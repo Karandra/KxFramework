@@ -1075,5 +1075,11 @@
     <ClCompile Include="KxFramework\KxWithDropdownMenu.cpp">
       <Filter>Source Files\Misc</Filter>
     </ClCompile>
+    <ClCompile Include="KxFramework\HTML\serialize.cc">
+      <Filter>Source Files\Parsers\HTML</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\HTML\clean_text.cc">
+      <Filter>Source Files\Parsers\HTML</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

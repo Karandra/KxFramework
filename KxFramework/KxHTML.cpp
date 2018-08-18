@@ -15,22 +15,22 @@
 //////////////////////////////////////////////////////////////////////////
 namespace
 {
-	GumboOptions* GetOptions(void* pOptions)
+	GumboOptions* GetOptions(void* options)
 	{
-		return reinterpret_cast<GumboOptions*>(pOptions);
+		return reinterpret_cast<GumboOptions*>(options);
 	}
-	GumboOutput* GetOutput(void* pOutput)
+	GumboOutput* GetOutput(void* output)
 	{
-		return reinterpret_cast<GumboOutput*>(pOutput);
+		return reinterpret_cast<GumboOutput*>(output);
 	}
 }
 
 void KxHTMLDocument::Init()
 {
-	GumboOptions* pOptions = new GumboOptions(kGumboDefaultOptions);
-	pOptions->userdata = this;
+	GumboOptions* options = new GumboOptions(kGumboDefaultOptions);
+	options->userdata = this;
 
-	m_ParserOptions = pOptions;
+	m_ParserOptions = options;
 }
 void KxHTMLDocument::Load()
 {

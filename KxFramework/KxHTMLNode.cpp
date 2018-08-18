@@ -4,12 +4,14 @@
 
 #pragma warning(disable: 4005)
 #include "gumbo.h"
-#include "gumbo_cpp.h"
 
 #define NODE(p)		reinterpret_cast<const GumboNode*>((p))
 
 namespace NodeInternals
 {
+	std::string gumbo_ex_cleantext(GumboNode* node);
+	std::string gumbo_ex_serialize(GumboNode* node);
+
 	wxString GetTagName(GumboTag tagType)
 	{
 		return gumbo_normalized_tagname(tagType);
@@ -238,7 +240,7 @@ wxString KxHTMLNode::GetHTML() const
 	std::string buffer;
 	if (node && NodeInternals::IsFullNode(NODE(node)))
 	{
-		buffer = gumbo_serialize(const_cast<GumboNode*>(NODE(node)));
+		buffer = NodeInternals::gumbo_ex_serialize(const_cast<GumboNode*>(NODE(node)));
 	}
 	else if (node)
 	{
@@ -257,7 +259,7 @@ wxString KxHTMLNode::GetValueText() const
 		}
 		else
 		{
-			return ToWxString(gumbo_cleantext(const_cast<GumboNode*>(NODE(node))));
+			return ToWxString(NodeInternals::gumbo_ex_cleantext(const_cast<GumboNode*>(NODE(node))));
 		}
 	}
 	return wxEmptyString;

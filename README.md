@@ -8,7 +8,7 @@ Support library for [Kortex Mod Manager](https://github.com/KerberX/Kortex-Mod-M
 - [WebSocket++](https://github.com/zaphoyd/websocketpp) (header only library, included).
 - [JSON for Modern C++](https://github.com/nlohmann/json) (included).
 - [cURL](https://curl.haxx.se), (headers and compiled .lib files included).
-- [Gumbo HTML parser](https://github.com/google/gumbo-parser). Compiled .lib files included.
+- [Gumbo HTML5 Parser](https://github.com/google/gumbo-parser). Compiled .lib files included.
 - [TinyXML2](https://github.com/leethomason/tinyxml2) (included).
 - [SimpleINI](https://github.com/brofield/simpleini) (header only library, included).
 

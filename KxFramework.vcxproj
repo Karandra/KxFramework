@@ -406,6 +406,18 @@
     <ClCompile Include="KxFramework\DataView\KxDataViewTimeEditor.cpp" />
     <ClCompile Include="KxFramework\DataView\KxDataViewToggleRenderer.cpp" />
     <ClCompile Include="KxFramework\DataView\KxDataViewTreeNode.cpp" />
+    <ClCompile Include="KxFramework\HTML\clean_text.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="KxFramework\HTML\serialize.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="KxFramework\KxApp.cpp" />
     <ClCompile Include="KxFramework\KxArchiveEvent.cpp" />
     <ClCompile Include="KxFramework\KxAuiNotebook.cpp" />
