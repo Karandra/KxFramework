@@ -1,0 +1,1079 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\System">
+      <UniqueIdentifier>{35a0ad53-72d1-47cc-be83-6ab87cda5688}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Streams">
+      <UniqueIdentifier>{cc10d6e8-b56c-4746-911a-b4f749466e83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Sizers">
+      <UniqueIdentifier>{febdb9fc-2421-477b-ab87-1e9d719c63a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\FileSystem">
+      <UniqueIdentifier>{49204734-d8d6-454c-8374-cb1df5bbc503}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Events">
+      <UniqueIdentifier>{bf54f086-d884-45dc-8670-5c65e6f09e19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DataStructures">
+      <UniqueIdentifier>{312cd0fc-b7a6-4e7c-a90b-eae4862d5112}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Crypto">
+      <UniqueIdentifier>{2047d07e-443c-43d9-ab37-12d9c37dac22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI">
+      <UniqueIdentifier>{6c310c16-9644-4de9-afd3-8862008629ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\Dialogs">
+      <UniqueIdentifier>{0de5f247-aaf3-442a-bc48-a8a16daa22e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\Controls">
+      <UniqueIdentifier>{5121c935-f7ad-4116-b589-cb0d930683c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\AUI">
+      <UniqueIdentifier>{be656ce5-feb3-4b1b-b4f3-bd15257ac986}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\Windows">
+      <UniqueIdentifier>{75e0a548-2dc9-4623-a2c1-9daef5598f15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Audio">
+      <UniqueIdentifier>{ee08d37a-b772-4504-8e19-7f06aad6f025}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FileSystem">
+      <UniqueIdentifier>{1c98282e-6b30-421a-98a6-607ca460419d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Events">
+      <UniqueIdentifier>{e19724b4-11bc-44f5-a040-78994c9ee6ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DataStructures">
+      <UniqueIdentifier>{5500debe-4bea-4b8a-8086-b9379f060578}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Crypto">
+      <UniqueIdentifier>{cf5a9b3f-5223-40f4-8980-34ff0a6f7eea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio">
+      <UniqueIdentifier>{e2f32b85-596c-486e-9081-47badce87023}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Sizers">
+      <UniqueIdentifier>{683c7eaa-1b43-4e61-9fcd-b25cc37d9d64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Streams">
+      <UniqueIdentifier>{721309c3-9280-403a-863b-7f43020c5be9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\System">
+      <UniqueIdentifier>{849b76ae-a5dc-47bf-8753-1b70f7aa091a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI">
+      <UniqueIdentifier>{60049398-3826-4dd1-9fea-0cca7f82949e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\AUI">
+      <UniqueIdentifier>{3e8be801-67ab-4b56-978f-86556053e602}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Dialogs">
+      <UniqueIdentifier>{b38ef96b-40e1-4dff-a767-e3fb73f75187}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Windows">
+      <UniqueIdentifier>{74472426-6df0-499b-9379-045dc38d5d4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\Menus">
+      <UniqueIdentifier>{f2b5ce1f-c739-47f9-bf55-bcbe305ca3f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Menus">
+      <UniqueIdentifier>{4f8ee5ef-125d-45f2-8fa5-32764cd79734}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parsers">
+      <UniqueIdentifier>{05175b32-2de3-4cd5-8b49-64b03465aa49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parsers">
+      <UniqueIdentifier>{f682b692-ee4a-429b-83fd-84db024f4639}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parsers\XML">
+      <UniqueIdentifier>{4d628c7c-94d3-4b7d-9265-49265654548e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parsers\XML">
+      <UniqueIdentifier>{685d523b-d479-4166-9951-3e5ed5b913cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parsers\INI">
+      <UniqueIdentifier>{b6d56553-25fd-47ff-b4ee-2a294ac8afbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parsers\INI">
+      <UniqueIdentifier>{e301e825-14cc-4c52-bffb-e2a81ddcb605}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parsers\HTML">
+      <UniqueIdentifier>{b01af409-c039-4b8b-874e-86dececf4df7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parsers\HTML">
+      <UniqueIdentifier>{fca23f05-6e0a-487d-9716-a8dd7f671d8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\General">
+      <UniqueIdentifier>{78ce2f9b-2a99-4d3f-8e20-2ce7526e49da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\General">
+      <UniqueIdentifier>{04351464-70db-4e69-82eb-8d33f862f80f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\DataView">
+      <UniqueIdentifier>{0fe22d6e-38bc-4d59-bc5d-4bfd844c92d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\DataView">
+      <UniqueIdentifier>{af1dbe62-c0ef-4f3c-aa12-01e66874f910}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Controls">
+      <UniqueIdentifier>{f01e130d-7ea9-414e-b8c5-c061c1b75cf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\DataView\Renderers">
+      <UniqueIdentifier>{a260eaae-04af-4750-a90b-e6e2a37b9d61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\DataView\Control">
+      <UniqueIdentifier>{81dcaf89-0671-4a8c-a3aa-526023d151fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\DataView\Control">
+      <UniqueIdentifier>{4f89bf7e-0439-4a4d-8286-4434d40ba063}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\DataView\Editors">
+      <UniqueIdentifier>{84e4b97e-893e-4ac1-a2a9-6b669b925eab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\DataView\Editors">
+      <UniqueIdentifier>{4b2caae1-b072-4848-87bb-7b0daa696d8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Drawing">
+      <UniqueIdentifier>{4a01e57e-89c2-4ec8-89f5-a9a005121141}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Drawing">
+      <UniqueIdentifier>{73e89795-488c-4434-8a05-9cc9d88ce2a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\DataView\Renderers">
+      <UniqueIdentifier>{3fd7a1f7-8b73-4520-b739-dcc014c8e2c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Network">
+      <UniqueIdentifier>{862b0d50-977d-4836-aaf1-77f2c6b9e809}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Network">
+      <UniqueIdentifier>{0935cad5-6ab0-410b-b7e6-9e9a0919f579}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Misc">
+      <UniqueIdentifier>{9369ebc3-44af-42ee-9987-724cc1b026c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Misc">
+      <UniqueIdentifier>{ce660ee4-5cc9-4fad-b667-b1c3c2924a59}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="KxStdAfx.h" />
+    <ClInclude Include="KxFramework\KxString.h">
+      <Filter>Header Files\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxVersion.h">
+      <Filter>Header Files\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxColor.h">
+      <Filter>Header Files\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxImageList.h">
+      <Filter>Header Files\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxImageSet.h">
+      <Filter>Header Files\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxSystemSettings.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxSystem.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxSystemAPI.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxRegistry.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxLibrary.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxFileStream.h">
+      <Filter>Header Files\Streams</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxFile.h">
+      <Filter>Header Files\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxFileFinder.h">
+      <Filter>Header Files\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxDrive.h">
+      <Filter>Header Files\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxShell.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxShellLink.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxProcess.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxProcessThread.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Lua Developer Studio\wxWidgets Extensions\Source\FileFormats\TinyXML2\TinyXML2.h">
+      <Filter>Header Files\Parsers\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxXML.h">
+      <Filter>Header Files\Parsers\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\XML\TinyXML2 HTML5 Printer.h">
+      <Filter>Header Files\Parsers\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxINI.h">
+      <Filter>Header Files\Parsers\INI</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\INI\SimpleINI.h">
+      <Filter>Header Files\Parsers\INI</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxTextFile.h">
+      <Filter>Header Files\Parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxHTML.h">
+      <Filter>Header Files\Parsers\HTML</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxTopLevelWindow.h">
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxIncludeWindows.h">
+      <Filter>Header Files\General</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxRTTI.h">
+      <Filter>Header Files\General</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxStandardID.h">
+      <Filter>Header Files\General</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxTranslation.h">
+      <Filter>Header Files\General</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxUtility.h">
+      <Filter>Header Files\General</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxWinUndef.h">
+      <Filter>Header Files\General</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxFrame.h">
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxPanel.h">
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxSplitterWindow.h">
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxCrypto.h">
+      <Filter>Header Files\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxStdDialogButtonSizer.h">
+      <Filter>Header Files\Sizers</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxButton.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxCollapsiblePane.h">
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxLabel.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxComboBox.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxBitmapComboBox.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxComboControl.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxComboPopup.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxHTMLWindow.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxImageView.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxParagraph.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxProgressBar.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxRadioButton.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxCheckBox.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxRichToolTip.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxSlider.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxStaticBitmap.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxStaticText.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxStatusBar.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxStatusBarEx.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxStyledTextBox.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxStyledTextBox_Scintilla.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxStyledTextBox_SciPosition.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxTextBox.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxThumbView.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxToolBar.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxListView.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxListBox.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxTreeList.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxTreeView.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxWebView.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxAuiToolBarItem.h">
+      <Filter>Header Files\GUI\AUI</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxAuiToolBar.h">
+      <Filter>Header Files\GUI\AUI</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxAuiNotebook.h">
+      <Filter>Header Files\GUI\AUI</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxNotebook.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxSimplebook.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxDialog.h">
+      <Filter>Header Files\GUI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxStdDialog.h">
+      <Filter>Header Files\GUI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxStdDialogSimple.h">
+      <Filter>Header Files\GUI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxTextBoxDialog.h">
+      <Filter>Header Files\GUI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxProgressDialog.h">
+      <Filter>Header Files\GUI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxListBoxDialog.h">
+      <Filter>Header Files\GUI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxComboBoxDialog.h">
+      <Filter>Header Files\GUI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxDualInputDialog.h">
+      <Filter>Header Files\GUI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxDualProgressDialog.h">
+      <Filter>Header Files\GUI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxFileBrowseDialog.h">
+      <Filter>Header Files\GUI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxTaskDialog.h">
+      <Filter>Header Files\GUI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxDataView.h">
+      <Filter>Header Files\GUI\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxDataViewComboBox.h">
+      <Filter>Header Files\GUI\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxDataViewModelExBase.h">
+      <Filter>Header Files\GUI\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxDataViewListModelEx.h">
+      <Filter>Header Files\GUI\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxINet.h">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxINetEvent.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxArchiveEvent.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxAuiToolBarEvent.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxCommandEvent.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxFileOperationEvent.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxMenuEvent.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxNotifyEvent.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxProcessEvent.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxINetConnection.h">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxApp.h">
+      <Filter>Header Files\General</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxXDocumentNode.h">
+      <Filter>Header Files\Parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxMenu.h">
+      <Filter>Header Files\GUI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxMenuItem.h">
+      <Filter>Header Files\GUI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxShellMenu.h">
+      <Filter>Header Files\GUI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewColumn.h">
+      <Filter>Header Files\GUI\DataView\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewCtrl.h">
+      <Filter>Header Files\GUI\DataView\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewHeaderCtrl.h">
+      <Filter>Header Files\GUI\DataView\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewItem.h">
+      <Filter>Header Files\GUI\DataView\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewModel.h">
+      <Filter>Header Files\GUI\DataView\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewRenderer.h">
+      <Filter>Header Files\GUI\DataView\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewMainWindow.h">
+      <Filter>Header Files\GUI\DataView\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewTreeNode.h">
+      <Filter>Header Files\GUI\DataView\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxDataViewEvent.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewEditor.h">
+      <Filter>Header Files\GUI\DataView\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewItemAttributes.h">
+      <Filter>Header Files\GUI\DataView\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewTextEditor.h">
+      <Filter>Header Files\GUI\DataView\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewSpinEditor.h">
+      <Filter>Header Files\GUI\DataView\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewComboBoxEditor.h">
+      <Filter>Header Files\GUI\DataView\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewTimeEditor.h">
+      <Filter>Header Files\GUI\DataView\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewDateEditor.h">
+      <Filter>Header Files\GUI\DataView\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewColorEditor.h">
+      <Filter>Header Files\GUI\DataView\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewConstants.h">
+      <Filter>Header Files\GUI\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxDataViewTreeModelEx.h">
+      <Filter>Header Files\GUI\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewToggleRenderer.h">
+      <Filter>Header Files\GUI\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewTextRenderer.h">
+      <Filter>Header Files\GUI\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewProgressRenderer.h">
+      <Filter>Header Files\GUI\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewImageListRenderer.h">
+      <Filter>Header Files\GUI\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewHTMLRenderer.h">
+      <Filter>Header Files\GUI\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewBitmapTextToggleRenderer.h">
+      <Filter>Header Files\GUI\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewBitmapTextRenderer.h">
+      <Filter>Header Files\GUI\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewBitmapRenderer.h">
+      <Filter>Header Files\GUI\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewDVComboBoxEditor.h">
+      <Filter>Header Files\GUI\DataView\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxGraphicsContext.h">
+      <Filter>Header Files\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxSplashWindow.h">
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxDCClipper.h">
+      <Filter>Header Files\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxSearchBox.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxSecretStore.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxCredentialsDialog.h">
+      <Filter>Header Files\GUI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxFramework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxINetRequest.h">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxWebSockets.h">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxWebSocketsImpl.h">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxWebSocketsImplHandler.h">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxWebSocketEvent.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxWebSocketsConstants.h">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxCURL.h">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxJSON.h">
+      <Filter>Header Files\Parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxCURLStructs.h">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxCURLEvent.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxISerializer.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxIOwned.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxMath.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxSingleton.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxWithDropdownMenu.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxWithImageList.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxWithOptions.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewNullRenderer.h">
+      <Filter>Header Files\GUI\DataView\Renderers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="KxStdAfx.cpp" />
+    <ClCompile Include="KxFramework\KxString.cpp">
+      <Filter>Source Files\DataStructures</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxVersion.cpp">
+      <Filter>Source Files\DataStructures</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxColor.cpp">
+      <Filter>Source Files\DataStructures</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxImageList.cpp">
+      <Filter>Source Files\DataStructures</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxImageSet.cpp">
+      <Filter>Source Files\DataStructures</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxSystemSettings.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxSystem.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxSystemAPI.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxRegistry.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxLibrary.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxFileStream.cpp">
+      <Filter>Source Files\Streams</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxFile.cpp">
+      <Filter>Source Files\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxFileFinder.cpp">
+      <Filter>Source Files\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxDrive.cpp">
+      <Filter>Source Files\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxShell.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxShellFolders.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxShellLink.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxProcess.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxProcessThread.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Lua Developer Studio\wxWidgets Extensions\Source\FileFormats\TinyXML2\TinyXML2.cpp">
+      <Filter>Source Files\Parsers\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxXMLAttribute.cpp">
+      <Filter>Source Files\Parsers\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxXMLNode.cpp">
+      <Filter>Source Files\Parsers\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxXML.cpp">
+      <Filter>Source Files\Parsers\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxINI.cpp">
+      <Filter>Source Files\Parsers\INI</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxTextFile.cpp">
+      <Filter>Source Files\Parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxHTML.cpp">
+      <Filter>Source Files\Parsers\HTML</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxHTMLNode.cpp">
+      <Filter>Source Files\Parsers\HTML</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxTopLevelWindow.cpp">
+      <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxTranslation.cpp">
+      <Filter>Source Files\General</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxUtility.cpp">
+      <Filter>Source Files\General</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxUtilityUxTheme.cpp">
+      <Filter>Source Files\General</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxFrame.cpp">
+      <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxPanel.cpp">
+      <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxSplitterWindow.cpp">
+      <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxCrypto.cpp">
+      <Filter>Source Files\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxStdDialogButtonSizer.cpp">
+      <Filter>Source Files\Sizers</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxButton.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxCollapsiblePane.cpp">
+      <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxLabel.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxComboBox.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxBitmapComboBox.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxComboControl.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxComboPopup.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxHTMLWindow.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxImageView.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxParagraph.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxProgressBar.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxRadioButton.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxCheckBox.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxRichToolTip.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxSlider.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxStaticBitmap.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxStaticText.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxStatusBar.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxStatusBarEx.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxStyledTextBox.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxTextBox.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxThumbView.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxToolBar.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxListView.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxListBox.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxTreeList.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxTreeView.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxWebView.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxAuiNotebook.cpp">
+      <Filter>Source Files\GUI\AUI</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxAuiToolBar.cpp">
+      <Filter>Source Files\GUI\AUI</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxAuiToolBarItem.cpp">
+      <Filter>Source Files\GUI\AUI</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxNotebook.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxSimplebook.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxDialog.cpp">
+      <Filter>Source Files\GUI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxStdDialog.cpp">
+      <Filter>Source Files\GUI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxStdDialogSimple.cpp">
+      <Filter>Source Files\GUI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxTextBoxDialog.cpp">
+      <Filter>Source Files\GUI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxProgressDialog.cpp">
+      <Filter>Source Files\GUI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxListBoxDialog.cpp">
+      <Filter>Source Files\GUI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxComboBoxDialog.cpp">
+      <Filter>Source Files\GUI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxDualInputDialog.cpp">
+      <Filter>Source Files\GUI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxDualProgressDialog.cpp">
+      <Filter>Source Files\GUI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxFileBrowseDialog.cpp">
+      <Filter>Source Files\GUI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxTaskDialog.cpp">
+      <Filter>Source Files\GUI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxDataView.cpp">
+      <Filter>Source Files\GUI\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxDataViewModelExBase.cpp">
+      <Filter>Source Files\GUI\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxDataViewListModelEx.cpp">
+      <Filter>Source Files\GUI\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxDataViewTreeModelEx.cpp">
+      <Filter>Source Files\GUI\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxINet.cpp">
+      <Filter>Source Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxINetConnection.cpp">
+      <Filter>Source Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxArchiveEvent.cpp">
+      <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxAuiToolBarEvent.cpp">
+      <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxCommandEvent.cpp">
+      <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxFileOperationEvent.cpp">
+      <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxINetEvent.cpp">
+      <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxMenuEvent.cpp">
+      <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxNotifyEvent.cpp">
+      <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxProcessEvent.cpp">
+      <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxApp.cpp">
+      <Filter>Source Files\General</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxXDocumentNode.cpp">
+      <Filter>Source Files\Parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxMenu.cpp">
+      <Filter>Source Files\GUI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxMenuItem.cpp">
+      <Filter>Source Files\GUI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxShellMenu.cpp">
+      <Filter>Source Files\GUI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxDataViewComboBox.cpp">
+      <Filter>Source Files\GUI\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewColumn.cpp">
+      <Filter>Source Files\GUI\DataView\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewCtrl.cpp">
+      <Filter>Source Files\GUI\DataView\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewHeaderCtrl.cpp">
+      <Filter>Source Files\GUI\DataView\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewItem.cpp">
+      <Filter>Source Files\GUI\DataView\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewModel.cpp">
+      <Filter>Source Files\GUI\DataView\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewRenderer.cpp">
+      <Filter>Source Files\GUI\DataView\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewMainWindow.cpp">
+      <Filter>Source Files\GUI\DataView\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewTreeNode.cpp">
+      <Filter>Source Files\GUI\DataView\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxDataViewEvent.cpp">
+      <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewEditor.cpp">
+      <Filter>Source Files\GUI\DataView\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewItemAttributes.cpp">
+      <Filter>Source Files\GUI\DataView\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewTextEditor.cpp">
+      <Filter>Source Files\GUI\DataView\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewSpinEditor.cpp">
+      <Filter>Source Files\GUI\DataView\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewComboBoxEditor.cpp">
+      <Filter>Source Files\GUI\DataView\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewTimeEditor.cpp">
+      <Filter>Source Files\GUI\DataView\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewDateEditor.cpp">
+      <Filter>Source Files\GUI\DataView\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewColorEditor.cpp">
+      <Filter>Source Files\GUI\DataView\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewBitmapRenderer.cpp">
+      <Filter>Source Files\GUI\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewBitmapTextRenderer.cpp">
+      <Filter>Source Files\GUI\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewBitmapTextToggleRenderer.cpp">
+      <Filter>Source Files\GUI\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewHTMLRenderer.cpp">
+      <Filter>Source Files\GUI\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewImageListRenderer.cpp">
+      <Filter>Source Files\GUI\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewProgressRenderer.cpp">
+      <Filter>Source Files\GUI\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewTextRenderer.cpp">
+      <Filter>Source Files\GUI\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewToggleRenderer.cpp">
+      <Filter>Source Files\GUI\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView\KxDataViewDVComboBoxEditor.cpp">
+      <Filter>Source Files\GUI\DataView\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxGraphicsContext.cpp">
+      <Filter>Source Files\Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxSplashWindow.cpp">
+      <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxDCClipper.cpp">
+      <Filter>Source Files\Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxSearchBox.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxSecretStore.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxCredentialsDialog.cpp">
+      <Filter>Source Files\GUI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxINetRequest.cpp">
+      <Filter>Source Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxWebSockets.cpp">
+      <Filter>Source Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxWebSocketsImpl.cpp">
+      <Filter>Source Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxWebSocketEvent.cpp">
+      <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxCURL.cpp">
+      <Filter>Source Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxJSON.cpp">
+      <Filter>Source Files\Parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxCURLEvent.cpp">
+      <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxISerializer.cpp">
+      <Filter>Source Files\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxIOwned.cpp">
+      <Filter>Source Files\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxMath.cpp">
+      <Filter>Source Files\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxSingleton.cpp">
+      <Filter>Source Files\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxWithImageList.cpp">
+      <Filter>Source Files\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxWithDropdownMenu.cpp">
+      <Filter>Source Files\Misc</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,169 @@
+#include "KxStdAfx.h"
+#include "KxFramework/KxShellLink.h"
+#include "KxFramework/KxUtility.h"
+#include <ShObjIDL.h>
+
+KxShellLink::KxShellLink(const wxString& filePath)
+{
+	HRESULT res = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLinkW, (void**)&m_Instance);
+	if (SUCCEEDED(res))
+	{
+		if (!filePath.IsEmpty())
+		{
+			IPersistFile* persistFile = NULL;
+			if (SUCCEEDED(m_Instance->QueryInterface(IID_IPersistFile, (void**)&persistFile)) && persistFile != NULL)
+			{
+				persistFile->Load(filePath, 0);
+				persistFile->Release();
+			}
+		}
+	}
+	else
+	{
+		m_Instance = NULL;
+	}
+}
+KxShellLink::~KxShellLink()
+{
+	if (m_Instance)
+	{
+		m_Instance->Release();
+	}
+}
+
+bool KxShellLink::IsOK() const
+{
+	return m_Instance != NULL;
+}
+bool KxShellLink::Save(const wxString& path) const
+{
+	if (!path.IsEmpty())
+	{
+		IPersistFile* persistFile = NULL;
+		if (SUCCEEDED(m_Instance->QueryInterface(IID_IPersistFile, (void**)&persistFile)) && persistFile != NULL)
+		{
+			HRESULT res = persistFile->Save(path, TRUE);
+			persistFile->Release();
+			return SUCCEEDED(res);
+		}
+	}
+	return false;
+}
+
+wxString KxShellLink::GetTarget() const
+{
+	wxString out;
+	m_Instance->GetPath(wxStringBuffer(out, MAX_PATH), MAX_PATH, NULL, 0);
+	return out;
+}
+void KxShellLink::SetTarget(const wxString& value)
+{
+	m_Instance->SetPath(value);
+}
+
+wxString KxShellLink::GetArguments() const
+{
+	wxString out;
+	m_Instance->GetArguments(wxStringBuffer(out, INT16_MAX), INT16_MAX);
+	out.Shrink();
+	return out;
+}
+void KxShellLink::SetArguments(const wxString& value)
+{
+	m_Instance->SetArguments(value);
+}
+
+wxString KxShellLink::GetWorkingFolder() const
+{
+	wxString out;
+	m_Instance->GetWorkingDirectory(wxStringBuffer(out, INT16_MAX), INT16_MAX);
+	out.Shrink();
+	return out;
+}
+void KxShellLink::SetWorkingFolder(const wxString& value)
+{
+	m_Instance->SetWorkingDirectory(value);
+}
+
+wxString KxShellLink::GetDescription() const
+{
+	wxString out;
+	m_Instance->GetDescription(wxStringBuffer(out, INFOTIPSIZE), INFOTIPSIZE);
+	return out;
+}
+void KxShellLink::SetDescription(const wxString& value)
+{
+	m_Instance->SetDescription(value);
+}
+
+wxString KxShellLink::GetIconLocation(int* indexOut) const
+{
+	int index = 0;
+	wxString out;
+
+	m_Instance->GetIconLocation(wxStringBuffer(out, INT16_MAX), INT16_MAX, &index);
+	out.Shrink();
+	KxUtility::SetIfNotNull(indexOut, index);
+	return out;
+}
+void KxShellLink::SetIconLocation(const wxString& value, int index)
+{
+	m_Instance->SetIconLocation(value, index);
+}
+int KxShellLink::GetIconIndex() const
+{
+	int index = -1;
+	m_Instance->GetIconLocation(NULL, 0, &index);
+	return index;
+}
+
+KxShellLink::ShowCommand KxShellLink::GetShowCommand() const
+{
+	int command = KxSHL_SHOW_INVALID_COMMAND;
+	if (SUCCEEDED(m_Instance->GetShowCmd(&command)))
+	{
+		return static_cast<ShowCommand>(command);
+	}
+	return KxSHL_SHOW_INVALID_COMMAND;
+}
+void KxShellLink::SetShowCommand(ShowCommand command)
+{
+	if (command != KxSHL_SHOW_INVALID_COMMAND)
+	{
+		m_Instance->SetShowCmd(command);
+	}
+}
+
+wxKeyEvent KxShellLink::GetHotKey() const
+{
+	wxKeyEvent keyState;
+
+	WORD hotKeys = 0;
+	if (SUCCEEDED(m_Instance->GetHotkey(&hotKeys)))
+	{
+		keyState.m_keyCode = KxUtility::GetIntLowPart<BYTE>(hotKeys);//LOBYTE(nHotKeys);
+
+		BYTE modifiers = KxUtility::GetIntHighPart<BYTE>(hotKeys);//HIBYTE(nHotKeys);
+		keyState.m_controlDown = modifiers & HOTKEYF_CONTROL;
+		keyState.m_altDown = modifiers & HOTKEYF_ALT;
+		keyState.m_shiftDown = modifiers & HOTKEYF_SHIFT;
+	}
+	return keyState;
+}
+void KxShellLink::SetHotKey(const wxKeyEvent& keyState)
+{
+	BYTE modifiers = 0;
+	if (keyState.ControlDown())
+	{
+		modifiers |= HOTKEYF_CONTROL;
+	}
+	if (keyState.AltDown())
+	{
+		modifiers |= HOTKEYF_ALT;
+	}
+	if (keyState.ShiftDown())
+	{
+		modifiers |= HOTKEYF_SHIFT;
+	}
+	m_Instance->SetHotkey(KxUtility::MakeInt<WORD>((BYTE)keyState.GetKeyCode(), modifiers));
+}
