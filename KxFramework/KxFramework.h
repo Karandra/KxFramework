@@ -18,6 +18,7 @@
 #include <cfloat>
 #include <ctime>
 #include <cctype>
+#include <cinttypes>
 
 // C++ part
 #include <string>

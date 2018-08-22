@@ -261,6 +261,7 @@
     <ClInclude Include="KxFramework\KxFileFinder.h" />
     <ClInclude Include="KxFramework\KxFileOperationEvent.h" />
     <ClInclude Include="KxFramework\KxFileStream.h" />
+    <ClInclude Include="KxFramework\KxFormat.h" />
     <ClInclude Include="KxFramework\KxFrame.h" />
     <ClInclude Include="KxFramework\KxFramework.h" />
     <ClInclude Include="KxFramework\KxGraphicsContext.h" />
@@ -469,6 +470,7 @@
     <ClCompile Include="KxFramework\KxFileFinder.cpp" />
     <ClCompile Include="KxFramework\KxFileOperationEvent.cpp" />
     <ClCompile Include="KxFramework\KxFileStream.cpp" />
+    <ClCompile Include="KxFramework\KxFormat.cpp" />
     <ClCompile Include="KxFramework\KxFrame.cpp" />
     <ClCompile Include="KxFramework\KxGraphicsContext.cpp" />
     <ClCompile Include="KxFramework\KxHTML.cpp">
