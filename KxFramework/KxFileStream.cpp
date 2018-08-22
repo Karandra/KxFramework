@@ -1,6 +1,25 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #include "KxStdAfx.h"
 #include "KxFramework/KxFileStream.h"
 #include <wx/ustring.h>
+
+namespace Utils
+{
+	template<class T> bool RemoveLastNullChar(std::vector<T>& data)
+	{
+		if (!data.empty() && data.back() == 0)
+		{
+			data.pop_back();
+			return true;
+		}
+		return false;
+	}
+}
 
 wxIMPLEMENT_CLASS2(KxFileStream, wxInputStream, wxOutputStream);
 
@@ -284,6 +303,7 @@ wxString KxFileStream::ReadStringCurrentLocale(size_t size, bool* isSuccess)
 
 	if (isOK)
 	{
+		Utils::RemoveLastNullChar(buffer);
 		return wxString(buffer.data(), buffer.size());
 	}
 	return wxEmptyString;
@@ -293,6 +313,7 @@ bool KxFileStream::WriteStringCurrentLocale(const wxString& v)
 	auto data = v.c_str().AsCharBuf();
 	return OnSysWrite(data.data(), data.length()) != 0;
 }
+
 wxString KxFileStream::ReadStringASCII(size_t size, bool* isSuccess)
 {
 	bool isOK = false;
@@ -301,6 +322,7 @@ wxString KxFileStream::ReadStringASCII(size_t size, bool* isSuccess)
 
 	if (isOK)
 	{
+		Utils::RemoveLastNullChar(buffer);
 		return wxString::FromAscii(buffer.data(), buffer.size());
 	}
 	return wxEmptyString;
@@ -310,6 +332,7 @@ bool KxFileStream::WriteStringASCII(const wxString& v, char replacement)
 	auto data = v.ToAscii(replacement);
 	return OnSysWrite(data.data(), data.length()) != 0;
 }
+
 wxString KxFileStream::ReadStringUTF8(size_t size, bool* isSuccess)
 {
 	bool isOK = false;
@@ -318,6 +341,7 @@ wxString KxFileStream::ReadStringUTF8(size_t size, bool* isSuccess)
 
 	if (isOK)
 	{
+		Utils::RemoveLastNullChar(buffer);
 		return wxString::FromUTF8(buffer.data(), buffer.size());
 	}
 	return wxEmptyString;
@@ -327,6 +351,7 @@ bool KxFileStream::WriteStringUTF8(const wxString& v)
 	auto utf8 = v.ToUTF8();
 	return OnSysWrite(utf8.data(), utf8.length()) != 0;
 }
+
 wxString KxFileStream::ReadStringUTF16(size_t size, bool* isSuccess)
 {
 	bool isOK = false;
@@ -335,6 +360,7 @@ wxString KxFileStream::ReadStringUTF16(size_t size, bool* isSuccess)
 
 	if (isOK)
 	{
+		Utils::RemoveLastNullChar(buffer);
 		return wxString(buffer.data(), buffer.size());
 	}
 	return wxEmptyString;
@@ -344,6 +370,7 @@ bool KxFileStream::WriteStringUTF16(const wxString& v)
 	auto utf8 = v.wchar_str();
 	return OnSysWrite(utf8.data(), utf8.length()) != 0;
 }
+
 wxString KxFileStream::ReadStringUTF32(size_t size, bool* isSuccess)
 {
 	bool isOK = false;
@@ -353,6 +380,7 @@ wxString KxFileStream::ReadStringUTF32(size_t size, bool* isSuccess)
 	if (isOK)
 	{
 		wxUString out;
+		Utils::RemoveLastNullChar(buffer);
 		out.assign(buffer.data(), buffer.size());
 		return out;
 	}

@@ -1,3 +1,9 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxUtility.h"
@@ -274,12 +280,16 @@ class KxFileStream: public virtual wxInputStream, public virtual wxOutputStream
 
 		wxString ReadStringCurrentLocale(size_t size, bool* isSuccess = NULL);
 		bool WriteStringCurrentLocale(const wxString& v);
+
 		wxString ReadStringASCII(size_t size, bool* isSuccess = NULL);
 		bool WriteStringASCII(const wxString& v, char replacement = '_');
+		
 		wxString ReadStringUTF8(size_t size, bool* isSuccess = NULL);
 		bool WriteStringUTF8(const wxString& v);
+		
 		wxString ReadStringUTF16(size_t size, bool* isSuccess = NULL);
 		bool WriteStringUTF16(const wxString& v);
+		
 		wxString ReadStringUTF32(size_t size, bool* isSuccess = NULL);
 		bool WriteStringUTF32(const wxString& v);
 
