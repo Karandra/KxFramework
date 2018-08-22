@@ -637,6 +637,9 @@
     <ClInclude Include="KxFramework\DataView\KxDataViewNullRenderer.h">
       <Filter>Header Files\GUI\DataView\Renderers</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxFormat.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1080,6 +1083,9 @@
     </ClCompile>
     <ClCompile Include="KxFramework\HTML\clean_text.cc">
       <Filter>Source Files\Parsers\HTML</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxFormat.cpp">
+      <Filter>Source Files\Misc</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
