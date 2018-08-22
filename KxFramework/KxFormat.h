@@ -26,7 +26,7 @@ class KxFormat
 		}
 
 	public:
-		operator const wxString&() const
+		operator wxString() const
 		{
 			return m_String;
 		}
