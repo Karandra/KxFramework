@@ -1,3 +1,9 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #include "KxStdAfx.h"
 #include "KxFramework/KxString.h"
 #include <Shlwapi.h>
@@ -19,12 +25,12 @@ wxUniChar& KxString::MakeUpper(wxUniChar& c)
 
 wxString& KxString::MakeLower(wxString& s)
 {
-	::CharLowerBuffW(const_cast<wchar_t*>(s.wc_str()), s.length());
+	::CharLowerBuffW(wxStringBuffer(s, s.length()), s.length());
 	return s;
 }
 wxString& KxString::MakeUpper(wxString& s)
 {
-	::CharUpperBuffW(const_cast<wchar_t*>(s.wc_str()), s.length());
+	::CharUpperBuffW(wxStringBuffer(s, s.length()), s.length());
 	return s;
 }
 
