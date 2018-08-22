@@ -39,7 +39,7 @@ class KxFormat
 		}
 		KxFormat& LowerCase(bool value = true)
 		{
-			m_UpperCase = value;
+			m_UpperCase = !value;
 			return *this;
 		}
 
