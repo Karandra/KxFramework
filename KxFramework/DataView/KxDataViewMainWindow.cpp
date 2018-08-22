@@ -1218,31 +1218,15 @@ void KxDataViewMainWindow::OnPaint(wxPaintEvent& event)
 
 	if (m_HotTrackRowEnabled && m_HotTrackRow != INVALID_ROW && m_HotTrackColumn && !m_Owner->HasFlag(KxDV_NO_HOT_TRACK))
 	{
-		wxRect tItemRect(x_start, GetLineStart(m_HotTrackRow), x_last - x_start, GetLineHeight(m_HotTrackRow));
-		wxRendererNative::Get().DrawItemSelectionRect(this, dc, tItemRect, wxCONTROL_FOCUSED|wxCONTROL_CURRENT);
+		wxRect itemRect(x_start, GetLineStart(m_HotTrackRow), x_last - x_start, GetLineHeight(m_HotTrackRow));
+		wxRendererNative::Get().DrawItemSelectionRect(this, dc, itemRect, wxCONTROL_FOCUSED|wxCONTROL_CURRENT);
 	}
 
 	#if wxUSE_DRAG_AND_DROP
 	if (m_DropHint)
 	{
-		#if 0
-		const bool after = false;
-		const int hintHeight = FromDIP(2);
-		const int lineHeight = GetLineHeight(m_DropHintLine);
-		wxRect rect(x_start, GetLineStart(m_DropHintLine), x_last - x_start, hintHeight);
-
-		if (after)
-		{
-			rect.y += lineHeight - hintHeight;
-		}
-
-		dc.SetBrush(dc.GetTextForeground());
-		dc.SetPen(dc.GetTextForeground());
-		dc.DrawRectangle(rect);
-		#else
 		wxRect rect(x_start, GetLineStart(m_DropHintLine), x_last - x_start, GetLineHeight(m_DropHintLine));
 		wxRendererNative::Get().DrawFocusRect(this, dc, rect, wxCONTROL_CURRENT);
-		#endif
 	}
 	#endif
 
@@ -1313,8 +1297,14 @@ void KxDataViewMainWindow::OnPaint(wxPaintEvent& event)
 			cell->PrepareItemToDraw(dataitem, cellState);
 
 			// Draw the background
-			bool selected = m_Selection.IsSelected(item);
-			//if ((!selected && item != m_DropHintLine) || cell->HasSpecialBackground())
+			if (i != col_start)
+			{
+				wxRect backgroundRect(cell_rect);
+				backgroundRect.x--;
+				backgroundRect.width++;
+				DrawCellBackground(cell, backgroundRect, cellState);
+			}
+			else
 			{
 				DrawCellBackground(cell, cell_rect, cellState);
 			}
@@ -1444,21 +1434,6 @@ void KxDataViewMainWindow::OnPaint(wxPaintEvent& event)
 }
 void KxDataViewMainWindow::DrawCellBackground(KxDataViewRenderer* renderer, const wxRect& rect, KxDataViewCellState cellState)
 {
-	//wxRect cellRect(rect);
-
-	// Don't overlap the horizontal rules
-	if (m_Owner->HasFlag(KxDV_HORIZ_RULES))
-	{
-		//cellRect.y++;
-		//cellRect.height--;
-	}
-
-	// Don't overlap the vertical rules
-	if (m_Owner->HasFlag(KxDV_VERT_RULES))
-	{
-		//cellRect.width--;
-	}
-
 	renderer->CallDrawCellBackground(rect, cellState);
 }
 KxDataViewCellState KxDataViewMainWindow::GetCellStateForRow(size_t row) const
