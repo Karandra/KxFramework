@@ -32,12 +32,13 @@ void KxHTMLWindow::CreateContextMenu()
 	m_ContextMenu.Bind(KxEVT_MENU_OPEN, &KxHTMLWindow::OnShowContextMenu, this);
 
 	m_ContextMenu.Add(new KxMenuItem(wxID_UNDO, KxTranslation::GetCurrent().GetString(wxID_UNDO)));
+	m_ContextMenu.Add(new KxMenuItem(wxID_REDO, KxTranslation::GetCurrent().GetString(wxID_REDO)));
 	m_ContextMenu.AddSeparator();
 
 	m_ContextMenu.Add(new KxMenuItem(wxID_CUT, KxTranslation::GetCurrent().GetString(wxID_CUT)));
 	m_ContextMenu.Add(new KxMenuItem(wxID_COPY, KxTranslation::GetCurrent().GetString(wxID_COPY)));
 	m_ContextMenu.Add(new KxMenuItem(wxID_PASTE, KxTranslation::GetCurrent().GetString(wxID_PASTE)));
-	m_ContextMenu.Add(new KxMenuItem(wxID_REMOVE, KxTranslation::GetCurrent().GetString(wxID_REMOVE)));
+	m_ContextMenu.Add(new KxMenuItem(wxID_DELETE, KxTranslation::GetCurrent().GetString(wxID_DELETE)));
 	m_ContextMenu.AddSeparator();
 
 	m_ContextMenu.Add(new KxMenuItem(wxID_SELECTALL, KxTranslation::GetCurrent().GetString(wxID_SELECTALL)));
@@ -64,9 +65,10 @@ void KxHTMLWindow::OnShowContextMenu(KxMenuEvent& event)
 				break;
 			}
 			case wxID_UNDO:
+			case wxID_REDO:
 			case wxID_CUT:
 			case wxID_PASTE:
-			case wxID_REMOVE:
+			case wxID_DELETE:
 			{
 				item->Enable(IsEditable());
 				break;
