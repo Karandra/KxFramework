@@ -31,16 +31,16 @@ void KxHTMLWindow::CreateContextMenu()
 {
 	m_ContextMenu.Bind(KxEVT_MENU_OPEN, &KxHTMLWindow::OnShowContextMenu, this);
 
-	m_ContextMenu.Add(new KxMenuItem(wxID_UNDO, KxTranslation::GetString(wxID_UNDO)));
+	m_ContextMenu.Add(new KxMenuItem(wxID_UNDO, KxTranslation::GetCurrent().GetString(wxID_UNDO)));
 	m_ContextMenu.AddSeparator();
 
-	m_ContextMenu.Add(new KxMenuItem(wxID_CUT, KxTranslation::GetString(wxID_CUT)));
-	m_ContextMenu.Add(new KxMenuItem(wxID_COPY, KxTranslation::GetString(wxID_COPY)));
-	m_ContextMenu.Add(new KxMenuItem(wxID_PASTE, KxTranslation::GetString(wxID_PASTE)));
-	m_ContextMenu.Add(new KxMenuItem(wxID_REMOVE, KxTranslation::GetString(wxID_REMOVE)));
+	m_ContextMenu.Add(new KxMenuItem(wxID_CUT, KxTranslation::GetCurrent().GetString(wxID_CUT)));
+	m_ContextMenu.Add(new KxMenuItem(wxID_COPY, KxTranslation::GetCurrent().GetString(wxID_COPY)));
+	m_ContextMenu.Add(new KxMenuItem(wxID_PASTE, KxTranslation::GetCurrent().GetString(wxID_PASTE)));
+	m_ContextMenu.Add(new KxMenuItem(wxID_REMOVE, KxTranslation::GetCurrent().GetString(wxID_REMOVE)));
 	m_ContextMenu.AddSeparator();
 
-	m_ContextMenu.Add(new KxMenuItem(wxID_SELECTALL, KxTranslation::GetString(wxID_SELECTALL)));
+	m_ContextMenu.Add(new KxMenuItem(wxID_SELECTALL, KxTranslation::GetCurrent().GetString(wxID_SELECTALL)));
 }
 void KxHTMLWindow::CopyTextToClipboard(const wxString& value) const
 {
@@ -55,14 +55,20 @@ void KxHTMLWindow::OnShowContextMenu(KxMenuEvent& event)
 {
 	for (wxMenuItem* item: m_ContextMenu.GetMenuItems())
 	{
-		switch (item->GetId())
+		switch (static_cast<KxMenuItem*>(item)->GetId())
 		{
+			case wxID_COPY:
+			case wxID_SELECTALL:
+			{
+				item->Enable(!IsEmpty());
+				break;
+			}
 			case wxID_UNDO:
 			case wxID_CUT:
 			case wxID_PASTE:
 			case wxID_REMOVE:
 			{
-				item->Enable(m_IsEditable);
+				item->Enable(IsEditable());
 				break;
 			}
 		};

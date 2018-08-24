@@ -1,45 +1,58 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxUtility.h"
-#include "KxFramework/KxXML.h"
+class KxXMLDocument;
+class KxLibrary;
 
-using KxTranslationTable = std::unordered_map<wxString, wxString>;
 class KxTranslation
 {
-	private:
-		KxTranslation() = delete;
-		KxTranslation& operator=(const KxTranslation&) = delete;
-
-	private:
-		static void InitStringTable();
-		static void ClearStringTable();
+	public:
+		static const KxTranslation& GetCurrent();
+		static void SetCurrent(const KxTranslation& translation);
 
 	public:
-		static KxTranslationTable FindTranslationsInDirectory(const wxString& folderPath);
-		static KxStringVector FindTranslationsInResources();
-		
-		static bool LoadTranslationFromFile(const wxString& filePath);
-		static bool LoadTranslationFromResource(const wxString& localeName);
-		
-		static const wxString& GetString(const wxString& id, bool* isSuccessOut = NULL);
-		static const wxString& GetString(const char* id, bool* isSuccessOut = NULL)
-		{
-			return GetString(wxString::FromUTF8Unchecked(id), isSuccessOut);
-		}
-		static wxString GetString(wxStandardID id, bool* isSuccessOut = NULL)
-		{
-			return KxUtility::GetStandardLocalizedString(id, isSuccessOut);
-		}
-		static wxString GetString(KxStandardID id, bool* isSuccessOut = NULL)
-		{
-			return KxUtility::GetStandardLocalizedString(id, isSuccessOut);
-		}
-
 		static wxString GetUserDefaultLocale();
 		static wxString GetSystemDefaultLocale();
 		static wxString GetSystemPreferredLocale();
 
 		static wxString GetLanguageFullName(const wxString& localeName);
-		static wxString ToLocaleName(const LANGID& langID, DWORD sortOrder = SORT_DEFAULT);
-		static wxString ToLocaleName(const LCID& lcid);
+		static wxString LangIDToLocaleName(const LANGID& langID, DWORD sortOrder = SORT_DEFAULT);
+		static wxString LCIDToLocaleName(const LCID& lcid);
+
+		static KxStringToStringUMap FindTranslationsInDirectory(const wxString& folderPath);
+		static KxStringVector FindTranslationsInResources();
+
+	private:
+		std::unordered_map<wxString, wxString> m_StringTable;
+		wxString m_TranslatorName;
+
+	private:
+		void Clear();
+		bool Init(const KxXMLDocument& xml);
+		bool LoadFromResourceInModule(const wxString& localeName, const KxLibrary& library);
+
+	public:
+		KxTranslation();
+		virtual ~KxTranslation();
+
+	public:
+		bool IsOK() const
+		{
+			return !m_StringTable.empty();
+		}
+		const wxString& GetTranslatorName() const
+		{
+			return m_TranslatorName;
+		}
+
+		const wxString& GetString(const wxString& id, bool* isSuccessOut = NULL) const;
+		const wxString& GetString(const char* id, bool* isSuccessOut = NULL) const
+		{
+			return GetString(wxString::FromUTF8Unchecked(id), isSuccessOut);
+		}
+		wxString GetString(wxStandardID id, bool* isSuccessOut = NULL) const;
+		wxString GetString(KxStandardID id, bool* isSuccessOut = NULL) const;
+
+		bool LoadFromFile(const wxString& filePath);
+		bool LoadFromResource(const wxString& localeName);
+		bool LoadFromResource(const wxString& localeName, const KxLibrary& library);
 };

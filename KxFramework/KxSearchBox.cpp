@@ -52,7 +52,7 @@ bool KxSearchBox::Create(wxWindow* parent,
 		SetDoubleBuffered(true);
 		ShowCancelButton(true);
 		ShowSearchButton(true);
-		SetDescriptiveText(KxTranslation::GetString(KxID_SEARCH));
+		SetDescriptiveText(KxTranslation::GetCurrent().GetString(KxID_SEARCH));
 		Refresh();
 
 		m_EvtHandler.Bind(wxEVT_TEXT, &KxSearchBox::OnText, this);

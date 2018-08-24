@@ -202,6 +202,9 @@ using KxUInt64Vector = std::vector<uint64_t>;
 
 using KxAnyVector = std::vector<wxAny>;
 
+using KxStringToStringMap = std::map<wxString, wxString>;
+using KxStringToStringUMap = std::unordered_map<wxString, wxString>;
+
 /* KxFramework */
 #include <KxFramework/KxStandardID.h>
 #include "KxFramework/KxRTTI.h"

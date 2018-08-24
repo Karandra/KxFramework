@@ -90,11 +90,11 @@ static wxString wxGetStockLabelAux(const char* sCharID, long flags, const char* 
 	}
 
 	bool bGetSuccess = false;
-	wxString value = KxTranslation::GetString(id, &bGetSuccess);
+	wxString value = KxTranslation::GetCurrent().GetString(id, &bGetSuccess);
 	if (!bGetSuccess)
 	{
 		id.RemoveLast(3);
-		value = KxTranslation::GetString(id, &bGetSuccess);
+		value = KxTranslation::GetCurrent().GetString(id, &bGetSuccess);
 	}
 
 	KxUtility::SetIfNotNull(isSuccessOut, bGetSuccess);

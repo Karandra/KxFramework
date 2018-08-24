@@ -4,127 +4,25 @@
 #include "KxFramework/KxSystem.h"
 #include "KxFramework/KxLibrary.h"
 #include "KxFramework/KxFileStream.h"
-#include "KxFramework/KxFile.h"
 #include "KxFramework/KxUtility.h"
+#include "KxFramework/KxFile.h"
+#include "KxFramework/KxXML.h"
 
 namespace
 {
-	static KxXMLDocument g_CurrentTranslation;
-	static std::unordered_map<wxString, wxString> g_StringTable;
-
 	static wxString g_TranslationResourceType = "Translation";
+	
+	static const KxTranslation g_DefaultTranslation;
+	static const KxTranslation* g_CurrentTranslation = &g_DefaultTranslation;
 }
 
-void KxTranslation::InitStringTable()
+const KxTranslation& KxTranslation::GetCurrent()
 {
-	g_StringTable.clear();
-
-	g_CurrentTranslation.SetXPathSeparator(wxEmptyString);
-	if (g_CurrentTranslation.IsOK())
-	{
-		KxXMLNode element = g_CurrentTranslation.QueryElement("Lang/StringTable");
-		if (element.IsOK())
-		{
-			element = element.GetFirstChild();
-			while (element.IsOK())
-			{
-				wxString id = element.GetAttribute("ID");
-				if (!id.IsEmpty())
-				{
-					g_StringTable.insert(std::make_pair(id, element.GetValue()));
-				}
-
-				element = element.GetNextSibling();
-			}
-		}
-	}
+	return *g_CurrentTranslation;
 }
-void KxTranslation::ClearStringTable()
+void KxTranslation::SetCurrent(const KxTranslation& translation)
 {
-	g_StringTable.clear();
-	g_CurrentTranslation.Load(wxEmptyString);
-}
-
-KxTranslationTable KxTranslation::FindTranslationsInDirectory(const wxString& folderPath)
-{
-	KxTranslationTable translations;
-	KxStringVector filesList = KxFile(folderPath).Find("*.xml", KxFS_FILE);
-	if (!filesList.empty())
-	{
-		for (const KxFile& filePath: filesList)
-		{
-			wxString localeName = filePath.GetName();
-			
-			// Check locale name
-			if (!GetLanguageFullName(localeName).IsEmpty())
-			{
-				translations.insert(std::make_pair(localeName, filePath.GetFullPath()));
-			}
-		}
-	}
-	return translations;
-}
-KxStringVector KxTranslation::FindTranslationsInResources()
-{
-	KxLibrary appLib(KxUtility::GetAppHandle());
-	if (appLib.IsOK())
-	{
-		KxAnyVector resourseList = appLib.EnumResources(g_TranslationResourceType);
-		
-		KxStringVector localeNames;
-		localeNames.reserve(resourseList.size());
-
-		for (const wxAny& any: resourseList)
-		{
-			localeNames.push_back(any.As<wxString>());
-		}
-		return localeNames;
-	}
-	return KxStringVector();
-}
-
-bool KxTranslation::LoadTranslationFromFile(const wxString& filePath)
-{
-	ClearStringTable();
-
-	KxFileStream file(filePath, KxFS_ACCESS_READ, KxFS_DISP_OPEN_EXISTING, KxFS_SHARE_READ);
-	if (file.IsOk() && g_CurrentTranslation.Load(file))
-	{
-		InitStringTable();
-		return true;
-	}
-	return false;
-}
-bool KxTranslation::LoadTranslationFromResource(const wxString& localeName)
-{
-	ClearStringTable();
-
-	KxLibrary appLib(KxUtility::GetAppHandle());
-	if (appLib.IsOK())
-	{
-		wxMemoryBuffer data = appLib.GetResource(g_TranslationResourceType, localeName);
-		if (!data.IsEmpty())
-		{
-			g_CurrentTranslation.Load(wxString::FromUTF8((const char*)data.GetData(), data.GetDataLen()));
-			InitStringTable();
-
-			return g_CurrentTranslation.IsOK();
-		}
-	}
-	return false;
-}
-
-const wxString& KxTranslation::GetString(const wxString& id, bool* isSuccessOut)
-{
-	auto it = g_StringTable.find(id);
-	if (it != g_StringTable.end())
-	{
-		KxUtility::SetIfNotNull(isSuccessOut, true);
-		return it->second;
-	}
-
-	KxUtility::SetIfNotNull(isSuccessOut, false);
-	return wxNullString;
+	g_CurrentTranslation = translation.IsOK() ? &translation : &g_DefaultTranslation;
 }
 
 wxString KxTranslation::GetUserDefaultLocale()
@@ -167,13 +65,140 @@ wxString KxTranslation::GetLanguageFullName(const wxString& localeName)
 	}
 	return wxEmptyString;
 }
-wxString KxTranslation::ToLocaleName(const LANGID& langID, DWORD sortOrder)
+wxString KxTranslation::LangIDToLocaleName(const LANGID& langID, DWORD sortOrder)
 {
-	return ToLocaleName(MAKELCID(langID, sortOrder));
+	return LCIDToLocaleName(MAKELCID(langID, sortOrder));
 }
-wxString KxTranslation::ToLocaleName(const LCID& lcid)
+wxString KxTranslation::LCIDToLocaleName(const LCID& lcid)
 {
 	wchar_t name[LOCALE_NAME_MAX_LENGTH] = {0};
 	::LCIDToLocaleName(lcid, name, LOCALE_NAME_MAX_LENGTH, 0);
 	return name;
+}
+
+KxStringToStringUMap KxTranslation::FindTranslationsInDirectory(const wxString& folderPath)
+{
+	KxStringToStringUMap translations;
+	KxStringVector filesList = KxFile(folderPath).Find("*.xml", KxFS_FILE);
+	if (!filesList.empty())
+	{
+		for (const KxFile& filePath: filesList)
+		{
+			wxString localeName = filePath.GetName();
+
+			// Check locale name
+			if (!GetLanguageFullName(localeName).IsEmpty())
+			{
+				translations.insert(std::make_pair(localeName, filePath.GetFullPath()));
+			}
+		}
+	}
+	return translations;
+}
+KxStringVector KxTranslation::FindTranslationsInResources()
+{
+	KxLibrary appLib(KxUtility::GetAppHandle());
+	if (appLib.IsOK())
+	{
+		KxAnyVector resourseList = appLib.EnumResources(g_TranslationResourceType);
+
+		KxStringVector localeNames;
+		localeNames.reserve(resourseList.size());
+
+		for (const wxAny& any: resourseList)
+		{
+			localeNames.push_back(any.As<wxString>());
+		}
+		return localeNames;
+	}
+	return KxStringVector();
+}
+
+void KxTranslation::Clear()
+{
+	m_StringTable.clear();
+	m_TranslatorName.clear();
+}
+bool KxTranslation::Init(const KxXMLDocument& xml)
+{
+	if (xml.IsOK())
+	{
+		KxXMLNode stringtTableNode = xml.QueryElement("Lang/StringTable");
+		if (stringtTableNode.IsOK())
+		{
+			m_TranslatorName = xml.QueryElement("Lang/Info/Translator").GetValue();
+
+			for (KxXMLNode node = stringtTableNode.GetFirstChildElement(); node.IsOK(); node = node.GetNextSiblingElement())
+			{
+				wxString id = node.GetAttribute("ID");
+				if (!id.IsEmpty())
+				{
+					m_StringTable.insert(std::make_pair(id, node.GetValue()));
+				}
+			}
+			return true;
+		}
+	}
+	return false;
+}
+bool KxTranslation::LoadFromResourceInModule(const wxString& localeName, const KxLibrary& library)
+{
+	if (library.IsOK())
+	{
+		wxMemoryBuffer data = library.GetResource(g_TranslationResourceType, localeName);
+		if (!data.IsEmpty())
+		{
+			KxXMLDocument xml(wxString::FromUTF8((const char*)data.GetData(), data.GetDataLen()));
+			return Init(xml);
+		}
+	}
+	return false;
+}
+
+KxTranslation::KxTranslation()
+{
+}
+KxTranslation::~KxTranslation()
+{
+}
+
+const wxString& KxTranslation::GetString(const wxString& id, bool* isSuccessOut) const
+{
+	auto it = m_StringTable.find(id);
+	if (it != m_StringTable.end())
+	{
+		KxUtility::SetIfNotNull(isSuccessOut, true);
+		return it->second;
+	}
+
+	KxUtility::SetIfNotNull(isSuccessOut, false);
+	return wxNullString;
+}
+wxString KxTranslation::GetString(wxStandardID id, bool* isSuccessOut) const
+{
+	return KxUtility::GetStandardLocalizedString(id, isSuccessOut);
+}
+wxString KxTranslation::GetString(KxStandardID id, bool* isSuccessOut) const
+{
+	return KxUtility::GetStandardLocalizedString(id, isSuccessOut);
+}
+
+bool KxTranslation::LoadFromFile(const wxString& filePath)
+{
+	Clear();
+
+	KxFileStream stream(filePath, KxFS_ACCESS_READ, KxFS_DISP_OPEN_EXISTING, KxFS_SHARE_READ);
+	if (stream.IsOk())
+	{
+		return Init(KxXMLDocument(stream));
+	}
+	return false;
+}
+bool KxTranslation::LoadFromResource(const wxString& localeName)
+{
+	return LoadFromResourceInModule(localeName, KxLibrary(KxUtility::GetAppHandle()));
+}
+bool KxTranslation::LoadFromResource(const wxString& localeName, const KxLibrary& library)
+{
+	return LoadFromResourceInModule(localeName, library);
 }
