@@ -220,6 +220,7 @@
     <ClInclude Include="KxFramework\KxCheckBox.h" />
     <ClInclude Include="KxFramework\KxCollapsiblePane.h" />
     <ClInclude Include="KxFramework\KxColor.h" />
+    <ClInclude Include="KxFramework\KxCOM.h" />
     <ClInclude Include="KxFramework\KxComboBox.h" />
     <ClInclude Include="KxFramework\KxComboBoxDialog.h" />
     <ClInclude Include="KxFramework\KxComboControl.h" />
@@ -327,6 +328,7 @@
     <ClInclude Include="KxFramework\KxSystemAPI.h" />
     <ClInclude Include="KxFramework\KxSystemSettings.h" />
     <ClInclude Include="KxFramework\KxTaskDialog.h" />
+    <ClInclude Include="KxFramework\KxTaskScheduler.h" />
     <ClInclude Include="KxFramework\KxTextBox.h" />
     <ClInclude Include="KxFramework\KxTextBoxDialog.h" />
     <ClInclude Include="KxFramework\KxTextFile.h" />
@@ -430,6 +432,7 @@
     <ClCompile Include="KxFramework\KxCheckBox.cpp" />
     <ClCompile Include="KxFramework\KxCollapsiblePane.cpp" />
     <ClCompile Include="KxFramework\KxColor.cpp" />
+    <ClCompile Include="KxFramework\KxCOM.cpp" />
     <ClCompile Include="KxFramework\KxComboBox.cpp" />
     <ClCompile Include="KxFramework\KxComboBoxDialog.cpp" />
     <ClCompile Include="KxFramework\KxComboControl.cpp" />
@@ -538,6 +541,7 @@
     <ClCompile Include="KxFramework\KxSystemAPI.cpp" />
     <ClCompile Include="KxFramework\KxSystemSettings.cpp" />
     <ClCompile Include="KxFramework\KxTaskDialog.cpp" />
+    <ClCompile Include="KxFramework\KxTaskScheduler.cpp" />
     <ClCompile Include="KxFramework\KxTextBox.cpp" />
     <ClCompile Include="KxFramework\KxTextBoxDialog.cpp" />
     <ClCompile Include="KxFramework\KxTextFile.cpp" />

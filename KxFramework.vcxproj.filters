@@ -640,6 +640,12 @@
     <ClInclude Include="KxFramework\KxFormat.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxCOM.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxTaskScheduler.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1086,6 +1092,12 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxFormat.cpp">
       <Filter>Source Files\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxCOM.cpp">
+      <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxTaskScheduler.cpp">
+      <Filter>Source Files\System</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
