@@ -2,11 +2,6 @@
 #include "KxFramework/KxSecretStore.h"
 #include <wincred.h>
 
-KxSecretValue::~KxSecretValue()
-{
-	Wipe();
-}
-
 wxString KxSecretValue::GetAsString(const wxMBConv& conv) const
 {
 	return wxString(m_Storage.data(), conv, m_Storage.size());
@@ -14,6 +9,7 @@ wxString KxSecretValue::GetAsString(const wxMBConv& conv) const
 void KxSecretValue::Wipe()
 {
 	::RtlSecureZeroMemory(m_Storage.data(), m_Storage.size());
+	m_Storage.clear();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -35,11 +31,11 @@ bool KxSecretStore::Save(const wxString& serviceName, const wxString& userName, 
 	{
 		CREDENTIALW credentialInfo = {0};
 		credentialInfo.Type = CRED_TYPE_GENERIC;
-		credentialInfo.TargetName = const_cast<LPWSTR>(serviceName.wc_str());
+		credentialInfo.TargetName = const_cast<wchar_t*>(serviceName.wc_str());
 		credentialInfo.CredentialBlobSize = password.GetSize();
-		credentialInfo.CredentialBlob = static_cast<LPBYTE>(const_cast<void*>(password.GetData()));
+		credentialInfo.CredentialBlob = static_cast<uint8_t*>(const_cast<void*>(password.GetData()));
 		credentialInfo.Persist = CRED_PERSIST_LOCAL_MACHINE;
-		credentialInfo.UserName = const_cast<LPWSTR>(userName.wc_str());
+		credentialInfo.UserName = const_cast<wchar_t*>(userName.wc_str());
 
 		return ::CredWriteW(&credentialInfo, 0);
 	}

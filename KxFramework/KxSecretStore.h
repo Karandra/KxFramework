@@ -26,7 +26,14 @@ class KxSecretValue
 		{
 			*this = other;
 		}
-		~KxSecretValue();
+		KxSecretValue(KxSecretValue&& other)
+		{
+			*this = std::move(other);
+		}
+		~KxSecretValue()
+		{
+			Wipe();
+		}
 
 	public:
 		bool IsOk() const
@@ -53,6 +60,13 @@ class KxSecretValue
 
 			return *this;
 		}
+		KxSecretValue& operator=(KxSecretValue&& other)
+		{
+			m_Storage = std::move(other.m_Storage);
+			other.Wipe();
+			return *this;
+		}
+
 		bool operator==(const KxSecretValue& other) const
 		{
 			return m_Storage == other.m_Storage;
