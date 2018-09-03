@@ -3,6 +3,7 @@
 #include "KxFramework/KxDrive.h"
 #include <SHLOBJ.h>
 #include <SHLWAPI.h>
+class KxFileFinderItem;
 
 #define KxShellDefineKnownFolder(name, l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8)		const GUID name = {l, w1, w2, { b1, b2,  b3,  b4,  b5,  b6,  b7,  b8 }}
 
@@ -98,6 +99,9 @@ class KxShell
 			return QueryAssocString(ext, KxSH_AQ_COMMAND);
 		}
 		static wxString GetLocalizedName(const wxString& objectPath, int* resourceIDOut = NULL);
+
+		static wxIcon GetFileIcon(const wxString& path, bool smallIcon = false);
+		static wxIcon GetFileIcon(const KxFileFinderItem& item, bool smallIcon = false);
 		
 		static bool Execute(wxWindow* window,
 							const wxString& filePath,

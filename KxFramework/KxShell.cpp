@@ -3,6 +3,7 @@
 #include "KxFramework/KxSystem.h"
 #include "KxFramework/KxDrive.h"
 #include "KxFramework/KxFile.h"
+#include "KxFramework/KxFileFinder.h"
 #include "KxFramework/KxUtility.h"
 #include <KnownFolders.h>
 #include <winnls.h>
@@ -320,11 +321,11 @@ wxString KxShell::GetTypeIcon(const wxString& ext, int* indexOut)
 
 		long value = 0;
 		index.ToCLong(&value);
-		*indexOut = value;
+		*indexOut = std::abs(value);
 	}
 
 	wxString path = icon.BeforeLast(',');
-	return path.IsEmpty() ? icon : path;
+	return !path.IsEmpty() ? path : icon;
 }
 wxString KxShell::GetLocalizedName(const wxString& objectPath, int* resourceIDOut)
 {
@@ -336,6 +337,35 @@ wxString KxShell::GetLocalizedName(const wxString& objectPath, int* resourceIDOu
 		return out;
 	}
 	return wxEmptyString;
+}
+
+wxIcon KxShell::GetFileIcon(const wxString& path, bool smallIcon)
+{
+	SHFILEINFOW shellInfo = {0};
+	::SHGetFileInfoW(path, 0, &shellInfo, sizeof(shellInfo), SHGFI_ICON|(smallIcon ? SHGFI_SMALLICON : 0));
+	if (shellInfo.hIcon != NULL)
+	{
+		wxIcon icon;
+		if (icon.CreateFromHICON(shellInfo.hIcon))
+		{
+			return icon;
+		}
+	}
+	return wxNullIcon;
+}
+wxIcon KxShell::GetFileIcon(const KxFileFinderItem& item, bool smallIcon)
+{
+	SHFILEINFOW shellInfo = {0};
+	::SHGetFileInfoW(item.GetName(), item.GetAttributes(), &shellInfo, sizeof(shellInfo), SHGFI_USEFILEATTRIBUTES|SHGFI_ICON|(smallIcon ? SHGFI_SMALLICON : 0));
+	if (shellInfo.hIcon != NULL)
+	{
+		wxIcon icon;
+		if (icon.CreateFromHICON(shellInfo.hIcon))
+		{
+			return icon;
+		}
+	}
+	return wxNullIcon;
 }
 
 bool KxShell::Execute(wxWindow* window,
