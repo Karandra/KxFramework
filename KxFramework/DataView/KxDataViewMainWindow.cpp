@@ -448,7 +448,7 @@ void KxDataViewMainWindow::OnMouse(wxMouseEvent& event)
 		}
 	};
 
-	wxEventType eventType = event.GetEventType();
+	const wxEventType eventType = event.GetEventType();
 	if (eventType == wxEVT_LEAVE_WINDOW || eventType == wxEVT_ENTER_WINDOW)
 	{
 		ResetHotTrackedExpander();
@@ -456,21 +456,21 @@ void KxDataViewMainWindow::OnMouse(wxMouseEvent& event)
 		event.Skip();
 		return;
 	}
-	#if 0
+
 	if (eventType == wxEVT_MOUSEWHEEL)
 	{
-		m_HotTrackColumn = NULL;
-		m_HotTrackRowEnabled = false;
-		if (m_HotTrackRow != INVALID_ROW)
+		#if 0
+		if (event.GetWheelAxis() == wxMOUSE_WHEEL_VERTICAL)
 		{
-			RefreshRow(m_HotTrackRow);
-			m_HotTrackRow = INVALID_ROW;
-		}
+			int rateX = 0;
+			int rateY = 0;
+			m_Owner->GetScrollPixelsPerUnit(&rateX, &rateY);
 
+			event.SetY(event.GetY() + event.GetLinesPerAction() * rateY);
+		}
+		#endif
 		event.Skip();
-		return;
 	}
-	#endif
 
 	if (event.ButtonDown())
 	{
@@ -1830,7 +1830,7 @@ KxDataViewMainWindow::KxDataViewMainWindow(KxDataViewCtrl* parent,
 	Bind(wxEVT_MOTION, &KxDataViewMainWindow::OnMouse, this);
 	Bind(wxEVT_ENTER_WINDOW, &KxDataViewMainWindow::OnMouse, this);
 	Bind(wxEVT_LEAVE_WINDOW, &KxDataViewMainWindow::OnMouse, this);
-	//Bind(wxEVT_MOUSEWHEEL, &KxDataViewMainWindow::OnMouse, this);
+	Bind(wxEVT_MOUSEWHEEL, &KxDataViewMainWindow::OnMouse, this);
 	//Bind(wxEVT_CHILD_FOCUS, &KxDataViewMainWindow::OnMouse, this);
 	
 	//Bind(wxEVT_AUX1_DOWN, &KxDataViewMainWindow::OnMouse, this);
@@ -2108,6 +2108,10 @@ bool KxDataViewMainWindow::ItemsCleared()
 	DestroyTree();
 	m_Selection.Clear();
 	m_CurrentRow = INVALID_ROW;
+	m_HotTrackRow = INVALID_ROW;
+	m_CurrentColumn = NULL;
+	m_HotTrackColumn = NULL;
+	m_TreeNodeUnderMouse = NULL;
 
 	if (GetModel())
 	{
@@ -2939,13 +2943,13 @@ wxRect KxDataViewMainWindow::GetItemRect(const KxDataViewItem& item, const KxDat
 
 void KxDataViewMainWindow::UpdateColumnSizes()
 {
-	size_t columnCount = GetOwner()->GetColumnCount();
+	size_t columnCount = GetOwner()->GetVisibleColumnCount();
 	if (columnCount != 0)
 	{
-		bool autoResize = !m_Owner->HasFlag(KxDV_NO_COLUMN_AUTO_SIZE) || m_Owner->GetColumnCount() <= 1;
+		bool autoResize = !m_Owner->HasFlag(KxDV_NO_COLUMN_AUTO_SIZE) || columnCount <= 1;
 		int fullWinWidth = GetSize().x;
 
-		KxDataViewColumn* lastColumn = m_Owner->GetColumn(columnCount - 1);
+		KxDataViewColumn* lastColumn = m_Owner->GetColumnAt(columnCount - 1);
 		int columnsFullWidth = GetEndOfLastCol();
 		int lastColumnX = columnsFullWidth - lastColumn->GetWidth();
 		if (autoResize && lastColumnX < fullWinWidth)

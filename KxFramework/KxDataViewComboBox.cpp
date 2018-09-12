@@ -112,19 +112,19 @@ void KxDataViewComboBox::OnScroll(wxMouseEvent& event)
 {
 	event.Skip();
 
-	int nRateX = 0;
-	int nRateY = 0;
-	GetScrollPixelsPerUnit(&nRateX, &nRateY);
-	wxPoint tStart = GetViewStart();
+	int rateX = 0;
+	int rateY = 0;
+	GetScrollPixelsPerUnit(&rateX, &rateY);
+	wxPoint startPos = GetViewStart();
 
 	wxCoord value = -event.GetWheelRotation();
 	if (event.GetWheelAxis() == wxMOUSE_WHEEL_VERTICAL)
 	{
-		Scroll(wxDefaultCoord, tStart.y + (float)value / (nRateY != 0 ? nRateY : 1));
+		Scroll(wxDefaultCoord, startPos.y + (float)value / (rateY != 0 ? rateY : 1));
 	}
 	else
 	{
-		Scroll(tStart.x + (float)value / (nRateX != 0 ? nRateX : 1), wxDefaultCoord);
+		Scroll(startPos.x + (float)value / (rateX != 0 ? rateX : 1), wxDefaultCoord);
 	}
 }
 
