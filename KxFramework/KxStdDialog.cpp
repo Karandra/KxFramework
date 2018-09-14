@@ -387,10 +387,6 @@ void KxStdDialog::AdjustWindow(const wxPoint &pos, const wxSize& tMinSize)
 		CenterIfNoPosition(pos);
 	}
 }
-void KxStdDialog::ResetState()
-{
-	GetDialogMainCtrl()->SetFocus();
-}
 
 int KxStdDialog::ShowModal()
 {

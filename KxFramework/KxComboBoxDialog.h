@@ -13,7 +13,6 @@ class KxComboBoxDialog: public KxStdDialog
 		wxComboBox* m_View = NULL;
 
 	private:
-		virtual void ResetState();
 		virtual wxOrientation GetViewLabelSizerOrientation() const;
 		virtual bool IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut = NULL) const;
 

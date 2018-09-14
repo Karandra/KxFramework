@@ -79,7 +79,7 @@ void KxLabel::OnMouseUp(wxMouseEvent& event)
 	evt.SetEventObject(this);
 	HandleWindowEvent(evt);
 }
-void KxLabel::OnPaint(wxPaintEvent& hEvent)
+void KxLabel::OnPaint(wxPaintEvent& event)
 {
 	wxAutoBufferedPaintDC dc(this);
 	if (IsFrozen())

@@ -20,6 +20,7 @@ bool KxProgressDialog::Create(wxWindow* parent,
 		wxSize progressBarSize = wxSize(DefaultProgressWidth, DefaultProgressHeight);
 		m_View = new KxProgressBar(m_ContentPanel, wxID_NONE, 100);
 		m_View->SetInitialSize(progressBarSize);
+		SetProgressBar(m_View);
 
 		PostCreate(pos);
 		return true;
@@ -30,15 +31,6 @@ KxProgressDialog::~KxProgressDialog()
 {
 }
 
-void KxProgressDialog::ResetState()
-{
-	KxStdDialog::ResetState();
-	if (GetProgressBar())
-	{
-		GetProgressBar()->SetValue(0);
-		GetProgressBar()->SetRange(100);
-	}
-}
 bool KxProgressDialog::IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut) const
 {
 	return KxStdDialog::IsEnterAllowed(event, idOut);

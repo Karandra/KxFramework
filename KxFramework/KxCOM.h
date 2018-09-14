@@ -50,19 +50,37 @@ template<class T> class KxCOMPtr
 		}
 
 	public:
-		void Reset()
+		void Reset(T* newPtr = NULL)
 		{
 			if (m_Ptr)
 			{
 				m_Ptr->Release();
-				m_Ptr = NULL;
 			}
+			m_Ptr = newPtr;
 		}
 		T* Detach()
 		{
 			T* ptr = m_Ptr;
 			m_Ptr = NULL;
 			return ptr;
+		}
+
+		T* Get() const
+		{
+			return m_Ptr;
+		}
+		void** GetPVoid() const
+		{
+			return reinterpret_cast<void**>(const_cast<T**>(&m_Ptr));
+		}
+		
+		operator T*()
+		{
+			return m_Ptr;
+		}
+		T** operator&()
+		{
+			return &m_Ptr;
 		}
 
 		operator bool() const
@@ -74,25 +92,19 @@ template<class T> class KxCOMPtr
 			return m_Ptr == NULL;
 		}
 
-		T* Get() const
-		{
-			return m_Ptr;
-		}
-		void** AsPVoid()
-		{
-			return reinterpret_cast<void**>(&m_Ptr);
-		}
-		operator T**()
-		{
-			return &m_Ptr;
-		}
-
-		const T* operator->() const
+		T* operator->() const
 		{
 			return m_Ptr;
 		}
 		T* operator->()
 		{
 			return m_Ptr;
+		}
+
+		KxCOMPtr& operator=(const KxCOMPtr&) = delete;
+		KxCOMPtr& operator=(T* ptr)
+		{
+			Reset(ptr);
+			return *this;
 		}
 };

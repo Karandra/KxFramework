@@ -145,10 +145,10 @@ bool KxTranslation::LoadFromResourceInModule(const wxString& localeName, const K
 {
 	if (library.IsOK())
 	{
-		wxMemoryBuffer data = library.GetResource(g_TranslationResourceType, localeName);
-		if (!data.IsEmpty())
+		KxUnownedMemoryBuffer data = library.GetResource(g_TranslationResourceType, localeName);
+		if (!data.empty())
 		{
-			KxXMLDocument xml(wxString::FromUTF8((const char*)data.GetData(), data.GetDataLen()));
+			KxXMLDocument xml(wxString::FromUTF8((const char*)data.data(), data.size()));
 			return Init(xml);
 		}
 	}

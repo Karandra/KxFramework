@@ -646,6 +646,15 @@
     <ClInclude Include="KxFramework\KxTaskScheduler.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxUnownedBuffer.h">
+      <Filter>Header Files\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxIProgressBar.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxBroadcastEvent.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1098,6 +1107,12 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxTaskScheduler.cpp">
       <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxIProgressBar.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxBroadcastEvent.cpp">
+      <Filter>Source Files\Events</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

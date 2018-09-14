@@ -37,7 +37,7 @@ void KxListBox::OnCheck(wxListEvent& event)
 
 	HandleWindowEvent(command);
 }
-void KxListBox::OnInsertItem(wxListEvent& hEvent)
+void KxListBox::OnInsertItem(wxListEvent& event)
 {
 	if (GetItemCount() < GetCountPerPage())
 	{
@@ -49,19 +49,19 @@ void KxListBox::OnInsertItem(wxListEvent& hEvent)
 	}
 	Refresh();
 }
-void KxListBox::OnItemMenu(wxListEvent& hEvent)
+void KxListBox::OnItemMenu(wxListEvent& event)
 {
 	wxContextMenuEvent command(wxEVT_CONTEXT_MENU, GetId());
-	command.SetInt(hEvent.GetIndex());
-	command.SetPosition(hEvent.GetPoint());
+	command.SetInt(event.GetIndex());
+	command.SetPosition(event.GetPoint());
 
 	HandleWindowEvent(command);
-	hEvent.Skip();
+	event.Skip();
 }
-void KxListBox::OnSize(wxSizeEvent& hEvent)
+void KxListBox::OnSize(wxSizeEvent& event)
 {
-	wxListEvent event;
-	OnInsertItem(event);
+	wxListEvent listEvent;
+	OnInsertItem(listEvent);
 }
 
 bool KxListBox::Create(wxWindow* parent,

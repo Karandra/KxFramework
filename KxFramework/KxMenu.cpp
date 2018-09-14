@@ -49,9 +49,9 @@ void KxMenu::OnHoverItem(wxMenuEvent& event)
 		KxMenuEvent itemEvent(KxEVT_MENU_HOVER, this);
 		itemEvent.SetEventObject(this);
 		itemEvent.SetId(event.GetId());
-		if (KxShellMenu* pShellMenu = dynamic_cast<KxShellMenu*>(this))
+		if (KxShellMenu* shellMenu = dynamic_cast<KxShellMenu*>(this))
 		{
-			itemEvent.SetHelpString(pShellMenu->GetHelpString(WxIDToWin(event.GetId())));
+			itemEvent.SetHelpString(shellMenu->GetHelpString(WxIDToWin(event.GetId())));
 		}
 		ProcessEvent(itemEvent);
 	}

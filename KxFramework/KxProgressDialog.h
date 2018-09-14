@@ -3,7 +3,7 @@
 #include "KxFramework/KxStdDialog.h"
 #include "KxFramework/KxProgressBar.h"
 
-class KxProgressDialog: public KxStdDialog
+class KxProgressDialog: public KxStdDialog, public KxProgressBarWrapper
 {
 	private:
 		KxProgressBar* m_View = NULL;
@@ -50,65 +50,6 @@ class KxProgressDialog: public KxStdDialog
 		virtual int GetViewSizerProportion() const override
 		{
 			return 0;
-		}
-		virtual void ResetState() override;
-
-		int GetRange() const
-		{
-			return GetProgressBar() ? GetProgressBar()->GetRange() : 0;
-		}
-		void SetRange(int max)
-		{
-			if (GetProgressBar())
-			{
-				GetProgressBar()->SetRange(max);
-			}
-		}
-		
-		int GetStep() const
-		{
-			return GetProgressBar() ? GetProgressBar()->GetStep() : 0;
-		}
-		void SetStep(int value)
-		{
-			if (GetProgressBar())
-			{
-				GetProgressBar()->SetStep(value);
-			}
-		}
-		
-		int GetValue() const
-		{
-			return GetProgressBar() ? GetProgressBar()->GetValue() : 0;
-		}
-		void SetValue(int value)
-		{
-			if (GetProgressBar())
-			{
-				GetProgressBar()->SetValue(value);
-			}
-		}
-		void SetValue(int64_t current, int64_t max)
-		{
-			if (GetProgressBar())
-			{
-				GetProgressBar()->SetValue(current, max);
-			}
-		}
-		
-		void Advance(int value)
-		{
-			if (GetProgressBar())
-			{
-				GetProgressBar()->Advance(value);
-			}
-		}
-		void Pulse()
-		{
-			if (GetProgressBar())
-			{
-				GetProgressBar()->Pulse();
-			}
 		}
 
 	public:

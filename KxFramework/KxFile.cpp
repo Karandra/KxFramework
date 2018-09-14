@@ -1317,10 +1317,6 @@ bool KxFile::ShellOpen()
 {
 	return ::ShellExecuteW(NULL, L"open", GetFullPath(), NULL, NULL, SW_SHOWNORMAL);
 }
-KxMenu* KxFile::GetShellMenu()
-{
-	return KxShellMenu::CreateMenuForFileSystemObject(GetFullPath());
-}
 
 //////////////////////////////////////////////////////////////////////////
 bool KxFile::operator==(const KxFile& other)

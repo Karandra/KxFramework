@@ -4,21 +4,6 @@
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxDualProgressDialog, KxStdDialog);
 
-void KxDualProgressDialog::ResetState()
-{
-	KxStdDialog::ResetState();
-	if (GetPB1())
-	{
-		GetPB1()->SetValue(0);
-		GetPB1()->SetRange(100);
-	}
-
-	if (GetPB2())
-	{
-		GetPB2()->SetValue(0);
-		GetPB2()->SetRange(100);
-	}
-}
 bool KxDualProgressDialog::IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut) const
 {
 	return KxStdDialog::IsEnterAllowed(event, idOut);
@@ -30,7 +15,7 @@ wxOrientation KxDualProgressDialog::GetViewLabelSizerOrientation() const
 
 KxProgressBar* KxDualProgressDialog::CreateProgressBar()
 {
-	auto progressBar = new KxProgressBar(m_View, wxID_NONE, 100);
+	KxProgressBar* progressBar = new KxProgressBar(m_View, wxID_NONE, 100);
 	progressBar->SetInitialSize(wxSize(DefaultProgressWidth, DefaultProgressHeight));
 
 	return progressBar;

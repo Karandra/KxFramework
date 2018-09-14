@@ -64,6 +64,11 @@ class KxTextBoxDialog: public KxStdDialog
 		{
 			return m_View;
 		}
+		virtual int GetViewSizerProportion() const override
+		{
+			return IsMultiLine() ? 1 : 0;
+		}
+		
 		KxTextBox* GetTextBox() const
 		{
 			if (!IsStyledTextBox())
@@ -80,11 +85,6 @@ class KxTextBoxDialog: public KxStdDialog
 			}
 			return NULL;
 		}
-		virtual int GetViewSizerProportion() const override
-		{
-			return IsMultiLine() ? 1 : 0;
-		}
-		virtual void ResetState() override;
 
 		wxString GetValue() const
 		{

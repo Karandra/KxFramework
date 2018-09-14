@@ -53,7 +53,6 @@ enum KxFileTime
 	KxFILETIME_LAST_ACCESS,
 };
 
-class KxMenu;
 class KxFile
 {
 	public:
@@ -204,7 +203,6 @@ class KxFile
 
 		// Misc
 		bool ShellOpen();
-		KxMenu* GetShellMenu();
 		
 	public:
 		bool operator==(const KxFile& other);

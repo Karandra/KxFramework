@@ -14,7 +14,7 @@ class KxListBox: public KxListView
 
 		// Sorting can only use ItemData, so custom sorting function needed
 		static int wxCALLBACK SortComparator(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData);
-		void OnSortNeeded(wxListEvent& hEvent);
+		void OnSortNeeded(wxListEvent& event);
 
 	public:
 		static const long DefaultStyle = KxLV_REPORT|KxLV_AUTOARRANGE|KxLV_NO_HEADER|KxLV_SINGLE_SEL;

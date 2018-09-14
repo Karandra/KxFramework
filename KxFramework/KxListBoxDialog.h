@@ -49,7 +49,6 @@ class KxListBoxDialog: public KxStdDialog
 		{
 			return 1;
 		}
-		virtual void ResetState();
 
 		bool IsMultiSelect() const
 		{

@@ -4,15 +4,6 @@
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxDualInputDialog, KxStdDialog);
 
-void KxDualInputDialog::ResetState()
-{
-	m_Input1->Clear();
-	m_Input1->SetModified(false);
-
-	m_Input2->Clear();
-	m_Input2->SetModified(false);
-}
-
 bool KxDualInputDialog::Create(wxWindow* parent,
 							   wxWindowID id,
 							   const wxString& caption,

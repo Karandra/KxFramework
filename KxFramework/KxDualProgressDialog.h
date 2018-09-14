@@ -11,7 +11,6 @@ class KxDualProgressDialog: public KxStdDialog
 		KxProgressBar* m_PB2 = NULL;
 
 	private:
-		virtual void ResetState();
 		virtual wxOrientation GetViewLabelSizerOrientation() const;
 		virtual bool IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut = NULL) const;
 		

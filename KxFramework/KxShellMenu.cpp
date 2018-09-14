@@ -10,46 +10,35 @@
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxShellMenu, KxMenu);
 
-KxShellMenu* KxShellMenu::CreateMenuForFileSystemObject(const wxString& path)
+KxShellMenu::KxShellMenu()
+	:m_Initializer(COINIT_APARTMENTTHREADED)
 {
-	CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
-
-	ITEMIDLIST* pIDs = NULL;
-	HRESULT res = SHParseDisplayName(path, 0, &pIDs, 0, 0);
-	if (SUCCEEDED(res) && pIDs)
+}
+KxShellMenu::KxShellMenu(const wxString& path)
+	:KxShellMenu()
+{
+	HRESULT res = SHParseDisplayName(path, 0, &m_ShellItemList, 0, 0);
+	if (SUCCEEDED(res) && m_ShellItemList)
 	{
-		IShellFolder* pFolder = NULL;
-		LPCITEMIDLIST pChildID = NULL;
-		res = SHBindToParent(pIDs, IID_IShellFolder, (void**)&pFolder, &pChildID);
-		if (SUCCEEDED(res) && pFolder)
+		LPCITEMIDLIST childID = NULL;
+		res = SHBindToParent(m_ShellItemList, IID_IShellFolder, m_ShellFolder.GetPVoid(), &childID);
+		if (SUCCEEDED(res) && m_ShellFolder)
 		{
-			IContextMenu* pContextMenu = NULL;
 			wxWindow* window = wxTheApp->GetTopWindow();
-			res = pFolder->GetUIObjectOf(window ? window->GetHandle() : NULL, 1, &pChildID, IID_IContextMenu, 0, (void**)&pContextMenu);
-			if (SUCCEEDED(res) && pContextMenu)
+			res = m_ShellFolder->GetUIObjectOf(window ? window->GetHandle() : NULL, 1, &childID, IID_IContextMenu, 0, m_ShellMenu.GetPVoid());
+			if (SUCCEEDED(res) && m_ShellMenu)
 			{
-				return new KxShellMenu(pContextMenu, pFolder, pIDs);
+				m_ShellMenu->QueryContextMenu(GetHMenu(), 0, MinShellItemID, MaxShellItemID, CMF_NORMAL);
 			}
 		}
-	}
-	CoUninitialize();
-	return NULL;
-}
-
-KxShellMenu::KxShellMenu(IContextMenu* pShellMenu, IShellFolder* pShellFolder, ITEMIDLIST* pShellItemList)
-	:m_ShellMenu(pShellMenu), m_ShellFolder(pShellFolder), m_ShellItemList(pShellItemList)
-{
-	if (pShellMenu && pShellFolder)
-	{
-		pShellMenu->QueryContextMenu(GetHMenu(), 0, MinShellItemID, MaxShellItemID, CMF_NORMAL);
 	}
 }
 KxShellMenu::~KxShellMenu()
 {
-	m_ShellMenu->Release();
-	m_ShellFolder->Release();
-	CoTaskMemFree(m_ShellItemList);
-	CoUninitialize();
+	if (m_ShellItemList)
+	{
+		CoTaskMemFree(m_ShellItemList);
+	}
 }
 
 bool KxShellMenu::IsSystemItemID(WORD menuWinID) const
@@ -67,6 +56,7 @@ void KxShellMenu::InvokeCommand(HWND hWnd, WORD menuWinID)
 	info.nShow = SW_SHOWNORMAL;
 	m_ShellMenu->InvokeCommand((LPCMINVOKECOMMANDINFO)&info);
 }
+
 wxString KxShellMenu::GetString(WORD menuWinID, DWORD index) const
 {
 	if (menuWinID != 0)
@@ -93,18 +83,18 @@ wxWindowID KxShellMenu::Show(wxWindow* window, const wxPoint& pos, DWORD alignme
 	WORD menuWinID = ShowNoEvent(window, pos, alignment);
 	if (menuWinID != 0)
 	{
-		KxMenuEvent tMenuEvent(KxEVT_MENU_SELECT, this);
-		tMenuEvent.SetEventObject(this);
-		tMenuEvent.SetId(WinMenuRetToWx(menuWinID));
-		tMenuEvent.SetInt(IsSystemItemID(menuWinID));
-		tMenuEvent.SetString(GetCommandString(menuWinID));
-		tMenuEvent.SetHelpString(GetHelpString(menuWinID));
-		tMenuEvent.SetPosition(pos);
-		tMenuEvent.SetPopup(true);
-		bool bProcessed = SafelyProcessEvent(tMenuEvent);
+		KxMenuEvent menuEvent(KxEVT_MENU_SELECT, this);
+		menuEvent.SetEventObject(this);
+		menuEvent.SetId(WinMenuRetToWx(menuWinID));
+		menuEvent.SetInt(IsSystemItemID(menuWinID));
+		menuEvent.SetString(GetCommandString(menuWinID));
+		menuEvent.SetHelpString(GetHelpString(menuWinID));
+		menuEvent.SetPosition(pos);
+		menuEvent.SetPopup(true);
+		bool bProcessed = SafelyProcessEvent(menuEvent);
 
 		// If selection wasn't processed or skipped invoke shell command
-		if (!bProcessed || tMenuEvent.GetSkipped())
+		if (!bProcessed || menuEvent.GetSkipped())
 		{
 			InvokeCommand(window ? window->GetHandle() : NULL, menuWinID);
 		}

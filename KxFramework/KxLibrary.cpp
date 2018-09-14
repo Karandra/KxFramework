@@ -6,108 +6,250 @@
 #include "KxFramework/KxIncludeWindows.h"
 #include <PsAPI.h>
 #include <DbgHelp.h>
-
 #pragma comment(lib, "DbgHelp.lib")
-#define LDR_IS_DATAFILE(handle)			(((ULONG_PTR)(handle)) & (ULONG_PTR)1)
-#define LDR_IS_IMAGEMAPPING(handle)		(((ULONG_PTR)(handle)) & (ULONG_PTR)2)
-#define LDR_IS_RESOURCE(handle)			(LDR_IS_IMAGEMAPPING(handle) || LDR_IS_DATAFILE(handle))
 
-const wxSize KxLibrary::DefaultIconSize(0, 0);
-const WORD KxLibrary::DefaultLocaleID = MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL);
-
-BOOL CALLBACK KxLibrary::EnumResourcesProc(HMODULE moduleHandle, LPCTSTR resType, LPTSTR resName, LONG_PTR lParam)
+namespace Util
 {
-	CallbackInfo* info = (CallbackInfo*)lParam;
-	KxAnyVector* list = reinterpret_cast<KxAnyVector*>(info->Data);
+	static const WORD DefaultLocaleID = MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL);
+	static const wxSize DefaultIconSize(0, 0);
 
-	if (IS_INTRESOURCE(resName))
+	bool IsLibraryDataFile(HMODULE handle)
 	{
-		list->push_back((size_t)resName);
+		return (ULONG_PTR)(handle) & (ULONG_PTR)1;
 	}
-	else
+	bool IsLibraryImageResourse(HMODULE handle)
 	{
-		wxString value(resName);
-		if (!value.IsEmpty())
+		return (ULONG_PTR)(handle) & (ULONG_PTR)2;
+	}
+	bool IsLibraryResource(HMODULE handle)
+	{
+		return IsLibraryDataFile(handle) || IsLibraryImageResourse(handle);
+	}
+
+	WORD GetLangID(BYTE primaryID, BYTE secondaryID)
+	{
+		return MAKELANGID(primaryID, secondaryID);
+	}
+	WORD GetLangID(WORD localeID)
+	{
+		// Useful macros: PRIMARYLANGID, SUBLANGID
+		return LANGIDFROMLCID(localeID);
+	}
+	LPCWSTR GetNameOrID(const wxString& name)
+	{
+		ULONG id = 0;
+		LPCWSTR idString = name.wc_str();
+		if (name.ToULong(&id))
 		{
-			list->push_back(value);
+			idString = MAKEINTRESOURCEW(id);
 		}
+		return idString;
 	}
-	return TRUE;
-}
-BOOL CALLBACK KxLibrary::EnumResourceTypesProc(HMODULE moduleHandle, LPTSTR resType, LONG_PTR lParam)
-{
-	CallbackInfo* info = (CallbackInfo*)lParam;
-	KxAnyVector* list = reinterpret_cast<KxAnyVector*>(info->Data);
 
-	if (IS_INTRESOURCE(resType))
+	HRSRC GetResourceHandle(HMODULE handle, const wxString& type, const wxString& name, WORD localeID = DefaultLocaleID)
 	{
-		list->push_back((size_t)resType);
+		return ::FindResourceExW(handle, GetNameOrID(type), GetNameOrID(name), GetLangID(localeID));
 	}
-	else
+	KxUnownedMemoryBuffer GetResource(HMODULE handle, HRSRC resHandle)
 	{
-		wxString value(resType);
-		if (value.IsEmpty() != true)
+		if (resHandle)
 		{
-			list->push_back(value);
-		}
-	}
-	return TRUE;
-}
-BOOL CALLBACK KxLibrary::EnumResourceLanguagesProc(HMODULE moduleHandle, LPCTSTR resType, LPTSTR resName, WORD langID, LONG_PTR lParam)
-{
-	CallbackInfo* info = (CallbackInfo*)lParam;
-	KxAnyVector* list = reinterpret_cast<KxAnyVector*>(info->Data);
-
-	list->push_back(langID);
-	return TRUE;
-}
-
-WORD KxLibrary::GetLangID(BYTE primaryID, BYTE secondaryID)
-{
-	return MAKELANGID(primaryID, secondaryID);
-}
-WORD KxLibrary::GetLangID(WORD localeID)
-{
-	// PRIMARYLANGID, SUBLANGID
-	return LANGIDFROMLCID(localeID);
-}
-LPCWSTR KxLibrary::GetNameOrID(const wxString& name)
-{
-	ULONG id = 0;
-	LPCWSTR idString = name.wc_str();
-	if (name.ToULong(&id))
-	{
-		idString = MAKEINTRESOURCEW(id);
-	}
-	return idString;
-}
-HRSRC KxLibrary::GetResourceHandle(const wxString& type, const wxString& name, WORD localeID) const
-{
-	return FindResourceExW(m_Handle, GetNameOrID(type), GetNameOrID(name), GetLangID(localeID));
-}
-HGLOBAL KxLibrary::LoadResource(HRSRC hResHandle) const
-{
-	return ::LoadResource(m_Handle, hResHandle);
-}
-wxMemoryBuffer KxLibrary::GetResource(HRSRC hResHandle) const
-{
-	if (hResHandle)
-	{
-		HGLOBAL resDataHandle = LoadResource(hResHandle);
-		if (resDataHandle != NULL)
-		{
-			void* resData = LockResource(resDataHandle);
-			DWORD resSize = SizeofResource(m_Handle, hResHandle);
-			if (resData && resSize != 0)
+			HGLOBAL resDataHandle = ::LoadResource(handle, resHandle);
+			if (resDataHandle != NULL)
 			{
-				wxMemoryBuffer buffer(resSize);
-				buffer.AppendData(resData, resSize);
-				return buffer;
+				void* resData = LockResource(resDataHandle);
+				DWORD resSize = SizeofResource(handle, resHandle);
+				if (resData && resSize != 0)
+				{
+					return KxUnownedMemoryBuffer(resData, resSize);
+				}
 			}
 		}
+		return KxUnownedMemoryBuffer();
 	}
-	return wxMemoryBuffer();
+
+	HANDLE LoadGDIImageAux(HMODULE handle, const wxString& name, const wxString& type, UINT GDIType, wxSize size = DefaultIconSize, WORD localeID = DefaultLocaleID)
+	{
+		HGLOBAL resDataHandle = ::LoadResource(handle, GetResourceHandle(handle, type, name, localeID));
+		if (resDataHandle)
+		{
+			return LoadImageW(handle, GetNameOrID(name), GDIType, size.GetWidth(), size.GetHeight(), LR_DEFAULTCOLOR);
+		}
+		return NULL;
+	}
+	template<class T> T LoadGDIImage(HMODULE handle, const wxString& name, const wxString& type, UINT GDIType, wxSize size = DefaultIconSize, WORD localeID = DefaultLocaleID)
+	{
+		HANDLE imageHandle = LoadGDIImageAux(handle, name, type, GDIType, size, localeID);
+		if (imageHandle)
+		{
+			T image;
+			image.SetHandle(imageHandle);
+			if (size.IsFullySpecified())
+			{
+				image.SetWidth(size.GetWidth());
+				image.SetHeight(size.GetHeight());
+			}
+			return image;
+		}
+		return T();
+	}
+	template<> wxIcon LoadGDIImage<wxIcon>(HMODULE handle, const wxString& name, const wxString& type, UINT GDIType, wxSize size, WORD localeID)
+	{
+		HANDLE imageHandle = LoadGDIImageAux(handle, name, type, GDIType, size, localeID);
+		if (imageHandle)
+		{
+			wxIcon icon;
+			icon.CreateFromHICON((HICON)imageHandle);
+			return icon;
+		}
+		return wxNullIcon;
+	}
+
+	#pragma pack(push)
+	#pragma pack(2)
+	struct IconGroupEntry
+	{
+		BYTE   bWidth;               // Width, in pixels, of the image
+		BYTE   bHeight;              // Height, in pixels, of the image
+		BYTE   bColorCount;          // Number of colors in image (0 if >=8bpp)
+		BYTE   bReserved;            // Reserved
+		WORD   wPlanes;              // Color Planes
+		WORD   wBitCount;            // Bits per pixel
+		DWORD  dwBytesInRes;         // how many bytes in this resource?
+		WORD   id;                  // the ID
+	};
+	#pragma pack(pop)
+
+	#pragma pack(push)
+	#pragma pack(2)
+	struct IconGroupDirectory
+	{
+		WORD            idReserved;   // Reserved (must be 0)
+		WORD            idType;       // Resource type (1 for icons)
+		WORD            idCount;      // How many images?
+		IconGroupEntry idEntries[1]; // The entries for each image
+	};
+	#pragma pack(pop)
+
+	struct CallbackInfo
+	{
+		KxLibrary* self = NULL;
+		void* Data = NULL;
+
+		CallbackInfo(KxLibrary* self, void* data = NULL)
+			:self(self), Data(data)
+		{
+		}
+	};
+	BOOL CALLBACK EnumResourcesProc(HMODULE moduleHandle, LPCTSTR resType, LPTSTR resName, LONG_PTR lParam)
+	{
+		CallbackInfo* info = (CallbackInfo*)lParam;
+		KxAnyVector* list = reinterpret_cast<KxAnyVector*>(info->Data);
+
+		if (IS_INTRESOURCE(resName))
+		{
+			list->push_back((size_t)resName);
+		}
+		else
+		{
+			wxString value(resName);
+			if (!value.IsEmpty())
+			{
+				list->push_back(value);
+			}
+		}
+		return TRUE;
+	}
+	BOOL CALLBACK EnumResourceTypesProc(HMODULE moduleHandle, LPTSTR resType, LONG_PTR lParam)
+	{
+		CallbackInfo* info = (CallbackInfo*)lParam;
+		KxAnyVector* list = reinterpret_cast<KxAnyVector*>(info->Data);
+
+		if (IS_INTRESOURCE(resType))
+		{
+			list->push_back((size_t)resType);
+		}
+		else
+		{
+			wxString value(resType);
+			if (value.IsEmpty() != true)
+			{
+				list->push_back(value);
+			}
+		}
+		return TRUE;
+	}
+	BOOL CALLBACK EnumResourceLanguagesProc(HMODULE moduleHandle, LPCTSTR resType, LPTSTR resName, WORD langID, LONG_PTR lParam)
+	{
+		CallbackInfo* info = (CallbackInfo*)lParam;
+		KxAnyVector* list = reinterpret_cast<KxAnyVector*>(info->Data);
+
+		list->push_back(langID);
+		return TRUE;
+	}
 }
+
+class KxLibraryUpdateLocker
+{
+	private:
+		HANDLE m_UpdateHandle = NULL;
+		bool m_Success = false;
+		KxLibrary* m_Library = NULL;
+		wxString m_LibaryFullPath;
+
+	private:
+		void Unlock()
+		{
+			::FreeLibrary(m_Library->GetHandle());
+			m_Library->SetHandle(NULL);
+		}
+		void Lock()
+		{
+			HMODULE libraryHandle = ::LoadLibraryExW(m_LibaryFullPath, NULL, m_Library->GetLoadFlags());
+			m_Library->SetHandle(libraryHandle);
+		}
+
+	public:
+		KxLibraryUpdateLocker(KxLibrary* library)
+			:m_LibaryFullPath(library->GetFileName())
+		{
+			m_UpdateHandle = ::BeginUpdateResourceW(m_LibaryFullPath, FALSE);
+		}
+
+	public:
+		void UpdateResource(const wxString& type, const wxString& name, const KxUnownedMemoryBuffer& data, WORD localeID)
+		{
+			if (IsOK())
+			{
+				Unlock();
+
+				WORD langID = Util::GetLangID(localeID);
+				if (::UpdateResourceW(GetHandle(), Util::GetNameOrID(type.Upper()), Util::GetNameOrID(name.Upper()), langID, const_cast<void*>(data.data()), data.size()))
+				{
+					m_Success = ::EndUpdateResourceW(m_UpdateHandle, FALSE);
+				}
+				Lock();
+				return;
+			}
+			m_Success = false;
+		}
+		bool IsOK() const
+		{
+			return m_UpdateHandle != NULL && m_Library != NULL;
+		}
+		bool IsSuccess() const
+		{
+			return m_Success;
+		}
+		HANDLE GetHandle() const
+		{
+			return m_UpdateHandle;
+		}
+};
+
+//////////////////////////////////////////////////////////////////////////
+const WORD KxLibrary::DefaultLocaleID = Util::DefaultLocaleID;
+const wxSize KxLibrary::DefaultIconSize = Util::DefaultIconSize;
 
 bool KxLibrary::SetSearchFolder(const wxString& path)
 {
@@ -142,10 +284,10 @@ KxLibrary::KxLibrary()
 	:KxIOwnedSimple(false)
 {
 }
-KxLibrary::KxLibrary(HMODULE hLibraryHandle)
+KxLibrary::KxLibrary(HMODULE libraryHandle)
 	:KxIOwnedSimple(false)
 {
-	Load(hLibraryHandle);
+	Load(libraryHandle);
 }
 KxLibrary::KxLibrary(const wxString& libraryPath, DWORD flags)
 	:KxIOwnedSimple(true)
@@ -157,13 +299,22 @@ KxLibrary::~KxLibrary()
 	Unload();
 }
 
-bool KxLibrary::Load(HMODULE hLibraryHandle)
+bool KxLibrary::Load(HMODULE libraryHandle)
 {
 	if (!IsOK())
 	{
-		m_Handle = hLibraryHandle;
-		m_LoadFlags = 0;
+		m_Handle = libraryHandle;
 		m_FilePath = GetFileName();
+		
+		m_LoadFlags = 0;
+		if (IsDataFile())
+		{
+			m_LoadFlags |= LOAD_LIBRARY_AS_DATAFILE;
+		}
+		if (IsImageDataFile())
+		{
+			m_LoadFlags |= LOAD_LIBRARY_AS_IMAGE_RESOURCE;
+		}
 
 		Disown();
 		return IsOK();
@@ -190,11 +341,6 @@ void KxLibrary::Unload()
 		::FreeLibrary(m_Handle);
 	}
 	Disown();
-
-	if (IsUpdatingResources())
-	{
-		EndUpdateResource(true);
-	}
 }
 
 // Version info
@@ -215,12 +361,12 @@ void KxLibrary::StringVersionToNumber(const wxString& version, DWORD& mostSignif
 	mostSignificant = MAKELONG(versionArray[1], versionArray[0]);
 	leastSignificant = MAKELONG(versionArray[3], versionArray[2]);
 }
-void KxLibrary::SaveVersionString(const KxLibraryVersionInfo& info, const wxString& queryTemplate, const wxMemoryBuffer& buffer, const wxString& rawFiledName, const wxString& infoFiledName)
+void KxLibrary::SaveVersionString(const KxLibraryVersionInfo& info, const wxString& queryTemplate, const KxUnownedMemoryBuffer& buffer, const wxString& rawFiledName, const wxString& infoFiledName)
 {
 	wxString query = wxString::Format("%s\\%s", queryTemplate, rawFiledName);
 	UINT size = 0;
 	LPWSTR stringInfo = NULL;
-	if (::VerQueryValueW(buffer.GetData(), query, (void**)&stringInfo, &size) && stringInfo)
+	if (::VerQueryValueW(buffer.data(), query, (void**)&stringInfo, &size) && stringInfo)
 	{
 		wxString value = info.GetString(rawFiledName);
 		if (value.IsEmpty())
@@ -231,12 +377,12 @@ void KxLibrary::SaveVersionString(const KxLibraryVersionInfo& info, const wxStri
 		wcsncpy(stringInfo, value, size);
 	}
 }
-void KxLibrary::LoadVersionString(KxLibraryVersionInfo& info, const wxString& queryTemplate, const wxMemoryBuffer& buffer, const wxString& rawFiledName, const wxString& infoFiledName)
+void KxLibrary::LoadVersionString(KxLibraryVersionInfo& info, const wxString& queryTemplate, const KxUnownedMemoryBuffer& buffer, const wxString& rawFiledName, const wxString& infoFiledName)
 {
 	wxString query = wxString::Format("%s\\%s", queryTemplate, rawFiledName);
 	UINT size = 0;
 	LPWSTR stringInfo = NULL;
-	if (::VerQueryValueW(buffer.GetData(), query, (void**)&stringInfo, &size) && stringInfo)
+	if (::VerQueryValueW(buffer.data(), query, (void**)&stringInfo, &size) && stringInfo)
 	{
 		info.SetString(infoFiledName, wxString(stringInfo, size));
 	}
@@ -304,7 +450,7 @@ KxLibraryVersionInfo KxLibrary::GetVersionInfoFromFile(const wxString& filePath)
 			ret = ::VerQueryValueW(buffer.GetData(), L"\\", &fixedInfo, &size);
 			if (ret != 0 && fixedInfo != NULL)
 			{
-				info.SetInit();
+				info.MarkAsInit();
 
 				VS_FIXEDFILEINFO* fixedVersionInfo = (VS_FIXEDFILEINFO*)fixedInfo;
 				info.SetString("FileVersion", NumberVersionToString(fixedVersionInfo->dwFileVersionMS, fixedVersionInfo->dwFileVersionLS));
@@ -327,7 +473,7 @@ KxLibraryVersionInfo KxLibrary::GetVersionInfoFromFile(const wxString& filePath)
 			ret = ::VerQueryValueW(buffer.GetData(), L"\\VarFileInfo\\Translation", &langInfo, &size);
 			if (ret)
 			{
-				info.SetInit();
+				info.MarkAsInit();
 				KxLibraryVersionInfo::VerQueryValueLangInfo* langInfo2 = (KxLibraryVersionInfo::VerQueryValueLangInfo*)langInfo;
 
 				wxString queryTemplate = wxString::Format("\\StringFileInfo\\%04x%04x", langInfo2->Language, langInfo2->CodePage);
@@ -346,26 +492,29 @@ bool KxLibrary::IsOK() const
 {
 	return m_Handle != NULL;
 }
+
 bool KxLibrary::IsDataFile() const
 {
-	return LDR_IS_DATAFILE(m_Handle);
+	return Util::IsLibraryDataFile(m_Handle);
 }
 bool KxLibrary::IsImageDataFile() const
 {
-	return LDR_IS_IMAGEMAPPING(m_Handle);
+	return Util::IsLibraryImageResourse(m_Handle);
 }
 bool KxLibrary::IsResource() const
 {
-	return LDR_IS_RESOURCE(m_Handle);
+	return Util::IsLibraryResource(m_Handle);
 }
+
 HMODULE KxLibrary::GetHandle() const
 {
 	return m_Handle;
 }
-void KxLibrary::SetHandle(HMODULE hHandle)
+void KxLibrary::SetHandle(HMODULE handle)
 {
-	m_Handle = hHandle;
+	m_Handle = handle;
 }
+
 wxString KxLibrary::GetFileName() const
 {
 	if (IsResource())
@@ -388,118 +537,66 @@ DWORD KxLibrary::GetLoadFlags() const
 }
 
 // Resources
-bool KxLibrary::BeginUpdateResource()
-{
-	if (!IsUpdatingResources())
-	{
-		FreeLibrary(GetHandle());
-		SetHandle(NULL);
-
-		m_UpdateHandle = BeginUpdateResourceW(GetFileName(), FALSE);
-		return m_UpdateHandle != NULL;
-	}
-	return false;
-}
-bool KxLibrary::EndUpdateResource(bool noReopen)
-{
-	if (IsUpdatingResources())
-	{
-		bool value = EndUpdateResourceW(m_UpdateHandle, FALSE);
-		m_UpdateHandle = NULL;
-
-		if (!noReopen)
-		{
-			HMODULE libraryHandle = LoadLibraryExW(GetFileName(), NULL, GetLoadFlags());
-			SetHandle(libraryHandle);
-			value = value && libraryHandle != NULL;
-		}
-		return value;
-	}
-	return false;
-}
-bool KxLibrary::UpdateResource(const wxString& type, const wxString& name, const wxMemoryBuffer& data, WORD localeID, bool updateNow)
-{
-	if (updateNow)
-	{
-		BeginUpdateResource();
-	}
-
-	if (IsUpdatingResources())
-	{
-		WORD langID = KxLibrary::GetLangID(localeID);
-		bool value = UpdateResourceW(m_UpdateHandle, KxLibrary::GetNameOrID(type.Upper()), KxLibrary::GetNameOrID(name.Upper()), langID, data.GetData(), data.GetDataLen());
-		if (updateNow)
-		{
-			EndUpdateResource();
-		}
-		return value;
-	}
-	return false;
-}
-bool KxLibrary::IsUpdatingResources() const
-{
-	return m_UpdateHandle != NULL;
-}
-
 KxIntVector KxLibrary::EnumResourceLanguages(const wxString& type, const wxString& name) const
 {
 	KxIntVector list;
 
-	CallbackInfo info(const_cast<KxLibrary*>(this), &list);
-	EnumResourceLanguagesW(m_Handle, GetNameOrID(type), GetNameOrID(name), (ENUMRESLANGPROCW)EnumResourceLanguagesProc, (LONG_PTR)&info);
+	Util::CallbackInfo info(const_cast<KxLibrary*>(this), &list);
+	EnumResourceLanguagesW(m_Handle, Util::GetNameOrID(type), Util::GetNameOrID(name), (ENUMRESLANGPROCW)Util::EnumResourceLanguagesProc, (LONG_PTR)&info);
 	return list;
 }
 KxAnyVector KxLibrary::EnumResourceTypes(WORD localeID) const
 {
 	KxAnyVector list;
 
-	CallbackInfo info(const_cast<KxLibrary*>(this), &list);
-	EnumResourceTypesExW(m_Handle, EnumResourceTypesProc, (LONG_PTR)&info, 0, GetLangID(localeID));
+	Util::CallbackInfo info(const_cast<KxLibrary*>(this), &list);
+	EnumResourceTypesExW(m_Handle, Util::EnumResourceTypesProc, (LONG_PTR)&info, 0, Util::GetLangID(localeID));
 	return list;
 }
 KxAnyVector KxLibrary::EnumResources(const wxString& type, WORD localeID) const
 {
 	KxAnyVector list;
 
-	CallbackInfo info(const_cast<KxLibrary*>(this), &list);
-	EnumResourceNamesExW(m_Handle, GetNameOrID(type), EnumResourcesProc, (LONG_PTR)&info, 0, GetLangID(localeID));
+	Util::CallbackInfo info(const_cast<KxLibrary*>(this), &list);
+	EnumResourceNamesExW(m_Handle, Util::GetNameOrID(type), Util::EnumResourcesProc, (LONG_PTR)&info, 0, Util::GetLangID(localeID));
 	return list;
 }
-wxMemoryBuffer KxLibrary::GetResource(const wxString& type, const wxString& name, WORD localeID) const
+KxUnownedMemoryBuffer KxLibrary::GetResource(const wxString& type, const wxString& name, WORD localeID) const
 {
-	return GetResource(GetResourceHandle(type, name, localeID));
+	return Util::GetResource(m_Handle, Util::GetResourceHandle(m_Handle, type, name, localeID));
 }
+
 wxBitmap KxLibrary::GetBitmap(const wxString& name, WORD localeID) const
 {
-	return LoadGDIImage<wxBitmap>(name, ResIDToName(RT_BITMAP), IMAGE_BITMAP, DefaultIconSize, localeID);
+	return Util::LoadGDIImage<wxBitmap>(m_Handle, name, ResIDToName(RT_BITMAP), IMAGE_BITMAP, Util::DefaultIconSize, localeID);
 }
 wxIcon KxLibrary::GetIcon(const wxString& name, wxSize size, WORD localeID) const
 {
-	return LoadGDIImage<wxIcon>(name, ResIDToName(RT_GROUP_ICON), IMAGE_ICON, size, localeID);
+	return Util::LoadGDIImage<wxIcon>(m_Handle, name, ResIDToName(RT_GROUP_ICON), IMAGE_ICON, size, localeID);
 }
 wxIcon KxLibrary::GetIcon(const wxString& name, size_t index, WORD localeID) const
 {
-	wxMemoryBuffer groupBuffer = GetResource(GetResourceHandle(ResIDToName(RT_GROUP_ICON), name, localeID));
-	if (!groupBuffer.IsEmpty())
+	KxUnownedMemoryBuffer groupBuffer = Util::GetResource(m_Handle, Util::GetResourceHandle(m_Handle, ResIDToName(RT_GROUP_ICON), name, localeID));
+	if (!groupBuffer.empty())
 	{
-		IconGroupDirectory* iconGroup = (IconGroupDirectory*)groupBuffer.GetData();
+		Util::IconGroupDirectory* iconGroup = (Util::IconGroupDirectory*)groupBuffer.data();
 		WORD iconCount = iconGroup->idCount;
 		if (index >= iconCount)
 		{
 			index = iconCount - 1;
 		}
 
-		IconGroupEntry* iconInfo = &iconGroup->idEntries[index];
+		Util::IconGroupEntry* iconInfo = &iconGroup->idEntries[index];
 		WORD imageID = iconInfo->id;
 
-		wxMemoryBuffer iconBuffer = GetResource(GetResourceHandle(ResIDToName(RT_ICON), ResIDToName(imageID), localeID));
-		if (!iconBuffer.IsEmpty())
+		KxUnownedMemoryBuffer iconBuffer = Util::GetResource(m_Handle, Util::GetResourceHandle(m_Handle, ResIDToName(RT_ICON), ResIDToName(imageID), localeID));
+		if (!iconBuffer.empty())
 		{
 			int width = 0;
 			int height = 0;
 
 			// I don't remember what '0x00030000' is.
-			HICON iconHandle = CreateIconFromResourceEx((PBYTE)iconBuffer.GetData(), iconBuffer.GetDataLen(), TRUE, 0x00030000, width, height, LR_DEFAULTCOLOR);
+			HICON iconHandle = ::CreateIconFromResourceEx((PBYTE)iconBuffer.data(), iconBuffer.size(), TRUE, 0x00030000, width, height, LR_DEFAULTCOLOR);
 			if (iconHandle != NULL)
 			{
 				wxIcon image;
@@ -513,17 +610,17 @@ wxIcon KxLibrary::GetIcon(const wxString& name, size_t index, WORD localeID) con
 }
 size_t KxLibrary::GetIconCount(const wxString& name, WORD localeID) const
 {
-	wxMemoryBuffer groupBuffer = GetResource(GetResourceHandle(ResIDToName(RT_GROUP_ICON), name));
-	if (!groupBuffer.IsEmpty())
+	KxUnownedMemoryBuffer groupBuffer = Util::GetResource(m_Handle, Util::GetResourceHandle(m_Handle, ResIDToName(RT_GROUP_ICON), name));
+	if (!groupBuffer.empty())
 	{
-		IconGroupDirectory* tIconGroup = (IconGroupDirectory*)groupBuffer.GetData();
-		return tIconGroup->idCount;
+		Util::IconGroupDirectory* iconGroup = (Util::IconGroupDirectory*)groupBuffer.data();
+		return iconGroup->idCount;
 	}
 	return 0;
 }
 wxCursor KxLibrary::GetCursor(const wxString& name, WORD localeID) const
 {
-	return LoadGDIImage<wxCursor>(name, ResIDToName(RT_CURSOR), IMAGE_CURSOR, DefaultIconSize, localeID);
+	return Util::LoadGDIImage<wxCursor>(m_Handle, name, ResIDToName(RT_CURSOR), IMAGE_CURSOR, Util::DefaultIconSize, localeID);
 }
 wxString KxLibrary::GetString(const wxString& name, WORD localeID) const
 {
@@ -546,15 +643,15 @@ wxString KxLibrary::GetString(const wxString& name, WORD localeID) const
 		long stringID = 0;
 		if (name.ToLong(&stringID))
 		{
-			wxMemoryBuffer data = GetResource(ResIDToName(RT_STRING), ResIDToName(MAKEINTRESOURCEW(stringID / 16 + 1)), localeID);
-			if (!data.IsEmpty())
+			KxUnownedMemoryBuffer data = GetResource(ResIDToName(RT_STRING), ResIDToName(MAKEINTRESOURCEW(stringID / 16 + 1)), localeID);
+			if (!data.empty())
 			{
 				stringID = stringID % 16;
-				DWORD tableSize = data.GetDataLen() / sizeof(WCHAR);
+				DWORD tableSize = data.size() / sizeof(WCHAR);
 				DWORD offset = 0;
 				DWORD index = 0;
 
-				const WCHAR* stringData = (const WCHAR*)data.GetData();
+				const WCHAR* stringData = (const WCHAR*)data.data();
 				while (offset < tableSize)
 				{
 					if (index == (DWORD)stringID)
@@ -574,26 +671,26 @@ wxString KxLibrary::GetString(const wxString& name, WORD localeID) const
 	}
 	return wxEmptyString;
 }
+
 wxString KxLibrary::FormatMessage(DWORD messageID, WORD localeID) const
 {
-	return KxSystem::FormatMessage(FORMAT_MESSAGE_IGNORE_INSERTS|FORMAT_MESSAGE_FROM_HMODULE, m_Handle, messageID, GetLangID(localeID));
+	return KxSystem::FormatMessage(FORMAT_MESSAGE_IGNORE_INSERTS|FORMAT_MESSAGE_FROM_HMODULE, m_Handle, messageID, Util::GetLangID(localeID));
 }
 
 bool KxLibrary::IsResourceExist(const wxString& type, const wxString& name, WORD localeID)
 {
-	return GetResourceHandle(type, name, localeID) != NULL;
+	return Util::GetResourceHandle(m_Handle, type, name, localeID) != NULL;
 }
 bool KxLibrary::RemoveResource(const wxString& type, const wxString& name, WORD localeID, bool updateNow)
 {
 	KxLibraryUpdateLocker locker(this);
 	if (locker.IsOK())
 	{
-		locker.UpdateResource(type, name, wxMemoryBuffer(), localeID);
+		locker.UpdateResource(type, name, KxUnownedMemoryBuffer(), localeID);
 	}
 	return locker.IsSuccess();
-	//return UpdateResource(type, name, wxMemoryBuffer(NULL, 0, ALLOC_NONE, true), localeID, updateNow);
 }
-bool KxLibrary::UpdateResource(const wxString& type, const wxString& name, const wxMemoryBuffer& data, bool overwrite, WORD localeID, bool updateNow)
+bool KxLibrary::UpdateResource(const wxString& type, const wxString& name, const KxUnownedMemoryBuffer& data, bool overwrite, WORD localeID, bool updateNow)
 {
 	if (overwrite || !IsResourceExist(type, name, localeID))
 	{
@@ -621,28 +718,28 @@ KxStringVector KxLibrary::EnumFunctions() const
 			LPVOID fileBase = ::MapViewOfFile(fileMapping, FILE_MAP_READ, 0, 0, 0);
 			if (fileBase != NULL)
 			{
-				PIMAGE_DOS_HEADER img_DOS_Header = (PIMAGE_DOS_HEADER)fileBase;
-				PIMAGE_NT_HEADERS img_NT_Header = (PIMAGE_NT_HEADERS)((size_t)img_DOS_Header + (size_t)img_DOS_Header->e_lfanew);
-				if (!(::IsBadReadPtr(img_NT_Header, sizeof(IMAGE_NT_HEADERS)) || img_NT_Header->Signature != IMAGE_NT_SIGNATURE))
+				PIMAGE_DOS_HEADER headerDOS = (PIMAGE_DOS_HEADER)fileBase;
+				PIMAGE_NT_HEADERS headerNT = (PIMAGE_NT_HEADERS)((size_t)headerDOS + (size_t)headerDOS->e_lfanew);
+				if (!(::IsBadReadPtr(headerNT, sizeof(IMAGE_NT_HEADERS)) || headerNT->Signature != IMAGE_NT_SIGNATURE))
 				{
 					#pragma warning(suppress: 4312)
-					PIMAGE_EXPORT_DIRECTORY img_Export_Dir = (PIMAGE_EXPORT_DIRECTORY)img_NT_Header->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress;
-					if (img_Export_Dir)
+					PIMAGE_EXPORT_DIRECTORY exportDir = (PIMAGE_EXPORT_DIRECTORY)headerNT->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress;
+					if (exportDir)
 					{
-						img_Export_Dir = (PIMAGE_EXPORT_DIRECTORY)::ImageRvaToVa(img_NT_Header, img_DOS_Header, (size_t)img_Export_Dir, 0);
+						exportDir = (PIMAGE_EXPORT_DIRECTORY)::ImageRvaToVa(headerNT, headerDOS, (size_t)exportDir, 0);
 
 						#pragma warning(suppress: 4312)
-						DWORD** namesArray = (DWORD**)img_Export_Dir->AddressOfNames;
-						namesArray = (DWORD**)::ImageRvaToVa(img_NT_Header, img_DOS_Header, (size_t)namesArray, 0);
+						DWORD** namesArray = (DWORD**)exportDir->AddressOfNames;
+						namesArray = (DWORD**)::ImageRvaToVa(headerNT, headerDOS, (size_t)namesArray, 0);
 						if (namesArray != NULL)
 						{
-							DWORD functionsCount = img_Export_Dir->NumberOfNames;
+							DWORD functionsCount = exportDir->NumberOfNames;
 							functionNames.reserve(functionsCount);
 							for (DWORD i = 0; i < functionsCount; i++)
 							{
 								#pragma warning(suppress: 4302)
 								#pragma warning(suppress: 4311)
-								const char* name = (const char*)ImageRvaToVa(img_NT_Header, img_DOS_Header, (DWORD)(*namesArray), 0);
+								const char* name = (const char*)::ImageRvaToVa(headerNT, headerDOS, (DWORD)(*namesArray), 0);
 								functionNames.push_back(name);
 								namesArray++;
 							}
@@ -662,18 +759,11 @@ void* KxLibrary::GetProcAddress(const wxString& name) const
 {
 	return ::GetProcAddress(m_Handle, name);
 }
-void* KxLibrary::GetProcAddress(WORD nOrdinal) const
+void* KxLibrary::GetProcAddress(WORD ordinal) const
 {
-	return ::GetProcAddress(m_Handle, MAKEINTRESOURCEA(nOrdinal));
+	return ::GetProcAddress(m_Handle, MAKEINTRESOURCEA(ordinal));
 }
-bool KxLibrary::IsFunctionExist(const wxString& name) const
-{
-	return GetProcAddress(name);
-}
-bool KxLibrary::IsFunctionExist(WORD nOrdinal) const
-{
-	return GetProcAddress(nOrdinal);
-}
+
 #if defined RtCFunction
 RtCFunction* KxLibrary::Function(const wxString& name, lua_State* L, const Lua::IntegerArray& tArgTypes, LClassID nRetTypeID, RtCFunctionABI nABI)
 {
@@ -686,9 +776,9 @@ RtCFunction* KxLibrary::Function(const wxString& name, lua_State* L, const Lua::
 	}
 	return NULL;
 }
-RtCFunction* KxLibrary::Function(WORD nOrdinal, lua_State* L, const Lua::IntegerArray& tArgTypes, LClassID nRetTypeID, RtCFunctionABI nABI)
+RtCFunction* KxLibrary::Function(WORD ordinal, lua_State* L, const Lua::IntegerArray& tArgTypes, LClassID nRetTypeID, RtCFunctionABI nABI)
 {
-	void* pFunction = GetProcAddress(nOrdinal);
+	void* pFunction = GetProcAddress(ordinal);
 	if (pFunction)
 	{
 		RtCFunction* pCFunction = new RtCFunction(pFunction, tArgTypes, nRetTypeID, nABI);
@@ -698,44 +788,6 @@ RtCFunction* KxLibrary::Function(WORD nOrdinal, lua_State* L, const Lua::Integer
 	return NULL;
 }
 #endif
-
-//////////////////////////////////////////////////////////////////////////
-void KxLibraryUpdateLocker::Unlock()
-{
-	::FreeLibrary(m_Library->GetHandle());
-	m_Library->SetHandle(NULL);
-}
-void KxLibraryUpdateLocker::Lock()
-{
-	HMODULE libraryHandle = ::LoadLibraryExW(m_LibarryFullPath, NULL, m_Library->GetLoadFlags());
-	m_Library->SetHandle(libraryHandle);
-}
-
-KxLibraryUpdateLocker::KxLibraryUpdateLocker(KxLibrary* library)
-	:m_Library(library), m_LibarryFullPath(library->GetFileName())
-{
-	m_UpdateHandle = ::BeginUpdateResourceW(m_LibarryFullPath, FALSE);
-}
-KxLibraryUpdateLocker::~KxLibraryUpdateLocker()
-{
-}
-
-void KxLibraryUpdateLocker::UpdateResource(const wxString& type, const wxString& name, const wxMemoryBuffer& data, WORD localeID)
-{
-	if (IsOK())
-	{
-		Unlock();
-
-		WORD langID = KxLibrary::GetLangID(localeID);
-		if (::UpdateResourceW(GetHandle(), KxLibrary::GetNameOrID(type.Upper()), KxLibrary::GetNameOrID(name.Upper()), langID, data.GetData(), data.GetDataLen()))
-		{
-			m_Success = ::EndUpdateResourceW(m_UpdateHandle, FALSE);
-		}
-		Lock();
-		return;
-	}
-	m_Success = false;
-}
 
 //////////////////////////////////////////////////////////////////////////
 const LPCWSTR KxLibraryVersionInfo::VersionInfoRawFieldNames[] =

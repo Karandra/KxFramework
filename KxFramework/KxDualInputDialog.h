@@ -47,11 +47,10 @@ class KxDualInputDialog: public KxStdDialog
 		{
 			return m_View;
 		}
-		virtual int GetViewSizerProportion() const
+		virtual int GetViewSizerProportion() const override
 		{
 			return 1;
 		}
-		virtual void ResetState();
 
 		wxString GetValue1() const
 		{
@@ -66,6 +65,7 @@ class KxDualInputDialog: public KxStdDialog
 			m_Input1->SetValue(value1);
 			m_Input2->SetValue(value2);
 		}
+		
 		bool IsEditable1() const
 		{
 			return m_Input1->IsEditable();
@@ -74,6 +74,7 @@ class KxDualInputDialog: public KxStdDialog
 		{
 			return m_Input2->IsEditable();
 		}
+		
 		void SetEditable(bool value1, bool value2)
 		{
 			m_Input1->SetEditable(value1);

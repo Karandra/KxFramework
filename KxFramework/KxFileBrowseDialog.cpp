@@ -67,11 +67,10 @@ void KxFileBrowseDialog::InitHWND()
 	HWND hWnd = NULL;
 	if (m_Instance)
 	{
-		IOleWindow* window = NULL;
+		KxCOMPtr<IOleWindow> window;
 		if (SUCCEEDED(m_Instance->QueryInterface(IID_PPV_ARGS(&window))) && window)
 		{
 			window->GetWindow(&hWnd);
-			window->Release();
 		}
 	}
 	m_Handle = hWnd;
@@ -82,10 +81,6 @@ void KxFileBrowseDialog::InitIFileDialog2()
 	if (SUCCEEDED(m_Instance->QueryInterface(IID_PPV_ARGS(&dialog))) && dialog)
 	{
 		m_InstanceExtra = dialog;
-	}
-	else
-	{
-		m_InstanceExtra = NULL;
 	}
 }
 
@@ -147,14 +142,6 @@ bool KxFileBrowseDialog::Create(wxWindow* parent,
 KxFileBrowseDialog::~KxFileBrowseDialog()
 {
 	m_Events.Destroy();
-	if (m_InstanceExtra)
-	{
-		m_InstanceExtra->Release();
-	}
-	if (m_Instance)
-	{
-		m_Instance->Release();
-	}
 }
 
 int KxFileBrowseDialog::ShowModal()
@@ -242,12 +229,11 @@ void KxFileBrowseDialog::SetFolder(const wxString& path)
 {
 	if (m_Instance)
 	{
-		IShellItem* folderPath = NULL;
+		KxCOMPtr<IShellItem> folderPath;
 		SHCreateItemFromParsingName(path, NULL, IID_PPV_ARGS(&folderPath));
 		if (folderPath)
 		{
 			m_Instance->SetFolder(folderPath);
-			folderPath->Release();
 		}
 	}
 }
@@ -255,12 +241,11 @@ void KxFileBrowseDialog::SetNavigationRoot(const wxString& path)
 {
 	if (m_InstanceExtra)
 	{
-		IShellItem* folderPath = NULL;
+		KxCOMPtr<IShellItem> folderPath;
 		SHCreateItemFromParsingName(path, NULL, IID_PPV_ARGS(&folderPath));
 		if (folderPath)
 		{
 			m_InstanceExtra->SetNavigationRoot(folderPath);
-			folderPath->Release();
 		}
 	}
 }
@@ -268,9 +253,9 @@ void KxFileBrowseDialog::AddPlace(const wxString& path, const wxString& label, b
 {
 	if (m_Instance)
 	{
-		IShellItem* pPathItem = NULL;
-		SHCreateItemFromParsingName(path, NULL, IID_PPV_ARGS(&pPathItem));
-		if (pPathItem)
+		KxCOMPtr<IShellItem> pathItem;
+		SHCreateItemFromParsingName(path, NULL, IID_PPV_ARGS(&pathItem));
+		if (pathItem)
 		{
 			if (!label.IsEmpty())
 			{
@@ -281,12 +266,11 @@ void KxFileBrowseDialog::AddPlace(const wxString& path, const wxString& label, b
 				PROPVARIANT nameVariant = {0};
 				nameVariant.vt = VT_LPWSTR;
 				nameVariant.pwszVal = labelCOM;
-				SHSetTemporaryPropertyForItem(pPathItem, PKEY_ItemNameDisplay, nameVariant);
+				SHSetTemporaryPropertyForItem(pathItem, PKEY_ItemNameDisplay, nameVariant);
 				CoTaskMemFree(labelCOM);
 			}
 
-			m_Instance->AddPlace(pPathItem, top ? FDAP_TOP : FDAP_BOTTOM);
-			pPathItem->Release();
+			m_Instance->AddPlace(pathItem, top ? FDAP_TOP : FDAP_BOTTOM);
 		}
 	}
 }
@@ -323,7 +307,7 @@ wxString KxFileBrowseDialog::GetResult() const
 	{
 		if (IsMultiSelect() && GetMode() != KxFBD_SAVE)
 		{
-			IFileOpenDialog* dialog = (IFileOpenDialog*)m_Instance;
+			IFileOpenDialog* dialog = static_cast<IFileOpenDialog*>(m_Instance.Get());
 			IShellItemArray* shellList = NULL;
 			if (SUCCEEDED(dialog->GetResults(&shellList)) && shellList)
 			{
@@ -365,7 +349,7 @@ KxStringVector KxFileBrowseDialog::GetResults() const
 		}
 		else
 		{
-			IFileOpenDialog* dialog = (IFileOpenDialog*)m_Instance;
+			IFileOpenDialog* dialog = static_cast<IFileOpenDialog*>(m_Instance.Get());
 			IShellItemArray* shellList = NULL;
 			if (SUCCEEDED(dialog->GetResults(&shellList)) && shellList)
 			{

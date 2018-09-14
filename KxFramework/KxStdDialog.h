@@ -295,8 +295,6 @@ class KxStdDialog: public KxDialog, public KxIStdDialog
 		}
 
 		virtual int ShowModal() override;
-
-		virtual void ResetState();
 		void AdjustWindow(const wxPoint &pos = wxPoint(-2, -2), const wxSize& tMinSize = wxDefaultSize);
 		void AddUserWindow(wxWindow* window)
 		{

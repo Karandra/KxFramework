@@ -2,6 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxDialog.h"
 #include "KxFramework/KxStdDialog.h"
+#include "KxFramework/KxCOM.h"
 #include <PropKey.h>
 #include <ShObjIDL.h>
 #include "KxFramework/KxWinUndef.h"
@@ -97,8 +98,8 @@ class KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 		typedef std::vector<std::pair<wxString, wxString>> ItemList;
 
 	private:
-		IFileDialog* m_Instance = NULL;
-		IFileDialog2* m_InstanceExtra = NULL;
+		KxCOMPtr<IFileDialog> m_Instance;
+		KxCOMPtr<IFileDialog2> m_InstanceExtra;
 
 		HWND m_Handle = NULL;
 		wxWindow* m_Parent = NULL;

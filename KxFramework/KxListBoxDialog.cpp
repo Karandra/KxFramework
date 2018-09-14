@@ -4,14 +4,6 @@
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxListBoxDialog, KxStdDialog);
 
-void KxListBoxDialog::ResetState()
-{
-	KxStdDialog::ResetState();
-	if (GetListBox())
-	{
-		GetListBox()->ClearItems();
-	}
-}
 bool KxListBoxDialog::IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut) const
 {
 	return KxStdDialog::IsEnterAllowed(event, idOut);

@@ -2,14 +2,14 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxUtility.h"
 
-template<class T, T nDefaultFlags = (T)0>
+template<class T, T defaultFlags = (T)0>
 class KxWithOptions
 {
 	public:
 		using EnumT = T;
 
 	private:
-		EnumT m_OptionFlags = nDefaultFlags;
+		EnumT m_OptionFlags = defaultFlags;
 
 	protected:
 		EnumT GetOptionFlags() const

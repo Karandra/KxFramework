@@ -5,15 +5,6 @@
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxComboBoxDialog, KxStdDialog);
 
-void KxComboBoxDialog::ResetState()
-{
-	KxStdDialog::ResetState();
-	if (GetComboBox())
-	{
-		GetComboBox()->Clear();
-		GetComboBox()->ChangeValue(wxEmptyString);
-	}
-}
 bool KxComboBoxDialog::IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut) const
 {
 	if (GetComboBox()->HasFocus() && event.GetKeyCode() == WXK_RETURN)

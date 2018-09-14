@@ -87,6 +87,11 @@ class KxMenu: public wxMenu
 		virtual ~KxMenu();
 
 	public:
+		virtual bool IsOK() const
+		{
+			return true;
+		}
+
 		virtual wxWindowID Show(wxWindow* window = NULL, const wxPoint& pos = wxDefaultPosition, DWORD alignment = DefaultAlignment);
 		virtual wxWindowID ShowAsPopup(wxWindow* window, int offset = 1, DWORD alignment = DefaultAlignment);
 

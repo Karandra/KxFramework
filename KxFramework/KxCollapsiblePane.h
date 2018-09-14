@@ -8,7 +8,7 @@ class KxCollapsiblePane: public wxCollapsiblePane
 		wxEvtHandler m_EvtHandler;
 
 	private:
-		void OnCollapsedExpanded(wxCollapsiblePaneEvent& hEvent);
+		void OnCollapsedExpanded(wxCollapsiblePaneEvent& event);
 
 	public:
 		static const long DefaultStyle = wxCP_DEFAULT_STYLE|wxCP_NO_TLW_RESIZE;

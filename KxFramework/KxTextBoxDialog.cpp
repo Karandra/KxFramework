@@ -4,20 +4,6 @@
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxTextBoxDialog, KxStdDialog);
 
-void KxTextBoxDialog::ResetState()
-{
-	KxStdDialog::ResetState();
-	if (GetTextBox())
-	{
-		GetTextBox()->Clear();
-		GetTextBox()->SetModified(false);
-	}
-	else if (GetStyledTextBox())
-	{
-		GetStyledTextBox()->ClearAll();
-		GetStyledTextBox()->SetModified(false);
-	}
-}
 bool KxTextBoxDialog::IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut) const
 {
 	if (IsMultiLine() || GetStyledTextBox() != NULL)

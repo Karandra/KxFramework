@@ -42,25 +42,25 @@ KxTaskSchedulerTask::KxTaskSchedulerTask(ITaskDefinition* taskDef)
 	:m_Task(taskDef)
 {
 	// Get the registration info for setting the identification.
-	m_Task->get_RegistrationInfo(m_RegInfo);
+	m_Task->get_RegistrationInfo(&m_RegInfo);
 
 	// Create the principal for the task - these credentials
 	// are overwritten with the credentials passed to RegisterTaskDefinition
-	m_Task->get_Principal(m_Principal);
+	m_Task->get_Principal(&m_Principal);
 
 	// Create the settings for the task
-	m_Task->get_Settings(m_Settings);
+	m_Task->get_Settings(&m_Settings);
 	if (m_Settings)
 	{
 		// Create the settings for the task
-		m_Settings->get_IdleSettings(m_IdleSettings);
+		m_Settings->get_IdleSettings(&m_IdleSettings);
 	}
 
 	// Get the trigger collection to insert the time trigger
-	m_Task->get_Triggers(m_TriggerCollection);
+	m_Task->get_Triggers(&m_TriggerCollection);
 
 	// Get the task action collection pointer
-	m_Task->get_Actions(m_ActionCollection);
+	m_Task->get_Actions(&m_ActionCollection);
 }
 KxTaskSchedulerTask::~KxTaskSchedulerTask()
 {
@@ -72,11 +72,11 @@ bool KxTaskSchedulerTask::SetExecutable(const wxString& path, const wxString& ar
 	if (m_ActionCollection)
 	{
 		KxCOMPtr<IAction> action;
-		m_ActionCollection->Create(TASK_ACTION_EXEC, action);
+		m_ActionCollection->Create(TASK_ACTION_EXEC, &action);
 		if (action)
 		{
 			KxCOMPtr<IExecAction> execAction;
-			action->QueryInterface(IID_IExecAction, execAction.AsPVoid());
+			action->QueryInterface(&execAction);
 			if (execAction)
 			{
 				execAction->put_Path(Util::BstrFromString(path));
@@ -93,11 +93,11 @@ bool KxTaskSchedulerTask::SetTimeTrigger(const wxString& id, const wxDateTime& s
 	{
 		// Add the time trigger to the task
 		KxCOMPtr<ITrigger> trigger;
-		m_TriggerCollection->Create(TASK_TRIGGER_TIME, trigger);
+		m_TriggerCollection->Create(TASK_TRIGGER_TIME, &trigger);
 		if (trigger)
 		{
 			KxCOMPtr<ITimeTrigger> timeTrigger;
-			trigger->QueryInterface(IID_ITimeTrigger, timeTrigger.AsPVoid());
+			trigger->QueryInterface(&timeTrigger);
 			if (timeTrigger)
 			{
 				timeTrigger->put_Id(Util::BstrFromString(id));
@@ -124,11 +124,11 @@ bool KxTaskSchedulerTask::SetRegistrationTrigger(const wxString& id, const wxTim
 	{
 		// Add the registration trigger to the task.
 		KxCOMPtr<ITrigger> trigger;
-		m_TriggerCollection->Create(TASK_TRIGGER_REGISTRATION, trigger);
+		m_TriggerCollection->Create(TASK_TRIGGER_REGISTRATION, &trigger);
 		if (trigger)
 		{
 			KxCOMPtr<IRegistrationTrigger> regTrigger;
-			trigger->QueryInterface(IID_IRegistrationTrigger, regTrigger.AsPVoid());
+			trigger->QueryInterface(&regTrigger);
 			if (regTrigger)
 			{
 				regTrigger->put_Id(Util::BstrFromString(id));
@@ -170,7 +170,7 @@ KxTaskScheduler::KxTaskScheduler(const wxString& folder,
 		HRESULT res S_OK;
 		if (SUCCEEDED(res))
 		{
-			res = ::CoCreateInstance(CLSID_TaskScheduler, NULL, CLSCTX_INPROC_SERVER, IID_ITaskService, m_TaskService.AsPVoid());
+			res = ::CoCreateInstance(CLSID_TaskScheduler, NULL, CLSCTX_INPROC_SERVER, IID_ITaskService, m_TaskService.GetPVoid());
 			if (SUCCEEDED(res))
 			{
 				res = m_TaskService->Connect(Util::VariantFromString_Null(serverName),
@@ -180,7 +180,7 @@ KxTaskScheduler::KxTaskScheduler(const wxString& folder,
 				);
 				if (SUCCEEDED(res))
 				{
-					res = m_TaskService->GetFolder(Util::BstrFromString(folder.IsEmpty() ? wxString("\\") : folder), m_TaskFolder);
+					res = m_TaskService->GetFolder(Util::BstrFromString(folder.IsEmpty() ? wxString("\\") : folder), &m_TaskFolder);
 					if (SUCCEEDED(res))
 					{
 						return;
@@ -214,7 +214,7 @@ bool KxTaskScheduler::SaveTask(const KxTaskSchedulerTask& task, const wxString& 
 													   _variant_t(),
 													   TASK_LOGON_INTERACTIVE_TOKEN,
 													   _variant_t(L""),
-													   registeredTask
+													   &registeredTask
 	);
 	return SUCCEEDED(res) && registeredTask;
 }
