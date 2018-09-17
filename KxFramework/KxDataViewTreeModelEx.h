@@ -36,11 +36,11 @@ template<class T, class BaseT> class KxDataViewVectorTreeModelEx: public BaseT
 	protected:
 		virtual void OnSetDataVectorInternal() override
 		{
-			if (GetView())
+			if (this->GetView())
 			{
-				GetView()->Enable(HasDataVector());
+				this->GetView()->Enable(HasDataVector());
 			}
-			OnSetDataVector();
+			this->OnSetDataVector();
 		}
 
 	public:

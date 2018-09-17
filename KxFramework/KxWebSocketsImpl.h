@@ -5,6 +5,7 @@
 #include "KxFramework/KxWebSocketsImplHandler.h"
 #include "KxFramework/KxWebSocketsConstants.h"
 #include <string>
+#include <thread>
 
 class KxWebSocketClientImpl
 {
@@ -44,19 +45,19 @@ class KxWebSocketClientImpl
 			ClientT* client = CastClient<ClientT>();
 
 			// Register our handlers
-			client->set_open_handler([this](websocketpp::connection_hdl hdl)
+			client->set_open_handler([this](typename websocketpp::connection_hdl hdl)
 			{
 				m_MessageHandler->OnOpen();
 			});
-			client->set_close_handler([this](websocketpp::connection_hdl hdl)
+			client->set_close_handler([this](typename websocketpp::connection_hdl hdl)
 			{
 				m_MessageHandler->OnClose();
 			});
-			client->set_fail_handler([this](websocketpp::connection_hdl hdl)
+			client->set_fail_handler([this](typename websocketpp::connection_hdl hdl)
 			{
 				m_MessageHandler->OnFail();
 			});
-			client->set_message_handler([this](websocketpp::connection_hdl hdl, MessageT message)
+			client->set_message_handler([this](typename websocketpp::connection_hdl hdl, MessageT message)
 			{
 				OnMessage(message->get_payload(), message->get_opcode());
 			});

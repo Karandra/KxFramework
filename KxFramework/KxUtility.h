@@ -108,7 +108,7 @@ class KxUtility
 			static_assert(sizeof(TIN1) == sizeof(TIN2), "sizeof(TIN1) not equal to sizeof(TIN2)");
 			static_assert(sizeof(TOUT) == sizeof(TIN1) + sizeof(TIN2), "sizeof(TIN1) + sizeof(TIN2) not equal to sizeof(TOUT)");
 			using TIN = TIN1;
-			using TUIN = std::make_unsigned<TIN>::type;
+			using TUIN = typename std::make_unsigned<TIN>::type;
 
 			const constexpr TUIN mask = static_cast<TUIN>(-1);
 			const constexpr TUIN inputBits = 8 * sizeof(vHigh);

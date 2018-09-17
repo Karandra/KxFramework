@@ -16,40 +16,40 @@ class KxDataViewListModelExBase: public KxDataViewModelExBase<BaseT>
 	public:
 		bool IsItemValid(const KxDataViewItem& item) const
 		{
-			return item.IsOK() && GetRow(item) < GetItemCount();
+			return item.IsOK() && this->GetRow(item) < this->GetItemCount();
 		}
 		bool IsMoveValid(const KxDataViewItem& item, wxDirection value) const
 		{
 			if (IsItemValid(item))
 			{
-				size_t index = GetRow(item);
+				size_t index = this->GetRow(item);
 				if (value == wxUP)
 				{
 					return index > 0;
 				}
 				else
 				{
-					return index + 1 < GetItemCount();
+					return index + 1 < this->GetItemCount();
 				}
 			}
 			return false;
 		}
 		KxDataViewItem GetNextItem(const KxDataViewItem& item) const
 		{
-			return GetItem(GetRow(item) + 1);
+			return this->GetItem(this->GetRow(item) + 1);
 		}
 		KxDataViewItem GetPrevItem(const KxDataViewItem& item) const
 		{
-			return GetItem(GetRow(item) - 1);
+			return this->GetItem(this->GetRow(item) - 1);
 		}
 		
 		void SelectItem(const KxDataViewItem& item = KxDataViewItem(), bool bUnselectAll = false)
 		{
 			KxDataViewModelExBase::SelectItem(item, bUnselectAll);
 		}
-		void SelectItem(size_t index, bool bUnselectAll = false)
+		void SelectItem(size_t index, bool unselectAll = false)
 		{
-			KxDataViewModelExBase::SelectItem(GetItem(index), bUnselectAll);
+			KxDataViewModelExBase::SelectItem(this->GetItem(index), unselectAll);
 		}
 };
 using KxDataViewListModelEx = KxDataViewListModelExBase<KxDataViewListModel>;
@@ -68,9 +68,9 @@ template<class T, class BaseT> class KxDataViewVectorListModelEx: public BaseT
 	protected:
 		virtual void OnSetDataVectorInternal()
 		{
-			if (GetView())
+			if (this->GetView())
 			{
-				GetView()->Enable(HasDataVector());
+				this->GetView()->Enable(HasDataVector());
 			}
 			OnSetDataVector();
 		}
@@ -78,16 +78,16 @@ template<class T, class BaseT> class KxDataViewVectorListModelEx: public BaseT
 	protected:
 		virtual void OnSwapItems(KxDataViewItem& tItem1, KxDataViewItem& tItem2)
 		{
-			if (IsItemValid(tItem1) && IsItemValid(tItem2))
+			if (this->IsItemValid(tItem1) && this->IsItemValid(tItem2))
 			{
-				std::iter_swap(m_Data->begin() + GetRow(tItem1), m_Data->begin() + GetRow(tItem2));
+				std::iter_swap(m_Data->begin() + this->GetRow(tItem1), m_Data->begin() + this->GetRow(tItem2));
 			}
 		}
 		virtual void OnRemoveItem(const KxDataViewItem& item)
 		{
-			if (IsItemValid(item))
+			if (this->IsItemValid(item))
 			{
-				m_Data->erase(m_Data->begin() + GetRow(item));
+				m_Data->erase(m_Data->begin() + this->GetRow(item));
 			}
 		}
 		virtual void OnClearItems()

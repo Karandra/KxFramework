@@ -31,17 +31,6 @@ class KxDataViewSpinEditor: public KxDataViewEditor
 		{
 			return m_Type == Type::Integer && m_IntIncrement != 1 && m_IntBase == 10;
 		}
-		template<class T> T CastAndGetValue(wxWindow* control) const
-		{
-			if constexpr(std::is_floating_point<T>::value)
-			{
-				return static_cast<wxSpinCtrlDouble*>(control)->GetValue();
-			}
-			else
-			{
-				return static_cast<wxSpinCtrl*>(control)->GetValue();
-			}
-		}
 
 	protected:
 		virtual wxWindow* CreateEditorControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value) override;

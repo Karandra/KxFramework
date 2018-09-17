@@ -34,7 +34,7 @@ class KxDataViewImageListRendererValue
 		KxDataViewImageListRendererValue(const KxIntVector& values)
 		{
 			Clear();
-			for (size_t i = 0; i < std::min(value.size(), m_Value.size()); i++)
+			for (size_t i = 0; i < std::min(values.size(), m_Value.size()); i++)
 			{
 				m_Value[i] = values[i];
 			}

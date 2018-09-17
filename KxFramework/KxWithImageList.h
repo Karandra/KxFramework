@@ -113,14 +113,14 @@ template<class BaseT> class KxWithImageListWrapper: public BaseT
 
 		void AssignImageList(KxImageList* imageList)
 		{
-			GetThis()->wxWithImages::AssignImageList(pList);
+			GetThis()->wxWithImages::AssignImageList(imageList);
 			m_IsKxList = true;
 			m_IsOwned = true;
 		}
 		void AssignImageList(wxImageList* imageList)
 		{
-			GetThis()->wxWithImages::AssignImageList(pList);
-			m_IsKxList = IsKxList(pList);
+			GetThis()->wxWithImages::AssignImageList(imageList);
+			m_IsKxList = IsKxList(imageList);
 			m_IsOwned = false;
 		}
 };
