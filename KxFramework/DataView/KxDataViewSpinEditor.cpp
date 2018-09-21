@@ -6,7 +6,7 @@ namespace
 {
 	template<class T> T CastAndGetValue(wxWindow* control)
 	{
-		if constexpr (std::is_floating_point<T>::value)
+		if constexpr(std::is_floating_point<T>::value)
 		{
 			return static_cast<wxSpinCtrlDouble*>(control)->GetValue();
 		}
