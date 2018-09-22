@@ -15,12 +15,14 @@ wxUniChar& KxString::MakeLower(wxUniChar& c)
 	#pragma warning(suppress: 4312)
 	#pragma warning(suppress: 4302)
 	c = reinterpret_cast<wchar_t>(::CharLowerW(reinterpret_cast<LPWSTR>(c.GetValue())));
+	return c;
 }
 wxUniChar& KxString::MakeUpper(wxUniChar& c)
 {
 	#pragma warning(suppress: 4312)
 	#pragma warning(suppress: 4302)
 	c = reinterpret_cast<wchar_t>(::CharUpperW(reinterpret_cast<LPWSTR>(c.GetValue())));
+	return c;
 }
 
 wxString& KxString::MakeLower(wxString& s)
