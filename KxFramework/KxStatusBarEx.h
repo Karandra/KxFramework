@@ -1,6 +1,7 @@
 #pragma once
 #include "KxFramework/KxStatusBar.h"
 #include "KxFramework/KxWithImageList.h"
+#include "KxFramework/KxIProgressBar.h"
 
 enum
 {
@@ -10,7 +11,7 @@ enum
 	KxSBE_MASK = KxSBE_INHERIT_COLORS|KxSBE_SEPARATORS_ENABLED
 };
 
-class KxStatusBarEx: public KxStatusBar, public KxWithImageList
+class KxStatusBarEx: public KxStatusBar, public KxWithImageList, public KxIProgressBar
 {
 
 	private:
@@ -23,6 +24,10 @@ class KxStatusBarEx: public KxStatusBar, public KxWithImageList
 		int m_State = wxCONTROL_NONE;
 		bool m_IsSeparatorsVisible = false;
 		long m_Style = DefaultStyle;
+
+		int m_ProgressRange = 100;
+		int m_ProgressPos = 0;
+		int m_ProgressStep = 10;
 	
 	private:
 		void OnPaint(wxPaintEvent& event);
@@ -44,6 +49,44 @@ class KxStatusBarEx: public KxStatusBar, public KxWithImageList
 		
 		wxEllipsizeMode GetEllipsizeMode() const;
 		void MakeTopmost();
+
+	protected:
+		virtual int DoGetRange() const override
+		{
+			return m_ProgressRange;
+		}
+		virtual void DoSetRange(int range)
+		{
+			m_ProgressRange = range;
+			Refresh();
+		}
+
+		virtual int DoGetValue() const override
+		{
+			return m_ProgressPos;
+		}
+		virtual void DoSetValue(int value) override
+		{
+			m_ProgressPos = value;
+			Refresh();
+		}
+
+		virtual int DoGetStep() const override
+		{
+			return m_ProgressStep;
+		}
+		virtual void DoSetStep(int step) override
+		{
+			m_ProgressStep = step <= m_ProgressRange ? step : m_ProgressRange;
+		}
+
+		virtual void DoPulse() override
+		{
+		}
+		virtual bool DoIsPulsing() const override
+		{
+			return false;
+		}
 
 	public:
 		static const int DefaultStyle = KxStatusBar::DefaultStyle|KxSBE_SEPARATORS_ENABLED;

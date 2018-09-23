@@ -13,8 +13,21 @@ void KxStatusBarEx::OnPaint(wxPaintEvent& event)
 	KxUtility::DrawParentBackground(this, dc, size);
 
 	// Draw background
-	dc.SetBrush(GetBackgroundColour());
-	dc.DrawRectangle(wxRect(wxPoint(-1, -1), size).Inflate(2));
+	{
+		dc.SetBrush(GetBackgroundColour());
+
+		wxRect backgroundRect(wxPoint(-1, -1), size);
+		backgroundRect.Inflate(2);
+		dc.DrawRectangle(backgroundRect);
+
+		if (m_ProgressPos != 0)
+		{
+			backgroundRect.SetWidth(size.GetWidth() * ((double)m_ProgressPos / m_ProgressRange));
+
+			dc.SetBrush(KxColor(GetBackgroundColour()).RotateHue(30));
+			dc.DrawRectangle(backgroundRect);
+		}
+	}
 
 	// Draw edge line
 	if (m_ColorBorder.IsOk())
