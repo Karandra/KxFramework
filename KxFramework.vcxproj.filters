@@ -655,6 +655,12 @@
     <ClInclude Include="KxFramework\KxBroadcastEvent.h">
       <Filter>Header Files\Events</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxCallAtScopeExit.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxSharedMemory.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1113,6 +1119,9 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxBroadcastEvent.cpp">
       <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxSharedMemory.cpp">
+      <Filter>Source Files\System</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

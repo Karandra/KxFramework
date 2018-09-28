@@ -218,6 +218,7 @@
     <ClInclude Include="KxFramework\KxBitmapComboBox.h" />
     <ClInclude Include="KxFramework\KxBroadcastEvent.h" />
     <ClInclude Include="KxFramework\KxButton.h" />
+    <ClInclude Include="KxFramework\KxCallAtScopeExit.h" />
     <ClInclude Include="KxFramework\KxCheckBox.h" />
     <ClInclude Include="KxFramework\KxCollapsiblePane.h" />
     <ClInclude Include="KxFramework\KxColor.h" />
@@ -306,6 +307,7 @@
     <ClInclude Include="KxFramework\KxRTTI.h" />
     <ClInclude Include="KxFramework\KxSearchBox.h" />
     <ClInclude Include="KxFramework\KxSecretStore.h" />
+    <ClInclude Include="KxFramework\KxSharedMemory.h" />
     <ClInclude Include="KxFramework\KxShell.h" />
     <ClInclude Include="KxFramework\KxShellLink.h" />
     <ClInclude Include="KxFramework\KxShellMenu.h" />
@@ -524,6 +526,7 @@
     <ClCompile Include="KxFramework\KxRichToolTip.cpp" />
     <ClCompile Include="KxFramework\KxSearchBox.cpp" />
     <ClCompile Include="KxFramework\KxSecretStore.cpp" />
+    <ClCompile Include="KxFramework\KxSharedMemory.cpp" />
     <ClCompile Include="KxFramework\KxShell.cpp" />
     <ClCompile Include="KxFramework\KxShellFolders.cpp" />
     <ClCompile Include="KxFramework\KxShellLink.cpp" />
