@@ -5,7 +5,7 @@
 class KxBroadcastEvent: public wxNotifyEvent, public KxRTTI::DynamicCastAsIs<KxBroadcastEvent>
 {
 	public:
-		template <class EventT, class Function, class HandlerT>
+		template<class EventT, class Function, class HandlerT>
 		static void Bind(const wxEventTypeTag<EventT>& eventType, const Function& function, HandlerT handler)
 		{
 			wxTheApp->Bind(eventType, [function, handler](EventT& event)
@@ -15,7 +15,7 @@ class KxBroadcastEvent: public wxNotifyEvent, public KxRTTI::DynamicCastAsIs<KxB
 			});
 		}
 		
-		template <class EventT, class FunctorT>
+		template<class EventT, class FunctorT>
 		static void Bind(const wxEventTypeTag<EventT>& eventType, const FunctorT& functor)
 		{
 			wxTheApp->Bind(eventType, [&functor](EventT& event)
@@ -23,6 +23,11 @@ class KxBroadcastEvent: public wxNotifyEvent, public KxRTTI::DynamicCastAsIs<KxB
 				functor(event);
 				event.wxNotifyEvent::Skip();
 			});
+		}
+
+		template<class... Args> static void CallAfter(Args&&... args)
+		{
+			wxTheApp->CallAfter(std::forward<Args>(args)...);
 		}
 
 	protected:
