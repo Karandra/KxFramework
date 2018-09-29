@@ -57,28 +57,7 @@ namespace
 
 namespace KxSharedMemoryNS
 {
-	bool Buffer::Open(const wxString& name, size_t size, uint32_t protection)
-	{
-		if (!name.IsEmpty())
-		{
-			const DWORD memoryAccessWin32 = ConvertMemoryAccess(protection);
-			m_Handle = ::OpenFileMappingW(memoryAccessWin32, FALSE, name);
-			if (m_Handle != INVALID_HANDLE_VALUE)
-			{
-				m_Buffer = ::MapViewOfFile(m_Handle, memoryAccessWin32, 0, 0, size);
-				m_Size = size;
-				m_Protection = static_cast<Protection>(protection);
-
-				if (m_Buffer)
-				{
-					return true;
-				}
-				::CloseHandle(m_Handle);
-			}
-		}
-		return false;
-	}
-	bool Buffer::Allocate(size_t size, uint32_t protection, const wxString& name)
+	bool Buffer::AllocateRegion(HANDLE& handle, void*& buffer, size_t size, uint32_t protection, const wchar_t* name)
 	{
 		ULARGE_INTEGER sizeULI = {0};
 		sizeULI.QuadPart = size;
@@ -86,35 +65,40 @@ namespace KxSharedMemoryNS
 		const DWORD protectionWin32 = ConvertProtection(protection);
 		const DWORD memoryAccessWin32 = ConvertMemoryAccess(protection);
 
-		m_Handle = ::CreateFileMappingW(INVALID_HANDLE_VALUE, NULL, protectionWin32, sizeULI.HighPart, sizeULI.LowPart, name.IsEmpty() ? NULL : name.wc_str());
-		if (m_Handle != INVALID_HANDLE_VALUE)
+		handle = ::CreateFileMappingW(INVALID_HANDLE_VALUE, NULL, protectionWin32, sizeULI.HighPart, sizeULI.LowPart, name);
+		if (handle != INVALID_HANDLE_VALUE)
 		{
-			m_Buffer = ::MapViewOfFile(m_Handle, memoryAccessWin32, 0, 0, size);
-			m_Size = size;
-			m_Protection = static_cast<Protection>(protection);
-
-			if (m_Buffer)
+			buffer = ::MapViewOfFile(handle, memoryAccessWin32, 0, 0, size);
+			if (buffer)
 			{
 				return true;
 			}
-			::CloseHandle(m_Handle);
-		}
-		return false;
-	}
-	void Buffer::Free()
-	{
-		::UnmapViewOfFile(m_Buffer);
-		::CloseHandle(m_Handle);
-	}
 
-	bool Buffer::CreateFrom(const Buffer& other)
-	{
-		FreeIfNeeded();
-		if (other.IsOK())
-		{
-			// Allocate new unnamed buffer with same parameters
-			return Allocate(other.m_Size, other.m_Protection);
+			::CloseHandle(handle);
+			handle = INVALID_HANDLE_VALUE;
 		}
 		return false;
+	}
+	bool Buffer::OpenRegion(HANDLE& handle, void*& buffer, const wchar_t* name, size_t size, uint32_t protection)
+	{
+		const DWORD memoryAccessWin32 = ConvertMemoryAccess(protection);
+		handle = ::OpenFileMappingW(memoryAccessWin32, FALSE, name);
+		if (handle != INVALID_HANDLE_VALUE)
+		{
+			buffer = ::MapViewOfFile(handle, memoryAccessWin32, 0, 0, size);
+			if (buffer)
+			{
+				return true;
+			}
+
+			::CloseHandle(handle);
+			handle = INVALID_HANDLE_VALUE;
+		}
+		return false;
+	}
+	void Buffer::FreeRegion(HANDLE handle, void* buffer)
+	{
+		::UnmapViewOfFile(buffer);
+		::CloseHandle(handle);
 	}
 }

@@ -21,6 +21,11 @@ namespace KxSharedMemoryNS
 		public:
 			using Protection = KxSharedMemoryNS::Protection;
 
+		public:
+			static bool AllocateRegion(HANDLE& handle, void*& buffer, size_t size, uint32_t protection = Protection::RW, const wchar_t* name = NULL);
+			static bool OpenRegion(HANDLE& handle, void*& buffer, const wchar_t* name, size_t size, uint32_t protection = Protection::RW);
+			static void FreeRegion(HANDLE handle, void* buffer);
+
 		private:
 			HANDLE m_Handle = INVALID_HANDLE_VALUE;
 			void* m_Buffer = NULL;
@@ -28,13 +33,6 @@ namespace KxSharedMemoryNS
 			Protection m_Protection = Protection::None;
 
 		private:
-			void FreeIfNeeded()
-			{
-				if (IsOK())
-				{
-					Free();
-				}
-			}
 			void MakeNull()
 			{
 				m_Handle = INVALID_HANDLE_VALUE;
@@ -65,9 +63,50 @@ namespace KxSharedMemoryNS
 			}
 
 		public:
-			bool Open(const wxString& name, size_t size, uint32_t protection = Protection::RW);
-			bool Allocate(size_t size, uint32_t protection, const wxString& name = wxEmptyString);
-			void Free();
+			bool Open(const wxString& name, size_t size, uint32_t protection = Protection::RW)
+			{
+				FreeIfNeeded();
+				if (OpenRegion(m_Handle, m_Buffer, name, size, protection))
+				{
+					m_Size = size;
+					m_Protection = static_cast<Protection>(protection);
+					return true;
+				}
+				else
+				{
+					MakeNull();
+					return false;
+				}
+			}
+			bool Allocate(size_t size, uint32_t protection, const wxString& name = wxEmptyString)
+			{
+				FreeIfNeeded();
+				if (AllocateRegion(m_Handle, m_Buffer, size, protection, name.IsEmpty() ? NULL : name.wc_str()))
+				{
+					m_Size = size;
+					m_Protection = static_cast<Protection>(protection);
+					return true;
+				}
+				else
+				{
+					MakeNull();
+					return false;
+				}
+			}
+			void Free()
+			{
+				FreeRegion(m_Handle, m_Buffer);
+				MakeNull();
+			}
+			bool FreeIfNeeded()
+			{
+				if (IsOK())
+				{
+					Free();
+					return true;
+				}
+				return false;
+			}
 
 		public:
 			bool IsOK() const
@@ -105,7 +144,16 @@ namespace KxSharedMemoryNS
 				return m_Buffer;
 			}
 	
-			bool CreateFrom(const Buffer& other);
+			bool CreateFrom(const Buffer& other)
+			{
+				FreeIfNeeded();
+				if (other.IsOK())
+				{
+					// Allocate new unnamed buffer with same parameters
+					return Allocate(other.m_Size, other.m_Protection);
+				}
+				return false;
+			}
 
 		public:
 			Buffer& operator=(Buffer&& other)
@@ -141,6 +189,7 @@ namespace KxSharedMemoryNS
 
 		private:
 			Buffer m_Object;
+			bool m_IsReference = false;
 
 		private:
 			template<class... Args> void Construct(Args&&... args)
@@ -161,17 +210,15 @@ namespace KxSharedMemoryNS
 			}
 			void DestroyIfNeeded()
 			{
-				if (m_Object.IsOK())
+				if (!m_IsReference && m_Object.IsOK())
 				{
 					Destroy();
 				}
 			}
 
 		public:
-			template<class... Args> TypedBuffer(const wxString& name = wxEmptyString)
-				:m_Object()
+			TypedBuffer()
 			{
-				m_Object.Open(name, sizeof(ObjectType), t_Protection);
 			}
 			template<class... Args> TypedBuffer(const wxString& name, Args&&... args)
 				:m_Object(sizeof(ObjectType), t_Protection, name)
@@ -192,6 +239,18 @@ namespace KxSharedMemoryNS
 			~TypedBuffer()
 			{
 				DestroyIfNeeded();
+			}
+
+		public:
+			bool IsReference() const
+			{
+				return m_IsReference;
+			}
+			bool Open(const wxString& name)
+			{
+				DestroyIfNeeded();
+				m_IsReference = m_Object.Open(name, sizeof(ObjectType), t_Protection);
+				return m_IsReference;
 			}
 
 		public:
@@ -313,6 +372,77 @@ namespace KxSharedMemoryNS
 				return *m_Object;
 			}
 	};
+
+	template<class T> class Allocator
+	{
+		public:
+			using value_type = T;
+			using size_type = size_t;
+			using difference_type = ptrdiff_t;
+
+		private:
+			class AllocationInfo
+			{
+				public:
+					HANDLE m_Handle = INVALID_HANDLE_VALUE;
+					void* m_Buffer = NULL;
+					size_t m_Size = 0;
+
+				public:
+					AllocationInfo(size_t size)
+						:m_Size(size)
+					{
+					}
+			
+				public:
+					bool IsOK(value_type* userBuffer, size_t userSize) const
+					{
+						// Field 'm_Buffer' contains original address
+						// Field 'm_Size' contains original size (including 'AllocationInfo' size)
+						return m_Handle != INVALID_HANDLE_VALUE &&
+							reinterpret_cast<uint8_t*>(userBuffer) - sizeof(*this) == reinterpret_cast<uint8_t*>(m_Buffer) &&
+							userSize + sizeof(*this) == m_Size;
+					}
+			};
+
+		public:
+			value_type* allocate(size_t count) const
+			{
+				// Allocate requested size + size for allocation info struct
+				const size_t size = sizeof(AllocationInfo) + sizeof(value_type) * count;
+				if (size != 0)
+				{
+					AllocationInfo allocInfo(size);
+					if (Buffer::AllocateRegion(allocInfo.m_Handle, allocInfo.m_Buffer, size, Protection::RW, NULL))
+					{
+						// Write allocation info at the begging of allocated space
+						*reinterpret_cast<AllocationInfo*>(allocInfo.m_Buffer) = allocInfo;
+
+						// Return address
+						return reinterpret_cast<value_type*>(reinterpret_cast<uint8_t*>(allocInfo.m_Buffer) + sizeof(AllocationInfo));
+					}
+				}
+				return nullptr;
+			}
+			void deallocate(value_type* buffer, size_t count) const
+			{
+				const size_t size = sizeof(value_type) * count;
+				AllocationInfo* allocInfo = reinterpret_cast<AllocationInfo*>(reinterpret_cast<uint8_t*>(buffer) - sizeof(AllocationInfo));
+
+				if (allocInfo->IsOK(buffer, size))
+				{
+					Buffer::FreeRegion(allocInfo->m_Handle, allocInfo->m_Buffer);
+				}
+			}
+	};
+	template<class T1, class T2> bool operator==(const Allocator<T1>& lhs, const Allocator<T2>& rhs)
+	{
+		return true;
+	}
+	template<class T1, class T2> bool operator!=(const Allocator<T1>& lhs, const Allocator<T2>& rhs)
+	{
+		return false;
+	}
 };
 
 using KxSharedMemoryBuffer = KxSharedMemoryNS::Buffer;
@@ -321,3 +451,4 @@ template<class T, KxSharedMemoryNS::Protection t_Protection = KxSharedMemoryNS::
 using KxSharedMemory = KxSharedMemoryNS::TypedBuffer<T, t_Protection>;
 
 template<class T> using KxSharedMemoryRef = KxSharedMemoryNS::TypedBufferRef<T>;
+template<class T> using KxSharedMemoryAllocator = KxSharedMemoryNS::Allocator<T>;
