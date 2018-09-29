@@ -56,4 +56,8 @@ class KxBroadcastEvent: public wxNotifyEvent, public KxRTTI::DynamicCastAsIs<KxB
 		{
 			QueueEvent(this);
 		}
+		void QueueClone()
+		{
+			QueueEvent(Clone());
+		}
 };
