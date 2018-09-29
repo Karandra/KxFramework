@@ -4,9 +4,6 @@
 template<class T> class KxSingleton
 {
 	public:
-		using InstanceT = KxSingleton<T>;
-
-	public:
 		static T& GetInstance()
 		{
 			static T ms_Instance;
@@ -14,8 +11,9 @@ template<class T> class KxSingleton
 		}
 
 	private:
-		KxSingleton(const InstanceT&) = delete;
-		InstanceT& operator=(const InstanceT&) = delete;
+		KxSingleton(const KxSingleton&) = delete;
+		KxSingleton& operator=(const KxSingleton&) = delete;
+		KxSingleton& operator=(const KxSingleton&&) = delete;
 
 	protected:
 		KxSingleton() = default;
@@ -24,11 +22,8 @@ template<class T> class KxSingleton
 //////////////////////////////////////////////////////////////////////////
 template<class T> class KxSingletonPtr
 {
-	public:
-		using InstanceT = KxSingletonPtr<T>;
-
 	private:
-		static KxSingletonPtr* ms_Instance;
+		static KxSingletonPtr<T>* ms_Instance;
 
 	public:
 		static bool HasInstance()
@@ -40,6 +35,11 @@ template<class T> class KxSingletonPtr
 			return static_cast<T*>(ms_Instance);
 		}
 
+	private:
+		KxSingletonPtr(const KxSingletonPtr&) = delete;
+		KxSingletonPtr& operator=(const KxSingletonPtr&) = delete;
+		KxSingletonPtr& operator=(const KxSingletonPtr&&) = delete;
+
 	public:
 		KxSingletonPtr()
 		{
@@ -49,7 +49,6 @@ template<class T> class KxSingletonPtr
 			}
 			else
 			{
-				delete this;
 				throw std::runtime_error("KxSingletonPtr: Only one instance of " __FUNCTION__ " is allowed");
 			}
 		}
@@ -60,39 +59,3 @@ template<class T> class KxSingletonPtr
 };
 
 #define KxSingletonPtr_Define(T)	KxSingletonPtr<T>* KxSingletonPtr<T>::ms_Instance = NULL
-
-//////////////////////////////////////////////////////////////////////////
-template<class T> class KxSingletonUniquePtr
-{
-	public:
-		using InstanceT = KxSingletonUniquePtr<T>;
-
-	private:
-		static std::unique_ptr<KxSingletonUniquePtr> ms_Instance;
-
-	public:
-		static bool HasInstance()
-		{
-			return ms_Instance.get() != NULL;
-		}
-		static T* GetInstance()
-		{
-			return static_cast<T*>(ms_Instance.get());
-		}
-
-	public:
-		KxSingletonUniquePtr()
-		{
-			if (!HasInstance())
-			{
-				ms_Instance.reset(this);
-			}
-			else
-			{
-				delete this;
-				throw std::runtime_error("KxSingletonUniquePtr: Only one instance of " __FUNCTION__ " is allowed");
-			}
-		}
-};
-
-#define KxSingletonUniquePtr_Define(T)	std::unique_ptr<KxSingletonUniquePtr> KxSingletonUniquePtr<T>::ms_Instance
