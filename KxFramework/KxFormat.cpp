@@ -68,7 +68,7 @@ void KxFormat::FindCurrentAndReplace(const wxString& string)
 	m_CurrentArgument++;
 }
 
-KxFormat& KxFormat::arg(const wxString& a, int fieldWidth, const wxUniChar& fillChar)
+KxFormat& KxFormat::argString(const wxString& a, int fieldWidth, const wxUniChar& fillChar)
 {
 	if (fieldWidth == 0 || a.length() >= (size_t)std::abs(fieldWidth))
 	{
@@ -88,44 +88,78 @@ KxFormat& KxFormat::arg(const wxString& a, int fieldWidth, const wxUniChar& fill
 	}
 	return *this;
 }
-
-KxFormat& KxFormat::arg(int8_t a, int fieldWidth, int base, const wxUniChar& fillChar)
+KxFormat& KxFormat::argChar(const wxUniChar& a, int fieldWidth, const wxUniChar& fillChar)
 {
-	return arg(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
-}
-KxFormat& KxFormat::arg(uint8_t a, int fieldWidth, int base, const wxUniChar& fillChar)
-{
-	return arg(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
+	return argString(wxString(a), fieldWidth, fillChar);
 }
 
-KxFormat& KxFormat::arg(int16_t a, int fieldWidth, int base, const wxUniChar& fillChar)
+KxFormat& KxFormat::argInt(int8_t a, int fieldWidth, int base, const wxUniChar& fillChar)
 {
-	return arg(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
+	return argString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
 }
-KxFormat& KxFormat::arg(uint16_t a, int fieldWidth, int base, const wxUniChar& fillChar)
+KxFormat& KxFormat::argInt(uint8_t a, int fieldWidth, int base, const wxUniChar& fillChar)
 {
-	return arg(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
-}
-
-KxFormat& KxFormat::arg(uint32_t a, int fieldWidth, int base, const wxUniChar& fillChar)
-{
-	return arg(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
-}
-KxFormat& KxFormat::arg(int32_t a, int fieldWidth, int base, const wxUniChar& fillChar)
-{
-	return arg(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
+	return argString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
 }
 
-KxFormat& KxFormat::arg(int64_t a, int fieldWidth, int base, const wxUniChar& fillChar)
+KxFormat& KxFormat::argInt(int16_t a, int fieldWidth, int base, const wxUniChar& fillChar)
 {
-	return arg(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
+	return argString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
 }
-KxFormat& KxFormat::arg(uint64_t a, int fieldWidth, int base, const wxUniChar& fillChar)
+KxFormat& KxFormat::argInt(uint16_t a, int fieldWidth, int base, const wxUniChar& fillChar)
 {
-	return arg(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
+	return argString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
 }
 
-KxFormat& KxFormat::arg(double a, const wxUniChar& format, int precision, int fieldWidth, const wxUniChar& fillChar)
+KxFormat& KxFormat::argInt(uint32_t a, int fieldWidth, int base, const wxUniChar& fillChar)
+{
+	return argString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
+}
+KxFormat& KxFormat::argInt(int32_t a, int fieldWidth, int base, const wxUniChar& fillChar)
+{
+	return argString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
+}
+
+KxFormat& KxFormat::argInt(int64_t a, int fieldWidth, int base, const wxUniChar& fillChar)
+{
+	return argString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
+}
+KxFormat& KxFormat::argInt(uint64_t a, int fieldWidth, int base, const wxUniChar& fillChar)
+{
+	return argString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
+}
+
+KxFormat& KxFormat::argPointer(const void* a, int fieldWidth, const wxUniChar& fillChar, bool add0x)
+{
+	const size_t value = reinterpret_cast<size_t>(const_cast<void*>(a));
+	if (add0x)
+	{
+		return argString(Utils::FormatIntWithBase(value, 16, m_UpperCase), fieldWidth, fillChar);
+	}
+	else
+	{
+		return argString(wxS("0x") + Utils::FormatIntWithBase(value, 16, m_UpperCase), fieldWidth, fillChar);
+	}
+}
+KxFormat& KxFormat::argBool(bool a, int fieldWidth, const wxUniChar& fillChar)
+{
+	static const wxChar* ms_TrueU = wxS("TRUE");
+	static const wxChar* ms_FalseU = wxS("FALSE");
+	
+	static const wxChar* ms_TrueL = wxS("true");
+	static const wxChar* ms_FalseL = wxS("false");
+
+	if (m_UpperCase)
+	{
+		return argString(a ? ms_TrueU : ms_FalseU, fieldWidth, fillChar);
+	}
+	else
+	{
+		return argString(a ? ms_TrueL : ms_FalseL, fieldWidth, fillChar);
+	}
+}
+
+KxFormat& KxFormat::argDouble(double a, int precision, int fieldWidth, const wxUniChar& format, const wxUniChar& fillChar)
 {
 	switch (format.GetValue())
 	{
@@ -134,6 +168,7 @@ KxFormat& KxFormat::arg(double a, const wxUniChar& format, int precision, int fi
 		case L'e':
 		case L'E':
 		case L'f':
+		case L'F':
 		{
 			break;
 		}
@@ -152,5 +187,65 @@ KxFormat& KxFormat::arg(double a, const wxUniChar& format, int precision, int fi
 	{
 		swprintf_s(formatString, L"%%%c", (wchar_t)format);
 	}
-	return arg(wxString::Format(formatString, a), fieldWidth, fieldWidth);
+	return argString(wxString::Format(formatString, a), fieldWidth, fieldWidth);
 }
+
+#if 0
+void TestFunction()
+{
+	KxFormat format("%1 %2 %3");
+
+	wxString strWx;
+	std::string strStd;
+	std::wstring strStdW;
+	std::string_view strStdV;
+	std::wstring_view strStdWV;
+
+	format.arg(strWx);
+	format.arg(strStd);
+	format.arg(strStdW);
+	format.arg(strStdV);
+	format.arg(strStdWV);
+
+	format.arg("a");
+	format.arg(L"a");
+	format.arg('a');
+	format.arg(L'a');
+
+	format.arg(wxUniChar('a'));
+	format.arg(strWx[0]);
+
+	format.arg(1);
+	format.arg(1u);
+
+	format.arg(1i8);
+	format.arg(1ui8);
+
+	format.arg(1i16);
+	format.arg(1ui16);
+
+	format.arg(1i32);
+	format.arg(1ui32);
+
+	format.arg(1i64);
+	format.arg(1ui64);
+
+	void* p1 = NULL;
+	const void* p2 = NULL;
+	format.arg(p1);
+	format.arg(p2);
+
+	const char* c1 = NULL;
+	char* c2 = NULL;
+	format.arg(c1);
+	format.arg(c2);
+
+	const wchar_t* wc1 = NULL;
+	wchar_t* wc2 = NULL;
+	format.arg(wc1);
+	format.arg(wc2);
+
+	format.arg(7.0);
+	format.arg(2.7f);
+}
+#endif
