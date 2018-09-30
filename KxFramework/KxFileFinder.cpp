@@ -54,17 +54,17 @@ wxString KxFileFinder::Normalize(const wxString& source, bool start, bool end) c
 	wxString out = source;
 	if (start)
 	{
-		out.StartsWith("\\", &out);
+		out.StartsWith(wxS("\\"), &out);
 	}
 	if (end)
 	{
-		out.EndsWith("\\", &out);
+		out.EndsWith(wxS("\\"), &out);
 	}
 	return out;
 }
 wxString KxFileFinder::ConstructSearchQuery() const
 {
-	return !m_Filter.IsEmpty() ? m_Source + '\\' + m_Filter : m_Source;
+	return !m_Filter.IsEmpty() ? m_Source + wxS('\\') + m_Filter : m_Source;
 }
 
 KxFileFinder::KxFileFinder(const wxString& source, const wxString& filter, wxEvtHandler* eventHandler)
@@ -109,8 +109,10 @@ KxFileFinderItem KxFileFinder::FindNext()
 	if (!IsOK())
 	{
 		// No search handle available, begin operation.
-		wxString query = ConstructSearchQuery();
-		m_Handle = ::FindFirstFileW(query, &m_FindData);
+		const wxString query = ConstructSearchQuery();
+		const DWORD searchFlags = FIND_FIRST_EX_LARGE_FETCH|(m_CaseSensitive ? FIND_FIRST_EX_CASE_SENSITIVE : 0);
+
+		m_Handle = ::FindFirstFileExW(query, FindExInfoBasic, &m_FindData, FindExSearchNameMatch, NULL, searchFlags);
 		if (IsOK())
 		{
 			m_Canceled = false;
@@ -125,6 +127,7 @@ KxFileFinderItem KxFileFinder::FindNext()
 			return KxFileFinderItem(this, m_FindData);
 		}
 		
+		// No files left, close search handle
 		::FindClose(m_Handle);
 		m_Canceled = false;
 		m_Handle = INVALID_HANDLE_VALUE;
@@ -133,9 +136,9 @@ KxFileFinderItem KxFileFinder::FindNext()
 }
 
 //////////////////////////////////////////////////////////////////////////
-void KxFileFinderItem::MakeNull(bool bAttribuesOnly)
+void KxFileFinderItem::MakeNull(bool attribuesOnly)
 {
-	if (bAttribuesOnly)
+	if (attribuesOnly)
 	{
 		m_Attributes = INVALID_FILE_ATTRIBUTES;
 		m_ReparsePointAttributes = 0;
@@ -173,19 +176,19 @@ void KxFileFinderItem::Set(const WIN32_FIND_DATAW& fileInfo)
 	SetTime(fileInfo.ftLastAccessTime, m_LastAccessTime);
 	SetTime(fileInfo.ftLastWriteTime, m_ModificationTime);
 }
-void KxFileFinderItem::SetTime(const FILETIME& fileTime, wxDateTime& wxTimeValue) const
+void KxFileFinderItem::SetTime(const FILETIME& fileTime, wxDateTime& fileTimeWx) const
 {
 	if (fileTime.dwHighDateTime != 0 && fileTime.dwLowDateTime != 0)
 	{
 		SYSTEMTIME systemTime = {0};
 		::FileTimeToSystemTime(&fileTime, &systemTime);
-		wxTimeValue.SetFromMSWSysTime(systemTime);
+		fileTimeWx.SetFromMSWSysTime(systemTime);
 	}
 }
 
 KxFileFinderItem::KxFileFinderItem(const wxString& fullPath)
 {
-	m_Source = fullPath.BeforeLast('\\', &m_Name);
+	m_Source = fullPath.BeforeLast(wxS('\\'), &m_Name);
 	UpdateInfo();
 }
 KxFileFinderItem::KxFileFinderItem(KxFileFinder* finder, const WIN32_FIND_DATAW& fileInfo)
@@ -199,14 +202,14 @@ KxFileFinderItem::~KxFileFinderItem()
 
 bool KxFileFinderItem::IsCurrentOrParent() const
 {
-	return m_Name == wxT("..") || m_Name == wxT(".");
+	return m_Name == wxS("..") || m_Name == wxS(".");
 }
 bool KxFileFinderItem::UpdateInfo()
 {
-	wxString query = m_Source + '\\' + m_Name;
+	wxString query = m_Source + wxS('\\') + m_Name;
 
 	WIN32_FIND_DATAW info = {0};
-	HANDLE searchHandle = ::FindFirstFileW(query, &info);
+	HANDLE searchHandle = ::FindFirstFileExW(query, FindExInfoBasic, &info, FindExSearchNameMatch, NULL, 0);
 	if (searchHandle != INVALID_HANDLE_VALUE)
 	{
 		Set(info);

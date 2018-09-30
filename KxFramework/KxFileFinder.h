@@ -13,6 +13,7 @@ class KxFileFinder
 		const wxString m_Source;
 		const wxString m_Filter;
 		bool m_Canceled = false;
+		bool m_CaseSensitive = false;
 
 		HANDLE m_Handle = INVALID_HANDLE_VALUE;
 		WIN32_FIND_DATAW m_FindData = {0};
@@ -35,6 +36,16 @@ class KxFileFinder
 		{
 			return m_Canceled;
 		}
+		
+		bool IsCaseSensitive() const
+		{
+			return m_CaseSensitive;
+		}
+		void SetCaseSensitive(bool value)
+		{
+			m_CaseSensitive = value;
+		}
+
 		bool Run();
 		KxFileFinderItem FindNext();
 		void NotifyFound(const KxFileFinderItem& foundItem)
@@ -63,9 +74,9 @@ class KxFileFinderItem
 		int64_t m_FileSize = -1;
 
 	private:
-		void MakeNull(bool bAttribuesOnly = false);
+		void MakeNull(bool attribuesOnly = false);
 		void Set(const WIN32_FIND_DATAW& fileInfo);
-		void SetTime(const FILETIME& fileTime, wxDateTime& wxTimeValue) const;
+		void SetTime(const FILETIME& fileTime, wxDateTime& fileTimeWx) const;
 
 	public:
 		KxFileFinderItem() {}
