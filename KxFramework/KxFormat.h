@@ -11,6 +11,9 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 
 namespace
 {
+	constexpr const wxChar DefaultFillChar = wxS(' ');
+	constexpr const wxChar DefaultFloatFormat = wxS('f');
+
 	template<class T> inline constexpr bool IsCharType = std::is_same_v<char, T> || std::is_same_v<wchar_t, T>;
 	template<class T> inline constexpr bool IsCharPointer =
 		std::is_same_v<char*, T> ||
@@ -45,27 +48,27 @@ class KxFormat
 
 	private:
 		// Strings
-		KxFormat& argString(const wxString& a, int fieldWidth = 0, const wxUniChar& fillChar = ' ');
-		KxFormat& argChar(const wxUniChar& a, int fieldWidth = 0, const wxUniChar& fillChar = ' ');
+		KxFormat& argString(const wxString& a, int fieldWidth = 0, const wxUniChar& fillChar = DefaultFillChar);
+		KxFormat& argChar(const wxUniChar& a, int fieldWidth = 0, const wxUniChar& fillChar = DefaultFillChar);
 
 		// Integers
-		KxFormat& argInt(int8_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = ' ');
-		KxFormat& argInt(uint8_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = ' ');
+		KxFormat& argInt(int8_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = DefaultFillChar);
+		KxFormat& argInt(uint8_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = DefaultFillChar);
 
-		KxFormat& argInt(int16_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = ' ');
-		KxFormat& argInt(uint16_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = ' ');
+		KxFormat& argInt(int16_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = DefaultFillChar);
+		KxFormat& argInt(uint16_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = DefaultFillChar);
 
-		KxFormat& argInt(int32_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = ' ');
-		KxFormat& argInt(uint32_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = ' ');
+		KxFormat& argInt(int32_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = DefaultFillChar);
+		KxFormat& argInt(uint32_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = DefaultFillChar);
 
-		KxFormat& argInt(int64_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = ' ');
-		KxFormat& argInt(uint64_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = ' ');
+		KxFormat& argInt(int64_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = DefaultFillChar);
+		KxFormat& argInt(uint64_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = DefaultFillChar);
 
-		KxFormat& argPointer(const void* a, int fieldWidth = 0, const wxUniChar& fillChar = ' ', bool add0x = false);
-		KxFormat& argBool(bool a, int fieldWidth = 0, const wxUniChar& fillChar = ' ');
+		KxFormat& argPointer(const void* a, bool add0x = false, int fieldWidth = 0, const wxUniChar& fillChar = DefaultFillChar);
+		KxFormat& argBool(bool a, int fieldWidth = 0, const wxUniChar& fillChar = DefaultFillChar);
 
 		// Floats
-		KxFormat& argDouble(double a, int precision = -1, int fieldWidth = 0, const wxUniChar& format = wxS('f'), const wxUniChar& fillChar = ' ');
+		KxFormat& argDouble(double a, int precision = -1, int fieldWidth = 0, const wxUniChar& format = DefaultFloatFormat, const wxUniChar& fillChar = DefaultFillChar);
 
 	public:
 		KxFormat(const wxString& format)
@@ -97,7 +100,7 @@ class KxFormat
 
 	public:
 		template<class T> typename std::enable_if<FmtString<T>, KxFormat&>::type
-		arg(const T& a, int fieldWidth = 0, const wxUniChar& fillChar = ' ')
+		arg(const T& a, int fieldWidth = 0, const wxUniChar& fillChar = DefaultFillChar)
 		{
 			if constexpr(std::is_same_v<bool, T>)
 			{
@@ -123,7 +126,7 @@ class KxFormat
 		}
 		
 		template<class T> typename std::enable_if<FmtInteger<T>, KxFormat&>::type
-		arg(const T& a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = ' ')
+		arg(const T& a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = DefaultFillChar)
 		{
 			if constexpr(std::is_integral_v<T>)
 			{
@@ -141,7 +144,7 @@ class KxFormat
 		}
 
 		template<class T> typename std::enable_if<FmtFloat<T>, KxFormat&>::type
-		arg(const T& a, int precision = -1, int fieldWidth = 0, const wxUniChar& format = wxS('f'), const wxUniChar& fillChar = ' ')
+		arg(const T& a, int precision = -1, int fieldWidth = 0, const wxUniChar& format = DefaultFloatFormat, const wxUniChar& fillChar = DefaultFillChar)
 		{
 			if constexpr(std::is_floating_point_v<T>)
 			{
@@ -155,11 +158,11 @@ class KxFormat
 		}
 
 		template<class T> typename std::enable_if<FmtPointer<T>, KxFormat&>::type
-		arg(const T& a, bool add0x = false, int fieldWidth = 0, const wxUniChar& fillChar = ' ')
+		arg(const T& a, bool add0x = false, int fieldWidth = 0, const wxUniChar& fillChar = DefaultFillChar)
 		{
-			if constexpr (std::is_pointer_v<T>)
+			if constexpr(std::is_pointer_v<T>)
 			{
-				return argPointer(a, fieldWidth, fillChar, add0x);
+				return argPointer(a, add0x, fieldWidth, fillChar);
 			}
 			else
 			{

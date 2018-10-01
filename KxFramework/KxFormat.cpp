@@ -129,7 +129,7 @@ KxFormat& KxFormat::argInt(uint64_t a, int fieldWidth, int base, const wxUniChar
 	return argString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
 }
 
-KxFormat& KxFormat::argPointer(const void* a, int fieldWidth, const wxUniChar& fillChar, bool add0x)
+KxFormat& KxFormat::argPointer(const void* a, bool add0x, int fieldWidth, const wxUniChar& fillChar)
 {
 	const size_t value = reinterpret_cast<size_t>(const_cast<void*>(a));
 	if (add0x)
@@ -247,5 +247,17 @@ void TestFunction()
 
 	format.arg(7.0);
 	format.arg(2.7f);
+
+	enum e1
+	{
+		e1_value,
+	};
+	enum class e2
+	{
+		e2_value,
+	};
+
+	format.arg(e1::e1_value);
+	format.arg(e2::e2_value);
 }
 #endif
