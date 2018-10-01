@@ -47,6 +47,12 @@ class KxBroadcastEvent: public wxNotifyEvent, public KxRTTI::DynamicCastAsIs<KxB
 		void Skip(bool skip = true) = delete;
 		bool GetSkipped() const = delete;
 
+	protected:
+		virtual bool OnSendEvent()
+		{
+			return true;
+		}
+
 	public:
 		KxBroadcastEvent(wxEventType type = wxEVT_NULL);
 		virtual ~KxBroadcastEvent();
@@ -55,14 +61,17 @@ class KxBroadcastEvent: public wxNotifyEvent, public KxRTTI::DynamicCastAsIs<KxB
 	public:
 		bool Send()
 		{
-			return SendEvent(*this);
+			if (OnSendEvent())
+			{
+				return SendEvent(*this);
+			}
+			return false;
 		}
 		void Queue()
 		{
-			QueueEvent(this);
-		}
-		void QueueClone()
-		{
-			QueueEvent(Clone());
+			if (OnSendEvent())
+			{
+				QueueEvent(this);
+			}
 		}
 };
