@@ -2196,36 +2196,44 @@ wxRect KxDataViewMainWindow::GetLineRect(size_t row) const
 int KxDataViewMainWindow::GetLineStart(size_t row) const
 {
 	const KxDataViewModel* model = GetModel();
-	if (GetOwner()->HasFlag(KxDV_VARIABLE_ROW_HEIGHT))
-	{
-		// TODO: make more efficient
-		size_t columnCount = GetOwner()->GetColumnCount();
+	const bool modelHeight = GetOwner()->HasFlag(KxDV_MODEL_ROW_HEIGHT);
+	const bool variableHeight = GetOwner()->HasFlag(KxDV_VARIABLE_ROW_HEIGHT);
 
+	if (modelHeight || variableHeight)
+	{
+		size_t columnCount = GetOwner()->GetColumnCount();
 		int start = 0;
+
 		for (size_t currentRow = 0; currentRow < row; currentRow++)
 		{
 			const KxDataViewTreeNode* node = GetTreeNodeByRow(currentRow);
 			if (node)
 			{
-				KxDataViewItem item = node->GetItem();
-
 				int height = m_UniformLineHeight;
+
+				KxDataViewItem item = node->GetItem();
 				for (size_t currentColumn = 0; currentColumn < columnCount; currentColumn++)
 				{
 					const KxDataViewColumn* column = GetOwner()->GetColumn(currentColumn);
-					if (column->IsShown())
+					if (column->IsExposed())
 					{
 						if ((currentColumn != 0) && model->IsContainer(item) &&	!model->HasContainerColumns(item))
 						{
 							continue;
 						}
 
-						KxDataViewRenderer* renderer = const_cast<KxDataViewRenderer*>(column->GetRenderer());
-						renderer->PrepareItemToDraw(item, GetCellStateForRow(currentRow));
-						height = std::max(height, renderer->GetCellSize().y);
+						if (modelHeight)
+						{
+							height = GetLineHeightModel(node);
+						}
+						else
+						{
+							KxDataViewRenderer* renderer = const_cast<KxDataViewRenderer*>(column->GetRenderer());
+							renderer->PrepareItemToDraw(item, GetCellStateForRow(currentRow));
+							height = std::max(height, renderer->GetCellSize().y);
+						}
 					}
 				}
-
 				start += height;
 			}
 			else
@@ -2235,15 +2243,15 @@ int KxDataViewMainWindow::GetLineStart(size_t row) const
 		}
 		return start;
 	}
-	else
-	{
-		return row * m_UniformLineHeight;
-	}
+	return row * m_UniformLineHeight;
 }
 int KxDataViewMainWindow::GetLineHeight(size_t row) const
 {
 	const KxDataViewModel* model = GetModel();
-	if (GetOwner()->HasFlag(KxDV_VARIABLE_ROW_HEIGHT))
+	const bool modelHeight = GetOwner()->HasFlag(KxDV_MODEL_ROW_HEIGHT);
+	const bool variableHeight = GetOwner()->HasFlag(KxDV_VARIABLE_ROW_HEIGHT);
+
+	if (modelHeight || variableHeight)
 	{
 		wxASSERT(!IsVirtualList());
 
@@ -2257,16 +2265,23 @@ int KxDataViewMainWindow::GetLineHeight(size_t row) const
 			for (size_t currentColumn = 0; currentColumn < columnCount; currentColumn++)
 			{
 				const KxDataViewColumn* column = GetOwner()->GetColumn(currentColumn);
-				if (column->IsShown())
+				if (column->IsExposed())
 				{
 					if ((currentColumn != 0) && model->IsContainer(item) &&	!model->HasContainerColumns(item))
 					{
 						continue;
 					}
 
-					KxDataViewRenderer* renderer = const_cast<KxDataViewRenderer*>(column->GetRenderer());
-					renderer->PrepareItemToDraw(item, GetCellStateForRow(row));
-					height = std::max(height, renderer->GetCellSize().y);
+					if (modelHeight)
+					{
+						height = GetLineHeightModel(node);
+					}
+					else
+					{
+						KxDataViewRenderer* renderer = const_cast<KxDataViewRenderer*>(column->GetRenderer());
+						renderer->PrepareItemToDraw(item, GetCellStateForRow(row));
+						height = std::max(height, renderer->GetCellSize().y);
+					}
 				}
 			}
 			return height;
@@ -2274,10 +2289,30 @@ int KxDataViewMainWindow::GetLineHeight(size_t row) const
 	}
 	return m_UniformLineHeight;
 }
+int KxDataViewMainWindow::GetLineHeightModel(const KxDataViewTreeNode* node) const
+{
+	if (node)
+	{
+		int height = m_UniformLineHeight;
+		if (GetModel()->GetCellHeight(node->GetItem(), height))
+		{
+			return height;
+		}
+	}
+	return m_UniformLineHeight;
+}
+int KxDataViewMainWindow::GetLineHeightModel(size_t row) const
+{
+	return GetLineHeightModel(GetTreeNodeByRow(row));
+}
+
 size_t KxDataViewMainWindow::GetLineAt(size_t yCoord) const
 {
 	const KxDataViewModel* model = GetModel();
-	if (GetOwner()->HasFlag(KxDV_VARIABLE_ROW_HEIGHT))
+	const bool modelHeight = GetOwner()->HasFlag(KxDV_MODEL_ROW_HEIGHT);
+	const bool variableHeight = GetOwner()->HasFlag(KxDV_VARIABLE_ROW_HEIGHT);
+
+	if (modelHeight || variableHeight)
 	{
 		// TODO: make more efficient
 
@@ -2299,16 +2334,23 @@ size_t KxDataViewMainWindow::GetLineAt(size_t yCoord) const
 			for (size_t currentColumn = 0; currentColumn < columnCount; currentColumn++)
 			{
 				const KxDataViewColumn* column = GetOwner()->GetColumn(currentColumn);
-				if (column->IsShown())
+				if (column->IsExposed())
 				{
 					if ((currentColumn != 0) && model->IsContainer(item) &&	!model->HasContainerColumns(item))
 					{
 						continue;
 					}
 
-					KxDataViewRenderer* renderer = const_cast<KxDataViewRenderer*>(column->GetRenderer());
-					renderer->PrepareItemToDraw(item, KxDATAVIEW_CELL_NONE);
-					height = std::max(height, renderer->GetCellSize().y);
+					if (modelHeight)
+					{
+						height = GetLineHeightModel(node);
+					}
+					else
+					{
+						KxDataViewRenderer* renderer = const_cast<KxDataViewRenderer*>(column->GetRenderer());
+						renderer->PrepareItemToDraw(item, KxDATAVIEW_CELL_NONE);
+						height = std::max(height, renderer->GetCellSize().y);
+					}
 				}
 			}
 
@@ -2320,10 +2362,7 @@ size_t KxDataViewMainWindow::GetLineAt(size_t yCoord) const
 			row++;
 		}
 	}
-	else
-	{
-		return yCoord / m_UniformLineHeight;
-	}
+	return yCoord / m_UniformLineHeight;
 }
 int KxDataViewMainWindow::GetLineWidth() const
 {

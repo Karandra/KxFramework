@@ -14,10 +14,11 @@ enum KxDataViewCtrlStyles: int
 
 	KxDV_ALTERNATING_ROW_COLORS = 1 << 5,
 	KxDV_VARIABLE_ROW_HEIGHT = 1 << 6,
-	KxDV_ITEM_TOOLTIPS = 1 << 7,
-	KxDV_NO_COLUMN_AUTO_SIZE = 1 << 8,
-	KxDV_DOUBLE_CLICK_EXPAND = 1 << 9,
-	KxDV_NO_HOT_TRACK = 1 << 10,
+	KxDV_MODEL_ROW_HEIGHT = 1 << 7,
+	KxDV_ITEM_TOOLTIPS = 1 << 8,
+	KxDV_NO_COLUMN_AUTO_SIZE = 1 << 9,
+	KxDV_DOUBLE_CLICK_EXPAND = 1 << 10,
+	KxDV_NO_HOT_TRACK = 1 << 11,
 };
 constexpr inline KxDataViewCtrlStyles operator|(KxDataViewCtrlStyles v1, KxDataViewCtrlStyles v2)
 {

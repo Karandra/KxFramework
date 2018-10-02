@@ -198,6 +198,12 @@ class KxDataViewModel: public wxRefCounter, private KxDataViewModelNotifier
 			return false;
 		}
 		
+		// When control have 'KxDV_MODEL_ROW_HEIGHT' flags, this function is called to get cell height
+		virtual bool GetCellHeight(const KxDataViewItem& item, int& height) const
+		{
+			return false;
+		}
+
 		// Get value into a 'wxAny'
 		virtual void GetValue(wxAny& value, const KxDataViewItem& item, const KxDataViewColumn* column) const = 0;
 		
@@ -242,6 +248,10 @@ class KxDataViewListModel: public KxDataViewModel
 		}
 		virtual bool SetValueByRow(const wxAny& value, size_t row, const KxDataViewColumn* column) = 0;
 		virtual bool GetItemAttributesByRow(size_t row, const KxDataViewColumn* column, KxDataViewItemAttributes& attribute, KxDataViewCellState cellState) const
+		{
+			return false;
+		}
+		virtual bool GetCellHeightByRow(size_t row, int& height) const
 		{
 			return false;
 		}
@@ -332,6 +342,10 @@ class KxDataViewListModel: public KxDataViewModel
 		virtual bool GetItemAttributes(const KxDataViewItem& item, const KxDataViewColumn* column, KxDataViewItemAttributes& attributes, KxDataViewCellState cellState) const override
 		{
 			return GetItemAttributesByRow(GetRow(item), column, attributes, cellState);
+		}
+		virtual bool GetCellHeight(const KxDataViewItem& item, int& height) const
+		{
+			return GetCellHeight(GetRow(item), height);
 		}
 		virtual bool IsEnabled(const KxDataViewItem& item, const KxDataViewColumn* column) const
 		{
