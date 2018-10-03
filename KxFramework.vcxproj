@@ -228,6 +228,7 @@
     <ClInclude Include="KxFramework\KxComboControl.h" />
     <ClInclude Include="KxFramework\KxComboPopup.h" />
     <ClInclude Include="KxFramework\KxCommandEvent.h" />
+    <ClInclude Include="KxFramework\KxCoroutine.h" />
     <ClInclude Include="KxFramework\KxCredentialsDialog.h" />
     <ClInclude Include="KxFramework\KxCrypto.h" />
     <ClInclude Include="KxFramework\KxCURL.h" />
@@ -444,6 +445,7 @@
     <ClCompile Include="KxFramework\KxComboControl.cpp" />
     <ClCompile Include="KxFramework\KxComboPopup.cpp" />
     <ClCompile Include="KxFramework\KxCommandEvent.cpp" />
+    <ClCompile Include="KxFramework\KxCoroutine.cpp" />
     <ClCompile Include="KxFramework\KxCredentialsDialog.cpp" />
     <ClCompile Include="KxFramework\KxCrypto.cpp" />
     <ClCompile Include="KxFramework\KxCURL.cpp" />

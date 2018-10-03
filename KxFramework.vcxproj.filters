@@ -661,6 +661,9 @@
     <ClInclude Include="KxFramework\KxSharedMemory.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxCoroutine.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1122,6 +1125,9 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxSharedMemory.cpp">
       <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxCoroutine.cpp">
+      <Filter>Source Files\Misc</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
