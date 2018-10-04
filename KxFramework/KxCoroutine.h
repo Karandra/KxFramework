@@ -3,10 +3,12 @@
 #include <utility>
 #include <type_traits>
 class KxCoroutineCallData;
+class KxCoroutineTimer;
 
 class KxCoroutineBase: public wxObject
 {
 	friend class KxCoroutineCallData;
+	friend class KxCoroutineTimer;
 
 	protected:
 		enum class Enumerator
@@ -18,6 +20,7 @@ class KxCoroutineBase: public wxObject
 
 	private:
 		KxCoroutineCallData* m_CallData = NULL;
+		KxCoroutineTimer* m_Timer = NULL;
 		Enumerator m_Enumerator = Enumerator::Continue;
 		uint64_t m_TimeStampStart = 0;
 		uint64_t m_TimeStampBefore = 0;
@@ -45,7 +48,7 @@ class KxCoroutineBase: public wxObject
 			m_CallData = callData;
 		}
 
-		uint64_t GetExecutionTime() const;
+		uint64_t GetCurrentExecutionTime() const;
 
 	protected:
 		virtual Enumerator Execute() = 0;
@@ -54,9 +57,9 @@ class KxCoroutineBase: public wxObject
 		{
 			return m_ShouldStop;
 		}
-		bool ShouldExecuteAfter(uint64_t timeMS) const
+		bool ShouldExecuteAfter() const
 		{
-			return m_ExecuteAfterTimePoint != 0 && timeMS > m_ExecuteAfterTimePoint;
+			return m_ExecuteAfterTimePoint != 0;
 		}
 		bool ShouldExecuteAfterCompletion() const
 		{

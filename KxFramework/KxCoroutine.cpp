@@ -44,6 +44,34 @@ class KxCoroutineCallData: public wxAsyncMethodCallEvent
 			m_Coroutine->AfterExecute();
 		}
 };
+class KxCoroutineTimer: public wxTimer
+{
+	private:
+		KxCoroutineBase* const m_Coroutine = NULL;
+
+	public:
+		KxCoroutineTimer(KxCoroutineBase* coroutine)
+			:m_Coroutine(coroutine)
+		{
+		}
+	
+	public:
+		virtual void Notify() override
+		{
+			KxCoroutineBase::QueueExecution(m_Coroutine->m_CallData);
+		}
+		bool RunTimer(uint64_t time)
+		{
+			// Copy call data as it will be deleted after timer is started
+			m_Coroutine->m_CallData = m_Coroutine->m_CallData->Clone();
+
+			// Setup next call
+			m_Coroutine->m_ExecuteAfterTimePoint = 0;
+			m_Coroutine->m_Enumerator = KxCoroutineBase::Enumerator::Continue;
+
+			return wxTimer::StartOnce(time);
+		}
+};
 
 //////////////////////////////////////////////////////////////////////////
 void KxCoroutineBase::Run(KxCoroutineBase* coroutine)
@@ -67,7 +95,12 @@ void KxCoroutineBase::DelayExecution(KxCoroutineCallData* callData)
 
 void KxCoroutineBase::BeforeExecute()
 {
-	m_TimeStampBefore = GetExecutionTime();
+	if (m_TimeStampStart == 0)
+	{
+		m_TimeStampStart = Util::GetClockTime();
+	}
+
+	m_TimeStampBefore = GetCurrentExecutionTime();
 	if (m_TimeStampAfter == 0)
 	{
 		m_TimeStampAfter = m_TimeStampBefore;
@@ -75,7 +108,7 @@ void KxCoroutineBase::BeforeExecute()
 }
 void KxCoroutineBase::AfterExecute()
 {
-	m_TimeStampAfter = GetExecutionTime();
+	m_TimeStampAfter = GetCurrentExecutionTime();
 }
 void KxCoroutineBase::RunExecute()
 {
@@ -83,14 +116,14 @@ void KxCoroutineBase::RunExecute()
 	{
 		case Enumerator::Wait:
 		{
-			if (ShouldExecuteAfter(m_TimeStampAfter))
+			if (ShouldExecuteAfter())
 			{
-				m_ExecuteAfterTimePoint = 0;
-				break;
-			}
-			if (ShouldExecuteAfterCompletion() && wxApp::GetInstance()->IsScheduledForDestruction(m_ExecuteAfterCoroutine))
-			{
-				NotifyCompletion();
+				if (!m_Timer)
+				{
+					m_Timer = new KxCoroutineTimer(this);
+				}
+				m_Timer->RunTimer(m_ExecuteAfterTimePoint);
+				return;
 			}
 
 			DelayExecution(m_CallData);
@@ -117,17 +150,17 @@ void KxCoroutineBase::NotifyCompletion()
 	QueueExecution(coroutine->m_CallData);
 }
 
-uint64_t KxCoroutineBase::GetExecutionTime() const
+uint64_t KxCoroutineBase::GetCurrentExecutionTime() const
 {
 	return Util::GetClockTime() - m_TimeStampStart;
 }
 
 KxCoroutineBase::KxCoroutineBase()
-	:m_TimeStampStart(Util::GetClockTime())
 {
 }
 KxCoroutineBase::~KxCoroutineBase()
 {
+	delete m_Timer;
 }
 
 uint64_t KxCoroutineBase::GetTimeDeltaMilliseconds() const
@@ -149,6 +182,6 @@ KxCoroutineBase::Enumerator KxCoroutineBase::YieldStop()
 }
 KxCoroutineBase::Enumerator KxCoroutineBase::YieldWaitMilliseconds(uint64_t timeMS)
 {
-	m_ExecuteAfterTimePoint = GetElapsedTimeMilliseconds() + timeMS;
+	m_ExecuteAfterTimePoint = timeMS;
 	return Enumerator::Wait;
 }
