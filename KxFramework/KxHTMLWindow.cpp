@@ -126,6 +126,7 @@ bool KxHTMLWindow::Create(wxWindow* parent,
 		SetBorders(2);
 		DoSetFont(parent->GetFont());
 		CreateContextMenu();
+		SetTextValue(text);
 
 		Bind(wxEVT_CONTEXT_MENU, &KxHTMLWindow::OnContextMenu, this);
 		Bind(wxEVT_KEY_DOWN, &KxHTMLWindow::OnKey, this);
