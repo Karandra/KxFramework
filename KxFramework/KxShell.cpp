@@ -353,7 +353,7 @@ wxIcon KxShell::GetFileIcon(const wxString& path, bool smallIcon)
 	}
 	return wxNullIcon;
 }
-wxIcon KxShell::GetFileIcon(const KxFileFinderItem& item, bool smallIcon)
+wxIcon KxShell::GetFileIcon(const KxFileItem& item, bool smallIcon)
 {
 	SHFILEINFOW shellInfo = {0};
 	::SHGetFileInfoW(item.GetName(), item.GetAttributes(), &shellInfo, sizeof(shellInfo), SHGFI_USEFILEATTRIBUTES|SHGFI_ICON|(smallIcon ? SHGFI_SMALLICON : 0));
