@@ -17,7 +17,7 @@ class KxFileItem
 		wxDateTime m_LastAccessTime;
 		wxDateTime m_ModificationTime;
 		int64_t m_FileSize = -1;
-		intptr_t m_ExtraData = NULL;
+		intptr_t m_ExtraData = -1;
 
 	private:
 		void MakeNull(bool attribuesOnly = false);
@@ -37,7 +37,7 @@ class KxFileItem
 	public:
 		bool IsOK() const
 		{
-			return !m_Source.IsEmpty() && m_Attributes != INVALID_FILE_ATTRIBUTES;
+			return m_Attributes != INVALID_FILE_ATTRIBUTES;
 		}
 
 		template<class T> T GetExtraData() const
