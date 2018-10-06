@@ -12,8 +12,9 @@ template<class T> class KxSingleton
 
 	private:
 		KxSingleton(const KxSingleton&) = delete;
+		KxSingleton(KxSingleton&&) = delete;
 		KxSingleton& operator=(const KxSingleton&) = delete;
-		KxSingleton& operator=(const KxSingleton&&) = delete;
+		KxSingleton& operator=(KxSingleton&&) = delete;
 
 	protected:
 		KxSingleton() = default;
@@ -41,8 +42,9 @@ template<class T> class KxSingletonPtr
 
 	private:
 		KxSingletonPtr(const KxSingletonPtr&) = delete;
+		KxSingletonPtr(KxSingletonPtr&&) = delete;
 		KxSingletonPtr& operator=(const KxSingletonPtr&) = delete;
-		KxSingletonPtr& operator=(const KxSingletonPtr&&) = delete;
+		KxSingletonPtr& operator=(KxSingletonPtr&&) = delete;
 
 	public:
 		KxSingletonPtr()
