@@ -169,6 +169,12 @@
     <Filter Include="Header Files\Misc">
       <UniqueIdentifier>{ce660ee4-5cc9-4fad-b667-b1c3c2924a59}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Archive">
+      <UniqueIdentifier>{061a2532-d388-4a05-857f-5335ebe6db48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Archive">
+      <UniqueIdentifier>{d29cc565-a45c-48d4-9495-c962786927d0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -250,9 +256,6 @@
     <ClInclude Include="KxFramework\KxTopLevelWindow.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxIncludeWindows.h">
-      <Filter>Header Files\General</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxRTTI.h">
       <Filter>Header Files\General</Filter>
     </ClInclude>
@@ -263,9 +266,6 @@
       <Filter>Header Files\General</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxUtility.h">
-      <Filter>Header Files\General</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxWinUndef.h">
       <Filter>Header Files\General</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxFrame.h">
@@ -662,6 +662,27 @@
       <Filter>Header Files\System</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxCoroutine.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxFileItem.h">
+      <Filter>Header Files\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxIFileFinder.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxIArchive.h">
+      <Filter>Header Files\Archive</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxArchiveFileFinder.h">
+      <Filter>Header Files\Archive</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxWinUndef.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxIncludeWindows.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxComparator.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1128,6 +1149,18 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxCoroutine.cpp">
       <Filter>Source Files\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxFileItem.cpp">
+      <Filter>Source Files\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxIFileFinder.cpp">
+      <Filter>Source Files\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxArchiveFileFinder.cpp">
+      <Filter>Source Files\Archive</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxIArchive.cpp">
+      <Filter>Source Files\Archive</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

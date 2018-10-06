@@ -211,6 +211,7 @@
     <ClInclude Include="KxFramework\INI\SimpleINI.h" />
     <ClInclude Include="KxFramework\KxApp.h" />
     <ClInclude Include="KxFramework\KxArchiveEvent.h" />
+    <ClInclude Include="KxFramework\KxArchiveFileFinder.h" />
     <ClInclude Include="KxFramework\KxAuiNotebook.h" />
     <ClInclude Include="KxFramework\KxAuiToolBar.h" />
     <ClInclude Include="KxFramework\KxAuiToolBarEvent.h" />
@@ -228,6 +229,7 @@
     <ClInclude Include="KxFramework\KxComboControl.h" />
     <ClInclude Include="KxFramework\KxComboPopup.h" />
     <ClInclude Include="KxFramework\KxCommandEvent.h" />
+    <ClInclude Include="KxFramework\KxComparator.h" />
     <ClInclude Include="KxFramework\KxCoroutine.h" />
     <ClInclude Include="KxFramework\KxCredentialsDialog.h" />
     <ClInclude Include="KxFramework\KxCrypto.h" />
@@ -263,6 +265,7 @@
     <ClInclude Include="KxFramework\KxFile.h" />
     <ClInclude Include="KxFramework\KxFileBrowseDialog.h" />
     <ClInclude Include="KxFramework\KxFileFinder.h" />
+    <ClInclude Include="KxFramework\KxFileItem.h" />
     <ClInclude Include="KxFramework\KxFileOperationEvent.h" />
     <ClInclude Include="KxFramework\KxFileStream.h" />
     <ClInclude Include="KxFramework\KxFormat.h" />
@@ -271,6 +274,8 @@
     <ClInclude Include="KxFramework\KxGraphicsContext.h" />
     <ClInclude Include="KxFramework\KxHTML.h" />
     <ClInclude Include="KxFramework\KxHTMLWindow.h" />
+    <ClInclude Include="KxFramework\KxIArchive.h" />
+    <ClInclude Include="KxFramework\KxIFileFinder.h" />
     <ClInclude Include="KxFramework\KxImageList.h" />
     <ClInclude Include="KxFramework\KxImageSet.h" />
     <ClInclude Include="KxFramework\KxImageView.h" />
@@ -429,6 +434,7 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxApp.cpp" />
     <ClCompile Include="KxFramework\KxArchiveEvent.cpp" />
+    <ClCompile Include="KxFramework\KxArchiveFileFinder.cpp" />
     <ClCompile Include="KxFramework\KxAuiNotebook.cpp" />
     <ClCompile Include="KxFramework\KxAuiToolBar.cpp" />
     <ClCompile Include="KxFramework\KxAuiToolBarEvent.cpp" />
@@ -479,6 +485,7 @@
     <ClCompile Include="KxFramework\KxFile.cpp" />
     <ClCompile Include="KxFramework\KxFileBrowseDialog.cpp" />
     <ClCompile Include="KxFramework\KxFileFinder.cpp" />
+    <ClCompile Include="KxFramework\KxFileItem.cpp" />
     <ClCompile Include="KxFramework\KxFileOperationEvent.cpp" />
     <ClCompile Include="KxFramework\KxFileStream.cpp" />
     <ClCompile Include="KxFramework\KxFormat.cpp" />
@@ -493,6 +500,8 @@
       </DisableSpecificWarnings>
     </ClCompile>
     <ClCompile Include="KxFramework\KxHTMLWindow.cpp" />
+    <ClCompile Include="KxFramework\KxIArchive.cpp" />
+    <ClCompile Include="KxFramework\KxIFileFinder.cpp" />
     <ClCompile Include="KxFramework\KxImageList.cpp" />
     <ClCompile Include="KxFramework\KxImageSet.cpp" />
     <ClCompile Include="KxFramework\KxImageView.cpp" />
