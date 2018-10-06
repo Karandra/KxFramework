@@ -28,3 +28,5 @@
 #undef CreateProcess
 #undef EnumProcesses
 #undef GetUserName
+#undef FindFirstFile
+#undef FindNextFile
