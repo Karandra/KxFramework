@@ -9,19 +9,210 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include <Shlwapi.h>
 #include "KxWinUndef.h"
 
+namespace
+{
+	char CharMakeLower(char c)
+	{
+		#pragma warning(suppress: 4312)
+		#pragma warning(suppress: 4302)
+		return reinterpret_cast<char>(::CharLowerA(reinterpret_cast<LPSTR>(c)));
+	}
+	char CharMakeUpper(char c)
+	{
+		#pragma warning(suppress: 4312)
+		#pragma warning(suppress: 4302)
+		return reinterpret_cast<char>(::CharLowerA(reinterpret_cast<LPSTR>(c)));
+	}
+	wchar_t CharMakeLower(wchar_t c)
+	{
+		#pragma warning(suppress: 4312)
+		#pragma warning(suppress: 4302)
+		return reinterpret_cast<wchar_t>(::CharLowerW(reinterpret_cast<LPWSTR>(c)));
+	}
+	wchar_t CharMakeUpper(wchar_t c)
+	{
+		#pragma warning(suppress: 4312)
+		#pragma warning(suppress: 4302)
+		return reinterpret_cast<wchar_t>(::CharLowerW(reinterpret_cast<LPWSTR>(c)));
+	}
+
+	// Check whether Name matches Expression
+	// Expression can contain "?"(any one character) and "*" (any string)
+	// when IgnoreCase is true, do case insensitive matching
+	//
+	// http://msdn.microsoft.com/en-us/library/ff546850(v=VS.85).aspx
+	// * (asterisk) Matches zero or more characters.
+	// ? (question mark) Matches a single character.
+
+	// DOS_DOT Matches either a period or zero characters beyond the name string.
+	// DOS_QM Matches any single character or, upon encountering a period or end
+	//        of name string, advances the expression to the end of the set of
+	//        contiguous DOS_QMs.
+	// DOS_STAR Matches zero or more characters until encountering and matching
+	//          the final . in the name.
+	template<class T> bool IsNameInExpressionT(const T* nameStr,
+											   const T* expressionStr,
+											   bool ignoreCase,
+											   const T dotChar,
+											   const T starChar,
+											   const T questionChar,
+											   const T DOS_STAR,
+											   const T DOS_QM,
+											   const T DOS_DOT
+	)
+	{
+		constexpr const T ZeroChar = T();
+
+		size_t expressionIndex = 0;
+		size_t nameIndex = 0;
+
+		if ((!expressionStr || !expressionStr[0]) && (!nameStr || !nameStr[0]))
+		{
+			return true;
+		}
+
+		if (!expressionStr || !nameStr || !expressionStr[0] || !nameStr[0])
+		{
+
+			return false;
+		}
+
+		while (expressionStr[expressionIndex] && nameStr[nameIndex])
+		{
+
+			if (expressionStr[expressionIndex] == starChar)
+			{
+				expressionIndex++;
+				if (expressionStr[expressionIndex] == ZeroChar)
+				{
+					return true;
+				}
+
+				while (nameStr[nameIndex] != ZeroChar)
+				{
+
+					if (IsNameInExpressionT(&expressionStr[expressionIndex], &nameStr[nameIndex], ignoreCase, dotChar, starChar, questionChar, DOS_STAR, DOS_QM, DOS_DOT))
+					{
+						return true;
+					}
+					nameIndex++;
+				}
+			}
+			else if (expressionStr[expressionIndex] == DOS_STAR)
+			{
+				size_t position = nameIndex;
+				size_t lastDot = 0;
+				expressionIndex++;
+
+				while (nameStr[position] != ZeroChar)
+				{
+					if (nameStr[position] == dotChar)
+					{
+						lastDot = position;
+					}
+					position++;
+				}
+
+				bool endReached = false;
+
+				while (!endReached)
+				{
+					endReached = (nameStr[nameIndex] == ZeroChar || nameIndex == lastDot);
+					if (!endReached)
+					{
+						if (IsNameInExpressionT(&expressionStr[expressionIndex], &nameStr[nameIndex], ignoreCase, dotChar, starChar, questionChar, DOS_STAR, DOS_QM, DOS_DOT))
+						{
+							return true;
+						}
+						nameIndex++;
+					}
+				}
+			}
+			else if (expressionStr[expressionIndex] == DOS_QM)
+			{
+				expressionIndex++;
+				if (nameStr[nameIndex] != dotChar)
+				{
+					nameIndex++;
+				}
+				else
+				{
+					size_t position = nameIndex + 1;
+					while (nameStr[position] != ZeroChar)
+					{
+						if (nameStr[position] == dotChar)
+						{
+							break;
+						}
+						position++;
+					}
+
+					if (nameStr[position] == dotChar)
+					{
+						nameIndex++;
+					}
+				}
+			}
+			else if (expressionStr[expressionIndex] == DOS_DOT)
+			{
+				expressionIndex++;
+				if (nameStr[nameIndex] == dotChar)
+				{
+					nameIndex++;
+				}
+			}
+			else
+			{
+				if (expressionStr[expressionIndex] == questionChar || (ignoreCase && CharMakeUpper(expressionStr[expressionIndex]) == CharMakeUpper(nameStr[nameIndex])) || (!ignoreCase && expressionStr[expressionIndex] == nameStr[nameIndex]))
+				{
+					expressionIndex++;
+					nameIndex++;
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
+
+		return !expressionStr[expressionIndex] && !nameStr[nameIndex] ? true : false;
+	}
+
+	bool IsNameInExpression(const wchar_t* nameStr, const wchar_t* expressionStr, bool ignoreCase)
+	{
+		const wchar_t DOS_STAR = L'<';
+		const wchar_t DOS_QM = L'>';
+		const wchar_t DOS_DOT = L'"';
+
+		const wchar_t dotChar = L'.';
+		const wchar_t starChar = L'*';
+		const wchar_t questionChar = L'?';
+
+		return IsNameInExpressionT(nameStr, expressionStr, ignoreCase, dotChar, starChar, questionChar, DOS_STAR, DOS_QM, DOS_DOT);
+	}
+	bool IsNameInExpression(const char* nameStr, const char* expressionStr, bool ignoreCase)
+	{
+		const char DOS_STAR = L'<';
+		const char DOS_QM = L'>';
+		const char DOS_DOT = L'"';
+
+		const char dotChar = L'.';
+		const char starChar = L'*';
+		const char questionChar = L'?';
+
+		return IsNameInExpressionT(nameStr, expressionStr, ignoreCase, dotChar, starChar, questionChar, DOS_STAR, DOS_QM, DOS_DOT);
+	}
+}
+
 /* Upper/Lower */
 wxUniChar& KxString::MakeLower(wxUniChar& c)
 {
-	#pragma warning(suppress: 4312)
-	#pragma warning(suppress: 4302)
-	c = reinterpret_cast<wchar_t>(::CharLowerW(reinterpret_cast<LPWSTR>(c.GetValue())));
+	c = CharMakeLower(static_cast<wchar_t>(c.GetValue()));
 	return c;
 }
 wxUniChar& KxString::MakeUpper(wxUniChar& c)
 {
-	#pragma warning(suppress: 4312)
-	#pragma warning(suppress: 4302)
-	c = reinterpret_cast<wchar_t>(::CharUpperW(reinterpret_cast<LPWSTR>(c.GetValue())));
+	c = CharMakeUpper(static_cast<wchar_t>(c.GetValue()));
 	return c;
 }
 
@@ -47,6 +238,29 @@ wxString& KxString::MakeCapitalized(wxString& s, bool fistCharOnly)
 		s[0] = ToUpper(s[0]);
 	}
 	return s;
+}
+
+/* Match and compare */
+KxString::CompareResult KxString::Compare(const std::wstring_view& v1, const std::wstring_view& v2, bool ignoreCase)
+{
+	return (CompareResult)::CompareStringOrdinal(v1.data(), v1.length(), v2.data(), v2.length(), ignoreCase);
+}
+KxString::CompareResult KxString::Compare(const wxString& v1, const wxString& v2, bool ignoreCase)
+{
+	return (CompareResult)::CompareStringOrdinal(v1.wc_str(), v1.length(), v2.wc_str(), v2.length(), ignoreCase);
+}
+
+bool KxString::Matches(const std::string_view& string, const std::string_view& mask, bool ignoreCase)
+{
+	return IsNameInExpression(string.data(), mask.data(), ignoreCase);
+}
+bool KxString::Matches(const std::wstring_view& string, const std::wstring_view& mask, bool ignoreCase)
+{
+	return IsNameInExpression(string.data(), mask.data(), ignoreCase);
+}
+bool KxString::Matches(const wxString& string, const wxString& mask, bool ignoreCase)
+{
+	return IsNameInExpression(string.wc_str(), mask.wc_str(), ignoreCase);
 }
 
 /* Split */

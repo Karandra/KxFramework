@@ -9,6 +9,15 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 
 class KxString
 {
+	public:
+		// There values correspond to 'CompareStringOrdinal' results
+		enum CompareResult
+		{
+			LessThan = 1,
+			Equal = 2,
+			GreaterThan = 3
+		};
+
 	private:
 		KxString() = delete;
 		KxString& operator=(KxString&) = delete;
@@ -62,6 +71,14 @@ class KxString
 			MakeCapitalized(temp);
 			return temp;
 		}
+
+		/* Match and compare */
+		static CompareResult Compare(const std::wstring_view& v1, const std::wstring_view& v2, bool ignoreCase = true);
+		static CompareResult Compare(const wxString& v1, const wxString& v2, bool ignoreCase = true);
+
+		static bool Matches(const std::string_view& string, const std::string_view& mask, bool ignoreCase = true);
+		static bool Matches(const std::wstring_view& string, const std::wstring_view& mask, bool ignoreCase = true);
+		static bool Matches(const wxString& string, const wxString& mask, bool ignoreCase = true);
 
 		/* Split */
 		static KxStringVector Split(const wxString& source, size_t partLength, bool allowEmpty = false);
