@@ -14,6 +14,9 @@ namespace KxIArchiveNS
 class KxIArchive
 {
 	public:
+		virtual ~KxIArchive() = default;
+
+	public:
 		virtual bool IsOK() const = 0;
 		virtual bool Open(const wxString& filePath) = 0;
 		virtual void Close() = 0;
@@ -30,6 +33,9 @@ class KxIArchive
 class KxIArchiveSearch
 {
 	public:
+		virtual ~KxIArchiveSearch() = default;
+
+	public:
 		virtual void* FindFirstFile(const wxString& searchQuery, KxFileItem& fileItem) const = 0;
 		virtual bool FindNextFile(void* handle, KxFileItem& item) const = 0;
 		virtual void FindClose(void* handle) const = 0;
@@ -41,6 +47,9 @@ class KxIArchiveSearch
 //////////////////////////////////////////////////////////////////////////
 class KxIArchiveExtraction
 {
+	public:
+		virtual ~KxIArchiveExtraction() = default;
+
 	protected:
 		virtual bool DoExtractAll(const wxString& directory) const = 0;
 		virtual bool DoExtractToDirectory(const KxIArchiveNS::IndexVector& indexes, const wxString& directory) const = 0;
@@ -81,6 +90,9 @@ class KxIArchiveExtraction
 //////////////////////////////////////////////////////////////////////////
 class KxIArchiveCompression
 {
+	public:
+		virtual ~KxIArchiveCompression() = default;
+
 	protected:
 		virtual bool DoCompressFiles(const wxString& directory, const wxString& searchFilter, bool recursive) = 0;
 		virtual bool DoCompressDirectory(const wxString& directory, bool recursive) = 0;
@@ -128,6 +140,9 @@ class KxIArchiveCompression
 template<class t_BoolProperties> class KxIArchivePropertiesBool
 {
 	public:
+		virtual ~KxIArchivePropertiesBool() = default;
+
+	public:
 		using BoolProperties = t_BoolProperties;
 		using BoolPropertiesValue = bool;
 
@@ -139,6 +154,9 @@ template<class t_BoolProperties> class KxIArchivePropertiesBool
 template<class t_IntProperties, class t_IntType = int> class KxIArchivePropertiesInt
 {
 	public:
+		virtual ~KxIArchivePropertiesInt() = default;
+
+	public:
 		using IntProperties = t_IntProperties;
 		using IntPropertiesValue = t_IntType;
 
@@ -149,6 +167,9 @@ template<class t_IntProperties, class t_IntType = int> class KxIArchivePropertie
 
 template<class t_StringProperties> class KxIArchivePropertiesString
 {
+	public:
+		virtual ~KxIArchivePropertiesString() = default;
+
 	public:
 		using StringProperties = t_StringProperties;
 		using StringPropertiesValue = wxString;
