@@ -31,9 +31,12 @@ KxArchiveFileFinder::KxArchiveFileFinder(const KxIArchiveSearch& archive, const 
 	m_EvtHandler(eventHandler)
 {
 }
-
 KxArchiveFileFinder::~KxArchiveFileFinder()
 {
+	if (m_Archive && m_Handle)
+	{
+		m_Archive->FindClose(m_Handle);
+	}
 }
 
 bool KxArchiveFileFinder::IsOK() const
