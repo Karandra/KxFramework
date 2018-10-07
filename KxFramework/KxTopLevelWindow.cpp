@@ -19,24 +19,24 @@ bool KxTLWInternal::DWMIsCompositionEnabled()
 }
 bool KxTLWInternal::DWMIsGlassOpaque()
 {
-	DWORD nDwmColor = 0;
-	BOOL bOpaqueColor = FALSE;
+	DWORD dwmColor = 0;
+	BOOL isOpaqueColor = FALSE;
 	if (KxSystemAPI::DwmGetColorizationColor)
 	{
-		KxSystemAPI::DwmGetColorizationColor(&nDwmColor, &bOpaqueColor);
+		KxSystemAPI::DwmGetColorizationColor(&dwmColor, &isOpaqueColor);
 	}
-	return bOpaqueColor;
+	return isOpaqueColor;
 }
 KxColor KxTLWInternal::DWMGetGlassColor()
 {
 	KxColor color;
 	if (KxSystemAPI::DwmGetColorizationColor)
 	{
-		DWORD nDwmColor = 0;
-		BOOL bOpaqueColor = FALSE;
-		KxSystemAPI::DwmGetColorizationColor(&nDwmColor, &bOpaqueColor);
+		DWORD dwmColor = 0;
+		BOOL isOpaqueColor = FALSE;
+		KxSystemAPI::DwmGetColorizationColor(&dwmColor, &isOpaqueColor);
 
-		color.SetARGB(nDwmColor);
+		color.SetARGB(dwmColor);
 	}
 	return color;
 }
