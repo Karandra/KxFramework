@@ -80,7 +80,7 @@ KxFileFinder::~KxFileFinder()
 	// If sequential search is not completed, close the handle here
 	if (m_Handle != INVALID_HANDLE_VALUE)
 	{
-		::FindClose(m_Handle);
+		CallFindClose(m_Handle);
 	}
 }
 
