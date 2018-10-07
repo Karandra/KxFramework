@@ -19,7 +19,7 @@ class KxLabel: public wxSystemThemedControl<wxStaticText>
 		static const int MinSingleLineHeight = 23;
 
 	private:
-		wxEvtHandler m_EvtHandler;
+		wxEvtHandler* m_EvtHandler = NULL;
 		wxString m_Label;
 		wxBitmap m_Icon = wxNullBitmap;
 		wxBitmap m_IconDisabled = wxNullBitmap;
@@ -107,10 +107,7 @@ class KxLabel: public wxSystemThemedControl<wxStaticText>
 					const wxString& label,
 					long style = DefaultStyle
 		);
-		virtual ~KxLabel()
-		{
-
-		}
+		virtual ~KxLabel();
 
 	public:
 		virtual long GetWindowStyleFlag() const override

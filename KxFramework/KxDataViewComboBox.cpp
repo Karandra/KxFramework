@@ -170,14 +170,16 @@ bool KxDataViewComboBox::Create(wxWindow* window)
 		m_Sizer->Add(this, 1, wxEXPAND);
 
 		// DataView events
-		PushEventHandler(&m_EvtHandler_DataView);
-		m_EvtHandler_DataView.Bind(KxEVT_DATAVIEW_ITEM_SELECTED, &KxDataViewComboBox::OnSelectItem, this);
+		m_EvtHandler_DataView = new wxEvtHandler();
+		m_EvtHandler_DataView->Bind(KxEVT_DATAVIEW_ITEM_SELECTED, &KxDataViewComboBox::OnSelectItem, this);
+		PushEventHandler(m_EvtHandler_DataView);
 
 		// ComboCtrl Events
 		if (!IsOptionEnabled(KxDVCB_OPTION_ALT_POPUP_WINDOW))
 		{
-			m_ComboCtrl->PushEventHandler(&m_EvtHandler_ComboCtrl);
-			m_EvtHandler_ComboCtrl.Bind(wxEVT_MOUSEWHEEL, &KxDataViewComboBox::OnScroll, this);
+			m_EvtHandler_ComboCtrl = new wxEvtHandler();
+			m_EvtHandler_ComboCtrl->Bind(wxEVT_MOUSEWHEEL, &KxDataViewComboBox::OnScroll, this);
+			m_ComboCtrl->PushEventHandler(m_EvtHandler_ComboCtrl);
 		}
 		return true;
 	}
@@ -201,6 +203,17 @@ bool KxDataViewComboBox::Create(wxWindow* parent,
 		return true;
 	}
 	return false;
+}
+KxDataViewComboBox::~KxDataViewComboBox()
+{
+	if (m_EvtHandler_ComboCtrl)
+	{
+		m_EvtHandler_ComboCtrl = PopEventHandler(true);
+	}
+	if (m_EvtHandler_DataView)
+	{
+		m_EvtHandler_DataView = PopEventHandler(true);
+	}
 }
 
 wxWindow* KxDataViewComboBox::GetControl()

@@ -30,8 +30,8 @@ class KxDataViewComboBox:
 		wxBoxSizer* m_Sizer = NULL;
 
 		KxComboControl* m_ComboCtrl = NULL;
-		wxEvtHandler m_EvtHandler_DataView;
-		wxEvtHandler m_EvtHandler_ComboCtrl;
+		wxEvtHandler* m_EvtHandler_DataView = NULL;
+		wxEvtHandler* m_EvtHandler_ComboCtrl = NULL;
 		KxDataViewItem m_Selection;
 		bool m_PopupWinEvtHandlerPushed = false;
 		int m_MaxVisibleItems = -1;
@@ -69,6 +69,7 @@ class KxDataViewComboBox:
 					long style = DefaultStyle,
 					const wxValidator& validator = wxDefaultValidator
 		);
+		virtual ~KxDataViewComboBox();
 
 	public:
 		 virtual wxWindow* GetControl() override;

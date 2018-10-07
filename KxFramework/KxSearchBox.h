@@ -4,7 +4,7 @@
 class KxSearchBox: public wxSearchCtrl
 {
 	private:
-		wxEvtHandler m_EvtHandler;
+		wxEvtHandler* m_EvtHandler = NULL;
 		wxString m_Value;
 
 	private:
@@ -33,6 +33,7 @@ class KxSearchBox: public wxSearchCtrl
 					long style = DefaultStyle,
 					const wxValidator& validator = wxDefaultValidator
 		);
+		virtual ~KxSearchBox();
 
 	public:
 		wxDECLARE_DYNAMIC_CLASS(KxTextBox);

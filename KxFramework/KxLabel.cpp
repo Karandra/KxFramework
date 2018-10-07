@@ -206,15 +206,23 @@ bool KxLabel::Create(wxWindow* parent,
 		m_BestSize = CalcBestSize();
 
 		// Events
-		m_EvtHandler.Bind(wxEVT_PAINT, &KxLabel::OnPaint, this);
-		m_EvtHandler.Bind(wxEVT_ENTER_WINDOW, &KxLabel::OnEnter, this);
-		m_EvtHandler.Bind(wxEVT_LEAVE_WINDOW, &KxLabel::OnLeave, this);
-		m_EvtHandler.Bind(wxEVT_LEFT_DOWN, &KxLabel::OnMouseDown, this);
-		m_EvtHandler.Bind(wxEVT_LEFT_UP, &KxLabel::OnMouseUp, this);
-		PushEventHandler(&m_EvtHandler);
+		m_EvtHandler = new wxEvtHandler();
+		m_EvtHandler->Bind(wxEVT_PAINT, &KxLabel::OnPaint, this);
+		m_EvtHandler->Bind(wxEVT_ENTER_WINDOW, &KxLabel::OnEnter, this);
+		m_EvtHandler->Bind(wxEVT_LEAVE_WINDOW, &KxLabel::OnLeave, this);
+		m_EvtHandler->Bind(wxEVT_LEFT_DOWN, &KxLabel::OnMouseDown, this);
+		m_EvtHandler->Bind(wxEVT_LEFT_UP, &KxLabel::OnMouseUp, this);
+		PushEventHandler(m_EvtHandler);
 		return true;
 	}
 	return false;
+}
+KxLabel::~KxLabel()
+{
+	if (m_EvtHandler)
+	{
+		m_EvtHandler = PopEventHandler(true);
+	}
 }
 
 void KxLabel::SetBitmap(const wxBitmap& image)
