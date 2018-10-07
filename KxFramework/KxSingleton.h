@@ -24,20 +24,16 @@ template<class T> class KxSingleton
 template<class T> class KxSingletonPtr
 {
 	private:
-		static T*& GetInstanceStore()
-		{
-			static T* ms_Instance = NULL;
-			return ms_Instance;
-		}
+		static inline T* ms_Instance = NULL;
 
 	public:
 		static bool HasInstance()
 		{
-			return GetInstanceStore() != NULL;
+			return ms_Instance != NULL;
 		}
 		static T* GetInstance()
 		{
-			return GetInstanceStore();
+			return ms_Instance;
 		}
 
 	private:
@@ -49,9 +45,9 @@ template<class T> class KxSingletonPtr
 	public:
 		KxSingletonPtr()
 		{
-			if (!HasInstance())
+			if (ms_Instance == NULL)
 			{
-				GetInstanceStore() = static_cast<T*>(this);
+				ms_Instance = static_cast<T*>(this);
 			}
 			else
 			{
@@ -60,6 +56,6 @@ template<class T> class KxSingletonPtr
 		}
 		virtual ~KxSingletonPtr()
 		{
-			GetInstanceStore() = NULL;
+			ms_Instance = NULL;
 		}
 };
