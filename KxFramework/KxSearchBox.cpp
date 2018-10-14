@@ -54,20 +54,16 @@ bool KxSearchBox::Create(wxWindow* parent,
 		SetDescriptiveText(KxTranslation::GetCurrent().GetString(KxID_SEARCH));
 		Refresh();
 
-		m_EvtHandler = new wxEvtHandler();
-		m_EvtHandler->Bind(wxEVT_TEXT, &KxSearchBox::OnText, this);
-		m_EvtHandler->Bind(wxEVT_TEXT_ENTER, &KxSearchBox::OnEnter, this);
-		m_EvtHandler->Bind(wxEVT_KILL_FOCUS, &KxSearchBox::OnKillFocus, this);
-		m_EvtHandler->Bind(wxEVT_SEARCHCTRL_CANCEL_BTN, &KxSearchBox::OnCancelSearch, this);
-		PushEventHandler(m_EvtHandler);
+		m_EvtHandler.Bind(wxEVT_TEXT, &KxSearchBox::OnText, this);
+		m_EvtHandler.Bind(wxEVT_TEXT_ENTER, &KxSearchBox::OnEnter, this);
+		m_EvtHandler.Bind(wxEVT_KILL_FOCUS, &KxSearchBox::OnKillFocus, this);
+		m_EvtHandler.Bind(wxEVT_SEARCHCTRL_CANCEL_BTN, &KxSearchBox::OnCancelSearch, this);
+		PushEventHandler(&m_EvtHandler);
 		return false;
 	}
 	return true;
 }
 KxSearchBox::~KxSearchBox()
 {
-	if (m_EvtHandler)
-	{
-		m_EvtHandler = PopEventHandler(true);
-	}
+	PopEventHandler();
 }

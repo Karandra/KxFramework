@@ -19,7 +19,7 @@ class KxLabel: public wxSystemThemedControl<wxStaticText>
 		static const int MinSingleLineHeight = 23;
 
 	private:
-		wxEvtHandler* m_EvtHandler = NULL;
+		wxEvtHandler m_EvtHandler;
 		wxString m_Label;
 		wxBitmap m_Icon = wxNullBitmap;
 		wxBitmap m_IconDisabled = wxNullBitmap;

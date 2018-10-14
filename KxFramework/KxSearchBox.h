@@ -4,7 +4,7 @@
 class KxSearchBox: public wxSearchCtrl
 {
 	private:
-		wxEvtHandler* m_EvtHandler = NULL;
+		wxEvtHandler m_EvtHandler;
 		wxString m_Value;
 
 	private:

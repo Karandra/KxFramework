@@ -5,7 +5,7 @@
 class KxCollapsiblePane: public wxCollapsiblePane
 {
 	private:
-		wxEvtHandler* m_EvtHandler = NULL;
+		wxEvtHandler m_EvtHandler;
 
 	private:
 		void OnCollapsedExpanded(wxCollapsiblePaneEvent& event);

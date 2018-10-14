@@ -35,17 +35,13 @@ bool KxCollapsiblePane::Create(wxWindow* parent,
 			}
 		}
 
-		m_EvtHandler = new wxEvtHandler();
-		m_EvtHandler->Bind(wxEVT_COLLAPSIBLEPANE_CHANGED, &KxCollapsiblePane::OnCollapsedExpanded, this);
-		PushEventHandler(m_EvtHandler);
+		m_EvtHandler.Bind(wxEVT_COLLAPSIBLEPANE_CHANGED, &KxCollapsiblePane::OnCollapsedExpanded, this);
+		PushEventHandler(&m_EvtHandler);
 		return true;
 	}
 	return false;
 }
 KxCollapsiblePane::~KxCollapsiblePane()
 {
-	if (m_EvtHandler)
-	{
-		m_EvtHandler = PopEventHandler(true);
-	}
+	PopEventHandler();
 }

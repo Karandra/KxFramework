@@ -30,8 +30,8 @@ class KxDataViewComboBox:
 		wxBoxSizer* m_Sizer = NULL;
 
 		KxComboControl* m_ComboCtrl = NULL;
-		wxEvtHandler* m_EvtHandler_DataView = NULL;
-		wxEvtHandler* m_EvtHandler_ComboCtrl = NULL;
+		wxEvtHandler m_EvtHandler_DataView;
+		wxEvtHandler m_EvtHandler_ComboCtrl;
 		KxDataViewItem m_Selection;
 		bool m_PopupWinEvtHandlerPushed = false;
 		int m_MaxVisibleItems = -1;
