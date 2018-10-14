@@ -25,28 +25,26 @@ class KxCoroutineBase: public wxObject
 		uint64_t m_TimeStampStart = 0;
 		uint64_t m_TimeStampBefore = 0;
 		uint64_t m_TimeStampAfter = 0;
-
 		bool m_ShouldStop = false;
-		uint64_t m_ExecuteAfterTimePoint = 0;
-		KxCoroutineBase* m_ExecuteAfterCoroutine = NULL;
+
+		uint64_t m_ExecuteAfterTimeInterval = 0;
 
 	public:
 		static void Run(KxCoroutineBase* coroutine);
 		static void Stop(KxCoroutineBase* coroutine);
 
 	private:
-		static void QueueExecution(KxCoroutineCallData* callData);
-		static void DelayExecution(KxCoroutineCallData* callData);
+		void QueueExecution();
+		void DelayExecution();
+		void DelayExecution(uint64_t timeMS);
 
 	private:
 		void BeforeExecute();
 		void AfterExecute();
 		void RunExecute();
-		void NotifyCompletion();
-		void UpdateCallData(KxCoroutineCallData* callData)
-		{
-			m_CallData = callData;
-		}
+
+		void UpdateCallData(KxCoroutineCallData* callData);
+		void CloneCallData();
 
 		uint64_t GetCurrentExecutionTime() const;
 
@@ -59,15 +57,7 @@ class KxCoroutineBase: public wxObject
 		}
 		bool ShouldExecuteAfter() const
 		{
-			return m_ExecuteAfterTimePoint != 0;
-		}
-		bool ShouldExecuteAfterCompletion() const
-		{
-			return m_ExecuteAfterCoroutine != NULL;
-		}
-		bool ShouldNotifyCompletion() const
-		{
-			return m_ExecuteAfterCoroutine != NULL;
+			return m_ExecuteAfterTimeInterval != 0;
 		}
 
 	public:
@@ -89,15 +79,6 @@ class KxCoroutineBase: public wxObject
 
 		Enumerator Yield();
 		Enumerator YieldStop();
-
-		#if 0
-		Enumerator YieldWaitForCoroutine(KxCoroutineBase& coroutine)
-		{
-			m_ExecuteAfterCoroutine = &coroutine;
-			return Enumerator::Wait;
-		}
-		#endif
-
 		Enumerator YieldWaitMilliseconds(uint64_t timeMS);
 		Enumerator YieldWaitSeconds(double timeSec)
 		{
@@ -136,15 +117,15 @@ class KxCoroutine: public KxCoroutineBase
 			KxCoroutineBase::Run(coroutine);
 			return coroutine;
 		}
-		template<class T> static KxCoroutineFunctor<T>* Run(const T& coroutine)
+		template<class T> static KxCoroutineBase* Run(const T& coroutine)
 		{
-			auto functor = new KxCoroutineFunctor<T>(coroutine);
+			KxCoroutineBase* functor = new KxCoroutineFunctor<T>(coroutine);
 			KxCoroutineBase::Run(functor);
 			return functor;
 		}
-		template<class T> static KxCoroutineFunctor<T>* Run(T&& coroutine)
+		template<class T> static KxCoroutineBase* Run(T&& coroutine)
 		{
-			auto functor = new KxCoroutineFunctor<T>(std::move(coroutine));
+			KxCoroutineBase* functor = new KxCoroutineFunctor<T>(std::move(coroutine));
 			KxCoroutineBase::Run(functor);
 			return functor;
 		}
