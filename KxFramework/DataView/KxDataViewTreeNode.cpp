@@ -129,23 +129,6 @@ void KxDataViewTreeNode::Resort(bool noRecurse)
 				}
 			}
 		}
-
-		#if 0
-		if ((g_column = m_window->GetSortColumn()) >= -1)
-		{
-			wxDataViewTreeNodes& nodes = m_branchData->children;
-
-			g_model = m_window->GetModel();
-			g_asending = m_window->IsAscendingSort();
-			nodes.Sort(&wxGenericTreeModelNodeCmp);
-			int len = nodes.GetItemCount();
-			for (int i = 0; i < len; i++)
-			{
-				if (nodes[i]->HasChildren())
-					nodes[i]->Resort();
-			}
-		}
-		#endif
 	}
 }
 
