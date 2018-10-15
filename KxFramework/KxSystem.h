@@ -85,6 +85,10 @@ class KxSystem
 		static DWORD GetLastError();
 		static wxString GetErrorMessage(DWORD messageID, DWORD langID = 0);
 
+		static wxString GetEnvironmentVariable(const wxString& name);
+		static bool SetEnvironmentVariable(const wxString& name, const wxString& value);
+		static KxStringToStringUMap GetEnvironmentVariables();
+
 		static bool IsWindowsServer();
 		static bool IsWindowsVersionOrGreater(int majorVersion, int minorVersion, int servicePackMajor = -1);
 		static bool IsWindows10OrGreater()

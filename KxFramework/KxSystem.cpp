@@ -325,6 +325,32 @@ wxString KxSystem::GetErrorMessage(DWORD messageID, DWORD langID)
 	return string;
 }
 
+wxString KxSystem::GetEnvironmentVariable(const wxString& name)
+{
+	DWORD length = ::GetEnvironmentVariableW(name, NULL, 0);
+	if (length != 0)
+	{
+		wxString out;
+		::GetEnvironmentVariableW(name, wxStringBuffer(out, length), length);
+		return out;
+	}
+	return wxEmptyString;
+}
+bool KxSystem::SetEnvironmentVariable(const wxString& name, const wxString& value)
+{
+	return ::SetEnvironmentVariableW(name, value);
+}
+KxStringToStringUMap KxSystem::GetEnvironmentVariables()
+{
+	KxStringToStringUMap map;
+	for (const wchar_t* item = ::GetEnvironmentStringsW(); *item; item += wcslen(item) + 1)
+	{
+		const wchar_t* separator = wcschr(item, L'=');
+		map.insert_or_assign(wxString(item, separator - item), wxString(separator + 1));
+	}
+	return map;
+}
+
 bool KxSystem::IsWindowsServer()
 {
 	return GetVersionInfo().ProductType == VER_NT_SERVER;

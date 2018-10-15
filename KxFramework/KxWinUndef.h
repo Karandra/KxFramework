@@ -30,3 +30,5 @@
 #undef GetUserName
 #undef FindFirstFile
 #undef FindNextFile
+#undef GetEnvironmentVariable
+#undef SetEnvironmentVariable
