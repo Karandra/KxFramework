@@ -25,9 +25,23 @@ class KxBroadcastEvent: public wxNotifyEvent, public KxRTTI::DynamicCastAsIs<KxB
 			});
 		}
 
-		template<class... Args> static void CallAfter(Args&&... args)
+		template<class... Args>
+		static void CallAfter(Args&&... args)
 		{
 			wxTheApp->CallAfter(std::forward<Args>(args)...);
+		}
+
+		template<class T, class... Args>
+		static void MakeQueue(Args&&... args)
+		{
+			T* event = new T(std::forward<Args>(args)...);
+			event->Queue();
+		}
+
+		template<class T, class... Args>
+		static bool MakeSend(Args&&... args)
+		{
+			return T(std::forward<Args>(args)...).Send();
 		}
 
 	protected:
