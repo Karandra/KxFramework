@@ -61,11 +61,11 @@ class KxShell
 {
 	friend class KxShellExecuteThread;
 
-	private:
-		using KnownFolderItem = std::pair<GUID, const char*>;
+	public:
+		using KnownFolderItem = std::pair<GUID, const wxChar*>;
 		using KnownFoldersList = std::unordered_map<KxShellFolderID, KnownFolderItem>;
-		static const KnownFoldersList ms_KnownFoldersTable;
-		
+
+	private:
 		// Get any valid HWND for functions that requires parent window in all cases.
 		// Return HWND of windows in following chain:
 		// window -> wxTheApp->GetTopWindow() -> wxGetTopLevelParent(wxGetActiveWindow()) -> ::GetShellWindow()
@@ -73,6 +73,7 @@ class KxShell
 		
 	public:
 		static KxShellFolderID GetShellFolderID(const wxString& name);
+		static const KnownFoldersList& GetShellFolderList();
 		static wxString GetFolder(KxShellFolderID id, bool useDefault = false, bool create = false);
 		
 		static bool FileOperation(const wxString& fullPath, KxFileSearchType elementType, KxShellOperationFunc func, bool useRecycleBin = false, bool recurse = false, wxWindow* window = NULL);
@@ -229,6 +230,6 @@ enum KxShellFolderID: int
 	// Max
 	KxSHF_MAX_ID,
 
-	// Overrides
+	// Aliases
 	KxSHF_APPLICATIONDATA_COMMON = KxSHF_COMMON,
 };
