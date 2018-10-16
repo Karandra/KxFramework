@@ -12,6 +12,8 @@ class KxDataViewItemAttributes
 		// Font
 		wxString m_FontFace;
 		wxFontFamily m_FontFamily = wxFONTFAMILY_DEFAULT;
+		int m_FontSize = 0;
+		wxSize m_FontPixelSize = wxDefaultSize;
 		bool m_IsBold = false;
 		bool m_IsItalic = false;
 		bool m_IsUnderlined = false;
@@ -68,7 +70,7 @@ class KxDataViewItemAttributes
 		/* Font attributes */
 		bool HasFontAttributes() const
 		{
-			return HasFontFace() || HasFontFamily() || IsBold() || IsItalic() || IsUnderlined() || IsStrikethrough();
+			return HasFontFace() || HasFontFamily() || HasFontSize() || HasFontPixelSize() || IsBold() || IsItalic() || IsUnderlined() || IsStrikethrough();
 		}
 
 		bool HasFontFace() const
@@ -95,6 +97,32 @@ class KxDataViewItemAttributes
 		void SetFontFamily(wxFontFamily family)
 		{
 			m_FontFamily = family;
+		}
+
+		bool HasFontPixelSize() const
+		{
+			return m_FontPixelSize.IsFullySpecified();
+		}
+		wxSize GetFontPixelSize() const
+		{
+			return m_FontPixelSize;
+		}
+		void SetFontPixelSize(const wxSize& size)
+		{
+			m_FontPixelSize = size;
+		}
+
+		bool HasFontSize() const
+		{
+			return m_FontSize > 0;
+		}
+		int GetFontSize() const
+		{
+			return m_FontSize;
+		}
+		void SetFontSize(int value)
+		{
+			m_FontSize = value;
 		}
 
 		bool IsBold() const

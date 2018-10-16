@@ -9,33 +9,41 @@ wxFont KxDataViewItemAttributes::GetEffectiveFont(const wxFont& baseFont) const
 {
 	if (HasFontAttributes())
 	{
-		wxFont newFont(baseFont);
+		wxFont font(baseFont);
 		if (IsBold())
 		{
-			newFont.MakeBold();
+			font.MakeBold();
 		}
 		if (IsItalic())
 		{
-			newFont.MakeItalic();
+			font.MakeItalic();
 		}
 		if (IsUnderlined())
 		{
-			newFont.MakeUnderlined();
+			font.MakeUnderlined();
 		}
 		if (IsStrikethrough())
 		{
-			newFont.MakeStrikethrough();
+			font.MakeStrikethrough();
 		}
 		if (HasFontFace())
 		{
-			newFont.SetFaceName(m_FontFace);
+			font.SetFaceName(m_FontFace);
 		}
 		if (HasFontFamily())
 		{
-			newFont.SetFamily(m_FontFamily);
+			font.SetFamily(m_FontFamily);
+		}
+		if (HasFontSize())
+		{
+			font.SetPointSize(m_FontSize);
+		}
+		if (HasFontPixelSize())
+		{
+			font.SetPixelSize(m_FontPixelSize);
 		}
 
-		return newFont;
+		return font;
 	}
 	return baseFont;
 }

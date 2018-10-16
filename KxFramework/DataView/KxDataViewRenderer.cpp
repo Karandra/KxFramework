@@ -107,6 +107,33 @@ void KxDataViewRenderer::CallDrawCellBackground(const wxRect& cellRect, KxDataVi
 		}
 	}
 
+	#if 0
+	if (m_Attributes.HasCategoryLine())
+	{
+		KxColor color = KxUtility::GetThemeColor_Caption(GetView());
+		if (!color.IsOk())
+		{
+			color = m_Attributes.GetForegroundColor();
+		}
+		color.SetA(70);
+
+		int offset = 0;
+		int width = 0;
+		int y = cellRect.GetY() + cellRect.GetHeight() / 2;
+
+		if (GetColumn()->IsFirst())
+		{
+			offset = 5;
+			width = GetCellSize().GetWidth() + offset;
+		}
+		if (GetColumn()->IsLast())
+		{
+			offset = 5;
+		}
+		dc.DrawLine(wxPoint(cellRect.GetLeft() + width, y), wxPoint(cellRect.GetRight() - width - offset, y));
+	}
+	#endif
+
 	DrawCellBackground(cellRect, cellState);
 
 	if (cellState & KxDATAVIEW_CELL_SELECTED && GetColumn()->IsCurrent())
@@ -116,6 +143,19 @@ void KxDataViewRenderer::CallDrawCellBackground(const wxRect& cellRect, KxDataVi
 }
 void KxDataViewRenderer::CallDrawCellContent(const wxRect& cellRect, KxDataViewCellState cellState)
 {
+	//wxDCTextColourChanger chnageTextColorGC(GetGCDC(), m_Attributes.HasForegroundColor() ? m_Attributes.GetForegroundColor() : KxColor(GetView()->GetForegroundColour()));
+	wxDCTextColourChanger chnageTextColorDC(GetDC(), m_Attributes.HasForegroundColor() ? m_Attributes.GetForegroundColor() : KxColor(GetView()->GetForegroundColour()));
+
+	//wxDCFontChanger changeFontGC(GetGCDC());
+	wxDCFontChanger changeFontDC(GetDC());
+	if (m_Attributes.HasFontAttributes())
+	{
+		wxFont font = m_Attributes.GetEffectiveFont(GetDC().GetFont());
+
+		//changeFontGC.Set(font);
+		changeFontDC.Set(font);
+	}
+
 	// Adjust the rectangle ourselves to account for the alignment
 	wxRect cellRectNew = cellRect;
 	const wxAlignment alignment = m_Attributes.HasAlignment() ? m_Attributes.GetAlignment() : GetEffectiveAlignment();
@@ -157,18 +197,6 @@ void KxDataViewRenderer::CallDrawCellContent(const wxRect& cellRect, KxDataViewC
 		cellRectNew.height = cellSize.y;
 	}
 
-	//wxDCTextColourChanger chnageTextColorGC(GetGCDC(), m_Attributes.HasForegroundColor() ? m_Attributes.GetForegroundColor() : KxColor(GetView()->GetForegroundColour()));
-	wxDCTextColourChanger chnageTextColorDC(GetDC(), m_Attributes.HasForegroundColor() ? m_Attributes.GetForegroundColor() : KxColor(GetView()->GetForegroundColour()));
-	
-	//wxDCFontChanger changeFontGC(GetGCDC());
-	wxDCFontChanger changeFontDC(GetDC());
-	if (m_Attributes.HasFontAttributes())
-	{
-		wxFont font = m_Attributes.GetEffectiveFont(GetDC().GetFont());
-
-		//changeFontGC.Set(font);
-		changeFontDC.Set(font);
-	}
 	DrawCellContent(cellRectNew, cellState);
 }
 
