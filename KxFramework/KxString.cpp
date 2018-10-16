@@ -9,27 +9,27 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include <Shlwapi.h>
 #include "KxWinUndef.h"
 
-namespace
+namespace Util
 {
-	char CharMakeLower(char c)
+	char CharToLower(char c)
 	{
 		#pragma warning(suppress: 4312)
 		#pragma warning(suppress: 4302)
 		return reinterpret_cast<char>(::CharLowerA(reinterpret_cast<LPSTR>(c)));
 	}
-	char CharMakeUpper(char c)
+	char CharToUpper(char c)
 	{
 		#pragma warning(suppress: 4312)
 		#pragma warning(suppress: 4302)
 		return reinterpret_cast<char>(::CharLowerA(reinterpret_cast<LPSTR>(c)));
 	}
-	wchar_t CharMakeLower(wchar_t c)
+	wchar_t CharToLower(wchar_t c)
 	{
 		#pragma warning(suppress: 4312)
 		#pragma warning(suppress: 4302)
 		return reinterpret_cast<wchar_t>(::CharLowerW(reinterpret_cast<LPWSTR>(c)));
 	}
-	wchar_t CharMakeUpper(wchar_t c)
+	wchar_t CharToUpper(wchar_t c)
 	{
 		#pragma warning(suppress: 4312)
 		#pragma warning(suppress: 4302)
@@ -163,7 +163,7 @@ namespace
 			}
 			else
 			{
-				if (expressionStr[expressionIndex] == questionChar || (ignoreCase && CharMakeUpper(expressionStr[expressionIndex]) == CharMakeUpper(nameStr[nameIndex])) || (!ignoreCase && expressionStr[expressionIndex] == nameStr[nameIndex]))
+				if (expressionStr[expressionIndex] == questionChar || (ignoreCase && CharToUpper(expressionStr[expressionIndex]) == CharToUpper(nameStr[nameIndex])) || (!ignoreCase && expressionStr[expressionIndex] == nameStr[nameIndex]))
 				{
 					expressionIndex++;
 					nameIndex++;
@@ -205,14 +205,31 @@ namespace
 }
 
 /* Upper/Lower */
-wxUniChar& KxString::MakeLower(wxUniChar& c)
+char KxString::CharToLower(char c)
 {
-	c = CharMakeLower(static_cast<wchar_t>(c.GetValue()));
+	return Util::CharToLower(c);
+}
+wchar_t KxString::CharToLower(wchar_t c)
+{
+	return Util::CharToLower(c);
+}
+char KxString::CharToUpper(char c)
+{
+	return Util::CharToUpper(c);
+}
+wchar_t KxString::CharToUpper(wchar_t c)
+{
+	return Util::CharToUpper(c);
+}
+
+wxUniChar& KxString::CharMakeLower(wxUniChar& c)
+{
+	c = Util::CharToLower(static_cast<wchar_t>(c.GetValue()));
 	return c;
 }
-wxUniChar& KxString::MakeUpper(wxUniChar& c)
+wxUniChar& KxString::CharMakeUpper(wxUniChar& c)
 {
-	c = CharMakeUpper(static_cast<wchar_t>(c.GetValue()));
+	c = Util::CharToUpper(static_cast<wchar_t>(c.GetValue()));
 	return c;
 }
 
@@ -235,7 +252,7 @@ wxString& KxString::MakeCapitalized(wxString& s, bool fistCharOnly)
 		{
 			s.MakeLower();
 		}
-		s[0] = ToUpper(s[0]);
+		s[0] = CharToUpper(s[0]);
 	}
 	return s;
 }
@@ -252,15 +269,15 @@ KxString::CompareResult KxString::Compare(const wxString& v1, const wxString& v2
 
 bool KxString::Matches(const std::string_view& string, const std::string_view& mask, bool ignoreCase)
 {
-	return IsNameInExpression(string.data(), mask.data(), ignoreCase);
+	return Util::IsNameInExpression(string.data(), mask.data(), ignoreCase);
 }
 bool KxString::Matches(const std::wstring_view& string, const std::wstring_view& mask, bool ignoreCase)
 {
-	return IsNameInExpression(string.data(), mask.data(), ignoreCase);
+	return Util::IsNameInExpression(string.data(), mask.data(), ignoreCase);
 }
 bool KxString::Matches(const wxString& string, const wxString& mask, bool ignoreCase)
 {
-	return IsNameInExpression(string.wc_str(), mask.wc_str(), ignoreCase);
+	return Util::IsNameInExpression(string.wc_str(), mask.wc_str(), ignoreCase);
 }
 
 /* Split */

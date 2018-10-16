@@ -48,7 +48,7 @@ wxString KxCrypto::Rot13(const wxString& source)
 		wxUniChar thisChar = source.GetChar(i);
 		if (thisChar.IsAscii())
 		{
-			char c = KxString::ToUpper(thisChar);
+			char c = KxString::CharToUpper(thisChar);
 			if (c >= 'A' && c <= 'M')
 			{
 				thisChar = wxUniChar(thisChar.GetValue() + 13);
