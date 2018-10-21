@@ -5,20 +5,33 @@
 
 wxSize KxDataViewBitmapTextRenderer::GetBitmapMargins(wxWindow* window)
 {
-	return window->FromDIP(wxSize(4, 2));
+	return window->FromDIP(wxSize(2, 2));
 }
 int KxDataViewBitmapTextRenderer::DrawBitmapWithText(KxDataViewRenderer* rederer, const wxRect& cellRect, KxDataViewCellState cellState, int offsetX, KxDataViewBitmapTextValue& value)
 {
+	const wxSize bitmapMargin = GetBitmapMargins(rederer->GetView());
 	if (value.HasBitmap())
 	{
 		const wxBitmap& bitmap = value.GetBitmap();
 		rederer->DoDrawBitmap(wxRect(cellRect.GetX() + offsetX, cellRect.GetY(), cellRect.GetWidth() - offsetX, cellRect.GetHeight()), cellState, bitmap);
 
-		offsetX += bitmap.GetWidth() + GetBitmapMargins(rederer->GetView()).GetWidth();
+		offsetX += bitmap.GetWidth() + bitmapMargin.GetWidth();
 	}
 	if (value.HasText())
 	{
-		rederer->DoDrawText(cellRect, cellState, value.GetText(), offsetX);
+		if (value.HasBitmap() && value.ShouldVCenterText())
+		{
+			wxSize textExtent = rederer->DoGetTextExtent(value.GetText());
+			wxSize size = wxSize(cellRect.GetWidth(), textExtent.GetHeight());
+			wxPoint pos = cellRect.GetPosition();
+			pos.y += textExtent.GetHeight() / 2;
+
+			rederer->DoDrawText(wxRect(pos, size), cellState, value.GetText(), offsetX);
+		}
+		else
+		{
+			rederer->DoDrawText(cellRect, cellState, value.GetText(), offsetX);
+		}
 	}
 	return offsetX;
 }
@@ -54,10 +67,12 @@ wxSize KxDataViewBitmapTextRenderer::GetCellSize() const
 	}
 	if (m_Value.HasBitmap())
 	{
-		size.x += m_Value.GetBitmap().GetWidth() + GetBitmapMargins(GetView()).x;
+		wxSize margins = GetBitmapMargins(GetView());
+
+		size.x += m_Value.GetBitmap().GetWidth() + margins.x;
 		if (size.y < m_Value.GetBitmap().GetHeight())
 		{
-			size.y = m_Value.GetBitmap().GetHeight();
+			size.y = m_Value.GetBitmap().GetHeight() + margins.y;
 		}
 	}
 	return size != wxSize(0, 0) ? size : wxSize(0, KxDataViewRenderer::GetCellSize().GetHeight());

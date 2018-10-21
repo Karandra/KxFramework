@@ -58,18 +58,7 @@ void KxDataViewBitmapTextToggleRenderer::DrawCellContent(const wxRect& cellRect,
 		wxRect toggleRect(cellRect.GetPosition(), KxDataViewToggleRenderer::GetToggleCellSize(GetView()));
 		toggleRect.SetHeight(cellRect.GetHeight());
 
-		KxDataViewCellState toggleCellState = cellState;
-		#if 0
-		wxPoint pos = GetView()->ScreenToClient(wxGetMousePosition());
-		GetView()->CalcUnscrolledPosition(pos.x, pos.y, &pos.x, &pos.y);
-		pos.x += toggleRect.GetWidth() / 2;
-		pos.y -= 1.5 * toggleRect.GetHeight();
-		pos -= KxDataViewToggleRenderer::GetToggleCellSizeNoMargins(GetView()) / 2;
-
-		toggleCellState = KxUtility::ModFlag(cellState, KxDATAVIEW_CELL_HIGHLIGHTED, toggleRect.Contains(pos));
-		#endif
-
-		offsetX += KxDataViewToggleRenderer::DrawToggle(GetDC(), GetView(), toggleRect, toggleCellState, m_Value, IsEnabled());
+		offsetX += KxDataViewToggleRenderer::DrawToggle(GetDC(), GetView(), toggleRect, cellState, m_Value, IsEnabled());
 		offsetFromToggle = GetView()->FromDIP(wxSize(2, 0)).x;
 	}
 	if (m_Value.HasBitmap() || m_Value.HasText())
@@ -105,10 +94,12 @@ wxSize KxDataViewBitmapTextToggleRenderer::GetCellSize() const
 	}
 	if (m_Value.HasBitmap())
 	{
-		size.x += m_Value.GetBitmap().GetWidth() + KxDataViewBitmapTextRenderer::GetBitmapMargins(GetView()).x;
+		wxSize margins = KxDataViewBitmapTextRenderer::GetBitmapMargins(GetView());
+
+		size.x += m_Value.GetBitmap().GetWidth() + margins.x;
 		if (size.y < m_Value.GetBitmap().GetHeight())
 		{
-			size.y = m_Value.GetBitmap().GetHeight();
+			size.y = m_Value.GetBitmap().GetHeight() + margins.y;
 		}
 	}
 	return size != wxSize(0, 0) ? size : wxSize(0, KxDataViewRenderer::GetCellSize().GetHeight());

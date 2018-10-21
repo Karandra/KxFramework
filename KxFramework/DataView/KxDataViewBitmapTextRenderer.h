@@ -7,6 +7,7 @@ class KxDataViewBitmapTextValue
 	private:
 		wxBitmap m_Bitmap;
 		wxString m_Text;
+		bool m_VCenterText = false;
 
 	public:
 		KxDataViewBitmapTextValue(const wxString& text = wxEmptyString, const wxBitmap& bitmap = wxNullBitmap)
@@ -47,6 +48,15 @@ class KxDataViewBitmapTextValue
 		void SetBitmap(const wxBitmap& bitmap)
 		{
 			m_Bitmap = bitmap;
+		}
+
+		void SetVCenterText(bool value)
+		{
+			m_VCenterText = value;
+		}
+		bool ShouldVCenterText() const
+		{
+			return m_VCenterText;
 		}
 };
 
