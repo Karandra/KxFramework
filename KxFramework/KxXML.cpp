@@ -113,7 +113,7 @@ bool KxXMLDocument::Load(wxInputStream& stream)
 }
 bool KxXMLDocument::Save(wxOutputStream& stream) const
 {
-	tinyxml2::XMLPrinter buffer;
+	KxXMLPrinter buffer;
 	m_Document.Print(&buffer);
 	stream.Write(buffer.CStr(), buffer.CStrSize() - 1);
 	return stream.IsOk();
