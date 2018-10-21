@@ -138,6 +138,7 @@ class KxFile
 		}
 
 		// File names and parts
+		wxString GetPath() const;
 		wxString GetFullPath() const;
 		wxString GetFullPathNS() const;
 
@@ -145,10 +146,8 @@ class KxFile
 		wxString GetLongPath() const;
 
 		wxString AbbreviatePath(size_t max) const;
-		bool IsRelative() const
-		{
-			return GetDrive().IsEmpty();
-		}
+		bool IsRelative() const;
+		bool IsAbsolute() const;
 
 		wxString GetDrive() const;
 		wxString GetFolders(int start = 0, int end = -1) const;
