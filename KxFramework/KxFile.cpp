@@ -276,25 +276,22 @@ wxString KxFile::GetLongPathName(const wxString& filePath)
 
 wxString& KxFile::TrimPath(wxString& path)
 {
-	wxUniChar c1('\\');
-	wxUniChar c2('//');
+	wxUniChar charToRemove(wxS('\\'));
 
 	size_t left = 0;
-	for (left; left < path.Length(); left++)
+	for (; left < path.length(); left++)
 	{
-		wxUniChar c = path[left];
-		if (c != c1 && c != c2)
+		if (path[left] != charToRemove)
 		{
 			break;
 		}
 	}
 	path.Remove(0, left);
 
-	size_t right = path.Length() - 1;
-	for (right; right > 0; right--)
+	size_t right = path.length() - 1;
+	for (; right != 0; right--)
 	{
-		wxUniChar c = path[right];
-		if (c != c1 && c != c2)
+		if (path[right] != charToRemove)
 		{
 			break;
 		}
@@ -340,7 +337,7 @@ const wxString& KxFile::GetNameSpaceString(KxFileNamespace namespaceType)
 }
 KxFileNamespace KxFile::RemoveNamespacePrefix(wxString& path)
 {
-	if (path.Length() >= 2 && path[1] == L':')
+	if (path.Length() >= 2 && path[1] == wxS(':'))
 	{
 		return KxFNS_WIN32_FILE;
 	}
@@ -351,7 +348,7 @@ KxFileNamespace KxFile::RemoveNamespacePrefix(wxString& path)
 	if (path.Length() >= 10)
 	{
 		wxString prefix = path.Left(10);
-		if (prefix == Namespace_Win32FileUNC && prefix[9] == L':')
+		if (prefix == Namespace_Win32FileUNC && prefix[9] == wxS(':'))
 		{
 			count = 8;
 			namespaceType = KxFNS_WIN32_FILE_UNC;
@@ -450,15 +447,15 @@ wxString KxFile::GetLongPath(const wxString& shortName)
 //////////////////////////////////////////////////////////////////////////
 bool KxFile::CheckValidity() const
 {
-	LPCWSTR checkPattern = L"*?/:\"<>|"; // Don't check for "\"
+	LPCWSTR checkPattern = wxS("*?/:\"<>|"); // Don't check for "\"
 	if (IsRelative())
 	{
-		return !GetFullPath().Contains(checkPattern);
+		return !m_Path.Contains(checkPattern);
 	}
 	else
 	{
 		// Check after drive letter
-		return !(GetFullPath().substr(GetFullPath().Find(':')+1)).Contains(checkPattern);
+		return !(GetFullPath().substr(GetFullPath().Find(wxS(':')) + 1)).Contains(checkPattern);
 	}
 }
 wxString KxFile::NormalizePath(const wxString& path)
@@ -467,19 +464,20 @@ wxString KxFile::NormalizePath(const wxString& path)
 	// And this: http://pdh11.blogspot.ru/2009/05/pathcanonicalize-versus-what-it-says-on.html
 
 	wxString pathCopy = path;
-	auto namespaceType = RemoveNamespacePrefix(pathCopy);
+	KxFileNamespace namespaceType = RemoveNamespacePrefix(pathCopy);
 	if (namespaceType == KxFNS_WIN32_FILE)
 	{
 		pathCopy = GetFullPathName(path);
 	}
+	pathCopy.Replace(wxS("/"), wxS("\\"), true);
 	TrimPath(pathCopy);
-	return path;
+	return pathCopy;
 }
 void KxFile::Init()
 {
 	if (CheckValidity())
 	{
-		NormalizePath(m_Path);
+		m_Path = NormalizePath(m_Path);
 	}
 	else
 	{
@@ -536,6 +534,10 @@ KxFile::~KxFile()
 
 //////////////////////////////////////////////////////////////////////////
 // File names and parts
+wxString KxFile::GetPath() const
+{
+	return m_Path;
+}
 wxString KxFile::GetFullPath() const
 {
 	return GetFullPathName(m_Path);
@@ -562,11 +564,20 @@ wxString KxFile::AbbreviatePath(size_t max) const
 	return KxString::AbbreviateFilePath(m_Path, max);
 }
 
+bool KxFile::IsRelative() const
+{
+	return !IsAbsolute();
+}
+bool KxFile::IsAbsolute() const
+{
+	return m_Path.length() >= 2 && m_Path[1] == wxS(':');
+}
+
 wxString KxFile::GetDrive() const
 {
-	const wxString& path = GetFullPath();
+	wxString path = GetFullPath();
 
-	int pos = path.Find(':');
+	int pos = path.Find(wxS(':'));
 	if (pos != wxNOT_FOUND)
 	{
 		return path.Left(pos+1);
@@ -589,7 +600,7 @@ wxString KxFile::GetFolders(int start, int end) const
 			out.Append(folders[i]);
 			if (i < size-1)
 			{
-				out.Append('\\');
+				out.Append(wxS('\\'));
 			}
 		}
 		return out;
@@ -603,7 +614,7 @@ KxStringVector KxFile::GetFoldersArray() const
 	int folderStart = m_Path.Find(':');
 	if (folderStart != wxNOT_FOUND)
 	{
-		if (m_Path[folderStart+1] == '\\')
+		if (m_Path[folderStart+1] == wxS('\\'))
 		{
 			folderStart += 2;
 		}
@@ -616,7 +627,7 @@ KxStringVector KxFile::GetFoldersArray() const
 	size_t next = (size_t)wxNOT_FOUND;
 	do
 	{
-		next = m_Path.find('\\', folderStart);
+		next = m_Path.find(wxS('\\'), folderStart);
 		folders.push_back(m_Path.SubString(folderStart, next - 1));
 		folderStart = next+1;
 	}
@@ -640,12 +651,12 @@ wxString KxFile::GetFolder(int index) const
 }
 wxString KxFile::GetName() const
 {
-	size_t pos = m_Path.rfind(L'\\');
+	size_t pos = m_Path.rfind(wxS('\\'));
 	if (pos != wxString::npos)
 	{
 		if (IsFile())
 		{
-			size_t dotPos = m_Path.rfind(L'.');
+			size_t dotPos = m_Path.rfind(wxS('.'));
 			if (dotPos != wxString::npos)
 			{
 				return m_Path.SubString(pos + 1, dotPos - 1);
@@ -657,7 +668,7 @@ wxString KxFile::GetName() const
 }
 wxString KxFile::GetExt() const
 {
-	size_t pos = m_Path.rfind(L'.');
+	size_t pos = m_Path.rfind(wxS('.'));
 	if (pos != wxString::npos)
 	{
 		return m_Path.Mid(pos + 1);
@@ -670,7 +681,7 @@ wxString KxFile::GetFullName() const
 	wxString ext = GetExt();
 	if (!ext.IsEmpty())
 	{
-		fullName += '.';
+		fullName += wxS('.');
 		fullName += ext;
 	}
 	return fullName;
@@ -679,7 +690,7 @@ KxFile::SplitPathData KxFile::SplitPath() const
 {
 	SplitPathData data;
 	data.Drive = GetDrive();
-	data.Folder = m_Path.AfterFirst(':').BeforeLast('\\');
+	data.Folder = m_Path.AfterFirst(wxS(':')).BeforeLast(wxS('\\'));
 	data.FileName = GetName();
 	data.Ext = GetExt();
 	return data;
