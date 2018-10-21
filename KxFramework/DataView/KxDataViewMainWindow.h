@@ -438,17 +438,15 @@ class KxDataViewMainWindowDropSource: public wxDropSource
 		wxPoint m_Distance = wxDefaultPosition;
 		size_t m_Row = KxDataViewMainWindow::INVALID_ROW;
 
-	protected:
+	private:
 		void OnPaint(wxPaintEvent& event);
+		void OnScroll(wxMouseEvent& event);
 		virtual bool GiveFeedback(wxDragResult effect) override;
 
 		wxPoint GetHintPosition(const wxPoint& mousePos) const;
 
 	public:
-		KxDataViewMainWindowDropSource(KxDataViewMainWindow* mainWindow, size_t row):
-			wxDropSource(mainWindow), m_MainWindow(mainWindow), m_Row(row), m_Distance(0, 0)
-		{
-		}
+		KxDataViewMainWindowDropSource(KxDataViewMainWindow* mainWindow, size_t row);
 		virtual ~KxDataViewMainWindowDropSource();
 };
 
@@ -464,8 +462,5 @@ class KxDataViewMainWindowDropTarget: public wxDropTarget
 		virtual void OnLeave() override;
 
 	public:
-		KxDataViewMainWindowDropTarget(wxDataObject* dataObject, KxDataViewMainWindow* mainWindow)
-			:wxDropTarget(dataObject), m_MainWindow(mainWindow)
-		{
-		}
+		KxDataViewMainWindowDropTarget(wxDataObject* dataObject, KxDataViewMainWindow* mainWindow);
 };

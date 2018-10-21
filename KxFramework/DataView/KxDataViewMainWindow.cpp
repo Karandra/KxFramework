@@ -10,6 +10,8 @@
 #include "KxFramework/KxSplashWindow.h"
 #include "KxFramework/KxDCClipper.h"
 #include "KxFramework/KxUtility.h"
+#include "KxFramework/KxFrame.h"
+#include <wx/popupwin.h>
 #include <wx/generic/private/widthcalc.h>
 
 void KxDataViewMainWindowEditorTimer::Notify()
@@ -2531,14 +2533,15 @@ wxDragResult KxDataViewMainWindow::OnDragOver(const wxDataFormat& format, const 
 	KxDataViewItem item;
 	OnDragDropGetRowItem(pos, row, item);
 
-	if (row != INVALID_ROW)
+	if (row != 0 && row < GetRowCount())
 	{
 		size_t firstVisible = GetFirstVisibleRow();
-		if (row != 0 && row == firstVisible)
+		size_t lastVisible = GetLastVisibleRow();
+		if (row == firstVisible || row == firstVisible + 1)
 		{
 			ScrollTo(row - 1);
 		}
-		else if (row == GetLastVisibleRow())
+		else if (row == lastVisible || row == lastVisible - 1)
 		{
 			ScrollTo(firstVisible + 1);
 		}
@@ -3272,6 +3275,29 @@ void KxDataViewMainWindowDropSource::OnPaint(wxPaintEvent& event)
 	wxPaintDC dc(m_DragImage);
 	dc.DrawBitmap(m_HintBitmap, 0, 0);
 }
+void KxDataViewMainWindowDropSource::OnScroll(wxMouseEvent& event)
+{
+	if (m_MainWindow)
+	{
+		KxDataViewCtrl* view = m_MainWindow->GetOwner();
+
+		int rateX = 0;
+		int rateY = 0;
+		view->GetScrollPixelsPerUnit(&rateX, &rateY);
+		wxPoint startPos = view->GetViewStart();
+
+		wxCoord value = -event.GetWheelRotation();
+		if (event.GetWheelAxis() == wxMOUSE_WHEEL_VERTICAL)
+		{
+			view->Scroll(wxDefaultCoord, startPos.y + (float)value / (rateY != 0 ? rateY : 1));
+		}
+		else
+		{
+			view->Scroll(startPos.x + (float)value / (rateX != 0 ? rateX : 1), wxDefaultCoord);
+		}
+	}
+	event.Skip();
+}
 bool KxDataViewMainWindowDropSource::GiveFeedback(wxDragResult effect)
 {
 	wxPoint mousePos = wxGetMousePosition();
@@ -3292,8 +3318,11 @@ bool KxDataViewMainWindowDropSource::GiveFeedback(wxDragResult effect)
 		m_Distance.x -= rowIndent;
 		m_HintPosition = GetHintPosition(mousePos);
 
-		int frameStyle = wxFRAME_TOOL_WINDOW|wxFRAME_FLOAT_ON_PARENT|wxFRAME_NO_TASKBAR|wxNO_BORDER;
-		m_DragImage = new wxMiniFrame(m_MainWindow->GetParent(), wxID_NONE, wxEmptyString, m_HintPosition, m_HintBitmap.GetSize(), frameStyle);
+		int frameStyle = wxFRAME_FLOAT_ON_PARENT|wxFRAME_NO_TASKBAR|wxNO_BORDER;
+		m_DragImage = new wxMiniFrame(m_MainWindow, wxID_NONE, wxEmptyString, m_HintPosition, m_HintBitmap.GetSize(), frameStyle);
+		//m_DragImage = new wxPopupWindow(m_MainWindow);
+		//m_DragImage->SetInitialSize(m_HintBitmap.GetSize());
+
 		m_DragImage->Bind(wxEVT_PAINT, &KxDataViewMainWindowDropSource::OnPaint, this);
 		m_DragImage->SetTransparent(128);
 		m_DragImage->Show();
@@ -3311,6 +3340,11 @@ wxPoint KxDataViewMainWindowDropSource::GetHintPosition(const wxPoint& mousePos)
 	return wxPoint(mousePos.x - m_Distance.x, mousePos.y + 5);
 }
 
+KxDataViewMainWindowDropSource::KxDataViewMainWindowDropSource(KxDataViewMainWindow* mainWindow, size_t row)
+	:wxDropSource(mainWindow), m_MainWindow(mainWindow), m_Row(row), m_Distance(0, 0)
+{
+	//m_MainWindow->Bind(wxEVT_MOUSEWHEEL, &KxDataViewMainWindowDropSource::OnScroll, this);
+}
 KxDataViewMainWindowDropSource::~KxDataViewMainWindowDropSource()
 {
 	m_HintPosition = wxDefaultPosition;
@@ -3351,4 +3385,9 @@ wxDragResult KxDataViewMainWindowDropTarget::OnData(wxCoord x, wxCoord y, wxDrag
 void KxDataViewMainWindowDropTarget::OnLeave()
 {
 	m_MainWindow->OnDragDropLeave();
+}
+
+KxDataViewMainWindowDropTarget::KxDataViewMainWindowDropTarget(wxDataObject* dataObject, KxDataViewMainWindow* mainWindow)
+	:wxDropTarget(dataObject), m_MainWindow(mainWindow)
+{
 }
