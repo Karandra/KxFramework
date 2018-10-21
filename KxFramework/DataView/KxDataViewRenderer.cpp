@@ -196,7 +196,6 @@ void KxDataViewRenderer::CallDrawCellContent(const wxRect& cellRect, KxDataViewC
 
 		cellRectNew.height = cellSize.y;
 	}
-
 	DrawCellContent(cellRectNew, cellState);
 }
 
@@ -222,6 +221,15 @@ wxSize KxDataViewRenderer::GetCellSize() const
 	return wxSize(KxDVC_DEFAULT_WIDTH, GetMainWindow()->GetUniformRowHeight());
 }
 
+int KxDataViewRenderer::DoCalcCenter(int pos, int size) const
+{
+	double offset = ((double)pos - (double)size) / 2.0;
+	if (offset > 0.0 && offset < 1.0)
+	{
+		return 1.0;
+	}
+	return offset;
+}
 int KxDataViewRenderer::DoFindFirstNewLinePos(const wxString& string) const
 {
 	int pos = string.Find('\r');
@@ -300,17 +308,6 @@ bool KxDataViewRenderer::DoDrawText(const wxRect& cellRect, KxDataViewCellState 
 		{
 			wxRendererNative::Get().DrawItemText(GetView(), GetDC(), string, textRect, GetEffectiveAlignment(), flags, GetEllipsizeMode());
 		}
-
-		#if 0
-		if (m_Attributes.HasCategoryLine())
-		{
-			wxPoint pos1(cellRect.GetRight() + 5, cellRect.GetHeight() / 2 + 1);
-			wxPoint pos2(GetColumn()->GetWidth(), pos1.y);
-
-			wxDCPenChanger pen(GetDC(), wxPen(m_Attributes.GetForegroundColor(), GetView()->FromDIP(1)));
-			GetDC().DrawLine(pos1, pos2);
-		}
-		#endif
 		return true;
 	}
 	return false;

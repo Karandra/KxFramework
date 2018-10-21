@@ -87,10 +87,7 @@ class KxDataViewRenderer: public wxObject, public KxWithOptions<KxDataViewRender
 		
 	public:
 		// Drawing helpers
-		int DoCalcCenter(int pos, int size) const
-		{
-			return ((pos - size) / 2);
-		}
+		int DoCalcCenter(int pos, int size) const;
 		int DoFindFirstNewLinePos(const wxString& string) const;
 		int DoGetControlFlags(KxDataViewCellState cellState) const;
 
