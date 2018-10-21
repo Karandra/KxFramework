@@ -1,22 +1,8 @@
 #pragma once
 
-#define	KxRTTI_ImplementClassDynamic(Name, CClassName, Base1CClassName)															\
-wxClassInfo CClassName::ms_classInfo(wxT(#Name), &Base1CClassName::ms_classInfo, NULL, (int)sizeof(CClassName), NULL);			\
-wxClassInfo* CClassName::GetClassInfo() const																					\
-{																																\
-	return &CClassName::ms_classInfo;																							\
-}
-
-#define	KxRTTI_ImplementClassDynamic2(Name, CClassName, Base1CClassName, Base2CClassName)															\
-wxClassInfo CClassName::ms_classInfo(wxT(#Name), &Base1CClassName::ms_classInfo, &Base2CClassName::ms_classInfo, (int)sizeof(CClassName), NULL);	\
-wxClassInfo* CClassName::GetClassInfo() const																										\
-{																																					\
-	return &CClassName::ms_classInfo;																												\
-}
-
 namespace KxRTTI
 {
-	template<class Base> class DynamicCastAsIs
+	template<class BaseT> class DynamicCastAsIs
 	{
 		public:
 			virtual ~DynamicCastAsIs() = default;
@@ -24,21 +10,65 @@ namespace KxRTTI
 		public:
 			template<class T> bool As(T*& ptr)
 			{
-				static_assert(std::is_base_of<Base, T>::value, "T must be derived from 'KPluginEntry'");
+				static_assert(std::is_base_of<BaseT, T>::value, "T must be derived from 'Base'");
+
 				ptr = dynamic_cast<T*>(this);
-				return ptr != NULL;
+				return ptr != nullptr;
 			}
 			template<class T> bool As(const T*& ptr) const
 			{
-				static_assert(std::is_base_of<Base, T>::value, "T must be derived from 'KPluginEntry'");
+				static_assert(std::is_base_of<BaseT, T>::value, "T must be derived from 'Base'");
+
 				ptr = dynamic_cast<const T*>(this);
-				return ptr != NULL;
+				return ptr != nullptr;
 			}
 
 			template<class T> bool Is() const
 			{
-				const T*& ptr = NULL;
+				const T*& ptr = nullptr;
 				return As<T>(ptr);
 			}
 	};
+
+	//////////////////////////////////////////////////////////////////////////
+	template<class BaseT> class StaticTypeID
+	{
+		public:
+			virtual ~StaticTypeID() = default;
+
+		public:
+			template<class T> bool As(T*& ptr)
+			{
+				static_assert(std::is_base_of<BaseT, T>::value, "T must be derived from 'Base'");
+				
+				ptr = nullptr;
+				if (BaseT::GetTypeID() == T::GetTypeID())
+				{
+					ptr = static_cast<T*>(this);
+					return true;
+				}
+				return false;
+			}
+			template<class T> bool As(const T*& ptr) const
+			{
+				static_assert(std::is_base_of<BaseT, T>::value, "T must be derived from 'Base'");
+
+				ptr = nullptr;
+				if (BaseT::GetTypeID() == T::GetTypeID())
+				{
+					ptr = static_cast<const T*>(this);
+					return true;
+				}
+				return false;
+			}
+
+			template<class T> bool Is() const
+			{
+				const T*& ptr = nullptr;
+				return As<T>(ptr);
+			}
+	};
+
+	//////////////////////////////////////////////////////////////////////////
+	size_t NewTypeID();
 }
