@@ -8,7 +8,7 @@ bool KxDataViewHTMLRenderer::SetValue(const wxAny& value)
 	m_Content.clear();
 	m_ContentHTML.clear();
 
-	if (value.GetAs<wxString>(&m_Content))
+	if (value.GetAs(&m_Content))
 	{
 		m_ContentHTML = KxHTMLWindow::ProcessPlainText(m_Content);
 		return true;

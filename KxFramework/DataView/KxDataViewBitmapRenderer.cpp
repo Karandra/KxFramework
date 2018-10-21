@@ -3,10 +3,10 @@
 
 bool KxDataViewBitmapRenderer::GetValueAsBitmap(const wxAny& value, wxBitmap& bitmap)
 {
-	if (!value.GetAs<wxBitmap>(&bitmap))
+	if (!value.GetAs(&bitmap))
 	{
 		wxIcon icon;
-		if (value.GetAs<wxIcon>(&icon))
+		if (value.GetAs(&icon))
 		{
 			bitmap.CopyFromIcon(icon);
 			return true;
@@ -14,7 +14,7 @@ bool KxDataViewBitmapRenderer::GetValueAsBitmap(const wxAny& value, wxBitmap& bi
 		else
 		{
 			wxImage image;
-			if (value.GetAs<wxImage>(&image))
+			if (value.GetAs(&image))
 			{
 				bitmap = wxBitmap(image, 32);
 				return true;

@@ -6,7 +6,7 @@ bool KxDataViewToggleRenderer::GetValueAsToggleState(const wxAny& value, ToggleS
 	// Check for 'ToggleState'
 	{
 		ToggleState tempState = ToggleState::InvalidState;
-		if (value.CheckType<ToggleState>() && value.GetAs<ToggleState>(&tempState))
+		if (value.CheckType<ToggleState>() && value.GetAs(&tempState))
 		{
 			switch (tempState)
 			{
@@ -24,7 +24,7 @@ bool KxDataViewToggleRenderer::GetValueAsToggleState(const wxAny& value, ToggleS
 	// Check for 'wxCheckBoxState'
 	{
 		wxCheckBoxState tempState = (wxCheckBoxState)-1; // Should be invalid 'wxCheckBoxState' value
-		if (value.CheckType<wxCheckBoxState>() && value.GetAs<wxCheckBoxState>(&tempState))
+		if (value.CheckType<wxCheckBoxState>() && value.GetAs(&tempState))
 		{
 			switch (tempState)
 			{
@@ -50,7 +50,7 @@ bool KxDataViewToggleRenderer::GetValueAsToggleState(const wxAny& value, ToggleS
 	// Check for bool
 	{
 		bool checked = false;
-		if (value.CheckType<bool>() && value.GetAs<bool>(&checked))
+		if (value.CheckType<bool>() && value.GetAs(&checked))
 		{
 			state = checked ? ToggleState::Checked : ToggleState::Unchecked;
 			return true;

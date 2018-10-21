@@ -4,7 +4,7 @@
 bool KxDataViewProgressRenderer::SetValue(const wxAny& value)
 {
 	m_Value = KxDataViewProgressValue();
-	if (!value.GetAs<KxDataViewProgressValue>(&m_Value))
+	if (!value.GetAs(&m_Value))
 	{
 		int position = -1;
 		if (value.GetAs<int>(&position) && position >= 0)
