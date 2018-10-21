@@ -685,6 +685,9 @@
     <ClInclude Include="KxFramework\KxIFileFinder.h">
       <Filter>Header Files\FileSystem</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxWxRTTI.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1161,6 +1164,9 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxIFileFinder.cpp">
       <Filter>Source Files\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxRTTI.cpp">
+      <Filter>Source Files\General</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -379,6 +379,7 @@
     <ClInclude Include="KxFramework\KxWithDropdownMenu.h" />
     <ClInclude Include="KxFramework\KxWithImageList.h" />
     <ClInclude Include="KxFramework\KxWithOptions.h" />
+    <ClInclude Include="KxFramework\KxWxRTTI.h" />
     <ClInclude Include="KxFramework\KxXDocumentNode.h" />
     <ClInclude Include="KxFramework\KxXML.h" />
     <ClInclude Include="KxFramework\XML\TinyXML2 HTML5 Printer.h" />
@@ -535,6 +536,7 @@
     <ClCompile Include="KxFramework\KxRadioButton.cpp" />
     <ClCompile Include="KxFramework\KxRegistry.cpp" />
     <ClCompile Include="KxFramework\KxRichToolTip.cpp" />
+    <ClCompile Include="KxFramework\KxRTTI.cpp" />
     <ClCompile Include="KxFramework\KxSearchBox.cpp" />
     <ClCompile Include="KxFramework\KxSecretStore.cpp" />
     <ClCompile Include="KxFramework\KxSharedMemory.cpp" />

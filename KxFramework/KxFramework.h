@@ -207,7 +207,5 @@ using KxStringToStringUMap = std::unordered_map<wxString, wxString>;
 
 /* KxFramework */
 #include <KxFramework/KxStandardID.h>
-#include "KxFramework/KxRTTI.h"
 #include "KxFramework/KxString.h"
 #include "KxFramework/KxColor.h"
-

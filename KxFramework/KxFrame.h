@@ -25,6 +25,17 @@ class KxFrame: public KxTopLevelWindow<wxFrame>
 					const wxSize& size = wxDefaultSize,
 					long style = DefaultStyle
 		);
+		bool Create(wxWindow* parent,
+					wxWindowID id,
+					const wxPoint& pos = wxDefaultPosition,
+					const wxSize& size = wxDefaultSize,
+					long style = DefaultStyle,
+					const wxString& name = wxEmptyString
+		)
+		{
+			SetName(name);
+			return Create(parent, id, wxEmptyString, pos, size, style);
+		}
 		virtual ~KxFrame();
 		
 	public:
