@@ -5,9 +5,6 @@
 
 class KxMenu: public wxMenu
 {
-	private:
-		static KxMenu* m_CurrentMenu;
-
 	public:
 		static bool EndMenu();
 		static KxMenu* GetCurrentMenu();
@@ -52,14 +49,8 @@ class KxMenu: public wxMenu
 		void OnHoverItem(wxMenuEvent& event);
 
 	protected:
-		KxMenuItem* FindItemByEvent(const wxEvent& event, KxMenu** menu = NULL);
-		void wxYieldForCommandsOnly();
-		WORD ShowNoEvent(wxWindow* window = NULL, const wxPoint& pos = wxDefaultPosition, DWORD alignment = DefaultAlignment);
+		virtual WORD DoShowMenu(wxWindow* window, const wxPoint& pos, DWORD alignment, bool async);
 		void ProcessItemSelection(int menuWxID, wxCommandEvent* event = NULL);
-		void ProcessItemSelection(WORD menuWinID, wxCommandEvent* event = NULL)
-		{
-			ProcessItemSelection(WinIDToWx(menuWinID));
-		}
 
 	public:
 		static int WinIDToWx(UINT menuWinID)
@@ -80,7 +71,6 @@ class KxMenu: public wxMenu
 		}
 
 	public:
-		static const DWORD AlignmentMask = TPM_LEFTALIGN|TPM_CENTERALIGN|TPM_RIGHTALIGN|TPM_TOPALIGN|TPM_VCENTERALIGN|TPM_BOTTOMALIGN|TPM_HORIZONTAL|TPM_VERTICAL;
 		static const DWORD DefaultAlignment = TPM_LEFTALIGN|TPM_TOPALIGN;
 
 		KxMenu(const wxString& label = wxEmptyString, long style = 0);
@@ -92,9 +82,14 @@ class KxMenu: public wxMenu
 			return true;
 		}
 
-		virtual wxWindowID Show(wxWindow* window = NULL, const wxPoint& pos = wxDefaultPosition, DWORD alignment = DefaultAlignment);
-		virtual wxWindowID ShowAsPopup(wxWindow* window, int offset = 1, DWORD alignment = DefaultAlignment);
+	public:
+		wxWindowID Show(wxWindow* window = NULL, const wxPoint& pos = wxDefaultPosition, DWORD alignment = DefaultAlignment);
+		wxWindowID ShowAsPopup(wxWindow* window, int offset = 1, DWORD alignment = DefaultAlignment);
 
+		void ShowAsync(wxWindow& window, const wxPoint& pos = wxDefaultPosition, DWORD alignment = DefaultAlignment);
+		void ShowAsPopupAsync(wxWindow& window, int offset = 1, DWORD alignment = DefaultAlignment);
+
+	public:
 		virtual KxMenuItem* Add(KxMenuItem* item);
 		KxMenuItem* Add(KxMenu* subMenu, const wxString& label, const wxString& helpString = wxEmptyString);
 		KxMenuItem* AddSeparator();
@@ -107,7 +102,7 @@ class KxMenu: public wxMenu
 		KxMenuItem* Prepend(KxMenu* subMenu, const wxString& label, const wxString& helpString = wxEmptyString);
 		KxMenuItem* PrependSeparator();
 
-		KxMenuItem* FindChildItem(wxWindowID id, size_t* nPosPtr = NULL) const;
+		KxMenuItem* FindChildItem(wxWindowID id, size_t* posPtr = NULL) const;
 		KxMenuItem* FindItem(wxWindowID id, KxMenu** menu = NULL) const;
 		KxMenuItem* FindItemByPosition(size_t pos) const;
 

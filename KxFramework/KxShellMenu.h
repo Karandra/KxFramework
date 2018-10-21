@@ -9,10 +9,6 @@ class KxShellMenu: public KxMenu
 	friend class KxMenu;
 
 	private:
-		static const int MinShellItemID = 0x1;
-		static const int MaxShellItemID = 0x7FFF;
-	
-	private:
 		KxCOMInit m_Initializer;
 
 		KxCOMPtr<IContextMenu> m_ShellMenu;
@@ -27,6 +23,9 @@ class KxShellMenu: public KxMenu
 		wxString GetCommandString(WORD menuWinID) const;
 		wxString GetHelpString(WORD menuWinID) const;
 
+	protected:
+		virtual WORD DoShowMenu(wxWindow* window, const wxPoint& pos, DWORD alignment, bool async) override;
+
 	public:
 		KxShellMenu();
 		KxShellMenu(const wxString& path);
@@ -37,7 +36,6 @@ class KxShellMenu: public KxMenu
 		{
 			return m_Initializer && m_ShellMenu && m_ShellFolder && m_ShellItemList;
 		}
-		virtual wxWindowID Show(wxWindow* window = NULL, const wxPoint& pos = wxDefaultPosition, DWORD alignment = DefaultAlignment) override;
 
 	public:
 		wxDECLARE_DYNAMIC_CLASS_NO_COPY(KxShellMenu);

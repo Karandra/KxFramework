@@ -2,10 +2,172 @@
 #include "KxFramework/KxMenu.h"
 #include "KxFramework/KxMenuEvent.h"
 #include "KxFramework/KxShellMenu.h"
+#include <thread>
+
+namespace
+{
+	KxMenu* ms_CurrentMenu = NULL;
+
+	void wxYieldForCommandsOnly()
+	{
+		// This right from wxWindowMSW::DoPopupMenu
+
+		// peek all WM_COMMANDs (it will always return WM_QUIT too but we don't
+		// want to process it here)
+		MSG msg;
+		while (::PeekMessageW(&msg, (HWND)NULL, WM_COMMAND, WM_COMMAND, PM_REMOVE))
+		{
+			if (msg.message == WM_QUIT)
+			{
+				// if we retrieved a WM_QUIT, insert back into the message queue.
+				::PostQuitMessage(0);
+				break;
+			}
+
+			// luckily (as we don't have access to wxEventLoopImpl method from here
+			// anyhow...) we don't need to pre-process WM_COMMANDs so dispatch it
+			// immediately
+			::TranslateMessage(&msg);
+			::DispatchMessageW(&msg);
+		}
+	}
+	wxWindowID TranslateItemID(wxWindowID id)
+	{
+		// See KxMenuItem::GetEffectiveID
+		if (id < 0)
+		{
+			return id;
+		}
+		else
+		{
+			return id + 1;
+		}
+	}
+
+	wxPoint TranslateCoordinates(wxWindow* window, const wxPoint& showPos)
+	{
+		wxPoint pos = showPos;
+		if (!pos.IsFullySpecified())
+		{
+			pos = wxGetMousePosition();
+		}
+		else if (window)
+		{
+			pos = window->ClientToScreen(pos);
+		}
+		return pos;
+	}
+	wxPoint TranslateCoordinatesAsPopup(wxWindow* window, int offset, DWORD alignment)
+	{
+		offset = std::abs(offset);
+		wxSize size = window->GetSize();
+		wxPoint pos(0, size.GetHeight() + offset); // TPM_LEFTALIGN|TPM_TOPALIGN == 0
+		if (alignment & TPM_RIGHTALIGN)
+		{
+			pos.x = size.GetWidth();
+		}
+		if (alignment & TPM_BOTTOMALIGN)
+		{
+			pos.y = -offset;
+		}
+		return pos;
+	}
+
+	HWND GetParentWindowHandle(wxWindow* window)
+	{
+		if (window = wxGetTopLevelParent(window))
+		{
+			return window->GetHandle();
+		}
+		else if(window = wxTheApp->GetTopWindow())
+		{
+			return window->GetHandle();
+		}
+		return NULL;
+	}
+	wxWindowID GetSelectedItemID(KxMenu* menu, WORD winID)
+	{
+		wxWindowID menuWxID = KxMenu::WinMenuRetToWx(winID);
+		KxMenuItem* item = dynamic_cast<KxMenuItem*>(menu->wxMenu::FindItem(menuWxID));
+		return item ? item->GetId() : wxID_NONE;
+	}
+
+	void SendOrQueueEvent(KxMenu* menu, KxMenuEvent& event)
+	{
+		if (wxThread::IsMain())
+		{
+			menu->ProcessEvent(event);
+		}
+		else
+		{
+			menu->QueueEvent(event.Clone());
+		}
+	}
+	void SendOnShowEvent(KxMenu* menu, const wxPoint& pos)
+	{
+		KxMenuEvent event(KxEVT_MENU_OPEN, menu);
+		event.SetPosition(pos);
+		event.SetPopup(true);
+		menu->ProcessEvent(event);
+	}
+	void SendOnCloseEvent(KxMenu* menu, const wxPoint& pos)
+	{
+		KxMenuEvent event(KxEVT_MENU_CLOSE, menu);
+		event.SetPosition(pos);
+		event.SetPopup(true);
+		menu->ProcessEvent(event);
+	}
+	KxMenuItem* FindItemByEvent(KxMenu* menu, const wxEvent& event, KxMenu** owningMenu = NULL)
+	{
+		if (event.GetId() != wxID_NONE)
+		{
+			return menu->FindItem(event.GetId(), owningMenu);
+		}
+		return NULL;
+	}
+
+	class ShowMenuScope
+	{
+		private:
+			KxMenu& m_Menu;
+			wxWindow* m_Window = NULL;
+			HWND m_Handle = NULL;
+
+		public:
+			ShowMenuScope(KxMenu& menu, wxWindow* window, HWND hWnd)
+				:m_Menu(menu), m_Window(window), m_Handle(hWnd)
+			{
+				if (m_Window)
+				{
+					m_Menu.SetInvokingWindow(m_Window);
+				}
+				if (m_Handle)
+				{
+					SetForegroundWindow(m_Handle);
+				}
+				m_Menu.UpdateUI();
+			}
+			~ShowMenuScope()
+			{
+				if (m_Window)
+				{
+					m_Menu.SetInvokingWindow(NULL);
+				}
+				if (m_Handle)
+				{
+					::PostMessageW(m_Handle, WM_NULL, 0, 0);
+				}
+				if (wxThread::IsMain())
+				{
+					wxYieldForCommandsOnly();
+				}
+			}
+	};
+
+	const DWORD AlignmentMask = TPM_LEFTALIGN|TPM_CENTERALIGN|TPM_RIGHTALIGN|TPM_TOPALIGN|TPM_VCENTERALIGN|TPM_BOTTOMALIGN|TPM_HORIZONTAL|TPM_VERTICAL;
+}
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxMenu, wxMenu);
-
-KxMenu* KxMenu::m_CurrentMenu = NULL;
 
 bool KxMenu::EndMenu()
 {
@@ -13,17 +175,9 @@ bool KxMenu::EndMenu()
 }
 KxMenu* KxMenu::GetCurrentMenu()
 {
-	return m_CurrentMenu;
+	return ms_CurrentMenu;
 }
 
-KxMenuItem* KxMenu::FindItemByEvent(const wxEvent& event, KxMenu** menu)
-{
-	if (event.GetId() != wxID_NONE)
-	{
-		return FindItem(event.GetId(), menu);
-	}
-	return NULL;
-}
 void KxMenu::OnSelectItem(wxCommandEvent& event)
 {
 	if (event.GetId() != wxID_NONE)
@@ -33,7 +187,7 @@ void KxMenu::OnSelectItem(wxCommandEvent& event)
 }
 void KxMenu::OnHoverItem(wxMenuEvent& event)
 {
-	KxMenuItem* item = FindItemByEvent(event);
+	KxMenuItem* item = FindItemByEvent(this, event);
 	if (item)
 	{
 		KxMenuEvent itemEvent(KxEVT_MENU_HOVER, item->GetMenu(), item);
@@ -58,92 +212,25 @@ void KxMenu::OnHoverItem(wxMenuEvent& event)
 	event.Skip(false);
 }
 
-void KxMenu::wxYieldForCommandsOnly()
+WORD KxMenu::DoShowMenu(wxWindow* window, const wxPoint& showPos, DWORD alignment, bool async)
 {
-	// This right from wxWindowMSW::DoPopupMenu
+	wxPoint pos = TranslateCoordinates(window, showPos);
+	HWND hWnd = GetParentWindowHandle(window);
 
-	// peek all WM_COMMANDs (it will always return WM_QUIT too but we don't
-	// want to process it here)
-	MSG msg;
-	while (::PeekMessageW(&msg, (HWND)NULL, WM_COMMAND, WM_COMMAND, PM_REMOVE))
-	{
-		if (msg.message == WM_QUIT)
-		{
-			// if we retrieved a WM_QUIT, insert back into the message queue.
-			::PostQuitMessage(0);
-			break;
-		}
+	ShowMenuScope showMenuScope(*this, window, hWnd);
+	SendOnShowEvent(this, pos);
 
-		// luckily (as we don't have access to wxEventLoopImpl method from here
-		// anyhow...) we don't need to pre-process WM_COMMANDs so dispatch it
-		// immediately
-		::TranslateMessage(&msg);
-		::DispatchMessageW(&msg);
-	}
-}
-WORD KxMenu::ShowNoEvent(wxWindow* window, const wxPoint& showPos, DWORD alignment)
-{
-	wxPoint pos = showPos;
-
-	// Check position
-	if (pos == wxDefaultPosition)
+	if (!async)
 	{
-		pos = wxGetMousePosition();
-	}
-	else
-	{
-		if (window)
-		{
-			pos = window->ClientToScreen(pos);
-		}
+		ms_CurrentMenu = this;
 	}
 
-	HWND hWnd = NULL;
-	if (window)
+	int ret = ::TrackPopupMenu(GetHMenu(), (async ? 0 : TPM_RETURNCMD)|TPM_RECURSE|TPM_LEFTBUTTON|(alignment & AlignmentMask), pos.x, pos.y, 0, hWnd, NULL);
+	
+	if (!async)
 	{
-		hWnd = window->GetHandle();
-	}
-	else
-	{
-		if (wxTheApp->GetTopWindow())
-		{
-			window = wxTheApp->GetTopWindow();
-			hWnd = window->GetHandle();
-		}
-	}
-	if (window)
-	{
-		SetInvokingWindow(window);
-		SetForegroundWindow(hWnd);
-	}
-	UpdateUI();
-
-	KxMenuEvent onShowEvent(KxEVT_MENU_OPEN, this);
-	onShowEvent.SetPosition(pos);
-	onShowEvent.SetPopup(true);
-	ProcessEvent(onShowEvent);
-
-	m_CurrentMenu = this;
-	int ret = ::TrackPopupMenu(GetHMenu(), TPM_RETURNCMD|TPM_RECURSE|TPM_LEFTBUTTON|(alignment & AlignmentMask), pos.x, pos.y, 0, hWnd, NULL);
-	m_CurrentMenu = NULL;
-
-	KxMenuEvent onCloseEvent(KxEVT_MENU_CLOSE, this);
-	onCloseEvent.SetPosition(pos);
-	onCloseEvent.SetPopup(true);
-	ProcessEvent(onCloseEvent);
-
-	if (hWnd)
-	{
-		PostMessageW(hWnd, WM_NULL, 0, 0);
-	}
-	if (wxThread::IsMain())
-	{
-		wxYieldForCommandsOnly();
-	}
-
-	if (window)
-	{
-		SetInvokingWindow(NULL);
+		ms_CurrentMenu = NULL;
+		SendOnCloseEvent(this, pos);
 	}
 	return ret;
 }
@@ -184,7 +271,7 @@ void KxMenu::ProcessItemSelection(int menuWxID, wxCommandEvent* event)
 	}
 
 	// Process in menu itself if item event handler did not process (or skip) this event
-	if (allowSendEvent)
+	if (allowSendEvent && item)
 	{
 		KxMenuEvent menuEvent(KxEVT_MENU_SELECT, item->GetMenu(), item);
 		menuEvent.SetEventObject(this);
@@ -209,30 +296,29 @@ KxMenu::~KxMenu()
 
 wxWindowID KxMenu::Show(wxWindow* window, const wxPoint& pos, DWORD alignment)
 {
-	WORD menuWinID = ShowNoEvent(window, pos, alignment);
+	WORD menuWinID = DoShowMenu(window, pos, alignment, false);
+	wxWindowID id = GetSelectedItemID(this, menuWinID);
+
 	if (menuWinID != 0)
 	{
-		ProcessItemSelection(menuWinID);
+		ProcessItemSelection(id);
 	}
-
-	wxWindowID menuWxID = WinMenuRetToWx(menuWinID);
-	KxMenuItem* item = dynamic_cast<KxMenuItem*>(FindItem(menuWxID));
-	return item ? item->GetId() : menuWxID;
+	return id;
 }
 wxWindowID KxMenu::ShowAsPopup(wxWindow* window, int offset, DWORD alignment)
 {
-	offset = std::abs(offset);
-	wxSize size = window->GetSize();
-	wxPoint pos(0, size.GetHeight() + offset); // TPM_LEFTALIGN|TPM_TOPALIGN == 0
-	if (alignment & TPM_RIGHTALIGN)
-	{
-		pos.x = size.GetWidth();
-	}
-	if (alignment & TPM_BOTTOMALIGN)
-	{
-		pos.y = -offset;
-	}
+	wxPoint pos = TranslateCoordinatesAsPopup(window, offset, alignment);
 	return Show(window, pos, alignment);
+}
+
+void KxMenu::ShowAsync(wxWindow& window, const wxPoint& pos, DWORD alignment)
+{
+	DoShowMenu(&window, pos, alignment, true);
+}
+void KxMenu::ShowAsPopupAsync(wxWindow& window, int offset, DWORD alignment)
+{
+	wxPoint pos = TranslateCoordinatesAsPopup(&window, offset, alignment);
+	ShowAsync(window, pos, alignment);
 }
 
 KxMenuItem* KxMenu::Add(KxMenuItem* item)
@@ -274,19 +360,18 @@ KxMenuItem* KxMenu::PrependSeparator()
 	return Prepend(new KxMenuItem(wxID_SEPARATOR, wxEmptyString, wxEmptyString, wxITEM_SEPARATOR));
 }
 
-KxMenuItem* KxMenu::FindChildItem(wxWindowID id, size_t* nPosPtr) const
+KxMenuItem* KxMenu::FindChildItem(wxWindowID id, size_t* posPtr) const
 {
-	return static_cast<KxMenuItem*>(wxMenu::FindChildItem(id, nPosPtr));
+	return static_cast<KxMenuItem*>(wxMenu::FindChildItem(TranslateItemID(id), posPtr));
 }
 KxMenuItem* KxMenu::FindItem(wxWindowID id, KxMenu** menu) const
 {
-	wxMenu* pWxMenu = NULL;
-	KxMenuItem* item = static_cast<KxMenuItem*>(wxMenu::FindItem(id, &pWxMenu));
+	wxMenu* menuWx = NULL;
+	KxMenuItem* item = static_cast<KxMenuItem*>(wxMenu::FindItem(TranslateItemID(id), &menuWx));
 	if (menu)
 	{
-		*menu = static_cast<KxMenu*>(pWxMenu);
+		*menu = static_cast<KxMenu*>(menuWx);
 	}
-
 	return item;
 }
 KxMenuItem* KxMenu::FindItemByPosition(size_t pos) const

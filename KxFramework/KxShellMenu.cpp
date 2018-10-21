@@ -8,6 +8,12 @@
 #include <Shldisp.h>
 #include <ShlObj.h>
 
+namespace
+{
+	const int MinShellItemID = 0x1;
+	const int MaxShellItemID = 0x7FFF;
+}
+
 wxIMPLEMENT_DYNAMIC_CLASS(KxShellMenu, KxMenu);
 
 KxShellMenu::KxShellMenu()
@@ -78,26 +84,27 @@ wxString KxShellMenu::GetHelpString(WORD menuWinID) const
 	return GetString(menuWinID, GCS_HELPTEXTW);
 }
 
-wxWindowID KxShellMenu::Show(wxWindow* window, const wxPoint& pos, DWORD alignment)
+WORD KxShellMenu::DoShowMenu(wxWindow* window, const wxPoint& pos, DWORD alignment, bool async)
 {
-	WORD menuWinID = ShowNoEvent(window, pos, alignment);
-	if (menuWinID != 0)
+	// Async is not supported here
+	WORD winID = KxMenu::DoShowMenu(window, pos, alignment, false);
+	if (winID != 0)
 	{
 		KxMenuEvent menuEvent(KxEVT_MENU_SELECT, this);
 		menuEvent.SetEventObject(this);
-		menuEvent.SetId(WinMenuRetToWx(menuWinID));
-		menuEvent.SetInt(IsSystemItemID(menuWinID));
-		menuEvent.SetString(GetCommandString(menuWinID));
-		menuEvent.SetHelpString(GetHelpString(menuWinID));
+		menuEvent.SetId(WinMenuRetToWx(winID));
+		menuEvent.SetInt(IsSystemItemID(winID));
+		menuEvent.SetString(GetCommandString(winID));
+		menuEvent.SetHelpString(GetHelpString(winID));
 		menuEvent.SetPosition(pos);
 		menuEvent.SetPopup(true);
-		bool bProcessed = SafelyProcessEvent(menuEvent);
+		bool isProcessed = SafelyProcessEvent(menuEvent);
 
 		// If selection wasn't processed or skipped invoke shell command
-		if (!bProcessed || menuEvent.GetSkipped())
+		if (!isProcessed || menuEvent.GetSkipped())
 		{
-			InvokeCommand(window ? window->GetHandle() : NULL, menuWinID);
+			InvokeCommand(window ? window->GetHandle() : NULL, winID);
 		}
 	}
-	return WinMenuRetToWx(menuWinID);
+	return winID;
 }
