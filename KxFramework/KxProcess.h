@@ -16,11 +16,10 @@ enum KxProcessOptions
 {
 	KxPROCESS_NONE = 0,
 	KxPROCESS_DETACHED = 1 << 0,
-	KxPROCESS_SYNC_EVENTS = 1 << 1,
-	KxPROCESS_WAIT_END = 1 << 2,
-	KxPROCESS_WAIT_INPUT_IDLE = 1 << 3,
+	KxPROCESS_WAIT_END = 1 << 1,
+	KxPROCESS_WAIT_INPUT_IDLE = 1 << 2,
 
-	KxPROCESS_DEFAULT_OPTIONS = KxPROCESS_WAIT_END,
+	KxPROCESS_DEFAULT_OPTIONS = KxPROCESS_NONE,
 };
 
 enum KxProcessWaitMode
@@ -72,6 +71,11 @@ class KxProcess: public wxEvtHandler, public KxWithOptions<KxProcessOptions, KxP
 		virtual bool OnDynamicBind(wxDynamicEventTableEntry& entry) override;
 		virtual void OnDynamicUnbind(wxDynamicEventTableEntry& entry) override;
 		#endif
+
+		bool IsDetached() const
+		{
+			return IsOptionEnabled(KxPROCESS_DETACHED);
+		}
 		
 		// IO Redirection functions
 		static void RIO_ReadStream(wxInputStream* stream, wxMemoryBuffer& buffer);

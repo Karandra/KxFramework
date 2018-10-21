@@ -81,7 +81,7 @@ void* KxProcessThread::ConvertEnvTable(const KxProcessEnvMap& envTable, wxMemory
 }
 void KxProcessThread::SendEventSyncAsync(wxEvent* event)
 {
-	if (m_EventHandler->IsOptionEnabled(KxPROCESS_SYNC_EVENTS))
+	if (m_RunMode == KxPROCESS_RUN_SYNC)
 	{
 		m_EventHandler->ProcessEvent(*event);
 		delete event;
@@ -238,23 +238,21 @@ bool KxProcessThread::WaitProcessIdle(PROCESS_INFORMATION& processInfo)
 }
 void KxProcessThread::SendProcessEndEvent()
 {
-	wxCriticalSectionLocker tLock(m_EndCS);
+	wxCriticalSectionLocker lock(m_EndCS);
 	if (IsProcessAlive())
 	{
 		m_EndSignaled = true;
+
+		wxProcessEvent* event = new wxProcessEvent(wxID_NONE, m_EventHandler->m_PID, m_EventHandler->m_ExitCode);
+		event->SetEventType(KxEVT_PROCESS_END);
+		event->SetEventObject(m_EventHandler);
+		SendEventSyncAsync(event);
+
 		if (m_EventHandler->IsOptionEnabled(KxPROCESS_DETACHED))
 		{
 			delete m_EventHandler;
 			m_EventHandler = NULL;
 			return;
-		}
-
-		if (m_EventHandler && m_RunMode == KxPROCESS_RUN_ASYNC)
-		{
-			wxProcessEvent* event = new wxProcessEvent(wxID_NONE, m_EventHandler->m_PID, m_EventHandler->m_ExitCode);
-			event->SetEventType(KxEVT_PROCESS_END);
-			event->SetEventObject(m_EventHandler);
-			SendEventSyncAsync(event);
 		}
 	}
 }
@@ -287,12 +285,12 @@ KxProcessThread::ExitCode KxProcessThread::Entry()
 	return 0;
 }
 
-KxProcessThread::KxProcessThread(KxProcess* eventHandler, bool hideUI, HANDLE processHandle)
-	:m_EventHandler(eventHandler), m_RunMode(KxPROCESS_RUN_ASYNC), m_HideUI(hideUI), m_Handle(processHandle), m_IsRedirectedIO(eventHandler->IsRedirected())
-{
-}
 KxProcessThread::KxProcessThread(KxProcess* eventHandler, KxProcessWaitMode runMode, bool hideUI, HANDLE processHandle)
-	:m_EventHandler(eventHandler), m_RunMode(runMode), m_HideUI(hideUI), m_Handle(processHandle), m_IsRedirectedIO(eventHandler->IsRedirected())
+	:m_EventHandler(eventHandler),
+	m_RunMode(runMode),
+	m_HideUI(hideUI),
+	m_Handle(processHandle),
+	m_IsRedirectedIO(eventHandler->IsRedirected())
 {
 }
 KxProcessThread::~KxProcessThread()

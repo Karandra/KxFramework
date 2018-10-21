@@ -253,19 +253,27 @@ int KxProcess::Run(KxProcessWaitMode waitMode, bool hideUI)
 	m_ExitCode = DefaultExitCode;
 	m_ProcessCreationStatus = false;
 
-	if (!m_ExecutablePath.IsEmpty())
+	if (waitMode == KxPROCESS_RUN_ASYNC)
 	{
-		if (waitMode == KxPROCESS_RUN_ASYNC)
+		auto thread = new KxProcessThread(this, waitMode, hideUI);
+		if (thread->Run() != wxTHREAD_NO_ERROR)
 		{
-			auto thread = new KxProcessThread(this, hideUI);
-			if (thread->Run() != wxTHREAD_NO_ERROR)
+			delete thread;
+			if (IsDetached())
 			{
-				delete thread;
+				delete this;
 			}
 		}
-		else
+	}
+	else if (waitMode == KxPROCESS_RUN_SYNC)
+	{
+		KxProcessThread(this, waitMode, hideUI).RunHere();
+	}
+	else
+	{
+		if (IsDetached())
 		{
-			KxProcessThread(this, hideUI).RunHere();
+			delete this;
 		}
 	}
 	return m_ExitCode;
@@ -473,13 +481,11 @@ const KxProcessEnvMap& KxProcess::GetEnvironment() const
 bool KxProcess::Attach(KxProcessWaitMode waitMode)
 {
 	DWORD attachPID = DefaultPID;
-	auto list = EnumProcesses();
-
-	wxString sThisName = GetImageName().AfterLast('\\');
-	for (const DWORD& pid: list)
+	wxString thisName = GetImageName().AfterLast(wxS('\\'));
+	for (DWORD pid: EnumProcesses())
 	{
-		wxString otherName = KxProcess(pid).GetImageName().AfterLast('\\');
-		if (sThisName.IsSameAs(otherName, false))
+		wxString otherName = KxProcess(pid).GetImageName().AfterLast(wxS('\\'));
+		if (thisName.IsSameAs(otherName, false))
 		{
 			attachPID = pid;
 			break;
@@ -494,16 +500,27 @@ bool KxProcess::Attach(KxProcessWaitMode waitMode)
 		{
 			if (waitMode == KxPROCESS_RUN_ASYNC)
 			{
-				auto thread = new KxProcessThread(this, false, processHandle);
+				auto thread = new KxProcessThread(this, waitMode, false, processHandle);
 				if (thread->Run() != wxTHREAD_NO_ERROR)
 				{
 					delete thread;
+					if (IsDetached())
+					{
+						delete this;
+					}
 					return false;
 				}
 			}
-			else
+			else if (waitMode == KxPROCESS_RUN_SYNC)
 			{
 				KxProcessThread(this, waitMode, false, processHandle).RunHere();
+			}
+			else
+			{
+				if (IsDetached())
+				{
+					delete this;
+				}
 			}
 			return true;
 		}

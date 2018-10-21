@@ -8,7 +8,7 @@ class KxProcessThread: public wxThread
 {
 	protected:
 		KxProcess* m_EventHandler = NULL;
-		const KxProcessWaitMode m_RunMode;
+		const KxProcessWaitMode m_RunMode = KxPROCESS_RUN_ASYNC;
 		const bool m_IsRedirectedIO;
 		bool m_HideUI = true;
 		bool m_IsProcessCreated = false;
@@ -38,7 +38,6 @@ class KxProcessThread: public wxThread
 		virtual ExitCode Entry() override;
 
 	public:
-		KxProcessThread(KxProcess* eventHandler, bool hideUI = true, HANDLE processHandle = INVALID_HANDLE_VALUE);
 		KxProcessThread(KxProcess* eventHandler, KxProcessWaitMode runMode, bool hideUI = true, HANDLE processHandle = INVALID_HANDLE_VALUE);
 		virtual ~KxProcessThread();
 
