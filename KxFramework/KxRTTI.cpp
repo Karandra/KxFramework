@@ -4,7 +4,7 @@
 
 namespace
 {
-	std::atomic<size_t> ms_TypeID = 0;
+	std::atomic<size_t> ms_TypeID = 1;
 }
 
 size_t KxRTTI::NewTypeID()
