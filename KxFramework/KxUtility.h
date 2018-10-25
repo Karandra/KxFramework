@@ -1,5 +1,6 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include <array>
 
 class KxUtility
 {
@@ -135,62 +136,17 @@ class KxUtility
 		}
 
 		static bool StringToBool(const wxString& value, bool* isUnknown = NULL);
-};
 
-class KxAlignedAllocator
-{
-	private:
-		void* m_Source = NULL;
-		void* m_Aligned = NULL;
-		size_t m_Size = 0;
-
-	public:
-		KxAlignedAllocator(size_t size)
-			:m_Size(size)
+		template<class... Args> constexpr static size_t SizeOfParameterPack()
 		{
-			m_Source = std::malloc(size);
-		}
-		~KxAlignedAllocator()
-		{
-			std::free(m_Source);
-		}
+			const constexpr size_t count = sizeof...(Args);
+			const constexpr std::array<size_t, count> sizes = {sizeof(Args)...};
 
-		void ReAlloc(size_t size)
-		{
-			m_Aligned = NULL;
-			m_Size = size;
-
-			void* temp = std::realloc(m_Source, size);
-			if (temp)
+			size_t sum = 0;
+			for (const size_t& size: sizes)
 			{
-				m_Source = temp;
+				sum += size;
 			}
-		}
-		template <typename T> T* Align(size_t a = alignof(T))
-		{
-			m_Aligned = NULL;
-			if (std::align(a, sizeof(T), m_Aligned, m_Size))
-			{
-				m_Aligned = reinterpret_cast<T*>(m_Source);
-				return m_Aligned;
-			}
-			return NULL;
-		}
-
-		size_t GetSize() const
-		{
-			return m_Size;
-		}
-		const void* GetSoure() const
-		{
-			return m_Source;
-		}
-		void* GetAligned()
-		{
-			return m_Aligned;
-		}
-		const void* GetAligned() const
-		{
-			return m_Aligned;
+			return sum;
 		}
 };
