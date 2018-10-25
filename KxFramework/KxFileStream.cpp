@@ -6,250 +6,275 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 */
 #include "KxStdAfx.h"
 #include "KxFramework/KxFileStream.h"
+#include "KxFramework/KxUtility.h"
 #include <wx/ustring.h>
 
-namespace Utils
+namespace
 {
-	template<class T> bool RemoveLastNullChar(std::vector<T>& data)
+	KxStreamBase::Offset GetFileSizeByHandle(HANDLE fileHandle)
 	{
-		if (!data.empty() && data.back() == 0)
+		LARGE_INTEGER size = {0};
+		if (::GetFileSizeEx(fileHandle, &size))
 		{
-			data.pop_back();
-			return true;
+			return size.QuadPart;
 		}
-		return false;
+		return KxStreamBase::InvalidOffset;
+	}
+	KxStreamBase::Offset SeekByHandle(HANDLE fileHandle, KxStreamBase::Offset offset, KxStreamBase::SeekMode seekMode)
+	{
+		using SeekMode = KxStreamBase::SeekMode;
+
+		DWORD seekModeWin = (DWORD)-1;
+		switch (seekMode)
+		{
+			case SeekMode::FromStart:
+			{
+				seekModeWin = FILE_BEGIN;
+				break;
+			}
+			case SeekMode::FromEnd:
+			{
+				seekModeWin = FILE_END;
+				break;
+			}
+			case SeekMode::FromCurrent:
+			{
+				seekModeWin = FILE_CURRENT;
+				break;
+			}
+			default:
+			{
+				return KxStreamBase::InvalidOffset;
+			}
+		};
+
+		LARGE_INTEGER moveTo = {0};
+		moveTo.QuadPart = offset;
+
+		LARGE_INTEGER newOffset = {0};
+		if (::SetFilePointerEx(fileHandle, moveTo, &newOffset, seekModeWin))
+		{
+			return newOffset.QuadPart;
+		}
+		return KxStreamBase::InvalidOffset;
+	}
+	KxStreamBase::Offset GetPositionByHandle(HANDLE fileHandle)
+	{
+		LARGE_INTEGER offset = {0};
+		::SetFilePointerEx(fileHandle, offset, &offset, FILE_CURRENT);
+		return offset.QuadPart;
+	}
+	wxString GetFileNameByHandle(HANDLE fileHandle)
+	{
+		wxString out;
+		const DWORD flags = VOLUME_NAME_DOS|FILE_NAME_NORMALIZED;
+		const DWORD length = ::GetFinalPathNameByHandleW(fileHandle, NULL, 0, flags);
+		if (length != 0)
+		{
+			::GetFinalPathNameByHandleW(fileHandle, wxStringBuffer(out, length), length, flags);
+			out.erase(0, 4); // Remove '\\?\' prefix
+		}
+		return out;
+	}
+
+	KxStreamBase::ErrorCode TranslateErrorCode(DWORD winErrorCode, bool isWrite)
+	{
+		using ErrorCode = KxStreamBase::ErrorCode;
+
+		if (winErrorCode == ERROR_SUCCESS)
+		{
+			return ErrorCode::Success;
+		}
+		else if (winErrorCode == ERROR_HANDLE_EOF)
+		{
+			return ErrorCode::EndOfFile;
+		}
+		else
+		{
+			return isWrite ? ErrorCode::WriteError : ErrorCode::ReadError;
+		}
+	}
+	DWORD AccessModeToNative(int mode)
+	{
+		using Access = KxFileStream::Access;
+
+		if (mode == Access::None)
+		{
+			return 0;
+		}
+		else if (mode != Access::Invalid)
+		{
+			DWORD nativeMode = 0;
+			KxUtility::ModFlagRef(nativeMode, GENERIC_READ, mode & Access::Read);
+			KxUtility::ModFlagRef(nativeMode, GENERIC_WRITE, mode & Access::Write);
+			KxUtility::ModFlagRef(nativeMode, FILE_READ_ATTRIBUTES, mode & Access::ReadAttributes);
+			KxUtility::ModFlagRef(nativeMode, FILE_WRITE_ATTRIBUTES, mode & Access::WriteAttributes);
+			return nativeMode;
+		}
+		return Access::Invalid;
+	}
+	DWORD ShareModeToNative(int mode)
+	{
+		using Share = KxFileStream::Share;
+
+		if (mode == Share::Exclusive)
+		{
+			return 0;
+		}
+		else if (mode != Share::Invalid)
+		{
+			DWORD nativeMode = 0;
+			KxUtility::ModFlagRef(nativeMode, FILE_SHARE_READ, mode & Share::Read);
+			KxUtility::ModFlagRef(nativeMode, FILE_SHARE_WRITE, mode & Share::Write);
+			KxUtility::ModFlagRef(nativeMode, FILE_SHARE_DELETE, mode & Share::Delete);
+			return nativeMode;
+		}
+		return Share::Invalid;
+	}
+	DWORD DispositionToNative(int mode)
+	{
+		using Disposition = KxFileStream::Disposition;
+
+		switch (mode)
+		{
+			case Disposition::OpenExisting:
+			{
+				return OPEN_EXISTING;
+			}
+			case Disposition::OpenAlways:
+			{
+				return OPEN_ALWAYS;
+			}
+			case Disposition::CreateNew:
+			{
+				return CREATE_NEW;
+			}
+			case Disposition::CreateAlways:
+			{
+				return CREATE_ALWAYS;
+			}
+		};
+		return Disposition::Invalid;
+	}
+	DWORD FlagsToNative(int flags)
+	{
+		using Flags = KxFileStream::Flags;
+
+		DWORD nativeMode = 0;
+		KxUtility::ModFlagRef(nativeMode, FILE_ATTRIBUTE_NORMAL, flags & Flags::Normal);
+		KxUtility::ModFlagRef(nativeMode, FILE_FLAG_BACKUP_SEMANTICS, flags & Flags::BackupSemantics);
+		return nativeMode;
 	}
 }
 
+//////////////////////////////////////////////////////////////////////////
 wxIMPLEMENT_CLASS2(KxFileStream, wxInputStream, wxOutputStream);
 
-wxString KxFileStream::GetFileNameByHandle(HANDLE fileHandle)
-{
-	wxString out;
-	const DWORD flags = VOLUME_NAME_DOS|FILE_NAME_NORMALIZED;
-	DWORD length = ::GetFinalPathNameByHandleW(fileHandle, NULL, 0, flags);
-	if (length != 0)
-	{
-		::GetFinalPathNameByHandleW(fileHandle, wxStringBuffer(out, length), length, flags);
-		out.erase(0, 4); // Remove "\\?\" prefix
-	}
-	return out;
-}
-wxFileOffset KxFileStream::GetFileSizeByHandle(HANDLE fileHandle)
-{
-	LARGE_INTEGER size = {0};
-	if (::GetFileSizeEx(fileHandle, &size))
-	{
-		return size.QuadPart;
-	}
-	return wxInvalidOffset;
-}
-
-wxStreamError KxFileStream::TranslateErrorCode(DWORD error, bool isWrite)
-{
-	if (error == ERROR_SUCCESS)
-	{
-		return wxSTREAM_NO_ERROR;
-	}
-	else if (error == ERROR_HANDLE_EOF)
-	{
-		return wxSTREAM_EOF;
-	}
-	else
-	{
-		return isWrite ? wxSTREAM_WRITE_ERROR : wxSTREAM_READ_ERROR;
-	}
-}
-DWORD KxFileStream::SeekModeToNative(KxFileStreamSeek mode)
-{
-	switch (mode)
-	{
-		case KxFS_SEEK_CURRENT:
-		{
-			return FILE_CURRENT;
-		}
-		case KxFS_SEEK_BEGIN:
-		{
-			return FILE_BEGIN;
-		}
-		case KxFS_SEEK_END:
-		{
-			return FILE_END;
-		}
-	};
-	return (DWORD)KxFS_SEEK_INVALID;
-}
-DWORD KxFileStream::AccessModeToNative(int mode)
-{
-	if (mode == KxFS_ACCESS_NONE)
-	{
-		return 0;
-	}
-	else if (mode != KxFS_ACCESS_INVALID)
-	{
-		DWORD nativeMode = 0;
-		KxUtility::ModFlagRef(nativeMode, GENERIC_READ, mode & KxFS_ACCESS_READ);
-		KxUtility::ModFlagRef(nativeMode, GENERIC_WRITE, mode & KxFS_ACCESS_WRITE);
-		KxUtility::ModFlagRef(nativeMode, FILE_READ_ATTRIBUTES, mode & KxFS_ACCESS_READ_ATTRIBUTES);
-		KxUtility::ModFlagRef(nativeMode, FILE_WRITE_ATTRIBUTES, mode & KxFS_ACCESS_WRITE_ATTRIBUTES);
-		return nativeMode;
-	}
-	return (DWORD)KxFS_ACCESS_INVALID;
-}
-DWORD KxFileStream::ShareModeToNative(int mode)
-{
-	if (mode == KxFS_SHARE_EXCLUSIVE)
-	{
-		return 0;
-	}
-	else if (mode != KxFS_SHARE_INVALID)
-	{
-		DWORD nativeMode = 0;
-		KxUtility::ModFlagRef(nativeMode, FILE_SHARE_READ, mode & KxFS_SHARE_READ);
-		KxUtility::ModFlagRef(nativeMode, FILE_SHARE_WRITE, mode & KxFS_SHARE_WRITE);
-		KxUtility::ModFlagRef(nativeMode, FILE_SHARE_DELETE, mode & KxFS_SHARE_DELETE);
-		return nativeMode;
-	}
-	return (DWORD)KxFS_SHARE_INVALID;
-}
-DWORD KxFileStream::DispositionToNative(KxFileStreamDisposition mode)
-{
-	switch (mode)
-	{
-		case KxFS_DISP_OPEN_EXISTING:
-		{
-			return OPEN_EXISTING;
-		}
-		case KxFS_DISP_OPEN_ALWAYS:
-		{
-			return OPEN_ALWAYS;
-		}
-		case KxFS_DISP_CREATE_NEW:
-		{
-			return CREATE_NEW;
-		}
-		case KxFS_DISP_CREATE_ALWAYS:
-		{
-			return CREATE_ALWAYS;
-		}
-	};
-	return (DWORD)KxFS_DISP_INVALID;
-}
-DWORD KxFileStream::FlagsToNative(int flags)
-{
-	DWORD nativeFlags = 0;
-	if (flags & KxFS_FLAG_NORMAL)
-	{
-		nativeFlags |= FILE_ATTRIBUTE_NORMAL;
-	}
-	if (flags & KxFS_FLAG_BACKUP_SEMANTICS)
-	{
-		nativeFlags |= FILE_FLAG_BACKUP_SEMANTICS;
-	}
-	return nativeFlags;
-}
-KxFileStreamSeek KxFileStream::WxSeekModeToKx(wxSeekMode mode)
-{
-	switch (mode)
-	{
-		case wxFromCurrent:
-		{
-			return KxFS_SEEK_CURRENT;
-		}
-		case wxFromStart:
-		{
-			return KxFS_SEEK_BEGIN;
-		}
-		case wxFromEnd:
-		{
-			return KxFS_SEEK_END;
-		}
-	};
-	return KxFS_SEEK_INVALID;
-}
-
-void KxFileStream::SetError(DWORD error, bool isWrite)
+void KxFileStream::SetLastStreamError(DWORD error, bool isWrite)
 {
 	m_LastError = TranslateErrorCode(error, isWrite);
-	wxInputStream::m_lasterror = m_LastError;
-	wxOutputStream::m_lasterror = m_LastError;
+	wxInputStream::m_lasterror = (wxStreamError)m_LastError;
+	wxOutputStream::m_lasterror = (wxStreamError)m_LastError;
 }
 
 wxFileOffset KxFileStream::OnSysSeek(wxFileOffset pos, wxSeekMode mode)
 {
-	return Seek(pos, WxSeekModeToKx(mode));
+	return SeekByHandle(m_Handle, pos, static_cast<SeekMode>(mode));
 }
 wxFileOffset KxFileStream::OnSysTell() const
 {
-	return GetPosition();
+	return GetPositionByHandle(m_Handle);
 }
 size_t KxFileStream::OnSysRead(void* buffer, size_t size)
 {
 	m_LastRead = 0;
-	if (::ReadFile(m_Handle, buffer, size, &m_LastRead, NULL))
+	DWORD lastRead = 0;
+
+	if (::ReadFile(m_Handle, buffer, size, &lastRead, NULL))
 	{
-		m_Position = GetPosition();
-		SetError(ERROR_SUCCESS, false);
-		return m_LastRead;
+		SetLastStreamError(ERROR_SUCCESS, false);
 	}
 	else
 	{
-		SetError(::GetLastError(), false);
-		return 0;
+		SetLastStreamError(::GetLastError(), false);
 	}
+
+	m_Position = GetPositionByHandle(m_Handle);
+	m_LastRead = lastRead;
+	return m_LastRead;
 }
 size_t KxFileStream::OnSysWrite(const void* buffer, size_t size)
 {
 	m_LastWrite = 0;
-	if (::WriteFile(m_Handle, buffer, size, &m_LastWrite, NULL))
+	DWORD lastWrite = 0;
+
+	if (::WriteFile(m_Handle, buffer, size, &lastWrite, NULL))
 	{
-		m_Position = GetPosition();
-		SetError(ERROR_SUCCESS, true);
-		return m_LastWrite;
+		SetLastStreamError(ERROR_SUCCESS, true);
 	}
 	else
 	{
-		SetError(::GetLastError(), true);
-		return 0;
+		SetLastStreamError(::GetLastError(), true);
 	}
+
+	m_Position = GetPositionByHandle(m_Handle);
+	m_LastWrite = lastWrite;
+	return m_LastWrite;
+}
+
+bool KxFileStream::IsOpened() const
+{
+	return m_Handle != INVALID_HANDLE_VALUE && m_Handle != NULL;
+}
+bool KxFileStream::DoClose()
+{
+	if (IsOpened())
+	{
+		::CloseHandle(m_Handle);
+		m_Handle = INVALID_HANDLE_VALUE;
+		return true;
+	}
+	return false;
 }
 
 KxFileStream::KxFileStream()
 {
+	SetLastStreamError(ERROR_SUCCESS, false);
 }
-KxFileStream::KxFileStream(HANDLE fileHandle, int accessMode, KxFileStreamDisposition disposition, int shareMode, int flags)
+KxFileStream::KxFileStream(HANDLE fileHandle, int accessMode, Disposition disposition, int shareMode, int flags)
 {
+	SetLastStreamError(ERROR_SUCCESS, false);
 	Open(fileHandle, accessMode, disposition, shareMode, flags);
 }
-KxFileStream::KxFileStream(const wxString& filePath, int accessMode, KxFileStreamDisposition disposition, int shareMode, int flags)
-	:m_FilePath(filePath), m_AccessMode((KxFileStreamAccess)accessMode), m_Disposition(disposition), m_ShareMode((KxFileStreamShare)shareMode), m_Flags((KxFileStreamFlags)flags)
+KxFileStream::KxFileStream(const wxString& filePath, int accessMode, Disposition disposition, int shareMode, int flags)
+	:m_FilePath(filePath), m_AccessMode((Access)accessMode), m_Disposition(disposition), m_ShareMode((Share)shareMode), m_Flags((Flags)flags)
 {
+	SetLastStreamError(ERROR_SUCCESS, false);
 	Open(filePath, accessMode, disposition, shareMode, flags);
 }
 
-bool KxFileStream::Open(HANDLE fileHandle, int accessMode, KxFileStreamDisposition disposition, int shareMode, int flags)
+bool KxFileStream::Open(HANDLE fileHandle, int accessMode, Disposition disposition, int shareMode, int flags)
 {
-	if (!IsOpened())
-	{
-		m_Handle = fileHandle;
-		m_AccessMode = (KxFileStreamAccess)accessMode;
-		m_Disposition = disposition;
-		m_ShareMode = (KxFileStreamShare)shareMode;
-		m_Flags = (KxFileStreamFlags)flags;
-		m_FilePath = GetFileName();
+	DoClose();
 
-		return IsOk();
-	}
-	return false;
+	m_Handle = fileHandle;
+	m_AccessMode = (Access)accessMode;
+	m_Disposition = disposition;
+	m_ShareMode = (Share)shareMode;
+	m_Flags = (Flags)flags;
+	m_FilePath = GetFileName();
+
+	return IsOk();
 }
-bool KxFileStream::Open(const wxString& filePath, int accessMode, KxFileStreamDisposition disposition, int shareMode, int flags)
+bool KxFileStream::Open(const wxString& filePath, int accessMode, Disposition disposition, int shareMode, int flags)
 {
-	if (!IsOpened() && !filePath.IsEmpty())
+	DoClose();
+	if (!filePath.IsEmpty())
 	{
-		m_AccessMode = (KxFileStreamAccess)accessMode;
+		m_AccessMode = (Access)accessMode;
 		m_Disposition = disposition;
-		m_ShareMode = (KxFileStreamShare)shareMode;
-		m_Flags = (KxFileStreamFlags)flags;
+		m_ShareMode = (Share)shareMode;
+		m_Flags = (Flags)flags;
 		m_FilePath = filePath;
 		m_Handle = ::CreateFileW(m_FilePath, AccessModeToNative(m_AccessMode), ShareModeToNative(m_ShareMode), NULL, DispositionToNative(m_Disposition), FlagsToNative(flags), NULL);
 
@@ -260,134 +285,150 @@ bool KxFileStream::Open(const wxString& filePath, int accessMode, KxFileStreamDi
 
 KxFileStream::~KxFileStream()
 {
-	Close();
+	DoClose();
 }
 bool KxFileStream::Close()
 {
-	if (IsOpened() && m_Handle != INVALID_HANDLE_VALUE)
-	{
-		::CloseHandle(m_Handle);
-		m_Handle = INVALID_HANDLE_VALUE;
-		return true;
-	}
-	return false;
+	return DoClose();
 }
 
 bool KxFileStream::IsOk() const
 {
-	return IsOpened() && m_Handle != INVALID_HANDLE_VALUE && m_Handle != NULL;
+	return IsOpened();
 }
-wxFileOffset KxFileStream::Seek(wxFileOffset offset, KxFileStreamSeek mode)
+bool KxFileStream::Eof() const
 {
-	DWORD winMode = SeekModeToNative(mode);
-	if (winMode != (DWORD)KxFS_SEEK_INVALID)
+	return GetPositionByHandle(m_Handle) == GetFileSizeByHandle(m_Handle);
+}
+bool KxFileStream::CanRead() const
+{
+	return IsReadable() && !Eof();
+}
+
+size_t KxFileStream::GetSize() const
+{
+	return GetFileSizeByHandle(m_Handle);
+}
+KxFileStream::Offset KxFileStream::GetLength() const
+{
+	return GetFileSizeByHandle(m_Handle);
+}
+
+bool KxFileStream::IsSeekable() const
+{
+	return ::GetFileType(m_Handle) == FILE_TYPE_DISK;
+}
+KxFileStream::Offset KxFileStream::SeekI(wxFileOffset offset, wxSeekMode mode)
+{
+	return SeekByHandle(m_Handle, offset, static_cast<SeekMode>(mode));
+}
+KxFileStream::Offset KxFileStream::SeekO(wxFileOffset offset, wxSeekMode mode)
+{
+	return SeekByHandle(m_Handle, offset, static_cast<SeekMode>(mode));
+}
+KxFileStream::Offset KxFileStream::TellI() const
+{
+	return GetPositionByHandle(m_Handle);
+}
+KxFileStream::Offset KxFileStream::TellO() const
+{
+	return GetPositionByHandle(m_Handle);
+}
+KxFileStream::Offset KxFileStream::Tell() const
+{
+	return GetPositionByHandle(m_Handle);
+}
+KxFileStream::Offset KxFileStream::Seek(Offset offset, SeekMode mode)
+{
+	return SeekByHandle(m_Handle, offset, mode);
+}
+
+char KxFileStream::Peek()
+{
+	if (!Eof())
 	{
-		LARGE_INTEGER offsetLI = {0};
-		offsetLI.QuadPart = offset;
-
-		LARGE_INTEGER newOffset = {0};
-		if (SetFilePointerEx(m_Handle, offsetLI, &newOffset, winMode))
-		{
-			m_Position = newOffset.QuadPart;
-			return m_Position;
-		}
+		char c = ReadObject<char>();
+		Skip(-1);
+		return c;
 	}
-	return wxInvalidOffset;
+	return 0;
 }
 
-wxString KxFileStream::ReadStringCurrentLocale(size_t size, bool* isSuccess)
+size_t KxFileStream::LastRead() const
 {
-	bool isOK = false;
-	auto buffer = ReadData<std::vector<char>>(size, &isOK);
-	KxUtility::SetIfNotNull(isSuccess, isOK);
+	return m_LastRead;
+}
+size_t KxFileStream::LastWrite() const
+{
+	return m_LastWrite;
+}
+wxStreamError KxFileStream::GetLastError() const
+{
+	return static_cast<wxStreamError>(m_LastError);
+}
 
-	if (isOK)
+bool KxFileStream::IsWriteable() const
+{
+	return m_AccessMode & Access::Write || m_AccessMode & Access::WriteAttributes;
+}
+bool KxFileStream::IsReadable() const
+{
+	return m_AccessMode & Access::Read || m_AccessMode & Access::ReadAttributes;
+}
+
+bool KxFileStream::Flush()
+{
+	return ::FlushFileBuffers(m_Handle);
+}
+bool KxFileStream::SetAllocationSize(Offset offset)
+{
+	if (offset != InvalidOffset)
 	{
-		Utils::RemoveLastNullChar(buffer);
-		return wxString(buffer.data(), buffer.size());
+		Offset oldPos = GetPositionByHandle(m_Handle);
+		SeekByHandle(m_Handle, offset, SeekMode::FromStart);
+
+		bool success = ::SetEndOfFile(m_Handle);
+		SeekByHandle(m_Handle, oldPos, SeekMode::FromStart);
+		return success;
 	}
-	return wxEmptyString;
-}
-bool KxFileStream::WriteStringCurrentLocale(const wxString& v)
-{
-	auto data = v.c_str().AsCharBuf();
-	return OnSysWrite(data.data(), data.length()) != 0;
-}
-
-wxString KxFileStream::ReadStringASCII(size_t size, bool* isSuccess)
-{
-	bool isOK = false;
-	auto buffer = ReadData<std::vector<char>>(size, &isOK);
-	KxUtility::SetIfNotNull(isSuccess, isOK);
-
-	if (isOK)
+	else
 	{
-		Utils::RemoveLastNullChar(buffer);
-		return wxString::FromAscii(buffer.data(), buffer.size());
+		return ::SetEndOfFile(m_Handle);
 	}
-	return wxEmptyString;
-}
-bool KxFileStream::WriteStringASCII(const wxString& v, char replacement)
-{
-	auto data = v.ToAscii(replacement);
-	return OnSysWrite(data.data(), data.length()) != 0;
 }
 
-wxString KxFileStream::ReadStringUTF8(size_t size, bool* isSuccess)
+wxString KxFileStream::GetFileName() const
 {
-	bool isOK = false;
-	auto buffer = ReadData<std::vector<char>>(size, &isOK);
-	KxUtility::SetIfNotNull(isSuccess, isOK);
-
-	if (isOK)
+	if (m_FilePath.IsEmpty())
 	{
-		Utils::RemoveLastNullChar(buffer);
-		return wxString::FromUTF8(buffer.data(), buffer.size());
+		m_FilePath = GetFileNameByHandle(m_Handle);
 	}
-	return wxEmptyString;
+	return m_FilePath;
 }
-bool KxFileStream::WriteStringUTF8(const wxString& v)
+HANDLE KxFileStream::GetHandle() const
 {
-	auto utf8 = v.ToUTF8();
-	return OnSysWrite(utf8.data(), utf8.length()) != 0;
+	return m_Handle;
 }
 
-wxString KxFileStream::ReadStringUTF16(size_t size, bool* isSuccess)
+KxFileStream::operator wxStreamBase*()
 {
-	bool isOK = false;
-	auto buffer = ReadData<std::vector<wchar_t>>(size, &isOK);
-	KxUtility::SetIfNotNull(isSuccess, isOK);
-
-	if (isOK)
+	if (IsWriteable())
 	{
-		Utils::RemoveLastNullChar(buffer);
-		return wxString(buffer.data(), buffer.size());
+		return static_cast<wxOutputStream*>(this);
 	}
-	return wxEmptyString;
-}
-bool KxFileStream::WriteStringUTF16(const wxString& v)
-{
-	auto utf8 = v.wchar_str();
-	return OnSysWrite(utf8.data(), utf8.length()) != 0;
-}
-
-wxString KxFileStream::ReadStringUTF32(size_t size, bool* isSuccess)
-{
-	bool isOK = false;
-	auto buffer = ReadData<std::vector<wxChar32>>(size, &isOK);
-	KxUtility::SetIfNotNull(isSuccess, isOK);
-
-	if (isOK)
+	else
 	{
-		wxUString out;
-		Utils::RemoveLastNullChar(buffer);
-		out.assign(buffer.data(), buffer.size());
-		return out;
+		return static_cast<wxInputStream*>(this);
 	}
-	return wxEmptyString;
 }
-bool KxFileStream::WriteStringUTF32(const wxString& v)
+KxFileStream::operator const wxStreamBase*()
 {
-	wxUString data(v);
-	return OnSysWrite(data.data(), data.length() * sizeof(wxChar32)) != 0;
+	if (IsWriteable())
+	{
+		return static_cast<wxOutputStream*>(this);
+	}
+	else
+	{
+		return static_cast<wxInputStream*>(this);
+	}
 }

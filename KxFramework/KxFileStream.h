@@ -6,316 +6,176 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 */
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxUtility.h"
+#include "KxFramework/KxStreamWrappers.h"
 
-enum KxFileStreamSeek
+class KxFileStream:
+	public KxStreamBase,
+	public KxIOStreamHelper<KxFileStream>,
+	public virtual KxInputStreamWrapper<wxInputStream>,
+	public virtual KxOutputStreamWrapper<wxOutputStream>
 {
-	KxFS_SEEK_INVALID = -1,
-	KxFS_SEEK_MIN = KxFS_SEEK_INVALID,
+	private:
+		struct SAccess
+		{
+			enum Enum
+			{
+				Invalid = -1,
 
-	KxFS_SEEK_BEGIN,
-	KxFS_SEEK_CURRENT,
-	KxFS_SEEK_END,
+				None = 0,
+				Read = 1 << 0,
+				Write = 1 << 1,
+				ReadAttributes = 1 << 2,
+				WriteAttributes = 1 << 2,
 
-	KxFS_SEEK_MAX,
-};
-enum KxFileStreamAccess
-{
-	KxFS_ACCESS_INVALID = -1,
+				RW = Read|Write,
+				AllAccess = RW|ReadAttributes|WriteAttributes
+			};
+		};
+		struct SShare
+		{
+			enum Enum
+			{
+				Invalid = -1,
 
-	KxFS_ACCESS_NONE = 0,
-	KxFS_ACCESS_READ = 1 << 0,
-	KxFS_ACCESS_WRITE = 1 << 1,
-	KxFS_ACCESS_READ_ATTRIBUTES = 1 << 2,
-	KxFS_ACCESS_WRITE_ATTRIBUTES = 1 << 2,
+				Exclusive = 0,
+				Read = 1 << 0,
+				Write = 1 << 1,
+				Delete = 1 << 2,
 
-	KxFS_ACCESS_RW = KxFS_ACCESS_READ|KxFS_ACCESS_WRITE,
-	KxFS_ACCESS_ALL = KxFS_ACCESS_RW|KxFS_ACCESS_READ_ATTRIBUTES|KxFS_ACCESS_WRITE_ATTRIBUTES
-};
-enum KxFileStreamShare
-{
-	KxFS_SHARE_INVALID = -1,
+				Everything = Read|Write|Delete
+			};
+		};
+		struct SDisposition
+		{
+			enum Enum
+			{
+				Invalid = -1,
 
-	KxFS_SHARE_EXCLUSIVE = 0,
-	KxFS_SHARE_READ = 1 << 0,
-	KxFS_SHARE_WRITE = 1 << 1,
-	KxFS_SHARE_DELETE = 1 << 2,
+				OpenExisting,
+				OpenAlways,
+				CreateNew,
+				CreateAlways,
+			};
+		};
+		struct SFlags
+		{
+			enum Enum
+			{
+				None = 0,
 
-	KxFS_SHARE_ALL = KxFS_SHARE_READ|KxFS_SHARE_WRITE|KxFS_SHARE_DELETE
-};
-enum KxFileStreamDisposition
-{
-	KxFS_DISP_INVALID = -1,
+				Normal = 1 << 0,
+				BackupSemantics = 1 << 1,
+			};
+		};
 
-	KxFS_DISP_OPEN_EXISTING,
-	KxFS_DISP_OPEN_ALWAYS,
-	KxFS_DISP_CREATE_NEW,
-	KxFS_DISP_CREATE_ALWAYS,
-};
-enum KxFileStreamFlags
-{
-	KxFS_FLAG_NONE = 0,
-
-	KxFS_FLAG_NORMAL = 1 << 0,
-	KxFS_FLAG_BACKUP_SEMANTICS = 1 << 1,
-};
-
-class KxFileStream: public virtual wxInputStream, public virtual wxOutputStream
-{
 	public:
-		static wxString GetFileNameByHandle(HANDLE fileHandle);
-		static wxFileOffset GetFileSizeByHandle(HANDLE fileHandle);
-
-		static wxStreamError TranslateErrorCode(DWORD error, bool isWrite);
-		static DWORD SeekModeToNative(KxFileStreamSeek mode);
-		static DWORD AccessModeToNative(int mode);
-		static DWORD ShareModeToNative(int mode);
-		static DWORD DispositionToNative(KxFileStreamDisposition mode);
-		static DWORD FlagsToNative(int flags);
-		static KxFileStreamSeek WxSeekModeToKx(wxSeekMode mode);
+		using Access = SAccess::Enum;
+		using Share = SShare::Enum;
+		using Disposition = SDisposition::Enum;
+		using Flags = SFlags::Enum;
 
 	private:
 		HANDLE m_Handle = INVALID_HANDLE_VALUE;
-		KxFileStreamAccess m_AccessMode = DefaultAccessMode;
-		KxFileStreamShare m_ShareMode = DefaultShareMode;
-		KxFileStreamDisposition m_Disposition = DefaultDisposition;
-		KxFileStreamFlags m_Flags = DefaultFlags;
+		Access m_AccessMode = DefaultAccess;
+		Share m_ShareMode = DefaultShare;
+		Disposition m_Disposition = DefaultDisposition;
+		Flags m_Flags = DefaultFlags;
 		mutable wxString m_FilePath;
 
-		DWORD m_LastRead = 0;
-		DWORD m_LastWrite = 0;
-		wxFileOffset m_Position = 0;
-		wxStreamError m_LastError = wxSTREAM_NO_ERROR;
+		size_t m_LastRead = 0;
+		size_t m_LastWrite = 0;
+		Offset m_Position = 0;
+		ErrorCode m_LastError = ErrorCode::Success;
 
 	private:
-		template <class CharType> wxFileOffset ReadToNullChar() const
-		{
-			wxFileOffset readed = 0;
-			bool isReadSuccess = false;
-			CharType c = NULL;
-
-			do
-			{
-				c = NULL;
-				c = ReadObject<CharType>(&isReadSuccess);
-				readed += LastRead();
-			}
-			while (isReadSuccess && c != NULL);
-			return readed;
-		}
-		void SetError(DWORD error, bool isWrite);
+		void SetLastStreamError(DWORD error, bool isWrite);
 
 	protected:
-		virtual wxFileOffset OnSysSeek(wxFileOffset pos, wxSeekMode mode);
-		virtual wxFileOffset OnSysTell() const;
+		virtual Offset OnSysSeek(wxFileOffset pos, wxSeekMode mode);
+		virtual Offset OnSysTell() const;
 		virtual size_t OnSysRead(void* buffer, size_t size) override;
 		virtual size_t OnSysWrite(const void* buffer, size_t size) override;
-		bool IsOpened() const
-		{
-			return m_Handle != INVALID_HANDLE_VALUE;
-		}
+		
+		bool IsOpened() const;
+		bool DoClose();
 
 	public:
-		static const KxFileStreamAccess DefaultAccessMode = KxFS_ACCESS_READ;
-		static const KxFileStreamShare DefaultShareMode = KxFS_SHARE_READ;
-		static const KxFileStreamDisposition DefaultDisposition = KxFS_DISP_OPEN_EXISTING;
-		static const KxFileStreamFlags DefaultFlags = KxFS_FLAG_NORMAL;
+		static const Access DefaultAccess = Access::Read;
+		static const Share DefaultShare = Share::Read;
+		static const Disposition DefaultDisposition = Disposition::OpenExisting;
+		static const Flags DefaultFlags = Flags::Normal;
 
+	public:
 		KxFileStream();
-		KxFileStream(HANDLE fileHandle, int accessMode = DefaultAccessMode, KxFileStreamDisposition disposition = DefaultDisposition, int shareMode = DefaultShareMode, int flags = DefaultFlags);
-		KxFileStream(const wxString& filePath, int accessMode = DefaultAccessMode, KxFileStreamDisposition disposition = DefaultDisposition, int shareMode = DefaultShareMode, int flags = DefaultFlags);
-		
-		bool Open(HANDLE fileHandle, int accessMode = DefaultAccessMode, KxFileStreamDisposition disposition = DefaultDisposition, int shareMode = DefaultShareMode, int flags = DefaultFlags);
-		bool Open(const wxString& filePath, int accessMode = DefaultAccessMode, KxFileStreamDisposition disposition = DefaultDisposition, int shareMode = DefaultShareMode, int flags = DefaultFlags);
-		
+		KxFileStream(HANDLE fileHandle, int accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, int shareMode = DefaultShare, int flags = DefaultFlags);
+		KxFileStream(const wxString& filePath, int accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, int shareMode = DefaultShare, int flags = DefaultFlags);
+		KxFileStream(const char* filePath, int accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, int shareMode = DefaultShare, int flags = DefaultFlags)
+			:KxFileStream(wxString(filePath), accessMode, disposition, shareMode, flags)
+		{
+		}
+		KxFileStream(const wchar_t* filePath, int accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, int shareMode = DefaultShare, int flags = DefaultFlags)
+			:KxFileStream(wxString(filePath), accessMode, disposition, shareMode, flags)
+		{
+		}
 		virtual ~KxFileStream();
-		virtual bool Close() override;
-
+		
+	public:
+		bool Open(HANDLE fileHandle, int accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, int shareMode = DefaultShare, int flags = DefaultFlags);
+		bool Open(const wxString& filePath, int accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, int shareMode = DefaultShare, int flags = DefaultFlags);
+		bool Open(const char* filePath, int accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, int shareMode = DefaultShare, int flags = DefaultFlags)
+		{
+			return Open(wxString(filePath), accessMode, disposition, shareMode, flags);
+		}
+		bool Open(const wchar_t* filePath, int accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, int shareMode = DefaultShare, int flags = DefaultFlags)
+		{
+			return Open(wxString(filePath), accessMode, disposition, shareMode, flags);
+		}
+		
 	public:
 		virtual bool IsOk() const override;
-		virtual bool Eof() const override
-		{
-			return GetPosition() == GetFileSizeByHandle(m_Handle);
-		}
-		virtual bool CanRead() const override
-		{
-			return !Eof();
-		}
+		virtual bool Close() override;
+		virtual bool Eof() const override;
+		virtual bool CanRead() const override;
 		
-		virtual wxFileOffset GetLength() const override
-		{
-			return GetFileSizeByHandle(m_Handle);
-		}
-		size_t GetSize() const override
-		{
-			return GetFileSizeByHandle(m_Handle);
-		}
-		virtual bool IsSeekable() const override
-		{
-			return ::GetFileType(m_Handle) == FILE_TYPE_DISK;
-		}
-		virtual wxFileOffset SeekI(wxFileOffset newPos, wxSeekMode mode = wxFromCurrent) override
-		{
-			return Seek(newPos, WxSeekModeToKx(mode));
-		}
-		virtual wxFileOffset SeekO(wxFileOffset newPos, wxSeekMode mode = wxFromCurrent) override
-		{
-			return Seek(newPos, WxSeekModeToKx(mode));
-		}
-		virtual wxFileOffset TellI() const override
-		{
-			return GetPosition();
-		}
-		virtual wxFileOffset TellO() const override
-		{
-			return GetPosition();
-		}
-		virtual size_t LastRead() const override
-		{
-			return m_LastRead;
-		}
-		virtual size_t LastWrite() const override
-		{
-			return m_LastWrite;
-		}
+		virtual size_t GetSize() const override;
+		virtual Offset GetLength() const override;
 
-		virtual wxStreamError GetLastError() const
-		{
-			return m_LastError;
-		}
-		bool IsWriteable() const
-		{
-			return m_AccessMode & KxFS_ACCESS_WRITE || m_AccessMode & KxFS_ACCESS_WRITE_ATTRIBUTES;
-		}
-		bool IsReadable() const
-		{
-			return m_AccessMode & KxFS_ACCESS_READ || m_AccessMode & KxFS_ACCESS_READ_ATTRIBUTES;
-		}
-		bool Flush()
-		{
-			return ::FlushFileBuffers(m_Handle);
-		}
-		bool SetEnd()
-		{
-			return ::SetEndOfFile(m_Handle);
-		}
-		wxFileOffset Seek(wxFileOffset offset, KxFileStreamSeek mode = KxFS_SEEK_CURRENT);
-		wxFileOffset GetPosition() const
-		{
-			LARGE_INTEGER offset = {0};
-			::SetFilePointerEx(m_Handle, offset, &offset, FILE_CURRENT);
-			return offset.QuadPart;
-		}
-		wxString GetFileName() const
-		{
-			wxString out = GetFileNameByHandle(m_Handle);
-			if (m_FilePath.IsEmpty())
-			{
-				m_FilePath = out;
-			}
-			if (out.IsEmpty())
-			{
-				return m_FilePath;
-			}
-			else
-			{
-				return out;
-			}
-		}
-		HANDLE GetHandle() const
-		{
-			return m_Handle;
-		}
-		
-		virtual char Peek()
-		{
-			if (!Eof())
-			{
-				char c = ReadObject<char>();
-				Seek(-1, KxFS_SEEK_CURRENT);
-				return c;
-			}
-			return 0;
-		}
+		virtual bool IsSeekable() const override;
+		virtual Offset SeekI(wxFileOffset offset, wxSeekMode mode = wxFromCurrent) override;
+		virtual Offset SeekO(wxFileOffset offset, wxSeekMode mode = wxFromCurrent) override;
+		virtual Offset TellI() const override;
+		virtual Offset TellO() const override;
+		Offset Tell() const;
+		Offset Seek(Offset offset, SeekMode mode = SeekMode::FromCurrent);
+
+		virtual char Peek();
 		virtual KxFileStream& Read(void* buffer, size_t size) override
 		{
-			ReadData(buffer, size);
+			ReadBuffer(buffer, size);
 			return *this;
 		}
-		bool ReadData(void* buffer, size_t size)
-		{
-			return OnSysRead(buffer, size) != 0;
-		}
-		template<class T> T ReadData(size_t size, bool* isSuccess = NULL)
-		{
-			T v;
-			v.resize(size);
-			KxUtility::SetIfNotNull(isSuccess, OnSysRead(v.data(), size) != 0);
-			return v;
-		}
-		template<class T> T ReadObject(bool* isSuccess = NULL)
-		{
-			T v;
-			KxUtility::SetIfNotNull(isSuccess, OnSysRead(&v, sizeof(v)) != 0);
-			return v;
-		}
-		
 		virtual KxFileStream& Write(const void* buffer, size_t size) override
 		{
-			WriteData(buffer, size);
+			WriteBuffer(buffer, size);
 			return *this;
 		}
-		bool WriteData(const void* buffer, size_t size)
-		{
-			return OnSysWrite(buffer, size) != 0;
-		}
-		template<class T> bool WriteData(const T& v)
-		{
-			return OnSysWrite(v.data(), v.size() * sizeof(T::value_type)) != 0;
-		}
-		template<class T> bool WriteObject(const T& v)
-		{
-			return OnSysWrite(&v, sizeof(T)) != 0;
-		}
 
-		wxString ReadStringCurrentLocale(size_t size, bool* isSuccess = NULL);
-		bool WriteStringCurrentLocale(const wxString& v);
+		virtual size_t LastRead() const override;
+		virtual size_t LastWrite() const override;
+		virtual wxStreamError GetLastError() const;
 
-		wxString ReadStringASCII(size_t size, bool* isSuccess = NULL);
-		bool WriteStringASCII(const wxString& v, char replacement = '_');
-		
-		wxString ReadStringUTF8(size_t size, bool* isSuccess = NULL);
-		bool WriteStringUTF8(const wxString& v);
-		
-		wxString ReadStringUTF16(size_t size, bool* isSuccess = NULL);
-		bool WriteStringUTF16(const wxString& v);
-		
-		wxString ReadStringUTF32(size_t size, bool* isSuccess = NULL);
-		bool WriteStringUTF32(const wxString& v);
+		virtual bool IsWriteable() const override;
+		virtual bool IsReadable() const override;
+
+		virtual bool Flush() override;
+		virtual bool SetAllocationSize(Offset offset = InvalidOffset) override;
+		wxString GetFileName() const;
+		HANDLE GetHandle() const;
 
 	public:
-		operator wxStreamBase*()
-		{
-			if (IsWriteable())
-			{
-				return static_cast<wxOutputStream*>(this);
-			}
-			else
-			{
-				return static_cast<wxInputStream*>(this);
-			}
-		}
-		operator const wxStreamBase*() const
-		{
-			if (IsWriteable())
-			{
-				return static_cast<const wxOutputStream*>(this);
-			}
-			else
-			{
-				return static_cast<const wxInputStream*>(this);
-			}
-		}
+		operator wxStreamBase*();
+		operator const wxStreamBase*();
 
+	public:
 		wxDECLARE_ABSTRACT_CLASS(KxFileStream);
 };

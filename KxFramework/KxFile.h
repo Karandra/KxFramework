@@ -178,8 +178,8 @@ class KxFile
 
 		// File time
 		wxDateTime GetFileTime(KxFileTime type) const;
-		bool SetFileTime(const wxDateTime& t, KxFileTime type);
-		bool SetFileTime(const wxDateTime& tCreation, const wxDateTime& tModification, const wxDateTime& tLastAccess);
+		bool SetFileTime(const wxDateTime& time, KxFileTime type);
+		bool SetFileTime(const wxDateTime& creationTime, const wxDateTime& modificationTime, const wxDateTime& lastAccessTime);
 
 		// Existence
 		bool IsFileExist() const;

@@ -409,7 +409,7 @@ KxFileNamespace KxFile::RemoveNamespacePrefix(wxString& path)
 }
 int64_t KxFile::GetFileSize(const wxString& path)
 {
-	return KxFileStream(path, KxFS_ACCESS_READ_ATTRIBUTES, KxFS_DISP_OPEN_EXISTING, KxFS_SHARE_READ).GetLength();
+	return KxFileStream(path, KxFileStream::Access::ReadAttributes, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Read).GetLength();
 }
 wxString KxFile::FormatFileSize(int64_t size, int precision, const wxString& failMassage)
 {
@@ -759,7 +759,7 @@ bool KxFile::SetAttribute(uint32_t attribute, bool set)
 	BOOL isSuccess = TRUE;
 	if (attribute & FILE_ATTRIBUTE_COMPRESSED)
 	{
-		KxFileStream fileHandle(GetFullPathNS(), KxFS_ACCESS_READ|KxFS_ACCESS_WRITE, KxFS_DISP_OPEN_EXISTING, KxFS_SHARE_EXCLUSIVE);
+		KxFileStream fileHandle(GetFullPathNS(), KxFileStream::Access::RW, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Exclusive);
 		if (fileHandle.IsOk())
 		{
 			USHORT value;
@@ -799,7 +799,7 @@ bool KxFile::SetAttributes(uint32_t attributes)
 
 bool KxFile::IsInUse() const
 {
-	return KxFileStream(GetFullPathNS(), KxFS_ACCESS_READ, KxFS_DISP_OPEN_EXISTING, KxFS_SHARE_EXCLUSIVE).IsOk();
+	return KxFileStream(GetFullPathNS(), KxFileStream::Access::Read, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Exclusive).IsOk();
 }
 bool KxFile::IsFile() const
 {
@@ -909,7 +909,8 @@ KxLibraryVersionInfo KxFile::GetVersionInfo() const
 //////////////////////////////////////////////////////////////////////////
 wxDateTime KxFile::GetFileTime(KxFileTime type) const
 {
-	KxFileStream stream(GetFullPathNS(), KxFS_ACCESS_READ, KxFS_DISP_OPEN_EXISTING, KxFS_SHARE_ALL, IsFolder() ? KxFS_FLAG_BACKUP_SEMANTICS : KxFS_FLAG_NORMAL);
+	KxFileStream::Flags streamFlags = IsFolder() ? KxFileStream::Flags::BackupSemantics : KxFileStream::Flags::Normal;
+	KxFileStream stream(GetFullPathNS(), KxFileStream::Access::Read, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Everything, streamFlags);
 	if (stream.IsOk())
 	{
 		BOOL isOK = FALSE;
@@ -942,18 +943,19 @@ wxDateTime KxFile::GetFileTime(KxFileTime type) const
 	}
 	return wxDefaultDateTime;
 }
-bool KxFile::SetFileTime(const wxDateTime& t, KxFileTime type)
+bool KxFile::SetFileTime(const wxDateTime& time, KxFileTime type)
 {
-	if (t.IsValid())
+	if (time.IsValid())
 	{
-		KxFileStream stream(GetFullPathNS(), KxFS_ACCESS_WRITE_ATTRIBUTES, KxFS_DISP_OPEN_EXISTING, KxFS_SHARE_ALL, IsFolder() ? KxFS_FLAG_BACKUP_SEMANTICS : KxFS_FLAG_NORMAL);
+		KxFileStream::Flags streamFlags = IsFolder() ? KxFileStream::Flags::BackupSemantics : KxFileStream::Flags::Normal;
+		KxFileStream stream(GetFullPathNS(), KxFileStream::Access::WriteAttributes, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Everything, streamFlags);
 		if (stream.IsOk())
 		{
 			TIME_ZONE_INFORMATION timeZoneInfo = {0};
 			bool noDST = ::GetTimeZoneInformation(&timeZoneInfo) == TIME_ZONE_ID_UNKNOWN;
 
 			SYSTEMTIME systemTime = {0};
-			t.ToUTC(noDST).GetAsMSWSysTime(&systemTime);
+			time.ToUTC(noDST).GetAsMSWSysTime(&systemTime);
 
 			FILETIME fileTime = {0};
 			if (::SystemTimeToFileTime(&systemTime, &fileTime))
@@ -978,11 +980,12 @@ bool KxFile::SetFileTime(const wxDateTime& t, KxFileTime type)
 	}
 	return false;
 }
-bool KxFile::SetFileTime(const wxDateTime& tCreation, const wxDateTime& tModification, const wxDateTime& tLastAccess)
+bool KxFile::SetFileTime(const wxDateTime& creationTime, const wxDateTime& modificationTime, const wxDateTime& lastAccessTime)
 {
-	if (tCreation.IsValid() && tModification.IsValid() && tLastAccess.IsValid())
+	if (creationTime.IsValid() && modificationTime.IsValid() && lastAccessTime.IsValid())
 	{
-		KxFileStream stream(GetFullPathNS(), KxFS_ACCESS_WRITE_ATTRIBUTES, KxFS_DISP_OPEN_EXISTING, KxFS_SHARE_ALL, IsFolder() ? KxFS_FLAG_BACKUP_SEMANTICS : KxFS_FLAG_NORMAL);
+		KxFileStream::Flags streamFlags = IsFolder() ? KxFileStream::Flags::BackupSemantics : KxFileStream::Flags::Normal;
+		KxFileStream stream(GetFullPathNS(), KxFileStream::Access::WriteAttributes, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Everything, streamFlags);
 		if (stream.IsOk())
 		{
 			TIME_ZONE_INFORMATION timeZoneInfo = {0};
@@ -991,9 +994,9 @@ bool KxFile::SetFileTime(const wxDateTime& tCreation, const wxDateTime& tModific
 			SYSTEMTIME creationSystemTime = {0};
 			SYSTEMTIME modificationSystemTime = {0};
 			SYSTEMTIME lastAccessSystemTime = {0};
-			tCreation.ToUTC(noDST).GetAsMSWSysTime(&creationSystemTime);
-			tModification.ToUTC(noDST).GetAsMSWSysTime(&modificationSystemTime);
-			tLastAccess.ToUTC(noDST).GetAsMSWSysTime(&lastAccessSystemTime);
+			creationTime.ToUTC(noDST).GetAsMSWSysTime(&creationSystemTime);
+			modificationTime.ToUTC(noDST).GetAsMSWSysTime(&modificationSystemTime);
+			lastAccessTime.ToUTC(noDST).GetAsMSWSysTime(&lastAccessSystemTime);
 
 			FILETIME creationFileTime = {0};
 			FILETIME modificationFileTime = {0};

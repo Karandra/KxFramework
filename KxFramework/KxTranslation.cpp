@@ -187,7 +187,7 @@ bool KxTranslation::LoadFromFile(const wxString& filePath)
 {
 	Clear();
 
-	KxFileStream stream(filePath, KxFS_ACCESS_READ, KxFS_DISP_OPEN_EXISTING, KxFS_SHARE_READ);
+	KxFileStream stream(filePath, KxFileStream::Access::Read, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Read);
 	if (stream.IsOk())
 	{
 		return Init(KxXMLDocument(stream));

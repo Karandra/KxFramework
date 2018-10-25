@@ -36,42 +36,44 @@ KxStringVector KxTextFile::ReadToArray(const wxString& sourceFile, wxTextFileTyp
 
 bool KxTextFile::WriteToFile(const wxString& sourceFile, const wxString& sData, wxTextFileType newLineMode, bool append)
 {
-	KxFileStream file(sourceFile, KxFS_ACCESS_WRITE, append ? KxFS_DISP_OPEN_EXISTING : KxFS_DISP_CREATE_ALWAYS, KxFS_SHARE_READ);
-	if (file.IsOk())
+	KxFileStream::Disposition disposition = append ? KxFileStream::Disposition::OpenExisting : KxFileStream::Disposition::CreateAlways;
+	KxFileStream stream(sourceFile, KxFileStream::Access::Write, disposition, KxFileStream::Share::Read);
+	if (stream.IsOk())
 	{
-		bool ret = true;
+		bool isSuccess = true;
 		if (append)
 		{
-			file.Seek(0, KxFS_SEEK_END);
-			ret = file.WriteStringUTF8(GetEOL(newLineMode));
+			stream.SkipToEnd();
+			isSuccess = stream.WriteStringUTF8(GetEOL(newLineMode));
 		}
 
-		return ret && file.WriteStringUTF8(Translate(sData, newLineMode));
+		return isSuccess && stream.WriteStringUTF8(Translate(sData, newLineMode));
 	}
 	return false;
 }
 bool KxTextFile::WriteToFile(const wxString& sourceFile, const KxStringVector& data, wxTextFileType newLineMode, bool append)
 {
-	KxFileStream file(sourceFile, KxFS_ACCESS_WRITE, append ? KxFS_DISP_OPEN_EXISTING : KxFS_DISP_CREATE_ALWAYS, KxFS_SHARE_READ);
-	if (file.IsOk())
+	KxFileStream::Disposition disposition = append ? KxFileStream::Disposition::OpenExisting : KxFileStream::Disposition::CreateAlways;
+	KxFileStream stream(sourceFile, KxFileStream::Access::Write, disposition, KxFileStream::Share::Read);
+	if (stream.IsOk())
 	{
-		bool ret = true;
+		bool isSuccess = true;
 		const wxChar* newLine = GetEOL(newLineMode);
 		if (append)
 		{
-			file.Seek(0, KxFS_SEEK_END);
-			ret = file.WriteStringUTF8(newLine);
+			stream.SkipToEnd();
+			isSuccess = stream.WriteStringUTF8(newLine);
 		}
 		
-		for (size_t i = 0; i < data.size() && ret; i++)
+		for (size_t i = 0; i < data.size() && isSuccess; i++)
 		{
-			ret = file.WriteStringUTF8(data[i]);
+			isSuccess = stream.WriteStringUTF8(data[i]);
 			if (i + 1 != data.size())
 			{
-				ret = file.WriteStringUTF8(newLine);
+				isSuccess = stream.WriteStringUTF8(newLine);
 			}
 		}
-		return ret;
+		return isSuccess;
 	}
 	return false;
 }
