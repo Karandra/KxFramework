@@ -209,6 +209,7 @@
     <ClInclude Include="KxFramework\DataView\KxDataViewToggleRenderer.h" />
     <ClInclude Include="KxFramework\DataView\KxDataViewTreeNode.h" />
     <ClInclude Include="KxFramework\INI\SimpleINI.h" />
+    <ClInclude Include="KxFramework\KxAlignedAllocator.h" />
     <ClInclude Include="KxFramework\KxApp.h" />
     <ClInclude Include="KxFramework\KxArchiveEvent.h" />
     <ClInclude Include="KxFramework\KxArchiveFileFinder.h" />
@@ -294,7 +295,9 @@
     <ClInclude Include="KxFramework\KxListBox.h" />
     <ClInclude Include="KxFramework\KxListBoxDialog.h" />
     <ClInclude Include="KxFramework\KxListView.h" />
+    <ClInclude Include="KxFramework\KxLZ4Stream.h" />
     <ClInclude Include="KxFramework\KxMath.h" />
+    <ClInclude Include="KxFramework\KxMemoryStream.h" />
     <ClInclude Include="KxFramework\KxMenu.h" />
     <ClInclude Include="KxFramework\KxMenuEvent.h" />
     <ClInclude Include="KxFramework\KxMenuItem.h" />
@@ -330,6 +333,7 @@
     <ClInclude Include="KxFramework\KxStdDialog.h" />
     <ClInclude Include="KxFramework\KxStdDialogButtonSizer.h" />
     <ClInclude Include="KxFramework\KxStdDialogSimple.h" />
+    <ClInclude Include="KxFramework\KxStreamWrappers.h" />
     <ClInclude Include="KxFramework\KxString.h" />
     <ClInclude Include="KxFramework\KxStyledTextBox.h" />
     <ClInclude Include="KxFramework\KxStyledTextBox_Scintilla.h" />
@@ -382,6 +386,7 @@
     <ClInclude Include="KxFramework\KxWxRTTI.h" />
     <ClInclude Include="KxFramework\KxXDocumentNode.h" />
     <ClInclude Include="KxFramework\KxXML.h" />
+    <ClInclude Include="KxFramework\KxZLibStream.h" />
     <ClInclude Include="KxFramework\XML\TinyXML2 HTML5 Printer.h" />
     <ClInclude Include="KxStdAfx.h" />
   </ItemGroup>
@@ -520,7 +525,9 @@
     <ClCompile Include="KxFramework\KxListBox.cpp" />
     <ClCompile Include="KxFramework\KxListBoxDialog.cpp" />
     <ClCompile Include="KxFramework\KxListView.cpp" />
+    <ClCompile Include="KxFramework\KxLZ4Stream.cpp" />
     <ClCompile Include="KxFramework\KxMath.cpp" />
+    <ClCompile Include="KxFramework\KxMemoryStream.cpp" />
     <ClCompile Include="KxFramework\KxMenu.cpp" />
     <ClCompile Include="KxFramework\KxMenuEvent.cpp" />
     <ClCompile Include="KxFramework\KxMenuItem.cpp" />
@@ -556,6 +563,7 @@
     <ClCompile Include="KxFramework\KxStdDialog.cpp" />
     <ClCompile Include="KxFramework\KxStdDialogButtonSizer.cpp" />
     <ClCompile Include="KxFramework\KxStdDialogSimple.cpp" />
+    <ClCompile Include="KxFramework\KxStreamWrappers.cpp" />
     <ClCompile Include="KxFramework\KxString.cpp" />
     <ClCompile Include="KxFramework\KxStyledTextBox.cpp" />
     <ClCompile Include="KxFramework\KxSystem.cpp" />
@@ -611,6 +619,7 @@
     <ClCompile Include="KxFramework\KxXML.cpp" />
     <ClCompile Include="KxFramework\KxXMLAttribute.cpp" />
     <ClCompile Include="KxFramework\KxXMLNode.cpp" />
+    <ClCompile Include="KxFramework\KxZLibStream.cpp" />
     <ClCompile Include="KxStdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

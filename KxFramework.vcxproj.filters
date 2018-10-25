@@ -688,6 +688,21 @@
     <ClInclude Include="KxFramework\KxWxRTTI.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxZLibStream.h">
+      <Filter>Header Files\Streams</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxLZ4Stream.h">
+      <Filter>Header Files\Streams</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxAlignedAllocator.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxMemoryStream.h">
+      <Filter>Header Files\Streams</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxStreamWrappers.h">
+      <Filter>Header Files\Streams</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1167,6 +1182,18 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxRTTI.cpp">
       <Filter>Source Files\General</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxZLibStream.cpp">
+      <Filter>Source Files\Streams</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxLZ4Stream.cpp">
+      <Filter>Source Files\Streams</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxMemoryStream.cpp">
+      <Filter>Source Files\Streams</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxStreamWrappers.cpp">
+      <Filter>Source Files\Streams</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
