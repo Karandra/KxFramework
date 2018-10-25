@@ -11,6 +11,7 @@ Support library for [Kortex Mod Manager](https://github.com/KerberX/Kortex-Mod-M
 - [Gumbo HTML5 Parser](https://github.com/google/gumbo-parser). Compiled .lib files included.
 - [TinyXML2](https://github.com/leethomason/tinyxml2) (included).
 - [SimpleINI](https://github.com/brofield/simpleini) (header only library, included).
+- [LZ4](https://github.com/lz4/lz4) (headers and compiled .lib files included).
 
 # Build (MSVC2017+)
 - Install Boost and create environment variable **BOOST_ROOT** with value of Boost installation directory (like this: `C:\Program Files\Boost\boost_1_67_0`).
