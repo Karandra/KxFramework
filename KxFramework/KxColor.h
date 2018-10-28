@@ -18,39 +18,38 @@ class KxColor: public wxColour
 		static const double SRGB_WeightB;
 
 	public:
-		static KxColor FromRGBA(wxUint32 color)
+		static KxColor FromRGBA(uint32_t color)
 		{
 			return KxColor().SetRGBA(color);
 		}
-		static KxColor FromARGB(wxUint32 color)
+		static KxColor FromARGB(uint32_t color)
 		{
 			return KxColor().SetARGB(color);
 		}
-		static KxColor FromCOLORREF(wxUint32 color)
+		static KxColor FromCOLORREF(uint32_t color)
 		{
 			return KxColor().SetCOLORREF(color);
 		}
 
 	private:
 		static double HUE2RGB(double p, double q, double t);
-		static wxByte GetAlphaCOLORREF(COLORREF RGB)
-		{
-			return LOBYTE((RGB >> 24));
-		}
-		static COLORREF MakeCOLORREF(wxByte R, wxByte G, wxByte B, wxByte A)
-		{
-			return ((DWORD)A << 24) | RGB(R, G, B);
-		}
+		static uint8_t GetAlphaCOLORREF(uint32_t rgb);
+		static uint32_t MakeCOLORREF(uint8_t R, uint8_t G, uint8_t B, uint8_t A);
 
 	public:
 		KxColor()
 			:wxColour()
 		{
 		}
-		KxColor(wxByte R, wxByte G, wxByte B, wxByte A = wxALPHA_OPAQUE)
+		KxColor(uint8_t R, uint8_t G, uint8_t B, uint8_t A = wxALPHA_OPAQUE)
 			:wxColour(R, G, B, A)
 		{
 		}
+		KxColor(uint32_t rgb)
+			:wxColour(rgb)
+		{
+		}
+		
 		KxColor(const wchar_t* name)
 			:wxColour(name)
 		{
@@ -63,14 +62,9 @@ class KxColor: public wxColour
 			:wxColour(name)
 		{
 		}
-		KxColor(wxUint32 RGB)
-			:wxColour(RGB)
-		{
-		}
-		KxColor(const wxColour& color)
-			:wxColour(color)
-		{
-		}
+		
+		KxColor(const KxColor& other);
+		KxColor(const wxColour& other);
 
 	public:
 		virtual bool IsOk() const override;
@@ -127,50 +121,50 @@ class KxColor: public wxColour
 			return Clone().Negate();
 		}
 		
-		wxByte GetR() const
+		uint8_t GetR() const
 		{
 			return Red();
 		}
-		wxByte GetG() const
+		uint8_t GetG() const
 		{
 			return Green();
 		}
-		wxByte GetB() const
+		uint8_t GetB() const
 		{
 			return Blue();
 		}
-		wxByte GetA() const
+		uint8_t GetA() const
 		{
 			return Alpha();
 		}
 		
-		KxColor& SetR(wxByte value)
+		KxColor& SetR(uint8_t value)
 		{
 			Set(value, GetG(), GetB(), GetA());
 			return *this;
 		}
-		KxColor& SetG(wxByte value)
+		KxColor& SetG(uint8_t value)
 		{
 			Set(GetR(), value, GetB(), GetA());
 			return *this;
 		}
-		KxColor& SetB(wxByte value)
+		KxColor& SetB(uint8_t value)
 		{
 			Set(GetR(), GetB(), value, GetA());
 			return *this;
 		}
-		KxColor& SetA(wxByte value)
+		KxColor& SetA(uint8_t value)
 		{
 			Set(GetR(), GetG(), GetB(), value);
 			return *this;
 		}
 
-		wxUint32 GetRGBA() const;
-		KxColor& SetRGBA(wxUint32 color);
-		wxUint32 GetARGB() const;
-		KxColor& SetARGB(wxUint32 color);
-		wxUint32 GetCOLORREF() const;
-		KxColor& SetCOLORREF(wxUint32 color);
+		uint32_t GetRGBA() const;
+		KxColor& SetRGBA(uint32_t color);
+		uint32_t GetARGB() const;
+		KxColor& SetARGB(uint32_t color);
+		uint32_t GetCOLORREF() const;
+		KxColor& SetCOLORREF(uint32_t color);
 		
 		void GetHSV(double& H, double& S, double& V, double* A = NULL) const;
 		void GetHSV(int& H, int& S, int& V, int* A = NULL) const;

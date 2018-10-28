@@ -29,6 +29,27 @@ double KxColor::HUE2RGB(double p, double q, double t)
 	}
 	return p;
 }
+uint8_t KxColor::GetAlphaCOLORREF(uint32_t rgb)
+{
+	return LOBYTE((rgb >> 24));
+}
+uint32_t KxColor::MakeCOLORREF(uint8_t R, uint8_t G, uint8_t B, uint8_t A)
+{
+	return ((DWORD)A << 24) | RGB(R, G, B);
+}
+
+KxColor::KxColor(const wxColour& other)
+	:wxColour(other)
+{
+}
+KxColor::KxColor(const KxColor& other)
+	:wxColour()
+{
+	if (other.IsOk())
+	{
+		Set(other.GetR(), other.GetG(), other.GetB(), other.GetA());
+	}
+}
 
 bool KxColor::IsOk() const
 {
@@ -42,14 +63,14 @@ wxString KxColor::GetAsString(long mode) const
 {
 	if (mode == KxC2S_LUA_SYNTAX)
 	{
-		return wxString::Format("{R = %d, G = %d, B = %d, A = %d}", (int)GetR(), (int)GetG(), (int)GetB(), (int)GetA());
+		return KxString::Format(wxS("{R = %1, G = %2, B = %3, A = %4}"), GetR(), GetG(), GetB(), GetA());
 	}
 	return wxColour::GetAsString(mode);
 }
 
 KxColor& KxColor::AlphaBlend(const KxColor& source)
 {
-	double A = GetA()/255.0;
+	double A = GetA() / 255.0;
 	Set
 	(
 		wxColour::AlphaBlend(GetR(), source.GetR(), A),
@@ -61,9 +82,9 @@ KxColor& KxColor::AlphaBlend(const KxColor& source)
 }
 KxColor& KxColor::MakeMono(bool bOn)
 {
-	wxByte R = Red();
-	wxByte G = Green();
-	wxByte B = Blue();
+	uint8_t R = Red();
+	uint8_t G = Green();
+	uint8_t B = Blue();
 
 	wxColour::MakeMono(&R, &G, &G, bOn);
 	Set(R, G, B, Alpha());
@@ -72,9 +93,9 @@ KxColor& KxColor::MakeMono(bool bOn)
 }
 KxColor& KxColor::MakeGray(double weightR, double weightG, double weightB)
 {
-	wxByte R = Red();
-	wxByte G = Green();
-	wxByte B = Blue();
+	uint8_t R = Red();
+	uint8_t G = Green();
+	uint8_t B = Blue();
 
 	wxColour::MakeGrey(&R, &G, &G, weightR, weightG, weightB);
 	Set(R, G, B, Alpha());
@@ -82,9 +103,9 @@ KxColor& KxColor::MakeGray(double weightR, double weightG, double weightB)
 }
 KxColor& KxColor::MakeGray()
 {
-	wxByte R = Red();
-	wxByte G = Green();
-	wxByte B = Blue();
+	uint8_t R = Red();
+	uint8_t G = Green();
+	uint8_t B = Blue();
 
 	wxColour::MakeGrey(&R, &G, &G);
 	Set(R, G, B, Alpha());
@@ -128,11 +149,11 @@ KxColor& KxColor::Negate()
 	return *this;
 }
 
-wxUint32 KxColor::GetRGBA() const
+uint32_t KxColor::GetRGBA() const
 {
 	return ((GetR() & 0xff) << 24) + ((GetG() & 0xff) << 16) + ((GetB() & 0xff) << 8) + (GetA() & 0xff);
 }
-KxColor& KxColor::SetRGBA(wxUint32 color)
+KxColor& KxColor::SetRGBA(uint32_t color)
 {
 	if (((color >> 24) & 0xFF) == 0)
 	{
@@ -144,25 +165,25 @@ KxColor& KxColor::SetRGBA(wxUint32 color)
 	}
 	return *this;
 }
-wxUint32 KxColor::GetARGB() const
+uint32_t KxColor::GetARGB() const
 {
 	return ((GetA() & 0xff) << 24) + ((GetR() & 0xff) << 16) + ((GetG() & 0xff) << 8) + (GetB() & 0xff);
 }
-KxColor& KxColor::SetARGB(wxUint32 color)
+KxColor& KxColor::SetARGB(uint32_t color)
 {
-	wxByte R = ((color >> 16) & 0xff);
-	wxByte G = ((color >> 8) & 0xff);
-	wxByte B = (color & 0xff);
-	wxByte A = ((color >> 24) & 0xff);
+	uint8_t R = ((color >> 16) & 0xff);
+	uint8_t G = ((color >> 8) & 0xff);
+	uint8_t B = (color & 0xff);
+	uint8_t A = ((color >> 24) & 0xff);
 
 	Set(R, G, B, A);
 	return *this;
 }
-wxUint32 KxColor::GetCOLORREF() const
+uint32_t KxColor::GetCOLORREF() const
 {
 	return MakeCOLORREF(GetR(), GetG(), GetB(), GetA());
 }
-KxColor& KxColor::SetCOLORREF(wxUint32 color)
+KxColor& KxColor::SetCOLORREF(uint32_t color)
 {
 	Set(GetRValue(color), GetGValue(color), GetBValue(color), GetAlphaCOLORREF(color));
 	return *this;
