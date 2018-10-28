@@ -2,88 +2,14 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView/KxDataViewConstants.h"
 #include "KxFramework/DataView/KxDataViewItem.h"
+#include <optional>
 class KxDataViewMainWindow;
-class KxDataViewTreeNodeData;
-
-class KxDataViewTreeNode
-{
-	public:
-		using Vector = std::vector<KxDataViewTreeNode*>;
-
-		static KxDataViewTreeNode* CreateRootNode(KxDataViewMainWindow* window);
-		static bool SwapNodes(KxDataViewTreeNode* node1, KxDataViewTreeNode* node2);
-
-	private:
-		KxDataViewMainWindow* m_MainWindow = NULL;
-		KxDataViewTreeNode* m_ParentNode = NULL;
-		KxDataViewItem m_Item;
-
-		// Data specific to non-leaf (branch, inner) nodes. They are kept in a separate class in order to conserve memory.
-		std::unique_ptr<KxDataViewTreeNodeData> m_BranchData;
-
-	private:
-		bool HasBranchData() const
-		{
-			return m_BranchData != NULL;
-		}
-		
-	public:
-		KxDataViewTreeNode(KxDataViewMainWindow* window, KxDataViewTreeNode* parent, const KxDataViewItem& item);
-		virtual ~KxDataViewTreeNode();
-
-	public:
-		bool IsRootNode()
-		{
-			return m_ParentNode == NULL;
-		}
-		bool HasParent() const
-		{
-			return m_ParentNode != NULL;
-		}
-		
-		KxDataViewTreeNode* GetParent() const
-		{
-			return m_ParentNode;
-		}
-		Vector& GetChildNodes();
-		const Vector& GetChildNodes() const;
-		size_t GetChildNodesCount() const;
-
-		void InsertChild(KxDataViewTreeNode* node, size_t index);
-		bool RemoveChild(KxDataViewTreeNode* node);
-		void Resort(bool noRecurse = false);
-
-		// Returns position of child node for given item in children list or 'wxNOT_FOUND'.
-		ptrdiff_t FindChildByItem(const KxDataViewItem& item) const;
-		int GetIndentLevel() const;
-
-		bool IsExpanded() const;
-		void ToggleExpanded();
-
-		// "HasChildren" property corresponds to model's IsContainer(). Note that it may be true even if GetChildNodes() is empty; see below.
-		bool HasChildren() const
-		{
-			return HasBranchData();
-		}
-		void SetHasChildren(bool hasChildren);
-
-		ptrdiff_t GetSubTreeCount() const;
-		void ChangeSubTreeCount(ptrdiff_t num);
-
-		const KxDataViewItem& GetItem() const
-		{
-			return m_Item;
-		}
-		void SetItem(const KxDataViewItem& item)
-		{
-			m_Item = item;
-		}
-};
+class KxDataViewTreeNode;
 
 class KxDataViewTreeNodeData
 {
 	public:
-		using Vector = KxDataViewTreeNode::Vector;
+		using Vector = std::vector<KxDataViewTreeNode*>;
 
 	private:
 		// Child nodes. Note that this may be empty in case
@@ -100,10 +26,7 @@ class KxDataViewTreeNodeData
 		ptrdiff_t m_SubTreeCount = 0;
 
 	private:
-		void DeleteChildNode(KxDataViewTreeNode* node)
-		{
-			delete node;
-		}
+		void DeleteChildNode(KxDataViewTreeNode* node);
 
 	public:
 		KxDataViewTreeNodeData(bool isExpanded = false)
@@ -162,6 +85,81 @@ class KxDataViewTreeNodeData
 		KxDataViewTreeNode* InsertNode(Vector::const_iterator it, KxDataViewTreeNode* node)
 		{
 			return *m_Children.emplace(it, node);
+		}
+};
+
+//////////////////////////////////////////////////////////////////////////
+class KxDataViewTreeNode
+{
+	public:
+		using Vector = std::vector<KxDataViewTreeNode*>;
+
+		static KxDataViewTreeNode* CreateRootNode(KxDataViewMainWindow* window);
+		static bool SwapNodes(KxDataViewTreeNode* node1, KxDataViewTreeNode* node2);
+
+	private:
+		KxDataViewMainWindow* m_MainWindow = NULL;
+		KxDataViewTreeNode* m_ParentNode = NULL;
+		KxDataViewItem m_Item;
+
+		// Data specific to non-leaf (branch, inner) nodes
+		std::optional<KxDataViewTreeNodeData> m_BranchData;
+
+	private:
+		bool HasBranchData() const;
+		void CreateBranchData(bool isExpanded = false);
+		void DestroyBranchData();
+
+	public:
+		KxDataViewTreeNode(KxDataViewMainWindow* window, KxDataViewTreeNode* parent, const KxDataViewItem& item);
+		virtual ~KxDataViewTreeNode();
+
+	public:
+		bool IsRootNode()
+		{
+			return m_ParentNode == NULL;
+		}
+		bool HasParent() const
+		{
+			return m_ParentNode != NULL;
+		}
+		
+		KxDataViewTreeNode* GetParent() const
+		{
+			return m_ParentNode;
+		}
+		Vector& GetChildNodes();
+		const Vector& GetChildNodes() const;
+		size_t GetChildNodesCount() const;
+
+		void InsertChild(KxDataViewTreeNode* node, size_t index);
+		bool RemoveChild(KxDataViewTreeNode* node);
+		void Resort(bool noRecurse = false);
+
+		// Returns position of child node for given item in children list or 'wxNOT_FOUND'.
+		ptrdiff_t FindChildByItem(const KxDataViewItem& item) const;
+		int GetIndentLevel() const;
+
+		bool IsExpanded() const;
+		void ToggleExpanded();
+
+		// "HasChildren" property corresponds to model's IsContainer(). Note that it may be true even if GetChildNodes() is empty; see below.
+		bool HasChildren() const
+		{
+			return HasBranchData();
+		}
+		void SetHasChildren(bool hasChildren);
+
+		ptrdiff_t GetSubTreeCount() const;
+		void ChangeSubTreeCount(ptrdiff_t num);
+
+		const KxDataViewItem& GetItem() const
+		{
+			return m_Item;
+		}
+		void SetItem(const KxDataViewItem& item)
+		{
+			m_Item = item;
 		}
 };
 

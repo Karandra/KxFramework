@@ -2,10 +2,17 @@
 #include "KxDataViewTreeNode.h"
 #include "KxDataViewMainWindow.h"
 
+//////////////////////////////////////////////////////////////////////////
+void KxDataViewTreeNodeData::DeleteChildNode(KxDataViewTreeNode* node)
+{
+	delete node;
+}
+
+//////////////////////////////////////////////////////////////////////////
 KxDataViewTreeNode* KxDataViewTreeNode::CreateRootNode(KxDataViewMainWindow* window)
 {
 	KxDataViewTreeNode* node = new KxDataViewTreeNode(window, NULL, KxDataViewItem());
-	node->m_BranchData = std::make_unique<KxDataViewTreeNodeData>(true);
+	node->CreateBranchData(true);
 	return node;
 }
 bool KxDataViewTreeNode::SwapNodes(KxDataViewTreeNode* node1, KxDataViewTreeNode* node2)
@@ -20,6 +27,19 @@ bool KxDataViewTreeNode::SwapNodes(KxDataViewTreeNode* node1, KxDataViewTreeNode
 		return true;
 	}
 	return false;
+}
+
+bool KxDataViewTreeNode::HasBranchData() const
+{
+	return m_BranchData.has_value();
+}
+void KxDataViewTreeNode::CreateBranchData(bool isExpanded)
+{
+	m_BranchData.emplace(isExpanded);
+}
+void KxDataViewTreeNode::DestroyBranchData()
+{
+	m_BranchData.reset();
 }
 
 KxDataViewTreeNode::KxDataViewTreeNode(KxDataViewMainWindow* window, KxDataViewTreeNode* parent, const KxDataViewItem& item)
@@ -53,7 +73,7 @@ void KxDataViewTreeNode::InsertChild(KxDataViewTreeNode* node, size_t index)
 {
 	if (!HasBranchData())
 	{
-		m_BranchData = std::make_unique<KxDataViewTreeNodeData>();
+		CreateBranchData();
 	}
 
 	const Vector& childNodes = m_BranchData->GetChildren();
@@ -74,20 +94,6 @@ void KxDataViewTreeNode::InsertChild(KxDataViewTreeNode* node, size_t index)
 	{
 		// Just insert
 		m_BranchData->InsertNode(childNodes.begin() + index, node);
-	}
-	#endif
-
-	#if 0
-	Vector& childNodes = m_branchData->m_Children;
-	childNodes.insert(childNodes.begin() + index, node);
-
-	// TODO: insert into sorted array directly in O(log n) instead of resorting in O(n log n)
-	if ((g_column = m_window->GetSortColumn()) >= -1)
-	{
-		g_model = m_window->GetModel();
-		g_asending = m_window->IsAscendingSort();
-
-		m_branchData->children.Sort(&wxGenericTreeModelNodeCmp);
 	}
 	#endif
 }
@@ -178,7 +184,7 @@ void KxDataViewTreeNode::ToggleExpanded()
 	// there is no way to expand it again.
 	if (!IsRootNode())
 	{
-		wxCHECK_RET(m_BranchData != NULL, "can't open leaf node");
+		wxCHECK_RET(HasBranchData(), "Can't open leaf node");
 
 		ptrdiff_t sum = 0;
 		for (const KxDataViewTreeNode* node: m_BranchData->GetChildren())
@@ -206,11 +212,11 @@ void KxDataViewTreeNode::SetHasChildren(bool hasChildren)
 	{
 		if (!hasChildren)
 		{
-			m_BranchData.reset();
+			DestroyBranchData();
 		}
 		else if (!HasBranchData())
 		{
-			m_BranchData = std::make_unique<KxDataViewTreeNodeData>();
+			CreateBranchData();
 		}
 	}
 }
