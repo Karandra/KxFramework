@@ -95,16 +95,10 @@ void KxDataViewRenderer::CallDrawCellBackground(const wxRect& cellRect, KxDataVi
 
 	if (m_Attributes.HasBackgroundColor())
 	{
-		KxColor color = m_Attributes.GetBackgroundColor();
-		uint8_t alpha = color.GetA();
-		if (alpha != 0 || alpha == 255)
-		{
-			color.SetA(70);
-
-			wxDCPenChanger changePen(dc, color);
-			wxDCBrushChanger changeBrush(dc, color);
-			dc.DrawRectangle(cellRect);
-		}
+		const KxColor& color = m_Attributes.GetBackgroundColor();
+		wxDCPenChanger changePen(dc, color);
+		wxDCBrushChanger changeBrush(dc, color);
+		dc.DrawRectangle(cellRect);
 	}
 
 	#if 0
@@ -218,7 +212,7 @@ bool KxDataViewRenderer::HasSpecialBackground() const
 }
 wxSize KxDataViewRenderer::GetCellSize() const
 {
-	return wxSize(KxDVC_DEFAULT_WIDTH, GetMainWindow()->GetUniformRowHeight());
+	return wxSize(KxDVC_DEFAULT_WIDTH / 2, GetMainWindow()->GetUniformRowHeight());
 }
 
 int KxDataViewRenderer::DoCalcCenter(int pos, int size) const
