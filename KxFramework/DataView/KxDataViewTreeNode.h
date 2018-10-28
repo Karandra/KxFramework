@@ -47,6 +47,7 @@ class KxDataViewTreeNode
 		}
 		Vector& GetChildNodes();
 		const Vector& GetChildNodes() const;
+		size_t GetChildNodesCount() const;
 
 		void InsertChild(KxDataViewTreeNode* node, size_t index);
 		bool RemoveChild(KxDataViewTreeNode* node);
@@ -147,6 +148,10 @@ class KxDataViewTreeNodeData
 		Vector& GetChildren()
 		{
 			return m_Children;
+		}
+		size_t GetChildrenCount() const
+		{
+			return m_Children.size();
 		}
 
 		void DeleteChild(Vector::const_iterator it)

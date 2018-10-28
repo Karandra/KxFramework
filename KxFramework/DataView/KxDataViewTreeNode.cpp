@@ -40,6 +40,14 @@ const KxDataViewTreeNode::KxDataViewTreeNode::Vector& KxDataViewTreeNode::GetChi
 	wxASSERT(HasBranchData());
 	return m_BranchData->GetChildren();
 }
+size_t KxDataViewTreeNode::GetChildNodesCount() const
+{
+	if (HasBranchData())
+	{
+		return m_BranchData->GetChildrenCount();
+	}
+	return 0;
+}
 
 void KxDataViewTreeNode::InsertChild(KxDataViewTreeNode* node, size_t index)
 {
@@ -286,8 +294,11 @@ KxDataViewTreeNodeOperation::Result KxDataViewTreeNodeOperation_RowToTreeNode::o
 		if (node->HasChildren() && node->GetChildNodes().size() == (size_t)node->GetSubTreeCount())
 		{
 			const size_t index = m_Row - m_CurrentRow - 1;
-			m_ResultNode = node->GetChildNodes()[index];
-			return Result::DONE;
+			if (index < node->GetChildNodes().size())
+			{
+				m_ResultNode = node->GetChildNodes()[index];
+				return Result::DONE;
+			}
 		}
 
 		return Result::CONTINUE;
