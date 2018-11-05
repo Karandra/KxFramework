@@ -2988,39 +2988,42 @@ void KxDataViewMainWindow::UpdateColumnSizes()
 	size_t columnCount = GetOwner()->GetVisibleColumnCount();
 	if (columnCount != 0)
 	{
-		bool autoResize = !m_Owner->HasFlag(KxDV_NO_COLUMN_AUTO_SIZE) || columnCount <= 1;
-		int fullWinWidth = GetSize().x;
-
-		KxDataViewColumn* lastColumn = m_Owner->GetColumnAt(columnCount - 1);
-		int columnsFullWidth = GetEndOfLastCol();
-		int lastColumnX = columnsFullWidth - lastColumn->GetWidth();
-		if (autoResize && lastColumnX < fullWinWidth)
+		KxDataViewColumn* lastColumn = m_Owner->GetColumnAtVisible(columnCount - 1);
+		if (lastColumn)
 		{
-			int desiredWidth = std::max(fullWinWidth - lastColumnX, lastColumn->GetMinWidth());
-			if (desiredWidth < (int)GetBestColumnWidth(columnCount - 1))
+			const bool autoResize = !m_Owner->HasFlag(KxDV_NO_COLUMN_AUTO_SIZE) || columnCount <= 1;
+			const int fullWinWidth = GetSize().x;
+			const int columnsFullWidth = GetEndOfLastCol();
+			const int lastColumnLeft = columnsFullWidth - lastColumn->GetWidth();
+
+			if (autoResize && lastColumnLeft < fullWinWidth)
 			{
-				lastColumn->SetWidth(lastColumn->GetWidth());
+				int desiredWidth = std::max(fullWinWidth - lastColumnLeft, lastColumn->GetMinWidth());
+				if (desiredWidth < (int)GetBestColumnWidth(columnCount - 1))
+				{
+					lastColumn->SetWidth(lastColumn->GetWidth());
+					SetVirtualSize(columnsFullWidth, m_virtualSize.y);
+					return;
+				}
+				lastColumn->SetWidth(desiredWidth);
+
+				// All columns fit on screen, so we don't need horizontal scrolling.
+				// To prevent flickering scrollbar when resizing the window to be
+				// narrower, force-set the virtual width to 0 here. It will eventually
+				// be corrected at idle time.
+				SetVirtualSize(0, m_virtualSize.y);
+				RefreshRect(wxRect(lastColumnLeft, 0, fullWinWidth - lastColumnLeft, GetSize().y));
+			}
+			else
+			{
+				if (!autoResize)
+				{
+					lastColumn->SetWidth(lastColumn->GetWidth());
+				}
+
+				// Don't bother, the columns won't fit anyway
 				SetVirtualSize(columnsFullWidth, m_virtualSize.y);
-				return;
 			}
-			lastColumn->SetWidth(desiredWidth);
-
-			// All columns fit on screen, so we don't need horizontal scrolling.
-			// To prevent flickering scrollbar when resizing the window to be
-			// narrower, force-set the virtual width to 0 here. It will eventually
-			// be corrected at idle time.
-			SetVirtualSize(0, m_virtualSize.y);
-			RefreshRect(wxRect(lastColumnX, 0, fullWinWidth - lastColumnX, GetSize().y));
-		}
-		else
-		{
-			if (!autoResize)
-			{
-				lastColumn->SetWidth(lastColumn->GetWidth());
-			}
-
-			// Don't bother, the columns won't fit anyway
-			SetVirtualSize(columnsFullWidth, m_virtualSize.y);
 		}
 	}
 }

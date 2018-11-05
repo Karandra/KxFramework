@@ -916,3 +916,46 @@ KxDataViewColumn* KxDataViewCtrl::GetColumnAt(size_t position) const
 	}
 	return NULL;
 }
+KxDataViewColumn* KxDataViewCtrl::GetColumnAtVisible(size_t position) const
+{
+	size_t visibleIndex = 0;
+	auto TestColumn = [this, &visibleIndex](size_t i, KxDataViewColumn*& column)
+	{
+		column = m_Columns[i]->GetColumn();
+		if (column->IsExposed())
+		{
+			visibleIndex++;
+		}
+		return visibleIndex != 0 ? visibleIndex - 1 : INVALID_COLUMN;
+	};
+
+	if (HasHeaderCtrl())
+	{
+		// Update needed
+		if (m_ColumnsOrder.size() != GetColumnCount())
+		{
+			const_cast<KxDataViewCtrl*>(this)->UpdateColumnsOrderArray();
+		}
+
+		for (size_t i: m_ColumnsOrder)
+		{
+			KxDataViewColumn* column = NULL;
+			if (TestColumn(i, column) == position)
+			{
+				return column;
+			}
+		}
+	}
+	else
+	{
+		for (size_t i = 0; i < m_Columns.size(); i++)
+		{
+			KxDataViewColumn* column = NULL;
+			if (TestColumn(i, column) == position)
+			{
+				return column;
+			}
+		}
+	}
+	return NULL;
+}

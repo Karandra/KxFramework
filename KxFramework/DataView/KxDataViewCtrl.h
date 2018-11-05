@@ -504,6 +504,10 @@ class KxDataViewCtrl: public wxSystemThemedControl<wxControl>, public wxScrollHe
 		// Return the column displayed at the given position in the control
 		KxDataViewColumn* GetColumnAt(size_t position) const;
 
+		// Return the column displayed at the given position in the control.
+		// Only for currently visible columns.
+		KxDataViewColumn* GetColumnAtVisible(size_t position) const;
+
 	public:
 		wxDECLARE_DYNAMIC_CLASS_NO_COPY(KxDataViewCtrl);
 
