@@ -1,4 +1,4 @@
-#include "wxeStdAfx.h"
+#include "KxStdAfx.h"
 /*
 Original code by Lee Thomason (www.grinninglizard.com)
 

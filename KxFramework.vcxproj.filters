@@ -763,9 +763,6 @@
     <ClCompile Include="KxFramework\KxProcessThread.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
-    <ClCompile Include="..\Lua Developer Studio\wxWidgets Extensions\Source\FileFormats\TinyXML2\TinyXML2.cpp">
-      <Filter>Source Files\Parsers\XML</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxXMLAttribute.cpp">
       <Filter>Source Files\Parsers\XML</Filter>
     </ClCompile>
@@ -1194,6 +1191,9 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxStreamWrappers.cpp">
       <Filter>Source Files\Streams</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\XML\TinyXML2.cpp">
+      <Filter>Source Files\Parsers\XML</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

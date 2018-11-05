@@ -391,16 +391,6 @@
     <ClInclude Include="KxStdAfx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Lua Developer Studio\wxWidgets Extensions\Source\FileFormats\TinyXML2\TinyXML2.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4005</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4005</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4005</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4005</DisableSpecificWarnings>
-    </ClCompile>
     <ClCompile Include="KxFramework\DataView\KxDataViewBitmapRenderer.cpp" />
     <ClCompile Include="KxFramework\DataView\KxDataViewBitmapTextRenderer.cpp" />
     <ClCompile Include="KxFramework\DataView\KxDataViewBitmapTextToggleRenderer.cpp" />
@@ -620,6 +610,7 @@
     <ClCompile Include="KxFramework\KxXMLAttribute.cpp" />
     <ClCompile Include="KxFramework\KxXMLNode.cpp" />
     <ClCompile Include="KxFramework\KxZLibStream.cpp" />
+    <ClCompile Include="KxFramework\XML\TinyXML2.cpp" />
     <ClCompile Include="KxStdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
