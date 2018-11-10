@@ -210,6 +210,8 @@
     <ClInclude Include="KxFramework\DataView\KxDataViewTreeNode.h" />
     <ClInclude Include="KxFramework\INI\SimpleINI.h" />
     <ClInclude Include="KxFramework\KxAlignedAllocator.h" />
+    <ClInclude Include="KxFramework\KxAnimatedSplashWindow.h" />
+    <ClInclude Include="KxFramework\KxAnimation.h" />
     <ClInclude Include="KxFramework\KxApp.h" />
     <ClInclude Include="KxFramework\KxArchiveEvent.h" />
     <ClInclude Include="KxFramework\KxArchiveFileFinder.h" />
@@ -347,6 +349,7 @@
     <ClInclude Include="KxFramework\KxTextBoxDialog.h" />
     <ClInclude Include="KxFramework\KxTextFile.h" />
     <ClInclude Include="KxFramework\KxThumbView.h" />
+    <ClInclude Include="KxFramework\KxTimer.h" />
     <ClInclude Include="KxFramework\KxToolBar.h" />
     <ClInclude Include="KxFramework\KxTopLevelWindow.h" />
     <ClInclude Include="KxFramework\KxTranslation.h" />
@@ -428,6 +431,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="KxFramework\KxAnimatedSplashWindow.cpp" />
+    <ClCompile Include="KxFramework\KxAnimation.cpp" />
     <ClCompile Include="KxFramework\KxApp.cpp" />
     <ClCompile Include="KxFramework\KxArchiveEvent.cpp" />
     <ClCompile Include="KxFramework\KxArchiveFileFinder.cpp" />
@@ -565,6 +570,7 @@
     <ClCompile Include="KxFramework\KxTextBoxDialog.cpp" />
     <ClCompile Include="KxFramework\KxTextFile.cpp" />
     <ClCompile Include="KxFramework\KxThumbView.cpp" />
+    <ClCompile Include="KxFramework\KxTimer.cpp" />
     <ClCompile Include="KxFramework\KxToolBar.cpp" />
     <ClCompile Include="KxFramework\KxTopLevelWindow.cpp" />
     <ClCompile Include="KxFramework\KxTranslation.cpp" />

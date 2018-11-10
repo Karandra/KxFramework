@@ -703,6 +703,15 @@
     <ClInclude Include="KxFramework\KxStreamWrappers.h">
       <Filter>Header Files\Streams</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxAnimatedSplashWindow.h">
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxAnimation.h">
+      <Filter>Header Files\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxTimer.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1194,6 +1203,15 @@
     </ClCompile>
     <ClCompile Include="KxFramework\XML\TinyXML2.cpp">
       <Filter>Source Files\Parsers\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxAnimatedSplashWindow.cpp">
+      <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxAnimation.cpp">
+      <Filter>Source Files\DataStructures</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxTimer.cpp">
+      <Filter>Source Files\Misc</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
