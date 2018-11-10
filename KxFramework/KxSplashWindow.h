@@ -21,7 +21,7 @@ class KxSplashWindow: public wxFrame
 		void OnTimer(wxTimerEvent& event);
 
 	protected:
-		virtual void DoSetSplashBitmap(const wxBitmap& bitmap);
+		virtual void DoSetSplash(const wxBitmap& bitmap);
 		virtual bool DoUpdateSplash();
 		virtual void DoCenterWindow();
 

@@ -10,19 +10,30 @@ void KxSplashWindow::OnTimer(wxTimerEvent& event)
 	wxTheApp->ScheduleForDestruction(this);
 }
 
-void KxSplashWindow::DoSetSplashBitmap(const wxBitmap& bitmap)
+void KxSplashWindow::DoSetSplash(const wxBitmap& bitmap)
 {
 	m_Bitmap = bitmap;
 	SetSize(m_Bitmap.GetSize());
 }
 bool KxSplashWindow::DoUpdateSplash()
 {
+	// UpdateLayeredWindow expects premultiplied alpha
 	wxImage image = m_Bitmap.ConvertToImage();
-	for (size_t i = 0; i < (size_t)(image.GetWidth() * image.GetHeight()); i++)
+	if (image.IsOk())
 	{
-		uint8_t* value = image.GetAlpha() + i;
-		*value = (double)*value * m_Alpha / 255;
+		if (!image.HasAlpha())
+		{
+			image.InitAlpha();
+		}
+
+		const size_t imageSize = image.GetWidth() * image.GetHeight();
+		for (size_t i = 0; i < imageSize; i++)
+		{
+			uint8_t* value = image.GetAlpha() + i;
+			*value = *value * m_Alpha / 255.0;
+		}
 	}
+
 	wxBitmap bitmap = wxBitmap(image, 32);
 	wxMemoryDC dc(bitmap);
 
@@ -68,7 +79,7 @@ bool KxSplashWindow::Create(wxWindow* parent,
 		KxUtility::ToggleWindowStyle(GetHandle(), GWL_EXSTYLE, WS_EX_LAYERED|WS_EX_TOOLWINDOW, true);
 		m_Timer.Bind(wxEVT_TIMER, &KxSplashWindow::OnTimer, this);
 
-		DoSetSplashBitmap(bitmap);
+		DoSetSplash(bitmap);
 		DoUpdateSplash();
 		DoCenterWindow();
 		return true;
@@ -104,7 +115,7 @@ bool KxSplashWindow::Show(bool show)
 
 void KxSplashWindow::SetSplashBitmap(const wxBitmap& bitmap)
 {
-	DoSetSplashBitmap(bitmap);
+	DoSetSplash(bitmap);
 	DoCenterWindow();
 	Update();
 }
