@@ -14,12 +14,6 @@
 #include <wx/popupwin.h>
 #include <wx/generic/private/widthcalc.h>
 
-void KxDataViewMainWindowEditorTimer::Notify()
-{
-	m_Owner->OnEditorTimer();
-}
-
-//////////////////////////////////////////////////////////////////////////
 class KxDataViewMainWindowMaxWidthCalculator: public wxMaxWidthCalculatorBase
 {
 	private:
@@ -1793,7 +1787,7 @@ KxDataViewMainWindow::KxDataViewMainWindow(KxDataViewCtrl* parent,
 										   const wxSize& size
 )
 	:wxWindow(parent, id, pos, size, wxWANTS_CHARS|wxBORDER_NONE, GetClassInfo()->GetClassName()),
-	m_Owner(parent), m_EditorTimer(this)
+	m_Owner(parent)
 {
 	// Setup drawing
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
@@ -1811,6 +1805,8 @@ KxDataViewMainWindow::KxDataViewMainWindow(KxDataViewCtrl* parent,
 	m_TreeRoot = KxDataViewTreeNode::CreateRootNode(this);
 
 	// Bind events
+	m_EditorTimer.BindFunction(&KxDataViewMainWindow::OnEditorTimer, this);
+
 	Bind(wxEVT_PAINT, &KxDataViewMainWindow::OnPaint, this);
 	Bind(wxEVT_SET_FOCUS, &KxDataViewMainWindow::OnSetFocus, this);
 	Bind(wxEVT_KILL_FOCUS, &KxDataViewMainWindow::OnKillFocus, this);

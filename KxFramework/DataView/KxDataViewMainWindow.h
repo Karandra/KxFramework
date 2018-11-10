@@ -1,5 +1,6 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include "KxFramework/KxTimer.h"
 #include "KxFramework/DataView/KxDataViewConstants.h"
 #include "KxFramework/DataView/KxDataViewCtrl.h"
 #include "KxFramework/DataView/KxDataViewItem.h"
@@ -13,20 +14,6 @@ class KxDataViewRenderer;
 class KxDataViewEditor;
 class KxDataViewHeaderCtrl;
 class KxDataViewEvent;
-
-class KxDataViewMainWindow;
-class KxDataViewMainWindowEditorTimer: public wxTimer
-{
-	private:
-		KxDataViewMainWindow* m_Owner = NULL;
-
-	public:
-		KxDataViewMainWindowEditorTimer(KxDataViewMainWindow* owner)
-			:m_Owner(owner)
-		{
-		}
-		virtual void Notify() override;
-};
 
 //////////////////////////////////////////////////////////////////////////
 class KxDataViewMainWindow: public wxWindow
@@ -76,7 +63,7 @@ class KxDataViewMainWindow: public wxWindow
 		size_t m_CurrentRow = INVALID_ROW;
 		wxSelectionStore m_Selection;
 
-		KxDataViewMainWindowEditorTimer m_EditorTimer;
+		KxTimerMethod<KxDataViewMainWindow> m_EditorTimer;
 		bool m_LastOnSame = false;
 
 		bool m_HasFocus = false;
