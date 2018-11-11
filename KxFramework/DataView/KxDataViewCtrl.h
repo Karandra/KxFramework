@@ -159,6 +159,7 @@ class KxDataViewCtrl: public wxSystemThemedControl<wxControl>, public wxScrollHe
 		virtual wxSize GetSizeAvailableForScrollTarget(const wxSize& size);
 
 	protected:
+		virtual void DoEnable(bool value) override;
 		virtual void DoSetExpanderColumn();
 		virtual void DoSetIndent();
 		virtual void DoInsertColumn(KxDataViewColumn* column, size_t position);
@@ -429,8 +430,8 @@ class KxDataViewCtrl: public wxSystemThemedControl<wxControl>, public wxScrollHe
 		bool EditItem(const KxDataViewItem& item, const KxDataViewColumn* column);
 
 		/* Drag and drop */
-		bool EnableDragSource(const wxDataFormat &format);
-		bool EnableDropTarget(const wxDataFormat &format);
+		bool EnableDragSource(const wxDataFormat& format);
+		bool EnableDropTarget(const wxDataFormat& format);
 
 		/* Window */
 		virtual void SetFocus() override;

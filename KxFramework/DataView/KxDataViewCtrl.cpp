@@ -89,6 +89,11 @@ void KxDataViewCtrl::UpdateColumnsOrderArray()
 	}
 }
 
+void KxDataViewCtrl::DoEnable(bool value)
+{
+	wxControl::DoEnable(value);
+	Refresh();
+}
 void KxDataViewCtrl::DoSetExpanderColumn()
 {
 	KxDataViewColumn* column = GetExpanderColumn();
@@ -729,11 +734,11 @@ bool KxDataViewCtrl::EditItem(const KxDataViewItem& item, const KxDataViewColumn
 }
 
 /* Drag and drop */
-bool KxDataViewCtrl::EnableDragSource(const wxDataFormat &format)
+bool KxDataViewCtrl::EnableDragSource(const wxDataFormat& format)
 {
 	return m_ClientArea->EnableDragSource(format);
 }
-bool KxDataViewCtrl::EnableDropTarget(const wxDataFormat &format)
+bool KxDataViewCtrl::EnableDropTarget(const wxDataFormat& format)
 {
 	return m_ClientArea->EnableDropTarget(format);
 }

@@ -250,11 +250,11 @@ class KxDataViewMainWindow: public wxWindow
 
 		/* Item rect */
 		wxRect GetLineRect(size_t row) const;
-		int GetLineStart(size_t row) const; // 'row' * 'm_lineHeight' in fixed mode
-		int GetLineHeight(size_t row) const; // 'm_lineHeight' in fixed mode
+		int GetLineStart(size_t row) const; // 'row' * 'm_UniformLineHeight' in fixed mode
+		int GetLineHeight(size_t row) const; // 'm_UniformLineHeight' in fixed mode
 		int GetLineHeightModel(const KxDataViewTreeNode* node) const;
 		int GetLineHeightModel(size_t row) const;
-		size_t GetLineAt(size_t yCoord) const; // 'yCoord' / 'm_lineHeight' in fixed mode
+		size_t GetLineAt(int yCoord) const; // 'yCoord' / 'm_UniformLineHeight' in fixed mode
 		int GetLineWidth() const;
 
 		int GetUniformRowHeight() const

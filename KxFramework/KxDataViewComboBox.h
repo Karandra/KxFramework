@@ -37,7 +37,7 @@ class KxDataViewComboBox:
 		int m_MaxVisibleItems = -1;
 
 	private:
-		size_t GetItemsHeight() const;
+		int CalculateItemsHeight() const;
 		void UpdatePopupHeight();
 
 	protected:
@@ -90,15 +90,10 @@ class KxDataViewComboBox:
 		 void ComboPopup();
 		 void ComboDismiss();
 		 void ComboRefreshLabel();
-		 int ComboGetMaxVisibleItems() const
-		 {
-			 return m_MaxVisibleItems;
-		 }
-		 void ComboSetMaxVisibleItems(int count)
-		 {
-			 m_MaxVisibleItems = count;
-			 UpdatePopupHeight();
-		 }
+
+		 int ComboGetMaxVisibleItems() const;
+		 void ComboSetMaxVisibleItems(int count);
+
 		 void ComboSetPopupExtents(int nLeft = 0, int nRight = 0);
 		 void ComboSetPopupMinWidth(int width = -1);
 		 void ComboSetPopupAnchor(wxDirection nSide = (wxDirection)0);

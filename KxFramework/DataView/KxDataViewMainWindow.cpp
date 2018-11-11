@@ -2304,7 +2304,7 @@ int KxDataViewMainWindow::GetLineHeightModel(size_t row) const
 	return GetLineHeightModel(GetTreeNodeByRow(row));
 }
 
-size_t KxDataViewMainWindow::GetLineAt(size_t yCoord) const
+size_t KxDataViewMainWindow::GetLineAt(int yCoord) const
 {
 	const KxDataViewModel* model = GetModel();
 	const bool modelHeight = GetOwner()->HasFlag(KxDV_MODEL_ROW_HEIGHT);
@@ -2315,7 +2315,7 @@ size_t KxDataViewMainWindow::GetLineAt(size_t yCoord) const
 		// TODO: make more efficient
 
 		size_t row = 0;
-		size_t yPos = 0;
+		int yPos = 0;
 		while (true)
 		{
 			const KxDataViewTreeNode* node = GetTreeNodeByRow(row);
@@ -2360,7 +2360,7 @@ size_t KxDataViewMainWindow::GetLineAt(size_t yCoord) const
 			row++;
 		}
 	}
-	return yCoord / m_UniformLineHeight;
+	return std::abs(yCoord) / m_UniformLineHeight;
 }
 int KxDataViewMainWindow::GetLineWidth() const
 {

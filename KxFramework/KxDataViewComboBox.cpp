@@ -9,70 +9,24 @@ wxDEFINE_EVENT(KxEVT_DVCB_SET_STRING_VALUE, KxDataViewEvent);
 
 wxIMPLEMENT_ABSTRACT_CLASS(KxDataViewComboBox, KxDataViewCtrl);
 
-size_t KxDataViewComboBox::GetItemsHeight() const
+int KxDataViewComboBox::CalculateItemsHeight() const
 {
-	size_t height = GetUniformRowHeight();
+	int height = 0;
 	if (m_MaxVisibleItems != -1)
 	{
-		#if 0
-		const KxDataViewMainWindow* mainWindow = GetMainWindow();
-
-		size_t count = mainWindow->GetRowCount();
-		for (size_t i = 0; i < count; i++)
-		{
-			height += mainWindow->GetLineHeight(i);
-		}
-
-		// Two additional pixels per row
-		height += FromDIP(2) * count;
-
-		if (count == 1)
-		{
-			height += GetUniformRowHeight() + FromDIP(4);
-		}
-
 		if (const wxHeaderCtrl* header = GetHeaderCtrl())
 		{
-			height += header->GetSize().GetHeight();
+			height += header->GetSize().GetHeight() + FromDIP(4);
 		}
-		#endif
-		
-		#if 1
-		const KxDataViewModel* pModel = GetModel();
-		if (pModel)
-		{
-			KxDataViewItem::Vector items;
-			pModel->GetChildren(KxDataViewItem(), items);
-			size_t max = std::min((size_t)m_MaxVisibleItems, items.size());
-			for (size_t i = 0; i < max; i++)
-			{
-				height += GetItemRect(items[i]).GetHeight();
-			}
 
-			if (max == 1)
-			{
-				height += 4;
-			}
-			else
-			{
-				// Two additional pixels by row
-				height += 2 * max;
-			}
-			if (!HasHeaderCtrl())
-			{
-				const wxHeaderCtrl* header = GetHeaderCtrl();
-				height += header ? header->GetSize().GetHeight() : 0;
-			}
-		}
-		#endif
+		int items = std::min(m_MaxVisibleItems, (int)GetMainWindow()->GetRowCount());
+		height += (items * FromDIP(4)) + (items * GetUniformRowHeight());
 	}
-
-	wxSize minSize = m_Sizer->GetMinSize();
-	if (height < (size_t)minSize.GetHeight())
+	else
 	{
-		height = minSize.GetHeight();
+		height = GetUniformRowHeight();
 	}
-	return height;
+	return std::clamp(height, 0, wxSystemSettings::GetMetric(wxSYS_SCREEN_Y));
 }
 void KxDataViewComboBox::UpdatePopupHeight()
 {
@@ -82,7 +36,7 @@ void KxDataViewComboBox::UpdatePopupHeight()
 	}
 	else
 	{
-		size_t height = GetItemsHeight();
+		int height = CalculateItemsHeight();
 
 		// Setting max height to zero doesn't seems to work
 		m_ComboCtrl->SetPopupMaxHeight(height == 0 ? 1 : height);
@@ -92,7 +46,6 @@ void KxDataViewComboBox::UpdatePopupHeight()
 void KxDataViewComboBox::OnInternalIdle()
 {
 	KxDataViewCtrl::OnInternalIdle();
-	UpdatePopupHeight();
 }
 void KxDataViewComboBox::OnSelectItem(KxDataViewEvent& event)
 {
@@ -134,7 +87,6 @@ bool KxDataViewComboBox::FindItem(const wxString& value, wxString* pTrueItem)
 }
 void KxDataViewComboBox::OnPopup()
 {
-	UpdatePopupHeight();
 	SetFocus();
 }
 void KxDataViewComboBox::OnDismiss()
@@ -151,7 +103,7 @@ void KxDataViewComboBox::OnDismiss()
 }
 void KxDataViewComboBox::OnDoShowPopup()
 {
-	
+	UpdatePopupHeight();
 }
 bool KxDataViewComboBox::Create(wxWindow* window)
 {
@@ -256,6 +208,16 @@ void KxDataViewComboBox::ComboRefreshLabel()
 {
 	m_ComboCtrl->SetText(GetStringValue());
 }
+
+int KxDataViewComboBox::ComboGetMaxVisibleItems() const
+{
+	return m_MaxVisibleItems;
+}
+void KxDataViewComboBox::ComboSetMaxVisibleItems(int count)
+{
+	m_MaxVisibleItems = count;
+}
+
 void KxDataViewComboBox::ComboSetPopupExtents(int nLeft, int nRight)
 {
 	m_ComboCtrl->SetPopupExtents(nLeft, nRight);
