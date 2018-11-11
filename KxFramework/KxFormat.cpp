@@ -190,10 +190,13 @@ KxFormat& KxFormat::argDouble(double a, int precision, int fieldWidth, const wxU
 	return argString(wxString::Format(formatString, a), fieldWidth, fieldWidth);
 }
 
-#if 0
-void TestFunction()
+#if 1
+static void TestFunction()
 {
 	KxFormat format("%1 %2 %3");
+
+	format.arg(true);
+	format.arg(false);
 
 	wxString strWx;
 	std::string strStd;
@@ -234,6 +237,11 @@ void TestFunction()
 	const void* p2 = NULL;
 	format.arg(p1);
 	format.arg(p2);
+
+	int* pi1 = NULL;
+	const int* pi2 = NULL;
+	format.arg(pi1);
+	format.arg(pi2);
 
 	const char* c1 = NULL;
 	char* c2 = NULL;

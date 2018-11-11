@@ -14,22 +14,22 @@ namespace
 	constexpr const wxChar DefaultFillChar = wxS(' ');
 	constexpr const wxChar DefaultFloatFormat = wxS('f');
 
-	template<class T> inline constexpr bool IsCharType = std::is_same_v<char, T> || std::is_same_v<wchar_t, T>;
+	template<class T> inline constexpr bool IsCharType = std::is_same_v<T, char> || std::is_same_v<T, wchar_t>;
 	template<class T> inline constexpr bool IsCharPointer =
-		std::is_same_v<char*, T> ||
-		std::is_same_v<wchar_t*, T> ||
-		std::is_same_v<const char*, T> ||
-		std::is_same_v<const wchar_t*, T>;
+		std::is_same_v<T, char*> ||
+		std::is_same_v<T, wchar_t*> ||
+		std::is_same_v<T, const char*> ||
+		std::is_same_v<T, const wchar_t*>;
 
 	template<class T> inline constexpr bool FmtString =
-		std::is_same_v<bool, T> ||
 		IsCharType<T> ||
 		IsCharPointer<T> ||
-		std::is_same_v<std::string_view, T> ||
-		std::is_same_v<std::wstring_view, T> ||
+		std::is_same_v<T, bool> ||
+		std::is_same_v<T, std::string_view> ||
+		std::is_same_v<T, std::wstring_view> ||
 		std::is_constructible_v<wxString, T>;
 
-	template<class T> inline constexpr bool FmtInteger = (std::is_integral_v<T> || std::is_enum_v<T>) && !(IsCharType<T> || std::is_pointer_v<T>);
+	template<class T> inline constexpr bool FmtInteger = (std::is_integral_v<T> || std::is_enum_v<T>) && !(IsCharType<T> || IsCharPointer<T> || std::is_pointer_v<T> || std::is_same_v<T, bool>);
 	template<class T> inline constexpr bool FmtFloat = std::is_floating_point_v<T>;
 	template<class T> inline constexpr bool FmtPointer = std::is_pointer_v<T> && !IsCharPointer<T>;
 }
@@ -102,7 +102,7 @@ class KxFormat
 		template<class T> typename std::enable_if<FmtString<T>, KxFormat&>::type
 		arg(const T& a, int fieldWidth = 0, const wxUniChar& fillChar = DefaultFillChar)
 		{
-			if constexpr(std::is_same_v<bool, T>)
+			if constexpr(std::is_same_v<T, bool>)
 			{
 				return argBool(a, fieldWidth, fillChar);
 			}
@@ -114,7 +114,7 @@ class KxFormat
 			{
 				return argString(a, fieldWidth, fillChar);
 			}
-			else if constexpr(std::is_same_v<std::string_view, T> || std::is_same_v<std::wstring_view, T>)
+			else if constexpr(std::is_same_v<T, std::string_view> || std::is_same_v<T, std::wstring_view>)
 			{
 				return argString(wxString(a.data(), a.size()), fieldWidth, fillChar);
 			}
