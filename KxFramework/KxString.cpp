@@ -43,7 +43,7 @@ namespace Util
 	// http://msdn.microsoft.com/en-us/library/ff546850(v=VS.85).aspx
 	// * (asterisk) Matches zero or more characters.
 	// ? (question mark) Matches a single character.
-
+	//
 	// DOS_DOT Matches either a period or zero characters beyond the name string.
 	// DOS_QM Matches any single character or, upon encountering a period or end
 	//        of name string, advances the expression to the end of the set of
@@ -66,20 +66,26 @@ namespace Util
 		size_t expressionIndex = 0;
 		size_t nameIndex = 0;
 
+		// Both name and expression is empty, return true.
 		if ((!expressionStr || !expressionStr[0]) && (!nameStr || !nameStr[0]))
 		{
 			return true;
 		}
 
+		// Expression is empty or it's star char ('*'), return true.
+		if ((!expressionStr || !expressionStr[0]) || (expressionStr[0] == starChar && expressionStr[1] == NULL))
+		{
+			return true;
+		}
+
+		// Empty name or empty expression, return false.
 		if (!expressionStr || !nameStr || !expressionStr[0] || !nameStr[0])
 		{
-
 			return false;
 		}
 
 		while (expressionStr[expressionIndex] && nameStr[nameIndex])
 		{
-
 			if (expressionStr[expressionIndex] == starChar)
 			{
 				expressionIndex++;
@@ -114,7 +120,6 @@ namespace Util
 				}
 
 				bool endReached = false;
-
 				while (!endReached)
 				{
 					endReached = (nameStr[nameIndex] == ZeroChar || nameIndex == lastDot);
@@ -174,10 +179,8 @@ namespace Util
 				}
 			}
 		}
-
 		return !expressionStr[expressionIndex] && !nameStr[nameIndex] ? true : false;
 	}
-
 	bool IsNameInExpression(const wchar_t* nameStr, const wchar_t* expressionStr, bool ignoreCase)
 	{
 		const wchar_t DOS_STAR = L'<';
