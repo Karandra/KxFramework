@@ -67,18 +67,6 @@ KxFileItem::KxFileItem(KxFileFinder* finder, const WIN32_FIND_DATAW& fileInfo)
 {
 	Set(fileInfo);
 }
-KxFileItem::~KxFileItem()
-{
-}
-
-bool KxFileItem::IsCurrentOrParent() const
-{
-	return m_Name == wxS("..") || m_Name == wxS(".");
-}
-bool KxFileItem::IsDirectoryEmpty() const
-{
-	return IsDirectory() && KxFileFinder::IsDirectoryEmpty(m_Source);
-}
 
 bool KxFileItem::UpdateInfo()
 {
@@ -96,5 +84,43 @@ bool KxFileItem::UpdateInfo()
 	{
 		MakeNull(true);
 		return false;
+	}
+}
+
+bool KxFileItem::IsCurrentOrParent() const
+{
+	return m_Name == wxS("..") || m_Name == wxS(".");
+}
+bool KxFileItem::IsDirectoryEmpty() const
+{
+	return IsDirectory() && KxFileFinder::IsDirectoryEmpty(m_Source);
+}
+
+wxString KxFileItem::GetFileExtension() const
+{
+	if (IsFile())
+	{
+		const size_t pos = m_Name.rfind(wxS('.'));
+		if (pos != wxString::npos)
+		{
+			return m_Name.substr(pos + 1);
+		}
+	}
+	return wxEmptyString;
+}
+void KxFileItem::SetFileExtension(const wxString& ext)
+{
+	if (IsFile())
+	{
+		const size_t pos = m_Name.rfind(wxS('.'));
+		if (pos != wxString::npos)
+		{
+			m_Name.replace(pos + 1, m_Name.length() - pos, ext);
+		}
+		else
+		{
+			m_Name += wxS('.');
+			m_Name += ext;
+		}
 	}
 }

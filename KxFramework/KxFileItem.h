@@ -25,11 +25,9 @@ class KxFileItem
 		void SetTime(const FILETIME& fileTime, wxDateTime& fileTimeWx) const;
 
 	public:
-		KxFileItem() {}
+		KxFileItem() = default;
 		KxFileItem(const wxString& fullPath);
 		KxFileItem(const wxString& source, const wxString& fileName);
-		KxFileItem(const KxFileItem& other) = default;
-		~KxFileItem();
 
 	private:
 		KxFileItem(KxFileFinder* finder, const WIN32_FIND_DATAW& fileInfo);
@@ -39,15 +37,18 @@ class KxFileItem
 		{
 			return m_Attributes != INVALID_FILE_ATTRIBUTES;
 		}
+		bool UpdateInfo();
 
 		template<class T> T GetExtraData() const
 		{
 			static_assert(sizeof(T) <= sizeof(m_ExtraData) && std::is_trivially_copyable_v<T>, "invalid data type");
+
 			return static_cast<T>(m_ExtraData);
 		}
 		template<class T> void SetExtraData(const T& value)
 		{
 			static_assert(sizeof(T) <= sizeof(m_ExtraData) && std::is_trivially_copyable_v<T>, "invalid data type");
+
 			m_ExtraData = static_cast<intptr_t>(value);
 		}
 
@@ -56,7 +57,11 @@ class KxFileItem
 			return IsOK() && !IsReparsePoint() && !IsCurrentOrParent();
 		}
 		bool IsCurrentOrParent() const;
-		
+		bool IsReparsePoint() const
+		{
+			return m_Attributes & FILE_ATTRIBUTE_REPARSE_POINT;
+		}
+
 		bool IsDirectory() const
 		{
 			return m_Attributes & FILE_ATTRIBUTE_DIRECTORY;
@@ -90,11 +95,6 @@ class KxFileItem
 		{
 			KxUtility::ModFlagRef(m_Attributes, FILE_ATTRIBUTE_READONLY, value);
 			return *this;
-		}
-
-		bool IsReparsePoint() const
-		{
-			return m_Attributes & FILE_ATTRIBUTE_REPARSE_POINT;
 		}
 
 		uint32_t GetAttributes() const
@@ -164,10 +164,11 @@ class KxFileItem
 			m_Name = name;
 		}
 		
+		wxString GetFileExtension() const;
+		void SetFileExtension(const wxString& ext);
+
 		wxString GetFullPath() const
 		{
-			return m_Source + '\\' + GetName();
+			return m_Source + wxS('\\') + GetName();
 		}
-
-		bool UpdateInfo();
 };
