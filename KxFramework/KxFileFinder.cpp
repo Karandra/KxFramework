@@ -23,7 +23,7 @@ namespace
 
 bool KxFileFinder::IsDirectoryEmpty(const wxString& directoryPath)
 {
-	KxFileFinder finder(directoryPath, "*");
+	KxFileFinder finder(directoryPath, wxS("*"));
 
 	KxFileItem item = finder.FindNext();
 	if (!item.IsOK())
