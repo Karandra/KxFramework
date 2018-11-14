@@ -97,19 +97,17 @@ bool KxLZ4BaseStream::SetDictionary(const wxMemoryBuffer& buffer)
 //////////////////////////////////////////////////////////////////////////
 void KxLZ4InputStream::Init()
 {
-	static_assert(sizeof(m_StreamObject) == sizeof(LZ4_streamDecode_t), "Invalid decompressing stream size");
-	
 	// Set stream pointer
-	SetStream(m_StreamObject);
+	SetStream(m_StreamObject.data());
 
 	// Init stream with or without dictionary
 	if (!m_Dictionary.empty())
 	{
-		LZ4_setStreamDecode(GetStream<LZ4_streamDecode_t>(), reinterpret_cast<const char*>(m_Dictionary.data()), m_Dictionary.size());
+		LZ4_setStreamDecode(m_StreamObject.GetAs<LZ4_streamDecode_t>(), reinterpret_cast<const char*>(m_Dictionary.data()), m_Dictionary.size());
 	}
 	else
 	{
-		LZ4_setStreamDecode(GetStream<LZ4_streamDecode_t>(), NULL, 0);
+		LZ4_setStreamDecode(m_StreamObject.GetAs<LZ4_streamDecode_t>(), NULL, 0);
 	}
 }
 
@@ -145,7 +143,36 @@ size_t KxLZ4InputStream::OnSysRead(void* buffer, size_t size)
 	return size;
 }
 
+KxLZ4InputStream::KxLZ4InputStream(wxInputStream& stream, const DictionaryBuffer& dictionary)
+	:KxInputStreamWrapper(stream), m_Dictionary(dictionary)
+{
+	Init();
+}
+KxLZ4InputStream::KxLZ4InputStream(wxInputStream* stream, const DictionaryBuffer& dictionary)
+	:KxInputStreamWrapper(stream), m_Dictionary(dictionary)
+{
+	Init();
+}
+KxLZ4InputStream::~KxLZ4InputStream()
+{
+}
+
 //////////////////////////////////////////////////////////////////////////
+KxLZ4OutputStream::KxLZ4OutputStream(wxOutputStream& stream, int acceleration)
+	:KxOutputStreamWrapper(stream)
+{
+	SetAcceleration(acceleration);
+}
+KxLZ4OutputStream::KxLZ4OutputStream(wxOutputStream* stream, int acceleration)
+	: KxOutputStreamWrapper(stream)
+{
+	SetAcceleration(acceleration);
+}
+KxLZ4OutputStream::~KxLZ4OutputStream()
+{
+
+}
+
 int KxLZ4OutputStream::GetAcceleration() const
 {
 	return m_Acceleration;

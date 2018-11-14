@@ -7,6 +7,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxStreamWrappers.h"
+#include "KxFramework/KxMemberObject.h"
 
 //////////////////////////////////////////////////////////////////////////
 class KxLZ4
@@ -102,7 +103,7 @@ class KxLZ4InputStream:
 		using DictionaryBuffer = std::vector<uint8_t>;
 
 	private:
-		uint8_t m_StreamObject[32] = {0};
+		KxMemberObject<uint8_t[32], 32> m_StreamObject;
 		DictionaryBuffer m_Dictionary;
 		size_t m_RingBufferIndex = 0;
 
@@ -113,16 +114,9 @@ class KxLZ4InputStream:
 		virtual size_t OnSysRead(void* buffer, size_t size) override;
 
 	public:
-		KxLZ4InputStream(wxInputStream& stream, const DictionaryBuffer& dictionary = DictionaryBuffer())
-			:KxInputStreamWrapper(stream), m_Dictionary(dictionary)
-		{
-			Init();
-		}
-		KxLZ4InputStream(wxInputStream* stream, const DictionaryBuffer& dictionary = DictionaryBuffer())
-			:KxInputStreamWrapper(stream), m_Dictionary(dictionary)
-		{
-			Init();
-		}
+		KxLZ4InputStream(wxInputStream& stream, const DictionaryBuffer& dictionary = DictionaryBuffer());
+		KxLZ4InputStream(wxInputStream* stream, const DictionaryBuffer& dictionary = DictionaryBuffer());
+		virtual ~KxLZ4InputStream();
 
 	public:
 		virtual bool IsWriteable() const override
@@ -144,17 +138,10 @@ class KxLZ4OutputStream:
 		int m_Acceleration = 0;
 
 	public:
-		KxLZ4OutputStream(wxOutputStream& stream, int acceleration = 0)
-			:KxOutputStreamWrapper(stream)
-		{
-			SetAcceleration(acceleration);
-		}
-		KxLZ4OutputStream(wxOutputStream* stream, int acceleration = 0)
-			:KxOutputStreamWrapper(stream)
-		{
-			SetAcceleration(acceleration);
-		}
-	
+		KxLZ4OutputStream(wxOutputStream& stream, int acceleration = 0);
+		KxLZ4OutputStream(wxOutputStream* stream, int acceleration = 0);
+		virtual ~KxLZ4OutputStream();
+
 	public:
 		virtual bool IsWriteable() const override
 		{
