@@ -712,6 +712,9 @@
     <ClInclude Include="KxFramework\KxTimer.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxMemberObject.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />

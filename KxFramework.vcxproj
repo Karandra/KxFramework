@@ -299,6 +299,7 @@
     <ClInclude Include="KxFramework\KxListView.h" />
     <ClInclude Include="KxFramework\KxLZ4Stream.h" />
     <ClInclude Include="KxFramework\KxMath.h" />
+    <ClInclude Include="KxFramework\KxMemberObject.h" />
     <ClInclude Include="KxFramework\KxMemoryStream.h" />
     <ClInclude Include="KxFramework\KxMenu.h" />
     <ClInclude Include="KxFramework\KxMenuEvent.h" />
