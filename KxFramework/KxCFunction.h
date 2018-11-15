@@ -3,102 +3,148 @@
 #include "KxFramework/KxUtility.h"
 #include <cstdint>
 #include <tuple>
+class KxCFunction;
 
 namespace KxFFI
 {
-	class FunctionData;
-	enum class Type
+	enum class TypeID: uint16_t
+	{
+		Invalid = std::numeric_limits<uint16_t>::max(),
+		Void = 0,
+
+		Float32 = 2,
+		Float64 = 3,
+
+		UInt8 = 5,
+		Int8 = 6,
+		UInt16 = 7,
+		Int16 = 8,
+		UInt32 = 9,
+		Int32 = 10,
+		UInt64 = 11,
+		Int64 = 12,
+
+		Pointer = 14
+	};
+	enum class ABI: int32_t
 	{
 		Invalid = -1,
 
-		Void,
-		Pointer,
-		Int8, Int16, Int32, Int64,
-		UInt8, UInt16, UInt32, UInt64,
-		Float32, Float64,
+		#if _WIN64
+
+		X64 = 1,
+		SysV = X64,
+		StdCall = X64,
+		ThisCall = X64,
+		FastCall = X64,
+		CDecl = X64,
+		Pascal = X64,
+		Register = X64,
+		Default = X64,
+
+		#else
+
+		SysV = 1,
+		StdCall = 2,
+		ThisCall = 3,
+		FastCall = 4,
+		CDecl = 5,
+		Pascal = 6,
+		Register = 7,
+		Default = CDecl,
+
+		#endif
 	};
-	enum class ABI
+
+	// Layout of these types must be the same as their corresponding 'ffi_*' counterparts.
+	struct CType
 	{
-		Invalid = -1,
-		Default = 0,
-
-		CDECL_ABI,
-		STDCALL_ABI,
-		THISCALL_ABI,
-
-		X64_ABI,
-		VECTORCALL_ABI
+		size_t m_Size = 0;
+		uint16_t m_Alignemnt = 0;
+		TypeID m_Type = TypeID::Invalid;
+		CType** m_Elements = NULL;
+	};
+	struct CInterface
+	{
+		ABI m_ABI = ABI::Invalid;
+		uint32_t m_ArgumentCount = 0;
+		CType** m_ArgumentTypes = NULL;
+		CType* m_ReturnType = NULL;
+		uint32_t m_CodeSize = 0;
+		uint32_t m_Flags = 0;
+	};
+	
+	using CClosureFunction = void(*)(CInterface*, void*, void**, KxCFunction*);
+	struct CClosure
+	{
+		uint8_t m_Trampoline[sizeof(void*) == 8 ? 29 : 52] = {0};
+		CInterface* m_CInterface = NULL;
+		CClosureFunction m_Function = NULL;
+		KxCFunction* m_Context = NULL;
 	};
 
-	template<Type> struct CType {};
-	template<> struct CType<Type::Invalid> {};
-	template<> struct CType<Type::Void> { using T = void; };
-	template<> struct CType<Type::Pointer> { using T = void*; };
-	template<> struct CType<Type::Int8> { using T = int8_t; };
-	template<> struct CType<Type::Int16> { using T = int16_t; };
-	template<> struct CType<Type::Int32> { using T = int32_t; };
-	template<> struct CType<Type::Int64> { using T = int64_t; };
-	template<> struct CType<Type::UInt16> { using T = uint16_t; };
-	template<> struct CType<Type::UInt32> { using T = uint32_t; };
-	template<> struct CType<Type::UInt64> { using T = uint64_t; };
-	template<> struct CType<Type::Float32> { using T = float; };
-	template<> struct CType<Type::Float64> { using T = double; };
+	enum class CStatus
+	{
+		OK = 0,
+		BadTypedef,
+		BadABI
+	};
 
 	template<class T, class CStdT, class AliasT>
 	inline constexpr bool IsTypeAlias = sizeof(CStdT) == sizeof(AliasT) && std::is_same_v<T, AliasT>;
 
-	template<class T> constexpr Type CRType()
+	template<class T> constexpr TypeID GetTypeID()
 	{
 		if constexpr(std::is_pointer_v<T>)
 		{
-			return Type::Pointer;
+			return TypeID::Pointer;
 		}
 		else if constexpr(std::is_void_v<T>)
 		{
-			return Type::Void;
+			return TypeID::Void;
 		}
 
 		else if constexpr(std::is_same_v<T, int8_t>)
 		{
-			return Type::Int8;
+			return TypeID::Int8;
 		}
 		else if constexpr(std::is_same_v<T, int16_t>)
 		{
-			return Type::Int16;
+			return TypeID::Int16;
 		}
 		else if constexpr(std::is_same_v<T, int32_t> || IsTypeAlias<T, int32_t, long> || IsTypeAlias<T, int32_t, int>)
 		{
-			return Type::Int32;
+			return TypeID::Int32;
 		}
 		else if constexpr(std::is_same_v<T, int64_t>)
 		{
-			return Type::Int64;
+			return TypeID::Int64;
 		}
 
 		else if constexpr(std::is_same_v<T, uint8_t>)
 		{
-			return Type::UInt8;
+			return TypeID::UInt8;
 		}
 		else if constexpr(std::is_same_v<T, uint16_t>)
 		{
-			return Type::UInt16;
+			return TypeID::UInt16;
 		}
 		else if constexpr(std::is_same_v<T, uint32_t> || IsTypeAlias<T, uint32_t, unsigned long> || IsTypeAlias<T, uint32_t, unsigned int>)
 		{
-			return Type::UInt32;
+			return TypeID::UInt32;
 		}
 		else if constexpr(std::is_same_v<T, uint64_t>)
 		{
-			return Type::UInt64;
+			return TypeID::UInt64;
 		}
 
 		else if constexpr(std::is_same_v<T, float>)
 		{
-			return Type::Float32;
+			return TypeID::Float32;
 		}
 		else if constexpr(std::is_same_v<T, double>)
 		{
-			return Type::Float64;
+			return TypeID::Float64;
 		}
 
 		else
@@ -106,117 +152,144 @@ namespace KxFFI
 			static_assert(false, "This type is not supported");
 		}
 	}
-
-	size_t GetMaxParameterCount();
-	size_t GetTypeSize(Type type);
+	size_t GetTypeSize(TypeID type);
 }
 
 //////////////////////////////////////////////////////////////////////////
 class KxCFunction
 {
 	public:
-		using FunctionData = KxFFI::FunctionData;
-		using Type = KxFFI::Type;
+		using TypeID = KxFFI::TypeID;
 		using ABI = KxFFI::ABI;
 
-		class Arguments
+		using CType = KxFFI::CType;
+		using CInterface = KxFFI::CInterface;
+		using CClosure = KxFFI::CClosure;
+		using CClosureFunction = KxFFI::CClosureFunction;
+		using CStatus = KxFFI::CStatus;
+
+		class ArgumentsWrapper
 		{
 			private:
 				const KxCFunction& m_Function;
 				void** m_Arguments = NULL;
 
 			public:
-				Arguments(const KxCFunction& function, void** arguments)
+				ArgumentsWrapper(const KxCFunction& function, void** arguments)
 					:m_Function(function), m_Arguments(arguments)
 				{
 				}
 
 			public:
-				template<size_t index, class T> T GetAs() const
+				size_t GetCount() const
+				{
+					return m_Function.GetParametersCount();
+				}
+
+				template<size_t index, class T> T Get() const
 				{
 					return *reinterpret_cast<T*>(m_Arguments[index]);
 				}
-				
-				template<size_t index, class T = void> T GetPointer() const
+				template<size_t index, class T> void Get(T& value) const
 				{
-					static_assert(std::is_pointer_v<T>, "[Arguments::GetPointer()] Only pointer types is allowed");
-					return GetAs<index, T>();
+					value = *reinterpret_cast<T*>(m_Arguments[index]);
 				}
-				template<size_t index> int8_t GetInt8() const
+				template<size_t index> TypeID GetType() const
 				{
-					return GetAs<index, int8_t>();
+					return m_Function.GetParameterType(index);
 				}
-				template<size_t index> int16_t GetInt16() const
+		};
+		class ResultWrapper
+		{
+			private:
+				void* m_ReturnValue = NULL;
+
+			public:
+				ResultWrapper(const KxCFunction& function, void* returnValue)
+					:m_ReturnValue(returnValue)
 				{
-					return GetAs<index, int16_t>();
 				}
-				template<size_t index> int32_t GetInt32() const
+			
+			public:
+				template<class T> void Set(const T& value)
 				{
-					return GetAs<index, int32_t>();
-				}
-				template<size_t index> int64_t GetInt64() const
-				{
-					return GetAs<index, int64_t>();
-				}
-				template<size_t index> uint8_t GetUInt8() const
-				{
-					return GetAs<index, uint8_t>();
-				}
-				template<size_t index> uint16_t GetUInt16() const
-				{
-					return GetAs<index, uint16_t>();
-				}
-				template<size_t index> uint32_t GetUInt32() const
-				{
-					return GetAs<index, uint32_t>();
-				}
-				template<size_t index> uint64_t GetUInt64() const
-				{
-					return GetAs<index, uint64_t>();
-				}
-				template<size_t index> float GetFloat32() const
-				{
-					return GetAs<index, float>();
-				}
-				template<size_t index> double GetFloat64() const
-				{
-					return GetAs<index, double>();
+					*reinterpret_cast<T*>(m_ReturnValue) = value;
 				}
 		};
 
 	private:
-		std::unique_ptr<FunctionData> m_FunctionData;
+		CInterface m_CInterface;
+		std::array<CType*, 16> m_ArgumentTypes;
+		CClosure* m_Closure = NULL;
+		void* m_Code = NULL;
+		CStatus m_Status = CStatus::OK;
+
+	private:
+		static void CallExecute(CInterface* cif, void* returnValue, void** arguments, KxCFunction* context)
+		{
+			context->Execute(arguments, returnValue);
+		};
 
 	protected:
 		virtual void Execute(void** arguments, void* returnValue) = 0;
+		
+		ArgumentsWrapper GetArgumentsWrapper(void** arguments) const
+		{
+			return ArgumentsWrapper(*this, arguments);
+		}
+		ResultWrapper GetResultWrapper(void* returnValue) const
+		{
+			return ResultWrapper(*this, returnValue);
+		}
 
 	public:
-		KxCFunction();
-		KxCFunction(KxCFunction&& other);
+		KxCFunction() = default;
+		KxCFunction(KxCFunction&& other)
+		{
+			*this = std::move(other);
+		}
 		KxCFunction(const KxCFunction&) = delete;
 		virtual ~KxCFunction();
 
 	public:
-		bool Create();
 		bool IsOK() const;
+		bool Create();
 
-		const void* GetCode() const;
-		size_t GetCodeSize() const;
+		const void* GetCode() const
+		{
+			return m_Code;
+		}
+		size_t GetCodeSize() const
+		{
+			return m_CInterface.m_CodeSize;
+		}
 		template<class T> T* GetFunctionPointer() const
 		{
-			return reinterpret_cast<T*>(GetCode());
+			return reinterpret_cast<T*>(m_Code);
 		}
 
-		size_t GetParametersCount() const;
-		bool HasParameters() const;
-		bool AddParameter(Type type);
-		Type GetParameterType(size_t index) const;
+		size_t GetParametersCount() const
+		{
+			return m_CInterface.m_ArgumentCount;
+		}
+		bool HasParameters() const
+		{
+			return m_CInterface.m_ArgumentCount != 0;
+		}
+		bool AddParameter(TypeID type);
+		TypeID GetParameterType(size_t index) const;
 
-		Type GetReturnType() const;
-		void SetReturnType(Type type);
+		TypeID GetReturnType() const;
+		void SetReturnType(TypeID type);
 
-		ABI GetABI() const;
-		void SetABI(ABI abi);
+		ABI GetABI() const
+		{
+			return m_CInterface.m_ABI;
+		}
+		void SetABI(ABI abi)
+		{
+			m_CInterface.m_ABI = abi;
+		}
 
 	public:
 		KxCFunction& operator=(KxCFunction&& other);
@@ -233,17 +306,13 @@ namespace KxFFI
 	{
 		public:
 			using ResultType = typename t_Ret;
-			using FinalType = typename KxCFunctor<t_Ret(t_Types...), t_ABI>;
+			using DerivedType = typename KxCFunctor<t_Ret(t_Types...), t_ABI>;
 			using FunctorType = typename std::function<t_Ret(t_Types...)>;
 			using SignatureType = typename t_Ret(t_Types...);
-
-			using FunctionPointerType = typename std::conditional_t<t_ABI == ABI::STDCALL_ABI,
+			using FunctionPointerType = typename std::conditional_t<t_ABI == ABI::StdCall,
 				t_Ret(__stdcall *)(t_Types...),
 				t_Ret(__cdecl *)(t_Types...)
 			>;
-
-		private:
-			FinalType& m_FinalObject;
 
 		protected:
 			FunctorType m_Functor;
@@ -252,13 +321,13 @@ namespace KxFFI
 			void Init()
 			{
 				SetABI(t_ABI);
-				SetReturnType(CRType<ResultType>());
-				SetParameters({CRType<t_Types>()...});
+				SetReturnType(GetTypeID<ResultType>());
+				SetParameters({GetTypeID<t_Types>()...});
 				Create();
 			}
-			void SetParameters(const std::initializer_list<Type>& types)
+			void SetParameters(const std::initializer_list<TypeID>& types)
 			{
-				for (Type type: types)
+				for (TypeID type: types)
 				{
 					AddParameter(type);
 				}
@@ -285,18 +354,17 @@ namespace KxFFI
 			}
 
 		public:
-			FunctorClass(FinalType& function)
-				:m_FinalObject(function)
+			FunctorClass()
 			{
 				Init();
 			}
-			FunctorClass(FinalType& function, const FunctorType& functor)
-				:m_FinalObject(function), m_Functor(functor)
+			FunctorClass(const FunctorType& functor)
+				:m_Functor(functor)
 			{
 				Init();
 			}
-			FunctorClass(FinalType& function, FunctorType&& functor)
-				:m_FinalObject(function), m_Functor(std::move(functor))
+			FunctorClass(FunctorType&& functor)
+				:m_Functor(std::move(functor))
 			{
 				Init();
 			}
@@ -342,29 +410,26 @@ template<class Signature, KxFFI::ABI t_ABI>
 class KxCFunctor: public KxFFI::FunctorClassWrapper<t_ABI, Signature>::ClassType
 {
 	public:
-		using Type = KxFFI::Type;
+		using TypeID = KxFFI::TypeID;
 		using ABI = KxFFI::ABI;
 
 	private:
-		using FullBaseType = typename KxFFI::FunctorClassWrapper<t_ABI, Signature>::ClassType;
-		friend typename FullBaseType;
+		using BaseType = typename KxFFI::FunctorClassWrapper<t_ABI, Signature>::ClassType;
+		friend typename BaseType;
 
 	public:
-		using ResultType = typename FullBaseType::ResultType;
-		using SignatureType = typename FullBaseType::SignatureType;
-		using FunctionPointerType = typename FullBaseType::FunctionPointerType;
+		using ResultType = typename BaseType::ResultType;
+		using SignatureType = typename BaseType::SignatureType;
+		using FunctionPointerType = typename BaseType::FunctionPointerType;
 
 	public:
-		KxCFunctor()
-			:FullBaseType(*this)
-		{
-		}
+		KxCFunctor() = default;
 		template<class Functor> KxCFunctor(const Functor& functor)
-			:FullBaseType(*this, functor)
+			:BaseType(functor)
 		{
 		}
 		template<class Functor> KxCFunctor(Functor&& functor)
-			:FullBaseType(*this, std::move(functor))
+			:BaseType(std::move(functor))
 		{
 		}
 

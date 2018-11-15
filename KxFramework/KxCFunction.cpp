@@ -13,303 +13,189 @@
 
 namespace
 {
-	using Type = KxCFunction::Type;
+	using TypeID = KxCFunction::TypeID;
 	using ABI = KxCFunction::ABI;
 
-	constexpr ffi_type* GetFFIType(Type type)
+	constexpr ffi_type* GetFFIType(TypeID type)
 	{
 		switch (type)
 		{
-			case Type::Void:
+			case TypeID::Void:
 			{
 				return &ffi_type_void;
 			}
 
-			case Type::Int8:
+			case TypeID::Int8:
 			{
 				return &ffi_type_sint8;
 			}
-			case Type::Int16:
+			case TypeID::Int16:
 			{
 				return &ffi_type_sint16;
 			}
-			case Type::Int32:
+			case TypeID::Int32:
 			{
 				return &ffi_type_sint32;
 			}
-			case Type::Int64:
+			case TypeID::Int64:
 			{
 				return &ffi_type_sint64;
 			}
 
-			case Type::UInt8:
+			case TypeID::UInt8:
 			{
 				return &ffi_type_uint8;
 			}
-			case Type::UInt16:
+			case TypeID::UInt16:
 			{
 				return &ffi_type_uint16;
 			}
-			case Type::UInt32:
+			case TypeID::UInt32:
 			{
 				return &ffi_type_uint32;
 			}
-			case Type::UInt64:
+			case TypeID::UInt64:
 			{
 				return &ffi_type_uint64;
 			}
 
-			case Type::Pointer:
+			case TypeID::Pointer:
 			{
 				return &ffi_type_pointer;
 			}
 
-			case Type::Float32:
+			case TypeID::Float32:
 			{
 				return &ffi_type_float;
 			}
-			case Type::Float64:
+			case TypeID::Float64:
 			{
 				return &ffi_type_double;
 			}
 		};
 		return NULL;
 	}
-	constexpr Type GetFromFFIType(const ffi_type* type)
-	{
-		if (type == &ffi_type_void)
-		{
-			return Type::Void;
-		}
-
-		if (type == &ffi_type_sint8)
-		{
-			return Type::Int8;
-		}
-		if (type == &ffi_type_sint8)
-		{
-			return Type::Int8;
-		}
-		if (type == &ffi_type_sint16)
-		{
-			return Type::Int16;
-		}
-		if (type == &ffi_type_sint32)
-		{
-			return Type::Int32;
-		}
-		if (type == &ffi_type_sint64)
-		{
-			return Type::Int64;
-		}
-
-		if (type == &ffi_type_uint8)
-		{
-			return Type::UInt8;
-		}
-		if (type == &ffi_type_uint8)
-		{
-			return Type::UInt8;
-		}
-		if (type == &ffi_type_uint16)
-		{
-			return Type::UInt16;
-		}
-		if (type == &ffi_type_uint32)
-		{
-			return Type::UInt32;
-		}
-		if (type == &ffi_type_uint64)
-		{
-			return Type::UInt64;
-		}
-
-		if (type == &ffi_type_pointer)
-		{
-			return Type::Pointer;
-		}
-
-		if (type == &ffi_type_float)
-		{
-			return Type::Float32;
-		}
-		if (type == &ffi_type_double)
-		{
-			return Type::Float64;
-		}
-
-		return Type::Invalid;
-	}
-	constexpr ffi_abi GetFFIABI(ABI abi)
-	{
-		#if _WIN64
-		if (abi != ABI::Invalid)
-		{
-			return FFI_WIN64;
-		}
-		#else
-		switch (abi)
-		{
-			case ABI::Default:
-			case ABI::CDECL_ABI:
-			{
-				return FFI_MS_CDECL;
-			}
-			case ABI::STDCALL_ABI:
-			{
-				return FFI_STDCALL;
-			}
-			case ABI::THISCALL_ABI:
-			{
-				return FFI_THISCALL;
-			}
-		};
-		#endif
-		return FFI_FIRST_ABI;
-	}
 }
 
 //////////////////////////////////////////////////////////////////////////
-class KxFFI::FunctionData
+size_t KxFFI::GetTypeSize(TypeID type)
 {
-	friend class KxCFunction;
-
-	public:
-		constexpr static const size_t ms_MaxParametersCount = 16;
-
-	private:
-		ffi_cif m_CInterface;
-		ffi_closure* m_Closure = NULL;
-		void* m_Code = NULL;
-		ABI m_ABI = ABI::Invalid;
-
-		std::array<ffi_type*, ms_MaxParametersCount> m_ArgumentTypes;
-		size_t m_ArgumentsCount = 0;
-		Type m_ReturnType = Type::Invalid;
-		ffi_status m_Status = FFI_OK;
-
-	public:
-		FunctionData()
-		{
-			m_ArgumentTypes.fill(NULL);
-		}
-};
-
-namespace KxFFI
-{
-	size_t GetMaxParameterCount()
-	{
-		return FunctionData::ms_MaxParametersCount;
-	}
-	size_t GetTypeSize(Type type)
-	{
-		return GetFFIType(type)->size;
-	}
+	return GetFFIType(type)->size;
 }
 
 //////////////////////////////////////////////////////////////////////////
-KxCFunction::KxCFunction()
-	:m_FunctionData(std::make_unique<FunctionData>())
-{
-}
-KxCFunction::KxCFunction(KxCFunction&& other)
-	:KxCFunction()
-{
-	*this = std::move(other);
-}
 KxCFunction::~KxCFunction()
 {
-	if (m_FunctionData && m_FunctionData->m_Closure)
+	if (m_Closure)
 	{
-		ffi_closure_free(m_FunctionData->m_Closure);
+		ffi_closure_free(m_Closure);
 	}
 }
 
+bool KxCFunction::IsOK() const
+{
+	// Layout
+	static_assert(sizeof(CInterface) == sizeof(ffi_cif), "[KxCFunction] CInterface invalid layout");
+	static_assert(sizeof(CType) == sizeof(ffi_type), "[KxCFunction] CType invalid layout");
+	static_assert(sizeof(CStatus) == sizeof(ffi_status), "[KxCFunction] CStatus invalid layout");
+	static_assert(sizeof(CClosure) == sizeof(CClosure), "[KxCFunction] CClosure invalid layout");
+
+	// Types
+	static_assert((int)TypeID::Void == FFI_TYPE_VOID);
+	static_assert((int)TypeID::Float32 == FFI_TYPE_FLOAT);
+	static_assert((int)TypeID::Float64 == FFI_TYPE_DOUBLE);
+	static_assert((int)TypeID::Int8 == FFI_TYPE_SINT8);
+	static_assert((int)TypeID::UInt8 == FFI_TYPE_UINT8);
+	static_assert((int)TypeID::Int16 == FFI_TYPE_SINT16);
+	static_assert((int)TypeID::UInt16 == FFI_TYPE_UINT16);
+	static_assert((int)TypeID::Int32 == FFI_TYPE_SINT32);
+	static_assert((int)TypeID::UInt32 == FFI_TYPE_UINT32);
+	static_assert((int)TypeID::Int64 == FFI_TYPE_SINT64);
+	static_assert((int)TypeID::UInt64 == FFI_TYPE_UINT64);
+	static_assert((int)TypeID::Pointer == FFI_TYPE_POINTER);
+
+	// ABI
+	static_assert((int)ABI::Default == FFI_DEFAULT_ABI);
+	#if _WIN64
+	static_assert((int)ABI::X64 == FFI_WIN64);
+	#else
+	static_assert((int)ABI::SysV == FFI_SYSV);
+	static_assert((int)ABI::StdCall == FFI_STDCALL);
+	static_assert((int)ABI::ThisCall == FFI_THISCALL);
+	static_assert((int)ABI::FastCall == FFI_FASTCALL);
+	static_assert((int)ABI::CDecl == FFI_MS_CDECL);
+	static_assert((int)ABI::Pascal == FFI_PASCAL);
+	static_assert((int)ABI::Register == FFI_REGISTER);
+	#endif
+	
+
+	return m_Closure && m_Code && m_CInterface.m_ReturnType && m_Status == CStatus::OK;
+}
 bool KxCFunction::Create()
 {
-	m_FunctionData->m_Closure = static_cast<ffi_closure*>(ffi_closure_alloc(sizeof(ffi_closure), &m_FunctionData->m_Code));
-	if (m_FunctionData->m_Closure)
+	m_Closure = reinterpret_cast<CClosure*>(ffi_closure_alloc(sizeof(ffi_closure), &m_Code));
+	if (m_Closure)
 	{
-		ffi_type** argumentTypes = m_FunctionData->m_ArgumentTypes.data();
-		ffi_type* returnType = GetFFIType(m_FunctionData->m_ReturnType);
-		ffi_abi abi = GetFFIABI(m_FunctionData->m_ABI);
+		ffi_cif* cif = reinterpret_cast<ffi_cif*>(&m_CInterface);
+		ffi_closure* closure = reinterpret_cast<ffi_closure*>(m_Closure);
+		ffi_type** argumentTypes = reinterpret_cast<ffi_type**>(m_ArgumentTypes.data());
+		ffi_type* returnType = reinterpret_cast<ffi_type*>(m_CInterface.m_ReturnType);
+		ffi_abi abi = static_cast<ffi_abi>(m_CInterface.m_ABI);
+		auto function = reinterpret_cast<void(*)(ffi_cif*, void*, void**, void*)>(CallExecute);
 
-		m_FunctionData->m_Status = ffi_prep_cif(&m_FunctionData->m_CInterface, abi, m_FunctionData->m_ArgumentsCount, returnType, argumentTypes);
-		if (m_FunctionData->m_Status == FFI_OK)
+		m_Status = static_cast<CStatus>(ffi_prep_cif(cif, abi, m_CInterface.m_ArgumentCount, returnType, argumentTypes));
+		if (m_Status == CStatus::OK)
 		{
-			auto OnCall = [](ffi_cif* cif, void* ret, void** args, void* context)
-			{
-				reinterpret_cast<KxCFunction*>(context)->Execute(args, ret);
-			};
-
-			m_FunctionData->m_Status = ffi_prep_closure_loc(m_FunctionData->m_Closure, &m_FunctionData->m_CInterface, OnCall, this, m_FunctionData->m_Code);
-			return m_FunctionData->m_Status == FFI_OK;
+			m_Status = static_cast<CStatus>(ffi_prep_closure_loc(closure, cif, function, this, m_Code));
+			return m_Status == CStatus::OK;
 		}
 	}
 	return false;
 }
-bool KxCFunction::IsOK() const
-{
-	return m_FunctionData && m_FunctionData->m_Closure && m_FunctionData->m_Code && m_FunctionData->m_ReturnType != Type::Invalid;
-}
 
-const void* KxCFunction::GetCode() const
+bool KxCFunction::AddParameter(TypeID type)
 {
-	return m_FunctionData->m_Code;
-}
-size_t KxCFunction::GetCodeSize() const
-{
-	return m_FunctionData->m_CInterface.bytes;
-}
-
-size_t KxCFunction::GetParametersCount() const
-{
-	return m_FunctionData->m_ArgumentsCount;
-}
-bool KxCFunction::HasParameters() const
-{
-	return m_FunctionData->m_ArgumentsCount != 0;
-}
-
-bool KxCFunction::AddParameter(Type type)
-{
-	if (type != Type::Void && m_FunctionData->m_ArgumentsCount + 1 < m_FunctionData->m_ArgumentTypes.size())
+	if (type != TypeID::Void && m_CInterface.m_ArgumentCount + 1 < m_ArgumentTypes.size())
 	{
 		ffi_type* ffiType = GetFFIType(type);
 		if (ffiType)
 		{
-			m_FunctionData->m_ArgumentTypes[m_FunctionData->m_ArgumentsCount] = ffiType;
-			m_FunctionData->m_ArgumentsCount++;
+			m_ArgumentTypes[m_CInterface.m_ArgumentCount] = reinterpret_cast<CType*>(ffiType);
+			m_CInterface.m_ArgumentCount++;
 			return true;
 		}
 	}
 	return false;
 }
-Type KxCFunction::GetParameterType(size_t index) const
+TypeID KxCFunction::GetParameterType(size_t index) const
 {
-	return GetFromFFIType(m_FunctionData->m_ArgumentTypes[index]);
+	return m_ArgumentTypes[index]->m_Type;
 }
 
-Type KxCFunction::GetReturnType() const
+TypeID KxCFunction::GetReturnType() const
 {
-	return m_FunctionData->m_ReturnType;
+	return m_CInterface.m_ReturnType ? m_CInterface.m_ReturnType->m_Type : TypeID::Invalid;
 }
-void KxCFunction::SetReturnType(Type type)
+void KxCFunction::SetReturnType(TypeID type)
 {
-	m_FunctionData->m_ReturnType = type;
-}
-
-ABI KxCFunction::GetABI() const
-{
-	return m_FunctionData->m_ABI;
-}
-void KxCFunction::SetABI(ABI abi)
-{
-	m_FunctionData->m_ABI = abi;
+	m_CInterface.m_ReturnType = reinterpret_cast<CType*>(GetFFIType(type));
 }
 
 KxCFunction& KxCFunction::operator=(KxCFunction&& other)
 {
-	m_FunctionData = std::move(other.m_FunctionData);
+	// Copy
+	m_CInterface = other.m_CInterface;
+	m_ArgumentTypes = other.m_ArgumentTypes;
+	m_Closure = other.m_Closure;
+	m_Code = other.m_Code;
+	m_Status = other.m_Status;
+
+	// Clean other data
+	other.m_CInterface = CInterface();
+	other.m_ArgumentTypes.fill(NULL);
+	other.m_Closure = NULL;
+	other.m_Code = NULL;
+	other.m_Status = CStatus::OK;
+
 	return *this;
 }
