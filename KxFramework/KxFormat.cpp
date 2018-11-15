@@ -68,7 +68,7 @@ void KxFormat::FindCurrentAndReplace(const wxString& string)
 	m_CurrentArgument++;
 }
 
-KxFormat& KxFormat::argString(const wxString& a, int fieldWidth, const wxUniChar& fillChar)
+void KxFormat::FormatString(const wxString& a, int fieldWidth, const wxUniChar& fillChar)
 {
 	if (fieldWidth == 0 || a.length() >= (size_t)std::abs(fieldWidth))
 	{
@@ -83,65 +83,57 @@ KxFormat& KxFormat::argString(const wxString& a, int fieldWidth, const wxUniChar
 	else if (fieldWidth < 0)
 	{
 		wxString copy(a);
-		copy.append(-fieldWidth - a.length(), fillChar);
+		copy.append(static_cast<size_t>(-fieldWidth) - a.length(), fillChar);
 		FindCurrentAndReplace(copy);
 	}
-	return *this;
 }
-KxFormat& KxFormat::argChar(const wxUniChar& a, int fieldWidth, const wxUniChar& fillChar)
+void KxFormat::FormatChar(const wxUniChar& a, int fieldWidth, const wxUniChar& fillChar)
 {
-	return argString(wxString(a), fieldWidth, fillChar);
+	FormatString(wxString(a), fieldWidth, fillChar);
 }
 
-KxFormat& KxFormat::argInt(int8_t a, int fieldWidth, int base, const wxUniChar& fillChar)
+void KxFormat::FormatInt(int8_t a, int fieldWidth, int base, const wxUniChar& fillChar)
 {
-	return argString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
+	FormatString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
 }
-KxFormat& KxFormat::argInt(uint8_t a, int fieldWidth, int base, const wxUniChar& fillChar)
+void KxFormat::FormatInt(uint8_t a, int fieldWidth, int base, const wxUniChar& fillChar)
 {
-	return argString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
-}
-
-KxFormat& KxFormat::argInt(int16_t a, int fieldWidth, int base, const wxUniChar& fillChar)
-{
-	return argString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
-}
-KxFormat& KxFormat::argInt(uint16_t a, int fieldWidth, int base, const wxUniChar& fillChar)
-{
-	return argString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
+	FormatString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
 }
 
-KxFormat& KxFormat::argInt(uint32_t a, int fieldWidth, int base, const wxUniChar& fillChar)
+void KxFormat::FormatInt(int16_t a, int fieldWidth, int base, const wxUniChar& fillChar)
 {
-	return argString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
+	FormatString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
 }
-KxFormat& KxFormat::argInt(int32_t a, int fieldWidth, int base, const wxUniChar& fillChar)
+void KxFormat::FormatInt(uint16_t a, int fieldWidth, int base, const wxUniChar& fillChar)
 {
-	return argString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
-}
-
-KxFormat& KxFormat::argInt(int64_t a, int fieldWidth, int base, const wxUniChar& fillChar)
-{
-	return argString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
-}
-KxFormat& KxFormat::argInt(uint64_t a, int fieldWidth, int base, const wxUniChar& fillChar)
-{
-	return argString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
+	FormatString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
 }
 
-KxFormat& KxFormat::argPointer(const void* a, bool add0x, int fieldWidth, const wxUniChar& fillChar)
+void KxFormat::FormatInt(uint32_t a, int fieldWidth, int base, const wxUniChar& fillChar)
+{
+	FormatString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
+}
+void KxFormat::FormatInt(int32_t a, int fieldWidth, int base, const wxUniChar& fillChar)
+{
+	FormatString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
+}
+
+void KxFormat::FormatInt(int64_t a, int fieldWidth, int base, const wxUniChar& fillChar)
+{
+	return FormatString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
+}
+void KxFormat::FormatInt(uint64_t a, int fieldWidth, int base, const wxUniChar& fillChar)
+{
+	return FormatString(Utils::FormatIntWithBase(a, base, m_UpperCase), fieldWidth, fillChar);
+}
+
+void KxFormat::FormatPointer(const void* a, int fieldWidth, const wxUniChar& fillChar)
 {
 	const size_t value = reinterpret_cast<size_t>(const_cast<void*>(a));
-	if (add0x)
-	{
-		return argString(Utils::FormatIntWithBase(value, 16, m_UpperCase), fieldWidth, fillChar);
-	}
-	else
-	{
-		return argString(wxS("0x") + Utils::FormatIntWithBase(value, 16, m_UpperCase), fieldWidth, fillChar);
-	}
+	FormatString(Utils::FormatIntWithBase(value, 16, m_UpperCase), fieldWidth, fillChar);
 }
-KxFormat& KxFormat::argBool(bool a, int fieldWidth, const wxUniChar& fillChar)
+void KxFormat::FormatBool(bool a, int fieldWidth, const wxUniChar& fillChar)
 {
 	static const wxChar* ms_TrueU = wxS("TRUE");
 	static const wxChar* ms_FalseU = wxS("FALSE");
@@ -151,15 +143,15 @@ KxFormat& KxFormat::argBool(bool a, int fieldWidth, const wxUniChar& fillChar)
 
 	if (m_UpperCase)
 	{
-		return argString(a ? ms_TrueU : ms_FalseU, fieldWidth, fillChar);
+		FormatString(a ? ms_TrueU : ms_FalseU, fieldWidth, fillChar);
 	}
 	else
 	{
-		return argString(a ? ms_TrueL : ms_FalseL, fieldWidth, fillChar);
+		FormatString(a ? ms_TrueL : ms_FalseL, fieldWidth, fillChar);
 	}
 }
 
-KxFormat& KxFormat::argDouble(double a, int precision, int fieldWidth, const wxUniChar& format, const wxUniChar& fillChar)
+void KxFormat::FormatDouble(double a, int precision, int fieldWidth, const wxUniChar& format, const wxUniChar& fillChar)
 {
 	switch (format.GetValue())
 	{
@@ -174,7 +166,7 @@ KxFormat& KxFormat::argDouble(double a, int precision, int fieldWidth, const wxU
 		}
 		default:
 		{
-			return *this;
+			return;
 		}
 	};
 
@@ -187,7 +179,7 @@ KxFormat& KxFormat::argDouble(double a, int precision, int fieldWidth, const wxU
 	{
 		swprintf_s(formatString, L"%%%c", (wchar_t)format);
 	}
-	return argString(wxString::Format(formatString, a), fieldWidth, fieldWidth);
+	FormatString(wxString::Format(formatString, a), fieldWidth, fieldWidth);
 }
 
 #if 1

@@ -129,12 +129,12 @@ class KxString
 		}
 
 	public:
-		template<class... Args> static wxString Format(const wxString& format, const Args&... args)
+		template<class... Args> static wxString Format(const wxString& format, const Args&... arg)
 		{
 			if ((sizeof...(Args)) != 0)
 			{
 				KxFormat formatter(format);
-				FormatAux(formatter, args...);
+				FormatAux(formatter, arg...);
 				return formatter;
 			}
 			return format;

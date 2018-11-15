@@ -48,27 +48,27 @@ class KxFormat
 
 	private:
 		// Strings
-		KxFormat& argString(const wxString& a, int fieldWidth = 0, const wxUniChar& fillChar = DefaultFillChar);
-		KxFormat& argChar(const wxUniChar& a, int fieldWidth = 0, const wxUniChar& fillChar = DefaultFillChar);
+		void FormatString(const wxString& a, int fieldWidth, const wxUniChar& fillChar);
+		void FormatChar(const wxUniChar& a, int fieldWidth, const wxUniChar& fillChar);
 
 		// Integers
-		KxFormat& argInt(int8_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = DefaultFillChar);
-		KxFormat& argInt(uint8_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = DefaultFillChar);
+		void FormatInt(int8_t a, int fieldWidth, int base, const wxUniChar& fillChar);
+		void FormatInt(uint8_t a, int fieldWidth, int base, const wxUniChar& fillChar);
 
-		KxFormat& argInt(int16_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = DefaultFillChar);
-		KxFormat& argInt(uint16_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = DefaultFillChar);
+		void FormatInt(int16_t a, int fieldWidth, int base, const wxUniChar& fillChar);
+		void FormatInt(uint16_t a, int fieldWidth, int base, const wxUniChar& fillChar);
 
-		KxFormat& argInt(int32_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = DefaultFillChar);
-		KxFormat& argInt(uint32_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = DefaultFillChar);
+		void FormatInt(int32_t a, int fieldWidth, int base, const wxUniChar& fillChar);
+		void FormatInt(uint32_t a, int fieldWidth, int base, const wxUniChar& fillChar);
 
-		KxFormat& argInt(int64_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = DefaultFillChar);
-		KxFormat& argInt(uint64_t a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = DefaultFillChar);
+		void FormatInt(int64_t a, int fieldWidth, int base, const wxUniChar& fillChar);
+		void FormatInt(uint64_t a, int fieldWidth, int base, const wxUniChar& fillChar);
 
-		KxFormat& argPointer(const void* a, bool add0x = false, int fieldWidth = 0, const wxUniChar& fillChar = DefaultFillChar);
-		KxFormat& argBool(bool a, int fieldWidth = 0, const wxUniChar& fillChar = DefaultFillChar);
+		void FormatPointer(const void* a, int fieldWidth, const wxUniChar& fillChar);
+		void FormatBool(bool a, int fieldWidth, const wxUniChar& fillChar);
 
 		// Floats
-		KxFormat& argDouble(double a, int precision = -1, int fieldWidth = 0, const wxUniChar& format = DefaultFloatFormat, const wxUniChar& fillChar = DefaultFillChar);
+		void FormatDouble(double a, int precision, int fieldWidth, const wxUniChar& format, const wxUniChar& fillChar);
 
 	public:
 		KxFormat(const wxString& format)
@@ -104,19 +104,19 @@ class KxFormat
 		{
 			if constexpr(std::is_same_v<T, bool>)
 			{
-				return argBool(a, fieldWidth, fillChar);
+				FormatBool(a, fieldWidth, fillChar);
 			}
 			else if constexpr(std::is_constructible_v<wxUniChar, T>)
 			{
-				return argChar(a, fieldWidth, fillChar);
+				FormatChar(a, fieldWidth, fillChar);
 			}
 			else if constexpr(std::is_constructible_v<wxString, T>)
 			{
-				return argString(a, fieldWidth, fillChar);
+				FormatString(a, fieldWidth, fillChar);
 			}
 			else if constexpr(std::is_same_v<T, std::string_view> || std::is_same_v<T, std::wstring_view>)
 			{
-				return argString(wxString(a.data(), a.size()), fieldWidth, fillChar);
+				FormatString(wxString(a.data(), a.size()), fieldWidth, fillChar);
 			}
 			else
 			{
@@ -130,15 +130,29 @@ class KxFormat
 		{
 			if constexpr(std::is_integral_v<T>)
 			{
-				return argInt(a, fieldWidth, base, fillChar);
+				FormatInt(a, fieldWidth, base, fillChar);
 			}
 			else if constexpr(std::is_enum_v<T>)
 			{
-				return argInt(static_cast<std::underlying_type_t<T>>(a), fieldWidth, base, fillChar);
+				FormatInt(static_cast<std::underlying_type_t<T>>(a), fieldWidth, base, fillChar);
 			}
 			else
 			{
 				static_assert(false, "KxFormat: unsupported type for integer formatting");
+			}
+			return *this;
+		}
+
+		template<class T> typename std::enable_if<FmtPointer<T>, KxFormat&>::type
+		arg(const T& a, int fieldWidth = sizeof(void*) * 2, const wxUniChar& fillChar = wxS('0'))
+		{
+			if constexpr (std::is_pointer_v<T>)
+			{
+				FormatPointer(a, fieldWidth, fillChar);
+			}
+			else
+			{
+				static_assert(false, "KxFormat: unsupported type for pointer formatting");
 			}
 			return *this;
 		}
@@ -148,25 +162,11 @@ class KxFormat
 		{
 			if constexpr(std::is_floating_point_v<T>)
 			{
-				return argDouble(a, precision, fieldWidth, format, fillChar);
+				FormatDouble(a, precision, fieldWidth, format, fillChar);
 			}
 			else
 			{
 				static_assert(false, "KxFormat: unsupported type for floating-point formatting");
-			}
-			return *this;
-		}
-
-		template<class T> typename std::enable_if<FmtPointer<T>, KxFormat&>::type
-		arg(const T& a, bool add0x = false, int fieldWidth = 0, const wxUniChar& fillChar = DefaultFillChar)
-		{
-			if constexpr(std::is_pointer_v<T>)
-			{
-				return argPointer(a, add0x, fieldWidth, fillChar);
-			}
-			else
-			{
-				static_assert(false, "KxFormat: unsupported type for pointer formatting");
 			}
 			return *this;
 		}
