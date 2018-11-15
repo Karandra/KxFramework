@@ -175,6 +175,12 @@
     <Filter Include="Header Files\Archive">
       <UniqueIdentifier>{d29cc565-a45c-48d4-9495-c962786927d0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\FFI">
+      <UniqueIdentifier>{6014e573-e4e3-4185-8c8b-4300a5436fe1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FFI">
+      <UniqueIdentifier>{9e36dc1d-166b-46a6-a68d-83443a639d1a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -715,6 +721,9 @@
     <ClInclude Include="KxFramework\KxMemberObject.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxCFunction.h">
+      <Filter>Header Files\FFI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1215,6 +1224,9 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxTimer.cpp">
       <Filter>Source Files\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxCFunction.cpp">
+      <Filter>Source Files\FFI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

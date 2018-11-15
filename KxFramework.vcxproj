@@ -265,6 +265,7 @@
     <ClInclude Include="KxFramework\KxDrive.h" />
     <ClInclude Include="KxFramework\KxDualInputDialog.h" />
     <ClInclude Include="KxFramework\KxDualProgressDialog.h" />
+    <ClInclude Include="KxFramework\KxCFunction.h" />
     <ClInclude Include="KxFramework\KxFile.h" />
     <ClInclude Include="KxFramework\KxFileBrowseDialog.h" />
     <ClInclude Include="KxFramework\KxFileFinder.h" />
@@ -484,6 +485,7 @@
     <ClCompile Include="KxFramework\KxDrive.cpp" />
     <ClCompile Include="KxFramework\KxDualInputDialog.cpp" />
     <ClCompile Include="KxFramework\KxDualProgressDialog.cpp" />
+    <ClCompile Include="KxFramework\KxCFunction.cpp" />
     <ClCompile Include="KxFramework\KxFile.cpp" />
     <ClCompile Include="KxFramework\KxFileBrowseDialog.cpp" />
     <ClCompile Include="KxFramework\KxFileFinder.cpp" />
