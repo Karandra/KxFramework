@@ -5,8 +5,8 @@
 class KxBroadcastEvent: public wxNotifyEvent, public KxRTTI::DynamicCastAsIs<KxBroadcastEvent>
 {
 	public:
-		template<class EventT, class Function, class HandlerT>
-		static void Bind(const wxEventTypeTag<EventT>& eventType, const Function& function, HandlerT handler)
+		template<class EventT, class FunctionT, class HandlerT>
+		static void Bind(const wxEventTypeTag<EventT>& eventType, const FunctionT& function, HandlerT handler)
 		{
 			wxTheApp->Bind(eventType, [function, handler](EventT& event)
 			{

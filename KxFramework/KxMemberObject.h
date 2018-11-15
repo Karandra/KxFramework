@@ -82,12 +82,12 @@ class KxMemberObject
 			return static_cast<ObjectType**>(&m_Buffer);
 		}
 
-		template<class T = ObjectType> const T& operator*() const
+		const ObjectType& operator*() const
 		{
-			return *GetAs<T>();
+			return *GetAs<ObjectType>();
 		}
-		template<class T = ObjectType> T& operator*()
+		ObjectType& operator*()
 		{
-			return *GetAs<T>();
+			return *GetAs<ObjectType>();
 		}
 };
