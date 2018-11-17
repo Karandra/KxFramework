@@ -97,9 +97,9 @@ class KxIStdDialog
 		virtual wxString GetLabel() const = 0;
 		virtual void SetLabel(const wxString& label) = 0;
 
-		virtual wxIcon GetMainIcon() const = 0;
+		virtual wxBitmap GetMainIcon() const = 0;
 		virtual KxIconType GetMainIconID() const = 0;
-		virtual void SetMainIcon(const wxIcon& icon) = 0;
+		virtual void SetMainIcon(const wxBitmap& icon) = 0;
 		virtual void SetMainIcon(KxIconType iconID = DefaultIconID) = 0;
 
 		virtual void SetDefaultButton(wxWindowID id) = 0;
@@ -136,7 +136,7 @@ class KxStdDialog: public KxDialog, public KxIStdDialog
 		KxLabel* m_ViewLabel = NULL;
 		KxPanel* m_ContentPanel = NULL;
 		wxStaticBitmap* m_IconView = NULL;
-		wxIcon m_MainIcon = wxNullIcon;
+		wxBitmap m_MainIcon = wxNullBitmap;
 		KxIconType m_MainIconID = DefaultIconID;
 		std::vector<wxWindow*> m_UserControls;
 		bool m_IsAutoSizeEnabled = true;
@@ -198,7 +198,7 @@ class KxStdDialog: public KxDialog, public KxIStdDialog
 		}
 		void LoadIcon()
 		{
-			m_IconView->SetIcon(m_MainIcon);
+			m_IconView->SetBitmap(m_MainIcon);
 		}
 		void SetIconVisibility()
 		{
@@ -346,7 +346,7 @@ class KxStdDialog: public KxDialog, public KxIStdDialog
 		}
 
 		// Icons
-		virtual wxIcon GetMainIcon() const override
+		virtual wxBitmap GetMainIcon() const override
 		{
 			return m_MainIcon;
 		}
@@ -354,7 +354,7 @@ class KxStdDialog: public KxDialog, public KxIStdDialog
 		{
 			return m_MainIconID;
 		}
-		virtual void SetMainIcon(const wxIcon& icon) override
+		virtual void SetMainIcon(const wxBitmap& icon) override
 		{
 			if (icon.IsOk())
 			{

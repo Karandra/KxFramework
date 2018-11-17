@@ -211,7 +211,7 @@ class KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 		}
 
 		// Icons
-		virtual wxIcon GetMainIcon() const
+		virtual wxBitmap GetMainIcon() const
 		{
 			return GetIcon();
 		}
@@ -219,9 +219,11 @@ class KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 		{
 			return KxICON_NONE;
 		}
-		virtual void SetMainIcon(const wxIcon& icon)
+		virtual void SetMainIcon(const wxBitmap& icon)
 		{
-			SetIcon(icon);
+			wxIcon temp;
+			temp.CopyFromBitmap(icon);
+			SetIcon(temp);
 		}
 		virtual void SetMainIcon(KxIconType iconID = DefaultIconID)
 		{
