@@ -5,93 +5,109 @@
 #include "KxFramework/KxUtility.h"
 #include <wx/clipbrd.h>
 
+namespace
+{
+	void CopyTextToClipboard(const wxString& value)
+	{
+		if (wxTheClipboard->Open())
+		{
+			wxTheClipboard->SetData(new wxTextDataObject(value));
+			wxTheClipboard->Close();
+		}
+	}
+}
+
 wxIMPLEMENT_DYNAMIC_CLASS(KxHTMLWindow, wxHtmlWindow);
 
 wxString KxHTMLWindow::ProcessPlainText(const wxString& text)
 {
-	if (text.StartsWith("<html>") && text.EndsWith("</html>"))
+	if (text.StartsWith(wxS("<html>")) && text.EndsWith(wxS("</html>")))
 	{
 		return text;
 	}
 	else
 	{
 		wxString temp = text;
-		temp.Replace("\r\n", "<br>");
-		temp.Replace("\r", "<br>");
-		temp.Replace("\n", "<br>");
+		temp.Replace(wxS("\r\n"), wxS("<br>"));
+		temp.Replace(wxS("\r"), wxS("<br>"));
+		temp.Replace(wxS("\n"), wxS("<br>"));
 		return temp;
 	}
 }
 
-void KxHTMLWindow::DoSetFont(const wxFont& font)
+void KxHTMLWindow::CreateContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link)
 {
-	SetStandardFonts(font.GetPointSize(), font.GetFaceName(), font.GetFaceName());
-}
-void KxHTMLWindow::CreateContextMenu()
-{
-	m_ContextMenu.Bind(KxEVT_MENU_OPEN, &KxHTMLWindow::OnShowContextMenu, this);
-
-	m_ContextMenu.Add(new KxMenuItem(wxID_UNDO, KxTranslation::GetCurrent().GetString(wxID_UNDO)));
-	m_ContextMenu.Add(new KxMenuItem(wxID_REDO, KxTranslation::GetCurrent().GetString(wxID_REDO)));
-	m_ContextMenu.AddSeparator();
-
-	m_ContextMenu.Add(new KxMenuItem(wxID_CUT, KxTranslation::GetCurrent().GetString(wxID_CUT)));
-	m_ContextMenu.Add(new KxMenuItem(wxID_COPY, KxTranslation::GetCurrent().GetString(wxID_COPY)));
-	m_ContextMenu.Add(new KxMenuItem(wxID_PASTE, KxTranslation::GetCurrent().GetString(wxID_PASTE)));
-	m_ContextMenu.Add(new KxMenuItem(wxID_DELETE, KxTranslation::GetCurrent().GetString(wxID_DELETE)));
-	m_ContextMenu.AddSeparator();
-
-	m_ContextMenu.Add(new KxMenuItem(wxID_SELECTALL, KxTranslation::GetCurrent().GetString(wxID_SELECTALL)));
-}
-void KxHTMLWindow::CopyTextToClipboard(const wxString& value) const
-{
-	if (wxTheClipboard->Open())
+	auto MakeItem = [&menu](KxStandardID id)
 	{
-		wxTheClipboard->SetData(new wxTextDataObject(value));
-		wxTheClipboard->Close();
+		return menu.Add(new KxMenuItem(id, KxTranslation::GetCurrent().GetString(id)));
+	};
+
+	{
+		KxMenuItem* item = MakeItem(KxID_UNDO);
+		item->Enable(IsEditable());
+	}
+	{
+		KxMenuItem* item = MakeItem(KxID_REDO);
+		item->Enable(IsEditable());
+	}
+	menu.AddSeparator();
+
+	{
+		KxMenuItem* item = MakeItem(KxID_CUT);
+		item->Enable(IsEditable());
+	}
+	{
+		KxMenuItem* item = MakeItem(KxID_COPY);
+		item->Enable(HasSelection());
+	}
+	{
+		KxMenuItem* item = MakeItem(KxID_COPY_LINK);
+		item->Enable(link != NULL);
+	}
+	{
+		KxMenuItem* item = MakeItem(KxID_PASTE);
+		item->Enable(IsEditable());
+	}
+	{
+		KxMenuItem* item = MakeItem(KxID_DELETE);
+		item->Enable(IsEditable());
+	}
+	menu.AddSeparator();
+	{
+		KxMenuItem* item = MakeItem(KxID_SELECTALL);
+		item->Enable(!IsEmpty());
 	}
 }
-
-void KxHTMLWindow::OnShowContextMenu(KxMenuEvent& event)
+wxWindowID KxHTMLWindow::ExecuteContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link)
 {
-	for (wxMenuItem* item: m_ContextMenu.GetMenuItems())
-	{
-		switch (static_cast<KxMenuItem*>(item)->GetId())
-		{
-			case wxID_COPY:
-			case wxID_SELECTALL:
-			{
-				item->Enable(!IsEmpty());
-				break;
-			}
-			case wxID_UNDO:
-			case wxID_REDO:
-			case wxID_CUT:
-			case wxID_PASTE:
-			case wxID_DELETE:
-			{
-				item->Enable(IsEditable());
-				break;
-			}
-		};
-	}
-}
-void KxHTMLWindow::OnContextMenu(wxContextMenuEvent& event)
-{
-	wxWindowID id = m_ContextMenu.Show(this);
+	wxWindowID id = menu.Show(this);
 	switch (id)
 	{
-		case wxID_COPY:
+		case KxID_COPY:
 		{
 			CopyTextToClipboard(SelectionToText());
 			break;
 		}
-		case wxID_SELECTALL:
+		case KxID_COPY_LINK:
+		{
+			CopyTextToClipboard(link->GetHref());
+			break;
+		}
+		case KxID_SELECTALL:
 		{
 			SelectAll();
 			break;
 		}
 	};
+	return id;
+}
+
+void KxHTMLWindow::OnContextMenu(wxContextMenuEvent& event)
+{
+	KxMenu menu;
+	CreateContextMenu(menu);
+	ExecuteContextMenu(menu);
+
 	event.Skip();
 }
 void KxHTMLWindow::OnKey(wxKeyEvent& event)
@@ -115,6 +131,35 @@ void KxHTMLWindow::OnKey(wxKeyEvent& event)
 	event.Skip();
 }
 
+wxString KxHTMLWindow::OnProcessPlainText(const wxString& text) const
+{
+	return ProcessPlainText(text);
+}
+void KxHTMLWindow::OnHTMLLinkClicked(const wxHtmlLinkInfo& link)
+{
+	const wxMouseEvent* event = link.GetEvent();
+	if (event && event->RightUp())
+	{
+		KxMenu menu;
+		CreateContextMenu(menu, &link);
+		ExecuteContextMenu(menu, &link);
+	}
+	else
+	{
+		wxHtmlWindow::OnHTMLLinkClicked(link);
+	}
+}
+
+void KxHTMLWindow::DoSetFont(const wxFont& font)
+{
+	SetStandardFonts(font.GetPointSize(), font.GetFaceName(), font.GetFaceName());
+}
+bool KxHTMLWindow::DoSetValue(const wxString& value)
+{
+	m_Value = value;
+	return wxHtmlWindow::SetPage(value);
+}
+
 bool KxHTMLWindow::Create(wxWindow* parent,
 						   wxWindowID id,
 						   const wxString& text,
@@ -125,8 +170,7 @@ bool KxHTMLWindow::Create(wxWindow* parent,
 	{
 		SetBorders(2);
 		DoSetFont(parent->GetFont());
-		CreateContextMenu();
-		SetTextValue(text);
+		DoSetValue(text);
 
 		Bind(wxEVT_CONTEXT_MENU, &KxHTMLWindow::OnContextMenu, this);
 		Bind(wxEVT_KEY_DOWN, &KxHTMLWindow::OnKey, this);
@@ -144,21 +188,40 @@ const wxString& KxHTMLWindow::GetValue() const
 }
 bool KxHTMLWindow::SetValue(const wxString& value)
 {
-	m_Value = value;
-	return wxHtmlWindow::SetPage(value);
+	return DoSetValue(value);
 }
+bool KxHTMLWindow::SetTextValue(const wxString& text)
+{
+	return DoSetValue(OnProcessPlainText(text));
+}
+
 void KxHTMLWindow::Clear()
 {
 	m_Value.Clear();
 	wxHtmlWindow::SetPage(m_Value);
 }
-bool KxHTMLWindow::SetTextValue(const wxString& text)
+bool KxHTMLWindow::IsEmpty() const
 {
-	return SetValue(ProcessPlainText(text));
+	return m_Value.IsEmpty();
+}
+
+bool KxHTMLWindow::IsEditable() const
+{
+	return m_IsEditable;
+}
+void KxHTMLWindow::SetEditable(bool isEditable)
+{
+	// Not implemented
+	//m_IsEditable = bIsEditable;
+}
+
+bool KxHTMLWindow::HasSelection() const
+{
+	return m_selection && !m_selection->IsEmpty();
 }
 
 KxHTMLWindow& KxHTMLWindow::operator<<(const wxString& s)
 {
-	SetValue(m_Value + ProcessPlainText(s));
+	SetValue(m_Value + OnProcessPlainText(s));
 	return *this;
 }

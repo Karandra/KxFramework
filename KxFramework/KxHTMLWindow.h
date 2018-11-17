@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxMenu.h"
 #include <wx/html/htmlwin.h>
+class KxMenu;
 
 class KxHTMLWindow: public wxHtmlWindow
 {
@@ -10,17 +10,21 @@ class KxHTMLWindow: public wxHtmlWindow
 
 	private:
 		const bool m_IsEditable = false;
-		KxMenu m_ContextMenu;
 		wxString m_Value;
 
 	private:
-		void DoSetFont(const wxFont& font);
-		void CreateContextMenu();
-		void CopyTextToClipboard(const wxString& value) const;
-
-		void OnShowContextMenu(KxMenuEvent& event);
+		void CreateContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link = NULL);
+		wxWindowID ExecuteContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link = NULL);
+		
 		void OnContextMenu(wxContextMenuEvent& event);
 		void OnKey(wxKeyEvent& event);
+
+	protected:
+		virtual wxString OnProcessPlainText(const wxString& text) const;
+		virtual void OnHTMLLinkClicked(const wxHtmlLinkInfo& link) override;
+		
+		void DoSetFont(const wxFont& font);
+		bool DoSetValue(const wxString& value);
 
 	public:
 		static const long DefaultStyle = wxHW_DEFAULT_STYLE;
@@ -44,30 +48,15 @@ class KxHTMLWindow: public wxHtmlWindow
 	public:
 		virtual const wxString& GetValue() const;
 		virtual bool SetValue(const wxString& value);
+		virtual bool SetTextValue(const wxString& text);
+		
 		virtual void Clear();
-		virtual bool IsEmpty() const
-		{
-			return m_Value.IsEmpty();
-		}
-		virtual bool IsEditable() const
-		{
-			return m_IsEditable;
-		}
-		virtual void SetEditable(bool bIsEditable)
-		{
-			// Not implemented
-			//m_IsEditable = bIsEditable;
-		}
-		bool SetTextValue(const wxString& text);
-
-		const KxMenu* GetContextMenu() const
-		{
-			return &m_ContextMenu;
-		}
-		KxMenu* GetContextMenu()
-		{
-			return &m_ContextMenu;
-		}
+		virtual bool IsEmpty() const;
+		
+		virtual bool IsEditable() const;
+		virtual void SetEditable(bool isEditable);
+		
+		bool HasSelection() const;
 
 	public:
 		KxHTMLWindow& operator<<(const wxString& s);
