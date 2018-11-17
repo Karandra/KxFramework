@@ -60,9 +60,9 @@ void KxHTMLWindow::CreateContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link)
 		KxMenuItem* item = MakeItem(KxID_COPY);
 		item->Enable(HasSelection());
 	}
+	if (link != NULL)
 	{
 		KxMenuItem* item = MakeItem(KxID_COPY_LINK);
-		item->Enable(link != NULL);
 	}
 	{
 		KxMenuItem* item = MakeItem(KxID_PASTE);
@@ -217,7 +217,7 @@ void KxHTMLWindow::SetEditable(bool isEditable)
 
 bool KxHTMLWindow::HasSelection() const
 {
-	return m_selection && !m_selection->IsEmpty();
+	return m_selection && !m_selection->IsEmpty() && !IsEmpty();
 }
 
 KxHTMLWindow& KxHTMLWindow::operator<<(const wxString& s)
