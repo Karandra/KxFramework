@@ -78,9 +78,24 @@ namespace
 }
 
 //////////////////////////////////////////////////////////////////////////
-size_t KxFFI::GetTypeSize(TypeID type)
+namespace KxFFI
 {
-	return GetFFIType(type)->size;
+	struct CClosure
+	{
+		uint8_t m_Trampoline[FFI_TRAMPOLINE_SIZE] = {0};
+		CInterface* m_CInterface = NULL;
+		CClosureFunction m_Function = NULL;
+		KxCFunction* m_Context = NULL;
+	};
+	void CClosureCall(KxFFI::CInterface* cif, void* returnValue, void** arguments, KxCFunction* context)
+	{
+		context->Execute(arguments, returnValue);
+	};
+
+	size_t GetTypeSize(TypeID type)
+	{
+		return GetFFIType(type)->size;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -141,7 +156,7 @@ bool KxCFunction::Create()
 		ffi_type** argumentTypes = reinterpret_cast<ffi_type**>(m_ArgumentTypes.data());
 		ffi_type* returnType = reinterpret_cast<ffi_type*>(m_CInterface.m_ReturnType);
 		ffi_abi abi = static_cast<ffi_abi>(m_CInterface.m_ABI);
-		auto function = reinterpret_cast<void(*)(ffi_cif*, void*, void**, void*)>(CallExecute);
+		auto function = reinterpret_cast<void(*)(ffi_cif*, void*, void**, void*)>(KxFFI::CClosureCall);
 
 		m_Status = static_cast<CStatus>(ffi_prep_cif(cif, abi, m_CInterface.m_ArgumentCount, returnType, argumentTypes));
 		if (m_Status == CStatus::OK)

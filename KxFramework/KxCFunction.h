@@ -57,6 +57,12 @@ namespace KxFFI
 	};
 
 	// Layout of these types must be the same as their corresponding 'ffi_*' counterparts.
+	enum class CStatus
+	{
+		OK = 0,
+		BadTypedef,
+		BadABI
+	};
 	struct CType
 	{
 		size_t m_Size = 0;
@@ -74,21 +80,9 @@ namespace KxFFI
 		uint32_t m_Flags = 0;
 	};
 	
+	struct CClosure;
 	using CClosureFunction = void(*)(CInterface*, void*, void**, KxCFunction*);
-	struct CClosure
-	{
-		uint8_t m_Trampoline[sizeof(void*) == 8 ? 29 : 52] = {0};
-		CInterface* m_CInterface = NULL;
-		CClosureFunction m_Function = NULL;
-		KxCFunction* m_Context = NULL;
-	};
-
-	enum class CStatus
-	{
-		OK = 0,
-		BadTypedef,
-		BadABI
-	};
+	void CClosureCall(CInterface* cif, void* returnValue, void** arguments, KxCFunction* context);
 
 	template<class T, class CStdT, class AliasT>
 	inline constexpr bool IsTypeAlias = sizeof(CStdT) == sizeof(AliasT) && std::is_same_v<T, AliasT>;
@@ -158,6 +152,8 @@ namespace KxFFI
 //////////////////////////////////////////////////////////////////////////
 class KxCFunction
 {
+	friend void KxFFI::CClosureCall(KxFFI::CInterface* cif, void* returnValue, void** arguments, KxCFunction* context);
+
 	public:
 		using TypeID = KxFFI::TypeID;
 		using ABI = KxFFI::ABI;
@@ -219,16 +215,10 @@ class KxCFunction
 
 	private:
 		CInterface m_CInterface;
-		std::array<CType*, 16> m_ArgumentTypes;
+		std::array<CType*, 8> m_ArgumentTypes;
 		CClosure* m_Closure = NULL;
 		void* m_Code = NULL;
 		CStatus m_Status = CStatus::OK;
-
-	private:
-		static void CallExecute(CInterface* cif, void* returnValue, void** arguments, KxCFunction* context)
-		{
-			context->Execute(arguments, returnValue);
-		};
 
 	protected:
 		virtual void Execute(void** arguments, void* returnValue) = 0;
