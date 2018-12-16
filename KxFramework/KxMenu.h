@@ -3,7 +3,7 @@
 #include "KxFramework/KxMenuEvent.h"
 #include "KxFramework/KxMenuItem.h"
 
-class KxMenu: public wxMenu
+class KX_API KxMenu: public wxMenu
 {
 	public:
 		static bool EndMenu();

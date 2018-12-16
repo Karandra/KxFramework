@@ -206,13 +206,11 @@ void KxDataViewCtrl::OnInternalIdle()
 }
 void KxDataViewCtrl::DoEnableSystemTheme(bool enable, wxWindow* window)
 {
-	using Base = wxSystemThemedControl<wxControl>;
-
-	Base::DoEnableSystemTheme(enable, window);
-	Base::DoEnableSystemTheme(enable, m_ClientArea);
+	wxSystemThemedControlBase::DoEnableSystemTheme(enable, window);
+	wxSystemThemedControlBase::DoEnableSystemTheme(enable, m_ClientArea);
 	if (m_HeaderArea)
 	{
-		Base::DoEnableSystemTheme(enable, m_HeaderArea);
+		wxSystemThemedControlBase::DoEnableSystemTheme(enable, m_HeaderArea);
 	}
 
 	m_UsingSystemTheme = enable;

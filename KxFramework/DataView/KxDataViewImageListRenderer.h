@@ -74,7 +74,7 @@ class KxDataViewImageListRendererValue
 		}
 };
 
-class KxDataViewImageListRendererBase: public KxDataViewRenderer, public KxWithImageList
+class KX_API KxDataViewImageListRendererBase: public KxDataViewRenderer, public KxWithImageList
 {
 	private:
 		int m_Spacing = 0;

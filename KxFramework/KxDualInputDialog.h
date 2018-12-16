@@ -3,7 +3,7 @@
 #include "KxFramework/KxStdDialog.h"
 #include "KxFramework/KxTextBox.h"
 
-class KxDualInputDialog: public KxStdDialog
+class KX_API KxDualInputDialog: public KxStdDialog
 {
 	private:
 		KxPanel* m_View = NULL;

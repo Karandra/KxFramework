@@ -51,29 +51,10 @@ void KxFileItem::SetTime(const FILETIME& fileTime, wxDateTime& fileTimeWx) const
 		fileTimeWx.SetFromMSWSysTime(systemTime);
 	}
 }
-
-KxFileItem::KxFileItem(const wxString& fullPath)
+bool KxFileItem::DoUpdateInfo(const wxString& fullPath)
 {
-	m_Source = fullPath.BeforeLast(wxS('\\'), &m_Name);
-	UpdateInfo();
-}
-KxFileItem::KxFileItem(const wxString& source, const wxString& fileName)
-	:m_Source(source), m_Name(fileName)
-{
-	UpdateInfo();
-}
-KxFileItem::KxFileItem(KxFileFinder* finder, const WIN32_FIND_DATAW& fileInfo)
-	:m_Source(finder->GetSource())
-{
-	Set(fileInfo);
-}
-
-bool KxFileItem::UpdateInfo()
-{
-	wxString query = m_Source + wxS('\\') + m_Name;
-
 	WIN32_FIND_DATAW info = {0};
-	HANDLE searchHandle = ::FindFirstFileExW(query, FindExInfoBasic, &info, FindExSearchNameMatch, NULL, 0);
+	HANDLE searchHandle = ::FindFirstFileExW(fullPath, FindExInfoBasic, &info, FindExSearchNameMatch, NULL, 0);
 	if (searchHandle != INVALID_HANDLE_VALUE)
 	{
 		Set(info);
@@ -85,6 +66,22 @@ bool KxFileItem::UpdateInfo()
 		MakeNull(true);
 		return false;
 	}
+}
+
+KxFileItem::KxFileItem(const wxString& fullPath)
+{
+	SetFullPath(fullPath);
+	DoUpdateInfo(fullPath);
+}
+KxFileItem::KxFileItem(const wxString& source, const wxString& fileName)
+	:m_Source(source), m_Name(fileName)
+{
+	UpdateInfo();
+}
+KxFileItem::KxFileItem(KxFileFinder* finder, const WIN32_FIND_DATAW& fileInfo)
+	:m_Source(finder->GetSource())
+{
+	Set(fileInfo);
 }
 
 bool KxFileItem::IsCurrentOrParent() const

@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxFileOperationEvent.h"
 
-class KxArchiveEvent: public KxFileOperationEvent
+class KX_API KxArchiveEvent: public KxFileOperationEvent
 {
 	private:
 		wxString m_Method;
@@ -75,8 +75,8 @@ class KxArchiveEvent: public KxFileOperationEvent
 };
 
 //////////////////////////////////////////////////////////////////////////
-wxDECLARE_EVENT(KxEVT_ARCHIVE, KxArchiveEvent);
-wxDECLARE_EVENT(KxEVT_ARCHIVE_PACK, KxArchiveEvent);
-wxDECLARE_EVENT(KxEVT_ARCHIVE_UNPACK, KxArchiveEvent);
-wxDECLARE_EVENT(KxEVT_ARCHIVE_SEARCH, KxArchiveEvent);
-wxDECLARE_EVENT(KxEVT_ARCHIVE_DONE, KxArchiveEvent);
+KX_DECLARE_EVENT(KxEVT_ARCHIVE, KxArchiveEvent);
+KX_DECLARE_EVENT(KxEVT_ARCHIVE_PACK, KxArchiveEvent);
+KX_DECLARE_EVENT(KxEVT_ARCHIVE_UNPACK, KxArchiveEvent);
+KX_DECLARE_EVENT(KxEVT_ARCHIVE_SEARCH, KxArchiveEvent);
+KX_DECLARE_EVENT(KxEVT_ARCHIVE_DONE, KxArchiveEvent);

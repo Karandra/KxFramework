@@ -4,7 +4,7 @@
 #include <wx/aui/auibook.h>
 #include <wx/aui/dockart.h>
 
-class KxAuiNotebook: public KxWithImageListWrapper<wxAuiNotebook>
+class KX_API KxAuiNotebook: public KxWithImageListWrapper<wxAuiNotebook>
 {
 	public:
 		enum RendererType
@@ -73,7 +73,7 @@ class KxAuiNotebook: public KxWithImageListWrapper<wxAuiNotebook>
 
 //////////////////////////////////////////////////////////////////////////
 using KxAuiDefaultTabArtBase = wxAuiDefaultTabArt;
-class KxAuiDefaultTabArt: public KxAuiDefaultTabArtBase
+class KX_API KxAuiDefaultTabArt: public KxAuiDefaultTabArtBase
 {
 	private:
 		const KxAuiNotebook* m_Notebook = NULL;
@@ -102,7 +102,7 @@ class KxAuiDefaultTabArt: public KxAuiDefaultTabArtBase
 
 //////////////////////////////////////////////////////////////////////////
 using KxAuiDefaultDockArtBase = wxAuiDefaultDockArt;
-class KxAuiNotebookDockArtProvider: public KxAuiDefaultDockArtBase
+class KX_API KxAuiNotebookDockArtProvider: public KxAuiDefaultDockArtBase
 {
 	private:
 		const KxAuiNotebook* m_Notebook = NULL;

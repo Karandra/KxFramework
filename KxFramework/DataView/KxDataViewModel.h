@@ -2,13 +2,13 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView/KxDataViewConstants.h"
 #include "KxFramework/DataView/KxDataViewItem.h"
-class KxDataViewCtrl;
-class KxDataViewItemAttributes;
-class KxDataViewMainWindow;
-class KxDataViewColumn;
+class KX_API KxDataViewCtrl;
+class KX_API KxDataViewItemAttributes;
+class KX_API KxDataViewMainWindow;
+class KX_API KxDataViewColumn;
 
-class KxDataViewModel;
-class KxDataViewModelNotifier
+class KX_API KxDataViewModel;
+class KX_API KxDataViewModelNotifier
 {
 	public:
 		using Vector = std::vector<std::unique_ptr<KxDataViewModelNotifier>>;
@@ -53,7 +53,7 @@ class KxDataViewModelNotifier
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxDataViewModelGenerciNotifier: public KxDataViewModelNotifier
+class KX_API KxDataViewModelGenerciNotifier: public KxDataViewModelNotifier
 {
 	private:
 		KxDataViewMainWindow* m_MainWindow = NULL;
@@ -74,7 +74,7 @@ class KxDataViewModelGenerciNotifier: public KxDataViewModelNotifier
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxDataViewModel: public wxRefCounter, private KxDataViewModelNotifier
+class KX_API KxDataViewModel: public wxRefCounter, private KxDataViewModelNotifier
 {
 	private:
 		KxDataViewModelNotifier::Vector m_Notifiers;
@@ -237,7 +237,7 @@ class KxDataViewModel: public wxRefCounter, private KxDataViewModelNotifier
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxDataViewListModel: public KxDataViewModel
+class KX_API KxDataViewListModel: public KxDataViewModel
 {
 	public:
 		// Derived classes should override these methods instead of {Get,Set}Value() and GetItemAttributes() inherited from the base class.
@@ -365,7 +365,7 @@ class KxDataViewListModel: public KxDataViewModel
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxDataViewVirtualListModel: public KxDataViewListModel
+class KX_API KxDataViewVirtualListModel: public KxDataViewListModel
 {
 	public:
 		enum: size_t

@@ -1,14 +1,19 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxINetEvent.h"
-class KxINet;
-class KxINetRequest;
+class KX_API KxINet;
+class KX_API KxINetRequest;
 
-class KxINetConnection: public wxEvtHandler
+class KX_API KxINetConnection: public wxEvtHandler
 {
 	friend class KxINet;
 	friend class KxINetConnectionThread;
-	friend struct std::default_delete<KxINetConnection>;
 
 	private:
 		using HINTERNET = void*;
@@ -40,7 +45,7 @@ class KxINetConnection: public wxEvtHandler
 		{
 			*this = other;
 		}
-		KxINetConnection(KxINet* pSession, const wxString& url, uint16_t port, const wxString& userName, const wxString& password);
+		KxINetConnection(KxINet* session, const wxString& url, uint16_t port, const wxString& userName, const wxString& password);
 		virtual ~KxINetConnection();
 
 	public:

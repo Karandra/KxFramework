@@ -1,3 +1,9 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 
@@ -17,7 +23,7 @@
 #define KxSysAPI_INIT_FUNCTION_AS(dll, name, in_dll_name)			name = (FUNCTION_##name)GetProcAddress((Lib_##dll), #in_dll_name)
 #define KxSysAPI_INIT_FUNCTION(dll, name)							KxSysAPI_INIT_FUNCTION_AS(dll, name, name)
 
-class KxSystemAPI
+class KX_API KxSystemAPI
 {
 	friend class KxSystemAPIModule;
 

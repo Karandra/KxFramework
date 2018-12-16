@@ -5,9 +5,9 @@
 #include "KxFramework/DataView/KxDataViewCtrl.h"
 #include "KxFramework/DataView/KxDataViewColumn.h"
 #include "KxFramework/DataView/KxDataViewItemAttributes.h"
-class KxDataViewCtrl;
-class KxDataViewModel;
-class KxDataViewMainWindow;
+class KX_API KxDataViewCtrl;
+class KX_API KxDataViewModel;
+class KX_API KxDataViewMainWindow;
 
 enum KxDataViewRendererOptions
 {
@@ -16,7 +16,7 @@ enum KxDataViewRendererOptions
 	KxDVR_ALLOW_BITMAP_SCALEDOWN = 1 << 1,
 };
 
-class KxDataViewRenderer: public wxObject, public KxWithOptions<KxDataViewRendererOptions, KxDVR_NONE>
+class KX_API KxDataViewRenderer: public wxObject, public KxWithOptions<KxDataViewRendererOptions, KxDVR_NONE>
 {
 	friend class KxDataViewColumn;
 	friend class KxDataViewMainWindow;

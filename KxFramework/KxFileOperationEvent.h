@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KxFileOperationEvent: public wxNotifyEvent
+class KX_API KxFileOperationEvent: public wxNotifyEvent
 {
 	private:
 		wxString m_Destination;
@@ -128,11 +128,11 @@ class KxFileOperationEvent: public wxNotifyEvent
 };
 
 //////////////////////////////////////////////////////////////////////////
-wxDECLARE_EVENT(KxEVT_FILEOP_COPY, KxFileOperationEvent);
-wxDECLARE_EVENT(KxEVT_FILEOP_MOVE, KxFileOperationEvent);
-wxDECLARE_EVENT(KxEVT_FILEOP_REMOVE, KxFileOperationEvent);
-wxDECLARE_EVENT(KxEVT_FILEOP_COPY_FOLDER, KxFileOperationEvent);
-wxDECLARE_EVENT(KxEVT_FILEOP_MOVE_FOLDER, KxFileOperationEvent);
-wxDECLARE_EVENT(KxEVT_FILEOP_REMOVE_FOLDER, KxFileOperationEvent);
-wxDECLARE_EVENT(KxEVT_FILEOP_SEARCH, KxFileOperationEvent);
-wxDECLARE_EVENT(KxEVT_FILEOP_RENAME, KxFileOperationEvent);
+KX_DECLARE_EVENT(KxEVT_FILEOP_COPY, KxFileOperationEvent);
+KX_DECLARE_EVENT(KxEVT_FILEOP_MOVE, KxFileOperationEvent);
+KX_DECLARE_EVENT(KxEVT_FILEOP_REMOVE, KxFileOperationEvent);
+KX_DECLARE_EVENT(KxEVT_FILEOP_COPY_FOLDER, KxFileOperationEvent);
+KX_DECLARE_EVENT(KxEVT_FILEOP_MOVE_FOLDER, KxFileOperationEvent);
+KX_DECLARE_EVENT(KxEVT_FILEOP_REMOVE_FOLDER, KxFileOperationEvent);
+KX_DECLARE_EVENT(KxEVT_FILEOP_SEARCH, KxFileOperationEvent);
+KX_DECLARE_EVENT(KxEVT_FILEOP_RENAME, KxFileOperationEvent);

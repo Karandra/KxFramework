@@ -4,11 +4,11 @@
 #include "KxFramework/DataView/KxDataViewColumn.h"
 #include "KxFramework/DataView/KxDataViewModel.h"
 #include "KxFramework/DataView/KxDataViewConstants.h"
-class KxDataViewHeaderCtrl;
-class KxDataViewMainWindow;
-class KxMenu;
+class KX_API KxDataViewHeaderCtrl;
+class KX_API KxDataViewMainWindow;
+class KX_API KxMenu;
 
-class KxDataViewCtrl: public wxSystemThemedControl<wxControl>, public wxScrollHelper
+class KX_API KxDataViewCtrl: public wxSystemThemedControl<wxControl>, public wxScrollHelper
 {
 	friend class KxDataViewHeaderCtrl;
 	friend class KxDataViewMainWindow;

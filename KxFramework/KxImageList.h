@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KxImageList: public wxImageList
+class KX_API KxImageList: public wxImageList
 {
 	public:
 		KxImageList() {}

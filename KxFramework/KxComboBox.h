@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KxComboBox: public wxSystemThemedControl<wxComboBox>
+class KX_API KxComboBox: public wxSystemThemedControl<wxComboBox>
 {
 	public:
 		static const long DefaultStyle = wxTE_PROCESS_ENTER|wxCB_DROPDOWN|wxCB_READONLY;

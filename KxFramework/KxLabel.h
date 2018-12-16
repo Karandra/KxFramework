@@ -12,7 +12,7 @@ enum
 	KxLABEL_COLORED = 1 << 4,
 };
 
-class KxLabel: public wxSystemThemedControl<wxStaticText>
+class KX_API KxLabel: public wxSystemThemedControl<wxStaticText>
 {
 	private:
 		static const wxEllipsizeMode LabelEllipsizeMode = wxELLIPSIZE_END;

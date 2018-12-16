@@ -1,3 +1,9 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 
@@ -10,7 +16,7 @@ template<class T> class KxSingleton
 			return ms_Instance;
 		}
 
-	private:
+	public:
 		KxSingleton(const KxSingleton&) = delete;
 		KxSingleton(KxSingleton&&) = delete;
 		KxSingleton& operator=(const KxSingleton&) = delete;
@@ -18,6 +24,7 @@ template<class T> class KxSingleton
 
 	protected:
 		KxSingleton() = default;
+		~KxSingleton() = default;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -36,7 +43,7 @@ template<class T> class KxSingletonPtr
 			return ms_Instance;
 		}
 
-	private:
+	public:
 		KxSingletonPtr(const KxSingletonPtr&) = delete;
 		KxSingletonPtr(KxSingletonPtr&&) = delete;
 		KxSingletonPtr& operator=(const KxSingletonPtr&) = delete;

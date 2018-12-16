@@ -53,7 +53,7 @@ enum KxFileTime
 	KxFILETIME_LAST_ACCESS,
 };
 
-class KxFile
+class KX_API KxFile
 {
 	public:
 		struct SplitPathData
@@ -209,7 +209,7 @@ class KxFile
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxEvtFile: public wxEvtHandler, public KxFile
+class KX_API KxEvtFile: public wxEvtHandler, public KxFile
 {
 	private:
 		void SetEventHandler(wxEvtHandler* eventHandler) = delete;

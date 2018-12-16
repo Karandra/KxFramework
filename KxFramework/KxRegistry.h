@@ -1,3 +1,9 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 
@@ -47,8 +53,8 @@ enum KxRegistryNode
 	KxREG_NODE_64 = KEY_WOW64_64KEY
 };
 
-class KxRegistryKey;
-class KxRegistry
+class KX_API KxRegistryKey;
+class KX_API KxRegistry
 {
 	private:
 		static bool IsTypesConform(DWORD realType, KxRegistryValueType requestedValueType);
@@ -76,7 +82,7 @@ class KxRegistry
 		static KxStringVector GetValueNames(KxRegistryHKey mainKey, const wxString& subKey, KxRegistryNode regNode = KxREG_NODE_SYS);
 };
 
-class KxRegistryKey
+class KX_API KxRegistryKey
 {
 	private:
 		HKEY m_Handle = NULL;

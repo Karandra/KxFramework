@@ -3,7 +3,7 @@
 #include "KxFramework/KxStdDialog.h"
 #include "KxFramework/KxProgressBar.h"
 
-class KxProgressDialog: public KxStdDialog, public KxProgressBarWrapper
+class KX_API KxProgressDialog: public KxStdDialog, public KxProgressBarWrapper
 {
 	private:
 		KxProgressBar* m_View = NULL;

@@ -1,12 +1,12 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-wxDECLARE_EVENT(KxEVT_THUMBVIEW_SELECTED, wxCommandEvent);
-wxDECLARE_EVENT(KxEVT_THUMBVIEW_ACTIVATED, wxCommandEvent);
-wxDECLARE_EVENT(KxEVT_THUMBVIEW_CONTEXT_MENU, wxContextMenuEvent);
+KX_DECLARE_EVENT(KxEVT_THUMBVIEW_SELECTED, wxCommandEvent);
+KX_DECLARE_EVENT(KxEVT_THUMBVIEW_ACTIVATED, wxCommandEvent);
+KX_DECLARE_EVENT(KxEVT_THUMBVIEW_CONTEXT_MENU, wxContextMenuEvent);
 
-class KxThumbView;
-class KxThumbViewItem
+class KX_API KxThumbView;
+class KX_API KxThumbViewItem
 {
 	friend class KxThumbView;
 
@@ -24,7 +24,7 @@ class KxThumbViewItem
 		}
 };
 
-class KxThumbView: public wxSystemThemedControl<wxVScrolledWindow >
+class KX_API KxThumbView: public wxSystemThemedControl<wxVScrolledWindow>
 {
 	private:
 		wxSize m_ThumbSize = wxDefaultSize;

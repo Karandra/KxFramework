@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView/KxDataViewRenderer.h"
 
-class KxDataViewBitmapRenderer: public KxDataViewRenderer
+class KX_API KxDataViewBitmapRenderer: public KxDataViewRenderer
 {
 	public:
 		static bool GetValueAsBitmap(const wxAny& value, wxBitmap& bitmap);

@@ -301,7 +301,6 @@ class KxCURLModule: public wxModule
 		virtual bool OnInit() override
 		{
 			CURLcode status = curl_global_init(CURL_GLOBAL_DEFAULT);
-
 			KxCURL::GetInstance().m_IsInitialized = status == CURLE_OK;
 			return true;
 		}

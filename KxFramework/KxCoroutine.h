@@ -1,3 +1,9 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include <utility>
@@ -5,7 +11,7 @@
 class KxCoroutineCallData;
 class KxCoroutineTimer;
 
-class KxCoroutineBase: public wxObject
+class KX_API KxCoroutineBase: public wxObject
 {
 	friend class KxCoroutineCallData;
 	friend class KxCoroutineTimer;

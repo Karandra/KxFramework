@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include <wx/splitter.h>
 
-class KxSplitterWindow: public wxSplitterWindow
+class KX_API KxSplitterWindow: public wxSplitterWindow
 {
 	private:
 		wxColour m_SashColor;

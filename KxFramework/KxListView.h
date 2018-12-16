@@ -30,7 +30,7 @@ enum
 	KxLV_INVALID_WIDTH = -100,
 };
 
-class KxListView: public wxListView
+class KX_API KxListView: public wxListView
 {
 	private:
 		int m_ItemHeight = 21;

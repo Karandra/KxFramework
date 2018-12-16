@@ -3,7 +3,7 @@
 #include <wx/graphics.h>
 #include <wx/geometry.h>
 
-class KxGraphicsContext
+class KX_API KxGraphicsContext
 {
 	private:
 		wxGraphicsContext* m_Context = NULL;

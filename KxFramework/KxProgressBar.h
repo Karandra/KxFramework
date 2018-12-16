@@ -1,9 +1,9 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxIProgressBar.h"
-class KxIProgressBarWrapper;
+class KX_API KxIProgressBarWrapper;
 
-class KxProgressBar: public wxGauge, public KxIProgressBar
+class KX_API KxProgressBar: public wxGauge, public KxIProgressBar
 {
 	friend class KxProgressBarWrapper;
 
@@ -133,7 +133,7 @@ class KxProgressBar: public wxGauge, public KxIProgressBar
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxProgressBarWrapper: public KxIProgressBar
+class KX_API KxProgressBarWrapper: public KxIProgressBar
 {
 	private:
 		KxProgressBar* m_ProgressBar = NULL;

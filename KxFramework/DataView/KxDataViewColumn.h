@@ -2,18 +2,18 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxWithOptions.h"
 #include "KxFramework/DataView/KxDataViewConstants.h"
-class KxDataViewCtrl;
-class KxDataViewMainWindow;
-class KxDataViewHeaderCtrl;
-class KxDataViewRenderer;
-class KxDataViewEditor;
-class KxDataViewModel;
+class KX_API KxDataViewCtrl;
+class KX_API KxDataViewMainWindow;
+class KX_API KxDataViewHeaderCtrl;
+class KX_API KxDataViewRenderer;
+class KX_API KxDataViewEditor;
+class KX_API KxDataViewModel;
 
-class KxDataViewColumn: private wxSettableHeaderColumn, public KxWithOptions<KxDataViewColumnFlags, KxDV_COL_NONE>
+class KX_API KxDataViewColumn: private wxSettableHeaderColumn, public KxWithOptions<KxDataViewColumnFlags, KxDV_COL_NONE>
 {
-	friend class KxDataViewHeaderCtrl;
-	friend class KxDataViewMainWindow;
-	friend class KxDataViewCtrl;
+	friend class KX_API KxDataViewHeaderCtrl;
+	friend class KX_API KxDataViewMainWindow;
+	friend class KX_API KxDataViewCtrl;
 
 	public:
 		using wxSettableHeaderColumn::IsSortable;
@@ -262,7 +262,7 @@ class KxDataViewColumn: private wxSettableHeaderColumn, public KxWithOptions<KxD
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxDataViewColumnPart
+class KX_API KxDataViewColumnPart
 {
 	friend class KxDataViewColumn;
 

@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView/KxDataViewRenderer.h"
 
-class KxDataViewNullRenderer: public KxDataViewRenderer
+class KX_API KxDataViewNullRenderer: public KxDataViewRenderer
 {
 	protected:
 		virtual bool SetValue(const wxAny& value)

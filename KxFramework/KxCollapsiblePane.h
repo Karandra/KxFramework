@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include <wx/collpane.h>
 
-class KxCollapsiblePane: public wxCollapsiblePane
+class KX_API KxCollapsiblePane: public wxCollapsiblePane
 {
 	private:
 		wxEvtHandler m_EvtHandler;

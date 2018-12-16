@@ -76,7 +76,7 @@ wxString KxTranslation::LCIDToLocaleName(const LCID& lcid)
 	return name;
 }
 
-KxStringToStringUMap KxTranslation::FindTranslationsInDirectory(const wxString& folderPath)
+KxTranslation::AvailableMap KxTranslation::FindTranslationsInDirectory(const wxString& folderPath)
 {
 	KxStringToStringUMap translations;
 	KxStringVector filesList = KxFile(folderPath).Find("*.xml", KxFS_FILE);
@@ -143,6 +143,7 @@ bool KxTranslation::Init(const KxXMLDocument& xml)
 }
 bool KxTranslation::LoadFromResourceInModule(const wxString& localeName, const KxLibrary& library)
 {
+	m_Locale = localeName;
 	if (library.IsOK())
 	{
 		KxUnownedMemoryBuffer data = library.GetResource(g_TranslationResourceType, localeName);
@@ -196,9 +197,11 @@ bool KxTranslation::LoadFromFile(const wxString& filePath)
 }
 bool KxTranslation::LoadFromResource(const wxString& localeName)
 {
+	Clear();
 	return LoadFromResourceInModule(localeName, KxLibrary(KxUtility::GetAppHandle()));
 }
 bool KxTranslation::LoadFromResource(const wxString& localeName, const KxLibrary& library)
 {
+	Clear();
 	return LoadFromResourceInModule(localeName, library);
 }

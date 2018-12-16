@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxStdDialog.h"
 
-class KxStdDialogSimple: public KxStdDialog
+class KX_API KxStdDialogSimple: public KxStdDialog
 {
 	private:
 		wxWindow* m_View = NULL;

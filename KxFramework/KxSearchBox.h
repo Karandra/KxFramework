@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KxSearchBox: public wxSearchCtrl
+class KX_API KxSearchBox: public wxSearchCtrl
 {
 	private:
 		wxEvtHandler m_EvtHandler;

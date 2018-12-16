@@ -1,10 +1,16 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxINetEvent.h"
 #include "KxFramework/KxINetRequest.h"
 #include "KxFramework/KxINetConnection.h"
 
-class KxINet
+class KX_API KxINet
 {
 	friend class KxINetConnection;
 
@@ -43,6 +49,8 @@ class KxINet
 		virtual wxString OnGetUserAgent() const;
 
 	public:
+		KxINet(const KxINet&) = delete;
+		KxINet(KxINet&&) = delete;
 		KxINet(DWORD timeout = DefaultTimeout);
 		virtual ~KxINet();
 
@@ -58,4 +66,8 @@ class KxINet
 		{
 			return T(this, url, port, userName, password);
 		}
+
+	public:
+		KxINet& operator=(const KxINet&) = delete;
+		KxINet& operator=(KxINet&&) = delete;
 };

@@ -52,4 +52,4 @@ template<class T> class KxUnownedBuffer
 };
 
 //////////////////////////////////////////////////////////////////////////
-using KxUnownedMemoryBuffer = KxUnownedBuffer<void>;
+using KxUnownedMemoryBuffer = KX_API KxUnownedBuffer<void>;

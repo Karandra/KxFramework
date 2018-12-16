@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KxDCClipper
+class KX_API KxDCClipper
 {
 	private:
 		wxDC& m_DC;

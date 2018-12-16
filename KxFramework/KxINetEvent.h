@@ -52,8 +52,8 @@ struct KxINetResponse
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxINetConnection;
-class KxINetEvent: public wxNotifyEvent
+class KX_API KxINetConnection;
+class KX_API KxINetEvent: public wxNotifyEvent
 {
 	friend class KxINetConnection;
 	using HINTERNET = void*;
@@ -113,6 +113,6 @@ class KxINetEvent: public wxNotifyEvent
 };
 
 //////////////////////////////////////////////////////////////////////////
-wxDECLARE_EVENT(KxEVT_INET_SEND_DATA, KxINetEvent);
-wxDECLARE_EVENT(KxEVT_INET_QUERY_INFO, KxINetEvent);
-wxDECLARE_EVENT(KxEVT_INET_DOWNLOAD, KxFileOperationEvent);
+KX_DECLARE_EVENT(KxEVT_INET_SEND_DATA, KxINetEvent);
+KX_DECLARE_EVENT(KxEVT_INET_QUERY_INFO, KxINetEvent);
+KX_DECLARE_EVENT(KxEVT_INET_DOWNLOAD, KxFileOperationEvent);

@@ -1,8 +1,8 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-class KxComboControl;
+class KX_API KxComboControl;
 
-class KxComboPopup: public wxComboPopup
+class KX_API KxComboPopup: public wxComboPopup
 {
 	friend class KxComboControl;
 

@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView/KxDataViewRenderer.h"
 
-class KxDataViewBitmapTextValue
+class KX_API KxDataViewBitmapTextValue
 {
 	private:
 		wxBitmap m_Bitmap;
@@ -60,7 +60,7 @@ class KxDataViewBitmapTextValue
 		}
 };
 
-class KxDataViewBitmapTextRenderer: public KxDataViewRenderer
+class KX_API KxDataViewBitmapTextRenderer: public KxDataViewRenderer
 {
 	public:
 		static wxSize GetBitmapMargins(wxWindow* window);

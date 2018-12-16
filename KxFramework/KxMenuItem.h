@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxMenuEvent.h"
 
-class KxMenuItem: public wxEvtHandler, public wxMenuItem
+class KX_API KxMenuItem: public wxEvtHandler, public wxMenuItem
 {
 	private:
 		wxWindowID m_EffectiveID = KxID_NONE;

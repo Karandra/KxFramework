@@ -1,7 +1,13 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KxSecretValue
+class KX_API KxSecretValue
 {
 	private:
 		KxUInt8Vector m_Storage;
@@ -78,7 +84,7 @@ class KxSecretValue
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxSecretStore
+class KX_API KxSecretStore
 {
 	public:
 		static KxSecretStore GetDefault();
@@ -101,7 +107,7 @@ class KxSecretStore
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxSecretStoreService
+class KX_API KxSecretStoreService
 {
 	private:
 		const wxString m_ServiceName;
@@ -137,7 +143,7 @@ class KxSecretStoreService
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxSecretDefaultStoreService
+class KX_API KxSecretDefaultStoreService
 {
 	private:
 		KxSecretStore m_Store;

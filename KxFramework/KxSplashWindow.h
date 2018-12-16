@@ -7,7 +7,7 @@ enum
 	KxSPLASH_CENTER_ON_PARENT = 1 << 0,
 };
 
-class KxSplashWindow: public wxFrame
+class KX_API KxSplashWindow: public wxFrame
 {
 	private:
 		wxBitmap m_Bitmap;

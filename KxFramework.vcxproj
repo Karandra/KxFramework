@@ -70,12 +70,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TargetName>$(ProjectName)</TargetName>
+    <TargetName>$(ProjectName) x64</TargetName>
     <IntDir>$(ProjectDir)Junk\$(Configuration) $(Platform)\</IntDir>
     <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <TargetName>$(ProjectName)</TargetName>
+    <TargetName>$(ProjectName) x64</TargetName>
     <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)Junk\$(Configuration) $(Platform)\</IntDir>
   </PropertyGroup>
@@ -96,16 +96,20 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>KxStdAfx.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)KxFramework;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\wxWidgets\include;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\Gumbo HTML5 Parser\src;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\cURL\Includes;$(BOOST_ROOT);$(ProjectDir)KxFramework\OpenSSL\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>KXFRAMEWORK_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>KXFRAMEWORK_LIBRARY;WXMAKINGDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Lib>
       <AdditionalLibraryDirectories>$(ProjectDir);C:\Users\Kerber\Documents\Visual Studio 2017\Projects\wxWidgets\lib\vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>copy /Y "$(ProjectDir)$(Configuration)\$(TargetName)$(TargetExt)" "$(ProjectDir)Bin x86\$(TargetName)$(TargetExt)"</Command>
+      <Command>copy /Y "$(ProjectDir)$(Configuration)\$(TargetName)$(TargetExt)" "$(ProjectDir)Bin\$(TargetName)$(TargetExt)"</Command>
     </PostBuildEvent>
+    <Link>
+      <AdditionalLibraryDirectories>$(BOOST_ROOT)\lib32-msvc-14.1;$(SolutionDir)..\wxWidgets\lib\vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -116,16 +120,20 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>KxStdAfx.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)KxFramework;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\wxWidgets\include;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\Gumbo HTML5 Parser\src;$(BOOST_ROOT);$(ProjectDir)KxFramework\OpenSSL\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>KXFRAMEWORK_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>KXFRAMEWORK_LIBRARY;WXMAKINGDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Lib>
       <AdditionalLibraryDirectories>$(ProjectDir);$(ProjectDir);C:\Users\Kerber\Documents\Visual Studio 2017\Projects\wxWidgets\lib\vc_x64_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>copy /Y "$(ProjectDir)$(Configuration)\$(TargetName)$(TargetExt)" "$(ProjectDir)Bin x64\$(TargetName)$(TargetExt)"</Command>
+      <Command>copy /Y "$(ProjectDir)$(Configuration)\$(TargetName)$(TargetExt)" "$(ProjectDir)Bin\$(TargetName)$(TargetExt)"</Command>
     </PostBuildEvent>
+    <Link>
+      <AdditionalLibraryDirectories>$(BOOST_ROOT)\lib64-msvc-14.1;$(SolutionDir)..\wxWidgets\lib\vc_x64_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -138,19 +146,21 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>KxStdAfx.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)KxFramework;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\wxWidgets\include;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\Gumbo HTML5 Parser\src;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\cURL\Includes;$(BOOST_ROOT);$(ProjectDir)KxFramework\OpenSSL\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>KXFRAMEWORK_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>KXFRAMEWORK_LIBRARY;WXMAKINGDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(BOOST_ROOT)\lib32-msvc-14.1;$(SolutionDir)..\wxWidgets\lib\vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(ProjectDir);C:\Users\Kerber\Documents\Visual Studio 2017\Projects\Gumbo HTML5 Parser\visualc\Release;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\wxWidgets\lib\vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>copy /Y "$(ProjectDir)$(Configuration)\$(TargetName)$(TargetExt)" "$(ProjectDir)Bin x86\$(TargetName)$(TargetExt)"</Command>
+      <Command>copy /Y "$(ProjectDir)$(Configuration)\$(TargetName)$(TargetExt)" "$(ProjectDir)Bin\$(TargetName)$(TargetExt)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -164,23 +174,24 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>KxStdAfx.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)KxFramework;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\wxWidgets\include;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\Gumbo HTML5 Parser\src;$(BOOST_ROOT);$(ProjectDir)KxFramework\OpenSSL\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>KXFRAMEWORK_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>KXFRAMEWORK_LIBRARY;WXMAKINGDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(BOOST_ROOT)\lib64-msvc-14.1;$(SolutionDir)..\wxWidgets\lib\vc_x64_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(ProjectDir);$(ProjectDir);C:\Users\Kerber\Documents\Visual Studio 2017\Projects\Gumbo HTML5 Parser\visualc\Release x64;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\wxWidgets\lib\vc_x64_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>copy /Y "$(ProjectDir)$(Configuration)\$(TargetName)$(TargetExt)" "$(ProjectDir)Bin x64\$(TargetName)$(TargetExt)"</Command>
+      <Command>copy /Y "$(ProjectDir)$(Configuration)\$(TargetName)$(TargetExt)" "$(ProjectDir)Bin\$(TargetName)$(TargetExt)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\Lua Developer Studio\wxWidgets Extensions\Source\FileFormats\TinyXML2\TinyXML2.h" />
     <ClInclude Include="KxFramework\DataView\KxDataViewBitmapRenderer.h" />
     <ClInclude Include="KxFramework\DataView\KxDataViewBitmapTextRenderer.h" />
     <ClInclude Include="KxFramework\DataView\KxDataViewBitmapTextToggleRenderer.h" />
@@ -222,6 +233,7 @@
     <ClInclude Include="KxFramework\KxBitmapComboBox.h" />
     <ClInclude Include="KxFramework\KxBroadcastEvent.h" />
     <ClInclude Include="KxFramework\KxButton.h" />
+    <ClInclude Include="KxFramework\KxButtonType.h" />
     <ClInclude Include="KxFramework\KxCallAtScopeExit.h" />
     <ClInclude Include="KxFramework\KxCheckBox.h" />
     <ClInclude Include="KxFramework\KxCollapsiblePane.h" />
@@ -275,10 +287,13 @@
     <ClInclude Include="KxFramework\KxFormat.h" />
     <ClInclude Include="KxFramework\KxFrame.h" />
     <ClInclude Include="KxFramework\KxFramework.h" />
+    <ClInclude Include="KxFramework\KxIncludes.h" />
+    <ClInclude Include="KxFramework\KxFunctional.h" />
     <ClInclude Include="KxFramework\KxGraphicsContext.h" />
     <ClInclude Include="KxFramework\KxHTML.h" />
     <ClInclude Include="KxFramework\KxHTMLWindow.h" />
     <ClInclude Include="KxFramework\KxIArchive.h" />
+    <ClInclude Include="KxFramework\KxIconType.h" />
     <ClInclude Include="KxFramework\KxIFileFinder.h" />
     <ClInclude Include="KxFramework\KxImageList.h" />
     <ClInclude Include="KxFramework\KxImageSet.h" />
@@ -299,6 +314,7 @@
     <ClInclude Include="KxFramework\KxListBoxDialog.h" />
     <ClInclude Include="KxFramework\KxListView.h" />
     <ClInclude Include="KxFramework\KxLZ4Stream.h" />
+    <ClInclude Include="KxFramework\KxMainDefs.h" />
     <ClInclude Include="KxFramework\KxMath.h" />
     <ClInclude Include="KxFramework\KxMemberObject.h" />
     <ClInclude Include="KxFramework\KxMemoryStream.h" />
@@ -322,6 +338,7 @@
     <ClInclude Include="KxFramework\KxSecretStore.h" />
     <ClInclude Include="KxFramework\KxSharedMemory.h" />
     <ClInclude Include="KxFramework\KxShell.h" />
+    <ClInclude Include="KxFramework\KxShellDefs.h" />
     <ClInclude Include="KxFramework\KxShellLink.h" />
     <ClInclude Include="KxFramework\KxShellMenu.h" />
     <ClInclude Include="KxFramework\KxSimplebook.h" />
@@ -357,6 +374,7 @@
     <ClInclude Include="KxFramework\KxTranslation.h" />
     <ClInclude Include="KxFramework\KxTreeList.h" />
     <ClInclude Include="KxFramework\KxTreeView.h" />
+    <ClInclude Include="KxFramework\KxTypedefs.h" />
     <ClInclude Include="KxFramework\KxUnownedBuffer.h" />
     <ClInclude Include="KxFramework\KxUtility.h" />
     <ClInclude Include="KxFramework\KxVersion.h" />
@@ -393,6 +411,7 @@
     <ClInclude Include="KxFramework\KxXML.h" />
     <ClInclude Include="KxFramework\KxZLibStream.h" />
     <ClInclude Include="KxFramework\XML\TinyXML2 HTML5 Printer.h" />
+    <ClInclude Include="KxFramework\XML\TinyXML2.h" />
     <ClInclude Include="KxStdAfx.h" />
   </ItemGroup>
   <ItemGroup>
@@ -421,17 +440,17 @@
     <ClCompile Include="KxFramework\DataView\KxDataViewTimeEditor.cpp" />
     <ClCompile Include="KxFramework\DataView\KxDataViewToggleRenderer.cpp" />
     <ClCompile Include="KxFramework\DataView\KxDataViewTreeNode.cpp" />
-    <ClCompile Include="KxFramework\HTML\clean_text.cc">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    <ClCompile Include="KxFramework\HTML\clean_text.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="KxFramework\HTML\serialize.cc">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    <ClCompile Include="KxFramework\HTML\serialize.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="KxFramework\KxAnimatedSplashWindow.cpp" />
     <ClCompile Include="KxFramework\KxAnimation.cpp" />

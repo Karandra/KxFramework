@@ -412,7 +412,7 @@ void KxStdDialog::SetDefaultButton(wxWindowID id)
 	auto vControl = GetButton(id);
 	if (vControl.IsControl())
 	{
-		auto button = vControl.As<KxButton>();
+		KxButton* button = vControl.As<KxButton>();
 		if (button)
 		{
 			button->SetDefault();

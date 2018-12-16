@@ -3,7 +3,7 @@
 #include "KxFramework/DataView/KxDataViewRenderer.h"
 
 class wxHtmlDCRenderer;
-class KxDataViewHTMLRenderer: public KxDataViewRenderer
+class KX_API KxDataViewHTMLRenderer: public KxDataViewRenderer
 {
 	private:
 		wxString m_Content;

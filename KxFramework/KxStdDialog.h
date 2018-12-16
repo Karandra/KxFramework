@@ -4,15 +4,16 @@
 #include "KxFramework/KxStdDialogButtonSizer.h"
 #include "KxFramework/KxLabel.h"
 #include "KxFramework/KxPanel.h"
+class KX_API KxButton;
 
-wxDECLARE_EVENT(KxEVT_STDDIALOG_BUTTON, wxNotifyEvent);
-wxDECLARE_EVENT(KxEVT_STDDIALOG_NAVIGATE, wxNotifyEvent);
-wxDECLARE_EVENT(KxEVT_STDDIALOG_NAVIGATING, wxNotifyEvent);
-wxDECLARE_EVENT(KxEVT_STDDIALOG_OVERWRITE, wxNotifyEvent);
-wxDECLARE_EVENT(KxEVT_STDDIALOG_SELECT, wxNotifyEvent);
-wxDECLARE_EVENT(KxEVT_STDDIALOG_TYPE_CHANGED, wxNotifyEvent);
+KX_DECLARE_EVENT(KxEVT_STDDIALOG_BUTTON, wxNotifyEvent);
+KX_DECLARE_EVENT(KxEVT_STDDIALOG_NAVIGATE, wxNotifyEvent);
+KX_DECLARE_EVENT(KxEVT_STDDIALOG_NAVIGATING, wxNotifyEvent);
+KX_DECLARE_EVENT(KxEVT_STDDIALOG_OVERWRITE, wxNotifyEvent);
+KX_DECLARE_EVENT(KxEVT_STDDIALOG_SELECT, wxNotifyEvent);
+KX_DECLARE_EVENT(KxEVT_STDDIALOG_TYPE_CHANGED, wxNotifyEvent);
 
-class KxStdDialogControl
+class KX_API KxStdDialogControl
 {
 	public:
 		enum class Type
@@ -79,7 +80,7 @@ class KxStdDialogControl
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxIStdDialog
+class KX_API KxIStdDialog
 {
 	public:
 		static const KxIconType DefaultIconID = KxICON_INFO;
@@ -108,7 +109,7 @@ class KxIStdDialog
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxStdDialog: public KxDialog, public KxIStdDialog
+class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 {
 	public:
 		typedef std::vector<wxWindowID> StdButtonsIDs;

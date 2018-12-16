@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KxStaticBitmap: public wxGenericStaticBitmap
+class KX_API KxStaticBitmap: public wxGenericStaticBitmap
 {
 	private:
 		wxSize m_InitialSize;

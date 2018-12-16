@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView/KxDataViewConstants.h"
 
-class KxDataViewItemAttributes
+class KX_API KxDataViewItemAttributes
 {
 	private:
 		// Colors

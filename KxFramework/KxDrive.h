@@ -12,8 +12,8 @@ enum KxDriveType
 	KxDRIVE_RAMDISK = DRIVE_RAMDISK,
 };
 
-class KxFile;
-class KxDrive
+class KX_API KxFile;
+class KX_API KxDrive
 {
 	public:
 		static const char ms_InvalidDrive = '\255';

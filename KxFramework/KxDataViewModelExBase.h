@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxDataView.h"
 #include <typeinfo>
-class KxDataViewModelExDragDropData;
+class KX_API KxDataViewModelExDragDropData;
 
 template<class T = KxDataViewModel>
 class KxDataViewModelExBase: public T
@@ -185,7 +185,7 @@ class KxDataViewModelExDragDropEnabled
 		}
 };
 
-class KxDataViewModelExDragDropData: public wxDataObjectSimple
+class KX_API KxDataViewModelExDragDropData: public wxDataObjectSimple
 {
 	private:
 		virtual size_t GetDataSize() const override

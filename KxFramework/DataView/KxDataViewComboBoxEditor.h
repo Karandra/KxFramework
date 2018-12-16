@@ -3,7 +3,7 @@
 #include "KxFramework/KxWithImageList.h"
 #include "KxFramework/DataView/KxDataViewEditor.h"
 
-class KxDataViewComboBoxEditorBase
+class KX_API KxDataViewComboBoxEditorBase
 {
 	private:
 		int m_MaxVisibleItems = -1;
@@ -39,7 +39,7 @@ class KxDataViewComboBoxEditorBase
 		}
 };
 
-class KxDataViewComboBoxEditor: public KxDataViewEditor, public KxDataViewComboBoxEditorBase, public KxWithImageList
+class KX_API KxDataViewComboBoxEditor: public KxDataViewEditor, public KxDataViewComboBoxEditorBase, public KxWithImageList
 {
 	private:
 		KxStringVector m_Items;
@@ -100,7 +100,7 @@ class KxDataViewComboBoxEditor: public KxDataViewEditor, public KxDataViewComboB
 		}
 };
 
-class KxDataViewComboBoxEditorControlHandler: public KxDataViewEditorControlHandler
+class KX_API KxDataViewComboBoxEditorControlHandler: public KxDataViewEditorControlHandler
 {
 	protected:
 		virtual void DoOnKillFocus(wxFocusEvent& event) override;

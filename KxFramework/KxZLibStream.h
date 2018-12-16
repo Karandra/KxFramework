@@ -10,7 +10,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include <wx/zstream.h>
 
 //////////////////////////////////////////////////////////////////////////
-class KxZLib
+class KX_API KxZLib
 {
 	public:
 		static wxString GetLibraryName();

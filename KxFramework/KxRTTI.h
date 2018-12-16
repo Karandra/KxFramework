@@ -1,8 +1,14 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 
 namespace KxRTTI
 {
-	size_t NewTypeID();
+	size_t KX_API NewTypeID();
 	//////////////////////////////////////////////////////////////////////////
 
 	template<class BaseT> class DynamicCastAsIs
@@ -80,7 +86,7 @@ namespace KxRTTI
 	};
 
 	//////////////////////////////////////////////////////////////////////////
-	class IVirtualTypeID
+	class KX_API IVirtualTypeID
 	{
 		private:
 			virtual size_t DoGetTypeID() const = 0;

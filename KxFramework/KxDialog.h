@@ -2,9 +2,9 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxTopLevelWindow.h"
 
-class KxButton;
-class KxStdDialogButtonSizer;
-class KxDialog: public KxTopLevelWindow<wxDialog>
+class KX_API KxButton;
+class KX_API KxStdDialogButtonSizer;
+class KX_API KxDialog: public KxTopLevelWindow<wxDialog>
 {
 	public:
 		static void SetStdLabels(wxSizer* sizer);

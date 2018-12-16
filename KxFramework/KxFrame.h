@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxTopLevelWindow.h"
 
-class KxFrame: public KxTopLevelWindow<wxFrame>
+class KX_API KxFrame: public KxTopLevelWindow<wxFrame>
 {
 	public:
 		static const long DefaultStyle = wxDEFAULT_FRAME_STYLE|wxFRAME_SHAPED;

@@ -1,9 +1,9 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include <wx/aui/auibar.h>
-class KxAuiToolBarItem;
+class KX_API KxAuiToolBarItem;
 
-class KxAuiToolBarEvent: public wxAuiToolBarEvent
+class KX_API KxAuiToolBarEvent: public wxAuiToolBarEvent
 {
 	private:
 		KxAuiToolBarItem* m_Item = NULL;
@@ -28,8 +28,8 @@ class KxAuiToolBarEvent: public wxAuiToolBarEvent
 		wxDECLARE_DYNAMIC_CLASS(KxAuiToolBarEvent);
 };
 
-wxDECLARE_EVENT(KxEVT_AUI_TOOLBAR_CLICK, KxAuiToolBarEvent);
-wxDECLARE_EVENT(KxEVT_AUI_TOOLBAR_RIGHT_CLICK, KxAuiToolBarEvent);
-wxDECLARE_EVENT(KxEVT_AUI_TOOLBAR_MIDDLE_CLICK, KxAuiToolBarEvent);
-wxDECLARE_EVENT(KxEVT_AUI_TOOLBAR_DROPDOWN, KxAuiToolBarEvent);
-wxDECLARE_EVENT(KxEVT_AUI_TOOLBAR_OVERFLOW, KxAuiToolBarEvent);
+KX_DECLARE_EVENT(KxEVT_AUI_TOOLBAR_CLICK, KxAuiToolBarEvent);
+KX_DECLARE_EVENT(KxEVT_AUI_TOOLBAR_RIGHT_CLICK, KxAuiToolBarEvent);
+KX_DECLARE_EVENT(KxEVT_AUI_TOOLBAR_MIDDLE_CLICK, KxAuiToolBarEvent);
+KX_DECLARE_EVENT(KxEVT_AUI_TOOLBAR_DROPDOWN, KxAuiToolBarEvent);
+KX_DECLARE_EVENT(KxEVT_AUI_TOOLBAR_OVERFLOW, KxAuiToolBarEvent);

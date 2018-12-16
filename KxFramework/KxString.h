@@ -8,7 +8,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxFormat.h"
 
-class KxString
+class KX_API KxString
 {
 	public:
 		// There values correspond to 'CompareStringOrdinal' results
@@ -122,14 +122,14 @@ class KxString
 		/* Formatting */
 	private:
 		template<class Head, class... Tail>
-		static void FormatAux(KxFormat& formatter, const Head& head, const Tail&... tail)
+		static void FormatAux(KxFormat& formatter, Head&& head, Tail&&... tail)
 		{
 			formatter.arg(head);
 			(void)std::initializer_list<int> {((formatter.arg(tail)), 0)...};
 		}
 
 	public:
-		template<class... Args> static wxString Format(const wxString& format, const Args&... arg)
+		template<class... Args> static wxString Format(const wxString& format, Args&&... arg)
 		{
 			if ((sizeof...(Args)) != 0)
 			{

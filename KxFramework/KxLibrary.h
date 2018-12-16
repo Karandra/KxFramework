@@ -1,3 +1,9 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxIOwned.h"
@@ -5,7 +11,7 @@
 #include "KxFramework/KxUnownedBuffer.h"
 class KxLibraryUpdateLocker;
 
-class KxLibraryVersionInfo
+class KX_API KxLibraryVersionInfo
 {
 	public:
 		using StringsListType = std::unordered_map<wxString, wxString>;
@@ -91,7 +97,7 @@ class KxLibraryVersionInfo
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxLibrary: public KxIOwnedSimple
+class KX_API KxLibrary: public KxIOwnedSimple
 {
 	friend class KxLibraryUpdateLocker;
 

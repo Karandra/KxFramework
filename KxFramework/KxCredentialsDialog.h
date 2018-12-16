@@ -6,7 +6,7 @@
 #include "KxFramework/KxSecretStore.h"
 #include "KxFramework/KxWinUndef.h"
 
-class KxCredentialsDialog: public KxDialog
+class KX_API KxCredentialsDialog: public KxDialog
 {
 	private:
 		wxWindow* m_Parent = NULL;

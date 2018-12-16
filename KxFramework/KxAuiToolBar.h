@@ -3,7 +3,7 @@
 #include "KxFramework/KxAuiToolBarItem.h"
 #include "KxFramework/KxAuiToolBarEvent.h"
 
-class KxAuiToolBar: public wxAuiToolBar
+class KX_API KxAuiToolBar: public wxAuiToolBar
 {
 	private:
 		wxColour m_ColorBorder;
@@ -124,7 +124,7 @@ class KxAuiToolBar: public wxAuiToolBar
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxAuiToolBarArt: public wxAuiDefaultToolBarArt
+class KX_API KxAuiToolBarArt: public wxAuiDefaultToolBarArt
 {
 	private:
 		KxAuiToolBar* m_Instance = NULL;

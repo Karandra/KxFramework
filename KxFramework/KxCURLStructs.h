@@ -1,8 +1,14 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include "KxFramework/KxFramework.h"
-class KxCURLSession;
+class KX_API KxCURLSession;
 
-class KxCURLReplyBase
+class KX_API KxCURLReplyBase
 {
 	friend class KxCURLSession;
 
@@ -43,7 +49,7 @@ class KxCURLReplyBase
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxCURLReply: public KxCURLReplyBase
+class KX_API KxCURLReply: public KxCURLReplyBase
 {
 	friend class KxCURLSession;
 
@@ -84,7 +90,7 @@ class KxCURLReply: public KxCURLReplyBase
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxCURLBinaryReply: public KxCURLReplyBase
+class KX_API KxCURLBinaryReply: public KxCURLReplyBase
 {
 	friend class KxCURLSession;
 
@@ -129,7 +135,7 @@ class KxCURLBinaryReply: public KxCURLReplyBase
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxCURLStreamReply: public KxCURLReplyBase
+class KX_API KxCURLStreamReply: public KxCURLReplyBase
 {
 	friend class KxCURLSession;
 

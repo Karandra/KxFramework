@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KxImageSet: public wxObject
+class KX_API KxImageSet: public wxObject
 {
 	public:
 		enum ImageType

@@ -61,7 +61,7 @@ KxColor KxColor::Clone() const
 }
 wxString KxColor::GetAsString(long mode) const
 {
-	if (mode == KxC2S_LUA_SYNTAX)
+	if (mode == (long)ToString::LuaSyntax)
 	{
 		return KxString::Format(wxS("{R = %1, G = %2, B = %3, A = %4}"), GetR(), GetG(), GetB(), GetA());
 	}

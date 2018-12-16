@@ -1,8 +1,14 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include <string>
-class KxWebSocketClientImpl;
+#include "KxMainDefs.h"
 
-class KxWebSocketsClientImplMessageHandler
+class KX_API KxWebSocketsClientImplMessageHandler
 {
 	friend class KxWebSocketClientImpl;
 

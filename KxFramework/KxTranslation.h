@@ -1,10 +1,20 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 class KxXMLDocument;
 class KxLibrary;
 
-class KxTranslation
+class KX_API KxTranslation
 {
+	public:
+		using StringsMap = std::unordered_map<wxString, wxString>;
+		using AvailableMap = std::unordered_map<wxString, wxString>;
+
 	public:
 		static const KxTranslation& GetCurrent();
 		static void SetCurrent(const KxTranslation& translation);
@@ -18,11 +28,12 @@ class KxTranslation
 		static wxString LangIDToLocaleName(const LANGID& langID, DWORD sortOrder = SORT_DEFAULT);
 		static wxString LCIDToLocaleName(const LCID& lcid);
 
-		static KxStringToStringUMap FindTranslationsInDirectory(const wxString& folderPath);
+		static AvailableMap FindTranslationsInDirectory(const wxString& folderPath);
 		static KxStringVector FindTranslationsInResources();
 
 	private:
-		std::unordered_map<wxString, wxString> m_StringTable;
+		StringsMap m_StringTable;
+		wxString m_Locale;
 		wxString m_TranslatorName;
 
 	private:
@@ -39,7 +50,20 @@ class KxTranslation
 		{
 			return !m_StringTable.empty();
 		}
-		const wxString& GetTranslatorName() const
+		
+		bool IsLocaleKnown() const
+		{
+			return !m_Locale.IsEmpty();
+		}
+		wxString GetLocale() const
+		{
+			return m_Locale;
+		}
+		void SetLocale(const wxString& value)
+		{
+			m_Locale = value;
+		}
+		wxString GetTranslatorName() const
 		{
 			return m_TranslatorName;
 		}

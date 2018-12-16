@@ -10,7 +10,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxFramework/KxMemberObject.h"
 
 //////////////////////////////////////////////////////////////////////////
-class KxLZ4
+class KX_API KxLZ4
 {
 	public:
 		static wxString GetLibraryName();
@@ -31,7 +31,7 @@ class KxLZ4
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxLZ4BaseStream: public KxStreamBase
+class KX_API KxLZ4BaseStream: public KxStreamBase
 {
 	protected:
 		constexpr static const size_t ms_BlockSize = 1024 * 8;
@@ -95,7 +95,7 @@ class KxLZ4BaseStream: public KxStreamBase
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxLZ4InputStream:
+class KX_API KxLZ4InputStream:
 	public KxLZ4BaseStream,
 	public KxInputStreamWrapper<wxFilterInputStream>
 {
@@ -130,7 +130,7 @@ class KxLZ4InputStream:
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxLZ4OutputStream:
+class KX_API KxLZ4OutputStream:
 	public KxLZ4BaseStream,
 	public KxOutputStreamWrapper<wxFilterOutputStream>
 {

@@ -1,8 +1,14 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxImageList.h"
 
-class KxWithImageList
+class KX_API KxWithImageList
 {
 	public:
 		enum
@@ -95,7 +101,7 @@ template<class BaseT> class KxWithImageListWrapper: public BaseT
 		}
 		const KxImageList* GetImageList() const
 		{
-			return m_IsKxList ? static_cast<KxImageList*>(GetWxImageList()) : NULL;
+			return m_IsKxList ? static_cast<const KxImageList*>(GetWxImageList()) : NULL;
 		}
 
 		void SetImageList(const KxImageList* imageList)

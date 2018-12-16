@@ -1,8 +1,14 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include <array>
 
-class KxUtility
+class KX_API KxUtility
 {
 	private:
 		static const wxString LoadResourceAux(HRSRC resourceHandle, HMODULE moduleHandle);

@@ -16,7 +16,7 @@ enum KxDataViewDateOptions
 	KxDVR_DATE_DEFAULT = KxDVR_DATE_DROPDOWN,
 };
 
-class KxDataViewDateEditor:
+class KX_API KxDataViewDateEditor:
 	public KxDataViewEditor,
 	public KxWithOptions<KxDataViewDateOptions, KxDVR_DATE_DEFAULT>
 {

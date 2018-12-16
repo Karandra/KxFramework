@@ -2,9 +2,9 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxIFileFinder.h"
 #include "KxFramework/KxFileItem.h"
-class KxIArchiveSearch;
+class KX_API KxIArchiveSearch;
 
-class KxArchiveFileFinder: public KxIFileFinder
+class KX_API KxArchiveFileFinder: public KxIFileFinder
 {
 	private:
 		const KxIArchiveSearch* m_Archive = NULL;

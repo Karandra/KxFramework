@@ -42,8 +42,8 @@ enum KxFBD_Options
 	KxFBD_SUPPORT_STREAMABLE_ITEMS = FOS_SUPPORTSTREAMABLEITEMS
 };
 
-class KxFileBrowseDialog;
-class KxFileBrowseDialogEvents: public IFileDialogEvents
+class KX_API KxFileBrowseDialog;
+class KX_API KxFileBrowseDialogEvents: public IFileDialogEvents
 {
 	private:
 		KxFileBrowseDialog* self = NULL;
@@ -90,7 +90,7 @@ class KxFileBrowseDialogEvents: public IFileDialogEvents
 		}
 };
 
-class KxFileBrowseDialog: public KxDialog, public KxIStdDialog
+class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 {
 	friend class KxFileBrowseDialogEvents;
 

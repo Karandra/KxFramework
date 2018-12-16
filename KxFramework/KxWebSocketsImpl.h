@@ -1,3 +1,9 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS 1
 #define _SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING 1
@@ -14,7 +20,8 @@ class KxWebSocketClientImpl
 		using MessageHandler = KxWebSocketsClientImplMessageHandler;
 
 	public:
-		static std::string GetVersion();
+		static std::string GetLibraryName();
+		static std::string GetLibraryVersion();
 
 	private:
 		MessageHandler* m_MessageHandler = nullptr;

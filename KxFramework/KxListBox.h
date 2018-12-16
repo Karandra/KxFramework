@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxListView.h"
 
-class KxListBox: public KxListView
+class KX_API KxListBox: public KxListView
 {
 	private:
 		void OnSelect(wxListEvent& event);

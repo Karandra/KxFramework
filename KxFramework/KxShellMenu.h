@@ -4,7 +4,7 @@
 #include "KxFramework/KxMenu.h"
 #include <shobjidl.h>
 
-class KxShellMenu: public KxMenu
+class KX_API KxShellMenu: public KxMenu
 {
 	friend class KxMenu;
 

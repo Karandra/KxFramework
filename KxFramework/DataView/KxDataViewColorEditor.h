@@ -3,7 +3,7 @@
 #include "KxFramework/DataView/KxDataViewEditor.h"
 class wxColourDialog;
 
-class KxDataViewColorEditor: public KxDataViewEditor
+class KX_API KxDataViewColorEditor: public KxDataViewEditor
 {
 	public:
 		static bool GetValueAsColor(const wxAny& value, KxColor& color);

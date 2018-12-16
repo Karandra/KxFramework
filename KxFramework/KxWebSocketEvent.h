@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KxWebSocketEvent: public wxNotifyEvent
+class KX_API KxWebSocketEvent: public wxNotifyEvent
 {
 	private:
 		const void* m_BinaryData = NULL;
@@ -35,7 +35,7 @@ class KxWebSocketEvent: public wxNotifyEvent
 		}
 };
 
-wxDECLARE_EVENT(KxEVT_WEBSOCKET_OPEN, KxWebSocketEvent);
-wxDECLARE_EVENT(KxEVT_WEBSOCKET_FAIL, KxWebSocketEvent);
-wxDECLARE_EVENT(KxEVT_WEBSOCKET_CLOSE, KxWebSocketEvent);
-wxDECLARE_EVENT(KxEVT_WEBSOCKET_MESSAGE, KxWebSocketEvent);
+KX_DECLARE_EVENT(KxEVT_WEBSOCKET_OPEN, KxWebSocketEvent);
+KX_DECLARE_EVENT(KxEVT_WEBSOCKET_FAIL, KxWebSocketEvent);
+KX_DECLARE_EVENT(KxEVT_WEBSOCKET_CLOSE, KxWebSocketEvent);
+KX_DECLARE_EVENT(KxEVT_WEBSOCKET_MESSAGE, KxWebSocketEvent);

@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KxSimplebook: public wxSimplebook
+class KX_API KxSimplebook: public wxSimplebook
 {
 	public:
 		static const long DefaultStyle = 0;

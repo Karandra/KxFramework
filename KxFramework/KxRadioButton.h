@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KxRadioButton: public wxRadioButton
+class KX_API KxRadioButton: public wxRadioButton
 {
 	public:
 		static const long DefaultStyle = 0;

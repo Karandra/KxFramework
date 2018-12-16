@@ -17,11 +17,13 @@
 //
 // Serialize back to html / xhtml making as few changes as possible (even in whitespace)
 
+#include "KxStdAfx.h"
 #include <fstream>
 #include <iostream>
 #include <stdlib.h>
 #include <string>
 
+#pragma warning(disable: 4005) // macro redefinition
 #include "gumbo.h"
 
 static std::string nonbreaking_inline  = "|a|abbr|acronym|b|bdo|big|cite|code|dfn|em|font|i|img|kbd|nobr|s|small|span|strike|strong|sub|sup|tt|";
@@ -258,7 +260,10 @@ static std::string serialize(GumboNode* node) {
   return results;
 }
 
-std::string gumbo_ex_serialize(GumboNode* node)
+namespace NodeInternals
 {
-	return serialize(node);
+	std::string gumbo_ex_serialize(GumboNode* node)
+	{
+		return serialize(node);
+	}
 }

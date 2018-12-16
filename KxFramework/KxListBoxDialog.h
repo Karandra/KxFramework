@@ -3,7 +3,7 @@
 #include "KxFramework/KxStdDialog.h"
 #include "KxFramework/KxListBox.h"
 
-class KxListBoxDialog: public KxStdDialog
+class KX_API KxListBoxDialog: public KxStdDialog
 {
 	private:
 		KxListBox* m_View = NULL;

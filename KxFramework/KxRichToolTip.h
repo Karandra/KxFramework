@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KxRichToolTip: public wxObject
+class KX_API KxRichToolTip: public wxObject
 {
 	private:
 		wxRichToolTip m_ToolTip;

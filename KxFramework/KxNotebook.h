@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxWithImageList.h"
 
-class KxNotebook: public KxWithImageListWrapper<wxNotebook>
+class KX_API KxNotebook: public KxWithImageListWrapper<wxNotebook>
 {
 	public:
 		static const long DefaultStyle = 0;

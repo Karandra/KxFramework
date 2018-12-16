@@ -3,7 +3,7 @@
 #include "KxFramework/KxIFileFinder.h"
 #include "KxFramework/KxFileItem.h"
 
-class KxFileFinder: public KxIFileFinder
+class KX_API KxFileFinder: public KxIFileFinder
 {
 	public:
 		static bool IsDirectoryEmpty(const wxString& directoryPath);

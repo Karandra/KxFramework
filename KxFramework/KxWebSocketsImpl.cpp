@@ -61,7 +61,17 @@ namespace
 }
 
 //////////////////////////////////////////////////////////////////////////
-std::string KxWebSocketClientImpl::GetVersion()
+std::string KxWebSocketClientImpl::GetLibraryName()
+{
+	std::string name(websocketpp::user_agent);
+	size_t pos = name.rfind('/');
+	if (pos != name.npos && pos != 0)
+	{
+		name.resize(pos);
+	}
+	return name;
+}
+std::string KxWebSocketClientImpl::GetLibraryVersion()
 {
 	std::string version(16, '\000');
 	int length = sprintf_s(version.data(), version.size(), "%d.%d.%d", websocketpp::major_version, websocketpp::minor_version, websocketpp::patch_version);

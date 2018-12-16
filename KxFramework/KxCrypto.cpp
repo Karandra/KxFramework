@@ -20,7 +20,7 @@
 		#pragma comment(lib, "KxFramework/OpenSSL/x64/LibCryptoMT.lib")
 	#endif
 #else
-	#ifdef DEBUG
+	#ifdef _DEBUG
 		#pragma comment(lib, "KxFramework/OpenSSL/x86/LibSSLMTd.lib")
 		#pragma comment(lib, "KxFramework/OpenSSL/x86/LibCryptoMTd.lib")
 	#else
@@ -29,226 +29,233 @@
 	#endif
 #endif
 
-//////////////////////////////////////////////////////////////////////////
-wxString KxCrypto::GetOpenSSLVersion()
+namespace Constants
 {
-	wxRegEx reg("OpenSSL(?:\\s+)([\\d+\\w+\\.]+)", wxRE_ICASE|wxRE_ADVANCED);
-	if (reg.Matches(OPENSSL_VERSION_TEXT))
-	{
-		return reg.GetMatch(OPENSSL_VERSION_TEXT, 1);
-	}
-	return OPENSSL_VERSION_TEXT;
+	const size_t BlockSize = 64 * 1024;
+	extern const uint32_t CRC32Table[];
 }
 
-wxString KxCrypto::Rot13(const wxString& source)
+namespace KxCrypto
 {
-	wxString result(source);
-	for (size_t i = 0; i < source.Length(); i++)
+	wxString GetOpenSSLVersion()
 	{
-		wxUniChar thisChar = source.GetChar(i);
-		if (thisChar.IsAscii())
+		wxRegEx reg("OpenSSL(?:\\s+)([\\d+\\w+\\.]+)", wxRE_ICASE|wxRE_ADVANCED);
+		if (reg.Matches(OPENSSL_VERSION_TEXT))
 		{
-			char c = KxString::CharToUpper(thisChar);
-			if (c >= 'A' && c <= 'M')
+			return reg.GetMatch(OPENSSL_VERSION_TEXT, 1);
+		}
+		return OPENSSL_VERSION_TEXT;
+	}
+
+	wxString Rot13(const wxString& source)
+	{
+		wxString result(source);
+		for (size_t i = 0; i < source.Length(); i++)
+		{
+			wxUniChar thisChar = source.GetChar(i);
+			if (thisChar.IsAscii())
 			{
-				thisChar = wxUniChar(thisChar.GetValue() + 13);
-			}
-			else if (c >= 'N' && c <= 'Z')
-			{
-				thisChar = wxUniChar(thisChar.GetValue() - 13);
-			}
-			result[i] = thisChar;
-		}
-	}
-	return result;
-}
-wxString KxCrypto::CRC32(wxInputStream& stream)
-{
-	uint32_t value = 0xFFFFFFFF;
-	while (stream.CanRead())
-	{
-		int byteValue = stream.GetC();
-		if (byteValue != wxEOF)
-		{
-			value = KxCrypto::CRC32Table[(value ^ (uint8_t)byteValue) & 0xff] ^ (value >> 8);
-		}
-		else
-		{
-			break;
-		}
-	}
-	return wxString::Format("%08x", ~value);
-}
-wxString KxCrypto::MD5(wxInputStream& stream)
-{
-	MD5_CTX hHash;
-	MD5_Init(&hHash);
-	uint8_t sHash[MD5_DIGEST_LENGTH] = {0};
-
-	while (stream.CanRead())
-	{
-		int byteValue = stream.GetC();
-		if (byteValue != wxEOF)
-		{
-			uint8_t nByte8 = byteValue;
-			MD5_Update(&hHash, &nByte8, sizeof(nByte8));
-		}
-		else
-		{
-			break;
-		}
-	}
-
-	wxString out;
-	int ret = MD5_Final(sHash, &hHash);
-	if (ret)
-	{
-		for (int i = 0; i < MD5_DIGEST_LENGTH; i++)
-		{
-			out.sprintf("%s%02x", out, sHash[i]);
-		};
-	}
-	return out;
-}
-wxString KxCrypto::SHA2(wxInputStream& stream, SHA2Mode keyType)
-{
-	size_t keyLength;
-	std::variant<SHA256_CTX, SHA512_CTX> hash;
-	switch (keyType)
-	{
-		case SHA2Mode::SHA2_256:
-		{
-			keyLength = SHA256_DIGEST_LENGTH;
-			SHA256_Init(&std::get<SHA256_CTX>(hash));
-			break;
-		}
-		case SHA2Mode::SHA2_512:
-		{
-			keyLength = SHA512_DIGEST_LENGTH;
-			SHA512_Init(&std::get<SHA512_CTX>(hash));
-			break;
-		}
-	};
-
-	int ret = 0;
-	while (stream.CanRead())
-	{
-		int byteValue = stream.GetC();
-		if (byteValue != wxEOF)
-		{
-			uint8_t byte8 = byteValue;
-			switch (keyType)
-			{
-				case SHA2Mode::SHA2_256:
+				char c = KxString::CharToUpper(thisChar);
+				if (c >= 'A' && c <= 'M')
 				{
-					ret = SHA256_Update(&std::get<SHA256_CTX>(hash), &byte8, sizeof(byte8));
-					break;
+					thisChar = wxUniChar(thisChar.GetValue() + 13);
 				}
-				case SHA2Mode::SHA2_512:
+				else if (c >= 'N' && c <= 'Z')
 				{
-					ret = SHA512_Update(&std::get<SHA512_CTX>(hash), &byte8, sizeof(byte8));
-					break;
+					thisChar = wxUniChar(thisChar.GetValue() - 13);
 				}
+				result[i] = thisChar;
+			}
+		}
+		return result;
+	}
+	wxString CRC32(wxInputStream& stream)
+	{
+		uint32_t value = 0xFFFFFFFF;
+		while (stream.CanRead())
+		{
+			int byteValue = stream.GetC();
+			if (byteValue != wxEOF)
+			{
+				value = Constants::CRC32Table[(value ^ (uint8_t)byteValue) & 0xff] ^ (value >> 8);
+			}
+			else
+			{
+				break;
+			}
+		}
+		return wxString::Format("%08x", ~value);
+	}
+	wxString MD5(wxInputStream& stream)
+	{
+		MD5_CTX hHash;
+		MD5_Init(&hHash);
+		uint8_t sHash[MD5_DIGEST_LENGTH] = {0};
+
+		while (stream.CanRead())
+		{
+			int byteValue = stream.GetC();
+			if (byteValue != wxEOF)
+			{
+				uint8_t nByte8 = byteValue;
+				MD5_Update(&hHash, &nByte8, sizeof(nByte8));
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		wxString out;
+		int ret = MD5_Final(sHash, &hHash);
+		if (ret)
+		{
+			for (int i = 0; i < MD5_DIGEST_LENGTH; i++)
+			{
+				out.sprintf("%s%02x", out, sHash[i]);
 			};
 		}
-		else
-		{
-			break;
-		}
+		return out;
 	}
-
-	unsigned char hashString[SHA512_DIGEST_LENGTH] = {'\000'};
-	switch (keyType)
+	wxString SHA2(wxInputStream& stream, SHA2Mode keyType)
 	{
-		case SHA2Mode::SHA2_256:
+		size_t keyLength;
+		std::variant<SHA256_CTX, SHA512_CTX> hash;
+		switch (keyType)
 		{
-			ret = SHA256_Final(hashString, &std::get<SHA256_CTX>(hash));
-			break;
-		}
-		case SHA2Mode::SHA2_512:
-		{
-			ret = SHA512_Final(hashString, &std::get<SHA512_CTX>(hash));
-			break;
-		}
-	};
-
-	wxString out;
-	if (ret)
-	{
-		for (size_t i = 0; i < keyLength; i++)
-		{
-			out.sprintf("%s%02x", out, hashString[i]);
+			case SHA2Mode::SHA2_256:
+			{
+				keyLength = SHA256_DIGEST_LENGTH;
+				SHA256_Init(&std::get<SHA256_CTX>(hash));
+				break;
+			}
+			case SHA2Mode::SHA2_512:
+			{
+				keyLength = SHA512_DIGEST_LENGTH;
+				SHA512_Init(&std::get<SHA512_CTX>(hash));
+				break;
+			}
 		};
-	}
-	return out;
-}
-bool KxCrypto::Base64Encode(wxInputStream& inputStream, wxOutputStream& outputStream)
-{
-	const size_t size = wxBase64EncodedSize(BlockSize);
-	wxMemoryBuffer buffer(size);
 
-	while (inputStream.CanRead())
-	{
-		int byteValue = inputStream.GetC();
-		if (byteValue != wxEOF)
+		int ret = 0;
+		while (stream.CanRead())
 		{
-			buffer.AppendByte(byteValue);
-		}
-		else
-		{
-			break;
-		}
-
-		if (buffer.GetDataLen() == size)
-		{
-			auto utf8 = wxBase64Encode(buffer).ToUTF8();
-			if (outputStream.Write(utf8.data(), utf8.length()).IsOk())
+			int byteValue = stream.GetC();
+			if (byteValue != wxEOF)
 			{
-				return true;
+				uint8_t byte8 = byteValue;
+				switch (keyType)
+				{
+					case SHA2Mode::SHA2_256:
+					{
+						ret = SHA256_Update(&std::get<SHA256_CTX>(hash), &byte8, sizeof(byte8));
+						break;
+					}
+					case SHA2Mode::SHA2_512:
+					{
+						ret = SHA512_Update(&std::get<SHA512_CTX>(hash), &byte8, sizeof(byte8));
+						break;
+					}
+				};
 			}
 			else
 			{
 				break;
 			}
 		}
-	}
-	return false;
-}
-bool KxCrypto::Base64Decode(wxInputStream& inputStream, wxOutputStream& outputStream)
-{
-	const size_t size = wxBase64DecodedSize(BlockSize);
-	wxMemoryBuffer buffer(size);
 
-	while (inputStream.CanRead())
-	{
-		int byteValue = inputStream.GetC();
-		if (byteValue != wxEOF)
+		unsigned char hashString[SHA512_DIGEST_LENGTH] = {'\000'};
+		switch (keyType)
 		{
-			buffer.AppendByte(byteValue);
-		}
-		else
-		{
-			break;
-		}
-
-		if (buffer.GetDataLen() == size)
-		{
-			wxMemoryBuffer outBuffer = wxBase64Decode((const char*)buffer.GetData(), buffer.GetDataLen(), wxBase64DecodeMode_SkipWS);
-			if (outputStream.Write(outBuffer.GetData(), outBuffer.GetDataLen()).IsOk())
+			case SHA2Mode::SHA2_256:
 			{
-				return true;
+				ret = SHA256_Final(hashString, &std::get<SHA256_CTX>(hash));
+				break;
+			}
+			case SHA2Mode::SHA2_512:
+			{
+				ret = SHA512_Final(hashString, &std::get<SHA512_CTX>(hash));
+				break;
+			}
+		};
+
+		wxString out;
+		if (ret)
+		{
+			for (size_t i = 0; i < keyLength; i++)
+			{
+				out.sprintf("%s%02x", out, hashString[i]);
+			};
+		}
+		return out;
+	}
+	bool Base64Encode(wxInputStream& inputStream, wxOutputStream& outputStream)
+	{
+		const size_t size = wxBase64EncodedSize(Constants::BlockSize);
+		wxMemoryBuffer buffer(size);
+
+		while (inputStream.CanRead())
+		{
+			int byteValue = inputStream.GetC();
+			if (byteValue != wxEOF)
+			{
+				buffer.AppendByte(byteValue);
 			}
 			else
 			{
 				break;
 			}
-		}
-	}
-	return false;
-}
 
+			if (buffer.GetDataLen() == size)
+			{
+				auto utf8 = wxBase64Encode(buffer).ToUTF8();
+				if (outputStream.Write(utf8.data(), utf8.length()).IsOk())
+				{
+					return true;
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+		return false;
+	}
+	bool Base64Decode(wxInputStream& inputStream, wxOutputStream& outputStream)
+	{
+		const size_t size = wxBase64DecodedSize(Constants::BlockSize);
+		wxMemoryBuffer buffer(size);
+
+		while (inputStream.CanRead())
+		{
+			int byteValue = inputStream.GetC();
+			if (byteValue != wxEOF)
+			{
+				buffer.AppendByte(byteValue);
+			}
+			else
+			{
+				break;
+			}
+
+			if (buffer.GetDataLen() == size)
+			{
+				wxMemoryBuffer outBuffer = wxBase64Decode((const char*)buffer.GetData(), buffer.GetDataLen(), wxBase64DecodeMode_SkipWS);
+				if (outputStream.Write(outBuffer.GetData(), outBuffer.GetDataLen()).IsOk())
+				{
+					return true;
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+		return false;
+	}
+}
 //////////////////////////////////////////////////////////////////////////
-const uint32_t KxCrypto::CRC32Table[] =
+const uint32_t Constants::CRC32Table[] =
 {
 	0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA, 0x076DC419, 0x706AF48F,
 	0xE963A535, 0x9E6495A3, 0x0EDB8832, 0x79DCB8A4, 0xE0D5E91E, 0x97D2D988,

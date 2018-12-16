@@ -9,7 +9,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxFramework/KxStreamWrappers.h"
 
 //////////////////////////////////////////////////////////////////////////
-class KxMemoryInputStream:
+class KX_API KxMemoryInputStream:
 	public KxStreamBase,
 	public KxInputStreamWrapper<wxMemoryInputStream>
 {
@@ -19,6 +19,10 @@ class KxMemoryInputStream:
 		{
 		}
 		KxMemoryInputStream(const wxMemoryOutputStream& stream)
+			:KxInputStreamWrapper(stream)
+		{
+		}
+		KxMemoryInputStream(wxMemoryInputStream& stream)
 			:KxInputStreamWrapper(stream)
 		{
 		}
@@ -42,12 +46,12 @@ class KxMemoryInputStream:
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxMemoryOutputStream:
+class KX_API KxMemoryOutputStream:
 	public KxStreamBase,
 	public KxOutputStreamWrapper<wxMemoryOutputStream>
 {
 	public:
-		KxMemoryOutputStream(void* data, size_t size)
+		KxMemoryOutputStream(void* data = nullptr, size_t size = 0)
 			:KxOutputStreamWrapper(data, size)
 		{
 		}

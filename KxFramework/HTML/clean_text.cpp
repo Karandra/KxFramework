@@ -16,11 +16,13 @@
 //
 // Gets the cleantext of a page.
 
+#include "KxStdAfx.h"
 #include <fstream>
 #include <iostream>
 #include <stdlib.h>
 #include <string>
 
+#pragma warning(disable: 4005) // macro redefinition
 #include "gumbo.h"
 
 static std::string cleantext(GumboNode* node) {
@@ -44,7 +46,10 @@ static std::string cleantext(GumboNode* node) {
   }
 }
 
-std::string gumbo_ex_cleantext(GumboNode* node)
+namespace NodeInternals
 {
-	return cleantext(node);
+	std::string gumbo_ex_cleantext(GumboNode* node)
+	{
+		return cleantext(node);
+	}
 }

@@ -13,7 +13,7 @@ enum KxAuiToolBarItem_Options
 	KxAUI_TBITEM_OPTION_RCLICK_MENU = 1 << 2,
 };
 
-class KxAuiToolBarItem:
+class KX_API KxAuiToolBarItem:
 	public wxEvtHandler,
 	public KxWithDropdownMenu,
 	public KxWithOptions<KxAuiToolBarItem_Options, KxAUI_TBITEM_OPTION_NONE>

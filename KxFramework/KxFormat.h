@@ -34,7 +34,7 @@ namespace
 	template<class T> inline constexpr bool FmtPointer = std::is_pointer_v<T> && !IsCharPointer<T>;
 }
 
-class KxFormat
+class KX_API KxFormat
 {
 	private:
 		wxString m_String;

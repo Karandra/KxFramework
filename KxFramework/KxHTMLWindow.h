@@ -1,9 +1,9 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include <wx/html/htmlwin.h>
-class KxMenu;
+class KX_API KxMenu;
 
-class KxHTMLWindow: public wxHtmlWindow
+class KX_API KxHTMLWindow: public wxHtmlWindow
 {
 	public:
 		static wxString ProcessPlainText(const wxString& text);

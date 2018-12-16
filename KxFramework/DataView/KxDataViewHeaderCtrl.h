@@ -1,9 +1,9 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView/KxDataViewConstants.h"
-class KxDataViewCtrl;
+class KX_API KxDataViewCtrl;
 
-class KxDataViewHeaderCtrl: public wxHeaderCtrl
+class KX_API KxDataViewHeaderCtrl: public wxHeaderCtrl
 {
 	private:
 		void FinishEditing();

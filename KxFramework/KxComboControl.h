@@ -1,8 +1,8 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-class KxComboPopup;
+class KX_API KxComboPopup;
 
-class KxComboControl: public wxComboCtrl
+class KX_API KxComboControl: public wxComboCtrl
 {
 	public:
 		enum DrawFocus

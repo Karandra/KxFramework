@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KxWebView: public wxWebView
+class KX_API KxWebView: public wxWebView
 {
 	public:
 		static wxWebView* New(wxWindow* parent,

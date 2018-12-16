@@ -1,3 +1,9 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxWithOptions.h"
@@ -9,8 +15,8 @@ class KxProcessPipe;
 class wxPipeOutputStream;
 class wxPipeInputStream;
 
-wxDECLARE_EVENT(KxEVT_PROCESS_END, wxProcessEvent);
-wxDECLARE_EVENT(KxEVT_PROCESS_IDLE, wxProcessEvent);
+KX_DECLARE_EVENT(KxEVT_PROCESS_END, wxProcessEvent);
+KX_DECLARE_EVENT(KxEVT_PROCESS_IDLE, wxProcessEvent);
 
 enum KxProcessOptions
 {
@@ -28,8 +34,8 @@ enum KxProcessWaitMode
 	KxPROCESS_RUN_ASYNC,
 };
 
-typedef std::unordered_map<wxString, wxString> KxProcessEnvMap;
-class KxProcess: public wxEvtHandler, public KxWithOptions<KxProcessOptions, KxPROCESS_DEFAULT_OPTIONS>
+using KxProcessEnvMap = std::unordered_map<wxString, wxString>;
+class KX_API KxProcess: public wxEvtHandler, public KxWithOptions<KxProcessOptions, KxPROCESS_DEFAULT_OPTIONS>
 {
 	friend class KxProcessThread;
 

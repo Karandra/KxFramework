@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView/KxDataViewEditor.h"
 
-class KxDataViewTimeEditor: public KxDataViewEditor
+class KX_API KxDataViewTimeEditor: public KxDataViewEditor
 {
 	protected:
 		wxDateTime& ResetDate(wxDateTime& date) const

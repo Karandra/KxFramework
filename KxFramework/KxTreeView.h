@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxUtility.h"
 
-wxDECLARE_EVENT(KxEVT_TREE_ITEM_CHECKED, wxTreeEvent);
+KX_DECLARE_EVENT(KxEVT_TREE_ITEM_CHECKED, wxTreeEvent);
 
 enum KxTreeView_ItemState
 {
@@ -25,9 +25,9 @@ enum KxTreeView_Options
 	KxTV_MASK = KxTV_CHK_ENABLED|KxTV_CHK_3STATE|KxTV_CHK_CHANGE_STATE|KxTV_HOTTARCK_ENABLED|KxTV_BUTTONS_FADE_ENABLED
 };
 
-class KxTextBox;
-class KxTreeView;
-class KxTreeViewItem
+class KX_API KxTextBox;
+class KX_API KxTreeView;
+class KX_API KxTreeViewItem
 {
 	private:
 		KxTreeView* m_Control = NULL;
@@ -131,7 +131,7 @@ class KxTreeViewItem
 		}
 };
 
-class KxTreeView: public wxTreeCtrl
+class KX_API KxTreeView: public wxTreeCtrl
 {
 	friend class KxTreeViewItem;
 

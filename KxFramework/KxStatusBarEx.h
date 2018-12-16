@@ -11,7 +11,7 @@ enum
 	KxSBE_MASK = KxSBE_INHERIT_COLORS|KxSBE_SEPARATORS_ENABLED
 };
 
-class KxStatusBarEx: public KxStatusBar, public KxWithImageList, public KxIProgressBar
+class KX_API KxStatusBarEx: public KxStatusBar, public KxWithImageList, public KxIProgressBar
 {
 
 	private:

@@ -146,11 +146,11 @@ namespace KxFFI
 			static_assert(false, "This type is not supported");
 		}
 	}
-	size_t GetTypeSize(TypeID type);
+	size_t KX_API GetTypeSize(TypeID type);
 }
 
 //////////////////////////////////////////////////////////////////////////
-class KxCFunction
+class KX_API KxCFunction
 {
 	friend void KxFFI::CClosureCall(KxFFI::CInterface* cif, void* returnValue, void** arguments, KxCFunction* context);
 

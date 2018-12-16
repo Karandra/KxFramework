@@ -1,11 +1,11 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-wxDECLARE_EVENT(KxEVT_TOOLBAR, wxCommandEvent);
-wxDECLARE_EVENT(KxEVT_TOOLBAR_RIGHTCLICK, wxCommandEvent);
-wxDECLARE_EVENT(KxEVT_TOOLBAR_DROPDOWN, wxCommandEvent);
-wxDECLARE_EVENT(KxEVT_TOOLBAR_ENTER, wxCommandEvent);
-wxDECLARE_EVENT(KxEVT_TOOLBAR_LEAVE, wxCommandEvent);
+KX_DECLARE_EVENT(KxEVT_TOOLBAR, wxCommandEvent);
+KX_DECLARE_EVENT(KxEVT_TOOLBAR_RIGHTCLICK, wxCommandEvent);
+KX_DECLARE_EVENT(KxEVT_TOOLBAR_DROPDOWN, wxCommandEvent);
+KX_DECLARE_EVENT(KxEVT_TOOLBAR_ENTER, wxCommandEvent);
+KX_DECLARE_EVENT(KxEVT_TOOLBAR_LEAVE, wxCommandEvent);
 
 enum
 {
@@ -16,7 +16,7 @@ enum
 
 	KxTB_MASK = KxTB_DD_ARROWS|KxTB_FLAT
 };
-class KxToolBar: public wxToolBar
+class KX_API KxToolBar: public wxToolBar
 {
 	private:
 		int m_Indent = 0;

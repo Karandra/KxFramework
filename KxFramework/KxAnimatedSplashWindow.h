@@ -4,7 +4,7 @@
 #include "KxFramework/KxTimer.h"
 #include <wx/animate.h>
 
-class KxAnimatedSplashWindow: public KxSplashWindow
+class KX_API KxAnimatedSplashWindow: public KxSplashWindow
 {
 	private:
 		std::unique_ptr<wxAnimation> m_Animation;

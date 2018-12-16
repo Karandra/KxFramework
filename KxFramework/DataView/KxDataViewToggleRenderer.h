@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView/KxDataViewRenderer.h"
 
-class KxDataViewToggleValue
+class KX_API KxDataViewToggleValue
 {
 	public:
 		enum ToggleState
@@ -72,7 +72,7 @@ class KxDataViewToggleValue
 		}
 };
 
-class KxDataViewToggleRendererBase
+class KX_API KxDataViewToggleRendererBase
 {
 	public:
 		using ToggleState = KxDataViewToggleValue::ToggleState;
@@ -113,7 +113,7 @@ class KxDataViewToggleRendererBase
 		}
 };
 
-class KxDataViewToggleRenderer: public KxDataViewRenderer, public KxDataViewToggleRendererBase
+class KX_API KxDataViewToggleRenderer: public KxDataViewRenderer, public KxDataViewToggleRendererBase
 {
 	public:
 		static bool GetValueAsToggleState(const wxAny& value, ToggleState& state);

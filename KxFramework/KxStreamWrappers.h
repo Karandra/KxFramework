@@ -11,7 +11,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include <vector>
 #include <array>
 
-class KxStreamBase
+class KX_API KxStreamBase
 {
 	public:
 		using Offset = wxFileOffset;
@@ -49,7 +49,7 @@ class KxStreamBase
 template<class BaseStreamT> class KxInputStreamWrapper: public BaseStreamT
 {
 	protected:
-		template<class T> static bool DoRemoveTrailingNulls(std::vector<T>& data)
+		template<class C> static bool DoRemoveTrailingNulls(C& data)
 		{
 			if (!data.empty() && data.back() == 0)
 			{
@@ -68,14 +68,19 @@ template<class BaseStreamT> class KxInputStreamWrapper: public BaseStreamT
 			return ReadBuffer(values.data(), values.size() * sizeof(T));
 		}
 
-	protected:
-		template<class... Args> KxInputStreamWrapper(Args&&... args)
-			:BaseStreamT(std::forward<Args>(args)...)
+	public:
+		KxInputStreamWrapper(const KxInputStreamWrapper&) = delete;
+		KxInputStreamWrapper(KxInputStreamWrapper&&) = delete;
+
+		template<class... Args> KxInputStreamWrapper(Args&&... arg)
+			:BaseStreamT(std::forward<Args>(arg)...)
 		{
 		}
+		virtual ~KxInputStreamWrapper() = default;
 
 	public:
-		virtual ~KxInputStreamWrapper() = default;
+		KxInputStreamWrapper& operator=(const KxInputStreamWrapper&) = delete;
+		KxInputStreamWrapper& operator=(KxInputStreamWrapper&&) = delete;
 
 	public:
 		bool LastReadSuccess() const
@@ -308,14 +313,19 @@ template<class BaseStreamT> class KxOutputStreamWrapper: public BaseStreamT
 			return WriteBuffer(values.data(), values.size() * sizeof(T));
 		}
 
-	protected:
-		template<class... Args> KxOutputStreamWrapper(Args&&... args)
-			:BaseStreamT(std::forward<Args>(args)...)
+	public:
+		KxOutputStreamWrapper(const KxOutputStreamWrapper&) = delete;
+		KxOutputStreamWrapper(KxOutputStreamWrapper&&) = delete;
+
+		template<class... Args> KxOutputStreamWrapper(Args&&... arg)
+			:BaseStreamT(std::forward<Args>(arg)...)
 		{
 		}
+		virtual ~KxOutputStreamWrapper() = default;
 
 	public:
-		virtual ~KxOutputStreamWrapper() = default;
+		KxOutputStreamWrapper& operator=(const KxOutputStreamWrapper&) = delete;
+		KxOutputStreamWrapper& operator=(KxOutputStreamWrapper&&) = delete;
 
 	public:
 		bool LastWriteSuccess() const

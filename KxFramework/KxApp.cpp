@@ -1,8 +1,8 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxApp.h"
 
-bool KxAppInternal::ParseCommandLine(wxCmdLineParser& parser)
+bool KxAppInternal::ParseCommandLine(wxAppConsole* app, wxCmdLineParser& parser)
 {
-	parser.SetCmdLine(wxTheApp->argc, wxTheApp->argv);
+	parser.SetCmdLine(app->argc, app->argv);
 	return parser.Parse() == 0;
 }

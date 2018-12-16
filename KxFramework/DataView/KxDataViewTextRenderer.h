@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView/KxDataViewRenderer.h"
 
-class KxDataViewTextRenderer: public KxDataViewRenderer
+class KX_API KxDataViewTextRenderer: public KxDataViewRenderer
 {
 	public:
 		static bool GetValueAsString(const wxAny& value, wxString& string)

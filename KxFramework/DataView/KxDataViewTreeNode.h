@@ -3,10 +3,10 @@
 #include "KxFramework/DataView/KxDataViewConstants.h"
 #include "KxFramework/DataView/KxDataViewItem.h"
 #include <optional>
-class KxDataViewMainWindow;
-class KxDataViewTreeNode;
+class KX_API KxDataViewMainWindow;
+class KX_API KxDataViewTreeNode;
 
-class KxDataViewTreeNodeData
+class KX_API KxDataViewTreeNodeData
 {
 	public:
 		using Vector = std::vector<KxDataViewTreeNode*>;
@@ -89,7 +89,7 @@ class KxDataViewTreeNodeData
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxDataViewTreeNode
+class KX_API KxDataViewTreeNode
 {
 	public:
 		using Vector = std::vector<KxDataViewTreeNode*>;
@@ -165,7 +165,7 @@ class KxDataViewTreeNode
 
 //////////////////////////////////////////////////////////////////////////
 // Helper class to perform an operation on the tree node
-class KxDataViewTreeNodeOperation
+class KX_API KxDataViewTreeNodeOperation
 {
 	public:
 		// The return value control how the tree-walker traverse the tree
@@ -193,7 +193,7 @@ class KxDataViewTreeNodeOperation
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxDataViewTreeNodeOperation_RowToTreeNode: public KxDataViewTreeNodeOperation
+class KX_API KxDataViewTreeNodeOperation_RowToTreeNode: public KxDataViewTreeNodeOperation
 {
 	private:
 		ptrdiff_t m_Row = -1;
@@ -216,7 +216,7 @@ class KxDataViewTreeNodeOperation_RowToTreeNode: public KxDataViewTreeNodeOperat
 		}
 };
 
-class KxDataViewTreeNodeOperation_ItemToRow: public KxDataViewTreeNodeOperation
+class KX_API KxDataViewTreeNodeOperation_ItemToRow: public KxDataViewTreeNodeOperation
 {
 	private:
 		using IterT = KxDataViewItem::Vector::reverse_iterator;

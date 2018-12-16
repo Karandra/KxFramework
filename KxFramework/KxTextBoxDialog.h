@@ -15,7 +15,7 @@ enum KxTBD_Options
 
 	KxTBD_MASK = KxTBD_MULTILINE|KxTBD_PASSWORD|KxTBD_READONLY|KxTBD_STYLED
 };
-class KxTextBoxDialog: public KxStdDialog
+class KX_API KxTextBoxDialog: public KxStdDialog
 {
 	private:
 		wxControl* m_View = NULL;

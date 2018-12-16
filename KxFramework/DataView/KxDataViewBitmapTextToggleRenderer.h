@@ -3,7 +3,7 @@
 #include "KxFramework/DataView/KxDataViewBitmapTextRenderer.h"
 #include "KxFramework/DataView/KxDataViewToggleRenderer.h"
 
-class KxDataViewBitmapTextToggleValue:
+class KX_API KxDataViewBitmapTextToggleValue:
 	public KxDataViewBitmapTextValue,
 	public KxDataViewToggleValue
 {
@@ -41,7 +41,7 @@ class KxDataViewBitmapTextToggleValue:
 		}
 };
 
-class KxDataViewBitmapTextToggleRenderer: public KxDataViewRenderer, public KxDataViewToggleRendererBase
+class KX_API KxDataViewBitmapTextToggleRenderer: public KxDataViewRenderer, public KxDataViewToggleRendererBase
 {
 	private:
 		KxDataViewBitmapTextToggleValue m_Value;

@@ -238,9 +238,6 @@
     <ClInclude Include="KxFramework\KxProcessThread.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="..\Lua Developer Studio\wxWidgets Extensions\Source\FileFormats\TinyXML2\TinyXML2.h">
-      <Filter>Header Files\Parsers\XML</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxXML.h">
       <Filter>Header Files\Parsers\XML</Filter>
     </ClInclude>
@@ -724,6 +721,30 @@
     <ClInclude Include="KxFramework\KxCFunction.h">
       <Filter>Header Files\FFI</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxFunctional.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\XML\TinyXML2.h">
+      <Filter>Header Files\Parsers\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxButtonType.h">
+      <Filter>Header Files\General</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxIconType.h">
+      <Filter>Header Files\General</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxShellDefs.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxIncludes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxMainDefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxTypedefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1159,12 +1180,6 @@
     <ClCompile Include="KxFramework\KxWithDropdownMenu.cpp">
       <Filter>Source Files\Misc</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\HTML\serialize.cc">
-      <Filter>Source Files\Parsers\HTML</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\HTML\clean_text.cc">
-      <Filter>Source Files\Parsers\HTML</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxFormat.cpp">
       <Filter>Source Files\Misc</Filter>
     </ClCompile>
@@ -1227,6 +1242,12 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxCFunction.cpp">
       <Filter>Source Files\FFI</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\HTML\clean_text.cpp">
+      <Filter>Source Files\Parsers\HTML</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\HTML\serialize.cpp">
+      <Filter>Source Files\Parsers\HTML</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -5,9 +5,9 @@
 #include "KxFramework/KxDataViewEvent.h"
 class KxDataViewComboBox;
 
-wxDECLARE_EVENT(KxEVT_DVR_DVCOMBOBOX_INIT_CONTROL, KxDataViewEvent);
+KX_DECLARE_EVENT(KxEVT_DVR_DVCOMBOBOX_INIT_CONTROL, KxDataViewEvent);
 
-class KxDataViewDVComboBoxEditor: public wxEvtHandler, public KxDataViewEditor, public KxDataViewComboBoxEditorBase
+class KX_API KxDataViewDVComboBoxEditor: public wxEvtHandler, public KxDataViewEditor, public KxDataViewComboBoxEditorBase
 {
 	private:
 		mutable KxDataViewComboBox* m_ComboBox = NULL;

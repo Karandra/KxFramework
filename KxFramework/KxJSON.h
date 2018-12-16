@@ -1,9 +1,15 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/nlohmann/json.hpp"
 
 using KxJSONObject = nlohmann::json;
-class KxJSON: public KxJSONObject
+class KX_API KxJSON: public KxJSONObject
 {
 	public:
 		static wxString GetVersion();
@@ -23,7 +29,7 @@ class KxJSON: public KxJSONObject
 
 namespace nlohmann
 {
-	template<> struct adl_serializer<wxString>
+	template<> struct KX_API adl_serializer<wxString>
 	{
 		static void to_json(json& j, const wxString& value)
 		{

@@ -149,8 +149,8 @@ KxINetResponse KxINetConnection::DoSendRequest(const wxString& method, KxINetReq
 	return response;
 }
 
-KxINetConnection::KxINetConnection(KxINet* pSession, const wxString& url, uint16_t port, const wxString& userName, const wxString& password)
-	:m_SessionInstance(pSession), m_URL(url), m_URLParts(KxINet::SplitURL(url)), m_UserName(userName), m_Password(password)
+KxINetConnection::KxINetConnection(KxINet* session, const wxString& url, uint16_t port, const wxString& userName, const wxString& password)
+	:m_SessionInstance(session), m_URL(url), m_URLParts(KxINet::SplitURL(url)), m_UserName(userName), m_Password(password)
 {
 	switch (m_URLParts.ShemeType)
 	{

@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxWithImageList.h"
 
-class KxBitmapComboBox: public wxSystemThemedControl<wxBitmapComboBox>, public KxWithImageList
+class KX_API KxBitmapComboBox: public wxSystemThemedControl<wxBitmapComboBox>, public KxWithImageList
 {
 	private:
 		std::unordered_map<size_t, int> m_ImageIDs;

@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxHTMLWindow.h"
 
-class KxParagraph: public KxHTMLWindow
+class KX_API KxParagraph: public KxHTMLWindow
 {
 	private:
 		wxString m_Text;

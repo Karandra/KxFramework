@@ -1,16 +1,17 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-enum KxColor_ToStringMode
+class KX_API KxColor: public wxColour
 {
-	KxC2S_LUA_SYNTAX = 0,
-	KxC2S_NAME = wxC2S_NAME,
-	KxC2S_CSS_SYNTAX = wxC2S_CSS_SYNTAX,
-	KxC2S_HTML_SYNTAX = wxC2S_HTML_SYNTAX,
-};
+	public:
+		enum class ToString
+		{
+			Name = wxC2S_NAME,
+			CSSSyntax = wxC2S_CSS_SYNTAX,
+			HTMLSyntax = wxC2S_HTML_SYNTAX,
+			LuaSyntax = HTMLSyntax << 1,
+		};
 
-class KxColor: public wxColour
-{
 	public:
 		static const int ALPHA_OPAQUE_PERCENT = 100;
 		static const double SRGB_WeightR;
@@ -68,7 +69,11 @@ class KxColor: public wxColour
 
 	public:
 		virtual bool IsOk() const override;
-		virtual wxString GetAsString(long mode = KxC2S_LUA_SYNTAX) const override;
+		virtual wxString GetAsString(long mode = (long)ToString::LuaSyntax) const override;
+		wxString GetAsString(ToString mode = ToString::LuaSyntax) const
+		{
+			return GetAsString(static_cast<long>(mode));
+		}
 		KxColor Clone() const;
 		
 		KxColor& AlphaBlend(const KxColor& source);

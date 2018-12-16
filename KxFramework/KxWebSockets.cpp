@@ -1,12 +1,22 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #include "KxStdAfx.h"
 #include "KxFramework/KxWebSockets.h"
 #include "KxFramework/KxWebSocketsImpl.h"
 #include "KxFramework/KxINet.h"
 #include "KxFramework/KxCrypto.h"
 
-wxString KxWebSocketClient::GetVersion()
+wxString KxWebSocketClient::GetLibraryName()
 {
-	return KxWebSocketClientImpl::GetVersion();
+	return KxWebSocketClientImpl::GetLibraryName();
+}
+wxString KxWebSocketClient::GetLibraryVersion()
+{
+	return KxWebSocketClientImpl::GetLibraryVersion();
 }
 
 bool KxWebSocketClient::OnOpen()

@@ -22,7 +22,7 @@ enum KxTD_Options
 	KxTD_CHB_ENABLED = 1 << 10,
 	KxTD_SIZE_TO_CONTENT = 1 << 11,
 };
-class KxTaskDialog: public KxDialog, public KxIStdDialog
+class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 {
 	public:
 		typedef std::vector<TASKDIALOG_BUTTON> ButtonSpecArray;

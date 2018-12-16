@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxWinUndef.h"
-class KxFileItem;
+class KX_API KxFileItem;
 
 namespace KxIArchiveNS
 {
@@ -11,7 +11,7 @@ namespace KxIArchiveNS
 }
 
 //////////////////////////////////////////////////////////////////////////
-class KxIArchive
+class KX_API KxIArchive
 {
 	public:
 		virtual ~KxIArchive() = default;
@@ -30,7 +30,7 @@ class KxIArchive
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxIArchiveSearch
+class KX_API KxIArchiveSearch
 {
 	public:
 		virtual ~KxIArchiveSearch() = default;
@@ -45,7 +45,7 @@ class KxIArchiveSearch
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxIArchiveExtraction
+class KX_API KxIArchiveExtraction
 {
 	public:
 		virtual ~KxIArchiveExtraction() = default;
@@ -88,7 +88,7 @@ class KxIArchiveExtraction
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxIArchiveCompression
+class KX_API KxIArchiveCompression
 {
 	public:
 		virtual ~KxIArchiveCompression() = default;

@@ -1,9 +1,9 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-class KxMenu;
-class KxMenuItem;
+class KX_API KxMenu;
+class KX_API KxMenuItem;
 
-class KxMenuEvent: public wxNotifyEvent
+class KX_API KxMenuEvent: public wxNotifyEvent
 {
 	private:
 		bool m_IsPopup = false;
@@ -70,7 +70,7 @@ class KxMenuEvent: public wxNotifyEvent
 };
 
 //////////////////////////////////////////////////////////////////////////
-wxDECLARE_EVENT(KxEVT_MENU_OPEN, KxMenuEvent);
-wxDECLARE_EVENT(KxEVT_MENU_CLOSE, KxMenuEvent);
-wxDECLARE_EVENT(KxEVT_MENU_SELECT, KxMenuEvent);
-wxDECLARE_EVENT(KxEVT_MENU_HOVER, KxMenuEvent);
+KX_DECLARE_EVENT(KxEVT_MENU_OPEN, KxMenuEvent);
+KX_DECLARE_EVENT(KxEVT_MENU_CLOSE, KxMenuEvent);
+KX_DECLARE_EVENT(KxEVT_MENU_SELECT, KxMenuEvent);
+KX_DECLARE_EVENT(KxEVT_MENU_HOVER, KxMenuEvent);

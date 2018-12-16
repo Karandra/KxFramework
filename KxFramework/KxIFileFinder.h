@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxFileItem.h"
 
-class KxIFileFinder
+class KX_API KxIFileFinder
 {
 	protected:
 		virtual bool OnFound(const KxFileItem& foundItem) = 0;

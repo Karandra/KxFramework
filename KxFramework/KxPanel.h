@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KxPanel: public wxPanel
+class KX_API KxPanel: public wxPanel
 {
 	public:
 		using ScaleMode = wxGenericStaticBitmap::ScaleMode;
@@ -48,7 +48,7 @@ class KxPanel: public wxPanel
 	public:
 		wxDECLARE_DYNAMIC_CLASS(KxPanel);
 };
-using KxScrolledPanel = wxScrolled<KxPanel>;
+using KxScrolledPanel = KX_API wxScrolled<KxPanel>;
 
 //////////////////////////////////////////////////////////////////////////
 enum KxPanelBGMode
@@ -62,7 +62,7 @@ enum KxPanelBGMode
 	KxPANEL_FG_IMAGE = 256,
 };
 
-class KxDrawablePanel: public KxPanel
+class KX_API KxDrawablePanel: public KxPanel
 {
 	public:
 		using ScaleMode = KxPanel::ScaleMode;
@@ -182,4 +182,4 @@ class KxDrawablePanel: public KxPanel
 	public:
 		wxDECLARE_DYNAMIC_CLASS(KxDrawablePanel);
 };
-using KxScrolledDrawablePanel = wxScrolled<KxDrawablePanel>;
+using KxScrolledDrawablePanel = KX_API wxScrolled<KxDrawablePanel>;

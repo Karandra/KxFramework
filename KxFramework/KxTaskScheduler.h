@@ -1,7 +1,13 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxCOM.h"
-class KxTaskScheduler;
+class KX_API KxTaskScheduler;
 
 struct ITaskDefinition;
 struct IRegistrationInfo;
@@ -11,7 +17,7 @@ struct IIdleSettings;
 struct ITriggerCollection;
 struct IActionCollection;
 struct IAction;
-class KxTaskSchedulerTask
+class KX_API KxTaskSchedulerTask
 {
 	friend class KxTaskScheduler;
 
@@ -46,7 +52,7 @@ class KxTaskSchedulerTask
 //////////////////////////////////////////////////////////////////////////
 struct ITaskService;
 struct ITaskFolder;
-class KxTaskScheduler
+class KX_API KxTaskScheduler
 {
 	private:
 		KxCOMInit m_COMInit;
@@ -72,4 +78,3 @@ class KxTaskScheduler
 		bool SaveTask(const KxTaskSchedulerTask& task, const wxString& name);
 		bool DeleteTask(const wxString& taskName);
 };
-

@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KxTextBox: public wxTextCtrl
+class KX_API KxTextBox: public wxTextCtrl
 {
 	private:
 		virtual WXLRESULT MSWWindowProc(WXUINT msg, WXWPARAM wParam, WXLPARAM lParam) override;

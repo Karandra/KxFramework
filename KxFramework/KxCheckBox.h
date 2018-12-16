@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KxCheckBox: public wxCheckBox
+class KX_API KxCheckBox: public wxCheckBox
 {
 	private:
 		void Set3StateValue(wxCheckBoxState) = delete;

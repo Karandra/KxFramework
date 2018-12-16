@@ -1,10 +1,10 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxFileOperationEvent.h"
-class KxCURLSession;
-class KxCURLReplyBase;
+class KX_API KxCURLSession;
+class KX_API KxCURLReplyBase;
 
-class KxCURLEvent: public KxFileOperationEvent
+class KX_API KxCURLEvent: public KxFileOperationEvent
 {
 	private:
 		KxCURLSession* m_Session = NULL;
@@ -35,4 +35,4 @@ class KxCURLEvent: public KxFileOperationEvent
 		wxDECLARE_DYNAMIC_CLASS(KxCURLEvent);
 };
 
-wxDECLARE_EVENT(KxEVT_CURL_DOWNLOAD, KxCURLEvent);
+KX_DECLARE_EVENT(KxEVT_CURL_DOWNLOAD, KxCURLEvent);

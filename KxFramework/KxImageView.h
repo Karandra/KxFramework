@@ -15,7 +15,7 @@ enum KxImageView_ScaleMode
 	KxIV_SCALE_ASPECT_FILL = wxStaticBitmapBase::Scale_AspectFill,
 };
 
-class KxImageView: public wxControl
+class KX_API KxImageView: public wxControl
 {
 	private:
 		KxImageView_BGMode m_BackgroundMode = KxIV_BG_SOLID;

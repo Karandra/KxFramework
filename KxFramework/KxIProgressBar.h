@@ -1,8 +1,8 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-class KxProgressBar;
+class KX_API KxProgressBar;
 
-class KxIProgressBar
+class KX_API KxIProgressBar
 {
 	protected:
 		virtual int DoGetRange() const = 0;

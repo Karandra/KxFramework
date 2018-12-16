@@ -2,10 +2,10 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxWithDropdownMenu.h"
 
-wxDECLARE_EVENT(KxEVT_BUTTON, wxCommandEvent);
-wxDECLARE_EVENT(KxEVT_BUTTON_MENU, wxContextMenuEvent);
+KX_DECLARE_EVENT(KxEVT_BUTTON, wxCommandEvent);
+KX_DECLARE_EVENT(KxEVT_BUTTON_MENU, wxContextMenuEvent);
 
-class KxButton: public wxSystemThemedControl<wxButton>, public KxWithDropdownMenu
+class KX_API KxButton: public wxSystemThemedControl<wxButton>, public KxWithDropdownMenu
 {
 	public:
 		enum

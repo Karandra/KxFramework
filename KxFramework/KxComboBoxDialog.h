@@ -7,7 +7,7 @@ enum
 	KxCBD_BITMAP = 1 << 0,
 	KxCBD_READONLY = 1 << 1
 };
-class KxComboBoxDialog: public KxStdDialog
+class KX_API KxComboBoxDialog: public KxStdDialog
 {
 	private:
 		wxComboBox* m_View = NULL;

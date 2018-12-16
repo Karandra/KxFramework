@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KxStaticText: public wxStaticText
+class KX_API KxStaticText: public wxStaticText
 {
 	private:
 		wxColour m_ColorNormal;

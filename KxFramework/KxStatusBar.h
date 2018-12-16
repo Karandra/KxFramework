@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KxStatusBar: public wxSystemThemedControl<wxStatusBar>
+class KX_API KxStatusBar: public wxSystemThemedControl<wxStatusBar>
 {
 	private:
 		virtual void SetFieldsCount(int count, const int* widths) override;

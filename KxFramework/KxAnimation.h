@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include <wx/animate.h>
 
-class KxAnimation: public wxAnimation
+class KX_API KxAnimation: public wxAnimation
 {
 	public:
 		enum
@@ -36,7 +36,7 @@ class KxAnimation: public wxAnimation
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxSimpleAnimation: public KxAnimation
+class KX_API KxSimpleAnimation: public KxAnimation
 {
 	private:
 		class Frame

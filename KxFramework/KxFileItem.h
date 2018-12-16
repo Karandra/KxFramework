@@ -2,9 +2,9 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxFile.h"
 #include <KxFramework/KxUtility.h>
-class KxFileFinder;
+class KX_API KxFileFinder;
 
-class KxFileItem
+class KX_API KxFileItem
 {
 	friend class KxFileFinder;
 
@@ -23,6 +23,7 @@ class KxFileItem
 		void MakeNull(bool attribuesOnly = false);
 		void Set(const WIN32_FIND_DATAW& fileInfo);
 		void SetTime(const FILETIME& fileTime, wxDateTime& fileTimeWx) const;
+		bool DoUpdateInfo(const wxString& fullPath);
 
 	public:
 		KxFileItem() = default;
@@ -37,7 +38,10 @@ class KxFileItem
 		{
 			return m_Attributes != INVALID_FILE_ATTRIBUTES;
 		}
-		bool UpdateInfo();
+		bool UpdateInfo()
+		{
+			return DoUpdateInfo(GetFullPath());
+		}
 
 		template<class T> T GetExtraData() const
 		{
@@ -169,6 +173,10 @@ class KxFileItem
 
 		wxString GetFullPath() const
 		{
-			return m_Source + wxS('\\') + GetName();
+			return m_Source + wxS('\\') + m_Name;
+		}
+		void SetFullPath(const wxString& fullPath)
+		{
+			m_Source = fullPath.BeforeLast(wxS('\\'), &m_Name);
 		}
 };

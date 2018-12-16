@@ -7,11 +7,11 @@ namespace KxVersionInternal
 	{
 		public:
 			int m_Numeric = -1;
-			wchar_t m_String[9] = {L'\000'};
+			wxChar m_String[9] = {wxS('\0')};
 
 		public:
 			VersionPart() {}
-			VersionPart(int n, wchar_t* s = NULL, size_t count = 0)
+			VersionPart(int n, wxChar* s = NULL, size_t count = 0)
 				:m_Numeric(n)
 			{
 				if (s)
@@ -29,21 +29,21 @@ namespace KxVersionInternal
 			{
 				return ::wcsnlen_s(m_String, ARRAYSIZE(m_String)) != 0;
 			}
-			void SetString(wchar_t* s, size_t count = 0)
+			void SetString(wxChar* s, size_t count = 0)
 			{
 				const size_t max = ARRAYSIZE(m_String) - 1;
 				wcsncpy_s(m_String, s, (count == 0 || count > max) ? max : count);
-				m_String[max] = L'\000';
+				m_String[max] = wxS('\0');
 			}
 	};
 
 	class StringPartAdapter
 	{
 		private:
-			std::wstring_view m_Str;
+			std::basic_string_view<wxChar, std::char_traits<wxChar>> m_Str;
 
 		public:
-			StringPartAdapter(const wchar_t* s)
+			StringPartAdapter(const wxChar* s)
 				:m_Str(s)
 			{
 			}
@@ -75,7 +75,7 @@ enum KxVersionType
 	KxVERSION_INTEGER,
 };
 
-class KxVersion
+class KX_API KxVersion
 {
 	private:
 		enum class Cmp
@@ -175,6 +175,14 @@ class KxVersion
 	public:
 		KxVersion() {}
 		KxVersion(const wxString& s, KxVersionType type = KxVERSION_INVALID);
+		KxVersion(const char* s, KxVersionType type = KxVERSION_INVALID)
+			:KxVersion(wxString(s), type)
+		{
+		}
+		KxVersion(const wchar_t* s, KxVersionType type = KxVERSION_INVALID)
+			:KxVersion(wxString(s), type)
+		{
+		}
 		KxVersion(const DateTimeT& t);
 		KxVersion(const IntegerT& i);
 		KxVersion(const wxVersionInfo& versionInfo);
@@ -209,10 +217,7 @@ class KxVersion
 		{
 			return ToString();
 		}
-		wxVersionInfo ToWxVersionInfo(const wxString& name = wxEmptyString,
-									  const wxString& description = wxEmptyString,
-									  const wxString& copyright = wxEmptyString
-		) const;
+		wxVersionInfo ToWxVersionInfo(const wxString& name = {}, const wxString& description = {}, const wxString& copyright = {}) const;
 		DateTimeT ToDateTime() const
 		{
 			return IsDateTime() ? GetDateTime() : wxDefaultDateTime;
@@ -231,4 +236,4 @@ class KxVersion
 		bool operator>=(const KxVersion& other) const;
 };
 
-extern const KxVersion KxNullVersion;
+extern KX_API const KxVersion KxNullVersion;

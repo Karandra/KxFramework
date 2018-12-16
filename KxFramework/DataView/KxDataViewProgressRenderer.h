@@ -9,7 +9,7 @@ enum KxDataViewProgressState
 	KxDVR_PROGRESS_STATE_ERROR,
 };
 
-class KxDataViewProgressValue
+class KX_API KxDataViewProgressValue
 {
 	private:
 		wxString m_Text;
@@ -70,7 +70,7 @@ enum KxDataViewProgressSizeOption
 	KxDVR_PROGRESS_HEIGHT_AUTO = 0,
 	KxDVR_PROGRESS_HEIGHT_FIT,
 };
-class KxDataViewProgressRenderer: public KxDataViewRenderer
+class KX_API KxDataViewProgressRenderer: public KxDataViewRenderer
 {
 	private:
 		KxDataViewProgressValue m_Value;

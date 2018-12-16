@@ -1,3 +1,9 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxWinUndef.h"
@@ -20,9 +26,9 @@ enum KxSystemPowerState
 	PSX_SCREENSAVER = -6
 };
 
-class KxProcess;
-class KxSystemFSRedirector;
-class KxSystem
+class KX_API KxProcess;
+class KX_API KxSystemFSRedirector;
+class KX_API KxSystem
 {
 	friend class KxSystemFSRedirector;
 	friend class KxProcess;
@@ -142,7 +148,7 @@ class KxSystem
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxSystemFSRedirector
+class KX_API KxSystemFSRedirector
 {
 	private:
 		void* m_Value = NULL;

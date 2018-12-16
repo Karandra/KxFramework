@@ -3,11 +3,11 @@
 #include "KxFramework/KxWithOptions.h"
 #include "KxFramework/KxComboPopup.h"
 #include "KxFramework/KxDataView.h"
-class KxComboControl;
-class KxPanel;
+class KX_API KxComboControl;
+class KX_API KxPanel;
 
-wxDECLARE_EVENT(KxEVT_DVCB_GET_STRING_VALUE, KxDataViewEvent);
-wxDECLARE_EVENT(KxEVT_DVCB_SET_STRING_VALUE, KxDataViewEvent);
+KX_DECLARE_EVENT(KxEVT_DVCB_GET_STRING_VALUE, KxDataViewEvent);
+KX_DECLARE_EVENT(KxEVT_DVCB_SET_STRING_VALUE, KxDataViewEvent);
 
 enum KxDataView_CBOptions
 {
@@ -19,7 +19,7 @@ enum KxDataView_CBOptions
 
 	KxDVCB_OPTION_DEFAULT = KxDVCB_OPTION_FORCE_GET_STRING_VALUE_ON_DISMISS|KxDVCB_OPTION_ALT_POPUP_WINDOW,
 };
-class KxDataViewComboBox:
+class KX_API KxDataViewComboBox:
 	public KxDataViewCtrl,
 	public KxComboPopup,
 	public KxWithOptions<KxDataView_CBOptions, KxDVCB_OPTION_DEFAULT>

@@ -1,10 +1,16 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxSingleton.h"
 #include "KxFramework/KxCURLStructs.h"
 #include "KxFramework/KxCURLEvent.h"
 
-class KxCURL: public KxSingleton<KxCURL>
+class KX_API KxCURL: public KxSingleton<KxCURL>
 {
 	friend class KxCURLModule;
 
@@ -26,7 +32,7 @@ class KxCURL: public KxSingleton<KxCURL>
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxCURLSession: public wxEvtHandler
+class KX_API KxCURLSession: public wxEvtHandler
 {
 	using CURL = void;
 	class CallbackData

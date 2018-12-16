@@ -4,13 +4,13 @@
 #include "KxFramework/DataView/KxDataViewRenderer.h"
 #include "KxFramework/DataView/KxDataViewColumn.h"
 #include "KxFramework/DataView/KxDataViewItem.h"
-class KxDataViewCtrl;
-class KxDataViewColumn;
-class KxDataViewRenderer;
-class KxDataViewMainWindow;
-class KxDataViewEditorControlHandler;
+class KX_API KxDataViewCtrl;
+class KX_API KxDataViewColumn;
+class KX_API KxDataViewRenderer;
+class KX_API KxDataViewMainWindow;
+class KX_API KxDataViewEditorControlHandler;
 
-class KxDataViewEditor: public KxDataViewColumnPart
+class KX_API KxDataViewEditor: public KxDataViewColumnPart
 {
 	friend class KxDataViewMainWindow;
 	friend class KxDataViewEditorControlHandler;
@@ -79,7 +79,7 @@ class KxDataViewEditor: public KxDataViewColumnPart
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KxDataViewEditorControlHandler: public wxEvtHandler
+class KX_API KxDataViewEditorControlHandler: public wxEvtHandler
 {
 	private:
 		KxDataViewEditor* m_Editor = NULL;

@@ -23,7 +23,7 @@ enum
 	KxSL_LABELS = wxSL_LABELS,
 };
 
-class KxSlider: public wxSlider
+class KX_API KxSlider: public wxSlider
 {
 	private:
 		int m_Step = DefaultStep;

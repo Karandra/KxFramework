@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView/KxDataViewEditor.h"
 
-class KxDataViewSpinEditor: public KxDataViewEditor
+class KX_API KxDataViewSpinEditor: public KxDataViewEditor
 {
 	private:
 		enum class Type

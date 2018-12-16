@@ -8,11 +8,11 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxStreamWrappers.h"
 
-class KxFileStream:
+class KX_API KxFileStream:
 	public KxStreamBase,
 	public KxIOStreamHelper<KxFileStream>,
-	public virtual KxInputStreamWrapper<wxInputStream>,
-	public virtual KxOutputStreamWrapper<wxOutputStream>
+	public KxInputStreamWrapper<wxInputStream>,
+	public KxOutputStreamWrapper<wxOutputStream>
 {
 	private:
 		struct SAccess

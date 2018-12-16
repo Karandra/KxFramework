@@ -2,8 +2,8 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxWithImageList.h"
 
-wxDECLARE_EVENT(KxEVT_TREELIST_ITEM_ACTIVATED, wxTreeListEvent);
-wxDECLARE_EVENT(KxEVT_TREELIST_SELECTION_CHANGED, wxTreeListEvent);
+KX_DECLARE_EVENT(KxEVT_TREELIST_ITEM_ACTIVATED, wxTreeListEvent);
+KX_DECLARE_EVENT(KxEVT_TREELIST_SELECTION_CHANGED, wxTreeListEvent);
 
 enum KxTreeList_ImageState
 {
@@ -23,8 +23,8 @@ enum KxTreeListOptions
 	KxTL_MASK = KxTL_VERT_RULES|KxTL_HORIZ_RULES|KxTL_DCLICK_EXPAND|KxTL_FIX_FIRST_COLUMN
 };
 
-class KxTreeList;
-class KxTreeListItem
+class KX_API KxTreeList;
+class KX_API KxTreeListItem
 {
 	private:
 		KxTreeList* m_Control = NULL;
@@ -148,7 +148,7 @@ class KxTreeListItem
 };
 typedef std::vector<KxTreeListItem> KxTreeListItems;
 
-class KxTreeList: public KxWithImageListWrapper<wxTreeListCtrl>
+class KX_API KxTreeList: public KxWithImageListWrapper<wxTreeListCtrl>
 {
 	friend class KxTreeListItem;
 

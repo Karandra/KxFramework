@@ -5,25 +5,25 @@
 #include "KxFramework/DataView/KxDataViewCtrl.h"
 #include "KxFramework/DataView/KxDataViewItem.h"
 #include <wx/selstore.h>
-class KxDataViewCtrl;
-class KxDataViewModel;
-class KxDataViewVirtualListModel;
-class KxDataViewColumn;
-class KxDataViewTreeNode;
-class KxDataViewRenderer;
-class KxDataViewEditor;
-class KxDataViewHeaderCtrl;
-class KxDataViewEvent;
+class KX_API KxDataViewCtrl;
+class KX_API KxDataViewModel;
+class KX_API KxDataViewVirtualListModel;
+class KX_API KxDataViewColumn;
+class KX_API KxDataViewTreeNode;
+class KX_API KxDataViewRenderer;
+class KX_API KxDataViewEditor;
+class KX_API KxDataViewHeaderCtrl;
+class KX_API KxDataViewEvent;
 
 //////////////////////////////////////////////////////////////////////////
-class KxDataViewMainWindow: public wxWindow
+class KX_API KxDataViewMainWindow: public wxWindow
 {
-	friend class KxDataViewRenderer;
-	friend class KxDataViewEditor;
-	friend class KxDataViewEvent;
-	friend class KxDataViewCtrl;
-	friend class KxDataViewHeaderCtrl;
-	friend class KxDataViewMainWindowEditorTimer;
+	friend class KX_API KxDataViewRenderer;
+	friend class KX_API KxDataViewEditor;
+	friend class KX_API KxDataViewEvent;
+	friend class KX_API KxDataViewCtrl;
+	friend class KX_API KxDataViewHeaderCtrl;
+	friend class KX_API KxDataViewMainWindowEditorTimer;
 	friend class KxDataViewMainWindowMaxWidthCalculator;
 
 	public:
@@ -437,7 +437,8 @@ class KxDataViewMainWindowDropSource: public wxDropSource
 		virtual ~KxDataViewMainWindowDropSource();
 };
 
-class KxDataViewMainWindowDropTarget: public wxDropTarget
+//////////////////////////////////////////////////////////////////////////
+class KX_API KxDataViewMainWindowDropTarget: public wxDropTarget
 {
 	private:
 		KxDataViewMainWindow* m_MainWindow = NULL;

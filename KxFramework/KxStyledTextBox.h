@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KxStyledTextBox: public wxStyledTextCtrl
+class KX_API KxStyledTextBox: public wxStyledTextCtrl
 {
 	private:
 		bool m_IsMultiLine = true;

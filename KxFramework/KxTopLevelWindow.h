@@ -2,28 +2,28 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxUtility.h"
 
-wxDECLARE_EVENT(KxEVT_DWM_GLASS_COLOR_CHANGED, wxCommandEvent);
-wxDECLARE_EVENT(KxEVT_DWM_COMPOSITION_CHANGED, wxCommandEvent);
+KX_DECLARE_EVENT(KxEVT_DWM_GLASS_COLOR_CHANGED, wxCommandEvent);
+KX_DECLARE_EVENT(KxEVT_DWM_COMPOSITION_CHANGED, wxCommandEvent);
 
 namespace KxTLWInternal
 {
-	bool DWMIsCompositionEnabled();
-	bool DWMIsGlassOpaque();
-	KxColor DWMGetGlassColor();
+	KX_API bool DWMIsCompositionEnabled();
+	KX_API bool DWMIsGlassOpaque();
+	KX_API KxColor DWMGetGlassColor();
 
-	void SetDefaultBackgroundColor(wxWindow* window);
-	bool MSWWindowProc(wxWindow* window, WXLRESULT& result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam);
+	KX_API void SetDefaultBackgroundColor(wxWindow* window);
+	KX_API bool MSWWindowProc(wxWindow* window, WXLRESULT& result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam);
 
-	KxColor DWMGetColorKey(const wxWindow* window);
-	bool DWMExtendFrame(wxWindow* window);
-	bool DWMExtendFrame(wxWindow* window, const wxRect& rect, const wxColour& color);
-	bool DWMBlurBehind(wxWindow* window, bool enable, const wxRegion& region);
+	KX_API KxColor DWMGetColorKey(const wxWindow* window);
+	KX_API bool DWMExtendFrame(wxWindow* window);
+	KX_API bool DWMExtendFrame(wxWindow* window, const wxRect& rect, const wxColour& color);
+	KX_API bool DWMBlurBehind(wxWindow* window, bool enable, const wxRegion& region);
 
-	wxIcon GetTitleIcon(const wxWindow* window);
-	void SetTitleIcon(wxWindow* window, const wxIcon& icon);
+	KX_API wxIcon GetTitleIcon(const wxWindow* window);
+	KX_API void SetTitleIcon(wxWindow* window, const wxIcon& icon);
 
-	void* GetWindowUserData(HWND hWnd);
-	void SetWindowUserData(HWND hWnd, const void* data);
+	KX_API void* GetWindowUserData(HWND hWnd);
+	KX_API void SetWindowUserData(HWND hWnd, const void* data);
 }
 
 template<class T = wxTopLevelWindow>
@@ -36,7 +36,7 @@ class KxTopLevelWindow: public T
 		}
 		static bool DWMIsGlassOpaque()
 		{
-			KxTLWInternal::DWMIsGlassOpaque();
+			return KxTLWInternal::DWMIsGlassOpaque();
 		}
 		static KxColor DWMGetGlassColor()
 		{

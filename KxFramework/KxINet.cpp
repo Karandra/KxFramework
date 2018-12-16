@@ -163,8 +163,7 @@ void KxINet::DestroyConnection(KxINetConnection& connection)
 }
 KxINetConnection& KxINet::MakeConnection(const wxString& url, uint16_t port, const wxString& userName, const wxString& password)
 {
-	KxINetConnection* pConnection = m_ConnectionsList.emplace_back(OnMakeConnection(url, port, userName, password)).get();
-	return *pConnection;
+	return *m_ConnectionsList.emplace_back(OnMakeConnection(url, port, userName, password));
 }
 
 const WCHAR* KxINet::AcceptTypes[] =

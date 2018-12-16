@@ -1,27 +1,60 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #include "KxStdAfx.h"
 #include "KxFramework/KxMath.h"
+#include <locale>
 #include <random>
 #include <cmath>
 
-const double KxMath::PI = KxMath::GetPI();
-const double KxMath::PI_2 = KxMath::GetPI_2();
-std::vector<double> KxMath::FactorialValues = {1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800};
-
-void KxMath::Fibonacci(int64_t x, double* u, double* v)
+namespace Util
 {
-	if (x == 1)
+	const double PI = std::acos(-1);
+	const double PI_2 = std::acos(0);
+
+	std::vector<double> FactorialValues = {1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800};
+
+	void Fibonacci(int64_t x, double* u, double* v)
 	{
-		*u = 1;
-		*v = 1;
+		if (x == 1)
+		{
+			*u = 1;
+			*v = 1;
+		}
+		else
+		{
+			double a;
+			double b;
+			Fibonacci(x - 1, &a, &b);
+			*u = b;
+			*v = a+b;
+		}
 	}
-	else
+	template<class T> T GetDecimalSeparator()
 	{
-		double a;
-		double b;
-		Fibonacci(x-1, &a, &b);
-		*u = b;
-		*v = a+b;
+		return std::use_facet<std::numpunct<T>>(std::cout.getloc()).decimal_point();
 	}
+}
+
+char KxMath::GetDecimalSeparator()
+{
+	return Util::GetDecimalSeparator<char>();
+}
+wchar_t KxMath::GetDecimalSeparatorW()
+{
+	return Util::GetDecimalSeparator<wchar_t>();
+}
+
+double KxMath::GetPI()
+{
+	return Util::PI;
+}
+double KxMath::GetPI_2()
+{
+	return Util::PI_2;
 }
 
 double KxMath::Round(double x, int64_t roundTo)
@@ -124,7 +157,7 @@ double KxMath::Cot(double x)
 }
 double KxMath::ACot(double x)
 {
-	return PI_2 - std::atan(x);
+	return Util::PI_2 - std::atan(x);
 }
 double KxMath::Sinh(double x)
 {
@@ -189,7 +222,7 @@ double KxMath::RandomFloat(double end)
 
 double KxMath::Map(double x, double inMin, double inMax, double outMin, double outMax)
 {
-	return (x - inMin) * (outMax - outMin)/(inMax - inMin) + outMin;
+	return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 }
 
 int64_t KxMath::FromBase(const wxString& x, int64_t base)
@@ -242,20 +275,20 @@ wxString KxMath::ToBase(int64_t x, int64_t base)
 
 double KxMath::Factorial(int64_t x)
 {
-	if (x < (int64_t)FactorialValues.size())
+	if (x < (int64_t)Util::FactorialValues.size())
 	{
-		return FactorialValues[x];
+		return Util::FactorialValues[x];
 	}
 	else
 	{
-		int64_t size = FactorialValues.size();
-		double value = FactorialValues[size-1];
-		FactorialValues.reserve(x);
+		int64_t size = Util::FactorialValues.size();
+		double value = Util::FactorialValues[size-1];
+		Util::FactorialValues.reserve(x);
 
 		for (int64_t i = size; i <= x; i++)
 		{
 			value *= i;
-			FactorialValues.insert(FactorialValues.begin()+i, value);
+			Util::FactorialValues.insert(Util::FactorialValues.begin()+i, value);
 		}
 		return value;
 	}
@@ -264,7 +297,7 @@ double KxMath::Fibonacci(int64_t x)
 {
 	double u = 1;
 	double v = 1;
-	Fibonacci(x, &u, &v);
+	Util::Fibonacci(x, &u, &v);
 	return v;
 }
 
