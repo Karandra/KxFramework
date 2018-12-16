@@ -116,37 +116,88 @@ KxXMLNode::~KxXMLNode()
 
 KxXMLNode KxXMLNode::QueryElement(const wxString& XPath) const
 {
-	const tinyxml2::XMLNode* currentNode = GetNode();
-	const tinyxml2::XMLNode* previousNode = currentNode;
-	KxStringVector pathArray = KxString::Split(XPath, "/");
-	if (!pathArray.empty())
+	KxStringVector elements = KxString::Split(XPath, wxS("/"));
+	if (!elements.empty())
 	{
-		for (size_t i = 0; i < pathArray.size() && currentNode; i++)
+		const tinyxml2::XMLNode* currentNode = GetNode();
+		const tinyxml2::XMLNode* previousNode = currentNode;
+
+		for (wxString& name: elements)
+		{
+			if (!currentNode)
+			{
+				break;
+			}
+
+			// Save previous element
+			previousNode = currentNode;
+
+			// Extract index from name and remove it from path
+			// point/x -> 1, point/x::2 -> 2, point/y::0 -> 1, point/z::-7 -> 1
+			int index = m_Document->ExtractIndexFromName(name);
+			auto elementNameUTF8 = name.ToUTF8();
+
+			// Get level 1
+			currentNode = previousNode->FirstChildElement(elementNameUTF8.data());
+
+			// We need to go down by 'index' elements
+			if (index != 1 && currentNode)
+			{
+				for (int level = 1; level < index && currentNode; level++)
+				{
+					// Get next level
+					currentNode = currentNode->NextSiblingElement(elementNameUTF8.data());
+				}
+			}
+		}
+		return KxXMLNode(const_cast<tinyxml2::XMLNode*>(currentNode), const_cast<KxXMLDocument*>(GetDocumentNode()));
+	}
+	return NullNode;
+}
+KxXMLNode KxXMLNode::QueryOrCreateElement(const wxString& XPath)
+{
+	KxStringVector elements = KxString::Split(XPath, wxS("/"));
+	if (!elements.empty())
+	{
+		KxXMLNode currentNode = *this;
+		KxXMLNode previousNode = currentNode;
+
+		for (wxString& name: elements)
 		{
 			// Save previous element
 			previousNode = currentNode;
 
 			// Extract index from name and remove it from path
 			// point/x -> 1, point/x::2 -> 2, point/y::0 -> 1, point/z::-7 -> 1
-			int index = m_Document->ExtractIndexFromName(pathArray[i]);
-			auto elementNameUTF8 = pathArray[i].ToUTF8();
+			const int index = m_Document->ExtractIndexFromName(name);
 
-			// Get or create level 1
-			currentNode = previousNode->FirstChildElement(elementNameUTF8.data());
-
-			// We need to go down by "index" elements
-			if (index != 1 && currentNode)
+			// Get level 1
+			currentNode = previousNode.GetFirstChildElement(name);
+			if (!currentNode.IsOK())
 			{
-				for (int nLevel = 1; nLevel < index && currentNode; nLevel++)
+				currentNode = previousNode.NewElement(name, KxXML_INSERT_AS_LAST_CHILD);
+			}
+
+			// We need to get or create 'index' amount of elements
+			if (index > 1)
+			{
+				for (int level = 1; level < index; level++)
 				{
-					// Get or create next level
-					currentNode = currentNode->NextSiblingElement(elementNameUTF8.data());
+					KxXMLNode tempNode = currentNode.GetNextSiblingElement(name);
+					if (tempNode.IsOK())
+					{
+						currentNode = tempNode;
+					}
+					else
+					{
+						currentNode = currentNode.NewElement(name, KxXML_INSERT_AFTER_CHILD);
+					}
 				}
 			}
 		}
+		return currentNode;
 	}
-
-	return KxXMLNode(const_cast<tinyxml2::XMLNode*>(currentNode), const_cast<KxXMLDocument*>(GetDocumentNode()));
+	return NullNode;
 }
 
 size_t KxXMLNode::GetIndexWithinParent() const

@@ -1,3 +1,9 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxXDocumentNode.h"
@@ -6,7 +12,7 @@ enum KxHTML_NodeType;
 enum KxHTML_TagType;
 
 class KxHTMLDocument;
-class KxHTMLNode: public KxXDocumentNode<KxHTMLNode>
+class KX_API KxHTMLNode: public KxXDocumentNode<KxHTMLNode>
 {
 	friend class KxHTMLDocument;
 
@@ -65,6 +71,7 @@ class KxHTMLNode: public KxXDocumentNode<KxHTMLNode>
 			return m_Node && m_Document;
 		}
 		virtual KxHTMLNode QueryElement(const wxString& XPath) const override;
+		virtual KxHTMLNode QueryOrCreateElement(const wxString& XPath) override;
 
 		/* Node */
 		virtual size_t GetIndexWithinParent() const override;
@@ -114,7 +121,7 @@ class KxHTMLNode: public KxXDocumentNode<KxHTMLNode>
 		virtual KxHTMLNode GetLastChild() const override;
 };
 
-class KxHTMLDocument: public KxHTMLNode
+class KX_API KxHTMLDocument: public KxHTMLNode
 {
 	private:
 		wxMemoryBuffer m_Buffer;

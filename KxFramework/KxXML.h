@@ -1,3 +1,9 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxXDocumentNode.h"
@@ -44,8 +50,8 @@ class KxXMLPrinter: public tinyxml2::XMLPrinter
 		}
 };
 
-class KxXMLNode;
-class KxXMLAttribute
+class KX_API KxXMLNode;
+class KX_API KxXMLAttribute
 {
 	friend class KxXMLNode;
 	
@@ -87,8 +93,8 @@ class KxXMLAttribute
 		KxXMLAttribute Next() const;
 };
 
-class KxXMLDocument;
-class KxXMLNode: public KxXDocumentNode<KxXMLNode>
+class KX_API KxXMLDocument;
+class KX_API KxXMLNode: public KxXDocumentNode<KxXMLNode>
 {
 	friend class KxXMLDocument;
 	friend class KxXMLAttribute;
@@ -155,6 +161,7 @@ class KxXMLNode: public KxXDocumentNode<KxXMLNode>
 			return m_Node && m_Document;
 		}
 		virtual KxXMLNode QueryElement(const wxString& XPath) const override;
+		virtual KxXMLNode QueryOrCreateElement(const wxString& XPath) override;
 
 		/* Node */
 		virtual size_t GetIndexWithinParent() const override;
@@ -235,7 +242,7 @@ class KxXMLNode: public KxXDocumentNode<KxXMLNode>
 		KxXMLNode NewUnknown(const wxString& value, KxXMLInsertNodeMode insertMode = KxXML_INSERT_AS_LAST_CHILD);
 };
 
-class KxXMLDocument: public KxXMLNode
+class KX_API KxXMLDocument: public KxXMLNode
 {
 	friend class KxXMLNode;
 

@@ -1,12 +1,22 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxXDocumentNode.h"
+
 namespace SimpleINI
 {
+	#define _SILENCE_CXX17_ADAPTOR_TYPEDEFS_DEPRECATION_WARNING 1
+	#define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS 1
+
 	#include "KxFramework/INI/SimpleINI.h"
 }
 
-class KxINI: private KxXDocumentNode<KxINI>
+class KX_API KxINI: private KxXDocumentNode<KxINI>
 {
 	private:
 		using DocumentT = SimpleINI::CSimpleIniA;
@@ -32,6 +42,10 @@ class KxINI: private KxXDocumentNode<KxINI>
 			// Invalid
 		}
 		virtual Node QueryElement(const wxString& XPath) const override
+		{
+			return Node();
+		}
+		virtual Node QueryOrCreateElement(const wxString& XPath) override
 		{
 			return Node();
 		}

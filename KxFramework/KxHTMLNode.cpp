@@ -2,7 +2,7 @@
 #include "KxFramework/KxHTML.h"
 #include "KxFramework/KxUtility.h"
 
-#pragma warning(disable: 4005)
+#pragma warning(disable: 4005) // macro redefinition
 #include "gumbo.h"
 
 #define NODE(p)		reinterpret_cast<const GumboNode*>((p))
@@ -170,63 +170,10 @@ bool KxHTMLNode::IsFullNode() const
 KxHTMLNode KxHTMLNode::QueryElement(const wxString& XPath) const
 {
 	return NullNode;
-	#if 0
-	static const wxString XPathDelimiter = "::";
-	std::vector<const KxHTMLNode*> nodes;
-
-	const KxHTMLNode* currentNode = NULL;
-	try
-	{
-		currentNode = nodes.emplace_back(this);
-		const KxHTMLNode* previousNode = currentNode;
-		KxStringVector pathArray = KxString::Split(XPath, "/");
-		if (!pathArray.empty())
-		{
-			for (size_t i = 0; i < pathArray.size() && currentNode && currentNode->IsOK(); i++)
-			{
-				// Save previous element
-				previousNode = currentNode;
-
-				// Extract index from name and remove it from path
-				// point/x -> 1, point/x::2 -> 2, point/y::0 -> 1, point/z::-7 -> 1
-				int requiredLevel = m_Document->ExtractIndexFromName(pathArray[i], XPathDelimiter);
-				const wxString& elementName = pathArray[i];
-
-				// Get level 1
-				currentNode = nodes.emplace_back(new KxHTMLNode(currentNode->GetFirstChild()));
-				while (currentNode && currentNode->GetName() != elementName)
-				{
-					currentNode = nodes.emplace_back(new KxHTMLNode(currentNode->GetNextSibling()));
-				}
-
-				// We need to go down by "index" elements
-				if (requiredLevel != 1 && currentNode && currentNode->IsOK())
-				{
-					for (int level = 1; level < requiredLevel && currentNode && currentNode->IsOK(); level++)
-					{
-						// Get next level
-						while (currentNode && currentNode->GetName() != elementName)
-						{
-							currentNode = nodes.emplace_back(new KxHTMLNode(currentNode->GetNextSibling()));
-						}
-					}
-				}
-			}
-		}
-	}
-	catch (...)
-	{
-	}
-
-	for (const KxHTMLNode* node: nodes)
-	{
-		if (node != this)
-		{
-			delete node;
-		}
-	}
-	return KxHTMLNode(*currentNode);
-	#endif
+}
+KxHTMLNode KxHTMLNode::QueryOrCreateElement(const wxString& XPath)
+{
+	return NullNode;
 }
 
 size_t KxHTMLNode::GetIndexWithinParent() const

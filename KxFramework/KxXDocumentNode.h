@@ -1,10 +1,16 @@
+/*
+Copyright © 2018 Kerber. All rights reserved.
+
+You should have received a copy of the GNU LGPL v3
+along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
+*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 
 namespace KxXDocumentNodeInternal
 {
-	bool ParseBool(const wxString& value, bool defaultValue);
-	int ExtractIndexFromName(wxString& elementName, const wxString& XPathDelimiter = wxEmptyString);
+	KX_API bool ParseBool(const wxString& value, bool defaultValue);
+	KX_API int ExtractIndexFromName(wxString& elementName, const wxString& XPathDelimiter = wxEmptyString);
 }
 
 template<class NodeT>
@@ -64,6 +70,7 @@ class KxXDocumentNode
 		/* General */
 		virtual bool IsOK() const = 0;
 		virtual Node QueryElement(const wxString& XPath) const = 0;
+		virtual Node QueryOrCreateElement(const wxString& XPath) = 0;
 
 		/* Node */
 		virtual size_t GetIndexWithinParent() const = 0;
@@ -201,9 +208,9 @@ class KxXDocumentNode
 		{
 			return DoSetAttribute(name, FormatFloat(value, precision));
 		}
-		bool SetAttribute(const wxString& name, float value, int precision = -1, bool isCDATA = false)
+		bool SetAttribute(const wxString& name, float value, int precision = -1)
 		{
-			return DoSetAttribute(name, FormatFloat((double)value, precision), isCDATA);
+			return DoSetAttribute(name, FormatFloat((double)value, precision));
 		}
 		bool SetAttribute(const wxString& name, bool value)
 		{
