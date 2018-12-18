@@ -245,6 +245,7 @@
     <ClInclude Include="KxFramework\KxComboPopup.h" />
     <ClInclude Include="KxFramework\KxCommandEvent.h" />
     <ClInclude Include="KxFramework\KxComparator.h" />
+    <ClInclude Include="KxFramework\KxCompileTimeMap.h" />
     <ClInclude Include="KxFramework\KxCoroutine.h" />
     <ClInclude Include="KxFramework\KxCredentialsDialog.h" />
     <ClInclude Include="KxFramework\KxCrypto.h" />
@@ -299,6 +300,7 @@
     <ClInclude Include="KxFramework\KxImageSet.h" />
     <ClInclude Include="KxFramework\KxImageView.h" />
     <ClInclude Include="KxFramework\KxIncludeWindows.h" />
+    <ClInclude Include="KxFramework\KxIndexedEnum.h" />
     <ClInclude Include="KxFramework\KxINet.h" />
     <ClInclude Include="KxFramework\KxINetEvent.h" />
     <ClInclude Include="KxFramework\KxINetRequest.h" />
