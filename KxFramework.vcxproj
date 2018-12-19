@@ -95,13 +95,13 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>KxStdAfx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)KxFramework;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\wxWidgets\include;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\Gumbo HTML5 Parser\src;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\cURL\Includes;$(BOOST_ROOT);$(ProjectDir)KxFramework\OpenSSL\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)KxFramework;$(SolutionDir)..\wxWidgets\include;$(SolutionDir)..\Gumbo HTML5 Parser\src;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\cURL\Includes;$(BOOST_ROOT);$(ProjectDir)KxFramework\OpenSSL\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>KXFRAMEWORK_LIBRARY;WXMAKINGDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Lib>
-      <AdditionalLibraryDirectories>$(ProjectDir);C:\Users\Kerber\Documents\Visual Studio 2017\Projects\wxWidgets\lib\vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir);$(SolutionDir)..\Gumbo HTML5 Parser\visualc\Release;$(SolutionDir)..\wxWidgets\lib\vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
       <Command>copy /Y "$(ProjectDir)$(Configuration)\$(TargetName)$(TargetExt)" "$(ProjectDir)Bin\$(TargetName)$(TargetExt)"</Command>
@@ -119,13 +119,13 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>KxStdAfx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)KxFramework;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\wxWidgets\include;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\Gumbo HTML5 Parser\src;$(BOOST_ROOT);$(ProjectDir)KxFramework\OpenSSL\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)KxFramework;$(SolutionDir)..\wxWidgets\include;$(SolutionDir)..\Gumbo HTML5 Parser\src;$(BOOST_ROOT);$(ProjectDir)KxFramework\OpenSSL\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>KXFRAMEWORK_LIBRARY;WXMAKINGDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Lib>
-      <AdditionalLibraryDirectories>$(ProjectDir);$(ProjectDir);C:\Users\Kerber\Documents\Visual Studio 2017\Projects\wxWidgets\lib\vc_x64_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir);$(SolutionDir)..\Gumbo HTML5 Parser\visualc\Release x64;$(SolutionDir)..\wxWidgets\lib\vc_x64_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
       <Command>copy /Y "$(ProjectDir)$(Configuration)\$(TargetName)$(TargetExt)" "$(ProjectDir)Bin\$(TargetName)$(TargetExt)"</Command>
@@ -145,7 +145,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>KxStdAfx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)KxFramework;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\wxWidgets\include;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\Gumbo HTML5 Parser\src;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\cURL\Includes;$(BOOST_ROOT);$(ProjectDir)KxFramework\OpenSSL\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)KxFramework;$(SolutionDir)..\wxWidgets\include;$(SolutionDir)..\Gumbo HTML5 Parser\src;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\cURL\Includes;$(BOOST_ROOT);$(ProjectDir)KxFramework\OpenSSL\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>KXFRAMEWORK_LIBRARY;WXMAKINGDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -157,7 +157,7 @@
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>$(ProjectDir);C:\Users\Kerber\Documents\Visual Studio 2017\Projects\Gumbo HTML5 Parser\visualc\Release;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\wxWidgets\lib\vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir);$(SolutionDir)..\Gumbo HTML5 Parser\visualc\Release;$(SolutionDir)..\wxWidgets\lib\vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
       <Command>copy /Y "$(ProjectDir)$(Configuration)\$(TargetName)$(TargetExt)" "$(ProjectDir)Bin\$(TargetName)$(TargetExt)"</Command>
@@ -173,7 +173,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>KxStdAfx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)KxFramework;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\wxWidgets\include;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\Gumbo HTML5 Parser\src;$(BOOST_ROOT);$(ProjectDir)KxFramework\OpenSSL\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)KxFramework;$(SolutionDir)..\wxWidgets\include;$(SolutionDir)..\Gumbo HTML5 Parser\src;$(BOOST_ROOT);$(ProjectDir)KxFramework\OpenSSL\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>KXFRAMEWORK_LIBRARY;WXMAKINGDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -185,7 +185,7 @@
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>$(ProjectDir);$(ProjectDir);C:\Users\Kerber\Documents\Visual Studio 2017\Projects\Gumbo HTML5 Parser\visualc\Release x64;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\wxWidgets\lib\vc_x64_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir);$(SolutionDir)..\Gumbo HTML5 Parser\visualc\Release x64;$(SolutionDir)..\wxWidgets\lib\vc_x64_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
       <Command>copy /Y "$(ProjectDir)$(Configuration)\$(TargetName)$(TargetExt)" "$(ProjectDir)Bin\$(TargetName)$(TargetExt)"</Command>
