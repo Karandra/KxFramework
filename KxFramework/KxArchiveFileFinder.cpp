@@ -41,7 +41,7 @@ KxArchiveFileFinder::~KxArchiveFileFinder()
 
 bool KxArchiveFileFinder::IsOK() const
 {
-	return m_Archive != NULL && m_Handle != NULL;
+	return m_Archive != nullptr && m_Handle != nullptr;
 }
 bool KxArchiveFileFinder::Run()
 {
@@ -62,7 +62,7 @@ bool KxArchiveFileFinder::Run()
 }
 KxFileItem KxArchiveFileFinder::FindNext()
 {
-	if (m_Handle == NULL)
+	if (m_Handle == nullptr)
 	{
 		// No search handle available, begin operation.
 		KxFileItem fileItem;
@@ -85,7 +85,7 @@ KxFileItem KxArchiveFileFinder::FindNext()
 		// No files left, close search handle
 		m_Archive->FindClose(m_Handle);
 		m_IsCanceled = false;
-		m_Handle = NULL;
+		m_Handle = nullptr;
 	}
 	return KxFileItem();
 }

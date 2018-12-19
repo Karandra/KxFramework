@@ -102,7 +102,7 @@ class KX_API KxFile
 
 	private:
 		wxString m_Path;
-		wxEvtHandler* m_EventHnadler = NULL;
+		wxEvtHandler* m_EventHnadler = nullptr;
 		KxFileNamespace m_NameSpace = KxFNS_WIN32_FILE;
 
 	private:
@@ -126,7 +126,7 @@ class KX_API KxFile
 
 		bool HasEventHandler() const
 		{
-			return m_EventHnadler != NULL;
+			return m_EventHnadler != nullptr;
 		}
 		wxEvtHandler* GetEventHandler() const
 		{

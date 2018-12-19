@@ -6,15 +6,15 @@
 class KX_API KxGraphicsContext
 {
 	private:
-		wxGraphicsContext* m_Context = NULL;
+		wxGraphicsContext* m_Context = nullptr;
 
 	private:
 		template<class ReturnType, class FuncT = ReturnType(wxGraphicsContext::*)(wxDouble x, wxDouble y, wxDouble w, wxDouble h)>
 		class CallMember
 		{
 			private:
-				wxGraphicsContext* m_Context = NULL;
-				FuncT m_Func = NULL;
+				wxGraphicsContext* m_Context = nullptr;
+				FuncT m_Func = nullptr;
 
 			public:
 				CallMember(wxGraphicsContext* context, const FuncT& func)

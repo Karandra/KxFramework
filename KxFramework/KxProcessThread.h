@@ -13,7 +13,7 @@ class KX_API wxStreamTempInputBuffer;
 class KX_API KxProcessThread: public wxThread
 {
 	protected:
-		KxProcess* m_EventHandler = NULL;
+		KxProcess* m_EventHandler = nullptr;
 		const KxProcessWaitMode m_RunMode = KxPROCESS_RUN_ASYNC;
 		const bool m_IsRedirectedIO;
 		bool m_HideUI = true;
@@ -30,7 +30,7 @@ class KX_API KxProcessThread: public wxThread
 		void SendEventSyncAsync(wxEvent* event);
 		bool IsProcessAlive() const
 		{
-			return m_EventHandler != NULL && !m_EndSignaled;
+			return m_EventHandler != nullptr && !m_EndSignaled;
 		}
 
 	protected:
@@ -87,7 +87,7 @@ class KX_API KxProcessPipe
 		{
 			SECURITY_ATTRIBUTES security;
 			security.nLength = sizeof(security);
-			security.lpSecurityDescriptor = NULL;
+			security.lpSecurityDescriptor = nullptr;
 			security.bInheritHandle = TRUE;
 
 			return ::CreatePipe(&m_PipeHandles[0], &m_PipeHandles[1], &security, 0);

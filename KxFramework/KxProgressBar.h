@@ -136,7 +136,7 @@ class KX_API KxProgressBar: public wxGauge, public KxIProgressBar
 class KX_API KxProgressBarWrapper: public KxIProgressBar
 {
 	private:
-		KxProgressBar* m_ProgressBar = NULL;
+		KxProgressBar* m_ProgressBar = nullptr;
 
 	protected:
 		KxProgressBar* GetProgressBar() const
@@ -186,7 +186,7 @@ class KX_API KxProgressBarWrapper: public KxIProgressBar
 		}
 
 	public:
-		KxProgressBarWrapper(KxProgressBar* progressBar = NULL)
+		KxProgressBarWrapper(KxProgressBar* progressBar = nullptr)
 			:m_ProgressBar(progressBar)
 		{
 		}

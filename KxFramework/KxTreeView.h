@@ -30,7 +30,7 @@ class KX_API KxTreeView;
 class KX_API KxTreeViewItem
 {
 	private:
-		KxTreeView* m_Control = NULL;
+		KxTreeView* m_Control = nullptr;
 		wxTreeItemId m_Item;
 
 	private:
@@ -54,9 +54,9 @@ class KX_API KxTreeViewItem
 			return *m_Control;
 		}
 
-		KxTreeViewItem Add(const wxString& label, wxTreeItemData* data = NULL);
-		KxTreeViewItem Insert(const wxString& label, KxTreeViewItem& previous, wxTreeItemData* data = NULL);
-		KxTreeViewItem Insert(const wxString& label, size_t index, wxTreeItemData* data = NULL);
+		KxTreeViewItem Add(const wxString& label, wxTreeItemData* data = nullptr);
+		KxTreeViewItem Insert(const wxString& label, KxTreeViewItem& previous, wxTreeItemData* data = nullptr);
+		KxTreeViewItem Insert(const wxString& label, size_t index, wxTreeItemData* data = nullptr);
 
 		KxTreeViewItem GetFirstChild(wxTreeItemIdValue& cookie) const;
 		KxTreeViewItem GetNextChild(wxTreeItemIdValue& cookie) const;
@@ -193,7 +193,7 @@ class KX_API KxTreeView: public wxTreeCtrl
 		}
 		void SetCheckBoxesEnabled(bool enable)
 		{
-			wxTreeCtrl::SetStateImageList(enable ? &ms_CheckBoxIcons : NULL);
+			wxTreeCtrl::SetStateImageList(enable ? &ms_CheckBoxIcons : nullptr);
 			KxUtility::ModFlagRef(m_Options, KxTV_CHK_ENABLED, enable);
 			SetStateImagesChangeEnabled(enable);
 		}
@@ -258,7 +258,7 @@ class KX_API KxTreeView: public wxTreeCtrl
 			wxTreeCtrl::SetStateImageList(pImageList);
 		}
 
-		KxTreeViewItem InsertRoot(const wxString& label, wxTreeItemData* data = NULL);
+		KxTreeViewItem InsertRoot(const wxString& label, wxTreeItemData* data = nullptr);
 		KxTreeViewItem GetRoot() const;
 		KxTreeViewItem GetFirstVisible() const;
 		KxTreeViewItem GetFocused() const;

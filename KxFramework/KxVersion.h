@@ -11,7 +11,7 @@ namespace KxVersionInternal
 
 		public:
 			VersionPart() {}
-			VersionPart(int n, wxChar* s = NULL, size_t count = 0)
+			VersionPart(int n, wxChar* s = nullptr, size_t count = 0)
 				:m_Numeric(n)
 			{
 				if (s)
@@ -134,7 +134,7 @@ class KX_API KxVersion
 		const wchar_t* GetStringPart(size_t i) const
 		{
 			const auto& v = GetDefault();
-			return v[i].IsOk() && v[i].IsStringOK() ? v[i].m_String : NULL;
+			return v[i].IsOk() && v[i].IsStringOK() ? v[i].m_String : nullptr;
 		}
 		const KxVersionInternal::StringPartAdapter GetStringPartView(size_t i) const
 		{

@@ -13,8 +13,8 @@ class KX_API KxHTMLWindow: public wxHtmlWindow
 		wxString m_Value;
 
 	private:
-		void CreateContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link = NULL);
-		wxWindowID ExecuteContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link = NULL);
+		void CreateContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link = nullptr);
+		wxWindowID ExecuteContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link = nullptr);
 		
 		void OnContextMenu(wxContextMenuEvent& event);
 		void OnKey(wxKeyEvent& event);

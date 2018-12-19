@@ -9,7 +9,7 @@ class KX_API KxDataViewColorEditor: public KxDataViewEditor
 		static bool GetValueAsColor(const wxAny& value, KxColor& color);
 
 	private:
-		wxColourDialog* m_Dialog = NULL;
+		wxColourDialog* m_Dialog = nullptr;
 		KxColor m_Color;
 
 	protected:

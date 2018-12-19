@@ -45,7 +45,7 @@ bool KxSplashWindow::DoUpdateSplash()
 
 	POINT pos = {0, 0};
 	SIZE size = {bitmap.GetWidth(), bitmap.GetHeight()};
-	return ::UpdateLayeredWindow(GetHandle(), NULL, NULL, &size, dc.GetHDC(), &pos, 0, &blendFunction, ULW_ALPHA);
+	return ::UpdateLayeredWindow(GetHandle(), nullptr, nullptr, &size, dc.GetHDC(), &pos, 0, &blendFunction, ULW_ALPHA);
 }
 void KxSplashWindow::DoCenterWindow()
 {

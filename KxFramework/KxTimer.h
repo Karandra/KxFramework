@@ -47,8 +47,8 @@ template<class T> class KX_API KxTimerMethod: public KxTimer
 		using FunctionSignature = void(T::*)();
 
 	private:
-		FunctionSignature m_Function = NULL;
-		T* m_Object = NULL;
+		FunctionSignature m_Function = nullptr;
+		T* m_Object = nullptr;
 
 	protected:
 		virtual void Notify() override

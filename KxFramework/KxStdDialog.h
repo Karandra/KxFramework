@@ -63,7 +63,7 @@ class KX_API KxStdDialogControl
 			{
 				return m_Data.Control;
 			}
-			return NULL;
+			return nullptr;
 		}
 		template<class T> T* As() const
 		{
@@ -71,7 +71,7 @@ class KX_API KxStdDialogControl
 			{
 				return static_cast<T*>(m_Data.Control);
 			}
-			return NULL;
+			return nullptr;
 		}
 
 		operator wxWindowID();
@@ -87,7 +87,7 @@ class KX_API KxIStdDialog
 		static const int DefaultButtons = KxBTN_OK|KxBTN_CANCEL;
 
 	protected:
-		bool ShowNativeWindow(wxDialog* window, bool show); // Will show/hide window if GetHandle() != NULL and call ShowModal() otherwise
+		bool ShowNativeWindow(wxDialog* window, bool show); // Will show/hide window if GetHandle() != nullptr and call ShowModal() otherwise
 		int TranslateIconIDToWx(KxIconType id) const;
 		KxIconType TranslateIconIDFromWx(int id) const;
 
@@ -133,28 +133,28 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 
 	protected:
 		wxOrientation m_DialogResizeSide = wxBOTH;
-		KxLabel* m_CaptionLabel = NULL;
-		KxLabel* m_ViewLabel = NULL;
-		KxPanel* m_ContentPanel = NULL;
-		wxStaticBitmap* m_IconView = NULL;
+		KxLabel* m_CaptionLabel = nullptr;
+		KxLabel* m_ViewLabel = nullptr;
+		KxPanel* m_ContentPanel = nullptr;
+		wxStaticBitmap* m_IconView = nullptr;
 		wxBitmap m_MainIcon = wxNullBitmap;
 		KxIconType m_MainIconID = DefaultIconID;
 		std::vector<wxWindow*> m_UserControls;
 		bool m_IsAutoSizeEnabled = true;
 
 	private:
-		KxPanel* m_ContentPanelLine = NULL;
-		wxSizer* m_DialogSizer = NULL;
-		wxSizer* m_ContentSizerBase = NULL;
-		wxSizer* m_ContentSizer = NULL;
-		wxSizer* m_IconSizer = NULL;
-		KxStdDialogButtonSizer* m_ButtonsSizer = NULL;
+		KxPanel* m_ContentPanelLine = nullptr;
+		wxSizer* m_DialogSizer = nullptr;
+		wxSizer* m_ContentSizerBase = nullptr;
+		wxSizer* m_ContentSizer = nullptr;
+		wxSizer* m_IconSizer = nullptr;
+		KxStdDialogButtonSizer* m_ButtonsSizer = nullptr;
 		bool m_IsGlassFrameEnabled = false;
 		wxNativeWindow m_GripperWindow;
 		wxSize m_GripperWindowSize;
 
-		wxSizerItem* m_ViewLabelSpacerSI = NULL;
-		wxSizerItem* m_ViewLabelSI = NULL;
+		wxSizerItem* m_ViewLabelSpacerSI = nullptr;
+		wxSizerItem* m_ViewLabelSI = nullptr;
 
 		StdButtonsIDs m_CloseIDs = ms_DefaultCloseIDs;
 		StdButtonsIDs m_EnterIDs = ms_DefaultEnterIDs;
@@ -172,8 +172,8 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 		{
 			return IsEscapeAllowed();
 		}
-		virtual bool IsEscapeAllowed(wxWindowID* idOut = NULL) const;
-		virtual bool IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut = NULL) const;
+		virtual bool IsEscapeAllowed(wxWindowID* idOut = nullptr) const;
+		virtual bool IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut = nullptr) const;
 		void SetResizingBehavior();
 		static wxWindowID TranslateButtonConstantsToIDs(int btnValue);
 		virtual wxRect GetGlassRect() const
@@ -240,7 +240,7 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 		void EnableGlassFrame();
 		HWND GetGripperWindow()
 		{
-			return FindWindowExW(this->GetHandle(), NULL, L"ScrollBar", L"");
+			return FindWindowExW(this->GetHandle(), nullptr, L"ScrollBar", L"");
 		}
 		void OnDrawFrameBorder(wxPaintEvent& event);
 

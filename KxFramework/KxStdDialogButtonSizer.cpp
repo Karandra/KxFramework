@@ -43,7 +43,7 @@ KxButton* KxStdDialogButtonSizer::CreateButton(KxDialog* dialog, int buttons, in
 		}
 		return button;
 	}
-	return NULL;
+	return nullptr;
 }
 bool KxStdDialogButtonSizer::AddButton(wxAnyButton* button)
 {

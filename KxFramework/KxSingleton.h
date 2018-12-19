@@ -31,12 +31,12 @@ template<class T> class KxSingleton
 template<class T> class KxSingletonPtr
 {
 	private:
-		static inline T* ms_Instance = NULL;
+		static inline T* ms_Instance = nullptr;
 
 	public:
 		static bool HasInstance()
 		{
-			return ms_Instance != NULL;
+			return ms_Instance != nullptr;
 		}
 		static T* GetInstance()
 		{
@@ -52,7 +52,7 @@ template<class T> class KxSingletonPtr
 	public:
 		KxSingletonPtr()
 		{
-			if (ms_Instance == NULL)
+			if (ms_Instance == nullptr)
 			{
 				ms_Instance = static_cast<T*>(this);
 			}
@@ -63,6 +63,6 @@ template<class T> class KxSingletonPtr
 		}
 		virtual ~KxSingletonPtr()
 		{
-			ms_Instance = NULL;
+			ms_Instance = nullptr;
 		}
 };

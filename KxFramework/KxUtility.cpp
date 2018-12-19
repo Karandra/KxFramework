@@ -8,12 +8,12 @@ const wxRegion KxNullWxRegion = wxRegion();
 const wxRect KxNullWxRect = wxRect();
 const wxString KxNullWxString = wxString();
 
-wxString wxGetStockLabelLocalized(wxWindowID id, long flags, bool* isSuccess = NULL);
+wxString wxGetStockLabelLocalized(wxWindowID id, long flags, bool* isSuccess = nullptr);
 
 /* Auxiliary library */
 HMODULE KxUtility::GetAppHandle()
 {
-	return GetModuleHandleW(NULL);
+	return GetModuleHandleW(nullptr);
 }
 const wxString KxUtility::LoadResourceAux(HRSRC resourceHandle, HMODULE moduleHandle)
 {
@@ -80,7 +80,7 @@ bool KxUtility::StringToBool(const wxString& value, bool* isUnknown)
 	return false;
 }
 
-static wxString wxGetStockLabelAux(wxString&& id, long flags, const wxChar* defaultValue = NULL, bool* isSuccessOut = NULL)
+static wxString wxGetStockLabelAux(wxString&& id, long flags, const wxChar* defaultValue = nullptr, bool* isSuccessOut = nullptr)
 {
 	if (flags & wxSTOCK_WITH_MNEMONIC)
 	{

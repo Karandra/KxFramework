@@ -17,7 +17,7 @@ wxString KxJSON::GetLibraryName()
 KxJSONObject KxJSON::Load(const wxString& json)
 {
 	auto utf8 = json.ToUTF8();
-	return KxJSONObject::parse(std::string(utf8.data(), utf8.length()), NULL, false);
+	return KxJSONObject::parse(std::string(utf8.data(), utf8.length()), nullptr, false);
 }
 KxJSONObject KxJSON::Load(wxInputStream& stream)
 {
@@ -27,7 +27,7 @@ KxJSONObject KxJSON::Load(wxInputStream& stream)
 		std::string buffer(size + 1, '\000');
 		if(stream.ReadAll(buffer.data(), buffer.size()))
 		{
-			return KxJSONObject::parse(buffer, NULL, false);
+			return KxJSONObject::parse(buffer, nullptr, false);
 		}
 	}
 	return KxJSONObject();

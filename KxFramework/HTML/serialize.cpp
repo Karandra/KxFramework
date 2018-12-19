@@ -84,7 +84,7 @@ static std::string substitute_xml_entities_into_attributes(char quote, const std
 static std::string handle_unknown_tag(GumboStringPiece *text)
 {
   std::string tagname = "";
-  if (text->data == NULL) {
+  if (text->data == nullptr) {
     return tagname;
   }
   // work with copy GumboStringPiece to prevent asserts 
@@ -119,7 +119,7 @@ static std::string build_doctype(GumboNode *node)
     results.append("<!DOCTYPE ");
     results.append(node->v.document.name);
     std::string pi(node->v.document.public_identifier);
-    if ((node->v.document.public_identifier != NULL) && !pi.empty() ) {
+    if ((node->v.document.public_identifier != nullptr) && !pi.empty() ) {
         results.append(" PUBLIC \"");
         results.append(node->v.document.public_identifier);
         results.append("\" \"");

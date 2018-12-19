@@ -6,9 +6,9 @@
 class KX_API KxDualInputDialog: public KxStdDialog
 {
 	private:
-		KxPanel* m_View = NULL;
-		KxTextBox* m_Input1 = NULL;
-		KxTextBox* m_Input2 = NULL;
+		KxPanel* m_View = nullptr;
+		KxTextBox* m_Input1 = nullptr;
+		KxTextBox* m_Input2 = nullptr;
 
 	private:
 		virtual wxOrientation GetWindowResizeSide() const

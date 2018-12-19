@@ -27,7 +27,7 @@ class KX_API KxDataViewEditor: public KxDataViewColumnPart
 	protected:
 		wxWindow* GetEditorControl() const
 		{
-			return m_EditorControl ? m_EditorControl.get() : NULL;
+			return m_EditorControl ? m_EditorControl.get() : nullptr;
 		}
 		virtual KxDataViewEditorControlHandler* CreateControlHandler();
 
@@ -63,7 +63,7 @@ class KX_API KxDataViewEditor: public KxDataViewColumnPart
 
 		bool HasValidator() const
 		{
-			return m_Validator != NULL;
+			return m_Validator != nullptr;
 		}
 		const wxValidator& GetValidator() const
 		{
@@ -82,8 +82,8 @@ class KX_API KxDataViewEditor: public KxDataViewColumnPart
 class KX_API KxDataViewEditorControlHandler: public wxEvtHandler
 {
 	private:
-		KxDataViewEditor* m_Editor = NULL;
-		wxWindow* m_EditorCtrl = NULL;
+		KxDataViewEditor* m_Editor = nullptr;
+		wxWindow* m_EditorCtrl = nullptr;
 
 		bool m_IsFinished = false;
 		bool m_SetFocusOnIdle = false;

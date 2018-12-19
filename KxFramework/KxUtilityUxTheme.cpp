@@ -14,7 +14,7 @@ bool KxUtility::DrawThemeBackground(const wxWindow* window, const wxString& clas
 	if (KxUxTheme::Handle handle(window, className); handle)
 	{
 		auto rectWin = CopyRectToRECT(rect);
-		return ::DrawThemeBackground(handle, dc.GetHDC(), iPartId, iStateId, &rectWin, NULL) == S_OK;
+		return ::DrawThemeBackground(handle, dc.GetHDC(), iPartId, iStateId, &rectWin, nullptr) == S_OK;
 	}
 	return false;
 }
@@ -92,7 +92,7 @@ bool KxUtility::DrawLabel(const wxWindow* window, wxDC& dc, const wxString& labe
 	dc.GetAsBitmap().SaveFile("zzz.png", wxBITMAP_TYPE_PNG);
 	hMemDC.SelectObject(wxNullBitmap);
 
-	if (boundingRect != NULL)
+	if (boundingRect != nullptr)
 	{
 		*boundingRect = CopyRECTToRect(tRectWin);
 	}

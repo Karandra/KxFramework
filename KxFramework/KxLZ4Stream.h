@@ -38,7 +38,7 @@ class KX_API KxLZ4BaseStream: public KxStreamBase
 
 	private:
 		uint8_t m_Buffer[2][ms_BlockSize] = {{0}, {0}};
-		void* m_LZ4Stream = NULL;
+		void* m_LZ4Stream = nullptr;
 
 	protected:
 		bool HasStream() const

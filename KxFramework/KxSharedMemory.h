@@ -28,13 +28,13 @@ namespace KxSharedMemoryNS
 			using Protection = KxSharedMemoryNS::Protection;
 
 		public:
-			static bool AllocateRegion(HANDLE& handle, void*& buffer, size_t size, uint32_t protection = Protection::RW, const wchar_t* name = NULL);
+			static bool AllocateRegion(HANDLE& handle, void*& buffer, size_t size, uint32_t protection = Protection::RW, const wchar_t* name = nullptr);
 			static bool OpenRegion(HANDLE& handle, void*& buffer, const wchar_t* name, size_t size, uint32_t protection = Protection::RW);
 			static void FreeRegion(HANDLE handle, void* buffer);
 
 		private:
 			HANDLE m_Handle = INVALID_HANDLE_VALUE;
-			void* m_Buffer = NULL;
+			void* m_Buffer = nullptr;
 			size_t m_Size = 0;
 			Protection m_Protection = Protection::None;
 
@@ -42,7 +42,7 @@ namespace KxSharedMemoryNS
 			void MakeNull()
 			{
 				m_Handle = INVALID_HANDLE_VALUE;
-				m_Buffer = NULL;
+				m_Buffer = nullptr;
 				m_Size = 0;
 				m_Protection = Protection::None;
 			}
@@ -87,7 +87,7 @@ namespace KxSharedMemoryNS
 			bool Allocate(size_t size, uint32_t protection, const wxString& name = wxEmptyString)
 			{
 				FreeIfNeeded();
-				if (AllocateRegion(m_Handle, m_Buffer, size, protection, name.IsEmpty() ? NULL : name.wc_str()))
+				if (AllocateRegion(m_Handle, m_Buffer, size, protection, name.IsEmpty() ? nullptr : name.wc_str()))
 				{
 					m_Size = size;
 					m_Protection = static_cast<Protection>(protection);
@@ -117,7 +117,7 @@ namespace KxSharedMemoryNS
 		public:
 			bool IsOK() const
 			{
-				return m_Handle != INVALID_HANDLE_VALUE && m_Buffer != NULL && m_Size != 0;
+				return m_Handle != INVALID_HANDLE_VALUE && m_Buffer != nullptr && m_Size != 0;
 			}
 
 			uint32_t GetProtection() const
@@ -334,7 +334,7 @@ namespace KxSharedMemoryNS
 			using BufferType = TypedBuffer<T>;
 
 		private:
-			ObjectType* m_Object = NULL;
+			ObjectType* m_Object = nullptr;
 
 		public:
 			TypedBufferRef()
@@ -348,11 +348,11 @@ namespace KxSharedMemoryNS
 		public:
 			operator bool() const
 			{
-				return m_Object != NULL;
+				return m_Object != nullptr;
 			}
 			bool operator!() const
 			{
-				return m_Object == NULL;
+				return m_Object == nullptr;
 			}
 
 			ObjectType* operator->() const
@@ -391,7 +391,7 @@ namespace KxSharedMemoryNS
 			{
 				public:
 					HANDLE m_Handle = INVALID_HANDLE_VALUE;
-					void* m_Buffer = NULL;
+					void* m_Buffer = nullptr;
 					size_t m_Size = 0;
 
 				public:
@@ -419,7 +419,7 @@ namespace KxSharedMemoryNS
 				if (size != 0)
 				{
 					AllocationInfo allocInfo(size);
-					if (Buffer::AllocateRegion(allocInfo.m_Handle, allocInfo.m_Buffer, size, Protection::RW, NULL))
+					if (Buffer::AllocateRegion(allocInfo.m_Handle, allocInfo.m_Buffer, size, Protection::RW, nullptr))
 					{
 						// Write allocation info at the begging of allocated space
 						*reinterpret_cast<AllocationInfo*>(allocInfo.m_Buffer) = allocInfo;

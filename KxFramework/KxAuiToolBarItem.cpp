@@ -14,7 +14,7 @@ KxAuiToolBarItem::~KxAuiToolBarItem()
 
 bool KxAuiToolBarItem::IsOK() const
 {
-	return m_Control != NULL && m_Item != NULL;
+	return m_Control != nullptr && m_Item != nullptr;
 }
 void KxAuiToolBarItem::Refresh()
 {

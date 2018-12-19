@@ -11,7 +11,7 @@ KxDataViewEditorControlHandler* KxDataViewComboBoxEditor::CreateControlHandler()
 wxWindow* KxDataViewComboBoxEditor::CreateEditorControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value)
 {
 	int comboBoxStyles = wxCB_DROPDOWN|wxTE_PROCESS_ENTER|(IsEditable() ? 0 : wxCB_READONLY);
-	wxComboBox* editor = NULL;
+	wxComboBox* editor = nullptr;
 	if (m_UseBitmap)
 	{
 		KxBitmapComboBox* bitmapEditor = new KxBitmapComboBox(parent, wxID_NONE, wxEmptyString, cellRect.GetPosition(), cellRect.GetSize(), comboBoxStyles, GetValidator());

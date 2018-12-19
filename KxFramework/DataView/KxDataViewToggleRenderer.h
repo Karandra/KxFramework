@@ -119,7 +119,7 @@ class KX_API KxDataViewToggleRenderer: public KxDataViewRenderer, public KxDataV
 		static bool GetValueAsToggleState(const wxAny& value, ToggleState& state);
 		static wxSize GetToggleCellSizeNoMargins(wxWindow* window);
 		static wxSize GetToggleCellSize(wxWindow* window);
-		static bool DoActivateToggle(KxDataViewToggleRendererBase* rederer, wxWindow* window, const KxDataViewItem& item, const wxRect& cellRect, ToggleState& state, const wxMouseEvent* mouseEvent = NULL);
+		static bool DoActivateToggle(KxDataViewToggleRendererBase* rederer, wxWindow* window, const KxDataViewItem& item, const wxRect& cellRect, ToggleState& state, const wxMouseEvent* mouseEvent = nullptr);
 		static int DrawToggle(wxDC& dc, wxWindow* window, const wxRect& cellRect, KxDataViewCellState cellState, const KxDataViewToggleValue& value, bool cellEnabled);
 
 	private:
@@ -130,7 +130,7 @@ class KX_API KxDataViewToggleRenderer: public KxDataViewRenderer, public KxDataV
 		{
 			return true;
 		}
-		virtual bool OnActivateCell(const KxDataViewItem& item, const wxRect& cellRect, const wxMouseEvent* mouseEvent = NULL);
+		virtual bool OnActivateCell(const KxDataViewItem& item, const wxRect& cellRect, const wxMouseEvent* mouseEvent = nullptr);
 		
 		virtual bool IsEnabled() const override
 		{

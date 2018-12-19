@@ -38,10 +38,10 @@ class KX_API KxCOMInit
 template<class T> class KxCOMPtr
 {
 	private:
-		T* m_Ptr = NULL;
+		T* m_Ptr = nullptr;
 
 	public:
-		KxCOMPtr(T* ptr = NULL)
+		KxCOMPtr(T* ptr = nullptr)
 			:m_Ptr(ptr)
 		{
 			static_assert(std::is_base_of<IUnknown, T>::value, "class T is not derived from IUnknown");
@@ -51,12 +51,12 @@ template<class T> class KxCOMPtr
 			if (m_Ptr)
 			{
 				m_Ptr->Release();
-				m_Ptr = NULL;
+				m_Ptr = nullptr;
 			}
 		}
 
 	public:
-		void Reset(T* newPtr = NULL)
+		void Reset(T* newPtr = nullptr)
 		{
 			if (m_Ptr)
 			{
@@ -67,7 +67,7 @@ template<class T> class KxCOMPtr
 		T* Detach()
 		{
 			T* ptr = m_Ptr;
-			m_Ptr = NULL;
+			m_Ptr = nullptr;
 			return ptr;
 		}
 
@@ -91,11 +91,11 @@ template<class T> class KxCOMPtr
 
 		operator bool() const
 		{
-			return m_Ptr != NULL;
+			return m_Ptr != nullptr;
 		}
 		bool operator!() const
 		{
-			return m_Ptr == NULL;
+			return m_Ptr == nullptr;
 		}
 
 		T* operator->() const

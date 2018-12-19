@@ -197,7 +197,7 @@ wxString KxShell::GetFolder(KxShellFolderID id, bool useDefault, bool create)
 
 		if (isEnvUsed)
 		{
-			DWORD size = ExpandEnvironmentStringsW(envVariable.wc_str(), NULL, NULL);
+			DWORD size = ExpandEnvironmentStringsW(envVariable.wc_str(), nullptr, 0);
 			if (ExpandEnvironmentStringsW(envVariable.wc_str(), wxStringBuffer(out, size), size) == 0)
 			{
 				out = wxEmptyString;
@@ -235,8 +235,8 @@ wxString KxShell::GetFolder(KxShellFolderID id, bool useDefault, bool create)
 	{
 		if (ms_KnownFoldersTable.count(id))
 		{
-			PWSTR sPathOut = NULL;
-			::SHGetKnownFolderPath(ms_KnownFoldersTable.at(id).first, flags, NULL, &sPathOut);
+			PWSTR sPathOut = nullptr;
+			::SHGetKnownFolderPath(ms_KnownFoldersTable.at(id).first, flags, nullptr, &sPathOut);
 			if (sPathOut)
 			{
 				out = sPathOut;

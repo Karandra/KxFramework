@@ -76,7 +76,7 @@ using KxAuiDefaultTabArtBase = wxAuiDefaultTabArt;
 class KX_API KxAuiDefaultTabArt: public KxAuiDefaultTabArtBase
 {
 	private:
-		const KxAuiNotebook* m_Notebook = NULL;
+		const KxAuiNotebook* m_Notebook = nullptr;
 
 	public:
 		KxAuiDefaultTabArt(KxAuiNotebook* object);
@@ -105,7 +105,7 @@ using KxAuiDefaultDockArtBase = wxAuiDefaultDockArt;
 class KX_API KxAuiNotebookDockArtProvider: public KxAuiDefaultDockArtBase
 {
 	private:
-		const KxAuiNotebook* m_Notebook = NULL;
+		const KxAuiNotebook* m_Notebook = nullptr;
 
 	public:
 		KxAuiNotebookDockArtProvider(KxAuiNotebook* object);

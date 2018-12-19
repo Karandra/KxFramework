@@ -7,8 +7,8 @@ class KX_API KxCURLReplyBase;
 class KX_API KxCURLEvent: public KxFileOperationEvent
 {
 	private:
-		KxCURLSession* m_Session = NULL;
-		KxCURLReplyBase* m_Reply = NULL;
+		KxCURLSession* m_Session = nullptr;
+		KxCURLReplyBase* m_Reply = nullptr;
 
 	public:
 		KxCURLEvent() {}
@@ -19,7 +19,7 @@ class KX_API KxCURLEvent: public KxFileOperationEvent
 	public:
 		bool IsOK() const
 		{
-			return m_Session != NULL && m_Reply != NULL;
+			return m_Session != nullptr && m_Reply != nullptr;
 		}
 
 		KxCURLSession& GetSession() const

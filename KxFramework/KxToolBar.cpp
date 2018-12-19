@@ -20,7 +20,7 @@ void KxToolBar::EventHandler(wxCommandEvent& event)
 	wxToolBarToolBase* tool = FindById(event.GetId());
 	if (tool)
 	{
-		KxMenu* menu = NULL;
+		KxMenu* menu = nullptr;
 		if (event.GetEventType() == wxEVT_TOOL)
 		{
 			event.SetEventType(KxEVT_TOOLBAR);
@@ -110,7 +110,7 @@ KxToolBar::~KxToolBar()
 		wxToolBarToolBase* tool = const_cast<wxToolBarToolBase*>(GetToolByPos(i));
 		if (tool->GetKind() == wxITEM_DROPDOWN)
 		{
-			tool->SetDropdownMenu(NULL);
+			tool->SetDropdownMenu(nullptr);
 		}
 	}
 }

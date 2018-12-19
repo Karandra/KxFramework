@@ -63,7 +63,7 @@ const wxObject* KxImageSet::Get(const wxString& id, ImageType* type) const
 	}
 
 	KxUtility::SetIfNotNull(type, TYPE_INVALID);
-	return NULL;
+	return nullptr;
 }
 void KxImageSet::Remove(const wxString& id)
 {

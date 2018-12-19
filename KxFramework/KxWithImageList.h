@@ -17,7 +17,7 @@ class KX_API KxWithImageList
 		};
 
 	private:
-		KxImageList* m_ImageList = NULL;
+		KxImageList* m_ImageList = nullptr;
 		bool m_IsOwned = false;
 
 	private:
@@ -30,7 +30,7 @@ class KX_API KxWithImageList
 	public:
 		bool HasImageList() const
 		{
-			return m_ImageList != NULL;
+			return m_ImageList != nullptr;
 		}
 		bool OwnsImageList() const
 		{
@@ -71,7 +71,7 @@ template<class BaseT> class KxWithImageListWrapper: public BaseT
 
 		bool IsKxList(const wxImageList* imageList) const
 		{
-			return dynamic_cast<const KxImageList*>(imageList) != NULL;
+			return dynamic_cast<const KxImageList*>(imageList) != nullptr;
 		}
 
 		wxIcon GetImage(int index) const = delete;
@@ -79,7 +79,7 @@ template<class BaseT> class KxWithImageListWrapper: public BaseT
 	public:
 		bool HasImageList() const
 		{
-			return GetImageList() != NULL;
+			return GetImageList() != nullptr;
 		}
 		bool OwnsImageList() const
 		{
@@ -97,11 +97,11 @@ template<class BaseT> class KxWithImageListWrapper: public BaseT
 
 		KxImageList* GetImageList()
 		{
-			return m_IsKxList ? static_cast<KxImageList*>(GetWxImageList()) : NULL;
+			return m_IsKxList ? static_cast<KxImageList*>(GetWxImageList()) : nullptr;
 		}
 		const KxImageList* GetImageList() const
 		{
-			return m_IsKxList ? static_cast<const KxImageList*>(GetWxImageList()) : NULL;
+			return m_IsKxList ? static_cast<const KxImageList*>(GetWxImageList()) : nullptr;
 		}
 
 		void SetImageList(const KxImageList* imageList)

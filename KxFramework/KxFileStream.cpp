@@ -68,7 +68,7 @@ namespace
 	{
 		wxString out;
 		const DWORD flags = VOLUME_NAME_DOS|FILE_NAME_NORMALIZED;
-		const DWORD length = ::GetFinalPathNameByHandleW(fileHandle, NULL, 0, flags);
+		const DWORD length = ::GetFinalPathNameByHandleW(fileHandle, nullptr, 0, flags);
 		if (length != 0)
 		{
 			::GetFinalPathNameByHandleW(fileHandle, wxStringBuffer(out, length), length, flags);
@@ -190,7 +190,7 @@ size_t KxFileStream::OnSysRead(void* buffer, size_t size)
 	m_LastRead = 0;
 	DWORD lastRead = 0;
 
-	if (::ReadFile(m_Handle, buffer, size, &lastRead, NULL))
+	if (::ReadFile(m_Handle, buffer, size, &lastRead, nullptr))
 	{
 		SetLastStreamError(ERROR_SUCCESS, false);
 	}
@@ -208,7 +208,7 @@ size_t KxFileStream::OnSysWrite(const void* buffer, size_t size)
 	m_LastWrite = 0;
 	DWORD lastWrite = 0;
 
-	if (::WriteFile(m_Handle, buffer, size, &lastWrite, NULL))
+	if (::WriteFile(m_Handle, buffer, size, &lastWrite, nullptr))
 	{
 		SetLastStreamError(ERROR_SUCCESS, true);
 	}
@@ -224,7 +224,7 @@ size_t KxFileStream::OnSysWrite(const void* buffer, size_t size)
 
 bool KxFileStream::IsOpened() const
 {
-	return m_Handle != INVALID_HANDLE_VALUE && m_Handle != NULL;
+	return m_Handle != INVALID_HANDLE_VALUE && m_Handle != nullptr;
 }
 bool KxFileStream::DoClose()
 {
@@ -276,7 +276,7 @@ bool KxFileStream::Open(const wxString& filePath, int accessMode, Disposition di
 		m_ShareMode = (Share)shareMode;
 		m_Flags = (Flags)flags;
 		m_FilePath = filePath;
-		m_Handle = ::CreateFileW(m_FilePath.wc_str(), AccessModeToNative(m_AccessMode), ShareModeToNative(m_ShareMode), NULL, DispositionToNative(m_Disposition), FlagsToNative(flags), NULL);
+		m_Handle = ::CreateFileW(m_FilePath.wc_str(), AccessModeToNative(m_AccessMode), ShareModeToNative(m_ShareMode), nullptr, DispositionToNative(m_Disposition), FlagsToNative(flags), nullptr);
 
 		return IsOk();
 	}

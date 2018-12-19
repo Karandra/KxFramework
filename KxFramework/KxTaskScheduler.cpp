@@ -171,12 +171,12 @@ KxTaskScheduler::KxTaskScheduler(const wxString& folder,
 	{
 		// https://docs.microsoft.com/en-us/windows/desktop/TaskSchd/starting-an-executable-at-a-spcific-time
 		// Doesn't work, no idea why
-		//HRESULT res = ::CoInitializeSecurity(NULL, -1, NULL, NULL, RPC_C_AUTHN_LEVEL_PKT_PRIVACY, RPC_C_IMP_LEVEL_IMPERSONATE, NULL, 0, NULL);
+		//HRESULT res = ::CoInitializeSecurity(nullptr, -1, nullptr, nullptr, RPC_C_AUTHN_LEVEL_PKT_PRIVACY, RPC_C_IMP_LEVEL_IMPERSONATE, nullptr, 0, nullptr);
 		
 		HRESULT res S_OK;
 		if (SUCCEEDED(res))
 		{
-			res = ::CoCreateInstance(CLSID_TaskScheduler, NULL, CLSCTX_INPROC_SERVER, IID_ITaskService, m_TaskService.GetPVoid());
+			res = ::CoCreateInstance(CLSID_TaskScheduler, nullptr, CLSCTX_INPROC_SERVER, IID_ITaskService, m_TaskService.GetPVoid());
 			if (SUCCEEDED(res))
 			{
 				res = m_TaskService->Connect(Util::VariantFromString_Null(serverName),
@@ -202,11 +202,11 @@ KxTaskScheduler::~KxTaskScheduler()
 
 KxTaskSchedulerTask KxTaskScheduler::NewTask()
 {
-	ITaskDefinition* taskDef = NULL;
+	ITaskDefinition* taskDef = nullptr;
 	HRESULT res = m_TaskService->NewTask(0, &taskDef);
 	if (FAILED(res))
 	{
-		taskDef = NULL;
+		taskDef = nullptr;
 	}
 	return KxTaskSchedulerTask(taskDef);
 }

@@ -23,7 +23,7 @@ HWND KxShell::GetOwnerHWND(wxWindow* window)
 {
 	window = wxGetTopLevelParent(window);
 
-	HWND hWnd = NULL;
+	HWND hWnd = nullptr;
 	if (window)
 	{
 		hWnd = window->GetHandle();
@@ -76,7 +76,7 @@ bool KxShell::FileOperationEx(KxShellOperationFunc func, const wxString& from, c
 
 	// Fill the struct
 	SHFILEOPSTRUCTW operationInfo = {0};
-	operationInfo.hwnd = window ? window->GetHandle() : NULL;
+	operationInfo.hwnd = window ? window->GetHandle() : nullptr;
 	operationInfo.wFunc = func;
 	operationInfo.pFrom = (PCZZWSTR)fromZZ.GetData();
 	operationInfo.pTo = (PCZZWSTR)toZZ.GetData();
@@ -139,28 +139,28 @@ bool KxShell::PinShortcut(const wxString& shortcutPath, KxShellShortcutPinMode m
 		{
 			#pragma warning(suppress: 4311)
 			#pragma warning(suppress: 4302)
-			ret = (int)::ShellExecuteW(NULL, L"startpin", shortcutPath.wc_str(), NULL, NULL, SW_SHOWNORMAL);
+			ret = (int)::ShellExecuteW(nullptr, L"startpin", shortcutPath.wc_str(), nullptr, nullptr, SW_SHOWNORMAL);
 			break;
 		}
 		case KxSH_UNPIN_STARTMENU:
 		{
 			#pragma warning(suppress: 4311)
 			#pragma warning(suppress: 4302)
-			ret = (int)::ShellExecuteW(NULL, L"startunpin", shortcutPath.wc_str(), NULL, NULL, SW_SHOWNORMAL);
+			ret = (int)::ShellExecuteW(nullptr, L"startunpin", shortcutPath.wc_str(), nullptr, nullptr, SW_SHOWNORMAL);
 			break;
 		}
 		case KxSH_PIN_TASKBAR:
 		{
 			#pragma warning(suppress: 4311)
 			#pragma warning(suppress: 4302)
-			ret = (int)::ShellExecuteW(NULL, L"taskbarpin", shortcutPath.wc_str(), NULL, NULL, SW_SHOWNORMAL);
+			ret = (int)::ShellExecuteW(nullptr, L"taskbarpin", shortcutPath.wc_str(), nullptr, nullptr, SW_SHOWNORMAL);
 			break;
 		}
 		case KxSH_UNPIN_TASKBAR:
 		{
 			#pragma warning(suppress: 4311)
 			#pragma warning(suppress: 4302)
-			ret = (int)::ShellExecuteW(NULL, L"taskbarunpin", shortcutPath.wc_str(), NULL, NULL, SW_SHOWNORMAL);
+			ret = (int)::ShellExecuteW(nullptr, L"taskbarunpin", shortcutPath.wc_str(), nullptr, nullptr, SW_SHOWNORMAL);
 			break;
 		}
 	}
@@ -177,12 +177,12 @@ wxString KxShell::QueryAssocString(const wxString& string, KxShellAssocQuery inf
 
 	DWORD length = 0;
 	ASSOCF flags = ASSOCF_INIT_DEFAULTTOSTAR;
-	::AssocQueryStringW(flags, (ASSOCSTR)infoType, extWithDot.wc_str(), NULL, NULL, &length);
+	::AssocQueryStringW(flags, (ASSOCSTR)infoType, extWithDot.wc_str(), nullptr, nullptr, &length);
 
 	wxString out;
 	if (length != 0)
 	{
-		::AssocQueryStringW(flags, (ASSOCSTR)infoType, extWithDot.wc_str(), NULL, wxStringBuffer(out, length), &length);
+		::AssocQueryStringW(flags, (ASSOCSTR)infoType, extWithDot.wc_str(), nullptr, wxStringBuffer(out, length), &length);
 	}
 	return out;
 }
@@ -222,7 +222,7 @@ wxIcon KxShell::GetFileIcon(const wxString& path, bool smallIcon)
 {
 	SHFILEINFOW shellInfo = {0};
 	::SHGetFileInfoW(path.wc_str(), 0, &shellInfo, sizeof(shellInfo), SHGFI_ICON|(smallIcon ? SHGFI_SMALLICON : 0));
-	if (shellInfo.hIcon != NULL)
+	if (shellInfo.hIcon != nullptr)
 	{
 		wxIcon icon;
 		if (icon.CreateFromHICON(shellInfo.hIcon))
@@ -236,7 +236,7 @@ wxIcon KxShell::GetFileIcon(const KxFileItem& item, bool smallIcon)
 {
 	SHFILEINFOW shellInfo = {0};
 	::SHGetFileInfoW(item.GetName().wc_str(), item.GetAttributes(), &shellInfo, sizeof(shellInfo), SHGFI_USEFILEATTRIBUTES|SHGFI_ICON|(smallIcon ? SHGFI_SMALLICON : 0));
-	if (shellInfo.hIcon != NULL)
+	if (shellInfo.hIcon != nullptr)
 	{
 		wxIcon icon;
 		if (icon.CreateFromHICON(shellInfo.hIcon))
@@ -256,7 +256,7 @@ bool KxShell::Execute(wxWindow* window,
 					  bool hideUI
 )
 {
-	SHELLEXECUTEINFOW info = {NULL};
+	SHELLEXECUTEINFOW info = {0};
 	info.cbSize = sizeof(info);
 	info.fMask = SEE_MASK_DEFAULT|SEE_MASK_INVOKEIDLIST;
 	if (hideUI)
@@ -266,23 +266,23 @@ bool KxShell::Execute(wxWindow* window,
 	info.hwnd = GetOwnerHWND(window);
 	info.lpVerb = operation.wc_str();
 	info.lpFile = filePath.wc_str();
-	info.lpDirectory = workingFolder.IsEmpty() ? NULL : workingFolder.wc_str();
-	info.lpParameters = arguments.IsEmpty() ? NULL : arguments.wc_str();
+	info.lpDirectory = workingFolder.IsEmpty() ? nullptr : workingFolder.wc_str();
+	info.lpParameters = arguments.IsEmpty() ? nullptr : arguments.wc_str();
 	info.nShow = windowMode;
 
-	::CoInitializeEx(NULL, COINIT_APARTMENTTHREADED|COINIT_DISABLE_OLE1DDE);
+	::CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED|COINIT_DISABLE_OLE1DDE);
 	BOOL status = ::ShellExecuteExW(&info);
 	::CoUninitialize();
 	return status;
 }
 bool KxShell::OpenFolderAndSelectItem(const wxString& filePath)
 {
-	LPITEMIDLIST item = NULL;
+	LPITEMIDLIST item = nullptr;
 	SFGAOF attributes = 0;
-	if (SUCCEEDED(::SHParseDisplayName(filePath.wc_str(), NULL, &item, 0, &attributes)))
+	if (SUCCEEDED(::SHParseDisplayName(filePath.wc_str(), nullptr, &item, 0, &attributes)))
 	{
-		::CoInitialize(NULL);
-		HRESULT status = ::SHOpenFolderAndSelectItems(item, 0, NULL, 0);
+		::CoInitialize(nullptr);
+		HRESULT status = ::SHOpenFolderAndSelectItems(item, 0, nullptr, 0);
 		::CoTaskMemFree(item);
 		::CoUninitialize();
 

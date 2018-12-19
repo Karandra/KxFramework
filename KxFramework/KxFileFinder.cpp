@@ -9,7 +9,7 @@ namespace
 	HANDLE CallFindFirstFile(const wxString& query, WIN32_FIND_DATAW& fileInfo, bool isCaseSensitive)
 	{
 		const DWORD searchFlags = FIND_FIRST_EX_LARGE_FETCH|(isCaseSensitive ? FIND_FIRST_EX_CASE_SENSITIVE : 0);
-		return ::FindFirstFileExW(query.wc_str(), FindExInfoBasic, &fileInfo, FindExSearchNameMatch, NULL, searchFlags);
+		return ::FindFirstFileExW(query.wc_str(), FindExInfoBasic, &fileInfo, FindExSearchNameMatch, nullptr, searchFlags);
 	}
 	bool CallFindNextFile(HANDLE handle, WIN32_FIND_DATAW& fileInfo)
 	{
@@ -86,7 +86,7 @@ KxFileFinder::~KxFileFinder()
 
 bool KxFileFinder::IsOK() const
 {
-	return m_Handle != INVALID_HANDLE_VALUE && m_Handle != NULL;
+	return m_Handle != INVALID_HANDLE_VALUE && m_Handle != nullptr;
 }
 bool KxFileFinder::Run()
 {

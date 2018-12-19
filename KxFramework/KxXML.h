@@ -35,7 +35,7 @@ enum KxXMLInsertNodeMode
 class KxXMLPrinter: public tinyxml2::XMLPrinter
 {
 	public:
-		KxXMLPrinter(FILE* file = NULL, bool compact = false, int depth = 0)
+		KxXMLPrinter(FILE* file = nullptr, bool compact = false, int depth = 0)
 			:XMLPrinter(file, compact, depth)
 		{
 		}
@@ -59,8 +59,8 @@ class KX_API KxXMLAttribute
 		static const KxXMLAttribute NullAttribute;
 
 	private:
-		KxXMLNode* m_Node = NULL;
-		tinyxml2::XMLAttribute* m_Attribute = NULL;
+		KxXMLNode* m_Node = nullptr;
+		tinyxml2::XMLAttribute* m_Attribute = nullptr;
 
 	private:
 		tinyxml2::XMLAttribute* GetAttribute()
@@ -77,7 +77,7 @@ class KX_API KxXMLAttribute
 	public:
 		bool IsOK() const
 		{
-			return m_Node != NULL && m_Attribute != NULL;
+			return m_Node != nullptr && m_Attribute != nullptr;
 		}
 
 		const KxXMLNode* GetNode() const
@@ -136,8 +136,8 @@ class KX_API KxXMLNode: public KxXDocumentNode<KxXMLNode>
 		}
 
 	private:
-		tinyxml2::XMLNode* m_Node = NULL;
-		KxXMLDocument* m_Document = NULL;
+		tinyxml2::XMLNode* m_Node = nullptr;
+		KxXMLDocument* m_Document = nullptr;
 
 	protected:
 		wxString DoGetValue(const wxString& defaultValue = wxEmptyString) const override;

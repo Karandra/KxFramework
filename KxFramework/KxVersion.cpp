@@ -124,7 +124,7 @@ bool KxVersion::ParseDefault(const wxString& source)
 		size_t pos = 0;
 		while (pos != wxString::npos && m_Count < KxVersionInternal::DefaultVersionSize)
 		{
-			wchar_t* endPtr = NULL;
+			wchar_t* endPtr = nullptr;
 			size_t endIndex = (endPtr - source.wc_str()) / sizeof(wchar_t);
 
 			version[m_Count].m_Numeric = std::wcstol(source.wc_str() + pos + (pos == 0 ? 0 : 1), &endPtr, 10);

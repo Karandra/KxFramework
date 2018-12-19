@@ -6,13 +6,13 @@
 class KX_API KxDualProgressDialog: public KxStdDialog
 {
 	private:
-		KxPanel* m_View = NULL;
-		KxProgressBar* m_PB1 = NULL;
-		KxProgressBar* m_PB2 = NULL;
+		KxPanel* m_View = nullptr;
+		KxProgressBar* m_PB1 = nullptr;
+		KxProgressBar* m_PB2 = nullptr;
 
 	private:
 		virtual wxOrientation GetViewLabelSizerOrientation() const;
-		virtual bool IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut = NULL) const;
+		virtual bool IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut = nullptr) const;
 		
 		KxProgressBar* CreateProgressBar();
 

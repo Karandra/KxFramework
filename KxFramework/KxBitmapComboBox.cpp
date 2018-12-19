@@ -13,7 +13,7 @@ bool KxBitmapComboBox::Create(wxWindow* parent,
 							  const wxValidator& validator
 )
 {
-	if (wxBitmapComboBox::Create(parent, id, value, pos, size, 0, NULL, style, validator))
+	if (wxBitmapComboBox::Create(parent, id, value, pos, size, 0, nullptr, style, validator))
 	{
 		EnableSystemTheme();
 		return true;

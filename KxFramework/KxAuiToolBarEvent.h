@@ -6,7 +6,7 @@ class KX_API KxAuiToolBarItem;
 class KX_API KxAuiToolBarEvent: public wxAuiToolBarEvent
 {
 	private:
-		KxAuiToolBarItem* m_Item = NULL;
+		KxAuiToolBarItem* m_Item = nullptr;
 
 	public:
 		KxAuiToolBarEvent(const wxAuiToolBarEvent& other);

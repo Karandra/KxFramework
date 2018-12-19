@@ -68,7 +68,7 @@ wxAny KxRegistry::GetValueRet(KxRegistryHKey mainKey, const wxString& subKey, co
 	DWORD valueType = 0;
 	DWORD bufferSize = 0;
 	KxRegistryKey mainKeyhandle(mainKey, regNode, KEY_READ);
-	DWORD ret = RegGetValueW(mainKeyhandle, subKey.wc_str(), valueName.wc_str(), flags, &valueType, NULL, &bufferSize);
+	DWORD ret = RegGetValueW(mainKeyhandle, subKey.wc_str(), valueName.wc_str(), flags, &valueType, nullptr, &bufferSize);
 
 	wxAny retData;
 	if (ret == ERROR_SUCCESS && bufferSize != 0)
@@ -124,13 +124,13 @@ wxAny KxRegistry::GetValueRet(KxRegistryHKey mainKey, const wxString& subKey, co
 				{
 					DWORD readed = 0;
 					DWORD prevRead = 0;
-					LPCWSTR value = NULL;
+					LPCWSTR value = nullptr;
 
 					KxStringVector list;
 					while (true)
 					{
 						value = (LPCWSTR)data+readed;
-						if (value != NULL)
+						if (value != nullptr)
 						{
 							size_t valueLength = wcslen(value);
 							DWORD currentLength = valueLength * sizeof(WCHAR)-sizeof(WCHAR);
@@ -169,7 +169,7 @@ KxRegistryValueType KxRegistry::GetValueType(KxRegistryHKey mainKey, const wxStr
 {
 	DWORD valueType = 0;
 	KxRegistryKey mainKeyHandle(mainKey, regNode, KEY_READ);
-	DWORD ret = RegGetValueW(mainKeyHandle, subKey.wc_str(), valueName.wc_str(), RRF_RT_ANY|RRF_NOEXPAND, &valueType, NULL, NULL);
+	DWORD ret = RegGetValueW(mainKeyHandle, subKey.wc_str(), valueName.wc_str(), RRF_RT_ANY|RRF_NOEXPAND, &valueType, nullptr, nullptr);
 
 	if (ret == ERROR_SUCCESS)
 	{
@@ -247,7 +247,7 @@ bool KxRegistry::SetValue(KxRegistryHKey mainKey, const wxString& subKey, const 
 }
 bool KxRegistry::CreateKey(KxRegistryHKey mainKey, const wxString& subKey, KxRegistryNode regNode)
 {
-	return RegCreateKeyExW(KxRegistryKey(mainKey, regNode, KEY_WRITE), subKey.wc_str(), NULL, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, KxRegistryKey(), NULL) == ERROR_SUCCESS;
+	return RegCreateKeyExW(KxRegistryKey(mainKey, regNode, KEY_WRITE), subKey.wc_str(), 0, nullptr, REG_OPTION_NON_VOLATILE, KEY_WRITE, nullptr, KxRegistryKey(), nullptr) == ERROR_SUCCESS;
 }
 
 bool KxRegistry::RemoveKey(KxRegistryHKey mainKey, const wxString& subKey, bool recurse, KxRegistryNode regNode)
@@ -260,7 +260,7 @@ bool KxRegistry::RemoveKey(KxRegistryHKey mainKey, const wxString& subKey, bool 
 	}
 	else
 	{
-		ret = RegDeleteKeyExW(keyHandle, subKey.wc_str(), regNode, NULL);
+		ret = RegDeleteKeyExW(keyHandle, subKey.wc_str(), regNode, 0);
 	}
 	return ret == ERROR_SUCCESS;
 }
@@ -275,7 +275,7 @@ bool KxRegistry::IsKeyExist(KxRegistryHKey mainKey, const wxString& subKey, KxRe
 }
 bool KxRegistry::IsValueExist(KxRegistryHKey mainKey, const wxString& subKey, const wxString& valueName, KxRegistryNode regNode)
 {
-	return RegQueryValueExW(KxRegistryKey(mainKey, subKey, regNode, KEY_QUERY_VALUE), valueName.wc_str(), NULL, NULL, NULL, NULL) == ERROR_SUCCESS;
+	return RegQueryValueExW(KxRegistryKey(mainKey, subKey, regNode, KEY_QUERY_VALUE), valueName.wc_str(), nullptr, nullptr, nullptr, nullptr) == ERROR_SUCCESS;
 }
 
 KxStringVector KxRegistry::GetKeyNames(KxRegistryHKey mainKey, const wxString& subKey, KxRegistryNode regNode)
@@ -284,7 +284,7 @@ KxStringVector KxRegistry::GetKeyNames(KxRegistryHKey mainKey, const wxString& s
 	KxStringVector list;
 
 	DWORD keyCount = 0;
-	DWORD retQuery = RegQueryInfoKeyW(mainKeyHandle, NULL, NULL, NULL, &keyCount, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+	DWORD retQuery = RegQueryInfoKeyW(mainKeyHandle, nullptr, nullptr, nullptr, &keyCount, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
 	if (retQuery == ERROR_SUCCESS && keyCount != 0)
 	{
 		DWORD index = 0;
@@ -292,12 +292,12 @@ KxStringVector KxRegistry::GetKeyNames(KxRegistryHKey mainKey, const wxString& s
 		for (DWORD i = 0; i < keyCount; i++)
 		{
 			DWORD keyNameLength = 0;
-			retQuery = RegQueryInfoKeyW(mainKeyHandle, NULL, NULL, NULL, NULL, &keyNameLength, NULL, NULL, NULL, NULL, NULL, NULL);
+			retQuery = RegQueryInfoKeyW(mainKeyHandle, nullptr, nullptr, nullptr, nullptr, &keyNameLength, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
 			if (retQuery == ERROR_SUCCESS)
 			{
 				keyNameLength += sizeof(WCHAR);
 				wxString keyName;
-				RegEnumKeyExW(mainKeyHandle, index, wxStringBuffer(keyName, keyNameLength), &keyNameLength, NULL, NULL, NULL, NULL);
+				RegEnumKeyExW(mainKeyHandle, index, wxStringBuffer(keyName, keyNameLength), &keyNameLength, nullptr, nullptr, nullptr, nullptr);
 				if (keyName.IsEmpty() != true)
 				{
 					list.push_back(keyName);
@@ -314,7 +314,7 @@ KxStringVector KxRegistry::GetValueNames(KxRegistryHKey mainKey, const wxString&
 	KxStringVector list;
 
 	DWORD valuesCount = 0;
-	DWORD retQuery = RegQueryInfoKeyW(mainKeyHandle, NULL, NULL, NULL, &valuesCount, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+	DWORD retQuery = RegQueryInfoKeyW(mainKeyHandle, nullptr, nullptr, nullptr, &valuesCount, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
 	if (retQuery == ERROR_SUCCESS && valuesCount != 0)
 	{
 		DWORD index = 0;
@@ -322,12 +322,12 @@ KxStringVector KxRegistry::GetValueNames(KxRegistryHKey mainKey, const wxString&
 		for (DWORD i = 0; i < valuesCount; i++)
 		{
 			DWORD valueNameLength = 0;
-			retQuery = RegQueryInfoKeyW(mainKeyHandle, NULL, NULL, NULL, NULL, &valueNameLength, NULL, NULL, NULL, NULL, NULL, NULL);
+			retQuery = RegQueryInfoKeyW(mainKeyHandle, nullptr, nullptr, nullptr, nullptr, &valueNameLength, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
 			if (retQuery == ERROR_SUCCESS)
 			{
 				valueNameLength += sizeof(WCHAR);
 				wxString valueName;
-				RegEnumValueW(mainKeyHandle, index, wxStringBuffer(valueName, valueNameLength), &valueNameLength, NULL, NULL, NULL, NULL);
+				RegEnumValueW(mainKeyHandle, index, wxStringBuffer(valueName, valueNameLength), &valueNameLength, nullptr, nullptr, nullptr, nullptr);
 				if (valueName.IsEmpty() != true)
 				{
 					list.push_back(valueName);
@@ -354,9 +354,9 @@ void KxRegistryKey::OpenKey(KxRegistryHKey mainKey, const wxString& subKey, KxRe
 		HKEY_PERFORMANCE_NLSTEXT
 	};
 
-	if (mainKey >= 0 && mainKey < KxRegistryHKey::KxREG_HKEY_MAX && m_Handle == NULL)
+	if (mainKey >= 0 && mainKey < KxRegistryHKey::KxREG_HKEY_MAX && m_Handle == nullptr)
 	{
-		LPCWSTR subKeyString = subKey.IsEmpty() ? NULL : subKey.wc_str();
+		LPCWSTR subKeyString = subKey.IsEmpty() ? nullptr : subKey.wc_str();
 		m_Status = ::RegOpenKeyExW(mainKeys[mainKey], subKeyString, 0, access|regNode, &m_Handle);
 	}
 }
@@ -374,7 +374,7 @@ KxRegistryKey::KxRegistryKey(KxRegistryHKey mainKey, KxRegistryNode regNode, DWO
 }
 KxRegistryKey::~KxRegistryKey()
 {
-	if (m_Handle != NULL)
+	if (m_Handle != nullptr)
 	{
 		m_Status = ::RegCloseKey(m_Handle);
 	}

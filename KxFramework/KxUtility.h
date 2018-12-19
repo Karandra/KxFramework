@@ -45,7 +45,7 @@ class KX_API KxUtility
 		}
 		static bool DrawThemeBackground(const wxWindow* window, const wxString& className, wxDC& dc, int iPartId, int iStateId, const wxRect& rect);
 
-		static bool DrawLabel(const wxWindow* window, wxDC& dc, const wxString& label, const wxBitmap& icon, wxRect rect, int alignment = wxALIGN_LEFT|wxALIGN_TOP, int accelIndex = -1, wxRect* boundingRect = NULL);
+		static bool DrawLabel(const wxWindow* window, wxDC& dc, const wxString& label, const wxBitmap& icon, wxRect rect, int alignment = wxALIGN_LEFT|wxALIGN_TOP, int accelIndex = -1, wxRect* boundingRect = nullptr);
 		static bool DrawGripper(const wxWindow* window, wxDC& dc, const wxRect& rect);
 		
 		static KxColor GetThemeColor(const wxWindow* window, const wxString& className, int iPartId, int iStateId, int iPropId, const wxColour& defaultColor = wxNullColour);
@@ -55,7 +55,7 @@ class KX_API KxUtility
 		static const wxString LoadResource(const wxString& name, const wxString& typeName = L"STRING");
 		static const wxString LoadResource(int id, const wxString& typeName = L"STRING");
 		static void ToggleWindowStyle(HWND hWnd, int index, LONG style, bool enable);
-		static wxString GetStandardLocalizedString(int id, bool* isSuccess = NULL);
+		static wxString GetStandardLocalizedString(int id, bool* isSuccess = nullptr);
 		template<class PointerType, class ValueType> static void SetIfNotNull(PointerType* p, ValueType v)
 		{
 			if (p)
@@ -141,7 +141,7 @@ class KX_API KxUtility
 			return newVector;
 		}
 
-		static bool StringToBool(const wxString& value, bool* isUnknown = NULL);
+		static bool StringToBool(const wxString& value, bool* isUnknown = nullptr);
 
 		template<class... Args> constexpr static size_t SizeOfParameterPack()
 		{

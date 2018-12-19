@@ -63,7 +63,7 @@ template<class T, class BaseT> class KxDataViewVectorListModelEx: public BaseT
 		using ValueType = typename VectorType::value_type;
 
 	private:
-		VectorType* m_Data = NULL;
+		VectorType* m_Data = nullptr;
 
 	protected:
 		virtual void OnSetDataVectorInternal()
@@ -101,7 +101,7 @@ template<class T, class BaseT> class KxDataViewVectorListModelEx: public BaseT
 	public:
 		virtual ~KxDataViewVectorListModelEx()
 		{
-			m_Data = NULL;
+			m_Data = nullptr;
 		}
 
 	public:
@@ -121,7 +121,7 @@ template<class T, class BaseT> class KxDataViewVectorListModelEx: public BaseT
 
 		bool HasDataVector() const
 		{
-			return m_Data != NULL;
+			return m_Data != nullptr;
 		}
 		VectorType* GetDataVector()
 		{
@@ -131,10 +131,10 @@ template<class T, class BaseT> class KxDataViewVectorListModelEx: public BaseT
 		{
 			return m_Data;
 		}
-		void SetDataVector(VectorType* data = NULL)
+		void SetDataVector(VectorType* data = nullptr)
 		{
 			// Clear control
-			m_Data = NULL;
+			m_Data = nullptr;
 			OnSetDataVectorInternal();
 
 			// Assign new and load data if needed

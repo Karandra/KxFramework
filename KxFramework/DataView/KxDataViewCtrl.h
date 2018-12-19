@@ -28,12 +28,12 @@ class KX_API KxDataViewCtrl: public wxSystemThemedControl<wxControl>, public wxS
 		class AddedColumnInfo
 		{
 			private:
-				KxDataViewColumn* m_Column = NULL;
-				KxDataViewRenderer* m_Renderer = NULL;
-				KxDataViewEditor* m_Editor = NULL;
+				KxDataViewColumn* m_Column = nullptr;
+				KxDataViewRenderer* m_Renderer = nullptr;
+				KxDataViewEditor* m_Editor = nullptr;
 
 			public:
-				AddedColumnInfo(KxDataViewColumn* column, KxDataViewRenderer* renderer, KxDataViewEditor* editor = NULL)
+				AddedColumnInfo(KxDataViewColumn* column, KxDataViewRenderer* renderer, KxDataViewEditor* editor = nullptr)
 					:m_Column(column), m_Renderer(renderer), m_Editor(editor)
 				{
 				}
@@ -61,16 +61,16 @@ class KX_API KxDataViewCtrl: public wxSystemThemedControl<wxControl>, public wxS
 		};
 
 	private:
-		KxDataViewModel* m_Model = NULL;
-		KxDataViewColumn* m_ExpanderColumn = NULL;
+		KxDataViewModel* m_Model = nullptr;
+		KxDataViewColumn* m_ExpanderColumn = nullptr;
 
-		KxDataViewHeaderCtrl* m_HeaderArea = NULL;
-		KxDataViewMainWindow* m_ClientArea = NULL;
-		KxDataViewModelNotifier* m_Notifier = NULL;
+		KxDataViewHeaderCtrl* m_HeaderArea = nullptr;
+		KxDataViewMainWindow* m_ClientArea = nullptr;
+		KxDataViewModelNotifier* m_Notifier = nullptr;
 
-		wxBoxSizer* m_Sizer = NULL;
-		wxSizerItem* m_HeaderAreaSI = NULL;
-		wxSizerItem* m_ClientAreaSI = NULL;
+		wxBoxSizer* m_Sizer = nullptr;
+		wxSizerItem* m_HeaderAreaSI = nullptr;
+		wxSizerItem* m_ClientAreaSI = nullptr;
 
 		int m_Indent = 0;
 		bool m_UsingSystemTheme = false;
@@ -86,7 +86,7 @@ class KX_API KxDataViewCtrl: public wxSystemThemedControl<wxControl>, public wxS
 		class ColumnInfo
 		{
 			private:
-				KxDataViewColumn* m_Column = NULL;
+				KxDataViewColumn* m_Column = nullptr;
 				size_t m_BestWidth = 0;
 				bool m_Dirty = true;
 
@@ -310,7 +310,7 @@ class KX_API KxDataViewCtrl: public wxSystemThemedControl<wxControl>, public wxS
 		KxDataViewColumn* GetColumnByID(int id) const
 		{
 			size_t pos = GetColumnIndexByID(id);
-			return pos != INVALID_COLUMN ? GetColumn(pos) : NULL;
+			return pos != INVALID_COLUMN ? GetColumn(pos) : nullptr;
 		}
 		size_t GetColumnPosition(const KxDataViewColumn* column) const;
 
@@ -346,7 +346,7 @@ class KX_API KxDataViewCtrl: public wxSystemThemedControl<wxControl>, public wxS
 		// sorting if using multiple columns is supported.
 		void ToggleSortByColumn(size_t position);
 
-		// Currently focused column of the current item or NULL if no column has focus
+		// Currently focused column of the current item or nullptr if no column has focus
 		virtual KxDataViewColumn* GetCurrentColumn() const;
 
 		virtual bool IsMultiColumnSortAllowed() const
@@ -392,7 +392,7 @@ class KX_API KxDataViewCtrl: public wxSystemThemedControl<wxControl>, public wxS
 		KxDataViewItem GetHotTrackedItem() const;
 		KxDataViewColumn* GetHotTrackedColumn() const;
 
-		void GenerateSelectionEvent(const KxDataViewItem& item, const KxDataViewColumn* column = NULL);
+		void GenerateSelectionEvent(const KxDataViewItem& item, const KxDataViewColumn* column = nullptr);
 
 		void SelectAll();
 		void UnselectAll();
@@ -417,11 +417,11 @@ class KX_API KxDataViewCtrl: public wxSystemThemedControl<wxControl>, public wxS
 			SetItemExpanded(item, !IsExpanded(item));
 		}
 
-		void EnsureVisible(const KxDataViewItem& item, const KxDataViewColumn* column = NULL);
+		void EnsureVisible(const KxDataViewItem& item, const KxDataViewColumn* column = nullptr);
 		void HitTest(const wxPoint& point, KxDataViewItem& item, KxDataViewColumn*& column) const;
-		wxRect GetItemRect(const KxDataViewItem& item, const KxDataViewColumn* column = NULL) const;
-		wxRect GetAdjustedItemRect(const KxDataViewItem& item, const KxDataViewColumn* column = NULL) const;
-		wxPoint GetDropdownMenuPosition(const KxDataViewItem& item, const KxDataViewColumn* column = NULL) const;
+		wxRect GetItemRect(const KxDataViewItem& item, const KxDataViewColumn* column = nullptr) const;
+		wxRect GetAdjustedItemRect(const KxDataViewItem& item, const KxDataViewColumn* column = nullptr) const;
+		wxPoint GetDropdownMenuPosition(const KxDataViewItem& item, const KxDataViewColumn* column = nullptr) const;
 
 		int GetUniformRowHeight() const;
 		void SetUniformRowHeight(int rowHeight);
@@ -439,7 +439,7 @@ class KX_API KxDataViewCtrl: public wxSystemThemedControl<wxControl>, public wxS
 
 		bool HasHeaderCtrl() const
 		{
-			return m_HeaderArea != NULL;
+			return m_HeaderArea != nullptr;
 		}
 		wxHeaderCtrl* GetHeaderCtrl();
 		const wxHeaderCtrl* GetHeaderCtrl() const;

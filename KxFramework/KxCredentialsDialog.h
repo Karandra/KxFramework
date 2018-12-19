@@ -9,7 +9,7 @@
 class KX_API KxCredentialsDialog: public KxDialog
 {
 	private:
-		wxWindow* m_Parent = NULL;
+		wxWindow* m_Parent = nullptr;
 		wxString m_Caption;
 		wxString m_Message;
 
@@ -22,7 +22,7 @@ class KX_API KxCredentialsDialog: public KxDialog
 	private:
 		inline LPCWSTR GetStringOrNull(const wxString& text)
 		{
-			return text.IsEmpty() ? NULL : text.wc_str();
+			return text.IsEmpty() ? nullptr : text.wc_str();
 		}
 
 	public:

@@ -20,8 +20,8 @@ class KX_API KxINetConnection: public wxEvtHandler
 		using HeadersMap = std::unordered_map<wxString, wxString>;
 
 	private:
-		KxINet* m_SessionInstance = NULL;
-		HINTERNET m_Handle = NULL;
+		KxINet* m_SessionInstance = nullptr;
+		HINTERNET m_Handle = nullptr;
 
 		wxString m_URL;
 		wxString m_UserName;
@@ -64,7 +64,7 @@ class KX_API KxINetConnection: public wxEvtHandler
 		}
 		bool IsConnected() const
 		{
-			return m_Handle != NULL;
+			return m_Handle != nullptr;
 		}
 		
 		wxString GetURL() const;

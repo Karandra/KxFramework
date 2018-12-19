@@ -33,18 +33,18 @@ namespace
 
 	struct CallbackData
 	{
-		wxEvtHandler* EventHandler = NULL;
+		wxEvtHandler* EventHandler = nullptr;
 		wxEventType EventType = wxEVT_NULL;
-		const wxString* Source = NULL;
-		const wxString* Destination = NULL;
+		const wxString* Source = nullptr;
+		const wxString* Destination = nullptr;
 	};
 	struct CallbackDataFolder
 	{
-		wxEvtHandler* EventHandler = NULL;
+		wxEvtHandler* EventHandler = nullptr;
 		wxEventType EventType = wxEVT_NULL;
-		const wxString* Source = NULL;
-		const wxString* Destination = NULL;
-		const wxString* Current = NULL;
+		const wxString* Source = nullptr;
+		const wxString* Destination = nullptr;
+		const wxString* Current = nullptr;
 		uint64_t ProcessedSize = 0;
 		uint64_t TotalSize = 0;
 	};
@@ -122,7 +122,7 @@ namespace
 				 const wxString& filter = KxFile::NullFilter,
 				 KxFileSearchType elementType = KxFS_FILE,
 				 bool recurse = false,
-				 wxEvtHandler* eventHandler = NULL
+				 wxEvtHandler* eventHandler = nullptr
 	)
 	{
 		const DWORD excludedFlags = FILE_ATTRIBUTE_REPARSE_POINT|FILE_ATTRIBUTE_SPARSE_FILE;
@@ -216,7 +216,7 @@ namespace
 		}
 		return false;
 	}
-	void CopyFolderAux(const wxString& source, const wxString& destination, const wxString& filter, bool recurse, DWORD flags, CallbackDataFolder* data, BOOL* cancel, LPPROGRESS_ROUTINE callback = NULL)
+	void CopyFolderAux(const wxString& source, const wxString& destination, const wxString& filter, bool recurse, DWORD flags, CallbackDataFolder* data, BOOL* cancel, LPPROGRESS_ROUTINE callback = nullptr)
 	{
 		auto list = KxFile(source).Find(filter, KxFS_ALL, false);
 		data->TotalSize += list.size();
@@ -227,7 +227,7 @@ namespace
 			{
 				wxString folder(element);
 				folder.Replace(source, destination, false);
-				::CreateDirectoryW(folder.wc_str(), NULL);
+				::CreateDirectoryW(folder.wc_str(), nullptr);
 				CopyAttributes(Namespace_Win32File + element, Namespace_Win32File + folder);
 				data->ProcessedSize++;
 
@@ -256,11 +256,11 @@ const wxString KxFile::NullFilter = L"*";
 
 wxString KxFile::GetFullPathName(const wxString& filePath)
 {
-	DWORD length = ::GetFullPathNameW(filePath.wc_str(), NULL, NULL, NULL);
+	DWORD length = ::GetFullPathNameW(filePath.wc_str(), 0, nullptr, nullptr);
 	if (length)
 	{
 		wxString out;
-		LPWSTR oldPathStart = NULL;
+		LPWSTR oldPathStart = nullptr;
 		::GetFullPathNameW(filePath.wc_str(), length, wxStringBuffer(out, length), &oldPathStart);
 		return out;
 	}
@@ -268,7 +268,7 @@ wxString KxFile::GetFullPathName(const wxString& filePath)
 }
 wxString KxFile::GetLongPathName(const wxString& filePath)
 {
-	DWORD length = ::GetLongPathNameW(filePath.wc_str(), NULL, 0);
+	DWORD length = ::GetLongPathNameW(filePath.wc_str(), nullptr, 0);
 	if (length)
 	{
 		wxString out;
@@ -718,7 +718,7 @@ int64_t KxFile::GetFolderSize() const
 		if (GetFullPath().Length() <= _MAX_DRIVE)
 		{
 			ULARGE_INTEGER total = {0};
-			if (::GetDiskFreeSpaceExW(GetDrive().wc_str(), NULL, &total, NULL))
+			if (::GetDiskFreeSpaceExW(GetDrive().wc_str(), nullptr, &total, nullptr))
 			{
 				return total.QuadPart;
 			}
@@ -777,7 +777,7 @@ bool KxFile::SetAttribute(uint32_t attribute, bool set)
 				value = COMPRESSION_FORMAT_NONE;
 			}
 			DWORD bytesReturned = 0;
-			isSuccess = ::DeviceIoControl(fileHandle.GetHandle(), FSCTL_SET_COMPRESSION, &value, sizeof(USHORT), NULL, 0, &bytesReturned, NULL);
+			isSuccess = ::DeviceIoControl(fileHandle.GetHandle(), FSCTL_SET_COMPRESSION, &value, sizeof(USHORT), nullptr, 0, &bytesReturned, nullptr);
 		}
 	}
 	else if (attribute & FILE_ATTRIBUTE_ENCRYPTED)
@@ -867,13 +867,13 @@ KxFileBinaryFormat KxFile::GetBinaryType() const
 	else if (KxSystemAPI::ImageNtHeader)
 	{
 		// If this file is DLL
-		HANDLE fileHandle = ::CreateFileW(GetFullPath().wc_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, NULL, NULL);
+		HANDLE fileHandle = ::CreateFileW(GetFullPath().wc_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, 0, nullptr);
 		if (fileHandle != INVALID_HANDLE_VALUE)
 		{
-			HANDLE mapHandle = ::CreateFileMappingW(fileHandle, NULL, PAGE_READONLY, 0, 0, NULL);
+			HANDLE mapHandle = ::CreateFileMappingW(fileHandle, nullptr, PAGE_READONLY, 0, 0, nullptr);
 			if (mapHandle)
 			{
-				void* mapAddress = ::MapViewOfFileEx(mapHandle, FILE_MAP_READ, 0, 0, 0, NULL);
+				void* mapAddress = ::MapViewOfFileEx(mapHandle, FILE_MAP_READ, 0, 0, 0, nullptr);
 				if (mapAddress)
 				{
 					IMAGE_NT_HEADERS* header = (IMAGE_NT_HEADERS*)KxSystemAPI::ImageNtHeader(mapAddress);
@@ -922,15 +922,15 @@ wxDateTime KxFile::GetFileTime(KxFileTime type) const
 		FILETIME fileTime = {0};
 		if (type == KxFILETIME_CREATION)
 		{
-			isOK = ::GetFileTime(stream.GetHandle(), &fileTime, NULL, NULL);
+			isOK = ::GetFileTime(stream.GetHandle(), &fileTime, nullptr, nullptr);
 		}
 		else if (type == KxFILETIME_LAST_ACCESS)
 		{
-			isOK = ::GetFileTime(stream.GetHandle(), NULL, &fileTime, NULL);
+			isOK = ::GetFileTime(stream.GetHandle(), nullptr, &fileTime, nullptr);
 		}
 		else if (type == KxFILETIME_MODIFICATION)
 		{
-			isOK = ::GetFileTime(stream.GetHandle(), NULL, NULL, &fileTime);
+			isOK = ::GetFileTime(stream.GetHandle(), nullptr, nullptr, &fileTime);
 		}
 
 		FILETIME fileTimeLocal = {0};
@@ -969,15 +969,15 @@ bool KxFile::SetFileTime(const wxDateTime& time, KxFileTime type)
 				{
 					case KxFILETIME_CREATION:
 					{
-						return ::SetFileTime(stream.GetHandle(), &fileTime, NULL, NULL);
+						return ::SetFileTime(stream.GetHandle(), &fileTime, nullptr, nullptr);
 					}
 					case KxFILETIME_LAST_ACCESS:
 					{
-						return ::SetFileTime(stream.GetHandle(), NULL, &fileTime, NULL);
+						return ::SetFileTime(stream.GetHandle(), nullptr, &fileTime, nullptr);
 					}
 					case KxFILETIME_MODIFICATION:
 					{
-						return ::SetFileTime(stream.GetHandle(), NULL, NULL, &fileTime);
+						return ::SetFileTime(stream.GetHandle(), nullptr, nullptr, &fileTime);
 					}
 				};
 			}
@@ -1075,7 +1075,7 @@ bool KxFile::CopyFile(const KxFile& destination, bool overwrite)
 		flags |= COPY_FILE_FAIL_IF_EXISTS;
 	}
 
-	LPPROGRESS_ROUTINE callback = HasEventHandler() ? CopyFileCallback : NULL;
+	LPPROGRESS_ROUTINE callback = HasEventHandler() ? CopyFileCallback : nullptr;
 	return CopyFileExW(GetFullPathNS().wc_str(), destination.GetFullPathNS().wc_str(), callback, &data, &cancel, flags);
 }
 bool KxFile::MoveFile(const KxFile& destination, bool overwrite)
@@ -1094,7 +1094,7 @@ bool KxFile::MoveFile(const KxFile& destination, bool overwrite)
 		flags |= MOVEFILE_REPLACE_EXISTING;
 	}
 
-	LPPROGRESS_ROUTINE callback = HasEventHandler() ? CopyFileCallback : NULL;
+	LPPROGRESS_ROUTINE callback = HasEventHandler() ? CopyFileCallback : nullptr;
 	if (callback)
 	{
 		MoveFileWithProgressW(GetFullPathNS().wc_str(), destination.GetFullPathNS().wc_str(), callback, &data, flags);
@@ -1158,7 +1158,7 @@ void KxFile::CopyFolder(const wxString& filter, const KxFile& destination, bool 
 		data.ProcessedSize = 0;
 		data.TotalSize = 0;
 
-		LPPROGRESS_ROUTINE callback = HasEventHandler() ? CopyFolderCallback : NULL;
+		LPPROGRESS_ROUTINE callback = HasEventHandler() ? CopyFolderCallback : nullptr;
 		CopyFolderAux(GetFullPath(), destination.GetFullPath(), filter, recurse, flags, &data, &cancel, callback);
 	}
 }
@@ -1299,7 +1299,7 @@ bool KxFile::CreateFolder() const
 		for (size_t i = 0; i < folders.size(); i++)
 		{
 			fullPath.Append(folders[i]).Append(wxS('\\'));
-			isSuccess = CreateDirectoryW(fullPath.wc_str(), NULL);
+			isSuccess = CreateDirectoryW(fullPath.wc_str(), nullptr);
 		}
 		return isSuccess;
 	}
@@ -1334,7 +1334,7 @@ bool KxFile::Rename(const KxFile& destination, bool overwrite)
 //////////////////////////////////////////////////////////////////////////
 bool KxFile::ShellOpen()
 {
-	return ::ShellExecuteW(NULL, L"open", GetFullPath().wc_str(), NULL, NULL, SW_SHOWNORMAL);
+	return ::ShellExecuteW(nullptr, L"open", GetFullPath().wc_str(), nullptr, nullptr, SW_SHOWNORMAL);
 }
 
 //////////////////////////////////////////////////////////////////////////

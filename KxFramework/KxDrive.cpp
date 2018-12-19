@@ -11,7 +11,7 @@ bool KxDrive::IsExist(char driveLetter)
 KxDrive::DrivesArray KxDrive::Enumerate()
 {
 	DrivesArray list;
-	DWORD length = ::GetLogicalDriveStringsW(0, NULL);
+	DWORD length = ::GetLogicalDriveStringsW(0, nullptr);
 	if (length != 0)
 	{
 		LPWSTR string = new WCHAR[length];
@@ -53,34 +53,34 @@ wxString KxDrive::GetLabel() const
 	wxString drivePath = ToDrivePath(m_Drive);
 	wxString value;
 	const int maxLength = MAX_PATH + 1;
-	::GetVolumeInformationW(drivePath.wc_str(), wxStringBuffer(value, maxLength), maxLength, NULL, NULL, NULL, NULL, 0);
+	::GetVolumeInformationW(drivePath.wc_str(), wxStringBuffer(value, maxLength), maxLength, nullptr, nullptr, nullptr, nullptr, 0);
 	return value;
 }
 bool KxDrive::SetLabel(const wxString& label)
 {
 	wxString drivePath = ToDrivePath(m_Drive);
-	return ::SetVolumeLabelW(drivePath.wc_str(), label.IsEmpty() ? NULL : label.wc_str());
+	return ::SetVolumeLabelW(drivePath.wc_str(), label.IsEmpty() ? nullptr : label.wc_str());
 }
 wxString KxDrive::GetFileSystemName() const
 {
 	wxString drivePath = ToDrivePath(m_Drive);
 	wxString value;
 	const int maxLength = MAX_PATH + 1;
-	::GetVolumeInformationW(drivePath.wc_str(), NULL, 0, NULL, NULL, NULL, wxStringBuffer(value, maxLength), maxLength);
+	::GetVolumeInformationW(drivePath.wc_str(), nullptr, 0, nullptr, nullptr, nullptr, wxStringBuffer(value, maxLength), maxLength);
 	return value;
 }
 uint32_t KxDrive::GetSerialNumber() const
 {
 	wxString drivePath = ToDrivePath(m_Drive);
 	DWORD value = 0;
-	::GetVolumeInformationW(drivePath.wc_str(), NULL, 0, &value, NULL, NULL, NULL, 0);
+	::GetVolumeInformationW(drivePath.wc_str(), nullptr, 0, &value, nullptr, nullptr, nullptr, 0);
 	return value;
 }
 wxFileOffset KxDrive::GetTotalSpace() const
 {
 	wxString drivePath = ToDrivePath(m_Drive);
 	ULARGE_INTEGER value;
-	::GetDiskFreeSpaceExW(drivePath.wc_str(), NULL, &value, NULL);
+	::GetDiskFreeSpaceExW(drivePath.wc_str(), nullptr, &value, nullptr);
 	return value.QuadPart;
 }
 wxFileOffset KxDrive::GetUsedSpace() const
@@ -89,15 +89,15 @@ wxFileOffset KxDrive::GetUsedSpace() const
 
 	ULARGE_INTEGER total;
 	ULARGE_INTEGER free;
-	::GetDiskFreeSpaceExW(drivePath.wc_str(), NULL, &total, NULL);
-	::GetDiskFreeSpaceExW(drivePath.wc_str(), NULL, NULL, &free);
+	::GetDiskFreeSpaceExW(drivePath.wc_str(), nullptr, &total, nullptr);
+	::GetDiskFreeSpaceExW(drivePath.wc_str(), nullptr, nullptr, &free);
 	return total.QuadPart - free.QuadPart;
 }
 wxFileOffset KxDrive::GetFreeSpace() const
 {
 	wxString drivePath = ToDrivePath(m_Drive);
 	ULARGE_INTEGER value;
-	::GetDiskFreeSpaceExW(drivePath.wc_str(), NULL, NULL, &value);
+	::GetDiskFreeSpaceExW(drivePath.wc_str(), nullptr, nullptr, &value);
 	return value.QuadPart;
 }
 KxDrive::DriveInfo KxDrive::GetInfo() const
@@ -106,7 +106,7 @@ KxDrive::DriveInfo KxDrive::GetInfo() const
 
 	DriveInfo info;
 	DWORD maximumComponentLength = 0;
-	::GetVolumeInformationW(drivePath.wc_str(), NULL, 0, NULL, &maximumComponentLength, &info.FileSystemFlags, NULL, 0);
+	::GetVolumeInformationW(drivePath.wc_str(), nullptr, 0, nullptr, &maximumComponentLength, &info.FileSystemFlags, nullptr, 0);
 	info.LongFileNames = maximumComponentLength == 255;
 	::GetDiskFreeSpaceW(drivePath.wc_str(), &info.SectorsPerCluster, &info.BytesPerSector, &info.NumberOfFreeClusters, &info.TotalNumberOfClusters);
 

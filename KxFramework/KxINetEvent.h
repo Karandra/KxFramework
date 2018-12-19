@@ -59,10 +59,10 @@ class KX_API KxINetEvent: public wxNotifyEvent
 	using HINTERNET = void*;
 
 	private:
-		KxINetConnection* m_Connection = NULL;
-		HINTERNET m_RequestHandle = NULL;
+		KxINetConnection* m_Connection = nullptr;
+		HINTERNET m_RequestHandle = nullptr;
 
-		const void* m_RequestBuffer = NULL;
+		const void* m_RequestBuffer = nullptr;
 		DWORD m_RequestBufferSize = 0;
 
 	private:
@@ -76,22 +76,22 @@ class KX_API KxINetEvent: public wxNotifyEvent
 		}
 
 	public:
-		KxINetEvent(wxEventType type = wxEVT_NULL, KxINetConnection* object = NULL);
+		KxINetEvent(wxEventType type = wxEVT_NULL, KxINetConnection* object = nullptr);
 		virtual ~KxINetEvent();
 		virtual KxINetEvent* Clone() const;
 
 	public:
 		bool IsOK() const
 		{
-			return m_Connection != NULL;
+			return m_Connection != nullptr;
 		}
 		KxINetConnection& GetConnection() const
 		{
 			return *m_Connection;
 		}
 
-		wxString QueryInfoString(DWORD infoLevel, DWORD index = 0, DWORD* nextIndex = NULL) const;
-		int64_t QueryInfoNumber(DWORD infoLevel, DWORD index = 0, DWORD* nextIndex = NULL) const;
+		wxString QueryInfoString(DWORD infoLevel, DWORD index = 0, DWORD* nextIndex = nullptr) const;
+		int64_t QueryInfoNumber(DWORD infoLevel, DWORD index = 0, DWORD* nextIndex = nullptr) const;
 		wxString QueryRequestURL() const;
 
 		const void* GetRequestBuffer() const

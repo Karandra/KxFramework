@@ -25,15 +25,15 @@ class KX_API KxShell
 		// Get any valid HWND for functions that requires parent window in all cases.
 		// Return HWND of windows in following chain:
 		// window -> wxTheApp->GetTopWindow() -> wxGetTopLevelParent(wxGetActiveWindow()) -> ::GetShellWindow()
-		static HWND GetOwnerHWND(wxWindow* window = NULL);
+		static HWND GetOwnerHWND(wxWindow* window = nullptr);
 		
 	public:
 		static KxShellFolderID GetShellFolderID(const wxString& name);
 		static const KnownFoldersList& GetShellFolderList();
 		static wxString GetFolder(KxShellFolderID id, bool useDefault = false, bool create = false);
 		
-		static bool FileOperation(const wxString& fullPath, KxFileSearchType elementType, KxShellOperationFunc func, bool useRecycleBin = false, bool recurse = false, wxWindow* window = NULL);
-		static bool FileOperationEx(KxShellOperationFunc func, const wxString& from, const wxString& to, wxWindow* window = NULL, bool recurse = false, bool filesOnly = true, bool allowUndo = true, bool yesToAll = false);
+		static bool FileOperation(const wxString& fullPath, KxFileSearchType elementType, KxShellOperationFunc func, bool useRecycleBin = false, bool recurse = false, wxWindow* window = nullptr);
+		static bool FileOperationEx(KxShellOperationFunc func, const wxString& from, const wxString& to, wxWindow* window = nullptr, bool recurse = false, bool filesOnly = true, bool allowUndo = true, bool yesToAll = false);
 		static DWORD FormatDrive(wxWindow* window, const KxDrive& drive, DWORD options = SHFMT_OPT_FULL, DWORD formatID = SHFMT_ID_DEFAULT);
 		static bool PinShortcut(const wxString& shortcutPath, KxShellShortcutPinMode mode);
 		
@@ -50,12 +50,12 @@ class KX_API KxShell
 		{
 			return QueryAssocString(ext, KxSH_AQ_FRIENDLY_DOC_NAME);
 		}
-		static wxString GetTypeIcon(const wxString& ext, int* indexOut = NULL);
+		static wxString GetTypeIcon(const wxString& ext, int* indexOut = nullptr);
 		static wxString GetTypeCommand(const wxString& ext)
 		{
 			return QueryAssocString(ext, KxSH_AQ_COMMAND);
 		}
-		static wxString GetLocalizedName(const wxString& objectPath, int* resourceIDOut = NULL);
+		static wxString GetLocalizedName(const wxString& objectPath, int* resourceIDOut = nullptr);
 
 		static wxIcon GetFileIcon(const wxString& path, bool smallIcon = false);
 		static wxIcon GetFileIcon(const KxFileItem& item, bool smallIcon = false);

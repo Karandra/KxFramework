@@ -9,7 +9,7 @@ class KxDataViewModelExBase: public T
 {
 	private:
 		KxDataViewCtrlStyles m_DataViewFlags = KxDataViewCtrl::DefaultStyle;
-		KxDataViewCtrl* m_View = NULL;
+		KxDataViewCtrl* m_View = nullptr;
 
 	private:
 		void CreateDataView(wxWindow* window, wxSizer* sizer)
@@ -39,7 +39,7 @@ class KxDataViewModelExBase: public T
 		virtual void OnInitControl() = 0;
 
 	public:
-		void Create(wxWindow* window, wxSizer* sizer = NULL)
+		void Create(wxWindow* window, wxSizer* sizer = nullptr)
 		{
 			CreateDataView(window, sizer);
 			OnInitControl();
@@ -90,7 +90,7 @@ class KxDataViewModelExDragDropEnabled
 		using DragDropDataObjectT = DragDropDataT;
 
 	private:
-		KxDataViewModelExDragDropData* m_DragDropDataObject = NULL;
+		KxDataViewModelExDragDropData* m_DragDropDataObject = nullptr;
 
 	private:
 		void SetPosition(KxDataViewEventDND& event)
@@ -118,7 +118,7 @@ class KxDataViewModelExDragDropEnabled
 			{
 				wxBell();
 			}
-			m_DragDropDataObject = NULL;
+			m_DragDropDataObject = nullptr;
 		}
 		void OnDropPossible(KxDataViewEventDND& event)
 		{
@@ -145,7 +145,7 @@ class KxDataViewModelExDragDropEnabled
 
 		bool HasDragDropDataObject() const
 		{
-			return m_DragDropDataObject != NULL;
+			return m_DragDropDataObject != nullptr;
 		}
 		template<class T = DragDropDataT> T* GetDragDropDataObject() const
 		{
@@ -194,7 +194,7 @@ class KX_API KxDataViewModelExDragDropData: public wxDataObjectSimple
 		}
 		virtual bool GetDataHere(void* buffer) const override
 		{
-			*((size_t*)buffer) = NULL;
+			*((size_t*)buffer) = 0;
 			return true;
 		}
 

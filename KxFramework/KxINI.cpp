@@ -49,7 +49,7 @@ bool KxINI::IniSetValue(const wxString& sectionName, const wxString& keyName, co
 	auto keyNameUTF8 = keyName.ToUTF8();
 	auto valueUTF8 = value.ToUTF8();
 
-	SimpleINI::SI_Error status = m_Document.SetValue(sectionNameUTF8.data(), keyNameUTF8.data(), valueUTF8.data(), NULL, true);
+	SimpleINI::SI_Error status = m_Document.SetValue(sectionNameUTF8.data(), keyNameUTF8.data(), valueUTF8.data(), nullptr, true);
 	return status == SimpleINI::SI_UPDATED || status == SimpleINI::SI_INSERTED;
 }
 
@@ -145,23 +145,23 @@ KxStringVector KxINI::GetKeyNames(const wxString& sectionName) const
 bool KxINI::RemoveSection(const wxString& sectionName)
 {
 	auto sectionNameUTF8 = sectionName.ToUTF8();
-	return m_Document.DeleteValue(sectionNameUTF8.data(), NULL, NULL, true);
+	return m_Document.DeleteValue(sectionNameUTF8.data(), nullptr, nullptr, true);
 }
 bool KxINI::RemoveValue(const wxString& sectionName, const wxString& keyName)
 {
 	auto sectionNameUTF8 = sectionName.ToUTF8();
 	auto keyNameUTF8 = keyName.ToUTF8();
-	return m_Document.DeleteValue(sectionNameUTF8.data(), keyNameUTF8.data(), NULL, false);
+	return m_Document.DeleteValue(sectionNameUTF8.data(), keyNameUTF8.data(), nullptr, false);
 }
 
 bool KxINI::HasValue(const wxString& sectionName, const wxString& keyName)  const
 {
 	auto sectionNameUTF8 = sectionName.ToUTF8();
 	auto keyNameUTF8 = keyName.ToUTF8();
-	return m_Document.GetValue(sectionNameUTF8.data(), keyNameUTF8.data()) != NULL;
+	return m_Document.GetValue(sectionNameUTF8.data(), keyNameUTF8.data()) != nullptr;
 }
 bool KxINI::HasSection(const wxString& sectionName) const
 {
 	auto sectionNameUTF8 = sectionName.ToUTF8();
-	return m_Document.GetSection(sectionNameUTF8.data()) != NULL;
+	return m_Document.GetSection(sectionNameUTF8.data()) != nullptr;
 }

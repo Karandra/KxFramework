@@ -7,19 +7,19 @@ class KX_API KxIArchiveSearch;
 class KX_API KxArchiveFileFinder: public KxIFileFinder
 {
 	private:
-		const KxIArchiveSearch* m_Archive = NULL;
-		wxEvtHandler* m_EvtHandler = NULL;
+		const KxIArchiveSearch* m_Archive = nullptr;
+		wxEvtHandler* m_EvtHandler = nullptr;
 		wxString m_SearchQuery;
 
-		void* m_Handle = NULL;
+		void* m_Handle = nullptr;
 		bool m_IsCanceled = false;
 
 	protected:
 		virtual bool OnFound(const KxFileItem& foundItem) override;
 
 	public:
-		KxArchiveFileFinder(const KxIArchiveSearch& archive, const wxString& searchQuery, wxEvtHandler* eventHandler = NULL);
-		KxArchiveFileFinder(const KxIArchiveSearch& archive, const wxString& source, const wxString& filter, wxEvtHandler* eventHandler = NULL);
+		KxArchiveFileFinder(const KxIArchiveSearch& archive, const wxString& searchQuery, wxEvtHandler* eventHandler = nullptr);
+		KxArchiveFileFinder(const KxIArchiveSearch& archive, const wxString& source, const wxString& filter, wxEvtHandler* eventHandler = nullptr);
 		virtual ~KxArchiveFileFinder();
 
 	public:

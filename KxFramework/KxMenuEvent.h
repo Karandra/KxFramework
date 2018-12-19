@@ -7,13 +7,13 @@ class KX_API KxMenuEvent: public wxNotifyEvent
 {
 	private:
 		bool m_IsPopup = false;
-		KxMenu* m_Menu = NULL;
-		KxMenuItem* m_Item = NULL;
+		KxMenu* m_Menu = nullptr;
+		KxMenuItem* m_Item = nullptr;
 		wxPoint m_Position = wxDefaultPosition;
 		wxString m_HelpString;
 
 	public:
-		KxMenuEvent(wxEventType type = wxEVT_NULL, KxMenu* menu = NULL, KxMenuItem* menuItem = NULL);
+		KxMenuEvent(wxEventType type = wxEVT_NULL, KxMenu* menu = nullptr, KxMenuItem* menuItem = nullptr);
 		virtual ~KxMenuEvent();
 		virtual KxMenuEvent* Clone() const;
 

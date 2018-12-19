@@ -58,7 +58,7 @@ namespace NodeInternals
 		{
 			return (GumboNode*)nodes->data[i];
 		}
-		return NULL;
+		return nullptr;
 	}
 	const GumboAttribute* GetAttribute(const GumboNode* node, const wxString& name)
 	{
@@ -67,7 +67,7 @@ namespace NodeInternals
 			auto utf8 = name.ToUTF8();
 			return (GumboAttribute*)gumbo_get_attribute(&node->v.element.attributes, utf8.data());
 		}
-		return NULL;
+		return nullptr;
 	}
 	const GumboAttribute** GetAttributes(const GumboNode* node)
 	{
@@ -75,7 +75,7 @@ namespace NodeInternals
 		{
 			return (const GumboAttribute**)node->v.element.attributes.data;
 		}
-		return NULL;
+		return nullptr;
 	}
 	size_t GetAttributesCount(const GumboNode* node)
 	{
@@ -88,7 +88,7 @@ namespace NodeInternals
 	
 	const GumboVector* GetChildren(const GumboNode* node)
 	{
-		const GumboVector* children = NULL;
+		const GumboVector* children = nullptr;
 		if (node->type == GUMBO_NODE_DOCUMENT)
 		{
 			children = &node->v.document.children;
@@ -133,7 +133,7 @@ namespace NodeInternals
 			}
 		}
 
-		return NULL;
+		return nullptr;
 	}
 	const GumboNode* GetElementByTag(const GumboNode* node, const wxString& desiredTagName)
 	{
@@ -159,7 +159,7 @@ namespace NodeInternals
 			}
 		}
 
-		return NULL;
+		return nullptr;
 	}
 	const GumboNode* GetParent(const GumboNode* node)
 	{
@@ -301,7 +301,7 @@ bool KxHTMLNode::HasAttribute(const wxString& name) const
 	auto node = GetNode();
 	if (node)
 	{
-		return NodeInternals::GetAttribute(ToGumboNode(node), name) != NULL;
+		return NodeInternals::GetAttribute(ToGumboNode(node), name) != nullptr;
 	}
 	return false;
 }

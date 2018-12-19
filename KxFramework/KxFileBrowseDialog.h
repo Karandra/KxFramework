@@ -46,7 +46,7 @@ class KX_API KxFileBrowseDialog;
 class KX_API KxFileBrowseDialogEvents: public IFileDialogEvents
 {
 	private:
-		KxFileBrowseDialog* self = NULL;
+		KxFileBrowseDialog* self = nullptr;
 		DWORD m_EventsCookie = 0;
 
 	private:
@@ -101,8 +101,8 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 		KxCOMPtr<IFileDialog> m_Instance;
 		KxCOMPtr<IFileDialog2> m_InstanceExtra;
 
-		HWND m_Handle = NULL;
-		wxWindow* m_Parent = NULL;
+		HWND m_Handle = nullptr;
+		wxWindow* m_Parent = nullptr;
 		HRESULT m_ShowStatus = E_FAIL;
 		KxFBD_Mode m_Mode = KxFBD_OPEN;
 		
@@ -186,7 +186,7 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 			m_Title = title;
 			if (m_Instance)
 			{
-				m_Instance->SetTitle(m_Title.IsEmpty() ? NULL : m_Title.wc_str());
+				m_Instance->SetTitle(m_Title.IsEmpty() ? nullptr : m_Title.wc_str());
 			}
 		}
 		virtual wxString GetLabel() const
@@ -250,7 +250,7 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 		{
 			if (m_Instance)
 			{
-				LPWSTR name = NULL;
+				LPWSTR name = nullptr;
 				if (SUCCEEDED(m_Instance->GetFileName(&name)) && name)
 				{
 					wxString out(name);

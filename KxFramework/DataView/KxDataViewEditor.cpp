@@ -113,7 +113,7 @@ void KxDataViewEditor::CancelEdit()
 }
 
 KxDataViewEditor::KxDataViewEditor()
-	:KxDataViewColumnPart(NULL)
+	:KxDataViewColumnPart(nullptr)
 {
 }
 KxDataViewEditor::~KxDataViewEditor()

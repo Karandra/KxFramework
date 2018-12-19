@@ -6,10 +6,10 @@
 class KX_API KxListBoxDialog: public KxStdDialog
 {
 	private:
-		KxListBox* m_View = NULL;
+		KxListBox* m_View = nullptr;
 
 		virtual wxOrientation GetViewLabelSizerOrientation() const;
-		virtual bool IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut = NULL) const;
+		virtual bool IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut = nullptr) const;
 
 	public:
 		static const int DefaultStyle = KxStdDialog::DefaultStyle;

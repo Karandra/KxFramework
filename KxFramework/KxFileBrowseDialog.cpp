@@ -6,7 +6,7 @@ wxIMPLEMENT_DYNAMIC_CLASS(KxFileBrowseDialog, KxStdDialog);
 
 wxString KxFileBrowseDialog::GetDisplayName(IShellItem* shellItem, SIGDN type)
 {
-	LPWSTR name = NULL;
+	LPWSTR name = nullptr;
 	if (SUCCEEDED(shellItem->GetDisplayName(type, &name)) && name)
 	{
 		wxString out(name);
@@ -25,9 +25,9 @@ wxString KxFileBrowseDialog::GetFullPathName(const wxString& relativePath)
 {
 	if (!relativePath.IsEmpty())
 	{
-		DWORD length = GetFullPathNameW(relativePath.wc_str(), NULL, NULL, NULL);
+		DWORD length = GetFullPathNameW(relativePath.wc_str(), 0, nullptr, nullptr);
 		wxString out;
-		GetFullPathNameW(relativePath.wc_str(), length, wxStringBuffer(out, length), NULL);
+		GetFullPathNameW(relativePath.wc_str(), length, wxStringBuffer(out, length), nullptr);
 		return out;
 	}
 	else
@@ -64,7 +64,7 @@ void KxFileBrowseDialog::ApplyFileFilters()
 }
 void KxFileBrowseDialog::InitHWND()
 {
-	HWND hWnd = NULL;
+	HWND hWnd = nullptr;
 	if (m_Instance)
 	{
 		KxCOMPtr<IOleWindow> window;
@@ -77,7 +77,7 @@ void KxFileBrowseDialog::InitHWND()
 }
 void KxFileBrowseDialog::InitIFileDialog2()
 {
-	IFileDialog2* dialog = NULL;
+	IFileDialog2* dialog = nullptr;
 	if (SUCCEEDED(m_Instance->QueryInterface(IID_PPV_ARGS(&dialog))) && dialog)
 	{
 		m_InstanceExtra = dialog;
@@ -104,14 +104,14 @@ bool KxFileBrowseDialog::Create(wxWindow* parent,
 		const CLSCTX context = CLSCTX_INPROC_SERVER;
 		if (m_Mode == KxFBD_SAVE)
 		{
-			IFileSaveDialog* saveDialog = NULL;
-			res = CoCreateInstance(CLSID_FileSaveDialog, NULL, context, IID_PPV_ARGS(&saveDialog));
+			IFileSaveDialog* saveDialog = nullptr;
+			res = CoCreateInstance(CLSID_FileSaveDialog, nullptr, context, IID_PPV_ARGS(&saveDialog));
 			m_Instance = saveDialog;
 		}
 		else
 		{
-			IFileOpenDialog* openDialog = NULL;
-			res = CoCreateInstance(CLSID_FileOpenDialog, NULL, context, IID_PPV_ARGS(&openDialog));
+			IFileOpenDialog* openDialog = nullptr;
+			res = CoCreateInstance(CLSID_FileOpenDialog, nullptr, context, IID_PPV_ARGS(&openDialog));
 			m_Instance = openDialog;
 		}
 
@@ -158,7 +158,7 @@ int KxFileBrowseDialog::ShowModal()
 		// Apply pending changes
 		ApplyFileFilters();
 
-		m_ShowStatus = m_Instance->Show(m_Parent ? m_Parent->GetHandle() : NULL);
+		m_ShowStatus = m_Instance->Show(m_Parent ? m_Parent->GetHandle() : nullptr);
 		if (SUCCEEDED(m_ShowStatus))
 		{
 			retCode = wxID_OK;
@@ -182,7 +182,7 @@ bool KxFileBrowseDialog::Close(bool force)
 }
 bool KxFileBrowseDialog::IsVisible() const
 {
-	return GetHandle() != NULL && ::IsWindowVisible(GetHandle());
+	return GetHandle() != nullptr && ::IsWindowVisible(GetHandle());
 }
 
 bool KxFileBrowseDialog::IsOptionEnabled(KxFBD_Options flag) const
@@ -230,7 +230,7 @@ void KxFileBrowseDialog::SetFolder(const wxString& path)
 	if (m_Instance)
 	{
 		KxCOMPtr<IShellItem> folderPath;
-		SHCreateItemFromParsingName(path.wc_str(), NULL, IID_PPV_ARGS(&folderPath));
+		SHCreateItemFromParsingName(path.wc_str(), nullptr, IID_PPV_ARGS(&folderPath));
 		if (folderPath)
 		{
 			m_Instance->SetFolder(folderPath);
@@ -242,7 +242,7 @@ void KxFileBrowseDialog::SetNavigationRoot(const wxString& path)
 	if (m_InstanceExtra)
 	{
 		KxCOMPtr<IShellItem> folderPath;
-		SHCreateItemFromParsingName(path.wc_str(), NULL, IID_PPV_ARGS(&folderPath));
+		SHCreateItemFromParsingName(path.wc_str(), nullptr, IID_PPV_ARGS(&folderPath));
 		if (folderPath)
 		{
 			m_InstanceExtra->SetNavigationRoot(folderPath);
@@ -254,7 +254,7 @@ void KxFileBrowseDialog::AddPlace(const wxString& path, const wxString& label, b
 	if (m_Instance)
 	{
 		KxCOMPtr<IShellItem> pathItem;
-		SHCreateItemFromParsingName(path.wc_str(), NULL, IID_PPV_ARGS(&pathItem));
+		SHCreateItemFromParsingName(path.wc_str(), nullptr, IID_PPV_ARGS(&pathItem));
 		if (pathItem)
 		{
 			if (!label.IsEmpty())
@@ -308,14 +308,14 @@ wxString KxFileBrowseDialog::GetResult() const
 		if (IsMultiSelect() && GetMode() != KxFBD_SAVE)
 		{
 			IFileOpenDialog* dialog = static_cast<IFileOpenDialog*>(m_Instance.Get());
-			IShellItemArray* shellList = NULL;
+			IShellItemArray* shellList = nullptr;
 			if (SUCCEEDED(dialog->GetResults(&shellList)) && shellList)
 			{
 				DWORD count = 0;
 				shellList->GetCount(&count);
 				if (count != 0)
 				{
-					IShellItem* shellItem = NULL;
+					IShellItem* shellItem = nullptr;
 					if (SUCCEEDED(shellList->GetItemAt(0, &shellItem)) && shellItem)
 					{
 						return GetDisplayName(shellItem, DefaultItemType);
@@ -325,7 +325,7 @@ wxString KxFileBrowseDialog::GetResult() const
 		}
 		else
 		{
-			IShellItem* shellItem = NULL;
+			IShellItem* shellItem = nullptr;
 			if (SUCCEEDED(m_Instance->GetResult(&shellItem)) && shellItem)
 			{
 				return GetDisplayName(shellItem, DefaultItemType);
@@ -350,14 +350,14 @@ KxStringVector KxFileBrowseDialog::GetResults() const
 		else
 		{
 			IFileOpenDialog* dialog = static_cast<IFileOpenDialog*>(m_Instance.Get());
-			IShellItemArray* shellList = NULL;
+			IShellItemArray* shellList = nullptr;
 			if (SUCCEEDED(dialog->GetResults(&shellList)) && shellList)
 			{
 				DWORD count = 0;
 				shellList->GetCount(&count);
 				for (DWORD i = 0; i < count; i++)
 				{
-					IShellItem* shellItem = NULL;
+					IShellItem* shellItem = nullptr;
 					if (SUCCEEDED(shellList->GetItemAt(i, &shellItem)) && shellItem)
 					{
 						wxString out = GetDisplayName(shellItem, DefaultItemType);
@@ -408,7 +408,7 @@ void KxFileBrowseDialogEvents::Destroy()
 	{
 		self->m_Instance->Unadvise(m_EventsCookie);
 		
-		self = NULL;
+		self = nullptr;
 		m_EventsCookie = 0;
 	}
 }
@@ -420,14 +420,14 @@ KxFileBrowseDialogEvents::~KxFileBrowseDialogEvents()
 ULONG KX_COMCALL KxFileBrowseDialogEvents::AddRef()
 {
 	// On Create
-	self->m_Handle = NULL;
+	self->m_Handle = nullptr;
 
 	return 0;
 }
 ULONG KX_COMCALL KxFileBrowseDialogEvents::Release()
 {
 	// On Destroy
-	self->m_Handle = NULL;
+	self->m_Handle = nullptr;
 
 	wxNotifyEvent event = CreateEvent(wxEVT_CLOSE_WINDOW);
 	ProcessEvent(event);
@@ -444,7 +444,7 @@ HRESULT KX_COMCALL KxFileBrowseDialogEvents::OnShow(IFileDialog* instance)
 }
 HRESULT KX_COMCALL KxFileBrowseDialogEvents::OnFolderChange(IFileDialog* instance)
 {
-	if (self->GetHandle() == NULL)
+	if (self->GetHandle() == nullptr)
 	{
 		OnShow(instance);
 	}

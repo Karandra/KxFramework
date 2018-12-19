@@ -69,7 +69,7 @@ KxINetResponse KxINetConnection::DoSendRequest(const wxString& method, KxINetReq
 	KxINetResponse response;
 
 	wxString fullRequestURL = GetRequestURL(request);
-	HINTERNET requestHandle = ::HttpOpenRequestW(m_Handle, KxINet::StringOrNull(method), fullRequestURL.wc_str(), NULL, NULL, KxINet::AcceptTypes, flags, (DWORD_PTR)this);
+	HINTERNET requestHandle = ::HttpOpenRequestW(m_Handle, KxINet::StringOrNull(method), fullRequestURL.wc_str(), nullptr, nullptr, KxINet::AcceptTypes, flags, (DWORD_PTR)this);
 	if (requestHandle)
 	{
 		AddRequestHeadres(request, requestHandle);
@@ -79,7 +79,7 @@ KxINetResponse KxINetConnection::DoSendRequest(const wxString& method, KxINetReq
 		ProcessEvent(event);
 
 		// Send request
-		if (::HttpSendRequestW(requestHandle, NULL, NULL, const_cast<void*>(event.GetRequestBuffer()), event.GetRequestBufferSize()))
+		if (::HttpSendRequestW(requestHandle, nullptr, 0, const_cast<void*>(event.GetRequestBuffer()), event.GetRequestBufferSize()))
 		{
 			// Query main connection info
 			QueryConnectionStatus(requestHandle, response);
@@ -210,13 +210,13 @@ bool KxINetConnection::Connect()
 								  KxINet::StringOrNull(m_Password),
 								  serviceType,
 								  INTERNET_FLAG_PRAGMA_NOCACHE|INTERNET_FLAG_RELOAD,
-								  NULL
+								  reinterpret_cast<DWORD_PTR>(nullptr)
 	);
 	return IsConnected();
 }
 bool KxINetConnection::CloseConnection()
 {
-	if (m_Handle != NULL)
+	if (m_Handle != nullptr)
 	{
 		return ::InternetCloseHandle(m_Handle);
 	}

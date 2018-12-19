@@ -66,7 +66,7 @@ class KX_API KxLabel: public wxSystemThemedControl<wxStaticText>
 		{
 			return label.Find('\r') != -1 || label.Find('\n') != -1;
 		}
-		wxSize CalcBestSize(wxDC* dc = NULL);
+		wxSize CalcBestSize(wxDC* dc = nullptr);
 
 	protected:
 		virtual void DoEnable(bool enable) override

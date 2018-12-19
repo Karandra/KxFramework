@@ -6,7 +6,7 @@ wxIMPLEMENT_DYNAMIC_CLASS(KxTextBoxDialog, KxStdDialog);
 
 bool KxTextBoxDialog::IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut) const
 {
-	if (IsMultiLine() || GetStyledTextBox() != NULL)
+	if (IsMultiLine() || GetStyledTextBox() != nullptr)
 	{
 		KxUtility::SetIfNotNull(idOut, wxID_NONE);
 		return false;

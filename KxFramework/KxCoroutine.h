@@ -25,8 +25,8 @@ class KX_API KxCoroutineBase: public wxObject
 		};
 
 	private:
-		KxCoroutineCallData* m_CallData = NULL;
-		KxCoroutineTimer* m_Timer = NULL;
+		KxCoroutineCallData* m_CallData = nullptr;
+		KxCoroutineTimer* m_Timer = nullptr;
 		Enumerator m_Enumerator = Enumerator::Continue;
 		uint64_t m_TimeStampStart = 0;
 		uint64_t m_TimeStampBefore = 0;

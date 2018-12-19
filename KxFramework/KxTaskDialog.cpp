@@ -169,7 +169,7 @@ LPCWSTR KxTaskDialog::TranslateIconIDToTDI(KxIconType id) const
 		}
 		else
 		{
-			return NULL;
+			return nullptr;
 		}
 	}
 	return (LPCWSTR)-1;
@@ -200,7 +200,7 @@ HRESULT CALLBACK KxTaskDialog::EventsCallback(HWND hWnd, UINT notification, WPAR
 		}
 		case TDN_DESTROYED:
 		{
-			self->m_Handle = NULL;
+			self->m_Handle = nullptr;
 
 			wxCloseEvent event(wxEVT_CLOSE_WINDOW, self->GetId());
 			event.SetEventObject(self);
@@ -256,14 +256,14 @@ int KxTaskDialog::ShowDialog(bool isModal)
 {
 	if (isModal)
 	{
-		m_DialogConfig.hwndParent = m_Parent ? m_Parent->GetHandle() : NULL;
+		m_DialogConfig.hwndParent = m_Parent ? m_Parent->GetHandle() : nullptr;
 	}
 	else
 	{
-		m_DialogConfig.hwndParent = NULL;
+		m_DialogConfig.hwndParent = nullptr;
 	}
 	SetFlagTDI(TDF_CAN_BE_MINIMIZED, !isModal);
-	SetFlagTDI(TDF_POSITION_RELATIVE_TO_WINDOW, m_Parent != NULL);
+	SetFlagTDI(TDF_POSITION_RELATIVE_TO_WINDOW, m_Parent != nullptr);
 
 	UpdateButtonArrays(m_ButtonLabels, m_ButtonsID);
 	UpdateButtonArrays(m_RadioButtonLabels, m_RadioButtonsID);
@@ -272,7 +272,7 @@ int KxTaskDialog::ShowDialog(bool isModal)
 	int retCode = wxID_CANCEL;
 	int radioButtonCode = wxID_NONE;
 	m_CheckBoxChecked = IsOptionEnabled(KxTD_CHB_CHECKED);
-	BOOL* checkedPtr = IsOptionEnabled(KxTD_CHB_ENABLED) ? &m_CheckBoxChecked : NULL;
+	BOOL* checkedPtr = IsOptionEnabled(KxTD_CHB_ENABLED) ? &m_CheckBoxChecked : nullptr;
 
 	SetReturnCode(wxID_CANCEL);
 	m_Result = ::TaskDialogIndirect(&m_DialogConfig, &retCode, &radioButtonCode, checkedPtr);
@@ -304,7 +304,7 @@ bool KxTaskDialog::Create(wxWindow* parent,
 	KxDialog::Create(m_Parent, id, sCaption, pos, size, KxDialog::DefaultStyle);
 
 	m_DialogConfig.cbSize = sizeof(TASKDIALOGCONFIG);
-	m_DialogConfig.hInstance = GetModuleHandleW(NULL);
+	m_DialogConfig.hInstance = GetModuleHandleW(nullptr);
 	m_DialogConfig.cxWidth = 0;
 	m_DialogConfig.lpCallbackData = (LONG_PTR)this;
 	m_DialogConfig.pfCallback = EventsCallback;
@@ -363,10 +363,10 @@ void KxTaskDialog::SetOptions(KxTD_Options options)
 bool KxTaskDialog::Show(bool show)
 {
 	// Create modeless-like dialog
-	if (show && GetHandle() == NULL)
+	if (show && GetHandle() == nullptr)
 	{
 		SetFlagTDI(TDF_CAN_BE_MINIMIZED, true);
-		m_DialogConfig.hwndParent = m_Parent ? m_Parent->GetHandle() : NULL;
+		m_DialogConfig.hwndParent = m_Parent ? m_Parent->GetHandle() : nullptr;
 
 		ShowDialog(false);
 	}
@@ -375,7 +375,7 @@ bool KxTaskDialog::Show(bool show)
 int KxTaskDialog::ShowModal()
 {
 	SetFlagTDI(TDF_CAN_BE_MINIMIZED, false);
-	m_DialogConfig.hwndParent = NULL;
+	m_DialogConfig.hwndParent = nullptr;
 
 	return ShowDialog(true);
 }
@@ -390,7 +390,7 @@ KxStdDialogControl KxTaskDialog::AddButton(wxWindowID id, const wxString& label,
 	{
 		m_ButtonLabels.push_back(label);
 	}
-	m_ButtonsID.push_back(TASKDIALOG_BUTTON {id, NULL});
+	m_ButtonsID.push_back(TASKDIALOG_BUTTON {id, nullptr});
 
 	m_DialogConfig.pButtons = m_ButtonsID.data();
 	m_DialogConfig.cButtons = m_ButtonsID.size();
@@ -406,7 +406,7 @@ KxStdDialogControl KxTaskDialog::AddRadioButton(wxWindowID id, const wxString& l
 	{
 		m_RadioButtonLabels.push_back(label);
 	}
-	m_RadioButtonsID.push_back(TASKDIALOG_BUTTON{id, NULL});
+	m_RadioButtonsID.push_back(TASKDIALOG_BUTTON{id, nullptr});
 
 	m_DialogConfig.pRadioButtons = m_RadioButtonsID.data();
 	m_DialogConfig.cRadioButtons = m_RadioButtonsID.size();

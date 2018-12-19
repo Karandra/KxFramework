@@ -24,7 +24,7 @@ namespace
 
 	int a()
 	{
-		KxGraphicsContext v(NULL);
+		KxGraphicsContext v(nullptr);
 		v.Clip(wxRect(0, 1, 2, 3));
 		v.Clip(wxRect2DDouble(0, 1, 2, 3));
 	}

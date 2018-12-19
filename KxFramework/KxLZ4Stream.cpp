@@ -107,7 +107,7 @@ void KxLZ4InputStream::Init()
 	}
 	else
 	{
-		LZ4_setStreamDecode(m_StreamObject.GetAs<LZ4_streamDecode_t>(), NULL, 0);
+		LZ4_setStreamDecode(m_StreamObject.GetAs<LZ4_streamDecode_t>(), nullptr, 0);
 	}
 }
 

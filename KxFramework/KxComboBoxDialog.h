@@ -10,11 +10,11 @@ enum
 class KX_API KxComboBoxDialog: public KxStdDialog
 {
 	private:
-		wxComboBox* m_View = NULL;
+		wxComboBox* m_View = nullptr;
 
 	private:
 		virtual wxOrientation GetViewLabelSizerOrientation() const;
-		virtual bool IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut = NULL) const;
+		virtual bool IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut = nullptr) const;
 
 	public:
 		static const long DefaultStyle = KxStdDialog::DefaultStyle|KxCBD_READONLY;

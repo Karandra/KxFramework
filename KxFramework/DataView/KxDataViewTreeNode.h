@@ -98,8 +98,8 @@ class KX_API KxDataViewTreeNode
 		static bool SwapNodes(KxDataViewTreeNode* node1, KxDataViewTreeNode* node2);
 
 	private:
-		KxDataViewMainWindow* m_MainWindow = NULL;
-		KxDataViewTreeNode* m_ParentNode = NULL;
+		KxDataViewMainWindow* m_MainWindow = nullptr;
+		KxDataViewTreeNode* m_ParentNode = nullptr;
 		KxDataViewItem m_Item;
 
 		// Data specific to non-leaf (branch, inner) nodes
@@ -117,11 +117,11 @@ class KX_API KxDataViewTreeNode
 	public:
 		bool IsRootNode()
 		{
-			return m_ParentNode == NULL;
+			return m_ParentNode == nullptr;
 		}
 		bool HasParent() const
 		{
-			return m_ParentNode != NULL;
+			return m_ParentNode != nullptr;
 		}
 		
 		KxDataViewTreeNode* GetParent() const
@@ -198,8 +198,8 @@ class KX_API KxDataViewTreeNodeOperation_RowToTreeNode: public KxDataViewTreeNod
 	private:
 		ptrdiff_t m_Row = -1;
 		ptrdiff_t m_CurrentRow = -1;
-		KxDataViewTreeNode* m_ResultNode = NULL;
-		KxDataViewTreeNode* m_ParentNode = NULL;
+		KxDataViewTreeNode* m_ResultNode = nullptr;
+		KxDataViewTreeNode* m_ParentNode = nullptr;
 
 	public:
 		KxDataViewTreeNodeOperation_RowToTreeNode(ptrdiff_t row , ptrdiff_t current, KxDataViewTreeNode* node)

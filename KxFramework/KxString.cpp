@@ -73,7 +73,7 @@ namespace Util
 		}
 
 		// Expression is empty or it's star char ('*'), return true.
-		if ((!expressionStr || !expressionStr[0]) || (expressionStr[0] == starChar && expressionStr[1] == NULL))
+		if ((!expressionStr || !expressionStr[0]) || (expressionStr[0] == starChar && expressionStr[1] == ZeroChar))
 		{
 			return true;
 		}
@@ -450,6 +450,6 @@ wxString KxString::AbbreviateFilePath(const wxString& source, size_t maxChars)
 	maxChars++;
 
 	wxString result;
-	::PathCompactPathExW(wxStringBuffer(result, maxChars), source.wc_str(), maxChars, NULL);
+	::PathCompactPathExW(wxStringBuffer(result, maxChars), source.wc_str(), maxChars, 0);
 	return result;
 }

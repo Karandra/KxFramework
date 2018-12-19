@@ -8,17 +8,17 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxFramework/KxFramework.h"
 
 #define KxSysAPI_DECLARE_LIBRARY(name)								static HMODULE Lib_##name
-#define KxSysAPI_DEFINE_LIBRARY(name)								HMODULE KxSystemAPI::Lib_##name = NULL
+#define KxSysAPI_DEFINE_LIBRARY(name)								HMODULE KxSystemAPI::Lib_##name = nullptr
 #define KxSysAPI_LOAD_LIBRARY(name)									Lib_##name = ::LoadLibraryW(L ## #name".dll")
-#define KxSysAPI_UNLOAD_LIBRARY(name)								if (Lib_##name != NULL) {::FreeLibrary(Lib_##name);}
+#define KxSysAPI_UNLOAD_LIBRARY(name)								if (Lib_##name != nullptr) {::FreeLibrary(Lib_##name);}
 #define KxSysAPI_GET_LIBRARY(name)									Lib_##name
-#define KxSysAPI_CHECK_LIBRARY(name)								(KxSysAPI_GET_LIBRARY(name) != NULL)
+#define KxSysAPI_CHECK_LIBRARY(name)								(KxSysAPI_GET_LIBRARY(name) != nullptr)
 
 #define KxSysAPI_DECLARE_FUNCTION(ret_type, call_conv, name, ...)	\
 	typedef ret_type (call_conv *FUNCTION_##name)(__VA_ARGS__);		\
 	static FUNCTION_##name name;									\
 
-#define KxSysAPI_DEFINE_FUNCTION(name)								KxSystemAPI::FUNCTION_##name KxSystemAPI::name = NULL
+#define KxSysAPI_DEFINE_FUNCTION(name)								KxSystemAPI::FUNCTION_##name KxSystemAPI::name = nullptr
 
 #define KxSysAPI_INIT_FUNCTION_AS(dll, name, in_dll_name)			name = (FUNCTION_##name)GetProcAddress((Lib_##dll), #in_dll_name)
 #define KxSysAPI_INIT_FUNCTION(dll, name)							KxSysAPI_INIT_FUNCTION_AS(dll, name, name)

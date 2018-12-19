@@ -7,7 +7,7 @@ template<class T> class KxUnownedBuffer
 		using DataType = T;
 
 	private:
-		DataType* m_Data = NULL;
+		DataType* m_Data = nullptr;
 		size_t m_Size = 0;
 
 	public:
@@ -39,7 +39,7 @@ template<class T> class KxUnownedBuffer
 
 		bool empty() const
 		{
-			return m_Data == NULL || m_Size == 0;
+			return m_Data == nullptr || m_Size == 0;
 		}
 		size_t size() const
 		{

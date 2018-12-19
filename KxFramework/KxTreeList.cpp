@@ -93,12 +93,12 @@ wxDataViewRenderer* KxTreeList::GetColumnRendererDV(size_t index) const
 	if (index != -1)
 	{
 		wxDataViewColumn* column = GetColumnDV(index);
-		if (column != NULL)
+		if (column != nullptr)
 		{
 			return column->GetRenderer();
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 bool KxTreeList::Create(wxWindow* parent,
@@ -238,7 +238,7 @@ void KxTreeList::SetItemImage(const wxTreeListItem& item, int nImage, int mode)
 }
 wxRect KxTreeList::GetItemRect(const wxDataViewItem& item, size_t columnIndex) const
 {
-	return m_DataView->GetItemRect(item, columnIndex != -1 ? GetColumnDV(columnIndex) : NULL);
+	return m_DataView->GetItemRect(item, columnIndex != -1 ? GetColumnDV(columnIndex) : nullptr);
 }
 wxRect KxTreeList::GetItemRect(const wxTreeListItem& item, size_t columnIndex) const
 {
@@ -264,7 +264,7 @@ wxTreeListItem KxTreeList::GetPrevSibling(const wxTreeListItem& item) const
 		}
 		prevItem = currentItem;
 	}
-	return wxTreeListItem(NULL);
+	return wxTreeListItem(nullptr);
 }
 
 KxTreeListItem KxTreeList::GetSelection() const

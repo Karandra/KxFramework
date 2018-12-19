@@ -12,7 +12,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 KxCOMInit::KxCOMInit(DWORD options)
 	:m_Result(E_FAIL)
 {
-	m_Result = ::CoInitializeEx(NULL, options);
+	m_Result = ::CoInitializeEx(nullptr, options);
 	m_IsInit = SUCCEEDED(m_Result);
 }
 KxCOMInit::~KxCOMInit()

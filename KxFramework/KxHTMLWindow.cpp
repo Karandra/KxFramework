@@ -60,7 +60,7 @@ void KxHTMLWindow::CreateContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link)
 		KxMenuItem* item = MakeItem(KxID_COPY);
 		item->Enable(HasSelection());
 	}
-	if (link != NULL)
+	if (link != nullptr)
 	{
 		KxMenuItem* item = MakeItem(KxID_COPY_LINK);
 	}

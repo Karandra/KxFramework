@@ -227,7 +227,7 @@ double KxMath::Map(double x, double inMin, double inMax, double outMin, double o
 
 int64_t KxMath::FromBase(const wxString& x, int64_t base)
 {
-	return std::wcstol(x.wc_str(), NULL, base);
+	return std::wcstol(x.wc_str(), nullptr, base);
 }
 wxString KxMath::ToBase(int64_t x, int64_t base)
 {

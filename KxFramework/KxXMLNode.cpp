@@ -11,7 +11,7 @@ std::string KxXMLNode::CleanText(const tinyxml2::XMLNode* node, const std::strin
 	std::string contents;
 	if (node->ToElement())
 	{
-		for (const tinyxml2::XMLNode* child = node->FirstChild(); child != NULL; child = child->NextSibling())
+		for (const tinyxml2::XMLNode* child = node->FirstChild(); child != nullptr; child = child->NextSibling())
 		{
 			const std::string text = CleanText(child);
 			if (!separator.empty() && child != node && !text.empty())
@@ -43,10 +43,10 @@ size_t KxXMLNode::GetIndexWithinParent(const tinyxml2::XMLNode* node)
 	size_t index = 0;
 	if (node && node->ToElement())
 	{
-		auto parentElement = node->Parent() ? node->Parent()->ToElement() : NULL;
+		auto parentElement = node->Parent() ? node->Parent()->ToElement() : nullptr;
 		if (parentElement)
 		{
-			for (const tinyxml2::XMLElement* element = parentElement->FirstChildElement(); element != NULL; element = element->NextSiblingElement())
+			for (const tinyxml2::XMLElement* element = parentElement->FirstChildElement(); element != nullptr; element = element->NextSiblingElement())
 			{
 				index++;
 				if (element == node->ToElement())
@@ -362,7 +362,7 @@ size_t KxXMLNode::GetChildrenCount() const
 	size_t count = 0;
 	if (auto node = GetNode())
 	{
-		for (const tinyxml2::XMLNode* child = node->FirstChild(); child != NULL; child = child->NextSibling())
+		for (const tinyxml2::XMLNode* child = node->FirstChild(); child != nullptr; child = child->NextSibling())
 		{
 			count++;
 		}
@@ -383,7 +383,7 @@ KxXMLNode::NodeVector KxXMLNode::GetChildren() const
 	NodeVector list;
 	if (auto node = GetNode())
 	{
-		for (const tinyxml2::XMLNode* child = node->FirstChild(); child != NULL; child = child->NextSibling())
+		for (const tinyxml2::XMLNode* child = node->FirstChild(); child != nullptr; child = child->NextSibling())
 		{
 			list.push_back(KxXMLNode(const_cast<tinyxml2::XMLNode*>(child), m_Document));
 		}
@@ -395,7 +395,7 @@ KxXMLNode::NodeVector KxXMLNode::GetChildrenElements(const wxString& searchPatte
 	NodeVector list;
 	if (auto node = GetNode())
 	{
-		for (const tinyxml2::XMLElement* child = node->FirstChildElement(); child != NULL; child = child->NextSiblingElement())
+		for (const tinyxml2::XMLElement* child = node->FirstChildElement(); child != nullptr; child = child->NextSiblingElement())
 		{
 			if (searchPattern.IsEmpty() || wxString(child->Name()).Matches(searchPattern))
 			{
@@ -468,7 +468,7 @@ bool KxXMLNode::IsElement() const
 {
 	if (GetNode())
 	{
-		return GetNode()->ToElement() != NULL;
+		return GetNode()->ToElement() != nullptr;
 	}
 	return false;
 }
@@ -476,7 +476,7 @@ bool KxXMLNode::IsText() const
 {
 	if (GetNode())
 	{
-		return GetNode()->ToText() != NULL;
+		return GetNode()->ToText() != nullptr;
 	}
 	return false;
 }
@@ -524,7 +524,7 @@ size_t KxXMLNode::GetAttributeCount() const
 	{
 		if (auto node = GetNode()->ToElement())
 		{
-			for (const tinyxml2::XMLAttribute* attribute = node->FirstAttribute(); attribute != NULL; attribute = attribute->Next())
+			for (const tinyxml2::XMLAttribute* attribute = node->FirstAttribute(); attribute != nullptr; attribute = attribute->Next())
 			{
 				count++;
 			}
@@ -538,7 +538,7 @@ bool KxXMLNode::HasAttributes() const
 	{
 		if (auto element = node->ToElement())
 		{
-			return element->FirstAttribute() != NULL;
+			return element->FirstAttribute() != nullptr;
 		}
 	}
 	return false;
@@ -550,7 +550,7 @@ KxStringVector KxXMLNode::GetAttributes() const
 	{
 		if (auto node = GetNode()->ToElement())
 		{
-			for (const tinyxml2::XMLAttribute* attribute = node->FirstAttribute(); attribute != NULL; attribute = attribute->Next())
+			for (const tinyxml2::XMLAttribute* attribute = node->FirstAttribute(); attribute != nullptr; attribute = attribute->Next())
 			{
 				list.push_back(attribute->Name());
 			}
@@ -566,7 +566,7 @@ bool KxXMLNode::HasAttribute(const wxString& name) const
 		if (auto node = GetNode()->ToElement())
 		{
 			auto utf8 = name.ToUTF8();
-			return node->Attribute(utf8.data()) != NULL;
+			return node->Attribute(utf8.data()) != nullptr;
 		}
 	}
 	return false;
@@ -602,7 +602,7 @@ bool KxXMLNode::ClearAttributes()
 	{
 		if (auto node = GetNode()->ToElement())
 		{
-			for (const tinyxml2::XMLAttribute* attribute = node->FirstAttribute(); attribute != NULL; attribute = attribute->Next())
+			for (const tinyxml2::XMLAttribute* attribute = node->FirstAttribute(); attribute != nullptr; attribute = attribute->Next())
 			{
 				node->DeleteAttribute(attribute->Name());
 			}
@@ -770,7 +770,7 @@ bool KxXMLNode::InsertAfterChild(KxXMLNode& newNode)
 {
 	if (auto node = GetNode())
 	{
-		return node->InsertAfterChild(node, newNode.GetNode()) != NULL;
+		return node->InsertAfterChild(node, newNode.GetNode()) != nullptr;
 	}
 	return false;
 }
@@ -778,7 +778,7 @@ bool KxXMLNode::InsertFirstChild(KxXMLNode& newNode)
 {
 	if (auto node = GetNode())
 	{
-		return node->InsertFirstChild(newNode.GetNode()) != NULL;
+		return node->InsertFirstChild(newNode.GetNode()) != nullptr;
 	}
 	return false;
 }
@@ -786,7 +786,7 @@ bool KxXMLNode::InsertLastChild(KxXMLNode& newNode)
 {
 	if (auto node = GetNode())
 	{
-		return node->InsertEndChild(newNode.GetNode()) != NULL;
+		return node->InsertEndChild(newNode.GetNode()) != nullptr;
 	}
 	return false;
 }

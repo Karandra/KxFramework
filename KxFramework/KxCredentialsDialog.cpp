@@ -30,15 +30,15 @@ int KxCredentialsDialog::ShowModal()
 
 	CREDUI_INFOW credentialInfoUI = {0};
 	credentialInfoUI.cbSize = sizeof(credentialInfoUI);
-	credentialInfoUI.hwndParent = m_Parent ? wxGetTopLevelParent(m_Parent)->GetHandle() : NULL;
+	credentialInfoUI.hwndParent = m_Parent ? wxGetTopLevelParent(m_Parent)->GetHandle() : nullptr;
 	credentialInfoUI.pszCaptionText = m_Caption.wc_str();
 	credentialInfoUI.pszMessageText = m_Message.wc_str();
-	credentialInfoUI.hbmBanner = NULL;
+	credentialInfoUI.hbmBanner = nullptr;
 
 	ULONG authPackage = 0;
-	PVOID inAuthBlob = NULL;
+	PVOID inAuthBlob = nullptr;
 	ULONG inAuthBlobSize = 0;
-	PVOID authBlob = NULL;
+	PVOID authBlob = nullptr;
 	ULONG authBlobSize = 0;
 	BOOL saveCredentials = m_SaveCredentials;
 
@@ -49,7 +49,7 @@ int KxCredentialsDialog::ShowModal()
 													 inAuthBlobSize,
 													 &authBlob,
 													 &authBlobSize,
-													 m_EnableSaveCredentialsCheckBox ? &saveCredentials : NULL,
+													 m_EnableSaveCredentialsCheckBox ? &saveCredentials : nullptr,
 													 CREDUIWIN_GENERIC
 	);
 	if (ret == ERROR_SUCCESS)

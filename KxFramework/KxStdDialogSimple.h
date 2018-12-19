@@ -5,7 +5,7 @@
 class KX_API KxStdDialogSimple: public KxStdDialog
 {
 	private:
-		wxWindow* m_View = NULL;
+		wxWindow* m_View = nullptr;
 
 	private:
 		virtual wxOrientation GetWindowResizeSide() const

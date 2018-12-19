@@ -44,7 +44,7 @@ bool KxTextBox::SetTabWidth(unsigned int width)
 }
 void KxTextBox::SetLimit(size_t max)
 {
-	::SendMessageW(GetHandle(), EM_LIMITTEXT, max, NULL);
+	::SendMessageW(GetHandle(), EM_LIMITTEXT, max, 0);
 }
 
 void KxTextBox::SetPasswordChar(const wxString character)
@@ -54,7 +54,7 @@ void KxTextBox::SetPasswordChar(const wxString character)
 	{
 		charValue = character.GetChar(0).GetValue();
 	}
-	::SendMessageW(GetHandle(), EM_SETPASSWORDCHAR, charValue, NULL);
+	::SendMessageW(GetHandle(), EM_SETPASSWORDCHAR, charValue, 0);
 	Refresh();
 }
 bool KxTextBox::SetHint(const wxString& label)

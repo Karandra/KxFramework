@@ -11,7 +11,7 @@ class KX_API KxMenuItem: public wxEvtHandler, public wxMenuItem
 		wxWindowID GetEffectiveID(wxWindowID id) const;
 
 	public:
-		KxMenuItem(wxWindowID id, const wxString& label = wxEmptyString, const wxString& helpString = wxEmptyString, wxItemKind kind = wxITEM_NORMAL, KxMenu* subMenu = NULL);
+		KxMenuItem(wxWindowID id, const wxString& label = wxEmptyString, const wxString& helpString = wxEmptyString, wxItemKind kind = wxITEM_NORMAL, KxMenu* subMenu = nullptr);
 		KxMenuItem(const wxString& label, const wxString& helpString = wxEmptyString, wxItemKind kind = wxITEM_NORMAL);
 		virtual ~KxMenuItem();
 
@@ -69,7 +69,7 @@ template<class ItemT, class MenuT> class KxMenuItemIterator
 		using size_type = std::size_t;
 
 	private:
-		MenuT* m_Menu = NULL;
+		MenuT* m_Menu = nullptr;
 		size_type m_ItemIndex = 0;
 
 	private:
@@ -111,7 +111,7 @@ template<class ItemT, class MenuT> class KxMenuItemIterator
 		pointer operator->() const
 		{
 			auto& items = m_Menu->GetMenuItems();
-			return m_ItemIndex < items.size() ? GetItemByIndex(m_ItemIndex) : NULL;
+			return m_ItemIndex < items.size() ? GetItemByIndex(m_ItemIndex) : nullptr;
 		}
 		
 		bool operator==(const self_type& rhs) const

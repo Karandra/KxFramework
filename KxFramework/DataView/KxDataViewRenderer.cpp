@@ -256,11 +256,11 @@ wxSize KxDataViewRenderer::DoGetTextExtent(const wxString& string) const
 		wxSize size;
 		if (newLinePos != wxNOT_FOUND)
 		{
-			GetView()->GetTextExtent(string.Left(newLinePos), &size.x, &size.y, NULL, NULL, &font);
+			GetView()->GetTextExtent(string.Left(newLinePos), &size.x, &size.y, nullptr, nullptr, &font);
 		}
 		else
 		{
-			GetView()->GetTextExtent(string, &size.x, &size.y, NULL, NULL, &font);
+			GetView()->GetTextExtent(string, &size.x, &size.y, nullptr, nullptr, &font);
 		}
 		return size;
 	}
@@ -319,7 +319,7 @@ bool KxDataViewRenderer::DoDrawBitmap(const wxRect& cellRect, KxDataViewCellStat
 		const wxPoint pos = cellRect.GetPosition();
 		if (IsOptionEnabled(KxDVR_IMAGELIST_BITMAP_DRAWING))
 		{
-			bool hasMask = bitmap.GetMask() != NULL;
+			bool hasMask = bitmap.GetMask() != nullptr;
 			KxImageList list(bitmapSize.GetWidth(), bitmapSize.GetHeight(), hasMask, 1);
 
 			if (needsScaling)
@@ -369,7 +369,7 @@ bool KxDataViewRenderer::DoDrawProgressBar(const wxRect& cellRect, KxDataViewCel
 
 		// Draw background
 		RECT cellRectWin = KxUtility::CopyRectToRECT(cellRect);
-		::DrawThemeBackground(themeHandle, dc, PP_BAR, 0, &cellRectWin, NULL);
+		::DrawThemeBackground(themeHandle, dc, PP_BAR, 0, &cellRectWin, nullptr);
 
 		// Draw filled part
 		RECT contentRect = {0};
@@ -389,24 +389,24 @@ bool KxDataViewRenderer::DoDrawProgressBar(const wxRect& cellRect, KxDataViewCel
 		{
 			case ProgressBarState::Paused:
 			{
-				::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_PAUSED, &contentRect, NULL);
+				::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_PAUSED, &contentRect, nullptr);
 				break;
 			}
 			case ProgressBarState::Error:
 			{
-				::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_ERROR, &contentRect, NULL);
+				::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_ERROR, &contentRect, nullptr);
 				break;
 			}
 			case ProgressBarState::Partial:
 			{
-				::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_PARTIAL, &contentRect, NULL);
+				::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_PARTIAL, &contentRect, nullptr);
 				break;
 			}
 
 			default:
 			case ProgressBarState::Normal:
 			{
-				::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_NORMAL, &contentRect, NULL);
+				::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_NORMAL, &contentRect, nullptr);
 				break;
 			}
 		};

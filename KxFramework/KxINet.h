@@ -34,7 +34,7 @@ class KX_API KxINet
 	public:
 		static LPCWSTR StringOrNull(const wxString& string)
 		{
-			return string.IsEmpty() ? NULL : string.wc_str();
+			return string.IsEmpty() ? nullptr : string.wc_str();
 		}
 		static KxINetURLParts SplitURL(const wxString& url);
 		static bool IsInternetAvailable();
@@ -43,7 +43,7 @@ class KX_API KxINet
 	private:
 		using HINTERNET = void*;
 
-		HINTERNET m_Handle = NULL;
+		HINTERNET m_Handle = nullptr;
 		DWORD m_TimeOut = DefaultTimeout;
 
 		std::list<std::unique_ptr<KxINetConnection>> m_ConnectionsList;

@@ -24,7 +24,7 @@ KxStringVector KxSystemSettings::GetSoundsList()
 }
 KxSystemSettings::DisplayInfo KxSystemSettings::GetDisplayInfo()
 {
-	HDC desktopDC = ::GetDC(NULL);
+	HDC desktopDC = ::GetDC(nullptr);
 	DisplayInfo info;
 
 	info.Width = ::GetDeviceCaps(desktopDC, DESKTOPHORZRES);
@@ -32,7 +32,7 @@ KxSystemSettings::DisplayInfo KxSystemSettings::GetDisplayInfo()
 	info.Depth = ::GetDeviceCaps(desktopDC, BITSPIXEL);
 	info.Frequency = ::GetDeviceCaps(desktopDC, VREFRESH);
 
-	::ReleaseDC(NULL, desktopDC);
+	::ReleaseDC(nullptr, desktopDC);
 	return info;
 }
 KxSystemSettings::VideoAdapterList KxSystemSettings::EnumVideoAdapters()
@@ -47,7 +47,7 @@ KxSystemSettings::VideoAdapterList KxSystemSettings::EnumVideoAdapters()
 	std::hash<std::wstring_view> Hasher;
 	do
 	{
-		isSuccess = ::EnumDisplayDevicesW(NULL, index, &info, 0);
+		isSuccess = ::EnumDisplayDevicesW(nullptr, index, &info, 0);
 		if (info.StateFlags & DISPLAY_DEVICE_ATTACHED_TO_DESKTOP || info.StateFlags == 0 && wcscmp(info.DeviceString, L"") != 0)
 		{
 			size_t hashValue = Hasher(info.DeviceString);
@@ -70,7 +70,7 @@ KxSystemSettings::VideoModeList KxSystemSettings::EnumVideoModes(const wxString&
 	DEVMODEW info = {0};
 	info.dmSize = sizeof(info);
 
-	while (::EnumDisplaySettingsW(deviceName.IsEmpty() ? NULL : deviceName.wc_str(), index, &info))
+	while (::EnumDisplaySettingsW(deviceName.IsEmpty() ? nullptr : deviceName.wc_str(), index, &info))
 	{
 		list.push_back(VideoMode{info.dmPelsWidth, info.dmPelsHeight, info.dmBitsPerPel, info.dmDisplayFrequency});
 		index++;

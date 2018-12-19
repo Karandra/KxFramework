@@ -171,12 +171,12 @@ class KX_API KxColor: public wxColour
 		uint32_t GetCOLORREF() const;
 		KxColor& SetCOLORREF(uint32_t color);
 		
-		void GetHSV(double& H, double& S, double& V, double* A = NULL) const;
-		void GetHSV(int& H, int& S, int& V, int* A = NULL) const;
+		void GetHSV(double& H, double& S, double& V, double* A = nullptr) const;
+		void GetHSV(int& H, int& S, int& V, int* A = nullptr) const;
 		KxColor& SetHSV(double H, double S, double V, double A = ALPHA_OPAQUE_PERCENT);
 		
-		void GetHSB(double& H, double& S, double& B, double* A = NULL) const;
-		void GetHSB(int& H, int& S, int& B, int* A = NULL) const;
+		void GetHSB(double& H, double& S, double& B, double* A = nullptr) const;
+		void GetHSB(int& H, int& S, int& B, int* A = nullptr) const;
 		KxColor& SetHSB(double H, double S, double B, double A = ALPHA_OPAQUE_PERCENT);
 };
 

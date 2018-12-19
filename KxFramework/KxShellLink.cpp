@@ -11,13 +11,13 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 
 KxShellLink::KxShellLink(const wxString& filePath)
 {
-	HRESULT res = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLinkW, (void**)&m_Instance);
+	HRESULT res = CoCreateInstance(CLSID_ShellLink, nullptr, CLSCTX_INPROC_SERVER, IID_IShellLinkW, (void**)&m_Instance);
 	if (SUCCEEDED(res))
 	{
 		if (!filePath.IsEmpty())
 		{
-			IPersistFile* persistFile = NULL;
-			if (SUCCEEDED(m_Instance->QueryInterface(IID_IPersistFile, (void**)&persistFile)) && persistFile != NULL)
+			IPersistFile* persistFile = nullptr;
+			if (SUCCEEDED(m_Instance->QueryInterface(IID_IPersistFile, (void**)&persistFile)) && persistFile != nullptr)
 			{
 				persistFile->Load(filePath.wc_str(), 0);
 				persistFile->Release();
@@ -26,7 +26,7 @@ KxShellLink::KxShellLink(const wxString& filePath)
 	}
 	else
 	{
-		m_Instance = NULL;
+		m_Instance = nullptr;
 	}
 }
 KxShellLink::~KxShellLink()
@@ -39,14 +39,14 @@ KxShellLink::~KxShellLink()
 
 bool KxShellLink::IsOK() const
 {
-	return m_Instance != NULL;
+	return m_Instance != nullptr;
 }
 bool KxShellLink::Save(const wxString& path) const
 {
 	if (!path.IsEmpty())
 	{
-		IPersistFile* persistFile = NULL;
-		if (SUCCEEDED(m_Instance->QueryInterface(IID_IPersistFile, (void**)&persistFile)) && persistFile != NULL)
+		IPersistFile* persistFile = nullptr;
+		if (SUCCEEDED(m_Instance->QueryInterface(IID_IPersistFile, (void**)&persistFile)) && persistFile != nullptr)
 		{
 			HRESULT res = persistFile->Save(path.wc_str(), TRUE);
 			persistFile->Release();
@@ -59,7 +59,7 @@ bool KxShellLink::Save(const wxString& path) const
 wxString KxShellLink::GetTarget() const
 {
 	wxString out;
-	m_Instance->GetPath(wxStringBuffer(out, MAX_PATH), MAX_PATH, NULL, 0);
+	m_Instance->GetPath(wxStringBuffer(out, MAX_PATH), MAX_PATH, nullptr, 0);
 	return out;
 }
 void KxShellLink::SetTarget(const wxString& value)
@@ -119,7 +119,7 @@ void KxShellLink::SetIconLocation(const wxString& value, int index)
 int KxShellLink::GetIconIndex() const
 {
 	int index = -1;
-	m_Instance->GetIconLocation(NULL, 0, &index);
+	m_Instance->GetIconLocation(nullptr, 0, &index);
 	return index;
 }
 

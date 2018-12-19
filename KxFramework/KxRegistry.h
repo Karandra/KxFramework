@@ -85,7 +85,7 @@ class KX_API KxRegistry
 class KX_API KxRegistryKey
 {
 	private:
-		HKEY m_Handle = NULL;
+		HKEY m_Handle = nullptr;
 		DWORD m_Status = ERROR_INVALID_FUNCTION; // Init to some error code
 
 	private:
@@ -104,7 +104,7 @@ class KX_API KxRegistryKey
 		}
 		operator bool() const
 		{
-			return m_Handle != NULL && m_Status == ERROR_SUCCESS;
+			return m_Handle != nullptr && m_Status == ERROR_SUCCESS;
 		}
 		
 		operator HKEY() const

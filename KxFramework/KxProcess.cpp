@@ -23,7 +23,7 @@ wxDEFINE_EVENT(KxEVT_PROCESS_IDLE, wxProcessEvent);
 
 void KxProcess::RIO_ReadStream(wxInputStream* stream, wxMemoryBuffer& buffer)
 {
-	if (stream != NULL)
+	if (stream != nullptr)
 	{
 		while (stream->CanRead())
 		{
@@ -41,15 +41,15 @@ void KxProcess::RIO_CloseStreams()
 	delete m_RIO_StreamOut;
 	delete m_RIO_StreamError;
 
-	m_RIO_StreamIn = NULL;
-	m_RIO_StreamOut = NULL;
-	m_RIO_StreamError = NULL;
+	m_RIO_StreamIn = nullptr;
+	m_RIO_StreamOut = nullptr;
+	m_RIO_StreamError = nullptr;
 }
 
 #if defined RtCFunction
 bool KxProcess::WH_RegisterForCreateWindow(DWORD nThreadID)
 {
-	if (WH_CreateWindowHookHandle == NULL && WH_Callback == NULL)
+	if (WH_CreateWindowHookHandle == nullptr && WH_Callback == nullptr)
 	{
 		using RtCFunctionWrapper = RtCFunctionWrapperT<LRESULT, KxProcess, int, WPARAM, LPARAM>;
 		auto WH_CallbackW = new RtCFunctionWrapper(Lua::IntegerArray{Rt_int32::ClassID, Rt_pointer::ClassID, Rt_pointer::ClassID}, Rt_pointer::ClassID, RtCFunctionABI::CFunction_STDCALL);
@@ -77,11 +77,11 @@ bool KxProcess::WH_RegisterForCreateWindow(DWORD nThreadID)
 					break;
 				}
 			};
-			return CallNextHookEx(NULL, code, wParam, lParam);
+			return CallNextHookEx(nullptr, code, wParam, lParam);
 		}, this);
 
 		WH_Callback = WH_CallbackW;
-		WH_CreateWindowHookHandle = ::SetWindowsHookExW(WH_SHELL, WH_Callback->GetPointer<HOOKPROC>(), NULL, nThreadID);
+		WH_CreateWindowHookHandle = ::SetWindowsHookExW(WH_SHELL, WH_Callback->GetPointer<HOOKPROC>(), nullptr, nThreadID);
 		return WH_CreateWindowHookHandle;
 	}
 	return false;
@@ -91,10 +91,10 @@ void KxProcess::WH_UnRegisterForCreateWindow()
 	if (WH_CreateWindowHookHandle)
 	{
 		::UnhookWindowsHookEx(WH_CreateWindowHookHandle);
-		WH_CreateWindowHookHandle = NULL;
+		WH_CreateWindowHookHandle = nullptr;
 		
 		delete WH_Callback;
-		WH_Callback = NULL;
+		WH_Callback = nullptr;
 	}
 }
 #endif
@@ -116,14 +116,14 @@ BOOL KxProcess::SafeTerminateProcess(HANDLE processHandle, UINT exitCode)
 	BOOL isSuccess = FALSE;
 	DWORD processExitCode = 0;
 	DWORD errorCode = 0;
-	HANDLE remoteThreadHandle = NULL;
+	HANDLE remoteThreadHandle = nullptr;
 	if (GetExitCodeProcess((wasDuplicated) ? processHandleDuplicate : processHandle, &processExitCode) && (processExitCode == STILL_ACTIVE))
 	{
 		DWORD threadID = 0;
 		remoteThreadHandle = CreateRemoteThread
 		(
 			(wasDuplicated) ? processHandleDuplicate : processHandle,
-			NULL,
+			nullptr,
 			0,
 			(LPTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandleW(L"Kernel32.dll"), "ExitProcess"),
 			(PVOID)exitCode,
@@ -131,7 +131,7 @@ BOOL KxProcess::SafeTerminateProcess(HANDLE processHandle, UINT exitCode)
 			&threadID
 		);
 
-		if (remoteThreadHandle == NULL)
+		if (remoteThreadHandle == nullptr)
 		{
 			errorCode = GetLastError();
 		}

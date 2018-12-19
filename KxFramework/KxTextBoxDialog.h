@@ -18,13 +18,13 @@ enum KxTBD_Options
 class KX_API KxTextBoxDialog: public KxStdDialog
 {
 	private:
-		wxControl* m_View = NULL;
+		wxControl* m_View = nullptr;
 		KxTBD_Options m_Options = KxTBD_NONE;
 
 	private:
 		virtual wxOrientation GetViewLabelSizerOrientation() const;
 		virtual wxOrientation GetWindowResizeSide() const;
-		virtual bool IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut = NULL) const;
+		virtual bool IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut = nullptr) const;
 
 		bool IsStyledTextBox() const
 		{
@@ -75,7 +75,7 @@ class KX_API KxTextBoxDialog: public KxStdDialog
 			{
 				return static_cast<KxTextBox*>(m_View);
 			}
-			return NULL;
+			return nullptr;
 		}
 		KxStyledTextBox* GetStyledTextBox() const
 		{
@@ -83,7 +83,7 @@ class KX_API KxTextBoxDialog: public KxStdDialog
 			{
 				return static_cast<KxStyledTextBox*>(m_View);
 			}
-			return NULL;
+			return nullptr;
 		}
 
 		wxString GetValue() const

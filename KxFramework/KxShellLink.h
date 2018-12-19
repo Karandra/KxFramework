@@ -21,7 +21,7 @@ class KX_API KxShellLink
 		};
 
 	private:
-		IShellLinkW* m_Instance = NULL;
+		IShellLinkW* m_Instance = nullptr;
 
 	public:
 		KxShellLink(const wxString& filePath = wxEmptyString);
@@ -43,7 +43,7 @@ class KX_API KxShellLink
 		wxString GetDescription() const;
 		void SetDescription(const wxString& value);
 
-		wxString GetIconLocation(int* indexOut = NULL) const;
+		wxString GetIconLocation(int* indexOut = nullptr) const;
 		void SetIconLocation(const wxString& value, int index = 0);
 		int GetIconIndex() const;
 

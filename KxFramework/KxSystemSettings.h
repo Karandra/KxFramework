@@ -30,7 +30,7 @@ class KX_API KxSystemSettings
 
 	public:
 		static KxColor GetColor(wxSystemColour index);
-		static int GetMetric(wxSystemMetric index, const wxWindow* window = NULL);
+		static int GetMetric(wxSystemMetric index, const wxWindow* window = nullptr);
 		static KxStringVector GetSoundsList();
 		static DisplayInfo GetDisplayInfo();
 		static VideoAdapterList EnumVideoAdapters();

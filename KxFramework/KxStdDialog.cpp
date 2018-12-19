@@ -447,7 +447,7 @@ KxStdDialogControl KxStdDialog::GetButton(wxWindowID id) const
 			}
 		}
 	}
-	return NULL;
+	return static_cast<wxWindow*>(nullptr);
 }
 KxStdDialogControl KxStdDialog::AddButton(wxWindowID id, const wxString& label, bool prepend)
 {
@@ -552,7 +552,7 @@ KxStdDialogControl::operator wxWindow*()
 	{
 		return m_Data.Control;
 	}
-	return NULL;
+	return nullptr;
 }
 KxStdDialogControl::operator KxButton*()
 {
@@ -560,5 +560,5 @@ KxStdDialogControl::operator KxButton*()
 	{
 		return static_cast<KxButton*>(m_Data.Control);
 	}
-	return NULL;
+	return nullptr;
 }

@@ -37,7 +37,7 @@ wxString KxINetEvent::QueryInfoString(DWORD infoLevel, DWORD index, DWORD* nextI
 		DWORD length = 0;
 		DWORD indexOld = index;
 
-		if (!::HttpQueryInfoW(m_RequestHandle, infoLevel, NULL, &length, &index) && ::GetLastError() == ERROR_INSUFFICIENT_BUFFER && length != 0)
+		if (!::HttpQueryInfoW(m_RequestHandle, infoLevel, nullptr, &length, &index) && ::GetLastError() == ERROR_INSUFFICIENT_BUFFER && length != 0)
 		{
 			wxString out;
 			index = indexOld;

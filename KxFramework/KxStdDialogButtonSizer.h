@@ -16,11 +16,11 @@ class KX_API KxStdDialogButtonSizer: public wxBoxSizer
 		bool m_HasFirstPrepend = false;
 
 	protected:
-		wxAnyButton* m_ButtonAffirmative = NULL; // wxID_OK, wxID_YES, wxID_SAVE go here
-		wxAnyButton* m_ButtonApply = NULL; // wxID_APPLY
-		wxAnyButton* m_ButtonNegative = NULL; // wxID_NO
-		wxAnyButton* m_ButtonCancel = NULL; // wxID_CANCEL, wxID_CLOSE
-		wxAnyButton* m_ButtonHelp = NULL; // wxID_HELP, wxID_CONTEXT_HELP
+		wxAnyButton* m_ButtonAffirmative = nullptr; // wxID_OK, wxID_YES, wxID_SAVE go here
+		wxAnyButton* m_ButtonApply = nullptr; // wxID_APPLY
+		wxAnyButton* m_ButtonNegative = nullptr; // wxID_NO
+		wxAnyButton* m_ButtonCancel = nullptr; // wxID_CANCEL, wxID_CLOSE
+		wxAnyButton* m_ButtonHelp = nullptr; // wxID_HELP, wxID_CONTEXT_HELP
 
 	private:
 		int GetSpacing(wxAnyButton* button)

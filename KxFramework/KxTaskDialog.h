@@ -30,8 +30,8 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 	private:
 		TASKDIALOGCONFIG m_DialogConfig = {0};
 		KxTD_Options m_Options = KxTD_NONE;
-		wxWindow* m_Parent = NULL;
-		HWND m_Handle = NULL;
+		wxWindow* m_Parent = nullptr;
+		HWND m_Handle = nullptr;
 		HRESULT m_Result = S_FALSE;
 
 		wxIcon m_MainIcon;
@@ -66,7 +66,7 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 
 		inline LPCWSTR GetStringOrNull(const wxString& text)
 		{
-			return text.IsEmpty() ? NULL : text.wc_str();
+			return text.IsEmpty() ? nullptr : text.wc_str();
 		}
 		inline void SetFlagTDI(TASKDIALOG_FLAGS flag, bool set = true)
 		{
@@ -169,7 +169,7 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 				m_MainIcon = wxNullIcon;
 
 				SetFlagTDI(TDF_USE_HICON_MAIN, false);
-				m_DialogConfig.hMainIcon = NULL;
+				m_DialogConfig.hMainIcon = nullptr;
 				m_DialogConfig.pszMainIcon = TranslateIconIDToTDI(m_MainIconID);
 			}
 			else
@@ -184,7 +184,7 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 			m_MainIcon.CopyFromBitmap(icon);
 
 			SetFlagTDI(TDF_USE_HICON_MAIN, true);
-			m_DialogConfig.pszMainIcon = NULL;
+			m_DialogConfig.pszMainIcon = nullptr;
 			m_DialogConfig.hMainIcon = m_MainIcon.GetHICON();
 		}
 		
@@ -210,7 +210,7 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 
 			SetFlagTDI(TDF_USE_HICON_FOOTER, false);
 			m_DialogConfig.pszFooterIcon = TranslateIconIDToTDI(m_FooterIconID);
-			m_DialogConfig.hFooterIcon = NULL;
+			m_DialogConfig.hFooterIcon = nullptr;
 		}
 		void SetFooterIcon(const wxBitmap& icon)
 		{
@@ -218,7 +218,7 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 			m_FooterIcon.CopyFromBitmap(icon);
 
 			SetFlagTDI(TDF_USE_HICON_FOOTER, true);
-			m_DialogConfig.pszFooterIcon = NULL;
+			m_DialogConfig.pszFooterIcon = nullptr;
 			m_DialogConfig.hFooterIcon = m_FooterIcon.GetHICON();
 		}
 

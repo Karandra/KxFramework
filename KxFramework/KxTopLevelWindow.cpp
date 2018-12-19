@@ -77,7 +77,7 @@ bool KxTLWInternal::MSWWindowProc(wxWindow* window, WXLRESULT& result, WXUINT ms
 			KxMenu* menu = KxMenu::GetCurrentMenu();
 			if (menu && flags & MF_MOUSESELECT)
 			{
-				KxMenuItem* item = NULL;
+				KxMenuItem* item = nullptr;
 				if (flags & MF_POPUP)
 				{
 					item = menu->FindItemByPosition(nItemID);
@@ -204,11 +204,11 @@ bool KxTLWInternal::DWMBlurBehind(wxWindow* window, bool enable, const wxRegion&
 wxIcon KxTLWInternal::GetTitleIcon(const wxWindow* window)
 {
 	HWND hWnd = window->GetHandle();
-	HICON iconHandle = (HICON)::SendMessageW(hWnd, WM_GETICON, ICON_BIG, NULL);
-	if (iconHandle == NULL)
+	HICON iconHandle = (HICON)::SendMessageW(hWnd, WM_GETICON, ICON_BIG, 0);
+	if (iconHandle == nullptr)
 	{
-		iconHandle = (HICON)::SendMessageW(hWnd, WM_GETICON, ICON_SMALL, NULL);
-		if (iconHandle != NULL)
+		iconHandle = (HICON)::SendMessageW(hWnd, WM_GETICON, ICON_SMALL, 0);
+		if (iconHandle != nullptr)
 		{
 			wxIcon icon;
 			icon.CreateFromHICON(iconHandle);
@@ -222,13 +222,13 @@ void KxTLWInternal::SetTitleIcon(wxWindow* window, const wxIcon& icon)
 	HWND hWnd = window->GetHandle();
 	if (icon.IsOk())
 	{
-		::SendMessageW(hWnd, WM_SETICON, ICON_BIG, (LPARAM)icon.GetHICON());
-		::SendMessageW(hWnd, WM_SETICON, ICON_SMALL, (LPARAM)icon.GetHICON());
+		::SendMessageW(hWnd, WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(icon.GetHICON()));
+		::SendMessageW(hWnd, WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(icon.GetHICON()));
 	}
 	else
 	{
-		::SendMessageW(hWnd, WM_SETICON, ICON_BIG, NULL);
-		::SendMessageW(hWnd, WM_SETICON, ICON_SMALL, NULL);
+		::SendMessageW(hWnd, WM_SETICON, ICON_BIG, 0);
+		::SendMessageW(hWnd, WM_SETICON, ICON_SMALL, 0);
 	}
 }
 

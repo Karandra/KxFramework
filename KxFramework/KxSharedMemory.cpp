@@ -71,7 +71,7 @@ namespace KxSharedMemoryNS
 		const DWORD protectionWin32 = ConvertProtection(protection);
 		const DWORD memoryAccessWin32 = ConvertMemoryAccess(protection);
 
-		handle = ::CreateFileMappingW(INVALID_HANDLE_VALUE, NULL, protectionWin32, sizeULI.HighPart, sizeULI.LowPart, name);
+		handle = ::CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, protectionWin32, sizeULI.HighPart, sizeULI.LowPart, name);
 		if (handle != INVALID_HANDLE_VALUE)
 		{
 			buffer = ::MapViewOfFile(handle, memoryAccessWin32, 0, 0, size);

@@ -50,7 +50,7 @@ class KX_API KxMenu: public wxMenu
 
 	protected:
 		virtual WORD DoShowMenu(wxWindow* window, const wxPoint& pos, DWORD alignment, bool async);
-		void ProcessItemSelection(int menuWxID, wxCommandEvent* event = NULL);
+		void ProcessItemSelection(int menuWxID, wxCommandEvent* event = nullptr);
 
 	public:
 		static int WinIDToWx(UINT menuWinID)
@@ -83,7 +83,7 @@ class KX_API KxMenu: public wxMenu
 		}
 
 	public:
-		wxWindowID Show(wxWindow* window = NULL, const wxPoint& pos = wxDefaultPosition, DWORD alignment = DefaultAlignment);
+		wxWindowID Show(wxWindow* window = nullptr, const wxPoint& pos = wxDefaultPosition, DWORD alignment = DefaultAlignment);
 		wxWindowID ShowAsPopup(wxWindow* window, int offset = 1, DWORD alignment = DefaultAlignment);
 
 		void ShowAsync(wxWindow& window, const wxPoint& pos = wxDefaultPosition, DWORD alignment = DefaultAlignment);
@@ -102,8 +102,8 @@ class KX_API KxMenu: public wxMenu
 		KxMenuItem* Prepend(KxMenu* subMenu, const wxString& label, const wxString& helpString = wxEmptyString);
 		KxMenuItem* PrependSeparator();
 
-		KxMenuItem* FindChildItem(wxWindowID id, size_t* posPtr = NULL) const;
-		KxMenuItem* FindItem(wxWindowID id, KxMenu** menu = NULL) const;
+		KxMenuItem* FindChildItem(wxWindowID id, size_t* posPtr = nullptr) const;
+		KxMenuItem* FindItem(wxWindowID id, KxMenu** menu = nullptr) const;
 		KxMenuItem* FindItemByPosition(size_t pos) const;
 
 		virtual KxMenuItem* RemoveItem(KxMenuItem* item);

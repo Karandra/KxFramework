@@ -68,13 +68,13 @@ class KX_API KxTranslation
 			return m_TranslatorName;
 		}
 
-		const wxString& GetString(const wxString& id, bool* isSuccessOut = NULL) const;
-		const wxString& GetString(const char* id, bool* isSuccessOut = NULL) const
+		const wxString& GetString(const wxString& id, bool* isSuccessOut = nullptr) const;
+		const wxString& GetString(const char* id, bool* isSuccessOut = nullptr) const
 		{
 			return GetString(wxString::FromUTF8Unchecked(id), isSuccessOut);
 		}
-		wxString GetString(wxStandardID id, bool* isSuccessOut = NULL) const;
-		wxString GetString(KxStandardID id, bool* isSuccessOut = NULL) const;
+		wxString GetString(wxStandardID id, bool* isSuccessOut = nullptr) const;
+		wxString GetString(KxStandardID id, bool* isSuccessOut = nullptr) const;
 
 		bool LoadFromFile(const wxString& filePath);
 		bool LoadFromResource(const wxString& localeName);

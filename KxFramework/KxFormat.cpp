@@ -225,23 +225,23 @@ static void TestFunction()
 	format.arg(1i64);
 	format.arg(1ui64);
 
-	void* p1 = NULL;
-	const void* p2 = NULL;
+	void* p1 = nullptr;
+	const void* p2 = nullptr;
 	format.arg(p1);
 	format.arg(p2);
 
-	int* pi1 = NULL;
-	const int* pi2 = NULL;
+	int* pi1 = nullptr;
+	const int* pi2 = nullptr;
 	format.arg(pi1);
 	format.arg(pi2);
 
-	const char* c1 = NULL;
-	char* c2 = NULL;
+	const char* c1 = nullptr;
+	char* c2 = nullptr;
 	format.arg(c1);
 	format.arg(c2);
 
-	const wchar_t* wc1 = NULL;
-	wchar_t* wc2 = NULL;
+	const wchar_t* wc1 = nullptr;
+	wchar_t* wc2 = nullptr;
 	format.arg(wc1);
 	format.arg(wc2);
 

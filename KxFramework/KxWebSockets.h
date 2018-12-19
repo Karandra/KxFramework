@@ -18,7 +18,7 @@ class KX_API KxWebSocketClient: public wxEvtHandler, public KxWebSocketsClientIm
 		static wxString GetLibraryVersion();
 
 	private:
-		KxWebSocketClientImpl* m_Impl = NULL;
+		KxWebSocketClientImpl* m_Impl = nullptr;
 
 		wxCriticalSection m_CritSection;
 		bool m_IsOpen = false;

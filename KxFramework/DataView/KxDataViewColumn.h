@@ -30,9 +30,9 @@ class KX_API KxDataViewColumn: private wxSettableHeaderColumn, public KxWithOpti
 		using Vector = std::vector<KxDataViewColumn*>;
 
 	private:
-		KxDataViewCtrl* m_DataView = NULL;
-		KxDataViewRenderer* m_Renderer = NULL;
-		KxDataViewEditor* m_Editor = NULL;
+		KxDataViewCtrl* m_DataView = nullptr;
+		KxDataViewRenderer* m_Renderer = nullptr;
+		KxDataViewEditor* m_Editor = nullptr;
 		bool m_ShouldDeleteEditor = true;
 		bool m_DynamicEditor = false;
 
@@ -122,7 +122,7 @@ class KX_API KxDataViewColumn: private wxSettableHeaderColumn, public KxWithOpti
 
 		bool HasEditor() const
 		{
-			return m_Editor != NULL;
+			return m_Editor != nullptr;
 		}
 		KxDataViewEditor* GetEditor() const
 		{
@@ -140,7 +140,7 @@ class KX_API KxDataViewColumn: private wxSettableHeaderColumn, public KxWithOpti
 		}
 		void RemoveEditor()
 		{
-			DoSetEditor(NULL);
+			DoSetEditor(nullptr);
 			m_ShouldDeleteEditor = false;
 		}
 		void UseDynamicEditor(bool use)
@@ -267,7 +267,7 @@ class KX_API KxDataViewColumnPart
 	friend class KxDataViewColumn;
 
 	private:
-		KxDataViewColumn* m_Column = NULL;
+		KxDataViewColumn* m_Column = nullptr;
 
 	private:
 		void SetOwner(KxDataViewColumn* column)

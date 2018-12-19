@@ -13,7 +13,7 @@ class KX_API KxComboControl: public wxComboCtrl
 		};
 
 	private:
-		KxComboPopup* m_PopupCtrl = NULL;
+		KxComboPopup* m_PopupCtrl = nullptr;
 		DrawFocus m_FocusDrawMode = DrawFocus::Auto;
 
 	protected:

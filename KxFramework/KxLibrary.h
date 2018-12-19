@@ -118,7 +118,7 @@ class KX_API KxLibrary: public KxIOwnedSimple
 
 	private:
 		wxString m_FilePath;
-		HMODULE m_Handle = NULL;
+		HMODULE m_Handle = nullptr;
 		DWORD m_LoadFlags = 0;
 
 	private:

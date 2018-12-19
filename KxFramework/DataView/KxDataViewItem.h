@@ -10,10 +10,10 @@ class KxDataViewItem
 		using Vector = std::vector<KxDataViewItem>;
 
 	private:
-		void* m_Value = NULL;
+		void* m_Value = nullptr;
 
 	public:
-		KxDataViewItem(const void* value = NULL)
+		KxDataViewItem(const void* value = nullptr)
 			:m_Value(const_cast<void*>(value))
 		{
 		}
@@ -29,7 +29,7 @@ class KxDataViewItem
 	public:
 		bool IsOK() const
 		{
-			return m_Value != NULL;
+			return m_Value != nullptr;
 		}
 		bool IsTreeRootItem() const
 		{
@@ -37,7 +37,7 @@ class KxDataViewItem
 		}
 		void MakeNull()
 		{
-			m_Value = NULL;
+			m_Value = nullptr;
 		}
 		
 		void* GetValue() const
@@ -80,7 +80,7 @@ class KxDataViewItem
 template<class T> class KxDataViewItemT: public KxDataViewItem
 {
 	public:
-		KxDataViewItemT(const T* value = NULL)
+		KxDataViewItemT(const T* value = nullptr)
 			:KxDataViewItem(value)
 		{
 		}

@@ -54,7 +54,7 @@ void KxFileItem::SetTime(const FILETIME& fileTime, wxDateTime& fileTimeWx) const
 bool KxFileItem::DoUpdateInfo(const wxString& fullPath)
 {
 	WIN32_FIND_DATAW info = {0};
-	HANDLE searchHandle = ::FindFirstFileExW(fullPath.wc_str(), FindExInfoBasic, &info, FindExSearchNameMatch, NULL, 0);
+	HANDLE searchHandle = ::FindFirstFileExW(fullPath.wc_str(), FindExInfoBasic, &info, FindExSearchNameMatch, nullptr, 0);
 	if (searchHandle != INVALID_HANDLE_VALUE)
 	{
 		Set(info);

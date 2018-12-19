@@ -62,14 +62,14 @@ class KX_API KxProcess: public wxEvtHandler, public KxWithOptions<KxProcessOptio
 
 		// I/O redirection part
 		bool m_RIO_Enabled = false;
-		wxPipeOutputStream* m_RIO_StreamIn = NULL;
-		wxPipeInputStream* m_RIO_StreamOut = NULL;
-		wxPipeInputStream* m_RIO_StreamError = NULL;
+		wxPipeOutputStream* m_RIO_StreamIn = nullptr;
+		wxPipeInputStream* m_RIO_StreamOut = nullptr;
+		wxPipeInputStream* m_RIO_StreamError = nullptr;
 
 		// Windows hooks
 		#if defined RtCFunction
-		RtCFunction* WH_Callback = NULL;
-		HHOOK WH_CreateWindowHookHandle = NULL;
+		RtCFunction* WH_Callback = nullptr;
+		HHOOK WH_CreateWindowHookHandle = nullptr;
 		#endif
 
 	private:

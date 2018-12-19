@@ -35,8 +35,8 @@ class KX_API KxHTMLNode: public KxXDocumentNode<KxHTMLNode>
 		}
 
 	private:
-		const void* m_Node = NULL;
-		const KxHTMLDocument* m_Document = NULL;
+		const void* m_Node = nullptr;
+		const KxHTMLDocument* m_Document = nullptr;
 
 	protected:
 		wxString DoGetValue(const wxString& defaultValue = wxEmptyString) const override;
@@ -47,7 +47,7 @@ class KX_API KxHTMLNode: public KxXDocumentNode<KxHTMLNode>
 
 	public:
 		KxHTMLNode()
-			:m_Document(NULL), m_Node(NULL)
+			:m_Document(nullptr), m_Node(nullptr)
 		{
 		}
 		KxHTMLNode(const KxHTMLNode&) = default;
@@ -121,8 +121,8 @@ class KX_API KxHTMLDocument: public KxHTMLNode
 {
 	private:
 		wxMemoryBuffer m_Buffer;
-		void* m_ParserOutput = NULL;
-		void* m_ParserOptions = NULL;
+		void* m_ParserOutput = nullptr;
+		void* m_ParserOptions = nullptr;
 
 	private:
 		void Init();

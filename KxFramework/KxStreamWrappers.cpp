@@ -12,15 +12,15 @@ template <class CharType> KxStreamBase::Offset ReadToNullChar()
 {
 	KxStreamBase::Offset readed = 0;
 	bool isReadSuccess = false;
-	CharType c = NULL;
+	CharType c = nullptr;
 
 	do
 	{
-		c = NULL;
+		c = nullptr;
 		isReadSuccess = ReadObject(c);
 		readed += LastRead();
 	}
-	while (isReadSuccess && c != NULL);
+	while (isReadSuccess && c != nullptr);
 	return readed;
 }
 #endif

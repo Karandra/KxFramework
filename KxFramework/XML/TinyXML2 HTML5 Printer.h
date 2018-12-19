@@ -53,7 +53,7 @@ namespace tinyxml2
 	class XMLPrinterHTML5: public XMLPrinter
 	{
 		public:
-			XMLPrinterHTML5(FILE* file = NULL, bool compact = false, int depth = 0):
+			XMLPrinterHTML5(FILE* file = nullptr, bool compact = false, int depth = 0):
 				XMLPrinter(file, compact, depth)
 			{
 			}
@@ -75,7 +75,7 @@ namespace tinyxml2
 				{
 					"area", "base", "br", "col", "command", "embed", "hr", "img",
 					"input", "keygen", "link", "meta", "param", "source", "track", "wbr",
-					NULL
+					nullptr
 				};
 
 				// I could use 'bsearch', but I don't have MSVC to test on (it would work with gcc/libc).

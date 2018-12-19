@@ -87,7 +87,7 @@ class KX_API KxAuiToolBar: public wxAuiToolBar
 	private:
 		wxAuiToolBarItem* AddTool(int tool_id, const wxString &label, const wxBitmap &bitmap, const wxString &short_help_string = wxEmptyString, wxItemKind kind = wxITEM_NORMAL) = delete;
 		wxAuiToolBarItem* AddTool(int tool_id, const wxString &label, const wxBitmap &bitmap, const wxBitmap &disabled_bitmap, wxItemKind kind, const wxString &short_help_string, const wxString &long_help_string, wxObject* client_data) = delete;
-		wxAuiToolBarItem* AddTool(int tool_id, const wxBitmap &bitmap, const wxBitmap &disabled_bitmap, bool toggle = false, wxObject* client_data = NULL, const wxString &short_help_string = wxEmptyString, const wxString &long_help_string = wxEmptyString) = delete;
+		wxAuiToolBarItem* AddTool(int tool_id, const wxBitmap &bitmap, const wxBitmap &disabled_bitmap, bool toggle = false, wxObject* client_data = nullptr, const wxString &short_help_string = wxEmptyString, const wxString &long_help_string = wxEmptyString) = delete;
 		bool GetOverflowVisible() const = delete;
 		bool GetToolBarFits() const = delete;
 		bool GetGripperVisible() const = delete;
@@ -127,7 +127,7 @@ class KX_API KxAuiToolBar: public wxAuiToolBar
 class KX_API KxAuiToolBarArt: public wxAuiDefaultToolBarArt
 {
 	private:
-		KxAuiToolBar* m_Instance = NULL;
+		KxAuiToolBar* m_Instance = nullptr;
 
 	public:
 		KxAuiToolBarArt(KxAuiToolBar* object)

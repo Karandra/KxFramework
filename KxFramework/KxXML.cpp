@@ -92,7 +92,7 @@ KxXMLDocument::~KxXMLDocument()
 
 bool KxXMLDocument::IsOK() const
 {
-	return !m_Document.Error() && m_Document.FirstChild() != NULL;
+	return !m_Document.Error() && m_Document.FirstChild() != nullptr;
 }
 wxString KxXMLDocument::GetXPath() const
 {

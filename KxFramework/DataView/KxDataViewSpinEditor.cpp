@@ -29,7 +29,7 @@ wxWindow* KxDataViewSpinEditor::CreateEditorControl(wxWindow* parent, const wxRe
 	wxPoint pos = cellRect.GetTopLeft();
 	wxSize size = cellRect.GetSize();
 
-	wxControl* editor = NULL;
+	wxControl* editor = nullptr;
 	if (m_Type == Type::Integer)
 	{
 		int initialValue = 0;

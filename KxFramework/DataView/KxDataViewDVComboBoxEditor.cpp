@@ -48,7 +48,7 @@ wxWindow* KxDataViewDVComboBoxEditor::CreateEditorControl(wxWindow* parent, cons
 		if (m_Model)
 		{
 			wxAny label;
-			m_Model->GetValue(label, m_Selection, NULL);
+			m_Model->GetValue(label, m_Selection, nullptr);
 			event.SetString(label.As<wxString>());
 		}
 		event.StopPropagation();
@@ -82,8 +82,8 @@ bool KxDataViewDVComboBoxEditor::GetValueFromEditor(wxWindow* control, wxAny& va
 	value = m_Selection;
 
 	m_Selection.MakeNull();
-	m_ComboBox->AssociateModel(NULL);
-	m_ComboBox = NULL;
+	m_ComboBox->AssociateModel(nullptr);
+	m_ComboBox = nullptr;
 	return true;
 }
 

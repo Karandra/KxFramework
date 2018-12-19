@@ -61,7 +61,7 @@ namespace Util
 		if (resHandle)
 		{
 			HGLOBAL resDataHandle = ::LoadResource(handle, resHandle);
-			if (resDataHandle != NULL)
+			if (resDataHandle != nullptr)
 			{
 				void* resData = LockResource(resDataHandle);
 				DWORD resSize = SizeofResource(handle, resHandle);
@@ -81,7 +81,7 @@ namespace Util
 		{
 			return LoadImageW(handle, GetNameOrID(name), GDIType, size.GetWidth(), size.GetHeight(), LR_DEFAULTCOLOR);
 		}
-		return NULL;
+		return nullptr;
 	}
 	template<class T> T LoadGDIImage(HMODULE handle, const wxString& name, const wxString& type, UINT GDIType, wxSize size = DefaultIconSize, WORD localeID = DefaultLocaleID)
 	{
@@ -140,10 +140,10 @@ namespace Util
 
 	struct CallbackInfo
 	{
-		KxLibrary* self = NULL;
-		void* Data = NULL;
+		KxLibrary* self = nullptr;
+		void* Data = nullptr;
 
-		CallbackInfo(KxLibrary* self, void* data = NULL)
+		CallbackInfo(KxLibrary* self, void* data = nullptr)
 			:self(self), Data(data)
 		{
 		}
@@ -199,20 +199,20 @@ namespace Util
 class KxLibraryUpdateLocker
 {
 	private:
-		HANDLE m_UpdateHandle = NULL;
+		HANDLE m_UpdateHandle = nullptr;
 		bool m_Success = false;
-		KxLibrary* m_Library = NULL;
+		KxLibrary* m_Library = nullptr;
 		wxString m_LibaryFullPath;
 
 	private:
 		void Unlock()
 		{
 			::FreeLibrary(m_Library->GetHandle());
-			m_Library->SetHandle(NULL);
+			m_Library->SetHandle(nullptr);
 		}
 		void Lock()
 		{
-			HMODULE libraryHandle = ::LoadLibraryExW(m_LibaryFullPath.wc_str(), NULL, m_Library->GetLoadFlags());
+			HMODULE libraryHandle = ::LoadLibraryExW(m_LibaryFullPath.wc_str(), nullptr, m_Library->GetLoadFlags());
 			m_Library->SetHandle(libraryHandle);
 		}
 
@@ -242,7 +242,7 @@ class KxLibraryUpdateLocker
 		}
 		bool IsOK() const
 		{
-			return m_UpdateHandle != NULL && m_Library != NULL;
+			return m_UpdateHandle != nullptr && m_Library != nullptr;
 		}
 		bool IsSuccess() const
 		{
@@ -264,7 +264,7 @@ bool KxLibrary::SetSearchFolder(const wxString& path)
 	{
 		if (path.IsEmpty())
 		{
-			return KxSystemAPI::SetDllDirectoryW(NULL);
+			return KxSystemAPI::SetDllDirectoryW(nullptr);
 		}
 		return KxSystemAPI::SetDllDirectoryW(path.wc_str());
 	}
@@ -276,7 +276,7 @@ const void* KxLibrary::AddSearchFolder(const wxString& path)
 	{
 		return reinterpret_cast<const void*>(KxSystemAPI::AddDllDirectory(path.wc_str()));
 	}
-	return NULL;
+	return nullptr;
 }
 bool KxLibrary::RemoveSearchFolder(const void* pathCookie)
 {
@@ -334,7 +334,7 @@ bool KxLibrary::Load(const wxString& libraryPath, DWORD flags)
 	{
 		m_FilePath = libraryPath;
 		m_LoadFlags = flags;
-		m_Handle = ::LoadLibraryExW(libraryPath.wc_str(), NULL, flags);
+		m_Handle = ::LoadLibraryExW(libraryPath.wc_str(), nullptr, flags);
 
 		TakeOwnership();
 		return IsOK();
@@ -372,7 +372,7 @@ void KxLibrary::SaveVersionString(const KxLibraryVersionInfo& info, const wxStri
 {
 	wxString query = wxString::Format(wxS("%s\\%s"), queryTemplate, rawFiledName);
 	UINT size = 0;
-	LPWSTR stringInfo = NULL;
+	LPWSTR stringInfo = nullptr;
 	if (::VerQueryValueW(buffer.data(), query.wc_str(), (void**)&stringInfo, &size) && stringInfo)
 	{
 		wxString value = info.GetString(rawFiledName);
@@ -388,7 +388,7 @@ void KxLibrary::LoadVersionString(KxLibraryVersionInfo& info, const wxString& qu
 {
 	wxString query = wxString::Format(wxS("%s\\%s"), queryTemplate, rawFiledName);
 	UINT size = 0;
-	LPWSTR stringInfo = NULL;
+	LPWSTR stringInfo = nullptr;
 	if (::VerQueryValueW(buffer.data(), query.wc_str(), (void**)&stringInfo, &size) && stringInfo)
 	{
 		info.SetString(infoFiledName, wxString(stringInfo, size));
@@ -396,17 +396,17 @@ void KxLibrary::LoadVersionString(KxLibraryVersionInfo& info, const wxString& qu
 }
 wxMemoryBuffer KxLibrary::CreateVersionInfoStruct(const wxString& templateString, const KxLibraryVersionInfo& info)
 {
-	DWORD structSize = ::GetFileVersionInfoSizeW(templateString.wc_str(), NULL);
+	DWORD structSize = ::GetFileVersionInfoSizeW(templateString.wc_str(), nullptr);
 	if (structSize != 0)
 	{
 		wxMemoryBuffer buffer(structSize);
 		BOOL ret = ::GetFileVersionInfoW(templateString.wc_str(), 0, structSize, buffer.GetData());
 		if (ret)
 		{
-			void* fixedInfo = NULL;
+			void* fixedInfo = nullptr;
 			UINT size = 0;
 			ret = ::VerQueryValueW(buffer.GetData(), L"\\", &fixedInfo, &size);
-			if (ret != 0 && fixedInfo != NULL)
+			if (ret != 0 && fixedInfo != nullptr)
 			{
 				VS_FIXEDFILEINFO* fixedVersionInfo = (VS_FIXEDFILEINFO*)fixedInfo;
 
@@ -423,7 +423,7 @@ wxMemoryBuffer KxLibrary::CreateVersionInfoStruct(const wxString& templateString
 			}
 
 			// Language
-			void* langInfo = NULL;
+			void* langInfo = nullptr;
 			size = 0;
 			ret = ::VerQueryValueW(buffer.GetData(), L"\\VarFileInfo\\Translation", &langInfo, &size);
 			if (ret)
@@ -445,17 +445,17 @@ wxMemoryBuffer KxLibrary::CreateVersionInfoStruct(const wxString& templateString
 KxLibraryVersionInfo KxLibrary::GetVersionInfoFromFile(const wxString& filePath)
 {
 	KxLibraryVersionInfo info;
-	DWORD structSize = ::GetFileVersionInfoSizeW(filePath.wc_str(), NULL);
+	DWORD structSize = ::GetFileVersionInfoSizeW(filePath.wc_str(), nullptr);
 	if (structSize != 0)
 	{
 		wxMemoryBuffer buffer(structSize);
 		BOOL ret = ::GetFileVersionInfoW(filePath.wc_str(), 0, structSize, buffer.GetData());
 		if (ret)
 		{
-			void* fixedInfo = NULL;
+			void* fixedInfo = nullptr;
 			UINT size = 0;
 			ret = ::VerQueryValueW(buffer.GetData(), L"\\", &fixedInfo, &size);
-			if (ret != 0 && fixedInfo != NULL)
+			if (ret != 0 && fixedInfo != nullptr)
 			{
 				info.MarkAsInit();
 
@@ -475,7 +475,7 @@ KxLibraryVersionInfo KxLibrary::GetVersionInfoFromFile(const wxString& filePath)
 			}
 
 			// Language
-			void* langInfo = NULL;
+			void* langInfo = nullptr;
 			size = 0;
 			ret = ::VerQueryValueW(buffer.GetData(), L"\\VarFileInfo\\Translation", &langInfo, &size);
 			if (ret)
@@ -497,7 +497,7 @@ KxLibraryVersionInfo KxLibrary::GetVersionInfoFromFile(const wxString& filePath)
 // Properties
 bool KxLibrary::IsOK() const
 {
-	return m_Handle != NULL;
+	return m_Handle != nullptr;
 }
 
 bool KxLibrary::IsDataFile() const
@@ -604,7 +604,7 @@ wxIcon KxLibrary::GetIcon(const wxString& name, size_t index, WORD localeID) con
 
 			// I don't remember what '0x00030000' is.
 			HICON iconHandle = ::CreateIconFromResourceEx((PBYTE)iconBuffer.data(), iconBuffer.size(), TRUE, 0x00030000, width, height, LR_DEFAULTCOLOR);
-			if (iconHandle != NULL)
+			if (iconHandle != nullptr)
 			{
 				wxIcon icon;
 				icon.CreateFromHICON(iconHandle);
@@ -636,7 +636,7 @@ wxString KxLibrary::GetString(const wxString& name, WORD localeID) const
 		long stringID = 0;
 		name.ToLong(&stringID);
 
-		LPCWSTR string = NULL;
+		LPCWSTR string = nullptr;
 		int length = LoadStringW(m_Handle, stringID, (LPWSTR)&string, 0);
 		if (length > 0)
 		{
@@ -685,7 +685,7 @@ wxString KxLibrary::FormatMessage(DWORD messageID, WORD localeID) const
 
 bool KxLibrary::IsResourceExist(const wxString& type, const wxString& name, WORD localeID)
 {
-	return Util::GetResourceHandle(m_Handle, type, name, localeID) != NULL;
+	return Util::GetResourceHandle(m_Handle, type, name, localeID) != nullptr;
 }
 bool KxLibrary::RemoveResource(const wxString& type, const wxString& name, WORD localeID, bool updateNow)
 {
@@ -715,14 +715,14 @@ KxStringVector KxLibrary::EnumFunctions() const
 {
 	KxStringVector functionNames;
 
-	HANDLE fileHandle = ::CreateFileW(GetFileName().wc_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	HANDLE fileHandle = ::CreateFileW(GetFileName().wc_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	if (fileHandle != INVALID_HANDLE_VALUE)
 	{
-		HANDLE fileMapping = ::CreateFileMappingW(fileHandle, NULL, PAGE_READONLY, 0, 0, NULL);
-		if (fileMapping != NULL)
+		HANDLE fileMapping = ::CreateFileMappingW(fileHandle, nullptr, PAGE_READONLY, 0, 0, nullptr);
+		if (fileMapping != nullptr)
 		{
 			LPVOID fileBase = ::MapViewOfFile(fileMapping, FILE_MAP_READ, 0, 0, 0);
-			if (fileBase != NULL)
+			if (fileBase != nullptr)
 			{
 				PIMAGE_DOS_HEADER headerDOS = (PIMAGE_DOS_HEADER)fileBase;
 				PIMAGE_NT_HEADERS headerNT = (PIMAGE_NT_HEADERS)((size_t)headerDOS + (size_t)headerDOS->e_lfanew);
@@ -737,7 +737,7 @@ KxStringVector KxLibrary::EnumFunctions() const
 						#pragma warning(suppress: 4312)
 						DWORD** namesArray = (DWORD**)exportDir->AddressOfNames;
 						namesArray = (DWORD**)::ImageRvaToVa(headerNT, headerDOS, (size_t)namesArray, 0);
-						if (namesArray != NULL)
+						if (namesArray != nullptr)
 						{
 							DWORD functionsCount = exportDir->NumberOfNames;
 							functionNames.reserve(functionsCount);

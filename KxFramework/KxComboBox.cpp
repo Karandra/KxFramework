@@ -11,7 +11,7 @@ bool KxComboBox::Create(wxWindow* parent,
 						const wxValidator& validator
 )
 {
-	if (wxComboBox::Create(parent, id, value, pos, size, 0, NULL, style, validator))
+	if (wxComboBox::Create(parent, id, value, pos, size, 0, nullptr, style, validator))
 	{
 		EnableSystemTheme();
 		return true;

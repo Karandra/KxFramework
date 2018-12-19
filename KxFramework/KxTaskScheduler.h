@@ -32,7 +32,7 @@ class KX_API KxTaskSchedulerTask
 		KxCOMPtr<IActionCollection> m_ActionCollection;
 
 	private:
-		KxTaskSchedulerTask(ITaskDefinition* taskDef = NULL);
+		KxTaskSchedulerTask(ITaskDefinition* taskDef = nullptr);
 
 	public:
 		virtual ~KxTaskSchedulerTask();

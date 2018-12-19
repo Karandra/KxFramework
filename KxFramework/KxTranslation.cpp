@@ -41,7 +41,7 @@ wxString KxTranslation::GetSystemPreferredLocale()
 {
 	ULONG langCount = 0;
 	ULONG bufferSize = 0;
-	if (!::GetSystemPreferredUILanguages(MUI_LANGUAGE_NAME, &langCount, NULL, &bufferSize))
+	if (!::GetSystemPreferredUILanguages(MUI_LANGUAGE_NAME, &langCount, nullptr, &bufferSize))
 	{
 		std::vector<wchar_t> buffer(bufferSize, L'\000');
 		if (::GetSystemPreferredUILanguages(MUI_LANGUAGE_NAME, &langCount, buffer.data(), &bufferSize))
@@ -56,7 +56,7 @@ wxString KxTranslation::GetLanguageFullName(const wxString& localeName)
 {
 	LCTYPE lcType = KxSystem::IsWindows7OrGreater() ? LOCALE_SLOCALIZEDDISPLAYNAME : LOCALE_SLOCALIZEDLANGUAGENAME;
 
-	int length = ::GetLocaleInfoEx(localeName.wc_str(), lcType, NULL, 0);
+	int length = ::GetLocaleInfoEx(localeName.wc_str(), lcType, nullptr, 0);
 	if (length != 0)
 	{
 		wxString langName;

@@ -14,10 +14,10 @@ class KX_API KxDataViewModelNotifier
 		using Vector = std::vector<std::unique_ptr<KxDataViewModelNotifier>>;
 
 	private:
-		KxDataViewModel* m_Model = NULL;
+		KxDataViewModel* m_Model = nullptr;
 
 	public:
-		KxDataViewModelNotifier(KxDataViewModel* model = NULL)
+		KxDataViewModelNotifier(KxDataViewModel* model = nullptr)
 			:m_Model(model)
 		{
 		}
@@ -56,10 +56,10 @@ class KX_API KxDataViewModelNotifier
 class KX_API KxDataViewModelGenerciNotifier: public KxDataViewModelNotifier
 {
 	private:
-		KxDataViewMainWindow* m_MainWindow = NULL;
+		KxDataViewMainWindow* m_MainWindow = nullptr;
 
 	public:
-		KxDataViewModelGenerciNotifier(KxDataViewMainWindow* mainWindow, KxDataViewModel* model = NULL)
+		KxDataViewModelGenerciNotifier(KxDataViewMainWindow* mainWindow, KxDataViewModel* model = nullptr)
 			:m_MainWindow(mainWindow), KxDataViewModelNotifier(model)
 		{
 		}
@@ -81,7 +81,7 @@ class KX_API KxDataViewModel: public wxRefCounter, private KxDataViewModelNotifi
 
 	public:
 		KxDataViewModel()
-			:KxDataViewModelNotifier(NULL)
+			:KxDataViewModelNotifier(nullptr)
 		{
 		}
 

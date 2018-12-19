@@ -9,7 +9,7 @@ class KX_API KxFileFinder: public KxIFileFinder
 		static bool IsDirectoryEmpty(const wxString& directoryPath);
 
 	private:
-		wxEvtHandler* m_EvtHandler = NULL;
+		wxEvtHandler* m_EvtHandler = nullptr;
 		wxString m_SearchQuery;
 		bool m_IsCanceled = false;
 		bool m_CaseSensitive = false;
@@ -24,8 +24,8 @@ class KX_API KxFileFinder: public KxIFileFinder
 		virtual bool OnFound(const KxFileItem& foundItem) override;
 
 	public:
-		KxFileFinder(const wxString& searchQuery, wxEvtHandler* eventHandler = NULL);
-		KxFileFinder(const wxString& source, const wxString& filter, wxEvtHandler* eventHandler = NULL);
+		KxFileFinder(const wxString& searchQuery, wxEvtHandler* eventHandler = nullptr);
+		KxFileFinder(const wxString& source, const wxString& filter, wxEvtHandler* eventHandler = nullptr);
 		virtual ~KxFileFinder();
 
 	public:

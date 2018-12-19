@@ -27,7 +27,7 @@ KxINetURLParts KxINet::SplitURL(const wxString& url)
 
 	wxString urlCopy = KxString::ToLower(url);
 	urlCopy.Replace(" ", wxEmptyString, true);
-	if (::InternetCrackUrlW(urlCopy.wc_str(), urlCopy.Length(), NULL, &urlParts))
+	if (::InternetCrackUrlW(urlCopy.wc_str(), urlCopy.Length(), 0, &urlParts))
 	{
 		// Port
 		splitData.Port = urlParts.nPort;
@@ -108,9 +108,9 @@ wxString KxINet::LookupIP(const wxString& url, IP ip)
 {
 	KxINetURLParts parts = SplitURL(url);
 
-	PDNS_RECORD infoDNS = NULL;
+	PDNS_RECORD infoDNS = nullptr;
 	const WORD type = ip == IP::v6 ? DNS_TYPE_A6 : DNS_TYPE_A;
-	if (::DnsQuery_W(parts.HostName.wc_str(), type, DNS_QUERY_STANDARD|DNS_QUERY_BYPASS_CACHE, NULL, &infoDNS, NULL) == 0)
+	if (::DnsQuery_W(parts.HostName.wc_str(), type, DNS_QUERY_STANDARD|DNS_QUERY_BYPASS_CACHE, nullptr, &infoDNS, nullptr) == 0)
 	{
 		IN_ADDR inAddress = {};
 		bool isSuccess = false;
@@ -161,7 +161,7 @@ KxINet::KxINet(DWORD timeout)
 	:m_TimeOut(timeout)
 {
 	wxString userAgent = OnGetUserAgent();
-	m_Handle = ::InternetOpenW(userAgent.wc_str(), INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
+	m_Handle = ::InternetOpenW(userAgent.wc_str(), INTERNET_OPEN_TYPE_PRECONFIG, nullptr, nullptr, 0);
 	SetTimeouts();
 }
 KxINet::~KxINet()
@@ -192,5 +192,5 @@ const WCHAR* KxINet::AcceptTypes[] =
 	L"multipart/*",
 	L"text/*",
 	L"video/*",
-	NULL
+	nullptr
 };

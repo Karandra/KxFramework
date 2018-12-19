@@ -13,7 +13,7 @@ class KX_API KxShellMenu: public KxMenu
 
 		KxCOMPtr<IContextMenu> m_ShellMenu;
 		KxCOMPtr<IShellFolder> m_ShellFolder;
-		ITEMIDLIST* m_ShellItemList = NULL;
+		ITEMIDLIST* m_ShellItemList = nullptr;
 
 	private:
 		bool IsSystemItemID(WORD menuWinID) const;

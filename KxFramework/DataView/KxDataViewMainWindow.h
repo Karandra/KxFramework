@@ -59,7 +59,7 @@ class KX_API KxDataViewMainWindow: public wxWindow
 		int m_UniformLineHeight = 0;
 		bool m_Dirty = true;
 
-		KxDataViewColumn* m_CurrentColumn = NULL;
+		KxDataViewColumn* m_CurrentColumn = nullptr;
 		size_t m_CurrentRow = INVALID_ROW;
 		wxSelectionStore m_Selection;
 
@@ -73,7 +73,7 @@ class KX_API KxDataViewMainWindow: public wxWindow
 
 		size_t m_HotTrackRow = INVALID_ROW;
 		bool m_HotTrackRowEnabled = false;
-		KxDataViewColumn* m_HotTrackColumn = NULL;
+		KxDataViewColumn* m_HotTrackColumn = nullptr;
 
 		// Drag and Drop
 		size_t m_DragCount = 0;
@@ -101,18 +101,18 @@ class KX_API KxDataViewMainWindow: public wxWindow
 
 		// This is the tree structure of the model.
 		// Make m_count = -1 will cause the class recalculate the real displaying number of rows.
-		KxDataViewTreeNode* m_TreeRoot = NULL;
+		KxDataViewTreeNode* m_TreeRoot = nullptr;
 		size_t m_ItemsCount = INVALID_COUNT;
 
 		// This is the tree node under the cursor
-		KxDataViewTreeNode* m_TreeNodeUnderMouse = NULL;
+		KxDataViewTreeNode* m_TreeNodeUnderMouse = nullptr;
 
 		// sorted column + extra flags
 		int m_Sorting_Column = SortColumn_Default;
 		bool m_Sorting_OrderAsc = true;
 
 		// Current editor
-		KxDataViewEditor* m_CurrentEditor = NULL;
+		KxDataViewEditor* m_CurrentEditor = nullptr;
 
 	protected:
 		/* Events */
@@ -127,8 +127,8 @@ class KX_API KxDataViewMainWindow: public wxWindow
 
 		// Return false only if the event was vetoed by its handler.
 		bool SendExpanderEvent(wxEventType type, const KxDataViewItem& item);
-		void SendSelectionChangedEvent(const KxDataViewItem& item, KxDataViewColumn* column = NULL);
-		void SendSelectionChangedEvent(size_t row, KxDataViewColumn* column = NULL);
+		void SendSelectionChangedEvent(const KxDataViewItem& item, KxDataViewColumn* column = nullptr);
+		void SendSelectionChangedEvent(size_t row, KxDataViewColumn* column = nullptr);
 
 		// Will return true if event allowed
 		bool SendEditingStartedEvent(const KxDataViewItem& item, KxDataViewEditor* editor);
@@ -196,7 +196,7 @@ class KX_API KxDataViewMainWindow: public wxWindow
 		virtual ~KxDataViewMainWindow();
 
 	public:
-		void CreateEventTemplate(KxDataViewEvent& event, const KxDataViewItem& item = KxDataViewItem(), KxDataViewColumn* column = NULL, bool noCurrent = false);
+		void CreateEventTemplate(KxDataViewEvent& event, const KxDataViewItem& item = KxDataViewItem(), KxDataViewColumn* column = nullptr, bool noCurrent = false);
 
 		void SetOwner(KxDataViewCtrl* owner)
 		{
@@ -218,7 +218,7 @@ class KX_API KxDataViewMainWindow: public wxWindow
 		}
 		bool IsVirtualList() const
 		{
-			return m_TreeRoot == NULL;
+			return m_TreeRoot == nullptr;
 		}
 
 		KxDataViewModel* GetModel()
@@ -277,7 +277,7 @@ class KX_API KxDataViewMainWindow: public wxWindow
 		void OnDragDropLeave();
 
 		/* Scrolling */
-		void ScrollWindow(int dx, int dy, const wxRect* rect = NULL);
+		void ScrollWindow(int dx, int dy, const wxRect* rect = nullptr);
 		void ScrollTo(size_t row, size_t column = INVALID_COLUMN);
 
 		/* Current row and column */
@@ -298,7 +298,7 @@ class KX_API KxDataViewMainWindow: public wxWindow
 		}
 		void ClearCurrentColumn()
 		{
-			m_CurrentColumn = NULL;
+			m_CurrentColumn = nullptr;
 		}
 
 		KxDataViewItem GetHotTrackItem() const;
@@ -417,8 +417,8 @@ class wxDragImage;
 class KxDataViewMainWindowDropSource: public wxDropSource
 {
 	private:
-		KxDataViewMainWindow* m_MainWindow = NULL;
-		wxWindow* m_DragImage = NULL;
+		KxDataViewMainWindow* m_MainWindow = nullptr;
+		wxWindow* m_DragImage = nullptr;
 		wxBitmap m_HintBitmap;
 		wxPoint m_HintPosition;
 
@@ -441,7 +441,7 @@ class KxDataViewMainWindowDropSource: public wxDropSource
 class KX_API KxDataViewMainWindowDropTarget: public wxDropTarget
 {
 	private:
-		KxDataViewMainWindow* m_MainWindow = NULL;
+		KxDataViewMainWindow* m_MainWindow = nullptr;
 
 	private:
 		virtual wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult dragResult) override;

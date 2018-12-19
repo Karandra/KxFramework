@@ -305,7 +305,7 @@ KxDataViewCtrl::~KxDataViewCtrl()
 	if (m_Model)
 	{
 		m_Model->DecRef();
-		m_Model = NULL;
+		m_Model = nullptr;
 	}
 }
 
@@ -316,11 +316,11 @@ bool KxDataViewCtrl::AssociateModel(KxDataViewModel* model)
 	{
 		m_Model->RemoveNotifier(m_Notifier);
 		m_Model->DecRef();
-		m_Model = NULL;
+		m_Model = nullptr;
 	}
 
 	// Add our own reference and notifier to the new model
-	m_Notifier = NULL;
+	m_Notifier = nullptr;
 	if (model)
 	{
 		m_Notifier = new KxDataViewModelGenerciNotifier(m_ClientArea);
@@ -388,7 +388,7 @@ KxDataViewColumn* KxDataViewCtrl::GetColumn(size_t position) const
 	{
 		return m_Columns[position]->GetColumn();
 	}
-	return NULL;
+	return nullptr;
 }
 size_t KxDataViewCtrl::GetColumnPosition(const KxDataViewColumn* column) const
 {
@@ -420,7 +420,7 @@ bool KxDataViewCtrl::DeleteColumn(KxDataViewColumn *column)
 }
 bool KxDataViewCtrl::ClearColumns()
 {
-	SetExpanderColumn(NULL);
+	SetExpanderColumn(nullptr);
 	m_Columns.clear();
 	m_ColumnsSortingIndexes.clear();
 	m_ClientArea->ClearCurrentColumn();
@@ -442,7 +442,7 @@ KxDataViewColumn* KxDataViewCtrl::GetExpanderColumnOrFirstOne()
 
 KxDataViewColumn* KxDataViewCtrl::GetSortingColumn() const
 {
-	return !m_ColumnsSortingIndexes.empty() ? GetColumn(m_ColumnsSortingIndexes.front()) : NULL;
+	return !m_ColumnsSortingIndexes.empty() ? GetColumn(m_ColumnsSortingIndexes.front()) : nullptr;
 }
 KxDataViewColumn::Vector KxDataViewCtrl::GetSortingColumns() const
 {
@@ -819,7 +819,7 @@ KxDataViewColumn* KxDataViewCtrl::OnColumnSelectionMenu(KxMenu& menu)
 		OnColumnChange(index);
 		return column;
 	}
-	return NULL;
+	return nullptr;
 }
 
 /* Control visuals */
@@ -917,7 +917,7 @@ KxDataViewColumn* KxDataViewCtrl::GetColumnAt(size_t position) const
 	{
 		return GetColumn(position);
 	}
-	return NULL;
+	return nullptr;
 }
 KxDataViewColumn* KxDataViewCtrl::GetColumnAtVisible(size_t position) const
 {
@@ -942,7 +942,7 @@ KxDataViewColumn* KxDataViewCtrl::GetColumnAtVisible(size_t position) const
 
 		for (size_t i: m_ColumnsOrder)
 		{
-			KxDataViewColumn* column = NULL;
+			KxDataViewColumn* column = nullptr;
 			if (TestColumn(i, column) == position)
 			{
 				return column;
@@ -953,12 +953,12 @@ KxDataViewColumn* KxDataViewCtrl::GetColumnAtVisible(size_t position) const
 	{
 		for (size_t i = 0; i < m_Columns.size(); i++)
 		{
-			KxDataViewColumn* column = NULL;
+			KxDataViewColumn* column = nullptr;
 			if (TestColumn(i, column) == position)
 			{
 				return column;
 			}
 		}
 	}
-	return NULL;
+	return nullptr;
 }

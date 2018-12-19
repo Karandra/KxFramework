@@ -50,9 +50,9 @@ void KxHTMLDocument::UnLoad()
 		gumbo_destroy_output(GetOptions(m_ParserOptions), GetOutput(m_ParserOutput));
 	}
 
-	SetNode(NULL);
+	SetNode(nullptr);
 	m_Buffer.Clear();
-	m_ParserOutput = NULL;
+	m_ParserOutput = nullptr;
 }
 
 const void* KxHTMLDocument::GetNode() const
@@ -61,7 +61,7 @@ const void* KxHTMLDocument::GetNode() const
 }
 
 KxHTMLDocument::KxHTMLDocument(const wxString& htmlText)
-	:KxHTMLNode(NULL, this)
+	:KxHTMLNode(nullptr, this)
 {
 	Init();
 
@@ -71,7 +71,7 @@ KxHTMLDocument::KxHTMLDocument(const wxString& htmlText)
 	}
 }
 KxHTMLDocument::KxHTMLDocument(wxInputStream& stream)
-	:KxHTMLNode(NULL, this)
+	:KxHTMLNode(nullptr, this)
 {
 	Init();
 	Load(stream);

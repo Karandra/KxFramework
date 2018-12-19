@@ -15,7 +15,7 @@ bool KxDataViewHeaderCtrl::SendEvent(wxEventType type, int index)
 	KxDataViewEvent event(type);
 	
 	KxDataViewCtrl* owner = GetOwner();
-	owner->GetMainWindow()->CreateEventTemplate(event, KxDataViewItem(), index >= 0 ? owner->GetColumn(index) : NULL, true);
+	owner->GetMainWindow()->CreateEventTemplate(event, KxDataViewItem(), index >= 0 ? owner->GetColumn(index) : nullptr, true);
 
 	// For events created by 'KxDataViewHeaderCtrl' the row/value fields are not valid.
 	return owner->ProcessWindowEvent(event);

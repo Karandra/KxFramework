@@ -68,14 +68,14 @@ namespace KxFFI
 		size_t m_Size = 0;
 		uint16_t m_Alignemnt = 0;
 		TypeID m_Type = TypeID::Invalid;
-		CType** m_Elements = NULL;
+		CType** m_Elements = nullptr;
 	};
 	struct CInterface
 	{
 		ABI m_ABI = ABI::Invalid;
 		uint32_t m_ArgumentCount = 0;
-		CType** m_ArgumentTypes = NULL;
-		CType* m_ReturnType = NULL;
+		CType** m_ArgumentTypes = nullptr;
+		CType* m_ReturnType = nullptr;
 		uint32_t m_CodeSize = 0;
 		uint32_t m_Flags = 0;
 	};
@@ -168,7 +168,7 @@ class KX_API KxCFunction
 		{
 			private:
 				const KxCFunction& m_Function;
-				void** m_Arguments = NULL;
+				void** m_Arguments = nullptr;
 
 			public:
 				ArgumentsWrapper(const KxCFunction& function, void** arguments)
@@ -198,7 +198,7 @@ class KX_API KxCFunction
 		class ResultWrapper
 		{
 			private:
-				void* m_ReturnValue = NULL;
+				void* m_ReturnValue = nullptr;
 
 			public:
 				ResultWrapper(const KxCFunction& function, void* returnValue)
@@ -216,8 +216,8 @@ class KX_API KxCFunction
 	private:
 		CInterface m_CInterface;
 		std::array<CType*, 8> m_ArgumentTypes;
-		CClosure* m_Closure = NULL;
-		void* m_Code = NULL;
+		CClosure* m_Closure = nullptr;
+		void* m_Code = nullptr;
 		CStatus m_Status = CStatus::OK;
 
 	protected:

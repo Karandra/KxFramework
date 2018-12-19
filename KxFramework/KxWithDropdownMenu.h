@@ -11,7 +11,7 @@ class KX_API KxMenu;
 class KX_API KxWithDropdownMenu
 {
 	private:
-		KxMenu* m_Menu = NULL;
+		KxMenu* m_Menu = nullptr;
 		bool m_IsOwned = false;
 
 	private:
@@ -24,7 +24,7 @@ class KX_API KxWithDropdownMenu
 	public:
 		bool HasDropdownMenu() const
 		{
-			return m_Menu != NULL;
+			return m_Menu != nullptr;
 		}
 		bool OwnsDropdownMenu() const
 		{

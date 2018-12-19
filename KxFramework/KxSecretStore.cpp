@@ -49,7 +49,7 @@ bool KxSecretStore::Save(const wxString& serviceName, const wxString& userName, 
 }
 bool KxSecretStore::Load(const wxString& serviceName, wxString& userName, KxSecretValue& password) const
 {
-	PCREDENTIALW credentialInfo = NULL;
+	PCREDENTIALW credentialInfo = nullptr;
 	bool status = false;
 	if (::CredReadW(serviceName.wc_str(), CRED_TYPE_GENERIC, 0, &credentialInfo))
 	{

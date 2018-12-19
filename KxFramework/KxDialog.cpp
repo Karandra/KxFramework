@@ -92,7 +92,7 @@ void KxDialog::SetStdLabels(wxSizer* sizer)
 	for (size_t i = 0; i < list.size(); i++)
 	{
 		wxWindow* window = list[i]->GetWindow();
-		if (window != NULL)
+		if (window != nullptr)
 		{
 			wxString label = KxUtility::GetStandardLocalizedString(window->GetId());
 			window->SetLabel(label);

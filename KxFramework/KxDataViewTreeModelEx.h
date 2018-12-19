@@ -31,7 +31,7 @@ template<class T, class BaseT> class KxDataViewVectorTreeModelEx: public BaseT
 		using DataType = T;
 
 	private:
-		DataType* m_Data = NULL;
+		DataType* m_Data = nullptr;
 
 	protected:
 		virtual void OnSetDataVectorInternal() override
@@ -46,13 +46,13 @@ template<class T, class BaseT> class KxDataViewVectorTreeModelEx: public BaseT
 	public:
 		virtual ~KxDataViewVectorTreeModelEx()
 		{
-			m_Data = NULL;
+			m_Data = nullptr;
 		}
 
 	public:
 		bool HasDataVector() const
 		{
-			return m_Data != NULL;
+			return m_Data != nullptr;
 		}
 		DataType* GetDataVector()
 		{
@@ -62,10 +62,10 @@ template<class T, class BaseT> class KxDataViewVectorTreeModelEx: public BaseT
 		{
 			return m_Data;
 		}
-		void SetDataVector(DataType* data = NULL)
+		void SetDataVector(DataType* data = nullptr)
 		{
 			// Clear control
-			m_Data = NULL;
+			m_Data = nullptr;
 			OnSetDataVectorInternal();
 			BaseT::RefreshItems();
 

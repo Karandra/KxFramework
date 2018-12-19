@@ -11,7 +11,7 @@ void KxDataViewTreeNodeData::DeleteChildNode(KxDataViewTreeNode* node)
 //////////////////////////////////////////////////////////////////////////
 KxDataViewTreeNode* KxDataViewTreeNode::CreateRootNode(KxDataViewMainWindow* window)
 {
-	KxDataViewTreeNode* node = new KxDataViewTreeNode(window, NULL, KxDataViewItem());
+	KxDataViewTreeNode* node = new KxDataViewTreeNode(window, nullptr, KxDataViewItem());
 	node->CreateBranchData(true);
 	return node;
 }
@@ -245,7 +245,7 @@ void KxDataViewTreeNode::ChangeSubTreeCount(ptrdiff_t num)
 //////////////////////////////////////////////////////////////////////////
 bool KxDataViewTreeNodeOperation::DoWalk(KxDataViewTreeNode* node, KxDataViewTreeNodeOperation& func)
 {
-	wxCHECK_MSG(node, false, "can't walk NULL node");
+	wxCHECK_MSG(node, false, "can't walk nullptr node");
 	switch (func(node))
 	{
 		case Result::DONE:

@@ -59,12 +59,12 @@ class KX_API KxCURLSession: public wxEvtHandler
 	};
 
 	private:
-		CURL* m_Handle = NULL;
+		CURL* m_Handle = nullptr;
 		bool m_IsPaused = false;
 		bool m_IsStopped = false;
 		
 		KxStdStringVector m_Headers;
-		void* m_HeadersSList = NULL;
+		void* m_HeadersSList = nullptr;
 
 		wxString m_URL;
 		wxString m_PostData;
@@ -73,7 +73,7 @@ class KX_API KxCURLSession: public wxEvtHandler
 		static size_t OnWriteResponse(char* data, size_t size, size_t count, void* userData);
 
 	private:
-		int SetOption(int option, const wxString& value, size_t* length = NULL);
+		int SetOption(int option, const wxString& value, size_t* length = nullptr);
 		int SetOption(int option, int value);
 		int SetOption(int option, int64_t value);
 		int SetOption(int option, size_t value);

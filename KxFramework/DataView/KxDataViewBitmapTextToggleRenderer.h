@@ -51,7 +51,7 @@ class KX_API KxDataViewBitmapTextToggleRenderer: public KxDataViewRenderer, publ
 		{
 			return true;
 		}
-		virtual bool OnActivateCell(const KxDataViewItem& item, const wxRect& cellRect, const wxMouseEvent* mouseEvent = NULL);
+		virtual bool OnActivateCell(const KxDataViewItem& item, const wxRect& cellRect, const wxMouseEvent* mouseEvent = nullptr);
 
 		virtual bool IsEnabled() const override;
 		virtual bool SetValue(const wxAny& value);

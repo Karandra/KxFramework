@@ -26,10 +26,10 @@ class KX_API KxDataViewComboBox:
 {
 	protected:
 		KxDataViewCtrlStyles m_DataViewFlags = DefaultDataViewStyle;
-		KxPanel* m_BackgroundWindow = NULL;
-		wxBoxSizer* m_Sizer = NULL;
+		KxPanel* m_BackgroundWindow = nullptr;
+		wxBoxSizer* m_Sizer = nullptr;
 
-		KxComboControl* m_ComboCtrl = NULL;
+		KxComboControl* m_ComboCtrl = nullptr;
 		wxEvtHandler m_EvtHandler_DataView;
 		wxEvtHandler m_EvtHandler_ComboCtrl;
 		KxDataViewItem m_Selection;
@@ -45,7 +45,7 @@ class KX_API KxDataViewComboBox:
 		void OnSelectItem(KxDataViewEvent& event);
 		void OnScroll(wxMouseEvent& event);
 
-		virtual bool FindItem(const wxString& value, wxString* pTrueItem = NULL) override;
+		virtual bool FindItem(const wxString& value, wxString* pTrueItem = nullptr) override;
 		virtual void OnPopup() override;
 		virtual void OnDismiss() override;
 		virtual void OnDoShowPopup() override;

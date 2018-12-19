@@ -17,8 +17,8 @@
 class KxDataViewMainWindowMaxWidthCalculator: public wxMaxWidthCalculatorBase
 {
 	private:
-		KxDataViewMainWindow* m_MainWindow = NULL;
-		KxDataViewRenderer* m_Renderer = NULL;
+		KxDataViewMainWindow* m_MainWindow = nullptr;
+		KxDataViewRenderer* m_Renderer = nullptr;
 
 		bool m_IsExpanderColumn = false;
 		int m_ExpanderSize = 0;
@@ -130,7 +130,7 @@ void KxDataViewMainWindow::OnChar(wxKeyEvent& event)
 
 					KxDataViewRenderer* renderer = activatableCol->GetRenderer();
 					renderer->PrepareItemToDraw(item, GetCellStateForRow(m_CurrentRow));
-					renderer->OnActivateCell(item, cellRect, NULL);
+					renderer->OnActivateCell(item, cellRect, nullptr);
 
 					break;
 				}
@@ -343,7 +343,7 @@ void KxDataViewMainWindow::OnLeftKey(wxKeyEvent& event)
 {
 	if (IsList())
 	{
-		TryAdvanceCurrentColumn(NULL, event, false);
+		TryAdvanceCurrentColumn(nullptr, event, false);
 	}
 	else
 	{
@@ -360,7 +360,7 @@ void KxDataViewMainWindow::OnLeftKey(wxKeyEvent& event)
 		const bool dontCollapseNodes = event.GetKeyCode() == WXK_TAB;
 		if (dontCollapseNodes)
 		{
-			m_CurrentColumn = NULL;
+			m_CurrentColumn = nullptr;
 
 			// allow focus change
 			event.Skip();
@@ -398,7 +398,7 @@ void KxDataViewMainWindow::OnRightKey(wxKeyEvent& event)
 {
 	if (IsList())
 	{
-		TryAdvanceCurrentColumn(NULL, event, true);
+		TryAdvanceCurrentColumn(nullptr, event, true);
 	}
 	else
 	{
@@ -439,7 +439,7 @@ void KxDataViewMainWindow::OnMouse(wxMouseEvent& event)
 		if (m_TreeNodeUnderMouse)
 		{
 			size_t row = GetRowByItem(m_TreeNodeUnderMouse->GetItem());
-			m_TreeNodeUnderMouse = NULL;
+			m_TreeNodeUnderMouse = nullptr;
 			RefreshRow(row);
 		}
 	};
@@ -479,7 +479,7 @@ void KxDataViewMainWindow::OnMouse(wxMouseEvent& event)
 	int x = event.GetX();
 	int y = event.GetY();
 	m_Owner->CalcUnscrolledPosition(x, y, &x, &y);
-	KxDataViewColumn* col = NULL;
+	KxDataViewColumn* col = nullptr;
 
 	int xpos = 0;
 	size_t columnsCount = GetOwner()->GetColumnCount();
@@ -664,11 +664,11 @@ void KxDataViewMainWindow::OnMouse(wxMouseEvent& event)
 	}
 	if (!hoverOverExpander)
 	{
-		if (m_TreeNodeUnderMouse != NULL)
+		if (m_TreeNodeUnderMouse != nullptr)
 		{
 			// wxLogMessage("Undo the row: %d", GetRowByItem(m_underMouse->GetItem()));
 			size_t row = GetRowByItem(m_TreeNodeUnderMouse->GetItem());
-			m_TreeNodeUnderMouse = NULL;
+			m_TreeNodeUnderMouse = nullptr;
 			RefreshRow(row);
 		}
 	}
@@ -1261,7 +1261,7 @@ void KxDataViewMainWindow::OnPaint(wxPaintEvent& event)
 		for (size_t item = item_start; item < item_last; item++)
 		{
 			// Get the cell value and set it into the renderer
-			KxDataViewTreeNode* node = NULL;
+			KxDataViewTreeNode* node = nullptr;
 			KxDataViewItem dataitem;
 
 			if (modelVirtualList)
@@ -1456,7 +1456,7 @@ KxDataViewCellState KxDataViewMainWindow::GetCellStateForRow(size_t row) const
 void KxDataViewMainWindow::UpdateDisplay()
 {
 	m_Dirty = true;
-	m_TreeNodeUnderMouse = NULL;
+	m_TreeNodeUnderMouse = nullptr;
 }
 void KxDataViewMainWindow::RecalculateDisplay()
 {
@@ -1506,7 +1506,7 @@ KxDataViewColumn* KxDataViewMainWindow::FindColumnForEditing(const KxDataViewIte
 		// But if it was done by keyboard, respect that even if the column
 		// isn't editable, because focus is visually on that column and editing
 		// something else would be surprising.
-		candidate = NULL;
+		candidate = nullptr;
 	}
 
 	if (!candidate)
@@ -1537,7 +1537,7 @@ KxDataViewColumn* KxDataViewMainWindow::FindColumnForEditing(const KxDataViewIte
 	{
 		return candidate;
 	}
-	return NULL;
+	return nullptr;
 }
 size_t KxDataViewMainWindow::GetBestColumnWidth(size_t index) const
 {
@@ -1673,12 +1673,12 @@ KxDataViewTreeNode* KxDataViewMainWindow::FindNode(const KxDataViewItem& item)
 
 				if (!nodeFound)
 				{
-					return NULL;
+					return nullptr;
 				}
 			}
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 KxDataViewTreeNode* KxDataViewMainWindow::GetTreeNodeByRow(size_t row) const
 {
@@ -1690,7 +1690,7 @@ KxDataViewTreeNode* KxDataViewMainWindow::GetTreeNodeByRow(size_t row) const
 		operation.Walk(m_TreeRoot);
 		return operation.GetResult();
 	}
-	return NULL;
+	return nullptr;
 }
 
 void KxDataViewMainWindow::BuildTreeHelper(const KxDataViewItem& item, KxDataViewTreeNode* node)
@@ -1737,7 +1737,7 @@ void KxDataViewMainWindow::DestroyTree()
 	if (!IsVirtualList())
 	{
 		delete m_TreeRoot;
-		m_TreeRoot = NULL;
+		m_TreeRoot = nullptr;
 
 		m_ItemsCount = 0;
 	}
@@ -1754,7 +1754,7 @@ void KxDataViewMainWindow::OnInternalIdle()
 		RefreshRow(m_HotTrackRow);
 
 		m_HotTrackRow = -1;
-		m_HotTrackColumn = NULL;
+		m_HotTrackColumn = nullptr;
 	}
 
 	if (m_Dirty)
@@ -1773,7 +1773,7 @@ void KxDataViewMainWindow::OnEditorTimer()
 		if (m_Dirty)
 		{
 			// TODO:
-			// Use wxTheApp->SafeYieldFor(NULL, wxEVT_CATEGORY_UI) instead (needs to be tested!)
+			// Use wxTheApp->SafeYieldFor(nullptr, wxEVT_CATEGORY_UI) instead (needs to be tested!)
 			wxSafeYield();
 		}
 
@@ -1860,12 +1860,12 @@ void KxDataViewMainWindow::CreateEventTemplate(KxDataViewEvent& event, const KxD
 KxDataViewVirtualListModel* KxDataViewMainWindow::GetVirtualListModel()
 {
 	KxDataViewModel* model = GetModel();
-	return model && model->IsVirtualListModel() ? static_cast<KxDataViewVirtualListModel*>(model) : NULL;
+	return model && model->IsVirtualListModel() ? static_cast<KxDataViewVirtualListModel*>(model) : nullptr;
 }
 const KxDataViewVirtualListModel* KxDataViewMainWindow::GetVirtualListModel() const
 {
 	const KxDataViewModel* model = GetModel();
-	return model && model->IsVirtualListModel() ? static_cast<const KxDataViewVirtualListModel*>(model) : NULL;
+	return model && model->IsVirtualListModel() ? static_cast<const KxDataViewVirtualListModel*>(model) : nullptr;
 }
 
 bool KxDataViewMainWindow::SwapTreeNodes(const KxDataViewItem& item1, const KxDataViewItem& item2)
@@ -1992,7 +1992,7 @@ bool KxDataViewMainWindow::ItemDeleted(const KxDataViewItem& parent, const KxDat
 		// have to do it manually. We keep track of its position as well for
 		// later use.
 		size_t itemNodePosition = 0;
-		KxDataViewTreeNode* itemNode = NULL;
+		KxDataViewTreeNode* itemNode = nullptr;
 		for (KxDataViewTreeNode* node: parentNode->GetChildNodes())
 		{
 			itemNodePosition++;
@@ -2107,9 +2107,9 @@ bool KxDataViewMainWindow::ItemsCleared()
 	m_Selection.Clear();
 	m_CurrentRow = INVALID_ROW;
 	m_HotTrackRow = INVALID_ROW;
-	m_CurrentColumn = NULL;
-	m_HotTrackColumn = NULL;
-	m_TreeNodeUnderMouse = NULL;
+	m_CurrentColumn = nullptr;
+	m_HotTrackColumn = nullptr;
+	m_TreeNodeUnderMouse = nullptr;
 
 	if (GetModel())
 	{
@@ -2171,7 +2171,7 @@ void KxDataViewMainWindow::RefreshRowsAfter(size_t firstRow)
 {
 	wxSize clientSize = GetClientSize();
 	int start = GetLineStart(firstRow);
-	m_Owner->CalcScrolledPosition(start, 0, &start, NULL);
+	m_Owner->CalcScrolledPosition(start, 0, &start, nullptr);
 
 	if (start <= clientSize.y)
 	{
@@ -2617,7 +2617,7 @@ void KxDataViewMainWindow::OnDragDropLeave()
 /* Scrolling */
 void KxDataViewMainWindow::ScrollWindow(int dx, int dy, const wxRect* rect)
 {
-	m_TreeNodeUnderMouse = NULL;
+	m_TreeNodeUnderMouse = nullptr;
 	wxWindow::ScrollWindow(dx, dy, rect);
 
 	if (wxHeaderCtrl* header = GetOwner()->GetHeaderCtrl())
@@ -2627,7 +2627,7 @@ void KxDataViewMainWindow::ScrollWindow(int dx, int dy, const wxRect* rect)
 }
 void KxDataViewMainWindow::ScrollTo(size_t row, size_t column)
 {
-	m_TreeNodeUnderMouse = NULL;
+	m_TreeNodeUnderMouse = nullptr;
 
 	wxPoint pos;
 	m_Owner->GetScrollPixelsPerUnit(&pos.x, &pos.y);
@@ -2692,7 +2692,7 @@ bool KxDataViewMainWindow::TryAdvanceCurrentColumn(KxDataViewTreeNode* node, wxK
 		}
 	}
 
-	if (m_CurrentColumn == NULL || !m_IsCurrentColumnSetByKeyboard)
+	if (m_CurrentColumn == nullptr || !m_IsCurrentColumnSetByKeyboard)
 	{
 		if (moveForward)
 		{
@@ -2754,7 +2754,7 @@ bool KxDataViewMainWindow::TryAdvanceCurrentColumn(KxDataViewTreeNode* node, wxK
 	{
 		// We are going to the left of the second column. Reset to whole-row
 		// focus (which means first column would be edited).
-		m_CurrentColumn = NULL;
+		m_CurrentColumn = nullptr;
 		RefreshRow(m_CurrentRow);
 		return true;
 	}
@@ -2899,7 +2899,7 @@ size_t KxDataViewMainWindow::GetRowCount() const
 
 void KxDataViewMainWindow::HitTest(const wxPoint& pos, KxDataViewItem& item, KxDataViewColumn*& column)
 {
-	KxDataViewColumn* columnFound = NULL;
+	KxDataViewColumn* columnFound = nullptr;
 	size_t columnCount = GetOwner()->GetColumnCount();
 
 	wxPoint unscrolledPos;
@@ -3246,7 +3246,7 @@ void KxDataViewMainWindow::EndEdit()
 		CreateEventTemplate(event, m_CurrentEditor->GetItem(), m_CurrentEditor->GetColumn());
 		
 		m_CurrentEditor->EndEdit();
-		m_CurrentEditor = NULL;
+		m_CurrentEditor = nullptr;
 
 		m_Owner->ProcessWindowEvent(event);
 	}
@@ -3259,7 +3259,7 @@ void KxDataViewMainWindow::CancelEdit()
 		CreateEventTemplate(event, m_CurrentEditor->GetItem(), m_CurrentEditor->GetColumn());
 
 		m_CurrentEditor->CancelEdit();
-		m_CurrentEditor = NULL;
+		m_CurrentEditor = nullptr;
 
 		m_Owner->ProcessWindowEvent(event);
 	}
@@ -3305,7 +3305,7 @@ bool KxDataViewMainWindowDropSource::GiveFeedback(wxDragResult effect)
 	{
 		wxPoint linePos(0, m_MainWindow->GetLineStart(m_Row));
 
-		m_MainWindow->GetOwner()->CalcUnscrolledPosition(0, linePos.y, NULL, &linePos.y);
+		m_MainWindow->GetOwner()->CalcUnscrolledPosition(0, linePos.y, nullptr, &linePos.y);
 		m_MainWindow->ClientToScreen(&linePos.x, &linePos.y);
 
 		m_Distance.x = mousePos.x - linePos.x;

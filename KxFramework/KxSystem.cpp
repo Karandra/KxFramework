@@ -14,8 +14,8 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 
 wxString KxSystem::FormatMessage(DWORD flags, const void* source, DWORD messageID, DWORD langID)
 {
-	LPWSTR formattedMessage = NULL;
-	DWORD length = ::FormatMessageW(flags|FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_IGNORE_INSERTS, source, messageID, MAKELCID(langID, SORT_DEFAULT), (LPWSTR)&formattedMessage, 0, NULL);
+	LPWSTR formattedMessage = nullptr;
+	DWORD length = ::FormatMessageW(flags|FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_IGNORE_INSERTS, source, messageID, MAKELCID(langID, SORT_DEFAULT), (LPWSTR)&formattedMessage, 0, nullptr);
 	if (length != 0 && formattedMessage)
 	{
 		wxString message(formattedMessage, length);
@@ -178,7 +178,7 @@ KxSystem::VersionInfo KxSystem::GetVersionInfo()
 	versionInfo.MinorVersion = info.dwMinorVersion;
 	versionInfo.BuildNumber = info.dwBuildNumber;
 	versionInfo.PlatformID = info.dwPlatformId;
-	versionInfo.ServicePack = info.szCSDVersion != NULL ? info.szCSDVersion : wxEmptyString;
+	versionInfo.ServicePack = info.szCSDVersion != nullptr ? info.szCSDVersion : wxEmptyString;
 	versionInfo.ServicePackMajor = info.wServicePackMajor;
 	versionInfo.ServicePackMinor = info.wServicePackMinor;
 	versionInfo.ProductType = info.wProductType;
@@ -254,12 +254,12 @@ bool KxSystem::SetPowerState(KxSystemPowerState mode, bool force, bool forceHung
 }
 wxString KxSystem::GetUserSID()
 {
-	HANDLE tokenHandle = NULL;
-	LPWSTR sid = NULL;
+	HANDLE tokenHandle = nullptr;
+	LPWSTR sid = nullptr;
 	if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &tokenHandle))
 	{
 		DWORD size = 0;
-		GetTokenInformation(tokenHandle, TokenUser, NULL, 0, &size);
+		GetTokenInformation(tokenHandle, TokenUser, nullptr, 0, &size);
 		
 		TOKEN_USER* userToken = (TOKEN_USER*)malloc(size);
 		memset(userToken, 0, size);
@@ -276,7 +276,7 @@ wxString KxSystem::GetUserSID()
 	}
 
 	wxString out;
-	if (sid != NULL)
+	if (sid != nullptr)
 	{
 		out = sid;
 		LocalFree(sid);
@@ -289,14 +289,14 @@ KxSystem::UserInfo KxSystem::GetUserInfo()
 
 	// User name
 	DWORD userNameLength = 0;
-	GetUserNameW(NULL, &userNameLength);
+	GetUserNameW(nullptr, &userNameLength);
 	GetUserNameW(wxStringBuffer(userInfo.Name, userNameLength), &userNameLength);
 
 	// Organization
 	userInfo.Organization = KxRegistry::GetValue(KxREG_HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "RegisteredOrganization", KxREG_VALUE_SZ).As<wxString>();
 
 	// Is admin
-	HANDLE tokenHandle = NULL;
+	HANDLE tokenHandle = nullptr;
 	if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &tokenHandle))
 	{
 		TOKEN_ELEVATION elevationInfo;
@@ -326,14 +326,14 @@ DWORD KxSystem::GetLastError()
 }
 wxString KxSystem::GetErrorMessage(DWORD messageID, DWORD langID)
 {
-	wxString string = FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_MAX_WIDTH_MASK, NULL, messageID, langID);
+	wxString string = FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_MAX_WIDTH_MASK, nullptr, messageID, langID);
 	string.Truncate(string.Length()-1);
 	return string;
 }
 
 wxString KxSystem::GetEnvironmentVariable(const wxString& name)
 {
-	DWORD length = ::GetEnvironmentVariableW(name.wc_str(), NULL, 0);
+	DWORD length = ::GetEnvironmentVariableW(name.wc_str(), nullptr, 0);
 	if (length != 0)
 	{
 		wxString out;
@@ -385,6 +385,6 @@ KxSystemFSRedirector::~KxSystemFSRedirector()
 	if (KxSystemAPI::Wow64RevertWow64FsRedirection && m_Value)
 	{
 		KxSystemAPI::Wow64RevertWow64FsRedirection(&m_Value);
-		m_Value = NULL;
+		m_Value = nullptr;
 	}
 }

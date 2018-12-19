@@ -30,7 +30,7 @@ class KX_API KxTreeList;
 class KX_API KxTreeListItem
 {
 	private:
-		KxTreeList* m_Control = NULL;
+		KxTreeList* m_Control = nullptr;
 		wxTreeListItem m_Item;
 
 	private:
@@ -66,16 +66,16 @@ class KX_API KxTreeListItem
 			return *m_Control;
 		}
 
-		KxTreeListItem Add(const wxString& label, wxClientData* data = NULL)
+		KxTreeListItem Add(const wxString& label, wxClientData* data = nullptr)
 		{
 			return Insert(Last, label, data);
 		}
-		KxTreeListItem Add(const KxStringVector& labels, wxClientData* data = NULL)
+		KxTreeListItem Add(const KxStringVector& labels, wxClientData* data = nullptr)
 		{
 			return Insert(Last, labels, data);
 		}
-		KxTreeListItem Insert(const KxTreeListItem& previous = First, const wxString& label = wxEmptyString, wxClientData* data = NULL);
-		KxTreeListItem Insert(const KxTreeListItem& previous, const KxStringVector& labels, wxClientData* data = NULL);
+		KxTreeListItem Insert(const KxTreeListItem& previous = First, const wxString& label = wxEmptyString, wxClientData* data = nullptr);
+		KxTreeListItem Insert(const KxTreeListItem& previous, const KxStringVector& labels, wxClientData* data = nullptr);
 
 		KxTreeListItem GetFirstChild() const;
 		KxTreeListItem GetNthChild(size_t index) const;
@@ -157,8 +157,8 @@ class KX_API KxTreeList: public KxWithImageListWrapper<wxTreeListCtrl>
 	friend class KxTreeListItem;
 
 	private:
-		wxDataViewCtrl* m_DataView = NULL;
-		wxHeaderCtrl* m_HeaderCtrl = NULL;
+		wxDataViewCtrl* m_DataView = nullptr;
+		wxHeaderCtrl* m_HeaderCtrl = nullptr;
 		KxTreeListOptions m_Options = KxTL_NONE;
 		int m_RowHeight = 0;
 		int m_FirstColumnWidth = wxCOL_WIDTH_AUTOSIZE;
@@ -176,11 +176,11 @@ class KX_API KxTreeList: public KxWithImageListWrapper<wxTreeListCtrl>
 		void OnSelectDV(wxDataViewEvent& event);
 		void OnActivateDV(wxDataViewEvent& event);
 
-		wxTreeListItem InsertItem(const wxTreeListItem& parentItem, const wxTreeListItem& prevItem, const wxString& label, int imageCollapsed = NO_IMAGE, int imageExpanded = NO_IMAGE, wxClientData* data = NULL)
+		wxTreeListItem InsertItem(const wxTreeListItem& parentItem, const wxTreeListItem& prevItem, const wxString& label, int imageCollapsed = NO_IMAGE, int imageExpanded = NO_IMAGE, wxClientData* data = nullptr)
 		{
 			return wxTreeListCtrl::InsertItem(parentItem, prevItem, label, imageCollapsed, imageExpanded, data);
 		}
-		wxTreeListItem AppendItem(const wxTreeListItem& parentItem, const wxString& label, int imageCollapsed = NO_IMAGE, int imageExpanded = NO_IMAGE, wxClientData* data = NULL)
+		wxTreeListItem AppendItem(const wxTreeListItem& parentItem, const wxString& label, int imageCollapsed = NO_IMAGE, int imageExpanded = NO_IMAGE, wxClientData* data = nullptr)
 		{
 			return wxTreeListCtrl::AppendItem(parentItem, label, imageCollapsed, imageExpanded, data);
 		}

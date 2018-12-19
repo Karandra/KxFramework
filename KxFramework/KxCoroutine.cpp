@@ -14,7 +14,7 @@ namespace Util
 class KxCoroutineCallData: public wxAsyncMethodCallEvent
 {
 	private:
-		KxCoroutineBase* const m_Coroutine = NULL;
+		KxCoroutineBase* const m_Coroutine = nullptr;
 
 	public:
 		KxCoroutineCallData()
@@ -29,7 +29,7 @@ class KxCoroutineCallData: public wxAsyncMethodCallEvent
 	public:
 		bool IsOK() const
 		{
-			return m_Coroutine != NULL;
+			return m_Coroutine != nullptr;
 		}
 		KxCoroutineBase* GetCoroutine() const
 		{
@@ -51,7 +51,7 @@ class KxCoroutineCallData: public wxAsyncMethodCallEvent
 class KxCoroutineTimer: public wxTimer
 {
 	private:
-		KxCoroutineBase* const m_Coroutine = NULL;
+		KxCoroutineBase* const m_Coroutine = nullptr;
 
 	public:
 		KxCoroutineTimer(KxCoroutineBase* coroutine)

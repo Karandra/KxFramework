@@ -21,8 +21,8 @@ class KX_API KxAuiToolBarItem:
 	friend class KxAuiToolBar;
 
 	private:
-		KxAuiToolBar* m_Control = NULL;
-		wxAuiToolBarItem* m_Item = NULL;
+		KxAuiToolBar* m_Control = nullptr;
+		wxAuiToolBarItem* m_Item = nullptr;
 
 	public:
 		KxAuiToolBarItem(KxAuiToolBar* control, wxAuiToolBarItem* item);
@@ -33,7 +33,7 @@ class KX_API KxAuiToolBarItem:
 		void Refresh();
 
 		KxAuiToolBar* GetToolBar() const;
-		wxPoint GetDropdownMenuPosition(DWORD* alignment = NULL) const;
+		wxPoint GetDropdownMenuPosition(DWORD* alignment = nullptr) const;
 		wxWindowID ShowDropdownMenu();
 		wxWindowID GetID() const;
 		wxRect GetRect() const;

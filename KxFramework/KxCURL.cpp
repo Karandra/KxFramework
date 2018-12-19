@@ -224,13 +224,13 @@ void KxCURLSession::Close()
 	if (m_HeadersSList)
 	{
 		curl_slist_free_all(reinterpret_cast<curl_slist*>(m_HeadersSList));
-		m_HeadersSList = NULL;
+		m_HeadersSList = nullptr;
 	}
 
 	if (m_Handle)
 	{
 		curl_easy_cleanup(m_Handle);
-		m_Handle = NULL;
+		m_Handle = nullptr;
 	}
 }
 void KxCURLSession::Download(KxCURLStreamReply& reply)
@@ -247,7 +247,7 @@ KxStringVector KxCURLSession::GetReplyCookies() const
 {
 	KxStringVector cookies;
 
-	curl_slist* cookesList = NULL;
+	curl_slist* cookesList = nullptr;
 	CURLcode res = curl_easy_getinfo(m_Handle, CURLINFO_COOKIELIST, &cookesList);
 	if (res == CURLE_OK && cookesList)
 	{

@@ -151,7 +151,7 @@ class KX_API KxSystem
 class KX_API KxSystemFSRedirector
 {
 	private:
-		void* m_Value = NULL;
+		void* m_Value = nullptr;
 
 	public:
 		KxSystemFSRedirector();

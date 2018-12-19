@@ -4,7 +4,7 @@
 class KX_API KxWebSocketEvent: public wxNotifyEvent
 {
 	private:
-		const void* m_BinaryData = NULL;
+		const void* m_BinaryData = nullptr;
 		size_t m_BinarySize = 0;
 
 	public:

@@ -83,7 +83,7 @@ void* KxProcessThread::ConvertEnvTable(const KxProcessEnvMap& envTable, wxMemory
 		buffer.AppendData(L"\0", sizeof(WCHAR));
 		return buffer.GetData();
 	}
-	return NULL;
+	return nullptr;
 }
 void KxProcessThread::SendEventSyncAsync(wxEvent* event)
 {
@@ -133,7 +133,7 @@ bool KxProcessThread::CreateProcess(PROCESS_INFORMATION& processInfo)
 
 		// Process command line
 		wxMemoryBuffer commandLineBuffer;
-		LPWSTR commandLine = NULL;
+		LPWSTR commandLine = nullptr;
 		if (!m_EventHandler->m_Arguments.IsEmpty())
 		{
 			commandLineBuffer.AppendData(m_EventHandler->m_Arguments.wc_str(), m_EventHandler->m_Arguments.Length()*sizeof(WCHAR)+sizeof(WCHAR));
@@ -141,7 +141,7 @@ bool KxProcessThread::CreateProcess(PROCESS_INFORMATION& processInfo)
 		}
 
 		// Working folder
-		LPCWSTR workingFolderPtr = NULL;
+		LPCWSTR workingFolderPtr = nullptr;
 		wxString workingFolder;
 		if (m_EventHandler->m_IsWorkingFolderInExecutablePath)
 		{
@@ -154,7 +154,7 @@ bool KxProcessThread::CreateProcess(PROCESS_INFORMATION& processInfo)
 		}
 		else if (m_EventHandler->m_WorkingFolder.IsEmpty())
 		{
-			workingFolderPtr = NULL;
+			workingFolderPtr = nullptr;
 		}
 		else
 		{
@@ -167,8 +167,8 @@ bool KxProcessThread::CreateProcess(PROCESS_INFORMATION& processInfo)
 		(
 			m_EventHandler->m_ExecutablePath.wc_str(),
 			commandLine,
-			NULL,
-			NULL,
+			nullptr,
+			nullptr,
 			m_EventHandler->IsRedirected(),
 			processFlags,
 			processEnv,
@@ -257,7 +257,7 @@ void KxProcessThread::SendProcessEndEvent()
 		if (m_EventHandler->IsOptionEnabled(KxPROCESS_DETACHED))
 		{
 			delete m_EventHandler;
-			m_EventHandler = NULL;
+			m_EventHandler = nullptr;
 			return;
 		}
 	}

@@ -73,7 +73,7 @@ namespace
 				return &ffi_type_double;
 			}
 		};
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -83,9 +83,9 @@ namespace KxFFI
 	struct CClosure
 	{
 		uint8_t m_Trampoline[FFI_TRAMPOLINE_SIZE] = {0};
-		CInterface* m_CInterface = NULL;
-		CClosureFunction m_Function = NULL;
-		KxCFunction* m_Context = NULL;
+		CInterface* m_CInterface = nullptr;
+		CClosureFunction m_Function = nullptr;
+		KxCFunction* m_Context = nullptr;
 	};
 	void CClosureCall(KxFFI::CInterface* cif, void* returnValue, void** arguments, KxCFunction* context)
 	{
@@ -207,9 +207,9 @@ KxCFunction& KxCFunction::operator=(KxCFunction&& other)
 
 	// Clean other data
 	other.m_CInterface = CInterface();
-	other.m_ArgumentTypes.fill(NULL);
-	other.m_Closure = NULL;
-	other.m_Code = NULL;
+	other.m_ArgumentTypes.fill(nullptr);
+	other.m_Closure = nullptr;
+	other.m_Code = nullptr;
 	other.m_Status = CStatus::OK;
 
 	return *this;

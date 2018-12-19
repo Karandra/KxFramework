@@ -26,12 +26,12 @@ KxShellMenu::KxShellMenu(const wxString& path)
 	HRESULT res = ::SHParseDisplayName(path.wc_str(), 0, &m_ShellItemList, 0, 0);
 	if (SUCCEEDED(res) && m_ShellItemList)
 	{
-		LPCITEMIDLIST childID = NULL;
+		LPCITEMIDLIST childID = nullptr;
 		res = SHBindToParent(m_ShellItemList, IID_IShellFolder, m_ShellFolder.GetPVoid(), &childID);
 		if (SUCCEEDED(res) && m_ShellFolder)
 		{
 			wxWindow* window = wxTheApp->GetTopWindow();
-			res = m_ShellFolder->GetUIObjectOf(window ? window->GetHandle() : NULL, 1, &childID, IID_IContextMenu, 0, m_ShellMenu.GetPVoid());
+			res = m_ShellFolder->GetUIObjectOf(window ? window->GetHandle() : nullptr, 1, &childID, IID_IContextMenu, 0, m_ShellMenu.GetPVoid());
 			if (SUCCEEDED(res) && m_ShellMenu)
 			{
 				m_ShellMenu->QueryContextMenu(GetHMenu(), 0, MinShellItemID, MaxShellItemID, CMF_NORMAL);
@@ -70,7 +70,7 @@ wxString KxShellMenu::GetString(WORD menuWinID, DWORD index) const
 		const size_t length = 4096;
 		WCHAR buffer[length] = {0};
 
-		m_ShellMenu->GetCommandString((UINT_PTR)(menuWinID - 1), index, NULL, (CHAR*)buffer, length - sizeof(WCHAR));
+		m_ShellMenu->GetCommandString((UINT_PTR)(menuWinID - 1), index, nullptr, (CHAR*)buffer, length - sizeof(WCHAR));
 		return buffer;
 	}
 	return wxEmptyString;
@@ -103,7 +103,7 @@ WORD KxShellMenu::DoShowMenu(wxWindow* window, const wxPoint& pos, DWORD alignme
 		// If selection wasn't processed or skipped invoke shell command
 		if (!isProcessed || menuEvent.GetSkipped())
 		{
-			InvokeCommand(window ? window->GetHandle() : NULL, winID);
+			InvokeCommand(window ? window->GetHandle() : nullptr, winID);
 		}
 	}
 	return winID;

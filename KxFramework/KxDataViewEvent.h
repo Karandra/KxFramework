@@ -10,8 +10,8 @@ class KX_API KxDataViewListModel;
 class KX_API KxDataViewEvent: public wxNotifyEvent
 {
 	private:
-		KxDataViewModel* m_Model = NULL;
-		KxDataViewColumn* m_Column = NULL;
+		KxDataViewModel* m_Model = nullptr;
+		KxDataViewColumn* m_Column = nullptr;
 		KxDataViewItem m_Item;
 		wxPoint m_Position = wxDefaultPosition;
 		wxAny m_Value;
@@ -121,9 +121,9 @@ class KX_API KxDataViewEvent: public wxNotifyEvent
 class KX_API KxDataViewEventDND: public KxDataViewEvent
 {
 	private:
-		wxDataObject* m_DataObject = NULL;
+		wxDataObject* m_DataObject = nullptr;
 		wxDataFormat m_DataFormat;
-		void* m_DataBuffer = NULL;
+		void* m_DataBuffer = nullptr;
 		size_t m_DataSize = 0;
 		int m_DragFlags = 0;
 		wxDragResult m_DropEffect = wxDragNone;

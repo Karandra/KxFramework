@@ -132,7 +132,7 @@ KxAuiToolBarItem* KxAuiToolBar::GetByIterator(const KxAuiToolBarItem_ConstIterat
 	{
 		return it->second;
 	}
-	return NULL;
+	return nullptr;
 }
 
 bool KxAuiToolBar::Create(wxWindow* parent,
@@ -170,11 +170,11 @@ KxAuiToolBarItem* KxAuiToolBar::AddTool(const wxString& label, const wxBitmap& b
 }
 KxAuiToolBarItem* KxAuiToolBar::AddTool(const wxString& label, const wxBitmap& bitmap, const wxBitmap& disabledBitmap, wxItemKind kind, const wxString& shortHelp)
 {
-	return OnCreateTool(wxAuiToolBar::AddTool(wxID_ANY, label, bitmap, disabledBitmap, kind, shortHelp, wxEmptyString, NULL));
+	return OnCreateTool(wxAuiToolBar::AddTool(wxID_ANY, label, bitmap, disabledBitmap, kind, shortHelp, wxEmptyString, nullptr));
 }
 KxAuiToolBarItem* KxAuiToolBar::AddTool(const wxBitmap& bitmap, const wxBitmap& disabledBitmap, bool toggle, const wxString& shortHelp, const wxString& longHelp)
 {
-	return OnCreateTool(wxAuiToolBar::AddTool(wxID_ANY, bitmap, disabledBitmap, toggle, NULL, shortHelp, longHelp));;
+	return OnCreateTool(wxAuiToolBar::AddTool(wxID_ANY, bitmap, disabledBitmap, toggle, nullptr, shortHelp, longHelp));;
 }
 
 KxAuiToolBarItem* KxAuiToolBar::AddLabel(const wxString& label, const int width)
@@ -205,7 +205,7 @@ KxAuiToolBarItem* KxAuiToolBar::FindToolByPosition(const wxPoint& pos) const
 	{
 		return GetByIterator(GetIteratorToTool(item->GetId()));
 	}
-	return NULL;
+	return nullptr;
 }
 KxAuiToolBarItem* KxAuiToolBar::FindToolByIndex(int index) const
 {
@@ -214,7 +214,7 @@ KxAuiToolBarItem* KxAuiToolBar::FindToolByIndex(int index) const
 	{
 		return GetByIterator(GetIteratorToTool(item->GetId()));
 	}
-	return NULL;
+	return nullptr;
 }
 KxAuiToolBarItem* KxAuiToolBar::FindToolByID(wxWindowID id) const
 {

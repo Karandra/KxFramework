@@ -25,7 +25,7 @@ class KX_API KxImageSet: public wxObject
 		void Set(const wxString& id, const wxImage& image);
 		void Set(const wxString& id, const wxBitmap& image);
 		void Set(const wxString& id, const wxIcon& image);
-		const wxObject* Get(const wxString& id, ImageType* type = NULL) const;
+		const wxObject* Get(const wxString& id, ImageType* type = nullptr) const;
 		void Remove(const wxString& id);
 		void Clear()
 		{

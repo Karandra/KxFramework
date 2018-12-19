@@ -47,7 +47,7 @@ class KX_API KxRichToolTip: public wxObject
 		
 		void Show(wxWindow* window, const wxRect& rect = KxNullWxRect)
 		{
-			m_ToolTip.ShowFor(window, rect.IsEmpty() ? NULL : &rect);
+			m_ToolTip.ShowFor(window, rect.IsEmpty() ? nullptr : &rect);
 		}
 
 		// Appearance
@@ -66,7 +66,7 @@ class KX_API KxRichToolTip: public wxObject
 			m_Color2 = color2;
 			m_ToolTip.SetBackgroundColour(color1, color2);
 		}
-		void GetBackgroundColour(wxColour* color1 = NULL, wxColour* color2 = NULL) const;
+		void GetBackgroundColour(wxColour* color1 = nullptr, wxColour* color2 = nullptr) const;
 
 		// Icon
 		KxIconType GetIconID() const

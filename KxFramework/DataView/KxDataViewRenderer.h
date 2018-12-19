@@ -35,10 +35,10 @@ class KX_API KxDataViewRenderer: public wxObject, public KxWithOptions<KxDataVie
 		wxAlignment m_Alignment = wxALIGN_INVALID;
 		wxEllipsizeMode m_EllipsizeMode = wxELLIPSIZE_END;
 		KxDataViewCellMode m_CellMode = KxDATAVIEW_CELL_INERT;
-		KxDataViewColumn* m_Column = NULL;
+		KxDataViewColumn* m_Column = nullptr;
 		
-		wxDC* m_DC = NULL;
-		wxGCDC* m_GCDC = NULL;
+		wxDC* m_DC = nullptr;
+		wxGCDC* m_GCDC = nullptr;
 		bool m_Enabled = true;
 		KxDataViewItemAttributes m_Attributes;
 
@@ -56,7 +56,7 @@ class KX_API KxDataViewRenderer: public wxObject, public KxWithOptions<KxDataVie
 		{
 			return false;
 		}
-		virtual bool OnActivateCell(const KxDataViewItem& item, const wxRect& cellRect, const wxMouseEvent* mouseEvent = NULL)
+		virtual bool OnActivateCell(const KxDataViewItem& item, const wxRect& cellRect, const wxMouseEvent* mouseEvent = nullptr)
 		{
 			return false;
 		}
@@ -102,11 +102,11 @@ class KX_API KxDataViewRenderer: public wxObject, public KxWithOptions<KxDataVie
 		
 		bool HasGCDC() const
 		{
-			return m_GCDC != NULL;
+			return m_GCDC != nullptr;
 		}
 		wxGraphicsContext* GetGraphicsContext() const
 		{
-			return m_GCDC ? m_GCDC->GetGraphicsContext() : NULL;
+			return m_GCDC ? m_GCDC->GetGraphicsContext() : nullptr;
 		}
 		wxDC& GetGCDC() const
 		{
@@ -118,7 +118,7 @@ class KX_API KxDataViewRenderer: public wxObject, public KxWithOptions<KxDataVie
 		}
 		void UnsetGCDC()
 		{
-			m_GCDC = NULL;
+			m_GCDC = nullptr;
 		}
 
 		wxSize DoGetTextExtent(const wxString& string) const;
@@ -133,11 +133,11 @@ class KX_API KxDataViewRenderer: public wxObject, public KxWithOptions<KxDataVie
 	public:
 		KxDataViewMainWindow* GetMainWindow() const
 		{
-			return m_Column ? m_Column->GetOwner()->GetMainWindow() : NULL;
+			return m_Column ? m_Column->GetOwner()->GetMainWindow() : nullptr;
 		}
 		KxDataViewCtrl* GetView() const
 		{
-			return m_Column ? m_Column->GetOwner() : NULL;
+			return m_Column ? m_Column->GetOwner() : nullptr;
 		}
 		KxDataViewModel* GetModel() const
 		{

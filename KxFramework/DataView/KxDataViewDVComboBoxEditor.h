@@ -10,9 +10,9 @@ KX_DECLARE_EVENT(KxEVT_DVR_DVCOMBOBOX_INIT_CONTROL, KxDataViewEvent);
 class KX_API KxDataViewDVComboBoxEditor: public wxEvtHandler, public KxDataViewEditor, public KxDataViewComboBoxEditorBase
 {
 	private:
-		mutable KxDataViewComboBox* m_ComboBox = NULL;
+		mutable KxDataViewComboBox* m_ComboBox = nullptr;
 		mutable KxDataViewItem m_Selection;
-		KxDataViewModel* m_Model = NULL;
+		KxDataViewModel* m_Model = nullptr;
 		bool m_OwnModel = false;
 
 		KxDataViewCtrlStyles m_DataViewStyle = KxDataViewCtrl::DefaultStyle;

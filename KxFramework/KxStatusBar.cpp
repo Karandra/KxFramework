@@ -5,7 +5,7 @@ wxIMPLEMENT_DYNAMIC_CLASS(KxStatusBar, wxStatusBar);
 
 void KxStatusBar::SetFieldsCount(int count, const int* widths)
 {
-	if (widths == NULL)
+	if (widths == nullptr)
 	{
 		count = GetFieldsCount();
 		if (count > 0)
