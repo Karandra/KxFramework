@@ -237,7 +237,7 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 			{
 				m_Title = string;
 			}
-			m_DialogConfig.pszWindowTitle = m_Title;
+			m_DialogConfig.pszWindowTitle = m_Title.wc_str();
 		}
 		virtual wxString GetCaption() const override
 		{

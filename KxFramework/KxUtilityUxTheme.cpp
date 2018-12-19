@@ -1,37 +1,20 @@
 ﻿#include "KxStdAfx.h"
 #include "KxFramework/KxUtility.h"
 #include "KxFramework/KxColor.h"
-#include <wx/wxprec.h>
-#include <wx/msw/private.h>
-#include <wx/msw/uxtheme.h>
-#include <vsstyle.h>
-#include <vssym32.h>
+#include "KxFramework/KxUxTheme.h"
 
 bool KxUtility::DrawParentBackground(const wxWindow* window, wxDC& dc, const wxRect& rect)
 {
-	wxUxThemeEngine* pThemeEngine = wxUxThemeEngine::GetIfActive();
-	if (pThemeEngine)
-	{
-		auto tRECT = CopyRectToRECT(rect);
-		pThemeEngine->DrawThemeParentBackground(window->GetHandle(), dc.GetHDC(), &tRECT);
-	}
-	else
-	{
-		dc.Clear();
-	}
+	RECT rectWin = CopyRectToRECT(rect);
+	::DrawThemeParentBackground(window->GetHandle(), dc.GetHDC(), &rectWin);
 	return true;
 }
 bool KxUtility::DrawThemeBackground(const wxWindow* window, const wxString& className, wxDC& dc, int iPartId, int iStateId, const wxRect& rect)
 {
-	wxUxThemeEngine* pThemeEngine = wxUxThemeEngine::GetIfActive();
-	if (pThemeEngine)
+	if (KxUxTheme::Handle handle(window, className); handle)
 	{
-		auto tRECT = CopyRectToRECT(rect);
-		wxUxThemeHandle hThemeHandle(window, className);
-		if (hThemeHandle)
-		{
-			return pThemeEngine->DrawThemeBackground(hThemeHandle, dc.GetHDC(), iPartId, iStateId, &tRECT, NULL) == S_OK;
-		}
+		auto rectWin = CopyRectToRECT(rect);
+		return ::DrawThemeBackground(handle, dc.GetHDC(), iPartId, iStateId, &rectWin, NULL) == S_OK;
 	}
 	return false;
 }
@@ -39,12 +22,10 @@ bool KxUtility::DrawThemeBackground(const wxWindow* window, const wxString& clas
 KxColor KxUtility::GetThemeColor(const wxWindow* window, const wxString& className, int iPartId, int iStateId, int iPropId, const wxColour& defaultColor)
 {
 	KxColor color = defaultColor;
-	wxUxThemeEngine* pThemeEngine = wxUxThemeEngine::GetIfActive();
-	if (pThemeEngine && pThemeEngine->IsAppThemed())
+	if (KxUxTheme::Handle handle(window, className); handle)
 	{
-		wxUxThemeHandle hThemeHandle(window, className);
 		COLORREF colorref = 0;
-		if (pThemeEngine->GetThemeColor(hThemeHandle, iPartId, iStateId, iPropId, &colorref) == S_OK)
+		if (::GetThemeColor(handle, iPartId, iStateId, iPropId, &colorref) == S_OK)
 		{
 			color.SetCOLORREF(colorref);
 		}
@@ -53,10 +34,10 @@ KxColor KxUtility::GetThemeColor(const wxWindow* window, const wxString& classNa
 }
 KxColor KxUtility::GetThemeColor_Caption(const wxWindow* window)
 {
-	wxColour cColor = GetThemeColor(window, L"TEXTSTYLE", TEXT_MAININSTRUCTION, 0, TMT_TEXTCOLOR);
+	wxColour color = GetThemeColor(window, L"TEXTSTYLE", TEXT_MAININSTRUCTION, 0, TMT_TEXTCOLOR);
 
 	// Approximation of caption color from default Aero style
-	return cColor.IsOk() ? cColor : wxSystemSettings::GetColour(wxSYS_COLOUR_HOTLIGHT).ChangeLightness(65);
+	return color.IsOk() ? color : wxSystemSettings::GetColour(wxSYS_COLOUR_HOTLIGHT).ChangeLightness(65);
 }
 
 bool KxUtility::DrawLabel(const wxWindow* window, wxDC& dc, const wxString& label, const wxBitmap& icon, wxRect rect, int alignment, int accelIndex, wxRect* boundingRect)
@@ -121,8 +102,8 @@ bool KxUtility::DrawLabel(const wxWindow* window, wxDC& dc, const wxString& labe
 }
 bool KxUtility::DrawGripper(const wxWindow* window, wxDC& dc, const wxRect& rect)
 {
-	RECT tRectWin = CopyRectToRECT(rect);
-	if (!::DrawFrameControl(dc.GetHDC(), &tRectWin, DFC_SCROLL, DFCS_SCROLLSIZEGRIP))
+	RECT rectWin = CopyRectToRECT(rect);
+	if (!::DrawFrameControl(dc.GetHDC(), &rectWin, DFC_SCROLL, DFCS_SCROLLSIZEGRIP))
 	{
 		static const char* ms_SizeGripData[] =
 		{

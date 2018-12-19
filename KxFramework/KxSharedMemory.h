@@ -72,7 +72,7 @@ namespace KxSharedMemoryNS
 			bool Open(const wxString& name, size_t size, uint32_t protection = Protection::RW)
 			{
 				FreeIfNeeded();
-				if (OpenRegion(m_Handle, m_Buffer, name, size, protection))
+				if (OpenRegion(m_Handle, m_Buffer, name.wc_str(), size, protection))
 				{
 					m_Size = size;
 					m_Protection = static_cast<Protection>(protection);

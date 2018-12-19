@@ -333,18 +333,18 @@ wxString KxSystem::GetErrorMessage(DWORD messageID, DWORD langID)
 
 wxString KxSystem::GetEnvironmentVariable(const wxString& name)
 {
-	DWORD length = ::GetEnvironmentVariableW(name, NULL, 0);
+	DWORD length = ::GetEnvironmentVariableW(name.wc_str(), NULL, 0);
 	if (length != 0)
 	{
 		wxString out;
-		::GetEnvironmentVariableW(name, wxStringBuffer(out, length), length);
+		::GetEnvironmentVariableW(name.wc_str(), wxStringBuffer(out, length), length);
 		return out;
 	}
 	return wxEmptyString;
 }
 bool KxSystem::SetEnvironmentVariable(const wxString& name, const wxString& value)
 {
-	return ::SetEnvironmentVariableW(name, value);
+	return ::SetEnvironmentVariableW(name.wc_str(), value.wc_str());
 }
 KxStringToStringUMap KxSystem::GetEnvironmentVariables()
 {

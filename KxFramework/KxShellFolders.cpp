@@ -197,8 +197,8 @@ wxString KxShell::GetFolder(KxShellFolderID id, bool useDefault, bool create)
 
 		if (isEnvUsed)
 		{
-			DWORD size = ExpandEnvironmentStringsW(envVariable, NULL, NULL);
-			if (ExpandEnvironmentStringsW(envVariable, wxStringBuffer(out, size), size) == 0)
+			DWORD size = ExpandEnvironmentStringsW(envVariable.wc_str(), NULL, NULL);
+			if (ExpandEnvironmentStringsW(envVariable.wc_str(), wxStringBuffer(out, size), size) == 0)
 			{
 				out = wxEmptyString;
 			}

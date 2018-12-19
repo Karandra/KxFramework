@@ -1,6 +1,8 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
+class [[deprecated("Use KxAuiToolBar")]] KX_API KxToolBar;
+
 KX_DECLARE_EVENT(KxEVT_TOOLBAR, wxCommandEvent);
 KX_DECLARE_EVENT(KxEVT_TOOLBAR_RIGHTCLICK, wxCommandEvent);
 KX_DECLARE_EVENT(KxEVT_TOOLBAR_DROPDOWN, wxCommandEvent);
@@ -16,6 +18,7 @@ enum
 
 	KxTB_MASK = KxTB_DD_ARROWS|KxTB_FLAT
 };
+
 class KX_API KxToolBar: public wxToolBar
 {
 	private:

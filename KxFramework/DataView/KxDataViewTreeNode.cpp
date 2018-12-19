@@ -227,7 +227,7 @@ ptrdiff_t KxDataViewTreeNode::GetSubTreeCount() const
 }
 void KxDataViewTreeNode::ChangeSubTreeCount(ptrdiff_t num)
 {
-	wxASSERT(m_BranchData != NULL);
+	wxASSERT(m_BranchData.has_value());
 	if (!m_BranchData->IsExpanded())
 	{
 		return;

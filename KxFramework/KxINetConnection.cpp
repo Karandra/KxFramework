@@ -69,7 +69,7 @@ KxINetResponse KxINetConnection::DoSendRequest(const wxString& method, KxINetReq
 	KxINetResponse response;
 
 	wxString fullRequestURL = GetRequestURL(request);
-	HINTERNET requestHandle = ::HttpOpenRequestW(m_Handle, KxINet::StringOrNull(method), fullRequestURL, NULL, NULL, KxINet::AcceptTypes, flags, (DWORD_PTR)this);
+	HINTERNET requestHandle = ::HttpOpenRequestW(m_Handle, KxINet::StringOrNull(method), fullRequestURL.wc_str(), NULL, NULL, KxINet::AcceptTypes, flags, (DWORD_PTR)this);
 	if (requestHandle)
 	{
 		AddRequestHeadres(request, requestHandle);
@@ -204,7 +204,7 @@ bool KxINetConnection::Connect()
 	}
 
 	m_Handle = ::InternetConnectW(m_SessionInstance->GetHandle(),
-								  m_URLParts.HostName,
+								  m_URLParts.HostName.wc_str(),
 								  m_Port,
 								  KxINet::StringOrNull(m_UserName),
 								  KxINet::StringOrNull(m_Password),

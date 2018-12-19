@@ -95,7 +95,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>KxStdAfx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)KxFramework;$(SolutionDir)..\wxWidgets\include;$(SolutionDir)..\Gumbo HTML5 Parser\src;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\cURL\Includes;$(BOOST_ROOT);$(ProjectDir)KxFramework\OpenSSL\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)KxFramework;$(SolutionDir)..\wxWidgets\include;$(SolutionDir)..\wxWidgets\lib\vc_lib\mswu;$(SolutionDir)..\Gumbo HTML5 Parser\src;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\cURL\Includes;$(BOOST_ROOT);$(ProjectDir)KxFramework\OpenSSL\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>KXFRAMEWORK_LIBRARY;WXMAKINGDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -119,7 +119,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>KxStdAfx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)KxFramework;$(SolutionDir)..\wxWidgets\include;$(SolutionDir)..\Gumbo HTML5 Parser\src;$(BOOST_ROOT);$(ProjectDir)KxFramework\OpenSSL\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)KxFramework;$(SolutionDir)..\wxWidgets\include;$(SolutionDir)..\wxWidgets\lib\vc_x64_lib\mswu;$(SolutionDir)..\Gumbo HTML5 Parser\src;$(BOOST_ROOT);$(ProjectDir)KxFramework\OpenSSL\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>KXFRAMEWORK_LIBRARY;WXMAKINGDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -145,8 +145,8 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>KxStdAfx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)KxFramework;$(SolutionDir)..\wxWidgets\include;$(SolutionDir)..\Gumbo HTML5 Parser\src;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\cURL\Includes;$(BOOST_ROOT);$(ProjectDir)KxFramework\OpenSSL\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>KXFRAMEWORK_LIBRARY;WXMAKINGDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)KxFramework;$(SolutionDir)..\wxWidgets\include;$(SolutionDir)..\wxWidgets\lib\vc_lib\mswu;$(SolutionDir)..\Gumbo HTML5 Parser\src;C:\Users\Kerber\Documents\Visual Studio 2017\Projects\cURL\Includes;$(BOOST_ROOT);$(ProjectDir)KxFramework\OpenSSL\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>KXFRAMEWORK_LIBRARY;WXMAKINGDLL;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
@@ -173,8 +173,8 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>KxStdAfx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)KxFramework;$(SolutionDir)..\wxWidgets\include;$(SolutionDir)..\Gumbo HTML5 Parser\src;$(BOOST_ROOT);$(ProjectDir)KxFramework\OpenSSL\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>KXFRAMEWORK_LIBRARY;WXMAKINGDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)KxFramework;$(SolutionDir)..\wxWidgets\include;$(SolutionDir)..\wxWidgets\lib\vc_x64_lib\mswu;$(SolutionDir)..\Gumbo HTML5 Parser\src;$(BOOST_ROOT);$(ProjectDir)KxFramework\OpenSSL\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>KXFRAMEWORK_LIBRARY;WXMAKINGDLL;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
@@ -379,6 +379,7 @@
     <ClInclude Include="KxFramework\KxTypedefs.h" />
     <ClInclude Include="KxFramework\KxUnownedBuffer.h" />
     <ClInclude Include="KxFramework\KxUtility.h" />
+    <ClInclude Include="KxFramework\KxUxTheme.h" />
     <ClInclude Include="KxFramework\KxVersion.h" />
     <ClInclude Include="KxFramework\KxWebSocketEvent.h" />
     <ClInclude Include="KxFramework\KxWebSockets.h">
@@ -412,6 +413,8 @@
     <ClInclude Include="KxFramework\KxXDocumentNode.h" />
     <ClInclude Include="KxFramework\KxXML.h" />
     <ClInclude Include="KxFramework\KxZLibStream.h" />
+    <ClInclude Include="KxFramework\UxTheme\Handle.h" />
+    <ClInclude Include="KxFramework\UxTheme\Defs.h" />
     <ClInclude Include="KxFramework\XML\TinyXML2 HTML5 Printer.h" />
     <ClInclude Include="KxFramework\XML\TinyXML2.h" />
     <ClInclude Include="KxStdAfx.h" />
@@ -602,6 +605,7 @@
     <ClCompile Include="KxFramework\KxTreeView.cpp" />
     <ClCompile Include="KxFramework\KxUtility.cpp" />
     <ClCompile Include="KxFramework\KxUtilityUxTheme.cpp" />
+    <ClCompile Include="KxFramework\KxUxTheme.cpp" />
     <ClCompile Include="KxFramework\KxVersion.cpp" />
     <ClCompile Include="KxFramework\KxWebSocketEvent.cpp" />
     <ClCompile Include="KxFramework\KxWebSockets.cpp">
@@ -640,6 +644,7 @@
     <ClCompile Include="KxFramework\KxXMLAttribute.cpp" />
     <ClCompile Include="KxFramework\KxXMLNode.cpp" />
     <ClCompile Include="KxFramework\KxZLibStream.cpp" />
+    <ClCompile Include="KxFramework\UxTheme\Handle.cpp" />
     <ClCompile Include="KxFramework\XML\TinyXML2.cpp" />
     <ClCompile Include="KxStdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

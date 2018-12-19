@@ -23,7 +23,7 @@ KxShellMenu::KxShellMenu()
 KxShellMenu::KxShellMenu(const wxString& path)
 	:KxShellMenu()
 {
-	HRESULT res = SHParseDisplayName(path, 0, &m_ShellItemList, 0, 0);
+	HRESULT res = ::SHParseDisplayName(path.wc_str(), 0, &m_ShellItemList, 0, 0);
 	if (SUCCEEDED(res) && m_ShellItemList)
 	{
 		LPCITEMIDLIST childID = NULL;

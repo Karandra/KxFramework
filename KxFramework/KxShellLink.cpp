@@ -19,7 +19,7 @@ KxShellLink::KxShellLink(const wxString& filePath)
 			IPersistFile* persistFile = NULL;
 			if (SUCCEEDED(m_Instance->QueryInterface(IID_IPersistFile, (void**)&persistFile)) && persistFile != NULL)
 			{
-				persistFile->Load(filePath, 0);
+				persistFile->Load(filePath.wc_str(), 0);
 				persistFile->Release();
 			}
 		}
@@ -48,7 +48,7 @@ bool KxShellLink::Save(const wxString& path) const
 		IPersistFile* persistFile = NULL;
 		if (SUCCEEDED(m_Instance->QueryInterface(IID_IPersistFile, (void**)&persistFile)) && persistFile != NULL)
 		{
-			HRESULT res = persistFile->Save(path, TRUE);
+			HRESULT res = persistFile->Save(path.wc_str(), TRUE);
 			persistFile->Release();
 			return SUCCEEDED(res);
 		}
@@ -64,7 +64,7 @@ wxString KxShellLink::GetTarget() const
 }
 void KxShellLink::SetTarget(const wxString& value)
 {
-	m_Instance->SetPath(value);
+	m_Instance->SetPath(value.wc_str());
 }
 
 wxString KxShellLink::GetArguments() const
@@ -76,7 +76,7 @@ wxString KxShellLink::GetArguments() const
 }
 void KxShellLink::SetArguments(const wxString& value)
 {
-	m_Instance->SetArguments(value);
+	m_Instance->SetArguments(value.wc_str());
 }
 
 wxString KxShellLink::GetWorkingFolder() const
@@ -88,7 +88,7 @@ wxString KxShellLink::GetWorkingFolder() const
 }
 void KxShellLink::SetWorkingFolder(const wxString& value)
 {
-	m_Instance->SetWorkingDirectory(value);
+	m_Instance->SetWorkingDirectory(value.wc_str());
 }
 
 wxString KxShellLink::GetDescription() const
@@ -99,7 +99,7 @@ wxString KxShellLink::GetDescription() const
 }
 void KxShellLink::SetDescription(const wxString& value)
 {
-	m_Instance->SetDescription(value);
+	m_Instance->SetDescription(value.wc_str());
 }
 
 wxString KxShellLink::GetIconLocation(int* indexOut) const
@@ -114,7 +114,7 @@ wxString KxShellLink::GetIconLocation(int* indexOut) const
 }
 void KxShellLink::SetIconLocation(const wxString& value, int index)
 {
-	m_Instance->SetIconLocation(value, index);
+	m_Instance->SetIconLocation(value.wc_str(), index);
 }
 int KxShellLink::GetIconIndex() const
 {

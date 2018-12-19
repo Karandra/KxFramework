@@ -56,11 +56,11 @@ wxString KxTranslation::GetLanguageFullName(const wxString& localeName)
 {
 	LCTYPE lcType = KxSystem::IsWindows7OrGreater() ? LOCALE_SLOCALIZEDDISPLAYNAME : LOCALE_SLOCALIZEDLANGUAGENAME;
 
-	int length = ::GetLocaleInfoEx(localeName, lcType, NULL, 0);
+	int length = ::GetLocaleInfoEx(localeName.wc_str(), lcType, NULL, 0);
 	if (length != 0)
 	{
 		wxString langName;
-		::GetLocaleInfoEx(localeName, lcType, wxStringBuffer(langName, length), length);
+		::GetLocaleInfoEx(localeName.wc_str(), lcType, wxStringBuffer(langName, length), length);
 		return langName;
 	}
 	return wxEmptyString;
@@ -173,7 +173,7 @@ const wxString& KxTranslation::GetString(const wxString& id, bool* isSuccessOut)
 	}
 
 	KxUtility::SetIfNotNull(isSuccessOut, false);
-	return wxNullString;
+	return KxNullWxString;
 }
 wxString KxTranslation::GetString(wxStandardID id, bool* isSuccessOut) const
 {

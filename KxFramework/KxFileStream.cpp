@@ -276,7 +276,7 @@ bool KxFileStream::Open(const wxString& filePath, int accessMode, Disposition di
 		m_ShareMode = (Share)shareMode;
 		m_Flags = (Flags)flags;
 		m_FilePath = filePath;
-		m_Handle = ::CreateFileW(m_FilePath, AccessModeToNative(m_AccessMode), ShareModeToNative(m_ShareMode), NULL, DispositionToNative(m_Disposition), FlagsToNative(flags), NULL);
+		m_Handle = ::CreateFileW(m_FilePath.wc_str(), AccessModeToNative(m_AccessMode), ShareModeToNative(m_ShareMode), NULL, DispositionToNative(m_Disposition), FlagsToNative(flags), NULL);
 
 		return IsOk();
 	}

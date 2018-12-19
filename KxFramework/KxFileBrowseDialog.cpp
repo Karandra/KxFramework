@@ -21,18 +21,18 @@ wxString KxFileBrowseDialog::NormalizeFileFilter(const wxString& rawFilter) cons
 	// Not implemented yet
 	return rawFilter;
 }
-wxString KxFileBrowseDialog::GetFullPathName(const wxString& sRelativePath)
+wxString KxFileBrowseDialog::GetFullPathName(const wxString& relativePath)
 {
-	if (!sRelativePath.IsEmpty())
+	if (!relativePath.IsEmpty())
 	{
-		DWORD length = GetFullPathNameW(sRelativePath, NULL, NULL, NULL);
+		DWORD length = GetFullPathNameW(relativePath.wc_str(), NULL, NULL, NULL);
 		wxString out;
-		GetFullPathNameW(sRelativePath, length, wxStringBuffer(out, length), NULL);
+		GetFullPathNameW(relativePath.wc_str(), length, wxStringBuffer(out, length), NULL);
 		return out;
 	}
 	else
 	{
-		return sRelativePath;
+		return relativePath;
 	}
 }
 void KxFileBrowseDialog::AdjustModeFromOptions(FILEOPENDIALOGOPTIONS options, bool enable)
@@ -56,8 +56,8 @@ void KxFileBrowseDialog::ApplyFileFilters()
 		for (size_t i = 0; i < m_FilterList.size(); i++)
 		{
 			auto& spec = m_FilterListSpec[i];
-			spec.pszSpec = m_FilterList[i].first;
-			spec.pszName = m_FilterList[i].second;
+			spec.pszSpec = m_FilterList[i].first.wc_str();
+			spec.pszName = m_FilterList[i].second.wc_str();
 		}
 		m_Instance->SetFileTypes(m_FilterListSpec.size(), m_FilterListSpec.data());
 	}
@@ -230,7 +230,7 @@ void KxFileBrowseDialog::SetFolder(const wxString& path)
 	if (m_Instance)
 	{
 		KxCOMPtr<IShellItem> folderPath;
-		SHCreateItemFromParsingName(path, NULL, IID_PPV_ARGS(&folderPath));
+		SHCreateItemFromParsingName(path.wc_str(), NULL, IID_PPV_ARGS(&folderPath));
 		if (folderPath)
 		{
 			m_Instance->SetFolder(folderPath);
@@ -242,7 +242,7 @@ void KxFileBrowseDialog::SetNavigationRoot(const wxString& path)
 	if (m_InstanceExtra)
 	{
 		KxCOMPtr<IShellItem> folderPath;
-		SHCreateItemFromParsingName(path, NULL, IID_PPV_ARGS(&folderPath));
+		SHCreateItemFromParsingName(path.wc_str(), NULL, IID_PPV_ARGS(&folderPath));
 		if (folderPath)
 		{
 			m_InstanceExtra->SetNavigationRoot(folderPath);
@@ -254,7 +254,7 @@ void KxFileBrowseDialog::AddPlace(const wxString& path, const wxString& label, b
 	if (m_Instance)
 	{
 		KxCOMPtr<IShellItem> pathItem;
-		SHCreateItemFromParsingName(path, NULL, IID_PPV_ARGS(&pathItem));
+		SHCreateItemFromParsingName(path.wc_str(), NULL, IID_PPV_ARGS(&pathItem));
 		if (pathItem)
 		{
 			if (!label.IsEmpty())

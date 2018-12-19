@@ -198,7 +198,7 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 			m_Label = label;
 			if (m_Instance)
 			{
-				m_Instance->SetFileNameLabel(m_Label);
+				m_Instance->SetFileNameLabel(m_Label.wc_str());
 			}
 		}
 		virtual wxString GetCaption() const
@@ -236,14 +236,14 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 		{
 			if (m_Instance)
 			{
-				m_Instance->SetOkButtonLabel(text);
+				m_Instance->SetOkButtonLabel(text.wc_str());
 			}
 		}
 		void SetCancelButtonLabel(const wxString& text)
 		{
 			if (m_InstanceExtra)
 			{
-				m_InstanceExtra->SetCancelButtonLabel(text);
+				m_InstanceExtra->SetCancelButtonLabel(text.wc_str());
 			}
 		}
 		wxString GetFileName() const
@@ -264,7 +264,7 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 		{
 			if (m_Instance)
 			{
-				m_Instance->SetFileName(text);
+				m_Instance->SetFileName(text.wc_str());
 			}
 		}
 		void SetDefaultExtension(const wxString& text)
@@ -273,11 +273,11 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 			{
 				if (text.Length() > 0 && text[0] == '.')
 				{
-					m_Instance->SetDefaultExtension(text.Mid(1));
+					m_Instance->SetDefaultExtension(text.Mid(1).wc_str());
 				}
 				else
 				{
-					m_Instance->SetDefaultExtension(text);
+					m_Instance->SetDefaultExtension(text.wc_str());
 				}
 			}
 		}

@@ -349,7 +349,8 @@ bool KxXMLNode::SetName(const wxString& name)
 	{
 		if (auto node = GetNode()->ToElement())
 		{
-			node->SetName(name);
+			auto utf8 = name.ToUTF8();
+			node->SetName(utf8.data());
 			return true;
 		}
 	}

@@ -237,7 +237,8 @@ wxString KxHTMLNode::GetHTML() const
 	}
 	else if (node)
 	{
-		buffer = GetValue();
+		auto utf8 = GetValue().ToUTF8();
+		buffer.assign(utf8.data(), utf8.length());
 	}
 	return ToWxString(buffer);
 }

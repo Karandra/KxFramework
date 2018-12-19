@@ -450,6 +450,6 @@ wxString KxString::AbbreviateFilePath(const wxString& source, size_t maxChars)
 	maxChars++;
 
 	wxString result;
-	::PathCompactPathExW(wxStringBuffer(result, maxChars), source, maxChars, NULL);
+	::PathCompactPathExW(wxStringBuffer(result, maxChars), source.wc_str(), maxChars, NULL);
 	return result;
 }

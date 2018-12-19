@@ -165,7 +165,7 @@ bool KxProcessThread::CreateProcess(PROCESS_INFORMATION& processInfo)
 		m_EventHandler->m_ProcessCreationLastError = 0;
 		m_IsProcessCreated = ::CreateProcessW
 		(
-			m_EventHandler->m_ExecutablePath,
+			m_EventHandler->m_ExecutablePath.wc_str(),
 			commandLine,
 			NULL,
 			NULL,

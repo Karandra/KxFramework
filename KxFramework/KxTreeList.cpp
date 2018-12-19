@@ -19,7 +19,7 @@ wxTreeListItem KxTreeList::DVItemToTL(const wxDataViewItem& item) const
 }
 void KxTreeList::InitHeaderWindow()
 {
-	m_HeaderCtrl = m_DataView->GetHeaderCtrl();
+	m_HeaderCtrl = nullptr;//m_DataView->GetHeaderCtrl();
 	if (m_HeaderCtrl)
 	{
 		if (m_Options & KxTL_FIX_FIRST_COLUMN)
@@ -56,6 +56,7 @@ void KxTreeList::OnHeaderResized(wxHeaderCtrlEvent& event)
 
 void KxTreeList::OnSelectDV(wxDataViewEvent& event)
 {
+	#if 0
 	auto item = event.GetItem();
 	size_t columnIndex = event.GetColumn();
 
@@ -63,11 +64,12 @@ void KxTreeList::OnSelectDV(wxDataViewEvent& event)
 	treeListEvent.SetEventObject(this);
 	treeListEvent.m_column = columnIndex;
 	HandleWindowEvent(treeListEvent);
-
+	#endif
 	event.Skip();
 }
 void KxTreeList::OnActivateDV(wxDataViewEvent& event)
 {
+	#if 0
 	auto item = event.GetItem();
 	size_t columnIndex = event.GetColumn();
 
@@ -75,6 +77,7 @@ void KxTreeList::OnActivateDV(wxDataViewEvent& event)
 	treeListEvent.SetEventObject(this);
 	treeListEvent.m_column = columnIndex;
 	HandleWindowEvent(treeListEvent);
+	#endif
 
 	event.Skip();
 }
@@ -109,7 +112,7 @@ bool KxTreeList::Create(wxWindow* parent,
 		wxWindowUpdateLocker lock(this);
 
 		m_DataView = GetDataView();
-		m_DataView->SetAllowColumnsAutoSize(false);
+		//m_DataView->SetAllowColumnsAutoSize(false);
 
 		// Additional styles form DataView
 		int styleDV = 0;
@@ -213,11 +216,11 @@ int KxTreeList::GetItemImage(const wxTreeListItem& item, int mode)
 	{
 		if (mode == KxTL_IMAGE_EXPANDED)
 		{
-			return node->m_imageOpened;
+			//return node->m_imageOpened;
 		}
 		else if (mode == KxTL_IMAGE_COLLAPSED)
 		{
-			return node->m_imageClosed;
+			//return node->m_imageClosed;
 		}
 	}
 	return NO_IMAGE;

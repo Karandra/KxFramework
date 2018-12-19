@@ -82,7 +82,7 @@ class KxTopLevelWindow: public T
 		{
 			return KxTLWInternal::DWMExtendFrame(GetThis(), rect, color);
 		}
-		bool DWMBlurBehind(bool enable, const wxRegion& region = wxNullRegion)
+		bool DWMBlurBehind(bool enable, const wxRegion& region = KxNullWxRegion)
 		{
 			return KxTLWInternal::DWMBlurBehind(GetThis(), enable, region);
 		}

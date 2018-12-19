@@ -14,6 +14,7 @@ wxIMPLEMENT_DYNAMIC_CLASS(KxToolBar, wxToolBar);
 
 void KxToolBar::EventHandler(wxCommandEvent& event)
 {
+	#if 0
 	SetFocus();
 
 	wxToolBarToolBase* tool = FindById(event.GetId());
@@ -57,7 +58,7 @@ void KxToolBar::EventHandler(wxCommandEvent& event)
 			menu->Show(this, GetDropdownMenuPosition(tool->GetId()));
 		}
 	}
-
+	#endif
 	event.Skip(false);
 }
 void KxToolBar::OnDrawLine(wxEraseEvent& event)

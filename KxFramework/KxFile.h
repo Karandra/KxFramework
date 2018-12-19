@@ -82,17 +82,17 @@ class KX_API KxFile
 		
 		static bool IsFilePathExist(const wxString& path)
 		{
-			DWORD attributes = ::GetFileAttributesW(path);
+			DWORD attributes = ::GetFileAttributesW(path.wc_str());
 			return (attributes != INVALID_FILE_ATTRIBUTES) && !(attributes & FILE_ATTRIBUTE_DIRECTORY);
 		}
 		static bool IsFolderPathExist(const wxString& path)
 		{
-			DWORD attributes = ::GetFileAttributesW(path);
+			DWORD attributes = ::GetFileAttributesW(path.wc_str());
 			return (attributes != INVALID_FILE_ATTRIBUTES) && (attributes & FILE_ATTRIBUTE_DIRECTORY);
 		}
 		static bool IsPathExist(const wxString& path)
 		{
-			return ::GetFileAttributesW(path) != INVALID_FILE_ATTRIBUTES;
+			return ::GetFileAttributesW(path.wc_str()) != INVALID_FILE_ATTRIBUTES;
 		}
 
 		static wxString GetCWD();

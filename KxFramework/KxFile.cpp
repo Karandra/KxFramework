@@ -132,7 +132,9 @@ namespace
 
 		// Search
 		WIN32_FIND_DATAW info = {0};
-		HANDLE searchHandle = ::FindFirstFileW(source + L"\\*", &info);
+
+		wxString seqrchQuery = source + L"\\*";
+		HANDLE searchHandle = ::FindFirstFileW(seqrchQuery.wc_str(), &info);
 		if (searchHandle != INVALID_HANDLE_VALUE)
 		{
 			ProcessElement:
@@ -207,10 +209,10 @@ namespace
 	}
 	bool CopyAttributes(const wxString& source, const wxString& destination)
 	{
-		uint32_t value = ::GetFileAttributesW(source);
+		uint32_t value = ::GetFileAttributesW(source.wc_str());
 		if (value != INVALID_FILE_ATTRIBUTES)
 		{
-			return ::SetFileAttributesW(destination, value);
+			return ::SetFileAttributesW(destination.wc_str(), value);
 		}
 		return false;
 	}
@@ -221,11 +223,11 @@ namespace
 
 		for (const auto& element: list)
 		{
-			if (recurse &&::GetFileAttributesW(element) & FILE_ATTRIBUTE_DIRECTORY)
+			if (recurse &&::GetFileAttributesW(element.wc_str()) & FILE_ATTRIBUTE_DIRECTORY)
 			{
 				wxString folder(element);
 				folder.Replace(source, destination, false);
-				::CreateDirectoryW(folder, NULL);
+				::CreateDirectoryW(folder.wc_str(), NULL);
 				CopyAttributes(Namespace_Win32File + element, Namespace_Win32File + folder);
 				data->ProcessedSize++;
 
@@ -238,7 +240,9 @@ namespace
 				fileDestination.Replace(source, destination, false);
 				data->ProcessedSize++;
 
-				BOOL ret = CopyFileExW(Namespace_Win32File + element, KxFile(fileDestination).GetFullPathNS(), callback, data, cancel, flags);
+				wxString sourcePath = Namespace_Win32File + element;
+				wxString destinationPath = KxFile(fileDestination).GetFullPathNS();
+				BOOL ret = CopyFileExW(sourcePath.wc_str(), destinationPath.wc_str(), callback, data, cancel, flags);
 				if (ret == FALSE && ::GetLastError() == ERROR_REQUEST_ABORTED)
 				{
 					return;
@@ -252,23 +256,23 @@ const wxString KxFile::NullFilter = L"*";
 
 wxString KxFile::GetFullPathName(const wxString& filePath)
 {
-	DWORD length = ::GetFullPathNameW(filePath, NULL, NULL, NULL);
+	DWORD length = ::GetFullPathNameW(filePath.wc_str(), NULL, NULL, NULL);
 	if (length)
 	{
 		wxString out;
 		LPWSTR oldPathStart = NULL;
-		::GetFullPathNameW(filePath, length, wxStringBuffer(out, length), &oldPathStart);
+		::GetFullPathNameW(filePath.wc_str(), length, wxStringBuffer(out, length), &oldPathStart);
 		return out;
 	}
 	return filePath;
 }
 wxString KxFile::GetLongPathName(const wxString& filePath)
 {
-	DWORD length = ::GetLongPathNameW(filePath, NULL, 0);
+	DWORD length = ::GetLongPathNameW(filePath.wc_str(), NULL, 0);
 	if (length)
 	{
 		wxString out;
-		::GetLongPathNameW(filePath, wxStringBuffer(out, length), length);
+		::GetLongPathNameW(filePath.wc_str(), wxStringBuffer(out, length), length);
 		return out;
 	}
 	return filePath;
@@ -432,13 +436,14 @@ wxString KxFile::GetCWD()
 }
 bool KxFile::SetCWD(const wxString& cwd)
 {
-	return SetCurrentDirectoryW(cwd);
+	return SetCurrentDirectoryW(cwd.wc_str());
 }
 
 wxString KxFile::GetLongPath(const wxString& shortName)
 {
 	wxString out;
-	GetLongPathNameW(Namespace_Win32File + shortName, wxStringBuffer(out, INT16_MAX), INT16_MAX);
+	wxString path = Namespace_Win32File + shortName;
+	GetLongPathNameW(path.wc_str(), wxStringBuffer(out, INT16_MAX), INT16_MAX);
 
 	out.Replace(Namespace_Win32File, "", false);
 	return out;
@@ -550,7 +555,7 @@ wxString KxFile::GetFullPathNS() const
 wxString KxFile::GetShortPath() const
 {
 	wxString out;
-	GetShortPathNameW(GetFullPathNS(), wxStringBuffer(out, INT16_MAX), INT16_MAX);
+	GetShortPathNameW(GetFullPathNS().wc_str(), wxStringBuffer(out, INT16_MAX), INT16_MAX);
 	out.Replace(Namespace_Win32File, "", false);
 	return out;
 }
@@ -713,7 +718,7 @@ int64_t KxFile::GetFolderSize() const
 		if (GetFullPath().Length() <= _MAX_DRIVE)
 		{
 			ULARGE_INTEGER total = {0};
-			if (::GetDiskFreeSpaceExW(GetDrive(), NULL, &total, NULL))
+			if (::GetDiskFreeSpaceExW(GetDrive().wc_str(), NULL, &total, NULL))
 			{
 				return total.QuadPart;
 			}
@@ -747,7 +752,7 @@ wxString KxFile::GetFormattedFolderSize(int precision, const wxString& failMassa
 
 uint32_t KxFile::GetAttributes() const
 {
-	return ::GetFileAttributesW(GetFullPathNS());
+	return ::GetFileAttributesW(GetFullPathNS().wc_str());
 }
 bool KxFile::HasAttribute(uint32_t attribute) const
 {
@@ -779,20 +784,20 @@ bool KxFile::SetAttribute(uint32_t attribute, bool set)
 	{
 		if (set)
 		{
-			isSuccess = ::EncryptFileW(GetFullPathNS());
+			isSuccess = ::EncryptFileW(GetFullPathNS().wc_str());
 		}
 		else
 		{
-			isSuccess = ::DecryptFileW(GetFullPathNS(), 0);
+			isSuccess = ::DecryptFileW(GetFullPathNS().wc_str(), 0);
 		}
 	}
-	return ::SetFileAttributesW(GetFullPathNS(), KxUtility::ModFlag(GetAttributes(), attribute, set)) && isSuccess;
+	return ::SetFileAttributesW(GetFullPathNS().wc_str(), KxUtility::ModFlag(GetAttributes(), attribute, set)) && isSuccess;
 }
 bool KxFile::SetAttributes(uint32_t attributes)
 {
 	if (attributes != INVALID_FILE_ATTRIBUTES)
 	{
-		return ::SetFileAttributesW(GetFullPathNS(), attributes);
+		return ::SetFileAttributesW(GetFullPathNS().wc_str(), attributes);
 	}
 	return false;
 }
@@ -813,7 +818,7 @@ bool KxFile::IsFolder() const
 KxFileBinaryFormat KxFile::GetBinaryType() const
 {
 	DWORD binaryType = (DWORD)-1;
-	BOOL ret = GetBinaryTypeW(GetFullPathNS(), &binaryType);
+	BOOL ret = GetBinaryTypeW(GetFullPathNS().wc_str(), &binaryType);
 	DWORD lastError = GetLastError();
 
 	KxFileBinaryFormat type = KxFBF_INVALID;
@@ -862,7 +867,7 @@ KxFileBinaryFormat KxFile::GetBinaryType() const
 	else if (KxSystemAPI::ImageNtHeader)
 	{
 		// If this file is DLL
-		HANDLE fileHandle = ::CreateFileW(GetFullPath(), GENERIC_READ, 0, NULL, OPEN_EXISTING, NULL, NULL);
+		HANDLE fileHandle = ::CreateFileW(GetFullPath().wc_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, NULL, NULL);
 		if (fileHandle != INVALID_HANDLE_VALUE)
 		{
 			HANDLE mapHandle = ::CreateFileMappingW(fileHandle, NULL, PAGE_READONLY, 0, 0, NULL);
@@ -1071,7 +1076,7 @@ bool KxFile::CopyFile(const KxFile& destination, bool overwrite)
 	}
 
 	LPPROGRESS_ROUTINE callback = HasEventHandler() ? CopyFileCallback : NULL;
-	return CopyFileExW(GetFullPathNS(), destination.GetFullPathNS(), callback, &data, &cancel, flags);
+	return CopyFileExW(GetFullPathNS().wc_str(), destination.GetFullPathNS().wc_str(), callback, &data, &cancel, flags);
 }
 bool KxFile::MoveFile(const KxFile& destination, bool overwrite)
 {
@@ -1092,11 +1097,11 @@ bool KxFile::MoveFile(const KxFile& destination, bool overwrite)
 	LPPROGRESS_ROUTINE callback = HasEventHandler() ? CopyFileCallback : NULL;
 	if (callback)
 	{
-		MoveFileWithProgressW(GetFullPathNS(), destination.GetFullPathNS(), callback, &data, flags);
+		MoveFileWithProgressW(GetFullPathNS().wc_str(), destination.GetFullPathNS().wc_str(), callback, &data, flags);
 	}
 	else
 	{
-		MoveFileExW(GetFullPathNS(), destination.GetFullPathNS(), flags);
+		MoveFileExW(GetFullPathNS().wc_str(), destination.GetFullPathNS().wc_str(), flags);
 	}
 	return isSuccess;
 }
@@ -1122,7 +1127,7 @@ bool KxFile::RemoveFile(bool toRecycleBin)
 	else
 	{
 		SetAttributes(FILE_ATTRIBUTE_NORMAL);
-		return ::DeleteFileW(GetFullPathNS());
+		return ::DeleteFileW(GetFullPathNS().wc_str());
 	}
 }
 
@@ -1178,8 +1183,8 @@ bool KxFile::RemoveFolder(bool removeRootFolder, bool toRecycleBin)
 	}
 	else
 	{
-		::SetFileAttributesW(GetFullPathNS(), FILE_ATTRIBUTE_NORMAL);
-		return RemoveDirectoryW(GetFullPathNS());
+		::SetFileAttributesW(GetFullPathNS().wc_str(), FILE_ATTRIBUTE_NORMAL);
+		return RemoveDirectoryW(GetFullPathNS().wc_str());
 	}
 }
 bool KxFile::RemoveFolderTree(bool removeRootFolder, bool toRecycleBin)
@@ -1233,8 +1238,8 @@ bool KxFile::RemoveFolderTree(bool removeRootFolder, bool toRecycleBin)
 				}
 
 				wxString path = fileName.Prepend(Namespace_Win32File);
-				::SetFileAttributesW(path, FILE_ATTRIBUTE_NORMAL);
-				isSuccess = ::DeleteFileW(path);
+				::SetFileAttributesW(path.wc_str(), FILE_ATTRIBUTE_NORMAL);
+				isSuccess = ::DeleteFileW(path.wc_str());
 				processed++;
 			}
 
@@ -1262,15 +1267,15 @@ bool KxFile::RemoveFolderTree(bool removeRootFolder, bool toRecycleBin)
 				}
 
 				wxString path = i->Prepend(Namespace_Win32File);
-				::SetFileAttributesW(path, FILE_ATTRIBUTE_NORMAL);
-				isSuccess = ::RemoveDirectoryW(path);
+				::SetFileAttributesW(path.wc_str(), FILE_ATTRIBUTE_NORMAL);
+				isSuccess = ::RemoveDirectoryW(path.wc_str());
 			}
 
 			// Removing main folder
 			if (removeRootFolder)
 			{
-				::SetFileAttributesW(GetFullPathNS(), FILE_ATTRIBUTE_NORMAL);
-				return RemoveDirectoryW(GetFullPathNS());
+				::SetFileAttributesW(GetFullPathNS().wc_str(), FILE_ATTRIBUTE_NORMAL);
+				return RemoveDirectoryW(GetFullPathNS().wc_str());
 			}
 			else
 			{
@@ -1289,12 +1294,12 @@ bool KxFile::CreateFolder() const
 	else
 	{
 		BOOL isSuccess = false;
-		wxString fullPath = Namespace_Win32File + GetDrive() + "\\";
+		wxString fullPath = Namespace_Win32File + GetDrive() + wxS('\\');
 		const auto& folders = GetFoldersArray();
 		for (size_t i = 0; i < folders.size(); i++)
 		{
-			fullPath.Append(folders[i]).Append("\\");
-			isSuccess = CreateDirectoryW(fullPath, NULL);
+			fullPath.Append(folders[i]).Append(wxS('\\'));
+			isSuccess = CreateDirectoryW(fullPath.wc_str(), NULL);
 		}
 		return isSuccess;
 	}
@@ -1322,14 +1327,14 @@ bool KxFile::Rename(const KxFile& destination, bool overwrite)
 		flags |= MOVEFILE_REPLACE_EXISTING;
 	}
 
-	bool isSuccess = MoveFileExW(GetFullPathNS(), destination.GetFullPathNS(), flags);
+	bool isSuccess = MoveFileExW(GetFullPathNS().wc_str(), destination.GetFullPathNS().wc_str(), flags);
 	return isSuccess;
 }
 
 //////////////////////////////////////////////////////////////////////////
 bool KxFile::ShellOpen()
 {
-	return ::ShellExecuteW(NULL, L"open", GetFullPath(), NULL, NULL, SW_SHOWNORMAL);
+	return ::ShellExecuteW(NULL, L"open", GetFullPath().wc_str(), NULL, NULL, SW_SHOWNORMAL);
 }
 
 //////////////////////////////////////////////////////////////////////////

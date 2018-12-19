@@ -39,11 +39,11 @@ class KX_API KxListBox: public KxListView
 		}
 		bool IsCheckList()
 		{
-			return HasCheckboxes();
+			return HasCheckBoxes();
 		}
 		void SetCheckList(bool value)
 		{
-			EnableCheckboxes(value);
+			EnableCheckBoxes(value);
 		}
 		
 		int InsertItem(const wxString& label, size_t index, int imageID = wxWithImages::NO_IMAGE)

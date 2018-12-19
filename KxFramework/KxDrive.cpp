@@ -5,7 +5,7 @@
 bool KxDrive::IsExist(char driveLetter)
 {
 	wxString drivePath = ToDrivePath(driveLetter);
-	return driveLetter != ms_InvalidDrive && ::GetDriveTypeW(drivePath) != DRIVE_NO_ROOT_DIR;
+	return driveLetter != ms_InvalidDrive && ::GetDriveTypeW(drivePath.wc_str()) != DRIVE_NO_ROOT_DIR;
 }
 
 KxDrive::DrivesArray KxDrive::Enumerate()
@@ -46,41 +46,41 @@ int KxDrive::ToIndex() const
 KxDriveType KxDrive::GetType() const
 {
 	wxString drivePath = ToDrivePath(m_Drive);
-	return static_cast<KxDriveType>(::GetDriveTypeW(drivePath));
+	return static_cast<KxDriveType>(::GetDriveTypeW(drivePath.wc_str()));
 }
 wxString KxDrive::GetLabel() const
 {
 	wxString drivePath = ToDrivePath(m_Drive);
 	wxString value;
 	const int maxLength = MAX_PATH + 1;
-	::GetVolumeInformationW(drivePath, wxStringBuffer(value, maxLength), maxLength, NULL, NULL, NULL, NULL, 0);
+	::GetVolumeInformationW(drivePath.wc_str(), wxStringBuffer(value, maxLength), maxLength, NULL, NULL, NULL, NULL, 0);
 	return value;
 }
 bool KxDrive::SetLabel(const wxString& label)
 {
 	wxString drivePath = ToDrivePath(m_Drive);
-	return ::SetVolumeLabelW(drivePath, label.IsEmpty() ? NULL : label.wc_str());
+	return ::SetVolumeLabelW(drivePath.wc_str(), label.IsEmpty() ? NULL : label.wc_str());
 }
 wxString KxDrive::GetFileSystemName() const
 {
 	wxString drivePath = ToDrivePath(m_Drive);
 	wxString value;
 	const int maxLength = MAX_PATH + 1;
-	::GetVolumeInformationW(drivePath, NULL, 0, NULL, NULL, NULL, wxStringBuffer(value, maxLength), maxLength);
+	::GetVolumeInformationW(drivePath.wc_str(), NULL, 0, NULL, NULL, NULL, wxStringBuffer(value, maxLength), maxLength);
 	return value;
 }
 uint32_t KxDrive::GetSerialNumber() const
 {
 	wxString drivePath = ToDrivePath(m_Drive);
 	DWORD value = 0;
-	::GetVolumeInformationW(drivePath, NULL, 0, &value, NULL, NULL, NULL, 0);
+	::GetVolumeInformationW(drivePath.wc_str(), NULL, 0, &value, NULL, NULL, NULL, 0);
 	return value;
 }
 wxFileOffset KxDrive::GetTotalSpace() const
 {
 	wxString drivePath = ToDrivePath(m_Drive);
 	ULARGE_INTEGER value;
-	::GetDiskFreeSpaceExW(drivePath, NULL, &value, NULL);
+	::GetDiskFreeSpaceExW(drivePath.wc_str(), NULL, &value, NULL);
 	return value.QuadPart;
 }
 wxFileOffset KxDrive::GetUsedSpace() const
@@ -89,15 +89,15 @@ wxFileOffset KxDrive::GetUsedSpace() const
 
 	ULARGE_INTEGER total;
 	ULARGE_INTEGER free;
-	::GetDiskFreeSpaceExW(drivePath, NULL, &total, NULL);
-	::GetDiskFreeSpaceExW(drivePath, NULL, NULL, &free);
+	::GetDiskFreeSpaceExW(drivePath.wc_str(), NULL, &total, NULL);
+	::GetDiskFreeSpaceExW(drivePath.wc_str(), NULL, NULL, &free);
 	return total.QuadPart - free.QuadPart;
 }
 wxFileOffset KxDrive::GetFreeSpace() const
 {
 	wxString drivePath = ToDrivePath(m_Drive);
 	ULARGE_INTEGER value;
-	::GetDiskFreeSpaceExW(drivePath, NULL, NULL, &value);
+	::GetDiskFreeSpaceExW(drivePath.wc_str(), NULL, NULL, &value);
 	return value.QuadPart;
 }
 KxDrive::DriveInfo KxDrive::GetInfo() const
@@ -105,18 +105,18 @@ KxDrive::DriveInfo KxDrive::GetInfo() const
 	wxString drivePath = ToDrivePath(m_Drive);
 
 	DriveInfo info;
-	DWORD nMaximumComponentLength = 0;
-	::GetVolumeInformationW(drivePath, NULL, 0, NULL, &nMaximumComponentLength, &info.FileSystemFlags, NULL, 0);
-	info.LongFileNames = nMaximumComponentLength == 255;
-	::GetDiskFreeSpaceW(drivePath, &info.SectorsPerCluster, &info.BytesPerSector, &info.NumberOfFreeClusters, &info.TotalNumberOfClusters);
+	DWORD maximumComponentLength = 0;
+	::GetVolumeInformationW(drivePath.wc_str(), NULL, 0, NULL, &maximumComponentLength, &info.FileSystemFlags, NULL, 0);
+	info.LongFileNames = maximumComponentLength == 255;
+	::GetDiskFreeSpaceW(drivePath.wc_str(), &info.SectorsPerCluster, &info.BytesPerSector, &info.NumberOfFreeClusters, &info.TotalNumberOfClusters);
 
 	return info;
 }
 bool KxDrive::Eject()
 {
 	bool ret = false;
-	wxString drivePath = "\\\\.\\" + ToDrivePath(m_Drive);
-	HANDLE drive = ::CreateFileW(drivePath, GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE|FILE_SHARE_DELETE, 0, OPEN_EXISTING, 0, 0);
+	wxString drivePath = wxS("\\\\.\\") + ToDrivePath(m_Drive);
+	HANDLE drive = ::CreateFileW(drivePath.wc_str(), GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE|FILE_SHARE_DELETE, 0, OPEN_EXISTING, 0, 0);
 	if (drive != INVALID_HANDLE_VALUE)
 	{
 		DWORD bytes = 0;

@@ -4,9 +4,9 @@
 #include "KxFramework/KxTranslation.h"
 #include "KxFramework/KxIncludeWindows.h"
 
-const wxRegion wxNullRegion = wxRegion();
-const wxRect wxNullRect = wxRect();
-const wxString wxNullString = wxString();
+const wxRegion KxNullWxRegion = wxRegion();
+const wxRect KxNullWxRect = wxRect();
+const wxString KxNullWxString = wxString();
 
 wxString wxGetStockLabelLocalized(wxWindowID id, long flags, bool* isSuccess = NULL);
 

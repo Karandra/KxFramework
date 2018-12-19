@@ -23,6 +23,9 @@ enum KxTreeListOptions
 	KxTL_MASK = KxTL_VERT_RULES|KxTL_HORIZ_RULES|KxTL_DCLICK_EXPAND|KxTL_FIX_FIRST_COLUMN
 };
 
+class KX_API [[deprecated("Use KxDataViewCtrl with custom data model")]] KxTreeList;
+class KX_API [[deprecated("Use KxDataViewCtrl with custom data model")]] KxTreeListItem;
+
 class KX_API KxTreeList;
 class KX_API KxTreeListItem
 {
@@ -148,6 +151,7 @@ class KX_API KxTreeListItem
 };
 typedef std::vector<KxTreeListItem> KxTreeListItems;
 
+//////////////////////////////////////////////////////////////////////////
 class KX_API KxTreeList: public KxWithImageListWrapper<wxTreeListCtrl>
 {
 	friend class KxTreeListItem;
@@ -169,8 +173,6 @@ class KX_API KxTreeList: public KxWithImageListWrapper<wxTreeListCtrl>
 		void OnResize(wxSizeEvent& event);
 		void OnHeaderResized(wxHeaderCtrlEvent& event);
 		void EvtExpandOnDClick(wxTreeListEvent& event);
-		void OnDrawItemHover(wxPaintEvent& event);
-		void OnItemHover(const wxPoint& tMousePos);
 		void OnSelectDV(wxDataViewEvent& event);
 		void OnActivateDV(wxDataViewEvent& event);
 

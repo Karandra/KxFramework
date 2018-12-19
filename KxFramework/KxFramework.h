@@ -4,18 +4,20 @@
 #include "KxTypedefs.h"
 
 // Global objects
-#if !defined wxNullRegion
-extern KX_API const wxRegion wxNullRegion;
+#if !defined KxNullWxRegion
+extern KX_API const wxRegion KxNullWxRegion;
 #endif
-#if !defined wxNullRect
-extern KX_API const wxRect wxNullRect;
+#if !defined KxNullWxRect
+extern KX_API const wxRect KxNullWxRect;
 #endif
-#if !defined wxNullString
-extern KX_API const wxString wxNullString;
+#if !defined KxNullWxString
+extern KX_API const wxString KxNullWxString;
 #endif
 
 // Libs
 #pragma comment(lib, "Ws2_32.lib")
+#pragma comment(lib, "Comctl32.lib")
+#pragma comment(lib, "Rpcrt4.lib")
 
 #pragma comment(lib, "wxbase31u")
 #pragma comment(lib, "wxbase31u_net")

@@ -53,7 +53,7 @@ void KxDataViewHTMLRenderer::DrawCellContent(const wxRect& cellRect, KxDataViewC
 		dc.GetUserScale(&scaleX, &scaleY);
 
 		// Render text
-		htmlRenderer.Render(cellRect.GetX(), cellRect.GetY(), m_KnownPageBreaks);
+		htmlRenderer.Render(cellRect.GetX(), cellRect.GetY(), m_VisibleCellFrom, m_VisibleCellTo);
 
 		// Restore user scale
 		dc.SetUserScale(scaleX, scaleY);
@@ -68,22 +68,3 @@ wxSize KxDataViewHTMLRenderer::GetCellSize() const
 	return wxSize(0, KxDataViewRenderer::GetCellSize().GetHeight());
 }
 
-KxIntVector KxDataViewHTMLRenderer::GetKnownPageBreaks() const
-{
-	KxIntVector knownBreaks;
-	knownBreaks.reserve(m_KnownPageBreaks.size());
-	for (const auto& v: m_KnownPageBreaks)
-	{
-		knownBreaks.push_back(v);
-	}
-	return knownBreaks;
-}
-void KxDataViewHTMLRenderer::SetKnownPageBreaks(const KxIntVector& tBreaks)
-{
-	m_KnownPageBreaks.clear();
-	m_KnownPageBreaks.reserve(tBreaks.size());
-	for (const auto& v : tBreaks)
-	{
-		m_KnownPageBreaks.push_back(v);
-	}
-}

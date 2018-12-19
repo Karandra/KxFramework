@@ -179,7 +179,7 @@ void KxTaskDialog::UpdateButtonArrays(const KxStringVector& labels, ButtonSpecAr
 {
 	for (size_t i = 0; i < labels.size(); i++)
 	{
-		array[i].pszButtonText = labels[i];
+		array[i].pszButtonText = labels[i].wc_str();
 	}
 }
 

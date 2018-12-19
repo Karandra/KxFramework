@@ -363,7 +363,7 @@ KxIntVector KxListView::GetSelections() const
 KxIntVector KxListView::GetCheckedItems() const
 {
 	KxIntVector list;
-	if (HasCheckboxes())
+	if (HasCheckBoxes())
 	{
 		int count = GetItemCount();
 		list.reserve(count);

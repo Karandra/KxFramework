@@ -7,12 +7,7 @@
 #include "KxFramework/KxImageList.h"
 #include "KxFramework/KxGraphicsContext.h"
 #include "KxFramework/KxDCClipper.h"
-
-#include <wx/wxprec.h>
-#include <wx/msw/private.h>
-#include <wx/msw/uxtheme.h>
-#include <vsstyle.h>
-#include <vssym32.h>
+#include "KxFramework/KxUxTheme.h"
 
 wxIMPLEMENT_ABSTRACT_CLASS(KxDataViewRenderer, wxObject);
 
@@ -367,59 +362,55 @@ bool KxDataViewRenderer::DoDrawBitmap(const wxRect& cellRect, KxDataViewCellStat
 }
 bool KxDataViewRenderer::DoDrawProgressBar(const wxRect& cellRect, KxDataViewCellState cellState, int value, int range, ProgressBarState state)
 {
-	wxUxThemeEngine* themeEngine = wxUxThemeEngine::GetIfActive();
-	if (themeEngine)
+	KxUxTheme::Handle themeHandle(GetView(), L"PROGRESS");
+	if (themeHandle)
 	{
-		wxUxThemeHandle themeHandle(GetView(), L"PROGRESS");
-		if (themeHandle)
+		HDC dc = GetDC().GetHDC();
+
+		// Draw background
+		RECT cellRectWin = KxUtility::CopyRectToRECT(cellRect);
+		::DrawThemeBackground(themeHandle, dc, PP_BAR, 0, &cellRectWin, NULL);
+
+		// Draw filled part
+		RECT contentRect = {0};
+		::GetThemeBackgroundContentRect(themeHandle, dc, PP_BAR, 0, &cellRectWin, &contentRect);
+
+		contentRect.right = contentRect.left + wxMulDivInt32(contentRect.right - contentRect.left, value, range);
+		if (contentRect.left - 2 == cellRectWin.left)
 		{
-			HDC dc = GetDC().GetHDC();
-			
-			// Draw background
-			RECT cellRectWin = KxUtility::CopyRectToRECT(cellRect);
-			themeEngine->DrawThemeBackground(themeHandle, dc, PP_BAR, 0, &cellRectWin, NULL);
-
-			// Draw filled part
-			RECT contentRect = {0};
-			themeEngine->GetThemeBackgroundContentRect(themeHandle, dc, PP_BAR, 0, &cellRectWin, &contentRect);
-
-			contentRect.right = contentRect.left + wxMulDivInt32(contentRect.right - contentRect.left, value, range);
-			if (contentRect.left - 2 == cellRectWin.left)
-			{
-				contentRect.left++;
-			}
-			if (contentRect.right + 2 == cellRectWin.right)
-			{
-				contentRect.right--;
-			}
-
-			switch (state)
-			{
-				case ProgressBarState::Paused:
-				{
-					themeEngine->DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_PAUSED, &contentRect, NULL);
-					break;
-				}
-				case ProgressBarState::Error:
-				{
-					themeEngine->DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_ERROR, &contentRect, NULL);
-					break;
-				}
-				case ProgressBarState::Partial:
-				{
-					themeEngine->DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_PARTIAL, &contentRect, NULL);
-					break;
-				}
-
-				default:
-				case ProgressBarState::Normal:
-				{
-					themeEngine->DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_NORMAL, &contentRect, NULL);
-					break;
-				}
-			};
-			return true;
+			contentRect.left++;
 		}
+		if (contentRect.right + 2 == cellRectWin.right)
+		{
+			contentRect.right--;
+		}
+
+		switch (state)
+		{
+			case ProgressBarState::Paused:
+			{
+				::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_PAUSED, &contentRect, NULL);
+				break;
+			}
+			case ProgressBarState::Error:
+			{
+				::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_ERROR, &contentRect, NULL);
+				break;
+			}
+			case ProgressBarState::Partial:
+			{
+				::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_PARTIAL, &contentRect, NULL);
+				break;
+			}
+
+			default:
+			case ProgressBarState::Normal:
+			{
+				::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_NORMAL, &contentRect, NULL);
+				break;
+			}
+		};
+		return true;
 	}
 
 	wxRendererNative::Get().DrawGauge(GetView(), GetGCDC(), cellRect, value, range);

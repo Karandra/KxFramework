@@ -139,28 +139,28 @@ bool KxShell::PinShortcut(const wxString& shortcutPath, KxShellShortcutPinMode m
 		{
 			#pragma warning(suppress: 4311)
 			#pragma warning(suppress: 4302)
-			ret = (int)::ShellExecuteW(NULL, L"startpin", shortcutPath, NULL, NULL, SW_SHOWNORMAL);
+			ret = (int)::ShellExecuteW(NULL, L"startpin", shortcutPath.wc_str(), NULL, NULL, SW_SHOWNORMAL);
 			break;
 		}
 		case KxSH_UNPIN_STARTMENU:
 		{
 			#pragma warning(suppress: 4311)
 			#pragma warning(suppress: 4302)
-			ret = (int)::ShellExecuteW(NULL, L"startunpin", shortcutPath, NULL, NULL, SW_SHOWNORMAL);
+			ret = (int)::ShellExecuteW(NULL, L"startunpin", shortcutPath.wc_str(), NULL, NULL, SW_SHOWNORMAL);
 			break;
 		}
 		case KxSH_PIN_TASKBAR:
 		{
 			#pragma warning(suppress: 4311)
 			#pragma warning(suppress: 4302)
-			ret = (int)::ShellExecuteW(NULL, L"taskbarpin", shortcutPath, NULL, NULL, SW_SHOWNORMAL);
+			ret = (int)::ShellExecuteW(NULL, L"taskbarpin", shortcutPath.wc_str(), NULL, NULL, SW_SHOWNORMAL);
 			break;
 		}
 		case KxSH_UNPIN_TASKBAR:
 		{
 			#pragma warning(suppress: 4311)
 			#pragma warning(suppress: 4302)
-			ret = (int)::ShellExecuteW(NULL, L"taskbarunpin", shortcutPath, NULL, NULL, SW_SHOWNORMAL);
+			ret = (int)::ShellExecuteW(NULL, L"taskbarunpin", shortcutPath.wc_str(), NULL, NULL, SW_SHOWNORMAL);
 			break;
 		}
 	}
@@ -177,12 +177,12 @@ wxString KxShell::QueryAssocString(const wxString& string, KxShellAssocQuery inf
 
 	DWORD length = 0;
 	ASSOCF flags = ASSOCF_INIT_DEFAULTTOSTAR;
-	::AssocQueryStringW(flags, (ASSOCSTR)infoType, extWithDot, NULL, NULL, &length);
+	::AssocQueryStringW(flags, (ASSOCSTR)infoType, extWithDot.wc_str(), NULL, NULL, &length);
 
 	wxString out;
 	if (length != 0)
 	{
-		::AssocQueryStringW(flags, (ASSOCSTR)infoType, extWithDot, NULL, wxStringBuffer(out, length), &length);
+		::AssocQueryStringW(flags, (ASSOCSTR)infoType, extWithDot.wc_str(), NULL, wxStringBuffer(out, length), &length);
 	}
 	return out;
 }
@@ -210,7 +210,7 @@ wxString KxShell::GetLocalizedName(const wxString& objectPath, int* resourceIDOu
 {
 	wxString out;
 	int resourceID = 0;
-	if (::SHGetLocalizedName(objectPath, wxStringBuffer(out, INT16_MAX), INT16_MAX, &resourceID) == S_OK)
+	if (::SHGetLocalizedName(objectPath.wc_str(), wxStringBuffer(out, INT16_MAX), INT16_MAX, &resourceID) == S_OK)
 	{
 		KxUtility::SetIfNotNull(resourceIDOut, resourceID);
 		return out;
@@ -221,7 +221,7 @@ wxString KxShell::GetLocalizedName(const wxString& objectPath, int* resourceIDOu
 wxIcon KxShell::GetFileIcon(const wxString& path, bool smallIcon)
 {
 	SHFILEINFOW shellInfo = {0};
-	::SHGetFileInfoW(path, 0, &shellInfo, sizeof(shellInfo), SHGFI_ICON|(smallIcon ? SHGFI_SMALLICON : 0));
+	::SHGetFileInfoW(path.wc_str(), 0, &shellInfo, sizeof(shellInfo), SHGFI_ICON|(smallIcon ? SHGFI_SMALLICON : 0));
 	if (shellInfo.hIcon != NULL)
 	{
 		wxIcon icon;
@@ -235,7 +235,7 @@ wxIcon KxShell::GetFileIcon(const wxString& path, bool smallIcon)
 wxIcon KxShell::GetFileIcon(const KxFileItem& item, bool smallIcon)
 {
 	SHFILEINFOW shellInfo = {0};
-	::SHGetFileInfoW(item.GetName(), item.GetAttributes(), &shellInfo, sizeof(shellInfo), SHGFI_USEFILEATTRIBUTES|SHGFI_ICON|(smallIcon ? SHGFI_SMALLICON : 0));
+	::SHGetFileInfoW(item.GetName().wc_str(), item.GetAttributes(), &shellInfo, sizeof(shellInfo), SHGFI_USEFILEATTRIBUTES|SHGFI_ICON|(smallIcon ? SHGFI_SMALLICON : 0));
 	if (shellInfo.hIcon != NULL)
 	{
 		wxIcon icon;
@@ -264,8 +264,8 @@ bool KxShell::Execute(wxWindow* window,
 		info.fMask = info.fMask|SEE_MASK_FLAG_NO_UI;
 	}
 	info.hwnd = GetOwnerHWND(window);
-	info.lpVerb = operation;
-	info.lpFile = filePath;
+	info.lpVerb = operation.wc_str();
+	info.lpFile = filePath.wc_str();
 	info.lpDirectory = workingFolder.IsEmpty() ? NULL : workingFolder.wc_str();
 	info.lpParameters = arguments.IsEmpty() ? NULL : arguments.wc_str();
 	info.nShow = windowMode;
@@ -279,7 +279,7 @@ bool KxShell::OpenFolderAndSelectItem(const wxString& filePath)
 {
 	LPITEMIDLIST item = NULL;
 	SFGAOF attributes = 0;
-	if (SUCCEEDED(::SHParseDisplayName(filePath, NULL, &item, 0, &attributes)))
+	if (SUCCEEDED(::SHParseDisplayName(filePath.wc_str(), NULL, &item, 0, &attributes)))
 	{
 		::CoInitialize(NULL);
 		HRESULT status = ::SHOpenFolderAndSelectItems(item, 0, NULL, 0);

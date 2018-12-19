@@ -31,8 +31,8 @@ int KxCredentialsDialog::ShowModal()
 	CREDUI_INFOW credentialInfoUI = {0};
 	credentialInfoUI.cbSize = sizeof(credentialInfoUI);
 	credentialInfoUI.hwndParent = m_Parent ? wxGetTopLevelParent(m_Parent)->GetHandle() : NULL;
-	credentialInfoUI.pszCaptionText = m_Caption;
-	credentialInfoUI.pszMessageText = m_Message;
+	credentialInfoUI.pszCaptionText = m_Caption.wc_str();
+	credentialInfoUI.pszMessageText = m_Message.wc_str();
 	credentialInfoUI.hbmBanner = NULL;
 
 	ULONG authPackage = 0;

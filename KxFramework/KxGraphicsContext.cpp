@@ -51,5 +51,5 @@ wxRegion KxGraphicsContext::GetClipRegion() const
 	{
 		return ToRegion(region, GetNativeContext(m_Context));
 	}
-	return wxNullRegion;
+	return KxNullWxRegion;
 }

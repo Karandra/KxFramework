@@ -88,7 +88,7 @@ class KX_API KxLibraryVersionInfo
 			{
 				return m_Strings.at(name);
 			}
-			return wxNullString;
+			return KxNullWxString;
 		}
 		void SetString(const wxString& name, const wxString& value = wxEmptyString)
 		{
@@ -176,19 +176,9 @@ class KX_API KxLibrary: public KxIOwnedSimple
 
 		// Functions
 		KxStringVector EnumFunctions() const;
-		void* GetProcAddress(const wxString& name) const;
-		void* GetProcAddress(WORD ordinal) const;
-		bool IsFunctionExist(const wxString& name) const
-		{
-			return GetProcAddress(name) != NULL;
-		}
-		bool IsFunctionExist(WORD ordinal) const
-		{
-			return GetProcAddress(ordinal) != NULL;
-		}
 		
-		#if defined RtCFunction
-		RtCFunction* Function(const wxString& name, lua_State* L, const Lua::IntegerArray& tArgTypes, LClassID nRetTypeID, RtCFunctionABI nABI);
-		RtCFunction* Function(WORD ordinal, lua_State* L, const Lua::IntegerArray& tArgTypes, LClassID nRetTypeID, RtCFunctionABI nABI);
-		#endif
+		void* GetProcAddress(const char* name) const;
+		void* GetProcAddress(const wchar_t* name) const;
+		void* GetProcAddress(const wxString& name) const;
+		void* GetProcAddress(uint32_t ordinal) const;
 };

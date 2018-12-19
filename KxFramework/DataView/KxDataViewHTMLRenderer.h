@@ -9,14 +9,16 @@ class KX_API KxDataViewHTMLRenderer: public KxDataViewRenderer
 		wxString m_Content;
 		wxString m_ContentHTML;
 
-		wxArrayInt m_KnownPageBreaks;
 		double m_PixelScale = 1.0;
 		double m_FontScale = 1.0;
+
+		int m_VisibleCellFrom = 0;
+		int m_VisibleCellTo = std::numeric_limits<int>::max();
 
 	protected:
 		virtual bool SetValue(const wxAny& value);
 
-		void PrepareRenderer(wxHtmlDCRenderer& htmlRenderer, wxDC& dc, const wxRect& cellRect = wxNullRect) const;
+		void PrepareRenderer(wxHtmlDCRenderer& htmlRenderer, wxDC& dc, const wxRect& cellRect = KxNullWxRect) const;
 		virtual void DrawCellContent(const wxRect& cellRect, KxDataViewCellState cellState) override;
 		virtual wxSize GetCellSize() const override;
 
@@ -27,8 +29,19 @@ class KX_API KxDataViewHTMLRenderer: public KxDataViewRenderer
 		}
 
 	public:
-		KxIntVector GetKnownPageBreaks() const;
-		void SetKnownPageBreaks(const KxIntVector& tBreaks);
+		int GetVisibleCellFrom() const
+		{
+			return m_VisibleCellFrom;
+		}
+		int GetVisibleCellTo() const
+		{
+			return m_VisibleCellTo;
+		}
+		void SetVisibleCellBounds(int from = 0, int to = std::numeric_limits<int>::max())
+		{
+			m_VisibleCellFrom = from;
+			m_VisibleCellTo = to;
+		}
 
 		void SetPixelScale(double v)
 		{
