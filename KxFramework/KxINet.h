@@ -14,6 +14,13 @@ class KX_API KxINet
 {
 	friend class KxINetConnection;
 
+	public:
+		enum class IP
+		{
+			v4,
+			v6
+		};
+
 	private:
 		static const WCHAR* AcceptTypes[];
 
@@ -31,7 +38,7 @@ class KX_API KxINet
 		}
 		static KxINetURLParts SplitURL(const wxString& url);
 		static bool IsInternetAvailable();
-		static wxString LookupIP(const wxString& url);
+		static wxString LookupIP(const wxString& url, IP ip = IP::v4);
 
 	private:
 		using HINTERNET = void*;

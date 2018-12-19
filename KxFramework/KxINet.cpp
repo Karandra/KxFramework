@@ -4,6 +4,7 @@
 #include "KxFramework/KxINetEvent.h"
 #include <WinINet.h>
 #include <WinDNS.h>
+#include <ws2tcpip.h>
 #pragma comment(lib, "DnsAPI.lib")
 #pragma comment(lib, "WinINet.lib")
 
@@ -103,18 +104,32 @@ bool KxINet::IsInternetAvailable()
 	DWORD flags = 0;
 	return ::InternetGetConnectedState(&flags, 0);
 }
-wxString KxINet::LookupIP(const wxString& url)
+wxString KxINet::LookupIP(const wxString& url, IP ip)
 {
 	KxINetURLParts parts = SplitURL(url);
 
 	PDNS_RECORD infoDNS = NULL;
-	if (::DnsQuery_W(parts.HostName, DNS_TYPE_A, DNS_QUERY_STANDARD|DNS_QUERY_BYPASS_CACHE, NULL, &infoDNS, NULL) == 0)
+	const WORD type = ip == IP::v6 ? DNS_TYPE_A6 : DNS_TYPE_A;
+	if (::DnsQuery_W(parts.HostName.wc_str(), type, DNS_QUERY_STANDARD|DNS_QUERY_BYPASS_CACHE, NULL, &infoDNS, NULL) == 0)
 	{
-		IN_ADDR inAddress;
-		inAddress.S_un.S_addr = (infoDNS->Data.A.IpAddress);
+		IN_ADDR inAddress = {};
+		bool isSuccess = false;
+		wchar_t buffer[64] = {0};
+
+		if (ip == IP::v6)
+		{
+			isSuccess = ::InetNtopW(AF_INET6, &infoDNS->Data.AAAA.Ip6Address, buffer, std::size(buffer)) != nullptr;
+		}
+		else
+		{
+			isSuccess = ::InetNtopW(AF_INET, &infoDNS->Data.A.IpAddress, buffer, std::size(buffer)) != nullptr;
+		}
 		DnsRecordListFree(infoDNS, DnsFreeRecordListDeep);
 
-		return inet_ntoa(inAddress);
+		if (isSuccess)
+		{
+			return buffer;
+		}
 	}
 	return wxEmptyString;
 }
@@ -145,8 +160,8 @@ wxString KxINet::OnGetUserAgent() const
 KxINet::KxINet(DWORD timeout)
 	:m_TimeOut(timeout)
 {
-	wxString sUserAgent = OnGetUserAgent();
-	m_Handle = ::InternetOpenW(sUserAgent, INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
+	wxString userAgent = OnGetUserAgent();
+	m_Handle = ::InternetOpenW(userAgent.wc_str(), INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
 	SetTimeouts();
 }
 KxINet::~KxINet()
