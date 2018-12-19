@@ -11,7 +11,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 enum KxHTML_NodeType;
 enum KxHTML_TagType;
 
-class KxHTMLDocument;
+class KX_API KxHTMLDocument;
 class KX_API KxHTMLNode: public KxXDocumentNode<KxHTMLNode>
 {
 	friend class KxHTMLDocument;
@@ -39,14 +39,11 @@ class KX_API KxHTMLNode: public KxXDocumentNode<KxHTMLNode>
 		const KxHTMLDocument* m_Document = NULL;
 
 	protected:
-		virtual bool DoSetValue(const wxString& value, bool isCDATA = false) override
-		{
-			return false;
-		}
-		virtual bool DoSetAttribute(const wxString& name, const wxString& value) override
-		{
-			return false;
-		}
+		wxString DoGetValue(const wxString& defaultValue = wxEmptyString) const override;
+		bool DoSetValue(const wxString& value, bool isCDATA = false) override;
+		
+		wxString DoGetAttribute(const wxString& name, const wxString& defaultValue = wxEmptyString) const override;
+		bool DoSetAttribute(const wxString& name, const wxString& value) override;
 
 	public:
 		KxHTMLNode()
@@ -66,19 +63,19 @@ class KX_API KxHTMLNode: public KxXDocumentNode<KxHTMLNode>
 
 	public:
 		/* General */
-		virtual bool IsOK() const override
+		bool IsOK() const override
 		{
 			return m_Node && m_Document;
 		}
-		virtual KxHTMLNode QueryElement(const wxString& XPath) const override;
-		virtual KxHTMLNode QueryOrCreateElement(const wxString& XPath) override;
+		KxHTMLNode QueryElement(const wxString& XPath) const override;
+		KxHTMLNode QueryOrCreateElement(const wxString& XPath) override;
 
 		/* Node */
-		virtual size_t GetIndexWithinParent() const override;
-		virtual wxString GetName() const override;
+		size_t GetIndexWithinParent() const override;
+		wxString GetName() const override;
 
-		virtual size_t GetChildrenCount() const override;
-		virtual NodeVector GetChildren() const override;
+		size_t GetChildrenCount() const override;
+		NodeVector GetChildren() const override;
 
 		virtual wxString GetHTML() const;
 		KxHTML_NodeType GetType() const;
@@ -92,17 +89,15 @@ class KX_API KxHTMLNode: public KxXDocumentNode<KxHTMLNode>
 
 		/* Value */
 		wxString GetValueText() const;
-		virtual wxString GetValue(const wxString& defaultValue = wxEmptyString) const override;
-		
+
 		/* Attributes */
 		virtual size_t GetAttributeCount() const override;
 		virtual KxStringVector GetAttributes() const override;
 
 		virtual bool HasAttribute(const wxString& name) const override;
-		virtual wxString GetAttribute(const wxString& name, const wxString& defaultValue = wxEmptyString) const override;
 		
 		/* Navigation */
-		virtual KxHTMLNode GetElementByAttribute(const wxString& name, const wxString& value) const override;
+		KxHTMLNode GetElementByAttribute(const wxString& name, const wxString& value) const override;
 		KxHTMLNode GetElementByID(const wxString& id) const
 		{
 			return GetElementByAttribute("id", id);
@@ -114,13 +109,14 @@ class KX_API KxHTMLNode: public KxXDocumentNode<KxHTMLNode>
 		KxHTMLNode GetElementByTag(KxHTML_TagType tagType) const;
 		KxHTMLNode GetElementByTag(const wxString& tagName) const;
 		
-		virtual KxHTMLNode GetParent() const override;
-		virtual KxHTMLNode GetPreviousSibling() const override;
-		virtual KxHTMLNode GetNextSibling() const override;
-		virtual KxHTMLNode GetFirstChild() const override;
-		virtual KxHTMLNode GetLastChild() const override;
+		KxHTMLNode GetParent() const override;
+		KxHTMLNode GetPreviousSibling() const override;
+		KxHTMLNode GetNextSibling() const override;
+		KxHTMLNode GetFirstChild() const override;
+		KxHTMLNode GetLastChild() const override;
 };
 
+//////////////////////////////////////////////////////////////////////////
 class KX_API KxHTMLDocument: public KxHTMLNode
 {
 	private:

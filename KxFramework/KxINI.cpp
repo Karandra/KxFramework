@@ -17,7 +17,25 @@ void KxINI::UnLoad()
 	m_Document.Reset();
 }
 
-wxString KxINI::DoGetValue(const wxString& sectionName, const wxString& keyName, const wxString& defaultValue) const
+wxString KxINI::DoGetValue(const wxString& defaultValue) const
+{
+	return wxEmptyString;
+}
+bool KxINI::DoSetValue(const wxString& value, bool isCDATA)
+{
+	return false;
+}
+
+wxString KxINI::DoGetAttribute(const wxString& name, const wxString& defaultValue) const
+{
+	return wxEmptyString;
+}
+bool KxINI::DoSetAttribute(const wxString& name, const wxString& value)
+{
+	return false;
+}
+
+wxString KxINI::IniGetValue(const wxString& sectionName, const wxString& keyName, const wxString& defaultValue) const
 {
 	auto sectionNameUTF8 = sectionName.ToUTF8();
 	auto keyNameUTF8 = keyName.ToUTF8();
@@ -25,7 +43,7 @@ wxString KxINI::DoGetValue(const wxString& sectionName, const wxString& keyName,
 
 	return value ? wxString::FromUTF8Unchecked(value) : defaultValue;
 }
-bool KxINI::DoSetValue(const wxString& sectionName, const wxString& keyName, const wxString& value)
+bool KxINI::IniSetValue(const wxString& sectionName, const wxString& keyName, const wxString& value)
 {
 	auto sectionNameUTF8 = sectionName.ToUTF8();
 	auto keyNameUTF8 = keyName.ToUTF8();
@@ -93,13 +111,13 @@ wxString KxINI::Save() const
 
 KxStringVector KxINI::GetSectionNames() const
 {
-	DocumentT::TNamesDepend sections;
+	TDocument::TNamesDepend sections;
 	m_Document.GetAllSections(sections);
-	sections.sort(DocumentT::Entry::LoadOrder());
+	sections.sort(TDocument::Entry::LoadOrder());
 
 	KxStringVector list;
 	list.reserve(sections.size());
-	for (DocumentT::TNamesDepend::const_iterator it = sections.begin(); it != sections.end(); ++it)
+	for (TDocument::TNamesDepend::const_iterator it = sections.begin(); it != sections.end(); ++it)
 	{
 		list.push_back(ToWxString(it->item));
 	}
@@ -108,7 +126,7 @@ KxStringVector KxINI::GetSectionNames() const
 KxStringVector KxINI::GetKeyNames(const wxString& sectionName) const
 {
 	KxStringVector list;
-	DocumentT::TNamesDepend keys;
+	TDocument::TNamesDepend keys;
 
 	auto utf8 = sectionName.ToUTF8();
 	if (m_Document.GetAllKeys(utf8.data(), keys))
@@ -116,7 +134,7 @@ KxStringVector KxINI::GetKeyNames(const wxString& sectionName) const
 		keys.sort(SimpleINI::CSimpleIniA::Entry::LoadOrder());
 		list.reserve(keys.size());
 
-		for (DocumentT::TNamesDepend::const_iterator it = keys.begin(); it != keys.end(); ++it)
+		for (TDocument::TNamesDepend::const_iterator it = keys.begin(); it != keys.end(); ++it)
 		{
 			list.push_back(ToWxString(it->item));
 		}

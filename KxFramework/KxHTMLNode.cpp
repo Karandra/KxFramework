@@ -5,7 +5,13 @@
 #pragma warning(disable: 4005) // macro redefinition
 #include "gumbo.h"
 
-#define NODE(p)		reinterpret_cast<const GumboNode*>((p))
+namespace
+{
+	const GumboNode* ToGumboNode(const void* node)
+	{
+		return reinterpret_cast<const GumboNode*>(node);
+	}
+}
 
 namespace NodeInternals
 {
@@ -163,10 +169,46 @@ namespace NodeInternals
 
 const KxHTMLNode KxHTMLNode::NullNode = KxHTMLNode();
 
-bool KxHTMLNode::IsFullNode() const
+wxString KxHTMLNode::DoGetValue(const wxString& defaultValue) const
 {
-	return NodeInternals::IsFullNode(NODE(GetNode()));
+	auto node = GetNode();
+	if (node && NodeInternals::IsFullNode(ToGumboNode(node)))
+	{
+		const GumboVector* children = NodeInternals::GetChildren(ToGumboNode(node));
+		if (children && children->length == 1)
+		{
+			return KxHTMLNode(NodeInternals::GetNodeAt(children, 0), GetDocumentNode()).GetValue();
+		}
+	}
+	else if (node)
+	{
+		return ToGumboNode(node)->v.text.text;
+	}
+	return defaultValue;
 }
+bool KxHTMLNode::DoSetValue(const wxString& value, bool isCDATA)
+{
+	return false;
+}
+
+wxString KxHTMLNode::DoGetAttribute(const wxString& name, const wxString& defaultValue) const
+{
+	auto node = GetNode();
+	if (node)
+	{
+		const GumboAttribute* attribute = NodeInternals::GetAttribute(ToGumboNode(node), name);
+		if (attribute && attribute->value)
+		{
+			return attribute->value;
+		}
+	}
+	return defaultValue;
+}
+bool KxHTMLNode::DoSetAttribute(const wxString& name, const wxString& value)
+{
+	return false;
+}
+
 KxHTMLNode KxHTMLNode::QueryElement(const wxString& XPath) const
 {
 	return NullNode;
@@ -178,16 +220,20 @@ KxHTMLNode KxHTMLNode::QueryOrCreateElement(const wxString& XPath)
 
 size_t KxHTMLNode::GetIndexWithinParent() const
 {
-	return NODE(m_Node)->index_within_parent;
+	return ToGumboNode(m_Node)->index_within_parent;
+}
+bool KxHTMLNode::IsFullNode() const
+{
+	return NodeInternals::IsFullNode(ToGumboNode(GetNode()));
 }
 
 wxString KxHTMLNode::GetHTML() const
 {
 	auto node = GetNode();
 	std::string buffer;
-	if (node && NodeInternals::IsFullNode(NODE(node)))
+	if (node && NodeInternals::IsFullNode(ToGumboNode(node)))
 	{
-		buffer = NodeInternals::gumbo_ex_serialize(const_cast<GumboNode*>(NODE(node)));
+		buffer = NodeInternals::gumbo_ex_serialize(const_cast<GumboNode*>(ToGumboNode(node)));
 	}
 	else if (node)
 	{
@@ -200,13 +246,13 @@ wxString KxHTMLNode::GetValueText() const
 	auto node = GetNode();
 	if (node)
 	{
-		if (NODE(node)->type == GUMBO_NODE_TEXT)
+		if (ToGumboNode(node)->type == GUMBO_NODE_TEXT)
 		{
-			return wxString(NODE(node)->v.text.text);
+			return wxString(ToGumboNode(node)->v.text.text);
 		}
 		else
 		{
-			return ToWxString(NodeInternals::gumbo_ex_cleantext(const_cast<GumboNode*>(NODE(node))));
+			return ToWxString(NodeInternals::gumbo_ex_cleantext(const_cast<GumboNode*>(ToGumboNode(node))));
 		}
 	}
 	return wxEmptyString;
@@ -214,35 +260,19 @@ wxString KxHTMLNode::GetValueText() const
 wxString KxHTMLNode::GetName() const
 {
 	auto node = GetNode();
-	if (node && NodeInternals::IsFullNode(NODE(node)))
+	if (node && NodeInternals::IsFullNode(ToGumboNode(node)))
 	{
-		return NodeInternals::GetTagName(NODE(node));
+		return NodeInternals::GetTagName(ToGumboNode(node));
 	}
 	return wxEmptyString;
 }
-wxString KxHTMLNode::GetValue(const wxString& defaultValue) const
-{
-	auto node = GetNode();
-	if (node && NodeInternals::IsFullNode(NODE(node)))
-	{
-		const GumboVector* children = NodeInternals::GetChildren(NODE(node));
-		if (children && children->length == 1)
-		{
-			return KxHTMLNode(NodeInternals::GetNodeAt(children, 0), GetDocumentNode()).GetValue();
-		}
-	}
-	else if (node)
-	{
-		return NODE(node)->v.text.text;
-	}
-	return defaultValue;
-}
+
 KxHTML_NodeType KxHTMLNode::GetType() const
 {
 	auto node = GetNode();
 	if (node)
 	{
-		return static_cast<KxHTML_NodeType>(NODE(node)->type);
+		return static_cast<KxHTML_NodeType>(ToGumboNode(node)->type);
 	}
 	return KxHTML_NODE_INVALID;
 }
@@ -250,7 +280,7 @@ KxHTML_TagType KxHTMLNode::GetTagType() const
 {
 	if (auto node = GetNode())
 	{
-		switch (NODE(node)->type)
+		switch (ToGumboNode(node)->type)
 		{
 			case GUMBO_NODE_DOCUMENT:
 			{
@@ -258,7 +288,7 @@ KxHTML_TagType KxHTMLNode::GetTagType() const
 			}
 			case GUMBO_NODE_ELEMENT:
 			{
-				return static_cast<KxHTML_TagType>(NODE(node)->v.element.tag);
+				return static_cast<KxHTML_TagType>(ToGumboNode(node)->v.element.tag);
 			}
 		};
 	}
@@ -270,22 +300,9 @@ bool KxHTMLNode::HasAttribute(const wxString& name) const
 	auto node = GetNode();
 	if (node)
 	{
-		return NodeInternals::GetAttribute(NODE(node), name) != NULL;
+		return NodeInternals::GetAttribute(ToGumboNode(node), name) != NULL;
 	}
 	return false;
-}
-wxString KxHTMLNode::GetAttribute(const wxString& name, const wxString& defaultValue) const
-{
-	auto node = GetNode();
-	if (node)
-	{
-		const GumboAttribute* attribute = NodeInternals::GetAttribute(NODE(node), name);
-		if (attribute && attribute->value)
-		{
-			return attribute->value;
-		}
-	}
-	return defaultValue;
 }
 KxStringVector KxHTMLNode::GetAttributes() const
 {
@@ -294,11 +311,11 @@ KxStringVector KxHTMLNode::GetAttributes() const
 	auto node = GetNode();
 	if (node)
 	{
-		const GumboAttribute** attributes = NodeInternals::GetAttributes(NODE(node));
+		const GumboAttribute** attributes = NodeInternals::GetAttributes(ToGumboNode(node));
 		if (attributes)
 		{
-			list.reserve(NodeInternals::GetAttributesCount(NODE(node)));
-			for (size_t i = 0; i < NodeInternals::GetAttributesCount(NODE(node)); i++)
+			list.reserve(NodeInternals::GetAttributesCount(ToGumboNode(node)));
+			for (size_t i = 0; i < NodeInternals::GetAttributesCount(ToGumboNode(node)); i++)
 			{
 				list.push_back(attributes[i]->name);
 			}
@@ -308,7 +325,7 @@ KxStringVector KxHTMLNode::GetAttributes() const
 }
 size_t KxHTMLNode::GetAttributeCount() const
 {
-	return NodeInternals::GetAttributesCount(NODE(GetNode()));
+	return NodeInternals::GetAttributesCount(ToGumboNode(GetNode()));
 }
 
 KxHTMLNode::NodeVector KxHTMLNode::GetChildren() const
@@ -318,11 +335,11 @@ KxHTMLNode::NodeVector KxHTMLNode::GetChildren() const
 	NodeVector list;
 	if (node)
 	{
-		auto children = NodeInternals::GetChildren(NODE(node));
+		auto children = NodeInternals::GetChildren(ToGumboNode(node));
 		if (children)
 		{
 			list.reserve(children->length);
-			for (size_t i = 0; i < NodeInternals::GetChildrenCount(NODE(node)); i++)
+			for (size_t i = 0; i < NodeInternals::GetChildrenCount(ToGumboNode(node)); i++)
 			{
 				list.push_back(KxHTMLNode(NodeInternals::GetNodeAt(children, i), m_Document));
 			}
@@ -332,20 +349,20 @@ KxHTMLNode::NodeVector KxHTMLNode::GetChildren() const
 }
 size_t KxHTMLNode::GetChildrenCount() const
 {
-	return NodeInternals::GetChildrenCount(NODE(GetNode()));
+	return NodeInternals::GetChildrenCount(ToGumboNode(GetNode()));
 }
 
 KxHTMLNode KxHTMLNode::GetElementByAttribute(const wxString& name, const wxString& value) const
 {
-	return KxHTMLNode(NodeInternals::GetElementByAttribute(NODE(GetNode()), name, value), m_Document);
+	return KxHTMLNode(NodeInternals::GetElementByAttribute(ToGumboNode(GetNode()), name, value), m_Document);
 }
 KxHTMLNode KxHTMLNode::GetElementByTag(KxHTML_TagType tagType) const
 {
-	return KxHTMLNode(NodeInternals::GetElementByTag(NODE(GetNode()), NodeInternals::GetTagName(static_cast<GumboTag>(tagType))), m_Document);
+	return KxHTMLNode(NodeInternals::GetElementByTag(ToGumboNode(GetNode()), NodeInternals::GetTagName(static_cast<GumboTag>(tagType))), m_Document);
 }
 KxHTMLNode KxHTMLNode::GetElementByTag(const wxString& tagName) const
 {
-	return KxHTMLNode(NodeInternals::GetElementByTag(NODE(GetNode()), KxString::ToLower(tagName)), m_Document);
+	return KxHTMLNode(NodeInternals::GetElementByTag(ToGumboNode(GetNode()), KxString::ToLower(tagName)), m_Document);
 }
 
 KxHTMLNode KxHTMLNode::GetParent() const
@@ -353,19 +370,19 @@ KxHTMLNode KxHTMLNode::GetParent() const
 	auto node = GetNode();
 	if (node)
 	{
-		return KxHTMLNode(NodeInternals::GetParent(NODE(node)), m_Document);
+		return KxHTMLNode(NodeInternals::GetParent(ToGumboNode(node)), m_Document);
 	}
 	return NullNode;
 }
 KxHTMLNode KxHTMLNode::GetPreviousSibling() const
 {
 	auto node = GetNode();
-	if (node && NODE(node)->parent && NODE(node)->index_within_parent != -1 && NODE(node)->index_within_parent > 0)
+	if (node && ToGumboNode(node)->parent && ToGumboNode(node)->index_within_parent != -1 && ToGumboNode(node)->index_within_parent > 0)
 	{
-		const GumboVector* children = NodeInternals::GetChildren(NODE(node)->parent);
+		const GumboVector* children = NodeInternals::GetChildren(ToGumboNode(node)->parent);
 		if (children)
 		{
-			KxHTMLNode node(NodeInternals::GetNodeAt(children, NODE(node)->index_within_parent - 1), m_Document);
+			KxHTMLNode node(NodeInternals::GetNodeAt(children, ToGumboNode(node)->index_within_parent - 1), m_Document);
 			if (node.IsOK())
 			{
 				return node;
@@ -377,15 +394,15 @@ KxHTMLNode KxHTMLNode::GetPreviousSibling() const
 KxHTMLNode KxHTMLNode::GetNextSibling() const
 {
 	auto node = GetNode();
-	if (node && NODE(node)->parent)
+	if (node && ToGumboNode(node)->parent)
 	{
-		size_t max = NodeInternals::GetChildrenCount(NODE(node)->parent);
-		if (NODE(node)->index_within_parent != -1 && NODE(node)->index_within_parent < max)
+		size_t max = NodeInternals::GetChildrenCount(ToGumboNode(node)->parent);
+		if (ToGumboNode(node)->index_within_parent != -1 && ToGumboNode(node)->index_within_parent < max)
 		{
-			const GumboVector* children = NodeInternals::GetChildren(NODE(node)->parent);
+			const GumboVector* children = NodeInternals::GetChildren(ToGumboNode(node)->parent);
 			if (children)
 			{
-				const GumboNode* pNewNode = NodeInternals::GetNodeAt(children, NODE(node)->index_within_parent + 1);
+				const GumboNode* pNewNode = NodeInternals::GetNodeAt(children, ToGumboNode(node)->index_within_parent + 1);
 				if (pNewNode)
 				{
 					return KxHTMLNode(pNewNode, m_Document);
@@ -400,7 +417,7 @@ KxHTMLNode KxHTMLNode::GetFirstChild() const
 	auto node = GetNode();
 	if (node)
 	{
-		auto children = NodeInternals::GetChildren(NODE(node));
+		auto children = NodeInternals::GetChildren(ToGumboNode(node));
 		if (children && children->length != 0)
 		{
 			return KxHTMLNode(NodeInternals::GetNodeAt(children, 0), m_Document);
@@ -413,7 +430,7 @@ KxHTMLNode KxHTMLNode::GetLastChild() const
 	auto node = GetNode();
 	if (node)
 	{
-		auto children = NodeInternals::GetChildren(NODE(node));
+		auto children = NodeInternals::GetChildren(ToGumboNode(node));
 		if (children && children->length != 0)
 		{
 			return KxHTMLNode(NodeInternals::GetNodeAt(children, children->length - 1), m_Document);

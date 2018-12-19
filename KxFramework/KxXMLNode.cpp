@@ -59,6 +59,68 @@ size_t KxXMLNode::GetIndexWithinParent(const tinyxml2::XMLNode* node)
 	return index;
 }
 
+wxString KxXMLNode::DoGetValue(const wxString& defaultValue) const
+{
+	if (auto node = GetNode())
+	{
+		if (auto text = node->ToText())
+		{
+			return ToWxString(text->Value());
+		}
+		else if (auto element = node->ToElement())
+		{
+			if (const char* text = element->GetText())
+			{
+				return ToWxString(text);
+			}
+		}
+		else if (const char* value = node->Value())
+		{
+			return ToWxString(value);
+		}
+	}
+	return defaultValue;
+}
+int64_t KxXMLNode::DoGetValueIntWithBase(int base, int64_t defaultValue) const
+{
+	if (base == 10)
+	{
+		int64_t value = defaultValue;
+		if (auto node = GetNode())
+		{
+			if (auto element = node->ToElement())
+			{
+				element->QueryInt64Text(&value);
+			}
+		}
+		return value;
+	}
+	return KxXDocumentNode::DoGetValueIntWithBase(base, defaultValue);
+}
+double KxXMLNode::DoGetValueFloat(double defaultValue) const
+{
+	double value = defaultValue;
+	if (auto node = GetNode())
+	{
+		if (auto element = node->ToElement())
+		{
+			element->QueryDoubleText(&value);
+		}
+	}
+	return value;
+}
+bool KxXMLNode::DoGetValueBool(bool defaultValue) const
+{
+	bool value = defaultValue;
+	if (auto node = GetNode())
+	{
+		if (auto element = node->ToElement())
+		{
+			element->QueryBoolText(&value);
+		}
+	}
+	return value;
+}
 bool KxXMLNode::DoSetValue(const wxString& value, bool isCDATA)
 {
 	auto node = GetNode();
@@ -87,6 +149,66 @@ bool KxXMLNode::DoSetValue(const wxString& value, bool isCDATA)
 	}
 	return false;
 }
+
+wxString KxXMLNode::DoGetAttribute(const wxString& name, const wxString& defaultValue) const
+{
+	if (GetNode())
+	{
+		if (auto node = GetNode()->ToElement())
+		{
+			auto utf8 = name.ToUTF8();
+			const char* value = node->Attribute(utf8.data());
+			if (value)
+			{
+				return ToWxString(value);
+			}
+		}
+	}
+	return defaultValue;
+}
+int64_t KxXMLNode::DoGetAttributeIntWithBase(const wxString& name, int base, int64_t defaultValue) const
+{
+	if (base == 10)
+	{
+		int64_t value = defaultValue;
+		if (GetNode())
+		{
+			if (auto node = GetNode()->ToElement())
+			{
+				auto utf8 = name.ToUTF8();
+				node->QueryInt64Attribute(utf8.data(), &value);
+			}
+		}
+		return value;
+	}
+	return KxXDocumentNode::DoGetAttributeIntWithBase(name, base, defaultValue);
+}
+double KxXMLNode::DoGetAttributeFloat(const wxString& name, double defaultValue) const
+{
+	double value = defaultValue;
+	if (GetNode())
+	{
+		if (auto node = GetNode()->ToElement())
+		{
+			auto utf8 = name.ToUTF8();
+			node->QueryDoubleAttribute(utf8.data(), &value);
+		}
+	}
+	return value;
+}
+bool KxXMLNode::DoGetAttributeBool(const wxString& name, bool defaultValue) const
+{
+	bool value = defaultValue;
+	if (GetNode())
+	{
+		if (auto node = GetNode()->ToElement())
+		{
+			auto utf8 = name.ToUTF8();
+			node->QueryBoolAttribute(utf8.data(), &value);
+		}
+	}
+	return value;
+}
 bool KxXMLNode::DoSetAttribute(const wxString& name, const wxString& value)
 {
 	if (GetNode())
@@ -108,9 +230,6 @@ KxXMLNode::KxXMLNode(tinyxml2::XMLNode* node, KxXMLDocument* document)
 }
 KxXMLNode::KxXMLNode(const tinyxml2::XMLNode* node, KxXMLDocument* document)
 	: m_Node(const_cast<tinyxml2::XMLNode*>(node)), m_Document(document)
-{
-}
-KxXMLNode::~KxXMLNode()
 {
 }
 
@@ -200,6 +319,15 @@ KxXMLNode KxXMLNode::QueryOrCreateElement(const wxString& XPath)
 	return NullNode;
 }
 
+wxString KxXMLNode::GetXPathIndexSeparator() const
+{
+	return m_Document->GetXPathIndexSeparator();
+}
+bool KxXMLNode::SetXPathIndexSeparator(const wxString& value)
+{
+	return m_Document->SetXPathIndexSeparator(value);
+}
+
 size_t KxXMLNode::GetIndexWithinParent() const
 {
 	return GetIndexWithinParent(GetNode());
@@ -276,33 +404,6 @@ KxXMLNode::NodeVector KxXMLNode::GetChildrenElements(const wxString& searchPatte
 	}
 	return list;
 }
-KxStringVector KxXMLNode::GetElementNames(bool bFullNames, bool includeIndexes)
-{
-	KxStringVector list;
-	auto children = GetChildrenElements();
-	if (!children.empty())
-	{
-		for (const KxXMLNode& node: children)
-		{
-			wxString XPath;
-			if (bFullNames)
-			{
-				XPath = node.GetXPath(includeIndexes);
-			}
-			else
-			{
-				XPath = node.GetName();
-				if (GetDocumentNode()->IsXPathSeparatorUsed())
-				{
-					XPath.Append(GetDocumentNode()->GetXPathSeparator());
-				}
-				XPath.Append(std::to_string(node.GetIndexWithinParent()));
-			}
-			list.push_back(XPath);
-		}
-	}
-	return list;
-}
 bool KxXMLNode::ClearChildren()
 {
 	if (auto node = GetNode())
@@ -329,39 +430,6 @@ wxString KxXMLNode::GetXML(KxXMLPrintMode mode) const
 		return PrintDocument(subTree, mode);
 	}
 	return wxEmptyString;
-}
-wxString KxXMLNode::GetXPath(bool includeIndexes) const
-{
-	wxString XPath;
-	if (GetNode())
-	{
-		if (auto node = GetNode()->ToElement())
-		{
-			for (const tinyxml2::XMLElement* element = node; node != NULL; node = node->Parent()->ToElement())
-			{
-				XPath.Prepend(ToWxString(element->Name()));
-				if (includeIndexes)
-				{
-					size_t index = GetIndexWithinParent(element);
-					if (index != 0)
-					{
-						if (GetDocumentNode()->IsXPathSeparatorUsed())
-						{
-							XPath.Append(GetDocumentNode()->GetXPathSeparator());
-						}
-						XPath.Append(std::to_string(index));
-					}
-				}
-				XPath.Prepend('/');
-			}
-		}
-
-		if (!XPath.IsEmpty() && XPath[0] == '/')
-		{
-			XPath.Remove(0, 1);
-		}
-	}
-	return XPath;
 }
 KxXMLNodeType KxXMLNode::GetType() const
 {
@@ -424,66 +492,6 @@ wxString KxXMLNode::GetValueText(const wxString& separator) const
 	}
 	return wxEmptyString;
 }
-
-wxString KxXMLNode::GetValue(const wxString& defaultValue) const
-{
-	if (auto node = GetNode())
-	{
-		if (auto text = node->ToText())
-		{
-			return ToWxString(text->Value());
-		}
-		else if (auto element = node->ToElement())
-		{
-			if (const char* text = element->GetText())
-			{
-				return ToWxString(text);
-			}
-		}
-		else if (const char* value = node->Value())
-		{
-			return ToWxString(value);
-		}
-	}
-	return defaultValue;
-}
-int64_t KxXMLNode::GetValueInt(int64_t defaultValue) const
-{
-	int64_t value = defaultValue;
-	if (auto node = GetNode())
-	{
-		if (auto element = node->ToElement())
-		{
-			element->QueryInt64Text(&value);
-		}
-	}
-	return value;
-}
-double KxXMLNode::GetValueFloat(double defaultValue) const
-{
-	double value = defaultValue;
-	if (auto node = GetNode())
-	{
-		if (auto element = node->ToElement())
-		{
-			element->QueryDoubleText(&value);
-		}
-	}
-	return value;
-}
-bool KxXMLNode::GetValueBool(bool defaultValue) const
-{
-	bool value = defaultValue;
-	if (auto node = GetNode())
-	{
-		if (auto element = node->ToElement())
-		{
-			element->QueryBoolText(&value);
-		}
-	}
-	return value;
-}
-
 bool KxXMLNode::IsCDATA() const
 {
 	if (GetNode())
@@ -601,62 +609,6 @@ bool KxXMLNode::ClearAttributes()
 		}
 	}
 	return false;
-}
-
-wxString KxXMLNode::GetAttribute(const wxString& name, const wxString& defaultValue) const
-{
-	if (GetNode())
-	{
-		if (auto node = GetNode()->ToElement())
-		{
-			auto utf8 = name.ToUTF8();
-			const char* value = node->Attribute(utf8.data());
-			if (value)
-			{
-				return ToWxString(value);
-			}
-		}
-	}
-	return defaultValue;
-}
-int64_t KxXMLNode::GetAttributeInt(const wxString& name, int64_t defaultValue) const
-{
-	int64_t value = defaultValue;
-	if (GetNode())
-	{
-		if (auto node = GetNode()->ToElement())
-		{
-			auto utf8 = name.ToUTF8();
-			node->QueryInt64Attribute(utf8.data(), &value);
-		}
-	}
-	return value;
-}
-double KxXMLNode::GetAttributeFloat(const wxString& name, double defaultValue) const
-{
-	double value = defaultValue;
-	if (GetNode())
-	{
-		if (auto node = GetNode()->ToElement())
-		{
-			auto utf8 = name.ToUTF8();
-			node->QueryDoubleAttribute(utf8.data(), &value);
-		}
-	}
-	return value;
-}
-bool KxXMLNode::GetAttributeBool(const wxString& name, bool defaultValue) const
-{
-	bool value = defaultValue;
-	if (GetNode())
-	{
-		if (auto node = GetNode()->ToElement())
-		{
-			auto utf8 = name.ToUTF8();
-			node->QueryBoolAttribute(utf8.data(), &value);
-		}
-	}
-	return value;
 }
 
 /* Navigation */

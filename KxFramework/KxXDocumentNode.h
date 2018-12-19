@@ -7,85 +7,130 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-namespace KxXDocumentNodeInternal
-{
-	KX_API bool ParseBool(const wxString& value, bool defaultValue);
-	KX_API int ExtractIndexFromName(wxString& elementName, const wxString& XPathDelimiter = wxEmptyString);
-}
-
-template<class NodeT>
-class KxXDocumentNode
+class KX_API KxIXDocumentNode
 {
 	public:
-		using Node = NodeT;
-		using NodeVector = std::vector<Node>;
-
-	public:
-		static int ExtractIndexFromName(wxString& elementName, const wxString& XPathDelimiter = wxEmptyString)
+		static int ExtractIndexFromName(wxString& elementName, const wxString& xPathSeparator);
+		template<class TNode> static wxString ConstructXPath(const TNode& thisNode)
 		{
-			return KxXDocumentNodeInternal::ExtractIndexFromName(elementName, XPathDelimiter);
+			wxString xPath;
+			const wxString xPathSep = thisNode.GetXPathSeparator();
+			const wxString xPathIndexSep = thisNode.GetXPathIndexSeparator();
+			bool isFirst = true;
+
+			for (TNode node = thisNode; node.IsOK(); node = node.GetParent())
+			{
+				const size_t index = node.GetIndexWithinParent();
+				if (index > 1)
+				{
+					xPath.Prepend(wxString::Format(wxS("%s%s%zu"), node.GetName(), xPathIndexSep, index));
+				}
+				else
+				{
+					xPath.Prepend(node.GetName());
+				}
+
+
+				if (!isFirst)
+				{
+					xPath.Prepend(xPathSep);
+				}
+				isFirst = true;
+			}
+			return xPath;
 		}
 
 	protected:
-		virtual wxString FormatInt(int64_t value) const
-		{
-			return wxString::Format("%lld", value);
-		}
-		virtual wxString FormatFloat(double value, int precision = -1) const
-		{
-			return wxString::FromCDouble(value, precision);
-		}
-		virtual wxString FormatBool(bool value) const
-		{
-			return value ? "1" : "0";
-		}
+		virtual wxString FormatInt(int64_t value, int base = 10) const;
+		virtual wxString FormatFloat(double value, int precision = -1) const;
+		virtual wxString FormatBool(bool value) const;
 
-		virtual int64_t ParseInt(const wxString& value, int64_t defaultValue = 0) const
-		{
-			int64_t iValue = defaultValue;
-			if (value.ToLongLong(&iValue))
-			{
-				return iValue;
-			}
-			return defaultValue;
-		}
-		virtual double ParseFloat(const wxString& value, double defaultValue = 0.0) const
-		{
-			double dValue = defaultValue;
-			if (value.ToCDouble(&dValue))
-			{
-				return dValue;
-			}
-			return defaultValue;
-		}
-		virtual bool ParseBool(const wxString& value, bool defaultValue = false) const
-		{
-			return KxXDocumentNodeInternal::ParseBool(value, defaultValue);
-		}
+		virtual int64_t ParseInt(const wxString& value, int base = 10, int64_t defaultValue = 0) const;
+		virtual double ParseFloat(const wxString& value, double defaultValue = 0.0) const;
+		virtual bool ParseBool(const wxString& value, bool defaultValue = false) const;
 
+	protected:
+		virtual wxString DoGetValue(const wxString& defaultValue = wxEmptyString) const = 0;
+		virtual int64_t DoGetValueIntWithBase(int base, int64_t defaultValue = 0) const
+		{
+			return ParseInt(DoGetValue(), base, defaultValue);
+		}
+		virtual double DoGetValueFloat(double defaultValue = 0.0) const
+		{
+			return ParseFloat(DoGetValue(), defaultValue);
+		}
+		virtual bool DoGetValueBool(bool defaultValue = false) const
+		{
+			return ParseBool(DoGetValue(), defaultValue);
+		}
 		virtual bool DoSetValue(const wxString& value, bool isCDATA = false) = 0;
+
+		virtual wxString DoGetAttribute(const wxString& name, const wxString& defaultValue = wxEmptyString) const = 0;
+		virtual int64_t DoGetAttributeIntWithBase(const wxString& name, int base, int64_t defaultValue = 0) const
+		{
+			return ParseInt(DoGetAttribute(name), base, defaultValue);
+		}
+		virtual double DoGetAttributeFloat(const wxString& name, double defaultValue = 0.0) const
+		{
+			return ParseFloat(DoGetAttribute(name), defaultValue);
+		}
+		virtual bool DoGetAttributeBool(const wxString& name, bool defaultValue = false) const
+		{
+			return ParseBool(DoGetAttribute(name), defaultValue);
+		}
 		virtual bool DoSetAttribute(const wxString& name, const wxString& value) = 0;
+
+	public:
+		virtual ~KxIXDocumentNode() = default;
 
 	public:
 		/* General */
 		virtual bool IsOK() const = 0;
-		virtual Node QueryElement(const wxString& XPath) const = 0;
-		virtual Node QueryOrCreateElement(const wxString& XPath) = 0;
+		virtual wxString GetXPath() const
+		{
+			return wxEmptyString;
+		}
+
+		wxString GetXPathSeparator() const
+		{
+			return wxS('/');
+		}
+		int ExtractIndexFromName(wxString& elementName) const
+		{
+			return ExtractIndexFromName(elementName, GetXPathIndexSeparator());
+		}
+
+		virtual wxString GetXPathIndexSeparator() const
+		{
+			return wxS(':');
+		}
+		virtual bool SetXPathIndexSeparator(const wxString& value)
+		{
+			return false;
+		}
 
 		/* Node */
-		virtual size_t GetIndexWithinParent() const = 0;
-		virtual wxString GetName() const = 0;
+		virtual size_t GetIndexWithinParent() const
+		{
+			return 0;
+		}
+		virtual wxString GetName() const
+		{
+			return wxEmptyString;
+		}
 		virtual bool SetName(const wxString& name)
 		{
 			return false;
 		}
 
-		virtual size_t GetChildrenCount() const = 0;
+		virtual size_t GetChildrenCount() const
+		{
+			return 0;
+		}
 		virtual bool HasChildren() const
 		{
 			return GetChildrenCount() != 0;
 		}
-		virtual NodeVector GetChildren() const = 0;
 		virtual bool ClearChildren()
 		{
 			return false;
@@ -96,18 +141,25 @@ class KxXDocumentNode
 		}
 
 		/* Values */
-		virtual wxString GetValue(const wxString& defaultValue = wxEmptyString) const = 0;
-		virtual int64_t GetValueInt(int64_t defaultValue) const
+		wxString GetValue(const wxString& defaultValue = wxEmptyString) const
 		{
-			return ParseInt(GetValue(), defaultValue);
+			return DoGetValue(defaultValue);
 		}
-		virtual double GetValueFloat(double defaultValue) const
+		int64_t GetValueInt(int64_t defaultValue = 0) const
 		{
-			return ParseFloat(GetValue(), defaultValue);
+			return DoGetValueIntWithBase(10, defaultValue);
 		}
-		virtual bool GetValueBool(bool defaultValue) const
+		int64_t GetValueIntWithBase(int base, int64_t defaultValue = 0) const
 		{
-			return ParseBool(GetValue(), defaultValue);
+			return DoGetValueIntWithBase(base, defaultValue);
+		}
+		double GetValueFloat(double defaultValue = 0.0) const
+		{
+			return DoGetValueFloat(defaultValue);
+		}
+		bool GetValueBool(bool defaultValue = false) const
+		{
+			return DoGetValueBool(defaultValue);
 		}
 
 		bool SetValue(const wxString& value, bool isCDATA = false)
@@ -122,13 +174,13 @@ class KxXDocumentNode
 		{
 			return DoSetValue(wxString(value), isCDATA);
 		}
-		bool SetValue(int64_t value, bool isCDATA = false)
+		bool SetValue(int64_t value, int base = 10, bool isCDATA = false)
 		{
-			return DoSetValue(FormatInt(value), isCDATA);
+			return DoSetValue(FormatInt(value, base), isCDATA);
 		}
-		bool SetValue(int value, bool isCDATA = false)
+		bool SetValue(int value, int base = 10, bool isCDATA = false)
 		{
-			return DoSetValue(FormatInt(value), isCDATA);
+			return DoSetValue(FormatInt(value, base), isCDATA);
 		}
 		bool SetValue(double value, int precision = -1, bool isCDATA = false)
 		{
@@ -153,14 +205,23 @@ class KxXDocumentNode
 		}
 
 		/* Attributes */
-		virtual size_t GetAttributeCount() const = 0;
+		virtual size_t GetAttributeCount() const
+		{
+			return 0;
+		}
 		virtual bool HasAttributes() const
 		{
 			return GetAttributeCount() != 0;
 		}
-		virtual KxStringVector GetAttributes() const = 0;
-		
-		virtual bool HasAttribute(const wxString& name) const = 0;
+		virtual KxStringVector GetAttributes() const
+		{
+			return {};
+		}
+
+		virtual bool HasAttribute(const wxString& name) const
+		{
+			return false;
+		}
 		virtual bool RemoveAttribute(const wxString& name)
 		{
 			return false;
@@ -170,18 +231,25 @@ class KxXDocumentNode
 			return false;
 		}
 
-		virtual wxString GetAttribute(const wxString& name, const wxString& defaultValue = wxEmptyString) const = 0;
-		virtual int64_t GetAttributeInt(const wxString& name, int64_t defaultValue = 0) const
+		wxString GetAttribute(const wxString& name, const wxString& defaultValue = wxEmptyString) const
 		{
-			return ParseInt(GetAttribute(name), defaultValue);
+			return DoGetAttribute(name, defaultValue);
 		}
-		virtual double GetAttributeFloat(const wxString& name, double defaultValue = 0.0) const
+		int64_t GetAttributeInt(const wxString& name, int64_t defaultValue = 0) const
 		{
-			return ParseFloat(GetAttribute(name), defaultValue);
+			return DoGetAttributeIntWithBase(name, 10, defaultValue);
 		}
-		virtual bool GetAttributeBool(const wxString& name, bool defaultValue = false) const
+		int64_t GetAttributeIntWithBase(const wxString& name, int base, int64_t defaultValue = 0) const
 		{
-			return ParseBool(GetAttribute(name), defaultValue);
+			return DoGetAttributeIntWithBase(name, base, defaultValue);
+		}
+		double GetAttributeFloat(const wxString& name, double defaultValue = 0.0) const
+		{
+			return DoGetAttributeFloat(name, defaultValue);
+		}
+		bool GetAttributeBool(const wxString& name, bool defaultValue = false) const
+		{
+			return DoGetAttributeBool(name, defaultValue);
 		}
 
 		bool SetAttribute(const wxString& name, const wxString& value)
@@ -196,13 +264,13 @@ class KxXDocumentNode
 		{
 			return DoSetAttribute(name, wxString(value));
 		}
-		bool SetAttribute(const wxString& name, int64_t value)
+		bool SetAttribute(const wxString& name, int64_t value, int base = 10)
 		{
-			return DoSetAttribute(name, FormatInt(value));
+			return DoSetAttribute(name, FormatInt(value, base));
 		}
-		bool SetAttribute(const wxString& name, int value)
+		bool SetAttribute(const wxString& name, int value, int base = 10)
 		{
-			return DoSetAttribute(name, FormatInt(value));
+			return DoSetAttribute(name, FormatInt(value, base));
 		}
 		bool SetAttribute(const wxString& name, double value, int precision = -1)
 		{
@@ -216,16 +284,62 @@ class KxXDocumentNode
 		{
 			return DoSetAttribute(name, FormatBool(value));
 		}
+};
+
+template<class NodeT>
+class KxXDocumentNode: public KxIXDocumentNode
+{
+	public:
+		using Node = NodeT;
+		using NodeVector = std::vector<Node>;
+
+	public:
+		/* General */
+		virtual Node QueryElement(const wxString& XPath) const
+		{
+			return {};
+		}
+		virtual Node QueryOrCreateElement(const wxString& XPath)
+		{
+			return {};
+		}
+
+		/* Node */
+		virtual NodeVector GetChildren() const
+		{
+			return {};
+		}
 
 		/* Navigation */
-		virtual Node GetElementByAttribute(const wxString& name, const wxString& value) const = 0;
-		virtual Node GetElementByTag(const wxString& tagName) const = 0;
+		virtual Node GetElementByAttribute(const wxString& name, const wxString& value) const
+		{
+			return {};
+		}
+		virtual Node GetElementByTag(const wxString& tagName) const
+		{
+			return {};
+		}
 
-		virtual Node GetParent() const = 0;
-		virtual Node GetPreviousSibling() const = 0;
-		virtual Node GetNextSibling() const = 0;
-		virtual Node GetFirstChild() const = 0;
-		virtual Node GetLastChild() const = 0;
+		virtual Node GetParent() const
+		{
+			return {};
+		}
+		virtual Node GetPreviousSibling() const
+		{
+			return {};
+		}
+		virtual Node GetNextSibling() const
+		{
+			return {};
+		}
+		virtual Node GetFirstChild() const
+		{
+			return {};
+		}
+		virtual Node GetLastChild() const
+		{
+			return {};
+		}
 
 		/* Insertion */
 

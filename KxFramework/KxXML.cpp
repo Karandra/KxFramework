@@ -2,8 +2,10 @@
 #include "KxFramework/KxXML.h"
 #include "KxFramework/KxUtility.h"
 
-const wxString KxXMLDocument::DefaultPathDelimiter = "::";
-const wxString KxXMLDocument::DefaultDeclaredEncoding = "utf-8";
+namespace
+{
+	const wxChar DefaultDeclaredEncoding[] = wxS("utf-8");
+}
 
 int KxXMLDocument::ExtractIndexFromName(wxString& elementName) const
 {
@@ -16,11 +18,17 @@ void KxXMLDocument::ReplaceDeclaration()
 		m_Document.DeleteNode(m_Document.FirstChild());
 	}
 
-	wxString declaration = "xml version=\"1.0\" encoding=\"" + m_DeclaredEncoding + "\"";
+	wxString declaration = wxS("xml version=\"1.0\" encoding=\"" + m_DeclaredEncoding + "\"");
 	auto utf8 = declaration.ToUTF8();
 	m_Document.InsertFirstChild(m_Document.NewDeclaration(utf8.data()));
 }
 
+void KxXMLDocument::Init()
+{
+	m_DeclaredEncoding = DefaultDeclaredEncoding;
+	m_XPathDelimiter = KxXDocumentNode::GetXPathIndexSeparator();
+	m_Document.SetBOM(false);
+}
 bool KxXMLDocument::Load(const char* xmlText, size_t length)
 {
 	m_Document.Parse(xmlText, length);
@@ -68,13 +76,13 @@ KxXMLNode KxXMLDocument::CreateUnknown(const wxString& value)
 KxXMLDocument::KxXMLDocument(const wxString& xmlText)
 	:KxXMLNode(&m_Document, this)
 {
-	m_Document.SetBOM(false);
+	Init();
 	Load(xmlText);
 }
 KxXMLDocument::KxXMLDocument(wxInputStream& stream)
 	:KxXMLNode(&m_Document, this)
 {
-	m_Document.SetBOM(false);
+	Init();
 	Load(stream);
 }
 KxXMLDocument::~KxXMLDocument()
@@ -85,6 +93,10 @@ KxXMLDocument::~KxXMLDocument()
 bool KxXMLDocument::IsOK() const
 {
 	return !m_Document.Error() && m_Document.FirstChild() != NULL;
+}
+wxString KxXMLDocument::GetXPath() const
+{
+	return wxEmptyString;
 }
 wxString KxXMLDocument::GetXML(KxXMLPrintMode mode) const
 {

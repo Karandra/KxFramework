@@ -52,12 +52,12 @@ wxString KxUtility::GetStandardLocalizedString(int id, bool* isSuccess)
 
 bool KxUtility::StringToBool(const wxString& value, bool* isUnknown)
 {
-	if (value.IsSameAs("false", false))
+	if (value.IsSameAs(wxS("false"), false))
 	{
 		SetIfNotNull(isUnknown, false);
 		return false;
 	}
-	else if (value.IsSameAs("true", false))
+	else if (value.IsSameAs(wxS("true"), false))
 	{
 		SetIfNotNull(isUnknown, false);
 		return true;

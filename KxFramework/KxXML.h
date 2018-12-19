@@ -140,41 +140,53 @@ class KX_API KxXMLNode: public KxXDocumentNode<KxXMLNode>
 		KxXMLDocument* m_Document = NULL;
 
 	protected:
-		virtual bool DoSetValue(const wxString& value, bool isCDATA = false) override;
-		virtual bool DoSetAttribute(const wxString& name, const wxString& value) override;
+		wxString DoGetValue(const wxString& defaultValue = wxEmptyString) const override;
+		int64_t DoGetValueIntWithBase(int base = 10, int64_t defaultValue = 0) const override;
+		double DoGetValueFloat(double defaultValue = 0.0) const override;
+		bool DoGetValueBool(bool defaultValue = false) const override;
+		bool DoSetValue(const wxString& value, bool isCDATA = false) override;
 
-	public:
-		KxXMLNode()
-			:m_Document(NULL), m_Node(NULL)
-		{
-		}
-		virtual ~KxXMLNode();
+		wxString DoGetAttribute(const wxString& name, const wxString& defaultValue = wxEmptyString) const override;
+		int64_t DoGetAttributeIntWithBase(const wxString& name, int base, int64_t defaultValue = 0) const override;
+		double DoGetAttributeFloat(const wxString& name, double defaultValue = 0.0) const override;
+		bool DoGetAttributeBool(const wxString& name, bool defaultValue = false) const override;
+		bool DoSetAttribute(const wxString& name, const wxString& value) override;
 
 	protected:
 		KxXMLNode(tinyxml2::XMLNode* node, KxXMLDocument* document);
 		KxXMLNode(const tinyxml2::XMLNode* node, KxXMLDocument* document);
 
 	public:
+		KxXMLNode() = default;
+		KxXMLNode(const KxXMLNode&) = default;
+
+	public:
 		/* General */
-		virtual bool IsOK() const override
+		bool IsOK() const override
 		{
 			return m_Node && m_Document;
 		}
-		virtual KxXMLNode QueryElement(const wxString& XPath) const override;
-		virtual KxXMLNode QueryOrCreateElement(const wxString& XPath) override;
+		wxString GetXPath() const override
+		{
+			return ConstructXPath(*this);
+		}
+		KxXMLNode QueryElement(const wxString& XPath) const override;
+		KxXMLNode QueryOrCreateElement(const wxString& XPath) override;
+
+		wxString GetXPathIndexSeparator() const override;
+		bool SetXPathIndexSeparator(const wxString& value) override;
 
 		/* Node */
-		virtual size_t GetIndexWithinParent() const override;
-		virtual wxString GetName() const override;
-		virtual bool SetName(const wxString& name) override;
+		size_t GetIndexWithinParent() const override;
+		wxString GetName() const override;
+		bool SetName(const wxString& name) override;
 
-		virtual size_t GetChildrenCount() const override;
-		virtual bool HasChildren() const override;
-		virtual NodeVector GetChildren() const override;
+		size_t GetChildrenCount() const override;
+		bool HasChildren() const override;
+		NodeVector GetChildren() const override;
 		NodeVector GetChildrenElements(const wxString& searchPattern = wxEmptyString) const;
-		KxStringVector GetElementNames(bool bFullNames = false, bool includeIndexes = false);
-		virtual bool ClearChildren() override;
-		virtual bool ClearNode() override;
+		bool ClearChildren() override;
+		bool ClearNode() override;
 
 		KxXMLDocument* GetDocumentNode()
 		{
@@ -186,47 +198,37 @@ class KX_API KxXMLNode: public KxXDocumentNode<KxXMLNode>
 		}
 
 		virtual wxString GetXML(KxXMLPrintMode mode = KxXML_PRINT_NORMAL) const;
-		wxString GetXPath(bool includeIndexes = true) const;
 		KxXMLNodeType GetType() const;
 		bool IsElement() const;
 		bool IsText() const;
 		
 		/* Value */
 		wxString GetValueText(const wxString& separator = wxEmptyString) const;
-		virtual wxString GetValue(const wxString& defaultValue = wxEmptyString) const;
-		virtual int64_t GetValueInt(int64_t defaultValue = 0) const override;
-		virtual double GetValueFloat(double defaultValue = 0.0) const;
-		virtual bool GetValueBool(bool defaultValue = false) const;
 		
-		virtual bool IsCDATA() const;
-		virtual bool SetCDATA(bool value);
+		bool IsCDATA() const;
+		bool SetCDATA(bool value);
 
 		/* Attributes */
-		virtual size_t GetAttributeCount() const override;
-		virtual bool HasAttributes() const override;
-		virtual KxStringVector GetAttributes() const override;
+		size_t GetAttributeCount() const override;
+		bool HasAttributes() const override;
+		KxStringVector GetAttributes() const override;
 
-		virtual bool HasAttribute(const wxString& name) const override;
-		virtual bool RemoveAttribute(const wxString& name) override;
+		bool HasAttribute(const wxString& name) const override;
+		bool RemoveAttribute(const wxString& name) override;
 		bool RemoveAttribute(KxXMLAttribute& attribute);
-		virtual bool ClearAttributes() override;
-
-		virtual wxString GetAttribute(const wxString& name, const wxString& defaultValue = wxEmptyString) const override;
-		virtual int64_t GetAttributeInt(const wxString& name, int64_t defaultValue = 0) const override;
-		virtual double GetAttributeFloat(const wxString& name, double defaultValue = 0.0) const override;
-		virtual bool GetAttributeBool(const wxString& name, bool defaultValue = false) const override;
+		bool ClearAttributes() override;
 		
 		/* Navigation */
-		virtual KxXMLNode GetElementByAttribute(const wxString& name, const wxString& value) const override;
-		virtual KxXMLNode GetElementByTag(const wxString& tagName) const override;
-		virtual KxXMLNode GetParent() const override;
-		virtual KxXMLNode GetPreviousSibling() const override;
+		KxXMLNode GetElementByAttribute(const wxString& name, const wxString& value) const override;
+		KxXMLNode GetElementByTag(const wxString& tagName) const override;
+		KxXMLNode GetParent() const override;
+		KxXMLNode GetPreviousSibling() const override;
 		KxXMLNode GetPreviousSiblingElement(const wxString& name = wxEmptyString) const;
-		virtual KxXMLNode GetNextSibling() const override;
+		KxXMLNode GetNextSibling() const override;
 		KxXMLNode GetNextSiblingElement(const wxString& name = wxEmptyString) const;
-		virtual KxXMLNode GetFirstChild() const override;
+		KxXMLNode GetFirstChild() const override;
 		KxXMLNode GetFirstChildElement(const wxString& name = wxEmptyString) const;
-		virtual KxXMLNode GetLastChild() const override;
+		KxXMLNode GetLastChild() const override;
 		KxXMLNode GetLastChildElement(const wxString& name = wxEmptyString) const;
 
 		/* Insertion */
@@ -242,14 +244,15 @@ class KX_API KxXMLNode: public KxXDocumentNode<KxXMLNode>
 		KxXMLNode NewUnknown(const wxString& value, KxXMLInsertNodeMode insertMode = KxXML_INSERT_AS_LAST_CHILD);
 };
 
+//////////////////////////////////////////////////////////////////////////
 class KX_API KxXMLDocument: public KxXMLNode
 {
 	friend class KxXMLNode;
 
 	private:
 		tinyxml2::XMLDocument m_Document;
-		wxString m_XPathDelimiter = DefaultPathDelimiter;
-		wxString m_DeclaredEncoding = DefaultDeclaredEncoding;
+		wxString m_XPathDelimiter;
+		wxString m_DeclaredEncoding;
 
 	private:
 		tinyxml2::XMLDocument* GetDocument()
@@ -259,18 +262,19 @@ class KX_API KxXMLDocument: public KxXMLNode
 		int ExtractIndexFromName(wxString& elementName) const;
 		void ReplaceDeclaration();
 		
+		void Init();
 		bool Load(const char* xmlText, size_t length);
 		void UnLoad();
 
-		virtual const tinyxml2::XMLNode* GetNode() const override
+		const tinyxml2::XMLNode* GetNode() const override
 		{
 			return &m_Document;
 		}
-		virtual tinyxml2::XMLNode* GetNode() override
+		tinyxml2::XMLNode* GetNode() override
 		{
 			return &m_Document;
 		}
-		virtual void SetNode(tinyxml2::XMLNode*) override
+		void SetNode(tinyxml2::XMLNode*) override
 		{
 		}
 
@@ -282,16 +286,14 @@ class KX_API KxXMLDocument: public KxXMLNode
 		KxXMLNode CreateUnknown(const wxString& value);
 
 	public:
-		static const wxString DefaultPathDelimiter;
-		static const wxString DefaultDeclaredEncoding;
-
 		KxXMLDocument(const wxString& xmlText = wxEmptyString);
 		KxXMLDocument(wxInputStream& stream);
 		virtual ~KxXMLDocument();
 
 	public:
-		virtual bool IsOK() const override;
-		virtual wxString GetXML(KxXMLPrintMode mode = KxXML_PRINT_NORMAL) const override;
+		bool IsOK() const override;
+		wxString GetXPath() const override;
+		wxString GetXML(KxXMLPrintMode mode = KxXML_PRINT_NORMAL) const override;
 
 		bool Load(const wxString& xmlText);
 		bool Load(wxInputStream& stream);
@@ -307,17 +309,14 @@ class KX_API KxXMLDocument: public KxXMLNode
 			m_DeclaredEncoding = value;
 		}
 
-		bool IsXPathSeparatorUsed() const
-		{
-			return !m_XPathDelimiter.IsEmpty();
-		}
-		const wxString& GetXPathSeparator() const
+		wxString GetXPathIndexSeparator() const override
 		{
 			return m_XPathDelimiter;
 		}
-		void SetXPathSeparator(const wxString& value = wxEmptyString)
+		bool SetXPathIndexSeparator(const wxString& value) override
 		{
 			m_XPathDelimiter = value;
+			return !m_XPathDelimiter.IsEmpty();
 		}
 
 		/* Deletion */

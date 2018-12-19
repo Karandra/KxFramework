@@ -19,10 +19,9 @@ namespace SimpleINI
 class KX_API KxINI: private KxXDocumentNode<KxINI>
 {
 	private:
-		using DocumentT = SimpleINI::CSimpleIniA;
-		DocumentT m_Document;
+		using TDocument = SimpleINI::CSimpleIniA;
 
-	private:
+	protected:
 		static wxString ToWxString(const std::string& s)
 		{
 			return wxString::FromUTF8Unchecked(s.c_str(), s.size());
@@ -32,110 +31,25 @@ class KX_API KxINI: private KxXDocumentNode<KxINI>
 			return wxString::FromUTF8Unchecked(s);
 		}
 
+	private:
+		SimpleINI::CSimpleIniA m_Document;
+
+	protected:
 		bool Load(const char* xmlText, size_t length);
 		void UnLoad();
 
-	private:
-		/* General */
-		KxINI(const KxINI& other)
-		{
-			// Invalid
-		}
-		virtual Node QueryElement(const wxString& XPath) const override
-		{
-			return Node();
-		}
-		virtual Node QueryOrCreateElement(const wxString& XPath) override
-		{
-			return Node();
-		}
+	protected:
+		wxString DoGetValue(const wxString& defaultValue = wxEmptyString) const override;
+		bool DoSetValue(const wxString& value, bool isCDATA = false) override;
 
-		/* Node */
-		virtual size_t GetIndexWithinParent() const override
-		{
-			return 0;
-		}
-		virtual wxString GetName() const override
-		{
-			return wxEmptyString;
-		}
+		wxString DoGetAttribute(const wxString& name, const wxString& defaultValue = wxEmptyString) const override;
+		bool DoSetAttribute(const wxString& name, const wxString& value) override;
 
-		virtual size_t GetChildrenCount() const override
-		{
-			return 0;
-		}
-		virtual NodeVector GetChildren() const override
-		{
-			return NodeVector();
-		}
-
-		/* Values */
-		virtual wxString GetValue(const wxString& defaultValue = wxEmptyString) const override
-		{
-			return wxEmptyString;
-		}
-		virtual bool DoSetValue(const wxString& value, bool isCDATA = false) override
-		{
-			return false;
-		}
-		
-		wxString DoGetValue(const wxString& sectionName, const wxString& keyName, const wxString& defaultValue = wxEmptyString) const;
-		bool DoSetValue(const wxString& sectionName, const wxString& keyName, const wxString& value);
-
-		/* Attributes */
-		virtual bool DoSetAttribute(const wxString& name, const wxString& value) override
-		{
-			return false;
-		}
-		virtual size_t GetAttributeCount() const override
-		{
-			return 0;
-		}
-		virtual KxStringVector GetAttributes() const override
-		{
-			return KxStringVector();
-		}
-		virtual bool HasAttribute(const wxString& name) const override
-		{
-			return false;
-		}
-		virtual wxString GetAttribute(const wxString& name, const wxString& defaultValue = wxEmptyString) const override
-		{
-			return wxEmptyString;
-		}
-
-		/* Navigation */
-		virtual Node GetElementByAttribute(const wxString& name, const wxString& value) const override
-		{
-			return Node();
-		}
-		virtual Node GetElementByTag(const wxString& tagName) const override
-		{
-			return Node();
-		}
-
-		virtual Node GetParent() const override
-		{
-			return Node();
-		}
-		virtual Node GetPreviousSibling() const override
-		{
-			return Node();
-		}
-		virtual Node GetNextSibling() const override
-		{
-			return Node();
-		}
-		virtual Node GetFirstChild() const override
-		{
-			return Node();
-		}
-		virtual Node GetLastChild() const override
-		{
-			return Node();
-		}
+		wxString IniGetValue(const wxString& sectionName, const wxString& keyName, const wxString& defaultValue = wxEmptyString) const;
+		bool IniSetValue(const wxString& sectionName, const wxString& keyName, const wxString& value);
 
 	public:
+		KxINI(const KxINI&) = delete;
 		KxINI(const wxString& iniText = wxEmptyString);
 		KxINI(wxInputStream& stream);
 		virtual ~KxINI();
@@ -159,52 +73,56 @@ class KX_API KxINI: private KxXDocumentNode<KxINI>
 
 		wxString GetValue(const wxString& sectionName, const wxString& keyName, const wxString& defaultValue = wxEmptyString) const
 		{
-			return DoGetValue(sectionName, keyName, defaultValue);
+			return IniGetValue(sectionName, keyName, defaultValue);
 		}
 		int64_t GetValueInt(const wxString& sectionName, const wxString& keyName, int64_t defaultValue = 0) const
 		{
-			return ParseInt(DoGetValue(sectionName, keyName), defaultValue);
+			return GetValueIntWithBase(sectionName, keyName, 10, defaultValue);
+		}
+		int64_t GetValueIntWithBase(const wxString& sectionName, const wxString& keyName, int base, int64_t defaultValue = 0) const
+		{
+			return ParseInt(IniGetValue(sectionName, keyName), base, defaultValue);
 		}
 		double GetValueFloat(const wxString& sectionName, const wxString& keyName, double defaultValue = 0.0) const
 		{
-			return ParseFloat(DoGetValue(sectionName, keyName), defaultValue);
+			return ParseFloat(IniGetValue(sectionName, keyName), defaultValue);
 		}
 		bool GetValueBool(const wxString& sectionName, const wxString& keyName, bool defaultValue = false) const
 		{
-			return ParseBool(DoGetValue(sectionName, keyName), defaultValue);
+			return ParseBool(IniGetValue(sectionName, keyName), defaultValue);
 		}
 
 		bool SetValue(const wxString& sectionName, const wxString& keyName, const wxString& value)
 		{
-			return DoSetValue(sectionName, keyName, value);
+			return IniSetValue(sectionName, keyName, value);
 		}
 		bool SetValue(const wxString& sectionName, const wxString& keyName, const char* value)
 		{
-			return DoSetValue(sectionName, keyName, wxString::FromUTF8(value));
+			return IniSetValue(sectionName, keyName, wxString::FromUTF8(value));
 		}
 		bool SetValue(const wxString& sectionName, const wxString& keyName, const wchar_t* value)
 		{
-			return DoSetValue(sectionName, keyName, wxString(value));
+			return IniSetValue(sectionName, keyName, wxString(value));
 		}
 		bool SetValue(const wxString& sectionName, const wxString& keyName, int64_t value)
 		{
-			return DoSetValue(sectionName, keyName, FormatInt(value));
+			return IniSetValue(sectionName, keyName, FormatInt(value));
 		}
 		bool SetValue(const wxString& sectionName, const wxString& keyName, int value)
 		{
-			return DoSetValue(sectionName, keyName, FormatInt(value));
+			return IniSetValue(sectionName, keyName, FormatInt(value));
 		}
 		bool SetValue(const wxString& sectionName, const wxString& keyName, double value, int precision = -1)
 		{
-			return DoSetValue(sectionName, keyName, FormatFloat(value, precision));
+			return IniSetValue(sectionName, keyName, FormatFloat(value, precision));
 		}
 		bool SetValue(const wxString& sectionName, const wxString& keyName, float value, int precision = -1)
 		{
-			return DoSetValue(sectionName, keyName, FormatFloat((double)value, precision));
+			return IniSetValue(sectionName, keyName, FormatFloat((double)value, precision));
 		}
 		bool SetValue(const wxString& sectionName, const wxString& keyName, bool value)
 		{
-			return DoSetValue(sectionName, keyName, FormatBool(value));
+			return IniSetValue(sectionName, keyName, FormatBool(value));
 		}
 
 		/* Deletion */
