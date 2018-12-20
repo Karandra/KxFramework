@@ -4,6 +4,7 @@
 #include "KxFramework/DataView/KxDataViewConstants.h"
 #include "KxFramework/DataView/KxDataViewCtrl.h"
 #include "KxFramework/DataView/KxDataViewItem.h"
+#include "KxFramework/DataView/KxDataViewSortOrder.h"
 #include <wx/selstore.h>
 class KX_API KxDataViewCtrl;
 class KX_API KxDataViewModel;
@@ -22,6 +23,7 @@ class KX_API KxDataViewMainWindow: public wxWindow
 	friend class KX_API KxDataViewEditor;
 	friend class KX_API KxDataViewEvent;
 	friend class KX_API KxDataViewCtrl;
+	friend class KX_API KxDataViewTreeNode;
 	friend class KX_API KxDataViewHeaderCtrl;
 	friend class KX_API KxDataViewMainWindowEditorTimer;
 	friend class KxDataViewMainWindowMaxWidthCalculator;
@@ -32,17 +34,6 @@ class KX_API KxDataViewMainWindow: public wxWindow
 			INVALID_ROW = (size_t)-1,
 			INVALID_COLUMN = (size_t)-1,
 			INVALID_COUNT = (size_t)-1,
-		};
-		enum: int
-		{
-			// Sort when we're thawed later.
-			SortColumn_OnThaw = -3,
-
-			// Don't sort at all.
-			SortColumn_None = -2,
-
-			// Sort using the model default sort order.
-			SortColumn_Default = -1
 		};
 		enum: int
 		{
@@ -107,10 +98,6 @@ class KX_API KxDataViewMainWindow: public wxWindow
 		// This is the tree node under the cursor
 		KxDataViewTreeNode* m_TreeNodeUnderMouse = nullptr;
 
-		// sorted column + extra flags
-		int m_Sorting_Column = SortColumn_Default;
-		bool m_Sorting_OrderAsc = true;
-
 		// Current editor
 		KxDataViewEditor* m_CurrentEditor = nullptr;
 
@@ -139,17 +126,18 @@ class KX_API KxDataViewMainWindow: public wxWindow
 		void DrawCellBackground(KxDataViewRenderer* renderer, const wxRect& rect, KxDataViewCellState cellState);
 		KxDataViewCellState GetCellStateForRow(size_t row) const;
 
-		/* Drawing */
-		// Override the base class method to resort if needed, i.e. if
-		// SortPrepare() was called and ignored while we were frozen.
-		virtual void DoThaw() override
+		KxDataViewSortOrder GetSortOrder() const
 		{
-			if (m_Sorting_Column == SortColumn_OnThaw)
+			KxDataViewColumn* column = GetOwner()->GetSortingColumn();
+			if (column)
 			{
-				Resort();
-				m_Sorting_Column = SortColumn_None;
+				return KxDataViewSortOrder::UseColumn(column, column->IsSortOrderAscending());
 			}
-			wxWindow::DoThaw();
+			else if (GetModel()->HasDefaultCompare())
+			{
+				return KxDataViewSortOrder::UseDefault();
+			}
+			return KxDataViewSortOrder::UseNone();
 		}
 		void UpdateDisplay();
 		void RecalculateDisplay();
@@ -171,9 +159,10 @@ class KX_API KxDataViewMainWindow: public wxWindow
 		}
 		size_t RecalculateItemCount() const;
 
+		// Common part of [Item/Value]Changed(). If column is nullptr, assumes that all columns were modified, otherwise just this one.
+		bool DoItemChanged(const KxDataViewItem& item, KxDataViewColumn* column);
+
 		/* Tree nodes */
-		void SortPrepare();
-		
 		KxDataViewTreeNode* FindNode(const KxDataViewItem& item);
 		KxDataViewTreeNode* GetTreeNodeByRow(size_t row) const;
 		KxDataViewTreeNode* GetTreeNodeByItem(const KxDataViewItem& item) = delete; // We don't need this temporarily
@@ -244,12 +233,20 @@ class KX_API KxDataViewMainWindow: public wxWindow
 		void Resort();
 
 		/* Rows refreshing */
-		void RefreshRow(size_t row);
+		void RefreshRow(size_t row)
+		{
+			RefreshRows(row, row);
+		}
 		void RefreshRows(size_t from, size_t to);
 		void RefreshRowsAfter(size_t firstRow);
 
 		/* Item rect */
-		wxRect GetLineRect(size_t row) const;
+		wxRect GetLineRect(size_t row) const
+		{
+			return GetLinesRect(row, row);
+		}
+		wxRect GetLinesRect(size_t rowFrom, size_t rowTo) const;
+
 		int GetLineStart(size_t row) const; // 'row' * 'm_UniformLineHeight' in fixed mode
 		int GetLineHeight(size_t row) const; // 'm_UniformLineHeight' in fixed mode
 		int GetLineHeightModel(const KxDataViewTreeNode* node) const;
@@ -367,7 +364,7 @@ class KX_API KxDataViewMainWindow: public wxWindow
 		// I changed this method to non-const because in the tree view,
 		// the displaying number of the tree are changing along with the
 		// expanding/collapsing of the tree nodes
-		// ???
+		// What???
 		size_t GetLastVisibleRow() const;
 		size_t GetRowCount() const;
 
@@ -397,16 +394,6 @@ class KX_API KxDataViewMainWindow: public wxWindow
 		bool BeginEdit(const KxDataViewItem& item, const KxDataViewColumn* column);
 		void EndEdit();
 		void CancelEdit();
-
-		/* Columns */
-		int GetSortColumn() const
-		{
-			return m_Sorting_Column;
-		}
-		bool IsAscendingSort() const
-		{
-			return m_Sorting_OrderAsc;
-		}
 
 	public:
 		wxDECLARE_DYNAMIC_CLASS(KxDataViewMainWindow);

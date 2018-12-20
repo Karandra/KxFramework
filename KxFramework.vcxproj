@@ -206,6 +206,7 @@
     <ClInclude Include="KxFramework\DataView\KxDataViewImageListRenderer.h" />
     <ClInclude Include="KxFramework\DataView\KxDataViewNullRenderer.h" />
     <ClInclude Include="KxFramework\DataView\KxDataViewProgressRenderer.h" />
+    <ClInclude Include="KxFramework\DataView\KxDataViewSortOrder.h" />
     <ClInclude Include="KxFramework\DataView\KxDataViewSpinEditor.h" />
     <ClInclude Include="KxFramework\DataView\KxDataViewTextEditor.h" />
     <ClInclude Include="KxFramework\DataView\KxDataViewHeaderCtrl.h" />

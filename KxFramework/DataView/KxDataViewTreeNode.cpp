@@ -1,6 +1,43 @@
 #include "KxStdAfx.h"
 #include "KxDataViewTreeNode.h"
 #include "KxDataViewMainWindow.h"
+#include "KxDataViewCtrl.h"
+
+//////////////////////////////////////////////////////////////////////////
+class KxDataViewComparator
+{
+	private:
+		KxDataViewSortOrder m_SortOrder;
+		KxDataViewMainWindow* m_MainWindow = nullptr;
+		KxDataViewColumn* m_SortingColumn = nullptr;
+		KxDataViewModel* m_DataModel = nullptr;
+
+	public:
+		KxDataViewComparator(KxDataViewMainWindow* window, const KxDataViewSortOrder& sortOrder)
+			:m_SortOrder(sortOrder), m_MainWindow(window), m_DataModel(window->GetModel())
+		{
+		}
+
+	public:
+		bool operator()(KxDataViewTreeNode* node1, KxDataViewTreeNode* node2) const
+		{
+			KxDataViewCtrl* dataView = m_MainWindow->GetOwner();
+			KxDataViewColumn* sortingColumn = dataView->GetSortingColumn();
+			if (sortingColumn || m_DataModel->HasDefaultCompare())
+			{
+				const bool multiColumnSort = dataView->IsMultiColumnSortUsed();
+				const bool sortAscending = sortingColumn ? sortingColumn->IsSortedAscending() : true;
+
+				const bool isLess = m_DataModel->Compare(node1->GetItem(), node2->GetItem(), sortingColumn);
+				if (!multiColumnSort)
+				{
+					return sortAscending ? isLess : !isLess;
+				}
+				return isLess;
+			}
+		}
+};
+
 
 //////////////////////////////////////////////////////////////////////////
 void KxDataViewTreeNodeData::DeleteChildNode(KxDataViewTreeNode* node)
@@ -11,7 +48,7 @@ void KxDataViewTreeNodeData::DeleteChildNode(KxDataViewTreeNode* node)
 //////////////////////////////////////////////////////////////////////////
 KxDataViewTreeNode* KxDataViewTreeNode::CreateRootNode(KxDataViewMainWindow* window)
 {
-	KxDataViewTreeNode* node = new KxDataViewTreeNode(window, nullptr, KxDataViewItem());
+	KxDataViewTreeNode* node = new KxDataViewTreeRootNode(window, nullptr, KxDataViewItem());
 	node->CreateBranchData(true);
 	return node;
 }
@@ -42,8 +79,8 @@ void KxDataViewTreeNode::DestroyBranchData()
 	m_BranchData.reset();
 }
 
-KxDataViewTreeNode::KxDataViewTreeNode(KxDataViewMainWindow* window, KxDataViewTreeNode* parent, const KxDataViewItem& item)
-	:m_MainWindow(window), m_ParentNode(parent), m_Item(item)
+KxDataViewTreeNode::KxDataViewTreeNode(KxDataViewTreeNode* parent, const KxDataViewItem& item)
+	:m_ParentNode(parent), m_Item(item)
 {
 }
 KxDataViewTreeNode::~KxDataViewTreeNode()
@@ -69,79 +106,206 @@ size_t KxDataViewTreeNode::GetChildNodesCount() const
 	return 0;
 }
 
-void KxDataViewTreeNode::InsertChild(KxDataViewTreeNode* node, size_t index)
+void KxDataViewTreeNode::InsertChild(KxDataViewMainWindow* window, KxDataViewTreeNode* node, size_t index)
 {
 	if (!HasBranchData())
 	{
 		CreateBranchData();
 	}
 
-	const Vector& childNodes = m_BranchData->GetChildren();
-	m_BranchData->InsertNode(childNodes.begin() + index, node);
+	const KxDataViewSortOrder sortOrder = window->GetSortOrder();
 
-	// TODO: insert into sorted array directly in O(log n) instead of resorting in O(n log n).
-	Resort(true);
+	// Flag indicating whether we should retain existing sorted list when inserting the child node.
+	bool shouldInsertSorted = false;
 
-	#if 0
-	const Vector& childNodes = m_BranchData->GetChildren();
-	if (m_MainWindow->GetSortColumn() >= -1)
+	if (sortOrder.IsNone())
 	{
-		// Insert into sorted array directly
-		auto it = std::upper_bound(childNodes.begin(), childNodes.end(), node);
-		m_BranchData->InsertNode(it, node);
+		// We should insert assuming an unsorted list. This will cause the child list to lose the current sort order, if any.
+		m_BranchData->ResetSortOrder();
+	}
+	else if (!m_BranchData->HasChildren())
+	{
+		if (m_BranchData->IsExpanded())
+		{
+			// We don't need to search for the right place to insert the first item (there is only one),
+			// but we do need to remember the sort order to use for the subsequent ones.
+			m_BranchData->SetSortOrder(sortOrder);
+		}
+		else
+		{
+			// We're inserting the first child of a closed node. We can choose whether to consider this empty
+			// child list sorted or unsorted. By choosing unsorted, we postpone comparisons until the parent
+			// node is opened in the view, which may be never.
+			m_BranchData->ResetSortOrder();
+		}
+	}
+	else if (m_BranchData->IsExpanded())
+	{
+		// For open branches, children should be already sorted.
+		wxASSERT_MSG(m_branchData->sortOrder == sortOrder, wxS("Logic error in KxDVC sorting code"));
+
+		// We can use fast insertion.
+		shouldInsertSorted = true;
+	}
+	else if (m_BranchData->GetSortOrder() == sortOrder)
+	{
+		// The children are already sorted by the correct criteria (because the node must have been opened
+		// in the same time in the past). Even though it is closed now, we still insert in sort order to
+		// avoid a later resort.
+		shouldInsertSorted = true;
 	}
 	else
 	{
-		// Just insert
-		m_BranchData->InsertNode(childNodes.begin() + index, node);
+		// The children of this closed node aren't sorted by the correct criteria, so we just insert unsorted.
+		m_BranchData->ResetSortOrder();
 	}
-	#endif
-}
-bool KxDataViewTreeNode::RemoveChild(KxDataViewTreeNode* node)
-{
-	Vector& childNodes = m_BranchData->GetChildren();
 
-	auto it = std::find(childNodes.begin(), childNodes.end(), node);
-	if (it != childNodes.end())
+	if (shouldInsertSorted)
 	{
-		m_BranchData->DeleteChild(it);
-		return true;
-	}
-	return false;
-}
-void KxDataViewTreeNode::Resort(bool noRecurse)
-{
-	if (HasBranchData())
-	{
-		KxDataViewModel* model = m_MainWindow->GetModel();
-		KxDataViewColumn* column = m_MainWindow->GetOwner()->GetSortingColumn();
-		if (column || model->HasDefaultCompare())
+		// Use binary search to find the correct position to insert at.
+		Vector& children = m_BranchData->GetChildren();
+		auto it = std::lower_bound(children.begin(), children.end(), node, KxDataViewComparator(window, sortOrder));
+		m_BranchData->InsertChild(node, it);
+
+		#if 0
+		// Use binary search to find the correct position to insert at.
+		size_t low = 0;
+		size_t high = m_BranchData->GetChildrenCount();
+
+		KxDataViewComparator comparator(window, sortOrder);
+		while (low < high)
 		{
-			bool multiColumnSort = m_MainWindow->GetOwner()->IsMultiColumnSortUsed();
-			bool sortAscending = column ? column->IsSortedAscending() : m_MainWindow->IsAscendingSort();
-
-			Vector& childNodes = m_BranchData->GetChildren();
-			std::sort(childNodes.begin(), childNodes.end(), [column, model, multiColumnSort, sortAscending]
-			(const KxDataViewTreeNode* node1, const KxDataViewTreeNode* node2)
+			const size_t mid = low + (high - low) / 2;
+			if (comparator(m_BranchData->GetChildren()[mid], node))
 			{
-				bool less = model->Compare(node1->GetItem(), node2->GetItem(), column);
-				if (!multiColumnSort)
-				{
-					return sortAscending ? less : !less;
-				}
-				return less;
-			});
-
-			if (!noRecurse)
+				low = mid + 1;
+			}
+			else
 			{
-				for (KxDataViewTreeNode* childNode: childNodes)
+				high = mid - 1;
+			}
+		}
+		m_BranchData->InsertChild(node, low);
+		#endif
+	}
+	else
+	{
+		m_BranchData->InsertChild(node, index);
+	}
+}
+void KxDataViewTreeNode::RemoveChild(size_t index)
+{
+	m_BranchData->RemoveChild(index);
+}
+void KxDataViewTreeNode::Resort(KxDataViewMainWindow* window)
+{
+	if (HasBranchData() && m_BranchData->IsExpanded())
+	{
+		const KxDataViewSortOrder sortOrder = window->GetSortOrder();
+		if (!sortOrder.IsNone())
+		{
+			Vector& children = m_BranchData->GetChildren();
+
+			// Only sort the children if they aren't already sorted by the wanted criteria.
+			if (m_BranchData->GetSortOrder() != sortOrder)
+			{
+				std::sort(children.begin(), children.end(), KxDataViewComparator(window, sortOrder));
+				m_BranchData->SetSortOrder(sortOrder);
+			}
+
+			// There may be open child nodes that also need a resort.
+			for (KxDataViewTreeNode* childNode: children)
+			{
+				if (childNode->HasChildren())
 				{
-					if (childNode->HasChildren())
-					{
-						childNode->Resort();
-					}
+					childNode->Resort(window);
 				}
 			}
+		}
+	}
+}
+void KxDataViewTreeNode::PutChildInSortOrder(KxDataViewMainWindow* window, KxDataViewTreeNode* node)
+{
+	// The childNode has changed, and may need to be moved to another location in the sorted child list.
+	if (HasBranchData() && m_BranchData->IsExpanded() && !m_BranchData->GetSortOrder().IsNone())
+	{
+		Vector& children = m_BranchData->GetChildren();
+
+		// This is more than an optimization, the code below assumes that 1 is a valid index.
+		if (children.size() > 1)
+		{
+			// We should already be sorted in the right order.
+			wxASSERT(m_BranchData->GetSortOrder() == window->GetSortOrder());
+
+			// First find the node in the current child list
+			intptr_t oldLocation = -1;
+			for (size_t index = 0; index < children.size(); ++index)
+			{
+				if (children[index] == node)
+				{
+					oldLocation = index;
+					break;
+				}
+			}
+			if (oldLocation < 0)
+			{
+				// Not our child?
+				return;
+			}
+
+			// Check if we actually need to move the node.
+			KxDataViewComparator comparator(window, m_BranchData->GetSortOrder());
+			bool locationChanged = false;
+
+			if (oldLocation == 0)
+			{
+				// Compare with the next item (as we return early in the case of only a single child,
+				// we know that there is one) to check if the item is now out of order.
+				if (!comparator(node, children[1]))
+				{
+					locationChanged = true;
+				}
+			}
+			else
+			{
+				// Compare with the previous item.
+				if (!comparator(children[oldLocation - 1], node))
+				{
+					locationChanged = true;
+				}
+			}
+			if (!locationChanged)
+			{
+				return;
+			}
+
+			// Remove and reinsert the node in the child list
+			m_BranchData->RemoveChild(oldLocation);
+
+			// Use binary search to find the correct position to insert at.
+			auto it = std::lower_bound(children.begin(), children.end(), node, comparator);
+			m_BranchData->InsertChild(node, it);
+
+			#if 0
+			size_t high = children.size();
+			size_t low = 0;
+			while (low < high)
+			{
+				const size_t mid = low + (high - low) / 2;
+				if (comparator(m_BranchData->GetChildren()[mid], node))
+				{
+					low = mid + 1;
+				}
+				else
+				{
+					high = mid - 1;
+				}
+			}
+			m_BranchData->InsertChild(node, low);
+			#endif
+
+			// Make sure the change is actually shown right away
+			window->UpdateDisplay();
 		}
 	}
 }
@@ -178,7 +342,7 @@ bool KxDataViewTreeNode::IsExpanded() const
 {
 	return HasBranchData() && m_BranchData->IsExpanded();
 }
-void KxDataViewTreeNode::ToggleExpanded()
+void KxDataViewTreeNode::ToggleExpanded(KxDataViewMainWindow* window)
 {
 	// We do not allow the (invisible) root node to be collapsed because
 	// there is no way to expand it again.
@@ -201,6 +365,9 @@ void KxDataViewTreeNode::ToggleExpanded()
 		{
 			m_BranchData->ToggleExpanded();
 			ChangeSubTreeCount(+sum);
+
+			// Sort the children if needed
+			Resort(window);
 		}
 	}
 }
@@ -292,8 +459,6 @@ KxDataViewTreeNodeOperation::Result KxDataViewTreeNodeOperation_RowToTreeNode::o
 	}
 	else
 	{
-		m_ParentNode = node;
-
 		// If the current node has only leaf children, we can find the
 		// desired node directly. This can speed up finding the node
 		// in some cases, and will have a very good effect for list views.
@@ -314,20 +479,22 @@ KxDataViewTreeNodeOperation::Result KxDataViewTreeNodeOperation_RowToTreeNode::o
 //////////////////////////////////////////////////////////////////////////
 KxDataViewTreeNodeOperation::Result KxDataViewTreeNodeOperation_ItemToRow::operator()(KxDataViewTreeNode* node)
 {
-	m_Result++;
 	if (node->GetItem() == m_Item)
 	{
 		return Result::DONE;
 	}
 
-	if (node->GetItem() == *m_Iter)
+	// Is this node the next (grand)parent of the item we're looking for?
+	if (node->GetItem() == *m_Iterator)
 	{
-		m_Iter++;
+		++m_Iterator;
+		++m_Current;
 		return Result::CONTINUE;
 	}
 	else
 	{
-		m_Result += node->GetSubTreeCount();
+		// Skip this node and all its currently visible children.
+		m_Current += node->GetSubTreeCount() + 1;
 		return Result::SKIP_SUBTREE;
 	}
 }

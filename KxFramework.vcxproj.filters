@@ -766,6 +766,9 @@
     <ClInclude Include="KxFramework\UxTheme\Defs.h">
       <Filter>Header Files\System\UxTheme</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\DataView\KxDataViewSortOrder.h">
+      <Filter>Header Files\GUI\DataView\Control</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />

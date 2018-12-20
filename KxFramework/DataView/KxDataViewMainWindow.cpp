@@ -1583,42 +1583,40 @@ size_t KxDataViewMainWindow::RecalculateItemCount() const
 		return m_TreeRoot->GetSubTreeCount();
 	}
 }
-
-/* Tree nodes */
-void KxDataViewMainWindow::SortPrepare()
+bool KxDataViewMainWindow::DoItemChanged(const KxDataViewItem& item, KxDataViewColumn* column)
 {
-	KxDataViewModel* model = GetModel();
+	// Move this node to its new correct place after it was updated.
+	//
+	// In principle, we could skip the call to PutInSortOrder() if the modified
+	// column is not the sort column, but in real-world applications it's fully
+	// possible and likely that custom compare uses not only the selected model
+	// column but also falls back to other values for comparison. To ensure consistency
+	// it is better to treat a value change as if it was an item change.
+	KxDataViewTreeNode* node = FindNode(item);
+	wxCHECK_MSG(node, false, "invalid item");
+	node->PutInSortOrder(this);
 
-	KxDataViewColumn* column = GetOwner()->GetSortingColumn();
-	if (!column)
+	if (column == nullptr)
 	{
-		if (model->HasDefaultCompare())
-		{
-			// See below for the explanation of IsFrozen() test
-			m_Sorting_Column = IsFrozen() ? SortColumn_OnThaw : SortColumn_Default;
-		}
-		else
-		{
-			m_Sorting_Column = SortColumn_None;
-		}
-
-		m_Sorting_OrderAsc = true;
-		return;
+		m_Owner->InvalidateColBestWidths();
+	}
+	else
+	{
+		m_Owner->InvalidateColBestWidth(m_Owner->GetColumnIndex(column));
 	}
 
-	// Avoid sorting while the window is frozen, this allows to quickly add
-	// many items without resorting after each addition and only resort
-	// them all at once when the window is finally thawed, see above.
-	if (IsFrozen())
-	{
-		m_Sorting_Column = SortColumn_OnThaw;
-		return;
-	}
+	// Update the displayed value(s).
+	RefreshRow(GetRowByItem(item));
 
-	m_Sorting_Column = column->GetID();
-	m_Sorting_OrderAsc = column->IsSortedAscending();
+	// Send event
+	KxDataViewEvent event(KxEVT_DATAVIEW_ITEM_VALUE_CHANGED);
+	CreateEventTemplate(event, item, column, true);
+	m_Owner->ProcessWindowEvent(event);
+
+	return true;
 }
 
+/* Tree nodes */
 KxDataViewTreeNode* KxDataViewMainWindow::FindNode(const KxDataViewItem& item)
 {
 	const KxDataViewModel* model = GetModel();
@@ -1648,10 +1646,8 @@ KxDataViewTreeNode* KxDataViewMainWindow::FindNode(const KxDataViewItem& item)
 			{
 				if (node->GetChildNodes().empty())
 				{
-					// Even though the item is a container, it doesn't have any
-					// child nodes in the control's representation yet. We have
-					// to realize its subtree now.
-					SortPrepare();
+					// Even though the item is a container, it doesn't have any child nodes
+					// in the control's representation yet. We have to realize its subtree now.
 					BuildTreeHelper(node->GetItem(), node);
 				}
 
@@ -1686,7 +1682,7 @@ KxDataViewTreeNode* KxDataViewMainWindow::GetTreeNodeByRow(size_t row) const
 
 	if (row != INVALID_ROW)
 	{
-		KxDataViewTreeNodeOperation_RowToTreeNode operation(row, -2, m_TreeRoot);
+		KxDataViewTreeNodeOperation_RowToTreeNode operation(static_cast<ptrdiff_t>(row), -2);
 		operation.Walk(m_TreeRoot);
 		return operation.GetResult();
 	}
@@ -1704,13 +1700,13 @@ void KxDataViewMainWindow::BuildTreeHelper(const KxDataViewItem& item, KxDataVie
 		size_t index = 0;
 		for (const KxDataViewItem& childItem: children)
 		{
-			KxDataViewTreeNode* childNode = new KxDataViewTreeNode(this, node, childItem);
+			KxDataViewTreeNode* childNode = new KxDataViewTreeNode(node, childItem);
 			if (model->IsContainer(childItem))
 			{
 				childNode->SetHasChildren(true);
 			}
 
-			node->InsertChild(childNode, index);
+			node->InsertChild(this, childNode, index);
 			index++;
 		}
 
@@ -1725,7 +1721,6 @@ void KxDataViewMainWindow::BuildTree(KxDataViewModel* model)
 	if (!GetModel()->IsVirtualListModel())
 	{
 		m_TreeRoot = KxDataViewTreeNode::CreateRootNode(this);
-		SortPrepare();
 
 		// Use an invalid item to fetch the top-level elements
 		BuildTreeHelper(KxDataViewItem(), m_TreeRoot);
@@ -1898,69 +1893,73 @@ bool KxDataViewMainWindow::ItemAdded(const KxDataViewItem& parent, const KxDataV
 	}
 	else
 	{
-		SortPrepare();
-
 		KxDataViewTreeNode* parentNode = FindNode(parent);
 		if (parentNode)
 		{
 			KxDataViewModel* model = GetModel();
 
-			KxDataViewItem::Vector modelChildItems;
-			model->GetChildren(parent, modelChildItems);
-			size_t modelChildItemsCount = modelChildItems.size();
-
-			// Search from end
-			auto itemIt = std::find(modelChildItems.rbegin(), modelChildItems.rend(), item);
-			ptrdiff_t modelItemPosition = std::distance(modelChildItems.begin(), itemIt.base()) - 1;
-			wxCHECK_MSG(itemIt != modelChildItems.rend(), false, "adding non-existent item?");
-
-			KxDataViewTreeNode* itemNode = new KxDataViewTreeNode(this, parentNode, item);
+			KxDataViewTreeNode* itemNode = new KxDataViewTreeNode(parentNode, item);
 			itemNode->SetHasChildren(GetModel()->IsContainer(item));
-
 			parentNode->SetHasChildren(true);
 
-			size_t nodeChildItemsCount = parentNode->GetChildNodes().size();
-			size_t nodeNewPosition = 0;
-			if (modelItemPosition == modelChildItemsCount - 1)
+			if (GetSortOrder().IsNone())
 			{
-				nodeNewPosition = nodeChildItemsCount;
-			}
-			else if (modelChildItemsCount == nodeChildItemsCount + 1)
-			{
-				// This is the simple case when our node tree already matches the
-				// model and only this one item is missing.
-				nodeNewPosition = modelItemPosition;
+				// There's no sorting, so we need to select an insertion position.
+				KxDataViewItem::Vector modelSiblings;
+				GetModel()->GetChildren(parent, modelSiblings);
+				const size_t modelSiblingsSize = modelSiblings.size();
+
+				// Search from end
+				auto itemIt = std::find(modelSiblings.rbegin(), modelSiblings.rend(), item);
+				size_t modelItemPosition = std::distance(modelSiblings.begin(), itemIt.base()) - 1;
+				wxCHECK_MSG(itemIt != modelSiblings.rend(), false, "adding non-existent item?");
+
+				const KxDataViewTreeNode::Vector& nodeSiblings = parentNode->GetChildNodes();
+				const size_t nodeSiblingsSize = nodeSiblings.size();
+
+				size_t nodePos = 0;
+				if (modelItemPosition == modelSiblingsSize - 1)
+				{
+					nodePos = nodeSiblingsSize;
+				}
+				else if (modelSiblingsSize == nodeSiblingsSize + 1)
+				{
+					// This is the simple case when our node tree already matches the model and only this one item is missing.
+					nodePos = modelItemPosition;
+				}
+				else
+				{
+					// It's possible that a larger discrepancy between the model and our realization exists.
+					// This can happen e.g. when adding a bunch of items to the model and then calling ItemsAdded()
+					// just once afterwards. In this case, we must find the right position by looking at sibling items.
+
+					// Append to the end if we won't find a better position:
+					nodePos = nodeSiblingsSize;
+
+					for (size_t nextItemPos = modelItemPosition + 1; nextItemPos < modelItemPosition; nextItemPos++)
+					{
+						ptrdiff_t nextNodePos = parentNode->FindChildByItem(modelSiblings[nextItemPos]);
+						if (nextNodePos != wxNOT_FOUND)
+						{
+							nodePos = nextNodePos;
+							break;
+						}
+					}
+				}
+				parentNode->ChangeSubTreeCount(+1);
+				parentNode->InsertChild(this, itemNode, nodePos);
 			}
 			else
 			{
-				// It's possible that a larger discrepancy between the model and
-				// our realization exists. This can happen e.g. when adding a bunch
-				// of items to the model and then calling ItemsAdded() just once
-				// afterwards. In this case, we must find the right position by
-				// looking at sibling items.
-
-				// Append to the end if we won't find a better position:
-				nodeNewPosition = nodeChildItemsCount;
-
-				for (size_t nextItemPos = modelItemPosition + 1; nextItemPos < modelChildItemsCount; nextItemPos++)
-				{
-					ptrdiff_t nextNodePos = parentNode->FindChildByItem(modelChildItems[nextItemPos]);
-					if (nextNodePos != wxNOT_FOUND)
-					{
-						nodeNewPosition = nextNodePos;
-						break;
-					}
-				}
+				// Node list is or will be sorted, so InsertChild do not need insertion position
+				parentNode->ChangeSubTreeCount(+1);
+				parentNode->InsertChild(this, itemNode, 0);
 			}
-
-			parentNode->ChangeSubTreeCount(+1);
-			parentNode->InsertChild(itemNode, nodeNewPosition);
-
 			InvalidateItemCount();
 		}
 	}
 
-	GetOwner()->InvalidateColBestWidths();
+	m_Owner->InvalidateColBestWidths();
 	UpdateDisplay();
 	return true;
 }
@@ -2019,8 +2018,7 @@ bool KxDataViewMainWindow::ItemDeleted(const KxDataViewItem& parent, const KxDat
 		// Delete the item from wxDataViewTreeNode representation:
 		const int itemsDeleted = 1 + itemNode->GetSubTreeCount();
 
-		parentNode->RemoveChild(itemNode);
-		//delete itemNode;
+		parentNode->RemoveChild(itemNodePosition);
 		parentNode->ChangeSubTreeCount(-itemsDeleted);
 
 		// Make the row number invalid and get a new valid one when user call GetRowCount
@@ -2038,7 +2036,7 @@ bool KxDataViewMainWindow::ItemDeleted(const KxDataViewItem& parent, const KxDat
 				// and not "-" one as there is nothing to collapse any more.
 				if (parentNode->IsExpanded())
 				{
-					parentNode->ToggleExpanded();
+					parentNode->ToggleExpanded(this);
 				}
 			}
 		}
@@ -2079,27 +2077,11 @@ bool KxDataViewMainWindow::ItemDeleted(const KxDataViewItem& parent, const KxDat
 }
 bool KxDataViewMainWindow::ItemChanged(const KxDataViewItem& item)
 {
-	SortPrepare();
-	GetModel()->Resort();
-	GetOwner()->InvalidateColBestWidths();
-
-	KxDataViewEvent event(KxEVT_DATAVIEW_ITEM_VALUE_CHANGED);
-	CreateEventTemplate(event, item);
-	m_Owner->ProcessWindowEvent(event);
-
-	return true;
+	return DoItemChanged(item, nullptr);
 }
 bool KxDataViewMainWindow::ValueChanged(const KxDataViewItem& item, KxDataViewColumn* column)
 {
-	SortPrepare();
-	GetModel()->Resort();
-	GetOwner()->InvalidateColBestWidth(m_Owner->GetColumnIndex(column));
-
-	// Send event
-	KxDataViewEvent event(KxEVT_DATAVIEW_ITEM_VALUE_CHANGED);
-	CreateEventTemplate(event, item, column);
-	m_Owner->ProcessWindowEvent(event);
-	return true;
+	return column ? DoItemChanged(item, column) : false;
 }
 bool KxDataViewMainWindow::ItemsCleared()
 {
@@ -2113,7 +2095,6 @@ bool KxDataViewMainWindow::ItemsCleared()
 
 	if (GetModel())
 	{
-		SortPrepare();
 		BuildTree(GetModel());
 	}
 	else
@@ -2129,40 +2110,21 @@ void KxDataViewMainWindow::Resort()
 {
 	if (!IsVirtualList())
 	{
-		SortPrepare();
-		m_TreeRoot->Resort();
+		m_TreeRoot->Resort(this);
 	}
 	UpdateDisplay();
 }
 
 /* Rows refreshing */
-void KxDataViewMainWindow::RefreshRow(size_t row)
-{
-	wxRect rowRect = GetLineRect(row);
-	m_Owner->CalcScrolledPosition(rowRect.x, rowRect.y, &rowRect.x, &rowRect.y);
-
-	wxSize clientSize = GetClientSize();
-	wxRect clientRect(0, 0, clientSize.x, clientSize.y);
-	wxRect intersectRect = clientRect.Intersect(rowRect);
-	if (intersectRect.width > 0)
-	{
-		RefreshRect(intersectRect, true);
-	}
-}
 void KxDataViewMainWindow::RefreshRows(size_t from, size_t to)
 {
-	if (from > to)
-	{
-		std::swap(from, to);
-	}
-
-	wxRect rect(0, GetLineStart(from), GetEndOfLastCol(), GetLineStart(to - from + 1));
+	wxRect rect = GetLinesRect(from, to);
 	m_Owner->CalcScrolledPosition(rect.x, rect.y, &rect.x, &rect.y);
 
 	wxSize clientSize = GetClientSize();
 	wxRect clientRect(0, 0, clientSize.x, clientSize.y);
 	wxRect intersectRect = clientRect.Intersect(rect);
-	if (intersectRect.width > 0)
+	if (!intersectRect.IsEmpty())
 	{
 		RefreshRect(intersectRect, true);
 	}
@@ -2181,14 +2143,29 @@ void KxDataViewMainWindow::RefreshRowsAfter(size_t firstRow)
 }
 
 /* Item rect */
-wxRect KxDataViewMainWindow::GetLineRect(size_t row) const
+wxRect KxDataViewMainWindow::GetLinesRect(size_t rowFrom, size_t rowTo) const
 {
+	if (rowFrom > rowTo)
+	{
+		std::swap(rowFrom, rowTo);
+	}
+
 	wxRect rect;
 	rect.x = 0;
-	rect.y = GetLineStart(row);
-	rect.width = GetEndOfLastCol();
-	rect.height = GetLineHeight(row);
+	rect.y = GetLineStart(rowFrom);
 
+	// Don't calculate exact width of the row, because GetEndOfLastCol() is
+	// expensive to call, and controls with rows not spanning entire width rare.
+	// It is more efficient to e.g. repaint empty parts of the window needlessly.
+	rect.width = std::numeric_limits<decltype(rect.width)>::max();
+	if (rowFrom == rowTo)
+	{
+		rect.height = GetLineHeight(rowFrom);
+	}
+	else
+	{
+		rect.height = GetLineStart(rowTo) - rect.y + GetLineHeight(rowTo);
+	}
 	return rect;
 }
 int KxDataViewMainWindow::GetLineStart(size_t row) const
@@ -2961,10 +2938,16 @@ wxRect KxDataViewMainWindow::GetItemRect(const KxDataViewItem& item, const KxDat
 		xpos = 0;
 	}
 
-	// We have to take an expander column into account and compute its indentation
-	// to get the correct x position where the actual text is
-	int indent = 0;
 	size_t row = GetRowByItem(item);
+	if (row == INVALID_ROW)
+	{
+		// This means the row is currently not visible at all.
+		return wxRect();
+	}
+
+	// We have to take an expander column into account and compute its indentation
+	// to get the correct x position where the actual text is.
+	int indent = 0;
 	if (!IsList() && (!column || m_Owner->GetExpanderColumnOrFirstOne() == column))
 	{
 		KxDataViewTreeNode* node = GetTreeNodeByRow(row);
@@ -3037,12 +3020,11 @@ void KxDataViewMainWindow::Expand(size_t row)
 				// Vetoed by the event handler.
 				return;
 			}
-			node->ToggleExpanded();
+			node->ToggleExpanded(this);
 
-			// build the children of current node
+			// Build the children of current node
 			if (node->GetChildNodes().empty())
 			{
-				SortPrepare();
 				BuildTreeHelper(node->GetItem(), node);
 			}
 
@@ -3089,7 +3071,7 @@ void KxDataViewMainWindow::Collapse(size_t row)
 				RefreshRow(row);
 				SendSelectionChangedEvent(row, m_CurrentColumn);
 			}
-			node->ToggleExpanded();
+			node->ToggleExpanded(this);
 
 			// Adjust the current row if necessary.
 			if (m_CurrentRow > row)
@@ -3183,8 +3165,21 @@ size_t KxDataViewMainWindow::GetRowByItem(const KxDataViewItem& item) const
 		// The parent chain was created by adding the deepest parent first.
 		// so if we want to start at the root node, we have to iterate backwards through the vector
 		KxDataViewTreeNodeOperation_ItemToRow operation(item, parentChain.rbegin());
-		operation.Walk(m_TreeRoot);
-		return operation.GetResult();
+
+		// If the item was not found at all, which can happen if all its parents
+		// are not expanded, this function still returned a valid but completely
+		// wrong row index.
+		//
+		// This affected many functions which could call it for the items which
+		// were not necessarily visible, i.e. all of them except for the event
+		// handlers as events can only affect the visible items, including but not
+		// limited to SetCurrentItem(), all the selection-related functions, all
+		// the expansion-related functions, EnsureVisible(), HitTest() and
+		// GetItemRect().
+		if (operation.Walk(m_TreeRoot))
+		{
+			return operation.GetResult();
+		}
 	}
 	return INVALID_ROW;
 }
