@@ -109,6 +109,45 @@ namespace KxIndexedEnum
 				const TItem* item = FindByValue(value);
 				return item ? TStringOpt(item->GetName()) : std::nullopt;
 			}
+	
+			template<class T> constexpr static T ToAnyString(TEnum value)
+			{
+				static_assert(std::is_constructible_v<T, TString>, "T can not be constructed from TString");
+
+				const TItem* item = FindByValue(value);
+				if (item)
+				{
+					const TString& name = item->GetName();
+					if constexpr (std::is_pointer_v<TString>)
+					{
+						return name;
+					}
+					else
+					{
+						return T(name.data(), name.size());
+					}
+				}
+				return T {};
+			}
+			template<class T> constexpr static std::optional<T> TryToAnyString(TEnum value)
+			{
+				static_assert(std::is_constructible_v<T, TString>, "T can not be constructed from TString");
+
+				const TItem* item = FindByValue(value);
+				if (item)
+				{
+					const TString& name = item->GetName();
+					if constexpr (std::is_pointer_v<TString>)
+					{
+						return T(name);
+					}
+					else
+					{
+						return std::optional<T>(T(name.data(), name.size()));
+					}
+				}
+				return std::nullopt;
+			}
 	};
 }
 
