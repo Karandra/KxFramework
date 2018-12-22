@@ -30,12 +30,11 @@ class KX_API KxIXDocumentNode
 					xPath.Prepend(node.GetName());
 				}
 
-
 				if (!isFirst)
 				{
 					xPath.Prepend(xPathSep);
 				}
-				isFirst = true;
+				isFirst = false;
 			}
 			return xPath;
 		}
