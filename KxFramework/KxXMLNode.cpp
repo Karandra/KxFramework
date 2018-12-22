@@ -321,11 +321,11 @@ KxXMLNode KxXMLNode::QueryOrCreateElement(const wxString& XPath)
 
 wxString KxXMLNode::GetXPathIndexSeparator() const
 {
-	return m_Document->GetXPathIndexSeparator();
+	return m_Document ? m_Document->GetXPathIndexSeparator() : wxString();
 }
 bool KxXMLNode::SetXPathIndexSeparator(const wxString& value)
 {
-	return m_Document->SetXPathIndexSeparator(value);
+	return m_Document ? m_Document->SetXPathIndexSeparator(value) : false;
 }
 
 size_t KxXMLNode::GetIndexWithinParent() const
