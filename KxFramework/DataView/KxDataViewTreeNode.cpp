@@ -26,7 +26,7 @@ class KxDataViewComparator
 			if (sortingColumn || m_DataModel->HasDefaultCompare())
 			{
 				const bool multiColumnSort = dataView->IsMultiColumnSortUsed();
-				const bool sortAscending = sortingColumn ? sortingColumn->IsSortedAscending() : true;
+				const bool sortAscending = m_SortOrder.IsAscending();
 
 				const bool isLess = m_DataModel->Compare(node1->GetItem(), node2->GetItem(), sortingColumn);
 				if (!multiColumnSort)
@@ -37,7 +37,6 @@ class KxDataViewComparator
 			}
 		}
 };
-
 
 //////////////////////////////////////////////////////////////////////////
 void KxDataViewTreeNodeData::DeleteChildNode(KxDataViewTreeNode* node)
