@@ -34,7 +34,18 @@ void KxImageView::OnDrawBackground(wxEraseEvent& event)
 void KxImageView::OnDrawForeground(wxPaintEvent& event)
 {
 	wxPaintDC dc(this);
-	m_ScaledImageSize = KxDrawablePanel::DrawScaledBitmap(dc, m_Bitmap, wxRect(wxPoint(0, 0), GetClientSize()), (KxDrawablePanel::ScaleMode)m_ScaleMode, m_ScaleFactor);
+	std::unique_ptr<wxGraphicsContext> context(m_Renderer->CreateContext(dc));
+
+	m_ScaledImageSize = KxDrawablePanel::DrawScaledBitmap(&*context, m_Bitmap, m_ImageSize, wxRect(wxPoint(0, 0), GetClientSize()), (KxDrawablePanel::ScaleMode)m_ScaleMode, m_ScaleFactor);
+}
+
+void KxImageView::DoSetBitmap(const wxGraphicsBitmap& bitmap, const wxSize& size)
+{
+	m_Bitmap = bitmap;
+	m_ImageSize = size;
+	m_ScaledImageSize = wxSize(0, 0);
+	m_IsAnimation = false;
+	Refresh();
 }
 
 bool KxImageView::Create(wxWindow* parent,
@@ -53,7 +64,14 @@ bool KxImageView::Create(wxWindow* parent,
 		SetBackgroundStyle(wxBG_STYLE_ERASE);
 		Bind(wxEVT_ERASE_BACKGROUND, &KxImageView::OnDrawBackground, this);
 		Bind(wxEVT_PAINT, &KxImageView::OnDrawForeground, this);
-		return true;
+
+		// Direct2D can't be used right now because it crops images and not scales them.
+		m_Renderer = wxGraphicsRenderer::GetGDIPlusRenderer();
+		if (m_Renderer == nullptr)
+		{
+			m_Renderer = wxGraphicsRenderer::GetDefaultRenderer();
+		}
+		return m_Renderer != nullptr;
 	}
 	return false;
 }
@@ -120,21 +138,28 @@ void KxImageView::SetScaleFactor(double factor)
 		Refresh();
 	}
 }
-void KxImageView::SetBitmap(const wxBitmap& image)
+void KxImageView::SetBitmap(const wxBitmap& bitmap)
 {
-	m_Bitmap = image;
-	m_IsAnimation = false;
-	Refresh();
+	DoSetBitmap(m_Renderer->CreateBitmap(bitmap), bitmap.GetSize());
 }
+void KxImageView::SetBitmap(const wxImage& image)
+{
+	DoSetBitmap(m_Renderer->CreateBitmapFromImage(image), image.GetSize());
+}
+void KxImageView::SetBitmap(const wxGraphicsBitmap& bitmap, const wxSize& size)
+{
+	DoSetBitmap(bitmap, size);
+}
+
 void KxImageView::LoadFile(const wxString& filePath, wxBitmapType type, int index)
 {
 	wxImage image;
 	image.LoadFile(filePath, type, index);
-	SetBitmap(wxBitmap(image, 32));
+	SetBitmap(image);
 }
 void KxImageView::LoadFile(wxInputStream& stream, wxBitmapType type, int index)
 {
 	wxImage image;
 	image.LoadFile(stream, type, index);
-	SetBitmap(wxBitmap(image, 32));
+	SetBitmap(image);
 }

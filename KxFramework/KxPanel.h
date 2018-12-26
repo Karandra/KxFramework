@@ -71,6 +71,7 @@ class KX_API KxDrawablePanel: public KxPanel
 		static const wxBitmap ms_EmptyBitmap;
 
 	public:
+		static wxSize DrawScaledBitmap(wxGraphicsContext* gc, const wxGraphicsBitmap& bitmap, const wxSize& bitmapSize, const wxRect& rect, ScaleMode scaleMode, double globalScale = 1.0);
 		static wxSize DrawScaledBitmap(wxGraphicsContext* gc, const wxBitmap& bitmap, const wxRect& rect, ScaleMode scaleMode, double globalScale = 1.0);
 		static wxSize DrawScaledBitmap(wxWindowDC& dc, const wxBitmap& bitmap, const wxRect& rect, ScaleMode scaleMode, double globalScale = 1.0);
 		static wxSize DrawScaledBitmap(wxMemoryDC& dc, const wxBitmap& bitmap, const wxRect& rect, ScaleMode scaleMode, double globalScale = 1.0);

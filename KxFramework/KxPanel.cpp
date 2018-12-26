@@ -21,10 +21,9 @@ wxIMPLEMENT_DYNAMIC_CLASS(KxDrawablePanel, KxPanel);
 
 const wxBitmap KxDrawablePanel::ms_EmptyBitmap = wxBitmap(8, 8, 32);
 
-wxSize KxDrawablePanel::DrawScaledBitmap(wxGraphicsContext* gc, const wxBitmap& bitmap, const wxRect& rect, ScaleMode scaleMode, double globalScale)
+wxSize KxDrawablePanel::DrawScaledBitmap(wxGraphicsContext* gc, const wxGraphicsBitmap& bitmap, const wxSize& bitmapSize, const wxRect& rect, ScaleMode scaleMode, double globalScale)
 {
 	wxSize scaledImageSize;
-	const wxSize imageSize = bitmap.GetSize();
 	double x = 0;
 	double y = 0;
 	double width = 0;
@@ -34,8 +33,8 @@ wxSize KxDrawablePanel::DrawScaledBitmap(wxGraphicsContext* gc, const wxBitmap& 
 	{
 		case ScaleMode::Scale_None:
 		{
-			scaledImageSize = imageSize;
-			gc->DrawBitmap(bitmap.IsOk() ? bitmap : ms_EmptyBitmap, rect.GetX(), rect.GetY(), imageSize.GetWidth(), imageSize.GetWidth());
+			scaledImageSize = bitmapSize;
+			gc->DrawBitmap(!bitmap.IsNull() ? bitmap : gc->CreateBitmap(ms_EmptyBitmap), rect.GetX(), rect.GetY(), bitmapSize.GetWidth(), bitmapSize.GetWidth());
 			return scaledImageSize;
 		}
 		case ScaleMode::Scale_Fill:
@@ -48,8 +47,8 @@ wxSize KxDrawablePanel::DrawScaledBitmap(wxGraphicsContext* gc, const wxBitmap& 
 		case ScaleMode::Scale_AspectFit:
 		{
 			double scaleFactor;
-			double scaleX = (double)rect.GetWidth() / (double)imageSize.GetWidth();
-			double scaleY = (double)rect.GetHeight() / (double)imageSize.GetHeight();
+			double scaleX = (double)rect.GetWidth() / (double)bitmapSize.GetWidth();
+			double scaleY = (double)rect.GetHeight() / (double)bitmapSize.GetHeight();
 			if ((scaleMode == ScaleMode::Scale_AspectFit && scaleY < scaleX) || (scaleMode == ScaleMode::Scale_AspectFill && scaleY > scaleX))
 			{
 				scaleFactor = scaleY;
@@ -60,8 +59,8 @@ wxSize KxDrawablePanel::DrawScaledBitmap(wxGraphicsContext* gc, const wxBitmap& 
 			}
 			scaleFactor *= globalScale;
 
-			width = imageSize.GetWidth() * scaleFactor;
-			height = imageSize.GetHeight() * scaleFactor;
+			width = bitmapSize.GetWidth() * scaleFactor;
+			height = bitmapSize.GetHeight() * scaleFactor;
 			break;
 		}
 	};
@@ -71,8 +70,12 @@ wxSize KxDrawablePanel::DrawScaledBitmap(wxGraphicsContext* gc, const wxBitmap& 
 
 	scaledImageSize.x = width;
 	scaledImageSize.y = height;
-	gc->DrawBitmap(bitmap.IsOk() ? bitmap : ms_EmptyBitmap, rect.GetX() + x, rect.GetY() + y, width, height);
+	gc->DrawBitmap(!bitmap.IsNull() ? bitmap : gc->CreateBitmap(ms_EmptyBitmap), rect.GetX() + x, rect.GetY() + y, width, height);
 	return scaledImageSize;
+}
+wxSize KxDrawablePanel::DrawScaledBitmap(wxGraphicsContext* gc, const wxBitmap& bitmap, const wxRect& rect, ScaleMode scaleMode, double globalScale)
+{
+	return DrawScaledBitmap(gc, gc->CreateBitmap(bitmap), bitmap.GetSize(), rect, scaleMode, globalScale);
 }
 wxSize KxDrawablePanel::DrawScaledBitmap(wxWindowDC& dc, const wxBitmap& bitmap, const wxRect& rect, ScaleMode scaleMode, double globalScale)
 {

@@ -18,18 +18,22 @@ enum KxImageView_ScaleMode
 class KX_API KxImageView: public wxControl
 {
 	private:
+		wxGraphicsRenderer* m_Renderer = nullptr;
 		KxImageView_BGMode m_BackgroundMode = KxIV_BG_SOLID;
 		KxImageView_ScaleMode m_ScaleMode = KxIV_SCALE_NONE;
 		wxDirection m_GradientDirection = wxDOWN;
-		wxSize m_ScaledImageSize;
 		double m_ScaleFactor = 1.0;
-
 		bool m_IsAnimation = false;
-		wxBitmap m_Bitmap;
+
+		wxGraphicsBitmap m_Bitmap;
+		wxSize m_ScaledImageSize;
+		wxSize m_ImageSize;
 
 	private:
 		void OnDrawBackground(wxEraseEvent& event);
 		void OnDrawForeground(wxPaintEvent& event);
+
+		void DoSetBitmap(const wxGraphicsBitmap& bitmap, const wxSize& size);
 
 	public:
 		static const long DefaultStyle = wxBORDER_THEME;
@@ -102,13 +106,20 @@ class KX_API KxImageView: public wxControl
 
 		bool HasBitmap() const
 		{
-			return m_Bitmap.IsOk();
+			return !m_Bitmap.IsNull();
 		}
-		const wxBitmap& GetBitmap() const
+		wxImage GetImage() const
 		{
-			return m_Bitmap;
+			return m_Bitmap.ConvertToImage();
+		}
+		wxBitmap GetBitmap() const
+		{
+			return wxBitmap(m_Bitmap.ConvertToImage(), 32);
 		}
 		void SetBitmap(const wxBitmap& image);
+		void SetBitmap(const wxImage& image);
+		void SetBitmap(const wxGraphicsBitmap& image, const wxSize& size);
+
 		void LoadFile(const wxString& filePath, wxBitmapType type = wxBITMAP_TYPE_ANY, int index = -1);
 		void LoadFile(wxInputStream& stream, wxBitmapType type = wxBITMAP_TYPE_ANY, int index = -1);
 
