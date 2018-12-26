@@ -23,7 +23,7 @@ class KX_API KxDataViewItemAttributes
 		bool m_IsEnabled = true;
 		bool m_ButtonBackgound = false;
 		bool m_HeaderButtonBackgound = false;
-		bool m_CategoryLine = false;
+		bool m_ShowAccelerators = false;
 		wxAlignment m_Alignment = wxALIGN_INVALID;
 
 	public:
@@ -168,7 +168,7 @@ class KX_API KxDataViewItemAttributes
 		}
 		bool HasMiscAttributes() const
 		{
-			return HasHeaderButtonBackgound() || HasButtonBackgound() || HasCategoryLine() || HasAlignment();
+			return HasHeaderButtonBackgound() || HasButtonBackgound() || ShouldShowAccelerators() || HasAlignment();
 		}
 		
 		bool IsEnabled() const
@@ -198,13 +198,13 @@ class KX_API KxDataViewItemAttributes
 			m_ButtonBackgound = enabled;
 		}
 
-		bool HasCategoryLine() const
+		bool ShouldShowAccelerators() const
 		{
-			return m_CategoryLine;
+			return m_ShowAccelerators;
 		}
-		void SetCategoryLine(bool enabled = true)
+		void ShowAccelerators(bool enabled = true)
 		{
-			m_CategoryLine = enabled;
+			m_ShowAccelerators = enabled;
 		}
 
 		bool HasAlignment() const

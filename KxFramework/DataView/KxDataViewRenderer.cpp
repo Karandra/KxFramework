@@ -8,6 +8,8 @@
 #include "KxFramework/KxGraphicsContext.h"
 #include "KxFramework/KxDCClipper.h"
 #include "KxFramework/KxUxTheme.h"
+#include "wx/generic/private/markuptext.h"
+#include "wx/generic/private/markuptext.h"
 
 wxIMPLEMENT_ABSTRACT_CLASS(KxDataViewRenderer, wxObject);
 
@@ -16,6 +18,69 @@ namespace
 	bool operator>(const wxSize& v1, const wxSize& v2)
 	{
 		return v1.GetWidth() > v2.GetWidth() || v1.GetHeight() > v2.GetHeight();
+	}
+
+	using MarkupMode = KxDataViewRenderer::MarkupMode;
+	template<MarkupMode t_Mode> auto CreateMarkup(const wxString& string = {})
+	{
+		if constexpr(t_Mode == MarkupMode::TextOnly)
+		{
+			return wxItemMarkupText(string);
+		}
+		else if constexpr(t_Mode == MarkupMode::WithMnemonics)
+		{
+			return wxMarkupText(string);
+		}
+	}
+
+	wxSize GetMarkupTextExtent(const wxMarkupTextBase& markup, wxWindow* window, const wxFont& font)
+	{
+		wxClientDC dc(window);
+		dc.SetFont(font);
+		return markup.Measure(dc);
+	}
+	wxSize GetMarkupTextExtent(MarkupMode mode, wxWindow* window, const wxFont& font, const wxString& string)
+	{
+		switch (mode)
+		{
+			case MarkupMode::TextOnly:
+			{
+				return GetMarkupTextExtent(CreateMarkup<MarkupMode::TextOnly>(string), window, font);
+			}
+			case MarkupMode::WithMnemonics:
+			{
+				return GetMarkupTextExtent(CreateMarkup<MarkupMode::WithMnemonics>(string), window, font);
+			}
+		};
+		return wxSize(0, 0);
+	}
+	
+	template<class T> void DrawMarkupText(T& markup, wxWindow* window, wxDC& dc, const wxRect& rect, int flags, wxEllipsizeMode ellipsizeMode)
+	{
+		if constexpr(std::is_same_v<T, wxMarkupText>)
+		{
+			markup.Render(dc, rect, flags);
+		}
+		else
+		{
+			markup.Render(window, dc, rect, flags, ellipsizeMode);
+		}
+	}
+	void DrawMarkupText(MarkupMode mode, const wxString& string, wxWindow* window, wxDC& dc, const wxRect& rect, int flags, wxEllipsizeMode ellipsizeMode)
+	{
+		switch (mode)
+		{
+			case MarkupMode::TextOnly:
+			{
+				auto markup = CreateMarkup<MarkupMode::TextOnly>(string);
+				return DrawMarkupText(markup, window, dc, rect, flags, ellipsizeMode);
+			}
+			case MarkupMode::WithMnemonics:
+			{
+				auto markup = CreateMarkup<MarkupMode::WithMnemonics>(string);
+				return DrawMarkupText(markup, window, dc, rect, flags, ellipsizeMode);
+			}
+		};
 	}
 }
 
@@ -256,11 +321,25 @@ wxSize KxDataViewRenderer::DoGetTextExtent(const wxString& string) const
 		wxSize size;
 		if (newLinePos != wxNOT_FOUND)
 		{
-			GetView()->GetTextExtent(string.Left(newLinePos), &size.x, &size.y, nullptr, nullptr, &font);
+			if (IsMarkupEnabled())
+			{
+				return GetMarkupTextExtent(m_MarkupMode, GetView(), font, string);
+			}
+			else
+			{
+				GetView()->GetTextExtent(string.Left(newLinePos), &size.x, &size.y, nullptr, nullptr, &font);
+			}
 		}
 		else
 		{
-			GetView()->GetTextExtent(string, &size.x, &size.y, nullptr, nullptr, &font);
+			if (IsMarkupEnabled())
+			{
+				return GetMarkupTextExtent(m_MarkupMode, GetView(), font, string);
+			}
+			else
+			{
+				GetView()->GetTextExtent(string, &size.x, &size.y, nullptr, nullptr, &font);
+			}
 		}
 		return size;
 	}
@@ -287,15 +366,33 @@ bool KxDataViewRenderer::DoDrawText(const wxRect& cellRect, KxDataViewCellState 
 		{
 			flags |= wxCONTROL_DISABLED;
 		}
+		if (IsMarkupWithMnemonicsEnabled() && m_Attributes.ShouldShowAccelerators())
+		{
+			flags |= wxMarkupText::Render_ShowAccels;
+		}
 
 		int newLinePos = DoFindFirstNewLinePos(string);
 		if (newLinePos != wxNOT_FOUND)
 		{
-			wxRendererNative::Get().DrawItemText(GetView(), GetDC(), string.Left(newLinePos), textRect, GetEffectiveAlignment(), flags, GetEllipsizeMode());
+			if (IsMarkupEnabled())
+			{
+				DrawMarkupText(m_MarkupMode, string, GetView(), GetDC(), textRect, flags, GetEllipsizeMode());
+			}
+			else
+			{
+				wxRendererNative::Get().DrawItemText(GetView(), GetDC(), string.Left(newLinePos), textRect, GetEffectiveAlignment(), flags, GetEllipsizeMode());
+			}
 		}
 		else
 		{
-			wxRendererNative::Get().DrawItemText(GetView(), GetDC(), string, textRect, GetEffectiveAlignment(), flags, GetEllipsizeMode());
+			if (IsMarkupEnabled())
+			{
+				DrawMarkupText(m_MarkupMode, string, GetView(), GetDC(), textRect, flags, GetEllipsizeMode());
+			}
+			else
+			{
+				wxRendererNative::Get().DrawItemText(GetView(), GetDC(), string, textRect, GetEffectiveAlignment(), flags, GetEllipsizeMode());
+			}
 		}
 		return true;
 	}

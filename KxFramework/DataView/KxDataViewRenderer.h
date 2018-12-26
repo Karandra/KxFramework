@@ -22,13 +22,19 @@ class KX_API KxDataViewRenderer: public wxObject, public KxWithOptions<KxDataVie
 	friend class KxDataViewMainWindow;
 	friend class KxDataViewMainWindowMaxWidthCalculator;
 
-	protected:
+	public:
 		enum class ProgressBarState
 		{
 			Normal,
 			Paused,
 			Error,
 			Partial,
+		};
+		enum class MarkupMode
+		{
+			Disabled = 0,
+			TextOnly,
+			WithMnemonics
 		};
 
 	private:
@@ -40,6 +46,7 @@ class KX_API KxDataViewRenderer: public wxObject, public KxWithOptions<KxDataVie
 		wxDC* m_DC = nullptr;
 		wxGCDC* m_GCDC = nullptr;
 		bool m_Enabled = true;
+		MarkupMode m_MarkupMode = MarkupMode::Disabled;
 		KxDataViewItemAttributes m_Attributes;
 
 	private:
@@ -183,6 +190,28 @@ class KX_API KxDataViewRenderer: public wxObject, public KxWithOptions<KxDataVie
 		void SetCellMode(KxDataViewCellMode mode)
 		{
 			m_CellMode = mode;
+		}
+
+		bool IsMarkupEnabled() const
+		{
+			return m_MarkupMode != MarkupMode::Disabled;
+		}
+		bool IsTextMarkupEnabled() const
+		{
+			return m_MarkupMode == MarkupMode::TextOnly;
+		}
+		bool IsMarkupWithMnemonicsEnabled() const
+		{
+			return m_MarkupMode == MarkupMode::WithMnemonics;
+		}
+		
+		void EnableMarkup(bool enable = true)
+		{
+			m_MarkupMode = enable ? MarkupMode::TextOnly : MarkupMode::Disabled;
+		}
+		void EnableMarkupWithMnemonics(bool enable = true)
+		{
+			m_MarkupMode = enable ? MarkupMode::WithMnemonics : MarkupMode::Disabled;
 		}
 
 	public:
