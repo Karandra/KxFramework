@@ -49,7 +49,7 @@ namespace KxIndexedEnum
 		protected:
 			constexpr static const TItem* FindByName(const TString& string)
 			{
-				for (const TItem& item: TDerived::m_Index)
+				for (const TItem& item: TDerived::ms_Index)
 				{
 					if (item.GetName() == string)
 					{
@@ -62,11 +62,11 @@ namespace KxIndexedEnum
 			{
 				if constexpr(t_DirectAccess)
 				{
-					return &TDerived::m_Index[static_cast<size_t>(value)];
+					return &TDerived::ms_Index[static_cast<size_t>(value)];
 				}
 				else
 				{
-					for (const TItem& item: TDerived::m_Index)
+					for (const TItem& item: TDerived::ms_Index)
 					{
 						if (item.GetValue() == value)
 						{
