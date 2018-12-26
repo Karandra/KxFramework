@@ -87,16 +87,16 @@ static wxString wxGetStockLabelAux(wxString&& id, long flags, const wxChar* defa
 		id.Append(wxS("_MM"));
 	}
 
-	bool bGetSuccess = false;
-	wxString value = KxTranslation::GetCurrent().GetString(id, &bGetSuccess);
-	if (!bGetSuccess)
+	bool isSuccess = false;
+	wxString value = KxTranslation::GetCurrent().GetString(id, &isSuccess);
+	if (!isSuccess && flags & wxSTOCK_WITH_MNEMONIC)
 	{
 		id.RemoveLast(3);
-		value = KxTranslation::GetCurrent().GetString(id, &bGetSuccess);
+		value = KxTranslation::GetCurrent().GetString(id, &isSuccess);
 	}
 
-	KxUtility::SetIfNotNull(isSuccessOut, bGetSuccess);
-	if (bGetSuccess)
+	KxUtility::SetIfNotNull(isSuccessOut, isSuccess);
+	if (isSuccess)
 	{
 		return value;
 	}
@@ -121,18 +121,18 @@ wxString wxGetStockLabelLocalized(wxWindowID id, long flags, bool* isSuccess)
 		flags &= ~wxSTOCK_WITH_MNEMONIC;
 	}
 
-	#define STOCKITEM_WX(stockid, defaultLabel)													\
-		case wx##stockid:																		\
-		{																						\
-			stockLabel = wxGetStockLabelAux(wxS(#stockid), flags, wxS(defaultLabel), isSuccess);		\
-			break;																				\
+	#define STOCKITEM_WX(stockid, defaultLabel)														\
+		case wx##stockid:																			\
+		{																							\
+			stockLabel = wxGetStockLabelAux(wxS(#stockid), flags, wxS(defaultLabel), isSuccess);	\
+			break;																					\
 		}
 
-	#define STOCKITEM_KX(stockid, defaultLabel)													\
-		case Kx##stockid:																		\
-		{																						\
-			stockLabel = wxGetStockLabelAux(wxS(#stockid), flags, wxS(defaultLabel), isSuccess);		\
-			break;																				\
+	#define STOCKITEM_KX(stockid, defaultLabel)														\
+		case Kx##stockid:																			\
+		{																							\
+			stockLabel = wxGetStockLabelAux(wxS(#stockid), flags, wxS(defaultLabel), isSuccess);	\
+			break;																					\
 		}
 	
 	switch (id)
