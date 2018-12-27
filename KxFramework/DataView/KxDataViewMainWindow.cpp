@@ -1477,7 +1477,7 @@ void KxDataViewMainWindow::OnColumnsCountChanged()
 	for (size_t i = 0; i < count; i++)
 	{
 		KxDataViewColumn* column = GetOwner()->GetColumnAt(i);
-		if (column->IsExposed() && column->IsEditable())
+		if (column->IsVisible() && column->IsEditable())
 		{
 			editableCount++;
 		}
@@ -1515,7 +1515,7 @@ KxDataViewColumn* KxDataViewMainWindow::FindColumnForEditing(const KxDataViewIte
 		for (size_t i = 0; i < count; i++)
 		{
 			KxDataViewColumn* column = GetOwner()->GetColumnAt(i);
-			if (column->IsExposed())
+			if (column->IsVisible())
 			{
 				if (IsCellEditable(item, column, KxDATAVIEW_CELL_EDITABLE))
 				{
@@ -2190,7 +2190,7 @@ int KxDataViewMainWindow::GetLineStart(size_t row) const
 				for (size_t currentColumn = 0; currentColumn < columnCount; currentColumn++)
 				{
 					const KxDataViewColumn* column = GetOwner()->GetColumn(currentColumn);
-					if (column->IsExposed())
+					if (column->IsVisible())
 					{
 						if ((currentColumn != 0) && model->IsContainer(item) &&	!model->HasContainerColumns(item))
 						{
@@ -2240,7 +2240,7 @@ int KxDataViewMainWindow::GetLineHeight(size_t row) const
 			for (size_t currentColumn = 0; currentColumn < columnCount; currentColumn++)
 			{
 				const KxDataViewColumn* column = GetOwner()->GetColumn(currentColumn);
-				if (column->IsExposed())
+				if (column->IsVisible())
 				{
 					if ((currentColumn != 0) && model->IsContainer(item) &&	!model->HasContainerColumns(item))
 					{
@@ -2309,7 +2309,7 @@ size_t KxDataViewMainWindow::GetLineAt(int yCoord) const
 			for (size_t currentColumn = 0; currentColumn < columnCount; currentColumn++)
 			{
 				const KxDataViewColumn* column = GetOwner()->GetColumn(currentColumn);
-				if (column->IsExposed())
+				if (column->IsVisible())
 				{
 					if ((currentColumn != 0) && model->IsContainer(item) &&	!model->HasContainerColumns(item))
 					{
@@ -2349,7 +2349,7 @@ int KxDataViewMainWindow::GetLineWidth() const
 	for (size_t i = 0; i < count; i++)
 	{
 		KxDataViewColumn* column = GetOwner()->GetColumnAt(i);
-		if (column->IsExposed())
+		if (column->IsVisible())
 		{
 			width += column->GetWidth();
 		}

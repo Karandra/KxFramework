@@ -374,7 +374,7 @@ size_t KxDataViewCtrl::GetVisibleColumnCount() const
 	size_t count = 0;
 	for (size_t i = 0; i < GetColumnCount(); i++)
 	{
-		if (GetColumn(i)->IsExposed())
+		if (GetColumn(i)->IsVisible())
 		{
 			count++;
 		}
@@ -925,7 +925,7 @@ KxDataViewColumn* KxDataViewCtrl::GetColumnAtVisible(size_t position) const
 	auto TestColumn = [this, &visibleIndex](size_t i, KxDataViewColumn*& column)
 	{
 		column = m_Columns[i]->GetColumn();
-		if (column->IsExposed())
+		if (column->IsVisible())
 		{
 			visibleIndex++;
 		}

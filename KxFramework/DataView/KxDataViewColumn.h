@@ -16,17 +16,6 @@ class KX_API KxDataViewColumn: private wxSettableHeaderColumn, public KxWithOpti
 	friend class KX_API KxDataViewCtrl;
 
 	public:
-		using wxSettableHeaderColumn::IsSortable;
-		using wxSettableHeaderColumn::IsReorderable;
-		using wxSettableHeaderColumn::IsResizeable;
-		using wxSettableHeaderColumn::IsHidden;
-		using wxSettableHeaderColumn::IsShown;
-
-		using wxSettableHeaderColumn::SetSortable;
-		using wxSettableHeaderColumn::SetReorderable;
-		using wxSettableHeaderColumn::SetResizeable;
-		using wxSettableHeaderColumn::SetHidden;
-
 		using Vector = std::vector<KxDataViewColumn*>;
 
 	private:
@@ -51,30 +40,22 @@ class KX_API KxDataViewColumn: private wxSettableHeaderColumn, public KxWithOpti
 		void Init();
 
 	private:
-		virtual bool IsSortOrderAscending() const override
+		bool IsSortOrderAscending() const override
 		{
 			return IsSortedAscending();
 		}
-		virtual bool IsSortKey() const override
+		bool IsSortKey() const override
 		{
 			return IsSorted();
 		}
-		virtual void UnsetAsSortKey() override
+		void UnsetAsSortKey() override
 		{
 			ResetSorting();
 		}
-		virtual void SetSortOrder(bool ascending) override;
+		void SetSortOrder(bool ascending) override;
 
 	protected:
-		bool DoIsExposed(int& width) const
-		{
-			if (IsShown())
-			{
-				width = GetWidth();
-				return width > 0;
-			}
-			return false;
-		}
+		bool DoIsExposed(int& width) const;
 		wxSettableHeaderColumn* GetAsSettableHeaderColumn()
 		{
 			return this;
@@ -161,11 +142,11 @@ class KX_API KxDataViewColumn: private wxSettableHeaderColumn, public KxWithOpti
 			m_ID = id;
 		}
 		
-		virtual int GetFlags() const override
+		int GetFlags() const override
 		{
 			return GetOptionFlags();
 		}
-		virtual void SetFlags(int flags) override
+		void SetFlags(int flags) override
 		{
 			SetOptionFlags(static_cast<KxDataViewColumnFlags>(flags));
 			UpdateDisplay();
@@ -175,11 +156,11 @@ class KX_API KxDataViewColumn: private wxSettableHeaderColumn, public KxWithOpti
 		{
 			return m_Bitmap.IsOk();
 		}
-		virtual wxBitmap GetBitmap() const override
+		wxBitmap GetBitmap() const override
 		{
 			return m_Bitmap;
 		}
-		virtual void SetBitmap(const wxBitmap& bitmap) override
+		void SetBitmap(const wxBitmap& bitmap) override
 		{
 			m_Bitmap = bitmap;
 			UpdateDisplay();
@@ -189,35 +170,39 @@ class KX_API KxDataViewColumn: private wxSettableHeaderColumn, public KxWithOpti
 		{
 			return m_Title.IsEmpty();
 		}
-		virtual wxString GetTitle() const override
+		wxString GetTitle() const override
 		{
 			return m_Title;
 		}
-		virtual void SetTitle(const wxString& title) override
+		void SetTitle(const wxString& title) override
 		{
 			m_Title = title;
 			UpdateDisplay();
 		}
 
-		virtual int GetWidth() const override;
-		virtual void SetWidth(int width) override;
+		bool UsesAutomaticWidth() const
+		{
+			return m_Width == KxCOL_WIDTH_AUTOSIZE;
+		}
+		int GetWidth() const override;
+		void SetWidth(int width) override;
 		
-		virtual int GetMinWidth() const override
+		int GetMinWidth() const override
 		{
 			return m_MinWidth;
 		}
-		virtual void SetMinWidth(int minWidth) override
+		void SetMinWidth(int minWidth) override
 		{
 			m_MinWidth = std::abs(minWidth);
 			UpdateDisplay();
 		}
 
-		virtual void SetAlignment(wxAlignment align) override
+		void SetAlignment(wxAlignment align) override
 		{
 			m_Alignment = align;
 			UpdateDisplay();
 		}
-		virtual wxAlignment GetAlignment() const override
+		wxAlignment GetAlignment() const override
 		{
 			return m_Alignment;
 		}
@@ -234,7 +219,7 @@ class KX_API KxDataViewColumn: private wxSettableHeaderColumn, public KxWithOpti
 		{
 			return !IsSortedAscending();
 		}
-		
+
 		void SortAscending()
 		{
 			SetSortOrder(true);
@@ -245,14 +230,43 @@ class KX_API KxDataViewColumn: private wxSettableHeaderColumn, public KxWithOpti
 		}
 		void ResetSorting();
 
-		bool IsExposed() const
+		bool IsSortable()
 		{
-			int width = 0;
-			return DoIsExposed(width);
+			return wxSettableHeaderColumn::IsSortable();
 		}
+		bool IsReorderable()
+		{
+			return wxSettableHeaderColumn::IsReorderable();
+		}
+		bool IsResizeable()
+		{
+			return wxSettableHeaderColumn::IsResizeable();
+		}
+		void SetSortable(bool value)
+		{
+			wxSettableHeaderColumn::SetSortable(value);
+		}
+		void SetReorderable(bool value)
+		{
+			wxSettableHeaderColumn::SetReorderable(value);
+		}
+		void SetResizeable(bool value)
+		{
+			wxSettableHeaderColumn::SetResizeable(value);
+		}
+
 		bool IsExposed(int& width) const
 		{
+			width = 0;
 			return DoIsExposed(width);
+		}
+		bool IsVisible() const
+		{
+			return wxSettableHeaderColumn::IsShown();
+		}
+		void SetVisible(bool value)
+		{
+			wxSettableHeaderColumn::SetHidden(!value);
 		}
 
 		bool IsHotTracked() const;

@@ -30,6 +30,16 @@ void KxDataViewColumn::SetSortOrder(bool ascending)
 		m_DataView->OnColumnChange(index);
 	}
 }
+
+bool KxDataViewColumn::DoIsExposed(int& width) const
+{
+	if (IsShown())
+	{
+		width = width >= 0 ? GetWidth() : -1;
+		return width > 0;
+	}
+	return false;
+}
 void KxDataViewColumn::UpdateDisplay()
 {
 	if (m_DataView)
@@ -117,11 +127,11 @@ bool KxDataViewColumn::IsCurrent() const
 }
 bool KxDataViewColumn::IsFirst() const
 {
-	return IsExposed() && m_DataView->GetColumnPosition(this) == 0;
+	return IsVisible() && m_DataView->GetColumnPosition(this) == 0;
 }
 bool KxDataViewColumn::IsLast() const
 {
-	return IsExposed() && m_DataView->GetColumnPosition(this) == m_DataView->GetVisibleColumnCount();
+	return IsVisible() && m_DataView->GetColumnPosition(this) == m_DataView->GetVisibleColumnCount();
 }
 
 //////////////////////////////////////////////////////////////////////////
