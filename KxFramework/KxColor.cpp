@@ -1,9 +1,99 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxColor.h"
 
-const double KxColor::SRGB_WeightR = 0.2126;
-const double KxColor::SRGB_WeightG = 0.7152;
-const double KxColor::SRGB_WeightB = 0.0722;
+namespace
+{
+	using C2SAlpha = KxColor::C2SAlpha;
+
+	namespace C2SImpl
+	{
+		wxString ToCSS(const KxColor& color, C2SAlpha alpha)
+		{
+			switch (alpha)
+			{
+				case C2SAlpha::None:
+				{
+					return KxString::Format(wxS("rgb(%1, %2, %3)"), color.GetR(), color.GetG(), color.GetB());
+				}
+				case C2SAlpha::Always:
+				{
+					return KxString::Format(wxS("rgba(%1, %2, %3, %4)"), color.GetR(), color.GetG(), color.GetB(), KxMath::Round(color.GetA() / 255.0, 1));
+				}
+				case C2SAlpha::Auto:
+				{
+					return color.IsAlphaOpaque() ? ToCSS(color, C2SAlpha::None) : ToCSS(color, C2SAlpha::Always);
+				}
+			};
+			return wxString();
+		}
+		wxString ToHTML(const KxColor& color, C2SAlpha alpha)
+		{
+			switch (alpha)
+			{
+				case C2SAlpha::None:
+				{
+					KxFormat formatter(wxS("#%1%2%3"));
+					formatter.arg(color.GetR(), 2, 16, '0');
+					formatter.arg(color.GetG(), 2, 16, '0');
+					formatter.arg(color.GetB(), 2, 16, '0');
+
+					return formatter;
+				}
+				case C2SAlpha::Always:
+				{
+					KxFormat formatter(wxS("#%1%2%3%4"));
+					formatter.arg(color.GetR(), 2, 16, '0');
+					formatter.arg(color.GetG(), 2, 16, '0');
+					formatter.arg(color.GetB(), 2, 16, '0');
+					formatter.arg(color.GetA(), 2, 16, '0');
+
+					return formatter;
+				}
+				case C2SAlpha::Auto:
+				{
+					return color.IsAlphaOpaque() ? ToHTML(color, C2SAlpha::None) : ToHTML(color, C2SAlpha::Always);
+				}
+			};
+			return wxString();
+		}
+		wxString ToLua(const KxColor& color, C2SAlpha alpha)
+		{
+			switch (alpha)
+			{
+				case C2SAlpha::None:
+				{
+					return KxString::Format(wxS("{R = %1, G = %2, B = %3}"), color.GetR(), color.GetG(), color.GetB());
+				}
+				case C2SAlpha::Always:
+				{
+					return KxString::Format(wxS("{R = %1, G = %2, B = %3, A = %4}"), color.GetR(), color.GetG(), color.GetB(), color.GetA());
+				}
+				case C2SAlpha::Auto:
+				{
+					return color.IsAlphaOpaque() ? ToLua(color, C2SAlpha::None) : ToLua(color, C2SAlpha::Always);
+				}
+			};
+			return wxString();
+		}
+	}
+}
+
+double KxColor::ContrastRatio(const KxColor& lighterColor, const KxColor& darkerColor)
+{
+	return (lighterColor.GetRelativeLuminance() + 0.05) / (darkerColor.GetRelativeLuminance() + 0.05);
+}
+double KxColor::ColorDifference(const KxColor& c1, const KxColor& c2)
+{
+	const uint8_t r1 = c1.GetR();
+	const uint8_t g1 = c1.GetG();
+	const uint8_t b1 = c1.GetB();
+
+	const uint8_t r2 = c2.GetR();
+	const uint8_t g2 = c2.GetG();
+	const uint8_t b2 = c2.GetB();
+
+	return ((std::max(r1, r2) - std::min(r1, r2)) + (std::max(g1, g2) - std::min(g1, g2)) + (std::max(b1, b2) - std::min(b1, b2))) / (255.0 * 3);
+}
 
 double KxColor::HUE2RGB(double p, double q, double t)
 {
@@ -55,17 +145,56 @@ bool KxColor::IsOk() const
 {
 	return wxColour::IsOk();
 }
+bool KxColor::IsAlphaOpaque() const
+{
+	return IsOk() && GetA() == wxALPHA_OPAQUE;
+}
+
 KxColor KxColor::Clone() const
 {
-	return KxColor(GetR(), GetG(), GetB(), GetA());
+	return IsOk() ? KxColor(GetR(), GetG(), GetB(), GetA()) : KxColor();
 }
 wxString KxColor::GetAsString(long mode) const
 {
-	if (mode == (long)ToString::LuaSyntax)
+	switch (mode)
 	{
-		return KxString::Format(wxS("{R = %1, G = %2, B = %3, A = %4}"), GetR(), GetG(), GetB(), GetA());
-	}
+		case wxC2S_NAME:
+		{
+			return ToString(C2S::Name, C2SAlpha::None);
+		}
+		case wxC2S_CSS_SYNTAX:
+		{
+			return ToString(C2S::CSS, C2SAlpha::Auto);
+		}
+		case wxC2S_HTML_SYNTAX:
+		{
+			return ToString(C2S::HTML, C2SAlpha::None);
+		}
+	};
 	return wxColour::GetAsString(mode);
+}
+wxString KxColor::ToString(C2S mode, C2SAlpha alpha) const
+{
+	switch (mode)
+	{
+		case C2S::Name:
+		{
+			return wxColour::GetAsString(wxC2S_NAME);
+		}
+		case C2S::CSS:
+		{
+			return C2SImpl::ToCSS(*this, alpha);
+		}
+		case C2S::HTML:
+		{
+			return C2SImpl::ToCSS(*this, alpha);
+		}
+		case C2S::LuaSyntax:
+		{
+			return C2SImpl::ToLua(*this, alpha);
+		}
+	};
+	return wxString();
 }
 
 KxColor& KxColor::AlphaBlend(const KxColor& source)
@@ -187,6 +316,44 @@ KxColor& KxColor::SetCOLORREF(uint32_t color)
 {
 	Set(GetRValue(color), GetGValue(color), GetBValue(color), GetAlphaCOLORREF(color));
 	return *this;
+}
+
+KxColor KxColor::GetContrastColor(const KxColor& lighterColor, const KxColor& darkerColor) const
+{
+	return GetBrightness() < 0.5 ? lighterColor : darkerColor;
+
+	// Not the best results, but I'll keep this around in case I'll need later.
+	#if 0
+	// https://stackoverflow.com/questions/7260989/how-to-pick-good-contrast-rgb-colors-programmatically/7261283#7261283
+
+	const uint8_t r = GetR();
+	const uint8_t g = GetG();
+	const uint8_t b = GetB();
+
+	const int sum = std::clamp(std::max({r, g, b}) + std::min({r, g, b}), 0, 255);
+	Set(sum - r, sum - g, sum - b, GetA());
+	#endif
+}
+KxColor KxColor::GetContrastColor(const wxWindow* window) const
+{
+	KxColor bg = window->GetBackgroundColour();
+	double bgBrightness = bg.GetBrightness();
+
+	KxColor fg = window->GetForegroundColour();
+	double fgBrightness = fg.GetBrightness();
+
+	return GetContrastColor(bgBrightness > fgBrightness ? bg : fg, bgBrightness > fgBrightness ? fg : bg);
+}
+
+double KxColor::GetRelativeLuminance() const
+{
+	// https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
+	return (SRGB_WeightR * GetR() + SRGB_WeightG * GetG() + SRGB_WeightB * GetB()) / 255.0;
+}
+double KxColor::GetBrightness() const
+{
+	// https://www.w3.org/TR/AERT/#color-contrast
+	return ((GetR() * 299 + GetG() * 587 + GetB() * 114) / 1000.0) / 255.0;
 }
 
 void KxColor::GetHSV(double& H, double& S, double& V, double* A) const

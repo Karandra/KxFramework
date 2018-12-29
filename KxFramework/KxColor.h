@@ -4,19 +4,25 @@
 class KX_API KxColor: public wxColour
 {
 	public:
-		enum class ToString
+		enum class C2S
 		{
-			Name = wxC2S_NAME,
-			CSSSyntax = wxC2S_CSS_SYNTAX,
-			HTMLSyntax = wxC2S_HTML_SYNTAX,
-			LuaSyntax = HTMLSyntax << 1,
+			Name = 0,
+			CSS,
+			HTML,
+			LuaSyntax,
+		};
+		enum class C2SAlpha
+		{
+			None = 0,
+			Auto,
+			Always,
 		};
 
 	public:
-		static const int ALPHA_OPAQUE_PERCENT = 100;
-		static const double SRGB_WeightR;
-		static const double SRGB_WeightG;
-		static const double SRGB_WeightB;
+		inline static const int ALPHA_OPAQUE_PERCENT = 100;
+		inline static const double SRGB_WeightR = 0.2126;
+		inline static const double SRGB_WeightG = 0.7152;
+		inline static const double SRGB_WeightB = 0.0722;
 
 	public:
 		static KxColor FromRGBA(uint32_t color)
@@ -31,6 +37,12 @@ class KX_API KxColor: public wxColour
 		{
 			return KxColor().SetCOLORREF(color);
 		}
+
+		// Range: [1, 21]
+		static double ContrastRatio(const KxColor& lighterColor, const KxColor& darkerColor);
+
+		// Range: [0, 1]
+		static double ColorDifference(const KxColor& c1, const KxColor& c2);
 
 	private:
 		static double HUE2RGB(double p, double q, double t);
@@ -68,16 +80,15 @@ class KX_API KxColor: public wxColour
 		KxColor(const wxColour& other);
 
 	public:
-		virtual bool IsOk() const override;
-		virtual wxString GetAsString(long mode = (long)ToString::LuaSyntax) const override;
-		wxString GetAsString(ToString mode = ToString::LuaSyntax) const
-		{
-			return GetAsString(static_cast<long>(mode));
-		}
+		bool IsOk() const override;
+		bool IsAlphaOpaque() const;
+
 		KxColor Clone() const;
+		wxString GetAsString(long mode = wxC2S_HTML_SYNTAX) const override;
+		wxString ToString(C2S mode = C2S::LuaSyntax, C2SAlpha alpha = C2SAlpha::None) const;
 		
 		KxColor& AlphaBlend(const KxColor& source);
-		KxColor& MakeMono(bool bOn = true);
+		KxColor& MakeMono(bool isOn = true);
 		KxColor& MakeGray(double weightR, double weightG, double weightB);
 		KxColor& MakeGraySRGB()
 		{
@@ -93,9 +104,9 @@ class KX_API KxColor: public wxColour
 		{
 			return Clone().AlphaBlend(source);
 		}
-		KxColor MakeMono(bool bOn = true) const
+		KxColor MakeMono(bool isOn = true) const
 		{
-			return Clone().MakeMono(bOn);
+			return Clone().MakeMono(isOn);
 		}
 		KxColor MakeGray(double weightR, double weightG, double weightB) const
 		{
@@ -125,7 +136,15 @@ class KX_API KxColor: public wxColour
 		{
 			return Clone().Negate();
 		}
-		
+		KxColor GetContrastColor(const KxColor& lighterColor, const KxColor& darkerColor) const;
+		KxColor GetContrastColor(const wxWindow* window) const;
+
+		// Range: [0, 1]
+		double GetRelativeLuminance() const;
+
+		// Range: [0, 1]
+		double GetBrightness() const;
+
 		uint8_t GetR() const
 		{
 			return Red();
