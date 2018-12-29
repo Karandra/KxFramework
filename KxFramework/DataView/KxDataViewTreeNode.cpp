@@ -35,6 +35,7 @@ class KxDataViewComparator
 				}
 				return isLess;
 			}
+			return false;
 		}
 };
 
