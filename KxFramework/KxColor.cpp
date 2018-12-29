@@ -187,7 +187,7 @@ wxString KxColor::ToString(C2S mode, C2SAlpha alpha) const
 		}
 		case C2S::HTML:
 		{
-			return C2SImpl::ToCSS(*this, alpha);
+			return C2SImpl::ToHTML(*this, alpha);
 		}
 		case C2S::LuaSyntax:
 		{
