@@ -73,7 +73,7 @@ wxSize KxDataViewToggleRenderer::GetToggleCellSize(wxWindow* window)
 {
 	if (window)
 	{
-		return GetToggleCellSizeNoMargins(window) + window->FromDIP(wxSize(1, 1));
+		return GetToggleCellSizeNoMargins(window) + window->FromDIP(wxSize(2, 2));
 	}
 	else
 	{
