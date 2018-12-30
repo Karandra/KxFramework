@@ -222,33 +222,33 @@ void KxDataViewRenderer::CallDrawCellContent(const wxRect& cellRect, KxDataViewC
 	// return hard-coded size which can be more than they need and if we
 	// trusted their GetSize() we'd draw the text out of cell bounds entirely
 
-	if (cellSize.x >= 0 && cellSize.x < cellRect.width)
+	if (cellSize.GetWidth() >= 0 && cellSize.GetWidth() < cellRect.GetWidth())
 	{
 		if (alignment & wxALIGN_CENTER_HORIZONTAL)
 		{
-			cellRectNew.x += DoCalcCenter(cellRect.width, cellSize.x);
+			cellRectNew.x += DoCalcCenter(cellRect.GetWidth(), cellSize.GetWidth());
 		}
 		else if (alignment & wxALIGN_RIGHT)
 		{
-			cellRectNew.x += cellRect.width - cellSize.x;
+			cellRectNew.x += cellRect.GetWidth() - cellSize.GetWidth();
 		}
 		// else: wxALIGN_LEFT is the default
 
-		cellRectNew.width = cellSize.x;
+		cellRectNew.SetWidth(cellSize.GetWidth());
 	}
-	if (cellSize.y >= 0 && cellSize.y < cellRect.height)
+	if (cellSize.GetHeight() >= 0 && cellSize.GetHeight() < cellRect.GetHeight())
 	{
 		if (alignment & wxALIGN_CENTER_VERTICAL)
 		{
-			cellRectNew.y += DoCalcCenter(cellRect.height, cellSize.y);
+			cellRectNew.y += DoCalcCenter(cellRect.GetHeight(), cellSize.GetHeight());
 		}
 		else if (alignment & wxALIGN_BOTTOM)
 		{
-			cellRectNew.y += cellRect.height - cellSize.y;
+			cellRectNew.y += cellRect.GetHeight() - cellSize.GetHeight();
 		}
 		// else: wxALIGN_TOP is the default
 
-		cellRectNew.height = cellSize.y;
+		cellRectNew.SetHeight(cellSize.y);
 	}
 	DrawCellContent(cellRectNew, cellState);
 }
@@ -275,14 +275,16 @@ wxSize KxDataViewRenderer::GetCellSize() const
 	return wxSize(KxDVC_DEFAULT_WIDTH / 2, GetMainWindow()->GetUniformRowHeight());
 }
 
-int KxDataViewRenderer::DoCalcCenter(int pos, int size) const
+int KxDataViewRenderer::DoCalcCenter(int cellSize, int itemSize) const
 {
-	double offset = ((double)pos - (double)size) / 2.0;
-	if (offset > 0.0 && offset < 1.0)
+	const int margins = cellSize - itemSize;
+
+	// Can't offset by fractional values, so return 1.
+	if (margins > 0 && margins <= 3)
 	{
-		return 1.0;
+		return 1;
 	}
-	return offset;
+	return margins / 2;
 }
 int KxDataViewRenderer::DoFindFirstNewLinePos(const wxString& string) const
 {
