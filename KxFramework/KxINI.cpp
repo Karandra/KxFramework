@@ -7,9 +7,22 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxStdAfx.h"
 #include "KxFramework/KxINI.h"
 
-bool KxINI::Load(const char* iniText, size_t length)
+wxString KxINI::GetLibraryName()
+{
+	return wxS("SimpleINI");
+}
+wxString KxINI::GetLibraryVersion()
+{
+	return wxS("4.17");
+}
+
+void KxINI::Init()
 {
 	m_Document.SetSpaces(false);
+	//m_Document.SetAllowEmptyValues(false); // This was removed from SimpleINI at some point
+}
+bool KxINI::Load(const char* iniText, size_t length)
+{
 	return m_Document.LoadData(iniText, length) == SimpleINI::SI_OK;
 }
 void KxINI::UnLoad()
@@ -54,16 +67,19 @@ bool KxINI::IniSetValue(const wxString& sectionName, const wxString& keyName, co
 }
 
 KxINI::KxINI(const wxString& iniText)
-	:m_Document(true, false, false, true)
+	:m_Document(true, false, false)
 {
+	Init();
+
 	if (!iniText.IsEmpty())
 	{
 		Load(iniText);
 	}
 }
 KxINI::KxINI(wxInputStream& stream)
-	:m_Document(true, false, false, true)
+	:m_Document(true, false, false)
 {
+	Init();
 	Load(stream);
 }
 KxINI::~KxINI()
@@ -119,7 +135,7 @@ KxStringVector KxINI::GetSectionNames() const
 	list.reserve(sections.size());
 	for (TDocument::TNamesDepend::const_iterator it = sections.begin(); it != sections.end(); ++it)
 	{
-		list.push_back(ToWxString(it->item));
+		list.push_back(ToWxString(it->pItem));
 	}
 	return list;
 }
@@ -136,7 +152,7 @@ KxStringVector KxINI::GetKeyNames(const wxString& sectionName) const
 
 		for (TDocument::TNamesDepend::const_iterator it = keys.begin(); it != keys.end(); ++it)
 		{
-			list.push_back(ToWxString(it->item));
+			list.push_back(ToWxString(it->pItem));
 		}
 	}
 	return list;

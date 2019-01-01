@@ -18,6 +18,10 @@ namespace SimpleINI
 
 class KX_API KxINI: private KxXDocumentNode<KxINI>
 {
+	public:
+		static wxString GetLibraryName();
+		static wxString GetLibraryVersion();
+
 	private:
 		using TDocument = SimpleINI::CSimpleIniA;
 
@@ -34,7 +38,8 @@ class KX_API KxINI: private KxXDocumentNode<KxINI>
 	private:
 		SimpleINI::CSimpleIniA m_Document;
 
-	protected:
+	private:
+		void Init();
 		bool Load(const char* xmlText, size_t length);
 		void UnLoad();
 
