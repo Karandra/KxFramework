@@ -249,6 +249,10 @@ class KX_API KxXMLDocument: public KxXMLNode
 {
 	friend class KxXMLNode;
 
+	public:
+		static wxString GetLibraryName();
+		static wxString GetLibraryVersion();
+
 	private:
 		tinyxml2::XMLDocument m_Document;
 		wxString m_XPathDelimiter;

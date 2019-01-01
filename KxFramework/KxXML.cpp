@@ -7,6 +7,15 @@ namespace
 	const wxChar DefaultDeclaredEncoding[] = wxS("utf-8");
 }
 
+wxString KxXMLDocument::GetLibraryName()
+{
+	return wxS("TinyXML2");
+}
+wxString KxXMLDocument::GetLibraryVersion()
+{
+	return KxString::Format(wxS("%1.%2.%3"), TIXML2_MAJOR_VERSION, TIXML2_MINOR_VERSION, TIXML2_PATCH_VERSION);
+}
+
 int KxXMLDocument::ExtractIndexFromName(wxString& elementName) const
 {
 	return KxXDocumentNode::ExtractIndexFromName(elementName, m_XPathDelimiter);
