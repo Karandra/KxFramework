@@ -25,7 +25,7 @@ bool KxStyledTextBox::Create(wxWindow* parent,
 		SetBufferedDraw(true);
 		SetTabWidth(8);
 		SetEOLMode(wxSTC_EOL_CRLF);
-		SetTechnology(wxSTC_TECHNOLOGY_DIRECTWRITE);
+		SetTechnology(wxSTC_TECHNOLOGY_DEFAULT);
 		SetIndentationGuides(4);
 		SetMarginType(wxSTC_MARGIN_NUMBER, wxSTC_MARGIN_NUMBER);
 		SetMarginWidth(wxSTC_MARGIN_NUMBER, TextWidth(style, "99999"));
