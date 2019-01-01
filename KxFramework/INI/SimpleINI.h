@@ -20,7 +20,7 @@
     @section features FEATURES
 
     - MIT Licence allows free use in all software (including GPL and commercial)
-    - multi-platform (Windows 95/98/ME/NT/2K/XP/2003, Windows CE, Linux, Unix)
+    - multi-platform (Windows CE/9x/NT..10/etc, Linux, MacOSX, Unix)
     - loading and saving of INI-style configuration files
     - configuration files can have any newline format on all platforms
     - liberal acceptance of file format
@@ -299,23 +299,23 @@ public:
 
     /** key entry */
     struct Entry {
-        const SI_CHAR * item;
+        const SI_CHAR * pItem;
         const SI_CHAR * pComment;
         int             nOrder;
 
-        Entry(const SI_CHAR * a_pszItem = nullptr, int a_nOrder = 0)
-            : item(a_pszItem)
-            , pComment(nullptr)
+        Entry(const SI_CHAR * a_pszItem = NULL, int a_nOrder = 0)
+            : pItem(a_pszItem)
+            , pComment(NULL)
             , nOrder(a_nOrder)
         { }
         Entry(const SI_CHAR * a_pszItem, const SI_CHAR * a_pszComment, int a_nOrder)
-            : item(a_pszItem)
+            : pItem(a_pszItem)
             , pComment(a_pszComment)
             , nOrder(a_nOrder)
         { }
         Entry(const Entry & rhs) { operator=(rhs); }
         Entry & operator=(const Entry & rhs) {
-            item    = rhs.item;
+            pItem    = rhs.pItem;
             pComment = rhs.pComment;
             nOrder   = rhs.nOrder;
             return *this;
@@ -328,20 +328,20 @@ public:
 #endif
 
         /** Strict less ordering by name of key only */
-        struct KeyOrder : std::function<bool (Entry, Entry)> {
+        struct KeyOrder {
             bool operator()(const Entry & lhs, const Entry & rhs) const {
                 const static SI_STRLESS isLess = SI_STRLESS();
-                return isLess(lhs.item, rhs.item);
+                return isLess(lhs.pItem, rhs.pItem);
             }
         };
 
         /** Strict less ordering by order, and then name of key */
-        struct LoadOrder : std::function<bool (Entry, Entry)> {
+        struct LoadOrder {
             bool operator()(const Entry & lhs, const Entry & rhs) const {
                 if (lhs.nOrder != rhs.nOrder) {
                     return lhs.nOrder < rhs.nOrder;
                 }
-                return KeyOrder()(lhs.item, rhs.item);
+                return KeyOrder()(lhs.pItem, rhs.pItem);
             }
         };
     };
@@ -447,16 +447,14 @@ public:
 
     /** Default constructor.
 
-        @param a_bIsUtf8            See the method SetUnicode() for details.
-        @param a_bMultiKey          See the method SetMultiKey() for details.
-        @param a_bMultiLine         See the method SetMultiLine() for details.
-        @param a_bAllowEmptyValues  See the method SetAllowEmptyValues() for details.
+        @param a_bIsUtf8     See the method SetUnicode() for details.
+        @param a_bMultiKey   See the method SetMultiKey() for details.
+        @param a_bMultiLine  See the method SetMultiLine() for details.
      */
     CSimpleIniTempl(
-        bool a_bIsUtf8           = false,
-        bool a_bMultiKey         = false,
-        bool a_bMultiLine        = false,
-        bool a_bAllowEmptyValues = false
+        bool a_bIsUtf8    = false,
+        bool a_bMultiKey  = false,
+        bool a_bMultiLine = false
         );
 
     /** Destructor */
@@ -518,32 +516,18 @@ public:
     bool IsMultiKey() const { return m_bAllowMultiKey; }
 
     /** Should data values be permitted to span multiple lines in the file. If
-    set to false then the multi-line construct <<<TAG as a value will be
-    returned as is instead of loading the data. This value may be changed
-    at any time.
+        set to false then the multi-line construct <<<TAG as a value will be
+        returned as is instead of loading the data. This value may be changed
+        at any time.
 
-    \param a_bAllowMultiLine     Allow multi-line values in the source?
-    */
+        \param a_bAllowMultiLine     Allow multi-line values in the source?
+     */
     void SetMultiLine(bool a_bAllowMultiLine = true) {
         m_bAllowMultiLine = a_bAllowMultiLine;
     }
 
     /** Query the status of multi-line data */
     bool IsMultiLine() const { return m_bAllowMultiLine; }
-
-    /** Should data values be permitted to span multiple lines in the file. If
-    set to false then the multi-line construct <<<TAG as a value will be
-    returned as is instead of loading the data. This value may be changed
-    at any time.
-
-    \param a_bAllowEmptyValues  Allow keys with no value
-    */
-    void SetAllowEmptyValues(bool a_bAllowEmptyValues = true) {
-        m_bAllowEmptyValues = a_bAllowEmptyValues;
-    }
-
-    /** Query whether empty keys are allowed */
-    bool AllowingEmpty() const { return m_bAllowEmptyValues; }
 
     /** Should spaces be added around the equals sign when writing key/value
         pairs out. When true, the result will be "key = value". When false, 
@@ -881,8 +865,8 @@ public:
     const SI_CHAR * GetValue(
         const SI_CHAR * a_pSection,
         const SI_CHAR * a_pKey,
-        const SI_CHAR * a_pDefault     = nullptr,
-        bool *          a_pHasMultiple = nullptr
+        const SI_CHAR * a_pDefault     = NULL,
+        bool *          a_pHasMultiple = NULL
         ) const;
 
     /** Retrieve a numeric value for a specific key. If multiple keys are enabled
@@ -902,7 +886,7 @@ public:
         const SI_CHAR * a_pSection,
         const SI_CHAR * a_pKey,
         long            a_nDefault     = 0,
-        bool *          a_pHasMultiple = nullptr
+        bool *          a_pHasMultiple = NULL
         ) const;
 
     /** Retrieve a numeric value for a specific key. If multiple keys are enabled
@@ -922,7 +906,7 @@ public:
         const SI_CHAR * a_pSection,
         const SI_CHAR * a_pKey,
         double          a_nDefault     = 0,
-        bool *          a_pHasMultiple = nullptr
+        bool *          a_pHasMultiple = NULL
         ) const;
 
     /** Retrieve a boolean value for a specific key. If multiple keys are enabled
@@ -947,19 +931,19 @@ public:
         const SI_CHAR * a_pSection,
         const SI_CHAR * a_pKey,
         bool            a_bDefault     = false,
-        bool *          a_pHasMultiple = nullptr
+        bool *          a_pHasMultiple = NULL
         ) const;
 
     /** Add or update a section or value. This will always insert
         when multiple keys are enabled.
 
         @param a_pSection   Section to add or update
-        @param a_pKey       Key to add or update. Set to nullptr to
+        @param a_pKey       Key to add or update. Set to NULL to
                             create an empty section.
-        @param a_pValue     Value to set. Set to nullptr to create an
+        @param a_pValue     Value to set. Set to NULL to create an
                             empty section.
         @param a_pComment   Comment to be associated with the section or the
-                            key. If a_pKey is nullptr then it will be associated
+                            key. If a_pKey is NULL then it will be associated
                             with the section, otherwise the key. Note that a
                             comment may be set ONLY when the section or key is
                             first created (i.e. when this function returns the
@@ -983,7 +967,7 @@ public:
         const SI_CHAR * a_pSection,
         const SI_CHAR * a_pKey,
         const SI_CHAR * a_pValue,
-        const SI_CHAR * a_pComment      = nullptr,
+        const SI_CHAR * a_pComment      = NULL,
         bool            a_bForceReplace = false
         )
     {
@@ -1017,7 +1001,7 @@ public:
         const SI_CHAR * a_pSection,
         const SI_CHAR * a_pKey,
         long            a_nValue,
-        const SI_CHAR * a_pComment      = nullptr,
+        const SI_CHAR * a_pComment      = NULL,
         bool            a_bUseHex       = false,
         bool            a_bForceReplace = false
         );
@@ -1046,7 +1030,7 @@ public:
         const SI_CHAR * a_pSection,
         const SI_CHAR * a_pKey,
         double          a_nValue,
-        const SI_CHAR * a_pComment      = nullptr,
+        const SI_CHAR * a_pComment      = NULL,
         bool            a_bForceReplace = false
         );
 
@@ -1074,7 +1058,7 @@ public:
         const SI_CHAR * a_pSection,
         const SI_CHAR * a_pKey,
         bool            a_bValue,
-        const SI_CHAR * a_pComment      = nullptr,
+        const SI_CHAR * a_pComment      = NULL,
         bool            a_bForceReplace = false
         );
 
@@ -1086,9 +1070,9 @@ public:
         DeleteValue.
 
         @param a_pSection       Section to delete key from, or if
-                                a_pKey is nullptr, the section to remove.
+                                a_pKey is NULL, the section to remove.
         @param a_pKey           Key to remove from the section. Set to
-                                nullptr to remove the entire section.
+                                NULL to remove the entire section.
         @param a_bRemoveEmpty   If the section is empty after this key has
                                 been deleted, should the empty section be
                                 removed?
@@ -1110,11 +1094,11 @@ public:
         be deleted.
 
         @param a_pSection       Section to delete key from, or if
-                                a_pKey is nullptr, the section to remove.
+                                a_pKey is NULL, the section to remove.
         @param a_pKey           Key to remove from the section. Set to
-                                nullptr to remove the entire section.
+                                NULL to remove the entire section.
         @param a_pValue         Value of key to remove from the section.
-                                Set to nullptr to remove all keys.
+                                Set to NULL to remove all keys.
         @param a_bRemoveEmpty   If the section is empty after this key has
                                 been deleted, should the empty section be
                                 removed?
@@ -1158,7 +1142,7 @@ private:
         );
 
     /** Parse the data looking for the next valid entry. The memory pointed to
-        by a_pData is modified by inserting nullptr characters. The pointer is
+        by a_pData is modified by inserting NULL characters. The pointer is
         updated to the current location in the block of text.
     */
     bool FindEntry(
@@ -1173,12 +1157,12 @@ private:
 
         @param a_pSection   Section name. Sections will be created if they
                             don't already exist.
-        @param a_pKey       Key name. May be nullptr to create an empty section.
+        @param a_pKey       Key name. May be NULL to create an empty section.
                             Existing entries will be updated. New entries will
                             be created.
         @param a_pValue     Value for the key.
         @param a_pComment   Comment to be associated with the section or the
-                            key. If a_pKey is nullptr then it will be associated
+                            key. If a_pKey is NULL then it will be associated
                             with the section, otherwise the key. This must be
                             a string in full comment form already (have a
                             comment character starting every line).
@@ -1246,7 +1230,7 @@ private:
 
 private:
     /** Copy of the INI file data in our character format. This will be
-        modified when parsed to have nullptr characters added after all
+        modified when parsed to have NULL characters added after all
         interesting string entries. All of the string pointers to sections,
         keys and values point into this block of memory.
      */
@@ -1279,9 +1263,6 @@ private:
     /** Are data values permitted to span multiple lines? */
     bool m_bAllowMultiLine;
 
-    /** Are keys permitted to have no value? */
-    bool m_bAllowEmptyValues;
-
     /** Should spaces be written out surrounding the equals sign? */
     bool m_bSpaces;
     
@@ -1299,16 +1280,14 @@ template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::CSimpleIniTempl(
     bool a_bIsUtf8,
     bool a_bAllowMultiKey,
-    bool a_bAllowMultiLine,
-    bool a_bAllowEmptyValues
+    bool a_bAllowMultiLine
     )
   : m_pData(0)
   , m_uDataLen(0)
-  , m_pFileComment(nullptr)
+  , m_pFileComment(NULL)
   , m_bStoreIsUtf8(a_bIsUtf8)
   , m_bAllowMultiKey(a_bAllowMultiKey)
   , m_bAllowMultiLine(a_bAllowMultiLine)
-  , m_bAllowEmptyValues(a_bAllowEmptyValues)
   , m_bSpaces(true)
   , m_nOrder(0)
 { }
@@ -1325,9 +1304,9 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Reset()
 {
     // remove all data
     delete[] m_pData;
-    m_pData = nullptr;
+    m_pData = NULL;
     m_uDataLen = 0;
-    m_pFileComment = nullptr;
+    m_pFileComment = NULL;
     if (!m_data.empty()) {
         m_data.erase(m_data.begin(), m_data.end());
     }
@@ -1336,7 +1315,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Reset()
     if (!m_strings.empty()) {
         typename TNamesDepend::iterator i = m_strings.begin();
         for (; i != m_strings.end(); ++i) {
-            delete[] const_cast<SI_CHAR*>(i->item);
+            delete[] const_cast<SI_CHAR*>(i->pItem);
         }
         m_strings.erase(m_strings.begin(), m_strings.end());
     }
@@ -1348,7 +1327,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
     const char * a_pszFile
     )
 {
-    FILE * fp = nullptr;
+    FILE * fp = NULL;
 #if __STDC_WANT_SECURE_LIB__ && !_WIN32_WCE
     fopen_s(&fp, a_pszFile, "rb");
 #else // !__STDC_WANT_SECURE_LIB__
@@ -1370,7 +1349,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
     )
 {
 #ifdef _WIN32
-    FILE * fp = nullptr;
+    FILE * fp = NULL;
 #if __STDC_WANT_SECURE_LIB__ && !_WIN32_WCE
     _wfopen_s(&fp, a_pwszFile, L"rb");
 #else // !__STDC_WANT_SECURE_LIB__
@@ -1407,24 +1386,24 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
         return SI_OK;
     }
     
-    // allocate and ensure nullptr terminated
-    char * data = new(std::nothrow) char[lSize+1];
-    if (!data) {
+    // allocate and ensure NULL terminated
+    char * pData = new(std::nothrow) char[lSize+1];
+    if (!pData) {
         return SI_NOMEM;
     }
-    data[lSize] = 0;
+    pData[lSize] = 0;
     
     // load data into buffer
     fseek(a_fpFile, 0, SEEK_SET);
-    size_t uRead = fread(data, sizeof(char), lSize, a_fpFile);
+    size_t uRead = fread(pData, sizeof(char), lSize, a_fpFile);
     if (uRead != (size_t) lSize) {
-        delete[] data;
+        delete[] pData;
         return SI_FILE;
     }
 
     // convert the raw data to unicode
-    SI_Error rc = LoadData(data, uRead);
-    delete[] data;
+    SI_Error rc = LoadData(pData, uRead);
+    delete[] pData;
     return rc;
 }
 
@@ -1435,14 +1414,18 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadData(
     size_t          a_uDataLen
     )
 {
-    SI_CONVERTER converter(m_bStoreIsUtf8);
-
-    // consume the UTF-8 BOM if it exists
-    if (m_bStoreIsUtf8 && a_uDataLen >= 3) {
-        if (memcmp(a_pData, SI_UTF8_SIGNATURE, 3) == 0) {
-            a_pData    += 3;
-            a_uDataLen -= 3;
-        }
+    if (!a_pData) {
+        return SI_OK;
+    }
+    
+    // if the UTF-8 BOM exists, consume it and set mode to unicode, if we have
+    // already loaded data and try to change mode half-way through then this will
+    // be ignored and we will assert in debug versions
+    if (a_uDataLen >= 3 && memcmp(a_pData, SI_UTF8_SIGNATURE, 3) == 0) {
+        a_pData    += 3;
+        a_uDataLen -= 3;
+        SI_ASSERT(m_bStoreIsUtf8 || !m_pData); // we don't expect mixed mode data
+        SetUnicode();
     }
 
     if (a_uDataLen == 0) {
@@ -1450,36 +1433,37 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadData(
     }
 
     // determine the length of the converted data
+    SI_CONVERTER converter(m_bStoreIsUtf8);
     size_t uLen = converter.SizeFromStore(a_pData, a_uDataLen);
     if (uLen == (size_t)(-1)) {
         return SI_FAIL;
     }
 
-    // allocate memory for the data, ensure that there is a nullptr
+    // allocate memory for the data, ensure that there is a NULL
     // terminator wherever the converted data ends
-    SI_CHAR * data = new(std::nothrow) SI_CHAR[uLen+1];
-    if (!data) {
+    SI_CHAR * pData = new(std::nothrow) SI_CHAR[uLen+1];
+    if (!pData) {
         return SI_NOMEM;
     }
-    memset(data, 0, sizeof(SI_CHAR)*(uLen+1));
+    memset(pData, 0, sizeof(SI_CHAR)*(uLen+1));
 
     // convert the data
-    if (!converter.ConvertFromStore(a_pData, a_uDataLen, data, uLen)) {
-        delete[] data;
+    if (!converter.ConvertFromStore(a_pData, a_uDataLen, pData, uLen)) {
+        delete[] pData;
         return SI_FAIL;
     }
 
     // parse it
     const static SI_CHAR empty = 0;
-    SI_CHAR * pWork = data;
+    SI_CHAR * pWork = pData;
     const SI_CHAR * pSection = &empty;
-    const SI_CHAR * item = nullptr;
-    const SI_CHAR * pVal = nullptr;
-    const SI_CHAR * pComment = nullptr;
+    const SI_CHAR * pItem = NULL;
+    const SI_CHAR * pVal = NULL;
+    const SI_CHAR * pComment = NULL;
 
     // We copy the strings if we are loading data into this class when we
     // already have stored some.
-    bool bCopyStrings = (m_pData != nullptr);
+    bool bCopyStrings = (m_pData != NULL);
 
     // find a file comment if it exists, this is a comment that starts at the
     // beginning of the file and continues until the first blank line.
@@ -1487,17 +1471,17 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadData(
     if (rc < 0) return rc;
 
     // add every entry in the file to the data table
-    while (FindEntry(pWork, pSection, item, pVal, pComment)) {
-        rc = AddEntry(pSection, item, pVal, pComment, false, bCopyStrings);
+    while (FindEntry(pWork, pSection, pItem, pVal, pComment)) {
+        rc = AddEntry(pSection, pItem, pVal, pComment, false, bCopyStrings);
         if (rc < 0) return rc;
     }
 
     // store these strings if we didn't copy them
     if (bCopyStrings) {
-        delete[] data;
+        delete[] pData;
     }
     else {
-        m_pData = data;
+        m_pData = pData;
         m_uDataLen = uLen+1;
     }
 
@@ -1536,7 +1520,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::FindFileComment(
 
     // Load the file comment as multi-line text, this will modify all of
     // the newline characters to be single \n chars
-    if (!LoadMultiLineText(a_pData, m_pFileComment, nullptr, false)) {
+    if (!LoadMultiLineText(a_pData, m_pFileComment, NULL, false)) {
         return SI_OK;
     }
 
@@ -1559,12 +1543,10 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::FindEntry(
     const SI_CHAR *&  a_pComment
     ) const
 {
-    a_pComment = nullptr;
+    a_pComment = NULL;
 
-    SI_CHAR * pTrail = nullptr;
-    bool bEmptyValue = false;
+    SI_CHAR * pTrail = NULL;
     while (*a_pData) {
-
         // skip spaces and empty lines
         while (*a_pData && IsSpace(*a_pData)) {
             ++a_pData;
@@ -1576,7 +1558,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::FindEntry(
         // skip processing of comment lines but keep a pointer to
         // the start of the comment.
         if (IsComment(*a_pData)) {
-            LoadMultiLineText(a_pData, a_pComment, nullptr, true);
+            LoadMultiLineText(a_pData, a_pComment, NULL, true);
             continue;
         }
 
@@ -1614,8 +1596,8 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::FindEntry(
                 ++a_pData;
             }
 
-            a_pKey = nullptr;
-            a_pVal = nullptr;
+            a_pKey = NULL;
+            a_pVal = NULL;
             return true;
         }
 
@@ -1626,9 +1608,8 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::FindEntry(
             ++a_pData;
         }
 
-        bEmptyValue = (*a_pData != '=');
-
-        if (bEmptyValue && !m_bAllowEmptyValues) {
+        // if it's an invalid line, just skip it
+        if (*a_pData != '=') {
             continue;
         }
 
@@ -1645,40 +1626,31 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::FindEntry(
         while (pTrail >= a_pKey && IsSpace(*pTrail)) {
             --pTrail;
         }
-		++pTrail;
+        ++pTrail;
+        *pTrail = 0;
 
-		if (!bEmptyValue) {
-			*pTrail = 0;
-
-            // skip leading whitespace on the value
-            ++a_pData;  // safe as checked that it == '=' above
-            while (*a_pData && !IsNewLineChar(*a_pData) && IsSpace(*a_pData)) {
-                ++a_pData;
-            }
-
-            // find the end of the value which is the end of this line
-            a_pVal = a_pData;
-            while (*a_pData && !IsNewLineChar(*a_pData)) {
-                ++a_pData;
-            }
-
-            // remove trailing spaces from the value
-            pTrail = a_pData - 1;
-            if (*a_pData) { // prepare for the next round
-                SkipNewLine(a_pData);
-            }
-            while (pTrail >= a_pVal && IsSpace(*pTrail)) {
-                --pTrail;
-            }
-            ++pTrail;
-            *pTrail = 0;
-        } else {
-			if (*a_pData) { // prepare for the next round
-				SkipNewLine(a_pData);
-			}
-			a_pVal = pTrail;
-			*pTrail = 0;
+        // skip leading whitespace on the value
+        ++a_pData;  // safe as checked that it == '=' above
+        while (*a_pData && !IsNewLineChar(*a_pData) && IsSpace(*a_pData)) {
+            ++a_pData;
         }
+
+        // find the end of the value which is the end of this line
+        a_pVal = a_pData;
+        while (*a_pData && !IsNewLineChar(*a_pData)) {
+            ++a_pData;
+        }
+
+        // remove trailing spaces from the value
+        pTrail = a_pData - 1;
+        if (*a_pData) { // prepare for the next round
+            SkipNewLine(a_pData);
+        }
+        while (pTrail >= a_pVal && IsSpace(*pTrail)) {
+            --pTrail;
+        }
+        ++pTrail;
+        *pTrail = 0;
 
         // check for multi-line entries
         if (m_bAllowMultiLine && IsMultiLineTag(a_pVal)) {
@@ -1827,7 +1799,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadMultiLineText(
             pDataLine[nLen] = '\0';
         }
 
-        // end the line with a nullptr
+        // end the line with a NULL
         cEndOfLineChar = *a_pData;
         *a_pData = 0;
 
@@ -1856,7 +1828,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadMultiLineText(
 
     // if we didn't find a comment at all then return false
     if (a_pVal == a_pData) {
-        a_pVal = nullptr;
+        a_pVal = NULL;
         return false;
     }
 
@@ -1893,7 +1865,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::CopyString(
     else {
         for ( ; a_pString[uLen]; ++uLen) /*loop*/ ;
     }
-    ++uLen; // nullptr character
+    ++uLen; // NULL character
     SI_CHAR * pCopy = new(std::nothrow) SI_CHAR[uLen];
     if (!pCopy) {
         return SI_NOMEM;
@@ -1950,7 +1922,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::AddEntry(
         bInserted = true;
     }
     if (!a_pKey || !a_pValue) {
-        // section only entries are specified with item and pVal as nullptr
+        // section only entries are specified with pItem and pVal as NULL
         return bInserted ? SI_INSERTED : SI_UPDATED;
     }
 
@@ -1962,8 +1934,8 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::AddEntry(
     // comment of the first entry
     int nLoadOrder = ++m_nOrder;
     if (iKey != keyval.end() && m_bAllowMultiKey && a_bForceReplace) {
-        const SI_CHAR * pComment = nullptr;
-        while (iKey != keyval.end() && !IsLess(a_pKey, iKey->first.item)) {
+        const SI_CHAR * pComment = NULL;
+        while (iKey != keyval.end() && !IsLess(a_pKey, iKey->first.pItem)) {
             if (iKey->first.nOrder < nLoadOrder) {
                 nLoadOrder = iKey->first.nOrder;
                 pComment   = iKey->first.pComment;
@@ -2001,7 +1973,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::AddEntry(
         if (a_pComment) {
             oKey.pComment = a_pComment;
         }
-        typename TKeyVal::value_type oEntry(oKey, static_cast<const SI_CHAR *>(nullptr));
+        typename TKeyVal::value_type oEntry(oKey, static_cast<const SI_CHAR *>(NULL));
         iKey = keyval.insert(oEntry);
         bInserted = true;
     }
@@ -2037,7 +2009,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::GetValue(
     if (m_bAllowMultiKey && a_pHasMultiple) {
         typename TKeyVal::const_iterator iTemp = iKeyVal;
         if (++iTemp != iSection->second.end()) {
-            if (!IsLess(a_pKey, iTemp->first.item)) {
+            if (!IsLess(a_pKey, iTemp->first.pItem)) {
                 *a_pHasMultiple = true;
             }
         }
@@ -2056,7 +2028,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::GetLongValue(
     ) const
 {
     // return the default if we don't have a value
-    const SI_CHAR * pszValue = GetValue(a_pSection, a_pKey, nullptr, a_pHasMultiple);
+    const SI_CHAR * pszValue = GetValue(a_pSection, a_pKey, NULL, a_pHasMultiple);
     if (!pszValue || !*pszValue) return a_nDefault;
 
     // convert to UTF-8/MBCS which for a numeric value will be the same as ASCII
@@ -2067,14 +2039,14 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::GetLongValue(
     }
 
     // handle the value as hex if prefaced with "0x"
-    long value = a_nDefault;
+    long nValue = a_nDefault;
     char * pszSuffix = szValue;
     if (szValue[0] == '0' && (szValue[1] == 'x' || szValue[1] == 'X')) {
-       if (!szValue[2]) return a_nDefault;
-        value = strtol(&szValue[2], &pszSuffix, 16);
+    	if (!szValue[2]) return a_nDefault;
+        nValue = strtol(&szValue[2], &pszSuffix, 16);
     }
     else {
-        value = strtol(szValue, &pszSuffix, 10);
+        nValue = strtol(szValue, &pszSuffix, 10);
     }
 
     // any invalid strings will return the default value
@@ -2082,7 +2054,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::GetLongValue(
         return a_nDefault; 
     }
 
-    return value;
+    return nValue;
 }
 
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
@@ -2127,7 +2099,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::GetDoubleValue(
     ) const
 {
     // return the default if we don't have a value
-    const SI_CHAR * pszValue = GetValue(a_pSection, a_pKey, nullptr, a_pHasMultiple);
+    const SI_CHAR * pszValue = GetValue(a_pSection, a_pKey, NULL, a_pHasMultiple);
     if (!pszValue || !*pszValue) return a_nDefault;
 
     // convert to UTF-8/MBCS which for a numeric value will be the same as ASCII
@@ -2137,46 +2109,46 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::GetDoubleValue(
         return a_nDefault;
     }
 
-    char * pszSuffix = nullptr;
-    double value = strtod(szValue, &pszSuffix);
+    char * pszSuffix = NULL;
+    double nValue = strtod(szValue, &pszSuffix);
 
     // any invalid strings will return the default value
     if (!pszSuffix || *pszSuffix) { 
         return a_nDefault; 
     }
 
-    return value;
+    return nValue;
 }
 
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 SI_Error 
 CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::SetDoubleValue(
-    const SI_CHAR * a_pSection,
-    const SI_CHAR * a_pKey,
-    double          a_nValue,
-    const SI_CHAR * a_pComment,
-    bool            a_bForceReplace
-    )
+	const SI_CHAR * a_pSection,
+	const SI_CHAR * a_pKey,
+	double          a_nValue,
+	const SI_CHAR * a_pComment,
+	bool            a_bForceReplace
+	)
 {
-    // use SetValue to create sections
-    if (!a_pSection || !a_pKey) return SI_FAIL;
+	// use SetValue to create sections
+	if (!a_pSection || !a_pKey) return SI_FAIL;
 
-    // convert to an ASCII string
-    char szInput[64];
+	// convert to an ASCII string
+	char szInput[64];
 #if __STDC_WANT_SECURE_LIB__ && !_WIN32_WCE
-    sprintf_s(szInput, "%f", a_nValue);
+	sprintf_s(szInput, "%f", a_nValue);
 #else // !__STDC_WANT_SECURE_LIB__
-    sprintf(szInput, "%f", a_nValue);
+	sprintf(szInput, "%f", a_nValue);
 #endif // __STDC_WANT_SECURE_LIB__
 
-    // convert to output text
-    SI_CHAR szOutput[64];
-    SI_CONVERTER c(m_bStoreIsUtf8);
-    c.ConvertFromStore(szInput, strlen(szInput) + 1, 
-        szOutput, sizeof(szOutput) / sizeof(SI_CHAR));
+	// convert to output text
+	SI_CHAR szOutput[64];
+	SI_CONVERTER c(m_bStoreIsUtf8);
+	c.ConvertFromStore(szInput, strlen(szInput) + 1, 
+		szOutput, sizeof(szOutput) / sizeof(SI_CHAR));
 
-    // actually add it
-    return AddEntry(a_pSection, a_pKey, szOutput, a_pComment, a_bForceReplace, true);
+	// actually add it
+	return AddEntry(a_pSection, a_pKey, szOutput, a_pComment, a_bForceReplace, true);
 }
 
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
@@ -2189,7 +2161,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::GetBoolValue(
     ) const
 {
     // return the default if we don't have a value
-    const SI_CHAR * pszValue = GetValue(a_pSection, a_pKey, nullptr, a_pHasMultiple);
+    const SI_CHAR * pszValue = GetValue(a_pSection, a_pKey, NULL, a_pHasMultiple);
     if (!pszValue || !*pszValue) return a_bDefault;
 
     // we only look at the minimum number of characters
@@ -2266,7 +2238,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::GetAllValues(
     a_values.push_back(Entry(iKeyVal->second, iKeyVal->first.pComment, iKeyVal->first.nOrder));
     if (m_bAllowMultiKey) {
         ++iKeyVal;
-        while (iKeyVal != iSection->second.end() && !IsLess(a_pKey, iKeyVal->first.item)) {
+        while (iKeyVal != iSection->second.end() && !IsLess(a_pKey, iKeyVal->first.pItem)) {
             a_values.push_back(Entry(iKeyVal->second, iKeyVal->first.pComment, iKeyVal->first.nOrder));
             ++iKeyVal;
         }
@@ -2298,16 +2270,16 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::GetSectionSize(
     }
 
     // otherwise we need to count them
-    int count = 0;
-    const SI_CHAR * pLastKey = nullptr;
+    int nCount = 0;
+    const SI_CHAR * pLastKey = NULL;
     typename TKeyVal::const_iterator iKeyVal = section.begin();
     for (int n = 0; iKeyVal != section.end(); ++iKeyVal, ++n) {
-        if (!pLastKey || IsLess(pLastKey, iKeyVal->first.item)) {
-            ++count;
-            pLastKey = iKeyVal->first.item;
+        if (!pLastKey || IsLess(pLastKey, iKeyVal->first.pItem)) {
+            ++nCount;
+            pLastKey = iKeyVal->first.pItem;
         }
     }
-    return count;
+    return nCount;
 }
 
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
@@ -2357,12 +2329,12 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::GetAllKeys(
     }
 
     const TKeyVal & section = iSection->second;
-    const SI_CHAR * pLastKey = nullptr;
+    const SI_CHAR * pLastKey = NULL;
     typename TKeyVal::const_iterator iKeyVal = section.begin();
     for (int n = 0; iKeyVal != section.end(); ++iKeyVal, ++n ) {
-        if (!pLastKey || IsLess(pLastKey, iKeyVal->first.item)) {
+        if (!pLastKey || IsLess(pLastKey, iKeyVal->first.pItem)) {
             a_names.push_back(iKeyVal->first);
-            pLastKey = iKeyVal->first.item;
+            pLastKey = iKeyVal->first.pItem;
         }
     }
 
@@ -2376,7 +2348,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::SaveFile(
     bool            a_bAddSignature
     ) const
 {
-    FILE * fp = nullptr;
+    FILE * fp = NULL;
 #if __STDC_WANT_SECURE_LIB__ && !_WIN32_WCE
     fopen_s(&fp, a_pszFile, "wb");
 #else // !__STDC_WANT_SECURE_LIB__
@@ -2397,7 +2369,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::SaveFile(
     ) const
 {
 #ifdef _WIN32
-    FILE * fp = nullptr;
+    FILE * fp = NULL;
 #if __STDC_WANT_SECURE_LIB__ && !_WIN32_WCE
     _wfopen_s(&fp, a_pwszFile, L"wb");
 #else // !__STDC_WANT_SECURE_LIB__
@@ -2457,7 +2429,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
         if (!OutputMultiLineText(a_oOutput, convert, m_pFileComment)) {
             return SI_FAIL;
         }
-        //bNeedNewLine = true;
+        bNeedNewLine = true;
     }
 
     // iterate through our sections and output the data
@@ -2467,7 +2439,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
         if (iSection->pComment) {
             if (bNeedNewLine) {
                 a_oOutput.Write(SI_NEWLINE_A);
-                //a_oOutput.Write(SI_NEWLINE_A);
+                a_oOutput.Write(SI_NEWLINE_A);
             }
             if (!OutputMultiLineText(a_oOutput, convert, iSection->pComment)) {
                 return SI_FAIL;
@@ -2477,13 +2449,13 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
 
         if (bNeedNewLine) {
             a_oOutput.Write(SI_NEWLINE_A);
-            //a_oOutput.Write(SI_NEWLINE_A);
+            a_oOutput.Write(SI_NEWLINE_A);
             bNeedNewLine = false;
         }
 
         // write the section (unless there is no section name)
-        if (*iSection->item) {
-            if (!convert.ConvertToStore(iSection->item)) {
+        if (*iSection->pItem) {
+            if (!convert.ConvertToStore(iSection->pItem)) {
                 return SI_FAIL;
             }
             a_oOutput.Write("[");
@@ -2494,7 +2466,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
 
         // get all of the keys sorted in load order
         TNamesDepend oKeys;
-        GetAllKeys(iSection->item, oKeys);
+        GetAllKeys(iSection->pItem, oKeys);
 #if defined(_MSC_VER) && _MSC_VER <= 1200
         oKeys.sort();
 #elif defined(__BORLANDC__)
@@ -2508,34 +2480,34 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
         for ( ; iKey != oKeys.end(); ++iKey) {
             // get all values for this key
             TNamesDepend oValues;
-            GetAllValues(iSection->item, iKey->item, oValues);
+            GetAllValues(iSection->pItem, iKey->pItem, oValues);
 
             typename TNamesDepend::const_iterator iValue = oValues.begin();
             for ( ; iValue != oValues.end(); ++iValue) {
                 // write out the comment if there is one
                 if (iValue->pComment) {
-                    //a_oOutput.Write(SI_NEWLINE_A); // Diable new line before comment
+                    a_oOutput.Write(SI_NEWLINE_A);
                     if (!OutputMultiLineText(a_oOutput, convert, iValue->pComment)) {
                         return SI_FAIL;
                     }
                 }
 
                 // write the key
-                if (!convert.ConvertToStore(iKey->item)) {
+                if (!convert.ConvertToStore(iKey->pItem)) {
                     return SI_FAIL;
                 }
                 a_oOutput.Write(convert.Data());
 
                 // write the value
-                if (!convert.ConvertToStore(iValue->item)) {
+                if (!convert.ConvertToStore(iValue->pItem)) {
                     return SI_FAIL;
                 }
                 a_oOutput.Write(m_bSpaces ? " = " : "=");
-                if (m_bAllowMultiLine && IsMultiLineData(iValue->item)) {
+                if (m_bAllowMultiLine && IsMultiLineData(iValue->pItem)) {
                     // multi-line data needs to be processed specially to ensure
                     // that we use the correct newline format for the current system
                     a_oOutput.Write("<<<END_OF_TEXT" SI_NEWLINE_A);
-                    if (!OutputMultiLineText(a_oOutput, convert, iValue->item)) {
+                    if (!OutputMultiLineText(a_oOutput, convert, iValue->pItem)) {
                         return SI_FAIL;
                     }
                     a_oOutput.Write("END_OF_TEXT");
@@ -2590,7 +2562,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Delete(
     bool            a_bRemoveEmpty
     )
 {
-    return DeleteValue(a_pSection, a_pKey, nullptr, a_bRemoveEmpty);
+    return DeleteValue(a_pSection, a_pKey, NULL, a_bRemoveEmpty);
 }
 
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
@@ -2626,17 +2598,17 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::DeleteValue(
         do {
             iDelete = iKeyVal++;
 
-            if(a_pValue == nullptr ||
+            if(a_pValue == NULL ||
             (isLess(a_pValue, iDelete->second) == false &&
             isLess(iDelete->second, a_pValue) == false)) {
-                DeleteString(iDelete->first.item);
+                DeleteString(iDelete->first.pItem);
                 DeleteString(iDelete->second);
                 iSection->second.erase(iDelete);
                 bDeleted = true;
             }
         }
         while (iKeyVal != iSection->second.end()
-            && !IsLess(a_pKey, iKeyVal->first.item));
+            && !IsLess(a_pKey, iKeyVal->first.pItem));
 
         if(!bDeleted) {
             return false;
@@ -2654,13 +2626,13 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::DeleteValue(
         // entries will be removed when the section is removed.
         typename TKeyVal::iterator iKeyVal = iSection->second.begin();
         for ( ; iKeyVal != iSection->second.end(); ++iKeyVal) {
-            DeleteString(iKeyVal->first.item);
+            DeleteString(iKeyVal->first.pItem);
             DeleteString(iKeyVal->second);
         }
     }
 
     // delete the section itself
-    DeleteString(iSection->first.item);
+    DeleteString(iSection->first.pItem);
     m_data.erase(iSection);
 
     return true;
@@ -2678,8 +2650,8 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::DeleteString(
     if (a_pString < m_pData || a_pString >= m_pData + m_uDataLen) {
         typename TNamesDepend::iterator i = m_strings.begin();
         for (;i != m_strings.end(); ++i) {
-            if (a_pString == i->item) {
-                delete[] const_cast<SI_CHAR*>(i->item);
+            if (a_pString == i->pItem) {
+                delete[] const_cast<SI_CHAR*>(i->pItem);
                 m_strings.erase(i);
                 break;
             }
@@ -2775,11 +2747,11 @@ public:
      * @param a_pInputData  Data in storage format to be converted to SI_CHAR.
      * @param a_uInputDataLen Length of storage format data in bytes. This
      *                      must be the actual length of the data, including
-     *                      nullptr byte if nullptr terminated string is required.
+     *                      NULL byte if NULL terminated string is required.
      * @return              Number of SI_CHAR required by the string when
-     *                      converted. If there are embedded nullptr bytes in the
+     *                      converted. If there are embedded NULL bytes in the
      *                      input data, only the string up and not including
-     *                      the nullptr byte will be converted.
+     *                      the NULL byte will be converted.
      * @return              -1 cast to size_t on a conversion error.
      */
     size_t SizeFromStore(
@@ -2799,7 +2771,7 @@ public:
      * @param a_pInputData  Data in storage format to be converted to SI_CHAR.
      * @param a_uInputDataLen Length of storage format data in bytes. This
      *                      must be the actual length of the data, including
-     *                      nullptr byte if nullptr terminated string is required.
+     *                      NULL byte if NULL terminated string is required.
      * @param a_pOutputData Pointer to the output buffer to received the
      *                      converted data.
      * @param a_uOutputDataSize Size of the output buffer in SI_CHAR.
@@ -2823,11 +2795,11 @@ public:
     /** Calculate the number of char required by the storage format of this
      * data. The storage format is always UTF-8 or MBCS.
      *
-     * @param a_pInputData  nullptr terminated string to calculate the number of
+     * @param a_pInputData  NULL terminated string to calculate the number of
      *                      bytes required to be converted to storage format.
      * @return              Number of bytes required by the string when
      *                      converted to storage format. This size always
-     *                      includes space for the terminating nullptr character.
+     *                      includes space for the terminating NULL character.
      * @return              -1 cast to size_t on a conversion error.
      */
     size_t SizeToStore(
@@ -2840,14 +2812,14 @@ public:
     /** Convert the input string to the storage format of this data.
      * The storage format is always UTF-8 or MBCS.
      *
-     * @param a_pInputData  nullptr terminated source string to convert. All of
+     * @param a_pInputData  NULL terminated source string to convert. All of
      *                      the data will be converted including the
-     *                      terminating nullptr character.
+     *                      terminating NULL character.
      * @param a_pOutputData Pointer to the buffer to receive the converted
      *                      string.
      * @param a_uOutputDataSize Size of the output buffer in char.
      * @return              true if all of the input data, including the
-     *                      terminating nullptr character was successfully
+     *                      terminating NULL character was successfully
      *                      converted.
      */
     bool ConvertToStore(
@@ -2904,11 +2876,11 @@ public:
      * @param a_pInputData  Data in storage format to be converted to SI_CHAR.
      * @param a_uInputDataLen Length of storage format data in bytes. This
      *                      must be the actual length of the data, including
-     *                      nullptr byte if nullptr terminated string is required.
+     *                      NULL byte if NULL terminated string is required.
      * @return              Number of SI_CHAR required by the string when
-     *                      converted. If there are embedded nullptr bytes in the
+     *                      converted. If there are embedded NULL bytes in the
      *                      input data, only the string up and not including
-     *                      the nullptr byte will be converted.
+     *                      the NULL byte will be converted.
      * @return              -1 cast to size_t on a conversion error.
      */
     size_t SizeFromStore(
@@ -2925,13 +2897,13 @@ public:
         }
 
 #if defined(SI_NO_MBSTOWCS_NULL) || (!defined(_MSC_VER) && !defined(_linux))
-        // fall back processing for platforms that don't support a nullptr dest to mbstowcs
+        // fall back processing for platforms that don't support a NULL dest to mbstowcs
         // worst case scenario is 1:1, this will be a sufficient buffer size
         (void)a_pInputData;
         return a_uInputDataLen;
 #else
         // get the actual required buffer size
-        return mbstowcs(nullptr, a_pInputData, a_uInputDataLen);
+        return mbstowcs(NULL, a_pInputData, a_uInputDataLen);
 #endif
     }
 
@@ -2941,7 +2913,7 @@ public:
      * @param a_pInputData  Data in storage format to be converted to SI_CHAR.
      * @param a_uInputDataLen Length of storage format data in bytes. This
      *                       must be the actual length of the data, including
-     *                       nullptr byte if nullptr terminated string is required.
+     *                       NULL byte if NULL terminated string is required.
      * @param a_pOutputData Pointer to the output buffer to received the
      *                       converted data.
      * @param a_uOutputDataSize Size of the output buffer in SI_CHAR.
@@ -2988,11 +2960,11 @@ public:
     /** Calculate the number of char required by the storage format of this
      * data. The storage format is always UTF-8 or MBCS.
      *
-     * @param a_pInputData  nullptr terminated string to calculate the number of
+     * @param a_pInputData  NULL terminated string to calculate the number of
      *                       bytes required to be converted to storage format.
      * @return              Number of bytes required by the string when
      *                       converted to storage format. This size always
-     *                       includes space for the terminating nullptr character.
+     *                       includes space for the terminating NULL character.
      * @return              -1 cast to size_t on a conversion error.
      */
     size_t SizeToStore(
@@ -3007,25 +2979,25 @@ public:
             return (6 * uLen) + 1;
         }
         else {
-            size_t uLen = wcstombs(nullptr, a_pInputData, 0);
+            size_t uLen = wcstombs(NULL, a_pInputData, 0);
             if (uLen == (size_t)(-1)) {
                 return uLen;
             }
-            return uLen + 1; // include nullptr terminator
+            return uLen + 1; // include NULL terminator
         }
     }
 
     /** Convert the input string to the storage format of this data.
      * The storage format is always UTF-8 or MBCS.
      *
-     * @param a_pInputData  nullptr terminated source string to convert. All of
+     * @param a_pInputData  NULL terminated source string to convert. All of
      *                       the data will be converted including the
-     *                       terminating nullptr character.
+     *                       terminating NULL character.
      * @param a_pOutputData Pointer to the buffer to receive the converted
      *                       string.
      * @param a_uOutputDataSize Size of the output buffer in char.
      * @return              true if all of the input data, including the
-     *                       terminating nullptr character was successfully
+     *                       terminating NULL character was successfully
      *                       converted.
      */
     bool ConvertToStore(
@@ -3040,7 +3012,7 @@ public:
             while (a_pInputData[uInputLen]) {
                 ++uInputLen;
             }
-            ++uInputLen; // include the nullptr char
+            ++uInputLen; // include the NULL char
 
             // This uses the Unicode reference implementation to do the
             // conversion from wchar_t to UTF-8. The required files are
@@ -3094,17 +3066,17 @@ class SI_ConvertW {
     const char * m_pEncoding;
     UConverter * m_pConverter;
 protected:
-    SI_ConvertW() : m_pEncoding(nullptr), m_pConverter(nullptr) { }
+    SI_ConvertW() : m_pEncoding(NULL), m_pConverter(NULL) { }
 public:
-    SI_ConvertW(bool a_bStoreIsUtf8) : m_pConverter(nullptr) {
-        m_pEncoding = a_bStoreIsUtf8 ? "UTF-8" : nullptr;
+    SI_ConvertW(bool a_bStoreIsUtf8) : m_pConverter(NULL) {
+        m_pEncoding = a_bStoreIsUtf8 ? "UTF-8" : NULL;
     }
 
     /* copy and assignment */
     SI_ConvertW(const SI_ConvertW & rhs) { operator=(rhs); }
     SI_ConvertW & operator=(const SI_ConvertW & rhs) {
         m_pEncoding = rhs.m_pEncoding;
-        m_pConverter = nullptr;
+        m_pConverter = NULL;
         return *this;
     }
     ~SI_ConvertW() { if (m_pConverter) ucnv_close(m_pConverter); }
@@ -3115,11 +3087,11 @@ public:
      * @param a_pInputData  Data in storage format to be converted to UChar.
      * @param a_uInputDataLen Length of storage format data in bytes. This
      *                      must be the actual length of the data, including
-     *                      nullptr byte if nullptr terminated string is required.
+     *                      NULL byte if NULL terminated string is required.
      * @return              Number of UChar required by the string when
-     *                      converted. If there are embedded nullptr bytes in the
+     *                      converted. If there are embedded NULL bytes in the
      *                      input data, only the string up and not including
-     *                      the nullptr byte will be converted.
+     *                      the NULL byte will be converted.
      * @return              -1 cast to size_t on a conversion error.
      */
     size_t SizeFromStore(
@@ -3128,20 +3100,20 @@ public:
     {
         SI_ASSERT(a_uInputDataLen != (size_t) -1);
 
-        UErrorCode error;
+        UErrorCode nError;
 
         if (!m_pConverter) {
-            error = U_ZERO_ERROR;
-            m_pConverter = ucnv_open(m_pEncoding, &error);
-            if (U_FAILURE(error)) {
+            nError = U_ZERO_ERROR;
+            m_pConverter = ucnv_open(m_pEncoding, &nError);
+            if (U_FAILURE(nError)) {
                 return (size_t) -1;
             }
         }
 
-        error = U_ZERO_ERROR;
-        int32_t nLen = ucnv_toUChars(m_pConverter, nullptr, 0,
-            a_pInputData, (int32_t) a_uInputDataLen, &error);
-        if (U_FAILURE(error) && error != U_BUFFER_OVERFLOW_ERROR) {
+        nError = U_ZERO_ERROR;
+        int32_t nLen = ucnv_toUChars(m_pConverter, NULL, 0,
+            a_pInputData, (int32_t) a_uInputDataLen, &nError);
+        if (U_FAILURE(nError) && nError != U_BUFFER_OVERFLOW_ERROR) {
             return (size_t) -1;
         }
 
@@ -3154,7 +3126,7 @@ public:
      * @param a_pInputData  Data in storage format to be converted to UChar.
      * @param a_uInputDataLen Length of storage format data in bytes. This
      *                      must be the actual length of the data, including
-     *                      nullptr byte if nullptr terminated string is required.
+     *                      NULL byte if NULL terminated string is required.
      * @param a_pOutputData Pointer to the output buffer to received the
      *                      converted data.
      * @param a_uOutputDataSize Size of the output buffer in UChar.
@@ -3167,21 +3139,21 @@ public:
         UChar *         a_pOutputData,
         size_t          a_uOutputDataSize)
     {
-        UErrorCode error;
+        UErrorCode nError;
 
         if (!m_pConverter) {
-            error = U_ZERO_ERROR;
-            m_pConverter = ucnv_open(m_pEncoding, &error);
-            if (U_FAILURE(error)) {
+            nError = U_ZERO_ERROR;
+            m_pConverter = ucnv_open(m_pEncoding, &nError);
+            if (U_FAILURE(nError)) {
                 return false;
             }
         }
 
-        error = U_ZERO_ERROR;
+        nError = U_ZERO_ERROR;
         ucnv_toUChars(m_pConverter,
             a_pOutputData, (int32_t) a_uOutputDataSize,
-            a_pInputData, (int32_t) a_uInputDataLen, &error);
-        if (U_FAILURE(error)) {
+            a_pInputData, (int32_t) a_uInputDataLen, &nError);
+        if (U_FAILURE(nError)) {
             return false;
         }
 
@@ -3191,30 +3163,30 @@ public:
     /** Calculate the number of char required by the storage format of this
      * data. The storage format is always UTF-8 or MBCS.
      *
-     * @param a_pInputData  nullptr terminated string to calculate the number of
+     * @param a_pInputData  NULL terminated string to calculate the number of
      *                      bytes required to be converted to storage format.
      * @return              Number of bytes required by the string when
      *                      converted to storage format. This size always
-     *                      includes space for the terminating nullptr character.
+     *                      includes space for the terminating NULL character.
      * @return              -1 cast to size_t on a conversion error.
      */
     size_t SizeToStore(
         const UChar * a_pInputData)
     {
-        UErrorCode error;
+        UErrorCode nError;
 
         if (!m_pConverter) {
-            error = U_ZERO_ERROR;
-            m_pConverter = ucnv_open(m_pEncoding, &error);
-            if (U_FAILURE(error)) {
+            nError = U_ZERO_ERROR;
+            m_pConverter = ucnv_open(m_pEncoding, &nError);
+            if (U_FAILURE(nError)) {
                 return (size_t) -1;
             }
         }
 
-        error = U_ZERO_ERROR;
-        int32_t nLen = ucnv_fromUChars(m_pConverter, nullptr, 0,
-            a_pInputData, -1, &error);
-        if (U_FAILURE(error) && error != U_BUFFER_OVERFLOW_ERROR) {
+        nError = U_ZERO_ERROR;
+        int32_t nLen = ucnv_fromUChars(m_pConverter, NULL, 0,
+            a_pInputData, -1, &nError);
+        if (U_FAILURE(nError) && nError != U_BUFFER_OVERFLOW_ERROR) {
             return (size_t) -1;
         }
 
@@ -3224,14 +3196,14 @@ public:
     /** Convert the input string to the storage format of this data.
      * The storage format is always UTF-8 or MBCS.
      *
-     * @param a_pInputData  nullptr terminated source string to convert. All of
+     * @param a_pInputData  NULL terminated source string to convert. All of
      *                      the data will be converted including the
-     *                      terminating nullptr character.
+     *                      terminating NULL character.
      * @param a_pOutputData Pointer to the buffer to receive the converted
      *                      string.
      * @param a_pOutputDataSize Size of the output buffer in char.
      * @return              true if all of the input data, including the
-     *                      terminating nullptr character was successfully
+     *                      terminating NULL character was successfully
      *                      converted.
      */
     bool ConvertToStore(
@@ -3239,21 +3211,21 @@ public:
         char *          a_pOutputData,
         size_t          a_uOutputDataSize)
     {
-        UErrorCode error;
+        UErrorCode nError;
 
         if (!m_pConverter) {
-            error = U_ZERO_ERROR;
-            m_pConverter = ucnv_open(m_pEncoding, &error);
-            if (U_FAILURE(error)) {
+            nError = U_ZERO_ERROR;
+            m_pConverter = ucnv_open(m_pEncoding, &nError);
+            if (U_FAILURE(nError)) {
                 return false;
             }
         }
 
-        error = U_ZERO_ERROR;
+        nError = U_ZERO_ERROR;
         ucnv_fromUChars(m_pConverter,
             a_pOutputData, (int32_t) a_uOutputDataSize,
-            a_pInputData, -1, &error);
-        if (U_FAILURE(error)) {
+            a_pInputData, -1, &nError);
+        if (U_FAILURE(nError)) {
             return false;
         }
 
@@ -3336,11 +3308,11 @@ public:
      * @param a_pInputData  Data in storage format to be converted to SI_CHAR.
      * @param a_uInputDataLen Length of storage format data in bytes. This
      *                      must be the actual length of the data, including
-     *                      nullptr byte if nullptr terminated string is required.
+     *                      NULL byte if NULL terminated string is required.
      * @return              Number of SI_CHAR required by the string when
-     *                      converted. If there are embedded nullptr bytes in the
+     *                      converted. If there are embedded NULL bytes in the
      *                      input data, only the string up and not including
-     *                      the nullptr byte will be converted.
+     *                      the NULL byte will be converted.
      * @return              -1 cast to size_t on a conversion error.
      */
     size_t SizeFromStore(
@@ -3362,7 +3334,7 @@ public:
      * @param a_pInputData  Data in storage format to be converted to SI_CHAR.
      * @param a_uInputDataLen Length of storage format data in bytes. This
      *                      must be the actual length of the data, including
-     *                      nullptr byte if nullptr terminated string is required.
+     *                      NULL byte if NULL terminated string is required.
      * @param a_pOutputData Pointer to the output buffer to received the
      *                      converted data.
      * @param a_uOutputDataSize Size of the output buffer in SI_CHAR.
@@ -3375,21 +3347,21 @@ public:
         SI_CHAR *       a_pOutputData,
         size_t          a_uOutputDataSize)
     {
-        int size = MultiByteToWideChar(
+        int nSize = MultiByteToWideChar(
             m_uCodePage, 0,
             a_pInputData, (int) a_uInputDataLen,
             (wchar_t *) a_pOutputData, (int) a_uOutputDataSize);
-        return (size > 0);
+        return (nSize > 0);
     }
 
     /** Calculate the number of char required by the storage format of this
      * data. The storage format is always UTF-8.
      *
-     * @param a_pInputData  nullptr terminated string to calculate the number of
+     * @param a_pInputData  NULL terminated string to calculate the number of
      *                      bytes required to be converted to storage format.
      * @return              Number of bytes required by the string when
      *                      converted to storage format. This size always
-     *                      includes space for the terminating nullptr character.
+     *                      includes space for the terminating NULL character.
      * @return              -1 cast to size_t on a conversion error.
      */
     size_t SizeToStore(
@@ -3405,14 +3377,14 @@ public:
     /** Convert the input string to the storage format of this data.
      * The storage format is always UTF-8 or MBCS.
      *
-     * @param a_pInputData  nullptr terminated source string to convert. All of
+     * @param a_pInputData  NULL terminated source string to convert. All of
      *                      the data will be converted including the
-     *                      terminating nullptr character.
+     *                      terminating NULL character.
      * @param a_pOutputData Pointer to the buffer to receive the converted
      *                      string.
      * @param a_pOutputDataSize Size of the output buffer in char.
      * @return              true if all of the input data, including the
-     *                      terminating nullptr character was successfully
+     *                      terminating NULL character was successfully
      *                      converted.
      */
     bool ConvertToStore(
