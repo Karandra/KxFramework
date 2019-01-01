@@ -16,7 +16,6 @@ class KX_API KxAuiNotebook: public KxWithImageListWrapper<wxAuiNotebook>
 
 	private:
 		int m_TabIndent = 3;
-		wxSize m_ContentMargin = wxSize(3, 3);
 		RendererType m_CurrentRendererType = Default;
 
 	public:
@@ -40,18 +39,7 @@ class KX_API KxAuiNotebook: public KxWithImageListWrapper<wxAuiNotebook>
 		{
 			return true;
 		}
-		virtual bool InsertPage(size_t index, wxWindow* window, const wxString& label, bool select = false, int imageID = NO_IMAGE) override;
-		
-		wxSize GetContentMargin() const
-		{
-			return m_ContentMargin;
-		}
-		void SetContentMargin(const wxSize& margins)
-		{
-			m_ContentMargin = margins;
-			m_ContentMargin.SetDefaults(wxSize(3, 3));
-		}
-		
+
 		int GetTabIndent() const
 		{
 			return m_TabIndent;

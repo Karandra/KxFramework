@@ -24,11 +24,6 @@ bool KxAuiNotebook::Create(wxWindow* parent,
 	return false;
 }
 
-bool KxAuiNotebook::InsertPage(size_t index, wxWindow* window, const wxString& label, bool select, int imageID)
-{
-	return wxAuiNotebook::InsertPage(index, window, label, select, imageID);
-}
-
 void KxAuiNotebook::SetRenderer(RendererType value)
 {
 	m_CurrentRendererType = value;
