@@ -68,7 +68,7 @@ bool KxFileFinder::OnFound(const KxFileItem& foundItem)
 }
 
 KxFileFinder::KxFileFinder(const wxString& searchQuery, wxEvtHandler* eventHandler)
-	:m_SearchQuery(Normalize(searchQuery, true, true))
+	:m_EvtHandler(eventHandler), m_SearchQuery(Normalize(searchQuery, true, true))
 {
 }
 KxFileFinder::KxFileFinder(const wxString& source, const wxString& filter, wxEvtHandler* eventHandler)
