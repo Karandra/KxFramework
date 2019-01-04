@@ -69,25 +69,34 @@ namespace KxSharedMemoryNS
 			}
 
 		public:
+			bool Open(const wchar_t* name, size_t size, uint32_t protection = Protection::RW)
+			{
+				FreeIfNeeded();
+				if (OpenRegion(m_Handle, m_Buffer, name, size, protection))
+				{
+					m_Size = size;
+					m_Protection = static_cast<Protection>(protection);
+					return true;
+				}
+				else
+				{
+					MakeNull();
+					return false;
+				}
+			}
 			bool Open(const wxString& name, size_t size, uint32_t protection = Protection::RW)
 			{
-				FreeIfNeeded();
-				if (OpenRegion(m_Handle, m_Buffer, name.wc_str(), size, protection))
-				{
-					m_Size = size;
-					m_Protection = static_cast<Protection>(protection);
-					return true;
-				}
-				else
-				{
-					MakeNull();
-					return false;
-				}
+				return Open(name.wc_str(), size, protection);
 			}
+
 			bool Allocate(size_t size, uint32_t protection, const wxString& name = wxEmptyString)
 			{
+				return Allocate(size, protection, name.IsEmpty() ? nullptr : name.wc_str());
+			}
+			bool Allocate(size_t size, uint32_t protection, const wchar_t* name = nullptr)
+			{
 				FreeIfNeeded();
-				if (AllocateRegion(m_Handle, m_Buffer, size, protection, name.IsEmpty() ? nullptr : name.wc_str()))
+				if (AllocateRegion(m_Handle, m_Buffer, size, protection, name))
 				{
 					m_Size = size;
 					m_Protection = static_cast<Protection>(protection);
@@ -99,6 +108,7 @@ namespace KxSharedMemoryNS
 					return false;
 				}
 			}
+			
 			void Free()
 			{
 				FreeRegion(m_Handle, m_Buffer);
