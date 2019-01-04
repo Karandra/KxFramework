@@ -224,6 +224,15 @@ namespace KxSharedMemoryNS
 			}
 
 		public:
+			explicit operator bool() const
+			{
+				return IsOK();
+			}
+			bool operator!() const
+			{
+				return !IsOK();
+			}
+
 			Buffer& operator=(Buffer&& other)
 			{
 				FreeIfNeeded();
