@@ -217,7 +217,8 @@ namespace KxSharedMemoryNS
 			{
 				if (IsOK())
 				{
-					value = wxString(reinterpret_cast<const wxChar*>(m_Buffer), m_Size);
+					const wxChar* data = reinterpret_cast<const wxChar*>(m_Buffer);
+					value = wxString(data, wcsnlen_s(data, m_Size));
 				}
 			}
 			template<> wxString GetAs() const
