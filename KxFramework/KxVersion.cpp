@@ -244,7 +244,7 @@ wxString KxVersion::FormatInteger() const
 //////////////////////////////////////////////////////////////////////////
 KxVersion::KxVersion(const wxString& s, KxVersionType type)
 {
-	m_Type = Create(s, type);
+	m_Type = !s.IsEmpty() ? Create(s, type) : KxVersionType::KxVERSION_INVALID;
 }
 KxVersion::KxVersion(const DateTimeT& t)
 	:m_Type(t.IsValid() ? KxVERSION_DATETIME : KxVERSION_INVALID)
