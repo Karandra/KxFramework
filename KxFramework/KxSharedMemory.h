@@ -162,6 +162,54 @@ namespace KxSharedMemoryNS
 			}
 
 		public:
+			template<class T> void GetAs(T& value) const
+			{
+				static_assert(std::is_default_constructible_v<T>, "T must be default constructible");
+				static_assert(std::is_trivially_copyable_v<T>, "T must be trivially copyable");
+
+				if (IsOK())
+				{
+					value = *reinterpret_cast<T*>(m_Buffer);
+				}
+				return T {};
+			}
+			template<class T> T GetAs() const
+			{
+				T value;
+				GetAs(value);
+				return value;
+			}
+			
+			template<> void GetAs(wxString& value) const
+			{
+				if (IsOK())
+				{
+					value = wxString(reinterpret_cast<const wchar_t*>(m_Buffer), m_Size);
+				}
+			}
+			template<> wxString GetAs() const
+			{
+				wxString value;
+				GetAs(value);
+				return value;
+			}
+
+			void WriteData(const void* data, size_t dataSize) const
+			{
+				std::memcpy(m_Buffer, data, std::min(dataSize, m_Size));
+			}
+			template<class T> void WriteData(const T& value) const
+			{
+				static_assert(std::is_trivially_copyable_v<T>, "T must be trivially copyable");
+
+				WriteData(&value, sizeof(T));
+			}
+			template<> void WriteData(const wxString& value) const
+			{
+				WriteData(value.wc_str(), value.length() * sizeof(wxChar) + sizeof(wxChar));
+			}
+
+		public:
 			Buffer& operator=(Buffer&& other)
 			{
 				FreeIfNeeded();
