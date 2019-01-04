@@ -132,12 +132,21 @@ bool KxProcessThread::CreateProcess(PROCESS_INFORMATION& processInfo)
 		void* processEnv = ConvertEnvTable(m_EventHandler->m_EnvironmentTable, processEnvBuffer);
 
 		// Process command line
-		wxMemoryBuffer commandLineBuffer;
-		LPWSTR commandLine = nullptr;
+		wxString commandLine = m_EventHandler->m_Arguments;
+		if (commandLine.IsEmpty())
+		{
+			commandLine = KxString::Format(wxS("\"%1\""), m_EventHandler->m_ExecutablePath);
+		}
+		else
+		{
+			commandLine = KxString::Format(wxS("\"%1\" %2"), m_EventHandler->m_ExecutablePath, commandLine);
+		}
+
+		const size_t commandLineBufferSize = commandLine.length() * sizeof(wchar_t) + sizeof(wchar_t);
+		wxMemoryBuffer commandLineBuffer(commandLineBufferSize);
 		if (!m_EventHandler->m_Arguments.IsEmpty())
 		{
-			commandLineBuffer.AppendData(m_EventHandler->m_Arguments.wc_str(), m_EventHandler->m_Arguments.Length()*sizeof(WCHAR)+sizeof(WCHAR));
-			commandLine = (LPWSTR)commandLineBuffer.GetData();
+			commandLineBuffer.AppendData(commandLine.wc_str(), commandLineBufferSize);
 		}
 
 		// Working folder
@@ -163,18 +172,16 @@ bool KxProcessThread::CreateProcess(PROCESS_INFORMATION& processInfo)
 		}
 
 		m_EventHandler->m_ProcessCreationLastError = 0;
-		m_IsProcessCreated = ::CreateProcessW
-		(
-			m_EventHandler->m_ExecutablePath.wc_str(),
-			commandLine,
-			nullptr,
-			nullptr,
-			m_EventHandler->IsRedirected(),
-			processFlags,
-			processEnv,
-			workingFolderPtr,
-			&startupInfo,
-			&processInfo
+		m_IsProcessCreated = ::CreateProcessW(m_EventHandler->m_ExecutablePath.wc_str(),
+											  static_cast<wchar_t*>(commandLineBuffer.GetData()),
+											  nullptr,
+											  nullptr,
+											  m_EventHandler->IsRedirected(),
+											  processFlags,
+											  processEnv,
+											  workingFolderPtr,
+											  &startupInfo,
+											  &processInfo
 		);
 		m_EventHandler->m_ProcessCreationLastError = ::GetLastError();
 		m_EventHandler->m_ProcessCreationStatus = m_IsProcessCreated;
