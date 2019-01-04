@@ -127,6 +127,10 @@ namespace KxSharedMemoryNS
 				}
 				return false;
 			}
+			void ZeroBuffer()
+			{
+				::RtlSecureZeroMemory(m_Buffer, m_Size);
+			}
 
 			void Acquire(HANDLE handle, void* data, size_t size, uint32_t protection)
 			{
