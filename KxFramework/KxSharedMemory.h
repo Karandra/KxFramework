@@ -51,7 +51,11 @@ namespace KxSharedMemoryNS
 			Buffer()
 			{
 			}
-			Buffer(size_t size, uint32_t protection = Protection::RW, const wxString& name = wxEmptyString)
+			Buffer(size_t size, uint32_t protection, const wxString& name)
+			{
+				Allocate(size, protection, name);
+			}
+			Buffer(size_t size, uint32_t protection = Protection::RW, const wchar_t* name = nullptr)
 			{
 				Allocate(size, protection, name);
 			}
@@ -89,7 +93,7 @@ namespace KxSharedMemoryNS
 				return Open(name.wc_str(), size, protection);
 			}
 
-			bool Allocate(size_t size, uint32_t protection, const wxString& name = wxEmptyString)
+			bool Allocate(size_t size, uint32_t protection, const wxString& name)
 			{
 				return Allocate(size, protection, name.IsEmpty() ? nullptr : name.wc_str());
 			}
@@ -159,7 +163,7 @@ namespace KxSharedMemoryNS
 			{
 				return m_Buffer;
 			}
-	
+
 			bool CreateFrom(const Buffer& other)
 			{
 				FreeIfNeeded();
