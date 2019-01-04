@@ -205,7 +205,6 @@ namespace KxSharedMemoryNS
 				{
 					value = *reinterpret_cast<T*>(m_Buffer);
 				}
-				return T {};
 			}
 			template<class T> T GetAs() const
 			{
