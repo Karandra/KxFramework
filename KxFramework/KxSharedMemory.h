@@ -128,6 +128,22 @@ namespace KxSharedMemoryNS
 				return false;
 			}
 
+			void Acquire(HANDLE handle, void* data, size_t size, uint32_t protection)
+			{
+				FreeIfNeeded();
+				
+				m_Handle = handle;
+				m_Buffer = data;
+				m_Size = size;
+				m_Protection = static_cast<Protection>(protection);
+			}
+			HANDLE Release()
+			{
+				const HANDLE handle = m_Handle;
+				MakeNull();
+				return handle;
+			}
+
 		public:
 			bool IsOK() const
 			{
@@ -198,7 +214,7 @@ namespace KxSharedMemoryNS
 			{
 				if (IsOK())
 				{
-					value = wxString(reinterpret_cast<const wchar_t*>(m_Buffer), m_Size);
+					value = wxString(reinterpret_cast<const wxChar*>(m_Buffer), m_Size);
 				}
 			}
 			template<> wxString GetAs() const
