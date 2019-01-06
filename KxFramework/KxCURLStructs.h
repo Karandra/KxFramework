@@ -35,7 +35,7 @@ class KX_API KxCURLReplyBase
 	public:
 		virtual bool IsOK() const
 		{
-			return m_ErrorCode != -1 && m_ResponseCode != -1;
+			return m_ErrorCode == 0 && m_ResponseCode == 0;
 		}
 
 		int GetErrorCode() const
