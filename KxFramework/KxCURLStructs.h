@@ -168,7 +168,7 @@ class KX_API KxCURLStreamReply: public KxCURLReplyBase
 	public:
 		virtual bool IsOK() const override
 		{
-			return m_Stream.IsOk();
+			return KxCURLReplyBase::IsOK() && m_Stream.IsOk();
 		}
 
 		int64_t GetResumeFromPosition() const
