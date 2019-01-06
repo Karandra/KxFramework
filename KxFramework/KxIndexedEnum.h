@@ -62,7 +62,21 @@ namespace KxIndexedEnum
 			{
 				if constexpr(t_DirectAccess)
 				{
-					return &TDerived::ms_Index[static_cast<size_t>(value)];
+					const TInt index = static_cast<TInt>(value);
+					if constexpr(std::is_signed_v<TInt>)
+					{
+						if (index >= 0 && index < static_cast<TInt>(GetEnumSize()))
+						{
+							return &TDerived::ms_Index[index];
+						}
+					}
+					else
+					{
+						if (index < GetEnumSize())
+						{
+							return &TDerived::ms_Index[index];
+						}
+					}
 				}
 				else
 				{
@@ -78,6 +92,11 @@ namespace KxIndexedEnum
 			}
 
 		public:
+			constexpr static size_t GetEnumSize()
+			{
+				return std::size(TDerived::ms_Index);
+			}
+
 			constexpr static TEnum FromString(const TString& string, TEnum defaultValue)
 			{
 				const TItem* item = FindByName(string);
@@ -176,6 +195,10 @@ namespace KxIndexedEnum
 				m_Value(value)
 			{
 			}
+			Value(TInt value):
+				m_Value(static_cast<TEnum>(value))
+			{
+			}
 
 		public:
 			constexpr bool FromString(const TString& string, TEnum defaultValue = t_DefaultValue)
@@ -209,14 +232,24 @@ namespace KxIndexedEnum
 			{
 				return static_cast<TInt>(m_Value);
 			}
+			
 			operator TEnum() const
 			{
-				return m_Value;
+				return GetValue();
+			}
+			operator TInt() const
+			{
+				return GetInt();
 			}
 			
 			Value& operator=(TEnum value)
 			{
 				m_Value = value;
+				return *this;
+			}
+			Value& operator=(TInt value)
+			{
+				m_Value = static_cast<TEnum>(value);
 				return *this;
 			}
 
@@ -236,6 +269,15 @@ namespace KxIndexedEnum
 			bool operator!=(TEnum value) const
 			{
 				return m_Value != value;
+			}
+
+			bool operator==(TInt value) const
+			{
+				return static_cast<TInt>(m_Value) == value;
+			}
+			bool operator!=(TInt value) const
+			{
+				return static_cast<TInt>(m_Value) != value;
 			}
 
 		public:
