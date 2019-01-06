@@ -36,7 +36,7 @@ class KX_API KxCURLReplyBase
 	public:
 		virtual bool IsOK() const
 		{
-			return m_ErrorCode == 0 && m_ResponseCode == KxHTTPStatusCode::OK;
+			return m_ErrorCode == 0 && m_ResponseCode.IsSuccessful();
 		}
 
 		int GetErrorCode() const

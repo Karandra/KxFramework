@@ -165,6 +165,32 @@ class KxHTTPStatusValue: public KxIndexedEnum::Value<KxHTTPStatusCodeDefinition,
 		}
 
 	public:
+		bool IsInformational() const
+		{
+			return GetInt() >= 100 && GetInt() < 200;
+		}
+		bool IsSuccessful() const
+		{
+			return GetInt() >= 200 && GetInt() < 300;
+		}
+		bool IsRedirection() const
+		{
+			return GetInt() >= 300 && GetInt() < 400;
+		}
+		bool IsClientError() const
+		{
+			return GetInt() >= 400 && GetInt() < 500;
+		}
+		bool IsServerError() const
+		{
+			return GetInt() >= 500 && GetInt() < 600;
+		}
+		bool IsError() const
+		{
+			return GetInt() >= 400;
+		}
+
+	public:
 		void AddFlag(TEnum value) = delete;
 		void RemoveFlag(TEnum value) = delete;
 		bool HasFlag(TEnum value) const = delete;
