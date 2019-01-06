@@ -769,6 +769,9 @@
     <ClInclude Include="KxFramework\DataView\KxDataViewSortOrder.h">
       <Filter>Header Files\GUI\DataView\Control</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxHTTPStatusCode.h">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
