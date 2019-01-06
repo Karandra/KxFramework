@@ -6,6 +6,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 */
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include "KxFramework/KxHTTPStatusCode.h"
 class KX_API KxCURLSession;
 
 class KX_API KxCURLReplyBase
@@ -14,7 +15,7 @@ class KX_API KxCURLReplyBase
 
 	private:
 		int m_ErrorCode = -1;
-		int m_ResponseCode = -1;
+		KxHTTPStatusValue m_ResponseCode;
 
 	protected:
 		void SetErrorCode(int code)
@@ -35,14 +36,14 @@ class KX_API KxCURLReplyBase
 	public:
 		virtual bool IsOK() const
 		{
-			return m_ErrorCode == 0 && m_ResponseCode == 200;
+			return m_ErrorCode == 0 && m_ResponseCode == KxHTTPStatusCode::OK;
 		}
 
 		int GetErrorCode() const
 		{
 			return m_ErrorCode;
 		}
-		int GetResponseCode() const
+		KxHTTPStatusValue GetResponseCode() const
 		{
 			return m_ResponseCode;
 		}
