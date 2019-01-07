@@ -144,10 +144,7 @@ bool KxProcessThread::CreateProcess(PROCESS_INFORMATION& processInfo)
 
 		const size_t commandLineBufferSize = commandLine.length() * sizeof(wchar_t) + sizeof(wchar_t);
 		wxMemoryBuffer commandLineBuffer(commandLineBufferSize);
-		if (!m_EventHandler->m_Arguments.IsEmpty())
-		{
-			commandLineBuffer.AppendData(commandLine.wc_str(), commandLineBufferSize);
-		}
+		commandLineBuffer.AppendData(commandLine.wc_str(), commandLineBufferSize);
 
 		// Working folder
 		LPCWSTR workingFolderPtr = nullptr;
