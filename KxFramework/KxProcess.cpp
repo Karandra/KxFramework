@@ -7,6 +7,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxStdAfx.h"
 #include "KxFramework/KxProcess.h"
 #include "KxFramework/KxProcessThread.h"
+#include "KxFramework/KxComparator.h"
 #include "KxFramework/KxSystemAPI.h"
 #include "KxFramework/KxFile.h"
 #include "KxFramework/KxIncludeWindows.h"
@@ -486,22 +487,26 @@ const KxProcessEnvMap& KxProcess::GetEnvironment() const
 
 bool KxProcess::Attach(KxProcessWaitMode waitMode)
 {
-	DWORD attachPID = DefaultPID;
-	wxString thisName = GetImageName().AfterLast(wxS('\\'));
-	for (DWORD pid: EnumProcesses())
+	if (m_PID == DefaultPID)
 	{
-		wxString otherName = KxProcess(pid).GetImageName().AfterLast(wxS('\\'));
-		if (thisName.IsSameAs(otherName, false))
+		const wxString thisName = GetImageName().AfterLast(wxS('\\'));
+		if (!thisName.IsEmpty())
 		{
-			attachPID = pid;
-			break;
+			for (DWORD pid: EnumProcesses())
+			{
+				const wxString otherName = KxProcess(pid).GetImageName().AfterLast(wxS('\\'));
+				if (KxComparator::IsEqual(thisName, otherName, true))
+				{
+					m_PID = pid;
+					break;
+				}
+			}
 		}
 	}
-
-	if (attachPID != DefaultPID)
+	
+	if (m_PID != DefaultPID)
 	{
-		m_PID = attachPID;
-		HANDLE processHandle = ::OpenProcess(SYNCHRONIZE|PROCESS_QUERY_LIMITED_INFORMATION, false, GetPID());
+		HANDLE processHandle = ::OpenProcess(SYNCHRONIZE|PROCESS_QUERY_LIMITED_INFORMATION, false, m_PID);
 		if (processHandle)
 		{
 			if (waitMode == KxPROCESS_RUN_ASYNC)
@@ -514,19 +519,22 @@ bool KxProcess::Attach(KxProcessWaitMode waitMode)
 					{
 						delete this;
 					}
+
+					::CloseHandle(processHandle);
 					return false;
 				}
+				return true;
 			}
 			else if (waitMode == KxPROCESS_RUN_SYNC)
 			{
 				KxProcessThread(this, waitMode, false, processHandle).RunHere();
+				return true;
 			}
-			else
+
+			::CloseHandle(processHandle);
+			if (IsDetached())
 			{
-				if (IsDetached())
-				{
-					delete this;
-				}
+				delete this;
 			}
 			return true;
 		}
