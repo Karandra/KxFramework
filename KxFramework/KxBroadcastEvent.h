@@ -5,43 +5,53 @@
 class KX_API KxBroadcastEvent: public wxNotifyEvent, public KxRTTI::DynamicCastAsIs<KxBroadcastEvent>
 {
 	public:
-		template<class EventT, class FunctionT, class HandlerT>
-		static void Bind(const wxEventTypeTag<EventT>& eventType, const FunctionT& function, HandlerT handler)
+		template<class TEvent, class TFunction, class THandler>
+		static void Bind(const wxEventTypeTag<TEvent>& eventType, const TFunction& function, THandler handler)
 		{
-			wxTheApp->Bind(eventType, [function, handler](EventT& event)
+			wxTheApp->Bind(eventType, [function, handler](TEvent& event)
 			{
 				(handler->*function)(event);
 				event.wxNotifyEvent::Skip();
 			});
 		}
-		
-		template<class EventT, class FunctorT>
-		static void Bind(const wxEventTypeTag<EventT>& eventType, const FunctorT& functor)
+		template<class TEvent, class TFunction, class THandler>
+		static void Unbind(const wxEventTypeTag<TEvent>& eventType, const TFunction& function, THandler handler)
 		{
-			wxTheApp->Bind(eventType, [&functor](EventT& event)
+			wxTheApp->Unbind(eventType, function, handler);
+		}
+		
+		template<class TEvent, class TFunctor>
+		static void Bind(const wxEventTypeTag<TEvent>& eventType, const TFunctor& functor)
+		{
+			wxTheApp->Bind(eventType, [functor](TEvent& event)
 			{
 				functor(event);
 				event.wxNotifyEvent::Skip();
 			});
 		}
+		template<class TEvent, class TFunctor>
+		static void Unbind(const wxEventTypeTag<TEvent>& eventType, const TFunctor& functor)
+		{
+			wxTheApp->Unbind(eventType, functor);
+		}
 
 		template<class... Args>
-		static void CallAfter(Args&&... args)
+		static void CallAfter(Args&&... arg)
 		{
-			wxTheApp->CallAfter(std::forward<Args>(args)...);
+			wxTheApp->CallAfter(std::forward<Args>(arg)...);
 		}
 
 		template<class T, class... Args>
-		static void MakeQueue(Args&&... args)
+		static void MakeQueue(Args&&... arg)
 		{
-			T* event = new T(std::forward<Args>(args)...);
+			T* event = new T(std::forward<Args>(arg)...);
 			event->Queue();
 		}
 
 		template<class T, class... Args>
-		static bool MakeSend(Args&&... args)
+		static bool MakeSend(Args&&... arg)
 		{
-			return T(std::forward<Args>(args)...).Send();
+			return T(std::forward<Args>(arg)...).Send();
 		}
 
 	protected:
