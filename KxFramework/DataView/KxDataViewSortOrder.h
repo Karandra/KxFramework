@@ -37,25 +37,20 @@ class KX_API KxDataViewSortOrder
 		}
 
 	private:
-		KxDataViewColumn* m_Column = nullptr;
 		SortWhat m_SortWhat = SortWhat::None;
 		bool m_IsAscending = true;
 
 	private:
 		KxDataViewSortOrder(SortWhat sortWhat = SortWhat::None, bool isAscending = true)
-			:m_Column(nullptr), m_SortWhat(sortWhat), m_IsAscending(isAscending)
+			:m_SortWhat(sortWhat), m_IsAscending(isAscending)
 		{
 		}
 		KxDataViewSortOrder(KxDataViewColumn* column, bool isAscending = true)
-			:m_Column(column), m_SortWhat(SortWhat::Column), m_IsAscending(isAscending)
+			:m_SortWhat(SortWhat::Column), m_IsAscending(isAscending)
 		{
 		}
 
 	public:
-		KxDataViewColumn* GetColumn() const
-		{
-			return m_Column;
-		}
 		bool IsAscending() const
 		{
 			return m_IsAscending;
@@ -63,21 +58,21 @@ class KX_API KxDataViewSortOrder
 
 		bool IsNone() const
 		{
-			return m_Column == nullptr && m_SortWhat == SortWhat::None;
+			return m_SortWhat == SortWhat::None;
 		}
 		bool IsDefault() const
 		{
-			return m_Column == nullptr && m_SortWhat == SortWhat::Default;
+			return m_SortWhat == SortWhat::Default;
 		}
 		bool IsColumn() const
 		{
-			return m_Column != nullptr && m_SortWhat == SortWhat::Column;
+			return m_SortWhat == SortWhat::Column;
 		}
 
 	public:
 		bool operator==(const KxDataViewSortOrder& other) const
 		{
-			return m_Column == other.m_Column && m_SortWhat == other.m_SortWhat && m_IsAscending == other.m_IsAscending;
+			return m_SortWhat == other.m_SortWhat && m_IsAscending == other.m_IsAscending;
 		}
 		bool operator!=(const KxDataViewSortOrder& other) const
 		{
