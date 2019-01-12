@@ -37,7 +37,7 @@ wxWindow* KxDataViewDateEditor::CreateEditorControl(wxWindow* parent, const wxRe
 	GetValueAsDateTime(value, date);
 	date.ResetTime();
 
-	wxDatePickerCtrl* editor = new wxDatePickerCtrl(parent, wxID_NONE, date, cellRect.GetPosition(), cellRect.GetSize(), GetOptionFlags(), GetValidator());
+	wxDatePickerCtrl* editor = new wxDatePickerCtrl(parent, wxID_NONE, date, cellRect.GetPosition(), cellRect.GetSize(), GetOptionsValue(), GetValidator());
 
 	if (m_Min.IsValid() && m_Max.IsValid())
 	{

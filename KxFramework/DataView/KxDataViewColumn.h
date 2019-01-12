@@ -144,11 +144,11 @@ class KX_API KxDataViewColumn: private wxSettableHeaderColumn, public KxWithOpti
 		
 		int GetFlags() const override
 		{
-			return GetOptionFlags();
+			return GetOptionsValue();
 		}
 		void SetFlags(int flags) override
 		{
-			SetOptionFlags(static_cast<KxDataViewColumnFlags>(flags));
+			SetOptionsValue(flags);
 			UpdateDisplay();
 		}
 

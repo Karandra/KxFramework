@@ -8,39 +8,53 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxUtility.h"
 
-template<class T, T defaultFlags = (T)0>
+template<class T, T t_DefaultOptions = (T)0>
 class KxWithOptions
 {
 	public:
-		using EnumT = T;
+		using TEnum = typename T;
+		using TInt = typename std::underlying_type_t<TEnum>;
 
 	private:
-		EnumT m_OptionFlags = defaultFlags;
+		TEnum m_Value = t_DefaultOptions;
 
 	protected:
-		EnumT GetOptionFlags() const
+		static bool DoIsOptionEnabled(TEnum value, TEnum option)
 		{
-			return m_OptionFlags;
+			return static_cast<TInt>(value) & static_cast<TInt>(option);
 		}
-		void SetOptionFlags(EnumT options)
-		{
-			m_OptionFlags = options;
-		}
-
-	public:
-		bool IsOptionEnabled(EnumT option) const
-		{
-			return m_OptionFlags & option;
-		}
-		void SetOptionEnabled(EnumT option, bool enable = true)
+		static TEnum DoSetOptionEnabled(TEnum value, TEnum option, bool enable = true)
 		{
 			if (enable)
 			{
-				m_OptionFlags = static_cast<EnumT>(m_OptionFlags | option);
+				return static_cast<TEnum>(static_cast<TInt>(value) | static_cast<TInt>(option));
 			}
 			else
 			{
-				m_OptionFlags = static_cast<EnumT>(m_OptionFlags & (~option));
+				return static_cast<TEnum>(static_cast<TInt>(value) & ~static_cast<TInt>(option));
 			}
+		}
+
+	public:
+		TEnum GetOptionsValue() const
+		{
+			return m_Value;
+		}
+		void SetOptionsValue(TEnum options)
+		{
+			m_Value = options;
+		}
+		void SetOptionsValue(TInt options)
+		{
+			m_Value = static_cast<TEnum>(options);
+		}
+
+		bool IsOptionEnabled(TEnum option) const
+		{
+			return DoIsOptionEnabled(m_Value, option);
+		}
+		void SetOptionEnabled(TEnum option, bool enable = true)
+		{
+			m_Value = DoSetOptionEnabled(m_Value, option, enable);
 		}
 };
