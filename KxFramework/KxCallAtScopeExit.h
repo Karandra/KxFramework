@@ -42,7 +42,7 @@ template<class T> class KxCallAtScopeExit
 		}
 		KxCallAtScopeExit& operator=(const KxCallAtScopeExit& other)
 		{
-			:m_Functor = other.m_Functor;
+			m_Functor = other.m_Functor;
 		}
 
 		~KxCallAtScopeExit()
