@@ -187,6 +187,24 @@
     <Filter Include="Source Files\System\UxTheme">
       <UniqueIdentifier>{47ff8030-0117-44db-add1-70ee07dcc295}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\GUI\DataView2">
+      <UniqueIdentifier>{eb022c58-7685-4933-83db-3ae2a7c99660}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\DataView2">
+      <UniqueIdentifier>{fa41b0a9-7ee7-4c1a-bfa0-7986c249353d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\DataView2\Renderers">
+      <UniqueIdentifier>{da4451a3-78ba-4565-93b1-f88adc5ac89e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\DataView2\Editors">
+      <UniqueIdentifier>{bc00aaeb-8f46-4ec8-a154-9824fdddd46d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\DataView2\Renderers">
+      <UniqueIdentifier>{faa6af25-b64e-43b3-ad87-e31b4b5c1615}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\DataView2\Editors">
+      <UniqueIdentifier>{321f7c2c-c979-46bd-b38d-fc6ed07d9e83}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -772,6 +790,60 @@
     <ClInclude Include="KxFramework\KxHTTPStatusCode.h">
       <Filter>Header Files\Network</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\DataView2.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Editor.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\HeaderCtrl.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\ItemAttributes.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\MainWindow.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Node.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Renderer.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Column.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\View.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\SortOrder.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\CellState.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Row.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Model.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxDataView2Event.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Common.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Renderers\TextRenderer.h">
+      <Filter>Header Files\GUI\DataView2\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Editors\TextEditor.h">
+      <Filter>Header Files\GUI\DataView2\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Renderers\NullRenderer.h">
+      <Filter>Header Files\GUI\DataView2\Renderers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1281,6 +1353,45 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxUxTheme.cpp">
       <Filter>Source Files\System</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\DataView2.cpp">
+      <Filter>Source Files\GUI\DataView2</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\Editor.cpp">
+      <Filter>Source Files\GUI\DataView2</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\HeaderCtrl.cpp">
+      <Filter>Source Files\GUI\DataView2</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\ItemAttributes.cpp">
+      <Filter>Source Files\GUI\DataView2</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\MainWindow.cpp">
+      <Filter>Source Files\GUI\DataView2</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\Node.cpp">
+      <Filter>Source Files\GUI\DataView2</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\Renderer.cpp">
+      <Filter>Source Files\GUI\DataView2</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\Column.cpp">
+      <Filter>Source Files\GUI\DataView2</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\View.cpp">
+      <Filter>Source Files\GUI\DataView2</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\Model.cpp">
+      <Filter>Source Files\GUI\DataView2</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxDataView2Event.cpp">
+      <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\Renderers\TextRenderer.cpp">
+      <Filter>Source Files\GUI\DataView2\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\Editors\TextEditor.cpp">
+      <Filter>Source Files\GUI\DataView2\Editors</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

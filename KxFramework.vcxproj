@@ -99,6 +99,7 @@
       <PreprocessorDefinitions>KXFRAMEWORK_LIBRARY;WXMAKINGDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Lib>
       <AdditionalLibraryDirectories>$(ProjectDir);$(SolutionDir)..\Gumbo HTML5 Parser\visualc\Release;$(SolutionDir)..\wxWidgets\lib\vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -123,6 +124,7 @@
       <PreprocessorDefinitions>KXFRAMEWORK_LIBRARY;WXMAKINGDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Lib>
       <AdditionalLibraryDirectories>$(ProjectDir);$(SolutionDir)..\Gumbo HTML5 Parser\visualc\Release x64;$(SolutionDir)..\wxWidgets\lib\vc_x64_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -149,6 +151,7 @@
       <PreprocessorDefinitions>KXFRAMEWORK_LIBRARY;WXMAKINGDLL;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -177,6 +180,7 @@
       <PreprocessorDefinitions>KXFRAMEWORK_LIBRARY;WXMAKINGDLL;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -192,6 +196,23 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="KxFramework\DataView2\CellState.h" />
+    <ClInclude Include="KxFramework\DataView2\Column.h" />
+    <ClInclude Include="KxFramework\DataView2\Editors\TextEditor.h" />
+    <ClInclude Include="KxFramework\DataView2\Model.h" />
+    <ClInclude Include="KxFramework\DataView2\Renderers\NullRenderer.h" />
+    <ClInclude Include="KxFramework\DataView2\Renderers\TextRenderer.h" />
+    <ClInclude Include="KxFramework\DataView2\Row.h" />
+    <ClInclude Include="KxFramework\DataView2\SortOrder.h" />
+    <ClInclude Include="KxFramework\DataView2\View.h" />
+    <ClInclude Include="KxFramework\DataView2\DataView2.h" />
+    <ClInclude Include="KxFramework\DataView2\Common.h" />
+    <ClInclude Include="KxFramework\DataView2\Editor.h" />
+    <ClInclude Include="KxFramework\DataView2\HeaderCtrl.h" />
+    <ClInclude Include="KxFramework\DataView2\ItemAttributes.h" />
+    <ClInclude Include="KxFramework\DataView2\MainWindow.h" />
+    <ClInclude Include="KxFramework\DataView2\Node.h" />
+    <ClInclude Include="KxFramework\DataView2\Renderer.h" />
     <ClInclude Include="KxFramework\DataView\KxDataViewBitmapRenderer.h" />
     <ClInclude Include="KxFramework\DataView\KxDataViewBitmapTextRenderer.h" />
     <ClInclude Include="KxFramework\DataView\KxDataViewBitmapTextToggleRenderer.h" />
@@ -257,6 +278,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxDataView2Event.h" />
     <ClInclude Include="KxFramework\KxDataViewComboBox.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </ExcludedFromBuild>
@@ -422,6 +444,18 @@
     <ClInclude Include="KxStdAfx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="KxFramework\DataView2\Column.cpp" />
+    <ClCompile Include="KxFramework\DataView2\Editors\TextEditor.cpp" />
+    <ClCompile Include="KxFramework\DataView2\Model.cpp" />
+    <ClCompile Include="KxFramework\DataView2\Renderers\TextRenderer.cpp" />
+    <ClCompile Include="KxFramework\DataView2\View.cpp" />
+    <ClCompile Include="KxFramework\DataView2\DataView2.cpp" />
+    <ClCompile Include="KxFramework\DataView2\Editor.cpp" />
+    <ClCompile Include="KxFramework\DataView2\HeaderCtrl.cpp" />
+    <ClCompile Include="KxFramework\DataView2\ItemAttributes.cpp" />
+    <ClCompile Include="KxFramework\DataView2\MainWindow.cpp" />
+    <ClCompile Include="KxFramework\DataView2\Node.cpp" />
+    <ClCompile Include="KxFramework\DataView2\Renderer.cpp" />
     <ClCompile Include="KxFramework\DataView\KxDataViewBitmapRenderer.cpp" />
     <ClCompile Include="KxFramework\DataView\KxDataViewBitmapTextRenderer.cpp" />
     <ClCompile Include="KxFramework\DataView\KxDataViewBitmapTextToggleRenderer.cpp" />
@@ -489,6 +523,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="KxFramework\KxDataView2Event.cpp" />
     <ClCompile Include="KxFramework\KxDataViewComboBox.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </ExcludedFromBuild>

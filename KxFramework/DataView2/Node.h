@@ -1,0 +1,311 @@
+#pragma once
+#include "KxFramework/KxFramework.h"
+#include "Common.h"
+#include "Row.h"
+#include "Column.h"
+#include "SortOrder.h"
+#include <optional>
+
+namespace Kx::DataView2
+{
+	class KX_API ItemAttributes;
+	class KX_API MainWindow;
+	class KX_API Renderer;
+	class KX_API Editor;
+	class KX_API Node;
+	class CellState;
+
+	class KX_API NodeOperation_RowToNode;
+	class KX_API NodeOperation_NodeToRow;
+}
+
+namespace Kx::DataView2
+{
+	class KX_API Node
+	{
+		friend class MainWindow;
+		friend class NodeOperation_RowToNode;
+		friend class NodeOperation_NodeToRow;
+
+		public:
+			using Vector = std::vector<Node*>;
+
+			static Node* CreateRootNode(MainWindow* window);
+			static bool SwapNodes(Node* node1, Node* node2);
+
+		private:
+			Vector m_Children;
+			SortOrder m_SortOrder = SortOrder::UseNone();
+			MainWindow* m_MainWindow = nullptr;
+			Node* m_ParentNode = nullptr;
+
+			// Total count of expanded (i.e. visible with the help of some scrolling) items
+			// in the subtree, but excluding this node. I.e. it is 0 for leaves and is the
+			// number of rows the subtree occupies for branch nodes.
+			intptr_t m_SubTreeCount = 0;
+
+			void* m_UserData = nullptr;
+			bool m_IsExpanded = false;
+
+		private:
+			// Called by the child after it has been updated to put it in the right place among its siblings, depending on the sort order.
+			void PutChildInSortOrder(Node* childNode);
+			void Resort();
+
+			// Should be called after changing the item value to update its position in the control if necessary.
+			void PutInSortOrder()
+			{
+				if (m_ParentNode)
+				{
+					m_ParentNode->PutChildInSortOrder(this);
+				}
+			}
+			const SortOrder& GetSortOrder() const
+			{
+				return m_SortOrder;
+			}
+			void SetSortOrder(const SortOrder& sortOrder)
+			{
+				m_SortOrder = sortOrder;
+			}
+			void ResetSortOrder()
+			{
+				m_SortOrder = SortOrder::UseNone();
+			}
+
+			void CalcSubTreeCount();
+			intptr_t GetSubTreeCount() const;
+			void ChangeSubTreeCount(intptr_t num);
+			void InitNodeFromThis(Node& node);
+
+			bool IsNodeExpanded() const
+			{
+				return m_IsExpanded;
+			}
+			void SetNodeExpanded(bool expanded)
+			{
+				CalcSubTreeCount();
+				m_IsExpanded = expanded;
+			}
+			void ToggleNodeExpanded()
+			{
+				SetNodeExpanded(!IsNodeExpanded());
+			}
+
+		public:
+			Node(MainWindow* window, Node* parent)
+				:m_MainWindow(window), m_ParentNode(parent)
+			{
+			}
+			Node() = default;
+			virtual ~Node();
+
+		public:
+			bool IsRootNode() const
+			{
+				return m_ParentNode == nullptr;
+			}
+			bool HasParent() const
+			{
+				return m_ParentNode != nullptr;
+			}
+			Node* GetParent() const
+			{
+				return m_ParentNode;
+			}
+
+			const Vector& GetChildren() const
+			{
+				return m_Children;
+			}
+			Vector& GetChildren()
+			{
+				return m_Children;
+			}
+			bool HasChildren() const
+			{
+				return !m_Children.empty();
+			}
+			size_t GetChildrenCount() const
+			{
+				return m_Children.size();
+			}
+
+			Row FindChild(const Node& node) const;
+			Row GetIndexWithinParent() const;
+			int GetIndentLevel() const;
+
+			void InsertChild(Node* node, size_t index = 0);
+			void AddChild(Node* node)
+			{
+				InsertChild(node, m_Children.size());
+			}
+			void RemoveChild(size_t index);
+			void RemoveChild(Node& node);
+
+			template<class TNode, class... Args> TNode& NewChild(Args&&... arg)
+			{
+				TNode* node = new TNode(std::forward<Args>(arg)...);
+				InsertChild(node, m_Children.size());
+				return *node;
+			}
+			template<class TNode, class... Args> TNode& NewChildAt(size_t index, Args&&... arg)
+			{
+				TNode* node = new TNode(std::forward<Args>(arg)...);
+				InsertChild(node, index);
+				return *node;
+			}
+			
+			bool IsRenderable(const Column& column) const;
+			bool IsEditable(const Column& column) const
+			{
+				return GetEditor(column) != nullptr;
+			}
+
+			template<class T = void*> T GetUserData() const
+			{
+				return reinterpret_cast<T>(m_UserData);
+			}
+			template<class T = void*> void SetUserData(T value) const
+			{
+				m_UserData = reinterpret_cast<void*>(value);
+			}
+
+		public:
+			virtual Renderer& GetRenderer(const Column& column) const
+			{
+				return column.GetRenderer();
+			}
+			virtual Editor* GetEditor(const Column& column) const
+			{
+				return column.GetEditor();
+			}
+			
+			virtual wxAny GetValue(const Column& column) const
+			{
+				return {};
+			}
+			virtual wxAny GetEditorValue(const Column& column) const
+			{
+				return {};
+			}
+			virtual bool SetValue(const wxAny& value, Column& column)
+			{
+				return false;
+			}
+			
+			virtual bool GetAttributes(ItemAttributes& attributes, const CellState& cellState, const Column& column) const
+			{
+				return false;
+			}
+			virtual int GetRowHeight() const
+			{
+				return 0;
+			}
+
+			virtual bool Compare(const Node& other, const Column& column) const
+			{
+				return false;
+			}
+	
+		public:
+			bool IsExpanded() const;
+			void SetExpanded(bool expanded);
+			void Expand();
+			void Collapse();
+			void ToggleExpanded();
+
+			void Refresh();
+			void Refresh(Column& column);
+			void Edit(Column& column);
+
+			Row GetRow() const;
+		};
+}
+
+namespace Kx::DataView2
+{
+	// Helper class to perform an operation on the tree node
+	class KX_API NodeOperation
+	{
+		public:
+			// The return value control how the tree-walker traverse the tree
+			enum class Result
+			{
+				Done, // Done, stop traversing and return
+				SkipSubTree, // Ignore the current node's subtree and continue
+				Continue, // Not done, continue
+			};
+
+		private:
+			static bool DoWalk(Node& node, NodeOperation& func);
+
+		protected:
+			virtual Result operator()(Node& node) = 0;
+
+		public:
+			virtual ~NodeOperation() = default;
+
+		public:
+			bool Walk(Node& node)
+			{
+				return DoWalk(node, *this);
+			}
+	};
+}
+
+namespace Kx::DataView2
+{
+	class KX_API NodeOperation_RowToNode: public NodeOperation
+	{
+		private:
+			const intptr_t m_Row = -1;
+			intptr_t m_CurrentRow = -1;
+			Node* m_ResultNode = nullptr;
+
+		public:
+			NodeOperation_RowToNode(intptr_t row , intptr_t current)
+				:m_Row(row), m_CurrentRow(current)
+			{
+			}
+
+		public:
+			Result operator()(Node& node) override;
+
+			Node* GetResult() const
+			{
+				return m_ResultNode;
+			}
+	};
+}
+
+namespace Kx::DataView2
+{
+	// As with 'NodeOperation_RowToNode' above, we initialize 'm_CurrentRow' to -1 because the first node
+	// passed to our operator() is the root node which is not visible on screen and so we
+	// should return 0 for its first child node and not for the root itself.
+	class KX_API NodeOperation_NodeToRow: public NodeOperation
+	{
+		public:
+			using TNodeIterator = Node::Vector::reverse_iterator;
+
+		private:
+			const Node& m_Node;
+			TNodeIterator m_Iterator;
+			intptr_t m_CurrentRow = -1; // The row corresponding to the last node seen in our operator().
+
+		public:
+			NodeOperation_NodeToRow(const Node& node, TNodeIterator iterator)
+				:m_Node(node), m_Iterator(iterator)
+			{
+			}
+
+		public:
+			Result operator()(Node& node) override;
+
+			Row GetResult() const
+			{
+				return m_CurrentRow >= 0 ? Row(m_CurrentRow) : Row();
+			}
+	};
+}
