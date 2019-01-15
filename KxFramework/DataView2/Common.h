@@ -43,16 +43,48 @@ namespace Kx::DataView2
 		return (uint32_t)v1 & (uint32_t)v2;
 	}
 
+	class ColumnWidth
+	{
+		public:
+			enum Value: int
+			{
+				Default = -1,
+				AutoSize = -2,
+			};
+
+		private:
+			int m_Value = Value::AutoSize;
+
+		public:
+			ColumnWidth(int value = Value::AutoSize) noexcept
+				:m_Value(value)
+			{
+			}
+
+		public:
+			bool IsSpecialValue() const noexcept
+			{
+				return IsDefault() || IsAutoSize();
+			}
+			bool IsDefault() const noexcept
+			{
+				return m_Value == Value::Default;
+			}
+			bool IsAutoSize() const noexcept
+			{
+				return m_Value == Value::AutoSize;
+			}
+
+			operator int() const noexcept
+			{
+				return m_Value;
+			}
+	};
+
 	enum class UniformHeight: int
 	{
 		Default,
 		ListView,
 		Explorer
-	};
-
-	enum class ColumnWidth: int
-	{
-		Default = -1,
-		AutoSize = -2,
 	};
 }
