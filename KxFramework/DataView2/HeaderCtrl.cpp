@@ -44,16 +44,13 @@ namespace Kx::DataView2
 		}
 		else
 		{
-			// Not using this column for sorting yet
-
-			// We will sort by this column only now, so reset all the
-			// previously used ones.
+			// Not using this column for sorting yet.
+			// We will sort by this column only now, so reset all the previously used ones.
 			m_View->ResetAllSortColumns();
-
-			// Sort the column
 			column->SortAscending();
 		}
 
+		m_View->GetMainWindow()->OnShouldResort();
 		m_View->OnColumnChange(columnIndex);
 		SendEvent(KxEVT_DATAVIEW_COLUMN_SORTED, columnIndex);
 	}
