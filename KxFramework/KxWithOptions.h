@@ -19,11 +19,11 @@ class KxWithOptions
 		TEnum m_Value = t_DefaultOptions;
 
 	protected:
-		static bool DoIsOptionEnabled(TEnum value, TEnum option)
+		constexpr static bool DoIsOptionEnabled(TEnum value, TEnum option) noexcept
 		{
 			return static_cast<TInt>(value) & static_cast<TInt>(option);
 		}
-		static TEnum DoSetOptionEnabled(TEnum value, TEnum option, bool enable = true)
+		constexpr static TEnum DoSetOptionEnabled(TEnum value, TEnum option, bool enable = true) noexcept
 		{
 			if (enable)
 			{
@@ -36,25 +36,63 @@ class KxWithOptions
 		}
 
 	public:
-		TEnum GetOptionsValue() const
+		constexpr KxWithOptions() = default;
+		constexpr KxWithOptions(KxWithOptions&& other) noexcept
+			:m_Value(other.m_Value)
+		{
+			other.m_Value = t_DefaultOptions;
+		}
+		constexpr KxWithOptions(const KxWithOptions& other) noexcept
+			:m_Value(other.m_Value)
+		{
+		}
+		constexpr KxWithOptions(TEnum value) noexcept
+			:m_Value(value)
+		{
+		}
+
+	public:
+		constexpr TEnum GetOptionsValue() const noexcept
 		{
 			return m_Value;
 		}
-		void SetOptionsValue(TEnum options)
+		constexpr void SetOptionsValue(TEnum options) noexcept
 		{
 			m_Value = options;
 		}
-		void SetOptionsValue(TInt options)
+		constexpr void SetOptionsValue(TInt options) noexcept
 		{
 			m_Value = static_cast<TEnum>(options);
 		}
 
-		bool IsOptionEnabled(TEnum option) const
+		constexpr bool IsOptionEnabled(TEnum option) const noexcept
 		{
 			return DoIsOptionEnabled(m_Value, option);
 		}
-		void SetOptionEnabled(TEnum option, bool enable = true)
+		constexpr void SetOptionEnabled(TEnum option, bool enable = true) noexcept
 		{
 			m_Value = DoSetOptionEnabled(m_Value, option, enable);
+		}
+
+	public:
+		constexpr bool operator==(const KxWithOptions& other) const noexcept
+		{
+			return m_Value == other.m_Value;
+		}
+		constexpr bool operator!=(const KxWithOptions& other) const noexcept
+		{
+			return m_Value != other.m_Value;
+		}
+
+		constexpr KxWithOptions& operator=(KxWithOptions&& other) noexcept
+		{
+			m_Value = other.m_Value;
+			other.m_Value = t_DefaultOptions;
+			return *this;
+		}
+		constexpr KxWithOptions& operator=(const KxWithOptions& other) noexcept
+		{
+			m_Value = other.m_Value;
+			return *this;
 		}
 };
