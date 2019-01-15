@@ -136,8 +136,6 @@ namespace Kx::DataView2
 
 	Column::~Column()
 	{
-		delete m_Renderer;
-		delete m_Editor;
 	}
 
 	Renderer& Column::GetRenderer() const
@@ -148,14 +146,23 @@ namespace Kx::DataView2
 		}
 		return GetView()->GetMainWindow()->GetNullRenderer();
 	}
+	void Column::AssignRenderer(Renderer* renderer)
+	{
+		m_Renderer.reset(renderer);
+	}
+
 	Editor* Column::GetEditor() const
 	{
-		return m_Editor;
+		return m_Editor.get();
+	}
+	void Column::AssignEditor(Editor* editor)
+	{
+		m_Editor.reset(editor);
 	}
 
 	int Column::GetWidth() const
 	{
-		switch (static_cast<ColumnWidth>(m_Width))
+		switch (m_Width)
 		{
 			case ColumnWidth::Default:
 			{
@@ -166,22 +173,18 @@ namespace Kx::DataView2
 				return const_cast<Column&>(*this).CalcBestSize();
 			}
 		};
-		return static_cast<int>(m_Width);
+		return m_Width;
 	}
-	void Column::SetWidth(int width)
+	void Column::SetWidth(ColumnWidth width)
 	{
-		switch (static_cast<ColumnWidth>(width))
+		if (width.IsSpecialValue())
 		{
-			case ColumnWidth::Default:
-			case ColumnWidth::AutoSize:
-			{
-				m_Width = static_cast<ColumnWidth>(width);
-				UpdateDisplay();
-				return;
-			}
-		};
-
-		m_Width = static_cast<ColumnWidth>(std::clamp(width, m_MinWidth, GetAbsMaxColumnWidth()));
+			m_Width = width;
+		}
+		else
+		{
+			m_Width = std::clamp<int>(width, m_MinWidth, GetAbsMaxColumnWidth());
+		}
 		UpdateDisplay();
 	}
 	int Column::CalcBestSize()

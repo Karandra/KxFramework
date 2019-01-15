@@ -1,5 +1,7 @@
 #pragma once
 #include "Common.h"
+#include "Editor.h"
+#include "Renderer.h"
 #include "KxFramework/KxWithOptions.h"
 
 namespace Kx::DataView2
@@ -80,19 +82,19 @@ namespace Kx::DataView2
 		private:
 			NativeColumn m_NativeColumn;
 			View* m_View = nullptr;
-			Renderer* m_Renderer = nullptr;
-			Editor* m_Editor = nullptr;
+			std::unique_ptr<Renderer> m_Renderer;
+			std::unique_ptr<Editor> m_Editor;
 
 			size_t m_Index = std::numeric_limits<size_t>::max();
 			size_t m_DisplayIndex = std::numeric_limits<size_t>::max();
-			int m_ID = -1;
+			int m_ID = std::numeric_limits<int>::min();
 
 			wxBitmap m_Bitmap;
 			wxString m_Title;
 			wxAlignment m_TitleAlignment = wxALIGN_INVALID;
 
 			KxWithOptions<ColumnStyle, ColumnStyle::DefaultStyle> m_Style;
-			ColumnWidth m_Width = ColumnWidth::AutoSize;
+			ColumnWidth m_Width;
 			int m_MinWidth = 0;
 			int m_BestWidth = 0;
 			wxRecursionGuardFlag m_BestWidthRG;
@@ -125,6 +127,11 @@ namespace Kx::DataView2
 			{
 				return m_Style.GetOptionsValue();
 			}
+			void SetStyleFlags(ColumnStyle style)
+			{
+				m_Style.SetOptionsValue(style);
+			}
+
 			const NativeColumn& GetNativeColumn() const
 			{
 				return m_NativeColumn;
@@ -139,18 +146,28 @@ namespace Kx::DataView2
 				:m_NativeColumn(*this)
 			{
 			}
-			Column(const wxString& title, Renderer* renderer, int id)
+			Column(const wxString& title, int id, Renderer* renderer = nullptr)
 				:m_NativeColumn(*this), m_Title(title), m_Renderer(renderer), m_ID(id)
 			{
 			}
-			Column(const wxBitmap& bitmap, Renderer* renderer, int id)
+			Column(const wxBitmap& bitmap, int id, Renderer* renderer = nullptr)
 				:m_NativeColumn(*this), m_Bitmap(bitmap), m_Renderer(renderer), m_ID(id)
 			{
 			}
-			Column(const wxBitmap& bitmap, const wxString& title, Renderer* renderer, int id)
+			Column(const wxBitmap& bitmap, const wxString& title, int id, Renderer* renderer = nullptr)
 				:m_NativeColumn(*this), m_Bitmap(bitmap), m_Title(title), m_Renderer(renderer), m_ID(id)
 			{
 			}
+			
+			Column(const wxString& title, int id, ColumnWidth width, ColumnStyle style)
+				:m_NativeColumn(*this), m_Title(title), m_ID(id), m_Width(width), m_Style(style)
+			{
+			}
+			Column(const wxBitmap& bitmap, int id, ColumnWidth width, ColumnStyle style)
+				:m_NativeColumn(*this), m_Bitmap(bitmap), m_ID(id), m_Width(width), m_Style(style)
+			{
+			}
+
 			virtual ~Column();
 
 		public:
@@ -158,8 +175,12 @@ namespace Kx::DataView2
 			{
 				return m_View;
 			}
+			
 			Renderer& GetRenderer() const;
+			void AssignRenderer(Renderer* renderer);
+
 			Editor* GetEditor() const;
+			void AssignEditor(Editor* editor);
 
 		public:
 			size_t GetIndex() const
@@ -214,12 +235,8 @@ namespace Kx::DataView2
 			}
 
 			int GetWidth() const;
-			void SetWidth(int width);
-			void SetWidth(ColumnWidth width)
-			{
-				SetWidth(static_cast<int>(width));
-			}
-		
+			void SetWidth(ColumnWidth width);
+
 			int GetMinWidth() const
 			{
 				return m_MinWidth;
