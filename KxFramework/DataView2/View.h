@@ -105,6 +105,69 @@ namespace Kx::DataView2
 			void DoEnable(bool value) override;
 			void DoInsertColumn(Column* column, size_t position);
 
+			enum class ICEAction
+			{
+				Append,
+				Prepend,
+				Insert
+			};
+
+			template<ICEAction action, class TValue, class TRenderer = void, class TEditor = void>
+			auto InsertColumnEx(const TValue& value, int id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::DefaultStyle, size_t index = 0)
+			{
+				Column* column = new Column(value, id, width, style);
+
+				// Assign renderer and editor if needed
+				TEditor* editor = nullptr;
+				TRenderer* renderer = nullptr;
+				if constexpr(!std::is_void_v<TEditor>)
+				{
+					editor = new TEditor();
+					column->AssignEditor(editor);
+				}
+				if constexpr(!std::is_void_v<TRenderer>)
+				{
+					renderer = new TRenderer();
+					column->AssignRenderer(renderer);
+				}
+
+				// Add column
+				if constexpr(action == ICEAction::Append)
+				{
+					AppendColumn(column);
+				}
+				else if constexpr(action == ICEAction::Prepend)
+				{
+					PrependColumn(column);
+				}
+				else if constexpr (action == ICEAction::Insert)
+				{
+					InsertColumn(index, column);
+				}
+				else
+				{
+					static_assert(false, "Invalid ICE action");
+				}
+
+				// Return tuple
+				if constexpr(!std::is_void_v<TRenderer> && !std::is_void_v<TEditor>)
+				{
+					return std::make_tuple(std::ref(*column), std::ref(*renderer), std::ref(*editor));
+				}
+				else if constexpr (std::is_void_v<TRenderer> && !std::is_void_v<TEditor>)
+				{
+					return std::make_tuple(std::ref(*column), std::ref(*editor));
+				}
+				else if constexpr(!std::is_void_v<TRenderer> && std::is_void_v<TEditor>)
+				{
+					return std::make_tuple(std::ref(*column), std::ref(*renderer));
+				}
+				else
+				{
+					return std::make_tuple(std::ref(*column));
+				}
+			}
+
 			// TODO: rewrite sorting columns code
 			void UseColumnForSorting(size_t index);
 			void DontUseColumnForSorting(size_t index);
@@ -157,7 +220,25 @@ namespace Kx::DataView2
 			// Columns
 			Renderer& AppendColumn(Column* column);
 			Renderer& PrependColumn(Column* column);
-			Renderer& InsertColumn(size_t pos, Column* column);
+			Renderer& InsertColumn(size_t index, Column* column);
+
+			template<class TRenderer = void, class TEditor = void>
+			auto AppendColumn(const wxString& title, int id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::DefaultStyle)
+			{
+				return InsertColumnEx<ICEAction::Append, wxString, TRenderer, TEditor>(title, id, width, style);
+			}
+
+			template<class TRenderer = void, class TEditor = void>
+			auto PrependColumn(const wxString& title, int id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::DefaultStyle)
+			{
+				return InsertColumnEx<ICEAction::Prepend, wxString, TRenderer, TEditor>(title, id, width, style);
+			}
+
+			template<class TRenderer = void, class TEditor = void>
+			auto InsertColumn(size_t index, const wxString& title, int id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::DefaultStyle)
+			{
+				return InsertColumnEx<ICEAction::Insert, wxString, TRenderer, TEditor>(title, id, width, style, index);
+			}
 
 			size_t GetColumnCount() const
 			{
