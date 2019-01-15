@@ -415,11 +415,7 @@ namespace Kx::DataView2
 		if (!allow)
 		{
 			ResetAllSortColumns();
-
-			if (Model* model = GetModel())
-			{
-				//model->Resort();
-			}
+			m_ClientArea->OnShouldResort();
 		}
 		return true;
 	}
