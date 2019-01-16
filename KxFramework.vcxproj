@@ -203,6 +203,7 @@
     <ClInclude Include="KxFramework\DataView2\RenderEngine.h" />
     <ClInclude Include="KxFramework\DataView2\Renderers\NullRenderer.h" />
     <ClInclude Include="KxFramework\DataView2\Renderers\TextRenderer.h" />
+    <ClInclude Include="KxFramework\DataView2\Renderers\ToggleRenderer.h" />
     <ClInclude Include="KxFramework\DataView2\Row.h" />
     <ClInclude Include="KxFramework\DataView2\SortOrder.h" />
     <ClInclude Include="KxFramework\DataView2\View.h" />
@@ -450,8 +451,8 @@
     <ClCompile Include="KxFramework\DataView2\Model.cpp" />
     <ClCompile Include="KxFramework\DataView2\RenderEngine.cpp" />
     <ClCompile Include="KxFramework\DataView2\Renderers\TextRenderer.cpp" />
+    <ClCompile Include="KxFramework\DataView2\Renderers\ToggleRenderer.cpp" />
     <ClCompile Include="KxFramework\DataView2\View.cpp" />
-    <ClCompile Include="KxFramework\DataView2\DataView2.cpp" />
     <ClCompile Include="KxFramework\DataView2\Editor.cpp" />
     <ClCompile Include="KxFramework\DataView2\HeaderCtrl.cpp" />
     <ClCompile Include="KxFramework\DataView2\ItemAttributes.cpp" />

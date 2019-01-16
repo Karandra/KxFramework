@@ -847,6 +847,9 @@
     <ClInclude Include="KxFramework\DataView2\RenderEngine.h">
       <Filter>Header Files\GUI\DataView2</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Renderers\ToggleRenderer.h">
+      <Filter>Header Files\GUI\DataView2\Renderers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1357,9 +1360,6 @@
     <ClCompile Include="KxFramework\KxUxTheme.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\DataView2.cpp">
-      <Filter>Source Files\GUI\DataView2</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\DataView2\Editor.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
     </ClCompile>
@@ -1398,6 +1398,9 @@
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\RenderEngine.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\Renderers\ToggleRenderer.cpp">
+      <Filter>Source Files\GUI\DataView2\Renderers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

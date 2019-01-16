@@ -12,6 +12,12 @@ namespace Kx::DataView2
 
 namespace Kx::DataView2
 {
+	enum class MarkupMode
+	{
+		Disabled = 0,
+		TextOnly,
+		WithMnemonics
+	};
 	enum class ProgressBarState
 	{
 		Normal,
@@ -19,11 +25,20 @@ namespace Kx::DataView2
 		Error,
 		Partial,
 	};
-	enum class MarkupMode
+	enum class ToggleState
 	{
-		Disabled = 0,
-		TextOnly,
-		WithMnemonics
+		None = -2,
+
+		Checked = 1,
+		Unchecked = 0,
+		Indeterminate = -1,
+	};
+	enum class ToggleType
+	{
+		None = -1,
+
+		CheckBox,
+		RadioBox,
 	};
 }
 
@@ -51,7 +66,10 @@ namespace Kx::DataView2
 			bool DrawText(const wxRect& cellRect, CellState cellState, const wxString& string, int offsetX = 0);
 			bool DrawText(wxDC& dc, const wxRect& cellRect, CellState cellState, const wxString& string, int offsetX = 0);
 
-			bool DoDrawBitmap(const wxRect& cellRect, CellState cellState, const wxBitmap& bitmap);
-			bool DoDrawProgressBar(const wxRect& cellRect, CellState cellState, int value, int range, ProgressBarState state = ProgressBarState::Normal);
+			bool DrawBitmap(const wxRect& cellRect, CellState cellState, const wxBitmap& bitmap);
+			bool DrawProgressBar(const wxRect& cellRect, CellState cellState, int value, int range, ProgressBarState state = ProgressBarState::Normal);
+			
+			wxSize GetToggleSize() const;
+			wxSize DrawToggle(wxDC& dc, const wxRect& cellRect, CellState cellState, ToggleState toggleState, ToggleType toggleType);
 	};
 }

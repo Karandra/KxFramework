@@ -230,7 +230,7 @@ namespace Kx::DataView2
 		return false;
 	}
 
-	bool RenderEngine::DoDrawBitmap(const wxRect& cellRect, CellState cellState, const wxBitmap& bitmap)
+	bool RenderEngine::DrawBitmap(const wxRect& cellRect, CellState cellState, const wxBitmap& bitmap)
 	{
 		if (bitmap.IsOk())
 		{
@@ -242,7 +242,7 @@ namespace Kx::DataView2
 		}
 		return false;
 	}
-	bool RenderEngine::DoDrawProgressBar(const wxRect& cellRect, CellState cellState, int value, int range, ProgressBarState state)
+	bool RenderEngine::DrawProgressBar(const wxRect& cellRect, CellState cellState, int value, int range, ProgressBarState state)
 	{
 		KxUxTheme::Handle themeHandle(m_Renderer.GetView(), L"PROGRESS");
 		if (themeHandle)
@@ -297,5 +297,46 @@ namespace Kx::DataView2
 
 		wxRendererNative::Get().DrawGauge(m_Renderer.GetView(), m_Renderer.GetGraphicsDC(), cellRect, value, range);
 		return true;
+	}
+	
+	wxSize RenderEngine::GetToggleSize() const
+	{
+		return wxRendererNative::Get().GetCheckBoxSize(m_Renderer.GetView());
+	}
+	wxSize RenderEngine::DrawToggle(wxDC& dc, const wxRect& cellRect, CellState cellState, ToggleState toggleState, ToggleType toggleType)
+	{
+		int flags = GetControlFlags(cellState);
+		switch (toggleState)
+		{
+			case ToggleState::Checked:
+			{
+				flags |= wxCONTROL_CHECKED;
+				break;
+			}
+			case ToggleState::Indeterminate:
+			{
+				flags |= wxCONTROL_UNDETERMINED;
+				break;
+			}
+		};
+
+		// Ensure that the check boxes always have at least the minimal required size,
+		// otherwise DrawCheckBox() doesn't really work well. If this size is greater than
+		// the cell size, the checkbox will be truncated but this is a lesser evil.
+		View* view = m_Renderer.GetView();
+		wxRect toggleRect = cellRect;
+		wxSize size = toggleRect.GetSize();
+		size.IncTo(GetToggleSize());
+		toggleRect.SetSize(size);
+
+		if (toggleType == ToggleType::CheckBox || flags & wxCONTROL_UNDETERMINED)
+		{
+			wxRendererNative::Get().DrawCheckBox(view, dc, toggleRect, flags);
+		}
+		else
+		{
+			wxRendererNative::Get().DrawRadioBitmap(view, dc, toggleRect, flags);
+		}
+		return toggleRect.GetSize();
 	}
 }

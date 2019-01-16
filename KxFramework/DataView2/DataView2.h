@@ -16,6 +16,7 @@
 #include "KxFramework/DataView2/Renderer.h"
 #include "KxFramework/DataView2/Renderers/NullRenderer.h"
 #include "KxFramework/DataView2/Renderers/TextRenderer.h"
+#include "KxFramework/DataView2/Renderers/ToggleRenderer.h"
 
 // Editors
 #include "KxFramework/DataView2/Editor.h"
