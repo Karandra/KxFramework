@@ -46,14 +46,14 @@ namespace Kx::DataView2
 		node->SetNodeExpanded(true);
 		return node;
 	}
-	bool Node::SwapNodes(Node* node1, Node* node2)
+	bool Node::SwapNodes(Node& node1, Node& node2)
 	{
-		if (node1 != node2 && (node1->HasParent() && node2->HasParent()) && node1->GetParent() == node2->GetParent())
+		if (&node1 != &node2 && (node1.HasParent() && node2.HasParent()) && node1.GetParent() == node2.GetParent())
 		{
-			Vector& children = node1->GetParent()->GetChildren();
+			Vector& children = node1.GetParent()->GetChildren();
 
-			auto it1 = std::find(children.begin(), children.end(), node1);
-			auto it2 = std::find(children.begin(), children.end(), node2);
+			auto it1 = std::find(children.begin(), children.end(), &node1);
+			auto it2 = std::find(children.begin(), children.end(), &node2);
 			std::iter_swap(it1, it2);
 			return true;
 		}
@@ -319,6 +319,10 @@ namespace Kx::DataView2
 			RemoveChild(index);
 		}
 	}
+	void Node::Remove()
+	{
+		m_ParentNode->RemoveChild(*this);
+	}
 
 	bool Node::IsRenderable(const Column& column) const
 	{
@@ -328,6 +332,15 @@ namespace Kx::DataView2
 
 namespace Kx::DataView2
 {
+	MainWindow* Node::GetMainWindow() const
+	{
+		return m_MainWindow;
+	}
+	View* Node::GetView() const
+	{
+		return m_MainWindow->GetView();
+	}
+
 	bool Node::IsExpanded() const
 	{
 		return IsNodeExpanded() && HasChildren();
@@ -345,11 +358,11 @@ namespace Kx::DataView2
 	}
 	void Node::Expand()
 	{
-		m_MainWindow->Expand(*this);
+		m_MainWindow->GetView()->Expand(*this);
 	}
 	void Node::Collapse()
 	{
-		m_MainWindow->Collapse(*this);
+		m_MainWindow->GetView()->Collapse(*this);
 	}
 	void Node::ToggleExpanded()
 	{
@@ -372,6 +385,42 @@ namespace Kx::DataView2
 	Row Node::GetRow() const
 	{
 		return m_MainWindow->GetRowByNode(*this);
+	}
+	bool Node::IsSelected() const
+	{
+		return GetView()->IsSelected(*this);
+	}
+	bool Node::IsCurrent() const
+	{
+		return GetView()->GetCurrentItem() == this;
+	}
+	bool Node::IsHotTracked() const
+	{
+		return GetView()->GetHotTrackedItem() == this;
+	}
+	void Node::SetSelected(bool value)
+	{
+		if (value)
+		{
+			GetView()->Select(*this);
+		}
+		else
+		{
+			GetView()->Unselect(*this);
+		}
+	}
+	void Node::EnsureVisible(const Column* column)
+	{
+		GetView()->EnsureVisible(*this, column);
+	}
+
+	wxRect Node::GetCellRect(const Column* column) const
+	{
+		return GetView()->GetAdjustedItemRect(*this, column);
+	}
+	wxPoint Node::GetDropdownMenuPosition(const Column* column) const
+	{
+		return GetView()->GetDropdownMenuPosition(*this, column);
 	}
 }
 

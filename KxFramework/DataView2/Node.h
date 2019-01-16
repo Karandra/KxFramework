@@ -4,7 +4,6 @@
 #include "Row.h"
 #include "Column.h"
 #include "SortOrder.h"
-#include <optional>
 
 namespace Kx::DataView2
 {
@@ -12,6 +11,7 @@ namespace Kx::DataView2
 	class KX_API MainWindow;
 	class KX_API Renderer;
 	class KX_API Editor;
+	class KX_API View;
 	class KX_API Node;
 	class CellState;
 
@@ -30,12 +30,14 @@ namespace Kx::DataView2
 		public:
 			using Vector = std::vector<Node*>;
 
+		private:
 			static Node* CreateRootNode(MainWindow* window);
-			static bool SwapNodes(Node* node1, Node* node2);
+		
+		public:
+			static bool SwapNodes(Node& node1, Node& node2);
 
 		private:
 			Vector m_Children;
-			SortOrder m_SortOrder = SortOrder::UseNone();
 			MainWindow* m_MainWindow = nullptr;
 			Node* m_ParentNode = nullptr;
 
@@ -44,7 +46,7 @@ namespace Kx::DataView2
 			// number of rows the subtree occupies for branch nodes.
 			intptr_t m_SubTreeCount = 0;
 
-			void* m_UserData = nullptr;
+			SortOrder m_SortOrder = SortOrder::UseNone();
 			bool m_IsExpanded = false;
 
 		private:
@@ -142,6 +144,7 @@ namespace Kx::DataView2
 			}
 			void RemoveChild(size_t index);
 			void RemoveChild(Node& node);
+			void Remove();
 
 			template<class TNode, class... Args> TNode& NewChild(Args&&... arg)
 			{
@@ -160,15 +163,6 @@ namespace Kx::DataView2
 			bool IsEditable(const Column& column) const
 			{
 				return GetEditor(column) != nullptr;
-			}
-
-			template<class T = void*> T GetUserData() const
-			{
-				return reinterpret_cast<T>(m_UserData);
-			}
-			template<class T = void*> void SetUserData(T value) const
-			{
-				m_UserData = reinterpret_cast<void*>(value);
 			}
 
 		public:
@@ -209,6 +203,9 @@ namespace Kx::DataView2
 			}
 	
 		public:
+			MainWindow* GetMainWindow() const;
+			View* GetView() const;
+
 			bool IsExpanded() const;
 			void SetExpanded(bool expanded);
 			void Expand();
@@ -220,6 +217,22 @@ namespace Kx::DataView2
 			void Edit(Column& column);
 
 			Row GetRow() const;
+			bool IsSelected() const;
+			bool IsCurrent() const;
+			bool IsHotTracked() const;
+			void SetSelected(bool value);
+			void Select()
+			{
+				SetSelected(true);
+			}
+			void Unselect()
+			{
+				SetSelected(false);
+			}
+			void EnsureVisible(const Column* column = nullptr);
+
+			wxRect GetCellRect(const Column* column = nullptr) const;
+			wxPoint GetDropdownMenuPosition(const Column* column = nullptr) const;
 		};
 }
 
