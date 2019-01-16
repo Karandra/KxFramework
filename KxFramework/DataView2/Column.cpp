@@ -245,6 +245,10 @@ namespace Kx::DataView2
 		return false;
 	}
 
+	bool Column::IsExpander() const
+	{
+		return m_View->GetExpanderColumn() == this;
+	}
 	bool Column::IsHotTracked() const
 	{
 		return m_View->GetMainWindow()->GetHotTrackColumn() == this;

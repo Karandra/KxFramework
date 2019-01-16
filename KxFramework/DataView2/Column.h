@@ -343,6 +343,7 @@ namespace Kx::DataView2
 				return m_Editor != nullptr;
 			}
 
+			bool IsExpander() const;
 			bool IsHotTracked() const;
 			bool IsCurrent() const;
 
