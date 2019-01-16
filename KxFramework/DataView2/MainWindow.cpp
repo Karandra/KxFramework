@@ -119,7 +119,7 @@ namespace Kx::DataView2
 					// because the user has full row selected), try to find the first activatable
 					// column (this would typically be a checkbox and we don't want to force the user
 					// to set focus on the checkbox column).
-					Column* activatableColumn = FindColumnForEditing(*node);
+					Column* activatableColumn = FindInteractibleColumn(*node, InteractibleCell::Activator);
 					if (activatableColumn)
 					{
 						const wxRect cellRect = m_View->GetItemRect(*node, activatableColumn);
@@ -162,7 +162,7 @@ namespace Kx::DataView2
 
 						// Edit the current column. If no column is focused (typically because the user has full row selected),
 						// try to find the first editable column.
-						if (Column* editableColumn = FindColumnForEditing(*node))
+						if (Column* editableColumn = FindInteractibleColumn(*node, InteractibleCell::Editor))
 						{
 							m_View->EditItem(*node, *editableColumn);
 						}
@@ -1319,7 +1319,22 @@ namespace Kx::DataView2
 		m_UseCellFocus = editableCount > 0;
 		UpdateDisplay();
 	}
-	Column* MainWindow::FindColumnForEditing(const Node& item)
+	bool MainWindow::IsCellInteractible(const Node& node, const Column& column, InteractibleCell action) const
+	{
+		switch (action)
+		{
+			case InteractibleCell::Activator:
+			{
+				return node.IsActivatable(column);
+			}
+			case InteractibleCell::Editor:
+			{
+				return node.IsEditable(column);
+			}
+		};
+		return false;
+	}
+	Column* MainWindow::FindInteractibleColumn(const Node& node, InteractibleCell action)
 	{
 		// Edit the current column editable in 'mode'. If no column is focused
 		// (typically because the user has full row selected), try to find the
@@ -1328,7 +1343,7 @@ namespace Kx::DataView2
 		// focus on the checkbox column; or on the only editable text column).
 
 		Column* candidate = m_CurrentColumn;
-		if (candidate && !item.IsEditable(*candidate) && !m_IsCurrentColumnSetByKeyboard)
+		if (candidate && !IsCellInteractible(node, *candidate, action) && !m_IsCurrentColumnSetByKeyboard)
 		{
 			// If current column was set by mouse to something not editable
 			// and the user pressed Space/F2 to edit it, treat the
@@ -1344,11 +1359,11 @@ namespace Kx::DataView2
 
 		if (!candidate)
 		{
-			size_t columnCount = m_View->GetColumnCount();
+			const size_t columnCount = m_View->GetColumnCount();
 			for (size_t columnIndex = 0; columnIndex < columnCount; columnIndex++)
 			{
 				Column* column = m_View->GetColumnDisplayedAt(columnIndex);
-				if (column->IsVisible() && item.IsEditable(*column))
+				if (column->IsVisible() && IsCellInteractible(node, *column, action))
 				{
 					candidate = column;
 					break;
@@ -1356,13 +1371,7 @@ namespace Kx::DataView2
 			}
 		}
 
-		// If on container item without columns, only the expander column may be directly editable:
-		if (candidate && m_View->GetExpanderColumn() != candidate && item.HasChildren())
-		{
-			candidate = m_View->GetExpanderColumn();
-		}
-
-		if (candidate && item.IsEditable(*candidate))
+		if (candidate && IsCellInteractible(node, *candidate, action))
 		{
 			return candidate;
 		}

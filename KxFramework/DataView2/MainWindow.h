@@ -51,6 +51,11 @@ namespace Kx::DataView2
 				EXPANDER_MARGIN = 4,
 				EXPANDER_OFFSET = 4,
 			};
+			enum class InteractibleCell
+			{
+				Editor,
+				Activator,
+			};
 
 		private:
 			View* m_View = nullptr;
@@ -150,7 +155,8 @@ namespace Kx::DataView2
 
 			/* Columns */
 			void OnColumnsCountChanged();
-			Column* FindColumnForEditing(const Node& item);
+			bool IsCellInteractible(const Node& node, const Column& column, InteractibleCell action) const;
+			Column* FindInteractibleColumn(const Node& node, InteractibleCell action);
 			int CalcBestColumnWidth(Column& column) const;
 
 			/* Items */
