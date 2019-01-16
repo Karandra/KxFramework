@@ -181,6 +181,7 @@ namespace Kx::DataView2
 	{
 		if (wxControl::Create(parent, id, wxDefaultPosition, wxDefaultSize, static_cast<long>(style)|wxScrolledWindowStyle, wxDefaultValidator, GetClassInfo()->GetClassName()))
 		{
+			m_Styles = style;
 			m_ClientArea = new MainWindow(this, wxID_NONE);
 
 			// We use the cursor keys for moving the selection, not scrolling, so call
