@@ -251,7 +251,7 @@ namespace Kx::DataView2
 	}
 	bool Column::IsExpander() const
 	{
-		return m_View->GetExpanderColumn() == this;
+		return m_View->GetExpanderColumnOrFirstOne() == this;
 	}
 	bool Column::IsHotTracked() const
 	{
