@@ -11,7 +11,7 @@ namespace Kx::DataView2
 			{
 				None = 0,
 				Selected = 1 << 0,
-				Highlighted = 1 << 1,
+				HotTracked = 1 << 1,
 				DropTarget = 1 << 2,
 			};
 
@@ -23,9 +23,9 @@ namespace Kx::DataView2
 			{
 				return m_Value.IsOptionEnabled(Value::Selected);
 			}
-			bool IsHighlighted() const
+			bool IsHotTracked() const
 			{
-				return m_Value.IsOptionEnabled(Value::Highlighted);
+				return m_Value.IsOptionEnabled(Value::HotTracked);
 			}
 			bool IsDropTarget() const
 			{
@@ -37,9 +37,9 @@ namespace Kx::DataView2
 				m_Value.SetOptionEnabled(Value::Selected);
 				return *this;
 			}
-			CellState& SetHighlighted()
+			CellState& SetHotTracked()
 			{
-				m_Value.SetOptionEnabled(Value::Highlighted);
+				m_Value.SetOptionEnabled(Value::HotTracked);
 				return *this;
 			}
 			CellState& SetDropTarget()

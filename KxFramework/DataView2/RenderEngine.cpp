@@ -104,18 +104,22 @@ namespace Kx::DataView2
 	int RenderEngine::GetControlFlags(CellState cellState) const
 	{
 		int flags = wxCONTROL_NONE;
-		if (cellState.IsSelected())
-		{
-			flags |= wxCONTROL_PRESSED;
-		}
-		if (cellState.IsHighlighted())
-		{
-			flags |= wxCONTROL_CURRENT|wxCONTROL_FOCUSED;
-		}
+
 		if (!m_Renderer.GetAttributes().IsEnabled())
 		{
 			flags |= wxCONTROL_DISABLED;
 		}
+
+		if (cellState.IsSelected())
+		{
+			flags |= wxCONTROL_PRESSED;
+		}
+
+		if (cellState.IsHotTracked())
+		{
+			flags |= wxCONTROL_CURRENT|wxCONTROL_FOCUSED;
+		}
+		
 		return flags;
 	}
 

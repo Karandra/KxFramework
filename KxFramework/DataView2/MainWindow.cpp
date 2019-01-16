@@ -1270,7 +1270,7 @@ namespace Kx::DataView2
 			}
 			if (m_HotTrackRowEnabled && row == m_HotTrackRow && m_HotTrackColumn)
 			{
-				state.SetHighlighted();
+				state.SetHotTracked();
 			}
 			if (m_DropHint && row == m_DropHintLine)
 			{
