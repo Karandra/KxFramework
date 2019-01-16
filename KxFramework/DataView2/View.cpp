@@ -603,16 +603,16 @@ namespace Kx::DataView2
 	}
 	void View::Collapse(Node& item)
 	{
-		size_t row = m_ClientArea->GetRowByNode(item);
-		if (row != -1)
+		Row row = m_ClientArea->GetRowByNode(item);
+		if (row)
 		{
 			m_ClientArea->Collapse(row);
 		}
 	}
 	bool View::IsExpanded(Node& item) const
 	{
-		size_t row = m_ClientArea->GetRowByNode(item);
-		if (row != -1)
+		Row row = m_ClientArea->GetRowByNode(item);
+		if (row)
 		{
 			return m_ClientArea->IsExpanded(row);
 		}
@@ -641,11 +641,11 @@ namespace Kx::DataView2
 	{
 		m_ClientArea->HitTest(point, item, column);
 	}
-	wxRect View::GetItemRect(Node& item, const Column* column) const
+	wxRect View::GetItemRect(const Node& item, const Column* column) const
 	{
 		return m_ClientArea->GetItemRect(item, column);
 	}
-	wxRect View::GetAdjustedItemRect(Node& item, const Column* column) const
+	wxRect View::GetAdjustedItemRect(const Node& item, const Column* column) const
 	{
 		wxRect rect = GetItemRect(item, column);
 		if (HasHeaderCtrl())
@@ -654,7 +654,7 @@ namespace Kx::DataView2
 		}
 		return rect;
 	}
-	wxPoint View::GetDropdownMenuPosition(Node& item, const Column* column) const
+	wxPoint View::GetDropdownMenuPosition(const Node& item, const Column* column) const
 	{
 		return GetAdjustedItemRect(item, column).GetLeftBottom() + FromDIP(wxPoint(0, 1));
 	}

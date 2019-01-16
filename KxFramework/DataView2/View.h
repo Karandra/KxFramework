@@ -327,9 +327,9 @@ namespace Kx::DataView2
 
 			void EnsureVisible(Node& item, const Column* column = nullptr);
 			void HitTest(const wxPoint& point, Node*& item, Column*& column) const;
-			wxRect GetItemRect(Node& item, const Column* column = nullptr) const;
-			wxRect GetAdjustedItemRect(Node& item, const Column* column = nullptr) const;
-			wxPoint GetDropdownMenuPosition(Node& item, const Column* column = nullptr) const;
+			wxRect GetItemRect(const Node& item, const Column* column = nullptr) const;
+			wxRect GetAdjustedItemRect(const Node& item, const Column* column = nullptr) const;
+			wxPoint GetDropdownMenuPosition(const Node& item, const Column* column = nullptr) const;
 
 			int GetUniformRowHeight() const;
 			void SetUniformRowHeight(int rowHeight);

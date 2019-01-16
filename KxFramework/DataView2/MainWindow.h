@@ -359,7 +359,7 @@ namespace Kx::DataView2
 			Row GetLastVisibleRow() const;
 
 			void HitTest(const wxPoint& pos, Node*& item, Column*& column);
-			wxRect GetItemRect(const Node& item, const Column* column);
+			wxRect GetItemRect(const Node& item, const Column* column = nullptr);
 
 			// Adjust last column to window size
 			void UpdateColumnSizes();
