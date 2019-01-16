@@ -11,14 +11,14 @@ namespace Kx::DataView2
 
 	void TextRenderer::DrawCellContent(const wxRect& cellRect, CellState cellState)
 	{
-		DoDrawText(cellRect, cellState, m_Text);
+		GetRenderEngine().DrawText(cellRect, cellState, m_Text);
 	}
 	wxSize TextRenderer::GetCellSize() const
 	{
 		if (!m_Text.IsEmpty())
 		{
-			return DoGetTextExtent(m_Text);
+			return GetRenderEngine().GetTextExtent(m_Text);
 		}
-		return wxSize(0, Renderer::GetCellSize().GetHeight());
+		return wxSize(0, 0);
 	}
 }

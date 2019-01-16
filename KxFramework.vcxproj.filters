@@ -844,6 +844,9 @@
     <ClInclude Include="KxFramework\DataView2\Renderers\NullRenderer.h">
       <Filter>Header Files\GUI\DataView2\Renderers</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\RenderEngine.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1392,6 +1395,9 @@
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\Editors\TextEditor.cpp">
       <Filter>Source Files\GUI\DataView2\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\RenderEngine.cpp">
+      <Filter>Source Files\GUI\DataView2</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

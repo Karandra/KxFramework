@@ -200,6 +200,7 @@
     <ClInclude Include="KxFramework\DataView2\Column.h" />
     <ClInclude Include="KxFramework\DataView2\Editors\TextEditor.h" />
     <ClInclude Include="KxFramework\DataView2\Model.h" />
+    <ClInclude Include="KxFramework\DataView2\RenderEngine.h" />
     <ClInclude Include="KxFramework\DataView2\Renderers\NullRenderer.h" />
     <ClInclude Include="KxFramework\DataView2\Renderers\TextRenderer.h" />
     <ClInclude Include="KxFramework\DataView2\Row.h" />
@@ -447,6 +448,7 @@
     <ClCompile Include="KxFramework\DataView2\Column.cpp" />
     <ClCompile Include="KxFramework\DataView2\Editors\TextEditor.cpp" />
     <ClCompile Include="KxFramework\DataView2\Model.cpp" />
+    <ClCompile Include="KxFramework\DataView2\RenderEngine.cpp" />
     <ClCompile Include="KxFramework\DataView2\Renderers\TextRenderer.cpp" />
     <ClCompile Include="KxFramework\DataView2\View.cpp" />
     <ClCompile Include="KxFramework\DataView2\DataView2.cpp" />

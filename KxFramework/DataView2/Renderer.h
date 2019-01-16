@@ -4,6 +4,7 @@
 #include "Common.h"
 #include "CellState.h"
 #include "ItemAttributes.h"
+#include "RenderEngine.h"
 
 namespace Kx::DataView2
 {
@@ -11,6 +12,7 @@ namespace Kx::DataView2
 	class KX_API View;
 	class KX_API MainWindow;
 	class KX_API Column;
+	class KX_API RenderEngine;
 }
 
 namespace Kx::DataView2
@@ -20,6 +22,7 @@ namespace Kx::DataView2
 		friend class Column;
 		friend class MainWindow;
 		friend class MaxWidthCalculator;
+		friend class RenderEngine;
 
 		public:
 			enum class ProgressBarState
@@ -69,6 +72,10 @@ namespace Kx::DataView2
 			{
 				return m_Attributes;
 			}
+			RenderEngine GetRenderEngine() const
+			{
+				return RenderEngine(const_cast<Renderer&>(*this));
+			}
 
 			virtual bool OnActivateCell(const Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent = nullptr)
 			{
@@ -85,10 +92,6 @@ namespace Kx::DataView2
 			virtual wxSize GetCellSize() const;
 
 		public:
-			int DoCalcCenter(int pos, int size) const;
-			int DoFindFirstNewLinePos(const wxString& string) const;
-			int DoGetControlFlags(CellState cellState) const;
-
 			bool HasRegularDC() const
 			{
 				return m_RegularDC != nullptr;
@@ -110,15 +113,6 @@ namespace Kx::DataView2
 			{
 				return *m_GraphicsDC->GetGraphicsContext();
 			}
-
-			wxSize DoGetTextExtent(const wxString& string) const;
-			wxSize DoGetTextExtent(wxDC& dc, const wxString& string) const;
-
-			bool DoDrawText(const wxRect& cellRect, CellState cellState, const wxString& string, int offsetX = 0);
-			bool DoDrawText(wxDC& dc, const wxRect& cellRect, CellState cellState, const wxString& string, int offsetX = 0);
-
-			bool DoDrawBitmap(const wxRect& cellRect, CellState cellState, const wxBitmap& bitmap);
-			bool DoDrawProgressBar(const wxRect& cellRect, CellState cellState, int value, int range, ProgressBarState state = ProgressBarState::Normal);
 
 		public:
 			Renderer(int alignment = wxALIGN_INVALID)
