@@ -126,7 +126,7 @@ namespace Kx::DataView2
 
 						Renderer& renderer = node->GetRenderer(*activatableColumn);
 						renderer.SetupCellAttributes(*node, *activatableColumn, GetCellStateForRow(m_CurrentRow));
-						renderer.OnActivateCell(*node, cellRect, nullptr);
+						renderer.CallOnActivateCell(*node, cellRect, nullptr);
 						renderer.EndRendering();
 						break;
 					}
@@ -463,10 +463,10 @@ namespace Kx::DataView2
 		int x = event.GetX();
 		int y = event.GetY();
 		m_View->CalcUnscrolledPosition(x, y, &x, &y);
-		Column* col = nullptr;
+		Column* currentColumn = nullptr;
 
 		int xpos = 0;
-		size_t columnsCount = m_View->GetColumnCount();
+		const size_t columnsCount = m_View->GetColumnCount();
 		for (size_t i = 0; i < columnsCount; i++)
 		{
 			Column* column = m_View->GetColumnDisplayedAt(i);
@@ -476,21 +476,21 @@ namespace Kx::DataView2
 			{
 				if (x < xpos + width)
 				{
-					col = column;
+					currentColumn = column;
 					break;
 				}
 				xpos += width;
 			}
 		}
 
-		const Row current = GetRowAt(y);
-		Node* item = GetNodeByRow(current);
+		const Row currentRow = GetRowAt(y);
+		Node* currentNode = GetNodeByRow(currentRow);
 
 		// Hot track
 		{
-			bool rowChnaged = m_HotTrackRow != current;
-			bool columnChanged = m_HotTrackColumn != col;
-			m_HotTrackColumn = col;
+			const bool rowChnaged = m_HotTrackRow != currentRow;
+			const bool columnChanged = m_HotTrackColumn != currentColumn;
+			m_HotTrackColumn = currentColumn;
 
 			if (rowChnaged || columnChanged)
 			{
@@ -499,18 +499,18 @@ namespace Kx::DataView2
 					m_HotTrackRowEnabled = false;
 					RefreshRow(m_HotTrackRow);
 
-					if (item == nullptr)
+					if (currentNode == nullptr)
 					{
 						ResetHotTrackedExpander();
 					}
 				}
 
-				m_HotTrackRow = item ? current : INVALID_ROW;
+				m_HotTrackRow = currentNode ? currentRow : INVALID_ROW;
 				m_HotTrackRowEnabled = m_HotTrackRow && m_HotTrackColumn;
 				RefreshRow(m_HotTrackRow);
 
 				Event hoverEvent(KxEVT_DATAVIEW_ITEM_HOVERED);
-				CreateEventTemplate(hoverEvent, item, m_HotTrackColumn);
+				CreateEventTemplate(hoverEvent, currentNode, m_HotTrackColumn);
 				m_View->ProcessWindowEvent(hoverEvent);
 			}
 		}
@@ -523,7 +523,7 @@ namespace Kx::DataView2
 			CancelEdit();
 
 			Event evt(KxEVT_DATAVIEW_ITEM_CONTEXT_MENU);
-			CreateEventTemplate(evt, item, col);
+			CreateEventTemplate(evt, currentNode, currentColumn);
 			m_View->ProcessWindowEvent(evt);
 			return;
 		}
@@ -560,7 +560,7 @@ namespace Kx::DataView2
 				{
 					// Notify cell about drag
 					EventDND evt(KxEVT_DATAVIEW_ITEM_DRAG);
-					CreateEventTemplate(evt, itemDragged, col);
+					CreateEventTemplate(evt, itemDragged, currentColumn);
 					if (!m_View->HandleWindowEvent(evt) || !evt.IsAllowed())
 					{
 						return;
@@ -587,7 +587,7 @@ namespace Kx::DataView2
 		#endif
 
 		// Check if we clicked outside the item area.
-		if (current >= GetRowCount() || !col)
+		if (currentRow >= GetRowCount() || !currentColumn)
 		{
 			// Follow Windows convention here - clicking either left or right (but not middle) button clears the existing selection.
 			if (m_View && (event.LeftDown() || event.RightDown()))
@@ -595,14 +595,14 @@ namespace Kx::DataView2
 				if (!m_SelectionStore.IsEmpty())
 				{
 					m_View->UnselectAll();
-					SendSelectionChangedEvent(nullptr, col);
+					SendSelectionChangedEvent(nullptr, currentColumn);
 				}
 			}
 			event.Skip();
 			return;
 		}
 
-		Renderer& renderer = col->GetRenderer();
+		Renderer& renderer = currentColumn->GetRenderer();
 		Column* expander = m_View->GetExpanderColumnOrFirstOne();
 
 		// Test whether the mouse is hovering over the expander (a.k.a tree "+"
@@ -610,30 +610,29 @@ namespace Kx::DataView2
 		// the indentation and the expander itself.
 		bool isHoverOverExpander = false;
 		int itemOffset = 0;
-		if (!IsList() && expander == col)
+		if (!IsList() && expander == currentColumn)
 		{
-			Node* node = GetNodeByRow(current);
-			itemOffset = m_Indent * node->GetIndentLevel();
+			itemOffset = m_Indent * currentNode->GetIndentLevel();
 
-			if (node->HasChildren())
+			if (currentNode->HasChildren())
 			{
 				// We make the rectangle we are looking in a bit bigger than the actual
 				// visual expander so the user can hit that little thing reliably
-				wxRect rect(xpos + itemOffset, GetRowStart(current) + (GetRowHeight(current) - m_UniformRowHeight) / 2, m_UniformRowHeight, m_UniformRowHeight);
+				wxRect rect(xpos + itemOffset, GetRowStart(currentRow) + (GetRowHeight(currentRow) - m_UniformRowHeight) / 2, m_UniformRowHeight, m_UniformRowHeight);
 
 				if (rect.Contains(x, y))
 				{
 					// So the mouse is over the expander
 					isHoverOverExpander = true;
-					if (m_TreeNodeUnderMouse && m_TreeNodeUnderMouse != node)
+					if (m_TreeNodeUnderMouse && m_TreeNodeUnderMouse != currentNode)
 					{
 						RefreshRow(GetRowByNode(*m_TreeNodeUnderMouse));
 					}
-					if (m_TreeNodeUnderMouse != node)
+					if (m_TreeNodeUnderMouse != currentNode)
 					{
-						RefreshRow(current);
+						RefreshRow(currentRow);
 					}
-					m_TreeNodeUnderMouse = node;
+					m_TreeNodeUnderMouse = currentNode;
 				}
 			}
 
@@ -650,7 +649,7 @@ namespace Kx::DataView2
 		}
 
 		bool simulateClick = false;
-		bool ignoreOtherColumns = expander != col && item->HasChildren();
+		bool ignoreOtherColumns = expander != currentColumn && currentNode->HasChildren();
 		if (event.ButtonDClick())
 		{
 			m_LastOnSame = false;
@@ -658,10 +657,10 @@ namespace Kx::DataView2
 
 		if (event.LeftDClick())
 		{
-			if (!isHoverOverExpander && (current == m_RowLastClicked))
+			if (!isHoverOverExpander && (currentRow == m_RowLastClicked))
 			{
 				Event evt(KxEVT_DATAVIEW_ITEM_ACTIVATED);
-				CreateEventTemplate(evt, item, col);
+				CreateEventTemplate(evt, currentNode, currentColumn);
 				if (m_View->ProcessWindowEvent(evt))
 				{
 					// Item activation was handled from the user code.
@@ -685,7 +684,7 @@ namespace Kx::DataView2
 				if (UnselectAllRows(m_RowSelectSingleOnUp))
 				{
 					SelectRow(m_RowSelectSingleOnUp, true);
-					SendSelectionChangedEvent(GetNodeByRow(m_RowSelectSingleOnUp), col);
+					SendSelectionChangedEvent(GetNodeByRow(m_RowSelectSingleOnUp), currentColumn);
 				}
 				// Else it was already selected, nothing to do.
 			}
@@ -705,19 +704,19 @@ namespace Kx::DataView2
 		if (event.RightDown())
 		{
 			m_RowBeforeLastClicked = m_RowLastClicked;
-			m_RowLastClicked = current;
+			m_RowLastClicked = currentRow;
 
 			// If the item is already selected, do not update the selection.
 			// Multi-selections should not be cleared if a selected item is clicked.
-			if (!IsRowSelected(current))
+			if (!IsRowSelected(currentRow))
 			{
 				UnselectAllRows();
 
 				const size_t oldCurrent = m_CurrentRow;
-				ChangeCurrentRow(current);
+				ChangeCurrentRow(currentRow);
 				SelectRow(m_CurrentRow, true);
 				RefreshRow(oldCurrent);
-				SendSelectionChangedEvent(GetNodeByRow(m_CurrentRow), col);
+				SendSelectionChangedEvent(GetNodeByRow(m_CurrentRow), currentColumn);
 			}
 		}
 		//else if (event.MiddleDown())
@@ -727,23 +726,23 @@ namespace Kx::DataView2
 	
 		if ((event.LeftDown() || simulateClick) && isHoverOverExpander && !event.LeftDClick())
 		{
-			Node* node = GetNodeByRow(current);
+			Node* node = GetNodeByRow(currentRow);
 
 			// hoverOverExpander being true tells us that our node must be
 			// valid and have children. So we don't need any extra checks.
 			if (node->IsNodeExpanded())
 			{
-				Collapse(current);
+				Collapse(currentRow);
 			}
 			else
 			{
-				Expand(current);
+				Expand(currentRow);
 			}
 		}
 		else if ((event.LeftDown() || simulateClick) && !isHoverOverExpander)
 		{
 			m_RowBeforeLastClicked = m_RowLastClicked;
-			m_RowLastClicked = current;
+			m_RowLastClicked = currentRow;
 
 			Row oldCurrentRow = m_CurrentRow;
 			bool oldWasSelected = IsRowSelected(m_CurrentRow);
@@ -751,20 +750,20 @@ namespace Kx::DataView2
 			bool cmdModifierDown = event.CmdDown();
 			if (IsSingleSelection() || !(cmdModifierDown || event.ShiftDown()))
 			{
-				if (IsSingleSelection() || !IsRowSelected(current))
+				if (IsSingleSelection() || !IsRowSelected(currentRow))
 				{
-					ChangeCurrentRow(current);
-					if (UnselectAllRows(current))
+					ChangeCurrentRow(currentRow);
+					if (UnselectAllRows(currentRow))
 					{
 						SelectRow(m_CurrentRow, true);
-						SendSelectionChangedEvent(GetNodeByRow(m_CurrentRow), col);
+						SendSelectionChangedEvent(GetNodeByRow(m_CurrentRow), currentColumn);
 					}
 				}
 				else 
 				{
 					// Multi selection & current is highlighted & no mod keys
-					m_RowSelectSingleOnUp = current;
-					ChangeCurrentRow(current); // change focus
+					m_RowSelectSingleOnUp = currentRow;
+					ChangeCurrentRow(currentRow); // change focus
 				}
 			}
 			else
@@ -772,21 +771,21 @@ namespace Kx::DataView2
 				// Multi selection & either ctrl or shift is down
 				if (cmdModifierDown)
 				{
-					ChangeCurrentRow(current);
+					ChangeCurrentRow(currentRow);
 					ReverseRowSelection(m_CurrentRow);
-					SendSelectionChangedEvent(GetNodeByRow(m_CurrentRow), col);
+					SendSelectionChangedEvent(GetNodeByRow(m_CurrentRow), currentColumn);
 				}
 				else if (event.ShiftDown())
 				{
-					ChangeCurrentRow(current);
+					ChangeCurrentRow(currentRow);
 
 					Row lineFrom = oldCurrentRow;
-					Row lineTo = current;
+					Row lineTo = currentRow;
 
 					if (!lineFrom)
 					{
 						// If we hadn't had any current row before, treat this as a simple click and select the new row only.
-						lineFrom = current;
+						lineFrom = currentRow;
 					}
 
 					if (lineTo < lineFrom)
@@ -801,7 +800,7 @@ namespace Kx::DataView2
 					auto firstSel = m_SelectionStore.GetFirstSelectedItem(cookie);
 					if (firstSel != wxSelectionStore::NO_SELECTION)
 					{
-						SendSelectionChangedEvent(GetNodeByRow(firstSel), col);
+						SendSelectionChangedEvent(GetNodeByRow(firstSel), currentColumn);
 					}
 				}
 				else
@@ -819,7 +818,7 @@ namespace Kx::DataView2
 			Column* oldCurrentCol = m_CurrentColumn;
 
 			// Update selection here...
-			m_CurrentColumn = col;
+			m_CurrentColumn = currentColumn;
 			m_IsCurrentColumnSetByKeyboard = false;
 
 			// This flag is used to decide whether we should start editing the item
@@ -828,19 +827,19 @@ namespace Kx::DataView2
 			// was used for something else already, e.g. selecting the item (so it
 			// must have been already selected) or giving the focus to the control
 			// (so it must have had focus already).
-			m_LastOnSame = !simulateClick && ((col == oldCurrentCol) &&	(current == oldCurrentRow)) && oldWasSelected && HasFocus();
+			m_LastOnSame = !simulateClick && ((currentColumn == oldCurrentCol) &&	(currentRow == oldCurrentRow)) && oldWasSelected && HasFocus();
 
 			// Call ActivateCell() after everything else as under GTK+
-			if (item->IsEditable(*col))
+			if (currentNode->IsEditable(*currentColumn))
 			{
 				// notify cell about click
-				wxRect cellRect(xpos + itemOffset, GetRowStart(current), col->GetWidth() - itemOffset, GetRowHeight(current));
+				wxRect cellRect(xpos + itemOffset, GetRowStart(currentRow), currentColumn->GetWidth() - itemOffset, GetRowHeight(currentRow));
 
 				// Note that SetupCellAttributes() should be called after GetRowStart()
 				// call in 'cellRect' initialization above as GetRowStart() calls
 				// SetupCellAttributes() for other items from inside it.
 				renderer.EndRendering();
-				renderer.SetupCellAttributes(*item, *col, GetCellStateForRow(oldCurrentRow));
+				renderer.SetupCellAttributes(*currentNode, *currentColumn, GetCellStateForRow(oldCurrentRow));
 
 				// Report position relative to the cell's custom area, i.e.
 				// not the entire space as given by the control but the one
@@ -888,7 +887,7 @@ namespace Kx::DataView2
 				event2.m_y -= rectItem.y;
 				m_View->CalcUnscrolledPosition(event2.m_x, event2.m_y, &event2.m_x, &event2.m_y);
 
-				renderer.OnActivateCell(*item, cellRect, &event2);
+				renderer.CallOnActivateCell(*currentNode, cellRect, &event2);
 				renderer.EndRendering();
 			}
 		}

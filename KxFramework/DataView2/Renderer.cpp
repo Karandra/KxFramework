@@ -135,6 +135,14 @@ namespace Kx::DataView2
 		}
 		DrawCellContent(cellRectNew, cellState);
 	}
+	void Renderer::CallOnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent)
+	{
+		wxAny value = OnActivateCell(node, cellRect, mouseEvent);
+		if (!value.IsNull() && node.SetValue(value, *m_Column))
+		{
+			GetMainWindow()->OnCellChanged(node, m_Column);
+		}
+	}
 
 	bool Renderer::HasSolidBackground() const
 	{

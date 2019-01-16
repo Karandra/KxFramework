@@ -64,6 +64,7 @@ namespace Kx::DataView2
 			}
 			void CallDrawCellBackground(const wxRect& cellRect, CellState cellState);
 			void CallDrawCellContent(const wxRect& cellRect, CellState cellState);
+			void CallOnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent = nullptr);
 
 			void SetupCellAttributes(const Node& node, Column& column, CellState cellState);
 
@@ -77,9 +78,9 @@ namespace Kx::DataView2
 				return RenderEngine(const_cast<Renderer&>(*this));
 			}
 
-			virtual bool OnActivateCell(const Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent = nullptr)
+			virtual wxAny OnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent = nullptr)
 			{
-				return false;
+				return {};
 			}
 			virtual bool SetValue(const wxAny& value) = 0;
 
