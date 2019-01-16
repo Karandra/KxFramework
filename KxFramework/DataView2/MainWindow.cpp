@@ -393,7 +393,7 @@ namespace Kx::DataView2
 		}
 		else if (Node* node = GetNodeByRow(m_CurrentRow))
 		{
-			if (node->HasChildren())
+			if (node->HasChildren() && m_CurrentColumn && m_CurrentColumn->IsExpander())
 			{
 				if (!node->IsNodeExpanded())
 				{
@@ -408,11 +408,9 @@ namespace Kx::DataView2
 					EnsureVisible(m_CurrentRow + 1);
 					SendSelectionChangedEvent(GetNodeByRow(m_CurrentRow + 1), m_CurrentColumn);
 				}
+				return;
 			}
-			else
-			{
-				TryAdvanceCurrentColumn(node, event, true);
-			}
+			TryAdvanceCurrentColumn(node, event, true);
 		}
 	}
 
@@ -1302,21 +1300,9 @@ namespace Kx::DataView2
 	}
 
 	// Columns
-	void MainWindow::OnColumnsCountChanged()
+	void MainWindow::OnColumnCountChanged()
 	{
-		int editableCount = 0;
-
-		size_t count = m_View->GetColumnCount();
-		for (size_t i = 0; i < count; i++)
-		{
-			Column* column = m_View->GetColumnDisplayedAt(i);
-			if (column->IsVisible() && column->IsEditable())
-			{
-				editableCount++;
-			}
-		}
-
-		m_UseCellFocus = editableCount > 0;
+		m_UseCellFocus = m_View->GetColumnCount() != 0;
 		UpdateDisplay();
 	}
 	bool MainWindow::IsCellInteractible(const Node& node, const Column& column, InteractibleCell action) const
@@ -2148,42 +2134,48 @@ namespace Kx::DataView2
 	}
 	bool MainWindow::TryAdvanceCurrentColumn(Node* node, wxKeyEvent& event, bool moveForward)
 	{
-		if (m_View->GetColumnCount() == 0)
-		{
-			return false;
-		}
-
-		if (!m_UseCellFocus)
-		{
-			return false;
-		}
+		const size_t columnCount = m_View->GetColumnCount();
+		const size_t visibleColumnsCount = m_View->GetVisibleColumnCount();
 		const bool wrapAround = event.GetKeyCode() == WXK_TAB;
+		const bool currentColumnIsExpander = m_CurrentColumn && m_CurrentColumn->IsExpander();
 
-		if (node && node->HasChildren())
+		// Nothing to do
+		if (columnCount == 0 || !m_UseCellFocus)
 		{
 			return false;
 		}
 
-		if (m_CurrentColumn == nullptr || !m_IsCurrentColumnSetByKeyboard)
+		if (node && currentColumnIsExpander)
 		{
 			if (moveForward)
 			{
-				m_CurrentColumn = m_View->GetColumnDisplayedAt(1);
-				m_IsCurrentColumnSetByKeyboard = true;
-				RefreshRow(m_CurrentRow);
-				return true;
+				if (node->HasChildren() && !node->IsExpanded())
+				{
+					return false;
+				}
 			}
 			else
 			{
-				if (!wrapAround)
+				if (node->HasParent())
 				{
 					return false;
 				}
 			}
 		}
 
-		size_t nextColumn = m_CurrentColumn->GetIndex() + (moveForward ? +1 : -1);
-		if (nextColumn >= m_View->GetColumnCount())
+		if (m_CurrentColumn == nullptr || !m_IsCurrentColumnSetByKeyboard)
+		{
+			if (moveForward)
+			{
+				m_CurrentColumn = m_View->GetColumnDisplayedAt(0);
+				m_IsCurrentColumnSetByKeyboard = true;
+				RefreshRow(m_CurrentRow);
+				return true;
+			}
+		}
+
+		size_t nextColumn = std::clamp<intptr_t>((intptr_t)m_CurrentColumn->GetDisplayIndex() + (moveForward ? +1 : -1), 0, visibleColumnsCount);
+		if (nextColumn == (intptr_t)visibleColumnsCount)
 		{
 			if (!wrapAround)
 			{
@@ -2209,7 +2201,7 @@ namespace Kx::DataView2
 			if (GetCurrentRow() > 0)
 			{
 				// Go to the last column of the previous row
-				nextColumn = m_View->GetColumnCount() - 1;
+				nextColumn = visibleColumnsCount - 1;
 				OnVerticalNavigation(wxKeyEvent(), -1);
 			}
 			else
@@ -2220,19 +2212,10 @@ namespace Kx::DataView2
 			}
 		}
 
-		EnsureVisible(m_CurrentRow, nextColumn);
-
-		if (nextColumn < 1)
-		{
-			// We are going to the left of the second column. Reset to whole-row
-			// focus (which means first column would be edited).
-			m_CurrentColumn = nullptr;
-			RefreshRow(m_CurrentRow);
-			return true;
-		}
-
-		m_CurrentColumn = m_View->GetColumnDisplayedAt(nextColumn);
 		m_IsCurrentColumnSetByKeyboard = true;
+		m_CurrentColumn = m_View->GetColumnDisplayedAt(nextColumn);
+		
+		EnsureVisible(m_CurrentRow, m_CurrentColumn->GetIndex());
 		RefreshRow(m_CurrentRow);
 		return true;
 	}

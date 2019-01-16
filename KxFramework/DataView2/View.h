@@ -398,7 +398,7 @@ namespace Kx::DataView2
 			void OnColumnChange(size_t index);
 
 			// Update after a change to the number of columns
-			void OnColumnsCountChanged();
+			void OnColumnCountChanged();
 
 		public:
 			wxDECLARE_DYNAMIC_CLASS_NO_COPY(View);

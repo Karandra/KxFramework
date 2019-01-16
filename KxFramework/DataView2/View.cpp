@@ -79,7 +79,7 @@ namespace Kx::DataView2
 
 		// Insert
 		m_Columns.emplace(m_Columns.begin() + index, column);
-		OnColumnsCountChanged();
+		OnColumnCountChanged();
 	}
 
 	void View::UseColumnForSorting(size_t index)
@@ -343,7 +343,7 @@ namespace Kx::DataView2
 				}
 			}
 
-			OnColumnsCountChanged();
+			OnColumnCountChanged();
 			return true;
 		}
 		return false;
@@ -354,7 +354,7 @@ namespace Kx::DataView2
 		m_Columns.clear();
 		m_ColumnsSortingIndexes.clear();
 		m_ClientArea->ClearCurrentColumn();
-		OnColumnsCountChanged();
+		OnColumnCountChanged();
 
 		return true;
 	}
@@ -807,12 +807,12 @@ namespace Kx::DataView2
 		}
 		m_ClientArea->UpdateDisplay();
 	}
-	void View::OnColumnsCountChanged()
+	void View::OnColumnCountChanged()
 	{
 		if (m_HeaderArea)
 		{
 			m_HeaderArea->SetColumnCount(GetColumnCount());
 		}
-		m_ClientArea->OnColumnsCountChanged();
+		m_ClientArea->OnColumnCountChanged();
 	}
 }

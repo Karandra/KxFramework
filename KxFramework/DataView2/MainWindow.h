@@ -154,7 +154,7 @@ namespace Kx::DataView2
 			void RecalculateDisplay();
 
 			/* Columns */
-			void OnColumnsCountChanged();
+			void OnColumnCountChanged();
 			bool IsCellInteractible(const Node& node, const Column& column, InteractibleCell action) const;
 			Column* FindInteractibleColumn(const Node& node, InteractibleCell action);
 			int CalcBestColumnWidth(Column& column) const;
