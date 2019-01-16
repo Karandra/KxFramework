@@ -1157,6 +1157,12 @@ namespace Kx::DataView2
 				// Draw the background
 				renderer.CallDrawCellBackground(cellRect, cellState);
 
+				// Draw cell focus
+				if (m_View->IsOptionEnabled(CtrlStyle::CellFocus) && currentRow == m_CurrentRow && cellState.IsSelected() && column == m_CurrentColumn)
+				{
+					wxRendererNative::Get().DrawFocusRect(this, dc, wxRect(cellRect).Deflate(FromDIP(wxSize(1, 1))));
+				}
+
 				// deal with the expander
 				int indent = 0;
 				if (!IsList() && column == expanderColumn)

@@ -13,6 +13,7 @@ namespace Kx::DataView2
 		VerticalRules = 1 << 3,
 		AlternatingRowColors = 1 << 4,
 		VariableRowHeight = 1 << 5,
+		CellFocus = 1 << 6,
 
 		DefaultStyle = SingleSelection|VerticalRules
 	};
