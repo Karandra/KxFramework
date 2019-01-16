@@ -328,6 +328,10 @@ namespace Kx::DataView2
 	{
 		return &GetRenderer(column) != &m_MainWindow->GetNullRenderer();
 	}
+	bool Node::IsActivatable(const Column& column) const
+	{
+		return GetRenderer(column).IsActivatable();
+	}
 }
 
 namespace Kx::DataView2

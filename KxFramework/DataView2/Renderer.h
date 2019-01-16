@@ -78,6 +78,10 @@ namespace Kx::DataView2
 				return RenderEngine(const_cast<Renderer&>(*this));
 			}
 
+			virtual bool HasActvator() const
+			{
+				return false;
+			}
 			virtual wxAny OnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent = nullptr)
 			{
 				return {};
@@ -151,6 +155,11 @@ namespace Kx::DataView2
 			void SetEllipsizeMode(wxEllipsizeMode mode)
 			{
 				m_EllipsizeMode = mode;
+			}
+
+			bool IsActivatable() const
+			{
+				return HasActvator();
 			}
 
 			bool IsMarkupEnabled() const

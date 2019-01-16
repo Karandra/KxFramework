@@ -164,6 +164,7 @@ namespace Kx::DataView2
 			{
 				return GetEditor(column) != nullptr;
 			}
+			bool IsActivatable(const Column& column) const;
 
 		public:
 			virtual Renderer& GetRenderer(const Column& column) const

@@ -59,11 +59,6 @@ namespace Kx::DataView2
 			dc.DrawRectangle(cellRect);
 		}
 		DrawCellBackground(cellRect, cellState);
-
-		if (cellState.IsSelected() && GetColumn()->IsCurrent())
-		{
-			wxRendererNative::Get().DrawFocusRect(GetView(), dc, wxRect(cellRect).Deflate(GetView()->FromDIP(wxSize(1, 1))));
-		}
 	}
 	void Renderer::CallDrawCellContent(const wxRect& cellRect, CellState cellState)
 	{

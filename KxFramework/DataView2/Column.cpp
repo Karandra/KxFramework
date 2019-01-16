@@ -245,6 +245,10 @@ namespace Kx::DataView2
 		return false;
 	}
 
+	bool Column::IsActivatable() const
+	{
+		return m_Renderer ? m_Renderer->IsActivatable() : false;
+	}
 	bool Column::IsExpander() const
 	{
 		return m_View->GetExpanderColumn() == this;

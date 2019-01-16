@@ -117,7 +117,12 @@ namespace Kx::DataView2
 			ToggleValue m_Value;
 
 		protected:
+			bool HasActvator() const override
+			{
+				return true;
+			}
 			wxAny OnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent = nullptr) override;
+			
 			bool SetValue(const wxAny& value) override;
 			void DrawCellContent(const wxRect& cellRect, CellState cellState) override;
 			wxSize GetCellSize() const override;
