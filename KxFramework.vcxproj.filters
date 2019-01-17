@@ -850,6 +850,15 @@
     <ClInclude Include="KxFramework\DataView2\Renderers\ToggleRenderer.h">
       <Filter>Header Files\GUI\DataView2\Renderers</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Renderers\BitmapRenderer.h">
+      <Filter>Header Files\GUI\DataView2\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Renderers\BitmapTextRenderer.h">
+      <Filter>Header Files\GUI\DataView2\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Renderers\BitmapTextToggleRenderer.h">
+      <Filter>Header Files\GUI\DataView2\Renderers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1400,6 +1409,15 @@
       <Filter>Source Files\GUI\DataView2</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\Renderers\ToggleRenderer.cpp">
+      <Filter>Source Files\GUI\DataView2\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\Renderers\BitmapRenderer.cpp">
+      <Filter>Source Files\GUI\DataView2\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\Renderers\BitmapTextRenderer.cpp">
+      <Filter>Source Files\GUI\DataView2\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\Renderers\BitmapTextToggleRenderer.cpp">
       <Filter>Source Files\GUI\DataView2\Renderers</Filter>
     </ClCompile>
   </ItemGroup>

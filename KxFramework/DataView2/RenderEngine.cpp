@@ -246,6 +246,31 @@ namespace Kx::DataView2
 		}
 		return false;
 	}
+	int RenderEngine::DrawBitmapWithText(const wxRect& cellRect, CellState cellState, int offsetX, const wxString& text, const wxBitmap& bitmap, bool centerTextV)
+	{
+		if (bitmap.IsOk())
+		{
+			DrawBitmap(wxRect(cellRect.GetX() + offsetX, cellRect.GetY(), cellRect.GetWidth() - offsetX, cellRect.GetHeight()), cellState, bitmap);
+			offsetX += bitmap.GetWidth();
+		}
+		if (!text.IsEmpty())
+		{
+			if (bitmap.IsOk() && centerTextV)
+			{
+				wxSize textExtent = GetTextExtent(text);
+				wxSize size = wxSize(cellRect.GetWidth(), textExtent.GetHeight());
+				wxPoint pos = cellRect.GetPosition();
+				pos.y += textExtent.GetHeight() / 2;
+
+				DrawText(wxRect(pos, size), cellState, text, offsetX);
+			}
+			else
+			{
+				DrawText(cellRect, cellState, text, offsetX);
+			}
+		}
+		return offsetX;
+	}
 	bool RenderEngine::DrawProgressBar(const wxRect& cellRect, CellState cellState, int value, int range, ProgressBarState state)
 	{
 		KxUxTheme::Handle themeHandle(m_Renderer.GetView(), L"PROGRESS");

@@ -7,6 +7,12 @@
 
 namespace Kx::DataView2
 {
+	bool Renderer::IsNullRenderer() const
+	{
+		MainWindow* mainWindow = GetMainWindow();
+		return mainWindow ? this == &mainWindow->GetNullRenderer() : false;
+	}
+
 	void Renderer::SetupCellAttributes(const Node& node, Column& column, CellState cellState)
 	{
 		m_Column = &column;
@@ -14,14 +20,15 @@ namespace Kx::DataView2
 		// Now check if we have a value and remember it for rendering it later.
 		// Notice that we do it even if it's null, as the cell should be empty then
 		// and not show the last used value.
-		SetValue(node.GetValue(column));
-
-		// Set up the attributes for this item if it's not empty.
-		// Reset attributes if they are not needed.
-		m_Attributes.Reset();
-		if (!node.GetAttributes(m_Attributes, cellState, column))
+		wxAny value = node.GetValue(column);
+		if (SetValue(value) && !value.IsNull())
 		{
+			// Set up the attributes for this item if it's not empty. Reset attributes if they are not needed.
 			m_Attributes.Reset();
+			if (!node.GetAttributes(m_Attributes, cellState, column))
+			{
+				m_Attributes.Reset();
+			}
 		}
 	}
 	void Renderer::CallDrawCellBackground(const wxRect& cellRect, CellState cellState)

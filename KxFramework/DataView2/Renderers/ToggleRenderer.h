@@ -117,7 +117,7 @@ namespace Kx::DataView2
 			ToggleValue m_Value;
 
 		protected:
-			bool HasActvator() const override
+			bool HasActivator() const override
 			{
 				return true;
 			}

@@ -62,6 +62,8 @@ namespace Kx::DataView2
 				m_GraphicsDC = nullptr;
 				m_RegularDC = nullptr;
 			}
+			bool IsNullRenderer() const;
+
 			void CallDrawCellBackground(const wxRect& cellRect, CellState cellState);
 			void CallDrawCellContent(const wxRect& cellRect, CellState cellState);
 			void CallOnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent = nullptr);
@@ -78,7 +80,7 @@ namespace Kx::DataView2
 				return RenderEngine(const_cast<Renderer&>(*this));
 			}
 
-			virtual bool HasActvator() const
+			virtual bool HasActivator() const
 			{
 				return false;
 			}
@@ -159,7 +161,7 @@ namespace Kx::DataView2
 
 			bool IsActivatable() const
 			{
-				return HasActvator();
+				return HasActivator();
 			}
 
 			bool IsMarkupEnabled() const
@@ -174,7 +176,7 @@ namespace Kx::DataView2
 			{
 				return m_MarkupMode == MarkupMode::WithMnemonics;
 			}
-		
+			
 			void EnableMarkup(bool enable = true)
 			{
 				m_MarkupMode = enable ? MarkupMode::TextOnly : MarkupMode::Disabled;
