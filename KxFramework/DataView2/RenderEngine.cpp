@@ -239,7 +239,7 @@ namespace Kx::DataView2
 		if (bitmap.IsOk())
 		{
 			const wxPoint pos = cellRect.GetPosition();
-			const wxSize size = bitmap.GetSize();
+			const wxSize size(bitmap.GetWidth(), cellRect.GetHeight());
 
 			m_Renderer.GetGraphicsContext().DrawBitmap(m_Renderer.m_Attributes.IsEnabled() ? bitmap : bitmap.ConvertToDisabled(), pos.x, pos.y, size.GetWidth(), size.GetHeight());
 			return true;

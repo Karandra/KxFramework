@@ -45,19 +45,22 @@ namespace Kx::DataView2
 			MarkupMode m_MarkupMode = MarkupMode::Disabled;
 			ItemAttributes m_Attributes;
 			
+			const Node* m_Node = nullptr;
 			Column* m_Column = nullptr;
 			wxGCDC* m_GraphicsDC = nullptr;
 			wxDC* m_RegularDC = nullptr;
 
 		private:
-			void BeginRendering(Column& column, wxGCDC& graphicsDC, wxDC* regularDC = nullptr)
+			void BeginRendering(const Node& node, Column& column, wxGCDC& graphicsDC, wxDC* regularDC = nullptr)
 			{
+				m_Node = &node;
 				m_Column = &column;
 				m_GraphicsDC = &graphicsDC;
 				m_RegularDC = regularDC;
 			}
 			void EndRendering()
 			{
+				m_Node = nullptr;
 				m_Column = nullptr;
 				m_GraphicsDC = nullptr;
 				m_RegularDC = nullptr;
@@ -135,7 +138,11 @@ namespace Kx::DataView2
 			{
 				return m_Column;
 			}
-			
+			const Node* GetNode() const
+			{
+				return m_Node;
+			}
+
 			virtual wxAlignment GetEffectiveAlignment() const;
 			wxAlignment GetAlignment() const
 			{

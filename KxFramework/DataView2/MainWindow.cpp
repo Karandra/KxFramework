@@ -1143,7 +1143,7 @@ namespace Kx::DataView2
 				}
 
 				Renderer& renderer = node->GetRenderer(*column);
-				renderer.BeginRendering(*column, dc, &paintDC);
+				renderer.BeginRendering(*node, *column, dc, &paintDC);
 
 				// Update cell rect
 				cellRect.y = GetRowStart(currentRow);
@@ -1892,8 +1892,6 @@ namespace Kx::DataView2
 		for (size_t columnIndex = 0; columnIndex < m_View->GetColumnCount(); columnIndex++)
 		{
 			Column* column = m_View->GetColumnDisplayedAt(columnIndex);
-			Renderer& renderer = column->GetRenderer();
-
 			if (column->IsExposed(width))
 			{
 				if (column == expander)
@@ -1903,13 +1901,14 @@ namespace Kx::DataView2
 
 				CellState cellState = GetCellStateForRow(row);
 
-				Node* item = GetNodeByRow(row);
+				Node* node = GetNodeByRow(row);
+				Renderer& renderer = node->GetRenderer(*column);
 
 				wxRect itemRect(x, 0, width, height);
 				itemRect.Deflate(PADDING_RIGHTLEFT, 0);
 
-				renderer.BeginRendering(*column, dc, &memoryDC);
-				renderer.SetupCellAttributes(*item, *column, cellState);
+				renderer.BeginRendering(*node, *column, dc, &memoryDC);
+				renderer.SetupCellAttributes(*node, *column, cellState);
 
 				renderer.CallDrawCellBackground(itemRect, cellState);
 				renderer.CallDrawCellContent(itemRect, cellState);

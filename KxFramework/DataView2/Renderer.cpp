@@ -15,6 +15,7 @@ namespace Kx::DataView2
 
 	void Renderer::SetupCellAttributes(const Node& node, Column& column, CellState cellState)
 	{
+		m_Node = &node;
 		m_Column = &column;
 
 		// Now check if we have a value and remember it for rendering it later.
@@ -69,7 +70,7 @@ namespace Kx::DataView2
 	}
 	void Renderer::CallDrawCellContent(const wxRect& cellRect, CellState cellState)
 	{
-		RenderEngine engine = GetRenderEngine();
+		RenderEngine renderEngine = GetRenderEngine();
 		wxGCDC& dc = GetGraphicsDC();
 
 		// Change text color
@@ -96,46 +97,42 @@ namespace Kx::DataView2
 		}
 
 		// Adjust the rectangle ourselves to account for the alignment
-		wxRect cellRectNew = cellRect;
-		const wxAlignment alignment = m_Attributes.HasAlignment() ? m_Attributes.GetAlignment() : GetEffectiveAlignment();
 		const wxSize cellSize = GetCellSize();
+		wxRect adjustedCellRect(cellRect);
+
+		// Restrict height to row height. This function checks if variable row hight style is enabled
+		// and if not, returns uniform row height.
+		adjustedCellRect.SetHeight(GetMainWindow()->GetVariableRowHeight(*m_Node));
 
 		// Take alignment into account only if there is enough space, otherwise
 		// show as much contents as possible.
-		// 
-		// Notice that many existing renderers (e.g. wxDataViewSpinRenderer)
-		// return hard-coded size which can be more than they need and if we
-		// trusted their GetSize() we'd draw the text out of cell bounds entirely
+		const wxAlignment alignment = m_Attributes.HasAlignment() ? m_Attributes.GetAlignment() : GetEffectiveAlignment();
 
 		if (cellSize.GetWidth() >= 0 && cellSize.GetWidth() < cellRect.GetWidth())
 		{
 			if (alignment & wxALIGN_CENTER_HORIZONTAL)
 			{
-				cellRectNew.x += engine.CalcCenter(cellRect.GetWidth(), cellSize.GetWidth());
+				adjustedCellRect.x += renderEngine.CalcCenter(cellRect.GetWidth(), cellSize.GetWidth());
 			}
 			else if (alignment & wxALIGN_RIGHT)
 			{
-				cellRectNew.x += cellRect.GetWidth() - cellSize.GetWidth();
+				adjustedCellRect.x += cellRect.GetWidth() - cellSize.GetWidth();
 			}
-			// else: wxALIGN_LEFT is the default
-
-			cellRectNew.SetWidth(cellSize.GetWidth());
+			adjustedCellRect.SetWidth(cellSize.GetWidth());
 		}
 		if (cellSize.GetHeight() >= 0 && cellSize.GetHeight() < cellRect.GetHeight())
 		{
 			if (alignment & wxALIGN_CENTER_VERTICAL)
 			{
-				cellRectNew.y += engine.CalcCenter(cellRect.GetHeight(), cellSize.GetHeight());
+				adjustedCellRect.y += renderEngine.CalcCenter(cellRect.GetHeight(), cellSize.GetHeight());
 			}
 			else if (alignment & wxALIGN_BOTTOM)
 			{
-				cellRectNew.y += cellRect.GetHeight() - cellSize.GetHeight();
+				adjustedCellRect.y += cellRect.GetHeight() - cellSize.GetHeight();
 			}
-			// else: wxALIGN_TOP is the default
-
-			cellRectNew.SetHeight(cellSize.y);
+			adjustedCellRect.SetHeight(cellSize.y);
 		}
-		DrawCellContent(cellRectNew, cellState);
+		DrawCellContent(adjustedCellRect, cellState);
 	}
 	void Renderer::CallOnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent)
 	{
