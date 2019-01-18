@@ -859,6 +859,15 @@
     <ClInclude Include="KxFramework\DataView2\Renderers\BitmapTextToggleRenderer.h">
       <Filter>Header Files\GUI\DataView2\Renderers</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Renderers\ProgressRenderer.h">
+      <Filter>Header Files\GUI\DataView2\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Renderers\HTMLRenderer.h">
+      <Filter>Header Files\GUI\DataView2\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Renderers\BitmapListRenderer.h">
+      <Filter>Header Files\GUI\DataView2\Renderers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1418,6 +1427,15 @@
       <Filter>Source Files\GUI\DataView2\Renderers</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\Renderers\BitmapTextToggleRenderer.cpp">
+      <Filter>Source Files\GUI\DataView2\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\Renderers\ProgressRenderer.cpp">
+      <Filter>Source Files\GUI\DataView2\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\Renderers\HTMLRenderer.cpp">
+      <Filter>Source Files\GUI\DataView2\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\Renderers\BitmapListRenderer.cpp">
       <Filter>Source Files\GUI\DataView2\Renderers</Filter>
     </ClCompile>
   </ItemGroup>

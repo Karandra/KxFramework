@@ -271,7 +271,7 @@ namespace Kx::DataView2
 		}
 		return offsetX;
 	}
-	bool RenderEngine::DrawProgressBar(const wxRect& cellRect, CellState cellState, int value, int range, ProgressBarState state)
+	bool RenderEngine::DrawProgressBar(const wxRect& cellRect, CellState cellState, int value, int range, ProgressState state)
 	{
 		KxUxTheme::Handle themeHandle(m_Renderer.GetView(), L"PROGRESS");
 		if (themeHandle)
@@ -298,24 +298,24 @@ namespace Kx::DataView2
 
 			switch (state)
 			{
-				case ProgressBarState::Paused:
+				case ProgressState::Paused:
 				{
 					::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_PAUSED, &contentRect, nullptr);
 					break;
 				}
-				case ProgressBarState::Error:
+				case ProgressState::Error:
 				{
 					::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_ERROR, &contentRect, nullptr);
 					break;
 				}
-				case ProgressBarState::Partial:
+				case ProgressState::Partial:
 				{
 					::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_PARTIAL, &contentRect, nullptr);
 					break;
 				}
 
 				default:
-				case ProgressBarState::Normal:
+				case ProgressState::Normal:
 				{
 					::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_NORMAL, &contentRect, nullptr);
 					break;

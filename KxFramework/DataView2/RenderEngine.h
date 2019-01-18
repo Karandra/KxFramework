@@ -18,7 +18,7 @@ namespace Kx::DataView2
 		TextOnly,
 		WithMnemonics
 	};
-	enum class ProgressBarState
+	enum class ProgressState
 	{
 		Normal,
 		Paused,
@@ -68,7 +68,7 @@ namespace Kx::DataView2
 
 			bool DrawBitmap(const wxRect& cellRect, CellState cellState, const wxBitmap& bitmap);
 			int DrawBitmapWithText(const wxRect& cellRect, CellState cellState, int offsetX, const wxString& text, const wxBitmap& bitmap, bool centerTextV = false);
-			bool DrawProgressBar(const wxRect& cellRect, CellState cellState, int value, int range, ProgressBarState state = ProgressBarState::Normal);
+			bool DrawProgressBar(const wxRect& cellRect, CellState cellState, int value, int range, ProgressState state = ProgressState::Normal);
 			
 			wxSize GetToggleSize() const;
 			wxSize DrawToggle(wxDC& dc, const wxRect& cellRect, CellState cellState, ToggleState toggleState, ToggleType toggleType);

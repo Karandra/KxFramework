@@ -25,7 +25,7 @@ namespace Kx::DataView2
 		friend class RenderEngine;
 
 		public:
-			enum class ProgressBarState
+			enum class ProgressState
 			{
 				Normal,
 				Paused,
