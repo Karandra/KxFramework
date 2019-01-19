@@ -37,7 +37,7 @@ namespace Kx::DataView2
 		if (m_Value.HasBitmap())
 		{
 			const wxBitmap& bitmap = m_Value.GetBitmap();
-			size.x += bitmap.GetWidth();
+			size.x += bitmap.GetWidth() + 1;
 			if (size.y < bitmap.GetHeight())
 			{
 				size.y = bitmap.GetHeight();

@@ -251,18 +251,17 @@ namespace Kx::DataView2
 		if (bitmap.IsOk())
 		{
 			DrawBitmap(wxRect(cellRect.GetX() + offsetX, cellRect.GetY(), cellRect.GetWidth() - offsetX, cellRect.GetHeight()), cellState, bitmap);
-			offsetX += bitmap.GetWidth();
+			offsetX += bitmap.GetWidth() + 1;
 		}
 		if (!text.IsEmpty())
 		{
 			if (bitmap.IsOk() && centerTextV)
 			{
 				wxSize textExtent = GetTextExtent(text);
-				wxSize size = wxSize(cellRect.GetWidth(), textExtent.GetHeight());
 				wxPoint pos = cellRect.GetPosition();
-				pos.y += textExtent.GetHeight() / 2;
+				pos.y += CalcCenter(cellRect.GetSize().GetHeight(), textExtent.GetHeight());
 
-				DrawText(wxRect(pos, size), cellState, text, offsetX);
+				DrawText(wxRect(pos, cellRect.GetSize()), cellState, text, offsetX);
 			}
 			else
 			{

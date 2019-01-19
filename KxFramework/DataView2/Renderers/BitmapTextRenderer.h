@@ -9,7 +9,7 @@ namespace Kx::DataView2
 		private:
 			wxBitmap m_Bitmap;
 			wxString m_Text;
-			bool m_VCenterText = false;
+			bool m_VCenterText = true;
 
 		public:
 			BitmapTextValue(const wxString& text = wxEmptyString, const wxBitmap& bitmap = wxNullBitmap)
