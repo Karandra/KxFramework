@@ -7,7 +7,7 @@ namespace Kx::DataView2
 	class KX_API TextEditor: public Editor
 	{
 		protected:
-			virtual wxWindow* CreateControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value) override;
-			virtual wxAny GetValue(wxWindow* control) const override;
+			wxWindow* CreateControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value) override;
+			wxAny GetValue(wxWindow* control) const override;
 	};
 }
