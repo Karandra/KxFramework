@@ -328,6 +328,10 @@ namespace Kx::DataView2
 	{
 		return &GetRenderer(column) != &m_MainWindow->GetNullRenderer();
 	}
+	bool Node::IsEditable(const Column& column) const
+	{
+		return GetEditor(column) != nullptr;
+	}
 	bool Node::IsActivatable(const Column& column) const
 	{
 		return GetRenderer(column).IsActivatable();

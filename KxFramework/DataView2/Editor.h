@@ -125,12 +125,17 @@ namespace Kx::DataView2
 			{
 				DoOnIdle(event);
 			}
+			void OnMouse(wxMouseEvent& event)
+			{
+				DoOnMouse(event);
+			}
 
 		protected:
 			virtual void DoOnChar(wxKeyEvent& event);
 			virtual void DoOnTextEnter(wxCommandEvent& event);
 			virtual void DoOnKillFocus(wxFocusEvent& event);
 			virtual void DoOnIdle(wxIdleEvent& event);
+			virtual void DoOnMouse(wxMouseEvent& event);
 
 			Editor* GetEditor() const
 			{

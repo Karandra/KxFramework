@@ -160,10 +160,7 @@ namespace Kx::DataView2
 			}
 			
 			bool IsRenderable(const Column& column) const;
-			bool IsEditable(const Column& column) const
-			{
-				return GetEditor(column) != nullptr;
-			}
+			bool IsEditable(const Column& column) const;
 			bool IsActivatable(const Column& column) const;
 
 		public:

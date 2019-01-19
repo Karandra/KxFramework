@@ -167,6 +167,15 @@ namespace Kx::DataView2
 			EndEdit();
 		}
 	}
+	void EditorControlHandler::DoOnMouse(wxMouseEvent& event)
+	{
+		const wxPoint originalPos = event.GetPosition();
+		event.SetPosition(m_EditorCtrl->GetPosition());
+		GetEditor()->GetMainWindow()->ProcessWindowEvent(event);
+		event.SetPosition(originalPos);
+
+		event.Skip();
+	}
 
 	EditorControlHandler::EditorControlHandler(Editor* editor, wxWindow* control)
 		:m_Editor(editor), m_EditorCtrl(control)
@@ -178,5 +187,6 @@ namespace Kx::DataView2
 		Bind(wxEVT_CHAR, &EditorControlHandler::OnChar, this);
 		Bind(wxEVT_KILL_FOCUS, &EditorControlHandler::OnKillFocus, this);
 		Bind(wxEVT_TEXT_ENTER, &EditorControlHandler::OnTextEnter, this);
+		Bind(wxEVT_MOTION, &EditorControlHandler::OnMouse, this);
 	}
 }
