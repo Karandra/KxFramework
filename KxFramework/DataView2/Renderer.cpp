@@ -17,6 +17,7 @@ namespace Kx::DataView2
 	{
 		m_Node = &node;
 		m_Column = &column;
+		m_Attributes.Reset();
 
 		// Now check if we have a value and remember it for rendering it later.
 		// Notice that we do it even if it's null, as the cell should be empty then
@@ -25,7 +26,6 @@ namespace Kx::DataView2
 		if (SetValue(value) && !value.IsNull())
 		{
 			// Set up the attributes for this item if it's not empty. Reset attributes if they are not needed.
-			m_Attributes.Reset();
 			if (!node.GetAttributes(m_Attributes, cellState, column))
 			{
 				m_Attributes.Reset();
@@ -71,7 +71,7 @@ namespace Kx::DataView2
 	void Renderer::CallDrawCellContent(const wxRect& cellRect, CellState cellState)
 	{
 		RenderEngine renderEngine = GetRenderEngine();
-		wxGCDC& dc = GetGraphicsDC();
+		wxDC& dc = GetRegularDC();
 
 		// Change text color
 		wxDCTextColourChanger chnageTextColor(dc);
@@ -90,7 +90,7 @@ namespace Kx::DataView2
 		}
 
 		// Change font
-		wxDCFontChanger changeFont(GetGraphicsDC());
+		wxDCFontChanger changeFont(dc);
 		if (m_Attributes.HasFontAttributes())
 		{
 			changeFont.Set(m_Attributes.GetEffectiveFont(dc.GetFont()));
