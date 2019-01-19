@@ -46,26 +46,7 @@ namespace Kx::DataView2
 		node->SetNodeExpanded(true);
 		return node;
 	}
-	bool Node::SwapNodes(Node& node1, Node& node2)
-	{
-		if (&node1 != &node2 && (node1.HasParent() && node2.HasParent()) && node1.GetParent() == node2.GetParent())
-		{
-			Vector& children = node1.GetParent()->GetChildren();
 
-			auto it1 = std::find(children.begin(), children.end(), &node1);
-			auto it2 = std::find(children.begin(), children.end(), &node2);
-			std::iter_swap(it1, it2);
-			return true;
-		}
-		return false;
-	}
-
-	void Node::InitNodeFromThis(Node& node)
-	{
-		node.m_ParentNode = this;
-		node.m_MainWindow = m_MainWindow;
-		node.m_SortOrder = m_SortOrder;
-	}
 	void Node::PutChildInSortOrder(Node* node)
 	{
 		// The childNode has changed, and may need to be moved to another location in the sorted child list.
@@ -193,6 +174,19 @@ namespace Kx::DataView2
 			m_ParentNode->ChangeSubTreeCount(num);
 		}
 	}
+	void Node::InitNodeFromThis(Node& node)
+	{
+		node.m_ParentNode = this;
+		node.m_MainWindow = m_MainWindow;
+		node.m_SortOrder = m_SortOrder;
+	}
+	void Node::RecalcIndexes(size_t startAt)
+	{
+		for (size_t i = startAt; i < m_Children.size(); ++i)
+		{
+			m_Children[i]->m_IndexWithinParent = i;
+		}
+	}
 
 	Node::~Node()
 	{
@@ -211,10 +205,6 @@ namespace Kx::DataView2
 		}
 		return Row();
 	}
-	Row Node::GetIndexWithinParent() const
-	{
-		return m_ParentNode->FindChild(*this);
-	}
 	int Node::GetIndentLevel() const
 	{
 		if (!IsRootNode())
@@ -232,11 +222,8 @@ namespace Kx::DataView2
 		return -1;
 	}
 
-	void Node::InsertChild(Node* node, size_t index)
+	void Node::AttachChild(Node* node, size_t index)
 	{
-		// Initialize child node if default constructor was used.
-		InitNodeFromThis(*node);
-
 		// Flag indicating whether we should retain existing sorted list when inserting the child node.
 		bool shouldInsertSorted = false;
 		SortOrder controlSortOrder = m_MainWindow->GetSortOrder();
@@ -283,21 +270,32 @@ namespace Kx::DataView2
 			ResetSortOrder();
 		}
 
+		node->m_ParentNode = this;
 		if (shouldInsertSorted)
 		{
 			// Use binary search to find the correct position to insert at.
 			auto it = std::lower_bound(m_Children.begin(), m_Children.end(), node, Comparator(m_MainWindow, controlSortOrder));
 			m_Children.insert(it, node);
+			RecalcIndexes(std::distance(m_Children.begin(), it));
 		}
 		else
 		{
-			m_Children.insert(m_Children.begin() + std::min(index, m_Children.size()), node);
+			index = std::min(index, m_Children.size());
+			m_Children.insert(m_Children.begin() + index, node);
+			RecalcIndexes(index);
 		}
-
-		//ChangeSubTreeCount(+1);
 		m_MainWindow->OnNodeAdded(*this);
 	}
-	void Node::RemoveChild(size_t index)
+	void Node::InsertChild(Node* node, size_t index)
+	{
+		// Initialize child node if default constructor was used.
+		InitNodeFromThis(*node);
+
+		// Add to children vector
+		AttachChild(node, index);
+	}
+
+	Node* Node::DetachChild(size_t index)
 	{
 		if (index < m_Children.size())
 		{
@@ -305,12 +303,26 @@ namespace Kx::DataView2
 			Node* node = *it;
 
 			const intptr_t removedCount = node->GetSubTreeCount() + 1;
-			//ChangeSubTreeCount(-removedCount);
 			m_MainWindow->OnNodeRemoved(*node, removedCount);
 
-			delete node;
+			node->m_ParentNode = nullptr;
 			m_Children.erase(it);
+			RecalcIndexes(index);
+			return node;
 		}
+		return nullptr;
+	}
+	Node* Node::DetachChild(Node& node)
+	{
+		if (Row index = FindChild(node); index.IsOK())
+		{
+			return DetachChild(index);
+		}
+		return nullptr;
+	}
+	Node* Node::Detach()
+	{
+		return m_ParentNode->DetachChild(*this);
 	}
 	void Node::RemoveChild(Node& node)
 	{
@@ -319,9 +331,25 @@ namespace Kx::DataView2
 			RemoveChild(index);
 		}
 	}
+	void Node::RemoveChild(size_t index)
+	{
+		delete DetachChild(index);
+	}
 	void Node::Remove()
 	{
 		m_ParentNode->RemoveChild(*this);
+	}
+
+	bool Node::Swap(Node& otherNode)
+	{
+		if (this != &otherNode && m_ParentNode == otherNode.GetParent())
+		{
+			auto it = m_Children.begin() + m_IndexWithinParent;
+			auto otherIt = otherNode.m_Children.begin() + otherNode.m_IndexWithinParent;
+			std::iter_swap(it, otherIt);
+			return true;
+		}
+		return false;
 	}
 
 	bool Node::IsRenderable(const Column& column) const

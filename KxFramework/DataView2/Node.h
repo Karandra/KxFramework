@@ -32,9 +32,6 @@ namespace Kx::DataView2
 
 		private:
 			static Node* CreateRootNode(MainWindow* window);
-		
-		public:
-			static bool SwapNodes(Node& node1, Node& node2);
 
 		private:
 			Vector m_Children;
@@ -45,6 +42,8 @@ namespace Kx::DataView2
 			// in the subtree, but excluding this node. I.e. it is 0 for leaves and is the
 			// number of rows the subtree occupies for branch nodes.
 			intptr_t m_SubTreeCount = 0;
+
+			Row m_IndexWithinParent;
 
 			SortOrder m_SortOrder = SortOrder::UseNone();
 			bool m_IsExpanded = false;
@@ -78,6 +77,7 @@ namespace Kx::DataView2
 			void CalcSubTreeCount();
 			intptr_t GetSubTreeCount() const;
 			void ChangeSubTreeCount(intptr_t num);
+			void RecalcIndexes(size_t startAt = 0);
 			void InitNodeFromThis(Node& node);
 
 			bool IsNodeExpanded() const
@@ -134,17 +134,35 @@ namespace Kx::DataView2
 			}
 
 			Row FindChild(const Node& node) const;
-			Row GetIndexWithinParent() const;
+			Row GetIndexWithinParent() const
+			{
+				return m_IndexWithinParent;
+			}
 			int GetIndentLevel() const;
 
-			void InsertChild(Node* node, size_t index = 0);
-			void AddChild(Node* node)
-			{
-				InsertChild(node, m_Children.size());
-			}
+			Node* DetachChild(size_t index);
+			Node* DetachChild(Node& node);
+			Node* Detach();
 			void RemoveChild(size_t index);
 			void RemoveChild(Node& node);
 			void Remove();
+
+			void AttachChild(Node* node, size_t index);
+			void InsertChild(Node* node, size_t index);
+			void AppendChild(Node* node)
+			{
+				InsertChild(node, m_Children.size());
+			}
+			
+			void MoveAt(Node& node, size_t index)
+			{
+				node.AttachChild(Detach(), index);
+			}
+			void Move(Node& node)
+			{
+				node.AttachChild(Detach(), node.GetChildrenCount());
+			}
+			bool Swap(Node& otherNode);
 
 			template<class TNode, class... Args> TNode& NewChild(Args&&... arg)
 			{
@@ -236,7 +254,6 @@ namespace Kx::DataView2
 
 namespace Kx::DataView2
 {
-	// Helper class to perform an operation on the tree node
 	class KX_API NodeOperation
 	{
 		public:
