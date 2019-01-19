@@ -11,7 +11,7 @@ namespace Kx::DataView2
 			using Vector = std::vector<TValue>;
 
 		private:
-			constexpr static TValue GetInvalidValue()
+			constexpr static TValue GetInvalidValue() noexcept
 			{
 				return std::numeric_limits<TValue>::max();
 			}
@@ -20,35 +20,35 @@ namespace Kx::DataView2
 			TValue m_Value;
 
 		public:
-			Row(TValue value = GetInvalidValue())
+			Row(TValue value = GetInvalidValue()) noexcept
 				:m_Value(value)
 			{
 			}
 
 		public:
-			bool IsOK() const
+			bool IsOK() const noexcept
 			{
 				return m_Value != GetInvalidValue();
 			}
-			void MakeInvalid()
+			void MakeInvalid() noexcept
 			{
 				m_Value = GetInvalidValue();
 			}
 			
-			explicit operator bool() const
+			explicit operator bool() const noexcept
 			{
 				return IsOK();
 			}
-			bool operator!() const
+			bool operator!() const noexcept
 			{
 				return !IsOK();
 			}
 	
-			TValue GetValue() const
+			TValue GetValue() const noexcept
 			{
 				return m_Value;
 			}
-			operator TValue() const
+			operator TValue() const noexcept
 			{
 				return GetValue();
 			}
@@ -80,21 +80,32 @@ namespace Kx::DataView2
 				return m_Value >= other;
 			}
 			
-			Row& operator++()
+			template<class T> Row& operator+=(const T& other)
+			{
+				m_Value += other;
+				return *this;
+			}
+			template<class T> Row& operator-=(const T& other)
+			{
+				m_Value -= other;
+				return *this;
+			}
+
+			Row& operator++() noexcept
 			{
 				++m_Value;
 				return *this;
 			}
-			Row& operator--()
+			Row& operator--() noexcept
 			{
 				--m_Value;
 				return *this;
 			}
-			Row operator++(int) const
+			Row operator++(int) const noexcept
 			{
 				return Row(m_Value + 1);
 			}
-			Row operator--(int) const
+			Row operator--(int) const noexcept
 			{
 				return Row(m_Value - 1);
 			}

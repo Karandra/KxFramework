@@ -2629,31 +2629,36 @@ namespace Kx::DataView2
 		}
 		else if (m_Model)
 		{
-			// Compose the parent-chain of the item we are looking for
-			Node::Vector parentChain;
-			Node* currentNode = const_cast<Node*>(&node);
-			while (currentNode)
+			Row row = 0;
+			const Node* currentNode = &node;
+			while (currentNode && !currentNode->IsRootNode())
 			{
-				parentChain.push_back(currentNode);
-				currentNode = currentNode->GetParent();
+				// Add current node sub row index
+				row += currentNode->GetIndexWithinParent() + 1;
+
+				// If this node has parent, add subtree count from all previous siblings
+				if (const Node* parentNode = currentNode->GetParent())
+				{
+					for (const Node* childNode: parentNode->GetChildren())
+					{
+						if (childNode != currentNode)
+						{
+							row += childNode->GetSubTreeCount();
+						}
+						else
+						{
+							break;
+						}
+					}
+					currentNode = parentNode;
+				}
 			}
 
-			// The parent chain was created by adding the deepest parent first.
-			// so if we want to start at the root node, we have to iterate backwards through the vector
-			NodeOperation_NodeToRow operation(node, parentChain.rbegin());
-
-			// If the item was not found at all, which can happen if all its parents
-			// are not expanded, this function still returned a valid but completely
-			// wrong row index.
-
-			// This affected many functions which could call it for the items which
-			// were not necessarily visible, i.e. all of them except for the event
-			// handlers as events can only affect the visible items, including but not
-			// limited to SetCurrentItem(), all the selection-related functions, all
-			// the expansion-related functions, EnsureVisible(), HitTest() and GetItemRect().
-			if (operation.Walk(*m_TreeRoot))
+			// If we reached root node, consider search successful.
+			if (currentNode->IsRootNode())
 			{
-				return operation.GetResult();
+				// Rows are zero-based, but we calculated it as one-based.
+				return row - 1;
 			}
 		}
 		return Row();
