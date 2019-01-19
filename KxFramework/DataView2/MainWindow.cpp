@@ -11,6 +11,7 @@
 #include "KxFramework/KxCallAtScopeExit.h"
 #include "KxFramework/KxUtility.h"
 #include "KxFramework/KxFrame.h"
+#include "KxFramework/KxUxTheme.h"
 #include <wx/popupwin.h>
 #include <wx/generic/private/widthcalc.h>
 #include <wx/minifram.h>
@@ -1075,19 +1076,89 @@ namespace Kx::DataView2
 			}
 		}
 
+		// Draw horizontal rules
+		if (m_View->IsOptionEnabled(CtrlStyle::HorizontalRules))
+		{
+			dc.SetPen(m_PenRuleH);
+			dc.SetBrush(*wxTRANSPARENT_BRUSH);
+
+			for (Row currentRow = rowStart; currentRow <= rowEnd; ++currentRow)
+			{
+				int y = GetRowStart(currentRow);
+				dc.DrawLine(xCoordStart, y, xCoordEnd, y);
+			}
+		}
+
+		// Draw vertical rules
+		if (m_View->IsOptionEnabled(CtrlStyle::VerticalRules))
+		{
+			dc.SetPen(m_PenRuleV);
+			dc.SetBrush(*wxTRANSPARENT_BRUSH);
+
+			// Vertical rules are drawn in the last pixel of a column so that
+			// they align perfectly with native MSW wxHeaderCtrl as well as for
+			// consistency with MSW native list control. There's no vertical
+			// rule at the most-left side of the control.
+
+			int x = xCoordStart - 1;
+			for (size_t currentColumnIndex = coulumnIndexStart; currentColumnIndex < coulmnIndexEnd; currentColumnIndex++)
+			{
+				Column* column = m_View->GetColumnDisplayedAt(currentColumnIndex);
+
+				int width = 0;
+				if (column->IsExposed(width))
+				{
+					x += width;
+					dc.DrawLine(x, GetRowStart(rowStart), x, GetRowStart(rowEnd) + clientSize.y);
+				}
+			}
+		}
+
 		// Draw selection
+		auto DrawSelectionRect = [this, &dc, &paintDC](const wxRect& cellRect, int flags)
+		{
+			auto GetListItemState = [](int flags)
+			{
+				int itemState = (flags & wxCONTROL_CURRENT) ? TREIS_HOT : TREIS_NORMAL;
+				if (flags & wxCONTROL_SELECTED)
+				{
+					itemState = (flags & wxCONTROL_CURRENT) ? TREIS_HOTSELECTED : TREIS_SELECTED;
+					if (!(flags & wxCONTROL_FOCUSED))
+					{
+						itemState = TREIS_SELECTEDNOTFOCUS;
+					}
+				}
+
+				if (flags & wxCONTROL_DISABLED)
+				{
+					itemState = TREIS_DISABLED;
+				}
+				return itemState;
+			};
+
+			KxUxTheme::Handle handle(this, L"LISTVIEW");
+			if (handle)
+			{
+				int itemState = GetListItemState(flags);
+				RECT rect = KxUtility::CopyRectToRECT(cellRect);
+				HDC hdc = paintDC.GetHDC();
+
+				::DrawThemeBackground(handle, hdc, TVP_TREEITEM, itemState, &rect, 0);
+			}
+		};
+
 		for (Row currentRow = rowStart; currentRow < rowEnd; ++currentRow)
 		{
 			const bool isSelected = m_SelectionStore.IsSelected(currentRow);
 			if (currentRow != m_HotTrackRow && isSelected)
 			{
 				wxRect rowRect(xCoordStart, GetRowStart(currentRow), xCoordEnd - xCoordStart, GetRowHeight(currentRow));
-				wxRendererNative::Get().DrawItemSelectionRect(this, dc, rowRect, wxCONTROL_FOCUSED|wxCONTROL_SELECTED);
+				DrawSelectionRect(rowRect, wxCONTROL_FOCUSED|wxCONTROL_SELECTED);
 			}
 			else if (currentRow == m_HotTrackRow && m_HotTrackRowEnabled && m_HotTrackColumn)
 			{
 				wxRect itemRect(xCoordStart, GetRowStart(currentRow), xCoordEnd - xCoordStart, GetRowHeight(currentRow));
-				wxRendererNative::Get().DrawItemSelectionRect(this, dc, itemRect, wxCONTROL_FOCUSED|wxCONTROL_CURRENT|(isSelected ? wxCONTROL_SELECTED : 0));
+				DrawSelectionRect(itemRect, wxCONTROL_FOCUSED|wxCONTROL_CURRENT|(isSelected ? wxCONTROL_SELECTED : 0));
 			}
 		}
 
@@ -1212,44 +1283,6 @@ namespace Kx::DataView2
 
 			// Move coordinates to next column
 			cellRect.x += cellRect.width;
-		}
-
-		// Draw horizontal rules
-		if (m_View->IsOptionEnabled(CtrlStyle::HorizontalRules))
-		{
-			dc.SetPen(m_PenRuleH);
-			dc.SetBrush(*wxTRANSPARENT_BRUSH);
-
-			for (Row currentRow = rowStart; currentRow <= rowEnd; ++currentRow)
-			{
-				int y = GetRowStart(currentRow);
-				dc.DrawLine(xCoordStart, y, xCoordEnd, y);
-			}
-		}
-
-		// Draw vertical rules
-		if (m_View->IsOptionEnabled(CtrlStyle::VerticalRules))
-		{
-			dc.SetPen(m_PenRuleV);
-			dc.SetBrush(*wxTRANSPARENT_BRUSH);
-
-			// Vertical rules are drawn in the last pixel of a column so that
-			// they align perfectly with native MSW wxHeaderCtrl as well as for
-			// consistency with MSW native list control. There's no vertical
-			// rule at the most-left side of the control.
-
-			int x = xCoordStart - 1;
-			for (size_t currentColumnIndex = coulumnIndexStart; currentColumnIndex < coulmnIndexEnd; currentColumnIndex++)
-			{
-				Column* column = m_View->GetColumnDisplayedAt(currentColumnIndex);
-
-				int width = 0;
-				if (column->IsExposed(width))
-				{
-					x += width;
-					dc.DrawLine(x, GetRowStart(rowStart), x, GetRowStart(rowEnd) + clientSize.y);
-				}
-			}
 		}
 	}
 	CellState MainWindow::GetCellStateForRow(Row row) const
