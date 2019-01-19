@@ -92,12 +92,17 @@ namespace Kx::DataView2
 		}
 		return margins / 2;
 	}
-	int RenderEngine::FindFirstNewLinePos(const wxString& string) const
+	wxSize RenderEngine::FromDIP(const wxSize& size) const
 	{
-		int pos = string.Find('\r');
-		if (pos == wxNOT_FOUND)
+		return m_Renderer.GetView()->FromDIP(size);
+	}
+	
+	size_t RenderEngine::FindFirstLineBreak(const wxString& string) const
+	{
+		size_t pos = string.find(wxS('\r'));
+		if (pos == wxString::npos)
 		{
-			pos = string.Find('\n');
+			pos = string.find(wxS('\n'));
 		}
 		return pos;
 	}
@@ -147,9 +152,9 @@ namespace Kx::DataView2
 		if (m_Renderer.m_Attributes.HasFontAttributes())
 		{
 			wxFont font(m_Renderer.m_Attributes.GetEffectiveFont(dc.GetFont()));
-			int newLinePos = FindFirstNewLinePos(string);
 
-			if (newLinePos != wxNOT_FOUND)
+			size_t lineBreakPos = FindFirstLineBreak(string);
+			if (lineBreakPos != wxString::npos && string.length() >= lineBreakPos)
 			{
 				if (m_Renderer.IsMarkupEnabled())
 				{
@@ -157,7 +162,7 @@ namespace Kx::DataView2
 				}
 				else
 				{
-					dc.GetTextExtent(string.Left(newLinePos), &textExtent.x, &textExtent.y, nullptr, nullptr, &font);
+					dc.GetTextExtent(string.Left(lineBreakPos), &textExtent.x, &textExtent.y, nullptr, nullptr, &font);
 				}
 			}
 			else
@@ -206,8 +211,8 @@ namespace Kx::DataView2
 				flags |= wxMarkupText::Render_ShowAccels;
 			}
 
-			int newLinePos = FindFirstNewLinePos(string);
-			if (newLinePos != wxNOT_FOUND)
+			size_t lineBreakPos = FindFirstLineBreak(string);
+			if (lineBreakPos != wxString::npos && string.length() >= lineBreakPos)
 			{
 				if (m_Renderer.IsMarkupEnabled())
 				{
@@ -215,7 +220,7 @@ namespace Kx::DataView2
 				}
 				else
 				{
-					dc.DrawText(wxControl::Ellipsize(string, dc, m_Renderer.GetEllipsizeMode(), textRect.GetWidth()), textRect.GetPosition());
+					dc.DrawText(wxControl::Ellipsize(string.Left(lineBreakPos), dc, m_Renderer.GetEllipsizeMode(), textRect.GetWidth()), textRect.GetPosition());
 				}
 			}
 			else
@@ -251,7 +256,7 @@ namespace Kx::DataView2
 		if (bitmap.IsOk())
 		{
 			DrawBitmap(wxRect(cellRect.GetX() + offsetX, cellRect.GetY(), cellRect.GetWidth() - offsetX, cellRect.GetHeight()), cellState, bitmap);
-			offsetX += bitmap.GetWidth() + 1;
+			offsetX += bitmap.GetWidth() + FromDIPX(1);
 		}
 		if (!text.IsEmpty())
 		{

@@ -52,7 +52,7 @@ namespace Kx::DataView2
 			toggleRect.SetHeight(cellRect.GetHeight());
 
 			offsetX += GetRenderEngine().DrawToggle(GetGraphicsDC(), toggleRect, cellState, m_Value.GetState(), m_Value.GetType()).GetWidth();
-			offsetFromToggle = GetView()->FromDIP(wxSize(2, 0)).x;
+			offsetFromToggle = GetRenderEngine().FromDIPX(2);
 		}
 		if (m_Value.HasBitmap() || m_Value.HasText())
 		{
@@ -69,12 +69,11 @@ namespace Kx::DataView2
 		if (m_Value.HasType())
 		{
 			wxSize toggleSize = GetRenderEngine().GetToggleSize();
-			size.x += toggleSize.x;
+			size.x += toggleSize.x + GetRenderEngine().FromDIPX(2);
 			if (size.y < toggleSize.y)
 			{
 				size.y = toggleSize.y;
 			}
-			size += GetView()->FromDIP(wxSize(2, 0));
 		}
 		if (m_Value.HasText())
 		{
@@ -88,7 +87,7 @@ namespace Kx::DataView2
 		if (m_Value.HasBitmap())
 		{
 			const wxBitmap& bitmap = m_Value.GetBitmap();
-			size.x += bitmap.GetWidth();
+			size.x += bitmap.GetWidth() + GetRenderEngine().FromDIPX(1);
 			if (size.y < bitmap.GetHeight())
 			{
 				size.y = bitmap.GetHeight();

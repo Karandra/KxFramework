@@ -56,8 +56,22 @@ namespace Kx::DataView2
 			}
 
 		public:
-			int CalcCenter(int pos, int size) const;
-			int FindFirstNewLinePos(const wxString& string) const;
+			int CalcCenter(int cellSize, int itemSize) const;
+			wxSize FromDIP(const wxSize& size) const;
+			wxSize FromDIP(int x, int y) const
+			{
+				return FromDIP(wxSize(x, y));
+			}
+			int FromDIPX(int x) const
+			{
+				return FromDIP(x, wxDefaultCoord).GetWidth();
+			}
+			int FromDIPY(int y) const
+			{
+				return FromDIP(wxDefaultCoord, y).GetHeight();
+			}
+
+			size_t FindFirstLineBreak(const wxString& string) const;
 			int GetControlFlags(CellState cellState) const;
 
 			wxSize GetTextExtent(const wxString& string) const;
