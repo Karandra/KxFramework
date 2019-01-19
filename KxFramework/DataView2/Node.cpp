@@ -303,13 +303,12 @@ namespace Kx::DataView2
 		{
 			auto it = m_Children.begin() + index;
 			Node* node = *it;
-
-			const intptr_t removedCount = node->GetSubTreeCount() + 1;
-			m_MainWindow->OnNodeRemoved(*node, removedCount);
-
 			node->m_ParentNode = nullptr;
 			m_Children.erase(it);
 			RecalcIndexes(index);
+
+			const intptr_t removedCount = node->GetSubTreeCount() + 1;
+			m_MainWindow->OnNodeRemoved(*node, removedCount);
 			return node;
 		}
 		return nullptr;

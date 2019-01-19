@@ -1118,7 +1118,7 @@ namespace Kx::DataView2
 			{
 				// Get the cell value and set it into the renderer
 				Node* node = nullptr;
-				if (m_VirtualListModel)
+				if (m_IsVirtualListModel)
 				{
 					node = static_cast<VirtualListModel*>(m_Model)->GetNode(currentRow);
 				}
@@ -1382,7 +1382,7 @@ namespace Kx::DataView2
 	// Items
 	size_t MainWindow::RecalculateItemCount() const
 	{
-		if (m_VirtualListModel)
+		if (m_IsVirtualListModel)
 		{
 			return static_cast<VirtualListModel*>(m_Model)->GetItemCount();
 		}
@@ -1423,14 +1423,12 @@ namespace Kx::DataView2
 	}
 	void MainWindow::OnNodeAdded(Node& node)
 	{
+		InvalidateItemCount();
+		m_IsRepresentingList = IsRepresentingList();
+
 		if (IsVirtualList())
 		{
-			RecalculateItemCount();
 			m_SelectionStore.OnItemsInserted(node.GetRow(), 1);
-		}
-		else
-		{
-			InvalidateItemCount();
 		}
 
 		m_View->InvalidateColumnsBestWidth();
@@ -1438,15 +1436,15 @@ namespace Kx::DataView2
 	}
 	void MainWindow::OnNodeRemoved(Node& item, intptr_t removedCount)
 	{
+		InvalidateItemCount();
+		m_IsRepresentingList = IsRepresentingList();
+
 		if (IsVirtualList())
 		{
-			RecalculateItemCount();
 			m_SelectionStore.OnItemDelete(item.GetRow());
 		}
 		else
 		{
-			InvalidateItemCount();
-
 			// Update selection by removing this node and its entire children tree from the selection.
 			if (!m_SelectionStore.IsEmpty())
 			{
@@ -1473,6 +1471,7 @@ namespace Kx::DataView2
 		m_CurrentColumn = nullptr;
 		m_HotTrackColumn = nullptr;
 		m_TreeNodeUnderMouse = nullptr;
+		m_IsRepresentingList = false;
 		BuildTree();
 
 		m_View->InvalidateColumnsBestWidth();
@@ -1503,6 +1502,35 @@ namespace Kx::DataView2
 		if (!IsVirtualList())
 		{
 			m_ItemsCount = 0;
+		}
+	}
+	void MainWindow::DoAssignModel(Model* model, bool own)
+	{
+		if (m_OwnModel)
+		{
+			delete m_Model;
+		}
+
+		m_OwnModel = own;
+		m_IsVirtualListModel = model && dynamic_cast<VirtualListModel*>(model) != nullptr;
+		m_Model = model;
+	}
+	bool MainWindow::IsRepresentingList() const
+	{
+		if (m_IsVirtualListModel)
+		{
+			return true;
+		}
+		else
+		{
+			for (const Node* node: m_TreeRoot->GetChildren())
+			{
+				if (node->HasChildren())
+				{
+					return false;
+				}
+			}
+			return true;
 		}
 	}
 
@@ -1600,30 +1628,6 @@ namespace Kx::DataView2
 		event.SetColumn(column);
 	}
 	
-	// Model
-	void MainWindow::AssignModel(Model* model)
-	{
-		if (m_OwnModel)
-		{
-			delete m_Model;
-		}
-
-		m_OwnModel = true;
-		m_ListModel = model && dynamic_cast<ListModel*>(model) != nullptr;
-		m_Model = model;
-	}
-	void MainWindow::SetModel(Model* model)
-	{
-		if (m_OwnModel)
-		{
-			delete m_Model;
-		}
-
-		m_OwnModel = false;
-		m_ListModel = model && dynamic_cast<ListModel*>(model) != nullptr;
-		m_Model = model;
-	}
-
 	// Refreshing
 	void MainWindow::RefreshRows(Row from, Row to)
 	{
@@ -2584,7 +2588,7 @@ namespace Kx::DataView2
 	}
 	bool MainWindow::HasChildren(Row row) const
 	{
-		if (!m_ListModel)
+		if (!m_IsRepresentingList)
 		{
 			Node* node = GetNodeByRow(row);
 			return node && node->HasChildren();
@@ -2594,7 +2598,7 @@ namespace Kx::DataView2
 
 	Node* MainWindow::GetNodeByRow(Row row) const
 	{
-		if (m_VirtualListModel)
+		if (m_IsVirtualListModel)
 		{
 			if (row < GetRowCount())
 			{
@@ -2611,7 +2615,7 @@ namespace Kx::DataView2
 	}
 	Row MainWindow::GetRowByNode(const Node& node) const
 	{
-		if (m_VirtualListModel)
+		if (m_IsVirtualListModel)
 		{
 			return static_cast<VirtualListModel*>(m_Model)->GetRow(node);
 		}

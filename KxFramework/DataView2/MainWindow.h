@@ -61,8 +61,8 @@ namespace Kx::DataView2
 			View* m_View = nullptr;
 			Model* m_Model = nullptr;
 			bool m_OwnModel = false;
-			bool m_ListModel = false;
-			bool m_VirtualListModel = false;
+			bool m_IsRepresentingList = false;
+			bool m_IsVirtualListModel = false;
 
 			int m_UniformRowHeight = 0;
 			int m_Indent = 0;
@@ -177,11 +177,12 @@ namespace Kx::DataView2
 			void OnItemsCleared();
 			void OnShouldResort();
 
-			// Methods for building the mapping tree
 			void BuildTree();
 			void DestroyTree();
+			void DoAssignModel(Model* model, bool own);
+			bool IsRepresentingList() const;
 
-			/* Misc */
+			// Misc
 			virtual void OnInternalIdle() override;
 
 		public:
@@ -194,19 +195,25 @@ namespace Kx::DataView2
 			// Model and nodes
 			bool IsList() const
 			{
-				return m_ListModel;
+				return m_IsVirtualListModel || m_IsRepresentingList;
 			}
 			bool IsVirtualList() const
 			{
-				return m_VirtualListModel;
+				return m_IsVirtualListModel;
 			}
 			
 			Model* GetModel() const
 			{
 				return m_Model;
 			}
-			void SetModel(Model* model);
-			void AssignModel(Model* model);
+			void SetModel(Model* model)
+			{
+				DoAssignModel(model, false);
+			}
+			void AssignModel(Model* model)
+			{
+				DoAssignModel(model, true);
+			}
 
 			Node& GetRootNode() const
 			{
