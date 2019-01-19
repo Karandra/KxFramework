@@ -964,7 +964,7 @@ namespace Kx::DataView2
 		return event.IsAllowed();
 	}
 
-	/* Drawing */
+	// Drawing
 	void MainWindow::OnPaint(wxPaintEvent& event)
 	{
 		wxAutoBufferedPaintDC paintDC(this);
@@ -1785,14 +1785,12 @@ namespace Kx::DataView2
 	{
 		if (m_View->IsOptionEnabled(CtrlStyle::VariableRowHeight))
 		{
-			// TODO: make more efficient
-
 			Row row = 0;
 			int yPos = 0;
 			while (true)
 			{
 				const Node* node = GetNodeByRow(row);
-				if (!node)
+				if (node == nullptr)
 				{
 					// Not really correct
 					return row + ((yCoord - yPos) / m_UniformRowHeight);
@@ -1806,7 +1804,7 @@ namespace Kx::DataView2
 				++row;
 			}
 		}
-		return std::abs(yCoord) / m_UniformRowHeight;
+		return yCoord / m_UniformRowHeight;
 	}
 
 	void MainWindow::SetUniformRowHeight(int height)

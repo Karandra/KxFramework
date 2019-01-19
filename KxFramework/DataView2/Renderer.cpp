@@ -100,9 +100,11 @@ namespace Kx::DataView2
 		const wxSize cellSize = GetCellSize();
 		wxRect adjustedCellRect(cellRect);
 
-		// Restrict height to row height. This function checks if variable row hight style is enabled
-		// and if not, returns uniform row height.
-		adjustedCellRect.SetHeight(GetMainWindow()->GetVariableRowHeight(*m_Node));
+		// Restrict height to row height.
+		if (GetView()->IsOptionEnabled(CtrlStyle::VariableRowHeight))
+		{
+			adjustedCellRect.SetHeight(GetMainWindow()->GetVariableRowHeight(*m_Node));
+		}
 
 		// Take alignment into account only if there is enough space, otherwise
 		// show as much contents as possible.
