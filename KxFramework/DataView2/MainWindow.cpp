@@ -8,7 +8,7 @@
 #include "KxFramework/KxDataView2Event.h"
 #include "KxFramework/KxSystemSettings.h"
 #include "KxFramework/KxSplashWindow.h"
-#include "KxFramework/KxDCClipper.h"
+#include "KxFramework/KxCallAtScopeExit.h"
 #include "KxFramework/KxUtility.h"
 #include "KxFramework/KxFrame.h"
 #include <wx/popupwin.h>
@@ -482,28 +482,30 @@ namespace Kx::DataView2
 		}
 
 		const Row currentRow = GetRowAt(y);
-		Node* currentNode = GetNodeByRow(currentRow);
+		Node* const currentNode = GetNodeByRow(currentRow);
 
 		// Hot track
 		{
-			const bool rowChnaged = m_HotTrackRow != currentRow;
+			const bool rowChnaged = (m_HotTrackRow != currentRow && currentNode) || (m_HotTrackRow && currentNode == nullptr);
 			const bool columnChanged = m_HotTrackColumn != currentColumn;
-			m_HotTrackColumn = currentColumn;
 
 			if (rowChnaged || columnChanged)
 			{
+				m_HotTrackColumn = currentColumn;
+
+				// Refresh old hot-tracked row
 				if (rowChnaged)
 				{
 					m_HotTrackRowEnabled = false;
 					RefreshRow(m_HotTrackRow);
-
-					if (currentNode == nullptr)
-					{
-						ResetHotTrackedExpander();
-					}
+				}
+				if (currentNode == nullptr)
+				{
+					ResetHotTrackedExpander();
 				}
 
-				m_HotTrackRow = currentNode ? currentRow : INVALID_ROW;
+				// Update new row
+				m_HotTrackRow = currentNode ? currentRow : Row();
 				m_HotTrackRowEnabled = m_HotTrackRow && m_HotTrackColumn;
 				RefreshRow(m_HotTrackRow);
 
@@ -513,9 +515,8 @@ namespace Kx::DataView2
 			}
 		}
 
-		// Handle right clicking here, before everything else as context menu
-		// events should be sent even when we click outside of any item, unlike all
-		// the other ones.
+		// Handle right clicking here, before everything else as context menu events should be
+		// sent even when we click outside of any item, unlike all the other ones.
 		if (event.RightUp())
 		{
 			CancelEdit();
@@ -596,42 +597,48 @@ namespace Kx::DataView2
 					SendSelectionChangedEvent(nullptr, currentColumn);
 				}
 			}
+
 			event.Skip();
 			return;
 		}
 
-		Renderer& renderer = currentColumn->GetRenderer();
-		Column* expander = m_View->GetExpanderColumnOrFirstOne();
+		auto TestExpanderButton = [this, xpos, x, y](Row row, int itemOffset = -1, const Node* node = nullptr)
+		{
+			if (itemOffset < 0)
+			{
+				itemOffset = m_Indent * node->GetIndentLevel();
+			}
+
+			wxRect rect(xpos + itemOffset, GetRowStart(row) + (GetRowHeight(row) - m_UniformRowHeight) / 2, m_UniformRowHeight, m_UniformRowHeight);
+			return rect.Contains(x, y);
+		};
 
 		// Test whether the mouse is hovering over the expander (a.k.a tree "+"
 		// button) and also determine the offset of the real cell start, skipping
 		// the indentation and the expander itself.
+		Column* expander = m_View->GetExpanderColumnOrFirstOne();
 		bool isHoverOverExpander = false;
 		int itemOffset = 0;
 		if (!IsList() && expander == currentColumn)
 		{
 			itemOffset = m_Indent * currentNode->GetIndentLevel();
 
-			if (currentNode->HasChildren())
+			// We make the rectangle we are looking in a bit bigger than the actual
+			// visual expander so the user can hit that little thing reliably.
+			if (currentNode->HasChildren() && TestExpanderButton(currentRow, itemOffset))
 			{
-				// We make the rectangle we are looking in a bit bigger than the actual
-				// visual expander so the user can hit that little thing reliably
-				wxRect rect(xpos + itemOffset, GetRowStart(currentRow) + (GetRowHeight(currentRow) - m_UniformRowHeight) / 2, m_UniformRowHeight, m_UniformRowHeight);
-
-				if (rect.Contains(x, y))
+				// So the mouse is over the expander
+				if (m_TreeNodeUnderMouse && m_TreeNodeUnderMouse != currentNode)
 				{
-					// So the mouse is over the expander
-					isHoverOverExpander = true;
-					if (m_TreeNodeUnderMouse && m_TreeNodeUnderMouse != currentNode)
-					{
-						RefreshRow(GetRowByNode(*m_TreeNodeUnderMouse));
-					}
-					if (m_TreeNodeUnderMouse != currentNode)
-					{
-						RefreshRow(currentRow);
-					}
-					m_TreeNodeUnderMouse = currentNode;
+					RefreshRow(GetRowByNode(*m_TreeNodeUnderMouse));
 				}
+				if (m_TreeNodeUnderMouse != currentNode)
+				{
+					RefreshRow(currentRow);
+				}
+
+				m_TreeNodeUnderMouse = currentNode;
+				isHoverOverExpander = true;
 			}
 
 			// Account for the expander as well, even if this item doesn't have it,
@@ -639,9 +646,9 @@ namespace Kx::DataView2
 			itemOffset += m_UniformRowHeight;
 		}
 
-		if (!isHoverOverExpander && m_TreeNodeUnderMouse != nullptr)
+		if (!isHoverOverExpander && m_TreeNodeUnderMouse)
 		{
-			size_t row = GetRowByNode(*m_TreeNodeUnderMouse);
+			Row row = GetRowByNode(*m_TreeNodeUnderMouse);
 			m_TreeNodeUnderMouse = nullptr;
 			RefreshRow(row);
 		}
@@ -684,6 +691,10 @@ namespace Kx::DataView2
 					SelectRow(m_RowSelectSingleOnUp, true);
 					SendSelectionChangedEvent(GetNodeByRow(m_RowSelectSingleOnUp), currentColumn);
 				}
+				else if (m_View->IsOptionEnabled(CtrlStyle::CellFocus))
+				{
+					RefreshRow(currentRow);
+				}
 				// Else it was already selected, nothing to do.
 			}
 
@@ -695,8 +706,8 @@ namespace Kx::DataView2
 			// This is necessary, because after a DnD operation in
 			// from and to ourself, the up event is swallowed by the
 			// DnD code. So on next non-up event (which means here and
-			// now) m_lineSelectSingleOnUp should be reset.
-			m_RowSelectSingleOnUp = INVALID_ROW;
+			// now) 'm_RowSelectSingleOnUp' should be reset.
+			m_RowSelectSingleOnUp.MakeInvalid();
 		}
 
 		if (event.RightDown())
@@ -724,11 +735,9 @@ namespace Kx::DataView2
 	
 		if ((event.LeftDown() || simulateClick) && isHoverOverExpander && !event.LeftDClick())
 		{
-			Node* node = GetNodeByRow(currentRow);
-
 			// hoverOverExpander being true tells us that our node must be
 			// valid and have children. So we don't need any extra checks.
-			if (node->IsNodeExpanded())
+			if (currentNode->IsNodeExpanded())
 			{
 				Collapse(currentRow);
 			}
@@ -830,12 +839,13 @@ namespace Kx::DataView2
 			// Call ActivateCell() after everything else as under GTK+
 			if (currentNode->IsEditable(*currentColumn))
 			{
-				// notify cell about click
+				// Notify cell about click
 				wxRect cellRect(xpos + itemOffset, GetRowStart(currentRow), currentColumn->GetWidth() - itemOffset, GetRowHeight(currentRow));
 
 				// Note that SetupCellAttributes() should be called after GetRowStart()
 				// call in 'cellRect' initialization above as GetRowStart() calls
 				// SetupCellAttributes() for other items from inside it.
+				Renderer& renderer = currentColumn->GetRenderer();
 				renderer.EndRendering();
 				renderer.SetupCellAttributes(*currentNode, *currentColumn, GetCellStateForRow(oldCurrentRow));
 
@@ -888,12 +898,6 @@ namespace Kx::DataView2
 				renderer.CallOnActivateCell(*currentNode, cellRect, &event2);
 				renderer.EndRendering();
 			}
-		}
-
-		// For selection rect
-		if (event.LeftDown() || event.RightDown())
-		{
-			RefreshRow(m_CurrentRow);
 		}
 	}
 	void MainWindow::OnSetFocus(wxFocusEvent& event)
@@ -1071,33 +1075,20 @@ namespace Kx::DataView2
 			}
 		}
 
-		// Redraw the background for the items which are selected/current
-		for (size_t currentRow = rowStart; currentRow < rowEnd; currentRow++)
+		// Draw selection
+		for (Row currentRow = rowStart; currentRow < rowEnd; ++currentRow)
 		{
-			const bool isCurrentRowSelected = m_SelectionStore.IsSelected(currentRow);
-			if (isCurrentRowSelected || currentRow == m_CurrentRow)
+			const bool isSelected = m_SelectionStore.IsSelected(currentRow);
+			if (currentRow != m_HotTrackRow && isSelected)
 			{
 				wxRect rowRect(xCoordStart, GetRowStart(currentRow), xCoordEnd - xCoordStart, GetRowHeight(currentRow));
-				bool renderColumnFocus = false;
-
-				int flags = wxCONTROL_SELECTED;
-				if (m_HasFocus)
-				{
-					flags |= wxCONTROL_FOCUSED;
-				}
-
-				// Draw selection and whole-item focus:
-				if (isCurrentRowSelected && !renderColumnFocus)
-				{
-					wxRendererNative::Get().DrawItemSelectionRect(this, dc, rowRect, flags|wxCONTROL_CURRENT);
-				}
+				wxRendererNative::Get().DrawItemSelectionRect(this, dc, rowRect, wxCONTROL_FOCUSED|wxCONTROL_SELECTED);
 			}
-		}
-
-		if (m_HotTrackRowEnabled && m_HotTrackRow && m_HotTrackColumn)
-		{
-			wxRect itemRect(xCoordStart, GetRowStart(m_HotTrackRow), xCoordEnd - xCoordStart, GetRowHeight(m_HotTrackRow));
-			wxRendererNative::Get().DrawItemSelectionRect(this, dc, itemRect, wxCONTROL_FOCUSED|wxCONTROL_CURRENT);
+			else if (currentRow == m_HotTrackRow && m_HotTrackRowEnabled && m_HotTrackColumn)
+			{
+				wxRect itemRect(xCoordStart, GetRowStart(currentRow), xCoordEnd - xCoordStart, GetRowHeight(currentRow));
+				wxRendererNative::Get().DrawItemSelectionRect(this, dc, itemRect, wxCONTROL_FOCUSED|wxCONTROL_CURRENT|(isSelected ? wxCONTROL_SELECTED : 0));
+			}
 		}
 
 		#if wxUSE_DRAG_AND_DROP
@@ -1115,9 +1106,7 @@ namespace Kx::DataView2
 		for (size_t currentColumnIndex = coulumnIndexStart; currentColumnIndex < coulmnIndexEnd; currentColumnIndex++)
 		{
 			Column* column = m_View->GetColumnDisplayedAt(currentColumnIndex);
-			cellRect.width = column->GetWidth();
-
-			if (!column->IsExposed())
+			if (!column->IsExposed(cellRect.width))
 			{
 				continue;
 			}
@@ -1151,8 +1140,6 @@ namespace Kx::DataView2
 
 				const CellState cellState = GetCellStateForRow(currentRow);
 				renderer.SetupCellAttributes(*node, *column, cellState);
-
-				// Draw the background
 				renderer.CallDrawCellBackground(cellRect, cellState);
 
 				// Draw cell focus
@@ -1201,7 +1188,7 @@ namespace Kx::DataView2
 						constexpr int GLPS_OPENED = 2;
 						constexpr int GLPS_CLOSED = 1;
 
-						if (!m_View->m_UsingSystemTheme || !KxUtility::DrawThemeBackground(this, wxS("TREEVIEW"), dc, flag & wxCONTROL_CURRENT ? TVP_HOTGLYPH : TVP_GLYPH, flag & wxCONTROL_EXPANDED ? GLPS_OPENED : GLPS_CLOSED, expanderRect))
+						if (!m_View->m_UsingSystemTheme || !KxUtility::DrawThemeBackground(this, wxS("TREEVIEW"), paintDC, flag & wxCONTROL_CURRENT ? TVP_HOTGLYPH : TVP_GLYPH, flag & wxCONTROL_EXPANDED ? GLPS_OPENED : GLPS_CLOSED, expanderRect))
 						{
 							wxRendererNative::Get().DrawTreeItemButton(this, dc, expanderRect, flag);
 						}
@@ -1222,6 +1209,8 @@ namespace Kx::DataView2
 				renderer.CallDrawCellContent(adjustedCellRect, GetCellStateForRow(currentRow));
 				renderer.EndRendering();
 			}
+
+			// Move coordinates to next column
 			cellRect.x += cellRect.width;
 		}
 
@@ -1266,7 +1255,7 @@ namespace Kx::DataView2
 	CellState MainWindow::GetCellStateForRow(Row row) const
 	{
 		CellState state;
-		if (row != INVALID_ROW)
+		if (row)
 		{
 			if (m_HasFocus && IsRowSelected(row))
 			{
@@ -1287,7 +1276,6 @@ namespace Kx::DataView2
 	void MainWindow::UpdateDisplay()
 	{
 		m_Dirty = true;
-		m_TreeNodeUnderMouse = nullptr;
 	}
 	void MainWindow::RecalculateDisplay()
 	{
@@ -1473,6 +1461,8 @@ namespace Kx::DataView2
 		}
 
 		m_View->InvalidateColumnsBestWidth();
+
+		m_TreeNodeUnderMouse = nullptr;
 		UpdateDisplay();
 	}
 	void MainWindow::OnItemsCleared()
@@ -2056,7 +2046,7 @@ namespace Kx::DataView2
 	// Scrolling
 	void MainWindow::ScrollWindow(int dx, int dy, const wxRect* rect)
 	{
-		m_TreeNodeUnderMouse = nullptr;
+		//m_TreeNodeUnderMouse = nullptr;
 		wxWindow::ScrollWindow(dx, dy, rect);
 
 		if (wxHeaderCtrl* header = m_View->GetHeaderCtrl())
@@ -2066,7 +2056,7 @@ namespace Kx::DataView2
 	}
 	void MainWindow::ScrollTo(Row row, size_t column)
 	{
-		m_TreeNodeUnderMouse = nullptr;
+		//m_TreeNodeUnderMouse = nullptr;
 
 		wxPoint pos;
 		m_View->GetScrollPixelsPerUnit(&pos.x, &pos.y);
