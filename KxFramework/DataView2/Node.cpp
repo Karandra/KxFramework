@@ -106,6 +106,7 @@ namespace Kx::DataView2
 				// Use binary search to find the correct position to insert at.
 				auto it = std::lower_bound(m_Children.begin(), m_Children.end(), node, comparator);
 				m_Children.insert(it, node);
+				RecalcIndexes(std::distance(m_Children.begin(), it));
 
 				// Make sure the change is actually shown right away
 				m_MainWindow->UpdateDisplay();
@@ -124,6 +125,7 @@ namespace Kx::DataView2
 				{
 					std::sort(m_Children.begin(), m_Children.end(), Comparator(m_MainWindow, sortOrder));
 					m_SortOrder = sortOrder;
+					RecalcIndexes();
 				}
 
 				// There may be open child nodes that also need a resort.
