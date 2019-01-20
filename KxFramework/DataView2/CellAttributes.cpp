@@ -1,13 +1,13 @@
 #include "KxStdAfx.h"
-#include "ItemAttributes.h"
+#include "CellAttributes.h"
 
 namespace Kx::DataView2
 {
-	void ItemAttributes::Reset()
+	void CellAttributes::Reset()
 	{
-		*this = ItemAttributes();
+		*this = CellAttributes();
 	}
-	wxFont ItemAttributes::GetEffectiveFont(const wxFont& baseFont) const
+	wxFont CellAttributes::GetEffectiveFont(const wxFont& baseFont) const
 	{
 		if (HasFontAttributes())
 		{

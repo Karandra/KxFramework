@@ -985,6 +985,9 @@ namespace Kx::DataView2
 		m_View->PrepareDC(paintDC);
 		wxGCDC dc(paintDC);
 
+		static wxBitmap background("micro_sd.png", wxBITMAP_TYPE_PNG);
+		dc.DrawBitmap(background, wxPoint(0, 0));
+
 		wxRect updateRect = GetUpdateRegion().GetBox();
 		m_View->CalcUnscrolledPosition(updateRect.x, updateRect.y, &updateRect.x, &updateRect.y);
 
@@ -2283,7 +2286,7 @@ namespace Kx::DataView2
 	{
 		if (!IsSelectionEmpty())
 		{
-			for (size_t i = GetFirstVisibleRow(); i <= GetLastVisibleRow(); i++)
+			for (Row i = GetFirstVisibleRow(); i <= GetLastVisibleRow(); ++i)
 			{
 				if (m_SelectionStore.IsSelected(i) && i != exceptThisRow)
 				{
@@ -2329,9 +2332,9 @@ namespace Kx::DataView2
 		wxArrayInt changed;
 		if (m_SelectionStore.SelectRange(from, to, true, &changed))
 		{
-			for (size_t i = 0; i < changed.size(); i++)
+			for (int row: changed)
 			{
-				RefreshRow(changed[i]);
+				RefreshRow(row);
 			}
 		}
 		else

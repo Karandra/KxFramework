@@ -3,7 +3,7 @@
 
 namespace Kx::DataView2
 {
-	class KX_API ItemAttributes
+	class KX_API CellAttributes
 	{
 		private:
 			// Colors
@@ -23,6 +23,12 @@ namespace Kx::DataView2
 			bool m_HeaderBackgound = false;
 			bool m_ShowAccelerators = false;
 			wxAlignment m_Alignment = wxALIGN_INVALID;
+
+		private:
+			void ChangeAlpha(KxColor& color, uint8_t alpha)
+			{
+				color.SetA(alpha);
+			}
 
 		public:
 			/* General */
@@ -51,6 +57,11 @@ namespace Kx::DataView2
 			{
 				m_BackgroundColor = color;
 			}
+			void SetBackgroundColor(const KxColor& color, uint8_t alpha)
+			{
+				m_BackgroundColor = color;
+				ChangeAlpha(m_BackgroundColor, alpha);
+			}
 
 			bool HasForegroundColor() const
 			{
@@ -63,6 +74,11 @@ namespace Kx::DataView2
 			void SetForegroundColor(const KxColor& color)
 			{
 				m_ForegroundColor = color;
+			}
+			void SetForegroundColor(const KxColor& color, uint8_t alpha)
+			{
+				m_ForegroundColor = color;
+				ChangeAlpha(m_ForegroundColor, alpha);
 			}
 
 			/* Font attributes */

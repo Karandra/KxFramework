@@ -3,7 +3,7 @@
 #include "KxFramework/KxWithOptions.h"
 #include "Common.h"
 #include "CellState.h"
-#include "ItemAttributes.h"
+#include "CellAttributes.h"
 #include "RenderEngine.h"
 
 namespace Kx::DataView2
@@ -43,7 +43,7 @@ namespace Kx::DataView2
 			wxAlignment m_Alignment = wxALIGN_INVALID;
 			wxEllipsizeMode m_EllipsizeMode = wxELLIPSIZE_END;
 			MarkupMode m_MarkupMode = MarkupMode::Disabled;
-			ItemAttributes m_Attributes;
+			CellAttributes m_Attributes;
 			
 			const Node* m_Node = nullptr;
 			Column* m_Column = nullptr;
@@ -75,7 +75,7 @@ namespace Kx::DataView2
 			void CallOnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent = nullptr);
 
 		protected:
-			const ItemAttributes& GetAttributes() const
+			const CellAttributes& GetAttributes() const
 			{
 				return m_Attributes;
 			}

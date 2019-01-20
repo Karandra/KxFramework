@@ -7,7 +7,7 @@
 
 namespace Kx::DataView2
 {
-	class KX_API ItemAttributes;
+	class KX_API CellAttributes;
 	class KX_API MainWindow;
 	class KX_API Renderer;
 	class KX_API Editor;
@@ -204,7 +204,7 @@ namespace Kx::DataView2
 				return false;
 			}
 			
-			virtual bool GetAttributes(ItemAttributes& attributes, const CellState& cellState, const Column& column) const
+			virtual bool GetAttributes(CellAttributes& attributes, const CellState& cellState, const Column& column) const
 			{
 				return false;
 			}

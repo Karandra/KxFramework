@@ -3,7 +3,7 @@
 #include "KxFramework/KxWithOptions.h"
 #include "Common.h"
 #include "CellState.h"
-#include "ItemAttributes.h"
+#include "CellAttributes.h"
 
 namespace Kx::DataView2
 {

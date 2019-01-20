@@ -9,7 +9,7 @@
 #include "KxFramework/DataView2/Model.h"
 #include "KxFramework/DataView2/CellState.h"
 #include "KxFramework/DataView2/HeaderCtrl.h"
-#include "KxFramework/DataView2/ItemAttributes.h"
+#include "KxFramework/DataView2/CellAttributes.h"
 #include "KxFramework/KxDataView2Event.h"
 
 // Renderers

@@ -217,7 +217,7 @@
     <ClInclude Include="KxFramework\DataView2\Common.h" />
     <ClInclude Include="KxFramework\DataView2\Editor.h" />
     <ClInclude Include="KxFramework\DataView2\HeaderCtrl.h" />
-    <ClInclude Include="KxFramework\DataView2\ItemAttributes.h" />
+    <ClInclude Include="KxFramework\DataView2\CellAttributes.h" />
     <ClInclude Include="KxFramework\DataView2\MainWindow.h" />
     <ClInclude Include="KxFramework\DataView2\Node.h" />
     <ClInclude Include="KxFramework\DataView2\Renderer.h" />
@@ -467,7 +467,7 @@
     <ClCompile Include="KxFramework\DataView2\View.cpp" />
     <ClCompile Include="KxFramework\DataView2\Editor.cpp" />
     <ClCompile Include="KxFramework\DataView2\HeaderCtrl.cpp" />
-    <ClCompile Include="KxFramework\DataView2\ItemAttributes.cpp" />
+    <ClCompile Include="KxFramework\DataView2\CellAttributes.cpp" />
     <ClCompile Include="KxFramework\DataView2\MainWindow.cpp" />
     <ClCompile Include="KxFramework\DataView2\Node.cpp" />
     <ClCompile Include="KxFramework\DataView2\Renderer.cpp" />

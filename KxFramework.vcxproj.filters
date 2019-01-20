@@ -799,9 +799,6 @@
     <ClInclude Include="KxFramework\DataView2\HeaderCtrl.h">
       <Filter>Header Files\GUI\DataView2</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\ItemAttributes.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\DataView2\MainWindow.h">
       <Filter>Header Files\GUI\DataView2</Filter>
     </ClInclude>
@@ -867,6 +864,9 @@
     </ClInclude>
     <ClInclude Include="KxFramework\DataView2\Renderers\BitmapListRenderer.h">
       <Filter>Header Files\GUI\DataView2\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\CellAttributes.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1384,9 +1384,6 @@
     <ClCompile Include="KxFramework\DataView2\HeaderCtrl.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\ItemAttributes.cpp">
-      <Filter>Source Files\GUI\DataView2</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\DataView2\MainWindow.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
     </ClCompile>
@@ -1437,6 +1434,9 @@
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\Renderers\BitmapListRenderer.cpp">
       <Filter>Source Files\GUI\DataView2\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\CellAttributes.cpp">
+      <Filter>Source Files\GUI\DataView2</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

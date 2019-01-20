@@ -10,7 +10,7 @@ namespace Kx::DataView2
 	class KX_API Node;
 	class KX_API Column;
 	class KX_API MainWindow;
-	class KX_API ItemAttributes;
+	class KX_API CellAttributes;
 }
 
 namespace Kx::DataView2
