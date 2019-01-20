@@ -2271,7 +2271,7 @@ namespace Kx::DataView2
 
 		if (nextColumn < 0 && wrapAround)
 		{
-			if (GetCurrentRow() > 0)
+			if (GetCurrentRow() > Row(0))
 			{
 				// Go to the last column of the previous row
 				nextColumn = visibleColumnsCount - 1;
@@ -2354,19 +2354,15 @@ namespace Kx::DataView2
 	}
 	void MainWindow::SelectRows(Row from, Row to)
 	{
-		wxArrayInt changed;
-		if (m_SelectionStore.SelectRange(from, to, true, &changed))
+		if (from > to)
 		{
-			for (int row: changed)
-			{
-				RefreshRow(row);
-			}
+			std::swap(from, to);
 		}
-		else
+		for (Row row = from; row <= to; ++row)
 		{
-			// Selection of too many rows has changed.
-			RefreshRows(from, to);
+			m_SelectionStore.SelectItem(row, true);
 		}
+		RefreshRows(from, to);
 	}
 	void MainWindow::SelectRows(const Row::Vector& selection)
 	{
