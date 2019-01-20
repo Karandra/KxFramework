@@ -3,7 +3,7 @@
 #include "KxFramework/KxHTMLWindow.h"
 #include <wx/html/htmprint.h>
 
-bool HTMLRenderer::SetValue(const wxAny& value)
+bool KxDataViewHTMLRenderer::SetValue(const wxAny& value)
 {
 	m_Content.clear();
 	m_ContentHTML.clear();
@@ -19,7 +19,7 @@ bool HTMLRenderer::SetValue(const wxAny& value)
 	}
 }
 
-void HTMLRenderer::PrepareRenderer(wxHtmlDCRenderer& htmlRenderer, wxDC& dc, const wxRect& cellRect) const
+void KxDataViewHTMLRenderer::PrepareRenderer(wxHtmlDCRenderer& htmlRenderer, wxDC& dc, const wxRect& cellRect) const
 {
 	// For some unknown reason scale of '1.0' renders text too large.
 	// Scaling it to '0.8' solves this.
@@ -38,7 +38,7 @@ void HTMLRenderer::PrepareRenderer(wxHtmlDCRenderer& htmlRenderer, wxDC& dc, con
 	htmlRenderer.SetFonts(font.GetFaceName(), "Consolas");
 	htmlRenderer.SetStandardFonts(font.GetPointSize(), font.GetFaceName(), "Consolas");
 }
-void HTMLRenderer::DrawCellContent(const wxRect& cellRect, KxDataViewCellState cellState)
+void KxDataViewHTMLRenderer::DrawCellContent(const wxRect& cellRect, KxDataViewCellState cellState)
 {
 	if (!m_Content.IsEmpty())
 	{
@@ -59,7 +59,7 @@ void HTMLRenderer::DrawCellContent(const wxRect& cellRect, KxDataViewCellState c
 		dc.SetUserScale(scaleX, scaleY);
 	}
 }
-wxSize HTMLRenderer::GetCellSize() const
+wxSize KxDataViewHTMLRenderer::GetCellSize() const
 {
 	if (!m_Content.IsEmpty())
 	{

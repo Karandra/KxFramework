@@ -3,7 +3,7 @@
 #include "KxFramework/DataView/KxDataViewRenderer.h"
 
 class wxHtmlDCRenderer;
-class KX_API HTMLRenderer: public KxDataViewRenderer
+class KX_API KxDataViewHTMLRenderer: public KxDataViewRenderer
 {
 	private:
 		wxString m_Content;
@@ -23,7 +23,7 @@ class KX_API HTMLRenderer: public KxDataViewRenderer
 		virtual wxSize GetCellSize() const override;
 
 	public:
-		HTMLRenderer(KxDataViewCellMode cellMode = KxDATAVIEW_CELL_INERT, int alignment = wxALIGN_INVALID)
+		KxDataViewHTMLRenderer(KxDataViewCellMode cellMode = KxDATAVIEW_CELL_INERT, int alignment = wxALIGN_INVALID)
 			:KxDataViewRenderer(cellMode, alignment)
 		{
 		}
