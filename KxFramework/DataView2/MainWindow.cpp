@@ -40,6 +40,7 @@ namespace Kx::DataView2
 					}
 
 					Renderer& renderer = node->GetRenderer(m_Column);
+					renderer.SetupCellValue(*node, m_Column);
 					renderer.SetupCellAttributes(*node, m_Column, m_MainWindow->GetCellStateForRow(row));
 					UpdateWithWidth(renderer.GetCellSize().x + indent);
 					renderer.EndRendering();
@@ -722,7 +723,7 @@ namespace Kx::DataView2
 			{
 				UnselectAllRows();
 
-				const size_t oldCurrent = m_CurrentRow;
+				const Row oldCurrent = m_CurrentRow;
 				ChangeCurrentRow(currentRow);
 				SelectRow(m_CurrentRow, true);
 				RefreshRow(oldCurrent);
@@ -1012,10 +1013,10 @@ namespace Kx::DataView2
 		int xCoordStart = 0;
 		for (coulumnIndexStart = 0; coulumnIndexStart < columnCount; coulumnIndexStart++)
 		{
-			Column* col = m_View->GetColumnDisplayedAt(coulumnIndexStart);
+			const Column* column = m_View->GetColumnDisplayedAt(coulumnIndexStart);
 
 			int width = 0;
-			if (col->IsExposed(width))
+			if (column->IsExposed(width))
 			{
 				if (xCoordStart + width >= updateRect.x)
 				{
@@ -1029,7 +1030,7 @@ namespace Kx::DataView2
 		int xCoordEnd = xCoordStart;
 		for (; coulmnIndexEnd < columnCount; coulmnIndexEnd++)
 		{
-			Column* column = m_View->GetColumnDisplayedAt(coulmnIndexEnd);
+			const Column* column = m_View->GetColumnDisplayedAt(coulmnIndexEnd);
 
 			int width = 0;
 			if (column->IsExposed(width))
@@ -1076,213 +1077,232 @@ namespace Kx::DataView2
 			}
 		}
 
-		// Draw horizontal rules
-		if (m_View->IsOptionEnabled(CtrlStyle::HorizontalRules))
-		{
-			dc.SetPen(m_PenRuleH);
-			dc.SetBrush(*wxTRANSPARENT_BRUSH);
-
-			for (Row currentRow = rowStart; currentRow <= rowEnd; ++currentRow)
-			{
-				int y = GetRowStart(currentRow);
-				dc.DrawLine(xCoordStart, y, xCoordEnd, y);
-			}
-		}
-
-		// Draw vertical rules
-		if (m_View->IsOptionEnabled(CtrlStyle::VerticalRules))
-		{
-			dc.SetPen(m_PenRuleV);
-			dc.SetBrush(*wxTRANSPARENT_BRUSH);
-
-			// Vertical rules are drawn in the last pixel of a column so that
-			// they align perfectly with native MSW wxHeaderCtrl as well as for
-			// consistency with MSW native list control. There's no vertical
-			// rule at the most-left side of the control.
-
-			int x = xCoordStart - 1;
-			for (size_t currentColumnIndex = coulumnIndexStart; currentColumnIndex < coulmnIndexEnd; currentColumnIndex++)
-			{
-				Column* column = m_View->GetColumnDisplayedAt(currentColumnIndex);
-
-				int width = 0;
-				if (column->IsExposed(width))
-				{
-					x += width;
-					dc.DrawLine(x, GetRowStart(rowStart), x, GetRowStart(rowEnd) + clientSize.y);
-				}
-			}
-		}
-
-		// Draw selection
-		auto DrawSelectionRect = [this, &dc, &paintDC](const wxRect& cellRect, int flags)
-		{
-			auto GetListItemState = [](int flags)
-			{
-				int itemState = (flags & wxCONTROL_CURRENT) ? TREIS_HOT : TREIS_NORMAL;
-				if (flags & wxCONTROL_SELECTED)
-				{
-					itemState = (flags & wxCONTROL_CURRENT) ? TREIS_HOTSELECTED : TREIS_SELECTED;
-					if (!(flags & wxCONTROL_FOCUSED))
-					{
-						itemState = TREIS_SELECTEDNOTFOCUS;
-					}
-				}
-
-				if (flags & wxCONTROL_DISABLED)
-				{
-					itemState = TREIS_DISABLED;
-				}
-				return itemState;
-			};
-
-			KxUxTheme::Handle handle(this, L"LISTVIEW");
-			if (handle)
-			{
-				int itemState = GetListItemState(flags);
-				RECT rect = KxUtility::CopyRectToRECT(cellRect);
-				HDC hdc = paintDC.GetHDC();
-
-				::DrawThemeBackground(handle, hdc, TVP_TREEITEM, itemState, &rect, 0);
-			}
-		};
-
+		// Redraw all cells for all rows which must be repainted and all columns
+		const Column* const expanderColumn = m_View->GetExpanderColumnOrFirstOne();
 		for (Row currentRow = rowStart; currentRow < rowEnd; ++currentRow)
 		{
-			const bool isSelected = m_SelectionStore.IsSelected(currentRow);
-			if (currentRow != m_HotTrackRow && isSelected)
-			{
-				wxRect rowRect(xCoordStart, GetRowStart(currentRow), xCoordEnd - xCoordStart, GetRowHeight(currentRow));
-				DrawSelectionRect(rowRect, wxCONTROL_FOCUSED|wxCONTROL_SELECTED);
-			}
-			else if (currentRow == m_HotTrackRow && m_HotTrackRowEnabled && m_HotTrackColumn)
-			{
-				wxRect itemRect(xCoordStart, GetRowStart(currentRow), xCoordEnd - xCoordStart, GetRowHeight(currentRow));
-				DrawSelectionRect(itemRect, wxCONTROL_FOCUSED|wxCONTROL_CURRENT|(isSelected ? wxCONTROL_SELECTED : 0));
-			}
-		}
+			const wxRect cellInitialRect(xCoordStart, GetRowStart(currentRow), 0, GetRowHeight(currentRow));
+			wxRect cellRect = cellInitialRect;
+			const CellState cellState = GetCellStateForRow(currentRow);
 
-		#if wxUSE_DRAG_AND_DROP
-		if (m_DropHint)
-		{
-			wxRect rect(xCoordStart, GetRowStart(m_DropHintLine), xCoordEnd - xCoordStart, GetRowHeight(m_DropHintLine));
-			wxRendererNative::Get().DrawFocusRect(this, dc, rect, wxCONTROL_CURRENT);
-		}
-		#endif
+			int expanderIndent = 0;
+			wxRect expanderRect;
+			wxRect focusCellRect;
 
-		const Column* expanderColumn = m_View->GetExpanderColumnOrFirstOne();
-
-		// Redraw all cells for all rows which must be repainted and all columns
-		wxRect cellRect(xCoordStart, 0, 0, 0);
-		for (size_t currentColumnIndex = coulumnIndexStart; currentColumnIndex < coulmnIndexEnd; currentColumnIndex++)
-		{
-			Column* column = m_View->GetColumnDisplayedAt(currentColumnIndex);
-			if (!column->IsExposed(cellRect.width))
+			const Node* const node = GetNodeByRow(currentRow);
+			if (node == nullptr)
 			{
 				continue;
 			}
 
-			const wxRect columnRect(cellRect.GetX(), 0, cellRect.GetWidth(), m_virtualSize.GetHeight());
-			wxDCClipper clip(paintDC, columnRect);
-
-			for (Row currentRow = rowStart; currentRow < rowEnd; ++currentRow)
+			for (size_t currentColumnIndex = coulumnIndexStart; currentColumnIndex < coulmnIndexEnd; currentColumnIndex++)
 			{
-				// Get the cell value and set it into the renderer
-				Node* node = nullptr;
-				if (m_IsVirtualListModel)
+				Column* column = m_View->GetColumnDisplayedAt(currentColumnIndex);
+				if (!column->IsExposed(cellRect.width))
 				{
-					node = static_cast<VirtualListModel*>(m_Model)->GetNode(currentRow);
-				}
-				else
-				{
-					node = GetNodeByRow(currentRow);
-					if (!node)
-					{
-						continue;
-					}
+					continue;
 				}
 
 				Renderer& renderer = node->GetRenderer(*column);
 				renderer.BeginRendering(*node, *column, dc, &paintDC);
-
-				// Update cell rect
-				cellRect.y = GetRowStart(currentRow);
-				cellRect.height = GetRowHeight(currentRow);
-
-				const CellState cellState = GetCellStateForRow(currentRow);
 				renderer.SetupCellAttributes(*node, *column, cellState);
 				renderer.CallDrawCellBackground(cellRect, cellState);
+				renderer.EndRendering();
 
-				// Draw cell focus
-				if (m_View->IsOptionEnabled(CtrlStyle::CellFocus) && currentRow == m_CurrentRow && cellState.IsSelected() && column == m_CurrentColumn)
-				{
-					wxRendererNative::Get().DrawFocusRect(this, dc, wxRect(cellRect).Deflate(FromDIP(wxSize(1, 1))));
-				}
-
-				// deal with the expander
-				int indent = 0;
+				// Calculate expander button rect and its indent
 				if (!IsList() && column == expanderColumn)
 				{
-					wxRect expanderRect;
-
 					// Calculate the indent first
-					indent = m_Indent * node->GetIndentLevel();
+					const int offset = m_Indent * node->GetIndentLevel();
+					expanderIndent = std::min(offset + m_UniformRowHeight, expanderColumn->GetWidth());
 
-					// We reserve 'm_UniformRowHeight' of horizontal space for the expander but leave EXPANDER_MARGIN around the expander itself
-					expanderRect.SetX(cellRect.x + indent + EXPANDER_MARGIN);
-
-					// Expander X position is calculated, now adjust indent
-					indent += m_UniformRowHeight;
-					
-					// Draw expander if needed and visible
-					if (node->HasChildren() && expanderRect.GetX() < cellRect.GetRight())
+					if (node->HasChildren())
 					{
-						dc.SetPen(m_PenExpander);
-						dc.SetBrush(wxNullBrush);
-
+						// We reserve 'm_UniformRowHeight' of horizontal space for the expander but leave EXPANDER_MARGIN around the expander itself
+						expanderRect.SetX(cellRect.x + offset + EXPANDER_MARGIN);
+						expanderRect.SetY(cellRect.y + (cellRect.height - m_UniformRowHeight) / 2 + EXPANDER_MARGIN - EXPANDER_OFFSET);
 						expanderRect.SetWidth(m_UniformRowHeight);
 						expanderRect.SetHeight(m_UniformRowHeight);
-						expanderRect.SetY(cellRect.y + (cellRect.height - m_UniformRowHeight) / 2 + EXPANDER_MARGIN - EXPANDER_OFFSET);
-
-						int flag = 0;
-						if (m_TreeNodeUnderMouse == node)
-						{
-							flag |= wxCONTROL_CURRENT;
-						}
-						if (node->IsNodeExpanded())
-						{
-							flag |= wxCONTROL_EXPANDED;
-						}
-
-						constexpr int TVP_GLYPH = 2;
-						constexpr int TVP_HOTGLYPH = 4;
-						constexpr int GLPS_OPENED = 2;
-						constexpr int GLPS_CLOSED = 1;
-
-						if (!m_View->m_UsingSystemTheme || !KxUtility::DrawThemeBackground(this, wxS("TREEVIEW"), paintDC, flag & wxCONTROL_CURRENT ? TVP_HOTGLYPH : TVP_GLYPH, flag & wxCONTROL_EXPANDED ? GLPS_OPENED : GLPS_CLOSED, expanderRect))
-						{
-							wxRendererNative::Get().DrawTreeItemButton(this, dc, expanderRect, flag);
-						}
 					}
 				}
 
-				wxRect adjustedCellRect = cellRect;
-				adjustedCellRect.Deflate(PADDING_RIGHTLEFT, 0);
+				// Calc focus rect
+				if (column == m_CurrentColumn && focusCellRect.IsEmpty())
+				{
+					focusCellRect = cellRect;
+					if (column == expanderColumn && column->IsDisplayedFirst())
+					{
+						focusCellRect.x += expanderIndent;
+						focusCellRect.width -= expanderIndent;
+					}
+				}
 
-				// Account for the tree indent (harmless if we're not indented)
-				adjustedCellRect.x += indent;
-				adjustedCellRect.width -= indent;
+				// Draw vertical rules
+				if (m_View->IsOptionEnabled(CtrlStyle::VerticalRules))
+				{
+					dc.SetPen(m_PenRuleV);
+					dc.SetBrush(*wxTRANSPARENT_BRUSH);
 
-				if (adjustedCellRect.width <= 0)
+					if (currentRow + 1 == rowEnd)
+					{
+						dc.DrawLine(cellRect.GetRightTop(), cellRect.GetRightBottom() + wxPoint(0, clientSize.GetHeight()));
+					}
+					else
+					{
+						dc.DrawLine(cellRect.GetRightTop(), cellRect.GetRightBottom());
+					}
+				}
+
+				// Move coordinates to next column
+				cellRect.x += cellRect.width;
+			}
+
+			auto GetRowRect = [&cellInitialRect, xCoordEnd, xCoordStart, expanderColumn, expanderIndent]()
+			{
+				wxRect rowRect = cellInitialRect;
+				rowRect.SetWidth(xCoordEnd - xCoordStart);
+				if (expanderColumn->IsDisplayedFirst())
+				{
+					rowRect.x += expanderIndent;
+					rowRect.width -= expanderIndent;
+				}
+				return rowRect;
+			};
+
+			// Draw horizontal rules
+			if (m_View->IsOptionEnabled(CtrlStyle::HorizontalRules))
+			{
+				dc.DrawLine(xCoordStart, cellInitialRect.GetY(), xCoordEnd + clientSize.GetWidth(), cellInitialRect.GetY());
+			}
+
+			auto DrawSelectionRect = [this, &dc, &paintDC](const wxRect& cellRect, int flags)
+			{
+				auto GetListItemState = [](int flags)
+				{
+					int itemState = (flags & wxCONTROL_CURRENT) ? TREIS_HOT : TREIS_NORMAL;
+					if (flags & wxCONTROL_SELECTED)
+					{
+						itemState = (flags & wxCONTROL_CURRENT) ? TREIS_HOTSELECTED : TREIS_SELECTED;
+						if (!(flags & wxCONTROL_FOCUSED))
+						{
+							itemState = TREIS_SELECTEDNOTFOCUS;
+						}
+					}
+
+					if (flags & wxCONTROL_DISABLED)
+					{
+						itemState = TREIS_DISABLED;
+					}
+					return itemState;
+				};
+
+				KxUxTheme::Handle handle(this, L"LISTVIEW");
+				if (handle)
+				{
+					int itemState = GetListItemState(flags);
+					RECT rect = KxUtility::CopyRectToRECT(cellRect);
+					HDC hdc = paintDC.GetHDC();
+
+					::DrawThemeBackground(handle, hdc, TVP_TREEITEM, itemState, &rect, 0);
+				}
+				else
+				{
+					wxRendererNative::Get().DrawItemSelectionRect(this, paintDC, cellRect, flags);
+				}
+			};
+
+			// Draw selection
+			if (cellState.IsSelected() || cellState.IsHotTracked())
+			{
+				wxRect rowRect = GetRowRect();
+
+				int flags = 0;
+				if (m_HasFocus)
+				{
+					flags |= wxCONTROL_FOCUSED;
+				}
+				if (cellState.IsSelected())
+				{
+					flags |= wxCONTROL_SELECTED;
+				}
+				if (cellState.IsHotTracked())
+				{
+					flags |= wxCONTROL_CURRENT;
+				}
+				DrawSelectionRect(rowRect, flags);
+			}
+
+			// Draw cell focus
+			if (!focusCellRect.IsEmpty() && m_View->IsOptionEnabled(CtrlStyle::CellFocus) && currentRow == m_CurrentRow && cellState.IsSelected())
+			{
+				// Focus rect looks ugly in it's narrower 3 px
+				if (focusCellRect.GetWidth() > 3)
+				{
+					wxRendererNative::Get().DrawFocusRect(this, paintDC, wxRect(focusCellRect).Deflate(FromDIP(wxSize(1, 1))), wxCONTROL_SELECTED);
+				}
+			}
+
+			// Draw drop hint
+			#if wxUSE_DRAG_AND_DROP
+			if (cellState.IsDropTarget())
+			{
+				wxRect rowRect = GetRowRect();
+				wxRendererNative::Get().DrawFocusRect(this, paintDC, rowRect, wxCONTROL_SELECTED);
+			}
+			#endif
+
+			cellRect = cellInitialRect;
+			for (size_t currentColumnIndex = coulumnIndexStart; currentColumnIndex < coulmnIndexEnd; currentColumnIndex++)
+			{
+				Column* column = m_View->GetColumnDisplayedAt(currentColumnIndex);
+				if (!column->IsExposed(cellRect.width))
 				{
 					continue;
 				}
+
+				// Clip DC to current column
+				const wxRect columnRect(cellRect.GetX(), 0, cellRect.GetWidth(), m_virtualSize.GetHeight());
+				wxDCClipper clip(paintDC, columnRect);
+
+				// Draw expander
+				if (column == expanderColumn && !expanderRect.IsEmpty())
+				{
+					int flags = 0;
+					if (m_TreeNodeUnderMouse == node)
+					{
+						flags |= wxCONTROL_CURRENT;
+					}
+					if (node->IsNodeExpanded())
+					{
+						flags |= wxCONTROL_EXPANDED;
+					}
+
+					if (!m_View->m_UsingSystemTheme || !KxUtility::DrawThemeBackground(this, wxS("TREEVIEW"), paintDC, flags & wxCONTROL_CURRENT ? TVP_HOTGLYPH : TVP_GLYPH, flags & wxCONTROL_EXPANDED ? GLPS_OPENED : GLPS_CLOSED, expanderRect))
+					{
+						wxRendererNative::Get().DrawTreeItemButton(this, paintDC, expanderRect, flags);
+					}
+				}
+
+				// Draw the cell
+				wxRect adjustedCellRect = cellRect;
+				adjustedCellRect.Deflate(PADDING_RIGHTLEFT, 0);
+
+				if (column == expanderColumn)
+				{
+					adjustedCellRect.x += expanderIndent;
+					adjustedCellRect.width -= expanderIndent;
+				}
+
+				Renderer& renderer = node->GetRenderer(*column);
+				renderer.BeginRendering(*node, *column, dc, &paintDC);
+				renderer.SetupCellValue(*node, *column);
+				renderer.SetupCellAttributes(*node, *column, cellState);
 				renderer.CallDrawCellContent(adjustedCellRect, GetCellStateForRow(currentRow));
 				renderer.EndRendering();
-			}
 
-			// Move coordinates to next column
-			cellRect.x += cellRect.width;
+				// Move coordinates to next column
+				cellRect.x += cellRect.width;
+			}
 		}
 	}
 	CellState MainWindow::GetCellStateForRow(Row row) const
@@ -1290,7 +1310,7 @@ namespace Kx::DataView2
 		CellState state;
 		if (row)
 		{
-			if (m_HasFocus && IsRowSelected(row))
+			if (IsRowSelected(row))
 			{
 				state.SetSelected();
 			}
@@ -1933,6 +1953,7 @@ namespace Kx::DataView2
 				itemRect.Deflate(PADDING_RIGHTLEFT, 0);
 
 				renderer.BeginRendering(*node, *column, dc, &memoryDC);
+				renderer.SetupCellValue(*node, *column);
 				renderer.SetupCellAttributes(*node, *column, cellState);
 
 				renderer.CallDrawCellBackground(itemRect, cellState);
@@ -2511,16 +2532,16 @@ namespace Kx::DataView2
 				// Vetoed by the event handler.
 				return;
 			}
-			node.ToggleNodeExpanded();
 
+			node.ToggleNodeExpanded();
 			const intptr_t countNewRows = node.GetSubTreeCount();
 
-			// Shift all stored indices after this row by the number of newly added rows.
 			if (!row)
 			{
 				row = GetRowByNode(node);
 			}
 
+			// Shift all stored indices after this row by the number of newly added rows.
 			m_SelectionStore.OnItemsInserted(row + 1, countNewRows);
 			if (m_CurrentRow > row)
 			{

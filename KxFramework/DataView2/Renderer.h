@@ -67,11 +67,12 @@ namespace Kx::DataView2
 			}
 			bool IsNullRenderer() const;
 
+			void SetupCellValue(const Node& node, Column& column);
+			void SetupCellAttributes(const Node& node, Column& column, CellState cellState);
+			
 			void CallDrawCellBackground(const wxRect& cellRect, CellState cellState);
 			void CallDrawCellContent(const wxRect& cellRect, CellState cellState);
 			void CallOnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent = nullptr);
-
-			void SetupCellAttributes(const Node& node, Column& column, CellState cellState);
 
 		protected:
 			const ItemAttributes& GetAttributes() const

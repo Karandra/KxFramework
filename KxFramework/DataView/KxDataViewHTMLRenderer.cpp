@@ -67,4 +67,3 @@ wxSize KxDataViewHTMLRenderer::GetCellSize() const
 	}
 	return wxSize(0, KxDataViewRenderer::GetCellSize().GetHeight());
 }
-
