@@ -27,3 +27,8 @@
 // Editors
 #include "KxFramework/DataView2/Editor.h"
 #include "KxFramework/DataView2/Editors/TextEditor.h"
+#include "KxFramework/DataView2/Editors/DateEditor.h"
+#include "KxFramework/DataView2/Editors/TimeEditor.h"
+#include "KxFramework/DataView2/Editors/SpinEditor.h"
+#include "KxFramework/DataView2/Editors/ColorEditor.h"
+#include "KxFramework/DataView2/Editors/ComboBoxEditor.h"

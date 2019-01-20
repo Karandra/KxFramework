@@ -868,6 +868,21 @@
     <ClInclude Include="KxFramework\DataView2\CellAttributes.h">
       <Filter>Header Files\GUI\DataView2</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Editors\TimeEditor.h">
+      <Filter>Header Files\GUI\DataView2\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Editors\DateEditor.h">
+      <Filter>Header Files\GUI\DataView2\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Editors\ComboBoxEditor.h">
+      <Filter>Header Files\GUI\DataView2\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Editors\ColorEditor.h">
+      <Filter>Header Files\GUI\DataView2\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Editors\SpinEditor.h">
+      <Filter>Header Files\GUI\DataView2\Editors</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1437,6 +1452,24 @@
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\CellAttributes.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\Editors\TimeEditor.cpp">
+      <Filter>Source Files\GUI\DataView2\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\Editors\DateEditor.cpp">
+      <Filter>Source Files\GUI\DataView2\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\Editors\ComboBoxEditor.cpp">
+      <Filter>Source Files\GUI\DataView2\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\Editors\ColorEditor.cpp">
+      <Filter>Source Files\GUI\DataView2\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\Editors\SpinEditor.cpp">
+      <Filter>Source Files\GUI\DataView2\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\wxWidgets\src\generic\colrdlgg.cpp">
+      <Filter>Source Files\GUI\DataView2\Editors</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
