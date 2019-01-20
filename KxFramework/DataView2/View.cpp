@@ -678,7 +678,7 @@ namespace Kx::DataView2
 		return m_ClientArea->BeginEdit(item, column);
 	}
 
-	/* Drag and drop */
+	// Drag and drop
 	bool View::EnableDragSource(const wxDataFormat& format)
 	{
 		return m_ClientArea->EnableDragSource(format);
@@ -720,7 +720,7 @@ namespace Kx::DataView2
 		return true;
 	}
 
-	/* Window */
+	// Window
 	wxHeaderCtrl* View::GetHeaderCtrl()
 	{
 		return m_HeaderArea;
@@ -768,7 +768,7 @@ namespace Kx::DataView2
 		return nullptr;
 	}
 
-	/* Control visuals */
+	// Control visuals
 	wxBorder View::GetDefaultBorder() const
 	{
 		return wxBORDER_THEME;
@@ -786,7 +786,29 @@ namespace Kx::DataView2
 		Refresh();
 	}
 
-	/* Utility functions, not part of the API */
+	bool View::SetForegroundColour(const wxColour& color)
+	{
+		bool b1 = wxControl::SetForegroundColour(color);
+		bool b2 = m_ClientArea->SetForegroundColour(color);
+		return b1 && b2;
+	}
+	bool View::SetBackgroundColour(const wxColour& color)
+	{
+		bool b1 = wxControl::SetBackgroundColour(color);
+		bool b2 = m_ClientArea->SetBackgroundColour(color);
+		return b1 && b2;
+	}
+
+	wxBitmap View::GetBackgroundBitmap() const
+	{
+		return m_ClientArea->GetBackgroundBitmap();
+	}
+	void View::SetBackgroundBitmap(const wxBitmap& bitmap, int align, bool fit)
+	{
+		m_ClientArea->SetBackgroundBitmap(bitmap, align, fit);
+	}
+
+	// Utility functions, not part of the API
 	void View::ColumnMoved(Column& column, size_t newIndex)
 	{
 		// Do *not* reorder 'm_Columns' elements here, they should always be in the order in which columns

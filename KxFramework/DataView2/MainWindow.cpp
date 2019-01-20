@@ -984,9 +984,29 @@ namespace Kx::DataView2
 
 		m_View->PrepareDC(paintDC);
 		wxGCDC dc(paintDC);
+		wxGraphicsContext& gc = *dc.GetGraphicsContext();
 
-		static wxBitmap background("micro_sd.png", wxBITMAP_TYPE_PNG);
-		dc.DrawBitmap(background, wxPoint(0, 0));
+		if (m_BackgroundBitmap.IsOk())
+		{
+			wxPoint pos;
+			if (m_BackgroundBitmapAlignment & wxALIGN_RIGHT)
+			{
+				pos.x = clientSize.x - m_BackgroundBitmap.GetWidth();
+			}
+			if (m_BackgroundBitmapAlignment & wxALIGN_BOTTOM)
+			{
+				pos.y = clientSize.y - m_BackgroundBitmap.GetHeight();
+			}
+
+			if (m_FitBackgroundBitmap && m_BackgroundBitmap.GetSize() != clientSize)
+			{
+				gc.DrawBitmap(m_BackgroundBitmap, pos.x, pos.y, clientSize.GetWidth(), clientSize.GetHeight());
+			}
+			else
+			{
+				dc.DrawBitmap(m_BackgroundBitmap, pos);
+			}
+		}
 
 		wxRect updateRect = GetUpdateRegion().GetBox();
 		m_View->CalcUnscrolledPosition(updateRect.x, updateRect.y, &updateRect.x, &updateRect.y);
@@ -1063,6 +1083,11 @@ namespace Kx::DataView2
 				// Depending on the background, alternate row color will be 3% more dark or 50% brighter.
 				int alpha = bgColor.GetRGB() > 0x808080 ? 97 : 150;
 				altRowColor = bgColor.ChangeLightness(alpha);
+				
+				if (m_BackgroundBitmap.IsOk())
+				{
+					altRowColor.SetA(200);
+				}
 			}
 
 			dc.SetPen(*wxTRANSPARENT_PEN);

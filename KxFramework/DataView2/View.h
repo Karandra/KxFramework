@@ -375,6 +375,9 @@ namespace Kx::DataView2
 			}
 			wxBorder GetDefaultBorder() const override;
 
+			bool SetForegroundColour(const wxColour& color) override;
+			bool SetBackgroundColour(const wxColour& color) override;
+
 			KxColor GetAlternateRowColor() const
 			{
 				return m_AlternateRowColor;
@@ -389,6 +392,9 @@ namespace Kx::DataView2
 				return m_BorderColor;
 			}
 			void SetBorderColor(const KxColor& color, int size = 1);
+
+			wxBitmap GetBackgroundBitmap() const;
+			void SetBackgroundBitmap(const wxBitmap& bitmap, int align = wxALIGN_INVALID, bool fit = false);
 
 		private:
 			// Called by header window after reorder

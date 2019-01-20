@@ -107,6 +107,11 @@ namespace Kx::DataView2
 			// the pen used to draw the expander and the lines
 			wxPen m_PenExpander;
 
+			// Background bitmap
+			wxBitmap m_BackgroundBitmap;
+			wxAlignment m_BackgroundBitmapAlignment = wxALIGN_INVALID;
+			bool m_FitBackgroundBitmap = false;
+
 			// This is the tree structure of the model.
 			// Make 'm_ItemsCount' = -1 will cause the class recalculate the real displaying number of rows.
 			std::unique_ptr<Node> m_TreeRoot;
@@ -242,6 +247,17 @@ namespace Kx::DataView2
 			Renderer& GetNullRenderer()
 			{
 				return m_NullRenderer;
+			}
+			const wxBitmap& GetBackgroundBitmap() const
+			{
+				return m_BackgroundBitmap;
+			}
+			void SetBackgroundBitmap(const wxBitmap& bitmap, int align = wxALIGN_INVALID, bool fit = false)
+			{
+				m_BackgroundBitmap = bitmap;
+				m_BackgroundBitmapAlignment = static_cast<wxAlignment>(align != wxALIGN_INVALID ? align : wxALIGN_NOT);
+				m_FitBackgroundBitmap = fit;
+				Refresh();
 			}
 
 			// Refreshing
