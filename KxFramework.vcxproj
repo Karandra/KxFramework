@@ -395,6 +395,7 @@
     <ClInclude Include="KxFramework\KxStdDialogSimple.h" />
     <ClInclude Include="KxFramework\KxStreamWrappers.h" />
     <ClInclude Include="KxFramework\KxString.h" />
+    <ClInclude Include="KxFramework\KxStringUtility.h" />
     <ClInclude Include="KxFramework\KxStyledTextBox.h" />
     <ClInclude Include="KxFramework\KxStyledTextBox_Scintilla.h" />
     <ClInclude Include="KxFramework\KxStyledTextBox_SciPosition.h" />

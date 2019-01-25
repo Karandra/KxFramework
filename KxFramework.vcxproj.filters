@@ -883,6 +883,9 @@
     <ClInclude Include="KxFramework\DataView2\Editors\SpinEditor.h">
       <Filter>Header Files\GUI\DataView2\Editors</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxStringUtility.h">
+      <Filter>Header Files\DataStructures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
