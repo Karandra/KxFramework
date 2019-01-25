@@ -120,21 +120,13 @@ class KX_API KxString
 		}
 
 		/* Formatting */
-	private:
-		template<class Head, class... Tail>
-		static void FormatAux(KxFormat& formatter, Head&& head, Tail&&... tail)
-		{
-			formatter.arg(head);
-			(void)std::initializer_list<int> {((formatter.arg(tail)), 0)...};
-		}
-
 	public:
 		template<class... Args> static wxString Format(const wxString& format, Args&&... arg)
 		{
-			if ((sizeof...(Args)) != 0)
+			if constexpr((sizeof...(Args)) != 0)
 			{
 				KxFormat formatter(format);
-				FormatAux(formatter, arg...);
+				std::initializer_list<int>{((void)formatter(arg), 0) ...};
 				return formatter;
 			}
 			return format;
