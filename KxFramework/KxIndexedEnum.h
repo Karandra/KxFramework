@@ -1,5 +1,6 @@
 #pragma once
 #include <optional>
+#include "KxFramework/KxStringUtility.h"
 
 namespace KxIndexedEnum
 {
@@ -90,7 +91,7 @@ namespace KxIndexedEnum
 					return nullptr;
 				}
 			}
-
+			
 		public:
 			constexpr static size_t GetEnumSize()
 			{
@@ -137,7 +138,7 @@ namespace KxIndexedEnum
 				if (item)
 				{
 					const TString& name = item->GetName();
-					if constexpr (std::is_pointer_v<TString>)
+					if constexpr(std::is_pointer_v<TString>)
 					{
 						return name;
 					}
@@ -156,7 +157,7 @@ namespace KxIndexedEnum
 				if (item)
 				{
 					const TString& name = item->GetName();
-					if constexpr (std::is_pointer_v<TString>)
+					if constexpr(std::is_pointer_v<TString>)
 					{
 						return T(name);
 					}
@@ -166,6 +167,39 @@ namespace KxIndexedEnum
 					}
 				}
 				return std::nullopt;
+			}
+			
+			static TEnum FromOrExpression(const TString& string, TEnum defaultValue)
+			{
+				using namespace Kx::Utility::String;
+
+				TInt intValue = static_cast<TInt>(defaultValue);
+				SplitBySeparator(string, wxS('|'), [&intValue](TStdWxStringView value)
+				{
+					const TItem* item = FindByName(TString(value.data(), value.size()));
+					if (item)
+					{
+						intValue |= static_cast<TInt>(item->GetValue());
+					}
+					return true;
+				});
+				return static_cast<TEnum>(intValue);
+			}
+			static wxString ToOrExpression(TEnum value)
+			{
+				wxString stringExpr;
+				for (const TItem& item: TDerived::ms_Index)
+				{
+					if (static_cast<TInt>(item.GetValue()) & static_cast<TInt>(value))
+					{
+						if (!stringExpr.empty())
+						{
+							stringExpr += wxS('|');
+						}
+						stringExpr += item.GetName();
+					}
+				}
+				return stringExpr;
 			}
 	};
 }
