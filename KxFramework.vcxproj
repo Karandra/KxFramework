@@ -322,6 +322,7 @@
     <ClInclude Include="KxFramework\KxFileOperationEvent.h" />
     <ClInclude Include="KxFramework\KxFileStream.h" />
     <ClInclude Include="KxFramework\KxFormat.h" />
+    <ClInclude Include="KxFramework\KxFormatTraits.h" />
     <ClInclude Include="KxFramework\KxFrame.h" />
     <ClInclude Include="KxFramework\KxFramework.h" />
     <ClInclude Include="KxFramework\KxHTTPStatusCode.h" />

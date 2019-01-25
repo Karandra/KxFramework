@@ -1,80 +1,75 @@
 /*
-Copyright © 2018 Kerber. All rights reserved.
+Copyright © 2018-2019 Kerber. All rights reserved.
 
 You should have received a copy of the GNU LGPL v3
 along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 */
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include "KxFramework/KxFormatTraits.h"
 #include <string>
 #include <string_view>
 
-namespace
-{
-	constexpr const wxChar DefaultFillChar = wxS(' ');
-	constexpr const wxChar DefaultFloatFormat = wxS('f');
-
-	template<class T> inline constexpr bool IsCharType = std::is_same_v<T, char> || std::is_same_v<T, wchar_t>;
-	template<class T> inline constexpr bool IsCharPointer =
-		std::is_same_v<T, char*> ||
-		std::is_same_v<T, wchar_t*> ||
-		std::is_same_v<T, const char*> ||
-		std::is_same_v<T, const wchar_t*>;
-
-	template<class T> inline constexpr bool FmtString =
-		IsCharType<T> ||
-		IsCharPointer<T> ||
-		std::is_same_v<T, bool> ||
-		std::is_same_v<T, std::string_view> ||
-		std::is_same_v<T, std::wstring_view> ||
-		std::is_constructible_v<wxString, T>;
-
-	template<class T> inline constexpr bool FmtInteger = (std::is_integral_v<T> || std::is_enum_v<T>) && !(IsCharType<T> || IsCharPointer<T> || std::is_pointer_v<T> || std::is_same_v<T, bool>);
-	template<class T> inline constexpr bool FmtFloat = std::is_floating_point_v<T>;
-	template<class T> inline constexpr bool FmtPointer = std::is_pointer_v<T> && !IsCharPointer<T>;
-}
-
-class KX_API KxFormat
+class KX_API KxFormatBase
 {
 	private:
 		wxString m_String;
 		size_t m_CurrentArgument = 1;
-		bool m_UpperCase = false;
+		bool m_IsUpperCase = false;
 
-	private:
+	protected:
+		const wxString& GetString() const
+		{
+			return m_String;
+		}
+		wxString& GetString()
+		{
+			return m_String;
+		}
+
 		bool FindAndReplace(const wxString& string, const std::wstring_view& index, size_t startAt = 0);
 		void FindAndReplace(const wxString& string, size_t index, size_t startAt = 0);
 		void FindCurrentAndReplace(const wxString& string);
 
-	private:
-		// Strings
-		void FormatString(const wxString& a, int fieldWidth, const wxUniChar& fillChar);
-		void FormatChar(const wxUniChar& a, int fieldWidth, const wxUniChar& fillChar);
+		void FormatString(const wxString& arg, int fieldWidth, wxUniChar fillChar);
+		void FormatChar(wxUniChar arg, int fieldWidth, wxUniChar fillChar);
+		void FormatBool(bool arg, int fieldWidth, wxUniChar fillChar);
+		void FormatDouble(double arg, int precision, int fieldWidth, wxUniChar format, wxUniChar fillChar);
+		void FormatPointer(const void* arg, int fieldWidth, wxUniChar fillChar);
 
-		// Integers
-		void FormatInt(int8_t a, int fieldWidth, int base, const wxUniChar& fillChar);
-		void FormatInt(uint8_t a, int fieldWidth, int base, const wxUniChar& fillChar);
+		template<class T> static wxString FormatIntWithBase(T value, int base = 10, bool upper = false)
+		{
+			static const wxChar digitsL[] = wxS("0123456789abcdefghijklmnopqrstuvwxyz");
+			static const wxChar digitsU[] = wxS("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+			const wxChar* digits = upper ? digitsU : digitsL;
 
-		void FormatInt(int16_t a, int fieldWidth, int base, const wxUniChar& fillChar);
-		void FormatInt(uint16_t a, int fieldWidth, int base, const wxUniChar& fillChar);
+			wxString result;
+			if (base >= 2 && base <= 36)
+			{
+				do
+				{
+					result = digits[value % base] + result;
+					value /= base;
+				}
+				while (value);
 
-		void FormatInt(int32_t a, int fieldWidth, int base, const wxUniChar& fillChar);
-		void FormatInt(uint32_t a, int fieldWidth, int base, const wxUniChar& fillChar);
-
-		void FormatInt(int64_t a, int fieldWidth, int base, const wxUniChar& fillChar);
-		void FormatInt(uint64_t a, int fieldWidth, int base, const wxUniChar& fillChar);
-
-		void FormatPointer(const void* a, int fieldWidth, const wxUniChar& fillChar);
-		void FormatBool(bool a, int fieldWidth, const wxUniChar& fillChar);
-
-		// Floats
-		void FormatDouble(double a, int precision, int fieldWidth, const wxUniChar& format, const wxUniChar& fillChar);
+				if constexpr(std::is_signed<T>::value)
+				{
+					if (value < 0)
+					{
+						result = wxS('-') + result;
+					}
+				}
+			}
+			return result;
+		};
 
 	public:
-		KxFormat(const wxString& format)
+		KxFormatBase(const wxString& format)
 			:m_String(format)
 		{
 		}
+		virtual ~KxFormatBase() = default;
 
 	public:
 		wxString ToString() const
@@ -86,37 +81,83 @@ class KX_API KxFormat
 			return m_String;
 		}
 
-		// Switches
+		size_t GetCurrentArgumentIndex() const
+		{
+			return m_CurrentArgument;
+		}
+		void SetCurrentArgumentIndex(size_t index)
+		{
+			m_CurrentArgument = index;
+		}
+		
+		bool IsUpperCase() const
+		{
+			return m_IsUpperCase;
+		}
+		KxFormatBase& UpperCase(bool value = true)
+		{
+			m_IsUpperCase = value;
+			return *this;
+		}
+		KxFormatBase& LowerCase(bool value = true)
+		{
+			m_IsUpperCase = !value;
+			return *this;
+		}
+};
+
+template<class FmtTraits = KxFormatTraits> class KxFormat: public KxFormatBase
+{
+	public:
+		using FormatTraits = typename FmtTraits;
+		template<class T> using TypeTraits = KxFormatTypeTraits<T>;
+
+	protected:
+		template<class T> void FormatInt(T&& arg, int fieldWidth, int base, wxUniChar fillChar)
+		{
+			FormatString(FormatIntWithBase(arg, base, IsUpperCase()), fieldWidth, fillChar);
+		}
+
+	public:
+		KxFormat(const wxString& format)
+			:KxFormatBase(format)
+		{
+		}
+
+	public:
 		KxFormat& UpperCase(bool value = true)
 		{
-			m_UpperCase = value;
+			KxFormatBase::UpperCase(value);
 			return *this;
 		}
 		KxFormat& LowerCase(bool value = true)
 		{
-			m_UpperCase = !value;
+			KxFormatBase::LowerCase(value);
 			return *this;
 		}
 
 	public:
-		template<class T> typename std::enable_if<FmtString<T>, KxFormat&>::type
-		arg(const T& a, int fieldWidth = 0, const wxUniChar& fillChar = DefaultFillChar)
+		template<class T> typename std::enable_if<TypeTraits<T>::FmtString(), KxFormat&>::type
+		operator()(const T& arg,
+				   int fieldWidth = FormatTraits::StringFiledWidth(),
+				   wxUniChar fillChar = FormatTraits::StringFillChar())
 		{
-			if constexpr(std::is_same_v<T, bool>)
+			TypeTraits<T> trait;
+			if constexpr(trait.IsBool())
 			{
-				FormatBool(a, fieldWidth, fillChar);
+				FormatBool(arg, fieldWidth, fillChar);
 			}
-			else if constexpr(std::is_constructible_v<wxUniChar, T>)
+			else if constexpr(trait.IsConstructibleToWxUniChar())
 			{
-				FormatChar(a, fieldWidth, fillChar);
+				FormatChar(arg, fieldWidth, fillChar);
 			}
-			else if constexpr(std::is_constructible_v<wxString, T>)
+			else if constexpr(trait.IsConstructibleToWxString())
 			{
-				FormatString(a, fieldWidth, fillChar);
+				FormatString(arg, fieldWidth, fillChar);
 			}
-			else if constexpr(std::is_same_v<T, std::string_view> || std::is_same_v<T, std::wstring_view>)
+			else if constexpr(trait.IsStringView() || trait.IsWStringView())
 			{
-				FormatString(wxString(a.data(), a.size()), fieldWidth, fillChar);
+				FormatString(wxString(arg.data(), arg.size()), fieldWidth, fillChar);
 			}
 			else
 			{
@@ -125,49 +166,40 @@ class KX_API KxFormat
 			return *this;
 		}
 		
-		template<class T> typename std::enable_if<FmtInteger<T>, KxFormat&>::type
-		arg(const T& a, int fieldWidth = 0, int base = 10, const wxUniChar& fillChar = DefaultFillChar)
+		template<class T> typename std::enable_if<TypeTraits<T>::FmtInteger(), KxFormat&>::type
+		operator()(T arg,
+				   int fieldWidth = FormatTraits::IntFiledWidth(),
+				   int base = FormatTraits::IntBase(),
+				   wxUniChar fillChar = FormatTraits::IntFillChar())
 		{
-			if constexpr(std::is_integral_v<T>)
+			if constexpr(TypeTraits<T>().IsEnum())
 			{
-				FormatInt(a, fieldWidth, base, fillChar);
-			}
-			else if constexpr(std::is_enum_v<T>)
-			{
-				FormatInt(static_cast<std::underlying_type_t<T>>(a), fieldWidth, base, fillChar);
+				FormatInt(static_cast<std::underlying_type_t<T>>(arg), fieldWidth, base, fillChar);
 			}
 			else
 			{
-				static_assert(false, "KxFormat: unsupported type for integer formatting");
+				FormatInt(arg, fieldWidth, base, fillChar);
 			}
 			return *this;
 		}
 
-		template<class T> typename std::enable_if<FmtPointer<T>, KxFormat&>::type
-		arg(const T& a, int fieldWidth = sizeof(void*) * 2, const wxUniChar& fillChar = wxS('0'))
+		template<class T> typename std::enable_if<TypeTraits<T>::FmtPointer(), KxFormat&>::type
+		operator()(T arg,
+				   int fieldWidth = FormatTraits::PtrFiledWidth(),
+				   wxUniChar fillChar = FormatTraits::PtrFillChar())
 		{
-			if constexpr (std::is_pointer_v<T>)
-			{
-				FormatPointer(a, fieldWidth, fillChar);
-			}
-			else
-			{
-				static_assert(false, "KxFormat: unsupported type for pointer formatting");
-			}
+			FormatPointer(arg, fieldWidth, fillChar);
 			return *this;
 		}
 
-		template<class T> typename std::enable_if<FmtFloat<T>, KxFormat&>::type
-		arg(const T& a, int precision = -1, int fieldWidth = 0, const wxUniChar& format = DefaultFloatFormat, const wxUniChar& fillChar = DefaultFillChar)
+		template<class T> typename std::enable_if<TypeTraits<T>::FmtFloat(), KxFormat&>::type
+		operator()(T arg,
+				   int precision = FormatTraits::FloatPrecision(),
+				   int fieldWidth = FormatTraits::FloatFiledWidth(),
+				   wxUniChar format = FormatTraits::FloatFormat(),
+				   wxUniChar fillChar = FormatTraits::FloatFillChar())
 		{
-			if constexpr(std::is_floating_point_v<T>)
-			{
-				FormatDouble(a, precision, fieldWidth, format, fillChar);
-			}
-			else
-			{
-				static_assert(false, "KxFormat: unsupported type for floating-point formatting");
-			}
+			FormatDouble(arg, precision, fieldWidth, format, fillChar);
 			return *this;
 		}
 };

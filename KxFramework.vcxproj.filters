@@ -886,6 +886,9 @@
     <ClInclude Include="KxFramework\KxStringUtility.h">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxFormatTraits.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />

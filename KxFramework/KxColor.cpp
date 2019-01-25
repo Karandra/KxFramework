@@ -33,19 +33,19 @@ namespace
 				case C2SAlpha::None:
 				{
 					KxFormat formatter(wxS("#%1%2%3"));
-					formatter.arg(color.GetR(), 2, 16, '0');
-					formatter.arg(color.GetG(), 2, 16, '0');
-					formatter.arg(color.GetB(), 2, 16, '0');
+					formatter(color.GetR(), 2, 16, '0');
+					formatter(color.GetG(), 2, 16, '0');
+					formatter(color.GetB(), 2, 16, '0');
 
 					return formatter;
 				}
 				case C2SAlpha::Always:
 				{
 					KxFormat formatter(wxS("#%1%2%3%4"));
-					formatter.arg(color.GetR(), 2, 16, '0');
-					formatter.arg(color.GetG(), 2, 16, '0');
-					formatter.arg(color.GetB(), 2, 16, '0');
-					formatter.arg(color.GetA(), 2, 16, '0');
+					formatter(color.GetR(), 2, 16, '0');
+					formatter(color.GetG(), 2, 16, '0');
+					formatter(color.GetB(), 2, 16, '0');
+					formatter(color.GetA(), 2, 16, '0');
 
 					return formatter;
 				}
