@@ -257,6 +257,16 @@ namespace KxIndexedEnum
 			{
 				return TDefinition::ToString(m_Value);
 			}
+			
+			bool FromOrExpression(const TString& string, TEnum defaultValue = t_DefaultValue)
+			{
+				m_Value = TDefinition::FromOrExpression(string, defaultValue);
+				return !IsDefault();
+			}
+			wxString ToOrExpression() const
+			{
+				return TDefinition::ToOrExpression(m_Value);
+			}
 
 			TDefinition GetDefinition() const
 			{
