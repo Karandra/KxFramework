@@ -241,10 +241,10 @@ namespace KxIndexedEnum
 			}
 			constexpr bool FromString(const TString& string, TEnum defaultValue = t_DefaultValue)
 			{
-				TEnumOpt value = TDefinition::TryFromString(string, t_DefaultValue);
-				if (value.has_value())
+				TEnumOpt value = TDefinition::TryFromString(string);
+				if (value)
 				{
-					m_Value = value.get_value();
+					m_Value = *value;
 					return true;
 				}
 				else
