@@ -235,6 +235,10 @@ namespace KxIndexedEnum
 			}
 
 		public:
+			constexpr bool IsDefault() const
+			{
+				return m_Value == t_DefaultValue;
+			}
 			constexpr bool FromString(const TString& string, TEnum defaultValue = t_DefaultValue)
 			{
 				TEnumOpt value = TDefinition::TryFromString(string, t_DefaultValue);
