@@ -5,7 +5,7 @@
 #include "KxFramework/KxLibrary.h"
 #include "KxFramework/KxFileStream.h"
 #include "KxFramework/KxUtility.h"
-#include "KxFramework/KxFile.h"
+#include "KxFramework/KxFileFinder.h"
 #include "KxFramework/KxXML.h"
 
 namespace
@@ -79,17 +79,19 @@ wxString KxTranslation::LCIDToLocaleName(const LCID& lcid)
 KxTranslation::AvailableMap KxTranslation::FindTranslationsInDirectory(const wxString& folderPath)
 {
 	KxStringToStringUMap translations;
-	KxStringVector filesList = KxFile(folderPath).Find("*.xml", KxFS_FILE);
-	if (!filesList.empty())
+
+	KxFileFinder finder(folderPath, wxS("*.xml"));
+	for (KxFileItem item = finder.FindNext(); item.IsOK(); item = finder.FindNext())
 	{
-		for (const KxFile& filePath: filesList)
+		if (item.IsFile())
 		{
-			wxString localeName = filePath.GetName();
+			// Extract locale name from names like 'en-US.Application.xml'
+			wxString localeName = item.GetName().BeforeFirst(wxS('.'));
 
 			// Check locale name
 			if (!GetLanguageFullName(localeName).IsEmpty())
 			{
-				translations.insert(std::make_pair(localeName, filePath.GetFullPath()));
+				translations.insert(std::make_pair(localeName, item.GetFullPath()));
 			}
 		}
 	}
