@@ -370,6 +370,7 @@
     <ClInclude Include="KxFramework\KxProcessThread.h" />
     <ClInclude Include="KxFramework\KxProgressBar.h" />
     <ClInclude Include="KxFramework\KxProgressDialog.h" />
+    <ClInclude Include="KxFramework\KxQueryInterface.h" />
     <ClInclude Include="KxFramework\KxRadioButton.h" />
     <ClInclude Include="KxFramework\KxRegistry.h" />
     <ClInclude Include="KxFramework\KxRichToolTip.h" />

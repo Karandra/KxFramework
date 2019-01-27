@@ -889,6 +889,9 @@
     <ClInclude Include="KxFramework\KxDynamicCastAsIs.h">
       <Filter>Header Files\General</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxQueryInterface.h">
+      <Filter>Header Files\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
