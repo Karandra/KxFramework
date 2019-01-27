@@ -91,7 +91,7 @@ KxTranslation::AvailableMap KxTranslation::FindTranslationsInDirectory(const wxS
 			// Check locale name
 			if (!GetLanguageFullName(localeName).IsEmpty())
 			{
-				translations.insert(std::make_pair(localeName, item.GetFullPath()));
+				translations.insert(std::make_pair(item.GetName(), item.GetFullPath()));
 			}
 		}
 	}
