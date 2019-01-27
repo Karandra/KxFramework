@@ -373,7 +373,7 @@
     <ClInclude Include="KxFramework\KxRadioButton.h" />
     <ClInclude Include="KxFramework\KxRegistry.h" />
     <ClInclude Include="KxFramework\KxRichToolTip.h" />
-    <ClInclude Include="KxFramework\KxRTTI.h" />
+    <ClInclude Include="KxFramework\KxDynamicCastAsIs.h" />
     <ClInclude Include="KxFramework\KxSearchBox.h" />
     <ClInclude Include="KxFramework\KxSecretStore.h" />
     <ClInclude Include="KxFramework\KxSharedMemory.h" />
@@ -639,7 +639,7 @@
     <ClCompile Include="KxFramework\KxRadioButton.cpp" />
     <ClCompile Include="KxFramework\KxRegistry.cpp" />
     <ClCompile Include="KxFramework\KxRichToolTip.cpp" />
-    <ClCompile Include="KxFramework\KxRTTI.cpp" />
+    <ClCompile Include="KxFramework\KxDynamicCastAsIs.cpp" />
     <ClCompile Include="KxFramework\KxSearchBox.cpp" />
     <ClCompile Include="KxFramework\KxSecretStore.cpp" />
     <ClCompile Include="KxFramework\KxSharedMemory.cpp" />

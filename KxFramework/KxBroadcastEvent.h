@@ -1,8 +1,8 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxRTTI.h"
+#include "KxFramework/KxDynamicCastAsIs.h"
 
-class KX_API KxBroadcastEvent: public wxNotifyEvent, public KxRTTI::DynamicCastAsIs<KxBroadcastEvent>
+class KX_API KxBroadcastEvent: public wxNotifyEvent, public Kx::RTTI::DynamicCastAsIs<KxBroadcastEvent>
 {
 	public:
 		template<class TEvent, class TFunction, class THandler>

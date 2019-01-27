@@ -283,9 +283,6 @@
     <ClInclude Include="KxFramework\KxTopLevelWindow.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxRTTI.h">
-      <Filter>Header Files\General</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxStandardID.h">
       <Filter>Header Files\General</Filter>
     </ClInclude>
@@ -712,9 +709,6 @@
     <ClInclude Include="KxFramework\KxIFileFinder.h">
       <Filter>Header Files\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxWxRTTI.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxZLibStream.h">
       <Filter>Header Files\Streams</Filter>
     </ClInclude>
@@ -888,6 +882,12 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxFormatTraits.h">
       <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxWxRTTI.h">
+      <Filter>Header Files\General</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxDynamicCastAsIs.h">
+      <Filter>Header Files\General</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1357,9 +1357,6 @@
     <ClCompile Include="KxFramework\KxIFileFinder.cpp">
       <Filter>Source Files\FileSystem</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxRTTI.cpp">
-      <Filter>Source Files\General</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxZLibStream.cpp">
       <Filter>Source Files\Streams</Filter>
     </ClCompile>
@@ -1476,6 +1473,9 @@
     </ClCompile>
     <ClCompile Include="..\wxWidgets\src\generic\colrdlgg.cpp">
       <Filter>Source Files\GUI\DataView2\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxDynamicCastAsIs.cpp">
+      <Filter>Source Files\General</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

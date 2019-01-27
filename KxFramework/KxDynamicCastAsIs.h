@@ -5,11 +5,11 @@ You should have received a copy of the GNU LGPL v3
 along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 */
 #pragma once
+#include <typeinfo>
 
-namespace KxRTTI
+namespace Kx::RTTI
 {
 	size_t KX_API NewTypeID();
-	//////////////////////////////////////////////////////////////////////////
 
 	template<class BaseT> class DynamicCastAsIs
 	{
@@ -39,7 +39,6 @@ namespace KxRTTI
 			}
 	};
 
-	//////////////////////////////////////////////////////////////////////////
 	template<class BaseT> class StaticTypeID
 	{
 		public:
@@ -85,7 +84,6 @@ namespace KxRTTI
 			}
 	};
 
-	//////////////////////////////////////////////////////////////////////////
 	class KX_API IVirtualTypeID
 	{
 		private:
