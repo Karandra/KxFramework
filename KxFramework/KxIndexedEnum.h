@@ -303,7 +303,7 @@ namespace KxIndexedEnum
 
 			bool operator==(const Value& other) const
 			{
-				return other.m_value == m_Value;
+				return other.m_Value == m_Value;
 			}
 			bool operator!=(const Value& other) const
 			{
@@ -339,11 +339,11 @@ namespace KxIndexedEnum
 			}
 			bool HasFlag(TEnum value) const
 			{
-				return (m_Value & value) == value;
+				return (static_cast<TInt>(m_Value) & static_cast<TInt>(value)) == static_cast<TInt>(value);
 			}
 			bool HasAnyFlag(TEnum valueCombo) const
 			{
-				return (m_Value & valueCombo) != 0;
+				return static_cast<TInt>(m_Value) & static_cast<TInt>(valueCombo);
 			}
 	};
 }
