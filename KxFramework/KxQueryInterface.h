@@ -62,15 +62,15 @@ namespace Kx::RTTI
 
 namespace Kx::RTTI
 {
-	template<class I> class IInterface: public IObject
+	template<class TInterface> class IInterface: public IObject
 	{
 		protected:
 			bool OnQueryInterface(IObject*& object, const IID& iid) noexcept override
 			{
-				static const IID ms_IID = GetIIDOf<I>();
+				static const IID ms_IID = GetIIDOf<TInterface>();
 				if (iid == ms_IID)
 				{
-					object = static_cast<I*>(this);
+					object = static_cast<TInterface*>(this);
 					return true;
 				}
 				
@@ -79,7 +79,7 @@ namespace Kx::RTTI
 			}
 	};
 
-	template<class I, class... BaseInterfaces> class IMultiInterface: public BaseInterfaces...
+	template<class TInterface, class... TBaseInterfaces> class IMultiInterface: public TBaseInterfaces...
 	{
 		public:
 			using IID = RTTI::IID;
@@ -87,13 +87,20 @@ namespace Kx::RTTI
 		protected:
 			bool OnQueryInterface(IObject*& object, const IID& iid) noexcept override
 			{
-				static const IID ms_IID = GetIIDOf<I>();
+				static const IID ms_IID = GetIIDOf<TInterface>();
 				if (iid == ms_IID)
 				{
-					object = static_cast<I*>(this);
+					object = static_cast<TInterface*>(this);
 					return true;
 				}
-				return (... || BaseInterfaces::OnQueryInterface(object, iid));
+				return (... || TBaseInterfaces::OnQueryInterface(object, iid));
+			}
+	
+		public:
+			IMultiInterface() = default;
+			template<class... Args> IMultiInterface(Args&&... arg)
+				:TBaseInterfaces(std::forward<Args>(arg)...)...
+			{
 			}
 	};
 }
@@ -105,13 +112,13 @@ namespace Kx::RTTI
 		template<class T> class IObjectWrapper: public IObject {};
 	}
 
-	template<class... T> class IImplementation: public Internal::IObjectWrapper<IImplementation<T...>>, public T...
+	template<class... TInterface> class IImplementation: public Internal::IObjectWrapper<IImplementation<TInterface...>>, public TInterface...
 	{
 		public:
 			using IID = RTTI::IID;
 
 		private:
-			using Wrapper = Internal::IObjectWrapper<IImplementation<T...>>;
+			using Wrapper = Internal::IObjectWrapper<IImplementation<TInterface...>>;
 
 		protected:
 			bool OnQueryInterface(IObject*& object, const IID& iid) noexcept override
@@ -122,7 +129,14 @@ namespace Kx::RTTI
 					object = static_cast<Wrapper*>(this);
 					return true;
 				}
-				return (T::OnQueryInterface(object, iid) || ...);
+				return (TInterface::OnQueryInterface(object, iid) || ...);
+			}
+
+		public:
+			IImplementation() = default;
+			template<class... Args> IImplementation(Args&&... arg)
+				:TInterface(std::forward<Args>(arg)...)...
+			{
 			}
 
 		public:
