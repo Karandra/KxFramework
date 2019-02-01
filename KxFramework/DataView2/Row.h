@@ -30,7 +30,7 @@ namespace KxDataView2
 			{
 				return m_Value != GetInvalidValue();
 			}
-			void MakeInvalid() noexcept
+			void MakeNull() noexcept
 			{
 				m_Value = GetInvalidValue();
 			}

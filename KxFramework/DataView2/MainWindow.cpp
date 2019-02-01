@@ -701,7 +701,7 @@ namespace KxDataView2
 			}
 
 			m_LastOnSame = false;
-			m_RowSelectSingleOnUp.MakeInvalid();
+			m_RowSelectSingleOnUp.MakeNull();
 		}
 		else if (!event.LeftUp())
 		{
@@ -709,7 +709,7 @@ namespace KxDataView2
 			// from and to ourself, the up event is swallowed by the
 			// DnD code. So on next non-up event (which means here and
 			// now) 'm_RowSelectSingleOnUp' should be reset.
-			m_RowSelectSingleOnUp.MakeInvalid();
+			m_RowSelectSingleOnUp.MakeNull();
 		}
 
 		if (event.RightDown())
@@ -1547,8 +1547,8 @@ namespace KxDataView2
 	void MainWindow::OnItemsCleared()
 	{
 		m_SelectionStore.Clear();
-		m_CurrentRow.MakeInvalid();
-		m_HotTrackRow.MakeInvalid();
+		m_CurrentRow.MakeNull();
+		m_HotTrackRow.MakeNull();
 		m_CurrentColumn = nullptr;
 		m_HotTrackColumn = nullptr;
 		m_TreeNodeUnderMouse = nullptr;
@@ -1625,7 +1625,7 @@ namespace KxDataView2
 			m_HotTrackRowEnabled = false;
 			RefreshRow(m_HotTrackRow);
 
-			m_HotTrackRow.MakeInvalid();
+			m_HotTrackRow.MakeNull();
 			m_HotTrackColumn = nullptr;
 		}
 
