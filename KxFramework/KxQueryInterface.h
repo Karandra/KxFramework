@@ -79,7 +79,7 @@ namespace Kx::RTTI
 			}
 	};
 
-	template<class TInterface, class... TBaseInterfaces> class IMultiInterface: public TBaseInterfaces...
+	template<class TInterface, class... TBaseInterfaces> class IExtendInterface: public TBaseInterfaces...
 	{
 		public:
 			using IID = RTTI::IID;
@@ -97,8 +97,8 @@ namespace Kx::RTTI
 			}
 	
 		public:
-			IMultiInterface() = default;
-			template<class... Args> IMultiInterface(Args&&... arg)
+			IExtendInterface() = default;
+			template<class... Args> IExtendInterface(Args&&... arg)
 				:TBaseInterfaces(std::forward<Args>(arg)...)...
 			{
 			}
