@@ -4,6 +4,7 @@
 #include "Row.h"
 #include "Column.h"
 #include "SortOrder.h"
+#include "INodeModel.h"
 #include "KxFramework/KxQueryInterface.h"
 
 namespace Kx::DataView2
@@ -22,7 +23,7 @@ namespace Kx::DataView2
 
 namespace Kx::DataView2
 {
-	class KX_API Node: public Kx::RTTI::IInterface<Node>
+	class KX_API Node: public Kx::RTTI::IExtendInterface<Node, INodeModel>
 	{
 		friend class MainWindow;
 		friend class NodeOperation_RowToNode;
@@ -144,6 +145,7 @@ namespace Kx::DataView2
 			Node* DetachChild(size_t index);
 			Node* DetachChild(Node& node);
 			Node* Detach();
+			
 			void RemoveChild(size_t index);
 			void RemoveChild(Node& node);
 			void Remove();
@@ -178,50 +180,10 @@ namespace Kx::DataView2
 				return *node;
 			}
 			
-			bool IsRenderable(const Column& column) const;
-			bool IsEditable(const Column& column) const;
-			bool IsActivatable(const Column& column) const;
-
-		public:
-			virtual Renderer& GetRenderer(const Column& column) const
-			{
-				return column.GetRenderer();
-			}
-			virtual Editor* GetEditor(const Column& column) const
-			{
-				return column.GetEditor();
-			}
-			
-			virtual wxAny GetValue(const Column& column) const
-			{
-				return {};
-			}
-			virtual wxAny GetEditorValue(const Column& column) const
-			{
-				return {};
-			}
-			virtual bool SetValue(const wxAny& value, Column& column)
-			{
-				return false;
-			}
-			
-			virtual bool GetAttributes(CellAttributes& attributes, const CellState& cellState, const Column& column) const
-			{
-				return false;
-			}
-			virtual int GetRowHeight() const
-			{
-				return 0;
-			}
-
-			virtual bool Compare(const Node& other, const Column& column) const
-			{
-				return false;
-			}
-	
 		public:
 			MainWindow* GetMainWindow() const;
 			View* GetView() const;
+			bool IsRenderable(const Column& column) const;
 
 			bool IsExpanded() const;
 			void SetExpanded(bool expanded);

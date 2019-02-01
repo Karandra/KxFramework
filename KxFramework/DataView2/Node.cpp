@@ -325,6 +325,7 @@ namespace Kx::DataView2
 	{
 		return m_ParentNode->DetachChild(*this);
 	}
+	
 	void Node::RemoveChild(Node& node)
 	{
 		if (Row index = FindChild(node); index.IsOK())
@@ -340,7 +341,6 @@ namespace Kx::DataView2
 	{
 		m_ParentNode->RemoveChild(*this);
 	}
-
 	bool Node::Swap(Node& otherNode)
 	{
 		if (this != &otherNode && m_ParentNode == otherNode.GetParent())
@@ -351,19 +351,6 @@ namespace Kx::DataView2
 			return true;
 		}
 		return false;
-	}
-
-	bool Node::IsRenderable(const Column& column) const
-	{
-		return &GetRenderer(column) != &m_MainWindow->GetNullRenderer();
-	}
-	bool Node::IsEditable(const Column& column) const
-	{
-		return GetEditor(column) != nullptr;
-	}
-	bool Node::IsActivatable(const Column& column) const
-	{
-		return GetRenderer(column).IsActivatable();
 	}
 }
 
@@ -376,6 +363,10 @@ namespace Kx::DataView2
 	View* Node::GetView() const
 	{
 		return m_MainWindow->GetView();
+	}
+	bool Node::IsRenderable(const Column& column) const
+	{
+		return &GetRenderer(column) != &m_MainWindow->GetNullRenderer();
 	}
 
 	bool Node::IsExpanded() const
