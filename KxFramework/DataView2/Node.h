@@ -4,6 +4,7 @@
 #include "Row.h"
 #include "Column.h"
 #include "SortOrder.h"
+#include "KxFramework/KxQueryInterface.h"
 
 namespace Kx::DataView2
 {
@@ -21,7 +22,7 @@ namespace Kx::DataView2
 
 namespace Kx::DataView2
 {
-	class KX_API Node
+	class KX_API Node: public Kx::RTTI::IInterface<Node>
 	{
 		friend class MainWindow;
 		friend class NodeOperation_RowToNode;
