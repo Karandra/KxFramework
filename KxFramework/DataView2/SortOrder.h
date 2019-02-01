@@ -11,7 +11,7 @@ namespace Kx::DataView2
 {
 	// A class storing the definition of sort order used, as a column index and sort direction by this column.
 	// Notice that the sort order may be invalid, meaning that items shouldn't be sorted.
-	class KX_API SortOrder
+	class SortOrder
 	{
 		private:
 			enum class SortWhat: uint8_t
