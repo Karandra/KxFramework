@@ -789,13 +789,13 @@ namespace KxDataView2
 	bool View::SetForegroundColour(const wxColour& color)
 	{
 		bool b1 = wxControl::SetForegroundColour(color);
-		bool b2 = m_ClientArea->SetForegroundColour(color);
+		bool b2 = m_ClientArea ? m_ClientArea->SetForegroundColour(color) : true;
 		return b1 && b2;
 	}
 	bool View::SetBackgroundColour(const wxColour& color)
 	{
 		bool b1 = wxControl::SetBackgroundColour(color);
-		bool b2 = m_ClientArea->SetBackgroundColour(color);
+		bool b2 = m_ClientArea ? m_ClientArea->SetBackgroundColour(color) : true;
 		return b1 && b2;
 	}
 
