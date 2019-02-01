@@ -3,7 +3,7 @@
 #include "KxFramework/KxComboBox.h"
 #include "KxFramework/KxBitmapComboBox.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	EditorControlHandler* ComboBoxEditor::CreateControlHandler()
 	{
@@ -98,7 +98,7 @@ namespace Kx::DataView2
 	}
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	void ComboBoxEditorControlHandler::DoOnKillFocus(wxFocusEvent& event)
 	{

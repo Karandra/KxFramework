@@ -6,7 +6,7 @@
 #include "MainWindow.h"
 #include <KxFramework/KxCallAtScopeExit.h>
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	void Editor::DestroyControl()
 	{
@@ -109,7 +109,7 @@ namespace Kx::DataView2
 	}
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	void EditorControlHandler::DoOnIdle(wxIdleEvent& event)
 	{

@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView2/Renderer.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API ProgressValue
 	{
@@ -61,7 +61,7 @@ namespace Kx::DataView2
 			}
 	};
 }
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	enum class ProgressHeight: int
 	{
@@ -70,7 +70,7 @@ namespace Kx::DataView2
 	};
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API ProgressRenderer: public Renderer
 	{

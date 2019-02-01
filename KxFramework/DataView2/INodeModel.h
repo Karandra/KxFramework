@@ -4,7 +4,7 @@
 #include "Column.h"
 #include "KxFramework/KxQueryInterface.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API CellAttributes;
 	class KX_API Renderer;
@@ -12,7 +12,7 @@ namespace Kx::DataView2
 	class CellState;
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API INodeModel: public Kx::RTTI::IInterface<INodeModel>
 	{

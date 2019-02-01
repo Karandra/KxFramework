@@ -1,7 +1,7 @@
 #include "KxStdAfx.h"
 #include "CellAttributes.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	void CellAttributes::Reset()
 	{

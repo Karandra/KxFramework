@@ -5,7 +5,7 @@
 #include "View.h"
 #include "MainWindow.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	bool Renderer::IsNullRenderer() const
 	{

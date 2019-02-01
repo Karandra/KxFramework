@@ -15,7 +15,7 @@ namespace
 	}
 }
 
-namespace Kx::DataView2::Markup
+namespace KxDataView2::Markup
 {
 	using MarkupMode = Renderer::MarkupMode;
 	template<MarkupMode t_Mode> auto Create(const wxString& string = {})
@@ -79,7 +79,7 @@ namespace Kx::DataView2::Markup
 	}
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	int RenderEngine::CalcCenter(int cellSize, int itemSize) const
 	{

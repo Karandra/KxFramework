@@ -4,7 +4,7 @@
 #include "KxFramework/KxWithOptions.h"
 class wxGenericColourDialog;
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	enum class ColorEditorStyle
 	{
@@ -16,7 +16,7 @@ namespace Kx::DataView2
 	};
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API ColorEditor: public Editor, public KxWithOptions<ColorEditorStyle, ColorEditorStyle::None>
 	{

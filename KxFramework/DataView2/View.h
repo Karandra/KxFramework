@@ -7,14 +7,14 @@
 #include "Column.h"
 class KX_API KxMenu;
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API HeaderCtrl;
 	class KX_API MainWindow;
 	class KX_API Model;
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API View: public wxSystemThemedControl<wxControl>,	public wxScrollHelper
 	{

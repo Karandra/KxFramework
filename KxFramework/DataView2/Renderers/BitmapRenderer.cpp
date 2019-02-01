@@ -1,7 +1,7 @@
 #include "KxStdAfx.h"
 #include "BitmapRenderer.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	bool BitmapRenderer::GetValueAsBitmap(const wxAny& value, wxBitmap& bitmap)
 	{

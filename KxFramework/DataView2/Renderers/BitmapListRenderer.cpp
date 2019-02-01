@@ -12,7 +12,7 @@ namespace
 	}
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	void BitmapListRenderer::DrawCellContent(const wxRect& cellRect, CellState cellState)
 	{
@@ -64,7 +64,7 @@ namespace Kx::DataView2
 	}
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	bool ImageListRenderer::SetValue(const wxAny& value)
 	{

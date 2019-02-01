@@ -3,7 +3,7 @@
 #include "Common.h"
 #include "Renderer.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API Node;
 	class KX_API View;
@@ -13,7 +13,7 @@ namespace Kx::DataView2
 	class KX_API EditorControlHandler;
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API Editor
 	{
@@ -97,7 +97,7 @@ namespace Kx::DataView2
 }
 
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API EditorControlHandler: public wxEvtHandler
 	{

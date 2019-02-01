@@ -10,7 +10,7 @@
 #include "Renderers/NullRenderer.h"
 #include <wx/selstore.h>
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API View;
 	class KX_API Column;
@@ -21,7 +21,7 @@ namespace Kx::DataView2
 	class KX_API VirtualListModel;
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API MainWindow: public wxWindow
 	{
@@ -414,7 +414,7 @@ namespace Kx::DataView2
 			wxDECLARE_DYNAMIC_CLASS(MainWindow);
 	};
 }
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class wxDragImage;
 	class DropSource: public wxDropSource
@@ -441,7 +441,7 @@ namespace Kx::DataView2
 	};
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API DropTarget: public wxDropTarget
 	{

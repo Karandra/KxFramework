@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView2/Renderer.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API ToggleValue
 	{
@@ -58,7 +58,7 @@ namespace Kx::DataView2
 	};
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API ToggleRendererBase
 	{
@@ -100,7 +100,7 @@ namespace Kx::DataView2
 	};
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API ToggleRenderer: public Renderer, public ToggleRendererBase
 	{

@@ -3,7 +3,7 @@
 #include "KxFramework/DataView2/Common.h"
 #include "KxFramework/DataView2/Row.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API Node;
 	class KX_API View;
@@ -12,7 +12,7 @@ namespace Kx::DataView2
 	class KX_API Model;
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API Event: public wxNotifyEvent
 	{
@@ -86,7 +86,7 @@ namespace Kx::DataView2
 	};
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API EditorEvent: public Event
 	{
@@ -130,7 +130,7 @@ namespace Kx::DataView2
 	};
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API EventDND: public Event
 	{
@@ -209,7 +209,7 @@ namespace Kx::DataView2
 	};
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	KX_DECLARE_EVENT(KxEVT_DATAVIEW_ITEM_SELECTED, Event);
 	KX_DECLARE_EVENT(KxEVT_DATAVIEW_ITEM_HOVERED, Event);

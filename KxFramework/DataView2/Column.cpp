@@ -6,7 +6,7 @@
 #include "Editor.h"
 #include "KxFramework/KxUtility.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	wxString NativeColumn::GetTitle() const
 	{
@@ -88,7 +88,7 @@ namespace Kx::DataView2
 	}
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	int Column::GetAbsMinColumnWidth()
 	{
@@ -100,7 +100,7 @@ namespace Kx::DataView2
 	}
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	void Column::SetSortOrder(bool ascending)
 	{

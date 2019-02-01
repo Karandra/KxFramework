@@ -4,9 +4,9 @@
 
 namespace
 {
-	int ConvertControlStyle(const Kx::DataView2::DateEditor& editor)
+	int ConvertControlStyle(const KxDataView2::DateEditor& editor)
 	{
-		using DateEditorStyle = Kx::DataView2::DateEditorStyle;
+		using DateEditorStyle = KxDataView2::DateEditorStyle;
 
 		int style = 0;
 		KxUtility::ModFlagRef(style, wxDP_SPIN, editor.IsOptionEnabled(DateEditorStyle::Spin));
@@ -18,7 +18,7 @@ namespace
 	}
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	bool DateEditor::GetValueAsDateTime(const wxAny& value, wxDateTime& dateTime)
 	{

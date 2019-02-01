@@ -3,7 +3,7 @@
 #include <wx/colordlg.h>
 #include <wx/generic/colrdlgg.h>
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	bool ColorEditor::GetValueAsColor(const wxAny& value, KxColor& color)
 	{

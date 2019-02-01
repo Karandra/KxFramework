@@ -16,7 +16,7 @@
 #include <wx/generic/private/widthcalc.h>
 #include <wx/minifram.h>
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class MaxWidthCalculator: public wxMaxWidthCalculatorBase
 	{
@@ -56,7 +56,7 @@ namespace Kx::DataView2
 	};
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	wxIMPLEMENT_ABSTRACT_CLASS(MainWindow, wxWindow);
 
@@ -2773,7 +2773,7 @@ namespace Kx::DataView2
 	}
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	void DropSource::OnPaint(wxPaintEvent& event)
 	{
@@ -2857,7 +2857,7 @@ namespace Kx::DataView2
 	}
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	wxDragResult DropTarget::OnDragOver(wxCoord x, wxCoord y, wxDragResult dragResult)
 	{

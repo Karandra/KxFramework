@@ -18,7 +18,7 @@ namespace
 	}
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	wxWindow* SpinEditor::CreateControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value)
 	{

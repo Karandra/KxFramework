@@ -3,7 +3,7 @@
 #include "KxFramework/DataView2/Editor.h"
 #include <KxFramework/KxWithImageList.h>
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API ComboBoxEditorBase
 	{
@@ -42,7 +42,7 @@ namespace Kx::DataView2
 	};
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API ComboBoxEditor: public Editor, public ComboBoxEditorBase, public KxWithImageList
 	{
@@ -106,7 +106,7 @@ namespace Kx::DataView2
 	};
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API ComboBoxEditorControlHandler: public EditorControlHandler
 	{

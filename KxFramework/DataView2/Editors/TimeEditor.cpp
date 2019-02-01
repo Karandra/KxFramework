@@ -16,7 +16,7 @@ namespace
 	}
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	wxWindow* TimeEditor::CreateControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value)
 	{

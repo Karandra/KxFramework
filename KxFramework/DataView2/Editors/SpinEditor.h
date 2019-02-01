@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView2/Editor.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API SpinEditor: public Editor
 	{

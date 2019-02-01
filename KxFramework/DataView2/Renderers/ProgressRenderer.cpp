@@ -4,7 +4,7 @@
 #include "KxFramework/DataView2/Node.h"
 #include "KxFramework/DataView2/Column.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	bool ProgressRenderer::SetValue(const wxAny& value)
 	{

@@ -3,7 +3,7 @@
 #include "KxFramework/DataView2/Renderer.h"
 #include <KxFramework/KxWithImageList.h>
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API BitmapListRenderer: public Renderer
 	{
@@ -46,7 +46,7 @@ namespace Kx::DataView2
 	};
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API ImageListRenderer: public BitmapListRenderer, public KxWithImageList
 	{

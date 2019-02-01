@@ -4,7 +4,7 @@
 #include "KxFramework/DataView2/Node.h"
 #include "KxFramework/DataView2/Column.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	bool ToggleRenderer::GetValueAsToggleState(const wxAny& value, ToggleState& state)
 	{
@@ -97,7 +97,7 @@ namespace Kx::DataView2
 	}
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	wxAny ToggleRenderer::OnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent)
 	{

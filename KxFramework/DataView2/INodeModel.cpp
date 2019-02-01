@@ -3,7 +3,7 @@
 #include "Editor.h"
 #include "Renderer.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	bool INodeModel::IsEditable(const Column& column) const
 	{

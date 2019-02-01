@@ -3,7 +3,7 @@
 #include "KxFramework/DataView2/Renderer.h"
 class wxHtmlDCRenderer;
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API HTMLRenderer: public Renderer
 	{

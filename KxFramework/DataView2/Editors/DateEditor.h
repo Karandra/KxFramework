@@ -3,7 +3,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView2/Editor.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	enum class DateEditorStyle
 	{
@@ -16,7 +16,7 @@ namespace Kx::DataView2
 	};
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API DateEditor: public Editor, public KxWithOptions<DateEditorStyle, DateEditorStyle::Dropdown>
 	{

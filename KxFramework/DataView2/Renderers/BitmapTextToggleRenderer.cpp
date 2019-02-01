@@ -5,7 +5,7 @@
 #include "ToggleRenderer.h"
 #include "KxFramework/DataView2/View.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	wxAny BitmapTextToggleRenderer::OnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent)
 	{

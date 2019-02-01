@@ -2,12 +2,12 @@
 #include "KxFramework/KxFramework.h"
 #include "Common.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API Column;
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	// A class storing the definition of sort order used, as a column index and sort direction by this column.
 	// Notice that the sort order may be invalid, meaning that items shouldn't be sorted.

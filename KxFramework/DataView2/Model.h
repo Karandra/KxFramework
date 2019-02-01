@@ -4,7 +4,7 @@
 #include "Node.h"
 #include "Row.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API View;
 	class KX_API Node;
@@ -13,7 +13,7 @@ namespace Kx::DataView2
 	class KX_API CellAttributes;
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API Model
 	{
@@ -45,7 +45,7 @@ namespace Kx::DataView2
 }
 
 //////////////////////////////////////////////////////////////////////////
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API ListModel: public Model
 	{
@@ -66,7 +66,7 @@ namespace Kx::DataView2
 	};
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API VirtualListModel: public ListModel
 	{

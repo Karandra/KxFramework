@@ -4,7 +4,7 @@
 #include "Renderer.h"
 #include "KxFramework/KxWithOptions.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API View;
 	class KX_API MainWindow;
@@ -13,7 +13,7 @@ namespace Kx::DataView2
 	class KX_API Editor;
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API Column;
 
@@ -63,7 +63,7 @@ namespace Kx::DataView2
 	};
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API Column
 	{

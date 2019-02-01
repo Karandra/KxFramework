@@ -1,7 +1,7 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxDataView2Event.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	wxDEFINE_EVENT(KxEVT_DATAVIEW_ITEM_SELECTED, Event);
 	wxDEFINE_EVENT(KxEVT_DATAVIEW_ITEM_HOVERED, Event);

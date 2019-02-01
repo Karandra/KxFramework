@@ -1,7 +1,7 @@
 #include "KxStdAfx.h"
 #include "TextRenderer.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	bool TextRenderer::SetValue(const wxAny& value)
 	{

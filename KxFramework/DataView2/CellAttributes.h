@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API CellAttributes
 	{

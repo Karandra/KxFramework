@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	enum class CtrlStyle: uint32_t
 	{

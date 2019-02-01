@@ -7,7 +7,7 @@
 #include "INodeModel.h"
 #include "KxFramework/KxQueryInterface.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API CellAttributes;
 	class KX_API MainWindow;
@@ -21,7 +21,7 @@ namespace Kx::DataView2
 	class KX_API NodeOperation_NodeToRow;
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API Node: public Kx::RTTI::IExtendInterface<Node, INodeModel>
 	{
@@ -215,7 +215,7 @@ namespace Kx::DataView2
 		};
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API NodeOperation
 	{
@@ -245,7 +245,7 @@ namespace Kx::DataView2
 	};
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API NodeOperation_RowToNode: public NodeOperation
 	{
@@ -270,7 +270,7 @@ namespace Kx::DataView2
 	};
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	// As with 'NodeOperation_RowToNode' above, we initialize 'm_CurrentRow' to -1 because the first node
 	// passed to our operator() is the root node which is not visible on screen and so we

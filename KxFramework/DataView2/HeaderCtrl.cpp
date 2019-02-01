@@ -5,7 +5,7 @@
 #include "Column.h"
 #include "KxFramework/KxDataView2Event.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	void HeaderCtrl::FinishEditing()
 	{

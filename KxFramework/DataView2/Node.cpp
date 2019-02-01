@@ -3,7 +3,7 @@
 #include "MainWindow.h"
 #include "View.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class Comparator
 	{
@@ -38,7 +38,7 @@ namespace Kx::DataView2
 	};
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	Node* Node::CreateRootNode(MainWindow* window)
 	{
@@ -354,7 +354,7 @@ namespace Kx::DataView2
 	}
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	MainWindow* Node::GetMainWindow() const
 	{
@@ -452,7 +452,7 @@ namespace Kx::DataView2
 	}
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	bool NodeOperation::DoWalk(Node& node, NodeOperation& func)
 	{
@@ -486,7 +486,7 @@ namespace Kx::DataView2
 	}
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	NodeOperation::Result NodeOperation_RowToNode::operator()(Node& node)
 	{
@@ -520,7 +520,7 @@ namespace Kx::DataView2
 	}
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	NodeOperation::Result NodeOperation_NodeToRow::operator()(Node& node)
 	{

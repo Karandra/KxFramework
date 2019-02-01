@@ -2,7 +2,7 @@
 #include "Model.h"
 #include "MainWindow.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	Row ListModel::GetRow(const Node& node) const
 	{
@@ -19,7 +19,7 @@ namespace Kx::DataView2
 	}
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	void VirtualListModel::OnRowInserted(Row row)
 	{

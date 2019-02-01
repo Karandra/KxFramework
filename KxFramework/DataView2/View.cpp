@@ -6,7 +6,7 @@
 #include "Renderer.h"
 #include "KxFramework/KxMenu.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	wxIMPLEMENT_ABSTRACT_CLASS(View, wxControl)
 

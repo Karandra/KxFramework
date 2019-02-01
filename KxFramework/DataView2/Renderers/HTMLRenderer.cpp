@@ -6,7 +6,7 @@
 #include "KxFramework/KxHTMLWindow.h"
 #include <wx/html/htmprint.h>
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	bool HTMLRenderer::SetValue(const wxAny& value)
 	{

@@ -6,7 +6,7 @@
 #include "CellAttributes.h"
 #include "RenderEngine.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API Node;
 	class KX_API View;
@@ -15,7 +15,7 @@ namespace Kx::DataView2
 	class KX_API RenderEngine;
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API Renderer
 	{

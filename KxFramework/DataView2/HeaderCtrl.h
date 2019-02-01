@@ -2,12 +2,12 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView/KxDataViewConstants.h"
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API View;
 }
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class KX_API HeaderCtrl: public wxHeaderCtrl
 	{

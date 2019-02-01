@@ -2,7 +2,7 @@
 #include "Common.h"
 #include <KxFramework/KxWithOptions.h>
 
-namespace Kx::DataView2
+namespace KxDataView2
 {
 	class Row
 	{
