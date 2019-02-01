@@ -892,6 +892,12 @@
     <ClInclude Include="KxFramework\KxQueryInterface.h">
       <Filter>Header Files\General</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\INodeModel.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\TypeAliases.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1479,6 +1485,9 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxDynamicCastAsIs.cpp">
       <Filter>Source Files\General</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\INodeModel.cpp">
+      <Filter>Source Files\GUI\DataView2</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
