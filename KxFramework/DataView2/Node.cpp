@@ -194,7 +194,10 @@ namespace KxDataView2
 	{
 		for (Node* node: m_Children)
 		{
-			delete node;
+			if (node->AllowDelete())
+			{
+				delete node;
+			}
 		}
 	}
 
@@ -272,7 +275,7 @@ namespace KxDataView2
 			ResetSortOrder();
 		}
 
-		node->m_ParentNode = this;
+		InitNodeFromThis(*node);
 		if (shouldInsertSorted)
 		{
 			// Use binary search to find the correct position to insert at.
@@ -290,10 +293,6 @@ namespace KxDataView2
 	}
 	void Node::InsertChild(Node* node, size_t index)
 	{
-		// Initialize child node if default constructor was used.
-		InitNodeFromThis(*node);
-
-		// Add to children vector
 		AttachChild(node, index);
 	}
 
@@ -335,7 +334,11 @@ namespace KxDataView2
 	}
 	void Node::RemoveChild(size_t index)
 	{
-		delete DetachChild(index);
+		Node* node = DetachChild(index);
+		if (node->AllowDelete())
+		{
+			delete node;
+		}
 	}
 	void Node::Remove()
 	{

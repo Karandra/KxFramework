@@ -96,6 +96,12 @@ namespace KxDataView2
 				SetNodeExpanded(!IsNodeExpanded());
 			}
 
+		protected:
+			virtual bool AllowDelete() const
+			{
+				return true;
+			}
+
 		public:
 			Node(MainWindow* window, Node* parent)
 				:m_MainWindow(window), m_ParentNode(parent)
