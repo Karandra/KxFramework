@@ -12,6 +12,19 @@ namespace Kx::Utility::String
 {
 	using TStdWxString = typename std::basic_string<wxChar, std::char_traits<wxChar>, std::allocator<wxChar>>;
 	using TStdWxStringView = typename std::basic_string_view<wxChar, std::char_traits<wxChar>>;
+
+	inline TStdWxStringView ToWxStringView(const wxString& string)
+	{
+		return TStdWxStringView(string.wc_str(), string.length());
+	}
+	inline TStdWxStringView ToWxStringView(const TStdWxString& string)
+	{
+		return TStdWxStringView(string.c_str(), string.length());
+	}
+	inline wxString FromWxStringView(TStdWxStringView view)
+	{
+		return wxString(view.data(), view.length());
+	}
 }
 
 namespace Kx::Utility::String
@@ -29,6 +42,12 @@ namespace Kx::Utility::String
 
 	template<class TFunctor> void SplitBySeparator(const wxString& string, const wxString& sep, TFunctor&& func)
 	{
+		if (string.IsEmpty() || sep.IsEmpty())
+		{
+			func(ToWxStringView(string));
+			return;
+		}
+
 		size_t pos = 0;
 		size_t separatorPos = string.find(sep);
 		if (separatorPos == wxString::npos)
@@ -57,13 +76,21 @@ namespace Kx::Utility::String
 	template<class TFunctor> void SplitByLength(const wxString& string, size_t length, TFunctor&& func)
 	{
 		const size_t stringLength = string.length();
-		for (size_t i = 0; i < stringLength; i += length)
+
+		if (length != 0)
 		{
-			const TStdWxStringView stringPiece(string.wc_str() + i, std::min(length, stringLength - i));
-			if (!func(stringPiece))
+			for (size_t i = 0; i < stringLength; i += length)
 			{
-				return;
+				const TStdWxStringView stringPiece(string.wc_str() + i, std::min(length, stringLength - i));
+				if (!func(stringPiece))
+				{
+					return;
+				}
 			}
+		}
+		else
+		{
+			func(ToWxStringView(string));
 		}
 	}
 }
