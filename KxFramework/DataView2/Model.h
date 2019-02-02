@@ -21,6 +21,7 @@ namespace KxDataView2
 
 		private:
 			MainWindow* m_MainWindow = nullptr;
+			const bool m_OwnTreeItems = false;
 
 		private:
 			void SetMainWindow(MainWindow* mainWindow)
@@ -29,12 +30,20 @@ namespace KxDataView2
 			}
 
 		public:
+			Model(bool ownTreeItems)
+				:m_OwnTreeItems(ownTreeItems)
+			{
+			}
 			virtual ~Model() = default;
 
 		public:
 			MainWindow* GetMainWindow() const
 			{
 				return m_MainWindow;
+			}
+			bool OwnTreeItems() const
+			{
+				return m_OwnTreeItems;
 			}
 
 			void CellChanged(Node& node, Column& column)
@@ -54,6 +63,12 @@ namespace KxDataView2
 
 			virtual Row GetRow(const Node& node) const;
 			virtual Node* GetNode(Row row) const;
+
+		public:
+			ListModel(bool ownTreeItems)
+				:Model(ownTreeItems)
+			{
+			}
 
 		public:
 			void RowCellChanged(Row row, Column& column)
@@ -80,7 +95,7 @@ namespace KxDataView2
 
 		public:
 			VirtualListModel(size_t initialCount = 0)
-				:m_InitialCount(initialCount)
+				:ListModel(true), m_InitialCount(initialCount)
 			{
 			}
 

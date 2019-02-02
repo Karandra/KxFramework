@@ -194,7 +194,7 @@ namespace KxDataView2
 	{
 		for (Node* node: m_Children)
 		{
-			if (node->AllowDelete())
+			if (m_MainWindow->GetModel()->OwnTreeItems())
 			{
 				delete node;
 			}
@@ -334,10 +334,9 @@ namespace KxDataView2
 	}
 	void Node::RemoveChild(size_t index)
 	{
-		Node* node = DetachChild(index);
-		if (node->AllowDelete())
+		if (m_MainWindow->GetModel()->OwnTreeItems())
 		{
-			delete node;
+			delete DetachChild(index);
 		}
 	}
 	void Node::Remove()
