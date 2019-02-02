@@ -417,7 +417,7 @@ namespace KxDataView2
 namespace KxDataView2
 {
 	class wxDragImage;
-	class DropSource: public wxDropSource
+	class KX_API DropSource: public wxDropSource
 	{
 		private:
 			MainWindow* m_MainWindow = nullptr;
