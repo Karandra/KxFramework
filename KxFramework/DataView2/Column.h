@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "Editor.h"
 #include "Renderer.h"
+#include "ColumnID.h"
 #include "KxFramework/KxWithOptions.h"
 
 namespace KxDataView2
@@ -87,7 +88,7 @@ namespace KxDataView2
 
 			size_t m_Index = std::numeric_limits<size_t>::max();
 			size_t m_DisplayIndex = std::numeric_limits<size_t>::max();
-			int m_ID = std::numeric_limits<int>::min();
+			ColumnID m_ID;
 
 			wxBitmap m_Bitmap;
 			wxString m_Title;
@@ -146,24 +147,24 @@ namespace KxDataView2
 				:m_NativeColumn(*this)
 			{
 			}
-			Column(const wxString& title, int id, Renderer* renderer = nullptr)
+			Column(const wxString& title, ColumnID id, Renderer* renderer = nullptr)
 				:m_NativeColumn(*this), m_Title(title), m_Renderer(renderer), m_ID(id)
 			{
 			}
-			Column(const wxBitmap& bitmap, int id, Renderer* renderer = nullptr)
+			Column(const wxBitmap& bitmap, ColumnID id, Renderer* renderer = nullptr)
 				:m_NativeColumn(*this), m_Bitmap(bitmap), m_Renderer(renderer), m_ID(id)
 			{
 			}
-			Column(const wxBitmap& bitmap, const wxString& title, int id, Renderer* renderer = nullptr)
+			Column(const wxBitmap& bitmap, const wxString& title, ColumnID id, Renderer* renderer = nullptr)
 				:m_NativeColumn(*this), m_Bitmap(bitmap), m_Title(title), m_Renderer(renderer), m_ID(id)
 			{
 			}
 			
-			Column(const wxString& title, int id, ColumnWidth width, ColumnStyle style)
+			Column(const wxString& title, ColumnID id, ColumnWidth width, ColumnStyle style)
 				:m_NativeColumn(*this), m_Title(title), m_ID(id), m_Width(width), m_Style(style)
 			{
 			}
-			Column(const wxBitmap& bitmap, int id, ColumnWidth width, ColumnStyle style)
+			Column(const wxBitmap& bitmap, ColumnID id, ColumnWidth width, ColumnStyle style)
 				:m_NativeColumn(*this), m_Bitmap(bitmap), m_ID(id), m_Width(width), m_Style(style)
 			{
 			}
@@ -197,11 +198,15 @@ namespace KxDataView2
 				m_DisplayIndex = value;
 			}
 
-			int GetID() const
+			template<class T> T GetID() const
+			{
+				return m_ID.GetValue<T>();
+			}
+			ColumnID GetID() const
 			{
 				return m_ID;
 			}
-			void SetID(int id)
+			void SetID(ColumnID id)
 			{
 				m_ID = id;
 			}

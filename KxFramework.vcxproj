@@ -198,6 +198,7 @@
   <ItemGroup>
     <ClInclude Include="KxFramework\DataView2\CellState.h" />
     <ClInclude Include="KxFramework\DataView2\Column.h" />
+    <ClInclude Include="KxFramework\DataView2\ColumnID.h" />
     <ClInclude Include="KxFramework\DataView2\Editors\ColorEditor.h" />
     <ClInclude Include="KxFramework\DataView2\Editors\ComboBoxEditor.h" />
     <ClInclude Include="KxFramework\DataView2\Editors\DateEditor.h" />

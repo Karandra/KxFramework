@@ -7,8 +7,10 @@
 #include "KxFramework/DataView2/Node.h"
 #include "KxFramework/DataView2/Column.h"
 #include "KxFramework/DataView2/Model.h"
-#include "KxFramework/DataView2/CellState.h"
 #include "KxFramework/DataView2/HeaderCtrl.h"
+#include "KxFramework/DataView2/Row.h"
+#include "KxFramework/DataView2/ColumnID.h"
+#include "KxFramework/DataView2/CellState.h"
 #include "KxFramework/DataView2/CellAttributes.h"
 #include "KxFramework/KxDataView2Event.h"
 

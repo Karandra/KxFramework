@@ -5,6 +5,7 @@
 #include "Row.h"
 #include "Node.h"
 #include "Column.h"
+#include "ColumnID.h"
 class KX_API KxMenu;
 
 namespace KxDataView2
@@ -30,42 +31,6 @@ namespace KxDataView2
 				INVALID_ROW = (size_t)-1,
 				INVALID_COLUMN = (size_t)-1,
 				INVALID_COUNT = (size_t)-1,
-			};
-
-			template<class TRenderer, class TEditor = void>
-			class AddedColumnInfo
-			{
-				private:
-					Column* m_Column = nullptr;
-					Renderer* m_Renderer = nullptr;
-					Editor* m_Editor = nullptr;
-
-				public:
-					AddedColumnInfo(Column* column, Renderer* renderer, Editor* editor = nullptr)
-						:m_Column(column), m_Renderer(renderer), m_Editor(editor)
-					{
-					}
-
-				public:
-					Column& GetColumn() const
-					{
-						return *m_Column;
-					}
-					TRenderer& GetRenderer() const
-					{
-						return static_cast<TRenderer&>(m_Renderer);
-					}
-					typename std::conditional<std::is_same_v<TEditor, void>, void, TEditor&>::type GetEditor() const
-					{
-						if constexpr(!std::is_same<TEditor, void>::value)
-						{
-							return *static_cast<TEditor*>(m_Editor);
-						}
-						else
-						{
-							static_assert(false, "This column has no editor");
-						}
-					}
 			};
 
 		private:
@@ -113,7 +78,7 @@ namespace KxDataView2
 			};
 
 			template<ICEAction action, class TValue, class TRenderer = void, class TEditor = void>
-			auto InsertColumnEx(const TValue& value, int id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::DefaultStyle, size_t index = 0)
+			auto InsertColumnEx(const TValue& value, ColumnID id = {}, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::DefaultStyle, size_t index = 0)
 			{
 				Column* column = new Column(value, id, width, style);
 
@@ -223,19 +188,19 @@ namespace KxDataView2
 			Renderer& InsertColumn(size_t index, Column* column);
 
 			template<class TRenderer = void, class TEditor = void>
-			auto AppendColumn(const wxString& title, int id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::DefaultStyle)
+			auto AppendColumn(const wxString& title, ColumnID id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::DefaultStyle)
 			{
 				return InsertColumnEx<ICEAction::Append, wxString, TRenderer, TEditor>(title, id, width, style);
 			}
 
 			template<class TRenderer = void, class TEditor = void>
-			auto PrependColumn(const wxString& title, int id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::DefaultStyle)
+			auto PrependColumn(const wxString& title, ColumnID id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::DefaultStyle)
 			{
 				return InsertColumnEx<ICEAction::Prepend, wxString, TRenderer, TEditor>(title, id, width, style);
 			}
 
 			template<class TRenderer = void, class TEditor = void>
-			auto InsertColumn(size_t index, const wxString& title, int id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::DefaultStyle)
+			auto InsertColumn(size_t index, const wxString& title, ColumnID id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::DefaultStyle)
 			{
 				return InsertColumnEx<ICEAction::Insert, wxString, TRenderer, TEditor>(title, id, width, style, index);
 			}

@@ -898,6 +898,9 @@
     <ClInclude Include="KxFramework\DataView2\TypeAliases.h">
       <Filter>Header Files\GUI\DataView2</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\ColumnID.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
