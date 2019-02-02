@@ -22,7 +22,9 @@ namespace Kx::Utility::String
 	}
 	template<class... Args> wxString ConcatWithSeparator(const wxString& sep, Args&&... arg)
 	{
-		return ((wxString(arg) + sep) + ...);
+		wxString value = ((wxString(arg) + sep) + ...);
+		value.RemoveLast(sep.length());
+		return value;
 	}
 
 	template<class TFunctor> void SplitBySeparator(const wxString& string, const wxString& sep, TFunctor&& func)
