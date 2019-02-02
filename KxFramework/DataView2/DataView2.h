@@ -12,6 +12,7 @@
 #include "KxFramework/DataView2/ColumnID.h"
 #include "KxFramework/DataView2/CellState.h"
 #include "KxFramework/DataView2/CellAttributes.h"
+#include "KxFramework/DataView2/TypeAliases.h"
 #include "KxFramework/KxDataView2Event.h"
 
 // Renderers

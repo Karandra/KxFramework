@@ -1,26 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "Common.h"
 #include "KxFramework/KxQueryInterface.h"
-
-namespace KxDataView2
-{
-	class KX_API View;
-	class KX_API MainWindow;
-	class KX_API HeaderCtrl;
-
-	class KX_API CellAttributes;
-	class KX_API Renderer;
-	class KX_API RenderEngine;
-	class KX_API Editor;
-	class KX_API Column;
-	class KX_API Node;
-	class KX_API Model;
-	class KX_API INodeModel;
-	class Row;
-	class SortOrder;
-	class CellState;
-}
+#include "DataView2Fwd.h"
 
 namespace KxDataView2
 {
@@ -30,18 +11,25 @@ namespace KxDataView2
 			using View = KxDataView2::View;
 			using MainWindow = KxDataView2::MainWindow;
 			using HeaderCtrl = KxDataView2::HeaderCtrl;
+			using Event = KxDataView2::Event;
 
 			using Renderer = KxDataView2::Renderer;
 			using RenderEngine = KxDataView2::RenderEngine;
 			using Editor = KxDataView2::Editor;
+			using EditorControlHandler = KxDataView2::EditorControlHandler;
 			using Column = KxDataView2::Column;
-			using Model = KxDataView2::Model;
 			using Node = KxDataView2::Node;
 			using INodeModel = KxDataView2::INodeModel;
+			
+			using Model = KxDataView2::Model;
+			using ListModel = KxDataView2::ListModel;
+			using VirtualListModel = KxDataView2::VirtualListModel;
+
 			using Row = KxDataView2::Row;
-			using SortOrder = KxDataView2::SortOrder;
+			using ColumnID = KxDataView2::ColumnID;
 			using CellState = KxDataView2::CellState;
 			using CellAttributes = KxDataView2::CellAttributes;
+			using SortOrder = KxDataView2::SortOrder;
 
 		protected:
 			TypeAliases() = default;
