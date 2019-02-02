@@ -41,6 +41,7 @@ namespace KxDataView2
 			using Row = KxDataView2::Row;
 			using SortOrder = KxDataView2::SortOrder;
 			using CellState = KxDataView2::CellState;
+			using CellAttributes = KxDataView2::CellAttributes;
 
 		protected:
 			TypeAliases() = default;
