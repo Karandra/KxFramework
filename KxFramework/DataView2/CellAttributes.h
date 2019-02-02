@@ -31,7 +31,7 @@ namespace KxDataView2
 			}
 
 		public:
-			/* General */
+			// General
 			bool IsDefault() const
 			{
 				return !HasColors() && !HasFontAttributes() && !HasItemState() && !HasMiscAttributes();
@@ -39,7 +39,7 @@ namespace KxDataView2
 			void Reset();
 			wxFont GetEffectiveFont(const wxFont& baseFont) const;
 
-			/* Colors */
+			// Colors
 			bool HasColors() const
 			{
 				return HasBackgroundColor() || HasForegroundColor();
@@ -81,7 +81,7 @@ namespace KxDataView2
 				ChangeAlpha(m_ForegroundColor, alpha);
 			}
 
-			/* Font attributes */
+			// Font attributes
 			bool HasFontAttributes() const
 			{
 				return HasFontFace() || HasFontSize() || IsBold() || IsItalic() || IsUnderlined() || IsStrikethrough();
@@ -149,7 +149,7 @@ namespace KxDataView2
 				m_IsStrikethrough = value;
 			}
 
-			/* Misc attributes */
+			// Misc attributes
 			bool HasItemState() const
 			{
 				return m_IsEnabled != true;
