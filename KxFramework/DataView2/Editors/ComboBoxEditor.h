@@ -10,6 +10,7 @@ namespace KxDataView2
 		private:
 			int m_MaxVisibleItems = -1;
 			bool m_EndEditOnCloseup = false;
+			bool m_EndEditOnSelect = false;
 			bool m_AutoPopup = false;
 
 		public:
@@ -31,6 +32,15 @@ namespace KxDataView2
 				m_EndEditOnCloseup = value;
 			}
 	
+			bool ShouldEndEditOnSelect() const
+			{
+				return m_EndEditOnSelect;
+			}
+			void EndEditOnSelect(bool value = true)
+			{
+				m_EndEditOnSelect = value;
+			}
+
 			bool ShouldAutoPopup() const
 			{
 				return m_AutoPopup;
@@ -51,6 +61,9 @@ namespace KxDataView2
 			KxIntVector m_BitmapIndexes;
 			bool m_AlwaysUseStringSelection = false;
 			bool m_UseBitmap = false;
+
+		private:
+			void AutoEndEditHandler(wxCommandEvent& event);
 
 		protected:
 			EditorControlHandler* CreateControlHandler() override;

@@ -5,6 +5,11 @@
 
 namespace KxDataView2
 {
+	void ComboBoxEditor::AutoEndEditHandler(wxCommandEvent& event)
+	{
+		EndEdit();
+		event.Skip();
+	}
 	EditorControlHandler* ComboBoxEditor::CreateControlHandler()
 	{
 		return new ComboBoxEditorControlHandler(this, GetControl());
@@ -64,17 +69,17 @@ namespace KxDataView2
 			editor->SetSelection(value.As<int>());
 		}
 
-		if (ShouldAutoPopup())
+		if (ShouldEndEditOnSelect())
 		{
-			editor->Popup();
+			editor->Bind(wxEVT_COMBOBOX, &ComboBoxEditor::AutoEndEditHandler, this);
 		}
 		if (ShouldEndEditOnCloseup())
 		{
-			editor->Bind(wxEVT_COMBOBOX_CLOSEUP, [this](wxCommandEvent& event)
-			{
-				EndEdit();
-				event.Skip();
-			});
+			editor->Bind(wxEVT_COMBOBOX_CLOSEUP, &ComboBoxEditor::AutoEndEditHandler, this);
+		}
+		if (ShouldAutoPopup())
+		{
+			editor->Popup();
 		}
 		return editor;
 	}
