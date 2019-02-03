@@ -27,6 +27,10 @@ namespace KxDataView2
 		{
 			style |= wxSP_WRAP;
 		}
+		if (!IsEditable())
+		{
+			style |= wxTE_READONLY;
+		}
 
 		wxPoint pos = cellRect.GetTopLeft();
 		wxSize size = cellRect.GetSize();

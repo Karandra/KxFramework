@@ -9,7 +9,6 @@ namespace KxDataView2
 	{
 		private:
 			int m_MaxVisibleItems = -1;
-			bool m_IsControlEditable = false;
 			bool m_EndEditOnCloseup = false;
 
 		public:
@@ -26,18 +25,9 @@ namespace KxDataView2
 			{
 				return m_EndEditOnCloseup;
 			}
-			void EndEditOnCloseup(bool value)
+			void EndEditOnCloseup(bool value = true)
 			{
 				m_EndEditOnCloseup = value;
-			}
-
-			bool IsEditable() const
-			{
-				return m_IsControlEditable;
-			}
-			void SetEditable(bool isEditable)
-			{
-				m_IsControlEditable = isEditable;
 			}
 	};
 }

@@ -25,6 +25,7 @@ namespace KxDataView2
 			std::unique_ptr<wxValidator> m_Validator;
 			Column* m_Column = nullptr;
 			Node* m_Node = nullptr;
+			bool m_IsEditable = true;
 
 		private:
 			void OnBeginEdit(Node& node, Column& column)
@@ -74,6 +75,14 @@ namespace KxDataView2
 			bool IsEditing() const
 			{
 				return m_Column != nullptr && m_Node != nullptr;
+			}
+			bool IsEditable() const
+			{
+				return m_IsEditable;
+			}
+			void SetEditable(bool isEditable = true)
+			{
+				m_IsEditable = isEditable;
 			}
 
 			bool HasValidator() const
