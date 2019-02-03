@@ -754,6 +754,7 @@ namespace KxDataView2
 			m_RowLastClicked = currentRow;
 
 			Row oldCurrentRow = m_CurrentRow;
+			Column* const oldCurrentCol = m_CurrentColumn;
 			bool oldWasSelected = IsRowSelected(m_CurrentRow);
 
 			bool cmdModifierDown = event.CmdDown();
@@ -824,7 +825,10 @@ namespace KxDataView2
 			{
 				RefreshRow(oldCurrentRow);
 			}
-			Column* oldCurrentCol = m_CurrentColumn;
+			if (oldCurrentCol != currentColumn && m_View->IsOptionEnabled(CtrlStyle::CellFocus))
+			{
+				RefreshRow(currentRow);
+			}
 
 			// Update selection here...
 			m_CurrentColumn = currentColumn;
