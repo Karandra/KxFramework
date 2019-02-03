@@ -53,9 +53,13 @@ namespace KxDataView2
 			{
 				return m_Items;
 			}
-			void SetItems(const KxStringVector& tValues)
+			void SetItems(const KxStringVector& items)
 			{
-				m_Items = tValues;
+				m_Items = items;
+			}
+			void AddItem(const wxString& item)
+			{
+				m_Items.push_back(item);
 			}
 			void ClearItems()
 			{
