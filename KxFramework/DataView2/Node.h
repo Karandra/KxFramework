@@ -23,7 +23,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API Node: public Kx::RTTI::IExtendInterface<Node, INodeModel>
+	class KX_API Node: public KxRTTI::IExtendInterface<Node, INodeModel>
 	{
 		friend class MainWindow;
 		friend class NodeOperation_RowToNode;

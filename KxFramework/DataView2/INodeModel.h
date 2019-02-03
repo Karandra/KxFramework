@@ -14,7 +14,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API INodeModel: public Kx::RTTI::IInterface<INodeModel>
+	class KX_API INodeModel: public KxRTTI::IInterface<INodeModel>
 	{
 		protected:
 			INodeModel() = default;

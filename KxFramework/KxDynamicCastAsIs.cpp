@@ -2,7 +2,7 @@
 #include "KxFramework/KxDynamicCastAsIs.h"
 #include <atomic>
 
-namespace Kx::RTTI
+namespace KxRTTI
 {
 	size_t NewTypeID()
 	{
