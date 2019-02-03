@@ -93,9 +93,9 @@ namespace KxDataView2
 			{
 				return HasValidator() ? *m_Validator : wxDefaultValidator;
 			}
-			void SetValidator(const wxValidator& validator)
+			void SetValidator(std::unique_ptr<wxValidator> validator)
 			{
-				m_Validator.reset(static_cast<wxValidator*>(validator.Clone()));
+				m_Validator = std::move(validator);
 			}
 			template<class T, class... Args> T& NewValidator(Args&&... arg)
 			{
