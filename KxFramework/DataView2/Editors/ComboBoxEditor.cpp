@@ -62,9 +62,12 @@ namespace KxDataView2
 		else
 		{
 			editor->SetSelection(value.As<int>());
-			editor->Popup();
 		}
 
+		if (ShouldAutoPopup())
+		{
+			editor->Popup();
+		}
 		if (ShouldEndEditOnCloseup())
 		{
 			editor->Bind(wxEVT_COMBOBOX_CLOSEUP, [this](wxCommandEvent& event)

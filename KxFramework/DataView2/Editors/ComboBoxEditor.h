@@ -10,6 +10,7 @@ namespace KxDataView2
 		private:
 			int m_MaxVisibleItems = -1;
 			bool m_EndEditOnCloseup = false;
+			bool m_AutoPopup = false;
 
 		public:
 			int GetMaxVisibleItems() const
@@ -28,6 +29,15 @@ namespace KxDataView2
 			void EndEditOnCloseup(bool value = true)
 			{
 				m_EndEditOnCloseup = value;
+			}
+	
+			bool ShouldAutoPopup() const
+			{
+				return m_AutoPopup;
+			}
+			void AutoPopup(bool value = true)
+			{
+				m_AutoPopup = value;
 			}
 	};
 }
