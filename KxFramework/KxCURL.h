@@ -68,6 +68,7 @@ class KX_API KxCURLSession: public wxEvtHandler
 
 		wxString m_URL;
 		wxString m_PostData;
+		wxString m_UserAgent;
 
 	private:
 		static size_t OnWriteResponse(char* data, size_t size, size_t count, void* userData);
@@ -142,4 +143,8 @@ class KX_API KxCURLSession: public wxEvtHandler
 		}
 		void AddHeader(const wxString& name, const wxString& value);
 		void AddHeader(const wxString& value);
+		void SetUserAgent(const wxString& userAgent)
+		{
+			m_UserAgent = userAgent;
+		}
 };

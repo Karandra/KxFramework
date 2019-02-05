@@ -184,6 +184,12 @@ void KxCURLSession::DoSendRequest(KxCURLReplyBase& reply)
 	SetOption(CURLOPT_FOLLOWLOCATION, true);
 	SetOption(CURLOPT_SSL_VERIFYPEER, false);
 
+	// Set user agent if specified
+	if (!m_UserAgent.IsEmpty())
+	{
+		SetOption(CURLOPT_USERAGENT, m_UserAgent);
+	}
+
 	// Post data
 	if (!m_PostData.IsEmpty())
 	{
@@ -287,7 +293,7 @@ void KxCURLSession::Stop()
 
 void KxCURLSession::AddHeader(const wxString& name, const wxString& value)
 {
-	m_Headers.push_back(wxString::Format("%s: %s", name, value).ToStdString());
+	m_Headers.push_back(wxString::Format(wxS("%s: %s"), name, value).ToStdString());
 }
 void KxCURLSession::AddHeader(const wxString& value)
 {
