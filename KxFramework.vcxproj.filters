@@ -205,6 +205,12 @@
     <Filter Include="Source Files\GUI\DataView2\Editors">
       <UniqueIdentifier>{321f7c2c-c979-46bd-b38d-fc6ed07d9e83}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Network\WebSocket">
+      <UniqueIdentifier>{d735d763-f912-4371-a8ea-da356c992a13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Network\WebSocket">
+      <UniqueIdentifier>{df1ef961-dfbe-4512-8860-e66b35662195}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -610,20 +616,8 @@
     <ClInclude Include="KxFramework\KxINetRequest.h">
       <Filter>Header Files\Network</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxWebSockets.h">
-      <Filter>Header Files\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxWebSocketsImpl.h">
-      <Filter>Header Files\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxWebSocketsImplHandler.h">
-      <Filter>Header Files\Network</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxWebSocketEvent.h">
       <Filter>Header Files\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxWebSocketsConstants.h">
-      <Filter>Header Files\Network</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxCURL.h">
       <Filter>Header Files\Network</Filter>
@@ -903,6 +897,15 @@
     </ClInclude>
     <ClInclude Include="KxFramework\DataView2\DataView2Fwd.h">
       <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\WebSocket\IClient.h">
+      <Filter>Header Files\Network\WebSocket</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\WebSocket\Common.h">
+      <Filter>Header Files\Network\WebSocket</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\WebSocket\SecureClient.h">
+      <Filter>Header Files\Network\WebSocket</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1303,12 +1306,6 @@
     <ClCompile Include="KxFramework\KxINetRequest.cpp">
       <Filter>Source Files\Network</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxWebSockets.cpp">
-      <Filter>Source Files\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxWebSocketsImpl.cpp">
-      <Filter>Source Files\Network</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxWebSocketEvent.cpp">
       <Filter>Source Files\Events</Filter>
     </ClCompile>
@@ -1494,6 +1491,12 @@
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\INodeModel.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\WebSocket\IClient.cpp">
+      <Filter>Source Files\Network\WebSocket</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\WebSocket\SecureClient.cpp">
+      <Filter>Source Files\Network\WebSocket</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
