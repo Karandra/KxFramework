@@ -17,7 +17,7 @@ namespace KxWebSocket
 		size_t pos = name.rfind('/');
 		if (pos != name.npos && pos != 0)
 		{
-			name.remove_prefix(pos);
+			name.remove_suffix(name.length() - pos);
 		}
 		return wxString(name.data(), name.size());
 	}
