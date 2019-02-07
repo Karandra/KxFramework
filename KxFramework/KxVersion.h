@@ -113,7 +113,7 @@ class KX_API KxVersion
 	private:
 		KxVersionType Create(const wxString& source, KxVersionType type);
 
-		/* Default */
+		// Default
 		const DefaultT& GetDefault() const
 		{
 			return std::get<KxVERSION_DEFAULT>(m_Value);
@@ -141,7 +141,7 @@ class KX_API KxVersion
 			return GetStringPart(i);
 		}
 
-		/* DateTime */
+		// DateTime
 		const DateTimeT& GetDateTime() const
 		{
 			return std::get<KxVERSION_DATETIME>(m_Value);
@@ -155,7 +155,7 @@ class KX_API KxVersion
 		bool ParseDateTime(const wxString& source);
 		wxString FormatDateTime() const;
 
-		/* Integer */
+		// Integer
 		const IntegerT& GetInteger() const
 		{
 			return std::get<KxVERSION_INTEGER>(m_Value);
