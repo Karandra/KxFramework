@@ -108,8 +108,10 @@ namespace KxWebSocket
 		m_ConnectionPtr = m_Client.get_connection(ToUTF8(!address.IsEmpty() ? address : m_Address), errorCode);
 		if (!errorCode)
 		{
-			m_Client.connect(m_ConnectionPtr);
+			KxWebSocketEvent event(KxEVT_WEBSOCKET_CONNECTING, KxID_NONE);
+			ProcessEvent(event);
 
+			m_Client.connect(m_ConnectionPtr);
 			std::thread asioThread([this]()
 			{
 				try
