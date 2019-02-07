@@ -1,17 +1,13 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxJSON.h"
 
-wxString KxJSON::GetVersion()
-{
-	std::string version(16, '\000');
-	int length = sprintf_s(version.data(), version.size(), "%d.%d.%d", NLOHMANN_JSON_VERSION_MAJOR, NLOHMANN_JSON_VERSION_MINOR, NLOHMANN_JSON_VERSION_PATCH);
-	version.resize(length);
-
-	return version;
-}
 wxString KxJSON::GetLibraryName()
 {
-	return "JSON for Modern C++";
+	return wxS("JSON for Modern C++");
+}
+wxString KxJSON::GetLibraryVersion()
+{
+	return KxString::Format("%1.%2.%3", NLOHMANN_JSON_VERSION_MAJOR, NLOHMANN_JSON_VERSION_MINOR, NLOHMANN_JSON_VERSION_PATCH);
 }
 
 KxJSONObject KxJSON::Load(const wxString& json)

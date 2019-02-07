@@ -12,8 +12,8 @@ using KxJSONObject = nlohmann::json;
 class KX_API KxJSON: public KxJSONObject
 {
 	public:
-		static wxString GetVersion();
 		static wxString GetLibraryName();
+		static wxString GetLibraryVersion();
 
 	public:
 		static KxJSONObject Load(const wxString& json);
