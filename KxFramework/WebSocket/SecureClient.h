@@ -58,5 +58,9 @@ namespace KxWebSocket
 
 			CloseCode GetCloseCode() const override;
 			wxString GetCloseReason() const override;
+
+			void AddHeader(const wxString& key, const wxString& value) override;
+			void ReplaceHeader(const wxString& key, const wxString& value) override;
+			void SetUserAgent(const wxString& userAgent) override;
 	};
 }

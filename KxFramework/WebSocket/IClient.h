@@ -30,6 +30,10 @@ namespace KxWebSocket
 			virtual CloseCode GetCloseCode() const = 0;
 			virtual wxString GetCloseReason() const = 0;
 			
+			virtual void AddHeader(const wxString& key, const wxString& value) = 0;
+			virtual void ReplaceHeader(const wxString& key, const wxString& value) = 0;
+			virtual void SetUserAgent(const wxString& userAgent) = 0;
+
 			bool Connect(const wxString& address = {})
 			{
 				return DoConnect(address);

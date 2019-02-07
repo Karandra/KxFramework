@@ -173,4 +173,24 @@ namespace KxWebSocket
 		}
 		return {};
 	}
+
+	void SecureClient::AddHeader(const wxString& key, const wxString& value)
+	{
+		try
+		{
+			m_ConnectionPtr->append_header(ToUTF8(key), ToUTF8(value));
+		}
+		catch (...)
+		{
+		}
+	}
+	void SecureClient::ReplaceHeader(const wxString& key, const wxString& value)
+	{
+		m_ConnectionPtr->replace_header(ToUTF8(key), ToUTF8(value));
+	}
+
+	void SecureClient::SetUserAgent(const wxString& userAgent)
+	{
+		m_Client.set_user_agent(ToUTF8(userAgent));
+	}
 }
