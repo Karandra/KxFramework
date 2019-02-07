@@ -9,13 +9,15 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxFramework/KxSingleton.h"
 #include "KxFramework/KxCURLStructs.h"
 #include "KxFramework/KxCURLEvent.h"
+#include "KxFramework/KxVersion.h"
 
 class KX_API KxCURL: public KxSingleton<KxCURL>
 {
 	friend class KxCURLModule;
 
 	public:
-		static wxString GetVersion();
+		static wxString GetLibraryName();
+		static wxString GetLibraryVersion();
 
 	private:
 		bool m_IsInitialized = false;

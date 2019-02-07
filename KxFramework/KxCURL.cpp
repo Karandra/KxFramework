@@ -79,7 +79,11 @@ namespace cURL
 }
 
 //////////////////////////////////////////////////////////////////////////
-wxString KxCURL::GetVersion()
+wxString KxCURL::GetLibraryName()
+{
+	return wxS("libcurl");
+}
+wxString KxCURL::GetLibraryVersion()
 {
 	return LIBCURL_VERSION;
 }
