@@ -15,15 +15,15 @@ namespace KxWebSocket
 		m_Client.set_open_handler([this](TConnectionHandle handle)
 		{
 			m_ConnectionHandle = handle;
-			QueueEvent(NewEvent(KxEVT_WEBSOCKET_OPEN));
+			SendEvent(NewEvent(KxEVT_WEBSOCKET_OPEN));
 		});
 		m_Client.set_fail_handler([this](TConnectionHandle handle)
 		{
-			QueueEvent(NewEvent(KxEVT_WEBSOCKET_FAIL));
+			SendEvent(NewEvent(KxEVT_WEBSOCKET_FAIL));
 		});
 		m_Client.set_close_handler([this](TConnectionHandle handle)
 		{
-			QueueEvent(NewEvent(KxEVT_WEBSOCKET_CLOSE));
+			SendEvent(NewEvent(KxEVT_WEBSOCKET_CLOSE));
 		});
 		m_Client.set_message_handler([this](TConnectionHandle handle, TMessagePtr message)
 		{
@@ -35,7 +35,7 @@ namespace KxWebSocket
 
 					KxWebSocketEvent* event = NewEvent(KxEVT_WEBSOCKET_MESSAGE);
 					event->SetString(wxString::FromUTF8(payload.data(), payload.size()));
-					QueueEvent(event);
+					SendEvent(event);
 					break;
 				}
 				case TFrameOpCode::binary:
@@ -44,7 +44,7 @@ namespace KxWebSocket
 
 					KxWebSocketEvent* event = NewEvent(KxEVT_WEBSOCKET_MESSAGE);
 					event->SetBinaryMessage(payload.data(), payload.size());
-					QueueEvent(event);
+					SendEvent(event);
 					break;
 				}
 			};
@@ -71,10 +71,9 @@ namespace KxWebSocket
 	{
 		return new KxWebSocketEvent(eventType, KxID_NONE);
 	}
-	void SecureClient::QueueEvent(wxEvent* event)
+	void SecureClient::SendEvent(wxEvent* event)
 	{
-		ProcessEvent(*event);
-		delete event;
+		QueueEvent(event);
 	}
 
 	std::string SecureClient::ToUTF8(const wxString& string) const
@@ -188,7 +187,6 @@ namespace KxWebSocket
 	{
 		m_ConnectionPtr->replace_header(ToUTF8(key), ToUTF8(value));
 	}
-
 	void SecureClient::SetUserAgent(const wxString& userAgent)
 	{
 		m_Client.set_user_agent(ToUTF8(userAgent));
