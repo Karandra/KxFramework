@@ -423,8 +423,10 @@
     <ClInclude Include="KxFramework\KxTypedefs.h" />
     <ClInclude Include="KxFramework\KxUnownedBuffer.h" />
     <ClInclude Include="KxFramework\KxUtility.h" />
+    <ClInclude Include="KxFramework\KxUUID.h" />
     <ClInclude Include="KxFramework\KxUxTheme.h" />
     <ClInclude Include="KxFramework\KxVersion.h" />
+    <ClInclude Include="KxFramework\KxWebSocket.h" />
     <ClInclude Include="KxFramework\KxWebSocketEvent.h" />
     <ClInclude Include="KxFramework\KxWebView.h" />
     <ClInclude Include="KxFramework\KxWinUndef.h" />
@@ -666,8 +668,10 @@
     <ClCompile Include="KxFramework\KxTreeView.cpp" />
     <ClCompile Include="KxFramework\KxUtility.cpp" />
     <ClCompile Include="KxFramework\KxUtilityUxTheme.cpp" />
+    <ClCompile Include="KxFramework\KxUUID.cpp" />
     <ClCompile Include="KxFramework\KxUxTheme.cpp" />
     <ClCompile Include="KxFramework\KxVersion.cpp" />
+    <ClCompile Include="KxFramework\KxWebSocket.cpp" />
     <ClCompile Include="KxFramework\KxWebSocketEvent.cpp" />
     <ClCompile Include="KxFramework\KxWebView.cpp" />
     <ClCompile Include="KxFramework\KxWithDropdownMenu.cpp" />

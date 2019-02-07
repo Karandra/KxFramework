@@ -6,6 +6,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 */
 #include "KxStdAfx.h"
 #include "SecureClient.h"
+#include "KxFramework/KxWebSocket.h"
 
 namespace KxWebSocket
 {
@@ -70,7 +71,12 @@ namespace KxWebSocket
 	{
 		return new KxWebSocketEvent(eventType, KxID_NONE);
 	}
-	
+	void SecureClient::QueueEvent(wxEvent* event)
+	{
+		ProcessEvent(*event);
+		delete event;
+	}
+
 	std::string SecureClient::ToUTF8(const wxString& string) const
 	{
 		auto utf8 = string.ToUTF8();

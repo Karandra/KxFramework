@@ -13,19 +13,11 @@ namespace KxWebSocket
 {
 	class KX_API IClient: public wxEvtHandler
 	{
-		public:
-			static wxString GetLibraryName();
-			static wxString GetLibraryVersion();
-
-			static std::unique_ptr<IClient> NewSecureClient(const wxString& address = {});
-
 		protected:
 			virtual bool DoSendData(const void* data, size_t length) = 0;
 			virtual bool DoSendData(const wxString& stringData) = 0;
 			virtual void DoClose(CloseCode code, const wxString& status, int& errorCode) = 0;
 			virtual bool DoConnect(const wxString& address) = 0;
-
-			bool IsAddressWSS(const wxString& address) const;
 
 		public:
 			virtual ~IClient() = default;

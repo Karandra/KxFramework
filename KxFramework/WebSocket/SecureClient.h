@@ -36,11 +36,7 @@ namespace KxWebSocket
 		private:
 			void RegisterHandlers();
 			KxWebSocketEvent* NewEvent(wxEventType eventType);
-			void QueueEvent(wxEvent* event)
-			{
-				ProcessEvent(*event);
-				delete event;
-			}
+			void QueueEvent(wxEvent* event);
 
 			std::string ToUTF8(const wxString& string) const;
 			wxString FromUTF8(const std::string& string) const;
