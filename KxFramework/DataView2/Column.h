@@ -338,6 +338,7 @@ namespace KxDataView2
 			{
 				m_IsVisible = value;
 			}
+			void Refresh() const;
 
 			bool IsRenderable() const
 			{

@@ -244,6 +244,10 @@ namespace KxDataView2
 		width = 0;
 		return false;
 	}
+	void Column::Refresh() const
+	{
+		m_View->GetMainWindow()->RefreshColumn(*this);
+	}
 
 	bool Column::IsActivatable() const
 	{
@@ -273,10 +277,10 @@ namespace KxDataView2
 	
 	bool Column::IsLast() const
 	{
-		return m_Index == m_View->GetColumnCount();
+		return m_Index + 1 == m_View->GetColumnCount();
 	}
 	bool Column::IsDisplayedLast() const
 	{
-		return m_DisplayIndex == m_View->GetVisibleColumnCount();
+		return m_DisplayIndex + 1 == m_View->GetVisibleColumnCount();
 	}
 }
