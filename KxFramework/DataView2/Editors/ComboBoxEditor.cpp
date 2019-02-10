@@ -87,22 +87,14 @@ namespace KxDataView2
 	{
 		KxComboBox* editor = static_cast<KxComboBox*>(control);
 
-		if (IsEditable())
+		if (!ShouldAlwaysUseStringSelection())
 		{
-			return editor->GetValue();
-		}
-		else
-		{
-			if (ShouldAlwaysUseStringSelection())
+			if (int index = editor->GetSelection(); index != wxNOT_FOUND)
 			{
-				return editor->GetStringSelection();
-			}
-			else
-			{
-				return editor->GetSelection();
+				return index;
 			}
 		}
-		return {};
+		return IsEditable() ? editor->GetValue() : editor->GetStringSelection();
 	}
 }
 
