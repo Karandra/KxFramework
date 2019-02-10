@@ -169,11 +169,11 @@ namespace KxIndexedEnum
 				return std::nullopt;
 			}
 			
-			static TEnum FromOrExpression(const TString& string, TEnum defaultValue)
+			static TEnum FromOrExpression(const TString& string, TEnum initialValue = static_cast<TEnum>(0))
 			{
 				using namespace Kx::Utility::String;
 
-				TInt intValue = static_cast<TInt>(defaultValue);
+				TInt intValue = static_cast<TInt>(initialValue);
 				SplitBySeparator(string, wxS('|'), [&intValue](TStdWxStringView value)
 				{
 					const TItem* item = FindByName(TString(value.data(), value.size()));
@@ -258,9 +258,9 @@ namespace KxIndexedEnum
 				return TDefinition::ToString(m_Value);
 			}
 			
-			bool FromOrExpression(const TString& string, TEnum defaultValue = t_DefaultValue)
+			bool FromOrExpression(const TString& string, TEnum initialValue = static_cast<TEnum>(0))
 			{
-				m_Value = TDefinition::FromOrExpression(string, defaultValue);
+				m_Value = TDefinition::FromOrExpression(string, initialValue);
 				return !IsDefault();
 			}
 			wxString ToOrExpression() const
