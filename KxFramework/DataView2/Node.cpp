@@ -43,80 +43,40 @@ namespace KxDataView2
 	void Node::PutChildInSortOrder(Node* node)
 	{
 		// The childNode has changed, and may need to be moved to another location in the sorted child list.
-		if (IsNodeExpanded() && !m_SortOrder.IsNone())
+		MainWindow* mainWindow = GetMainWindow();
+		if (mainWindow && IsNodeExpanded() && !m_SortOrder.IsNone() && m_Children.size() > 1)
 		{
-			// This is more than an optimization, the code below assumes that 1 is a valid index.
-			if (m_Children.size() > 1)
+			// We should already be sorted in the right order.
+			wxASSERT(m_SortOrder == window->GetSortOrder());
+
+			// Remove and reinsert the node in the child list
+			const Row nodeIndex = FindChild(*node);
+			if (nodeIndex)
 			{
-				// We should already be sorted in the right order.
-				wxASSERT(m_SortOrder == window->GetSortOrder());
-
-				// First find the node in the current child list
-				intptr_t oldLocation = -1;
-				for (size_t index = 0; index < m_Children.size(); ++index)
-				{
-					if (m_Children[index] == node)
-					{
-						oldLocation = index;
-						break;
-					}
-				}
-				if (oldLocation < 0)
-				{
-					// Not our child?
-					return;
-				}
-
-				// Check if we actually need to move the node.
-				Comparator comparator(m_RootNode->GetMainWindow(), m_SortOrder);
-				bool locationChanged = false;
-
-				if (oldLocation == 0)
-				{
-					// Compare with the next item (as we return early in the case of only a single child,
-					// we know that there is one) to check if the item is now out of order.
-					if (!comparator(node, m_Children[1]))
-					{
-						locationChanged = true;
-					}
-				}
-				else
-				{
-					// Compare with the previous item.
-					if (!comparator(m_Children[oldLocation - 1], node))
-					{
-						locationChanged = true;
-					}
-				}
-				if (!locationChanged)
-				{
-					return;
-				}
-
-				// Remove and reinsert the node in the child list
-				m_Children.erase(m_Children.begin() + oldLocation);
+				m_Children.erase(m_Children.begin() + nodeIndex);
 
 				// Use binary search to find the correct position to insert at.
-				auto it = std::lower_bound(m_Children.begin(), m_Children.end(), node, comparator);
+				auto it = std::lower_bound(m_Children.begin(), m_Children.end(), node, Comparator(mainWindow, m_SortOrder));
 				m_Children.insert(it, node);
 				RecalcIndexes(std::distance(m_Children.begin(), it));
 
 				// Make sure the change is actually shown right away
-				m_RootNode->GetMainWindow()->UpdateDisplay();
+				mainWindow->UpdateDisplay();
 			}
 		}
 	}
 	void Node::Resort()
 	{
-		if (IsNodeExpanded())
+		MainWindow* mainWindow = GetMainWindow();
+		if (mainWindow && IsNodeExpanded())
 		{
-			const SortOrder sortOrder = m_RootNode->GetMainWindow()->GetSortOrder();
+			const SortOrder sortOrder = mainWindow->GetSortOrder();
 			if (!sortOrder.IsNone())
 			{
 				// Only sort the children if they aren't already sorted by the wanted criteria.
 				if (m_SortOrder != sortOrder)
 				{
-					std::sort(m_Children.begin(), m_Children.end(), Comparator(m_RootNode->GetMainWindow(), sortOrder));
+					std::sort(m_Children.begin(), m_Children.end(), Comparator(mainWindow, sortOrder));
 					m_SortOrder = sortOrder;
 					RecalcIndexes();
 				}
