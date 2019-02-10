@@ -40,13 +40,6 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	Node* Node::CreateRootNode(MainWindow* window)
-	{
-		Node* node = new Node(window, nullptr);
-		node->SetNodeExpanded(true);
-		return node;
-	}
-
 	void Node::PutChildInSortOrder(Node* node)
 	{
 		// The childNode has changed, and may need to be moved to another location in the sorted child list.
@@ -75,7 +68,7 @@ namespace KxDataView2
 				}
 
 				// Check if we actually need to move the node.
-				Comparator comparator(m_MainWindow, m_SortOrder);
+				Comparator comparator(m_RootNode->GetMainWindow(), m_SortOrder);
 				bool locationChanged = false;
 
 				if (oldLocation == 0)
@@ -109,7 +102,7 @@ namespace KxDataView2
 				RecalcIndexes(std::distance(m_Children.begin(), it));
 
 				// Make sure the change is actually shown right away
-				m_MainWindow->UpdateDisplay();
+				m_RootNode->GetMainWindow()->UpdateDisplay();
 			}
 		}
 	}
@@ -117,13 +110,13 @@ namespace KxDataView2
 	{
 		if (IsNodeExpanded())
 		{
-			const SortOrder sortOrder = m_MainWindow->GetSortOrder();
+			const SortOrder sortOrder = m_RootNode->GetMainWindow()->GetSortOrder();
 			if (!sortOrder.IsNone())
 			{
 				// Only sort the children if they aren't already sorted by the wanted criteria.
 				if (m_SortOrder != sortOrder)
 				{
-					std::sort(m_Children.begin(), m_Children.end(), Comparator(m_MainWindow, sortOrder));
+					std::sort(m_Children.begin(), m_Children.end(), Comparator(m_RootNode->GetMainWindow(), sortOrder));
 					m_SortOrder = sortOrder;
 					RecalcIndexes();
 				}
@@ -179,7 +172,7 @@ namespace KxDataView2
 	void Node::InitNodeFromThis(Node& node)
 	{
 		node.m_ParentNode = this;
-		node.m_MainWindow = m_MainWindow;
+		node.m_RootNode = m_RootNode;
 		node.m_SortOrder = m_SortOrder;
 	}
 	void Node::RecalcIndexes(size_t startAt)
@@ -192,15 +185,14 @@ namespace KxDataView2
 
 	Node::~Node()
 	{
-		for (Node* node: m_Children)
+		if (Model* model = GetModel())
 		{
-			if (m_MainWindow->GetModel()->OwnTreeItems())
+			for (Node* node: m_Children)
 			{
-				delete node;
+				model->OnDeleteNode(node);
 			}
 		}
 	}
-
 	Row Node::FindChild(const Node& node) const
 	{
 		auto it = std::find(m_Children.begin(), m_Children.end(), &node);
@@ -227,11 +219,15 @@ namespace KxDataView2
 		return -1;
 	}
 
+	void Node::DetachAllChildren()
+	{
+		m_Children.clear();
+	}
 	void Node::AttachChild(Node* node, size_t index)
 	{
 		// Flag indicating whether we should retain existing sorted list when inserting the child node.
 		bool shouldInsertSorted = false;
-		SortOrder controlSortOrder = m_MainWindow->GetSortOrder();
+		SortOrder controlSortOrder = m_RootNode->GetMainWindow()->GetSortOrder();
 
 		if (controlSortOrder.IsNone())
 		{
@@ -279,7 +275,7 @@ namespace KxDataView2
 		if (shouldInsertSorted)
 		{
 			// Use binary search to find the correct position to insert at.
-			auto it = std::lower_bound(m_Children.begin(), m_Children.end(), node, Comparator(m_MainWindow, controlSortOrder));
+			auto it = std::lower_bound(m_Children.begin(), m_Children.end(), node, Comparator(m_RootNode->GetMainWindow(), controlSortOrder));
 			m_Children.insert(it, node);
 			RecalcIndexes(std::distance(m_Children.begin(), it));
 		}
@@ -289,7 +285,7 @@ namespace KxDataView2
 			m_Children.insert(m_Children.begin() + index, node);
 			RecalcIndexes(index);
 		}
-		m_MainWindow->OnNodeAdded(*this);
+		m_RootNode->GetMainWindow()->OnNodeAdded(*this);
 	}
 	void Node::InsertChild(Node* node, size_t index)
 	{
@@ -307,7 +303,10 @@ namespace KxDataView2
 			RecalcIndexes(index);
 
 			const intptr_t removedCount = node->GetSubTreeCount() + 1;
-			m_MainWindow->OnNodeRemoved(*node, removedCount);
+			if (MainWindow* mainWindow = GetMainWindow())
+			{
+				mainWindow->OnNodeRemoved(*node, removedCount);
+			}
 			return node;
 		}
 		return nullptr;
@@ -334,9 +333,10 @@ namespace KxDataView2
 	}
 	void Node::RemoveChild(size_t index)
 	{
-		if (m_MainWindow->GetModel()->OwnTreeItems())
+		Model* model = GetModel();
+		if (Node* node = DetachChild(index); node && model)
 		{
-			delete DetachChild(index);
+			model->OnDeleteNode(node);
 		}
 	}
 	void Node::Remove()
@@ -360,15 +360,23 @@ namespace KxDataView2
 {
 	MainWindow* Node::GetMainWindow() const
 	{
-		return m_MainWindow;
+		return m_RootNode ? m_RootNode->GetMainWindow() : nullptr;
 	}
 	View* Node::GetView() const
 	{
-		return m_MainWindow->GetView();
+		return m_RootNode ? m_RootNode->GetView() : nullptr;
+	}
+	Model* Node::GetModel() const
+	{
+		return m_RootNode ? m_RootNode->GetModel() : nullptr;
 	}
 	bool Node::IsRenderable(const Column& column) const
 	{
-		return &GetRenderer(column) != &m_MainWindow->GetNullRenderer();
+		if (MainWindow* mainWindow = GetMainWindow())
+		{
+			return &GetRenderer(column) != &mainWindow->GetNullRenderer();
+		}
+		return false;
 	}
 
 	bool Node::IsExpanded() const
@@ -377,22 +385,31 @@ namespace KxDataView2
 	}
 	void Node::SetExpanded(bool expanded)
 	{
-		if (expanded)
+		if (MainWindow* mainWindow = GetMainWindow())
 		{
-			m_MainWindow->Expand(*this);
-		}
-		else
-		{
-			m_MainWindow->Collapse(*this);
+			if (expanded)
+			{
+				mainWindow->Expand(*this);
+			}
+			else
+			{
+				mainWindow->Collapse(*this);
+			}
 		}
 	}
 	void Node::Expand()
 	{
-		m_MainWindow->GetView()->Expand(*this);
+		if (View* view = GetView())
+		{
+			view->Expand(*this);
+		}
 	}
 	void Node::Collapse()
 	{
-		m_MainWindow->GetView()->Collapse(*this);
+		if (View* view = GetView())
+		{
+			view->Collapse(*this);
+		}
 	}
 	void Node::ToggleExpanded()
 	{
@@ -401,56 +418,95 @@ namespace KxDataView2
 
 	void Node::Refresh()
 	{
-		m_MainWindow->OnCellChanged(*this, nullptr);
+		if (MainWindow* mainWindow = GetMainWindow())
+		{
+			mainWindow->OnCellChanged(*this, nullptr);
+		}
 	}
 	void Node::Refresh(Column& column)
 	{
-		m_MainWindow->OnCellChanged(*this, &column);
+		if (MainWindow* mainWindow = GetMainWindow())
+		{
+			mainWindow->OnCellChanged(*this, &column);
+		}
 	}
 	void Node::Edit(Column& column)
 	{
-		m_MainWindow->BeginEdit(*this, column);
+		if (MainWindow* mainWindow = GetMainWindow())
+		{
+			mainWindow->BeginEdit(*this, column);
+		}
 	}
 
 	Row Node::GetRow() const
 	{
-		return m_MainWindow->GetRowByNode(*this);
+		if (MainWindow* mainWindow = GetMainWindow())
+		{
+			return mainWindow->GetRowByNode(*this);
+		}
+		return {};
 	}
 	bool Node::IsSelected() const
 	{
-		return GetView()->IsSelected(*this);
+		if (View* view = GetView())
+		{
+			return view->IsSelected(*this);
+		}
+		return false;
 	}
 	bool Node::IsCurrent() const
 	{
-		return GetView()->GetCurrentItem() == this;
+		if (View* view = GetView())
+		{
+			return view->GetCurrentItem() == this;
+		}
+		return false;
 	}
 	bool Node::IsHotTracked() const
 	{
-		return GetView()->GetHotTrackedItem() == this;
+		if (View* view = GetView())
+		{
+			return view->GetHotTrackedItem() == this;
+		}
+		return false;
 	}
 	void Node::SetSelected(bool value)
 	{
-		if (value)
+		if (View* view = GetView())
 		{
-			GetView()->Select(*this);
-		}
-		else
-		{
-			GetView()->Unselect(*this);
+			if (value)
+			{
+				view->Select(*this);
+			}
+			else
+			{
+				view->Unselect(*this);
+			}
 		}
 	}
 	void Node::EnsureVisible(const Column* column)
 	{
-		GetView()->EnsureVisible(*this, column);
+		if (View* view = GetView())
+		{
+			view->EnsureVisible(*this, column);
+		}
 	}
 
 	wxRect Node::GetCellRect(const Column* column) const
 	{
-		return GetView()->GetAdjustedItemRect(*this, column);
+		if (View* view = GetView())
+		{
+			return view->GetAdjustedItemRect(*this, column);
+		}
+		return {};
 	}
 	wxPoint Node::GetDropdownMenuPosition(const Column* column) const
 	{
-		return GetView()->GetDropdownMenuPosition(*this, column);
+		if (View* view = GetView())
+		{
+			return view->GetDropdownMenuPosition(*this, column);
+		}
+		return {};
 	}
 }
 
@@ -490,6 +546,29 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
+	void RootNode::ResetAll()
+	{
+		if (Model* model = GetModel())
+		{
+			model->OnDetachRootNode(*this);
+		}
+
+		Node::ResetAll();
+		Init();
+	}
+
+	View* RootNode::GetView() const
+	{
+		return m_MainWindow ? m_MainWindow->GetView() : nullptr;
+	}
+	Model* RootNode::GetModel() const
+	{
+		return m_MainWindow ? m_MainWindow->GetModel() : nullptr;
+	}
+}
+
+namespace KxDataView2
+{
 	NodeOperation::Result NodeOperation_RowToNode::operator()(Node& node)
 	{
 		m_CurrentRow++;
@@ -518,31 +597,6 @@ namespace KxDataView2
 				}
 			}
 			return Result::Continue;
-		}
-	}
-}
-
-namespace KxDataView2
-{
-	NodeOperation::Result NodeOperation_NodeToRow::operator()(Node& node)
-	{
-		if (&m_Node == &node)
-		{
-			return Result::Done;
-		}
-
-		// Is this node the next (grand)parent of the item we're looking for?
-		if (*m_Iterator == &node)
-		{
-			++m_Iterator;
-			++m_CurrentRow;
-			return Result::Continue;
-		}
-		else
-		{
-			// Skip this node and all its currently visible children.
-			m_CurrentRow += node.GetSubTreeCount() + 1;
-			return Result::SkipSubTree;
 		}
 	}
 }

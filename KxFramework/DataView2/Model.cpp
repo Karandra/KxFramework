@@ -4,6 +4,14 @@
 
 namespace KxDataView2
 {
+	View* Model::GetView() const
+	{
+		return m_MainWindow->GetView();
+	}
+}
+
+namespace KxDataView2
+{
 	Row ListModel::GetRow(const Node& node) const
 	{
 		return GetMainWindow()->GetRootNode().FindChild(node);

@@ -3,11 +3,11 @@
 #include "Common.h"
 #include "Node.h"
 #include "Row.h"
+#include "KxFramework/KxQueryInterface.h"
 
 namespace KxDataView2
 {
 	class KX_API View;
-	class KX_API Node;
 	class KX_API Column;
 	class KX_API MainWindow;
 	class KX_API CellAttributes;
@@ -15,13 +15,14 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API Model
+	class KX_API Model: public KxRTTI::IInterface<Model>
 	{
+		friend class Node;
+		friend class RootNode;
 		friend class MainWindow;
 
 		private:
 			MainWindow* m_MainWindow = nullptr;
-			const bool m_OwnTreeItems = false;
 
 		private:
 			void SetMainWindow(MainWindow* mainWindow)
@@ -29,11 +30,16 @@ namespace KxDataView2
 				m_MainWindow = mainWindow;
 			}
 
-		public:
-			Model(bool ownTreeItems)
-				:m_OwnTreeItems(ownTreeItems)
+		protected:
+			virtual void OnDeleteNode(Node* node)
+			{
+				delete node;
+			}
+			virtual void OnDetachRootNode(RootNode& node)
 			{
 			}
+
+		public:
 			virtual ~Model() = default;
 
 		public:
@@ -41,11 +47,8 @@ namespace KxDataView2
 			{
 				return m_MainWindow;
 			}
-			bool OwnTreeItems() const
-			{
-				return m_OwnTreeItems;
-			}
-
+			View* GetView() const;
+			
 			void CellChanged(Node& node, Column& column)
 			{
 				node.Refresh(column);
@@ -56,19 +59,13 @@ namespace KxDataView2
 //////////////////////////////////////////////////////////////////////////
 namespace KxDataView2
 {
-	class KX_API ListModel: public Model
+	class KX_API ListModel: public KxRTTI::IExtendInterface<ListModel, Model>
 	{
 		public:
 			virtual size_t GetItemCount() const = 0;
 
 			virtual Row GetRow(const Node& node) const;
 			virtual Node* GetNode(Row row) const;
-
-		public:
-			ListModel(bool ownTreeItems)
-				:Model(ownTreeItems)
-			{
-			}
 
 		public:
 			void RowCellChanged(Row row, Column& column)
@@ -83,7 +80,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API VirtualListModel: public ListModel
+	class KX_API VirtualListModel: public KxRTTI::IExtendInterface<VirtualListModel, ListModel>
 	{
 		private:
 			const size_t m_InitialCount = 0;
@@ -95,7 +92,7 @@ namespace KxDataView2
 
 		public:
 			VirtualListModel(size_t initialCount = 0)
-				:ListModel(true), m_InitialCount(initialCount)
+				:m_InitialCount(initialCount)
 			{
 			}
 

@@ -51,14 +51,14 @@ namespace KxDataView2
 			wxDC* m_RegularDC = nullptr;
 
 		private:
-			void BeginRendering(const Node& node, Column& column, wxGCDC& graphicsDC, wxDC* regularDC = nullptr)
+			void BeginCellRendering(const Node& node, Column& column, wxGCDC& graphicsDC, wxDC* regularDC = nullptr)
 			{
 				m_Node = &node;
 				m_Column = &column;
 				m_GraphicsDC = &graphicsDC;
 				m_RegularDC = regularDC;
 			}
-			void EndRendering()
+			void EndCellRendering()
 			{
 				m_Node = nullptr;
 				m_Column = nullptr;
@@ -67,8 +67,18 @@ namespace KxDataView2
 			}
 			bool IsNullRenderer() const;
 
-			void SetupCellValue(const Node& node, Column& column);
-			void SetupCellAttributes(const Node& node, Column& column, CellState cellState);
+			void BeginCellSetup(const Node& node, Column& column)
+			{
+				m_Node = &node;
+				m_Column = &column;
+			}
+			void EndCellSetup()
+			{
+				m_Node = nullptr;
+				m_Column = nullptr;
+			}
+			void SetupCellValue();
+			void SetupCellAttributes(CellState cellState);
 			
 			void CallDrawCellBackground(const wxRect& cellRect, CellState cellState);
 			void CallDrawCellContent(const wxRect& cellRect, CellState cellState);

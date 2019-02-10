@@ -40,10 +40,11 @@ namespace KxDataView2
 					}
 
 					Renderer& renderer = node->GetRenderer(m_Column);
-					renderer.SetupCellValue(*node, m_Column);
-					renderer.SetupCellAttributes(*node, m_Column, m_MainWindow->GetCellStateForRow(row));
+					renderer.BeginCellSetup(*node, m_Column);
+					renderer.SetupCellValue();
+					renderer.SetupCellAttributes(m_MainWindow->GetCellStateForRow(row));
 					UpdateWithWidth(renderer.GetCellSize().x + indent);
-					renderer.EndRendering();
+					renderer.EndCellSetup();
 				}
 			}
 
@@ -127,9 +128,10 @@ namespace KxDataView2
 						const wxRect cellRect = m_View->GetItemRect(*node, activatableColumn);
 
 						Renderer& renderer = node->GetRenderer(*activatableColumn);
-						renderer.SetupCellAttributes(*node, *activatableColumn, GetCellStateForRow(m_CurrentRow));
+						renderer.BeginCellSetup(*node, *activatableColumn);
+						renderer.SetupCellAttributes(GetCellStateForRow(m_CurrentRow));
 						renderer.CallOnActivateCell(*node, cellRect, nullptr);
-						renderer.EndRendering();
+						renderer.EndCellSetup();
 						break;
 					}
 					break;
@@ -842,8 +844,8 @@ namespace KxDataView2
 			// (so it must have had focus already).
 			m_LastOnSame = !simulateClick && ((currentColumn == oldCurrentCol) &&	(currentRow == oldCurrentRow)) && oldWasSelected && HasFocus();
 
-			// Call ActivateCell() after everything else as under GTK+
-			if (currentNode->IsEditable(*currentColumn))
+			// Call OnActivateCell() after everything else as under GTK+
+			if (IsCellInteractible(*currentNode, *currentColumn, InteractibleCell::Activator))
 			{
 				// Notify cell about click
 				wxRect cellRect(xpos + itemOffset, GetRowStart(currentRow), currentColumn->GetWidth() - itemOffset, GetRowHeight(currentRow));
@@ -851,9 +853,10 @@ namespace KxDataView2
 				// Note that SetupCellAttributes() should be called after GetRowStart()
 				// call in 'cellRect' initialization above as GetRowStart() calls
 				// SetupCellAttributes() for other items from inside it.
-				Renderer& renderer = currentColumn->GetRenderer();
-				renderer.EndRendering();
-				renderer.SetupCellAttributes(*currentNode, *currentColumn, GetCellStateForRow(oldCurrentRow));
+				Renderer& renderer = currentNode->GetRenderer(*currentColumn);
+				renderer.BeginCellSetup(*currentNode, *currentColumn);
+				renderer.SetupCellAttributes(GetCellStateForRow(oldCurrentRow));
+				renderer.SetupCellValue();
 
 				// Report position relative to the cell's custom area, i.e.
 				// not the entire space as given by the control but the one
@@ -902,7 +905,7 @@ namespace KxDataView2
 				m_View->CalcUnscrolledPosition(event2.m_x, event2.m_y, &event2.m_x, &event2.m_y);
 
 				renderer.CallOnActivateCell(*currentNode, cellRect, &event2);
-				renderer.EndRendering();
+				renderer.EndCellSetup();
 			}
 		}
 	}
@@ -1109,6 +1112,9 @@ namespace KxDataView2
 			}
 		}
 
+		const bool verticalRulesEnabled = m_View->IsOptionEnabled(CtrlStyle::VerticalRules);
+		const bool horizontalRulesEnabled = m_View->IsOptionEnabled(CtrlStyle::HorizontalRules);
+
 		// Redraw all cells for all rows which must be repainted and all columns
 		const Column* const expanderColumn = m_View->GetExpanderColumnOrFirstOne();
 		for (Row currentRow = rowStart; currentRow < rowEnd; ++currentRow)
@@ -1135,12 +1141,6 @@ namespace KxDataView2
 					continue;
 				}
 
-				Renderer& renderer = node->GetRenderer(*column);
-				renderer.BeginRendering(*node, *column, dc, &paintDC);
-				renderer.SetupCellAttributes(*node, *column, cellState);
-				renderer.CallDrawCellBackground(cellRect, cellState);
-				renderer.EndRendering();
-
 				// Calculate expander button rect and its indent
 				if (!IsList() && column == expanderColumn)
 				{
@@ -1162,15 +1162,34 @@ namespace KxDataView2
 				if (column == m_CurrentColumn && focusCellRect.IsEmpty())
 				{
 					focusCellRect = cellRect;
-					if (column == expanderColumn && column->IsDisplayedFirst())
+
+					const bool first = column->IsDisplayedFirst();
+					if (column == expanderColumn && first)
 					{
 						focusCellRect.x += expanderIndent;
 						focusCellRect.width -= expanderIndent;
+
+						if (!verticalRulesEnabled)
+						{
+							focusCellRect.width += 1;
+						}
+					}
+					if (!first)
+					{
+						focusCellRect.x -= 1;
+						if (column->IsDisplayedLast())
+						{
+							focusCellRect.width += 1;
+						}
+						else
+						{
+							focusCellRect.width += verticalRulesEnabled ? 1 : 2;
+						}
 					}
 				}
 
 				// Draw vertical rules
-				if (m_View->IsOptionEnabled(CtrlStyle::VerticalRules))
+				if (verticalRulesEnabled)
 				{
 					dc.SetPen(m_PenRuleV);
 					dc.SetBrush(*wxTRANSPARENT_BRUSH);
@@ -1202,7 +1221,7 @@ namespace KxDataView2
 			};
 
 			// Draw horizontal rules
-			if (m_View->IsOptionEnabled(CtrlStyle::HorizontalRules))
+			if (horizontalRulesEnabled)
 			{
 				dc.DrawLine(xCoordStart, cellInitialRect.GetY(), xCoordEnd + clientSize.GetWidth(), cellInitialRect.GetY());
 			}
@@ -1326,11 +1345,14 @@ namespace KxDataView2
 				}
 
 				Renderer& renderer = node->GetRenderer(*column);
-				renderer.BeginRendering(*node, *column, dc, &paintDC);
-				renderer.SetupCellValue(*node, *column);
-				renderer.SetupCellAttributes(*node, *column, cellState);
+				renderer.BeginCellRendering(*node, *column, dc, &paintDC);
+
+				renderer.SetupCellValue();
+				renderer.SetupCellAttributes(cellState);
+				renderer.CallDrawCellBackground(cellRect, cellState);
 				renderer.CallDrawCellContent(adjustedCellRect, GetCellStateForRow(currentRow));
-				renderer.EndRendering();
+
+				renderer.EndCellRendering();
 
 				// Move coordinates to next column
 				cellRect.x += cellRect.width;
@@ -1465,7 +1487,7 @@ namespace KxDataView2
 	}
 
 	// Items
-	size_t MainWindow::RecalculateItemCount() const
+	size_t MainWindow::RecalculateItemCount()
 	{
 		if (m_IsVirtualListModel)
 		{
@@ -1473,8 +1495,8 @@ namespace KxDataView2
 		}
 		else
 		{
-			m_TreeRoot->ChangeSubTreeCount(m_TreeRoot->GetChildrenCount());
-			return m_TreeRoot->GetSubTreeCount();
+			m_TreeRoot.ChangeSubTreeCount(m_TreeRoot.GetChildrenCount());
+			return m_TreeRoot.GetSubTreeCount();
 		}
 	}
 	void MainWindow::OnCellChanged(Node& node, Column* column)
@@ -1566,7 +1588,7 @@ namespace KxDataView2
 	{
 		if (!IsVirtualList())
 		{
-			m_TreeRoot->Resort();
+			m_TreeRoot.Resort();
 		}
 		UpdateDisplay();
 	}
@@ -1574,16 +1596,11 @@ namespace KxDataView2
 	void MainWindow::BuildTree()
 	{
 		DestroyTree();
-
-		if (!IsVirtualList())
-		{
-			m_TreeRoot.reset(Node::CreateRootNode(this));
-		}
 		InvalidateItemCount();
 	}
 	void MainWindow::DestroyTree()
 	{
-		m_TreeRoot.reset();
+		m_TreeRoot.ResetAll();
 		if (!IsVirtualList())
 		{
 			m_ItemsCount = 0;
@@ -1596,9 +1613,9 @@ namespace KxDataView2
 			delete m_Model;
 		}
 
-		m_OwnModel = own;
-		m_IsVirtualListModel = model && dynamic_cast<VirtualListModel*>(model) != nullptr;
 		m_Model = model;
+		m_OwnModel = own;
+		m_IsVirtualListModel = model && model->QueryInterface<VirtualListModel>() != nullptr;
 	}
 	bool MainWindow::IsRepresentingList() const
 	{
@@ -1608,7 +1625,7 @@ namespace KxDataView2
 		}
 		else
 		{
-			for (const Node* node: m_TreeRoot->GetChildren())
+			for (const Node* node: m_TreeRoot.GetChildren())
 			{
 				if (node->HasChildren())
 				{
@@ -1624,7 +1641,7 @@ namespace KxDataView2
 	{
 		wxWindow::OnInternalIdle();
 
-		if (!IsMouseInWindow() && m_HotTrackRow)
+		if (m_HotTrackRow && !IsMouseInWindow())
 		{
 			m_HotTrackRowEnabled = false;
 			RefreshRow(m_HotTrackRow);
@@ -1643,7 +1660,7 @@ namespace KxDataView2
 
 	MainWindow::MainWindow(View* parent, wxWindowID id)
 		:wxWindow(parent, id, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS|wxBORDER_NONE, GetClassInfo()->GetClassName()),
-		m_View(parent)
+		m_TreeRoot(this), m_View(parent)
 	{
 		// Setup drawing
 		SetBackgroundStyle(wxBG_STYLE_PAINT);
@@ -1657,9 +1674,6 @@ namespace KxDataView2
 		m_PenExpander = wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE);
 		m_UniformRowHeight = GetDefaultRowHeight();
 		m_Indent = wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y);
-
-		// Create root node
-		m_TreeRoot.reset(Node::CreateRootNode(this));
 
 		// Bind events
 		Bind(wxEVT_PAINT, &MainWindow::OnPaint, this);
@@ -1699,6 +1713,8 @@ namespace KxDataView2
 	}
 	MainWindow::~MainWindow()
 	{
+		m_TreeRoot.ResetAll();
+
 		if (m_OwnModel)
 		{
 			delete m_Model;
@@ -1709,7 +1725,7 @@ namespace KxDataView2
 	{
 		event.SetId(m_View->GetId());
 		event.SetEventObject(m_View);
-		event.SetItem(node);
+		event.SetNode(node);
 		event.SetColumn(column);
 	}
 	
@@ -1980,18 +1996,17 @@ namespace KxDataView2
 
 				Node* node = GetNodeByRow(row);
 				Renderer& renderer = node->GetRenderer(*column);
+				renderer.BeginCellRendering(*node, *column, dc, &memoryDC);
 
 				wxRect itemRect(x, 0, width, height);
 				itemRect.Deflate(PADDING_RIGHTLEFT, 0);
 
-				renderer.BeginRendering(*node, *column, dc, &memoryDC);
-				renderer.SetupCellValue(*node, *column);
-				renderer.SetupCellAttributes(*node, *column, cellState);
-
+				renderer.SetupCellValue();
+				renderer.SetupCellAttributes(cellState);
 				renderer.CallDrawCellBackground(itemRect, cellState);
 				renderer.CallDrawCellContent(itemRect, cellState);
 				
-				renderer.EndRendering();
+				renderer.EndCellRendering();
 				x += width;
 			}
 		}
@@ -2385,7 +2400,7 @@ namespace KxDataView2
 		if (m_ItemsCount == INVALID_COUNT)
 		{
 			MainWindow* self = const_cast<MainWindow*>(this);
-			self->UpdateItemCount(RecalculateItemCount());
+			self->UpdateItemCount(const_cast<MainWindow*>(this)->RecalculateItemCount());
 			self->UpdateDisplay();
 		}
 		return m_ItemsCount;
@@ -2690,7 +2705,7 @@ namespace KxDataView2
 		else if (row)
 		{
 			NodeOperation_RowToNode operation(row, -2);
-			operation.Walk(*m_TreeRoot);
+			operation.Walk(const_cast<RootNode&>(m_TreeRoot));
 			return operation.GetResult();
 		}
 		return nullptr;

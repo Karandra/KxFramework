@@ -114,7 +114,7 @@ namespace KxDataView2
 
 			// This is the tree structure of the model.
 			// Make 'm_ItemsCount' = -1 will cause the class recalculate the real displaying number of rows.
-			std::unique_ptr<Node> m_TreeRoot;
+			RootNode m_TreeRoot;
 			size_t m_ItemsCount = INVALID_COUNT;
 
 			// This is the tree node under the cursor
@@ -174,7 +174,7 @@ namespace KxDataView2
 				m_ItemsCount = count;
 				m_SelectionStore.SetItemCount(count);
 			}
-			size_t RecalculateItemCount() const;
+			size_t RecalculateItemCount();
 
 			void OnCellChanged(Node& node, Column* column);
 			void OnNodeAdded(Node& node);
@@ -220,9 +220,13 @@ namespace KxDataView2
 				DoAssignModel(model, true);
 			}
 
-			Node& GetRootNode() const
+			const Node& GetRootNode() const
 			{
-				return *m_TreeRoot;
+				return m_TreeRoot;
+			}
+			Node& GetRootNode()
+			{
+				return m_TreeRoot;
 			}
 			void ItemsChanged()
 			{

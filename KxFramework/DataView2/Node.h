@@ -13,31 +13,30 @@ namespace KxDataView2
 	class KX_API MainWindow;
 	class KX_API Renderer;
 	class KX_API Editor;
+	class KX_API Model;
 	class KX_API View;
 	class KX_API Node;
 	class CellState;
 
 	class KX_API NodeOperation_RowToNode;
-	class KX_API NodeOperation_NodeToRow;
 }
 
 namespace KxDataView2
 {
+	class KX_API RootNode;
+
 	class KX_API Node: public KxRTTI::IExtendInterface<Node, INodeModel>
 	{
+		friend class RootNode;
 		friend class MainWindow;
 		friend class NodeOperation_RowToNode;
-		friend class NodeOperation_NodeToRow;
 
 		public:
 			using Vector = std::vector<Node*>;
 
 		private:
-			static Node* CreateRootNode(MainWindow* window);
-
-		private:
 			Vector m_Children;
-			MainWindow* m_MainWindow = nullptr;
+			RootNode* m_RootNode = nullptr;
 			Node* m_ParentNode = nullptr;
 
 			// Total count of expanded (i.e. visible with the help of some scrolling) items
@@ -46,7 +45,6 @@ namespace KxDataView2
 			intptr_t m_SubTreeCount = 0;
 
 			Row m_IndexWithinParent;
-
 			SortOrder m_SortOrder = SortOrder::UseNone();
 			bool m_IsExpanded = false;
 
@@ -96,11 +94,12 @@ namespace KxDataView2
 				SetNodeExpanded(!IsNodeExpanded());
 			}
 
-		public:
-			Node(MainWindow* window, Node* parent)
-				:m_MainWindow(window), m_ParentNode(parent)
+			void ResetAll()
 			{
+				*this = Node();
 			}
+
+		public:
 			Node() = default;
 			virtual ~Node();
 
@@ -116,6 +115,10 @@ namespace KxDataView2
 			Node* GetParent() const
 			{
 				return m_ParentNode;
+			}
+			RootNode* GetRootNode() const
+			{
+				return m_RootNode;
 			}
 
 			const Vector& GetChildren() const
@@ -142,6 +145,7 @@ namespace KxDataView2
 			}
 			int GetIndentLevel() const;
 
+			void DetachAllChildren();
 			Node* DetachChild(size_t index);
 			Node* DetachChild(Node& node);
 			Node* Detach();
@@ -183,6 +187,7 @@ namespace KxDataView2
 		public:
 			MainWindow* GetMainWindow() const;
 			View* GetView() const;
+			Model* GetModel() const;
 			bool IsRenderable(const Column& column) const;
 
 			bool IsExpanded() const;
@@ -213,6 +218,40 @@ namespace KxDataView2
 			wxRect GetCellRect(const Column* column = nullptr) const;
 			wxPoint GetDropdownMenuPosition(const Column* column = nullptr) const;
 		};
+}
+
+namespace KxDataView2
+{
+	class KX_API RootNode: public KxRTTI::IExtendInterface<RootNode, Node>
+	{
+		friend class MainWindow;
+
+		private:
+			MainWindow* const m_MainWindow = nullptr;
+
+		private:
+			void Init()
+			{
+				m_RootNode = this;
+				SetNodeExpanded(true);
+			}
+			void ResetAll();
+
+		public:
+			RootNode(MainWindow* mainWindow)
+				:m_MainWindow(mainWindow)
+			{
+				Init();
+			}
+
+		public:
+			MainWindow* GetMainWindow() const
+			{
+				return m_MainWindow;
+			}
+			View* GetView() const;
+			Model* GetModel() const;
+	};
 }
 
 namespace KxDataView2
@@ -266,37 +305,6 @@ namespace KxDataView2
 			Node* GetResult() const
 			{
 				return m_ResultNode;
-			}
-	};
-}
-
-namespace KxDataView2
-{
-	// As with 'NodeOperation_RowToNode' above, we initialize 'm_CurrentRow' to -1 because the first node
-	// passed to our operator() is the root node which is not visible on screen and so we
-	// should return 0 for its first child node and not for the root itself.
-	class KX_API NodeOperation_NodeToRow: public NodeOperation
-	{
-		public:
-			using TNodeIterator = Node::Vector::reverse_iterator;
-
-		private:
-			const Node& m_Node;
-			TNodeIterator m_Iterator;
-			intptr_t m_CurrentRow = -1; // The row corresponding to the last node seen in our operator().
-
-		public:
-			NodeOperation_NodeToRow(const Node& node, TNodeIterator iterator)
-				:m_Node(node), m_Iterator(iterator)
-			{
-			}
-
-		public:
-			Result operator()(Node& node) override;
-
-			Row GetResult() const
-			{
-				return m_CurrentRow >= 0 ? Row(m_CurrentRow) : Row();
 			}
 	};
 }
