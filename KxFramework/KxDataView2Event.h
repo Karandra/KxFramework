@@ -17,7 +17,7 @@ namespace KxDataView2
 	class KX_API Event: public wxNotifyEvent
 	{
 		private:
-			Node* m_Item = nullptr;
+			Node* m_Node = nullptr;
 			Column* m_Column = nullptr;
 			wxPoint m_Position = wxDefaultPosition;
 
@@ -35,13 +35,13 @@ namespace KxDataView2
 			}
 
 		public:
-			Node* GetItem() const
+			Node* GetNode() const
 			{
-				return m_Item;
+				return m_Node;
 			}
-			void SetItem(Node* item)
+			void SetNode(Node* item)
 			{
-				m_Item = item;
+				m_Node = item;
 			}
 
 			Column* GetColumn() const
