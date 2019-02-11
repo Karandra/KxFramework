@@ -6,7 +6,7 @@ namespace KxDataView2
 {
 	View* Model::GetView() const
 	{
-		return m_MainWindow->GetView();
+		return m_MainWindow ? m_MainWindow->GetView() : nullptr;
 	}
 }
 

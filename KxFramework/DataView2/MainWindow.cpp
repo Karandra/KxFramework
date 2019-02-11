@@ -1608,12 +1608,20 @@ namespace KxDataView2
 	}
 	void MainWindow::DoAssignModel(Model* model, bool own)
 	{
+		// Forget and (optionally) delete old model
+		if (m_Model)
+		{
+			m_Model->SetMainWindow(nullptr);
+		}
 		if (m_OwnModel)
 		{
 			delete m_Model;
 		}
 
+		// Assign new model and set main window
 		m_Model = model;
+		m_Model->SetMainWindow(this);
+
 		m_OwnModel = own;
 		m_IsVirtualListModel = model && model->QueryInterface<VirtualListModel>() != nullptr;
 	}
@@ -1718,6 +1726,10 @@ namespace KxDataView2
 		if (m_OwnModel)
 		{
 			delete m_Model;
+		}
+		else
+		{
+			m_Model->SetMainWindow(nullptr);
 		}
 	}
 
