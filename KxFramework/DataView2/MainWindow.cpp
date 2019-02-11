@@ -16,6 +16,19 @@
 #include <wx/generic/private/widthcalc.h>
 #include <wx/minifram.h>
 
+namespace
+{
+	enum: int
+	{
+		// Cell padding on the left/right
+		PADDING_RIGHTLEFT = 3,
+
+		// Expander space margin
+		EXPANDER_MARGIN = 2,
+		EXPANDER_OFFSET = 2,
+	};
+}
+
 namespace KxDataView2
 {
 	class MaxWidthCalculator: public wxMaxWidthCalculatorBase
@@ -983,9 +996,11 @@ namespace KxDataView2
 		paintDC.SetBrush(m_View->GetBackgroundColour());
 		paintDC.DrawRectangle(clientSize);
 
-		if (IsEmpty())
+		bool isControlEmpty = false;
+		if (IsEmpty() && !m_BackgroundBitmap.IsOk())
 		{
-			// No items to draw.
+			// No items to draw
+			isControlEmpty = true;
 			return;
 		}
 
@@ -1013,6 +1028,10 @@ namespace KxDataView2
 			{
 				dc.DrawBitmap(m_BackgroundBitmap, pos);
 			}
+		}
+		if (isControlEmpty)
+		{
+			return;
 		}
 
 		wxRect updateRect = GetUpdateRegion().GetBox();
@@ -1119,19 +1138,22 @@ namespace KxDataView2
 		const Column* const expanderColumn = m_View->GetExpanderColumnOrFirstOne();
 		for (Row currentRow = rowStart; currentRow < rowEnd; ++currentRow)
 		{
-			const wxRect cellInitialRect(xCoordStart, GetRowStart(currentRow), 0, GetRowHeight(currentRow));
-			wxRect cellRect = cellInitialRect;
-			const CellState cellState = GetCellStateForRow(currentRow);
-
-			int expanderIndent = 0;
-			wxRect expanderRect;
-			wxRect focusCellRect;
-
 			const Node* const node = GetNodeByRow(currentRow);
 			if (node == nullptr)
 			{
 				continue;
 			}
+
+			const wxRect cellInitialRect(xCoordStart, GetRowStart(currentRow), 0, GetRowHeight(currentRow));
+			wxRect cellRect = cellInitialRect;
+			const CellState cellState = GetCellStateForRow(currentRow);
+
+			const bool isCategoryRow = node->IsCategoryNode();
+			int categoryRowOffset = -1;
+
+			int expanderIndent = 0;
+			wxRect expanderRect;
+			wxRect focusCellRect;
 
 			for (size_t currentColumnIndex = coulumnIndexStart; currentColumnIndex < coulmnIndexEnd; currentColumnIndex++)
 			{
@@ -1145,16 +1167,28 @@ namespace KxDataView2
 				if (!IsList() && column == expanderColumn)
 				{
 					// Calculate the indent first
-					const int offset = m_Indent * node->GetIndentLevel();
-					expanderIndent = std::min(offset + m_UniformRowHeight, expanderColumn->GetWidth());
+					const int indentOffset = m_Indent * node->GetIndentLevel();
+					expanderIndent = std::min(indentOffset + m_UniformRowHeight, expanderColumn->GetWidth());
 
 					if (node->HasChildren())
 					{
-						// We reserve 'm_UniformRowHeight' of horizontal space for the expander but leave EXPANDER_MARGIN around the expander itself
-						expanderRect.SetX(cellRect.x + offset + EXPANDER_MARGIN);
-						expanderRect.SetY(cellRect.y + (cellRect.height - m_UniformRowHeight) / 2 + EXPANDER_MARGIN - EXPANDER_OFFSET);
-						expanderRect.SetWidth(m_UniformRowHeight);
-						expanderRect.SetHeight(m_UniformRowHeight);
+						auto ClacExpanderRect = [&expanderRect, &cellRect, indentOffset](const wxSize& size, int margin = 0, int offset = 0)
+						{
+							// We reserve 'm_UniformRowHeight' of horizontal space for the expander but leave EXPANDER_MARGIN around the expander itself
+							expanderRect.SetX(cellRect.x + indentOffset + margin);
+							expanderRect.SetY(cellRect.y + (cellRect.height - size.GetHeight()) / 2 + margin - offset);
+							expanderRect.SetWidth(size.GetWidth());
+							expanderRect.SetHeight(size.GetHeight());
+						};
+
+						if (isCategoryRow)
+						{
+							ClacExpanderRect(wxRendererNative::Get().GetCollapseButtonSize(this, paintDC), EXPANDER_MARGIN);
+						}
+						else
+						{
+							ClacExpanderRect(wxSize(m_UniformRowHeight, m_UniformRowHeight), EXPANDER_MARGIN, EXPANDER_OFFSET);
+						}
 					}
 				}
 
@@ -1328,13 +1362,20 @@ namespace KxDataView2
 						flags |= wxCONTROL_EXPANDED;
 					}
 
-					if (!m_View->m_UsingSystemTheme || !KxUtility::DrawThemeBackground(this, wxS("TREEVIEW"), paintDC, flags & wxCONTROL_CURRENT ? TVP_HOTGLYPH : TVP_GLYPH, flags & wxCONTROL_EXPANDED ? GLPS_OPENED : GLPS_CLOSED, expanderRect))
+					if (isCategoryRow)
 					{
-						wxRendererNative::Get().DrawTreeItemButton(this, paintDC, expanderRect, flags);
+						wxRendererNative::Get().DrawCollapseButton(this, paintDC, expanderRect, flags);
+					}
+					else
+					{
+						if (!m_View->m_UsingSystemTheme || !KxUtility::DrawThemeBackground(this, wxS("TREEVIEW"), paintDC, flags & wxCONTROL_CURRENT ? TVP_HOTGLYPH : TVP_GLYPH, flags & wxCONTROL_EXPANDED ? GLPS_OPENED : GLPS_CLOSED, expanderRect))
+						{
+							wxRendererNative::Get().DrawTreeItemButton(this, paintDC, expanderRect, flags);
+						}
 					}
 				}
 
-				// Draw the cell
+				// Adjust cell rectangle
 				wxRect adjustedCellRect = cellRect;
 				adjustedCellRect.Deflate(PADDING_RIGHTLEFT, 0);
 
@@ -1344,18 +1385,45 @@ namespace KxDataView2
 					adjustedCellRect.width -= expanderIndent;
 				}
 
-				Renderer& renderer = node->GetRenderer(*column);
-				renderer.BeginCellRendering(*node, *column, dc, &paintDC);
 
-				renderer.SetupCellValue();
-				renderer.SetupCellAttributes(cellState);
-				renderer.CallDrawCellBackground(cellRect, cellState);
-				renderer.CallDrawCellContent(adjustedCellRect, GetCellStateForRow(currentRow));
+				// Draw the cell
+				if (!isCategoryRow || currentColumnIndex == 0)
+				{
+					Renderer& renderer = node->GetRenderer(*column);
+					renderer.BeginCellRendering(*node, *column, dc, &paintDC);
 
-				renderer.EndCellRendering();
+					renderer.SetupCellValue();
+					renderer.SetupCellAttributes(cellState);
+					renderer.CallDrawCellBackground(cellRect, cellState);
+					renderer.CallDrawCellContent(adjustedCellRect, GetCellStateForRow(currentRow));
+
+					// Measure category line offset
+					if (isCategoryRow && categoryRowOffset < 0)
+					{
+						categoryRowOffset = renderer.GetCellSize().GetWidth() + GetCharWidth();
+						if (column == expanderColumn)
+						{
+							categoryRowOffset += expanderIndent;
+						}
+					}
+
+					renderer.EndCellRendering();
+				}
 
 				// Move coordinates to next column
 				cellRect.x += cellRect.width;
+			}
+
+			if (isCategoryRow)
+			{
+				if (categoryRowOffset < 0)
+				{
+					categoryRowOffset = 0;
+				}
+
+				wxPoint pos1(cellInitialRect.GetX() + categoryRowOffset, cellRect.GetY() + cellRect.GetHeight() / 2);
+				wxPoint pos2(cellInitialRect.GetX() + xCoordEnd - xCoordStart - categoryRowOffset, pos1.y);
+				dc.DrawLine(pos1, pos2);
 			}
 		}
 	}

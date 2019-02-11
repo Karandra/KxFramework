@@ -50,6 +50,10 @@ namespace KxDataView2
 			{
 				return false;
 			}
+			virtual bool IsCategoryNode() const
+			{
+				return false;
+			}
 			virtual int GetRowHeight() const
 			{
 				return 0;

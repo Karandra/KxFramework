@@ -42,15 +42,6 @@ namespace KxDataView2
 				INVALID_COLUMN = (size_t)-1,
 				INVALID_COUNT = (size_t)-1,
 			};
-			enum: int
-			{
-				// Cell padding on the left/right
-				PADDING_RIGHTLEFT = 3,
-
-				// Expander space margin
-				EXPANDER_MARGIN = 4,
-				EXPANDER_OFFSET = 4,
-			};
 			enum class InteractibleCell
 			{
 				Editor,
