@@ -21,7 +21,7 @@ namespace KxDataView2
 	{
 		return static_cast<CtrlStyle>((uint32_t)v1 | (uint32_t)v2);
 	}
-	constexpr inline bool operator&(CtrlStyle v1, CtrlStyle v2)
+	constexpr inline uint32_t operator&(CtrlStyle v1, CtrlStyle v2)
 	{
 		return (uint32_t)v1 & (uint32_t)v2;
 	}
@@ -39,7 +39,7 @@ namespace KxDataView2
 	{
 		return static_cast<ColumnStyle>((uint32_t)v1 | (uint32_t)v2);
 	}
-	constexpr inline bool operator&(ColumnStyle v1, ColumnStyle v2)
+	constexpr inline uint32_t operator&(ColumnStyle v1, ColumnStyle v2)
 	{
 		return (uint32_t)v1 & (uint32_t)v2;
 	}
