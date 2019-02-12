@@ -39,9 +39,22 @@ class KX_API KxFormatBase
 
 		template<class T> static wxString FormatIntWithBase(T value, int base = 10, bool upper = false)
 		{
+			static_assert(std::is_integral_v<T>);
+
 			static const wxChar digitsL[] = wxS("0123456789abcdefghijklmnopqrstuvwxyz");
 			static const wxChar digitsU[] = wxS("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 			const wxChar* digits = upper ? digitsU : digitsL;
+
+			// Make positive
+			bool isNegative = false;
+			if constexpr(std::is_signed<T>::value)
+			{
+				if (value < 0)
+				{
+					isNegative = true;
+					value = -value;
+				}
+			}
 
 			wxString result;
 			if (base >= 2 && base <= 36)
@@ -53,12 +66,9 @@ class KX_API KxFormatBase
 				}
 				while (value);
 
-				if constexpr(std::is_signed<T>::value)
+				if (isNegative)
 				{
-					if (value < 0)
-					{
-						result = wxS('-') + result;
-					}
+					result = wxS('-') + result;
 				}
 			}
 			return result;
