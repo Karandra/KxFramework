@@ -8,11 +8,11 @@
 
 namespace KxDataView2
 {
-	wxIMPLEMENT_ABSTRACT_CLASS(View, wxControl)
+	wxIMPLEMENT_ABSTRACT_CLASS(View, wxWindow)
 
 	WXLRESULT View::MSWWindowProc(WXUINT msg, WXWPARAM wParam, WXLPARAM lParam)
 	{
-		WXLRESULT rc = wxControl::MSWWindowProc(msg, wParam, lParam);
+		WXLRESULT rc = ViewBase::MSWWindowProc(msg, wParam, lParam);
 
 		// We need to process arrows ourselves for scrolling
 		if (msg == WM_GETDLGCODE)
@@ -57,7 +57,7 @@ namespace KxDataView2
 
 	void View::DoEnable(bool value)
 	{
-		wxControl::DoEnable(value);
+		ViewBase::DoEnable(value);
 		Refresh();
 	}
 	void View::DoInsertColumn(Column* column, size_t index)
@@ -113,7 +113,7 @@ namespace KxDataView2
 	}
 	void View::OnInternalIdle()
 	{
-		wxControl::OnInternalIdle();
+		ViewBase::OnInternalIdle();
 
 		if (m_IsColumnsDirty)
 		{
@@ -177,11 +177,11 @@ namespace KxDataView2
 		return newSize;
 	}
 
-	bool View::Create(wxWindow* parent, wxWindowID id, CtrlStyle style)
+	bool View::Create(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
 	{
-		if (wxControl::Create(parent, id, wxDefaultPosition, wxDefaultSize, static_cast<long>(style)|wxScrolledWindowStyle, wxDefaultValidator, GetClassInfo()->GetClassName()))
+		if (ViewBase::Create(parent, id, pos, size, style|wxScrolledWindowStyle, GetClassInfo()->GetClassName()))
 		{
-			m_Styles = style;
+			m_Styles = static_cast<CtrlStyle>(style);
 			m_ClientArea = new MainWindow(this, wxID_NONE);
 
 			// We use the cursor keys for moving the selection, not scrolling, so call
@@ -697,7 +697,7 @@ namespace KxDataView2
 	}
 	bool View::SetFont(const wxFont& font)
 	{
-		if (!wxControl::SetFont(font))
+		if (!ViewBase::SetFont(font))
 		{
 			return false;
 		}
@@ -788,13 +788,13 @@ namespace KxDataView2
 
 	bool View::SetForegroundColour(const wxColour& color)
 	{
-		bool b1 = wxControl::SetForegroundColour(color);
+		bool b1 = ViewBase::SetForegroundColour(color);
 		bool b2 = m_ClientArea ? m_ClientArea->SetForegroundColour(color) : true;
 		return b1 && b2;
 	}
 	bool View::SetBackgroundColour(const wxColour& color)
 	{
-		bool b1 = wxControl::SetBackgroundColour(color);
+		bool b1 = ViewBase::SetBackgroundColour(color);
 		bool b2 = m_ClientArea ? m_ClientArea->SetBackgroundColour(color) : true;
 		return b1 && b2;
 	}

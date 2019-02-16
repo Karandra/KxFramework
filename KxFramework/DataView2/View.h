@@ -17,7 +17,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API View: public wxSystemThemedControl<wxControl>,	public wxScrollHelper
+	class KX_API View: public wxSystemThemedControl<wxScrolled<wxWindow>>
 	{
 		friend class HeaderCtrl;
 		friend class MainWindow;
@@ -32,6 +32,9 @@ namespace KxDataView2
 				INVALID_COLUMN = (size_t)-1,
 				INVALID_COUNT = (size_t)-1,
 			};
+
+		protected:
+			using ViewBase = wxSystemThemedControl<wxScrolled<wxWindow>>;
 
 		private:
 			KxWithOptions<CtrlStyle, CtrlStyle::DefaultStyle> m_Styles;
@@ -145,17 +148,24 @@ namespace KxDataView2
 			void DoEnableSystemTheme(bool enable, wxWindow* window) override;
 
 		public:
-			View()
-				:wxScrollHelper(this)
-			{
-			}
+			View() = default;
 			View(wxWindow* parent, wxWindowID id, CtrlStyle style = CtrlStyle::DefaultStyle)
-				:View()
 			{
 				Create(parent, id, style);
 			}
-			bool Create(wxWindow* parent, wxWindowID id, CtrlStyle style = CtrlStyle::DefaultStyle);
 			virtual ~View();
+			
+			bool Create(wxWindow* parent,
+						wxWindowID id,
+						const wxPoint& pos = wxDefaultPosition,
+						const wxSize& size = wxDefaultSize,
+						long style = static_cast<long>(CtrlStyle::DefaultStyle),
+						const wxString& name = wxEmptyString
+			);
+			bool Create(wxWindow* parent, wxWindowID id, CtrlStyle style = CtrlStyle::DefaultStyle)
+			{
+				return Create(parent, id, wxDefaultPosition, wxDefaultSize, static_cast<int>(style));
+			}
 
 		public:
 			// Styles
@@ -166,12 +176,12 @@ namespace KxDataView2
 			void SetOptionEnabled(CtrlStyle option, bool enable = true)
 			{
 				m_Styles.SetOptionEnabled(option, enable);
-				wxControl::SetWindowStyleFlag(wxControl::GetWindowStyleFlag()|static_cast<long>(option));
+				ViewBase::SetWindowStyleFlag(ViewBase::GetWindowStyleFlag()|static_cast<long>(option));
 			}
 			void SetWindowStyleFlag(long style) override
 			{
 				m_Styles.SetOptionsValue(style);
-				wxControl::SetWindowStyleFlag(style);
+				ViewBase::SetWindowStyleFlag(style);
 			}
 
 			// Model
@@ -373,8 +383,5 @@ namespace KxDataView2
 
 		public:
 			wxDECLARE_DYNAMIC_CLASS_NO_COPY(View);
-
-		private:
-			WX_FORWARD_TO_SCROLL_HELPER();
 	};
 }

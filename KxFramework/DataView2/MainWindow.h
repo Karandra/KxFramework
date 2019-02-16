@@ -115,7 +115,7 @@ namespace KxDataView2
 			Editor* m_CurrentEditor = nullptr;
 
 		protected:
-			/* Events */
+			// Events
 			void OnChar(wxKeyEvent& event);
 			void OnCharHook(wxKeyEvent& event);
 			void OnVerticalNavigation(const wxKeyEvent& event, int delta);
@@ -133,7 +133,7 @@ namespace KxDataView2
 			bool SendEditingStartedEvent(Node& item, Editor* editor);
 			bool SendEditingDoneEvent(Node& item, Editor* editor, bool canceled, const wxAny& value);
 
-			/* Drawing */
+			// Drawing
 			void OnPaint(wxPaintEvent& event);
 			CellState GetCellStateForRow(Row row) const;
 
@@ -149,13 +149,13 @@ namespace KxDataView2
 			void UpdateDisplay();
 			void RecalculateDisplay();
 
-			/* Columns */
+			// Columns
 			void OnColumnCountChanged();
 			bool IsCellInteractible(const Node& node, const Column& column, InteractibleCell action) const;
 			Column* FindInteractibleColumn(const Node& node, InteractibleCell action);
 			int CalcBestColumnWidth(Column& column) const;
 
-			/* Items */
+			// Items
 			void InvalidateItemCount()
 			{
 				m_ItemsCount = INVALID_COUNT;
