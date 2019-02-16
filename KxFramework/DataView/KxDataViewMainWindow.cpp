@@ -453,18 +453,43 @@ void KxDataViewMainWindow::OnMouse(wxMouseEvent& event)
 		return;
 	}
 
+	auto IsMouseInsideWindow = [this, &event]()
+	{
+		const int x = event.GetX();
+		const int y = event.GetY();
+		wxSize size = m_Owner->GetClientSize();
+
+		return x >= 0 && y >= 0 && x <= size.GetWidth() && y <= size.GetHeight();
+	};
+	const bool isMouseInsideWindow = IsMouseInsideWindow();
+
 	if (eventType == wxEVT_MOUSEWHEEL)
 	{
-		#if 0
-		if (event.GetWheelAxis() == wxMOUSE_WHEEL_VERTICAL)
+		if (isMouseInsideWindow)
 		{
-			int rateX = 0;
-			int rateY = 0;
-			m_Owner->GetScrollPixelsPerUnit(&rateX, &rateY);
+			// Adjust Y mouse coordinate when vertical scrolling happened.
+			// If we don't do this, row a few lines above or below will be tracked
+			// and not the one, that should be tracked.
+			if (event.GetWheelAxis() == wxMOUSE_WHEEL_VERTICAL)
+			{
+				const int scrollPos = m_Owner->GetScrollPos(wxVERTICAL);
+				if (scrollPos > 0 && scrollPos + m_Owner->GetScrollPageSize(wxVERTICAL) < m_Owner->GetScrollLines(wxVERTICAL))
+				{
+					int rateX = 0;
+					int rateY = 0;
+					m_Owner->GetScrollPixelsPerUnit(&rateX, &rateY);
 
-			event.SetY(event.GetY() + event.GetLinesPerAction() * rateY);
+					// Invert modifier if we scrolling up
+					const bool isScrollDown = event.GetWheelRotation() < 0;
+					if (!isScrollDown)
+					{
+						rateY = -rateY;
+					}
+
+					event.SetY(event.GetY() + event.GetLinesPerAction() * rateY);
+				}
+			}
 		}
-		#endif
 		event.Skip();
 	}
 
@@ -505,6 +530,7 @@ void KxDataViewMainWindow::OnMouse(wxMouseEvent& event)
 	const KxDataViewItem item = GetItemByRow(current);
 
 	// Hot track
+	if (isMouseInsideWindow)
 	{
 		bool rowChnaged = m_HotTrackRow != current;
 		bool columnChanged = m_HotTrackColumn != col;
