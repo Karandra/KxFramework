@@ -273,7 +273,7 @@ namespace KxDataView2
 		}
 		return nullptr;
 	}
-	Column* View::GetColumnByID(int columnID) const
+	Column* View::GetColumnByID(ColumnID columnID) const
 	{
 		for (const auto& column: m_Columns)
 		{

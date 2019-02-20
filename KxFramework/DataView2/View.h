@@ -226,7 +226,7 @@ namespace KxDataView2
 			}
 
 			Column* GetColumn(size_t position) const;
-			Column* GetColumnByID(int id) const;
+			Column* GetColumnByID(ColumnID id) const;
 			Column* GetColumnDisplayedAt(size_t displayIndex) const;
 
 			bool DeleteColumn(Column& column);
