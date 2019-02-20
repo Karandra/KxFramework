@@ -17,11 +17,11 @@ namespace KxDataView2
 			
 			template<class T> constexpr static bool CheckType()
 			{
-				return std::is_integral_v<T> || std::is_enum_v<T>;
+				return std::is_integral_v<T> || std::is_enum_v<T> || std::is_same_v<T, ColumnID>;
 			}
 			template<class T> static void AssertType()
 			{
-				static_assert(CheckType<T>(), "only integer types are allowed");
+				static_assert(CheckType<T>(), "only integer types or ColumnID are allowed");
 			}
 
 		private:
