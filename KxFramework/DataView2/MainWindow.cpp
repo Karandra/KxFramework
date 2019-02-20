@@ -629,7 +629,7 @@ namespace KxDataView2
 		#endif
 
 		// Check if we clicked outside the item area.
-		if (currentRow >= GetRowCount() || !currentColumn)
+		if (currentRow >= GetRowCount() || !currentNode || !currentColumn)
 		{
 			// Follow Windows convention here - clicking either left or right (but not middle) button clears the existing selection.
 			if (m_View && (event.LeftDown() || event.RightDown()))
