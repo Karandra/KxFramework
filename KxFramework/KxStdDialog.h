@@ -289,6 +289,10 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 		{
 			return GetDialogMainCtrl()->GetContainingSizer();
 		}
+		wxSizer* GetContentWindowMainSizer()
+		{
+			return m_ContentSizer;
+		}
 		virtual wxWindow* GetDialogMainCtrl() const = 0;
 		virtual wxWindow* GetDialogFocusCtrl() const
 		{
