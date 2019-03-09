@@ -29,6 +29,10 @@ class KX_API KxFileItem
 		KxFileItem() = default;
 		KxFileItem(const wxString& fullPath);
 		KxFileItem(const wxString& source, const wxString& fileName);
+		KxFileItem(KxFileItem&& other)
+		{
+			*this = std::move(other);
+		}
 
 	private:
 		KxFileItem(const KxFileFinder* finder, const WIN32_FIND_DATAW& fileInfo);
@@ -178,5 +182,13 @@ class KX_API KxFileItem
 		void SetFullPath(const wxString& fullPath)
 		{
 			m_Source = fullPath.BeforeLast(wxS('\\'), &m_Name);
+		}
+
+	public:
+		KxFileItem& operator=(const KxFileItem&) = default;
+		KxFileItem& operator=(KxFileItem&& other)
+		{
+			*this = other;
+			other.MakeNull();
 		}
 };
