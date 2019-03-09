@@ -4,7 +4,7 @@
 #include <KxFramework/KxUtility.h>
 class KX_API KxFileFinder;
 
-class KX_API KxFileItem
+class KX_API KxFileItem final
 {
 	friend class KxFileFinder;
 
