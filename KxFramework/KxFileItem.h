@@ -29,6 +29,8 @@ class KX_API KxFileItem final
 		KxFileItem() = default;
 		KxFileItem(const wxString& fullPath);
 		KxFileItem(const wxString& source, const wxString& fileName);
+		
+		KxFileItem(const KxFileItem&) = default;
 		KxFileItem(KxFileItem&& other)
 		{
 			*this = std::move(other);
@@ -190,5 +192,7 @@ class KX_API KxFileItem final
 		{
 			*this = other;
 			other.MakeNull();
+
+			return *this;
 		}
 };
