@@ -78,7 +78,7 @@ KxFileItem::KxFileItem(const wxString& source, const wxString& fileName)
 {
 	UpdateInfo();
 }
-KxFileItem::KxFileItem(KxFileFinder* finder, const WIN32_FIND_DATAW& fileInfo)
+KxFileItem::KxFileItem(const KxFileFinder* finder, const WIN32_FIND_DATAW& fileInfo)
 	:m_Source(finder->GetSource())
 {
 	Set(fileInfo);

@@ -9,14 +9,14 @@ class KX_API KxFileItem
 	friend class KxFileFinder;
 
 	private:
-		wxString m_Source;
 		wxString m_Name;
-		uint32_t m_Attributes = INVALID_FILE_ATTRIBUTES;
-		uint32_t m_ReparsePointAttributes = 0;
+		wxString m_Source;
 		wxDateTime m_CreationTime;
 		wxDateTime m_LastAccessTime;
 		wxDateTime m_ModificationTime;
 		int64_t m_FileSize = -1;
+		uint32_t m_Attributes = INVALID_FILE_ATTRIBUTES;
+		uint32_t m_ReparsePointAttributes = 0;
 		intptr_t m_ExtraData = -1;
 
 	private:
@@ -31,7 +31,7 @@ class KX_API KxFileItem
 		KxFileItem(const wxString& source, const wxString& fileName);
 
 	private:
-		KxFileItem(KxFileFinder* finder, const WIN32_FIND_DATAW& fileInfo);
+		KxFileItem(const KxFileFinder* finder, const WIN32_FIND_DATAW& fileInfo);
 
 	public:
 		bool IsOK() const
@@ -150,7 +150,7 @@ class KX_API KxFileItem
 			m_FileSize = size;
 		}
 
-		const wxString& GetSource() const
+		wxString GetSource() const
 		{
 			return m_Source;
 		}
@@ -159,7 +159,7 @@ class KX_API KxFileItem
 			m_Source = source;
 		}
 		
-		const wxString& GetName() const
+		wxString GetName() const
 		{
 			return m_Name;
 		}
