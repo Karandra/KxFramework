@@ -913,6 +913,15 @@
     <ClInclude Include="KxFramework\KxWebSocket.h">
       <Filter>Header Files\Network</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxGCAntialiasModeChanger.h">
+      <Filter>Header Files\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxGCInterpolationQualityChanger.h">
+      <Filter>Header Files\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxGCCompositionModeChanger.h">
+      <Filter>Header Files\Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />

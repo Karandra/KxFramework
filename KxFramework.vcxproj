@@ -329,6 +329,9 @@
     <ClInclude Include="KxFramework\KxFormatTraits.h" />
     <ClInclude Include="KxFramework\KxFrame.h" />
     <ClInclude Include="KxFramework\KxFramework.h" />
+    <ClInclude Include="KxFramework\KxGCAntialiasModeChanger.h" />
+    <ClInclude Include="KxFramework\KxGCCompositionModeChanger.h" />
+    <ClInclude Include="KxFramework\KxGCInterpolationQualityChanger.h" />
     <ClInclude Include="KxFramework\KxHTTPStatusCode.h" />
     <ClInclude Include="KxFramework\KxIncludes.h" />
     <ClInclude Include="KxFramework\KxFunctional.h" />
