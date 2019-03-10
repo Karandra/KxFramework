@@ -4,18 +4,18 @@
 
 void KxFileItem::MakeNull(bool attribuesOnly)
 {
-	if (attribuesOnly)
+	m_CreationTime = wxDefaultDateTime;
+	m_LastAccessTime = wxDefaultDateTime;
+	m_ModificationTime = wxDefaultDateTime;
+	m_FileSize = -1;
+	m_Attributes = INVALID_FILE_ATTRIBUTES;
+	m_ReparsePointAttributes = 0;
+	m_ExtraData = -1;
+
+	if (!attribuesOnly)
 	{
-		m_Attributes = INVALID_FILE_ATTRIBUTES;
-		m_ReparsePointAttributes = 0;
-		m_CreationTime = wxDefaultDateTime;
-		m_LastAccessTime = wxDefaultDateTime;
-		m_ModificationTime = wxDefaultDateTime;
-		m_FileSize = -1;
-	}
-	else
-	{
-		*this = KxFileItem();
+		m_Name.clear();
+		m_Source.clear();
 	}
 }
 void KxFileItem::Set(const WIN32_FIND_DATAW& fileInfo)
