@@ -1252,10 +1252,10 @@ namespace KxDataView2
 
 					// Draw vertical rules in column's last pixel, so they will align with header control dividers
 					const int x = cellRect.x - 1;
-					int yAdd = 1;
+					int yAdd = 0;
 					if (currentRow + 1 == rowEnd)
 					{
-						yAdd += clientSize.GetHeight();
+						yAdd = clientSize.GetHeight();
 					}
 					dc.DrawLine(x, cellRect.GetTop(), x, cellRect.GetBottom() + yAdd);
 				}
