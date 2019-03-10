@@ -1015,24 +1015,17 @@ namespace KxDataView2
 	// Drawing
 	void MainWindow::OnPaint(wxPaintEvent& event)
 	{
-		wxAutoBufferedPaintDC paintDC(this);
-		
 		const wxSize clientSize = GetClientSize();
+		wxAutoBufferedPaintDC paintDC(this);
 		paintDC.SetPen(*wxTRANSPARENT_PEN);
 		paintDC.SetBrush(m_View->GetBackgroundColour());
 		paintDC.DrawRectangle(clientSize);
 
-		bool isControlEmpty = false;
-		if (IsEmpty() && !m_BackgroundBitmap.IsOk())
-		{
-			// No items to draw
-			isControlEmpty = true;
-			return;
-		}
-
 		m_View->PrepareDC(paintDC);
 		wxGCDC dc(paintDC);
 		wxGraphicsContext& gc = *dc.GetGraphicsContext();
+		gc.SetAntialiasMode(wxANTIALIAS_NONE);
+		gc.SetInterpolationQuality(wxINTERPOLATION_NONE);
 
 		if (m_BackgroundBitmap.IsOk())
 		{
@@ -1055,7 +1048,7 @@ namespace KxDataView2
 				dc.DrawBitmap(m_BackgroundBitmap, pos);
 			}
 		}
-		if (isControlEmpty)
+		if (IsEmpty())
 		{
 			return;
 		}
@@ -1248,24 +1241,24 @@ namespace KxDataView2
 					}
 				}
 
-				// Draw vertical rules
-				if (verticalRulesEnabled)
-				{
-					dc.SetPen(m_PenRuleV);
-					dc.SetBrush(*wxTRANSPARENT_BRUSH);
-
-					if (currentRow + 1 == rowEnd)
-					{
-						dc.DrawLine(cellRect.GetRightTop(), cellRect.GetRightBottom() + wxPoint(0, clientSize.GetHeight()));
-					}
-					else
-					{
-						dc.DrawLine(cellRect.GetRightTop(), cellRect.GetRightBottom());
-					}
-				}
-
 				// Move coordinates to next column
 				cellRect.x += cellRect.width;
+
+				// Draw vertical rules
+				if (verticalRulesEnabled && currentColumnIndex + 1 != coulmnIndexEnd)
+				{
+					wxDCPenChanger pen(dc, m_PenRuleV);
+					wxDCBrushChanger brush(dc, *wxTRANSPARENT_BRUSH);
+
+					// Draw vertical rules in column's last pixel, so they will align with header control dividers
+					const int x = cellRect.x - 1;
+					int yAdd = 1;
+					if (currentRow + 1 == rowEnd)
+					{
+						yAdd += clientSize.GetHeight();
+					}
+					dc.DrawLine(x, cellRect.GetTop(), x, cellRect.GetBottom() + yAdd);
+				}
 			}
 
 			auto GetRowRect = [&cellInitialRect, xCoordEnd, xCoordStart, expanderColumn, expanderIndent]()
@@ -1283,10 +1276,13 @@ namespace KxDataView2
 			// Draw horizontal rules
 			if (horizontalRulesEnabled)
 			{
+				wxDCPenChanger pen(dc, m_PenRuleV);
+				wxDCBrushChanger brush(dc, *wxTRANSPARENT_BRUSH);
+
 				dc.DrawLine(xCoordStart, cellInitialRect.GetY(), xCoordEnd + clientSize.GetWidth(), cellInitialRect.GetY());
 			}
 
-			auto DrawSelectionRect = [this, &dc, &paintDC](const wxRect& cellRect, int flags)
+			auto DrawSelectionRect = [this, &paintDC](const wxRect& cellRect, int flags)
 			{
 				auto GetListItemState = [](int flags)
 				{
@@ -1394,7 +1390,9 @@ namespace KxDataView2
 					}
 					else
 					{
-						if (!m_View->m_UsingSystemTheme || !KxUtility::DrawThemeBackground(this, wxS("TREEVIEW"), paintDC, flags & wxCONTROL_CURRENT ? TVP_HOTGLYPH : TVP_GLYPH, flags & wxCONTROL_EXPANDED ? GLPS_OPENED : GLPS_CLOSED, expanderRect))
+						const int partID = flags & wxCONTROL_CURRENT ? TVP_HOTGLYPH : TVP_GLYPH;
+						const int stateID = flags & wxCONTROL_EXPANDED ? GLPS_OPENED : GLPS_CLOSED;
+						if (!m_View->m_UsingSystemTheme || !KxUtility::DrawThemeBackground(this, wxS("TREEVIEW"), paintDC, partID, stateID, expanderRect))
 						{
 							wxRendererNative::Get().DrawTreeItemButton(this, paintDC, expanderRect, flags);
 						}
@@ -1769,7 +1767,7 @@ namespace KxDataView2
 		SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX));
 
 		KxColor rulesColor = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
-		rulesColor.SetA(127);
+		rulesColor.SetA(85);
 
 		m_PenRuleH = rulesColor;
 		m_PenRuleV = rulesColor;
