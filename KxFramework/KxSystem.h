@@ -143,7 +143,7 @@ class KX_API KxSystem
 		}
 		static bool IsWindowsXPOrGreater()
 		{
-			return IsWindowsVersionOrGreater(5, 1, 1);
+			return IsWindowsVersionOrGreater(5, 1);
 		}
 };
 
