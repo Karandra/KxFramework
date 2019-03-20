@@ -95,11 +95,12 @@ wxSize KxDataViewBitmapTextToggleRenderer::GetCellSize() const
 	if (m_Value.HasBitmap())
 	{
 		wxSize margins = KxDataViewBitmapTextRenderer::GetBitmapMargins(GetView());
+		const wxBitmap& bitmap = m_Value.GetBitmap();
 
-		size.x += m_Value.GetBitmap().GetWidth() + margins.x;
-		if (size.y < m_Value.GetBitmap().GetHeight())
+		size.x += bitmap.GetWidth() + margins.x;
+		if (size.y < bitmap.GetHeight())
 		{
-			size.y = m_Value.GetBitmap().GetHeight() + margins.y;
+			size.y = bitmap.GetHeight() + margins.y;
 		}
 	}
 	return size != wxSize(0, 0) ? size : wxSize(0, KxDataViewRenderer::GetCellSize().GetHeight());
