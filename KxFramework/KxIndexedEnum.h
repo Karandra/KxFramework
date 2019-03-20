@@ -88,8 +88,8 @@ namespace KxIndexedEnum
 							return &item;
 						}
 					}
-					return nullptr;
 				}
+				return nullptr;
 			}
 			
 		public:
