@@ -73,7 +73,7 @@ wxAny KxRegistry::GetValueRet(KxRegistryHKey mainKey, const wxString& subKey, co
 	wxAny retData;
 	if (ret == ERROR_SUCCESS && bufferSize != 0)
 	{
-		void* data = new byte[bufferSize];
+		byte* data = new byte[bufferSize];
 		ret = RegGetValueW(mainKeyhandle, subKey.wc_str(), valueName.wc_str(), flags, &valueType, data, &bufferSize);
 		if (ret == ERROR_SUCCESS && IsTypesConform(valueType, requestedValueType))
 		{
@@ -129,11 +129,11 @@ wxAny KxRegistry::GetValueRet(KxRegistryHKey mainKey, const wxString& subKey, co
 					KxStringVector list;
 					while (true)
 					{
-						value = (LPCWSTR)data+readed;
+						value = (LPCWSTR)data + readed;
 						if (value != nullptr)
 						{
 							size_t valueLength = wcslen(value);
-							DWORD currentLength = valueLength * sizeof(WCHAR)-sizeof(WCHAR);
+							DWORD currentLength = valueLength * sizeof(WCHAR) - sizeof(WCHAR);
 							readed = readed + currentLength;
 
 							if (valueLength != 0)
