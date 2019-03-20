@@ -210,6 +210,7 @@ void KxListView::SetSortArrow(int index, SortArrow mode)
 				case ARROW_DOWN:
 				{
 					item.fmt = (item.fmt & ~HDF_SORTUP) | HDF_SORTDOWN;
+					break;
 				}
 				default:
 				{
