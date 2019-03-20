@@ -524,7 +524,7 @@ void KxListView::SetItemImage(int row, int columnIndex, int imageID)
 		{
 			SetItemImage(row, imageID, imageID);
 		}
-		else if (columnIndex != 0 && columnIndex != -1)
+		else if (columnIndex != -1)
 		{
 			item.SetMask(wxLIST_MASK_IMAGE|wxLIST_MASK_TEXT);
 			item.SetColumn(columnIndex);
