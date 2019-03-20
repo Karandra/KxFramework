@@ -580,16 +580,16 @@ void KxDataViewCtrl::Select(const KxDataViewItem& item)
 }
 void KxDataViewCtrl::Unselect(const KxDataViewItem& item)
 {
-	size_t row = m_ClientArea->GetRowByItem(item);
-	if (row >= 0)
+	const size_t row = m_ClientArea->GetRowByItem(item);
+	if (row != INVALID_ROW)
 	{
 		m_ClientArea->SelectRow(row, false);
 	}
 }
 bool KxDataViewCtrl::IsSelected(const KxDataViewItem& item) const
 {
-	size_t row = m_ClientArea->GetRowByItem(item);
-	if (row >= 0)
+	const size_t row = m_ClientArea->GetRowByItem(item);
+	if (row != INVALID_ROW)
 	{
 		return m_ClientArea->IsRowSelected(row);
 	}
