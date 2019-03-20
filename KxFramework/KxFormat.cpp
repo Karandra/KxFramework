@@ -115,7 +115,7 @@ void KxFormatBase::FormatDouble(double arg, int precision, int fieldWidth, wxUni
 	FormatString(wxString::Format(formatString, arg), fieldWidth, fieldWidth);
 }
 
-#if 1
+#if 0
 static void TestFunction()
 {
 	KxFormat format("%1 %2 %3");
