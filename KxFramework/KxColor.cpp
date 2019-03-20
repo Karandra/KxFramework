@@ -353,7 +353,7 @@ double KxColor::GetRelativeLuminance() const
 double KxColor::GetBrightness() const
 {
 	// https://www.w3.org/TR/AERT/#color-contrast
-	return ((GetR() * 299 + GetG() * 587 + GetB() * 114) / 1000.0) / 255.0;
+	return ((GetR() * 299.0 + GetG() * 587.0 + GetB() * 114.0) / 1000.0) / 255.0;
 }
 
 void KxColor::GetHSV(double& H, double& S, double& V, double* A) const
