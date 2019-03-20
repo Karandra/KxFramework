@@ -21,7 +21,7 @@ namespace Util
 	{
 		#pragma warning(suppress: 4312)
 		#pragma warning(suppress: 4302)
-		return reinterpret_cast<char>(::CharLowerA(reinterpret_cast<LPSTR>(c)));
+		return reinterpret_cast<char>(::CharUpperA(reinterpret_cast<LPSTR>(c)));
 	}
 	wchar_t CharToLower(wchar_t c)
 	{
@@ -33,7 +33,7 @@ namespace Util
 	{
 		#pragma warning(suppress: 4312)
 		#pragma warning(suppress: 4302)
-		return reinterpret_cast<wchar_t>(::CharLowerW(reinterpret_cast<LPWSTR>(c)));
+		return reinterpret_cast<wchar_t>(::CharUpperW(reinterpret_cast<LPWSTR>(c)));
 	}
 
 	// Check whether Name matches Expression
