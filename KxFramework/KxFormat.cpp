@@ -50,7 +50,7 @@ void KxFormatBase::FormatString(const wxString& arg, int fieldWidth, wxUniChar f
 		copy += arg;
 		FindCurrentAndReplace(copy);
 	}
-	else if (fieldWidth < 0)
+	else
 	{
 		wxString copy(arg);
 		copy.append(static_cast<size_t>(-fieldWidth) - arg.length(), fillChar);
