@@ -17,10 +17,6 @@ bool KxProcessThread::PrepareRedirection(KxProcessPipe& pipeIn, KxProcessPipe& p
 	if (pipeIn.Create() && pipeOut.Create() && pipeError.Create())
 	{
 		startupInfo.dwFlags |= STARTF_USESTDHANDLES;
-
-		startupInfo.hStdInput = INVALID_HANDLE_VALUE;
-		startupInfo.hStdOutput = INVALID_HANDLE_VALUE;
-		startupInfo.hStdError = INVALID_HANDLE_VALUE;
 		startupInfo.hStdInput = pipeIn[KxProcessPipe::Read];
 		startupInfo.hStdOutput = pipeOut[KxProcessPipe::Write];
 		startupInfo.hStdError = pipeError[KxProcessPipe::Write];
