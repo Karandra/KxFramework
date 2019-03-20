@@ -21,13 +21,6 @@ namespace
 	{
 		return wxRegion(region.GetHRGN(graphics));
 	}
-
-	int a()
-	{
-		KxGraphicsContext v(nullptr);
-		v.Clip(wxRect(0, 1, 2, 3));
-		v.Clip(wxRect2DDouble(0, 1, 2, 3));
-	}
 }
 
 wxRect2DDouble KxGraphicsContext::GetClip() const
