@@ -2396,9 +2396,9 @@ namespace KxDataView2
 			}
 		}
 
-		if (nextColumn < 0 && wrapAround)
+		if (nextColumn == 0 && wrapAround)
 		{
-			if (GetCurrentRow() > Row(0))
+			if (GetCurrentRow() > 0)
 			{
 				// Go to the last column of the previous row
 				nextColumn = visibleColumnsCount - 1;

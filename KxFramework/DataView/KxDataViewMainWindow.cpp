@@ -2722,7 +2722,7 @@ bool KxDataViewMainWindow::TryAdvanceCurrentColumn(KxDataViewTreeNode* node, wxK
 		}
 	}
 
-	if (nextColumn < 0 && wrapAround)
+	if (nextColumn == 0 && wrapAround)
 	{
 		if (GetCurrentRow() > 0)
 		{
