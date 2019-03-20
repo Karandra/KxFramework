@@ -48,7 +48,7 @@ KxSystemSettings::VideoAdapterList KxSystemSettings::EnumVideoAdapters()
 	do
 	{
 		isSuccess = ::EnumDisplayDevicesW(nullptr, index, &info, 0);
-		if (info.StateFlags & DISPLAY_DEVICE_ATTACHED_TO_DESKTOP || info.StateFlags == 0 && wcscmp(info.DeviceString, L"") != 0)
+		if ((info.StateFlags & DISPLAY_DEVICE_ATTACHED_TO_DESKTOP) || (info.StateFlags == 0 && wcscmp(info.DeviceString, L"") != 0))
 		{
 			size_t hashValue = Hasher(info.DeviceString);
 			if (hash.count(hashValue) == 0)
