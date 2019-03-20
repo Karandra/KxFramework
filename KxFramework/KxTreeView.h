@@ -155,10 +155,10 @@ class KX_API KxTreeView: public wxTreeCtrl
 		void OnCheck(wxTreeEvent& event);
 		void OnKeyDown(wxTreeEvent& event);
 
-		wxTreeItemId AddRoot();
-		wxTreeItemId GetRootItem();
-		void ExpandAll();
-		void CollapseAll();
+		wxTreeItemId AddRoot() = delete;
+		wxTreeItemId GetRootItem() = delete;
+		void ExpandAll() = delete;
+		void CollapseAll() = delete;
 
 		void SetFocusedItem(const wxTreeItemId& item)
 		{
