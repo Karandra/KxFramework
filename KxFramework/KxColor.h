@@ -80,6 +80,18 @@ class KX_API KxColor: public wxColour
 		KxColor(const wxColour& other);
 
 	public:
+		KxColor& operator=(const wxColour& other)
+		{
+			static_cast<wxColour*>(this)->operator=(other);
+			return *this;
+		}
+		KxColor& operator=(const KxColor& other)
+		{
+			static_cast<wxColour*>(this)->operator=(other);
+			return *this;
+		}
+
+	public:
 		bool IsOk() const override;
 		bool IsAlphaOpaque() const;
 
