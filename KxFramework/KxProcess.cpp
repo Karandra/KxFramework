@@ -530,13 +530,6 @@ bool KxProcess::Attach(KxProcessWaitMode waitMode)
 				KxProcessThread(this, waitMode, false, processHandle).RunHere();
 				return true;
 			}
-
-			::CloseHandle(processHandle);
-			if (IsDetached())
-			{
-				delete this;
-			}
-			return true;
 		}
 	}
 	return false;

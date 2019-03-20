@@ -2368,19 +2368,6 @@ size_t KxDataViewMainWindow::GetLineAt(int yCoord) const
 int KxDataViewMainWindow::GetLineWidth() const
 {
 	return GetEndOfLastCol();
-
-	int width = 0;
-
-	size_t count = GetOwner()->GetColumnCount();
-	for (size_t i = 0; i < count; i++)
-	{
-		KxDataViewColumn* column = GetOwner()->GetColumnAt(i);
-		if (column->IsVisible())
-		{
-			width += column->GetWidth();
-		}
-	}
-	return width;
 }
 
 void KxDataViewMainWindow::SetUniformRowHeight(int height)
