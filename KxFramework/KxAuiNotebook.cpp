@@ -83,24 +83,24 @@ void KxAuiNotebookDockArtProvider::DrawBorder(wxDC& dc, wxWindow* window, const 
 	KxAuiDefaultDockArtBase::DrawBorder(dc, window, rect, pane);
 
 	// Top horizontal line
-	wxRect tTopLine(rect.GetLeftTop(), rect.GetRightTop());
-	tTopLine.height = 1;
-	tTopLine.width += 1;
-	KxUtility::DrawParentBackground(m_Notebook, dc, tTopLine);
+	wxRect topLine(rect.GetLeftTop(), rect.GetRightTop());
+	topLine.height = 1;
+	topLine.width += 1;
+	KxUtility::DrawParentBackground(m_Notebook, dc, topLine);
 
 	// Right vertical line
-	wxRect tRightLine = wxRect(tTopLine.GetRightTop(), tTopLine.GetRightBottom());
-	tRightLine.x += 1;
-	tRightLine.y -= 2;
-	tRightLine.width =+ 5;
-	tRightLine.height += 2;
-	KxUtility::DrawParentBackground(m_Notebook, dc, tRightLine);
+	wxRect rightLine = wxRect(topLine.GetRightTop(), topLine.GetRightBottom());
+	rightLine.x += 1;
+	rightLine.y -= 2;
+	rightLine.width += 5;
+	rightLine.height += 2;
+	KxUtility::DrawParentBackground(m_Notebook, dc, rightLine);
 
 	// Left vertical line
-	wxRect tLeftLine;
-	tLeftLine.x = 0;
-	tLeftLine.y = 0;
-	tLeftLine.width = m_Notebook->GetTabIndent();
-	tLeftLine.height = m_Notebook->GetTabCtrlHeight() - 1;
-	KxUtility::DrawParentBackground(m_Notebook, dc, tLeftLine);
+	wxRect leftLine;
+	leftLine.x = 0;
+	leftLine.y = 0;
+	leftLine.width = m_Notebook->GetTabIndent();
+	leftLine.height = m_Notebook->GetTabCtrlHeight() - 1;
+	KxUtility::DrawParentBackground(m_Notebook, dc, leftLine);
 }
