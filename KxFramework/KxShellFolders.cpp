@@ -36,9 +36,6 @@ namespace
 		AddRecord(SHF_VIDEOS_LIBRARY, FOLDERID_VideosLibrary),
 		AddRecord(SHF_VIDEOS_SAMPLE, FOLDERID_SampleVideos),
 
-		AddRecord(SHF_PICTURES_CAMERAROLL_SKYDRIVE, FOLDERID_Desktop),
-		AddRecord(SHF_PICTURES_CAMERAROLL_SKYDRIVE, FOLDERID_PublicDesktop),
-
 		AddRecord(SHF_DESKTOP, FOLDERID_Desktop),
 		AddRecord(SHF_DESKTOP_COMMON, FOLDERID_PublicDesktop),
 
