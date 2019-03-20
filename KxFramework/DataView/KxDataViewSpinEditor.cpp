@@ -64,7 +64,7 @@ wxWindow* KxDataViewSpinEditor::CreateEditorControl(wxWindow* parent, const wxRe
 		editor = spin;
 	}
 
-	if (editor && HasValidator())
+	if (HasValidator())
 	{
 		editor->SetValidator(GetValidator());
 	}
