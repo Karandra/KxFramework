@@ -47,7 +47,7 @@ void KxTextBox::SetLimit(size_t max)
 	::SendMessageW(GetHandle(), EM_LIMITTEXT, max, 0);
 }
 
-void KxTextBox::SetPasswordChar(const wxString character)
+void KxTextBox::SetPasswordChar(const wxString& character)
 {
 	wxUint32 charValue = 0;
 	if (!character.IsEmpty())

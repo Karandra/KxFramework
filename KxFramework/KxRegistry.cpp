@@ -177,7 +177,7 @@ KxRegistryValueType KxRegistry::GetValueType(KxRegistryHKey mainKey, const wxStr
 	}
 	return KxRegistryValueType::KxREG_VALUE_NONE;
 }
-bool KxRegistry::SetValue(KxRegistryHKey mainKey, const wxString& subKey, const wxString& valueName, wxAny data, KxRegistryValueType nValueType, KxRegistryNode regNode)
+bool KxRegistry::SetValue(KxRegistryHKey mainKey, const wxString& subKey, const wxString& valueName, const wxAny& data, KxRegistryValueType nValueType, KxRegistryNode regNode)
 {
 	KxRegistryKey mainKeyHandle(mainKey, regNode, KEY_WRITE);
 

@@ -53,7 +53,7 @@ class KX_API KxTextBox: public wxTextCtrl
 		bool SetTabWidth(unsigned int width = 16);
 		void SetLimit(size_t max);
 		
-		void SetPasswordChar(const wxString character = DefaultPasswordChar);
+		void SetPasswordChar(const wxString& character = DefaultPasswordChar);
 		virtual bool SetHint(const wxString& label) override;
 		
 		virtual void SetValue(const wxString& value) override;

@@ -69,7 +69,7 @@ class KX_API KxRegistry
 		}
 		static wxAny GetValueRet(KxRegistryHKey mainKey, const wxString& subKey, const wxString& valueName, KxRegistryValueType& requestedValueType, KxRegistryNode regNode = KxREG_NODE_SYS, bool autoExpand = false);
 		static KxRegistryValueType GetValueType(KxRegistryHKey mainKey, const wxString& subKey, const wxString& valueName, KxRegistryNode regNode = KxREG_NODE_SYS);
-		static bool SetValue(KxRegistryHKey mainKey, const wxString& subKey, const wxString& valueName, wxAny vData, KxRegistryValueType nValueType = KxREG_VALUE_SZ, KxRegistryNode regNode = KxREG_NODE_SYS);
+		static bool SetValue(KxRegistryHKey mainKey, const wxString& subKey, const wxString& valueName, const wxAny& data, KxRegistryValueType nValueType = KxREG_VALUE_SZ, KxRegistryNode regNode = KxREG_NODE_SYS);
 		static bool CreateKey(KxRegistryHKey mainKey, const wxString& subKey, KxRegistryNode regNode = KxREG_NODE_SYS);
 		
 		static bool RemoveKey(KxRegistryHKey mainKey, const wxString& subKey, bool recurse = false, KxRegistryNode regNode = KxREG_NODE_SYS);
