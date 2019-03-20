@@ -66,7 +66,7 @@ class KX_API KxDataViewColumn: private wxSettableHeaderColumn, public KxWithOpti
 			m_DataView = owner;
 		}
 
-		/* Editor */
+		// Editor
 		void DeleteEditorIfNeeded();
 		void DoSetEditor(KxDataViewEditor* editor);
 
@@ -230,15 +230,15 @@ class KX_API KxDataViewColumn: private wxSettableHeaderColumn, public KxWithOpti
 		}
 		void ResetSorting();
 
-		bool IsSortable()
+		bool IsSortable() const
 		{
 			return wxSettableHeaderColumn::IsSortable();
 		}
-		bool IsReorderable()
+		bool IsReorderable() const
 		{
 			return wxSettableHeaderColumn::IsReorderable();
 		}
-		bool IsResizeable()
+		bool IsResizeable() const
 		{
 			return wxSettableHeaderColumn::IsResizeable();
 		}
