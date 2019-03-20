@@ -49,17 +49,15 @@ namespace
 		uint64_t TotalSize = 0;
 	};
 
-	DWORD CALLBACK CopyFileCallback
-	(
-		LARGE_INTEGER TotalFileSize,
-		LARGE_INTEGER TotalBytesTransferred,
-		LARGE_INTEGER StreamSize,
-		LARGE_INTEGER StreamBytesTransferred,
-		DWORD dwStreamNumber,
-		DWORD dwCallbackReason,
-		HANDLE hSourceFile,
-		HANDLE 	hDestinationFile,
-		LPVOID lpData
+	DWORD CALLBACK CopyFileCallback(LARGE_INTEGER TotalFileSize,
+									LARGE_INTEGER TotalBytesTransferred,
+									LARGE_INTEGER StreamSize,
+									LARGE_INTEGER StreamBytesTransferred,
+									DWORD dwStreamNumber,
+									DWORD dwCallbackReason,
+									HANDLE hSourceFile,
+									HANDLE 	hDestinationFile,
+									LPVOID lpData
 	)
 	{
 		CallbackData* data = (CallbackData*)lpData;
@@ -81,17 +79,15 @@ namespace
 		}
 		return PROGRESS_CANCEL;
 	}
-	DWORD CALLBACK CopyFolderCallback
-	(
-		LARGE_INTEGER TotalFileSize,
-		LARGE_INTEGER TotalBytesTransferred,
-		LARGE_INTEGER StreamSize,
-		LARGE_INTEGER StreamBytesTransferred,
-		DWORD dwStreamNumber,
-		DWORD dwCallbackReason,
-		HANDLE hSourceFile,
-		HANDLE hDestinationFile,
-		LPVOID lpData
+	DWORD CALLBACK CopyFolderCallback(LARGE_INTEGER TotalFileSize,
+									  LARGE_INTEGER TotalBytesTransferred,
+									  LARGE_INTEGER StreamSize,
+									  LARGE_INTEGER StreamBytesTransferred,
+									  DWORD dwStreamNumber,
+									  DWORD dwCallbackReason,
+									  HANDLE hSourceFile,
+									  HANDLE hDestinationFile,
+									  LPVOID lpData
 	)
 	{
 		CallbackDataFolder* data = (CallbackDataFolder*)lpData;
@@ -116,97 +112,6 @@ namespace
 		return PROGRESS_CANCEL;
 	}
 
-	void FindAux(KxStringVector& elementsList,
-				 uint64_t* total,
-				 const wxString& source,
-				 const wxString& filter = KxFile::NullFilter,
-				 KxFileSearchType elementType = KxFS_FILE,
-				 bool recurse = false,
-				 wxEvtHandler* eventHandler = nullptr
-	)
-	{
-		const DWORD excludedFlags = FILE_ATTRIBUTE_REPARSE_POINT|FILE_ATTRIBUTE_SPARSE_FILE;
-		const DWORD requiredFlags = 0;
-		const wxString excludedFolder1(".");
-		const wxString excludedFolder2("..");
-
-		// Search
-		WIN32_FIND_DATAW info = {0};
-
-		wxString seqrchQuery = source + L"\\*";
-		HANDLE searchHandle = ::FindFirstFileW(seqrchQuery.wc_str(), &info);
-		if (searchHandle != INVALID_HANDLE_VALUE)
-		{
-			ProcessElement:
-			{
-				bool isPass = true;
-				switch (elementType)
-				{
-					case KxFS_FILE:
-					{
-						isPass = !(info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
-						break;
-					}
-					case KxFS_FOLDER:
-					{
-						isPass = info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
-						break;
-					}
-					case KxFS_ALL:
-					{
-						isPass = true;
-						break;
-					}
-					default:
-					{
-						// KxFS_FILE
-						isPass = !(info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
-					}
-				}
-
-				wxString fileName(info.cFileName);
-				if (isPass && !(info.dwFileAttributes & excludedFlags) && fileName != excludedFolder1 && fileName != excludedFolder2)
-				{
-					(*total)++;
-					wxString currentFile = wxString::Format("%s\\%s", source, fileName);
-					bool isMatch = fileName.Matches(filter);
-					if (isMatch)
-					{
-						currentFile.Replace(Namespace_Win32File, "", false);
-						elementsList.push_back(currentFile);
-					}
-
-					if (eventHandler)
-					{
-						KxFileOperationEvent event(KxEVT_FILEOP_SEARCH);
-						event.SetEventObject(eventHandler);
-						event.SetSource(source);
-						event.SetMajorTotal(*total);
-						event.SetCurrent(currentFile);
-						event.SetMajorProcessed(elementsList.size());
-						event.SetInt(isMatch);
-
-						eventHandler->ProcessEvent(event);
-						if (event.IsStopped())
-						{
-							return;
-						}
-					}
-				}
-			}
-
-			while (::FindNextFileW(searchHandle, &info))
-			{
-				wxString fileName(info.cFileName);
-				if (recurse && !(info.dwFileAttributes & excludedFlags) && (info.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) && fileName != excludedFolder1 && fileName != excludedFolder2)
-				{
-					FindAux(elementsList, total, wxString::Format("%s\\%s", source, fileName), filter, elementType, recurse, eventHandler);
-				}
-				goto ProcessElement;
-			}
-			::FindClose(searchHandle);
-		}
-	}
 	bool CopyAttributes(const wxString& source, const wxString& destination)
 	{
 		uint32_t value = ::GetFileAttributesW(source.wc_str());
@@ -903,7 +808,6 @@ KxFileBinaryFormat KxFile::GetBinaryType() const
 			::CloseHandle(fileHandle);
 		}
 	}
-
 	return (KxFileBinaryFormat)type;
 }
 KxLibraryVersionInfo KxFile::GetVersionInfo() const
@@ -1034,9 +938,54 @@ bool KxFile::IsExist() const
 //////////////////////////////////////////////////////////////////////////
 KxStringVector KxFile::Find(const wxString& filter, KxFileSearchType elementType, bool recurse) const
 {
-	uint64_t total = 0;
 	KxStringVector elementsList;
-	FindAux(elementsList, &total, GetFullPathNS(), filter, elementType, recurse, m_EventHnadler);
+	auto ScanFolder = [this, &elementsList, &filter, elementType, recurse](const wxString& source, KxStringVector& directories)
+	{
+		KxFileFinder finder(source, filter);
+		for (KxFileItem item = finder.FindNext(); item.IsOK(); item = finder.FindNext())
+		{
+			if (elementType == KxFS_ALL || (elementType == KxFS_FILE && item.IsFile()) || (elementType == KxFS_FOLDER && item.IsDirectory()))
+			{
+				if (m_EventHnadler)
+				{
+					KxFileOperationEvent event(KxEVT_FILEOP_SEARCH);
+					event.SetEventObject(m_EventHnadler);
+					event.SetSource(source);
+					event.SetCurrent(item.GetFullPath());
+					event.SetMajorTotal(elementsList.size());
+					event.SetMajorProcessed(elementsList.size());
+					event.SetInt(1); // It was "is match" property, now it's always true
+
+					m_EventHnadler->ProcessEvent(event);
+					if (event.IsStopped())
+					{
+						return false;
+					}
+				}
+				elementsList.push_back(item.GetFullPath());
+			}
+			if (recurse && item.IsDirectory())
+			{
+				directories.push_back(item.GetFullPath());
+			}
+		}
+		return true;
+	};
+
+	KxStringVector directories;
+	if (ScanFolder(GetFullPathNS(), directories))
+	{
+		bool shouldStop = false;
+		while (!shouldStop && !directories.empty())
+		{
+			KxStringVector roundDirectories;
+			for (size_t i = 0; i < directories.size() && !shouldStop; i++)
+			{
+				shouldStop = ScanFolder(directories[i], roundDirectories);
+			}
+			directories = std::move(roundDirectories);
+		}
+	}
 	return elementsList;
 }
 KxStringVector KxFile::Find(const KxStringVector& filters, KxFileSearchType elementType, bool recurse) const
