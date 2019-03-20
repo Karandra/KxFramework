@@ -2369,6 +2369,10 @@ namespace KxDataView2
 				return true;
 			}
 		}
+		if (m_CurrentColumn == nullptr)
+		{
+			return false;
+		}
 
 		size_t nextColumn = std::clamp<intptr_t>((intptr_t)m_CurrentColumn->GetDisplayIndex() + (moveForward ? +1 : -1), 0, visibleColumnsCount);
 		if (nextColumn == (intptr_t)visibleColumnsCount)
