@@ -44,6 +44,8 @@ class KX_API KxBroadcastEvent: public wxNotifyEvent, public KxRTTI::DynamicCastA
 		template<class T, class... Args>
 		static void MakeQueue(Args&&... arg)
 		{
+			static_assert(std::is_base_of_v<KxBroadcastEvent, T>);
+
 			T* event = new T(std::forward<Args>(arg)...);
 			event->Queue();
 		}
@@ -96,6 +98,10 @@ class KX_API KxBroadcastEvent: public wxNotifyEvent, public KxRTTI::DynamicCastA
 			if (OnSendEvent())
 			{
 				QueueEvent(this);
+			}
+			else
+			{
+				delete this;
 			}
 		}
 };
