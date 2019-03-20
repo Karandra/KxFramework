@@ -116,13 +116,6 @@ bool KxTLWInternal::MSWWindowProc(wxWindow* window, WXLRESULT& result, WXUINT ms
 					event.SetEventObject(menu);
 					menu->ProcessEvent(event);
 				}
-
-				if (flags & MF_POPUP && item)
-				{
-					
-				}
-
-				result = 0;
 			}
 			result = 1;
 			return true;
