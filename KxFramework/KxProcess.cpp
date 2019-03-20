@@ -596,10 +596,10 @@ wxString KxProcess::GetStdOut() const
 }
 wxString KxProcess::GetStdErr() const
 {
-	if (IsRedirected() && m_RIO_StreamOut)
+	if (IsRedirected() && m_RIO_StreamError)
 	{
 		wxMemoryBuffer buffer;
-		RIO_ReadStream(m_RIO_StreamOut, buffer);
+		RIO_ReadStream(m_RIO_StreamError, buffer);
 		return RIO_StreamDataToString(buffer);
 	}
 	return wxEmptyString;
