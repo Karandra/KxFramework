@@ -38,7 +38,7 @@ bool KxSplashWindow::DoUpdateSplash()
 	wxMemoryDC dc(bitmap);
 
 	BLENDFUNCTION blendFunction = {0};
-	blendFunction.AlphaFormat = AC_SRC_OVER;
+	blendFunction.BlendOp = AC_SRC_OVER;
 	blendFunction.BlendFlags = 0;
 	blendFunction.SourceConstantAlpha = m_Alpha;
 	blendFunction.AlphaFormat = AC_SRC_ALPHA;
