@@ -45,8 +45,8 @@ bool KxTextBoxDialog::Create(wxWindow* parent,
 							 long style
 )
 {
-	m_DialogResizeSide = (wxOrientation)-1;
-	m_Options = (KxTBD_Options)(style & KxTBD_MASK);
+	m_DialogResizeSide = static_cast<wxOrientation>(-1);
+	m_Options = static_cast<KxTBD_Options>(style & KxTBD_MASK);
 
 	if (KxStdDialog::Create(parent, id, caption, pos, size, buttons, KxUtility::ModFlag(style, KxTBD_MASK, false)))
 	{

@@ -23,7 +23,7 @@ bool KxDataViewToggleRenderer::GetValueAsToggleState(const wxAny& value, ToggleS
 
 	// Check for 'wxCheckBoxState'
 	{
-		wxCheckBoxState tempState = (wxCheckBoxState)-1; // Should be invalid 'wxCheckBoxState' value
+		wxCheckBoxState tempState = static_cast<wxCheckBoxState>(-1); // Should be invalid 'wxCheckBoxState' value
 		if (value.CheckType<wxCheckBoxState>() && value.GetAs(&tempState))
 		{
 			switch (tempState)
