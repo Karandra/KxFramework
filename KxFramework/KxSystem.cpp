@@ -178,7 +178,7 @@ KxSystem::VersionInfo KxSystem::GetVersionInfo()
 	versionInfo.MinorVersion = info.dwMinorVersion;
 	versionInfo.BuildNumber = info.dwBuildNumber;
 	versionInfo.PlatformID = info.dwPlatformId;
-	versionInfo.ServicePack = info.szCSDVersion != nullptr ? info.szCSDVersion : wxEmptyString;
+	versionInfo.ServicePack = info.szCSDVersion;
 	versionInfo.ServicePackMajor = info.wServicePackMajor;
 	versionInfo.ServicePackMinor = info.wServicePackMinor;
 	versionInfo.ProductType = info.wProductType;
