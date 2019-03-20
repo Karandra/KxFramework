@@ -38,7 +38,7 @@ WXLRESULT KxTextBox::MSWWindowProc(WXUINT msg, WXWPARAM wParam, WXLPARAM lParam)
 
 bool KxTextBox::SetTabWidth(unsigned int width)
 {
-	BOOL ret = ::SendMessageW(GetHandle(), EM_SETTABSTOPS, 1, (LPARAM)&width);
+	const bool ret = ::SendMessageW(GetHandle(), EM_SETTABSTOPS, 1, (LPARAM)&width) != 0;
 	Refresh();
 	return ret;
 }
