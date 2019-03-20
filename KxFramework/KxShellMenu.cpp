@@ -49,7 +49,7 @@ KxShellMenu::~KxShellMenu()
 
 bool KxShellMenu::IsSystemItemID(WORD menuWinID) const
 {
-	return menuWinID >= MinShellItemID || menuWinID <= MaxShellItemID;
+	return menuWinID >= MinShellItemID && menuWinID <= MaxShellItemID;
 }
 void KxShellMenu::InvokeCommand(HWND hWnd, WORD menuWinID)
 {
