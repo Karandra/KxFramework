@@ -98,7 +98,7 @@ namespace KxDataView2
 			ColumnWidth m_Width;
 			int m_MinWidth = 0;
 			int m_BestWidth = 0;
-			wxRecursionGuardFlag m_BestWidthRG;
+			wxRecursionGuardFlag m_BestWidthRG = 0;
 
 			bool m_IsDirty = true;
 			bool m_IsVisible = true;
