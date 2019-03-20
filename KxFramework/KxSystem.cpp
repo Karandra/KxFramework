@@ -256,30 +256,32 @@ wxString KxSystem::GetUserSID()
 {
 	HANDLE tokenHandle = nullptr;
 	LPWSTR sid = nullptr;
-	if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &tokenHandle))
+	if (::OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &tokenHandle))
 	{
 		DWORD size = 0;
-		GetTokenInformation(tokenHandle, TokenUser, nullptr, 0, &size);
-		
-		TOKEN_USER* userToken = (TOKEN_USER*)malloc(size);
-		memset(userToken, 0, size);
+		::GetTokenInformation(tokenHandle, TokenUser, nullptr, 0, &size);
 
-		if (GetTokenInformation(tokenHandle, TokenUser, userToken, size, &size))
+		TOKEN_USER* userToken = (TOKEN_USER*)malloc(size);
+		if (userToken)
 		{
-			ConvertSidToStringSidW(userToken->User.Sid, &sid);
+			memset(userToken, 0, size);
+			if (::GetTokenInformation(tokenHandle, TokenUser, userToken, size, &size))
+			{
+				::ConvertSidToStringSidW(userToken->User.Sid, &sid);
+			}
+			free(userToken);
 		}
-		free(userToken);
 	}
 	if (tokenHandle)
 	{
-		CloseHandle(tokenHandle);
+		::CloseHandle(tokenHandle);
 	}
 
 	wxString out;
 	if (sid != nullptr)
 	{
 		out = sid;
-		LocalFree(sid);
+		::LocalFree(sid);
 	}
 	return out;
 }
