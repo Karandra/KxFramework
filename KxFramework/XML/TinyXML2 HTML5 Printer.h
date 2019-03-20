@@ -59,15 +59,15 @@ namespace tinyxml2
 			}
 
 		protected:
-			virtual void CloseElement()
+			void CloseElement(bool compactMode = false) override
 			{
-				if (_elementJustOpened && !isVoidElement(_stack.PeekTop()))
+				if (_elementJustOpened && !IsVoidElement(_stack.PeekTop()))
 				{
 					SealElementIfJustOpened();
 				}
 				XMLPrinter::CloseElement();
 			}
-			virtual bool isVoidElement(const char *name)
+			bool IsVoidElement(const char* name) const
 			{
 				// Complete list of all HTML5 "void elements",
 				// http://dev.w3.org/html5/markup/syntax.html
@@ -88,7 +88,7 @@ namespace tinyxml2
 				}
 				return false;
 			}
-			virtual void PrintSpace(int depth) override
+			void PrintSpace(int depth) override
 			{
 				for (int i = 0; i < depth; i++)
 				{
