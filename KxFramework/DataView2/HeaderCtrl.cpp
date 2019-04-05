@@ -130,7 +130,7 @@ namespace KxDataView2
 		Column* column = m_View->GetColumn(columnIndex);
 		if (column->IsSortable())
 		{
-			if (m_View->IsColumnSorted(columnIndex))
+			if (column->IsSorted())
 			{
 				column->ResetSorting();
 				SendEvent(KxEVT_DATAVIEW_COLUMN_SORTED, columnIndex);

@@ -104,31 +104,23 @@ namespace KxDataView2
 {
 	void Column::SetSortOrder(bool ascending)
 	{
-		if (m_View)
-		{
+		// If this column isn't sorted already, mark it as sorted
+		m_IsSorted = true;
+		m_IsSortedAscending = ascending;
 
-			// If this column isn't sorted already, mark it as sorted
-			if (!m_IsSorted)
-			{
-				// Now set this one as the new sort column.
-				m_View->UseColumnForSorting(m_Index);
-				m_IsSorted = true;
-			}
-			m_IsSortedAscending = ascending;
-
-			// Call this directly instead of using UpdateDisplay() as we already have
-			// the column index, no need to look it up again.
-			m_View->OnColumnChange(m_Index);
-		}
+		UpdateDisplay();
 	}
 	void Column::UpdateDisplay()
 	{
-		m_View->OnColumnChange(m_Index);
+		if (m_View)
+		{
+			m_View->OnColumnChange(m_Index);
+		}
 	}
 	void Column::MarkDirty(bool value)
 	{
 		m_IsDirty = value;
-		if (value)
+		if (m_View && value)
 		{
 			m_View->m_IsColumnsDirty = true;
 		}
@@ -221,13 +213,11 @@ namespace KxDataView2
 	}
 	void Column::ResetSorting()
 	{
-		m_IsSorted = false;
-
-		if (m_View)
+		if (m_IsSorted)
 		{
-			m_View->DontUseColumnForSorting(m_Index);
+			m_IsSorted = false;
+			UpdateDisplay();
 		}
-		UpdateDisplay();
 	}
 
 	bool Column::IsExposed(int& width) const

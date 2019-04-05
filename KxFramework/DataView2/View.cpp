@@ -81,34 +81,11 @@ namespace KxDataView2
 		m_Columns.emplace(m_Columns.begin() + index, column);
 		OnColumnCountChanged();
 	}
-
-	void View::UseColumnForSorting(size_t index)
-	{
-		m_ColumnsSortingIndexes.push_back(index);
-	}
-	void View::DontUseColumnForSorting(size_t index)
-	{
-		for (auto it = m_ColumnsSortingIndexes.begin(); it < m_ColumnsSortingIndexes.end(); ++it)
-		{
-			if (*it == index)
-			{
-				m_ColumnsSortingIndexes.erase(it);
-				return;
-			}
-		}
-	}
-	bool View::IsColumnSorted(size_t index) const
-	{
-		return std::find(m_ColumnsSortingIndexes.begin(), m_ColumnsSortingIndexes.end(), index) != m_ColumnsSortingIndexes.end();
-	}
-
 	void View::ResetAllSortColumns()
 	{
-		// Must make copy, because unsorting will remove it from original vector
-		auto copy = m_ColumnsSortingIndexes;
-		for (auto& index: copy)
+		for (const auto& column: m_Columns)
 		{
-			GetColumn(index)->ResetSorting();
+			column->ResetSorting();
 		}
 	}
 	void View::OnInternalIdle()
@@ -352,7 +329,6 @@ namespace KxDataView2
 	{
 		SetExpanderColumn(nullptr);
 		m_Columns.clear();
-		m_ColumnsSortingIndexes.clear();
 		m_ClientArea->ClearCurrentColumn();
 		OnColumnCountChanged();
 
@@ -387,21 +363,40 @@ namespace KxDataView2
 		m_ClientArea->UpdateDisplay();
 	}
 
+	bool View::IsMultiColumnSortUsed() const
+	{
+		size_t sortedCount = 0;
+		for (const auto& column: m_Columns)
+		{
+			if (column->IsSorted())
+			{
+				sortedCount++;
+			}
+		}
+		return sortedCount > 1;
+	}
 	Column* View::GetSortingColumn() const
 	{
-		return !m_ColumnsSortingIndexes.empty() ? GetColumn(m_ColumnsSortingIndexes.front()) : nullptr;
+		for (const auto& column: m_Columns)
+		{
+			if (column->IsSorted())
+			{
+				return column.get();
+			}
+		}
+		return nullptr;
 	}
 	Column::Vector View::GetSortingColumns() const
 	{
-		Column::Vector columns;
-		for (const auto& index: m_ColumnsSortingIndexes)
+		Column::Vector sortingColumns;
+		for (const auto& column: m_Columns)
 		{
-			if (Column* column = GetColumn(index))
+			if (column->IsSorted())
 			{
-				columns.push_back(column);
+				sortingColumns.push_back(column.get());
 			}
 		}
-		return columns;
+		return sortingColumns;
 	}
 
 	bool View::AllowMultiColumnSort(bool allow)

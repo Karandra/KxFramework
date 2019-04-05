@@ -58,9 +58,6 @@ namespace KxDataView2
 			// iterate over 'm_Columns' to check if anything needs to be done.
 			bool m_IsColumnsDirty = false;
 
-			// Columns indices used for sorting, empty if nothing is sorted
-			KxIntPtrVector m_ColumnsSortingIndexes;
-
 		private:
 			void InvalidateColumnsBestWidth();
 			void UpdateColumnsWidth();
@@ -72,6 +69,7 @@ namespace KxDataView2
 		protected:
 			void DoEnable(bool value) override;
 			void DoInsertColumn(Column* column, size_t position);
+			void ResetAllSortColumns();
 
 			enum class ICEAction
 			{
@@ -79,7 +77,6 @@ namespace KxDataView2
 				Prepend,
 				Insert
 			};
-
 			template<ICEAction action, class TValue, class TRenderer = void, class TEditor = void>
 			auto InsertColumnEx(const TValue& value, ColumnID id = {}, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::DefaultStyle, size_t index = 0)
 			{
@@ -135,12 +132,6 @@ namespace KxDataView2
 					return std::make_tuple(std::ref(*column));
 				}
 			}
-
-			// TODO: rewrite sorting columns code
-			void UseColumnForSorting(size_t index);
-			void DontUseColumnForSorting(size_t index);
-			bool IsColumnSorted(size_t index) const;
-			void ResetAllSortColumns();
 
 			// We need to return a special WM_GETDLGCODE value to process just the arrows but let the other navigation characters through
 			WXLRESULT MSWWindowProc(WXUINT msg, WXWPARAM wParam, WXLPARAM lParam) override;
@@ -237,10 +228,7 @@ namespace KxDataView2
 			Column* GetExpanderColumn() const;
 			void SetExpanderColumn(Column *column);
 
-			bool IsMultiColumnSortUsed() const
-			{
-				return m_ColumnsSortingIndexes.size() > 1;
-			}
+			bool IsMultiColumnSortUsed() const;
 			Column* GetSortingColumn() const;
 			Column::Vector GetSortingColumns() const;
 
