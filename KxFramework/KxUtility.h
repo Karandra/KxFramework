@@ -56,32 +56,51 @@ class KX_API KxUtility
 		static const wxString LoadResource(int id, const wxString& typeName = L"STRING");
 		static void ToggleWindowStyle(HWND hWnd, int index, LONG style, bool enable);
 		static wxString GetStandardLocalizedString(int id, bool* isSuccess = nullptr);
-		template<class PointerType, class ValueType> static void SetIfNotNull(PointerType* p, ValueType v)
+		template<class TPointer, class TValue> static void SetIfNotNull(TPointer* ptr, TValue value)
 		{
-			if (p)
+			if (ptr)
 			{
-				*p = static_cast<PointerType>(v);
+				*ptr = static_cast<TPointer>(value);
 			}
 		}
-		template<class F, class V> static F ModFlag(F f, V v, bool set)
+		template<class TFlag, class TFlagMod> static TFlag ModFlag(TFlag flag, TFlagMod flagMod, bool set)
 		{
 			if (set)
 			{
-				f = static_cast<F>(f|static_cast<F>(v));
+				flag = static_cast<TFlag>(flag|static_cast<TFlag>(flagMod));
 			}
 			else
 			{
-				f = static_cast<F>(f & ~static_cast<F>(v));
+				flag = static_cast<TFlag>(flag & ~static_cast<TFlag>(flagMod));
 			}
-			return f;
+			return flag;
 		}
-		template<class F, class V> static void ModFlagRef(F& f, V v, bool set)
+		template<class TFlag, class TFlagMod> static void ModFlagRef(TFlag& flag, TFlagMod flagMod, bool set)
 		{
-			f = ModFlag(f, v, set);
+			flag = ModFlag(flag, flagMod, set);
 		}
-		template<class F, class V> static bool HasFlag(F f, V v)
+		
+		template<class TFlagLeft, class TFlagRight> static bool HasFlag(TFlagLeft left, TFlagRight right)
 		{
-			return f & v;
+			static_assert(std::is_enum_v<TFlagLeft>, "left value must be an enum type");
+			static_assert(std::is_enum_v<TFlagRight>, "right value must be an enum type");
+
+			using TIntLeft = std::underlying_type_t<TFlagLeft>;
+			using TIntRight = std::underlying_type_t<TFlagRight>;
+
+			return static_cast<TIntLeft>(left) & static_cast<TIntRight>(right);
+		}
+		template<class TFlag> static bool HasFlag(TFlag left, TFlag right)
+		{
+			if constexpr(std::is_enum_v<TFlag>)
+			{
+				using TInt = std::underlying_type_t<TFlag>;
+				return static_cast<TInt>(left) & static_cast<TInt>(right);
+			}
+			else
+			{
+				return left & right;
+			}
 		}
 
 		inline static void CopyRECTToRect(const RECT& r, wxRect& rect)
