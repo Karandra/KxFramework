@@ -49,6 +49,7 @@ namespace KxDataView2
 			Column* m_Column = nullptr;
 			wxGCDC* m_GraphicsDC = nullptr;
 			wxDC* m_RegularDC = nullptr;
+			bool m_AlwaysUseGC = false;
 
 		private:
 			void BeginCellRendering(const Node& node, Column& column, wxGCDC& graphicsDC, wxDC* regularDC = nullptr)
@@ -80,8 +81,8 @@ namespace KxDataView2
 			void SetupCellValue();
 			void SetupCellAttributes(CellState cellState);
 			
-			void CallDrawCellBackground(const wxRect& cellRect, CellState cellState);
-			void CallDrawCellContent(const wxRect& cellRect, CellState cellState);
+			void CallDrawCellBackground(const wxRect& cellRect, CellState cellState, bool noUserBackground = false);
+			void CallDrawCellContent(const wxRect& cellRect, CellState cellState, bool alwaysUseGC = false);
 			void CallOnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent = nullptr);
 
 		protected:
@@ -91,7 +92,7 @@ namespace KxDataView2
 			}
 			RenderEngine GetRenderEngine() const
 			{
-				return RenderEngine(const_cast<Renderer&>(*this));
+				return RenderEngine(const_cast<Renderer&>(*this), m_AlwaysUseGC);
 			}
 
 			virtual bool HasActivator() const

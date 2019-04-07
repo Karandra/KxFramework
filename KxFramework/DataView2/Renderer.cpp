@@ -29,7 +29,7 @@ namespace KxDataView2
 		SetValue(m_Node->GetValue(*m_Column));
 	}
 
-	void Renderer::CallDrawCellBackground(const wxRect& cellRect, CellState cellState)
+	void Renderer::CallDrawCellBackground(const wxRect& cellRect, CellState cellState, bool noUserBackground)
 	{
 		wxDC& dc = GetGraphicsDC();
 
@@ -63,15 +63,20 @@ namespace KxDataView2
 			wxDCBrushChanger changeBrush(dc, color);
 			dc.DrawRectangle(cellRect);
 		}
-		DrawCellBackground(cellRect, cellState);
+
+		if (!noUserBackground)
+		{
+			DrawCellBackground(cellRect, cellState);
+		}
 	}
-	void Renderer::CallDrawCellContent(const wxRect& cellRect, CellState cellState)
+	void Renderer::CallDrawCellContent(const wxRect& cellRect, CellState cellState, bool alwaysUseGC)
 	{
+		m_AlwaysUseGC = alwaysUseGC;
 		RenderEngine renderEngine = GetRenderEngine();
-		wxDC& dc = GetRegularDC();
+		wxDC& dc = HasRegularDC() ? GetRegularDC() : GetGraphicsDC();
 
 		// Change text color
-		wxDCTextColourChanger chnageTextColor(dc);
+		wxDCTextColourChanger changeTextColor(dc);
 		if (m_Attributes.HasForegroundColor())
 		{
 			KxColor color = m_Attributes.GetForegroundColor();
@@ -79,11 +84,11 @@ namespace KxDataView2
 			{
 				color.MakeDisabled();
 			}
-			chnageTextColor.Set(color);
+			changeTextColor.Set(color);
 		}
 		else if (!m_Attributes.IsEnabled())
 		{
-			chnageTextColor.Set(GetView()->GetForegroundColour().MakeDisabled());
+			changeTextColor.Set(GetView()->GetForegroundColour().MakeDisabled());
 		}
 
 		// Change font

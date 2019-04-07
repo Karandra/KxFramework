@@ -9,12 +9,14 @@
 #include "KxFramework/KxSystemSettings.h"
 #include "KxFramework/KxSplashWindow.h"
 #include "KxFramework/KxCallAtScopeExit.h"
+#include "KxFramework/KxBitmapGraphicsCanvas.h"
 #include "KxFramework/KxUtility.h"
 #include "KxFramework/KxFrame.h"
 #include "KxFramework/KxUxTheme.h"
 #include <wx/popupwin.h>
 #include <wx/generic/private/widthcalc.h>
 #include <wx/minifram.h>
+#include <wx/rawbmp.h>
 
 namespace
 {
@@ -27,6 +29,68 @@ namespace
 		EXPANDER_MARGIN = 2,
 		EXPANDER_OFFSET = 2,
 	};
+
+	int GetTreeItemState(int flags)
+	{
+		int itemState = (flags & wxCONTROL_CURRENT) ? TREIS_HOT : TREIS_NORMAL;
+		if (flags & wxCONTROL_SELECTED)
+		{
+			itemState = (flags & wxCONTROL_CURRENT) ? TREIS_HOTSELECTED : TREIS_SELECTED;
+			if (!(flags & wxCONTROL_FOCUSED))
+			{
+				itemState = TREIS_SELECTEDNOTFOCUS;
+			}
+		}
+
+		if (flags & wxCONTROL_DISABLED)
+		{
+			itemState = TREIS_DISABLED;
+		}
+		return itemState;
+	};
+	void DrawSelectionRect(wxWindow* window, wxDC& dc, const wxRect& cellRect, int flags)
+	{
+		KxUxTheme::Handle handle(window, L"TREEVIEW");
+		if (handle)
+		{
+			int itemState = GetTreeItemState(flags);
+			RECT rect = KxUtility::CopyRectToRECT(cellRect);
+			HDC hdc = dc.GetHDC();
+
+			::DrawThemeBackground(handle, hdc, TVP_TREEITEM, itemState, &rect, 0);
+		}
+		else
+		{
+			wxRendererNative::Get().DrawItemSelectionRect(window, dc, cellRect, flags);
+		}
+	};
+	bool SwapRedGreenChannels(wxBitmap& bitmap)
+	{
+		wxAlphaPixelData data(bitmap);
+		if (data)
+		{
+			wxAlphaPixelData::Iterator it(data);
+			for (int y = 0; y < data.GetHeight(); y++)
+			{
+				wxAlphaPixelData::Iterator rowStartIt = it;
+				for (int x = 0; x < data.GetWidth(); x++)
+				{
+					uint8_t r = it.Red();
+					uint8_t g = it.Green();
+
+					it.Red() = g;
+					it.Green() = r;
+
+					++it;
+				}
+
+				it = rowStartIt;
+				it.OffsetY(data, 1);
+			}
+			return true;
+		}
+		return false;
+	}
 }
 
 namespace KxDataView2
@@ -594,30 +658,27 @@ namespace KxDataView2
 			if (event.LeftIsDown())
 			{
 				m_View->CalcUnscrolledPosition(m_DragStart.x, m_DragStart.y, &m_DragStart.x, &m_DragStart.y);
-				size_t drag_item_row = GetRowAt(m_DragStart.y);
-				Node* itemDragged = GetNodeByRow(drag_item_row);
+				const Row draggedRow = GetRowAt(m_DragStart.y);
+				Node* const draggedNode = GetNodeByRow(draggedRow);
 
 				// Don't allow invalid items
-				if (itemDragged)
+				if (draggedNode)
 				{
 					// Notify cell about drag
-					EventDND evt(KxEVT_DATAVIEW_ITEM_DRAG);
-					CreateEventTemplate(evt, itemDragged, currentColumn);
-					if (!m_View->HandleWindowEvent(evt) || !evt.IsAllowed())
+					EventDND dragEvent(KxEVT_DATAVIEW_ITEM_DRAG);
+					CreateEventTemplate(dragEvent, draggedNode, currentColumn);
+					if (!m_View->HandleWindowEvent(dragEvent) || !dragEvent.IsAllowed())
 					{
 						return;
 					}
 
-					wxDataObject* dragObject = evt.GetDataObject();
-					if (!dragObject)
+					auto dragObject = dragEvent.TakeDataObject();
+					if (dragObject)
 					{
-						return;
+						DropSource drag(this, draggedRow);
+						drag.SetData(*dragObject);
+						drag.DoDragDrop(dragEvent.GetDragFlags());
 					}
-
-					DropSource drag(this, drag_item_row);
-					drag.SetData(*dragObject);
-					drag.DoDragDrop(evt.GetDragFlags());
-					delete dragObject;
 				}
 			}
 			return;
@@ -1282,42 +1343,6 @@ namespace KxDataView2
 				dc.DrawLine(xCoordStart, cellInitialRect.GetY(), xCoordEnd + clientSize.GetWidth(), cellInitialRect.GetY());
 			}
 
-			auto DrawSelectionRect = [this, &paintDC](const wxRect& cellRect, int flags)
-			{
-				auto GetListItemState = [](int flags)
-				{
-					int itemState = (flags & wxCONTROL_CURRENT) ? TREIS_HOT : TREIS_NORMAL;
-					if (flags & wxCONTROL_SELECTED)
-					{
-						itemState = (flags & wxCONTROL_CURRENT) ? TREIS_HOTSELECTED : TREIS_SELECTED;
-						if (!(flags & wxCONTROL_FOCUSED))
-						{
-							itemState = TREIS_SELECTEDNOTFOCUS;
-						}
-					}
-
-					if (flags & wxCONTROL_DISABLED)
-					{
-						itemState = TREIS_DISABLED;
-					}
-					return itemState;
-				};
-
-				KxUxTheme::Handle handle(this, L"LISTVIEW");
-				if (handle)
-				{
-					int itemState = GetListItemState(flags);
-					RECT rect = KxUtility::CopyRectToRECT(cellRect);
-					HDC hdc = paintDC.GetHDC();
-
-					::DrawThemeBackground(handle, hdc, TVP_TREEITEM, itemState, &rect, 0);
-				}
-				else
-				{
-					wxRendererNative::Get().DrawItemSelectionRect(this, paintDC, cellRect, flags);
-				}
-			};
-
 			// Draw selection
 			if (cellState.IsSelected() || cellState.IsHotTracked())
 			{
@@ -1336,7 +1361,7 @@ namespace KxDataView2
 				{
 					flags |= wxCONTROL_CURRENT;
 				}
-				DrawSelectionRect(rowRect, flags);
+				DrawSelectionRect(this, paintDC, rowRect, flags);
 			}
 
 			// Draw cell focus
@@ -2058,8 +2083,8 @@ namespace KxDataView2
 	// Drag and Drop
 	wxBitmap MainWindow::CreateItemBitmap(Row row, int& indent)
 	{
-		int height = GetRowHeight(row);
 		int width = GetRowWidth();
+		int height = GetRowHeight(row);
 
 		indent = 0;
 		if (!IsList())
@@ -2067,88 +2092,102 @@ namespace KxDataView2
 			Node* node = GetNodeByRow(row);
 			indent = m_Indent * node->GetIndentLevel();
 			indent = indent + m_UniformRowHeight;
-
-			// Try to use the 'm_UniformLineHeight' as the expander space
 		}
 		width -= indent;
+		wxRect itemRect = wxRect(0, 0, width, height);
 
 		wxBitmap bitmap(width, height, 32);
-		wxMemoryDC memoryDC(bitmap);
-		wxGCDC dc(memoryDC);
-
-		dc.SetFont(GetFont());
-		dc.SetBackground(m_View->GetBackgroundColour());
-		dc.SetTextBackground(m_View->GetBackgroundColour());
-		dc.SetTextForeground(m_View->GetForegroundColour());
-		dc.DrawRectangle(wxRect(0, 0, width, height));
-		wxRendererNative::Get().DrawItemSelectionRect(this, dc, wxRect(0, 0, width, height), wxCONTROL_CURRENT|wxCONTROL_SELECTED|wxCONTROL_FOCUSED);
-
-		Column* expander = m_View->GetExpanderColumnOrFirstOne();
-
-		int x = 0;
-		for (size_t columnIndex = 0; columnIndex < m_View->GetColumnCount(); columnIndex++)
 		{
-			Column* column = m_View->GetColumnDisplayedAt(columnIndex);
-			if (column->IsExposed(width))
+			bitmap.UseAlpha();
+
+			wxMemoryDC memoryDC(bitmap);
+			memoryDC.SetFont(GetFont());
+			memoryDC.SetBackground(m_View->GetBackgroundColour());
+			memoryDC.SetTextForeground(m_View->GetForegroundColour());
+			memoryDC.SetTextBackground(m_View->GetBackgroundColour());
+			memoryDC.Clear();
+
+			DrawSelectionRect(this, memoryDC, itemRect, wxCONTROL_CURRENT|wxCONTROL_SELECTED|wxCONTROL_FOCUSED);
+			wxGCDC gcdc(memoryDC);
+
+			int x = 0;
+			Column* expander = m_View->GetExpanderColumnOrFirstOne();
+			for (size_t columnIndex = 0; columnIndex < m_View->GetColumnCount(); columnIndex++)
 			{
-				if (column == expander)
+				Column* column = m_View->GetColumnDisplayedAt(columnIndex);
+				if (column->IsExposed(width))
 				{
-					width -= indent;
+					if (column == expander)
+					{
+						width -= indent;
+					}
+
+					CellState cellState = GetCellStateForRow(row);
+					Node* node = GetNodeByRow(row);
+					Renderer& renderer = node->GetRenderer(*column);
+					renderer.BeginCellRendering(*node, *column, gcdc, &memoryDC);
+
+					wxRect cellRect(x, 0, width, height);
+					cellRect.Deflate(PADDING_RIGHTLEFT, 0);
+
+					renderer.SetupCellValue();
+					renderer.SetupCellAttributes(cellState);
+					renderer.CallDrawCellBackground(cellRect, cellState, true);
+					renderer.CallDrawCellContent(cellRect, cellState, true);
+
+					renderer.EndCellRendering();
+					x += width;
 				}
-
-				CellState cellState = GetCellStateForRow(row);
-
-				Node* node = GetNodeByRow(row);
-				Renderer& renderer = node->GetRenderer(*column);
-				renderer.BeginCellRendering(*node, *column, dc, &memoryDC);
-
-				wxRect itemRect(x, 0, width, height);
-				itemRect.Deflate(PADDING_RIGHTLEFT, 0);
-
-				renderer.SetupCellValue();
-				renderer.SetupCellAttributes(cellState);
-				renderer.CallDrawCellBackground(itemRect, cellState);
-				renderer.CallDrawCellContent(itemRect, cellState);
-				
-				renderer.EndCellRendering();
-				x += width;
 			}
 		}
 
-		memoryDC.SelectObject(wxNullBitmap);
+		// Fix swapped red and green channels when using transparent rendering on memory DC (wxBitmap::UseAlpha)
+		SwapRedGreenChannels(bitmap);
 		return bitmap;
 	}
 	bool MainWindow::EnableDragSource(const wxDataFormat& format)
 	{
-		m_DragFormat = format;
-		m_DragEnabled = format != wxDF_INVALID;
-
-		return true;
+		return m_DragDropInfo.EnableDragOperation(format) != DnDInfo::Result::None;
 	}
-	bool MainWindow::EnableDropTarget(const wxDataFormat& format)
+	bool MainWindow::EnableDropTarget(std::unique_ptr<wxDataObjectSimple> dataObject, bool isPreferred)
 	{
-		m_DropFormat = format;
-		m_DropEnabled = format != wxDF_INVALID;
-
-		if (m_DropEnabled)
+		if (dataObject)
 		{
-			SetDropTarget(new DropTarget(new wxCustomDataObject(format), this));
+			const auto result = m_DragDropInfo.EnableDropOperation(*dataObject, isPreferred);
+			if (result != DnDInfo::Result::None && result != DnDInfo::Result::OperationRemoved)
+			{
+				if (m_DragDropDataObject == nullptr)
+				{
+					m_DragDropDataObject = new wxDataObjectComposite();
+					m_DropTarget = new DropTarget(m_DragDropDataObject, this);
+					SetDropTarget(m_DropTarget);
+				}
+
+				if (m_DragDropDataObject->GetObject(dataObject->GetFormat()) == nullptr)
+				{
+					m_DragDropDataObject->Add(dataObject.release(), isPreferred);
+				}
+			}
+			return result != DnDInfo::Result::None;
 		}
-		return true;
+		return false;
 	}
 
-	void MainWindow::OnDragDropGetRowNode(const wxPoint& pos, Row& row, Node*& item)
+	std::tuple<Row, Node*> MainWindow::DragDropHitTest(const wxPoint& pos) const
 	{
 		// Get row
 		wxPoint unscrolledPos;
 		m_View->CalcUnscrolledPosition(pos.x, pos.y, &unscrolledPos.x, &unscrolledPos.y);
-		row = GetRowAt(unscrolledPos.y);
+		Row row = GetRowAt(unscrolledPos.y);
 
 		// Get item
+		Node* node = nullptr;
 		if (row < GetRowCount() && pos.y <= GetRowWidth())
 		{
-			item = GetNodeByRow(row);
+			node = GetNodeByRow(row);
 		}
+
+		return {row, node};
 	}
 	void MainWindow::RemoveDropHint()
 	{
@@ -2156,19 +2195,16 @@ namespace KxDataView2
 		{
 			m_DropHint = false;
 			RefreshRow(m_DropHintLine);
-			m_DropHintLine = INVALID_ROW;
+			m_DropHintLine.MakeNull();
 		}
 	}
-	wxDragResult MainWindow::OnDragOver(const wxDataFormat& format, const wxPoint& pos, wxDragResult dragResult)
+	wxDragResult MainWindow::OnDragOver(const wxDataObjectSimple& dataObject, const wxPoint& pos, wxDragResult dragResult)
 	{
-		Row row;
-		Node* item = nullptr;
-		OnDragDropGetRowNode(pos, row, item);
-
+		auto [row, node] = DragDropHitTest(pos);
 		if (row != 0 && row < GetRowCount())
 		{
-			size_t firstVisible = GetFirstVisibleRow();
-			size_t lastVisible = GetLastVisibleRow();
+			const size_t firstVisible = GetFirstVisibleRow();
+			const size_t lastVisible = GetLastVisibleRow();
 			if (row == firstVisible || row == firstVisible + 1)
 			{
 				ScrollTo(row - 1);
@@ -2180,9 +2216,11 @@ namespace KxDataView2
 		}
 
 		EventDND event(KxEVT_DATAVIEW_ITEM_DROP_POSSIBLE);
-		CreateEventTemplate(event, item);
-		event.SetDataFormat(format);
+		CreateEventTemplate(event, node);
+		event.SetPosition(pos);
 		event.SetDropEffect(dragResult);
+		event.SetDataObject(&dataObject);
+		event.SetDataFormat(dataObject.GetFormat());
 
 		if (!m_View->HandleWindowEvent(event) || !event.IsAllowed())
 		{
@@ -2190,7 +2228,7 @@ namespace KxDataView2
 			return wxDragNone;
 		}
 
-		if (item)
+		if (node)
 		{
 			if (m_DropHint && (row != m_DropHintLine))
 			{
@@ -2206,20 +2244,16 @@ namespace KxDataView2
 		}
 		return dragResult;
 	}
-	wxDragResult MainWindow::OnDragData(const wxDataFormat& format, const wxPoint& pos, wxDragResult dragResult)
+	wxDragResult MainWindow::OnDropData(const wxDataObjectSimple& dataObject, const wxPoint& pos, wxDragResult dragResult)
 	{
-		Row row;
-		Node* item = nullptr;
-		OnDragDropGetRowNode(pos, row, item);
-
-		wxCustomDataObject* dataObject = (wxCustomDataObject*)GetDropTarget()->GetDataObject();
+		auto [row, node] = DragDropHitTest(pos);
 
 		EventDND event(KxEVT_DATAVIEW_ITEM_DROP);
-		CreateEventTemplate(event, item);
-		event.SetDataFormat(format);
-		event.SetDataSize(dataObject->GetSize());
-		event.SetDataBuffer(dataObject->GetData());
+		CreateEventTemplate(event, node);
+		event.SetPosition(pos);
 		event.SetDropEffect(dragResult);
+		event.SetDataObject(&dataObject);
+		event.SetDataFormat(dataObject.GetFormat());
 
 		if (!m_View->HandleWindowEvent(event) || !event.IsAllowed())
 		{
@@ -2227,23 +2261,27 @@ namespace KxDataView2
 		}
 		return dragResult;
 	}
-	bool MainWindow::OnDrop(const wxDataFormat& format, const wxPoint& pos)
+	bool MainWindow::TestDropPossible(const wxDataObjectSimple& dataObject, const wxPoint& pos)
 	{
 		RemoveDropHint();
-
-		Row row;
-		Node* item = nullptr;
-		OnDragDropGetRowNode(pos, row, item);
+		auto [row, node] = DragDropHitTest(pos);
 
 		EventDND event(KxEVT_DATAVIEW_ITEM_DROP_POSSIBLE);
-		CreateEventTemplate(event, item);
-		event.SetDataFormat(format);
+		CreateEventTemplate(event, node);
+		event.SetPosition(pos);
+		event.SetDataObject(&dataObject);
+		event.SetDataFormat(dataObject.GetFormat());
 
 		if (!m_View->HandleWindowEvent(event) || !event.IsAllowed())
 		{
 			return false;
 		}
 		return true;
+	}
+	
+	wxDragResult MainWindow::OnDragDropEnter(const wxDataObjectSimple& dataObject, const wxPoint& pos, wxDragResult dragResult)
+	{
+		return dragResult;
 	}
 	void MainWindow::OnDragDropLeave()
 	{
@@ -2621,7 +2659,6 @@ namespace KxDataView2
 		m_View->CalcScrolledPosition(itemRect.x, itemRect.y, &itemRect.x, &itemRect.y);
 		return itemRect;
 	}
-
 	void MainWindow::UpdateColumnSizes()
 	{
 		size_t columnCount = m_View->GetVisibleColumnCount();
@@ -2852,7 +2889,7 @@ namespace KxDataView2
 			}
 
 			// If we reached root node, consider search successful.
-			if (currentNode->IsRootNode())
+			if (currentNode && currentNode->IsRootNode())
 			{
 				// Rows are zero-based, but we calculated it as one-based.
 				return row - 1;
@@ -2897,132 +2934,5 @@ namespace KxDataView2
 			m_CurrentEditor->CancelEdit();
 			m_CurrentEditor = nullptr;
 		}
-	}
-}
-
-namespace KxDataView2
-{
-	void DropSource::OnPaint(wxPaintEvent& event)
-	{
-		wxPaintDC dc(m_DragImage);
-		dc.DrawBitmap(m_HintBitmap, 0, 0);
-	}
-	void DropSource::OnScroll(wxMouseEvent& event)
-	{
-		if (m_MainWindow)
-		{
-			View* view = m_MainWindow->GetView();
-
-			int rateX = 0;
-			int rateY = 0;
-			view->GetScrollPixelsPerUnit(&rateX, &rateY);
-			wxPoint startPos = view->GetViewStart();
-
-			wxCoord value = -event.GetWheelRotation();
-			if (event.GetWheelAxis() == wxMOUSE_WHEEL_VERTICAL)
-			{
-				view->Scroll(wxDefaultCoord, startPos.y + (float)value / (rateY != 0 ? rateY : 1));
-			}
-			else
-			{
-				view->Scroll(startPos.x + (float)value / (rateX != 0 ? rateX : 1), wxDefaultCoord);
-			}
-		}
-		event.Skip();
-	}
-	bool DropSource::GiveFeedback(wxDragResult effect)
-	{
-		wxPoint mousePos = wxGetMousePosition();
-
-		if (!m_DragImage)
-		{
-			wxPoint linePos(0, m_MainWindow->GetRowStart(m_Row));
-
-			m_MainWindow->GetView()->CalcUnscrolledPosition(0, linePos.y, nullptr, &linePos.y);
-			m_MainWindow->ClientToScreen(&linePos.x, &linePos.y);
-
-			m_Distance.x = mousePos.x - linePos.x;
-			m_Distance.y = mousePos.y - linePos.y;
-
-			int rowIndent = 0;
-			m_HintBitmap = m_MainWindow->CreateItemBitmap(m_Row, rowIndent);
-
-			m_Distance.x -= rowIndent;
-			m_HintPosition = GetHintPosition(mousePos);
-
-			int frameStyle = wxFRAME_FLOAT_ON_PARENT|wxFRAME_NO_TASKBAR|wxNO_BORDER;
-			m_DragImage = new wxMiniFrame(m_MainWindow, wxID_NONE, wxEmptyString, m_HintPosition, m_HintBitmap.GetSize(), frameStyle);
-			//m_DragImage = new wxPopupWindow(m_MainWindow);
-			//m_DragImage->SetInitialSize(m_HintBitmap.GetSize());
-
-			m_DragImage->Bind(wxEVT_PAINT, &DropSource::OnPaint, this);
-			m_DragImage->SetTransparent(128);
-			m_DragImage->Show();
-		}
-		else
-		{
-			m_HintPosition = GetHintPosition(mousePos);
-			m_DragImage->Move(m_HintPosition);
-		}
-		return false;
-	}
-
-	wxPoint DropSource::GetHintPosition(const wxPoint& mousePos) const
-	{
-		return wxPoint(mousePos.x - m_Distance.x, mousePos.y + 5);
-	}
-
-	DropSource::DropSource(MainWindow* mainWindow, size_t row)
-		:wxDropSource(mainWindow), m_MainWindow(mainWindow), m_Row(row), m_Distance(0, 0)
-	{
-		//m_MainWindow->Bind(wxEVT_MOUSEWHEEL, &KxDataViewMainWindowDropSource::OnScroll, this);
-	}
-	DropSource::~DropSource()
-	{
-		m_HintPosition = wxDefaultPosition;
-		delete m_DragImage;
-	}
-}
-
-namespace KxDataView2
-{
-	wxDragResult DropTarget::OnDragOver(wxCoord x, wxCoord y, wxDragResult dragResult)
-	{
-		wxDataFormat format = GetMatchingPair();
-		if (format != wxDF_INVALID)
-		{
-			return m_MainWindow->OnDragOver(format, wxPoint(x, y), dragResult);
-		}
-		return wxDragNone;
-	}
-	bool DropTarget::OnDrop(wxCoord x, wxCoord y)
-	{
-		wxDataFormat format = GetMatchingPair();
-		if (format != wxDF_INVALID)
-		{
-			return m_MainWindow->OnDrop(format, wxPoint(x, y));
-		}
-		return false;
-	}
-	wxDragResult DropTarget::OnData(wxCoord x, wxCoord y, wxDragResult dragResult)
-	{
-		wxDataFormat format = GetMatchingPair();
-		if (format == wxDF_INVALID || !GetData())
-		{
-			return wxDragNone;
-		}
-		else
-		{
-			return m_MainWindow->OnDragData(format, wxPoint(x, y), dragResult);
-		}
-	}
-	void DropTarget::OnLeave()
-	{
-		m_MainWindow->OnDragDropLeave();
-	}
-
-	DropTarget::DropTarget(wxDataObject* dataObject, MainWindow* mainWindow)
-		:wxDropTarget(dataObject), m_MainWindow(mainWindow)
-	{
 	}
 }

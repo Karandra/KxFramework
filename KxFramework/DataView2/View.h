@@ -302,7 +302,7 @@ namespace KxDataView2
 
 			// Drag and drop
 			bool EnableDragSource(const wxDataFormat& format);
-			bool EnableDropTarget(const wxDataFormat& format);
+			bool EnableDropTarget(std::unique_ptr<wxDataObjectSimple> dataObject, bool isPreferred = false);
 
 			// Window
 			void SetFocus() override;

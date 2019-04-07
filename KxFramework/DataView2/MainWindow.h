@@ -7,6 +7,7 @@
 #include "Model.h"
 #include "CellState.h"
 #include "SortOrder.h"
+#include "DragAndDrop.h"
 #include "Renderers/NullRenderer.h"
 #include <wx/selstore.h>
 
@@ -19,6 +20,9 @@ namespace KxDataView2
 	class KX_API HeaderCtrl;
 	class KX_API Event;
 	class KX_API VirtualListModel;
+
+	class KX_API DropSource;
+	class KX_API DropTarget;
 }
 
 namespace KxDataView2
@@ -33,6 +37,9 @@ namespace KxDataView2
 		friend class KX_API Node;
 		friend class KX_API HeaderCtrl;
 		friend class KX_API VirtualListModel;
+
+		friend class KX_API DropSource;
+		friend class KX_API DropTarget;
 		friend class MaxWidthCalculator;
 
 		public:
@@ -75,16 +82,14 @@ namespace KxDataView2
 			Column* m_HotTrackColumn = nullptr;
 
 			// Drag and Drop
+			DnDInfo m_DragDropInfo;
+			wxDataObjectComposite* m_DragDropDataObject = nullptr;
+			DropTarget* m_DropTarget = nullptr;
 			size_t m_DragCount = 0;
+
 			wxPoint m_DragStart = wxPoint(0, 0);
-
-			bool m_DragEnabled = false;
-			wxDataFormat m_DragFormat;
-
-			bool m_DropEnabled = false;
-			wxDataFormat m_DropFormat;
-			bool m_DropHint = false;
 			Row m_DropHintLine;
+			bool m_DropHint = false;
 
 			// Double click logic
 			Row m_RowLastClicked;
@@ -285,13 +290,15 @@ namespace KxDataView2
 			// Drag and Drop
 			wxBitmap CreateItemBitmap(Row row, int& indent);
 			bool EnableDragSource(const wxDataFormat& format);
-			bool EnableDropTarget(const wxDataFormat& format);
+			bool EnableDropTarget(std::unique_ptr<wxDataObjectSimple> dataObject, bool isPreferred = false);
 
-			void OnDragDropGetRowNode(const wxPoint& pos, Row& row, Node*& item);
+			std::tuple<Row, Node*> DragDropHitTest(const wxPoint& pos) const;
 			void RemoveDropHint();
-			wxDragResult OnDragOver(const wxDataFormat& format, const wxPoint& pos, wxDragResult dragResult);
-			wxDragResult OnDragData(const wxDataFormat& format, const wxPoint& pos, wxDragResult dragResult);
-			bool OnDrop(const wxDataFormat& format, const wxPoint& pos);
+			wxDragResult OnDragOver(const wxDataObjectSimple& dataObject, const wxPoint& pos, wxDragResult dragResult);
+			wxDragResult OnDropData(const wxDataObjectSimple& dataObject, const wxPoint& pos, wxDragResult dragResult);
+			bool TestDropPossible(const wxDataObjectSimple& dataObject, const wxPoint& pos);
+			
+			wxDragResult OnDragDropEnter(const wxDataObjectSimple& format, const wxPoint& pos, wxDragResult dragResult);
 			void OnDragDropLeave();
 
 			// Scrolling
@@ -407,49 +414,5 @@ namespace KxDataView2
 
 		public:
 			wxDECLARE_DYNAMIC_CLASS(MainWindow);
-	};
-}
-namespace KxDataView2
-{
-	class wxDragImage;
-	class KX_API DropSource: public wxDropSource
-	{
-		private:
-			MainWindow* m_MainWindow = nullptr;
-			wxWindow* m_DragImage = nullptr;
-			wxBitmap m_HintBitmap;
-			wxPoint m_HintPosition;
-
-			wxPoint m_Distance = wxDefaultPosition;
-			size_t m_Row = MainWindow::INVALID_ROW;
-
-		private:
-			void OnPaint(wxPaintEvent& event);
-			void OnScroll(wxMouseEvent& event);
-			virtual bool GiveFeedback(wxDragResult effect) override;
-
-			wxPoint GetHintPosition(const wxPoint& mousePos) const;
-
-		public:
-			DropSource(MainWindow* mainWindow, size_t row);
-			virtual ~DropSource();
-	};
-}
-
-namespace KxDataView2
-{
-	class KX_API DropTarget: public wxDropTarget
-	{
-		private:
-			MainWindow* m_MainWindow = nullptr;
-
-		private:
-			virtual wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult dragResult) override;
-			virtual bool OnDrop(wxCoord x, wxCoord y) override;
-			virtual wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult dragResult) override;
-			virtual void OnLeave() override;
-
-		public:
-			DropTarget(wxDataObject* dataObject, MainWindow* mainWindow);
 	};
 }

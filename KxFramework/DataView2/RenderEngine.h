@@ -48,10 +48,11 @@ namespace KxDataView2
 	{
 		private:
 			Renderer& m_Renderer;
+			const bool m_AlwaysUseGC = false;
 
 		public:
-			RenderEngine(Renderer& renderer)
-				:m_Renderer(renderer)
+			RenderEngine(Renderer& renderer, bool alwaysUseGC = false)
+				:m_Renderer(renderer), m_AlwaysUseGC(alwaysUseGC)
 			{
 			}
 

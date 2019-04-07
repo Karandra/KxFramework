@@ -131,7 +131,7 @@ namespace KxDataView2
 	wxSize RenderEngine::GetTextExtent(const wxString& string) const
 	{
 		// Regular (GDI) device context is preferable to draw and measure text
-		if (m_Renderer.HasRegularDC())
+		if (m_Renderer.HasRegularDC() && !m_AlwaysUseGC)
 		{
 			return GetTextExtent(m_Renderer.GetRegularDC(), string);
 		}
@@ -187,7 +187,7 @@ namespace KxDataView2
 
 	bool RenderEngine::DrawText(const wxRect& cellRect, CellState cellState, const wxString& string, int offsetX)
 	{
-		if (m_Renderer.HasRegularDC())
+		if (m_Renderer.HasRegularDC() && !m_AlwaysUseGC)
 		{
 			return DrawText(m_Renderer.GetRegularDC(), cellRect, cellState, string, offsetX);
 		}

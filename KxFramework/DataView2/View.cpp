@@ -678,9 +678,9 @@ namespace KxDataView2
 	{
 		return m_ClientArea->EnableDragSource(format);
 	}
-	bool View::EnableDropTarget(const wxDataFormat& format)
+	bool View::EnableDropTarget(std::unique_ptr<wxDataObjectSimple> dataObject, bool isPreferred)
 	{
-		return m_ClientArea->EnableDropTarget(format);
+		return m_ClientArea->EnableDropTarget(std::move(dataObject), isPreferred);
 	}
 
 	void View::SetFocus()

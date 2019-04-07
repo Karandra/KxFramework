@@ -134,32 +134,66 @@ namespace KxDataView2
 {
 	class KX_API EventDND: public Event
 	{
+		friend class KX_API MainWindow;
+
 		private:
-			wxDataObject* m_DataObject = nullptr;
-			wxDataFormat m_DataFormat;
-			void* m_DataBuffer = nullptr;
-			size_t m_DataSize = 0;
-			int m_DragFlags = 0;
+			const wxDataObject* m_DataObject = nullptr;
+			bool m_IsDataObjectOwned = false;
+
 			wxDragResult m_DropEffect = wxDragNone;
+			wxDataFormat m_DataFormat;
+			int m_DragFlags = wxDrag_CopyOnly;
+
+		protected:
+			void SetDataObject(const wxDataObject* object)
+			{
+				m_DataObject = object;
+				m_IsDataObjectOwned = false;
+			}
+			std::unique_ptr<wxDataObject> TakeDataObject()
+			{
+				wxDataObject* temp = const_cast<wxDataObject*>(m_DataObject);
+				m_DataObject = nullptr;
+				return std::unique_ptr<wxDataObject>(temp);
+			}
 
 		public:
 			EventDND(wxEventType type = wxEVT_NULL, wxWindowID winid = wxID_NONE)
 				:Event(type, winid)
 			{
 			}
+			~EventDND()
+			{
+				if (m_IsDataObjectOwned)
+				{
+					delete m_DataObject;
+				}
+			}
 			virtual wxEvent* Clone() const override
 			{
-				return new EventDND(*this);
+				EventDND* clone = new EventDND(*this);
+				clone->m_DataObject = nullptr;
+				clone->m_IsDataObjectOwned = false;
+				return clone;
 			}
 
 		public:
-			void SetDataObject(wxDataObject* object)
+			void NewDataObject(std::unique_ptr<wxDataObject> object)
 			{
-				m_DataObject = object;
+				m_DataObject = object.release();
+				m_IsDataObjectOwned = true;
 			}
-			wxDataObject* GetDataObject() const
+			const wxDataObject* GetDataObject() const
 			{
 				return m_DataObject;
+			}
+			template<class T> const T* GetDataObjectAs() const
+			{
+				return dynamic_cast<const T*>(m_DataObject);
+			}
+			bool HasDataObject() const
+			{
+				return m_DataObject != nullptr;
 			}
 
 			void SetDataFormat(const wxDataFormat& format)
@@ -170,34 +204,7 @@ namespace KxDataView2
 			{
 				return m_DataFormat;
 			}
-		
-			void SetDataBuffer(void* buffer)
-			{
-				m_DataBuffer = buffer;
-			}
-			void* GetDataBuffer() const
-			{
-				return m_DataBuffer;
-			}
 
-			void SetDataSize(size_t size)
-			{
-				m_DataSize = size;
-			}
-			size_t GetDataSize() const
-			{
-				return m_DataSize;
-			}
-		
-			void SetDragFlags(int flags)
-			{
-				m_DragFlags = flags;
-			}
-			int GetDragFlags() const
-			{
-				return m_DragFlags;
-			}
-		
 			void SetDropEffect(wxDragResult effect)
 			{
 				m_DropEffect = effect;
@@ -205,6 +212,15 @@ namespace KxDataView2
 			wxDragResult GetDropEffect() const
 			{
 				return m_DropEffect;
+			}
+	
+			void SetDragFlags(int flags)
+			{
+				m_DragFlags = flags;
+			}
+			int GetDragFlags() const
+			{
+				return m_DragFlags;
 			}
 	};
 }
