@@ -14,7 +14,7 @@ Support library for [Kortex Mod Manager](https://github.com/KerberX/Kortex-Mod-M
 - [LZ4](https://github.com/lz4/lz4) (headers and compiled .lib files included).
 - [LibFFI](https://github.com/libffi/libffi) (headers and compiled .lib files included).
 
-# Build (Visual Studio 2017)
+# Build (Visual Studio 2019)
 - Install Boost and create environment variable **BOOST_ROOT** with value of Boost installation directory (like this: `C:\Program Files\Boost\boost_1_68_0`).
 - Go to project *Properties* -> *C/C++* -> *General* -> *Additional include directories* and chnage include paths to required libraries.
 - Same with .lib files (*Librarian* -> *General* -> *Additional library directories*).

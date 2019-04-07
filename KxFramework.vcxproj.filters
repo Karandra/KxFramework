@@ -913,13 +913,19 @@
     <ClInclude Include="KxFramework\KxWebSocket.h">
       <Filter>Header Files\Network</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxGCAntialiasModeChanger.h">
+    <ClInclude Include="KxFramework\DataView2\DragAndDrop.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxGraphicsCanvas.h">
       <Filter>Header Files\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxGCInterpolationQualityChanger.h">
+    <ClInclude Include="KxFramework\KxBitmapGraphicsCanvas.h">
       <Filter>Header Files\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxGCCompositionModeChanger.h">
+    <ClInclude Include="KxFramework\KxGCUtility.h">
+      <Filter>Header Files\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxImageGraphicsCanvas.h">
       <Filter>Header Files\Drawing</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1518,6 +1524,9 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxWebSocket.cpp">
       <Filter>Source Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\DragAndDrop.cpp">
+      <Filter>Source Files\GUI\DataView2</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

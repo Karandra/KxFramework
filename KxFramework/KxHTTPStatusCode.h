@@ -79,7 +79,7 @@ enum class KxHTTPStatusCode: int32_t
 	NetworkAuthenticationRequired = 511
 };
 
-class KxHTTPStatusCodeDefinition: public KxIndexedEnum::Definition<KxHTTPStatusCodeDefinition, KxHTTPStatusCode, std::basic_string_view<wxChar, std::char_traits<wxChar>>, true>
+struct KxHTTPStatusCodeDefinition: public KxIndexedEnum::Definition<KxHTTPStatusCodeDefinition, KxHTTPStatusCode, std::basic_string_view<wxChar, std::char_traits<wxChar>>, true>
 {
 	inline static constexpr const TItem ms_Index[] =
 	{
