@@ -143,24 +143,22 @@ namespace KxDataView2
 		}
 	}
 
-	Node::~Node()
-	{
-		if (Model* model = GetModel())
-		{
-			for (Node* node: m_Children)
-			{
-				model->OnDeleteNode(node);
-			}
-		}
-	}
 	Row Node::FindChild(const Node& node) const
 	{
+		if (Row index = node.GetIndexWithinParent(); index.IsOK() && index < m_Children.size())
+		{
+			return index;
+		}
+		return Row();
+
+		#if 0
 		auto it = std::find(m_Children.begin(), m_Children.end(), &node);
 		if (it != m_Children.end())
 		{
 			return std::distance(m_Children.begin(), it);
 		}
 		return Row();
+		#endif
 	}
 	int Node::GetIndentLevel() const
 	{
@@ -179,11 +177,7 @@ namespace KxDataView2
 		return -1;
 	}
 
-	void Node::DetachAllChildren()
-	{
-		m_Children.clear();
-	}
-	void Node::AttachChild(Node* node, size_t index)
+	void Node::AttachChild(Node& node, size_t index)
 	{
 		// Flag indicating whether we should retain existing sorted list when inserting the child node.
 		bool shouldInsertSorted = false;
@@ -231,27 +225,22 @@ namespace KxDataView2
 			ResetSortOrder();
 		}
 
-		InitNodeFromThis(*node);
+		InitNodeFromThis(node);
 		if (shouldInsertSorted)
 		{
 			// Use binary search to find the correct position to insert at.
-			auto it = std::lower_bound(m_Children.begin(), m_Children.end(), node, Comparator(m_RootNode->GetMainWindow(), controlSortOrder));
-			m_Children.insert(it, node);
+			auto it = std::lower_bound(m_Children.begin(), m_Children.end(), &node, Comparator(m_RootNode->GetMainWindow(), controlSortOrder));
+			m_Children.insert(it, &node);
 			RecalcIndexes(std::distance(m_Children.begin(), it));
 		}
 		else
 		{
 			index = std::min(index, m_Children.size());
-			m_Children.insert(m_Children.begin() + index, node);
+			m_Children.insert(m_Children.begin() + index, &node);
 			RecalcIndexes(index);
 		}
 		m_RootNode->GetMainWindow()->OnNodeAdded(*this);
 	}
-	void Node::InsertChild(Node* node, size_t index)
-	{
-		AttachChild(node, index);
-	}
-
 	Node* Node::DetachChild(size_t index)
 	{
 		if (index < m_Children.size())
@@ -279,30 +268,11 @@ namespace KxDataView2
 		}
 		return nullptr;
 	}
-	Node* Node::Detach()
+	void Node::DetachAllChildren()
 	{
-		return m_ParentNode->DetachChild(*this);
+		m_Children.clear();
 	}
 	
-	void Node::RemoveChild(Node& node)
-	{
-		if (Row index = FindChild(node); index.IsOK())
-		{
-			RemoveChild(index);
-		}
-	}
-	void Node::RemoveChild(size_t index)
-	{
-		Model* model = GetModel();
-		if (Node* node = DetachChild(index); node && model)
-		{
-			model->OnDeleteNode(node);
-		}
-	}
-	void Node::Remove()
-	{
-		m_ParentNode->RemoveChild(*this);
-	}
 	bool Node::Swap(Node& otherNode)
 	{
 		if (this != &otherNode && m_ParentNode == otherNode.GetParent())
@@ -508,11 +478,6 @@ namespace KxDataView2
 {
 	void RootNode::ResetAll()
 	{
-		if (Model* model = GetModel())
-		{
-			model->OnDetachRootNode(*this);
-		}
-
 		Node::ResetAll();
 		Init();
 	}

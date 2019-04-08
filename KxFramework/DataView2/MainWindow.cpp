@@ -1844,7 +1844,7 @@ namespace KxDataView2
 		{
 			delete m_Model;
 		}
-		else
+		else if (m_Model)
 		{
 			m_Model->SetMainWindow(nullptr);
 		}

@@ -30,15 +30,6 @@ namespace KxDataView2
 				m_MainWindow = mainWindow;
 			}
 
-		protected:
-			virtual void OnDeleteNode(Node* node)
-			{
-				delete node;
-			}
-			virtual void OnDetachRootNode(RootNode& node)
-			{
-			}
-
 		public:
 			virtual ~Model() = default;
 

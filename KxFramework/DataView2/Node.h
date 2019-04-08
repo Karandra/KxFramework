@@ -101,7 +101,6 @@ namespace KxDataView2
 
 		public:
 			Node() = default;
-			virtual ~Node();
 
 		public:
 			bool IsRootNode() const
@@ -148,42 +147,36 @@ namespace KxDataView2
 			void DetachAllChildren();
 			Node* DetachChild(size_t index);
 			Node* DetachChild(Node& node);
-			Node* Detach();
-			
-			void RemoveChild(size_t index);
-			void RemoveChild(Node& node);
-			void Remove();
+			Node* DetachThis()
+			{
+				if (m_ParentNode)
+				{
+					return m_ParentNode->DetachChild(*this);
+				}
+				return nullptr;
+			}
 
-			void AttachChild(Node* node, size_t index);
-			void InsertChild(Node* node, size_t index);
-			void AppendChild(Node* node)
+			void AttachChild(Node& node, size_t index);
+			void AttachChild(Node& node)
 			{
-				InsertChild(node, m_Children.size());
+				AttachChild(node, GetChildrenCount());
 			}
 			
-			void MoveAt(Node& node, size_t index)
+			bool MoveTo(Node& node, size_t index)
 			{
-				node.AttachChild(Detach(), index);
+				if (Node* thisNode = DetachThis())
+				{
+					node.AttachChild(*thisNode, index);
+					return true;
+				}
+				return false;
 			}
-			void Move(Node& node)
+			bool MoveTo(Node& node)
 			{
-				node.AttachChild(Detach(), node.GetChildrenCount());
+				return MoveTo(node, node.GetChildrenCount());
 			}
 			bool Swap(Node& otherNode);
 
-			template<class TNode, class... Args> TNode& NewChild(Args&&... arg)
-			{
-				TNode* node = new TNode(std::forward<Args>(arg)...);
-				InsertChild(node, m_Children.size());
-				return *node;
-			}
-			template<class TNode, class... Args> TNode& NewChildAt(size_t index, Args&&... arg)
-			{
-				TNode* node = new TNode(std::forward<Args>(arg)...);
-				InsertChild(node, index);
-				return *node;
-			}
-			
 		public:
 			MainWindow* GetMainWindow() const;
 			View* GetView() const;
