@@ -1741,6 +1741,10 @@ namespace KxDataView2
 
 		m_OwnModel = own;
 		m_IsVirtualListModel = model && model->QueryInterface<VirtualListModel>() != nullptr;
+
+		// Call model event
+		m_Model->OnAssignModel();
+		ItemsChanged();
 	}
 	bool MainWindow::IsRepresentingList() const
 	{
@@ -2844,7 +2848,12 @@ namespace KxDataView2
 		{
 			if (row < GetRowCount())
 			{
-				return static_cast<VirtualListModel*>(m_Model)->GetNode(row);
+				Node* node = static_cast<VirtualListModel*>(m_Model)->GetNode(row);
+				if (node)
+				{
+					node->InitNodeUsing(m_TreeRoot);
+				}
+				return node;
 			}
 		}
 		else if (row)

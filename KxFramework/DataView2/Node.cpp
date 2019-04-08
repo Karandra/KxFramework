@@ -129,11 +129,11 @@ namespace KxDataView2
 			m_ParentNode->ChangeSubTreeCount(num);
 		}
 	}
-	void Node::InitNodeFromThis(Node& node)
+	void Node::InitNodeUsing(const Node& node)
 	{
-		node.m_ParentNode = this;
-		node.m_RootNode = m_RootNode;
-		node.m_SortOrder = m_SortOrder;
+		m_ParentNode = node.m_ParentNode;
+		m_RootNode = node.m_RootNode;
+		m_SortOrder = node.m_SortOrder;
 	}
 	void Node::RecalcIndexes(size_t startAt)
 	{
@@ -225,7 +225,7 @@ namespace KxDataView2
 			ResetSortOrder();
 		}
 
-		InitNodeFromThis(node);
+		node.InitNodeUsing(*this);
 		if (shouldInsertSorted)
 		{
 			// Use binary search to find the correct position to insert at.
@@ -437,6 +437,58 @@ namespace KxDataView2
 			return view->GetDropdownMenuPosition(*this, column);
 		}
 		return {};
+	}
+}
+
+namespace KxDataView2
+{
+	bool Node::IsEditable(const Column& column) const
+	{
+		return GetEditor(column) != nullptr;
+	}
+	bool Node::IsActivatable(const Column& column) const
+	{
+		return GetRenderer(column).IsActivatable();
+	}
+
+	Renderer& Node::GetRenderer(const Column& column) const
+	{
+		return GetModel()->GetRenderer(*this, column);
+	}
+	Editor* Node::GetEditor(const Column& column) const
+	{
+		return GetModel()->GetEditor(*this, column);
+	}
+
+	wxAny Node::GetValue(const Column& column) const
+	{
+		return GetModel()->GetValue(*this, column);
+	}
+	wxAny Node::GetEditorValue(const Column& column) const
+	{
+		return GetModel()->GetEditorValue(*this, column);
+	}
+	bool Node::SetValue(const wxAny& value, Column& column)
+	{
+		return GetModel()->SetValue(*this, value, column);
+	}
+
+	bool Node::GetAttributes(CellAttributes& attributes, const CellState& cellState, const Column& column) const
+	{
+		return GetModel()->GetAttributes(*this, attributes, cellState, column);
+	}
+	bool Node::IsCategoryNode() const
+	{
+		return GetModel()->IsCategoryNode(*this);
+	}
+	int Node::GetRowHeight() const
+	{
+		return GetModel()->GetRowHeight(*this);
+	}
+
+	bool Node::Compare(const Node& other, const Column& column) const
+	{
+		return GetModel()->Compare(*this, other, column);
 	}
 }
 

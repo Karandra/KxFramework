@@ -207,7 +207,6 @@
     <ClInclude Include="KxFramework\DataView2\Editors\SpinEditor.h" />
     <ClInclude Include="KxFramework\DataView2\Editors\TextEditor.h" />
     <ClInclude Include="KxFramework\DataView2\Editors\TimeEditor.h" />
-    <ClInclude Include="KxFramework\DataView2\INodeModel.h" />
     <ClInclude Include="KxFramework\DataView2\Model.h" />
     <ClInclude Include="KxFramework\DataView2\RenderEngine.h" />
     <ClInclude Include="KxFramework\DataView2\Renderers\BitmapListRenderer.h" />
@@ -470,7 +469,6 @@
     <ClCompile Include="KxFramework\DataView2\Editors\SpinEditor.cpp" />
     <ClCompile Include="KxFramework\DataView2\Editors\TextEditor.cpp" />
     <ClCompile Include="KxFramework\DataView2\Editors\TimeEditor.cpp" />
-    <ClCompile Include="KxFramework\DataView2\INodeModel.cpp" />
     <ClCompile Include="KxFramework\DataView2\Model.cpp" />
     <ClCompile Include="KxFramework\DataView2\RenderEngine.cpp" />
     <ClCompile Include="KxFramework\DataView2\Renderers\BitmapListRenderer.cpp" />

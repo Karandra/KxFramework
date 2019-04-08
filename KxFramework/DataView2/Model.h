@@ -30,6 +30,11 @@ namespace KxDataView2
 				m_MainWindow = mainWindow;
 			}
 
+		protected:
+			virtual void OnAssignModel()
+			{
+			}
+
 		public:
 			virtual ~Model() = default;
 
@@ -38,11 +43,48 @@ namespace KxDataView2
 			{
 				return m_MainWindow;
 			}
+			Node& GetRootNode() const;
 			View* GetView() const;
-			
 			void CellChanged(Node& node, Column& column)
 			{
 				node.Refresh(column);
+			}
+			
+			bool IsEditable(Node& node, const Column& column) const;
+			bool IsActivatable(Node& node, const Column& column) const;
+
+			virtual Renderer& GetRenderer(const Node& node, const Column& column) const;
+			virtual Editor* GetEditor(const Node& node, const Column& column) const;
+
+			virtual wxAny GetValue(const Node& node, const Column& column) const
+			{
+				return {};
+			}
+			virtual wxAny GetEditorValue(const Node& node, const Column& column) const
+			{
+				return {};
+			}
+			virtual bool SetValue(Node& node, const wxAny& value, Column& column)
+			{
+				return false;
+			}
+
+			virtual bool GetAttributes(const Node& node, CellAttributes& attributes, const CellState& cellState, const Column& column) const
+			{
+				return false;
+			}
+			virtual bool IsCategoryNode(const Node& node) const
+			{
+				return false;
+			}
+			virtual int GetRowHeight(const Node& node) const
+			{
+				return 0;
+			}
+
+			virtual bool Compare(const Node& leftNode, const Node& rightNode, const Column& column) const
+			{
+				return false;
 			}
 	};
 }
@@ -53,10 +95,10 @@ namespace KxDataView2
 	class KX_API ListModel: public KxRTTI::IExtendInterface<ListModel, Model>
 	{
 		public:
-			virtual size_t GetItemCount() const = 0;
+			size_t GetItemCount() const;
 
-			virtual Row GetRow(const Node& node) const;
-			virtual Node* GetNode(Row row) const;
+			Row GetRow(const Node& node) const;
+			Node* GetNode(Row row) const;
 
 		public:
 			void RowCellChanged(Row row, Column& column)
@@ -71,54 +113,46 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API VirtualListModel: public KxRTTI::IExtendInterface<VirtualListModel, ListModel>
+	class KX_API VirtualListModel: public KxRTTI::IExtendInterface<VirtualListModel, Model>
 	{
 		private:
-			const size_t m_InitialCount = 0;
-			size_t m_ItemsCount = 0;
+			size_t m_ItemCount = 0;
 
 		private:
 			void OnRowInserted(Row row);
 			void OnRowRemoved(Row row);
 
 		public:
-			VirtualListModel(size_t initialCount = 0)
-				:m_InitialCount(initialCount)
-			{
-			}
+			virtual Row GetRow(const Node& node) const = 0;
+			virtual Node* GetNode(Row row) const = 0;
 
-		public:
-			size_t GetInitialCount() const
+			size_t GetItemCount() const
 			{
-				return m_InitialCount;
-			}
-			size_t GetItemCount() const override
-			{
-				return m_ItemsCount;
+				return m_ItemCount;
 			}
 			void SetItemCount(size_t newCount)
 			{
-				m_ItemsCount = newCount;
+				m_ItemCount = newCount;
 			}
 
 			void RowPrepended()
 			{
-				m_ItemsCount++;
+				m_ItemCount++;
 				OnRowInserted(0);
 			}
 			void RowInserted(Row row)
 			{
-				m_ItemsCount++;
+				m_ItemCount++;
 				OnRowInserted(row);
 			}
 			void RowAppended()
 			{
-				m_ItemsCount++;
-				OnRowInserted(m_ItemsCount);
+				m_ItemCount++;
+				OnRowInserted(m_ItemCount);
 			}
 			void RowRemoved(Row row) 
 			{
-				m_ItemsCount--;
+				m_ItemCount--;
 				OnRowRemoved(row);
 			}
 	};

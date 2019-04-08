@@ -4,8 +4,8 @@
 #include "Row.h"
 #include "Column.h"
 #include "SortOrder.h"
-#include "INodeModel.h"
 #include "KxFramework/KxQueryInterface.h"
+#include "KxFramework/KxFunctional.h"
 
 namespace KxDataView2
 {
@@ -25,7 +25,7 @@ namespace KxDataView2
 {
 	class KX_API RootNode;
 
-	class KX_API Node: public KxRTTI::IExtendInterface<Node, INodeModel>
+	class KX_API Node: public KxRTTI::IInterface<Node>
 	{
 		friend class RootNode;
 		friend class MainWindow;
@@ -36,8 +36,8 @@ namespace KxDataView2
 
 		private:
 			Vector m_Children;
-			RootNode* m_RootNode = nullptr;
 			Node* m_ParentNode = nullptr;
+			RootNode* m_RootNode = nullptr;
 
 			// Total count of expanded (i.e. visible with the help of some scrolling) items
 			// in the subtree, but excluding this node. I.e. it is 0 for leaves and is the
@@ -78,7 +78,7 @@ namespace KxDataView2
 			intptr_t GetSubTreeCount() const;
 			void ChangeSubTreeCount(intptr_t num);
 			void RecalcIndexes(size_t startAt = 0);
-			void InitNodeFromThis(Node& node);
+			void InitNodeUsing(const Node& node);
 
 			bool IsNodeExpanded() const
 			{
@@ -115,11 +115,7 @@ namespace KxDataView2
 			{
 				return m_ParentNode;
 			}
-			RootNode* GetRootNode() const
-			{
-				return m_RootNode;
-			}
-
+			
 			const Vector& GetChildren() const
 			{
 				return m_Children;
@@ -160,6 +156,37 @@ namespace KxDataView2
 			void AttachChild(Node& node)
 			{
 				AttachChild(node, GetChildrenCount());
+			}
+			void AttachChildren(std::initializer_list<std::reference_wrapper<Node>> list)
+			{
+				for (Node& node: list)
+				{
+					AttachChild(node, GetChildrenCount());
+				}
+			}
+			template<class TContainer> void AttachChildren(TContainer& items)
+			{
+				auto GetRawPointer = [](auto& node)
+				{
+					using TValue = std::decay_t<decltype(node)>;
+					if constexpr(KxFunctional::is_unique_ptr_v<TValue>)
+					{
+						return node.get();
+					}
+					else if constexpr(std::is_pointer_v<TValue>)
+					{
+						return node;
+					}
+					else
+					{
+						return &node;
+					}
+				};
+
+				for (auto& node: items)
+				{
+					AttachChild(*GetRawPointer(node), GetChildrenCount());
+				}
 			}
 			
 			bool MoveTo(Node& node, size_t index)
@@ -210,6 +237,23 @@ namespace KxDataView2
 
 			wxRect GetCellRect(const Column* column = nullptr) const;
 			wxPoint GetDropdownMenuPosition(const Column* column = nullptr) const;
+
+		public:
+			bool IsEditable(const Column& column) const;
+			bool IsActivatable(const Column& column) const;
+
+			virtual Renderer& GetRenderer(const Column& column) const;
+			virtual Editor* GetEditor(const Column& column) const;
+
+			virtual wxAny GetValue(const Column& column) const;
+			virtual wxAny GetEditorValue(const Column& column) const;
+			virtual bool SetValue(const wxAny& value, Column& column);
+
+			virtual bool GetAttributes(CellAttributes& attributes, const CellState& cellState, const Column& column) const;
+			virtual bool IsCategoryNode() const;
+			virtual int GetRowHeight() const;
+
+			virtual bool Compare(const Node& other, const Column& column) const;
 		};
 }
 
