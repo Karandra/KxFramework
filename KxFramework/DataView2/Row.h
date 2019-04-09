@@ -17,12 +17,33 @@ namespace KxDataView2
 			}
 
 		private:
-			TValue m_Value;
+			TValue m_Value = GetInvalidValue();
 
 		public:
 			Row(TValue value = GetInvalidValue()) noexcept
 				:m_Value(value)
 			{
+			}
+			Row(const Row& other)
+				:m_Value(other.m_Value)
+			{
+			}
+			Row(Row&& other)
+				:m_Value(other.m_Value)
+			{
+				other.MakeNull();
+			}
+
+			Row& operator=(const Row& other)
+			{
+				m_Value = other.m_Value;
+				return *this;
+			}
+			Row& operator=(Row&& other)
+			{
+				m_Value = other.m_Value;
+				other.MakeNull();
+				return *this;
 			}
 
 		public:
