@@ -45,6 +45,8 @@ namespace KxDataView2
 			}
 			Node& GetRootNode() const;
 			View* GetView() const;
+
+			void ItemsChanged();
 			void CellChanged(Node& node, Column& column)
 			{
 				node.Refresh(column);
@@ -119,20 +121,20 @@ namespace KxDataView2
 			size_t m_ItemCount = 0;
 
 		private:
+			VirtualNode& GetVirtualNode() const;
+
 			void OnRowInserted(Row row);
 			void OnRowRemoved(Row row);
 
 		public:
-			virtual Row GetRow(const Node& node) const = 0;
-			virtual Node* GetNode(Row row) const = 0;
-
 			size_t GetItemCount() const
 			{
 				return m_ItemCount;
 			}
-			void SetItemCount(size_t newCount)
+			void SetItemCount(size_t count)
 			{
-				m_ItemCount = newCount;
+				m_ItemCount = count;
+				ItemsChanged();
 			}
 
 			void RowPrepended()

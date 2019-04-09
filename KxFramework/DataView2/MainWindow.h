@@ -111,6 +111,7 @@ namespace KxDataView2
 			// This is the tree structure of the model.
 			// Make 'm_ItemsCount' = -1 will cause the class recalculate the real displaying number of rows.
 			RootNode m_TreeRoot;
+			VirtualNode m_VirtualNode;
 			size_t m_ItemsCount = INVALID_COUNT;
 
 			// This is the tree node under the cursor

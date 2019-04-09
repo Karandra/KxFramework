@@ -1789,7 +1789,7 @@ namespace KxDataView2
 
 	MainWindow::MainWindow(View* parent, wxWindowID id)
 		:wxWindow(parent, id, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS|wxBORDER_NONE, GetClassInfo()->GetClassName()),
-		m_TreeRoot(this), m_View(parent)
+		m_TreeRoot(this), m_VirtualNode(m_TreeRoot), m_View(parent)
 	{
 		// Setup drawing
 		SetBackgroundStyle(wxBG_STYLE_PAINT);
@@ -2848,12 +2848,9 @@ namespace KxDataView2
 		{
 			if (row < GetRowCount())
 			{
-				Node* node = static_cast<VirtualListModel*>(m_Model)->GetNode(row);
-				if (node)
-				{
-					node->InitNodeUsing(m_TreeRoot);
-				}
-				return node;
+				VirtualNode& node = const_cast<VirtualNode&>(m_VirtualNode);
+				node.SetVirtualRow(row);
+				return &node;
 			}
 		}
 		else if (row)
@@ -2868,7 +2865,7 @@ namespace KxDataView2
 	{
 		if (m_IsVirtualListModel)
 		{
-			return static_cast<VirtualListModel*>(m_Model)->GetRow(node);
+			return m_VirtualNode.GetVirtualRow();
 		}
 		else if (m_Model)
 		{

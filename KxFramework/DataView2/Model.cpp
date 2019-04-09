@@ -12,6 +12,13 @@ namespace KxDataView2
 	{
 		return m_MainWindow ? m_MainWindow->GetView() : nullptr;
 	}
+	void Model::ItemsChanged()
+	{
+		if (m_MainWindow)
+		{
+			m_MainWindow->ItemsChanged();
+		}
+	}
 
 	bool Model::IsEditable(Node& node, const Column& column) const
 	{
@@ -56,18 +63,19 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
+	VirtualNode& VirtualListModel::GetVirtualNode() const
+	{
+		return GetMainWindow()->m_VirtualNode;
+	}
+
 	void VirtualListModel::OnRowInserted(Row row)
 	{
-		if (Node* node = GetNode(row))
-		{
-			GetMainWindow()->OnNodeAdded(*node);
-		}
+		VirtualNode::VirtualRowChanger changeRow(GetVirtualNode(), row);
+		GetMainWindow()->OnNodeAdded(changeRow.GetNode());
 	}
 	void VirtualListModel::OnRowRemoved(Row row)
 	{
-		if (Node* node = GetNode(row))
-		{
-			GetMainWindow()->OnNodeRemoved(*node, 1);
-		}
+		VirtualNode::VirtualRowChanger changeRow(GetVirtualNode(), row);
+		GetMainWindow()->OnNodeRemoved(changeRow.GetNode(), 1);
 	}
 }

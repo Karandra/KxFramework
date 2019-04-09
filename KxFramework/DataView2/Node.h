@@ -24,10 +24,12 @@ namespace KxDataView2
 namespace KxDataView2
 {
 	class KX_API RootNode;
+	class KX_API VirtualNode;
 
 	class KX_API Node: public KxRTTI::IInterface<Node>
 	{
 		friend class RootNode;
+		friend class VirtualNode;
 		friend class MainWindow;
 		friend class NodeOperation_RowToNode;
 
@@ -288,6 +290,57 @@ namespace KxDataView2
 			}
 			View* GetView() const;
 			Model* GetModel() const;
+	};
+}
+
+namespace KxDataView2
+{
+	class KX_API VirtualNode: public KxRTTI::IExtendInterface<VirtualNode, Node>
+	{
+		friend class MainWindow;
+		friend class VirtualListModel;
+
+		protected:
+			class VirtualRowChanger
+			{
+				private:
+					VirtualNode& m_Node;
+					const Row m_OriginalRow;
+
+				public:
+					VirtualRowChanger(VirtualNode& node, Row row)
+						:m_Node(node), m_OriginalRow(node.GetVirtualRow())
+					{
+						m_Node.SetVirtualRow(row);
+					}
+					~VirtualRowChanger()
+					{
+						m_Node.SetVirtualRow(m_OriginalRow);
+					}
+			
+				public:
+					VirtualNode& GetNode()
+					{
+						return m_Node;
+					}
+			};
+
+		protected:
+			Row GetVirtualRow() const
+			{
+				return m_IndexWithinParent;
+			}
+			void SetVirtualRow(Row row)
+			{
+				m_IndexWithinParent = row;
+			}
+
+		public:
+			VirtualNode(RootNode& rootNode, Row row = {})
+			{
+				InitNodeUsing(rootNode);
+				SetVirtualRow(row);
+			}
 	};
 }
 

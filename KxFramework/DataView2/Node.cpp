@@ -225,7 +225,10 @@ namespace KxDataView2
 			ResetSortOrder();
 		}
 
+		// Copy attributes and set this node as parent for child node
 		node.InitNodeUsing(*this);
+		node.m_ParentNode = this;
+
 		if (shouldInsertSorted)
 		{
 			// Use binary search to find the correct position to insert at.
