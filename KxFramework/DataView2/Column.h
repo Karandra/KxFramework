@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "ColumnID.h"
 #include "KxFramework/KxWithOptions.h"
+#include "KxFramework/KxQueryInterface.h"
 
 namespace KxDataView2
 {
@@ -66,7 +67,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API Column
+	class KX_API Column: public KxRTTI::IInterface<Column>, public wxClientDataContainer
 	{
 		friend class KX_API View;
 		friend class KX_API MainWindow;
