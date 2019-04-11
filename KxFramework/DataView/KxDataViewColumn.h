@@ -9,7 +9,10 @@ class KX_API KxDataViewRenderer;
 class KX_API KxDataViewEditor;
 class KX_API KxDataViewModel;
 
-class KX_API KxDataViewColumn: private wxSettableHeaderColumn, public KxWithOptions<KxDataViewColumnFlags, KxDV_COL_NONE>
+class KX_API KxDataViewColumn:
+	private wxSettableHeaderColumn,
+	public KxWithOptions<KxDataViewColumnFlags, KxDV_COL_NONE>,
+	public wxClientDataContainer
 {
 	friend class KX_API KxDataViewHeaderCtrl;
 	friend class KX_API KxDataViewMainWindow;
