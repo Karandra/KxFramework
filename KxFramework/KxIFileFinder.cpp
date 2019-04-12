@@ -4,6 +4,10 @@
 wxString KxIFileFinder::Normalize(const wxString& source, bool start, bool end) const
 {
 	wxString out = source;
+
+	// Remove long path prefix
+	out.StartsWith(wxS("\\\\?\\"), &out);
+
 	if (start)
 	{
 		out.StartsWith(wxS("\\"), &out);
