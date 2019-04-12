@@ -91,7 +91,7 @@ bool KxFileFinder::IsOK() const
 bool KxFileFinder::Run()
 {
 	WIN32_FIND_DATAW fileInfo = {0};
-	HANDLE searchHandle = CallFindFirstFile(m_SearchQuery, fileInfo, m_CaseSensitive);
+	HANDLE searchHandle = CallFindFirstFile(wxS("\\\\?\\") + m_SearchQuery, fileInfo, m_CaseSensitive);
 	if (searchHandle != INVALID_HANDLE_VALUE)
 	{
 		if (OnFound(fileInfo))
@@ -110,7 +110,7 @@ KxFileItem KxFileFinder::FindNext()
 	if (m_Handle == INVALID_HANDLE_VALUE)
 	{
 		// No search handle available, begin operation.
-		m_Handle = CallFindFirstFile(m_SearchQuery, m_FindData, m_CaseSensitive);
+		m_Handle = CallFindFirstFile(wxS("\\\\?\\") + m_SearchQuery, m_FindData, m_CaseSensitive);
 		if (m_Handle != INVALID_HANDLE_VALUE)
 		{
 			m_IsCanceled = false;
