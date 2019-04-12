@@ -944,29 +944,33 @@ KxStringVector KxFile::Find(const wxString& filter, KxFileSearchType elementType
 		KxFileFinder finder(source, filter);
 		for (KxFileItem item = finder.FindNext(); item.IsOK(); item = finder.FindNext())
 		{
-			if (elementType == KxFS_ALL || (elementType == KxFS_FILE && item.IsFile()) || (elementType == KxFS_FOLDER && item.IsDirectory()))
+			if (item.IsNormalItem())
 			{
-				if (m_EventHnadler)
+				if (elementType == KxFS_ALL || (elementType == KxFS_FILE && item.IsFile()) || (elementType == KxFS_FOLDER && item.IsDirectory()))
 				{
-					KxFileOperationEvent event(KxEVT_FILEOP_SEARCH);
-					event.SetEventObject(m_EventHnadler);
-					event.SetSource(source);
-					event.SetCurrent(item.GetFullPath());
-					event.SetMajorTotal(elementsList.size());
-					event.SetMajorProcessed(elementsList.size());
-					event.SetInt(1); // It was "is match" property, now it's always true
-
-					m_EventHnadler->ProcessEvent(event);
-					if (event.IsStopped())
+					if (m_EventHnadler)
 					{
-						return false;
+						KxFileOperationEvent event(KxEVT_FILEOP_SEARCH);
+						event.SetEventObject(m_EventHnadler);
+						event.SetSource(source);
+						event.SetCurrent(item.GetFullPath());
+						event.SetMajorTotal(elementsList.size());
+						event.SetMajorProcessed(elementsList.size());
+						event.SetInt(1); // It was "is match" property, now it's always true
+
+						m_EventHnadler->ProcessEvent(event);
+						if (event.IsStopped())
+						{
+							return false;
+						}
 					}
+					elementsList.push_back(item.GetFullPath());
 				}
-				elementsList.push_back(item.GetFullPath());
-			}
-			if (recurse && item.IsDirectory())
-			{
-				directories.push_back(item.GetFullPath());
+
+				if (recurse && item.IsDirectory())
+				{
+					directories.push_back(item.GetFullPath());
+				}
 			}
 		}
 		return true;
@@ -981,7 +985,7 @@ KxStringVector KxFile::Find(const wxString& filter, KxFileSearchType elementType
 			KxStringVector roundDirectories;
 			for (size_t i = 0; i < directories.size() && !shouldStop; i++)
 			{
-				shouldStop = ScanFolder(directories[i], roundDirectories);
+				shouldStop = !ScanFolder(directories[i], roundDirectories);
 			}
 			directories = std::move(roundDirectories);
 		}
