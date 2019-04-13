@@ -67,6 +67,20 @@ namespace KxWebSocket
 			return context;
 		});
 	}
+	void SecureClient::AddRequestHeaders()
+	{
+		for (const auto& [key, value]: m_Headers)
+		{
+			try
+			{
+				m_ConnectionPtr->append_header(ToUTF8(key), ToUTF8(value));
+			}
+			catch (...)
+			{
+			}
+		}
+	}
+
 	KxWebSocketEvent* SecureClient::NewEvent(wxEventType eventType)
 	{
 		return new KxWebSocketEvent(eventType, KxID_NONE);
@@ -108,6 +122,8 @@ namespace KxWebSocket
 		m_ConnectionPtr = m_Client.get_connection(ToUTF8(!address.IsEmpty() ? address : m_Address), errorCode);
 		if (!errorCode)
 		{
+			AddRequestHeaders();
+
 			KxWebSocketEvent event(KxEVT_WEBSOCKET_CONNECTING, KxID_NONE);
 			ProcessEvent(event);
 
@@ -177,18 +193,60 @@ namespace KxWebSocket
 
 	void SecureClient::AddHeader(const wxString& key, const wxString& value)
 	{
-		try
+		if (m_ConnectionPtr)
 		{
-			m_ConnectionPtr->append_header(ToUTF8(key), ToUTF8(value));
+			try
+			{
+				m_ConnectionPtr->append_header(ToUTF8(key), ToUTF8(value));
+			}
+			catch (...)
+			{
+			}
 		}
-		catch (...)
+		else
 		{
+			m_Headers.insert_or_assign(key, value);
 		}
 	}
 	void SecureClient::ReplaceHeader(const wxString& key, const wxString& value)
 	{
-		m_ConnectionPtr->replace_header(ToUTF8(key), ToUTF8(value));
+		if (m_ConnectionPtr)
+		{
+			try
+			{
+				m_ConnectionPtr->replace_header(ToUTF8(key), ToUTF8(value));
+			}
+			catch (...)
+			{
+			}
+		}
+		else
+		{
+			m_Headers.insert_or_assign(key, value);
+		}
 	}
+	void SecureClient::RemoveHeader(const wxString& key)
+	{
+		if (m_ConnectionPtr)
+		{
+			try
+			{
+				m_ConnectionPtr->remove_header(ToUTF8(key));
+			}
+			catch (...)
+			{
+			}
+		}
+		else
+		{
+			m_Headers.erase(key);
+		}
+	}
+	void SecureClient::ClearHeaders()
+	{
+		m_Headers.clear();
+	}
+
 	void SecureClient::SetUserAgent(const wxString& userAgent)
 	{
 		m_Client.set_user_agent(ToUTF8(userAgent));

@@ -32,6 +32,8 @@ namespace KxWebSocket
 			
 			virtual void AddHeader(const wxString& key, const wxString& value) = 0;
 			virtual void ReplaceHeader(const wxString& key, const wxString& value) = 0;
+			virtual void RemoveHeader(const wxString& key) = 0;
+			virtual void ClearHeaders() = 0;
 			virtual void SetUserAgent(const wxString& userAgent) = 0;
 
 			bool Connect(const wxString& address = {})

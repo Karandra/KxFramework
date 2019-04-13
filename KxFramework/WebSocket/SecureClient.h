@@ -31,10 +31,14 @@ namespace KxWebSocket
 			TClient m_Client;
 			TConnectionPtr m_ConnectionPtr;
 			TConnectionHandle m_ConnectionHandle;
+
+			std::unordered_map<wxString, wxString> m_Headers;
 			wxString m_Address;
 
 		private:
 			void RegisterHandlers();
+			void AddRequestHeaders();
+
 			KxWebSocketEvent* NewEvent(wxEventType eventType);
 			void SendEvent(wxEvent* event);
 
@@ -61,6 +65,8 @@ namespace KxWebSocket
 
 			void AddHeader(const wxString& key, const wxString& value) override;
 			void ReplaceHeader(const wxString& key, const wxString& value) override;
+			void RemoveHeader(const wxString& key) override;
+			void ClearHeaders() override;
 			void SetUserAgent(const wxString& userAgent) override;
 	};
 }
