@@ -92,6 +92,11 @@ class KX_API KxCURLSession: public wxEvtHandler
 
 	public:
 		KxCURLSession(const wxString& url = wxEmptyString);
+		KxCURLSession(const KxCURLSession&) = delete;
+		KxCURLSession(KxCURLSession&& other)
+		{
+			*this = std::move(other);
+		}
 		virtual ~KxCURLSession();
 
 	public:
@@ -149,4 +154,8 @@ class KX_API KxCURLSession: public wxEvtHandler
 		{
 			m_UserAgent = userAgent;
 		}
+
+	public:
+		KxCURLSession& operator=(KxCURLSession&) = delete;
+		KxCURLSession& operator=(KxCURLSession&& other);
 };

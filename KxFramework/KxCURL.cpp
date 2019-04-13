@@ -304,6 +304,30 @@ void KxCURLSession::AddHeader(const wxString& value)
 	m_Headers.push_back(value.ToStdString());
 }
 
+KxCURLSession& KxCURLSession::operator=(KxCURLSession&& other)
+{
+	m_Handle = other.m_Handle;
+	m_IsPaused = other.m_IsPaused;
+	m_IsStopped = other.m_IsStopped;
+	
+	m_HeadersSList = other.m_HeadersSList;
+	m_Headers = std::move(other.m_Headers);
+
+	m_URL = other.m_URL;
+	m_PostData = other.m_PostData;
+	m_UserAgent = other.m_UserAgent;
+
+	other.m_Handle = nullptr;
+	other.m_IsPaused = false;
+	other.m_IsStopped = false;
+
+	other.m_HeadersSList = nullptr;
+
+	other.m_URL.clear();
+	other.m_PostData.clear();
+	other.m_UserAgent.clear();
+}
+
 //////////////////////////////////////////////////////////////////////////
 class KxCURLModule: public wxModule
 {
