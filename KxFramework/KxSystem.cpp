@@ -40,11 +40,11 @@ bool KxSystem::Is64Bit()
 }
 KxSystem::KernelVersion KxSystem::GetKernelVersion()
 {
-	RTL_OSVERSIONINFOEXW info = {0};
-	info.dwOSVersionInfoSize = sizeof(info);
-	KxSystemAPI::RtlGetVersion(&info);
+	RTL_OSVERSIONINFOEXW osVersionInfo = {0};
+	osVersionInfo.dwOSVersionInfoSize = sizeof(osVersionInfo);
+	KxSystemAPI::RtlGetVersion(&osVersionInfo);
 
-	return KernelVersion(info.dwMajorVersion, info.dwMinorVersion);
+	return KernelVersion(osVersionInfo.dwMajorVersion, osVersionInfo.dwMinorVersion, osVersionInfo.dwBuildNumber);
 }
 wxString KxSystem::GetName()
 {
@@ -169,20 +169,17 @@ DWORD KxSystem::GetProductInfo()
 }
 KxSystem::VersionInfo KxSystem::GetVersionInfo()
 {
-	RTL_OSVERSIONINFOEXW info = {0};
-	info.dwOSVersionInfoSize = sizeof(info);
-	KxSystemAPI::RtlGetVersion(&info);
+	RTL_OSVERSIONINFOEXW osVersionInfo = {0};
+	osVersionInfo.dwOSVersionInfoSize = sizeof(osVersionInfo);
+	KxSystemAPI::RtlGetVersion(&osVersionInfo);
 
-	VersionInfo versionInfo;
-	versionInfo.MajorVersion = info.dwMajorVersion;
-	versionInfo.MinorVersion = info.dwMinorVersion;
-	versionInfo.BuildNumber = info.dwBuildNumber;
-	versionInfo.PlatformID = info.dwPlatformId;
-	versionInfo.ServicePack = info.szCSDVersion;
-	versionInfo.ServicePackMajor = info.wServicePackMajor;
-	versionInfo.ServicePackMinor = info.wServicePackMinor;
-	versionInfo.ProductType = info.wProductType;
-	versionInfo.ProductSuite = info.wSuiteMask;
+	VersionInfo versionInfo(osVersionInfo.dwMajorVersion, osVersionInfo.dwMinorVersion, osVersionInfo.dwBuildNumber);
+	versionInfo.PlatformID = osVersionInfo.dwPlatformId;
+	versionInfo.ServicePack = osVersionInfo.szCSDVersion;
+	versionInfo.ServicePackMajor = osVersionInfo.wServicePackMajor;
+	versionInfo.ServicePackMinor = osVersionInfo.wServicePackMinor;
+	versionInfo.ProductType = osVersionInfo.wProductType;
+	versionInfo.ProductSuite = osVersionInfo.wSuiteMask;
 	return versionInfo;
 }
 KxSystem::MemoryInfo KxSystem::GetMemoryInfo()
@@ -366,7 +363,7 @@ bool KxSystem::IsWindowsServer()
 bool KxSystem::IsWindowsVersionOrGreater(int majorVersion, int minorVersion, int servicePackMajor)
 {
 	VersionInfo version = GetVersionInfo();
-	bool isVersionOK = version.MajorVersion >= majorVersion && version.MinorVersion >= minorVersion;
+	bool isVersionOK = version.Kernel.Major >= majorVersion && version.Kernel.Minor >= minorVersion;
 	if (servicePackMajor != -1)
 	{
 		isVersionOK = isVersionOK && version.ServicePackMajor >= servicePackMajor;

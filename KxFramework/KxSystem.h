@@ -36,26 +36,59 @@ class KX_API KxSystem
 	public:
 		struct KernelVersion
 		{
-			const int Major = 0;
-			const int Minor = 0;
+			public:
+				const int Major = -1;
+				const int Minor = -1;
+				const int Build = -1;
 
-			KernelVersion(int major = 0, int minor = 0)
-				:Major(major), Minor(minor)
-			{
+			public:
+				KernelVersion() = default;
+				KernelVersion(int major, int minor = 0, int build = 0)
+					:Major(major), Minor(minor), Build(build)
+				{
+				}
 
-			}
+			public:
+				bool IsOK() const
+				{
+					// Major version should be > 0, others are allowed to be zero
+					return Major > 0 && Minor >= 0 && Build >= 0;
+				}
 		};
 		struct VersionInfo
 		{
-			int MajorVersion = 0;
-			int MinorVersion = 0;
-			int BuildNumber = 0;
-			int PlatformID = 0;
-			wxString ServicePack;
-			int ServicePackMajor = 0;
-			int ServicePackMinor = 0;
-			int ProductType = 0;
-			int ProductSuite = 0;
+			public:
+				KernelVersion Kernel;
+
+				wxString ServicePack;
+				int PlatformID = -1;
+				int ServicePackMajor = -1;
+				int ServicePackMinor = -1;
+				int ProductType = -1;
+				int ProductSuite = -1;
+
+			public:
+				VersionInfo() = default;
+				VersionInfo(int major, int minor = 0, int build = 0)
+					:Kernel(major, minor, build)
+				{
+				}
+
+			public:
+				bool IsOK() const
+				{
+					return Kernel.IsOK() &&
+						PlatformID >= 0 &&
+						ServicePackMajor >= 0 &&
+						ServicePackMajor >= 0 &&
+						ServicePackMinor >= 0 &&
+						ProductType >= 0 &&
+						ProductSuite >= 0;
+				}
+				bool HasServicePack() const
+				{
+					return !ServicePack.IsEmpty();
+				}
 		};
 		struct MemoryInfo
 		{
