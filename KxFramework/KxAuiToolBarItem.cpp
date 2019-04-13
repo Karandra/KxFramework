@@ -4,6 +4,37 @@
 #include "KxFramework/KxMenu.h"
 #include "KxFramework/KxUtility.h"
 
+wxPoint KxAuiToolBarItem::DoGetDropdownMenuPosition(DWORD* alignment, bool leftAlign) const
+{
+	wxRect rect = GetRect();
+	if (!rect.IsEmpty())
+	{
+		if (leftAlign)
+		{
+			KxUtility::SetIfNotNull(alignment, TPM_LEFTALIGN|TPM_TOPALIGN);
+			return rect.GetLeftBottom() + wxPoint(0, 2);
+		}
+		else
+		{
+			KxUtility::SetIfNotNull(alignment, TPM_RIGHTALIGN|TPM_TOPALIGN);
+			return rect.GetRightBottom() + wxPoint(0, 2);
+		}
+	}
+	return wxDefaultPosition;
+}
+wxWindowID KxAuiToolBarItem::DoShowDropdownMenu(bool leftAlign)
+{
+	DWORD alignment = 0;
+	wxPoint pos = DoGetDropdownMenuPosition(&alignment, leftAlign);
+	wxWindowID ret = GetDropdownMenu()->Show(m_Control, pos, alignment);
+
+	// To make parent window respond to mouse events without clicking to window manually
+	m_Control->GenerateMouseLeave();
+	m_Control->GetParent()->CaptureMouse();
+	m_Control->GetParent()->ReleaseMouse();
+	return ret;
+}
+
 KxAuiToolBarItem::KxAuiToolBarItem(KxAuiToolBar* control, wxAuiToolBarItem* item)
 	:m_Control(control), m_Item(item)
 {
@@ -24,36 +55,6 @@ void KxAuiToolBarItem::Refresh()
 KxAuiToolBar* KxAuiToolBarItem::GetToolBar() const
 {
 	return m_Control;
-}
-wxPoint KxAuiToolBarItem::GetDropdownMenuPosition(DWORD* alignment) const
-{
-	wxRect rect = GetRect();
-	if (!rect.IsEmpty())
-	{
-		if (HasDropDown())
-		{
-			KxUtility::SetIfNotNull(alignment, TPM_RIGHTALIGN|TPM_TOPALIGN);
-			return rect.GetRightBottom() + wxPoint(0, 2);
-		}
-		else
-		{
-			KxUtility::SetIfNotNull(alignment, TPM_LEFTALIGN|TPM_TOPALIGN);
-			return rect.GetLeftBottom() + wxPoint(0, 2);
-		}
-	}
-	return wxDefaultPosition;
-}
-wxWindowID KxAuiToolBarItem::ShowDropdownMenu()
-{
-	DWORD alignment = 0;
-	wxPoint pos = GetDropdownMenuPosition(&alignment);
-	wxWindowID ret = GetDropdownMenu()->Show(m_Control, pos, alignment);
-
-	// To make parent window respond to mouse events without clicking to window manually
-	m_Control->GenerateMouseLeave();
-	m_Control->GetParent()->CaptureMouse();
-	m_Control->GetParent()->ReleaseMouse();
-	return ret;
 }
 wxWindowID KxAuiToolBarItem::GetID() const
 {

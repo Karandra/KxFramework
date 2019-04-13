@@ -24,6 +24,10 @@ class KX_API KxAuiToolBarItem:
 		KxAuiToolBar* m_Control = nullptr;
 		wxAuiToolBarItem* m_Item = nullptr;
 
+	private:
+		wxPoint DoGetDropdownMenuPosition(DWORD* alignment, bool leftAlign) const;
+		wxWindowID DoShowDropdownMenu(bool leftAlign);
+
 	public:
 		KxAuiToolBarItem(KxAuiToolBar* control, wxAuiToolBarItem* item);
 		virtual ~KxAuiToolBarItem();
@@ -31,10 +35,34 @@ class KX_API KxAuiToolBarItem:
 	public:
 		bool IsOK() const;
 		void Refresh();
-
 		KxAuiToolBar* GetToolBar() const;
-		wxPoint GetDropdownMenuPosition(DWORD* alignment = nullptr) const;
-		wxWindowID ShowDropdownMenu();
+
+		wxPoint GetDropdownMenuPosition(DWORD* alignment = nullptr) const
+		{
+			return DoGetDropdownMenuPosition(alignment, !HasDropDown());
+		}
+		wxPoint GetDropdownMenuPosLeftAlign(DWORD* alignment = nullptr) const
+		{
+			return DoGetDropdownMenuPosition(alignment, true);
+		}
+		wxPoint GetDropdownMenuPosRightAlign(DWORD* alignment = nullptr) const
+		{
+			return DoGetDropdownMenuPosition(alignment, false);
+		}
+		
+		wxWindowID ShowDropdownMenu()
+		{
+			return DoShowDropdownMenu(!HasDropDown());
+		}
+		wxWindowID ShowDropdownMenuLeftAlign()
+		{
+			return DoShowDropdownMenu(true);
+		}
+		wxWindowID ShowDropdownMenuRightAlign()
+		{
+			return DoShowDropdownMenu(false);
+		}
+
 		wxWindowID GetID() const;
 		wxRect GetRect() const;
 		int GetPosition() const;
