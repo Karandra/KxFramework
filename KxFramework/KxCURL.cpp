@@ -113,13 +113,15 @@ size_t KxCURLSession::OnWriteResponse(char* data, size_t size, size_t count, voi
 	else
 	{
 		// Write data
-		reply.AddChunk(data, size * count);
+		const size_t length = size * count;
+		reply.AddChunk(data, length);
 
 		// Send event
 		KxCURLEvent event(KxEVT_CURL_DOWNLOAD, &session, &reply);
 		event.SetEventObject(&session);
 		event.SetSource(session.m_URL);
 		event.SetMajorProcessed(reply.GetDownloaded());
+		event.SetResponseData(data, length);
 
 		// Get total size
 		curl_off_t contentLength = -1;
@@ -132,8 +134,26 @@ size_t KxCURLSession::OnWriteResponse(char* data, size_t size, size_t count, voi
 		event.SetSpeed(downloadSpeed);
 
 		session.SafelyProcessEvent(event);
-		return size * count;
+		return length;
 	}
+}
+size_t KxCURLSession::OnWriteHeader(char* data, size_t size, size_t count, void* userData)
+{
+	CallbackData* callbackData = reinterpret_cast<CallbackData*>(userData);
+	KxCURLSession& session = callbackData->GetSession();
+	KxCURLReplyBase& reply = callbackData->GetReply();
+
+	// Save header
+	const size_t length = size * count;
+
+	// Send event
+	KxCURLEvent event(KxEVT_CURL_RESPONSE_HEADER, &session, &reply);
+	event.SetEventObject(&session);
+	event.SetSource(session.m_URL);
+	event.SetResponseData(data, length);
+	session.SafelyProcessEvent(event);
+
+	return length;
 }
 
 int KxCURLSession::SetOption(int option, const wxString& value, size_t* length)
@@ -204,8 +224,14 @@ void KxCURLSession::DoSendRequest(KxCURLReplyBase& reply)
 
 	// Server response
 	CallbackData callbackData(*this, reply);
+
+	// On data
 	SetOption(CURLOPT_WRITEDATA, &callbackData);
 	SetOptionFunction(CURLOPT_WRITEFUNCTION, OnWriteResponse);
+
+	// On headers
+	SetOption(CURLOPT_HEADERDATA, &callbackData);
+	SetOptionFunction(CURLOPT_HEADERFUNCTION, OnWriteHeader);
 
 	// Send
 	reply.SetErrorCode(curl_easy_perform(m_Handle));

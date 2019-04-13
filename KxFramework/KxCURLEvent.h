@@ -6,9 +6,21 @@ class KX_API KxCURLReplyBase;
 
 class KX_API KxCURLEvent: public KxFileOperationEvent
 {
+	friend class KxCURLSession;
+
 	private:
 		KxCURLSession* m_Session = nullptr;
 		KxCURLReplyBase* m_Reply = nullptr;
+
+		const char* m_ResponseData = nullptr;
+		size_t m_ResponseLength = 0;
+
+	private:
+		void SetResponseData(const char* data, size_t length)
+		{
+			m_ResponseData = data;
+			m_ResponseLength = length;
+		}
 
 	public:
 		KxCURLEvent() {}
@@ -31,8 +43,13 @@ class KX_API KxCURLEvent: public KxFileOperationEvent
 			return *m_Reply;
 		}
 
+		wxString GetHeaderKey() const;
+		wxString GetHeaderValue() const;
+		wxString GetHeaderLine() const;
+
 	public:
 		wxDECLARE_DYNAMIC_CLASS(KxCURLEvent);
 };
 
 KX_DECLARE_EVENT(KxEVT_CURL_DOWNLOAD, KxCURLEvent);
+KX_DECLARE_EVENT(KxEVT_CURL_RESPONSE_HEADER, KxCURLEvent);

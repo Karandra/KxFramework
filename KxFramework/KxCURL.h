@@ -74,6 +74,7 @@ class KX_API KxCURLSession: public wxEvtHandler
 
 	private:
 		static size_t OnWriteResponse(char* data, size_t size, size_t count, void* userData);
+		static size_t OnWriteHeader(char* data, size_t size, size_t count, void* userData);
 
 	private:
 		int SetOption(int option, const wxString& value, size_t* length = nullptr);
