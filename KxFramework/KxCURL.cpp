@@ -326,6 +326,8 @@ KxCURLSession& KxCURLSession::operator=(KxCURLSession&& other)
 	other.m_URL.clear();
 	other.m_PostData.clear();
 	other.m_UserAgent.clear();
+
+	return *this;
 }
 
 //////////////////////////////////////////////////////////////////////////
