@@ -49,14 +49,12 @@ class KX_API KxStreamBase
 template<class BaseStreamT> class KxInputStreamWrapper: public BaseStreamT
 {
 	protected:
-		template<class C> static bool DoRemoveTrailingNulls(C& data)
+		template<class C> static void DoRemoveTrailingNulls(C& data)
 		{
-			if (!data.empty() && data.back() == 0)
+			while (!data.empty() && data.back() == 0)
 			{
 				data.pop_back();
-				return true;
 			}
-			return false;
 		}
 		template<class C> bool DoReadContainter(C& values, size_t count)
 		{
