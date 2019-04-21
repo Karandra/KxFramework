@@ -23,7 +23,7 @@ namespace KxDataView2
 		FinishEditing();
 
 		const int columnIndex = event.GetColumn();
-		if (SendEvent(KxEVT_DATAVIEW_COLUMN_HEADER_CLICK, columnIndex))
+		if (SendEvent(EVENT_COLUMN_HEADER_CLICK, columnIndex))
 		{
 			return;
 		}
@@ -52,14 +52,14 @@ namespace KxDataView2
 
 		m_View->GetMainWindow()->OnShouldResort();
 		m_View->OnColumnChange(columnIndex);
-		SendEvent(KxEVT_DATAVIEW_COLUMN_SORTED, columnIndex);
+		SendEvent(EVENT_COLUMN_SORTED, columnIndex);
 	}
 	void HeaderCtrl::OnRClick(wxHeaderCtrlEvent& event)
 	{
 		FinishEditing();
 
 		// Event wasn't processed somewhere, use default behavior
-		if (!SendEvent(KxEVT_DATAVIEW_COLUMN_HEADER_RIGHT_CLICK, event.GetColumn()))
+		if (!SendEvent(EVENT_COLUMN_HEADER_RCLICK, event.GetColumn()))
 		{
 			event.Skip();
 			ToggleSortByColumn(event.GetColumn());
@@ -88,7 +88,7 @@ namespace KxDataView2
 		wxPoint pos = event.GetPosition();
 		if (pos.x > m_View->GetMainWindow()->GetRowWidth())
 		{
-			SendEvent(event.GetEventType() == wxEVT_LEFT_UP ? KxEVT_DATAVIEW_COLUMN_HEADER_CLICK : KxEVT_DATAVIEW_COLUMN_HEADER_RIGHT_CLICK, -1);
+			SendEvent(event.GetEventType() == wxEVT_LEFT_UP ? EVENT_COLUMN_HEADER_CLICK : EVENT_COLUMN_HEADER_RCLICK, -1);
 		}
 		event.Skip();
 	}
@@ -133,13 +133,13 @@ namespace KxDataView2
 			if (column->IsSorted())
 			{
 				column->ResetSorting();
-				SendEvent(KxEVT_DATAVIEW_COLUMN_SORTED, columnIndex);
+				SendEvent(EVENT_COLUMN_SORTED, columnIndex);
 			}
 			else
 			{
 				// Start sorting by it.
 				column->SortAscending();
-				SendEvent(KxEVT_DATAVIEW_COLUMN_SORTED, columnIndex);
+				SendEvent(EVENT_COLUMN_SORTED, columnIndex);
 			}
 		}
 	}
