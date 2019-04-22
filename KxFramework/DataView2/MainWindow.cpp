@@ -1319,34 +1319,6 @@ namespace KxDataView2
 				const wxRect columnRect(cellRect.GetX(), 0, cellRect.GetWidth(), m_virtualSize.GetHeight());
 				wxDCClipper clip(paintDC, columnRect);
 
-				// Draw expander
-				if (column == expanderColumn && !expanderRect.IsEmpty())
-				{
-					int flags = 0;
-					if (m_TreeNodeUnderMouse == node)
-					{
-						flags |= wxCONTROL_CURRENT;
-					}
-					if (node->IsNodeExpanded())
-					{
-						flags |= wxCONTROL_EXPANDED;
-					}
-
-					if (isCategoryRow)
-					{
-						wxRendererNative::Get().DrawCollapseButton(this, paintDC, expanderRect, flags);
-					}
-					else
-					{
-						const int partID = flags & wxCONTROL_CURRENT ? TVP_HOTGLYPH : TVP_GLYPH;
-						const int stateID = flags & wxCONTROL_EXPANDED ? GLPS_OPENED : GLPS_CLOSED;
-						if (!m_View->m_UsingSystemTheme || !KxUtility::DrawThemeBackground(this, wxS("TREEVIEW"), paintDC, partID, stateID, expanderRect))
-						{
-							wxRendererNative::Get().DrawTreeItemButton(this, paintDC, expanderRect, flags);
-						}
-					}
-				}
-
 				// Adjust cell rectangle
 				wxRect adjustedCellRect = cellRect;
 				adjustedCellRect.Deflate(PADDING_RIGHTLEFT, 0);
@@ -1383,6 +1355,34 @@ namespace KxDataView2
 
 				// Move coordinates to next column
 				cellRect.x += cellRect.width;
+
+				// Draw expander
+				if (column == expanderColumn && !expanderRect.IsEmpty())
+				{
+					int flags = 0;
+					if (m_TreeNodeUnderMouse == node)
+					{
+						flags |= wxCONTROL_CURRENT;
+					}
+					if (node->IsNodeExpanded())
+					{
+						flags |= wxCONTROL_EXPANDED;
+					}
+
+					if (isCategoryRow)
+					{
+						wxRendererNative::Get().DrawCollapseButton(this, paintDC, expanderRect, flags);
+					}
+					else
+					{
+						const int partID = flags & wxCONTROL_CURRENT ? TVP_HOTGLYPH : TVP_GLYPH;
+						const int stateID = flags & wxCONTROL_EXPANDED ? GLPS_OPENED : GLPS_CLOSED;
+						if (!m_View->m_UsingSystemTheme || !KxUtility::DrawThemeBackground(this, wxS("TREEVIEW"), paintDC, partID, stateID, expanderRect))
+						{
+							wxRendererNative::Get().DrawTreeItemButton(this, paintDC, expanderRect, flags);
+						}
+					}
+				}
 
 				// Draw vertical rules
 				if (verticalRulesEnabled && currentColumnIndex + 1 != coulmnIndexEnd)
