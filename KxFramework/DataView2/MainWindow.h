@@ -225,11 +225,7 @@ namespace KxDataView2
 			{
 				return m_TreeRoot;
 			}
-			void ItemsChanged()
-			{
-				m_ItemsCount = RecalculateItemCount();
-				m_View->InvalidateColumnsBestWidth();
-			}
+			void ItemsChanged();
 
 			// View
 			void SetView(View* owner)

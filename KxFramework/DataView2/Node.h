@@ -76,8 +76,10 @@ namespace KxDataView2
 				m_SortOrder = SortOrder::UseNone();
 			}
 
-			void CalcSubTreeCount();
-			intptr_t GetSubTreeCount() const;
+			intptr_t GetSubTreeCount() const
+			{
+				return m_SubTreeCount;
+			}
 			void ChangeSubTreeCount(intptr_t num);
 			void RecalcIndexes(size_t startAt = 0);
 			void InitNodeUsing(const Node& node);
@@ -88,13 +90,9 @@ namespace KxDataView2
 			}
 			void SetNodeExpanded(bool expanded)
 			{
-				CalcSubTreeCount();
 				m_IsExpanded = expanded;
 			}
-			void ToggleNodeExpanded()
-			{
-				SetNodeExpanded(!IsNodeExpanded());
-			}
+			void ToggleNodeExpanded();
 
 			void ResetAll()
 			{
@@ -103,6 +101,7 @@ namespace KxDataView2
 
 		public:
 			Node() = default;
+			~Node();
 
 		public:
 			bool IsRootNode() const
@@ -213,7 +212,7 @@ namespace KxDataView2
 			bool IsRenderable(const Column& column) const;
 
 			bool IsExpanded() const;
-			void SetExpanded(bool expanded);
+			void SetExpanded(bool expand);
 			void Expand();
 			void Collapse();
 			void ToggleExpanded();

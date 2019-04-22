@@ -92,10 +92,23 @@ namespace KxDataView2
 			}
 		}
 	}
-
-	void Node::CalcSubTreeCount()
+	void Node::ChangeSubTreeCount(intptr_t num)
 	{
-		if (!IsRootNode() && HasChildren())
+		if (m_IsExpanded)
+		{
+			m_SubTreeCount += num;
+			if (m_ParentNode)
+			{
+				m_ParentNode->ChangeSubTreeCount(num);
+			}
+		}
+	}
+	void Node::ToggleNodeExpanded()
+	{
+		// We do not allow the (invisible) root node to be collapsed because
+		// there is no way to expand it again.
+
+		if (!IsRootNode())
 		{
 			intptr_t count = 0;
 			for (const Node* node: m_Children)
@@ -106,9 +119,11 @@ namespace KxDataView2
 			if (m_IsExpanded)
 			{
 				ChangeSubTreeCount(-count);
+				m_IsExpanded = false;
 			}
 			else
 			{
+				m_IsExpanded = true;
 				ChangeSubTreeCount(+count);
 
 				// Sort the children if needed
@@ -116,19 +131,7 @@ namespace KxDataView2
 			}
 		}
 	}
-	intptr_t Node::GetSubTreeCount() const
-	{
-		return m_SubTreeCount;
-	}
-	void Node::ChangeSubTreeCount(intptr_t num)
-	{
-		m_SubTreeCount += num;
 
-		if (m_ParentNode)
-		{
-			m_ParentNode->ChangeSubTreeCount(num);
-		}
-	}
 	void Node::InitNodeUsing(const Node& node)
 	{
 		m_ParentNode = node.m_ParentNode;
@@ -141,6 +144,11 @@ namespace KxDataView2
 		{
 			m_Children[i]->m_IndexWithinParent = i;
 		}
+	}
+
+	Node::~Node()
+	{
+		DetachAllChildren();
 	}
 
 	Row Node::FindChild(const Node& node) const
@@ -229,6 +237,7 @@ namespace KxDataView2
 		node.InitNodeUsing(*this);
 		node.m_ParentNode = this;
 
+		const intptr_t addedCount = node.GetSubTreeCount() + 1;
 		if (shouldInsertSorted)
 		{
 			// Use binary search to find the correct position to insert at.
@@ -242,7 +251,9 @@ namespace KxDataView2
 			m_Children.insert(m_Children.begin() + index, &node);
 			RecalcIndexes(index);
 		}
+
 		m_RootNode->GetMainWindow()->OnNodeAdded(*this);
+		ChangeSubTreeCount(+addedCount);
 	}
 	Node* Node::DetachChild(size_t index)
 	{
@@ -258,6 +269,7 @@ namespace KxDataView2
 			if (MainWindow* mainWindow = GetMainWindow())
 			{
 				mainWindow->OnNodeRemoved(*node, removedCount);
+				ChangeSubTreeCount(-removedCount);
 			}
 			return node;
 		}
@@ -273,6 +285,9 @@ namespace KxDataView2
 	}
 	void Node::DetachAllChildren()
 	{
+		const intptr_t removedCount = GetSubTreeCount();
+		ChangeSubTreeCount(-removedCount);
+
 		m_Children.clear();
 	}
 	
@@ -316,17 +331,17 @@ namespace KxDataView2
 	{
 		return IsNodeExpanded() && HasChildren();
 	}
-	void Node::SetExpanded(bool expanded)
+	void Node::SetExpanded(bool expand)
 	{
-		if (MainWindow* mainWindow = GetMainWindow())
+		if (View* view = GetView())
 		{
-			if (expanded)
+			if (expand)
 			{
-				mainWindow->Expand(*this);
+				view->Expand(*this);
 			}
 			else
 			{
-				mainWindow->Collapse(*this);
+				view->Collapse(*this);
 			}
 		}
 	}

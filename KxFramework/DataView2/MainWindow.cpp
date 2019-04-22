@@ -1304,84 +1304,7 @@ namespace KxDataView2
 
 				// Move coordinates to next column
 				cellRect.x += cellRect.width;
-
-				// Draw vertical rules
-				if (verticalRulesEnabled && currentColumnIndex + 1 != coulmnIndexEnd)
-				{
-					wxDCPenChanger pen(dc, m_PenRuleV);
-					wxDCBrushChanger brush(dc, *wxTRANSPARENT_BRUSH);
-
-					// Draw vertical rules in column's last pixel, so they will align with header control dividers
-					const int x = cellRect.x - 1;
-					int yAdd = 0;
-					if (currentRow + 1 == rowEnd)
-					{
-						yAdd = clientSize.GetHeight();
-					}
-					dc.DrawLine(x, cellRect.GetTop(), x, cellRect.GetBottom() + yAdd);
-				}
 			}
-
-			auto GetRowRect = [&cellInitialRect, xCoordEnd, xCoordStart, expanderColumn, expanderIndent]()
-			{
-				wxRect rowRect = cellInitialRect;
-				rowRect.SetWidth(xCoordEnd - xCoordStart);
-				if (expanderColumn->IsDisplayedFirst())
-				{
-					rowRect.x += expanderIndent;
-					rowRect.width -= expanderIndent;
-				}
-				return rowRect;
-			};
-
-			// Draw horizontal rules
-			if (horizontalRulesEnabled)
-			{
-				wxDCPenChanger pen(dc, m_PenRuleV);
-				wxDCBrushChanger brush(dc, *wxTRANSPARENT_BRUSH);
-
-				dc.DrawLine(xCoordStart, cellInitialRect.GetY(), xCoordEnd + clientSize.GetWidth(), cellInitialRect.GetY());
-			}
-
-			// Draw selection
-			if (cellState.IsSelected() || cellState.IsHotTracked())
-			{
-				wxRect rowRect = GetRowRect();
-
-				int flags = 0;
-				if (m_HasFocus)
-				{
-					flags |= wxCONTROL_FOCUSED;
-				}
-				if (cellState.IsSelected())
-				{
-					flags |= wxCONTROL_SELECTED;
-				}
-				if (cellState.IsHotTracked())
-				{
-					flags |= wxCONTROL_CURRENT;
-				}
-				DrawSelectionRect(this, paintDC, rowRect, flags);
-			}
-
-			// Draw cell focus
-			if (!focusCellRect.IsEmpty() && m_View->IsOptionEnabled(CtrlStyle::CellFocus) && currentRow == m_CurrentRow && cellState.IsSelected())
-			{
-				// Focus rect looks ugly in it's narrower 3 px
-				if (focusCellRect.GetWidth() > 3)
-				{
-					wxRendererNative::Get().DrawFocusRect(this, paintDC, wxRect(focusCellRect).Deflate(FromDIP(wxSize(1, 1))), wxCONTROL_SELECTED);
-				}
-			}
-
-			// Draw drop hint
-			#if wxUSE_DRAG_AND_DROP
-			if (cellState.IsDropTarget())
-			{
-				wxRect rowRect = GetRowRect();
-				wxRendererNative::Get().DrawFocusRect(this, paintDC, rowRect, wxCONTROL_SELECTED);
-			}
-			#endif
 
 			cellRect = cellInitialRect;
 			for (size_t currentColumnIndex = coulumnIndexStart; currentColumnIndex < coulmnIndexEnd; currentColumnIndex++)
@@ -1434,7 +1357,6 @@ namespace KxDataView2
 					adjustedCellRect.width -= expanderIndent;
 				}
 
-
 				// Draw the cell
 				if (!isCategoryRow || currentColumnIndex == 0)
 				{
@@ -1461,9 +1383,86 @@ namespace KxDataView2
 
 				// Move coordinates to next column
 				cellRect.x += cellRect.width;
+
+				// Draw vertical rules
+				if (verticalRulesEnabled && currentColumnIndex + 1 != coulmnIndexEnd)
+				{
+					wxDCPenChanger pen(dc, m_PenRuleV);
+					wxDCBrushChanger brush(dc, *wxTRANSPARENT_BRUSH);
+
+					// Draw vertical rules in column's last pixel, so they will align with header control dividers
+					const int x = cellRect.x - 1;
+					int yAdd = 0;
+					if (currentRow + 1 == rowEnd)
+					{
+						yAdd = clientSize.GetHeight();
+					}
+					dc.DrawLine(x, cellRect.GetTop(), x, cellRect.GetBottom() + yAdd);
+				}
+
+				// Draw horizontal rules
+				if (horizontalRulesEnabled)
+				{
+					wxDCPenChanger pen(dc, m_PenRuleV);
+					wxDCBrushChanger brush(dc, *wxTRANSPARENT_BRUSH);
+
+					dc.DrawLine(xCoordStart, cellInitialRect.GetY(), xCoordEnd + clientSize.GetWidth(), cellInitialRect.GetY());
+				}
+
+				auto GetRowRect = [&cellInitialRect, xCoordEnd, xCoordStart, expanderColumn, expanderIndent]()
+				{
+					wxRect rowRect = cellInitialRect;
+					rowRect.SetWidth(xCoordEnd - xCoordStart);
+					if (expanderColumn->IsDisplayedFirst())
+					{
+						rowRect.x += expanderIndent;
+						rowRect.width -= expanderIndent;
+					}
+					return rowRect;
+				};
+
+				// Draw selection
+				if (cellState.IsSelected() || cellState.IsHotTracked())
+				{
+					wxRect rowRect = GetRowRect();
+
+					int flags = 0;
+					if (m_HasFocus)
+					{
+						flags |= wxCONTROL_FOCUSED;
+					}
+					if (cellState.IsSelected())
+					{
+						flags |= wxCONTROL_SELECTED;
+					}
+					if (cellState.IsHotTracked())
+					{
+						flags |= wxCONTROL_CURRENT;
+					}
+					DrawSelectionRect(this, paintDC, rowRect, flags);
+				}
+
+				// Draw cell focus
+				if (!focusCellRect.IsEmpty() && m_View->IsOptionEnabled(CtrlStyle::CellFocus) && currentRow == m_CurrentRow && cellState.IsSelected())
+				{
+					// Focus rect looks ugly in it's narrower 3 px
+					if (focusCellRect.GetWidth() > 3)
+					{
+						wxRendererNative::Get().DrawFocusRect(this, paintDC, wxRect(focusCellRect).Deflate(FromDIP(wxSize(1, 1))), wxCONTROL_SELECTED);
+					}
+				}
+
+				// Draw drop hint
+				#if wxUSE_DRAG_AND_DROP
+				if (cellState.IsDropTarget())
+				{
+					wxRect rowRect = GetRowRect();
+					wxRendererNative::Get().DrawFocusRect(this, paintDC, rowRect, wxCONTROL_SELECTED);
+				}
+				#endif
 			}
 
-			if (isCategoryRow)
+			if (false && isCategoryRow)
 			{
 				if (categoryRowOffset < 0)
 				{
@@ -1612,7 +1611,6 @@ namespace KxDataView2
 		}
 		else
 		{
-			m_TreeRoot.ChangeSubTreeCount(m_TreeRoot.GetChildrenCount());
 			return m_TreeRoot.GetSubTreeCount();
 		}
 	}
@@ -1861,7 +1859,12 @@ namespace KxDataView2
 		event.SetNode(node);
 		event.SetColumn(column);
 	}
-	
+	void MainWindow::ItemsChanged()
+	{
+		m_ItemsCount = RecalculateItemCount();
+		m_View->InvalidateColumnsBestWidth();
+	}
+
 	// Refreshing
 	void MainWindow::RefreshRows(Row from, Row to)
 	{
