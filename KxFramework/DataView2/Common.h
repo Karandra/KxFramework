@@ -57,10 +57,7 @@ namespace KxDataView2
 			int m_Value = Value::AutoSize;
 
 		public:
-			ColumnWidth(int value = Value::AutoSize) noexcept
-				:m_Value(value)
-			{
-			}
+			ColumnWidth(int value = Value::AutoSize) noexcept;
 
 		public:
 			bool IsSpecialValue() const noexcept
@@ -69,13 +66,18 @@ namespace KxDataView2
 			}
 			bool IsDefault() const noexcept
 			{
-				return m_Value == Value::Default;
+				return m_Value == (int)Value::Default;
 			}
 			bool IsAutoSize() const noexcept
 			{
-				return m_Value == Value::AutoSize;
+				return m_Value == (int)Value::AutoSize;
 			}
 
+		public:
+			int GetValue() const noexcept
+			{
+				return m_Value;
+			}
 			operator int() const noexcept
 			{
 				return m_Value;

@@ -1522,5 +1522,8 @@
     <ClCompile Include="KxFramework\DataView2\DragAndDrop.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
     </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\Common.cpp">
+      <Filter>Source Files\GUI\DataView2</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -462,6 +462,7 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(Configuration) $(Platform)\%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\Column.cpp" />
+    <ClCompile Include="KxFramework\DataView2\Common.cpp" />
     <ClCompile Include="KxFramework\DataView2\DragAndDrop.cpp" />
     <ClCompile Include="KxFramework\DataView2\Editors\ColorEditor.cpp" />
     <ClCompile Include="KxFramework\DataView2\Editors\ComboBoxEditor.cpp" />

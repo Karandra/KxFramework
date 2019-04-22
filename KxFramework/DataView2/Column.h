@@ -240,6 +240,10 @@ namespace KxDataView2
 				UpdateDisplay();
 			}
 
+			ColumnWidth GetWidthDescriptor() const
+			{
+				return m_Width;
+			}
 			int GetWidth() const;
 			void SetWidth(ColumnWidth width);
 
