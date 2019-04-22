@@ -29,7 +29,7 @@ namespace KxDataView2
 				:wxNotifyEvent(type, winid)
 			{
 			}
-			virtual wxEvent* Clone() const override
+			wxEvent* Clone() const override
 			{
 				return new Event(*this);
 			}
@@ -68,6 +68,10 @@ namespace KxDataView2
 			}
 
 			// Return hints as physical rows
+			std::tuple<Row, Row> GetCacheHint() const
+			{
+				return {m_CacheHintFrom, m_CacheHintTo};
+			}
 			Row GetCacheHintFrom() const
 			{
 				return m_CacheHintFrom;
@@ -76,7 +80,7 @@ namespace KxDataView2
 			{
 				return m_CacheHintTo;
 			}
-		
+			
 			// These are physical rows as user sees them, not logical
 			void SetCacheHints(Row from, Row to)
 			{
@@ -99,7 +103,7 @@ namespace KxDataView2
 				:Event(type, winid)
 			{
 			}
-			virtual wxEvent* Clone() const override
+			wxEvent* Clone() const override
 			{
 				return new EditorEvent(*this);
 			}
@@ -137,7 +141,7 @@ namespace KxDataView2
 		friend class KX_API MainWindow;
 
 		private:
-			const wxDataObject* m_DataObject = nullptr;
+			wxDataObject* m_DataObject = nullptr;
 			bool m_IsDataObjectOwned = false;
 
 			wxDragResult m_DropEffect = wxDragNone;
@@ -147,12 +151,12 @@ namespace KxDataView2
 		protected:
 			void SetDataObject(const wxDataObject* object)
 			{
-				m_DataObject = object;
+				m_DataObject = const_cast<wxDataObject*>(object);
 				m_IsDataObjectOwned = false;
 			}
 			std::unique_ptr<wxDataObject> TakeDataObject()
 			{
-				wxDataObject* temp = const_cast<wxDataObject*>(m_DataObject);
+				wxDataObject* temp = m_DataObject;
 				m_DataObject = nullptr;
 				return std::unique_ptr<wxDataObject>(temp);
 			}
@@ -169,7 +173,7 @@ namespace KxDataView2
 					delete m_DataObject;
 				}
 			}
-			virtual wxEvent* Clone() const override
+			wxEvent* Clone() const override
 			{
 				EventDND* clone = new EventDND(*this);
 				clone->m_DataObject = nullptr;
@@ -183,13 +187,13 @@ namespace KxDataView2
 				m_DataObject = object.release();
 				m_IsDataObjectOwned = true;
 			}
-			const wxDataObject* GetDataObject() const
+			wxDataObject* GetDataObject() const
 			{
 				return m_DataObject;
 			}
-			template<class T> const T* GetDataObjectAs() const
+			template<class T> T* GetDataObjectAs() const
 			{
-				return dynamic_cast<const T*>(m_DataObject);
+				return dynamic_cast<T*>(m_DataObject);
 			}
 			bool HasDataObject() const
 			{
@@ -213,7 +217,7 @@ namespace KxDataView2
 			{
 				return m_DropEffect;
 			}
-	
+			
 			void SetDragFlags(int flags)
 			{
 				m_DragFlags = flags;
@@ -242,8 +246,8 @@ namespace KxDataView2
 	KX_DECLARE_EVENT(EVENT_ITEM_EDIT_DONE, EditorEvent);
 
 	KX_DECLARE_EVENT(EVENT_ITEM_DRAG, EventDND);
-	KX_DECLARE_EVENT(EVENT_ITEM_DROP_POSSIBLE, EventDND);
 	KX_DECLARE_EVENT(EVENT_ITEM_DROP, EventDND);
+	KX_DECLARE_EVENT(EVENT_ITEM_DROP_POSSIBLE, EventDND);
 
 	KX_DECLARE_EVENT(EVENT_COLUMN_HEADER_CLICK, Event);
 	KX_DECLARE_EVENT(EVENT_COLUMN_HEADER_RCLICK, Event);
