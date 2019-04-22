@@ -53,7 +53,7 @@ namespace KxDataView2
 		private:
 			// Called by the child after it has been updated to put it in the right place among its siblings, depending on the sort order.
 			void PutChildInSortOrder(Node* childNode);
-			void Resort();
+			void Resort(bool force = false);
 
 			// Should be called after changing the item value to update its position in the control if necessary.
 			void PutInSortOrder()

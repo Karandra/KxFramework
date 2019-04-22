@@ -1703,7 +1703,7 @@ namespace KxDataView2
 	{
 		if (!IsVirtualList())
 		{
-			m_TreeRoot.Resort();
+			m_TreeRoot.Resort(true);
 		}
 		UpdateDisplay();
 	}

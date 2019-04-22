@@ -65,7 +65,7 @@ namespace KxDataView2
 			}
 		}
 	}
-	void Node::Resort()
+	void Node::Resort(bool force)
 	{
 		MainWindow* mainWindow = GetMainWindow();
 		if (mainWindow && IsNodeExpanded())
@@ -74,7 +74,7 @@ namespace KxDataView2
 			if (!sortOrder.IsNone())
 			{
 				// Only sort the children if they aren't already sorted by the wanted criteria.
-				if (m_SortOrder != sortOrder)
+				if (force || m_SortOrder != sortOrder)
 				{
 					std::sort(m_Children.begin(), m_Children.end(), Comparator(mainWindow, sortOrder));
 					m_SortOrder = sortOrder;
@@ -86,7 +86,7 @@ namespace KxDataView2
 				{
 					if (childNode->HasChildren())
 					{
-						childNode->Resort();
+						childNode->Resort(force);
 					}
 				}
 			}
