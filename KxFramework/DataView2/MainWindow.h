@@ -33,6 +33,7 @@ namespace KxDataView2
 		friend class KX_API Editor;
 		friend class KX_API Column;
 		friend class KX_API Event;
+		friend class KX_API EventDND;
 		friend class KX_API View;
 		friend class KX_API Node;
 		friend class KX_API HeaderCtrl;
@@ -286,13 +287,13 @@ namespace KxDataView2
 
 			// Drag and Drop
 			wxBitmap CreateItemBitmap(Row row, int& indent);
-			bool EnableDragSource(const wxDataFormat& format);
-			bool EnableDropTarget(std::unique_ptr<wxDataObjectSimple> dataObject, bool isPreferred = false);
+			bool EnableDND(std::unique_ptr<wxDataObjectSimple> dataObject, DNDOpType type, bool isPreferredDrop = false);
+			bool DisableDND(const wxDataFormat& format);
 
 			std::tuple<Row, Node*> DragDropHitTest(const wxPoint& pos) const;
 			void RemoveDropHint();
 			wxDragResult OnDragOver(const wxDataObjectSimple& dataObject, const wxPoint& pos, wxDragResult dragResult);
-			wxDragResult OnDropData(const wxDataObjectSimple& dataObject, const wxPoint& pos, wxDragResult dragResult);
+			wxDragResult OnDropData(wxDataObjectSimple& dataObject, const wxPoint& pos, wxDragResult dragResult);
 			bool TestDropPossible(const wxDataObjectSimple& dataObject, const wxPoint& pos);
 			
 			wxDragResult OnDragDropEnter(const wxDataObjectSimple& format, const wxPoint& pos, wxDragResult dragResult);

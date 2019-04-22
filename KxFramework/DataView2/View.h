@@ -301,8 +301,9 @@ namespace KxDataView2
 			bool EditItem(Node& item, Column& column);
 
 			// Drag and drop
-			bool EnableDragSource(const wxDataFormat& format);
-			bool EnableDropTarget(std::unique_ptr<wxDataObjectSimple> dataObject, bool isPreferred = false);
+			bool EnableDND(std::unique_ptr<wxDataObjectSimple> dataObject, DNDOpType type, bool isPreferredDrop = false);
+			bool DisableDND(const wxDataObjectSimple& dataObject);
+			bool DisableDND(const wxDataFormat& format);
 
 			// Window
 			void SetFocus() override;

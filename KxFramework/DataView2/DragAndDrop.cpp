@@ -6,22 +6,22 @@
 
 namespace KxDataView2
 {
-	bool DnDInfo::IsOperationEnabled(const wxDataFormat& format, OperationType desiredType) const
+	bool DnDInfo::DoCheckOperation(const wxDataFormat& format, DNDOpType desiredType) const
 	{
-		if (const Operation* operation = FindFormat(format))
+		if (const DNDOperationInfo* info = GetOperationInfo(format))
 		{
-			return KxUtility::HasFlag(operation->GetType(), desiredType);
+			return KxUtility::HasFlag(info->GetType(), desiredType);
 		}
 		return false;
 	}
-	DnDInfo::Result DnDInfo::EnableOperation(const wxDataFormat& format, const Operation& operation)
+	DnDInfo::Result DnDInfo::DoChangeOperation(const wxDataFormat& format, const DNDOperationInfo& info)
 	{
 		auto it = m_DataFormats.find(format);
 		if (it != m_DataFormats.end())
 		{
-			if (operation.IsOK() && format != wxDF_INVALID)
+			if (info.IsOK() && format != wxDF_INVALID)
 			{
-				it->second.Combine(operation);
+				it->second.Combine(info);
 				return Result::OperationChanged;
 			}
 			else
@@ -30,9 +30,9 @@ namespace KxDataView2
 				return Result::OperationRemoved;
 			}
 		}
-		else if (operation.IsOK() && format != wxDF_INVALID)
+		else if (info.IsOK() && format != wxDF_INVALID)
 		{
-			m_DataFormats.insert_or_assign(format, operation);
+			m_DataFormats.insert_or_assign(format, info);
 			return Result::OperationAdded;
 		}
 		return Result::None;
@@ -147,6 +147,7 @@ namespace KxDataView2
 		wxDataObjectSimple* dataObject = nullptr;
 		if (wxDataFormat format = GetReceivedFormat(); IsFormatSupported(format, dataObject))
 		{
+			GetData();
 			return m_MainWindow->OnDropData(*dataObject, wxPoint(x, y), dragResult);
 		}
 		return wxDragNone;

@@ -24,6 +24,10 @@ namespace KxDataView2
 			Row m_CacheHintFrom;
 			Row m_CacheHintTo;
 
+		protected:
+			View* GetView() const;
+			MainWindow* GetMainWindow() const;
+
 		public:
 			Event(wxEventType type = wxEVT_NULL, wxWindowID winid = wxID_NONE)
 				:wxNotifyEvent(type, winid)
@@ -92,20 +96,20 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API EditorEvent: public Event
+	class KX_API EventEditor: public Event
 	{
 		private:
 			wxAny m_Value;
 			bool m_IsEditCancelled = false;
 
 		public:
-			EditorEvent(wxEventType type = wxEVT_NULL, wxWindowID winid = wxID_NONE)
+			EventEditor(wxEventType type = wxEVT_NULL, wxWindowID winid = wxID_NONE)
 				:Event(type, winid)
 			{
 			}
 			wxEvent* Clone() const override
 			{
-				return new EditorEvent(*this);
+				return new EventEditor(*this);
 			}
 
 		public:
@@ -141,24 +145,27 @@ namespace KxDataView2
 		friend class KX_API MainWindow;
 
 		private:
-			wxDataObject* m_DataObject = nullptr;
-			bool m_IsDataObjectOwned = false;
-
-			wxDragResult m_DropEffect = wxDragNone;
-			wxDataFormat m_DataFormat;
+			wxDataObjectSimple* m_DataObject = nullptr;
+			wxDragResult m_DropResult = wxDragNone;
 			int m_DragFlags = wxDrag_CopyOnly;
 
 		protected:
-			void SetDataObject(const wxDataObject* object)
+			wxDataObjectSimple* GetDataObject() const
 			{
-				m_DataObject = const_cast<wxDataObject*>(object);
-				m_IsDataObjectOwned = false;
+				return m_DataObject;
 			}
-			std::unique_ptr<wxDataObject> TakeDataObject()
+			void SetDataObject(wxDataObjectSimple* object)
 			{
-				wxDataObject* temp = m_DataObject;
-				m_DataObject = nullptr;
-				return std::unique_ptr<wxDataObject>(temp);
+				m_DataObject = object;
+			}
+			
+			void SetDragFlags(int flags)
+			{
+				m_DragFlags = flags;
+			}
+			void SetDropEffect(wxDragResult effect)
+			{
+				m_DropResult = effect;
 			}
 
 		public:
@@ -166,66 +173,42 @@ namespace KxDataView2
 				:Event(type, winid)
 			{
 			}
-			~EventDND()
-			{
-				if (m_IsDataObjectOwned)
-				{
-					delete m_DataObject;
-				}
-			}
 			wxEvent* Clone() const override
 			{
-				EventDND* clone = new EventDND(*this);
-				clone->m_DataObject = nullptr;
-				clone->m_IsDataObjectOwned = false;
-				return clone;
+				return new EventDND(*this);
 			}
 
 		public:
-			void NewDataObject(std::unique_ptr<wxDataObject> object)
+			// Drag
+			wxDataObjectSimple* GetDragObject(const wxDataFormat& format) const;
+			template<class T> T* GetDragObject(const wxDataFormat& format) const
 			{
-				m_DataObject = object.release();
-				m_IsDataObjectOwned = true;
-			}
-			wxDataObject* GetDataObject() const
-			{
-				return m_DataObject;
-			}
-			template<class T> T* GetDataObjectAs() const
-			{
-				return dynamic_cast<T*>(m_DataObject);
-			}
-			bool HasDataObject() const
-			{
-				return m_DataObject != nullptr;
+				static_assert(std::is_base_of_v<wxDataObjectSimple, T>);
+				return dynamic_cast<T*>(GetDragObject(format));
 			}
 
-			void SetDataFormat(const wxDataFormat& format)
-			{
-				m_DataFormat = format;
-			}
-			wxDataFormat GetDataFormat() const
-			{
-				return m_DataFormat;
-			}
-
-			void SetDropEffect(wxDragResult effect)
-			{
-				m_DropEffect = effect;
-			}
-			wxDragResult GetDropEffect() const
-			{
-				return m_DropEffect;
-			}
-			
-			void SetDragFlags(int flags)
-			{
-				m_DragFlags = flags;
-			}
 			int GetDragFlags() const
 			{
 				return m_DragFlags;
 			}
+			void DragDone(const wxDataObjectSimple& dataObject, int flags = wxDrag_CopyOnly);
+			void DragCancel();
+
+			// Drop
+			wxDataObjectSimple* GetRecievedDataObject() const;
+			template<class T> T* GetRecievedDataObject() const
+			{
+				static_assert(std::is_base_of_v<wxDataObjectSimple, T>);
+				return dynamic_cast<T*>(GetRecievedDataObject());
+			}
+			
+			wxDragResult GetDropResult() const
+			{
+				return m_DropResult;
+			}
+			void DropDone(wxDragResult result = wxDragNone);
+			void DropCancel();
+			void DropError();
 	};
 }
 
@@ -241,9 +224,9 @@ namespace KxDataView2
 	KX_DECLARE_EVENT(EVENT_ITEM_CONTEXT_MENU, Event);
 	KX_DECLARE_EVENT(EVENT_ITEM_VALUE_CHANGED, Event);
 
-	KX_DECLARE_EVENT(EVENT_ITEM_EDIT_STARTING, EditorEvent);
-	KX_DECLARE_EVENT(EVENT_ITEM_EDIT_STARTED, EditorEvent);
-	KX_DECLARE_EVENT(EVENT_ITEM_EDIT_DONE, EditorEvent);
+	KX_DECLARE_EVENT(EVENT_ITEM_EDIT_STARTING, EventEditor);
+	KX_DECLARE_EVENT(EVENT_ITEM_EDIT_STARTED, EventEditor);
+	KX_DECLARE_EVENT(EVENT_ITEM_EDIT_DONE, EventEditor);
 
 	KX_DECLARE_EVENT(EVENT_ITEM_DRAG, EventDND);
 	KX_DECLARE_EVENT(EVENT_ITEM_DROP, EventDND);

@@ -17,13 +17,13 @@ namespace KxDataView2
 
 		DefaultStyle = SingleSelection|VerticalRules
 	};
-	constexpr inline CtrlStyle operator|(CtrlStyle v1, CtrlStyle v2)
+	constexpr inline CtrlStyle operator|(CtrlStyle left, CtrlStyle right)
 	{
-		return static_cast<CtrlStyle>((uint32_t)v1 | (uint32_t)v2);
+		return static_cast<CtrlStyle>((uint32_t)left | (uint32_t)right);
 	}
-	constexpr inline uint32_t operator&(CtrlStyle v1, CtrlStyle v2)
+	constexpr inline uint32_t operator&(CtrlStyle left, CtrlStyle right)
 	{
-		return (uint32_t)v1 & (uint32_t)v2;
+		return (uint32_t)left & (uint32_t)right;
 	}
 
 	enum class ColumnStyle: uint32_t
@@ -35,13 +35,28 @@ namespace KxDataView2
 
 		DefaultStyle = Move|Size,
 	};
-	constexpr inline ColumnStyle operator|(ColumnStyle v1, ColumnStyle v2)
+	constexpr inline ColumnStyle operator|(ColumnStyle left, ColumnStyle right)
 	{
-		return static_cast<ColumnStyle>((uint32_t)v1 | (uint32_t)v2);
+		return static_cast<ColumnStyle>((uint32_t)left | (uint32_t)right);
 	}
-	constexpr inline uint32_t operator&(ColumnStyle v1, ColumnStyle v2)
+	constexpr inline uint32_t operator&(ColumnStyle left, ColumnStyle right)
 	{
-		return (uint32_t)v1 & (uint32_t)v2;
+		return (uint32_t)left & (uint32_t)right;
+	}
+
+	enum class DNDOpType: uint32_t
+	{
+		None = 0,
+		Drag = 1 << 0,
+		Drop = 1 << 1,
+	};
+	constexpr inline DNDOpType operator|(DNDOpType left, DNDOpType right)
+	{
+		return static_cast<DNDOpType>((uint32_t)left | (uint32_t)right);
+	}
+	constexpr inline uint32_t operator&(DNDOpType left, DNDOpType right)
+	{
+		return (uint32_t)left& (uint32_t)right;
 	}
 
 	class ColumnWidth

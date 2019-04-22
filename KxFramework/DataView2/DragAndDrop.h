@@ -13,57 +13,47 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API DnDInfo
+	class DNDOperationInfo
 	{
 		private:
-			enum class OperationType
+			wxDataObjectSimple* m_DropDataObject = nullptr;
+			DNDOpType m_Type = DNDOpType::None;
+			bool m_IsPreferedDrop = false;
+
+		public:
+			DNDOperationInfo() = default;
+			DNDOperationInfo(wxDataObjectSimple& dataObject, DNDOpType type, bool isPreferredDrop = false)
+				:m_DropDataObject(&dataObject), m_Type(type), m_IsPreferedDrop(isPreferredDrop)
 			{
-				None = 0,
-				Drag = 1 << 0,
-				Drop = 1 << 1,
+			}
 
-				All = Drag|Drop,
-			};
-			class Operation
+		public:
+			bool IsOK() const
 			{
-				private:
-					wxDataObjectSimple* m_DropDataObject = nullptr;
-					OperationType m_Type = OperationType::None;
-					bool m_IsPreferedDrop = false;
+				return m_DropDataObject && m_Type != DNDOpType::None;
+			}
+			DNDOpType GetType() const
+			{
+				return m_Type;
+			}
+			wxDataObjectSimple& GetDataObject() const
+			{
+				return *m_DropDataObject;
+			}
 
-				public:
-					Operation() = default;
-					Operation(OperationType type)
-						:m_Type(type)
-					{
-					}
-					Operation(wxDataObjectSimple& dataObject, bool isPreferredDrop = false)
-						:m_Type(OperationType::Drop), m_DropDataObject(&dataObject), m_IsPreferedDrop(isPreferredDrop)
-					{
-					}
+			void Combine(const DNDOperationInfo& other)
+			{
+				m_Type = (DNDOpType)(m_Type|other.m_Type);
+				m_DropDataObject = other.m_DropDataObject;
+				m_IsPreferedDrop = other.m_IsPreferedDrop;
+			}
+	};
+}
 
-				public:
-					bool IsOK() const
-					{
-						if (KxUtility::HasFlag(m_Type, OperationType::Drop))
-						{
-							return m_DropDataObject != nullptr;
-						}
-						return m_Type != OperationType::None;
-					}
-					OperationType GetType() const
-					{
-						return m_Type;
-					}
-					
-					void Combine(const Operation& other)
-					{
-						m_Type = (OperationType)((int)m_Type|(int)other.m_Type);
-						m_DropDataObject = other.m_DropDataObject;
-						m_IsPreferedDrop = other.m_IsPreferedDrop;
-					}
-			};
-
+namespace KxDataView2
+{
+	class KX_API DnDInfo
+	{
 		public:
 			enum class Result
 			{
@@ -74,10 +64,14 @@ namespace KxDataView2
 			};
 
 		private:
-			std::map<wxDataFormat, Operation> m_DataFormats;
+			std::map<wxDataFormat, DNDOperationInfo> m_DataFormats;
 
 		private:
-			Operation* FindFormat(const wxDataFormat& format)
+			bool DoCheckOperation(const wxDataFormat& format, DNDOpType desiredType) const;
+			Result DoChangeOperation(const wxDataFormat& format, const DNDOperationInfo& info);
+
+		public:
+			DNDOperationInfo* GetOperationInfo(const wxDataFormat& format)
 			{
 				if (auto it = m_DataFormats.find(format); it != m_DataFormats.end())
 				{
@@ -85,43 +79,31 @@ namespace KxDataView2
 				}
 				return nullptr;
 			}
-			const Operation* FindFormat(const wxDataFormat& format) const
+			const DNDOperationInfo* GetOperationInfo(const wxDataFormat& format) const
 			{
-				return const_cast<DnDInfo*>(this)->FindFormat(format);
+				return const_cast<DnDInfo*>(this)->GetOperationInfo(format);
 			}
-			
-			bool IsOperationEnabled(const wxDataFormat& format, OperationType desiredType) const;
-			Result EnableOperation(const wxDataFormat& format, const Operation& operation);
 
-		public:
 			bool IsDragEnabled(const wxDataFormat& format) const
 			{
-				return IsOperationEnabled(format, OperationType::Drag);
+				return DoCheckOperation(format, DNDOpType::Drag);
 			}
 			bool IsDropEnabled(const wxDataFormat& format) const
 			{
-				return IsOperationEnabled(format, OperationType::Drop);
+				return DoCheckOperation(format, DNDOpType::Drop);
 			}
-			bool IsAllEnabled(const wxDataFormat& format) const
+			bool IsFullEnabled(const wxDataFormat& format) const
 			{
-				return IsOperationEnabled(format, OperationType::All);
+				return DoCheckOperation(format, DNDOpType::Drag|DNDOpType::Drop);
 			}
 
-			Result EnableDragOperation(const wxDataFormat& format)
+			Result EnableOperation(wxDataObjectSimple& dataObject, DNDOpType type, bool isPreferredDrop = false)
 			{
-				return EnableOperation(format, Operation(OperationType::Drag));
-			}
-			Result EnableDropOperation(wxDataObjectSimple& dataObject, bool isPreferred = false)
-			{
-				return EnableOperation(dataObject.GetFormat(), Operation(dataObject, isPreferred));
-			}
-			Result EnableAllOperations(wxDataObjectSimple& dataObject, bool isPreferredDrop = false)
-			{
-				return EnableOperation(dataObject.GetFormat(), Operation(dataObject, isPreferredDrop));
+				return DoChangeOperation(dataObject.GetFormat(), DNDOperationInfo(dataObject, type, isPreferredDrop));
 			}
 			Result DisableOperations(const wxDataFormat& format)
 			{
-				return EnableOperation(format, {});
+				return DoChangeOperation(format, {});
 			}
 	};
 }

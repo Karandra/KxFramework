@@ -674,13 +674,17 @@ namespace KxDataView2
 	}
 
 	// Drag and drop
-	bool View::EnableDragSource(const wxDataFormat& format)
+	bool View::EnableDND(std::unique_ptr<wxDataObjectSimple> dataObject, DNDOpType type, bool isPreferredDrop)
 	{
-		return m_ClientArea->EnableDragSource(format);
+		return m_ClientArea->EnableDND(std::move(dataObject), type, isPreferredDrop);
 	}
-	bool View::EnableDropTarget(std::unique_ptr<wxDataObjectSimple> dataObject, bool isPreferred)
+	bool View::DisableDND(const wxDataFormat& format)
 	{
-		return m_ClientArea->EnableDropTarget(std::move(dataObject), isPreferred);
+		return m_ClientArea->DisableDND(format);
+	}
+	bool View::DisableDND(const wxDataObjectSimple& dataObject)
+	{
+		return m_ClientArea->DisableDND(dataObject.GetFormat());
 	}
 
 	void View::SetFocus()

@@ -672,8 +672,7 @@ namespace KxDataView2
 						return;
 					}
 
-					auto dragObject = dragEvent.TakeDataObject();
-					if (dragObject)
+					if (wxDataObjectSimple* dragObject = dragEvent.GetDataObject())
 					{
 						DropSource drag(this, draggedRow);
 						drag.SetData(*dragObject);
@@ -1064,7 +1063,7 @@ namespace KxDataView2
 	}
 	bool MainWindow::SendEditingDoneEvent(Node& item, Editor* editor, bool canceled, const wxAny& value)
 	{
-		EditorEvent event(EVENT_ITEM_EDIT_DONE);
+		EventEditor event(EVENT_ITEM_EDIT_DONE);
 		CreateEventTemplate(event, &item, editor->GetColumn());
 		event.SetEditCanceled(canceled);
 		event.SetValue(value);
@@ -2152,16 +2151,15 @@ namespace KxDataView2
 		SwapRedGreenChannels(bitmap);
 		return bitmap;
 	}
-	bool MainWindow::EnableDragSource(const wxDataFormat& format)
+
+	bool MainWindow::EnableDND(std::unique_ptr<wxDataObjectSimple> dataObject, DNDOpType type, bool isPreferredDrop)
 	{
-		return m_DragDropInfo.EnableDragOperation(format) != DnDInfo::Result::None;
-	}
-	bool MainWindow::EnableDropTarget(std::unique_ptr<wxDataObjectSimple> dataObject, bool isPreferred)
-	{
+		using Result = DnDInfo::Result;
+
 		if (dataObject)
 		{
-			const auto result = m_DragDropInfo.EnableDropOperation(*dataObject, isPreferred);
-			if (result != DnDInfo::Result::None && result != DnDInfo::Result::OperationRemoved)
+			const auto result = m_DragDropInfo.EnableOperation(*dataObject, type, isPreferredDrop);
+			if (result != Result::None && result != Result::OperationRemoved)
 			{
 				if (m_DragDropDataObject == nullptr)
 				{
@@ -2172,12 +2170,19 @@ namespace KxDataView2
 
 				if (m_DragDropDataObject->GetObject(dataObject->GetFormat()) == nullptr)
 				{
-					m_DragDropDataObject->Add(dataObject.release(), isPreferred);
+					m_DragDropDataObject->Add(dataObject.release(), isPreferredDrop);
 				}
 			}
 			return result != DnDInfo::Result::None;
 		}
 		return false;
+	}
+	bool MainWindow::DisableDND(const wxDataFormat& format)
+	{
+		using Result = DnDInfo::Result;
+
+		const Result value = m_DragDropInfo.DisableOperations(format);
+		return value != Result::OperationRemoved || value == Result::None;
 	}
 
 	std::tuple<Row, Node*> MainWindow::DragDropHitTest(const wxPoint& pos) const
@@ -2226,8 +2231,7 @@ namespace KxDataView2
 		CreateEventTemplate(event, node);
 		event.SetPosition(pos);
 		event.SetDropEffect(dragResult);
-		event.SetDataObject(&dataObject);
-		event.SetDataFormat(dataObject.GetFormat());
+		event.SetDataObject(const_cast<wxDataObjectSimple*>(&dataObject));
 
 		if (!m_View->HandleWindowEvent(event) || !event.IsAllowed())
 		{
@@ -2251,7 +2255,7 @@ namespace KxDataView2
 		}
 		return dragResult;
 	}
-	wxDragResult MainWindow::OnDropData(const wxDataObjectSimple& dataObject, const wxPoint& pos, wxDragResult dragResult)
+	wxDragResult MainWindow::OnDropData(wxDataObjectSimple& dataObject, const wxPoint& pos, wxDragResult dragResult)
 	{
 		auto [row, node] = DragDropHitTest(pos);
 
@@ -2260,7 +2264,6 @@ namespace KxDataView2
 		event.SetPosition(pos);
 		event.SetDropEffect(dragResult);
 		event.SetDataObject(&dataObject);
-		event.SetDataFormat(dataObject.GetFormat());
 
 		if (!m_View->HandleWindowEvent(event) || !event.IsAllowed())
 		{
@@ -2276,8 +2279,7 @@ namespace KxDataView2
 		EventDND event(EVENT_ITEM_DROP_POSSIBLE);
 		CreateEventTemplate(event, node);
 		event.SetPosition(pos);
-		event.SetDataObject(&dataObject);
-		event.SetDataFormat(dataObject.GetFormat());
+		event.SetDataObject(const_cast<wxDataObjectSimple*>(&dataObject));
 
 		if (!m_View->HandleWindowEvent(event) || !event.IsAllowed())
 		{
