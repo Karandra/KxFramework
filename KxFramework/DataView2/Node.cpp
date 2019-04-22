@@ -103,11 +103,9 @@ namespace KxDataView2
 			}
 		}
 	}
-	void Node::ToggleNodeExpanded()
+	intptr_t Node::ToggleNodeExpanded()
 	{
-		// We do not allow the (invisible) root node to be collapsed because
-		// there is no way to expand it again.
-
+		// We do not allow the (invisible) root node to be collapsed because there is no way to expand it again.
 		if (!IsRootNode())
 		{
 			intptr_t count = 0;
@@ -130,6 +128,7 @@ namespace KxDataView2
 				Resort();
 			}
 		}
+		return m_SubTreeCount;
 	}
 
 	void Node::InitNodeUsing(const Node& node)
@@ -269,8 +268,8 @@ namespace KxDataView2
 			if (MainWindow* mainWindow = GetMainWindow())
 			{
 				mainWindow->OnNodeRemoved(*node, removedCount);
-				ChangeSubTreeCount(-removedCount);
 			}
+			ChangeSubTreeCount(-removedCount);
 			return node;
 		}
 		return nullptr;
@@ -288,6 +287,10 @@ namespace KxDataView2
 		const intptr_t removedCount = GetSubTreeCount();
 		ChangeSubTreeCount(-removedCount);
 
+		for (Node* node: m_Children)
+		{
+			node->m_ParentNode = nullptr;
+		}
 		m_Children.clear();
 	}
 	

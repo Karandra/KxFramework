@@ -2728,24 +2728,22 @@ namespace KxDataView2
 				return;
 			}
 
-			node.ToggleNodeExpanded();
-			const intptr_t countNewRows = node.GetSubTreeCount();
-
+			const intptr_t rowsAdded = node.ToggleNodeExpanded();
 			if (!row)
 			{
 				row = GetRowByNode(node);
 			}
 
 			// Shift all stored indices after this row by the number of newly added rows.
-			m_SelectionStore.OnItemsInserted(row + 1, countNewRows);
+			m_SelectionStore.OnItemsInserted(row + 1, rowsAdded);
 			if (m_CurrentRow > row)
 			{
-				ChangeCurrentRow(m_CurrentRow + countNewRows);
+				ChangeCurrentRow(m_CurrentRow + rowsAdded);
 			}
 
 			if (m_ItemsCount != INVALID_COUNT)
 			{
-				m_ItemsCount += countNewRows;
+				m_ItemsCount += rowsAdded;
 			}
 
 			// Expanding this item means the previously cached column widths could
@@ -2783,8 +2781,8 @@ namespace KxDataView2
 				row = GetRowByNode(node);
 			}
 
-			intptr_t countDeletedRows = node.GetSubTreeCount();
-			if (m_SelectionStore.OnItemsDeleted(row + 1, countDeletedRows))
+			const intptr_t rowsRemoved = node.GetSubTreeCount();
+			if (m_SelectionStore.OnItemsDeleted(row + 1, rowsRemoved))
 			{
 				RefreshRow(row);
 				SendSelectionChangedEvent(GetNodeByRow(row), m_CurrentColumn);
@@ -2796,20 +2794,20 @@ namespace KxDataView2
 			{
 				// If the current row was among the collapsed items, make the
 				// parent itself current.
-				if (m_CurrentRow <= row + countDeletedRows)
+				if (m_CurrentRow <= row + rowsRemoved)
 				{
 					ChangeCurrentRow(row);
 				}
 				else
 				{
 					// Otherwise just update the index.
-					ChangeCurrentRow(m_CurrentRow - countDeletedRows);
+					ChangeCurrentRow(m_CurrentRow - rowsRemoved);
 				}
 			}
 
 			if (m_ItemsCount != INVALID_COUNT)
 			{
-				m_ItemsCount -= countDeletedRows;
+				m_ItemsCount -= rowsRemoved;
 			}
 
 			m_View->InvalidateColumnsBestWidth();

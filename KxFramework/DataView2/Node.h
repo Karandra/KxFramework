@@ -92,7 +92,7 @@ namespace KxDataView2
 			{
 				m_IsExpanded = expanded;
 			}
-			void ToggleNodeExpanded();
+			intptr_t ToggleNodeExpanded();
 
 			void ResetAll()
 			{
