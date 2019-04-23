@@ -245,6 +245,7 @@ namespace KxDataView2
 
 			virtual Renderer& GetRenderer(const Column& column) const;
 			virtual Editor* GetEditor(const Column& column) const;
+			virtual bool IsEnabled(const Column& column) const;
 
 			virtual wxAny GetValue(const Column& column) const;
 			virtual wxAny GetEditorValue(const Column& column) const;

@@ -22,11 +22,11 @@ namespace KxDataView2
 
 	bool Model::IsEditable(Node& node, const Column& column) const
 	{
-		return GetEditor(node, column) != nullptr;
+		return IsEnabled(node, column) && GetEditor(node, column) != nullptr;
 	}
 	bool Model::IsActivatable(Node& node, const Column& column) const
 	{
-		return GetRenderer(node, column).IsActivatable();
+		return IsEnabled(node, column) && GetRenderer(node, column).IsActivatable();
 	}
 
 	Renderer& Model::GetRenderer(const Node& node, const Column& column) const

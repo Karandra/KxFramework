@@ -465,11 +465,11 @@ namespace KxDataView2
 {
 	bool Node::IsEditable(const Column& column) const
 	{
-		return GetEditor(column) != nullptr;
+		return IsEnabled(column) && GetEditor(column) != nullptr;
 	}
 	bool Node::IsActivatable(const Column& column) const
 	{
-		return GetRenderer(column).IsActivatable();
+		return IsEnabled(column) && GetRenderer(column).IsActivatable();
 	}
 
 	Renderer& Node::GetRenderer(const Column& column) const
@@ -479,6 +479,10 @@ namespace KxDataView2
 	Editor* Node::GetEditor(const Column& column) const
 	{
 		return GetModel()->GetEditor(*this, column);
+	}
+	bool Node::IsEnabled(const Column& column) const
+	{
+		return GetModel()->IsEnabled(*this, column);
 	}
 
 	wxAny Node::GetValue(const Column& column) const
