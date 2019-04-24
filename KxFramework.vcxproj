@@ -352,6 +352,7 @@
     <ClInclude Include="KxFramework\KxINetRequest.h" />
     <ClInclude Include="KxFramework\KxINI.h" />
     <ClInclude Include="KxFramework\KxINetConnection.h" />
+    <ClInclude Include="KxFramework\KxValidator.h" />
     <ClInclude Include="KxFramework\KxIOwned.h" />
     <ClInclude Include="KxFramework\KxIProgressBar.h" />
     <ClInclude Include="KxFramework\KxISerializer.h" />
@@ -675,6 +676,7 @@
     <ClCompile Include="KxFramework\KxUtilityUxTheme.cpp" />
     <ClCompile Include="KxFramework\KxUUID.cpp" />
     <ClCompile Include="KxFramework\KxUxTheme.cpp" />
+    <ClCompile Include="KxFramework\KxValidator.cpp" />
     <ClCompile Include="KxFramework\KxVersion.cpp" />
     <ClCompile Include="KxFramework\KxWebSocket.cpp" />
     <ClCompile Include="KxFramework\KxWebSocketEvent.cpp" />

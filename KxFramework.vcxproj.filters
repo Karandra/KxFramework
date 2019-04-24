@@ -211,6 +211,12 @@
     <Filter Include="Source Files\Network\WebSocket">
       <UniqueIdentifier>{df1ef961-dfbe-4512-8860-e66b35662195}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Validators">
+      <UniqueIdentifier>{bbc0997b-3c55-47c5-b40b-57d95eb7aae2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Validators">
+      <UniqueIdentifier>{a2b339a6-8565-4769-8878-831496b2828e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -925,6 +931,9 @@
     <ClInclude Include="KxFramework\KxImageGraphicsCanvas.h">
       <Filter>Header Files\Drawing</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxValidator.h">
+      <Filter>Header Files\Validators</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1524,6 +1533,9 @@
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\Common.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxValidator.cpp">
+      <Filter>Source Files\Validators</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
