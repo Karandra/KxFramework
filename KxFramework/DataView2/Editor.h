@@ -93,6 +93,11 @@ namespace KxDataView2
 			{
 				return HasValidator() ? *m_Validator : wxDefaultValidator;
 			}
+			wxValidator& GetValidatorRef()
+			{
+				return *m_Validator;
+			}
+			
 			void SetValidator(std::unique_ptr<wxValidator> validator)
 			{
 				m_Validator = std::move(validator);
