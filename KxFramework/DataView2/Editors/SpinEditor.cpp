@@ -1,6 +1,7 @@
 #include "KxStdAfx.h"
 #include "SpinEditor.h"
 #include "KxFramework/DataView2/Node.h"
+#include "KxFramework/KxValidator.h"
 #include <wx/spinctrl.h>
 
 namespace
@@ -72,9 +73,25 @@ namespace KxDataView2
 			m_EffectiveType = Type::Float;
 			editor = spin;
 		}
-
 		editor->SetMaxSize(size);
-		editor->SetValidator(GetValidator());
+
+		// Set our win validator ignoring any user supplied because spin controls
+		// are different for validators (in other words broken, at least for Windows).
+		// See 'KxValidator.cpp' file for details.
+		if (m_Type == Type::Integer)
+		{
+			KxIntegerValidator<int> validator(nullptr, wxNUM_VAL_NO_TRAILING_ZEROES);
+			validator.SetMin(m_IntMin);
+			validator.SetMax(m_IntMax);
+			editor->SetValidator(validator);
+		}
+		else
+		{
+			KxFloatingPointValidator<double> validator(nullptr, wxNUM_VAL_NO_TRAILING_ZEROES);
+			validator.SetMin(m_FloatMin);
+			validator.SetMax(m_FloatMax);
+			editor->SetValidator(validator);
+		}
 		return editor;
 	}
 	wxAny SpinEditor::GetValue(wxWindow* control) const
