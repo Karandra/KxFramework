@@ -187,6 +187,8 @@ namespace KxDataView2
 		Bind(wxEVT_CHAR, &EditorControlHandler::OnChar, this);
 		Bind(wxEVT_KILL_FOCUS, &EditorControlHandler::OnKillFocus, this);
 		Bind(wxEVT_TEXT_ENTER, &EditorControlHandler::OnTextEnter, this);
-		Bind(wxEVT_MOTION, &EditorControlHandler::OnMouse, this);
+
+		// Causes drag events when focus in editor and such. Disabled for now.
+		//Bind(wxEVT_MOTION, &EditorControlHandler::OnMouse, this);
 	}
 }
