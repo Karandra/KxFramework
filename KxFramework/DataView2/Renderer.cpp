@@ -73,7 +73,7 @@ namespace KxDataView2
 	{
 		m_AlwaysUseGC = alwaysUseGC;
 		RenderEngine renderEngine = GetRenderEngine();
-		wxDC& dc = HasRegularDC() ? GetRegularDC() : GetGraphicsDC();
+		wxDC& dc = HasRegularDC() && !m_AlwaysUseGC  ? GetRegularDC() : GetGraphicsDC();
 
 		// Change text color
 		wxDCTextColourChanger changeTextColor(dc);
