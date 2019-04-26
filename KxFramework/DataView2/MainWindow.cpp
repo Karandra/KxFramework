@@ -9,7 +9,6 @@
 #include "KxFramework/KxSystemSettings.h"
 #include "KxFramework/KxSplashWindow.h"
 #include "KxFramework/KxCallAtScopeExit.h"
-#include "KxFramework/KxBitmapGraphicsCanvas.h"
 #include "KxFramework/KxUtility.h"
 #include "KxFramework/KxFrame.h"
 #include "KxFramework/KxUxTheme.h"
@@ -2113,7 +2112,13 @@ namespace KxDataView2
 			memoryDC.SetTextBackground(m_View->GetBackgroundColour());
 			memoryDC.Clear();
 
+			// Draw selection
 			DrawSelectionRect(this, memoryDC, itemRect, wxCONTROL_CURRENT|wxCONTROL_SELECTED|wxCONTROL_FOCUSED);
+
+			// Fix swapped red and green channels when using transparent rendering on memory DC (wxBitmap::UseAlpha)
+			SwapRedGreenChannels(bitmap);
+
+			// Draw cells
 			wxGCDC gcdc(memoryDC);
 
 			int x = 0;
@@ -2134,11 +2139,12 @@ namespace KxDataView2
 					renderer.BeginCellRendering(*node, *column, gcdc, &memoryDC);
 
 					wxRect cellRect(x, 0, width, height);
-					cellRect.Deflate(PADDING_RIGHTLEFT, 0);
 
 					renderer.SetupCellValue();
 					renderer.SetupCellAttributes(cellState);
-					renderer.CallDrawCellBackground(cellRect, cellState, true);
+					renderer.CallDrawCellBackground(cellRect, cellState);
+
+					cellRect.Deflate(PADDING_RIGHTLEFT, 0);
 					renderer.CallDrawCellContent(cellRect, cellState, true);
 
 					renderer.EndCellRendering();
@@ -2147,8 +2153,6 @@ namespace KxDataView2
 			}
 		}
 
-		// Fix swapped red and green channels when using transparent rendering on memory DC (wxBitmap::UseAlpha)
-		SwapRedGreenChannels(bitmap);
 		return bitmap;
 	}
 
