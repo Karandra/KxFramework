@@ -1,5 +1,5 @@
 /*
-Copyright © 2018 Kerber. All rights reserved.
+Copyright © 2019 Kerber. All rights reserved.
 
 You should have received a copy of the GNU LGPL v3
 along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
@@ -10,11 +10,21 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 class KX_API KxCOMInit
 {
 	private:
-		HRESULT m_Result = 0;
-		bool m_IsInit = false;
+		static HRESULT GetInvalidHRESULT()
+		{
+			return CO_E_NOTINITIALIZED;
+		}
+
+	private:
+		HRESULT m_Result = GetInvalidHRESULT();
 
 	public:
-		KxCOMInit(DWORD options);
+		KxCOMInit(tagCOINIT options = tagCOINIT::COINIT_APARTMENTTHREADED);
+		KxCOMInit(const KxCOMInit&) = delete;
+		KxCOMInit(KxCOMInit&& other)
+		{
+			*this = std::move(other);
+		}
 		~KxCOMInit();
 
 	public:
@@ -22,15 +32,29 @@ class KX_API KxCOMInit
 		{
 			return m_Result;
 		}
+		bool IsInitialized() const
+		{
+			return SUCCEEDED(m_Result);
+		}
 		void Uninitialize();
 
 		operator bool() const
 		{
-			return m_IsInit;
+			return IsInitialized();
 		}
 		bool operator!() const
 		{
-			return !m_IsInit;
+			return !IsInitialized();
+		}
+
+	public:
+		KxCOMInit& operator=(const KxCOMInit&) = delete;
+		KxCOMInit& operator=(KxCOMInit&& other)
+		{
+			m_Result = other.m_Result;
+			other.m_Result = GetInvalidHRESULT();
+
+			return *this;
 		}
 };
 

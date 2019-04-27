@@ -1,5 +1,5 @@
 /*
-Copyright © 2018 Kerber. All rights reserved.
+Copyright © 2019 Kerber. All rights reserved.
 
 You should have received a copy of the GNU LGPL v3
 along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
@@ -9,11 +9,9 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include <combaseapi.h>
 #include <unknwn.h>
 
-KxCOMInit::KxCOMInit(DWORD options)
-	:m_Result(E_FAIL)
+KxCOMInit::KxCOMInit(tagCOINIT options)
+	:m_Result(::CoInitializeEx(nullptr, options))
 {
-	m_Result = ::CoInitializeEx(nullptr, options);
-	m_IsInit = SUCCEEDED(m_Result);
 }
 KxCOMInit::~KxCOMInit()
 {
@@ -22,9 +20,9 @@ KxCOMInit::~KxCOMInit()
 
 void KxCOMInit::Uninitialize()
 {
-	if (m_IsInit)
+	if (IsInitialized())
 	{
 		::CoUninitialize();
-		m_IsInit = false;
+		m_Result = GetInvalidHRESULT();
 	}
 }
