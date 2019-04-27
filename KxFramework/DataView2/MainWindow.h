@@ -86,6 +86,7 @@ namespace KxDataView2
 			DnDInfo m_DragDropInfo;
 			wxDataObjectComposite* m_DragDropDataObject = nullptr;
 			DropTarget* m_DropTarget = nullptr;
+			DropSource* m_DragSource = nullptr;
 			size_t m_DragCount = 0;
 
 			wxPoint m_DragStart = wxPoint(0, 0);

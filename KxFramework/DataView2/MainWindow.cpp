@@ -673,9 +673,12 @@ namespace KxDataView2
 
 					if (wxDataObjectSimple* dragObject = dragEvent.GetDataObject())
 					{
-						DropSource drag(this, draggedRow);
-						drag.SetData(*dragObject);
-						drag.DoDragDrop(dragEvent.GetDragFlags());
+						DropSource dragSource(this, draggedRow);
+						dragSource.SetData(*dragObject);
+
+						m_DragSource = &dragSource;
+						dragSource.DoDragDrop(dragEvent.GetDragFlags());
+						m_DragSource = nullptr;
 					}
 				}
 			}
@@ -2222,8 +2225,8 @@ namespace KxDataView2
 		auto [row, node] = DragDropHitTest(pos);
 		if (row != 0 && row < GetRowCount())
 		{
-			const size_t firstVisible = GetFirstVisibleRow();
-			const size_t lastVisible = GetLastVisibleRow();
+			const Row firstVisible = GetFirstVisibleRow();
+			const Row lastVisible = GetLastVisibleRow();
 			if (row == firstVisible || row == firstVisible + 1)
 			{
 				ScrollTo(row - 1);
