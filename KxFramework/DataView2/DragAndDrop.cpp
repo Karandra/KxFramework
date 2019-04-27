@@ -104,7 +104,10 @@ namespace KxDataView2
 	DropSource::~DropSource()
 	{
 		m_HintPosition = wxDefaultPosition;
-		m_DragImage->Destroy();
+		if (m_DragImage)
+		{
+			m_DragImage->Destroy();
+		}
 	}
 }
 
