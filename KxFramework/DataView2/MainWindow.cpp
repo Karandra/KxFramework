@@ -41,7 +41,7 @@ namespace
 			}
 		}
 
-		if (flags & wxCONTROL_DISABLED)
+		if (flags & wxCONTROL_DISABLED && !(flags & wxCONTROL_CURRENT))
 		{
 			itemState = TREIS_DISABLED;
 		}
@@ -1419,7 +1419,7 @@ namespace KxDataView2
 					return rowRect;
 				};
 
-				// Draw selection
+				// Draw selection and hot-track indicator
 				if (cellState.IsSelected() || cellState.IsHotTracked())
 				{
 					wxRect rowRect = GetRowRect();
@@ -1435,7 +1435,7 @@ namespace KxDataView2
 					}
 					if (cellState.IsHotTracked())
 					{
-						flags |= wxCONTROL_CURRENT;
+						flags |= wxCONTROL_CURRENT|wxCONTROL_FOCUSED;
 					}
 					DrawSelectionRect(this, paintDC, rowRect, flags);
 				}
@@ -1460,7 +1460,9 @@ namespace KxDataView2
 				#endif
 			}
 
-			if (false && isCategoryRow)
+			// This needs more work
+			#if 0
+			if (isCategoryRow)
 			{
 				if (categoryRowOffset < 0)
 				{
@@ -1471,6 +1473,7 @@ namespace KxDataView2
 				wxPoint pos2(cellInitialRect.GetX() + xCoordEnd - xCoordStart - categoryRowOffset, pos1.y);
 				dc.DrawLine(pos1, pos2);
 			}
+			#endif
 		}
 	}
 	CellState MainWindow::GetCellStateForRow(Row row) const
