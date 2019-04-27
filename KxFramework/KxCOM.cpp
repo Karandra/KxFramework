@@ -26,3 +26,23 @@ void KxCOMInit::Uninitialize()
 		m_Result = GetInvalidHRESULT();
 	}
 }
+
+//////////////////////////////////////////////////////////////////////////
+
+KxOLEInit::KxOLEInit()
+	:m_Result(::OleInitialize(nullptr))
+{
+}
+KxOLEInit::~KxOLEInit()
+{
+	Uninitialize();
+}
+
+void KxOLEInit::Uninitialize()
+{
+	if (IsInitialized())
+	{
+		::OleUninitialize();
+		m_Result = GetInvalidHRESULT();
+	}
+}

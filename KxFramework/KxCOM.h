@@ -59,6 +59,58 @@ class KX_API KxCOMInit
 };
 
 //////////////////////////////////////////////////////////////////////////
+class KX_API KxOLEInit
+{
+	private:
+		static HRESULT GetInvalidHRESULT()
+		{
+			return CO_E_NOTINITIALIZED;
+		}
+
+	private:
+		HRESULT m_Result = GetInvalidHRESULT();
+
+	public:
+		KxOLEInit();
+		KxOLEInit(const KxCOMInit&) = delete;
+		KxOLEInit(KxOLEInit&& other)
+		{
+			*this = std::move(other);
+		}
+		~KxOLEInit();
+
+	public:
+		HRESULT GetResult() const
+		{
+			return m_Result;
+		}
+		bool IsInitialized() const
+		{
+			return SUCCEEDED(m_Result);
+		}
+		void Uninitialize();
+
+		operator bool() const
+		{
+			return IsInitialized();
+		}
+		bool operator!() const
+		{
+			return !IsInitialized();
+		}
+
+	public:
+		KxOLEInit& operator=(const KxOLEInit&) = delete;
+		KxOLEInit& operator=(KxOLEInit&& other)
+		{
+			m_Result = other.m_Result;
+			other.m_Result = GetInvalidHRESULT();
+
+			return *this;
+		}
+};
+
+//////////////////////////////////////////////////////////////////////////
 template<class T> class KxCOMPtr
 {
 	private:
