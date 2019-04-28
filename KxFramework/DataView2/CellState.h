@@ -4,6 +4,11 @@
 
 namespace KxDataView2
 {
+	class KX_API MainWindow;
+}
+
+namespace KxDataView2
+{
 	class CellState
 	{
 		private:
@@ -47,5 +52,8 @@ namespace KxDataView2
 				m_Value.SetOptionEnabled(Value::DropTarget);
 				return *this;
 			}
+	
+		public:
+			int ToItemState(const MainWindow* window) const;
 	};
 }

@@ -471,6 +471,7 @@
     <ClCompile Include="KxFramework\ComponentSystem\ComponentContainer.cpp" />
     <ClCompile Include="KxFramework\ComponentSystem\ComponentItem.cpp" />
     <ClCompile Include="KxFramework\ComponentSystem\IComponentContainer.cpp" />
+    <ClCompile Include="KxFramework\DataView2\CellState.cpp" />
     <ClCompile Include="KxFramework\DataView2\Column.cpp" />
     <ClCompile Include="KxFramework\DataView2\Common.cpp" />
     <ClCompile Include="KxFramework\DataView2\DragAndDrop.cpp" />
