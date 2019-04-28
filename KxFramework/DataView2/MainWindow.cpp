@@ -2439,7 +2439,7 @@ namespace KxDataView2
 
 		if (nextColumn == 0 && wrapAround)
 		{
-			if (GetCurrentRow() > 0)
+			if (GetCurrentRow().IsOK())
 			{
 				// Go to the last column of the previous row
 				nextColumn = visibleColumnsCount - 1;
