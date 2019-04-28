@@ -2096,10 +2096,8 @@ namespace KxDataView2
 		width -= indent;
 		wxRect itemRect = wxRect(0, 0, width, height);
 
-		wxBitmap bitmap(width, height, 32);
+		wxBitmap bitmap(width, height, 24);
 		{
-			bitmap.UseAlpha();
-
 			wxMemoryDC memoryDC(bitmap);
 			memoryDC.SetFont(GetFont());
 			memoryDC.SetBackground(m_View->GetBackgroundColour());
@@ -2109,9 +2107,6 @@ namespace KxDataView2
 
 			// Draw selection
 			DrawSelectionRect(this, memoryDC, itemRect, wxCONTROL_CURRENT|wxCONTROL_SELECTED|wxCONTROL_FOCUSED);
-
-			// Fix swapped red and green channels when using transparent rendering on memory DC (wxBitmap::UseAlpha)
-			SwapRedGreenChannels(bitmap);
 
 			// Draw cells
 			wxGCDC gcdc(memoryDC);
@@ -2140,7 +2135,7 @@ namespace KxDataView2
 					renderer.CallDrawCellBackground(cellRect, cellState);
 
 					cellRect.Deflate(PADDING_RIGHTLEFT, 0);
-					renderer.CallDrawCellContent(cellRect, cellState, true);
+					renderer.CallDrawCellContent(cellRect, cellState);
 
 					renderer.EndCellRendering();
 					x += width;
