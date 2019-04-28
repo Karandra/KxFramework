@@ -196,6 +196,10 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="KxFramework\ComponentSystem\Component.h" />
+    <ClInclude Include="KxFramework\ComponentSystem\ComponentContainer.h" />
+    <ClInclude Include="KxFramework\ComponentSystem\ComponentItem.h" />
+    <ClInclude Include="KxFramework\ComponentSystem\IComponentContainer.h" />
     <ClInclude Include="KxFramework\DataView2\CellState.h" />
     <ClInclude Include="KxFramework\DataView2\Column.h" />
     <ClInclude Include="KxFramework\DataView2\ColumnID.h" />
@@ -286,6 +290,7 @@
     <ClInclude Include="KxFramework\KxCommandEvent.h" />
     <ClInclude Include="KxFramework\KxComparator.h" />
     <ClInclude Include="KxFramework\KxCompileTimeMap.h" />
+    <ClInclude Include="KxFramework\KxComponentSystem.h" />
     <ClInclude Include="KxFramework\KxCoroutine.h" />
     <ClInclude Include="KxFramework\KxCredentialsDialog.h" />
     <ClInclude Include="KxFramework\KxCrypto.h" />
@@ -462,6 +467,10 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(Configuration) $(Platform)\%(RelativeDir)</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(Configuration) $(Platform)\%(RelativeDir)</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="KxFramework\ComponentSystem\Component.cpp" />
+    <ClCompile Include="KxFramework\ComponentSystem\ComponentContainer.cpp" />
+    <ClCompile Include="KxFramework\ComponentSystem\ComponentItem.cpp" />
+    <ClCompile Include="KxFramework\ComponentSystem\IComponentContainer.cpp" />
     <ClCompile Include="KxFramework\DataView2\Column.cpp" />
     <ClCompile Include="KxFramework\DataView2\Common.cpp" />
     <ClCompile Include="KxFramework\DataView2\DragAndDrop.cpp" />

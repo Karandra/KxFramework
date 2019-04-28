@@ -217,6 +217,12 @@
     <Filter Include="Header Files\Validators">
       <UniqueIdentifier>{a2b339a6-8565-4769-8878-831496b2828e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\General\ComponentSystem">
+      <UniqueIdentifier>{b296e85e-06b9-48e1-820c-8ee15beb6b5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\General\ComponentSystem">
+      <UniqueIdentifier>{4a75dadd-4514-4c7e-9ed8-32e75e3b7eb5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -934,6 +940,21 @@
     <ClInclude Include="KxFramework\KxValidator.h">
       <Filter>Header Files\Validators</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxComponentSystem.h">
+      <Filter>Header Files\General</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\ComponentSystem\ComponentItem.h">
+      <Filter>Header Files\General\ComponentSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\ComponentSystem\IComponentContainer.h">
+      <Filter>Header Files\General\ComponentSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\ComponentSystem\Component.h">
+      <Filter>Header Files\General\ComponentSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\ComponentSystem\ComponentContainer.h">
+      <Filter>Header Files\General\ComponentSystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1536,6 +1557,18 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxValidator.cpp">
       <Filter>Source Files\Validators</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\ComponentSystem\ComponentItem.cpp">
+      <Filter>Source Files\General\ComponentSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\ComponentSystem\IComponentContainer.cpp">
+      <Filter>Source Files\General\ComponentSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\ComponentSystem\Component.cpp">
+      <Filter>Source Files\General\ComponentSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\ComponentSystem\ComponentContainer.cpp">
+      <Filter>Source Files\General\ComponentSystem</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
