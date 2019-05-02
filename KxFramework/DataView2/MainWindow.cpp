@@ -1442,7 +1442,7 @@ namespace KxDataView2
 				}
 
 				// Draw cell focus
-				if (!focusCellRect.IsEmpty() && m_View->IsOptionEnabled(CtrlStyle::CellFocus) && currentRow == m_CurrentRow && cellState.IsSelected())
+				if (m_HasFocus && m_View->IsOptionEnabled(CtrlStyle::CellFocus) && !focusCellRect.IsEmpty() && currentRow == m_CurrentRow && cellState.IsSelected())
 				{
 					// Focus rect looks ugly in it's narrower 3 px
 					if (focusCellRect.GetWidth() > 3)
