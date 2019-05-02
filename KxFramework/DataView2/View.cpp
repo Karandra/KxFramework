@@ -477,14 +477,13 @@ namespace KxDataView2
 	}
 	size_t View::GetSelections(Node::Vector& selection) const
 	{
-		selection.clear();
 		const wxSelectionStore& selectionStore = m_ClientArea->GetSelections();
+		selection.reserve(selectionStore.GetSelectedCount());
 
 		wxSelectionStore::IterationState cookie;
 		for (auto row = selectionStore.GetFirstSelectedItem(cookie); row != wxSelectionStore::NO_SELECTION; row = selectionStore.GetNextSelectedItem(cookie))
 		{
-			Node* item = m_ClientArea->GetNodeByRow(row);
-			if (item)
+			if (Node* item = m_ClientArea->GetNodeByRow(row))
 			{
 				selection.push_back(item);
 			}
