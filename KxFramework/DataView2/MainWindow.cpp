@@ -1139,6 +1139,8 @@ namespace KxDataView2
 			return;
 		}
 
+		
+		// Calc start of X coordinate
 		size_t coulumnIndexStart = 0;
 		int xCoordStart = 0;
 		for (coulumnIndexStart = 0; coulumnIndexStart < columnCount; coulumnIndexStart++)
@@ -1156,8 +1158,13 @@ namespace KxDataView2
 			}
 		}
 
+		
+		// Calc end of X coordinate and visible columns count
+		size_t visibleColumnsCount = 0;
 		size_t coulmnIndexEnd = coulumnIndexStart;
 		int xCoordEnd = xCoordStart;
+		const int fullRowWidth = GetRowWidth();
+
 		for (; coulmnIndexEnd < columnCount; coulmnIndexEnd++)
 		{
 			const Column* column = m_View->GetColumnDisplayedAt(coulmnIndexEnd);
@@ -1165,10 +1172,12 @@ namespace KxDataView2
 			int width = 0;
 			if (column->IsExposed(width))
 			{
+				visibleColumnsCount++;
+
 				if (xCoordEnd > updateRect.GetRight())
 				{
 					// If we drawing only part of the control, draw it one pixel wider, to hide not drawn regions.
-					if (xCoordEnd + width < GetRowWidth())
+					if (xCoordEnd + width < fullRowWidth)
 					{
 						xCoordEnd++;
 					}
@@ -1342,14 +1351,14 @@ namespace KxDataView2
 					adjustedCellRect.width -= expanderIndent;
 				}
 
-				// Draw vertical rules
-				if (verticalRulesEnabled && currentColumnIndex + 1 != coulmnIndexEnd)
+				// Draw vertical rules but don't draw the rule for last column is we have only one column
+				if (verticalRulesEnabled && visibleColumnsCount > 1)
 				{
 					wxDCPenChanger pen(dc, m_PenRuleV);
 					wxDCBrushChanger brush(dc, *wxTRANSPARENT_BRUSH);
 
 					// Draw vertical rules in column's last pixel, so they will align with header control dividers
-					const int x = cellRect.x - 1;
+					const int x = cellRect.x + cellRect.width - 1;
 					int yAdd = 0;
 					if (currentRow + 1 == rowEnd)
 					{
