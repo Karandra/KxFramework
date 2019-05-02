@@ -253,8 +253,16 @@ namespace KxDataView2
 			{
 				return GetSelectedCount() != 0;
 			}
+			
 			Node* GetSelection() const;
 			size_t GetSelections(Node::Vector& selection) const;
+			Node::Vector GetSelections() const
+			{
+				Node::Vector nodes;
+				GetSelections(nodes);
+				return nodes;
+			}
+
 			void SetSelections(const Node::Vector& selection);
 			void Select(Node& node);
 			void Unselect(Node& node);
