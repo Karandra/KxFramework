@@ -795,7 +795,7 @@ bool KxDataViewCtrl::CreateColumnSelectionMenu(KxMenu& menu)
 			title << '<' << i + 1 << '>';
 		}
 
-		KxMenuItem* menuItem = menu.Add(new KxMenuItem(title, wxEmptyString, wxITEM_CHECK));
+		KxMenuItem* menuItem = menu.AddItem(title, wxEmptyString, wxITEM_CHECK);
 		menuItem->Check(column->IsShown());
 		menuItem->SetClientData(column);
 	}

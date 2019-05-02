@@ -4,6 +4,12 @@
 
 class KX_API KxMenuItem: public wxEvtHandler, public wxMenuItem
 {
+	protected:
+		template<class T> constexpr static bool TestIDType()
+		{
+			return std::is_integral_v<T> || std::is_enum_v<T>;
+		}
+
 	private:
 		wxWindowID m_EffectiveID = KxID_NONE;
 
@@ -11,8 +17,14 @@ class KX_API KxMenuItem: public wxEvtHandler, public wxMenuItem
 		wxWindowID GetEffectiveID(wxWindowID id) const;
 
 	public:
-		KxMenuItem(wxWindowID id, const wxString& label = wxEmptyString, const wxString& helpString = wxEmptyString, wxItemKind kind = wxITEM_NORMAL, KxMenu* subMenu = nullptr);
-		KxMenuItem(const wxString& label, const wxString& helpString = wxEmptyString, wxItemKind kind = wxITEM_NORMAL);
+		template<class T, class = std::enable_if_t<TestIDType<T>()>>
+		KxMenuItem(T id, const wxString& label = {}, const wxString& helpString = {}, wxItemKind kind = wxITEM_NORMAL)
+			:KxMenuItem(static_cast<wxWindowID>(id), label, helpString, kind)
+		{
+		}
+
+		KxMenuItem(wxWindowID id, const wxString& label = {}, const wxString& helpString = {}, wxItemKind kind = wxITEM_NORMAL);
+		KxMenuItem(const wxString& label, const wxString& helpString = {}, wxItemKind kind = wxITEM_NORMAL);
 		virtual ~KxMenuItem();
 
 	public:

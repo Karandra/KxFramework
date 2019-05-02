@@ -737,10 +737,10 @@ namespace KxDataView2
 			wxString title = column->GetTitle();
 			if (title.IsEmpty())
 			{
-				title << '<' << i + 1 << '>';
+				title << wxS('<') << i + 1 << wxS('>');
 			}
 
-			KxMenuItem* menuItem = menu.Add(new KxMenuItem(title, wxEmptyString, wxITEM_CHECK));
+			KxMenuItem* menuItem = menu.AddItem(title, wxEmptyString, wxITEM_CHECK);
 			menuItem->Check(column->IsVisible());
 			menuItem->SetClientData(column);
 		}

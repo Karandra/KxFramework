@@ -86,9 +86,6 @@ class KX_API KxMenu: public wxMenu
 		wxWindowID Show(wxWindow* window = nullptr, const wxPoint& pos = wxDefaultPosition, DWORD alignment = DefaultAlignment);
 		wxWindowID ShowAsPopup(wxWindow* window, int offset = 1, DWORD alignment = DefaultAlignment);
 
-		void ShowAsync(wxWindow& window, const wxPoint& pos = wxDefaultPosition, DWORD alignment = DefaultAlignment);
-		void ShowAsPopupAsync(wxWindow& window, int offset = 1, DWORD alignment = DefaultAlignment);
-
 	public:
 		virtual KxMenuItem* Add(KxMenuItem* item);
 		KxMenuItem* Add(KxMenu* subMenu, const wxString& label, const wxString& helpString = wxEmptyString);
@@ -108,6 +105,26 @@ class KX_API KxMenu: public wxMenu
 
 		virtual KxMenuItem* RemoveItem(KxMenuItem* item);
 		virtual KxMenuItem* RemoveItem(wxWindowID id);
+
+	public:
+		template<class TItem = KxMenuItem, class... Args> TItem* AddItem(Args&&... arg)
+		{
+			TItem* item = new TItem(std::forward<Args>(arg)...);
+			Add(item);
+			return item;
+		}
+		template<class TItem = KxMenuItem, class... Args> TItem* InsertItem(size_t pos, Args&& ... arg)
+		{
+			TItem* item = new TItem(std::forward<Args>(arg)...);
+			Insert(pos, item);
+			return item;
+		}
+		template<class TItem = KxMenuItem, class... Args> TItem* PrependItem(Args&& ... arg)
+		{
+			TItem* item = new TItem(std::forward<Args>(arg)...);
+			Prepend(item);
+			return item;
+		}
 
 	public:
 		iterator begin()

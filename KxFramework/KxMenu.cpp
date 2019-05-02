@@ -311,23 +311,15 @@ wxWindowID KxMenu::ShowAsPopup(wxWindow* window, int offset, DWORD alignment)
 	return Show(window, pos, alignment);
 }
 
-void KxMenu::ShowAsync(wxWindow& window, const wxPoint& pos, DWORD alignment)
-{
-	DoShowMenu(&window, pos, alignment, true);
-}
-void KxMenu::ShowAsPopupAsync(wxWindow& window, int offset, DWORD alignment)
-{
-	wxPoint pos = TranslateCoordinatesAsPopup(&window, offset, alignment);
-	ShowAsync(window, pos, alignment);
-}
-
 KxMenuItem* KxMenu::Add(KxMenuItem* item)
 {
 	return wxMenu::Append(item) ? item : nullptr;
 }
 KxMenuItem* KxMenu::Add(KxMenu* subMenu, const wxString& label, const wxString& helpString)
 {
-	return Add(new KxMenuItem(wxID_ANY, label, helpString, wxITEM_NORMAL, subMenu));
+	KxMenuItem* item = new KxMenuItem(wxID_ANY, label, helpString, wxITEM_NORMAL);
+	item->SetSubMenu(subMenu);
+	return Add(item);
 }
 KxMenuItem* KxMenu::AddSeparator()
 {
@@ -340,7 +332,9 @@ KxMenuItem* KxMenu::Insert(size_t pos, KxMenuItem* item)
 }
 KxMenuItem* KxMenu::Insert(size_t pos, KxMenu* subMenu, const wxString& label, const wxString& helpString)
 {
-	return Insert(pos, new KxMenuItem(wxID_ANY, label, helpString, wxITEM_NORMAL, subMenu));
+	KxMenuItem* item = new KxMenuItem(wxID_ANY, label, helpString, wxITEM_NORMAL);
+	item->SetSubMenu(subMenu);
+	return Insert(pos, item);
 }
 KxMenuItem* KxMenu::InsertSeparator(size_t pos)
 {
@@ -353,7 +347,9 @@ KxMenuItem* KxMenu::Prepend(KxMenuItem* item)
 }
 KxMenuItem* KxMenu::Prepend(KxMenu* subMenu, const wxString& label, const wxString& helpString)
 {
-	return Prepend(new KxMenuItem(wxID_ANY, label, helpString, wxITEM_NORMAL, subMenu));
+	KxMenuItem* item = new KxMenuItem(wxID_ANY, label, helpString, wxITEM_NORMAL);
+	item->SetSubMenu(subMenu);
+	return Prepend(item);
 }
 KxMenuItem* KxMenu::PrependSeparator()
 {

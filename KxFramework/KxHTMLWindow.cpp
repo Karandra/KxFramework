@@ -39,7 +39,7 @@ void KxHTMLWindow::CreateContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link)
 {
 	auto MakeItem = [&menu](KxStandardID id)
 	{
-		return menu.Add(new KxMenuItem(id, KxTranslation::GetCurrent().GetString(id)));
+		return menu.AddItem(id, KxTranslation::GetCurrent().GetString(id));
 	};
 
 	{

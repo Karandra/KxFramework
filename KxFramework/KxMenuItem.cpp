@@ -7,7 +7,7 @@
 KxWxRTTI_ImplementClassDynamic2(KxMenuItem, KxMenuItem, wxEvtHandler, wxMenuItem); // wxIMPLEMENT_DYNAMIC_CLASS2(KxMenuItem, wxEvtHandler, wxMenuItem);
 wxObject* KxMenuItem::wxCreateObject()
 {
-	return static_cast<wxEvtHandler*>(new KxMenuItem(wxID_SEPARATOR, wxEmptyString, wxEmptyString, wxITEM_SEPARATOR, nullptr));
+	return static_cast<wxEvtHandler*>(new KxMenuItem(wxID_SEPARATOR, wxEmptyString, wxEmptyString, wxITEM_SEPARATOR));
 }
 
 wxWindowID KxMenuItem::GetEffectiveID(wxWindowID id) const
@@ -15,8 +15,8 @@ wxWindowID KxMenuItem::GetEffectiveID(wxWindowID id) const
 	return id < 0 ? id : id + 1;
 }
 
-KxMenuItem::KxMenuItem(wxWindowID id = wxID_SEPARATOR, const wxString& label, const wxString& helpString, wxItemKind kind, KxMenu* subMenu)
-	:wxMenuItem(nullptr, GetEffectiveID(id), label, helpString, kind, subMenu)
+KxMenuItem::KxMenuItem(wxWindowID id, const wxString& label, const wxString& helpString, wxItemKind kind)
+	:wxMenuItem(nullptr, GetEffectiveID(id), label, helpString, kind, nullptr)
 {
 	m_EffectiveID = id;
 }
