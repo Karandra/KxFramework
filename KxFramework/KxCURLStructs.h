@@ -80,6 +80,15 @@ class KX_API KxCURLReply: public KxCURLReplyBase
 			return KxCURLReplyBase::IsOK() && !m_Buffer.IsEmpty();
 		}
 
+		const wxString& AsString() const
+		{
+			return m_Buffer;
+		}
+		wxString& AsString()
+		{
+			return m_Buffer;
+		}
+
 		operator const wxString&() const
 		{
 			return m_Buffer;
