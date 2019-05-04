@@ -253,7 +253,7 @@ wxString& KxString::MakeCapitalized(wxString& s, bool fistCharOnly)
 	{
 		if (!fistCharOnly)
 		{
-			s.MakeLower();
+			MakeLower(s);
 		}
 		s[0] = CharToUpper(s[0]);
 	}
