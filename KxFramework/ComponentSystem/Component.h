@@ -24,6 +24,10 @@ class KX_API KxComponent: public KxIComponentContainer
 		{
 			return m_Container->DoRemoveComponent(typeInfo);
 		}
+		void DoRemoveAllComponents() override
+		{
+			m_Container->DoRemoveAllComponents();
+		}
 		void DoEnumComponents(TEnumFunction func) override
 		{
 			m_Container->DoEnumComponents(std::move(func));

@@ -2,6 +2,18 @@
 #include "ComponentContainer.h"
 #include "Component.h"
 
+void KxComponentContainer::Clear()
+{
+	// Call uninit for all components, they are going to be destroyed (or detached) on 'm_Components' clear
+	for (auto& [key, value]: m_Components)
+	{
+		KxComponent& component = value.Get();
+		component.OnUninit();
+		component.m_Container = nullptr;
+	}
+	m_Components.clear();
+}
+
 KxComponent& KxComponentContainer::DoAddComponent(KxComponentItem item)
 {
 	// Add to container
@@ -41,13 +53,17 @@ KxComponent* KxComponentContainer::DoRemoveComponent(const std::type_info& typeI
 		// Erase the item (and delete the component if owned)
 		m_Components.erase(it);
 
-		// If we don't own this component, return pointer to it
+		// If we don't own this component (and is wasn't deleted by call to 'erase'), return pointer to it
 		if (!deleteNeeded)
 		{
 			return component;
 		}
 	}
 	return nullptr;
+}
+void KxComponentContainer::DoRemoveAllComponents()
+{
+	Clear();
 }
 void KxComponentContainer::DoEnumComponents(TEnumFunction func)
 {
@@ -62,9 +78,5 @@ void KxComponentContainer::DoEnumComponents(TEnumFunction func)
 
 KxComponentContainer::~KxComponentContainer()
 {
-	// Call uninit for all components, they are going to be destroyed (or detached) right after
-	for (auto& [key, value]: m_Components)
-	{
-		value.Get().OnUninit();
-	}
+	Clear();
 }

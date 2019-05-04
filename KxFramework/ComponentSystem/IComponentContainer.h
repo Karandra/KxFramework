@@ -14,6 +14,7 @@ class KX_API KxIComponentContainer
 		virtual KxComponent& DoAddComponent(KxComponentItem item) = 0;
 		virtual KxComponent* DoGetComponent(const std::type_info& typeInfo) = 0;
 		virtual KxComponent* DoRemoveComponent(const std::type_info& typeInfo) = 0;
+		virtual void DoRemoveAllComponents() = 0;
 		virtual void DoEnumComponents(TEnumFunction func) = 0;
 
 	public:
@@ -36,6 +37,10 @@ class KX_API KxIComponentContainer
 		template<class TComponent> TComponent* RemoveComponent()
 		{
 			return static_cast<TComponent*>(DoRemoveComponent(typeid(TComponent)));
+		}
+		void RemoveAllComponents()
+		{
+			DoRemoveAllComponents();
 		}
 
 	public:
