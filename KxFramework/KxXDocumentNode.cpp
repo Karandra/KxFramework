@@ -41,6 +41,17 @@ int KxIXDocumentNode::ExtractIndexFromName(wxString& elementName, const wxString
 	}
 	return index;
 }
+bool KxIXDocumentNode::ContainsForbiddenCharactersForValue(const wxString& value)
+{
+	for (const auto& c: value)
+	{
+		if (c == wxS('&') || c == wxS('<') || c == wxS('>'))
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 wxString KxIXDocumentNode::FormatInt(int64_t value, int base) const
 {

@@ -144,7 +144,7 @@ class KX_API KxXMLNode: public KxXDocumentNode<KxXMLNode>
 		int64_t DoGetValueIntWithBase(int base = 10, int64_t defaultValue = 0) const override;
 		double DoGetValueFloat(double defaultValue = 0.0) const override;
 		bool DoGetValueBool(bool defaultValue = false) const override;
-		bool DoSetValue(const wxString& value, bool isCDATA = false) override;
+		bool DoSetValue(const wxString& value, AsCDATA asCDATA = AsCDATA::Auto) override;
 
 		wxString DoGetAttribute(const wxString& name, const wxString& defaultValue = wxEmptyString) const override;
 		int64_t DoGetAttributeIntWithBase(const wxString& name, int base, int64_t defaultValue = 0) const override;

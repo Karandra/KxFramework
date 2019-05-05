@@ -45,7 +45,7 @@ class KX_API KxINI: private KxXDocumentNode<KxINI>
 
 	protected:
 		wxString DoGetValue(const wxString& defaultValue = wxEmptyString) const override;
-		bool DoSetValue(const wxString& value, bool isCDATA = false) override;
+		bool DoSetValue(const wxString& value, AsCDATA asCDATA = AsCDATA::Auto) override;
 
 		wxString DoGetAttribute(const wxString& name, const wxString& defaultValue = wxEmptyString) const override;
 		bool DoSetAttribute(const wxString& name, const wxString& value) override;

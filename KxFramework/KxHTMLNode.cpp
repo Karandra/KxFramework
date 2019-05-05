@@ -186,7 +186,7 @@ wxString KxHTMLNode::DoGetValue(const wxString& defaultValue) const
 	}
 	return defaultValue;
 }
-bool KxHTMLNode::DoSetValue(const wxString& value, bool isCDATA)
+bool KxHTMLNode::DoSetValue(const wxString& value, AsCDATA asCDATA)
 {
 	return false;
 }

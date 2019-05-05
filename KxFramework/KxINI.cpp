@@ -34,7 +34,7 @@ wxString KxINI::DoGetValue(const wxString& defaultValue) const
 {
 	return wxEmptyString;
 }
-bool KxINI::DoSetValue(const wxString& value, bool isCDATA)
+bool KxINI::DoSetValue(const wxString& value, AsCDATA asCDATA)
 {
 	return false;
 }

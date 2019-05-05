@@ -10,7 +10,16 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 class KX_API KxIXDocumentNode
 {
 	public:
+		enum class AsCDATA
+		{
+			Auto = -1,
+			Always = 1,
+			Never = 0,
+		};
+
+	public:
 		static int ExtractIndexFromName(wxString& elementName, const wxString& xPathSeparator);
+		static bool ContainsForbiddenCharactersForValue(const wxString& value);
 		template<class TNode> static wxString ConstructXPath(const TNode& thisNode)
 		{
 			wxString xPath;
@@ -62,7 +71,7 @@ class KX_API KxIXDocumentNode
 		{
 			return ParseBool(DoGetValue(), defaultValue);
 		}
-		virtual bool DoSetValue(const wxString& value, bool isCDATA = false) = 0;
+		virtual bool DoSetValue(const wxString& value, AsCDATA asCDATA = AsCDATA::Auto) = 0;
 
 		virtual wxString DoGetAttribute(const wxString& name, const wxString& defaultValue = wxEmptyString) const = 0;
 		virtual int64_t DoGetAttributeIntWithBase(const wxString& name, int base, int64_t defaultValue = 0) const
@@ -161,37 +170,37 @@ class KX_API KxIXDocumentNode
 			return DoGetValueBool(defaultValue);
 		}
 
-		bool SetValue(const wxString& value, bool isCDATA = false)
+		bool SetValue(const char* value, AsCDATA asCDATA = AsCDATA::Auto)
 		{
-			return DoSetValue(value, isCDATA);
+			return DoSetValue(wxString::FromUTF8(value), asCDATA);
 		}
-		bool SetValue(const char* value, bool isCDATA = false)
+		bool SetValue(const wchar_t* value, AsCDATA asCDATA = AsCDATA::Auto)
 		{
-			return DoSetValue(wxString::FromUTF8(value), isCDATA);
+			return DoSetValue(value, asCDATA);
 		}
-		bool SetValue(const wchar_t* value, bool isCDATA = false)
+		bool SetValue(const wxString& value, AsCDATA asCDATA = AsCDATA::Auto)
 		{
-			return DoSetValue(wxString(value), isCDATA);
+			return DoSetValue(value, asCDATA);
 		}
-		bool SetValue(int64_t value, int base = 10, bool isCDATA = false)
+		bool SetValue(int value, int base = 10)
 		{
-			return DoSetValue(FormatInt(value, base), isCDATA);
+			return DoSetValue(FormatInt(value, base), AsCDATA::Never);
 		}
-		bool SetValue(int value, int base = 10, bool isCDATA = false)
+		bool SetValue(int64_t value, int base = 10)
 		{
-			return DoSetValue(FormatInt(value, base), isCDATA);
+			return DoSetValue(FormatInt(value, base), AsCDATA::Never);
 		}
-		bool SetValue(double value, int precision = -1, bool isCDATA = false)
+		bool SetValue(double value, int precision = -1)
 		{
-			return DoSetValue(FormatFloat(value, precision), isCDATA);
+			return DoSetValue(FormatFloat(value, precision), AsCDATA::Never);
 		}
-		bool SetValue(float value, int precision = -1, bool isCDATA = false)
+		bool SetValue(float value, int precision = -1)
 		{
-			return DoSetValue(FormatFloat((double)value, precision), isCDATA);
+			return DoSetValue(FormatFloat((double)value, precision), AsCDATA::Never);
 		}
-		bool SetValue(bool value, bool isCDATA = false)
+		bool SetValue(bool value)
 		{
-			return DoSetValue(FormatBool(value), isCDATA);
+			return DoSetValue(FormatBool(value), AsCDATA::Never);
 		}
 
 		virtual bool IsCDATA() const

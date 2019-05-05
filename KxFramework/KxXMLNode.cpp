@@ -121,7 +121,7 @@ bool KxXMLNode::DoGetValueBool(bool defaultValue) const
 	}
 	return value;
 }
-bool KxXMLNode::DoSetValue(const wxString& value, bool isCDATA)
+bool KxXMLNode::DoSetValue(const wxString& value, AsCDATA asCDATA)
 {
 	auto node = GetNode();
 	if (node)
@@ -132,7 +132,25 @@ bool KxXMLNode::DoSetValue(const wxString& value, bool isCDATA)
 			{
 				auto utf8 = value.ToUTF8();
 				tinyxml2::XMLText* textNode = m_Document->GetDocument()->NewText(utf8.data());
-				textNode->SetCData(isCDATA);
+
+				switch (asCDATA)
+				{
+					case AsCDATA::Always:
+					{
+						textNode->SetCData(true);
+						break;
+					}
+					case AsCDATA::Never:
+					{
+						textNode->SetCData(false);
+						break;
+					}
+					default:
+					{
+						textNode->SetCData(ContainsForbiddenCharactersForValue(value));
+						break;
+					}
+				};
 
 				node->DeleteChildren();
 				node->InsertFirstChild(textNode);
