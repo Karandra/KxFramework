@@ -25,8 +25,8 @@ class KX_API KxCURLEvent: public KxFileOperationEvent
 	public:
 		KxCURLEvent() {}
 		KxCURLEvent(wxEventType eventType, KxCURLSession* session, KxCURLReplyBase* reply);
-		virtual ~KxCURLEvent();
-		virtual KxCURLEvent* Clone() const;
+		~KxCURLEvent();
+		KxCURLEvent* Clone() const override;
 
 	public:
 		bool IsOK() const
@@ -43,7 +43,7 @@ class KX_API KxCURLEvent: public KxFileOperationEvent
 			return *m_Reply;
 		}
 
-		wxString GetHeaderKey() const;
+		wxString GetHeaderName() const;
 		wxString GetHeaderValue() const;
 		wxString GetHeaderLine() const;
 

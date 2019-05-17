@@ -561,6 +561,7 @@
     <ClCompile Include="KxFramework\KxCrypto.cpp" />
     <ClCompile Include="KxFramework\KxCURL.cpp" />
     <ClCompile Include="KxFramework\KxCURLEvent.cpp" />
+    <ClCompile Include="KxFramework\KxCURLStructs.cpp" />
     <ClCompile Include="KxFramework\KxDataView.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </ExcludedFromBuild>

@@ -31,6 +31,7 @@ class KX_API KxCURL: public KxSingleton<KxCURL>
 		{
 			return m_IsInitialized;
 		}
+		wxString ErrorCodeToString(int code) const;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -59,6 +60,8 @@ class KX_API KxCURLSession: public wxEvtHandler
 				return m_Reply;
 			}
 	};
+
+	friend class KxCURLEvent;
 
 	private:
 		CURL* m_Handle = nullptr;

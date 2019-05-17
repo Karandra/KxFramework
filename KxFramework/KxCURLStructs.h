@@ -14,7 +14,15 @@ class KX_API KxCURLReplyBase
 	friend class KxCURLSession;
 
 	private:
-		int m_ErrorCode = -1;
+		enum ErrorCode
+		{
+			Success = 0,
+			Invalid = -2
+		};
+
+	private:
+		wxString m_ErrorMessage;
+		int m_ErrorCode = ErrorCode::Invalid;
 		KxHTTPStatusValue m_ResponseCode;
 
 	protected:
@@ -26,6 +34,10 @@ class KX_API KxCURLReplyBase
 		{
 			m_ResponseCode = code;
 		}
+		void SetErrorMessage(const wxString& value)
+		{
+			m_ErrorMessage = value;
+		}
 
 		virtual void AddChunk(const void* data, size_t size) = 0;
 		virtual size_t GetDownloaded() const = 0;
@@ -36,13 +48,14 @@ class KX_API KxCURLReplyBase
 	public:
 		virtual bool IsOK() const
 		{
-			return m_ErrorCode == 0 && m_ResponseCode.IsSuccessful();
+			return m_ErrorCode == ErrorCode::Success && m_ResponseCode.IsSuccessful();
 		}
 
 		int GetErrorCode() const
 		{
 			return m_ErrorCode;
 		}
+		wxString GetErrorMessage() const;
 		KxHTTPStatusValue GetResponseCode() const
 		{
 			return m_ResponseCode;
@@ -64,18 +77,18 @@ class KX_API KxCURLReply: public KxCURLReplyBase
 			m_Buffer.Append(data);
 			m_Downloaded += data.size() / sizeof(wxChar);
 		}
-		virtual void AddChunk(const void* data, size_t size) override
+		void AddChunk(const void* data, size_t size) override
 		{
 			m_Buffer.Append(static_cast<const char*>(data), size);
 			m_Downloaded += size;
 		}
-		virtual size_t GetDownloaded() const override
+		size_t GetDownloaded() const override
 		{
 			return m_Downloaded;
 		}
 
 	public:
-		virtual bool IsOK() const override
+		bool IsOK() const override
 		{
 			return KxCURLReplyBase::IsOK() && !m_Buffer.IsEmpty();
 		}
@@ -108,11 +121,11 @@ class KX_API KxCURLBinaryReply: public KxCURLReplyBase
 		wxMemoryBuffer m_Buffer;
 
 	private:
-		virtual void AddChunk(const void* data, size_t size) override
+		void AddChunk(const void* data, size_t size) override
 		{
 			m_Buffer.AppendData(data, size);
 		}
-		virtual size_t GetDownloaded() const override
+		size_t GetDownloaded() const override
 		{
 			return m_Buffer.GetDataLen();
 		}
@@ -124,7 +137,7 @@ class KX_API KxCURLBinaryReply: public KxCURLReplyBase
 		}
 
 	public:
-		virtual bool IsOK() const override
+		bool IsOK() const override
 		{
 			return KxCURLReplyBase::IsOK() && !m_Buffer.IsEmpty();
 		}
@@ -155,12 +168,12 @@ class KX_API KxCURLStreamReply: public KxCURLReplyBase
 		int64_t m_InitialPosition = 0;
 
 	private:
-		virtual void AddChunk(const void* data, size_t size) override
+		void AddChunk(const void* data, size_t size) override
 		{
 			m_Stream.WriteAll(data, size);
 			m_Downloaded += size;
 		}
-		virtual size_t GetDownloaded() const override
+		size_t GetDownloaded() const override
 		{
 			return m_InitialPosition + m_Downloaded;
 		}
@@ -176,7 +189,7 @@ class KX_API KxCURLStreamReply: public KxCURLReplyBase
 		}
 
 	public:
-		virtual bool IsOK() const override
+		bool IsOK() const override
 		{
 			return KxCURLReplyBase::IsOK() && m_Stream.IsOk();
 		}

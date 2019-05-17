@@ -10,12 +10,14 @@ wxIMPLEMENT_DYNAMIC_CLASS(KxCURLEvent, KxFileOperationEvent);
 //////////////////////////////////////////////////////////////////////////
 namespace
 {
-	void CleanHeader(wxString& value)
+	void NormalizeValue(wxString& value)
 	{
 		KxString::Trim(value, true, true);
 		value.Replace(wxS("\r"), wxEmptyString, true);
 		value.Replace(wxS("\n"), wxEmptyString, true);
 	}
+
+	using CharTraits = std::char_traits<char>;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -31,14 +33,14 @@ KxCURLEvent* KxCURLEvent::Clone() const
 	return new KxCURLEvent(*this);
 }
 
-wxString KxCURLEvent::GetHeaderKey() const
+wxString KxCURLEvent::GetHeaderName() const
 {
 	if (m_ResponseData)
 	{
-		if (const char* colon = strchr(m_ResponseData, ':'))
+		if (const char* colon = CharTraits::find(m_ResponseData, m_ResponseLength, ':'))
 		{
 			wxString value = wxString::FromUTF8(m_ResponseData, colon - m_ResponseData);
-			CleanHeader(value);
+			NormalizeValue(value);
 			return value;
 		}
 	}
@@ -48,13 +50,13 @@ wxString KxCURLEvent::GetHeaderValue() const
 {
 	if (m_ResponseData)
 	{
-		if (const char* colon = strchr(m_ResponseData, ':'))
+		if (const char* colon = CharTraits::find(m_ResponseData, m_ResponseLength, ':'))
 		{
 			// Skip colon itself and one space after it
 			constexpr size_t offset = 2;
 
 			wxString value = wxString::FromUTF8(colon + offset, m_ResponseLength - (colon - m_ResponseData) - offset);
-			CleanHeader(value);
+			NormalizeValue(value);
 			return value;
 		}
 	}
@@ -65,7 +67,7 @@ wxString KxCURLEvent::GetHeaderLine() const
 	if (m_ResponseData)
 	{
 		wxString value = wxString::FromUTF8(m_ResponseData, m_ResponseLength);
-		CleanHeader(value);
+		NormalizeValue(value);
 		return value;
 	}
 	return {};

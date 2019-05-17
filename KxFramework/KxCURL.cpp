@@ -95,6 +95,11 @@ KxCURL::~KxCURL()
 {	
 }
 
+wxString KxCURL::ErrorCodeToString(int code) const
+{
+	return wxString::FromUTF8(curl_easy_strerror(static_cast<CURLcode>(code)));
+}
+
 //////////////////////////////////////////////////////////////////////////
 size_t KxCURLSession::OnWriteResponse(char* data, size_t size, size_t count, void* userData)
 {
@@ -191,6 +196,7 @@ void KxCURLSession::SetHeaders()
 	if (m_HeadersSList)
 	{
 		curl_slist_free_all(reinterpret_cast<curl_slist*>(m_HeadersSList));
+		m_HeadersSList = nullptr;
 	}
 	for (const std::string& header: m_Headers)
 	{
@@ -233,8 +239,14 @@ void KxCURLSession::DoSendRequest(KxCURLReplyBase& reply)
 	SetOption(CURLOPT_HEADERDATA, &callbackData);
 	SetOptionFunction(CURLOPT_HEADERFUNCTION, OnWriteHeader);
 
+	// Set error message buffer
+	std::array<char, 2 * CURL_ERROR_SIZE> errorMessage;
+	errorMessage.fill(0);
+	SetOption(CURLOPT_ERRORBUFFER, errorMessage.data());
+
 	// Send
 	reply.SetErrorCode(curl_easy_perform(m_Handle));
+	reply.SetErrorMessage(wxString::FromUTF8(errorMessage.data()));
 
 	// Get server response code
 	long responseCode = 0;
@@ -287,11 +299,11 @@ KxStringVector KxCURLSession::GetReplyCookies() const
 	CURLcode res = curl_easy_getinfo(m_Handle, CURLINFO_COOKIELIST, &cookesList);
 	if (res == CURLE_OK && cookesList)
 	{
-		curl_slist* each = cookesList;
-		while (each)
+		const curl_slist* item = cookesList;
+		while (item)
 		{
-			cookies.push_back(wxString::FromUTF8(each->data));
-			each = each->next;
+			cookies.push_back(wxString::FromUTF8(item->data));
+			item = item->next;
 		}
 		curl_slist_free_all(cookesList);
 	}
@@ -360,15 +372,17 @@ KxCURLSession& KxCURLSession::operator=(KxCURLSession&& other)
 class KxCURLModule: public wxModule
 {
 	public:
-		virtual bool OnInit() override
+		bool OnInit() override
 		{
-			CURLcode status = curl_global_init(CURL_GLOBAL_DEFAULT);
+			const CURLcode status = curl_global_init(CURL_GLOBAL_DEFAULT);
 			KxCURL::GetInstance().m_IsInitialized = status == CURLE_OK;
+
 			return true;
 		}
-		virtual void OnExit() override
+		void OnExit() override
 		{
 			curl_global_cleanup();
+			KxCURL::GetInstance().m_IsInitialized = false;
 		}
 
 	private:
