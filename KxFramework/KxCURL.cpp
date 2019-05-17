@@ -344,6 +344,8 @@ void KxCURLSession::AddHeader(const wxString& value)
 
 KxCURLSession& KxCURLSession::operator=(KxCURLSession&& other)
 {
+	Close();
+
 	m_Handle = other.m_Handle;
 	m_IsPaused = other.m_IsPaused;
 	m_IsStopped = other.m_IsStopped;

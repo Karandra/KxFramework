@@ -1,5 +1,5 @@
 /*
-Copyright © 2018 Kerber. All rights reserved.
+Copyright © 2019 Kerber. All rights reserved.
 
 You should have received a copy of the GNU LGPL v3
 along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
@@ -37,31 +37,32 @@ class KX_API KxCURL: public KxSingleton<KxCURL>
 //////////////////////////////////////////////////////////////////////////
 class KX_API KxCURLSession: public wxEvtHandler
 {
-	using CURL = void;
-	class CallbackData
-	{
-		private:
-			KxCURLSession& m_Session;
-			KxCURLReplyBase& m_Reply;
-
-		public:
-			CallbackData(KxCURLSession& session, KxCURLReplyBase& reply)
-				:m_Session(session), m_Reply(reply)
-			{
-			}
-
-		public:
-			KxCURLSession& GetSession()
-			{
-				return m_Session;
-			}
-			KxCURLReplyBase& GetReply()
-			{
-				return m_Reply;
-			}
-	};
-
 	friend class KxCURLEvent;
+	
+	private:
+		using CURL = void;
+		class CallbackData
+		{
+			private:
+				KxCURLSession& m_Session;
+				KxCURLReplyBase& m_Reply;
+
+			public:
+				CallbackData(KxCURLSession& session, KxCURLReplyBase& reply)
+					:m_Session(session), m_Reply(reply)
+				{
+				}
+
+			public:
+				KxCURLSession& GetSession()
+				{
+					return m_Session;
+				}
+				KxCURLReplyBase& GetReply()
+				{
+					return m_Reply;
+				}
+		};
 
 	private:
 		CURL* m_Handle = nullptr;
