@@ -1,8 +1,10 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxCURL.h"
+#include "KxFramework/KxCURLAddress.h"
 
 #define CURL_STATICLIB 1
 #include "KxFramework/cURL/curl.h"
+#include "KxFramework/cURL/urlapi.h"
 #include "KxFramework/cURL/curlver.h"
 
 #pragma comment(lib, "Wldap32.lib")
@@ -47,11 +49,11 @@ namespace cURL
 		{
 			if constexpr(easy)
 			{
-				return curl_easy_setopt(handle, static_cast<CURLoption>(option), static_cast<curl_off_t >(value));
+				return curl_easy_setopt(handle, static_cast<CURLoption>(option), static_cast<curl_off_t>(value));
 			}
 			else
 			{
-				return curl_multi_setopt(handle, static_cast<CURLMoption>(option), static_cast<curl_off_t >(value));
+				return curl_multi_setopt(handle, static_cast<CURLMoption>(option), static_cast<curl_off_t>(value));
 			}
 		}
 		else
@@ -98,6 +100,25 @@ KxCURL::~KxCURL()
 wxString KxCURL::ErrorCodeToString(int code) const
 {
 	return wxString::FromUTF8(curl_easy_strerror(static_cast<CURLcode>(code)));
+}
+
+wxString KxCURL::EscapeURL(const wxString& url) const
+{
+	if (KxCURLAddress address(url); address.IsOK())
+	{
+		address.SetPath(address.GetPath(), KxCURLAddressFlag::EncodeURL);
+		return address.GetURL();
+	}
+	return url;
+}
+wxString KxCURL::UnescapeURL(const wxString& url) const
+{
+	if (KxCURLAddress address(url); address.IsOK())
+	{
+		address.SetPath(address.GetPath(KxCURLAddressFlag::DecodeURL));
+		return address.GetURL();
+	}
+	return url;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -210,6 +231,7 @@ void KxCURLSession::DoSendRequest(KxCURLReplyBase& reply)
 	m_IsPaused = false;
 
 	SetHeaders();
+
 	SetOption(CURLOPT_URL, m_URL);
 	SetOption(CURLOPT_FOLLOWLOCATION, true);
 	SetOption(CURLOPT_SSL_VERIFYPEER, false);
@@ -258,9 +280,9 @@ void KxCURLSession::DoSendRequest(KxCURLReplyBase& reply)
 }
 
 KxCURLSession::KxCURLSession(const wxString& url)
-	:m_URL(url)
 {
 	m_Handle = curl_easy_init();
+	SetURL(url);
 }
 KxCURLSession::~KxCURLSession()
 {
@@ -331,6 +353,15 @@ bool KxCURLSession::Resume()
 void KxCURLSession::Stop()
 {
 	m_IsStopped = true;
+}
+
+void KxCURLSession::SetURL(const wxString& url)
+{
+	m_URL = KxCURL::GetInstance().EscapeURL(url);
+}
+void KxCURLSession::SetPostData(const wxString& data)
+{
+	m_PostData = data;
 }
 
 void KxCURLSession::AddHeader(const wxString& name, const wxString& value)

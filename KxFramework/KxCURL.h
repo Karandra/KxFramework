@@ -32,6 +32,9 @@ class KX_API KxCURL: public KxSingleton<KxCURL>
 			return m_IsInitialized;
 		}
 		wxString ErrorCodeToString(int code) const;
+
+		wxString EscapeURL(const wxString& url) const;
+		wxString UnescapeURL(const wxString& url) const;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -140,14 +143,8 @@ class KX_API KxCURLSession: public wxEvtHandler
 		}
 		void Stop();
 
-		void SetURL(const wxString& url)
-		{
-			m_URL = url;
-		}
-		void SetPostData(const wxString& data)
-		{
-			m_PostData = data;
-		}
+		void SetURL(const wxString& url);
+		void SetPostData(const wxString& data);
 
 		void ClearHeaders()
 		{
