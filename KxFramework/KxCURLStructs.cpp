@@ -10,6 +10,6 @@ wxString KxCURLReplyBase::GetErrorMessage() const
 	}
 	else
 	{
-		KxCURL::GetInstance().ErrorCodeToString(m_ErrorCode);
+		return KxCURL::GetInstance().ErrorCodeToString(m_ErrorCode);
 	}
 }
