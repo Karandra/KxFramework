@@ -56,14 +56,15 @@ class KX_API KxUtility
 		static const wxString LoadResource(int id, const wxString& typeName = L"STRING");
 		static void ToggleWindowStyle(HWND hWnd, int index, LONG style, bool enable);
 		static wxString GetStandardLocalizedString(int id, bool* isSuccess = nullptr);
-		template<class TPointer, class TValue> static void SetIfNotNull(TPointer* ptr, TValue value)
+		
+		template<class TPointer, class TValue> constexpr static void SetIfNotNull(TPointer* ptr, TValue value)
 		{
 			if (ptr)
 			{
 				*ptr = static_cast<TPointer>(value);
 			}
 		}
-		template<class TFlag, class TFlagMod> static TFlag ModFlag(TFlag flag, TFlagMod flagMod, bool set)
+		template<class TFlag, class TFlagMod> constexpr static TFlag ModFlag(TFlag flag, TFlagMod flagMod, bool set)
 		{
 			if (set)
 			{
@@ -75,12 +76,12 @@ class KX_API KxUtility
 			}
 			return flag;
 		}
-		template<class TFlag, class TFlagMod> static void ModFlagRef(TFlag& flag, TFlagMod flagMod, bool set)
+		template<class TFlag, class TFlagMod> constexpr static void ModFlagRef(TFlag& flag, TFlagMod flagMod, bool set)
 		{
 			flag = ModFlag(flag, flagMod, set);
 		}
 		
-		template<class TFlagLeft, class TFlagRight> static bool HasFlag(TFlagLeft left, TFlagRight right)
+		template<class TFlagLeft, class TFlagRight> constexpr static bool HasFlag(TFlagLeft left, TFlagRight right)
 		{
 			static_assert(std::is_enum_v<TFlagLeft>, "left value must be an enum type");
 			static_assert(std::is_enum_v<TFlagRight>, "right value must be an enum type");
@@ -90,7 +91,7 @@ class KX_API KxUtility
 
 			return static_cast<TIntLeft>(left) & static_cast<TIntRight>(right);
 		}
-		template<class TFlag> static bool HasFlag(TFlag left, TFlag right)
+		template<class TFlag> constexpr static bool HasFlag(TFlag left, TFlag right)
 		{
 			if constexpr(std::is_enum_v<TFlag>)
 			{
