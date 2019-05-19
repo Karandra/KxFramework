@@ -14,7 +14,7 @@ class KX_API KxAnimatedSplashWindow: public KxSplashWindow
 		bool m_ShouldStop = false;
 
 	private:
-		void OnTimer();
+		void OnTimer(wxTimerEvent& event);
 		void OnDestroy();
 
 	protected:

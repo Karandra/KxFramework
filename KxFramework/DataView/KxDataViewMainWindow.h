@@ -174,7 +174,7 @@ class KX_API KxDataViewMainWindow: public wxWindow
 
 		/* Misc */
 		virtual void OnInternalIdle() override;
-		virtual void OnEditorTimer();
+		virtual void OnEditorTimer(wxTimerEvent& event);
 
 	public:
 		KxDataViewMainWindow(KxDataViewCtrl* parent,

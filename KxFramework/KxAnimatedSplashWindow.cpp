@@ -5,7 +5,7 @@
 wxIMPLEMENT_DYNAMIC_CLASS(KxAnimatedSplashWindow, KxSplashWindow)
 
 //////////////////////////////////////////////////////////////////////////
-void KxAnimatedSplashWindow::OnTimer()
+void KxAnimatedSplashWindow::OnTimer(wxTimerEvent& event)
 {
 	// Update frame counter
 	m_CurrentFrame++;

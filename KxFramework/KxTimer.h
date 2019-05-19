@@ -18,23 +18,24 @@ class KX_API KxTimer: public wxTimer
 };
 
 //////////////////////////////////////////////////////////////////////////
-template<class Functor> class KX_API KxTimerFunctor: public KxTimer
+template<class TFunctor> class KX_API KxTimerFunctor: public KxTimer
 {
 	private:
-		Functor m_Functor;
+		TFunctor m_Functor;
 
 	protected:
 		virtual void Notify() override
 		{
-			std::invoke(m_Functor);
+			wxTimerEvent event(*this);
+			std::invoke(m_Functor, event);
 		}
 
 	public:
-		KxTimerFunctor(const Functor& functor)
+		KxTimerFunctor(const TFunctor& functor)
 			:m_Functor(functor)
 		{
 		}
-		KxTimerFunctor(Functor&& functor)
+		KxTimerFunctor(TFunctor&& functor)
 			:m_Functor(std::move(functor))
 		{
 		}
@@ -44,27 +45,31 @@ template<class Functor> class KX_API KxTimerFunctor: public KxTimer
 template<class T> class KX_API KxTimerMethod: public KxTimer
 {
 	private:
-		using FunctionSignature = void(T::*)();
+		using TMethod = void(T::*)(wxTimerEvent&);
 
 	private:
-		FunctionSignature m_Function = nullptr;
+		TMethod m_Function = nullptr;
 		T* m_Object = nullptr;
 
 	protected:
 		virtual void Notify() override
 		{
-			std::invoke(m_Function, m_Object);
+			if (m_Object && m_Function)
+			{
+				wxTimerEvent event(*this);
+				std::invoke(m_Function, m_Object, event);
+			}
 		}
 
 	public:
 		KxTimerMethod() = default;
-		KxTimerMethod(FunctionSignature function, T* object)
+		KxTimerMethod(TMethod function, T* object)
 			:m_Object(object), m_Function(function)
 		{
 		}
 
 	public:
-		void BindFunction(FunctionSignature function, T* object)
+		void BindFunction(TMethod function, T* object)
 		{
 			m_Object = object;
 			m_Function = function;

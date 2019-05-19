@@ -1785,7 +1785,7 @@ void KxDataViewMainWindow::OnInternalIdle()
 		m_Dirty = false;
 	}
 }
-void KxDataViewMainWindow::OnEditorTimer()
+void KxDataViewMainWindow::OnEditorTimer(wxTimerEvent& event)
 {
 	if (!m_Owner->HasFlag(KxDV_NO_TIMEOUT_EDIT))
 	{
