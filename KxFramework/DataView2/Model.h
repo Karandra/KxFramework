@@ -1,6 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "Common.h"
+#include "ToolTip.h"
 #include "Node.h"
 #include "Row.h"
 #include "KxFramework/KxQueryInterface.h"
@@ -70,6 +71,7 @@ namespace KxDataView2
 			{
 				return {};
 			}
+			virtual ToolTip GetToolTip(const Node& node, const Column& column) const;
 			virtual bool SetValue(Node& node, const wxAny& value, Column& column)
 			{
 				return false;

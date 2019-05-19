@@ -263,7 +263,7 @@ namespace KxDataView2
 	}
 	Column* View::GetColumnDisplayedAt(size_t displayIndex) const
 	{
-		// Columns can't be reordered if there is no header window which allows to do this.
+		// Columns can't be reordered if there is no header window which allows to do this
 		if (HasHeaderCtrl())
 		{
 			for (const auto& column: m_Columns)
@@ -292,11 +292,12 @@ namespace KxDataView2
 				nextColumn = column.GetIndex();
 				displayIndex = column.GetDisplayIndex();
 
-				if (m_ClientArea->GetCurrentColumn() == &column)
+				if (&column == m_ExpanderColumn)
 				{
-					m_ClientArea->ClearCurrentColumn();
+					m_ExpanderColumn = nullptr;
 				}
 
+				m_ClientArea->OnDeleteColumn(column);
 				m_Columns.erase(it);
 				break;
 			}
@@ -327,9 +328,13 @@ namespace KxDataView2
 	}
 	bool View::ClearColumns()
 	{
+		for (auto& column: m_Columns)
+		{
+			m_ClientArea->OnDeleteColumn(*column);
+		}
+
 		SetExpanderColumn(nullptr);
 		m_Columns.clear();
-		m_ClientArea->ClearCurrentColumn();
 		OnColumnCountChanged();
 
 		return true;

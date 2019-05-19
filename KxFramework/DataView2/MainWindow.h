@@ -1,5 +1,6 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include "KxFramework/KxTimer.h"
 #include "Common.h"
 #include "View.h"
 #include "Node.h"
@@ -82,6 +83,10 @@ namespace KxDataView2
 			bool m_HotTrackRowEnabled = false;
 			Column* m_HotTrackColumn = nullptr;
 
+			// Tooltip
+			KxTimerMethod<MainWindow> m_ToolTipTimer;
+			int m_ToolTipDelay = 500;
+
 			// Drag and Drop
 			DnDInfo m_DragDropInfo;
 			wxDataObjectComposite* m_DragDropDataObject = nullptr;
@@ -129,9 +134,12 @@ namespace KxDataView2
 			void OnVerticalNavigation(const wxKeyEvent& event, int delta);
 			void OnLeftKey(wxKeyEvent& event);
 			void OnRightKey(wxKeyEvent& event);
+
 			void OnMouse(wxMouseEvent& event);
 			void OnSetFocus(wxFocusEvent& event);
 			void OnKillFocus(wxFocusEvent& event);
+
+			void OnTooltipEvent(wxTimerEvent& event);
 
 			// Return false only if the event was vetoed by its handler.
 			bool SendExpanderEvent(wxEventType type, Node& item);
@@ -157,17 +165,19 @@ namespace KxDataView2
 			void UpdateDisplay();
 			void RecalculateDisplay();
 
+			// Tooltip
+			bool ShowToolTip(const Node& node, Column& column);
+			void RemoveTooltip();
+
 			// Columns
+			void OnDeleteColumn(Column& column);
 			void OnColumnCountChanged();
 			bool IsCellInteractible(const Node& node, const Column& column, InteractibleCell action) const;
 			Column* FindInteractibleColumn(const Node& node, InteractibleCell action);
 			int CalcBestColumnWidth(Column& column) const;
 
 			// Items
-			void InvalidateItemCount()
-			{
-				m_ItemsCount = INVALID_COUNT;
-			}
+			void InvalidateItemCount();
 			void UpdateItemCount(size_t count)
 			{
 				m_ItemsCount = count;

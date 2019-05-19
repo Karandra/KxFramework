@@ -1,6 +1,7 @@
 #include "KxStdAfx.h"
 #include "MainWindow.h"
 #include "Renderer.h"
+#include "ToolTip.h"
 #include "Editor.h"
 #include "Column.h"
 #include "Node.h"
@@ -618,6 +619,13 @@ namespace KxDataView2
 				Event hoverEvent(EVENT_ITEM_HOVERED);
 				CreateEventTemplate(hoverEvent, currentNode, m_HotTrackColumn);
 				m_View->ProcessWindowEvent(hoverEvent);
+
+				// Show tooltip
+				RemoveTooltip();
+				if (m_HotTrackRow && m_HotTrackColumn)
+				{
+					m_ToolTipTimer.StartOnce(m_ToolTipDelay);
+				}
 			}
 		}
 
@@ -1035,6 +1043,19 @@ namespace KxDataView2
 			Refresh();
 		}
 		event.Skip();
+	}
+
+	void MainWindow::OnTooltipEvent(wxTimerEvent& event)
+	{
+		RemoveTooltip();
+
+		if (m_HotTrackColumn)
+		{
+			if (const Node* node = GetNodeByRow(m_HotTrackRow))
+			{
+				ShowToolTip(*node, *m_HotTrackColumn);
+			}
+		}
 	}
 
 	bool MainWindow::SendExpanderEvent(wxEventType type, Node& item)
@@ -1512,7 +1533,64 @@ namespace KxDataView2
 		Refresh();
 	}
 
+	// Tooltip
+	bool MainWindow::ShowToolTip(const Node& node, Column& column)
+	{
+		// Setup renderer
+		Renderer& renderer = node.GetRenderer(column);
+		renderer.BeginCellSetup(node, column);
+		renderer.SetupCellValue();
+		const wxSize cellSize = renderer.GetCellSize();
+		renderer.EndCellSetup();
+
+		// Get tooltip
+		ToolTip tooltip = node.GetToolTip(column);
+		if (tooltip.IsOK())
+		{
+			// See if we need to display the tooltip at all
+			bool shouldShow = true;
+			if (tooltip.ShouldDisplayOnlyIfClipped())
+			{
+				shouldShow = false;
+				const wxRect columnRect = column.GetRect();
+				auto CompareWidth = [&cellSize](int width)
+				{
+					return width - (2 * PADDING_RIGHTLEFT) <= cellSize.GetWidth();
+				};
+
+				// If the column is too small to display its content
+				shouldShow = shouldShow || CompareWidth(columnRect.GetWidth());
+
+				// If column scrolled outside of visible area
+				shouldShow = shouldShow || CompareWidth(GetClientSize().GetWidth() - columnRect.GetX());
+			}
+
+			// Show it
+			if (shouldShow)
+			{
+				return tooltip.Show(node, column);
+			}
+		}
+		return false;
+	}
+	void MainWindow::RemoveTooltip()
+	{
+		m_ToolTipTimer.Stop();
+		SetToolTip(wxEmptyString);
+	}
+
 	// Columns
+	void MainWindow::OnDeleteColumn(Column& column)
+	{
+		if (&column == m_HotTrackColumn)
+		{
+			m_HotTrackColumn = nullptr;
+		}
+		if (&column == m_CurrentColumn)
+		{
+			m_CurrentColumn = nullptr;
+		}
+	}
 	void MainWindow::OnColumnCountChanged()
 	{
 		m_UseCellFocus = m_View->GetColumnCount() != 0;
@@ -1616,6 +1694,13 @@ namespace KxDataView2
 			return m_TreeRoot.GetSubTreeCount();
 		}
 	}
+	void MainWindow::InvalidateItemCount()
+	{
+		m_ItemsCount = INVALID_COUNT;
+		m_TreeNodeUnderMouse = nullptr;
+		m_ToolTipTimer.Stop();
+		CancelEdit();
+	}
 	void MainWindow::OnCellChanged(Node& node, Column* column)
 	{
 		// Move this node to its new correct place after it was updated.
@@ -1689,6 +1774,8 @@ namespace KxDataView2
 	}
 	void MainWindow::OnItemsCleared()
 	{
+		InvalidateItemCount();
+
 		m_SelectionStore.Clear();
 		m_CurrentRow.MakeNull();
 		m_HotTrackRow.MakeNull();
@@ -1777,6 +1864,8 @@ namespace KxDataView2
 
 			m_HotTrackRow.MakeNull();
 			m_HotTrackColumn = nullptr;
+
+			RemoveTooltip();
 		}
 
 		if (m_Dirty)
@@ -1837,12 +1926,17 @@ namespace KxDataView2
 		//Bind(wxEVT_AUX2_DCLICK, &KxDataViewMainWindow::OnMouse, this);
 		//Bind(wxEVT_MAGNIFY, &KxDataViewMainWindow::OnMouse, this);
 
+		// Tooltip
+		m_ToolTipDelay = ::GetDoubleClickTime();
+		m_ToolTipTimer.BindFunction(&MainWindow::OnTooltipEvent, this);
+
 		// Do update
 		UpdateDisplay();
 	}
 	MainWindow::~MainWindow()
 	{
 		m_TreeRoot.ResetAll();
+		RemoveTooltip();
 
 		if (m_OwnModel)
 		{

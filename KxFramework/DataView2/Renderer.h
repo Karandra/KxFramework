@@ -5,13 +5,15 @@
 #include "CellState.h"
 #include "CellAttributes.h"
 #include "RenderEngine.h"
+#include "ToolTip.h"
 
 namespace KxDataView2
 {
 	class KX_API Node;
 	class KX_API View;
-	class KX_API MainWindow;
+	class KX_API Model;
 	class KX_API Column;
+	class KX_API MainWindow;
 	class KX_API RenderEngine;
 }
 
@@ -19,6 +21,7 @@ namespace KxDataView2
 {
 	class KX_API Renderer
 	{
+		friend class Model;
 		friend class Column;
 		friend class MainWindow;
 		friend class MaxWidthCalculator;
@@ -104,6 +107,10 @@ namespace KxDataView2
 				return {};
 			}
 			virtual bool SetValue(const wxAny& value) = 0;
+			virtual ToolTip CreateToolTip() const
+			{
+				return {};
+			}
 
 			virtual bool HasSolidBackground() const;
 			virtual bool HasSpecialBackground() const;

@@ -364,5 +364,7 @@ namespace KxDataView2
 
 			bool IsLast() const;
 			bool IsDisplayedLast() const;
+
+			wxRect GetRect() const;
 	};
 }

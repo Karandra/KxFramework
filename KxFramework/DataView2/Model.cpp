@@ -37,6 +37,10 @@ namespace KxDataView2
 	{
 		return column.GetEditor();
 	}
+	ToolTip Model::GetToolTip(const Node& node, const Column& column) const
+	{
+		return GetRenderer(node, column).CreateToolTip();
+	}
 }
 
 namespace KxDataView2

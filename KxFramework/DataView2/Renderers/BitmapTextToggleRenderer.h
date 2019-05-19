@@ -55,6 +55,10 @@ namespace KxDataView2
 			wxAny OnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent = nullptr) override;
 
 			bool SetValue(const wxAny& value);
+			ToolTip CreateToolTip() const override
+			{
+				return ToolTip::CreateDefaultForRenderer(m_Value.GetText());
+			}
 			void DrawCellContent(const wxRect& cellRect, CellState cellState) override;
 			wxSize GetCellSize() const override;
 

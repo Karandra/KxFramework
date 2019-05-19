@@ -493,6 +493,10 @@ namespace KxDataView2
 	{
 		return GetModel()->GetEditorValue(*this, column);
 	}
+	ToolTip Node::GetToolTip(const Column& column) const
+	{
+		return GetModel()->GetToolTip(*this, column);
+	}
 	bool Node::SetValue(const wxAny& value, Column& column)
 	{
 		return GetModel()->SetValue(*this, value, column);

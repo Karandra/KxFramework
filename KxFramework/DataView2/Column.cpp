@@ -273,4 +273,27 @@ namespace KxDataView2
 	{
 		return m_DisplayIndex + 1 == m_View->GetVisibleColumnCount();
 	}
+
+	wxRect Column::GetRect() const
+	{
+		int x = 0;
+		for (size_t i = 0; i < m_View->GetColumnCount(); i++)
+		{
+			if (const Column* column = m_View->GetColumnDisplayedAt(i))
+			{
+				if (column == this)
+				{
+					break;
+				}
+
+				int width = 0;
+				if (column->IsExposed(width))
+				{
+					x += width;
+				}
+			}
+		}
+
+		return {x, 0, GetWidth(), m_View->GetMainWindow()->GetClientSize().GetHeight()};
+	}
 }

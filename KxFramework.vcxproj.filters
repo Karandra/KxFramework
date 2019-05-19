@@ -958,6 +958,9 @@
     <ClInclude Include="KxFramework\KxCURLAddress.h">
       <Filter>Header Files\Network</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\ToolTip.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1581,6 +1584,9 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxCURLAddress.cpp">
       <Filter>Source Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\ToolTip.cpp">
+      <Filter>Source Files\GUI\DataView2</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

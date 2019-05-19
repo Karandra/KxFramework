@@ -80,6 +80,10 @@ namespace KxDataView2
 
 		protected:
 			bool SetValue(const wxAny& value) override;
+			ToolTip CreateToolTip() const override
+			{
+				return ToolTip::CreateDefaultForRenderer(m_Value.GetText());
+			}
 			void DrawCellContent(const wxRect& cellRect, CellState cellState) override;
 			wxSize GetCellSize() const override;
 

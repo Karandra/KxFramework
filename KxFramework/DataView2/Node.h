@@ -4,6 +4,7 @@
 #include "Row.h"
 #include "Column.h"
 #include "SortOrder.h"
+#include "ToolTip.h"
 #include "KxFramework/KxQueryInterface.h"
 #include "KxFramework/KxFunctional.h"
 
@@ -249,6 +250,7 @@ namespace KxDataView2
 
 			virtual wxAny GetValue(const Column& column) const;
 			virtual wxAny GetEditorValue(const Column& column) const;
+			virtual ToolTip GetToolTip(const Column& column) const;
 			virtual bool SetValue(const wxAny& value, Column& column);
 
 			virtual bool GetAttributes(CellAttributes& attributes, const CellState& cellState, const Column& column) const;
