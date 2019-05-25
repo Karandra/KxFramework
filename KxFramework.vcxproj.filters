@@ -364,9 +364,6 @@
     <ClInclude Include="KxFramework\KxCheckBox.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxRichToolTip.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxSlider.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
@@ -961,6 +958,12 @@
     <ClInclude Include="KxFramework\DataView2\ToolTip.h">
       <Filter>Header Files\GUI\DataView2</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxToolTipEx.h">
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxRichToolTip.h">
+      <Filter>Header Files\GUI\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1106,9 +1109,6 @@
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxCheckBox.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxRichToolTip.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxSlider.cpp">
@@ -1587,6 +1587,12 @@
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\ToolTip.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxRichToolTip.cpp">
+      <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxToolTipEx.cpp">
+      <Filter>Source Files\GUI\Windows</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

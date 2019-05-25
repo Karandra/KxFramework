@@ -274,6 +274,7 @@
     <ClInclude Include="KxFramework\KxAuiToolBar.h" />
     <ClInclude Include="KxFramework\KxAuiToolBarEvent.h" />
     <ClInclude Include="KxFramework\KxAuiToolBarItem.h" />
+    <ClInclude Include="KxFramework\KxToolTipEx.h" />
     <ClInclude Include="KxFramework\KxBitmapComboBox.h" />
     <ClInclude Include="KxFramework\KxBitmapGraphicsCanvas.h" />
     <ClInclude Include="KxFramework\KxBroadcastEvent.h" />
@@ -547,6 +548,7 @@
     <ClCompile Include="KxFramework\KxAuiToolBar.cpp" />
     <ClCompile Include="KxFramework\KxAuiToolBarEvent.cpp" />
     <ClCompile Include="KxFramework\KxAuiToolBarItem.cpp" />
+    <ClCompile Include="KxFramework\KxToolTipEx.cpp" />
     <ClCompile Include="KxFramework\KxBitmapComboBox.cpp" />
     <ClCompile Include="KxFramework\KxBroadcastEvent.cpp" />
     <ClCompile Include="KxFramework\KxButton.cpp" />
