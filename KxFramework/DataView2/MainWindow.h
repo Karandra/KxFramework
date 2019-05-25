@@ -1,6 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxTimer.h"
+#include "KxFramework/KxToolTipEx.h"
 #include "Common.h"
 #include "View.h"
 #include "Node.h"
@@ -18,6 +19,7 @@ namespace KxDataView2
 	class KX_API Column;
 	class KX_API Renderer;
 	class KX_API Editor;
+	class KX_API ToolTip;
 	class KX_API HeaderCtrl;
 	class KX_API Event;
 	class KX_API VirtualListModel;
@@ -37,6 +39,7 @@ namespace KxDataView2
 		friend class KX_API EventDND;
 		friend class KX_API View;
 		friend class KX_API Node;
+		friend class KX_API ToolTip;
 		friend class KX_API HeaderCtrl;
 		friend class KX_API VirtualListModel;
 
@@ -84,6 +87,7 @@ namespace KxDataView2
 			Column* m_HotTrackColumn = nullptr;
 
 			// Tooltip
+			KxToolTipEx m_ToolTip;
 			KxTimerMethod<MainWindow> m_ToolTipTimer;
 			int m_ToolTipDelay = 500;
 
@@ -197,7 +201,7 @@ namespace KxDataView2
 			bool IsRepresentingList() const;
 
 			// Misc
-			virtual void OnInternalIdle() override;
+			void OnInternalIdle() override;
 
 		public:
 			MainWindow(View* parent, wxWindowID id);

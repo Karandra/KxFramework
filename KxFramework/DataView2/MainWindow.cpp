@@ -1576,6 +1576,7 @@ namespace KxDataView2
 	void MainWindow::RemoveTooltip()
 	{
 		m_ToolTipTimer.Stop();
+		m_ToolTip.Dismiss();
 		SetToolTip(wxEmptyString);
 	}
 
@@ -1927,6 +1928,7 @@ namespace KxDataView2
 		//Bind(wxEVT_MAGNIFY, &KxDataViewMainWindow::OnMouse, this);
 
 		// Tooltip
+		m_ToolTip.Create(this);
 		m_ToolTipDelay = ::GetDoubleClickTime();
 		m_ToolTipTimer.BindFunction(&MainWindow::OnTooltipEvent, this);
 

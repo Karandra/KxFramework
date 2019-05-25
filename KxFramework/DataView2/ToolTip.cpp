@@ -4,7 +4,7 @@
 #include "Node.h"
 #include "View.h"
 #include "MainWindow.h"
-#include <wx/richtooltip.h>
+#include "KxFramework/KxToolTipEx.h"
 
 namespace KxDataView2
 {
@@ -14,15 +14,13 @@ namespace KxDataView2
 		{
 			if (!m_Caption.IsEmpty())
 			{
-				wxRichToolTip tooltip(m_Caption, m_Message);
-				tooltip.SetIcon(static_cast<int>(m_Icon));
-				if (!m_AutoHide)
-				{
-					tooltip.SetTimeout(0);
-				}
+				KxToolTipEx& tooltip = mainWindow->m_ToolTip;
+				tooltip.SetCaption(m_Caption);
+				tooltip.SetMessage(m_Message);
+				tooltip.SetIcon(m_Icon);
 
-				wxRect cellRect = mainWindow->GetView()->GetItemRect(node, &column);
-				tooltip.ShowFor(mainWindow, &cellRect);
+				wxRect rect = mainWindow->GetItemRect(node, &column);
+				tooltip.Popup(rect.GetPosition() + wxPoint(0 , rect.GetHeight() + 1));
 				return true;
 			}
 			else
