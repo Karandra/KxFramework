@@ -131,7 +131,7 @@ class KX_API KxUtility
 
 		template<class TOUT, class TIN1, class TIN2> static TOUT MakeInt(TIN1 vHigh, TIN2 vLow)
 		{
-			static_assert(std::_Is_integral<TIN1>::value && std::_Is_integral<TIN2>::value && std::_Is_integral<TOUT>::value, "only integral types allowed");
+			static_assert(std::is_integral_v<TIN1> && std::is_integral_v<TIN2> && std::is_integral_v<TOUT>, "only integral types allowed");
 			static_assert(sizeof(TIN1) == sizeof(TIN2), "sizeof(TIN1) not equal to sizeof(TIN2)");
 			static_assert(sizeof(TOUT) == sizeof(TIN1) + sizeof(TIN2), "sizeof(TIN1) + sizeof(TIN2) not equal to sizeof(TOUT)");
 			using TIN = TIN1;
