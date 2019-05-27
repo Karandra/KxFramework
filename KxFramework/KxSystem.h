@@ -80,7 +80,6 @@ class KX_API KxSystem
 					return Kernel.IsOK() &&
 						PlatformID >= 0 &&
 						ServicePackMajor >= 0 &&
-						ServicePackMajor >= 0 &&
 						ServicePackMinor >= 0 &&
 						ProductType >= 0 &&
 						ProductSuite >= 0;
