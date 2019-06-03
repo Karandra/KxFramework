@@ -89,25 +89,27 @@ void KxStdDialog::OnDrawFrameBorder(wxPaintEvent& event)
 
 void KxStdDialog::OnStdButtonClick(wxCommandEvent& event)
 {
-	wxWindowID nOldID = GetReturnCode();
+	const wxWindowID oldReturnCode = GetReturnCode();
+	const wxWindowID buttonID = event.GetId();
 
-	wxWindowID id = event.GetId();
-	for (size_t i = 0; i < m_CloseIDs.size(); i++)
+	for (wxWindowID closeID: m_CloseIDs)
 	{
-		if (m_CloseIDs[i] == id)
+		if (closeID == buttonID)
 		{
-			wxNotifyEvent onEscapeEvent(KxEVT_STDDIALOG_BUTTON, id);
+			const wxWindow* button = GetButton(buttonID).GetControl();
+
+			wxNotifyEvent onEscapeEvent(KxEVT_STDDIALOG_BUTTON, buttonID);
 			onEscapeEvent.SetEventObject(this);
 			ProcessEvent(onEscapeEvent);
-			if (onEscapeEvent.IsAllowed())
+			if (onEscapeEvent.IsAllowed() && (button == nullptr || button->IsThisEnabled()))
 			{
-				SetReturnCode(id);
-				EndModal(id);
+				SetReturnCode(buttonID);
+				EndModal(buttonID);
 				Close();
 			}
 			else
 			{
-				SetReturnCode(nOldID);
+				SetReturnCode(oldReturnCode);
 			}
 			break;
 		}
