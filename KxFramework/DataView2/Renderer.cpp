@@ -32,8 +32,24 @@ namespace KxDataView2
 	void Renderer::CallDrawCellBackground(const wxRect& cellRect, CellState cellState, bool noUserBackground)
 	{
 		wxDC& dc = GetGraphicsDC();
+		const auto& cellOptions = m_Attributes.Options();
+		const auto& cellBGOptions = m_Attributes.BGOptions();
+		
+		auto ClipRectIfNeeded = [this, &cellState](const wxRect& rect)
+		{
+			if (GetView()->IsOptionEnabled(CtrlStyle::VerticalRules))
+			{
+				if (m_Column->IsDisplayedLast() && (cellState.IsHotTracked() || cellState.IsHotTracked()))
+				{
+					return rect;
+				}
+				return wxRect(rect.GetX(), rect.GetY(), rect.GetWidth() - 1, rect.GetHeight());
+			}
+			return rect;
+		};
 
-		if (m_Attributes.HasHeaderBackgound())
+		// Special backgrounds
+		if (cellBGOptions.IsEnabled(CellBGOption::Header))
 		{
 			wxSize offsetSize = GetView()->FromDIP(wxSize(0, 1));
 
@@ -55,15 +71,33 @@ namespace KxDataView2
 
 			dc.DrawBitmap(canvas, cellRect.GetPosition());
 		}
-
-		if (m_Attributes.HasBackgroundColor())
+		else if (cellBGOptions.IsEnabled(CellBGOption::Button))
 		{
-			const KxColor& color = m_Attributes.GetBackgroundColor();
+			wxRect buttonRect = cellRect.Inflate(1, 1);
+			wxRendererNative::Get().DrawPushButton(GetView(), dc, buttonRect, GetRenderEngine().GetControlFlags(cellState));
+		}
+		else if (cellBGOptions.IsEnabled(CellBGOption::ComboBox))
+		{
+			if (cellOptions.IsEnabled(CellOption::Editable))
+			{
+				wxRendererNative::Get().DrawComboBox(GetView(), dc, cellRect, GetRenderEngine().GetControlFlags(cellState));
+			}
+			else
+			{
+				wxRendererNative::Get().DrawComboBoxDropButton(GetView(), dc, cellRect, GetRenderEngine().GetControlFlags(cellState));
+			}
+		}
+
+		// Solid background color
+		if (cellOptions.HasBackgroundColor())
+		{
+			KxColor color = m_Attributes.Options().GetBackgroundColor();
 			wxDCPenChanger changePen(dc, color);
 			wxDCBrushChanger changeBrush(dc, color);
 			dc.DrawRectangle(cellRect);
 		}
 
+		// Call derived class drawing
 		if (!noUserBackground)
 		{
 			DrawCellBackground(cellRect, cellState);
@@ -77,23 +111,23 @@ namespace KxDataView2
 
 		// Change text color
 		wxDCTextColourChanger changeTextColor(dc);
-		if (m_Attributes.HasForegroundColor())
+		if (m_Attributes.Options().HasForegroundColor())
 		{
-			KxColor color = m_Attributes.GetForegroundColor();
-			if (!m_Attributes.IsEnabled())
+			KxColor color = m_Attributes.Options().GetForegroundColor();
+			if (!m_Attributes.Options().IsEnabled(CellOption::Enabled))
 			{
 				color.MakeDisabled();
 			}
 			changeTextColor.Set(color);
 		}
-		else if (!m_Attributes.IsEnabled())
+		else if (!m_Attributes.Options().IsEnabled(CellOption::Enabled))
 		{
 			changeTextColor.Set(GetView()->GetForegroundColour().MakeDisabled());
 		}
 
 		// Change font
 		wxDCFontChanger changeFont(dc);
-		if (m_Attributes.HasFontAttributes())
+		if (m_Attributes.FontOptions().NeedDCAlteration())
 		{
 			changeFont.Set(m_Attributes.GetEffectiveFont(dc.GetFont()));
 		}
@@ -108,9 +142,8 @@ namespace KxDataView2
 			adjustedCellRect.SetHeight(GetMainWindow()->GetVariableRowHeight(*m_Node));
 		}
 
-		// Take alignment into account only if there is enough space, otherwise
-		// show as much contents as possible.
-		const wxAlignment alignment = m_Attributes.HasAlignment() ? m_Attributes.GetAlignment() : GetEffectiveAlignment();
+		// Take alignment into account only if there is enough space, otherwise show as much contents as possible.
+		const wxAlignment alignment = m_Attributes.Options().HasAlignment() ? m_Attributes.Options().GetAlignment() : GetEffectiveAlignment();
 
 		if (cellSize.GetWidth() >= 0 && cellSize.GetWidth() < cellRect.GetWidth())
 		{
@@ -153,7 +186,7 @@ namespace KxDataView2
 	}
 	bool Renderer::HasSpecialBackground() const
 	{
-		return m_Attributes.HasHeaderBackgound();
+		return !m_Attributes.BGOptions().IsDefault();
 	}
 	wxSize Renderer::GetCellSize() const
 	{
