@@ -671,6 +671,8 @@ namespace KxDataView2
 				// Don't allow invalid items
 				if (draggedNode)
 				{
+					RemoveTooltip();
+
 					// Notify cell about drag
 					EventDND dragEvent(EVENT_ITEM_DRAG);
 					CreateEventTemplate(dragEvent, draggedNode, currentColumn);
