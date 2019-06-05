@@ -1816,6 +1816,7 @@ namespace KxDataView2
 		// Forget and (optionally) delete old model
 		if (m_Model)
 		{
+			m_Model->OnDetachModel();
 			m_Model->SetMainWindow(nullptr);
 		}
 		if (m_OwnModel)
@@ -1831,7 +1832,7 @@ namespace KxDataView2
 		m_IsVirtualListModel = model && model->QueryInterface<VirtualListModel>() != nullptr;
 
 		// Call model event
-		m_Model->OnAssignModel();
+		m_Model->OnAttachModel();
 		ItemsChanged();
 	}
 	bool MainWindow::IsRepresentingList() const

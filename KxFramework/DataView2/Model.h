@@ -32,7 +32,10 @@ namespace KxDataView2
 			}
 
 		protected:
-			virtual void OnAssignModel()
+			virtual void OnAttachModel()
+			{
+			}
+			virtual void OnDetachModel()
 			{
 			}
 
