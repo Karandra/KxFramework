@@ -4,12 +4,24 @@
 
 namespace KxDataView2
 {
-	class KX_API BitmapTextValue
+	enum class BitmapTextValueOptions
 	{
+		None = 0,
+		VCenterText = 1 << 0,
+	};
+}
+
+namespace KxDataView2
+{
+	class KX_API BitmapTextValue: public KxWithOptions<BitmapTextValueOptions, BitmapTextValueOptions::None>
+	{
+		public:
+			using Options = BitmapTextValueOptions;
+
 		private:
 			wxBitmap m_Bitmap;
 			wxString m_Text;
-			bool m_VCenterText = true;
+			int m_ReservedBitmapWidth = -1;
 
 		public:
 			BitmapTextValue(const wxString& text = wxEmptyString, const wxBitmap& bitmap = wxNullBitmap)
@@ -51,14 +63,14 @@ namespace KxDataView2
 			{
 				m_Bitmap = bitmap;
 			}
-
-			void VCenterText(bool value = true)
+	
+			int GetReservedBitmapWidth() const
 			{
-				m_VCenterText = value;
+				return m_ReservedBitmapWidth;
 			}
-			bool ShouldVCenterText() const
+			void SetReservedBitmapWidth(int value)
 			{
-				return m_VCenterText;
+				m_ReservedBitmapWidth = value;
 			}
 	};
 }
@@ -71,7 +83,7 @@ namespace KxDataView2
 			BitmapTextValue m_Value;
 
 		protected:
-			virtual bool SetValue(const wxAny& value) override;
+			bool SetValue(const wxAny& value) override;
 			ToolTip CreateToolTip() const override
 			{
 				return ToolTip::CreateDefaultForRenderer(m_Value.GetText());

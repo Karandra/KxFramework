@@ -43,6 +43,9 @@ namespace KxDataView2
 	}
 	void BitmapTextToggleRenderer::DrawCellContent(const wxRect& cellRect, CellState cellState)
 	{
+		const bool centerTextV = m_Value.IsOptionEnabled(BitmapTextValueOptions::VCenterText);
+		const int reservedWidth = m_Value.GetReservedBitmapWidth();
+
 		int offsetX = 0;
 		int offsetFromToggle = 0;
 
@@ -54,22 +57,24 @@ namespace KxDataView2
 			offsetX += GetRenderEngine().DrawToggle(GetGraphicsDC(), toggleRect, cellState, m_Value.GetState(), m_Value.GetType()).GetWidth();
 			offsetFromToggle = GetRenderEngine().FromDIPX(2);
 		}
-		if (m_Value.HasBitmap() || m_Value.HasText())
+		if (m_Value.HasBitmap() || m_Value.HasText() || reservedWidth > 0)
 		{
 			wxRect rect = cellRect;
 			rect.x += offsetFromToggle;
 			rect.width -= offsetFromToggle;
 
-			GetRenderEngine().DrawBitmapWithText(rect, cellState, offsetX, m_Value.GetText(), m_Value.GetBitmap(), m_Value.ShouldVCenterText());
+			GetRenderEngine().DrawBitmapWithText(rect, cellState, offsetX, m_Value.GetText(), m_Value.GetBitmap(), centerTextV, reservedWidth);
 		}
 	}
 	wxSize BitmapTextToggleRenderer::GetCellSize() const
 	{
+		RenderEngine renderEngine = GetRenderEngine();
+
 		wxSize size(0, 0);
 		if (m_Value.HasType())
 		{
-			wxSize toggleSize = GetRenderEngine().GetToggleSize();
-			size.x += toggleSize.x + GetRenderEngine().FromDIPX(2);
+			wxSize toggleSize = renderEngine.GetToggleSize();
+			size.x += toggleSize.x + renderEngine.FromDIPX(renderEngine.GetInterTextSpacing());
 			if (size.y < toggleSize.y)
 			{
 				size.y = toggleSize.y;
@@ -77,7 +82,7 @@ namespace KxDataView2
 		}
 		if (m_Value.HasText())
 		{
-			wxSize textExtent = GetRenderEngine().GetTextExtent(m_Value.GetText());
+			wxSize textExtent = renderEngine.GetTextExtent(m_Value.GetText());
 			size.x += textExtent.x;
 			if (size.y < textExtent.y)
 			{
@@ -87,11 +92,15 @@ namespace KxDataView2
 		if (m_Value.HasBitmap())
 		{
 			const wxBitmap& bitmap = m_Value.GetBitmap();
-			size.x += bitmap.GetWidth() + GetRenderEngine().FromDIPX(1);
+			size.x += bitmap.GetWidth() + renderEngine.FromDIPX(renderEngine.GetInterTextSpacing());
 			if (size.y < bitmap.GetHeight())
 			{
 				size.y = bitmap.GetHeight();
 			}
+		}
+		else if (int reservedWidth = m_Value.GetReservedBitmapWidth(); reservedWidth > 0)
+		{
+			size.x += reservedWidth + renderEngine.FromDIPX(renderEngine.GetInterTextSpacing());
 		}
 		return size;
 	}

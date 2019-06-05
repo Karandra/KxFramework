@@ -57,7 +57,12 @@ namespace KxDataView2
 			}
 
 		public:
+			int GetInterTextSpacing() const
+			{
+				return 2;
+			}
 			int CalcCenter(int cellSize, int itemSize) const;
+			
 			wxSize FromDIP(const wxSize& size) const;
 			wxSize FromDIP(int x, int y) const
 			{
@@ -81,8 +86,8 @@ namespace KxDataView2
 			bool DrawText(const wxRect& cellRect, CellState cellState, const wxString& string, int offsetX = 0);
 			bool DrawText(wxDC& dc, const wxRect& cellRect, CellState cellState, const wxString& string, int offsetX = 0);
 
-			bool DrawBitmap(const wxRect& cellRect, CellState cellState, const wxBitmap& bitmap);
-			int DrawBitmapWithText(const wxRect& cellRect, CellState cellState, int offsetX, const wxString& text, const wxBitmap& bitmap, bool centerTextV = false);
+			bool DrawBitmap(const wxRect& cellRect, CellState cellState, const wxBitmap& bitmap, int reservedWidth = -1);
+			int DrawBitmapWithText(const wxRect& cellRect, CellState cellState, int offsetX, const wxString& text, const wxBitmap& bitmap, bool centerTextV = false, int reservedWidth = -1);
 			bool DrawProgressBar(const wxRect& cellRect, CellState cellState, int value, int range, ProgressState state = ProgressState::Normal);
 			
 			wxSize GetToggleSize() const;

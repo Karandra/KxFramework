@@ -238,7 +238,7 @@ namespace KxDataView2
 		return false;
 	}
 
-	bool RenderEngine::DrawBitmap(const wxRect& cellRect, CellState cellState, const wxBitmap& bitmap)
+	bool RenderEngine::DrawBitmap(const wxRect& cellRect, CellState cellState, const wxBitmap& bitmap, int reservedWidth)
 	{
 		if (bitmap.IsOk())
 		{
@@ -248,14 +248,18 @@ namespace KxDataView2
 			m_Renderer.GetGraphicsContext().DrawBitmap(m_Renderer.m_Attributes.IsEnabled() ? bitmap : bitmap.ConvertToDisabled(), pos.x, pos.y, size.GetWidth(), size.GetHeight());
 			return true;
 		}
+		else if (reservedWidth > 0)
+		{
+			return true;
+		}
 		return false;
 	}
-	int RenderEngine::DrawBitmapWithText(const wxRect& cellRect, CellState cellState, int offsetX, const wxString& text, const wxBitmap& bitmap, bool centerTextV)
+	int RenderEngine::DrawBitmapWithText(const wxRect& cellRect, CellState cellState, int offsetX, const wxString& text, const wxBitmap& bitmap, bool centerTextV, int reservedWidth)
 	{
-		if (bitmap.IsOk())
+		if (bitmap.IsOk() || reservedWidth > 0)
 		{
-			DrawBitmap(wxRect(cellRect.GetX() + offsetX, cellRect.GetY(), cellRect.GetWidth() - offsetX, cellRect.GetHeight()), cellState, bitmap);
-			offsetX += bitmap.GetWidth() + FromDIPX(1);
+			DrawBitmap(wxRect(cellRect.GetX() + offsetX, cellRect.GetY(), cellRect.GetWidth() - offsetX, cellRect.GetHeight()), cellState, bitmap, reservedWidth);
+			offsetX += (reservedWidth > 0 ? reservedWidth : bitmap.GetWidth()) + FromDIPX(GetInterTextSpacing());
 		}
 		if (!text.IsEmpty())
 		{

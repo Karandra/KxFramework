@@ -25,23 +25,32 @@ namespace KxDataView2
 
 	void BitmapTextRenderer::DrawCellContent(const wxRect& cellRect, CellState cellState)
 	{
-		GetRenderEngine().DrawBitmapWithText(cellRect, cellState, 0, m_Value.GetText(), m_Value.GetBitmap(), m_Value.ShouldVCenterText());
+		const bool centerTextV = m_Value.IsOptionEnabled(BitmapTextValueOptions::VCenterText);
+		const int reservedWidth = m_Value.GetReservedBitmapWidth();
+
+		GetRenderEngine().DrawBitmapWithText(cellRect, cellState, 0, m_Value.GetText(), m_Value.GetBitmap(), centerTextV, reservedWidth);
 	}
 	wxSize BitmapTextRenderer::GetCellSize() const
 	{
+		RenderEngine renderEngine = GetRenderEngine();
+
 		wxSize size(0, 0);
 		if (m_Value.HasText())
 		{
-			size += GetRenderEngine().GetTextExtent(m_Value.GetText());
+			size += renderEngine.GetTextExtent(m_Value.GetText());
 		}
 		if (m_Value.HasBitmap())
 		{
 			const wxBitmap& bitmap = m_Value.GetBitmap();
-			size.x += bitmap.GetWidth() + GetRenderEngine().FromDIPX(1);
+			size.x += bitmap.GetWidth() + GetRenderEngine().FromDIPX(renderEngine.GetInterTextSpacing());
 			if (size.y < bitmap.GetHeight())
 			{
 				size.y = bitmap.GetHeight();
 			}
+		}
+		else if (int reservedWidth = m_Value.GetReservedBitmapWidth(); reservedWidth > 0)
+		{
+			size.x += reservedWidth + renderEngine.FromDIPX(renderEngine.GetInterTextSpacing());
 		}
 		return size;
 	}
