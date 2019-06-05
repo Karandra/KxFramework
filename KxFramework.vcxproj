@@ -200,6 +200,7 @@
     <ClInclude Include="KxFramework\ComponentSystem\ComponentContainer.h" />
     <ClInclude Include="KxFramework\ComponentSystem\ComponentItem.h" />
     <ClInclude Include="KxFramework\ComponentSystem\IComponentContainer.h" />
+    <ClInclude Include="KxFramework\DataView2\CellAttributeOptions.h" />
     <ClInclude Include="KxFramework\DataView2\CellState.h" />
     <ClInclude Include="KxFramework\DataView2\Column.h" />
     <ClInclude Include="KxFramework\DataView2\ColumnID.h" />
@@ -274,6 +275,7 @@
     <ClInclude Include="KxFramework\KxAuiToolBar.h" />
     <ClInclude Include="KxFramework\KxAuiToolBarEvent.h" />
     <ClInclude Include="KxFramework\KxAuiToolBarItem.h" />
+    <ClInclude Include="KxFramework\KxOptionSet.h" />
     <ClInclude Include="KxFramework\KxToolTipEx.h" />
     <ClInclude Include="KxFramework\KxBitmapComboBox.h" />
     <ClInclude Include="KxFramework\KxBitmapGraphicsCanvas.h" />

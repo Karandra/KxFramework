@@ -111,13 +111,13 @@ namespace KxDataView2
 		const Column* column = m_Renderer.GetColumn();
 
 		int flags = wxCONTROL_NONE;
-		if (!m_Renderer.GetAttributes().IsEnabled())
+		if (!m_Renderer.GetAttributes().Options().IsEnabled(CellOption::Enabled))
 		{
 			flags |= wxCONTROL_DISABLED;
 		}
 		if (cellState.IsSelected())
 		{
-			flags |= wxCONTROL_PRESSED;
+			flags |= wxCONTROL_PRESSED|wxCONTROL_SELECTED;
 		}
 		if (column && (cellState.IsHotTracked() && column->IsHotTracked()))
 		{
@@ -148,7 +148,7 @@ namespace KxDataView2
 	wxSize RenderEngine::GetTextExtent(wxDC& dc, const wxString& string) const
 	{
 		wxSize textExtent(0, 0);
-		if (m_Renderer.m_Attributes.HasFontAttributes())
+		if (m_Renderer.m_Attributes.FontOptions().NeedDCAlteration())
 		{
 			wxFont font(m_Renderer.m_Attributes.GetEffectiveFont(dc.GetFont()));
 
@@ -205,7 +205,7 @@ namespace KxDataView2
 			textRect.width -= offsetX;
 
 			int flags = 0;
-			if (m_Renderer.IsMarkupWithMnemonicsEnabled() && m_Renderer.m_Attributes.ShouldShowAccelerators())
+			if (m_Renderer.IsMarkupWithMnemonicsEnabled() && m_Renderer.m_Attributes.Options().IsEnabled(CellOption::ShowAccelerators))
 			{
 				flags |= wxMarkupText::Render_ShowAccels;
 			}
@@ -244,8 +244,9 @@ namespace KxDataView2
 		{
 			const wxPoint pos = cellRect.GetPosition();
 			const wxSize size(bitmap.GetWidth(), cellRect.GetHeight());
+			const bool isEnabled = m_Renderer.m_Attributes.Options().IsEnabled(CellOption::Enabled);
 
-			m_Renderer.GetGraphicsContext().DrawBitmap(m_Renderer.m_Attributes.IsEnabled() ? bitmap : bitmap.ConvertToDisabled(), pos.x, pos.y, size.GetWidth(), size.GetHeight());
+			m_Renderer.GetGraphicsContext().DrawBitmap(isEnabled ? bitmap : bitmap.ConvertToDisabled(), pos.x, pos.y, size.GetWidth(), size.GetHeight());
 			return true;
 		}
 		else if (reservedWidth > 0)

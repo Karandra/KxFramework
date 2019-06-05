@@ -3,38 +3,34 @@
 
 namespace KxDataView2
 {
-	void CellAttributes::Reset()
-	{
-		*this = CellAttributes();
-	}
 	wxFont CellAttributes::GetEffectiveFont(const wxFont& baseFont) const
 	{
-		if (HasFontAttributes())
+		if (!m_FontOptions.IsDefault())
 		{
 			wxFont font(baseFont);
-			if (IsBold())
+			if (m_FontOptions.IsEnabled(CellFontOption::Bold))
 			{
 				font.MakeBold();
 			}
-			if (IsItalic())
+			if (m_FontOptions.IsEnabled(CellFontOption::Italic))
 			{
 				font.MakeItalic();
 			}
-			if (IsUnderlined())
+			if (m_FontOptions.IsEnabled(CellFontOption::Underlined))
 			{
 				font.MakeUnderlined();
 			}
-			if (IsStrikethrough())
+			if (m_FontOptions.IsEnabled(CellFontOption::Strikethrough))
 			{
 				font.MakeStrikethrough();
 			}
-			if (HasFontFace())
+			if (m_FontOptions.HasFontFace())
 			{
-				font.SetFaceName(m_FontFace);
+				font.SetFaceName(m_FontOptions.GetFontFace());
 			}
-			if (HasFontSize())
+			if (m_FontOptions.HasFontSize())
 			{
-				font.SetPointSize(m_FontSize);
+				font.SetPointSize(m_FontOptions.GetFontSize());
 			}
 			return font;
 		}

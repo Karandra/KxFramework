@@ -964,6 +964,12 @@
     <ClInclude Include="KxFramework\KxRichToolTip.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\CellAttributeOptions.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxOptionSet.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
