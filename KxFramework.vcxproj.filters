@@ -970,6 +970,9 @@
     <ClInclude Include="KxFramework\KxOptionSet.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxWindowUpdateLocker.h">
+      <Filter>Header Files\Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />

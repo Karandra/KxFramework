@@ -444,6 +444,7 @@
     <ClInclude Include="KxFramework\KxWebSocket.h" />
     <ClInclude Include="KxFramework\KxWebSocketEvent.h" />
     <ClInclude Include="KxFramework\KxWebView.h" />
+    <ClInclude Include="KxFramework\KxWindowUpdateLocker.h" />
     <ClInclude Include="KxFramework\KxWinUndef.h" />
     <ClInclude Include="KxFramework\KxWithDropdownMenu.h" />
     <ClInclude Include="KxFramework\KxWithImageList.h" />
