@@ -163,6 +163,20 @@ namespace KxDataView2
 		const NMHEADERW* header = reinterpret_cast<NMHEADERW*>(lParam);
 		switch (notification)
 		{
+			// The control doesn't display drag image on reordering columns if double-buffering
+			// is enabled. That looks really bad so we'll temporarily disable double buffering
+			// for the duration of the drag and drop operation.
+			case (int)HDN_BEGINDRAG:
+			{
+				SetDoubleBuffered(false);
+				return true;
+			}
+			case (int)HDN_ENDDRAG:
+			{
+				SetDoubleBuffered(true);
+				return true;
+			}
+
 			case (int)HDN_ITEMSTATEICONCLICK:
 			{
 				Column* column = GetColumnAt(FromNativeColumnIndex(header->iItem));
@@ -195,33 +209,37 @@ namespace KxDataView2
 
 	void HeaderCtrl::OnColumnInserted(Column& column)
 	{
-		UpdateColumn(column);
+		//UpdateColumn(column);
 	}
 	void HeaderCtrl::UpdateColumn(Column& column)
 	{
-		const HWND hwnd = GetHandle();
-		const int nativeIndex = ToNativeColumnIndex(column.GetIndex());
+		if (column.IsVisible())
+		{
+			wxHeaderCtrl::UpdateColumn(column.GetIndex());
+			const HWND hwnd = GetHandle();
+			const int nativeIndex = ToNativeColumnIndex(column.GetIndex());
 
-		// Get current info
-		HDITEMW item = {0};
-		item.mask = HDI_FORMAT;
-		Header_GetItem(hwnd, nativeIndex, &item);
+			// Get current format
+			HDITEMW item = {0};
+			item.mask = HDI_FORMAT|HDI_STATE;
+			Header_GetItem(hwnd, nativeIndex, &item);
 
-		// Dropdown
-		KxUtility::ModFlagRef(item.fmt, HDF_SPLITBUTTON, column.HasDropDown());
+			// Dropdown
+			KxUtility::ModFlagRef(item.fmt, HDF_SPLITBUTTON, column.HasDropDown());
 
-		// Checkbox
-		KxUtility::ModFlagRef(item.fmt, HDF_CHECKBOX, column.GetStyle().IsEnabled(ColumnStyle::CheckBox));
-		KxUtility::ModFlagRef(item.fmt, HDF_CHECKED, column.IsChecked());
+			// Checkbox
+			KxUtility::ModFlagRef(item.fmt, HDF_CHECKBOX, column.GetStyle().IsEnabled(ColumnStyle::CheckBox));
+			KxUtility::ModFlagRef(item.fmt, HDF_CHECKED, column.IsChecked());
 
-		// Update item
-		Header_SetItem(hwnd, nativeIndex, &item);
+			// Update the column format
+			item.state = HDIS_FOCUSED;
+			Header_SetItem(hwnd, nativeIndex, &item);
+		}
 	}
 	void HeaderCtrl::UpdateColumn(size_t index)
 	{
 		if (Column* column = GetColumnAt(index))
 		{
-			wxHeaderCtrl::UpdateColumn(index);
 			UpdateColumn(*column);
 		}
 	}
@@ -239,6 +257,7 @@ namespace KxDataView2
 		// General
 		KxUtility::ToggleWindowStyle(GetHandle(), GWL_STYLE, HDS_CHECKBOXES, true);
 		SetBackgroundColour(m_View->GetBackgroundColour());
+		SetDoubleBuffered(true);
 
 		// Events
 		Bind(wxEVT_HEADER_CLICK, &HeaderCtrl::OnClick, this);

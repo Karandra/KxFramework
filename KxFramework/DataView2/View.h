@@ -56,7 +56,7 @@ namespace KxDataView2
 			// This indicates that at least one entry in 'm_Columns' has 'm_Dirty'
 			// flag set. It's cheaper to check one flag in OnInternalIdle() than to
 			// iterate over 'm_Columns' to check if anything needs to be done.
-			bool m_IsColumnsDirty = false;
+			bool m_ColumnsDirty = false;
 
 		private:
 			void InvalidateColumnsBestWidth();

@@ -123,7 +123,7 @@ namespace KxDataView2
 		m_IsDirty = value;
 		if (m_View && value)
 		{
-			m_View->m_IsColumnsDirty = true;
+			m_View->m_ColumnsDirty = true;
 		}
 	}
 

@@ -43,7 +43,7 @@ namespace KxDataView2
 	}
 	void View::UpdateColumnsWidth()
 	{
-		m_IsColumnsDirty = false;
+		m_ColumnsDirty = false;
 
 		if (m_HeaderArea)
 		{
@@ -108,7 +108,7 @@ namespace KxDataView2
 	{
 		ViewBase::OnInternalIdle();
 
-		if (m_IsColumnsDirty)
+		if (m_ColumnsDirty)
 		{
 			UpdateColumnsWidth();
 		}
@@ -137,8 +137,8 @@ namespace KxDataView2
 		// b) does not query the sizer for their size and use that for setting
 		// the scrollable area as set that ourselves by calling SetScrollbar() further down.
 
-		Layout();
 		AdjustScrollbars();
+		Layout();
 
 		// We must redraw the headers if their height changed. Normally this
 		// shouldn't happen as the control shouldn't let itself be resized beneath
@@ -319,7 +319,7 @@ namespace KxDataView2
 			}
 		}
 
-		// Column was removed, update indexes.
+		// Column was removed, update display indexes
 		if (nextColumn != INVALID_COLUMN)
 		{
 			for (size_t i = nextColumn; i < m_Columns.size(); i++)
@@ -843,6 +843,10 @@ namespace KxDataView2
 
 		OnColumnChange(oldIndex);
 		OnColumnChange(newIndex);
+		if (m_HeaderArea)
+		{
+			m_HeaderArea->UpdateDisplay();
+		}
 	}
 	void View::OnColumnChange(size_t index)
 	{
@@ -857,6 +861,7 @@ namespace KxDataView2
 		if (m_HeaderArea)
 		{
 			m_HeaderArea->SetColumnCount(GetColumnCount());
+			m_HeaderArea->UpdateDisplay();
 		}
 		m_ClientArea->OnColumnCountChanged();
 	}
