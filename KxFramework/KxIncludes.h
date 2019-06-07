@@ -28,6 +28,7 @@
 #include <algorithm>
 #include <functional>
 #include <variant>
+#include <optional>
 #include <locale>
 #include <limits>
 
