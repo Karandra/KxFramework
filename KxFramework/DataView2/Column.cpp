@@ -2,6 +2,7 @@
 #include "Column.h"
 #include "View.h"
 #include "MainWindow.h"
+#include "HeaderCtrl.h"
 #include "Renderer.h"
 #include "Editor.h"
 #include "KxFramework/KxUtility.h"

@@ -84,7 +84,7 @@ namespace KxDataView2
 			}
 			else
 			{
-				wxRendererNative::Get().DrawComboBoxDropButton(GetView(), dc, cellRect, GetRenderEngine().GetControlFlags(cellState));
+				wxRendererNative::Get().DrawChoice(GetView(), dc, cellRect, GetRenderEngine().GetControlFlags(cellState));
 			}
 		}
 

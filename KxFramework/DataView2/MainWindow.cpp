@@ -1,5 +1,6 @@
 #include "KxStdAfx.h"
 #include "MainWindow.h"
+#include "HeaderCtrl.h"
 #include "Renderer.h"
 #include "ToolTip.h"
 #include "Editor.h"
@@ -1876,6 +1877,7 @@ namespace KxDataView2
 		{
 			UpdateColumnSizes();
 			RecalculateDisplay();
+
 			m_Dirty = false;
 		}
 	}

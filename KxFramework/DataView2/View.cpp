@@ -10,16 +10,28 @@ namespace KxDataView2
 {
 	wxIMPLEMENT_ABSTRACT_CLASS(View, wxWindow)
 
-	WXLRESULT View::MSWWindowProc(WXUINT msg, WXWPARAM wParam, WXLPARAM lParam)
+	bool View::MSWHandleMessage(WXLRESULT* result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam)
 	{
-		WXLRESULT rc = ViewBase::MSWWindowProc(msg, wParam, lParam);
-
-		// We need to process arrows ourselves for scrolling
-		if (msg == WM_GETDLGCODE)
+		const bool ret = ViewBase::MSWHandleMessage(result, msg, wParam, lParam);
+		switch (msg)
 		{
-			rc |= DLGC_WANTARROWS;
-		}
-		return rc;
+			case WM_GETDLGCODE:
+			{
+				// We need to process arrows ourselves for scrolling
+				*result |= DLGC_WANTARROWS;
+				break;
+			}
+			case WM_NOTIFY:
+			{
+				NMHDR* notifyInfo = reinterpret_cast<NMHDR*>(lParam);
+				if (m_HeaderArea && notifyInfo && m_HeaderArea->GetHandle() == notifyInfo->hwndFrom)
+				{
+					return m_HeaderArea->MSWHandleNotify(result, notifyInfo->code, wParam, lParam);
+				}
+				break;
+			}
+		};
+		return ret;
 	}
 
 	void View::InvalidateColumnsBestWidth()
@@ -80,6 +92,10 @@ namespace KxDataView2
 		// Insert
 		m_Columns.emplace(m_Columns.begin() + index, column);
 		OnColumnCountChanged();
+		if (m_HeaderArea)
+		{
+			m_HeaderArea->OnColumnInserted(*column);
+		}
 	}
 	void View::ResetAllSortColumns()
 	{
@@ -99,14 +115,14 @@ namespace KxDataView2
 	}
 	void View::DoEnableSystemTheme(bool enable, wxWindow* window)
 	{
+		m_UsingSystemTheme = enable;
+
 		wxSystemThemedControlBase::DoEnableSystemTheme(enable, window);
 		wxSystemThemedControlBase::DoEnableSystemTheme(enable, m_ClientArea);
 		if (m_HeaderArea)
 		{
 			wxSystemThemedControlBase::DoEnableSystemTheme(enable, m_HeaderArea);
 		}
-
-		m_UsingSystemTheme = enable;
 	}
 
 	void View::OnSize(wxSizeEvent& event)
@@ -793,13 +809,17 @@ namespace KxDataView2
 	{
 		bool b1 = ViewBase::SetForegroundColour(color);
 		bool b2 = m_ClientArea ? m_ClientArea->SetForegroundColour(color) : true;
-		return b1 && b2;
+		bool b3 = m_HeaderArea ? m_HeaderArea->SetForegroundColour(color) : true;
+		
+		return b1 && b2 && b3;
 	}
 	bool View::SetBackgroundColour(const wxColour& color)
 	{
 		bool b1 = ViewBase::SetBackgroundColour(color);
 		bool b2 = m_ClientArea ? m_ClientArea->SetBackgroundColour(color) : true;
-		return b1 && b2;
+		bool b3 = m_HeaderArea ? m_HeaderArea->SetBackgroundColour(color) : true;
+
+		return b1 && b2 && b3;
 	}
 
 	wxBitmap View::GetBackgroundBitmap() const

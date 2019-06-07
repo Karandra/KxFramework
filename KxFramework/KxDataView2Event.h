@@ -19,10 +19,8 @@ namespace KxDataView2
 		private:
 			Node* m_Node = nullptr;
 			Column* m_Column = nullptr;
-			wxPoint m_Position = wxDefaultPosition;
-
-			Row m_CacheHintFrom;
-			Row m_CacheHintTo;
+			std::optional<wxRect> m_Rect;
+			std::pair<Row, Row> m_CacheHints;
 
 		protected:
 			View* GetView() const;
@@ -57,39 +55,59 @@ namespace KxDataView2
 				m_Column = column;
 			}
 
+			wxRect GetRect() const
+			{
+				return m_Rect ? *m_Rect : wxRect();
+			}
+			void SetRect(const wxRect& rect)
+			{
+				m_Rect = rect;
+			}
+			void ResetRect()
+			{
+				m_Rect.reset();
+			}
+
 			wxPoint GetPosition() const 
 			{
-				return m_Position;
+				return m_Rect ? m_Rect->GetPosition() : wxDefaultPosition;
 			}
 			void SetPosition(int x, int y)
 			{
-				m_Position.x = x;
-				m_Position.y = y;
+				if (!m_Rect)
+				{
+					m_Rect = {};
+				}
+				m_Rect->x = x;
+				m_Rect->y = y;
 			}
 			void SetPosition(const wxPoint& pos)
 			{
-				m_Position = pos;
+				SetPosition(pos.x, pos.y);
+			}
+			void ResetPosition()
+			{
+				m_Rect.reset();
 			}
 
 			// Return hints as physical rows
-			std::tuple<Row, Row> GetCacheHint() const
+			std::pair<Row, Row> GetCacheHint() const
 			{
-				return {m_CacheHintFrom, m_CacheHintTo};
+				return m_CacheHints;
 			}
 			Row GetCacheHintFrom() const
 			{
-				return m_CacheHintFrom;
+				return m_CacheHints.first;
 			}
 			Row GetCacheHintTo() const
 			{
-				return m_CacheHintTo;
+				return m_CacheHints.second;
 			}
 			
 			// These are physical rows as user sees them, not logical
 			void SetCacheHints(Row from, Row to)
 			{
-				m_CacheHintFrom = from;
-				m_CacheHintTo = to;
+				m_CacheHints = {from, to};
 			}
 	};
 }
@@ -234,6 +252,8 @@ namespace KxDataView2
 
 	KX_DECLARE_EVENT(EVENT_COLUMN_HEADER_CLICK, Event);
 	KX_DECLARE_EVENT(EVENT_COLUMN_HEADER_RCLICK, Event);
+	KX_DECLARE_EVENT(EVENT_COLUMN_DROPDOWN, Event);
+	KX_DECLARE_EVENT(EVENT_COLUMN_TOGGLE, Event);
 	KX_DECLARE_EVENT(EVENT_COLUMN_SORTED, Event);
 	KX_DECLARE_EVENT(EVENT_COLUMN_MOVED, Event);
 

@@ -37,7 +37,7 @@ namespace KxDataView2
 			using ViewBase = wxSystemThemedControl<wxScrolled<wxWindow>>;
 
 		private:
-			KxWithOptions<CtrlStyle, CtrlStyle::DefaultStyle> m_Styles;
+			KxWithOptions<CtrlStyle, CtrlStyle::Default> m_Styles;
 
 			HeaderCtrl* m_HeaderArea = nullptr;
 			MainWindow* m_ClientArea = nullptr;
@@ -78,7 +78,7 @@ namespace KxDataView2
 				Insert
 			};
 			template<ICEAction action, class TValue, class TRenderer = void, class TEditor = void>
-			auto InsertColumnEx(const TValue& value, ColumnID id = {}, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::DefaultStyle, size_t index = 0)
+			auto InsertColumnEx(const TValue& value, ColumnID id = {}, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::Default, size_t index = 0)
 			{
 				Column* column = new Column(value, id, width, style);
 
@@ -134,13 +134,13 @@ namespace KxDataView2
 			}
 
 			// We need to return a special WM_GETDLGCODE value to process just the arrows but let the other navigation characters through
-			WXLRESULT MSWWindowProc(WXUINT msg, WXWPARAM wParam, WXLPARAM lParam) override;
+			bool MSWHandleMessage(WXLRESULT* result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam) override;
 			void OnInternalIdle() override;
 			void DoEnableSystemTheme(bool enable, wxWindow* window) override;
 
 		public:
 			View() = default;
-			View(wxWindow* parent, wxWindowID id, CtrlStyle style = CtrlStyle::DefaultStyle)
+			View(wxWindow* parent, wxWindowID id, CtrlStyle style = CtrlStyle::Default)
 			{
 				Create(parent, id, style);
 			}
@@ -150,10 +150,10 @@ namespace KxDataView2
 						wxWindowID id,
 						const wxPoint& pos = wxDefaultPosition,
 						const wxSize& size = wxDefaultSize,
-						long style = static_cast<long>(CtrlStyle::DefaultStyle),
+						long style = static_cast<long>(CtrlStyle::Default),
 						const wxString& name = wxEmptyString
 			);
-			bool Create(wxWindow* parent, wxWindowID id, CtrlStyle style = CtrlStyle::DefaultStyle)
+			bool Create(wxWindow* parent, wxWindowID id, CtrlStyle style = CtrlStyle::Default)
 			{
 				return Create(parent, id, wxDefaultPosition, wxDefaultSize, static_cast<int>(style));
 			}
@@ -189,19 +189,19 @@ namespace KxDataView2
 			Renderer& InsertColumn(size_t index, Column* column);
 
 			template<class TRenderer = void, class TEditor = void>
-			auto AppendColumn(const wxString& title, ColumnID id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::DefaultStyle)
+			auto AppendColumn(const wxString& title, ColumnID id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::Default)
 			{
 				return InsertColumnEx<ICEAction::Append, wxString, TRenderer, TEditor>(title, id, width, style);
 			}
 
 			template<class TRenderer = void, class TEditor = void>
-			auto PrependColumn(const wxString& title, ColumnID id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::DefaultStyle)
+			auto PrependColumn(const wxString& title, ColumnID id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::Default)
 			{
 				return InsertColumnEx<ICEAction::Prepend, wxString, TRenderer, TEditor>(title, id, width, style);
 			}
 
 			template<class TRenderer = void, class TEditor = void>
-			auto InsertColumn(size_t index, const wxString& title, ColumnID id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::DefaultStyle)
+			auto InsertColumn(size_t index, const wxString& title, ColumnID id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::Default)
 			{
 				return InsertColumnEx<ICEAction::Insert, wxString, TRenderer, TEditor>(title, id, width, style, index);
 			}

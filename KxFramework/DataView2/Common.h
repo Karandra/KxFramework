@@ -15,7 +15,7 @@ namespace KxDataView2
 		VariableRowHeight = 1 << 5,
 		CellFocus = 1 << 6,
 
-		DefaultStyle = SingleSelection|VerticalRules
+		Default = SingleSelection|VerticalRules
 	};
 	constexpr inline CtrlStyle operator|(CtrlStyle left, CtrlStyle right)
 	{
@@ -32,8 +32,10 @@ namespace KxDataView2
 		Sort = 1 << 0,
 		Move = 1 << 1,
 		Size = 1 << 2,
+		DropDown = 1 << 3,
+		CheckBox = 1 << 4,
 
-		DefaultStyle = Move|Size,
+		Default = Move|Size,
 	};
 	constexpr inline ColumnStyle operator|(ColumnStyle left, ColumnStyle right)
 	{

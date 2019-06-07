@@ -3,7 +3,7 @@
 #include "Editor.h"
 #include "Renderer.h"
 #include "ColumnID.h"
-#include "KxFramework/KxWithOptions.h"
+#include "KxFramework/KxOptionSet.h"
 #include "KxFramework/KxQueryInterface.h"
 
 namespace KxDataView2
@@ -94,8 +94,9 @@ namespace KxDataView2
 			wxBitmap m_Bitmap;
 			wxString m_Title;
 			wxAlignment m_TitleAlignment = wxALIGN_INVALID;
+			bool m_IsChecked = false;
 
-			KxWithOptions<ColumnStyle, ColumnStyle::DefaultStyle> m_Style;
+			KxOptionSet<ColumnStyle, ColumnStyle::Default> m_Style;
 			ColumnWidth m_Width;
 			int m_MinWidth = 0;
 			int m_BestWidth = 0;
@@ -127,11 +128,11 @@ namespace KxDataView2
 
 			ColumnStyle GetStyleFlags() const
 			{
-				return m_Style.GetOptionsValue();
+				return m_Style.GetValue();
 			}
 			void SetStyleFlags(ColumnStyle style)
 			{
-				m_Style.SetOptionsValue(style);
+				m_Style.SetValue(style);
 			}
 
 			const NativeColumn& GetNativeColumn() const
@@ -189,7 +190,6 @@ namespace KxDataView2
 			{
 				return m_Index;
 			}
-			
 			size_t GetDisplayIndex() const
 			{
 				return m_DisplayIndex;
@@ -238,6 +238,15 @@ namespace KxDataView2
 			{
 				m_Title = title;
 				UpdateDisplay();
+			}
+
+			bool IsChecked() const
+			{
+				return m_IsChecked;
+			}
+			void SetChecked(bool value = true)
+			{
+				m_IsChecked = value;
 			}
 
 			ColumnWidth GetWidthDescriptor() const
@@ -304,29 +313,49 @@ namespace KxDataView2
 			void ToggleSortOrder();
 			void ResetSorting();
 
+			const auto& GetStyle() const
+			{
+				return m_Style;
+			}
+			auto& GetStyle()
+			{
+				return m_Style;
+			}
+
 			bool IsSortable()
 			{
-				return m_Style.IsOptionEnabled(ColumnStyle::Sort);
-			}
-			bool IsMoveable()
-			{
-				return m_Style.IsOptionEnabled(ColumnStyle::Move);
-			}
-			bool IsSizeable()
-			{
-				return m_Style.IsOptionEnabled(ColumnStyle::Size);
+				return m_Style.IsEnabled(ColumnStyle::Sort);
 			}
 			void SetSortable(bool value)
 			{
-				m_Style.SetOptionEnabled(ColumnStyle::Sort, value);
+				m_Style.Enable(ColumnStyle::Sort, value);
+			}
+			
+			bool IsMoveable()
+			{
+				return m_Style.IsEnabled(ColumnStyle::Move);
 			}
 			void SetMoveable(bool value)
 			{
-				m_Style.SetOptionEnabled(ColumnStyle::Move, value);
+				m_Style.Enable(ColumnStyle::Move, value);
+			}
+			
+			bool IsSizeable()
+			{
+				return m_Style.IsEnabled(ColumnStyle::Size);
 			}
 			void SetSizeable(bool value)
 			{
-				m_Style.SetOptionEnabled(ColumnStyle::Size, value);
+				m_Style.Enable(ColumnStyle::Size, value);
+			}
+
+			bool HasDropDown()
+			{
+				return m_Style.IsEnabled(ColumnStyle::DropDown);
+			}
+			void ShowDropDown(bool value)
+			{
+				m_Style.Enable(ColumnStyle::DropDown, value);
 			}
 
 			bool IsExposed(int& width) const;
