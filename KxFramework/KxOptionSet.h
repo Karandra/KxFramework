@@ -85,4 +85,9 @@ class KxOptionSet
 			m_Value = other.m_Value;
 			return *this;
 		}
+
+		constexpr operator TWithOptions() const
+		{
+			return m_Value;
+		}
 };
