@@ -26,7 +26,8 @@ namespace KxDataView2
 				NMHDR* notifyInfo = reinterpret_cast<NMHDR*>(lParam);
 				if (m_HeaderArea && notifyInfo && m_HeaderArea->GetHandle() == notifyInfo->hwndFrom)
 				{
-					return m_HeaderArea->MSWHandleNotify(result, notifyInfo->code, wParam, lParam);
+					// We are ignoring the return value from header and returning what our 'MSWHandleMessage' returned
+					m_HeaderArea->MSWHandleNotify(result, notifyInfo->code, wParam, lParam);
 				}
 				break;
 			}
