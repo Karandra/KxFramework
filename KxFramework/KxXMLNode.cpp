@@ -253,6 +253,11 @@ KxXMLNode::KxXMLNode(const tinyxml2::XMLNode* node, KxXMLDocument* document)
 
 KxXMLNode KxXMLNode::QueryElement(const wxString& XPath) const
 {
+	if (!IsOK())
+	{
+		return {};
+	}
+
 	KxStringVector elements = KxString::Split(XPath, wxS("/"));
 	if (!elements.empty())
 	{
@@ -293,6 +298,11 @@ KxXMLNode KxXMLNode::QueryElement(const wxString& XPath) const
 }
 KxXMLNode KxXMLNode::QueryOrCreateElement(const wxString& XPath)
 {
+	if (!IsOK())
+	{
+		return {};
+	}
+
 	KxStringVector elements = KxString::Split(XPath, wxS("/"));
 	if (!elements.empty())
 	{
@@ -339,7 +349,7 @@ KxXMLNode KxXMLNode::QueryOrCreateElement(const wxString& XPath)
 
 wxString KxXMLNode::GetXPathIndexSeparator() const
 {
-	return m_Document ? m_Document->GetXPathIndexSeparator() : wxString();
+	return m_Document ? m_Document->GetXPathIndexSeparator() : wxEmptyString;
 }
 bool KxXMLNode::SetXPathIndexSeparator(const wxString& value)
 {
@@ -786,25 +796,34 @@ KxXMLNode KxXMLNode::GetLastChildElement(const wxString& name) const
 
 bool KxXMLNode::InsertAfterChild(KxXMLNode& newNode)
 {
-	if (auto node = GetNode())
+	auto thisTxNode = GetNode();
+	auto newTxNode = newNode.GetNode();
+
+	if (thisTxNode && newTxNode)
 	{
-		return node->InsertAfterChild(node, newNode.GetNode()) != nullptr;
+		return thisTxNode->InsertAfterChild(thisTxNode, newTxNode) != nullptr;
 	}
 	return false;
 }
 bool KxXMLNode::InsertFirstChild(KxXMLNode& newNode)
 {
-	if (auto node = GetNode())
+	auto thisTxNode = GetNode();
+	auto newTxNode = newNode.GetNode();
+
+	if (thisTxNode && newTxNode)
 	{
-		return node->InsertFirstChild(newNode.GetNode()) != nullptr;
+		return thisTxNode->InsertFirstChild(newTxNode) != nullptr;
 	}
 	return false;
 }
 bool KxXMLNode::InsertLastChild(KxXMLNode& newNode)
 {
-	if (auto node = GetNode())
+	auto thisTxNode = GetNode();
+	auto newTxNode = newNode.GetNode();
+
+	if (thisTxNode && newTxNode)
 	{
-		return node->InsertEndChild(newNode.GetNode()) != nullptr;
+		return thisTxNode->InsertEndChild(newTxNode) != nullptr;
 	}
 	return false;
 }
@@ -831,26 +850,46 @@ bool KxXMLNode::Insert(KxXMLNode& node, KxXMLInsertNodeMode insertMode)
 /* Insertion */
 KxXMLNode KxXMLNode::NewElement(const wxString& name, KxXMLInsertNodeMode insertMode)
 {
-	KxXMLNode node = m_Document->CreateElement(name);
-	return Insert(node, insertMode) ? node : NullNode;
+	if (IsOK())
+	{
+		KxXMLNode node = m_Document->CreateElement(name);
+		return Insert(node, insertMode) ? node : NullNode;
+	}
+	return {};
 }
 KxXMLNode KxXMLNode::NewComment(const wxString& value, KxXMLInsertNodeMode insertMode)
 {
-	KxXMLNode node = m_Document->CreateComment(value);
-	return Insert(node, insertMode) ? node : NullNode;
+	if (IsOK())
+	{
+		KxXMLNode node = m_Document->CreateComment(value);
+		return Insert(node, insertMode) ? node : NullNode;
+	}
+	return {};
 }
 KxXMLNode KxXMLNode::NewText(const wxString& value, KxXMLInsertNodeMode insertMode)
 {
-	KxXMLNode node = m_Document->CreateText(value);
-	return Insert(node, insertMode) ? node : NullNode;
+	if (IsOK())
+	{
+		KxXMLNode node = m_Document->CreateText(value);
+		return Insert(node, insertMode) ? node : NullNode;
+	}
+	return {};
 }
 KxXMLNode KxXMLNode::NewDeclaration(const wxString& value, KxXMLInsertNodeMode insertMode)
 {
-	KxXMLNode node = m_Document->CreateDeclaration(value);
-	return Insert(node, insertMode) ? node : NullNode;
+	if (IsOK())
+	{
+		KxXMLNode node = m_Document->CreateDeclaration(value);
+		return Insert(node, insertMode) ? node : NullNode;
+	}
+	return {};
 }
 KxXMLNode KxXMLNode::NewUnknown(const wxString& value, KxXMLInsertNodeMode insertMode)
 {
-	KxXMLNode node = m_Document->CreateUnknown(value);
-	return Insert(node, insertMode) ? node : NullNode;
+	if (IsOK())
+	{
+		KxXMLNode node = m_Document->CreateUnknown(value);
+		return Insert(node, insertMode) ? node : NullNode;
+	}
+	return {};
 }
