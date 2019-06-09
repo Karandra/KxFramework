@@ -24,9 +24,6 @@ namespace KxDataView2
 			void FinishEditing();
 			bool SendEvent(wxEventType type, int index, std::optional<wxRect> rect = {});
 
-			int ToNativeColumnIndex(size_t index) const;
-			size_t FromNativeColumnIndex(int nativeIndex) const;
-
 			void OnClick(wxHeaderCtrlEvent& event);
 			void OnRClick(wxHeaderCtrlEvent& event);
 			void OnResize(wxHeaderCtrlEvent& event);
@@ -34,14 +31,15 @@ namespace KxDataView2
 			void OnWindowClick(wxMouseEvent& event);
 
 		protected:
-			bool UpdateColumnWidthToFit(unsigned int index, int titleWidth) override;
 			const wxHeaderColumn& GetColumn(unsigned int index) const override;
-			bool MSWHandleNotify(WXLRESULT* result, int notification, WXWPARAM wParam, WXLPARAM lParam);
-
-			void OnColumnInserted(Column& column);
-			void UpdateColumn(Column& column);
+			wxRect GetDropdownRect(size_t index) const;
+			bool UpdateColumnWidthToFit(unsigned int index, int titleWidth) override;
 			void UpdateColumn(size_t index);
-			void UpdateDisplay();
+			
+			void DoUpdate(unsigned int index) override;
+			void DoSetCount(unsigned int count) override;
+			void DoInsertItem(const Column& column, size_t index);
+			bool MSWHandleNotify(WXLRESULT* result, int notification, WXWPARAM wParam, WXLPARAM lParam);
 
 		public:
 			HeaderCtrl(View* parent);
@@ -62,6 +60,8 @@ namespace KxDataView2
 
 			void ToggleSortByColumn(size_t index);
 			void ToggleSortByColumn(Column& column);
+
+			bool SetBackgroundColour(const wxColour& color) override;
 
 		public:
 			wxDECLARE_NO_COPY_CLASS(HeaderCtrl);
