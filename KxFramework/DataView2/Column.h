@@ -240,6 +240,10 @@ namespace KxDataView2
 				UpdateDisplay();
 			}
 
+			bool HasCheckBox() const
+			{
+				return m_Style.IsEnabled(ColumnStyle::CheckBox);
+			}
 			bool IsChecked() const
 			{
 				return m_IsChecked;
@@ -256,15 +260,8 @@ namespace KxDataView2
 			int GetWidth() const;
 			void SetWidth(ColumnWidth width);
 
-			int GetMinWidth() const
-			{
-				return m_MinWidth;
-			}
-			void SetMinWidth(int width)
-			{
-				m_MinWidth = std::clamp(width, GetAbsMinColumnWidth(), GetAbsMaxColumnWidth());
-				UpdateDisplay();
-			}
+			int GetMinWidth() const;
+			void SetMinWidth(int width);
 
 			bool HasBestWidth() const
 			{
@@ -322,7 +319,7 @@ namespace KxDataView2
 				return m_Style;
 			}
 
-			bool IsSortable()
+			bool IsSortable() const
 			{
 				return m_Style.IsEnabled(ColumnStyle::Sort);
 			}
@@ -331,7 +328,7 @@ namespace KxDataView2
 				m_Style.Enable(ColumnStyle::Sort, value);
 			}
 			
-			bool IsMoveable()
+			bool IsMoveable() const
 			{
 				return m_Style.IsEnabled(ColumnStyle::Move);
 			}
@@ -340,7 +337,7 @@ namespace KxDataView2
 				m_Style.Enable(ColumnStyle::Move, value);
 			}
 			
-			bool IsSizeable()
+			bool IsSizeable() const
 			{
 				return m_Style.IsEnabled(ColumnStyle::Size);
 			}
@@ -349,13 +346,13 @@ namespace KxDataView2
 				m_Style.Enable(ColumnStyle::Size, value);
 			}
 
-			bool HasDropDown()
+			bool HasDropdown() const
 			{
-				return m_Style.IsEnabled(ColumnStyle::DropDown);
+				return m_Style.IsEnabled(ColumnStyle::Dropdown);
 			}
-			void ShowDropDown(bool value)
+			void ShowDropdown(bool value)
 			{
-				m_Style.Enable(ColumnStyle::DropDown, value);
+				m_Style.Enable(ColumnStyle::Dropdown, value);
 			}
 
 			bool IsExposed(int& width) const;
@@ -395,5 +392,6 @@ namespace KxDataView2
 			bool IsDisplayedLast() const;
 
 			wxRect GetRect() const;
+			wxRect GetDropdownRect() const;
 	};
 }

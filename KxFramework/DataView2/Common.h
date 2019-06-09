@@ -32,7 +32,7 @@ namespace KxDataView2
 		Sort = 1 << 0,
 		Move = 1 << 1,
 		Size = 1 << 2,
-		DropDown = 1 << 3,
+		Dropdown = 1 << 3,
 		CheckBox = 1 << 4,
 
 		Default = Move|Size,
