@@ -6,14 +6,15 @@ namespace KxDataView2
 	enum class CtrlStyle: uint32_t
 	{
 		None = 0,
-		SingleSelection = None,
+		SingleSelection = 0,
 		MultipleSelection = 1 << 0,
-		NoHeader = 1 << 1,
-		HorizontalRules = 1 << 2,
-		VerticalRules = 1 << 3,
+		VerticalRules = 1 << 2,
+		HorizontalRules = 1 << 3,
 		AlternatingRowColors = 1 << 4,
-		VariableRowHeight = 1 << 5,
-		CellFocus = 1 << 6,
+		CellFocus = 1 << 5,
+		FitLastColumn = 1 << 6,
+		VariableRowHeight = 1 << 7,
+		NoHeader = 1 << 8,
 
 		Default = SingleSelection|VerticalRules
 	};

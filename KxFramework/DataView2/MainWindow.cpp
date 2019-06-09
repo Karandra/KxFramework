@@ -2774,6 +2774,11 @@ namespace KxDataView2
 	}
 	void MainWindow::UpdateColumnSizes()
 	{
+		if (!m_View->IsOptionEnabled(CtrlStyle::FitLastColumn))
+		{
+			return;
+		}
+
 		size_t columnCount = m_View->GetVisibleColumnCount();
 		if (columnCount != 0)
 		{
