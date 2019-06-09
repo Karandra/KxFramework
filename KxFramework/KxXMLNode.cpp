@@ -850,7 +850,7 @@ bool KxXMLNode::Insert(KxXMLNode& node, KxXMLInsertNodeMode insertMode)
 /* Insertion */
 KxXMLNode KxXMLNode::NewElement(const wxString& name, KxXMLInsertNodeMode insertMode)
 {
-	if (IsOK())
+	if (m_Document)
 	{
 		KxXMLNode node = m_Document->CreateElement(name);
 		return Insert(node, insertMode) ? node : NullNode;
@@ -859,7 +859,7 @@ KxXMLNode KxXMLNode::NewElement(const wxString& name, KxXMLInsertNodeMode insert
 }
 KxXMLNode KxXMLNode::NewComment(const wxString& value, KxXMLInsertNodeMode insertMode)
 {
-	if (IsOK())
+	if (m_Document)
 	{
 		KxXMLNode node = m_Document->CreateComment(value);
 		return Insert(node, insertMode) ? node : NullNode;
@@ -868,7 +868,7 @@ KxXMLNode KxXMLNode::NewComment(const wxString& value, KxXMLInsertNodeMode inser
 }
 KxXMLNode KxXMLNode::NewText(const wxString& value, KxXMLInsertNodeMode insertMode)
 {
-	if (IsOK())
+	if (m_Document)
 	{
 		KxXMLNode node = m_Document->CreateText(value);
 		return Insert(node, insertMode) ? node : NullNode;
@@ -877,7 +877,7 @@ KxXMLNode KxXMLNode::NewText(const wxString& value, KxXMLInsertNodeMode insertMo
 }
 KxXMLNode KxXMLNode::NewDeclaration(const wxString& value, KxXMLInsertNodeMode insertMode)
 {
-	if (IsOK())
+	if (m_Document)
 	{
 		KxXMLNode node = m_Document->CreateDeclaration(value);
 		return Insert(node, insertMode) ? node : NullNode;
@@ -886,7 +886,7 @@ KxXMLNode KxXMLNode::NewDeclaration(const wxString& value, KxXMLInsertNodeMode i
 }
 KxXMLNode KxXMLNode::NewUnknown(const wxString& value, KxXMLInsertNodeMode insertMode)
 {
-	if (IsOK())
+	if (m_Document)
 	{
 		KxXMLNode node = m_Document->CreateUnknown(value);
 		return Insert(node, insertMode) ? node : NullNode;
