@@ -29,7 +29,7 @@ namespace KxDataView2
 
 	int NativeColumn::GetWidth() const
 	{
-		return m_Column.GetWidth();
+		return m_Column.GetWidthDescriptor();
 	}
 	void NativeColumn::SetWidth(int width)
 	{
@@ -63,7 +63,7 @@ namespace KxDataView2
 		
 		// Use raw visibility flag. Native control does some weird things
 		// if the flag value is calculated using column width.
-		KxUtility::ModFlagRef(flags, wxCOL_HIDDEN, !m_Column.m_IsVisible);
+		KxUtility::ModFlagRef(flags, wxCOL_HIDDEN, !m_Column.IsVisible());
 
 		return flags;
 	}
@@ -155,18 +155,21 @@ namespace KxDataView2
 
 	int Column::GetWidth() const
 	{
+		int width = m_Width;
 		switch (m_Width)
 		{
 			case ColumnWidth::Default:
 			{
-				return m_View->FromDIP(wxSize(80, 0)).GetWidth();
+				width = m_View->FromDIP(wxSize(80, 0)).GetWidth();
+				break;
 			}
 			case ColumnWidth::AutoSize:
 			{
-				return const_cast<Column&>(*this).CalcBestSize();
+				width = const_cast<Column&>(*this).CalcBestSize();
+				break;
 			}
 		};
-		return m_Width;
+		return std::clamp(width, GetMinWidth(), std::numeric_limits<int>::max());
 	}
 	void Column::SetWidth(ColumnWidth width)
 	{
@@ -188,6 +191,30 @@ namespace KxDataView2
 			m_View->GetMainWindow()->CalcBestColumnWidth(*this);
 		}
 		return m_BestWidth;
+	}
+	
+	int Column::GetMinWidth() const
+	{
+		int width = m_MinWidth;
+		if (m_View)
+		{
+			if (HasDropdown())
+			{
+				width += GetDropdownRect().GetWidth();
+				width += m_View->FromDIP(wxSize(HasCheckBox() ? 1 : 2, 0)).GetWidth();
+			}
+			if (HasCheckBox())
+			{
+				width += wxRendererNative::Get().GetCheckBoxSize(m_View).GetWidth();
+				width += m_View->FromDIP(wxSize(8, 0)).GetWidth();
+			}
+		}
+		return width;
+	}
+	void Column::SetMinWidth(int width)
+	{
+		m_MinWidth = std::clamp(width, GetAbsMinColumnWidth(), GetAbsMaxColumnWidth());
+		UpdateDisplay();
 	}
 
 	void Column::SortAscending()
@@ -296,5 +323,13 @@ namespace KxDataView2
 		}
 
 		return {x, 0, GetWidth(), m_View->GetMainWindow()->GetClientSize().GetHeight()};
+	}
+	wxRect Column::GetDropdownRect() const
+	{
+		if (m_View && m_View->m_HeaderArea && IsVisible())
+		{
+			return m_View->m_HeaderArea->GetDropdownRect(m_Index);
+		}
+		return {};
 	}
 }
