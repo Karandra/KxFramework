@@ -93,10 +93,6 @@ namespace KxDataView2
 		// Insert
 		m_Columns.emplace(m_Columns.begin() + index, column);
 		OnColumnCountChanged();
-		if (m_HeaderArea)
-		{
-			m_HeaderArea->OnColumnInserted(*column);
-		}
 	}
 	void View::ResetAllSortColumns()
 	{
@@ -833,20 +829,45 @@ namespace KxDataView2
 	}
 
 	// Utility functions, not part of the API
-	void View::ColumnMoved(Column& column, size_t newIndex)
+	void View::ColumnMoved(Column& movedColumn, size_t newDisplayIndex)
 	{
 		// Do *not* reorder 'm_Columns' elements here, they should always be in the order in which columns
 		// were added, we only display the columns in different order.
-		const size_t oldIndex = column.GetDisplayIndex();
-
-		GetColumnDisplayedAt(newIndex)->SetDisplayIndex(oldIndex);
-		column.SetDisplayIndex(newIndex);
-
-		OnColumnChange(oldIndex);
-		OnColumnChange(newIndex);
-		if (m_HeaderArea)
+		if (movedColumn.GetDisplayIndex() != newDisplayIndex)
 		{
-			m_HeaderArea->UpdateDisplay();
+			const size_t oldDisplayIndex = movedColumn.GetDisplayIndex();
+			Column& otherColumn = *GetColumnDisplayedAt(newDisplayIndex);
+
+			if (oldDisplayIndex < newDisplayIndex)
+			{
+				// Column moved to the left
+				for (auto& column: m_Columns)
+				{
+					size_t displayIndex = column->GetDisplayIndex();
+					if (displayIndex <= newDisplayIndex && displayIndex > oldDisplayIndex)
+					{
+						column->SetDisplayIndex(displayIndex - 1);
+					}
+				}
+			}
+			else
+			{
+				// Column moved to the right
+				for (auto& column: m_Columns)
+				{
+					size_t displayIndex = column->GetDisplayIndex();
+					if (displayIndex >= newDisplayIndex && displayIndex < oldDisplayIndex)
+					{
+						column->SetDisplayIndex(displayIndex + 1);
+					}
+				}
+			}
+
+			// Set the new display position
+			movedColumn.SetDisplayIndex(newDisplayIndex);
+
+			// Notify the header control
+			OnColumnCountChanged();
 		}
 	}
 	void View::OnColumnChange(size_t index)
@@ -862,7 +883,6 @@ namespace KxDataView2
 		if (m_HeaderArea)
 		{
 			m_HeaderArea->SetColumnCount(GetColumnCount());
-			m_HeaderArea->UpdateDisplay();
 		}
 		m_ClientArea->OnColumnCountChanged();
 	}
