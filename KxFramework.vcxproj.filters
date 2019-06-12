@@ -973,6 +973,9 @@
     <ClInclude Include="KxFramework\KxWindowUpdateLocker.h">
       <Filter>Header Files\Drawing</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxDefragmenterMap.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1602,6 +1605,9 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxToolTipEx.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxDefragmenterMap.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
