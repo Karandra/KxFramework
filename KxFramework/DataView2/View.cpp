@@ -179,7 +179,7 @@ namespace KxDataView2
 			// keyboard events forwarded to us from 'MainWindow'.
 			DisableKeyboardScrolling();
 
-			if (!IsOptionEnabled(CtrlStyle::NoHeader))
+			if (!IsStyleEnabled(CtrlStyle::NoHeader))
 			{
 				m_HeaderArea = new HeaderCtrl(this);
 			}
@@ -450,7 +450,7 @@ namespace KxDataView2
 
 	Node* View::GetCurrentItem() const
 	{
-		if (IsOptionEnabled(CtrlStyle::MultipleSelection))
+		if (IsStyleEnabled(CtrlStyle::MultipleSelection))
 		{
 			return m_ClientArea->GetNodeByRow(m_ClientArea->GetCurrentRow());
 		}
@@ -461,7 +461,7 @@ namespace KxDataView2
 	}
 	void View::SetCurrentItem(Node& item)
 	{
-		if (IsOptionEnabled(CtrlStyle::MultipleSelection))
+		if (IsStyleEnabled(CtrlStyle::MultipleSelection))
 		{
 			const size_t newCurrent = m_ClientArea->GetRowByNode(item);
 			const size_t oldCurrent = m_ClientArea->GetCurrentRow();
