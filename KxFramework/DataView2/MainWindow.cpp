@@ -1698,7 +1698,6 @@ namespace KxDataView2
 			Column* lastColumn = m_View->GetColumnDisplayedAt(columnCount - 1);
 			if (lastColumn)
 			{
-				RecalculateDisplay();
 				const int fullWinWidth = GetClientSize().GetWidth();
 				const int columnsFullWidth = GetRowWidth();
 				const int lastColumnLeft = columnsFullWidth - lastColumn->GetWidth();
@@ -1921,8 +1920,8 @@ namespace KxDataView2
 
 		if (m_Dirty)
 		{
-			FitLastColumn();
 			RecalculateDisplay();
+			FitLastColumn();
 
 			m_Dirty = false;
 		}
