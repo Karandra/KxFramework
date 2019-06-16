@@ -126,7 +126,7 @@ namespace KxDataView2
 	{
 		if (m_ClientArea && GetColumnCount() != 0)
 		{
-			m_ClientArea->UpdateColumnSizes();
+			m_ClientArea->FitLastColumn();
 		}
 
 		// We need to override OnSize so that our scrolled window

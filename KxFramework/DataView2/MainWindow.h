@@ -179,6 +179,7 @@ namespace KxDataView2
 			bool IsCellInteractible(const Node& node, const Column& column, InteractibleCell action) const;
 			Column* FindInteractibleColumn(const Node& node, InteractibleCell action);
 			int CalcBestColumnWidth(Column& column) const;
+			void FitLastColumn();
 
 			// Items
 			void InvalidateItemCount();
@@ -387,7 +388,7 @@ namespace KxDataView2
 				return m_SelectionStore.IsSelected(row);
 			}
 
-			/* View */
+			// View
 			void SetRuleHPen(const wxPen& pen)
 			{
 				m_PenRuleH = pen;
@@ -404,9 +405,6 @@ namespace KxDataView2
 
 			void HitTest(const wxPoint& pos, Node*& item, Column*& column);
 			wxRect GetItemRect(const Node& item, const Column* column = nullptr);
-
-			// Adjust last column to window size
-			void UpdateColumnSizes();
 
 			// Rows
 			void Expand(Row row);

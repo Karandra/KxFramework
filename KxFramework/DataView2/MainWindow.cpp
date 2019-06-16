@@ -1685,6 +1685,52 @@ namespace KxDataView2
 		column.SetBestWidth(maxWidth);
 		return maxWidth;
 	}
+	void MainWindow::FitLastColumn()
+	{
+		if (!m_View->IsOptionEnabled(CtrlStyle::FitLastColumn))
+		{
+			return;
+		}
+
+		size_t columnCount = m_View->GetVisibleColumnCount();
+		if (columnCount != 0)
+		{
+			Column* lastColumn = m_View->GetColumnDisplayedAt(columnCount - 1);
+			if (lastColumn)
+			{
+				RecalculateDisplay();
+				const int fullWinWidth = GetClientSize().GetWidth();
+				const int columnsFullWidth = GetRowWidth();
+				const int lastColumnLeft = columnsFullWidth - lastColumn->GetWidth();
+
+				if (lastColumnLeft < fullWinWidth)
+				{
+					int desiredWidth = std::max(fullWinWidth - lastColumnLeft, lastColumn->GetMinWidth());
+					if (desiredWidth < lastColumn->CalcBestSize())
+					{
+						lastColumn->SetWidth(lastColumn->GetWidth());
+						SetVirtualSize(columnsFullWidth, m_virtualSize.y);
+						return;
+					}
+					lastColumn->SetWidth(desiredWidth);
+
+					// All columns fit on screen, so we don't need horizontal scrolling.
+					// To prevent flickering scrollbar when resizing the window to be
+					// narrower, force-set the virtual width to 0 here. It will eventually
+					// be corrected at idle time.
+					SetVirtualSize(0, m_virtualSize.y);
+					RefreshRect(wxRect(lastColumnLeft, 0, fullWinWidth - lastColumnLeft, GetSize().y));
+				}
+				else
+				{
+					lastColumn->SetWidth(lastColumn->GetWidth());
+
+					// Don't bother, the columns won't fit anyway
+					SetVirtualSize(columnsFullWidth, m_virtualSize.y);
+				}
+			}
+		}
+	}
 
 	// Items
 	size_t MainWindow::RecalculateItemCount()
@@ -1875,7 +1921,7 @@ namespace KxDataView2
 
 		if (m_Dirty)
 		{
-			UpdateColumnSizes();
+			FitLastColumn();
 			RecalculateDisplay();
 
 			m_Dirty = false;
@@ -2772,53 +2818,7 @@ namespace KxDataView2
 		m_View->CalcScrolledPosition(itemRect.x, itemRect.y, &itemRect.x, &itemRect.y);
 		return itemRect;
 	}
-	void MainWindow::UpdateColumnSizes()
-	{
-		if (!m_View->IsOptionEnabled(CtrlStyle::FitLastColumn))
-		{
-			return;
-		}
-
-		size_t columnCount = m_View->GetVisibleColumnCount();
-		if (columnCount != 0)
-		{
-			Column* lastColumn = m_View->GetColumnDisplayedAt(columnCount - 1);
-			if (lastColumn)
-			{
-				RecalculateDisplay();
-				const int fullWinWidth = GetClientSize().GetWidth();
-				const int columnsFullWidth = GetRowWidth();
-				const int lastColumnLeft = columnsFullWidth - lastColumn->GetWidth();
-
-				if (lastColumnLeft < fullWinWidth)
-				{
-					int desiredWidth = std::max(fullWinWidth - lastColumnLeft, lastColumn->GetMinWidth());
-					if (desiredWidth < lastColumn->CalcBestSize())
-					{
-						lastColumn->SetWidth(lastColumn->GetWidth());
-						SetVirtualSize(columnsFullWidth, m_virtualSize.y);
-						return;
-					}
-					lastColumn->SetWidth(desiredWidth);
-
-					// All columns fit on screen, so we don't need horizontal scrolling.
-					// To prevent flickering scrollbar when resizing the window to be
-					// narrower, force-set the virtual width to 0 here. It will eventually
-					// be corrected at idle time.
-					SetVirtualSize(0, m_virtualSize.y);
-					RefreshRect(wxRect(lastColumnLeft, 0, fullWinWidth - lastColumnLeft, GetSize().y));
-				}
-				else
-				{
-					lastColumn->SetWidth(lastColumn->GetWidth());
-
-					// Don't bother, the columns won't fit anyway
-					SetVirtualSize(columnsFullWidth, m_virtualSize.y);
-				}
-			}
-		}
-	}
-
+	
 	// Rows
 	void MainWindow::Expand(Row row)
 	{
