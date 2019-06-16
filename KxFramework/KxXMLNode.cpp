@@ -298,7 +298,7 @@ KxXMLNode KxXMLNode::QueryElement(const wxString& XPath) const
 }
 KxXMLNode KxXMLNode::QueryOrCreateElement(const wxString& XPath)
 {
-	if (!IsOK())
+	if (!m_Document)
 	{
 		return {};
 	}
@@ -640,7 +640,7 @@ bool KxXMLNode::ClearAttributes()
 	return false;
 }
 
-/* Navigation */
+// Navigation
 KxXMLNode KxXMLNode::GetElementByAttribute(const wxString& name, const wxString& value) const
 {
 	if (auto node = GetNode())
@@ -847,7 +847,7 @@ bool KxXMLNode::Insert(KxXMLNode& node, KxXMLInsertNodeMode insertMode)
 	return false;
 }
 
-/* Insertion */
+// Insertion
 KxXMLNode KxXMLNode::NewElement(const wxString& name, KxXMLInsertNodeMode insertMode)
 {
 	if (m_Document)
