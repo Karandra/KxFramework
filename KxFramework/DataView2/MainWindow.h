@@ -351,7 +351,7 @@ namespace KxDataView2
 			}
 			bool IsMultipleSelection() const
 			{
-				return m_View->IsOptionEnabled(CtrlStyle::MultipleSelection);
+				return m_View->IsStyleEnabled(CtrlStyle::MultipleSelection);
 			}
 			bool IsEmpty()
 			{

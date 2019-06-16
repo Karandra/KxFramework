@@ -35,6 +35,7 @@ namespace KxDataView2
 		using ToolTip = KxDataView2::ToolTip;
 
 		using CtrlStyle = KxDataView2::CtrlStyle;
+		using CtrlExtraStyle = KxDataView2::CtrlExtraStyle;
 		using ColumnStyle = KxDataView2::ColumnStyle;
 		using DNDOpType = KxDataView2::DNDOpType;
 		using ColumnWidth = KxDataView2::ColumnWidth;

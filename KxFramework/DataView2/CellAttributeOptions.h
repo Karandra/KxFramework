@@ -65,7 +65,7 @@ namespace KxDataView2::CellAttributeOptions
 		public:
 			bool IsDefault() const
 			{
-				return !NeedDCAlteration() && !HasAlignment();
+				return !HasColors() && !HasAlignment() && GetValue() == Enums::Option::Default;
 			}
 
 			// Colors

@@ -1,6 +1,6 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxWithOptions.h"
+#include "KxFramework/KxOptionSet.h"
 #include "Common.h"
 #include "Row.h"
 #include "Node.h"
@@ -37,7 +37,8 @@ namespace KxDataView2
 			using ViewBase = wxSystemThemedControl<wxScrolled<wxWindow>>;
 
 		private:
-			KxWithOptions<CtrlStyle, CtrlStyle::Default> m_Styles;
+			KxOptionSet<CtrlStyle, CtrlStyle::Default> m_Styles;
+			KxOptionSet<CtrlExtraStyle, CtrlExtraStyle::None> m_ExtraStyles;
 
 			HeaderCtrl* m_HeaderArea = nullptr;
 			MainWindow* m_ClientArea = nullptr;
@@ -160,19 +161,22 @@ namespace KxDataView2
 
 		public:
 			// Styles
-			bool IsOptionEnabled(CtrlStyle option) const
+			bool IsStyleEnabled(CtrlStyle style) const
 			{
-				return m_Styles.IsOptionEnabled(option);
+				return m_Styles.IsEnabled(style);
 			}
-			void SetOptionEnabled(CtrlStyle option, bool enable = true)
+			void EnableStyle(CtrlStyle style, bool enable = true)
 			{
-				m_Styles.SetOptionEnabled(option, enable);
-				ViewBase::SetWindowStyleFlag(ViewBase::GetWindowStyleFlag()|static_cast<long>(option));
+				m_Styles.Enable(style, enable);
 			}
-			void SetWindowStyleFlag(long style) override
+			
+			bool IsExtraStyleEnabled(CtrlExtraStyle style) const
 			{
-				m_Styles.SetOptionsValue(style);
-				ViewBase::SetWindowStyleFlag(style);
+				return m_ExtraStyles.IsEnabled(style);
+			}
+			void EnableExtraStyle(CtrlExtraStyle style, bool enable = true)
+			{
+				m_ExtraStyles.Enable(style, enable);
 			}
 
 			// Model

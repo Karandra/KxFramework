@@ -92,6 +92,61 @@ namespace
 		}
 		return false;
 	}
+
+	void DrawPlusMinusExpander(wxWindow* window, wxDC& dc, const wxRect& canvasRect, int flags)
+	{
+		const bool isActive = flags & wxCONTROL_CURRENT;
+		const bool isExpanded = flags & wxCONTROL_EXPANDED;
+
+		wxRect rect(canvasRect.GetPosition(), canvasRect.GetSize() / 2);
+		if (rect.width % 2 == 0)
+		{
+			rect.x++;
+			rect.width--;
+		}
+		if (rect.height % 2 == 0)
+		{
+			rect.y++;
+			rect.height--;
+		}
+		rect.x += rect.width / 2;
+		rect.y += rect.height / 2;
+
+		// Draw inner rectangle
+		dc.SetBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
+		dc.DrawRectangle(rect);
+
+		// Draw border
+		dc.SetBrush(*wxTRANSPARENT_BRUSH);
+		dc.SetPen(wxSystemSettings::GetColour(isActive ? wxSYS_COLOUR_HOTLIGHT : wxSYS_COLOUR_MENUHILIGHT));
+		dc.DrawRectangle(rect);
+
+		// Draw plus/minus
+		dc.SetPen(wxPen(wxSystemSettings::GetColour(wxSYS_COLOUR_HOTLIGHT), window->FromDIP(1), wxPENSTYLE_SOLID));
+
+		const int width = std::min(rect.GetWidth(), rect.GetHeight());
+		const int length = width * 0.5;
+
+		int baseX = width * 0.2 + 1;
+		int baseY = width / 2;
+		auto GetXY = [&]()
+		{
+			return wxPoint(rect.x + baseX, rect.y + baseY);
+		};
+
+		// Draw horizontal line
+		wxPoint pos = GetXY();
+		dc.DrawLine(pos, {pos.x + length, pos.y});
+		if (isExpanded)
+		{
+			return;
+		}
+
+		// Draw vertical line
+		std::swap(baseX, baseY);
+		pos = GetXY();
+		dc.DrawLine(pos, {pos.x, pos.y + length});
+	}
 }
 
 namespace KxDataView2
@@ -807,7 +862,7 @@ namespace KxDataView2
 					SelectRow(m_RowSelectSingleOnUp, true);
 					SendSelectionChangedEvent(GetNodeByRow(m_RowSelectSingleOnUp), currentColumn);
 				}
-				else if (m_View->IsOptionEnabled(CtrlStyle::CellFocus))
+				else if (m_View->IsStyleEnabled(CtrlStyle::CellFocus))
 				{
 					RefreshRow(currentRow);
 				}
@@ -939,7 +994,7 @@ namespace KxDataView2
 			{
 				RefreshRow(oldCurrentRow);
 			}
-			if (oldCurrentCol != currentColumn && m_View->IsOptionEnabled(CtrlStyle::CellFocus))
+			if (oldCurrentCol != currentColumn && m_View->IsStyleEnabled(CtrlStyle::CellFocus))
 			{
 				RefreshRow(currentRow);
 			}
@@ -1212,7 +1267,7 @@ namespace KxDataView2
 		}
 
 		// Draw background of alternate rows specially if required
-		if (m_View->IsOptionEnabled(CtrlStyle::AlternatingRowColors))
+		if (m_View->IsStyleEnabled(CtrlStyle::AlternatingRowColors))
 		{
 			KxColor altRowColor = m_View->m_AlternateRowColor;
 			if (!altRowColor.IsOk())
@@ -1245,8 +1300,8 @@ namespace KxDataView2
 			}
 		}
 
-		const bool verticalRulesEnabled = m_View->IsOptionEnabled(CtrlStyle::VerticalRules);
-		const bool horizontalRulesEnabled = m_View->IsOptionEnabled(CtrlStyle::HorizontalRules);
+		const bool verticalRulesEnabled = m_View->IsStyleEnabled(CtrlStyle::VerticalRules);
+		const bool horizontalRulesEnabled = m_View->IsStyleEnabled(CtrlStyle::HorizontalRules);
 
 		// Redraw all cells for all rows which must be repainted and all columns
 		const Column* const expanderColumn = m_View->GetExpanderColumnOrFirstOne();
@@ -1454,6 +1509,10 @@ namespace KxDataView2
 					{
 						wxRendererNative::Get().DrawCollapseButton(this, paintDC, expanderRect, flags);
 					}
+					else if (m_View->IsExtraStyleEnabled(CtrlExtraStyle::PlusMinusExpander))
+					{
+						DrawPlusMinusExpander(this, dc, expanderRect, flags);
+					}
 					else
 					{
 						const int partID = flags & wxCONTROL_CURRENT ? TVP_HOTGLYPH : TVP_GLYPH;
@@ -1466,7 +1525,7 @@ namespace KxDataView2
 				}
 
 				// Draw cell focus
-				if (m_HasFocus && m_View->IsOptionEnabled(CtrlStyle::CellFocus) && !focusCellRect.IsEmpty() && currentRow == m_CurrentRow && cellState.IsSelected())
+				if (m_HasFocus && m_View->IsStyleEnabled(CtrlStyle::CellFocus) && !focusCellRect.IsEmpty() && currentRow == m_CurrentRow && cellState.IsSelected())
 				{
 					// Focus rect looks ugly in it's narrower 3 px
 					if (focusCellRect.GetWidth() > 3)
@@ -1687,7 +1746,7 @@ namespace KxDataView2
 	}
 	void MainWindow::FitLastColumn()
 	{
-		if (!m_View->IsOptionEnabled(CtrlStyle::FitLastColumn))
+		if (!m_View->IsStyleEnabled(CtrlStyle::FitLastColumn))
 		{
 			return;
 		}
@@ -2093,7 +2152,7 @@ namespace KxDataView2
 	}
 	int MainWindow::GetRowStart(Row row) const
 	{
-		if (m_View->IsOptionEnabled(CtrlStyle::VariableRowHeight))
+		if (m_View->IsStyleEnabled(CtrlStyle::VariableRowHeight))
 		{
 			size_t columnCount = m_View->GetColumnCount();
 			int start = 0;
@@ -2126,7 +2185,7 @@ namespace KxDataView2
 	}
 	int MainWindow::GetRowHeight(Row row) const
 	{
-		if (m_View->IsOptionEnabled(CtrlStyle::VariableRowHeight))
+		if (m_View->IsStyleEnabled(CtrlStyle::VariableRowHeight))
 		{
 			const Node* node = GetNodeByRow(row);
 			if (node)
@@ -2172,7 +2231,7 @@ namespace KxDataView2
 	}
 	Row MainWindow::GetRowAt(int yCoord) const
 	{
-		if (m_View->IsOptionEnabled(CtrlStyle::VariableRowHeight))
+		if (m_View->IsStyleEnabled(CtrlStyle::VariableRowHeight))
 		{
 			Row row = 0;
 			int yPos = 0;

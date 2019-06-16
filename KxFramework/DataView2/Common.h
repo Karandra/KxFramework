@@ -27,6 +27,20 @@ namespace KxDataView2
 		return (uint32_t)left & (uint32_t)right;
 	}
 
+	enum class CtrlExtraStyle: uint32_t
+	{
+		None = 0,
+		PlusMinusExpander = 1 << 0,
+	};
+	constexpr inline CtrlExtraStyle operator|(CtrlExtraStyle left, CtrlExtraStyle right)
+	{
+		return static_cast<CtrlExtraStyle>((uint32_t)left | (uint32_t)right);
+	}
+	constexpr inline uint32_t operator&(CtrlExtraStyle left, CtrlExtraStyle right)
+	{
+		return (uint32_t)left & (uint32_t)right;
+	}
+
 	enum class ColumnStyle: uint32_t
 	{
 		None = 0,
