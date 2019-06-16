@@ -8,6 +8,9 @@ namespace KxDataView2
 	class KX_API MainWindow;
 	class KX_API HeaderCtrl;
 	class KX_API Event;
+	class KX_API EventDND;
+	class KX_API EventEditor;
+	class KX_API ToolTip;
 
 	class KX_API DropSource;
 	class KX_API DropTarget;
@@ -20,7 +23,6 @@ namespace KxDataView2
 	class KX_API Column;
 	class KX_API NativeColumn;
 	class KX_API Node;
-	class KX_API INodeModel;
 	
 	class KX_API Model;
 	class KX_API ListModel;
