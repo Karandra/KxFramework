@@ -158,6 +158,6 @@ class KX_API KxCURLSession: public wxEvtHandler
 		}
 
 	public:
-		KxCURLSession& operator=(KxCURLSession&) = delete;
+		KxCURLSession& operator=(const KxCURLSession&) = delete;
 		KxCURLSession& operator=(KxCURLSession&& other);
 };
