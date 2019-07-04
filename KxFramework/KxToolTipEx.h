@@ -71,6 +71,12 @@ class KX_API KxToolTipEx: public wxNativeWindow, public KxWithOptions<KxToolTipE
 		KxIconType GetIconID() const;
 		wxIcon GetIcon() const;
 		void SetIcon(const wxIcon& icon);
+		void SetIcon(const wxBitmap& bitmap)
+		{
+			wxIcon icon;
+			icon.CopyFromBitmap(bitmap);
+			SetIcon(icon);
+		}
 		void SetIcon(KxIconType iconID);
 
 		int GetMaxWidth() const
