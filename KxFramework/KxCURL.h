@@ -157,6 +157,9 @@ class KX_API KxCURLSession: public wxEvtHandler
 			m_UserAgent = userAgent;
 		}
 
+		void SetTimeout(const wxTimeSpan& timeout);
+		void SetConnectionTimeout(const wxTimeSpan& timeout);
+
 	public:
 		KxCURLSession& operator=(const KxCURLSession&) = delete;
 		KxCURLSession& operator=(KxCURLSession&& other);

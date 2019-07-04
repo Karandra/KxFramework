@@ -373,6 +373,15 @@ void KxCURLSession::AddHeader(const wxString& value)
 	m_Headers.push_back(value.ToStdString());
 }
 
+void KxCURLSession::SetTimeout(const wxTimeSpan& timeout)
+{
+	SetOption(CURLOPT_TIMEOUT_MS, timeout.GetMilliseconds().GetValue());
+}
+void KxCURLSession::SetConnectionTimeout(const wxTimeSpan& timeout)
+{
+	SetOption(CURLOPT_CONNECTTIMEOUT_MS, timeout.GetMilliseconds().GetValue());
+}
+
 KxCURLSession& KxCURLSession::operator=(KxCURLSession&& other)
 {
 	if (this != &other)
