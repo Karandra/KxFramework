@@ -7,7 +7,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KX_API KxCOMInit
+class KX_API KxCOMInit final
 {
 	private:
 		static HRESULT GetInvalidHRESULT()
@@ -59,7 +59,7 @@ class KX_API KxCOMInit
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KX_API KxOLEInit
+class KX_API KxOLEInit final
 {
 	private:
 		static HRESULT GetInvalidHRESULT()
@@ -111,7 +111,7 @@ class KX_API KxOLEInit
 };
 
 //////////////////////////////////////////////////////////////////////////
-template<class T> class KxCOMPtr
+template<class T> class KxCOMPtr final
 {
 	private:
 		T* m_Ptr = nullptr;
@@ -122,13 +122,13 @@ template<class T> class KxCOMPtr
 		{
 			static_assert(std::is_base_of<IUnknown, T>::value, "class T is not derived from IUnknown");
 		}
+		KxCOMPtr(KxCOMPtr&& other)
+		{
+			*this = std::move(other);
+		}
 		~KxCOMPtr()
 		{
-			if (m_Ptr)
-			{
-				m_Ptr->Release();
-				m_Ptr = nullptr;
-			}
+			Reset();
 		}
 
 	public:
@@ -156,16 +156,30 @@ template<class T> class KxCOMPtr
 			return reinterpret_cast<void**>(const_cast<T**>(&m_Ptr));
 		}
 		
-		operator T*()
+		operator const T*() const
 		{
 			return m_Ptr;
 		}
+		operator T* ()
+		{
+			return m_Ptr;
+		}
+
+		const T& operator*() const
+		{
+			return *m_Ptr;
+		}
+		T& operator*()
+		{
+			return *m_Ptr;
+		}
+
 		T** operator&()
 		{
 			return &m_Ptr;
 		}
 
-		operator bool() const
+		explicit operator bool() const
 		{
 			return m_Ptr != nullptr;
 		}
@@ -184,6 +198,11 @@ template<class T> class KxCOMPtr
 		}
 
 		KxCOMPtr& operator=(const KxCOMPtr&) = delete;
+		KxCOMPtr& operator=(KxCOMPtr&& other)
+		{
+			Reset(other.Detach());
+			return *this;
+		}
 		KxCOMPtr& operator=(T* ptr)
 		{
 			Reset(ptr);
