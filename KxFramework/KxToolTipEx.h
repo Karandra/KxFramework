@@ -20,12 +20,13 @@ class KX_API KxToolTipEx: public wxNativeWindow, public KxWithOptions<KxToolTipE
 		std::variant<wxIcon, KxIconType> m_Icon = KxIconType::KxICON_NONE;
 		wxIcon m_QuestionIcon;
 		int m_MaxWidth = -1;
+		bool m_IsBalloonStyleSupported = false;
 
 	private:
-		bool IsBalloonStyleSupported() const;
 		bool CreateWindow(wxWindow* parent);
 		bool CreateToolTip();
 		void UpdateCaption();
+		void UpdateStyle();
 		int ConvertIconID(KxIconType icon) const;
 		void DoRedraw();
 

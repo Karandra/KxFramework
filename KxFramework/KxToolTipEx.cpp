@@ -5,6 +5,15 @@
 
 namespace
 {
+	bool IsBalloonStyleSupported()
+	{
+		wxAny value = KxRegistry::GetValue(KxREG_HKEY_CURRENT_USER,
+										   wxS("Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced"),
+										   wxS("EnableBalloonTips"),
+										   KxREG_VALUE_DWORD
+		);
+		return value.IsNull() || value.As<DWORD>() != 0;
+	}
 	TTTOOLINFOW MakeToolInfo(const KxToolTipEx& tooltip, const wxString& message)
 	{
 		TTTOOLINFOW info = {};
@@ -17,41 +26,25 @@ namespace
 	}
 }
 
-bool KxToolTipEx::IsBalloonStyleSupported() const
-{
-	wxAny value = KxRegistry::GetValue(KxREG_HKEY_CURRENT_USER,
-									   wxS("Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced"),
-									   wxS("EnableBalloonTips"),
-									   KxREG_VALUE_DWORD
-	);
-	return value.IsNull() || value.As<DWORD>() != 0;
-}
 bool KxToolTipEx::CreateWindow(wxWindow* parent)
 {
+	m_IsBalloonStyleSupported = IsBalloonStyleSupported();
+
 	if (parent)
 	{
-		uint32_t style = WS_POPUP|WS_VISIBLE|TTS_ALWAYSTIP|TTS_NOPREFIX;
-		if (IsOptionEnabled(KxToolTipExOption::Ballon) && IsBalloonStyleSupported())
-		{
-			style |= TTS_BALLOON;
-		}
-		if (IsOptionEnabled(KxToolTipExOption::CloseButton))
-		{
-			style |= TTS_CLOSE;
-		}
-
-		HWND handle = CreateWindowExW(WS_EX_TOOLWINDOW,
-									  TOOLTIPS_CLASS,
-									  nullptr,
-									  style,
-									  CW_USEDEFAULT,
-									  CW_USEDEFAULT,
-									  CW_USEDEFAULT,
-									  CW_USEDEFAULT,
-									  parent->GetHandle(),
-									  nullptr,
-									  nullptr,
-									  nullptr);
+		HWND handle = ::CreateWindowExW(WS_EX_TOOLWINDOW,
+										TOOLTIPS_CLASS,
+										nullptr,
+										WS_POPUP|WS_VISIBLE,
+										CW_USEDEFAULT,
+										CW_USEDEFAULT,
+										CW_USEDEFAULT,
+										CW_USEDEFAULT,
+										parent->GetHandle(),
+										nullptr,
+										nullptr,
+										nullptr
+		);
 		
 		wxNativeWindow::Disown();
 		return wxNativeWindow::Create(parent, wxID_NONE, handle);
@@ -65,6 +58,8 @@ bool KxToolTipEx::CreateToolTip()
 		HWND hwnd = GetHandle();
 
 		// Set basic info
+		UpdateStyle();
+
 		TTTOOLINFOW info = MakeToolInfo(*this, m_Message);
 		::SendMessageW(hwnd, TTM_DELTOOL, 0, reinterpret_cast<LPARAM>(&info));
 		::SendMessageW(hwnd, TTM_ADDTOOL, 0, reinterpret_cast<LPARAM>(&info));
@@ -128,6 +123,20 @@ void KxToolTipEx::UpdateCaption()
 		// Set just the text caption, without icon
 		::SendMessageW(hwnd, TTM_SETTITLE, 0, reinterpret_cast<LPARAM>(m_Caption.wc_str()));
 	}
+}
+void KxToolTipEx::UpdateStyle()
+{
+	uint32_t style = WS_POPUP|WS_VISIBLE|TTS_ALWAYSTIP|TTS_NOPREFIX;
+	if (IsOptionEnabled(KxToolTipExOption::Ballon) && m_IsBalloonStyleSupported)
+	{
+		style |= TTS_BALLOON;
+	}
+	if (IsOptionEnabled(KxToolTipExOption::CloseButton))
+	{
+		style |= TTS_CLOSE;
+	}
+
+	::SetWindowLongPtrW(GetHandle(), GWL_STYLE, style);
 }
 int KxToolTipEx::ConvertIconID(KxIconType icon) const
 {
