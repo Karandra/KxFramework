@@ -93,10 +93,6 @@ namespace KxDataView2
 			{
 				return m_Attributes;
 			}
-			RenderEngine GetRenderEngine() const
-			{
-				return RenderEngine(const_cast<Renderer&>(*this), m_AlwaysUseGC);
-			}
 
 			virtual bool HasActivator() const
 			{
@@ -141,6 +137,11 @@ namespace KxDataView2
 			wxGraphicsContext& GetGraphicsContext() const
 			{
 				return *m_GraphicsDC->GetGraphicsContext();
+			}
+
+			RenderEngine GetRenderEngine() const
+			{
+				return RenderEngine(const_cast<Renderer&>(*this), m_AlwaysUseGC);
 			}
 
 		public:
