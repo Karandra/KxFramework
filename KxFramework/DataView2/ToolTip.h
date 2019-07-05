@@ -12,7 +12,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API ToolTip
+	class KX_API ToolTip final
 	{
 		friend class MainWindow;
 
@@ -28,12 +28,15 @@ namespace KxDataView2
 			wxString m_Caption;
 			wxString m_Message;
 			std::variant<wxBitmap, KxIconType> m_Icon;
+			const Column* m_AnchorColumn = nullptr;
 			bool m_AutoHide = true;
 			bool m_DisplayOnlyIfClipped = false;
 
 		private:
-			bool Show(const Node& node, const Column& column);
+			const Column& SelectAnchorColumn(const Column& currentColumn) const;
 			wxString ProcessText(const Node& node, const Column& column, const wxString& text) const;
+
+			bool Show(const Node& node, const Column& column);
 
 		public:
 			ToolTip() = default;
@@ -98,6 +101,15 @@ namespace KxDataView2
 			void SetIcon(const wxIcon& icon)
 			{
 				m_Icon = icon;
+			}
+
+			void SetAnchorColumn(const Column* column = nullptr)
+			{
+				m_AnchorColumn = column;
+			}
+			const Column* GetAnchorColumn() const
+			{
+				return m_AnchorColumn;
 			}
 
 			bool ShouldAutoHide() const

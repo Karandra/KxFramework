@@ -8,6 +8,24 @@
 
 namespace KxDataView2
 {
+	const Column& ToolTip::SelectAnchorColumn(const Column& currentColumn) const
+	{
+		if (m_AnchorColumn && m_AnchorColumn->IsVisible())
+		{
+			return *m_AnchorColumn;
+		}
+		return currentColumn;
+	}
+	wxString ToolTip::ProcessText(const Node& node, const Column& column, const wxString& text) const
+	{
+		const Renderer& renderer = node.GetRenderer(column);
+		if (renderer.IsMarkupEnabled())
+		{
+			return renderer.GetRenderEngine().StripMarkup(text);
+		}
+		return text;
+	}
+
 	bool ToolTip::Show(const Node& node, const Column& column)
 	{
 		if (MainWindow* mainWindow = node.GetMainWindow())
@@ -27,7 +45,7 @@ namespace KxDataView2
 					tooltip.SetIcon(GetIconID());
 				}
 
-				const wxRect rect = mainWindow->GetItemRect(node, &column);
+				const wxRect rect = mainWindow->GetItemRect(node, &SelectAnchorColumn(column));
 				tooltip.Popup(rect.GetPosition() + wxPoint(0 , rect.GetHeight() + 1));
 				return true;
 			}
@@ -38,15 +56,6 @@ namespace KxDataView2
 			}
 		}
 		return false;
-	}
-	wxString ToolTip::ProcessText(const Node& node, const Column& column, const wxString& text) const
-	{
-		const Renderer& renderer = node.GetRenderer(column);
-		if (renderer.IsMarkupEnabled())
-		{
-			return renderer.GetRenderEngine().StripMarkup(text);
-		}
-		return text;
 	}
 
 	bool ToolTip::IsOK() const
