@@ -37,21 +37,45 @@ namespace KxDataView2
 	}
 	wxSize ProgressRenderer::GetCellSize() const
 	{
-		// Return 'wxDefaultCoord' because a progress bar fits any width. Unlike most renderers,
-		// it doesn't have a "good" width for the content. This makes it grow to the whole column,
-		// which is pretty much always the desired.
+		// Return 'wxDefaultCoord' for width because a progress bar fits any width 
+		// unless it has a text string). Unlike most renderers, it doesn't have a "good" width
+		// for the content. This makes it grow/ to the whole column, which is pretty much always
+		// the desired. Unless it has a text string.
 
+		wxSize size;
+		if (m_Value.HasText())
+		{
+			size += GetRenderEngine().GetTextExtent(m_Value.GetText());
+		}
+
+		wxSize barSize;
 		switch (m_Height)
 		{
 			case ProgressHeight::Auto:
 			{
-				return wxSize(wxDefaultCoord, std::max(GetView()->GetDefaultRowHeight(UniformHeight::Default), GetView()->GetCharHeight() + 2));
+				barSize = wxSize(wxDefaultCoord, std::max(GetView()->GetDefaultRowHeight(UniformHeight::Default), GetView()->GetCharHeight() + 2));
+				break;
 			}
 			case ProgressHeight::Fit:
 			{
-				return wxSize(wxDefaultCoord, GetView()->GetUniformRowHeight() - GetView()->FromDIP(4));
+				barSize = wxSize(wxDefaultCoord, GetView()->GetUniformRowHeight() - GetView()->FromDIP(4));
+				break;
+			}
+			default:
+			{
+				barSize = wxSize(wxDefaultCoord, static_cast<int>(m_Height));
+				break;
 			}
 		};
-		return wxSize(0, static_cast<int>(m_Height));
+
+		if (size != wxSize())
+		{
+			size.IncTo(barSize);
+			return size;
+		}
+		else
+		{
+			return barSize;
+		}
 	}
 }
