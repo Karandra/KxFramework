@@ -8,8 +8,8 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxXDocumentNode.h"
 
-enum KxHTML_NodeType;
-enum KxHTML_TagType;
+enum KxHTML_NodeType: int;
+enum KxHTML_TagType: int;
 
 class KX_API KxHTMLDocument;
 class KX_API KxHTMLNode: public KxXDocumentNode<KxHTMLNode>
@@ -148,7 +148,7 @@ class KX_API KxHTMLDocument: public KxHTMLNode
 		wxString Save() const;
 };
 
-enum KxHTML_NodeType
+enum KxHTML_NodeType: int
 {
 	KxHTML_NODE_INVALID = -1,
 
@@ -160,7 +160,7 @@ enum KxHTML_NodeType
 	KxHTML_NODE_TEMPLATE = 5, // GumboNodeType::GUMBO_NODE_TEMPLATE,
 	KxHTML_NODE_WHITESPACE = 6, // GumboNodeType::GUMBO_NODE_WHITESPACE,
 };
-enum KxHTML_TagType
+enum KxHTML_TagType: int
 {
 	KxHTML_TAG_HTML,
 	KxHTML_TAG_HEAD,
