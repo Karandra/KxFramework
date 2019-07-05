@@ -34,7 +34,7 @@ namespace KxDataView2
 	{
 		RenderEngine renderEngine = GetRenderEngine();
 
-		wxSize size(0, 0);
+		wxSize size;
 		if (m_Value.HasText())
 		{
 			size += renderEngine.GetTextExtent(m_Value.GetText());
