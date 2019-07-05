@@ -112,3 +112,27 @@ class KxGCStartDocument final
 			return m_Result;
 		}
 };
+
+class KxGCClipper final
+{
+	private:
+		wxGraphicsContext& m_GC;
+
+	public:
+		KxGCClipper(wxGraphicsContext& gc, const wxRect& rect)
+			:m_GC(gc)
+		{
+			m_GC.PushState();
+			m_GC.Clip(rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
+		}
+		KxGCClipper(wxGraphicsContext& gc, const wxRegion& region)
+			:m_GC(gc)
+		{
+			m_GC.PushState();
+			m_GC.Clip(region);
+		}
+		~KxGCClipper()
+		{
+			m_GC.PopState();
+		}
+};
