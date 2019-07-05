@@ -15,26 +15,43 @@ namespace KxDataView2
 			if (!m_Caption.IsEmpty())
 			{
 				KxToolTipEx& tooltip = mainWindow->m_ToolTip;
-				tooltip.SetCaption(m_Caption);
-				tooltip.SetMessage(m_Message);
-				tooltip.SetIcon(m_Icon);
+				tooltip.SetCaption(ProcessText(node, column, m_Caption));
+				tooltip.SetMessage(ProcessText(node, column, m_Message));
 
-				wxRect rect = mainWindow->GetItemRect(node, &column);
+				if (auto icon = GetIconBitmap(); icon.IsOk())
+				{
+					tooltip.SetIcon(icon);
+				}
+				else
+				{
+					tooltip.SetIcon(GetIconID());
+				}
+
+				const wxRect rect = mainWindow->GetItemRect(node, &column);
 				tooltip.Popup(rect.GetPosition() + wxPoint(0 , rect.GetHeight() + 1));
 				return true;
 			}
 			else
 			{
-				mainWindow->SetToolTip(m_Message);
+				mainWindow->SetToolTip(ProcessText(node, column, m_Message));
 				return mainWindow->GetToolTip() != nullptr;
 			}
 		}
 		return false;
 	}
+	wxString ToolTip::ProcessText(const Node& node, const Column& column, const wxString& text) const
+	{
+		const Renderer& renderer = node.GetRenderer(column);
+		if (renderer.IsMarkupEnabled())
+		{
+			return renderer.GetRenderEngine().StripMarkup(text);
+		}
+		return text;
+	}
 
 	bool ToolTip::IsOK() const
 	{
-		if (m_Icon != KxICON_NONE)
+		if (GetIconID() != KxICON_NONE || GetIconBitmap().IsOk())
 		{
 			return !m_Caption.IsEmpty() && !m_Message.IsEmpty();
 		}

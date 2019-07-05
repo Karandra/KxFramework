@@ -27,12 +27,13 @@ namespace KxDataView2
 		private:
 			wxString m_Caption;
 			wxString m_Message;
-			KxIconType m_Icon = KxICON_NONE;
+			std::variant<wxBitmap, KxIconType> m_Icon;
 			bool m_AutoHide = true;
 			bool m_DisplayOnlyIfClipped = false;
 
 		private:
 			bool Show(const Node& node, const Column& column);
+			wxString ProcessText(const Node& node, const Column& column, const wxString& text) const;
 
 		public:
 			ToolTip() = default;
@@ -42,6 +43,10 @@ namespace KxDataView2
 			}
 			ToolTip(const wxString& caption, const wxString& message, KxIconType icon = KxICON_NONE)
 				:m_Caption(caption), m_Message(message), m_Icon(icon)
+			{
+			}
+			ToolTip(const wxString& caption, const wxString& message, const wxBitmap& bitmap)
+				:m_Caption(caption), m_Message(message), m_Icon(bitmap)
 			{
 			}
 
@@ -66,11 +71,31 @@ namespace KxDataView2
 				m_Message = value;
 			}
 
-			KxIconType GetIcon() const
+			KxIconType GetIconID() const
 			{
-				return m_Icon;
+				if (const auto& value = std::get_if<KxIconType>(&m_Icon))
+				{
+					return *value;
+				}
+				return KxICON_NONE;
+			}
+			wxBitmap GetIconBitmap() const
+			{
+				if (const auto& value = std::get_if<wxBitmap>(&m_Icon))
+				{
+					return *value;
+				}
+				return wxNullBitmap;
 			}
 			void SetIcon(KxIconType icon)
+			{
+				m_Icon = icon;
+			}
+			void SetIcon(const wxBitmap& icon)
+			{
+				m_Icon = icon;
+			}
+			void SetIcon(const wxIcon& icon)
 			{
 				m_Icon = icon;
 			}
