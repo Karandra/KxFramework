@@ -8,7 +8,7 @@ namespace KxDataView2
 	bool BitmapTextRenderer::SetValue(const wxAny& value)
 	{
 		m_Value = BitmapTextValue();
-		if (value.GetAs<BitmapTextValue>(&m_Value))
+		if (value.GetAs(&m_Value))
 		{
 			return true;
 		}
