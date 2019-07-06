@@ -79,6 +79,7 @@ namespace KxDataView2
 
 			size_t FindFirstLineBreak(const wxString& string) const;
 			int GetControlFlags(CellState cellState) const;
+			wxString StripMarkup(const wxString& markup) const;
 
 			wxSize GetTextExtent(const wxString& string) const;
 			wxSize GetTextExtent(wxDC& dc, const wxString& string) const;

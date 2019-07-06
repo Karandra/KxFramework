@@ -5,14 +5,51 @@
 #include "View.h"
 #include "MainWindow.h"
 #include "KxFramework/KxUxTheme.h"
+#include "KxFramework/KxGCUtility.h"
 #include "wx/generic/private/markuptext.h"
 
 namespace
 {
-	bool operator>(const wxSize& v1, const wxSize& v2)
+	bool operator<(const wxSize& left, const wxSize& right)
 	{
-		return v1.GetWidth() > v2.GetWidth() || v1.GetHeight() > v2.GetHeight();
+		return left.GetWidth() < right.GetWidth() || left.GetHeight() < right.GetHeight();
 	}
+	bool operator>(const wxSize& left, const wxSize& right)
+	{
+		return left.GetWidth() > right.GetWidth() || left.GetHeight() > right.GetHeight();
+	}
+}
+
+namespace KxDataView2::Markup
+{
+	class TextOnly: public wxItemMarkupText
+	{
+		public:
+			TextOnly(const wxString& markup)
+				:wxItemMarkupText(markup)
+			{
+			}
+
+		public:
+			wxSize GetTextExtent(wxDC& dc) const
+			{
+				return Measure(dc);
+			}
+	};
+	class WithMnemonics: public wxMarkupText
+	{
+		public:
+			WithMnemonics(const wxString& markup)
+				:wxMarkupText(markup)
+			{
+			}
+
+		public:
+			wxSize GetTextExtent(wxDC& dc) const
+			{
+				return Measure(dc);
+			}
+	};
 }
 
 namespace KxDataView2::Markup
@@ -22,11 +59,11 @@ namespace KxDataView2::Markup
 	{
 		if constexpr(t_Mode == MarkupMode::TextOnly)
 		{
-			return wxItemMarkupText(string);
+			return TextOnly(string);
 		}
 		else if constexpr(t_Mode == MarkupMode::WithMnemonics)
 		{
-			return wxMarkupText(string);
+			return WithMnemonics(string);
 		}
 	}
 
@@ -40,11 +77,11 @@ namespace KxDataView2::Markup
 		{
 			case MarkupMode::TextOnly:
 			{
-				return GetTextExtent(Create<MarkupMode::TextOnly>(string), dc);
+				return Create<MarkupMode::TextOnly>(string).GetTextExtent(dc);
 			}
 			case MarkupMode::WithMnemonics:
 			{
-				return GetTextExtent(Create<MarkupMode::WithMnemonics>(string), dc);
+				return Create<MarkupMode::WithMnemonics>(string).GetTextExtent(dc);
 			}
 		};
 		return wxSize(0, 0);
@@ -52,7 +89,7 @@ namespace KxDataView2::Markup
 	
 	template<class T> void DrawText(T& markup, wxWindow* window, wxDC& dc, const wxRect& rect, int flags, wxEllipsizeMode ellipsizeMode)
 	{
-		if constexpr(std::is_same_v<T, wxMarkupText>)
+		if constexpr(std::is_same_v<T, WithMnemonics>)
 		{
 			markup.Render(dc, rect, flags);
 		}
@@ -99,12 +136,15 @@ namespace KxDataView2
 	
 	size_t RenderEngine::FindFirstLineBreak(const wxString& string) const
 	{
-		size_t pos = string.find(wxS('\r'));
-		if (pos == wxString::npos)
+		for (size_t i = 0; i < string.size(); i++)
 		{
-			pos = string.find(wxS('\n'));
+			const wxChar c = string[i];
+			if (c == wxS('\r') || c == wxS('\n'))
+			{
+				return i;
+			}
 		}
-		return pos;
+		return wxString::npos;
 	}
 	int RenderEngine::GetControlFlags(CellState cellState) const
 	{
@@ -125,6 +165,11 @@ namespace KxDataView2
 		}
 		
 		return flags;
+	}
+	wxString RenderEngine::StripMarkup(const wxString& markup) const
+	{
+		// Stub for now. Need proper mnemonics removal algorithm
+		return wxControl::RemoveMnemonics(markup);
 	}
 
 	wxSize RenderEngine::GetTextExtent(const wxString& string) const
@@ -147,41 +192,45 @@ namespace KxDataView2
 	}
 	wxSize RenderEngine::GetTextExtent(wxDC& dc, const wxString& string) const
 	{
-		wxSize textExtent(0, 0);
-		if (m_Renderer.m_Attributes.FontOptions().NeedDCAlteration())
-		{
-			wxFont font(m_Renderer.m_Attributes.GetEffectiveFont(dc.GetFont()));
+		const CellAttributes& attributes = m_Renderer.GetAttributes();
 
-			size_t lineBreakPos = FindFirstLineBreak(string);
-			if (lineBreakPos != wxString::npos && string.length() >= lineBreakPos)
+		if (m_Renderer.IsMarkupEnabled())
+		{
+			wxDCFontChanger fontChnager(dc);
+			if (attributes.FontOptions().NeedDCAlteration())
 			{
-				if (m_Renderer.IsMarkupEnabled())
-				{
-					textExtent = Markup::GetTextExtent(m_Renderer.m_MarkupMode, dc, string);
-				}
-				else
-				{
-					dc.GetTextExtent(string.Left(lineBreakPos), &textExtent.x, &textExtent.y, nullptr, nullptr, &font);
-				}
+				fontChnager.Set(attributes.GetEffectiveFont(dc.GetFont()));
 			}
-			else
-			{
-				if (m_Renderer.IsMarkupEnabled())
-				{
-					textExtent = Markup::GetTextExtent(m_Renderer.m_MarkupMode, dc, string);
-				}
-				else
-				{
-					dc.GetTextExtent(string, &textExtent.x, &textExtent.y, nullptr, nullptr, &font);
-				}
-			}
-			
+
+			return Markup::GetTextExtent(m_Renderer.m_MarkupMode, dc, string);
 		}
 		else
 		{
-			textExtent = dc.GetTextExtent(string);
+			auto GetEffectiveFontIfNeeded = [&dc, &attributes]()
+			{
+				if (attributes.FontOptions().NeedDCAlteration())
+				{
+					return attributes.GetEffectiveFont(dc.GetFont());
+				}
+				return wxNullFont;
+			};
+			auto MeasureString = [&dc](const wxString& text, const wxFont& font = wxNullFont)
+			{
+				wxSize extent;
+				dc.GetTextExtent(text, &extent.x, &extent.y, nullptr, nullptr, font.IsOk() ? &font : nullptr);
+				return extent;
+			};
+
+			const size_t lineBreakPos = FindFirstLineBreak(string);
+			if (lineBreakPos != wxString::npos)
+			{
+				return MeasureString(string.Left(lineBreakPos), GetEffectiveFontIfNeeded());
+			}
+			else
+			{
+				return MeasureString(string, GetEffectiveFontIfNeeded());
+			}
 		}
-		return textExtent;
 	}
 
 	bool RenderEngine::DrawText(const wxRect& cellRect, CellState cellState, const wxString& string, int offsetX)
@@ -200,37 +249,37 @@ namespace KxDataView2
 	{
 		if (!string.IsEmpty())
 		{
+			const CellAttributes& attributes = m_Renderer.GetAttributes();
+
 			wxRect textRect = cellRect;
 			textRect.x += offsetX;
 			textRect.width -= offsetX;
 
 			int flags = 0;
-			if (m_Renderer.IsMarkupWithMnemonicsEnabled() && m_Renderer.m_Attributes.Options().IsEnabled(CellOption::ShowAccelerators))
+			if (m_Renderer.IsMarkupWithMnemonicsEnabled() && attributes.Options().IsEnabled(CellOption::ShowAccelerators))
 			{
 				flags |= wxMarkupText::Render_ShowAccels;
 			}
 
-			size_t lineBreakPos = FindFirstLineBreak(string);
-			if (lineBreakPos != wxString::npos && string.length() >= lineBreakPos)
+			if (m_Renderer.IsMarkupEnabled())
 			{
-				if (m_Renderer.IsMarkupEnabled())
-				{
-					Markup::DrawText(m_Renderer.m_MarkupMode, string, m_Renderer.GetView(), dc, textRect, flags, m_Renderer.GetEllipsizeMode());
-				}
-				else
-				{
-					dc.DrawText(wxControl::Ellipsize(string.Left(lineBreakPos), dc, m_Renderer.GetEllipsizeMode(), textRect.GetWidth()), textRect.GetPosition());
-				}
+				Markup::DrawText(m_Renderer.m_MarkupMode, string, m_Renderer.GetView(), dc, textRect, flags, m_Renderer.GetEllipsizeMode());
 			}
 			else
 			{
-				if (m_Renderer.IsMarkupEnabled())
+				auto DrawString = [this, &dc, &textRect](const wxString& text)
 				{
-					Markup::DrawText(m_Renderer.m_MarkupMode, string, m_Renderer.GetView(), dc, textRect, flags, m_Renderer.GetEllipsizeMode());
+					dc.DrawText(wxControl::Ellipsize(text, dc, m_Renderer.GetEllipsizeMode(), textRect.GetWidth()), textRect.GetPosition());
+				};
+
+				const size_t lineBreakPos = FindFirstLineBreak(string);
+				if (lineBreakPos != wxString::npos)
+				{
+					DrawString(string.Left(lineBreakPos));
 				}
 				else
 				{
-					dc.DrawText(wxControl::Ellipsize(string, dc, m_Renderer.GetEllipsizeMode(), textRect.GetWidth()), textRect.GetPosition());
+					DrawString(string);
 				}
 			}
 			return true;
@@ -242,11 +291,27 @@ namespace KxDataView2
 	{
 		if (bitmap.IsOk())
 		{
-			const wxPoint pos = cellRect.GetPosition();
-			const wxSize size(bitmap.GetWidth(), cellRect.GetHeight());
-			const bool isEnabled = m_Renderer.m_Attributes.Options().IsEnabled(CellOption::Enabled);
+			wxGraphicsContext& context = m_Renderer.GetGraphicsContext();
+			const CellAttributes& attributes = m_Renderer.GetAttributes();
 
-			m_Renderer.GetGraphicsContext().DrawBitmap(isEnabled ? bitmap : bitmap.ConvertToDisabled(), pos.x, pos.y, size.GetWidth(), size.GetHeight());
+			auto DrawBitmap = [&]()
+			{
+				const wxPoint pos = cellRect.GetPosition();
+				const wxSize size = bitmap.GetSize();
+				const bool isEnabled = attributes.Options().IsEnabled(CellOption::Enabled);
+
+				context.DrawBitmap(isEnabled ? bitmap : bitmap.ConvertToDisabled(), pos.x, pos.y, size.GetWidth(), size.GetHeight());
+			};
+
+			if (bitmap.GetSize() > cellRect.GetSize())
+			{
+				KxGCClipper clip(context, cellRect);
+				DrawBitmap();
+			}
+			else
+			{
+				DrawBitmap();
+			}
 			return true;
 		}
 		else if (reservedWidth > 0)
