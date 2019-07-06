@@ -238,6 +238,7 @@ namespace KxDataView2
 			void EnsureVisible(const Column* column = nullptr);
 
 			wxRect GetCellRect(const Column* column = nullptr) const;
+			wxRect GetClientCellRect(const Column* column = nullptr) const;
 			wxPoint GetDropdownMenuPosition(const Column* column = nullptr) const;
 
 		public:

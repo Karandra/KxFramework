@@ -451,6 +451,14 @@ namespace KxDataView2
 		}
 		return {};
 	}
+	wxRect Node::GetClientCellRect(const Column* column) const
+	{
+		if (View* view = GetView())
+		{
+			return view->GetItemRect(*this, column);
+		}
+		return {};
+	}
 	wxPoint Node::GetDropdownMenuPosition(const Column* column) const
 	{
 		if (View* view = GetView())
