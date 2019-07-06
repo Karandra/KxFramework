@@ -84,6 +84,8 @@ class KX_API KxAuiToolBar: public wxAuiToolBar
 		bool RemoveTool(KxAuiToolBarItem* tool);
 		bool RemoveTool(int position);
 
+		void UpdateUI();
+
 	private:
 		wxAuiToolBarItem* AddTool(int tool_id, const wxString &label, const wxBitmap &bitmap, const wxString &short_help_string = wxEmptyString, wxItemKind kind = wxITEM_NORMAL) = delete;
 		wxAuiToolBarItem* AddTool(int tool_id, const wxString &label, const wxBitmap &bitmap, const wxBitmap &disabled_bitmap, wxItemKind kind, const wxString &short_help_string, const wxString &long_help_string, wxObject* client_data) = delete;

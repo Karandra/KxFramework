@@ -234,6 +234,15 @@ bool KxAuiToolBar::RemoveTool(int position)
 	return RemoveTool(FindToolByIndex(position));
 }
 
+void KxAuiToolBar::UpdateUI()
+{
+	wxWindowUpdateLocker lock1(GetParent());
+	wxWindowUpdateLocker lock2(this);
+
+	Realize();
+	GetParent()->Layout();
+}
+
 //////////////////////////////////////////////////////////////////////////
 void KxAuiToolBarArt::DrawPlainBackground(wxDC& dc, wxWindow* window, const wxRect& rect)
 {
