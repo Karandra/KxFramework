@@ -89,7 +89,6 @@ namespace KxDataView2
 			// Tooltip
 			KxToolTipEx m_ToolTip;
 			KxTimerMethod<MainWindow> m_ToolTipTimer;
-			int m_ToolTipDelay = 500;
 
 			// Drag and Drop
 			DnDInfo m_DragDropInfo;

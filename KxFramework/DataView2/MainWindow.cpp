@@ -680,7 +680,7 @@ namespace KxDataView2
 				RemoveTooltip();
 				if (m_HotTrackRow && m_HotTrackColumn)
 				{
-					m_ToolTipTimer.StartOnce(m_ToolTipDelay);
+					m_ToolTipTimer.StartOnce(wxSystemSettings::GetMetric(wxSYS_DCLICK_MSEC));
 				}
 			}
 		}
@@ -1623,7 +1623,7 @@ namespace KxDataView2
 				// If the column is too small to display its content
 				shouldShow = shouldShow || CompareWidth(columnRect.GetWidth());
 
-				// If column scrolled outside of visible area
+				// If the column scrolled outside of the visible area
 				shouldShow = shouldShow || CompareWidth(GetClientSize().GetWidth() - columnRect.GetX());
 			}
 
@@ -1757,17 +1757,19 @@ namespace KxDataView2
 			Column* lastColumn = m_View->GetColumnDisplayedAt(columnCount - 1);
 			if (lastColumn)
 			{
-				const int fullWinWidth = GetClientSize().GetWidth();
-				const int columnsFullWidth = GetRowWidth();
-				const int lastColumnLeft = columnsFullWidth - lastColumn->GetWidth();
+				const int clientWidth = GetClientSize().GetWidth();
+				const int virtualWidth = GetRowWidth();
+				const int lastColumnLeft = virtualWidth - lastColumn->GetWidth();
 
-				if (lastColumnLeft < fullWinWidth)
+				if (lastColumnLeft < clientWidth)
 				{
-					int desiredWidth = std::max(fullWinWidth - lastColumnLeft, lastColumn->GetMinWidth());
-					if (desiredWidth < lastColumn->CalcBestSize())
+					const bool fitToClient = m_View->IsExtraStyleEnabled(CtrlExtraStyle::FitLastColumnToClient);
+					const int desiredWidth = std::max(clientWidth - lastColumnLeft, lastColumn->GetMinWidth());
+
+					if (desiredWidth < lastColumn->CalcBestSize() && !fitToClient)
 					{
 						lastColumn->SetWidth(lastColumn->GetWidth());
-						SetVirtualSize(columnsFullWidth, m_virtualSize.y);
+						SetVirtualSize(virtualWidth, m_virtualSize.y);
 						return;
 					}
 					lastColumn->SetWidth(desiredWidth);
@@ -1777,14 +1779,14 @@ namespace KxDataView2
 					// narrower, force-set the virtual width to 0 here. It will eventually
 					// be corrected at idle time.
 					SetVirtualSize(0, m_virtualSize.y);
-					RefreshRect(wxRect(lastColumnLeft, 0, fullWinWidth - lastColumnLeft, GetSize().y));
+					RefreshRect(wxRect(lastColumnLeft, 0, clientWidth - lastColumnLeft, GetSize().y));
 				}
 				else
 				{
 					lastColumn->SetWidth(lastColumn->GetWidth());
 
 					// Don't bother, the columns won't fit anyway
-					SetVirtualSize(columnsFullWidth, m_virtualSize.y);
+					SetVirtualSize(virtualWidth, m_virtualSize.y);
 				}
 			}
 		}
@@ -2038,7 +2040,6 @@ namespace KxDataView2
 
 		// Tooltip
 		m_ToolTip.Create(this);
-		m_ToolTipDelay = ::GetDoubleClickTime();
 		m_ToolTipTimer.BindFunction(&MainWindow::OnTooltipEvent, this);
 
 		// Do update

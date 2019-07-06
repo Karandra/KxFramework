@@ -31,6 +31,7 @@ namespace KxDataView2
 	{
 		None = 0,
 		PlusMinusExpander = 1 << 0,
+		FitLastColumnToClient = 1 << 1,
 	};
 	constexpr inline CtrlExtraStyle operator|(CtrlExtraStyle left, CtrlExtraStyle right)
 	{
