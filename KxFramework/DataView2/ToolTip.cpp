@@ -5,6 +5,7 @@
 #include "View.h"
 #include "MainWindow.h"
 #include "KxFramework/KxToolTipEx.h"
+#include <wx/textwrapper.h>
 
 namespace KxDataView2
 {
@@ -16,7 +17,32 @@ namespace KxDataView2
 		}
 		return currentColumn;
 	}
-	wxString ToolTip::ProcessText(const Node& node, const Column& column, const wxString& text) const
+	wxPoint ToolTip::GetPopupPosition(const Node& node, const Column& column) const
+	{
+		const wxRect rect = node.GetClientCellRect(&SelectAnchorColumn(column));
+		return rect.GetPosition() + wxPoint(0, rect.GetHeight() + 1);
+	}
+	wxPoint ToolTip::AdjustPopupPosition(const Node& node, const wxPoint& pos) const
+	{
+		MainWindow* mainWindow = node.GetMainWindow();
+
+		wxSize screenSize = {wxSystemSettings::GetMetric(wxSYS_SCREEN_X), wxSystemSettings::GetMetric(wxSYS_SCREEN_Y)};
+		wxSize iconSize = {wxSystemSettings::GetMetric(wxSYS_ICON_X), wxSystemSettings::GetMetric(wxSYS_ICON_Y)};
+		wxSize textExtent = wxClientDC(mainWindow).GetMultiLineTextExtent(m_Message) + iconSize * 1.5;
+		wxSize offset = wxSize(wxSystemSettings::GetMetric(wxSYS_SMALLICON_X), wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y)) / 2;
+
+		wxPoint adjustedPos = mainWindow->ClientToScreen(pos);
+		if (int right = adjustedPos.x + textExtent.GetWidth(); right > screenSize.GetWidth())
+		{
+			adjustedPos.x -= (right - screenSize.GetWidth()) + offset.GetWidth();
+		}
+		if (int bottom = adjustedPos.y + textExtent.GetHeight(); bottom > screenSize.GetHeight())
+		{
+			adjustedPos.y -= (bottom - screenSize.GetHeight()) + offset.GetHeight();
+		}
+		return mainWindow->ScreenToClient(adjustedPos);
+	}
+	wxString ToolTip::StripMarkupIfNeeded(const Node& node, const Column& column, const wxString& text) const
 	{
 		const Renderer& renderer = node.GetRenderer(column);
 		if (renderer.IsMarkupEnabled())
@@ -33,8 +59,8 @@ namespace KxDataView2
 			if (!m_Caption.IsEmpty())
 			{
 				KxToolTipEx& tooltip = mainWindow->m_ToolTip;
-				tooltip.SetCaption(ProcessText(node, column, m_Caption));
-				tooltip.SetMessage(ProcessText(node, column, m_Message));
+				tooltip.SetCaption(StripMarkupIfNeeded(node, column, m_Caption));
+				tooltip.SetMessage(StripMarkupIfNeeded(node, column, m_Message));
 
 				if (auto icon = GetIconBitmap(); icon.IsOk())
 				{
@@ -45,13 +71,13 @@ namespace KxDataView2
 					tooltip.SetIcon(GetIconID());
 				}
 
-				const wxRect rect = mainWindow->GetItemRect(node, &SelectAnchorColumn(column));
-				tooltip.Popup(rect.GetPosition() + wxPoint(0 , rect.GetHeight() + 1));
+				const wxPoint pos = AdjustPopupPosition(node, GetPopupPosition(node, column));
+				tooltip.Popup(pos);
 				return true;
 			}
 			else
 			{
-				mainWindow->SetToolTip(ProcessText(node, column, m_Message));
+				mainWindow->SetToolTip(StripMarkupIfNeeded(node, column, m_Message));
 				return mainWindow->GetToolTip() != nullptr;
 			}
 		}

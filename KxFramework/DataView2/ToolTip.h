@@ -34,7 +34,9 @@ namespace KxDataView2
 
 		private:
 			const Column& SelectAnchorColumn(const Column& currentColumn) const;
-			wxString ProcessText(const Node& node, const Column& column, const wxString& text) const;
+			wxPoint GetPopupPosition(const Node& node, const Column& column) const;
+			wxPoint AdjustPopupPosition(const Node& node, const wxPoint& pos) const;
+			wxString StripMarkupIfNeeded(const Node& node, const Column& column, const wxString& text) const;
 
 			bool Show(const Node& node, const Column& column);
 
