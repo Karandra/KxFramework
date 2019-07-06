@@ -131,6 +131,11 @@ namespace KxDataView2
 	{
 	}
 
+	MainWindow* Column::GetMainWindow() const
+	{
+		return m_View ? m_View->GetMainWindow() : nullptr;
+	}
+
 	Renderer& Column::GetRenderer() const
 	{
 		if (m_Renderer)
@@ -265,6 +270,35 @@ namespace KxDataView2
 	void Column::Refresh() const
 	{
 		m_View->GetMainWindow()->RefreshColumn(*this);
+	}
+	void Column::FitInside()
+	{
+		if (MainWindow* mainWindow = GetMainWindow())
+		{
+			mainWindow->RecalculateDisplay();
+			for (auto& column: m_View->m_Columns)
+			{
+				column->CalcBestSize();
+				if (column.get() == this)
+				{
+					m_Width = m_BestWidth;
+				}
+			}
+
+			const int clientWidth = mainWindow->GetClientSize().GetWidth();
+			const int virtualWidth = mainWindow->GetRowWidth();
+			if (virtualWidth > clientWidth)
+			{
+				m_Width -= virtualWidth - clientWidth;
+			}
+			else
+			{
+				m_Width += clientWidth - virtualWidth;
+			}
+
+			SetWidth(m_Width);
+			m_View->OnColumnChange(m_Index);
+		}
 	}
 
 	bool Column::IsActivatable() const

@@ -178,7 +178,8 @@ namespace KxDataView2
 			{
 				return m_View;
 			}
-			
+			MainWindow* GetMainWindow() const;
+
 			Renderer& GetRenderer() const;
 			void AssignRenderer(Renderer* renderer);
 
@@ -370,6 +371,7 @@ namespace KxDataView2
 				m_IsVisible = value;
 			}
 			void Refresh() const;
+			void FitInside();
 
 			bool IsRenderable() const
 			{
