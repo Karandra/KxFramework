@@ -2,201 +2,162 @@
 #include "KxFramework/KxCoroutine.h"
 #include <chrono>
 
-namespace Util
+namespace
 {
-	uint64_t GetClockTime()
+	wxTimeSpan GetClockTime()
 	{
 		using namespace std::chrono;
-		return duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count();
+		return wxTimeSpan::Milliseconds(duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count());
 	}
 }
 
-class KxCoroutineCallData: public wxAsyncMethodCallEvent
+namespace Kx::Async
 {
-	private:
-		KxCoroutineBase* const m_Coroutine = nullptr;
-
-	public:
-		KxCoroutineCallData()
-			:wxAsyncMethodCallEvent(wxApp::GetInstance())
-		{
-		}
-		KxCoroutineCallData(KxCoroutineBase* coroutine)
-			:wxAsyncMethodCallEvent(wxApp::GetInstance()), m_Coroutine(coroutine)
-		{
-		}
-
-	public:
-		bool IsOK() const
-		{
-			return m_Coroutine != nullptr;
-		}
-		KxCoroutineBase* GetCoroutine() const
-		{
-			return m_Coroutine;
-		}
-
-		virtual KxCoroutineCallData* Clone() const override
-		{
-			return new KxCoroutineCallData(*this);
-		}
-		virtual void Execute() override
-		{
-			m_Coroutine->UpdateCallData(this);
-			m_Coroutine->BeforeExecute();
-			m_Coroutine->RunExecute();
-			m_Coroutine->AfterExecute();
-		}
-};
-class KxCoroutineTimer: public wxTimer
-{
-	private:
-		KxCoroutineBase* const m_Coroutine = nullptr;
-
-	public:
-		KxCoroutineTimer(KxCoroutineBase* coroutine)
-			:m_Coroutine(coroutine)
-		{
-		}
-	
-	public:
-		virtual void Notify() override
-		{
-			m_Coroutine->QueueExecution();
-		}
-		bool RunTimer(uint64_t time)
-		{
-			// Copy call data as it will be deleted after timer is started
-			m_Coroutine->CloneCallData();
-
-			// Setup next call
-			m_Coroutine->m_ExecuteAfterTimeInterval = 0;
-			m_Coroutine->m_Enumerator = KxCoroutineBase::Enumerator::Continue;
-
-			return wxTimer::StartOnce(time);
-		}
-};
-
-//////////////////////////////////////////////////////////////////////////
-void KxCoroutineBase::Run(KxCoroutineBase* coroutine)
-{
-	coroutine->UpdateCallData(new KxCoroutineCallData(coroutine));
-	coroutine->QueueExecution();
-}
-void KxCoroutineBase::Stop(KxCoroutineBase* coroutine)
-{
-	coroutine->m_ShouldStop = true;
-	wxApp::GetInstance()->ScheduleForDestruction(coroutine);
-}
-
-void KxCoroutineBase::QueueExecution()
-{
-	wxApp::GetInstance()->QueueEvent(m_CallData);
-}
-void KxCoroutineBase::DelayExecution()
-{
-	UpdateCallData(m_CallData->Clone());
-	QueueExecution();
-}
-void KxCoroutineBase::DelayExecution(uint64_t timeMS)
-{
-	if (!m_Timer)
+	void CoroutineTimer::Notify()
 	{
-		m_Timer = new KxCoroutineTimer(this);
+		KxCoroutine::QueueExecution(std::move(m_Coroutine));
 	}
-	m_Timer->RunTimer(m_ExecuteAfterTimeInterval);
-}
-
-void KxCoroutineBase::BeforeExecute()
-{
-	if (m_TimeStampStart == 0)
+	std::unique_ptr<BaseCoroutine> CoroutineTimer::Relinquish()
 	{
-		m_TimeStampStart = Util::GetClockTime();
+		wxTimer::Stop();
+
+		auto temp = std::move(m_Coroutine);
+		return temp;
 	}
-
-	m_TimeStampBefore = GetCurrentExecutionTime();
-	if (m_TimeStampAfter == 0)
+	void CoroutineTimer::Wait(std::unique_ptr<BaseCoroutine> coroutine, const wxTimeSpan& time)
 	{
-		m_TimeStampAfter = m_TimeStampBefore;
+		m_Coroutine = std::move(coroutine);
+		wxTimer::StartOnce(time.GetMilliseconds().GetValue());
 	}
 }
-void KxCoroutineBase::AfterExecute()
+
+namespace Kx::Async
 {
-	m_TimeStampAfter = GetCurrentExecutionTime();
-}
-void KxCoroutineBase::RunExecute()
-{
-	if (ShouldStop())
+	CoroutineExecutor::CoroutineExecutor(std::unique_ptr<BaseCoroutine> coroutine)
+		:wxAsyncMethodCallEvent(wxApp::GetInstance()), m_Coroutine(std::move(coroutine))
 	{
-		m_Enumerator = Enumerator::Terminate;
 	}
 
-	switch (m_Enumerator)
+	void CoroutineExecutor::Execute()
 	{
-		case Enumerator::Wait:
+		m_Coroutine->RunExecute(std::move(m_Coroutine));
+	}
+}
+
+namespace Kx::Async
+{
+	BaseCoroutine* BaseCoroutine::Run(std::unique_ptr<BaseCoroutine> coroutine)
+	{
+		if (coroutine)
 		{
-			if (ShouldExecuteAfter())
+			BaseCoroutine& ref = *coroutine;
+			QueueExecution(std::move(coroutine));
+			return &ref;
+		}
+		return nullptr;
+	}
+
+	void BaseCoroutine::QueueExecution(std::unique_ptr<BaseCoroutine> coroutine)
+	{
+		wxApp::GetInstance()->QueueEvent(new CoroutineExecutor(std::move(coroutine)));
+	}
+	void BaseCoroutine::DelayExecution(std::unique_ptr<BaseCoroutine> coroutine, const wxTimeSpan& time)
+	{
+		if (time.IsPositive())
+		{
+			BaseCoroutine& ref = *coroutine;
+			ref.m_DelayTimer.Wait(std::move(coroutine), time);
+		}
+		else
+		{
+			QueueExecution(std::move(coroutine));
+		}
+	}
+	void BaseCoroutine::AbortExecution(std::unique_ptr<BaseCoroutine> coroutine)
+	{
+		wxApp::GetInstance()->ScheduleForDestruction(coroutine.release());
+	}
+
+	void BaseCoroutine::BeforeExecute()
+	{
+		// Save starting time
+		if (m_TimeStampStart.IsNull())
+		{
+			m_TimeStampStart = GetClockTime();
+		}
+
+		// Save before-after timestamps
+		m_TimeStampBefore = GetCurrentExecutionTime();
+		if (m_TimeStampAfter.IsNull())
+		{
+			m_TimeStampAfter = m_TimeStampBefore;
+		}
+	}
+	void BaseCoroutine::AfterExecute()
+	{
+		m_TimeStampAfter = GetCurrentExecutionTime();
+	}
+	void BaseCoroutine::RunExecute(std::unique_ptr<BaseCoroutine> coroutine)
+	{
+		if (m_Instruction.GetType() == InstructionType::Terminate)
+		{
+			AbortExecution(std::move(coroutine));
+			return;
+		}
+
+		BeforeExecute();
+		m_Instruction = Execute();
+		AfterExecute();
+
+		switch (m_Instruction.GetType())
+		{
+			case InstructionType::Delay:
 			{
-				DelayExecution(m_ExecuteAfterTimeInterval);
-				return;
+				DelayExecution(std::move(coroutine), m_Instruction.GetDelay());
+				break;
 			}
+			case InstructionType::Continue:
+			{
+				QueueExecution(std::move(coroutine));
+				break;
+			}
+			default:
+			{
+				AbortExecution(std::move(coroutine));
+				break;
+			}
+		};
+	}
 
-			DelayExecution();
-			return;
-		}
-		case Enumerator::Terminate:
+	wxTimeSpan BaseCoroutine::GetCurrentExecutionTime() const
+	{
+		return GetClockTime() - m_TimeStampStart;
+	}
+
+	BaseCoroutine::BaseCoroutine()
+		:m_Instruction(InstructionType::Continue)
+	{
+	}
+	BaseCoroutine::~BaseCoroutine()
+	{
+	}
+
+	void BaseCoroutine::Terminate()
+	{
+		m_Instruction = KxCoroutine::YieldStop();
+
+		if (m_DelayTimer.IsRunning())
 		{
-			Stop(this);
-			return;
+			AbortExecution(m_DelayTimer.Relinquish());
 		}
-	};
-
-	// For Enumerator::Continue;
-	m_Enumerator = Execute();
-	DelayExecution();
-}
-
-void KxCoroutineBase::UpdateCallData(KxCoroutineCallData* callData)
-{
-	m_CallData = callData;
-}
-void KxCoroutineBase::CloneCallData()
-{
-	m_CallData = m_CallData->Clone();
-}
-
-uint64_t KxCoroutineBase::GetCurrentExecutionTime() const
-{
-	return Util::GetClockTime() - m_TimeStampStart;
-}
-
-KxCoroutineBase::KxCoroutineBase()
-{
-}
-KxCoroutineBase::~KxCoroutineBase()
-{
-	delete m_Timer;
-}
-
-uint64_t KxCoroutineBase::GetTimeDeltaMilliseconds() const
-{
-	return m_TimeStampBefore - m_TimeStampAfter;
-}
-uint64_t KxCoroutineBase::GetElapsedTimeMilliseconds() const
-{
-	return std::max(m_TimeStampBefore, m_TimeStampAfter);
-}
-
-KxCoroutineBase::Enumerator KxCoroutineBase::Yield()
-{
-	return Enumerator::Continue;
-}
-KxCoroutineBase::Enumerator KxCoroutineBase::YieldStop()
-{
-	return Enumerator::Terminate;
-}
-KxCoroutineBase::Enumerator KxCoroutineBase::YieldWaitMilliseconds(uint64_t timeMS)
-{
-	m_ExecuteAfterTimeInterval = timeMS;
-	return Enumerator::Wait;
+	}
+	
+	wxTimeSpan BaseCoroutine::GetTimeDelta() const
+	{
+		return m_TimeStampBefore - m_TimeStampAfter;
+	}
+	wxTimeSpan BaseCoroutine::GetElapsedTime() const
+	{
+		return std::max(m_TimeStampBefore, m_TimeStampAfter);
+	}
 }

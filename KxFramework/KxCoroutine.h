@@ -7,132 +7,234 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include <utility>
+#include <optional>
 #include <type_traits>
-class KxCoroutineCallData;
-class KxCoroutineTimer;
 
-class KX_API KxCoroutineBase: public wxObject
+class KX_API KxCoroutine;
+namespace Kx::Async
 {
-	friend class KxCoroutineCallData;
-	friend class KxCoroutineTimer;
+	class KX_API BaseCoroutine;
+	enum class InstructionType
+	{
+		Delay,
+		Continue,
+		Terminate,
+	};
+}
+
+namespace Kx::Async
+{
+	template<class T> void AssertStateType()
+	{
+		static_assert(std::is_integral_v<T> || std::is_enum_v<T>);
+	}
+}
+
+namespace Kx::Async
+{
+	class CoroutineTimer: public wxTimer
+	{
+		private:
+			std::unique_ptr<BaseCoroutine> m_Coroutine;
+
+		public:
+			void Notify() override;
+			void Wait(std::unique_ptr<BaseCoroutine> coroutine, const wxTimeSpan& time);
+			std::unique_ptr<BaseCoroutine> Relinquish();
+	};
+	class CoroutineExecutor: public wxAsyncMethodCallEvent
+	{
+		private:
+			std::unique_ptr<BaseCoroutine> m_Coroutine;
+
+		public:
+			CoroutineExecutor(std::unique_ptr<BaseCoroutine> coroutine);
+
+		public:
+			CoroutineExecutor* Clone() const override
+			{
+				return nullptr;
+			}
+			void Execute() override;
+	};
+}
+
+class KX_API KxYieldInstruction
+{
+	friend class Kx::Async::BaseCoroutine;
+	friend class KxCoroutine;
+
+	private:
+		using InstructionType = Kx::Async::InstructionType;
+
+	private:
+		InstructionType m_Type = InstructionType::Continue;
+		wxTimeSpan m_Delay;
+		std::optional<intptr_t> m_NextState;
 
 	protected:
-		enum class Enumerator
+		KxYieldInstruction(InstructionType instruction) noexcept
+			:m_Type(instruction)
 		{
-			Wait,
-			Continue,
-			Terminate,
-		};
-
-	private:
-		KxCoroutineCallData* m_CallData = nullptr;
-		KxCoroutineTimer* m_Timer = nullptr;
-		Enumerator m_Enumerator = Enumerator::Continue;
-		uint64_t m_TimeStampStart = 0;
-		uint64_t m_TimeStampBefore = 0;
-		uint64_t m_TimeStampAfter = 0;
-		bool m_ShouldStop = false;
-
-		uint64_t m_ExecuteAfterTimeInterval = 0;
-
-	public:
-		static void Run(KxCoroutineBase* coroutine);
-		static void Stop(KxCoroutineBase* coroutine);
-
-	private:
-		void QueueExecution();
-		void DelayExecution();
-		void DelayExecution(uint64_t timeMS);
-
-	private:
-		void BeforeExecute();
-		void AfterExecute();
-		void RunExecute();
-
-		void UpdateCallData(KxCoroutineCallData* callData);
-		void CloneCallData();
-
-		uint64_t GetCurrentExecutionTime() const;
-
-	protected:
-		virtual Enumerator Execute() = 0;
-
-		bool ShouldStop() const
-		{
-			return m_ShouldStop;
 		}
-		bool ShouldExecuteAfter() const
+		template<class T> KxYieldInstruction(InstructionType type, const T& nextState) noexcept
+			:m_Type(type), m_NextState(static_cast<intptr_t>(nextState))
 		{
-			return m_ExecuteAfterTimeInterval != 0;
+			Kx::Async::AssertStateType<T>();
 		}
 
 	public:
-		KxCoroutineBase();
-		virtual ~KxCoroutineBase();
-
-	public:
-		uint64_t GetTimeDeltaMilliseconds() const;
-		double GetTimeDeltaDeconds() const
+		InstructionType GetType() const noexcept
 		{
-			return GetTimeDeltaMilliseconds() / 1000.0;
+			return m_Type;
 		}
-
-		uint64_t GetElapsedTimeMilliseconds() const;
-		double GetElapsedTimeSeconds() const
+		wxTimeSpan GetDelay() const
 		{
-			return GetElapsedTimeMilliseconds() / 1000.0;
+			return m_Delay;
 		}
-
-		Enumerator Yield();
-		Enumerator YieldStop();
-		Enumerator YieldWaitMilliseconds(uint64_t timeMS);
-		Enumerator YieldWaitSeconds(double timeSec)
+		
+		template<class T = intptr_t> std::optional<T> GetNextState() const noexcept
 		{
-			return YieldWaitMilliseconds(timeSec * 1000.0);
+			Kx::Async::AssertStateType<T>();
+			if (m_NextState)
+			{
+				return static_cast<T>(*m_NextState);
+			}
+			else
+			{
+				return std::nullopt;
+			}
 		}
 };
 
-//////////////////////////////////////////////////////////////////////////
-template<class T> class KxCoroutineFunctor: public KxCoroutineBase
+namespace Kx::Async
+{
+	class KX_API BaseCoroutine: public wxObject
+	{
+		friend class CoroutineTimer;
+		friend class CoroutineExecutor;
+
+		public:
+			static BaseCoroutine* Run(std::unique_ptr<BaseCoroutine> coroutine);
+
+			template<class T = intptr_t> static KxYieldInstruction Yield(const T& nextState = 0)
+			{
+				return KxYieldInstruction(InstructionType::Continue, nextState);
+			}
+			template<class T = intptr_t> static KxYieldInstruction YieldWait(const wxTimeSpan& interval, const T& nextState = 0)
+			{
+				KxYieldInstruction instruction(InstructionType::Delay, nextState);
+				instruction.m_Delay = interval;
+				return instruction;
+			}
+			template<class T = intptr_t> static KxYieldInstruction YieldStop(const T& nextState = 0)
+			{
+				return KxYieldInstruction(InstructionType::Terminate, nextState);
+			}
+
+		private:
+			static void QueueExecution(std::unique_ptr<BaseCoroutine> coroutine);
+			static void DelayExecution(std::unique_ptr<BaseCoroutine> coroutine, const wxTimeSpan& time);
+			static void AbortExecution(std::unique_ptr<BaseCoroutine> coroutine);
+
+		private:
+			CoroutineTimer m_DelayTimer;
+			KxYieldInstruction m_Instruction;
+			wxTimeSpan m_TimeStampStart;
+			wxTimeSpan m_TimeStampBefore;
+			wxTimeSpan m_TimeStampAfter;
+
+		private:
+			void BeforeExecute();
+			void AfterExecute();
+			void RunExecute(std::unique_ptr<BaseCoroutine> coroutine);
+
+			wxTimeSpan GetCurrentExecutionTime() const;
+
+		protected:
+			virtual KxYieldInstruction Execute() = 0;
+
+		public:
+			BaseCoroutine();
+			virtual ~BaseCoroutine();
+
+		public:
+			void Terminate();
+
+			template<class T = intptr_t> std::optional<T> GetNextState() const noexcept
+			{
+				return m_Instruction.GetNextState<T>();
+			}
+
+			wxTimeSpan GetTimeDelta() const;
+			wxTimeSpan GetElapsedTime() const;
+	};
+}
+
+class KX_API KxCoroutine: public Kx::Async::BaseCoroutine
 {
 	private:
-		T m_Functor;
-
-	protected:
-		virtual Enumerator Execute() override
+		static KxCoroutine* DoRun(std::unique_ptr<KxCoroutine> coroutine)
 		{
-			return std::invoke(m_Functor, *this);
+			return static_cast<KxCoroutine*>(BaseCoroutine::Run(std::move(coroutine)));
 		}
 
 	public:
-		KxCoroutineFunctor(const T& functor)
-			:m_Functor(functor)
+		static KxCoroutine* Run(std::unique_ptr<KxCoroutine> coroutine)
 		{
+			return DoRun(std::move(coroutine));
 		}
-		KxCoroutineFunctor(T&& functor)
-			:m_Functor(std::move(functor))
+		template<class TCallable> static KxCoroutine* Run(TCallable func)
 		{
+			return DoRun(std::make_unique<Kx::Async::CoroutineCallableWrapper<TCallable>>(std::move(func)));
+		}
+		template<class TClass> static KxCoroutine* Run(KxYieldInstruction(TClass::*method)(KxCoroutine&), TClass* object)
+		{
+			return DoRun(std::make_unique<Kx::Async::CoroutineMethodWrapper<TClass>>(method, object));
 		}
 };
 
-class KxCoroutine: public KxCoroutineBase
+namespace Kx::Async
 {
-	public:
-		static KxCoroutineBase* Run(KxCoroutineBase* coroutine)
-		{
-			KxCoroutineBase::Run(coroutine);
-			return coroutine;
-		}
-		template<class T> static KxCoroutineBase* Run(const T& coroutine)
-		{
-			KxCoroutineBase* functor = new KxCoroutineFunctor<T>(coroutine);
-			KxCoroutineBase::Run(functor);
-			return functor;
-		}
-		template<class T> static KxCoroutineBase* Run(T&& coroutine)
-		{
-			KxCoroutineBase* functor = new KxCoroutineFunctor<T>(std::move(coroutine));
-			KxCoroutineBase::Run(functor);
-			return functor;
-		}
-};
+	template<class TCallable>
+	class CoroutineCallableWrapper: public KxCoroutine
+	{
+		private:
+			TCallable m_Callable;
+
+		protected:
+			KxYieldInstruction Execute() override
+			{
+				return std::invoke(m_Callable, *this);
+			}
+
+		public:
+			CoroutineCallableWrapper(TCallable func)
+				:m_Callable(std::move(func))
+			{
+			}
+	};
+
+	template<class TClass>
+	class CoroutineMethodWrapper: public KxCoroutine
+	{
+		public:
+			using TMethod = KxYieldInstruction(TClass::*)(KxCoroutine&);
+
+		private:
+			TClass* m_Object = nullptr;
+			TMethod m_Method = nullptr;
+
+		protected:
+			KxYieldInstruction Execute() override
+			{
+				return std::invoke(m_Method, m_Object, *this);
+			}
+
+		public:
+			CoroutineMethodWrapper(TMethod method, TClass* object)
+				:m_Method(method), m_Object(object)
+			{
+			}
+	};
+}
