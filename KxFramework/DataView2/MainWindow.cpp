@@ -1602,13 +1602,6 @@ namespace KxDataView2
 	// Tooltip
 	bool MainWindow::ShowToolTip(const Node& node, Column& column)
 	{
-		// Setup renderer
-		Renderer& renderer = node.GetRenderer(column);
-		renderer.BeginCellSetup(node, column);
-		renderer.SetupCellValue();
-		const wxSize cellSize = renderer.GetCellSize();
-		renderer.EndCellSetup();
-
 		// Get tooltip
 		ToolTip tooltip = node.GetToolTip(column);
 		if (tooltip.IsOK())
@@ -1617,18 +1610,28 @@ namespace KxDataView2
 			bool shouldShow = true;
 			if (tooltip.ShouldDisplayOnlyIfClipped())
 			{
+				// Setup renderer to get cell size
+				const Column& clipTestColumn = tooltip.SelectClipTestColumn(column);
+
+				Renderer& renderer = node.GetRenderer(clipTestColumn);
+				renderer.BeginCellSetup(node, const_cast<Column&>(clipTestColumn));
+				renderer.SetupCellValue();
+				const wxSize cellSize = renderer.GetCellSize();
+				renderer.EndCellSetup();
+
+				// Test for clipping
 				shouldShow = false;
-				const wxRect columnRect = column.GetRect();
+				const wxRect cellRect = clipTestColumn.GetRect();
 				auto CompareWidth = [&cellSize](int width)
 				{
 					return width - (2 * PADDING_RIGHTLEFT) <= cellSize.GetWidth();
 				};
 
 				// If the column is too small to display its content
-				shouldShow = shouldShow || CompareWidth(columnRect.GetWidth());
+				shouldShow = shouldShow || CompareWidth(cellRect.GetWidth());
 
 				// If the column scrolled outside of the visible area
-				shouldShow = shouldShow || CompareWidth(GetClientSize().GetWidth() - columnRect.GetX());
+				shouldShow = shouldShow || CompareWidth(GetClientSize().GetWidth() - cellRect.GetX());
 			}
 
 			// Show it

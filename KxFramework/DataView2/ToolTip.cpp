@@ -17,6 +17,15 @@ namespace KxDataView2
 		}
 		return currentColumn;
 	}
+	const Column& ToolTip::SelectClipTestColumn(const Column& currentColumn) const
+	{
+		if (m_ClipTestColumn && m_ClipTestColumn->IsVisible())
+		{
+			return *m_ClipTestColumn;
+		}
+		return currentColumn;
+	}
+
 	wxPoint ToolTip::GetPopupPosition(const Node& node, const Column& column) const
 	{
 		const wxRect rect = node.GetClientCellRect(&SelectAnchorColumn(column));
@@ -25,12 +34,28 @@ namespace KxDataView2
 	wxPoint ToolTip::AdjustPopupPosition(const Node& node, const wxPoint& pos) const
 	{
 		MainWindow* mainWindow = node.GetMainWindow();
+		const wxSize screenSize = {wxSystemSettings::GetMetric(wxSYS_SCREEN_X), wxSystemSettings::GetMetric(wxSYS_SCREEN_Y)};
+		const wxSize smallIcon = {wxSystemSettings::GetMetric(wxSYS_SMALLICON_X), wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y)};
 
-		wxSize screenSize = {wxSystemSettings::GetMetric(wxSYS_SCREEN_X), wxSystemSettings::GetMetric(wxSYS_SCREEN_Y)};
-		wxSize iconSize = {wxSystemSettings::GetMetric(wxSYS_ICON_X), wxSystemSettings::GetMetric(wxSYS_ICON_Y)};
-		wxSize textExtent = wxClientDC(mainWindow).GetMultiLineTextExtent(m_Message) + iconSize * 1.5;
-		wxSize offset = wxSize(wxSystemSettings::GetMetric(wxSYS_SMALLICON_X), wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y)) / 2;
+		wxSize textExtent = wxClientDC(mainWindow).GetMultiLineTextExtent(m_Message);
+		wxSize offset;
 
+		if (auto icon = GetIconBitmap(); icon.IsOk())
+		{
+			textExtent += icon.GetSize() * 1.5;
+			offset = smallIcon / 2;
+		}
+		else if (auto icon = GetIconID(); icon != KxICON_NONE)
+		{
+			textExtent += smallIcon * 1.5;
+			offset = smallIcon / 2;
+		}
+		else
+		{
+			offset = smallIcon;
+		}
+
+		
 		wxPoint adjustedPos = mainWindow->ClientToScreen(pos);
 		if (int right = adjustedPos.x + textExtent.GetWidth(); right > screenSize.GetWidth())
 		{
@@ -62,6 +87,7 @@ namespace KxDataView2
 				tooltip.SetCaption(StripMarkupIfNeeded(node, column, m_Caption));
 				tooltip.SetMessage(StripMarkupIfNeeded(node, column, m_Message));
 
+				tooltip.SetOptionEnabled(KxToolTipExOption::LargeIcons, false);
 				if (auto icon = GetIconBitmap(); icon.IsOk())
 				{
 					tooltip.SetIcon(icon);
@@ -86,7 +112,7 @@ namespace KxDataView2
 
 	bool ToolTip::IsOK() const
 	{
-		if (GetIconID() != KxICON_NONE || GetIconBitmap().IsOk())
+		if (HasAnyIcon())
 		{
 			return !m_Caption.IsEmpty() && !m_Message.IsEmpty();
 		}

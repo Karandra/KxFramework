@@ -29,11 +29,16 @@ namespace KxDataView2
 			wxString m_Message;
 			std::variant<wxBitmap, KxIconType> m_Icon;
 			const Column* m_AnchorColumn = nullptr;
-			bool m_AutoHide = true;
+
+			const Column* m_ClipTestColumn = nullptr;
 			bool m_DisplayOnlyIfClipped = false;
+
+			bool m_AutoHide = true;
 
 		private:
 			const Column& SelectAnchorColumn(const Column& currentColumn) const;
+			const Column& SelectClipTestColumn(const Column& currentColumn) const;
+
 			wxPoint GetPopupPosition(const Node& node, const Column& column) const;
 			wxPoint AdjustPopupPosition(const Node& node, const wxPoint& pos) const;
 			wxString StripMarkupIfNeeded(const Node& node, const Column& column, const wxString& text) const;
@@ -41,8 +46,7 @@ namespace KxDataView2
 			bool Show(const Node& node, const Column& column);
 
 		public:
-			ToolTip() = default;
-			ToolTip(const wxString& message, KxIconType icon = KxICON_NONE)
+			ToolTip(const wxString& message = wxEmptyString, KxIconType icon = KxICON_NONE)
 				:m_Message(message), m_Icon(icon)
 			{
 			}
@@ -76,6 +80,10 @@ namespace KxDataView2
 				m_Message = value;
 			}
 
+			bool HasAnyIcon() const
+			{
+				return !m_Icon.valueless_by_exception() && (GetIconID() != KxICON_NONE || GetIconBitmap().IsOk());
+			}
 			KxIconType GetIconID() const
 			{
 				if (const auto& value = std::get_if<KxIconType>(&m_Icon))
@@ -105,9 +113,13 @@ namespace KxDataView2
 				m_Icon = icon;
 			}
 
-			void SetAnchorColumn(const Column* column = nullptr)
+			void SetAnchorColumn(const Column& column)
 			{
-				m_AnchorColumn = column;
+				m_AnchorColumn = &column;
+			}
+			void ResetAnchorColumn()
+			{
+				m_AnchorColumn = nullptr;
 			}
 			const Column* GetAnchorColumn() const
 			{
@@ -123,6 +135,10 @@ namespace KxDataView2
 				m_AutoHide = value;
 			}
 
+			const Column* GetClipTestColumn() const
+			{
+				return m_ClipTestColumn;
+			}
 			bool ShouldDisplayOnlyIfClipped() const
 			{
 				return m_DisplayOnlyIfClipped;
@@ -130,6 +146,15 @@ namespace KxDataView2
 			void DisplayOnlyIfClipped(bool value = true)
 			{
 				m_DisplayOnlyIfClipped = value;
+				if (!value)
+				{
+					m_ClipTestColumn = nullptr;
+				}
+			}
+			void DisplayOnlyIfClipped(const Column& column)
+			{
+				m_DisplayOnlyIfClipped = true;
+				m_ClipTestColumn = &column;
 			}
 	};
 }
