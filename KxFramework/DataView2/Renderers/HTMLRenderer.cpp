@@ -61,6 +61,7 @@ namespace KxDataView2
 			dc.GetUserScale(&userScale.m_x, &userScale.m_y);
 
 			// Render text
+			wxDCClipper clip(dc, cellRect);
 			htmlRenderer.Render(cellRect.GetX(), cellRect.GetY(), m_VisibleCellFrom, m_VisibleCellTo);
 
 			// Restore user scale
