@@ -1189,8 +1189,20 @@ namespace KxDataView2
 				dc.DrawBitmap(m_BackgroundBitmap, pos);
 			}
 		}
-		if (IsEmpty())
+
+		const size_t columnCount = m_View->GetColumnCount();
+		if (IsEmpty() || columnCount == 0)
 		{
+			if (!m_EmptyControlLabel.IsEmpty())
+			{
+				const int y = GetCharHeight() * 2;
+				const wxRect rect(0, y, clientSize.GetWidth(), clientSize.GetHeight() - y);
+
+				paintDC.SetTextForeground(m_View->GetForegroundColour().MakeDisabled());
+				paintDC.DrawLabel(m_EmptyControlLabel, rect, wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP);
+			}
+
+			// We assume that we have at least one column below and painting an empty control is unnecessary anyhow
 			return;
 		}
 
@@ -1211,14 +1223,6 @@ namespace KxDataView2
 		}
 
 		// Compute which columns needs to be redrawn
-		const size_t columnCount = m_View->GetColumnCount();
-		if (columnCount == 0)
-		{
-			// We assume that we have at least one column below and painting an empty control is unnecessary anyhow
-			return;
-		}
-
-		
 		// Calc start of X coordinate
 		size_t coulumnIndexStart = 0;
 		int xCoordStart = 0;
@@ -2071,6 +2075,7 @@ namespace KxDataView2
 	{
 		m_ItemsCount = RecalculateItemCount();
 		m_View->InvalidateColumnsBestWidth();
+		Refresh();
 	}
 
 	// Refreshing

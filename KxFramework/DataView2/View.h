@@ -340,6 +340,9 @@ namespace KxDataView2
 			bool CreateColumnSelectionMenu(KxMenu& menu);
 			Column* OnColumnSelectionMenu(KxMenu& menu);
 
+			wxString GetEmptyControlLabel() const;
+			void SetEmptyControlLabel(const wxString& value);
+
 			// Control visuals
 			static wxVisualAttributes GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL)
 			{

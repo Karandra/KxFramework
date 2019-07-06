@@ -124,6 +124,9 @@ namespace KxDataView2
 			VirtualNode m_VirtualNode;
 			size_t m_ItemsCount = INVALID_COUNT;
 
+			// String to display when the control is empty
+			wxString m_EmptyControlLabel;
+
 			// This is the tree node under the cursor
 			Node* m_TreeNodeUnderMouse = nullptr;
 

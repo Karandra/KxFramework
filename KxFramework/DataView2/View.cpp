@@ -784,6 +784,19 @@ namespace KxDataView2
 		return nullptr;
 	}
 
+	wxString View::GetEmptyControlLabel() const
+	{
+		return m_ClientArea->m_EmptyControlLabel;
+	}
+	void View::SetEmptyControlLabel(const wxString& value)
+	{
+		m_ClientArea->m_EmptyControlLabel = value;
+		if (m_ClientArea->IsEmpty())
+		{
+			m_ClientArea->Refresh();
+		}
+	}
+
 	// Control visuals
 	wxBorder View::GetDefaultBorder() const
 	{
