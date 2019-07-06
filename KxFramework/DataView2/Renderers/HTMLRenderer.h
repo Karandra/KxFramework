@@ -19,6 +19,7 @@ namespace KxDataView2
 
 		protected:
 			bool SetValue(const wxAny& value) override;
+			ToolTip CreateToolTip() const override;
 
 			void PrepareRenderer(wxHtmlDCRenderer& htmlRenderer, wxDC& dc, const wxRect& cellRect = KxNullWxRect) const;
 			void DrawCellContent(const wxRect& cellRect, CellState cellState) override;

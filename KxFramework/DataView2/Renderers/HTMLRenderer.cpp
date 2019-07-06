@@ -23,12 +23,16 @@ namespace KxDataView2
 			return false;
 		}
 	}
+	ToolTip HTMLRenderer::CreateToolTip() const
+	{
+		return ToolTip::CreateDefaultForRenderer(m_Content);
+	}
 
 	void HTMLRenderer::PrepareRenderer(wxHtmlDCRenderer& htmlRenderer, wxDC& dc, const wxRect& cellRect) const
 	{
 		// For some unknown reason scale of '1.0' renders text too large.
 		// Scaling it to '0.8' solves this.
-		const double userScale = 0.8;
+		constexpr double userScale = 0.8;
 		htmlRenderer.SetDC(&dc, userScale * m_PixelScale, userScale * m_FontScale);
 
 		// Size
@@ -40,40 +44,44 @@ namespace KxDataView2
 		htmlRenderer.SetHtmlText(m_ContentHTML);
 
 		const wxFont& font = dc.GetFont();
-		htmlRenderer.SetFonts(font.GetFaceName(), "Consolas");
-		htmlRenderer.SetStandardFonts(font.GetPointSize(), font.GetFaceName(), "Consolas");
+		htmlRenderer.SetFonts(font.GetFaceName(), wxS("Consolas"));
+		htmlRenderer.SetStandardFonts(font.GetPointSize(), font.GetFaceName(), wxS("Consolas"));
 	}
 	void HTMLRenderer::DrawCellContent(const wxRect& cellRect, CellState cellState)
 	{
 		if (!m_Content.IsEmpty())
 		{
-			wxDC& dc = GetGraphicsDC();
+			// Prefer regular DC
+			wxDC& dc = HasRegularDC() ? GetRegularDC() : GetGraphicsDC();
 			wxHtmlDCRenderer htmlRenderer;
 			PrepareRenderer(htmlRenderer, dc, cellRect);
 
 			// Save user scale
-			double scaleX = 1.0;
-			double scaleY = 1.0;
-			dc.GetUserScale(&scaleX, &scaleY);
+			wxPoint2DDouble userScale(1.0,  1.0);
+			dc.GetUserScale(&userScale.m_x, &userScale.m_y);
 
 			// Render text
 			htmlRenderer.Render(cellRect.GetX(), cellRect.GetY(), m_VisibleCellFrom, m_VisibleCellTo);
 
 			// Restore user scale
-			dc.SetUserScale(scaleX, scaleY);
+			dc.SetUserScale(userScale.m_x, userScale.m_y);
 		}
 	}
 	wxSize HTMLRenderer::GetCellSize() const
 	{
+		// HTMLRenderer is the only renderer at the moment that supports multiline text.
+		// RenderEngine doesn't have a function to measure multiline text (it measures only the first line).
+		// So we need to do that ourselves.
+
 		if (!m_Content.IsEmpty())
 		{
-			if (HasGraphicsDC())
-			{
-				return GetGraphicsDC().GetMultiLineTextExtent(m_Content);
-			}
-			else if (HasRegularDC())
+			if (HasRegularDC())
 			{
 				return GetRegularDC().GetMultiLineTextExtent(m_Content);
+			}
+			else if (HasGraphicsDC())
+			{
+				return GetGraphicsDC().GetMultiLineTextExtent(m_Content);
 			}
 			return wxClientDC(GetView()).GetMultiLineTextExtent(m_Content);
 		}
