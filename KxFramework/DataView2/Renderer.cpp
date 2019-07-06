@@ -174,7 +174,7 @@ namespace KxDataView2
 	void Renderer::CallOnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent)
 	{
 		wxAny value = OnActivateCell(node, cellRect, mouseEvent);
-		if (!value.IsNull() && node.SetValue(value, *m_Column))
+		if (!value.IsNull() && node.SetValue(*m_Column, value))
 		{
 			GetMainWindow()->OnCellChanged(node, m_Column);
 		}

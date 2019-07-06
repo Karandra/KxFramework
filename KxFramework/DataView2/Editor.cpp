@@ -78,7 +78,7 @@ namespace KxDataView2
 			MainWindow* mainWindow = GetMainWindow();
 			if (!value.IsNull() && mainWindow->SendEditingDoneEvent(*m_Node, this, false, value))
 			{
-				if (m_Node->SetValue(value, *m_Column))
+				if (m_Node->SetValue(*m_Column, value))
 				{
 					mainWindow->OnCellChanged(*m_Node, m_Column);
 				}

@@ -505,9 +505,9 @@ namespace KxDataView2
 	{
 		return GetModel()->GetToolTip(*this, column);
 	}
-	bool Node::SetValue(const wxAny& value, Column& column)
+	bool Node::SetValue(Column& column, const wxAny& value)
 	{
-		return GetModel()->SetValue(*this, value, column);
+		return GetModel()->SetValue(*this, column, value);
 	}
 
 	bool Node::GetAttributes(CellAttributes& attributes, const CellState& cellState, const Column& column) const

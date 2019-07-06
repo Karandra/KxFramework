@@ -252,7 +252,7 @@ namespace KxDataView2
 			virtual wxAny GetValue(const Column& column) const;
 			virtual wxAny GetEditorValue(const Column& column) const;
 			virtual ToolTip GetToolTip(const Column& column) const;
-			virtual bool SetValue(const wxAny& value, Column& column);
+			virtual bool SetValue(Column& column, const wxAny& value);
 
 			virtual bool GetAttributes(CellAttributes& attributes, const CellState& cellState, const Column& column) const;
 			virtual bool IsCategoryNode() const;

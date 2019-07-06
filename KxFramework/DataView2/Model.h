@@ -75,7 +75,7 @@ namespace KxDataView2
 				return {};
 			}
 			virtual ToolTip GetToolTip(const Node& node, const Column& column) const;
-			virtual bool SetValue(Node& node, const wxAny& value, Column& column)
+			virtual bool SetValue(Node& node, Column& column, const wxAny& value)
 			{
 				return false;
 			}
