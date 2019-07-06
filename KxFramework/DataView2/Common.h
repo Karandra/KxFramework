@@ -89,8 +89,14 @@ namespace KxDataView2
 		private:
 			int m_Value = Value::AutoSize;
 
+		private:
+			bool AssignValue(int value) noexcept;
+
 		public:
-			ColumnWidth(int value = Value::AutoSize) noexcept;
+			ColumnWidth(int value = Value::AutoSize) noexcept
+			{
+				AssignValue(value);
+			}
 
 		public:
 			bool IsSpecialValue() const noexcept
@@ -114,6 +120,22 @@ namespace KxDataView2
 			operator int() const noexcept
 			{
 				return m_Value;
+			}
+			
+			ColumnWidth& operator=(int value) noexcept
+			{
+				AssignValue(value);
+				return *this;
+			}
+			ColumnWidth& operator+=(int value) noexcept
+			{
+				AssignValue(m_Value + value);
+				return *this;
+			}
+			ColumnWidth& operator-=(int value) noexcept
+			{
+				AssignValue(m_Value - value);
+				return *this;
 			}
 	};
 
