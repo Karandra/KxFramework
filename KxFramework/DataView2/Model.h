@@ -80,7 +80,7 @@ namespace KxDataView2
 				return false;
 			}
 
-			virtual bool GetAttributes(const Node& node, CellAttributes& attributes, const CellState& cellState, const Column& column) const
+			virtual bool GetAttributes(const Node& node, const Column& column, const CellState& cellState, CellAttributes& attributes) const
 			{
 				return false;
 			}

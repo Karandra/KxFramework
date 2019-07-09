@@ -17,7 +17,7 @@ namespace KxDataView2
 	{
 		// Set up the attributes for this item if it's not empty. Reset attributes if they are not needed.
 		m_Attributes.Reset();
-		if (!m_Node->GetAttributes(m_Attributes, cellState, *m_Column))
+		if (!m_Node->GetAttributes(*m_Column, cellState, m_Attributes))
 		{
 			m_Attributes.Reset();
 		}

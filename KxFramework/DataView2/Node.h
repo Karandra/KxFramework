@@ -254,7 +254,7 @@ namespace KxDataView2
 			virtual ToolTip GetToolTip(const Column& column) const;
 			virtual bool SetValue(Column& column, const wxAny& value);
 
-			virtual bool GetAttributes(CellAttributes& attributes, const CellState& cellState, const Column& column) const;
+			virtual bool GetAttributes(const Column& column, const CellState& cellState, CellAttributes& attributes) const;
 			virtual bool IsCategoryNode() const;
 			virtual int GetRowHeight() const;
 

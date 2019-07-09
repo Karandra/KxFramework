@@ -510,9 +510,9 @@ namespace KxDataView2
 		return GetModel()->SetValue(*this, column, value);
 	}
 
-	bool Node::GetAttributes(CellAttributes& attributes, const CellState& cellState, const Column& column) const
+	bool Node::GetAttributes(const Column& column, const CellState& cellState, CellAttributes& attributes) const
 	{
-		return GetModel()->GetAttributes(*this, attributes, cellState, column);
+		return GetModel()->GetAttributes(*this, column, cellState, attributes);
 	}
 	bool Node::IsCategoryNode() const
 	{
