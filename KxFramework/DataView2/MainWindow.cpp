@@ -14,6 +14,7 @@
 #include "KxFramework/KxUtility.h"
 #include "KxFramework/KxFrame.h"
 #include "KxFramework/KxUxTheme.h"
+#include "KxFramework/KxGCUtility.h"
 #include <wx/popupwin.h>
 #include <wx/generic/private/widthcalc.h>
 #include <wx/minifram.h>
@@ -1423,6 +1424,7 @@ namespace KxDataView2
 				// Clip DC to current column
 				const wxRect columnRect(cellRect.GetX(), 0, cellRect.GetWidth(), m_virtualSize.GetHeight());
 				wxDCClipper clip(paintDC, columnRect);
+				KxGCClipper clipGC(gc, columnRect);
 
 				// Adjust cell rectangle
 				wxRect adjustedCellRect = cellRect;
