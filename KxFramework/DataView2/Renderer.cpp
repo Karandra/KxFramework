@@ -169,6 +169,17 @@ namespace KxDataView2
 			}
 			adjustedCellRect.SetHeight(cellSize.y);
 		}
+
+		// Draw highlighting selection
+		if (m_Attributes.Options().IsEnabled(CellOption::HighlightItem) && !adjustedCellRect.IsEmpty())
+		{
+			MainWindow* mainWindow = GetMainWindow();
+
+			wxRect highlightRect = wxRect(adjustedCellRect).Inflate(2);
+			RenderEngine::DrawSelectionRect(mainWindow, dc, highlightRect, cellState.ToItemState(mainWindow));
+		}
+
+		// Call derived class drawing
 		DrawCellContent(adjustedCellRect, cellState);
 	}
 	void Renderer::CallOnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent)

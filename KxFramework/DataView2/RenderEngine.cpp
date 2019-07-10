@@ -18,6 +18,25 @@ namespace
 	{
 		return left.GetWidth() > right.GetWidth() || left.GetHeight() > right.GetHeight();
 	}
+
+	int GetTreeItemState(int flags)
+	{
+		int itemState = (flags & wxCONTROL_CURRENT) ? TREIS_HOT : TREIS_NORMAL;
+		if (flags & wxCONTROL_SELECTED)
+		{
+			itemState = (flags & wxCONTROL_CURRENT) ? TREIS_HOTSELECTED : TREIS_SELECTED;
+			if (!(flags & wxCONTROL_FOCUSED))
+			{
+				itemState = TREIS_SELECTEDNOTFOCUS;
+			}
+		}
+
+		if (flags & wxCONTROL_DISABLED && !(flags & wxCONTROL_CURRENT))
+		{
+			itemState = TREIS_DISABLED;
+		}
+		return itemState;
+	};
 }
 
 namespace KxDataView2::Markup
@@ -133,7 +152,7 @@ namespace KxDataView2
 	{
 		return m_Renderer.GetView()->FromDIP(size);
 	}
-	
+
 	size_t RenderEngine::FindFirstLineBreak(const wxString& string) const
 	{
 		for (size_t i = 0; i < string.size(); i++)
@@ -163,7 +182,7 @@ namespace KxDataView2
 		{
 			flags |= wxCONTROL_CURRENT|wxCONTROL_FOCUSED;
 		}
-		
+
 		return flags;
 	}
 	wxString RenderEngine::StripMarkup(const wxString& markup) const
@@ -400,7 +419,7 @@ namespace KxDataView2
 		wxRendererNative::Get().DrawGauge(m_Renderer.GetView(), m_Renderer.GetGraphicsDC(), cellRect, value, range);
 		return true;
 	}
-	
+
 	wxSize RenderEngine::GetToggleSize() const
 	{
 		return wxRendererNative::Get().GetCheckBoxSize(m_Renderer.GetView());
@@ -440,5 +459,79 @@ namespace KxDataView2
 			wxRendererNative::Get().DrawRadioBitmap(view, dc, toggleRect, flags);
 		}
 		return toggleRect.GetSize();
+	}
+}
+
+namespace KxDataView2
+{
+	void RenderEngine::DrawPlusMinusExpander(wxWindow* window, wxDC& dc, const wxRect& canvasRect, int flags)
+	{
+		const bool isActive = flags & wxCONTROL_CURRENT;
+		const bool isExpanded = flags & wxCONTROL_EXPANDED;
+
+		wxRect rect(canvasRect.GetPosition(), canvasRect.GetSize() / 2);
+		if (rect.width % 2 == 0)
+		{
+			rect.x++;
+			rect.width--;
+		}
+		if (rect.height % 2 == 0)
+		{
+			rect.y++;
+			rect.height--;
+		}
+		rect.x += rect.width / 2;
+		rect.y += rect.height / 2;
+
+		// Draw inner rectangle
+		dc.SetBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
+		dc.DrawRectangle(rect);
+
+		// Draw border
+		dc.SetBrush(*wxTRANSPARENT_BRUSH);
+		dc.SetPen(wxSystemSettings::GetColour(isActive ? wxSYS_COLOUR_HOTLIGHT : wxSYS_COLOUR_MENUHILIGHT));
+		dc.DrawRectangle(rect);
+
+		// Draw plus/minus
+		dc.SetPen(wxPen(wxSystemSettings::GetColour(wxSYS_COLOUR_HOTLIGHT), window->FromDIP(1), wxPENSTYLE_SOLID));
+
+		const int width = std::min(rect.GetWidth(), rect.GetHeight());
+		const int length = width * 0.5;
+
+		int baseX = width * 0.2 + 1;
+		int baseY = width / 2;
+		auto GetXY = [&]()
+		{
+			return wxPoint(rect.x + baseX, rect.y + baseY);
+		};
+
+		// Draw horizontal line
+		wxPoint pos = GetXY();
+		dc.DrawLine(pos, {pos.x + length, pos.y});
+		if (isExpanded)
+		{
+			return;
+		}
+
+		// Draw vertical line
+		std::swap(baseX, baseY);
+		pos = GetXY();
+		dc.DrawLine(pos, {pos.x, pos.y + length});
+	}
+	void RenderEngine::DrawSelectionRect(wxWindow* window, wxDC& dc, const wxRect& cellRect, int flags)
+	{
+		KxUxTheme::Handle handle(window, L"TREEVIEW");
+		if (handle)
+		{
+			const int itemState = GetTreeItemState(flags);
+			const RECT rect = KxUtility::CopyRectToRECT(cellRect);
+			const HDC hdc = dc.GetHDC();
+
+			::DrawThemeBackground(handle, hdc, TVP_TREEITEM, itemState, &rect, 0);
+		}
+		else
+		{
+			wxRendererNative::Get().DrawItemSelectionRect(window, dc, cellRect, flags);
+		}
 	}
 }

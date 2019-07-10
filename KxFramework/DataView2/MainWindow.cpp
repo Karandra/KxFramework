@@ -31,123 +31,6 @@ namespace
 		EXPANDER_MARGIN = 2,
 		EXPANDER_OFFSET = 2,
 	};
-
-	int GetTreeItemState(int flags)
-	{
-		int itemState = (flags & wxCONTROL_CURRENT) ? TREIS_HOT : TREIS_NORMAL;
-		if (flags & wxCONTROL_SELECTED)
-		{
-			itemState = (flags & wxCONTROL_CURRENT) ? TREIS_HOTSELECTED : TREIS_SELECTED;
-			if (!(flags & wxCONTROL_FOCUSED))
-			{
-				itemState = TREIS_SELECTEDNOTFOCUS;
-			}
-		}
-
-		if (flags & wxCONTROL_DISABLED && !(flags & wxCONTROL_CURRENT))
-		{
-			itemState = TREIS_DISABLED;
-		}
-		return itemState;
-	};
-	void DrawSelectionRect(wxWindow* window, wxDC& dc, const wxRect& cellRect, int flags)
-	{
-		KxUxTheme::Handle handle(window, L"TREEVIEW");
-		if (handle)
-		{
-			int itemState = GetTreeItemState(flags);
-			RECT rect = KxUtility::CopyRectToRECT(cellRect);
-			HDC hdc = dc.GetHDC();
-
-			::DrawThemeBackground(handle, hdc, TVP_TREEITEM, itemState, &rect, 0);
-		}
-		else
-		{
-			wxRendererNative::Get().DrawItemSelectionRect(window, dc, cellRect, flags);
-		}
-	};
-	bool SwapRedGreenChannels(wxBitmap& bitmap)
-	{
-		wxAlphaPixelData data(bitmap);
-		if (data)
-		{
-			wxAlphaPixelData::Iterator it(data);
-			for (int y = 0; y < data.GetHeight(); y++)
-			{
-				wxAlphaPixelData::Iterator rowStartIt = it;
-				for (int x = 0; x < data.GetWidth(); x++)
-				{
-					uint8_t r = it.Red();
-					uint8_t g = it.Green();
-
-					it.Red() = g;
-					it.Green() = r;
-
-					++it;
-				}
-
-				it = rowStartIt;
-				it.OffsetY(data, 1);
-			}
-			return true;
-		}
-		return false;
-	}
-
-	void DrawPlusMinusExpander(wxWindow* window, wxDC& dc, const wxRect& canvasRect, int flags)
-	{
-		const bool isActive = flags & wxCONTROL_CURRENT;
-		const bool isExpanded = flags & wxCONTROL_EXPANDED;
-
-		wxRect rect(canvasRect.GetPosition(), canvasRect.GetSize() / 2);
-		if (rect.width % 2 == 0)
-		{
-			rect.x++;
-			rect.width--;
-		}
-		if (rect.height % 2 == 0)
-		{
-			rect.y++;
-			rect.height--;
-		}
-		rect.x += rect.width / 2;
-		rect.y += rect.height / 2;
-
-		// Draw inner rectangle
-		dc.SetBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
-		dc.DrawRectangle(rect);
-
-		// Draw border
-		dc.SetBrush(*wxTRANSPARENT_BRUSH);
-		dc.SetPen(wxSystemSettings::GetColour(isActive ? wxSYS_COLOUR_HOTLIGHT : wxSYS_COLOUR_MENUHILIGHT));
-		dc.DrawRectangle(rect);
-
-		// Draw plus/minus
-		dc.SetPen(wxPen(wxSystemSettings::GetColour(wxSYS_COLOUR_HOTLIGHT), window->FromDIP(1), wxPENSTYLE_SOLID));
-
-		const int width = std::min(rect.GetWidth(), rect.GetHeight());
-		const int length = width * 0.5;
-
-		int baseX = width * 0.2 + 1;
-		int baseY = width / 2;
-		auto GetXY = [&]()
-		{
-			return wxPoint(rect.x + baseX, rect.y + baseY);
-		};
-
-		// Draw horizontal line
-		wxPoint pos = GetXY();
-		dc.DrawLine(pos, {pos.x + length, pos.y});
-		if (isExpanded)
-		{
-			return;
-		}
-
-		// Draw vertical line
-		std::swap(baseX, baseY);
-		pos = GetXY();
-		dc.DrawLine(pos, {pos.x, pos.y + length});
-	}
 }
 
 namespace KxDataView2
@@ -1474,7 +1357,7 @@ namespace KxDataView2
 					// Draw selection and hot-track indicator after background but before cell content
 					if (cellState.IsSelected() || cellState.IsHotTracked())
 					{
-						DrawSelectionRect(this, paintDC, GetRowRect(), cellState.ToItemState(this));
+						RenderEngine::DrawSelectionRect(this, paintDC, GetRowRect(), cellState.ToItemState(this));
 					}
 
 					// Draw cell content
@@ -1517,7 +1400,7 @@ namespace KxDataView2
 					}
 					else if (m_View->IsExtraStyleEnabled(CtrlExtraStyle::PlusMinusExpander))
 					{
-						DrawPlusMinusExpander(this, dc, expanderRect, flags);
+						RenderEngine::DrawPlusMinusExpander(this, dc, expanderRect, flags);
 					}
 					else
 					{
@@ -2331,7 +2214,7 @@ namespace KxDataView2
 			memoryDC.Clear();
 
 			// Draw selection
-			DrawSelectionRect(this, memoryDC, itemRect, wxCONTROL_CURRENT|wxCONTROL_SELECTED|wxCONTROL_FOCUSED);
+			RenderEngine::DrawSelectionRect(this, memoryDC, itemRect, wxCONTROL_CURRENT|wxCONTROL_SELECTED|wxCONTROL_FOCUSED);
 
 			// Draw cells
 			wxGCDC gcdc(memoryDC);

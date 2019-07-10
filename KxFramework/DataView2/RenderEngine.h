@@ -93,5 +93,9 @@ namespace KxDataView2
 			
 			wxSize GetToggleSize() const;
 			wxSize DrawToggle(wxDC& dc, const wxRect& cellRect, CellState cellState, ToggleState toggleState, ToggleType toggleType);
+
+		public:
+			static void DrawPlusMinusExpander(wxWindow* window, wxDC& dc, const wxRect& canvasRect, int flags);
+			static void DrawSelectionRect(wxWindow* window, wxDC& dc, const wxRect& cellRect, int flags);;
 	};
 }

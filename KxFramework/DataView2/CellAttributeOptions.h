@@ -15,7 +15,8 @@ namespace KxDataView2::CellAttributeOptions::Enums
 		None = 0,
 		Enabled = 1 << 0,
 		Editable = 1 << 1,
-		ShowAccelerators = 1 << 2,
+		HighlightItem = 1 << 2,
+		ShowAccelerators = 1 << 3,
 
 		Default = Enabled|Editable
 	};
