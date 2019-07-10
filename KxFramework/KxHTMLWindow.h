@@ -3,28 +3,39 @@
 #include <wx/html/htmlwin.h>
 class KX_API KxMenu;
 
-class KX_API KxHTMLWindow: public wxHtmlWindow
+class KX_API KxHTMLWindow: public wxHtmlWindow, public wxTextEntry
 {
 	public:
 		static wxString ProcessPlainText(const wxString& text);
 
 	private:
 		const bool m_IsEditable = false;
-		wxString m_Value;
 
 	private:
+		void CopyTextToClipboard(const wxString& value) const;
 		void CreateContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link = nullptr);
-		wxWindowID ExecuteContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link = nullptr);
+		void ExecuteContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link = nullptr);
 		
 		void OnContextMenu(wxContextMenuEvent& event);
 		void OnKey(wxKeyEvent& event);
 
 	protected:
 		virtual wxString OnProcessPlainText(const wxString& text) const;
-		virtual void OnHTMLLinkClicked(const wxHtmlLinkInfo& link) override;
+		void OnHTMLLinkClicked(const wxHtmlLinkInfo& link) override;
+		wxHtmlOpeningStatus OnHTMLOpeningURL(wxHtmlURLType type, const wxString& url, wxString* redirect) const override;
 		
-		void DoSetFont(const wxFont& font);
+		bool DoSetFont(const wxFont& normalFont);
 		bool DoSetValue(const wxString& value);
+		bool DoAppendValue(const wxString& value);
+
+		WXHWND GetEditHWND() const override
+		{
+			return nullptr;
+		}
+		wxWindow* GetEditableWindow() override
+		{
+			return this;
+		}
 
 	public:
 		static const long DefaultStyle = wxHW_DEFAULT_STYLE;
@@ -43,23 +54,159 @@ class KX_API KxHTMLWindow: public wxHtmlWindow
 					const wxString& text = wxEmptyString,
 					long style = DefaultStyle
 		);
-		virtual ~KxHTMLWindow();
+		~KxHTMLWindow();
 
 	public:
-		virtual const wxString& GetValue() const;
-		virtual bool SetValue(const wxString& value);
-		virtual bool SetTextValue(const wxString& text);
+		// wxTextEntry
+		wxString GetValue() const override
+		{
+			return const_cast<KxHTMLWindow*>(this)->ToText();
+		}
+		void SetValue(const wxString& value) override
+		{
+			DoSetValue(value);
+		}
+		void ChangeValue(const wxString& value) override
+		{
+			DoSetValue(value);
+		}
+		void AppendText(const wxString& text) override
+		{
+			DoAppendValue(text);
+		}
+		void WriteText(const wxString& text) override
+		{
+			DoAppendValue(text);
+		}
+		void Clear() override
+		{
+			wxHtmlWindow::SetPage(wxEmptyString);
+		}
 		
-		virtual void Clear();
-		virtual bool IsEmpty() const;
+		void Cut() override
+		{
+		}
+		void Copy() override
+		{
+			CopyTextToClipboard(wxHtmlWindow::SelectionToText());
+		}
+		void Paste() override
+		{
+		}
+		void Undo() override
+		{
+		}
+		void Redo() override
+		{
+		}
+
+		bool CanCopy() const override
+		{
+			return HasSelection();
+		}
+		bool CanCut() const override
+		{
+			return IsEditable() && HasSelection();
+		}
+		bool CanPaste() const override
+		{
+			return IsEditable();
+		}
+		bool CanUndo() const override
+		{
+			return IsEditable();
+		}
+		bool CanRedo() const override
+		{
+			return IsEditable();
+		}
+
+		wxTextPos GetInsertionPoint() const override
+		{
+			return 0;
+		}
+		wxTextPos GetLastPosition() const override
+		{
+			const wxString text = const_cast<KxHTMLWindow*>(this)->ToText();
+			return !text.IsEmpty() ? text.length() - 1 : 0;
+		}
+		wxString GetRange(long from, long to) const override
+		{
+			const wxString text = const_cast<KxHTMLWindow*>(this)->ToText();
+			return text.SubString(from, to);
+		}
+		void SetInsertionPoint(long pos) override
+		{
+		}
+		void SetInsertionPointEnd()
+		{
+		}
+		void SetMaxLength(unsigned long len)
+		{
+		}
+
+		wxString GetStringSelection() const override
+		{
+			return const_cast<KxHTMLWindow*>(this)->SelectionToText();
+		}
+		bool HasSelection() const
+		{
+			return m_selection && !m_selection->IsEmpty();
+		}
+		void GetSelection(long* from, long* to) const override
+		{
+			if (from)
+			{
+				*from = m_selection ? m_selection->GetFromCharacterPos() : 0;
+			}
+			if (to)
+			{
+				*to = m_selection ? m_selection->GetToCharacterPos() : 0;
+			}
+		}
+		void SetSelection(long from, long to) override
+		{
+			// Initialize selection if none
+			wxHtmlWindow::SelectAll();
+
+			m_selection->SetFromCharacterPos(from);
+			m_selection->SetToCharacterPos(to);
+		}
+		void SelectAll() override
+		{
+			wxHtmlWindow::SelectAll();
+		}
+		void SelectNone() override
+		{
+			SetSelection(0, 0);
+		}
+
+		wxString GetHint() const override
+		{
+			return wxEmptyString;
+		}
+		bool SetHint(const wxString& hint) override
+		{
+			return false;
+		}
+
+		bool IsEditable() const override
+		{
+			return m_IsEditable;
+		}
+		void SetEditable(bool isEditable) override
+		{
+			// Not implemented
+			//m_IsEditable = isEditable;
+		}
 		
-		virtual bool IsEditable() const;
-		virtual void SetEditable(bool isEditable);
-		
-		bool HasSelection() const;
+	public:
+		KxHTMLWindow& operator<<(const wxString& value)
+		{
+			AppendText(value);
+			return *this;
+		}
 
 	public:
-		KxHTMLWindow& operator<<(const wxString& s);
-
 		wxDECLARE_DYNAMIC_CLASS(KxHTMLWindow);
 };

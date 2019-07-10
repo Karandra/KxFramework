@@ -5,18 +5,6 @@
 #include "KxFramework/KxUtility.h"
 #include <wx/clipbrd.h>
 
-namespace
-{
-	void CopyTextToClipboard(const wxString& value)
-	{
-		if (wxTheClipboard->Open())
-		{
-			wxTheClipboard->SetData(new wxTextDataObject(value));
-			wxTheClipboard->Close();
-		}
-	}
-}
-
 wxIMPLEMENT_DYNAMIC_CLASS(KxHTMLWindow, wxHtmlWindow);
 
 wxString KxHTMLWindow::ProcessPlainText(const wxString& text)
@@ -28,13 +16,21 @@ wxString KxHTMLWindow::ProcessPlainText(const wxString& text)
 	else
 	{
 		wxString temp = text;
-		temp.Replace(wxS("\r\n"), wxS("<br>"));
-		temp.Replace(wxS("\r"), wxS("<br>"));
-		temp.Replace(wxS("\n"), wxS("<br>"));
+		temp.Replace(wxS("\r\n"), wxS("<br/>"));
+		temp.Replace(wxS("\r"), wxS("<br/>"));
+		temp.Replace(wxS("\n"), wxS("<br/>"));
 		return temp;
 	}
 }
 
+void KxHTMLWindow::CopyTextToClipboard(const wxString& value) const
+{
+	if (wxTheClipboard->Open())
+	{
+		wxTheClipboard->SetData(new wxTextDataObject(value));
+		wxTheClipboard->Close();
+	}
+}
 void KxHTMLWindow::CreateContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link)
 {
 	auto MakeItem = [&menu](KxStandardID id)
@@ -44,21 +40,21 @@ void KxHTMLWindow::CreateContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link)
 
 	{
 		KxMenuItem* item = MakeItem(KxID_UNDO);
-		item->Enable(IsEditable());
+		item->Enable(CanUndo());
 	}
 	{
 		KxMenuItem* item = MakeItem(KxID_REDO);
-		item->Enable(IsEditable());
+		item->Enable(CanRedo());
 	}
 	menu.AddSeparator();
 
 	{
 		KxMenuItem* item = MakeItem(KxID_CUT);
-		item->Enable(IsEditable());
+		item->Enable(CanCut());
 	}
 	{
 		KxMenuItem* item = MakeItem(KxID_COPY);
-		item->Enable(HasSelection());
+		item->Enable(CanCopy());
 	}
 	if (link != nullptr)
 	{
@@ -66,7 +62,7 @@ void KxHTMLWindow::CreateContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link)
 	}
 	{
 		KxMenuItem* item = MakeItem(KxID_PASTE);
-		item->Enable(IsEditable());
+		item->Enable(CanPaste());
 	}
 	{
 		KxMenuItem* item = MakeItem(KxID_DELETE);
@@ -78,14 +74,13 @@ void KxHTMLWindow::CreateContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link)
 		item->Enable(!IsEmpty());
 	}
 }
-wxWindowID KxHTMLWindow::ExecuteContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link)
+void KxHTMLWindow::ExecuteContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link)
 {
-	wxWindowID id = menu.Show(this);
-	switch (id)
+	switch (menu.Show(this))
 	{
 		case KxID_COPY:
 		{
-			CopyTextToClipboard(SelectionToText());
+			Copy();
 			break;
 		}
 		case KxID_COPY_LINK:
@@ -99,7 +94,6 @@ wxWindowID KxHTMLWindow::ExecuteContextMenu(KxMenu& menu, const wxHtmlLinkInfo* 
 			break;
 		}
 	};
-	return id;
 }
 
 void KxHTMLWindow::OnContextMenu(wxContextMenuEvent& event)
@@ -123,7 +117,7 @@ void KxHTMLWindow::OnKey(wxKeyEvent& event)
 			}
 			case 'C':
 			{
-				CopyTextToClipboard(SelectionToText());
+				Copy();
 				break;
 			}
 		};
@@ -149,15 +143,45 @@ void KxHTMLWindow::OnHTMLLinkClicked(const wxHtmlLinkInfo& link)
 		wxHtmlWindow::OnHTMLLinkClicked(link);
 	}
 }
-
-void KxHTMLWindow::DoSetFont(const wxFont& font)
+wxHtmlOpeningStatus KxHTMLWindow::OnHTMLOpeningURL(wxHtmlURLType type, const wxString& url, wxString* redirect) const
 {
-	SetStandardFonts(font.GetPointSize(), font.GetFaceName(), font.GetFaceName());
+	return wxHTML_BLOCK;
+}
+
+bool KxHTMLWindow::DoSetFont(const wxFont& normalFont)
+{
+	wxFont fixedFont(normalFont);
+	auto UseFixedFont = [this, &normalFont, &fixedFont]()
+	{
+		wxHtmlWindow::SetStandardFonts(normalFont.GetPointSize(), normalFont.GetFaceName(), fixedFont.GetFaceName());
+	};
+
+	if (fixedFont.SetFaceName(wxS("Consolas")))
+	{
+		UseFixedFont();
+	}
+	else if (fixedFont.SetFaceName(wxS("Courier New")))
+	{
+		UseFixedFont();
+	}
+	else if (fixedFont.SetFamily(wxFONTFAMILY_TELETYPE); fixedFont.IsOk())
+	{
+		UseFixedFont();
+	}
+	else if (normalFont.IsOk())
+	{
+		wxHtmlWindow::SetStandardFonts(normalFont.GetPointSize(), normalFont.GetFaceName(), normalFont.GetFaceName());
+		return true;
+	}
+	return false;
 }
 bool KxHTMLWindow::DoSetValue(const wxString& value)
 {
-	m_Value = value;
-	return wxHtmlWindow::SetPage(value);
+	return wxHtmlWindow::SetPage(OnProcessPlainText(value));
+}
+bool KxHTMLWindow::DoAppendValue(const wxString& value)
+{
+	return wxHtmlWindow::AppendToPage(OnProcessPlainText(value));
 }
 
 bool KxHTMLWindow::Create(wxWindow* parent,
@@ -180,48 +204,4 @@ bool KxHTMLWindow::Create(wxWindow* parent,
 }
 KxHTMLWindow::~KxHTMLWindow()
 {
-}
-
-const wxString& KxHTMLWindow::GetValue() const
-{
-	return m_Value;
-}
-bool KxHTMLWindow::SetValue(const wxString& value)
-{
-	return DoSetValue(value);
-}
-bool KxHTMLWindow::SetTextValue(const wxString& text)
-{
-	return DoSetValue(OnProcessPlainText(text));
-}
-
-void KxHTMLWindow::Clear()
-{
-	m_Value.Clear();
-	wxHtmlWindow::SetPage(m_Value);
-}
-bool KxHTMLWindow::IsEmpty() const
-{
-	return m_Value.IsEmpty();
-}
-
-bool KxHTMLWindow::IsEditable() const
-{
-	return m_IsEditable;
-}
-void KxHTMLWindow::SetEditable(bool isEditable)
-{
-	// Not implemented
-	//m_IsEditable = bIsEditable;
-}
-
-bool KxHTMLWindow::HasSelection() const
-{
-	return m_selection && !m_selection->IsEmpty() && !IsEmpty();
-}
-
-KxHTMLWindow& KxHTMLWindow::operator<<(const wxString& s)
-{
-	SetValue(m_Value + OnProcessPlainText(s));
-	return *this;
 }
