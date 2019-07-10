@@ -5,9 +5,10 @@
 
 namespace KxDataView2
 {
-	class KX_API BitmapListRenderer: public Renderer
+	class KX_API BitmapListRendererBase: public Renderer
 	{
 		private:
+			wxString m_Text;
 			int m_Spacing = 0;
 			bool m_SkipInvalidBitmaps = false;
 
@@ -15,12 +16,14 @@ namespace KxDataView2
 			void DrawCellContent(const wxRect& cellRect, CellState cellState) override;
 			wxSize GetCellSize() const override;
 
+			bool SetValue(const wxAny& value) override;
+
 		protected:
 			virtual size_t GetBitmapCount() const = 0;
-			virtual wxBitmap GetBitmap(size_t index) const = 0;
+			virtual const wxBitmap& GetBitmap(size_t index) const = 0;
 
 		public:
-			BitmapListRenderer(int alignment = wxALIGN_INVALID)
+			BitmapListRendererBase(int alignment = wxALIGN_INVALID)
 				:Renderer(alignment)
 			{
 			}
@@ -48,23 +51,50 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API ImageListRenderer: public BitmapListRenderer, public KxWithImageList
+	class KX_API BitmapListRenderer: public BitmapListRendererBase
+	{
+		private:
+			std::vector<wxBitmap> m_Bitmaps;
+
+		protected:
+			bool SetValue(const wxAny& value) override;
+
+			size_t GetBitmapCount() const override
+			{
+				return m_Bitmaps.size();
+			}
+			const wxBitmap& GetBitmap(size_t index) const override
+			{
+				return index < m_Bitmaps.size() ? m_Bitmaps[index] : wxNullBitmap;
+			}
+
+		public:
+			BitmapListRenderer(int alignment = wxALIGN_INVALID)
+				:BitmapListRendererBase(alignment)
+			{
+			}
+	};
+}
+
+namespace KxDataView2
+{
+	class KX_API ImageListRenderer: public BitmapListRendererBase, public KxWithImageList
 	{
 		protected:
 			bool SetValue(const wxAny& value) override;
-			wxSize GetCellSize() const override;
+
 			size_t GetBitmapCount() const override
 			{
 				return HasImageList() ? GetImageList()->GetImageCount() : 0;
 			}
-			wxBitmap GetBitmap(size_t index) const override
+			const wxBitmap& GetBitmap(size_t index) const override
 			{
 				return HasImageList() ? GetBitmap(index) : wxNullBitmap;
 			}
 
 		public:
 			ImageListRenderer(int alignment = wxALIGN_INVALID)
-				:BitmapListRenderer(alignment)
+				:BitmapListRendererBase(alignment)
 			{
 			}
 	};

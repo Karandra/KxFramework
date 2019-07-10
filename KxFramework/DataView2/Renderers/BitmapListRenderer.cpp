@@ -3,6 +3,7 @@
 #include "KxFramework/DataView2/View.h"
 #include "KxFramework/DataView2/Node.h"
 #include "KxFramework/DataView2/Column.h"
+#include "TextRenderer.h"
 
 namespace
 {
@@ -10,57 +11,99 @@ namespace
 	{
 		return window->FromDIP(wxSize(value, 0)).GetWidth();
 	}
+	wxSize GetSmallIconSize()
+	{
+		return {wxSystemSettings::GetMetric(wxSYS_SMALLICON_X), wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y)};
+	}
 }
 
 namespace KxDataView2
 {
-	void BitmapListRenderer::DrawCellContent(const wxRect& cellRect, CellState cellState)
+	bool BitmapListRendererBase::SetValue(const wxAny& value)
 	{
-		const size_t bitmapCount = GetBitmapCount();
-		if (bitmapCount != 0)
+		return TextRenderer::GetValueAsString(value, m_Text);
+	}
+
+	void BitmapListRendererBase::DrawCellContent(const wxRect& cellRect, CellState cellState)
+	{
+		RenderEngine renderEngine = GetRenderEngine();
+
+		int offsetX = 0;
+		if (size_t bitmapCount = GetBitmapCount(); bitmapCount != 0)
 		{
+			const wxSize smallIcon = GetSmallIconSize();
 			const int spacing = CalcSpacing(GetView(), m_Spacing);
 
-			int index = 0;
 			for (size_t i = 0; i < bitmapCount; i++)
 			{
-				wxBitmap bitmap = GetBitmap(i);
+				const wxBitmap& bitmap = GetBitmap(i);
 				if (bitmap.IsOk() || !m_SkipInvalidBitmaps)
 				{
+					const wxSize bitmapSize = bitmap.IsOk() ? bitmap.GetSize() : smallIcon;
+
 					wxRect bitmapRect = cellRect;
-					bitmapRect.SetX(cellRect.GetX() + (index * (bitmap.GetWidth() + spacing)));
-					bitmapRect.SetWidth(bitmap.GetWidth());
-					bitmapRect.SetHeight(std::clamp(bitmap.GetHeight(), 0, cellRect.GetHeight()));
+					bitmapRect.SetX(cellRect.GetX() + offsetX);
+					bitmapRect.SetWidth(bitmapSize.GetWidth());
+					bitmapRect.SetHeight(std::clamp(bitmapSize.GetHeight(), 0, cellRect.GetHeight()));
 
 					// Don't draw images with invalid indexes, but count them as drawn to allow spaces.
 					if (bitmap.IsOk())
 					{
-						GetRenderEngine().DrawBitmap(bitmapRect, cellState, bitmap);
+						renderEngine.DrawBitmap(bitmapRect, cellState, bitmap);
 					}
-					index++;
+
+					// Move right
+					offsetX += bitmapSize.GetWidth() + spacing;
 				}
 			}
+		}
+		if (m_Text.IsEmpty())
+		{
+			offsetX += renderEngine.GetInterTextSpacing();
+			GetRenderEngine().DrawText(cellRect, cellState, m_Text, offsetX);
 		}
 	}
-	wxSize BitmapListRenderer::GetCellSize() const
+	wxSize BitmapListRendererBase::GetCellSize() const
 	{
-		const size_t bitmapCount = GetBitmapCount();
-		if (bitmapCount != 0)
+		wxSize totalSize;
+		if (!m_Text.IsEmpty())
 		{
-			int totalWidth = 0;
-			int maxHeight = 0;
+			RenderEngine renderEngine = GetRenderEngine();
+
+			totalSize = renderEngine.GetTextExtent(m_Text);
+			totalSize.x += renderEngine.GetInterTextSpacing();
+		}
+		if (size_t bitmapCount = GetBitmapCount(); bitmapCount != 0)
+		{
+			const wxSize smallIcon = GetSmallIconSize();
+			const int spacing = CalcSpacing(GetView(), GetSpacing());
+
 			for (size_t i = 0; i < bitmapCount; i++)
 			{
-				wxBitmap bitmap = GetBitmap(i);
-				if (bitmap.IsOk())
+				const wxBitmap& bitmap = GetBitmap(i);
+				if (bitmap.IsOk() || !m_SkipInvalidBitmaps)
 				{
-					totalWidth += bitmap.GetWidth();
-					maxHeight = std::max(maxHeight, bitmap.GetHeight());
+					const wxSize bitmapSize = bitmap.IsOk() ? bitmap.GetSize() : smallIcon;
+
+					totalSize.x += bitmapSize.GetWidth() + spacing;
+					totalSize.y = std::max(totalSize.y, bitmapSize.GetHeight());
 				}
 			}
-			return wxSize(totalWidth, maxHeight);
 		}
-		return wxSize(0, 0);
+		return totalSize;
+	}
+}
+
+namespace KxDataView2
+{
+	bool BitmapListRenderer::SetValue(const wxAny& value)
+	{
+		m_Bitmaps.clear();
+		if (value.GetAs(&m_Bitmaps))
+		{
+			return true;
+		}
+		return BitmapListRendererBase::SetValue(value);
 	}
 }
 
@@ -68,18 +111,12 @@ namespace KxDataView2
 {
 	bool ImageListRenderer::SetValue(const wxAny& value)
 	{
-		return true;
-	}
-	wxSize ImageListRenderer::GetCellSize() const
-	{
-		if (const KxImageList* imageList = GetImageList())
+		KxImageList* imageList = nullptr;
+		if (value.GetAs(&imageList))
 		{
-			const int spacing = CalcSpacing(GetView(), GetSpacing());
-
-			wxSize size = imageList->GetSize();
-			size.x = (size.x + spacing) * imageList->GetImageCount();
-			return size;
+			SetImageList(imageList);
+			return true;
 		}
-		return wxSize(0, 0);
+		return BitmapListRendererBase::SetValue(value);
 	}
 }
