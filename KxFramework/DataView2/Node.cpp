@@ -407,17 +407,31 @@ namespace KxDataView2
 	}
 	bool Node::IsCurrent() const
 	{
-		if (View* view = GetView())
+		if (MainWindow* mainWindow = GetMainWindow())
 		{
-			return view->GetCurrentItem() == this;
+			if (mainWindow->IsVirtualList())
+			{
+				return GetRow() == mainWindow->m_CurrentRow;
+			}
+			else
+			{
+				return mainWindow->GetView()->GetCurrentItem() == this;
+			}
 		}
 		return false;
 	}
 	bool Node::IsHotTracked() const
 	{
-		if (View* view = GetView())
+		if (MainWindow* mainWindow = GetMainWindow())
 		{
-			return view->GetHotTrackedItem() == this;
+			if (mainWindow->IsVirtualList())
+			{
+				return GetRow() == mainWindow->m_HotTrackRow;
+			}
+			else
+			{
+				return mainWindow->GetView()->GetHotTrackedItem() == this;
+			}
 		}
 		return false;
 	}
