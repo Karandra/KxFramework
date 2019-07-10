@@ -2966,6 +2966,11 @@ namespace KxDataView2
 			if (m_SelectionStore.OnItemsDeleted(row + 1, rowsRemoved))
 			{
 				RefreshRow(row);
+
+				if (!m_CurrentColumn)
+				{
+					m_CurrentColumn = m_View->GetExpanderColumnOrFirstOne();
+				}
 				SendSelectionChangedEvent(GetNodeByRow(row), m_CurrentColumn);
 			}
 			node.ToggleNodeExpanded();
