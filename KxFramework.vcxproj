@@ -384,7 +384,6 @@
     <ClInclude Include="KxFramework\KxNotebook.h" />
     <ClInclude Include="KxFramework\KxNotifyEvent.h" />
     <ClInclude Include="KxFramework\KxPanel.h" />
-    <ClInclude Include="KxFramework\KxParagraph.h" />
     <ClInclude Include="KxFramework\KxProcess.h" />
     <ClInclude Include="KxFramework\KxProcessEvent.h" />
     <ClInclude Include="KxFramework\KxProcessThread.h" />
@@ -647,7 +646,6 @@
     <ClCompile Include="KxFramework\KxNotebook.cpp" />
     <ClCompile Include="KxFramework\KxNotifyEvent.cpp" />
     <ClCompile Include="KxFramework\KxPanel.cpp" />
-    <ClCompile Include="KxFramework\KxParagraph.cpp" />
     <ClCompile Include="KxFramework\KxProcess.cpp" />
     <ClCompile Include="KxFramework\KxProcessEvent.cpp" />
     <ClCompile Include="KxFramework\KxProcessThread.cpp" />

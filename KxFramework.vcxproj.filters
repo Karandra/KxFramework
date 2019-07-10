@@ -352,9 +352,6 @@
     <ClInclude Include="KxFramework\KxImageView.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxParagraph.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxProgressBar.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
@@ -1109,9 +1106,6 @@
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxImageView.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxParagraph.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxProgressBar.cpp">
