@@ -145,7 +145,7 @@ void KxHTMLWindow::OnHTMLLinkClicked(const wxHtmlLinkInfo& link)
 }
 wxHtmlOpeningStatus KxHTMLWindow::OnHTMLOpeningURL(wxHtmlURLType type, const wxString& url, wxString* redirect) const
 {
-	return wxHTML_BLOCK;
+	return wxHtmlWindow::OnHTMLOpeningURL(type, url, redirect);
 }
 
 bool KxHTMLWindow::DoSetFont(const wxFont& normalFont)

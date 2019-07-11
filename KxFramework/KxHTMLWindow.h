@@ -57,6 +57,19 @@ class KX_API KxHTMLWindow: public wxHtmlWindow, public wxTextEntry
 		~KxHTMLWindow();
 
 	public:
+		// KxHTMLWindow
+		wxString GetPage() const
+		{
+			const wxString* source = wxHtmlWindow::GetParser()->GetSource();
+			return source ? *source : wxEmptyString;
+		}
+		bool IsEmpty() const
+		{
+			const wxString* source = wxHtmlWindow::GetParser()->GetSource();
+			return source == nullptr || source->IsEmpty();
+		}
+
+	public:
 		// wxTextEntry
 		wxString GetValue() const override
 		{
@@ -199,7 +212,7 @@ class KX_API KxHTMLWindow: public wxHtmlWindow, public wxTextEntry
 			// Not implemented
 			//m_IsEditable = isEditable;
 		}
-		
+
 	public:
 		KxHTMLWindow& operator<<(const wxString& value)
 		{
