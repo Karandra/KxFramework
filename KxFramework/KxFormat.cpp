@@ -8,53 +8,61 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxFramework/KxFormat.h"
 #include "KxFramework/KxString.h"
 
-void KxFormatBase::FindAndReplace(const wxString& string, size_t index, size_t startAt)
+void KxFormatBase::ReplaceNext(const wxString& string)
+{
+	ReplaceAnchor(string, m_CurrentArgument);
+	m_CurrentArgument++;
+}
+void KxFormatBase::ReplaceAnchor(const wxString& string, size_t index, size_t startAt)
 {
 	wchar_t indexBuffer[64] = {0};
-	swprintf_s(indexBuffer, L"%%%zu", index);
+	int indexLength = swprintf_s(indexBuffer, L"%%%zu", index);
 
-	bool ok = false;
-	size_t count = 0;
-	do
+	if (indexLength > 0)
 	{
-		ok = FindAndReplace(string, indexBuffer, startAt);
-		count++;
+		std::wstring_view indexString(indexBuffer, indexLength);
+
+		bool ok = false;
+		size_t count = 0;
+		size_t next = 0;
+
+		do
+		{
+			ok = DoReplace(string, indexString, startAt + next, next);
+			count++;
+		}
+		while (ok && count < 1024);
 	}
-	while (ok && count < 1024);
 }
-bool KxFormatBase::FindAndReplace(const wxString& string, const std::wstring_view& index, size_t startAt)
+bool KxFormatBase::DoReplace(const wxString& string, std::wstring_view index, size_t startAt, size_t& next)
 {
 	size_t pos = m_String.find(index.data(), startAt);
 	if (pos != wxString::npos && m_String.length() > pos + 1)
 	{
 		m_String.replace(pos, index.length(), string);
+		next = pos + string.length();
 		return true;
 	}
 	return false;
-}
-void KxFormatBase::FindCurrentAndReplace(const wxString& string)
-{
-	FindAndReplace(string, m_CurrentArgument);
-	m_CurrentArgument++;
 }
 
 void KxFormatBase::FormatString(const wxString& arg, int fieldWidth, wxUniChar fillChar)
 {
 	if (fieldWidth == 0 || arg.length() >= (size_t)std::abs(fieldWidth))
 	{
-		FindCurrentAndReplace(arg);
+		ReplaceNext(arg);
 	}
 	else if (fieldWidth > 0)
 	{
 		wxString copy(fillChar, (size_t)fieldWidth - arg.length());
 		copy += arg;
-		FindCurrentAndReplace(copy);
+		ReplaceNext(copy);
 	}
 	else
 	{
 		wxString copy(arg);
 		copy.append(static_cast<size_t>(-fieldWidth) - arg.length(), fillChar);
-		FindCurrentAndReplace(copy);
+		ReplaceNext(copy);
 	}
 }
 void KxFormatBase::FormatChar(wxUniChar arg, int fieldWidth, wxUniChar fillChar)

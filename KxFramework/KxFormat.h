@@ -27,9 +27,9 @@ class KX_API KxFormatBase
 			return m_String;
 		}
 
-		bool FindAndReplace(const wxString& string, const std::wstring_view& index, size_t startAt = 0);
-		void FindAndReplace(const wxString& string, size_t index, size_t startAt = 0);
-		void FindCurrentAndReplace(const wxString& string);
+		void ReplaceNext(const wxString& string);
+		void ReplaceAnchor(const wxString& string, size_t index, size_t startAt = 0);
+		bool DoReplace(const wxString& string, std::wstring_view index, size_t startAt, size_t& next);
 
 		void FormatString(const wxString& arg, int fieldWidth, wxUniChar fillChar);
 		void FormatChar(wxUniChar arg, int fieldWidth, wxUniChar fillChar);
