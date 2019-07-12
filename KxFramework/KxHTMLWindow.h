@@ -58,6 +58,11 @@ class KX_API KxHTMLWindow: public wxHtmlWindow, public wxTextEntry
 
 	public:
 		// KxHTMLWindow
+		wxBorder GetDefaultBorder() const override
+		{
+			return wxBORDER_THEME;
+		}
+		
 		wxString GetPage() const
 		{
 			const wxString* source = wxHtmlWindow::GetParser()->GetSource();
