@@ -6,6 +6,31 @@
 #include "KxFramework/KxHTMLWindow.h"
 #include <wx/html/htmprint.h>
 
+namespace
+{
+	// For some unknown reason scale of '1.0' renders text too large.
+	// Scaling it to '0.8' solves this.
+	constexpr double g_UserScale = 0.8;
+
+	class DCUserScaleSaver final
+	{
+		private:
+			wxDC& m_DC;
+			wxPoint2DDouble m_UserScale;
+
+		public:
+			DCUserScaleSaver(wxDC& dc)
+				:m_DC(dc)
+			{
+				m_DC.GetUserScale(&m_UserScale.m_x, &m_UserScale.m_y);
+			}
+			~DCUserScaleSaver()
+			{
+				m_DC.SetUserScale(m_UserScale.m_x, m_UserScale.m_y);
+			}
+	};
+}
+
 namespace KxDataView2
 {
 	bool HTMLRenderer::SetValue(const wxAny& value)
@@ -27,22 +52,26 @@ namespace KxDataView2
 
 	void HTMLRenderer::PrepareRenderer(wxHtmlDCRenderer& htmlRenderer, wxDC& dc, const wxRect& cellRect) const
 	{
-		// For some unknown reason scale of '1.0' renders text too large.
-		// Scaling it to '0.8' solves this.
-		constexpr double userScale = 0.8;
-		htmlRenderer.SetDC(&dc, userScale * m_PixelScale, userScale * m_FontScale);
+		htmlRenderer.SetDC(&dc, g_UserScale * m_PixelScale, g_UserScale * m_FontScale);
 
 		// Size
 		wxSize size = cellRect.GetSize();
 		size.IncTo(GetCellSize());
 		htmlRenderer.SetSize(size.GetWidth(), size.GetHeight());
 
-		// Content
+		// Set HTML
 		htmlRenderer.SetHtmlText(m_ContentHTML);
 
-		const wxFont& font = dc.GetFont();
-		htmlRenderer.SetFonts(font.GetFaceName(), wxS("Consolas"));
-		htmlRenderer.SetStandardFonts(font.GetPointSize(), font.GetFaceName(), wxS("Consolas"));
+		// Setup fonts. This needs to be done after a call to 'wxHtmlDCRenderer::SetHtmlText',
+		// otherwise text scales really weirdly.
+		int pointSize = 0;
+		wxString normalFace;
+		wxString fixedFace;
+		if (KxHTMLWindow::SetupFontsUsing(dc.GetFont(), normalFace, fixedFace, pointSize))
+		{
+			htmlRenderer.SetFonts(normalFace, fixedFace);
+			htmlRenderer.SetStandardFonts(pointSize, normalFace, fixedFace);
+		}
 	}
 	void HTMLRenderer::DrawCellContent(const wxRect& cellRect, CellState cellState)
 	{
@@ -50,18 +79,12 @@ namespace KxDataView2
 		{
 			// Prefer regular DC
 			wxDC& dc = HasRegularDC() ? GetRegularDC() : GetGraphicsDC();
-			wxHtmlDCRenderer htmlRenderer;
-			PrepareRenderer(htmlRenderer, dc, cellRect);
-
-			// Save user scale
-			wxPoint2DDouble userScale(1.0,  1.0);
-			dc.GetUserScale(&userScale.m_x, &userScale.m_y);
+			DCUserScaleSaver userScaleSaver(dc);
 
 			// Render text
+			wxHtmlDCRenderer htmlRenderer;
+			PrepareRenderer(htmlRenderer, dc, cellRect);
 			htmlRenderer.Render(cellRect.GetX(), cellRect.GetY(), m_VisibleCellFrom, m_VisibleCellTo);
-
-			// Restore user scale
-			dc.SetUserScale(userScale.m_x, userScale.m_y);
 		}
 	}
 	wxSize HTMLRenderer::GetCellSize() const
@@ -71,5 +94,13 @@ namespace KxDataView2
 			return GetRenderEngine().GetMultilineTextExtent(m_Value.GetText());
 		}
 		return wxSize(0, 0);
+	}
+
+	HTMLRenderer::HTMLRenderer(int alignment)
+		:Renderer(alignment)
+	{
+	}
+	HTMLRenderer::~HTMLRenderer()
+	{
 	}
 }

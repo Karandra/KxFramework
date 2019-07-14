@@ -27,10 +27,8 @@ namespace KxDataView2
 			wxSize GetCellSize() const override;
 
 		public:
-			HTMLRenderer(int alignment = wxALIGN_INVALID)
-				:Renderer(alignment)
-			{
-			}
+			HTMLRenderer(int alignment = wxALIGN_INVALID);
+			~HTMLRenderer();
 
 		public:
 			int GetVisibleCellFrom() const
