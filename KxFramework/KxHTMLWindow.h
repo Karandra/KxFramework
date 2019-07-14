@@ -7,6 +7,7 @@ class KX_API KxHTMLWindow: public wxHtmlWindow, public wxTextEntry
 {
 	public:
 		static wxString ProcessPlainText(const wxString& text);
+		static bool SetupFontsUsing(const wxFont& normalFont, wxString& normalFace, wxString& fixedFace, int& pointSize);
 
 	private:
 		wxBitmap m_BackgroundBitmap;

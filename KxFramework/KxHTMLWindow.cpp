@@ -22,6 +22,36 @@ wxString KxHTMLWindow::ProcessPlainText(const wxString& text)
 		return temp;
 	}
 }
+bool KxHTMLWindow::SetupFontsUsing(const wxFont& normalFont, wxString& normalFace, wxString& fixedFace, int& pointSize)
+{
+	if (normalFont.IsOk())
+	{
+		wxFont fixedFont(normalFont);
+		auto UseFixedFont = [&]()
+		{
+			pointSize = normalFont.GetPointSize();
+			normalFace = normalFont.GetFaceName();
+			fixedFace = fixedFont.GetFaceName();
+		};
+
+		if (fixedFont.SetFaceName(wxS("Consolas")) || fixedFont.SetFaceName(wxS("Courier New")))
+		{
+			UseFixedFont();
+		}
+		else if (fixedFont.SetFamily(wxFONTFAMILY_TELETYPE); fixedFont.IsOk())
+		{
+			UseFixedFont();
+		}
+		else
+		{
+			pointSize = normalFont.GetPointSize();
+			normalFace = normalFont.GetFaceName();
+			fixedFace = normalFont.GetFaceName();
+		}
+		return true;
+	}
+	return false;
+}
 
 void KxHTMLWindow::CopyTextToClipboard(const wxString& value) const
 {
@@ -150,27 +180,13 @@ wxHtmlOpeningStatus KxHTMLWindow::OnHTMLOpeningURL(wxHtmlURLType type, const wxS
 
 bool KxHTMLWindow::DoSetFont(const wxFont& normalFont)
 {
-	wxFont fixedFont(normalFont);
-	auto UseFixedFont = [this, &normalFont, &fixedFont]()
-	{
-		wxHtmlWindow::SetStandardFonts(normalFont.GetPointSize(), normalFont.GetFaceName(), fixedFont.GetFaceName());
-	};
+	int pointSize = normalFont.GetPointSize();
+	wxString normalFace;
+	wxString fixedFace;
 
-	if (fixedFont.SetFaceName(wxS("Consolas")))
+	if (SetupFontsUsing(normalFont, normalFace, fixedFace, pointSize))
 	{
-		UseFixedFont();
-	}
-	else if (fixedFont.SetFaceName(wxS("Courier New")))
-	{
-		UseFixedFont();
-	}
-	else if (fixedFont.SetFamily(wxFONTFAMILY_TELETYPE); fixedFont.IsOk())
-	{
-		UseFixedFont();
-	}
-	else if (normalFont.IsOk())
-	{
-		wxHtmlWindow::SetStandardFonts(normalFont.GetPointSize(), normalFont.GetFaceName(), normalFont.GetFaceName());
+		wxHtmlWindow::SetStandardFonts(pointSize, normalFace, fixedFace);
 		return true;
 	}
 	return false;
