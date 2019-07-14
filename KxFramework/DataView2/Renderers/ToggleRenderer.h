@@ -87,7 +87,6 @@ namespace KxDataView2
 	class KX_API ToggleRendererBase
 	{
 		private:
-			ToggleValue m_DefaultState;
 			ToggleValue& m_Value;
 
 		protected:
@@ -97,16 +96,6 @@ namespace KxDataView2
 			ToggleRendererBase(ToggleValue& value)
 				:m_Value(value)
 			{
-			}
-
-		public:
-			const ToggleValue& GetDefaultState() const
-			{
-				return m_DefaultState;
-			}
-			ToggleValue& GetDefaultState()
-			{
-				return m_DefaultState;
 			}
 	};
 }

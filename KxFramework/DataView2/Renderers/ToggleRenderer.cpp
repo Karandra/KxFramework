@@ -125,7 +125,7 @@ namespace KxDataView2
 	{
 		if (!m_Value.FromAny(value))
 		{
-			m_Value = GetDefaultState();
+			m_Value.Clear();
 			return false;
 		}
 		return true;
