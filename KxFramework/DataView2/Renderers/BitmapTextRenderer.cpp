@@ -15,12 +15,8 @@ namespace KxDataView2
 {
 	bool BitmapTextRenderer::SetValue(const wxAny& value)
 	{
-		if (!m_Value.FromAny(value))
-		{
-			m_Value.Clear();
-			return false;
-		}
-		return true;
+		m_Value.Clear();
+		return m_Value.FromAny(value);
 	}
 
 	void BitmapTextRenderer::DrawCellContent(const wxRect& cellRect, CellState cellState)

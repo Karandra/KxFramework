@@ -13,12 +13,8 @@ namespace KxDataView2
 {
 	bool TextRenderer::SetValue(const wxAny& value)
 	{
-		if (!m_Value.FromAny(value))
-		{
-			m_Value.Clear();
-			return false;
-		}
-		return true;
+		m_Value.Clear();
+		return m_Value.FromAny(value);
 	}
 
 	void TextRenderer::DrawCellContent(const wxRect& cellRect, CellState cellState)

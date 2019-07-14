@@ -20,12 +20,8 @@ namespace KxDataView2
 {
 	bool ProgressRenderer::SetValue(const wxAny& value)
 	{
-		if (!m_Value.FromAny(value))
-		{
-			m_Value.Clear();
-			return false;
-		}
-		return true;
+		m_Value.Clear();
+		return m_Value.FromAny(value);
 	}
 
 	void ProgressRenderer::DrawCellContent(const wxRect& cellRect, CellState cellState)

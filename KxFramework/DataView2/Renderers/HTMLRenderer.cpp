@@ -10,17 +10,15 @@ namespace KxDataView2
 {
 	bool HTMLRenderer::SetValue(const wxAny& value)
 	{
+		m_Value.Clear();
+		m_ContentHTML.clear();
+
 		if (m_Value.FromAny(value))
 		{
 			m_ContentHTML = KxHTMLWindow::ProcessPlainText(m_Value.GetText());
 			return true;
 		}
-		else
-		{
-			m_Value.Clear();
-			m_ContentHTML.clear();
-			return false;
-		}
+		return false;
 	}
 	ToolTip HTMLRenderer::CreateToolTip() const
 	{
