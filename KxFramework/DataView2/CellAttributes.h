@@ -21,7 +21,7 @@ namespace KxDataView2
 		public:
 			bool IsDefault() const
 			{
-				return m_Options.IsDefault() && m_BGOptions.IsDefault() && m_BGOptions.IsDefault();
+				return m_Options.IsDefault() && m_BGOptions.IsDefault() && m_FontOptions.IsDefault();
 			}
 			void Reset()
 			{

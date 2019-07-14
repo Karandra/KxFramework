@@ -39,7 +39,7 @@ namespace KxDataView2
 		{
 			if (GetView()->IsStyleEnabled(CtrlStyle::VerticalRules))
 			{
-				if (m_Column->IsDisplayedLast() && (cellState.IsHotTracked() || cellState.IsHotTracked()))
+				if (m_Column->IsDisplayedLast() && (cellState.IsHotTracked() || cellState.IsSelected()))
 				{
 					return rect;
 				}
