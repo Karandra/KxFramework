@@ -6,63 +6,76 @@
 
 namespace KxDataView2
 {
-	bool ToggleRenderer::GetValueAsToggleState(const wxAny& value, ToggleState& state)
+	bool ToggleValue::FromAny(const wxAny& value)
 	{
-		// Check for 'ToggleState'
+		if (!value.GetAs(this))
 		{
-			ToggleState tempState = ToggleState::None;
-			if (value.CheckType<ToggleState>() && value.GetAs(&tempState))
+			// Check for 'ToggleState'
+			if (ToggleState state = ToggleState::None; value.CheckType<ToggleState>() && value.GetAs(&state))
 			{
-				switch (tempState)
+				switch (state)
 				{
 					case ToggleState::Checked:
 					case ToggleState::Unchecked:
 					case ToggleState::Indeterminate:
 					{
-						state = tempState;
+						m_State = state;
 						return true;
 					}
 				};
 			}
-		}
 
-		// Check for 'wxCheckBoxState'
-		{
-			wxCheckBoxState tempState = static_cast<wxCheckBoxState>(-1); // Should be invalid 'wxCheckBoxState' value
-			if (value.CheckType<wxCheckBoxState>() && value.GetAs(&tempState))
+			// Check for 'wxCheckBoxState'
+			if (wxCheckBoxState state = static_cast<wxCheckBoxState>(-1); value.CheckType<wxCheckBoxState>() && value.GetAs(&state))
 			{
-				switch (tempState)
+				switch (state)
 				{
 					case wxCHK_CHECKED:
 					{
-						state = ToggleState::Checked;
+						m_State = ToggleState::Checked;
 						return true;
 					}
 					case wxCHK_UNCHECKED:
 					{
-						state = ToggleState::Unchecked;
+						m_State = ToggleState::Unchecked;
 						return true;
 					}
 					case wxCHK_UNDETERMINED:
 					{
-						state = ToggleState::Indeterminate;
+						m_State = ToggleState::Indeterminate;
+						return true;
+					}
+				};
+			}
+
+			// Check for bool
+			if (bool isChecked = false; value.CheckType<bool>() && value.GetAs(&isChecked))
+			{
+				m_State = isChecked ? ToggleState::Checked : ToggleState::Unchecked;
+				return true;
+			}
+
+			// Check for 'ToggleType'
+			if (ToggleType type = ToggleType::None; value.CheckType<ToggleType>() && value.GetAs(&type))
+			{
+				switch (type)
+				{
+					case ToggleType::None:
+					case ToggleType::CheckBox:
+					case ToggleType::RadioBox:
+					{
+						m_Type = type;
 						return true;
 					}
 				};
 			}
 		}
-
-		// Check for bool
-		{
-			bool checked = false;
-			if (value.CheckType<bool>() && value.GetAs(&checked))
-			{
-				state = checked ? ToggleState::Checked : ToggleState::Unchecked;
-				return true;
-			}
-		}
 		return false;
 	}
+}
+
+namespace KxDataView2
+{
 	bool ToggleRendererBase::DoOnActivateCell(const wxRect& toggleRect, ToggleState& state, const wxMouseEvent* mouseEvent) const
 	{
 		// Only react to clicks directly on the checkbox, not elsewhere in the same cell.
@@ -76,7 +89,7 @@ namespace KxDataView2
 		{
 			case ToggleState::Checked:
 			{
-				nextState = Is3StateAllowed() ? ToggleState::Indeterminate : ToggleState::Unchecked;
+				nextState = m_Value.Is3StateAllowed() ? ToggleState::Indeterminate : ToggleState::Unchecked;
 				break;
 			}
 			case ToggleState::Unchecked:
@@ -110,21 +123,10 @@ namespace KxDataView2
 	}
 	bool ToggleRenderer::SetValue(const wxAny& value)
 	{
-		m_Value = ToggleValue();
-		if (!value.GetAs(&m_Value))
+		if (!m_Value.FromAny(value))
 		{
-			m_Value.SetType(GetDefaultToggleType());
-
-			ToggleState state = ToggleState::None;
-			if (GetValueAsToggleState(value, state))
-			{
-				m_Value.SetState(state);
-			}
-			else
-			{
-				m_Value.SetState(GetDefaultToggleState());
-				return false;
-			}
+			m_Value = GetDefaultState();
+			return false;
 		}
 		return true;
 	}
@@ -138,6 +140,10 @@ namespace KxDataView2
 	}
 	wxSize ToggleRenderer::GetCellSize() const
 	{
-		return GetRenderEngine().GetToggleSize();
+		if (m_Value.HasType())
+		{
+			return GetRenderEngine().GetToggleSize();
+		}
+		return wxSize(0, 0);
 	}
 }

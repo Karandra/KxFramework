@@ -6,37 +6,44 @@
 
 namespace KxDataView2
 {
+	bool ProgressValueBase::FromAny(const wxAny& value)
+	{
+		return value.GetAs(&m_Position) || value.GetAs(this);
+	}
+	bool ProgressValue::FromAny(const wxAny& value)
+	{
+		return TextValue::FromAny(value) || ProgressValueBase::FromAny(value) || value.GetAs(this);
+	}
+}
+
+namespace KxDataView2
+{
 	bool ProgressRenderer::SetValue(const wxAny& value)
 	{
-		m_Value = ProgressValue();
-		if (!value.GetAs(&m_Value))
+		if (!m_Value.FromAny(value))
 		{
-			int position = -1;
-			if (value.GetAs(&position))
-			{
-				m_Value.SetPosition(position);
-			}
-			else
-			{
-				return false;
-			}
+			m_Value.Clear();
+			return false;
 		}
 		return true;
 	}
 
 	void ProgressRenderer::DrawCellContent(const wxRect& cellRect, CellState cellState)
 	{
+		RenderEngine renderEngine = GetRenderEngine();
 		if (m_Value.HasPosition())
 		{
-			GetRenderEngine().DrawProgressBar(cellRect, cellState, m_Value.GetPosition(), m_Value.GetRange(), m_Value.GetState());
+			renderEngine.DrawProgressBar(cellRect, cellState, m_Value.GetPosition(), m_Value.GetRange(), m_Value.GetState());
 		}
 		if (m_Value.HasText())
 		{
-			GetRenderEngine().DrawText(cellRect, cellState, m_Value.GetText());
+			renderEngine.DrawText(cellRect, cellState, m_Value.GetText());
 		}
 	}
 	wxSize ProgressRenderer::GetCellSize() const
 	{
+		RenderEngine renderEngine = GetRenderEngine();
+
 		// Return 'wxDefaultCoord' for width because a progress bar fits any width 
 		// unless it has a text string). Unlike most renderers, it doesn't have a "good" width
 		// for the content. This makes it grow/ to the whole column, which is pretty much always
@@ -45,7 +52,7 @@ namespace KxDataView2
 		wxSize size;
 		if (m_Value.HasText())
 		{
-			size += GetRenderEngine().GetTextExtent(m_Value.GetText());
+			size += renderEngine.GetTextExtent(m_Value.GetText());
 		}
 
 		wxSize barSize;
@@ -58,7 +65,7 @@ namespace KxDataView2
 			}
 			case ProgressHeight::Fit:
 			{
-				barSize = wxSize(wxDefaultCoord, GetView()->GetUniformRowHeight() - GetView()->FromDIP(4));
+				barSize = wxSize(wxDefaultCoord, GetView()->GetUniformRowHeight() - renderEngine.FromDIPY(4));
 				break;
 			}
 			default:

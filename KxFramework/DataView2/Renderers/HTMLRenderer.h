@@ -1,6 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView2/Renderer.h"
+#include "TextRenderer.h"
 class wxHtmlDCRenderer;
 
 namespace KxDataView2
@@ -8,7 +9,7 @@ namespace KxDataView2
 	class KX_API HTMLRenderer: public Renderer
 	{
 		private:
-			wxString m_Content;
+			TextValue m_Value;
 			wxString m_ContentHTML;
 
 			double m_PixelScale = 1.0;

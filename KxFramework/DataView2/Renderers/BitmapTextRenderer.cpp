@@ -5,28 +5,28 @@
 
 namespace KxDataView2
 {
+	bool BitmapTextValue::FromAny(const wxAny& value)
+	{
+		return TextValue::FromAny(value) || BitmapValue::FromAny(value) || value.GetAs(this);
+	}
+}
+
+namespace KxDataView2
+{
 	bool BitmapTextRenderer::SetValue(const wxAny& value)
 	{
-		m_Value = BitmapTextValue();
-		if (value.GetAs(&m_Value))
+		if (!m_Value.FromAny(value))
 		{
-			return true;
+			m_Value.Clear();
+			return false;
 		}
-		if (BitmapRenderer::GetValueAsBitmap(value, m_Value.GetBitmap()))
-		{
-			return true;
-		}
-		if (TextRenderer::GetValueAsString(value, m_Value.GetText()))
-		{
-			return true;
-		}
-		return false;
+		return true;
 	}
 
 	void BitmapTextRenderer::DrawCellContent(const wxRect& cellRect, CellState cellState)
 	{
 		const bool centerTextV = m_Value.IsOptionEnabled(BitmapTextValueOptions::VCenterText);
-		const int reservedWidth = m_Value.GetReservedBitmapWidth();
+		const int reservedWidth = m_Value.GetDefaultBitmapWidth();
 
 		GetRenderEngine().DrawBitmapWithText(cellRect, cellState, 0, m_Value.GetText(), m_Value.GetBitmap(), centerTextV, reservedWidth);
 	}
@@ -48,9 +48,9 @@ namespace KxDataView2
 				size.y = bitmap.GetHeight();
 			}
 		}
-		else if (int reservedWidth = m_Value.GetReservedBitmapWidth(); reservedWidth > 0)
+		else if (m_Value.IsDefaultBitmapWidthSpecified())
 		{
-			size.x += reservedWidth + renderEngine.FromDIPX(renderEngine.GetInterTextSpacing());
+			size.x += m_Value.GetDefaultBitmapWidth() + renderEngine.FromDIPX(renderEngine.GetInterTextSpacing());
 		}
 		return size;
 	}

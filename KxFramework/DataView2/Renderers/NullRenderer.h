@@ -21,8 +21,8 @@ namespace KxDataView2
 			}
 
 		public:
-			NullRenderer(int alignment = wxALIGN_INVALID)
-				:Renderer(alignment)
+			NullRenderer(int = wxALIGN_INVALID)
+				:Renderer(wxALIGN_INVALID)
 			{
 			}
 			

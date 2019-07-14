@@ -3,21 +3,36 @@
 
 namespace KxDataView2
 {
+	bool TextValue::FromAny(const wxAny& value)
+	{
+		return value.GetAs(&m_Text) || value.GetAs(this);
+	}
+}
+
+namespace KxDataView2
+{
 	bool TextRenderer::SetValue(const wxAny& value)
 	{
-		m_Text.clear();
-		return GetValueAsString(value, m_Text);
+		if (!m_Value.FromAny(value))
+		{
+			m_Value.Clear();
+			return false;
+		}
+		return true;
 	}
 
 	void TextRenderer::DrawCellContent(const wxRect& cellRect, CellState cellState)
 	{
-		GetRenderEngine().DrawText(cellRect, cellState, m_Text);
+		if (m_Value.HasText())
+		{
+			GetRenderEngine().DrawText(cellRect, cellState, m_Value.GetText());
+		}
 	}
 	wxSize TextRenderer::GetCellSize() const
 	{
-		if (!m_Text.IsEmpty())
+		if (m_Value.HasText())
 		{
-			return GetRenderEngine().GetTextExtent(m_Text);
+			return GetRenderEngine().GetTextExtent(m_Value.GetText());
 		}
 		return wxSize(0, 0);
 	}

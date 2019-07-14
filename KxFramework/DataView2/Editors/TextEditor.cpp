@@ -8,7 +8,14 @@ namespace KxDataView2
 	wxWindow* TextEditor::CreateControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value)
 	{
 		const int style = KxTextBox::DefaultStyle|wxTE_PROCESS_ENTER|(IsEditable() ? 0 : wxTE_READONLY);
-		KxTextBox* editor = new KxTextBox(parent, wxID_NONE, TextRenderer::GetValueAsString(value), cellRect.GetPosition(), cellRect.GetSize(), style, GetValidator());
+		KxTextBox* editor = new KxTextBox(parent,
+										  wxID_NONE,
+										  FromAnyUsing<TextValue>(value).GetText(),
+										  cellRect.GetPosition(),
+										  cellRect.GetSize(),
+										  style,
+										  GetValidator()
+		);
 
 		// Adjust size of 'KxTextBox' editor to fit text, even if it means being
 		// wider than the corresponding column (this is how Explorer behaves).

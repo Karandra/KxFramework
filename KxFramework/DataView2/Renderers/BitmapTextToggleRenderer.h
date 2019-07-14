@@ -1,7 +1,8 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/DataView2/Renderers/BitmapTextRenderer.h"
-#include "KxFramework/DataView2/Renderers/ToggleRenderer.h"
+#include "TextRenderer.h"
+#include "ToggleRenderer.h"
+#include "BitmapTextRenderer.h"
 
 namespace KxDataView2
 {
@@ -11,9 +12,9 @@ namespace KxDataView2
 	{
 		public:
 			BitmapTextToggleValue(const wxString& text = wxEmptyString,
-											const wxBitmap& bitmap = wxNullBitmap,
-											ToggleState state = ToggleState::None,
-											ToggleType type = ToggleType::None
+								  const wxBitmap& bitmap = wxNullBitmap,
+								  ToggleState state = ToggleState::None,
+								  ToggleType type = ToggleType::None
 			)
 				:BitmapTextValue(text, bitmap), ToggleValue(state, type)
 			{
@@ -36,6 +37,14 @@ namespace KxDataView2
 				:BitmapTextToggleValue(text, bitmap, ToggleState::None, type)
 			{
 				SetChecked(checked);
+			}
+	
+		public:
+			bool FromAny(const wxAny& value);
+			void Clear()
+			{
+				BitmapTextValue::Clear();
+				ToggleValue::Clear();
 			}
 	};
 }
@@ -64,7 +73,7 @@ namespace KxDataView2
 
 		public:
 			BitmapTextToggleRenderer(int alignment = wxALIGN_INVALID)
-				:Renderer(alignment)
+				:Renderer(alignment), ToggleRendererBase(m_Value)
 			{
 			}
 	};

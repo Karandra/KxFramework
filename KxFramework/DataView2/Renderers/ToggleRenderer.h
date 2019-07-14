@@ -9,6 +9,7 @@ namespace KxDataView2
 		private:
 			ToggleState m_State = ToggleState::None;
 			ToggleType m_Type = ToggleType::None;
+			bool m_Allow3State = false;
 
 		public:
 			ToggleValue(ToggleState state = ToggleState::None, ToggleType type = ToggleType::None)
@@ -22,6 +23,12 @@ namespace KxDataView2
 			}
 
 		public:
+			bool FromAny(const wxAny& value);
+			void Clear()
+			{
+				*this = {};
+			}
+
 			bool HasState() const
 			{
 				return m_State != ToggleState::None;
@@ -42,6 +49,10 @@ namespace KxDataView2
 			{
 				m_State = checked ? ToggleState::Checked : ToggleState::Unchecked;
 			}
+			void ClearState()
+			{
+				m_State = ToggleState::None;
+			}
 
 			bool HasType() const
 			{
@@ -55,22 +66,11 @@ namespace KxDataView2
 			{
 				m_Type = type;
 			}
-	};
-}
-
-namespace KxDataView2
-{
-	class KX_API ToggleRendererBase
-	{
-		private:
-			ToggleType m_DefaultType = ToggleType::CheckBox;
-			ToggleState m_DefaultState = ToggleState::Unchecked;
-			bool m_Allow3State = false;
-
-		protected:
-			bool DoOnActivateCell(const wxRect& toggleRect, ToggleState& state, const wxMouseEvent* mouseEvent = nullptr) const;
-
-		public:
+			void ClearType()
+			{
+				m_Type = ToggleType::None;
+			}
+	
 			bool Is3StateAllowed() const
 			{
 				return m_Allow3State;
@@ -79,23 +79,34 @@ namespace KxDataView2
 			{
 				m_Allow3State = allow;
 			}
+	};
+}
 
-			ToggleType GetDefaultToggleType() const
+namespace KxDataView2
+{
+	class KX_API ToggleRendererBase
+	{
+		private:
+			ToggleValue m_DefaultState;
+			ToggleValue& m_Value;
+
+		protected:
+			bool DoOnActivateCell(const wxRect& toggleRect, ToggleState& state, const wxMouseEvent* mouseEvent = nullptr) const;
+
+		public:
+			ToggleRendererBase(ToggleValue& value)
+				:m_Value(value)
 			{
-				return m_DefaultType;
-			}
-			void SetDefaultToggleType(ToggleType type)
-			{
-				m_DefaultType = type != ToggleType::None ? type : ToggleType::CheckBox;
 			}
 
-			ToggleState GetDefaultToggleState() const
+		public:
+			const ToggleValue& GetDefaultState() const
 			{
 				return m_DefaultState;
 			}
-			void SetDefaultToggleState(ToggleState state)
+			ToggleValue& GetDefaultState()
 			{
-				m_DefaultState = state != ToggleState::None ? state : ToggleState::Unchecked;
+				return m_DefaultState;
 			}
 	};
 }
@@ -104,15 +115,6 @@ namespace KxDataView2
 {
 	class KX_API ToggleRenderer: public Renderer, public ToggleRendererBase
 	{
-		public:
-			static bool GetValueAsToggleState(const wxAny& value, ToggleState& state);
-			static ToggleState GetValueAsToggleState(const wxAny& value)
-			{
-				ToggleState state = ToggleState::None;
-				GetValueAsToggleState(value, state);
-				return state;
-			}
-
 		private:
 			ToggleValue m_Value;
 
@@ -129,7 +131,7 @@ namespace KxDataView2
 
 		public:
 			ToggleRenderer(int alignment = wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL)
-				:Renderer(alignment)
+				:Renderer(alignment), ToggleRendererBase(m_Value)
 			{
 			}
 	};

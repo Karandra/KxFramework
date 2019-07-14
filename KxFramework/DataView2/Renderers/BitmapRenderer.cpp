@@ -3,44 +3,50 @@
 
 namespace KxDataView2
 {
-	bool BitmapRenderer::GetValueAsBitmap(const wxAny& value, wxBitmap& bitmap)
+	bool BitmapValue::FromAny(const wxAny& value)
 	{
-		if (!value.GetAs(&bitmap))
-		{
-			wxIcon icon;
-			if (value.GetAs(&icon))
-			{
-				bitmap.CopyFromIcon(icon);
-				return true;
-			}
-			else
-			{
-				wxImage image;
-				if (value.GetAs(&image))
-				{
-					bitmap = wxBitmap(image, 32);
-					return true;
-				}
-			}
-			return false;
-		}
-		else
+		if (value.GetAs(&m_Bitmap) || value.GetAs(this))
 		{
 			return true;
 		}
+		else if (wxIcon icon; value.GetAs(&icon))
+		{
+			m_Bitmap.CopyFromIcon(icon, wxBitmapTransparency_Auto);
+			return true;
+		}
+		else if (wxImage image; value.GetAs(&image))
+		{
+			m_Bitmap = wxBitmap(image, 32);
+			return true;
+		}
+		return false;
 	}
+}
 
+namespace KxDataView2
+{
 	bool BitmapRenderer::SetValue(const wxAny& value)
 	{
-		m_Bitmap = wxNullBitmap;
-		return GetValueAsBitmap(value, m_Bitmap);
+		if (!m_Value.FromAny(value))
+		{
+			m_Value.Clear();
+			return false;
+		}
+		return true;
 	}
 	void BitmapRenderer::DrawCellContent(const wxRect& cellRect, CellState cellState)
 	{
-		GetRenderEngine().DrawBitmap(cellRect, cellState, m_Bitmap);
+		if (m_Value.HasBitmap())
+		{
+			GetRenderEngine().DrawBitmap(cellRect, cellState, m_Value.GetBitmap());
+		}
 	}
 	wxSize BitmapRenderer::GetCellSize() const
 	{
-		return m_Bitmap.IsOk() ? m_Bitmap.GetSize() : wxSize(0, 0);
+		if (m_Value.HasBitmap())
+		{
+			return m_Value.GetBitmap().GetSize();
+		}
+		return wxSize(0, 0);
 	}
 }

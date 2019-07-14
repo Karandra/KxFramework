@@ -51,6 +51,12 @@ namespace KxDataView2
 		protected:
 			virtual wxWindow* CreateControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value) = 0;
 			virtual wxAny GetValue(wxWindow* control) const = 0;
+			template<class TValue> TValue FromAnyUsing(const wxAny& value) const
+			{
+				TValue rendererValue;
+				rendererValue.FromAny(value);
+				return rendererValue;
+			}
 		
 		public:
 			Editor();

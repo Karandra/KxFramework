@@ -11,19 +11,36 @@ namespace
 	{
 		return window->FromDIP(wxSize(value, 0)).GetWidth();
 	}
-	wxSize GetSmallIconSize()
+	wxSize GetSmallIconSize(const KxDataView2::BitmapValueBase& bitmapValue)
 	{
-		return {wxSystemSettings::GetMetric(wxSYS_SMALLICON_X), wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y)};
+		const int x = bitmapValue.IsDefaultBitmapWidthSpecified() ? bitmapValue.GetDefaultBitmapWidth() : wxSystemSettings::GetMetric(wxSYS_SMALLICON_X);
+		return wxSize(x, wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y));
 	}
 }
 
 namespace KxDataView2
 {
-	bool BitmapListRendererBase::SetValue(const wxAny& value)
+	bool BitmapListValue::FromAny(const wxAny& value)
 	{
-		return TextRenderer::GetValueAsString(value, m_Text);
+		return TextValue::FromAny(value) || value.GetAs(&m_Bitmaps) || value.GetAs(this);
 	}
+	bool ImageListValue::FromAny(const wxAny& value)
+	{
+		if (TextValue::FromAny(value) || value.GetAs(this))
+		{
+			return true;
+		}
+		else if (const KxImageList* imageList = nullptr; value.GetAs(&imageList))
+		{
+			KxWithImageList::SetImageList(imageList);
+			return true;
+		}
+		return false;
+	}
+}
 
+namespace KxDataView2
+{
 	void BitmapListRendererBase::DrawCellContent(const wxRect& cellRect, CellState cellState)
 	{
 		RenderEngine renderEngine = GetRenderEngine();
@@ -31,13 +48,13 @@ namespace KxDataView2
 		int offsetX = 0;
 		if (size_t bitmapCount = GetBitmapCount(); bitmapCount != 0)
 		{
-			const wxSize smallIcon = GetSmallIconSize();
-			const int spacing = CalcSpacing(GetView(), m_Spacing);
+			const wxSize smallIcon = GetSmallIconSize(m_BitmapValueBase);
+			const int spacing = CalcSpacing(GetView(), m_BitmapValueBase.GetSpacing());
 
 			for (size_t i = 0; i < bitmapCount; i++)
 			{
 				const wxBitmap& bitmap = GetBitmap(i);
-				if (bitmap.IsOk() || !m_SkipInvalidBitmaps)
+				if (bitmap.IsOk() || !m_BitmapValueBase.ShouldDrawInvalidBitmaps())
 				{
 					const wxSize bitmapSize = bitmap.IsOk() ? bitmap.GetSize() : smallIcon;
 
@@ -57,31 +74,31 @@ namespace KxDataView2
 				}
 			}
 		}
-		if (m_Text.IsEmpty())
+		if (m_TextValue.HasText())
 		{
 			offsetX += renderEngine.GetInterTextSpacing();
-			GetRenderEngine().DrawText(cellRect, cellState, m_Text, offsetX);
+			renderEngine.DrawText(cellRect, cellState, m_TextValue.GetText(), offsetX);
 		}
 	}
 	wxSize BitmapListRendererBase::GetCellSize() const
 	{
 		wxSize totalSize;
-		if (!m_Text.IsEmpty())
+		if (m_TextValue.HasText())
 		{
 			RenderEngine renderEngine = GetRenderEngine();
 
-			totalSize = renderEngine.GetTextExtent(m_Text);
+			totalSize = renderEngine.GetTextExtent(m_TextValue.GetText());
 			totalSize.x += renderEngine.GetInterTextSpacing();
 		}
 		if (size_t bitmapCount = GetBitmapCount(); bitmapCount != 0)
 		{
-			const wxSize smallIcon = GetSmallIconSize();
-			const int spacing = CalcSpacing(GetView(), GetSpacing());
+			const wxSize smallIcon = GetSmallIconSize(m_BitmapValueBase);
+			const int spacing = CalcSpacing(GetView(), m_BitmapValueBase.GetSpacing());
 
 			for (size_t i = 0; i < bitmapCount; i++)
 			{
 				const wxBitmap& bitmap = GetBitmap(i);
-				if (bitmap.IsOk() || !m_SkipInvalidBitmaps)
+				if (bitmap.IsOk() || !m_BitmapValueBase.ShouldDrawInvalidBitmaps())
 				{
 					const wxSize bitmapSize = bitmap.IsOk() ? bitmap.GetSize() : smallIcon;
 
@@ -98,12 +115,12 @@ namespace KxDataView2
 {
 	bool BitmapListRenderer::SetValue(const wxAny& value)
 	{
-		m_Bitmaps.clear();
-		if (value.GetAs(&m_Bitmaps))
+		if (!m_Value.FromAny(value))
 		{
-			return true;
+			m_Value.Clear();
+			return false;
 		}
-		return BitmapListRendererBase::SetValue(value);
+		return true;
 	}
 }
 
@@ -111,12 +128,11 @@ namespace KxDataView2
 {
 	bool ImageListRenderer::SetValue(const wxAny& value)
 	{
-		KxImageList* imageList = nullptr;
-		if (value.GetAs(&imageList))
+		if (!m_Value.FromAny(value))
 		{
-			SetImageList(imageList);
-			return true;
+			m_Value.Clear();
+			return false;
 		}
-		return BitmapListRendererBase::SetValue(value);
+		return true;
 	}
 }

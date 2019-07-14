@@ -10,22 +10,21 @@ namespace KxDataView2
 {
 	bool HTMLRenderer::SetValue(const wxAny& value)
 	{
-		m_Content.clear();
-		m_ContentHTML.clear();
-
-		if (value.GetAs(&m_Content))
+		if (m_Value.FromAny(value))
 		{
-			m_ContentHTML = KxHTMLWindow::ProcessPlainText(m_Content);
+			m_ContentHTML = KxHTMLWindow::ProcessPlainText(m_Value.GetText());
 			return true;
 		}
 		else
 		{
+			m_Value.Clear();
+			m_ContentHTML.clear();
 			return false;
 		}
 	}
 	ToolTip HTMLRenderer::CreateToolTip() const
 	{
-		return ToolTip::CreateDefaultForRenderer(m_Content);
+		return ToolTip::CreateDefaultForRenderer(m_Value.GetText());
 	}
 
 	void HTMLRenderer::PrepareRenderer(wxHtmlDCRenderer& htmlRenderer, wxDC& dc, const wxRect& cellRect) const
@@ -49,7 +48,7 @@ namespace KxDataView2
 	}
 	void HTMLRenderer::DrawCellContent(const wxRect& cellRect, CellState cellState)
 	{
-		if (!m_Content.IsEmpty())
+		if (m_Value.HasText())
 		{
 			// Prefer regular DC
 			wxDC& dc = HasRegularDC() ? GetRegularDC() : GetGraphicsDC();
@@ -70,20 +69,20 @@ namespace KxDataView2
 	wxSize HTMLRenderer::GetCellSize() const
 	{
 		// HTMLRenderer is the only renderer at the moment that supports multiline text.
-		// RenderEngine doesn't have a function to measure multiline text (it measures only the first line).
+		// RenderEngine doesn't have any functions to measure multiline text (it measures only the first line).
 		// So we need to do that ourselves.
 
-		if (!m_Content.IsEmpty())
+		if (m_Value.HasText())
 		{
 			if (HasRegularDC())
 			{
-				return GetRegularDC().GetMultiLineTextExtent(m_Content);
+				return GetRegularDC().GetMultiLineTextExtent(m_Value.GetText());
 			}
 			else if (HasGraphicsDC())
 			{
-				return GetGraphicsDC().GetMultiLineTextExtent(m_Content);
+				return GetGraphicsDC().GetMultiLineTextExtent(m_Value.GetText());
 			}
-			return wxClientDC(GetView()).GetMultiLineTextExtent(m_Content);
+			return wxClientDC(GetView()).GetMultiLineTextExtent(m_Value.GetText());
 		}
 		return wxSize(0, 0);
 	}

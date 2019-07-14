@@ -7,6 +7,14 @@
 
 namespace KxDataView2
 {
+	bool BitmapTextToggleValue::FromAny(const wxAny& value)
+	{
+		return BitmapTextValue::FromAny(value) || ToggleValue::FromAny(value) || value.GetAs(this);
+	}
+}
+
+namespace KxDataView2
+{
 	wxAny BitmapTextToggleRenderer::OnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent)
 	{
 		ToggleState state = m_Value.GetState();
@@ -19,33 +27,15 @@ namespace KxDataView2
 
 	bool BitmapTextToggleRenderer::SetValue(const wxAny& value)
 	{
-		m_Value = BitmapTextToggleValue();
-		if (!value.GetAs(&m_Value))
+		if (!m_Value.FromAny(value))
 		{
-			if (ToggleRenderer::GetValueAsToggleState(value, m_Value.GetState()))
-			{
-				if (!m_Value.HasType())
-				{
-					m_Value.SetType(GetDefaultToggleType());
-				}
-				return true;
-			}
-			if (TextRenderer::GetValueAsString(value, m_Value.GetText()))
-			{
-				return true;
-			}
-			if (BitmapRenderer::GetValueAsBitmap(value, m_Value.GetBitmap()))
-			{
-				return true;
-			}
+			m_Value.Clear();
+			return false;
 		}
-		return false;
+		return true;
 	}
 	void BitmapTextToggleRenderer::DrawCellContent(const wxRect& cellRect, CellState cellState)
 	{
-		const bool centerTextV = m_Value.IsOptionEnabled(BitmapTextValueOptions::VCenterText);
-		const int reservedWidth = m_Value.GetReservedBitmapWidth();
-
 		int offsetX = 0;
 		int offsetFromToggle = 0;
 
@@ -57,12 +47,14 @@ namespace KxDataView2
 			offsetX += GetRenderEngine().DrawToggle(GetGraphicsDC(), toggleRect, cellState, m_Value.GetState(), m_Value.GetType()).GetWidth();
 			offsetFromToggle = GetRenderEngine().FromDIPX(2);
 		}
-		if (m_Value.HasBitmap() || m_Value.HasText() || reservedWidth > 0)
+		if (m_Value.HasBitmap() || m_Value.HasText() || m_Value.IsDefaultBitmapWidthSpecified())
 		{
 			wxRect rect = cellRect;
 			rect.x += offsetFromToggle;
 			rect.width -= offsetFromToggle;
 
+			const int reservedWidth = m_Value.GetDefaultBitmapWidth();
+			const bool centerTextV = m_Value.IsOptionEnabled(BitmapTextValueOptions::VCenterText);
 			GetRenderEngine().DrawBitmapWithText(rect, cellState, offsetX, m_Value.GetText(), m_Value.GetBitmap(), centerTextV, reservedWidth);
 		}
 	}
@@ -98,9 +90,9 @@ namespace KxDataView2
 				size.y = bitmap.GetHeight();
 			}
 		}
-		else if (int reservedWidth = m_Value.GetReservedBitmapWidth(); reservedWidth > 0)
+		else if (m_Value.IsDefaultBitmapWidthSpecified())
 		{
-			size.x += reservedWidth + renderEngine.FromDIPX(renderEngine.GetInterTextSpacing());
+			size.x += m_Value.GetDefaultBitmapWidth() + renderEngine.FromDIPX(renderEngine.GetInterTextSpacing());
 		}
 		return size;
 	}
