@@ -4,15 +4,15 @@
 
 namespace
 {
-	int ConvertControlStyle(const KxDataView2::DateEditor& editor)
+	int ConvertControlStyle(const KxDataView2::DateTimeValue& value)
 	{
-		using DateEditorStyle = KxDataView2::DateEditorStyle;
+		using Option = KxDataView2::DateEditorOptions;
 
 		int style = 0;
-		KxUtility::ModFlagRef(style, wxDP_SPIN, editor.IsOptionEnabled(DateEditorStyle::Spin));
-		KxUtility::ModFlagRef(style, wxDP_DROPDOWN, editor.IsOptionEnabled(DateEditorStyle::Dropdown));
-		KxUtility::ModFlagRef(style, wxDP_ALLOWNONE, editor.IsOptionEnabled(DateEditorStyle::AllowNone));
-		KxUtility::ModFlagRef(style, wxDP_SHOWCENTURY, editor.IsOptionEnabled(DateEditorStyle::ShowCentury));
+		KxUtility::ModFlagRef(style, wxDP_SPIN, value.IsOptionEnabled(Option::Spin));
+		KxUtility::ModFlagRef(style, wxDP_DROPDOWN, value.IsOptionEnabled(Option::Dropdown));
+		KxUtility::ModFlagRef(style, wxDP_ALLOWNONE, value.IsOptionEnabled(Option::AllowNone));
+		KxUtility::ModFlagRef(style, wxDP_SHOWCENTURY, value.IsOptionEnabled(Option::ShowCentury));
 
 		return style;
 	}
@@ -20,53 +20,58 @@ namespace
 
 namespace KxDataView2
 {
-	bool DateEditor::GetValueAsDateTime(const wxAny& value, wxDateTime& dateTime)
+	bool DateTimeValue::FromAny(const wxAny& value)
 	{
-		if (value.GetAs(&dateTime))
+		if (value.GetAs(&m_Value) || value.GetAs(this))
 		{
 			return true;
 		}
-
-		SYSTEMTIME systemTime = {0};
-		if (value.CheckType<SYSTEMTIME>() && value.GetAs(&systemTime))
+		else if (SYSTEMTIME systemTime; value.CheckType<SYSTEMTIME>() && value.GetAs(&systemTime))
 		{
-			dateTime.SetFromMSWSysTime(systemTime);
+			m_Value.SetFromMSWSysTime(systemTime);
 			return true;
 		}
-
-		FILETIME fileTime = {0};
-		if (value.CheckType<FILETIME>() && value.GetAs(&fileTime))
+		else if (FILETIME fileTime; value.CheckType<FILETIME>() && value.GetAs(&fileTime))
 		{
 			if (::FileTimeToSystemTime(&fileTime, &systemTime))
 			{
-				dateTime.SetFromMSWSysTime(systemTime);
+				m_Value.SetFromMSWSysTime(systemTime);
 				return true;
 			}
 		}
-
-		time_t unixTime = 0;
-		if (value.CheckType<time_t>() && value.GetAs(&unixTime))
+		else if (time_t unixTime = 0; value.CheckType<time_t>() && value.GetAs(&unixTime))
 		{
-			dateTime.Set(unixTime);
+			m_Value.Set(unixTime);
 			return true;
 		}
-
-		wxString string;
-		if (value.GetAs(&string))
+		else if (wxString string; value.GetAs(&string))
 		{
-			return dateTime.ParseISOCombined(string) || dateTime.ParseISOCombined(string, wxS(' ')) || dateTime.ParseTime(string);
+			return m_Value.ParseISOCombined(string) || m_Value.ParseISOCombined(string, wxS(' ')) || m_Value.ParseTime(string);
 		}
 		return false;
 	}
+}
 
+namespace KxDataView2
+{
 	wxWindow* DateEditor::CreateControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value)
 	{
-		const int style = ConvertControlStyle(*this);
-		wxDatePickerCtrl* editor = new wxDatePickerCtrl(parent, wxID_NONE, GetValueAsDateTime(value), cellRect.GetPosition(), cellRect.GetSize(), style, GetValidator());
+		const DateTimeValue dateTimeValue = FromAnyUsing<DateTimeValue>(value);
+		const int style = ConvertControlStyle(dateTimeValue);
 
-		if (m_Min.IsValid() && m_Max.IsValid())
+		wxDatePickerCtrl* editor = new wxDatePickerCtrl(parent,
+														wxID_NONE,
+														dateTimeValue.GetDateTime(),
+														cellRect.GetPosition(),
+														cellRect.GetSize(),
+														style,
+														GetValidator()
+		);
+
+		if (dateTimeValue.HasDateRange())
 		{
-			editor->SetRange(m_Min, m_Max);
+			auto [lower, upper] = dateTimeValue.GetDateTimeRange();
+			editor->SetRange(lower, upper);
 		}
 		return editor;
 	}

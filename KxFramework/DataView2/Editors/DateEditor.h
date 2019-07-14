@@ -5,7 +5,7 @@
 
 namespace KxDataView2
 {
-	enum class DateEditorStyle
+	enum class DateEditorOptions
 	{
 		None = 0,
 
@@ -18,45 +18,83 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API DateEditor: public Editor, public KxWithOptions<DateEditorStyle, DateEditorStyle::Dropdown>
+	class KX_API DateTimeValue: public KxWithOptions<DateEditorOptions, DateEditorOptions::None>
 	{
 		public:
-			static bool GetValueAsDateTime(const wxAny& value, wxDateTime& dateTime);
-			static wxDateTime GetValueAsDateTime(const wxAny& value)
+			using Options = DateEditorOptions;
+
+		protected:
+			wxDateTime m_Value;
+			wxDateTime m_RangeLower;
+			wxDateTime m_RangeUpper;
+
+		public:
+			DateTimeValue(const wxDateTime& value = {})
+				:m_Value(value)
 			{
-				wxDateTime dateTime;
-				GetValueAsDateTime(value, dateTime);
-				return dateTime;
+			}
+			DateTimeValue(const wxDateTime& value, const wxDateTime& lower, const wxDateTime& upper)
+				:m_Value(value)
+			{
+				SetDateTimeRange(lower, upper);
 			}
 
-		private:
-			wxDateTime m_Min = wxDefaultDateTime;
-			wxDateTime m_Max = wxDefaultDateTime;
+		public:
+			bool FromAny(const wxAny& value);
+			void Clear()
+			{
+				*this = {};
+			}
 
+			bool HasDateTime() const
+			{
+				return m_Value.IsValid();
+			}
+			wxDateTime GetDateTime() const
+			{
+				return m_Value;
+			}
+			void SetDateTime(const wxDateTime& value)
+			{
+				m_Value = value;
+			}
+			void ClearDateTime()
+			{
+				m_Value = {};
+			}
+			
+			bool HasDateRange() const
+			{
+				return m_RangeLower.IsValid() && m_RangeUpper.IsValid();
+			}
+			std::pair<wxDateTime, wxDateTime> GetDateTimeRange() const
+			{
+				return {m_RangeLower, m_RangeUpper};
+			}
+			void SetDateTimeRange(const wxDateTime& lower, const wxDateTime& upper)
+			{
+				m_RangeLower = lower;
+				m_RangeUpper = upper;
+
+				if (m_RangeLower > m_RangeUpper)
+				{
+					std::swap(m_RangeLower, m_RangeUpper);
+				}
+			}
+			void ClearDateTimeRange()
+			{
+				m_RangeLower = {};
+				m_RangeUpper = {};
+			}
+	};
+}
+
+namespace KxDataView2
+{
+	class KX_API DateEditor: public Editor
+	{
 		protected:
 			wxWindow* CreateControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value) override;
 			wxAny GetValue(wxWindow* control) const override;
-
-			wxDateTime GetMin() const
-			{
-				return m_Min;
-			}
-			wxDateTime GetMax() const
-			{
-				return m_Max;
-			}
-			void SetRange(const wxDateTime& min, const wxDateTime& max)
-			{
-				if (min <= max)
-				{
-					m_Min = min;
-					m_Max = max;
-				}
-				else
-				{
-					m_Min = max;
-					m_Max = min;
-				}
-			}
 	};
 }

@@ -20,7 +20,16 @@ namespace KxDataView2
 {
 	wxWindow* TimeEditor::CreateControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value)
 	{
-		return new wxTimePickerCtrl(parent, wxID_NONE, ResetDate(DateEditor::GetValueAsDateTime(value)), cellRect.GetPosition(), cellRect.GetSize(), 0, GetValidator());
+		const DateTimeValue dateValue = FromAnyUsing<DateTimeValue>(value);
+
+		return new wxTimePickerCtrl(parent,
+									wxID_NONE,
+									ResetDate(dateValue.GetDateTime()),
+									cellRect.GetPosition(),
+									cellRect.GetSize(),
+									0,
+									GetValidator()
+		);
 	}
 	wxAny TimeEditor::GetValue(wxWindow* control) const
 	{
