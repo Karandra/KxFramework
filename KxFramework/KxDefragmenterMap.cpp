@@ -89,8 +89,8 @@ auto KxDefragmenterMap::GetDrawInfo() const -> DrawInfo
 	DrawInfo info;
 	info.ClientSize = GetClientSize();
 	info.Increment = m_ItemSize + m_Spacing;
-	info.ItemsX = std::ceil((float)m_ItemCount / info.ItemsY);
 	info.ItemsY = info.ClientSize.GetWidth() / info.Increment;
+	info.ItemsX = std::ceil((float)m_ItemCount / info.ItemsY);
 
 	return info;
 }
