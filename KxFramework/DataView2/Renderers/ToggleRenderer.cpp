@@ -69,8 +69,9 @@ namespace KxDataView2
 					}
 				};
 			}
+			return false;
 		}
-		return false;
+		return true;
 	}
 }
 
