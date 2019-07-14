@@ -3,57 +3,105 @@
 #include <wx/colordlg.h>
 #include <wx/generic/colrdlgg.h>
 
+namespace
+{
+	template<typename> struct ArraySize;
+	template<typename T, size_t N> struct ArraySize<std::array<T, N>>
+	{
+		static constexpr size_t size = N;
+	};
+}
+
 namespace KxDataView2
 {
-	bool ColorEditor::GetValueAsColor(const wxAny& value, KxColor& color)
+	ColorValue::ColorValue(const KxColor& color):m_Color(color)
 	{
-		if (value.GetAs(&color))
+		static_assert(wxColourData::NUM_CUSTOM == ArraySize<decltype(m_PaletteColors)>::size);
+	}
+
+	bool ColorValue::FromAny(const wxAny& value)
+	{
+		if (value.GetAs(this))
 		{
 			return true;
 		}
-
-		wxColour colorWx;
-		if (value.GetAs(&colorWx))
+		else if (KxColor color; value.GetAs(&color))
 		{
-			color = colorWx;
+			return true;
+		}
+		else if (wxColour color; value.GetAs(&color))
+		{
+			return true;
+		}
+		else if (wxColourData colorData; value.GetAs(&colorData))
+		{
+			FromColorData(colorData);
 			return true;
 		}
 		return false;
 	}
 
+	wxColourData ColorValue::ToColorData() const
+	{
+		wxColourData colorData;
+		colorData.SetColour(m_Color);
+		for (size_t i = 0; i < m_PaletteColors.size(); i++)
+		{
+			colorData.SetCustomColour(i, m_PaletteColors[i]);
+		}
+
+		colorData.SetChooseFull(IsOptionEnabled(Options::FullEditor));
+		colorData.SetChooseAlpha(IsOptionEnabled(Options::ShowAlpha));
+
+		return colorData;
+	}
+	void ColorValue::FromColorData(const wxColourData& colorData)
+	{
+		m_Color = colorData.GetColour();
+		for (size_t i = 0; i < m_PaletteColors.size(); i++)
+		{
+			m_PaletteColors[i] = colorData.GetCustomColour(i);
+		}
+
+		SetOptionEnabled(Options::FullEditor, colorData.GetChooseFull());
+		SetOptionEnabled(Options::ShowAlpha, colorData.GetChooseAlpha());
+	}
+}
+
+namespace KxDataView2
+{
 	wxWindow* ColorEditor::CreateControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value)
 	{
-		bool shouldUseGeneric = IsOptionEnabled(ColorEditorStyle::UseGeneric) || IsOptionEnabled(ColorEditorStyle::ShowAlpha);
-
-		m_ColorData.SetColour(GetValueAsColor(value));
-		m_ColorData.SetChooseFull(IsOptionEnabled(ColorEditorStyle::Full));
-		m_ColorData.SetChooseAlpha(IsOptionEnabled(ColorEditorStyle::ShowAlpha));
+		m_Value = FromAnyUsing<ColorValue>(value);
+		wxColourData colorData = m_Value.ToColorData();
 
 		wxColourDialog* nativeDialog = nullptr;
 		wxGenericColourDialog* genericDialog = nullptr;
+		const bool shouldUseGeneric = m_Value.IsOptionEnabled(Options::GenericEditor) || m_Value.IsOptionEnabled(Options::ShowAlpha);
 
 		if (shouldUseGeneric)
 		{
-			genericDialog = new wxGenericColourDialog(parent, &m_ColorData);
+			genericDialog = new wxGenericColourDialog(parent, &colorData);
 			m_Dialog = genericDialog;
 		}
 		else
 		{
-			nativeDialog = new wxColourDialog(parent, &m_ColorData);
+			nativeDialog = new wxColourDialog(parent, &colorData);
 			m_Dialog = nativeDialog;
 		}
 
 		wxTheApp->CallAfter([this, nativeDialog, genericDialog]()
 		{
+			m_Value.Clear();
 			if (m_Dialog->ShowModal() == wxID_OK)
 			{
 				if (nativeDialog)
 				{
-					m_ColorData = nativeDialog->GetColourData();
+					m_Value.FromColorData(nativeDialog->GetColourData());
 				}
 				else if (genericDialog)
 				{
-					m_ColorData = genericDialog->GetColourData();
+					m_Value.FromColorData(genericDialog->GetColourData());
 				}
 				EndEdit();
 			}
@@ -64,27 +112,10 @@ namespace KxDataView2
 	{
 		control->Destroy();
 
-		KxColor color = m_ColorData.GetColour();
-		if (color.IsOk())
+		if (m_Value.HasColor())
 		{
-			return color;
+			return m_Value;
 		}
 		return {};
-	}
-
-	wxColour ColorEditor::GetCustomColor(size_t index) const
-	{
-		if (index < wxColourData::NUM_CUSTOM)
-		{
-			m_ColorData.GetCustomColour(index);
-		}
-		return {};
-	}
-	void ColorEditor::SetCustomColor(size_t index, const wxColour& color)
-	{
-		if (index < wxColourData::NUM_CUSTOM)
-		{
-			m_ColorData.SetCustomColour(index, color);
-		}
 	}
 }
