@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KX_API KxDefragmenterMap: public wxSystemThemedControl<wxWindow>
+class KX_API KxClusterMap: public wxSystemThemedControl<wxWindow>
 {
 	private:
 		struct DrawInfo
@@ -48,14 +48,14 @@ class KX_API KxDefragmenterMap: public wxSystemThemedControl<wxWindow>
 		wxRect IndexToCoordRect(const DrawInfo& drawInfo, int index) const;
 
 	public:
-		KxDefragmenterMap();
-		KxDefragmenterMap(wxWindow* parent,
+		KxClusterMap();
+		KxClusterMap(wxWindow* parent,
 						  wxWindowID id,
 						  const wxPoint& pos = wxDefaultPosition,
 						  const wxSize& size = wxDefaultSize,
 						  long style = 0
 		)
-			:KxDefragmenterMap()
+			:KxClusterMap()
 		{
 			Create(parent, id, pos, size, style);
 		}
@@ -65,7 +65,7 @@ class KX_API KxDefragmenterMap: public wxSystemThemedControl<wxWindow>
 					const wxSize& size = wxDefaultSize,
 					long style = 0
 		);
-		~KxDefragmenterMap();
+		~KxClusterMap();
 
 	public:
 		int HitTest(const wxPoint& pos) const
@@ -103,5 +103,5 @@ class KX_API KxDefragmenterMap: public wxSystemThemedControl<wxWindow>
 		}
 
 	public:
-		wxDECLARE_DYNAMIC_CLASS(KxDefragmenterMap);
+		wxDECLARE_DYNAMIC_CLASS(KxClusterMap);
 };

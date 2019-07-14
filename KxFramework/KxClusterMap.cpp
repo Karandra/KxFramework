@@ -1,11 +1,11 @@
 #include "KxStdAfx.h"
-#include "KxFramework/KxDefragmenterMap.h"
+#include "KxFramework/KxClusterMap.h"
 #include "KxFramework/KxUtility.h"
 #include "KxFramework/KxColor.h"
 
-wxIMPLEMENT_DYNAMIC_CLASS(KxDefragmenterMap, wxControl)
+wxIMPLEMENT_DYNAMIC_CLASS(KxClusterMap, wxControl)
 
-void KxDefragmenterMap::OnPaint(wxPaintEvent& event)
+void KxClusterMap::OnPaint(wxPaintEvent& event)
 {
 	wxPaintDC dc(this);
 
@@ -49,7 +49,7 @@ void KxDefragmenterMap::OnPaint(wxPaintEvent& event)
 		}
 	}
 }
-void KxDefragmenterMap::OnMouse(wxMouseEvent& event)
+void KxClusterMap::OnMouse(wxMouseEvent& event)
 {
 	int index = HitTest(event.GetPosition());
 	if (index != m_UnderMouseIndex)
@@ -67,12 +67,12 @@ void KxDefragmenterMap::OnMouse(wxMouseEvent& event)
 		}
 	}
 }
-void KxDefragmenterMap::OnMouseLeave(wxMouseEvent& event)
+void KxClusterMap::OnMouseLeave(wxMouseEvent& event)
 {
 	m_UnderMouseIndex = -1;
 	Refresh();
 }
-void KxDefragmenterMap::OnLeftUp(wxMouseEvent& event)
+void KxClusterMap::OnLeftUp(wxMouseEvent& event)
 {
 	if (m_UnderMouseIndex != -1 && event.LeftUp())
 	{
@@ -84,7 +84,7 @@ void KxDefragmenterMap::OnLeftUp(wxMouseEvent& event)
 	}
 }
 
-auto KxDefragmenterMap::GetDrawInfo() const -> DrawInfo
+auto KxClusterMap::GetDrawInfo() const -> DrawInfo
 {
 	DrawInfo info;
 	info.ClientSize = GetClientSize();
@@ -95,7 +95,7 @@ auto KxDefragmenterMap::GetDrawInfo() const -> DrawInfo
 	return info;
 }
 
-wxPoint KxDefragmenterMap::CoordToXY(const DrawInfo& drawInfo, const wxPoint& pos) const
+wxPoint KxClusterMap::CoordToXY(const DrawInfo& drawInfo, const wxPoint& pos) const
 {
 	// See if we are inside actual space used by blocks
 	const wxRect effectiveRect(0, 0, drawInfo.ItemsY * drawInfo.Increment, drawInfo.ItemsX * drawInfo.Increment);
@@ -105,7 +105,7 @@ wxPoint KxDefragmenterMap::CoordToXY(const DrawInfo& drawInfo, const wxPoint& po
 	}
 	return wxDefaultPosition;
 }
-int KxDefragmenterMap::CoordToIndex(const DrawInfo& drawInfo, const wxPoint& pos) const
+int KxClusterMap::CoordToIndex(const DrawInfo& drawInfo, const wxPoint& pos) const
 {
 	wxPoint xy = CoordToXY(drawInfo, pos);
 	if (xy.IsFullySpecified())
@@ -119,7 +119,7 @@ int KxDefragmenterMap::CoordToIndex(const DrawInfo& drawInfo, const wxPoint& pos
 	return -1;
 }
 
-wxPoint KxDefragmenterMap::IndexToXY(const DrawInfo& drawInfo, int index) const
+wxPoint KxClusterMap::IndexToXY(const DrawInfo& drawInfo, int index) const
 {
 	if (index >= 0 && (size_t)index < m_ItemCount)
 	{
@@ -130,7 +130,7 @@ wxPoint KxDefragmenterMap::IndexToXY(const DrawInfo& drawInfo, int index) const
 	}
 	return wxDefaultPosition;
 }
-int KxDefragmenterMap::XYToIndex(const DrawInfo& drawInfo, const wxPoint& xy) const
+int KxClusterMap::XYToIndex(const DrawInfo& drawInfo, const wxPoint& xy) const
 {
 	if (xy.IsFullySpecified())
 	{
@@ -152,11 +152,11 @@ int KxDefragmenterMap::XYToIndex(const DrawInfo& drawInfo, const wxPoint& xy) co
 	return -1;
 }
 
-wxRect KxDefragmenterMap::XYToCoordRect(const DrawInfo& drawInfo, const wxPoint& xy) const
+wxRect KxClusterMap::XYToCoordRect(const DrawInfo& drawInfo, const wxPoint& xy) const
 {
 	return {xy.x * drawInfo.Increment, xy.y * drawInfo.Increment, m_ItemSize, m_ItemSize};
 }
-wxRect KxDefragmenterMap::IndexToCoordRect(const DrawInfo& drawInfo, int index) const
+wxRect KxClusterMap::IndexToCoordRect(const DrawInfo& drawInfo, int index) const
 {
 	wxPoint xy = IndexToXY(drawInfo, index);
 	if (xy.IsFullySpecified())
@@ -166,11 +166,11 @@ wxRect KxDefragmenterMap::IndexToCoordRect(const DrawInfo& drawInfo, int index) 
 	return {};
 }
 
-KxDefragmenterMap::KxDefragmenterMap()
+KxClusterMap::KxClusterMap()
 {
 	PushEventHandler(&m_EvtHandler);
 }
-bool KxDefragmenterMap::Create(wxWindow* parent,
+bool KxClusterMap::Create(wxWindow* parent,
 							   wxWindowID id,
 							   const wxPoint& pos,
 							   const wxSize& size,
@@ -183,16 +183,16 @@ bool KxDefragmenterMap::Create(wxWindow* parent,
 		SetDoubleBuffered(true);
 		SetBackgroundStyle(wxBG_STYLE_PAINT);
 
-		m_EvtHandler.Bind(wxEVT_PAINT, &KxDefragmenterMap::OnPaint, this);
-		m_EvtHandler.Bind(wxEVT_MOTION, &KxDefragmenterMap::OnMouse, this);
-		m_EvtHandler.Bind(wxEVT_ENTER_WINDOW, &KxDefragmenterMap::OnMouse, this);
-		m_EvtHandler.Bind(wxEVT_LEAVE_WINDOW, &KxDefragmenterMap::OnMouseLeave, this);
-		m_EvtHandler.Bind(wxEVT_LEFT_UP, &KxDefragmenterMap::OnLeftUp, this);
+		m_EvtHandler.Bind(wxEVT_PAINT, &KxClusterMap::OnPaint, this);
+		m_EvtHandler.Bind(wxEVT_MOTION, &KxClusterMap::OnMouse, this);
+		m_EvtHandler.Bind(wxEVT_ENTER_WINDOW, &KxClusterMap::OnMouse, this);
+		m_EvtHandler.Bind(wxEVT_LEAVE_WINDOW, &KxClusterMap::OnMouseLeave, this);
+		m_EvtHandler.Bind(wxEVT_LEFT_UP, &KxClusterMap::OnLeftUp, this);
 		return true;
 	}
 	return false;
 }
-KxDefragmenterMap::~KxDefragmenterMap()
+KxClusterMap::~KxClusterMap()
 {
 	PopEventHandler();
 }
