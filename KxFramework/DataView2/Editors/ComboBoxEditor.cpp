@@ -2,6 +2,7 @@
 #include "ComboBoxEditor.h"
 #include "KxFramework/KxComboBox.h"
 #include "KxFramework/KxBitmapComboBox.h"
+#include "KxFramework/DataView2/Renderers/TextRenderer.h"
 
 namespace KxDataView2
 {
@@ -58,7 +59,8 @@ namespace KxDataView2
 
 		if (IsEditable())
 		{
-			editor->ChangeValue(value.As<wxString>());
+			const TextValue textValue = FromAnyUsing<TextValue>(value);
+			editor->ChangeValue(textValue.GetText());
 
 			// Select the text in the control and place the cursor at the end
 			editor->SetInsertionPointEnd();

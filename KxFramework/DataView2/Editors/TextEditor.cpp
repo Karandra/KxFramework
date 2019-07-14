@@ -8,9 +8,11 @@ namespace KxDataView2
 	wxWindow* TextEditor::CreateControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value)
 	{
 		const int style = KxTextBox::DefaultStyle|wxTE_PROCESS_ENTER|(IsEditable() ? 0 : wxTE_READONLY);
+		const TextValue textValue = FromAnyUsing<TextValue>(value);
+
 		KxTextBox* editor = new KxTextBox(parent,
 										  wxID_NONE,
-										  FromAnyUsing<TextValue>(value).GetText(),
+										  textValue.GetText(),
 										  cellRect.GetPosition(),
 										  cellRect.GetSize(),
 										  style,
