@@ -219,6 +219,7 @@
     <ClInclude Include="KxFramework\DataView2\Renderers\BitmapTextRenderer.h" />
     <ClInclude Include="KxFramework\DataView2\Renderers\BitmapTextToggleRenderer.h" />
     <ClInclude Include="KxFramework\DataView2\Renderers\HTMLRenderer.h" />
+    <ClInclude Include="KxFramework\DataView2\Renderers\ImageListRenderer.h" />
     <ClInclude Include="KxFramework\DataView2\Renderers\NullRenderer.h" />
     <ClInclude Include="KxFramework\DataView2\Renderers\ProgressRenderer.h" />
     <ClInclude Include="KxFramework\DataView2\Renderers\TextRenderer.h" />
@@ -494,6 +495,7 @@
     <ClCompile Include="KxFramework\DataView2\Renderers\BitmapTextRenderer.cpp" />
     <ClCompile Include="KxFramework\DataView2\Renderers\BitmapTextToggleRenderer.cpp" />
     <ClCompile Include="KxFramework\DataView2\Renderers\HTMLRenderer.cpp" />
+    <ClCompile Include="KxFramework\DataView2\Renderers\ImageListRenderer.cpp" />
     <ClCompile Include="KxFramework\DataView2\Renderers\ProgressRenderer.cpp" />
     <ClCompile Include="KxFramework\DataView2\Renderers\TextRenderer.cpp" />
     <ClCompile Include="KxFramework\DataView2\Renderers\ToggleRenderer.cpp" />

@@ -973,6 +973,9 @@
     <ClInclude Include="KxFramework\KxDefragmenterMap.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\Renderers\ImageListRenderer.h">
+      <Filter>Header Files\GUI\DataView2\Renderers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1602,6 +1605,9 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxDefragmenterMap.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\Renderers\ImageListRenderer.cpp">
+      <Filter>Source Files\GUI\DataView2\Renderers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

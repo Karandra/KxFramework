@@ -3,7 +3,6 @@
 #include "KxFramework/DataView2/View.h"
 #include "KxFramework/DataView2/Node.h"
 #include "KxFramework/DataView2/Column.h"
-#include "TextRenderer.h"
 
 namespace
 {
@@ -24,19 +23,6 @@ namespace KxDataView2
 	{
 		return TextValue::FromAny(value) || value.GetAs(&m_Bitmaps) || value.GetAs(this);
 	}
-	bool ImageListValue::FromAny(const wxAny& value)
-	{
-		if (TextValue::FromAny(value) || value.GetAs(this))
-		{
-			return true;
-		}
-		else if (const KxImageList* imageList = nullptr; value.GetAs(&imageList))
-		{
-			KxWithImageList::SetImageList(imageList);
-			return true;
-		}
-		return false;
-	}
 }
 
 namespace KxDataView2
@@ -53,7 +39,7 @@ namespace KxDataView2
 
 			for (size_t i = 0; i < bitmapCount; i++)
 			{
-				const wxBitmap& bitmap = GetBitmap(i);
+				wxBitmap bitmap = GetBitmap(i);
 				if (bitmap.IsOk() || !m_BitmapValueBase.ShouldDrawInvalidBitmaps())
 				{
 					const wxSize bitmapSize = bitmap.IsOk() ? bitmap.GetSize() : smallIcon;
@@ -97,7 +83,7 @@ namespace KxDataView2
 
 			for (size_t i = 0; i < bitmapCount; i++)
 			{
-				const wxBitmap& bitmap = GetBitmap(i);
+				wxBitmap bitmap = GetBitmap(i);
 				if (bitmap.IsOk() || !m_BitmapValueBase.ShouldDrawInvalidBitmaps())
 				{
 					const wxSize bitmapSize = bitmap.IsOk() ? bitmap.GetSize() : smallIcon;
@@ -114,19 +100,6 @@ namespace KxDataView2
 namespace KxDataView2
 {
 	bool BitmapListRenderer::SetValue(const wxAny& value)
-	{
-		if (!m_Value.FromAny(value))
-		{
-			m_Value.Clear();
-			return false;
-		}
-		return true;
-	}
-}
-
-namespace KxDataView2
-{
-	bool ImageListRenderer::SetValue(const wxAny& value)
 	{
 		if (!m_Value.FromAny(value))
 		{
