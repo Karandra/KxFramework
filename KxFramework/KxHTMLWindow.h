@@ -9,6 +9,10 @@ class KX_API KxHTMLWindow: public wxHtmlWindow, public wxTextEntry
 		static wxString ProcessPlainText(const wxString& text);
 
 	private:
+		wxBitmap m_BackgroundBitmap;
+		KxColor m_BackgroundColor;
+		wxGraphicsRenderer* m_Renderer = nullptr;
+
 		const bool m_IsEditable = false;
 
 	private:
@@ -36,6 +40,9 @@ class KX_API KxHTMLWindow: public wxHtmlWindow, public wxTextEntry
 		{
 			return this;
 		}
+		
+		void OnEraseBackground(wxEraseEvent& event);
+		void OnPaint(wxPaintEvent& event);
 
 	public:
 		static const long DefaultStyle = wxHW_DEFAULT_STYLE;
@@ -63,6 +70,35 @@ class KX_API KxHTMLWindow: public wxHtmlWindow, public wxTextEntry
 			return wxBORDER_THEME;
 		}
 		
+		wxGraphicsRenderer* GetRenderer() const
+		{
+			return m_Renderer;
+		}
+		void SetRenderer(wxGraphicsRenderer* renderer)
+		{
+			m_Renderer = renderer;
+		}
+
+		wxBitmap GetHTMLBackgroundImage() const
+		{
+			return m_BackgroundBitmap;
+		}
+		void SetHTMLBackgroundImage(const wxBitmap& bitmap) override
+		{
+			m_BackgroundBitmap = bitmap;
+			wxHtmlWindow::SetHTMLBackgroundImage(bitmap);
+		}
+
+		wxColour GetHTMLBackgroundColour() const override
+		{
+			return m_BackgroundColor;
+		}
+		void SetHTMLBackgroundColour(const wxColour& color) override
+		{
+			m_BackgroundColor = color;
+			wxHtmlWindow::SetHTMLBackgroundColour(color);
+		}
+
 		wxString GetPage() const
 		{
 			const wxString* source = wxHtmlWindow::GetParser()->GetSource();
