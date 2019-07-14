@@ -68,21 +68,9 @@ namespace KxDataView2
 	}
 	wxSize HTMLRenderer::GetCellSize() const
 	{
-		// HTMLRenderer is the only renderer at the moment that supports multiline text.
-		// RenderEngine doesn't have any functions to measure multiline text (it measures only the first line).
-		// So we need to do that ourselves.
-
 		if (m_Value.HasText())
 		{
-			if (HasRegularDC())
-			{
-				return GetRegularDC().GetMultiLineTextExtent(m_Value.GetText());
-			}
-			else if (HasGraphicsDC())
-			{
-				return GetGraphicsDC().GetMultiLineTextExtent(m_Value.GetText());
-			}
-			return wxClientDC(GetView()).GetMultiLineTextExtent(m_Value.GetText());
+			return GetRenderEngine().GetMultilineTextExtent(m_Value.GetText());
 		}
 		return wxSize(0, 0);
 	}

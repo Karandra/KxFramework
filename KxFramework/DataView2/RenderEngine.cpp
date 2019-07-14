@@ -252,6 +252,39 @@ namespace KxDataView2
 		}
 	}
 
+	wxSize RenderEngine::GetMultilineTextExtent(const wxString& string) const
+	{
+		// Regular (GDI) device context is preferable to draw and measure text
+		if (m_Renderer.HasRegularDC() && !m_AlwaysUseGC)
+		{
+			return GetMultilineTextExtent(m_Renderer.GetRegularDC(), string);
+		}
+		else if (m_Renderer.HasGraphicsDC())
+		{
+			return GetMultilineTextExtent(m_Renderer.GetGraphicsDC(), string);
+		}
+		else
+		{
+			// No existing window context right now, create one to measure text
+			wxClientDC dc(m_Renderer.GetView());
+			return GetMultilineTextExtent(dc, string);
+		}
+	}
+	wxSize RenderEngine::GetMultilineTextExtent(wxDC& dc, const wxString& string) const
+	{
+		// Markup doesn't support multiline text so we are ignoring it for now.
+
+		const CellAttributes& attributes = m_Renderer.GetAttributes();
+		
+		wxDCFontChanger fontChnager(dc);
+		if (attributes.FontOptions().NeedDCAlteration())
+		{
+			fontChnager.Set(attributes.GetEffectiveFont(dc.GetFont()));
+		}
+
+		return dc.GetMultiLineTextExtent(string);
+	}
+
 	bool RenderEngine::DrawText(const wxRect& cellRect, CellState cellState, const wxString& string, int offsetX)
 	{
 		if (m_Renderer.HasRegularDC() && !m_AlwaysUseGC)

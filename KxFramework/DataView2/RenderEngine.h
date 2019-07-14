@@ -83,6 +83,9 @@ namespace KxDataView2
 
 			wxSize GetTextExtent(const wxString& string) const;
 			wxSize GetTextExtent(wxDC& dc, const wxString& string) const;
+			
+			wxSize GetMultilineTextExtent(const wxString& string) const;
+			wxSize GetMultilineTextExtent(wxDC& dc, const wxString& string) const;
 
 			bool DrawText(const wxRect& cellRect, CellState cellState, const wxString& string, int offsetX = 0);
 			bool DrawText(wxDC& dc, const wxRect& cellRect, CellState cellState, const wxString& string, int offsetX = 0);
