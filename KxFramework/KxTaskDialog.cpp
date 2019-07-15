@@ -4,7 +4,7 @@
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxTaskDialog, KxStdDialog);
 
-void KxTaskDialog::SetStdButtonsFromWx(KxButtonType buttons)
+int KxTaskDialog::SetStdButtonsFromWx(KxButtonType buttons)
 {
 	m_DialogConfig.dwCommonButtons = 0;
 	if (buttons & KxBTN_OK)
@@ -35,7 +35,49 @@ void KxTaskDialog::SetStdButtonsFromWx(KxButtonType buttons)
 	{
 		m_DialogConfig.dwCommonButtons |= TDCBF_YES_BUTTON;
 	}
+	SetAutoDefaultButton(buttons);
+
+	return m_DialogConfig.dwCommonButtons;
 }
+int KxTaskDialog::SetAutoDefaultButton(KxButtonType buttons)
+{
+	m_DialogConfig.nDefaultButton = 0;
+	if (buttons & KxBTN_CANCEL)
+	{
+		m_DialogConfig.nDefaultButton = IDCANCEL;
+	}
+	if (buttons & KxBTN_ABORT)
+	{
+		m_DialogConfig.nDefaultButton = IDABORT;
+	}
+	else if (buttons & KxBTN_CLOSE)
+	{
+		m_DialogConfig.nDefaultButton = IDCLOSE;
+	}
+	else if (buttons & KxBTN_NO)
+	{
+		m_DialogConfig.nDefaultButton = IDNO;
+	}
+	else if (buttons & KxBTN_HELP)
+	{
+		m_DialogConfig.nDefaultButton = IDHELP;
+	}
+	else if (buttons & KxBTN_RETRY)
+	{
+		m_DialogConfig.nDefaultButton = IDRETRY;
+	}
+	else if (buttons & KxBTN_YES)
+	{
+		m_DialogConfig.nDefaultButton = IDYES;
+	}
+	else if (buttons & KxBTN_OK)
+	{
+		m_DialogConfig.nDefaultButton = IDOK;
+	}
+
+	return m_DialogConfig.nDefaultButton;
+}
+
 wxWindowID KxTaskDialog::TranslateButtonID_WinToWx(int idWin) const
 {
 	switch (idWin)
@@ -44,9 +86,25 @@ wxWindowID KxTaskDialog::TranslateButtonID_WinToWx(int idWin) const
 		{
 			return wxID_CANCEL;
 		}
+		case IDABORT:
+		{
+			return wxID_ABORT;
+		}
+		case IDCLOSE:
+		{
+			return wxID_CLOSE;
+		}
 		case IDNO:
 		{
 			return wxID_NO;
+		}
+		case IDHELP:
+		{
+			return wxID_HELP;
+		}
+		case IDRETRY:
+		{
+			return wxID_RETRY;
 		}
 		case IDYES:
 		{
@@ -55,14 +113,6 @@ wxWindowID KxTaskDialog::TranslateButtonID_WinToWx(int idWin) const
 		case IDOK:
 		{
 			return wxID_OK;
-		}
-		case IDRETRY:
-		{
-			return wxID_RETRY;
-		}
-		case IDCLOSE:
-		{
-			return wxID_CLOSE;
 		}
 	};
 	return idWin;
@@ -75,9 +125,25 @@ int KxTaskDialog::TranslateButtonID_WxToWin(wxWindowID idWx) const
 		{
 			return IDCANCEL;
 		}
+		case wxID_ABORT:
+		{
+			return IDABORT;
+		}
+		case wxID_CLOSE:
+		{
+			return IDCLOSE;
+		}
 		case wxID_NO:
 		{
 			return IDNO;
+		}
+		case wxID_HELP:
+		{
+			return IDHELP;
+		}
+		case wxID_RETRY:
+		{
+			return IDRETRY;
 		}
 		case wxID_YES:
 		{
@@ -87,16 +153,7 @@ int KxTaskDialog::TranslateButtonID_WxToWin(wxWindowID idWx) const
 		{
 			return IDOK;
 		}
-		case wxID_RETRY:
-		{
-			return IDRETRY;
-		}
-		case wxID_CLOSE:
-		{
-			return IDCLOSE;
-		}
 	};
-
 	return idWx;
 }
 LPCWSTR KxTaskDialog::TranslateIconIDToTDI(KxIconType id) const
@@ -183,32 +240,22 @@ void KxTaskDialog::UpdateButtonArrays(const KxStringVector& labels, ButtonSpecAr
 	}
 }
 
-HRESULT CALLBACK KxTaskDialog::EventsCallback(HWND hWnd, UINT notification, WPARAM wParam, LPARAM lParam, LONG_PTR refData)
+HRESULT CALLBACK KxTaskDialog::EventsCallback(HWND handle, UINT notification, WPARAM wParam, LPARAM lParam, LONG_PTR refData)
 {
 	KxTaskDialog* self = (KxTaskDialog*)refData;
 	switch (notification)
 	{
 		case TDN_CREATED:
 		{
-			self->m_Handle = hWnd;
-
-			wxShowEvent event(wxEVT_SHOW, true);
-			event.SetId(self->GetId());
-			event.SetEventObject(self);
-			self->HandleWindowEvent(event);
+			self->m_Handle = handle;
 			break;
 		}
 		case TDN_DESTROYED:
 		{
 			self->m_Handle = nullptr;
-
-			wxCloseEvent event(wxEVT_CLOSE_WINDOW, self->GetId());
-			event.SetEventObject(self);
-			event.SetCanVeto(false);
-			self->HandleWindowEvent(event);
+			self->Close(true);
 			break;
 		}
-
 		case TDN_HYPERLINK_CLICKED:
 		case TDN_BUTTON_CLICKED:
 		case TDN_RADIO_BUTTON_CLICKED:
@@ -252,7 +299,7 @@ HRESULT CALLBACK KxTaskDialog::EventsCallback(HWND hWnd, UINT notification, WPAR
 
 	return S_OK;
 }
-int KxTaskDialog::ShowDialog(bool isModal)
+int KxTaskDialog::DoShowDialog(bool isModal)
 {
 	if (isModal)
 	{
@@ -268,13 +315,23 @@ int KxTaskDialog::ShowDialog(bool isModal)
 	UpdateButtonArrays(m_ButtonLabels, m_ButtonsID);
 	UpdateButtonArrays(m_RadioButtonLabels, m_RadioButtonsID);
 
-	// Show dialog
+	// Setup checkbox
 	int retCode = wxID_CANCEL;
 	int radioButtonCode = wxID_NONE;
 	m_CheckBoxChecked = IsOptionEnabled(KxTD_CHB_CHECKED);
 	BOOL* checkedPtr = IsOptionEnabled(KxTD_CHB_ENABLED) ? &m_CheckBoxChecked : nullptr;
 
 	SetReturnCode(wxID_CANCEL);
+
+	// Send show event
+	{
+		wxShowEvent event(wxEVT_SHOW, true);
+		event.SetId(GetId());
+		event.SetEventObject(this);
+		ProcessWindowEvent(event);
+	}
+
+	// Show dialog
 	m_Result = ::TaskDialogIndirect(&m_DialogConfig, &retCode, &radioButtonCode, checkedPtr);
 	if (IsOK())
 	{
@@ -285,48 +342,22 @@ int KxTaskDialog::ShowDialog(bool isModal)
 		SetReturnCode(wxID_CANCEL);
 	}
 
+	// Send close event
+	{
+		wxShowEvent event(wxEVT_SHOW, false);
+		event.SetId(GetId());
+		event.SetEventObject(this);
+		ProcessWindowEvent(event);
+	}
+
 	m_SelectedRadioButton = radioButtonCode;
 	return GetReturnCode();
 }
-
-bool KxTaskDialog::Create(wxWindow* parent,
-						  wxWindowID id,
-						  const wxString& sCaption,
-						  const wxString& message,
-						  int buttons,
-						  KxIconType nMainIcon,
-						  wxPoint pos,
-						  wxSize size,
-						  long style
-)
+void KxTaskDialog::OnClose(wxCloseEvent& event)
 {
-	m_Parent = wxGetTopLevelParent(parent);
-	KxDialog::Create(m_Parent, id, sCaption, pos, size, KxDialog::DefaultStyle);
-
-	m_DialogConfig.cbSize = sizeof(TASKDIALOGCONFIG);
-	m_DialogConfig.hInstance = GetModuleHandleW(nullptr);
-	m_DialogConfig.cxWidth = 0;
-	m_DialogConfig.lpCallbackData = (LONG_PTR)this;
-	m_DialogConfig.pfCallback = EventsCallback;
-
-	SetOptions((KxTD_Options)style);
-	SetStdButtonsFromWx((KxButtonType)buttons);
-	SetTitle();
-	SetCaption(sCaption);
-	SetMessage(message);
-	SetMainIcon(nMainIcon);
-
-	return true;
-}
-KxTaskDialog::~KxTaskDialog()
-{
-}
-bool KxTaskDialog::Close(bool force)
-{
-	bool ret = KxDialog::Close(force);
-	if (ret && GetHandle())
+	if (m_Handle)
 	{
-		if (force)
+		if (!event.CanVeto())
 		{
 			::DestroyWindow(m_Handle);
 		}
@@ -335,7 +366,43 @@ bool KxTaskDialog::Close(bool force)
 			::EndDialog(m_Handle, wxID_CANCEL);
 		}
 	}
-	return ret;
+}
+
+bool KxTaskDialog::Create(wxWindow* parent,
+						  wxWindowID id,
+						  const wxString& caption,
+						  const wxString& message,
+						  int buttons,
+						  KxIconType mainIcon,
+						  wxPoint pos,
+						  wxSize size,
+						  long style
+)
+{
+	m_Parent = wxGetTopLevelParent(parent);
+	if (!m_Parent)
+	{
+		m_Parent = parent;
+	}
+	KxDialog::Create(m_Parent, id, caption, pos, size, KxDialog::DefaultStyle);
+
+	m_DialogConfig.cbSize = sizeof(TASKDIALOGCONFIG);
+	m_DialogConfig.hInstance = GetModuleHandleW(nullptr);
+	m_DialogConfig.cxWidth = 0;
+	m_DialogConfig.lpCallbackData = reinterpret_cast<LONG_PTR>(this);
+	m_DialogConfig.pfCallback = EventsCallback;
+
+	SetOptions((KxTD_Options)style);
+	SetStandardButtons(buttons);
+	SetTitle();
+	SetCaption(caption);
+	SetMessage(message);
+	SetMainIcon(mainIcon);
+
+	return true;
+}
+KxTaskDialog::~KxTaskDialog()
+{
 }
 
 void KxTaskDialog::SetOptions(KxTD_Options options)
@@ -368,7 +435,7 @@ bool KxTaskDialog::Show(bool show)
 		SetFlagTDI(TDF_CAN_BE_MINIMIZED, true);
 		m_DialogConfig.hwndParent = m_Parent ? m_Parent->GetHandle() : nullptr;
 
-		ShowDialog(false);
+		DoShowDialog(false);
 	}
 	return ShowNativeWindow(this, show);
 }
@@ -377,7 +444,7 @@ int KxTaskDialog::ShowModal()
 	SetFlagTDI(TDF_CAN_BE_MINIMIZED, false);
 	m_DialogConfig.hwndParent = nullptr;
 
-	return ShowDialog(true);
+	return DoShowDialog(true);
 }
 
 KxStdDialogControl KxTaskDialog::AddButton(wxWindowID id, const wxString& label, bool prepend)

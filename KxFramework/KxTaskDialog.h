@@ -20,12 +20,13 @@ enum KxTD_Options
 	KxTD_RB_NO_DEFAULT = 1 << 8,
 	KxTD_CHB_CHECKED = 1 << 9,
 	KxTD_CHB_ENABLED = 1 << 10,
-	KxTD_SIZE_TO_CONTENT = 1 << 11,
+	KxTD_SIZE_TO_CONTENT = 1 << 11
 };
+
 class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 {
 	public:
-		typedef std::vector<TASKDIALOG_BUTTON> ButtonSpecArray;
+		using ButtonSpecArray = std::vector<TASKDIALOG_BUTTON>;
 
 	private:
 		TASKDIALOGCONFIG m_DialogConfig = {0};
@@ -35,8 +36,8 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 		HRESULT m_Result = S_FALSE;
 
 		wxIcon m_MainIcon;
-		KxIconType m_MainIconID = KxICON_INFORMATION;
 		wxIcon m_FooterIcon;
+		KxIconType m_MainIconID = KxICON_INFORMATION;
 		KxIconType m_FooterIconID = KxICON_NONE;
 
 		wxString m_Title;
@@ -51,28 +52,31 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 		wxWindowID m_SelectedRadioButton = KxID_NONE;
 
 		KxStringVector m_ButtonLabels;
-		std::vector<TASKDIALOG_BUTTON> m_ButtonsID;
 		KxStringVector m_RadioButtonLabels;
+		std::vector<TASKDIALOG_BUTTON> m_ButtonsID;
 		std::vector<TASKDIALOG_BUTTON> m_RadioButtonsID;
 
 	private:
-		static HRESULT CALLBACK EventsCallback(HWND hWnd, UINT notification, WPARAM wParam, LPARAM lParam, LONG_PTR refData);
-		int ShowDialog(bool isModal = true);
+		static HRESULT CALLBACK EventsCallback(HWND handle, UINT notification, WPARAM wParam, LPARAM lParam, LONG_PTR refData);
+		int DoShowDialog(bool isModal = true);
+		void OnClose(wxCloseEvent& event);
 
-		void SetStdButtonsFromWx(KxButtonType buttons);
+		int SetStdButtonsFromWx(KxButtonType buttons);
+		int SetAutoDefaultButton(KxButtonType buttons);
+
 		wxWindowID TranslateButtonID_WinToWx(int idWin) const;
 		int TranslateButtonID_WxToWin(wxWindowID idWx) const;
 		LPCWSTR TranslateIconIDToTDI(KxIconType id) const;
 
-		inline LPCWSTR GetStringOrNull(const wxString& text)
+		const wxChar* GetStringOrNull(const wxString& text)
 		{
 			return text.IsEmpty() ? nullptr : text.wc_str();
 		}
-		inline void SetFlagTDI(TASKDIALOG_FLAGS flag, bool set = true)
+		void SetFlagTDI(TASKDIALOG_FLAGS flag, bool set = true)
 		{
 			KxUtility::ModFlagRef(m_DialogConfig.dwFlags, flag, set);
 		}
-		inline bool IsFlagSetTDI(TASKDIALOG_FLAGS flag) const
+		bool IsFlagSetTDI(TASKDIALOG_FLAGS flag) const
 		{
 			return KxUtility::HasFlag(m_DialogConfig.dwFlags, flag);
 		}
@@ -86,41 +90,40 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 		KxTaskDialog() {}
 		KxTaskDialog(wxWindow* parent,
 					 wxWindowID id,
-					 const wxString& sCaption = wxEmptyString,
+					 const wxString& caption = wxEmptyString,
 					 const wxString& message = wxEmptyString,
 					 int buttons = DefaultButtons,
-					 KxIconType nMainIcon = KxICON_NONE,
+					 KxIconType mainIcon = KxICON_NONE,
 					 wxPoint pos = wxDefaultPosition,
 					 wxSize size = wxDefaultSize,
 					 long style = DefaultStyle
 		)
 		{
-			Create(parent, id, sCaption, message, buttons, nMainIcon, pos, size, style);
+			Create(parent, id, caption, message, buttons, mainIcon, pos, size, style);
 		}
-		bool Create(wxWindow* pParent,
+		bool Create(wxWindow* parent,
 					wxWindowID id,
-					const wxString& sCaption = wxEmptyString,
+					const wxString& caption = wxEmptyString,
 					const wxString& message = wxEmptyString,
 					int buttons = DefaultButtons,
-					KxIconType nMainIcon = KxICON_NONE,
+					KxIconType mainIcon = KxICON_NONE,
 					wxPoint pos = wxDefaultPosition,
 					wxSize size = wxDefaultSize,
 					long style = DefaultStyle
 		);
-		virtual ~KxTaskDialog();
-		virtual bool Close(bool force = false);
+		~KxTaskDialog();
 
 	public:
 		bool IsOK()
 		{
 			return SUCCEEDED(m_Result);
 		}
-		virtual WXHWND GetHandle() const override
+		WXHWND GetHandle() const override
 		{
 			return m_Handle;
 		}
-		virtual bool Show(bool show = true) override;
-		virtual int ShowModal();
+		bool Show(bool show = true) override;
+		int ShowModal() override;
 		bool Realize()
 		{
 			if (GetHandle())
@@ -146,7 +149,7 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 		void SetOptions(KxTD_Options options);
 
 		// Icons
-		virtual KxIconType GetMainIconID() const override
+		KxIconType GetMainIconID() const override
 		{
 			return m_MainIconID;
 		}
@@ -223,11 +226,11 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 		}
 
 		// Strings
-		virtual wxString GetTitle() const override
+		wxString GetTitle() const override
 		{
 			return m_Title;
 		}
-		virtual void SetTitle(const wxString& string = wxEmptyString) override
+		void SetTitle(const wxString& string = wxEmptyString) override
 		{
 			if (string.IsEmpty())
 			{
@@ -239,20 +242,20 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 			}
 			m_DialogConfig.pszWindowTitle = m_Title.wc_str();
 		}
-		virtual wxString GetCaption() const override
+		wxString GetCaption() const override
 		{
 			return m_Caption;
 		}
-		virtual void SetCaption(const wxString& string) override
+		void SetCaption(const wxString& string) override
 		{
 			m_Caption = string;
 			m_DialogConfig.pszMainInstruction = GetStringOrNull(m_Caption);
 		}
-		virtual wxString GetLabel() const override
+		wxString GetLabel() const override
 		{
 			return GetMessage();
 		}
-		virtual void SetLabel(const wxString& string) override
+		void SetLabel(const wxString& string) override
 		{
 			SetMessage(string);
 		}
@@ -295,7 +298,11 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 		}
 
 		// Buttons
-		virtual void SetDefaultButton(wxWindowID id) override
+		void SetStandardButtons(int buttons)
+		{
+			SetStdButtonsFromWx(static_cast<KxButtonType>(buttons));
+		}
+		void SetDefaultButton(wxWindowID id) override
 		{
 			m_DialogConfig.nDefaultButton = TranslateButtonID_WxToWin(id);
 		}
@@ -304,11 +311,11 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 			m_DialogConfig.nDefaultRadioButton = id;
 		}
 		
-		virtual KxStdDialogControl GetButton(wxWindowID id) const override
+		KxStdDialogControl GetButton(wxWindowID id) const override
 		{
 			return id;
 		}
-		virtual KxStdDialogControl AddButton(wxWindowID id, const wxString& label = wxEmptyString, bool prepend = false) override;
+		KxStdDialogControl AddButton(wxWindowID id, const wxString& label = wxEmptyString, bool prepend = false) override;
 		KxStdDialogControl AddRadioButton(wxWindowID id, const wxString& label = wxEmptyString);
 		
 		bool IsCheckBoxChecked() const
