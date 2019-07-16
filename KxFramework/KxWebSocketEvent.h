@@ -1,9 +1,11 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include "KxFramework/KxURI.h"
 
 class KX_API KxWebSocketEvent: public wxNotifyEvent
 {
 	private:
+		KxURL m_URL;
 		const void* m_BinaryData = nullptr;
 		size_t m_BinarySize = 0;
 
@@ -15,6 +17,15 @@ class KX_API KxWebSocketEvent: public wxNotifyEvent
 		}
 
 	public:
+		KxURL GetURL() const
+		{
+			return m_URL;
+		}
+		void SetURL(const KxURL& url)
+		{
+			m_URL = url;
+		}
+
 		wxString GetTextMessage() const
 		{
 			return GetString();
