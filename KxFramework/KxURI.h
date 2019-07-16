@@ -45,7 +45,7 @@ namespace Kx::Network
 			}
 			const TBase& AsBase() const
 			{
-				return static_cast<const TBase>(*m_URI);
+				return static_cast<const TBase&>(*m_URI);
 			}
 			
 			TDerived& AsDerived()
