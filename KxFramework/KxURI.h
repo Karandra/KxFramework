@@ -73,7 +73,7 @@ namespace Kx::Network
 				AsBase().Resolve(base, static_cast<int>(flags));
 				return AsDerived().IsOk();
 			}
-	
+			
 		public:
 			explicit operator bool() const
 			{
@@ -115,6 +115,14 @@ class KX_API KxURI: public wxURI, public Kx::Network::URXHelper<KxURI, wxURI>
 			:wxURI(url), THelper(this)
 		{
 		}
+		KxURI(const char* url)
+			:KxURI(wxString(url))
+		{
+		}
+		KxURI(const wchar_t* url)
+			:KxURI(wxString(url))
+		{
+		}
 		KxURI(const wxURI& other)
 			:wxURI(other), THelper(this)
 		{
@@ -146,6 +154,16 @@ class KX_API KxURI: public wxURI, public Kx::Network::URXHelper<KxURI, wxURI>
 		TDerived& operator=(const wxString& uri)
 		{
 			AsBase() = uri;
+			return AsDerived();
+		}
+		TDerived& operator=(const char* uri)
+		{
+			*this = wxString(uri);
+			return AsDerived();
+		}
+		TDerived& operator=(const wchar_t* uri)
+		{
+			*this = wxString(uri);
 			return AsDerived();
 		}
 		TDerived& operator=(const wxURI& other)
@@ -181,6 +199,14 @@ class KX_API KxURL: public wxURL, public Kx::Network::URXHelper<KxURL, wxURL>
 		}
 		KxURL(const wxString& url)
 			:wxURL(url), THelper(this)
+		{
+		}
+		KxURL(const char* url)
+			:KxURL(wxString(url))
+		{
+		}
+		KxURL(const wchar_t* url)
+			:KxURL(wxString(url))
 		{
 		}
 		KxURL(const wxURI& other)
@@ -229,9 +255,19 @@ class KX_API KxURL: public wxURL, public Kx::Network::URXHelper<KxURL, wxURL>
 		using THelper::Resolve;
 
 	public:
-		TDerived& operator=(const wxString& uri)
+		TDerived& operator=(const wxString& url)
 		{
-			AsBase() = uri;
+			AsBase() = url;
+			return AsDerived();
+		}
+		TDerived& operator=(const char* url)
+		{
+			*this = wxString(url);
+			return AsDerived();
+		}
+		TDerived& operator=(const wchar_t* url)
+		{
+			*this = wxString(url);
 			return AsDerived();
 		}
 		TDerived& operator=(const wxURI& other)
