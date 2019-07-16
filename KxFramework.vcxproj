@@ -301,7 +301,6 @@
     <ClInclude Include="KxFramework\KxCredentialsDialog.h" />
     <ClInclude Include="KxFramework\KxCrypto.h" />
     <ClInclude Include="KxFramework\KxCURL.h" />
-    <ClInclude Include="KxFramework\KxCURLAddress.h" />
     <ClInclude Include="KxFramework\KxCURLEvent.h" />
     <ClInclude Include="KxFramework\KxCURLStructs.h" />
     <ClInclude Include="KxFramework\KxDataView.h">
@@ -572,7 +571,6 @@
     <ClCompile Include="KxFramework\KxCredentialsDialog.cpp" />
     <ClCompile Include="KxFramework\KxCrypto.cpp" />
     <ClCompile Include="KxFramework\KxCURL.cpp" />
-    <ClCompile Include="KxFramework\KxCURLAddress.cpp" />
     <ClCompile Include="KxFramework\KxCURLEvent.cpp" />
     <ClCompile Include="KxFramework\KxCURLStructs.cpp" />
     <ClCompile Include="KxFramework\KxDataView.cpp">

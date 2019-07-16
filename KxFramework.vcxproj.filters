@@ -949,9 +949,6 @@
     <ClInclude Include="KxFramework\ComponentSystem\ComponentContainer.h">
       <Filter>Header Files\General\ComponentSystem</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxCURLAddress.h">
-      <Filter>Header Files\Network</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\DataView2\ToolTip.h">
       <Filter>Header Files\GUI\DataView2</Filter>
     </ClInclude>
@@ -1592,9 +1589,6 @@
       <Filter>Source Files\GUI\DataView2</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxCURLStructs.cpp">
-      <Filter>Source Files\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxCURLAddress.cpp">
       <Filter>Source Files\Network</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\ToolTip.cpp">

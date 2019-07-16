@@ -10,6 +10,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxFramework/KxCURLStructs.h"
 #include "KxFramework/KxCURLEvent.h"
 #include "KxFramework/KxVersion.h"
+#include "KxFramework/KxURI.h"
 
 class KX_API KxCURL: public KxSingleton<KxCURL>
 {
@@ -32,9 +33,6 @@ class KX_API KxCURL: public KxSingleton<KxCURL>
 			return m_IsInitialized;
 		}
 		wxString ErrorCodeToString(int code) const;
-
-		wxString EscapeURL(const wxString& url) const;
-		wxString UnescapeURL(const wxString& url) const;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -75,7 +73,7 @@ class KX_API KxCURLSession: public wxEvtHandler
 		KxStdStringVector m_Headers;
 		void* m_HeadersSList = nullptr;
 
-		wxString m_URL;
+		KxURL m_URL;
 		wxString m_PostData;
 		wxString m_UserAgent;
 
@@ -99,7 +97,7 @@ class KX_API KxCURLSession: public wxEvtHandler
 		void DoSendRequest(KxCURLReplyBase& reply);
 
 	public:
-		KxCURLSession(const wxString& url = wxEmptyString);
+		KxCURLSession(const KxURL& url = {});
 		KxCURLSession(const KxCURLSession&) = delete;
 		KxCURLSession(KxCURLSession&& other)
 		{
@@ -143,7 +141,7 @@ class KX_API KxCURLSession: public wxEvtHandler
 		}
 		void Stop();
 
-		void SetURL(const wxString& url);
+		void SetURL(const KxURL& url);
 		void SetPostData(const wxString& data);
 
 		void ClearHeaders()

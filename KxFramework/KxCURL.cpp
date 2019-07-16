@@ -1,6 +1,5 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxCURL.h"
-#include "KxFramework/KxCURLAddress.h"
 
 #define CURL_STATICLIB 1
 #include "KxFramework/cURL/curl.h"
@@ -102,25 +101,6 @@ wxString KxCURL::ErrorCodeToString(int code) const
 	return wxString::FromUTF8(curl_easy_strerror(static_cast<CURLcode>(code)));
 }
 
-wxString KxCURL::EscapeURL(const wxString& url) const
-{
-	if (KxCURLAddress address(url); address.IsOK())
-	{
-		address.SetPath(address.GetPath(), KxCURLAddressFlag::EncodeURL);
-		return address.GetURL();
-	}
-	return url;
-}
-wxString KxCURL::UnescapeURL(const wxString& url) const
-{
-	if (KxCURLAddress address(url); address.IsOK())
-	{
-		address.SetPath(address.GetPath(KxCURLAddressFlag::DecodeURL));
-		return address.GetURL();
-	}
-	return url;
-}
-
 //////////////////////////////////////////////////////////////////////////
 size_t KxCURLSession::OnWriteResponse(char* data, size_t size, size_t count, void* userData)
 {
@@ -145,7 +125,7 @@ size_t KxCURLSession::OnWriteResponse(char* data, size_t size, size_t count, voi
 		// Send event
 		KxCURLEvent event(KxEVT_CURL_DOWNLOAD, &session, &reply);
 		event.SetEventObject(&session);
-		event.SetSource(session.m_URL);
+		event.SetSource(session.m_URL.BuildUnescapedURI());
 		event.SetMajorProcessed(reply.GetDownloaded());
 		event.SetResponseData(data, length);
 
@@ -175,7 +155,7 @@ size_t KxCURLSession::OnWriteHeader(char* data, size_t size, size_t count, void*
 	// Send event
 	KxCURLEvent event(KxEVT_CURL_RESPONSE_HEADER, &session, &reply);
 	event.SetEventObject(&session);
-	event.SetSource(session.m_URL);
+	event.SetSource(session.m_URL.BuildUnescapedURI());
 	event.SetResponseData(data, length);
 	session.SafelyProcessEvent(event);
 
@@ -232,7 +212,7 @@ void KxCURLSession::DoSendRequest(KxCURLReplyBase& reply)
 
 	SetHeaders();
 
-	SetOption(CURLOPT_URL, m_URL);
+	SetOption(CURLOPT_URL, m_URL.BuildURI());
 	SetOption(CURLOPT_FOLLOWLOCATION, true);
 	SetOption(CURLOPT_SSL_VERIFYPEER, false);
 
@@ -279,7 +259,7 @@ void KxCURLSession::DoSendRequest(KxCURLReplyBase& reply)
 	}
 }
 
-KxCURLSession::KxCURLSession(const wxString& url)
+KxCURLSession::KxCURLSession(const KxURL& url)
 {
 	m_Handle = curl_easy_init();
 	SetURL(url);
@@ -355,9 +335,9 @@ void KxCURLSession::Stop()
 	m_IsStopped = true;
 }
 
-void KxCURLSession::SetURL(const wxString& url)
+void KxCURLSession::SetURL(const KxURL& url)
 {
-	m_URL = KxCURL::GetInstance().EscapeURL(url);
+	m_URL = url;
 }
 void KxCURLSession::SetPostData(const wxString& data)
 {
@@ -395,7 +375,7 @@ KxCURLSession& KxCURLSession::operator=(KxCURLSession&& other)
 		m_HeadersSList = other.m_HeadersSList;
 		m_Headers = std::move(other.m_Headers);
 
-		m_URL = other.m_URL;
+		m_URL = std::move(other.m_URL);
 		m_PostData = other.m_PostData;
 		m_UserAgent = other.m_UserAgent;
 
@@ -405,7 +385,6 @@ KxCURLSession& KxCURLSession::operator=(KxCURLSession&& other)
 
 		other.m_HeadersSList = nullptr;
 
-		other.m_URL.clear();
 		other.m_PostData.clear();
 		other.m_UserAgent.clear();
 	}
