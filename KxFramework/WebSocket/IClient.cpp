@@ -7,7 +7,3 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxStdAfx.h"
 #include "IClient.h"
 #include "KxFramework/KxWebSocket.h"
-
-namespace KxWebSocket
-{
-}
