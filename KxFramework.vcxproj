@@ -364,6 +364,7 @@
     <ClInclude Include="KxFramework\KxINetRequest.h" />
     <ClInclude Include="KxFramework\KxINI.h" />
     <ClInclude Include="KxFramework\KxINetConnection.h" />
+    <ClInclude Include="KxFramework\KxURI.h" />
     <ClInclude Include="KxFramework\KxValidator.h" />
     <ClInclude Include="KxFramework\KxIOwned.h" />
     <ClInclude Include="KxFramework\KxIProgressBar.h" />
