@@ -5,20 +5,31 @@
 
 namespace KxDataView2
 {
+	enum class ProgressHeight: int
+	{
+		Auto = -1,
+		Fit = -2,
+	};
+
 	class KX_API ProgressValueBase
 	{
+		public:
+			using State = ProgressState;
+			using Height = ProgressHeight;
+
 		private:
 			int m_Range = 100;
 			int m_Position = -1;
-			ProgressState m_State = ProgressState::Normal;
+			State m_State = State::Normal;
+			Height m_Height = Height::Auto;
 
 		public:
-			ProgressValueBase(int position = -1, ProgressState state = ProgressState::Normal)
+			ProgressValueBase(int position = -1, State state = State::Normal)
 				:m_State(state)
 			{
 				SetPosition(position);
 			}
-			ProgressValueBase(int position, int range, ProgressState state = ProgressState::Normal)
+			ProgressValueBase(int position, int range, State state = State::Normal)
 				:m_State(state)
 			{
 				SetRange(range);
@@ -85,17 +96,30 @@ namespace KxDataView2
 				m_Position = -1;
 			}
 
-			ProgressState GetState() const
+			State GetState() const
 			{
 				return m_State;
 			}
-			void SetState(ProgressState state)
+			void SetState(State state)
 			{
 				m_State = state;
 			}
 			void ClearState()
 			{
-				m_State = ProgressState::Normal;
+				m_State = State::Normal;
+			}
+			
+			template<class T = Height> T GetHeight() const
+			{
+				return static_cast<T>(m_Height);
+			}
+			void SetHeight(Height height)
+			{
+				m_Height = height;
+			}
+			void SetHeight(int height)
+			{
+				m_Height = static_cast<Height>(height);
 			}
 	};
 }
@@ -128,14 +152,6 @@ namespace KxDataView2
 			}
 	};
 }
-namespace KxDataView2
-{
-	enum class ProgressHeight: int
-	{
-		Auto = -1,
-		Fit = -2,
-	};
-}
 
 namespace KxDataView2
 {
@@ -143,7 +159,6 @@ namespace KxDataView2
 	{
 		private:
 			ProgressValue m_Value;
-			ProgressHeight m_Height = ProgressHeight::Auto;
 
 		protected:
 			bool SetValue(const wxAny& value) override;
@@ -158,24 +173,6 @@ namespace KxDataView2
 			ProgressRenderer(int alignment = wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL)
 				:Renderer(alignment)
 			{
-			}
-
-		public:
-			ProgressHeight GetHeightOption() const
-			{
-				return m_Height;
-			}
-			int GetHeight() const
-			{
-				return static_cast<int>(m_Height);
-			}
-			void SetHeight(ProgressHeight height)
-			{
-				m_Height = height;
-			}
-			void SetHeight(int height)
-			{
-				m_Height = static_cast<ProgressHeight>(height);
 			}
 	};
 }

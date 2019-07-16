@@ -52,21 +52,21 @@ namespace KxDataView2
 		}
 
 		wxSize barSize;
-		switch (m_Height)
+		switch (m_Value.GetHeight())
 		{
-			case ProgressHeight::Auto:
+			case ProgressValue::Height::Auto:
 			{
 				barSize = wxSize(wxDefaultCoord, std::max(GetView()->GetDefaultRowHeight(UniformHeight::Default), GetView()->GetCharHeight() + 2));
 				break;
 			}
-			case ProgressHeight::Fit:
+			case ProgressValue::Height::Fit:
 			{
 				barSize = wxSize(wxDefaultCoord, GetView()->GetUniformRowHeight() - renderEngine.FromDIPY(4));
 				break;
 			}
 			default:
 			{
-				barSize = wxSize(wxDefaultCoord, static_cast<int>(m_Height));
+				barSize = wxSize(wxDefaultCoord, m_Value.GetHeight<int>());
 				break;
 			}
 		};
