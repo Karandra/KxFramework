@@ -19,7 +19,7 @@ class KX_API KxIWebSocketClient: public wxEvtHandler
 		virtual bool DoSendData(const void* data, size_t length) = 0;
 		virtual bool DoSendData(const wxString& stringData) = 0;
 		virtual void DoClose(CloseCode code, const wxString& status, int& errorCode) = 0;
-		virtual bool DoConnect(const KxURL& address) = 0;
+		virtual bool DoConnect(const KxURI& address) = 0;
 
 	public:
 		virtual ~KxIWebSocketClient() = default;
@@ -38,7 +38,7 @@ class KX_API KxIWebSocketClient: public wxEvtHandler
 		virtual void ClearHeaders() = 0;
 		virtual void SetUserAgent(const wxString& userAgent) = 0;
 
-		bool Connect(const KxURL& address = {})
+		bool Connect(const KxURI& address = {})
 		{
 			return DoConnect(address);
 		}

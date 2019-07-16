@@ -33,7 +33,7 @@ namespace KxWebSocket
 			TConnectionHandle m_ConnectionHandle;
 
 			std::unordered_map<wxString, wxString> m_Headers;
-			KxURL m_Address;
+			KxURI m_Address;
 
 		private:
 			void RegisterHandlers();
@@ -49,10 +49,10 @@ namespace KxWebSocket
 			bool DoSendData(const void* data, size_t length) override;
 			bool DoSendData(const wxString& stringData) override;
 			void DoClose(CloseCode code, const wxString& status, int& errorCode) override;
-			bool DoConnect(const KxURL& address) override;
+			bool DoConnect(const KxURI& address) override;
 
 		public:
-			SecureClient(const KxURL& address);
+			SecureClient(const KxURI& address);
 			~SecureClient();
 
 		public:

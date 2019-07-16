@@ -86,7 +86,7 @@ namespace KxWebSocket
 	std::unique_ptr<KxWebSocketEvent> SecureClient::NewEvent(wxEventType eventType)
 	{
 		auto event = std::make_unique<KxWebSocketEvent>(eventType, KxID_NONE);
-		event->SetURL(m_Address);
+		event->SetURI(m_Address);
 
 		return event;
 	}
@@ -121,7 +121,7 @@ namespace KxWebSocket
 	{
 		m_Client.close(m_ConnectionHandle, static_cast<TCloseStatus>(code), ToUTF8(status));
 	}
-	bool SecureClient::DoConnect(const KxURL& address)
+	bool SecureClient::DoConnect(const KxURI& address)
 	{
 		if (address)
 		{
@@ -135,7 +135,7 @@ namespace KxWebSocket
 			AddRequestHeaders();
 
 			KxWebSocketEvent event(KxEVT_WEBSOCKET_CONNECTING, KxID_NONE);
-			event.SetURL(address);
+			event.SetURI(address);
 			event.SetEventObject(this);
 			ProcessEvent(event);
 
@@ -156,7 +156,7 @@ namespace KxWebSocket
 		return false;
 	}
 
-	SecureClient::SecureClient(const KxURL& address)
+	SecureClient::SecureClient(const KxURI& address)
 		:m_Address(address)
 	{
 		m_Client.clear_access_channels(websocketpp::log::alevel::frame_header);

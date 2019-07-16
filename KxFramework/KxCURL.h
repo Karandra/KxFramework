@@ -73,7 +73,7 @@ class KX_API KxCURLSession: public wxEvtHandler
 		KxStdStringVector m_Headers;
 		void* m_HeadersSList = nullptr;
 
-		KxURL m_URL;
+		KxURI m_URI;
 		wxString m_PostData;
 		wxString m_UserAgent;
 
@@ -97,7 +97,7 @@ class KX_API KxCURLSession: public wxEvtHandler
 		void DoSendRequest(KxCURLReplyBase& reply);
 
 	public:
-		KxCURLSession(const KxURL& url = {});
+		KxCURLSession(const KxURI& url = {});
 		KxCURLSession(const KxCURLSession&) = delete;
 		KxCURLSession(KxCURLSession&& other)
 		{
@@ -141,7 +141,7 @@ class KX_API KxCURLSession: public wxEvtHandler
 		}
 		void Stop();
 
-		void SetURL(const KxURL& url);
+		void SetURI(const KxURI& uri);
 		void SetPostData(const wxString& data);
 
 		void ClearHeaders()

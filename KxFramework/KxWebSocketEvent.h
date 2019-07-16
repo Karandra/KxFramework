@@ -5,7 +5,7 @@
 class KX_API KxWebSocketEvent: public wxNotifyEvent
 {
 	private:
-		KxURL m_URL;
+		KxURI m_URI;
 		const void* m_BinaryData = nullptr;
 		size_t m_BinarySize = 0;
 
@@ -17,13 +17,13 @@ class KX_API KxWebSocketEvent: public wxNotifyEvent
 		}
 
 	public:
-		KxURL GetURL() const
+		KxURI GetURI() const
 		{
-			return m_URL;
+			return m_URI;
 		}
-		void SetURL(const KxURL& url)
+		void SetURI(const KxURI& uri)
 		{
-			m_URL = url;
+			m_URI = uri;
 		}
 
 		wxString GetTextMessage() const

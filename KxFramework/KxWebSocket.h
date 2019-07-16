@@ -19,7 +19,7 @@ namespace KxWebSocket
 
 namespace KxWebSocket
 {
-	std::unique_ptr<KxIWebSocketClient> NewSecureClient(const KxURL& address = {});
+	std::unique_ptr<KxIWebSocketClient> NewSecureClient(const KxURI& address = {});
 
-	bool IsAddressWSS(const KxURL& address);
+	bool IsAddressWSS(const KxURI& address);
 }
