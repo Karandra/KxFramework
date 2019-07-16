@@ -39,6 +39,6 @@ namespace KxDataView2
 		using ColumnStyle = KxDataView2::ColumnStyle;
 		using DNDOpType = KxDataView2::DNDOpType;
 		using ColumnWidth = KxDataView2::ColumnWidth;
-		using UniformHeight = KxDataView2::ColumnWidth;
+		using UniformHeight = KxDataView2::UniformHeight;
 	};
 }
