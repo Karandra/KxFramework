@@ -6,6 +6,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 */
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include "KxFramework/KxURI.h"
 #include "KxFramework/KxWebSocketEvent.h"
 #include "KxFramework/WebSocket/Common.h"
 #include "KxFramework/WebSocket/IClient.h"
@@ -18,7 +19,7 @@ namespace KxWebSocket
 
 namespace KxWebSocket
 {
-	std::unique_ptr<IClient> NewSecureClient(const wxString& address = {});
+	std::unique_ptr<KxIWebSocketClient> NewSecureClient(const KxURL& address = {});
 
-	bool IsAddressWSS(const wxString& address);
+	bool IsAddressWSS(const KxURL& address);
 }

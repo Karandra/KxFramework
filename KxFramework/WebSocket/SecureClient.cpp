@@ -33,18 +33,18 @@ namespace KxWebSocket
 				{
 					const std::string& payload = message->get_payload();
 
-					KxWebSocketEvent* event = NewEvent(KxEVT_WEBSOCKET_MESSAGE);
+					auto event = NewEvent(KxEVT_WEBSOCKET_MESSAGE);
 					event->SetString(wxString::FromUTF8(payload.data(), payload.size()));
-					SendEvent(event);
+					SendEvent(std::move(event));
 					break;
 				}
 				case TFrameOpCode::binary:
 				{
 					const std::string& payload = message->get_payload();
 
-					KxWebSocketEvent* event = NewEvent(KxEVT_WEBSOCKET_MESSAGE);
+					auto event = NewEvent(KxEVT_WEBSOCKET_MESSAGE);
 					event->SetBinaryMessage(payload.data(), payload.size());
-					SendEvent(event);
+					SendEvent(std::move(event));
 					break;
 				}
 			};
@@ -63,6 +63,7 @@ namespace KxWebSocket
 			}
 			catch (...)
 			{
+				wxLogDebug(wxS("KxWebSocket::RegisterHandlers: exception occured"));
 			}
 			return context;
 		});
@@ -77,17 +78,21 @@ namespace KxWebSocket
 			}
 			catch (...)
 			{
+				wxLogDebug(wxS("KxWebSocket::AddRequestHeaders: exception occured"));
 			}
 		}
 	}
 
-	KxWebSocketEvent* SecureClient::NewEvent(wxEventType eventType)
+	std::unique_ptr<KxWebSocketEvent> SecureClient::NewEvent(wxEventType eventType)
 	{
-		return new KxWebSocketEvent(eventType, KxID_NONE);
+		auto event = std::make_unique<KxWebSocketEvent>(eventType, KxID_NONE);
+		event->SetURL(m_Address);
+
+		return event;
 	}
-	void SecureClient::SendEvent(wxEvent* event)
+	void SecureClient::SendEvent(std::unique_ptr<KxWebSocketEvent> event)
 	{
-		QueueEvent(event);
+		QueueEvent(event.release());
 	}
 
 	std::string SecureClient::ToUTF8(const wxString& string) const
@@ -116,19 +121,26 @@ namespace KxWebSocket
 	{
 		m_Client.close(m_ConnectionHandle, static_cast<TCloseStatus>(code), ToUTF8(status));
 	}
-	bool SecureClient::DoConnect(const wxString& address)
+	bool SecureClient::DoConnect(const KxURL& address)
 	{
+		if (address)
+		{
+			m_Address = address;
+		}
+
 		TErrorCode errorCode;
-		m_ConnectionPtr = m_Client.get_connection(ToUTF8(!address.IsEmpty() ? address : m_Address), errorCode);
+		m_ConnectionPtr = m_Client.get_connection(ToUTF8(m_Address.BuildURI()), errorCode);
 		if (!errorCode)
 		{
 			AddRequestHeaders();
 
 			KxWebSocketEvent event(KxEVT_WEBSOCKET_CONNECTING, KxID_NONE);
+			event.SetURL(address);
+			event.SetEventObject(this);
 			ProcessEvent(event);
 
 			m_Client.connect(m_ConnectionPtr);
-			std::thread asioThread([this]()
+			std::thread([this]()
 			{
 				try
 				{
@@ -138,14 +150,13 @@ namespace KxWebSocket
 				{
 					wxLogDebug(wxS("KxWebSocket::SecureClient::<ASIOLoop>: exception occured"));
 				}
-			});
-			asioThread.detach();
+			}).detach();
 			return true;
 		}
 		return false;
 	}
 
-	SecureClient::SecureClient(const wxString& address)
+	SecureClient::SecureClient(const KxURL& address)
 		:m_Address(address)
 	{
 		m_Client.clear_access_channels(websocketpp::log::alevel::frame_header);
@@ -201,6 +212,7 @@ namespace KxWebSocket
 			}
 			catch (...)
 			{
+				wxLogDebug(wxS("KxWebSocket::AddHeader: exception occured"));
 			}
 		}
 		else
@@ -218,6 +230,7 @@ namespace KxWebSocket
 			}
 			catch (...)
 			{
+				wxLogDebug(wxS("KxWebSocket::ReplaceHeader: exception occured"));
 			}
 		}
 		else
@@ -235,6 +248,7 @@ namespace KxWebSocket
 			}
 			catch (...)
 			{
+				wxLogDebug(wxS("KxWebSocket::RemoveHeader: exception occured"));
 			}
 		}
 		else

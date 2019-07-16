@@ -13,7 +13,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 
 namespace KxWebSocket
 {
-	class KX_API SecureClient: public IClient
+	class KX_API SecureClient: public KxIWebSocketClient
 	{
 		private:
 			using TClient = websocketpp::client<websocketpp::config::asio_tls_client>;
@@ -33,14 +33,14 @@ namespace KxWebSocket
 			TConnectionHandle m_ConnectionHandle;
 
 			std::unordered_map<wxString, wxString> m_Headers;
-			wxString m_Address;
+			KxURL m_Address;
 
 		private:
 			void RegisterHandlers();
 			void AddRequestHeaders();
 
-			KxWebSocketEvent* NewEvent(wxEventType eventType);
-			void SendEvent(wxEvent* event);
+			std::unique_ptr<KxWebSocketEvent> NewEvent(wxEventType eventType);
+			void SendEvent(std::unique_ptr<KxWebSocketEvent> event);
 
 			std::string ToUTF8(const wxString& string) const;
 			wxString FromUTF8(const std::string& string) const;
@@ -49,10 +49,10 @@ namespace KxWebSocket
 			bool DoSendData(const void* data, size_t length) override;
 			bool DoSendData(const wxString& stringData) override;
 			void DoClose(CloseCode code, const wxString& status, int& errorCode) override;
-			bool DoConnect(const wxString& address) override;
+			bool DoConnect(const KxURL& address) override;
 
 		public:
-			SecureClient(const wxString& address);
+			SecureClient(const KxURL& address);
 			~SecureClient();
 
 		public:

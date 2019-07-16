@@ -29,19 +29,13 @@ namespace KxWebSocket
 
 namespace KxWebSocket
 {
-	std::unique_ptr<IClient> NewSecureClient(const wxString& address)
+	std::unique_ptr<KxIWebSocketClient> NewSecureClient(const KxURL& address)
 	{
 		return std::make_unique<SecureClient>(address);
 	}
 
-	bool IsAddressWSS(const wxString& address)
+	bool IsAddressWSS(const KxURL& address)
 	{
-		size_t pos = address.find(':');
-		if (pos != std::string::npos)
-		{
-			// For 'wss://example.com:80' pos will be '3'.
-			return pos == 3;
-		}
-		return false;
+		return address.HasScheme() && address.GetScheme() == wxS("wss");
 	}
 }
