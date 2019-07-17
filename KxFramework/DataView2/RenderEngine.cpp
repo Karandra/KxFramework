@@ -395,6 +395,13 @@ namespace KxDataView2
 	}
 	bool RenderEngine::DrawProgressBar(const wxRect& cellRect, CellState cellState, int value, int range, ProgressState state)
 	{
+		// Progress bar looks really ugly when it's smaller than 10x10 pixels,
+		// so don't draw it at all in this case.
+		if (cellRect.GetWidth() < 10 || cellRect.GetHeight() < 10)
+		{
+			return false;
+		}
+
 		KxUxTheme::Handle themeHandle(m_Renderer.GetView(), L"PROGRESS");
 		if (themeHandle)
 		{
