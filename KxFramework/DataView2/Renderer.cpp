@@ -105,7 +105,9 @@ namespace KxDataView2
 	}
 	void Renderer::CallDrawCellContent(const wxRect& cellRect, CellState cellState, bool alwaysUseGC)
 	{
+		m_PaintRect = cellRect;
 		m_AlwaysUseGC = alwaysUseGC;
+
 		RenderEngine renderEngine = GetRenderEngine();
 		wxDC& dc = HasRegularDC() && !m_AlwaysUseGC  ? GetRegularDC() : GetGraphicsDC();
 
@@ -181,6 +183,7 @@ namespace KxDataView2
 
 		// Call derived class drawing
 		DrawCellContent(adjustedCellRect, cellState);
+		m_PaintRect = {};
 	}
 	void Renderer::CallOnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent)
 	{

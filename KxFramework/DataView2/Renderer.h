@@ -48,8 +48,10 @@ namespace KxDataView2
 			MarkupMode m_MarkupMode = MarkupMode::Disabled;
 			CellAttributes m_Attributes;
 			
+			wxRect m_PaintRect;
 			const Node* m_Node = nullptr;
 			Column* m_Column = nullptr;
+
 			wxGCDC* m_GraphicsDC = nullptr;
 			wxDC* m_RegularDC = nullptr;
 			bool m_AlwaysUseGC = false;
@@ -92,6 +94,10 @@ namespace KxDataView2
 			const CellAttributes& GetAttributes() const
 			{
 				return m_Attributes;
+			}
+			wxRect GetPaintRect() const
+			{
+				return m_PaintRect;
 			}
 
 			virtual bool HasActivator() const
