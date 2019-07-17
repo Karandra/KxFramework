@@ -47,7 +47,7 @@ namespace KxDataView2
 			// If we need to draw a progress bar, then add a small margin to prevent clipping
 			if (m_Value.HasPosition())
 			{
-				size += renderEngine.FromDIP(4, 0);
+				size += renderEngine.FromDIP(8, 0);
 			}
 			return size;
 		}
