@@ -1354,14 +1354,14 @@ namespace KxDataView2
 					renderer.SetupCellAttributes(cellState);
 					renderer.CallDrawCellBackground(cellRect, cellState);
 
-					// Draw selection and hot-track indicator after background but before cell content
+					// Draw cell content
+					renderer.CallDrawCellContent(adjustedCellRect, GetCellStateForRow(currentRow));
+
+					// Draw selection and hot-track indicator after background and cell content
 					if (cellState.IsSelected() || cellState.IsHotTracked())
 					{
 						RenderEngine::DrawSelectionRect(this, paintDC, GetRowRect(), cellState.ToItemState(this));
 					}
-
-					// Draw cell content
-					renderer.CallDrawCellContent(adjustedCellRect, GetCellStateForRow(currentRow));
 
 					#if 0
 					// Measure category line offset
