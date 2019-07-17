@@ -27,37 +27,74 @@ namespace KxDataView2
 	void ProgressRenderer::DrawCellContent(const wxRect& cellRect, CellState cellState)
 	{
 		RenderEngine renderEngine = GetRenderEngine();
+
 		if (m_Value.HasPosition())
 		{
-			renderEngine.DrawProgressBar(cellRect, cellState, m_Value.GetPosition(), m_Value.GetRange(), m_Value.GetState());
+			renderEngine.DrawProgressBar(GetBarRect(), cellState, m_Value.GetPosition(), m_Value.GetRange(), m_Value.GetState());
 		}
 		if (m_Value.HasText())
 		{
-			wxRect textRect = wxRect(cellRect).Deflate(renderEngine.FromDIP(4, 4));
-			textRect = renderEngine.CenterTextInside(textRect, renderEngine.GetTextExtent(m_Value.GetText()));
-
-			renderEngine.DrawText(textRect, cellState, m_Value.GetText());
+			renderEngine.DrawText(cellRect, cellState, m_Value.GetText());
 		}
 	}
 	wxSize ProgressRenderer::GetCellSize() const
 	{
-		// Return 'wxDefaultCoord' for width because a progress bar fits any width 
-		// unless it has a text string). Unlike most renderers, it doesn't have a "good" width
-		// for the content. This makes it grow/ to the whole column, which is pretty much always
-		// the desired.
+		if (m_Value.HasText())
+		{
+			RenderEngine renderEngine = GetRenderEngine();
+			wxSize size = renderEngine.GetTextExtent(m_Value.GetText());
 
+			// If we need to draw a progress bar, then add a small margin to prevent clipping
+			if (m_Value.HasPosition())
+			{
+				size += renderEngine.FromDIP(4, 0);
+			}
+			return size;
+		}
+		else
+		{
+			return wxSize(wxDefaultCoord, GetBarRect().GetHeight());
+		}
+	}
+	wxRect ProgressRenderer::GetBarRect() const
+	{
+		RenderEngine renderEngine = GetRenderEngine();
+		const wxRect paintRect = GetPaintRect();
+
+		wxRect barRect = paintRect;
+		auto SetHeight = [&](int desiredHeight, int margin = 0)
+		{
+			if (desiredHeight < barRect.GetHeight())
+			{
+				barRect.Inflate(0, barRect.GetHeight() - desiredHeight);
+			}
+			barRect.Deflate(0, margin);
+		};
+
+		const int margin = renderEngine.FromDIPY(4);
 		switch (m_Value.GetHeight())
 		{
 			case ProgressValue::Height::Auto:
 			{
-				return wxSize(wxDefaultCoord, std::max(GetView()->GetDefaultRowHeight(UniformHeight::Default), GetView()->GetCharHeight() + 2));
+				SetHeight(GetView()->GetCharHeight() + renderEngine.FromDIPY(2), margin);
+				break;
 			}
 			case ProgressValue::Height::Fit:
 			{
-				RenderEngine renderEngine = GetRenderEngine();
-				return wxSize(wxDefaultCoord, GetView()->GetUniformRowHeight() - renderEngine.FromDIPY(4));
+				barRect.Deflate(0, margin);
+				break;
+			}
+			default:
+			{
+				SetHeight(m_Value.GetHeight<int>(), margin);
+				break;
 			}
 		};
-		return wxSize(wxDefaultCoord, m_Value.GetHeight<int>());
+
+		if (barRect.GetHeight() >= paintRect.GetHeight())
+		{
+			barRect.Deflate(0, margin);
+		}
+		return barRect;
 	}
 }
