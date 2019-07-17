@@ -274,16 +274,27 @@ namespace KxDataView2
 		}
 		return nullptr;
 	}
-	Column* View::GetColumnDisplayedAt(size_t displayIndex) const
+	Column* View::GetColumnDisplayedAt(size_t displayIndex, bool calcHidden) const
 	{
 		// Columns can't be reordered if there is no header window which allows to do this
 		if (HasHeaderCtrl())
 		{
-			for (const auto& column: m_Columns)
+			if (calcHidden)
 			{
-				if (column->GetDisplayIndex() == displayIndex)
+				std::vector<Column*> displayed = GetColumnsInDisplayOrder(true);
+				if (displayIndex < displayed.size())
 				{
-					return column.get();
+					return displayed[displayIndex];
+				}
+			}
+			else
+			{
+				for (const auto& column: m_Columns)
+				{
+					if (column->GetDisplayIndex() == displayIndex)
+					{
+						return column.get();
+					}
 				}
 			}
 		}
@@ -292,6 +303,24 @@ namespace KxDataView2
 			return GetColumn(displayIndex);
 		}
 		return nullptr;
+	}
+	Column::Vector View::GetColumnsInDisplayOrder(bool visibleOnly) const
+	{
+		std::vector<Column*> displayOrder;
+		displayOrder.reserve(m_Columns.size());
+
+		for (const auto& column: m_Columns)
+		{
+			if (!visibleOnly || column->IsVisible())
+			{
+				displayOrder.push_back(column.get());
+			}
+		}
+		std::sort(displayOrder.begin(), displayOrder.end(), [](Column* left, Column* right)
+		{
+			return left->GetDisplayIndex() < right->GetDisplayIndex();
+		});
+		return displayOrder;
 	}
 
 	bool View::DeleteColumn(Column& column)

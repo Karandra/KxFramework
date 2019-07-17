@@ -222,7 +222,8 @@ namespace KxDataView2
 
 			Column* GetColumn(size_t position) const;
 			Column* GetColumnByID(ColumnID id) const;
-			Column* GetColumnDisplayedAt(size_t displayIndex) const;
+			Column* GetColumnDisplayedAt(size_t displayIndex, bool calcHidden = false) const;
+			Column::Vector GetColumnsInDisplayOrder(bool visibleOnly = false) const;
 
 			bool DeleteColumn(Column& column);
 			bool ClearColumns();
