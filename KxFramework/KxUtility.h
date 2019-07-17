@@ -150,14 +150,22 @@ class KX_API KxUtility
 			return GetIntPart<TOUT>(vInt, false);
 		}
 
-		template<class OldType, class NewType, typename ConvFunc> static std::vector<NewType> RepackVector(const std::vector<OldType>& oldVector, ConvFunc ConvFunc)
+		template<class TOut, class TSource, class TFunc>
+		static void ConvertVector(const std::vector<TSource>& oldVector, std::vector<TOut>& newVector, TFunc&& func)
 		{
-			std::vector<NewType> newVector;
 			newVector.reserve(oldVector.size());
-			for (size_t i = 0; i < oldVector.size(); i++)
+			for (const TSource& item: oldVector)
 			{
-				newVector.emplace_back(ConvFunc(oldVector[i]));
+				newVector.emplace_back(func(item));
 			}
+		}
+		
+		template<class TOut, class TSource, class TFunc>
+		static std::vector<TOut> ConvertVector(const std::vector<TSource>& oldVector, TFunc&& func)
+		{
+			std::vector<TOut> newVector;
+			ConvertVector(oldVector, newVector, std::forward<TFunc>(func));
+
 			return newVector;
 		}
 
