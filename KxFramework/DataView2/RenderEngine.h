@@ -80,6 +80,13 @@ namespace KxDataView2
 			size_t FindFirstLineBreak(const wxString& string) const;
 			int GetControlFlags(CellState cellState) const;
 			wxString StripMarkup(const wxString& markup) const;
+			wxRect CenterTextInside(const wxRect& cellRect, const wxSize& textExtent) const
+			{
+				wxPoint pos = cellRect.GetPosition();
+				pos.y += CalcCenter(cellRect.GetSize().GetHeight(), textExtent.GetHeight());
+
+				return wxRect(pos, cellRect.GetSize());
+			}
 
 			wxSize GetTextExtent(const wxString& string) const;
 			wxSize GetTextExtent(wxDC& dc, const wxString& string) const;

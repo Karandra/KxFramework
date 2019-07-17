@@ -383,11 +383,8 @@ namespace KxDataView2
 		{
 			if (bitmap.IsOk() && centerTextV)
 			{
-				wxSize textExtent = GetTextExtent(text);
-				wxPoint pos = cellRect.GetPosition();
-				pos.y += CalcCenter(cellRect.GetSize().GetHeight(), textExtent.GetHeight());
-
-				DrawText(wxRect(pos, cellRect.GetSize()), cellState, text, offsetX);
+				const wxRect textRect = CenterTextInside(cellRect, GetTextExtent(text));
+				DrawText(textRect, cellState, text, offsetX);
 			}
 			else
 			{
