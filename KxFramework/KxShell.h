@@ -9,6 +9,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxFramework/KxShellDefs.h"
 #include "KxFramework/KxDrive.h"
 #include "KxFramework/KxFile.h"
+#include "KxFramework/KxURI.h"
 #include <SHLOBJ.h>
 #include <SHLWAPI.h>
 class KX_API KxFileItem;
@@ -68,5 +69,6 @@ class KX_API KxShell
 							int windowMode = SW_SHOWNORMAL,
 							bool hideUI = false
 		);
+		static bool OpenURI(wxWindow* window, const KxURI& uri, bool hideUI = false);
 		static bool OpenFolderAndSelectItem(const wxString& filePath);
 };

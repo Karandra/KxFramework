@@ -275,6 +275,11 @@ bool KxShell::Execute(wxWindow* window,
 	::CoUninitialize();
 	return status;
 }
+bool KxShell::OpenURI(wxWindow* window, const KxURI& uri, bool hideUI)
+{
+	return Execute(window, uri.BuildUnescapedURI(), {}, {}, {}, SW_SHOWDEFAULT, hideUI);
+}
+
 bool KxShell::OpenFolderAndSelectItem(const wxString& filePath)
 {
 	LPITEMIDLIST item = nullptr;
