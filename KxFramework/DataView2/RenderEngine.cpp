@@ -401,7 +401,7 @@ namespace KxDataView2
 		KxUxTheme::Handle themeHandle(m_Renderer.GetView(), L"PROGRESS");
 		if (themeHandle)
 		{
-			HDC dc = m_Renderer.GetGraphicsDC().GetHDC();
+			HDC dc = m_Renderer.GetRegularDC().GetHDC();
 
 			// Draw background
 			RECT cellRectWin = KxUtility::CopyRectToRECT(cellRect);
