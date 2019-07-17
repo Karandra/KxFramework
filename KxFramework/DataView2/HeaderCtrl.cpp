@@ -274,9 +274,22 @@ namespace KxDataView2
 		wxHeaderCtrl::UpdateColumn(index);
 	}
 	
+	void HeaderCtrl::UpdateColumnIndices()
+	{
+		wxHeaderCtrlClone& clone = GetHeaderCtrlClone(this);
+
+		const size_t count = m_View->GetColumnCount();
+		clone.m_colIndices.resize(count);
+
+		for (size_t i = 0; i < count; i++)
+		{
+			clone.m_colIndices[i] = m_View->GetColumn(i)->GetDisplayIndex();
+		}
+	}
 	void HeaderCtrl::DoUpdate(unsigned int index)
 	{
 		wxHeaderCtrlClone& clone = GetHeaderCtrlClone(this);
+		UpdateColumnIndices();
 
 		// The native control does provide Header_SetItem() but it's inconvenient
 		// to use it because it sends HDN_ITEMCHANGING messages and we'd have to
@@ -313,6 +326,7 @@ namespace KxDataView2
 	void HeaderCtrl::DoSetCount(unsigned int count)
 	{
 		wxHeaderCtrlClone& clone = GetHeaderCtrlClone(this);
+		UpdateColumnIndices();
 
 		// First delete all old columns
 		const size_t oldColumnsCount = clone.GetShownColumnsCount();
@@ -345,6 +359,8 @@ namespace KxDataView2
 	void HeaderCtrl::DoInsertItem(const Column& column, size_t index)
 	{
 		wxHeaderCtrlClone& clone = GetHeaderCtrlClone(this);
+		UpdateColumnIndices();
+
 		wxASSERT_MSG(column.IsVisible(), "should only be called for shown columns");
 
 		HDITEMW headerItem = {};
@@ -493,6 +509,7 @@ namespace KxDataView2
 			}
 			case (int)HDN_ITEMSTATEICONCLICK:
 			{
+				UpdateColumnIndices();
 				Column* column = GetColumnAt(clone.MSWFromNativeIdx(header->iItem));
 				if (column)
 				{

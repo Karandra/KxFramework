@@ -36,6 +36,7 @@ namespace KxDataView2
 			bool UpdateColumnWidthToFit(unsigned int index, int titleWidth) override;
 			void UpdateColumn(size_t index);
 			
+			void UpdateColumnIndices();
 			void DoUpdate(unsigned int index) override;
 			void DoSetCount(unsigned int count) override;
 			void DoInsertItem(const Column& column, size_t index);

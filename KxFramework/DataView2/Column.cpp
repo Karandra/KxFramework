@@ -158,6 +158,19 @@ namespace KxDataView2
 		m_Editor.reset(editor);
 	}
 
+	void Column::SetDisplayIndex(size_t newPosition)
+	{
+		if (m_View)
+		{
+			m_View->ColumnMoved(*this, newPosition);
+			UpdateDisplay();
+		}
+		else
+		{
+			AssignDisplayIndex(newPosition);
+		}
+	}
+
 	int Column::GetWidth() const
 	{
 		int width = m_Width;

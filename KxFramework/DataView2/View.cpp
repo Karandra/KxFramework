@@ -87,7 +87,7 @@ namespace KxDataView2
 
 		// Set column data
 		column->SetIndex(index);
-		column->SetDisplayIndex(index);
+		column->AssignDisplayIndex(index);
 		column->SetView(this);
 
 		// Insert
@@ -359,7 +359,7 @@ namespace KxDataView2
 				size_t index = currentColumn.GetDisplayIndex();
 				if (index > displayIndex)
 				{
-					currentColumn.SetDisplayIndex(index - 1);
+					currentColumn.AssignDisplayIndex(index - 1);
 				}
 			}
 
@@ -888,7 +888,7 @@ namespace KxDataView2
 					size_t displayIndex = column->GetDisplayIndex();
 					if (displayIndex <= newDisplayIndex && displayIndex > oldDisplayIndex)
 					{
-						column->SetDisplayIndex(displayIndex - 1);
+						column->AssignDisplayIndex(displayIndex - 1);
 					}
 				}
 			}
@@ -900,13 +900,13 @@ namespace KxDataView2
 					size_t displayIndex = column->GetDisplayIndex();
 					if (displayIndex >= newDisplayIndex && displayIndex < oldDisplayIndex)
 					{
-						column->SetDisplayIndex(displayIndex + 1);
+						column->AssignDisplayIndex(displayIndex + 1);
 					}
 				}
 			}
 
 			// Set the new display position
-			movedColumn.SetDisplayIndex(newDisplayIndex);
+			movedColumn.AssignDisplayIndex(newDisplayIndex);
 
 			// Notify the header control
 			OnColumnCountChanged();

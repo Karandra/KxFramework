@@ -186,6 +186,11 @@ namespace KxDataView2
 			Editor* GetEditor() const;
 			void AssignEditor(Editor* editor);
 
+			void AssignDisplayIndex(size_t value)
+			{
+				m_DisplayIndex = value;
+			}
+
 		public:
 			size_t GetIndex() const
 			{
@@ -195,10 +200,7 @@ namespace KxDataView2
 			{
 				return m_DisplayIndex;
 			}
-			void SetDisplayIndex(size_t value)
-			{
-				m_DisplayIndex = value;
-			}
+			void SetDisplayIndex(size_t newPosition);
 
 			template<class T> T GetID() const
 			{
