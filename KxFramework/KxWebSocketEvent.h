@@ -1,6 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxURI.h"
+#include "KxEvent.h"
 
 class KX_API KxWebSocketEvent: public wxNotifyEvent
 {
@@ -46,8 +47,8 @@ class KX_API KxWebSocketEvent: public wxNotifyEvent
 		}
 };
 
-KX_DECLARE_EVENT(KxEVT_WEBSOCKET_OPEN, KxWebSocketEvent);
-KX_DECLARE_EVENT(KxEVT_WEBSOCKET_FAIL, KxWebSocketEvent);
-KX_DECLARE_EVENT(KxEVT_WEBSOCKET_CLOSE, KxWebSocketEvent);
-KX_DECLARE_EVENT(KxEVT_WEBSOCKET_MESSAGE, KxWebSocketEvent);
-KX_DECLARE_EVENT(KxEVT_WEBSOCKET_CONNECTING, KxWebSocketEvent);
+KxEVENT_DECLARE_GLOBAL(WEBSOCKET_OPEN, KxWebSocketEvent);
+KxEVENT_DECLARE_GLOBAL(WEBSOCKET_FAIL, KxWebSocketEvent);
+KxEVENT_DECLARE_GLOBAL(WEBSOCKET_CLOSE, KxWebSocketEvent);
+KxEVENT_DECLARE_GLOBAL(WEBSOCKET_MESSAGE, KxWebSocketEvent);
+KxEVENT_DECLARE_GLOBAL(WEBSOCKET_CONNECTING, KxWebSocketEvent);

@@ -1,8 +1,9 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxUtility.h"
+#include "KxEvent.h"
 
-KX_DECLARE_EVENT(KxEVT_TREE_ITEM_CHECKED, wxTreeEvent);
+KxEVENT_DECLARE_GLOBAL(TREE_ITEM_CHECKED, wxTreeEvent);
 
 enum KxTreeView_ItemState
 {

@@ -3,7 +3,7 @@
 #include "KxFramework/DataView/KxDataViewMainWindow.h"
 #include "KxFramework/KxDataViewComboBox.h"
 
-wxDEFINE_EVENT(KxEVT_DVR_DVCOMBOBOX_INIT_CONTROL, KxDataViewEvent);
+KxEVENT_DEFINE_GLOBAL(DVR_DVCOMBOBOX_INIT_CONTROL, KxDataViewEvent);
 
 void KxDataViewDVComboBoxEditor::OnInitControl(const wxAny& value)
 {

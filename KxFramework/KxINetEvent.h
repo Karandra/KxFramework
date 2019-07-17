@@ -113,6 +113,6 @@ class KX_API KxINetEvent: public wxNotifyEvent
 };
 
 //////////////////////////////////////////////////////////////////////////
-KX_DECLARE_EVENT(KxEVT_INET_SEND_DATA, KxINetEvent);
-KX_DECLARE_EVENT(KxEVT_INET_QUERY_INFO, KxINetEvent);
-KX_DECLARE_EVENT(KxEVT_INET_DOWNLOAD, KxFileOperationEvent);
+KxEVENT_DECLARE_GLOBAL(INET_SEND_DATA, KxINetEvent);
+KxEVENT_DECLARE_GLOBAL(INET_QUERY_INFO, KxINetEvent);
+KxEVENT_DECLARE_GLOBAL(INET_DOWNLOAD, KxFileOperationEvent);

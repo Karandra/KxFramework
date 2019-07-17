@@ -1,9 +1,10 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxUtility.h"
+#include "KxEvent.h"
 
-KX_DECLARE_EVENT(KxEVT_DWM_GLASS_COLOR_CHANGED, wxCommandEvent);
-KX_DECLARE_EVENT(KxEVT_DWM_COMPOSITION_CHANGED, wxCommandEvent);
+KxEVENT_DECLARE_GLOBAL(DWM_GLASS_COLOR_CHANGED, wxCommandEvent);
+KxEVENT_DECLARE_GLOBAL(DWM_COMPOSITION_CHANGED, wxCommandEvent);
 
 namespace KxTLWInternal
 {

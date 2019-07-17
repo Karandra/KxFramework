@@ -277,6 +277,7 @@
     <ClInclude Include="KxFramework\KxAuiToolBarEvent.h" />
     <ClInclude Include="KxFramework\KxAuiToolBarItem.h" />
     <ClInclude Include="KxFramework\KxClusterMap.h" />
+    <ClInclude Include="KxFramework\KxEvent.h" />
     <ClInclude Include="KxFramework\KxOptionSet.h" />
     <ClInclude Include="KxFramework\KxToolTipEx.h" />
     <ClInclude Include="KxFramework\KxBitmapComboBox.h" />

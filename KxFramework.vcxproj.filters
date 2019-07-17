@@ -976,6 +976,9 @@
     <ClInclude Include="KxFramework\KxURI.h">
       <Filter>Header Files\Network</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxEvent.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />

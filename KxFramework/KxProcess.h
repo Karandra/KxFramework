@@ -8,6 +8,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxWithOptions.h"
 #include "KxFramework/KxWinUndef.h"
+#include "KxEvent.h"
 #include <wx/process.h>
 #include <wx/stream.h>
 class KxProcessThread;
@@ -15,8 +16,8 @@ class KxProcessPipe;
 class wxPipeOutputStream;
 class wxPipeInputStream;
 
-KX_DECLARE_EVENT(KxEVT_PROCESS_END, wxProcessEvent);
-KX_DECLARE_EVENT(KxEVT_PROCESS_IDLE, wxProcessEvent);
+KxEVENT_DECLARE_GLOBAL(PROCESS_END, wxProcessEvent);
+KxEVENT_DECLARE_GLOBAL(PROCESS_IDLE, wxProcessEvent);
 
 enum KxProcessOptions
 {

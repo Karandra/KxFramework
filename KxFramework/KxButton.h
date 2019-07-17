@@ -1,9 +1,10 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxWithDropdownMenu.h"
+#include "KxEvent.h"
 
-KX_DECLARE_EVENT(KxEVT_BUTTON, wxCommandEvent);
-KX_DECLARE_EVENT(KxEVT_BUTTON_MENU, wxContextMenuEvent);
+KxEVENT_DECLARE_GLOBAL(BUTTON, wxCommandEvent);
+KxEVENT_DECLARE_GLOBAL(BUTTON_MENU, wxContextMenuEvent);
 
 class KX_API KxButton: public wxSystemThemedControl<wxButton>, public KxWithDropdownMenu
 {

@@ -1,5 +1,6 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include "KxEvent.h"
 class KX_API KxMenu;
 class KX_API KxMenuItem;
 
@@ -70,7 +71,7 @@ class KX_API KxMenuEvent: public wxNotifyEvent
 };
 
 //////////////////////////////////////////////////////////////////////////
-KX_DECLARE_EVENT(KxEVT_MENU_OPEN, KxMenuEvent);
-KX_DECLARE_EVENT(KxEVT_MENU_CLOSE, KxMenuEvent);
-KX_DECLARE_EVENT(KxEVT_MENU_SELECT, KxMenuEvent);
-KX_DECLARE_EVENT(KxEVT_MENU_HOVER, KxMenuEvent);
+KxEVENT_DECLARE_GLOBAL(MENU_OPEN, KxMenuEvent);
+KxEVENT_DECLARE_GLOBAL(MENU_CLOSE, KxMenuEvent);
+KxEVENT_DECLARE_GLOBAL(MENU_SELECT, KxMenuEvent);
+KxEVENT_DECLARE_GLOBAL(MENU_HOVER, KxMenuEvent);

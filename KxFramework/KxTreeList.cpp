@@ -6,8 +6,8 @@
 #include "KxFramework/KxWinUndef.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxTreeList, wxTreeListCtrl);
-wxDEFINE_EVENT(KxEVT_TREELIST_ITEM_ACTIVATED, wxTreeListEvent);
-wxDEFINE_EVENT(KxEVT_TREELIST_SELECTION_CHANGED, wxTreeListEvent);
+KxEVENT_DEFINE_GLOBAL(TREELIST_ITEM_ACTIVATED, wxTreeListEvent);
+KxEVENT_DEFINE_GLOBAL(TREELIST_SELECTION_CHANGED, wxTreeListEvent);
 
 wxTreeListModelNode* KxTreeList::GetItemNode(const wxTreeListItem& item) const
 {

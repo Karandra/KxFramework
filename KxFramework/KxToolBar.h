@@ -1,13 +1,14 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include "KxEvent.h"
 
 class [[deprecated("Use KxAuiToolBar")]] KX_API KxToolBar;
 
-KX_DECLARE_EVENT(KxEVT_TOOLBAR, wxCommandEvent);
-KX_DECLARE_EVENT(KxEVT_TOOLBAR_RIGHTCLICK, wxCommandEvent);
-KX_DECLARE_EVENT(KxEVT_TOOLBAR_DROPDOWN, wxCommandEvent);
-KX_DECLARE_EVENT(KxEVT_TOOLBAR_ENTER, wxCommandEvent);
-KX_DECLARE_EVENT(KxEVT_TOOLBAR_LEAVE, wxCommandEvent);
+KxEVENT_DECLARE_GLOBAL(TOOLBAR, wxCommandEvent);
+KxEVENT_DECLARE_GLOBAL(TOOLBAR_RIGHTCLICK, wxCommandEvent);
+KxEVENT_DECLARE_GLOBAL(TOOLBAR_DROPDOWN, wxCommandEvent);
+KxEVENT_DECLARE_GLOBAL(TOOLBAR_ENTER, wxCommandEvent);
+KxEVENT_DECLARE_GLOBAL(TOOLBAR_LEAVE, wxCommandEvent);
 
 enum
 {

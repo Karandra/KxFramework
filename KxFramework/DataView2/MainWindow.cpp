@@ -78,7 +78,7 @@ namespace KxDataView2
 {
 	wxIMPLEMENT_ABSTRACT_CLASS(MainWindow, wxWindow);
 
-	/* Events */
+	// Events
 	void MainWindow::OnChar(wxKeyEvent& event)
 	{
 		// Propagate the char event upwards
@@ -111,10 +111,10 @@ namespace KxDataView2
 				}
 				else
 				{
-					// Enter activates the item, i.e. sends EVENT_ITEM_ACTIVATED to it.
+					// Enter activates the item, i.e. sends EvtITEM_ACTIVATED to it.
 					// Only if that event is not handled do we activate column renderer (which
 					// is normally done by Space) or even inline editing.
-					Event evt(EVENT_ITEM_ACTIVATED);
+					Event evt(EvtITEM_ACTIVATED);
 					CreateEventTemplate(evt, GetNodeByRow(m_CurrentRow));
 
 					if (m_View->ProcessWindowEvent(evt))
@@ -556,7 +556,7 @@ namespace KxDataView2
 				m_HotTrackRowEnabled = m_HotTrackRow && m_HotTrackColumn;
 				RefreshRow(m_HotTrackRow);
 
-				Event hoverEvent(EVENT_ITEM_HOVERED);
+				Event hoverEvent(EvtITEM_HOVERED);
 				CreateEventTemplate(hoverEvent, currentNode, m_HotTrackColumn);
 				m_View->ProcessWindowEvent(hoverEvent);
 
@@ -575,7 +575,7 @@ namespace KxDataView2
 		{
 			CancelEdit();
 
-			Event evt(EVENT_ITEM_CONTEXT_MENU);
+			Event evt(EvtITEM_CONTEXT_MENU);
 			CreateEventTemplate(evt, currentNode, currentColumn);
 			m_View->ProcessWindowEvent(evt);
 			return;
@@ -614,7 +614,7 @@ namespace KxDataView2
 					RemoveTooltip();
 
 					// Notify cell about drag
-					EventDND dragEvent(EVENT_ITEM_DRAG);
+					EventDND dragEvent(EvtITEM_DRAG);
 					CreateEventTemplate(dragEvent, draggedNode, currentColumn);
 					if (!m_View->HandleWindowEvent(dragEvent) || !dragEvent.IsAllowed())
 					{
@@ -719,7 +719,7 @@ namespace KxDataView2
 		{
 			if (!isHoverOverExpander && (currentRow == m_RowLastClicked))
 			{
-				Event evt(EVENT_ITEM_ACTIVATED);
+				Event evt(EvtITEM_ACTIVATED);
 				CreateEventTemplate(evt, currentNode, currentColumn);
 				if (m_View->ProcessWindowEvent(evt))
 				{
@@ -1014,13 +1014,13 @@ namespace KxDataView2
 			RefreshRow(GetRowByNode(*item));
 		}
 
-		Event event(EVENT_ITEM_SELECTED);
+		Event event(EvtITEM_SELECTED);
 		CreateEventTemplate(event, item, column);
 		m_View->ProcessWindowEvent(event);
 	}
 	bool MainWindow::SendEditingStartedEvent(Node& item, Editor* editor)
 	{
-		Event event(EVENT_ITEM_EDIT_STARTED);
+		Event event(EvtITEM_EDIT_STARTED);
 		CreateEventTemplate(event, &item, editor->GetColumn());
 
 		m_View->ProcessWindowEvent(event);
@@ -1028,7 +1028,7 @@ namespace KxDataView2
 	}
 	bool MainWindow::SendEditingDoneEvent(Node& item, Editor* editor, bool canceled, const wxAny& value)
 	{
-		EventEditor event(EVENT_ITEM_EDIT_DONE);
+		EventEditor event(EvtITEM_EDIT_DONE);
 		CreateEventTemplate(event, &item, editor->GetColumn());
 		event.SetEditCanceled(canceled);
 		event.SetValue(value);
@@ -1100,7 +1100,7 @@ namespace KxDataView2
 
 		// Send the event to the control itself.
 		{
-			Event cacheEvent(EVENT_VIEW_CACHE_HINT);
+			Event cacheEvent(EvtVIEW_CACHE_HINT);
 			CreateEventTemplate(cacheEvent);
 			cacheEvent.SetCacheHints(rowStart, rowEnd - 1);
 			m_View->ProcessWindowEvent(cacheEvent);
@@ -1728,7 +1728,7 @@ namespace KxDataView2
 		RefreshRow(GetRowByNode(node));
 
 		// Send event
-		Event event(EVENT_ITEM_VALUE_CHANGED);
+		Event event(EvtITEM_VALUE_CHANGED);
 		CreateEventTemplate(event, &node, column);
 		m_View->ProcessWindowEvent(event);
 	}
@@ -2329,7 +2329,7 @@ namespace KxDataView2
 			}
 		}
 
-		EventDND event(EVENT_ITEM_DROP_POSSIBLE);
+		EventDND event(EvtITEM_DROP_POSSIBLE);
 		CreateEventTemplate(event, node);
 		event.SetPosition(pos);
 		event.SetDropEffect(dragResult);
@@ -2361,7 +2361,7 @@ namespace KxDataView2
 	{
 		auto [row, node] = DragDropHitTest(pos);
 
-		EventDND event(EVENT_ITEM_DROP);
+		EventDND event(EvtITEM_DROP);
 		CreateEventTemplate(event, node);
 		event.SetPosition(pos);
 		event.SetDropEffect(dragResult);
@@ -2378,7 +2378,7 @@ namespace KxDataView2
 		RemoveDropHint();
 		auto [row, node] = DragDropHitTest(pos);
 
-		EventDND event(EVENT_ITEM_DROP_POSSIBLE);
+		EventDND event(EvtITEM_DROP_POSSIBLE);
 		CreateEventTemplate(event, node);
 		event.SetPosition(pos);
 		event.SetDataObject(const_cast<wxDataObjectSimple*>(&dataObject));
@@ -2786,7 +2786,7 @@ namespace KxDataView2
 	{
 		if (node.HasChildren() && !node.IsNodeExpanded())
 		{
-			if (!SendExpanderEvent(EVENT_ITEM_EXPANDING, node))
+			if (!SendExpanderEvent(EvtITEM_EXPANDING, node))
 			{
 				// Vetoed by the event handler.
 				return;
@@ -2816,7 +2816,7 @@ namespace KxDataView2
 			UpdateDisplay();
 
 			// Send the expanded event
-			SendExpanderEvent(EVENT_ITEM_EXPANDED, node);
+			SendExpanderEvent(EvtITEM_EXPANDED, node);
 		}
 	}
 
@@ -2834,7 +2834,7 @@ namespace KxDataView2
 	{
 		if (node.HasChildren() && node.IsNodeExpanded())
 		{
-			if (!SendExpanderEvent(EVENT_ITEM_COLLAPSING, node))
+			if (!SendExpanderEvent(EvtITEM_COLLAPSING, node))
 			{
 				// Vetoed by the event handler.
 				return;
@@ -2882,7 +2882,7 @@ namespace KxDataView2
 			m_View->InvalidateColumnsBestWidth();
 			UpdateDisplay();
 
-			SendExpanderEvent(EVENT_ITEM_COLLAPSED, node);
+			SendExpanderEvent(EvtITEM_COLLAPSED, node);
 		}
 	}
 

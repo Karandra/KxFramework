@@ -20,7 +20,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #pragma warning (disable: 4312)
 
 wxDEFINE_EVENT_ALIAS(KxEVT_PROCESS_END, wxProcessEvent, wxEVT_END_PROCESS);
-wxDEFINE_EVENT(KxEVT_PROCESS_IDLE, wxProcessEvent);
+KxEVENT_DEFINE_GLOBAL(PROCESS_IDLE, wxProcessEvent);
 
 void KxProcess::RIO_ReadStream(wxInputStream* stream, wxMemoryBuffer& buffer)
 {

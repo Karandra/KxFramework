@@ -1,9 +1,10 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include "KxEvent.h"
 
-KX_DECLARE_EVENT(KxEVT_THUMBVIEW_SELECTED, wxCommandEvent);
-KX_DECLARE_EVENT(KxEVT_THUMBVIEW_ACTIVATED, wxCommandEvent);
-KX_DECLARE_EVENT(KxEVT_THUMBVIEW_CONTEXT_MENU, wxContextMenuEvent);
+KxEVENT_DECLARE_GLOBAL(THUMBVIEW_SELECTED, wxCommandEvent);
+KxEVENT_DECLARE_GLOBAL(THUMBVIEW_ACTIVATED, wxCommandEvent);
+KxEVENT_DECLARE_GLOBAL(THUMBVIEW_CONTEXT_MENU, wxContextMenuEvent);
 
 class KX_API KxThumbView;
 class KX_API KxThumbViewItem

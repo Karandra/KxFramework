@@ -243,5 +243,5 @@ void KxTLWInternal::SetWindowUserData(HWND hWnd, const void* data)
 }
 
 //////////////////////////////////////////////////////////////////////////
-wxDEFINE_EVENT(KxEVT_DWM_GLASS_COLOR_CHANGED, wxCommandEvent);
-wxDEFINE_EVENT(KxEVT_DWM_COMPOSITION_CHANGED, wxCommandEvent);
+KxEVENT_DEFINE_GLOBAL(DWM_GLASS_COLOR_CHANGED, wxCommandEvent);
+KxEVENT_DEFINE_GLOBAL(DWM_COMPOSITION_CHANGED, wxCommandEvent);

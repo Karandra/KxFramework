@@ -5,7 +5,7 @@
 #include "KxFramework/KxUtility.h"
 #include "KxFramework/KxIncludeWindows.h"
 
-wxDEFINE_EVENT(KxEVT_TREE_ITEM_CHECKED, wxTreeEvent);
+KxEVENT_DEFINE_GLOBAL(TREE_ITEM_CHECKED, wxTreeEvent);
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxTreeView, wxTreeCtrl);
 

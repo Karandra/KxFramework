@@ -1,6 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include <wx/aui/auibar.h>
+#include "KxEvent.h"
 class KX_API KxAuiToolBarItem;
 
 class KX_API KxAuiToolBarEvent: public wxAuiToolBarEvent
@@ -11,10 +12,11 @@ class KX_API KxAuiToolBarEvent: public wxAuiToolBarEvent
 	public:
 		KxAuiToolBarEvent(const wxAuiToolBarEvent& other);
 		KxAuiToolBarEvent(wxEventType type = wxEVT_NULL, wxWindowID id = 0);
-		virtual ~KxAuiToolBarEvent();
-		virtual KxAuiToolBarEvent* Clone() const override;
+		~KxAuiToolBarEvent();
 
 	public:
+		KxAuiToolBarEvent* Clone() const override;
+
 		KxAuiToolBarItem* GetItem() const
 		{
 			return m_Item;
@@ -28,8 +30,8 @@ class KX_API KxAuiToolBarEvent: public wxAuiToolBarEvent
 		wxDECLARE_DYNAMIC_CLASS(KxAuiToolBarEvent);
 };
 
-KX_DECLARE_EVENT(KxEVT_AUI_TOOLBAR_CLICK, KxAuiToolBarEvent);
-KX_DECLARE_EVENT(KxEVT_AUI_TOOLBAR_RIGHT_CLICK, KxAuiToolBarEvent);
-KX_DECLARE_EVENT(KxEVT_AUI_TOOLBAR_MIDDLE_CLICK, KxAuiToolBarEvent);
-KX_DECLARE_EVENT(KxEVT_AUI_TOOLBAR_DROPDOWN, KxAuiToolBarEvent);
-KX_DECLARE_EVENT(KxEVT_AUI_TOOLBAR_OVERFLOW, KxAuiToolBarEvent);
+KxEVENT_DECLARE_GLOBAL(AUI_TOOLBAR_CLICK, KxAuiToolBarEvent);
+KxEVENT_DECLARE_GLOBAL(AUI_TOOLBAR_RIGHT_CLICK, KxAuiToolBarEvent);
+KxEVENT_DECLARE_GLOBAL(AUI_TOOLBAR_MIDDLE_CLICK, KxAuiToolBarEvent);
+KxEVENT_DECLARE_GLOBAL(AUI_TOOLBAR_DROPDOWN, KxAuiToolBarEvent);
+KxEVENT_DECLARE_GLOBAL(AUI_TOOLBAR_OVERFLOW, KxAuiToolBarEvent);

@@ -1,4 +1,4 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxNotifyEvent.h"
 
-wxDEFINE_EVENT(KxEVT_CONSOLE_EVENT, wxNotifyEvent);
+KxEVENT_DEFINE_GLOBAL(CONSOLE_EVENT, wxNotifyEvent);

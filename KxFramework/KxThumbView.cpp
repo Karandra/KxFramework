@@ -12,9 +12,9 @@ KxThumbViewItem::~KxThumbViewItem()
 }
 
 //////////////////////////////////////////////////////////////////////////
-wxDEFINE_EVENT(KxEVT_THUMBVIEW_SELECTED, wxCommandEvent);
-wxDEFINE_EVENT(KxEVT_THUMBVIEW_ACTIVATED, wxCommandEvent);
-wxDEFINE_EVENT(KxEVT_THUMBVIEW_CONTEXT_MENU, wxContextMenuEvent);
+KxEVENT_DEFINE_GLOBAL(THUMBVIEW_SELECTED, wxCommandEvent);
+KxEVENT_DEFINE_GLOBAL(THUMBVIEW_ACTIVATED, wxCommandEvent);
+KxEVENT_DEFINE_GLOBAL(THUMBVIEW_CONTEXT_MENU, wxContextMenuEvent);
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxThumbView, wxVScrolledWindow);
 

@@ -180,7 +180,7 @@ namespace KxDataView2
 		FinishEditing();
 
 		const int columnIndex = event.GetColumn();
-		if (SendEvent(EVENT_COLUMN_HEADER_CLICK, columnIndex))
+		if (SendEvent(EvtCOLUMN_HEADER_CLICK, columnIndex))
 		{
 			return;
 		}
@@ -209,14 +209,14 @@ namespace KxDataView2
 
 		m_View->GetMainWindow()->OnShouldResort();
 		m_View->OnColumnChange(columnIndex);
-		SendEvent(EVENT_COLUMN_SORTED, columnIndex);
+		SendEvent(EvtCOLUMN_SORTED, columnIndex);
 	}
 	void HeaderCtrl::OnRClick(wxHeaderCtrlEvent& event)
 	{
 		FinishEditing();
 
 		// Event wasn't processed somewhere, use default behavior
-		if (!SendEvent(EVENT_COLUMN_HEADER_RCLICK, event.GetColumn()))
+		if (!SendEvent(EvtCOLUMN_HEADER_RCLICK, event.GetColumn()))
 		{
 			event.Skip();
 			ToggleSortByColumn(event.GetColumn());
@@ -245,7 +245,7 @@ namespace KxDataView2
 		wxPoint pos = event.GetPosition();
 		if (pos.x > m_View->GetMainWindow()->GetRowWidth())
 		{
-			SendEvent(event.GetEventType() == wxEVT_LEFT_UP ? EVENT_COLUMN_HEADER_CLICK : EVENT_COLUMN_HEADER_RCLICK, -1);
+			SendEvent(event.GetEventType() == wxEVT_LEFT_UP ? EvtCOLUMN_HEADER_CLICK : EvtCOLUMN_HEADER_RCLICK, -1);
 		}
 		event.Skip();
 	}
@@ -516,7 +516,7 @@ namespace KxDataView2
 					// Send an event, if it wasn't processed, toggle check state ourselves.
 					// In any case update native column state after the event handler returns.
 					const bool isChecked = column->IsChecked();
-					if (!SendEvent(EVENT_COLUMN_TOGGLE, column->GetIndex()))
+					if (!SendEvent(EvtCOLUMN_TOGGLE, column->GetIndex()))
 					{
 						column->SetChecked(!isChecked);
 					}
@@ -526,7 +526,7 @@ namespace KxDataView2
 			}
 			case (int)HDN_DROPDOWN:
 			{
-				SendEvent(EVENT_COLUMN_DROPDOWN, clone.MSWFromNativeIdx(header->iItem), GetDropdownRect(header->iItem));
+				SendEvent(EvtCOLUMN_DROPDOWN, clone.MSWFromNativeIdx(header->iItem), GetDropdownRect(header->iItem));
 				return true;
 			}
 		};
@@ -590,7 +590,7 @@ namespace KxDataView2
 			{
 				column.SortAscending();
 			}
-			SendEvent(EVENT_COLUMN_SORTED, column.GetIndex());
+			SendEvent(EvtCOLUMN_SORTED, column.GetIndex());
 		}
 	}
 	

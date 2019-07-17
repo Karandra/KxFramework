@@ -8,8 +8,8 @@ KxWebSocketEvent::KxWebSocketEvent(wxEventType type, wxWindowID winid)
 }
 
 //////////////////////////////////////////////////////////////////////////
-wxDEFINE_EVENT(KxEVT_WEBSOCKET_OPEN, KxWebSocketEvent);
-wxDEFINE_EVENT(KxEVT_WEBSOCKET_FAIL, KxWebSocketEvent);
-wxDEFINE_EVENT(KxEVT_WEBSOCKET_CLOSE, KxWebSocketEvent);
-wxDEFINE_EVENT(KxEVT_WEBSOCKET_MESSAGE, KxWebSocketEvent);
-wxDEFINE_EVENT(KxEVT_WEBSOCKET_CONNECTING, KxWebSocketEvent);
+KxEVENT_DEFINE_GLOBAL(WEBSOCKET_OPEN, KxWebSocketEvent);
+KxEVENT_DEFINE_GLOBAL(WEBSOCKET_FAIL, KxWebSocketEvent);
+KxEVENT_DEFINE_GLOBAL(WEBSOCKET_CLOSE, KxWebSocketEvent);
+KxEVENT_DEFINE_GLOBAL(WEBSOCKET_MESSAGE, KxWebSocketEvent);
+KxEVENT_DEFINE_GLOBAL(WEBSOCKET_CONNECTING, KxWebSocketEvent);

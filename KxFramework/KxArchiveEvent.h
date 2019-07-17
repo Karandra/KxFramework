@@ -14,9 +14,11 @@ class KX_API KxArchiveEvent: public KxFileOperationEvent
 
 	public:
 		KxArchiveEvent(wxEventType type = wxEVT_NULL, int id = 0);
-		virtual ~KxArchiveEvent();
-		virtual KxArchiveEvent* Clone() const override;
+		~KxArchiveEvent();
 
+	public:
+		KxArchiveEvent* Clone() const override;
+		
 		uint32_t GetCRC() const
 		{
 			return m_CRC32;
@@ -71,12 +73,13 @@ class KX_API KxArchiveEvent: public KxFileOperationEvent
 			m_Ratio = value;
 		}
 
+	public:
 		wxDECLARE_DYNAMIC_CLASS(KxArchiveEvent);
 };
 
 //////////////////////////////////////////////////////////////////////////
-KX_DECLARE_EVENT(KxEVT_ARCHIVE, KxArchiveEvent);
-KX_DECLARE_EVENT(KxEVT_ARCHIVE_PACK, KxArchiveEvent);
-KX_DECLARE_EVENT(KxEVT_ARCHIVE_UNPACK, KxArchiveEvent);
-KX_DECLARE_EVENT(KxEVT_ARCHIVE_SEARCH, KxArchiveEvent);
-KX_DECLARE_EVENT(KxEVT_ARCHIVE_DONE, KxArchiveEvent);
+KxEVENT_DECLARE_GLOBAL(ARCHIVE, KxArchiveEvent);
+KxEVENT_DECLARE_GLOBAL(ARCHIVE_PACK, KxArchiveEvent);
+KxEVENT_DECLARE_GLOBAL(ARCHIVE_UNPACK, KxArchiveEvent);
+KxEVENT_DECLARE_GLOBAL(ARCHIVE_SEARCH, KxArchiveEvent);
+KxEVENT_DECLARE_GLOBAL(ARCHIVE_DONE, KxArchiveEvent);

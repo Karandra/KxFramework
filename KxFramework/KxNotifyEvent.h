@@ -1,4 +1,5 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include "KxEvent.h"
 
-KX_DECLARE_EVENT(KxEVT_CONSOLE_EVENT, wxNotifyEvent);
+KxEVENT_DECLARE_GLOBAL(CONSOLE_EVENT, wxNotifyEvent);

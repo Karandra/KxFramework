@@ -26,9 +26,9 @@ class KX_API KxCURLEvent: public KxFileOperationEvent
 		KxCURLEvent() {}
 		KxCURLEvent(wxEventType eventType, KxCURLSession* session, KxCURLReplyBase* reply);
 		~KxCURLEvent();
-		KxCURLEvent* Clone() const override;
 
 	public:
+		KxCURLEvent* Clone() const override;
 		bool IsOK() const
 		{
 			return m_Session != nullptr && m_Reply != nullptr;
@@ -51,5 +51,5 @@ class KX_API KxCURLEvent: public KxFileOperationEvent
 		wxDECLARE_DYNAMIC_CLASS(KxCURLEvent);
 };
 
-KX_DECLARE_EVENT(KxEVT_CURL_DOWNLOAD, KxCURLEvent);
-KX_DECLARE_EVENT(KxEVT_CURL_RESPONSE_HEADER, KxCURLEvent);
+KxEVENT_DECLARE_GLOBAL(CURL_DOWNLOAD, KxCURLEvent);
+KxEVENT_DECLARE_GLOBAL(CURL_RESPONSE_HEADER, KxCURLEvent);

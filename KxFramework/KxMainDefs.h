@@ -10,6 +10,3 @@
 #else
 #define KX_API
 #endif
-
-#define KX_DECLARE_EVENT(name, type) wxDECLARE_EXPORTED_EVENT(KX_API, name, type)
-#define KX_DECLARE_EVENT_ALIAS(name, type) wxDECLARE_EXPORTED_EVENT(KX_API, name, type)

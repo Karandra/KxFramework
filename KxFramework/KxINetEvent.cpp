@@ -11,9 +11,9 @@ KxINetURLParts::KxINetURLParts()
 }
 //////////////////////////////////////////////////////////////////////////
 
-wxDEFINE_EVENT(KxEVT_INET_SEND_DATA, KxINetEvent);
-wxDEFINE_EVENT(KxEVT_INET_QUERY_INFO, KxINetEvent);
-wxDEFINE_EVENT(KxEVT_INET_DOWNLOAD, KxFileOperationEvent);
+KxEVENT_DEFINE_GLOBAL(INET_SEND_DATA, KxINetEvent);
+KxEVENT_DEFINE_GLOBAL(INET_QUERY_INFO, KxINetEvent);
+KxEVENT_DEFINE_GLOBAL(INET_DOWNLOAD, KxFileOperationEvent);
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxINetEvent, KxFileOperationEvent);
 

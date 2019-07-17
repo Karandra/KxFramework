@@ -1,6 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxDynamicCastAsIs.h"
+#include "KxEvent.h"
 
 class KX_API KxBroadcastEvent: public wxNotifyEvent, public KxRTTI::DynamicCastAsIs<KxBroadcastEvent>
 {
@@ -81,10 +82,11 @@ class KX_API KxBroadcastEvent: public wxNotifyEvent, public KxRTTI::DynamicCastA
 
 	public:
 		KxBroadcastEvent(wxEventType type = wxEVT_NULL);
-		virtual ~KxBroadcastEvent();
-		KxBroadcastEvent* Clone() const override;
+		~KxBroadcastEvent();
 
 	public:
+		KxBroadcastEvent* Clone() const override;
+		
 		bool Send()
 		{
 			if (OnSendEvent())

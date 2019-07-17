@@ -1,9 +1,10 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxWithImageList.h"
+#include "KxEvent.h"
 
-KX_DECLARE_EVENT(KxEVT_TREELIST_ITEM_ACTIVATED, wxTreeListEvent);
-KX_DECLARE_EVENT(KxEVT_TREELIST_SELECTION_CHANGED, wxTreeListEvent);
+KxEVENT_DECLARE_GLOBAL(TREELIST_ITEM_ACTIVATED, wxTreeListEvent);
+KxEVENT_DECLARE_GLOBAL(TREELIST_SELECTION_CHANGED, wxTreeListEvent);
 
 enum KxTreeList_ImageState
 {
@@ -23,8 +24,8 @@ enum KxTreeListOptions
 	KxTL_MASK = KxTL_VERT_RULES|KxTL_HORIZ_RULES|KxTL_DCLICK_EXPAND|KxTL_FIX_FIRST_COLUMN
 };
 
-class KX_API [[deprecated("Use KxDataViewCtrl with custom data model")]] KxTreeList;
-class KX_API [[deprecated("Use KxDataViewCtrl with custom data model")]] KxTreeListItem;
+class KX_API [[deprecated("Use KxDataView2 with custom data model")]] KxTreeList;
+class KX_API [[deprecated("Use KxDataView2 with custom data model")]] KxTreeListItem;
 
 class KX_API KxTreeList;
 class KX_API KxTreeListItem
