@@ -1304,11 +1304,6 @@ namespace KxDataView2
 					continue;
 				}
 
-				// Clip DC to current column
-				const wxRect columnRect(cellRect.GetX(), 0, cellRect.GetWidth(), m_virtualSize.GetHeight());
-				wxDCClipper clip(paintDC, columnRect);
-				KxGCClipper clipGC(gc, columnRect);
-
 				// Adjust cell rectangle
 				wxRect adjustedCellRect = cellRect;
 				adjustedCellRect.Deflate(PADDING_RIGHTLEFT, 0);
@@ -1343,6 +1338,11 @@ namespace KxDataView2
 
 					dc.DrawLine(xCoordStart, cellInitialRect.GetY(), xCoordEnd + clientSize.GetWidth(), cellInitialRect.GetY());
 				}
+
+				// Clip DC to current column
+				const wxRect columnRect(cellRect.GetX(), 0, cellRect.GetWidth(), m_virtualSize.GetHeight());
+				wxDCClipper clip(paintDC, columnRect);
+				KxGCClipper clipGC(gc, columnRect);
 
 				// Draw the cell
 				if (!isCategoryRow || currentColumnIndex == 0)
