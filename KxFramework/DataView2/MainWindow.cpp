@@ -1646,7 +1646,7 @@ namespace KxDataView2
 		size_t columnCount = m_View->GetVisibleColumnCount();
 		if (columnCount != 0)
 		{
-			Column* lastColumn = m_View->GetColumnDisplayedAt(columnCount - 1);
+			Column* lastColumn = m_View->GetColumnDisplayedAt(columnCount - 1, true);
 			if (lastColumn)
 			{
 				const int clientWidth = GetClientSize().GetWidth();
