@@ -365,6 +365,7 @@
     <ClInclude Include="KxFramework\KxINI.h" />
     <ClInclude Include="KxFramework\KxINetConnection.h" />
     <ClInclude Include="KxFramework\KxURI.h" />
+    <ClInclude Include="KxFramework\KxURL.h" />
     <ClInclude Include="KxFramework\KxValidator.h" />
     <ClInclude Include="KxFramework\KxIOwned.h" />
     <ClInclude Include="KxFramework\KxIProgressBar.h" />
@@ -694,6 +695,7 @@
     <ClCompile Include="KxFramework\KxTranslation.cpp" />
     <ClCompile Include="KxFramework\KxTreeList.cpp" />
     <ClCompile Include="KxFramework\KxTreeView.cpp" />
+    <ClCompile Include="KxFramework\KxURL.cpp" />
     <ClCompile Include="KxFramework\KxUtility.cpp" />
     <ClCompile Include="KxFramework\KxUtilityUxTheme.cpp" />
     <ClCompile Include="KxFramework\KxUUID.cpp" />

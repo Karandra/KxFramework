@@ -979,6 +979,9 @@
     <ClInclude Include="KxFramework\KxEvent.h">
       <Filter>Header Files\Events</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxURL.h">
+      <Filter>Header Files\Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1608,6 +1611,9 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxClusterMap.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxURL.cpp">
+      <Filter>Source Files\Network</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
