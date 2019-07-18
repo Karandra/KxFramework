@@ -17,6 +17,7 @@ enum class KxURLError: std::underlying_type_t<wxURLError>
 class KX_API KxURL: public wxURL, public Kx::Network::URXHelper<KxURL, wxURL>
 {
 	private:
+		bool IsHTTPS() const;
 		void OnAssignAddress();
 
 	public:

@@ -223,6 +223,9 @@
     <Filter Include="Source Files\General\ComponentSystem">
       <UniqueIdentifier>{4a75dadd-4514-4c7e-9ed8-32e75e3b7eb5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Crypto\OpenSSL">
+      <UniqueIdentifier>{29801532-0096-4e62-b43d-d8c85439da90}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -981,6 +984,9 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxURL.h">
       <Filter>Header Files\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\OpenSSL\IncludeLibs.h">
+      <Filter>Header Files\Crypto\OpenSSL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
