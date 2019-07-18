@@ -1,7 +1,6 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include <wx/uri.h>
-#include <wx/url.h>
 
 enum class KxURIHostType: std::underlying_type_t<wxURIHostType>
 {
@@ -15,16 +14,11 @@ enum class KxURIFlags: std::underlying_type_t<wxURIFlags>
 	None = 0,
 	UseStrict = wxURI_STRICT
 };
-enum class KxURLError: std::underlying_type_t<wxURLError>
+
+namespace Kx::Network
 {
-	Success = wxURL_NOERR,
-	Syntax = wxURL_SNTXERR,
-	NoProtocol = wxURL_NOPROTO,
-	NoHost = wxURL_NOHOST,
-	NoPath = wxURL_NOPATH,
-	ConnectionError = wxURL_CONNERR,
-	ProtocolError = wxURL_PROTOERR
-};
+	wxString NormalizeAddress(const wxString& address);
+}
 
 namespace Kx::Network
 {
@@ -83,15 +77,6 @@ namespace Kx::Network
 			{
 				return !AsDerived().IsOk();
 			}
-			
-			bool operator==(const wxURL& other) const
-			{
-				return AsBase() == other;
-			}
-			bool operator!=(const wxURL& other) const
-			{
-				return !(*this == other);
-			}
 
 			bool operator==(const wxURI& other) const
 			{
@@ -111,20 +96,20 @@ class KX_API KxURI: public wxURI, public Kx::Network::URXHelper<KxURI, wxURI>
 			:THelper(this)
 		{
 		}
-		KxURI(const wxString& url)
-			:wxURI(url), THelper(this)
+		KxURI(const wxString& uri)
+			:wxURI(Kx::Network::NormalizeAddress(uri)), THelper(this)
 		{
 		}
-		KxURI(const char* url)
-			:KxURI(wxString(url))
+		KxURI(const char* uri)
+			:KxURI(wxString(uri))
 		{
 		}
-		KxURI(const wchar_t* url)
-			:KxURI(wxString(url))
+		KxURI(const wchar_t* uri)
+			:KxURI(wxString(uri))
 		{
 		}
 		KxURI(const wxURI& other)
-			:wxURI(other), THelper(this)
+			:KxURI(other.BuildURI())
 		{
 		}
 		KxURI(const KxURI& other)
@@ -153,7 +138,7 @@ class KX_API KxURI: public wxURI, public Kx::Network::URXHelper<KxURI, wxURI>
 	public:
 		TDerived& operator=(const wxString& uri)
 		{
-			AsBase() = uri;
+			AsBase() = Kx::Network::NormalizeAddress(uri);
 			return AsDerived();
 		}
 		TDerived& operator=(const char* uri)
@@ -168,12 +153,7 @@ class KX_API KxURI: public wxURI, public Kx::Network::URXHelper<KxURI, wxURI>
 		}
 		TDerived& operator=(const wxURI& other)
 		{
-			AsBase() = other;
-			return AsDerived();
-		}
-		TDerived& operator=(const wxURL& other)
-		{
-			AsBase() = other;
+			AsBase() = Kx::Network::NormalizeAddress(other.BuildURI());
 			return AsDerived();
 		}
 		TDerived& operator=(const TDerived& other)

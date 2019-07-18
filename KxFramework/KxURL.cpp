@@ -1,5 +1,5 @@
 #include "KxStdAfx.h"
-#include "KxURL.h"
+#include "KxFramework/KxURL.h"
 
 void KxURL::OnAssignAddress()
 {

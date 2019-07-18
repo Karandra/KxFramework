@@ -695,6 +695,7 @@
     <ClCompile Include="KxFramework\KxTranslation.cpp" />
     <ClCompile Include="KxFramework\KxTreeList.cpp" />
     <ClCompile Include="KxFramework\KxTreeView.cpp" />
+    <ClCompile Include="KxFramework\KxURI.cpp" />
     <ClCompile Include="KxFramework\KxURL.cpp" />
     <ClCompile Include="KxFramework\KxUtility.cpp" />
     <ClCompile Include="KxFramework\KxUtilityUxTheme.cpp" />

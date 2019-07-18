@@ -3,6 +3,17 @@
 #include "KxFramework/KxURI.h"
 #include <wx/url.h>
 
+enum class KxURLError: std::underlying_type_t<wxURLError>
+{
+	Success = wxURL_NOERR,
+	Syntax = wxURL_SNTXERR,
+	NoProtocol = wxURL_NOPROTO,
+	NoHost = wxURL_NOHOST,
+	NoPath = wxURL_NOPATH,
+	ConnectionError = wxURL_CONNERR,
+	ProtocolError = wxURL_PROTOERR
+};
+
 class KX_API KxURL: public wxURL, public Kx::Network::URXHelper<KxURL, wxURL>
 {
 	private:
@@ -14,7 +25,7 @@ class KX_API KxURL: public wxURL, public Kx::Network::URXHelper<KxURL, wxURL>
 		{
 		}
 		KxURL(const wxString& url)
-			:wxURL(url), THelper(this)
+			:wxURL(Kx::Network::NormalizeAddress(url)), THelper(this)
 		{
 			OnAssignAddress();
 		}
@@ -27,12 +38,7 @@ class KX_API KxURL: public wxURL, public Kx::Network::URXHelper<KxURL, wxURL>
 		{
 		}
 		KxURL(const wxURI& other)
-			:wxURL(other), THelper(this)
-		{
-			OnAssignAddress();
-		}
-		KxURL(const wxURL& other)
-			:wxURL(other), THelper(this)
+			:KxURL(other.BuildURI())
 		{
 			OnAssignAddress();
 		}
@@ -64,7 +70,7 @@ class KX_API KxURL: public wxURL, public Kx::Network::URXHelper<KxURL, wxURL>
 		}
 		KxURLError SetURL(const wxString& url)
 		{
-			wxURL::SetURL(url);
+			wxURL::SetURL(Kx::Network::NormalizeAddress(url));
 			OnAssignAddress();
 			return GetError();
 		}
@@ -77,7 +83,7 @@ class KX_API KxURL: public wxURL, public Kx::Network::URXHelper<KxURL, wxURL>
 	public:
 		TDerived& operator=(const wxString& url)
 		{
-			AsBase() = url;
+			AsBase() = Kx::Network::NormalizeAddress(url);
 			OnAssignAddress();
 			return AsDerived();
 		}
@@ -95,13 +101,7 @@ class KX_API KxURL: public wxURL, public Kx::Network::URXHelper<KxURL, wxURL>
 		}
 		TDerived& operator=(const wxURI& other)
 		{
-			AsBase() = other;
-			OnAssignAddress();
-			return AsDerived();
-		}
-		TDerived& operator=(const wxURL& other)
-		{
-			AsBase() = other;
+			AsBase() = Kx::Network::NormalizeAddress(other.BuildURI());
 			OnAssignAddress();
 			return AsDerived();
 		}
