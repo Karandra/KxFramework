@@ -121,10 +121,16 @@ namespace KxDataView2
 				return m_IsDirty;
 			}
 			void MarkDirty(bool value = true);
-			void SetIndex(size_t value)
+			
+			void AssignIndex(size_t value)
 			{
 				m_Index = value;
 			}
+			void AssignDisplayIndex(size_t value)
+			{
+				m_DisplayIndex = value;
+			}
+			void AssignWidth(ColumnWidth width);
 
 			ColumnStyle GetStyleFlags() const
 			{
@@ -186,11 +192,6 @@ namespace KxDataView2
 			Editor* GetEditor() const;
 			void AssignEditor(Editor* editor);
 
-			void AssignDisplayIndex(size_t value)
-			{
-				m_DisplayIndex = value;
-			}
-
 		public:
 			size_t GetIndex() const
 			{
@@ -200,7 +201,10 @@ namespace KxDataView2
 			{
 				return m_DisplayIndex;
 			}
+			size_t GetPhysicalDisplayIndex() const;
 			void SetDisplayIndex(size_t newPosition);
+			void SetPhysicalDisplayIndex(size_t newPosition);
+			size_t GetInvisibleColumnsBefore() const;
 
 			template<class T> T GetID() const
 			{
@@ -214,7 +218,7 @@ namespace KxDataView2
 			{
 				m_ID = id;
 			}
-		
+			
 			bool HasBitmap() const
 			{
 				return m_Bitmap.IsOk();
@@ -254,6 +258,7 @@ namespace KxDataView2
 			void SetChecked(bool value = true)
 			{
 				m_IsChecked = value;
+				UpdateDisplay();
 			}
 
 			ColumnWidth GetWidthDescriptor() const
@@ -371,6 +376,7 @@ namespace KxDataView2
 			void SetVisible(bool value)
 			{
 				m_IsVisible = value;
+				UpdateDisplay();
 			}
 			void Refresh() const;
 			void FitInside();

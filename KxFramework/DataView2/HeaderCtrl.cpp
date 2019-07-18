@@ -4,156 +4,35 @@
 #include "MainWindow.h"
 #include "Column.h"
 #include "KxFramework/KxDataView2Event.h"
+#include "KxFramework/KxUtility.h"
 #include <CommCtrl.h>
 
 namespace
 {
-	class wxHeaderCtrlClone: public wxHeaderCtrlBase
+	enum class MouseButton
 	{
-		public:
-			wxHeaderCtrlClone();
-			wxHeaderCtrlClone(wxWindow* parent,
-							  wxWindowID id = wxID_ANY,
-							  const wxPoint& pos = wxDefaultPosition,
-							  const wxSize& size = wxDefaultSize,
-							  long style = wxHD_DEFAULT_STYLE,
-							  const wxString& name = wxHeaderCtrlNameStr);
-			bool Create(wxWindow* parent,
-						wxWindowID id = wxID_ANY,
-						const wxPoint& pos = wxDefaultPosition,
-						const wxSize& size = wxDefaultSize,
-						long style = wxHD_DEFAULT_STYLE,
-						const wxString& name = wxHeaderCtrlNameStr);
-			virtual ~wxHeaderCtrlClone();
-
-		public:
-			bool SetBackgroundColour(const wxColour& colour) override;
-			bool SetForegroundColour(const wxColour& colour) override;
-			bool SetFont(const wxFont& font) override;
-
-		public:
-			wxSize DoGetBestSize() const override;
-			void DoSetSize(int x, int y, int width, int height, int sizeFlags = wxSIZE_AUTO) override;
-
-		public:
-			void DoSetCount(unsigned int count) override;
-			unsigned int DoGetCount() const override;
-			void DoUpdate(unsigned int idx) override;
-			void DoScrollHorz(int dx) override;
-			void DoSetColumnsOrder(const wxArrayInt& order) override;
-			wxArrayInt DoGetColumnsOrder() const override;
-			WXDWORD MSWGetStyle(long style, WXDWORD* exstyle) const override;
-			bool MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM* result) override;
-
-			void Init();
-			void DoInsertItem(const wxHeaderColumn& col, unsigned int idx);
-			int GetShownColumnsCount() const
-			{
-				const int numItems = Header_GetItemCount(GetHandle());
-
-				wxASSERT_MSG(numItems >= 0 && (unsigned)numItems <= m_numColumns,
-							 "unexpected number of items in the native control");
-
-				return numItems;
-			}
-
-			int MSWToNativeIdx(int idx)
-			{
-				// don't check for GetColumn(idx).IsShown() as it could have just became
-				// false and we may be called from DoUpdate() to delete the old column
-				wxASSERT_MSG(!m_isHidden[idx],
-							 "column must be visible to have an "
-							 "index in the native control");
-
-				int item = idx;
-				for (int i = 0; i < idx; i++)
-				{
-					if (GetColumn(i).IsHidden())
-						item--; // one less column the native control knows about
-				}
-
-				wxASSERT_MSG(item >= 0 && item <= GetShownColumnsCount(), "logic error");
-
-				return item;
-			}
-			int MSWFromNativeIdx(int item)
-			{
-				wxASSERT_MSG(item >= 0 && item < GetShownColumnsCount(),
-							 "column index out of range");
-
-				// reverse the above function
-
-				unsigned idx = item;
-				for (unsigned n = 0; n < m_numColumns; n++)
-				{
-					if (n > idx)
-						break;
-
-					if (GetColumn(n).IsHidden())
-						idx++;
-				}
-
-				wxASSERT_MSG(MSWToNativeIdx(idx) == item, "logic error");
-
-				return idx;
-			}
-			int MSWToNativeOrder(int pos)
-			{
-				wxASSERT_MSG(pos >= 0 && static_cast<unsigned>(pos) < m_numColumns,
-							 "column position out of range");
-
-				int order = pos;
-				for (int n = 0; n < pos; n++)
-				{
-					if (GetColumn(m_colIndices[n]).IsHidden())
-						order--;
-				}
-
-				wxASSERT_MSG(order >= 0 && order <= GetShownColumnsCount(), "logic error");
-
-				return order;
-			}
-			int MSWFromNativeOrder(int order)
-			{
-				wxASSERT_MSG(order >= 0 && order < GetShownColumnsCount(),
-							 "native column position out of range");
-
-				unsigned pos = order;
-				for (unsigned n = 0; n < m_numColumns; n++)
-				{
-					if (n > pos)
-						break;
-
-					if (GetColumn(m_colIndices[n]).IsHidden())
-						pos++;
-				}
-
-				wxASSERT_MSG(MSWToNativeOrder(pos) == order, "logic error");
-
-				return pos;
-			}
-
-			wxEventType GetClickEventType(bool dblclk, int button);
-			wxMSWHeaderCtrlCustomDraw* GetCustomDraw();
-
-		public:
-			unsigned int m_numColumns;
-			wxArrayInt m_isHidden;
-			wxArrayInt m_colIndices;
-			wxImageList* m_imageList;
-			int m_scrollOffset;
-			int m_colBeingDragged;
-			bool m_isColBeingResized;
-			wxMSWHeaderCtrlCustomDraw* m_customDraw;
-
-		private:
-			wxDECLARE_NO_COPY_CLASS(wxHeaderCtrlClone);
+		Left = 0,
+		Right = 1,
+		Middle = 2,
 	};
-
-	template<class T> wxHeaderCtrlClone& GetHeaderCtrlClone(T* headerCtrl)
+	wxEventTypeTag<wxHeaderCtrlEvent> GetClickEventType(bool isDoubleClick, MouseButton button)
 	{
-		wxHeaderCtrl* headerCtrlBase = const_cast<T*>(headerCtrl);
-		return *reinterpret_cast<wxHeaderCtrlClone*>(headerCtrlBase);
+		switch (button)
+		{
+			case MouseButton::Left:
+			{
+				return isDoubleClick ? wxEVT_HEADER_DCLICK : wxEVT_HEADER_CLICK;
+			}
+			case MouseButton::Right:
+			{
+				return isDoubleClick ? wxEVT_HEADER_RIGHT_DCLICK : wxEVT_HEADER_RIGHT_CLICK;
+			}
+			case MouseButton::Middle:
+			{
+				return isDoubleClick ? wxEVT_HEADER_MIDDLE_DCLICK : wxEVT_HEADER_MIDDLE_CLICK;
+			}
+		};
+		return wxEVT_NULL;
 	}
 }
 
@@ -179,66 +58,75 @@ namespace KxDataView2
 	{
 		FinishEditing();
 
-		const int columnIndex = event.GetColumn();
-		if (SendEvent(EvtCOLUMN_HEADER_CLICK, columnIndex))
+		Column* column = m_View->GetColumn(event.GetColumn());
+		if (column)
 		{
-			return;
-		}
+			if (SendEvent(EvtCOLUMN_HEADER_CLICK, column->GetIndex()))
+			{
+				return;
+			}
 
-		// Default handling for the column click is to sort by this column or  toggle its sort order
-		Column* column = m_View->GetColumn(columnIndex);
-		if (!column->IsSortable())
-		{
-			// No default handling for non-sortable columns
-			event.Skip();
-			return;
-		}
+			// Default handling for the column click is to sort by this column or  toggle its sort order
+			if (!column->IsSortable())
+			{
+				// No default handling for non-sortable columns
+				event.Skip();
+				return;
+			}
 
-		if (column->IsSorted())
-		{
-			// already using this column for sorting, just change the order
-			column->ToggleSortOrder();
-		}
-		else
-		{
-			// Not using this column for sorting yet.
-			// We will sort by this column only now, so reset all the previously used ones.
-			m_View->ResetAllSortColumns();
-			column->SortAscending();
-		}
+			if (column->IsSorted())
+			{
+				// already using this column for sorting, just change the order
+				column->ToggleSortOrder();
+			}
+			else
+			{
+				// Not using this column for sorting yet.
+				// We will sort by this column only now, so reset all the previously used ones.
+				m_View->ResetAllSortColumns();
+				column->SortAscending();
+			}
 
-		m_View->GetMainWindow()->OnShouldResort();
-		m_View->OnColumnChange(columnIndex);
-		SendEvent(EvtCOLUMN_SORTED, columnIndex);
+			m_View->GetMainWindow()->OnShouldResort();
+			m_View->OnColumnChange(*column);
+			SendEvent(EvtCOLUMN_SORTED, column->GetIndex());
+		}
 	}
 	void HeaderCtrl::OnRClick(wxHeaderCtrlEvent& event)
 	{
 		FinishEditing();
 
-		// Event wasn't processed somewhere, use default behavior
-		if (!SendEvent(EvtCOLUMN_HEADER_RCLICK, event.GetColumn()))
+		Column* column = m_View->GetColumn(event.GetColumn());
+		if (column)
 		{
-			event.Skip();
-			ToggleSortByColumn(event.GetColumn());
+			// Event wasn't processed somewhere, use default behavior
+			if (!SendEvent(EvtCOLUMN_HEADER_RCLICK, column->GetIndex()))
+			{
+				event.Skip();
+				ToggleSortByColumn(column->GetIndex());
+			}
 		}
 	}
 	void HeaderCtrl::OnResize(wxHeaderCtrlEvent& event)
 	{
 		FinishEditing();
 
-		const int index = event.GetColumn();
-		const int width = event.GetWidth();
-		Column* column = m_View->GetColumn(index);
-
-		column->SetWidth(width);
-		m_View->OnColumnChange(index);
+		Column* column = m_View->GetColumn(event.GetColumn());
+		if (column)
+		{
+			column->AssignWidth(event.GetWidth());
+			GetMainWindow()->UpdateDisplay();
+		}
 	}
 	void HeaderCtrl::OnReordered(wxHeaderCtrlEvent& event)
 	{
 		FinishEditing();
 
-		const int index = event.GetColumn();
-		m_View->ColumnMoved(*m_View->GetColumn(index), event.GetNewOrder());
+		Column* column = m_View->GetColumn(event.GetColumn());
+		if (column)
+		{
+			m_View->ColumnMoved(*column, event.GetNewOrder());
+		}
 	}
 	void HeaderCtrl::OnWindowClick(wxMouseEvent& event)
 	{
@@ -250,123 +138,57 @@ namespace KxDataView2
 		event.Skip();
 	}
 	
-	wxRect HeaderCtrl::GetDropdownRect(size_t index) const
-	{
-		RECT rect = {};
-		Header_GetItemDropDownRect(GetHandle(), index, &rect);
-		return KxUtility::CopyRECTToRect(rect);
-	}
 	const wxHeaderColumn& HeaderCtrl::GetColumn(unsigned int index) const
 	{
 		return GetColumnAt(index)->GetNativeColumn();
 	}
 	bool HeaderCtrl::UpdateColumnWidthToFit(unsigned int index, int titleWidth)
 	{
-		Column* column = m_View->GetColumn(index);
-
-		int contentsWidth = column->CalcBestSize();
-		column->SetWidth(std::max({titleWidth, contentsWidth, column->GetMinWidth()}));
-		m_View->OnColumnChange(index);
-		return true;
-	}
-	void HeaderCtrl::UpdateColumn(size_t index)
-	{
-		wxHeaderCtrl::UpdateColumn(index);
+		if (Column* column = m_View->GetColumn(index))
+		{
+			int contentsWidth = column->CalcBestSize();
+			column->SetWidth(std::max({titleWidth, contentsWidth, column->GetMinWidth()}));
+			m_View->OnColumnChange(*column);
+			return true;
+		}
+		return false;
 	}
 	
-	void HeaderCtrl::UpdateColumnIndices()
+	void HeaderCtrl::DoUpdate(unsigned int)
 	{
-		wxHeaderCtrlClone& clone = GetHeaderCtrlClone(this);
-
-		const size_t count = m_View->GetColumnCount();
-		clone.m_colIndices.resize(count);
-
-		for (size_t i = 0; i < count; i++)
-		{
-			clone.m_colIndices[i] = m_View->GetColumn(i)->GetDisplayIndex();
-		}
+		DoSetCount();
 	}
-	void HeaderCtrl::DoUpdate(unsigned int index)
+	void HeaderCtrl::DoSetCount(unsigned int)
 	{
-		wxHeaderCtrlClone& clone = GetHeaderCtrlClone(this);
-		UpdateColumnIndices();
-
-		// The native control does provide Header_SetItem() but it's inconvenient
-		// to use it because it sends HDN_ITEMCHANGING messages and we'd have to
-		// arrange not to block setting the width from there and the logic would be
-		// more complicated as we'd have to reset the old values as well as setting
-		// the new ones so instead just recreate the column
-
-		const Column* column = GetColumnAt(index);
-		if (!column->IsVisible())
-		{
-			// Column is hidden now, but it wasn't hidden before, so remove it
-			if (!clone.m_isHidden[index])
-			{
-				Header_DeleteItem(GetHandle(), clone.MSWToNativeIdx(index));
-				clone.m_isHidden[index] = true;
-			}
-			// Otherwise nothing to do, updating hidden column doesn't have any effect
-		}
-		else
-		{
-			// Column is shown now
-			if (clone.m_isHidden[index])
-			{
-				clone.m_isHidden[index] = false;
-			}
-			else
-			{
-				// And it was shown before as well so we need to remove the old column
-				Header_DeleteItem(GetHandle(), clone.MSWToNativeIdx(index));
-			}
-			DoInsertItem(*column, index);
-		}
-	}
-	void HeaderCtrl::DoSetCount(unsigned int count)
-	{
-		wxHeaderCtrlClone& clone = GetHeaderCtrlClone(this);
-		UpdateColumnIndices();
-
 		// First delete all old columns
-		const size_t oldColumnsCount = clone.GetShownColumnsCount();
+		const size_t oldColumnsCount = Header_GetItemCount(GetHandle());
 		for (size_t i = 0; i < oldColumnsCount; i++)
 		{
 			Header_DeleteItem(GetHandle(), 0);
 		}
 
-		// Update the column indices order array before changing m_numColumns
-		DoResizeColumnIndices(clone.m_colIndices, count);
-
-		// and add the new ones
-		clone.m_numColumns = count;
-		clone.m_isHidden.resize(clone.m_numColumns);
-		for (size_t i = 0; i < count; i++)
+		// Clear image list
+		if (m_ImageList)
 		{
-			const Column* column = GetColumnAt(i);
+			m_ImageList->Clear();
+		}
+
+		// And add the new ones
+		for (const auto& column: m_View->m_Columns)
+		{
 			if (column->IsVisible())
 			{
-				clone.m_isHidden[i] = false;
-				DoInsertItem(*column, i);
-			}
-			else
-			{
-				// Hidden initially
-				clone.m_isHidden[i] = true;
+				DoInsertItem(*column);
 			}
 		}
 	}
-	void HeaderCtrl::DoInsertItem(const Column& column, size_t index)
+	void HeaderCtrl::DoInsertItem(const Column& column)
 	{
-		wxHeaderCtrlClone& clone = GetHeaderCtrlClone(this);
-		UpdateColumnIndices();
-
-		wxASSERT_MSG(column.IsVisible(), "should only be called for shown columns");
-
 		HDITEMW headerItem = {};
+		headerItem.mask |= HDI_FORMAT|HDI_TEXT|HDI_LPARAM;
+		headerItem.lParam = reinterpret_cast<LPARAM>(&column);
 
 		// Title text
-		headerItem.mask |= HDI_FORMAT|HDI_TEXT;
 		headerItem.pszText = const_cast<wchar_t*>(column.m_Title.wc_str());
 		headerItem.cchTextMax = column.m_Title.length();
 
@@ -382,13 +204,12 @@ namespace KxDataView2
 
 			if (bitmap.IsOk())
 			{
-				if (!clone.m_imageList)
+				if (!m_ImageList)
 				{
-					clone.m_imageList = new wxImageList(bitmap.GetWidth(), bitmap.GetHeight());
-					Header_SetImageList(GetHandle(), clone.m_imageList->GetHIMAGELIST());
+					m_ImageList = std::make_unique<KxImageList>(bitmap.GetWidth(), bitmap.GetHeight());
+					Header_SetImageList(GetHandle(), m_ImageList->GetHIMAGELIST());
 				}
-				clone.m_imageList->Add(bitmap);
-				headerItem.iImage = clone.m_imageList->GetImageCount() - 1;
+				headerItem.iImage = m_ImageList->Add(bitmap);
 			}
 			else
 			{
@@ -429,19 +250,14 @@ namespace KxDataView2
 		}
 
 		// Width
-		if (column.GetWidthDescriptor() != wxCOL_WIDTH_DEFAULT)
-		{
-			headerItem.mask |= HDI_WIDTH;
-			headerItem.cxy = column.GetWidth();
-		}
+		headerItem.mask |= HDI_WIDTH;
+		headerItem.cxy = column.GetWidth();
 
 		// Display order
 		headerItem.mask |= HDI_ORDER;
-		headerItem.iOrder = clone.MSWToNativeOrder(clone.m_colIndices.Index(index));
+		headerItem.iOrder = column.GetPhysicalDisplayIndex();
 
-		// Dropdown
-		// It seems that 'HDF_SPLITBUTTON' doesn't respect 'iOrder' value and it's always
-		// displayed at actual item index. Though it can still be useful to allow this option.
+		// Dropdown.
 		if (column.HasDropdown())
 		{
 			headerItem.fmt |= HDF_SPLITBUTTON;
@@ -455,9 +271,9 @@ namespace KxDataView2
 		}
 
 		// Insert the item
-		Header_InsertItem(GetHandle(), clone.MSWToNativeIdx(index), &headerItem);
+		Header_InsertItem(GetHandle(), headerItem.iOrder, &headerItem);
 
-		// Resizing cursor that correctly reflects per-column IsResizable() cannot
+		// Resizing cursor that correctly reflects per-column IsSizable() cannot
 		// be implemented, it is per-control rather than per-column in the native
 		// control. Enable resizing cursor if at least one column is resizeble.
 		auto HasResizableColumns = [this]()
@@ -473,45 +289,199 @@ namespace KxDataView2
 		};
 		KxUtility::ToggleWindowStyle(GetHandle(), GWL_STYLE, HDS_NOSIZING, !HasResizableColumns());
 	}
-	bool HeaderCtrl::MSWHandleNotify(WXLRESULT* result, int notification, WXWPARAM wParam, WXLPARAM lParam)
+	bool HeaderCtrl::MSWOnNotify(int ctrlID, WXLPARAM lParam, WXLPARAM* result)
 	{
-		wxHeaderCtrlClone& clone = GetHeaderCtrlClone(this);
 		const NMHEADERW* header = reinterpret_cast<NMHEADERW*>(lParam);
+		const int notification = header->hdr.code;
+
+		auto GetColumn = [this, header](bool hitTest = false)
+		{
+			if (hitTest)
+			{
+				return GetMainWindow()->HitTestColumn(m_View->ScreenToClient(::wxGetMousePosition()));
+			}
+			else
+			{
+				HDITEMW headerItem = {};
+				headerItem.mask = HDI_LPARAM;
+				Header_GetItem(GetHandle(), header->iItem, &headerItem);
+
+				return reinterpret_cast<Column*>(headerItem.lParam);
+			}
+		};
+		auto NewEvent = [this](wxEventType eventType, Column* column)
+		{
+			wxHeaderCtrlEvent event(eventType, GetId());
+			event.SetEventObject(this);
+			event.SetColumn(column ? column->GetIndex() : -1);
+
+			return event;
+		};
+		auto Notify = [this, result](wxHeaderCtrlEvent& event, std::optional<bool> overrideResult = {})
+		{
+			// All of HDN_BEGIN{DRAG,TRACK}, HDN_TRACK and HDN_ITEMCHANGING
+			// interpret TRUE in '*result' as a meaning to stop the control
+			// default handling of the message.
+
+			const bool disallowed = ProcessWindowEvent(event) && !event.IsAllowed();
+			if (overrideResult)
+			{
+				*result = *overrideResult;
+				return *overrideResult;
+			}
+			else if (disallowed)
+			{
+				*result = TRUE;
+				return true;
+			}
+			return false;
+		};
 
 		switch (notification)
 		{
-			#if 0
-			// The control doesn't display drag image on reordering columns if double-buffering
-			// is enabled. That looks really bad so we'll temporarily disable double buffering
-			// for the duration of the drag and drop operation.
-			case (int)HDN_BEGINDRAG:
+			// Click
+			case (int)HDN_ITEMCLICK:
+			case (int)HDN_ITEMDBLCLICK:
 			{
-				SetDoubleBuffered(false);
-				return true;
+				m_DraggedColumn = nullptr;
+				if (Column* column = GetColumn())
+				{
+					wxEventType eventType = ::GetClickEventType(notification == HDN_ITEMDBLCLICK, static_cast<MouseButton>(header->iButton));
+					wxHeaderCtrlEvent event = NewEvent(eventType, column);
+					return Notify(event);
+				}
+				return false;
 			}
-			case (int)HDN_ENDDRAG:
+			case (int)HDN_DIVIDERDBLCLICK:
 			{
-				SetDoubleBuffered(true);
-				return true;
+				if (Column* column = GetColumn())
+				{
+					wxHeaderCtrlEvent event = NewEvent(wxEVT_HEADER_SEPARATOR_DCLICK, column);
+					return Notify(event);
+				}
+				return false;
 			}
-			#endif
+			case NM_RCLICK:
+			case NM_RDBLCLK:
+			{
+				// These two messages aren't from Header control and they contain no item index
+				// and we have to use hit-testing to get the column.
+				if (Column* column = GetColumn(true))
+				{
+					wxEventType eventType = ::GetClickEventType(notification == NM_RDBLCLK, MouseButton::Right);
+					wxHeaderCtrlEvent event = NewEvent(eventType, column);
+					return Notify(event);
+				}
+				return false;
+			}
 
+			// Resizing
+			case (int)HDN_BEGINTRACKA:
+			case (int)HDN_BEGINTRACKW:
+			{
+				if (!m_ResizedColumn)
+				{
+					// These messages are from header control but active area of grabbing column edge
+					// is wider than column rect and hit-testing won't work here.
+					Column* column = GetColumn();
+					if (column && column->IsSizeable())
+					{
+						m_ResizedColumn = column;
+						wxHeaderCtrlEvent event = NewEvent(wxEVT_HEADER_BEGIN_RESIZE, m_ResizedColumn);
+						return Notify(event);
+					}
+				}
+				return false;
+			}
 			case (int)HDN_ENDTRACKA:
 			case (int)HDN_ENDTRACKW:
 			{
-				// Prevents the column shrinking to a size less than its minimum width
-				const Column* column = GetColumnAt(clone.MSWFromNativeIdx(header->iItem));
-				if (column && header->pitem->cxy <= column->GetMinWidth())
+				if (m_ResizedColumn)
 				{
-					*result = TRUE;
+					bool preventShrink = false;
+
+					int width = header->pitem->cxy;
+					if (width < m_ResizedColumn->GetMinWidth())
+					{
+						width = m_ResizedColumn->GetMinWidth();
+						preventShrink = true;
+					}
+
+					wxHeaderCtrlEvent event = NewEvent(wxEVT_HEADER_END_RESIZE, m_ResizedColumn);
+					event.SetWidth(width);
+
+					m_ResizedColumn = nullptr;
+					return Notify(event, preventShrink);
 				}
-				return true;
+				return false;
 			}
+			case (int)HDN_TRACK:
+			case (int)HDN_ITEMCHANGING:
+			{
+				if (m_ResizedColumn && header->pitem && (header->pitem->mask & HDI_WIDTH))
+				{
+					int width = header->pitem->cxy;
+					bool preventShrink = false;
+
+					if (width < m_ResizedColumn->GetMinWidth())
+					{
+						width = m_ResizedColumn->GetMinWidth();
+						preventShrink = true;
+					}
+
+					wxHeaderCtrlEvent event = NewEvent(wxEVT_HEADER_RESIZING, m_ResizedColumn);
+					event.SetWidth(width);
+					return Notify(event, preventShrink);
+				}
+				return false;
+			}
+
+			// Reordering
+			case (int)HDN_BEGINDRAG:
+			{
+				if (!m_DraggedColumn)
+				{
+					Column* column = GetColumn();
+					if (column && column->IsMoveable())
+					{
+						m_DraggedColumn = column;
+
+						wxHeaderCtrlEvent event = NewEvent(wxEVT_HEADER_BEGIN_REORDER, m_DraggedColumn);
+						return Notify(event);
+					}
+				}
+				return false;
+			}
+			case (int)HDN_ENDDRAG:
+			{
+				const int order = header->pitem->iOrder;
+				if (m_DraggedColumn && order != -1)
+				{
+					Column* column = m_DraggedColumn;
+					m_DraggedColumn = nullptr;
+					m_UpdateColumns = true;
+
+					wxHeaderCtrlEvent event = NewEvent(wxEVT_HEADER_END_REORDER, column);
+					event.SetNewOrder(order);
+					return Notify(event);
+				}
+				break;
+			}
+			case NM_RELEASEDCAPTURE:
+			{
+				if (m_DraggedColumn)
+				{
+					wxHeaderCtrlEvent event = NewEvent(wxEVT_HEADER_DRAGGING_CANCELLED, m_DraggedColumn);
+					m_DraggedColumn = nullptr;
+					return Notify(event);
+				}
+				return false;
+			}
+			
+			// Checkbox
 			case (int)HDN_ITEMSTATEICONCLICK:
 			{
-				UpdateColumnIndices();
-				Column* column = GetColumnAt(clone.MSWFromNativeIdx(header->iItem));
-				if (column)
+				if (Column* column = GetColumn())
 				{
 					// Send an event, if it wasn't processed, toggle check state ourselves.
 					// In any case update native column state after the event handler returns.
@@ -520,17 +490,53 @@ namespace KxDataView2
 					{
 						column->SetChecked(!isChecked);
 					}
-					UpdateColumn(column->GetIndex());
+					UpdateColumn(*column);
+					return true;
 				}
-				return true;
+				return false;
 			}
+
+			// Dropdown
 			case (int)HDN_DROPDOWN:
 			{
-				SendEvent(EvtCOLUMN_DROPDOWN, clone.MSWFromNativeIdx(header->iItem), GetDropdownRect(header->iItem));
-				return true;
+				if (Column* column = GetColumn())
+				{
+					SendEvent(EvtCOLUMN_DROPDOWN, column->GetIndex(), GetDropdownRect(header->iItem));
+					return true;
+				}
+				return false;
 			}
 		};
 		return false;
+	}
+	void HeaderCtrl::OnInternalIdle()
+	{
+		if (m_UpdateColumns)
+		{
+			UpdateColumnCount();
+			m_UpdateColumns = false;
+		}
+		wxHeaderCtrl::OnInternalIdle();
+	}
+
+	void HeaderCtrl::UpdateColumn(const Column& column)
+	{
+		DoUpdate();
+	}
+	void HeaderCtrl::UpdateColumnCount()
+	{
+		DoSetCount();
+	}
+
+	wxRect HeaderCtrl::GetDropdownRect(size_t index) const
+	{
+		RECT rect = {};
+		Header_GetItemDropDownRect(GetHandle(), index, &rect);
+		return KxUtility::CopyRECTToRect(rect);
+	}
+	wxRect HeaderCtrl::GetDropdownRect(const Column& column) const
+	{
+		return GetDropdownRect(column.GetPhysicalDisplayIndex());
 	}
 
 	HeaderCtrl::HeaderCtrl(View* parent)
@@ -552,6 +558,11 @@ namespace KxDataView2
 
 		Bind(wxEVT_LEFT_UP, &HeaderCtrl::OnWindowClick, this);
 		Bind(wxEVT_RIGHT_UP, &HeaderCtrl::OnWindowClick, this);
+	}
+
+	MainWindow* HeaderCtrl::GetMainWindow() const
+	{
+		return m_View ? m_View->GetMainWindow() : nullptr;
 	}
 
 	size_t HeaderCtrl::GetColumnCount() const

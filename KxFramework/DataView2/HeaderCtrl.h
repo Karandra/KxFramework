@@ -1,6 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView/KxDataViewConstants.h"
+#include "KxFramework/KxImageList.h"
 
 namespace KxDataView2
 {
@@ -20,6 +21,11 @@ namespace KxDataView2
 		private:
 			View* m_View = nullptr;
 
+			std::unique_ptr<KxImageList> m_ImageList;
+			Column* m_DraggedColumn = nullptr;
+			Column* m_ResizedColumn = nullptr;
+			bool m_UpdateColumns = false;
+
 		private:
 			void FinishEditing();
 			bool SendEvent(wxEventType type, int index, std::optional<wxRect> rect = {});
@@ -32,28 +38,30 @@ namespace KxDataView2
 
 		protected:
 			const wxHeaderColumn& GetColumn(unsigned int index) const override;
-			wxRect GetDropdownRect(size_t index) const;
 			bool UpdateColumnWidthToFit(unsigned int index, int titleWidth) override;
-			void UpdateColumn(size_t index);
 			
-			void UpdateColumnIndices();
-			void DoUpdate(unsigned int index) override;
-			void DoSetCount(unsigned int count) override;
-			void DoInsertItem(const Column& column, size_t index);
-			bool MSWHandleNotify(WXLRESULT* result, int notification, WXWPARAM wParam, WXLPARAM lParam);
+			void DoUpdate(unsigned int = 0) override;
+			void DoSetCount(unsigned int = 0) override;
+			void DoInsertItem(const Column& column);
+			bool MSWOnNotify(int ctrlID, WXLPARAM lParam, WXLPARAM* result) override;
+			void OnInternalIdle() override;
+			
+		protected:
+			void UpdateColumn(const Column& column);
+			void UpdateColumnCount();
+
+			wxRect GetDropdownRect(const Column& column) const;
+			wxRect GetDropdownRect(size_t index) const;
 
 		public:
 			HeaderCtrl(View* parent);
 
 		public:
-			const View* GetView() const
+			View* GetView() const
 			{
 				return m_View;
 			}
-			View* GetView()
-			{
-				return m_View;
-			}
+			MainWindow* GetMainWindow() const;
 
 			size_t GetColumnCount() const;
 			Column* GetColumnAt(size_t index) const;

@@ -405,7 +405,23 @@ namespace KxDataView2
 			Row GetFirstVisibleRow() const;
 			Row GetLastVisibleRow() const;
 
-			void HitTest(const wxPoint& pos, Node*& item, Column*& column);
+			void HitTest(const wxPoint& pos, Node** nodeOut = nullptr, Column** columnOut = nullptr);
+			void HitTest(const wxPoint& pos, Node*& node, Column*& column)
+			{
+				return HitTest(pos, &node, &column);
+			}
+			Node* HitTestNode(const wxPoint& pos)
+			{
+				Node* node = nullptr;
+				HitTest(pos, &node);
+				return node;
+			}
+			Column* HitTestColumn(const wxPoint& pos)
+			{
+				Column* column = nullptr;
+				HitTest(pos, nullptr, &column);
+				return column;
+			}
 			wxRect GetItemRect(const Node& item, const Column* column = nullptr);
 
 			// Rows

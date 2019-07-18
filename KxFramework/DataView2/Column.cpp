@@ -115,7 +115,7 @@ namespace KxDataView2
 	{
 		if (m_View)
 		{
-			m_View->OnColumnChange(m_Index);
+			m_View->OnColumnChange(*this);
 		}
 	}
 	void Column::MarkDirty(bool value)
@@ -124,6 +124,18 @@ namespace KxDataView2
 		if (m_View && value)
 		{
 			m_View->m_ColumnsDirty = true;
+		}
+	}
+
+	void Column::AssignWidth(ColumnWidth width)
+	{
+		if (width.IsSpecialValue())
+		{
+			m_Width = width;
+		}
+		else
+		{
+			m_Width = std::clamp<int>(width, m_MinWidth, GetAbsMaxColumnWidth());
 		}
 	}
 
@@ -158,6 +170,28 @@ namespace KxDataView2
 		m_Editor.reset(editor);
 	}
 
+	size_t Column::GetPhysicalDisplayIndex() const
+	{
+		if (IsVisible())
+		{
+			auto& columns = m_View->m_Columns;
+
+			size_t physicalIndex = 0;
+			for (size_t i = 0; i < columns.size(); i++)
+			{
+				Column* column = m_View->GetColumnDisplayedAt(i);
+				if (column == this)
+				{
+					return physicalIndex;
+				}
+				else if (column->IsVisible())
+				{
+					physicalIndex++;
+				}
+			}
+		}
+		return std::numeric_limits<size_t>::max();
+	}
 	void Column::SetDisplayIndex(size_t newPosition)
 	{
 		if (m_View)
@@ -169,6 +203,25 @@ namespace KxDataView2
 		{
 			AssignDisplayIndex(newPosition);
 		}
+	}
+	void Column::SetPhysicalDisplayIndex(size_t newPosition)
+	{
+		if (IsVisible())
+		{
+			SetDisplayIndex(newPosition + GetInvisibleColumnsBefore());
+		}
+	}
+	size_t Column::GetInvisibleColumnsBefore() const
+	{
+		size_t invisibleBefore = 0;
+		for (const auto& column: m_View->m_Columns)
+		{
+			if (column->GetIndex() < m_Index && !column->IsVisible())
+			{
+				invisibleBefore++;
+			}
+		}
+		return invisibleBefore;
 	}
 
 	int Column::GetWidth() const
@@ -191,14 +244,7 @@ namespace KxDataView2
 	}
 	void Column::SetWidth(ColumnWidth width)
 	{
-		if (width.IsSpecialValue())
-		{
-			m_Width = width;
-		}
-		else
-		{
-			m_Width = std::clamp<int>(width, m_MinWidth, GetAbsMaxColumnWidth());
-		}
+		AssignWidth(width);
 		UpdateDisplay();
 	}
 	int Column::CalcBestSize()
@@ -310,7 +356,7 @@ namespace KxDataView2
 			}
 
 			SetWidth(m_Width);
-			m_View->OnColumnChange(m_Index);
+			UpdateDisplay();
 		}
 	}
 
@@ -375,7 +421,7 @@ namespace KxDataView2
 	{
 		if (m_View && m_View->m_HeaderArea && IsVisible())
 		{
-			return m_View->m_HeaderArea->GetDropdownRect(m_Index);
+			return m_View->m_HeaderArea->GetDropdownRect(*this);
 		}
 		return {};
 	}

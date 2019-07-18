@@ -21,16 +21,6 @@ namespace KxDataView2
 				*result |= DLGC_WANTARROWS;
 				break;
 			}
-			case WM_NOTIFY:
-			{
-				NMHDR* notifyInfo = reinterpret_cast<NMHDR*>(lParam);
-				if (m_HeaderArea && notifyInfo && m_HeaderArea->GetHandle() == notifyInfo->hwndFrom)
-				{
-					// We are ignoring the return value from header and returning what our 'MSWHandleMessage' returned
-					m_HeaderArea->MSWHandleNotify(result, notifyInfo->code, wParam, lParam);
-				}
-				break;
-			}
 		};
 		return ret;
 	}
@@ -61,7 +51,7 @@ namespace KxDataView2
 
 				if (column->IsDirty())
 				{
-					m_HeaderArea->UpdateColumn(column->GetIndex());
+					m_HeaderArea->UpdateColumn(*column);
 					column->MarkDirty(false);
 				}
 			}
@@ -86,7 +76,7 @@ namespace KxDataView2
 		}
 
 		// Set column data
-		column->SetIndex(index);
+		column->AssignIndex(index);
 		column->AssignDisplayIndex(index);
 		column->SetView(this);
 
@@ -165,6 +155,25 @@ namespace KxDataView2
 			newSize.y -= m_HeaderArea->GetSize().y;
 		}
 		return newSize;
+	}
+
+	Column::Vector View::DoGetColumnsInDisplayOrder(bool physicalOrder) const
+	{
+		std::vector<Column*> displayOrder;
+		displayOrder.reserve(m_Columns.size());
+
+		for (const auto& column: m_Columns)
+		{
+			if (!physicalOrder || column->IsVisible())
+			{
+				displayOrder.push_back(column.get());
+			}
+		}
+		std::sort(displayOrder.begin(), displayOrder.end(), [](Column* left, Column* right)
+		{
+			return left->GetDisplayIndex() < right->GetDisplayIndex();
+		});
+		return displayOrder;
 	}
 
 	bool View::Create(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
@@ -274,53 +283,33 @@ namespace KxDataView2
 		}
 		return nullptr;
 	}
-	Column* View::GetColumnDisplayedAt(size_t displayIndex, bool calcHidden) const
+	Column* View::GetColumnDisplayedAt(size_t displayIndex) const
 	{
 		// Columns can't be reordered if there is no header window which allows to do this
 		if (HasHeaderCtrl())
 		{
-			if (calcHidden)
+			for (const auto& column: m_Columns)
 			{
-				std::vector<Column*> displayed = GetColumnsInDisplayOrder(true);
-				if (displayIndex < displayed.size())
+				if (column->GetDisplayIndex() == displayIndex)
 				{
-					return displayed[displayIndex];
-				}
-			}
-			else
-			{
-				for (const auto& column: m_Columns)
-				{
-					if (column->GetDisplayIndex() == displayIndex)
-					{
-						return column.get();
-					}
+					return column.get();
 				}
 			}
 		}
-		else
-		{
-			return GetColumn(displayIndex);
-		}
-		return nullptr;
+		return GetColumn(displayIndex);
 	}
-	Column::Vector View::GetColumnsInDisplayOrder(bool visibleOnly) const
+	Column* View::GetColumnPhysicallyDisplayedAt(size_t displayIndex) const
 	{
-		std::vector<Column*> displayOrder;
-		displayOrder.reserve(m_Columns.size());
-
-		for (const auto& column: m_Columns)
+		// Columns can't be reordered if there is no header window which allows to do this
+		if (HasHeaderCtrl())
 		{
-			if (!visibleOnly || column->IsVisible())
+			std::vector<Column*> displayed = GetColumnsInPhysicalDisplayOrder();
+			if (displayIndex < displayed.size())
 			{
-				displayOrder.push_back(column.get());
+				return displayed[displayIndex];
 			}
 		}
-		std::sort(displayOrder.begin(), displayOrder.end(), [](Column* left, Column* right)
-		{
-			return left->GetDisplayIndex() < right->GetDisplayIndex();
-		});
-		return displayOrder;
+		return GetColumn(displayIndex);
 	}
 
 	bool View::DeleteColumn(Column& column)
@@ -353,7 +342,7 @@ namespace KxDataView2
 				Column& currentColumn = *m_Columns[i];
 
 				// Move actual index
-				currentColumn.SetIndex(currentColumn.GetIndex() - 1);
+				currentColumn.AssignIndex(currentColumn.GetIndex() - 1);
 
 				// Move display index
 				size_t index = currentColumn.GetDisplayIndex();
@@ -807,7 +796,7 @@ namespace KxDataView2
 				column->SetWidth(column->GetBestWidth());
 			}
 
-			OnColumnChange(column->GetIndex());
+			OnColumnChange(*column);
 			return column;
 		}
 		return nullptr;
@@ -912,11 +901,11 @@ namespace KxDataView2
 			OnColumnCountChanged();
 		}
 	}
-	void View::OnColumnChange(size_t index)
+	void View::OnColumnChange(Column& column)
 	{
 		if (m_HeaderArea)
 		{
-			m_HeaderArea->UpdateColumn(index);
+			m_HeaderArea->UpdateColumn(column);
 		}
 		m_ClientArea->UpdateDisplay();
 	}
@@ -924,7 +913,7 @@ namespace KxDataView2
 	{
 		if (m_HeaderArea)
 		{
-			m_HeaderArea->SetColumnCount(GetColumnCount());
+			m_HeaderArea->UpdateColumnCount();
 		}
 		m_ClientArea->OnColumnCountChanged();
 	}

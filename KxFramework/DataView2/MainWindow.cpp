@@ -1646,25 +1646,25 @@ namespace KxDataView2
 		size_t columnCount = m_View->GetVisibleColumnCount();
 		if (columnCount != 0)
 		{
-			Column* lastColumn = m_View->GetColumnDisplayedAt(columnCount - 1, true);
-			if (lastColumn)
+			Column* lastVisibleColumn = m_View->GetColumnPhysicallyDisplayedAt(columnCount - 1);
+			if (lastVisibleColumn)
 			{
 				const int clientWidth = GetClientSize().GetWidth();
 				const int virtualWidth = GetRowWidth();
-				const int lastColumnLeft = virtualWidth - lastColumn->GetWidth();
+				const int lastColumnLeft = virtualWidth - lastVisibleColumn->GetWidth();
 
 				if (lastColumnLeft < clientWidth)
 				{
 					const bool fitToClient = m_View->IsExtraStyleEnabled(CtrlExtraStyle::FitLastColumnToClient);
-					const int desiredWidth = std::max(clientWidth - lastColumnLeft, lastColumn->GetMinWidth());
+					const int desiredWidth = std::max(clientWidth - lastColumnLeft, lastVisibleColumn->GetMinWidth());
 
-					if (desiredWidth < lastColumn->CalcBestSize() && !fitToClient)
+					if (desiredWidth < lastVisibleColumn->CalcBestSize() && !fitToClient)
 					{
-						lastColumn->SetWidth(lastColumn->GetWidth());
+						lastVisibleColumn->SetWidth(lastVisibleColumn->GetWidth());
 						SetVirtualSize(virtualWidth, m_virtualSize.y);
 						return;
 					}
-					lastColumn->SetWidth(desiredWidth);
+					lastVisibleColumn->SetWidth(desiredWidth);
 
 					// All columns fit on screen, so we don't need horizontal scrolling.
 					// To prevent flickering scrollbar when resizing the window to be
@@ -1675,7 +1675,7 @@ namespace KxDataView2
 				}
 				else
 				{
-					lastColumn->SetWidth(lastColumn->GetWidth());
+					lastVisibleColumn->SetWidth(lastVisibleColumn->GetWidth());
 
 					// Don't bother, the columns won't fit anyway
 					SetVirtualSize(virtualWidth, m_virtualSize.y);
@@ -2683,33 +2683,40 @@ namespace KxDataView2
 		return std::min(GetRowCount() - 1, row);
 	}
 
-	void MainWindow::HitTest(const wxPoint& pos, Node*& item, Column*& column)
+	void MainWindow::HitTest(const wxPoint& pos, Node** nodeOut, Column** columnOut)
 	{
-		Column* columnFound = nullptr;
-		size_t columnCount = m_View->GetColumnCount();
-
-		wxPoint unscrolledPos;
-		m_View->CalcUnscrolledPosition(pos.x, pos.y, &unscrolledPos.x, &unscrolledPos.y);
-
-		int x_start = 0;
-		for (size_t colnumIndex = 0; colnumIndex < columnCount; colnumIndex++)
+		wxPoint unscrolledPos = wxDefaultPosition;
+		if (nodeOut)
 		{
-			Column* testColumn = m_View->GetColumnDisplayedAt(colnumIndex);
-
-			int width = 0;
-			if (testColumn->IsExposed(width))
-			{
-				if (x_start + width >= unscrolledPos.x)
-				{
-					columnFound = testColumn;
-					break;
-				}
-				x_start += width;
-			}
+			m_View->CalcUnscrolledPosition(pos.x, pos.y, &unscrolledPos.x, &unscrolledPos.y);
+			*nodeOut = GetNodeByRow(GetRowAt(unscrolledPos.y));
 		}
 
-		column = columnFound;
-		item = GetNodeByRow(GetRowAt(unscrolledPos.y));
+		if (columnOut)
+		{
+			int x_start = 0;
+			const size_t columnCount = m_View->GetColumnCount();
+
+			if (!unscrolledPos.IsFullySpecified())
+			{
+				m_View->CalcUnscrolledPosition(pos.x, pos.y, &unscrolledPos.x, &unscrolledPos.y);
+			}
+			for (size_t colnumIndex = 0; colnumIndex < columnCount; colnumIndex++)
+			{
+				Column* column = m_View->GetColumnDisplayedAt(colnumIndex);
+
+				int width = 0;
+				if (column->IsExposed(width))
+				{
+					if (x_start + width >= unscrolledPos.x)
+					{
+						*columnOut = column;
+						return;
+					}
+					x_start += width;
+				}
+			}
+		}
 	}
 	wxRect MainWindow::GetItemRect(const Node& item, const Column* column)
 	{

@@ -67,6 +67,8 @@ namespace KxDataView2
 			void OnPaint(wxPaintEvent& event);
 			wxSize GetSizeAvailableForScrollTarget(const wxSize& size) override;
 
+			Column::Vector DoGetColumnsInDisplayOrder(bool physicalOrder) const;
+
 		protected:
 			void DoEnable(bool value) override;
 			void DoInsertColumn(Column* column, size_t position);
@@ -222,8 +224,16 @@ namespace KxDataView2
 
 			Column* GetColumn(size_t position) const;
 			Column* GetColumnByID(ColumnID id) const;
-			Column* GetColumnDisplayedAt(size_t displayIndex, bool calcHidden = false) const;
-			Column::Vector GetColumnsInDisplayOrder(bool visibleOnly = false) const;
+			Column* GetColumnDisplayedAt(size_t displayIndex) const;
+			Column* GetColumnPhysicallyDisplayedAt(size_t displayIndex) const;
+			Column::Vector GetColumnsInDisplayOrder() const
+			{
+				return DoGetColumnsInDisplayOrder(false);
+			}
+			Column::Vector GetColumnsInPhysicalDisplayOrder() const
+			{
+				return DoGetColumnsInDisplayOrder(true);
+			}
 
 			bool DeleteColumn(Column& column);
 			bool ClearColumns();
@@ -381,7 +391,7 @@ namespace KxDataView2
 			void ColumnMoved(Column& column, size_t newPos);
 
 			// Update the display after a change to an individual column
-			void OnColumnChange(size_t index);
+			void OnColumnChange(Column& column);
 
 			// Update after a change to the number of columns
 			void OnColumnCountChanged();
