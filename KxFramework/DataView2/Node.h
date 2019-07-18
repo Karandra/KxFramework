@@ -134,6 +134,10 @@ namespace KxDataView2
 			{
 				return m_Children.size();
 			}
+			void SortChildren()
+			{
+				Resort(true);
+			}
 
 			Row FindChild(const Node& node) const;
 			Row GetIndexWithinParent() const
