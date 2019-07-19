@@ -477,7 +477,7 @@
     <ClInclude Include="Kx\Core\EventSystem\Events\IndirectCallEvent.h" />
     <ClInclude Include="Kx\Core\EventSystem\Events\NotifyEvent.h" />
     <ClInclude Include="Kx\Core\EventSystem\EvtHandler.h" />
-    <ClInclude Include="Kx\Core\EventSystem\IEvtHandler.h" />
+    <ClInclude Include="Kx\Core\EventSystem\BasicEvtHandler.h" />
     <ClInclude Include="Kx\Core\Utility.h" />
     <ClInclude Include="Kx\Threading.hpp" />
     <ClInclude Include="Kx\Threading\Common.h" />

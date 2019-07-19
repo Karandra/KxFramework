@@ -1,17 +1,13 @@
 #pragma once
 #include "Event.h"
-
-namespace Kx::EventSystem
-{
-	class IEvtHandler;
-}
+class KxBasicEvtHandler;
 
 namespace Kx::EventSystem
 {
 	class KX_API EventBuilder
 	{
 		protected:
-			IEvtHandler* m_EvtHandler = nullptr;
+			KxBasicEvtHandler* m_EvtHandler = nullptr;
 			wxEvent* m_Event = nullptr;
 			KxEventID m_EventID = KxEvent::EvtNone;
 			bool m_Async = false;
@@ -23,11 +19,11 @@ namespace Kx::EventSystem
 			EventBuilder() = default;
 
 		public:
-			EventBuilder(IEvtHandler& evtHandler, std::unique_ptr<wxEvent> event, KxEventID eventID = KxEvent::EvtNone)
+			EventBuilder(KxBasicEvtHandler& evtHandler, std::unique_ptr<wxEvent> event, KxEventID eventID = KxEvent::EvtNone)
 				:m_EvtHandler(&evtHandler), m_Event(event.release()), m_EventID(eventID), m_Async(true)
 			{
 			}
-			EventBuilder(IEvtHandler& evtHandler, wxEvent& event, KxEventID eventID = KxEvent::EvtNone)
+			EventBuilder(KxBasicEvtHandler& evtHandler, wxEvent& event, KxEventID eventID = KxEvent::EvtNone)
 				:m_EvtHandler(&evtHandler), m_Event(&event), m_EventID(eventID), m_Async(false)
 			{
 			}

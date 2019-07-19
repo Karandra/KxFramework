@@ -1,15 +1,15 @@
 #pragma once
-#include "IEvtHandler.h"
+#include "BasicEvtHandler.h"
 #include <wx/window.h>
 
-class KX_API KxEvtHandler: public Kx::EventSystem::IEvtHandler
+class KX_API KxEvtHandler: public KxBasicEvtHandler
 {
 	private:
 		wxEvtHandler m_EvtHandler;
 
 	public:
 		KxEvtHandler()
-			:IEvtHandler(m_EvtHandler)
+			:KxBasicEvtHandler(m_EvtHandler)
 		{
 		}
 		KxEvtHandler(const KxEvtHandler&) = delete;
@@ -24,14 +24,14 @@ class KX_API KxEvtHandler: public Kx::EventSystem::IEvtHandler
 		KxEvtHandler& operator=(const KxEvtHandler&) = delete;
 };
 
-class KX_API KxRefEvtHandler: public Kx::EventSystem::IEvtHandler
+class KX_API KxRefEvtHandler: public KxBasicEvtHandler
 {
 	private:
 		wxEvtHandler& m_EvtHandler;
 
 	public:
 		KxRefEvtHandler(wxEvtHandler* evtHandler)
-			:IEvtHandler(*evtHandler), m_EvtHandler(*evtHandler)
+			:KxBasicEvtHandler(*evtHandler), m_EvtHandler(*evtHandler)
 		{
 		}
 		KxRefEvtHandler(const KxRefEvtHandler&) = delete;
@@ -46,14 +46,14 @@ class KX_API KxRefEvtHandler: public Kx::EventSystem::IEvtHandler
 		KxRefEvtHandler& operator=(const KxRefEvtHandler&) = delete;
 };
 
-class KX_API KxWindowEvtHandler: public Kx::EventSystem::IEvtHandler
+class KX_API KxWindowEvtHandler: public KxBasicEvtHandler
 {
 	private:
 		wxWindow& m_Window;
 
 	public:
 		KxWindowEvtHandler(wxWindow* window)
-			:IEvtHandler(*window), m_Window(*window)
+			:KxBasicEvtHandler(*window), m_Window(*window)
 		{
 		}
 		KxWindowEvtHandler(const KxWindowEvtHandler&) = delete;
@@ -62,6 +62,30 @@ class KX_API KxWindowEvtHandler: public Kx::EventSystem::IEvtHandler
 		wxEvtHandler& GetTargetHandler() override
 		{
 			return *m_Window.GetEventHandler();
+		}
+		const wxWindow& GetWindow() const
+		{
+			return m_Window;
+		}
+		wxWindow& GetWindow()
+		{
+			return m_Window;
+		}
+
+		void SetPrevHandler(wxEvtHandler* evtHandler) = delete;
+		void SetNextHandler(wxEvtHandler* evtHandler) = delete;
+
+		void PushEventHandler(wxEvtHandler& evtHandler)
+		{
+			m_Window.PushEventHandler(&evtHandler);
+		}
+		bool RemoveEventHandler(wxEvtHandler& evtHandler)
+		{
+			return m_Window.RemoveEventHandler(&evtHandler);
+		}
+		wxEvtHandler* PopEventHandler()
+		{
+			return m_Window.PopEventHandler(false);
 		}
 
 	public:

@@ -1051,7 +1051,7 @@
     <ClInclude Include="KxFramework\KxNotifyEvent.h">
       <Filter>Header Files\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Core\EventSystem\IEvtHandler.h">
+    <ClInclude Include="Kx\Core\EventSystem\BasicEvtHandler.h">
       <Filter>Kx\Core\EventSystem</Filter>
     </ClInclude>
   </ItemGroup>
