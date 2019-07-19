@@ -49,9 +49,6 @@
     <Filter Include="Header Files\GUI\Windows">
       <UniqueIdentifier>{75e0a548-2dc9-4623-a2c1-9daef5598f15}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Audio">
-      <UniqueIdentifier>{ee08d37a-b772-4504-8e19-7f06aad6f025}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\FileSystem">
       <UniqueIdentifier>{1c98282e-6b30-421a-98a6-607ca460419d}</UniqueIdentifier>
     </Filter>
@@ -63,9 +60,6 @@
     </Filter>
     <Filter Include="Source Files\Crypto">
       <UniqueIdentifier>{cf5a9b3f-5223-40f4-8980-34ff0a6f7eea}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Audio">
-      <UniqueIdentifier>{e2f32b85-596c-486e-9081-47badce87023}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Sizers">
       <UniqueIdentifier>{683c7eaa-1b43-4e61-9fcd-b25cc37d9d64}</UniqueIdentifier>
@@ -225,6 +219,24 @@
     </Filter>
     <Filter Include="Header Files\Crypto\OpenSSL">
       <UniqueIdentifier>{29801532-0096-4e62-b43d-d8c85439da90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx">
+      <UniqueIdentifier>{b754c7f1-7cfc-4648-b498-fd9750d8b242}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx\Core">
+      <UniqueIdentifier>{55484f69-92d4-49c3-9478-e47d08a7c380}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx\Core\EventSystem">
+      <UniqueIdentifier>{92dd9a25-4dd3-43b6-93d2-2e7e3aca0fee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx\Threading">
+      <UniqueIdentifier>{ccbec7f3-86f7-4bda-acbe-9a8176c4626d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx\Threading\Events">
+      <UniqueIdentifier>{737b854d-e62c-4e0c-94df-859ffce23b3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx\Core\EventSystem\Events">
+      <UniqueIdentifier>{d9095824-780a-4122-9f03-6015b95cf0ec}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -484,16 +496,10 @@
     <ClInclude Include="KxFramework\KxAuiToolBarEvent.h">
       <Filter>Header Files\Events</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxCommandEvent.h">
-      <Filter>Header Files\Events</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxFileOperationEvent.h">
       <Filter>Header Files\Events</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxMenuEvent.h">
-      <Filter>Header Files\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxNotifyEvent.h">
       <Filter>Header Files\Events</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxProcessEvent.h">
@@ -988,6 +994,63 @@
     <ClInclude Include="KxFramework\OpenSSL\IncludeLibs.h">
       <Filter>Header Files\Crypto\OpenSSL</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Core.hpp">
+      <Filter>Kx</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Threading.hpp">
+      <Filter>Kx</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Threading\Common.h">
+      <Filter>Kx\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Threading\Thread.h">
+      <Filter>Kx\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Core\Common.h">
+      <Filter>Kx\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Core\EventSystem.hpp">
+      <Filter>Kx\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Core\Utility.h">
+      <Filter>Kx\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Core\EventSystem\CallWrapper.h">
+      <Filter>Kx\Core\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Core\EventSystem\Common.h">
+      <Filter>Kx\Core\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Core\EventSystem\Event.h">
+      <Filter>Kx\Core\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Core\EventSystem\EventBuilder.h">
+      <Filter>Kx\Core\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Core\EventSystem\EvtHandler.h">
+      <Filter>Kx\Core\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Common.hpp">
+      <Filter>Kx</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Threading\Events\ThreadEvent.h">
+      <Filter>Kx\Threading\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Core\EventSystem\Events\CommandEvent.h">
+      <Filter>Kx\Core\EventSystem\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Core\EventSystem\Events\IndirectCallEvent.h">
+      <Filter>Kx\Core\EventSystem\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Core\EventSystem\Events\NotifyEvent.h">
+      <Filter>Kx\Core\EventSystem\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxCommandEvent.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxNotifyEvent.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1246,9 +1309,6 @@
     <ClCompile Include="KxFramework\KxAuiToolBarEvent.cpp">
       <Filter>Source Files\Events</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxCommandEvent.cpp">
-      <Filter>Source Files\Events</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxFileOperationEvent.cpp">
       <Filter>Source Files\Events</Filter>
     </ClCompile>
@@ -1256,9 +1316,6 @@
       <Filter>Source Files\Events</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxMenuEvent.cpp">
-      <Filter>Source Files\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxNotifyEvent.cpp">
       <Filter>Source Files\Events</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxProcessEvent.cpp">
@@ -1623,6 +1680,21 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxURI.cpp">
       <Filter>Source Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Threading\Thread.cpp">
+      <Filter>Kx\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Core\EventSystem\EventBuilder.cpp">
+      <Filter>Kx\Core\EventSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Core\EventSystem\EvtHandler.cpp">
+      <Filter>Kx\Core\EventSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxCommandEvent.cpp">
+      <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxNotifyEvent.cpp">
+      <Filter>Source Files\Events</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

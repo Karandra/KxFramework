@@ -277,7 +277,9 @@
     <ClInclude Include="KxFramework\KxAuiToolBarEvent.h" />
     <ClInclude Include="KxFramework\KxAuiToolBarItem.h" />
     <ClInclude Include="KxFramework\KxClusterMap.h" />
+    <ClInclude Include="KxFramework\KxCommandEvent.h" />
     <ClInclude Include="KxFramework\KxEvent.h" />
+    <ClInclude Include="KxFramework\KxNotifyEvent.h" />
     <ClInclude Include="KxFramework\KxOptionSet.h" />
     <ClInclude Include="KxFramework\KxToolTipEx.h" />
     <ClInclude Include="KxFramework\KxBitmapComboBox.h" />
@@ -294,7 +296,6 @@
     <ClInclude Include="KxFramework\KxComboBoxDialog.h" />
     <ClInclude Include="KxFramework\KxComboControl.h" />
     <ClInclude Include="KxFramework\KxComboPopup.h" />
-    <ClInclude Include="KxFramework\KxCommandEvent.h" />
     <ClInclude Include="KxFramework\KxComparator.h" />
     <ClInclude Include="KxFramework\KxCompileTimeMap.h" />
     <ClInclude Include="KxFramework\KxComponentSystem.h" />
@@ -385,7 +386,6 @@
     <ClInclude Include="KxFramework\KxMenuEvent.h" />
     <ClInclude Include="KxFramework\KxMenuItem.h" />
     <ClInclude Include="KxFramework\KxNotebook.h" />
-    <ClInclude Include="KxFramework\KxNotifyEvent.h" />
     <ClInclude Include="KxFramework\KxPanel.h" />
     <ClInclude Include="KxFramework\KxProcess.h" />
     <ClInclude Include="KxFramework\KxProcessEvent.h" />
@@ -465,6 +465,23 @@
     <ClInclude Include="KxFramework\XML\TinyXML2 HTML5 Printer.h" />
     <ClInclude Include="KxFramework\XML\TinyXML2.h" />
     <ClInclude Include="KxStdAfx.h" />
+    <ClInclude Include="Kx\Common.hpp" />
+    <ClInclude Include="Kx\Core.hpp" />
+    <ClInclude Include="Kx\Core\Common.h" />
+    <ClInclude Include="Kx\Core\EventSystem.hpp" />
+    <ClInclude Include="Kx\Core\EventSystem\CallWrapper.h" />
+    <ClInclude Include="Kx\Core\EventSystem\Common.h" />
+    <ClInclude Include="Kx\Core\EventSystem\Event.h" />
+    <ClInclude Include="Kx\Core\EventSystem\EventBuilder.h" />
+    <ClInclude Include="Kx\Core\EventSystem\Events\CommandEvent.h" />
+    <ClInclude Include="Kx\Core\EventSystem\Events\IndirectCallEvent.h" />
+    <ClInclude Include="Kx\Core\EventSystem\Events\NotifyEvent.h" />
+    <ClInclude Include="Kx\Core\EventSystem\EvtHandler.h" />
+    <ClInclude Include="Kx\Core\Utility.h" />
+    <ClInclude Include="Kx\Threading.hpp" />
+    <ClInclude Include="Kx\Threading\Common.h" />
+    <ClInclude Include="Kx\Threading\Events\ThreadEvent.h" />
+    <ClInclude Include="Kx\Threading\Thread.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\wxWidgets\src\generic\colrdlgg.cpp">
@@ -557,6 +574,8 @@
     <ClCompile Include="KxFramework\KxAuiToolBarEvent.cpp" />
     <ClCompile Include="KxFramework\KxAuiToolBarItem.cpp" />
     <ClCompile Include="KxFramework\KxClusterMap.cpp" />
+    <ClCompile Include="KxFramework\KxCommandEvent.cpp" />
+    <ClCompile Include="KxFramework\KxNotifyEvent.cpp" />
     <ClCompile Include="KxFramework\KxToolTipEx.cpp" />
     <ClCompile Include="KxFramework\KxBitmapComboBox.cpp" />
     <ClCompile Include="KxFramework\KxBroadcastEvent.cpp" />
@@ -569,7 +588,6 @@
     <ClCompile Include="KxFramework\KxComboBoxDialog.cpp" />
     <ClCompile Include="KxFramework\KxComboControl.cpp" />
     <ClCompile Include="KxFramework\KxComboPopup.cpp" />
-    <ClCompile Include="KxFramework\KxCommandEvent.cpp" />
     <ClCompile Include="KxFramework\KxCoroutine.cpp" />
     <ClCompile Include="KxFramework\KxCredentialsDialog.cpp" />
     <ClCompile Include="KxFramework\KxCrypto.cpp" />
@@ -648,7 +666,6 @@
     <ClCompile Include="KxFramework\KxMenuEvent.cpp" />
     <ClCompile Include="KxFramework\KxMenuItem.cpp" />
     <ClCompile Include="KxFramework\KxNotebook.cpp" />
-    <ClCompile Include="KxFramework\KxNotifyEvent.cpp" />
     <ClCompile Include="KxFramework\KxPanel.cpp" />
     <ClCompile Include="KxFramework\KxProcess.cpp" />
     <ClCompile Include="KxFramework\KxProcessEvent.cpp" />
@@ -724,6 +741,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Kx\Core\EventSystem\EventBuilder.cpp" />
+    <ClCompile Include="Kx\Core\EventSystem\EvtHandler.cpp" />
+    <ClCompile Include="Kx\Threading\Thread.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
