@@ -62,17 +62,23 @@ bool KxBroadcastProcessor::AddReciever(KxBroadcastReciever& reciever)
 }
 bool KxBroadcastProcessor::RemoveReciever(KxBroadcastReciever& reciever)
 {
-	// Check if this handler is part of our chain
-	bool removed = false;
-	EnumRecieveres([&reciever, &removed](wxEvtHandler& chainItem)
+	wxEvtHandler& evtHandler = reciever.GetEvtHandler();
+
+	// Check if this handler is part of a chain at all
+	if (!evtHandler.IsUnlinked())
 	{
-		// Unlink it
-		if (&chainItem == &reciever.GetEvtHandler())
+		// Is it part of our chain?
+		wxEvtHandler* unlinked = EnumRecieveres([&evtHandler](wxEvtHandler& chainItem)
 		{
-			chainItem.Unlink();
-			removed = true;
-		}
-		return !removed;
-	});
-	return removed;
+			// Unlink it
+			if (&chainItem == &evtHandler)
+			{
+				chainItem.Unlink();
+				return false;
+			}
+			return true;
+		});
+		return unlinked != nullptr;
+	}
+	return false;
 }
