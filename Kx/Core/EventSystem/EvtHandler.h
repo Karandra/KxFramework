@@ -16,14 +16,22 @@ class KX_API KxEvtHandler
 		wxEvtHandler* m_EvtHandler = nullptr;
 
 	private:
-		bool DoProcessEvent(wxEvent& event)
+		bool DoProcessEvent(wxEvent& event, KxEventID eventID = KxEvent::EvtNone)
 		{
 			event.SetEventObject(m_EvtHandler);
+			if (eventID != KxEvent::EvtNone)
+			{
+				event.SetEventType(eventID);
+			}
 			return m_EvtHandler->ProcessEvent(event);
 		}
-		void DoQueueEvent(std::unique_ptr<wxEvent> event)
+		void DoQueueEvent(std::unique_ptr<wxEvent> event, KxEventID eventID = KxEvent::EvtNone)
 		{
 			event->SetEventObject(m_EvtHandler);
+			if (eventID != KxEvent::EvtNone)
+			{
+				event->SetEventType(eventID);
+			}
 			m_EvtHandler->QueueEvent(event.release());
 		}
 
@@ -75,17 +83,9 @@ class KX_API KxEvtHandler
 		{
 			m_EvtHandler->SetPreviousHandler(evtHandler);
 		}
-		void SetPrevHandler(KxEvtHandler* evtHandler)
-		{
-			m_EvtHandler->SetPreviousHandler(evtHandler ? evtHandler->m_EvtHandler : nullptr);
-		}
 		void SetNextHandler(wxEvtHandler* evtHandler)
 		{
 			m_EvtHandler->SetNextHandler(evtHandler);
-		}
-		void SetNextHandler(KxEvtHandler* evtHandler)
-		{
-			m_EvtHandler->SetNextHandler(evtHandler ? evtHandler->m_EvtHandler : nullptr);
 		}
 
 		void Unlink()
@@ -174,9 +174,9 @@ class KX_API KxEvtHandler
 
 	public:
 		// Regular event sending functions
-		bool ProcessEvent(wxEvent& event)
+		bool ProcessEvent(wxEvent& event, KxEventID eventID = KxEvent::EvtNone)
 		{
-			return DoProcessEvent(event);
+			return DoProcessEvent(event, eventID);
 		}
 		template<class TEvent, class... Args> bool ProcessEvent(Args&&... arg)
 		{
@@ -186,13 +186,12 @@ class KX_API KxEvtHandler
 		template<class TEvent, class... Args> bool ProcessEvent(KxEventTag<TEvent> eventTag, Args&&... arg)
 		{
 			TEvent event(std::forward<Args>(arg)...);
-			event.SetEventType(eventTag);
-			return DoProcessEvent(event);
+			return DoProcessEvent(event, eventTag);
 		}
 
-		void QueueEvent(std::unique_ptr<KxEvent> event)
+		void QueueEvent(std::unique_ptr<KxEvent> event, KxEventID eventID = KxEvent::EvtNone)
 		{
-			DoQueueEvent(std::move(event));
+			DoQueueEvent(std::move(event), eventID);
 		}
 		template<class TEvent, class... Args> void QueueEvent(Args&&... arg)
 		{
@@ -201,9 +200,7 @@ class KX_API KxEvtHandler
 		template<class TEvent, class... Args> void QueueEvent(KxEventTag<TEvent> eventTag, Args&&... arg)
 		{
 			auto event = std::make_unique<TEvent>(std::forward<Args>(arg)...);
-			event->SetEventType(eventTag);
-
-			DoQueueEvent(std::move(event));
+			DoQueueEvent(std::move(event), eventTag);
 		}
 
 		// Construct and send the event using event builder
