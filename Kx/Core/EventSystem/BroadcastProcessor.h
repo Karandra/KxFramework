@@ -34,10 +34,18 @@ class KX_API KxBroadcastProcessor
 {
 	friend class KxBroadcastReciever;
 
+	public:
+		enum class Order
+		{
+			LastToFirst,
+			FirstToLast,
+		};
+
 	private:
 		Kx::EventSystem::BroadcastProcessorHandler m_EvtHandler;
 		KxRefEvtHandler m_EvtHandlerWrapper;
 		wxEvtHandler* m_LastEvtHandler = nullptr;
+		Order m_Order = Order::LastToFirst;
 
 	protected:
 		virtual bool PreProcessEvent(wxEvent& event)
@@ -66,34 +74,65 @@ class KX_API KxBroadcastProcessor
 		size_t GetRecieveresCount() const
 		{
 			size_t count = 0;
-			EnumRecieveres([&count](wxEvtHandler& item)
+			EnumRecieveres(m_Order, [&count](wxEvtHandler& item)
 			{
 				count++;
 				return true;
 			});
 			return count;
 		}
-		template<class TFunc> wxEvtHandler* EnumRecieveres(TFunc&& func) const
+		
+		template<Order order, class TFunc> wxEvtHandler* EnumRecieveres(TFunc&& func) const
 		{
-			for (wxEvtHandler* item = m_EvtHandler.GetNextHandler(); item; item = item->GetNextHandler())
+			if constexpr(order == Order::FirstToLast)
 			{
-				if (!func(*item))
+				for (wxEvtHandler* item = m_EvtHandler.GetNextHandler(); item; item = item->GetNextHandler())
 				{
-					return item;
+					if (!func(*item))
+					{
+						return item;
+					}
 				}
+			}
+			else if constexpr(order == Order::LastToFirst)
+			{
+				for (wxEvtHandler* item = m_LastEvtHandler; item != &m_EvtHandler; item = item->GetPreviousHandler())
+				{
+					if (!func(*item))
+					{
+						return item;
+					}
+				}
+			}
+			else
+			{
+				static_assert(false, "invalid order");
 			}
 			return nullptr;
 		}
-		template<class TFunc> wxEvtHandler* EnumRecieveresFromEnd(TFunc&& func) const
+		template<class TFunc> wxEvtHandler* EnumRecieveres(Order order, TFunc&& func) const
 		{
-			for (wxEvtHandler* item = m_LastEvtHandler->GetPreviousHandler(); item; item = item->GetPreviousHandler())
+			switch (order)
 			{
-				if (!func(*item))
+				case Order::FirstToLast:
 				{
-					return item;
+					return EnumRecieveres<Order::FirstToLast>(std::forward<TFunc>(func));
 				}
-			}
+				case Order::LastToFirst:
+				{
+					return EnumRecieveres<Order::LastToFirst>(std::forward<TFunc>(func));
+				}
+			};
 			return nullptr;
+		}
+
+		Order GetRecieversOrder() const
+		{
+			return m_Order;
+		}
+		void SetRecieversOrder(Order order)
+		{
+			m_Order = order;
 		}
 
 	public:
@@ -101,15 +140,15 @@ class KX_API KxBroadcastProcessor
 		{
 			return m_EvtHandlerWrapper.ProcessEvent(event, eventID);
 		}
-		template<class TEvent, class... Args> bool ProcessEvent(Args&& ... arg)
+		template<class TEvent, class... Args> bool ProcessEvent(Args&&... arg)
 		{
 			return m_EvtHandlerWrapper.ProcessEvent(std::forward<Args>(arg)...);
 		}
-		template<class TEvent, class... Args> bool ProcessEvent(KxEventTag<TEvent> eventTag, Args&& ... arg)
+		template<class TEvent, class... Args> bool ProcessEvent(KxEventTag<TEvent> eventTag, Args&&... arg)
 		{
 			return m_EvtHandlerWrapper.ProcessEvent(eventTag, std::forward<Args>(arg)...);
 		}
-		template<class TEvent, class... Args> auto ProcessEventEx(KxEventTag<TEvent> eventTag, Args&& ... arg)
+		template<class TEvent, class... Args> auto ProcessEventEx(KxEventTag<TEvent> eventTag, Args&&... arg)
 		{
 			return m_EvtHandlerWrapper.ProcessEventEx(eventTag, std::forward<Args>(arg)...);
 		}
@@ -118,20 +157,20 @@ class KX_API KxBroadcastProcessor
 		{
 			m_EvtHandlerWrapper.QueueEvent(std::move(event), eventID);
 		}
-		template<class TEvent, class... Args> void QueueEvent(Args&& ... arg)
+		template<class TEvent, class... Args> void QueueEvent(Args&&... arg)
 		{
 			m_EvtHandlerWrapper.QueueEvent(std::forward<Args>(arg)...);
 		}
-		template<class TEvent, class... Args> void QueueEvent(KxEventTag<TEvent> eventTag, Args&& ... arg)
+		template<class TEvent, class... Args> void QueueEvent(KxEventTag<TEvent> eventTag, Args&&... arg)
 		{
 			m_EvtHandlerWrapper.QueueEvent(eventTag, std::forward<Args>(arg)...);
 		}
-		template<class TEvent, class... Args> auto QueueEventEx(KxEventTag<TEvent> eventTag, Args&& ... arg)
+		template<class TEvent, class... Args> auto QueueEventEx(KxEventTag<TEvent> eventTag, Args&&... arg)
 		{
 			return m_EvtHandlerWrapper.QueueEventEx(eventTag, std::forward<Args>(arg)...);
 		}
 
-		template<class TCallable, class... Args> void CallAfter(TCallable callable, Args&& ... arg)
+		template<class TCallable, class... Args> void CallAfter(TCallable callable, Args&&... arg)
 		{
 			m_EvtHandlerWrapper.CallAfter(std::move(callable), std::forward<Args>(arg)...);
 		}

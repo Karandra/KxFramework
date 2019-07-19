@@ -10,7 +10,7 @@ namespace Kx::EventSystem
 			return false;
 		}
 
-		m_Processor.EnumRecieveres([this, &event](wxEvtHandler& evtHandler)
+		m_Processor.EnumRecieveres(m_Processor.GetRecieversOrder(), [this, &event](wxEvtHandler& evtHandler)
 		{
 			evtHandler.ProcessEventLocally(event);
 			return true;
@@ -82,7 +82,7 @@ bool KxBroadcastProcessor::RemoveReciever(KxBroadcastReciever& reciever)
 		}
 
 		// Is it part of our chain?
-		wxEvtHandler* unlinked = EnumRecieveres([&evtHandler](wxEvtHandler& chainItem)
+		wxEvtHandler* unlinked = EnumRecieveres(m_Order, [&evtHandler](wxEvtHandler& chainItem)
 		{
 			// Unlink it
 			if (&chainItem == &evtHandler)
