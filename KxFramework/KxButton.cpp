@@ -6,7 +6,7 @@
 #include "KxFramework/KxUtility.h"
 #include "KxFramework/KxIncludeWindows.h"
 
-wxDEFINE_EVENT_ALIAS(KxEVT_BUTTON, wxCommandEvent, wxEVT_BUTTON);
+KxEVENT_DEFINE_GLOBAL_AS(BUTTON, wxCommandEvent, wxEVT_BUTTON);
 KxEVENT_DEFINE_GLOBAL(BUTTON_MENU, wxContextMenuEvent);
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxButton, wxButton);
