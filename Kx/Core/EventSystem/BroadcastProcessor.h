@@ -185,7 +185,7 @@ class KX_API KxBroadcastReciever
 					func(event);
 					PostProcessEvent(event);
 				}
-				FinalPostProcessEvent();
+				FinalPostProcessEvent(event);
 			});
 		}
 
@@ -200,7 +200,7 @@ class KX_API KxBroadcastReciever
 					func(event);
 					PostProcessEvent(event);
 				}
-				FinalPostProcessEvent();
+				FinalPostProcessEvent(event);
 			});
 		}
 
@@ -215,7 +215,7 @@ class KX_API KxBroadcastReciever
 					std::invoke(method, handler, event);
 					PostProcessEvent(event);
 				}
-				FinalPostProcessEvent();
+				FinalPostProcessEvent(event);
 			});
 		}
 
@@ -232,7 +232,7 @@ class KX_API KxBroadcastReciever
 					std::invoke(method, static_cast<TClass*>(this), event);
 					PostProcessEvent(event);
 				}
-				FinalPostProcessEvent();
+				FinalPostProcessEvent(event);
 			});
 		}
 
