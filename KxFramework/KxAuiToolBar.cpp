@@ -142,6 +142,7 @@ bool KxAuiToolBar::Create(wxWindow* parent,
 {
 	if (wxAuiToolBar::Create(parent, id, wxDefaultPosition, wxDefaultSize, style))
 	{
+		SetMargins(0, 0, 0, 0);
 		SetArtProvider(new KxAuiToolBarArt(this));
 
 		Bind(wxEVT_MENU, &KxAuiToolBar::OnLeftClick, this);
