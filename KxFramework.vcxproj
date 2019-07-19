@@ -469,6 +469,7 @@
     <ClInclude Include="Kx\Core.hpp" />
     <ClInclude Include="Kx\Core\Common.h" />
     <ClInclude Include="Kx\Core\EventSystem.hpp" />
+    <ClInclude Include="Kx\Core\EventSystem\BroadcastProcessor.h" />
     <ClInclude Include="Kx\Core\EventSystem\CallWrapper.h" />
     <ClInclude Include="Kx\Core\EventSystem\Common.h" />
     <ClInclude Include="Kx\Core\EventSystem\Event.h" />
@@ -742,6 +743,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Kx\Core\EventSystem\BroadcastProcessor.cpp" />
     <ClCompile Include="Kx\Core\EventSystem\EventBuilder.cpp" />
     <ClCompile Include="Kx\Threading\Thread.cpp" />
   </ItemGroup>

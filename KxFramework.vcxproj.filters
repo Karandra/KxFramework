@@ -1054,6 +1054,9 @@
     <ClInclude Include="Kx\Core\EventSystem\BasicEvtHandler.h">
       <Filter>Kx\Core\EventSystem</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Core\EventSystem\BroadcastProcessor.h">
+      <Filter>Kx\Core\EventSystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1695,6 +1698,9 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxNotifyEvent.cpp">
       <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Core\EventSystem\BroadcastProcessor.cpp">
+      <Filter>Kx\Core\EventSystem</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
