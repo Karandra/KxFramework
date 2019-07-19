@@ -87,7 +87,7 @@ class KX_API KxBroadcastProcessor
 		}
 
 	public:
-		bool ProcessEvent(wxEvent& event, KxEventID eventID = KxEvent::EvtNone)
+		bool ProcessEvent(wxEvent& event, std::optional<KxEventID> eventID = {})
 		{
 			return m_EvtHandlerWrapper.ProcessEvent(event, eventID);
 		}
@@ -104,7 +104,7 @@ class KX_API KxBroadcastProcessor
 			return m_EvtHandlerWrapper.ProcessEventEx(eventTag, std::forward<Args>(arg)...);
 		}
 
-		void QueueEvent(std::unique_ptr<KxEvent> event, KxEventID eventID = KxEvent::EvtNone)
+		void QueueEvent(std::unique_ptr<KxEvent> event, std::optional<KxEventID> eventID = {})
 		{
 			m_EvtHandlerWrapper.QueueEvent(std::move(event), eventID);
 		}

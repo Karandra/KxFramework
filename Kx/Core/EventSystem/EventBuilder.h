@@ -1,5 +1,6 @@
 #pragma once
 #include "Event.h"
+#include <optional>
 class KxBasicEvtHandler;
 
 namespace Kx::EventSystem
@@ -9,7 +10,7 @@ namespace Kx::EventSystem
 		protected:
 			KxBasicEvtHandler* m_EvtHandler = nullptr;
 			wxEvent* m_Event = nullptr;
-			KxEventID m_EventID = KxEvent::EvtNone;
+			std::optional<KxEventID> m_EventID;
 			bool m_Async = false;
 			bool m_Sent = false;
 			bool m_IsSkipped = false;
@@ -19,11 +20,11 @@ namespace Kx::EventSystem
 			EventBuilder() = default;
 
 		public:
-			EventBuilder(KxBasicEvtHandler& evtHandler, std::unique_ptr<wxEvent> event, KxEventID eventID = KxEvent::EvtNone)
+			EventBuilder(KxBasicEvtHandler& evtHandler, std::unique_ptr<wxEvent> event, std::optional<KxEventID> eventID = {})
 				:m_EvtHandler(&evtHandler), m_Event(event.release()), m_EventID(eventID), m_Async(true)
 			{
 			}
-			EventBuilder(KxBasicEvtHandler& evtHandler, wxEvent& event, KxEventID eventID = KxEvent::EvtNone)
+			EventBuilder(KxBasicEvtHandler& evtHandler, wxEvent& event, std::optional<KxEventID> eventID = {})
 				:m_EvtHandler(&evtHandler), m_Event(&event), m_EventID(eventID), m_Async(false)
 			{
 			}
@@ -60,12 +61,12 @@ template<class TEvent>
 class KxEventBuilder: public Kx::EventSystem::EventBuilder
 {
 	public:
-		KxEventBuilder(wxEvtHandler& evtHandler, std::unique_ptr<TEvent> event)
-			:EventBuilder(evtHandler, std::move(event))
+		KxEventBuilder(wxEvtHandler& evtHandler, std::unique_ptr<TEvent> event, std::optional<KxEventID> eventID = {})
+			:EventBuilder(evtHandler, std::move(event), eventID)
 		{
 		}
-		KxEventBuilder(wxEvtHandler& evtHandler, TEvent& event)
-			:EventBuilder(evtHandler, event)
+		KxEventBuilder(wxEvtHandler& evtHandler, TEvent& event, std::optional<KxEventID> eventID = {})
+			:EventBuilder(evtHandler, event, eventID)
 		{
 		}
 		KxEventBuilder(KxEventBuilder&& other)

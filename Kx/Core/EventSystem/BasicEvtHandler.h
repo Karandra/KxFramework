@@ -2,6 +2,7 @@
 #include "Event.h"
 #include "EventBuilder.h"
 #include "Events/IndirectCallEvent.h"
+#include <optional>
 
 class KX_API KxBasicEvtHandler
 {
@@ -21,25 +22,25 @@ class KX_API KxBasicEvtHandler
 		wxEvtHandler& m_EvtHandler;
 
 	private:
-		void ConfigureEvent(wxEvent& event, KxEventID eventID = KxEvent::EvtNone)
+		void ConfigureEvent(wxEvent& event, std::optional<KxEventID> eventID = {})
 		{
 			event.SetEventObject(&m_EvtHandler);
-			if (eventID != KxEvent::EvtNone)
+			if (eventID)
 			{
-				event.SetEventType(eventID);
+				event.SetEventType(*eventID);
 			}
 		}
 		bool IsValidEventID(KxEventID eventID) const
 		{
-			return eventID != KxEvent::EvtNone && eventID != KxEvent::EvtNull;
+			return eventID != KxEvent::EvtNull && eventID != KxEvent::EvtAny;
 		}
 
-		bool DoProcessEvent(wxEvent& event, KxEventID eventID = KxEvent::EvtNone)
+		bool DoProcessEvent(wxEvent& event, std::optional<KxEventID> eventID = {})
 		{
 			ConfigureEvent(event, eventID);
 			return GetTargetHandler().ProcessEvent(event);
 		}
-		void DoQueueEvent(std::unique_ptr<wxEvent> event, KxEventID eventID = KxEvent::EvtNone)
+		void DoQueueEvent(std::unique_ptr<wxEvent> event, std::optional<KxEventID> eventID = {})
 		{
 			ConfigureEvent(*event, eventID);
 			GetTargetHandler().QueueEvent(event.release());
@@ -219,16 +220,16 @@ class KX_API KxBasicEvtHandler
 
 	public:
 		// Regular event sending functions
-		bool ProcessEvent(wxEvent& event, KxEventID eventID = KxEvent::EvtNone)
+		bool ProcessEvent(wxEvent& event, std::optional<KxEventID> eventID = {})
 		{
 			return DoProcessEvent(event, eventID);
 		}
-		bool ProcessEventLocally(wxEvent& event, KxEventID eventID = KxEvent::EvtNone)
+		bool ProcessEventLocally(wxEvent& event, std::optional<KxEventID> eventID = {})
 		{
 			ConfigureEvent(event, eventID);
 			return GetTargetHandler().ProcessEventLocally(event);
 		}
-		bool SafelyProcessEvent(wxEvent& event, KxEventID eventID = KxEvent::EvtNone)
+		bool SafelyProcessEvent(wxEvent& event, std::optional<KxEventID> eventID = {})
 		{
 			ConfigureEvent(event, eventID);
 			return GetTargetHandler().SafelyProcessEvent(event);
@@ -245,7 +246,7 @@ class KX_API KxBasicEvtHandler
 			return DoProcessEvent(event, eventTag);
 		}
 
-		void QueueEvent(std::unique_ptr<KxEvent> event, KxEventID eventID = KxEvent::EvtNone)
+		void QueueEvent(std::unique_ptr<KxEvent> event, std::optional<KxEventID> eventID = {})
 		{
 			DoQueueEvent(std::move(event), eventID);
 		}
@@ -259,7 +260,7 @@ class KX_API KxBasicEvtHandler
 			DoQueueEvent(std::move(event), eventTag);
 		}
 
-		void AddPendingEvent(const wxEvent& event, KxEventID eventID = KxEvent::EvtNone)
+		void AddPendingEvent(const wxEvent& event, std::optional<KxEventID> eventID = {})
 		{
 			ConfigureEvent(const_cast<wxEvent&>(event), eventID);
 			GetTargetHandler().AddPendingEvent(event);

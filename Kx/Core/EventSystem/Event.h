@@ -9,7 +9,7 @@ class KX_API KxEvent: public wxEvent
 {
 	public:
 		static inline const KxEventTag<KxEvent> EvtNull = wxEVT_NULL;
-		static inline const KxEventTag<KxEvent> EvtNone = wxNewEventType();
+		static inline const KxEventTag<KxEvent> EvtAny = wxEVT_ANY;
 
 	public:
 		static KxEventID NewEventID() noexcept
