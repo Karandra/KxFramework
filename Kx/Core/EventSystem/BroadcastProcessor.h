@@ -73,11 +73,14 @@ class KX_API KxBroadcastProcessor
 		}
 		template<class TFunc> wxEvtHandler* EnumRecieveres(TFunc&& func) const
 		{
-			for (wxEvtHandler* item = m_EvtHandler.GetNextHandler(); item; item = item->GetNextHandler())
+			if (m_EvtHandler.GetNextHandler())
 			{
-				if (item && !func(*item))
+				for (wxEvtHandler* item = m_EvtHandler.GetNextHandler(); item; item = item->GetNextHandler())
 				{
-					return item;
+					if (!func(*item))
+					{
+						return item;
+					}
 				}
 			}
 			return nullptr;
