@@ -17,7 +17,15 @@ enum class KxURIFlags: std::underlying_type_t<wxURIFlags>
 
 namespace Kx::Network
 {
-	wxString NormalizeAddress(const wxString& address);
+	wxString NormalizeInputAddress(const wxString& address);
+	void NormalizeURI(wxString& scheme,
+					  wxString& server,
+					  wxString& path,
+					  wxString& query,
+					  wxString& fragment,
+					  wxString& userInfo,
+					  wxString& port
+	);
 }
 
 namespace Kx::Network
@@ -91,14 +99,21 @@ namespace Kx::Network
 
 class KX_API KxURI: public wxURI, public Kx::Network::URXHelper<KxURI, wxURI>
 {
+	protected:
+		void NormalizeURI()
+		{
+			Kx::Network::NormalizeURI(m_scheme, m_server, m_path, m_query, m_fragment, m_userinfo, m_port);
+		}
+
 	public:
 		KxURI()
 			:THelper(this)
 		{
 		}
 		KxURI(const wxString& uri)
-			:wxURI(Kx::Network::NormalizeAddress(uri)), THelper(this)
+			:wxURI(Kx::Network::NormalizeInputAddress(uri)), THelper(this)
 		{
+			NormalizeURI();
 		}
 		KxURI(const char* uri)
 			:KxURI(wxString(uri))
@@ -136,36 +151,38 @@ class KX_API KxURI: public wxURI, public Kx::Network::URXHelper<KxURI, wxURI>
 		using THelper::Resolve;
 
 	public:
-		TDerived& operator=(const wxString& uri)
+		KxURI& operator=(const wxString& uri)
 		{
-			AsBase() = Kx::Network::NormalizeAddress(uri);
-			return AsDerived();
+			AsBase() = Kx::Network::NormalizeInputAddress(uri);
+			NormalizeURI();
+
+			return *this;
 		}
-		TDerived& operator=(const char* uri)
-		{
-			*this = wxString(uri);
-			return AsDerived();
-		}
-		TDerived& operator=(const wchar_t* uri)
+		KxURI& operator=(const char* uri)
 		{
 			*this = wxString(uri);
-			return AsDerived();
+			return *this;
 		}
-		TDerived& operator=(const wxURI& other)
+		KxURI& operator=(const wchar_t* uri)
 		{
-			AsBase() = Kx::Network::NormalizeAddress(other.BuildURI());
-			return AsDerived();
+			*this = wxString(uri);
+			return *this;
 		}
-		TDerived& operator=(const TDerived& other)
+		KxURI& operator=(const wxURI& other)
+		{
+			*this = other.BuildURI();
+			return *this;
+		}
+		KxURI& operator=(const KxURI& other)
 		{
 			AsBase() = other;
-			return AsDerived();
+			return *this;
 		}
-		TDerived& operator=(TDerived&& other)
+		KxURI& operator=(KxURI&& other)
 		{
 			AsBase() = std::move(other);
 			other.Clear();
 
-			return AsDerived();
+			return *this;
 		}
 };

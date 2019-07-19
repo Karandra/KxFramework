@@ -4,15 +4,24 @@
 
 namespace Kx::Network
 {
-	wxString NormalizeAddress(const wxString& address)
+	wxString NormalizeInputAddress(const wxString& address)
 	{
 		if (!address.IsEmpty())
 		{
-			wxString normalized = KxString::ToLower(address);
-			KxString::Trim(normalized, true, true);
-
-			return normalized;
+			return KxString::Trim(address, true, true);
 		}
 		return address;
+	}
+	void NormalizeURI(wxString& scheme,
+					  wxString& server,
+					  wxString& path,
+					  wxString& query,
+					  wxString& fragment,
+					  wxString& userInfo,
+					  wxString& port
+	)
+	{
+		KxString::MakeLower(scheme);
+		KxString::MakeLower(server);
 	}
 }

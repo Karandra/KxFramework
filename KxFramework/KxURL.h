@@ -16,9 +16,13 @@ enum class KxURLError: std::underlying_type_t<wxURLError>
 
 class KX_API KxURL: public wxURL, public Kx::Network::URXHelper<KxURL, wxURL>
 {
-	private:
+	protected:
 		bool IsHTTPS() const;
 		void OnAssignAddress();
+		void NormalizeURI()
+		{
+			Kx::Network::NormalizeURI(m_scheme, m_server, m_path, m_query, m_fragment, m_userinfo, m_port);
+		}
 
 	public:
 		KxURL()
@@ -26,8 +30,9 @@ class KX_API KxURL: public wxURL, public Kx::Network::URXHelper<KxURL, wxURL>
 		{
 		}
 		KxURL(const wxString& url)
-			:wxURL(Kx::Network::NormalizeAddress(url)), THelper(this)
+			:wxURL(Kx::Network::NormalizeInputAddress(url)), THelper(this)
 		{
+			NormalizeURI();
 			OnAssignAddress();
 		}
 		KxURL(const char* url)
@@ -41,18 +46,15 @@ class KX_API KxURL: public wxURL, public Kx::Network::URXHelper<KxURL, wxURL>
 		KxURL(const wxURI& other)
 			:KxURL(other.BuildURI())
 		{
-			OnAssignAddress();
 		}
 		KxURL(const KxURL& other)
 			:wxURL(other), THelper(this)
 		{
-			OnAssignAddress();
 		}
 		KxURL(KxURL&& other)
 			:wxURL(std::move(other)), THelper(this)
 		{
 			other.Clear();
-			OnAssignAddress();
 		}
 
 	public:
@@ -71,8 +73,10 @@ class KX_API KxURL: public wxURL, public Kx::Network::URXHelper<KxURL, wxURL>
 		}
 		KxURLError SetURL(const wxString& url)
 		{
-			wxURL::SetURL(Kx::Network::NormalizeAddress(url));
+			wxURL::SetURL(Kx::Network::NormalizeInputAddress(url));
+			NormalizeURI();
 			OnAssignAddress();
+
 			return GetError();
 		}
 
@@ -82,42 +86,36 @@ class KX_API KxURL: public wxURL, public Kx::Network::URXHelper<KxURL, wxURL>
 		using THelper::Resolve;
 
 	public:
-		TDerived& operator=(const wxString& url)
+		KxURL& operator=(const wxString& url)
 		{
-			AsBase() = Kx::Network::NormalizeAddress(url);
-			OnAssignAddress();
-			return AsDerived();
+			SetURL(url);
+			return *this;
 		}
-		TDerived& operator=(const char* url)
-		{
-			*this = wxString(url);
-			OnAssignAddress();
-			return AsDerived();
-		}
-		TDerived& operator=(const wchar_t* url)
+		KxURL& operator=(const char* url)
 		{
 			*this = wxString(url);
-			OnAssignAddress();
-			return AsDerived();
+			return *this;
 		}
-		TDerived& operator=(const wxURI& other)
+		KxURL& operator=(const wchar_t* url)
 		{
-			AsBase() = Kx::Network::NormalizeAddress(other.BuildURI());
-			OnAssignAddress();
-			return AsDerived();
+			*this = wxString(url);
+			return *this;
 		}
-		TDerived& operator=(const TDerived& other)
+		KxURL& operator=(const wxURI& other)
+		{
+			*this = other.BuildURI();
+			return *this;
+		}
+		KxURL& operator=(const KxURL& other)
 		{
 			AsBase() = other;
-			OnAssignAddress();
-			return AsDerived();
+			return *this;
 		}
-		TDerived& operator=(TDerived&& other)
+		KxURL& operator=(KxURL&& other)
 		{
 			AsBase() = std::move(other);
-			OnAssignAddress();
 			other.Clear();
 
-			return AsDerived();
+			return *this;
 		}
 };
