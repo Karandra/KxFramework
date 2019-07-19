@@ -13,7 +13,7 @@ class KxIndirectCallEvent: public wxAsyncMethodCallEvent
 	protected:
 		wxEvtHandler& GetEvtHandler()
 		{
-			return *static_cast<wxEvtHandler*>(wxAsyncMethodCallEvent::GetEventObject());
+			return *static_cast<wxEvtHandler*>(GetEventObject());
 		}
 
 	public:
@@ -34,7 +34,7 @@ namespace Kx::EventSystem
 			std::tuple<Args...> m_Parameters;
 
 		public:
-			FunctorIndirectCall(KxEvtHandler& evtHandler, TCallable callable, Args&&... arg)
+			FunctorIndirectCall(wxEvtHandler& evtHandler, TCallable callable, Args&&... arg)
 				:KxIndirectCallEvent(evtHandler), m_Callable(std::move(callable)), m_Parameters(std::forward<Args>(arg)...)
 			{
 			}
@@ -55,7 +55,7 @@ namespace Kx::EventSystem
 			TFunction m_Function;
 
 		public:
-			FunctionIndirectCall(KxEvtHandler& evtHandler, TFunction func, Args&&... arg)
+			FunctionIndirectCall(wxEvtHandler& evtHandler, TFunction func, Args&&... arg)
 				:KxIndirectCallEvent(evtHandler), m_Function(func), m_Parameters(std::forward<Args>(arg)...)
 			{
 			}
@@ -76,7 +76,7 @@ namespace Kx::EventSystem
 			TMethod m_Method = nullptr;
 
 		public:
-			MethodIndirectCall(KxEvtHandler& evtHandler, TMethod func, Args&&... arg)
+			MethodIndirectCall(wxEvtHandler& evtHandler, TMethod func, Args&&... arg)
 				:KxIndirectCallEvent(evtHandler), m_Method(func), m_Parameters(std::forward<Args>(arg)...)
 			{
 			}

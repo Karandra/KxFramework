@@ -1051,6 +1051,9 @@
     <ClInclude Include="KxFramework\KxNotifyEvent.h">
       <Filter>Header Files\Events</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Core\EventSystem\IEvtHandler.h">
+      <Filter>Kx\Core\EventSystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1685,9 +1688,6 @@
       <Filter>Kx\Threading</Filter>
     </ClCompile>
     <ClCompile Include="Kx\Core\EventSystem\EventBuilder.cpp">
-      <Filter>Kx\Core\EventSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\Core\EventSystem\EvtHandler.cpp">
       <Filter>Kx\Core\EventSystem</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxCommandEvent.cpp">

@@ -1,6 +1,6 @@
 #include "KxStdAfx.h"
 #include "EventBuilder.h"
-#include "EvtHandler.h"
+#include "IEvtHandler.h"
 #include "../Utility.h"
 
 namespace Kx::EventSystem
@@ -25,18 +25,16 @@ namespace Kx::EventSystem
 	{
 		if (m_Async)
 		{
-			wxEvent* event = Utility::ExchangeResetAndReturn(m_Event, nullptr);
-			m_EvtHandler->QueueEvent(event);
+			std::unique_ptr<wxEvent> event(Utility::ExchangeResetAndReturn(m_Event, nullptr));
+			m_EvtHandler->DoQueueEvent(std::move(event), m_EventID);
 
 			m_Sent = true;
 			return false;
 		}
 		else
 		{
-			const bool processed = m_EvtHandler->ProcessEvent(*m_Event);
+			const bool processed = m_EvtHandler->DoProcessEvent(*m_Event, m_EventID);
 
-			m_Sent = true;
-			m_IsSkipped = m_Event->GetSkipped();
 			if (m_Event->IsKindOf(wxCLASSINFO(wxNotifyEvent)))
 			{
 				m_IsAllowed = static_cast<wxNotifyEvent*>(m_Event)->IsAllowed();
@@ -45,7 +43,9 @@ namespace Kx::EventSystem
 			{
 				m_IsAllowed = true;
 			}
-			
+			m_IsSkipped = m_Event->GetSkipped();
+			m_Sent = true;
+
 			return processed;
 		}
 	}
@@ -57,6 +57,7 @@ namespace Kx::EventSystem
 		using Utility::ExchangeAndReset;
 		ExchangeAndReset(m_EvtHandler, other.m_EvtHandler, null.m_EvtHandler);
 		ExchangeAndReset(m_Event, other.m_Event, null.m_Event);
+		ExchangeAndReset(m_EventID, other.m_EventID, null.m_EventID);
 		ExchangeAndReset(m_Async, other.m_Async, null.m_Async);
 		ExchangeAndReset(m_Sent, other.m_Sent, null.m_Sent);
 		ExchangeAndReset(m_IsSkipped, other.m_IsSkipped, null.m_IsSkipped);

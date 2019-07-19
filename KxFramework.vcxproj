@@ -477,6 +477,7 @@
     <ClInclude Include="Kx\Core\EventSystem\Events\IndirectCallEvent.h" />
     <ClInclude Include="Kx\Core\EventSystem\Events\NotifyEvent.h" />
     <ClInclude Include="Kx\Core\EventSystem\EvtHandler.h" />
+    <ClInclude Include="Kx\Core\EventSystem\IEvtHandler.h" />
     <ClInclude Include="Kx\Core\Utility.h" />
     <ClInclude Include="Kx\Threading.hpp" />
     <ClInclude Include="Kx\Threading\Common.h" />
@@ -742,7 +743,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Kx\Core\EventSystem\EventBuilder.cpp" />
-    <ClCompile Include="Kx\Core\EventSystem\EvtHandler.cpp" />
     <ClCompile Include="Kx\Threading\Thread.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

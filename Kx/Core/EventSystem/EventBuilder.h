@@ -3,11 +3,17 @@
 
 namespace Kx::EventSystem
 {
+	class IEvtHandler;
+}
+
+namespace Kx::EventSystem
+{
 	class KX_API EventBuilder
 	{
 		protected:
-			wxEvtHandler* m_EvtHandler = nullptr;
+			IEvtHandler* m_EvtHandler = nullptr;
 			wxEvent* m_Event = nullptr;
+			KxEventID m_EventID = KxEvent::EvtNone;
 			bool m_Async = false;
 			bool m_Sent = false;
 			bool m_IsSkipped = false;
@@ -17,12 +23,12 @@ namespace Kx::EventSystem
 			EventBuilder() = default;
 
 		public:
-			EventBuilder(wxEvtHandler& evtHandler, std::unique_ptr<wxEvent> event)
-				:m_EvtHandler(&evtHandler), m_Event(event.release()), m_Async(true)
+			EventBuilder(IEvtHandler& evtHandler, std::unique_ptr<wxEvent> event, KxEventID eventID = KxEvent::EvtNone)
+				:m_EvtHandler(&evtHandler), m_Event(event.release()), m_EventID(eventID), m_Async(true)
 			{
 			}
-			EventBuilder(wxEvtHandler& evtHandler, wxEvent& event)
-				:m_EvtHandler(&evtHandler), m_Event(&event), m_Async(false)
+			EventBuilder(IEvtHandler& evtHandler, wxEvent& event, KxEventID eventID = KxEvent::EvtNone)
+				:m_EvtHandler(&evtHandler), m_Event(&event), m_EventID(eventID), m_Async(false)
 			{
 			}
 			EventBuilder(EventBuilder&& other)

@@ -12,7 +12,7 @@ class KxEventCallWrapper
 	public:
 		virtual void Execute(wxEvtHandler& evtHandler, wxEvent& event) = 0;
 		virtual bool IsSameAs(const KxEventCallWrapper& other) const = 0;
-		virtual wxEvtHandler* GetEvtHandler()
+		virtual wxEvtHandler* GetTargetHandler()
 		{
 			return nullptr;
 		}
@@ -129,7 +129,7 @@ namespace Kx::EventSystem
 				}
 				return false;
 			}
-			wxEvtHandler* GetEvtHandler() override
+			wxEvtHandler* GetTargetHandler() override
 			{
 				return m_EvtHandler;
 			}

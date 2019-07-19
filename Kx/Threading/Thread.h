@@ -5,15 +5,12 @@
 
 class KX_API KxThread: public wxThread, public KxEvtHandler
 {
-	private:
-		wxEvtHandler m_EvtHandler;
-
 	protected:
 		ExitCode Entry() override;
 
 	public:
 		KxThread(wxThreadKind kind = wxThreadKind::wxTHREAD_JOINABLE)
-			:wxThread(kind), KxEvtHandler(m_EvtHandler)
+			:wxThread(kind)
 		{
 		}
 };

@@ -1,6 +1,5 @@
 #pragma once
 #include "Common.h"
-#include "../Utility.h"
 #include <functional>
 class KxEvtHandler;
 class KxCoreApplication;
