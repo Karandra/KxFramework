@@ -4,6 +4,11 @@
 wxThread::ExitCode KxThread::Entry()
 {
 	QueueEvent(KxThreadEvent::EvtStarted);
-	ProcessEvent(KxThreadEvent::EvtExecute);
+
+	KxThreadEvent event;
+	ProcessEvent(event, KxThreadEvent::EvtExecute);
+
 	QueueEvent(KxThreadEvent::EvtFinished);
+
+	return event.GetExitCode();
 }
