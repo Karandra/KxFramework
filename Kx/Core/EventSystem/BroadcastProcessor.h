@@ -25,6 +25,7 @@ namespace Kx::EventSystem
 		friend class KxBroadcastReciever;
 
 		protected:
+			bool TryBefore(wxEvent& event) override;
 			bool UnbindAll(KxEventID eventID);
 	};
 }
@@ -36,6 +37,7 @@ class KX_API KxBroadcastProcessor
 	private:
 		Kx::EventSystem::BroadcastProcessorHandler m_EvtHandler;
 		KxRefEvtHandler m_EvtHandlerWrapper;
+		wxEvtHandler* m_LastEvtHandler = nullptr;
 
 	protected:
 		virtual bool PreProcessEvent(wxEvent& event)
@@ -48,7 +50,7 @@ class KX_API KxBroadcastProcessor
 
 	public:
 		KxBroadcastProcessor()
-			:m_EvtHandlerWrapper(&m_EvtHandler), m_EvtHandler(*this)
+			:m_EvtHandlerWrapper(&m_EvtHandler), m_EvtHandler(*this), m_LastEvtHandler(&m_EvtHandler)
 		{
 		}
 		virtual ~KxBroadcastProcessor() = default;
@@ -73,14 +75,22 @@ class KX_API KxBroadcastProcessor
 		}
 		template<class TFunc> wxEvtHandler* EnumRecieveres(TFunc&& func) const
 		{
-			if (m_EvtHandler.GetNextHandler())
+			for (wxEvtHandler* item = m_EvtHandler.GetNextHandler(); item; item = item->GetNextHandler())
 			{
-				for (wxEvtHandler* item = m_EvtHandler.GetNextHandler(); item; item = item->GetNextHandler())
+				if (!func(*item))
 				{
-					if (!func(*item))
-					{
-						return item;
-					}
+					return item;
+				}
+			}
+			return nullptr;
+		}
+		template<class TFunc> wxEvtHandler* EnumRecieveresFromEnd(TFunc&& func) const
+		{
+			for (wxEvtHandler* item = m_LastEvtHandler->GetPreviousHandler(); item; item = item->GetPreviousHandler())
+			{
+				if (!func(*item))
+				{
+					return item;
 				}
 			}
 			return nullptr;

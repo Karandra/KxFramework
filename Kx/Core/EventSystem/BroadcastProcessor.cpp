@@ -21,6 +21,11 @@ namespace Kx::EventSystem
 
 namespace Kx::EventSystem
 {
+	bool BroadcastRecieverHandler::TryBefore(wxEvent& event)
+	{
+		TryHereOnly(event);
+		return true;
+	}
 	bool BroadcastRecieverHandler::UnbindAll(KxEventID eventID)
 	{
 		// See 'wxEvtHandler::DoUnbind' (wxWidgets/src/event.cpp) for details
@@ -53,8 +58,9 @@ bool KxBroadcastProcessor::AddReciever(KxBroadcastReciever& reciever)
 	// New handler can't be part of another chain
 	if (evtHandler.IsUnlinked())
 	{
-		m_EvtHandler.SetNextHandler(&evtHandler);
-		evtHandler.SetPreviousHandler(&m_EvtHandler);
+		m_LastEvtHandler->SetNextHandler(&evtHandler);
+		evtHandler.SetPreviousHandler(m_LastEvtHandler);
+		m_LastEvtHandler = &evtHandler;
 
 		return true;
 	}
@@ -67,6 +73,14 @@ bool KxBroadcastProcessor::RemoveReciever(KxBroadcastReciever& reciever)
 	// Check if this handler is part of a chain at all
 	if (!evtHandler.IsUnlinked())
 	{
+		// Short circuit for last handler
+		if (&evtHandler == m_LastEvtHandler)
+		{
+			wxEvtHandler* previous = m_LastEvtHandler->GetPreviousHandler();
+			m_LastEvtHandler->Unlink();
+			m_LastEvtHandler = previous;
+		}
+
 		// Is it part of our chain?
 		wxEvtHandler* unlinked = EnumRecieveres([&evtHandler](wxEvtHandler& chainItem)
 		{
