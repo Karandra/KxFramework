@@ -26,7 +26,7 @@ namespace Kx::EventSystem
 		TryHereOnly(event);
 		return true;
 	}
-	bool BroadcastRecieverHandler::UnbindAll(KxEventID eventID)
+	bool BroadcastRecieverHandler::UnbindAll(std::optional<KxEventID> eventID)
 	{
 		// See 'wxEvtHandler::DoUnbind' (wxWidgets/src/event.cpp) for details
 		if (m_dynamicEvents)
@@ -35,7 +35,7 @@ namespace Kx::EventSystem
 			for (auto it = m_dynamicEvents->rbegin(); it != m_dynamicEvents->rend(); ++it)
 			{
 				wxDynamicEventTableEntry* entry = *it;
-				if (entry && entry->m_eventType == eventID)
+				if (entry && (!eventID || entry->m_eventType == eventID))
 				{
 					*it = nullptr;
 

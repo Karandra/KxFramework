@@ -26,7 +26,7 @@ namespace Kx::EventSystem
 
 		protected:
 			bool TryBefore(wxEvent& event) override;
-			bool UnbindAll(KxEventID eventID);
+			bool UnbindAll(std::optional<KxEventID> eventID = {});
 	};
 }
 
@@ -290,9 +290,14 @@ class KX_API KxBroadcastReciever
 		}
 
 		// Unbind all functions bound to this event
-		template<class TEvent>
-		bool UnbindAll(KxEventTag<TEvent> eventTag)
+		template<class TEvent> bool UnbindAll(KxEventTag<TEvent> eventTag)
 		{
 			return m_EvtHandler.UnbindAll(eventTag);
+		}
+
+		// Unbind all events
+		bool UnbindAll()
+		{
+			return m_EvtHandler.UnbindAll();
 		}
 };
