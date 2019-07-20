@@ -96,3 +96,18 @@ bool KxBroadcastProcessor::RemoveReciever(KxBroadcastReciever& reciever)
 	}
 	return false;
 }
+
+bool KxBroadcastReciever::PreProcessEvent(wxEvent& event)
+{
+	event.StopPropagation();
+	return m_Processor.PreProcessEvent(event);
+}
+void KxBroadcastReciever::PostProcessEvent(wxEvent& event)
+{
+	m_Processor.PostProcessEvent(event);
+}
+void KxBroadcastReciever::FinalPostProcessEvent(wxEvent& event)
+{
+	event.Skip();
+	event.StopPropagation();
+}

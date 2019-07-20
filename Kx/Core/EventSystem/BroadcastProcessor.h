@@ -186,18 +186,9 @@ class KX_API KxBroadcastReciever
 		KxBroadcastProcessor& m_Processor;
 
 	private:
-		bool PreProcessEvent(wxEvent& event)
-		{
-			return m_Processor.PreProcessEvent(event);
-		}
-		void PostProcessEvent(wxEvent& event)
-		{
-			m_Processor.PostProcessEvent(event);
-		}
-		void FinalPostProcessEvent(wxEvent& event)
-		{
-			event.Skip();
-		}
+		bool PreProcessEvent(wxEvent& event);
+		void PostProcessEvent(wxEvent& event);
+		void FinalPostProcessEvent(wxEvent& event);
 
 	protected:
 		wxEvtHandler& GetEvtHandler()
