@@ -479,6 +479,11 @@
     <ClInclude Include="Kx\Core\EventSystem\EvtHandler.h" />
     <ClInclude Include="Kx\Core\EventSystem\BasicEvtHandler.h" />
     <ClInclude Include="Kx\Core\Utility.h" />
+    <ClInclude Include="Kx\System.hpp" />
+    <ClInclude Include="Kx\System\Common.h" />
+    <ClInclude Include="Kx\System\FileType.h" />
+    <ClInclude Include="Kx\System\FileTypeInfo.h" />
+    <ClInclude Include="Kx\System\FileTypeManager.h" />
     <ClInclude Include="Kx\Threading.hpp" />
     <ClInclude Include="Kx\Threading\Common.h" />
     <ClInclude Include="Kx\Threading\Events\ThreadEvent.h" />

@@ -238,6 +238,9 @@
     <Filter Include="Kx\Core\EventSystem\Events">
       <UniqueIdentifier>{d9095824-780a-4122-9f03-6015b95cf0ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\System">
+      <UniqueIdentifier>{7b228bc2-9ef1-4a57-ad08-f8ed2e2297f8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -1053,6 +1056,21 @@
     </ClInclude>
     <ClInclude Include="Kx\Core\EventSystem\BroadcastProcessor.h">
       <Filter>Kx\Core\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System.hpp">
+      <Filter>Kx</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\FileTypeManager.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\Common.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\FileType.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\FileTypeInfo.h">
+      <Filter>Kx\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
