@@ -66,11 +66,11 @@ template<class TEvent>
 class KxEventBuilder: public Kx::EventSystem::EventBuilder
 {
 	public:
-		KxEventBuilder(wxEvtHandler& evtHandler, std::unique_ptr<TEvent> event, std::optional<KxEventID> eventID = {})
+		KxEventBuilder(KxBasicEvtHandler& evtHandler, std::unique_ptr<TEvent> event, std::optional<KxEventID> eventID = {})
 			:EventBuilder(evtHandler, std::move(event), eventID)
 		{
 		}
-		KxEventBuilder(wxEvtHandler& evtHandler, TEvent& event, std::optional<KxEventID> eventID = {})
+		KxEventBuilder(KxBasicEvtHandler& evtHandler, TEvent& event, std::optional<KxEventID> eventID = {})
 			:EventBuilder(evtHandler, event, eventID)
 		{
 		}
