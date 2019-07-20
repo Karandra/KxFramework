@@ -21,7 +21,7 @@ namespace Kx::EventSystem
 		}
 	}
 
-	bool EventBuilder::Do()
+	EventBuilder& EventBuilder::Do()
 	{
 		if (m_Async)
 		{
@@ -29,11 +29,12 @@ namespace Kx::EventSystem
 			m_EvtHandler->DoQueueEvent(std::move(event), m_EventID);
 
 			m_Sent = true;
-			return false;
 		}
 		else
 		{
-			const bool processed = m_EvtHandler->DoProcessEvent(*m_Event, m_EventID);
+			m_IsProcessed = m_EvtHandler->DoProcessEvent(*m_Event, m_EventID);
+			m_IsSkipped = m_Event->GetSkipped();
+			m_Sent = true;
 
 			if (m_Event->IsKindOf(wxCLASSINFO(wxNotifyEvent)))
 			{
@@ -43,11 +44,8 @@ namespace Kx::EventSystem
 			{
 				m_IsAllowed = true;
 			}
-			m_IsSkipped = m_Event->GetSkipped();
-			m_Sent = true;
-
-			return processed;
 		}
+		return *this;
 	}
 
 	EventBuilder& EventBuilder::operator=(EventBuilder&& other)

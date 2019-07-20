@@ -15,6 +15,7 @@ namespace Kx::EventSystem
 			bool m_Sent = false;
 			bool m_IsSkipped = false;
 			bool m_IsAllowed = true;
+			bool m_IsProcessed = false;
 
 		private:
 			EventBuilder() = default;
@@ -36,7 +37,7 @@ namespace Kx::EventSystem
 			virtual ~EventBuilder();
 
 		public:
-			bool Do();
+			EventBuilder& Do();
 
 			bool IsAsync() const
 			{
@@ -49,6 +50,10 @@ namespace Kx::EventSystem
 			bool IsAllowed() const
 			{
 				return m_IsAllowed;
+			}
+			bool IsProcessed() const
+			{
+				return m_IsProcessed;
 			}
 
 		public:
@@ -78,6 +83,11 @@ class KxEventBuilder: public Kx::EventSystem::EventBuilder
 		template<class TFunctor> KxEventBuilder& On(TFunctor&& func)
 		{
 			std::invoke(func, static_cast<TEvent&>(*m_Event));
+			return *this;
+		}
+		KxEventBuilder& Do()
+		{
+			EventBuilder::Do();
 			return *this;
 		}
 
