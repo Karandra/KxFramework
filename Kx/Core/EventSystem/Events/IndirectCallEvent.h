@@ -21,6 +21,12 @@ class KxIndirectCallEvent: public wxAsyncMethodCallEvent
 			:wxAsyncMethodCallEvent(&evtHandler)
 		{
 		}
+
+	public:
+		KxIndirectCallEvent* Clone() const override
+		{
+			return nullptr;
+		}
 };
 
 namespace Kx::EventSystem
