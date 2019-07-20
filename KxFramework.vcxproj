@@ -284,7 +284,6 @@
     <ClInclude Include="KxFramework\KxToolTipEx.h" />
     <ClInclude Include="KxFramework\KxBitmapComboBox.h" />
     <ClInclude Include="KxFramework\KxBitmapGraphicsCanvas.h" />
-    <ClInclude Include="KxFramework\KxBroadcastEvent.h" />
     <ClInclude Include="KxFramework\KxButton.h" />
     <ClInclude Include="KxFramework\KxButtonType.h" />
     <ClInclude Include="KxFramework\KxCallAtScopeExit.h" />
@@ -580,7 +579,6 @@
     <ClCompile Include="KxFramework\KxNotifyEvent.cpp" />
     <ClCompile Include="KxFramework\KxToolTipEx.cpp" />
     <ClCompile Include="KxFramework\KxBitmapComboBox.cpp" />
-    <ClCompile Include="KxFramework\KxBroadcastEvent.cpp" />
     <ClCompile Include="KxFramework\KxButton.cpp" />
     <ClCompile Include="KxFramework\KxCheckBox.cpp" />
     <ClCompile Include="KxFramework\KxCollapsiblePane.cpp" />

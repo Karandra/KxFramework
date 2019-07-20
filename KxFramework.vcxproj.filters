@@ -685,9 +685,6 @@
     <ClInclude Include="KxFramework\KxIProgressBar.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxBroadcastEvent.h">
-      <Filter>Header Files\Events</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxCallAtScopeExit.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
@@ -1485,9 +1482,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxIProgressBar.cpp">
       <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxBroadcastEvent.cpp">
-      <Filter>Source Files\Events</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxSharedMemory.cpp">
       <Filter>Source Files\System</Filter>
