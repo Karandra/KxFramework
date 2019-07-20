@@ -19,6 +19,12 @@ namespace Kx::Utility
 		ExchangeAndReset(left, right, std::move(nullValue));
 		return left;
 	}
+
+	template<class TFunc, class... Args>
+	void ForEachParameterInPack(TFunc&& func, Args&&... arg)
+	{
+		int temp[] = {(func(std::forward<Args>(arg)), 0)...};
+	}
 }
 
 namespace Kx::Utility
