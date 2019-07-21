@@ -1,6 +1,6 @@
 #pragma once
-#include "Kx/Core/EventSystem/Event.h"
-#include "Kx/Core/Utility.h"
+#include "Kx/EventSystem/Event.h"
+#include "Kx/Utility/TypeTraits.h"
 #include <functional>
 #include <type_traits>
 

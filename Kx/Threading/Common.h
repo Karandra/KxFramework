@@ -1,2 +1,2 @@
 #pragma once
-#include <Kx/Core/Common.h>
+#include <Kx/Common.hpp>

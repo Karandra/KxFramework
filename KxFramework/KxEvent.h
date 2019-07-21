@@ -1,3 +1,3 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "Kx/Core/EventSystem/Event.h"
+#include "Kx/EventSystem/Event.h"

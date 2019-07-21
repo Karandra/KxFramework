@@ -14,10 +14,7 @@ namespace Kx::EventSystem
 			bool TryBefore(wxEvent& event) override;
 
 		public:
-			BroadcastProcessorHandler(KxBroadcastProcessor& processor)
-				:m_Processor(processor)
-			{
-			}
+			BroadcastProcessorHandler(KxBroadcastProcessor& processor);
 	};
 
 	class KX_API BroadcastRecieverHandler: public wxEvtHandler

@@ -17,6 +17,11 @@ namespace Kx::EventSystem
 		});
 		return true;
 	}
+
+	BroadcastProcessorHandler::BroadcastProcessorHandler(KxBroadcastProcessor& processor)
+		:m_Processor(processor)
+	{
+	}
 }
 
 namespace Kx::EventSystem

@@ -1,5 +1,5 @@
 #pragma once
-#include "../Event.h"
+#include "Kx/EventSystem/Event.h"
 
 class KxCommandEvent: public wxCommandEvent
 {

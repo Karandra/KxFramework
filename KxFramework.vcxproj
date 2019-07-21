@@ -465,20 +465,17 @@
     <ClInclude Include="KxFramework\XML\TinyXML2.h" />
     <ClInclude Include="KxStdAfx.h" />
     <ClInclude Include="Kx\Common.hpp" />
-    <ClInclude Include="Kx\Core.hpp" />
-    <ClInclude Include="Kx\Core\Common.h" />
-    <ClInclude Include="Kx\Core\EventSystem.hpp" />
-    <ClInclude Include="Kx\Core\EventSystem\BroadcastProcessor.h" />
-    <ClInclude Include="Kx\Core\EventSystem\CallWrapper.h" />
-    <ClInclude Include="Kx\Core\EventSystem\Common.h" />
-    <ClInclude Include="Kx\Core\EventSystem\Event.h" />
-    <ClInclude Include="Kx\Core\EventSystem\EventBuilder.h" />
-    <ClInclude Include="Kx\Core\EventSystem\Events\CommandEvent.h" />
-    <ClInclude Include="Kx\Core\EventSystem\Events\IndirectCallEvent.h" />
-    <ClInclude Include="Kx\Core\EventSystem\Events\NotifyEvent.h" />
-    <ClInclude Include="Kx\Core\EventSystem\EvtHandler.h" />
-    <ClInclude Include="Kx\Core\EventSystem\BasicEvtHandler.h" />
-    <ClInclude Include="Kx\Core\Utility.h" />
+    <ClInclude Include="Kx\EventSystem.hpp" />
+    <ClInclude Include="Kx\EventSystem\BasicEvtHandler.h" />
+    <ClInclude Include="Kx\EventSystem\BroadcastProcessor.h" />
+    <ClInclude Include="Kx\EventSystem\CallWrapper.h" />
+    <ClInclude Include="Kx\EventSystem\Common.h" />
+    <ClInclude Include="Kx\EventSystem\Event.h" />
+    <ClInclude Include="Kx\EventSystem\EventBuilder.h" />
+    <ClInclude Include="Kx\EventSystem\Events\CommandEvent.h" />
+    <ClInclude Include="Kx\EventSystem\Events\IndirectCallEvent.h" />
+    <ClInclude Include="Kx\EventSystem\Events\NotifyEvent.h" />
+    <ClInclude Include="Kx\EventSystem\EvtHandler.h" />
     <ClInclude Include="Kx\System.hpp" />
     <ClInclude Include="Kx\System\Common.h" />
     <ClInclude Include="Kx\System\FileType.h" />
@@ -488,6 +485,9 @@
     <ClInclude Include="Kx\Threading\Common.h" />
     <ClInclude Include="Kx\Threading\Events\ThreadEvent.h" />
     <ClInclude Include="Kx\Threading\Thread.h" />
+    <ClInclude Include="Kx\Utility.hpp" />
+    <ClInclude Include="Kx\Utility\Common.h" />
+    <ClInclude Include="Kx\Utility\TypeTraits.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\wxWidgets\src\generic\colrdlgg.cpp">
@@ -746,8 +746,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Kx\Core\EventSystem\BroadcastProcessor.cpp" />
-    <ClCompile Include="Kx\Core\EventSystem\EventBuilder.cpp" />
+    <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp" />
+    <ClCompile Include="Kx\EventSystem\EventBuilder.cpp" />
     <ClCompile Include="Kx\Threading\Thread.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

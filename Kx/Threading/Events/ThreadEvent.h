@@ -1,5 +1,5 @@
 #pragma once
-#include "Kx/Core/EventSystem/Event.h"
+#include "Kx/EventSystem/Event.h"
 
 namespace Kx::Threading
 {

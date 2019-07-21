@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "Kx/Core/Utility.h"
+#include "Kx/Utility/Common.h"
 #include <wx/mimetype.h>
 #include <wx/iconloc.h>
 

@@ -1,7 +1,7 @@
 #include "KxStdAfx.h"
 #include "EventBuilder.h"
 #include "BasicEvtHandler.h"
-#include "../Utility.h"
+#include "Kx/Utility/Common.h"
 
 namespace Kx::EventSystem
 {
