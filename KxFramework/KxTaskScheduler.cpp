@@ -82,12 +82,11 @@ bool KxTaskSchedulerTask::SetExecutable(const wxString& path, const wxString& ar
 		if (action)
 		{
 			KxCOMPtr<IExecAction> execAction;
-			action->QueryInterface(&execAction);
-			if (execAction)
+			if (action->QueryInterface(&execAction); execAction)
 			{
 				execAction->put_Path(Util::BstrFromString(path));
 				execAction->put_Arguments(Util::BstrFromString_Null(arguments));
-				execAction->put_Arguments(Util::BstrFromString_Null(workingDirectory));
+				execAction->put_WorkingDirectory(Util::BstrFromString_Null(workingDirectory));
 			}
 		}
 	}
