@@ -31,7 +31,7 @@ namespace Util
 	}
 	_bstr_t BstrFromString_Null(const wxString& value = wxEmptyString)
 	{
-		return value.IsEmpty() ? _bstr_t() : BstrFromString();
+		return value.IsEmpty() ? _bstr_t() : BstrFromString(value);
 	}
 
 	wxString FormatTimeAsTaskBoundary(const wxDateTime& date)
