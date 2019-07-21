@@ -469,6 +469,7 @@
     <ClInclude Include="Kx\Async\Coroutine\Coroutine.h" />
     <ClInclude Include="Kx\Async\Coroutine\CoroutineImpl.h" />
     <ClInclude Include="Kx\Async\Coroutine\CoroutineInstruction.h" />
+    <ClInclude Include="Kx\Async\DelayedCall.h" />
     <ClInclude Include="Kx\Common.hpp" />
     <ClInclude Include="Kx\EventSystem.hpp" />
     <ClInclude Include="Kx\EventSystem\BasicEvtHandler.h" />

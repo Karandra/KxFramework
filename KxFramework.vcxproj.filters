@@ -1093,6 +1093,9 @@
     <ClInclude Include="Kx\Async\Coroutine.h">
       <Filter>Kx\Async</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Async\DelayedCall.h">
+      <Filter>Kx\Async</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
