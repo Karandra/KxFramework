@@ -1,5 +1,5 @@
 #include "KxStdAfx.h"
-#include "KxFramework/KxCoroutine.h"
+#include "CoroutineImpl.h"
 #include <chrono>
 
 namespace
@@ -15,7 +15,7 @@ namespace Kx::Async
 {
 	void CoroutineTimer::Notify()
 	{
-		KxCoroutine::QueueExecution(std::move(m_Coroutine));
+		BaseCoroutine::QueueExecution(std::move(m_Coroutine));
 	}
 	std::unique_ptr<BaseCoroutine> CoroutineTimer::Relinquish()
 	{
@@ -144,7 +144,7 @@ namespace Kx::Async
 
 	void BaseCoroutine::Terminate()
 	{
-		m_Instruction = KxCoroutine::YieldStop();
+		m_Instruction = BaseCoroutine::YieldStop();
 
 		if (m_DelayTimer.IsRunning())
 		{

@@ -298,7 +298,6 @@
     <ClInclude Include="KxFramework\KxComparator.h" />
     <ClInclude Include="KxFramework\KxCompileTimeMap.h" />
     <ClInclude Include="KxFramework\KxComponentSystem.h" />
-    <ClInclude Include="KxFramework\KxCoroutine.h" />
     <ClInclude Include="KxFramework\KxCredentialsDialog.h" />
     <ClInclude Include="KxFramework\KxCrypto.h" />
     <ClInclude Include="KxFramework\KxCURL.h" />
@@ -464,6 +463,12 @@
     <ClInclude Include="KxFramework\XML\TinyXML2 HTML5 Printer.h" />
     <ClInclude Include="KxFramework\XML\TinyXML2.h" />
     <ClInclude Include="KxStdAfx.h" />
+    <ClInclude Include="Kx\Async.hpp" />
+    <ClInclude Include="Kx\Async\Common.h" />
+    <ClInclude Include="Kx\Async\Coroutine.h" />
+    <ClInclude Include="Kx\Async\Coroutine\Coroutine.h" />
+    <ClInclude Include="Kx\Async\Coroutine\CoroutineImpl.h" />
+    <ClInclude Include="Kx\Async\Coroutine\CoroutineInstruction.h" />
     <ClInclude Include="Kx\Common.hpp" />
     <ClInclude Include="Kx\EventSystem.hpp" />
     <ClInclude Include="Kx\EventSystem\BasicEvtHandler.h" />
@@ -593,7 +598,6 @@
     <ClCompile Include="KxFramework\KxComboBoxDialog.cpp" />
     <ClCompile Include="KxFramework\KxComboControl.cpp" />
     <ClCompile Include="KxFramework\KxComboPopup.cpp" />
-    <ClCompile Include="KxFramework\KxCoroutine.cpp" />
     <ClCompile Include="KxFramework\KxCredentialsDialog.cpp" />
     <ClCompile Include="KxFramework\KxCrypto.cpp" />
     <ClCompile Include="KxFramework\KxCURL.cpp" />
@@ -746,6 +750,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Kx\Async\Coroutine\CoroutineImpl.cpp" />
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp" />
     <ClCompile Include="Kx\EventSystem\EventBuilder.cpp" />
     <ClCompile Include="Kx\Threading\Thread.cpp" />

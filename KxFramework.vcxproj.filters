@@ -241,6 +241,12 @@
     <Filter Include="Kx\Utility">
       <UniqueIdentifier>{52fc7bb7-70b1-4c6a-bf5f-529badf3d413}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\Async">
+      <UniqueIdentifier>{fc09224a-8afc-4d5f-8e30-38510a31f4ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx\Async\Coroutine">
+      <UniqueIdentifier>{5af1a9f7-b496-4a12-82b1-164394d2a34c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -694,9 +700,6 @@
     <ClInclude Include="KxFramework\KxSharedMemory.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxCoroutine.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxFileItem.h">
       <Filter>Header Files\FileSystem</Filter>
     </ClInclude>
@@ -1071,6 +1074,24 @@
     </ClInclude>
     <ClInclude Include="Kx\Utility\TypeTraits.h">
       <Filter>Kx\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Async\Common.h">
+      <Filter>Kx\Async</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Async.hpp">
+      <Filter>Kx</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Async\Coroutine\Coroutine.h">
+      <Filter>Kx\Async\Coroutine</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Async\Coroutine\CoroutineImpl.h">
+      <Filter>Kx\Async\Coroutine</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Async\Coroutine\CoroutineInstruction.h">
+      <Filter>Kx\Async\Coroutine</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Async\Coroutine.h">
+      <Filter>Kx\Async</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1504,9 +1525,6 @@
     <ClCompile Include="KxFramework\KxSharedMemory.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxCoroutine.cpp">
-      <Filter>Source Files\Misc</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxFileItem.cpp">
       <Filter>Source Files\FileSystem</Filter>
     </ClCompile>
@@ -1713,6 +1731,9 @@
     </ClCompile>
     <ClCompile Include="Kx\EventSystem\EventBuilder.cpp">
       <Filter>Kx\EventSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Async\Coroutine\CoroutineImpl.cpp">
+      <Filter>Kx\Async\Coroutine</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
