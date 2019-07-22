@@ -7,11 +7,12 @@ class KX_API KxDualInputDialog: public KxStdDialog
 {
 	private:
 		KxPanel* m_View = nullptr;
-		KxTextBox* m_Input1 = nullptr;
-		KxTextBox* m_Input2 = nullptr;
+
+		KxTextBox* m_TextBox1 = nullptr;
+		KxTextBox* m_TextBox2 = nullptr;
 
 	private:
-		virtual wxOrientation GetWindowResizeSide() const
+		wxOrientation GetWindowResizeSide() const override
 		{
 			return wxHORIZONTAL;
 		}
@@ -43,50 +44,75 @@ class KX_API KxDualInputDialog: public KxStdDialog
 		virtual ~KxDualInputDialog();
 
 	public:
-		virtual wxWindow* GetDialogMainCtrl() const override
+		wxWindow* GetDialogMainCtrl() const override
 		{
 			return m_View;
 		}
-		virtual int GetViewSizerProportion() const override
+		int GetViewSizerProportion() const override
 		{
 			return 1;
 		}
 
+		KxTextBox* GetTextBox1()
+		{
+			return m_TextBox1;
+		}
+		KxTextBox* GetTextBox2()
+		{
+			return m_TextBox2;
+		}
+
 		wxString GetValue1() const
 		{
-			return m_Input1->GetValue();
+			return m_TextBox1->GetValue();
 		}
 		wxString GetValue2() const
 		{
-			return m_Input2->GetValue();
+			return m_TextBox2->GetValue();
 		}
-		void SetValue(const wxString& value1, const wxString& value2)
+		void SetValue1(const wxString& value)
 		{
-			m_Input1->SetValue(value1);
-			m_Input2->SetValue(value2);
+			m_TextBox1->SetValue(value);
+		}
+		void SetValue2(const wxString& value)
+		{
+			m_TextBox2->SetValue(value);
 		}
 		
 		bool IsEditable1() const
 		{
-			return m_Input1->IsEditable();
+			return m_TextBox1->IsEditable();
 		}
 		bool IsEditable2() const
 		{
-			return m_Input2->IsEditable();
+			return m_TextBox2->IsEditable();
 		}
-		
-		void SetEditable(bool value1, bool value2)
+		void SetEditable1(bool value)
 		{
-			m_Input1->SetEditable(value1);
-			m_Input2->SetEditable(value2);
+			m_TextBox1->SetEditable(value);
 		}
-		bool SetHint(const wxString& value1, const wxString& value2)
+		void SetEditable2(bool value)
 		{
-			bool b1 = m_Input1->SetHint(value1);
-			bool b2 = m_Input2->SetHint(value2);
-			return b1 && b2;
+			m_TextBox2->SetEditable(value);
 		}
-		void SetInputFocus(int index);
+
+		bool SetHint1(const wxString& value)
+		{
+			return m_TextBox1->SetHint(value);
+		}
+		bool SetHint2(const wxString& value)
+		{
+			return m_TextBox2->SetHint(value);
+		}
+
+		void SetFocus1()
+		{
+			m_TextBox1->SetFocus();
+		}
+		void SetFocus2()
+		{
+			m_TextBox1->SetFocus();
+		}
 
 	public:
 		wxDECLARE_DYNAMIC_CLASS(KxDualInputDialog);

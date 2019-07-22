@@ -20,19 +20,19 @@ bool KxDualInputDialog::Create(wxWindow* parent,
 
 		m_View = new KxPanel(m_ContentPanel, wxID_NONE);
 
-		m_Input1 = new KxTextBox(m_View, wxID_NONE, wxEmptyString, flags);
-		m_Input1->SetInitialSize(size);
+		m_TextBox1 = new KxTextBox(m_View, wxID_NONE, wxEmptyString, flags);
+		m_TextBox1->SetInitialSize(size);
 
-		m_Input2 = new KxTextBox(m_View, wxID_NONE, wxEmptyString, flags);
-		m_Input2->SetInitialSize(size);
+		m_TextBox2 = new KxTextBox(m_View, wxID_NONE, wxEmptyString, flags);
+		m_TextBox2->SetInitialSize(size);
 
 		wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 		m_View->SetSizer(sizer);
-		sizer->Add(m_Input1, 0, wxEXPAND);
-		sizer->Add(m_Input2, 0, wxEXPAND|wxTOP, 5);
+		sizer->Add(m_TextBox1, 0, wxEXPAND);
+		sizer->Add(m_TextBox2, 0, wxEXPAND|wxTOP, 5);
 
-		AddUserWindow(m_Input1);
-		AddUserWindow(m_Input2);
+		AddUserWindow(m_TextBox1);
+		AddUserWindow(m_TextBox2);
 		PostCreate(pos);
 		return true;
 	}
@@ -40,21 +40,4 @@ bool KxDualInputDialog::Create(wxWindow* parent,
 }
 KxDualInputDialog::~KxDualInputDialog()
 {
-}
-
-void KxDualInputDialog::SetInputFocus(int index)
-{
-	switch (index)
-	{
-		case 0:
-		{
-			m_Input1->SetFocus();
-			break;
-		}
-		case 1:
-		{
-			m_Input2->SetFocus();
-			break;
-		}
-	};
 }
