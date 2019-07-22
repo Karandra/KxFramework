@@ -57,18 +57,24 @@ namespace KxDataView2
 			}
 		}
 
-		if (IsEditable())
+		if (int index = -1; value.CheckType<int>() && value.GetAs(&index))
 		{
-			const TextValue textValue = FromAnyUsing<TextValue>(value);
-			editor->ChangeValue(textValue.GetText());
-
-			// Select the text in the control and place the cursor at the end
-			editor->SetInsertionPointEnd();
-			editor->SelectAll();
+			editor->SetSelection(index);
 		}
-		else
+		else if (TextValue textValue = FromAnyUsing<TextValue>(value); textValue.HasText())
 		{
-			editor->SetSelection(value.As<int>());
+			if (IsEditable())
+			{
+				editor->ChangeValue(textValue.GetText());
+
+				// Select the text in the control and place the cursor at the end
+				editor->SetInsertionPointEnd();
+				editor->SelectAll();
+			}
+			else
+			{
+				editor->SetStringSelection(textValue.GetText());
+			}
 		}
 
 		if (ShouldEndEditOnSelect())
@@ -87,16 +93,24 @@ namespace KxDataView2
 	}
 	wxAny ComboBoxEditor::GetValue(wxWindow* control) const
 	{
-		KxComboBox* editor = static_cast<KxComboBox*>(control);
+		const KxComboBox* editor = static_cast<const KxComboBox*>(control);
 
-		if (!ShouldAlwaysUseStringSelection())
+		if (ShouldAlwaysUseStringSelection())
 		{
-			if (int index = editor->GetSelection(); index != wxNOT_FOUND)
+			if (IsEditable())
 			{
-				return index;
+				return editor->GetValue();
+			}
+			else if (int index = editor->GetSelection(); index != wxNOT_FOUND)
+			{
+				return editor->GetString(index);
 			}
 		}
-		return IsEditable() ? editor->GetValue() : editor->GetStringSelection();
+		else if (int index = editor->GetSelection(); index != wxNOT_FOUND)
+		{
+			return index;
+		}
+		return {};
 	}
 }
 
