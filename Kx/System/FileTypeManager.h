@@ -29,6 +29,7 @@ class KX_API KxFileTypeManager
 		{
 			return m_Manager.Associate(fileTypeInfo.AsWxFileTypeInfo());
 		}
+		bool IsAssociatedWith(const KxFileType& fileType, const wxString& executablePath) const;
 		bool Unassociate(KxFileType& fileType)
 		{
 			if (fileType)

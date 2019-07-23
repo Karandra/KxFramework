@@ -1738,5 +1738,8 @@
     <ClCompile Include="Kx\Async\Coroutine\CoroutineImpl.cpp">
       <Filter>Kx\Async\Coroutine</Filter>
     </ClCompile>
+    <ClCompile Include="Kx\System\FileTypeManager.cpp">
+      <Filter>Kx\System</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
