@@ -134,7 +134,7 @@ class KX_API KxFileType final
 
 		KxFileType& operator=(KxFileType&& other) noexcept
 		{
-			m_FileType = std::move(m_FileType);
+			m_FileType = std::move(other.m_FileType);
 			return *this;
 		}
 		KxFileType& operator=(const KxFileType&) = delete;
