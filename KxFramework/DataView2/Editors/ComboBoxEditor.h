@@ -62,8 +62,11 @@ namespace KxDataView2
 			bool m_AlwaysUseStringSelection = false;
 			bool m_UseBitmap = false;
 
+			int m_InitialSelection = -1;
+
 		private:
-			void AutoEndEditHandler(wxCommandEvent& event);
+			void OnSelectItem(wxCommandEvent& event);
+			void OnCloseUp(wxCommandEvent& event);
 
 		protected:
 			EditorControlHandler* CreateControlHandler() override;

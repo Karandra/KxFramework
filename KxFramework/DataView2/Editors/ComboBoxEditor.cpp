@@ -6,11 +6,21 @@
 
 namespace KxDataView2
 {
-	void ComboBoxEditor::AutoEndEditHandler(wxCommandEvent& event)
+	void ComboBoxEditor::OnSelectItem(wxCommandEvent& event)
 	{
-		EndEdit();
-		event.Skip();
+		if (!IsEditCanceled())
+		{
+			EndEdit();
+		}
 	}
+	void ComboBoxEditor::OnCloseUp(wxCommandEvent& event)
+	{
+		if (!IsEditFinished())
+		{
+			CancelEdit();
+		}
+	}
+
 	EditorControlHandler* ComboBoxEditor::CreateControlHandler()
 	{
 		return new ComboBoxEditorControlHandler(this, GetControl());
@@ -18,8 +28,10 @@ namespace KxDataView2
 
 	wxWindow* ComboBoxEditor::CreateControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value)
 	{
-		int comboBoxStyles = wxCB_DROPDOWN|wxTE_PROCESS_ENTER|(IsEditable() ? 0 : wxCB_READONLY);
+		const int comboBoxStyles = wxCB_DROPDOWN|wxTE_PROCESS_ENTER|(IsEditable() ? 0 : wxCB_READONLY);
 		wxComboBox* editor = nullptr;
+
+		// Create the control
 		if (m_UseBitmap)
 		{
 			KxBitmapComboBox* bitmapEditor = new KxBitmapComboBox(parent, wxID_NONE, wxEmptyString, cellRect.GetPosition(), cellRect.GetSize(), comboBoxStyles, GetValidator());
@@ -33,6 +45,7 @@ namespace KxDataView2
 		}
 		editor->SetMaxSize(cellRect.GetSize());
 
+		// Add items
 		if (m_UseBitmap)
 		{
 			for (size_t i = 0; i < m_Items.size(); i++)
@@ -45,6 +58,7 @@ namespace KxDataView2
 			editor->Set(m_Items);
 		}
 
+		// Set max visible items
 		if (GetMaxVisibleItems() != -1)
 		{
 			if (m_UseBitmap)
@@ -57,6 +71,7 @@ namespace KxDataView2
 			}
 		}
 
+		// Select an item
 		if (int index = -1; value.CheckType<int>() && value.GetAs(&index))
 		{
 			editor->SetSelection(index);
@@ -76,15 +91,20 @@ namespace KxDataView2
 				editor->SetStringSelection(textValue.GetText());
 			}
 		}
+		m_InitialSelection = editor->GetSelection();
 
+		// Events
 		if (ShouldEndEditOnSelect())
 		{
-			editor->Bind(wxEVT_COMBOBOX, &ComboBoxEditor::AutoEndEditHandler, this);
+			editor->Bind(wxEVT_COMBOBOX, &ComboBoxEditor::OnSelectItem, this);
 		}
 		if (ShouldEndEditOnCloseup())
 		{
-			editor->Bind(wxEVT_COMBOBOX_CLOSEUP, &ComboBoxEditor::AutoEndEditHandler, this);
+			editor->Bind(wxEVT_COMBOBOX, &ComboBoxEditor::OnSelectItem, this);
+			editor->Bind(wxEVT_COMBOBOX_CLOSEUP, &ComboBoxEditor::OnCloseUp, this);
 		}
+
+		// Popup if needed
 		if (ShouldAutoPopup())
 		{
 			editor->Popup();
