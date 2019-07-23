@@ -32,6 +32,21 @@ namespace KxDataView2
 		return new EditorControlHandler(this, GetControl());
 	}
 
+	void Editor::OnBeginEdit(Node& node, Column& column)
+	{
+		m_Node = &node;
+		m_Column = &column;
+
+		m_IsEditCanceled = false;
+		m_IsEditFinished = false;
+	}
+	void Editor::OnEndEdit()
+	{
+		DestroyControl();
+		m_Node = nullptr;
+		m_Column = nullptr;
+	}
+
 	bool Editor::BeginEdit(Node& node, Column& column, const wxRect& cellRect)
 	{
 		OnBeginEdit(node, column);
@@ -54,29 +69,32 @@ namespace KxDataView2
 		{
 			OnEndEdit();
 		}
-		return false;
 	}
 	bool Editor::EndEdit()
 	{
-		KxCallAtScopeExit atExit([this]()
+		if (m_Node && m_Column)
 		{
-			OnEndEdit();
-		});
-
-		if (m_Control)
-		{
-			// Try to get the value, normally we should succeed but if we fail, don't
-			// return immediately, we still need to destroy the edit control.
-			wxAny value = GetValue(m_Control);
-			DestroyControl();
-			GetView()->SetFocus();
-
-			MainWindow* mainWindow = GetMainWindow();
-			if (!value.IsNull() && mainWindow->SendEditingDoneEvent(*m_Node, this, false, value))
+			m_IsEditFinished = true;
+			KxCallAtScopeExit atExit([this]()
 			{
-				if (m_Node->SetValue(*m_Column, value))
+				OnEndEdit();
+			});
+
+			if (m_Control)
+			{
+				// Try to get the value, normally we should succeed but if we fail, don't
+				// return immediately, we still need to destroy the edit control.
+				wxAny value = GetValue(m_Control);
+				DestroyControl();
+				GetView()->SetFocus();
+
+				MainWindow* mainWindow = GetMainWindow();
+				if (!value.IsNull() && mainWindow->SendEditingDoneEvent(*m_Node, this, false, value))
 				{
-					mainWindow->OnCellChanged(*m_Node, m_Column);
+					if (m_Node->SetValue(*m_Column, value))
+					{
+						mainWindow->OnCellChanged(*m_Node, m_Column);
+					}
 				}
 			}
 		}
@@ -84,6 +102,7 @@ namespace KxDataView2
 	}
 	void Editor::CancelEdit()
 	{
+		m_IsEditCanceled = true;
 		OnEndEdit();
 	}
 

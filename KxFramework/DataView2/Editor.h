@@ -27,18 +27,12 @@ namespace KxDataView2
 			Node* m_Node = nullptr;
 			bool m_IsEditable = true;
 
+			bool m_IsEditCanceled = false;
+			bool m_IsEditFinished = false;
+
 		private:
-			void OnBeginEdit(Node& node, Column& column)
-			{
-				m_Node = &node;
-				m_Column = &column;
-			}
-			void OnEndEdit()
-			{
-				DestroyControl();
-				m_Node = nullptr;
-				m_Column = nullptr;
-			}
+			void OnBeginEdit(Node& node, Column& column);
+			void OnEndEdit();
 
 		protected:
 			virtual void DestroyControl();
@@ -57,7 +51,16 @@ namespace KxDataView2
 				rendererValue.FromAny(value);
 				return rendererValue;
 			}
-		
+			
+			bool IsEditCanceled() const
+			{
+				return m_IsEditCanceled;
+			}
+			bool IsEditFinished() const
+			{
+				return m_IsEditFinished;
+			}
+
 		public:
 			Editor();
 			virtual ~Editor();
