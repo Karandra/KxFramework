@@ -39,19 +39,15 @@ namespace KxDataView2
 		// Before doing anything we send an event asking if editing of this item is really wanted.
 		if (GetMainWindow()->SendEditingStartedEvent(node, this))
 		{
-			wxAny value = m_Node->GetEditorValue(column);
-			if (!value.IsNull())
+			m_Control = CreateControl(GetMainWindow(), cellRect, m_Node->GetEditorValue(column));
+
+			// There might be no editor control for the given item
+			if (m_Control)
 			{
-				m_Control = CreateControl(GetMainWindow(), cellRect, value);
+				m_Control->PushEventHandler(CreateControlHandler());
+				m_Control->SetFocus();
 
-				// There might be no editor control for the given item
-				if (m_Control)
-				{
-					m_Control->PushEventHandler(CreateControlHandler());
-					m_Control->SetFocus();
-
-					return true;
-				}
+				return true;
 			}
 		}
 		else
