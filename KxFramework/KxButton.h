@@ -36,6 +36,10 @@ class KX_API KxButton: public wxSystemThemedControl<wxButton>, public KxWithDrop
 		void OnLeftButtonUp(wxMouseEvent& event);
 		void OnLeftButtonDown(wxMouseEvent& event);
 
+	protected:
+		wxSize DoGetBestSize() const override;
+		wxSize DoGetBestClientSize() const override;
+
 	public:
 		KxButton() {}
 		KxButton(wxWindow* parent,
@@ -58,6 +62,9 @@ class KX_API KxButton: public wxSystemThemedControl<wxButton>, public KxWithDrop
 		{
 			Create(parent, id, label, style, validator);
 		}
+		~KxButton();
+
+	public:
 		bool Create(wxWindow* parent,
 					wxWindowID id,
 					const wxString& label,
@@ -75,13 +82,9 @@ class KX_API KxButton: public wxSystemThemedControl<wxButton>, public KxWithDrop
 		{
 			return Create(parent, id, label, wxDefaultPosition, wxDefaultSize, style, validator);
 		}
-		virtual ~KxButton();
 
 	public:
-		virtual bool Enable(bool enable = true) override;
-		virtual wxSize DoGetBestSize() const override;
-		virtual wxSize DoGetBestClientSize() const override;
-
+		bool Enable(bool enable = true) override;
 		wxSize GetBitmapMargins() const
 		{
 			return const_cast<KxButton*>(this)->wxButton::GetBitmapMargins();
@@ -94,6 +97,7 @@ class KX_API KxButton: public wxSystemThemedControl<wxButton>, public KxWithDrop
 		void SetSplitterEnabled(bool show = true)
 		{
 			m_IsSliptterEnabled = show;
+			Refresh();
 		}
 		
 		bool IsAuthNeeded()

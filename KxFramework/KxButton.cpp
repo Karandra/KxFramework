@@ -21,31 +21,36 @@ void KxButton::OnPaint(wxPaintEvent& event)
 	wxAutoBufferedPaintDC dc(this);
 	KxUtility::ClearDC(this, dc);
 
-	bool isEnabled = IsThisEnabled();
-	wxSize size = GetSize();
-	int width = size.GetWidth();
+	const bool isEnabled = IsThisEnabled();
+	const wxSize clientSize = GetSize();
+	int width = clientSize.GetWidth();
 	int widthMod = 2;
 	if (m_IsSliptterEnabled)
 	{
 		width -= ms_ArrowButtonWidth;
 		widthMod = 5;
 	}
-	wxRect rect(-1, -1, width + widthMod, size.GetHeight() + 2);
+	wxRect rect(-1, -1, width + widthMod, clientSize.GetHeight() + 2);
+
+	int controlState = m_ControlState;
+	if (!isEnabled)
+	{
+		controlState |= wxCONTROL_DISABLED;
+	}
 
 	// Draw first part
 	dc.SetTextForeground(isEnabled ? GetForegroundColour() : GetForegroundColour().MakeDisabled());
-	wxRendererNative::Get().DrawPushButton(this, dc, rect, isEnabled ? m_ControlState : wxCONTROL_DISABLED);
+	wxRendererNative::Get().DrawPushButton(this, dc, rect, controlState);
 
 	// Draw focus rectangle
 	if (m_IsFocusDrawingAllowed && HasFocus())
 	{
-		wxRendererNative::Get().DrawFocusRect(this, dc, wxRect(2, 2, size.GetWidth() - 4, size.GetHeight() - 4), wxCONTROL_SELECTED);
+		wxRendererNative::Get().DrawFocusRect(this, dc, wxRect(2, 2, clientSize.GetWidth() - 4, clientSize.GetHeight() - 4), wxCONTROL_SELECTED);
 	}
 
 	// Draw bitmap and label
-	rect.y += (size.GetHeight() + 2 - GetCharHeight()) / 2;
-	wxBitmap bitmap = GetBitmap();
-	if (bitmap.IsOk())
+	rect.y += (clientSize.GetHeight() + 2 - GetCharHeight()) / 2;
+	if (wxBitmap bitmap = GetBitmap(); bitmap.IsOk())
 	{
 		if (!isEnabled)
 		{
@@ -61,13 +66,14 @@ void KxButton::OnPaint(wxPaintEvent& event)
 	// Draw second part of the button
 	if (m_IsSliptterEnabled)
 	{
-		rect.x = width+1;
-		rect.y = -1;
-		rect.width = ms_ArrowButtonWidth;
-		rect.height = size.GetHeight() + 2;
+		wxRect splitRect = rect;
+		splitRect.x = width + 1;
+		splitRect.y = -1;
+		splitRect.width = ms_ArrowButtonWidth;
+		splitRect.height = clientSize.GetHeight() + 2;
 
-		wxRendererNative::Get().DrawPushButton(this, dc, rect, m_ControlState);
-		wxRendererNative::Get().DrawDropArrow(this, dc, rect, m_ControlState);
+		wxRendererNative::Get().DrawPushButton(this, dc, splitRect, controlState);
+		wxRendererNative::Get().DrawDropArrow(this, dc, splitRect, controlState);
 	}
 }
 void KxButton::OnMouseLeave(wxMouseEvent& event)
@@ -118,6 +124,20 @@ void KxButton::OnLeftButtonDown(wxMouseEvent& event)
 	event.Skip();
 }
 
+wxSize KxButton::DoGetBestSize() const
+{
+	wxSize size = wxButton::DoGetBestSize();
+	if (std::abs(size.y - ms_DefaultButtonHeight) <= GetCharHeight())
+	{
+		size.y = ms_DefaultButtonHeight;
+	}
+	return size;
+}
+wxSize KxButton::DoGetBestClientSize() const
+{
+	return wxButton::DoGetBestClientSize();
+}
+
 bool KxButton::Create(wxWindow* parent,
 					   wxWindowID id,
 					   const wxString& label,
@@ -149,24 +169,9 @@ KxButton::~KxButton()
 
 bool KxButton::Enable(bool isEnabled)
 {
-	m_ControlState = isEnabled ? wxCONTROL_NONE : wxCONTROL_DISABLED;
-	isEnabled = wxButton::Enable(isEnabled);
+	const bool ret = wxButton::Enable(isEnabled);
 	Refresh();
-	return isEnabled;
-}
-
-wxSize KxButton::DoGetBestSize() const
-{
-	wxSize size = wxButton::DoGetBestSize();
-	if (std::abs(size.y - ms_DefaultButtonHeight) <= GetCharHeight())
-	{
-		size.y = ms_DefaultButtonHeight;
-	}
-	return size;
-}
-wxSize KxButton::DoGetBestClientSize() const
-{
-	return wxButton::DoGetBestClientSize();
+	return ret;
 }
 
 void KxButton::SetAuthNeeded(bool show)
