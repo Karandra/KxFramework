@@ -105,7 +105,8 @@ class KX_API KxFileType final
 		{
 			return GetOpenCommand(MessageParameters(filePath));
 		}
-		
+		wxString GetOpenExecutable() const;
+
 		wxString GetPrintCommand(const MessageParameters& parameters) const
 		{
 			wxString value;

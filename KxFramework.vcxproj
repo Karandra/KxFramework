@@ -754,6 +754,7 @@
     <ClCompile Include="Kx\Async\Coroutine\CoroutineImpl.cpp" />
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp" />
     <ClCompile Include="Kx\EventSystem\EventBuilder.cpp" />
+    <ClCompile Include="Kx\System\FileType.cpp" />
     <ClCompile Include="Kx\System\FileTypeManager.cpp" />
     <ClCompile Include="Kx\Threading\Thread.cpp" />
   </ItemGroup>

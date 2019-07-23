@@ -1741,5 +1741,8 @@
     <ClCompile Include="Kx\System\FileTypeManager.cpp">
       <Filter>Kx\System</Filter>
     </ClCompile>
+    <ClCompile Include="Kx\System\FileType.cpp">
+      <Filter>Kx\System</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
