@@ -84,40 +84,40 @@ class KX_API KxFileType final
 			return icon;
 		}
 
-		wxString GetCommand(const MessageParameters& parameters, const wxString& action)
+		wxString GetCommand(const MessageParameters& parameters, const wxString& action) const
 		{
 			wxString value;
 			m_FileType->GetExpandedCommand(action, parameters);
 			return value;
 		}
-		wxString GetCommand(const wxString& filePath, const wxString& action)
+		wxString GetCommand(const wxString& filePath, const wxString& action) const
 		{
 			return GetCommand(MessageParameters(filePath), action);
 		}
 
-		wxString GetOpenCommand(const MessageParameters& parameters)
+		wxString GetOpenCommand(const MessageParameters& parameters) const
 		{
 			wxString value;
 			m_FileType->GetOpenCommand(&value, parameters);
 			return value;
 		}
-		wxString GetOpenCommand(const wxString& filePath)
+		wxString GetOpenCommand(const wxString& filePath) const
 		{
 			return GetOpenCommand(MessageParameters(filePath));
 		}
 		
-		wxString GetPrintCommand(const MessageParameters& parameters)
+		wxString GetPrintCommand(const MessageParameters& parameters) const
 		{
 			wxString value;
 			m_FileType->GetPrintCommand(&value, parameters);
 			return value;
 		}
-		wxString GetPrintCommand(const wxString& filePath)
+		wxString GetPrintCommand(const wxString& filePath) const
 		{
 			return GetPrintCommand(MessageParameters(filePath));
 		}
 		
-		size_t GetAllCommands(wxArrayString& verbs, wxArrayString& commands, const MessageParameters& parameters)
+		size_t GetAllCommands(wxArrayString& verbs, wxArrayString& commands, const MessageParameters& parameters) const
 		{
 			return m_FileType->GetAllCommands(&verbs, &commands, parameters);
 		}
