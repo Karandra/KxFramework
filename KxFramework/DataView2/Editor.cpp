@@ -65,10 +65,9 @@ namespace KxDataView2
 				return true;
 			}
 		}
-		else
-		{
-			OnEndEdit();
-		}
+
+		OnEndEdit();
+		return false;
 	}
 	bool Editor::EndEdit()
 	{
