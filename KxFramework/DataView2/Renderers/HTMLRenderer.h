@@ -31,6 +31,11 @@ namespace KxDataView2
 			~HTMLRenderer();
 
 		public:
+			wxString GetTextValue(const wxAny& value) const override
+			{
+				return FromAnyUsing<decltype(m_Value)>(value).GetText();
+			}
+
 			int GetVisibleCellFrom() const
 			{
 				return m_VisibleCellFrom;

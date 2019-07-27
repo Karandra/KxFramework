@@ -122,6 +122,13 @@ namespace KxDataView2
 			virtual void DrawCellContent(const wxRect& cellRect, CellState cellState) = 0;
 			virtual wxSize GetCellSize() const;
 
+			template<class TValue> TValue FromAnyUsing(const wxAny& value) const
+			{
+				TValue rendererValue;
+				rendererValue.FromAny(value);
+				return rendererValue;
+			}
+
 		public:
 			bool HasRegularDC() const
 			{
@@ -149,6 +156,7 @@ namespace KxDataView2
 			{
 				return RenderEngine(const_cast<Renderer&>(*this), m_AlwaysUseGC);
 			}
+			virtual wxString GetTextValue(const wxAny& value) const = 0;
 
 		public:
 			Renderer(int alignment = wxALIGN_INVALID)

@@ -107,5 +107,11 @@ namespace KxDataView2
 				:BitmapListRendererBase(m_Value, m_Value, alignment)
 			{
 			}
+	
+		public:
+			wxString GetTextValue(const wxAny& value) const override
+			{
+				return FromAnyUsing<decltype(m_Value)>(value).GetText();
+			}
 	};
 }

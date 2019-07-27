@@ -12,7 +12,9 @@ namespace KxDataView2
 		VCenterText = 1 << 0,
 	};
 
-	class KX_API BitmapTextValue: public TextValue, public BitmapValue,
+	class KX_API BitmapTextValue:
+		public TextValue,
+		public BitmapValue,
 		public KxWithOptions<BitmapTextValueOptions, BitmapTextValueOptions::None>
 	{
 		public:
@@ -64,6 +66,12 @@ namespace KxDataView2
 			BitmapTextRenderer(int alignment = wxALIGN_INVALID)
 				:Renderer(alignment)
 			{
+			}
+			
+		public:
+			wxString GetTextValue(const wxAny& value) const override
+			{
+				return FromAnyUsing<decltype(m_Value)>(value).GetText();
 			}
 	};
 }

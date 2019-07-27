@@ -76,5 +76,11 @@ namespace KxDataView2
 				:Renderer(alignment), ToggleRendererBase(m_Value)
 			{
 			}
+			
+		public:
+			wxString GetTextValue(const wxAny& value) const override
+			{
+				return FromAnyUsing<decltype(m_Value)>(value).GetText();
+			}
 	};
 }

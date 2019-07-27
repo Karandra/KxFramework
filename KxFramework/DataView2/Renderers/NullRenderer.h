@@ -31,5 +31,11 @@ namespace KxDataView2
 			{
 				return wxALIGN_INVALID;
 			}
+			
+		public:
+			wxString GetTextValue(const wxAny& value) const override
+			{
+				return wxEmptyString;
+			}
 	};
 }
