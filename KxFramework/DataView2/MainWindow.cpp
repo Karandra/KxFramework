@@ -1488,7 +1488,12 @@ namespace KxDataView2
 	bool MainWindow::ShowToolTip(const Node& node, Column& column)
 	{
 		// Get tooltip
+		Renderer& renderer = node.GetRenderer(column);
+		renderer.BeginCellSetup(node, column);
+		renderer.SetupCellValue();
 		ToolTip tooltip = node.GetToolTip(column);
+		renderer.EndCellSetup();
+
 		if (tooltip.IsOK())
 		{
 			// See if we need to display the tooltip at all
@@ -1498,11 +1503,11 @@ namespace KxDataView2
 				// Setup renderer to get cell size
 				const Column& clipTestColumn = tooltip.SelectClipTestColumn(column);
 
-				Renderer& renderer = node.GetRenderer(clipTestColumn);
-				renderer.BeginCellSetup(node, const_cast<Column&>(clipTestColumn));
-				renderer.SetupCellValue();
-				const wxSize cellSize = renderer.GetCellSize();
-				renderer.EndCellSetup();
+				Renderer& clipTestRenderer = node.GetRenderer(clipTestColumn);
+				clipTestRenderer.BeginCellSetup(node, const_cast<Column&>(clipTestColumn));
+				clipTestRenderer.SetupCellValue();
+				const wxSize cellSize = clipTestRenderer.GetCellSize();
+				clipTestRenderer.EndCellSetup();
 
 				// Test for clipping
 				shouldShow = false;
