@@ -1780,8 +1780,8 @@ void KxDataViewMainWindow::OnInternalIdle()
 
 	if (m_Dirty)
 	{
-		UpdateColumnSizes();
 		RecalculateDisplay();
+		UpdateColumnSizes();
 		m_Dirty = false;
 	}
 }
