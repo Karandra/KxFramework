@@ -1,7 +1,6 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView/KxDataViewEditor.h"
-class wxColourDialog;
 
 class KX_API KxDataViewColorEditor: public KxDataViewEditor
 {
@@ -9,7 +8,6 @@ class KX_API KxDataViewColorEditor: public KxDataViewEditor
 		static bool GetValueAsColor(const wxAny& value, KxColor& color);
 
 	private:
-		wxColourDialog* m_Dialog = nullptr;
 		KxColor m_Color;
 
 	protected:

@@ -1,6 +1,6 @@
 #include "KxStdAfx.h"
 #include "KxFramework/DataView/KxDataViewColorEditor.h"
-#include <wx/colordlg.h>
+#include <wx/generic/colrdlgg.h>
 
 bool KxDataViewColorEditor::GetValueAsColor(const wxAny& value, KxColor& color)
 {
@@ -27,16 +27,20 @@ wxWindow* KxDataViewColorEditor::CreateEditorControl(wxWindow* parent, const wxR
 	colorData.SetChooseFull(true);
 	colorData.SetChooseAlpha(true);
 
-	m_Dialog = new wxColourDialog(parent, &colorData);
-	GetView()->CallAfter([this]()
+	wxGenericColourDialog* dialog = new wxGenericColourDialog(parent, &colorData);
+	GetView()->CallAfter([this, dialog]()
 	{
-		if (m_Dialog->ShowModal() == wxID_OK)
+		if (dialog->ShowModal() == wxID_OK)
 		{
-			m_Color = m_Dialog->GetColourData().GetColour();
+			m_Color = dialog->GetColourData().GetColour();
 			EndEdit();
 		}
+		else
+		{
+			CancelEdit();
+		}
 	});
-	return m_Dialog;
+	return dialog;
 }
 bool KxDataViewColorEditor::GetValueFromEditor(wxWindow* control, wxAny& value) const
 {
