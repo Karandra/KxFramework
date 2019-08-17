@@ -28,10 +28,10 @@ namespace
 		};
 		return KxUUIDStatus::Unknown;
 	}
-	int Compare(const ::UUID& v1, const ::UUID& v2) noexcept
+	int Compare(const ::UUID& left, const ::UUID& right) noexcept
 	{
 		RPC_STATUS status = RPC_S_OK;
-		return ::UuidCompare(const_cast<::UUID*>(&v1), const_cast<::UUID*>(&v2), &status);
+		return ::UuidCompare(const_cast<::UUID*>(&left), const_cast<::UUID*>(&right), &status);
 	}
 }
 
@@ -48,6 +48,26 @@ bool KxUUID::IsNull() const noexcept
 KxUUIDStatus KxUUID::Create() noexcept
 {
 	return RPCStatusToUUIDStatus(::UuidCreate(&m_ID));
+}
+KxUUIDStatus KxUUID::CreateSequential() noexcept
+{
+	return RPCStatusToUUIDStatus(::UuidCreateSequential(&m_ID));
+}
+size_t KxUUID::GetHash() const noexcept
+{
+	static_assert(sizeof(m_ID) == 16, "UUID must be 16 bytes in size");
+
+	if constexpr(sizeof(size_t) == sizeof(uint64_t))
+	{
+		const size_t* parts = reinterpret_cast<const size_t*>(&m_ID);
+		return parts[0] ^ parts[1];
+	}
+	else if constexpr(sizeof(size_t) == sizeof(uint32_t))
+	{
+		const size_t* parts = reinterpret_cast<const size_t*>(&m_ID);
+		return parts[0] ^ parts[1] ^ parts[2] ^ parts[3];
+	}
+	return 0;
 }
 
 wxString KxUUID::ToString() const
@@ -75,7 +95,40 @@ bool KxUUID::operator==(const KxUUID& other) const noexcept
 {
 	return Compare(m_ID, other.m_ID) == 0;
 }
+bool KxUUID::operator<(const KxUUID& other) const noexcept
+{
+	return Compare(m_ID, other.m_ID) < 0;
+}
+bool KxUUID::operator<=(const KxUUID& other) const noexcept
+{
+	return Compare(m_ID, other.m_ID) <= 0;
+}
+bool KxUUID::operator>(const KxUUID& other) const noexcept
+{
+	return Compare(m_ID, other.m_ID) > 0;
+}
+bool KxUUID::operator>=(const KxUUID& other) const noexcept
+{
+	return Compare(m_ID, other.m_ID) >= 0;
+}
+
 bool KxUUID::operator==(const ::UUID& other) const noexcept
 {
 	return Compare(m_ID, other) == 0;
+}
+bool KxUUID::operator<(const ::UUID& other) const noexcept
+{
+	return Compare(m_ID, other) < 0;
+}
+bool KxUUID::operator<=(const ::UUID& other) const noexcept
+{
+	return Compare(m_ID, other) <= 0;
+}
+bool KxUUID::operator>(const ::UUID& other) const noexcept
+{
+	return Compare(m_ID, other) > 0;
+}
+bool KxUUID::operator>=(const ::UUID& other) const noexcept
+{
+	return Compare(m_ID, other) >= 0;
 }

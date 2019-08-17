@@ -6,6 +6,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 */
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include <rpcdce.h>
 
 enum class KxUUIDStatus
 {
@@ -18,22 +19,36 @@ enum class KxUUIDStatus
 
 class KX_API KxUUID
 {
+	public:
+		KxUUID MakeUUID() noexcept
+		{
+			KxUUID uuid;
+			uuid.Create();
+			return uuid;
+		}
+		KxUUID MakeSequentialUUID() noexcept
+		{
+			KxUUID uuid;
+			uuid.CreateSequential();
+			return uuid;
+		}
+
 	private:
 		::UUID m_ID = {0};
 
 	public:
 		KxUUID() noexcept;
-		KxUUID(const UUID& uuid) noexcept
+		KxUUID(const ::UUID& other) noexcept
 		{
-			*this = uuid;
+			m_ID = other;
 		}
-		KxUUID(const KxUUID& uuid) noexcept
+		KxUUID(const KxUUID& other) noexcept
 		{
-			*this = uuid;
+			m_ID = other.m_ID;
 		}
-		KxUUID(KxUUID&& uuid) noexcept
+		KxUUID(KxUUID&& other) noexcept
 		{
-			*this = std::move(uuid);
+			*this = std::move(other);
 		}
 
 		KxUUID(const char* value) noexcept
@@ -52,8 +67,11 @@ class KX_API KxUUID
 	public:
 		bool IsNull() const noexcept;
 		KxUUIDStatus Create() noexcept;
+		KxUUIDStatus CreateSequential() noexcept;
+		
+		size_t GetHash() const noexcept;
 
-		const ::UUID& GetID() const
+		::UUID ToNativeUUID() const noexcept
 		{
 			return m_ID;
 		}
@@ -82,6 +100,29 @@ class KX_API KxUUID
 			other.m_ID = {0};
 			return *this;
 		}
+		KxUUID& operator=(const wxString& value) noexcept
+		{
+			FromString(value);
+			return *this;
+		}
+
+		operator ::UUID() const noexcept
+		{
+			return ToNativeUUID();
+		}
+		operator wxString() const noexcept
+		{
+			return ToString();
+		}
+
+		explicit operator bool() const noexcept
+		{
+			return !IsNull();
+		}
+		bool operator!() const noexcept
+		{
+			return IsNull();
+		}
 
 	public:
 		bool operator==(const KxUUID& other) const noexcept;
@@ -89,10 +130,36 @@ class KX_API KxUUID
 		{
 			return !(*this == other);
 		}
+		bool operator<(const KxUUID& other) const noexcept;
+		bool operator<=(const KxUUID& other) const noexcept;
+		bool operator>(const KxUUID& other) const noexcept;
+		bool operator>=(const KxUUID& other) const noexcept;
 
 		bool operator==(const ::UUID& other) const noexcept;
 		bool operator!=(const ::UUID& other) const noexcept
 		{
 			return !(*this == other);
 		}
+		bool operator<(const ::UUID& other) const noexcept;
+		bool operator<=(const ::UUID& other) const noexcept;
+		bool operator>(const ::UUID& other) const noexcept;
+		bool operator>=(const ::UUID& other) const noexcept;
 };
+
+namespace std
+{
+	template<> struct hash<KxUUID>
+	{
+		size_t operator()(const KxUUID& uuid) const noexcept
+		{
+			return uuid.GetHash();
+		}
+	};
+	template<> struct hash<::UUID>
+	{
+		size_t operator()(const ::UUID& uuid) const noexcept
+		{
+			return KxUUID(uuid).GetHash();
+		}
+	};
+}
