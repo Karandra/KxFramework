@@ -278,9 +278,11 @@
     <ClInclude Include="KxFramework\KxAuiToolBarItem.h" />
     <ClInclude Include="KxFramework\KxClusterMap.h" />
     <ClInclude Include="KxFramework\KxCommandEvent.h" />
+    <ClInclude Include="KxFramework\KxEnumClassOperations.h" />
     <ClInclude Include="KxFramework\KxEvent.h" />
     <ClInclude Include="KxFramework\KxNotifyEvent.h" />
     <ClInclude Include="KxFramework\KxOptionSet.h" />
+    <ClInclude Include="KxFramework\KxSystemEnums.h" />
     <ClInclude Include="KxFramework\KxToolTipEx.h" />
     <ClInclude Include="KxFramework\KxBitmapComboBox.h" />
     <ClInclude Include="KxFramework\KxBitmapGraphicsCanvas.h" />

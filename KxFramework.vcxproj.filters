@@ -1096,6 +1096,12 @@
     <ClInclude Include="Kx\Async\DelayedCall.h">
       <Filter>Kx\Async</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxSystemEnums.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxEnumClassOperations.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
