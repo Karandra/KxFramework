@@ -38,3 +38,4 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #undef FindNextFile
 #undef GetEnvironmentVariable
 #undef SetEnvironmentVariable
+#undef ExitWindows
