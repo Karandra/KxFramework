@@ -391,7 +391,9 @@ namespace KxDataView2
 						return Notify(event);
 					}
 				}
-				return false;
+
+				*result = TRUE;
+				return true;
 			}
 			case (int)HDN_ENDTRACKA:
 			case (int)HDN_ENDTRACKW:
@@ -420,18 +422,24 @@ namespace KxDataView2
 			{
 				if (m_ResizedColumn && header->pitem && (header->pitem->mask & HDI_WIDTH))
 				{
-					int width = header->pitem->cxy;
-					bool preventShrink = false;
-
-					if (width < m_ResizedColumn->GetMinWidth())
+					int& width = header->pitem->cxy;
+					if (m_ResizedColumn->IsSizeable())
 					{
-						width = m_ResizedColumn->GetMinWidth();
-						preventShrink = true;
-					}
+						bool preventShrink = false;
+						if (width < m_ResizedColumn->GetMinWidth())
+						{
+							width = m_ResizedColumn->GetMinWidth();
+							preventShrink = true;
+						}
 
-					wxHeaderCtrlEvent event = NewEvent(wxEVT_HEADER_RESIZING, m_ResizedColumn);
-					event.SetWidth(width);
-					return Notify(event, preventShrink);
+						wxHeaderCtrlEvent event = NewEvent(wxEVT_HEADER_RESIZING, m_ResizedColumn);
+						event.SetWidth(width);
+						return Notify(event, preventShrink);
+					}
+					else
+					{
+						width = m_ResizedColumn->GetWidth();
+					}
 				}
 				return false;
 			}
