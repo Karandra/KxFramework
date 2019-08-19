@@ -122,13 +122,17 @@ namespace KxDataView2
 				--m_Value;
 				return *this;
 			}
-			Row operator++(int) const noexcept
+			Row operator++(int) noexcept
 			{
-				return Row(m_Value + 1);
+				size_t oldValue = m_Value + 1;
+				++m_Value;
+				return oldValue;
 			}
-			Row operator--(int) const noexcept
+			Row operator--(int) noexcept
 			{
-				return Row(m_Value - 1);
+				size_t oldValue = m_Value - 1;
+				--m_Value;
+				return oldValue;
 			}
 	};
 }
