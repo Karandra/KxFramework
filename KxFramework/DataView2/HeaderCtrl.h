@@ -18,6 +18,13 @@ namespace KxDataView2
 		friend class MainWindow;
 		friend class Column;
 
+		public:
+			struct EventResult
+			{
+				bool Processed = false;
+				bool Allowed = false;
+			};
+
 		private:
 			View* m_View = nullptr;
 
@@ -28,7 +35,7 @@ namespace KxDataView2
 
 		private:
 			void FinishEditing();
-			bool SendEvent(wxEventType type, int index, std::optional<wxRect> rect = {});
+			EventResult SendCtrlEvent(wxEventType type, Column* column = nullptr, std::optional<wxRect> rect = {});
 
 			void OnClick(wxHeaderCtrlEvent& event);
 			void OnRClick(wxHeaderCtrlEvent& event);

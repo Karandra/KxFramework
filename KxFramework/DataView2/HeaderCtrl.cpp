@@ -42,16 +42,17 @@ namespace KxDataView2
 	{
 		m_View->GetMainWindow()->EndEdit();
 	}
-	bool HeaderCtrl::SendEvent(wxEventType type, int index, std::optional<wxRect> rect)
+	
+	HeaderCtrl::EventResult HeaderCtrl::SendCtrlEvent(wxEventType type, Column* column, std::optional<wxRect> rect)
 	{
 		Event event(type);
 		if (rect)
 		{
 			event.SetRect(*rect);
 		}
-		m_View->GetMainWindow()->CreateEventTemplate(event, nullptr, index >= 0 ? GetColumnAt(index) : nullptr);
+		m_View->GetMainWindow()->CreateEventTemplate(event, nullptr, column);
 
-		return m_View->ProcessWindowEvent(event);
+		return {m_View->ProcessWindowEvent(event), event.IsAllowed()};
 	}
 
 	void HeaderCtrl::OnClick(wxHeaderCtrlEvent& event)
@@ -61,7 +62,7 @@ namespace KxDataView2
 		Column* column = m_View->GetColumn(event.GetColumn());
 		if (column)
 		{
-			if (SendEvent(EvtCOLUMN_HEADER_CLICK, column->GetIndex()))
+			if (SendCtrlEvent(EvtCOLUMN_HEADER_CLICK, column).Processed)
 			{
 				return;
 			}
@@ -89,7 +90,7 @@ namespace KxDataView2
 
 			m_View->GetMainWindow()->OnShouldResort();
 			m_View->OnColumnChange(*column);
-			SendEvent(EvtCOLUMN_SORTED, column->GetIndex());
+			SendCtrlEvent(EvtCOLUMN_SORTED, column);
 		}
 	}
 	void HeaderCtrl::OnRClick(wxHeaderCtrlEvent& event)
@@ -100,7 +101,7 @@ namespace KxDataView2
 		if (column)
 		{
 			// Event wasn't processed somewhere, use default behavior
-			if (!SendEvent(EvtCOLUMN_HEADER_RCLICK, column->GetIndex()))
+			if (!SendCtrlEvent(EvtCOLUMN_HEADER_RCLICK, column).Processed)
 			{
 				event.Skip();
 				ToggleSortByColumn(column->GetIndex());
@@ -133,7 +134,7 @@ namespace KxDataView2
 		wxPoint pos = event.GetPosition();
 		if (pos.x > m_View->GetMainWindow()->GetRowWidth())
 		{
-			SendEvent(event.GetEventType() == wxEVT_LEFT_UP ? EvtCOLUMN_HEADER_CLICK : EvtCOLUMN_HEADER_RCLICK, -1);
+			SendCtrlEvent(event.GetEventType() == wxEVT_LEFT_UP ? EvtCOLUMN_HEADER_CLICK : EvtCOLUMN_HEADER_RCLICK, nullptr);
 		}
 		event.Skip();
 	}
@@ -291,6 +292,7 @@ namespace KxDataView2
 	}
 	bool HeaderCtrl::MSWOnNotify(int ctrlID, WXLPARAM lParam, WXLPARAM* result)
 	{
+		MainWindow* mainWindow = GetMainWindow();
 		const NMHEADERW* header = reinterpret_cast<NMHEADERW*>(lParam);
 		const int notification = header->hdr.code;
 
@@ -309,7 +311,7 @@ namespace KxDataView2
 				return reinterpret_cast<Column*>(headerItem.lParam);
 			}
 		};
-		auto NewEvent = [this](wxEventType eventType, Column* column)
+		auto NewHeaderEvent = [this](wxEventType eventType, Column* column)
 		{
 			wxHeaderCtrlEvent event(eventType, GetId());
 			event.SetEventObject(this);
@@ -317,24 +319,20 @@ namespace KxDataView2
 
 			return event;
 		};
-		auto Notify = [this, result](wxHeaderCtrlEvent& event, std::optional<bool> overrideResult = {})
+		auto SendHeaderEvent = [this, result](wxHeaderCtrlEvent& event)
 		{
 			// All of HDN_BEGIN{DRAG,TRACK}, HDN_TRACK and HDN_ITEMCHANGING
 			// interpret TRUE in '*result' as a meaning to stop the control
 			// default handling of the message.
 
-			const bool disallowed = ProcessWindowEvent(event) && !event.IsAllowed();
-			if (overrideResult)
-			{
-				*result = *overrideResult;
-				return *overrideResult;
-			}
-			else if (disallowed)
+			if (ProcessWindowEvent(event) && !event.IsAllowed())
 			{
 				*result = TRUE;
-				return true;
 			}
-			return false;
+		};
+		auto MakeWidthRect = [](int value)
+		{
+			return wxRect(1, 0, value, 0);
 		};
 
 		switch (notification)
@@ -347,8 +345,10 @@ namespace KxDataView2
 				if (Column* column = GetColumn())
 				{
 					wxEventType eventType = ::GetClickEventType(notification == HDN_ITEMDBLCLICK, static_cast<MouseButton>(header->iButton));
-					wxHeaderCtrlEvent event = NewEvent(eventType, column);
-					return Notify(event);
+					wxHeaderCtrlEvent event = NewHeaderEvent(eventType, column);
+					SendHeaderEvent(event);
+
+					return true;
 				}
 				return false;
 			}
@@ -356,8 +356,10 @@ namespace KxDataView2
 			{
 				if (Column* column = GetColumn())
 				{
-					wxHeaderCtrlEvent event = NewEvent(wxEVT_HEADER_SEPARATOR_DCLICK, column);
-					return Notify(event);
+					wxHeaderCtrlEvent event = NewHeaderEvent(wxEVT_HEADER_SEPARATOR_DCLICK, column);
+					SendHeaderEvent(event);
+
+					return true;
 				}
 				return false;
 			}
@@ -369,8 +371,10 @@ namespace KxDataView2
 				if (Column* column = GetColumn(true))
 				{
 					wxEventType eventType = ::GetClickEventType(notification == NM_RDBLCLK, MouseButton::Right);
-					wxHeaderCtrlEvent event = NewEvent(eventType, column);
-					return Notify(event);
+					wxHeaderCtrlEvent event = NewHeaderEvent(eventType, column);
+					SendHeaderEvent(event);
+
+					return true;
 				}
 				return false;
 			}
@@ -387,8 +391,17 @@ namespace KxDataView2
 					if (column && column->IsSizeable())
 					{
 						m_ResizedColumn = column;
-						wxHeaderCtrlEvent event = NewEvent(wxEVT_HEADER_BEGIN_RESIZE, m_ResizedColumn);
-						return Notify(event);
+
+						if (SendCtrlEvent(EvtCOLUMN_BEGIN_RESIZE, m_ResizedColumn).Allowed)
+						{
+							wxHeaderCtrlEvent event = NewHeaderEvent(wxEVT_HEADER_BEGIN_RESIZE, m_ResizedColumn);
+							SendHeaderEvent(event);
+						}
+						else
+						{
+							*result = TRUE;
+						}
+						return true;
 					}
 				}
 
@@ -400,20 +413,27 @@ namespace KxDataView2
 			{
 				if (m_ResizedColumn)
 				{
-					bool preventShrink = false;
+					int& width = header->pitem->cxy;
 
-					int width = header->pitem->cxy;
-					if (width < m_ResizedColumn->GetMinWidth())
+					const bool isLess = width < m_ResizedColumn->GetMinWidth();
+					if (isLess)
 					{
 						width = m_ResizedColumn->GetMinWidth();
-						preventShrink = true;
 					}
 
-					wxHeaderCtrlEvent event = NewEvent(wxEVT_HEADER_END_RESIZE, m_ResizedColumn);
-					event.SetWidth(width);
+					if (!SendCtrlEvent(EvtCOLUMN_END_RESIZE, m_ResizedColumn, MakeWidthRect(width)).Allowed || isLess)
+					{
+						*result = TRUE;
+					}
+					else
+					{
+						wxHeaderCtrlEvent event = NewHeaderEvent(wxEVT_HEADER_END_RESIZE, m_ResizedColumn);
+						event.SetWidth(width);
+						SendHeaderEvent(event);
+					}
 
 					m_ResizedColumn = nullptr;
-					return Notify(event, preventShrink);
+					return true;
 				}
 				return false;
 			}
@@ -425,21 +445,29 @@ namespace KxDataView2
 					int& width = header->pitem->cxy;
 					if (m_ResizedColumn->IsSizeable())
 					{
-						bool preventShrink = false;
-						if (width < m_ResizedColumn->GetMinWidth())
+						const bool isLess = width < m_ResizedColumn->GetMinWidth();
+						if (isLess)
 						{
 							width = m_ResizedColumn->GetMinWidth();
-							preventShrink = true;
 						}
 
-						wxHeaderCtrlEvent event = NewEvent(wxEVT_HEADER_RESIZING, m_ResizedColumn);
-						event.SetWidth(width);
-						return Notify(event, preventShrink);
+						if (!SendCtrlEvent(EvtCOLUMN_RESIZE, m_ResizedColumn, MakeWidthRect(width)).Allowed || isLess)
+						{
+							*result = TRUE;
+						}
+						else
+						{
+							wxHeaderCtrlEvent event = NewHeaderEvent(wxEVT_HEADER_RESIZING, m_ResizedColumn);
+							event.SetWidth(width);
+							SendHeaderEvent(event);
+						}
 					}
 					else
 					{
 						width = m_ResizedColumn->GetWidth();
+						*result = TRUE;
 					}
+					return true;
 				}
 				return false;
 			}
@@ -454,8 +482,10 @@ namespace KxDataView2
 					{
 						m_DraggedColumn = column;
 
-						wxHeaderCtrlEvent event = NewEvent(wxEVT_HEADER_BEGIN_REORDER, m_DraggedColumn);
-						return Notify(event);
+						wxHeaderCtrlEvent event = NewHeaderEvent(wxEVT_HEADER_BEGIN_REORDER, m_DraggedColumn);
+						SendHeaderEvent(event);
+
+						return true;
 					}
 				}
 				return false;
@@ -469,9 +499,11 @@ namespace KxDataView2
 					m_DraggedColumn = nullptr;
 					m_UpdateColumns = true;
 
-					wxHeaderCtrlEvent event = NewEvent(wxEVT_HEADER_END_REORDER, column);
+					wxHeaderCtrlEvent event = NewHeaderEvent(wxEVT_HEADER_END_REORDER, column);
 					event.SetNewOrder(order);
-					return Notify(event);
+					SendHeaderEvent(event);
+
+					return true;
 				}
 				break;
 			}
@@ -479,9 +511,11 @@ namespace KxDataView2
 			{
 				if (m_DraggedColumn)
 				{
-					wxHeaderCtrlEvent event = NewEvent(wxEVT_HEADER_DRAGGING_CANCELLED, m_DraggedColumn);
+					wxHeaderCtrlEvent event = NewHeaderEvent(wxEVT_HEADER_DRAGGING_CANCELLED, m_DraggedColumn);
 					m_DraggedColumn = nullptr;
-					return Notify(event);
+					SendHeaderEvent(event);
+
+					return true;
 				}
 				return false;
 			}
@@ -494,7 +528,7 @@ namespace KxDataView2
 					// Send an event, if it wasn't processed, toggle check state ourselves.
 					// In any case update native column state after the event handler returns.
 					const bool isChecked = column->IsChecked();
-					if (!SendEvent(EvtCOLUMN_TOGGLE, column->GetIndex()))
+					if (!SendCtrlEvent(EvtCOLUMN_TOGGLE, column).Processed)
 					{
 						column->SetChecked(!isChecked);
 					}
@@ -509,7 +543,7 @@ namespace KxDataView2
 			{
 				if (Column* column = GetColumn())
 				{
-					SendEvent(EvtCOLUMN_DROPDOWN, column->GetIndex(), GetDropdownRect(header->iItem));
+					SendCtrlEvent(EvtCOLUMN_DROPDOWN, column, GetDropdownRect(header->iItem));
 					return true;
 				}
 				return false;
@@ -609,7 +643,7 @@ namespace KxDataView2
 			{
 				column.SortAscending();
 			}
-			SendEvent(EvtCOLUMN_SORTED, column.GetIndex());
+			SendCtrlEvent(EvtCOLUMN_SORTED, &column);
 		}
 	}
 	

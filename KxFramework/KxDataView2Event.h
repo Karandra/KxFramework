@@ -91,6 +91,15 @@ namespace KxDataView2
 				m_Rect.reset();
 			}
 
+			int GetWidth() const
+			{
+				return m_Rect ? m_Rect->GetWidth() : wxDefaultCoord;
+			}
+			int GetHeight() const
+			{
+				return m_Rect ? m_Rect->GetHeight() : wxDefaultCoord;
+			}
+
 			// Return hints as physical rows
 			std::pair<Row, Row> GetCacheHint() const
 			{
@@ -259,6 +268,10 @@ namespace KxDataView2
 	KxEVENT_DECLARE_LOCAL(COLUMN_TOGGLE, Event);
 	KxEVENT_DECLARE_LOCAL(COLUMN_SORTED, Event);
 	KxEVENT_DECLARE_LOCAL(COLUMN_MOVED, Event);
+
+	KxEVENT_DECLARE_LOCAL(COLUMN_BEGIN_RESIZE, Event);
+	KxEVENT_DECLARE_LOCAL(COLUMN_RESIZE, Event);
+	KxEVENT_DECLARE_LOCAL(COLUMN_END_RESIZE, Event);
 
 	KxEVENT_DECLARE_LOCAL(VIEW_CACHE_HINT, Event);
 }
