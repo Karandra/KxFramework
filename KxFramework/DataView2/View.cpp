@@ -755,15 +755,6 @@ namespace KxDataView2
 	}
 
 	// Window
-	wxHeaderCtrl* View::GetHeaderCtrl()
-	{
-		return m_HeaderArea;
-	}
-	const wxHeaderCtrl* View::GetHeaderCtrl() const
-	{
-		return m_HeaderArea;
-	}
-
 	bool View::CreateColumnSelectionMenu(KxMenu& menu)
 	{
 		size_t count = GetColumnCount();
@@ -778,6 +769,7 @@ namespace KxDataView2
 
 			KxMenuItem* menuItem = menu.AddItem(title, wxEmptyString, wxITEM_CHECK);
 			menuItem->Check(column->IsVisible());
+			menuItem->SetBitmap(column->m_Bitmap);
 			menuItem->SetClientData(column);
 		}
 		return menu.GetMenuItemCount() != 0;
@@ -789,12 +781,16 @@ namespace KxDataView2
 		{
 			KxMenuItem* menuItem = menu.FindItem(retID);
 			Column* column = static_cast<Column*>(menuItem->GetClientData());
-			column->SetVisible(menuItem->IsChecked());
+			column->AssignVisible(menuItem->IsChecked());
 
 			if (column->IsVisible() && column->GetWidth() == 0)
 			{
-				column->SetWidth(column->GetBestWidth());
+				column->AssignWidth(column->GetBestWidth());
 			}
+
+			Event event(EvtCOLUMN_HEADER_MENU_ITEM);
+			m_ClientArea->CreateEventTemplate(event, nullptr, column);
+			ProcessWindowEvent(event);
 
 			OnColumnChange(*column);
 			return column;

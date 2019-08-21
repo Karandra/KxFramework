@@ -257,6 +257,29 @@ namespace KxDataView2
 		return m_BestWidth;
 	}
 	
+	int Column::GetTitleWidth() const
+	{
+		if (m_View)
+		{
+			wxWindow* window = m_View;
+			if (HeaderCtrl* header = m_View->GetHeaderCtrl())
+			{
+				window = header;
+			}
+
+			int width = window->GetTextExtent(m_Title).GetWidth();
+			width += wxRendererNative::Get().GetHeaderButtonMargin(window);
+
+			// If a bitmap is used, add space for it and 2px border
+			if (const wxBitmap& bitmap = m_Bitmap; bitmap.IsOk())
+			{
+				width += bitmap.GetWidth() + window->FromDIP(wxSize(2, 0)).GetWidth();
+			}
+
+			return width;
+		}
+		return -1;
+	}
 	int Column::GetMinWidth() const
 	{
 		int width = m_MinWidth;
@@ -358,6 +381,23 @@ namespace KxDataView2
 			SetWidth(m_Width);
 			UpdateDisplay();
 		}
+	}
+	bool Column::FitContent()
+	{
+		if (m_View)
+		{
+			Event event(EvtCOLUMN_HEADER_WIDTH_FIT);
+			event.SetWidth(std::max({GetTitleWidth(), CalcBestSize(), GetMinWidth()}));
+
+			GetMainWindow()->CreateEventTemplate(event, nullptr, this);
+			m_View->ProcessWindowEvent(event);
+			if (event.IsAllowed())
+			{
+				SetWidth(event.GetWidth());
+				return true;
+			}
+		}
+		return false;
 	}
 
 	bool Column::IsActivatable() const

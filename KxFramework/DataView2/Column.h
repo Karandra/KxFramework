@@ -131,6 +131,10 @@ namespace KxDataView2
 				m_DisplayIndex = value;
 			}
 			void AssignWidth(ColumnWidth width);
+			void AssignVisible(bool value)
+			{
+				m_IsVisible = value;
+			}
 
 			ColumnStyle GetStyleFlags() const
 			{
@@ -290,6 +294,7 @@ namespace KxDataView2
 			}
 			int CalcBestSize();
 
+			int GetTitleWidth() const;
 			wxAlignment GetTitleAlignment() const
 			{
 				return m_TitleAlignment;
@@ -375,11 +380,12 @@ namespace KxDataView2
 			}
 			void SetVisible(bool value)
 			{
-				m_IsVisible = value;
+				AssignVisible(value);
 				UpdateDisplay();
 			}
 			void Refresh() const;
 			void FitInside();
+			bool FitContent();
 
 			bool IsRenderable() const
 			{

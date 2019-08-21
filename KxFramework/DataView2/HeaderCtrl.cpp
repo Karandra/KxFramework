@@ -5,6 +5,7 @@
 #include "Column.h"
 #include "KxFramework/KxDataView2Event.h"
 #include "KxFramework/KxUtility.h"
+#include "KxFramework/KxMenu.h"
 #include <CommCtrl.h>
 
 namespace
@@ -34,6 +35,11 @@ namespace
 		};
 		return wxEVT_NULL;
 	}
+
+	wxRect MakeWidthRect(int value)
+	{
+		return wxRect(0, 0, value, 0);
+	};
 }
 
 namespace KxDataView2
@@ -43,9 +49,9 @@ namespace KxDataView2
 		m_View->GetMainWindow()->EndEdit();
 	}
 	
-	HeaderCtrl::EventResult HeaderCtrl::SendCtrlEvent(wxEventType type, Column* column, std::optional<wxRect> rect)
+	HeaderCtrl::EventResult HeaderCtrl::SendCtrlEvent(Event& event, wxEventType type, Column* column, std::optional<wxRect> rect)
 	{
-		Event event(type);
+		event.SetEventType(type);
 		if (rect)
 		{
 			event.SetRect(*rect);
@@ -59,8 +65,7 @@ namespace KxDataView2
 	{
 		FinishEditing();
 
-		Column* column = m_View->GetColumn(event.GetColumn());
-		if (column)
+		if (Column* column = m_View->GetColumn(event.GetColumn()))
 		{
 			if (SendCtrlEvent(EvtCOLUMN_HEADER_CLICK, column).Processed)
 			{
@@ -71,13 +76,12 @@ namespace KxDataView2
 			if (!column->IsSortable())
 			{
 				// No default handling for non-sortable columns
-				event.Skip();
 				return;
 			}
 
 			if (column->IsSorted())
 			{
-				// already using this column for sorting, just change the order
+				// Already using this column for sorting, just change the order
 				column->ToggleSortOrder();
 			}
 			else
@@ -97,14 +101,15 @@ namespace KxDataView2
 	{
 		FinishEditing();
 
-		Column* column = m_View->GetColumn(event.GetColumn());
-		if (column)
+		if (Column* column = m_View->GetColumn(event.GetColumn()))
 		{
 			// Event wasn't processed somewhere, use default behavior
-			if (!SendCtrlEvent(EvtCOLUMN_HEADER_RCLICK, column).Processed)
+			if (!SendCtrlEvent(EvtCOLUMN_HEADER_RCLICK, column).Processed && m_View)
 			{
-				event.Skip();
-				ToggleSortByColumn(column->GetIndex());
+				if (KxMenu menu; m_View->CreateColumnSelectionMenu(menu))
+				{
+					m_View->OnColumnSelectionMenu(menu);
+				}
 			}
 		}
 	}
@@ -112,8 +117,7 @@ namespace KxDataView2
 	{
 		FinishEditing();
 
-		Column* column = m_View->GetColumn(event.GetColumn());
-		if (column)
+		if (Column* column = m_View->GetColumn(event.GetColumn()))
 		{
 			column->AssignWidth(event.GetWidth());
 			GetMainWindow()->UpdateDisplay();
@@ -138,23 +142,30 @@ namespace KxDataView2
 		}
 		event.Skip();
 	}
-	
+	void HeaderCtrl::OnSeparatorDClick(wxHeaderCtrlEvent& event)
+	{
+		FinishEditing();
+
+		Column* column = m_View->GetColumn(event.GetColumn());
+		if (column && column->IsSizeable())
+		{
+			column->FitContent();
+		}
+	}
+
 	const wxHeaderColumn& HeaderCtrl::GetColumn(unsigned int index) const
 	{
 		return GetColumnAt(index)->GetNativeColumn();
 	}
-	bool HeaderCtrl::UpdateColumnWidthToFit(unsigned int index, int titleWidth)
+	bool HeaderCtrl::UpdateColumnWidthToFit(unsigned int index, int)
 	{
 		if (Column* column = m_View->GetColumn(index))
 		{
-			int contentsWidth = column->CalcBestSize();
-			column->SetWidth(std::max({titleWidth, contentsWidth, column->GetMinWidth()}));
-			m_View->OnColumnChange(*column);
-			return true;
+			return column->FitContent();
 		}
 		return false;
 	}
-	
+
 	void HeaderCtrl::DoUpdate(unsigned int)
 	{
 		DoSetCount();
@@ -330,10 +341,6 @@ namespace KxDataView2
 				*result = TRUE;
 			}
 		};
-		auto MakeWidthRect = [](int value)
-		{
-			return wxRect(1, 0, value, 0);
-		};
 
 		switch (notification)
 		{
@@ -356,7 +363,7 @@ namespace KxDataView2
 			{
 				if (Column* column = GetColumn())
 				{
-					if (SendCtrlEvent(EvtCOLUMN_HEADER_SEPARATOR_CLICK, m_ResizedColumn).Allowed)
+					if (!SendCtrlEvent(EvtCOLUMN_HEADER_SEPARATOR_DCLICK, column).Processed)
 					{
 						wxHeaderCtrlEvent event = NewHeaderEvent(wxEVT_HEADER_SEPARATOR_DCLICK, column);
 						SendHeaderEvent(event);
@@ -373,7 +380,8 @@ namespace KxDataView2
 			case NM_RDBLCLK:
 			{
 				// These two messages aren't from Header control and they contain no item index
-				// and we have to use hit-testing to get the column.
+				// so we have to use hit-testing to get the column.
+				m_DraggedColumn = nullptr;
 				if (Column* column = GetColumn(true))
 				{
 					wxEventType eventType = ::GetClickEventType(notification == NM_RDBLCLK, MouseButton::Right);
@@ -427,14 +435,15 @@ namespace KxDataView2
 						width = m_ResizedColumn->GetMinWidth();
 					}
 
-					if (!SendCtrlEvent(EvtCOLUMN_END_RESIZE, m_ResizedColumn, MakeWidthRect(width)).Allowed || isLess)
+					Event ctrlEvent;
+					if (!SendCtrlEvent(ctrlEvent, EvtCOLUMN_END_RESIZE, m_ResizedColumn, MakeWidthRect(width)).Allowed || isLess)
 					{
 						*result = TRUE;
 					}
 					else
 					{
 						wxHeaderCtrlEvent event = NewHeaderEvent(wxEVT_HEADER_END_RESIZE, m_ResizedColumn);
-						event.SetWidth(width);
+						event.SetWidth(ctrlEvent.GetWidth());
 						SendHeaderEvent(event);
 					}
 
@@ -457,14 +466,15 @@ namespace KxDataView2
 							width = m_ResizedColumn->GetMinWidth();
 						}
 
-						if (!SendCtrlEvent(EvtCOLUMN_RESIZE, m_ResizedColumn, MakeWidthRect(width)).Allowed || isLess)
+						Event ctrlEvent;
+						if (!SendCtrlEvent(ctrlEvent, EvtCOLUMN_RESIZE, m_ResizedColumn, MakeWidthRect(width)).Allowed || isLess)
 						{
 							*result = TRUE;
 						}
 						else
 						{
 							wxHeaderCtrlEvent event = NewHeaderEvent(wxEVT_HEADER_RESIZING, m_ResizedColumn);
-							event.SetWidth(width);
+							event.SetWidth(ctrlEvent.GetWidth());
 							SendHeaderEvent(event);
 						}
 					}
@@ -603,6 +613,7 @@ namespace KxDataView2
 		Bind(wxEVT_HEADER_RESIZING, &HeaderCtrl::OnResize, this);
 		Bind(wxEVT_HEADER_END_RESIZE, &HeaderCtrl::OnResize, this);
 		Bind(wxEVT_HEADER_END_REORDER, &HeaderCtrl::OnReordered, this);
+		Bind(wxEVT_HEADER_SEPARATOR_DCLICK, &HeaderCtrl::OnSeparatorDClick, this);
 
 		Bind(wxEVT_LEFT_UP, &HeaderCtrl::OnWindowClick, this);
 		Bind(wxEVT_RIGHT_UP, &HeaderCtrl::OnWindowClick, this);

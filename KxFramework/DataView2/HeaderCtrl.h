@@ -1,6 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView/KxDataViewConstants.h"
+#include "KxFramework/KxDataView2Event.h"
 #include "KxFramework/KxImageList.h"
 
 namespace KxDataView2
@@ -8,6 +9,7 @@ namespace KxDataView2
 	class KX_API View;
 	class KX_API MainWindow;
 	class KX_API Column;
+	class KX_API Event;
 }
 
 namespace KxDataView2
@@ -35,17 +37,23 @@ namespace KxDataView2
 
 		private:
 			void FinishEditing();
-			EventResult SendCtrlEvent(wxEventType type, Column* column = nullptr, std::optional<wxRect> rect = {});
+			EventResult SendCtrlEvent(Event& event, wxEventType type, Column* column = nullptr, std::optional<wxRect> rect = {});
+			EventResult SendCtrlEvent(wxEventType type, Column* column = nullptr, std::optional<wxRect> rect = {})
+			{
+				Event event;
+				return SendCtrlEvent(event, type, column, std::move(rect));
+			}
 
 			void OnClick(wxHeaderCtrlEvent& event);
 			void OnRClick(wxHeaderCtrlEvent& event);
 			void OnResize(wxHeaderCtrlEvent& event);
 			void OnReordered(wxHeaderCtrlEvent& event);
 			void OnWindowClick(wxMouseEvent& event);
+			void OnSeparatorDClick(wxHeaderCtrlEvent& event);
 
 		protected:
 			const wxHeaderColumn& GetColumn(unsigned int index) const override;
-			bool UpdateColumnWidthToFit(unsigned int index, int titleWidth) override;
+			bool UpdateColumnWidthToFit(unsigned int index, int = 0) override;
 			
 			void DoUpdate(unsigned int = 0) override;
 			void DoSetCount(unsigned int = 0) override;

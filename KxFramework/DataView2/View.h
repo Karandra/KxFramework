@@ -336,8 +336,14 @@ namespace KxDataView2
 			{
 				return m_HeaderArea != nullptr;
 			}
-			wxHeaderCtrl* GetHeaderCtrl();
-			const wxHeaderCtrl* GetHeaderCtrl() const;
+			HeaderCtrl* GetHeaderCtrl()
+			{
+				return m_HeaderArea;
+			}
+			const HeaderCtrl* GetHeaderCtrl() const
+			{
+				return m_HeaderArea;
+			}
 
 			MainWindow* GetMainWindow()
 			{

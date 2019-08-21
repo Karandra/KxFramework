@@ -91,13 +91,29 @@ namespace KxDataView2
 				m_Rect.reset();
 			}
 
+			wxSize GetSize() const
+			{
+				return m_Rect ? m_Rect->GetSize() : wxDefaultSize;
+			}
+			void SetSize(const wxSize& size)
+			{
+				m_Rect = size;
+			}
 			int GetWidth() const
 			{
-				return m_Rect ? m_Rect->GetWidth() : wxDefaultCoord;
+				return GetSize().x;
+			}
+			void SetWidth(int width)
+			{
+				SetSize({width, 0});
 			}
 			int GetHeight() const
 			{
-				return m_Rect ? m_Rect->GetHeight() : wxDefaultCoord;
+				return GetSize().y;
+			}
+			void SetHeight(int height)
+			{
+				SetSize({0, height});
 			}
 
 			// Return hints as physical rows
@@ -264,7 +280,9 @@ namespace KxDataView2
 
 	KxEVENT_DECLARE_LOCAL(COLUMN_HEADER_CLICK, Event);
 	KxEVENT_DECLARE_LOCAL(COLUMN_HEADER_RCLICK, Event);
-	KxEVENT_DECLARE_LOCAL(COLUMN_HEADER_SEPARATOR_CLICK, Event);
+	KxEVENT_DECLARE_LOCAL(COLUMN_HEADER_MENU_ITEM, Event);
+	KxEVENT_DECLARE_LOCAL(COLUMN_HEADER_SEPARATOR_DCLICK, Event);
+	KxEVENT_DECLARE_LOCAL(COLUMN_HEADER_WIDTH_FIT, Event);
 	KxEVENT_DECLARE_LOCAL(COLUMN_DROPDOWN, Event);
 	KxEVENT_DECLARE_LOCAL(COLUMN_TOGGLE, Event);
 	KxEVENT_DECLARE_LOCAL(COLUMN_SORTED, Event);
