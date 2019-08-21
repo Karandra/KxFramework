@@ -356,9 +356,15 @@ namespace KxDataView2
 			{
 				if (Column* column = GetColumn())
 				{
-					wxHeaderCtrlEvent event = NewHeaderEvent(wxEVT_HEADER_SEPARATOR_DCLICK, column);
-					SendHeaderEvent(event);
-
+					if (SendCtrlEvent(EvtCOLUMN_HEADER_SEPARATOR_CLICK, m_ResizedColumn).Allowed)
+					{
+						wxHeaderCtrlEvent event = NewHeaderEvent(wxEVT_HEADER_SEPARATOR_DCLICK, column);
+						SendHeaderEvent(event);
+					}
+					else
+					{
+						*result = TRUE;
+					}
 					return true;
 				}
 				return false;
