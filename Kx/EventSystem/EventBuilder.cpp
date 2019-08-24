@@ -8,14 +8,14 @@ namespace Kx::EventSystem
 	EventBuilder::~EventBuilder()
 	{
 		// If the event wasn't sent using 'EventBuilder::Do', send it here
-		if (!m_Sent)
+		if (!m_IsSent)
 		{
 			Do();
 		}
 
 		// Async events are allocated on the heap so we need to delete
 		// the pointer if it's still here for some reason.
-		if (m_Async)
+		if (m_IsAsync)
 		{
 			delete m_Event;
 		}
@@ -23,27 +23,18 @@ namespace Kx::EventSystem
 
 	EventBuilder& EventBuilder::Do()
 	{
-		if (m_Async)
+		if (m_IsAsync)
 		{
 			std::unique_ptr<wxEvent> event(Utility::ExchangeResetAndReturn(m_Event, nullptr));
 			m_EvtHandler->DoQueueEvent(std::move(event), m_EventID);
-
-			m_Sent = true;
+			m_IsSent = true;
 		}
 		else
 		{
 			m_IsProcessed = m_EvtHandler->DoProcessEvent(*m_Event, m_EventID);
+			m_IsSent = true;
 			m_IsSkipped = m_Event->GetSkipped();
-			m_Sent = true;
-
-			if (m_Event->IsKindOf(wxCLASSINFO(wxNotifyEvent)))
-			{
-				m_IsAllowed = static_cast<wxNotifyEvent*>(m_Event)->IsAllowed();
-			}
-			else
-			{
-				m_IsAllowed = true;
-			}
+			m_IsAllowed = m_IsNotifyEvent ? static_cast<wxNotifyEvent*>(m_Event)->IsAllowed() : true;
 		}
 		return *this;
 	}
@@ -56,8 +47,8 @@ namespace Kx::EventSystem
 		ExchangeAndReset(m_EvtHandler, other.m_EvtHandler, null.m_EvtHandler);
 		ExchangeAndReset(m_Event, other.m_Event, null.m_Event);
 		ExchangeAndReset(m_EventID, other.m_EventID, null.m_EventID);
-		ExchangeAndReset(m_Async, other.m_Async, null.m_Async);
-		ExchangeAndReset(m_Sent, other.m_Sent, null.m_Sent);
+		ExchangeAndReset(m_IsAsync, other.m_IsAsync, null.m_IsAsync);
+		ExchangeAndReset(m_IsSent, other.m_IsSent, null.m_IsSent);
 		ExchangeAndReset(m_IsSkipped, other.m_IsSkipped, null.m_IsSkipped);
 		ExchangeAndReset(m_IsAllowed, other.m_IsAllowed, null.m_IsAllowed);
 

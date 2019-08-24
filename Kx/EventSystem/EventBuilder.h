@@ -11,8 +11,10 @@ namespace Kx::EventSystem
 			KxBasicEvtHandler* m_EvtHandler = nullptr;
 			wxEvent* m_Event = nullptr;
 			std::optional<KxEventID> m_EventID;
-			bool m_Async = false;
-			bool m_Sent = false;
+
+			bool m_IsNotifyEvent = false;
+			bool m_IsAsync = false;
+			bool m_IsSent = false;
 			bool m_IsSkipped = false;
 			bool m_IsAllowed = true;
 			bool m_IsProcessed = false;
@@ -22,11 +24,11 @@ namespace Kx::EventSystem
 
 		public:
 			EventBuilder(KxBasicEvtHandler& evtHandler, std::unique_ptr<wxEvent> event, std::optional<KxEventID> eventID = {})
-				:m_EvtHandler(&evtHandler), m_Event(event.release()), m_EventID(eventID), m_Async(true)
+				:m_EvtHandler(&evtHandler), m_Event(event.release()), m_EventID(eventID), m_IsAsync(true)
 			{
 			}
 			EventBuilder(KxBasicEvtHandler& evtHandler, wxEvent& event, std::optional<KxEventID> eventID = {})
-				:m_EvtHandler(&evtHandler), m_Event(&event), m_EventID(eventID), m_Async(false)
+				:m_EvtHandler(&evtHandler), m_Event(&event), m_EventID(eventID), m_IsAsync(false)
 			{
 			}
 			EventBuilder(EventBuilder&& other)
@@ -41,7 +43,7 @@ namespace Kx::EventSystem
 
 			bool IsAsync() const
 			{
-				return m_Async;
+				return m_IsAsync;
 			}
 			bool IsSkipped() const
 			{
@@ -65,17 +67,25 @@ namespace Kx::EventSystem
 template<class TEvent>
 class KxEventBuilder: public Kx::EventSystem::EventBuilder
 {
+	private:
+		void TestEventClass()
+		{
+			m_IsNotifyEvent = std::is_base_of_v<wxNotifyEvent, TEvent>;
+		}
+
 	public:
 		KxEventBuilder(KxBasicEvtHandler& evtHandler, std::unique_ptr<TEvent> event, std::optional<KxEventID> eventID = {})
 			:EventBuilder(evtHandler, std::move(event), eventID)
 		{
+			TestEventClass();
 		}
 		KxEventBuilder(KxBasicEvtHandler& evtHandler, TEvent& event, std::optional<KxEventID> eventID = {})
 			:EventBuilder(evtHandler, event, eventID)
 		{
+			TestEventClass();
 		}
 		KxEventBuilder(KxEventBuilder&& other)
-			:EventBuilder(other)
+			:EventBuilder(std::move(other))
 		{
 		}
 
