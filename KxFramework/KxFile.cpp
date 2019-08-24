@@ -964,12 +964,12 @@ KxStringVector KxFile::Find(const wxString& filter, KxFileSearchType elementType
 							return false;
 						}
 					}
-					elementsList.push_back(item.GetFullPath());
+					elementsList.emplace_back(item.GetFullPath());
 				}
 
 				if (recurse && item.IsDirectory())
 				{
-					directories.push_back(item.GetFullPath());
+					directories.emplace_back(Namespace_Win32File + item.GetFullPath());
 				}
 			}
 		}
@@ -1170,15 +1170,15 @@ bool KxFile::RemoveFolderTree(bool removeRootFolder, bool toRecycleBin)
 
 			// Removing files
 			uint64_t processed = 0;
-			auto filesList = Find(NullFilter, KxFS_FILE, true);
-			for (auto& fileName: filesList)
+			KxStringVector filesList = Find(NullFilter, KxFS_FILE, true);
+			for (wxString& filePath: filesList)
 			{
 				if (HasEventHandler())
 				{
 					KxFileOperationEvent event(KxEVT_FILEOP_REMOVE_FOLDER);
 					event.SetEventObject(m_EventHnadler);
 					event.SetSource(GetFullPath());
-					event.SetCurrent(fileName);
+					event.SetCurrent(filePath);
 					event.SetMajorTotal(filesList.size());
 					event.SetMajorProcessed(processed);
 					event.SetInt(isFile);
@@ -1190,24 +1190,24 @@ bool KxFile::RemoveFolderTree(bool removeRootFolder, bool toRecycleBin)
 					}
 				}
 
-				wxString path = fileName.Prepend(Namespace_Win32File);
-				::SetFileAttributesW(path.wc_str(), FILE_ATTRIBUTE_NORMAL);
-				isSuccess = ::DeleteFileW(path.wc_str());
+				filePath.Prepend(Namespace_Win32File);
+				::SetFileAttributesW(filePath.wc_str(), FILE_ATTRIBUTE_NORMAL);
+				isSuccess = ::DeleteFileW(filePath.wc_str());
 				processed++;
 			}
 
 			// Removing folders
 			processed = 0;
 			isFile = false;
-			auto foldersList = Find(NullFilter, KxFS_FOLDER, true);
-			for (auto i = foldersList.begin(); i != foldersList.end(); ++i)
+			KxStringVector foldersList = Find(NullFilter, KxFS_FOLDER, true);
+			for (auto it = foldersList.rbegin(); it != foldersList.rend(); ++it)
 			{
 				if (HasEventHandler())
 				{
 					KxFileOperationEvent event(KxEVT_FILEOP_REMOVE_FOLDER);
 					event.SetEventObject(m_EventHnadler);
 					event.SetSource(GetFullPath());
-					event.SetCurrent(*i);
+					event.SetCurrent(*it);
 					event.SetMajorTotal(foldersList.size());
 					event.SetMajorProcessed(processed++);
 					event.SetInt(isFile);
@@ -1219,16 +1219,17 @@ bool KxFile::RemoveFolderTree(bool removeRootFolder, bool toRecycleBin)
 					}
 				}
 
-				wxString path = i->Prepend(Namespace_Win32File);
-				::SetFileAttributesW(path.wc_str(), FILE_ATTRIBUTE_NORMAL);
-				isSuccess = ::RemoveDirectoryW(path.wc_str());
+				wxString& folderPath = it->Prepend(Namespace_Win32File);
+				::SetFileAttributesW(folderPath.wc_str(), FILE_ATTRIBUTE_NORMAL);
+				isSuccess = ::RemoveDirectoryW(folderPath.wc_str());
 			}
 
 			// Removing main folder
 			if (removeRootFolder)
 			{
-				::SetFileAttributesW(GetFullPathNS().wc_str(), FILE_ATTRIBUTE_NORMAL);
-				return RemoveDirectoryW(GetFullPathNS().wc_str());
+				wxString path = GetFullPathNS();
+				::SetFileAttributesW(path.wc_str(), FILE_ATTRIBUTE_NORMAL);
+				return RemoveDirectoryW(path.wc_str());
 			}
 			else
 			{
