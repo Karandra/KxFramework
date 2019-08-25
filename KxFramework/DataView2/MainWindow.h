@@ -69,7 +69,6 @@ namespace KxDataView2
 
 			int m_UniformRowHeight = 0;
 			int m_Indent = 0;
-			bool m_Dirty = true;
 
 			NullRenderer m_NullRenderer;
 			Column* m_CurrentColumn = nullptr;
@@ -81,6 +80,9 @@ namespace KxDataView2
 			bool m_UseCellFocus = false;
 			bool m_IsCurrentColumnSetByKeyboard = false;
 			bool m_IsMouseOverExpander = false;
+
+			bool m_Dirty = true;
+			bool m_RedrawNeeded = false;
 
 			Row m_HotTrackRow;
 			bool m_HotTrackRowEnabled = false;
@@ -169,7 +171,9 @@ namespace KxDataView2
 				return SortOrder::UseNone();
 			}
 			void UpdateDisplay();
+			void RefreshDisplay();
 			void RecalculateDisplay();
+			void DoSetVirtualSize(int x, int y) override;
 
 			// Tooltip
 			bool ShowToolTip(const Node& node, Column& column);
@@ -181,7 +185,7 @@ namespace KxDataView2
 			bool IsCellInteractible(const Node& node, const Column& column, InteractibleCell action) const;
 			Column* FindInteractibleColumn(const Node& node, InteractibleCell action);
 			int CalcBestColumnWidth(Column& column) const;
-			void FitLastColumn();
+			bool FitLastColumn(bool update = true);
 
 			// Items
 			void InvalidateItemCount();

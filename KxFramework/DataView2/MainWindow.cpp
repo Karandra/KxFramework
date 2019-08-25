@@ -1160,7 +1160,7 @@ namespace KxDataView2
 			KxColor altRowColor = m_View->m_AlternateRowColor;
 			if (!altRowColor.IsOk())
 			{
-				// Determine the alternate rows colour automatically from the background colour.
+				// Determine the alternate rows color automatically from the background color.
 				const wxColour bgColor = m_View->GetBackgroundColour();
 
 				// Depending on the background, alternate row color will be 3% more dark or 50% brighter.
@@ -1416,7 +1416,7 @@ namespace KxDataView2
 				// Draw cell focus
 				if (m_HasFocus && m_View->IsStyleEnabled(CtrlStyle::CellFocus) && !focusCellRect.IsEmpty() && currentRow == m_CurrentRow && cellState.IsSelected())
 				{
-					// Focus rect looks ugly in it's narrower 3 px
+					// Focus rect looks ugly in it's narrower 3px
 					if (focusCellRect.GetWidth() > 3)
 					{
 						wxRendererNative::Get().DrawFocusRect(this, paintDC, wxRect(focusCellRect).Deflate(FromDIP(wxSize(1, 1))), wxCONTROL_SELECTED);
@@ -1474,14 +1474,26 @@ namespace KxDataView2
 	{
 		m_Dirty = true;
 	}
+	void MainWindow::RefreshDisplay()
+	{
+		m_RedrawNeeded = true;
+	}
+
 	void MainWindow::RecalculateDisplay()
 	{
 		if (m_Model)
 		{
 			SetVirtualSize(GetRowWidth(), GetRowStart(GetRowCount()));
-			m_View->SetScrollRate(10, m_UniformRowHeight);
+			m_View->SetScrollRate(std::min(GetCharWidth() * 2, m_UniformRowHeight), m_UniformRowHeight);
 		}
 		Refresh();
+	}
+	void MainWindow::DoSetVirtualSize(int x, int y)
+	{
+		if (x != m_virtualSize.x || y != m_virtualSize.y)
+		{
+			wxWindow::DoSetVirtualSize(x, y);
+		}
 	}
 
 	// Tooltip
@@ -1641,11 +1653,11 @@ namespace KxDataView2
 		column.SetBestWidth(maxWidth);
 		return maxWidth;
 	}
-	void MainWindow::FitLastColumn()
+	bool MainWindow::FitLastColumn(bool update)
 	{
 		if (!m_View->IsStyleEnabled(CtrlStyle::FitLastColumn))
 		{
-			return;
+			return false;
 		}
 
 		size_t columnCount = m_View->GetVisibleColumnCount();
@@ -1654,6 +1666,18 @@ namespace KxDataView2
 			Column* lastVisibleColumn = m_View->GetColumnPhysicallyDisplayedAt(columnCount - 1);
 			if (lastVisibleColumn)
 			{
+				auto SetColumnWidth = [lastVisibleColumn, update](int width)
+				{
+					if (update)
+					{
+						lastVisibleColumn->SetWidth(width);
+					}
+					else
+					{
+						lastVisibleColumn->AssignWidth(width);
+					}
+				};
+
 				const int clientWidth = GetClientSize().GetWidth();
 				const int virtualWidth = GetRowWidth();
 				const int lastColumnLeft = virtualWidth - lastVisibleColumn->GetWidth();
@@ -1665,11 +1689,11 @@ namespace KxDataView2
 
 					if (desiredWidth < lastVisibleColumn->CalcBestSize() && !fitToClient)
 					{
-						lastVisibleColumn->SetWidth(lastVisibleColumn->GetWidth());
+						SetColumnWidth(lastVisibleColumn->GetWidth());
 						SetVirtualSize(virtualWidth, m_virtualSize.y);
-						return;
+						return true;
 					}
-					lastVisibleColumn->SetWidth(desiredWidth);
+					SetColumnWidth(desiredWidth);
 
 					// All columns fit on screen, so we don't need horizontal scrolling.
 					// To prevent flickering scrollbar when resizing the window to be
@@ -1677,16 +1701,20 @@ namespace KxDataView2
 					// be corrected at idle time.
 					SetVirtualSize(0, m_virtualSize.y);
 					RefreshRect(wxRect(lastColumnLeft, 0, clientWidth - lastColumnLeft, GetSize().y));
+
+					return true;
 				}
 				else
 				{
-					lastVisibleColumn->SetWidth(lastVisibleColumn->GetWidth());
-
 					// Don't bother, the columns won't fit anyway
+					SetColumnWidth(lastVisibleColumn->GetWidth());
 					SetVirtualSize(virtualWidth, m_virtualSize.y);
+
+					return true;
 				}
 			}
 		}
+		return false;
 	}
 
 	// Items
@@ -1882,6 +1910,18 @@ namespace KxDataView2
 			FitLastColumn();
 
 			m_Dirty = false;
+			m_RedrawNeeded = false;
+		}
+		if (m_RedrawNeeded)
+		{
+			FitLastColumn(false);
+			if (HeaderCtrl* header = m_View->GetHeaderCtrl())
+			{
+				header->DoUpdate();
+			}
+			RecalculateDisplay();
+
+			m_RedrawNeeded = false;
 		}
 	}
 
@@ -2407,9 +2447,7 @@ namespace KxDataView2
 	// Scrolling
 	void MainWindow::ScrollWindow(int dx, int dy, const wxRect* rect)
 	{
-		//m_TreeNodeUnderMouse = nullptr;
 		wxWindow::ScrollWindow(dx, dy, rect);
-
 		if (wxHeaderCtrl* header = m_View->GetHeaderCtrl())
 		{
 			header->ScrollWindow(dx, 0);
@@ -2417,8 +2455,6 @@ namespace KxDataView2
 	}
 	void MainWindow::ScrollTo(Row row, size_t column)
 	{
-		//m_TreeNodeUnderMouse = nullptr;
-
 		wxPoint pos;
 		m_View->GetScrollPixelsPerUnit(&pos.x, &pos.y);
 		wxPoint scrollPos(-1, GetRowStart(row) / pos.y);

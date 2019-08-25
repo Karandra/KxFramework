@@ -113,26 +113,6 @@ namespace KxDataView2
 			}
 		}
 	}
-	void HeaderCtrl::OnResize(wxHeaderCtrlEvent& event)
-	{
-		FinishEditing();
-
-		if (Column* column = m_View->GetColumn(event.GetColumn()))
-		{
-			column->AssignWidth(event.GetWidth());
-			GetMainWindow()->UpdateDisplay();
-		}
-	}
-	void HeaderCtrl::OnReordered(wxHeaderCtrlEvent& event)
-	{
-		FinishEditing();
-
-		Column* column = m_View->GetColumn(event.GetColumn());
-		if (column)
-		{
-			m_View->ColumnMoved(*column, event.GetNewOrder());
-		}
-	}
 	void HeaderCtrl::OnWindowClick(wxMouseEvent& event)
 	{
 		wxPoint pos = event.GetPosition();
@@ -150,6 +130,31 @@ namespace KxDataView2
 		if (column && column->IsSizeable())
 		{
 			column->FitContent();
+		}
+	}
+	
+	void HeaderCtrl::OnResize(wxHeaderCtrlEvent& event)
+	{
+		FinishEditing();
+
+		if (Column* column = m_View->GetColumn(event.GetColumn()))
+		{
+			column->AssignWidth(event.GetWidth());
+			GetMainWindow()->RefreshDisplay();
+		}
+	}
+	void HeaderCtrl::OnResizeEnd(wxHeaderCtrlEvent& event)
+	{
+		GetMainWindow()->UpdateDisplay();
+	}
+	void HeaderCtrl::OnReorderEnd(wxHeaderCtrlEvent& event)
+	{
+		FinishEditing();
+
+		Column* column = m_View->GetColumn(event.GetColumn());
+		if (column)
+		{
+			m_View->ColumnMoved(*column, event.GetNewOrder());
 		}
 	}
 
@@ -610,13 +615,13 @@ namespace KxDataView2
 		// Events
 		Bind(wxEVT_HEADER_CLICK, &HeaderCtrl::OnClick, this);
 		Bind(wxEVT_HEADER_RIGHT_CLICK, &HeaderCtrl::OnRClick, this);
-		Bind(wxEVT_HEADER_RESIZING, &HeaderCtrl::OnResize, this);
-		Bind(wxEVT_HEADER_END_RESIZE, &HeaderCtrl::OnResize, this);
-		Bind(wxEVT_HEADER_END_REORDER, &HeaderCtrl::OnReordered, this);
 		Bind(wxEVT_HEADER_SEPARATOR_DCLICK, &HeaderCtrl::OnSeparatorDClick, this);
-
 		Bind(wxEVT_LEFT_UP, &HeaderCtrl::OnWindowClick, this);
 		Bind(wxEVT_RIGHT_UP, &HeaderCtrl::OnWindowClick, this);
+
+		Bind(wxEVT_HEADER_RESIZING, &HeaderCtrl::OnResize, this);
+		Bind(wxEVT_HEADER_END_RESIZE, &HeaderCtrl::OnResizeEnd, this);
+		Bind(wxEVT_HEADER_END_REORDER, &HeaderCtrl::OnReorderEnd, this);
 	}
 
 	MainWindow* HeaderCtrl::GetMainWindow() const

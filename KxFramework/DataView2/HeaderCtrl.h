@@ -46,10 +46,12 @@ namespace KxDataView2
 
 			void OnClick(wxHeaderCtrlEvent& event);
 			void OnRClick(wxHeaderCtrlEvent& event);
-			void OnResize(wxHeaderCtrlEvent& event);
-			void OnReordered(wxHeaderCtrlEvent& event);
 			void OnWindowClick(wxMouseEvent& event);
 			void OnSeparatorDClick(wxHeaderCtrlEvent& event);
+
+			void OnResize(wxHeaderCtrlEvent& event);
+			void OnResizeEnd(wxHeaderCtrlEvent& event);
+			void OnReorderEnd(wxHeaderCtrlEvent& event);
 
 		protected:
 			const wxHeaderColumn& GetColumn(unsigned int index) const override;
