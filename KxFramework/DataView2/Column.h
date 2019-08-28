@@ -75,7 +75,8 @@ namespace KxDataView2
 		friend class KX_API NativeColumn;
 
 		public:
-			using Vector = std::vector<Column*>;
+			using Vector = std::vector<std::unique_ptr<Column>>;
+			using RefVector = std::vector<Column*>;
 
 		private:
 			static int GetAbsMinColumnWidth();
@@ -130,6 +131,11 @@ namespace KxDataView2
 			{
 				m_DisplayIndex = value;
 			}
+			void AssignPhysicalDisplayIndex(size_t value)
+			{
+				m_DisplayIndex = value + GetInvisibleColumnsBefore();
+			}
+
 			void AssignWidth(ColumnWidth width);
 			void AssignVisible(bool value)
 			{

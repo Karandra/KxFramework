@@ -154,7 +154,7 @@ namespace KxDataView2
 		Column* column = m_View->GetColumn(event.GetColumn());
 		if (column)
 		{
-			m_View->ColumnMoved(*column, event.GetNewOrder());
+			m_View->MoveColumnToPhysicalIndex(*column, event.GetNewOrder());
 		}
 	}
 
@@ -178,8 +178,8 @@ namespace KxDataView2
 	void HeaderCtrl::DoSetCount(unsigned int)
 	{
 		// First delete all old columns
-		const size_t oldColumnsCount = Header_GetItemCount(GetHandle());
-		for (size_t i = 0; i < oldColumnsCount; i++)
+		const size_t oldItemsCount = Header_GetItemCount(GetHandle());
+		for (size_t i = 0; i < oldItemsCount; i++)
 		{
 			Header_DeleteItem(GetHandle(), 0);
 		}
@@ -191,70 +191,73 @@ namespace KxDataView2
 		}
 
 		// And add the new ones
-		for (const auto& column: m_View->m_Columns)
+		bool hasResizableColumns = false;
+		size_t index = 0;
+
+		for (const Column* column: m_View->GetColumnsInPhysicalDisplayOrder())
 		{
-			if (column->IsVisible())
-			{
-				DoInsertItem(*column);
-			}
+			HDITEMW item = {};
+			DoMakeItem(item, *column);
+			Header_InsertItem(GetHandle(), index, &item);
+			index++;
+
+			hasResizableColumns = column->IsSizeable();
 		}
 	}
-	void HeaderCtrl::DoInsertItem(const Column& column)
+	void HeaderCtrl::DoMakeItem(_HD_ITEMW& item, const Column& column)
 	{
-		HDITEMW headerItem = {};
-		headerItem.mask |= HDI_FORMAT|HDI_TEXT|HDI_LPARAM;
-		headerItem.lParam = reinterpret_cast<LPARAM>(&column);
+		item.mask |= HDI_FORMAT|HDI_TEXT|HDI_LPARAM;
+		item.lParam = reinterpret_cast<LPARAM>(&column);
 
 		// Title text
-		headerItem.pszText = const_cast<wchar_t*>(column.m_Title.wc_str());
-		headerItem.cchTextMax = column.m_Title.length();
+		item.pszText = const_cast<wchar_t*>(column.m_Title.wc_str());
+		item.cchTextMax = column.m_Title.length();
 
 		// Bitmap
 		const wxBitmap& bitmap = column.m_Bitmap;
 		if (bitmap.IsOk())
 		{
-			headerItem.mask |= HDI_IMAGE;
+			item.mask |= HDI_IMAGE;
 			if (HasFlag(wxHD_BITMAP_ON_RIGHT))
 			{
-				headerItem.fmt |= HDF_BITMAP_ON_RIGHT;
+				item.fmt |= HDF_BITMAP_ON_RIGHT;
 			}
 
-			if (bitmap.IsOk())
+			if (!m_ImageList)
 			{
-				if (!m_ImageList)
-				{
-					m_ImageList = std::make_unique<KxImageList>(bitmap.GetWidth(), bitmap.GetHeight());
-					Header_SetImageList(GetHandle(), m_ImageList->GetHIMAGELIST());
-				}
-				headerItem.iImage = m_ImageList->Add(bitmap);
+				m_ImageList = std::make_unique<KxImageList>(bitmap.GetWidth(), bitmap.GetHeight());
+				Header_SetImageList(GetHandle(), m_ImageList->GetHIMAGELIST());
 			}
-			else
-			{
-				// No bitmap but we still need to update the item
-				headerItem.iImage = I_IMAGENONE;
-			}
+			item.iImage = m_ImageList->Add(bitmap);
+		}
+		else
+		{
+			// No bitmap but we still need to update the item
+			item.mask |= HDI_IMAGE;
+			item.iImage = I_IMAGENONE;
 		}
 
 		// Alignment
 		if (column.GetTitleAlignment() != wxALIGN_NOT)
 		{
-			headerItem.mask |= HDF_LEFT;
+			item.mask |= HDF_LEFT;
 			switch (column.GetTitleAlignment())
 			{
 				case wxALIGN_LEFT:
 				{
-					headerItem.fmt |= HDF_LEFT;
+					item.fmt |= HDF_LEFT;
 					break;
 				}
 				case wxALIGN_CENTER:
+				case wxALIGN_CENTER_VERTICAL:
 				case wxALIGN_CENTER_HORIZONTAL:
 				{
-					headerItem.fmt |= HDF_CENTER;
+					item.fmt |= HDF_CENTER;
 					break;
 				}
 				case wxALIGN_RIGHT:
 				{
-					headerItem.fmt |= HDF_RIGHT;
+					item.fmt |= HDF_RIGHT;
 					break;
 				}
 			};
@@ -263,48 +266,35 @@ namespace KxDataView2
 		// Sort order
 		if (column.IsSorted())
 		{
-			headerItem.fmt |= column.IsSortedAscending() ? HDF_SORTUP : HDF_SORTDOWN;
+			item.fmt |= column.IsSortedAscending() ? HDF_SORTUP : HDF_SORTDOWN;
+		}
+
+		// Resizing
+		if (!column.IsSizeable())
+		{
+			item.fmt |= HDF_FIXEDWIDTH;
 		}
 
 		// Width
-		headerItem.mask |= HDI_WIDTH;
-		headerItem.cxy = column.GetWidth();
+		item.mask |= HDI_WIDTH;
+		item.cxy = column.GetWidth();
 
 		// Display order
-		headerItem.mask |= HDI_ORDER;
-		headerItem.iOrder = column.GetPhysicalDisplayIndex();
+		//item.mask |= HDI_ORDER;
+		//item.iOrder = column.GetPhysicalDisplayIndex();
 
-		// Dropdown.
+		// Dropdown
 		if (column.HasDropdown())
 		{
-			headerItem.fmt |= HDF_SPLITBUTTON;
+			item.fmt |= HDF_SPLITBUTTON;
 		}
 
 		// Checkbox
 		if (column.HasCheckBox())
 		{
-			headerItem.fmt |= HDF_CHECKBOX;
-			headerItem.fmt |= column.IsChecked() ? HDF_CHECKED : 0;
+			item.fmt |= HDF_CHECKBOX;
+			item.fmt |= column.IsChecked() ? HDF_CHECKED : 0;
 		}
-
-		// Insert the item
-		Header_InsertItem(GetHandle(), headerItem.iOrder, &headerItem);
-
-		// Resizing cursor that correctly reflects per-column IsSizable() cannot
-		// be implemented, it is per-control rather than per-column in the native
-		// control. Enable resizing cursor if at least one column is resizeble.
-		auto HasResizableColumns = [this]()
-		{
-			for (const auto& column: m_View->m_Columns)
-			{
-				if (column->IsVisible() && column->IsSizeable())
-				{
-					return true;
-				}
-			}
-			return false;
-		};
-		KxUtility::ToggleWindowStyle(GetHandle(), GWL_STYLE, HDS_NOSIZING, !HasResizableColumns());
 	}
 	bool HeaderCtrl::MSWOnNotify(int ctrlID, WXLPARAM lParam, WXLPARAM* result)
 	{
@@ -674,7 +664,6 @@ namespace KxDataView2
 		// Skip setting the background color altogether to prevent 'wxHeaderCtrl' from trying to
 		// owner-draw background because it causes flicker on resizing columns when double-buffering
 		// is not enabled, but enabling double-buffering have some negative consequences on drag image.
-		// Look for details in 'HeaderCtrl::MSWHandleNotify' in disabled code for 'HDN_[BEGIN|END]DRAG' messages.
 		return false;
 	}
 }

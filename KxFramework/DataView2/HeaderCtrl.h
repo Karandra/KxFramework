@@ -3,6 +3,7 @@
 #include "KxFramework/DataView/KxDataViewConstants.h"
 #include "KxFramework/KxDataView2Event.h"
 #include "KxFramework/KxImageList.h"
+struct _HD_ITEMW;
 
 namespace KxDataView2
 {
@@ -59,7 +60,7 @@ namespace KxDataView2
 			
 			void DoUpdate(unsigned int = 0) override;
 			void DoSetCount(unsigned int = 0) override;
-			void DoInsertItem(const Column& column);
+			void DoMakeItem(_HD_ITEMW& item, const Column& column);
 			bool MSWOnNotify(int ctrlID, WXLPARAM lParam, WXLPARAM* result) override;
 			void OnInternalIdle() override;
 			

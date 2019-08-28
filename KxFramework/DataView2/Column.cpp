@@ -196,7 +196,7 @@ namespace KxDataView2
 	{
 		if (m_View)
 		{
-			m_View->ColumnMoved(*this, newPosition);
+			m_View->MoveColumn(*this, newPosition);
 			UpdateDisplay();
 		}
 		else
@@ -208,7 +208,15 @@ namespace KxDataView2
 	{
 		if (IsVisible())
 		{
-			SetDisplayIndex(newPosition + GetInvisibleColumnsBefore());
+			if (m_View)
+			{
+				m_View->MoveColumnToPhysicalIndex(*this, newPosition);
+				UpdateDisplay();
+			}
+			else
+			{
+				AssignPhysicalDisplayIndex(newPosition);
+			}
 		}
 	}
 	size_t Column::GetInvisibleColumnsBefore() const

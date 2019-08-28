@@ -52,7 +52,7 @@ namespace KxDataView2
 			bool m_AllowMultiColumnSort = false;
 			KxColor m_BorderColor;
 			KxColor m_AlternateRowColor;
-			std::vector<std::unique_ptr<Column>> m_Columns;
+			Column::Vector m_Columns;
 
 			// This indicates that at least one entry in 'm_Columns' has 'm_Dirty'
 			// flag set. It's cheaper to check one flag in OnInternalIdle() than to
@@ -67,7 +67,7 @@ namespace KxDataView2
 			void OnPaint(wxPaintEvent& event);
 			wxSize GetSizeAvailableForScrollTarget(const wxSize& size) override;
 
-			Column::Vector DoGetColumnsInDisplayOrder(bool physicalOrder) const;
+			Column::RefVector DoGetColumnsInDisplayOrder(bool physicalOrder) const;
 
 		protected:
 			void DoEnable(bool value) override;
@@ -226,11 +226,11 @@ namespace KxDataView2
 			Column* GetColumnByID(ColumnID id) const;
 			Column* GetColumnDisplayedAt(size_t displayIndex) const;
 			Column* GetColumnPhysicallyDisplayedAt(size_t displayIndex) const;
-			Column::Vector GetColumnsInDisplayOrder() const
+			Column::RefVector GetColumnsInDisplayOrder() const
 			{
 				return DoGetColumnsInDisplayOrder(false);
 			}
-			Column::Vector GetColumnsInPhysicalDisplayOrder() const
+			Column::RefVector GetColumnsInPhysicalDisplayOrder() const
 			{
 				return DoGetColumnsInDisplayOrder(true);
 			}
@@ -245,7 +245,7 @@ namespace KxDataView2
 
 			bool IsMultiColumnSortUsed() const;
 			Column* GetSortingColumn() const;
-			Column::Vector GetSortingColumns() const;
+			Column::RefVector GetSortingColumns() const;
 
 			bool IsMultiColumnSortAllowed() const
 			{
@@ -394,7 +394,8 @@ namespace KxDataView2
 
 		private:
 			// Called by header window after reorder
-			void ColumnMoved(Column& column, size_t newPos);
+			void MoveColumn(Column& column, size_t newIndex);
+			void MoveColumnToPhysicalIndex(Column& movedColumn, size_t newIndex);
 
 			// Update the display after a change to an individual column
 			void OnColumnChange(Column& column);

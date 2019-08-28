@@ -157,7 +157,7 @@ namespace KxDataView2
 		return newSize;
 	}
 
-	Column::Vector View::DoGetColumnsInDisplayOrder(bool physicalOrder) const
+	Column::RefVector View::DoGetColumnsInDisplayOrder(bool physicalOrder) const
 	{
 		std::vector<Column*> displayOrder;
 		displayOrder.reserve(m_Columns.size());
@@ -303,11 +303,12 @@ namespace KxDataView2
 		// Columns can't be reordered if there is no header window which allows to do this
 		if (HasHeaderCtrl())
 		{
-			std::vector<Column*> displayed = GetColumnsInPhysicalDisplayOrder();
+			Column::RefVector displayed = GetColumnsInPhysicalDisplayOrder();
 			if (displayIndex < displayed.size())
 			{
 				return displayed[displayIndex];
 			}
+			return nullptr;
 		}
 		return GetColumn(displayIndex);
 	}
@@ -422,9 +423,9 @@ namespace KxDataView2
 		}
 		return nullptr;
 	}
-	Column::Vector View::GetSortingColumns() const
+	Column::RefVector View::GetSortingColumns() const
 	{
-		Column::Vector sortingColumns;
+		Column::RefVector sortingColumns;
 		for (const auto& column: m_Columns)
 		{
 			if (column->IsSorted())
@@ -856,22 +857,22 @@ namespace KxDataView2
 	}
 
 	// Utility functions, not part of the API
-	void View::ColumnMoved(Column& movedColumn, size_t newDisplayIndex)
+	void View::MoveColumn(Column& movedColumn, size_t newIndex)
 	{
 		// Do *not* reorder 'm_Columns' elements here, they should always be in the order in which columns
 		// were added, we only display the columns in different order.
-		if (movedColumn.GetDisplayIndex() != newDisplayIndex)
+		if (movedColumn.GetDisplayIndex() != newIndex)
 		{
 			const size_t oldDisplayIndex = movedColumn.GetDisplayIndex();
-			Column& otherColumn = *GetColumnDisplayedAt(newDisplayIndex);
+			Column& otherColumn = *GetColumnDisplayedAt(newIndex);
 
-			if (oldDisplayIndex < newDisplayIndex)
+			if (oldDisplayIndex < newIndex)
 			{
 				// Column moved to the left
 				for (auto& column: m_Columns)
 				{
 					size_t displayIndex = column->GetDisplayIndex();
-					if (displayIndex <= newDisplayIndex && displayIndex > oldDisplayIndex)
+					if (displayIndex <= newIndex && displayIndex > oldDisplayIndex)
 					{
 						column->AssignDisplayIndex(displayIndex - 1);
 					}
@@ -883,7 +884,7 @@ namespace KxDataView2
 				for (auto& column: m_Columns)
 				{
 					size_t displayIndex = column->GetDisplayIndex();
-					if (displayIndex >= newDisplayIndex && displayIndex < oldDisplayIndex)
+					if (displayIndex >= newIndex && displayIndex < oldDisplayIndex)
 					{
 						column->AssignDisplayIndex(displayIndex + 1);
 					}
@@ -891,12 +892,20 @@ namespace KxDataView2
 			}
 
 			// Set the new display position
-			movedColumn.AssignDisplayIndex(newDisplayIndex);
+			movedColumn.AssignDisplayIndex(newIndex);
 
 			// Notify the header control
 			OnColumnCountChanged();
 		}
 	}
+	void View::MoveColumnToPhysicalIndex(Column& movedColumn, size_t newIndex)
+	{
+		if (Column* column = GetColumnPhysicallyDisplayedAt(newIndex))
+		{
+			MoveColumn(movedColumn, column->GetDisplayIndex());
+		}
+	}
+
 	void View::OnColumnChange(Column& column)
 	{
 		if (m_HeaderArea)
