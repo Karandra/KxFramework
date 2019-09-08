@@ -269,6 +269,7 @@
     <ClInclude Include="KxFramework\KxAlignedAllocator.h" />
     <ClInclude Include="KxFramework\KxAnimatedSplashWindow.h" />
     <ClInclude Include="KxFramework\KxAnimation.h" />
+    <ClInclude Include="KxFramework\KxAny.h" />
     <ClInclude Include="KxFramework\KxApp.h" />
     <ClInclude Include="KxFramework\KxArchiveEvent.h" />
     <ClInclude Include="KxFramework\KxArchiveFileFinder.h" />
@@ -580,6 +581,7 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxAnimatedSplashWindow.cpp" />
     <ClCompile Include="KxFramework\KxAnimation.cpp" />
+    <ClCompile Include="KxFramework\KxAny.cpp" />
     <ClCompile Include="KxFramework\KxApp.cpp" />
     <ClCompile Include="KxFramework\KxArchiveEvent.cpp" />
     <ClCompile Include="KxFramework\KxArchiveFileFinder.cpp" />

@@ -1102,6 +1102,9 @@
     <ClInclude Include="KxFramework\KxEnumClassOperations.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxAny.h">
+      <Filter>Header Files\DataStructures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1749,6 +1752,9 @@
     </ClCompile>
     <ClCompile Include="Kx\System\FileType.cpp">
       <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxAny.cpp">
+      <Filter>Source Files\DataStructures</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
