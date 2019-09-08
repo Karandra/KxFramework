@@ -1,58 +1,62 @@
 #pragma once
 #include <typeinfo>
 
+class KX_API KxIObject;
+
 namespace KxRTTI
 {
-	using IID = std::size_t;
+	using IID = std::type_info;
 
-	template<class T> IID GetIIDOf() noexcept
+	template<class T> const IID& IIDOf() noexcept
 	{
-		return typeid(T).hash_code();
+		return typeid(T);
 	}
+}
 
-	class IObject;
-	class Query final
+namespace KxRTTI
+{
+	class KX_API QueryInfo final
 	{
 		private:
-			const IID m_IID;
-			IObject* m_IObject = nullptr;
+			const IID& m_IID;
+			KxIObject* m_IObject = nullptr;
 			void* m_ActualObject = nullptr;
 
 		public:
-			Query(const IID& iid)
+			QueryInfo(const IID& iid) noexcept
 				:m_IID(iid)
 			{
 			}
 
 		public:
-			const IID& GetIID() const
+			const IID& GetIID() const noexcept
 			{
 				return m_IID;
 			}
-			bool TestIID(const IID& other) const
+			bool TestIID(const IID& other) const noexcept
 			{
 				return m_IID == other;
 			}
-					
-			IObject* GetIObject() const
+			
+			KxIObject* GetIObject() const noexcept
 			{
 				return m_IObject;
 			}
-			void* GetActualObject() const
+			void* GetActualObject() const noexcept
 			{
 				return m_ActualObject;
 			}
-			template<class T> T* GetActualObject() const
+			template<class T> T* GetActualObject() const noexcept
 			{
 				return reinterpret_cast<T*>(m_ActualObject);
 			}
-					
-			void AssignNull()
+			
+			void AssignNull() noexcept
 			{
 				m_IObject = nullptr;
 				m_ActualObject = nullptr;
 			}
-			void Assign(IObject* object, void* actualObject)
+			void Assign(KxIObject* object, void* actualObject) noexcept
 			{
 				m_IObject = object;
 				m_ActualObject = actualObject;
@@ -60,80 +64,85 @@ namespace KxRTTI
 	};
 }
 
-namespace KxRTTI
+class KX_API KxIObject
 {
-	class IObject
-	{
-		protected:
-			virtual bool OnQueryInterface(Query& query) noexcept = 0
-			{
-				static const IID ms_IID = GetIIDOf<IObject>();
-				if (query.TestIID(ms_IID))
-				{
-					query.Assign(const_cast<IObject*>(this), const_cast<IObject*>(this));
-					return true;
-				}
-				return false;
-			}
+	public:
+		using QueryInfo = KxRTTI::QueryInfo;
+		using IID = KxRTTI::IID;
 
-		public:
-			virtual ~IObject() = default;
+	public:
+		template<class T> static const IID& IIDOf() noexcept
+		{
+			return KxRTTI::IIDOf<T>();
+		}
 
-		public:
-			IObject* QueryInterface(const IID& iid) noexcept
+	protected:
+		virtual bool OnQueryInterface(QueryInfo& query) noexcept = 0
+		{
+			static const IID& s_IID = IIDOf<KxIObject>();
+			if (query.TestIID(s_IID))
 			{
-				Query query(iid);
-				OnQueryInterface(query);
-				return query.GetIObject();
+				query.Assign(const_cast<KxIObject*>(this), const_cast<KxIObject*>(this));
+				return true;
 			}
-			const IObject* QueryInterface(const IID& iid) const noexcept
-			{
-				Query query(iid);
-				const_cast<IObject*>(this)->OnQueryInterface(query);
-				return query.GetIObject();
-			}
+			return false;
+		}
 
-			template<class T> T* QueryInterface() noexcept
-			{
-				Query query(GetIIDOf<T>());
-				OnQueryInterface(query);
-				return query.GetActualObject<T>();
-			}
-			template<class T> const T* QueryInterface() const noexcept
-			{
-				Query query(GetIIDOf<T>());
-				const_cast<IObject*>(this)->OnQueryInterface(query);
-				return query.GetActualObject<T>();
-			}
+	public:
+		virtual ~KxIObject() = default;
 
-			template<class T> bool QueryInterface(T*& ptr) noexcept
-			{
-				ptr = QueryInterface<T>();
-				return ptr != nullptr;
-			}
-			template<class T> bool QueryInterface(const T*& ptr) const noexcept
-			{
-				ptr = QueryInterface<T>();
-				return ptr != nullptr;
-			}
-	};
-}
+	public:
+		KxIObject* QueryInterface(const IID& iid) noexcept
+		{
+			QueryInfo query(iid);
+			OnQueryInterface(query);
+			return query.GetIObject();
+		}
+		const KxIObject* QueryInterface(const IID& iid) const noexcept
+		{
+			QueryInfo query(iid);
+			const_cast<KxIObject*>(this)->OnQueryInterface(query);
+			return query.GetIObject();
+		}
+
+		template<class T> T* QueryInterface() noexcept
+		{
+			QueryInfo query(IIDOf<T>());
+			OnQueryInterface(query);
+			return query.GetActualObject<T>();
+		}
+		template<class T> const T* QueryInterface() const noexcept
+		{
+			return const_cast<KxIObject&>(*this).QueryInterface<T>();
+		}
+
+		template<class T> bool QueryInterface(T*& ptr) noexcept
+		{
+			ptr = QueryInterface<T>();
+			return ptr != nullptr;
+		}
+		template<class T> bool QueryInterface(const T*& ptr) const noexcept
+		{
+			ptr = QueryInterface<T>();
+			return ptr != nullptr;
+		}
+};
 
 namespace KxRTTI
 {
 	template<class TInterface>
-	class IInterface: public IObject
+	class IInterface: public KxIObject
 	{
 		protected:
-			bool OnQueryInterface(Query& query) noexcept override
+			bool OnQueryInterface(QueryInfo& query) noexcept override
 			{
-				static const IID ms_IID = GetIIDOf<TInterface>();
-				if (query.TestIID(ms_IID))
+				static const IID& s_IID = IIDOf<TInterface>();
+				if (query.TestIID(s_IID))
 				{
 					query.Assign(const_cast<IInterface*>(this), const_cast<IInterface*>(this));
 					return true;
 				}
-				return IObject::OnQueryInterface(query);
+				return KxIObject::OnQueryInterface(query);
 			}
 	};
 
@@ -145,10 +154,10 @@ namespace KxRTTI
 			template<size_t N, typename... Ts> using NthTypeOf = typename std::tuple_element<N, std::tuple<Ts...>>::type;
 
 		protected:
-			bool OnQueryInterface(Query& query) noexcept override
+			bool OnQueryInterface(QueryInfo& query) noexcept override
 			{
-				static const IID ms_IID = GetIIDOf<TInterface>();
-				if (query.TestIID(ms_IID))
+				static const IID& s_IID = IIDOf<TInterface>();
+				if (query.TestIID(s_IID))
 				{
 					query.Assign(GetIOW(), const_cast<IExtendInterface*>(this));
 					return true;
@@ -157,11 +166,11 @@ namespace KxRTTI
 			}
 
 		private:
-			IObject* GetIOW()
+			KxIObject* GetIOW() noexcept
 			{
 				return static_cast<IOW*>(this);
 			}
-			const IObject* GetIOW() const
+			const KxIObject* GetIOW() const noexcept
 			{
 				return static_cast<const IOW*>(this);
 			}
@@ -174,11 +183,11 @@ namespace KxRTTI
 			}
 
 		public:
-			IObject* QueryInterface(const IID& iid) noexcept
+			KxIObject* QueryInterface(const IID& iid) noexcept
 			{
 				return GetIOW()->QueryInterface(iid);
 			}
-			const IObject* QueryInterface(const IID& iid) const noexcept
+			const KxIObject* QueryInterface(const IID& iid) const noexcept
 			{
 				return GetIOW()->QueryInterface(iid);
 			}
@@ -202,11 +211,11 @@ namespace KxRTTI
 			}
 
 		public:
-			operator IObject*()
+			operator KxIObject*() noexcept
 			{
 				return GetIOW();
 			}
-			operator const IObject*() const
+			operator const KxIObject*() const noexcept
 			{
 				return GetIOW();
 			}
