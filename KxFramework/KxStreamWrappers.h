@@ -460,7 +460,7 @@ template<class BaseStreamT> class KxIOStreamHelper
 		{
 			static_assert(sizeof...(Types) != 0, "KxIOStreamHelper::Skip<Types...>: Skipping 0 bytes is not allowed");
 
-			return SeekIO(KxUtility::SizeOfParameterPack<Types...>(), wxSeekMode::wxFromCurrent) != KxStreamBase::InvalidOffset;
+			return SeekIO(KxUtility::SizeOfParameterPackValues<Types...>(), wxSeekMode::wxFromCurrent) != KxStreamBase::InvalidOffset;
 		}
 
 		bool SeekFromStart(KxStreamBase::Offset offset)
