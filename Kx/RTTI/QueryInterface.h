@@ -57,7 +57,7 @@ class KX_API KxIObject
 		}
 		template<class... Args, class T> static bool QueryAnyOf(const KxIID& iid, void*& ptr, T& self, Args&&... arg) noexcept
 		{
-			static_assert((std::is_base_of_v<KxIObject, Args> && ...), "[...] must inherit from 'KxIObject'");
+			static_assert((std::is_base_of_v<KxIObject, std::remove_reference_t<Args>> && ...), "[...] must inherit from 'KxIObject'");
 
 			if (iid.IsOfType<T>())
 			{
@@ -147,7 +147,7 @@ namespace KxRTTI
 			using KxIObject::QueryInterface;
 			bool QueryInterface(const KxIID& iid, void*& ptr) noexcept override
 			{
-				static_assert((std::is_base_of_v<KxIObject, TBase> && ...), "KxIObject as a base class required");
+				static_assert((std::is_base_of_v<KxIObject, TBase> && ...), "[...] must inherit from 'KxIObject'");
 
 				return KxIObject::QueryAnyOf<TBase...>(iid, ptr, static_cast<TDerived&>(*this));
 			}
