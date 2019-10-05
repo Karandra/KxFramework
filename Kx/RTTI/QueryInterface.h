@@ -41,35 +41,35 @@ class KX_API KxIID final
 class KX_API KxIObject
 {
 	protected:
-		template<class... Args, class T> static bool QueryAnyOf(const KxIID& iid, void*& ptr, T* self) noexcept
+		template<class... Args, class T> static bool QueryAnyOf(const KxIID& iid, void*& ptr, T& self) noexcept
 		{
 			if (iid.IsOfType<T>())
 			{
-				ptr = self;
+				ptr = &self;
 				return true;
 			}
-			else if (void* result = nullptr; (static_cast<Args*>(self)->Args::QueryInterface(iid, result) || ...))
+			else if (void* result = nullptr; (static_cast<Args&>(self).Args::QueryInterface(iid, result) || ...))
 			{
 				ptr = result;
 				return true;
 			}
-			return self->KxIObject::QueryInterface(iid, ptr);
+			return self.KxIObject::QueryInterface(iid, ptr);
 		}
-		template<class... Args, class T> static bool QueryAnyOf(const KxIID& iid, void*& ptr, T* self, Args&&... arg) noexcept
+		template<class... Args, class T> static bool QueryAnyOf(const KxIID& iid, void*& ptr, T& self, Args&&... arg) noexcept
 		{
-			static_assert((std::is_base_of_v<KxIObject, Args> && ...), "[...] must be inherit from 'KxIObject'");
+			static_assert((std::is_base_of_v<KxIObject, Args> && ...), "[...] must inherit from 'KxIObject'");
 
 			if (iid.IsOfType<T>())
 			{
-				ptr = self;
+				ptr = &self;
 				return true;
 			}
-			else if (void* result = nullptr; (arg->QueryInterface(iid, result) || ...))
+			else if (void* result = nullptr; (arg.QueryInterface(iid, result) || ...))
 			{
 				ptr = result;
 				return true;
 			}
-			return self->KxIObject::QueryInterface(iid, ptr);
+			return self.KxIObject::QueryInterface(iid, ptr);
 		}
 		
 	public:
@@ -129,7 +129,7 @@ namespace KxRTTI
 			using KxIObject::QueryInterface;
 			bool QueryInterface(const KxIID& iid, void*& ptr) noexcept override
 			{
-				return KxIObject::QueryAnyOf(iid, ptr, static_cast<T*>(this));
+				return KxIObject::QueryAnyOf(iid, ptr, static_cast<T&>(*this));
 			}
 	};
 
@@ -149,7 +149,7 @@ namespace KxRTTI
 			{
 				static_assert((std::is_base_of_v<KxIObject, TBase> && ...), "KxIObject as a base class required");
 
-				return KxIObject::QueryAnyOf<TBase...>(iid, ptr, static_cast<TDerived*>(this));
+				return KxIObject::QueryAnyOf<TBase...>(iid, ptr, static_cast<TDerived&>(*this));
 			}
 	};
 }

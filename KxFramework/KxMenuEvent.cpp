@@ -17,11 +17,15 @@ KxMenuEvent::KxMenuEvent(wxEventType type, KxMenu* menu, KxMenuItem* menuItem)
 KxMenuEvent::~KxMenuEvent()
 {
 }
+
 KxMenuEvent* KxMenuEvent::Clone() const
 {
 	return new KxMenuEvent(*this);
 }
-
+wxWindow* KxMenuEvent::GetInvokingWindow() const
+{
+	return m_Menu ? m_Menu->GetWindow() : nullptr;
+}
 const wxString& KxMenuEvent::GetHelpString() const
 {
 	return m_Item ? m_Item->GetHelp() : m_HelpString;

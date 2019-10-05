@@ -15,10 +15,11 @@ class KX_API KxMenuEvent: public wxNotifyEvent
 
 	public:
 		KxMenuEvent(wxEventType type = wxEVT_NULL, KxMenu* menu = nullptr, KxMenuItem* menuItem = nullptr);
-		virtual ~KxMenuEvent();
-		virtual KxMenuEvent* Clone() const;
+		~KxMenuEvent();
 
 	public:
+		KxMenuEvent* Clone() const override;
+
 		bool IsPopup() const
 		{
 			return m_IsPopup;
@@ -36,7 +37,8 @@ class KX_API KxMenuEvent: public wxNotifyEvent
 		{
 			m_Menu = menu;
 		}
-		
+		wxWindow* GetInvokingWindow() const;
+
 		KxMenuItem* GetItem() const
 		{
 			return m_Item;
