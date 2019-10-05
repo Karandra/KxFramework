@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "Coroutine.h"
 
-namespace Kx::Async
+namespace KxAsync
 {
 	template<class TCallable> static void DelayedCall(TCallable func, const wxTimeSpan& delay)
 	{

@@ -6,7 +6,7 @@
 
 class KX_API KxBasicEvtHandler
 {
-	friend class Kx::EventSystem::EventBuilder;
+	friend class KxEventSystem::EventBuilder;
 
 	public:
 		static void AddFilter(wxEventFilter& filter)
@@ -293,8 +293,8 @@ class KX_API KxBasicEvtHandler
 		template<class TCallable, class... Args>
 		void CallAfter(TCallable callable, Args&&... arg)
 		{
-			using namespace Kx::EventSystem;
-			using TCallableTraits = typename Kx::Utility::CallableTraits<TCallable, Args...>;
+			using namespace KxEventSystem;
+			using TCallableTraits = typename KxUtility::CallableTraits<TCallable, Args...>;
 
 			if constexpr(TCallableTraits::IsMemberFunction)
 			{

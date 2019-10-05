@@ -29,7 +29,7 @@ class KxIndirectCallEvent: public wxAsyncMethodCallEvent
 		}
 };
 
-namespace Kx::EventSystem
+namespace KxEventSystem
 {
 	// Wrapper for lambda function or a class which implements 'operator()'
 	template<class TCallable, class... Args>
@@ -92,7 +92,7 @@ namespace Kx::EventSystem
 			{
 				std::apply([this](auto&& ... arg)
 				{
-					using TClass = typename Utility::MethodTraits<TMethod>::TInstance;
+					using TClass = typename KxUtility::MethodTraits<TMethod>::TInstance;
 					std::invoke(m_Method, static_cast<TClass*>(&GetEvtHandler()), std::forward<decltype(arg)>(arg)...);
 				}, std::move(m_Parameters));
 			}

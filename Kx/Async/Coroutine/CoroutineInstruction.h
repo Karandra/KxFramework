@@ -3,7 +3,7 @@
 #include "CoroutineImpl.h"
 
 class KX_API KxCoroutine;
-namespace Kx::Async
+namespace KxAsync
 {
 	class KX_API BaseCoroutine;
 
@@ -22,11 +22,11 @@ namespace Kx::Async
 
 class KX_API KxYieldInstruction
 {
-	friend class Kx::Async::BaseCoroutine;
+	friend class KxAsync::BaseCoroutine;
 	friend class KxCoroutine;
 
 	private:
-		using InstructionType = Kx::Async::InstructionType;
+		using InstructionType = KxAsync::InstructionType;
 
 	private:
 		InstructionType m_Type = InstructionType::Continue;
@@ -41,7 +41,7 @@ class KX_API KxYieldInstruction
 		template<class T> KxYieldInstruction(InstructionType type, const T& nextState) noexcept
 			:m_Type(type), m_NextState(static_cast<intptr_t>(nextState))
 		{
-			Kx::Async::AssertStateType<T>();
+			KxAsync::AssertStateType<T>();
 		}
 
 	public:
@@ -56,7 +56,7 @@ class KX_API KxYieldInstruction
 		
 		template<class T = intptr_t> std::optional<T> GetNextState() const noexcept
 		{
-			Kx::Async::AssertStateType<T>();
+			KxAsync::AssertStateType<T>();
 			if (m_NextState)
 			{
 				return static_cast<T>(*m_NextState);

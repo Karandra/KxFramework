@@ -8,7 +8,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxFormat.h"
 
-namespace Kx::Utility::String
+namespace KxUtility::String
 {
 	using TStdWxString = typename std::basic_string<wxChar, std::char_traits<wxChar>, std::allocator<wxChar>>;
 	using TStdWxStringView = typename std::basic_string_view<wxChar, std::char_traits<wxChar>>;
@@ -27,7 +27,7 @@ namespace Kx::Utility::String
 	}
 }
 
-namespace Kx::Utility::String
+namespace KxUtility::String
 {
 	template<class... Args> wxString Concat(Args&&... arg)
 	{

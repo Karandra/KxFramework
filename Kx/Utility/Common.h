@@ -1,7 +1,7 @@
 #pragma once
 #include <type_traits>
 
-namespace Kx::Utility
+namespace KxUtility
 {
 	template<class TLeft, class TRight> void ExchangeAndReset(TLeft& left, TLeft& right, TRight nullValue)
 	{

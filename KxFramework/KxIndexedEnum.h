@@ -171,7 +171,7 @@ namespace KxIndexedEnum
 			
 			static TEnum FromOrExpression(const TString& string, TEnum initialValue = static_cast<TEnum>(0))
 			{
-				using namespace Kx::Utility::String;
+				using namespace KxUtility::String;
 
 				TInt intValue = static_cast<TInt>(initialValue);
 				SplitBySeparator(string, wxS('|'), [&intValue](TStdWxStringView value)

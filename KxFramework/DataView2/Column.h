@@ -67,7 +67,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API Column: public Kx::RTTI::Interface<Column>, public wxClientDataContainer
+	class KX_API Column: public KxRTTI::Interface<Column>, public wxClientDataContainer
 	{
 		friend class KX_API View;
 		friend class KX_API MainWindow;

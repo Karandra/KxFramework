@@ -16,7 +16,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API Model: public Kx::RTTI::Interface<Model>
+	class KX_API Model: public KxRTTI::Interface<Model>
 	{
 		friend class KX_API Node;
 		friend class KX_API RootNode;
@@ -103,7 +103,7 @@ namespace KxDataView2
 //////////////////////////////////////////////////////////////////////////
 namespace KxDataView2
 {
-	class KX_API ListModel: public Kx::RTTI::ExtendInterface<ListModel, Model>
+	class KX_API ListModel: public KxRTTI::ExtendInterface<ListModel, Model>
 	{
 		public:
 			size_t GetItemCount() const;
@@ -124,7 +124,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API VirtualListModel: public Kx::RTTI::ExtendInterface<VirtualListModel, Model>
+	class KX_API VirtualListModel: public KxRTTI::ExtendInterface<VirtualListModel, Model>
 	{
 		private:
 			size_t m_ItemCount = 0;

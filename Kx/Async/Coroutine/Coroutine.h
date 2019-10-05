@@ -3,7 +3,7 @@
 #include "CoroutineImpl.h"
 #include "CoroutineInstruction.h"
 
-class KX_API KxCoroutine: public Kx::Async::BaseCoroutine
+class KX_API KxCoroutine: public KxAsync::BaseCoroutine
 {
 	private:
 		static KxCoroutine* DoRun(std::unique_ptr<KxCoroutine> coroutine)
@@ -18,15 +18,15 @@ class KX_API KxCoroutine: public Kx::Async::BaseCoroutine
 		}
 		template<class TCallable> static KxCoroutine* Run(TCallable func)
 		{
-			return DoRun(std::make_unique<Kx::Async::CoroutineCallableWrapper<TCallable>>(std::move(func)));
+			return DoRun(std::make_unique<KxAsync::CoroutineCallableWrapper<TCallable>>(std::move(func)));
 		}
 		template<class TClass> static KxCoroutine* Run(KxYieldInstruction(TClass::*method)(KxCoroutine&), TClass* object)
 		{
-			return DoRun(std::make_unique<Kx::Async::CoroutineMethodWrapper<TClass>>(method, object));
+			return DoRun(std::make_unique<KxAsync::CoroutineMethodWrapper<TClass>>(method, object));
 		}
 };
 
-namespace Kx::Async
+namespace KxAsync
 {
 	template<class TCallable>
 	class CoroutineCallableWrapper: public KxCoroutine

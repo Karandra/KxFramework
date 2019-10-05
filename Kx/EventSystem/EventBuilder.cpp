@@ -3,7 +3,7 @@
 #include "BasicEvtHandler.h"
 #include "Kx/Utility/Common.h"
 
-namespace Kx::EventSystem
+namespace KxEventSystem
 {
 	EventBuilder::~EventBuilder()
 	{
@@ -25,7 +25,7 @@ namespace Kx::EventSystem
 	{
 		if (m_IsAsync)
 		{
-			std::unique_ptr<wxEvent> event(Utility::ExchangeResetAndReturn(m_Event, nullptr));
+			std::unique_ptr<wxEvent> event(KxUtility::ExchangeResetAndReturn(m_Event, nullptr));
 			m_EvtHandler->DoQueueEvent(std::move(event), m_EventID);
 			m_IsSent = true;
 		}
@@ -41,9 +41,9 @@ namespace Kx::EventSystem
 
 	EventBuilder& EventBuilder::operator=(EventBuilder&& other)
 	{
+		using KxUtility::ExchangeAndReset;
 		const EventBuilder null;
 
-		using Utility::ExchangeAndReset;
 		ExchangeAndReset(m_EvtHandler, other.m_EvtHandler, null.m_EvtHandler);
 		ExchangeAndReset(m_Event, other.m_Event, null.m_Event);
 		ExchangeAndReset(m_EventID, other.m_EventID, null.m_EventID);

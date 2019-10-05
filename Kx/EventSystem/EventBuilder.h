@@ -3,7 +3,7 @@
 #include <optional>
 class KxBasicEvtHandler;
 
-namespace Kx::EventSystem
+namespace KxEventSystem
 {
 	class KX_API EventBuilder
 	{
@@ -65,7 +65,7 @@ namespace Kx::EventSystem
 }
 
 template<class TEvent>
-class KxEventBuilder: public Kx::EventSystem::EventBuilder
+class KxEventBuilder: public KxEventSystem::EventBuilder
 {
 	private:
 		void TestEventClass()

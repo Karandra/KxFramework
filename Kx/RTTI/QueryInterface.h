@@ -55,6 +55,22 @@ class KX_API KxIObject
 			}
 			return self->KxIObject::QueryInterface(iid, ptr);
 		}
+		template<class... Args, class T> static bool QueryAnyOf(const KxIID& iid, void*& ptr, T* self, Args&&... arg) noexcept
+		{
+			static_assert((std::is_base_of_v<KxIObject, Args> && ...), "[...] must be inherit from 'KxIObject'");
+
+			if (iid.IsOfType<T>())
+			{
+				ptr = self;
+				return true;
+			}
+			else if (void* result = nullptr; (arg->QueryInterface(iid, result) || ...))
+			{
+				ptr = result;
+				return true;
+			}
+			return self->KxIObject::QueryInterface(iid, ptr);
+		}
 		
 	public:
 		virtual ~KxIObject() = default;
@@ -89,7 +105,7 @@ class KX_API KxIObject
 		}
 		template<class T> const T* QueryInterface() const noexcept
 		{
-			return static_cast<T*>(this->QueryInterface(KxIID::FromType<T>()));
+			return static_cast<const T*>(this->QueryInterface(KxIID::FromType<T>()));
 		}
 
 		template<class T> bool QueryInterface(T*& ptr) noexcept
@@ -104,7 +120,7 @@ class KX_API KxIObject
 		}
 };
 
-namespace Kx::RTTI
+namespace KxRTTI
 {
 	template<class T>
 	class Interface: public virtual KxIObject
@@ -121,12 +137,9 @@ namespace Kx::RTTI
 	class ExtendInterface: public TBase...
 	{
 		public:
-			template<size_t N> using NthBase = Kx::Utility::NthTypeOf<N, TBase...>;
-
-		public:
 			ExtendInterface() = default;
 			template<class... Args> ExtendInterface(Args&&... arg) noexcept
-				:NthBase<0>(std::forward<Args>(arg)...)
+				:KxUtility::NthTypeOf<0, TBase...>(std::forward<Args>(arg)...)
 			{
 			}
 
@@ -134,6 +147,8 @@ namespace Kx::RTTI
 			using KxIObject::QueryInterface;
 			bool QueryInterface(const KxIID& iid, void*& ptr) noexcept override
 			{
+				static_assert((std::is_base_of_v<KxIObject, TBase> && ...), "KxIObject as a base class required");
+
 				return KxIObject::QueryAnyOf<TBase...>(iid, ptr, static_cast<TDerived*>(this));
 			}
 	};

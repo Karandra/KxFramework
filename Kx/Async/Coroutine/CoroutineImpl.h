@@ -7,12 +7,12 @@
 #include <type_traits>
 
 class KX_API KxCoroutine;
-namespace Kx::Async
+namespace KxAsync
 {
 	class KX_API BaseCoroutine;
 }
 
-namespace Kx::Async
+namespace KxAsync
 {
 	class CoroutineTimer: public wxTimer
 	{
@@ -41,7 +41,7 @@ namespace Kx::Async
 	};
 }
 
-namespace Kx::Async
+namespace KxAsync
 {
 	class KX_API BaseCoroutine: public wxObject
 	{

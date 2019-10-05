@@ -11,7 +11,7 @@ namespace
 	}
 }
 
-namespace Kx::Async
+namespace KxAsync
 {
 	void CoroutineTimer::Notify()
 	{
@@ -31,7 +31,7 @@ namespace Kx::Async
 	}
 }
 
-namespace Kx::Async
+namespace KxAsync
 {
 	CoroutineExecutor::CoroutineExecutor(std::unique_ptr<BaseCoroutine> coroutine)
 		:wxAsyncMethodCallEvent(wxApp::GetInstance()), m_Coroutine(std::move(coroutine))
@@ -44,7 +44,7 @@ namespace Kx::Async
 	}
 }
 
-namespace Kx::Async
+namespace KxAsync
 {
 	BaseCoroutine* BaseCoroutine::Run(std::unique_ptr<BaseCoroutine> coroutine)
 	{

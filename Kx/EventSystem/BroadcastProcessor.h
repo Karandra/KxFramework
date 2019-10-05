@@ -3,7 +3,7 @@
 class KxBroadcastProcessor;
 class KxBroadcastReciever;
 
-namespace Kx::EventSystem
+namespace KxEventSystem
 {
 	class KX_API BroadcastProcessorHandler: public wxEvtHandler
 	{
@@ -39,7 +39,7 @@ class KX_API KxBroadcastProcessor
 		};
 
 	private:
-		Kx::EventSystem::BroadcastProcessorHandler m_EvtHandler;
+		KxEventSystem::BroadcastProcessorHandler m_EvtHandler;
 		KxRefEvtHandler m_EvtHandlerWrapper;
 		wxEvtHandler* m_LastEvtHandler = nullptr;
 		Order m_Order = Order::LastToFirst;
@@ -178,7 +178,7 @@ class KX_API KxBroadcastReciever
 	friend class KxBroadcastProcessor;
 
 	private:
-		Kx::EventSystem::BroadcastRecieverHandler m_EvtHandler;
+		KxEventSystem::BroadcastRecieverHandler m_EvtHandler;
 		KxRefEvtHandler m_EvtHandlerWrapper;
 		KxBroadcastProcessor& m_Processor;
 

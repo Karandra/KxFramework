@@ -111,7 +111,7 @@ class KX_API KxFileTypeInfo final
 		}
 		template<class... Args> KxFileTypeInfo& AddExtensions(Args&&... arg)
 		{
-			Kx::Utility::ForEachParameterInPack([this](const wxString& ext)
+			KxUtility::ForEachParameterInPack([this](const wxString& ext)
 			{
 				m_FileTypeInfo.AddExtension(ext);
 			}, std::forward<Args>(arg)...);

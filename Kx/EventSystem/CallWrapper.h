@@ -18,7 +18,7 @@ class KxEventCallWrapper
 		}
 };
 
-namespace Kx::EventSystem
+namespace KxEventSystem
 {
 	// Wrapper for lambda or class which implements 'operator()'
 	template<class aTEvent, class aTFunctor>

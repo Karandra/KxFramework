@@ -1,7 +1,7 @@
 #pragma once
 #include <type_traits>
 
-namespace Kx::Utility
+namespace KxUtility
 {
 	template<class> struct MethodTraits;
 
@@ -17,7 +17,7 @@ namespace Kx::Utility
 	template<size_t N, typename... T> using NthTypeOf = typename std::tuple_element<N, std::tuple<T...>>::type;
 }
 
-namespace Kx::Utility
+namespace KxUtility
 {
 	template<class TCallable, class... Args>
 	struct CallableTraits

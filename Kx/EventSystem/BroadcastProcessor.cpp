@@ -1,7 +1,7 @@
 #include "KxStdAfx.h"
 #include "BroadcastProcessor.h"
 
-namespace Kx::EventSystem
+namespace KxEventSystem
 {
 	bool BroadcastProcessorHandler::TryBefore(wxEvent& event)
 	{
@@ -24,7 +24,7 @@ namespace Kx::EventSystem
 	}
 }
 
-namespace Kx::EventSystem
+namespace KxEventSystem
 {
 	bool BroadcastRecieverHandler::TryBefore(wxEvent& event)
 	{

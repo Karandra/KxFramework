@@ -1,6 +1,5 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxQueryInterface.h"
 #include "DataView2Fwd.h"
 
 namespace KxDataView2

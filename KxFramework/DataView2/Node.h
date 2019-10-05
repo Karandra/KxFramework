@@ -27,7 +27,7 @@ namespace KxDataView2
 	class KX_API RootNode;
 	class KX_API VirtualNode;
 
-	class KX_API Node: public Kx::RTTI::Interface<Node>
+	class KX_API Node: public KxRTTI::Interface<Node>
 	{
 		friend class KX_API RootNode;
 		friend class KX_API VirtualNode;
@@ -268,7 +268,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API RootNode: public Kx::RTTI::ExtendInterface<RootNode, Node>
+	class KX_API RootNode: public KxRTTI::ExtendInterface<RootNode, Node>
 	{
 		friend class KX_API MainWindow;
 
@@ -302,7 +302,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API VirtualNode: public Kx::RTTI::ExtendInterface<VirtualNode, Node>
+	class KX_API VirtualNode: public KxRTTI::ExtendInterface<VirtualNode, Node>
 	{
 		friend class KX_API MainWindow;
 		friend class KX_API VirtualListModel;
