@@ -5,8 +5,8 @@
 #include "Column.h"
 #include "SortOrder.h"
 #include "ToolTip.h"
-#include "KxFramework/KxQueryInterface.h"
 #include "KxFramework/KxFunctional.h"
+#include <Kx/RTTI.hpp>
 
 namespace KxDataView2
 {
@@ -27,12 +27,12 @@ namespace KxDataView2
 	class KX_API RootNode;
 	class KX_API VirtualNode;
 
-	class KX_API Node: public KxRTTI::IInterface<Node>
+	class KX_API Node: public Kx::RTTI::Interface<Node>
 	{
-		friend class RootNode;
-		friend class VirtualNode;
-		friend class MainWindow;
-		friend class NodeOperation_RowToNode;
+		friend class KX_API RootNode;
+		friend class KX_API VirtualNode;
+		friend class KX_API MainWindow;
+		friend class KX_API NodeOperation_RowToNode;
 
 		public:
 			using Vector = std::vector<Node*>;
@@ -268,9 +268,9 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API RootNode: public KxRTTI::IExtendInterface<RootNode, Node>
+	class KX_API RootNode: public Kx::RTTI::ExtendInterface<RootNode, Node>
 	{
-		friend class MainWindow;
+		friend class KX_API MainWindow;
 
 		private:
 			MainWindow* const m_MainWindow = nullptr;
@@ -302,10 +302,10 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API VirtualNode: public KxRTTI::IExtendInterface<VirtualNode, Node>
+	class KX_API VirtualNode: public Kx::RTTI::ExtendInterface<VirtualNode, Node>
 	{
-		friend class MainWindow;
-		friend class VirtualListModel;
+		friend class KX_API MainWindow;
+		friend class KX_API VirtualListModel;
 
 		protected:
 			class VirtualRowChanger

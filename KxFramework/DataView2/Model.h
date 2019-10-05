@@ -4,7 +4,7 @@
 #include "ToolTip.h"
 #include "Node.h"
 #include "Row.h"
-#include "KxFramework/KxQueryInterface.h"
+#include <Kx/RTTI.hpp>
 
 namespace KxDataView2
 {
@@ -16,11 +16,11 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API Model: public KxRTTI::IInterface<Model>
+	class KX_API Model: public Kx::RTTI::Interface<Model>
 	{
-		friend class Node;
-		friend class RootNode;
-		friend class MainWindow;
+		friend class KX_API Node;
+		friend class KX_API RootNode;
+		friend class KX_API MainWindow;
 
 		private:
 			MainWindow* m_MainWindow = nullptr;
@@ -103,7 +103,7 @@ namespace KxDataView2
 //////////////////////////////////////////////////////////////////////////
 namespace KxDataView2
 {
-	class KX_API ListModel: public KxRTTI::IExtendInterface<ListModel, Model>
+	class KX_API ListModel: public Kx::RTTI::ExtendInterface<ListModel, Model>
 	{
 		public:
 			size_t GetItemCount() const;
@@ -124,7 +124,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API VirtualListModel: public KxRTTI::IExtendInterface<VirtualListModel, Model>
+	class KX_API VirtualListModel: public Kx::RTTI::ExtendInterface<VirtualListModel, Model>
 	{
 		private:
 			size_t m_ItemCount = 0;

@@ -247,6 +247,9 @@
     <Filter Include="Kx\Async\Coroutine">
       <UniqueIdentifier>{5af1a9f7-b496-4a12-82b1-164394d2a34c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\RTTI">
+      <UniqueIdentifier>{9f4d2d8d-8aa1-4b1f-a11f-51ca03f6bba8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -901,9 +904,6 @@
     <ClInclude Include="KxFramework\KxDynamicCastAsIs.h">
       <Filter>Header Files\General</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxQueryInterface.h">
-      <Filter>Header Files\General</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\DataView2\TypeAliases.h">
       <Filter>Header Files\GUI\DataView2</Filter>
     </ClInclude>
@@ -1104,6 +1104,15 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxAny.h">
       <Filter>Header Files\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\RTTI.hpp">
+      <Filter>Kx</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\RTTI\QueryInterface.h">
+      <Filter>Kx\RTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\RTTI\Common.h">
+      <Filter>Kx\RTTI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -13,6 +13,8 @@ namespace Kx::Utility
 
 		inline static constexpr size_t ArgumentCount = sizeof...(Args);
 	};
+
+	template<size_t N, typename... T> using NthTypeOf = typename std::tuple_element<N, std::tuple<T...>>::type;
 }
 
 namespace Kx::Utility
