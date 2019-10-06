@@ -7,12 +7,16 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-template<class T> class KxSingleton
+template<class T>
+class KxSingleton
 {
 	public:
-		static T& GetInstance()
+		using TObject = T;
+
+	public:
+		static TObject& GetInstance()
 		{
-			static T ms_Instance;
+			static TObject ms_Instance;
 			return ms_Instance;
 		}
 
@@ -28,19 +32,31 @@ template<class T> class KxSingleton
 };
 
 //////////////////////////////////////////////////////////////////////////
-template<class T> class KxSingletonPtr
+template<class T>
+class KxSingletonPtr
 {
+	public:
+		using TObject = T;
+
 	private:
-		static inline T* ms_Instance = nullptr;
+		static inline TObject* ms_Instance = nullptr;
 
 	public:
-		static bool HasInstance()
-		{
-			return ms_Instance != nullptr;
-		}
-		static T* GetInstance()
+		static TObject* GetInstance()
 		{
 			return ms_Instance;
+		}
+
+		template<class TFunc>
+		static void IfHasInstance(TFunc&& func)
+		{
+			using TFuncResult = std::invoke_result_t<TFunc, TObject&>;
+			static_assert(std::is_void_v<TFuncResult>, "TFunc should not return a value");
+
+			if (ms_Instance)
+			{
+				std::invoke(func, *ms_Instance);
+			}
 		}
 
 	public:
@@ -54,7 +70,7 @@ template<class T> class KxSingletonPtr
 		{
 			if (ms_Instance == nullptr)
 			{
-				ms_Instance = static_cast<T*>(this);
+				ms_Instance = static_cast<TObject*>(this);
 			}
 			else
 			{
