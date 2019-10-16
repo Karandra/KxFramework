@@ -1,5 +1,5 @@
 /*
-Copyright © 2018 Kerber. All rights reserved.
+Copyright © 2019 Kerber. All rights reserved.
 
 You should have received a copy of the GNU LGPL v3
 along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
@@ -47,13 +47,44 @@ class KX_API KxIXDocumentNode
 			}
 			return xPath;
 		}
+	
+	private:
+		template<class T> using RemoveRCV = typename std::remove_cv_t<std::remove_reference_t<T>>;
+
+		template<class T> constexpr static bool TestIntType()
+		{
+			return std::is_integral_v<RemoveRCV<T>> || std::is_enum_v<RemoveRCV<T>>;
+		}
+		template<class T> constexpr static bool TestFloatType()
+		{
+			return std::is_floating_point_v<RemoveRCV<T>>;
+		}
+		template<class T> constexpr static bool TestPtrType()
+		{
+			return std::is_pointer_v<RemoveRCV<T>>;
+		}
+
+		template<class T> constexpr static void AssertIntType()
+		{
+			static_assert(TestIntType<T>(), "T must be of integral or enum type");
+		}
+		template<class T> constexpr static void AssertFloatType()
+		{
+			static_assert(TestFloatType<T>(), "T must be floating point number");
+		}
+		template<class T> constexpr static void AssertPtrType()
+		{
+			static_assert(TestPtrType<T>(), "T must be a pointer");
+		}
 
 	protected:
 		virtual wxString FormatInt(int64_t value, int base = 10) const;
+		virtual wxString FormatPointer(const void* value) const;
 		virtual wxString FormatFloat(double value, int precision = -1) const;
 		virtual wxString FormatBool(bool value) const;
 
 		virtual int64_t ParseInt(const wxString& value, int base = 10, int64_t defaultValue = 0) const;
+		virtual void* ParsePointer(const wxString& value, void* defaultValue = nullptr) const;
 		virtual double ParseFloat(const wxString& value, double defaultValue = 0.0) const;
 		virtual bool ParseBool(const wxString& value, bool defaultValue = false) const;
 
@@ -153,21 +184,37 @@ class KX_API KxIXDocumentNode
 		{
 			return DoGetValue(defaultValue);
 		}
-		int64_t GetValueInt(int64_t defaultValue = 0) const
+		bool GetValueBool(bool defaultValue = false) const
 		{
-			return DoGetValueIntWithBase(10, defaultValue);
-		}
-		int64_t GetValueIntWithBase(int base, int64_t defaultValue = 0) const
-		{
-			return DoGetValueIntWithBase(base, defaultValue);
+			return DoGetValueBool(defaultValue);
 		}
 		double GetValueFloat(double defaultValue = 0.0) const
 		{
 			return DoGetValueFloat(defaultValue);
 		}
-		bool GetValueBool(bool defaultValue = false) const
+
+		template<class T = void, class TDefault = T>
+		T* GetValuePtr(TDefault* defaultValue = nullptr) const
 		{
-			return DoGetValueBool(defaultValue);
+			AssertPtrType<T>();
+
+			return reinterpret_cast<T*>(DoGetValueIntWithBase(16, reinterpret_cast<int64_t>(defaultValue)));
+		}
+
+		template<class T = int64_t, class TDefault = T>
+		T GetValueInt(TDefault defaultValue = 0) const
+		{
+			AssertIntType<T>();
+
+			return static_cast<T>(DoGetValueIntWithBase(10, static_cast<int64_t>(defaultValue)));
+		}
+		
+		template<class T = int64_t, class TDefault = T>
+		T GetValueIntWithBase(int base, TDefault defaultValue = 0) const
+		{
+			AssertIntType<T>();
+
+			return static_cast<T>(DoGetValueIntWithBase(base, static_cast<int64_t>(defaultValue)));
 		}
 
 		bool SetValue(const char* value, AsCDATA asCDATA = AsCDATA::Auto)
@@ -182,25 +229,31 @@ class KX_API KxIXDocumentNode
 		{
 			return DoSetValue(value, asCDATA);
 		}
-		bool SetValue(int value, int base = 10)
+		bool SetValue(bool value)
 		{
-			return DoSetValue(FormatInt(value, base), AsCDATA::Never);
+			return DoSetValue(FormatBool(value), AsCDATA::Never);
 		}
-		bool SetValue(int64_t value, int base = 10)
+		bool SetValue(float value, int precision = -1)
 		{
-			return DoSetValue(FormatInt(value, base), AsCDATA::Never);
+			return DoSetValue(FormatFloat(static_cast<double>(value), precision), AsCDATA::Never);
 		}
 		bool SetValue(double value, int precision = -1)
 		{
 			return DoSetValue(FormatFloat(value, precision), AsCDATA::Never);
 		}
-		bool SetValue(float value, int precision = -1)
+		bool SetValue(const void* value)
 		{
-			return DoSetValue(FormatFloat((double)value, precision), AsCDATA::Never);
+			return DoSetValue(FormatPointer(value));
 		}
-		bool SetValue(bool value)
+		bool SetValue(std::nullptr_t)
 		{
-			return DoSetValue(FormatBool(value), AsCDATA::Never);
+			return DoSetValue(FormatPointer(nullptr));
+		}
+
+		template<class T>
+		std::enable_if_t<TestIntType<T>(), bool> SetValue(T value, int base = 10)
+		{
+			return DoSetValue(FormatInt(static_cast<int64_t>(value), base), AsCDATA::Never);
 		}
 
 		virtual bool IsCDATA() const
@@ -243,21 +296,37 @@ class KX_API KxIXDocumentNode
 		{
 			return DoGetAttribute(name, defaultValue);
 		}
-		int64_t GetAttributeInt(const wxString& name, int64_t defaultValue = 0) const
+		bool GetAttributeBool(const wxString& name, bool defaultValue = false) const
 		{
-			return DoGetAttributeIntWithBase(name, 10, defaultValue);
-		}
-		int64_t GetAttributeIntWithBase(const wxString& name, int base, int64_t defaultValue = 0) const
-		{
-			return DoGetAttributeIntWithBase(name, base, defaultValue);
+			return DoGetAttributeBool(name, defaultValue);
 		}
 		double GetAttributeFloat(const wxString& name, double defaultValue = 0.0) const
 		{
 			return DoGetAttributeFloat(name, defaultValue);
 		}
-		bool GetAttributeBool(const wxString& name, bool defaultValue = false) const
+
+		template<class T = void, class TDefault = T>
+		T* GetAttributePtr(const wxString& name, TDefault* defaultValue = nullptr) const
 		{
-			return DoGetAttributeBool(name, defaultValue);
+			AssertPtrType<T>();
+
+			return reinterpret_cast<T*>(DoGetAttributeIntWithBase(name, 16, reinterpret_cast<int64_t>(defaultValue)));
+		}
+		
+		template<class T = int64_t, class TDefault = T>
+		T GetAttributeInt(const wxString& name, TDefault defaultValue = 0) const
+		{
+			AssertIntType<T>();
+
+			return static_cast<T>(DoGetAttributeIntWithBase(name, 10, static_cast<int64_t>(defaultValue)));
+		}
+
+		template<class T = int64_t, class TDefault = T>
+		T GetAttributeIntWithBase(const wxString& name, int base, TDefault defaultValue = 0) const
+		{
+			AssertIntType<T>();
+
+			return static_cast<T>(DoGetAttributeIntWithBase(name, base, static_cast<int64_t>(defaultValue)));
 		}
 
 		bool SetAttribute(const wxString& name, const wxString& value)
@@ -272,25 +341,31 @@ class KX_API KxIXDocumentNode
 		{
 			return DoSetAttribute(name, wxString(value));
 		}
-		bool SetAttribute(const wxString& name, int64_t value, int base = 10)
+		bool SetAttribute(const wxString& name, bool value)
 		{
-			return DoSetAttribute(name, FormatInt(value, base));
+			return DoSetAttribute(name, FormatBool(value));
 		}
-		bool SetAttribute(const wxString& name, int value, int base = 10)
+		bool SetAttribute(const wxString& name, float value, int precision = -1)
 		{
-			return DoSetAttribute(name, FormatInt(value, base));
+			return DoSetAttribute(name, FormatFloat(static_cast<double>(value), precision));
 		}
 		bool SetAttribute(const wxString& name, double value, int precision = -1)
 		{
 			return DoSetAttribute(name, FormatFloat(value, precision));
 		}
-		bool SetAttribute(const wxString& name, float value, int precision = -1)
+		bool SetAttribute(const wxString& name, const void* value)
 		{
-			return DoSetAttribute(name, FormatFloat((double)value, precision));
+			return DoSetAttribute(name, FormatPointer(value));
 		}
-		bool SetAttribute(const wxString& name, bool value)
+		bool SetAttribute(const wxString& name, std::nullptr_t)
 		{
-			return DoSetAttribute(name, FormatBool(value));
+			return DoSetAttribute(name, FormatPointer(nullptr));
+		}
+
+		template<class T>
+		std::enable_if_t<TestIntType<T>(), bool> SetAttribute(const wxString& name, T value, int base = 10)
+		{
+			return DoSetAttribute(name, FormatInt(static_cast<int64_t>(value), base));
 		}
 };
 

@@ -1,5 +1,5 @@
 /*
-Copyright © 2018 Kerber. All rights reserved.
+Copyright © 2019 Kerber. All rights reserved.
 
 You should have received a copy of the GNU LGPL v3
 along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
@@ -7,6 +7,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxStdAfx.h"
 #include "KxFramework/KxXDocumentNode.h"
 #include "KxFramework/KxUtility.h"
+#include "KxFramework/KxString.h"
 #include <charconv>
 
 namespace
@@ -62,6 +63,15 @@ wxString KxIXDocumentNode::FormatInt(int64_t value, int base) const
 	}
 	return wxEmptyString;
 }
+wxString KxIXDocumentNode::FormatPointer(const void* value) const
+{
+	char buffer[32] = {0};
+	if (IntToChars(buffer, reinterpret_cast<size_t>(value), 16))
+	{
+		return KxString::Format(wxS("0x%1"), buffer);
+	}
+	return wxEmptyString;
+}
 wxString KxIXDocumentNode::FormatFloat(double value, int precision) const
 {
 	// TODO: replace by inactive code below on MSVC update
@@ -86,6 +96,15 @@ int64_t KxIXDocumentNode::ParseInt(const wxString& value, int base, int64_t defa
 	if (value.ToLongLong(&iValue, base))
 	{
 		return iValue;
+	}
+	return defaultValue;
+}
+void* KxIXDocumentNode::ParsePointer(const wxString& value, void* defaultValue) const
+{
+	wxString intValue;
+	if (value.StartsWith(wxS("0x")), &intValue)
+	{
+		return reinterpret_cast<void*>(ParseInt(intValue, 16, reinterpret_cast<int64_t>(defaultValue)));
 	}
 	return defaultValue;
 }
