@@ -11,6 +11,21 @@ KxEVENT_DEFINE_GLOBAL(BUTTON_MENU, wxContextMenuEvent);
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxButton, wxButton);
 
+namespace
+{
+	constexpr auto g_ArrowButtonWidth = 17;
+	constexpr auto g_DefaultButtonHeight = 23;
+
+	wxSize CalcBestSize(const KxButton& button, wxSize size)
+	{
+		if (std::abs(size.y - g_DefaultButtonHeight) <= button.GetCharHeight())
+		{
+			size.y = g_DefaultButtonHeight;
+		}
+		return size;
+	}
+}
+
 wxSize KxButton::GetDefaultSize()
 {
 	return wxButton::GetDefaultSize();
@@ -20,6 +35,7 @@ void KxButton::OnPaint(wxPaintEvent& event)
 {
 	wxAutoBufferedPaintDC dc(this);
 	KxUtility::ClearDC(this, dc);
+	wxRendererNative& renderer = wxRendererNative::Get();
 
 	const bool isEnabled = IsThisEnabled();
 	const wxSize clientSize = GetSize();
@@ -27,7 +43,7 @@ void KxButton::OnPaint(wxPaintEvent& event)
 	int widthMod = 2;
 	if (m_IsSliptterEnabled)
 	{
-		width -= ms_ArrowButtonWidth;
+		width -= g_ArrowButtonWidth;
 		widthMod = 5;
 	}
 	wxRect rect(-1, -1, width + widthMod, clientSize.GetHeight() + 2);
@@ -40,12 +56,12 @@ void KxButton::OnPaint(wxPaintEvent& event)
 
 	// Draw first part
 	dc.SetTextForeground(isEnabled ? GetForegroundColour() : GetForegroundColour().MakeDisabled());
-	wxRendererNative::Get().DrawPushButton(this, dc, rect, controlState);
+	renderer.DrawPushButton(this, dc, rect, controlState);
 
 	// Draw focus rectangle
 	if (m_IsFocusDrawingAllowed && HasFocus())
 	{
-		wxRendererNative::Get().DrawFocusRect(this, dc, wxRect(2, 2, clientSize.GetWidth() - 4, clientSize.GetHeight() - 4), wxCONTROL_SELECTED);
+		renderer.DrawFocusRect(this, dc, wxRect(2, 2, clientSize.GetWidth() - 4, clientSize.GetHeight() - 4), wxCONTROL_SELECTED);
 	}
 
 	// Draw bitmap and label
@@ -69,32 +85,34 @@ void KxButton::OnPaint(wxPaintEvent& event)
 		wxRect splitRect = rect;
 		splitRect.x = width + 1;
 		splitRect.y = -1;
-		splitRect.width = ms_ArrowButtonWidth;
+		splitRect.width = g_ArrowButtonWidth;
 		splitRect.height = clientSize.GetHeight() + 2;
 
-		wxRendererNative::Get().DrawPushButton(this, dc, splitRect, controlState);
-		wxRendererNative::Get().DrawDropArrow(this, dc, splitRect, controlState);
+		renderer.DrawPushButton(this, dc, splitRect, controlState);
+		renderer.DrawDropArrow(this, dc, splitRect, controlState);
 	}
 }
 void KxButton::OnMouseLeave(wxMouseEvent& event)
 {
+	m_ShouldRefresh = true;
 	m_ControlState = wxCONTROL_NONE;
-	Refresh();
+
 	event.Skip();
 }
 void KxButton::OnMouseEnter(wxMouseEvent& event)
 {
+	m_ShouldRefresh = true;
 	m_ControlState = wxCONTROL_CURRENT;
-	Refresh();
+
 	event.Skip();
 }
 void KxButton::OnLeftButtonUp(wxMouseEvent& event)
 {
+	m_ShouldRefresh = true;
 	m_ControlState = wxCONTROL_NONE;
-	Refresh();
 
 	wxPoint pos = event.GetPosition();
-	if (m_IsSliptterEnabled && pos.x > (GetSize().GetWidth() - ms_ArrowButtonWidth))
+	if (m_IsSliptterEnabled && pos.x > (GetSize().GetWidth() - g_ArrowButtonWidth))
 	{
 		CallAfter([this, pos]()
 		{
@@ -119,23 +137,29 @@ void KxButton::OnLeftButtonUp(wxMouseEvent& event)
 }
 void KxButton::OnLeftButtonDown(wxMouseEvent& event)
 {
+	m_ShouldRefresh = true;
 	m_ControlState = wxCONTROL_PRESSED;
-	Refresh();
+
 	event.Skip();
 }
 
 wxSize KxButton::DoGetBestSize() const
 {
-	wxSize size = wxButton::DoGetBestSize();
-	if (std::abs(size.y - ms_DefaultButtonHeight) <= GetCharHeight())
-	{
-		size.y = ms_DefaultButtonHeight;
-	}
-	return size;
+	return CalcBestSize(*this, wxAnyButton::DoGetBestSize());
 }
 wxSize KxButton::DoGetBestClientSize() const
 {
-	return wxButton::DoGetBestClientSize();
+	return CalcBestSize(*this, wxAnyButton::DoGetBestClientSize());
+}
+void KxButton::OnInternalIdle()
+{
+	wxAnyButton::OnInternalIdle();
+
+	if (m_ShouldRefresh)
+	{
+		m_ShouldRefresh = false;
+		Refresh();
+	}
 }
 
 bool KxButton::Create(wxWindow* parent,
@@ -147,9 +171,11 @@ bool KxButton::Create(wxWindow* parent,
 					   const wxValidator& validator
 )
 {
-	SetBackgroundStyle(wxBG_STYLE_PAINT);
-	if (wxButton::Create(parent, id, label, pos, size, style, validator))
+	
+	if (wxAnyButton::Create(parent, id, pos, size, style, validator))
 	{
+		SetLabel(label);
+		SetBackgroundStyle(wxBG_STYLE_PAINT);
 		EnableSystemTheme();
 		MakeOwnerDrawn();
 
@@ -169,9 +195,24 @@ KxButton::~KxButton()
 
 bool KxButton::Enable(bool isEnabled)
 {
-	const bool ret = wxButton::Enable(isEnabled);
-	Refresh();
-	return ret;
+	m_ShouldRefresh = true;
+	return wxAnyButton::Enable(isEnabled);
+}
+wxWindow* KxButton::SetDefault()
+{
+	m_ShouldRefresh = true;
+
+	wxWindow* tlwParent = wxGetTopLevelParent(this);
+	if (tlwParent && tlwParent->IsKindOf(wxCLASSINFO(wxTopLevelWindow)))
+	{
+		return static_cast<wxTopLevelWindow*>(tlwParent)->SetDefaultItem(this);
+	}
+	else
+	{
+		wxWindow* focused = wxWindow::FindFocus();
+		SetFocus();
+		return focused;
+	}
 }
 
 void KxButton::SetAuthNeeded(bool show)
@@ -183,7 +224,7 @@ void KxButton::SetAuthNeeded(bool show)
 		if (library.IsOK())
 		{
 			int iconSize = 16;
-			int height = GetSize().GetHeight();
+			const int height = GetSize().GetHeight();
 			if (height > 32)
 			{
 				iconSize = 32;
@@ -204,18 +245,24 @@ void KxButton::SetAuthNeeded(bool show)
 			{
 				iconSize = 256;
 			}
+			if (height > 512)
+			{
+				iconSize = 512;
+			}
 
-			auto langs = library.EnumResourceLanguages(KxLibrary::ResIDToName(RT_GROUP_ICON), "78");
+			auto langs = library.EnumResourceLanguages(KxLibrary::ResIDToName(RT_GROUP_ICON), wxS("78"));
 			if (!langs.empty())
 			{
 				wxBitmap bitmap;
 				bitmap.CopyFromIcon(library.GetIcon("78", wxSize(iconSize, iconSize), langs[0]));
 				SetBitmap(bitmap);
+
+				m_ShouldRefresh = true;
 				return;
 			}
 		}
 	}
 
+	m_ShouldRefresh = true;
 	SetBitmap(wxNullBitmap);
-	Refresh();
 }

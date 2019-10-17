@@ -6,28 +6,17 @@
 KxEVENT_DECLARE_GLOBAL(BUTTON, wxCommandEvent);
 KxEVENT_DECLARE_GLOBAL(BUTTON_MENU, wxContextMenuEvent);
 
-class KX_API KxButton: public wxSystemThemedControl<wxButton>, public KxWithDropdownMenu
+class KX_API KxButton: public wxSystemThemedControl<wxAnyButton>, public KxWithDropdownMenu
 {
 	public:
-		enum
-		{
-			DRAW_STYLE_NORMAL,
-			DRAW_STYLE_AERO,
-			DRAW_STYLE_MAX
-		};
-
 		static wxSize GetDefaultSize();
-
-	private:
-		static const int ms_ArrowButtonWidth = 17;
-		static const int ms_DefaultButtonHeight = 23;
 
 	private:
 		int m_ControlState = wxCONTROL_NONE;
 		bool m_IsSliptterEnabled = false;
 		bool m_IsFocusDrawingAllowed = false;
-		
 		bool m_IsAuthNeeded = false;
+		bool m_ShouldRefresh = false;
 
 	private:
 		void OnPaint(wxPaintEvent& event);
@@ -39,6 +28,7 @@ class KX_API KxButton: public wxSystemThemedControl<wxButton>, public KxWithDrop
 	protected:
 		wxSize DoGetBestSize() const override;
 		wxSize DoGetBestClientSize() const override;
+		void OnInternalIdle() override;
 
 	public:
 		KxButton() {}
@@ -85,9 +75,19 @@ class KX_API KxButton: public wxSystemThemedControl<wxButton>, public KxWithDrop
 
 	public:
 		bool Enable(bool enable = true) override;
+		virtual wxWindow* SetDefault();
+
 		wxSize GetBitmapMargins() const
 		{
-			return const_cast<KxButton*>(this)->wxButton::GetBitmapMargins();
+			return const_cast<KxButton*>(this)->wxAnyButton::GetBitmapMargins();
+		}
+		void SetBitmapMargins(wxCoord x, wxCoord y)
+		{
+			wxAnyButton::SetBitmapMargins(x, y);
+		}
+		void SetBitmapMargins(const wxSize& margins)
+		{
+			wxAnyButton::SetBitmapMargins(margins);
 		}
 
 		bool IsSplitterEnabled()
@@ -96,8 +96,8 @@ class KX_API KxButton: public wxSystemThemedControl<wxButton>, public KxWithDrop
 		}
 		void SetSplitterEnabled(bool show = true)
 		{
+			m_ShouldRefresh = true;
 			m_IsSliptterEnabled = show;
-			Refresh();
 		}
 		
 		bool IsAuthNeeded()
@@ -106,10 +106,14 @@ class KX_API KxButton: public wxSystemThemedControl<wxButton>, public KxWithDrop
 		}
 		void SetAuthNeeded(bool show = true);
 		
+		bool IsFocusDrawingAllowed() const
+		{
+			return m_IsFocusDrawingAllowed;
+		}
 		void SetAllowDrawFocus(bool value)
 		{
 			m_IsFocusDrawingAllowed = value;
-			Refresh();
+			m_ShouldRefresh = true;
 		}
 
 	public:
