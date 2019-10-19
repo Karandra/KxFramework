@@ -92,6 +92,11 @@ void KxButton::OnPaint(wxPaintEvent& event)
 		renderer.DrawDropArrow(this, dc, splitRect, controlState);
 	}
 }
+void KxButton::OnResize(wxSizeEvent& event)
+{
+	m_ShouldRefresh = true;
+	event.Skip();
+}
 void KxButton::OnMouseLeave(wxMouseEvent& event)
 {
 	m_ShouldRefresh = true;
@@ -171,7 +176,6 @@ bool KxButton::Create(wxWindow* parent,
 					   const wxValidator& validator
 )
 {
-	
 	if (wxAnyButton::Create(parent, id, pos, size, style, validator))
 	{
 		SetLabel(label);
@@ -179,11 +183,14 @@ bool KxButton::Create(wxWindow* parent,
 		EnableSystemTheme();
 		MakeOwnerDrawn();
 
-		Bind(wxEVT_PAINT, &KxButton::OnPaint, this);
-		Bind(wxEVT_LEFT_UP, &KxButton::OnLeftButtonUp, this);
-		Bind(wxEVT_LEFT_DOWN, &KxButton::OnLeftButtonDown, this);
-		Bind(wxEVT_LEAVE_WINDOW, &KxButton::OnMouseLeave, this);
-		Bind(wxEVT_ENTER_WINDOW, &KxButton::OnMouseEnter, this);
+		m_EventHandler.SetClientData(this);
+		m_EventHandler.Bind(wxEVT_PAINT, &KxButton::OnPaint, this);
+		m_EventHandler.Bind(wxEVT_SIZE, &KxButton::OnResize, this);
+		m_EventHandler.Bind(wxEVT_LEFT_UP, &KxButton::OnLeftButtonUp, this);
+		m_EventHandler.Bind(wxEVT_LEFT_DOWN, &KxButton::OnLeftButtonDown, this);
+		m_EventHandler.Bind(wxEVT_LEAVE_WINDOW, &KxButton::OnMouseLeave, this);
+		m_EventHandler.Bind(wxEVT_ENTER_WINDOW, &KxButton::OnMouseEnter, this);
+		PushEventHandler(&m_EventHandler);
 
 		return true;
 	}
@@ -191,6 +198,10 @@ bool KxButton::Create(wxWindow* parent,
 };
 KxButton::~KxButton()
 {
+	if (m_EventHandler.GetClientData() == this)
+	{
+		PopEventHandler();
+	}
 }
 
 bool KxButton::Enable(bool isEnabled)

@@ -12,6 +12,8 @@ class KX_API KxButton: public wxSystemThemedControl<wxAnyButton>, public KxWithD
 		static wxSize GetDefaultSize();
 
 	private:
+		wxEvtHandler m_EventHandler;
+
 		int m_ControlState = wxCONTROL_NONE;
 		bool m_IsSliptterEnabled = false;
 		bool m_IsFocusDrawingAllowed = false;
@@ -20,6 +22,7 @@ class KX_API KxButton: public wxSystemThemedControl<wxAnyButton>, public KxWithD
 
 	private:
 		void OnPaint(wxPaintEvent& event);
+		void OnResize(wxSizeEvent& event);
 		void OnMouseLeave(wxMouseEvent& event);
 		void OnMouseEnter(wxMouseEvent& event);
 		void OnLeftButtonUp(wxMouseEvent& event);
