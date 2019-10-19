@@ -116,28 +116,24 @@ void KxButton::OnLeftButtonUp(wxMouseEvent& event)
 	m_ShouldRefresh = true;
 	m_ControlState = wxCONTROL_NONE;
 
-	wxPoint pos = event.GetPosition();
-	if (m_IsSliptterEnabled && pos.x > (GetSize().GetWidth() - g_ArrowButtonWidth))
+	const wxPoint pos = event.GetPosition();
+	if (m_IsSliptterEnabled && pos.x > (GetClientSize().GetWidth() - g_ArrowButtonWidth))
 	{
-		CallAfter([this, pos]()
+		wxContextMenuEvent menuEvent(KxEVT_BUTTON_MENU, this->GetId());
+		menuEvent.SetPosition(pos);
+		menuEvent.SetEventObject(this);
+		if ((!ProcessWindowEvent(menuEvent) || menuEvent.GetSkipped()) && HasDropdownMenu())
 		{
-			wxContextMenuEvent menuEvent(KxEVT_BUTTON_MENU, this->GetId());
-			menuEvent.SetPosition(pos);
-			menuEvent.SetEventObject(this);
-			if ((!HandleWindowEvent(menuEvent) || menuEvent.GetSkipped()) && HasDropdownMenu())
-			{
-				GetDropdownMenu()->ShowAsPopup(this, 1);
-			}
-		});
+			GetDropdownMenu()->ShowAsPopup(this, 1);
+		}
 	}
-	#if 0
 	else
 	{
 		wxCommandEvent clickEvent(KxEVT_BUTTON, this->GetId());
 		clickEvent.SetEventObject(this);
-		HandleWindowEvent(clickEvent);
+		ProcessWindowEvent(clickEvent);
 	}
-	#endif
+
 	event.Skip();
 }
 void KxButton::OnLeftButtonDown(wxMouseEvent& event)
