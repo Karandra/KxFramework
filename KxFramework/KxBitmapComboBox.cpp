@@ -16,6 +16,8 @@ bool KxBitmapComboBox::Create(wxWindow* parent,
 	if (wxBitmapComboBox::Create(parent, id, value, pos, size, 0, nullptr, style, validator))
 	{
 		EnableSystemTheme();
+		SetDoubleBuffered(true);
+
 		return true;
 	}
 	return false;
@@ -23,7 +25,7 @@ bool KxBitmapComboBox::Create(wxWindow* parent,
 
 void KxBitmapComboBox::SetVisibleItemsCount(size_t count)
 {
-	SendMessageW(GetHandle(), CB_SETMINVISIBLE, (WPARAM)count, 0);
+	::SendMessageW(GetHandle(), CB_SETMINVISIBLE, static_cast<WPARAM>(count), 0);
 }
 int KxBitmapComboBox::InsertItem(const wxString& s, size_t i, int imageID)
 {

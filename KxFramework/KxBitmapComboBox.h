@@ -4,20 +4,14 @@
 
 class KX_API KxBitmapComboBox: public wxSystemThemedControl<wxBitmapComboBox>, public KxWithImageList
 {
-	private:
-		std::unordered_map<size_t, int> m_ImageIDs;
-
-	private:
-		int Insert() = delete;
-		int Append() = delete;
-		void Delete() = delete;
-		void Set() = delete;
-		void GetItemBitmap() = delete;
-		void SetItemBitmap() = delete;
-
 	public:
 		static const long DefaultStyle = wxTE_PROCESS_ENTER|wxCB_DROPDOWN|wxCB_READONLY;
 
+	private:
+		std::unordered_map<size_t, int> m_ImageIDs;
+		std::optional<wxSize> m_DefaultBitmapSize;
+
+	public:
 		KxBitmapComboBox() {}
 		KxBitmapComboBox(wxWindow* parent,
 						 wxWindowID id,
@@ -39,6 +33,8 @@ class KX_API KxBitmapComboBox: public wxSystemThemedControl<wxBitmapComboBox>, p
 		{
 			Create(parent, id, value, pos, size, style, validator);
 		}
+		
+	public:
 		bool Create(wxWindow* parent,
 					wxWindowID id,
 					const wxString& value = wxEmptyString,
@@ -62,10 +58,28 @@ class KX_API KxBitmapComboBox: public wxSystemThemedControl<wxBitmapComboBox>, p
 		int InsertItem(const wxString& s, size_t i, int imageID = NO_IMAGE);
 		int AddItem(const wxString& s, int imageID = NO_IMAGE);
 		void RemoveItem(size_t i);
-		void Clear();
+		void Clear() override;
 
 		int GetItemImage(size_t i) const;
 		void SetItemImage(size_t i, int imageID = NO_IMAGE);
 
+		wxSize GetBitmapSize() const override
+		{
+			if (m_DefaultBitmapSize)
+			{
+				return *m_DefaultBitmapSize;
+			}
+			return wxBitmapComboBox::GetBitmapSize();
+		}
+		void SetDefaultBitmapSize(const wxSize& size)
+		{
+			m_DefaultBitmapSize = size;
+		}
+		void SetDefaultBitmapSize()
+		{
+			m_DefaultBitmapSize = std::nullopt;
+		}
+
+	public:
 		wxDECLARE_DYNAMIC_CLASS(KxBitmapComboBox);
 };
