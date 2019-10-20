@@ -205,6 +205,20 @@ bool KxButton::Enable(bool isEnabled)
 	m_ShouldRefresh = true;
 	return wxAnyButton::Enable(isEnabled);
 }
+void KxButton::SetLabel(const wxString& label)
+{
+	m_ShouldRefresh = true;
+	wxAnyButton::SetLabel(label);
+}
+
+bool KxButton::IsDefault() const
+{
+	wxWindow* tlwParent = wxGetTopLevelParent(const_cast<KxButton*>(this));
+	if (tlwParent && tlwParent->IsKindOf(wxCLASSINFO(wxTopLevelWindow)))
+	{
+		return static_cast<wxTopLevelWindow*>(tlwParent)->GetDefaultItem() == this;
+	}
+}
 wxWindow* KxButton::SetDefault()
 {
 	m_ShouldRefresh = true;
@@ -213,12 +227,6 @@ wxWindow* KxButton::SetDefault()
 	if (tlwParent && tlwParent->IsKindOf(wxCLASSINFO(wxTopLevelWindow)))
 	{
 		return static_cast<wxTopLevelWindow*>(tlwParent)->SetDefaultItem(this);
-	}
-	else
-	{
-		wxWindow* focused = wxWindow::FindFocus();
-		SetFocus();
-		return focused;
 	}
 }
 

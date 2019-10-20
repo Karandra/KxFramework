@@ -78,6 +78,9 @@ class KX_API KxButton: public wxSystemThemedControl<wxAnyButton>, public KxWithD
 
 	public:
 		bool Enable(bool enable = true) override;
+		void SetLabel(const wxString& label) override;
+		
+		bool IsDefault() const;
 		virtual wxWindow* SetDefault();
 
 		wxSize GetBitmapMargins() const
@@ -93,7 +96,7 @@ class KX_API KxButton: public wxSystemThemedControl<wxAnyButton>, public KxWithD
 			wxAnyButton::SetBitmapMargins(margins);
 		}
 
-		bool IsSplitterEnabled()
+		bool IsSplitterEnabled() const
 		{
 			return m_IsSliptterEnabled;
 		}
@@ -103,7 +106,7 @@ class KX_API KxButton: public wxSystemThemedControl<wxAnyButton>, public KxWithD
 			m_IsSliptterEnabled = show;
 		}
 		
-		bool IsAuthNeeded()
+		bool IsAuthNeeded() const
 		{
 			return m_IsAuthNeeded;
 		}
