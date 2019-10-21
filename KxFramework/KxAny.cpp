@@ -77,7 +77,7 @@ std::optional<bool> KxAny::StringToBool() const noexcept
 		{
 			return true;
 		}
-		else if (*ptr == wxS("false") || *ptr == wxS("false"))
+		else if (*ptr == wxS("false") || *ptr == wxS("FALSE"))
 		{
 			return false;
 		}
