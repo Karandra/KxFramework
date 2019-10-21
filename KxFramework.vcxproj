@@ -749,7 +749,10 @@
     <ClCompile Include="KxFramework\KxZLibStream.cpp" />
     <ClCompile Include="KxFramework\UxTheme\Handle.cpp" />
     <ClCompile Include="KxFramework\WebSocket\IClient.cpp" />
-    <ClCompile Include="KxFramework\WebSocket\SecureClient.cpp" />
+    <ClCompile Include="KxFramework\WebSocket\SecureClient.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="KxFramework\XML\TinyXML2.cpp" />
     <ClCompile Include="KxStdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
