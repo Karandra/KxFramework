@@ -102,7 +102,7 @@ int64_t KxIXDocumentNode::ParseInt(const wxString& value, int base, int64_t defa
 void* KxIXDocumentNode::ParsePointer(const wxString& value, void* defaultValue) const
 {
 	wxString intValue;
-	if (value.StartsWith(wxS("0x")), &intValue)
+	if (value.StartsWith(wxS("0x"), &intValue))
 	{
 		return reinterpret_cast<void*>(ParseInt(intValue, 16, reinterpret_cast<int64_t>(defaultValue)));
 	}
