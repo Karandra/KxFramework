@@ -218,6 +218,7 @@ bool KxButton::IsDefault() const
 	{
 		return static_cast<wxTopLevelWindow*>(tlwParent)->GetDefaultItem() == this;
 	}
+	return false;
 }
 wxWindow* KxButton::SetDefault()
 {
@@ -228,6 +229,7 @@ wxWindow* KxButton::SetDefault()
 	{
 		return static_cast<wxTopLevelWindow*>(tlwParent)->SetDefaultItem(this);
 	}
+	return nullptr;
 }
 
 void KxButton::SetAuthNeeded(bool show)

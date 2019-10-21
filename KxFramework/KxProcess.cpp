@@ -103,38 +103,33 @@ void KxProcess::WH_UnRegisterForCreateWindow()
 BOOL KxProcess::SafeTerminateProcess(HANDLE processHandle, UINT exitCode)
 {
 	HANDLE processHandleDuplicate = INVALID_HANDLE_VALUE;
-	BOOL wasDuplicated = DuplicateHandle
-	(
-		GetCurrentProcess(),
-		processHandle,
-		GetCurrentProcess(),
-		&processHandleDuplicate,
-		PROCESS_ALL_ACCESS,
-		FALSE,
-		0
+	bool wasDuplicated = ::DuplicateHandle(::GetCurrentProcess(),
+										   processHandle,
+										   ::GetCurrentProcess(),
+										   &processHandleDuplicate,
+										   PROCESS_ALL_ACCESS,
+										   FALSE,
+										   0
 	);
 
-	BOOL isSuccess = FALSE;
+	
 	DWORD processExitCode = 0;
 	DWORD errorCode = 0;
 	HANDLE remoteThreadHandle = nullptr;
-	if (GetExitCodeProcess((wasDuplicated) ? processHandleDuplicate : processHandle, &processExitCode) && (processExitCode == STILL_ACTIVE))
+	if (::GetExitCodeProcess(wasDuplicated ? processHandleDuplicate : processHandle, &processExitCode) && (processExitCode == STILL_ACTIVE))
 	{
 		DWORD threadID = 0;
-		remoteThreadHandle = CreateRemoteThread
-		(
-			(wasDuplicated) ? processHandleDuplicate : processHandle,
-			nullptr,
-			0,
-			(LPTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandleW(L"Kernel32.dll"), "ExitProcess"),
-			(PVOID)exitCode,
-			0,
-			&threadID
-		);
+		remoteThreadHandle = ::CreateRemoteThread((wasDuplicated) ? processHandleDuplicate : processHandle,
+												  nullptr,
+												  0,
+												  reinterpret_cast<LPTHREAD_START_ROUTINE>(::GetProcAddress(::GetModuleHandleW(L"Kernel32.dll"), "ExitProcess")),
+												  reinterpret_cast<void*>(exitCode),
+												  0,
+												  & threadID);
 
-		if (remoteThreadHandle == nullptr)
+		if (!remoteThreadHandle)
 		{
-			errorCode = GetLastError();
+			errorCode = ::GetLastError();
 		}
 	}
 	else
@@ -142,12 +137,13 @@ BOOL KxProcess::SafeTerminateProcess(HANDLE processHandle, UINT exitCode)
 		errorCode = ERROR_PROCESS_ABORTED;
 	}
 
+	bool isSuccess = false;
 	if (remoteThreadHandle)
 	{
 		// Must wait process to terminate to guarantee that it has exited...
-		WaitForSingleObject((wasDuplicated) ? processHandleDuplicate : processHandle, INFINITE);
-		CloseHandle(remoteThreadHandle);
-		isSuccess = TRUE;
+		::WaitForSingleObject(wasDuplicated ? processHandleDuplicate : processHandle, INFINITE);
+		::CloseHandle(remoteThreadHandle);
+		isSuccess = true;
 	}
 
 	if (wasDuplicated)
