@@ -17,9 +17,8 @@ bool KxProgressDialog::Create(wxWindow* parent,
 
 	if (KxStdDialog::Create(parent, id, caption, pos, size, buttons, style))
 	{
-		wxSize progressBarSize = wxSize(DefaultProgressWidth, DefaultProgressHeight);
 		m_View = new KxProgressBar(m_ContentPanel, wxID_NONE, 100);
-		m_View->SetInitialSize(progressBarSize);
+		m_View->SetInitialSize(FromDIP(wxSize(DefaultProgressWidth, DefaultProgressHeight)));
 		SetProgressBar(m_View);
 
 		PostCreate(pos);

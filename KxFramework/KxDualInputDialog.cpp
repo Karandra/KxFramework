@@ -16,7 +16,7 @@ bool KxDualInputDialog::Create(wxWindow* parent,
 	if (KxStdDialog::Create(parent, id, caption, pos, size, buttons, style))
 	{
 		wxSize size(DefaultWidth, wxDefaultCoord);
-		int flags = KxTextBox::DefaultStyle|wxTE_PROCESS_ENTER;
+		const int flags = KxTextBox::DefaultStyle|wxTE_PROCESS_ENTER;
 
 		m_View = new KxPanel(m_ContentPanel, wxID_NONE);
 
@@ -29,7 +29,7 @@ bool KxDualInputDialog::Create(wxWindow* parent,
 		wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 		m_View->SetSizer(sizer);
 		sizer->Add(m_TextBox1, 0, wxEXPAND);
-		sizer->Add(m_TextBox2, 0, wxEXPAND|wxTOP, 5);
+		sizer->Add(m_TextBox2, 0, wxEXPAND|wxTOP, FromDIP(wxSize(wxDefaultCoord, 5)).GetHeight());
 
 		AddUserWindow(m_TextBox1);
 		AddUserWindow(m_TextBox2);

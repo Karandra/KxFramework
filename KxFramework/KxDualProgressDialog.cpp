@@ -16,7 +16,7 @@ wxOrientation KxDualProgressDialog::GetViewLabelSizerOrientation() const
 KxProgressBar* KxDualProgressDialog::CreateProgressBar()
 {
 	KxProgressBar* progressBar = new KxProgressBar(m_View, wxID_NONE, 100);
-	progressBar->SetInitialSize(wxSize(DefaultProgressWidth, DefaultProgressHeight));
+	progressBar->SetInitialSize(FromDIP(wxSize(DefaultProgressWidth, DefaultProgressHeight)));
 
 	return progressBar;
 }
@@ -41,7 +41,7 @@ bool KxDualProgressDialog::Create(wxWindow* parent,
 		wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 		m_View->SetSizer(sizer);
 		sizer->Add(m_PB1, 0, wxEXPAND);
-		sizer->Add(m_PB2, 0, wxEXPAND|wxTOP, 5);
+		sizer->Add(m_PB2, 0, wxEXPAND|wxTOP, FromDIP(wxSize(wxDefaultCoord, 5)).GetHeight());
 
 		PostCreate(pos);
 		return true;

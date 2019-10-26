@@ -377,13 +377,13 @@ void KxStdDialog::PostCreate(const wxPoint& pos)
 	InitIcon();
 	AdjustWindow(pos);
 }
-void KxStdDialog::AdjustWindow(const wxPoint &pos, const wxSize& tMinSize)
+void KxStdDialog::AdjustWindow(const wxPoint &pos, const wxSize& minSize)
 {
 	if (IsAutoSizeEnabled())
 	{
-		if (tMinSize.IsFullySpecified())
+		if (minSize.IsFullySpecified())
 		{
-			SetMinSize(tMinSize);
+			SetMinSize(minSize);
 		}
 		else
 		{

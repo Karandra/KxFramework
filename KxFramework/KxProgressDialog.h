@@ -9,8 +9,8 @@ class KX_API KxProgressDialog: public KxStdDialog, public KxProgressBarWrapper
 		KxProgressBar* m_View = nullptr;
 
 	private:
-		virtual wxOrientation GetViewLabelSizerOrientation() const;
-		virtual bool IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut = nullptr) const;
+		wxOrientation GetViewLabelSizerOrientation() const override;
+		bool IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut = nullptr) const override;
 
 	public:
 		static const int DefaultProgressWidth = 300;
@@ -43,11 +43,11 @@ class KX_API KxProgressDialog: public KxStdDialog, public KxProgressBarWrapper
 		{
 			return m_View;
 		}
-		virtual KxProgressBar* GetDialogMainCtrl() const override
+		KxProgressBar* GetDialogMainCtrl() const override
 		{
 			return GetProgressBar();
 		}
-		virtual int GetViewSizerProportion() const override
+		int GetViewSizerProportion() const override
 		{
 			return 0;
 		}

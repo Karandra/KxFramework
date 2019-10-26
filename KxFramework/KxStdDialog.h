@@ -112,7 +112,8 @@ class KX_API KxIStdDialog
 class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 {
 	public:
-		typedef std::vector<wxWindowID> StdButtonsIDs;
+		using StdButtonsIDs = std::vector<wxWindowID>;
+
 		static const StdButtonsIDs ms_DefaultCloseIDs;
 		static const StdButtonsIDs ms_DefaultEnterIDs;
 		static const wxColour ms_WindowBackgroundColor;
@@ -236,7 +237,7 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 			return false;
 		}
 		
-		virtual bool MSWTranslateMessage(WXMSG* msg);
+		bool MSWTranslateMessage(WXMSG* msg) override;
 		void EnableGlassFrame();
 		HWND GetGripperWindow()
 		{
@@ -269,7 +270,7 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 					int buttons = DefaultButtons,
 					long style = DefaultStyle
 		);
-		virtual ~KxStdDialog();
+		~KxStdDialog();
 
 	public:
 		virtual void SetAffirmativeId(int id)
@@ -281,7 +282,7 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 
 		}
 
-		virtual wxWindow* GetContentWindow() const
+		wxWindow* GetContentWindow() const override
 		{
 			return m_ContentPanel;
 		}
@@ -300,7 +301,7 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 		}
 
 		virtual int ShowModal() override;
-		void AdjustWindow(const wxPoint &pos = wxPoint(-2, -2), const wxSize& tMinSize = wxDefaultSize);
+		void AdjustWindow(const wxPoint &pos = wxPoint(-2, -2), const wxSize& minSize = wxDefaultSize);
 		void AddUserWindow(wxWindow* window)
 		{
 			m_UserControls.push_back(window);
@@ -351,15 +352,15 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 		}
 
 		// Icons
-		virtual wxBitmap GetMainIcon() const override
+		wxBitmap GetMainIcon() const override
 		{
 			return m_MainIcon;
 		}
-		virtual KxIconType GetMainIconID() const override
+		KxIconType GetMainIconID() const override
 		{
 			return m_MainIconID;
 		}
-		virtual void SetMainIcon(const wxBitmap& icon) override
+		void SetMainIcon(const wxBitmap& icon) override
 		{
 			if (icon.IsOk())
 			{
@@ -373,7 +374,7 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 			}
 			SetIconVisibility();
 		}
-		virtual void SetMainIcon(KxIconType iconID = DefaultIconID) override
+		void SetMainIcon(KxIconType iconID = DefaultIconID) override
 		{
 			m_MainIconID = iconID;
 			if (iconID != KxICON_NONE)
@@ -385,26 +386,26 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 		}
 		
 		// Caption
-		virtual wxString GetCaption() const override
+		wxString GetCaption() const override
 		{
 			return m_CaptionLabel->GetLabel();
 		}
-		virtual void SetCaption(const wxString& label) override
+		void SetCaption(const wxString& label) override
 		{
 			m_CaptionLabel->SetLabel(label);
 		}
 		
 		// Small label above main control
-		virtual wxString GetLabel() const override
+		wxString GetLabel() const override
 		{
 			return m_ViewLabel->GetLabel();
 		}
-		virtual void SetLabel(const wxString& label) override;
+		void SetLabel(const wxString& label) override;
 		
 		// Buttons customization
-		virtual void SetDefaultButton(wxWindowID id) override;
-		virtual KxStdDialogControl GetButton(wxWindowID id) const override;
-		virtual KxStdDialogControl AddButton(wxWindowID id, const wxString& label = wxEmptyString, bool prepend = false) override;
+		void SetDefaultButton(wxWindowID id) override;
+		KxStdDialogControl GetButton(wxWindowID id) const override;
+		KxStdDialogControl AddButton(wxWindowID id, const wxString& label = wxEmptyString, bool prepend = false) override;
 
 		// Keyboard control
 		StdButtonsIDs GetCloseIDs() const
