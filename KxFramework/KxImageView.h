@@ -1,5 +1,6 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include "KxFramework/KxWindowRefreshScheduler.h"
 
 enum KxImageView_BGMode
 {
@@ -15,7 +16,7 @@ enum KxImageView_ScaleMode
 	KxIV_SCALE_ASPECT_FILL = wxStaticBitmapBase::Scale_AspectFill,
 };
 
-class KX_API KxImageView: public wxControl
+class KX_API KxImageView: public KxWindowRefreshScheduler<wxSystemThemedControl<wxControl>>
 {
 	private:
 		wxGraphicsRenderer* m_Renderer = nullptr;
@@ -32,6 +33,7 @@ class KX_API KxImageView: public wxControl
 	private:
 		void OnDrawBackground(wxEraseEvent& event);
 		void OnDrawForeground(wxPaintEvent& event);
+		void OnSize(wxSizeEvent& event);
 
 		void DoSetBitmap(const wxGraphicsBitmap& bitmap, const wxSize& size);
 
@@ -71,7 +73,7 @@ class KX_API KxImageView: public wxControl
 		void SetBackgroundMode(KxImageView_BGMode mode)
 		{
 			m_BackgroundMode = mode;
-			Refresh();
+			ScheduleRefresh();
 		}
 		
 		wxDirection GetGradientDirection() const
@@ -81,7 +83,7 @@ class KX_API KxImageView: public wxControl
 		void SetGradientDirection(wxDirection mode)
 		{
 			m_GradientDirection = mode;
-			Refresh();
+			ScheduleRefresh();
 		}
 
 		wxSize GetScaledImageSize() const
@@ -101,7 +103,7 @@ class KX_API KxImageView: public wxControl
 		void SetScaleMode(KxImageView_ScaleMode mode)
 		{
 			m_ScaleMode = mode;
-			Refresh();
+			ScheduleRefresh();
 		}
 
 		bool HasBitmap() const

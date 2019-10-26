@@ -1115,7 +1115,7 @@
       <Filter>Kx\RTTI</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxWindowRefreshScheduler.h">
-      <Filter>Source Files\Drawing</Filter>
+      <Filter>Header Files\Drawing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

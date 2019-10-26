@@ -1,12 +1,15 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxWithDropdownMenu.h"
+#include "KxFramework/KxWindowRefreshScheduler.h"
 #include "KxEvent.h"
 
 KxEVENT_DECLARE_GLOBAL(BUTTON, wxCommandEvent);
 KxEVENT_DECLARE_GLOBAL(BUTTON_MENU, wxContextMenuEvent);
 
-class KX_API KxButton: public wxSystemThemedControl<wxAnyButton>, public KxWithDropdownMenu
+class KX_API KxButton:
+	public KxWindowRefreshScheduler<wxSystemThemedControl<wxAnyButton>>,
+	public KxWithDropdownMenu
 {
 	public:
 		static wxSize GetDefaultSize();
@@ -18,7 +21,6 @@ class KX_API KxButton: public wxSystemThemedControl<wxAnyButton>, public KxWithD
 		bool m_IsSliptterEnabled = false;
 		bool m_IsFocusDrawingAllowed = false;
 		bool m_IsAuthNeeded = false;
-		bool m_ShouldRefresh = false;
 
 	private:
 		void OnPaint(wxPaintEvent& event);
@@ -32,8 +34,6 @@ class KX_API KxButton: public wxSystemThemedControl<wxAnyButton>, public KxWithD
 		wxSize DoGetBestSize() const override;
 		wxSize DoGetBestClientSize() const override;
 		wxSize DoGetSizeFromTextSize(int xlen, int ylen = -1) const override;
-
-		void OnInternalIdle() override;
 
 	public:
 		KxButton() {}
@@ -104,8 +104,8 @@ class KX_API KxButton: public wxSystemThemedControl<wxAnyButton>, public KxWithD
 		}
 		void SetSplitterEnabled(bool show = true)
 		{
-			m_ShouldRefresh = true;
 			m_IsSliptterEnabled = show;
+			ScheduleRefresh();
 		}
 		
 		bool IsAuthNeeded() const
@@ -120,8 +120,8 @@ class KX_API KxButton: public wxSystemThemedControl<wxAnyButton>, public KxWithD
 		}
 		void SetAllowDrawFocus(bool value)
 		{
+			ScheduleRefresh();
 			m_IsFocusDrawingAllowed = value;
-			m_ShouldRefresh = true;
 		}
 
 	public:

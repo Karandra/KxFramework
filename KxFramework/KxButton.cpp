@@ -107,26 +107,26 @@ void KxButton::OnPaint(wxPaintEvent& event)
 }
 void KxButton::OnResize(wxSizeEvent& event)
 {
-	m_ShouldRefresh = true;
+	ScheduleRefresh();
 	event.Skip();
 }
 void KxButton::OnMouseLeave(wxMouseEvent& event)
 {
-	m_ShouldRefresh = true;
+	ScheduleRefresh();
 	m_ControlState = wxCONTROL_NONE;
 
 	event.Skip();
 }
 void KxButton::OnMouseEnter(wxMouseEvent& event)
 {
-	m_ShouldRefresh = true;
+	ScheduleRefresh();
 	m_ControlState = wxCONTROL_CURRENT;
 
 	event.Skip();
 }
 void KxButton::OnLeftButtonUp(wxMouseEvent& event)
 {
-	m_ShouldRefresh = true;
+	ScheduleRefresh();
 	m_ControlState = wxCONTROL_NONE;
 
 	const wxPoint pos = event.GetPosition();
@@ -151,7 +151,7 @@ void KxButton::OnLeftButtonUp(wxMouseEvent& event)
 }
 void KxButton::OnLeftButtonDown(wxMouseEvent& event)
 {
-	m_ShouldRefresh = true;
+	ScheduleRefresh();
 	m_ControlState = wxCONTROL_PRESSED;
 
 	event.Skip();
@@ -177,17 +177,6 @@ wxSize KxButton::DoGetSizeFromTextSize(int xlen, int ylen) const
 		size.y += ylen;
 	}
 	return size;
-}
-
-void KxButton::OnInternalIdle()
-{
-	wxAnyButton::OnInternalIdle();
-
-	if (m_ShouldRefresh)
-	{
-		m_ShouldRefresh = false;
-		Refresh();
-	}
 }
 
 bool KxButton::Create(wxWindow* parent,
@@ -229,12 +218,12 @@ KxButton::~KxButton()
 
 bool KxButton::Enable(bool isEnabled)
 {
-	m_ShouldRefresh = true;
+	ScheduleRefresh();
 	return wxAnyButton::Enable(isEnabled);
 }
 void KxButton::SetLabel(const wxString& label)
 {
-	m_ShouldRefresh = true;
+	ScheduleRefresh();
 	wxAnyButton::SetLabel(label);
 }
 
@@ -249,7 +238,7 @@ bool KxButton::IsDefault() const
 }
 wxWindow* KxButton::SetDefault()
 {
-	m_ShouldRefresh = true;
+	ScheduleRefresh();
 
 	wxWindow* tlwParent = wxGetTopLevelParent(this);
 	if (tlwParent && tlwParent->IsKindOf(wxCLASSINFO(wxTopLevelWindow)))
@@ -261,7 +250,9 @@ wxWindow* KxButton::SetDefault()
 
 void KxButton::SetAuthNeeded(bool show)
 {
+	ScheduleRefresh();
 	m_IsAuthNeeded = show;
+
 	if (m_IsAuthNeeded)
 	{
 		KxLibrary library("ImageRes.dll", LOAD_LIBRARY_AS_DATAFILE);
@@ -300,13 +291,10 @@ void KxButton::SetAuthNeeded(bool show)
 				wxBitmap bitmap;
 				bitmap.CopyFromIcon(library.GetIcon("78", wxSize(iconSize, iconSize), langs[0]));
 				SetBitmap(bitmap);
-
-				m_ShouldRefresh = true;
 				return;
 			}
 		}
 	}
 
-	m_ShouldRefresh = true;
 	SetBitmap(wxNullBitmap);
 }

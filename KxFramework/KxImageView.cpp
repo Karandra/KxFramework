@@ -38,14 +38,20 @@ void KxImageView::OnDrawForeground(wxPaintEvent& event)
 
 	m_ScaledImageSize = KxDrawablePanel::DrawScaledBitmap(&*context, m_Bitmap, m_ImageSize, wxRect(wxPoint(0, 0), GetClientSize()), (KxDrawablePanel::ScaleMode)m_ScaleMode, m_ScaleFactor);
 }
+void KxImageView::OnSize(wxSizeEvent& event)
+{
+	Refresh();
+	event.Skip();
+}
 
 void KxImageView::DoSetBitmap(const wxGraphicsBitmap& bitmap, const wxSize& size)
 {
+	ScheduleRefresh();
+	
 	m_Bitmap = bitmap;
 	m_ImageSize = size;
 	m_ScaledImageSize = wxSize(0, 0);
 	m_IsAnimation = false;
-	Refresh();
 }
 
 bool KxImageView::Create(wxWindow* parent,
@@ -53,8 +59,9 @@ bool KxImageView::Create(wxWindow* parent,
 						  long style
 )
 {
-	if (wxControl::Create(parent, id, wxDefaultPosition, wxDefaultSize, style|wxFULL_REPAINT_ON_RESIZE))
+	if (wxControl::Create(parent, id, wxDefaultPosition, wxDefaultSize, style))
 	{
+		EnableSystemTheme();
 		SetDoubleBuffered(true);
 		if (ShouldInheritColours())
 		{
@@ -64,6 +71,7 @@ bool KxImageView::Create(wxWindow* parent,
 		SetBackgroundStyle(wxBG_STYLE_ERASE);
 		Bind(wxEVT_ERASE_BACKGROUND, &KxImageView::OnDrawBackground, this);
 		Bind(wxEVT_PAINT, &KxImageView::OnDrawForeground, this);
+		Bind(wxEVT_SIZE, &KxImageView::OnSize, this);
 
 		// Direct2D can't be used right now because it crops images and not scales them.
 		m_Renderer = wxGraphicsRenderer::GetGDIPlusRenderer();
@@ -135,7 +143,7 @@ void KxImageView::SetScaleFactor(double factor)
 	if (std::abs(m_ScaleFactor - factor) > 0.01)
 	{
 		m_ScaleFactor = factor;
-		Refresh();
+		ScheduleRefresh();
 	}
 }
 void KxImageView::SetBitmap(const wxBitmap& bitmap)

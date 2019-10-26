@@ -145,7 +145,7 @@ namespace KxDataView2
 		// does happen, e.g. because there is really not enough vertical space.
 		if (m_HeaderArea && m_HeaderArea->GetSize().y <= m_HeaderArea->GetBestSize().y)
 		{
-			m_HeaderArea->Refresh();
+			m_HeaderArea->ScheduleRefresh();
 		}
 	}
 	void View::OnPaint(wxPaintEvent& event)

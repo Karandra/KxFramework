@@ -570,6 +570,7 @@ namespace KxDataView2
 			m_UpdateColumns = false;
 		}
 		wxHeaderCtrl::OnInternalIdle();
+		KxWindowRefreshScheduler::OnInternalIdle();
 	}
 
 	void HeaderCtrl::UpdateColumn(const Column& column)
@@ -593,7 +594,7 @@ namespace KxDataView2
 	}
 
 	HeaderCtrl::HeaderCtrl(View* parent)
-		:wxHeaderCtrl(parent), m_View(parent)
+		:KxWindowRefreshScheduler(parent), m_View(parent)
 	{
 		// See comment in 'HeaderCtrl::SetBackgroundColour' for details
 		// about why double-buffering needs to be disabled.

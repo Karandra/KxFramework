@@ -1,5 +1,6 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include "KxFramework/KxWindowRefreshScheduler.h"
 
 enum
 {
@@ -12,7 +13,7 @@ enum
 	KxLABEL_COLORED = 1 << 4,
 };
 
-class KX_API KxLabel: public wxSystemThemedControl<wxStaticText>
+class KX_API KxLabel: public KxWindowRefreshScheduler<wxSystemThemedControl<wxStaticText>>
 {
 	private:
 		wxEvtHandler m_EvtHandler;
@@ -43,17 +44,16 @@ class KX_API KxLabel: public wxSystemThemedControl<wxStaticText>
 		const wxColour& GetStateColor() const;
 		void SetupColors(const wxColour& color)
 		{
-			wxWindowUpdateLocker tLock(this);
+			ScheduleRefresh();
 
 			m_ColorNormal = color;
 			m_ColorHighlight = color;
 			m_ColorClick = color;
 			m_ColorDisabled = wxColour(color).MakeDisabled();
-			Refresh();
 		}
 		bool IsLabelMultiline(const wxString& label)
 		{
-			return label.Find('\r') != -1 || label.Find('\n') != -1;
+			return label.Find('\r') != wxNOT_FOUND || label.Find('\n') != wxNOT_FOUND;
 		}
 		wxSize CalcBestSize(wxDC* dc = nullptr);
 
@@ -73,10 +73,11 @@ class KX_API KxLabel: public wxSystemThemedControl<wxStaticText>
 		}
 		void DoSetLabel(const wxString& label) override
 		{
+			ScheduleRefresh();
+
 			m_Label = label;
 			m_IsMultilne = IsLabelMultiline(label);
 			m_BestSize = CalcBestSize();
-			Refresh();
 		}
 
 	public:
@@ -141,6 +142,7 @@ class KX_API KxLabel: public wxSystemThemedControl<wxStaticText>
 		void SetBitmap(const wxBitmap& image);
 		void Wrap(int width)
 		{
+			ScheduleRefresh();
 			m_WrapLength = width;
 		}
 		wxColour GetNormalColor()
@@ -149,8 +151,8 @@ class KX_API KxLabel: public wxSystemThemedControl<wxStaticText>
 		}
 		void SetNormalColor(const wxColour& color)
 		{
+			ScheduleRefresh();
 			m_ColorNormal = color;
-			Refresh();
 		}
 		wxColour GetHighlightColor()
 		{
@@ -158,8 +160,8 @@ class KX_API KxLabel: public wxSystemThemedControl<wxStaticText>
 		}
 		void SetHighlightColor(const wxColour& color)
 		{
+			ScheduleRefresh();
 			m_ColorHighlight = color;
-			Refresh();
 		}
 		wxColour GetClickColor()
 		{
@@ -167,12 +169,14 @@ class KX_API KxLabel: public wxSystemThemedControl<wxStaticText>
 		}
 		void SetClickColor(const wxColour& color)
 		{
+			ScheduleRefresh();
 			m_ColorClick = color;
-			Refresh();
 		}
 
 		void SetLabelAlignment(int singleLine, int multiLine = wxALIGN_LEFT|wxALIGN_TOP)
 		{
+			ScheduleRefresh();
+
 			m_AlignStyle = singleLine;
 			m_MultiLineAlignStyle = multiLine;
 		}

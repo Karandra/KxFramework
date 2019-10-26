@@ -230,6 +230,8 @@ KxLabel::~KxLabel()
 
 void KxLabel::SetBitmap(const wxBitmap& image)
 {
+	ScheduleRefresh();
+
 	if (image.IsOk())
 	{
 		m_Icon = image;
@@ -246,5 +248,4 @@ void KxLabel::SetBitmap(const wxBitmap& image)
 		m_Icon = wxNullBitmap;
 		m_IconDisabled = wxNullBitmap;
 	}
-	Refresh();
 }
