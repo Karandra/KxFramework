@@ -1,70 +1,76 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include "KxFramework/KxWindowRefreshScheduler.h"
 #include "KxEvent.h"
 
 KxEVENT_DECLARE_GLOBAL(THUMBVIEW_SELECTED, wxCommandEvent);
 KxEVENT_DECLARE_GLOBAL(THUMBVIEW_ACTIVATED, wxCommandEvent);
 KxEVENT_DECLARE_GLOBAL(THUMBVIEW_CONTEXT_MENU, wxContextMenuEvent);
 
-class KX_API KxThumbView;
-class KX_API KxThumbViewItem
+class KX_API KxThumbViewItem final
 {
-	friend class KxThumbView;
-
 	private:
 		wxBitmap m_Bitmap;
 
 	public:
-		KxThumbViewItem(const wxBitmap& bitmap);
-		~KxThumbViewItem();
+		KxThumbViewItem(const wxBitmap& bitmap)
+			:m_Bitmap(bitmap)
+		{
+		}
 
 	public:
 		const wxBitmap& GetBitmap() const
 		{
 			return m_Bitmap;
 		}
+		wxBitmap& GetBitmap()
+		{
+			return m_Bitmap;
+		}
 };
 
-class KX_API KxThumbView: public wxSystemThemedControl<wxVScrolledWindow>
+class KX_API KxThumbView: public KxWindowRefreshScheduler<wxSystemThemedControl<wxVScrolledWindow>>
 {
+	private:
+		enum: size_t
+		{
+			InvalidItemIndex = std::numeric_limits<size_t>::max()
+		};
+
 	private:
 		wxSize m_ThumbSize = wxDefaultSize;
 		wxSize m_Spacing = wxSize(1, 1);
-		size_t m_Focused = (size_t)-1;
-		size_t m_Selected = (size_t)-1;
-		bool m_HasCahnges = true;
+		size_t m_Focused = InvalidItemIndex;
+		size_t m_Selected = InvalidItemIndex;
 		std::vector<KxThumbViewItem> m_Thumbs;
 
 	private:
 		void OnPaint(wxPaintEvent& event);
 		void OnSize(wxSizeEvent& event);
 		void OnMouse(wxMouseEvent& event);
-		void OnFocusLost(wxFocusEvent& event);
-		virtual void OnInternalIdle() override;
-		void UpdateView();
-		void RefreshUpdatedRect()
-		{
-			RefreshRect(GetUpdateRegion().GetBox());
-		}
+		void OnKillFocus(wxFocusEvent& event);
 
 		size_t GetIndexByRowColumn(size_t row, size_t columnIndex, size_t itemsInRow) const;
 		wxRect GetThumbRect(size_t row, size_t columnIndex, size_t beginRow);
 		wxRect GetFullThumbRect(size_t row, size_t columnIndex, size_t beginRow);
 		wxSize GetFinalThumbSize() const;
-		int CalcItemsPerRow() const;
-		KxThumbViewItem& GetThumb(size_t i);
+		size_t CalcItemsPerRow() const;
 
-		virtual int OnGetRowHeight(size_t i) const override
+		int OnGetRowHeight(size_t i) const override
 		{
 			return GetFinalThumbSize().GetHeight();
 		}
-		int CalcRowCount() const;
+		size_t CalcRowCount() const;
+		void UpdateRowCount();
+		KxThumbViewItem& GetThumb(size_t i);
 		wxBitmap CreateThumb(const wxBitmap& bitmap, const wxSize& size) const;
+
+		void OnInternalIdle() override;
 
 	public:
 		static const long DefaultStyle = 0;
 		static const wxSize DefaultThumbSize;
-		static const float ThumbPaddingScale;
+		static const double ThumbPaddingScale;
 		
 		KxThumbView() {}
 		KxThumbView(wxWindow* parent,
@@ -81,11 +87,11 @@ class KX_API KxThumbView: public wxSystemThemedControl<wxVScrolledWindow>
 		virtual ~KxThumbView();
 
 	public:
-		virtual wxBorder GetDefaultBorder() const override
+		wxBorder GetDefaultBorder() const override
 		{
 			return wxBORDER_THEME;
 		}
-		virtual bool ShouldInheritColours() const override
+		bool ShouldInheritColours() const override
 		{
 			return true;
 		}

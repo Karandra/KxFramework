@@ -3,15 +3,6 @@
 #include "KxFramework/KxPanel.h"
 #include "KxFramework/KxUtility.h"
 
-KxThumbViewItem::KxThumbViewItem(const wxBitmap& bitmap)
-	:m_Bitmap(bitmap)
-{
-}
-KxThumbViewItem::~KxThumbViewItem()
-{
-}
-
-//////////////////////////////////////////////////////////////////////////
 KxEVENT_DEFINE_GLOBAL(THUMBVIEW_SELECTED, wxCommandEvent);
 KxEVENT_DEFINE_GLOBAL(THUMBVIEW_ACTIVATED, wxCommandEvent);
 KxEVENT_DEFINE_GLOBAL(THUMBVIEW_CONTEXT_MENU, wxContextMenuEvent);
@@ -19,7 +10,7 @@ KxEVENT_DEFINE_GLOBAL(THUMBVIEW_CONTEXT_MENU, wxContextMenuEvent);
 wxIMPLEMENT_DYNAMIC_CLASS(KxThumbView, wxVScrolledWindow);
 
 const wxSize KxThumbView::DefaultThumbSize = wxSize(256, 144);
-const float KxThumbView::ThumbPaddingScale = 0.9f;
+const double KxThumbView::ThumbPaddingScale = 0.9;
 
 void KxThumbView::OnPaint(wxPaintEvent& event)
 {
@@ -58,13 +49,15 @@ void KxThumbView::OnPaint(wxPaintEvent& event)
 }
 void KxThumbView::OnSize(wxSizeEvent& event)
 {
-	m_HasCahnges = true;
-	UpdateView();
 	event.Skip();
+
+	UpdateRowCount();
+	Refresh();
 }
 void KxThumbView::OnMouse(wxMouseEvent& event)
 {
 	event.Skip();
+
 	auto IsSelectionEvent = [](wxMouseEvent& event) -> bool
 	{
 		return event.GetEventType() == wxEVT_LEFT_DOWN || event.GetEventType() == wxEVT_LEFT_DCLICK || event.GetEventType() == wxEVT_RIGHT_UP;
@@ -103,79 +96,60 @@ void KxThumbView::OnMouse(wxMouseEvent& event)
 		}
 	};
 
-	bool isSelectionEvent = IsSelectionEvent(event);
-	m_Focused = (size_t)-1;
-	if (isSelectionEvent)
-	{
-		m_Selected = (size_t)-1;
-	}
+	const bool isSelectionEvent = IsSelectionEvent(event);
+	const int itemsInRow = CalcItemsPerRow();
+	const wxPoint pos = event.GetPosition();
+	const int row = VirtualHitTest(pos.y);
 
-	int itemsInRow = CalcItemsPerRow();
-	wxPoint pos = event.GetPosition();
-	int row = VirtualHitTest(pos.y);
-	if (row != wxNOT_FOUND)
+	const size_t oldSelection = m_Selected;
+	const size_t oldFocus = m_Focused;
+	if (row != wxNOT_FOUND && pos.x != 0)
 	{
-		if (pos.x != 0)
+		const size_t beginRow = GetVisibleRowsBegin();
+		for (int columnIndex = 0; columnIndex < itemsInRow; columnIndex++)
 		{
-			const size_t beginRow = GetVisibleRowsBegin();
-			for (int columnIndex = 0; columnIndex < itemsInRow; columnIndex++)
+			const wxRect thumbRect = GetFullThumbRect(row, columnIndex, beginRow);
+			if (pos.x >= thumbRect.GetLeft() && pos.x <= thumbRect.GetRight())
 			{
-				wxRect thumbRect = GetFullThumbRect(row, columnIndex, beginRow);
-				if (pos.x >= thumbRect.GetLeft() && pos.x <= thumbRect.GetRight())
+				const size_t index = GetIndexByRowColumn(row, columnIndex, itemsInRow);
+				const size_t focus = index < GetThumbsCount() ? index : InvalidItemIndex;
+				const size_t selection = index < GetThumbsCount() ? index : InvalidItemIndex;
+
+				if (focus != oldFocus)
 				{
-					size_t index = GetIndexByRowColumn(row, columnIndex, itemsInRow);
-					m_Focused = index < GetThumbsCount() ? index : (size_t)-1;
-
-					if (isSelectionEvent)
-					{
-						m_Selected = index < GetThumbsCount() ? index : (size_t)-1;
-					}
-					RefreshRect(GetClientRect());
-
-					if (isSelectionEvent)
-					{
-						SendEvents(event);
-					}
-					return;
+					ScheduleRefresh();
+					m_Focused = focus;
 				}
+				if (isSelectionEvent && selection != oldSelection)
+				{
+					ScheduleRefresh();
+					m_Selected = selection;
+				}
+
+				if (isSelectionEvent)
+				{
+					SendEvents(event);
+				}
+				return;
 			}
 		}
+
+		m_Focused = InvalidItemIndex;
+		if (isSelectionEvent)
+		{
+			m_Selected = InvalidItemIndex;
+		}
+		ScheduleRefresh();
 	}
 
 	SendEvents(event);
-	RefreshRect(GetClientRect());
 }
-void KxThumbView::OnFocusLost(wxFocusEvent& event)
+void KxThumbView::OnKillFocus(wxFocusEvent& event)
 {
-	m_Focused = (size_t)-1;
-	RefreshRect(GetClientRect());
 	event.Skip();
-}
-void KxThumbView::OnInternalIdle()
-{
-	UpdateView();
-	wxVScrolledWindow::OnInternalIdle();
-}
-void KxThumbView::UpdateView()
-{
-	bool shouldDoRefresh = false;
 
-	if (m_Focused != (size_t)-1 && !IsMouseInWindow())
-	{
-		m_Focused = (size_t)-1;
-		shouldDoRefresh = true;
-	}
-	if (m_HasCahnges)
-	{
-		SetRowCount(CalcRowCount());
-		shouldDoRefresh = true;
-	}
-
-	if (shouldDoRefresh)
-	{
-		Refresh();
-	}
-	m_HasCahnges = false;
+	m_Focused = InvalidItemIndex;
+	ScheduleRefresh();
 }
 
 size_t KxThumbView::GetIndexByRowColumn(size_t row, size_t columnIndex, size_t itemsInRow) const
@@ -203,20 +177,30 @@ wxSize KxThumbView::GetFinalThumbSize() const
 {
 	return m_ThumbSize + m_Spacing;
 }
-int KxThumbView::CalcItemsPerRow() const
+size_t KxThumbView::CalcItemsPerRow() const
 {
 	int count = GetClientSize().GetWidth() / GetFinalThumbSize().GetWidth();
 	return count == 0 ? 1 : count;
 }
-int KxThumbView::CalcRowCount() const
+
+size_t KxThumbView::CalcRowCount() const
 {
 	return std::ceil(m_Thumbs.size() / (double)CalcItemsPerRow());
+}
+void KxThumbView::UpdateRowCount()
+{
+	const size_t oldCount = GetRowCount();
+	const size_t newCount = CalcRowCount();
+
+	if (oldCount != newCount)
+	{
+		SetRowCount(newCount);
+	}
 }
 KxThumbViewItem& KxThumbView::GetThumb(size_t i)
 {
 	return m_Thumbs[i];
 }
-
 wxBitmap KxThumbView::CreateThumb(const wxBitmap& bitmap, const wxSize& size) const
 {
 	wxBitmap result(size, 32);
@@ -228,6 +212,18 @@ wxBitmap KxThumbView::CreateThumb(const wxBitmap& bitmap, const wxSize& size) co
 
 	KxDrawablePanel::DrawScaledBitmap(gcdc.GetGraphicsContext(), bitmap, wxRect(wxPoint(0, 0), size), KxDrawablePanel::ScaleMode::Scale_AspectFit);
 	return result;
+}
+
+void KxThumbView::OnInternalIdle()
+{
+	if (m_Focused != InvalidItemIndex && !IsMouseInWindow())
+	{
+		m_Focused = InvalidItemIndex;
+		ScheduleRefresh();
+	}
+
+	wxVScrolledWindow::OnInternalIdle();
+	KxWindowRefreshScheduler::OnInternalIdle();
 }
 
 bool KxThumbView::Create(wxWindow* parent,
@@ -249,14 +245,13 @@ bool KxThumbView::Create(wxWindow* parent,
 		Bind(wxEVT_LEFT_DOWN, &KxThumbView::OnMouse, this);
 		Bind(wxEVT_LEFT_DCLICK, &KxThumbView::OnMouse, this);
 		Bind(wxEVT_RIGHT_UP, &KxThumbView::OnMouse, this);
-		Bind(wxEVT_KILL_FOCUS, &KxThumbView::OnFocusLost, this);
+		Bind(wxEVT_KILL_FOCUS, &KxThumbView::OnKillFocus, this);
 		return true;
 	}
 	return false;
 }
 KxThumbView::~KxThumbView()
 {
-	ClearThumbs();
 }
 
 wxSize KxThumbView::GetThumbSize() const
@@ -270,7 +265,8 @@ void KxThumbView::SetThumbSize(const wxSize& size)
 	{
 		m_ThumbSize = FromDIP(DefaultThumbSize);
 	}
-	Refresh();
+
+	ScheduleRefresh();
 }
 wxSize KxThumbView::GetSpacing() const
 {
@@ -280,11 +276,13 @@ void KxThumbView::SetSpacing(const wxSize& spacing)
 {
 	m_Spacing = spacing;
 	m_Spacing.SetDefaults(wxSize(0, 0));
+
+	ScheduleRefresh();
 }
 
 int KxThumbView::GetSelectedThumb() const
 {
-	return m_Selected != (size_t)-1 ? (int)m_Selected : wxNOT_FOUND;
+	return m_Selected != InvalidItemIndex ? (int)m_Selected : wxNOT_FOUND;
 }
 void KxThumbView::SetSelectedThumb(int index)
 {
@@ -294,7 +292,7 @@ void KxThumbView::SetSelectedThumb(int index)
 	}
 	else
 	{
-		m_Selected = (size_t)-1;
+		m_Selected = InvalidItemIndex;
 	}
 }
 
@@ -304,7 +302,9 @@ size_t KxThumbView::GetThumbsCount() const
 }
 size_t KxThumbView::AddThumb(const wxBitmap& bitmap)
 {
-	m_HasCahnges = true;
+	ScheduleRefresh();
+	UpdateRowCount();
+
 	m_Thumbs.emplace_back(KxThumbViewItem(CreateThumb(bitmap, wxSize(m_ThumbSize).Scale(ThumbPaddingScale, ThumbPaddingScale))));
 	return m_Thumbs.size() - 1;
 }
@@ -332,24 +332,24 @@ void KxThumbView::RemoveThumb(size_t index)
 	{
 		if (index == m_Focused)
 		{
-			m_Focused = (size_t)-1;
+			m_Focused = InvalidItemIndex;
 		}
 		if (index == m_Selected)
 		{
-			m_Selected = (size_t)-1;
+			m_Selected = InvalidItemIndex;
 		}
-
-		m_HasCahnges = true;
 		m_Thumbs.erase(m_Thumbs.begin() + index);
-		Refresh();
+
+		UpdateRowCount();
+		ScheduleRefresh();
 	}
 }
 void KxThumbView::ClearThumbs()
 {
-	m_HasCahnges = true;
+	ScheduleRefresh();
+	UpdateRowCount();
 
-	m_Focused = (size_t)-1;
-	m_Selected = (size_t)-1;
+	m_Focused = InvalidItemIndex;
+	m_Selected = InvalidItemIndex;
 	m_Thumbs.clear();
-	Refresh();
 }
