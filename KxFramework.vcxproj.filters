@@ -1114,6 +1114,9 @@
     <ClInclude Include="Kx\RTTI\Common.h">
       <Filter>Kx\RTTI</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxWindowRefreshScheduler.h">
+      <Filter>Source Files\Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
