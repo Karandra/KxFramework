@@ -15,11 +15,8 @@ enum
 class KX_API KxLabel: public wxSystemThemedControl<wxStaticText>
 {
 	private:
-		static const wxEllipsizeMode LabelEllipsizeMode = wxELLIPSIZE_END;
-		static const int MinSingleLineHeight = 23;
-
-	private:
 		wxEvtHandler m_EvtHandler;
+
 		wxString m_Label;
 		wxBitmap m_Icon = wxNullBitmap;
 		wxBitmap m_IconDisabled = wxNullBitmap;
@@ -28,12 +25,13 @@ class KX_API KxLabel: public wxSystemThemedControl<wxStaticText>
 		wxColour m_ColorClick;
 		wxColour m_ColorDisabled;
 		wxSize m_BestSize;
+
 		int m_WrapLength = -1;
 		int m_State = wxCONTROL_NONE;
-		long m_Style = DefaultStyle;
-		bool m_IsMultilne = false;
+		int m_Style = DefaultStyle;
 		int m_MultiLineAlignStyle = wxALIGN_LEFT|wxALIGN_TOP;
 		int m_AlignStyle = wxALIGN_CENTER_VERTICAL;
+		bool m_IsMultilne = false;
 		
 	private:
 		void OnPaint(wxPaintEvent& event);
@@ -41,15 +39,6 @@ class KX_API KxLabel: public wxSystemThemedControl<wxStaticText>
 		void OnLeave(wxMouseEvent& event);
 		void OnMouseDown(wxMouseEvent& event);
 		void OnMouseUp(wxMouseEvent& event);
-
-		virtual bool AcceptsFocus() const
-		{
-			return false;
-		}
-		virtual bool AcceptsFocusFromKeyboard() const
-		{
-			return false;
-		}
 
 		const wxColour& GetStateColor() const;
 		void SetupColors(const wxColour& color)
@@ -69,20 +58,20 @@ class KX_API KxLabel: public wxSystemThemedControl<wxStaticText>
 		wxSize CalcBestSize(wxDC* dc = nullptr);
 
 	protected:
-		virtual void DoEnable(bool enable) override
+		void DoEnable(bool enable) override
 		{
 			Refresh();
 			return wxStaticText::DoEnable(enable);
 		}
-		virtual wxSize DoGetBestSize() const override
+		wxSize DoGetBestSize() const override
 		{
 			return m_BestSize;
 		}
-		virtual wxSize GetMinSize() const override
+		wxSize GetMinSize() const override
 		{
 			return DoGetBestSize();
 		}
-		void DoSetLabel(const wxString& label)
+		void DoSetLabel(const wxString& label) override
 		{
 			m_Label = label;
 			m_IsMultilne = IsLabelMultiline(label);
@@ -93,7 +82,7 @@ class KX_API KxLabel: public wxSystemThemedControl<wxStaticText>
 	public:
 		static const long DefaultStyle = KxLABEL_NONE;
 		
-		KxLabel() {}
+		KxLabel() = default;
 		KxLabel(wxWindow* parent,
 				wxWindowID id,
 				const wxString& label,
@@ -110,30 +99,39 @@ class KX_API KxLabel: public wxSystemThemedControl<wxStaticText>
 		virtual ~KxLabel();
 
 	public:
-		virtual long GetWindowStyleFlag() const override
+		long GetWindowStyleFlag() const override
 		{
 			return m_Style;
 		}
-		virtual void SetWindowStyleFlag(long style) override
+		void SetWindowStyleFlag(long style) override
 		{
 			m_Style = style;
 		}
-		virtual wxString GetLabel() const override
+		wxString GetLabel() const override
 		{
 			return m_Label;
 		}
-		virtual void SetLabel(const wxString& label) override
+		void SetLabel(const wxString& label) override
 		{
 			DoSetLabel(label);
 		}
-		virtual void SetLabelText(const wxString& label) override
+		void SetLabelText(const wxString& label) override
 		{
 			DoSetLabel(label);
 		}
-		virtual bool SetForegroundColour(const wxColour& color) override
+		bool SetForegroundColour(const wxColour& color) override
 		{
 			SetupColors(color);
 			return wxStaticText::SetForegroundColour(color);
+		}
+
+		bool AcceptsFocus() const override
+		{
+			return false;
+		}
+		bool AcceptsFocusFromKeyboard() const override
+		{
+			return false;
 		}
 
 		wxBitmap GetBitmap()

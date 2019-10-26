@@ -21,6 +21,18 @@ namespace KxUtility
 		return false;
 	}
 
+	wxSize GetThemePartSize(const wxWindow* window, const wxString& className, wxDC& dc, int iPartId, int iStateId, int sizeVariant)
+	{
+		if (KxUxTheme::Handle handle(window, className); handle)
+		{
+			SIZE size = {};
+			if (SUCCEEDED(::GetThemePartSize(handle, dc.GetHDC(), iPartId, iStateId, nullptr, static_cast<THEMESIZE>(sizeVariant), &size)))
+			{
+				return wxSize(size.cx, size.cy);
+			}
+		}
+		return wxDefaultSize;
+	}
 	KxColor GetThemeColor(const wxWindow* window, const wxString& className, int iPartId, int iStateId, int iPropId, const wxColour& defaultColor)
 	{
 		KxColor color = defaultColor;

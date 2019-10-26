@@ -2,6 +2,12 @@
 #include "KxFramework/KxLabel.h"
 #include "KxFramework/KxUtility.h"
 
+namespace
+{
+	constexpr wxEllipsizeMode LabelEllipsizeMode = wxELLIPSIZE_END;
+	constexpr int MinSingleLineHeight = 23;
+}
+
 wxIMPLEMENT_DYNAMIC_CLASS(KxLabel, wxStaticText)
 
 const wxColour& KxLabel::GetStateColor() const
@@ -29,24 +35,25 @@ const wxColour& KxLabel::GetStateColor() const
 }
 wxSize KxLabel::CalcBestSize(wxDC* dc)
 {
+	const wxSize padding = ConvertDialogToPixels(wxSize(3, 1));
+
 	if (m_IsMultilne)
 	{
-		wxSize size;
+		wxSize textExtent;
 		if (dc)
 		{
-			size = dc->GetMultiLineTextExtent(m_Label);
+			textExtent = dc->GetMultiLineTextExtent(m_Label);
 		}
 		else
 		{
 			wxClientDC clientDC(this);
-			size = clientDC.GetMultiLineTextExtent(m_Label);
+			textExtent = clientDC.GetMultiLineTextExtent(m_Label);
 		}
-		return size + ConvertDialogToPixels(wxSize(1, 3));
+		return textExtent + padding;
 	}
 	else
 	{
-		int width = GetTextExtent(m_Label).GetWidth()+GetCharWidth();
-		return wxSize(width + 0.1 * width, MinSingleLineHeight);
+		return (dc ? dc->GetTextExtent(m_Label) : GetTextExtent(m_Label)) + padding;
 	}
 }
 

@@ -16,11 +16,24 @@ namespace
 	constexpr auto g_ArrowButtonWidth = 17;
 	constexpr auto g_DefaultButtonHeight = 23;
 
+	int FromDIPX(const wxWindow* window, int value)
+	{
+		return window->FromDIP(wxSize(value, wxDefaultCoord)).GetWidth();
+	}
+	int FromDIPY(const wxWindow* window, int value)
+	{
+		return window->FromDIP(wxSize(wxDefaultCoord, value)).GetHeight();
+	}
+
 	wxSize CalcBestSize(const KxButton& button, wxSize size)
 	{
+		if (!size.IsFullySpecified())
+		{
+			size = button.GetSizeFromTextSize(button.GetTextExtent(button.GetLabelText()));
+		}
 		if (std::abs(size.y - g_DefaultButtonHeight) <= button.GetCharHeight())
 		{
-			size.y = g_DefaultButtonHeight;
+			size.y = FromDIPY(&button, g_DefaultButtonHeight);
 		}
 		return size;
 	}
@@ -61,11 +74,11 @@ void KxButton::OnPaint(wxPaintEvent& event)
 	// Draw focus rectangle
 	if (m_IsFocusDrawingAllowed && HasFocus())
 	{
-		renderer.DrawFocusRect(this, dc, wxRect(2, 2, clientSize.GetWidth() - 4, clientSize.GetHeight() - 4), wxCONTROL_SELECTED);
+		renderer.DrawFocusRect(this, dc, wxRect(FromDIP(wxPoint(2, 2)), clientSize - FromDIP(wxSize(4, 4))), wxCONTROL_SELECTED);
 	}
 
 	// Draw bitmap and label
-	rect.y += (clientSize.GetHeight() + 2 - GetCharHeight()) / 2;
+	rect.y += (clientSize.GetHeight() + FromDIPY(this, 2) - GetCharHeight()) / 2;
 	if (wxBitmap bitmap = GetBitmap(); bitmap.IsOk())
 	{
 		if (!isEnabled)
@@ -83,10 +96,10 @@ void KxButton::OnPaint(wxPaintEvent& event)
 	if (m_IsSliptterEnabled)
 	{
 		wxRect splitRect = rect;
-		splitRect.x = width + 1;
+		splitRect.x = width + FromDIPX(this, 1);
 		splitRect.y = -1;
-		splitRect.width = g_ArrowButtonWidth;
-		splitRect.height = clientSize.GetHeight() + 2;
+		splitRect.width = FromDIPX(this, g_ArrowButtonWidth);
+		splitRect.height = clientSize.GetHeight() + FromDIPX(this, 2);
 
 		renderer.DrawPushButton(this, dc, splitRect, controlState);
 		renderer.DrawDropArrow(this, dc, splitRect, controlState);
@@ -152,6 +165,20 @@ wxSize KxButton::DoGetBestClientSize() const
 {
 	return CalcBestSize(*this, wxAnyButton::DoGetBestClientSize());
 }
+wxSize KxButton::DoGetSizeFromTextSize(int xlen, int ylen) const
+{
+	wxSize size = ConvertDialogToPixels(wxSize(16, 0));
+	if (xlen > 0)
+	{
+		size.x += xlen;
+	}
+	if (ylen > 0)
+	{
+		size.y += ylen;
+	}
+	return size;
+}
+
 void KxButton::OnInternalIdle()
 {
 	wxAnyButton::OnInternalIdle();

@@ -91,7 +91,7 @@ void KxDrawablePanel::DrawTransparencyPattern(wxDC& dc)
 {
 	const wxWindow* window = dc.GetWindow();
 
-	const int sideSize = 8;
+	const int sideSize = window->FromDIP(8);
 	dc.SetBackground(window->GetBackgroundColour());
 	dc.SetBrush(window->GetForegroundColour());
 	dc.SetPen(window->GetForegroundColour());

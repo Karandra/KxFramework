@@ -18,6 +18,7 @@ namespace KxUtility
 	bool DrawLabel(const wxWindow* window, wxDC& dc, const wxString& label, const wxBitmap& icon, wxRect rect, int alignment = wxALIGN_LEFT|wxALIGN_TOP, int accelIndex = -1, wxRect* boundingRect = nullptr);
 	bool DrawGripper(const wxWindow* window, wxDC& dc, const wxRect& rect);
 
+	wxSize GetThemePartSize(const wxWindow* window, const wxString& className, wxDC& dc, int iPartId, int iStateId, int sizeVariant);
 	KxColor GetThemeColor(const wxWindow* window, const wxString& className, int iPartId, int iStateId, int iPropId, const wxColour& defaultColor = wxNullColour);
 	KxColor GetThemeColor_Caption(const wxWindow* window);
 }

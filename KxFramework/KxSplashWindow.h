@@ -45,24 +45,24 @@ class KX_API KxSplashWindow: public wxFrame
 		virtual ~KxSplashWindow();
 
 	public:
-		virtual long GetWindowStyleFlag() const override
+		long GetWindowStyleFlag() const override
 		{
 			return m_Style;
 		}
-		virtual void SetWindowStyleFlag(long style) override;
+		void SetWindowStyleFlag(long style) override;
 		
-		virtual bool CanSetTransparent() override
+		bool CanSetTransparent() override
 		{
 			return true;
 		}
-		virtual bool SetTransparent(wxByte value) override
+		bool SetTransparent(wxByte value) override
 		{
 			SetSplashAlpha(value);
 			return true;
 		}
 
-		virtual void Update() override;
-		virtual bool Show(bool show = true) override;
+		void Update() override;
+		bool Show(bool show = true) override;
 
 		const wxBitmap& GetSplashBitmap() const
 		{

@@ -31,6 +31,8 @@ class KX_API KxButton: public wxSystemThemedControl<wxAnyButton>, public KxWithD
 	protected:
 		wxSize DoGetBestSize() const override;
 		wxSize DoGetBestClientSize() const override;
+		wxSize DoGetSizeFromTextSize(int xlen, int ylen = -1) const override;
+
 		void OnInternalIdle() override;
 
 	public:

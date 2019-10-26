@@ -24,7 +24,7 @@ class KxDataViewMainWindowMaxWidthCalculator: public wxMaxWidthCalculatorBase
 		int m_ExpanderSize = 0;
 
 	protected:
-		virtual void UpdateWithRow(int row) override
+		void UpdateWithRow(int row) override
 		{
 			int indent = 0;
 			KxDataViewItem item;
@@ -2387,7 +2387,7 @@ int KxDataViewMainWindow::GetDefaultRowHeight(KxDataViewDefaultRowHeightType typ
 			int userHeight = wxSystemOptions::GetOptionInt("KxDataViewCtrl::DefaultRowHeight");
 			if (userHeight > 0)
 			{
-				return GetOwner()->FromDIP(userHeight);
+				return userHeight;
 			}
 			else
 			{

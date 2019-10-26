@@ -240,7 +240,7 @@ bool KxThumbView::Create(wxWindow* parent,
 		EnableSystemTheme();
 		SetDoubleBuffered(true);
 
-		m_ThumbSize = DefaultThumbSize;
+		m_ThumbSize = FromDIP(DefaultThumbSize);
 		SetRowCount(0);
 
 		Bind(wxEVT_SIZE, &KxThumbView::OnSize, this);
@@ -268,7 +268,7 @@ void KxThumbView::SetThumbSize(const wxSize& size)
 	m_ThumbSize = size;
 	if (!m_ThumbSize.IsFullySpecified() || m_ThumbSize == wxSize(0, 0))
 	{
-		m_ThumbSize = DefaultThumbSize;
+		m_ThumbSize = FromDIP(DefaultThumbSize);
 	}
 	Refresh();
 }

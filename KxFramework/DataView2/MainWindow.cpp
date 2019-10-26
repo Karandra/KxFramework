@@ -1052,6 +1052,8 @@ namespace KxDataView2
 		gc.SetAntialiasMode(wxANTIALIAS_NONE);
 		gc.SetInterpolationQuality(wxINTERPOLATION_NONE);
 
+		wxRendererNative& nativeRenderer = wxRendererNative::Get();
+
 		if (m_BackgroundBitmap.IsOk())
 		{
 			wxPoint pos;
@@ -1252,7 +1254,7 @@ namespace KxDataView2
 
 						if (isCategoryRow)
 						{
-							ClacExpanderRect(wxRendererNative::Get().GetCollapseButtonSize(this, paintDC), EXPANDER_MARGIN);
+							ClacExpanderRect(nativeRenderer.GetCollapseButtonSize(this, paintDC), EXPANDER_MARGIN);
 						}
 						else
 						{
@@ -1396,7 +1398,10 @@ namespace KxDataView2
 
 					if (isCategoryRow)
 					{
-						wxRendererNative::Get().DrawCollapseButton(this, paintDC, expanderRect, flags);
+						wxRect rect(expanderRect.GetPosition(), nativeRenderer.GetCollapseButtonSize(this, dc));
+						rect = rect.CenterIn(expanderRect);
+
+						nativeRenderer.DrawCollapseButton(this, paintDC, rect, flags);
 					}
 					else if (m_View->IsExtraStyleEnabled(CtrlExtraStyle::PlusMinusExpander))
 					{
@@ -1406,9 +1411,13 @@ namespace KxDataView2
 					{
 						const int partID = flags & wxCONTROL_CURRENT ? TVP_HOTGLYPH : TVP_GLYPH;
 						const int stateID = flags & wxCONTROL_EXPANDED ? GLPS_OPENED : GLPS_CLOSED;
-						if (!m_View->m_UsingSystemTheme || !KxUtility::DrawThemeBackground(this, wxS("TREEVIEW"), paintDC, partID, stateID, expanderRect))
+
+						wxRect rect(expanderRect.GetPosition(), KxUtility::GetThemePartSize(this, wxS("TREEVIEW"), dc, partID, stateID, THEMESIZE::TS_DRAW));
+						rect = rect.CenterIn(expanderRect);
+
+						if (!m_View->m_UsingSystemTheme || !KxUtility::DrawThemeBackground(this, wxS("TREEVIEW"), paintDC, partID, stateID, rect))
 						{
-							wxRendererNative::Get().DrawTreeItemButton(this, paintDC, expanderRect, flags);
+							nativeRenderer.DrawTreeItemButton(this, paintDC, rect, flags);
 						}
 					}
 				}
@@ -1419,7 +1428,7 @@ namespace KxDataView2
 					// Focus rect looks ugly in it's narrower 3px
 					if (focusCellRect.GetWidth() > 3)
 					{
-						wxRendererNative::Get().DrawFocusRect(this, paintDC, wxRect(focusCellRect).Deflate(FromDIP(wxSize(1, 1))), wxCONTROL_SELECTED);
+						nativeRenderer.DrawFocusRect(this, paintDC, wxRect(focusCellRect).Deflate(FromDIP(wxSize(1, 1))), wxCONTROL_SELECTED);
 					}
 				}
 
@@ -1428,7 +1437,7 @@ namespace KxDataView2
 				if (cellState.IsDropTarget())
 				{
 					wxRect rowRect = GetRowRect();
-					wxRendererNative::Get().DrawFocusRect(this, paintDC, rowRect, wxCONTROL_SELECTED);
+					nativeRenderer.DrawFocusRect(this, paintDC, rowRect, wxCONTROL_SELECTED);
 				}
 				#endif
 			}
@@ -2211,7 +2220,7 @@ namespace KxDataView2
 				int userHeight = wxSystemOptions::GetOptionInt("KxDataView2::DefaultRowHeight");
 				if (userHeight > 0)
 				{
-					return m_View->FromDIP(userHeight);
+					return userHeight;
 				}
 				else
 				{

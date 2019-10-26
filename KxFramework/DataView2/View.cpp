@@ -6,6 +6,18 @@
 #include "Renderer.h"
 #include "KxFramework/KxMenu.h"
 
+namespace
+{
+	int FromDIPX(const wxWindow* window, int value)
+	{
+		return window->FromDIP(wxSize(value, wxDefaultCoord)).GetWidth();
+	}
+	int FromDIPY(const wxWindow* window, int value)
+	{
+		return window->FromDIP(wxSize(wxDefaultCoord, value)).GetHeight();
+	}
+}
+
 namespace KxDataView2
 {
 	wxIMPLEMENT_ABSTRACT_CLASS(View, wxWindow)
@@ -139,6 +151,8 @@ namespace KxDataView2
 	void View::OnPaint(wxPaintEvent& event)
 	{
 		wxPaintDC dc(this);
+		dc.Clear();
+
 		if (m_BorderColor.IsOk())
 		{
 			dc.SetPen(m_BorderColor);
@@ -197,12 +211,14 @@ namespace KxDataView2
 			m_Sizer = new wxBoxSizer(wxVERTICAL);
 			if (m_HeaderArea)
 			{
-				m_HeaderAreaSI = m_Sizer->Add(m_HeaderArea, 0, wxEXPAND|wxTOP|wxLEFT|wxRIGHT);
+				m_HeaderAreaSI = m_Sizer->Add(m_HeaderArea, 0, wxEXPAND);
+				m_HeaderAreaSI->SetMinSize(m_HeaderArea->FromDIP(wxSize(wxDefaultCoord, 25)));
 			}
-			m_ClientAreaSI = m_Sizer->Add(m_ClientArea, 1, wxEXPAND|wxBOTTOM|wxLEFT|wxRIGHT);
+			m_ClientAreaSI = m_Sizer->Add(m_ClientArea, 1, wxEXPAND|wxLEFT);
 			SetSizer(m_Sizer);
 
 			EnableSystemTheme();
+			SetBackgroundStyle(wxBG_STYLE_PAINT);
 			Bind(wxEVT_SIZE, &View::OnSize, this);
 			Bind(wxEVT_PAINT, &View::OnPaint, this);
 			return true;
@@ -832,17 +848,17 @@ namespace KxDataView2
 
 	bool View::SetForegroundColour(const wxColour& color)
 	{
-		bool b1 = ViewBase::SetForegroundColour(color);
-		bool b2 = m_ClientArea ? m_ClientArea->SetForegroundColour(color) : true;
-		bool b3 = m_HeaderArea ? m_HeaderArea->SetForegroundColour(color) : true;
+		const bool b1 = ViewBase::SetForegroundColour(color);
+		const bool b2 = m_ClientArea ? m_ClientArea->SetForegroundColour(color) : true;
+		const bool b3 = m_HeaderArea ? m_HeaderArea->SetForegroundColour(color) : true;
 		
 		return b1 && b2 && b3;
 	}
 	bool View::SetBackgroundColour(const wxColour& color)
 	{
-		bool b1 = ViewBase::SetBackgroundColour(color);
-		bool b2 = m_ClientArea ? m_ClientArea->SetBackgroundColour(color) : true;
-		bool b3 = m_HeaderArea ? m_HeaderArea->SetBackgroundColour(color) : true;
+		const  bool b1 = ViewBase::SetBackgroundColour(color);
+		const  bool b2 = m_ClientArea ? m_ClientArea->SetBackgroundColour(color) : true;
+		const  bool b3 = m_HeaderArea ? m_HeaderArea->SetBackgroundColour(color) : true;
 
 		return b1 && b2 && b3;
 	}

@@ -8,23 +8,21 @@ wxIMPLEMENT_CLASS(KxStdDialogButtonSizer, wxBoxSizer);
 
 void KxStdDialogButtonSizer::ConfigureButton(wxAnyButton* button)
 {
-	wxString label = button->GetLabel();
-	wxSize size = wxSize(button->GetTextExtent(label).GetWidth(), 21);
-	size.SetWidth(size.GetWidth() + 28);
-	if (size.GetWidth() < 72)
+	wxSize size = button->GetBestSize();
+	const int defaultWidth = button->FromDIP(wxSize(72, wxDefaultCoord).GetWidth());
+
+	if (size.GetWidth() < defaultWidth)
 	{
-		size.SetWidth(72);
+		size.SetWidth(defaultWidth);
 	}
 	button->SetMinSize(size);
-	button->SetMaxSize(size);
 }
 
 KxStdDialogButtonSizer::KxStdDialogButtonSizer()
 	:wxBoxSizer(wxHORIZONTAL)
 {
-	bool isPDA = (wxSystemSettings::GetScreenType() <= wxSYS_SCREEN_PDA);
-
 	// If we have a PDA screen, put yes/no button over all other buttons, otherwise on the left side.
+	const bool isPDA = wxSystemSettings::GetScreenType() <= wxSYS_SCREEN_PDA;
 	if (isPDA)
 	{
 		SetOrientation(wxVERTICAL);
@@ -115,7 +113,7 @@ void KxStdDialogButtonSizer::AddCustomButton(KxButton* button, const wxString& l
 		if (!m_HasFirstPrepend)
 		{
 			m_HasFirstPrepend = true;
-			InsertSpacer(0, 6);
+			InsertSpacer(0, button->FromDIP(wxSize(6, wxDefaultCoord).GetWidth()));
 		}
 		Insert(1, button, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT, border);
 	}
@@ -134,7 +132,7 @@ void KxStdDialogButtonSizer::Realize()
 	{
 		if (button)
 		{
-			Add(button, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT, button->ConvertDialogToPixels(wxSize(2, 0)).x);
+			Add(button, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT, button->ConvertDialogToPixels(wxSize(2, 0)).GetWidth());
 		}
 	};
 	AddStdButton(m_ButtonAffirmative);

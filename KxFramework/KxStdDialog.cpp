@@ -15,6 +15,18 @@ KxEVENT_DEFINE_GLOBAL(STDDIALOG_TYPE_CHANGED, wxNotifyEvent);
 
 wxIMPLEMENT_ABSTRACT_CLASS(KxStdDialog, wxDialog);
 
+namespace
+{
+	int FromDIPX(const wxWindow* window, int value)
+	{
+		return window->FromDIP(wxSize(value, wxDefaultCoord)).GetWidth();
+	}
+	int FromDIPY(const wxWindow* window, int value)
+	{
+		return window->FromDIP(wxSize(wxDefaultCoord, value)).GetHeight();
+	}
+}
+
 bool KxStdDialog::ms_IsBellAllowed = false;
 
 const KxStdDialog::StdButtonsIDs KxStdDialog::ms_DefaultCloseIDs = {wxID_OK, wxID_YES, wxID_NO, wxID_CANCEL, wxID_APPLY, wxID_CLOSE};
@@ -187,16 +199,16 @@ bool KxStdDialog::Create(wxWindow* parent,
 		m_ContentPanel->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 
 		m_CaptionLabel = new KxLabel(m_ContentPanel, wxID_NONE, caption, KxLABEL_CAPTION); // wxLLabel::DefaultStyle|KxLABEL_CAPTION
-		m_CaptionLabel->SetMaxSize(wxSize(wxDefaultCoord, 23));
+		m_CaptionLabel->SetMaxSize(FromDIP(wxSize(wxDefaultCoord, 23)));
 		m_CaptionLabel->SetForegroundColour(KxUtility::GetThemeColor_Caption(m_ContentPanel));
 
 		m_ViewLabel = new KxLabel(m_ContentPanel, wxID_NONE, wxEmptyString, KxLabel::DefaultStyle & ~(KxLABEL_LINE|KxLABEL_COLORED|KxLABEL_CAPTION|KxLABEL_SELECTION));
-		m_ViewLabel->SetMaxSize(wxSize(wxDefaultCoord, 23));
+		m_ViewLabel->SetMaxSize(FromDIP(wxSize(wxDefaultCoord, 23)));
 
 		m_ContentPanelLine = new KxPanel(this, wxID_NONE, wxBORDER_NONE);
 		m_ContentPanelLine->SetPosition(wxPoint(0, 0));
 		m_ContentPanelLine->SetBackgroundColour(ms_LineBackgroundColor);
-		m_ContentPanelLine->SetMaxSize(wxSize(wxDefaultCoord, 1));
+		m_ContentPanelLine->SetMaxSize(FromDIP(wxSize(wxDefaultCoord, 1)));
 
 		m_IconView = new wxStaticBitmap(m_ContentPanel, wxID_NONE, m_MainIcon);
 		if (m_MainIcon.IsOk() == true)
@@ -246,9 +258,8 @@ bool KxStdDialog::IsEscapeAllowed(wxWindowID* idOut) const
 {
 	if (m_SelectedButtons & KxBTN_OK || m_SelectedButtons & KxBTN_CANCEL || m_SelectedButtons & KxBTN_NO || m_SelectedButtons & KxBTN_CLOSE)
 	{
-		for (size_t i = 0; i < m_CloseIDs.size(); i++)
+		for (int id: m_CloseIDs)
 		{
-			int id = m_CloseIDs[i];
 			if (id == wxID_CANCEL || id == wxID_NO || id == wxID_CLOSE)
 			{
 				KxUtility::SetIfNotNull(idOut, id);
@@ -269,9 +280,8 @@ bool KxStdDialog::IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut) const
 
 	if (m_SelectedButtons & wxOK || m_SelectedButtons & wxYES || m_SelectedButtons & wxAPPLY)
 	{
-		for (size_t i = 0; i < m_EnterIDs.size(); i++)
+		for (int id: m_EnterIDs)
 		{
-			int id = m_EnterIDs[i];
 			if (Check(wxOK, wxID_OK, id) || Check(wxYES, wxID_YES, id) || Check(wxAPPLY, wxID_APPLY, id))
 			{
 				KxUtility::SetIfNotNull(idOut, id);
@@ -320,38 +330,38 @@ void KxStdDialog::PostCreate(const wxPoint& pos)
 	if (m_ContentSizerBase)
 	{
 		m_ContentPanel->SetSizer(m_ContentSizerBase);
-		m_ContentSizerBase->Add(m_IconSizer, 0, wxEXPAND, 5);
-		m_ContentSizerBase->Add(m_ContentSizer, 1, wxEXPAND|wxALL, 5);
+		m_ContentSizerBase->Add(m_IconSizer, 0, wxEXPAND, FromDIPY(this, 5));
+		m_ContentSizerBase->Add(m_ContentSizer, 1, wxEXPAND|wxALL, FromDIPY(this, 5));
 	}
 
 	if (m_IconSizer )
 	{
-		m_IconSizer->Add(m_IconView, 0, wxLEFT|wxTOP, 10);
+		m_IconSizer->Add(m_IconView, 0, wxLEFT|wxTOP, FromDIPX(this, 10));
 	}
 
 	if (m_ContentSizer)
 	{
-		m_ContentSizer->AddSpacer(4);
-		m_ContentSizer->Add(m_CaptionLabel, 0, wxLEFT|wxRIGHT|wxEXPAND, 2);
+		m_ContentSizer->AddSpacer(FromDIPY(this, 4));
+		m_ContentSizer->Add(m_CaptionLabel, 0, wxLEFT|wxRIGHT|wxEXPAND, FromDIPX(this, 2));
 
 		if (GetViewLabelSizerOrientation() == wxHORIZONTAL)
 		{
-			m_ContentSizer->AddSpacer(6);
+			m_ContentSizer->AddSpacer(FromDIPY(this, 6));
 			wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
 			m_ContentSizer->Add(sizer, 1, wxEXPAND);
 
-			m_ViewLabelSI = sizer->Add(m_ViewLabel, 0, wxLEFT|wxEXPAND, 3);
+			m_ViewLabelSI = sizer->Add(m_ViewLabel, 0, wxLEFT|wxEXPAND, FromDIPX(this, 3));
 			wxBoxSizer* viewSizer = new wxBoxSizer(GetViewSizerOrientation());
-			sizer->Add(viewSizer, 1, wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND, 5);
+			sizer->Add(viewSizer, 1, wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND, FromDIPX(this, 5));
 			viewSizer->Add(GetDialogMainCtrl(), GetViewSizerProportion(), wxEXPAND);
 		}
 		else
 		{
-			m_ViewLabelSpacerSI = m_ContentSizer->AddSpacer(6);
-			m_ViewLabelSI = m_ContentSizer->Add(m_ViewLabel, 0, wxLEFT|wxEXPAND, 3);
+			m_ViewLabelSpacerSI = m_ContentSizer->AddSpacer(FromDIPX(this, 40));
+			m_ViewLabelSI = m_ContentSizer->Add(m_ViewLabel, 0, wxLEFT|wxEXPAND, FromDIPX(this, 3));
 
 			wxBoxSizer* viewSizer = new wxBoxSizer(GetViewSizerOrientation());
-			m_ContentSizer->Add(viewSizer, 1, wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND, 5);
+			m_ContentSizer->Add(viewSizer, 1, wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND, FromDIPX(this, 5));
 			viewSizer->Add(GetDialogMainCtrl(), GetViewSizerProportion(), wxEXPAND);
 		}
 		m_ViewLabelSI->Show(false);
@@ -360,8 +370,8 @@ void KxStdDialog::PostCreate(const wxPoint& pos)
 	if (m_ButtonsSizer)
 	{
 		m_DialogSizer->Add(m_ButtonsSizer, 0, wxEXPAND);
-		m_ButtonsSizer->AddSpacer(6);
-		m_ButtonsSizer->SetMinSize(wxDefaultCoord, 40);
+		m_ButtonsSizer->AddSpacer(FromDIPX(this, 6));
+		m_ButtonsSizer->SetMinSize(wxDefaultCoord, FromDIPY(this, 40));
 	}
 
 	InitIcon();
@@ -411,20 +421,20 @@ void KxStdDialog::SetLabel(const wxString& label)
 
 void KxStdDialog::SetDefaultButton(wxWindowID id)
 {
-	auto vControl = GetButton(id);
-	if (vControl.IsControl())
+	auto control = GetButton(id);
+	if (control.IsControl())
 	{
-		KxButton* button = vControl.As<KxButton>();
+		KxButton* button = control.As<KxButton>();
 		if (button)
 		{
 			button->SetDefault();
 		}
-		SetDefaultItem(vControl.GetControl());
-		vControl.GetControl()->SetFocus();
+		SetDefaultItem(control.GetControl());
+		control.GetControl()->SetFocus();
 	}
 	else
 	{
-		wxWindow* window = wxWindow::FindWindowById(vControl, this);
+		wxWindow* window = wxWindow::FindWindowById(control, this);
 		if (window)
 		{
 			window->SetFocus();

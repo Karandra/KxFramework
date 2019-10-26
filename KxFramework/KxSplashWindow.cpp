@@ -17,20 +17,25 @@ void KxSplashWindow::DoSetSplash(const wxBitmap& bitmap)
 }
 bool KxSplashWindow::DoUpdateSplash()
 {
-	// UpdateLayeredWindow expects premultiplied alpha
 	wxImage image = m_Bitmap.ConvertToImage();
 	if (image.IsOk())
 	{
+		// UpdateLayeredWindow expects premultiplied alpha
 		if (!image.HasAlpha())
 		{
 			image.InitAlpha();
 		}
-
 		const size_t imageSize = image.GetWidth() * image.GetHeight();
 		for (size_t i = 0; i < imageSize; i++)
 		{
 			uint8_t* value = image.GetAlpha() + i;
 			*value = *value * m_Alpha / 255.0;
+		}
+
+		// Scale the image for HiDPI display
+		if (wxSize size = FromDIP(image.GetSize()); size != image.GetSize())
+		{
+			image.Rescale(size.GetWidth(), size.GetHeight(), wxImageResizeQuality::wxIMAGE_QUALITY_HIGH);
 		}
 	}
 
