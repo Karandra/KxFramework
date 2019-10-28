@@ -15,7 +15,7 @@ void KxAnimatedSplashWindow::OnTimer(wxTimerEvent& event)
 	}
 
 	// Update view
-	DoSetSplash(wxBitmap(m_Animation->GetFrame(m_CurrentFrame), 32));
+	DoSetSplash(wxBitmap(m_Animation->GetFrame(m_CurrentFrame), 32), GetClientSize());
 	DoUpdateSplash();
 
 	// Schedule next frame
@@ -30,11 +30,12 @@ void KxAnimatedSplashWindow::OnDestroy()
 	m_Timer.Stop();
 }
 
-void KxAnimatedSplashWindow::DoResetAnimation()
+void KxAnimatedSplashWindow::DoResetAnimation(const wxSize& size)
 {
 	m_Timer.Stop();
 	m_CurrentFrame = 0;
-	DoSetSplash(m_Animation->GetFrame(0));
+
+	DoSetSplash(wxBitmap(m_Animation->GetFrame(0), 32), size.IsFullySpecified() ? size : GetClientSize());
 }
 void KxAnimatedSplashWindow::DoPlay()
 {
@@ -43,12 +44,13 @@ void KxAnimatedSplashWindow::DoPlay()
 
 bool KxAnimatedSplashWindow::Create(wxWindow* parent,
 									wxAnimation* animation,
+									const wxSize& size,
 									int timeout,
 									int style
 )
 {
 	m_Animation.reset(animation);
-	if (KxSplashWindow::Create(parent, m_Animation->GetFrame(0), timeout, style))
+	if (KxSplashWindow::Create(parent, m_Animation->GetFrame(0), size, timeout, style))
 	{
 		m_Timer.BindFunction(&KxAnimatedSplashWindow::OnTimer, this);
 		return true;
@@ -65,15 +67,16 @@ const wxAnimation* KxAnimatedSplashWindow::GetAnimation() const
 {
 	return m_Animation.get();
 }
-void KxAnimatedSplashWindow::SetAnimation(wxAnimation* animation)
+void KxAnimatedSplashWindow::SetAnimation(wxAnimation* animation, const wxSize& size)
 {
 	m_Animation.reset(animation);
-	DoResetAnimation();
-	DoUpdateSplash();
+	DoResetAnimation(size);
+	ScheduleRefresh();
 }
 void KxAnimatedSplashWindow::ResetAnimation()
 {
-	DoResetAnimation();
+	DoResetAnimation(wxDefaultSize);
+	ScheduleRefresh();
 }
 
 bool KxAnimatedSplashWindow::IsLooping() const
@@ -86,6 +89,7 @@ void KxAnimatedSplashWindow::SetLooping(bool value)
 	if (IsAnimationEnded())
 	{
 		DoPlay();
+		ScheduleRefresh();
 	}
 }
 
@@ -100,8 +104,10 @@ bool KxAnimatedSplashWindow::IsAnimationEnded() const
 
 bool KxAnimatedSplashWindow::Show(bool show)
 {
-	DoResetAnimation();
+	DoResetAnimation(wxDefaultSize);
 	DoPlay();
+	ScheduleRefresh();
+
 	return KxSplashWindow::Show(show);
 }
 bool KxAnimatedSplashWindow::Destroy()
@@ -111,6 +117,7 @@ bool KxAnimatedSplashWindow::Destroy()
 }
 void KxAnimatedSplashWindow::Play()
 {
-	DoResetAnimation();
+	DoResetAnimation(wxDefaultSize);
 	DoPlay();
+	ScheduleRefresh();
 }

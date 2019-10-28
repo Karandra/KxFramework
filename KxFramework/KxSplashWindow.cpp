@@ -9,11 +9,16 @@ void KxSplashWindow::OnTimer(wxTimerEvent& event)
 {
 	wxTheApp->ScheduleForDestruction(this);
 }
+void KxSplashWindow::OnSize(wxSizeEvent& event)
+{
+	ScheduleRefresh();
+	event.Skip();
+}
 
-void KxSplashWindow::DoSetSplash(const wxBitmap& bitmap)
+void KxSplashWindow::DoSetSplash(const wxBitmap& bitmap, const wxSize& size)
 {
 	m_Bitmap = bitmap;
-	SetSize(m_Bitmap.GetSize());
+	SetSize(size.IsFullySpecified() ? size : GetClientSize());
 }
 bool KxSplashWindow::DoUpdateSplash()
 {
@@ -32,8 +37,8 @@ bool KxSplashWindow::DoUpdateSplash()
 			*value = *value * m_Alpha / 255.0;
 		}
 
-		// Scale the image for HiDPI display
-		if (wxSize size = FromDIP(image.GetSize()); size != image.GetSize())
+		// Scale the image for window size
+		if (wxSize size = GetClientSize(); size != image.GetSize())
 		{
 			image.Rescale(size.GetWidth(), size.GetHeight(), wxImageResizeQuality::wxIMAGE_QUALITY_HIGH);
 		}
@@ -66,6 +71,7 @@ void KxSplashWindow::DoCenterWindow()
 
 bool KxSplashWindow::Create(wxWindow* parent,
 							const wxBitmap& bitmap,
+							const wxSize& size,
 							int timeout,
 							int style
 )
@@ -79,12 +85,13 @@ bool KxSplashWindow::Create(wxWindow* parent,
 		frameStyle |= wxFRAME_FLOAT_ON_PARENT;
 	}
 
-	if (wxFrame::Create(parent, wxID_NONE, wxEmptyString, wxDefaultPosition, bitmap.GetSize(), frameStyle, GetClassInfo()->GetClassName()))
+	if (wxFrame::Create(parent, wxID_NONE, wxEmptyString, wxDefaultPosition, size, frameStyle, GetClassInfo()->GetClassName()))
 	{
 		KxUtility::ToggleWindowStyle(GetHandle(), GWL_EXSTYLE, WS_EX_LAYERED|WS_EX_TOOLWINDOW, true);
 		m_Timer.Bind(wxEVT_TIMER, &KxSplashWindow::OnTimer, this);
+		m_Timer.Bind(wxEVT_SIZE, &KxSplashWindow::OnSize, this);
 
-		DoSetSplash(bitmap);
+		DoSetSplash(bitmap, size);
 		DoUpdateSplash();
 		DoCenterWindow();
 		return true;
@@ -100,32 +107,35 @@ KxSplashWindow::~KxSplashWindow()
 void KxSplashWindow::SetWindowStyleFlag(long style)
 {
 	m_Style = style;
-	Update();
+	ScheduleRefresh();
 }
 
-void KxSplashWindow::Update()
-{
-	wxFrame::Update();
-	DoUpdateSplash();
-}
 bool KxSplashWindow::Show(bool show)
 {
-	bool ret = wxFrame::Show(show);
-	if (ret && show && m_Timeout > 0)
+	const bool result = wxFrame::Show(show);
+	if (result && show && m_Timeout > 0)
 	{
 		m_Timer.StartOnce(m_Timeout);
 	}
-	return ret;
+	return result;
+}
+void KxSplashWindow::Update()
+{
+	DoUpdateSplash();
+}
+void KxSplashWindow::Refresh(bool eraseBackground, const wxRect* rect)
+{
+	DoUpdateSplash();
 }
 
-void KxSplashWindow::SetSplashBitmap(const wxBitmap& bitmap)
+void KxSplashWindow::SetSplashBitmap(const wxBitmap& bitmap, const wxSize& size)
 {
-	DoSetSplash(bitmap);
+	DoSetSplash(bitmap, size);
 	DoCenterWindow();
-	Update();
+	ScheduleRefresh();
 }
 void KxSplashWindow::SetSplashAlpha(uint8_t value)
 {
 	m_Alpha = value;
-	Update();
+	ScheduleRefresh();
 }

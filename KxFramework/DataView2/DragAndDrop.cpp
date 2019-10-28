@@ -83,6 +83,7 @@ namespace KxDataView2
 
 			m_DragImage = new KxSplashWindow(m_MainWindow, m_HintBitmap, 0, wxSTAY_ON_TOP);
 			m_DragImage->SetTransparent(225);
+			m_DragImage->Update();
 			m_DragImage->Show();
 		}
 		else

@@ -18,11 +18,11 @@ class KX_API KxAnimatedSplashWindow: public KxSplashWindow
 		void OnDestroy();
 
 	protected:
-		virtual void DoResetAnimation();
+		virtual void DoResetAnimation(const wxSize& size);
 		virtual void DoPlay();
 
 	public:
-		KxAnimatedSplashWindow() {}
+		KxAnimatedSplashWindow() = default;
 		KxAnimatedSplashWindow(wxWindow* parent,
 							   wxAnimation* animation,
 							   int timeout = 0,
@@ -31,20 +31,38 @@ class KX_API KxAnimatedSplashWindow: public KxSplashWindow
 		{
 			Create(parent, animation, timeout, style);
 		}
+		KxAnimatedSplashWindow(wxWindow* parent,
+							   wxAnimation* animation,
+							   const wxSize& size,
+							   int timeout = 0,
+							   int style = DefaultStyle
+		)
+		{
+			Create(parent, animation, size, timeout, style);
+		}
 		bool Create(wxWindow* parent,
 					wxAnimation* animation,
 					int timeout = 0,
 					int style = DefaultStyle
+		)
+		{
+			return Create(parent, animation, animation->GetSize(), timeout, style);
+		}
+		bool Create(wxWindow* parent,
+					wxAnimation* animation,
+					const wxSize& size,
+					int timeout = 0,
+					int style = DefaultStyle
 		);
-		virtual ~KxAnimatedSplashWindow();
+		~KxAnimatedSplashWindow();
 
 	public:
-		virtual bool Show(bool show = true) override;
-		virtual bool Destroy() override;
+		bool Show(bool show = true) override;
+		bool Destroy() override;
 		void Play();
 
 		const wxAnimation* GetAnimation() const;
-		void SetAnimation(wxAnimation* animation);
+		void SetAnimation(wxAnimation* animation, const wxSize& size = wxDefaultSize);
 		void ResetAnimation();
 
 		bool IsLooping() const;

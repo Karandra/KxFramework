@@ -1,5 +1,6 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include "KxFramework/KxWindowRefreshScheduler.h"
 
 enum
 {
@@ -7,7 +8,7 @@ enum
 	KxSPLASH_CENTER_ON_PARENT = 1 << 0,
 };
 
-class KX_API KxSplashWindow: public wxFrame
+class KX_API KxSplashWindow: public KxWindowRefreshScheduler<wxFrame>
 {
 	private:
 		wxBitmap m_Bitmap;
@@ -19,16 +20,17 @@ class KX_API KxSplashWindow: public wxFrame
 
 	private:
 		void OnTimer(wxTimerEvent& event);
+		void OnSize(wxSizeEvent& event);
 
 	protected:
-		virtual void DoSetSplash(const wxBitmap& bitmap);
+		virtual void DoSetSplash(const wxBitmap& bitmap, const wxSize& size);
 		virtual bool DoUpdateSplash();
 		virtual void DoCenterWindow();
 
 	public:
 		static const int DefaultStyle = KxSPLASH_NONE;
 
-		KxSplashWindow() {}
+		KxSplashWindow() = default;
 		KxSplashWindow(wxWindow* parent,
 					   const wxBitmap& bitmap,
 					   int timeout = 0,
@@ -37,8 +39,26 @@ class KX_API KxSplashWindow: public wxFrame
 		{
 			Create(parent, bitmap, timeout, style);
 		}
+		KxSplashWindow(wxWindow* parent,
+					   const wxBitmap& bitmap,
+					   const wxSize& size,
+					   int timeout = 0,
+					   int style = DefaultStyle
+		)
+		{
+			Create(parent, bitmap, size, timeout, style);
+		}
 		bool Create(wxWindow* parent,
 					const wxBitmap& bitmap,
+					int timeout = 0,
+					int style = DefaultStyle
+		)
+		{
+			return Create(parent, bitmap, bitmap.GetSize(), timeout, style);
+		}
+		bool Create(wxWindow* parent,
+					const wxBitmap& bitmap,
+					const wxSize& size,
 					int timeout = 0,
 					int style = DefaultStyle
 		);
@@ -61,14 +81,15 @@ class KX_API KxSplashWindow: public wxFrame
 			return true;
 		}
 
-		void Update() override;
 		bool Show(bool show = true) override;
+		void Update() override;
+		void Refresh(bool eraseBackground = true, const wxRect* rect = nullptr) override;
 
 		const wxBitmap& GetSplashBitmap() const
 		{
 			return m_Bitmap;
 		}
-		void SetSplashBitmap(const wxBitmap& bitmap);
+		void SetSplashBitmap(const wxBitmap& bitmap, const wxSize& size = wxDefaultSize);
 		
 		uint8_t GetSplashAlpha() const
 		{
