@@ -15,7 +15,7 @@ class KX_API KxSplashWindow: public KxWindowRefreshScheduler<wxFrame>
 		uint8_t m_Alpha = 255;
 		
 		wxTimer m_Timer;
-		int m_Timeout = 0;
+		wxTimeSpan m_Timeout;
 		int m_Style = DefaultStyle;
 
 	private:
@@ -33,7 +33,7 @@ class KX_API KxSplashWindow: public KxWindowRefreshScheduler<wxFrame>
 		KxSplashWindow() = default;
 		KxSplashWindow(wxWindow* parent,
 					   const wxBitmap& bitmap,
-					   int timeout = 0,
+					   wxTimeSpan timeout = {},
 					   int style = DefaultStyle
 		)
 		{
@@ -42,7 +42,7 @@ class KX_API KxSplashWindow: public KxWindowRefreshScheduler<wxFrame>
 		KxSplashWindow(wxWindow* parent,
 					   const wxBitmap& bitmap,
 					   const wxSize& size,
-					   int timeout = 0,
+					   wxTimeSpan timeout = {},
 					   int style = DefaultStyle
 		)
 		{
@@ -50,7 +50,7 @@ class KX_API KxSplashWindow: public KxWindowRefreshScheduler<wxFrame>
 		}
 		bool Create(wxWindow* parent,
 					const wxBitmap& bitmap,
-					int timeout = 0,
+					wxTimeSpan timeout = {},
 					int style = DefaultStyle
 		)
 		{
@@ -59,7 +59,7 @@ class KX_API KxSplashWindow: public KxWindowRefreshScheduler<wxFrame>
 		bool Create(wxWindow* parent,
 					const wxBitmap& bitmap,
 					const wxSize& size,
-					int timeout = 0,
+					wxTimeSpan timeout = {},
 					int style = DefaultStyle
 		);
 		virtual ~KxSplashWindow();
@@ -97,11 +97,11 @@ class KX_API KxSplashWindow: public KxWindowRefreshScheduler<wxFrame>
 		}
 		void SetSplashAlpha(uint8_t value);
 		
-		int GetTimeout() const
+		wxTimeSpan GetTimeout() const
 		{
 			return m_Timeout;
 		}
-		void SetTimeout(int timeout)
+		void SetTimeout(wxTimeSpan timeout)
 		{
 			m_Timeout = timeout;
 		}

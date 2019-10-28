@@ -35,7 +35,7 @@ void KxAnimatedSplashWindow::DoResetAnimation(const wxSize& size)
 	m_Timer.Stop();
 	m_CurrentFrame = 0;
 
-	DoSetSplash(wxBitmap(m_Animation->GetFrame(0), 32), size.IsFullySpecified() ? size : GetClientSize());
+	DoSetSplash(wxBitmap(m_Animation->GetFrame(0), 32), size);
 }
 void KxAnimatedSplashWindow::DoPlay()
 {
@@ -45,7 +45,7 @@ void KxAnimatedSplashWindow::DoPlay()
 bool KxAnimatedSplashWindow::Create(wxWindow* parent,
 									std::unique_ptr<wxAnimation> animation,
 									const wxSize& size,
-									int timeout,
+									wxTimeSpan timeout,
 									int style
 )
 {

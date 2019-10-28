@@ -72,7 +72,7 @@ void KxSplashWindow::DoCenterWindow()
 bool KxSplashWindow::Create(wxWindow* parent,
 							const wxBitmap& bitmap,
 							const wxSize& size,
-							int timeout,
+							wxTimeSpan timeout,
 							int style
 )
 {
@@ -115,7 +115,7 @@ bool KxSplashWindow::Show(bool show)
 	const bool result = wxFrame::Show(show);
 	if (result && show && m_Timeout > 0)
 	{
-		m_Timer.StartOnce(m_Timeout);
+		m_Timer.StartOnce(m_Timeout.GetMilliseconds().GetValue());
 	}
 	return result;
 }

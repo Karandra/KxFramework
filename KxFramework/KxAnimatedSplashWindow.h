@@ -25,7 +25,7 @@ class KX_API KxAnimatedSplashWindow: public KxSplashWindow
 		KxAnimatedSplashWindow() = default;
 		KxAnimatedSplashWindow(wxWindow* parent,
 							   std::unique_ptr<wxAnimation> animation,
-							   int timeout = 0,
+							   wxTimeSpan timeout = {},
 							   int style = DefaultStyle
 		)
 		{
@@ -34,7 +34,7 @@ class KX_API KxAnimatedSplashWindow: public KxSplashWindow
 		KxAnimatedSplashWindow(wxWindow* parent,
 							   std::unique_ptr<wxAnimation> animation,
 							   const wxSize& size,
-							   int timeout = 0,
+							   wxTimeSpan timeout = {},
 							   int style = DefaultStyle
 		)
 		{
@@ -42,7 +42,7 @@ class KX_API KxAnimatedSplashWindow: public KxSplashWindow
 		}
 		bool Create(wxWindow* parent,
 					std::unique_ptr<wxAnimation> animation,
-					int timeout = 0,
+					wxTimeSpan timeout = {},
 					int style = DefaultStyle
 		)
 		{
@@ -51,7 +51,7 @@ class KX_API KxAnimatedSplashWindow: public KxSplashWindow
 		bool Create(wxWindow* parent,
 					std::unique_ptr<wxAnimation> animation,
 					const wxSize& size,
-					int timeout = 0,
+					wxTimeSpan timeout = {},
 					int style = DefaultStyle
 		);
 		~KxAnimatedSplashWindow();
