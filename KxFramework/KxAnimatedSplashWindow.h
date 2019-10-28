@@ -24,32 +24,32 @@ class KX_API KxAnimatedSplashWindow: public KxSplashWindow
 	public:
 		KxAnimatedSplashWindow() = default;
 		KxAnimatedSplashWindow(wxWindow* parent,
-							   wxAnimation* animation,
+							   std::unique_ptr<wxAnimation> animation,
 							   int timeout = 0,
 							   int style = DefaultStyle
 		)
 		{
-			Create(parent, animation, timeout, style);
+			Create(parent, std::move(animation), timeout, style);
 		}
 		KxAnimatedSplashWindow(wxWindow* parent,
-							   wxAnimation* animation,
+							   std::unique_ptr<wxAnimation> animation,
 							   const wxSize& size,
 							   int timeout = 0,
 							   int style = DefaultStyle
 		)
 		{
-			Create(parent, animation, size, timeout, style);
+			Create(parent, std::move(animation), size, timeout, style);
 		}
 		bool Create(wxWindow* parent,
-					wxAnimation* animation,
+					std::unique_ptr<wxAnimation> animation,
 					int timeout = 0,
 					int style = DefaultStyle
 		)
 		{
-			return Create(parent, animation, animation->GetSize(), timeout, style);
+			return Create(parent, std::move(animation), animation->GetSize(), timeout, style);
 		}
 		bool Create(wxWindow* parent,
-					wxAnimation* animation,
+					std::unique_ptr<wxAnimation> animation,
 					const wxSize& size,
 					int timeout = 0,
 					int style = DefaultStyle
@@ -61,8 +61,15 @@ class KX_API KxAnimatedSplashWindow: public KxSplashWindow
 		bool Destroy() override;
 		void Play();
 
-		const wxAnimation* GetAnimation() const;
-		void SetAnimation(wxAnimation* animation, const wxSize& size = wxDefaultSize);
+		bool HasNaimation() const
+		{
+			return m_Animation != nullptr;
+		}
+		const wxAnimation& GetAnimation() const
+		{
+			return *m_Animation;
+		}
+		void SetAnimation(std::unique_ptr<wxAnimation> animation, const wxSize& size = wxDefaultSize);
 		void ResetAnimation();
 
 		bool IsLooping() const;
