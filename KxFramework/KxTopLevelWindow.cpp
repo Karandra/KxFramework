@@ -8,14 +8,18 @@
 #include "KxFramework/KxIncludeWindows.h"
 #include <DWMAPI.h>
 
+KxEVENT_DEFINE_GLOBAL(DWM_GLASS_COLOR_CHANGED, wxNotifyEvent);
+KxEVENT_DEFINE_GLOBAL(DWM_COMPOSITION_CHANGED, wxNotifyEvent);
+KxEVENT_DEFINE_GLOBAL(WINDOW_DPI_CHANGED, wxNotifyEvent);
+
 bool KxTLWInternal::DWMIsCompositionEnabled()
 {
-	BOOL ret = FALSE;
+	BOOL result = FALSE;
 	if (KxSystemAPI::DwmIsCompositionEnabled)
 	{
-		KxSystemAPI::DwmIsCompositionEnabled(&ret);
+		KxSystemAPI::DwmIsCompositionEnabled(&result);
 	}
-	return ret;
+	return result;
 }
 bool KxTLWInternal::DWMIsGlassOpaque()
 {
@@ -50,9 +54,26 @@ bool KxTLWInternal::MSWWindowProc(wxWindow* window, WXLRESULT& result, WXUINT ms
 {
 	switch (msg)
 	{
+		case WM_NCCREATE:
+		{
+			if (KxSystemAPI::EnableNonClientDpiScaling)
+			{
+				KxSystemAPI::EnableNonClientDpiScaling(window->GetHandle());
+			}
+			return false;
+		}
+		case WM_DPICHANGED:
+		{
+			wxNotifyEvent event(KxEVT_WINDOW_DPI_CHANGED);
+			event.SetEventObject(window);
+			window->HandleWindowEvent(event);
+
+			return true;
+		}
+
 		case WM_DWMCOLORIZATIONCOLORCHANGED:
 		{
-			wxCommandEvent event(KxEVT_DWM_GLASS_COLOR_CHANGED);
+			wxNotifyEvent event(KxEVT_DWM_GLASS_COLOR_CHANGED);
 			event.SetEventObject(window);
 			window->HandleWindowEvent(event);
 
@@ -61,7 +82,7 @@ bool KxTLWInternal::MSWWindowProc(wxWindow* window, WXLRESULT& result, WXUINT ms
 		}
 		case WM_DWMCOMPOSITIONCHANGED:
 		{
-			wxCommandEvent event(KxEVT_DWM_COMPOSITION_CHANGED);
+			wxNotifyEvent event(KxEVT_DWM_COMPOSITION_CHANGED);
 			event.SetEventObject(window);
 			event.SetInt(DWMIsCompositionEnabled());
 			window->HandleWindowEvent(event);
@@ -159,11 +180,11 @@ bool KxTLWInternal::DWMExtendFrame(wxWindow* window, const wxRect& rect, const w
 
 		if (color.IsOk())
 		{
-			SetLayeredWindowAttributes(hWnd, color.GetPixel(), color.Alpha(), LWA_COLORKEY);
+			::SetLayeredWindowAttributes(hWnd, color.GetPixel(), color.Alpha(), LWA_COLORKEY);
 		}
 		else
 		{
-			SetLayeredWindowAttributes(hWnd, color.GetPixel(), 0, 0);
+			::SetLayeredWindowAttributes(hWnd, color.GetPixel(), 0, 0);
 		}
 
 		MARGINS margins = {0};
@@ -179,17 +200,17 @@ bool KxTLWInternal::DWMBlurBehind(wxWindow* window, bool enable, const wxRegion&
 {
 	if (KxSystemAPI::DwmEnableBlurBehindWindow)
 	{
-		DWM_BLURBEHIND tBlurInfo = {0};
-		tBlurInfo.fEnable = enable;
-		tBlurInfo.fTransitionOnMaximized = TRUE;
-		tBlurInfo.dwFlags = DWM_BB_ENABLE|DWM_BB_TRANSITIONONMAXIMIZED;
+		DWM_BLURBEHIND blurInfo = {0};
+		blurInfo.fEnable = enable;
+		blurInfo.fTransitionOnMaximized = TRUE;
+		blurInfo.dwFlags = DWM_BB_ENABLE|DWM_BB_TRANSITIONONMAXIMIZED;
 		if (!region.IsEmpty())
 		{
-			tBlurInfo.dwFlags |= DWM_BB_BLURREGION;
-			tBlurInfo.hRgnBlur = region.GetHRGN();
+			blurInfo.dwFlags |= DWM_BB_BLURREGION;
+			blurInfo.hRgnBlur = region.GetHRGN();
 		}
 
-		return KxSystemAPI::DwmEnableBlurBehindWindow(window->GetHandle(), &tBlurInfo);
+		return KxSystemAPI::DwmEnableBlurBehindWindow(window->GetHandle(), &blurInfo);
 	}
 	return false;
 }
@@ -197,11 +218,11 @@ bool KxTLWInternal::DWMBlurBehind(wxWindow* window, bool enable, const wxRegion&
 wxIcon KxTLWInternal::GetTitleIcon(const wxWindow* window)
 {
 	HWND hWnd = window->GetHandle();
-	HICON iconHandle = (HICON)::SendMessageW(hWnd, WM_GETICON, ICON_BIG, 0);
-	if (iconHandle == nullptr)
+	HICON iconHandle = reinterpret_cast<HICON>(::SendMessageW(hWnd, WM_GETICON, ICON_BIG, 0));
+	if (!iconHandle)
 	{
-		iconHandle = (HICON)::SendMessageW(hWnd, WM_GETICON, ICON_SMALL, 0);
-		if (iconHandle != nullptr)
+		iconHandle = reinterpret_cast<HICON>(::SendMessageW(hWnd, WM_GETICON, ICON_SMALL, 0));
+		if (iconHandle)
 		{
 			wxIcon icon;
 			icon.CreateFromHICON(iconHandle);
@@ -241,7 +262,3 @@ void KxTLWInternal::SetWindowUserData(HWND hWnd, const void* data)
 	SetWindowLongW(hWnd, GWLP_USERDATA, reinterpret_cast<LONG>(data));
 	#endif
 }
-
-//////////////////////////////////////////////////////////////////////////
-KxEVENT_DEFINE_GLOBAL(DWM_GLASS_COLOR_CHANGED, wxCommandEvent);
-KxEVENT_DEFINE_GLOBAL(DWM_COMPOSITION_CHANGED, wxCommandEvent);

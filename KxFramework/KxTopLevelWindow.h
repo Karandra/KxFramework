@@ -3,8 +3,9 @@
 #include "KxFramework/KxUtility.h"
 #include "KxEvent.h"
 
-KxEVENT_DECLARE_GLOBAL(DWM_GLASS_COLOR_CHANGED, wxCommandEvent);
-KxEVENT_DECLARE_GLOBAL(DWM_COMPOSITION_CHANGED, wxCommandEvent);
+KxEVENT_DECLARE_GLOBAL(DWM_GLASS_COLOR_CHANGED, wxNotifyEvent);
+KxEVENT_DECLARE_GLOBAL(DWM_COMPOSITION_CHANGED, wxNotifyEvent);
+KxEVENT_DECLARE_GLOBAL(WINDOW_DPI_CHANGED, wxNotifyEvent);
 
 namespace KxTLWInternal
 {
@@ -45,11 +46,11 @@ class KxTopLevelWindow: public T
 		}
 
 	private:
-		inline T* GetThis()
+		T* GetThis()
 		{
 			return static_cast<T*>(this);
 		}
-		inline const T* GetThis() const
+		const T* GetThis() const
 		{
 			return static_cast<const T*>(this);
 		}
@@ -61,7 +62,7 @@ class KxTopLevelWindow: public T
 		}
 
 	public:
-		virtual WXLRESULT MSWWindowProc(WXUINT msg, WXWPARAM wParam, WXLPARAM lParam) override
+		WXLRESULT MSWWindowProc(WXUINT msg, WXWPARAM wParam, WXLPARAM lParam) override
 		{
 			WXLRESULT result = 0;
 			if (KxTLWInternal::MSWWindowProc(GetThis(), result, msg, wParam, lParam))
@@ -97,7 +98,7 @@ class KxTopLevelWindow: public T
 			KxTLWInternal::SetTitleIcon(GetThis(), icon);
 		}
 
-		virtual bool EnableCloseButton(bool enable = true) override
+		bool EnableCloseButton(bool enable = true) override
 		{
 			int options = 0;
 			if (enable)
@@ -110,12 +111,12 @@ class KxTopLevelWindow: public T
 			}
 			return ::EnableMenuItem(::GetSystemMenu(GetThis()->GetHandle(), FALSE), SC_CLOSE, MF_BYCOMMAND|options);
 		}
-		virtual bool EnableMinimizeButton(bool enable = true) override
+		bool EnableMinimizeButton(bool enable = true) override
 		{
 			KxUtility::ToggleWindowStyle(GetThis()->GetHandle(), GWL_STYLE, WS_MINIMIZEBOX, enable);
 			return true;
 		}
-		virtual bool EnableMaximizeButton(bool enable = true) override
+		bool EnableMaximizeButton(bool enable = true) override
 		{
 			KxUtility::ToggleWindowStyle(GetThis()->GetHandle(), GWL_STYLE, WS_MAXIMIZEBOX, enable);
 			return true;
