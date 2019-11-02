@@ -976,9 +976,6 @@
     <ClInclude Include="KxFramework\KxOptionSet.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxWindowUpdateLocker.h">
-      <Filter>Header Files\Drawing</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\DataView2\Renderers\ImageListRenderer.h">
       <Filter>Header Files\GUI\DataView2\Renderers</Filter>
     </ClInclude>
@@ -1114,8 +1111,14 @@
     <ClInclude Include="Kx\RTTI\Common.h">
       <Filter>Kx\RTTI</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxWindowUpdateLocker.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
     <ClInclude Include="KxFramework\KxWindowRefreshScheduler.h">
-      <Filter>Header Files\Drawing</Filter>
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxHiDPIEnabledWindow.h">
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1767,6 +1770,9 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxAny.cpp">
       <Filter>Source Files\DataStructures</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxHiDPIEnabledWindow.cpp">
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

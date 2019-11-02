@@ -1,5 +1,5 @@
 /*
-Copyright © 2018 Kerber. All rights reserved.
+Copyright © 2019 Kerber. All rights reserved.
 
 You should have received a copy of the GNU LGPL v3
 along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
@@ -28,9 +28,9 @@ class KX_API KxSystemAPI
 	friend class KxSystemAPIModule;
 
 	public:
-		typedef void MARGINS;
-		typedef void DWM_BLURBEHIND;
-		typedef void IMAGE_NT_HEADERS;
+		using MARGINS = void;
+		using DWM_BLURBEHIND = void;
+		using IMAGE_NT_HEADERS = void;
 
 	private:
 		static void InitFunctions();
@@ -39,6 +39,7 @@ class KX_API KxSystemAPI
 	public:
 		KxSysAPI_DECLARE_LIBRARY(NTDLL);
 		KxSysAPI_DECLARE_LIBRARY(Kernel32);
+		KxSysAPI_DECLARE_LIBRARY(User32);
 		KxSysAPI_DECLARE_LIBRARY(DWMAPI);
 		KxSysAPI_DECLARE_LIBRARY(DbgHelp);
 
@@ -58,6 +59,9 @@ class KX_API KxSystemAPI
 		KxSysAPI_DECLARE_FUNCTION(BOOL, WINAPI, RemoveDllDirectory, DLL_DIRECTORY_COOKIE);
 		KxSysAPI_DECLARE_FUNCTION(BOOL, WINAPI, SetDllDirectoryW, LPCWSTR);
 		KxSysAPI_DECLARE_FUNCTION(DWORD, WINAPI, GetDllDirectoryW, DWORD, LPWSTR);
+
+		/* User32 */
+		KxSysAPI_DECLARE_FUNCTION(BOOL, WINAPI, EnableNonClientDpiScaling, HWND);
 
 		/* DWMAPI */
 		KxSysAPI_DECLARE_FUNCTION(HRESULT, WINAPI, DwmIsCompositionEnabled, BOOL*);

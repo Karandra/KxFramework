@@ -1,5 +1,5 @@
 /*
-Copyright © 2018 Kerber. All rights reserved.
+Copyright © 2019 Kerber. All rights reserved.
 
 You should have received a copy of the GNU LGPL v3
 along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
@@ -10,6 +10,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 /* Libraries */
 KxSysAPI_DEFINE_LIBRARY(NTDLL);
 KxSysAPI_DEFINE_LIBRARY(Kernel32);
+KxSysAPI_DEFINE_LIBRARY(User32);
 KxSysAPI_DEFINE_LIBRARY(DWMAPI);
 KxSysAPI_DEFINE_LIBRARY(DbgHelp);
 
@@ -29,6 +30,9 @@ KxSysAPI_DEFINE_FUNCTION(RemoveDllDirectory);
 KxSysAPI_DEFINE_FUNCTION(SetDllDirectoryW);
 KxSysAPI_DEFINE_FUNCTION(GetDllDirectoryW);
 
+/* User32 */
+KxSysAPI_DEFINE_FUNCTION(EnableNonClientDpiScaling);
+
 /* DWMAPI */
 KxSysAPI_DEFINE_FUNCTION(DwmIsCompositionEnabled);
 KxSysAPI_DEFINE_FUNCTION(DwmGetColorizationColor);
@@ -42,6 +46,7 @@ KxSysAPI_DEFINE_FUNCTION(ImageNtHeader);
 void KxSystemAPI::InitFunctions()
 {
 	KxSysAPI_LOAD_LIBRARY(NTDLL);
+	KxSysAPI_LOAD_LIBRARY(Kernel32);
 	KxSysAPI_LOAD_LIBRARY(Kernel32);
 	KxSysAPI_LOAD_LIBRARY(DWMAPI);
 	KxSysAPI_LOAD_LIBRARY(DbgHelp);
@@ -76,6 +81,11 @@ void KxSystemAPI::InitFunctions()
 		KxSysAPI_INIT_FUNCTION(Kernel32, GetDllDirectoryW);
 	}
 
+	if (KxSysAPI_CHECK_LIBRARY(User32))
+	{
+		KxSysAPI_INIT_FUNCTION(User32, EnableNonClientDpiScaling);
+	}
+
 	if (KxSysAPI_CHECK_LIBRARY(DWMAPI))
 	{
 		KxSysAPI_INIT_FUNCTION(DWMAPI, DwmIsCompositionEnabled);
@@ -93,6 +103,7 @@ void KxSystemAPI::UnInitFunctions()
 {
 	KxSysAPI_UNLOAD_LIBRARY(NTDLL);
 	KxSysAPI_UNLOAD_LIBRARY(Kernel32);
+	KxSysAPI_UNLOAD_LIBRARY(User32);
 	KxSysAPI_UNLOAD_LIBRARY(DWMAPI);
 	KxSysAPI_UNLOAD_LIBRARY(DbgHelp);
 }
@@ -101,12 +112,12 @@ void KxSystemAPI::UnInitFunctions()
 class KxSystemAPIModule: public wxModule
 {
 	public:
-		virtual bool OnInit() override
+		bool OnInit() override
 		{
 			KxSystemAPI::InitFunctions();
 			return true;
 		}
-		virtual void OnExit() override
+		void OnExit() override
 		{
 			KxSystemAPI::UnInitFunctions();
 		}

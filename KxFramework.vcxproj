@@ -281,6 +281,7 @@
     <ClInclude Include="KxFramework\KxCommandEvent.h" />
     <ClInclude Include="KxFramework\KxEnumClassOperations.h" />
     <ClInclude Include="KxFramework\KxEvent.h" />
+    <ClInclude Include="KxFramework\KxHiDPIEnabledWindow.h" />
     <ClInclude Include="KxFramework\KxNotifyEvent.h" />
     <ClInclude Include="KxFramework\KxOptionSet.h" />
     <ClInclude Include="KxFramework\KxSystemEnums.h" />
@@ -594,6 +595,7 @@
     <ClCompile Include="KxFramework\KxAuiToolBarItem.cpp" />
     <ClCompile Include="KxFramework\KxClusterMap.cpp" />
     <ClCompile Include="KxFramework\KxCommandEvent.cpp" />
+    <ClCompile Include="KxFramework\KxHiDPIEnabledWindow.cpp" />
     <ClCompile Include="KxFramework\KxNotifyEvent.cpp" />
     <ClCompile Include="KxFramework\KxToolTipEx.cpp" />
     <ClCompile Include="KxFramework\KxBitmapComboBox.cpp" />
