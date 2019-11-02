@@ -52,6 +52,7 @@ void KxButton::OnPaint(wxPaintEvent& event)
 
 	const bool isEnabled = IsThisEnabled();
 	const wxSize clientSize = GetSize();
+	const wxRect contentRect = wxRect(FromDIP(wxPoint(2, 2)), clientSize - FromDIP(wxSize(4, 4)));
 	int width = clientSize.GetWidth();
 	int widthMod = 2;
 	if (m_IsSliptterEnabled)
@@ -74,22 +75,22 @@ void KxButton::OnPaint(wxPaintEvent& event)
 	// Draw focus rectangle
 	if (m_IsFocusDrawingAllowed && HasFocus())
 	{
-		renderer.DrawFocusRect(this, dc, wxRect(FromDIP(wxPoint(2, 2)), clientSize - FromDIP(wxSize(4, 4))), wxCONTROL_SELECTED);
+		renderer.DrawFocusRect(this, dc, contentRect, wxCONTROL_SELECTED);
 	}
 
 	// Draw bitmap and label
-	rect.y += (clientSize.GetHeight() + FromDIPY(this, 2) - GetCharHeight()) / 2;
+	
 	if (wxBitmap bitmap = GetBitmap(); bitmap.IsOk())
 	{
 		if (!isEnabled)
 		{
 			bitmap = bitmap.ConvertToDisabled();
 		}
-		dc.DrawLabel(GetLabelText(), bitmap, rect, wxALIGN_CENTER_HORIZONTAL);
+		dc.DrawLabel(GetLabelText(), bitmap, contentRect, wxALIGN_CENTER);
 	}
 	else
 	{
-		dc.DrawLabel(GetLabelText(), rect, wxALIGN_CENTER_HORIZONTAL);
+		dc.DrawLabel(GetLabelText(), contentRect, wxALIGN_CENTER);
 	}
 
 	// Draw second part of the button
