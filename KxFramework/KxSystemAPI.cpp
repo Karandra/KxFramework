@@ -32,6 +32,7 @@ KxSysAPI_DEFINE_FUNCTION(GetDllDirectoryW);
 
 /* User32 */
 KxSysAPI_DEFINE_FUNCTION(EnableNonClientDpiScaling);
+KxSysAPI_DEFINE_FUNCTION(SetThreadDpiAwarenessContext);
 
 /* DWMAPI */
 KxSysAPI_DEFINE_FUNCTION(DwmIsCompositionEnabled);
@@ -47,7 +48,7 @@ void KxSystemAPI::InitFunctions()
 {
 	KxSysAPI_LOAD_LIBRARY(NTDLL);
 	KxSysAPI_LOAD_LIBRARY(Kernel32);
-	KxSysAPI_LOAD_LIBRARY(Kernel32);
+	KxSysAPI_LOAD_LIBRARY(User32);
 	KxSysAPI_LOAD_LIBRARY(DWMAPI);
 	KxSysAPI_LOAD_LIBRARY(DbgHelp);
 
@@ -84,6 +85,7 @@ void KxSystemAPI::InitFunctions()
 	if (KxSysAPI_CHECK_LIBRARY(User32))
 	{
 		KxSysAPI_INIT_FUNCTION(User32, EnableNonClientDpiScaling);
+		KxSysAPI_INIT_FUNCTION(User32, SetThreadDpiAwarenessContext);
 	}
 
 	if (KxSysAPI_CHECK_LIBRARY(DWMAPI))
@@ -93,10 +95,18 @@ void KxSystemAPI::InitFunctions()
 		KxSysAPI_INIT_FUNCTION(DWMAPI, DwmExtendFrameIntoClientArea);
 		KxSysAPI_INIT_FUNCTION(DWMAPI, DwmEnableBlurBehindWindow);
 	}
+	else
+	{
+		wxLogWarning("DWMAPI is unavailable");
+	}
 
 	if (KxSysAPI_CHECK_LIBRARY(DbgHelp))
 	{
 		KxSysAPI_INIT_FUNCTION(DbgHelp, ImageNtHeader);
+	}
+	else
+	{
+		wxLogWarning("DbgHelp is unavailable");
 	}
 }
 void KxSystemAPI::UnInitFunctions()

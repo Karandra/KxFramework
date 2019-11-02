@@ -2,7 +2,6 @@
 #include "KxFramework/KxMenu.h"
 #include "KxFramework/KxMenuEvent.h"
 #include "KxFramework/KxShellMenu.h"
-#include <thread>
 
 namespace
 {

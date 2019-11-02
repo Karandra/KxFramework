@@ -1120,6 +1120,9 @@
     <ClInclude Include="KxFramework\KxHiDPIEnabledWindow.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxDPIAwareness.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1772,6 +1775,9 @@
       <Filter>Source Files\DataStructures</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxHiDPIEnabledWindow.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxDPIAwareness.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>

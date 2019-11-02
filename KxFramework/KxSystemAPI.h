@@ -31,6 +31,7 @@ class KX_API KxSystemAPI
 		using MARGINS = void;
 		using DWM_BLURBEHIND = void;
 		using IMAGE_NT_HEADERS = void;
+		using DPI_AWARENESS_CONTEXT = void*;
 
 	private:
 		static void InitFunctions();
@@ -62,6 +63,7 @@ class KX_API KxSystemAPI
 
 		/* User32 */
 		KxSysAPI_DECLARE_FUNCTION(BOOL, WINAPI, EnableNonClientDpiScaling, HWND);
+		KxSysAPI_DECLARE_FUNCTION(DPI_AWARENESS_CONTEXT, WINAPI, SetThreadDpiAwarenessContext, DPI_AWARENESS_CONTEXT);
 
 		/* DWMAPI */
 		KxSysAPI_DECLARE_FUNCTION(HRESULT, WINAPI, DwmIsCompositionEnabled, BOOL*);
