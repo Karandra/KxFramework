@@ -24,37 +24,37 @@ size_t KxDataViewImageListRendererBase::GetEffectiveImageCount() const
 
 void KxDataViewImageListRendererBase::DrawCellContent(const wxRect& cellRect, KxDataViewCellState cellState)
 {
+	using namespace KxEnumClassOperations;
+
 	if (KxImageList* imageList = GetImageList())
 	{
-		int drawFlags = wxIMAGELIST_DRAW_NORMAL|wxIMAGELIST_DRAW_TRANSPARENT;
+		const int imageWidth = imageList->GetSize().GetWidth();
+		KxImageListDrawMode drawMode = KxImageListDrawMode::Normal|KxImageListDrawMode::Transparent;
 		if (IsOptionEnabled(KxDVR_IMAGELIST_BITMAP_DRAWING))
 		{
 			if (cellState & KxDATAVIEW_CELL_SELECTED)
 			{
-				drawFlags |= wxIMAGELIST_DRAW_SELECTED;
+				drawMode |= KxImageListDrawMode::Selected;
 			}
 			if (cellState & KxDATAVIEW_CELL_HIGHLIGHTED)
 			{
-				drawFlags |= wxIMAGELIST_DRAW_FOCUSED;
+				drawMode |= KxImageListDrawMode::Focused;
 			}
 		}
-
-		int imageWidth = imageList->GetSize().GetWidth();
-		bool hasSolidBackground = HasSolidBackground();
 
 		int index = 0;
 		for (size_t i = 0; i < GetActualImageCount(); i++)
 		{
-			int imageID = GetImageID(i);
+			const int imageID = GetImageID(i);
 			if (imageID != NO_IMAGE)
 			{
-				int x = cellRect.GetX() + (index * (imageWidth + m_Spacing));
-				int y = cellRect.GetY();
+				const int x = cellRect.GetX() + (index * (imageWidth + m_Spacing));
+				const int y = cellRect.GetY();
 
 				// Don't draw images with invalid indexes, but count them as drawn to allow spaces.
 				if (imageID >= 0)
 				{
-					imageList->Draw(imageID, GetDC(), x, y, drawFlags, hasSolidBackground);
+					imageList->Draw(GetDC(), imageID, wxRect(wxPoint(x, y), cellRect.GetSize()), drawMode);
 				}
 				index++;
 			}

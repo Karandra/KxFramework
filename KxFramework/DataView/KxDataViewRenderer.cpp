@@ -403,6 +403,8 @@ bool KxDataViewRenderer::DoDrawText(const wxRect& cellRect, KxDataViewCellState 
 }
 bool KxDataViewRenderer::DoDrawBitmap(const wxRect& cellRect, KxDataViewCellState cellState, const wxBitmap& bitmap)
 {
+	using namespace KxEnumClassOperations;
+
 	if (bitmap.IsOk())
 	{
 		// Rescale if needed
@@ -416,11 +418,9 @@ bool KxDataViewRenderer::DoDrawBitmap(const wxRect& cellRect, KxDataViewCellStat
 		}
 
 		// Draw bitmap
-		const wxPoint pos = cellRect.GetPosition();
 		if (IsOptionEnabled(KxDVR_IMAGELIST_BITMAP_DRAWING))
 		{
-			bool hasMask = bitmap.GetMask() != nullptr;
-			KxImageList list(bitmapSize.GetWidth(), bitmapSize.GetHeight(), hasMask, 1);
+			KxImageList list(bitmapSize, 1);
 
 			if (needsScaling)
 			{
@@ -432,28 +432,28 @@ bool KxDataViewRenderer::DoDrawBitmap(const wxRect& cellRect, KxDataViewCellStat
 				list.Add(m_Attributes.IsEnabled() ? bitmap : bitmap.ConvertToDisabled());
 			}
 
-			int drawFlags = wxIMAGELIST_DRAW_NORMAL|wxIMAGELIST_DRAW_TRANSPARENT;
+			KxImageListDrawMode drawFlags = KxImageListDrawMode::Normal|KxImageListDrawMode::Transparent;
 			if (cellState & KxDATAVIEW_CELL_SELECTED)
 			{
-				drawFlags |= wxIMAGELIST_DRAW_SELECTED;
+				drawFlags |= KxImageListDrawMode::Selected;
 			}
 			if (cellState & KxDATAVIEW_CELL_HIGHLIGHTED)
 			{
-				drawFlags |= wxIMAGELIST_DRAW_FOCUSED;
+				drawFlags |= KxImageListDrawMode::Focused;
 			}
 
-			return list.Draw(0, GetDC(), pos.x, pos.y, drawFlags, HasSolidBackground());
+			return list.Draw(GetDC(), 0, cellRect.GetPosition(), drawFlags);
 		}
 		else
 		{
 			if (HasGCDC())
 			{
-				GetGraphicsContext()->DrawBitmap(m_Attributes.IsEnabled() ? bitmap : bitmap.ConvertToDisabled(), pos.x, pos.y, bitmapSize.GetWidth(), bitmapSize.GetHeight());
+				GetGraphicsContext()->DrawBitmap(m_Attributes.IsEnabled() ? bitmap : bitmap.ConvertToDisabled(), cellRect.GetX(), cellRect.GetY(), bitmapSize.GetWidth(), bitmapSize.GetHeight());
 			}
 			else
 			{
 				wxBitmap bitmapScaled = bitmap.ConvertToImage().Rescale(bitmap.GetWidth(), bitmapSize.GetHeight());
-				GetDC().DrawBitmap(bitmapScaled, pos, true);
+				GetDC().DrawBitmap(bitmapScaled, cellRect.GetPosition(), true);
 			}
 			return true;
 		}
