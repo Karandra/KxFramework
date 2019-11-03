@@ -1,6 +1,8 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxStatusBarEx.h"
 #include "KxFramework/KxUtility.h"
+#include "KxFramework/KxUxTheme.h"
+#include "KxFramework/KxUxThemePartsAndStates.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxStatusBarEx, KxStatusBar);
 
@@ -9,23 +11,31 @@ void KxStatusBarEx::OnPaint(wxPaintEvent& event)
 	wxAutoBufferedPaintDC dc(this);
 	dc.SetBackgroundMode(wxBRUSHSTYLE_TRANSPARENT);
 	dc.SetTextForeground(GetForegroundColour());
-	wxSize size = GetSize();
-	KxUtility::DrawParentBackground(this, dc, size);
+	
+	const wxSize clientSize = GetClientSize();
+	KxUxTheme::DrawParentBackground(*this, dc, clientSize);
 
 	// Draw background
 	{
 		dc.SetBrush(GetBackgroundColour());
 
-		wxRect backgroundRect(wxPoint(-1, -1), size);
+		wxRect backgroundRect(wxPoint(0, 0), clientSize);
 		backgroundRect.Inflate(2);
 		dc.DrawRectangle(backgroundRect);
 
-		if (m_ProgressPos != 0)
+		if (m_ProgressPos > 0 && m_ProgressRange > 0)
 		{
-			backgroundRect.SetWidth(size.GetWidth() * ((double)m_ProgressPos / m_ProgressRange));
+			if (KxUxTheme theme(*this, KxUxThemeClass::Progress); theme)
+			{
+				theme.DrawProgress(dc, -1, PP_FILL, PBFS_NORMAL, backgroundRect, m_ProgressPos, m_ProgressRange);
+			}
+			else
+			{
+				backgroundRect.SetWidth(m_ProgressPos == m_ProgressRange ? clientSize.GetWidth() : clientSize.GetWidth() * ((double)m_ProgressPos / m_ProgressRange));
 
-			dc.SetBrush(KxColor(GetBackgroundColour()).RotateHue(30));
-			dc.DrawRectangle(backgroundRect);
+				dc.SetBrush(KxColor(GetBackgroundColour()).RotateHue(30));
+				dc.DrawRectangle(backgroundRect);
+			}
 		}
 	}
 
@@ -33,17 +43,24 @@ void KxStatusBarEx::OnPaint(wxPaintEvent& event)
 	if (m_ColorBorder.IsOk())
 	{
 		dc.SetPen(wxPen(m_ColorBorder, 1));
-		dc.DrawLine(0, 0, size.GetWidth()+1, 0);
+		dc.DrawLine(0, 0, clientSize.GetWidth()+1, 0);
 	}
 
 	// Draw size grip
 	int sizeGripWidth = 0;
-	wxTopLevelWindow* topLevelWindow = dynamic_cast<wxTopLevelWindow*>(GetParent());
+	const wxTopLevelWindow* topLevelWindow = GetTLWParent();
 	if (topLevelWindow && !topLevelWindow->IsMaximized() && topLevelWindow->HasFlag(wxRESIZE_BORDER))
 	{
-		wxPoint gripPos(size.GetWidth() - m_SizeGripBitmap.GetWidth() - 1, GetMinHeight() - m_SizeGripBitmap.GetHeight() - 1);
-		dc.DrawBitmap(m_SizeGripBitmap, gripPos, true);
-		sizeGripWidth = m_SizeGripBitmap.GetWidth();
+		if (KxUxTheme theme(*this, KxUxThemeClass::Status); theme)
+		{
+			wxSize gripSize = theme.GetPartSize(dc, SP_GRIPPER, 0);
+			wxPoint gripPos(clientSize.GetWidth() - gripSize.GetWidth() - 1, GetMinHeight() - gripSize.GetHeight() - 1);
+			theme.DrawBackground(dc, SP_GRIPPER, 0, wxRect(gripPos, gripSize));
+		}
+		else
+		{
+			sizeGripWidth = clientSize.GetHeight();
+		}
 	}
 
 	// Draw text
@@ -51,7 +68,8 @@ void KxStatusBarEx::OnPaint(wxPaintEvent& event)
 	int splitterX = 0;
 	wxRect rect(spacer, 0, 0, GetMinHeight());
 
-	for (int i = 0; i < GetFieldsCount(); i++)
+	const size_t fieldsCount = GetFieldsCount();
+	for (size_t i = 0; i < fieldsCount; i++)
 	{
 		GetFieldRect(i, rect);
 		rect.SetX(rect.GetX() + spacer);
@@ -64,17 +82,17 @@ void KxStatusBarEx::OnPaint(wxPaintEvent& event)
 		if (!label.IsEmpty())
 		{
 			// Ellipsize label
-			int maxWidth = rect.GetWidth() - 2*GetCharWidth();
-			if (i == GetFieldsCount()-1)
+			int maxWidth = rect.GetWidth() - 2 * GetCharWidth();
+			if (i == fieldsCount - 1)
 			{
 				maxWidth -= sizeGripWidth;
 			}
 
-			// If icons enabled
-			int imageIndex = -1;
-			if (m_Images.count(i))
+			// If icons are enabled
+			int imageIndex = NO_IMAGE;
+			if (auto it = m_Images.find(i); it != m_Images.end())
 			{
-				imageIndex = m_Images[i];
+				imageIndex = it->second;
 			}
 			if (imageIndex != -1 && HasImageList())
 			{
@@ -83,7 +101,7 @@ void KxStatusBarEx::OnPaint(wxPaintEvent& event)
 
 			// Draw label
 			label = wxControl::Ellipsize(label, dc, GetEllipsizeMode(), maxWidth);
-			if (imageIndex == -1 || !HasImageList())
+			if (imageIndex == NO_IMAGE || !HasImageList())
 			{
 				dc.DrawLabel(label, rect, wxALIGN_CENTER_VERTICAL);
 			}
@@ -93,13 +111,39 @@ void KxStatusBarEx::OnPaint(wxPaintEvent& event)
 			}
 		}
 
-		if (m_IsSeparatorsVisible && m_ColorBorder.IsOk() && i != GetFieldsCount()-1)
+		if (m_IsSeparatorsVisible && m_ColorBorder.IsOk() && i != GetFieldsCount() - 1)
 		{
 			splitterX += rect.GetWidth();
 			dc.SetPen(m_ColorBorder);
 			dc.DrawLine(wxPoint(splitterX, spacer), wxPoint(splitterX, GetMinHeight() - spacer));
 		}
 	}
+}
+void KxStatusBarEx::OnSize(wxSizeEvent& event)
+{
+	ScheduleRefresh();
+	event.Skip();
+}
+void KxStatusBarEx::OnMouseDown(wxMouseEvent& event)
+{
+	m_State = wxCONTROL_SELECTED|wxCONTROL_CURRENT|wxCONTROL_FOCUSED;
+
+	event.Skip();
+	ScheduleRefresh();
+}
+void KxStatusBarEx::OnEnter(wxMouseEvent& event)
+{
+	m_State = wxCONTROL_SELECTED|wxCONTROL_CURRENT;
+
+	event.Skip();
+	ScheduleRefresh();
+}
+void KxStatusBarEx::OnLeave(wxMouseEvent& event)
+{
+	m_State = wxCONTROL_NONE;
+
+	event.Skip();
+	ScheduleRefresh();
 }
 
 wxEllipsizeMode KxStatusBarEx::GetEllipsizeMode() const
@@ -121,24 +165,33 @@ wxEllipsizeMode KxStatusBarEx::GetEllipsizeMode() const
 		return wxEllipsizeMode::wxELLIPSIZE_NONE;
 	}
 }
+wxTopLevelWindow* KxStatusBarEx::GetTLWParent() const
+{
+	wxWindow* parent = GetParent();
+	if (parent && parent->IsKindOf(wxCLASSINFO(wxTopLevelWindow)))
+	{
+		return static_cast<wxTopLevelWindow*>(parent);
+	}
+	return nullptr;
+}
+
 void KxStatusBarEx::MakeTopmost()
 {
 	::SetWindowPos(GetHandle(), HWND_TOPMOST, 0, 0, 0, 0, SWP_ASYNCWINDOWPOS|SWP_NOMOVE|SWP_NOSIZE|SWP_NOSENDCHANGING|SWP_NOREDRAW);
 }
 
-bool KxStatusBarEx::Create(wxWindow* pParent,
+bool KxStatusBarEx::Create(wxWindow* parent,
 						   wxWindowID id,
 						   int fieldsCount,
 						   long style
 )
 {
-	SetBackgroundStyle(wxBG_STYLE_PAINT);
-
-	if (KxStatusBar::Create(pParent, id, KxUtility::ModFlag(style, KxSBE_MASK, false)))
+	if (KxStatusBar::Create(parent, id, KxUtility::ModFlag(style, KxSBE_MASK, false)))
 	{
-		wxWindowUpdateLocker(this);
-		
+		EnableSystemTheme();
+		SetBackgroundStyle(wxBG_STYLE_PAINT);
 		SetSeparatorsVisible(style & KxSBE_SEPARATORS_ENABLED);
+
 		if (style & KxSBE_INHERIT_COLORS)
 		{
 			SetBackgroundColour(GetParent()->GetBackgroundColour().ChangeLightness(110));
@@ -161,36 +214,45 @@ bool KxStatusBarEx::Create(wxWindow* pParent,
 		}
 
 		Bind(wxEVT_PAINT, &KxStatusBarEx::OnPaint, this);
-		//Bind(wxEVT_ENTER_WINDOW, &wxStatusBarEx::OnEnter, this);
-		//Bind(wxEVT_LEAVE_WINDOW, &wxStatusBarEx::OnLeave, this);
-		//Bind(wxEVT_LEFT_DOWN, &wxStatusBarEx::OnMouseDown, this);
-		//Bind(wxEVT_LEFT_UP, &wxStatusBarEx::OnEnter, this);
+		Bind(wxEVT_SIZE, &KxStatusBarEx::OnSize, this);
+		Bind(wxEVT_ENTER_WINDOW, &KxStatusBarEx::OnEnter, this);
+		Bind(wxEVT_LEAVE_WINDOW, &KxStatusBarEx::OnLeave, this);
+		Bind(wxEVT_LEFT_DOWN, &KxStatusBarEx::OnMouseDown, this);
+		Bind(wxEVT_LEFT_UP, &KxStatusBarEx::OnEnter, this);
 
 		return true;
 	}
 	return false;
 }
 
-//////////////////////////////////////////////////////////////////////////
-const char* KxStatusBarEx::m_SizeGripData[] =
+bool KxStatusBarEx::SetForegroundColour(const wxColour& colour)
 {
-	/* width height num_colors chars_per_pixel */
-	"11 11 3 1",
-	/* colors */
-	"  c None",
-	"! c #ffffff",
-	"# c #a0a0a0",
-	/* pixels */
-	"        ## ",
-	"        ##!",
-	"         !!",
-	"           ",
-	"    ##  ## ",
-	"    ##! ##!",
-	"     !!  !!",
-	"           ",
-	"##  ##  ## ",
-	"##! ##! ##!",
-	" !!  !!  !!"
-};
-const wxBitmap KxStatusBarEx::m_SizeGripBitmap(m_SizeGripData);
+	ScheduleRefresh();
+	return KxStatusBar::SetForegroundColour(colour);
+}
+bool KxStatusBarEx::SetBackgroundColour(const wxColour& color)
+{
+	ScheduleRefresh();
+
+	if (color.IsOk())
+	{
+		return KxStatusBar::SetBackgroundColour(color);
+	}
+	else
+	{
+		wxColour newColor = GetParent()->GetBackgroundColour().ChangeLightness(110);
+		return KxStatusBar::SetBackgroundColour(newColor);
+	}
+}
+
+void KxStatusBarEx::SetMinHeight(int height)
+{
+	KxStatusBar::SetMinHeight(height);
+	wxFrame* parentFrame = dynamic_cast<wxFrame*>(GetParent());
+	if (parentFrame)
+	{
+		SetMinSize(wxSize(wxDefaultCoord, height));
+		parentFrame->SetStatusBar(this);
+	}
+	ScheduleRefresh();
+}

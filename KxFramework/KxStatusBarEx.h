@@ -11,79 +11,66 @@ enum
 	KxSBE_MASK = KxSBE_INHERIT_COLORS|KxSBE_SEPARATORS_ENABLED
 };
 
-class KX_API KxStatusBarEx: public KxStatusBar, public KxWithImageList, public KxIProgressBar
+class KX_API KxStatusBarEx:	public KxStatusBar,	public KxWithImageList,	public KxIProgressBar
 {
-
 	private:
-		static const char* m_SizeGripData[];
-		static const wxBitmap m_SizeGripBitmap;
-
-	private:
-		wxColour m_ColorBorder = wxNullColour;
 		std::unordered_map<int, int> m_Images;
+		wxColour m_ColorBorder = wxNullColour;
 		int m_State = wxCONTROL_NONE;
+		int m_Style = DefaultStyle;
 		bool m_IsSeparatorsVisible = false;
-		long m_Style = DefaultStyle;
 
-		int m_ProgressRange = 100;
 		int m_ProgressPos = 0;
+		int m_ProgressRange = 100;
 		int m_ProgressStep = 10;
 	
 	private:
 		void OnPaint(wxPaintEvent& event);
-		void OnMouseDown(wxMouseEvent& event)
-		{
-			m_State = wxCONTROL_SELECTED|wxCONTROL_CURRENT|wxCONTROL_FOCUSED;
-			Refresh();
-		}
-		void OnEnter(wxMouseEvent& event)
-		{
-			m_State = wxCONTROL_SELECTED|wxCONTROL_CURRENT;
-			Refresh();
-		}
-		void OnLeave(wxMouseEvent& event)
-		{
-			m_State = wxCONTROL_NONE;
-			Refresh();
-		}
+		void OnSize(wxSizeEvent& event);
+		void OnMouseDown(wxMouseEvent& event);
+		void OnEnter(wxMouseEvent& event);
+		void OnLeave(wxMouseEvent& event);
 		
 		wxEllipsizeMode GetEllipsizeMode() const;
+		wxTopLevelWindow* GetTLWParent() const;
 		void MakeTopmost();
 
 	protected:
-		virtual int DoGetRange() const override
+		// KxIProgressBar
+		int DoGetRange() const override
 		{
 			return m_ProgressRange;
 		}
-		virtual void DoSetRange(int range)
+		void DoSetRange(int range) override
 		{
 			m_ProgressRange = range;
-			Refresh();
+			ScheduleRefresh();
 		}
 
-		virtual int DoGetValue() const override
+		int DoGetValue() const override
 		{
 			return m_ProgressPos;
 		}
-		virtual void DoSetValue(int value) override
+		void DoSetValue(int value) override
 		{
 			m_ProgressPos = value;
-			Refresh();
+			ScheduleRefresh();
 		}
 
-		virtual int DoGetStep() const override
+		int DoGetStep() const override
 		{
 			return m_ProgressStep;
 		}
-		virtual void DoSetStep(int step) override
+		void DoSetStep(int step) override
 		{
 			m_ProgressStep = step <= m_ProgressRange ? step : m_ProgressRange;
 		}
 
-		virtual void DoPulse() override
+		void DoPulse() override
 		{
+			ScheduleRefresh();
 		}
-		virtual bool DoIsPulsing() const override
+		bool DoIsPulsing() const override
 		{
 			return false;
 		}
@@ -91,18 +78,18 @@ class KX_API KxStatusBarEx: public KxStatusBar, public KxWithImageList, public K
 	public:
 		static const int DefaultStyle = KxStatusBar::DefaultStyle|KxSBE_SEPARATORS_ENABLED;
 
-		KxStatusBarEx() {}
-		KxStatusBarEx(wxWindow* pParent,
+		KxStatusBarEx() = default;
+		KxStatusBarEx(wxWindow* parent,
 					  wxWindowID id,
-					  int fieldsCount = DefaultFiledsCount,
+					  int fieldsCount = 1,
 					  long style = DefaultStyle
 		)
 		{
-			Create(pParent, id, fieldsCount, style);
+			Create(parent, id, fieldsCount, style);
 		}
-		bool Create(wxWindow* pParent,
+		bool Create(wxWindow* parent,
 					wxWindowID id,
-					int fieldsCount = DefaultFiledsCount,
+					int fieldsCount = 1,
 					long style = DefaultStyle
 		);
 
@@ -114,39 +101,20 @@ class KX_API KxStatusBarEx: public KxStatusBar, public KxWithImageList, public K
 		void SetBorderColor(const wxColour& color = wxNullColour)
 		{
 			m_ColorBorder = color;
-			Refresh();
+			ScheduleRefresh();
 		}
 		
-		virtual bool SetForegroundColour(const wxColour& colour) override
-		{
-			bool value = KxStatusBar::SetForegroundColour(colour);
-			Refresh();
-			return value;
-		}
-		virtual bool SetBackgroundColour(const wxColour& color = wxNullColour) override
-		{
-			bool ret = false;
-			if (color.IsOk())
-			{
-				ret = KxStatusBar::SetBackgroundColour(color);
-			}
-			else
-			{
-				wxColour tNewColor = GetParent()->GetBackgroundColour().ChangeLightness(110);
-				ret = KxStatusBar::SetBackgroundColour(tNewColor);
-			}
-			Refresh();
-			return ret;
-		}
+		bool SetForegroundColour(const wxColour& colour) override;
+		bool SetBackgroundColour(const wxColour& color = wxNullColour) override;
 		
 		bool IsSeparatorsVisible() const
 		{
 			return m_IsSeparatorsVisible;
 		}
-		void SetSeparatorsVisible(bool bSeparators)
+		void SetSeparatorsVisible(bool visible = true)
 		{
-			m_IsSeparatorsVisible = bSeparators;
-			Refresh();
+			m_IsSeparatorsVisible = visible;
+			ScheduleRefresh();
 		}
 		
 		int GetStatusImage(int index)
@@ -162,25 +130,26 @@ class KX_API KxStatusBarEx: public KxStatusBar, public KxWithImageList, public K
 			if (index < GetFieldsCount())
 			{
 				m_Images[index] = imageIndex;
-				Refresh();
+				ScheduleRefresh();
 			}
 		}
 		
-		virtual void SetMinHeight(int height) override
+		void SetMinHeight(int height) override;
+		void SetStatusText(const wxString& text, int index = 0)
 		{
-			KxStatusBar::SetMinHeight(height);
-			wxFrame* pFrame = dynamic_cast<wxFrame*>(GetParent());
-			if (pFrame)
-			{
-				SetMinSize(wxSize(wxDefaultCoord, height));
-				pFrame->SetStatusBar(this);
-			}
-			Refresh();
+			KxStatusBar::SetStatusText(text, index);
+			ScheduleRefresh();
 		}
-		virtual void SetStatusText(const wxString& text, int number = 0)
+
+		void SetFieldsCount(int count) override
 		{
-			KxStatusBar::SetStatusText(text, number);
-			Refresh();
+			KxStatusBar::SetFieldsCount(count);
+			ScheduleRefresh();
+		}
+		void SetFieldsCount(const KxIntVector& widths) override
+		{
+			KxStatusBar::SetFieldsCount(widths);
+			ScheduleRefresh();
 		}
 
 	public:
