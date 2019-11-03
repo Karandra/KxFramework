@@ -4,17 +4,39 @@
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxImageSet, wxObject);
 
-KxImageSet::KxImageSet(size_t count)
+namespace
 {
-	m_Data.reserve(count);
+	template<class T>
+	const T* GetPtr(const KxImageSet& imageSet, const wxString& id, KxImageSet::ImageType desiredType)
+	{
+		using ImageType = KxImageSet::ImageType;
+
+		ImageType type = ImageType::Invalid;
+		if (const wxObject* object = imageSet.Get(id, &type); object && type == desiredType)
+		{
+			return static_cast<const T*>(object);
+		}
+		return nullptr;
+	}
 }
-KxImageSet::~KxImageSet()
+
+KxImageSet::KxImageSet(size_t initialCount)
 {
+	m_Store.reserve(initialCount);
+}
+
+bool KxImageSet::Remove(const wxString& id)
+{
+	return m_Store.erase(id) != 0;
+}
+void KxImageSet::Clear()
+{
+	m_Store.clear();
 }
 
 void KxImageSet::Set(const wxString& id, const wxImage& image)
 {
-	m_Data.insert_or_assign(id, image);
+	m_Store.insert_or_assign(id, image);
 }
 void KxImageSet::Set(const wxString& id, const wxBitmap& image)
 {
@@ -22,74 +44,92 @@ void KxImageSet::Set(const wxString& id, const wxBitmap& image)
 	if (tempImage.HasAlpha())
 	{
 		tempImage.InitAlpha();
-		m_Data.insert_or_assign(id, wxBitmap(tempImage, 32));
+		m_Store.insert_or_assign(id, wxBitmap(tempImage, 32));
 	}
 	else
 	{
-		m_Data.insert_or_assign(id, image);
+		m_Store.insert_or_assign(id, image);
 	}
 }
 void KxImageSet::Set(const wxString& id, const wxIcon& image)
 {
-	m_Data.insert_or_assign(id, image);
+	m_Store.insert_or_assign(id, image);
 }
+
 const wxObject* KxImageSet::Get(const wxString& id, ImageType* type) const
 {
-	auto it = m_Data.find(id);
-	if (it != m_Data.end())
+	auto it = m_Store.find(id);
+	if (it != m_Store.end())
 	{
-		auto& var = it->second;
-		switch (var.index())
+		const auto& var = it->second;
+		switch (static_cast<ImageType>(var.index()))
 		{
-			case TYPE_BITMAP:
+			case ImageType::Bitmap:
 			{
-				KxUtility::SetIfNotNull(type, TYPE_BITMAP);
+				KxUtility::SetIfNotNull(type, ImageType::Bitmap);
 				return &std::get<wxBitmap>(var);
 				break;
 			}
-			case TYPE_IMAGE:
+			case ImageType::Image:
 			{
-				KxUtility::SetIfNotNull(type, TYPE_IMAGE);
+				KxUtility::SetIfNotNull(type, ImageType::Image);
 				return &std::get<wxImage>(var);
 				break;
 			}
-			case TYPE_ICON:
+			case ImageType::Icon:
 			{
-				KxUtility::SetIfNotNull(type, TYPE_ICON);
+				KxUtility::SetIfNotNull(type, ImageType::Icon);
 				return &std::get<wxIcon>(var);
 				break;
 			}
 		};
 	}
 
-	KxUtility::SetIfNotNull(type, TYPE_INVALID);
+	KxUtility::SetIfNotNull(type, ImageType::Invalid);
 	return nullptr;
 }
-void KxImageSet::Remove(const wxString& id)
+wxSize KxImageSet::GetSize(const wxString& id) const
 {
-	m_Data.erase(id);
+	ImageType type = ImageType::Invalid;
+	if (const wxObject* object = Get(id, &type))
+	{
+		switch (type)
+		{
+			case ImageType::Bitmap:
+			{
+				return static_cast<const wxBitmap&>(*object).GetSize();
+			}
+			case ImageType::Image:
+			{
+				return static_cast<const wxImage&>(*object).GetSize();
+			}
+			case ImageType::Icon:
+			{
+				return static_cast<const wxIcon&>(*object).GetSize();
+			}
+		};
+	};
+	return wxDefaultSize;
 }
 
 wxImage KxImageSet::GetImage(const wxString& id) const
 {
-	ImageType type = TYPE_INVALID;
-	const wxObject* object = Get(id, &type);
-
-	if (object)
+	ImageType type = ImageType::Invalid;
+	if (const wxObject* object = Get(id, &type))
 	{
 		switch (type)
 		{
-			case TYPE_IMAGE:
+			case ImageType::Image:
 			{
 				return *static_cast<const wxImage*>(object);
 			}
-			case TYPE_BITMAP:
+			case ImageType::Bitmap:
 			{
 				return static_cast<const wxBitmap*>(object)->ConvertToImage();
 			}
-			case TYPE_ICON:
+			case ImageType::Icon:
 			{
-				wxBitmap bitmap(*static_cast<const wxIcon*>(object));
+				wxBitmap bitmap(*static_cast<const wxIcon*>(object), wxBitmapTransparency::wxBitmapTransparency_Auto);
 				return bitmap.ConvertToImage();
 			}
 		};
@@ -98,24 +138,22 @@ wxImage KxImageSet::GetImage(const wxString& id) const
 }
 wxBitmap KxImageSet::GetBitmap(const wxString& id) const
 {
-	ImageType type = TYPE_INVALID;
-	const wxObject* object = Get(id, &type);
-
-	if (object)
+	ImageType type = ImageType::Invalid;
+	if (const wxObject* object = Get(id, &type))
 	{
 		switch (type)
 		{
-			case TYPE_IMAGE:
+			case ImageType::Image:
 			{
 				return wxBitmap(*static_cast<const wxImage*>(object), 32);
 			}
-			case TYPE_BITMAP:
+			case ImageType::Bitmap:
 			{
 				return *static_cast<const wxBitmap*>(object);
 			}
-			case TYPE_ICON:
+			case ImageType::Icon:
 			{
-				return wxBitmap(*static_cast<const wxIcon*>(object));
+				return wxBitmap(*static_cast<const wxIcon*>(object), wxBitmapTransparency::wxBitmapTransparency_Auto);
 			}
 		};
 	}
@@ -123,27 +161,25 @@ wxBitmap KxImageSet::GetBitmap(const wxString& id) const
 }
 wxIcon KxImageSet::GetIcon(const wxString& id) const
 {
-	ImageType type = TYPE_INVALID;
-	const wxObject* object = Get(id, &type);
-
-	if (object)
+	ImageType type = ImageType::Invalid;
+	if (const wxObject* object = Get(id, &type))
 	{
 		switch (type)
 		{
-			case TYPE_IMAGE:
+			case ImageType::Image:
 			{
-				wxBitmap bitmap(*static_cast<const wxImage*>(object));
+				wxBitmap bitmap(*static_cast<const wxImage*>(object), 32);
 				wxIcon icon;
 				icon.CopyFromBitmap(bitmap);
 				return icon;
 			}
-			case TYPE_BITMAP:
+			case ImageType::Bitmap:
 			{
 				wxIcon icon;
 				icon.CopyFromBitmap(*static_cast<const wxBitmap*>(object));
 				return icon;
 			}
-			case TYPE_ICON:
+			case ImageType::Icon:
 			{
 				return *static_cast<const wxIcon*>(object);
 			}
@@ -151,31 +187,42 @@ wxIcon KxImageSet::GetIcon(const wxString& id) const
 	}
 	return wxNullIcon;
 }
-wxImageList* KxImageSet::ToImageList(const wxSize& size) const
+
+const wxImage* KxImageSet::GetImagePtr(const wxString& id) const
 {
-	wxImageList* imageList = new wxImageList(size.GetWidth(), size.GetHeight(), false, GetCount());
+	return GetPtr<wxImage>(*this, id, ImageType::Image);
+}
+const wxBitmap* KxImageSet::GetBitmapPtr(const wxString& id) const
+{
+	return GetPtr<wxBitmap>(*this, id, ImageType::Bitmap);
+}
+const wxIcon* KxImageSet::GetIconPtr(const wxString& id) const
+{
+	return GetPtr<wxIcon>(*this, id, ImageType::Icon);
+}
 
-	for (auto& i: m_Data)
+std::unique_ptr<KxImageList> KxImageSet::CreateImageList(const wxSize& size) const
+{
+	std::unique_ptr<KxImageList> imageList = std::make_unique<KxImageList>(size, GetCount());
+
+	for (const auto& item: m_Store)
 	{
-		wxString id = i.first;
-		ImageType type = TYPE_INVALID;
-		const wxObject* object = Get(id, &type);
-
-		if (object)
+		ImageType type = ImageType::Invalid;
+		if (const wxObject* object = Get(item.first, &type))
 		{
 			switch (type)
 			{
-				case TYPE_IMAGE:
+				case ImageType::Image:
 				{
 					imageList->Add(*static_cast<const wxImage*>(object));
 					break;
 				}
-				case TYPE_BITMAP:
+				case ImageType::Bitmap:
 				{
 					imageList->Add(*static_cast<const wxBitmap*>(object));
 					break;
 				}
-				case TYPE_ICON:
+				case ImageType::Icon:
 				{
 					imageList->Add(*static_cast<const wxIcon*>(object));
 					break;
