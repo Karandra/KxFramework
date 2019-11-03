@@ -14,7 +14,7 @@ namespace
 		// peek all WM_COMMANDs (it will always return WM_QUIT too but we don't
 		// want to process it here)
 		MSG msg;
-		while (::PeekMessageW(&msg, (HWND)nullptr, WM_COMMAND, WM_COMMAND, PM_REMOVE))
+		while (::PeekMessageW(&msg, nullptr, WM_COMMAND, WM_COMMAND, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT)
 			{
@@ -125,7 +125,7 @@ namespace
 		return nullptr;
 	}
 
-	class ShowMenuScope
+	class ShowMenuScope final
 	{
 		private:
 			KxMenu& m_Menu;
@@ -134,7 +134,7 @@ namespace
 
 		public:
 			ShowMenuScope(KxMenu& menu, wxWindow* window, HWND hWnd)
-				:m_Menu(menu), m_Window(window), m_Handle(hWnd)
+				:m_Menu(menu), m_Window(window ? window : wxGetActiveWindow()), m_Handle(hWnd)
 			{
 				if (m_Window)
 				{
@@ -163,7 +163,7 @@ namespace
 			}
 	};
 
-	const DWORD AlignmentMask = TPM_LEFTALIGN|TPM_CENTERALIGN|TPM_RIGHTALIGN|TPM_TOPALIGN|TPM_VCENTERALIGN|TPM_BOTTOMALIGN|TPM_HORIZONTAL|TPM_VERTICAL;
+	constexpr DWORD g_AlignmentMask = TPM_LEFTALIGN|TPM_CENTERALIGN|TPM_RIGHTALIGN|TPM_TOPALIGN|TPM_VCENTERALIGN|TPM_BOTTOMALIGN|TPM_HORIZONTAL|TPM_VERTICAL;
 }
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxMenu, wxMenu);
@@ -224,7 +224,7 @@ WORD KxMenu::DoShowMenu(wxWindow* window, const wxPoint& showPos, DWORD alignmen
 		ms_CurrentMenu = this;
 	}
 
-	int ret = ::TrackPopupMenu(GetHMenu(), (async ? 0 : TPM_RETURNCMD)|TPM_RECURSE|TPM_LEFTBUTTON|(alignment & AlignmentMask), pos.x, pos.y, 0, hWnd, nullptr);
+	int ret = ::TrackPopupMenu(GetHMenu(), (async ? 0 : TPM_RETURNCMD)|TPM_RECURSE|TPM_LEFTBUTTON|(alignment & g_AlignmentMask), pos.x, pos.y, 0, hWnd, nullptr);
 	
 	if (!async)
 	{
@@ -312,7 +312,12 @@ wxWindowID KxMenu::ShowAsPopup(wxWindow* window, int offset, DWORD alignment)
 
 KxMenuItem* KxMenu::Add(KxMenuItem* item)
 {
-	return wxMenu::Append(item) ? item : nullptr;
+	if (wxMenu::Append(item))
+	{
+		item->OnAddedToMenu();
+		return item;
+	}
+	return nullptr;
 }
 KxMenuItem* KxMenu::Add(KxMenu* subMenu, const wxString& label, const wxString& helpString)
 {
@@ -327,7 +332,12 @@ KxMenuItem* KxMenu::AddSeparator()
 
 KxMenuItem* KxMenu::Insert(size_t pos, KxMenuItem* item)
 {
-	return wxMenu::Insert(pos, item) ? item : nullptr;
+	if (wxMenu::Insert(pos, item))
+	{
+		item->OnAddedToMenu();
+		return item;
+	}
+	return nullptr;
 }
 KxMenuItem* KxMenu::Insert(size_t pos, KxMenu* subMenu, const wxString& label, const wxString& helpString)
 {
@@ -342,7 +352,12 @@ KxMenuItem* KxMenu::InsertSeparator(size_t pos)
 
 KxMenuItem* KxMenu::Prepend(KxMenuItem* item)
 {
-	return wxMenu::Prepend(item) ? item : nullptr;
+	if (wxMenu::Prepend(item))
+	{
+		item->OnAddedToMenu();
+		return item;
+	}
+	return nullptr;
 }
 KxMenuItem* KxMenu::Prepend(KxMenu* subMenu, const wxString& label, const wxString& helpString)
 {
@@ -376,7 +391,12 @@ KxMenuItem* KxMenu::FindItemByPosition(size_t pos) const
 
 KxMenuItem* KxMenu::RemoveItem(KxMenuItem* item)
 {
-	return static_cast<KxMenuItem*>(wxMenu::Remove(item));
+	if (item = static_cast<KxMenuItem*>(wxMenu::Remove(item)))
+	{
+		item->OnRemovedFromMenu();
+		return item;
+	}
+	return nullptr;
 }
 KxMenuItem* KxMenu::RemoveItem(wxWindowID id)
 {

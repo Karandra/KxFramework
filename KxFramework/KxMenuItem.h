@@ -1,9 +1,12 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxMenuEvent.h"
+class KxMenu;
 
 class KX_API KxMenuItem: public wxEvtHandler, public wxMenuItem
 {
+	friend class KxMenu;
+
 	protected:
 		template<class T> constexpr static bool TestIDType()
 		{
@@ -14,6 +17,14 @@ class KX_API KxMenuItem: public wxEvtHandler, public wxMenuItem
 		wxWindowID m_EffectiveID = KxID_NONE;
 
 	private:
+		void OnCreate();
+		bool OnMeasureItem(size_t* width, size_t* height) override;
+		bool OnDrawItem(wxDC& dc, const wxRect& rect, wxODAction action, wxODStatus status) override;
+
+		void OnAddedToMenu();
+		void OnRemovedFromMenu();
+
+		void CheckIfShouldOwnerDraw();
 		wxWindowID GetEffectiveID(wxWindowID id) const;
 
 	public:
@@ -45,7 +56,8 @@ class KX_API KxMenuItem: public wxEvtHandler, public wxMenuItem
 		{
 			return HasEffectiveID() ? m_EffectiveID : wxMenuItem::GetId();
 		}
-
+		
+		wxWindow* GetWindow() const;
 		wxMenu* GetWxMenu() const
 		{
 			return wxMenuItem::GetMenu();
@@ -67,7 +79,8 @@ class KX_API KxMenuItem: public wxEvtHandler, public wxMenuItem
 		wxDECLARE_DYNAMIC_CLASS(KxMenuItem);
 };
 
-template<class ItemT, class MenuT> class KxMenuItemIterator
+template<class ItemT, class MenuT>
+class KxMenuItemIterator
 {
 	static_assert(std::is_base_of<wxMenu, MenuT>::value, "MenuT must be derived from wxMenu");
 
