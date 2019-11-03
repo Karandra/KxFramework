@@ -1,6 +1,6 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxLabel.h"
-#include "KxFramework/KxUtility.h"
+#include "KxFramework/KxUxTheme.h"
 
 namespace
 {
@@ -98,7 +98,7 @@ void KxLabel::OnPaint(wxPaintEvent& event)
 	dc.SetBackground(GetParent()->GetBackgroundColour());
 
 	wxRect rect(wxPoint(0, 0), GetSize());
-	KxUtility::DrawParentBackground(this, dc, rect);
+	KxUxTheme::DrawParentBackground(*this, dc, rect);
 
 	bool isSelected = m_State == wxCONTROL_FOCUSED || m_State == wxCONTROL_PRESSED;
 	const wxColour& color = GetStateColor();
@@ -205,7 +205,7 @@ bool KxLabel::Create(wxWindow* parent,
 		}
 		if (m_Style & KxLABEL_COLORED)
 		{
-			color = KxUtility::GetThemeColor_Caption(this);
+			color = KxUxTheme::GetDialogMainInstructionColor(*this);
 		}
 		SetupColors(color);
 

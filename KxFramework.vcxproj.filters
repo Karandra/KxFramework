@@ -175,12 +175,6 @@
     <Filter Include="Source Files\FFI">
       <UniqueIdentifier>{9e36dc1d-166b-46a6-a68d-83443a639d1a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\System\UxTheme">
-      <UniqueIdentifier>{70cd11b2-016e-4906-b01d-5ba6f24a7b41}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\System\UxTheme">
-      <UniqueIdentifier>{47ff8030-0117-44db-add1-70ee07dcc295}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\GUI\DataView2">
       <UniqueIdentifier>{eb022c58-7685-4933-83db-3ae2a7c99660}</UniqueIdentifier>
     </Filter>
@@ -784,15 +778,6 @@
     <ClInclude Include="KxFramework\KxIndexedEnum.h">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\UxTheme\Handle.h">
-      <Filter>Header Files\System\UxTheme</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxUxTheme.h">
-      <Filter>Header Files\System</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\UxTheme\Defs.h">
-      <Filter>Header Files\System\UxTheme</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\DataView\KxDataViewSortOrder.h">
       <Filter>Header Files\GUI\DataView\Control</Filter>
     </ClInclude>
@@ -1123,6 +1108,12 @@
     <ClInclude Include="KxFramework\KxDPIAwareness.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxUxTheme.h">
+      <Filter>Header Files\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxUxThemePartsAndStates.h">
+      <Filter>Header Files\Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1211,9 +1202,6 @@
       <Filter>Source Files\General</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxUtility.cpp">
-      <Filter>Source Files\General</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxUtilityUxTheme.cpp">
       <Filter>Source Files\General</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxFrame.cpp">
@@ -1600,12 +1588,6 @@
     <ClCompile Include="KxFramework\HTML\serialize.cpp">
       <Filter>Source Files\Parsers\HTML</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\UxTheme\Handle.cpp">
-      <Filter>Source Files\System\UxTheme</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxUxTheme.cpp">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\DataView2\Editor.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
     </ClCompile>
@@ -1779,6 +1761,9 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxDPIAwareness.cpp">
       <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxUxTheme.cpp">
+      <Filter>Source Files\Drawing</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

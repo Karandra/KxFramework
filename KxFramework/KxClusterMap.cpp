@@ -1,6 +1,6 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxClusterMap.h"
-#include "KxFramework/KxUtility.h"
+#include "KxFramework/KxUxTheme.h"
 #include "KxFramework/KxColor.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxClusterMap, wxControl)
@@ -10,7 +10,7 @@ void KxClusterMap::OnPaint(wxPaintEvent& event)
 	wxPaintDC dc(this);
 
 	const DrawInfo drawInfo = GetDrawInfo();
-	KxUtility::DrawParentBackground(this, dc, wxRect({0, 0}, drawInfo.ClientSize));
+	KxUxTheme::DrawParentBackground(*this, dc, wxRect({0, 0}, drawInfo.ClientSize));
 
 	if (m_ItemCount != 0 && m_ItemSize > 0)
 	{

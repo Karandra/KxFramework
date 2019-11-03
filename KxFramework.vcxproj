@@ -370,6 +370,7 @@
     <ClInclude Include="KxFramework\KxINetConnection.h" />
     <ClInclude Include="KxFramework\KxURI.h" />
     <ClInclude Include="KxFramework\KxURL.h" />
+    <ClInclude Include="KxFramework\KxUxThemePartsAndStates.h" />
     <ClInclude Include="KxFramework\KxValidator.h" />
     <ClInclude Include="KxFramework\KxIOwned.h" />
     <ClInclude Include="KxFramework\KxIProgressBar.h" />
@@ -460,8 +461,6 @@
     <ClInclude Include="KxFramework\KxXML.h" />
     <ClInclude Include="KxFramework\KxZLibStream.h" />
     <ClInclude Include="KxFramework\OpenSSL\IncludeLibs.h" />
-    <ClInclude Include="KxFramework\UxTheme\Handle.h" />
-    <ClInclude Include="KxFramework\UxTheme\Defs.h" />
     <ClInclude Include="KxFramework\WebSocket\Common.h" />
     <ClInclude Include="KxFramework\WebSocket\IClient.h" />
     <ClInclude Include="KxFramework\WebSocket\SecureClient.h" />
@@ -737,7 +736,6 @@
     <ClCompile Include="KxFramework\KxURI.cpp" />
     <ClCompile Include="KxFramework\KxURL.cpp" />
     <ClCompile Include="KxFramework\KxUtility.cpp" />
-    <ClCompile Include="KxFramework\KxUtilityUxTheme.cpp" />
     <ClCompile Include="KxFramework\KxUUID.cpp" />
     <ClCompile Include="KxFramework\KxUxTheme.cpp" />
     <ClCompile Include="KxFramework\KxValidator.cpp" />
@@ -752,7 +750,6 @@
     <ClCompile Include="KxFramework\KxXMLAttribute.cpp" />
     <ClCompile Include="KxFramework\KxXMLNode.cpp" />
     <ClCompile Include="KxFramework\KxZLibStream.cpp" />
-    <ClCompile Include="KxFramework\UxTheme\Handle.cpp" />
     <ClCompile Include="KxFramework\WebSocket\IClient.cpp" />
     <ClCompile Include="KxFramework\WebSocket\SecureClient.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

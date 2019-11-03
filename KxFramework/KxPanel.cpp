@@ -1,6 +1,6 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxPanel.h"
-#include "KxFramework/KxUtility.h"
+#include "KxFramework/KxUxTheme.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxPanel, wxPanel);
 
@@ -135,7 +135,7 @@ void KxDrawablePanel::OnDrawBackground(wxEraseEvent& event)
 		{
 			window = GetParent();
 		}
-		KxUtility::DrawParentBackground(window, *dc, wxRect(wxPoint(0, 0), GetSize()));
+		KxUxTheme::DrawParentBackground(*window, *dc, wxRect(wxPoint(0, 0), GetSize()));
 	}
 
 	if (mode & KxPANEL_BG_IMAGE)

@@ -8,6 +8,7 @@
 #include "KxFramework/KxGraphicsContext.h"
 #include "KxFramework/KxDCClipper.h"
 #include "KxFramework/KxUxTheme.h"
+#include "KxFramework/KxUxThemePartsAndStates.h"
 #include "wx/generic/private/markuptext.h"
 #include "wx/generic/private/markuptext.h"
 
@@ -461,58 +462,42 @@ bool KxDataViewRenderer::DoDrawBitmap(const wxRect& cellRect, KxDataViewCellStat
 }
 bool KxDataViewRenderer::DoDrawProgressBar(const wxRect& cellRect, KxDataViewCellState cellState, int value, int range, ProgressBarState state)
 {
-	KxUxTheme::Handle themeHandle(GetView(), L"PROGRESS");
-	if (themeHandle)
+	// Progress bar looks really ugly when it's smaller than 10x10 pixels,
+	// so don't draw it at all in this case.
+	if (cellRect.GetWidth() < 10 || cellRect.GetHeight() < 10)
 	{
-		HDC dc = GetDC().GetHDC();
+		return false;
+	}
 
-		// Draw background
-		RECT cellRectWin = KxUtility::CopyRectToRECT(cellRect);
-		::DrawThemeBackground(themeHandle, dc, PP_BAR, 0, &cellRectWin, nullptr);
-
-		// Draw filled part
-		RECT contentRect = {0};
-		::GetThemeBackgroundContentRect(themeHandle, dc, PP_BAR, 0, &cellRectWin, &contentRect);
-
-		contentRect.right = contentRect.left + wxMulDivInt32(contentRect.right - contentRect.left, value, range);
-		if (contentRect.left - 2 == cellRectWin.left)
-		{
-			contentRect.left++;
-		}
-		if (contentRect.right + 2 == cellRectWin.right)
-		{
-			contentRect.right--;
-		}
-
+	if (KxUxTheme theme(*GetView(), KxUxThemeClass::Progress); theme)
+	{
 		switch (state)
 		{
 			case ProgressBarState::Paused:
 			{
-				::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_PAUSED, &contentRect, nullptr);
+				theme.DrawProgress(GetDC(), PP_BAR, PP_FILL, PBFS_PAUSED, cellRect, value, range);
 				break;
 			}
 			case ProgressBarState::Error:
 			{
-				::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_ERROR, &contentRect, nullptr);
+				theme.DrawProgress(GetDC(), PP_BAR, PP_FILL, PBFS_ERROR, cellRect, value, range);
 				break;
 			}
 			case ProgressBarState::Partial:
 			{
-				::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_PARTIAL, &contentRect, nullptr);
+				theme.DrawProgress(GetDC(), PP_BAR, PP_FILL, PBFS_PARTIAL, cellRect, value, range);
 				break;
 			}
-
 			default:
-			case ProgressBarState::Normal:
 			{
-				::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_NORMAL, &contentRect, nullptr);
+				theme.DrawProgress(GetDC(), PP_BAR, PP_FILL, PBFS_NORMAL, cellRect, value, range);
 				break;
 			}
 		};
 		return true;
 	}
 
-	wxRendererNative::Get().DrawGauge(GetView(), GetGCDC(), cellRect, value, range);
+	wxRendererNative::Get().DrawGauge(GetView(), GetDC(), cellRect, value, range);
 	return true;
 }
 

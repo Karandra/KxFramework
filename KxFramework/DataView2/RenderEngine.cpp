@@ -8,6 +8,8 @@
 #include "KxFramework/KxGCUtility.h"
 #include "wx/generic/private/markuptext.h"
 
+#include "KxFramework/KxUxThemePartsAndStates.h"
+
 namespace
 {
 	bool operator<(const wxSize& left, const wxSize& right)
@@ -402,51 +404,28 @@ namespace KxDataView2
 			return false;
 		}
 
-		KxUxTheme::Handle themeHandle(m_Renderer.GetView(), L"PROGRESS");
-		if (themeHandle)
+		if (KxUxTheme theme(*m_Renderer.GetView(), KxUxThemeClass::Progress); theme)
 		{
-			HDC dc = m_Renderer.GetRegularDC().GetHDC();
-
-			// Draw background
-			RECT cellRectWin = KxUtility::CopyRectToRECT(cellRect);
-			::DrawThemeBackground(themeHandle, dc, PP_BAR, 0, &cellRectWin, nullptr);
-
-			// Draw filled part
-			RECT contentRect = {0};
-			::GetThemeBackgroundContentRect(themeHandle, dc, PP_BAR, 0, &cellRectWin, &contentRect);
-
-			contentRect.right = contentRect.left + wxMulDivInt32(contentRect.right - contentRect.left, value, range);
-			if (contentRect.left - 2 == cellRectWin.left)
-			{
-				contentRect.left++;
-			}
-			if (contentRect.right + 2 == cellRectWin.right)
-			{
-				contentRect.right--;
-			}
-
 			switch (state)
 			{
 				case ProgressState::Paused:
 				{
-					::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_PAUSED, &contentRect, nullptr);
+					theme.DrawProgress(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_PAUSED, cellRect, value, range);
 					break;
 				}
 				case ProgressState::Error:
 				{
-					::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_ERROR, &contentRect, nullptr);
+					theme.DrawProgress(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_ERROR, cellRect, value, range);
 					break;
 				}
 				case ProgressState::Partial:
 				{
-					::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_PARTIAL, &contentRect, nullptr);
+					theme.DrawProgress(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_PARTIAL, cellRect, value, range);
 					break;
 				}
-
 				default:
-				case ProgressState::Normal:
 				{
-					::DrawThemeBackground(themeHandle, dc, PP_FILL, PBFS_NORMAL, &contentRect, nullptr);
+					theme.DrawProgress(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_NORMAL, cellRect, value, range);
 					break;
 				}
 			};
@@ -557,14 +536,10 @@ namespace KxDataView2
 	}
 	void RenderEngine::DrawSelectionRect(wxWindow* window, wxDC& dc, const wxRect& cellRect, int flags)
 	{
-		KxUxTheme::Handle handle(window, L"TREEVIEW");
-		if (handle)
+		if (KxUxTheme theme(*window, KxUxThemeClass::TreeView); theme)
 		{
 			const int itemState = GetTreeItemState(flags);
-			const RECT rect = KxUtility::CopyRectToRECT(cellRect);
-			const HDC hdc = dc.GetHDC();
-
-			::DrawThemeBackground(handle, hdc, TVP_TREEITEM, itemState, &rect, 0);
+			theme.DrawBackground(dc, TVP_TREEITEM, GetTreeItemState(flags), cellRect);
 		}
 		else
 		{

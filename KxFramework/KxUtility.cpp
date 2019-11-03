@@ -238,23 +238,6 @@ namespace
 
 namespace KxUtility
 {
-	bool ClearDC(const wxWindow* window, wxDC& dc)
-	{
-		return DrawParentBackground(window, dc, wxRect(wxPoint(0, 0), dc.GetSize()));
-	}
-	bool DrawParentBackground(const wxWindow* window, wxDC& dc, const wxPoint& point1, const wxPoint& point2)
-	{
-		wxRect rect(point1, point2);
-		return DrawParentBackground(window, dc, rect);
-	}
-	void ToggleWindowStyle(HWND hWnd, int index, LONG style, bool enable)
-	{
-		::SetWindowLongPtrW(hWnd, index, ModFlag(::GetWindowLongPtrW(hWnd, index), style, enable));
-	}
-}
-
-namespace KxUtility
-{
 	HMODULE GetAppHandle()
 	{
 		return GetModuleHandleW(nullptr);
@@ -270,6 +253,10 @@ namespace KxUtility
 		HMODULE moduleHandle = GetAppHandle();
 		HRSRC resourceHandle = ::FindResourceW(moduleHandle, MAKEINTRESOURCEW(id), typeName.wc_str());
 		return LoadResourceAux(resourceHandle, moduleHandle);
+	}
+	void ToggleWindowStyle(HWND hWnd, int index, LONG style, bool enable)
+	{
+		::SetWindowLongPtrW(hWnd, index, ModFlag(::GetWindowLongPtrW(hWnd, index), style, enable));
 	}
 
 	wxString GetStandardLocalizedString(int id, bool* isSuccess)

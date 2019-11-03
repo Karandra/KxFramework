@@ -10,6 +10,8 @@
 #include "KxFramework/KxSplashWindow.h"
 #include "KxFramework/KxDCClipper.h"
 #include "KxFramework/KxUtility.h"
+#include "KxFramework/KxUxTheme.h"
+#include "KxFramework/KxUxThemePartsAndStates.h"
 #include "KxFramework/KxFrame.h"
 #include <wx/popupwin.h>
 #include <wx/generic/private/widthcalc.h>
@@ -1369,12 +1371,14 @@ void KxDataViewMainWindow::OnPaint(wxPaintEvent& event)
 					// happen if the column is very narrow)
 					//wxDCClipper clip(dc, cell_rect);
 
-					int TVP_GLYPH = 2;
-					int TVP_HOTGLYPH = 4;
-					int GLPS_OPENED = 2;
-					int GLPS_CLOSED = 1;
+					if (KxUxTheme theme(*this, KxUxThemeClass::TreeView); theme)
+					{
+						const int partID = flag & wxCONTROL_CURRENT ? TVP_HOTGLYPH : TVP_GLYPH;
+						const int stateID = flag & wxCONTROL_EXPANDED ? GLPS_OPENED : GLPS_CLOSED;
 
-					if (!m_Owner->m_UsingSystemTheme || !KxUtility::DrawThemeBackground(this, "TREEVIEW", dc, flag & wxCONTROL_CURRENT ? TVP_HOTGLYPH : TVP_GLYPH, flag & wxCONTROL_EXPANDED ? GLPS_OPENED : GLPS_CLOSED, rect))
+						theme.DrawBackground(dc, partID, stateID, rect);
+					}
+					else
 					{
 						wxRendererNative::Get().DrawTreeItemButton(this, dc, rect, flag);
 					}

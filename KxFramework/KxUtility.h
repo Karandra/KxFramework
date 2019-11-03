@@ -1,5 +1,5 @@
 /*
-Copyright © 2018 Kerber. All rights reserved.
+Copyright © 2019 Kerber. All rights reserved.
 
 You should have received a copy of the GNU LGPL v3
 along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
@@ -7,21 +7,6 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include <array>
-
-namespace KxUtility
-{
-	bool ClearDC(const wxWindow* window, wxDC& dc);
-	bool DrawParentBackground(const wxWindow* window, wxDC& dc, const wxRect& rect);
-	bool DrawParentBackground(const wxWindow* window, wxDC& dc, const wxPoint& point1, const wxPoint& point2);
-	bool DrawThemeBackground(const wxWindow* window, const wxString& className, wxDC& dc, int iPartId, int iStateId, const wxRect& rect);
-
-	bool DrawLabel(const wxWindow* window, wxDC& dc, const wxString& label, const wxBitmap& icon, wxRect rect, int alignment = wxALIGN_LEFT|wxALIGN_TOP, int accelIndex = -1, wxRect* boundingRect = nullptr);
-	bool DrawGripper(const wxWindow* window, wxDC& dc, const wxRect& rect);
-
-	wxSize GetThemePartSize(const wxWindow* window, const wxString& className, wxDC& dc, int iPartId, int iStateId, int sizeVariant);
-	KxColor GetThemeColor(const wxWindow* window, const wxString& className, int iPartId, int iStateId, int iPropId, const wxColour& defaultColor = wxNullColour);
-	KxColor GetThemeColor_Caption(const wxWindow* window);
-}
 
 namespace KxUtility
 {
@@ -92,11 +77,11 @@ namespace KxUtility
 	}
 
 	template<class TPointer, class TValue>
-	constexpr void SetIfNotNull(TPointer* ptr, TValue value)
+	constexpr void SetIfNotNull(TPointer* ptr, TValue&& value)
 	{
 		if (ptr)
 		{
-			*ptr = static_cast<TPointer>(value);
+			*ptr = static_cast<TPointer>(std::forward<TValue>(value));
 		}
 	}
 };

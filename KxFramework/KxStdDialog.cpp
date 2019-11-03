@@ -4,6 +4,7 @@
 #include "KxFramework/KxTopLevelWindow.h"
 #include "KxFramework/KxButton.h"
 #include "KxFramework/KxUtility.h"
+#include "KxFramework/KxUxTheme.h"
 #include "KxFramework/KxIncludeWindows.h"
 
 KxEVENT_DEFINE_GLOBAL(STDDIALOG_BUTTON, wxNotifyEvent);
@@ -200,7 +201,7 @@ bool KxStdDialog::Create(wxWindow* parent,
 
 		m_CaptionLabel = new KxLabel(m_ContentPanel, wxID_NONE, caption, KxLABEL_CAPTION); // wxLLabel::DefaultStyle|KxLABEL_CAPTION
 		m_CaptionLabel->SetMaxSize(FromDIP(wxSize(wxDefaultCoord, 23)));
-		m_CaptionLabel->SetForegroundColour(KxUtility::GetThemeColor_Caption(m_ContentPanel));
+		m_CaptionLabel->SetForegroundColour(KxUxTheme::GetDialogMainInstructionColor(*m_ContentPanel));
 
 		m_ViewLabel = new KxLabel(m_ContentPanel, wxID_NONE, wxEmptyString, KxLabel::DefaultStyle & ~(KxLABEL_LINE|KxLABEL_COLORED|KxLABEL_CAPTION|KxLABEL_SELECTION));
 		m_ViewLabel->SetMaxSize(FromDIP(wxSize(wxDefaultCoord, 23)));

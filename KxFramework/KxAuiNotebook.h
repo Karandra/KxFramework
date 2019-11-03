@@ -64,7 +64,7 @@ using KxAuiDefaultTabArtBase = wxAuiDefaultTabArt;
 class KX_API KxAuiDefaultTabArt: public KxAuiDefaultTabArtBase
 {
 	private:
-		const KxAuiNotebook* m_Notebook = nullptr;
+		KxAuiNotebook* m_Notebook = nullptr;
 
 	public:
 		KxAuiDefaultTabArt(KxAuiNotebook* object);
@@ -74,11 +74,11 @@ class KX_API KxAuiDefaultTabArt: public KxAuiDefaultTabArtBase
 		}
 
 	public:
-		virtual void DrawBackground(wxDC& dc, wxWindow* window, const wxRect& rect) override;
-		virtual void DrawTab(wxDC& dc, wxWindow* wnd, const wxAuiNotebookPage& pane, const wxRect& inRect, int closeButtonState, wxRect* outTabRect, wxRect* outButtonRect, int* xExtent);
-		virtual void DrawButton(wxDC& dc, wxWindow* wnd, const wxRect& inRect, int bitmapId, int buttonState, int orientation, wxRect* outRect);
+		void DrawBackground(wxDC& dc, wxWindow* window, const wxRect& rect) override;
+		void DrawTab(wxDC& dc, wxWindow* wnd, const wxAuiNotebookPage& pane, const wxRect& inRect, int closeButtonState, wxRect* outTabRect, wxRect* outButtonRect, int* xExtent) override;
+		void DrawButton(wxDC& dc, wxWindow* wnd, const wxRect& inRect, int bitmapId, int buttonState, int orientation, wxRect* outRect) override;
 
-		virtual int GetIndentSize() override
+		int GetIndentSize() override
 		{
 			if (m_Notebook)
 			{
@@ -93,12 +93,12 @@ using KxAuiDefaultDockArtBase = wxAuiDefaultDockArt;
 class KX_API KxAuiNotebookDockArtProvider: public KxAuiDefaultDockArtBase
 {
 	private:
-		const KxAuiNotebook* m_Notebook = nullptr;
+		KxAuiNotebook* m_Notebook = nullptr;
 
 	public:
 		KxAuiNotebookDockArtProvider(KxAuiNotebook* object);
 
 	public:
-		virtual void DrawBackground(wxDC& dc, wxWindow* window, int orientation, const wxRect& rect) override;
-		virtual void DrawBorder(wxDC& dc, wxWindow* window, const wxRect& rect, wxAuiPaneInfo& pane) override;
+		void DrawBackground(wxDC& dc, wxWindow* window, int orientation, const wxRect& rect) override;
+		void DrawBorder(wxDC& dc, wxWindow* window, const wxRect& rect, wxAuiPaneInfo& pane) override;
 };

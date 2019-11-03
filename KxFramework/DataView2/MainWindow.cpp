@@ -14,6 +14,7 @@
 #include "KxFramework/KxUtility.h"
 #include "KxFramework/KxFrame.h"
 #include "KxFramework/KxUxTheme.h"
+#include "KxFramework/KxUxThemePartsAndStates.h"
 #include "KxFramework/KxGCUtility.h"
 #include <wx/popupwin.h>
 #include <wx/generic/private/widthcalc.h>
@@ -1409,15 +1410,17 @@ namespace KxDataView2
 					}
 					else
 					{
-						const int partID = flags & wxCONTROL_CURRENT ? TVP_HOTGLYPH : TVP_GLYPH;
-						const int stateID = flags & wxCONTROL_EXPANDED ? GLPS_OPENED : GLPS_CLOSED;
-
-						wxRect rect(expanderRect.GetPosition(), KxUtility::GetThemePartSize(this, wxS("TREEVIEW"), dc, partID, stateID, THEMESIZE::TS_DRAW));
-						rect = rect.CenterIn(expanderRect);
-
-						if (!m_View->m_UsingSystemTheme || !KxUtility::DrawThemeBackground(this, wxS("TREEVIEW"), paintDC, partID, stateID, rect))
+						if (KxUxTheme theme(*this, KxUxThemeClass::TreeView); theme)
 						{
-							nativeRenderer.DrawTreeItemButton(this, paintDC, rect, flags);
+							const int partID = flags & wxCONTROL_CURRENT ? TVP_HOTGLYPH : TVP_GLYPH;
+							const int stateID = flags & wxCONTROL_EXPANDED ? GLPS_OPENED : GLPS_CLOSED;
+
+							wxRect rect(expanderRect.GetPosition(), theme.GetPartSize(dc, partID, stateID));
+							theme.DrawBackground(paintDC, partID, stateID, rect.CenterIn(expanderRect));
+						}
+						else
+						{
+							nativeRenderer.DrawTreeItemButton(this, paintDC, expanderRect, flags);
 						}
 					}
 				}
