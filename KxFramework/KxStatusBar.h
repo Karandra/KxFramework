@@ -1,28 +1,27 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include "KxFramework/KxWindowRefreshScheduler.h"
 
-class KX_API KxStatusBar: public wxSystemThemedControl<wxStatusBar>
+class KX_API KxStatusBar: public wxSystemThemedControl<KxWindowRefreshScheduler<wxStatusBar>>
 {
 	private:
-		virtual void SetFieldsCount(int count, const int* widths) override;
+		void SetFieldsCount(int count, const int* widths) override;
 
 	public:
 		static const long DefaultStyle = wxSTB_DEFAULT_STYLE;
-		static const long DefaultHeight = 23;
-		static const long DefaultFiledsCount = 1;
 
-		KxStatusBar() {}
+		KxStatusBar() = default;
 		KxStatusBar(wxWindow* parent,
-					wxWindowID winid,
-					int fieldsCount = DefaultFiledsCount,
+					wxWindowID id,
+					int fieldCount = 1,
 					long style = DefaultStyle
 		)
 		{
-			Create(parent, winid, fieldsCount, style);
+			Create(parent, id, fieldCount, style);
 		}
 		bool Create(wxWindow* parent,
-					wxWindowID winid,
-					int fieldsCount = DefaultFiledsCount,
+					wxWindowID id,
+					int fieldCount = 1,
 					long style = DefaultStyle
 		);
 

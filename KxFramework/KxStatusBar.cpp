@@ -1,22 +1,26 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxStatusBar.h"
 
+namespace
+{
+	constexpr int DefaultMinHeight = 23;
+}
+
 wxIMPLEMENT_DYNAMIC_CLASS(KxStatusBar, wxStatusBar);
 
 void KxStatusBar::SetFieldsCount(int count, const int* widths)
 {
-	if (widths == nullptr)
+	if (!widths)
 	{
-		count = GetFieldsCount();
-		if (count > 0)
+		if (count = GetFieldsCount(); count > 0)
 		{
-			std::vector<int> newWidths;
-			newWidths.reserve(count);
-			for (int i = 0; i < count; i++)
+			KxIntVector newWidths;
+			newWidths.resize(count);
+			for (size_t i = 0; i < count; i++)
 			{
-				int value = GetStatusWidth(i);
-				newWidths.insert(newWidths.begin() + i, value);
+				newWidths[i] = GetStatusWidth(i);
 			}
+
 			wxStatusBar::SetStatusWidths(count, newWidths.data());
 			return;
 		}
@@ -25,16 +29,16 @@ void KxStatusBar::SetFieldsCount(int count, const int* widths)
 }
 
 bool KxStatusBar::Create(wxWindow* parent,
-						 wxWindowID winid,
-						 int fieldsCount,
+						 wxWindowID id,
+						 int fieldCount,
 						 long style
 )
 {
-	if (wxStatusBar::Create(parent, winid, style))
+	if (wxStatusBar::Create(parent, id, style))
 	{
 		EnableSystemTheme();
 		SetDoubleBuffered(true);
-		SetMinHeight(DefaultHeight);
+		SetMinHeight(FromDIP(DefaultMinHeight));
 
 		return true;
 	}
@@ -52,6 +56,7 @@ void KxStatusBar::SetStatusWidth(int width, int index)
 			widths[i] = GetStatusWidth(i);
 		}
 		widths[index] = width;
+
 		wxStatusBar::SetStatusWidths(count, widths.data());
 	}
 }
