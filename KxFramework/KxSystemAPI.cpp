@@ -33,6 +33,8 @@ KxSysAPI_DEFINE_FUNCTION(GetDllDirectoryW);
 /* User32 */
 KxSysAPI_DEFINE_FUNCTION(EnableNonClientDpiScaling);
 KxSysAPI_DEFINE_FUNCTION(SetThreadDpiAwarenessContext);
+KxSysAPI_DEFINE_FUNCTION(GetDpiForSystem);
+KxSysAPI_DEFINE_FUNCTION(GetDpiForWindow);
 
 /* DWMAPI */
 KxSysAPI_DEFINE_FUNCTION(DwmIsCompositionEnabled);
@@ -86,6 +88,8 @@ void KxSystemAPI::InitFunctions()
 	{
 		KxSysAPI_INIT_FUNCTION(User32, EnableNonClientDpiScaling);
 		KxSysAPI_INIT_FUNCTION(User32, SetThreadDpiAwarenessContext);
+		KxSysAPI_INIT_FUNCTION(User32, GetDpiForSystem);
+		KxSysAPI_INIT_FUNCTION(User32, GetDpiForWindow);
 	}
 
 	if (KxSysAPI_CHECK_LIBRARY(DWMAPI))
