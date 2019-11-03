@@ -18,7 +18,7 @@ void KxSplashWindow::OnSize(wxSizeEvent& event)
 void KxSplashWindow::DoSetSplash(const wxBitmap& bitmap, const wxSize& size)
 {
 	m_Bitmap = bitmap;
-	SetSize(size.IsFullySpecified() ? size : GetClientSize());
+	SetSize(size.IsFullySpecified() ? size : GetSize());
 }
 bool KxSplashWindow::DoUpdateSplash()
 {
@@ -38,7 +38,7 @@ bool KxSplashWindow::DoUpdateSplash()
 		}
 
 		// Scale the image for window size
-		if (wxSize size = GetClientSize(); size != image.GetSize())
+		if (wxSize size = GetSize(); size != image.GetSize())
 		{
 			image.Rescale(size.GetWidth(), size.GetHeight(), wxImageResizeQuality::wxIMAGE_QUALITY_HIGH);
 		}

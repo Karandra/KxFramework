@@ -242,7 +242,7 @@ void KxTaskDialog::UpdateButtonArrays(const KxStringVector& labels, ButtonSpecAr
 
 HRESULT CALLBACK KxTaskDialog::EventsCallback(HWND handle, UINT notification, WPARAM wParam, LPARAM lParam, LONG_PTR refData)
 {
-	KxTaskDialog* self = (KxTaskDialog*)refData;
+	KxTaskDialog* self = reinterpret_cast<KxTaskDialog*>(refData);
 	switch (notification)
 	{
 		case TDN_CREATED:
