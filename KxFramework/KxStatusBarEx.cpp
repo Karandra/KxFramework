@@ -27,7 +27,7 @@ void KxStatusBarEx::OnPaint(wxPaintEvent& event)
 		{
 			if (KxUxTheme theme(*this, KxUxThemeClass::Progress); theme)
 			{
-				theme.DrawProgress(dc, -1, PP_FILL, PBFS_NORMAL, backgroundRect, m_ProgressPos, m_ProgressRange);
+				theme.DrawProgress(dc, -1, PP_FILL, m_State & wxCONTROL_CURRENT ? PBFS_PARTIAL : PBFS_NORMAL, backgroundRect, m_ProgressPos, m_ProgressRange);
 			}
 			else
 			{
@@ -79,36 +79,39 @@ void KxStatusBarEx::OnPaint(wxPaintEvent& event)
 		{
 			label = GetStatusText(i);
 		}
+
+		// Calc max width
+		int maxWidth = rect.GetWidth() - 2 * GetCharWidth();
+		if (i == fieldsCount - 1)
+		{
+			maxWidth -= sizeGripWidth;
+		}
+
+		// If icons are enabled update max width
+		int imageIndex = NO_IMAGE;
+		if (auto it = m_Images.find(i); it != m_Images.end())
+		{
+			imageIndex = it->second;
+		}
+		if (imageIndex != NO_IMAGE && HasImageList())
+		{
+			maxWidth -= GetImageList()->GetSize().GetWidth();
+		}
+
+		// Ellipsize label if needed
 		if (!label.IsEmpty())
 		{
-			// Ellipsize label
-			int maxWidth = rect.GetWidth() - 2 * GetCharWidth();
-			if (i == fieldsCount - 1)
-			{
-				maxWidth -= sizeGripWidth;
-			}
-
-			// If icons are enabled
-			int imageIndex = NO_IMAGE;
-			if (auto it = m_Images.find(i); it != m_Images.end())
-			{
-				imageIndex = it->second;
-			}
-			if (imageIndex != -1 && HasImageList())
-			{
-				maxWidth -= GetImageList()->GetSize().GetWidth();
-			}
-
-			// Draw label
 			label = wxControl::Ellipsize(label, dc, GetEllipsizeMode(), maxWidth);
-			if (imageIndex == NO_IMAGE || !HasImageList())
-			{
-				dc.DrawLabel(label, rect, wxALIGN_CENTER_VERTICAL);
-			}
-			else
-			{
-				dc.DrawLabel(label, GetImageList()->GetBitmap(imageIndex), rect, wxALIGN_CENTER_VERTICAL);
-			}
+		}
+
+		// Draw the label and/or icon
+		if (imageIndex == NO_IMAGE || !HasImageList())
+		{
+			dc.DrawLabel(label, rect, wxALIGN_CENTER_VERTICAL);
+		}
+		else
+		{
+			dc.DrawLabel(label, GetImageList()->GetBitmap(imageIndex), rect, wxALIGN_CENTER_VERTICAL);
 		}
 
 		if (m_IsSeparatorsVisible && m_ColorBorder.IsOk() && i != GetFieldsCount() - 1)
