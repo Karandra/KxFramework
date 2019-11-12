@@ -2,6 +2,7 @@
 #include "Common.h"
 #include <Kx/Utility/TypeTraits.h>
 #include <typeinfo>
+class KxIObject;
 
 class KX_API KxIID final
 {
@@ -41,9 +42,23 @@ class KX_API KxIID final
 class KX_API KxIObject
 {
 	protected:
-		template<class... Args, class T> static bool QueryAnyOf(const KxIID& iid, void*& ptr, T& self) noexcept
+		template<class T>
+		static bool Cast(T& object, const KxIID& iid, void*& ptr) noexcept
 		{
+			static_assert((std::is_base_of_v<KxIObject, T>), "T must inherit from 'KxIObject'");
+
 			if (iid.IsOfType<T>())
+			{
+				ptr = &object;
+				return true;
+			}
+			return false;
+		}
+
+		template<class... Args, class TSelf>
+		static bool QuerySelf(const KxIID& iid, void*& ptr, TSelf& self) noexcept
+		{
+			if (iid.IsOfType<TSelf>())
 			{
 				ptr = &self;
 				return true;
@@ -55,23 +70,13 @@ class KX_API KxIObject
 			}
 			return self.KxIObject::QueryInterface(iid, ptr);
 		}
-		template<class... Args, class T> static bool QueryAnyOf(const KxIID& iid, void*& ptr, T& self, Args&&... arg) noexcept
-		{
-			static_assert((std::is_base_of_v<KxIObject, std::remove_reference_t<Args>> && ...), "[...] must inherit from 'KxIObject'");
 
-			if (iid.IsOfType<T>())
-			{
-				ptr = &self;
-				return true;
-			}
-			else if (void* result = nullptr; (arg.QueryInterface(iid, result) || ...))
-			{
-				ptr = result;
-				return true;
-			}
-			return self.KxIObject::QueryInterface(iid, ptr);
+		template<class... Args>
+		static bool UseAnyOf(const KxIID& iid, void*& ptr, std::add_lvalue_reference_t<Args>&&... arg) noexcept
+		{
+			return (KxIObject::Cast<Args>(arg, iid, ptr) || ...);
 		}
-		
+
 	public:
 		virtual ~KxIObject() = default;
 
@@ -129,7 +134,7 @@ namespace KxRTTI
 			using KxIObject::QueryInterface;
 			bool QueryInterface(const KxIID& iid, void*& ptr) noexcept override
 			{
-				return KxIObject::QueryAnyOf(iid, ptr, static_cast<T&>(*this));
+				return KxIObject::QuerySelf(iid, ptr, static_cast<T&>(*this));
 			}
 	};
 
@@ -149,7 +154,7 @@ namespace KxRTTI
 			{
 				static_assert((std::is_base_of_v<KxIObject, TBase> && ...), "[...] must inherit from 'KxIObject'");
 
-				return KxIObject::QueryAnyOf<TBase...>(iid, ptr, static_cast<TDerived&>(*this));
+				return KxIObject::QuerySelf<TBase...>(iid, ptr, static_cast<TDerived&>(*this));
 			}
 	};
 }
