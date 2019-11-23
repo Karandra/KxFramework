@@ -5,26 +5,32 @@
 
 class KX_API KxAuiToolBar: public wxAuiToolBar
 {
-	private:
-		wxColour m_ColorBorder;
-		KxAuiToolBarItem_Array m_Items;
+	friend class KxAuiToolBarItem;
 
 	private:
-		bool IsValidID(wxWindowID id) const;
+		std::unordered_map<wxWindowID, std::unique_ptr<KxAuiToolBarItem>> m_Items;
+		wxColour m_ColorBorder;
+
+	private:
 		void EventHandler(wxAuiToolBarEvent& event);
 		void OnLeftClick(wxCommandEvent& event);
 
-		void Clear();
-		KxAuiToolBarItem* OnCreateTool(wxAuiToolBarItem* item);
-		KxAuiToolBarItem_ConstIterator GetIteratorToTool(wxWindowID id) const;
-		bool RemoveByIterator(const KxAuiToolBarItem_ConstIterator& it);
-		KxAuiToolBarItem* GetByIterator(const KxAuiToolBarItem_ConstIterator& it) const;
+		KxAuiToolBarItem* DoCreateTool(wxAuiToolBarItem* item);
+		KxAuiToolBarItem* DoGetTool(const wxAuiToolBarItem& item);
+		bool DoRemoveTool(wxAuiToolBarItem& item);
+		bool DoRemoveTool(KxAuiToolBarItem& item)
+		{
+			return DoRemoveTool(*item.m_Item);
+		}
+		
+		size_t DoGetToolIndex(const KxAuiToolBarItem& item) const;
+		bool DoSetToolIndex(KxAuiToolBarItem& item, size_t newIndex);
 
 	public:
 		static const long DefaultStyle = wxAUI_TB_HORZ_LAYOUT;
 		static const int DefaultSeparatorSize = 2;
 
-		KxAuiToolBar() {}
+		KxAuiToolBar() = default;
 		KxAuiToolBar(wxWindow* parent,
 					 wxWindowID id,
 					 long style = DefaultStyle
@@ -36,7 +42,7 @@ class KX_API KxAuiToolBar: public wxAuiToolBar
 					wxWindowID id,
 					long style = DefaultStyle
 		);
-		virtual ~KxAuiToolBar();
+		~KxAuiToolBar();
 
 	public:
 		wxColour GetBorderColor() const
@@ -81,8 +87,8 @@ class KX_API KxAuiToolBar: public wxAuiToolBar
 		KxAuiToolBarItem* FindToolByIndex(int index) const;
 		KxAuiToolBarItem* FindToolByID(wxWindowID id) const;
 
-		bool RemoveTool(KxAuiToolBarItem* tool);
-		bool RemoveTool(int position);
+		bool RemoveTool(KxAuiToolBarItem& tool);
+		bool RemoveTool(int index);
 
 		void UpdateUI();
 

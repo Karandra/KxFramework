@@ -4,18 +4,21 @@
 #include "KxFramework/KxMenu.h"
 #include "KxFramework/KxUtility.h"
 
+namespace
+{
+	bool IsValidID(wxWindowID id)
+	{
+		return id != wxID_NONE && id != wxID_SEPARATOR && id != wxID_ANY;
+	}
+}
+
 wxIMPLEMENT_DYNAMIC_CLASS(KxAuiToolBar, wxAuiToolBar);
 
-bool KxAuiToolBar::IsValidID(wxWindowID id) const
-{
-	return id != wxID_NONE && id != wxID_SEPARATOR && id != wxID_ANY;
-}
 void KxAuiToolBar::EventHandler(wxAuiToolBarEvent& event)
 {
 	if (IsValidID(event.GetToolId()))
 	{
-		KxAuiToolBarItem* item = FindToolByID(event.GetToolId());
-		if (item)
+		if (KxAuiToolBarItem* item = FindToolByID(event.GetToolId()))
 		{
 			bool canShowMenu = false;
 			wxEventType type = event.GetEventType();
@@ -92,47 +95,69 @@ void KxAuiToolBar::OnLeftClick(wxCommandEvent& event)
 	event.Skip();
 }
 
-void KxAuiToolBar::Clear()
+KxAuiToolBarItem* KxAuiToolBar::DoCreateTool(wxAuiToolBarItem* item)
 {
-	for (auto& v: m_Items)
+	if (item)
 	{
-		delete v.second;
+		auto it = m_Items.insert_or_assign(item->GetId(), std::make_unique<KxAuiToolBarItem>(*this, *item));
+		return it.first->second.get();
 	}
-	m_Items.clear();
+	return nullptr;
 }
-KxAuiToolBarItem* KxAuiToolBar::OnCreateTool(wxAuiToolBarItem* item)
+KxAuiToolBarItem* KxAuiToolBar::DoGetTool(const wxAuiToolBarItem& item)
 {
-	auto element = m_Items.emplace_back(std::make_pair(item->GetId(), new KxAuiToolBarItem(this, item)));
-	return element.second;
+	auto it = m_Items.find(item.GetId());
+	return it != m_Items.end() ? it->second.get() : nullptr;
 }
-KxAuiToolBarItem_ConstIterator KxAuiToolBar::GetIteratorToTool(wxWindowID id) const
+bool KxAuiToolBar::DoRemoveTool(wxAuiToolBarItem& item)
 {
-	if (IsValidID(id))
-	{
-		return std::find_if(m_Items.begin(), m_Items.end(), [id](const KxAuiToolBarItem_ArrayElement& element)
-		{
-			return element.first == id;
-		});
-	}
-	return m_Items.end();
-}
-bool KxAuiToolBar::RemoveByIterator(const KxAuiToolBarItem_ConstIterator& it)
-{
+	auto it = m_Items.find(item.GetId());
 	if (it != m_Items.end())
 	{
-		delete it->second;
+		wxAuiToolBar::DeleteTool(item.GetId());
 		m_Items.erase(it);
+
 		return true;
 	}
 	return false;
 }
-KxAuiToolBarItem* KxAuiToolBar::GetByIterator(const KxAuiToolBarItem_ConstIterator& it) const
+
+size_t KxAuiToolBar::DoGetToolIndex(const KxAuiToolBarItem& item) const
 {
-	if (it != m_Items.end())
+	const auto& items = wxAuiToolBar::m_items;
+	for (size_t i = 0; i < items.size(); i++)
 	{
-		return it->second;
+		if (&items[i] == item.m_Item)
+		{
+			return i;
+		}
 	}
-	return nullptr;
+	return KxAuiToolBarItem::npos;
+}
+bool KxAuiToolBar::DoSetToolIndex(KxAuiToolBarItem& item, size_t newIndex)
+{
+	if (newIndex < GetToolCount() && item.GetIndex() != newIndex)
+	{
+		auto& items = wxAuiToolBar::m_items;
+		for (size_t i = 0; i < items.size(); i++)
+		{
+			if (&items[i] == item.m_Item)
+			{
+				items.Insert(*item.m_Item, newIndex, 1);
+				if (newIndex > i)
+				{
+					items.RemoveAt(i);
+				}
+				else
+				{
+					items.RemoveAt(i + 1);
+				}
+
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 bool KxAuiToolBar::Create(wxWindow* parent,
@@ -161,78 +186,80 @@ KxAuiToolBar::~KxAuiToolBar()
 
 void KxAuiToolBar::ClearTools()
 {
+	m_Items.clear();
 	wxAuiToolBar::ClearTools();
-	Clear();
 }
 
 KxAuiToolBarItem* KxAuiToolBar::AddTool(const wxString& label, const wxBitmap& bitmap, wxItemKind kind, const wxString& shortHelp)
 {
-	return OnCreateTool(wxAuiToolBar::AddTool(wxID_ANY, label, bitmap, shortHelp, kind == wxITEM_DROPDOWN ? wxITEM_NORMAL : kind));
+	return DoCreateTool(wxAuiToolBar::AddTool(wxID_ANY, label, bitmap, shortHelp, kind == wxITEM_DROPDOWN ? wxITEM_NORMAL : kind));
 }
 KxAuiToolBarItem* KxAuiToolBar::AddTool(const wxString& label, const wxBitmap& bitmap, const wxBitmap& disabledBitmap, wxItemKind kind, const wxString& shortHelp)
 {
-	return OnCreateTool(wxAuiToolBar::AddTool(wxID_ANY, label, bitmap, disabledBitmap, kind, shortHelp, wxEmptyString, nullptr));
+	return DoCreateTool(wxAuiToolBar::AddTool(wxID_ANY, label, bitmap, disabledBitmap, kind, shortHelp, wxEmptyString, nullptr));
 }
 KxAuiToolBarItem* KxAuiToolBar::AddTool(const wxBitmap& bitmap, const wxBitmap& disabledBitmap, bool toggle, const wxString& shortHelp, const wxString& longHelp)
 {
-	return OnCreateTool(wxAuiToolBar::AddTool(wxID_ANY, bitmap, disabledBitmap, toggle, nullptr, shortHelp, longHelp));;
+	return DoCreateTool(wxAuiToolBar::AddTool(wxID_ANY, bitmap, disabledBitmap, toggle, nullptr, shortHelp, longHelp));;
 }
 
 KxAuiToolBarItem* KxAuiToolBar::AddLabel(const wxString& label, const int width)
 {
-	return OnCreateTool(wxAuiToolBar::AddLabel(wxID_ANY, label, width));
+	return DoCreateTool(wxAuiToolBar::AddLabel(wxID_ANY, label, width));
 }
 KxAuiToolBarItem* KxAuiToolBar::AddControl(wxControl* control, const wxString& label)
 {
-	return OnCreateTool(wxAuiToolBar::AddControl(control, label));
+	return DoCreateTool(wxAuiToolBar::AddControl(control, label));
 }
 KxAuiToolBarItem* KxAuiToolBar::AddSeparator()
 {
-	return OnCreateTool(wxAuiToolBar::AddSeparator());
+	return DoCreateTool(wxAuiToolBar::AddSeparator());
 }
 KxAuiToolBarItem* KxAuiToolBar::AddSpacer(int pixels)
 {
-	return OnCreateTool(wxAuiToolBar::AddSpacer(pixels));
+	return DoCreateTool(wxAuiToolBar::AddSpacer(pixels));
 }
 KxAuiToolBarItem* KxAuiToolBar::AddStretchSpacer(int proportion)
 {
-	return OnCreateTool(wxAuiToolBar::AddStretchSpacer(proportion));
+	return DoCreateTool(wxAuiToolBar::AddStretchSpacer(proportion));
 }
 
 KxAuiToolBarItem* KxAuiToolBar::FindToolByPosition(const wxPoint& pos) const
 {
-	wxAuiToolBarItem* item = wxAuiToolBar::FindToolByPosition(pos.x, pos.y);
-	if (item)
+	if (wxAuiToolBarItem* item = wxAuiToolBar::FindToolByPosition(pos.x, pos.y))
 	{
-		return GetByIterator(GetIteratorToTool(item->GetId()));
+		return const_cast<KxAuiToolBar&>(*this).DoGetTool(*item);
 	}
 	return nullptr;
 }
 KxAuiToolBarItem* KxAuiToolBar::FindToolByIndex(int index) const
 {
-	wxAuiToolBarItem* item = wxAuiToolBar::FindToolByIndex(index);
-	if (item)
+	if (wxAuiToolBarItem* item = wxAuiToolBar::FindToolByIndex(index))
 	{
-		return GetByIterator(GetIteratorToTool(item->GetId()));
+		return const_cast<KxAuiToolBar&>(*this).DoGetTool(*item);
 	}
 	return nullptr;
 }
 KxAuiToolBarItem* KxAuiToolBar::FindToolByID(wxWindowID id) const
 {
-	return GetByIterator(GetIteratorToTool(id));
+	if (wxAuiToolBarItem* item = wxAuiToolBar::FindTool(id))
+	{
+		return const_cast<KxAuiToolBar&>(*this).DoGetTool(*item);
+	}
+	return nullptr;
 }
 
-bool KxAuiToolBar::RemoveTool(KxAuiToolBarItem* tool)
+bool KxAuiToolBar::RemoveTool(KxAuiToolBarItem& tool)
 {
-	if (tool)
+	return DoRemoveTool(tool);
+}
+bool KxAuiToolBar::RemoveTool(int index)
+{
+	if (KxAuiToolBarItem* item = FindToolByIndex(index))
 	{
-		return RemoveByIterator(GetIteratorToTool(tool->GetID()));
+		return RemoveTool(*item);
 	}
 	return false;
-}
-bool KxAuiToolBar::RemoveTool(int position)
-{
-	return RemoveTool(FindToolByIndex(position));
 }
 
 void KxAuiToolBar::UpdateUI()

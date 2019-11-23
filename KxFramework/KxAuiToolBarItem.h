@@ -20,8 +20,11 @@ class KX_API KxAuiToolBarItem:
 {
 	friend class KxAuiToolBar;
 
+	public:
+		static constexpr size_t npos = std::numeric_limits<size_t>::max();
+
 	private:
-		KxAuiToolBar* m_Control = nullptr;
+		KxAuiToolBar* m_ToolBar = nullptr;
 		wxAuiToolBarItem* m_Item = nullptr;
 
 	private:
@@ -29,13 +32,17 @@ class KX_API KxAuiToolBarItem:
 		wxWindowID DoShowDropdownMenu(bool leftAlign);
 
 	public:
-		KxAuiToolBarItem(KxAuiToolBar* control, wxAuiToolBarItem* item);
-		virtual ~KxAuiToolBarItem();
+		KxAuiToolBarItem() = default;
+		KxAuiToolBarItem(KxAuiToolBar& control, wxAuiToolBarItem& item);
+		~KxAuiToolBarItem();
 
 	public:
 		bool IsOK() const;
 		void Refresh();
-		KxAuiToolBar* GetToolBar() const;
+		KxAuiToolBar& GetToolBar() const
+		{
+			return *m_ToolBar;
+		}
 
 		wxPoint GetDropdownMenuPosition(DWORD* alignment = nullptr) const
 		{
@@ -65,44 +72,53 @@ class KX_API KxAuiToolBarItem:
 
 		wxWindowID GetID() const;
 		wxRect GetRect() const;
-		int GetPosition() const;
-		int GetIndex() const;
 		bool IsItemFits() const;
+
+		int GetIndex() const;
+		bool SetIndex(size_t index);
 
 		bool IsToggled() const;
 		void SetToggled(bool isPressed);
+
 		bool IsEnabled() const;
 		void SetEnabled(bool isEnabled);
+
 		bool HasDropDown() const;
 		void SetDropDown(bool isDropDown);
+
 		bool IsSticky() const;
 		void SetSticky(bool isSticky);
+
 		void SetActive(bool isActive);
 		bool IsActive() const;
+
 		int GetProportion() const;
 		void SetProportion(int proportion);
+
 		wxAlignment GetAlignment() const;
 		void SetAlignment(wxAlignment alignment);
+
 		int GetSpacerPixels() const;
 		void SetSpacerPixels(int pixels);
+
 		void SetKind(wxItemKind kind);
 		wxItemKind GetKind() const;
+
 		void SetWindow(wxWindow* window);
 		wxWindow* GetWindow();
 
 		const wxString& GetLabel() const;
 		void SetLabel(const wxString& label);
+
 		const wxString& GetShortHelp() const;
 		void SetShortHelp(const wxString& helpString);
+
 		const wxString& GetLongHelp() const;
 		void SetLongHelp(const wxString& helpString);
 
 		const wxBitmap& GetBitmap() const;
 		void SetBitmap(const wxBitmap& bitmap);
+
 		const wxBitmap& GetDisabledBitmap() const;
 		void SetDisabledBitmap(const wxBitmap& bitmap);
 };
-using KxAuiToolBarItem_ArrayElement = std::pair<wxWindowID, KxAuiToolBarItem*>;
-using KxAuiToolBarItem_Array = std::vector<KxAuiToolBarItem_ArrayElement>;
-using KxAuiToolBarItem_Iterator = KxAuiToolBarItem_Array::iterator;
-using KxAuiToolBarItem_ConstIterator = KxAuiToolBarItem_Array::const_iterator;
