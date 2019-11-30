@@ -123,7 +123,7 @@ class KX_API KxIXDocumentNode
 		virtual ~KxIXDocumentNode() = default;
 
 	public:
-		/* General */
+		// General
 		virtual bool IsOK() const = 0;
 		virtual wxString GetXPath() const
 		{
@@ -148,7 +148,7 @@ class KX_API KxIXDocumentNode
 			return false;
 		}
 
-		/* Node */
+		// Node
 		virtual size_t GetIndexWithinParent() const
 		{
 			return 0;
@@ -179,7 +179,7 @@ class KX_API KxIXDocumentNode
 			return false;
 		}
 
-		/* Values */
+		// Values
 		wxString GetValue(const wxString& defaultValue = wxEmptyString) const
 		{
 			return DoGetValue(defaultValue);
@@ -265,7 +265,7 @@ class KX_API KxIXDocumentNode
 			return false;
 		}
 
-		/* Attributes */
+		// Attributes
 		virtual size_t GetAttributeCount() const
 		{
 			return 0;
@@ -367,6 +367,16 @@ class KX_API KxIXDocumentNode
 		{
 			return DoSetAttribute(name, FormatInt(static_cast<int64_t>(value), base));
 		}
+
+	public:
+		explicit operator bool() const
+		{
+			return IsOK();
+		}
+		bool operator!() const
+		{
+			return IsOK();
+		}
 };
 
 template<class NodeT>
@@ -377,7 +387,7 @@ class KxXDocumentNode: public KxIXDocumentNode
 		using NodeVector = std::vector<Node>;
 
 	public:
-		/* General */
+		// General
 		virtual Node QueryElement(const wxString& XPath) const
 		{
 			return {};
@@ -387,13 +397,13 @@ class KxXDocumentNode: public KxIXDocumentNode
 			return {};
 		}
 
-		/* Node */
+		// Node
 		virtual NodeVector GetChildren() const
 		{
 			return {};
 		}
 
-		/* Navigation */
+		// Navigation
 		virtual Node GetElementByAttribute(const wxString& name, const wxString& value) const
 		{
 			return {};
@@ -424,7 +434,7 @@ class KxXDocumentNode: public KxIXDocumentNode
 			return {};
 		}
 
-		/* Insertion */
+		// Insertion
 
-		/* Deletion */
+		// Deletion
 };
