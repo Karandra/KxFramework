@@ -1114,6 +1114,9 @@
     <ClInclude Include="KxFramework\KxUxThemePartsAndStates.h">
       <Filter>Header Files\Drawing</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxDCUtility.h">
+      <Filter>Header Files\Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1763,6 +1766,9 @@
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxUxTheme.cpp">
+      <Filter>Source Files\Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxDCUtility.cpp">
       <Filter>Source Files\Drawing</Filter>
     </ClCompile>
   </ItemGroup>
