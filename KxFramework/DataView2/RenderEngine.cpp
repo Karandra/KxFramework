@@ -139,6 +139,19 @@ namespace KxDataView2::Markup
 
 namespace KxDataView2
 {
+	wxDC* RenderEngine::GetTextRenderingDC() const
+	{
+		if (m_Renderer.HasRegularDC() && !m_AlwaysUseGC)
+		{
+			return &m_Renderer.GetRegularDC();
+		}
+		else if (m_Renderer.HasGraphicsDC())
+		{
+			return &m_Renderer.GetGraphicsDC();
+		}
+		return nullptr;
+	}
+
 	int RenderEngine::CalcCenter(int cellSize, int itemSize) const
 	{
 		const int margins = cellSize - itemSize;
@@ -195,20 +208,15 @@ namespace KxDataView2
 
 	wxSize RenderEngine::GetTextExtent(const wxString& string) const
 	{
-		// Regular (GDI) device context is preferable to draw and measure text
-		if (m_Renderer.HasRegularDC() && !m_AlwaysUseGC)
+		if (wxDC* dc = GetTextRenderingDC())
 		{
-			return GetTextExtent(m_Renderer.GetRegularDC(), string);
-		}
-		else if (m_Renderer.HasGraphicsDC())
-		{
-			return GetTextExtent(m_Renderer.GetGraphicsDC(), string);
+			return GetTextExtent(*dc, string);
 		}
 		else
 		{
 			// No existing window context right now, create one to measure text
-			wxClientDC dc(m_Renderer.GetView());
-			return GetTextExtent(dc, string);
+			wxClientDC clientDC(m_Renderer.GetView());
+			return GetTextExtent(clientDC, string);
 		}
 	}
 	wxSize RenderEngine::GetTextExtent(wxDC& dc, const wxString& string) const
@@ -256,20 +264,15 @@ namespace KxDataView2
 
 	wxSize RenderEngine::GetMultilineTextExtent(const wxString& string) const
 	{
-		// Regular (GDI) device context is preferable to draw and measure text
-		if (m_Renderer.HasRegularDC() && !m_AlwaysUseGC)
+		if (wxDC* dc = GetTextRenderingDC())
 		{
-			return GetMultilineTextExtent(m_Renderer.GetRegularDC(), string);
-		}
-		else if (m_Renderer.HasGraphicsDC())
-		{
-			return GetMultilineTextExtent(m_Renderer.GetGraphicsDC(), string);
+			return GetMultilineTextExtent(*dc, string);
 		}
 		else
 		{
 			// No existing window context right now, create one to measure text
-			wxClientDC dc(m_Renderer.GetView());
-			return GetMultilineTextExtent(dc, string);
+			wxClientDC clientDC(m_Renderer.GetView());
+			return GetMultilineTextExtent(clientDC, string);
 		}
 	}
 	wxSize RenderEngine::GetMultilineTextExtent(wxDC& dc, const wxString& string) const
@@ -289,13 +292,9 @@ namespace KxDataView2
 
 	bool RenderEngine::DrawText(const wxRect& cellRect, CellState cellState, const wxString& string, int offsetX)
 	{
-		if (m_Renderer.HasRegularDC() && !m_AlwaysUseGC)
+		if (wxDC* dc = GetTextRenderingDC())
 		{
-			return DrawText(m_Renderer.GetRegularDC(), cellRect, cellState, string, offsetX);
-		}
-		else if (m_Renderer.HasGraphicsDC())
-		{
-			return DrawText(m_Renderer.GetGraphicsDC(), cellRect, cellState, string, offsetX);
+			return DrawText(*dc, cellRect, cellState, string, offsetX);
 		}
 		return false;
 	}
@@ -395,11 +394,12 @@ namespace KxDataView2
 		}
 		return offsetX;
 	}
-	bool RenderEngine::DrawProgressBar(const wxRect& cellRect, CellState cellState, int value, int range, ProgressState state)
+	bool RenderEngine::DrawProgressBar(const wxRect& cellRect, CellState cellState, int value, int range, ProgressState state, KxColor* averageBackgroundColor)
 	{
 		// Progress bar looks really ugly when it's smaller than 10x10 pixels,
 		// so don't draw it at all in this case.
-		if (cellRect.GetWidth() < 10 || cellRect.GetHeight() < 10)
+		const wxSize minSize = FromDIP(10, 10);
+		if (cellRect.GetWidth() < minSize.GetWidth() || cellRect.GetHeight() < minSize.GetHeight())
 		{
 			return false;
 		}
@@ -410,22 +410,22 @@ namespace KxDataView2
 			{
 				case ProgressState::Paused:
 				{
-					theme.DrawProgress(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_PAUSED, cellRect, value, range);
+					theme.DrawProgress(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_PAUSED, cellRect, value, range, averageBackgroundColor);
 					break;
 				}
 				case ProgressState::Error:
 				{
-					theme.DrawProgress(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_ERROR, cellRect, value, range);
+					theme.DrawProgress(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_ERROR, cellRect, value, range, averageBackgroundColor);
 					break;
 				}
 				case ProgressState::Partial:
 				{
-					theme.DrawProgress(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_PARTIAL, cellRect, value, range);
+					theme.DrawProgress(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_PARTIAL, cellRect, value, range, averageBackgroundColor);
 					break;
 				}
 				default:
 				{
-					theme.DrawProgress(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_NORMAL, cellRect, value, range);
+					theme.DrawProgress(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_NORMAL, cellRect, value, range, averageBackgroundColor);
 					break;
 				}
 			};

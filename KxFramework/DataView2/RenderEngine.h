@@ -48,7 +48,7 @@ namespace KxDataView2
 	{
 		private:
 			Renderer& m_Renderer;
-			const bool m_AlwaysUseGC = false;
+			bool m_AlwaysUseGC = false;
 
 		public:
 			RenderEngine(Renderer& renderer, bool alwaysUseGC = false)
@@ -57,6 +57,17 @@ namespace KxDataView2
 			}
 
 		public:
+			wxDC* GetTextRenderingDC() const;
+
+			bool IsAlwaysUseingGraphicsContext() const
+			{
+				return m_AlwaysUseGC;
+			}
+			void AlwaysUseGraphicsContext(bool alwaysGC)
+			{
+				m_AlwaysUseGC = alwaysGC;
+			}
+
 			int GetInterTextSpacing() const
 			{
 				return 2;
@@ -99,7 +110,7 @@ namespace KxDataView2
 
 			bool DrawBitmap(const wxRect& cellRect, CellState cellState, const wxBitmap& bitmap, int reservedWidth = -1);
 			int DrawBitmapWithText(const wxRect& cellRect, CellState cellState, int offsetX, const wxString& text, const wxBitmap& bitmap, bool centerTextV = false, int reservedWidth = -1);
-			bool DrawProgressBar(const wxRect& cellRect, CellState cellState, int value, int range, ProgressState state = ProgressState::Normal);
+			bool DrawProgressBar(const wxRect& cellRect, CellState cellState, int value, int range, ProgressState state = ProgressState::Normal, KxColor* averageBackgroundColor = nullptr);
 			
 			wxSize GetToggleSize() const;
 			wxSize DrawToggle(wxDC& dc, const wxRect& cellRect, CellState cellState, ToggleState toggleState, ToggleType toggleType);

@@ -1,6 +1,7 @@
 #include "KxStdAfx.h"
-#include "KxUxTheme.h"
-#include "KxUtility.h"
+#include "KxFramework/KxUxTheme.h"
+#include "KxFramework/KxUtility.h"
+#include "KxFramework/KxDCUtility.h"
 #include "Kx/Utility/Common.h"
 #include <wx/fontutil.h>
 
@@ -379,7 +380,7 @@ bool KxUxTheme::DrawBackground(wxDC& dc, int iPartId, int iStateId, const wxRect
 	RECT rectWin = KxUtility::CopyRectToRECT(rect);
 	return ::DrawThemeBackground(m_Handle, dc.GetHDC(), iPartId, iStateId, &rectWin, nullptr) == S_OK;
 }
-bool KxUxTheme::DrawProgress(wxDC& dc, int iBarPartId, int iFillPartId, int iFillStateId, const wxRect& rect, int position, int range)
+bool KxUxTheme::DrawProgress(wxDC& dc, int iBarPartId, int iFillPartId, int iFillStateId, const wxRect& rect, int position, int range, KxColor* averageBackgroundColor)
 {
 	bool result = true;
 
@@ -399,6 +400,11 @@ bool KxUxTheme::DrawProgress(wxDC& dc, int iBarPartId, int iFillPartId, int iFil
 			fillRect.SetWidth(fillRect.GetWidth() * ((double)position / (double)range));
 		}
 		result = DrawBackground(dc, iFillPartId, iFillStateId, fillRect);
+
+		if (averageBackgroundColor)
+		{
+			*averageBackgroundColor = KxDCUtility::GetAverageColor(dc, fillRect);
+		}
 	}
 	return result;
 }

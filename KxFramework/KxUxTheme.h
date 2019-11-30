@@ -127,7 +127,7 @@ class KxUxTheme final
 		{
 			return DrawParentBackground(*m_Window, dc, rect);
 		}
-		bool DrawProgress(wxDC& dc, int iBarPartId, int iFillPartId, int iFillStateId, const wxRect& rect, int position, int range);
+		bool DrawProgress(wxDC& dc, int iBarPartId, int iFillPartId, int iFillStateId, const wxRect& rect, int position, int range, KxColor* averageBackgroundColor = nullptr);
 
 	public:
 		explicit operator bool() const
