@@ -122,6 +122,7 @@ class KX_API KxFileType final
 		{
 			return m_FileType->GetAllCommands(&verbs, &commands, parameters);
 		}
+		bool IsURLProtocol(const wxString& extension) const;
 
 	public:
 		explicit operator bool() const noexcept

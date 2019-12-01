@@ -11,33 +11,18 @@ class KX_API KxFileTypeManager
 		{
 			return wxMimeTypesManager::IsOfType(mimeType, wildcard);
 		}
+		static wxString NormalizeFileExtension(const wxString& extension);
 
 	private:
 		mutable wxMimeTypesManager m_Manager;
 
 	public:
-		KxFileType FileTypeFromExtension(const wxString& extension) const
-		{
-			return m_Manager.GetFileTypeFromExtension(extension);
-		}
-		KxFileType FileTypeFromMimeType(const wxString& mimeType) const
-		{
-			return m_Manager.GetFileTypeFromMimeType(mimeType);
-		}
+		KxFileType FileTypeFromExtension(const wxString& extension) const;
+		KxFileType FileTypeFromMimeType(const wxString& mimeType) const;
 
-		KxFileType Associate(const KxFileTypeInfo& fileTypeInfo)
-		{
-			return m_Manager.Associate(fileTypeInfo.AsWxFileTypeInfo());
-		}
+		KxFileType Associate(const KxFileTypeInfo& fileTypeInfo);
 		bool IsAssociatedWith(const KxFileType& fileType, const wxString& executablePath) const;
-		bool Unassociate(KxFileType& fileType)
-		{
-			if (fileType)
-			{
-				return m_Manager.Unassociate(&fileType.AsWxFileType());
-			}
-			return false;
-		}
+		bool Unassociate(KxFileType& fileType);
 
 		wxArrayString EnumAllFileTypes() const
 		{

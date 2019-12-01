@@ -1771,5 +1771,8 @@
     <ClCompile Include="KxFramework\KxDCUtility.cpp">
       <Filter>Source Files\Drawing</Filter>
     </ClCompile>
+    <ClCompile Include="Kx\System\FileTypeInfo.cpp">
+      <Filter>Kx\System</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Kx/Utility/Common.h"
+#include <KxFramework/KxComparator.h>
 #include <wx/mimetype.h>
 #include <wx/iconloc.h>
 
@@ -8,6 +9,7 @@ class KX_API KxFileTypeInfo final
 {
 	private:
 		wxFileTypeInfo m_FileTypeInfo;
+		KxComparator::UMapNoCase<wxString, bool> m_URLProtocolMap;
 
 	public:
 		KxFileTypeInfo() = default;
@@ -104,9 +106,10 @@ class KX_API KxFileTypeInfo final
 		{
 			return m_FileTypeInfo.GetExtensionsCount();
 		}
-		KxFileTypeInfo& AddExtension(const wxString& ext)
+		KxFileTypeInfo& AddExtension(const wxString& ext, bool isURLProtocol = false)
 		{
 			m_FileTypeInfo.AddExtension(ext);
+			m_URLProtocolMap.insert_or_assign(ext, isURLProtocol);
 			return *this;
 		}
 		template<class... Args> KxFileTypeInfo& AddExtensions(Args&&... arg)
@@ -140,6 +143,9 @@ class KX_API KxFileTypeInfo final
 			m_FileTypeInfo.SetIcon(filePath, index);
 			return *this;
 		}
+
+		bool IsURLProtocol(const wxString& ext) const;
+		KxFileTypeInfo& SetURLProtocol(const wxString& ext, bool protocol = true);
 
 	public:
 		explicit operator bool() const noexcept
