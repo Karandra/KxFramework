@@ -80,6 +80,7 @@ namespace KxDataView2
 			// Prefer regular DC
 			wxDC& dc = HasRegularDC() ? GetRegularDC() : GetGraphicsDC();
 			DCUserScaleSaver userScaleSaver(dc);
+			wxDCClipper clip(dc, cellRect.Deflate(0, GetRenderEngine().FromDIPY(2)));
 
 			// Render text
 			wxHtmlDCRenderer htmlRenderer;
