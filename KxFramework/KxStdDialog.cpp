@@ -548,7 +548,7 @@ KxStdDialogControl::KxStdDialogControl(KxButton* control)
 	m_Data.Control = control;
 }
 
-KxStdDialogControl::operator wxWindowID()
+KxStdDialogControl::operator wxWindowID() const
 {
 	if (m_Type != Type::ID)
 	{
@@ -559,7 +559,7 @@ KxStdDialogControl::operator wxWindowID()
 		return m_Data.ID;
 	}
 }
-KxStdDialogControl::operator wxWindow*()
+KxStdDialogControl::operator wxWindow*() const
 {
 	if (m_Type == Type::Window)
 	{
@@ -567,7 +567,7 @@ KxStdDialogControl::operator wxWindow*()
 	}
 	return nullptr;
 }
-KxStdDialogControl::operator KxButton*()
+KxStdDialogControl::operator KxButton*() const
 {
 	if (m_Type == Type::Button)
 	{

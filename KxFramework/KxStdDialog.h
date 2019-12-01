@@ -45,6 +45,7 @@ class KX_API KxStdDialogControl
 		}
 		KxStdDialogControl(KxButton* control);
 
+	public:
 		bool IsID() const
 		{
 			return m_Type == Type::ID;
@@ -74,9 +75,9 @@ class KX_API KxStdDialogControl
 			return nullptr;
 		}
 
-		operator wxWindowID();
-		operator wxWindow*();
-		operator KxButton*();
+		operator wxWindowID() const;
+		operator wxWindow*() const;
+		operator KxButton*() const;
 };
 
 //////////////////////////////////////////////////////////////////////////
