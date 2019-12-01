@@ -111,7 +111,7 @@ void KxButton::OnResize(wxSizeEvent& event)
 	ScheduleRefresh();
 	event.Skip();
 }
-void KxButton::OnMouseLeave(wxMouseEvent& event)
+void KxButton::OnKillFocus(wxFocusEvent& event)
 {
 	ScheduleRefresh();
 	m_ControlState = wxCONTROL_NONE;
@@ -122,6 +122,13 @@ void KxButton::OnMouseEnter(wxMouseEvent& event)
 {
 	ScheduleRefresh();
 	m_ControlState = wxCONTROL_CURRENT;
+
+	event.Skip();
+}
+void KxButton::OnMouseLeave(wxMouseEvent& event)
+{
+	ScheduleRefresh();
+	m_ControlState = wxCONTROL_NONE;
 
 	event.Skip();
 }
@@ -199,6 +206,7 @@ bool KxButton::Create(wxWindow* parent,
 		m_EventHandler.SetClientData(this);
 		m_EventHandler.Bind(wxEVT_PAINT, &KxButton::OnPaint, this);
 		m_EventHandler.Bind(wxEVT_SIZE, &KxButton::OnResize, this);
+		m_EventHandler.Bind(wxEVT_KILL_FOCUS, &KxButton::OnKillFocus, this);
 		m_EventHandler.Bind(wxEVT_LEFT_UP, &KxButton::OnLeftButtonUp, this);
 		m_EventHandler.Bind(wxEVT_LEFT_DOWN, &KxButton::OnLeftButtonDown, this);
 		m_EventHandler.Bind(wxEVT_LEAVE_WINDOW, &KxButton::OnMouseLeave, this);

@@ -25,8 +25,9 @@ class KX_API KxButton:
 	private:
 		void OnPaint(wxPaintEvent& event);
 		void OnResize(wxSizeEvent& event);
-		void OnMouseLeave(wxMouseEvent& event);
+		void OnKillFocus(wxFocusEvent& event);
 		void OnMouseEnter(wxMouseEvent& event);
+		void OnMouseLeave(wxMouseEvent& event);
 		void OnLeftButtonUp(wxMouseEvent& event);
 		void OnLeftButtonDown(wxMouseEvent& event);
 
