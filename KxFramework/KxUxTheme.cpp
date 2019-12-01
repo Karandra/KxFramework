@@ -382,13 +382,15 @@ bool KxUxTheme::DrawBackground(wxDC& dc, int iPartId, int iStateId, const wxRect
 }
 bool KxUxTheme::DrawProgress(wxDC& dc, int iBarPartId, int iFillPartId, int iFillStateId, const wxRect& rect, int position, int range, KxColor* averageBackgroundColor)
 {
-	bool result = true;
+	const bool isVertical = iBarPartId == PP_BARVERT && iFillPartId == PP_FILLVERT;
+	const wxSize padding = isVertical ? wxSize(0, 0) : m_Window->FromDIP(wxSize(2, 0));
 
 	// Draw background part
+	bool result = true;
 	wxRect fillRect = rect;
 	if (iBarPartId > 0)
 	{
-		result = DrawBackground(dc, iBarPartId, 0, rect);
+		result = DrawBackground(dc, iBarPartId, 0, rect.Deflate(padding.GetWidth(), padding.GetHeight()));
 		fillRect = GetBackgroundContentRect(dc, iBarPartId, 0, rect).value_or(rect);
 	}
 
@@ -399,6 +401,8 @@ bool KxUxTheme::DrawProgress(wxDC& dc, int iBarPartId, int iFillPartId, int iFil
 		{
 			fillRect.SetWidth(fillRect.GetWidth() * ((double)position / (double)range));
 		}
+
+		fillRect.Deflate(m_Window->FromDIP(wxSize(1, 1)) + padding);
 		result = DrawBackground(dc, iFillPartId, iFillStateId, fillRect);
 
 		if (averageBackgroundColor)
