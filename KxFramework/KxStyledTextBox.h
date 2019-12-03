@@ -4,6 +4,7 @@
 class KX_API KxStyledTextBox: public wxStyledTextCtrl
 {
 	private:
+		bool m_IsCreated = false;
 		bool m_IsMultiLine = true;
 
 	public:
@@ -43,6 +44,9 @@ class KX_API KxStyledTextBox: public wxStyledTextCtrl
 		{
 			m_IsMultiLine = value;
 		}
+
+		bool SetBackgroundColour(const wxColour& color) override;
+		bool SetForegroundColour(const wxColour& color) override;
 
 	public:
 		wxDECLARE_DYNAMIC_CLASS(KxStyledTextBox);
