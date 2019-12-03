@@ -1,9 +1,10 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include "KxFramework/KxWindowRefreshScheduler.h"
 #include <wx/html/htmlwin.h>
 class KX_API KxMenu;
 
-class KX_API KxHTMLWindow: public wxHtmlWindow, public wxTextEntry
+class KX_API KxHTMLWindow: public KxWindowRefreshScheduler<wxHtmlWindow>, public wxTextEntry
 {
 	public:
 		static wxString ProcessPlainText(const wxString& text);
@@ -78,6 +79,7 @@ class KX_API KxHTMLWindow: public wxHtmlWindow, public wxTextEntry
 		void SetRenderer(wxGraphicsRenderer* renderer)
 		{
 			m_Renderer = renderer;
+			ScheduleRefresh();
 		}
 
 		wxBitmap GetHTMLBackgroundImage() const
@@ -88,6 +90,7 @@ class KX_API KxHTMLWindow: public wxHtmlWindow, public wxTextEntry
 		{
 			m_BackgroundBitmap = bitmap;
 			wxHtmlWindow::SetHTMLBackgroundImage(bitmap);
+			ScheduleRefresh();
 		}
 
 		wxColour GetHTMLBackgroundColour() const override
@@ -98,6 +101,7 @@ class KX_API KxHTMLWindow: public wxHtmlWindow, public wxTextEntry
 		{
 			m_BackgroundColor = color;
 			wxHtmlWindow::SetHTMLBackgroundColour(color);
+			ScheduleRefresh();
 		}
 
 		wxString GetPage() const
@@ -193,10 +197,10 @@ class KX_API KxHTMLWindow: public wxHtmlWindow, public wxTextEntry
 		void SetInsertionPoint(long pos) override
 		{
 		}
-		void SetInsertionPointEnd()
+		void SetInsertionPointEnd() override
 		{
 		}
-		void SetMaxLength(unsigned long len)
+		void SetMaxLength(unsigned long len) override
 		{
 		}
 
