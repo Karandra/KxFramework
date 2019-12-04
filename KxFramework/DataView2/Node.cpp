@@ -47,7 +47,7 @@ namespace KxDataView2
 		if (mainWindow && IsNodeExpanded() && !m_SortOrder.IsNone() && m_Children.size() > 1)
 		{
 			// We should already be sorted in the right order.
-			wxASSERT(m_SortOrder == window->GetSortOrder());
+			wxASSERT(m_SortOrder == mainWindow->GetSortOrder());
 
 			// Remove and reinsert the node in the child list
 			const Row nodeIndex = FindChild(*node);

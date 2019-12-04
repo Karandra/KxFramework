@@ -142,7 +142,7 @@ void KxDataViewTreeNode::InsertChild(KxDataViewMainWindow* window, KxDataViewTre
 	else if (m_BranchData->IsExpanded())
 	{
 		// For open branches, children should be already sorted.
-		wxASSERT_MSG(m_branchData->sortOrder == sortOrder, wxS("Logic error in KxDVC sorting code"));
+		wxASSERT_MSG(m_BranchData->GetSortOrder() == sortOrder, wxS("Logic error in KxDVC sorting code"));
 
 		// We can use fast insertion.
 		shouldInsertSorted = true;

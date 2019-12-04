@@ -71,7 +71,7 @@ class KX_API KxLabel: public KxWindowRefreshScheduler<wxSystemThemedControl<wxSt
 		{
 			return DoGetBestSize();
 		}
-		void DoSetLabel(const wxString& label) override
+		void DoSetLabel(const wxString& label)
 		{
 			ScheduleRefresh();
 
