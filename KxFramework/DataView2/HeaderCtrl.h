@@ -31,6 +31,7 @@ namespace KxDataView2
 
 		private:
 			View* m_View = nullptr;
+			HWND m_HeaderCtrlHandle = nullptr;
 
 			std::unique_ptr<KxImageList> m_ImageList;
 			Column* m_DraggedColumn = nullptr;
@@ -38,6 +39,8 @@ namespace KxDataView2
 			bool m_UpdateColumns = false;
 
 		private:
+			HWND GetHeaderCtrlHandle() const;
+
 			void FinishEditing();
 			EventResult SendCtrlEvent(Event& event, wxEventType type, Column* column = nullptr, std::optional<wxRect> rect = {});
 			EventResult SendCtrlEvent(wxEventType type, Column* column = nullptr, std::optional<wxRect> rect = {})
@@ -45,6 +48,9 @@ namespace KxDataView2
 				Event event;
 				return SendCtrlEvent(event, type, column, std::move(rect));
 			}
+
+			void OnCreate(wxWindowCreateEvent& event);
+			void OnDestroy(wxWindowDestroyEvent& event);
 
 			void OnClick(wxHeaderCtrlEvent& event);
 			void OnRClick(wxHeaderCtrlEvent& event);
@@ -74,6 +80,7 @@ namespace KxDataView2
 
 		public:
 			HeaderCtrl(View* parent);
+			~HeaderCtrl();
 
 		public:
 			View* GetView() const

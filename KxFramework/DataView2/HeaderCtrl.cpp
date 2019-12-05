@@ -44,11 +44,15 @@ namespace
 
 namespace KxDataView2
 {
+	HWND HeaderCtrl::GetHeaderCtrlHandle() const
+	{
+		return m_HeaderCtrlHandle;
+	}
+
 	void HeaderCtrl::FinishEditing()
 	{
 		m_View->GetMainWindow()->EndEdit();
 	}
-	
 	HeaderCtrl::EventResult HeaderCtrl::SendCtrlEvent(Event& event, wxEventType type, Column* column, std::optional<wxRect> rect)
 	{
 		event.SetEventType(type);
@@ -59,6 +63,23 @@ namespace KxDataView2
 		m_View->GetMainWindow()->CreateEventTemplate(event, nullptr, column);
 
 		return {m_View->ProcessWindowEvent(event), event.IsAllowed()};
+	}
+
+	void HeaderCtrl::OnCreate(wxWindowCreateEvent& event)
+	{
+		m_HeaderCtrlHandle = event.GetWindow()->GetHandle();
+		if (m_HeaderCtrlHandle)
+		{
+			// Needed to display checkboxes
+			KxUtility::ToggleWindowStyle(m_HeaderCtrlHandle, GWL_STYLE, HDS_CHECKBOXES, true);
+		}
+
+		event.Skip();
+	}
+	void HeaderCtrl::OnDestroy(wxWindowDestroyEvent& event)
+	{
+		m_HeaderCtrlHandle = nullptr;
+		event.Skip();
 	}
 
 	void HeaderCtrl::OnClick(wxHeaderCtrlEvent& event)
@@ -178,10 +199,10 @@ namespace KxDataView2
 	void HeaderCtrl::DoSetCount(unsigned int)
 	{
 		// First delete all old columns
-		const size_t oldItemsCount = Header_GetItemCount(GetHandle());
+		const size_t oldItemsCount = Header_GetItemCount(GetHeaderCtrlHandle());
 		for (size_t i = 0; i < oldItemsCount; i++)
 		{
-			Header_DeleteItem(GetHandle(), 0);
+			Header_DeleteItem(GetHeaderCtrlHandle(), 0);
 		}
 
 		// Clear image list
@@ -198,7 +219,7 @@ namespace KxDataView2
 		{
 			HDITEMW item = {};
 			DoMakeItem(item, *column);
-			Header_InsertItem(GetHandle(), index, &item);
+			Header_InsertItem(GetHeaderCtrlHandle(), index, &item);
 			index++;
 
 			hasResizableColumns = column->IsSizeable();
@@ -226,7 +247,7 @@ namespace KxDataView2
 			if (!m_ImageList)
 			{
 				m_ImageList = std::make_unique<KxImageList>(bitmap.GetWidth(), bitmap.GetHeight());
-				Header_SetImageList(GetHandle(), m_ImageList->GetHIMAGELIST());
+				Header_SetImageList(GetHeaderCtrlHandle(), m_ImageList->GetHIMAGELIST());
 			}
 			item.iImage = m_ImageList->Add(bitmap);
 		}
@@ -312,7 +333,7 @@ namespace KxDataView2
 			{
 				HDITEMW headerItem = {};
 				headerItem.mask = HDI_LPARAM;
-				Header_GetItem(GetHandle(), header->iItem, &headerItem);
+				Header_GetItem(GetHeaderCtrlHandle(), header->iItem, &headerItem);
 
 				return reinterpret_cast<Column*>(headerItem.lParam);
 			}
@@ -585,7 +606,7 @@ namespace KxDataView2
 	wxRect HeaderCtrl::GetDropdownRect(size_t index) const
 	{
 		RECT rect = {};
-		Header_GetItemDropDownRect(GetHandle(), index, &rect);
+		Header_GetItemDropDownRect(GetHeaderCtrlHandle(), index, &rect);
 		return KxUtility::CopyRECTToRect(rect);
 	}
 	wxRect HeaderCtrl::GetDropdownRect(const Column& column) const
@@ -594,25 +615,32 @@ namespace KxDataView2
 	}
 
 	HeaderCtrl::HeaderCtrl(View* parent)
-		:KxWindowRefreshScheduler(parent), m_View(parent)
+		:m_View(parent)
 	{
-		// See comment in 'HeaderCtrl::SetBackgroundColour' for details
-		// about why double-buffering needs to be disabled.
-		SetDoubleBuffered(false);
-		
-		// Needed to display checkboxes
-		KxUtility::ToggleWindowStyle(GetHandle(), GWL_STYLE, HDS_CHECKBOXES, true);
+		Bind(wxEVT_CREATE, &HeaderCtrl::OnCreate, this);
+		Bind(wxEVT_DESTROY, &HeaderCtrl::OnDestroy, this);
 
-		// Events
-		Bind(wxEVT_HEADER_CLICK, &HeaderCtrl::OnClick, this);
-		Bind(wxEVT_HEADER_RIGHT_CLICK, &HeaderCtrl::OnRClick, this);
-		Bind(wxEVT_HEADER_SEPARATOR_DCLICK, &HeaderCtrl::OnSeparatorDClick, this);
-		Bind(wxEVT_LEFT_UP, &HeaderCtrl::OnWindowClick, this);
-		Bind(wxEVT_RIGHT_UP, &HeaderCtrl::OnWindowClick, this);
+		if (wxHeaderCtrl::Create(parent, KxID_NONE))
+		{
+			// See comment in 'HeaderCtrl::SetBackgroundColour' for details
+			// about why double-buffering needs to be disabled.
+			SetDoubleBuffered(false);
 
-		Bind(wxEVT_HEADER_RESIZING, &HeaderCtrl::OnResize, this);
-		Bind(wxEVT_HEADER_END_RESIZE, &HeaderCtrl::OnResizeEnd, this);
-		Bind(wxEVT_HEADER_END_REORDER, &HeaderCtrl::OnReorderEnd, this);
+			// Events
+			Bind(wxEVT_HEADER_CLICK, &HeaderCtrl::OnClick, this);
+			Bind(wxEVT_HEADER_RIGHT_CLICK, &HeaderCtrl::OnRClick, this);
+			Bind(wxEVT_HEADER_SEPARATOR_DCLICK, &HeaderCtrl::OnSeparatorDClick, this);
+			Bind(wxEVT_LEFT_UP, &HeaderCtrl::OnWindowClick, this);
+			Bind(wxEVT_RIGHT_UP, &HeaderCtrl::OnWindowClick, this);
+
+			Bind(wxEVT_HEADER_RESIZING, &HeaderCtrl::OnResize, this);
+			Bind(wxEVT_HEADER_END_RESIZE, &HeaderCtrl::OnResizeEnd, this);
+			Bind(wxEVT_HEADER_END_REORDER, &HeaderCtrl::OnReorderEnd, this);
+		}
+	}
+	HeaderCtrl::~HeaderCtrl()
+	{
+		m_HeaderCtrlHandle = nullptr;
 	}
 
 	MainWindow* HeaderCtrl::GetMainWindow() const
