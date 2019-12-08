@@ -27,7 +27,7 @@ void KxStatusBarEx::OnPaint(wxPaintEvent& event)
 		{
 			if (KxUxTheme theme(*this, KxUxThemeClass::Progress); theme)
 			{
-				theme.DrawProgress(dc, -1, PP_FILL, m_State & wxCONTROL_CURRENT ? PBFS_PARTIAL : PBFS_NORMAL, backgroundRect, m_ProgressPos, m_ProgressRange);
+				theme.DrawProgressBar(dc, -1, PP_FILL, m_State & wxCONTROL_CURRENT ? PBFS_PARTIAL : PBFS_NORMAL, backgroundRect, m_ProgressPos, m_ProgressRange);
 			}
 			else
 			{

@@ -380,7 +380,7 @@ bool KxUxTheme::DrawBackground(wxDC& dc, int iPartId, int iStateId, const wxRect
 	RECT rectWin = KxUtility::CopyRectToRECT(rect);
 	return ::DrawThemeBackground(m_Handle, dc.GetHDC(), iPartId, iStateId, &rectWin, nullptr) == S_OK;
 }
-bool KxUxTheme::DrawProgress(wxDC& dc, int iBarPartId, int iFillPartId, int iFillStateId, const wxRect& rect, int position, int range, KxColor* averageBackgroundColor)
+bool KxUxTheme::DrawProgressBar(wxDC& dc, int iBarPartId, int iFillPartId, int iFillStateId, const wxRect& rect, int position, int range, KxColor* averageBackgroundColor)
 {
 	const bool isVertical = iBarPartId == PP_BARVERT && iFillPartId == PP_FILLVERT;
 	const wxSize padding = isVertical ? wxSize(0, 0) : m_Window->FromDIP(wxSize(2, 0));

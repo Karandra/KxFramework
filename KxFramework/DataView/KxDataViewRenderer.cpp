@@ -475,22 +475,22 @@ bool KxDataViewRenderer::DoDrawProgressBar(const wxRect& cellRect, KxDataViewCel
 		{
 			case ProgressBarState::Paused:
 			{
-				theme.DrawProgress(GetDC(), PP_BAR, PP_FILL, PBFS_PAUSED, cellRect, value, range);
+				theme.DrawProgressBar(GetDC(), PP_BAR, PP_FILL, PBFS_PAUSED, cellRect, value, range);
 				break;
 			}
 			case ProgressBarState::Error:
 			{
-				theme.DrawProgress(GetDC(), PP_BAR, PP_FILL, PBFS_ERROR, cellRect, value, range);
+				theme.DrawProgressBar(GetDC(), PP_BAR, PP_FILL, PBFS_ERROR, cellRect, value, range);
 				break;
 			}
 			case ProgressBarState::Partial:
 			{
-				theme.DrawProgress(GetDC(), PP_BAR, PP_FILL, PBFS_PARTIAL, cellRect, value, range);
+				theme.DrawProgressBar(GetDC(), PP_BAR, PP_FILL, PBFS_PARTIAL, cellRect, value, range);
 				break;
 			}
 			default:
 			{
-				theme.DrawProgress(GetDC(), PP_BAR, PP_FILL, PBFS_NORMAL, cellRect, value, range);
+				theme.DrawProgressBar(GetDC(), PP_BAR, PP_FILL, PBFS_NORMAL, cellRect, value, range);
 				break;
 			}
 		};

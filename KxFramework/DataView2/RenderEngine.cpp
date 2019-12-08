@@ -410,22 +410,22 @@ namespace KxDataView2
 			{
 				case ProgressState::Paused:
 				{
-					theme.DrawProgress(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_PAUSED, cellRect, value, range, averageBackgroundColor);
+					theme.DrawProgressBar(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_PAUSED, cellRect, value, range, averageBackgroundColor);
 					break;
 				}
 				case ProgressState::Error:
 				{
-					theme.DrawProgress(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_ERROR, cellRect, value, range, averageBackgroundColor);
+					theme.DrawProgressBar(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_ERROR, cellRect, value, range, averageBackgroundColor);
 					break;
 				}
 				case ProgressState::Partial:
 				{
-					theme.DrawProgress(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_PARTIAL, cellRect, value, range, averageBackgroundColor);
+					theme.DrawProgressBar(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_PARTIAL, cellRect, value, range, averageBackgroundColor);
 					break;
 				}
 				default:
 				{
-					theme.DrawProgress(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_NORMAL, cellRect, value, range, averageBackgroundColor);
+					theme.DrawProgressBar(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_NORMAL, cellRect, value, range, averageBackgroundColor);
 					break;
 				}
 			};
