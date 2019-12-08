@@ -402,7 +402,10 @@ bool KxUxTheme::DrawProgress(wxDC& dc, int iBarPartId, int iFillPartId, int iFil
 			fillRect.SetWidth(fillRect.GetWidth() * ((double)position / (double)range));
 		}
 
-		fillRect.Deflate(m_Window->FromDIP(wxSize(1, 1)) + padding);
+		if (iBarPartId > 0)
+		{
+			fillRect.Deflate(m_Window->FromDIP(wxSize(1, 1)) + padding);
+		}
 		result = DrawBackground(dc, iFillPartId, iFillStateId, fillRect);
 
 		if (averageBackgroundColor)
