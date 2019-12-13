@@ -13,8 +13,9 @@ wxIMPLEMENT_DYNAMIC_CLASS(KxButton, wxButton);
 
 namespace
 {
-	constexpr auto g_ArrowButtonWidth = 17;
+	constexpr auto g_DefaultButtonWidth = 72;
 	constexpr auto g_DefaultButtonHeight = 23;
+	constexpr auto g_ArrowButtonWidth = 17;
 
 	int FromDIPX(const wxWindow* window, int value)
 	{
@@ -31,7 +32,12 @@ namespace
 		{
 			size = button.GetSizeFromTextSize(button.GetTextExtent(button.GetLabelText()));
 		}
-		if (std::abs(size.y - g_DefaultButtonHeight) <= button.GetCharHeight())
+
+		if (size.x <= 0)
+		{
+			size.x = FromDIPX(&button, g_DefaultButtonWidth);
+		}
+		if (size.y <= 0 || std::abs(size.y - g_DefaultButtonHeight) <= button.GetCharHeight())
 		{
 			size.y = FromDIPY(&button, g_DefaultButtonHeight);
 		}
