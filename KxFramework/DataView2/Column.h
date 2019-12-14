@@ -72,6 +72,7 @@ namespace KxDataView2
 		friend class KX_API View;
 		friend class KX_API MainWindow;
 		friend class KX_API HeaderCtrl;
+		friend class KX_API HeaderCtrl2;
 		friend class KX_API NativeColumn;
 
 		public:

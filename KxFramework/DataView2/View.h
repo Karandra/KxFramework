@@ -20,6 +20,7 @@ namespace KxDataView2
 	class KX_API View: public wxSystemThemedControl<wxScrolled<wxWindow>>
 	{
 		friend class HeaderCtrl;
+		friend class HeaderCtrl2;
 		friend class MainWindow;
 		friend class Column;
 		friend class Renderer;

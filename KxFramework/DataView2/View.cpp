@@ -1,6 +1,7 @@
 #include "KxStdAfx.h"
 #include "View.h"
 #include "HeaderCtrl.h"
+#include "HeaderCtrl2.h"
 #include "MainWindow.h"
 #include "Column.h"
 #include "Renderer.h"

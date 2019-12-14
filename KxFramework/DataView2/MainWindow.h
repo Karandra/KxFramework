@@ -41,6 +41,7 @@ namespace KxDataView2
 		friend class KX_API Node;
 		friend class KX_API ToolTip;
 		friend class KX_API HeaderCtrl;
+		friend class KX_API HeaderCtrl2;
 		friend class KX_API VirtualListModel;
 
 		friend class KX_API DropSource;

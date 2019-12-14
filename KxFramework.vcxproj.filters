@@ -1117,6 +1117,9 @@
     <ClInclude Include="KxFramework\KxDCUtility.h">
       <Filter>Header Files\Drawing</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\DataView2\HeaderCtrl2.h">
+      <Filter>Header Files\GUI\DataView2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1773,6 +1776,9 @@
     </ClCompile>
     <ClCompile Include="Kx\System\FileTypeInfo.cpp">
       <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\DataView2\HeaderCtrl2.cpp">
+      <Filter>Source Files\GUI\DataView2</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
