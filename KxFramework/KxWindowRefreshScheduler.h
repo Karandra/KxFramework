@@ -17,7 +17,14 @@ class KxWindowRefreshScheduler: public TWindow
 
 			if (rect)
 			{
-				m_Rect = *rect;
+				if (m_Rect)
+				{
+					m_Rect->Union(*rect);
+				}
+				else
+				{
+					m_Rect = *rect;
+				}
 			}
 			else
 			{
