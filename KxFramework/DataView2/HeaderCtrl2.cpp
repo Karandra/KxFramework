@@ -590,7 +590,10 @@ namespace KxDataView2
 			Bind(wxEVT_HEADER_RESIZING, &HeaderCtrl2::OnResize, this);
 			Bind(wxEVT_HEADER_END_RESIZE, &HeaderCtrl2::OnResizeEnd, this);
 			Bind(wxEVT_HEADER_END_REORDER, &HeaderCtrl2::OnReorderEnd, this);
+
+			return true;
 		}
+		return false;
 	}
 
 	MainWindow* HeaderCtrl2::GetMainWindow() const
