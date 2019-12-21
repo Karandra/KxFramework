@@ -63,9 +63,15 @@ namespace KxUtility
 	}
 
 	template<class... Args>
+	constexpr size_t CountOfParameterPack()
+	{
+		return sizeof...(Args);
+	}
+
+	template<class... Args>
 	constexpr size_t SizeOfParameterPackValues()
 	{
-		const constexpr size_t count = sizeof...(Args);
+		const constexpr size_t count = CountOfParameterPack<Args...>();
 		const constexpr std::array<size_t, count> sizes = {sizeof(Args)...};
 
 		size_t sum = 0;
