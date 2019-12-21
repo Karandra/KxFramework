@@ -69,6 +69,8 @@ namespace KxDataView2
 {
 	class KX_API Column: public KxRTTI::Interface<Column>, public wxClientDataContainer
 	{
+		KxDecalreIID(Column, {0x95e43f36, 0x4b4a, 0x4d43, {0xa9, 0x8, 0xab, 0x1e, 0x25, 0x42, 0x9, 0xfa}});
+
 		friend class KX_API View;
 		friend class KX_API MainWindow;
 		friend class KX_API HeaderCtrl;
