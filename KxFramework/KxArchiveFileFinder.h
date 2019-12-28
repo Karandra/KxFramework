@@ -2,33 +2,40 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxIFileFinder.h"
 #include "KxFramework/KxFileItem.h"
-class KX_API KxIArchiveSearch;
 
-class KX_API KxArchiveFileFinder: public KxIFileFinder
+namespace KxArchive
 {
-	private:
-		const KxIArchiveSearch* m_Archive = nullptr;
-		wxEvtHandler* m_EvtHandler = nullptr;
-		wxString m_SearchQuery;
+	class KX_API IArchiveSearch;
+}
 
-		void* m_Handle = nullptr;
-		bool m_IsCanceled = false;
+namespace KxArchive
+{
+	class KX_API KxArchiveFileFinder: public KxIFileFinder
+	{
+		private:
+			const IArchiveSearch* m_Archive = nullptr;
+			wxEvtHandler* m_EvtHandler = nullptr;
+			wxString m_SearchQuery;
 
-	protected:
-		virtual bool OnFound(const KxFileItem& foundItem) override;
+			void* m_Handle = nullptr;
+			bool m_IsCanceled = false;
 
-	public:
-		KxArchiveFileFinder(const KxIArchiveSearch& archive, const wxString& searchQuery, wxEvtHandler* eventHandler = nullptr);
-		KxArchiveFileFinder(const KxIArchiveSearch& archive, const wxString& source, const wxString& filter, wxEvtHandler* eventHandler = nullptr);
-		virtual ~KxArchiveFileFinder();
+		protected:
+			bool OnFound(const KxFileItem& foundItem) override;
 
-	public:
-		virtual bool IsOK() const override;
-		virtual bool IsCanceled() const override
-		{
-			return m_IsCanceled;
-		}
+		public:
+			KxArchiveFileFinder(const IArchiveSearch& archive, const wxString& searchQuery, wxEvtHandler* eventHandler = nullptr);
+			KxArchiveFileFinder(const IArchiveSearch& archive, const wxString& source, const wxString& filter, wxEvtHandler* eventHandler = nullptr);
+			~KxArchiveFileFinder();
 
-		virtual bool Run() override;
-		virtual KxFileItem FindNext() override;
-};
+		public:
+			bool IsOK() const override;
+			bool IsCanceled() const override
+			{
+				return m_IsCanceled;
+			}
+
+			bool Run() override;
+			KxFileItem FindNext() override;
+	};
+}

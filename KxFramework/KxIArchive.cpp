@@ -4,38 +4,42 @@
 #include "KxFramework/KxArchiveFileFinder.h"
 #include "KxFramework/KxComparator.h"
 
-float KxIArchive::GetCompressionRatio() const
+namespace KxArchive
 {
-	int64_t originalSize = GetOriginalSize();
-	int64_t compressedSize = GetCompressedSize();
-
-	if (originalSize > 0)
+	double IArchive::GetCompressionRatio() const
 	{
-		return (double)compressedSize / originalSize;
-	}
-	return 0;
-}
+		int64_t originalSize = GetOriginalSize();
+		int64_t compressedSize = GetCompressedSize();
 
-//////////////////////////////////////////////////////////////////////////
-bool KxIArchiveSearch::FindFile(const wxString& searchQuery, KxFileItem& fileItem) const
-{
-	KxArchiveFileFinder finder(*this, searchQuery);
-	fileItem = finder.FindNext();
-	return fileItem.IsOK();
-}
-bool KxIArchiveSearch::FindFileInFolder(const wxString& folder, const wxString& filter, KxFileItem& fileItem) const
-{
-	KxArchiveFileFinder finder(*this, folder, filter);
-
-	KxFileItem item = finder.FindNext();
-	while (item.IsOK())
-	{
-		if (KxComparator::IsEqual(folder, item.GetSource(), true))
+		if (originalSize > 0)
 		{
-			fileItem = item;
-			return true;
+			return (double)compressedSize / originalSize;
 		}
-		item = finder.FindNext();
+		return 0;
 	}
-	return false;
+}
+
+namespace KxArchive
+{
+	bool IArchiveSearch::FindFile(const wxString& searchQuery, KxFileItem& fileItem) const
+	{
+		KxArchiveFileFinder finder(*this, searchQuery);
+		fileItem = finder.FindNext();
+
+		return fileItem.IsOK();
+	}
+	bool IArchiveSearch::FindFileInFolder(const wxString& folder, const wxString& filter, KxFileItem& fileItem) const
+	{
+		KxArchiveFileFinder finder(*this, folder, filter);
+
+		for (KxFileItem item = finder.FindNext(); item.IsOK(); item = finder.FindNext())
+		{
+			if (KxComparator::IsEqual(folder, item.GetSource(), true))
+			{
+				fileItem = std::move(item);
+				return true;
+			}
+		}
+		return false;
+	}
 }
