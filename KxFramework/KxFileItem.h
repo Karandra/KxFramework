@@ -15,6 +15,7 @@ class KX_API KxFileItem final
 		wxDateTime m_LastAccessTime;
 		wxDateTime m_ModificationTime;
 		int64_t m_FileSize = -1;
+		int64_t m_CompressedFileSize = -1;
 		uint32_t m_Attributes = INVALID_FILE_ATTRIBUTES;
 		uint32_t m_ReparsePointAttributes = 0;
 		intptr_t m_ExtraData = -1;
@@ -37,7 +38,7 @@ class KX_API KxFileItem final
 		}
 
 	private:
-		KxFileItem(const KxFileFinder* finder, const WIN32_FIND_DATAW& fileInfo);
+		KxFileItem(const KxFileFinder& finder, const WIN32_FIND_DATAW& fileInfo);
 
 	public:
 		bool IsOK() const
@@ -111,13 +112,17 @@ class KX_API KxFileItem final
 		{
 			return m_Attributes;
 		}
-		uint32_t GetReparsePointAttributes() const
+		void SetAttributes(uint32_t attributes)
 		{
-			return m_ReparsePointAttributes;
+			m_Attributes = attributes;
 		}
 		void SetNormalAttributes()
 		{
 			m_Attributes = FILE_ATTRIBUTE_NORMAL;
+		}
+		uint32_t GetReparsePointAttributes() const
+		{
+			return m_ReparsePointAttributes;
 		}
 
 		wxDateTime GetCreationTime() const
@@ -154,6 +159,28 @@ class KX_API KxFileItem final
 		void SetFileSize(int64_t size)
 		{
 			m_FileSize = size;
+		}
+
+		int64_t GetCompressedFileSize() const
+		{
+			return m_CompressedFileSize;
+		}
+		void SetCompressedFileSize(int64_t size)
+		{
+			m_CompressedFileSize = size;
+		}
+
+		bool IsCompressed() const
+		{
+			return m_Attributes & FILE_ATTRIBUTE_COMPRESSED;
+		}
+		double GetCompressionRatio() const
+		{
+			if (m_FileSize > 0)
+			{
+				return (double)m_CompressedFileSize / m_FileSize;
+			}
+			return -1;
 		}
 
 		wxString GetSource() const

@@ -46,7 +46,7 @@ bool KxFileFinder::IsDirectoryEmpty(const wxString& directoryPath)
 
 bool KxFileFinder::OnFound(const WIN32_FIND_DATAW& fileInfo)
 {
-	KxFileItem foundItem(this, fileInfo);
+	KxFileItem foundItem(*this, fileInfo);
 	if (!foundItem.IsCurrentOrParent())
 	{
 		return OnFound(foundItem);
@@ -114,7 +114,7 @@ KxFileItem KxFileFinder::FindNext()
 		if (m_Handle != INVALID_HANDLE_VALUE)
 		{
 			m_IsCanceled = false;
-			return KxFileItem(this, m_FindData);
+			return KxFileItem(*this, m_FindData);
 		}
 	}
 	else
@@ -122,7 +122,7 @@ KxFileItem KxFileFinder::FindNext()
 		// We have handle, find next file.
 		if (CallFindNextFile(m_Handle, m_FindData))
 		{
-			return KxFileItem(this, m_FindData);
+			return KxFileItem(*this, m_FindData);
 		}
 		
 		// No files left, close search handle
@@ -130,5 +130,5 @@ KxFileItem KxFileFinder::FindNext()
 		m_Handle = INVALID_HANDLE_VALUE;
 		m_IsCanceled = false;
 	}
-	return KxFileItem();
+	return {};
 }

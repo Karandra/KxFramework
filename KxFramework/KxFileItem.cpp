@@ -8,6 +8,7 @@ void KxFileItem::MakeNull(bool attribuesOnly)
 	m_LastAccessTime = wxDefaultDateTime;
 	m_ModificationTime = wxDefaultDateTime;
 	m_FileSize = -1;
+	m_CompressedFileSize = -1;
 	m_Attributes = INVALID_FILE_ATTRIBUTES;
 	m_ReparsePointAttributes = 0;
 	m_ExtraData = -1;
@@ -58,6 +59,14 @@ bool KxFileItem::DoUpdateInfo(const wxString& fullPath)
 	if (searchHandle != INVALID_HANDLE_VALUE)
 	{
 		Set(info);
+
+		if (m_Attributes & FILE_ATTRIBUTE_COMPRESSED)
+		{
+			ULARGE_INTEGER compressedSize = {};
+			compressedSize.LowPart = ::GetCompressedFileSizeW(fullPath.wc_str(), &compressedSize.HighPart);
+			m_CompressedFileSize = compressedSize.QuadPart;
+		}
+
 		::FindClose(searchHandle);
 		return true;
 	}
@@ -78,8 +87,8 @@ KxFileItem::KxFileItem(const wxString& source, const wxString& fileName)
 {
 	UpdateInfo();
 }
-KxFileItem::KxFileItem(const KxFileFinder* finder, const WIN32_FIND_DATAW& fileInfo)
-	:m_Source(finder->GetSource())
+KxFileItem::KxFileItem(const KxFileFinder& finder, const WIN32_FIND_DATAW& fileInfo)
+	:m_Source(finder.GetSource())
 {
 	Set(fileInfo);
 }
