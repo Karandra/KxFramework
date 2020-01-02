@@ -91,19 +91,19 @@ class KX_API KxFileStream:
 		void SetLastStreamError(DWORD error, bool isWrite);
 
 	protected:
-		virtual Offset OnSysSeek(wxFileOffset pos, wxSeekMode mode);
-		virtual Offset OnSysTell() const;
-		virtual size_t OnSysRead(void* buffer, size_t size) override;
-		virtual size_t OnSysWrite(const void* buffer, size_t size) override;
+		Offset OnSysSeek(wxFileOffset pos, wxSeekMode mode) override;
+		Offset OnSysTell() const override;
+		size_t OnSysRead(void* buffer, size_t size) override;
+		size_t OnSysWrite(const void* buffer, size_t size) override;
 		
 		bool IsOpened() const;
 		bool DoClose();
 
 	public:
-		static const Access DefaultAccess = Access::Read;
-		static const Share DefaultShare = Share::Read;
-		static const Disposition DefaultDisposition = Disposition::OpenExisting;
-		static const Flags DefaultFlags = Flags::Normal;
+		static constexpr Access DefaultAccess = Access::Read;
+		static constexpr Share DefaultShare = Share::Read;
+		static constexpr Disposition DefaultDisposition = Disposition::OpenExisting;
+		static constexpr Flags DefaultFlags = Flags::Normal;
 
 	public:
 		KxFileStream();
@@ -132,43 +132,54 @@ class KX_API KxFileStream:
 		}
 		
 	public:
-		virtual bool IsOk() const override;
-		virtual bool Close() override;
-		virtual bool Eof() const override;
-		virtual bool CanRead() const override;
+		bool IsOk() const override;
+		bool Close() override;
+		bool Eof() const override;
+		bool CanRead() const override;
 		
-		virtual size_t GetSize() const override;
-		virtual Offset GetLength() const override;
+		size_t GetSize() const override;
+		Offset GetLength() const override;
 
-		virtual bool IsSeekable() const override;
-		virtual Offset SeekI(wxFileOffset offset, wxSeekMode mode = wxFromCurrent) override;
-		virtual Offset SeekO(wxFileOffset offset, wxSeekMode mode = wxFromCurrent) override;
-		virtual Offset TellI() const override;
-		virtual Offset TellO() const override;
+		bool IsSeekable() const override;
+		Offset SeekI(wxFileOffset offset, wxSeekMode mode = wxFromCurrent) override;
+		Offset SeekO(wxFileOffset offset, wxSeekMode mode = wxFromCurrent) override;
+		Offset TellI() const override;
+		Offset TellO() const override;
 		Offset Tell() const;
 		Offset Seek(Offset offset, SeekMode mode = SeekMode::FromCurrent);
 
-		virtual char Peek();
-		virtual KxFileStream& Read(void* buffer, size_t size) override
+		char Peek() override;
+		KxFileStream& Read(void* buffer, size_t size) override
 		{
 			ReadBuffer(buffer, size);
 			return *this;
 		}
-		virtual KxFileStream& Write(const void* buffer, size_t size) override
+		KxFileStream& Read(wxOutputStream& stream)
+		{
+			wxInputStream::Read(stream);
+			return *this;
+		}
+
+		KxFileStream& Write(const void* buffer, size_t size) override
 		{
 			WriteBuffer(buffer, size);
 			return *this;
 		}
+		KxFileStream& Write(wxInputStream& stream)
+		{
+			wxOutputStream::Write(stream);
+			return *this;
+		}
 
-		virtual size_t LastRead() const override;
-		virtual size_t LastWrite() const override;
-		virtual wxStreamError GetLastError() const;
+		size_t LastRead() const override;
+		size_t LastWrite() const override;
+		wxStreamError GetLastError() const;
 
-		virtual bool IsWriteable() const override;
-		virtual bool IsReadable() const override;
+		bool IsWriteable() const override;
+		bool IsReadable() const override;
 
-		virtual bool Flush() override;
-		virtual bool SetAllocationSize(Offset offset = InvalidOffset) override;
+		bool Flush() override;
+		bool SetAllocationSize(Offset offset = InvalidOffset) override;
 		wxString GetFileName() const;
 		HANDLE GetHandle() const;
 
