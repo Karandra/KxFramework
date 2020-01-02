@@ -4,20 +4,36 @@
 
 class KX_API KxArchiveEvent: public KxFileOperationEvent
 {
+	public:
+		KxEVENT_MEMBER(KxArchiveEvent, Process);
+		KxEVENT_MEMBER(KxArchiveEvent, Search);
+		KxEVENT_MEMBER(KxArchiveEvent, Done);
+
+		KxEVENT_MEMBER(KxArchiveEvent, GetInputStream);
+		KxEVENT_MEMBER(KxArchiveEvent, GetOutputStream);
+
 	private:
 		wxString m_Method;
 		wxString m_Attributes;
 		int64_t m_OriginalSize = 0;
 		int64_t m_CompressedSize = 0;
 		uint32_t m_CRC32 = 0;
-		float m_Ratio = 0;
+		double m_Ratio = 0;
+
+		wxInputStream* m_InputStream = nullptr;
+		wxOutputStream* m_OutputStream = nullptr;
 
 	public:
-		KxArchiveEvent(wxEventType type = wxEVT_NULL, int id = 0);
-		~KxArchiveEvent();
+		KxArchiveEvent(wxEventType type = wxEVT_NULL, int id = 0)
+			:KxFileOperationEvent(type, id)
+		{
+		}
 
 	public:
-		KxArchiveEvent* Clone() const override;
+		KxArchiveEvent* Clone() const override
+		{
+			return new KxArchiveEvent(*this);
+		}
 		
 		uint32_t GetCRC() const
 		{
@@ -64,22 +80,33 @@ class KX_API KxArchiveEvent: public KxFileOperationEvent
 			m_CompressedSize = value;
 		}
 		
-		float GetRatio() const
+		double GetRatio() const
 		{
 			return m_Ratio;
 		}
-		void SetRatio(float value)
+		void SetRatio(double value)
 		{
 			m_Ratio = value;
+		}
+
+		wxOutputStream* GetOutputStream() const
+		{
+			return m_OutputStream;
+		}
+		void SetOutputStream(wxOutputStream* stream)
+		{
+			m_OutputStream = stream;
+		}
+
+		wxInputStream* GetInputStream() const
+		{
+			return m_InputStream;
+		}
+		void SetInputStream(wxInputStream* stream)
+		{
+			m_InputStream = stream;
 		}
 
 	public:
 		wxDECLARE_DYNAMIC_CLASS(KxArchiveEvent);
 };
-
-//////////////////////////////////////////////////////////////////////////
-KxEVENT_DECLARE_GLOBAL(ARCHIVE, KxArchiveEvent);
-KxEVENT_DECLARE_GLOBAL(ARCHIVE_PACK, KxArchiveEvent);
-KxEVENT_DECLARE_GLOBAL(ARCHIVE_UNPACK, KxArchiveEvent);
-KxEVENT_DECLARE_GLOBAL(ARCHIVE_SEARCH, KxArchiveEvent);
-KxEVENT_DECLARE_GLOBAL(ARCHIVE_DONE, KxArchiveEvent);

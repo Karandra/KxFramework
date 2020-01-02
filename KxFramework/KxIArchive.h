@@ -22,8 +22,6 @@ namespace KxArchive
 			virtual void Close() = 0;
 			virtual wxString GetFilePath() const = 0;
 
-			virtual size_t GetItemCount() const = 0;
-			virtual wxString GetItemName(size_t index) const = 0;
 			virtual int64_t GetOriginalSize() const = 0;
 			virtual int64_t GetCompressedSize() const = 0;
 			double GetCompressionRatio() const;
@@ -37,6 +35,16 @@ namespace KxArchive
 			{
 				return !IsOK();
 			}
+	};
+
+	class KX_API IArchiveItems
+	{
+		public:
+			virtual ~IArchiveItems() = default;
+
+		public:
+			virtual size_t GetItemCount() const = 0;
+			virtual KxFileItem GetItem(size_t fileIndex) const = 0;
 	};
 	
 	class KX_API IArchiveSearch
@@ -58,54 +66,24 @@ namespace KxArchive
 {
 	class KX_API IArchiveExtraction
 	{
-		protected:
-			// Extract entire archive into specified directory
-			virtual bool DoExtractAll(const wxString& directory) const = 0;
-
-			// Extract only specified files into directory
-			virtual bool DoExtractToDirectory(const FileIndexVector& files, const wxString& directory) const = 0;
-
-			// Extract only specified files into corresponding files path
-			virtual bool DoExtractToFile(const FileIndexVector& files, const KxStringVector& filePaths) const = 0;
-
-			// Extract specified file to a stream
-			virtual bool DoExtractStream(FileIndex fileIndex, wxOutputStream& stream) = 0;
-
 		public:
 			virtual ~IArchiveExtraction() = default;
 
 		public:
 			// Extract entire archive into specified directory
-			bool ExtractAll(const wxString& directory) const
-			{
-				return DoExtractAll(directory);
-			}
+			virtual bool ExtractAll(const wxString& directory) const = 0;
 			
 			// Extract only specified files into directory
-			bool ExtractToDirectory(const FileIndexVector& files, const wxString& directory) const
-			{
-				return DoExtractToDirectory(files, directory);
-			}
-			bool ExtractToDirectory(FileIndex fileIndex, const wxString& directory) const
-			{
-				return DoExtractToDirectory({fileIndex}, directory);
-			}
+			virtual bool ExtractToDirectory(const FileIndexVector& files, const wxString& directory) const = 0;
+			virtual bool ExtractToDirectory(FileIndex fileIndex, const wxString& directory) const = 0;
 			
 			// Extract only specified files into corresponding files path
-			bool ExtractToFile(const FileIndexVector& files, const KxStringVector& filePaths) const
-			{
-				return DoExtractToFile(files, filePaths);
-			}
-			bool ExtractToFile(FileIndex fileIndex, const wxString& targetPath) const
-			{
-				return DoExtractToFile({fileIndex}, {targetPath});
-			}
+			virtual bool ExtractToFile(const FileIndexVector& files, const KxStringVector& filePaths) const = 0;
+			virtual bool ExtractToFile(FileIndex fileIndex, const wxString& targetPath) const = 0;
 			
 			// Extract specified file to a stream
-			bool ExtractToStream(FileIndex fileIndex, wxOutputStream& stream)
-			{
-				return DoExtractStream(fileIndex, stream);
-			}
+			virtual bool ExtractToStream(const FileIndexVector& files) const = 0;
+			virtual bool ExtractToStream(FileIndex fileIndex, wxOutputStream& stream) const = 0;
 	};
 }
 
@@ -116,57 +94,30 @@ namespace KxArchive
 		public:
 			virtual ~IArchiveCompression() = default;
 
-		protected:
-			virtual bool DoCompressFiles(const wxString& directory, const wxString& searchFilter, bool recursive) = 0;
-			virtual bool DoCompressDirectory(const wxString& directory, bool recursive) = 0;
-			virtual bool DoCompressSpecifiedFiles(const KxStringVector& sourcePaths, const KxStringVector& archivePaths) = 0;
-			virtual bool DoCompressFile(const wxString& sourcePath) = 0;
-			virtual bool DoCompressFile(const wxString& sourcePath, const wxString& archivePath) = 0;
-
 		public:
-			// Excludes the last directory as the root in the archive, its contents are at root instead. E.g.
-			// specifying "C:\Temp\MyFolder" make the files in "MyFolder" the root items in the archive.
-			bool CompressFiles(const wxString& directory, const wxString& searchFilter, bool recursive)
-			{
-				return DoCompressFiles(directory, searchFilter, recursive);
-			}
-			bool CompressAllFiles(const wxString& directory, bool recursive)
-			{
-				return DoCompressFiles(directory, wxEmptyString, recursive);
-			}
-		
 			// Includes the last directory as the root in the archive, e.g. specifying "C:\Temp\MyFolder"
 			// makes "MyFolder" the single root item in archive with the files within it included.
-			bool CompressDirectory(const wxString& directory, bool recursive)
-			{
-				return DoCompressDirectory(directory, recursive);
-			}
-			bool CompressSpecifiedFiles(const KxStringVector& sourcePaths, const KxStringVector& archivePaths)
-			{
-				return DoCompressSpecifiedFiles(sourcePaths, archivePaths);
-			}
+			virtual bool CompressDirectory(const wxString& directory, bool recursive) = 0;
+
+			// Excludes the last directory as the root in the archive, its contents are at root instead. E.g.
+			// specifying "C:\Temp\MyFolder" make the files in "MyFolder" the root items in the archive.
+			virtual bool CompressFiles(const wxString& directory, const wxString& searchFilter, bool recursive) = 0;
+			virtual bool CompressSpecifiedFiles(const KxStringVector& sourcePaths, const KxStringVector& archivePaths) = 0;
 
 			// Compress just this single file as the root item in the archive.
-			bool CompressFile(const wxString& sourcePath)
-			{
-				return DoCompressFile(sourcePath);
-			}
-
-			// Same as above, but places compressed file into 'archivePath' folder inside the archive
-			bool CompressFile(const wxString& sourcePath, const wxString& archivePath)
-			{
-				return DoCompressFile(sourcePath, archivePath);
-			}
+			// Second overload places compressed file into 'archivePath' folder inside the archive.
+			virtual bool CompressFile(const wxString& sourcePath) = 0;
+			virtual bool CompressFile(const wxString& sourcePath, const wxString& archivePath) = 0;
 	};
 }
 
 namespace KxArchive
 {
 	template<class TPropertyIndex>
-	class IArchiveBoolProperties
+	class IBoolProperties
 	{
 		protected:
-			~IArchiveBoolProperties() = default;
+			~IBoolProperties() = default;
 
 		public:
 			using TBoolPropertyIndex = TPropertyIndex;
@@ -178,10 +129,10 @@ namespace KxArchive
 	};
 
 	template<class TPropertyIndex, class t_IntType = int>
-	class IArchiveIntProperties
+	class IIntProperties
 	{
 		protected:
-			~IArchiveIntProperties() = default;
+			~IIntProperties() = default;
 
 		public:
 			using TIntPropertyIndex = TPropertyIndex;
@@ -193,10 +144,10 @@ namespace KxArchive
 	};
 
 	template<class TPropertyIndex>
-	class IArchiveStringProperties
+	class IStringProperties
 	{
 		protected:
-			~IArchiveStringProperties() = default;
+			~IStringProperties() = default;
 
 		public:
 			using TStringPropertyIndex = TPropertyIndex;

@@ -23,14 +23,14 @@ namespace KxArchive
 {
 	bool IArchiveSearch::FindFile(const wxString& searchQuery, KxFileItem& fileItem) const
 	{
-		KxArchiveFileFinder finder(*this, searchQuery);
+		FileFinder finder(*this, searchQuery);
 		fileItem = finder.FindNext();
 
 		return fileItem.IsOK();
 	}
 	bool IArchiveSearch::FindFileInFolder(const wxString& folder, const wxString& filter, KxFileItem& fileItem) const
 	{
-		KxArchiveFileFinder finder(*this, folder, filter);
+		FileFinder finder(*this, folder, filter);
 
 		for (KxFileItem item = finder.FindNext(); item.IsOK(); item = finder.FindNext())
 		{

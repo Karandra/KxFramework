@@ -10,7 +10,7 @@ namespace KxArchive
 
 namespace KxArchive
 {
-	class KX_API KxArchiveFileFinder: public KxIFileFinder
+	class KX_API FileFinder: public KxIFileFinder
 	{
 		private:
 			const IArchiveSearch* m_Archive = nullptr;
@@ -24,9 +24,9 @@ namespace KxArchive
 			bool OnFound(const KxFileItem& foundItem) override;
 
 		public:
-			KxArchiveFileFinder(const IArchiveSearch& archive, const wxString& searchQuery, wxEvtHandler* eventHandler = nullptr);
-			KxArchiveFileFinder(const IArchiveSearch& archive, const wxString& source, const wxString& filter, wxEvtHandler* eventHandler = nullptr);
-			~KxArchiveFileFinder();
+			FileFinder(const IArchiveSearch& archive, const wxString& searchQuery, wxEvtHandler* eventHandler = nullptr);
+			FileFinder(const IArchiveSearch& archive, const wxString& source, const wxString& filter, wxEvtHandler* eventHandler = nullptr);
+			~FileFinder();
 
 		public:
 			bool IsOK() const override;

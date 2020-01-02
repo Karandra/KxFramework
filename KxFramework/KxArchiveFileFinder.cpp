@@ -6,7 +6,7 @@
 
 namespace KxArchive
 {
-	bool KxArchiveFileFinder::OnFound(const KxFileItem& foundItem)
+	bool FileFinder::OnFound(const KxFileItem& foundItem)
 	{
 		if (m_EvtHandler)
 		{
@@ -21,19 +21,19 @@ namespace KxArchive
 		return true;
 	}
 
-	KxArchiveFileFinder::KxArchiveFileFinder(const IArchiveSearch& archive, const wxString& searchQuery, wxEvtHandler* eventHandler)
+	FileFinder::FileFinder(const IArchiveSearch& archive, const wxString& searchQuery, wxEvtHandler* eventHandler)
 		:m_Archive(&archive),
 		m_SearchQuery(Normalize(searchQuery, false, true)),
 		m_EvtHandler(eventHandler)
 	{
 	}
-	KxArchiveFileFinder::KxArchiveFileFinder(const IArchiveSearch& archive, const wxString& source, const wxString& filter, wxEvtHandler* eventHandler)
+	FileFinder::FileFinder(const IArchiveSearch& archive, const wxString& source, const wxString& filter, wxEvtHandler* eventHandler)
 		: m_Archive(&archive),
 		m_SearchQuery(Normalize(ConstructSearchQuery(source, filter), false, true)),
 		m_EvtHandler(eventHandler)
 	{
 	}
-	KxArchiveFileFinder::~KxArchiveFileFinder()
+	FileFinder::~FileFinder()
 	{
 		if (m_Archive && m_Handle)
 		{
@@ -41,11 +41,11 @@ namespace KxArchive
 		}
 	}
 
-	bool KxArchiveFileFinder::IsOK() const
+	bool FileFinder::IsOK() const
 	{
 		return m_Archive != nullptr && m_Handle != nullptr;
 	}
-	bool KxArchiveFileFinder::Run()
+	bool FileFinder::Run()
 	{
 		KxFileItem fileItem;
 		void* searchHandle = m_Archive->FindFirstFile(m_SearchQuery, fileItem);
@@ -62,7 +62,7 @@ namespace KxArchive
 		}
 		return false;
 	}
-	KxFileItem KxArchiveFileFinder::FindNext()
+	KxFileItem FileFinder::FindNext()
 	{
 		if (m_Handle == nullptr)
 		{
