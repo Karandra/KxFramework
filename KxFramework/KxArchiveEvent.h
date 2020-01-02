@@ -18,6 +18,7 @@ class KX_API KxArchiveEvent: public KxFileOperationEvent
 		int64_t m_OriginalSize = 0;
 		int64_t m_CompressedSize = 0;
 		uint32_t m_CRC32 = 0;
+		uint32_t m_FileIndex = 0;
 		double m_Ratio = 0;
 
 		wxInputStream* m_InputStream = nullptr;
@@ -35,6 +36,15 @@ class KX_API KxArchiveEvent: public KxFileOperationEvent
 			return new KxArchiveEvent(*this);
 		}
 		
+		uint32_t GetFileIndex() const
+		{
+			return m_FileIndex;
+		}
+		void SetFileIndex(uint32_t value)
+		{
+			m_FileIndex = value;
+		}
+
 		uint32_t GetCRC() const
 		{
 			return m_CRC32;

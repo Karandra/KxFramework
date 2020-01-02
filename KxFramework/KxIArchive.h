@@ -7,6 +7,7 @@ namespace KxArchive
 {
 	using FileIndex = uint32_t;
 	using FileIndexVector = std::vector<FileIndex>;
+	using FileIndexToPathMap = std::unordered_map<FileIndex, wxString>;
 }
 
 namespace KxArchive
@@ -78,7 +79,7 @@ namespace KxArchive
 			virtual bool ExtractToDirectory(FileIndex fileIndex, const wxString& directory) const = 0;
 			
 			// Extract only specified files into corresponding files path
-			virtual bool ExtractToFile(const FileIndexVector& files, const KxStringVector& filePaths) const = 0;
+			virtual bool ExtractToFile(const FileIndexToPathMap& files) const = 0;
 			virtual bool ExtractToFile(FileIndex fileIndex, const wxString& targetPath) const = 0;
 			
 			// Extract specified file to a stream
