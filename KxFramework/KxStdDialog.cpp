@@ -212,7 +212,7 @@ bool KxStdDialog::Create(wxWindow* parent,
 		m_ContentPanelLine->SetMaxSize(FromDIP(wxSize(wxDefaultCoord, 1)));
 
 		m_IconView = new wxStaticBitmap(m_ContentPanel, wxID_NONE, m_MainIcon);
-		if (m_MainIcon.IsOk() == true)
+		if (m_MainIcon.IsOk())
 		{
 			m_IconView->SetMinSize(m_MainIcon.GetSize());
 		}
@@ -335,7 +335,7 @@ void KxStdDialog::PostCreate(const wxPoint& pos)
 		m_ContentSizerBase->Add(m_ContentSizer, 1, wxEXPAND|wxALL, FromDIPY(this, 5));
 	}
 
-	if (m_IconSizer )
+	if (m_IconSizer)
 	{
 		m_IconSizer->Add(m_IconView, 0, wxLEFT|wxTOP, FromDIPX(this, 10));
 	}
@@ -358,7 +358,7 @@ void KxStdDialog::PostCreate(const wxPoint& pos)
 		}
 		else
 		{
-			m_ViewLabelSpacerSI = m_ContentSizer->AddSpacer(FromDIPX(this, 40));
+			m_ViewLabelSpacerSI = m_ContentSizer->AddSpacer(FromDIPX(this, 6));
 			m_ViewLabelSI = m_ContentSizer->Add(m_ViewLabel, 0, wxLEFT|wxEXPAND, FromDIPX(this, 3));
 
 			wxBoxSizer* viewSizer = new wxBoxSizer(GetViewSizerOrientation());
