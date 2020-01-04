@@ -222,4 +222,13 @@ class KX_API KxFileItem final
 
 			return *this;
 		}
+
+		explicit operator bool() const
+		{
+			return IsOK();
+		}
+		bool operator!() const
+		{
+			return !IsOK();
+		}
 };
