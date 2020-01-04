@@ -70,7 +70,10 @@ namespace KxArchive
 
 			FileIndexVector CopyToVector() const
 			{
-				return FileIndexVector(m_Data, m_Data + m_Size);
+				const FileIndex* data = this->data();
+				const size_t size = this->size();
+
+				return FileIndexVector(data, data + size);
 			}
 
 			explicit operator bool() const
@@ -89,8 +92,6 @@ namespace KxArchive
 	class KX_API IExtractionCallback: public KxRTTI::Interface<IExtractionCallback>
 	{
 		KxDecalreIID(IExtractionCallback, {0x8a6363c5, 0x35be, 0x4884, {0x8a, 0x35, 0x5e, 0x14, 0x5, 0x81, 0xbc, 0x25}});
-
-		friend class IExtractionCallbackDelegate;
 
 		public:
 			virtual ~IExtractionCallback() = default;
