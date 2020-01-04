@@ -357,7 +357,7 @@
     <ClInclude Include="KxFramework\KxGraphicsContext.h" />
     <ClInclude Include="KxFramework\KxHTML.h" />
     <ClInclude Include="KxFramework\KxHTMLWindow.h" />
-    <ClInclude Include="KxFramework\KxIArchive.h" />
+    <ClInclude Include="KxFramework\KxArchive.h" />
     <ClInclude Include="KxFramework\KxIconType.h" />
     <ClInclude Include="KxFramework\KxIFileFinder.h" />
     <ClInclude Include="KxFramework\KxImageList.h" />
@@ -664,7 +664,7 @@
       </DisableSpecificWarnings>
     </ClCompile>
     <ClCompile Include="KxFramework\KxHTMLWindow.cpp" />
-    <ClCompile Include="KxFramework\KxIArchive.cpp" />
+    <ClCompile Include="KxFramework\KxArchive.cpp" />
     <ClCompile Include="KxFramework\KxIFileFinder.cpp" />
     <ClCompile Include="KxFramework\KxImageList.cpp" />
     <ClCompile Include="KxFramework\KxImageSet.cpp" />

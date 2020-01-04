@@ -1,5 +1,5 @@
 #include "KxStdAfx.h"
-#include "KxFramework/KxIArchive.h"
+#include "KxFramework/KxArchive.h"
 #include "KxFramework/KxFileItem.h"
 #include "KxFramework/KxArchiveFileFinder.h"
 #include "KxFramework/KxComparator.h"
