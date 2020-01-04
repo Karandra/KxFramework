@@ -1,12 +1,7 @@
-/*
-Copyright © 2018 Kerber. All rights reserved.
-
-You should have received a copy of the GNU LGPL v3
-along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
-*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxStreamWrappers.h"
+#include "KxFramework/KxEnumClassOperations.h"
 
 class KX_API KxFileStream:
 	public KxStreamBase,
@@ -14,65 +9,47 @@ class KX_API KxFileStream:
 	public KxInputStreamWrapper<wxInputStream>,
 	public KxOutputStreamWrapper<wxOutputStream>
 {
-	private:
-		struct SAccess
-		{
-			enum Enum
-			{
-				Invalid = -1,
-
-				None = 0,
-				Read = 1 << 0,
-				Write = 1 << 1,
-				ReadAttributes = 1 << 2,
-				WriteAttributes = 1 << 2,
-
-				RW = Read|Write,
-				AllAccess = RW|ReadAttributes|WriteAttributes
-			};
-		};
-		struct SShare
-		{
-			enum Enum
-			{
-				Invalid = -1,
-
-				Exclusive = 0,
-				Read = 1 << 0,
-				Write = 1 << 1,
-				Delete = 1 << 2,
-
-				Everything = Read|Write|Delete
-			};
-		};
-		struct SDisposition
-		{
-			enum Enum
-			{
-				Invalid = -1,
-
-				OpenExisting,
-				OpenAlways,
-				CreateNew,
-				CreateAlways,
-			};
-		};
-		struct SFlags
-		{
-			enum Enum
-			{
-				None = 0,
-
-				Normal = 1 << 0,
-				BackupSemantics = 1 << 1,
-			};
-		};
-
 	public:
-		using Access = SAccess::Enum;
-		using Share = SShare::Enum;
-		using Disposition = SDisposition::Enum;
-		using Flags = SFlags::Enum;
+		enum class Access
+		{
+			Invalid = -1,
+
+			None = 0,
+			Read = 1 << 0,
+			Write = 1 << 1,
+			ReadAttributes = 1 << 2,
+			WriteAttributes = 1 << 2,
+
+			RW = Read|Write,
+			AllAccess = RW|ReadAttributes|WriteAttributes
+		};
+		enum class Share
+		{
+			Invalid = -1,
+
+			Exclusive = 0,
+			Read = 1 << 0,
+			Write = 1 << 1,
+			Delete = 1 << 2,
+
+			Everything = Read|Write|Delete
+		};
+		enum class Disposition
+		{
+			Invalid = -1,
+
+			OpenExisting,
+			OpenAlways,
+			CreateNew,
+			CreateAlways,
+		};
+		enum class Flags
+		{
+			None = 0,
+
+			Normal = 1 << 0,
+			BackupSemantics = 1 << 1,
+		};
 
 	private:
 		HANDLE m_Handle = INVALID_HANDLE_VALUE;
@@ -107,26 +84,26 @@ class KX_API KxFileStream:
 
 	public:
 		KxFileStream();
-		KxFileStream(HANDLE fileHandle, int accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, int shareMode = DefaultShare, int flags = DefaultFlags);
-		KxFileStream(const wxString& filePath, int accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, int shareMode = DefaultShare, int flags = DefaultFlags);
-		KxFileStream(const char* filePath, int accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, int shareMode = DefaultShare, int flags = DefaultFlags)
+		KxFileStream(HANDLE fileHandle, Access accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, Share shareMode = DefaultShare, Flags flags = DefaultFlags);
+		KxFileStream(const wxString& filePath, Access accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, Share shareMode = DefaultShare, Flags flags = DefaultFlags);
+		KxFileStream(const char* filePath, Access accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, Share shareMode = DefaultShare, Flags flags = DefaultFlags)
 			:KxFileStream(wxString(filePath), accessMode, disposition, shareMode, flags)
 		{
 		}
-		KxFileStream(const wchar_t* filePath, int accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, int shareMode = DefaultShare, int flags = DefaultFlags)
+		KxFileStream(const wchar_t* filePath, Access accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, Share shareMode = DefaultShare, Flags flags = DefaultFlags)
 			:KxFileStream(wxString(filePath), accessMode, disposition, shareMode, flags)
 		{
 		}
 		virtual ~KxFileStream();
 		
 	public:
-		bool Open(HANDLE fileHandle, int accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, int shareMode = DefaultShare, int flags = DefaultFlags);
-		bool Open(const wxString& filePath, int accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, int shareMode = DefaultShare, int flags = DefaultFlags);
-		bool Open(const char* filePath, int accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, int shareMode = DefaultShare, int flags = DefaultFlags)
+		bool Open(HANDLE fileHandle, Access accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, Share shareMode = DefaultShare, Flags flags = DefaultFlags);
+		bool Open(const wxString& filePath, Access accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, Share shareMode = DefaultShare, Flags flags = DefaultFlags);
+		bool Open(const char* filePath, Access accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, Share shareMode = DefaultShare, Flags flags = DefaultFlags)
 		{
 			return Open(wxString(filePath), accessMode, disposition, shareMode, flags);
 		}
-		bool Open(const wchar_t* filePath, int accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, int shareMode = DefaultShare, int flags = DefaultFlags)
+		bool Open(const wchar_t* filePath, Access accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, Share shareMode = DefaultShare, Flags flags = DefaultFlags)
 		{
 			return Open(wxString(filePath), accessMode, disposition, shareMode, flags);
 		}
@@ -190,3 +167,11 @@ class KX_API KxFileStream:
 	public:
 		wxDECLARE_ABSTRACT_CLASS(KxFileStream);
 };
+
+namespace KxEnumClassOperations
+{
+	KxImplementEnum(KxFileStream::Access);
+	KxImplementEnum(KxFileStream::Share);
+	KxAllowEnumCastOp(KxFileStream::Disposition);
+	KxImplementEnum(KxFileStream::Flags);
+}

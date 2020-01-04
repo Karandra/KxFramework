@@ -1,13 +1,9 @@
-/*
-Copyright © 2018 Kerber. All rights reserved.
-
-You should have received a copy of the GNU LGPL v3
-along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
-*/
 #include "KxStdAfx.h"
 #include "KxFramework/KxFileStream.h"
 #include "KxFramework/KxUtility.h"
 #include <wx/ustring.h>
+
+using namespace KxEnumClassOperations;
 
 namespace
 {
@@ -94,7 +90,7 @@ namespace
 			return isWrite ? ErrorCode::WriteError : ErrorCode::ReadError;
 		}
 	}
-	DWORD AccessModeToNative(int mode)
+	DWORD AccessModeToNative(KxFileStream::Access mode)
 	{
 		using Access = KxFileStream::Access;
 
@@ -111,9 +107,9 @@ namespace
 			KxUtility::ModFlagRef(nativeMode, FILE_WRITE_ATTRIBUTES, mode & Access::WriteAttributes);
 			return nativeMode;
 		}
-		return Access::Invalid;
+		return std::numeric_limits<DWORD>::max();
 	}
-	DWORD ShareModeToNative(int mode)
+	DWORD ShareModeToNative(KxFileStream::Share mode)
 	{
 		using Share = KxFileStream::Share;
 
@@ -129,9 +125,9 @@ namespace
 			KxUtility::ModFlagRef(nativeMode, FILE_SHARE_DELETE, mode & Share::Delete);
 			return nativeMode;
 		}
-		return Share::Invalid;
+		return std::numeric_limits<DWORD>::max();
 	}
-	DWORD DispositionToNative(int mode)
+	DWORD DispositionToNative(KxFileStream::Disposition mode)
 	{
 		using Disposition = KxFileStream::Disposition;
 
@@ -154,9 +150,9 @@ namespace
 				return CREATE_ALWAYS;
 			}
 		};
-		return Disposition::Invalid;
+		return std::numeric_limits<DWORD>::max();
 	}
-	DWORD FlagsToNative(int flags)
+	DWORD FlagsToNative(KxFileStream::Flags flags)
 	{
 		using Flags = KxFileStream::Flags;
 
@@ -241,19 +237,19 @@ KxFileStream::KxFileStream()
 {
 	SetLastStreamError(ERROR_SUCCESS, false);
 }
-KxFileStream::KxFileStream(HANDLE fileHandle, int accessMode, Disposition disposition, int shareMode, int flags)
+KxFileStream::KxFileStream(HANDLE fileHandle, Access accessMode, Disposition disposition, Share shareMode, Flags flags)
 {
 	SetLastStreamError(ERROR_SUCCESS, false);
 	Open(fileHandle, accessMode, disposition, shareMode, flags);
 }
-KxFileStream::KxFileStream(const wxString& filePath, int accessMode, Disposition disposition, int shareMode, int flags)
+KxFileStream::KxFileStream(const wxString& filePath, Access accessMode, Disposition disposition, Share shareMode, Flags flags)
 	:m_FilePath(filePath), m_AccessMode((Access)accessMode), m_Disposition(disposition), m_ShareMode((Share)shareMode), m_Flags((Flags)flags)
 {
 	SetLastStreamError(ERROR_SUCCESS, false);
 	Open(filePath, accessMode, disposition, shareMode, flags);
 }
 
-bool KxFileStream::Open(HANDLE fileHandle, int accessMode, Disposition disposition, int shareMode, int flags)
+bool KxFileStream::Open(HANDLE fileHandle, Access accessMode, Disposition disposition, Share shareMode, Flags flags)
 {
 	DoClose();
 
@@ -266,7 +262,7 @@ bool KxFileStream::Open(HANDLE fileHandle, int accessMode, Disposition dispositi
 
 	return IsOk();
 }
-bool KxFileStream::Open(const wxString& filePath, int accessMode, Disposition disposition, int shareMode, int flags)
+bool KxFileStream::Open(const wxString& filePath, Access accessMode, Disposition disposition, Share shareMode, Flags flags)
 {
 	DoClose();
 	if (!filePath.IsEmpty())
