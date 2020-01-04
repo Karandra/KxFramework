@@ -774,6 +774,9 @@
     <ClCompile Include="Kx\System\FileTypeManager.cpp" />
     <ClCompile Include="Kx\Threading\Thread.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

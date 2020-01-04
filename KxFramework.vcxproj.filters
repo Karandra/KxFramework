@@ -1781,4 +1781,7 @@
       <Filter>Source Files\GUI\DataView2</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+  </ItemGroup>
 </Project>
