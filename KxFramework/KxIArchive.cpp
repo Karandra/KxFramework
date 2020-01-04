@@ -3,6 +3,129 @@
 #include "KxFramework/KxFileItem.h"
 #include "KxFramework/KxArchiveFileFinder.h"
 #include "KxFramework/KxComparator.h"
+#include <KxFramework/KxFile.h>
+#include <KxFramework/KxFileStream.h>
+
+namespace KxArchive
+{
+	class ExtractorCallbackBase: public KxRTTI::ImplementInterface<FileExtractionCallback, IExtractionCallback>
+	{
+		protected:
+			IArchiveItems& m_ArchiveItems;
+
+		public:
+			ExtractorCallbackBase(IArchiveExtraction& archive)
+				:m_ArchiveItems(*archive.QueryInterface<IArchiveItems>())
+			{
+			}
+	
+		public:
+			bool ShouldCancel() const override
+			{
+				return false;
+			}
+	};
+
+	class FileExtractionCallback: public ExtractorCallbackBase
+	{
+		private:
+			wxString m_Directory;
+			KxFileItem m_FileItem;
+
+		public:
+			FileExtractionCallback(IArchiveExtraction& archive, const wxString& directory = {})
+				:ExtractorCallbackBase(archive), m_Directory(directory)
+			{
+				if (!m_Directory.IsEmpty() && m_Directory.Last() == wxS('\\'))
+				{
+					m_Directory.RemoveLast(1);
+				}
+			}
+
+		public:
+			std::unique_ptr<wxOutputStream> OnGetStream(FileIndex fileIndex) override
+			{
+				m_FileItem = m_ArchiveItems.GetItem(fileIndex);
+				if (m_FileItem.IsOK())
+				{
+					// Get target path
+					wxString targetPath = GetTargetPath(m_FileItem);
+					if (m_FileItem.IsDirectory())
+					{
+						// Creating a directory here supports having empty directories
+						KxFile(targetPath).CreateFolder();
+						return nullptr;
+					}
+					else
+					{
+						KxFile(targetPath.BeforeLast(wxS('\\'))).CreateFolder();
+						return std::make_unique<KxFileStream>(targetPath, KxFileStream::Access::Write, KxFileStream::Disposition::CreateAlways, KxFileStream::Share::Read);
+					}
+				}
+				return nullptr;
+			}
+			bool OnOperationCompleted(FileIndex fileIndex) override
+			{
+				if (m_FileItem.IsOK())
+				{
+					KxFile file(m_FileItem.GetFullPath());
+					file.SetFileTime(m_FileItem.GetCreationTime(), m_FileItem.GetModificationTime(), m_FileItem.GetLastAccessTime());
+					file.SetAttributes(m_FileItem.GetAttributes());
+
+					return true;
+				}
+				return false;
+			}
+			
+			virtual wxString GetTargetPath(const KxFileItem& fileItem) const
+			{
+				return m_Directory + wxS('\\') + fileItem.GetFullPath();
+			}
+	};
+	class SingleFileExtractionCallback: public FileExtractionCallback
+	{
+		private:
+			wxString m_TargetPath;
+
+		public:
+			SingleFileExtractionCallback(IArchiveExtraction& archive, const wxString& targetPath)
+				:FileExtractionCallback(archive), m_TargetPath(targetPath)
+			{
+			}
+
+		public:
+			wxString GetTargetPath(const KxFileItem& fileItem) const override
+			{
+				return m_TargetPath;
+			}
+	};
+	class SingleStreamExtractionCallback: public ExtractorCallbackBase
+	{
+		private:
+			wxOutputStream& m_Stream;
+
+		public:
+			SingleStreamExtractionCallback(IArchiveExtraction& archive, wxOutputStream& stream)
+				:ExtractorCallbackBase(archive), m_Stream(stream)
+			{
+			}
+
+		public:
+			std::unique_ptr<wxOutputStream> OnGetStream(FileIndex fileIndex) override
+			{
+				KxFileItem fileItem = m_ArchiveItems.GetItem(fileIndex);
+				if (fileItem.IsOK() && !fileItem.IsDirectory())
+				{
+					return std::make_unique<wxFilterOutputStream>(m_Stream);
+				}
+				return nullptr;
+			}
+			bool OnOperationCompleted(FileIndex fileIndex) override
+			{
+				return true;
+			}
+	};
+}
 
 namespace KxArchive
 {
@@ -15,7 +138,7 @@ namespace KxArchive
 		{
 			return (double)compressedSize / originalSize;
 		}
-		return 0;
+		return -1;
 	}
 }
 
@@ -41,5 +164,24 @@ namespace KxArchive
 			}
 		}
 		return false;
+	}
+}
+
+namespace KxArchive
+{
+	bool IArchiveExtraction::ExtractToDirectory(const wxString& directory, FileIndexView files) const
+	{
+		FileExtractionCallback callback(const_cast<IArchiveExtraction&>(*this), directory);
+		return Extract(callback, files);
+	}
+	bool IArchiveExtraction::ExtractToStream(FileIndex fileIndex, wxOutputStream& stream) const
+	{
+		SingleStreamExtractionCallback callback(const_cast<IArchiveExtraction&>(*this), stream);
+		return Extract(callback, fileIndex);
+	}
+	bool IArchiveExtraction::ExtractToFile(FileIndex fileIndex, const wxString& targetPath) const
+	{
+		SingleFileExtractionCallback callback(const_cast<IArchiveExtraction&>(*this), targetPath);
+		return Extract(callback, fileIndex);
 	}
 }

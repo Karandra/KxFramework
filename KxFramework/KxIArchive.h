@@ -1,19 +1,114 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include "KxFramework/KxFileItem.h"
 #include "KxFramework/KxWinUndef.h"
-class KX_API KxFileItem;
+#include "Kx/RTTI.hpp"
 
 namespace KxArchive
 {
 	using FileIndex = uint32_t;
 	using FileIndexVector = std::vector<FileIndex>;
-	using FileIndexToPathMap = std::unordered_map<FileIndex, wxString>;
+
+	class FileIndexView final
+	{
+		private:
+			const FileIndex* m_Data = nullptr;
+			size_t m_Size = 0;
+
+		private:
+			void AssignSingle(FileIndex fileIndex)
+			{
+				m_Data = reinterpret_cast<FileIndex*>(static_cast<size_t>(fileIndex));
+				m_Size = 1;
+			}
+			void Validate()
+			{
+				if (m_Size == 0)
+				{
+					m_Data = nullptr;
+				}
+				if (m_Size > 1 && m_Data == nullptr)
+				{
+					m_Size = 0;
+				}
+			}
+
+		public:
+			FileIndexView() = default;
+			FileIndexView(const FileIndex* data, size_t count)
+				:m_Data(data), m_Size(count)
+			{
+				if (data && count == 1)
+				{
+					AssignSingle(*data);
+				}
+				Validate();
+			}
+			FileIndexView(FileIndex fileIndex)
+			{
+				AssignSingle(fileIndex);
+				Validate();
+			}
+
+		public:
+			const FileIndex* data() const
+			{
+				if (m_Size == 1)
+				{
+					return reinterpret_cast<const FileIndex*>(&m_Data);
+				}
+				return m_Data;
+			}
+			size_t size() const
+			{
+				return m_Size;
+			}
+			bool empty() const
+			{
+				return m_Size == 0;
+			}
+
+			FileIndexVector CopyToVector() const
+			{
+				return FileIndexVector(m_Data, m_Data + m_Size);
+			}
+
+			explicit operator bool() const
+			{
+				return !empty();
+			}
+			bool operator!() const
+			{
+				return empty();
+			}
+	};
 }
 
 namespace KxArchive
 {
-	class KX_API IArchive
+	class KX_API IExtractionCallback: public KxRTTI::Interface<IExtractionCallback>
 	{
+		KxDecalreIID(IExtractionCallback, {0x8a6363c5, 0x35be, 0x4884, {0x8a, 0x35, 0x5e, 0x14, 0x5, 0x81, 0xbc, 0x25}});
+
+		friend class IExtractionCallbackDelegate;
+
+		public:
+			virtual ~IExtractionCallback() = default;
+
+		public:
+			virtual bool ShouldCancel() const = 0;
+
+			virtual std::unique_ptr<wxOutputStream> OnGetStream(FileIndex fileIndex) = 0;
+			virtual bool OnOperationCompleted(FileIndex fileIndex) = 0;
+	};
+}
+
+namespace KxArchive
+{
+	class KX_API IArchive: public KxRTTI::Interface<IArchive>
+	{
+		KxDecalreIID(IArchive, {0xb4327a42, 0x17a7, 0x44db, {0x84, 0xb, 0xc3, 0x24, 0x5b, 0x29, 0xca, 0xe8}});
+
 		public:
 			virtual ~IArchive() = default;
 
@@ -38,8 +133,10 @@ namespace KxArchive
 			}
 	};
 
-	class KX_API IArchiveItems
+	class KX_API IArchiveItems: public KxRTTI::Interface<IArchiveItems>
 	{
+		KxDecalreIID(IArchiveItems, {0x1455f21f, 0x1a17, 0x4ca2, {0xb5, 0x57, 0xaa, 0xa8, 0x68, 0xfb, 0x4b, 0x7e}});
+
 		public:
 			virtual ~IArchiveItems() = default;
 
@@ -48,8 +145,10 @@ namespace KxArchive
 			virtual KxFileItem GetItem(size_t fileIndex) const = 0;
 	};
 	
-	class KX_API IArchiveSearch
+	class KX_API IArchiveSearch: public KxRTTI::Interface<IArchiveSearch>
 	{
+		KxDecalreIID(IArchiveSearch, {0x38c58054, 0x845d, 0x43c1, {0xa6, 0x6d, 0x46, 0xc4, 0xd2, 0x4d, 0x32, 0x3c}});
+
 		public:
 			virtual ~IArchiveSearch() = default;
 
@@ -65,33 +164,34 @@ namespace KxArchive
 
 namespace KxArchive
 {
-	class KX_API IArchiveExtraction
+	class KX_API IArchiveExtraction: public KxRTTI::Interface<IArchiveExtraction>
 	{
+		KxDecalreIID(IArchiveExtraction, {0x105f744b, 0x904d, 0x4822, {0xb4, 0x7a, 0x57, 0x8b, 0x3e, 0xd, 0x95, 0xe6}});
+
 		public:
 			virtual ~IArchiveExtraction() = default;
 
 		public:
-			// Extract entire archive into specified directory
-			virtual bool ExtractAll(const wxString& directory) const = 0;
+			// Extracts files using provided callback interface
+			virtual bool Extract(IExtractionCallback& callback, FileIndexView files = {}) const = 0;
+
+			// Extract entire archive or only specified files into a directory
+			virtual bool ExtractToDirectory(const wxString& directory, FileIndexView files = {}) const;
 			
-			// Extract only specified files into directory
-			virtual bool ExtractToDirectory(const FileIndexVector& files, const wxString& directory) const = 0;
-			virtual bool ExtractToDirectory(FileIndex fileIndex, const wxString& directory) const = 0;
-			
-			// Extract only specified files into corresponding files path
-			virtual bool ExtractToFile(const FileIndexToPathMap& files) const = 0;
-			virtual bool ExtractToFile(FileIndex fileIndex, const wxString& targetPath) const = 0;
-			
-			// Extract specified file to a stream
-			virtual bool ExtractToStream(const FileIndexVector& files) const = 0;
-			virtual bool ExtractToStream(FileIndex fileIndex, wxOutputStream& stream) const = 0;
+			// Extract specified file into a stream
+			virtual bool ExtractToStream(FileIndex fileIndex, wxOutputStream& stream) const;
+
+			// Extract single file into specified path
+			virtual bool ExtractToFile(FileIndex fileIndex, const wxString& targetPath) const;
 	};
 }
 
 namespace KxArchive
 {
-	class KX_API IArchiveCompression
+	class KX_API IArchiveCompression: public KxRTTI::Interface<IArchiveCompression>
 	{
+		KxDecalreIID(IArchiveCompression, {0xcf9bb9ac, 0x6519, 0x49d4, {0xa3, 0xb4, 0xcd, 0x63, 0x17, 0x52, 0xe1, 0x55}});
+
 		public:
 			virtual ~IArchiveCompression() = default;
 
