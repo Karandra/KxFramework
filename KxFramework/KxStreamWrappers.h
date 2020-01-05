@@ -1,9 +1,3 @@
-/*
-Copyright © 2018 Kerber. All rights reserved.
-
-You should have received a copy of the GNU LGPL v3
-along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
-*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxUtility.h"
@@ -46,7 +40,8 @@ class KX_API KxStreamBase
 };
 
 //////////////////////////////////////////////////////////////////////////
-template<class BaseStreamT> class KxInputStreamWrapper: public BaseStreamT
+template<class TBaseStream>
+class KxInputStreamWrapper: public TBaseStream
 {
 	protected:
 		template<class C> static void DoRemoveTrailingNulls(C& data)
@@ -71,7 +66,7 @@ template<class BaseStreamT> class KxInputStreamWrapper: public BaseStreamT
 		KxInputStreamWrapper(KxInputStreamWrapper&&) = delete;
 
 		template<class... Args> KxInputStreamWrapper(Args&&... arg)
-			:BaseStreamT(std::forward<Args>(arg)...)
+			:TBaseStream(std::forward<Args>(arg)...)
 		{
 		}
 		virtual ~KxInputStreamWrapper() = default;
@@ -300,7 +295,8 @@ template<class BaseStreamT> class KxInputStreamWrapper: public BaseStreamT
 };
 
 //////////////////////////////////////////////////////////////////////////
-template<class BaseStreamT> class KxOutputStreamWrapper: public BaseStreamT
+template<class TBaseStream>
+class KxOutputStreamWrapper: public TBaseStream
 {
 	protected:
 		template<class C> bool DoWriteContainter(const C& values)
@@ -316,7 +312,7 @@ template<class BaseStreamT> class KxOutputStreamWrapper: public BaseStreamT
 		KxOutputStreamWrapper(KxOutputStreamWrapper&&) = delete;
 
 		template<class... Args> KxOutputStreamWrapper(Args&&... arg)
-			:BaseStreamT(std::forward<Args>(arg)...)
+			:TBaseStream(std::forward<Args>(arg)...)
 		{
 		}
 		virtual ~KxOutputStreamWrapper() = default;
@@ -387,25 +383,26 @@ template<class BaseStreamT> class KxOutputStreamWrapper: public BaseStreamT
 };
 
 //////////////////////////////////////////////////////////////////////////
-template<class BaseStreamT> class KxIOStreamHelper
+template<class TBaseStream>
+class KxIOStreamHelper
 {
 	private:
 		constexpr static bool IsInputStream()
 		{
-			return std::is_base_of<wxInputStream, BaseStreamT>::value;
+			return std::is_base_of<wxInputStream, TBaseStream>::value;
 		}
 		constexpr static bool IsOutputStream()
 		{
-			return std::is_base_of<wxOutputStream, BaseStreamT>::value;
+			return std::is_base_of<wxOutputStream, TBaseStream>::value;
 		}
 
-		BaseStreamT* GetThis()
+		TBaseStream* GetThis()
 		{
-			return static_cast<BaseStreamT*>(this);
+			return static_cast<TBaseStream*>(this);
 		}
-		const BaseStreamT* GetThis() const
+		const TBaseStream* GetThis() const
 		{
-			return static_cast<const BaseStreamT*>(this);
+			return static_cast<const TBaseStream*>(this);
 		}
 
 		KxStreamBase::Offset SeekIO(KxStreamBase::Offset offset, wxSeekMode mode)
@@ -483,11 +480,12 @@ template<class BaseStreamT> class KxIOStreamHelper
 };
 
 //////////////////////////////////////////////////////////////////////////
-template<class BaseStreamT> class KxIOStreamWrapper: public BaseStreamT, public KxIOStreamHelper<KxIOStreamWrapper<BaseStreamT>>
+template<class TBaseStream>
+class KxIOStreamWrapper: public TBaseStream, public KxIOStreamHelper<KxIOStreamWrapper<TBaseStream>>
 {
 	public:
-		template<class... Args> KxIOStreamWrapper(Args&&... args)
-			:BaseStreamT(std::forward<Args>(args)...)
+		template<class... Args> KxIOStreamWrapper(Args&&... arg)
+			:TBaseStream(std::forward<Args>(arg)...)
 		{
 		}
 		virtual ~KxIOStreamWrapper() = default;

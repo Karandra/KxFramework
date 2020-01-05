@@ -1120,6 +1120,9 @@
     <ClInclude Include="KxFramework\KxArchive.h">
       <Filter>Header Files\Archive</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxStreamDelegate.h">
+      <Filter>Header Files\Streams</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />

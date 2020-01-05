@@ -286,6 +286,7 @@
     <ClInclude Include="KxFramework\KxHiDPIEnabledWindow.h" />
     <ClInclude Include="KxFramework\KxNotifyEvent.h" />
     <ClInclude Include="KxFramework\KxOptionSet.h" />
+    <ClInclude Include="KxFramework\KxStreamDelegate.h" />
     <ClInclude Include="KxFramework\KxSystemEnums.h" />
     <ClInclude Include="KxFramework\KxDPIAwareness.h" />
     <ClInclude Include="KxFramework\KxToolTipEx.h" />
