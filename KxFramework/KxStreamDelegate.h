@@ -1,162 +1,204 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KX_API KxDelegateInputStream: public wxFilterInputStream
+class KX_API KxDelegateInputStream: public wxInputStream
 {
+	private:
+		wxInputStream* m_Stream;
+		const bool m_StreamOwned = false;
+
 	protected:
 		// wxStreamBase 
 		wxFileOffset OnSysSeek(wxFileOffset pos, wxSeekMode mode) override
 		{
-			return GetFilterInputStream()->SeekI(pos, mode);
+			return m_Stream->SeekI(pos, mode);
 		}
 		wxFileOffset OnSysTell() const override
 		{
-			return GetFilterInputStream()->TellI();
+			return m_Stream->TellI();
 		}
 		
 		// wxInputStream
 		size_t OnSysRead(void* buffer, size_t size) override
 		{
-			GetFilterInputStream()->Read(buffer, size);
-			return GetFilterInputStream()->LastRead();
+			m_Stream->Read(buffer, size);
+			return m_Stream->LastRead();
 		}
 
 	public:
 		KxDelegateInputStream(wxInputStream& stream)
-			:wxFilterInputStream(stream)
+			:m_Stream(&stream), m_StreamOwned(false)
 		{
 		}
 		KxDelegateInputStream(std::unique_ptr<wxInputStream> stream)
-			:wxFilterInputStream(stream.release())
+			:m_Stream(stream.release()), m_StreamOwned(true)
 		{
+		}
+		~KxDelegateInputStream()
+		{
+			if (m_StreamOwned)
+			{
+				delete m_Stream;
+			}
+		}
+
+	public:
+		wxInputStream* GetTargetStream() const
+		{
+			return m_Stream;
 		}
 
 	public:
 		// wxStreamBase
 		bool IsOk() const override
 		{
-			return GetFilterInputStream()->IsOk();
+			return m_Stream->IsOk();
 		}
 		bool IsSeekable() const override
 		{
-			return GetFilterInputStream()->IsSeekable();
+			return m_Stream->IsSeekable();
 		}
 
 		wxFileOffset GetLength() const override
 		{
-			return GetFilterInputStream()->GetLength();
+			return m_Stream->GetLength();
 		}
 		size_t GetSize() const override
 		{
-			return GetFilterInputStream()->GetSize();
+			return m_Stream->GetSize();
 		}
 
 		// wxInputStream
 		bool CanRead() const override
 		{
-			return GetFilterInputStream()->CanRead();
+			return m_Stream->CanRead();
 		}
 		bool Eof() const override
 		{
-			return GetFilterInputStream()->Eof();
+			return m_Stream->Eof();
 		}
 
 		char Peek() override
 		{
-			return GetFilterInputStream()->Peek();
+			return m_Stream->Peek();
 		}
 		KxDelegateInputStream& Read(void* buffer, size_t size) override
 		{
-			GetFilterInputStream()->Read(buffer, size);
+			m_Stream->Read(buffer, size);
 			return *this;
 		}
 		size_t LastRead() const override
 		{
-			return GetFilterInputStream()->LastRead();
+			return m_Stream->LastRead();
 		}
 
 		wxFileOffset SeekI(wxFileOffset pos, wxSeekMode mode = wxFromStart) override
 		{
-			return GetFilterInputStream()->SeekI(pos, mode);
+			return m_Stream->SeekI(pos, mode);
 		}
 		wxFileOffset TellI() const override
 		{
-			return GetFilterInputStream()->TellI();
+			return m_Stream->TellI();
 		}
 };
 
-class KX_API KxDelegateOutputStream: public wxFilterOutputStream
+class KX_API KxDelegateOutputStream: public wxOutputStream
 {
+	private:
+		wxOutputStream* m_Stream;
+		const bool m_StreamOwned = false;
+
 	protected:
 		// wxStreamBase 
 		wxFileOffset OnSysSeek(wxFileOffset pos, wxSeekMode mode) override
 		{
-			return GetFilterOutputStream()->SeekO(pos, mode);
+			return m_Stream->SeekO(pos, mode);
 		}
 		wxFileOffset OnSysTell() const override
 		{
-			return GetFilterOutputStream()->TellO();
+			return m_Stream->TellO();
 		}
 		
 		// wxOutputStream
 		size_t OnSysWrite(const void* buffer, size_t size) override
 		{
-			GetFilterOutputStream()->Write(buffer, size);
-			return GetFilterOutputStream()->LastWrite();
+			m_Stream->Write(buffer, size);
+			return m_Stream->LastWrite();
 		}
 
 	public:
 		KxDelegateOutputStream(wxOutputStream& stream)
-			:wxFilterOutputStream(stream)
+			:m_Stream(&stream), m_StreamOwned(false)
 		{
 		}
 		KxDelegateOutputStream(std::unique_ptr<wxOutputStream> stream)
-			:wxFilterOutputStream(stream.release())
+			:m_Stream(stream.release()), m_StreamOwned(true)
 		{
+		}
+		~KxDelegateOutputStream()
+		{
+			if (m_StreamOwned)
+			{
+				delete m_Stream;
+			}
+		}
+
+	public:
+		wxOutputStream* GetTargetStream() const
+		{
+			return m_Stream;
 		}
 
 	public:
 		// wxStreamBase 
 		bool IsOk() const override
 		{
-			return GetFilterOutputStream()->IsOk();
+			return m_Stream->IsOk();
 		}
 		bool IsSeekable() const override
 		{
-			return GetFilterOutputStream()->IsSeekable();
+			return m_Stream->IsSeekable();
 		}
 
 		wxFileOffset GetLength() const override
 		{
-			return GetFilterOutputStream()->GetLength();
+			return m_Stream->GetLength();
 		}
 		size_t GetSize() const override
 		{
-			return GetFilterOutputStream()->GetSize();
+			return m_Stream->GetSize();
 		}
 
 		// wxOutputStream
 		KxDelegateOutputStream& Write(const void* buffer, size_t size) override
 		{
-			GetFilterOutputStream()->Write(buffer, size);
+			m_Stream->Write(buffer, size);
 			return *this;
 		}
 		size_t LastWrite() const override
 		{
-			return GetFilterOutputStream()->LastWrite();
+			return m_Stream->LastWrite();
 		}
 		
 		wxFileOffset SeekO(wxFileOffset pos, wxSeekMode mode = wxFromStart) override
 		{
-			return GetFilterOutputStream()->SeekO(pos, mode);
+			return m_Stream->SeekO(pos, mode);
 		}
 		wxFileOffset TellO() const override
 		{
-			return GetFilterOutputStream()->TellO();
+			return m_Stream->TellO();
 		}
 
+		void Sync() override
+		{
+			m_Stream->Sync();
+		}
 		bool Close() override
 		{
-			return GetFilterOutputStream()->Close();
+			if (m_StreamOwned)
+			{
+				return m_Stream->Close();
+			}
+			return true;
 		}
 };
