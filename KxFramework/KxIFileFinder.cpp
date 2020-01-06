@@ -16,14 +16,19 @@ wxString KxIFileFinder::Normalize(const wxString& source, bool start, bool end) 
 	{
 		out.EndsWith(wxS("\\"), &out);
 	}
+
+	out.Replace(wxS('/'), wxS('\\'), true);
 	return out;
 }
 wxString KxIFileFinder::ConstructSearchQuery(const wxString& source, const wxString& filter) const
 {
-	return !filter.IsEmpty() ? source + wxS('\\') + filter : source;
+	wxString out = !filter.IsEmpty() ? source + wxS('\\') + filter : source;
+
+	out.Replace(wxS('/'), wxS('\\'), true);
+	return out;
 }
-wxString KxIFileFinder::ExtrctSourceFromSearchQuery(const wxString& searchQuery) const
+wxString KxIFileFinder::ExtractSourceFromSearchQuery(const wxString& searchQuery) const
 {
 	wxString source = searchQuery.BeforeLast(wxS('\\'));
-	return source.IsEmpty() ? searchQuery : source;
+	return !source.IsEmpty() ? source : searchQuery;
 }

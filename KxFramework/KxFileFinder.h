@@ -53,6 +53,6 @@ class KX_API KxFileFinder: public KxIFileFinder
 
 		wxString GetSource() const
 		{
-			return ExtrctSourceFromSearchQuery(m_SearchQuery);
+			return ExtractSourceFromSearchQuery(m_SearchQuery);
 		}
 };

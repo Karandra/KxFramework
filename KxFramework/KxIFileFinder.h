@@ -9,7 +9,7 @@ class KX_API KxIFileFinder
 
 		wxString Normalize(const wxString& source, bool start, bool end) const;
 		wxString ConstructSearchQuery(const wxString& source, const wxString& filter) const;
-		wxString ExtrctSourceFromSearchQuery(const wxString& searchQuery) const;
+		wxString ExtractSourceFromSearchQuery(const wxString& searchQuery) const;
 
 	public:
 		KxIFileFinder() = default;
