@@ -818,36 +818,30 @@ KxLibraryVersionInfo KxFile::GetVersionInfo() const
 //////////////////////////////////////////////////////////////////////////
 wxDateTime KxFile::GetFileTime(KxFileTime type) const
 {
-	KxFileStream::Flags streamFlags = IsFolder() ? KxFileStream::Flags::BackupSemantics : KxFileStream::Flags::Normal;
+	const KxFileStream::Flags streamFlags = IsFolder() ? KxFileStream::Flags::BackupSemantics : KxFileStream::Flags::Normal;
 	KxFileStream stream(GetFullPathNS(), KxFileStream::Access::Read, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Everything, streamFlags);
-	if (stream.IsOk())
+	if (stream)
 	{
-		BOOL isOK = FALSE;
-		FILETIME fileTime = {0};
-		if (type == KxFILETIME_CREATION)
+		wxDateTime creationTime;
+		wxDateTime modificationTime;
+		wxDateTime lastAccessTime;
+		if (stream.GetFileTime(creationTime, modificationTime, lastAccessTime))
 		{
-			isOK = ::GetFileTime(stream.GetHandle(), &fileTime, nullptr, nullptr);
-		}
-		else if (type == KxFILETIME_LAST_ACCESS)
-		{
-			isOK = ::GetFileTime(stream.GetHandle(), nullptr, &fileTime, nullptr);
-		}
-		else if (type == KxFILETIME_MODIFICATION)
-		{
-			isOK = ::GetFileTime(stream.GetHandle(), nullptr, nullptr, &fileTime);
-		}
-
-		FILETIME fileTimeLocal = {0};
-		if (isOK && ::FileTimeToLocalFileTime(&fileTime, &fileTimeLocal))
-		{
-			SYSTEMTIME systemTime = {0};
-			if (::FileTimeToSystemTime(&fileTimeLocal, &systemTime))
+			switch (type)
 			{
-				wxDateTime t;
-				t.SetFromMSWSysTime(systemTime);
-
-				return t;
-			}
+				case KxFILETIME_CREATION:
+				{
+					return creationTime;
+				}
+				case KxFILETIME_MODIFICATION:
+				{
+					return modificationTime;
+				}
+				case KxFILETIME_LAST_ACCESS:
+				{
+					return lastAccessTime;
+				}
+			};
 		}
 	}
 	return wxDefaultDateTime;
@@ -856,35 +850,25 @@ bool KxFile::SetFileTime(const wxDateTime& time, KxFileTime type)
 {
 	if (time.IsValid())
 	{
-		KxFileStream::Flags streamFlags = IsFolder() ? KxFileStream::Flags::BackupSemantics : KxFileStream::Flags::Normal;
+		const KxFileStream::Flags streamFlags = IsFolder() ? KxFileStream::Flags::BackupSemantics : KxFileStream::Flags::Normal;
 		KxFileStream stream(GetFullPathNS(), KxFileStream::Access::WriteAttributes, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Everything, streamFlags);
-		if (stream.IsOk())
+		if (stream)
 		{
-			TIME_ZONE_INFORMATION timeZoneInfo = {0};
-			bool noDST = ::GetTimeZoneInformation(&timeZoneInfo) == TIME_ZONE_ID_UNKNOWN;
-
-			SYSTEMTIME systemTime = {0};
-			time.ToUTC(noDST).GetAsMSWSysTime(&systemTime);
-
-			FILETIME fileTime = {0};
-			if (::SystemTimeToFileTime(&systemTime, &fileTime))
+			switch (type)
 			{
-				switch (type)
+				case KxFILETIME_CREATION:
 				{
-					case KxFILETIME_CREATION:
-					{
-						return ::SetFileTime(stream.GetHandle(), &fileTime, nullptr, nullptr);
-					}
-					case KxFILETIME_LAST_ACCESS:
-					{
-						return ::SetFileTime(stream.GetHandle(), nullptr, &fileTime, nullptr);
-					}
-					case KxFILETIME_MODIFICATION:
-					{
-						return ::SetFileTime(stream.GetHandle(), nullptr, nullptr, &fileTime);
-					}
-				};
-			}
+					return stream.SetFileTime(time, {}, {});
+				}
+				case KxFILETIME_MODIFICATION:
+				{
+					return stream.SetFileTime({}, time, {});
+				}
+				case KxFILETIME_LAST_ACCESS:
+				{
+					return stream.SetFileTime({}, {}, time);
+				}
+			};
 		}
 	}
 	return false;
@@ -893,29 +877,11 @@ bool KxFile::SetFileTime(const wxDateTime& creationTime, const wxDateTime& modif
 {
 	if (creationTime.IsValid() && modificationTime.IsValid() && lastAccessTime.IsValid())
 	{
-		KxFileStream::Flags streamFlags = IsFolder() ? KxFileStream::Flags::BackupSemantics : KxFileStream::Flags::Normal;
+		const KxFileStream::Flags streamFlags = IsFolder() ? KxFileStream::Flags::BackupSemantics : KxFileStream::Flags::Normal;
 		KxFileStream stream(GetFullPathNS(), KxFileStream::Access::WriteAttributes, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Everything, streamFlags);
-		if (stream.IsOk())
+		if (stream)
 		{
-			TIME_ZONE_INFORMATION timeZoneInfo = {0};
-			bool noDST = ::GetTimeZoneInformation(&timeZoneInfo) == TIME_ZONE_ID_UNKNOWN;
-
-			SYSTEMTIME creationSystemTime = {0};
-			SYSTEMTIME modificationSystemTime = {0};
-			SYSTEMTIME lastAccessSystemTime = {0};
-			creationTime.ToUTC(noDST).GetAsMSWSysTime(&creationSystemTime);
-			modificationTime.ToUTC(noDST).GetAsMSWSysTime(&modificationSystemTime);
-			lastAccessTime.ToUTC(noDST).GetAsMSWSysTime(&lastAccessSystemTime);
-
-			FILETIME creationFileTime = {0};
-			FILETIME modificationFileTime = {0};
-			FILETIME lastAccessFileTime = {0};
-			if (::SystemTimeToFileTime(&creationSystemTime, &creationFileTime) &&
-				::SystemTimeToFileTime(&modificationSystemTime, &modificationFileTime) &&
-				::SystemTimeToFileTime(&lastAccessSystemTime, &lastAccessFileTime))
-			{
-				return ::SetFileTime(stream.GetHandle(), &creationFileTime, &lastAccessFileTime, &modificationFileTime);
-			}
+			return stream.SetFileTime(creationTime, modificationTime, lastAccessTime);
 		}
 	}
 	return false;
