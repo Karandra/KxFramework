@@ -183,6 +183,11 @@ namespace KxArchive
 			virtual ~IExtractionCallback() = default;
 
 		public:
+			virtual bool ShouldCancel()
+			{
+				return false;
+			}
+
 			virtual KxDelegateOutputStream OnGetStream(FileIndex fileIndex) = 0;
 			virtual bool OnOperationCompleted(FileIndex fileIndex, wxOutputStream& stream) = 0;
 	};
@@ -193,10 +198,16 @@ namespace KxArchive
 		private:
 			const IArchiveExtraction& m_Archive;
 
+			std::function<bool()> m_ShouldCancel;
 			std::function<KxDelegateOutputStream(FileIndex)> m_OnGetStream;
 			std::function<bool(FileIndex, wxOutputStream&)> m_OnOperationCompleted;
 
 		private:
+			bool ShouldCancel() override
+			{
+				return m_ShouldCancel ? m_ShouldCancel() : false;
+			}
+
 			KxDelegateOutputStream OnGetStream(FileIndex fileIndex) override
 			{
 				return m_OnGetStream ? m_OnGetStream(fileIndex) : nullptr;
@@ -214,11 +225,22 @@ namespace KxArchive
 			}
 
 		public:
-			bool Execute(FileIndexView files = {})
+			bool Execute()
+			{
+				return m_Archive.Extract(*this);
+			}
+			bool Execute(FileIndexView files)
 			{
 				return m_Archive.Extract(*this, files);
 			}
 			
+			template<class TFunc>
+			ExtractWithOptions& ShouldCancel(TFunc&& func)
+			{
+				m_ShouldCancel = std::forward<TFunc>(func);
+				return *this;
+			}
+
 			template<class TFunc>
 			ExtractWithOptions& OnGetStream(TFunc&& func)
 			{
@@ -255,10 +277,12 @@ namespace KxArchive
 
 		public:
 			// Extracts files using provided callback interface
-			virtual bool Extract(IExtractionCallback& callback, FileIndexView files = {}) const = 0;
+			virtual bool Extract(IExtractionCallback& callback) const = 0;
+			virtual bool Extract(IExtractionCallback& callback, FileIndexView files) const = 0;
 
 			// Extract entire archive or only specified files into a directory
-			virtual bool ExtractToDirectory(const wxString& directory, FileIndexView files = {}) const;
+			virtual bool ExtractToDirectory(const wxString& directory) const;
+			virtual bool ExtractToDirectory(const wxString& directory, FileIndexView files) const;
 			
 			// Extract specified file into a stream
 			virtual bool ExtractToStream(FileIndex fileIndex, wxOutputStream& stream) const;

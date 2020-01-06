@@ -167,11 +167,17 @@ namespace KxArchive
 
 namespace KxArchive
 {
+	bool IArchiveExtraction::ExtractToDirectory(const wxString& directory) const
+	{
+		FileExtractionCallback callback(const_cast<IArchiveExtraction&>(*this), directory);
+		return Extract(callback);
+	}
 	bool IArchiveExtraction::ExtractToDirectory(const wxString& directory, FileIndexView files) const
 	{
 		FileExtractionCallback callback(const_cast<IArchiveExtraction&>(*this), directory);
 		return Extract(callback, files);
 	}
+
 	bool IArchiveExtraction::ExtractToStream(FileIndex fileIndex, wxOutputStream& stream) const
 	{
 		SingleStreamExtractionCallback callback(const_cast<IArchiveExtraction&>(*this), stream);
