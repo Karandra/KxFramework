@@ -160,9 +160,21 @@ class KX_API KxFileStream:
 		wxString GetFileName() const;
 		HANDLE GetHandle() const;
 
+		std::optional<uint32_t> GetAttributes() const;
+		bool SetAttributes(uint32_t attributes);
+
+		bool GetFileTime(wxDateTime& creationTime, wxDateTime& modificationTime, wxDateTime& lastAccessTime) const;
+		bool SetFileTime(const wxDateTime& creationTime, const wxDateTime& modificationTime, const wxDateTime& lastAccessTime);
+
 	public:
-		operator wxStreamBase*();
-		operator const wxStreamBase*();
+		explicit operator bool() const
+		{
+			return IsOk();
+		}
+		bool operator!() const
+		{
+			return !IsOk();
+		}
 
 	public:
 		wxDECLARE_ABSTRACT_CLASS(KxFileStream);

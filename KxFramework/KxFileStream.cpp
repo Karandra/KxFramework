@@ -406,25 +406,82 @@ HANDLE KxFileStream::GetHandle() const
 	return m_Handle;
 }
 
-KxFileStream::operator wxStreamBase*()
+std::optional<uint32_t> KxFileStream::GetAttributes() const
 {
-	if (IsWriteable())
+	if (m_Handle)
 	{
-		return static_cast<wxOutputStream*>(this);
+		BY_HANDLE_FILE_INFORMATION info = {};
+		if (::GetFileInformationByHandle(m_Handle, &info))
+		{
+			return info.dwFileAttributes;
+		}
 	}
-	else
-	{
-		return static_cast<wxInputStream*>(this);
-	}
+	return std::nullopt;
 }
-KxFileStream::operator const wxStreamBase*()
+bool KxFileStream::SetAttributes(uint32_t attributes)
 {
-	if (IsWriteable())
+	if (m_Handle)
 	{
-		return static_cast<wxOutputStream*>(this);
+		FILE_BASIC_INFO basicInfo = {};
+		if (::GetFileInformationByHandleEx(m_Handle, FILE_INFO_BY_HANDLE_CLASS::FileBasicInfo, &basicInfo, sizeof(basicInfo)))
+		{
+			basicInfo.FileAttributes = attributes;
+			return ::SetFileInformationByHandle(m_Handle, FILE_INFO_BY_HANDLE_CLASS::FileBasicInfo, &basicInfo, sizeof(basicInfo));
+		}
 	}
-	else
+	return false;
+}
+
+bool KxFileStream::GetFileTime(wxDateTime& creationTime, wxDateTime& modificationTime, wxDateTime& lastAccessTime) const
+{
+	FILETIME creationTimeFile = {};
+	FILETIME modificationTimeFile = {};
+	FILETIME lastAccessTimeFile = {};
+	if (m_Handle && ::GetFileTime(m_Handle, &creationTimeFile, &lastAccessTimeFile, &modificationTimeFile))
 	{
-		return static_cast<wxInputStream*>(this);
+		auto ToDateTime = [](const FILETIME& fileTime)
+		{
+			SYSTEMTIME systemTime = {};
+			SYSTEMTIME localTime = {};
+			if (::FileTimeToSystemTime(&fileTime, &systemTime) && ::SystemTimeToTzSpecificLocalTime(nullptr, &systemTime, &localTime))
+			{
+				return wxDateTime().SetFromMSWSysTime(localTime);
+			}
+			return wxInvalidDateTime;
+		};
+		
+		creationTime = ToDateTime(creationTimeFile);
+		modificationTime = ToDateTime(modificationTimeFile);
+		lastAccessTime = ToDateTime(lastAccessTimeFile);
+
+		return true;
 	}
+	return false;
+}
+bool KxFileStream::SetFileTime(const wxDateTime& creationTime, const wxDateTime& modificationTime, const wxDateTime& lastAccessTime)
+{
+	if (m_Handle)
+	{
+		auto ToFileTime = [](const wxDateTime& dateTime)
+		{
+			FILETIME fileTime = {0, 0};
+			if (dateTime.IsValid())
+			{
+				SYSTEMTIME systemTime = {};
+				dateTime.GetAsMSWSysTime(&systemTime);
+
+				if (::SystemTimeToFileTime(&systemTime, &fileTime))
+				{
+					return fileTime;
+				}
+			}
+			return fileTime;
+		};
+
+		FILETIME creationTimeFile = ToFileTime(creationTime);
+		FILETIME modificationTimeFile = ToFileTime(modificationTime);
+		FILETIME lastAccessTimeFile = ToFileTime(lastAccessTime);
+		return ::SetFileTime(m_Handle, &creationTimeFile, &modificationTimeFile, &lastAccessTimeFile);
+	}
+	return false;
 }
