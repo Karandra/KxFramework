@@ -1,58 +1,117 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KX_API KxDelegateInputStream: public wxInputStream
+template<class TBaseStream>
+class KxDelegateStreamBase: public TBaseStream
 {
 	private:
-		wxInputStream* m_Stream;
-		const bool m_StreamOwned = false;
+		TBaseStream* m_Stream = nullptr;
+		bool m_StreamOwned = false;
 
-	protected:
-		// wxStreamBase 
-		wxFileOffset OnSysSeek(wxFileOffset pos, wxSeekMode mode) override
-		{
-			return m_Stream->SeekI(pos, mode);
-		}
-		wxFileOffset OnSysTell() const override
-		{
-			return m_Stream->TellI();
-		}
-		
-		// wxInputStream
-		size_t OnSysRead(void* buffer, size_t size) override
-		{
-			m_Stream->Read(buffer, size);
-			return m_Stream->LastRead();
-		}
-
-	public:
-		KxDelegateInputStream(wxInputStream& stream)
-			:m_Stream(&stream), m_StreamOwned(false)
-		{
-		}
-		KxDelegateInputStream(std::unique_ptr<wxInputStream> stream)
-			:m_Stream(stream.release()), m_StreamOwned(true)
-		{
-		}
-		~KxDelegateInputStream()
+	private:
+		void DeleteTargetStreamIfNeeded()
 		{
 			if (m_StreamOwned)
 			{
 				delete m_Stream;
+				m_Stream = nullptr;
 			}
+			m_StreamOwned = false;
+		}
+
+	protected:
+		KxDelegateStreamBase() = default;
+		KxDelegateStreamBase(std::nullptr_t)
+			:m_Stream(nullptr), m_StreamOwned(false)
+		{
+		}
+		KxDelegateStreamBase(TBaseStream& stream)
+			:m_Stream(&stream), m_StreamOwned(false)
+		{
+		}
+		
+		template<class T>
+		KxDelegateStreamBase(std::unique_ptr<T> stream)
+			:m_Stream(stream.release()), m_StreamOwned(true)
+		{
+			static_assert(std::is_base_of_v<TBaseStream, T>, "must inherit from 'TBaseStream' (wx[Input/Output]Stream)");
+		}
+
+		KxDelegateStreamBase(KxDelegateStreamBase&& other)
+		{
+			*this = std::move(other);
+		}
+		KxDelegateStreamBase(const KxDelegateStreamBase&) = delete;
+
+		~KxDelegateStreamBase()
+		{
+			DeleteTargetStreamIfNeeded();
 		}
 
 	public:
-		wxInputStream* GetTargetStream() const
+		bool IsTargetStreamOwned() const
+		{
+			return m_StreamOwned;
+		}
+		bool HasTargetStream() const
+		{
+			return m_Stream != nullptr;
+		}
+		std::unique_ptr<TBaseStream> TakeTargetStream()
+		{
+			if (m_StreamOwned)
+			{
+				return std::unique_ptr<TBaseStream>(m_Stream);
+			}
+			return nullptr;
+		}
+		
+		TBaseStream* GetTargetStream() const
 		{
 			return m_Stream;
+		}
+		TBaseStream& operator*() const
+		{
+			return *m_Stream;
+		}
+		TBaseStream* operator->() const
+		{
+			return m_Stream;
+		}
+
+		KxDelegateStreamBase& operator=(KxDelegateStreamBase&& other)
+		{
+			DeleteTargetStreamIfNeeded();
+			m_Stream = other.m_Stream;
+			other.m_Stream = nullptr;
+
+			m_StreamOwned = other.m_StreamOwned;
+			other.m_StreamOwned = false;
+
+			TBaseStream::m_lastcount = other.m_lastcount;
+			other.m_lastcount = 0;
+
+			TBaseStream::m_lasterror = other.m_lasterror;
+			other.m_lasterror = wxStreamError::wxSTREAM_NO_ERROR;
+
+			return *this;
+		}
+		KxDelegateStreamBase& operator=(const KxDelegateStreamBase&) = delete;
+
+		explicit operator bool() const
+		{
+			return HasTargetStream();
+		}
+		bool operator!() const
+		{
+			return !HasTargetStream();
 		}
 
 	public:
 		// wxStreamBase
 		bool IsOk() const override
 		{
-			return m_Stream->IsOk();
+			return m_Stream && m_Stream->IsOk();
 		}
 		bool IsSeekable() const override
 		{
@@ -67,137 +126,131 @@ class KX_API KxDelegateInputStream: public wxInputStream
 		{
 			return m_Stream->GetSize();
 		}
+};
 
+class KX_API KxDelegateInputStream: public KxDelegateStreamBase<wxInputStream>
+{
+	protected:
+		// wxStreamBase
+		wxFileOffset OnSysSeek(wxFileOffset pos, wxSeekMode mode) override
+		{
+			return GetTargetStream()->SeekI(pos, mode);
+		}
+		wxFileOffset OnSysTell() const override
+		{
+			return GetTargetStream()->TellI();
+		}
+
+		// wxInputStream
+		size_t OnSysRead(void* buffer, size_t size) override
+		{
+			GetTargetStream()->Read(buffer, size);
+			return GetTargetStream()->LastRead();
+		}
+
+	public:
+		KxDelegateInputStream() = default;
+
+		template<class... Args>
+		KxDelegateInputStream(Args&&... arg)
+			:KxDelegateStreamBase(std::forward<Args>(arg)...)
+		{
+		}
+
+	public:
 		// wxInputStream
 		bool CanRead() const override
 		{
-			return m_Stream->CanRead();
+			return GetTargetStream()->CanRead();
 		}
 		bool Eof() const override
 		{
-			return m_Stream->Eof();
+			return GetTargetStream()->Eof();
 		}
 
 		char Peek() override
 		{
-			return m_Stream->Peek();
+			return GetTargetStream()->Peek();
 		}
 		KxDelegateInputStream& Read(void* buffer, size_t size) override
 		{
-			m_Stream->Read(buffer, size);
+			GetTargetStream()->Read(buffer, size);
 			return *this;
 		}
 		size_t LastRead() const override
 		{
-			return m_Stream->LastRead();
+			return GetTargetStream()->LastRead();
 		}
 
 		wxFileOffset SeekI(wxFileOffset pos, wxSeekMode mode = wxFromStart) override
 		{
-			return m_Stream->SeekI(pos, mode);
+			return GetTargetStream()->SeekI(pos, mode);
 		}
 		wxFileOffset TellI() const override
 		{
-			return m_Stream->TellI();
+			return GetTargetStream()->TellI();
 		}
 };
 
-class KX_API KxDelegateOutputStream: public wxOutputStream
+class KX_API KxDelegateOutputStream: public KxDelegateStreamBase<wxOutputStream>
 {
-	private:
-		wxOutputStream* m_Stream;
-		const bool m_StreamOwned = false;
-
 	protected:
-		// wxStreamBase 
+		// wxStreamBase
 		wxFileOffset OnSysSeek(wxFileOffset pos, wxSeekMode mode) override
 		{
-			return m_Stream->SeekO(pos, mode);
+			return GetTargetStream()->SeekO(pos, mode);
 		}
 		wxFileOffset OnSysTell() const override
 		{
-			return m_Stream->TellO();
+			return GetTargetStream()->TellO();
 		}
-		
+
 		// wxOutputStream
 		size_t OnSysWrite(const void* buffer, size_t size) override
 		{
-			m_Stream->Write(buffer, size);
-			return m_Stream->LastWrite();
+			GetTargetStream()->Write(buffer, size);
+			return GetTargetStream()->LastWrite();
 		}
 
 	public:
-		KxDelegateOutputStream(wxOutputStream& stream)
-			:m_Stream(&stream), m_StreamOwned(false)
+		KxDelegateOutputStream() = default;
+
+		template<class... Args>
+		KxDelegateOutputStream(Args&&... arg)
+			:KxDelegateStreamBase(std::forward<Args>(arg)...)
 		{
-		}
-		KxDelegateOutputStream(std::unique_ptr<wxOutputStream> stream)
-			:m_Stream(stream.release()), m_StreamOwned(true)
-		{
-		}
-		~KxDelegateOutputStream()
-		{
-			if (m_StreamOwned)
-			{
-				delete m_Stream;
-			}
 		}
 
 	public:
-		wxOutputStream* GetTargetStream() const
-		{
-			return m_Stream;
-		}
-
-	public:
-		// wxStreamBase 
-		bool IsOk() const override
-		{
-			return m_Stream->IsOk();
-		}
-		bool IsSeekable() const override
-		{
-			return m_Stream->IsSeekable();
-		}
-
-		wxFileOffset GetLength() const override
-		{
-			return m_Stream->GetLength();
-		}
-		size_t GetSize() const override
-		{
-			return m_Stream->GetSize();
-		}
-
 		// wxOutputStream
 		KxDelegateOutputStream& Write(const void* buffer, size_t size) override
 		{
-			m_Stream->Write(buffer, size);
+			GetTargetStream()->Write(buffer, size);
 			return *this;
 		}
 		size_t LastWrite() const override
 		{
-			return m_Stream->LastWrite();
+			return GetTargetStream()->LastWrite();
 		}
 		
 		wxFileOffset SeekO(wxFileOffset pos, wxSeekMode mode = wxFromStart) override
 		{
-			return m_Stream->SeekO(pos, mode);
+			return GetTargetStream()->SeekO(pos, mode);
 		}
 		wxFileOffset TellO() const override
 		{
-			return m_Stream->TellO();
+			return GetTargetStream()->TellO();
 		}
 
 		void Sync() override
 		{
-			m_Stream->Sync();
+			GetTargetStream()->Sync();
 		}
 		bool Close() override
 		{
-			if (m_StreamOwned)
+			if (IsTargetStreamOwned())
 			{
-				return m_Stream->Close();
+				return GetTargetStream()->Close();
 			}
 			return true;
 		}
