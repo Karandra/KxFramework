@@ -1,6 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxFileItem.h"
+#include <KxFramework/KxStreamDelegate.h>
 #include "KxFramework/KxWinUndef.h"
 #include "Kx/RTTI.hpp"
 
@@ -9,6 +10,11 @@ namespace KxArchive
 	using FileIndex = uint32_t;
 	using FileIndexVector = std::vector<FileIndex>;
 
+	constexpr FileIndex InvalidFileIndex = std::numeric_limits<FileIndex>::max();
+}
+
+namespace KxArchive
+{
 	class FileIndexView final
 	{
 		private:
@@ -48,6 +54,10 @@ namespace KxArchive
 			FileIndexView(const FileIndex* data, size_t count)
 			{
 				AssignMultiple(data, count);
+			}
+			FileIndexView(const FileIndexVector& files)
+			{
+				AssignMultiple(files.data(), files.size());
 			}
 			FileIndexView(FileIndex fileIndex)
 			{
@@ -100,23 +110,6 @@ namespace KxArchive
 			{
 				return empty();
 			}
-	};
-}
-
-namespace KxArchive
-{
-	class KX_API IExtractionCallback: public KxRTTI::Interface<IExtractionCallback>
-	{
-		KxDecalreIID(IExtractionCallback, {0x8a6363c5, 0x35be, 0x4884, {0x8a, 0x35, 0x5e, 0x14, 0x5, 0x81, 0xbc, 0x25}});
-
-		public:
-			virtual ~IExtractionCallback() = default;
-
-		public:
-			virtual bool ShouldCancel() const = 0;
-
-			virtual std::unique_ptr<wxOutputStream> OnGetStream(FileIndex fileIndex) = 0;
-			virtual bool OnOperationCompleted(FileIndex fileIndex) = 0;
 	};
 }
 
@@ -181,6 +174,78 @@ namespace KxArchive
 
 namespace KxArchive
 {
+	class KX_API IArchiveExtraction;
+	class KX_API IExtractionCallback: public KxRTTI::Interface<IExtractionCallback>
+	{
+		KxDecalreIID(IExtractionCallback, {0x8a6363c5, 0x35be, 0x4884, {0x8a, 0x35, 0x5e, 0x14, 0x5, 0x81, 0xbc, 0x25}});
+
+		public:
+			virtual ~IExtractionCallback() = default;
+
+		public:
+			virtual KxDelegateOutputStream OnGetStream(FileIndex fileIndex) = 0;
+			virtual bool OnOperationCompleted(FileIndex fileIndex, wxOutputStream& stream) = 0;
+	};
+
+	template<class TOutStream = wxOutputStream>
+	class KX_API ExtractWithOptions: public IExtractionCallback
+	{
+		private:
+			const IArchiveExtraction& m_Archive;
+
+			std::function<KxDelegateOutputStream(FileIndex)> m_OnGetStream;
+			std::function<bool(FileIndex, wxOutputStream&)> m_OnOperationCompleted;
+
+		private:
+			KxDelegateOutputStream OnGetStream(FileIndex fileIndex) override
+			{
+				return m_OnGetStream ? m_OnGetStream(fileIndex) : nullptr;
+			}
+			bool OnOperationCompleted(FileIndex fileIndex, wxOutputStream& stream) override
+			{
+				return m_OnOperationCompleted ? m_OnOperationCompleted(fileIndex, stream) : true;
+			}
+			
+		public:
+			ExtractWithOptions(const IArchiveExtraction& archive)
+				:m_Archive(archive)
+			{
+				static_assert(std::is_base_of_v<wxOutputStream, TOutStream>, "invalid stream type");
+			}
+
+		public:
+			bool Execute(FileIndexView files = {})
+			{
+				return m_Archive.Extract(*this, files);
+			}
+			
+			template<class TFunc>
+			ExtractWithOptions& OnGetStream(TFunc&& func)
+			{
+				m_OnGetStream = std::forward<TFunc>(func);
+				return *this;
+			}
+
+			template<class TFunc>
+			ExtractWithOptions& OnOperationCompleted(TFunc&& func)
+			{
+				if constexpr(std::is_same_v<TOutStream, wxOutputStream>)
+				{
+					// Assign as is
+					m_OnOperationCompleted = std::forward<TFunc>(func);
+				}
+				else
+				{
+					// Wrap inside lambda and cast stream type
+					m_OnOperationCompleted = [func = std::forward<TFunc>(func)](FileIndex fileIndex, wxOutputStream& stream) -> bool
+					{
+						return std::invoke(func, fileIndex, static_cast<TOutStream&>(stream));
+					};
+				}
+				return *this;
+			}
+	};
+
 	class KX_API IArchiveExtraction: public KxRTTI::Interface<IArchiveExtraction>
 	{
 		KxDecalreIID(IArchiveExtraction, {0x105f744b, 0x904d, 0x4822, {0xb4, 0x7a, 0x57, 0x8b, 0x3e, 0xd, 0x95, 0xe6}});
@@ -201,37 +266,10 @@ namespace KxArchive
 			// Extract single file into specified path
 			virtual bool ExtractToFile(FileIndex fileIndex, const wxString& targetPath) const;
 
-			template<class TFunc>
-			bool ExtractToStream(TFunc&& func, FileIndexView files = {})
+			template<class TOutStream = wxOutputStream>
+			ExtractWithOptions<TOutStream> ExtractWith() const
 			{
-				class Callback: public KxRTTI::ImplementInterface<Callback, IExtractionCallback>
-				{
-					private:
-						TFunc&& m_Func;
-
-					public:
-						Callback(TFunc&& func)
-							:m_Func(std::forward<TFunc>(func))
-						{
-						}
-
-					public:
-						std::unique_ptr<wxOutputStream> OnGetStream(FileIndex fileIndex) override
-						{
-							if (wxOutputStream* stream = std::invoke(m_Func, fileIndex))
-							{
-								return std::make_unique<wxFilterOutputStream>(*stream);
-							}
-							return nullptr;
-						}
-						bool OnOperationCompleted(FileIndex fileIndex) override
-						{
-							return true;
-						}
-				};
-
-				Callback callback(std::forward<TFunc>(func));
-				return Extract(callback, files);
+				return *this;
 			}
 	};
 }

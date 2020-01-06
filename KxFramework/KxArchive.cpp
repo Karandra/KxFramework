@@ -5,6 +5,7 @@
 #include "KxFramework/KxComparator.h"
 #include <KxFramework/KxFile.h>
 #include <KxFramework/KxFileStream.h>
+#include <KxFramework/KxStreamDelegate.h>
 
 namespace KxArchive
 {
@@ -18,12 +19,6 @@ namespace KxArchive
 				:m_ArchiveItems(*archive.QueryInterface<IArchiveItems>())
 			{
 			}
-	
-		public:
-			bool ShouldCancel() const override
-			{
-				return false;
-			}
 	};
 
 	class FileExtractionCallback: public ExtractorCallbackBase
@@ -31,6 +26,7 @@ namespace KxArchive
 		private:
 			wxString m_Directory;
 			KxFileItem m_FileItem;
+			KxFileStream m_Stream;
 
 		public:
 			FileExtractionCallback(IArchiveExtraction& archive, const wxString& directory = {})
@@ -43,7 +39,7 @@ namespace KxArchive
 			}
 
 		public:
-			std::unique_ptr<wxOutputStream> OnGetStream(FileIndex fileIndex) override
+			KxDelegateOutputStream OnGetStream(FileIndex fileIndex) override
 			{
 				m_FileItem = m_ArchiveItems.GetItem(fileIndex);
 				if (m_FileItem.IsOK())
@@ -59,18 +55,20 @@ namespace KxArchive
 					else
 					{
 						KxFile(targetPath.BeforeLast(wxS('\\'))).CreateFolder();
-						return std::make_unique<KxFileStream>(targetPath, KxFileStream::Access::Write, KxFileStream::Disposition::CreateAlways, KxFileStream::Share::Read);
+
+						m_Stream.Open(targetPath, KxFileStream::Access::Write, KxFileStream::Disposition::CreateAlways, KxFileStream::Share::Read);
+						return m_Stream;
 					}
 				}
 				return nullptr;
 			}
-			bool OnOperationCompleted(FileIndex fileIndex) override
+			bool OnOperationCompleted(FileIndex fileIndex, wxOutputStream& stream) override
 			{
 				if (m_FileItem.IsOK())
 				{
-					KxFile file(m_FileItem.GetFullPath());
-					file.SetFileTime(m_FileItem.GetCreationTime(), m_FileItem.GetModificationTime(), m_FileItem.GetLastAccessTime());
-					file.SetAttributes(m_FileItem.GetAttributes());
+					m_Stream.SetAttributes(m_FileItem.GetAttributes());
+					m_Stream.SetFileTime(m_FileItem.GetCreationTime(), m_FileItem.GetModificationTime(), m_FileItem.GetLastAccessTime());
+					m_Stream.Close();
 
 					return true;
 				}
@@ -111,16 +109,16 @@ namespace KxArchive
 			}
 
 		public:
-			std::unique_ptr<wxOutputStream> OnGetStream(FileIndex fileIndex) override
+			KxDelegateOutputStream OnGetStream(FileIndex fileIndex) override
 			{
 				KxFileItem fileItem = m_ArchiveItems.GetItem(fileIndex);
 				if (fileItem.IsOK() && !fileItem.IsDirectory())
 				{
-					return std::make_unique<wxFilterOutputStream>(m_Stream);
+					return m_Stream;
 				}
 				return nullptr;
 			}
-			bool OnOperationCompleted(FileIndex fileIndex) override
+			bool OnOperationCompleted(FileIndex fileIndex, wxOutputStream& stream) override
 			{
 				return true;
 			}
