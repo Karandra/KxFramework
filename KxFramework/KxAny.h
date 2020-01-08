@@ -8,11 +8,12 @@ class KX_API KxAny final
 		std::any m_Any;
 
 	private:
-		template<class TFunc> bool ResetOnException(TFunc&& func) noexcept
+		template<class TFunc>
+		bool ResetOnException(TFunc&& func) noexcept
 		{
 			try
 			{
-				func();
+				std::invoke(func);
 				return true;
 			}
 			catch (...)
@@ -21,34 +22,109 @@ class KX_API KxAny final
 				return false;
 			}
 		}
-		template<class T, class TAny> static T DoAs(TAny&& value)
-		{
-			if constexpr(std::is_rvalue_reference_v<T>)
-			{
-				return std::any_cast<T>(std::move(value));
-			}
-			else if constexpr(std::is_pointer_v<T>)
-			{
-				return std::any_cast<std::remove_pointer_t<T>>(&value);
-			}
-			else if constexpr(std::is_lvalue_reference_v<T>)
-			{
-				using TValue = std::remove_reference_t<std::remove_const_t<T>>;
-				using TCValue = std::conditional_t<std::is_const_v<T>, const TValue, TValue>;
 
-				if (TCValue* ptr = std::any_cast<TValue>(&value))
-				{
-					return static_cast<TValue&>(*ptr);
-				}
-				else
-				{
-					throw std::bad_any_cast();
-				}
-			}
-			else
+		template<class T>
+		static bool ConvertTo(const KxAny& any, T& value) noexcept
+		{
+			if constexpr(std::is_same_v<T, wxString>)
 			{
-				return std::any_cast<T>(value);
+				// Convert to a string
+				if (value = any.IntToString(); !value.IsEmpty())
+				{
+					return true;
+				}
+				else if (value = any.FloatToString(); !value.IsEmpty())
+				{
+					return true;
+				}
+				else if (value = any.BoolToString(); !value.IsEmpty())
+				{
+					return true;
+				}
 			}
+			else if constexpr(std::is_same_v<T, bool>)
+			{
+				// Convert to a bool value
+				if (auto ptr = any.AsPtr<uint64_t>())
+				{
+					value = *ptr != 0;
+					return true;
+				}
+				else if (auto ptr = any.AsPtr<double>())
+				{
+					value = *ptr != 0;
+					return true;
+				}
+				else if (auto opt = any.StringToBool())
+				{
+					value = *opt;
+					return true;
+				}
+			}
+			else if constexpr(std::is_integral_v<T> || std::is_enum_v<T>)
+			{
+				using TIntType = std::conditional_t<std::is_enum_v<T>, std::underlying_type_t<T>, T>;
+
+				// Convert to an integer
+				if constexpr (std::is_signed_v<TIntType>)
+				{
+					// Convert to signed int
+					if (const wxString* ptr = any.AsPtr<wxString>())
+					{
+						if (long long iValue = 0; ptr->ToLongLong(&iValue))
+						{
+							value = static_cast<T>(iValue);
+							return true;
+						}
+					}
+				}
+				else if constexpr(std::is_unsigned_v<TIntType>)
+				{
+					// Convert to unsigned int
+					if (const wxString* ptr = any.AsPtr<wxString>())
+					{
+						if (unsigned long long iValue = 0; ptr->ToULongLong(&iValue))
+						{
+							value = static_cast<T>(iValue);
+							return true;
+						}
+					}
+				}
+
+				if (auto ptr = any.AsPtr<double>())
+				{
+					value = static_cast<T>(*ptr);
+					return true;
+				}
+				else if (const bool* ptr = any.AsPtr<bool>())
+				{
+					value = static_cast<T>(*ptr ? 1 : 0);
+					return true;
+				}
+			}
+			else if constexpr(std::is_floating_point_v<T>)
+			{
+				// Convert to float or double
+				if (const wxString* ptr = any.AsPtr<wxString>())
+				{
+					if (double dValue = 0; ptr->ToCDouble(&dValue))
+					{
+						value = dValue;
+						return true;
+					}
+				}
+				else if (auto ptr = any.AsPtr<int64_t>())
+				{
+					value = *ptr;
+					return true;
+				}
+				else if (const bool* ptr = any.AsPtr<bool>())
+				{
+					value = *ptr ? 1 : 0;
+					return true;
+				}
+			}
+			return false;
 		}
 
 		template<class T> T* AsPtr() noexcept
@@ -142,11 +218,35 @@ class KX_API KxAny final
 
 		template<class T> T As() const
 		{
-			return DoAs<T>(m_Any);
+			return std::any_cast<T>(m_Any);
 		}
 		template<class T> T As()
 		{
-			return DoAs<T>(m_Any);
+			if constexpr(std::is_rvalue_reference_v<T>)
+			{
+				return std::any_cast<T>(std::move(*this));
+			}
+			else
+			{
+				return std::any_cast<T>(m_Any);
+			}
+		}
+		
+		template<class T, class TDefault> T AsOr(TDefault&& defaultValue) const
+		{
+			if (auto ptr = AsPtr<T>())
+			{
+				return *ptr;
+			}
+			return std::forward<TDefault>(defaultValue);
+		}
+		template<class T, class TDefault> T AsOr(TDefault&& defaultValue)
+		{
+			if (auto ptr = AsPtr<T>())
+			{
+				return std::forward<T>(*ptr);
+			}
+			return std::forward<TDefault>(defaultValue);
 		}
 
 		template<class T> bool As(const T*& value) const noexcept
@@ -167,108 +267,27 @@ class KX_API KxAny final
 				value = *ptr;
 				return true;
 			}
-			else
-			{
-				if constexpr(std::is_same_v<T, wxString>)
-				{
-					// Convert to a string
-					if (value = IntToString(); !value.IsEmpty())
-					{
-						return true;
-					}
-					else if (value = FloatToString(); !value.IsEmpty())
-					{
-						return true;
-					}
-					else if (value = BoolToString(); !value.IsEmpty())
-					{
-						return true;
-					}
-				}
-				else if constexpr(std::is_same_v<T, bool>)
-				{
-					// Convert to a bool value
-					if (auto ptr = AsPtr<uint64_t>())
-					{
-						value = *ptr != 0;
-						return true;
-					}
-					else if (auto ptr = AsPtr<double>())
-					{
-						value = *ptr != 0;
-						return true;
-					}
-					else if (auto opt = StringToBool())
-					{
-						value = *opt;
-						return true;
-					}
-				}
-				else if constexpr(std::is_integral_v<T>)
-				{
-					// Convert to an integer
-					if constexpr(std::is_signed_v<T>)
-					{
-						// Convert to signed int
-						if (const wxString* ptr = AsPtr<wxString>())
-						{
-							if (long long iValue = 0; ptr->ToLongLong(&iValue))
-							{
-								value = iValue;
-								return true;
-							}
-						}
-					}
-					else if constexpr(std::is_unsigned_v<T>)
-					{
-						// Convert to unsigned int
-						if (const wxString* ptr = AsPtr<wxString>())
-						{
-							if (unsigned long long iValue = 0; ptr->ToULongLong(&iValue))
-							{
-								value = iValue;
-								return true;
-							}
-						}
-					}
-
-					if (auto ptr = AsPtr<double>())
-					{
-						value = *ptr;
-						return true;
-					}
-					else if (const bool* ptr = AsPtr<bool>())
-					{
-						value = *ptr ? 1 : 0;
-						return true;
-					}
-				}
-				else if constexpr(std::is_floating_point_v<T>)
-				{
-					// Convert to float or double
-					if (const wxString* ptr = AsPtr<wxString>())
-					{
-						if (double dValue = 0; ptr->ToCDouble(&dValue))
-						{
-							value = dValue;
-							return true;
-						}
-					}
-					else if (auto ptr = AsPtr<int64_t>())
-					{
-						value = *ptr;
-						return true;
-					}
-					else if (const bool* ptr = AsPtr<bool>())
-					{
-						value = *ptr ? 1 : 0;
-						return true;
-					}
-				}
-			}
-			return false;
+			return ConvertTo(*this, value);
 		}
+		template<class T> bool GetAs(T&& value) noexcept
+		{
+			if (const T* ptr = AsPtr<T>())
+			{
+				value = std::forward<T>(*ptr);
+				return true;
+			}
+			return ConvertTo(*this, value);
+		}
+
 		template<class T> T GetAs() const noexcept
+		{
+			static_assert(std::is_default_constructible_v<T>, "T must be default constructible");
+
+			T value;
+			GetAs(value);
+			return value;
+		}
+		template<class T> T GetAs() noexcept
 		{
 			static_assert(std::is_default_constructible_v<T>, "T must be default constructible");
 
@@ -282,7 +301,14 @@ class KX_API KxAny final
 		{
 			ResetOnException([&]()
 			{
-				m_Any = std::forward<T>(value);
+				if constexpr(std::is_enum_v<T>)
+				{
+					m_Any = static_cast<std::underlying_type_t<T>>(value);
+				}
+				else
+				{
+					m_Any = std::forward<T>(value);
+				}
 			});
 			return *this;
 		}
