@@ -2,11 +2,10 @@
 #include "KxIncludes.h"
 
 // Typedefs
+using wxStringView = std::basic_string_view<wxChar>;
+
 using KxStringVector = std::vector<wxString>;
 using KxStdStringVector = std::vector<std::string>;
-using KxStdStringViewVector = std::vector<std::string_view>;
-using KxStdWStringVector = std::vector<std::wstring>;
-using KxStdWStringViewVector = std::vector<std::wstring_view>;
 
 using KxIntVector = std::vector<int>;
 using KxIntPtrVector = std::vector<intptr_t>;

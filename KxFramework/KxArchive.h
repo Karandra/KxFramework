@@ -326,48 +326,115 @@ namespace KxArchive
 
 namespace KxArchive
 {
-	template<class TPropertyIndex>
-	class IBoolProperties
+	class KX_API IArchiveProperties: public KxRTTI::Interface<IArchiveProperties>
 	{
-		protected:
-			~IBoolProperties() = default;
+		KxDecalreIID(IArchiveProperties, {0x8ecede61, 0x7542, 0x4164, {0x99, 0x7c, 0xd6, 0x72, 0x57, 0x24, 0x94, 0x26}});
 
 		public:
-			using TBoolPropertyIndex = TPropertyIndex;
-			using TBoolPropertyValue = bool;
+			virtual ~IArchiveProperties() = default;
 
 		public:
-			virtual bool GetPropertyBool(const TPropertyIndex& property) const = 0;
-			virtual void SetPropertyBool(const TPropertyIndex& property, bool value) = 0;
+			virtual std::optional<bool> GetPropertyBool(wxStringView property) const = 0;
+			virtual bool SetPropertyBool(wxStringView property, bool value) = 0;
+
+			virtual std::optional<int64_t> GetPropertyInt(wxStringView property) const = 0;
+			virtual bool SetPropertyInt(wxStringView property, int64_t value) = 0;
+
+			virtual std::optional<double> GetPropertyFloat(wxStringView property) const = 0;
+			virtual bool SetPropertyFloat(wxStringView property, double value) = 0;
+
+			virtual std::optional<wxString> GetPropertyString(wxStringView property) const = 0;
+			virtual bool SetPropertyString(wxStringView property, wxStringView value) = 0;
+
+		public:
+			template<class T>
+			auto GetProperty(wxStringView property) const
+			{
+				if constexpr(std::is_same_v<T, bool>)
+				{
+					return GetPropertyBool(property);
+				}
+				else if constexpr(std::is_integral_v<T> || std::is_enum_v<T>)
+				{
+					if (auto value = GetPropertyInt(property))
+					{
+						return std::optional<T>(static_cast<T>(*value));
+					}
+					return std::optional<T>();
+				}
+				else if constexpr(std::is_floating_point_v<T>)
+				{
+					if (auto value = GetPropertyFloat(property))
+					{
+						return std::optional<T>(static_cast<T>(*value));
+					}
+					return std::optional<T>();
+				}
+				else if constexpr(std::is_same_v<T, wxString>)
+				{
+					return GetPropertyString(property);
+				}
+				else
+				{
+					static_assert(false, "invalid property type");
+				}
+			}
+
+			template<class T>
+			bool SetProperty(const wxStringView& property, T&& value)
+			{
+				if constexpr (std::is_same_v<T, bool>)
+				{
+					return SetPropertyBool(property, value);
+				}
+				else if constexpr(std::is_integral_v<T> )
+				{
+					return SetPropertyInt(property, value);
+				}
+				else if constexpr(std::is_enum_v<T>)
+				{
+					return SetPropertyInt(property, static_cast<std::underlying_type_t<T>>(value));
+				}
+				else if constexpr(std::is_floating_point_v<T>)
+				{
+					return SetPropertyFloat(property, value);
+				}
+				else
+				{
+					static_assert(false, "invalid property type");
+				}
+			}
+			bool SetProperty(const wxStringView& property, wxStringView value)
+			{
+				return SetPropertyString(property, value);
+			}
+			bool SetProperty(const wxStringView& property, const wxString& value)
+			{
+				return SetPropertyString(property, wxStringView(value.wc_str(), value.length()));
+			}
 	};
+}
 
-	template<class TPropertyIndex, class t_IntType = int>
-	class IIntProperties
+namespace KxArchive
+{
+	#define KxArchiveDeclareUserProperty(section, name)	constexpr wxChar section##_##name[] = wxS("User/") wxS(#section) wxS("/") wxS(#name);
+
+	namespace Property
 	{
-		protected:
-			~IIntProperties() = default;
+		#define KxArchiveDeclareBaseProperty(section, name) constexpr wxChar section##_##name[] = wxS("KxArchive/") wxS(#section) wxS("/") wxS(#name);
 
-		public:
-			using TIntPropertyIndex = TPropertyIndex;
-			using TIntPropertyValue = t_IntType;
+		KxArchiveDeclareBaseProperty(Common, FilePath);
+		KxArchiveDeclareBaseProperty(Common, ItemCount);
+		KxArchiveDeclareBaseProperty(Common, OriginalSize);
+		KxArchiveDeclareBaseProperty(Common, CompressedSize);
 
-		public:
-			virtual t_IntType GetPropertyInt(const TPropertyIndex& property) const = 0;
-			virtual void SetPropertyInt(const TPropertyIndex& property, t_IntType value) = 0;
-	};
+		KxArchiveDeclareBaseProperty(Compression, Level);
+		KxArchiveDeclareBaseProperty(Compression, Solid);
+		KxArchiveDeclareBaseProperty(Compression, Format);
+		KxArchiveDeclareBaseProperty(Compression, Method);
+		KxArchiveDeclareBaseProperty(Compression, MultiThreaded);
+		KxArchiveDeclareBaseProperty(Compression, DictionarySize);
 
-	template<class TPropertyIndex>
-	class IStringProperties
-	{
-		protected:
-			~IStringProperties() = default;
-
-		public:
-			using TStringPropertyIndex = TPropertyIndex;
-			using TStringPropertyValue = wxString;
-
-		public:
-			virtual wxString GetPropertyString(const TPropertyIndex& property) const = 0;
-			virtual void SetPropertyString(const TPropertyIndex& property, const wxString& value) = 0;
-	};
+		#undef KxArchiveDeclareBaseProperty
+	}
 }
