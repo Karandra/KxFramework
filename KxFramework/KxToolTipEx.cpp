@@ -5,6 +5,9 @@
 
 namespace
 {
+	constexpr uint32_t g_DefaultStyle = 0;
+	constexpr uint32_t g_DefaultExStyle = WS_EX_TOOLWINDOW;
+
 	bool IsBalloonStyleSupported()
 	{
 		wxAny value = KxRegistry::GetValue(KxREG_HKEY_CURRENT_USER,
@@ -32,10 +35,10 @@ bool KxToolTipEx::CreateWindow(wxWindow* parent)
 
 	if (parent)
 	{
-		HWND handle = ::CreateWindowExW(WS_EX_TOOLWINDOW,
+		HWND handle = ::CreateWindowExW(g_DefaultExStyle,
 										TOOLTIPS_CLASS,
 										nullptr,
-										WS_POPUP|WS_VISIBLE,
+										g_DefaultStyle,
 										CW_USEDEFAULT,
 										CW_USEDEFAULT,
 										CW_USEDEFAULT,
@@ -46,8 +49,18 @@ bool KxToolTipEx::CreateWindow(wxWindow* parent)
 										nullptr
 		);
 		
-		wxNativeWindow::Disown();
-		return wxNativeWindow::Create(parent, wxID_NONE, handle);
+		if (handle)
+		{
+			if (wxNativeWindow::Create(parent, wxID_NONE, handle))
+			{
+				wxNativeWindow::Disown();
+				return true;
+			}
+			else
+			{
+				::DestroyWindow(handle);
+			}
+		}
 	}
 	return false;
 }
@@ -126,7 +139,7 @@ void KxToolTipEx::UpdateCaption()
 }
 void KxToolTipEx::UpdateStyle()
 {
-	uint32_t style = WS_POPUP|WS_VISIBLE|TTS_ALWAYSTIP|TTS_NOPREFIX;
+	uint32_t style = g_DefaultStyle|TTS_ALWAYSTIP|TTS_NOPREFIX;
 	if (IsOptionEnabled(KxToolTipExOption::Ballon) && m_IsBalloonStyleSupported)
 	{
 		style |= TTS_BALLOON;
