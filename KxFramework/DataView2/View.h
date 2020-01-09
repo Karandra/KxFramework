@@ -332,6 +332,7 @@ namespace KxDataView2
 			// Window
 			void SetFocus() override;
 			bool SetFont(const wxFont& font) override;
+			void InitDialog() override;
 
 			bool HasHeaderCtrl() const
 			{

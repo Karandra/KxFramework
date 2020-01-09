@@ -771,6 +771,10 @@ namespace KxDataView2
 		}
 		return true;
 	}
+	void View::InitDialog()
+	{
+		ViewBase::InitDialog();
+	}
 
 	// Window
 	bool View::CreateColumnSelectionMenu(KxMenu& menu)

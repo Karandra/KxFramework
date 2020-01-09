@@ -1954,6 +1954,10 @@ namespace KxDataView2
 		m_UniformRowHeight = GetDefaultRowHeight();
 		m_Indent = wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y);
 
+		// Tooltip
+		m_ToolTip.Create(this);
+		m_ToolTipTimer.BindFunction(&MainWindow::OnTooltipEvent, this);
+
 		// Bind events
 		Bind(wxEVT_PAINT, &MainWindow::OnPaint, this);
 		Bind(wxEVT_SET_FOCUS, &MainWindow::OnSetFocus, this);
@@ -1977,19 +1981,15 @@ namespace KxDataView2
 		Bind(wxEVT_ENTER_WINDOW, &MainWindow::OnMouse, this);
 		Bind(wxEVT_LEAVE_WINDOW, &MainWindow::OnMouse, this);
 		Bind(wxEVT_MOUSEWHEEL, &MainWindow::OnMouse, this);
-		//Bind(wxEVT_CHILD_FOCUS, &KxDataViewMainWindow::OnMouse, this);
-	
-		//Bind(wxEVT_AUX1_DOWN, &KxDataViewMainWindow::OnMouse, this);
-		//Bind(wxEVT_AUX1_UP, &KxDataViewMainWindow::OnMouse, this);
-		//Bind(wxEVT_AUX1_DCLICK, &KxDataViewMainWindow::OnMouse, this);
-		//Bind(wxEVT_AUX2_DOWN, &KxDataViewMainWindow::OnMouse, this);
-		//Bind(wxEVT_AUX2_UP, &KxDataViewMainWindow::OnMouse, this);
-		//Bind(wxEVT_AUX2_DCLICK, &KxDataViewMainWindow::OnMouse, this);
-		//Bind(wxEVT_MAGNIFY, &KxDataViewMainWindow::OnMouse, this);
-
-		// Tooltip
-		m_ToolTip.Create(this);
-		m_ToolTipTimer.BindFunction(&MainWindow::OnTooltipEvent, this);
+		//Bind(wxEVT_CHILD_FOCUS, &MainWindow::OnMouse, this);
+		
+		//Bind(wxEVT_AUX1_DOWN, &MainWindow::OnMouse, this);
+		//Bind(wxEVT_AUX1_UP, &MainWindow::OnMouse, this);
+		//Bind(wxEVT_AUX1_DCLICK, &MainWindow::OnMouse, this);
+		//Bind(wxEVT_AUX2_DOWN, &MainWindow::OnMouse, this);
+		//Bind(wxEVT_AUX2_UP, &MainWindow::OnMouse, this);
+		//Bind(wxEVT_AUX2_DCLICK, &MainWindow::OnMouse, this);
+		//Bind(wxEVT_MAGNIFY, &MainWindow::OnMouse, this);
 
 		// Do update
 		UpdateDisplay();
