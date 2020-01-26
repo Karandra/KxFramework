@@ -5,7 +5,7 @@
 
 namespace
 {
-	constexpr uint32_t g_DefaultStyle = 0;
+	constexpr uint32_t g_DefaultStyle = WS_POPUP;
 	constexpr uint32_t g_DefaultExStyle = WS_EX_TOOLWINDOW;
 
 	bool IsBalloonStyleSupported()
