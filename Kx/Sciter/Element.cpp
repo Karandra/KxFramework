@@ -31,7 +31,7 @@ namespace KxSciter
 {
 	void Element::Acquire(void* handle)
 	{
-		if (::Sciter_UseElement(ToElement(m_Handle)) == SCDOM_OK)
+		if (::Sciter_UseElement(ToElement(handle)) == SCDOM_OK)
 		{
 			m_Handle = handle;
 		}

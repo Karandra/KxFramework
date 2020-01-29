@@ -60,7 +60,7 @@ namespace KxSciter
 
 	void Node::Acquire(void* handle)
 	{
-		if (::SciterNodeAddRef(ToNode(m_Handle)) == SCDOM_OK)
+		if (::SciterNodeAddRef(ToNode(handle)) == SCDOM_OK)
 		{
 			m_Handle = handle;
 		}
