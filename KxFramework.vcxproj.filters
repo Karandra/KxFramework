@@ -244,6 +244,9 @@
     <Filter Include="Kx\RTTI">
       <UniqueIdentifier>{9f4d2d8d-8aa1-4b1f-a11f-51ca03f6bba8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\Sciter">
+      <UniqueIdentifier>{d52584cf-315c-4912-80d6-95b031065ed1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -1123,6 +1126,21 @@
     <ClInclude Include="KxFramework\KxStreamDelegate.h">
       <Filter>Header Files\Streams</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Sciter.hpp">
+      <Filter>Kx</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Sciter\Common.h">
+      <Filter>Kx\Sciter</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Sciter\Window.h">
+      <Filter>Kx\Sciter</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Sciter\Node.h">
+      <Filter>Kx\Sciter</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Sciter\Element.h">
+      <Filter>Kx\Sciter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1782,6 +1800,15 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxArchive.cpp">
       <Filter>Source Files\Archive</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Sciter\Window.cpp">
+      <Filter>Kx\Sciter</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Sciter\Node.cpp">
+      <Filter>Kx\Sciter</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Sciter\Element.cpp">
+      <Filter>Kx\Sciter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
