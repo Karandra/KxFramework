@@ -121,8 +121,7 @@ namespace KxSciter
 			template<class... Args>
 			bool Create(Args&&... arg)
 			{
-				TWindow::Create(std::forward<Args>(arg)...);
-				return Host::Create();
+				return TWindow::Create(std::forward<Args>(arg)...) && Host::Create();
 			}
 			
 			void Update() override
