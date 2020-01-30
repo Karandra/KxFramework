@@ -21,7 +21,7 @@ namespace
 		return {};
 	}
 
-	void ExtractWxString(LPCWSTR value, UINT length, LPVOID context)
+	void __stdcall ExtractWxString(LPCWSTR value, UINT length, LPVOID context)
 	{
 		reinterpret_cast<wxString*>(context)->assign(value, length);
 	}

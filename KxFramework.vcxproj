@@ -494,9 +494,10 @@
     <ClInclude Include="Kx\RTTI\QueryInterface.h" />
     <ClInclude Include="Kx\Sciter.hpp" />
     <ClInclude Include="Kx\Sciter\Common.h" />
+    <ClInclude Include="Kx\Sciter\Controls\Label.h" />
     <ClInclude Include="Kx\Sciter\Element.h" />
     <ClInclude Include="Kx\Sciter\Node.h" />
-    <ClInclude Include="Kx\Sciter\Window.h" />
+    <ClInclude Include="Kx\Sciter\Windows\Host.h" />
     <ClInclude Include="Kx\System.hpp" />
     <ClInclude Include="Kx\System\Common.h" />
     <ClInclude Include="Kx\System\FileType.h" />
@@ -775,9 +776,10 @@
     <ClCompile Include="Kx\Async\Coroutine\CoroutineImpl.cpp" />
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp" />
     <ClCompile Include="Kx\EventSystem\EventBuilder.cpp" />
+    <ClCompile Include="Kx\Sciter\Controls\Label.cpp" />
     <ClCompile Include="Kx\Sciter\Element.cpp" />
     <ClCompile Include="Kx\Sciter\Node.cpp" />
-    <ClCompile Include="Kx\Sciter\Window.cpp" />
+    <ClCompile Include="Kx\Sciter\Windows\Host.cpp" />
     <ClCompile Include="Kx\System\FileType.cpp" />
     <ClCompile Include="Kx\System\FileTypeInfo.cpp" />
     <ClCompile Include="Kx\System\FileTypeManager.cpp" />

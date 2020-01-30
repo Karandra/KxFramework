@@ -1,8 +1,7 @@
 #include "KxStdAfx.h"
-#include "Window.h"
-
-#include "SciterAPI/sciter-x-api.h"
-#include "SciterAPI/sciter-x.h"
+#include "Host.h"
+#include "Kx/Sciter/SciterAPI/sciter-x.h"
+#include "Kx/Sciter/SciterAPI/sciter-x-api.h"
 
 namespace KxSciter
 {
@@ -64,8 +63,8 @@ namespace KxSciter
 		EnableSmoothScrolling();
 		SetFontSmoothingMode(FontSmoothing::SystemDefault);
 		::SciterSetOption(m_SciterWindow.GetHandle(), SCITER_TRANSPARENT_WINDOW, true);
-		::SciterSetOption(m_SciterWindow.GetHandle(), SCITER_HTTPS_ERROR, 1);
 		::SciterSetOption(m_SciterWindow.GetHandle(), SCITER_CONNECTION_TIMEOUT, 500);
+		::SciterSetOption(m_SciterWindow.GetHandle(), SCITER_HTTPS_ERROR, 1);
 	}
 	void Host::SetupCallbacks()
 	{
@@ -81,9 +80,28 @@ namespace KxSciter
 
 	bool Host::SciterHandleMessage(WXLRESULT* result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam)
 	{
-		BOOL handled = FALSE;
-		*result = ::SciterProcND(m_SciterWindow.GetHandle(), msg, wParam, lParam, &handled);
-		return handled;
+		if (m_AllowSciterHandleMessage)
+		{
+			// Forward message to Sciter
+			BOOL handled = FALSE;
+			*result = ::SciterProcND(m_SciterWindow.GetHandle(), msg, wParam, lParam, &handled);
+
+			// Handle engine creation callbacks
+			if (msg == WM_CREATE)
+			{
+				m_EngineCreated = true;
+
+				SetDefaultOptions();
+				SetupCallbacks();
+			}
+			else if (msg == WM_DESTROY)
+			{
+				m_EngineCreated = false;
+				m_AllowSciterHandleMessage = false;
+			}
+			return handled;
+		}
+		return false;
 	}
 	int Host::SciterHandleNotify(void* context)
 	{
@@ -119,33 +137,43 @@ namespace KxSciter
 		return 0;
 	}
 
+	Host::Host(wxWindow& window)
+		:m_SciterWindow(window)
+	{
+		// Child windows are fine with already created window. They don't need 'WS_EX_NOREDIRECTIONBITMAP' style
+		if (!m_SciterWindow.IsTopLevel())
+		{
+			m_AllowSciterHandleMessage = true;
+		}
+	}
 	Host::~Host()
 	{
 	}
 
 	bool Host::Create()
 	{
-		// Get original window info
-		const long style = m_SciterWindow.GetWindowStyle();
-		const wxChar* nativeClassName = m_SciterWindow.GetMSWClassName(style);
-
-		WXDWORD nativeExStyle = 0;
-		WXDWORD nativeStyle = m_SciterWindow.MSWGetStyle(style, &nativeExStyle);
-
-		const wxPoint pos = m_SciterWindow.GetPosition();
-		const wxSize size = m_SciterWindow.GetSize();
-		const wxString title = m_SciterWindow.GetLabel();
-
-		// Destroy original window
-		::DestroyWindow(m_SciterWindow.GetHandle());
-		m_SciterWindow.DissociateHandle();
-
-		// Create new window with 'WS_EX_NOREDIRECTIONBITMAP' extended style instead and attach it to the wxWindow
-		if (m_SciterWindow.MSWCreate(nativeClassName, title.wc_str(), pos, size, nativeStyle, nativeExStyle|WS_EX_NOREDIRECTIONBITMAP))
+		if (!m_EngineCreated && m_SciterWindow.IsTopLevel())
 		{
-			SetDefaultOptions();
-			SetupCallbacks();
-			return true;
+			// Get original window info
+			const long style = m_SciterWindow.GetWindowStyle();
+			const wxChar* nativeClassName = m_SciterWindow.GetMSWClassName(style);
+
+			WXDWORD nativeExStyle = 0;
+			WXDWORD nativeStyle = m_SciterWindow.MSWGetStyle(style, &nativeExStyle);
+
+			const wxPoint pos = m_SciterWindow.GetPosition();
+			const wxSize size = m_SciterWindow.GetSize();
+			const wxString title = m_SciterWindow.GetLabel();
+
+			// Destroy and detach original window
+			::DestroyWindow(m_SciterWindow.GetHandle());
+			m_SciterWindow.DissociateHandle();
+
+			// Create new window with 'WS_EX_NOREDIRECTIONBITMAP' extended style instead and attach it to the wxWindow
+			m_AllowSciterHandleMessage = true;
+			m_SciterWindow.MSWCreate(nativeClassName, title.wc_str(), pos, size, nativeStyle, nativeExStyle|WS_EX_NOREDIRECTIONBITMAP);
+
+			return m_EngineCreated;
 		}
 		return false;
 	}
@@ -156,10 +184,13 @@ namespace KxSciter
 
 	wxSize Host::GetBestSize() const
 	{
-		int width = ::SciterGetMinWidth(m_SciterWindow.GetHandle());
-		int height = ::SciterGetMinHeight(m_SciterWindow.GetHandle(), width);
+		const int paddingX = wxSystemSettings::GetMetric(wxSYS_SMALLICON_X, &m_SciterWindow);
+		const int paddingY = wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y, &m_SciterWindow);
 
-		return wxSize(width, height);
+		int width = ::SciterGetMinWidth(m_SciterWindow.GetHandle()) + paddingX;
+		int height = ::SciterGetMinHeight(m_SciterWindow.GetHandle(), width) + paddingY;
+
+		return m_SciterWindow.FromDIP(wxSize(width, height));
 	}
 	wxSize Host::GetDPI() const
 	{

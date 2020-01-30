@@ -247,6 +247,12 @@
     <Filter Include="Kx\Sciter">
       <UniqueIdentifier>{d52584cf-315c-4912-80d6-95b031065ed1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\Sciter\Windows">
+      <UniqueIdentifier>{651bbcaa-5289-4581-90c4-73dc49119514}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx\Sciter\Controls">
+      <UniqueIdentifier>{aacb0ec0-4f97-43ee-a76e-16f29cea9351}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -1132,14 +1138,17 @@
     <ClInclude Include="Kx\Sciter\Common.h">
       <Filter>Kx\Sciter</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\Window.h">
-      <Filter>Kx\Sciter</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\Sciter\Node.h">
       <Filter>Kx\Sciter</Filter>
     </ClInclude>
     <ClInclude Include="Kx\Sciter\Element.h">
       <Filter>Kx\Sciter</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Sciter\Controls\Label.h">
+      <Filter>Kx\Sciter\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Sciter\Windows\Host.h">
+      <Filter>Kx\Sciter\Windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1801,14 +1810,17 @@
     <ClCompile Include="KxFramework\KxArchive.cpp">
       <Filter>Source Files\Archive</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\Window.cpp">
-      <Filter>Kx\Sciter</Filter>
-    </ClCompile>
     <ClCompile Include="Kx\Sciter\Node.cpp">
       <Filter>Kx\Sciter</Filter>
     </ClCompile>
     <ClCompile Include="Kx\Sciter\Element.cpp">
       <Filter>Kx\Sciter</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Sciter\Controls\Label.cpp">
+      <Filter>Kx\Sciter\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Sciter\Windows\Host.cpp">
+      <Filter>Kx\Sciter\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

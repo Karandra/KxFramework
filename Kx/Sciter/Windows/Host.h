@@ -1,7 +1,7 @@
 #pragma once
-#include "Common.h"
-#include "Node.h"
-#include "Element.h"
+#include "Kx/Sciter/Common.h"
+#include "Kx/Sciter/Node.h"
+#include "Kx/Sciter/Element.h"
 #include <KxFramework/KxURI.h>
 #include <wx/window.h>
 
@@ -11,6 +11,8 @@ namespace KxSciter
 	{
 		private:
 			wxWindow& m_SciterWindow;
+			bool m_EngineCreated = false;
+			bool m_AllowSciterHandleMessage = false;
 
 			bool m_Option_ThemeEnabled = true;
 			bool m_Option_SmoothScrolling = true;
@@ -32,16 +34,17 @@ namespace KxSciter
 			int SciterHandleNotify(void* context);
 
 		public:
-			Host(wxWindow& window)
-				:m_SciterWindow(window)
-			{
-			}
+			Host(wxWindow& window);
 			Host(const Host&) = delete;
 			virtual ~Host();
 
 		public:
 			bool Create();
 			void Update();
+			bool IsEngineCreated()
+			{
+				return m_EngineCreated;
+			}
 
 			const wxWindow& GetWindow() const
 			{
@@ -98,7 +101,7 @@ namespace KxSciter
 				return TWindow::MSWHandleMessage(result, msg, wParam, lParam);
 			}
 			
-			wxSize DoGetBestSize() const override
+			wxSize DoGetBestClientSize() const override
 			{
 				return Host::GetBestSize();
 			}
@@ -117,13 +120,13 @@ namespace KxSciter
 				Host::Create();
 			}
 
-		public:
 			template<class... Args>
 			bool Create(Args&&... arg)
 			{
 				return TWindow::Create(std::forward<Args>(arg)...) && Host::Create();
 			}
 			
+		public:
 			void Update() override
 			{
 				Host::Update();
@@ -172,7 +175,11 @@ namespace KxSciter
 			{
 				return Host::GetDPI();
 			}
-	
+			wxSize GetBestSize() const
+			{
+				return TWindow::GetBestSize();
+			}
+
 		public:
 			Window& operator=(const Window&) = delete;
 	};
