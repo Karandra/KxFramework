@@ -89,7 +89,7 @@ namespace KxSciter
 namespace KxSciter
 {
 	template<class TWindow>
-	class Window: public TWindow, public Host
+	class WindowWrapper: public TWindow, public Host
 	{
 		protected:
 			bool MSWHandleMessage(WXLRESULT* result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam) override
@@ -107,14 +107,14 @@ namespace KxSciter
 			}
 
 		public:
-			Window()
+			WindowWrapper()
 				:Host(static_cast<wxWindow&>(*this))
 			{
 			}
-			Window(const Window&) = delete;
+			WindowWrapper(const WindowWrapper&) = delete;
 
 			template<class... Args>
-			Window(Args&&... arg)
+			WindowWrapper(Args&&... arg)
 				:TWindow(std::forward<Args>(arg)...), Host(static_cast<wxWindow&>(*this))
 			{
 				Host::Create();
@@ -181,6 +181,6 @@ namespace KxSciter
 			}
 
 		public:
-			Window& operator=(const Window&) = delete;
+			WindowWrapper& operator=(const WindowWrapper&) = delete;
 	};
 }

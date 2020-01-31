@@ -4,7 +4,7 @@
 
 namespace KxSciter
 {
-	class KX_API Label: public Window<wxControl>
+	class KX_API Label: public WindowWrapper<wxControl>
 	{
 		public:
 			Label() = default;
@@ -26,7 +26,7 @@ namespace KxSciter
 						const wxSize& size = wxDefaultSize,
 						long style = wxBORDER_NONE)
 			{
-				if (Window::Create(parent, id, pos, size, style))
+				if (WindowWrapper::Create(parent, id, pos, size, style))
 				{
 					SetLabel(label);
 					return true;
