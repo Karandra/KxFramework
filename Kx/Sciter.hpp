@@ -1,8 +1,11 @@
 #pragma once
+
+// General
 #include "Sciter/Common.h"
+#include "Sciter/Host.h"
+#include "Sciter/WrapperWindow.h"
 
 // Windows
-#include "Sciter/Windows/Host.h"
 
 // Controls
 #include "Sciter/Controls/Label.h"

@@ -1,5 +1,5 @@
 #pragma once
-#include "Kx/Sciter/Windows/Host.h"
+#include "Kx/Sciter/WrapperWindow.h"
 #include <wx/control.h>
 
 namespace KxSciter

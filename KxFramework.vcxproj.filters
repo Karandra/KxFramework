@@ -1147,8 +1147,11 @@
     <ClInclude Include="Kx\Sciter\Controls\Label.h">
       <Filter>Kx\Sciter\Controls</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\Windows\Host.h">
-      <Filter>Kx\Sciter\Windows</Filter>
+    <ClInclude Include="Kx\Sciter\Host.h">
+      <Filter>Kx\Sciter</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Sciter\WrapperWindow.h">
+      <Filter>Kx\Sciter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1819,8 +1822,11 @@
     <ClCompile Include="Kx\Sciter\Controls\Label.cpp">
       <Filter>Kx\Sciter\Controls</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\Windows\Host.cpp">
-      <Filter>Kx\Sciter\Windows</Filter>
+    <ClCompile Include="Kx\Sciter\Host.cpp">
+      <Filter>Kx\Sciter</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Sciter\Common.cpp">
+      <Filter>Kx\Sciter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
