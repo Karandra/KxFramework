@@ -496,6 +496,7 @@
     <ClInclude Include="Kx\Sciter\Common.h" />
     <ClInclude Include="Kx\Sciter\Controls\Label.h" />
     <ClInclude Include="Kx\Sciter\Element.h" />
+    <ClInclude Include="Kx\Sciter\Internal.h" />
     <ClInclude Include="Kx\Sciter\SciterAPI.h" />
     <ClInclude Include="Kx\Sciter\Host.h" />
     <ClInclude Include="Kx\Sciter\Node.h" />
@@ -782,6 +783,7 @@
     <ClCompile Include="Kx\Sciter\Controls\Label.cpp" />
     <ClCompile Include="Kx\Sciter\Element.cpp" />
     <ClCompile Include="Kx\Sciter\Host.cpp" />
+    <ClCompile Include="Kx\Sciter\Internal.cpp" />
     <ClCompile Include="Kx\Sciter\Node.cpp" />
     <ClCompile Include="Kx\Sciter\SciterAPI.cpp" />
     <ClCompile Include="Kx\System\FileType.cpp" />

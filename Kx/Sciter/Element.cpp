@@ -4,6 +4,7 @@
 #include "Host.h"
 #include "KxFramework/KxUtility.h"
 #include "SciterAPI.h"
+#include "Internal.h"
 
 #pragma warning(disable: 4312) // 'reinterpret_cast': conversion from 'UINT' to 'void *' of greater size
 
@@ -39,7 +40,7 @@ namespace
 	}
 	void __stdcall ExtractWxString(const char* value, UINT length, void* context)
 	{
-		*reinterpret_cast<wxString*>(context) = wxString::FromUTF8Unchecked(value, length);
+		*reinterpret_cast<wxString*>(context) = wxString::FromUTF8(value, length);
 	}
 	void __stdcall ExtractWxString(const BYTE* value, UINT length, void* context)
 	{
@@ -325,8 +326,8 @@ namespace KxSciter
 
 		if (auto nativeMode = MapMode())
 		{
-			auto utf8 = html.ToUTF8();
-			return GetSciterAPI()->SciterSetElementHtml(ToElement(m_Handle), reinterpret_cast<const BYTE*>(utf8.data()), utf8.length(), *nativeMode) == SCDOM_OK;
+			auto utf8 = Internal::ToSciterUTF8(html);
+			return GetSciterAPI()->SciterSetElementHtml(ToElement(m_Handle), utf8.data(), utf8.size(), *nativeMode) == SCDOM_OK;
 		}
 		return false;
 	}
@@ -354,8 +355,8 @@ namespace KxSciter
 
 		if (auto nativeMode = MapMode())
 		{
-			auto utf8 = html.ToUTF8();
-			return GetSciterAPI()->SciterSetElementHtml(ToElement(m_Handle), reinterpret_cast<const BYTE*>(utf8.data()), utf8.length(), *nativeMode) == SCDOM_OK;
+			auto utf8 = Internal::ToSciterUTF8(html);
+			return GetSciterAPI()->SciterSetElementHtml(ToElement(m_Handle), utf8.data(), utf8.size(), *nativeMode) == SCDOM_OK;
 		}
 		return false;
 	}

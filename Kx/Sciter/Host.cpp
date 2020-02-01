@@ -1,6 +1,7 @@
 #include "KxStdAfx.h"
 #include "Host.h"
 #include "SciterAPI.h"
+#include "Internal.h"
 
 #pragma warning(disable: 4302) // 'reinterpret_cast': truncation from 'void *' to 'UINT'
 #pragma warning(disable: 4311) // 'reinterpret_cast': pointer truncation from 'void *' to 'UINT'
@@ -451,15 +452,15 @@ namespace KxSciter
 			m_LatestBasePath += wxS('\\');
 		}
 
-		auto utf8 = html.ToUTF8();
-		return GetSciterAPI()->SciterLoadHtml(m_SciterWindow.GetHandle(), reinterpret_cast<const BYTE*>(utf8.data()), utf8.length(), m_LatestBasePath.wc_str());
+		auto utf8 = Internal::ToSciterUTF8(html);
+		return GetSciterAPI()->SciterLoadHtml(m_SciterWindow.GetHandle(), utf8.data(), utf8.size(), m_LatestBasePath.wc_str());
 	}
 	bool Host::LoadHTML(const wxString& html, const KxURI& baseURI)
 	{
-		auto utf8 = html.ToUTF8();
 		m_LatestBasePath = baseURI.BuildURI();
-
-		return GetSciterAPI()->SciterLoadHtml(m_SciterWindow.GetHandle(), reinterpret_cast<const BYTE*>(utf8.data()), utf8.length(), m_LatestBasePath.wc_str());
+		
+		auto utf8 = Internal::ToSciterUTF8(html);
+		return GetSciterAPI()->SciterLoadHtml(m_SciterWindow.GetHandle(), utf8.data(), utf8.size(), m_LatestBasePath.wc_str());
 	}
 
 	bool Host::LoadDocument(const wxString& localPath)
