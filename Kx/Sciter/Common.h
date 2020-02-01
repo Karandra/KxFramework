@@ -1,6 +1,7 @@
 #pragma once
 #include "Kx/Common.hpp"
 #include <KxFramework/KxEnumClassOperations.h>
+#include <KxFramework/KxVersion.h>
 
 namespace KxSciter
 {
@@ -73,6 +74,16 @@ namespace KxSciter
 
 namespace KxEnumClassOperations
 {
+}
+
+namespace KxSciter
+{
+	wxString GetLibraryName();
+	KxVersion GetLibraryVersion();
+
+	bool IsLibraryLoaded();
+	bool LoadLibrary(const wxString& path);
+	void FreeLibrary();
 }
 
 namespace KxSciter

@@ -1153,6 +1153,9 @@
     <ClInclude Include="Kx\Sciter\WrapperWindow.h">
       <Filter>Kx\Sciter</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Sciter\SciterAPI.h">
+      <Filter>Kx\Sciter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1826,6 +1829,9 @@
       <Filter>Kx\Sciter</Filter>
     </ClCompile>
     <ClCompile Include="Kx\Sciter\Common.cpp">
+      <Filter>Kx\Sciter</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Sciter\SciterAPI.cpp">
       <Filter>Kx\Sciter</Filter>
     </ClCompile>
   </ItemGroup>

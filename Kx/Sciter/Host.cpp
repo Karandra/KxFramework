@@ -1,7 +1,6 @@
 #include "KxStdAfx.h"
 #include "Host.h"
-#include "Kx/Sciter/SciterAPI/sciter-x.h"
-#include "Kx/Sciter/SciterAPI/sciter-x-api.h"
+#include "SciterAPI.h"
 
 #pragma warning(disable: 4302) // 'reinterpret_cast': truncation from 'void *' to 'UINT'
 #pragma warning(disable: 4311) // 'reinterpret_cast': pointer truncation from 'void *' to 'UINT'
@@ -20,7 +19,7 @@ namespace KxSciter
 		{
 			if (sciter::load_resource_data(nullptr, wu.start + 4, pb, cb))
 			{
-				::SciterDataReady(m_SciterWindow.GetHandle(), notification.uri, pb, cb);
+				GetSciterAPI()->SciterDataReady(m_SciterWindow.GetHandle(), notification.uri, pb, cb);
 			}
 			return LOAD_DISCARD;
 		}
@@ -30,7 +29,7 @@ namespace KxSciter
 			aux::bytes adata = sciter::archive::instance().get(wu.start+11);
 			if (adata.length)
 			{
-				::SciterDataReady(m_SciterWindow.GetHandle(), notification.uri, adata.start, adata.length);
+				GetSciterAPI()->SciterDataReady(m_SciterWindow.GetHandle(), notification.uri, adata.start, adata.length);
 			}
 			return LOAD_DISCARD;
 		}
@@ -65,13 +64,13 @@ namespace KxSciter
 		EnableSystemTheme();
 		EnableSmoothScrolling();
 		SetFontSmoothingMode(FontSmoothing::SystemDefault);
-		::SciterSetOption(m_SciterWindow.GetHandle(), SCITER_TRANSPARENT_WINDOW, true);
-		::SciterSetOption(m_SciterWindow.GetHandle(), SCITER_CONNECTION_TIMEOUT, 500);
-		::SciterSetOption(m_SciterWindow.GetHandle(), SCITER_HTTPS_ERROR, 1);
+		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_TRANSPARENT_WINDOW, true);
+		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_CONNECTION_TIMEOUT, 500);
+		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_HTTPS_ERROR, 1);
 	}
 	void Host::SetupCallbacks()
 	{
-		::SciterSetCallback(m_SciterWindow.GetHandle(), [](SCITER_CALLBACK_NOTIFICATION* notification, void* context) -> UINT
+		GetSciterAPI()->SciterSetCallback(m_SciterWindow.GetHandle(), [](SCITER_CALLBACK_NOTIFICATION* notification, void* context) -> UINT
 		{
 			if (notification && context)
 			{
@@ -100,7 +99,7 @@ namespace KxSciter
 		{
 			// Forward message to Sciter
 			BOOL handled = FALSE;
-			*result = ::SciterProcND(m_SciterWindow.GetHandle(), msg, wParam, lParam, &handled);
+			*result = GetSciterAPI()->SciterProcND(m_SciterWindow.GetHandle(), msg, wParam, lParam, &handled);
 
 			// Handle engine creation callbacks
 			if (msg == WM_CREATE)
@@ -212,7 +211,7 @@ namespace KxSciter
 	}
 	void Host::Update()
 	{
-		::SciterUpdateWindow(m_SciterWindow.GetHandle());
+		GetSciterAPI()->SciterUpdateWindow(m_SciterWindow.GetHandle());
 	}
 	void Host::Reload()
 	{
@@ -224,8 +223,8 @@ namespace KxSciter
 		const int paddingX = wxSystemSettings::GetMetric(wxSYS_SMALLICON_X, &m_SciterWindow);
 		const int paddingY = wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y, &m_SciterWindow);
 
-		int width = ::SciterGetMinWidth(m_SciterWindow.GetHandle()) + paddingX;
-		int height = ::SciterGetMinHeight(m_SciterWindow.GetHandle(), width) + paddingY;
+		int width = GetSciterAPI()->SciterGetMinWidth(m_SciterWindow.GetHandle()) + paddingX;
+		int height = GetSciterAPI()->SciterGetMinHeight(m_SciterWindow.GetHandle(), width) + paddingY;
 
 		return m_SciterWindow.FromDIP(wxSize(width, height));
 	}
@@ -233,7 +232,7 @@ namespace KxSciter
 	{
 		UINT x = 0;
 		UINT y = 0;
-		::SciterGetPPI(m_SciterWindow.GetHandle(), &x, &y);
+		GetSciterAPI()->SciterGetPPI(m_SciterWindow.GetHandle(), &x, &y);
 
 		return wxSize(x, y);
 	}
@@ -245,7 +244,7 @@ namespace KxSciter
 	bool Host::EnableSystemTheme(bool enable)
 	{
 		m_Option_ThemeEnabled = enable;
-		return ::SciterSetOption(m_SciterWindow.GetHandle(), SCITER_SET_UX_THEMING, enable);
+		return GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_SET_UX_THEMING, enable);
 	}
 
 	bool Host::IsSmoothScrollingEnabled() const
@@ -255,7 +254,7 @@ namespace KxSciter
 	bool Host::EnableSmoothScrolling(bool enable)
 	{
 		m_Option_SmoothScrolling = enable;
-		return ::SciterSetOption(m_SciterWindow.GetHandle(), SCITER_SMOOTH_SCROLL, enable);
+		return GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_SMOOTH_SCROLL, enable);
 	}
 
 	FontSmoothing Host::GetFontSommthingMode() const
@@ -268,19 +267,19 @@ namespace KxSciter
 		{
 			case FontSmoothing::None:
 			{
-				return ::SciterSetOption(m_SciterWindow.GetHandle(), SCITER_FONT_SMOOTHING, 1);
+				return GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_FONT_SMOOTHING, 1);
 			}
 			case FontSmoothing::SystemDefault:
 			{
-				return ::SciterSetOption(m_SciterWindow.GetHandle(), SCITER_FONT_SMOOTHING, 0);
+				return GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_FONT_SMOOTHING, 0);
 			}
 			case FontSmoothing::Standard:
 			{
-				return ::SciterSetOption(m_SciterWindow.GetHandle(), SCITER_FONT_SMOOTHING, 2);
+				return GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_FONT_SMOOTHING, 2);
 			}
 			case FontSmoothing::ClearType:
 			{
-				return ::SciterSetOption(m_SciterWindow.GetHandle(), SCITER_FONT_SMOOTHING, 3);
+				return GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_FONT_SMOOTHING, 3);
 			}
 		};
 		return false;
@@ -453,25 +452,25 @@ namespace KxSciter
 		}
 
 		auto utf8 = html.ToUTF8();
-		return ::SciterLoadHtml(m_SciterWindow.GetHandle(), reinterpret_cast<const BYTE*>(utf8.data()), utf8.length(), m_LatestBasePath.wc_str());
+		return GetSciterAPI()->SciterLoadHtml(m_SciterWindow.GetHandle(), reinterpret_cast<const BYTE*>(utf8.data()), utf8.length(), m_LatestBasePath.wc_str());
 	}
 	bool Host::LoadHTML(const wxString& html, const KxURI& baseURI)
 	{
 		auto utf8 = html.ToUTF8();
 		m_LatestBasePath = baseURI.BuildURI();
 
-		return ::SciterLoadHtml(m_SciterWindow.GetHandle(), reinterpret_cast<const BYTE*>(utf8.data()), utf8.length(), m_LatestBasePath.wc_str());
+		return GetSciterAPI()->SciterLoadHtml(m_SciterWindow.GetHandle(), reinterpret_cast<const BYTE*>(utf8.data()), utf8.length(), m_LatestBasePath.wc_str());
 	}
 
 	bool Host::LoadDocument(const wxString& localPath)
 	{
 		m_LatestBasePath = localPath.AfterLast(wxS('\\'));
-		return ::SciterLoadFile(m_SciterWindow.GetHandle(), localPath.wc_str());
+		return GetSciterAPI()->SciterLoadFile(m_SciterWindow.GetHandle(), localPath.wc_str());
 	}
 	bool Host::LoadDocument(const KxURI& uri)
 	{
 		m_LatestBasePath = uri.BuildURI();
-		return ::SciterLoadFile(m_SciterWindow.GetHandle(), m_LatestBasePath.wc_str());
+		return GetSciterAPI()->SciterLoadFile(m_SciterWindow.GetHandle(), m_LatestBasePath.wc_str());
 	}
 
 	void Host::ClearDocument()
@@ -483,7 +482,7 @@ namespace KxSciter
 	Element Host::GetRootElement() const
 	{
 		HELEMENT node = nullptr;
-		if (::SciterGetRootElement(m_SciterWindow.GetHandle(), &node) == SCDOM_OK)
+		if (GetSciterAPI()->SciterGetRootElement(m_SciterWindow.GetHandle(), &node) == SCDOM_OK)
 		{
 			return Element(node);
 		}
@@ -492,7 +491,7 @@ namespace KxSciter
 	Element Host::GetFocusedElement() const
 	{
 		HELEMENT node = nullptr;
-		if (::SciterGetFocusElement(m_SciterWindow.GetHandle(), &node) == SCDOM_OK)
+		if (GetSciterAPI()->SciterGetFocusElement(m_SciterWindow.GetHandle(), &node) == SCDOM_OK)
 		{
 			return Element(node);
 		}
@@ -501,7 +500,7 @@ namespace KxSciter
 	Element Host::GetElementByUID(void* id) const
 	{
 		HELEMENT node = nullptr;
-		if (::SciterGetElementByUID(m_SciterWindow.GetHandle(), reinterpret_cast<UINT>(id), &node) == SCDOM_OK)
+		if (GetSciterAPI()->SciterGetElementByUID(m_SciterWindow.GetHandle(), reinterpret_cast<UINT>(id), &node) == SCDOM_OK)
 		{
 			return Element(node);
 		}
@@ -510,7 +509,7 @@ namespace KxSciter
 	Element Host::GetElementFromPoint(const wxPoint& pos) const
 	{
 		HELEMENT node = nullptr;
-		if (::SciterFindElement(m_SciterWindow.GetHandle(), {pos.x, pos.y}, &node) == SCDOM_OK)
+		if (GetSciterAPI()->SciterFindElement(m_SciterWindow.GetHandle(), {pos.x, pos.y}, &node) == SCDOM_OK)
 		{
 			return Element(node);
 		}
@@ -520,7 +519,7 @@ namespace KxSciter
 	Element Host::GetHighlightedElement() const
 	{
 		HELEMENT node = nullptr;
-		if (::SciterGetHighlightedElement(m_SciterWindow.GetHandle(), &node) == SCDOM_OK)
+		if (GetSciterAPI()->SciterGetHighlightedElement(m_SciterWindow.GetHandle(), &node) == SCDOM_OK)
 		{
 			return Element(node);
 		}
@@ -528,12 +527,12 @@ namespace KxSciter
 	}
 	void Host::SetHighlightedElement(const Element& node)
 	{
-		::SciterSetHighlightedElement(m_SciterWindow.GetHandle(), (HELEMENT)node.GetHandle());
+		GetSciterAPI()->SciterSetHighlightedElement(m_SciterWindow.GetHandle(), (HELEMENT)node.GetHandle());
 	}
 
 	bool Host::ExecuteScript(const wxString& script)
 	{
-		SCITER_VALUE returnValue;
-		return ::SciterEval(m_SciterWindow.GetHandle(), script.wc_str(), script.length(), &returnValue);
+		VALUE returnValue = {};
+		return GetSciterAPI()->SciterEval(m_SciterWindow.GetHandle(), script.wc_str(), script.length(), reinterpret_cast<SCITER_VALUE*>(&returnValue));
 	}
 }
