@@ -58,6 +58,7 @@ namespace KxSciter
 		px, // Pixel
 		pt, // Point
 		pc, // Pica
+		dip, // Device-independent pixel
 
 		// Relative
 		em, // Relative to the font-size of the element (2em means 2 times the size of the current font)

@@ -70,6 +70,7 @@ namespace KxSciter
 			Map(px);
 			Map(pt);
 			Map(pc);
+			Map(dip);
 
 			// Relative
 			Map(em);
