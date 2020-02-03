@@ -2,9 +2,132 @@
 #include "Host.h"
 #include "SciterAPI.h"
 #include "Internal.h"
+#include "KxFramework/KxUtility.h"
 
 #pragma warning(disable: 4302) // 'reinterpret_cast': truncation from 'void *' to 'UINT'
 #pragma warning(disable: 4311) // 'reinterpret_cast': pointer truncation from 'void *' to 'UINT'
+
+namespace
+{
+	template<class TEvent>
+	TEvent MakeEvent(KxSciter::Host& host, KxEventID eventID = wxEVT_NULL)
+	{
+		TEvent event(host);
+		event.Allow();
+		event.SetEventObject(&host.GetWindow());
+		event.SetEventType(eventID);
+
+		return event;
+	}
+
+	KxSciter::ElementHandle* FromSciterElement(HELEMENT handle)
+	{
+		return reinterpret_cast<KxSciter::ElementHandle*>(handle);
+	}
+
+	void AssignKeyboardState(wxKeyboardState& state, UINT sciterValues)
+	{
+		state.SetAltDown(sciterValues & KEYBOARD_STATES::ALT_KEY_PRESSED);
+		state.SetShiftDown(sciterValues & KEYBOARD_STATES::SHIFT_KEY_PRESSED);
+		state.SetControlDown(sciterValues & KEYBOARD_STATES::CONTROL_KEY_PRESSED);
+		state.SetMetaDown(wxGetKeyState(wxKeyCode::WXK_WINDOWS_LEFT) || wxGetKeyState(wxKeyCode::WXK_WINDOWS_RIGHT));
+	}
+	void AssignMouseState(wxMouseState& state, UINT sciterValues)
+	{
+		state.SetLeftDown(sciterValues & MOUSE_BUTTONS::MAIN_MOUSE_BUTTON);
+		state.SetRightDown(sciterValues & MOUSE_BUTTONS::PROP_MOUSE_BUTTON);
+		state.SetMiddleDown(sciterValues & MOUSE_BUTTONS::MIDDLE_MOUSE_BUTTON);
+		state.SetAux1Down(::GetKeyState(VK_XBUTTON1) < 0);
+		state.SetAux2Down(::GetKeyState(VK_XBUTTON2) < 0);
+	}
+	wxStockCursor MapCursorType(CURSOR_TYPE type)
+	{
+		switch (type)
+		{
+			case CURSOR_TYPE::CURSOR_ARROW:
+			case CURSOR_TYPE::CURSOR_UPARROW:
+			case CURSOR_TYPE::CURSOR_DRAG_MOVE:
+			case CURSOR_TYPE::CURSOR_DRAG_COPY:
+			{
+				return wxStockCursor::wxCURSOR_ARROW;
+			}
+			case CURSOR_TYPE::CURSOR_IBEAM:
+			{
+				return wxStockCursor::wxCURSOR_IBEAM;
+			}
+			case CURSOR_TYPE::CURSOR_WAIT:
+			{
+				return wxStockCursor::wxCURSOR_WAIT;
+			}
+			case CURSOR_TYPE::CURSOR_CROSS:
+			{
+				return wxStockCursor::wxCURSOR_CROSS;
+			}
+			case CURSOR_TYPE::CURSOR_SIZENWSE:
+			{
+				return wxStockCursor::wxCURSOR_SIZENWSE;
+			}
+			case CURSOR_TYPE::CURSOR_SIZENESW:
+			{
+				return wxStockCursor::wxCURSOR_SIZENESW;
+			}
+			case CURSOR_TYPE::CURSOR_SIZEWE:
+			{
+				return wxStockCursor::wxCURSOR_SIZEWE;
+			}
+			case CURSOR_TYPE::CURSOR_SIZENS:
+			{
+				return wxStockCursor::wxCURSOR_SIZENS;
+			}
+			case CURSOR_TYPE::CURSOR_SIZEALL:
+			{
+				return wxStockCursor::wxCURSOR_SIZING;
+			}
+			case CURSOR_TYPE::CURSOR_NO:
+			{
+				return wxStockCursor::wxCURSOR_WAIT;
+			}
+			case CURSOR_TYPE::CURSOR_APPSTARTING:
+			{
+				return wxStockCursor::wxCURSOR_ARROWWAIT;
+			}
+			case CURSOR_TYPE::CURSOR_HELP:
+			{
+				return wxStockCursor::wxCURSOR_QUESTION_ARROW;
+			}
+			case CURSOR_TYPE::CURSOR_HAND:
+			{
+				return wxStockCursor::wxCURSOR_HAND;
+			}
+		}
+		return wxStockCursor::wxCURSOR_NONE;
+	}
+	KxSciter::ScrollSource MapScrollSource(SCROLL_SOURCE source)
+	{
+		using namespace KxSciter;
+
+		switch (source)
+		{
+			case SCROLL_SOURCE::SCROLL_SOURCE_KEYBOARD:
+			{
+				return ScrollSource::Keyboard;
+			}
+			case SCROLL_SOURCE::SCROLL_SOURCE_SCROLLBAR:
+			{
+				return ScrollSource::Scrollbar;
+			}
+			case SCROLL_SOURCE::SCROLL_SOURCE_ANIMATOR:
+			{
+				return ScrollSource::Animator;
+			}
+			case SCROLL_SOURCE::SCROLL_SOURCE_WHEEL:
+			{
+				return ScrollSource::Wheel;
+			}
+		};
+		return ScrollSource::Unknown;
+	}
+}
 
 namespace KxSciter
 {
@@ -60,6 +183,298 @@ namespace KxSciter
 		return 0;
 	}
 
+	bool Host::HandleInitializationEvent(ElementHandle* element, void* context)
+	{
+		INITIALIZATION_PARAMS& parameters = *reinterpret_cast<INITIALIZATION_PARAMS*>(context);
+
+		if (parameters.cmd == BEHAVIOR_ATTACH)
+		{
+			Event event = MakeEvent<Event>(*this, EvtAttached);
+			event.SetElement(element);
+			return ProcessEvent(event);
+		}
+		else if (parameters.cmd == BEHAVIOR_DETACH)
+		{
+			Event event = MakeEvent<Event>(*this, EvtDetached);
+			event.SetElement(element);
+			return ProcessEvent(event);
+		}
+		return true;
+	}
+	bool Host::HandleKeyEvent(ElementHandle* element, void* context)
+	{
+		KEY_PARAMS& parameters = *reinterpret_cast<KEY_PARAMS*>(context);
+
+		KeyEvent event = MakeEvent<KeyEvent>(*this);
+		switch (parameters.cmd)
+		{
+			case KEY_EVENTS::KEY_CHAR:
+			{
+				event.SetEventType(EvtKeyChar);
+				event.SetUnicodeKey(parameters.key_code);
+				break;
+			}
+			case KEY_EVENTS::KEY_UP:
+			{
+				event.SetEventType(EvtKeyUp);
+				break;
+			}
+			case KEY_EVENTS::KEY_DOWN:
+			{
+				event.SetEventType(EvtKeyDown);
+				break;
+			}
+		};
+
+		if (event.GetEventType() != wxEVT_NULL)
+		{
+			event.SetElement(element);
+			event.SetTargetElement(FromSciterElement(parameters.target));
+			event.SetKeyCode(static_cast<wxKeyCode>(parameters.key_code));
+			event.SetPosition(m_SciterWindow.ScreenToClient(wxGetMousePosition()));
+			AssignKeyboardState(event, parameters.alt_state);
+
+			return ProcessEvent(event);
+		}
+		return false;
+	}
+	bool Host::HandleMouseEvent(ElementHandle* element, void* context)
+	{
+		MOUSE_PARAMS& parameters = *reinterpret_cast<MOUSE_PARAMS*>(context);
+
+		MouseEvent event = MakeEvent<MouseEvent>(*this);
+		switch (parameters.cmd)
+		{
+			case MOUSE_EVENTS::MOUSE_ENTER:
+			{
+				event.SetEventType(EvtMouseEnter);
+				break;
+			}
+			case MOUSE_EVENTS::MOUSE_LEAVE:
+			{
+				event.SetEventType(EvtMouseLeave);
+				break;
+			}
+			case MOUSE_EVENTS::MOUSE_MOVE:
+			{
+				event.SetEventType(EvtMouseMove);
+				break;
+			}
+			case MOUSE_EVENTS::MOUSE_UP:
+			{
+				event.SetEventType(EvtMouseUp);
+				break;
+			}
+			case MOUSE_EVENTS::MOUSE_DOWN:
+			{
+				event.SetEventType(EvtMouseDown);
+				break;
+			}
+			case MOUSE_EVENTS::MOUSE_CLICK:
+			{
+				event.SetEventType(EvtMouseClick);
+				break;
+			}
+			case MOUSE_EVENTS::MOUSE_DCLICK:
+			{
+				event.SetEventType(EvtMouseDoubleClick);
+				break;
+			}
+			case MOUSE_EVENTS::MOUSE_TICK:
+			{
+				event.SetEventType(EvtMouseTick);
+				break;
+			}
+			case MOUSE_EVENTS::MOUSE_IDLE:
+			{
+				event.SetEventType(EvtMouseIdle);
+				break;
+			}
+
+			// Skipping drag events for now. Sciter also has "exchange" event and it seems also have something to do with drag and drop.
+			// Further investigation required.
+		};
+
+		if (event.GetEventType() != wxEVT_NULL)
+		{
+			event.SetElement(element);
+			event.SetTargetElement(FromSciterElement(parameters.target));
+			event.SetPosition({parameters.pos_view.x, parameters.pos_view.y});
+			event.SetRelativePosition({parameters.pos.x, parameters.pos.y});
+			event.SetIsOnIcon(parameters.is_on_icon);
+			event.SetCursorType(MapCursorType(static_cast<CURSOR_TYPE>(parameters.cursor_type)));
+			AssignKeyboardState(event, parameters.alt_state);
+			AssignMouseState(event, parameters.button_state);
+
+			return ProcessEvent(event);
+		}
+		return false;
+	}
+	bool Host::HandleFocusEvent(ElementHandle* element, void* context)
+	{
+		FOCUS_PARAMS& parameters = *reinterpret_cast<FOCUS_PARAMS*>(context);
+
+		FocusEvent event = MakeEvent<FocusEvent>(*this);
+		switch (parameters.cmd)
+		{
+			case FOCUS_EVENTS::FOCUS_GOT:
+			{
+				event.SetEventType(EvtSetFocus);
+				break;
+			}
+			case FOCUS_EVENTS::FOCUS_LOST:
+			{
+				event.SetEventType(EvtKillFocus);
+				break;
+			}
+			case FOCUS_EVENTS::FOCUS_IN:
+			{
+				event.SetEventType(EvtContainerSetFocus);
+				break;
+			}
+			case FOCUS_EVENTS::FOCUS_OUT:
+			{
+				event.SetEventType(EvtContainerKillFocus);
+				break;
+			}
+		};
+
+		if (event.GetEventType() != wxEVT_NULL)
+		{
+			event.SetElement(element);
+			event.SetTargetElement(FromSciterElement(parameters.target));
+			event.SetByMouseClick(parameters.by_mouse_click);
+
+			const bool result = ProcessEvent(event);
+			parameters.cancel = !event.IsAllowed();
+			return result;
+		}
+		return false;
+	}
+	bool Host::HandleSizeEvent(ElementHandle* element, void* context)
+	{
+		Event event = MakeEvent<SizeEvent>(*this, EvtSize);
+		return ProcessEvent(event);
+	}
+	bool Host::HandleTimerEvent(ElementHandle* element, void* context)
+	{
+		TIMER_PARAMS& parameters = *reinterpret_cast<TIMER_PARAMS*>(context);
+
+		TimerEvent event = MakeEvent<TimerEvent>(*this, EvtTimer);
+		event.SetTimerID(parameters.timerId);
+		return ProcessEvent(event);
+	}
+	bool Host::HandleScrollEvent(ElementHandle* element, void* context)
+	{
+		SCROLL_PARAMS& parameters = *reinterpret_cast<SCROLL_PARAMS*>(context);
+
+		ScrollEvent event = MakeEvent<ScrollEvent>(*this);
+		switch (parameters.cmd)
+		{
+			case SCROLL_EVENTS::SCROLL_HOME:
+			{
+				event.SetEventType(EvtScrollHome);
+				break;
+			}
+			case SCROLL_EVENTS::SCROLL_END:
+			{
+				event.SetEventType(EvtScrollEnd);
+				break;
+			}
+			case SCROLL_EVENTS::SCROLL_STEP_PLUS:
+			{
+				event.SetEventType(EvtScrollStepPlus);
+				break;
+			}
+			case SCROLL_EVENTS::SCROLL_STEP_MINUS:
+			{
+				event.SetEventType(EvtScrollStepMinus);
+				break;
+			}
+			case SCROLL_EVENTS::SCROLL_PAGE_PLUS:
+			{
+				event.SetEventType(EvtScrollPagePlus);
+				break;
+			}
+			case SCROLL_EVENTS::SCROLL_PAGE_MINUS:
+			{
+				event.SetEventType(EvtScrollPageMinus);
+				break;
+			}
+			case SCROLL_EVENTS::SCROLL_SLIDER_PRESSED:
+			{
+				event.SetEventType(EvtScrollSliderPressed);
+				break;
+			}
+			case SCROLL_EVENTS::SCROLL_SLIDER_RELEASED:
+			{
+				event.SetEventType(EvtScrollSliderReleased);
+				break;
+			}
+			case SCROLL_EVENTS::SCROLL_CORNER_PRESSED:
+			{
+				event.SetEventType(EvtScrollCornerPressed);
+				break;
+			}
+			case SCROLL_EVENTS::SCROLL_CORNER_RELEASED:
+			{
+				event.SetEventType(EvtScrollCornerReleased);
+				break;
+			}
+		};
+
+		if (event.GetEventType() != wxEVT_NULL)
+		{
+			event.SetElement(element);
+			event.SetTargetElement(FromSciterElement(parameters.target));
+			event.SetOrientation(parameters.vertical ? wxVERTICAL : wxHORIZONTAL);
+			event.SetPosition(parameters.pos);
+			event.SetSource(MapScrollSource(static_cast<SCROLL_SOURCE>(parameters.source)));
+
+			return ProcessEvent(event);
+		}
+		return false;
+	}
+	bool Host::HandleDrawEvent(ElementHandle* element, void* context)
+	{
+		DRAW_PARAMS& parameters = *reinterpret_cast<DRAW_PARAMS*>(context);
+
+		PaintEvent event = MakeEvent<PaintEvent>(*this);
+		switch (parameters.cmd)
+		{
+			case DRAW_EVENTS::DRAW_BACKGROUND:
+			{
+				event.SetEventType(EvtPaintBackground);
+				break;
+			}
+			case DRAW_EVENTS::DRAW_FOREGROUND:
+			{
+				event.SetEventType(EvtPaintForeground);
+				break;
+			}
+			case DRAW_EVENTS::DRAW_OUTLINE:
+			{
+				event.SetEventType(EvtPaintOutline);
+				break;
+			}
+			case DRAW_EVENTS::DRAW_CONTENT:
+			{
+				event.SetEventType(EvtPaintContent);
+				break;
+			}
+		};
+
+		if (event.GetEventType() != wxEVT_NULL)
+		{
+			event.SetElement(element);
+			event.SetDC(parameters.gfx);
+			event.SetRect(KxUtility::CopyRECTToRect(parameters.area));
+
+			return ProcessEvent(event);
+		}
+		return false;
+	}
+
 	void Host::SetDefaultOptions()
 	{
 		EnableSystemTheme();
@@ -79,6 +494,14 @@ namespace KxSciter
 			}
 			return 0;
 		}, this);
+		GetSciterAPI()->SciterWindowAttachEventHandler(m_SciterWindow.GetHandle(), [](void* context, HELEMENT element, UINT eventGroupID, void* parameters) -> BOOL
+		{
+			if (context)
+			{
+				return reinterpret_cast<Host*>(context)->SciterHandleEvent(reinterpret_cast<ElementHandle*>(element), eventGroupID, parameters);
+			}
+			return FALSE;
+		}, this, HANDLE_ALL);
 	}
 
 	void Host::OnEngineCreated()
@@ -89,9 +512,19 @@ namespace KxSciter
 
 		// Window options
 		m_SciterWindow.SetBackgroundStyle(wxBG_STYLE_TRANSPARENT);
+
+		// Send event
+		Event event = MakeEvent<Event>(*this, EvtEngineCreated);
+		ProcessEvent(event);
 	}
 	void Host::OnEngineDestroyed()
 	{
+		Event event = MakeEvent<Event>(*this, EvtEngineDestroyed);
+		ProcessEvent(event);
+	}
+	bool Host::ProcessEvent(wxEvent& event)
+	{
+		return m_SciterWindow.ProcessWindowEvent(event) && !event.GetSkipped();
 	}
 
 	bool Host::SciterHandleMessage(WXLRESULT* result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam)
@@ -120,6 +553,51 @@ namespace KxSciter
 			}
 			return handled;
 		}
+		return false;
+	}
+	bool Host::SciterHandleEvent(ElementHandle* element, uint32_t eventGroupID, void* context)
+	{
+		switch (eventGroupID)
+		{
+			case EVENT_GROUPS::SUBSCRIPTIONS_REQUEST:
+			{
+				// Defines list of event groups this event handler is subscribed to
+				*reinterpret_cast<UINT*>(context) = HANDLE_ALL;
+				return true;
+			}
+			case EVENT_GROUPS::HANDLE_INITIALIZATION:
+			{
+				return HandleInitializationEvent(element, context);
+			}
+			case EVENT_GROUPS::HANDLE_KEY:
+			{
+				return HandleKeyEvent(element, context);
+			}
+			case EVENT_GROUPS::HANDLE_MOUSE:
+			{
+				return HandleMouseEvent(element, context);
+			}
+			case EVENT_GROUPS::HANDLE_FOCUS:
+			{
+				return HandleFocusEvent(element, context);
+			}
+			case EVENT_GROUPS::HANDLE_SIZE:
+			{
+				return HandleSizeEvent(element, context);
+			}
+			case EVENT_GROUPS::HANDLE_TIMER:
+			{
+				return HandleTimerEvent(element, context);
+			}
+			case EVENT_GROUPS::HANDLE_SCROLL:
+			{
+				return HandleScrollEvent(element, context);
+			}
+			case EVENT_GROUPS::HANDLE_DRAW:
+			{
+				return HandleDrawEvent(element, context);
+			}
+		};
 		return false;
 	}
 	int Host::SciterHandleNotify(void* context)
@@ -485,7 +963,7 @@ namespace KxSciter
 		HELEMENT node = nullptr;
 		if (GetSciterAPI()->SciterGetRootElement(m_SciterWindow.GetHandle(), &node) == SCDOM_OK)
 		{
-			return Element(node);
+			return reinterpret_cast<ElementHandle*>(node);
 		}
 		return {};
 	}
@@ -494,16 +972,16 @@ namespace KxSciter
 		HELEMENT node = nullptr;
 		if (GetSciterAPI()->SciterGetFocusElement(m_SciterWindow.GetHandle(), &node) == SCDOM_OK)
 		{
-			return Element(node);
+			return reinterpret_cast<ElementHandle*>(node);
 		}
 		return {};
 	}
-	Element Host::GetElementByUID(void* id) const
+	Element Host::GetElementByUID(ElementUID* id) const
 	{
 		HELEMENT node = nullptr;
 		if (GetSciterAPI()->SciterGetElementByUID(m_SciterWindow.GetHandle(), reinterpret_cast<UINT>(id), &node) == SCDOM_OK)
 		{
-			return Element(node);
+			return reinterpret_cast<ElementHandle*>(node);
 		}
 		return {};
 	}
@@ -512,7 +990,7 @@ namespace KxSciter
 		HELEMENT node = nullptr;
 		if (GetSciterAPI()->SciterFindElement(m_SciterWindow.GetHandle(), {pos.x, pos.y}, &node) == SCDOM_OK)
 		{
-			return Element(node);
+			return reinterpret_cast<ElementHandle*>(node);
 		}
 		return {};
 	}
@@ -522,7 +1000,7 @@ namespace KxSciter
 		HELEMENT node = nullptr;
 		if (GetSciterAPI()->SciterGetHighlightedElement(m_SciterWindow.GetHandle(), &node) == SCDOM_OK)
 		{
-			return Element(node);
+			return reinterpret_cast<ElementHandle*>(node);
 		}
 		return {};
 	}

@@ -70,6 +70,15 @@ namespace KxSciter
 		vmax, // Relative to 1% of viewport's larger dimension
 		Percent, // Relative to the parent element
 	};
+
+	enum class ScrollSource
+	{
+		Unknown = 0,
+		Keyboard,
+		Scrollbar,
+		Animator,
+		Wheel
+	};
 }
 
 namespace KxEnumClassOperations

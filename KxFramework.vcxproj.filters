@@ -253,6 +253,9 @@
     <Filter Include="Kx\Sciter\Controls">
       <UniqueIdentifier>{aacb0ec0-4f97-43ee-a76e-16f29cea9351}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\Sciter\Events">
+      <UniqueIdentifier>{49eb5c51-d7e1-45ec-9167-7e05b2a547ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -1159,6 +1162,33 @@
     <ClInclude Include="Kx\Sciter\Internal.h">
       <Filter>Kx\Sciter</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Sciter\Events.h">
+      <Filter>Kx\Sciter</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Sciter\Events\Event.h">
+      <Filter>Kx\Sciter\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Sciter\Events\KeyEvent.h">
+      <Filter>Kx\Sciter\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Sciter\Events\MouseEvent.h">
+      <Filter>Kx\Sciter\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Sciter\Events\FocusEvent.h">
+      <Filter>Kx\Sciter\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Sciter\Events\TimerEvent.h">
+      <Filter>Kx\Sciter\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Sciter\Events\SizeEvent.h">
+      <Filter>Kx\Sciter\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Sciter\Events\ScrollEvent.h">
+      <Filter>Kx\Sciter\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Sciter\Events\PaintEvent.h">
+      <Filter>Kx\Sciter\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1839,6 +1869,9 @@
     </ClCompile>
     <ClCompile Include="Kx\Sciter\Internal.cpp">
       <Filter>Kx\Sciter</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Sciter\Events\Event.cpp">
+      <Filter>Kx\Sciter\Events</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -5,18 +5,22 @@
 
 namespace
 {
-	HNODE ToNode(void* handle)
+	HNODE ToSciterNode(void* handle)
 	{
 		return reinterpret_cast<HNODE>(handle);
 	}
-	
-	template<class TNode = HELEMENT, class TFunc>
-	KxSciter::Node DoGetNode(void* handle, TFunc&& func)
+	KxSciter::NodeHandle* FromSciterNode(HNODE handle)
 	{
-		TNode node = nullptr;
-		if (func(ToNode(handle), &node) == SCDOM_OK)
+		return reinterpret_cast<KxSciter::NodeHandle*>(handle);
+	}
+	
+	template<class TFunc>
+	KxSciter::Node DoGetNode(KxSciter::NodeHandle* handle, TFunc&& func)
+	{
+		HNODE node = nullptr;
+		if (func(ToSciterNode(handle), &node) == SCDOM_OK)
 		{
-			return KxSciter::Node(node);
+			return FromSciterNode(node);
 		}
 		return {};
 	}
@@ -28,7 +32,7 @@ namespace
 		if (func(value.data(), value.length(), &nativeNode) == SCDOM_OK)
 		{
 			KxSciter::Node node;
-			node.Attach(nativeNode);
+			node.Attach(FromSciterNode(nativeNode));
 			return node;
 		}
 		return {};
@@ -39,7 +43,7 @@ namespace
 		using namespace KxSciter;
 
 		UINT nodeType = std::numeric_limits<UINT>::max();
-		GetSciterAPI()->SciterNodeType(ToNode(handle), &nodeType);
+		GetSciterAPI()->SciterNodeType(ToSciterNode(handle), &nodeType);
 
 		return static_cast<NODE_TYPE>(nodeType);
 	}
@@ -47,7 +51,7 @@ namespace
 	{
 		using namespace KxSciter;
 
-		return GetSciterAPI()->SciterNodeInsert(ToNode(thisNode.GetHandle()), mode, ToNode(node.GetHandle())) == SCDOM_OK;
+		return GetSciterAPI()->SciterNodeInsert(ToSciterNode(thisNode.GetHandle()), mode, ToSciterNode(node.GetHandle())) == SCDOM_OK;
 	}
 }
 
@@ -62,9 +66,9 @@ namespace KxSciter
 		return DoCreateTextNode(GetSciterAPI()->SciterCreateCommentNode, value);
 	}
 
-	void Node::Acquire(void* handle)
+	void Node::Acquire(NodeHandle* handle)
 	{
-		if (GetSciterAPI()->SciterNodeAddRef(ToNode(handle)) == SCDOM_OK)
+		if (GetSciterAPI()->SciterNodeAddRef(ToSciterNode(handle)) == SCDOM_OK)
 		{
 			m_Handle = handle;
 		}
@@ -77,7 +81,7 @@ namespace KxSciter
 	{
 		if (m_Handle)
 		{
-			GetSciterAPI()->SciterNodeRelease(ToNode(m_Handle));
+			GetSciterAPI()->SciterNodeRelease(ToSciterNode(m_Handle));
 			m_Handle = nullptr;
 		}
 	}
@@ -94,21 +98,21 @@ namespace KxSciter
 		other.m_Handle = nullptr;
 	}
 
-	bool Node::Attach(void* handle)
+	bool Node::Attach(NodeHandle* handle)
 	{
 		if (!IsOk())
 		{
-			m_Handle = nullptr;
+			m_Handle = handle;
 			return true;
 		}
 		return false;
 	}
-	void* Node::Detach()
+	NodeHandle* Node::Detach()
 	{
-		void* handle = m_Handle;
+		NodeHandle* handle = m_Handle;
 		m_Handle = nullptr;
 
-		if (GetSciterAPI()->SciterNodeRemove(ToNode(handle), FALSE) == SCDOM_OK)
+		if (GetSciterAPI()->SciterNodeRemove(ToSciterNode(handle), FALSE) == SCDOM_OK)
 		{
 			return handle;
 		}
@@ -116,7 +120,7 @@ namespace KxSciter
 	}
 	bool Node::Remove()
 	{
-		if (GetSciterAPI()->SciterNodeRemove(ToNode(m_Handle), TRUE) == SCDOM_OK)
+		if (GetSciterAPI()->SciterNodeRemove(ToSciterNode(m_Handle), TRUE) == SCDOM_OK)
 		{
 			Release();
 			return true;
@@ -139,30 +143,35 @@ namespace KxSciter
 
 	Element Node::ToElement() const
 	{
-		HELEMENT node = nullptr;
-		GetSciterAPI()->SciterNodeCastToElement(ToNode(m_Handle), &node);
-		return Element(node);
+		HELEMENT element = nullptr;
+		GetSciterAPI()->SciterNodeCastToElement(ToSciterNode(m_Handle), &element);
+		return reinterpret_cast<ElementHandle*>(element);
 	}
 	
 	Node Node::GetParent() const
 	{
-		return DoGetNode(m_Handle, GetSciterAPI()->SciterNodeParent);
+		HELEMENT element = nullptr;
+		if (GetSciterAPI()->SciterNodeParent(ToSciterNode(m_Handle), &element) == SCDOM_OK)
+		{
+			return Element(reinterpret_cast<ElementHandle*>(element)).ToNode();
+		}
+		return {};
 	}
 	Node Node::GetPrevSibling() const
 	{
-		return DoGetNode<HNODE>(m_Handle, GetSciterAPI()->SciterNodePrevSibling);
+		return DoGetNode(m_Handle, GetSciterAPI()->SciterNodePrevSibling);
 	}
 	Node Node::GetNextSibling() const
 	{
-		return DoGetNode<HNODE>(m_Handle, GetSciterAPI()->SciterNodeNextSibling);
+		return DoGetNode(m_Handle, GetSciterAPI()->SciterNodeNextSibling);
 	}
 	Node Node::GetFirstChild() const
 	{
-		return DoGetNode<HNODE>(m_Handle, GetSciterAPI()->SciterNodeFirstChild);
+		return DoGetNode(m_Handle, GetSciterAPI()->SciterNodeFirstChild);
 	}
 	Node Node::GetLastChild() const
 	{
-		return DoGetNode<HNODE>(m_Handle, GetSciterAPI()->SciterNodeLastChild);
+		return DoGetNode(m_Handle, GetSciterAPI()->SciterNodeLastChild);
 	}
 
 	size_t Node::GetIndexWithinParent() const
@@ -180,16 +189,16 @@ namespace KxSciter
 	size_t Node::GetChildrenCount() const
 	{
 		UINT count = 0;
-		GetSciterAPI()->SciterNodeChildrenCount(ToNode(m_Handle), &count);
+		GetSciterAPI()->SciterNodeChildrenCount(ToSciterNode(m_Handle), &count);
 
 		return count;
 	}
 	Node Node::GetChildAt(size_t index) const
 	{
 		HNODE node = nullptr;
-		if (GetSciterAPI()->SciterNodeNthChild(ToNode(m_Handle), index, &node) == SCDOM_OK)
+		if (GetSciterAPI()->SciterNodeNthChild(ToSciterNode(m_Handle), index, &node) == SCDOM_OK)
 		{
-			return Node(node);
+			return FromSciterNode(node);
 		}
 		return {};
 	}
@@ -214,7 +223,7 @@ namespace KxSciter
 	wxString Node::GetValue() const
 	{
 		wxString result;
-		GetSciterAPI()->SciterNodeGetText(ToNode(m_Handle), [](LPCWSTR value, UINT length, LPVOID context)
+		GetSciterAPI()->SciterNodeGetText(ToSciterNode(m_Handle), [](LPCWSTR value, UINT length, LPVOID context)
 		{
 			reinterpret_cast<wxString*>(context)->assign(value, length);
 		}, &result);
@@ -222,6 +231,6 @@ namespace KxSciter
 	}
 	bool Node::SetValue(wxStringView value) const
 	{
-		return GetSciterAPI()->SciterNodeSetText(ToNode(m_Handle), value.data(), value.length()) == SCDOM_OK;
+		return GetSciterAPI()->SciterNodeSetText(ToSciterNode(m_Handle), value.data(), value.length()) == SCDOM_OK;
 	}
 }

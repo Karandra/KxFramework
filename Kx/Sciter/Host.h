@@ -2,13 +2,17 @@
 #include "Common.h"
 #include "Node.h"
 #include "Element.h"
+#include "Events.h"
 #include <KxFramework/KxURI.h>
 #include <wx/window.h>
 
 namespace KxSciter
 {
-	class KX_API Host
+	class KX_API Host: public wxObject
 	{
+		friend class Node;
+		friend class Element;
+
 		private:
 			wxWindow& m_SciterWindow;
 			bool m_EngineCreated = false;
@@ -29,15 +33,25 @@ namespace KxSciter
 			int SciterNotify_CriticalFailure();
 			int SciterNotify_EngineDestroyed();
 
+			bool HandleInitializationEvent(ElementHandle* element, void* context);
+			bool HandleKeyEvent(ElementHandle* element, void* context);
+			bool HandleMouseEvent(ElementHandle* element, void* context);
+			bool HandleFocusEvent(ElementHandle* element, void* context);
+			bool HandleSizeEvent(ElementHandle* element, void* context);
+			bool HandleTimerEvent(ElementHandle* element, void* context);
+			bool HandleScrollEvent(ElementHandle* element, void* context);
+			bool HandleDrawEvent(ElementHandle* element, void* context);
+
 			void SetDefaultOptions();
 			void SetupCallbacks();
 
 			void OnEngineCreated();
 			void OnEngineDestroyed();
-
+			bool ProcessEvent(wxEvent& event);
 
 		protected:
 			bool SciterHandleMessage(WXLRESULT* result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam);
+			bool SciterHandleEvent(ElementHandle* element, uint32_t eventGroupID, void* context);
 			int SciterHandleNotify(void* context);
 
 			void OnInternalIdle();
@@ -101,7 +115,7 @@ namespace KxSciter
 
 			Element GetRootElement() const;
 			Element GetFocusedElement() const;
-			Element GetElementByUID(void* id) const;
+			Element GetElementByUID(ElementUID* id) const;
 			Element GetElementFromPoint(const wxPoint& pos) const;
 
 			Element GetHighlightedElement() const;

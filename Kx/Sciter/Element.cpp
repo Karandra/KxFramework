@@ -2,34 +2,38 @@
 #include "Element.h"
 #include "Node.h"
 #include "Host.h"
-#include "KxFramework/KxUtility.h"
 #include "SciterAPI.h"
 #include "Internal.h"
+#include "KxFramework/KxUtility.h"
 
 #pragma warning(disable: 4312) // 'reinterpret_cast': conversion from 'UINT' to 'void *' of greater size
 
 namespace
 {
-	HELEMENT ToElement(void* handle)
+	HELEMENT ToSciterElement(KxSciter::ElementHandle* handle)
 	{
 		return reinterpret_cast<HELEMENT>(handle);
 	}
+	KxSciter::ElementHandle* FromSciterElement(HELEMENT handle)
+	{
+		return reinterpret_cast<KxSciter::ElementHandle*>(handle);
+	}
 
 	template<class TFunc>
-	KxSciter::Element DoGetElemenet(void* handle, TFunc&& func)
+	KxSciter::Element DoGetElemenet(KxSciter::ElementHandle* handle, TFunc&& func)
 	{
 		HELEMENT node = nullptr;
-		if (func(ToElement(handle), &node) == SCDOM_OK)
+		if (func(ToSciterElement(handle), &node) == SCDOM_OK)
 		{
-			return KxSciter::Element(node);
+			return FromSciterElement(node);
 		}
 		return {};
 	}
 
-	bool DoCheckStateFlag(void* handle, ELEMENT_STATE_BITS flag)
+	bool DoCheckStateFlag(KxSciter::ElementHandle* handle, ELEMENT_STATE_BITS flag)
 	{
 		UINT state = 0;
-		KxSciter::GetSciterAPI()->SciterGetElementState(ToElement(handle), &state);
+		KxSciter::GetSciterAPI()->SciterGetElementState(ToSciterElement(handle), &state);
 
 		return state & flag;
 	}
@@ -58,14 +62,22 @@ namespace KxSciter
 		HELEMENT nativeNode = nullptr;
 		if (GetSciterAPI()->SciterCreateElement(tagNameUTF8.data(), value.wc_str(), &nativeNode) == SCDOM_OK)
 		{
-			node.Attach(nativeNode);
+			node.Attach(FromSciterElement(nativeNode));
 		}
 		return node;
 	}
-
-	void Element::Acquire(void* handle)
+	BOOL Element::EventHandler(void* context, ElementHandle* element, uint32_t eventGroupID, void* parameters)
 	{
-		if (GetSciterAPI()->Sciter_UseElement(ToElement(handle)) == SCDOM_OK)
+		if (context)
+		{
+			return reinterpret_cast<Host*>(context)->SciterHandleEvent(element, eventGroupID, parameters);
+		}
+		return FALSE;
+	}
+
+	void Element::Acquire(ElementHandle* handle)
+	{
+		if (GetSciterAPI()->Sciter_UseElement(ToSciterElement(handle)) == SCDOM_OK)
 		{
 			m_Handle = handle;
 		}
@@ -78,7 +90,7 @@ namespace KxSciter
 	{
 		if (m_Handle)
 		{
-			GetSciterAPI()->Sciter_UnuseElement(ToElement(m_Handle));
+			GetSciterAPI()->Sciter_UnuseElement(ToSciterElement(m_Handle));
 			m_Handle = nullptr;
 		}
 	}
@@ -95,16 +107,16 @@ namespace KxSciter
 		other.m_Handle = nullptr;
 	}
 
-	void* Element::GetUID() const
+	ElementUID* Element::GetUID() const
 	{
 		UINT id = 0;
-		GetSciterAPI()->SciterGetElementUID(ToElement(m_Handle), &id);
-		return reinterpret_cast<void*>(id);
+		GetSciterAPI()->SciterGetElementUID(ToSciterElement(m_Handle), &id);
+		return reinterpret_cast<ElementUID*>(id);
 	}
 	Host* Element::GetHost() const
 	{
 		HWND windowHandle = nullptr;
-		GetSciterAPI()->SciterGetElementHwnd(ToElement(m_Handle), &windowHandle, TRUE);
+		GetSciterAPI()->SciterGetElementHwnd(ToSciterElement(m_Handle), &windowHandle, TRUE);
 		if (windowHandle)
 		{
 			return reinterpret_cast<Host*>(::GetWindowLongPtrW(windowHandle, GWLP_USERDATA));
@@ -112,21 +124,21 @@ namespace KxSciter
 		return nullptr;
 	}
 
-	bool Element::Attach(void* handle)
+	bool Element::Attach(ElementHandle* handle)
 	{
 		if (!IsOk())
 		{
-			m_Handle = nullptr;
+			m_Handle = handle;
 			return true;
 		}
 		return false;
 	}
-	void* Element::Detach()
+	ElementHandle* Element::Detach()
 	{
-		void* handle = m_Handle;
+		ElementHandle* handle = m_Handle;
 		m_Handle = nullptr;
 
-		if (GetSciterAPI()->SciterDetachElement(ToElement(handle)))
+		if (GetSciterAPI()->SciterDetachElement(ToSciterElement(handle)))
 		{
 			return handle;
 		}
@@ -134,7 +146,7 @@ namespace KxSciter
 	}
 	bool Element::Remove()
 	{
-		if (GetSciterAPI()->SciterDeleteElement(ToElement(m_Handle)) == SCDOM_OK)
+		if (GetSciterAPI()->SciterDeleteElement(ToSciterElement(m_Handle)) == SCDOM_OK)
 		{
 			Release();
 			return true;
@@ -145,34 +157,49 @@ namespace KxSciter
 	Node Element::ToNode() const
 	{
 		HNODE node = nullptr;
-		GetSciterAPI()->SciterNodeCastFromElement(ToElement(m_Handle), &node);
-		return Node(node);
+		GetSciterAPI()->SciterNodeCastFromElement(ToSciterElement(m_Handle), &node);
+		return Node(reinterpret_cast<NodeHandle*>(node));
 	}
 	Element Element::Clone() const
 	{
 		HELEMENT nativeNode = nullptr;
-		if (GetSciterAPI()->SciterCloneElement(ToElement(m_Handle), &nativeNode) == SCDOM_OK)
+		if (GetSciterAPI()->SciterCloneElement(ToSciterElement(m_Handle), &nativeNode) == SCDOM_OK)
 		{
 			Element node;
-			node.Attach(nativeNode);
+			node.Attach(FromSciterElement(nativeNode));
 			return node;
 		}
 		return {};
 	}
 
+	void Element::AttachEventHandler()
+	{
+		if (Host* host = GetHost())
+		{
+			GetSciterAPI()->SciterAttachEventHandler(ToSciterElement(m_Handle), reinterpret_cast<LPELEMENT_EVENT_PROC>(EventHandler), host);
+		}
+	}
+	void Element::DetachEventHandler()
+	{
+		if (Host* host = GetHost())
+		{
+			GetSciterAPI()->SciterDetachEventHandler(ToSciterElement(m_Handle), reinterpret_cast<LPELEMENT_EVENT_PROC>(EventHandler), host);
+		}
+	}
+
 	bool Element::Update(bool force)
 	{
-		return GetSciterAPI()->SciterUpdateElement(ToElement(m_Handle), force) == SCDOM_OK;
+		return GetSciterAPI()->SciterUpdateElement(ToSciterElement(m_Handle), force) == SCDOM_OK;
 	}
 	bool Element::UpdateRect(const wxRect& rect)
 	{
-		return GetSciterAPI()->SciterRefreshElementArea(ToElement(m_Handle), KxUtility::CopyRectToRECT(rect)) == SCDOM_OK;
+		return GetSciterAPI()->SciterRefreshElementArea(ToSciterElement(m_Handle), KxUtility::CopyRectToRECT(rect)) == SCDOM_OK;
 	}
 
 	wxRect Element::GetRect() const
 	{
 		RECT nativeRect = {};
-		if (GetSciterAPI()->SciterGetElementLocation(ToElement(m_Handle), &nativeRect, ELEMENT_AREAS::VIEW_RELATIVE) == SCDOM_OK)
+		if (GetSciterAPI()->SciterGetElementLocation(ToSciterElement(m_Handle), &nativeRect, ELEMENT_AREAS::VIEW_RELATIVE) == SCDOM_OK)
 		{
 			return KxUtility::CopyRECTToRect(nativeRect);
 		}
@@ -192,8 +219,8 @@ namespace KxSciter
 		INT minWidth = 0;
 		INT maxWidth = 0;
 		INT height = 0;
-		GetSciterAPI()->SciterGetElementIntrinsicWidths(ToElement(m_Handle), &minWidth, &maxWidth);
-		GetSciterAPI()->SciterGetElementIntrinsicHeight(ToElement(m_Handle), minWidth, &height);
+		GetSciterAPI()->SciterGetElementIntrinsicWidths(ToSciterElement(m_Handle), &minWidth, &maxWidth);
+		GetSciterAPI()->SciterGetElementIntrinsicHeight(ToSciterElement(m_Handle), minWidth, &height);
 
 		return wxSize(minWidth, height);
 	}
@@ -202,19 +229,19 @@ namespace KxSciter
 		INT minWidth = 0;
 		INT maxWidth = 0;
 		INT height = 0;
-		GetSciterAPI()->SciterGetElementIntrinsicWidths(ToElement(m_Handle), &minWidth, &maxWidth);
-		GetSciterAPI()->SciterGetElementIntrinsicHeight(ToElement(m_Handle), maxWidth, &height);
+		GetSciterAPI()->SciterGetElementIntrinsicWidths(ToSciterElement(m_Handle), &minWidth, &maxWidth);
+		GetSciterAPI()->SciterGetElementIntrinsicHeight(ToSciterElement(m_Handle), maxWidth, &height);
 
 		return wxSize(maxWidth, height);
 	}
 
 	bool Element::SetCapture()
 	{
-		return GetSciterAPI()->SciterSetCapture(ToElement(m_Handle)) == SCDOM_OK;
+		return GetSciterAPI()->SciterSetCapture(ToSciterElement(m_Handle)) == SCDOM_OK;
 	}
 	bool Element::ReleaseCapture()
 	{
-		return GetSciterAPI()->SciterReleaseCapture(ToElement(m_Handle)) == SCDOM_OK;
+		return GetSciterAPI()->SciterReleaseCapture(ToSciterElement(m_Handle)) == SCDOM_OK;
 	}
 
 	bool Element::IsFocusable() const
@@ -227,7 +254,7 @@ namespace KxSciter
 	}
 	void Element::SetFocus()
 	{
-		GetSciterAPI()->SciterSetElementState(ToElement(m_Handle), ELEMENT_STATE_BITS::STATE_FOCUS, 0, FALSE);
+		GetSciterAPI()->SciterSetElementState(ToSciterElement(m_Handle), ELEMENT_STATE_BITS::STATE_FOCUS, 0, FALSE);
 	}
 
 	bool Element::IsHighlighted() const
@@ -258,12 +285,12 @@ namespace KxSciter
 			nativeFlags |= SCITER_SCROLL_FLAGS::SCROLL_SMOOTH;
 		}
 
-		GetSciterAPI()->SciterScrollToView(ToElement(m_Handle), nativeFlags);
+		GetSciterAPI()->SciterScrollToView(ToSciterElement(m_Handle), nativeFlags);
 	}
 	wxPoint Element::GetScrollPos() const
 	{
 		POINT pos = {};
-		if (GetSciterAPI()->SciterGetScrollInfo(ToElement(m_Handle), &pos, nullptr, nullptr) == SCDOM_OK)
+		if (GetSciterAPI()->SciterGetScrollInfo(ToSciterElement(m_Handle), &pos, nullptr, nullptr) == SCDOM_OK)
 		{
 			return wxPoint(pos.x, pos.y);
 		}
@@ -272,7 +299,7 @@ namespace KxSciter
 	wxSize Element::GetScrollRange() const
 	{
 		RECT range = {};
-		if (GetSciterAPI()->SciterGetScrollInfo(ToElement(m_Handle), nullptr, &range, nullptr) == SCDOM_OK)
+		if (GetSciterAPI()->SciterGetScrollInfo(ToSciterElement(m_Handle), nullptr, &range, nullptr) == SCDOM_OK)
 		{
 			return KxUtility::CopyRECTToRect(range).GetSize();
 		}
@@ -281,13 +308,13 @@ namespace KxSciter
 	bool Element::SetScrollPos(const wxPoint& pos) const
 	{
 		const Host* host = GetHost();
-		return GetSciterAPI()->SciterSetScrollPos(ToElement(m_Handle), {pos.x, pos.y}, host ? host->IsSmoothScrollingEnabled() : false) == SCDOM_OK;
+		return GetSciterAPI()->SciterSetScrollPos(ToSciterElement(m_Handle), {pos.x, pos.y}, host ? host->IsSmoothScrollingEnabled() : false) == SCDOM_OK;
 	}
 
 	wxString Element::GetInnerHTML() const
 	{
 		wxString result;
-		if (GetSciterAPI()->SciterGetElementHtmlCB(ToElement(m_Handle), FALSE, ExtractWxString, &result) == SCDOM_OK)
+		if (GetSciterAPI()->SciterGetElementHtmlCB(ToSciterElement(m_Handle), FALSE, ExtractWxString, &result) == SCDOM_OK)
 		{
 			return result;
 		}
@@ -296,7 +323,7 @@ namespace KxSciter
 	wxString Element::GetOuterHTML() const
 	{
 		wxString result;
-		if (GetSciterAPI()->SciterGetElementHtmlCB(ToElement(m_Handle), TRUE, ExtractWxString, &result) == SCDOM_OK)
+		if (GetSciterAPI()->SciterGetElementHtmlCB(ToSciterElement(m_Handle), TRUE, ExtractWxString, &result) == SCDOM_OK)
 		{
 			return result;
 		}
@@ -327,7 +354,7 @@ namespace KxSciter
 		if (auto nativeMode = MapMode())
 		{
 			auto utf8 = Internal::ToSciterUTF8(html);
-			return GetSciterAPI()->SciterSetElementHtml(ToElement(m_Handle), utf8.data(), utf8.size(), *nativeMode) == SCDOM_OK;
+			return GetSciterAPI()->SciterSetElementHtml(ToSciterElement(m_Handle), utf8.data(), utf8.size(), *nativeMode) == SCDOM_OK;
 		}
 		return false;
 	}
@@ -356,7 +383,7 @@ namespace KxSciter
 		if (auto nativeMode = MapMode())
 		{
 			auto utf8 = Internal::ToSciterUTF8(html);
-			return GetSciterAPI()->SciterSetElementHtml(ToElement(m_Handle), utf8.data(), utf8.size(), *nativeMode) == SCDOM_OK;
+			return GetSciterAPI()->SciterSetElementHtml(ToSciterElement(m_Handle), utf8.data(), utf8.size(), *nativeMode) == SCDOM_OK;
 		}
 		return false;
 	}
@@ -404,22 +431,22 @@ namespace KxSciter
 	size_t Element::GetIndexWithinParent() const
 	{
 		UINT index = std::numeric_limits<size_t>::max();
-		GetSciterAPI()->SciterGetElementIndex(ToElement(m_Handle), &index);
+		GetSciterAPI()->SciterGetElementIndex(ToSciterElement(m_Handle), &index);
 		return index;
 	}
 	size_t Element::GetChildrenCount() const
 	{
 		UINT count = 0;
-		GetSciterAPI()->SciterGetChildrenCount(ToElement(m_Handle), &count);
+		GetSciterAPI()->SciterGetChildrenCount(ToSciterElement(m_Handle), &count);
 
 		return count;
 	}
 	Element Element::GetChildAt(size_t index) const
 	{
 		HELEMENT node = nullptr;
-		if (GetSciterAPI()->SciterGetNthChild(ToElement(m_Handle), index, &node) == SCDOM_OK)
+		if (GetSciterAPI()->SciterGetNthChild(ToSciterElement(m_Handle), index, &node) == SCDOM_OK)
 		{
-			return Element(node);
+			return FromSciterElement(node);
 		}
 		return {};
 	}
@@ -435,7 +462,7 @@ namespace KxSciter
 	}
 	bool Element::InsertAt(const Element& node, size_t index)
 	{
-		return GetSciterAPI()->SciterInsertElement(ToElement(node.m_Handle), ToElement(m_Handle), index) == SCDOM_OK;
+		return GetSciterAPI()->SciterInsertElement(ToSciterElement(node.m_Handle), ToSciterElement(m_Handle), index) == SCDOM_OK;
 	}
 	bool Element::InsertBefore(const Element& node)
 	{
@@ -470,7 +497,7 @@ namespace KxSciter
 	HWND Element::GetNativeWindow() const
 	{
 		HWND windowHandle = nullptr;
-		GetSciterAPI()->SciterGetElementHwnd(ToElement(m_Handle), &windowHandle, FALSE);
+		GetSciterAPI()->SciterGetElementHwnd(ToSciterElement(m_Handle), &windowHandle, FALSE);
 		return windowHandle;
 	}
 	
@@ -482,7 +509,7 @@ namespace KxSciter
 	{
 		if (handle)
 		{
-			return GetSciterAPI()->SciterAttachHwndToElement(ToElement(m_Handle), reinterpret_cast<HWND>(handle)) == SCDOM_OK;
+			return GetSciterAPI()->SciterAttachHwndToElement(ToSciterElement(m_Handle), reinterpret_cast<HWND>(handle)) == SCDOM_OK;
 		}
 		return false;
 	}
@@ -505,30 +532,30 @@ namespace KxSciter
 	wxString Element::GetValue() const
 	{
 		wxString result;
-		GetSciterAPI()->SciterGetElementTextCB(ToElement(m_Handle), ExtractWxString, &result);
+		GetSciterAPI()->SciterGetElementTextCB(ToSciterElement(m_Handle), ExtractWxString, &result);
 		return result;
 	}
 	bool Element::SetValue(wxStringView value) const
 	{
-		return GetSciterAPI()->SciterSetElementText(ToElement(m_Handle), value.data(), value.length()) == SCDOM_OK;
+		return GetSciterAPI()->SciterSetElementText(ToSciterElement(m_Handle), value.data(), value.length()) == SCDOM_OK;
 	}
 
 	size_t Element::GetAttributeCount() const
 	{
 		UINT count = 0;
-		GetSciterAPI()->SciterGetAttributeCount(ToElement(m_Handle), &count);
+		GetSciterAPI()->SciterGetAttributeCount(ToSciterElement(m_Handle), &count);
 		return count;
 	}
 	wxString Element::GetAttributeNameAt(size_t index) const
 	{
 		wxString result;
-		GetSciterAPI()->SciterGetNthAttributeNameCB(ToElement(m_Handle), index, ExtractWxString, &result);
+		GetSciterAPI()->SciterGetNthAttributeNameCB(ToSciterElement(m_Handle), index, ExtractWxString, &result);
 		return result;
 	}
 	wxString Element::GetAttributeValueAt(size_t index) const
 	{
 		wxString result;
-		GetSciterAPI()->SciterGetNthAttributeValueCB(ToElement(m_Handle), index, ExtractWxString, &result);
+		GetSciterAPI()->SciterGetNthAttributeValueCB(ToSciterElement(m_Handle), index, ExtractWxString, &result);
 		return result;
 	}
 	wxString Element::GetAttribute(const wxString& name) const
@@ -536,22 +563,22 @@ namespace KxSciter
 		wxString result;
 
 		auto nameUTF8 = name.ToUTF8();
-		GetSciterAPI()->SciterGetAttributeByNameCB(ToElement(m_Handle), nameUTF8.data(), ExtractWxString, &result);
+		GetSciterAPI()->SciterGetAttributeByNameCB(ToSciterElement(m_Handle), nameUTF8.data(), ExtractWxString, &result);
 		return result;
 	}
 	bool Element::SetAttribute(const wxString& name, const wxString& value)
 	{
 		auto nameUTF8 = name.ToUTF8();
-		return GetSciterAPI()->SciterSetAttributeByName(ToElement(m_Handle), nameUTF8.data(), value.wc_str()) == SCDOM_OK;
+		return GetSciterAPI()->SciterSetAttributeByName(ToSciterElement(m_Handle), nameUTF8.data(), value.wc_str()) == SCDOM_OK;
 	}
 	bool Element::RemoveAttribute(const wxString& name)
 	{
 		auto nameUTF8 = name.ToUTF8();
-		return GetSciterAPI()->SciterSetAttributeByName(ToElement(m_Handle), nameUTF8.data(), nullptr) == SCDOM_OK;
+		return GetSciterAPI()->SciterSetAttributeByName(ToSciterElement(m_Handle), nameUTF8.data(), nullptr) == SCDOM_OK;
 	}
 	bool Element::ClearAttributes()
 	{
-		return GetSciterAPI()->SciterClearAttributes(ToElement(m_Handle)) == SCDOM_OK;
+		return GetSciterAPI()->SciterClearAttributes(ToSciterElement(m_Handle)) == SCDOM_OK;
 	}
 
 	wxString Element::GetStyleAttribute(const wxString& name) const
@@ -559,7 +586,7 @@ namespace KxSciter
 		wxString result;
 
 		auto nameUTF8 = name.ToUTF8();
-		GetSciterAPI()->SciterGetStyleAttributeCB(ToElement(m_Handle), nameUTF8.data(), ExtractWxString, &result);
+		GetSciterAPI()->SciterGetStyleAttributeCB(ToSciterElement(m_Handle), nameUTF8.data(), ExtractWxString, &result);
 		return result;
 	}
 	KxColor Element::GetStyleAttributeColor(const wxString& name) const
@@ -588,7 +615,7 @@ namespace KxSciter
 	bool Element::SetStyleAttribute(const wxString& name, const wxString& value)
 	{
 		auto nameUTF8 = name.ToUTF8();
-		return GetSciterAPI()->SciterSetStyleAttribute(ToElement(m_Handle), nameUTF8.data(), value.wc_str()) == SCDOM_OK;
+		return GetSciterAPI()->SciterSetStyleAttribute(ToSciterElement(m_Handle), nameUTF8.data(), value.wc_str()) == SCDOM_OK;
 	}
 	bool Element::SetStyleAttribute(const wxString& name, const KxColor& value)
 	{
@@ -605,7 +632,7 @@ namespace KxSciter
 	bool Element::RemoveStyleAttribute(const wxString& name)
 	{
 		auto nameUTF8 = name.ToUTF8();
-		return GetSciterAPI()->SciterSetStyleAttribute(ToElement(m_Handle), nameUTF8.data(), nullptr) == SCDOM_OK;
+		return GetSciterAPI()->SciterSetStyleAttribute(ToSciterElement(m_Handle), nameUTF8.data(), nullptr) == SCDOM_OK;
 	}
 
 	bool Element::SetStyleFont(const wxFont& font)

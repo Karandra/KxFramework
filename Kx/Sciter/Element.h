@@ -7,6 +7,9 @@ namespace KxSciter
 {
 	class Node;
 	class Host;
+
+	struct ElementHandle;
+	struct ElementUID;
 }
 
 namespace KxSciter
@@ -17,14 +20,17 @@ namespace KxSciter
 			static Element Create(const wxString& tagName, const wxString& value = {});
 
 		private:
-			void* m_Handle = nullptr;
+			static BOOL EventHandler(void* context, ElementHandle* element, uint32_t eventGroupID, void* parameters);
 
 		private:
-			void Acquire(void* handle);
+			ElementHandle* m_Handle = nullptr;
+
+		private:
+			void Acquire(ElementHandle* handle);
 			void Release();
 
 			void CopyFrom(const Element& other);
-			void CopyFrom(void* handle)
+			void CopyFrom(ElementHandle* handle)
 			{
 				Release();
 				Acquire(handle);
@@ -33,7 +39,7 @@ namespace KxSciter
 
 		public:
 			Element() = default;
-			explicit Element(void* handle)
+			Element(ElementHandle* handle)
 			{
 				Acquire(handle);
 			}
@@ -60,19 +66,23 @@ namespace KxSciter
 				Release();
 			}
 			
-			void* GetHandle() const
+			ElementHandle* GetHandle() const
 			{
 				return m_Handle;
 			}
-			void* GetUID() const;
+			ElementUID* GetUID() const;
 			Host* GetHost() const;
 
-			bool Attach(void* handle);
-			void* Detach();
+			bool Attach(ElementHandle* handle);
+			ElementHandle* Detach();
 			bool Remove();
 
 			Node ToNode() const;
 			Element Clone() const;
+
+			// Event handling
+			void AttachEventHandler();
+			void DetachEventHandler();
 
 			// Refreshing
 			bool Update(bool force = false);
@@ -186,7 +196,7 @@ namespace KxSciter
 				MoveFrom(other);
 				return *this;
 			}
-			Element& operator=(void* handle)
+			Element& operator=(ElementHandle* handle)
 			{
 				CopyFrom(handle);
 				return *this;

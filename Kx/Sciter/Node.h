@@ -5,6 +5,8 @@
 namespace KxSciter
 {
 	class Element;
+
+	struct NodeHandle;
 }
 
 namespace KxSciter
@@ -16,14 +18,14 @@ namespace KxSciter
 			static Node CreateCommentNode(wxStringView value);
 
 		private:
-			void* m_Handle = nullptr;
+			NodeHandle* m_Handle = nullptr;
 
 		private:
-			void Acquire(void* handle);
+			void Acquire(NodeHandle* handle);
 			void Release();
 
 			void CopyFrom(const Node& other);
-			void CopyFrom(void* handle)
+			void CopyFrom(NodeHandle* handle)
 			{
 				Release();
 				Acquire(handle);
@@ -32,7 +34,7 @@ namespace KxSciter
 
 		public:
 			Node() = default;
-			explicit Node(void* handle)
+			Node(NodeHandle* handle)
 			{
 				Acquire(handle);
 			}
@@ -54,7 +56,7 @@ namespace KxSciter
 			{
 				return m_Handle != nullptr;
 			}
-			void* GetHandle() const
+			NodeHandle* GetHandle() const
 			{
 				return m_Handle;
 			}
@@ -63,8 +65,8 @@ namespace KxSciter
 				Release();
 			}
 
-			bool Attach(void* handle);
-			void* Detach();
+			bool Attach(NodeHandle* handle);
+			NodeHandle* Detach();
 			bool Remove();
 
 			bool IsText() const;
@@ -106,7 +108,7 @@ namespace KxSciter
 				MoveFrom(other);
 				return *this;
 			}
-			Node& operator=(void* handle)
+			Node& operator=(NodeHandle* handle)
 			{
 				CopyFrom(handle);
 				return *this;
