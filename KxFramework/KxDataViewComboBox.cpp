@@ -4,8 +4,8 @@
 #include "KxFramework/KxPanel.h"
 #include "KxFramework/DataView/KxDataViewMainWindow.h"
 
-KxEVENT_DEFINE_GLOBAL(DVCB_GET_STRING_VALUE, KxDataViewEvent);
-KxEVENT_DEFINE_GLOBAL(DVCB_SET_STRING_VALUE, KxDataViewEvent);
+KxEVENT_DEFINE_GLOBAL(KxDataViewEvent, DVCB_GET_STRING_VALUE);
+KxEVENT_DEFINE_GLOBAL(KxDataViewEvent, DVCB_SET_STRING_VALUE);
 
 wxIMPLEMENT_ABSTRACT_CLASS(KxDataViewComboBox, KxDataViewCtrl);
 

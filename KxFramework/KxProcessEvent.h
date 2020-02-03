@@ -3,4 +3,4 @@
 #include "KxEvent.h"
 #include <wx/process.h>
 
-KxEVENT_DECLARE_GLOBAL(WINDOW_CREATED, wxProcessEvent);
+KxEVENT_DECLARE_GLOBAL(wxProcessEvent, WINDOW_CREATED);

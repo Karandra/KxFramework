@@ -5,7 +5,7 @@
 #include "KxFramework/KxDataViewEvent.h"
 class KxDataViewComboBox;
 
-KxEVENT_DECLARE_GLOBAL(DVR_DVCOMBOBOX_INIT_CONTROL, KxDataViewEvent);
+KxEVENT_DECLARE_GLOBAL(KxDataViewEvent, DVR_DVCOMBOBOX_INIT_CONTROL);
 
 class KX_API KxDataViewDVComboBoxEditor: public wxEvtHandler, public KxDataViewEditor, public KxDataViewComboBoxEditorBase
 {
@@ -19,8 +19,8 @@ class KX_API KxDataViewDVComboBoxEditor: public wxEvtHandler, public KxDataViewE
 
 	protected:
 		virtual void OnInitControl(const wxAny& value);
-		virtual wxWindow* CreateEditorControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value) override;
-		virtual bool GetValueFromEditor(wxWindow* control, wxAny& value) const override;
+		wxWindow* CreateEditorControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value) override;
+		bool GetValueFromEditor(wxWindow* control, wxAny& value) const override;
 
 	public:
 		virtual ~KxDataViewDVComboBoxEditor();

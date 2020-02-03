@@ -3,7 +3,7 @@
 #include "KxFramework/KxUtility.h"
 #include "KxEvent.h"
 
-KxEVENT_DECLARE_GLOBAL(TREE_ITEM_CHECKED, wxTreeEvent);
+KxEVENT_DECLARE_GLOBAL(wxTreeEvent, TREE_ITEM_CHECKED);
 
 enum KxTreeView_ItemState
 {

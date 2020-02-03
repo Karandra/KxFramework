@@ -4,8 +4,8 @@
 #include "KxFramework/KxWindowRefreshScheduler.h"
 #include "KxEvent.h"
 
-KxEVENT_DECLARE_GLOBAL(BUTTON, wxCommandEvent);
-KxEVENT_DECLARE_GLOBAL(BUTTON_MENU, wxContextMenuEvent);
+KxEVENT_DECLARE_GLOBAL(wxCommandEvent, BUTTON);
+KxEVENT_DECLARE_GLOBAL(wxContextMenuEvent, BUTTON_MENU);
 
 class KX_API KxButton:
 	public KxWindowRefreshScheduler<wxSystemThemedControl<wxAnyButton>>,

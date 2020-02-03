@@ -6,8 +6,8 @@
 #include "KxFramework/KxUxTheme.h"
 #include "KxFramework/KxIncludeWindows.h"
 
-KxEVENT_DEFINE_GLOBAL_AS(BUTTON, wxCommandEvent, wxEVT_BUTTON);
-KxEVENT_DEFINE_GLOBAL(BUTTON_MENU, wxContextMenuEvent);
+KxEVENT_DEFINE_GLOBAL_AS(wxCommandEvent, BUTTON, wxEVT_BUTTON);
+KxEVENT_DEFINE_GLOBAL(wxContextMenuEvent, BUTTON_MENU);
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxButton, wxButton);
 

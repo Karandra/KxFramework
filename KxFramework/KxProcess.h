@@ -16,8 +16,8 @@ class KxProcessPipe;
 class wxPipeOutputStream;
 class wxPipeInputStream;
 
-KxEVENT_DECLARE_GLOBAL(PROCESS_END, wxProcessEvent);
-KxEVENT_DECLARE_GLOBAL(PROCESS_IDLE, wxProcessEvent);
+KxEVENT_DECLARE_GLOBAL(wxProcessEvent, PROCESS_END);
+KxEVENT_DECLARE_GLOBAL(wxProcessEvent, PROCESS_IDLE);
 
 enum KxProcessOptions
 {

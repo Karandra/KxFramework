@@ -19,8 +19,8 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include <wx/private/streamtempinput.h>
 #pragma warning (disable: 4312)
 
-KxEVENT_DEFINE_GLOBAL_AS(PROCESS_END, wxProcessEvent, wxEVT_END_PROCESS);
-KxEVENT_DEFINE_GLOBAL(PROCESS_IDLE, wxProcessEvent);
+KxEVENT_DEFINE_GLOBAL_AS(wxProcessEvent, PROCESS_END, wxEVT_END_PROCESS);
+KxEVENT_DEFINE_GLOBAL(wxProcessEvent, PROCESS_IDLE);
 
 void KxProcess::RIO_ReadStream(wxInputStream* stream, wxMemoryBuffer& buffer)
 {

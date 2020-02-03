@@ -73,7 +73,7 @@ class KX_API KxMenuEvent: public wxNotifyEvent
 };
 
 //////////////////////////////////////////////////////////////////////////
-KxEVENT_DECLARE_GLOBAL(MENU_OPEN, KxMenuEvent);
-KxEVENT_DECLARE_GLOBAL(MENU_CLOSE, KxMenuEvent);
-KxEVENT_DECLARE_GLOBAL(MENU_SELECT, KxMenuEvent);
-KxEVENT_DECLARE_GLOBAL(MENU_HOVER, KxMenuEvent);
+KxEVENT_DECLARE_GLOBAL(KxMenuEvent, MENU_OPEN);
+KxEVENT_DECLARE_GLOBAL(KxMenuEvent, MENU_CLOSE);
+KxEVENT_DECLARE_GLOBAL(KxMenuEvent, MENU_SELECT);
+KxEVENT_DECLARE_GLOBAL(KxMenuEvent, MENU_HOVER);

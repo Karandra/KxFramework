@@ -78,7 +78,7 @@ class KX_API KxINetEvent: public wxNotifyEvent
 	public:
 		KxINetEvent(wxEventType type = wxEVT_NULL, KxINetConnection* object = nullptr);
 		virtual ~KxINetEvent();
-		virtual KxINetEvent* Clone() const;
+		KxINetEvent* Clone() const override;
 
 	public:
 		bool IsOK() const
@@ -113,6 +113,6 @@ class KX_API KxINetEvent: public wxNotifyEvent
 };
 
 //////////////////////////////////////////////////////////////////////////
-KxEVENT_DECLARE_GLOBAL(INET_SEND_DATA, KxINetEvent);
-KxEVENT_DECLARE_GLOBAL(INET_QUERY_INFO, KxINetEvent);
-KxEVENT_DECLARE_GLOBAL(INET_DOWNLOAD, KxFileOperationEvent);
+KxEVENT_DECLARE_GLOBAL(KxINetEvent, INET_SEND_DATA);
+KxEVENT_DECLARE_GLOBAL(KxINetEvent, INET_QUERY_INFO);
+KxEVENT_DECLARE_GLOBAL(KxFileOperationEvent, INET_DOWNLOAD);

@@ -4,10 +4,10 @@
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxMenuEvent, wxNotifyEvent);
 
-KxEVENT_DEFINE_GLOBAL(MENU_OPEN, KxMenuEvent);
-KxEVENT_DEFINE_GLOBAL(MENU_CLOSE, KxMenuEvent);
-KxEVENT_DEFINE_GLOBAL(MENU_SELECT, KxMenuEvent);
-KxEVENT_DEFINE_GLOBAL(MENU_HOVER, KxMenuEvent);
+KxEVENT_DEFINE_GLOBAL(KxMenuEvent, MENU_OPEN);
+KxEVENT_DEFINE_GLOBAL(KxMenuEvent, MENU_CLOSE);
+KxEVENT_DEFINE_GLOBAL(KxMenuEvent, MENU_SELECT);
+KxEVENT_DEFINE_GLOBAL(KxMenuEvent, MENU_HOVER);
 
 KxMenuEvent::KxMenuEvent(wxEventType type, KxMenu* menu, KxMenuItem* menuItem)
 	:wxNotifyEvent(type, menuItem ? menuItem->GetId() : wxID_NONE), m_Menu(menu), m_Item(menuItem)
