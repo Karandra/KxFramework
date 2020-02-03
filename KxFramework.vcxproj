@@ -496,6 +496,7 @@
     <ClInclude Include="Kx\Sciter\Common.h" />
     <ClInclude Include="Kx\Sciter\Controls\Label.h" />
     <ClInclude Include="Kx\Sciter\Element.h" />
+    <ClInclude Include="Kx\Sciter\EventHandler.h" />
     <ClInclude Include="Kx\Sciter\Events.h" />
     <ClInclude Include="Kx\Sciter\Events\BehaviorEvent.h" />
     <ClInclude Include="Kx\Sciter\Events\Event.h" />
@@ -792,6 +793,7 @@
     <ClCompile Include="Kx\Sciter\Common.cpp" />
     <ClCompile Include="Kx\Sciter\Controls\Label.cpp" />
     <ClCompile Include="Kx\Sciter\Element.cpp" />
+    <ClCompile Include="Kx\Sciter\EventHandler.cpp" />
     <ClCompile Include="Kx\Sciter\Events\Event.cpp" />
     <ClCompile Include="Kx\Sciter\Host.cpp" />
     <ClCompile Include="Kx\Sciter\Internal.cpp" />

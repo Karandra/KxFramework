@@ -23,9 +23,6 @@ namespace KxSciter
 			static Element Create(const wxString& tagName, const wxString& value = {});
 
 		private:
-			static BOOL EventHandler(void* context, ElementHandle* element, uint32_t eventGroupID, void* parameters);
-
-		private:
 			ElementHandle* m_Handle = nullptr;
 
 		private:
@@ -87,6 +84,8 @@ namespace KxSciter
 			// Event handling
 			void AttachEventHandler();
 			void DetachEventHandler();
+			void AttachEventHandler(wxEvtHandler& evtHandler);
+			void DetachEventHandler(wxEvtHandler& evtHandler);
 
 			// Refreshing
 			bool Update(bool force = false);
@@ -99,6 +98,10 @@ namespace KxSciter
 
 			wxSize GetMinSize() const;
 			wxSize GetMaxSize() const;
+
+			// Visibility
+			bool IsVisible() const;
+			void SetVisible(bool visible = true);
 
 			// Misc
 			bool SetCapture();
@@ -223,14 +226,17 @@ namespace KxSciter
 			Element SelectAny(const wxString& query) const;
 			std::vector<Element> SelectAll(const wxString& query) const;
 
-			Element GetElementByAttribute(const wxString& name, const wxString& value) const;
-			Element GetElementByID(const wxString& value) const
+			Element GetElementByAttribute(const wxString& name, const wxString& value) const
 			{
-				return GetElementByAttribute("id", value);
+				return SelectAny(KxString::Format(wxS("[%1=%2]"), name, value));
 			}
-			Element GetElementByClass(const wxString& value) const
+			Element GetElementByID(const wxString& id) const
 			{
-				return GetElementByAttribute("class", value);
+				return SelectAny(KxString::Format(wxS("#%1"), id));
+			}
+			Element GetElementByClass(const wxString& name) const
+			{
+				return SelectAny(KxString::Format(wxS(".%1"), name));
 			}
 
 		public:

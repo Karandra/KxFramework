@@ -1192,6 +1192,9 @@
     <ClInclude Include="Kx\Sciter\Events\BehaviorEvent.h">
       <Filter>Kx\Sciter\Events</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Sciter\EventHandler.h">
+      <Filter>Kx\Sciter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1875,6 +1878,9 @@
     </ClCompile>
     <ClCompile Include="Kx\Sciter\Events\Event.cpp">
       <Filter>Kx\Sciter\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Sciter\EventHandler.cpp">
+      <Filter>Kx\Sciter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

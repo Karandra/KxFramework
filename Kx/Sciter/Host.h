@@ -3,6 +3,7 @@
 #include "Node.h"
 #include "Element.h"
 #include "Events.h"
+#include "EventHandler.h"
 #include <KxFramework/KxURI.h>
 #include <wx/window.h>
 
@@ -15,6 +16,9 @@ namespace KxSciter
 
 		private:
 			wxWindow& m_SciterWindow;
+			WindowEventHandler m_EventHandler;
+			std::unordered_map<wxEvtHandler*, std::unique_ptr<EventHandler>> m_ElementEventHandlers;
+
 			bool m_EngineCreated = false;
 			bool m_AllowSciterHandleMessage = false;
 
@@ -27,23 +31,6 @@ namespace KxSciter
 			bool m_ReloadScheduled = false;
 
 		private:
-			int HandleLoadDataNotification(void* context);
-			int HandleDataLoadedNotification(void* context);
-			int HandleAttachBehaviorNotification(void* context);
-			int HandlePostedNotification(void* context);
-			int handleCriticalFailureNotification();
-			int HandleDestroyedNotification();
-
-			bool HandleInitializationEvent(ElementHandle* element, void* context);
-			bool HandleKeyEvent(ElementHandle* element, void* context);
-			bool HandleMouseEvent(ElementHandle* element, void* context);
-			bool HandleFocusEvent(ElementHandle* element, void* context);
-			bool HandleSizeEvent(ElementHandle* element, void* context);
-			bool HandleTimerEvent(ElementHandle* element, void* context);
-			bool HandleScrollEvent(ElementHandle* element, void* context);
-			bool HandleDrawEvent(ElementHandle* element, void* context);
-			bool HandleBehaviorEvent(ElementHandle* element, void* context);
-
 			void SetDefaultOptions();
 			void SetupCallbacks();
 
@@ -51,11 +38,13 @@ namespace KxSciter
 			void OnEngineDestroyed();
 			bool ProcessEvent(wxEvent& event);
 
+			void AttachElementHandler(Element& element);
+			void DetachElementHandler(Element& element);
+			void AttachElementHandler(Element& element, wxEvtHandler& evtHandler);
+			void DetachElementHandler(Element& element, wxEvtHandler& evtHandler);
+
 		protected:
 			bool SciterHandleMessage(WXLRESULT* result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam);
-			bool SciterHandleEvent(ElementHandle* element, uint32_t eventGroupID, void* context);
-			int SciterHandleNotify(void* context);
-
 			void OnInternalIdle();
 
 		public:
@@ -72,6 +61,10 @@ namespace KxSciter
 				return m_EngineCreated;
 			}
 
+			EventHandler& GetEventHandler()
+			{
+				return m_EventHandler;
+			}
 			const wxWindow& GetWindow() const
 			{
 				return m_SciterWindow;

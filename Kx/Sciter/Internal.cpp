@@ -1,7 +1,7 @@
 #include "KxStdAfx.h"
 #include "Internal.h"
 
-namespace KxSciter::Internal
+namespace KxSciter
 {
 	std::vector<BYTE> ToSciterUTF8(const wxString& text)
 	{

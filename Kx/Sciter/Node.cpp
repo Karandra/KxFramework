@@ -1,21 +1,13 @@
 #include "KxStdAfx.h"
 #include "Node.h"
 #include "Element.h"
+#include "Internal.h"
 #include "SciterAPI.h"
 
-namespace
+namespace KxSciter
 {
-	HNODE ToSciterNode(void* handle)
-	{
-		return reinterpret_cast<HNODE>(handle);
-	}
-	KxSciter::NodeHandle* FromSciterNode(HNODE handle)
-	{
-		return reinterpret_cast<KxSciter::NodeHandle*>(handle);
-	}
-	
 	template<class TFunc>
-	KxSciter::Node DoGetNode(KxSciter::NodeHandle* handle, TFunc&& func)
+	Node DoGetNode(NodeHandle* handle, TFunc&& func)
 	{
 		HNODE node = nullptr;
 		if (func(ToSciterNode(handle), &node) == SCDOM_OK)
@@ -26,12 +18,12 @@ namespace
 	}
 
 	template<class TNode = HELEMENT, class TFunc>
-	KxSciter::Node DoCreateTextNode(TFunc&& func, const wxString& value)
+	Node DoCreateTextNode(TFunc&& func, const wxString& value)
 	{
 		HNODE nativeNode = nullptr;
 		if (func(value.wc_str(), value.length(), &nativeNode) == SCDOM_OK)
 		{
-			KxSciter::Node node;
+			Node node;
 			node.AttachHandle(FromSciterNode(nativeNode));
 			return node;
 		}
@@ -40,17 +32,13 @@ namespace
 
 	NODE_TYPE DoGetNodeType(void* handle)
 	{
-		using namespace KxSciter;
-
 		UINT nodeType = std::numeric_limits<UINT>::max();
 		GetSciterAPI()->SciterNodeType(ToSciterNode(handle), &nodeType);
 
 		return static_cast<NODE_TYPE>(nodeType);
 	}
-	bool DoInsertNode(KxSciter::Node& thisNode, const KxSciter::Node& node, NODE_INS_TARGET mode)
+	bool DoInsertNode(KxSciter::Node& thisNode, const Node& node, NODE_INS_TARGET mode)
 	{
-		using namespace KxSciter;
-
 		return GetSciterAPI()->SciterNodeInsert(ToSciterNode(thisNode.GetHandle()), mode, ToSciterNode(node.GetHandle())) == SCDOM_OK;
 	}
 }

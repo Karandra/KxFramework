@@ -2,25 +2,17 @@
 #include "Element.h"
 #include "Node.h"
 #include "Host.h"
+#include "EventHandler.h"
 #include "SciterAPI.h"
 #include "Internal.h"
 #include "KxFramework/KxUtility.h"
 
 #pragma warning(disable: 4312) // 'reinterpret_cast': conversion from 'UINT' to 'void *' of greater size
 
-namespace
+namespace KxSciter
 {
-	HELEMENT ToSciterElement(KxSciter::ElementHandle* handle)
-	{
-		return reinterpret_cast<HELEMENT>(handle);
-	}
-	KxSciter::ElementHandle* FromSciterElement(HELEMENT handle)
-	{
-		return reinterpret_cast<KxSciter::ElementHandle*>(handle);
-	}
-
 	template<class TFunc>
-	KxSciter::Element DoGetElemenet(KxSciter::ElementHandle* handle, TFunc&& func)
+	Element DoGetElemenet(ElementHandle* handle, TFunc&& func)
 	{
 		HELEMENT node = nullptr;
 		if (func(ToSciterElement(handle), &node) == SCDOM_OK)
@@ -30,10 +22,10 @@ namespace
 		return {};
 	}
 
-	bool DoCheckStateFlag(KxSciter::ElementHandle* handle, ELEMENT_STATE_BITS flag)
+	bool DoCheckStateFlag(ElementHandle* handle, ELEMENT_STATE_BITS flag)
 	{
 		UINT state = 0;
-		KxSciter::GetSciterAPI()->SciterGetElementState(ToSciterElement(handle), &state);
+		GetSciterAPI()->SciterGetElementState(ToSciterElement(handle), &state);
 
 		return state & flag;
 	}
@@ -65,14 +57,6 @@ namespace KxSciter
 			node.AttachHandle(FromSciterElement(nativeNode));
 		}
 		return node;
-	}
-	BOOL Element::EventHandler(void* context, ElementHandle* element, uint32_t eventGroupID, void* parameters)
-	{
-		if (context)
-		{
-			return reinterpret_cast<Host*>(context)->SciterHandleEvent(element, eventGroupID, parameters);
-		}
-		return FALSE;
 	}
 
 	void Element::Acquire(ElementHandle* handle)
@@ -181,14 +165,28 @@ namespace KxSciter
 	{
 		if (Host* host = GetHost())
 		{
-			GetSciterAPI()->SciterAttachEventHandler(ToSciterElement(m_Handle), reinterpret_cast<LPELEMENT_EVENT_PROC>(EventHandler), host);
+			host->AttachElementHandler(*this);
 		}
 	}
 	void Element::DetachEventHandler()
 	{
 		if (Host* host = GetHost())
 		{
-			GetSciterAPI()->SciterDetachEventHandler(ToSciterElement(m_Handle), reinterpret_cast<LPELEMENT_EVENT_PROC>(EventHandler), host);
+			host->DetachElementHandler(*this);
+		}
+	}
+	void Element::AttachEventHandler(wxEvtHandler& evtHandler)
+	{
+		if (Host* host = GetHost())
+		{
+			host->AttachElementHandler(*this, evtHandler);
+		}
+	}
+	void Element::DetachEventHandler(wxEvtHandler& evtHandler)
+	{
+		if (Host* host = GetHost())
+		{
+			host->DetachElementHandler(*this, evtHandler);
 		}
 	}
 
@@ -240,6 +238,26 @@ namespace KxSciter
 		GetSciterAPI()->SciterGetElementIntrinsicHeight(ToSciterElement(m_Handle), maxWidth, &height);
 
 		return wxSize(maxWidth, height);
+	}
+
+	// Visibility
+	bool Element::IsVisible() const
+	{
+		BOOL result = FALSE;
+		GetSciterAPI()->SciterIsElementVisible(ToSciterElement(m_Handle), &result);
+
+		return result;
+	}
+	void Element::SetVisible(bool visible)
+	{
+		if (visible)
+		{
+			SetStyleAttribute("visibility", "hidden");
+		}
+		else
+		{
+			SetStyleAttribute("visibility", "inherit");
+		}
 	}
 
 	// Misc
@@ -363,7 +381,7 @@ namespace KxSciter
 
 		if (auto nativeMode = MapMode())
 		{
-			auto utf8 = Internal::ToSciterUTF8(html);
+			auto utf8 = ToSciterUTF8(html);
 			return GetSciterAPI()->SciterSetElementHtml(ToSciterElement(m_Handle), utf8.data(), utf8.size(), *nativeMode) == SCDOM_OK;
 		}
 		return false;
@@ -392,7 +410,7 @@ namespace KxSciter
 
 		if (auto nativeMode = MapMode())
 		{
-			auto utf8 = Internal::ToSciterUTF8(html);
+			auto utf8 = ToSciterUTF8(html);
 			return GetSciterAPI()->SciterSetElementHtml(ToSciterElement(m_Handle), utf8.data(), utf8.size(), *nativeMode) == SCDOM_OK;
 		}
 		return false;
@@ -888,10 +906,5 @@ namespace KxSciter
 			return true;
 		});
 		return results;
-	}
-
-	Element Element::GetElementByAttribute(const wxString& name, const wxString& value) const
-	{
-		return SelectAny(KxString::Format(wxS("[%1=%2]"), name, value));
 	}
 }
