@@ -22,16 +22,17 @@ namespace KxSciter
 			bool m_Option_SmoothScrolling = true;
 			FontSmoothing m_Option_FontSmoothing = FontSmoothing::SystemDefault;
 
-			wxString m_LatestBasePath;
+			wxString m_DocumentPath;
+			wxString m_DocumentBasePath;
 			bool m_ReloadScheduled = false;
 
 		private:
-			int SciterNotify_LoadData(void* context);
-			int SciterNotify_DataLoaded(void* context);
-			int SciterNotify_AttachBehavior(void* context);
-			int SciterNotify_PostedNotification(void* context);
-			int SciterNotify_CriticalFailure();
-			int SciterNotify_EngineDestroyed();
+			int HandleLoadDataNotification(void* context);
+			int HandleDataLoadedNotification(void* context);
+			int HandleAttachBehaviorNotification(void* context);
+			int HandlePostedNotification(void* context);
+			int handleCriticalFailureNotification();
+			int HandleDestroyedNotification();
 
 			bool HandleInitializationEvent(ElementHandle* element, void* context);
 			bool HandleKeyEvent(ElementHandle* element, void* context);

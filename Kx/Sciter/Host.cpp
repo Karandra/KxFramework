@@ -131,7 +131,7 @@ namespace
 
 namespace KxSciter
 {
-	int Host::SciterNotify_LoadData(void* context)
+	int Host::HandleLoadDataNotification(void* context)
 	{
 		SCN_LOAD_DATA& notification = *reinterpret_cast<SCN_LOAD_DATA*>(context);
 
@@ -159,26 +159,26 @@ namespace KxSciter
 		}
 		return LOAD_OK;
 	}
-	int Host::SciterNotify_DataLoaded(void* context)
+	int Host::HandleDataLoadedNotification(void* context)
 	{
 		SCN_DATA_LOADED& notification = *reinterpret_cast<SCN_DATA_LOADED*>(context);
 		return 0;
 	}
-	int Host::SciterNotify_AttachBehavior(void* context)
+	int Host::HandleAttachBehaviorNotification(void* context)
 	{
 		SCN_ATTACH_BEHAVIOR& notification = *reinterpret_cast<SCN_ATTACH_BEHAVIOR*>(context);
 		return sciter::create_behavior(&notification);
 	}
-	int Host::SciterNotify_PostedNotification(void* context)
+	int Host::HandlePostedNotification(void* context)
 	{
 		SCN_POSTED_NOTIFICATION& notification = *reinterpret_cast<SCN_POSTED_NOTIFICATION*>(context);
 		return 0;
 	}
-	int Host::SciterNotify_CriticalFailure()
+	int Host::handleCriticalFailureNotification()
 	{
 		return 0;
 	}
-	int Host::SciterNotify_EngineDestroyed()
+	int Host::HandleDestroyedNotification()
 	{
 		return 0;
 	}
@@ -750,9 +750,13 @@ namespace KxSciter
 			const bool processed = ProcessEvent(event);
 			if (!event.IsAllowed())
 			{
-				constexpr wchar_t cancelString[] = L"cancel";
-				GetSciterAPI()->ValueInit(&parameters.data);
-				GetSciterAPI()->ValueStringDataSet(&parameters.data, cancelString, std::size(cancelString) - 1, UT_STRING_SYMBOL);
+				// This event can be canceled this way
+				if (parameters.cmd == DOCUMENT_CLOSE_REQUEST)
+				{
+					constexpr wchar_t cancelString[] = L"cancel";
+					GetSciterAPI()->ValueInit(&parameters.data);
+					GetSciterAPI()->ValueStringDataSet(&parameters.data, cancelString, std::size(cancelString) - 1, UT_STRING_SYMBOL);
+				}
 			}
 			return processed;
 		}
@@ -764,9 +768,10 @@ namespace KxSciter
 		EnableSystemTheme();
 		EnableSmoothScrolling();
 		SetFontSmoothingMode(FontSmoothing::SystemDefault);
-		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_TRANSPARENT_WINDOW, true);
-		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_CONNECTION_TIMEOUT, 500);
 		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_HTTPS_ERROR, 1);
+		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_CONNECTION_TIMEOUT, 500);
+		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_TRANSPARENT_WINDOW, true);
+		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_SET_SCRIPT_RUNTIME_FEATURES, ALLOW_FILE_IO|ALLOW_SOCKET_IO|ALLOW_EVAL|ALLOW_SYSINFO);
 	}
 	void Host::SetupCallbacks()
 	{
@@ -896,27 +901,27 @@ namespace KxSciter
 		{
 			case SC_LOAD_DATA:
 			{
-				return SciterNotify_LoadData(context);
+				return HandleLoadDataNotification(context);
 			}
 			case SC_DATA_LOADED:
 			{
-				return SciterNotify_DataLoaded(context);
+				return HandleDataLoadedNotification(context);
 			}
 			case SC_ATTACH_BEHAVIOR:
 			{
-				return SciterNotify_AttachBehavior(context);
+				return HandleAttachBehaviorNotification(context);
 			}
 			case SC_POSTED_NOTIFICATION:
 			{
-				return SciterNotify_PostedNotification(context);
+				return HandlePostedNotification(context);
 			}
 			case SC_GRAPHICS_CRITICAL_FAILURE:
 			{
-				return SciterNotify_CriticalFailure();
+				return handleCriticalFailureNotification();
 			}
 			case SC_ENGINE_DESTROYED:
 			{
-				return SciterNotify_EngineDestroyed();
+				return HandleDestroyedNotification();
 			}
 		};
 		return 0;
@@ -927,7 +932,7 @@ namespace KxSciter
 		{
 			if (auto root = GetRootElement())
 			{
-				LoadHTML(root.GetOuterHTML(), m_LatestBasePath);
+				LoadHTML(root.GetOuterHTML(), m_DocumentBasePath);
 			}
 			m_ReloadScheduled = false;
 		}
@@ -936,11 +941,15 @@ namespace KxSciter
 	Host::Host(wxWindow& window)
 		:m_SciterWindow(window)
 	{
+		if (m_SciterWindow.GetHandle())
+		{
+			::SetWindowLongPtrW(m_SciterWindow.GetHandle(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
+		}
+
 		// Child windows are fine with already created window. They don't need 'WS_EX_NOREDIRECTIONBITMAP' style
 		if (!m_SciterWindow.IsTopLevel())
 		{
 			m_AllowSciterHandleMessage = true;
-			::SetWindowLongPtrW(m_SciterWindow.GetHandle(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 		}
 	}
 	Host::~Host()
@@ -949,8 +958,13 @@ namespace KxSciter
 
 	bool Host::Create()
 	{
-		if (!m_EngineCreated && m_SciterWindow.IsTopLevel())
+		if (m_SciterWindow.IsTopLevel())
 		{
+			if (m_EngineCreated)
+			{
+				return false;
+			}
+
 			// Get original window info
 			const long style = m_SciterWindow.GetWindowStyle();
 			const wxChar* nativeClassName = m_SciterWindow.GetMSWClassName(style);
@@ -971,10 +985,9 @@ namespace KxSciter
 			// Create new window with 'WS_EX_NOREDIRECTIONBITMAP' extended style instead and attach it to the wxWindow
 			m_AllowSciterHandleMessage = true;
 			m_SciterWindow.MSWCreate(nativeClassName, title.wc_str(), pos, size, nativeStyle, nativeExStyle|WS_EX_NOREDIRECTIONBITMAP);
-
 			return m_EngineCreated;
 		}
-		return false;
+		return true;
 	}
 	void Host::Update()
 	{
@@ -1208,41 +1221,45 @@ namespace KxSciter
 
 	bool Host::LoadHTML(const wxString& html, const wxString& basePath)
 	{
-		m_LatestBasePath = basePath;
-		if (!m_LatestBasePath.IsEmpty() && !m_LatestBasePath.StartsWith(wxS("file://")))
+		m_DocumentPath.clear();
+		m_DocumentBasePath = basePath;
+		if (!m_DocumentBasePath.IsEmpty() && !m_DocumentBasePath.StartsWith(wxS("file://")))
 		{
-			m_LatestBasePath.Prepend(wxS("file://"));
+			m_DocumentBasePath.Prepend(wxS("file://"));
 		}
-		if (!m_LatestBasePath.IsEmpty() && m_LatestBasePath.Last() != wxS('\\'))
+		if (!m_DocumentBasePath.IsEmpty() && m_DocumentBasePath.Last() != wxS('\\'))
 		{
-			m_LatestBasePath += wxS('\\');
+			m_DocumentBasePath += wxS('\\');
 		}
 
 		auto utf8 = Internal::ToSciterUTF8(html);
-		return GetSciterAPI()->SciterLoadHtml(m_SciterWindow.GetHandle(), utf8.data(), utf8.size(), m_LatestBasePath.wc_str());
+		return GetSciterAPI()->SciterLoadHtml(m_SciterWindow.GetHandle(), utf8.data(), utf8.size(), m_DocumentBasePath.wc_str());
 	}
 	bool Host::LoadHTML(const wxString& html, const KxURI& baseURI)
 	{
-		m_LatestBasePath = baseURI.BuildURI();
+		m_DocumentPath.clear();
+		m_DocumentBasePath = baseURI.BuildURI();
 		
 		auto utf8 = Internal::ToSciterUTF8(html);
-		return GetSciterAPI()->SciterLoadHtml(m_SciterWindow.GetHandle(), utf8.data(), utf8.size(), m_LatestBasePath.wc_str());
+		return GetSciterAPI()->SciterLoadHtml(m_SciterWindow.GetHandle(), utf8.data(), utf8.size(), m_DocumentBasePath.wc_str());
 	}
 
 	bool Host::LoadDocument(const wxString& localPath)
 	{
-		m_LatestBasePath = localPath.AfterLast(wxS('\\'));
-		return GetSciterAPI()->SciterLoadFile(m_SciterWindow.GetHandle(), localPath.wc_str());
+		m_DocumentPath = localPath;
+		m_DocumentBasePath = localPath.BeforeLast(wxS('\\'));
+		return GetSciterAPI()->SciterLoadFile(m_SciterWindow.GetHandle(), m_DocumentPath.wc_str());
 	}
 	bool Host::LoadDocument(const KxURI& uri)
 	{
-		m_LatestBasePath = uri.BuildURI();
-		return GetSciterAPI()->SciterLoadFile(m_SciterWindow.GetHandle(), m_LatestBasePath.wc_str());
+		m_DocumentPath = uri.BuildURI();
+		m_DocumentBasePath = m_DocumentPath;
+		return GetSciterAPI()->SciterLoadFile(m_SciterWindow.GetHandle(), m_DocumentBasePath.wc_str());
 	}
 
 	void Host::ClearDocument()
 	{
-		m_LatestBasePath.clear();
+		m_DocumentBasePath.clear();
 		LoadHTML(wxEmptyString);
 	}
 
