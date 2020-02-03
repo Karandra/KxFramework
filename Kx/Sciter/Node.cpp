@@ -26,13 +26,13 @@ namespace
 	}
 
 	template<class TNode = HELEMENT, class TFunc>
-	KxSciter::Node DoCreateTextNode(TFunc&& func, wxStringView value)
+	KxSciter::Node DoCreateTextNode(TFunc&& func, const wxString& value)
 	{
 		HNODE nativeNode = nullptr;
-		if (func(value.data(), value.length(), &nativeNode) == SCDOM_OK)
+		if (func(value.wc_str(), value.length(), &nativeNode) == SCDOM_OK)
 		{
 			KxSciter::Node node;
-			node.Attach(FromSciterNode(nativeNode));
+			node.AttachHandle(FromSciterNode(nativeNode));
 			return node;
 		}
 		return {};
@@ -57,11 +57,11 @@ namespace
 
 namespace KxSciter
 {
-	Node Node::CreateTextNode(wxStringView value)
+	Node Node::CreateTextNode(const wxString& value)
 	{
 		return DoCreateTextNode(GetSciterAPI()->SciterCreateTextNode, value);
 	}
-	Node Node::CreateCommentNode(wxStringView value)
+	Node Node::CreateCommentNode(const wxString& value)
 	{
 		return DoCreateTextNode(GetSciterAPI()->SciterCreateCommentNode, value);
 	}
@@ -98,7 +98,7 @@ namespace KxSciter
 		other.m_Handle = nullptr;
 	}
 
-	bool Node::Attach(NodeHandle* handle)
+	bool Node::AttachHandle(NodeHandle* handle)
 	{
 		if (!IsOk())
 		{

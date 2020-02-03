@@ -14,8 +14,8 @@ namespace KxSciter
 	class KX_API Node final
 	{
 		public:
-			static Node CreateTextNode(wxStringView value);
-			static Node CreateCommentNode(wxStringView value);
+			static Node CreateTextNode(const wxString& value);
+			static Node CreateCommentNode(const wxString& value);
 
 		private:
 			NodeHandle* m_Handle = nullptr;
@@ -65,7 +65,7 @@ namespace KxSciter
 				Release();
 			}
 
-			bool Attach(NodeHandle* handle);
+			bool AttachHandle(NodeHandle* handle);
 			NodeHandle* Detach();
 			bool Remove();
 
