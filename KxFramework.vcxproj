@@ -497,6 +497,7 @@
     <ClInclude Include="Kx\Sciter\Controls\Label.h" />
     <ClInclude Include="Kx\Sciter\Element.h" />
     <ClInclude Include="Kx\Sciter\Events.h" />
+    <ClInclude Include="Kx\Sciter\Events\BehaviorEvent.h" />
     <ClInclude Include="Kx\Sciter\Events\Event.h" />
     <ClInclude Include="Kx\Sciter\Events\FocusEvent.h" />
     <ClInclude Include="Kx\Sciter\Events\KeyEvent.h" />

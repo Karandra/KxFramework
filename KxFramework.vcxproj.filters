@@ -1189,6 +1189,9 @@
     <ClInclude Include="Kx\Sciter\Events\PaintEvent.h">
       <Filter>Kx\Sciter\Events</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Sciter\Events\BehaviorEvent.h">
+      <Filter>Kx\Sciter\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />

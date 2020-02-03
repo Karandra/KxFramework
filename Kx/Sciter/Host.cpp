@@ -474,6 +474,290 @@ namespace KxSciter
 		}
 		return false;
 	}
+	bool Host::HandleBehaviorEvent(ElementHandle* element, void* context)
+	{
+		BEHAVIOR_EVENT_PARAMS& parameters = *reinterpret_cast<BEHAVIOR_EVENT_PARAMS*>(context);
+
+		BehaviorEvent event = MakeEvent<BehaviorEvent>(*this);
+		switch (parameters.cmd)
+		{
+			// Button
+			case BEHAVIOR_EVENTS::BUTTON_CLICK:
+			{
+				event.SetEventType(BehaviorEvent::EvtButtonClick);
+				break;
+			}
+			case BEHAVIOR_EVENTS::BUTTON_PRESS:
+			{
+				event.SetEventType(BehaviorEvent::EvtButtonPress);
+				break;
+			}
+			case BEHAVIOR_EVENTS::BUTTON_STATE_CHANGED:
+			{
+				event.SetEventType(BehaviorEvent::EvtButtonStateChanged);
+				break;
+			}
+
+			// Edit
+			case BEHAVIOR_EVENTS::EDIT_VALUE_CHANGING:
+			{
+				event.SetEventType(BehaviorEvent::EvtEditValueChanging);
+				break;
+			}
+			case BEHAVIOR_EVENTS::EDIT_VALUE_CHANGED:
+			{
+				event.SetEventType(BehaviorEvent::EvtEditValueChanged);
+				break;
+			}
+
+			// Select
+			case BEHAVIOR_EVENTS::SELECT_SELECTION_CHANGED:
+			{
+				event.SetEventType(BehaviorEvent::EvtSelectValueChanged);
+				break;
+			}
+			case BEHAVIOR_EVENTS::SELECT_STATE_CHANGED:
+			{
+				event.SetEventType(BehaviorEvent::EvtSelectStateChanged);
+				break;
+			}
+
+			// Popup
+			case BEHAVIOR_EVENTS::POPUP_READY:
+			{
+				event.SetEventType(BehaviorEvent::EvtPopupReady);
+				break;
+			}
+			case BEHAVIOR_EVENTS::POPUP_DISMISSING:
+			{
+				event.SetEventType(BehaviorEvent::EvtPopupDismissing);
+				break;
+			}
+			case BEHAVIOR_EVENTS::POPUP_DISMISSED:
+			{
+				event.SetEventType(BehaviorEvent::EvtPopupDismissed);
+				break;
+			}
+			case BEHAVIOR_EVENTS::POPUP_REQUEST:
+			{
+				event.SetEventType(BehaviorEvent::EvtPopupShowRequest);
+				break;
+			}
+			case BEHAVIOR_EVENTS::CLOSE_POPUP:
+			{
+				event.SetEventType(BehaviorEvent::EvtPopupCloseRequest);
+				break;
+			}
+
+			// Menu
+			case BEHAVIOR_EVENTS::CONTEXT_MENU_REQUEST:
+			{
+				event.SetEventType(BehaviorEvent::EvtContextMenuRequest);
+				break;
+			}
+			case BEHAVIOR_EVENTS::MENU_ITEM_ACTIVE:
+			{
+				event.SetEventType(BehaviorEvent::EvtMenuItemActive);
+				break;
+			}
+			case BEHAVIOR_EVENTS::MENU_ITEM_CLICK:
+			{
+				event.SetEventType(BehaviorEvent::EvtMenuItemClick);
+				break;
+			}
+			
+			// History
+			case BEHAVIOR_EVENTS::HISTORY_PUSH:
+			{
+				event.SetEventType(BehaviorEvent::EvtHistoryPush);
+				break;
+			}
+			case BEHAVIOR_EVENTS::HISTORY_DROP:
+			{
+				event.SetEventType(BehaviorEvent::EvtHistoryDrop);
+				break;
+			}
+			case BEHAVIOR_EVENTS::HISTORY_PRIOR:
+			{
+				event.SetEventType(BehaviorEvent::EvtHistoryBackward);
+				break;
+			}
+			case BEHAVIOR_EVENTS::HISTORY_NEXT:
+			{
+				event.SetEventType(BehaviorEvent::EvtHistoryForward);
+				break;
+			}
+			case BEHAVIOR_EVENTS::HISTORY_STATE_CHANGED:
+			{
+				event.SetEventType(BehaviorEvent::EvtHistoryStateChanged);
+				break;
+			}
+
+			// Document
+			case BEHAVIOR_EVENTS::DOCUMENT_COMPLETE:
+			{
+				event.SetEventType(BehaviorEvent::EvtDocumentComplete);
+				break;
+			}
+			case BEHAVIOR_EVENTS::DOCUMENT_CREATED:
+			{
+				event.SetEventType(BehaviorEvent::EvtDocumentCreated);
+				break;
+			}
+			case BEHAVIOR_EVENTS::DOCUMENT_PARSED:
+			{
+				event.SetEventType(BehaviorEvent::EvtDocumentParsed);
+				break;
+			}
+			case BEHAVIOR_EVENTS::DOCUMENT_READY:
+			{
+				event.SetEventType(BehaviorEvent::EvtDocumentReady);
+				break;
+			}
+			case BEHAVIOR_EVENTS::DOCUMENT_CLOSE_REQUEST:
+			{
+				event.SetEventType(BehaviorEvent::EvtDocumentClosing);
+				break;
+			}
+			case BEHAVIOR_EVENTS::DOCUMENT_CLOSE:
+			{
+				event.SetEventType(BehaviorEvent::EvtDocumentClosed);
+				break;
+			}
+
+			// Video
+			case BEHAVIOR_EVENTS::VIDEO_INITIALIZED:
+			{
+				event.SetEventType(BehaviorEvent::EvtVideoInitialized);
+				break;
+			}
+			case BEHAVIOR_EVENTS::VIDEO_STARTED:
+			{
+				event.SetEventType(BehaviorEvent::EvtVideoStarted);
+				break;
+			}
+			case BEHAVIOR_EVENTS::VIDEO_STOPPED:
+			{
+				event.SetEventType(BehaviorEvent::EvtVideoStopped);
+				break;
+			}
+			case BEHAVIOR_EVENTS::VIDEO_BIND_RQ:
+			{
+				event.SetEventType(BehaviorEvent::EvtVideoBindingRequest);
+				break;
+			}
+
+			// Pagination
+			case BEHAVIOR_EVENTS::PAGINATION_STARTS:
+			{
+				event.SetEventType(BehaviorEvent::EvtPaginationStart);
+				break;
+			}
+			case BEHAVIOR_EVENTS::PAGINATION_PAGE:
+			{
+				event.SetEventType(BehaviorEvent::EvtPaginationPage);
+				break;
+			}
+			case BEHAVIOR_EVENTS::PAGINATION_ENDS:
+			{
+				event.SetEventType(BehaviorEvent::EvtPaginationEnd);
+				break;
+			}
+
+			// Generic
+			case BEHAVIOR_EVENTS::CLICK:
+			{
+				event.SetEventType(BehaviorEvent::EvtGenericClick);
+				break;
+			}
+			case BEHAVIOR_EVENTS::CHANGE:
+			{
+				event.SetEventType(BehaviorEvent::EvtGenericChange);
+				break;
+			}
+			case BEHAVIOR_EVENTS::HYPERLINK_CLICK:
+			{
+				event.SetEventType(BehaviorEvent::EvtHyperlinkClick);
+				break;
+			}
+
+			// Expand/Collapse
+			case BEHAVIOR_EVENTS::ELEMENT_EXPANDED:
+			{
+				event.SetEventType(BehaviorEvent::EvtElementExpanded);
+				break;
+			}
+			case BEHAVIOR_EVENTS::ELEMENT_COLLAPSED:
+			{
+				event.SetEventType(BehaviorEvent::EvtElementCollapsed);
+				break;
+			}
+
+			// Forms
+			case BEHAVIOR_EVENTS::FORM_SUBMIT:
+			{
+				event.SetEventType(BehaviorEvent::EvtFormSubmit);
+				break;
+			}
+			case BEHAVIOR_EVENTS::FORM_RESET:
+			{
+				event.SetEventType(BehaviorEvent::EvtFormReset);
+				break;
+			}
+
+			// Misc
+			case BEHAVIOR_EVENTS::ANIMATION:
+			{
+				event.SetEventType(BehaviorEvent::EvtAnimation);
+				break;
+			}
+			case BEHAVIOR_EVENTS::ACTIVATE_CHILD:
+			{
+				event.SetEventType(BehaviorEvent::EvtActivateChild);
+				break;
+			}
+
+			case BEHAVIOR_EVENTS::VISIUAL_STATUS_CHANGED:
+			{
+				event.SetEventType(BehaviorEvent::EvtAnimation);
+				break;
+			}
+			case BEHAVIOR_EVENTS::DISABLED_STATUS_CHANGED:
+			{
+				event.SetEventType(BehaviorEvent::EvtDisabledStatusChanged);
+				break;
+			}
+			case BEHAVIOR_EVENTS::CONTENT_CHANGED:
+			{
+				event.SetEventType(BehaviorEvent::EvtContentChanged);
+				break;
+			}
+			case BEHAVIOR_EVENTS::UI_STATE_CHANGED:
+			{
+				event.SetEventType(BehaviorEvent::EvtUIStateChanged);
+				break;
+			}
+		};
+
+		if (event.GetEventType() != wxEVT_NULL)
+		{
+			event.SetElement(element);
+			event.SetSourceElement(FromSciterElement(parameters.he));
+			event.SetTargetElement(FromSciterElement(parameters.heTarget));
+			event.SetEventName(parameters.name);
+
+			// "cancel"
+			const bool processed = ProcessEvent(event);
+			if (!event.IsAllowed())
+			{
+				constexpr wchar_t cancelString[] = L"cancel";
+				GetSciterAPI()->ValueInit(&parameters.data);
+				GetSciterAPI()->ValueStringDataSet(&parameters.data, cancelString, std::size(cancelString) - 1, UT_STRING_SYMBOL);
+			}
+			return processed;
+		}
+		return false;
+	}
 
 	void Host::SetDefaultOptions()
 	{
@@ -596,6 +880,10 @@ namespace KxSciter
 			case EVENT_GROUPS::HANDLE_DRAW:
 			{
 				return HandleDrawEvent(element, context);
+			}
+			case EVENT_GROUPS::HANDLE_BEHAVIOR_EVENT:
+			{
+				return HandleBehaviorEvent(element, context);
 			}
 		};
 		return false;

@@ -41,6 +41,7 @@ namespace KxSciter
 			bool HandleTimerEvent(ElementHandle* element, void* context);
 			bool HandleScrollEvent(ElementHandle* element, void* context);
 			bool HandleDrawEvent(ElementHandle* element, void* context);
+			bool HandleBehaviorEvent(ElementHandle* element, void* context);
 
 			void SetDefaultOptions();
 			void SetupCallbacks();

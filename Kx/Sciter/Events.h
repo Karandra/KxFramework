@@ -8,3 +8,4 @@
 #include "Events\TimerEvent.h"
 #include "Events\ScrollEvent.h"
 #include "Events\PaintEvent.h"
+#include "Events\BehaviorEvent.h"

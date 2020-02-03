@@ -113,6 +113,7 @@ namespace KxSciter
 			wxSize GetScrollRange() const;
 			bool SetScrollPos(const wxPoint& pos) const;
 
+			// HTML content
 			wxString GetInnerHTML() const;
 			wxString GetOuterHTML() const;
 			bool SetInnerHTML(const wxString& html, ElementInnerHTML mode);
@@ -159,29 +160,50 @@ namespace KxSciter
 			wxString GetAttributeNameAt(size_t index) const;
 			wxString GetAttributeValueAt(size_t index) const;
 			wxString GetAttribute(const wxString& name) const;
+			wxString GetAttribute(const char* name) const;
+
 			bool SetAttribute(const wxString& name, const wxString& value);
+			bool SetAttribute(const char* name, const wxString& value);
 			bool RemoveAttribute(const wxString& name);
+			bool RemoveAttribute(const char* name);
 			bool ClearAttributes();
 
 			// Style (CSS) attributes
 			wxString GetStyleAttribute(const wxString& name) const;
-			KxColor GetStyleAttributeColor(const wxString& name) const;
-			std::optional<int> GetStyleAttributeInt(const wxString& name) const;
-			std::optional<double> GetStyleAttributeFloat(const wxString& name) const;
+			wxString GetStyleAttribute(const char* name) const;
 
 			bool SetStyleAttribute(const wxString& name, const wxString& value);
+			bool SetStyleAttribute(const char* name, const wxString& value);
+
 			bool SetStyleAttribute(const wxString& name, const char* value)
 			{
 				return SetStyleAttribute(name, wxString(value));
 			}
+			bool SetStyleAttribute(const char* name, const char* value)
+			{
+				return SetStyleAttribute(name, wxString(value));
+			}
+
 			bool SetStyleAttribute(const wxString& name, const wchar_t* value)
 			{
 				return SetStyleAttribute(name, wxString(value));
 			}
+			bool SetStyleAttribute(const char* name, const wchar_t* value)
+			{
+				return SetStyleAttribute(name, wxString(value));
+			}
+
 			bool SetStyleAttribute(const wxString& name, const KxColor& value);
+			bool SetStyleAttribute(const char* name, const KxColor& value);
+
 			bool SetStyleAttribute(const wxString& name, int value, SizeUnit unit = SizeUnit::None);
+			bool SetStyleAttribute(const char* name, int value, SizeUnit unit = SizeUnit::None);
+
 			bool SetStyleAttribute(const wxString& name, double value, SizeUnit unit = SizeUnit::None);
+			bool SetStyleAttribute(const char* name, double value, SizeUnit unit = SizeUnit::None);
+
 			bool RemoveStyleAttribute(const wxString& name);
+			bool RemoveStyleAttribute(const char* name);
 
 			bool SetStyleFont(const wxFont& font);
 
