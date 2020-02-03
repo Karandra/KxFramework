@@ -17,6 +17,9 @@ namespace KxSciter
 	class KX_API Element final
 	{
 		public:
+			using TOnElement = std::function<bool(Element)>;
+
+		public:
 			static Element Create(const wxString& tagName, const wxString& value = {});
 
 		private:
@@ -73,12 +76,13 @@ namespace KxSciter
 			ElementUID* GetUID() const;
 			Host* GetHost() const;
 
-			bool Attach(ElementHandle* handle);
+			bool AttachHandle(ElementHandle* handle);
 			ElementHandle* Detach();
 			bool Remove();
 
 			Node ToNode() const;
 			Element Clone() const;
+			void Swap(Element& other);
 
 			// Event handling
 			void AttachEventHandler();
@@ -119,6 +123,9 @@ namespace KxSciter
 			bool SetInnerHTML(const wxString& html, ElementInnerHTML mode);
 			bool SetOuterHTML(const wxString& html, ElementOuterHTML mode);
 
+			wxString GetTagName() const;
+			bool SetTagName(const wxString& tagName);
+
 			// Children and parents
 			Element GetParent() const;
 			Element GetPrevSibling() const;
@@ -151,9 +158,13 @@ namespace KxSciter
 			wxWindow* DetachWindow();
 			HWND DetachNativeWindow();
 
+			// Text
+			wxString GetText() const;
+			bool SetText(const wxString& text) const;
+
 			// Value
 			wxString GetValue() const;
-			bool SetValue(wxStringView value) const;
+			bool SetValue(const wxString& value) const;
 
 			// Attributes
 			size_t GetAttributeCount() const;
@@ -206,6 +217,21 @@ namespace KxSciter
 			bool RemoveStyleAttribute(const char* name);
 
 			bool SetStyleFont(const wxFont& font);
+
+			// Selectors
+			size_t Select(const wxString& query, TOnElement onElement) const;
+			Element SelectAny(const wxString& query) const;
+			std::vector<Element> SelectAll(const wxString& query) const;
+
+			Element GetElementByAttribute(const wxString& name, const wxString& value) const;
+			Element GetElementByID(const wxString& value) const
+			{
+				return GetElementByAttribute("id", value);
+			}
+			Element GetElementByClass(const wxString& value) const
+			{
+				return GetElementByAttribute("class", value);
+			}
 
 		public:
 			Element& operator=(const Element& other)

@@ -62,7 +62,7 @@ namespace KxSciter
 		HELEMENT nativeNode = nullptr;
 		if (GetSciterAPI()->SciterCreateElement(tagNameUTF8.data(), value.wc_str(), &nativeNode) == SCDOM_OK)
 		{
-			node.Attach(FromSciterElement(nativeNode));
+			node.AttachHandle(FromSciterElement(nativeNode));
 		}
 		return node;
 	}
@@ -124,7 +124,7 @@ namespace KxSciter
 		return nullptr;
 	}
 
-	bool Element::Attach(ElementHandle* handle)
+	bool Element::AttachHandle(ElementHandle* handle)
 	{
 		if (!IsOk())
 		{
@@ -166,10 +166,14 @@ namespace KxSciter
 		if (GetSciterAPI()->SciterCloneElement(ToSciterElement(m_Handle), &nativeNode) == SCDOM_OK)
 		{
 			Element node;
-			node.Attach(FromSciterElement(nativeNode));
+			node.AttachHandle(FromSciterElement(nativeNode));
 			return node;
 		}
 		return {};
+	}
+	void Element::Swap(Element& other)
+	{
+		GetSciterAPI()->SciterSwapElements(ToSciterElement(m_Handle), ToSciterElement(other.m_Handle));
 	}
 
 	// Event handling
@@ -394,6 +398,78 @@ namespace KxSciter
 		return false;
 	}
 
+	wxString Element::GetTagName() const
+	{
+		wxString result;
+		GetSciterAPI()->SciterGetElementTypeCB(ToSciterElement(m_Handle), ExtractWxString, &result);
+		return result;
+	}
+	bool Element::SetTagName(const wxString& tagName)
+	{
+		if (GetTagName() == tagName)
+		{
+			return true;
+		}
+
+		// I can't believe there isn't a function is Sciter to change element's tag name.
+		// This ugly hack is absolutely terrible.
+		if (Element parent = GetParent())
+		{
+			// Collect all element's children
+			const size_t childrenCount = GetChildrenCount();
+
+			std::vector<Element> children;
+			children.reserve(childrenCount);
+			for (size_t i = 0; i < childrenCount; i++)
+			{
+				children.emplace_back(GetChildAt(i));
+			}
+
+			// Collect all attributes
+			const size_t attributeCount = GetAttributeCount();
+
+			std::vector<std::pair<wxString, wxString>> attributes;
+			attributes.reserve(attributeCount);
+			for (size_t i = 0; i < attributeCount; i++)
+			{
+				attributes.emplace_back(GetAttributeNameAt(i), GetAttributeValueAt(i));
+			}
+
+			// Create empty element with required tag name
+			Element newElement = Create(tagName);
+
+			// Insert new the element into the DOM
+			parent.InsertAt(newElement, GetIndexWithinParent());
+
+			// Move children into new element
+			for (Element& element: children)
+			{
+				newElement.Append(element);
+			}
+
+			// Add text node if needed
+			if (wxString value = GetValue(); !value.IsEmpty())
+			{
+				newElement.ToNode().Append(Node::CreateTextNode(value));
+			}
+
+			// Add attributes
+			for (const auto& [name, value]: attributes)
+			{
+				newElement.SetAttribute(name, value);
+			}
+
+			// Remove the original one
+			Remove();
+
+			// Now new element is this element
+			*this = newElement;
+
+			return true;
+		}
+		return false;
+	}
+
 	// Children and parents
 	Element Element::GetParent() const
 	{
@@ -461,7 +537,7 @@ namespace KxSciter
 	// Insertion
 	bool Element::Append(const Element& node)
 	{
-		return InsertAt(node, std::numeric_limits<UINT>::max());
+		return InsertAt(node, GetIndexWithinParent() + 1);
 	}
 	bool Element::Prepend(const Element& node)
 	{
@@ -538,16 +614,39 @@ namespace KxSciter
 		return window;
 	}
 
-	// Value
-	wxString Element::GetValue() const
+	// Text
+	wxString Element::GetText() const
 	{
 		wxString result;
 		GetSciterAPI()->SciterGetElementTextCB(ToSciterElement(m_Handle), ExtractWxString, &result);
 		return result;
 	}
-	bool Element::SetValue(wxStringView value) const
+	bool Element::SetText(const wxString& text) const
 	{
-		return GetSciterAPI()->SciterSetElementText(ToSciterElement(m_Handle), value.data(), value.length()) == SCDOM_OK;
+		return GetSciterAPI()->SciterSetElementText(ToSciterElement(m_Handle), text.wc_str(), text.length()) == SCDOM_OK;
+	}
+
+	// Value
+	wxString Element::GetValue() const
+	{
+		VALUE value = {};
+		if (GetSciterAPI()->SciterGetValue(ToSciterElement(m_Handle), &value) == SCDOM_OK && value.t == VALUE_TYPE::T_STRING)
+		{
+			aux::wchars slice;
+			if (GetSciterAPI()->ValueStringData(&value, &slice.start, &slice.length) == HV_OK)
+			{
+				return wxString(slice.begin(), slice.end());
+			}
+		}
+		return {};
+	}
+	bool Element::SetValue(const wxString& value) const
+	{
+		VALUE nativeValue = {};
+		GetSciterAPI()->ValueInit(&nativeValue);
+		GetSciterAPI()->ValueStringDataSet(&nativeValue, value.wc_str(), value.length(), T_STRING);
+
+		return GetSciterAPI()->SciterSetValue(ToSciterElement(m_Handle), &nativeValue) == SCDOM_OK;
 	}
 
 	// Attributes
@@ -749,5 +848,50 @@ namespace KxSciter
 			return true;
 		}
 		return false;
+	}
+
+	// Selectors
+	size_t Element::Select(const wxString& query, TOnElement onElement) const
+	{
+		struct CallContext
+		{
+			TOnElement& Callback;
+			size_t Count = 0;
+		};
+
+		CallContext context = {onElement};
+		GetSciterAPI()->SciterSelectElementsW(ToSciterElement(m_Handle), query.wc_str(), [](HELEMENT nativeElement, void* context) -> BOOL
+		{
+			CallContext& callContext = *reinterpret_cast<CallContext*>(context);
+			callContext.Count++;
+
+			return !std::invoke(callContext.Callback, FromSciterElement(nativeElement));
+		}, &context);
+		return context.Count;
+	}
+	Element Element::SelectAny(const wxString& query) const
+	{
+		Element result;
+		Select(query, [&result](Element element)
+		{
+			result = std::move(element);
+			return false;
+		});
+		return result;
+	}
+	std::vector<Element> Element::SelectAll(const wxString& query) const
+	{
+		std::vector<Element> results;
+		Select(query, [&results](Element element)
+		{
+			results.emplace_back(std::move(element));
+			return true;
+		});
+		return results;
+	}
+
+	Element Element::GetElementByAttribute(const wxString& name, const wxString& value) const
+	{
+		return SelectAny(KxString::Format(wxS("[%1=%2]"), name, value));
 	}
 }
