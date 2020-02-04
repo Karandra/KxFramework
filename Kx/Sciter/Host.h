@@ -4,6 +4,7 @@
 #include "Element.h"
 #include "Events.h"
 #include "EventHandler.h"
+#include "IWindowRenderer.h"
 #include <KxFramework/KxURI.h>
 #include <wx/window.h>
 
@@ -17,6 +18,7 @@ namespace KxSciter
 		private:
 			wxWindow& m_SciterWindow;
 			WindowEventHandler m_EventHandler;
+			std::unique_ptr<IWindowRenderer> m_Renderer;
 			std::unordered_map<wxEvtHandler*, std::unique_ptr<EventHandler>> m_ElementEventHandlers;
 
 			bool m_EngineCreated = false;
@@ -25,6 +27,7 @@ namespace KxSciter
 			bool m_Option_ThemeEnabled = true;
 			bool m_Option_SmoothScrolling = true;
 			FontSmoothing m_Option_FontSmoothing = FontSmoothing::SystemDefault;
+			WindowRenderer m_Option_WindowRenderer = WindowRenderer::Default;
 
 			wxString m_DocumentPath;
 			wxString m_DocumentBasePath;
@@ -88,6 +91,9 @@ namespace KxSciter
 
 			bool SetWindowFrame(WindowFrame windowFrame);
 			bool SetBlurBehind(WindowBlurBehind blurMode);
+
+			WindowRenderer GetWindowRenderer() const;
+			bool SetWindowRenderer(WindowRenderer renderer);
 
 			bool IsTransparentBackgroundSupported(wxString* reason = nullptr) const;
 			bool SetTransparency(uint8_t alpha);

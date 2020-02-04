@@ -508,6 +508,9 @@
     <ClInclude Include="Kx\Sciter\Events\SizeEvent.h" />
     <ClInclude Include="Kx\Sciter\Events\TimerEvent.h" />
     <ClInclude Include="Kx\Sciter\Internal.h" />
+    <ClInclude Include="Kx\Sciter\IWindowRenderer.h" />
+    <ClInclude Include="Kx\Sciter\Renderers\DirectX.h" />
+    <ClInclude Include="Kx\Sciter\Renderers\FPSCounter.h" />
     <ClInclude Include="Kx\Sciter\SciterAPI.h" />
     <ClInclude Include="Kx\Sciter\Host.h" />
     <ClInclude Include="Kx\Sciter\Node.h" />
@@ -797,7 +800,10 @@
     <ClCompile Include="Kx\Sciter\Events\Event.cpp" />
     <ClCompile Include="Kx\Sciter\Host.cpp" />
     <ClCompile Include="Kx\Sciter\Internal.cpp" />
+    <ClCompile Include="Kx\Sciter\IWindowRenderer.cpp" />
     <ClCompile Include="Kx\Sciter\Node.cpp" />
+    <ClCompile Include="Kx\Sciter\Renderers\DirectX.cpp" />
+    <ClCompile Include="Kx\Sciter\Renderers\FPSCounter.cpp" />
     <ClCompile Include="Kx\Sciter\SciterAPI.cpp" />
     <ClCompile Include="Kx\System\FileType.cpp" />
     <ClCompile Include="Kx\System\FileTypeInfo.cpp" />

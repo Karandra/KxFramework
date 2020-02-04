@@ -52,8 +52,16 @@ namespace KxSciter
 		SetDefaultOptions();
 		SetupCallbacks();
 
+		// Create renderer
+		m_Renderer = IWindowRenderer::CreateInstance(m_Option_WindowRenderer, m_SciterWindow);
+
 		// Window options
 		m_SciterWindow.SetBackgroundStyle(wxBG_STYLE_TRANSPARENT);
+
+		if (m_Renderer)
+		{
+			m_Renderer->Create();
+		}
 
 		// Send event
 		Event event = MakeEvent<Event>(*this, EvtEngineCreated);
@@ -97,26 +105,56 @@ namespace KxSciter
 	{
 		if (m_AllowSciterHandleMessage)
 		{
-			// Forward message to Sciter
+			bool allowSciter = true;
+			if (m_Option_WindowRenderer != WindowRenderer::Default && (msg == WM_CREATE || msg == WM_PAINT))
+			{
+				allowSciter = false;
+			}
+
+			// Forward messages to Sciter
 			BOOL handled = FALSE;
-			*result = GetSciterAPI()->SciterProcND(m_SciterWindow.GetHandle(), msg, wParam, lParam, &handled);
-
-			// Handle engine creation callbacks
-			if (msg == WM_CREATE)
+			if (allowSciter)
 			{
-				::SetWindowLongPtrW(m_SciterWindow.GetHandle(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
-				m_EngineCreated = true;
-
-				OnEngineCreated();
+				*result = GetSciterAPI()->SciterProcND(m_SciterWindow.GetHandle(), msg, wParam, lParam, &handled);
 			}
-			else if (msg == WM_DESTROY)
+
+			// Handle engine creation and renderer callbacks
+			switch (msg)
 			{
-				OnEngineDestroyed();
-				m_EngineCreated = false;
-				m_AllowSciterHandleMessage = false;
+				case WM_CREATE:
+				{
+					::SetWindowLongPtrW(m_SciterWindow.GetHandle(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 
-				::SetWindowLongPtrW(m_SciterWindow.GetHandle(), GWLP_USERDATA, 0);
-			}
+					m_EngineCreated = true;
+					OnEngineCreated();
+					break;
+				}
+				case WM_SIZE:
+				{
+					if (m_Renderer)
+					{
+						m_Renderer->OnSize();
+					}
+					break;
+				}
+				case WM_PAINT:
+				{
+					if (m_Renderer)
+					{
+						m_Renderer->Render();
+					}
+					break;
+				}
+				case WM_DESTROY:
+				{
+					OnEngineDestroyed();
+					m_EngineCreated = false;
+					m_AllowSciterHandleMessage = false;
+
+					::SetWindowLongPtrW(m_SciterWindow.GetHandle(), GWLP_USERDATA, 0);
+					break;
+				}
+			};
 			return handled;
 		}
 		return false;
@@ -130,6 +168,12 @@ namespace KxSciter
 				LoadHTML(root.GetOuterHTML(), m_DocumentBasePath);
 			}
 			m_ReloadScheduled = false;
+		}
+
+		if (m_Renderer)
+		{
+			m_Renderer->OnIdle();
+			m_SciterWindow.SetLabel(KxString::Format(wxS("FPS: %1"), m_Renderer->GetFPS()));
 		}
 	}
 
@@ -348,6 +392,16 @@ namespace KxSciter
 			}
 		};
 		return false;
+	}
+
+	WindowRenderer Host::GetWindowRenderer() const
+	{
+		return m_Option_WindowRenderer;
+	}
+	bool Host::SetWindowRenderer(WindowRenderer renderer)
+	{
+		m_Option_WindowRenderer = renderer;
+		return !m_EngineCreated;
 	}
 
 	bool Host::IsTransparentBackgroundSupported(wxString* reason) const

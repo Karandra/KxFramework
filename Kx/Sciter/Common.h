@@ -33,6 +33,11 @@ namespace KxSciter
 		Dark,
 		UltraDark
 	};
+	enum class WindowRenderer
+	{
+		Default = 0,
+		DirectX
+	};
 
 	enum class ElementInnerHTML
 	{

@@ -256,6 +256,9 @@
     <Filter Include="Kx\Sciter\Events">
       <UniqueIdentifier>{49eb5c51-d7e1-45ec-9167-7e05b2a547ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\Sciter\Renderers">
+      <UniqueIdentifier>{79730e57-63ef-4d10-a119-9ef02463b0b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -1195,6 +1198,15 @@
     <ClInclude Include="Kx\Sciter\EventHandler.h">
       <Filter>Kx\Sciter</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Sciter\IWindowRenderer.h">
+      <Filter>Kx\Sciter</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Sciter\Renderers\DirectX.h">
+      <Filter>Kx\Sciter\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Sciter\Renderers\FPSCounter.h">
+      <Filter>Kx\Sciter\Renderers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1881,6 +1893,15 @@
     </ClCompile>
     <ClCompile Include="Kx\Sciter\EventHandler.cpp">
       <Filter>Kx\Sciter</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Sciter\IWindowRenderer.cpp">
+      <Filter>Kx\Sciter</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Sciter\Renderers\DirectX.cpp">
+      <Filter>Kx\Sciter\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Sciter\Renderers\FPSCounter.cpp">
+      <Filter>Kx\Sciter\Renderers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
