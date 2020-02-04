@@ -172,7 +172,6 @@ namespace KxSciter
 		if (m_Renderer)
 		{
 			m_Renderer->OnIdle();
-			m_SciterWindow.SetLabel(KxString::Format(wxS("FPS: %1"), m_Renderer->GetFPS()));
 		}
 	}
 
