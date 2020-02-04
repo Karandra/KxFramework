@@ -48,20 +48,19 @@ namespace KxSciter
 
 	void Host::OnEngineCreated()
 	{
-		// Sciter options
-		SetDefaultOptions();
-		SetupCallbacks();
-
-		// Create renderer
-		m_Renderer = IWindowRenderer::CreateInstance(m_Option_WindowRenderer, m_SciterWindow);
-
 		// Window options
 		m_SciterWindow.SetBackgroundStyle(wxBG_STYLE_TRANSPARENT);
 
+		// Create renderer
+		m_Renderer = IWindowRenderer::CreateInstance(m_Option_WindowRenderer, m_SciterWindow);
 		if (m_Renderer)
 		{
 			m_Renderer->Create();
 		}
+
+		// Sciter options
+		SetDefaultOptions();
+		SetupCallbacks();
 
 		// Send event
 		Event event = MakeEvent<Event>(*this, EvtEngineCreated);

@@ -23,10 +23,9 @@ namespace KxSciter
 
 			KxCOMPtr<IDXGIFactory2> m_DXGIFactory;
 			KxCOMPtr<IDXGIDevice> m_DXGIDevice;
-
+			KxCOMPtr<IDXGISwapChain1> m_SwapChain;
 			KxCOMPtr<ID3D11Device1> m_D3DDevice;
 			KxCOMPtr<ID3D11DeviceContext1> m_DeviceContext;
-			KxCOMPtr<IDXGISwapChain1> m_SwapChain;
 
 			KxCOMPtr<IDCompositionDevice> m_CompositionDevice;
 			KxCOMPtr<IDCompositionTarget> m_CompositionTarget;

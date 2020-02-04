@@ -11,7 +11,6 @@
 
 namespace
 {
-	constexpr size_t g_ViewportCount = 1;
 	constexpr size_t g_SwapChainBufferCount = 2;
 	constexpr size_t g_SwapChainSampleCount = 1;
 	constexpr size_t g_SwapChainSampleQuality = 0;
@@ -214,7 +213,7 @@ namespace KxSciter
 			m_D3DDevice->CreateRenderTargetView(texture2D, nullptr, &renderTarget);
 			m_DeviceContext->OMSetRenderTargets(1, &renderTarget, nullptr);
 
-			// Set up the viewport.
+			// Resize the viewport
 			D3D11_VIEWPORT viewport;
 			viewport.Width = size.GetWidth();
 			viewport.Height = size.GetHeight();
