@@ -14,12 +14,13 @@ namespace KxSciter
 	{
 		friend class Node;
 		friend class Element;
+		friend class BasicEventHandler;
 
 		private:
 			wxWindow& m_SciterWindow;
 			WindowEventHandler m_EventHandler;
 			std::unique_ptr<IWindowRenderer> m_Renderer;
-			std::unordered_map<wxEvtHandler*, std::unique_ptr<EventHandler>> m_ElementEventHandlers;
+			std::unordered_map<wxEvtHandler*, std::unique_ptr<BasicEventHandler>> m_ElementEventHandlers;
 
 			bool m_EngineCreated = false;
 			bool m_AllowSciterHandleMessage = false;
@@ -35,10 +36,11 @@ namespace KxSciter
 
 		private:
 			void SetDefaultOptions();
-			void SetupCallbacks();
+			std::pair<int, int> UpdateWindowStyle();
 
 			void OnEngineCreated();
 			void OnEngineDestroyed();
+			void OnDocumentChanged();
 			bool ProcessEvent(wxEvent& event);
 
 			void AttachElementHandler(Element& element);
@@ -47,7 +49,8 @@ namespace KxSciter
 			void DetachElementHandler(Element& element, wxEvtHandler& evtHandler);
 
 		protected:
-			bool SciterHandleMessage(WXLRESULT* result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam);
+			bool SciterPreHandleMessage(WXLRESULT* result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam);
+			bool SciterPostHandleMessage(WXLRESULT* result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam);
 			void OnInternalIdle();
 
 		public:
@@ -64,10 +67,6 @@ namespace KxSciter
 				return m_EngineCreated;
 			}
 
-			EventHandler& GetEventHandler()
-			{
-				return m_EventHandler;
-			}
 			const wxWindow& GetWindow() const
 			{
 				return m_SciterWindow;

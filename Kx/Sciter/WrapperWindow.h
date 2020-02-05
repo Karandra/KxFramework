@@ -9,11 +9,21 @@ namespace KxSciter
 		protected:
 			bool MSWHandleMessage(WXLRESULT* result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam) override
 			{
-				if (Host::SciterHandleMessage(result, msg, wParam, lParam))
+				// Handle messages before native window
+				if (Host::SciterPreHandleMessage(result, msg, wParam, lParam))
 				{
 					return true;
 				}
-				return TWindow::MSWHandleMessage(result, msg, wParam, lParam);
+				
+				// Call native window procedure
+				bool handled = TWindow::MSWHandleMessage(result, msg, wParam, lParam);
+
+				// Post process messages
+				if (Host::SciterPostHandleMessage(result, msg, wParam, lParam))
+				{
+					handled = true;
+				}
+				return handled;
 			}
 			void OnInternalIdle() override
 			{

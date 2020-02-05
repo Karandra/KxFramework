@@ -3,6 +3,8 @@
 #include "SciterAPI.h"
 #include "Internal.h"
 #include "KxFramework/KxUtility.h"
+#include <WindowsX.h>
+#include "KxWinUndef.h"
 
 #pragma warning(disable: 4302) // 'reinterpret_cast': truncation from 'void *' to 'UINT'
 #pragma warning(disable: 4311) // 'reinterpret_cast': pointer truncation from 'void *' to 'UINT'
@@ -29,26 +31,29 @@ namespace KxSciter
 		EnableSmoothScrolling();
 		SetFontSmoothingMode(FontSmoothing::SystemDefault);
 		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_HTTPS_ERROR, 1);
-		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_CONNECTION_TIMEOUT, 500);
+		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_CONNECTION_TIMEOUT, 20);
 		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_TRANSPARENT_WINDOW, true);
 		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_SET_SCRIPT_RUNTIME_FEATURES, ALLOW_FILE_IO|ALLOW_SOCKET_IO|ALLOW_EVAL|ALLOW_SYSINFO);
 	}
-	void Host::SetupCallbacks()
+	std::pair<int, int> Host::UpdateWindowStyle()
 	{
-		GetSciterAPI()->SciterSetCallback(m_SciterWindow.GetHandle(), [](SCITER_CALLBACK_NOTIFICATION* notification, void* context) -> UINT
+		const long style = m_SciterWindow.GetWindowStyle();
+		const long exStyle = m_SciterWindow.GetExtraStyle();
+
+		// Add 'wxWS_EX_PROCESS_IDLE'. We always need to process idle, especially when using non-default renderer
+		// because we're drawing the window content when idle.
+		if (!(exStyle & wxWS_EX_PROCESS_IDLE))
 		{
-			if (notification && context)
-			{
-				return reinterpret_cast<WindowEventHandler*>(context)->SciterHandleNotify(notification);
-			}
-			return 0;
-		}, &m_EventHandler);
-		m_EventHandler.AttachHost();
+			m_SciterWindow.SetExtraStyle(exStyle|wxWS_EX_PROCESS_IDLE);
+		}
+
+		return {style, exStyle};
 	}
 
 	void Host::OnEngineCreated()
 	{
 		// Window options
+		::SetWindowLongPtrW(m_SciterWindow.GetHandle(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 		m_SciterWindow.SetBackgroundStyle(wxBG_STYLE_TRANSPARENT);
 
 		// Create renderer
@@ -60,7 +65,7 @@ namespace KxSciter
 
 		// Sciter options
 		SetDefaultOptions();
-		SetupCallbacks();
+		m_EventHandler.AttachHost();
 
 		// Send event
 		Event event = MakeEvent<Event>(*this, EvtEngineCreated);
@@ -68,10 +73,16 @@ namespace KxSciter
 	}
 	void Host::OnEngineDestroyed()
 	{
+		::SetWindowLongPtrW(m_SciterWindow.GetHandle(), GWLP_USERDATA, 0);
+
 		Event event = MakeEvent<Event>(*this, EvtEngineDestroyed);
 		ProcessEvent(event);
 
 		m_EventHandler.DetachHost();
+	}
+	void Host::OnDocumentChanged()
+	{
+		m_SciterWindow.InvalidateBestSize();
 	}
 	bool Host::ProcessEvent(wxEvent& event)
 	{
@@ -88,7 +99,7 @@ namespace KxSciter
 	}
 	void Host::AttachElementHandler(Element& element, wxEvtHandler& evtHandler)
 	{
-		auto [it, newItem] = m_ElementEventHandlers.insert_or_assign(&evtHandler, std::make_unique<RegularEventHandler>(*this, evtHandler));
+		auto [it, newItem] = m_ElementEventHandlers.insert_or_assign(&evtHandler, std::make_unique<EventHandler>(*this, evtHandler));
 		it->second->AttachElement(element);
 	}
 	void Host::DetachElementHandler(Element& element, wxEvtHandler& evtHandler)
@@ -100,7 +111,7 @@ namespace KxSciter
 		}
 	}
 
-	bool Host::SciterHandleMessage(WXLRESULT* result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam)
+	bool Host::SciterPreHandleMessage(WXLRESULT* result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam)
 	{
 		if (m_AllowSciterHandleMessage)
 		{
@@ -122,8 +133,6 @@ namespace KxSciter
 			{
 				case WM_CREATE:
 				{
-					::SetWindowLongPtrW(m_SciterWindow.GetHandle(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
-
 					m_EngineCreated = true;
 					OnEngineCreated();
 					break;
@@ -149,13 +158,15 @@ namespace KxSciter
 					OnEngineDestroyed();
 					m_EngineCreated = false;
 					m_AllowSciterHandleMessage = false;
-
-					::SetWindowLongPtrW(m_SciterWindow.GetHandle(), GWLP_USERDATA, 0);
 					break;
 				}
 			};
 			return handled;
 		}
+		return false;
+	}
+	bool Host::SciterPostHandleMessage(WXLRESULT* result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam)
+	{
 		return false;
 	}
 	void Host::OnInternalIdle()
@@ -164,7 +175,9 @@ namespace KxSciter
 		{
 			if (auto root = GetRootElement())
 			{
+				wxString path = m_DocumentPath;
 				LoadHTML(root.GetOuterHTML(), m_DocumentBasePath);
+				m_DocumentPath = std::move(path);
 			}
 			m_ReloadScheduled = false;
 		}
@@ -186,6 +199,7 @@ namespace KxSciter
 		// Child windows are fine with already created window. They don't need 'WS_EX_NOREDIRECTIONBITMAP' style
 		if (!m_SciterWindow.IsTopLevel())
 		{
+			UpdateWindowStyle();
 			m_AllowSciterHandleMessage = true;
 		}
 	}
@@ -195,19 +209,19 @@ namespace KxSciter
 
 	bool Host::Create()
 	{
+		if (m_EngineCreated)
+		{
+			return false;
+		}
+
 		if (m_SciterWindow.IsTopLevel())
 		{
-			if (m_EngineCreated)
-			{
-				return false;
-			}
-
 			// Get original window info
-			const long style = m_SciterWindow.GetWindowStyle();
-			const wxChar* nativeClassName = m_SciterWindow.GetMSWClassName(style);
+			auto [style, exStyle] = UpdateWindowStyle();
 
 			WXDWORD nativeExStyle = 0;
 			WXDWORD nativeStyle = m_SciterWindow.MSWGetStyle(style, &nativeExStyle);
+			const wxChar* nativeClassName = m_SciterWindow.GetMSWClassName(style);
 
 			const wxPoint pos = m_SciterWindow.GetPosition();
 			const wxSize size = m_SciterWindow.GetSize();

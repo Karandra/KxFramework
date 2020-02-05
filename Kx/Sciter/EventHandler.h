@@ -11,12 +11,12 @@ namespace KxSciter
 
 namespace KxSciter
 {
-	class KX_API EventHandler
+	class KX_API BasicEventHandler
 	{
 		friend class Host;
 
 		private:
-			static BOOL CallHostEventhandler(void* context, ElementHandle* element, uint32_t eventGroupID, void* parameters);
+			static BOOL CallHostEventHandler(void* context, ElementHandle* element, uint32_t eventGroupID, void* parameters);
 
 		private:
 			Host& m_Host;
@@ -40,42 +40,45 @@ namespace KxSciter
 			bool HandleBehaviorEvent(ElementHandle* element, void* context);
 
 			WXHWND GetSciterHandle() const;
+			bool IsHostLevelHandler() const;
+			bool ProcessEvent(wxEvent& event);
+			void QueueEvent(std::unique_ptr<wxEvent> event);
 
 			void AttachHost();
 			void DetachHost();
 			void AttachElement(Element& element);
 			void DetachElement(Element& element);
 
-		public:
-			EventHandler(Host& host)
-				:m_Host(host)
-			{
-			}
-			virtual ~EventHandler() = default;
-
-		public:
+		protected:
 			bool SciterHandleEvent(ElementHandle* element, uint32_t eventGroupID, void* context);
 			int SciterHandleNotify(void* context);
 
+		public:
+			BasicEventHandler(Host& host)
+				:m_Host(host)
+			{
+			}
+			virtual ~BasicEventHandler() = default;
+
+		public:
 			Host& GetHost() const
 			{
 				return m_Host;
 			}
-			bool ProcessEvent(wxEvent& event);
 			virtual wxEvtHandler& GetEvtHandler() = 0;
 	};
 }
 
 namespace KxSciter
 {
-	class KX_API RegularEventHandler: public EventHandler
+	class KX_API EventHandler: public BasicEventHandler
 	{
 		private:
 			wxEvtHandler& m_EvtHandler;
 
 		public:
-			RegularEventHandler(Host& host, wxEvtHandler& window)
-				:EventHandler(host), m_EvtHandler(window)
+			EventHandler(Host& host, wxEvtHandler& window)
+				:BasicEventHandler(host), m_EvtHandler(window)
 			{
 			}
 
@@ -86,14 +89,14 @@ namespace KxSciter
 			}
 	};
 
-	class KX_API WindowEventHandler: public EventHandler
+	class KX_API WindowEventHandler: public BasicEventHandler
 	{
 		private:
 			wxWindow& m_Window;
 
 		public:
 			WindowEventHandler(Host& host, wxWindow& window)
-				:EventHandler(host), m_Window(window)
+				:BasicEventHandler(host), m_Window(window)
 			{
 			}
 
