@@ -6,9 +6,9 @@ bool KxEvtHandlerStack::Push(wxEvtHandler& evtHandler)
 	// New handler can't be part of another chain
 	if (evtHandler.IsUnlinked())
 	{
-		evtHandler.SetNextHandler(m_Last);
-		m_Last->SetPreviousHandler(&evtHandler);
-		m_Last = &evtHandler;
+		evtHandler.SetNextHandler(m_Top);
+		m_Top->SetPreviousHandler(&evtHandler);
+		m_Top = &evtHandler;
 
 		return true;
 	}
@@ -17,7 +17,7 @@ bool KxEvtHandlerStack::Push(wxEvtHandler& evtHandler)
 bool KxEvtHandlerStack::Remove(wxEvtHandler& evtHandler)
 {
 	// Short circuit for last handler
-	if (&evtHandler == m_Last)
+	if (&evtHandler == m_Top)
 	{
 		return Pop() != nullptr;
 	}
@@ -26,7 +26,7 @@ bool KxEvtHandlerStack::Remove(wxEvtHandler& evtHandler)
 	if (!evtHandler.IsUnlinked())
 	{
 		// Is it part of our chain?
-		wxEvtHandler* unlinked = ForEachItem<Order::LastToFirst>([&evtHandler](wxEvtHandler& chainItem)
+		wxEvtHandler* unlinked = ForEachItem(Order::LastToFirst, [&evtHandler](wxEvtHandler& chainItem)
 		{
 			// Unlink it
 			if (&chainItem == &evtHandler)
@@ -43,10 +43,10 @@ bool KxEvtHandlerStack::Remove(wxEvtHandler& evtHandler)
 wxEvtHandler* KxEvtHandlerStack::Pop()
 {
 	// We need to pop the stack, i.e. we need to remove the latest added handler
-	wxEvtHandler* topHandler = m_Last;
+	wxEvtHandler* topHandler = m_Top;
 
 	// We can't pop if we have only one item and the top handler should have no previous handlers set
-	if (topHandler != m_First && !topHandler->GetPreviousHandler())
+	if (topHandler != m_Base && !topHandler->GetPreviousHandler())
 	{
 		// The second handler should have non-null next handler
 		if (wxEvtHandler* nextHandler = topHandler->GetNextHandler())
@@ -55,7 +55,7 @@ wxEvtHandler* KxEvtHandlerStack::Pop()
 			nextHandler->SetPreviousHandler(nullptr);
 
 			// Now top handler is completely unlinked, set next handler as the new current handler
-			m_Last = nextHandler;
+			m_Top = nextHandler;
 
 			// And return the popped one
 			return topHandler;

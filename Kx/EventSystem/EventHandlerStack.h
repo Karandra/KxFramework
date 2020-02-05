@@ -11,57 +11,57 @@ class KX_API KxEvtHandlerStack
 		};
 
 	private:
-		wxEvtHandler* m_First = nullptr;
-		wxEvtHandler* m_Last = nullptr;
+		wxEvtHandler* m_Base = nullptr;
+		wxEvtHandler* m_Top = nullptr;
 
 	public:
 		KxEvtHandlerStack(wxEvtHandler& first)
-			:m_First(&first), m_Last(&first)
+			:m_Base(&first), m_Top(&first)
 		{
 		}
+		KxEvtHandlerStack(const KxEvtHandlerStack&) = delete;
 
 	public:
+		bool Push(wxEvtHandler& evtHandler);
+		bool Remove(wxEvtHandler& evtHandler);
+		wxEvtHandler* Pop();
+
 		wxEvtHandler* GetBase() const
 		{
-			return m_First;
+			return m_Base;
 		}
 		wxEvtHandler* GetTop() const
 		{
-			return m_Last;
+			return m_Top;
+		}
+		bool HasChainedItems() const
+		{
+			return m_Base != m_Top;
 		}
 		size_t GetCount() const
 		{
 			size_t count = 0;
-			ForEachItem<Order::LastToFirst>([&count](wxEvtHandler& chainItem)
+			ForEachItem(Order::LastToFirst, [&count](wxEvtHandler& chainItem)
 			{
 				count++;
 				return true;
 			});
 			return count;
 		}
-		bool HasChainedItems() const
-		{
-			return m_First != m_Last;
-		}
 
-		bool Push(wxEvtHandler& evtHandler);
-		bool Remove(wxEvtHandler& evtHandler);
-		wxEvtHandler* Pop();
-
-	public:
 		template<class TFunc>
 		wxEvtHandler* ForEachItem(Order order, TFunc&& func, bool chainedItemsOnly = false) const
 		{
 			auto TestItem = [&](wxEvtHandler* item)
 			{
-				return item && (!chainedItemsOnly || item != m_First);
+				return item && (!chainedItemsOnly || item != m_Base);
 			};
 
 			switch (order)
 			{
 				case Order::FirstToLast:
 				{
-					for (wxEvtHandler* item = m_First; TestItem(); item = item->GetPreviousHandler())
+					for (wxEvtHandler* item = m_Base; TestItem(); item = item->GetPreviousHandler())
 					{
 						if (!func(*item))
 						{
@@ -71,7 +71,7 @@ class KX_API KxEvtHandlerStack
 				}
 				case Order::LastToFirst:
 				{
-					for (wxEvtHandler* item = m_Last; TestItem(); item = item->GetNextHandler())
+					for (wxEvtHandler* item = m_Top; TestItem(); item = item->GetNextHandler())
 					{
 						if (!func(*item))
 						{
@@ -82,4 +82,7 @@ class KX_API KxEvtHandlerStack
 			};
 			return nullptr;
 		}
+
+	public:
+		KxEvtHandlerStack& operator=(const KxEvtHandlerStack&) = delete;
 };
