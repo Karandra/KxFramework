@@ -10,7 +10,7 @@ namespace KxEventSystem
 			return false;
 		}
 
-		m_Processor.EnumRecieveres(m_Processor.GetRecieversOrder(), [this, &event](wxEvtHandler& evtHandler)
+		m_Processor.EnumRecieveres([this, &event](wxEvtHandler& evtHandler)
 		{
 			evtHandler.ProcessEventLocally(event);
 			return true;
@@ -58,48 +58,11 @@ namespace KxEventSystem
 
 bool KxBroadcastProcessor::AddReciever(KxBroadcastReciever& reciever)
 {
-	wxEvtHandler& evtHandler = reciever.GetEvtHandler();
-
-	// New handler can't be part of another chain
-	if (evtHandler.IsUnlinked())
-	{
-		m_LastEvtHandler->SetNextHandler(&evtHandler);
-		evtHandler.SetPreviousHandler(m_LastEvtHandler);
-		m_LastEvtHandler = &evtHandler;
-
-		return true;
-	}
-	return false;
+	return m_Stack.Push(reciever.GetEvtHandler());
 }
 bool KxBroadcastProcessor::RemoveReciever(KxBroadcastReciever& reciever)
 {
-	wxEvtHandler& evtHandler = reciever.GetEvtHandler();
-
-	// Check if this handler is part of a chain at all
-	if (!evtHandler.IsUnlinked())
-	{
-		// Short circuit for last handler
-		if (&evtHandler == m_LastEvtHandler)
-		{
-			wxEvtHandler* previous = m_LastEvtHandler->GetPreviousHandler();
-			m_LastEvtHandler->Unlink();
-			m_LastEvtHandler = previous;
-		}
-
-		// Is it part of our chain?
-		wxEvtHandler* unlinked = EnumRecieveres(m_Order, [&evtHandler](wxEvtHandler& chainItem)
-		{
-			// Unlink it
-			if (&chainItem == &evtHandler)
-			{
-				chainItem.Unlink();
-				return false;
-			}
-			return true;
-		});
-		return unlinked != nullptr;
-	}
-	return false;
+	return m_Stack.Remove(reciever.GetEvtHandler());
 }
 
 bool KxBroadcastReciever::PreProcessEvent(wxEvent& event)

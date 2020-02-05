@@ -1,5 +1,6 @@
 #pragma once
 #include "EvtHandler.h"
+#include "EventHandlerStack.h"
 class KxBroadcastProcessor;
 class KxBroadcastReciever;
 
@@ -32,16 +33,12 @@ class KX_API KxBroadcastProcessor
 	friend class KxBroadcastReciever;
 
 	public:
-		enum class Order
-		{
-			LastToFirst,
-			FirstToLast,
-		};
+		using Order = KxEvtHandlerStack::Order;
 
 	private:
 		KxEventSystem::BroadcastProcessorHandler m_EvtHandler;
 		KxRefEvtHandler m_EvtHandlerWrapper;
-		wxEvtHandler* m_LastEvtHandler = nullptr;
+		KxEvtHandlerStack m_Stack;
 		Order m_Order = Order::LastToFirst;
 
 	protected:
@@ -55,7 +52,7 @@ class KX_API KxBroadcastProcessor
 
 	public:
 		KxBroadcastProcessor()
-			:m_EvtHandlerWrapper(&m_EvtHandler), m_EvtHandler(*this), m_LastEvtHandler(&m_EvtHandler)
+			:m_EvtHandlerWrapper(&m_EvtHandler), m_EvtHandler(*this), m_Stack(m_EvtHandler)
 		{
 		}
 		virtual ~KxBroadcastProcessor() = default;
@@ -66,61 +63,23 @@ class KX_API KxBroadcastProcessor
 
 		bool HasRecieveres() const
 		{
-			return m_EvtHandler.GetNextHandler() != nullptr;
+			return m_Stack.HasChainedItems();
 		}
 		size_t GetRecieveresCount() const
 		{
-			size_t count = 0;
-			EnumRecieveres(m_Order, [&count](wxEvtHandler& item)
-			{
-				count++;
-				return true;
-			});
-			return count;
+			return m_Stack.GetCount();
 		}
-		
-		template<Order order, class TFunc> wxEvtHandler* EnumRecieveres(TFunc&& func) const
+
+		template<class TFunc>
+		wxEvtHandler* EnumRecieveres(Order order, TFunc&& func) const
 		{
-			if constexpr(order == Order::FirstToLast)
-			{
-				for (wxEvtHandler* item = m_EvtHandler.GetNextHandler(); item; item = item->GetNextHandler())
-				{
-					if (!func(*item))
-					{
-						return item;
-					}
-				}
-			}
-			else if constexpr(order == Order::LastToFirst)
-			{
-				for (wxEvtHandler* item = m_LastEvtHandler; item != &m_EvtHandler; item = item->GetPreviousHandler())
-				{
-					if (!func(*item))
-					{
-						return item;
-					}
-				}
-			}
-			else
-			{
-				static_assert(false, "invalid order");
-			}
-			return nullptr;
+			return m_Stack.ForEachItem(order, std::forward<TFunc>(func), true);
 		}
-		template<class TFunc> wxEvtHandler* EnumRecieveres(Order order, TFunc&& func) const
+
+		template<class TFunc>
+		wxEvtHandler* EnumRecieveres(TFunc&& func) const
 		{
-			switch (order)
-			{
-				case Order::FirstToLast:
-				{
-					return EnumRecieveres<Order::FirstToLast>(std::forward<TFunc>(func));
-				}
-				case Order::LastToFirst:
-				{
-					return EnumRecieveres<Order::LastToFirst>(std::forward<TFunc>(func));
-				}
-			};
-			return nullptr;
+			return m_Stack.ForEachItem(m_Order, std::forward<TFunc>(func), true);
 		}
 
 		Order GetRecieversOrder() const
