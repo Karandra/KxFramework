@@ -489,6 +489,14 @@ namespace KxSciter
 	}
 
 	// Children and parents
+	Element Element::GetRoot() const
+	{
+		if (Host* host = GetHost())
+		{
+			return host->GetRootElement();
+		}
+		return {};
+	}
 	Element Element::GetParent() const
 	{
 		return DoGetElemenet(m_Handle, GetSciterAPI()->SciterGetParentElement);

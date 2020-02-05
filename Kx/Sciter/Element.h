@@ -130,6 +130,7 @@ namespace KxSciter
 			bool SetTagName(const wxString& tagName);
 
 			// Children and parents
+			Element GetRoot() const;
 			Element GetParent() const;
 			Element GetPrevSibling() const;
 			Element GetNextSibling() const;
