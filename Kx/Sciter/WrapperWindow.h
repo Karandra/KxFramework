@@ -27,7 +27,9 @@ namespace KxSciter
 			}
 			void OnInternalIdle() override
 			{
-				TWindow::OnInternalIdle();
+				// Base class version generates too much strain on message processing system
+				// if there is more than one Sciter shown at the same time so let's just call
+				// Host object idle handler. Base class version doesn't seems to be needed here.
 				Host::OnInternalIdle();
 			}
 

@@ -249,6 +249,10 @@ namespace KxSciter
 	void Host::Update()
 	{
 		GetSciterAPI()->SciterUpdateWindow(m_SciterWindow.GetHandle());
+		if (m_Renderer)
+		{
+			m_Renderer->Render();
+		}
 	}
 	void Host::Reload()
 	{
