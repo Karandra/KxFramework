@@ -20,7 +20,7 @@ namespace
 	{
 		D3D_FEATURE_LEVEL_12_1,
 		D3D_FEATURE_LEVEL_12_0,
-		D3D_FEATURE_LEVEL_11_0,
+		D3D_FEATURE_LEVEL_11_1,
 	};
 	constexpr D3D_DRIVER_TYPE g_DriverTypes[] =
 	{
@@ -29,7 +29,7 @@ namespace
 	};
 
 	// RGBA
-	constexpr float g_ClearColor[4] = {0.0f, 0.125f, 0.3f, 0.0f};
+	constexpr float g_ClearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 }
 
 namespace KxSciter

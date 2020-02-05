@@ -125,6 +125,12 @@ namespace KxSciter
 			BOOL handled = FALSE;
 			if (allowSciter)
 			{
+				std::optional<FPSCounter::Watcher> fpsWatcher;
+				if (msg == WM_PAINT)
+				{
+					fpsWatcher.emplace(m_FrameCounter.CreateWatcher());
+				}
+
 				*result = GetSciterAPI()->SciterProcND(m_SciterWindow.GetHandle(), msg, wParam, lParam, &handled);
 			}
 
@@ -266,6 +272,10 @@ namespace KxSciter
 		GetSciterAPI()->SciterGetPPI(m_SciterWindow.GetHandle(), &x, &y);
 
 		return wxSize(x, y);
+	}
+	double Host::GetFPS() const
+	{
+		return m_Renderer ? m_Renderer->GetFPS() : m_FrameCounter.GetCount();
 	}
 
 	bool Host::IsSystemThemeEnabled() const

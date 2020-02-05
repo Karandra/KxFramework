@@ -5,6 +5,7 @@
 #include "Events.h"
 #include "EventHandler.h"
 #include "IWindowRenderer.h"
+#include "Renderers/FPSCounter.h"
 #include <KxFramework/KxURI.h>
 #include <wx/window.h>
 
@@ -21,6 +22,7 @@ namespace KxSciter
 			WindowEventHandler m_EventHandler;
 			std::unique_ptr<IWindowRenderer> m_Renderer;
 			std::unordered_map<wxEvtHandler*, std::unique_ptr<BasicEventHandler>> m_ElementEventHandlers;
+			FPSCounter m_FrameCounter;
 
 			bool m_EngineCreated = false;
 			bool m_AllowSciterHandleMessage = false;
@@ -78,6 +80,7 @@ namespace KxSciter
 
 			wxSize GetBestSize() const;
 			wxSize GetDPI() const;
+			double GetFPS() const;
 
 			bool IsSystemThemeEnabled() const;
 			bool EnableSystemTheme(bool enable = true);

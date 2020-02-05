@@ -59,15 +59,18 @@ namespace KxSciter
 		public:
 			bool Layout() override
 			{
+				const bool result = TWindow::Layout();
 				Host::Update();
-				return TWindow::Layout();
+				return result;
 			}
 			void Update() override
 			{
+				TWindow::Update();
 				Host::Update();
 			}
 			void Refresh(bool eraseBackground = true, const wxRect* rect = nullptr) override
 			{
+				TWindow::Refresh(eraseBackground, rect);
 				Host::Update();
 			}
 			void UpdateWindowUI(long flags = wxUPDATE_UI_NONE) override

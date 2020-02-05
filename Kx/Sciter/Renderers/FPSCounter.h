@@ -6,7 +6,7 @@ namespace KxSciter
 {
 	class FPSCounter final
 	{
-		private:
+		public:
 			class Watcher final
 			{
 				private:
