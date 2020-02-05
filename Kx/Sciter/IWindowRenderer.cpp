@@ -4,13 +4,13 @@
 
 namespace KxSciter
 {
-	std::unique_ptr<IWindowRenderer> IWindowRenderer::CreateInstance(WindowRenderer type, wxWindow& sciterWindow)
+	std::unique_ptr<IWindowRenderer> IWindowRenderer::CreateInstance(WindowRenderer type, Host& host)
 	{
 		switch (type)
 		{
 			case WindowRenderer::DirectX:
 			{
-				return std::make_unique<DirectX>(sciterWindow);
+				return std::make_unique<DirectX>(host);
 			}
 		};
 		return nullptr;

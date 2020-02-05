@@ -15,6 +15,7 @@ namespace KxSciter
 	class KX_API DirectX: public IWindowRenderer
 	{
 		private:
+			Host& m_SciterHost;
 			wxWindow& m_SciterWindow;
 			FPSCounter m_FrameCounter;
 
@@ -32,7 +33,7 @@ namespace KxSciter
 			KxCOMPtr<IDCompositionVisual> m_CompositionVisual;
 
 		public:
-			DirectX(wxWindow& sciterWindow);
+			DirectX(Host& host);
 			~DirectX();
 
 		public:

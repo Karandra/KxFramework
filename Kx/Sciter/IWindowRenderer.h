@@ -3,10 +3,15 @@
 
 namespace KxSciter
 {
+	class Host;
+}
+
+namespace KxSciter
+{
 	class KX_API IWindowRenderer
 	{
 		public:
-			static std::unique_ptr<IWindowRenderer> CreateInstance(WindowRenderer type, wxWindow& sciterWindow);
+			static std::unique_ptr<IWindowRenderer> CreateInstance(WindowRenderer type, Host& host);
 
 		public:
 			IWindowRenderer() = default;

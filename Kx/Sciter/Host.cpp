@@ -57,7 +57,7 @@ namespace KxSciter
 		m_SciterWindow.SetBackgroundStyle(wxBG_STYLE_TRANSPARENT);
 
 		// Create renderer
-		m_Renderer = IWindowRenderer::CreateInstance(m_Option_WindowRenderer, m_SciterWindow);
+		m_Renderer = IWindowRenderer::CreateInstance(m_Option_WindowRenderer, *this);
 		if (m_Renderer)
 		{
 			m_Renderer->Create();

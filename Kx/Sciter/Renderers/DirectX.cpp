@@ -1,6 +1,7 @@
 #include "KxStdAfx.h"
 #include "DirectX.h"
 #include "Kx/Sciter/SciterAPI.h"
+#include "Kx/Sciter/Host.h"
 #include <thread>
 #include <chrono>
 
@@ -33,8 +34,8 @@ namespace
 
 namespace KxSciter
 {
-	DirectX::DirectX(wxWindow& sciterWindow)
-		:m_SciterWindow(sciterWindow)
+	DirectX::DirectX(Host& host)
+		:m_SciterHost(host), m_SciterWindow(host.GetWindow())
 	{
 	}
 	DirectX::~DirectX()
