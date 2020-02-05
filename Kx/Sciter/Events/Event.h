@@ -17,7 +17,6 @@ namespace KxSciter
 
 			KxEVENT_MEMBER(Event, Gesture);
 			KxEVENT_MEMBER(Event, Exchange);
-			KxEVENT_MEMBER(Event, Behavior);
 
 			KxEVENT_MEMBER(Event, ContentLoaded);
 			KxEVENT_MEMBER(Event, TIScriptCall);
@@ -78,7 +77,6 @@ namespace KxSciter
 
 	KxEVENT_DECLARE_ALIAS_TO_MEMBER(Event, Gesture);
 	KxEVENT_DECLARE_ALIAS_TO_MEMBER(Event, Exchange);
-	KxEVENT_DECLARE_ALIAS_TO_MEMBER(Event, Behavior);
 
 	KxEVENT_DECLARE_ALIAS_TO_MEMBER(Event, ContentLoaded);
 	KxEVENT_DECLARE_ALIAS_TO_MEMBER(Event, TIScriptCall);
