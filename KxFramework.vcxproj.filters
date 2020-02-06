@@ -1219,6 +1219,9 @@
     <ClInclude Include="Kx\Sciter\CommonDefs.h">
       <Filter>Kx\Sciter</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Sciter\WidgetFactory.h">
+      <Filter>Kx\Sciter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1919,6 +1922,9 @@
       <Filter>Kx\EventSystem</Filter>
     </ClCompile>
     <ClCompile Include="Kx\Sciter\EventDispatcher.cpp">
+      <Filter>Kx\Sciter</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Sciter\WidgetFactory.cpp">
       <Filter>Kx\Sciter</Filter>
     </ClCompile>
   </ItemGroup>

@@ -517,6 +517,7 @@
     <ClInclude Include="Kx\Sciter\Host.h" />
     <ClInclude Include="Kx\Sciter\Node.h" />
     <ClInclude Include="Kx\Sciter\Widget.h" />
+    <ClInclude Include="Kx\Sciter\WidgetFactory.h" />
     <ClInclude Include="Kx\Sciter\WrapperWindow.h" />
     <ClInclude Include="Kx\System.hpp" />
     <ClInclude Include="Kx\System\Common.h" />
@@ -810,6 +811,7 @@
     <ClCompile Include="Kx\Sciter\Renderers\FPSCounter.cpp" />
     <ClCompile Include="Kx\Sciter\SciterAPI.cpp" />
     <ClCompile Include="Kx\Sciter\Widget.cpp" />
+    <ClCompile Include="Kx\Sciter\WidgetFactory.cpp" />
     <ClCompile Include="Kx\System\FileType.cpp" />
     <ClCompile Include="Kx\System\FileTypeInfo.cpp" />
     <ClCompile Include="Kx\System\FileTypeManager.cpp" />

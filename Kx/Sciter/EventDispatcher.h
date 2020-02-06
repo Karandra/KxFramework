@@ -18,6 +18,7 @@ namespace KxSciter
 
 		private:
 			static BOOL CallHandleEvent(void* context, ElementHandle* element, uint32_t eventGroupID, void* parameters);
+			static UINT CallHandleNotification(void* notification, void* context);
 
 		private:
 			Host& m_Host;
@@ -25,10 +26,10 @@ namespace KxSciter
 		private:
 			int HandleLoadDataNotification(void* context);
 			int HandleDataLoadedNotification(void* context);
-			int HandleAttachBehaviorNotification(void* context);
 			int HandlePostedNotification(void* context);
-			int handleCriticalFailureNotification();
-			int HandleDestroyedNotification();
+			bool HandleAttachBehaviorNotification(void* context);
+			void HandleCriticalFailureNotification();
+			void HandleDestroyedNotification();
 
 			bool HandleInitializationEvent(ElementHandle* element, void* context);
 			bool HandleKeyEvent(ElementHandle* element, void* context);
@@ -52,7 +53,7 @@ namespace KxSciter
 
 		protected:
 			bool SciterHandleEvent(ElementHandle* element, uint32_t eventGroupID, void* context);
-			int SciterHandleNotify(void* context);
+			int SciterHandleNotification(void* context);
 
 		public:
 			BasicEventDispatcher(Host& host)

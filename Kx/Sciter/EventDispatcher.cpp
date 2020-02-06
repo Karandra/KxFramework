@@ -3,6 +3,7 @@
 #include "SciterAPI.h"
 #include "Internal.h"
 #include "Widget.h"
+#include "WidgetFactory.h"
 #include "Host.h"
 #include "KxFramework/KxUtility.h"
 
@@ -125,36 +126,33 @@ namespace KxSciter
 {
 	BOOL BasicEventDispatcher::CallHandleEvent(void* context, ElementHandle* element, uint32_t eventGroupID, void* parameters)
 	{
-		if (context)
+		if (context && element)
 		{
 			return reinterpret_cast<BasicEventDispatcher*>(context)->SciterHandleEvent(element, eventGroupID, parameters);
 		}
 		return FALSE;
+	}
+	UINT BasicEventDispatcher::CallHandleNotification(void* notification, void* context)
+	{
+		if (notification && context)
+		{
+			return reinterpret_cast<BasicEventDispatcher*>(context)->SciterHandleNotification(notification);
+		}
+		return 0;
 	}
 
 	int BasicEventDispatcher::HandleLoadDataNotification(void* context)
 	{
 		SCN_LOAD_DATA& notification = *reinterpret_cast<SCN_LOAD_DATA*>(context);
 
-		LPCBYTE pb = nullptr;
-		UINT cb = 0;
-		aux::wchars wu = aux::chars_of(notification.uri);
-
-		if (wu.like(WSTR("res:*")))
+		aux::wchars uri = aux::chars_of(notification.uri);
+		if (uri.like(L"res:*"))
 		{
-			if (sciter::load_resource_data(nullptr, wu.start + 4, pb, cb))
+			LPCBYTE data = nullptr;
+			UINT size = 0;
+			if (sciter::load_resource_data(nullptr, uri.start + 4, data, size))
 			{
-				GetSciterAPI()->SciterDataReady(GetSciterHandle(), notification.uri, pb, cb);
-			}
-			return LOAD_DISCARD;
-		}
-		else if (wu.like(WSTR("this://app/*")))
-		{
-			// try to get them from archive first
-			aux::bytes adata = sciter::archive::instance().get(wu.start+11);
-			if (adata.length)
-			{
-				GetSciterAPI()->SciterDataReady(GetSciterHandle(), notification.uri, adata.start, adata.length);
+				GetSciterAPI()->SciterDataReady(GetSciterHandle(), notification.uri, data, size);
 			}
 			return LOAD_DISCARD;
 		}
@@ -165,27 +163,34 @@ namespace KxSciter
 		SCN_DATA_LOADED& notification = *reinterpret_cast<SCN_DATA_LOADED*>(context);
 		return 0;
 	}
-	int BasicEventDispatcher::HandleAttachBehaviorNotification(void* context)
-	{
-		if (IsHostLevelDispatcher())
-		{
-			SCN_ATTACH_BEHAVIOR& notification = *reinterpret_cast<SCN_ATTACH_BEHAVIOR*>(context);
-			return sciter::create_behavior(&notification);
-		}
-		return false;
-	}
 	int BasicEventDispatcher::HandlePostedNotification(void* context)
 	{
 		SCN_POSTED_NOTIFICATION& notification = *reinterpret_cast<SCN_POSTED_NOTIFICATION*>(context);
 		return 0;
 	}
-	int BasicEventDispatcher::handleCriticalFailureNotification()
+	bool BasicEventDispatcher::HandleAttachBehaviorNotification(void* context)
 	{
-		return 0;
+		if (IsHostLevelDispatcher())
+		{
+			SCN_ATTACH_BEHAVIOR& notification = *reinterpret_cast<SCN_ATTACH_BEHAVIOR*>(context);
+
+			if (auto widget = WidgetFactory::NewWidget(m_Host, FromSciterElement(notification.element), notification.behaviorName))
+			{
+				BasicEventDispatcher& dispatcher = widget.release()->m_EventDispatcher;
+
+				notification.elementTag = &dispatcher;
+				notification.elementProc = reinterpret_cast<LPELEMENT_EVENT_PROC>(CallHandleEvent);
+				return true;
+			}
+			return sciter::create_behavior(&notification);
+		}
+		return false;
 	}
-	int BasicEventDispatcher::HandleDestroyedNotification()
+	void BasicEventDispatcher::HandleCriticalFailureNotification()
 	{
-		return 0;
+	}
+	void BasicEventDispatcher::HandleDestroyedNotification()
+	{
 	}
 
 	bool BasicEventDispatcher::HandleInitializationEvent(ElementHandle* element, void* context)
@@ -794,14 +799,7 @@ namespace KxSciter
 	void BasicEventDispatcher::AttachHost()
 	{
 		GetSciterAPI()->SciterWindowAttachEventHandler(GetSciterHandle(), reinterpret_cast<LPELEMENT_EVENT_PROC>(CallHandleEvent), this, HANDLE_ALL);
-		GetSciterAPI()->SciterSetCallback(GetSciterHandle(), [](SCITER_CALLBACK_NOTIFICATION* notification, void* context) -> UINT
-		{
-			if (notification && context)
-			{
-				return reinterpret_cast<BasicEventDispatcher*>(context)->SciterHandleNotify(notification);
-			}
-			return 0;
-		}, this);
+		GetSciterAPI()->SciterSetCallback(GetSciterHandle(), reinterpret_cast<LPSciterHostCallback>(CallHandleNotification), this);
 	}
 	void BasicEventDispatcher::DetachHost()
 	{
@@ -866,7 +864,7 @@ namespace KxSciter
 		};
 		return false;
 	}
-	int BasicEventDispatcher::SciterHandleNotify(void* context)
+	int BasicEventDispatcher::SciterHandleNotification(void* context)
 	{
 		SCITER_CALLBACK_NOTIFICATION& notification = *reinterpret_cast<SCITER_CALLBACK_NOTIFICATION*>(context);
 
@@ -882,7 +880,7 @@ namespace KxSciter
 			}
 			case SC_ATTACH_BEHAVIOR:
 			{
-				return HandleAttachBehaviorNotification(context);
+				return static_cast<int>(HandleAttachBehaviorNotification(context));
 			}
 			case SC_POSTED_NOTIFICATION:
 			{
@@ -890,11 +888,13 @@ namespace KxSciter
 			}
 			case SC_GRAPHICS_CRITICAL_FAILURE:
 			{
-				return handleCriticalFailureNotification();
+				HandleCriticalFailureNotification();
+				break;
 			}
 			case SC_ENGINE_DESTROYED:
 			{
-				return HandleDestroyedNotification();
+				HandleDestroyedNotification();
+				break;
 			}
 		};
 		return 0;
