@@ -74,7 +74,8 @@ namespace KxSciter
 			Host* GetHost() const;
 
 			bool AttachHandle(ElementHandle* handle);
-			ElementHandle* Detach();
+			ElementHandle* DetachHandle();
+			bool Detach();
 			bool Remove();
 
 			Node ToNode() const;

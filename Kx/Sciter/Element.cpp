@@ -117,16 +117,15 @@ namespace KxSciter
 		}
 		return false;
 	}
-	ElementHandle* Element::Detach()
+	ElementHandle* Element::DetachHandle()
 	{
 		ElementHandle* handle = m_Handle;
 		m_Handle = nullptr;
-
-		if (GetSciterAPI()->SciterDetachElement(ToSciterElement(handle)))
-		{
-			return handle;
-		}
-		return nullptr;
+		return handle;
+	}
+	bool Element::Detach()
+	{
+		return GetSciterAPI()->SciterDetachElement(ToSciterElement(m_Handle)) == SCDOM_OK;
 	}
 	bool Element::Remove()
 	{

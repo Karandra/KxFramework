@@ -66,7 +66,8 @@ namespace KxSciter
 			}
 
 			bool AttachHandle(NodeHandle* handle);
-			NodeHandle* Detach();
+			NodeHandle* DetachHandle();
+			bool Detach();
 			bool Remove();
 
 			bool IsText() const;

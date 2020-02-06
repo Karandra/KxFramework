@@ -95,16 +95,15 @@ namespace KxSciter
 		}
 		return false;
 	}
-	NodeHandle* Node::Detach()
+	NodeHandle* Node::DetachHandle()
 	{
 		NodeHandle* handle = m_Handle;
 		m_Handle = nullptr;
-
-		if (GetSciterAPI()->SciterNodeRemove(ToSciterNode(handle), FALSE) == SCDOM_OK)
-		{
-			return handle;
-		}
-		return nullptr;
+		return handle;
+	}
+	bool Node::Detach()
+	{
+		return GetSciterAPI()->SciterNodeRemove(ToSciterNode(m_Handle), FALSE) == SCDOM_OK;
 	}
 	bool Node::Remove()
 	{
