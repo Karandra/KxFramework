@@ -1198,9 +1198,6 @@
     <ClInclude Include="Kx\Sciter\Events\BehaviorEvent.h">
       <Filter>Kx\Sciter\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\EventHandler.h">
-      <Filter>Kx\Sciter</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\Sciter\IWindowRenderer.h">
       <Filter>Kx\Sciter</Filter>
     </ClInclude>
@@ -1215,6 +1212,9 @@
     </ClInclude>
     <ClInclude Include="Kx\EventSystem\EventHandlerStack.h">
       <Filter>Kx\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Sciter\EventDispatcher.h">
+      <Filter>Kx\Sciter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1900,9 +1900,6 @@
     <ClCompile Include="Kx\Sciter\Events\Event.cpp">
       <Filter>Kx\Sciter\Events</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\EventHandler.cpp">
-      <Filter>Kx\Sciter</Filter>
-    </ClCompile>
     <ClCompile Include="Kx\Sciter\IWindowRenderer.cpp">
       <Filter>Kx\Sciter</Filter>
     </ClCompile>
@@ -1917,6 +1914,9 @@
     </ClCompile>
     <ClCompile Include="Kx\EventSystem\EventHandlerStack.cpp">
       <Filter>Kx\EventSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Sciter\EventDispatcher.cpp">
+      <Filter>Kx\Sciter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

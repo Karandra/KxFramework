@@ -1,7 +1,7 @@
 #pragma once
 #include "Kx/Sciter/Common.h"
 #include "Kx/Sciter/Element.h"
-#include "Kx/Sciter/EventHandler.h"
+#include "Kx/Sciter/EventDispatcher.h"
 #include "Kx/EventSystem/EventHandlerStack.h"
 
 namespace KxSciter

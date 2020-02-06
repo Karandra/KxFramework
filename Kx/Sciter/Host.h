@@ -3,7 +3,7 @@
 #include "Node.h"
 #include "Element.h"
 #include "Events.h"
-#include "EventHandler.h"
+#include "EventDispatcher.h"
 #include "IWindowRenderer.h"
 #include "Renderers/FPSCounter.h"
 #include <KxFramework/KxURI.h>

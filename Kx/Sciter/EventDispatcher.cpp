@@ -1,5 +1,5 @@
 #include "KxStdAfx.h"
-#include "EventHandler.h"
+#include "EventDispatcher.h"
 #include "SciterAPI.h"
 #include "Internal.h"
 #include "Widget.h"
@@ -167,7 +167,7 @@ namespace KxSciter
 	}
 	int BasicEventDispatcher::HandleAttachBehaviorNotification(void* context)
 	{
-		if (IsHostLevelHandler())
+		if (IsHostLevelDispatcher())
 		{
 			SCN_ATTACH_BEHAVIOR& notification = *reinterpret_cast<SCN_ATTACH_BEHAVIOR*>(context);
 			return sciter::create_behavior(&notification);
@@ -778,7 +778,7 @@ namespace KxSciter
 	{
 		return m_Host.GetWindow().GetHandle();
 	}
-	bool BasicEventDispatcher::IsHostLevelHandler() const
+	bool BasicEventDispatcher::IsHostLevelDispatcher() const
 	{
 		return &m_Host.m_EventDispatcher == this;
 	}

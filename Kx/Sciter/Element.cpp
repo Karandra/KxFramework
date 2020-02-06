@@ -2,7 +2,7 @@
 #include "Element.h"
 #include "Node.h"
 #include "Host.h"
-#include "EventHandler.h"
+#include "EventDispatcher.h"
 #include "SciterAPI.h"
 #include "Internal.h"
 #include "KxFramework/KxUtility.h"

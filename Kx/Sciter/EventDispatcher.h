@@ -41,7 +41,7 @@ namespace KxSciter
 			bool HandleBehaviorEvent(ElementHandle* element, void* context);
 
 			WXHWND GetSciterHandle() const;
-			bool IsHostLevelHandler() const;
+			bool IsHostLevelDispatcher() const;
 			bool ProcessEvent(wxEvent& event);
 			void QueueEvent(std::unique_ptr<wxEvent> event);
 
