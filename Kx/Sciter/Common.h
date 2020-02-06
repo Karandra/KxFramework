@@ -17,4 +17,7 @@ namespace KxSciter
 namespace KxSciter
 {
 	wxStringView SizeUnitToString(SizeUnit unit);
+
+	bool SetMasterCSS(const wxString& css);
+	bool AppendMasterCSS(const wxString& css);
 }

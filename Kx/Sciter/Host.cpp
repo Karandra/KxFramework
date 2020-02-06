@@ -437,11 +437,6 @@ namespace KxSciter
 		}
 		return true;
 	}
-	bool Host::SetTransparency(uint8_t alpha)
-	{
-		return false;
-	}
-
 	bool Host::SetFont(const wxFont& font)
 	{
 		return GetRootElement().SetStyleFont(font);
@@ -513,6 +508,11 @@ namespace KxSciter
 		auto utf8 = ToSciterUTF8(html);
 		return GetSciterAPI()->SciterLoadHtml(m_SciterWindow.GetHandle(), utf8.data(), utf8.size(), m_DocumentBasePath.wc_str());
 	}
+	bool Host::SetCSS(const wxString& css)
+	{
+		auto utf8 = ToSciterUTF8(css);
+		return GetSciterAPI()->SciterSetCSS(m_SciterWindow.GetHandle(), utf8.data(), utf8.size(), m_DocumentBasePath.wc_str(), nullptr);
+	}
 
 	bool Host::LoadDocument(const wxString& localPath)
 	{
@@ -526,7 +526,6 @@ namespace KxSciter
 		m_DocumentBasePath = m_DocumentPath;
 		return GetSciterAPI()->SciterLoadFile(m_SciterWindow.GetHandle(), m_DocumentBasePath.wc_str());
 	}
-
 	void Host::ClearDocument()
 	{
 		m_DocumentBasePath.clear();

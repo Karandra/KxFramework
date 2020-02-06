@@ -1,6 +1,7 @@
 #include "KxStdAfx.h"
 #include "Common.h"
 #include "SciterAPI.h"
+#include "Internal.h"
 #include <KxFramework/KxLibrary.h>
 
 namespace KxSciter
@@ -90,5 +91,16 @@ namespace KxSciter
 		return {};
 
 		#undef Map
+	}
+
+	bool SetMasterCSS(const wxString& css)
+	{
+		auto utf8 = ToSciterUTF8(css);
+		return GetSciterAPI()->SciterSetMasterCSS(utf8.data(), utf8.size());
+	}
+	bool AppendMasterCSS(const wxString& css)
+	{
+		auto utf8 = ToSciterUTF8(css);
+		return GetSciterAPI()->SciterAppendMasterCSS(utf8.data(), utf8.size());
 	}
 }

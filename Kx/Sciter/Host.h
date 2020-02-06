@@ -98,8 +98,6 @@ namespace KxSciter
 			bool SetWindowRenderer(WindowRenderer renderer);
 
 			bool IsTransparentBackgroundSupported(wxString* reason = nullptr) const;
-			bool SetTransparency(uint8_t alpha);
-
 			bool SetFont(const wxFont& font);
 			bool SetBackgroundColor(const KxColor& color);
 			bool SetForegroundColor(const KxColor& color);
@@ -110,10 +108,10 @@ namespace KxSciter
 		public:
 			bool LoadHTML(const wxString& html, const wxString& basePath = {});
 			bool LoadHTML(const wxString& html, const KxURI& baseURI);
+			bool SetCSS(const wxString& css);
 
 			bool LoadDocument(const wxString& localPath);
 			bool LoadDocument(const KxURI& uri);
-
 			void ClearDocument();
 
 			Element GetRootElement() const;
