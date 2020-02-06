@@ -215,12 +215,7 @@ namespace KxSciter
 
 	bool Host::Create()
 	{
-		if (m_EngineCreated)
-		{
-			return false;
-		}
-
-		if (m_SciterWindow.IsTopLevel())
+		if (!m_EngineCreated && m_SciterWindow.IsTopLevel())
 		{
 			// Get original window info
 			auto [style, exStyle] = UpdateWindowStyle();
