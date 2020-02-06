@@ -61,7 +61,7 @@ class KX_API KxEvtHandlerStack
 			{
 				case Order::FirstToLast:
 				{
-					for (wxEvtHandler* item = m_Base; TestItem(); item = item->GetPreviousHandler())
+					for (wxEvtHandler* item = m_Base; TestItem(item); item = item->GetPreviousHandler())
 					{
 						if (!func(*item))
 						{
@@ -71,7 +71,7 @@ class KX_API KxEvtHandlerStack
 				}
 				case Order::LastToFirst:
 				{
-					for (wxEvtHandler* item = m_Top; TestItem(); item = item->GetNextHandler())
+					for (wxEvtHandler* item = m_Top; TestItem(item); item = item->GetNextHandler())
 					{
 						if (!func(*item))
 						{
