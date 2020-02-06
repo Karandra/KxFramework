@@ -105,15 +105,15 @@ namespace KxSciter
 			}
 			bool HasTransparentBackground() override
 			{
-				return GetBackgroundColour().Alpha() != 255;
+				return TWindow::GetBackgroundColour().Alpha() != 255;
 			}
 			bool CanSetTransparent() override
 			{
 				return IsTransparentBackgroundSupported();
 			}
-			bool SetTransparent(wxByte alpha)
+			bool SetTransparent(wxByte alpha) override
 			{
-				KxColor color = GetBackgroundColour();
+				KxColor color = TWindow::GetBackgroundColour();
 				color.SetA(alpha);
 				return SetBackgroundColour(color);
 			}
