@@ -427,15 +427,21 @@ namespace KxSciter
 
 	bool Host::IsTransparentBackgroundSupported(wxString* reason) const
 	{
-		if (!m_SciterWindow.IsTopLevel())
+		if (m_SciterWindow.IsTopLevel())
 		{
-			if (reason)
-			{
-				*reason = "Not a top-level window";
-			}
+			KxUtility::SetIfNotNull(reason, wxS("Always supported for top-level window"));
+			return true;
+		}
+		else if (m_Renderer)
+		{
+			KxUtility::SetIfNotNull(reason, wxS("Graphics renderer can enable transparency even for child windows"));
+			return true;
+		}
+		else
+		{
+			KxUtility::SetIfNotNull(reason, wxS("Not a top-level window and doesn't use a graphics renderer"));
 			return false;
 		}
-		return true;
 	}
 	bool Host::SetFont(const wxFont& font)
 	{
