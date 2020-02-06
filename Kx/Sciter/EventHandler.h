@@ -12,12 +12,12 @@ namespace KxSciter
 
 namespace KxSciter
 {
-	class KX_API BasicEventHandler
+	class KX_API BasicEventDispatcher
 	{
 		friend class Host;
 
 		private:
-			static BOOL CallHostEventHandler(void* context, ElementHandle* element, uint32_t eventGroupID, void* parameters);
+			static BOOL CallHandleEvent(void* context, ElementHandle* element, uint32_t eventGroupID, void* parameters);
 
 		private:
 			Host& m_Host;
@@ -55,11 +55,11 @@ namespace KxSciter
 			int SciterHandleNotify(void* context);
 
 		public:
-			BasicEventHandler(Host& host)
+			BasicEventDispatcher(Host& host)
 				:m_Host(host)
 			{
 			}
-			virtual ~BasicEventHandler() = default;
+			virtual ~BasicEventDispatcher() = default;
 
 		public:
 			Host& GetHost() const
@@ -72,14 +72,14 @@ namespace KxSciter
 
 namespace KxSciter
 {
-	class KX_API EventHandler: public BasicEventHandler
+	class KX_API EventDispatcher: public BasicEventDispatcher
 	{
 		private:
 			wxEvtHandler& m_EvtHandler;
 
 		public:
-			EventHandler(Host& host, wxEvtHandler& evtHandler)
-				:BasicEventHandler(host), m_EvtHandler(evtHandler)
+			EventDispatcher(Host& host, wxEvtHandler& evtHandler)
+				:BasicEventDispatcher(host), m_EvtHandler(evtHandler)
 			{
 			}
 
@@ -90,14 +90,14 @@ namespace KxSciter
 			}
 	};
 
-	class KX_API WindowEventHandler: public BasicEventHandler
+	class KX_API WindowEventDispatcher: public BasicEventDispatcher
 	{
 		private:
 			wxWindow& m_Window;
 
 		public:
-			WindowEventHandler(Host& host, wxWindow& window)
-				:BasicEventHandler(host), m_Window(window)
+			WindowEventDispatcher(Host& host, wxWindow& window)
+				:BasicEventDispatcher(host), m_Window(window)
 			{
 			}
 
@@ -108,14 +108,14 @@ namespace KxSciter
 			}
 	};
 
-	class KX_API WidgetEventHandler: public BasicEventHandler
+	class KX_API WidgetEventDispatcher: public BasicEventDispatcher
 	{
 		private:
 			Widget& m_Widget;
 
 		public:
-			WidgetEventHandler(Host& host, Widget& widget)
-				:BasicEventHandler(host), m_Widget(widget)
+			WidgetEventDispatcher(Host& host, Widget& widget)
+				:BasicEventDispatcher(host), m_Widget(widget)
 			{
 			}
 

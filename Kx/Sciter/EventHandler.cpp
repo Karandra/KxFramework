@@ -9,7 +9,7 @@
 namespace KxSciter
 {
 	template<class TEvent>
-	TEvent MakeEvent(BasicEventHandler& evtHandler, KxEventID eventID = wxEVT_NULL)
+	TEvent MakeEvent(BasicEventDispatcher& evtHandler, KxEventID eventID = wxEVT_NULL)
 	{
 		TEvent event(evtHandler.GetHost());
 		event.Allow();
@@ -123,16 +123,16 @@ namespace KxSciter
 
 namespace KxSciter
 {
-	BOOL BasicEventHandler::CallHostEventHandler(void* context, ElementHandle* element, uint32_t eventGroupID, void* parameters)
+	BOOL BasicEventDispatcher::CallHandleEvent(void* context, ElementHandle* element, uint32_t eventGroupID, void* parameters)
 	{
 		if (context)
 		{
-			return reinterpret_cast<BasicEventHandler*>(context)->SciterHandleEvent(element, eventGroupID, parameters);
+			return reinterpret_cast<BasicEventDispatcher*>(context)->SciterHandleEvent(element, eventGroupID, parameters);
 		}
 		return FALSE;
 	}
 
-	int BasicEventHandler::HandleLoadDataNotification(void* context)
+	int BasicEventDispatcher::HandleLoadDataNotification(void* context)
 	{
 		SCN_LOAD_DATA& notification = *reinterpret_cast<SCN_LOAD_DATA*>(context);
 
@@ -160,12 +160,12 @@ namespace KxSciter
 		}
 		return LOAD_OK;
 	}
-	int BasicEventHandler::HandleDataLoadedNotification(void* context)
+	int BasicEventDispatcher::HandleDataLoadedNotification(void* context)
 	{
 		SCN_DATA_LOADED& notification = *reinterpret_cast<SCN_DATA_LOADED*>(context);
 		return 0;
 	}
-	int BasicEventHandler::HandleAttachBehaviorNotification(void* context)
+	int BasicEventDispatcher::HandleAttachBehaviorNotification(void* context)
 	{
 		if (IsHostLevelHandler())
 		{
@@ -174,21 +174,21 @@ namespace KxSciter
 		}
 		return false;
 	}
-	int BasicEventHandler::HandlePostedNotification(void* context)
+	int BasicEventDispatcher::HandlePostedNotification(void* context)
 	{
 		SCN_POSTED_NOTIFICATION& notification = *reinterpret_cast<SCN_POSTED_NOTIFICATION*>(context);
 		return 0;
 	}
-	int BasicEventHandler::handleCriticalFailureNotification()
+	int BasicEventDispatcher::handleCriticalFailureNotification()
 	{
 		return 0;
 	}
-	int BasicEventHandler::HandleDestroyedNotification()
+	int BasicEventDispatcher::HandleDestroyedNotification()
 	{
 		return 0;
 	}
 
-	bool BasicEventHandler::HandleInitializationEvent(ElementHandle* element, void* context)
+	bool BasicEventDispatcher::HandleInitializationEvent(ElementHandle* element, void* context)
 	{
 		INITIALIZATION_PARAMS& parameters = *reinterpret_cast<INITIALIZATION_PARAMS*>(context);
 
@@ -206,7 +206,7 @@ namespace KxSciter
 		}
 		return true;
 	}
-	bool BasicEventHandler::HandleKeyEvent(ElementHandle* element, void* context)
+	bool BasicEventDispatcher::HandleKeyEvent(ElementHandle* element, void* context)
 	{
 		KEY_PARAMS& parameters = *reinterpret_cast<KEY_PARAMS*>(context);
 
@@ -243,7 +243,7 @@ namespace KxSciter
 		}
 		return false;
 	}
-	bool BasicEventHandler::HandleMouseEvent(ElementHandle* element, void* context)
+	bool BasicEventDispatcher::HandleMouseEvent(ElementHandle* element, void* context)
 	{
 		MOUSE_PARAMS& parameters = *reinterpret_cast<MOUSE_PARAMS*>(context);
 
@@ -315,7 +315,7 @@ namespace KxSciter
 		}
 		return false;
 	}
-	bool BasicEventHandler::HandleFocusEvent(ElementHandle* element, void* context)
+	bool BasicEventDispatcher::HandleFocusEvent(ElementHandle* element, void* context)
 	{
 		FOCUS_PARAMS& parameters = *reinterpret_cast<FOCUS_PARAMS*>(context);
 
@@ -356,12 +356,12 @@ namespace KxSciter
 		}
 		return false;
 	}
-	bool BasicEventHandler::HandleSizeEvent(ElementHandle* element, void* context)
+	bool BasicEventDispatcher::HandleSizeEvent(ElementHandle* element, void* context)
 	{
 		Event event = MakeEvent<SizeEvent>(*this, EvtSize);
 		return ProcessEvent(event);
 	}
-	bool BasicEventHandler::HandleTimerEvent(ElementHandle* element, void* context)
+	bool BasicEventDispatcher::HandleTimerEvent(ElementHandle* element, void* context)
 	{
 		TIMER_PARAMS& parameters = *reinterpret_cast<TIMER_PARAMS*>(context);
 
@@ -369,7 +369,7 @@ namespace KxSciter
 		event.SetTimerID(parameters.timerId);
 		return ProcessEvent(event);
 	}
-	bool BasicEventHandler::HandleScrollEvent(ElementHandle* element, void* context)
+	bool BasicEventDispatcher::HandleScrollEvent(ElementHandle* element, void* context)
 	{
 		SCROLL_PARAMS& parameters = *reinterpret_cast<SCROLL_PARAMS*>(context);
 
@@ -440,7 +440,7 @@ namespace KxSciter
 		}
 		return false;
 	}
-	bool BasicEventHandler::HandleDrawEvent(ElementHandle* element, void* context)
+	bool BasicEventDispatcher::HandleDrawEvent(ElementHandle* element, void* context)
 	{
 		DRAW_PARAMS& parameters = *reinterpret_cast<DRAW_PARAMS*>(context);
 
@@ -479,7 +479,7 @@ namespace KxSciter
 		}
 		return false;
 	}
-	bool BasicEventHandler::HandleBehaviorEvent(ElementHandle* element, void* context)
+	bool BasicEventDispatcher::HandleBehaviorEvent(ElementHandle* element, void* context)
 	{
 		BEHAVIOR_EVENT_PARAMS& parameters = *reinterpret_cast<BEHAVIOR_EVENT_PARAMS*>(context);
 
@@ -774,50 +774,50 @@ namespace KxSciter
 		return false;
 	}
 
-	WXHWND BasicEventHandler::GetSciterHandle() const
+	WXHWND BasicEventDispatcher::GetSciterHandle() const
 	{
 		return m_Host.GetWindow().GetHandle();
 	}
-	bool BasicEventHandler::IsHostLevelHandler() const
+	bool BasicEventDispatcher::IsHostLevelHandler() const
 	{
-		return &m_Host.m_EventHandler == this;
+		return &m_Host.m_EventDispatcher == this;
 	}
-	bool BasicEventHandler::ProcessEvent(wxEvent& event)
+	bool BasicEventDispatcher::ProcessEvent(wxEvent& event)
 	{
 		return GetEvtHandler().ProcessEvent(event) && !event.GetSkipped();
 	}
-	void BasicEventHandler::QueueEvent(std::unique_ptr<wxEvent> event)
+	void BasicEventDispatcher::QueueEvent(std::unique_ptr<wxEvent> event)
 	{
 		GetEvtHandler().QueueEvent(event.release());
 	}
 
-	void BasicEventHandler::AttachHost()
+	void BasicEventDispatcher::AttachHost()
 	{
-		GetSciterAPI()->SciterWindowAttachEventHandler(GetSciterHandle(), reinterpret_cast<LPELEMENT_EVENT_PROC>(CallHostEventHandler), this, HANDLE_ALL);
+		GetSciterAPI()->SciterWindowAttachEventHandler(GetSciterHandle(), reinterpret_cast<LPELEMENT_EVENT_PROC>(CallHandleEvent), this, HANDLE_ALL);
 		GetSciterAPI()->SciterSetCallback(GetSciterHandle(), [](SCITER_CALLBACK_NOTIFICATION* notification, void* context) -> UINT
 		{
 			if (notification && context)
 			{
-				return reinterpret_cast<BasicEventHandler*>(context)->SciterHandleNotify(notification);
+				return reinterpret_cast<BasicEventDispatcher*>(context)->SciterHandleNotify(notification);
 			}
 			return 0;
 		}, this);
 	}
-	void BasicEventHandler::DetachHost()
+	void BasicEventDispatcher::DetachHost()
 	{
-		GetSciterAPI()->SciterWindowDetachEventHandler(GetSciterHandle(), reinterpret_cast<LPELEMENT_EVENT_PROC>(CallHostEventHandler), this);
+		GetSciterAPI()->SciterWindowDetachEventHandler(GetSciterHandle(), reinterpret_cast<LPELEMENT_EVENT_PROC>(CallHandleEvent), this);
 		GetSciterAPI()->SciterSetCallback(GetSciterHandle(), nullptr, nullptr);
 	}
-	void BasicEventHandler::AttachElement(Element& element)
+	void BasicEventDispatcher::AttachElement(Element& element)
 	{
-		GetSciterAPI()->SciterAttachEventHandler(ToSciterElement(element.GetHandle()), reinterpret_cast<LPELEMENT_EVENT_PROC>(CallHostEventHandler), this);
+		GetSciterAPI()->SciterAttachEventHandler(ToSciterElement(element.GetHandle()), reinterpret_cast<LPELEMENT_EVENT_PROC>(CallHandleEvent), this);
 	}
-	void BasicEventHandler::DetachElement(Element& element)
+	void BasicEventDispatcher::DetachElement(Element& element)
 	{
-		GetSciterAPI()->SciterDetachEventHandler(ToSciterElement(element.GetHandle()), reinterpret_cast<LPELEMENT_EVENT_PROC>(CallHostEventHandler), this);
+		GetSciterAPI()->SciterDetachEventHandler(ToSciterElement(element.GetHandle()), reinterpret_cast<LPELEMENT_EVENT_PROC>(CallHandleEvent), this);
 	}
 
-	bool BasicEventHandler::SciterHandleEvent(ElementHandle* element, uint32_t eventGroupID, void* context)
+	bool BasicEventDispatcher::SciterHandleEvent(ElementHandle* element, uint32_t eventGroupID, void* context)
 	{
 		switch (eventGroupID)
 		{
@@ -866,7 +866,7 @@ namespace KxSciter
 		};
 		return false;
 	}
-	int BasicEventHandler::SciterHandleNotify(void* context)
+	int BasicEventDispatcher::SciterHandleNotify(void* context)
 	{
 		SCITER_CALLBACK_NOTIFICATION& notification = *reinterpret_cast<SCITER_CALLBACK_NOTIFICATION*>(context);
 
@@ -903,7 +903,7 @@ namespace KxSciter
 
 namespace KxSciter
 {
-	wxEvtHandler& WidgetEventHandler::GetEvtHandler()
+	wxEvtHandler& WidgetEventDispatcher::GetEvtHandler()
 	{
 		return m_Widget.GetEventHandler();
 	}

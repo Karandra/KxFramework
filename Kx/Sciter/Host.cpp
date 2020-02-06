@@ -65,7 +65,7 @@ namespace KxSciter
 
 		// Sciter options
 		SetDefaultOptions();
-		m_EventHandler.AttachHost();
+		m_EventDispatcher.AttachHost();
 
 		// Send event
 		Event event = MakeEvent<Event>(*this, EvtEngineCreated);
@@ -78,7 +78,7 @@ namespace KxSciter
 		Event event = MakeEvent<Event>(*this, EvtEngineDestroyed);
 		ProcessEvent(event);
 
-		m_EventHandler.DetachHost();
+		m_EventDispatcher.DetachHost();
 	}
 	void Host::OnDocumentChanged()
 	{
@@ -91,23 +91,23 @@ namespace KxSciter
 
 	void Host::AttachElementHandler(Element& element)
 	{
-		m_EventHandler.AttachElement(element);
+		m_EventDispatcher.AttachElement(element);
 	}
 	void Host::DetachElementHandler(Element& element)
 	{
-		m_EventHandler.DetachElement(element);
+		m_EventDispatcher.DetachElement(element);
 	}
 	void Host::AttachElementHandler(Element& element, wxEvtHandler& evtHandler)
 	{
-		auto [it, newItem] = m_ElementEventHandlers.insert_or_assign(&evtHandler, std::make_unique<EventHandler>(*this, evtHandler));
+		auto [it, newItem] = m_ElementEventDispatchers.insert_or_assign(&evtHandler, std::make_unique<EventDispatcher>(*this, evtHandler));
 		it->second->AttachElement(element);
 	}
 	void Host::DetachElementHandler(Element& element, wxEvtHandler& evtHandler)
 	{
-		if (auto it = m_ElementEventHandlers.find(&evtHandler); it != m_ElementEventHandlers.end())
+		if (auto it = m_ElementEventDispatchers.find(&evtHandler); it != m_ElementEventDispatchers.end())
 		{
 			it->second->DetachElement(element);
-			m_ElementEventHandlers.erase(it);
+			m_ElementEventDispatchers.erase(it);
 		}
 	}
 
@@ -195,7 +195,7 @@ namespace KxSciter
 	}
 
 	Host::Host(wxWindow& window)
-		:m_SciterWindow(window), m_EventHandler(*this, window)
+		:m_SciterWindow(window), m_EventDispatcher(*this, window)
 	{
 		if (m_SciterWindow.GetHandle())
 		{

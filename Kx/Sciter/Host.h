@@ -15,13 +15,13 @@ namespace KxSciter
 	{
 		friend class Node;
 		friend class Element;
-		friend class BasicEventHandler;
+		friend class BasicEventDispatcher;
 
 		private:
 			wxWindow& m_SciterWindow;
-			WindowEventHandler m_EventHandler;
+			WindowEventDispatcher m_EventDispatcher;
 			std::unique_ptr<IWindowRenderer> m_Renderer;
-			std::unordered_map<wxEvtHandler*, std::unique_ptr<BasicEventHandler>> m_ElementEventHandlers;
+			std::unordered_map<wxEvtHandler*, std::unique_ptr<BasicEventDispatcher>> m_ElementEventDispatchers;
 			FPSCounter m_FrameCounter;
 
 			bool m_EngineCreated = false;

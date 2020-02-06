@@ -9,7 +9,7 @@ namespace KxSciter
 	class KX_API Widget: public wxEvtHandler
 	{
 		private:
-			WidgetEventHandler m_WidgetEventHandler;
+			WidgetEventDispatcher m_EventDispatcher;
 			KxEvtHandlerStack m_EventHandlerStack;
 			Host& m_Host;
 
@@ -23,7 +23,7 @@ namespace KxSciter
 
 		public:
 			Widget(Host& host)
-				:m_WidgetEventHandler(host, *this), m_EventHandlerStack(*this), m_Host(host)
+				:m_EventDispatcher(host, *this), m_EventHandlerStack(*this), m_Host(host)
 			{
 			}
 			Widget(const Widget&) = delete;
