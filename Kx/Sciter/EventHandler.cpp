@@ -2,6 +2,7 @@
 #include "EventHandler.h"
 #include "SciterAPI.h"
 #include "Internal.h"
+#include "Widget.h"
 #include "Host.h"
 #include "KxFramework/KxUtility.h"
 
@@ -897,5 +898,13 @@ namespace KxSciter
 			}
 		};
 		return 0;
+	}
+}
+
+namespace KxSciter
+{
+	wxEvtHandler& WidgetEventHandler::GetEvtHandler()
+	{
+		return m_Widget.GetEventHandler();
 	}
 }

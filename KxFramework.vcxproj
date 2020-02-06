@@ -485,6 +485,7 @@
     <ClInclude Include="Kx\EventSystem\Common.h" />
     <ClInclude Include="Kx\EventSystem\Event.h" />
     <ClInclude Include="Kx\EventSystem\EventBuilder.h" />
+    <ClInclude Include="Kx\EventSystem\EventHandlerStack.h" />
     <ClInclude Include="Kx\EventSystem\Events\CommandEvent.h" />
     <ClInclude Include="Kx\EventSystem\Events\IndirectCallEvent.h" />
     <ClInclude Include="Kx\EventSystem\Events\NotifyEvent.h" />
@@ -514,6 +515,7 @@
     <ClInclude Include="Kx\Sciter\SciterAPI.h" />
     <ClInclude Include="Kx\Sciter\Host.h" />
     <ClInclude Include="Kx\Sciter\Node.h" />
+    <ClInclude Include="Kx\Sciter\Widget.h" />
     <ClInclude Include="Kx\Sciter\WrapperWindow.h" />
     <ClInclude Include="Kx\System.hpp" />
     <ClInclude Include="Kx\System\Common.h" />
@@ -793,6 +795,7 @@
     <ClCompile Include="Kx\Async\Coroutine\CoroutineImpl.cpp" />
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp" />
     <ClCompile Include="Kx\EventSystem\EventBuilder.cpp" />
+    <ClCompile Include="Kx\EventSystem\EventHandlerStack.cpp" />
     <ClCompile Include="Kx\Sciter\Common.cpp" />
     <ClCompile Include="Kx\Sciter\Controls\Label.cpp" />
     <ClCompile Include="Kx\Sciter\Element.cpp" />
@@ -805,6 +808,7 @@
     <ClCompile Include="Kx\Sciter\Renderers\DirectX.cpp" />
     <ClCompile Include="Kx\Sciter\Renderers\FPSCounter.cpp" />
     <ClCompile Include="Kx\Sciter\SciterAPI.cpp" />
+    <ClCompile Include="Kx\Sciter\Widget.cpp" />
     <ClCompile Include="Kx\System\FileType.cpp" />
     <ClCompile Include="Kx\System\FileTypeInfo.cpp" />
     <ClCompile Include="Kx\System\FileTypeManager.cpp" />

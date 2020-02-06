@@ -7,6 +7,7 @@
 namespace KxSciter
 {
 	class Host;
+	class Widget;
 }
 
 namespace KxSciter
@@ -77,8 +78,8 @@ namespace KxSciter
 			wxEvtHandler& m_EvtHandler;
 
 		public:
-			EventHandler(Host& host, wxEvtHandler& window)
-				:BasicEventHandler(host), m_EvtHandler(window)
+			EventHandler(Host& host, wxEvtHandler& evtHandler)
+				:BasicEventHandler(host), m_EvtHandler(evtHandler)
 			{
 			}
 
@@ -105,5 +106,20 @@ namespace KxSciter
 			{
 				return *m_Window.GetEventHandler();
 			}
+	};
+
+	class KX_API WidgetEventHandler: public BasicEventHandler
+	{
+		private:
+			Widget& m_Widget;
+
+		public:
+			WidgetEventHandler(Host& host, Widget& widget)
+				:BasicEventHandler(host), m_Widget(widget)
+			{
+			}
+
+		public:
+			wxEvtHandler& GetEvtHandler() override;
 	};
 }
