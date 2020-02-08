@@ -37,6 +37,15 @@ namespace KxSciter
 			{
 			}
 
+		protected:
+			using wxEvtHandler::ProcessEvent;
+			using wxEvtHandler::ProcessEventLocally;
+			using wxEvtHandler::ProcessThreadEvent;
+			using wxEvtHandler::SafelyProcessEvent;
+			using wxEvtHandler::ProcessPendingEvents;
+			using wxEvtHandler::AddPendingEvent;
+			using wxEvtHandler::QueueEvent;
+
 		public:
 			Widget(Host& host, WidgetFactory& factory, const Element& element)
 				:m_EventDispatcher(host, *this), m_EventHandlerStack(*this), m_Host(host), m_Factory(factory), m_Element(element)
@@ -83,6 +92,20 @@ namespace KxSciter
 			bool RemoveEventHandler(wxEvtHandler& evtHandler)
 			{
 				return m_EventHandlerStack.Remove(evtHandler);
+			}
+
+			bool ProcessWidgetEvent(wxEvent& event)
+			{
+				return GetEventHandler().ProcessEvent(event);
+			}
+			bool ProcessWidgetEventLocally(wxEvent& event)
+			{
+				return GetEventHandler().ProcessEventLocally(event);
+			}
+			bool HandleWidgetEvent(wxEvent& event)
+			{
+				// SafelyProcessEvent() will handle exceptions nicely
+				return GetEventHandler().SafelyProcessEvent(event);
 			}
 
 			// Layout
