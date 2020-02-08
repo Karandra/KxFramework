@@ -386,9 +386,9 @@ namespace KxSciter
 
 			if (!value.IsEmpty())
 			{
-				return ExecuteScript(KxString::Format(wxS("view.windowBlurbehind = #%1;"), value));
+				return !ExecuteScript(KxString::Format(wxS("view.windowBlurbehind = #%1;"), value)).IsNone();
 			}
-			return ExecuteScript(wxS("view.windowBlurbehind = undefined;"));
+			return !ExecuteScript(wxS("view.windowBlurbehind = undefined;")).IsNone();
 		};
 
 		switch (blurMode)
@@ -595,9 +595,10 @@ namespace KxSciter
 		GetSciterAPI()->SciterSetHighlightedElement(m_SciterWindow.GetHandle(), (HELEMENT)node.GetHandle());
 	}
 
-	bool Host::ExecuteScript(const wxString& script)
+	ScriptValue Host::ExecuteScript(const wxString& script)
 	{
-		VALUE returnValue = {};
-		return GetSciterAPI()->SciterEval(m_SciterWindow.GetHandle(), script.wc_str(), script.length(), reinterpret_cast<SCITER_VALUE*>(&returnValue));
+		ScriptValue result;
+		GetSciterAPI()->SciterEval(m_SciterWindow.GetHandle(), script.wc_str(), script.length(), reinterpret_cast<SCITER_VALUE*>(&result.GetNativeValue()));
+		return result;
 	}
 }

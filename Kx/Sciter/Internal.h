@@ -6,6 +6,7 @@ namespace KxSciter
 {
 	struct NodeHandle;
 	struct ElementHandle;
+	struct ScriptNativeValue;
 }
 
 namespace KxSciter
@@ -28,5 +29,18 @@ namespace KxSciter
 	inline NodeHandle* FromSciterNode(HNODE handle)
 	{
 		return reinterpret_cast<NodeHandle*>(handle);
+	}
+
+	inline VALUE* ToSciterScriptValue(ScriptNativeValue& value)
+	{
+		return reinterpret_cast<VALUE*>(&value);
+	}
+	inline const VALUE* ToSciterScriptValue(const ScriptNativeValue& value)
+	{
+		return reinterpret_cast<const VALUE*>(&value);
+	}
+	inline ScriptNativeValue& FromSciterScriptValue(VALUE& value)
+	{
+		return *reinterpret_cast<ScriptNativeValue*>(&value);
 	}
 }

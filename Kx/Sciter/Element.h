@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "ScriptValue.h"
 #include <KxFramework/KxColor.h>
 #include <utility>
 
@@ -246,6 +247,9 @@ namespace KxSciter
 			{
 				return SelectAny(KxString::Format(wxS(".%1"), name));
 			}
+
+			// Scripts
+			ScriptValue ExecuteScript(const wxString& script);
 
 		public:
 			Element& operator=(const Element& other)

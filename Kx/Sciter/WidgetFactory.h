@@ -21,7 +21,7 @@ namespace KxSciter
 			{
 				for (WidgetFactory* factory = GetFirstFactory(); factory; factory = factory->GetNextFactory())
 				{
-					if (factory && !func(*factory))
+					if (!func(*factory))
 					{
 						return factory;
 					}

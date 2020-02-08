@@ -954,4 +954,11 @@ namespace KxSciter
 		});
 		return results;
 	}
+
+	ScriptValue Element::ExecuteScript(const wxString& script)
+	{
+		ScriptValue result;
+		GetSciterAPI()->SciterEvalElementScript(ToSciterElement(m_Handle), script.wc_str(), script.length(), ToSciterScriptValue(result.GetNativeValue()));
+		return result;
+	}
 }

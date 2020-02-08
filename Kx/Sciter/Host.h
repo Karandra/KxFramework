@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "Node.h"
 #include "Element.h"
+#include "ScriptValue.h"
 #include "Events.h"
 #include "EventDispatcher.h"
 #include "IWindowRenderer.h"
@@ -122,7 +123,7 @@ namespace KxSciter
 			Element GetHighlightedElement() const;
 			void SetHighlightedElement(const Element& node);
 
-			bool ExecuteScript(const wxString& script);
+			ScriptValue ExecuteScript(const wxString& script);
 
 		public:
 			Host& operator=(const Host&) = delete;
