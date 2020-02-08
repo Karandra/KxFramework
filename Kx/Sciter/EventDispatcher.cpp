@@ -5,6 +5,7 @@
 #include "Widget.h"
 #include "WidgetFactory.h"
 #include "Host.h"
+#include "ScriptValue.h"
 #include "KxFramework/KxUtility.h"
 
 namespace KxSciter
@@ -762,16 +763,15 @@ namespace KxSciter
 				m_Host.OnDocumentChanged();
 			}
 
-			// "cancel"
 			const bool processed = ProcessEvent(event);
 			if (!event.IsAllowed())
 			{
 				// This event can be canceled this way
 				if (parameters.cmd == DOCUMENT_CLOSE_REQUEST)
 				{
-					constexpr wchar_t cancelString[] = L"cancel";
-					GetSciterAPI()->ValueInit(&parameters.data);
-					GetSciterAPI()->ValueStringDataSet(&parameters.data, cancelString, std::size(cancelString) - 1, UT_STRING_SYMBOL);
+					ScriptValue value;
+					value.SetString(wxS("cancel"), ScriptValue::StringType::Symbol);
+					GetSciterAPI()->ValueCopy(&parameters.data, ToSciterScriptValue(value.GetNativeValue()));
 				}
 			}
 			return processed;
