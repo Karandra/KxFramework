@@ -30,6 +30,28 @@ namespace KxSciter
 		return state & flag;
 	}
 
+	template<class TName>
+	std::optional<int> DoGetStyleAttributeInt(const Element& element, TName&& name)
+	{
+		wxString value = element.GetStyleAttribute(name);
+		if (long iValue = -1; value.ToCLong(&iValue))
+		{
+			return iValue;
+		}
+		return std::nullopt;
+	}
+
+	template<class TName>
+	std::optional<double> DoGetStyleAttributeFloat(const Element& element, TName&& name)
+	{
+		wxString value = element.GetStyleAttribute(name);
+		if (double fValue = -1; value.ToCDouble(&fValue))
+		{
+			return fValue;
+		}
+		return std::nullopt;
+	}
+
 	void __stdcall ExtractWxString(const wchar_t* value, UINT length, void* context)
 	{
 		reinterpret_cast<wxString*>(context)->assign(value, length);
@@ -740,6 +762,24 @@ namespace KxSciter
 		wxString result;
 		GetSciterAPI()->SciterGetStyleAttributeCB(ToSciterElement(m_Handle), name, ExtractWxString, &result);
 		return result;
+	}
+
+	std::optional<int> Element::GetStyleAttributeInt(const char* name) const
+	{
+		return DoGetStyleAttributeInt(*this, name);
+	}
+	std::optional<int> Element::GetStyleAttributeInt(const wxString& name) const
+	{
+		return DoGetStyleAttributeInt(*this, name);
+	}
+
+	std::optional<double> Element::GetStyleAttributeFloat(const wxString& name) const
+	{
+		return DoGetStyleAttributeFloat(*this, name);
+	}
+	std::optional<double> Element::GetStyleAttributeFloat(const char* name) const
+	{
+		return DoGetStyleAttributeFloat(*this, name);
 	}
 
 	bool Element::SetStyleAttribute(const wxString& name, const wxString& value)

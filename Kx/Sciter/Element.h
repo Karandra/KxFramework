@@ -188,6 +188,12 @@ namespace KxSciter
 			wxString GetStyleAttribute(const wxString& name) const;
 			wxString GetStyleAttribute(const char* name) const;
 
+			std::optional<int> GetStyleAttributeInt(const wxString& name) const;
+			std::optional<int> GetStyleAttributeInt(const char* name) const;
+
+			std::optional<double> GetStyleAttributeFloat(const wxString& name) const;
+			std::optional<double> GetStyleAttributeFloat(const char* name) const;
+
 			bool SetStyleAttribute(const wxString& name, const wxString& value);
 			bool SetStyleAttribute(const char* name, const wxString& value);
 
