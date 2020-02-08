@@ -116,13 +116,17 @@ namespace KxSciter
 		if (m_AllowSciterHandleMessage)
 		{
 			bool allowSciter = true;
+			bool messageHandled = false;
 			if (m_Option_WindowRenderer != WindowRenderer::Default && (msg == WM_CREATE || msg == WM_PAINT))
+			{
+				allowSciter = false;
+			}
+			if (msg == WM_PAINT && m_SciterWindow.IsFrozen())
 			{
 				allowSciter = false;
 			}
 
 			// Forward messages to Sciter
-			BOOL handled = FALSE;
 			if (allowSciter)
 			{
 				std::optional<FPSCounter::Watcher> fpsWatcher;
@@ -131,7 +135,9 @@ namespace KxSciter
 					fpsWatcher.emplace(m_FrameCounter.CreateWatcher());
 				}
 
+				BOOL handled = FALSE;
 				*result = GetSciterAPI()->SciterProcND(m_SciterWindow.GetHandle(), msg, wParam, lParam, &handled);
+				messageHandled = handled;
 			}
 
 			// Handle engine creation and renderer callbacks
@@ -167,7 +173,7 @@ namespace KxSciter
 					break;
 				}
 			};
-			return handled;
+			return messageHandled;
 		}
 		return false;
 	}

@@ -165,7 +165,7 @@ namespace KxSciter
 	}
 	void DirectX::Render()
 	{
-		if (m_SwapChain)
+		if (m_SwapChain && !m_SciterWindow.IsFrozen())
 		{
 			auto fpsWatcher = m_FrameCounter.CreateWatcher();
 
