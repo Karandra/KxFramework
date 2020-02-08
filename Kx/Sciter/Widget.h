@@ -7,6 +7,13 @@
 namespace KxSciter
 {
 	class WidgetFactory;
+
+	enum class LayoutFlow
+	{
+		None,
+		Horizontal,
+		Vertical
+	};
 }
 
 namespace KxSciter
@@ -62,6 +69,50 @@ namespace KxSciter
 			WidgetFactory& GetFactory() const
 			{
 				return m_Factory;
+			}
+
+			// Layout
+			LayoutFlow GetLayoutFlow() const;
+			void SetLayoutFlow(LayoutFlow flow);
+
+			// Size and position
+			wxRect GetRect() const
+			{
+				return m_Element.GetRect();
+			}
+			wxSize GetSize() const
+			{
+				return GetRect().GetSize();
+			}
+			void SetSize(const wxSize& size);
+
+			wxSize GetMinSize() const
+			{
+				return m_Element.GetMinSize();
+			}
+			wxSize GetMaxSize() const
+			{
+				return m_Element.GetMaxSize();
+			}
+
+			wxPoint GetPosition() const
+			{
+				return GetRect().GetPosition();
+			}
+			void SetPosition(const wxPoint& pos);
+			
+			// Focus
+			bool IsFocusable() const
+			{
+				return m_Element.IsFocusable();
+			}
+			bool HasFocus() const
+			{
+				return m_Element.HasFocus();
+			}
+			void SetFocus()
+			{
+				return m_Element.SetFocus();
 			}
 
 		public:
