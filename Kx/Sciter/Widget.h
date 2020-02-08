@@ -46,6 +46,26 @@ namespace KxSciter
 			virtual ~Widget() = default;
 
 		public:
+			// General
+			Element& GetElement()
+			{
+				return m_Element;
+			}
+			const Element& GetElement() const
+			{
+				return m_Element;
+			}
+			Host& GetHost() const
+			{
+				return m_Host;
+			}
+
+			// Factory
+			WidgetFactory& GetFactory() const
+			{
+				return m_Factory;
+			}
+
 			// Event handler chain
 			wxEvtHandler& GetEventHandler()
 			{
@@ -63,12 +83,6 @@ namespace KxSciter
 			bool RemoveEventHandler(wxEvtHandler& evtHandler)
 			{
 				return m_EventHandlerStack.Remove(evtHandler);
-			}
-
-			// Factory
-			WidgetFactory& GetFactory() const
-			{
-				return m_Factory;
 			}
 
 			// Layout
