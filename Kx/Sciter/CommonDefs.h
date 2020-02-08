@@ -72,7 +72,8 @@ namespace KxSciter
 		vh, // Relative to 1% of the height of the viewport
 		vmin, // Relative to 1% of viewport's smaller dimension
 		vmax, // Relative to 1% of viewport's larger dimension
-		Percent, // Relative to the parent element
+		pr, // %, relative to the parent element
+		sp, // %% "springs", a.k.a. flex units
 	};
 
 	enum class ScrollSource

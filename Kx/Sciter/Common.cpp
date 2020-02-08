@@ -83,9 +83,13 @@ namespace KxSciter
 			Map(vmin);
 			Map(vmax);
 
-			case SizeUnit::Percent:
+			case SizeUnit::pr:
 			{
 				return wxS("%");
+			}
+			case SizeUnit::sp:
+			{
+				return wxS("%%");
 			}
 		};
 		return {};
