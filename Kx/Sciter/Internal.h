@@ -8,7 +8,7 @@ namespace KxSciter
 	struct ElementHandle;
 	struct ScriptNativeValue;
 
-	struct ImageHandle;
+	struct GraphicsBitmapHandle;
 }
 
 namespace KxSciter
@@ -46,12 +46,12 @@ namespace KxSciter
 		return *reinterpret_cast<ScriptNativeValue*>(&value);
 	}
 
-	inline HIMG ToSciterImage(ImageHandle* handle)
+	inline HIMG ToSciterImage(GraphicsBitmapHandle* handle)
 	{
 		return reinterpret_cast<HIMG>(handle);
 	}
-	inline ImageHandle* FromSciterImage(HIMG handle)
+	inline GraphicsBitmapHandle* FromSciterImage(HIMG handle)
 	{
-		return reinterpret_cast<ImageHandle*>(handle);
+		return reinterpret_cast<GraphicsBitmapHandle*>(handle);
 	}
 }

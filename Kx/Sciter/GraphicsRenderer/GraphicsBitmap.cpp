@@ -1,5 +1,6 @@
 #include "KxStdAfx.h"
 #include "GraphicsBitmap.h"
+#include "Kx/Sciter/ScriptValue.h"
 #include "Kx/Sciter/SciterAPI.h"
 #include "Kx/Sciter/Internal.h"
 
@@ -50,7 +51,7 @@ namespace KxSciter
 
 namespace KxSciter
 {
-	void GraphicsBitmap::Acquire(ImageHandle* handle)
+	void GraphicsBitmap::Acquire(GraphicsBitmapHandle* handle)
 	{
 		Release();
 		if (GetGrapchicsAPI()->imageAddRef(ToSciterImage(handle)) == GRAPHIN_OK)
@@ -91,6 +92,14 @@ namespace KxSciter
 	GraphicsBitmap::GraphicsBitmap(const wxBitmap& bitmap)
 		:GraphicsBitmap(bitmap.ConvertToImage())
 	{
+	}
+	GraphicsBitmap::GraphicsBitmap(const ScriptValue& value)
+	{
+		HIMG image = nullptr;
+		if (GetGrapchicsAPI()->vUnWrapImage(ToSciterScriptValue(value.GetNativeValue()), &image))
+		{
+			Acquire(FromSciterImage(image));
+		}
 	}
 
 	bool GraphicsBitmap::CreateFromPixmap(const wxSize& size, const char* pixmapData, bool withAlpha)
@@ -168,5 +177,14 @@ namespace KxSciter
 	{
 		wxImage image = ConvertToImage();
 		return wxBitmap(image, image.HasAlpha() ? 32 : -1);
+	}
+	ScriptValue GraphicsBitmap::ToScriptValue() const
+	{
+		ScriptValue value;
+		if (GetGrapchicsAPI()->vWrapImage(ToSciterImage(m_Handle), ToSciterScriptValue(value.GetNativeValue())) == GRAPHIN_OK)
+		{
+			return value;
+		}
+		return {};
 	}
 }

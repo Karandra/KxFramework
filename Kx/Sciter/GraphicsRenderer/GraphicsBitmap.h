@@ -3,7 +3,8 @@
 
 namespace KxSciter
 {
-	struct ImageHandle;
+	struct GraphicsBitmapHandle;
+	class ScriptValue;
 }
 
 namespace KxSciter
@@ -21,10 +22,10 @@ namespace KxSciter
 			};
 
 		private:
-			ImageHandle* m_Handle = nullptr;
+			GraphicsBitmapHandle* m_Handle = nullptr;
 
 		private:
-			void Acquire(ImageHandle* handle);
+			void Acquire(GraphicsBitmapHandle* handle);
 			void Release();
 
 			void CopyFrom(const GraphicsBitmap& other)
@@ -32,7 +33,7 @@ namespace KxSciter
 				Release();
 				Acquire(other.m_Handle);
 			}
-			void CopyFrom(ImageHandle* handle)
+			void CopyFrom(GraphicsBitmapHandle* handle)
 			{
 				Release();
 				Acquire(handle);
@@ -46,7 +47,7 @@ namespace KxSciter
 
 		public:
 			GraphicsBitmap() = default;
-			GraphicsBitmap(ImageHandle* handle)
+			GraphicsBitmap(GraphicsBitmapHandle* handle)
 			{
 				Acquire(handle);
 			}
@@ -69,6 +70,7 @@ namespace KxSciter
 			{
 				Load(stream);
 			}
+			GraphicsBitmap(const ScriptValue& value);
 			~GraphicsBitmap()
 			{
 				Release();
@@ -79,7 +81,7 @@ namespace KxSciter
 			{
 				return m_Handle != nullptr;
 			}
-			ImageHandle* GetHandle() const
+			GraphicsBitmapHandle* GetHandle() const
 			{
 				return m_Handle;
 			}
@@ -88,7 +90,7 @@ namespace KxSciter
 				Release();
 			}
 
-			bool AttachHandle(ImageHandle* handle)
+			bool AttachHandle(GraphicsBitmapHandle* handle)
 			{
 				if (!IsOk())
 				{
@@ -97,9 +99,9 @@ namespace KxSciter
 				}
 				return false;
 			}
-			ImageHandle* DetachHandle()
+			GraphicsBitmapHandle* DetachHandle()
 			{
-				ImageHandle* handle = m_Handle;
+				GraphicsBitmapHandle* handle = m_Handle;
 				m_Handle = nullptr;
 				return handle;
 			}
@@ -117,6 +119,7 @@ namespace KxSciter
 
 			wxImage ConvertToImage() const;
 			wxBitmap ConvertToBitmap() const;
+			ScriptValue ToScriptValue() const;
 
 		public:
 			GraphicsBitmap& operator=(const GraphicsBitmap& other)
@@ -129,7 +132,7 @@ namespace KxSciter
 				MoveFrom(other);
 				return *this;
 			}
-			GraphicsBitmap& operator=(ImageHandle* handle)
+			GraphicsBitmap& operator=(GraphicsBitmapHandle* handle)
 			{
 				CopyFrom(handle);
 				return *this;
