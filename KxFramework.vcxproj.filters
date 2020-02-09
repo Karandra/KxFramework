@@ -1228,7 +1228,7 @@
     <ClInclude Include="Kx\Sciter\ScriptValue.h">
       <Filter>Kx\Sciter</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\GraphicsRenderer\Image.h">
+    <ClInclude Include="Kx\Sciter\GraphicsRenderer\GraphicsBitmap.h">
       <Filter>Kx\Sciter\GraphicsRenderer</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1939,7 +1939,7 @@
     <ClCompile Include="Kx\Sciter\ScriptValue.cpp">
       <Filter>Kx\Sciter</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\GraphicsRenderer\Image.cpp">
+    <ClCompile Include="Kx\Sciter\GraphicsRenderer\GraphicsBitmap.cpp">
       <Filter>Kx\Sciter\GraphicsRenderer</Filter>
     </ClCompile>
   </ItemGroup>

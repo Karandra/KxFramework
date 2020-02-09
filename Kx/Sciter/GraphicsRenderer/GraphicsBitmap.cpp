@@ -1,5 +1,5 @@
 #include "KxStdAfx.h"
-#include "Image.h"
+#include "GraphicsBitmap.h"
 #include "Kx/Sciter/SciterAPI.h"
 #include "Kx/Sciter/Internal.h"
 
