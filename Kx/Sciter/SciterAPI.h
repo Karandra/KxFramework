@@ -8,7 +8,7 @@ namespace KxSciter
 	extern void* g_SciterLibrary;
 
 	ISciterAPI* GetSciterAPI();
-	SciterGraphicsAPI* GetSciterGrapchicsAPI();
-	SciterRequestAPI* GetSciterRequestAPI();
-	tiscript_native_interface* GetSciterSciptingAPI();
+	SciterGraphicsAPI* GetGrapchicsAPI();
+	SciterRequestAPI* GetRequestAPI();
+	tiscript_native_interface* GetSciptingAPI();
 }

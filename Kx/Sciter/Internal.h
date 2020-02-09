@@ -7,6 +7,8 @@ namespace KxSciter
 	struct NodeHandle;
 	struct ElementHandle;
 	struct ScriptNativeValue;
+
+	struct ImageHandle;
 }
 
 namespace KxSciter
@@ -22,7 +24,7 @@ namespace KxSciter
 		return reinterpret_cast<ElementHandle*>(handle);
 	}
 
-	inline HNODE ToSciterNode(void* handle)
+	inline HNODE ToSciterNode(NodeHandle* handle)
 	{
 		return reinterpret_cast<HNODE>(handle);
 	}
@@ -42,5 +44,14 @@ namespace KxSciter
 	inline ScriptNativeValue& FromSciterScriptValue(VALUE& value)
 	{
 		return *reinterpret_cast<ScriptNativeValue*>(&value);
+	}
+
+	inline HIMG ToSciterImage(ImageHandle* handle)
+	{
+		return reinterpret_cast<HIMG>(handle);
+	}
+	inline ImageHandle* FromSciterImage(HIMG handle)
+	{
+		return reinterpret_cast<ImageHandle*>(handle);
 	}
 }

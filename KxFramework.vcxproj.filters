@@ -262,6 +262,9 @@
     <Filter Include="Kx\Sciter\Widgets">
       <UniqueIdentifier>{7a7710b7-f10d-4cdd-aab6-3deb50927777}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\Sciter\GraphicsRenderer">
+      <UniqueIdentifier>{d79eb026-949d-4566-8c1b-6a403a1f46f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -1225,6 +1228,9 @@
     <ClInclude Include="Kx\Sciter\ScriptValue.h">
       <Filter>Kx\Sciter</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Sciter\GraphicsRenderer\Image.h">
+      <Filter>Kx\Sciter\GraphicsRenderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1932,6 +1938,9 @@
     </ClCompile>
     <ClCompile Include="Kx\Sciter\ScriptValue.cpp">
       <Filter>Kx\Sciter</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Sciter\GraphicsRenderer\Image.cpp">
+      <Filter>Kx\Sciter\GraphicsRenderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

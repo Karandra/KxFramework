@@ -30,7 +30,7 @@ namespace KxSciter
 		return {};
 	}
 
-	NODE_TYPE DoGetNodeType(void* handle)
+	NODE_TYPE DoGetNodeType(NodeHandle* handle)
 	{
 		UINT nodeType = std::numeric_limits<UINT>::max();
 		GetSciterAPI()->SciterNodeType(ToSciterNode(handle), &nodeType);

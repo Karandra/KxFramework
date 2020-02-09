@@ -46,9 +46,18 @@ namespace KxSciter
 		{
 			m_Element.SetStyleAttribute("width", size.GetWidth(), SizeUnit::dip);
 		}
+		else
+		{
+			m_Element.RemoveStyleAttribute("width");
+		}
+
 		if (size.GetHeight() != wxDefaultCoord)
 		{
 			m_Element.SetStyleAttribute("height", size.GetHeight(), SizeUnit::dip);
+		}
+		else
+		{
+			m_Element.RemoveStyleAttribute("height");
 		}
 	}
 	void Widget::SetPosition(const wxPoint& pos)
@@ -58,9 +67,18 @@ namespace KxSciter
 		{
 			m_Element.SetStyleAttribute("left", pos.x, SizeUnit::dip);
 		}
+		else
+		{
+			m_Element.RemoveStyleAttribute("left");
+		}
+
 		if (pos.y != wxDefaultCoord)
 		{
 			m_Element.SetStyleAttribute("top", pos.y, SizeUnit::dip);
+		}
+		else
+		{
+			m_Element.RemoveStyleAttribute("top");
 		}
 	}
 }

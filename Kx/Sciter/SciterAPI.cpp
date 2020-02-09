@@ -31,15 +31,15 @@ namespace KxSciter
 		}
 		return g_SciterAPI;
 	}
-	SciterGraphicsAPI* GetSciterGrapchicsAPI()
+	SciterGraphicsAPI* GetGrapchicsAPI()
 	{
 		return GetSciterAPI()->GetSciterGraphicsAPI();
 	}
-	SciterRequestAPI* GetSciterRequestAPI()
+	SciterRequestAPI* GetRequestAPI()
 	{
 		return GetSciterAPI()->GetSciterRequestAPI();
 	}
-	tiscript_native_interface* GetSciterSciptingAPI()
+	tiscript_native_interface* GetSciptingAPI()
 	{
 		return GetSciterAPI()->TIScriptAPI();
 	}

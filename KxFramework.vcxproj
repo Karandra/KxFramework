@@ -509,6 +509,7 @@
     <ClInclude Include="Kx\Sciter\Events\ScrollEvent.h" />
     <ClInclude Include="Kx\Sciter\Events\SizeEvent.h" />
     <ClInclude Include="Kx\Sciter\Events\TimerEvent.h" />
+    <ClInclude Include="Kx\Sciter\GraphicsRenderer\Image.h" />
     <ClInclude Include="Kx\Sciter\Internal.h" />
     <ClInclude Include="Kx\Sciter\IWindowRenderer.h" />
     <ClInclude Include="Kx\Sciter\Renderers\DirectX.h" />
@@ -804,6 +805,7 @@
     <ClCompile Include="Kx\Sciter\Element.cpp" />
     <ClCompile Include="Kx\Sciter\EventDispatcher.cpp" />
     <ClCompile Include="Kx\Sciter\Events\Event.cpp" />
+    <ClCompile Include="Kx\Sciter\GraphicsRenderer\Image.cpp" />
     <ClCompile Include="Kx\Sciter\Host.cpp" />
     <ClCompile Include="Kx\Sciter\Internal.cpp" />
     <ClCompile Include="Kx\Sciter\IWindowRenderer.cpp" />
