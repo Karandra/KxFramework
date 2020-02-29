@@ -1,18 +1,20 @@
 #pragma once
 #include "Common.h"
+#include "Utility/HandleWrapper.h"
 #include <utility>
 
 namespace KxSciter
 {
 	class Element;
-
 	struct NodeHandle;
 }
 
 namespace KxSciter
 {
-	class KX_API Node final
+	class KX_API Node final: public HandleWrapper<Node, NodeHandle>
 	{
+		friend class HandleWrapper;
+
 		public:
 			static Node CreateTextNode(const wxString& value);
 			static Node CreateCommentNode(const wxString& value);
@@ -21,52 +23,25 @@ namespace KxSciter
 			NodeHandle* m_Handle = nullptr;
 
 		private:
-			void Acquire(NodeHandle* handle);
-			void Release();
-
-			void CopyFrom(const Node& other);
-			void CopyFrom(NodeHandle* handle)
-			{
-				Release();
-				Acquire(handle);
-			}
-			void MoveFrom(Node& other);
+			bool DoAcquire(NodeHandle* handle);
+			void DoRelease();
 
 		public:
 			Node() = default;
 			Node(NodeHandle* handle)
+				:HandleWrapper(handle)
 			{
-				Acquire(handle);
 			}
 			Node(const Node& other)
+				:HandleWrapper(other)
 			{
-				*this = other;
 			}
 			Node(Node&& other)
+				:HandleWrapper(std::move(other))
 			{
-				*this = std::move(other);
-			}
-			~Node()
-			{
-				Release();
 			}
 
 		public:
-			bool IsOk() const
-			{
-				return m_Handle != nullptr;
-			}
-			NodeHandle* GetHandle() const
-			{
-				return m_Handle;
-			}
-			void MakeNull()
-			{
-				Release();
-			}
-
-			bool AttachHandle(NodeHandle* handle);
-			NodeHandle* DetachHandle();
 			bool Detach();
 			bool Remove();
 
@@ -113,24 +88,6 @@ namespace KxSciter
 			{
 				CopyFrom(handle);
 				return *this;
-			}
-
-			bool operator==(const Node& other) const
-			{
-				return m_Handle == other.m_Handle;
-			}
-			bool operator!=(const Node& other) const
-			{
-				return !(*this == other);
-			}
-
-			explicit operator bool() const
-			{
-				return IsOk();
-			}
-			bool operator!() const
-			{
-				return !IsOk();
 			}
 	};
 }

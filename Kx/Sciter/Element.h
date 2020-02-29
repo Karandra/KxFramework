@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "ScriptValue.h"
+#include "Utility/HandleWrapper.h"
 #include <KxFramework/KxColor.h>
 #include <utility>
 
@@ -15,8 +16,10 @@ namespace KxSciter
 
 namespace KxSciter
 {
-	class KX_API Element final
+	class KX_API Element final: public HandleWrapper<Element, ElementHandle>
 	{
+		friend class HandleWrapper;
+
 		public:
 			using TOnElement = std::function<bool(Element)>;
 
@@ -24,58 +27,28 @@ namespace KxSciter
 			static Element Create(const wxString& tagName, const wxString& value = {});
 
 		private:
-			ElementHandle* m_Handle = nullptr;
-
-		private:
-			void Acquire(ElementHandle* handle);
-			void Release();
-
-			void CopyFrom(const Element& other);
-			void CopyFrom(ElementHandle* handle)
-			{
-				Release();
-				Acquire(handle);
-			}
-			void MoveFrom(Element& other);
+			bool DoAcquire(ElementHandle* handle);
+			void DoRelease();
 
 		public:
 			Element() = default;
 			Element(ElementHandle* handle)
+				:HandleWrapper(handle)
 			{
-				Acquire(handle);
 			}
 			Element(const Element& other)
+				:HandleWrapper(other)
 			{
-				CopyFrom(other);
 			}
 			Element(Element&& other)
+				:HandleWrapper(std::move(other))
 			{
-				MoveFrom(other);
-			}
-			~Element()
-			{
-				Release();
 			}
 			
 		public:
-			bool IsOk() const
-			{
-				return m_Handle != nullptr;
-			}
-			void MakeNull()
-			{
-				Release();
-			}
-			
-			ElementHandle* GetHandle() const
-			{
-				return m_Handle;
-			}
 			ElementUID* GetUID() const;
 			Host* GetHost() const;
 
-			bool AttachHandle(ElementHandle* handle);
-			ElementHandle* DetachHandle();
 			bool Detach();
 			bool Remove();
 
@@ -266,24 +239,6 @@ namespace KxSciter
 			{
 				CopyFrom(handle);
 				return *this;
-			}
-			
-			bool operator==(const Element& other) const
-			{
-				return m_Handle == other.m_Handle;
-			}
-			bool operator!=(const Element& other) const
-			{
-				return !(*this == other);
-			}
-
-			explicit operator bool() const
-			{
-				return IsOk();
-			}
-			bool operator!() const
-			{
-				return !IsOk();
 			}
 	};
 }

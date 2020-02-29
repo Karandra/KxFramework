@@ -54,53 +54,15 @@ namespace KxSciter
 		return DoCreateTextNode(GetSciterAPI()->SciterCreateCommentNode, value);
 	}
 
-	void Node::Acquire(NodeHandle* handle)
+	bool Node::DoAcquire(NodeHandle* handle)
 	{
-		if (GetSciterAPI()->SciterNodeAddRef(ToSciterNode(handle)) == SCDOM_OK)
-		{
-			m_Handle = handle;
-		}
-		else
-		{
-			m_Handle = nullptr;
-		}
+		return GetSciterAPI()->SciterNodeAddRef(ToSciterNode(handle)) == SCDOM_OK;
 	}
-	void Node::Release()
+	void Node::DoRelease()
 	{
-		if (m_Handle)
-		{
-			GetSciterAPI()->SciterNodeRelease(ToSciterNode(m_Handle));
-			m_Handle = nullptr;
-		}
+		GetSciterAPI()->SciterNodeRelease(ToSciterNode(m_Handle));
 	}
 
-	void Node::CopyFrom(const Node& other)
-	{
-		Release();
-		Acquire(other.m_Handle);
-	}
-	void Node::MoveFrom(Node& other)
-	{
-		Release();
-		m_Handle = other.m_Handle;
-		other.m_Handle = nullptr;
-	}
-
-	bool Node::AttachHandle(NodeHandle* handle)
-	{
-		if (!IsOk())
-		{
-			m_Handle = handle;
-			return true;
-		}
-		return false;
-	}
-	NodeHandle* Node::DetachHandle()
-	{
-		NodeHandle* handle = m_Handle;
-		m_Handle = nullptr;
-		return handle;
-	}
 	bool Node::Detach()
 	{
 		return GetSciterAPI()->SciterNodeRemove(ToSciterNode(m_Handle), FALSE) == SCDOM_OK;

@@ -81,36 +81,13 @@ namespace KxSciter
 		return node;
 	}
 
-	void Element::Acquire(ElementHandle* handle)
+	bool Element::DoAcquire(ElementHandle* handle)
 	{
-		if (GetSciterAPI()->Sciter_UseElement(ToSciterElement(handle)) == SCDOM_OK)
-		{
-			m_Handle = handle;
-		}
-		else
-		{
-			m_Handle = nullptr;
-		}
+		return GetSciterAPI()->Sciter_UseElement(ToSciterElement(handle)) == SCDOM_OK;
 	}
-	void Element::Release()
+	void Element::DoRelease()
 	{
-		if (m_Handle)
-		{
-			GetSciterAPI()->Sciter_UnuseElement(ToSciterElement(m_Handle));
-			m_Handle = nullptr;
-		}
-	}
-
-	void Element::CopyFrom(const Element& other)
-	{
-		Release();
-		Acquire(other.m_Handle);
-	}
-	void Element::MoveFrom(Element& other)
-	{
-		Release();
-		m_Handle = other.m_Handle;
-		other.m_Handle = nullptr;
+		GetSciterAPI()->Sciter_UnuseElement(ToSciterElement(m_Handle));
 	}
 
 	ElementUID* Element::GetUID() const
@@ -130,21 +107,6 @@ namespace KxSciter
 		return nullptr;
 	}
 
-	bool Element::AttachHandle(ElementHandle* handle)
-	{
-		if (!IsOk())
-		{
-			m_Handle = handle;
-			return true;
-		}
-		return false;
-	}
-	ElementHandle* Element::DetachHandle()
-	{
-		ElementHandle* handle = m_Handle;
-		m_Handle = nullptr;
-		return handle;
-	}
 	bool Element::Detach()
 	{
 		return GetSciterAPI()->SciterDetachElement(ToSciterElement(m_Handle)) == SCDOM_OK;
@@ -831,7 +793,7 @@ namespace KxSciter
 
 	bool Element::SetStyleFont(const wxFont& font)
 	{
-		if (IsOk())
+		if (!IsNull())
 		{
 			auto MapFamily = [&]() -> wxString
 			{
