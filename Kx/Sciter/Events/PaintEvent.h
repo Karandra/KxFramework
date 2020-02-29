@@ -3,6 +3,12 @@
 
 namespace KxSciter
 {
+	class GraphicsContext;
+	struct GraphicsContextHandle;
+}
+
+namespace KxSciter
+{
 	class KX_API PaintEvent: public Event
 	{
 		public:
@@ -12,7 +18,7 @@ namespace KxSciter
 			KxEVENT_MEMBER(PaintEvent, PaintContent);
 
 		protected:
-			void* m_DC = nullptr;
+			GraphicsContextHandle* m_GraphicsContext = nullptr;
 			wxRect m_Rect;
 
 		public:
@@ -27,14 +33,8 @@ namespace KxSciter
 				return new PaintEvent(*this);
 			}
 
-			void* GetDC() const
-			{
-				return m_DC;
-			}
-			void SetDC(void* dc)
-			{
-				m_DC = dc;
-			}
+			GraphicsContext GetGraphicsContext() const;
+			void SetGraphicsContext(GraphicsContextHandle* handle);
 
 			wxRect GetRect() const
 			{

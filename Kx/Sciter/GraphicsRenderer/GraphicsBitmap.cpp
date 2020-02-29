@@ -1,5 +1,6 @@
 #include "KxStdAfx.h"
 #include "GraphicsBitmap.h"
+#include "GraphicsContext.h"
 #include "Kx/Sciter/ScriptValue.h"
 #include "Kx/Sciter/SciterAPI.h"
 #include "Kx/Sciter/Internal.h"
@@ -29,10 +30,6 @@ namespace KxSciter
 		};
 		return std::nullopt;
 	}
-	SC_COLOR CreateSciterColor(const KxColor& color)
-	{
-		return GetGrapchicsAPI()->RGBA(color.GetR(), color.GetG(), color.GetB(), color.GetA());
-	}
 	bool DoGetImageInfo(HIMG image, wxSize& size, bool& usesAlpha)
 	{
 		UINT width = 0;
@@ -51,25 +48,13 @@ namespace KxSciter
 
 namespace KxSciter
 {
-	void GraphicsBitmap::Acquire(GraphicsBitmapHandle* handle)
+	bool GraphicsBitmap::DoAcquire(GraphicsBitmapHandle* handle)
 	{
-		Release();
-		if (GetGrapchicsAPI()->imageAddRef(ToSciterImage(handle)) == GRAPHIN_OK)
-		{
-			m_Handle = handle;
-		}
-		else
-		{
-			m_Handle = nullptr;
-		}
+		return GetGrapchicsAPI()->imageAddRef(ToSciterImage(handle)) == GRAPHIN_OK;
 	}
-	void GraphicsBitmap::Release()
+	void GraphicsBitmap::DoRelease()
 	{
-		if (m_Handle)
-		{
-			GetGrapchicsAPI()->imageRelease(ToSciterImage(m_Handle));
-			m_Handle = nullptr;
-		}
+		GetGrapchicsAPI()->imageRelease(ToSciterImage(m_Handle));
 	}
 
 	GraphicsBitmap::GraphicsBitmap(const wxSize& size, bool withAlpha)
@@ -130,7 +115,7 @@ namespace KxSciter
 	bool GraphicsBitmap::Save(wxOutputStream& stream, Format format, int quality) const
 	{
 		auto encoding = MapImageEncoding(format);
-		if (IsOk() && encoding)
+		if (!IsNull() && encoding)
 		{
 			return GetGrapchicsAPI()->imageSave(ToSciterImage(m_Handle), [](void* context, const BYTE* data, UINT size) -> BOOL
 			{
@@ -186,5 +171,33 @@ namespace KxSciter
 			return value;
 		}
 		return {};
+	}
+
+	void GraphicsBitmap::DrawOn(TDrawOnFunc func)
+	{
+		class CallContext
+		{
+			private:
+				TDrawOnFunc& m_Func;
+
+			public:
+				CallContext(TDrawOnFunc& func)
+					:m_Func(func)
+				{
+				}
+
+			public:
+				void Execute(GraphicsContextHandle* handle, const wxSize& size)
+				{
+					GraphicsContext graphicsContext(handle);
+					std::invoke(m_Func, graphicsContext, size);
+				}
+		};
+
+		CallContext context(func);
+		GetGrapchicsAPI()->imagePaint(ToSciterImage(m_Handle), [](void* context, HGFX handle, UINT width, UINT height)
+		{
+			reinterpret_cast<CallContext*>(context)->Execute(FromSciterGraphicsContext(handle), wxSize(width, height));
+		}, &context);
 	}
 }

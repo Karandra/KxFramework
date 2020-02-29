@@ -510,6 +510,9 @@
     <ClInclude Include="Kx\Sciter\Events\SizeEvent.h" />
     <ClInclude Include="Kx\Sciter\Events\TimerEvent.h" />
     <ClInclude Include="Kx\Sciter\GraphicsRenderer\GraphicsBitmap.h" />
+    <ClInclude Include="Kx\Sciter\GraphicsRenderer\GraphicsContext.h" />
+    <ClInclude Include="Kx\Sciter\GraphicsRenderer\GraphicsPath.h" />
+    <ClInclude Include="Kx\Sciter\GraphicsRenderer\GraphicsText.h" />
     <ClInclude Include="Kx\Sciter\Internal.h" />
     <ClInclude Include="Kx\Sciter\IWindowRenderer.h" />
     <ClInclude Include="Kx\Sciter\Renderers\DirectX.h" />
@@ -518,6 +521,7 @@
     <ClInclude Include="Kx\Sciter\Host.h" />
     <ClInclude Include="Kx\Sciter\Node.h" />
     <ClInclude Include="Kx\Sciter\ScriptValue.h" />
+    <ClInclude Include="Kx\Sciter\Utility\HandleWrapper.h" />
     <ClInclude Include="Kx\Sciter\Widget.h" />
     <ClInclude Include="Kx\Sciter\WidgetFactory.h" />
     <ClInclude Include="Kx\Sciter\WrapperWindow.h" />
@@ -805,7 +809,11 @@
     <ClCompile Include="Kx\Sciter\Element.cpp" />
     <ClCompile Include="Kx\Sciter\EventDispatcher.cpp" />
     <ClCompile Include="Kx\Sciter\Events\Event.cpp" />
+    <ClCompile Include="Kx\Sciter\Events\PaintEvent.cpp" />
     <ClCompile Include="Kx\Sciter\GraphicsRenderer\GraphicsBitmap.cpp" />
+    <ClCompile Include="Kx\Sciter\GraphicsRenderer\GraphicsContext.cpp" />
+    <ClCompile Include="Kx\Sciter\GraphicsRenderer\GraphicsPath.cpp" />
+    <ClCompile Include="Kx\Sciter\GraphicsRenderer\GraphicsText.cpp" />
     <ClCompile Include="Kx\Sciter\Host.cpp" />
     <ClCompile Include="Kx\Sciter\Internal.cpp" />
     <ClCompile Include="Kx\Sciter\IWindowRenderer.cpp" />

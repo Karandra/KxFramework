@@ -265,6 +265,9 @@
     <Filter Include="Kx\Sciter\GraphicsRenderer">
       <UniqueIdentifier>{d79eb026-949d-4566-8c1b-6a403a1f46f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\Sciter\Utility">
+      <UniqueIdentifier>{8e318e71-b1be-4b4e-9f7b-d62888b30ea5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -1231,6 +1234,18 @@
     <ClInclude Include="Kx\Sciter\GraphicsRenderer\GraphicsBitmap.h">
       <Filter>Kx\Sciter\GraphicsRenderer</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Sciter\GraphicsRenderer\GraphicsText.h">
+      <Filter>Kx\Sciter\GraphicsRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Sciter\Utility\HandleWrapper.h">
+      <Filter>Kx\Sciter\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Sciter\GraphicsRenderer\GraphicsPath.h">
+      <Filter>Kx\Sciter\GraphicsRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Sciter\GraphicsRenderer\GraphicsContext.h">
+      <Filter>Kx\Sciter\GraphicsRenderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1941,6 +1956,18 @@
     </ClCompile>
     <ClCompile Include="Kx\Sciter\GraphicsRenderer\GraphicsBitmap.cpp">
       <Filter>Kx\Sciter\GraphicsRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Sciter\GraphicsRenderer\GraphicsText.cpp">
+      <Filter>Kx\Sciter\GraphicsRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Sciter\GraphicsRenderer\GraphicsPath.cpp">
+      <Filter>Kx\Sciter\GraphicsRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Sciter\GraphicsRenderer\GraphicsContext.cpp">
+      <Filter>Kx\Sciter\GraphicsRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Sciter\Events\PaintEvent.cpp">
+      <Filter>Kx\Sciter\Events</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

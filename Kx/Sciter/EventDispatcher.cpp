@@ -478,7 +478,7 @@ namespace KxSciter
 		if (event.GetEventType() != wxEVT_NULL)
 		{
 			event.SetElement(element);
-			event.SetDC(parameters.gfx);
+			event.SetGraphicsContext(FromSciterGraphicsContext(parameters.gfx));
 			event.SetRect(KxUtility::CopyRECTToRect(parameters.area));
 
 			return ProcessEvent(event);
