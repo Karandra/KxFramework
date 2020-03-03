@@ -13,7 +13,7 @@ namespace KxSciter
 {
 	class KX_API GraphicsBitmap final: public HandleWrapper<GraphicsBitmap, GraphicsBitmapHandle>
 	{
-		friend class HandleWrapper;
+		friend class HandleWrapper<GraphicsBitmap, GraphicsBitmapHandle>;
 		
 		public:
 			using TDrawOnFunc = std::function<void(GraphicsContext&, const wxSize& size)>;

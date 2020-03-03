@@ -12,7 +12,7 @@ namespace KxSciter
 {
 	class KX_API GraphicsPath final: public HandleWrapper<GraphicsPath, GraphicsPathHandle>
 	{
-		friend class HandleWrapper;
+		friend class HandleWrapper<GraphicsPath, GraphicsPathHandle>;
 		
 		private:
 			GraphicsPathHandle* m_Handle = nullptr;

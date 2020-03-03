@@ -50,7 +50,7 @@ namespace KxSciter
 {
 	class KX_API GraphicsContext final: public HandleWrapper<GraphicsContext, GraphicsContextHandle>
 	{
-		friend class HandleWrapper;
+		friend class HandleWrapper<GraphicsContext, GraphicsContextHandle>;
 		
 		private:
 			GraphicsContextHandle* m_Handle = nullptr;

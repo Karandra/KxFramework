@@ -13,7 +13,7 @@ namespace KxSciter
 {
 	class KX_API Node final: public HandleWrapper<Node, NodeHandle>
 	{
-		friend class HandleWrapper;
+		friend class HandleWrapper<Node, NodeHandle>;
 
 		public:
 			static Node CreateTextNode(const wxString& value);

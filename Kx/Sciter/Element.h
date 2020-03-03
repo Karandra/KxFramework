@@ -18,7 +18,7 @@ namespace KxSciter
 {
 	class KX_API Element final: public HandleWrapper<Element, ElementHandle>
 	{
-		friend class HandleWrapper;
+		friend class HandleWrapper<Element, ElementHandle>;
 
 		public:
 			using TOnElement = std::function<bool(Element)>;

@@ -13,7 +13,7 @@ namespace KxSciter
 {
 	class KX_API GraphicsText final: public HandleWrapper<GraphicsText, GraphicsTextHandle>
 	{
-		friend class HandleWrapper;
+		friend class HandleWrapper<GraphicsText, GraphicsTextHandle>;
 		
 		private:
 			GraphicsTextHandle* m_Handle = nullptr;
