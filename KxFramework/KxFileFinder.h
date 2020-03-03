@@ -7,6 +7,7 @@ class KX_API KxFileFinder: public KxIFileFinder
 {
 	public:
 		static bool IsDirectoryEmpty(const wxString& directoryPath);
+		static size_t GetItemCountInDirectory(const wxString& directoryPath);
 
 	private:
 		wxEvtHandler* m_EvtHandler = nullptr;
@@ -54,5 +55,15 @@ class KX_API KxFileFinder: public KxIFileFinder
 		wxString GetSource() const
 		{
 			return ExtractSourceFromSearchQuery(m_SearchQuery);
+		}
+
+	public:
+		explicit operator bool() const
+		{
+			return IsOK();
+		}
+		bool operator!() const
+		{
+			return !IsOK();
 		}
 };

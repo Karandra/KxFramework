@@ -6,6 +6,8 @@
 
 namespace
 {
+	constexpr wxChar g_LongPathPrefix[] = wxS("\\\\?\\");
+
 	HANDLE CallFindFirstFile(const wxString& query, WIN32_FIND_DATAW& fileInfo, bool isCaseSensitive)
 	{
 		const DWORD searchFlags = FIND_FIRST_EX_LARGE_FETCH|(isCaseSensitive ? FIND_FIRST_EX_CASE_SENSITIVE : 0);
@@ -42,6 +44,32 @@ bool KxFileFinder::IsDirectoryEmpty(const wxString& directoryPath)
 		}
 	}
 	return false;
+}
+size_t KxFileFinder::GetItemCountInDirectory(const wxString& directoryPath)
+{
+	WIN32_FIND_DATAW fileInfo = {};
+
+	size_t count = 0;
+	auto Increment = [&]()
+	{
+		wxStringView name = fileInfo.cFileName;
+		if (name != wxS("..") && name != wxS("."))
+		{
+			count++;
+		}
+	};
+	
+	HANDLE handle = CallFindFirstFile(g_LongPathPrefix + Normalize(directoryPath, true, true), fileInfo, true);
+	if (handle != INVALID_HANDLE_VALUE)
+	{
+		Increment();
+		while (CallFindNextFile(handle, fileInfo))
+		{
+			Increment();
+		}
+		CallFindClose(handle);
+	}
+	return count;
 }
 
 bool KxFileFinder::OnFound(const WIN32_FIND_DATAW& fileInfo)
@@ -91,7 +119,7 @@ bool KxFileFinder::IsOK() const
 bool KxFileFinder::Run()
 {
 	WIN32_FIND_DATAW fileInfo = {0};
-	HANDLE searchHandle = CallFindFirstFile(wxS("\\\\?\\") + m_SearchQuery, fileInfo, m_CaseSensitive);
+	HANDLE searchHandle = CallFindFirstFile(g_LongPathPrefix + m_SearchQuery, fileInfo, m_CaseSensitive);
 	if (searchHandle != INVALID_HANDLE_VALUE)
 	{
 		if (OnFound(fileInfo))
