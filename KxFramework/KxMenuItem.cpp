@@ -47,7 +47,9 @@ void KxMenuItem::OnRemovedFromMenu()
 
 void KxMenuItem::CheckIfShouldOwnerDraw()
 {
-	if (!IsOwnerDrawn())
+	static const bool allowOwnerDraw = wxSystemOptions::GetOptionInt("KxMenu::AllowOwnerDraw") != 0;
+
+	if (!IsOwnerDrawn() && allowOwnerDraw)
 	{
 		wxWindow* window = GetWindow();
 		if (!window)
