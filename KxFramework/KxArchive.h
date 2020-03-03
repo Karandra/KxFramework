@@ -94,6 +94,19 @@ namespace KxArchive
 				return m_Size == 0;
 			}
 
+			FileIndex operator[](size_t index) const
+			{
+				return data()[index];
+			}
+			FileIndex front() const
+			{
+				return *data();
+			}
+			FileIndex back() const
+			{
+				return data()[size() - 1];
+			}
+
 			FileIndexVector CopyToVector() const
 			{
 				const FileIndex* data = this->data();
