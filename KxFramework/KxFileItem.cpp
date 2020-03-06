@@ -48,8 +48,11 @@ void KxFileItem::SetTime(const FILETIME& fileTime, wxDateTime& fileTimeWx) const
 	if (fileTime.dwHighDateTime != 0 && fileTime.dwLowDateTime != 0)
 	{
 		SYSTEMTIME systemTime = {0};
-		::FileTimeToSystemTime(&fileTime, &systemTime);
-		fileTimeWx.SetFromMSWSysTime(systemTime);
+		SYSTEMTIME localTime = {0};
+		if (::FileTimeToSystemTime(&fileTime, &systemTime) && ::SystemTimeToTzSpecificLocalTime(nullptr, &systemTime, &localTime))
+		{
+			fileTimeWx.SetFromMSWSysTime(localTime);
+		}
 	}
 }
 bool KxFileItem::DoUpdateInfo(const wxString& fullPath)

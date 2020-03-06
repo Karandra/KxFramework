@@ -467,10 +467,11 @@ bool KxFileStream::SetFileTime(const wxDateTime& creationTime, const wxDateTime&
 			FILETIME fileTime = {0, 0};
 			if (dateTime.IsValid())
 			{
+				SYSTEMTIME localTime = {};
 				SYSTEMTIME systemTime = {};
-				dateTime.GetAsMSWSysTime(&systemTime);
+				dateTime.GetAsMSWSysTime(&localTime);
 
-				if (::SystemTimeToFileTime(&systemTime, &fileTime))
+				if (::TzSpecificLocalTimeToSystemTime(nullptr, &localTime, &systemTime) && ::SystemTimeToFileTime(&systemTime, &fileTime))
 				{
 					return fileTime;
 				}
