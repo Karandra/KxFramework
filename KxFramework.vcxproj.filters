@@ -268,6 +268,9 @@
     <Filter Include="Kx\Sciter\Utility">
       <UniqueIdentifier>{8e318e71-b1be-4b4e-9f7b-d62888b30ea5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\FileSystem">
+      <UniqueIdentifier>{a95e1a0b-7728-4fee-bdea-a3a34c440c70}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -1246,6 +1249,18 @@
     <ClInclude Include="Kx\Sciter\GraphicsRenderer\GraphicsContext.h">
       <Filter>Kx\Sciter\GraphicsRenderer</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\FileSystem.hpp">
+      <Filter>Kx</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\FileSystem\FSPath.h">
+      <Filter>Kx\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\FileSystem\Common.h">
+      <Filter>Kx\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\FileSystem\NamespacePrefix.h">
+      <Filter>Kx\FileSystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1968,6 +1983,12 @@
     </ClCompile>
     <ClCompile Include="Kx\Sciter\Events\PaintEvent.cpp">
       <Filter>Kx\Sciter\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\FileSystem\FSPath.cpp">
+      <Filter>Kx\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\FileSystem\Common.cpp">
+      <Filter>Kx\FileSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -490,6 +490,10 @@
     <ClInclude Include="Kx\EventSystem\Events\IndirectCallEvent.h" />
     <ClInclude Include="Kx\EventSystem\Events\NotifyEvent.h" />
     <ClInclude Include="Kx\EventSystem\EvtHandler.h" />
+    <ClInclude Include="Kx\FileSystem.hpp" />
+    <ClInclude Include="Kx\FileSystem\Common.h" />
+    <ClInclude Include="Kx\FileSystem\FSPath.h" />
+    <ClInclude Include="Kx\FileSystem\NamespacePrefix.h" />
     <ClInclude Include="Kx\RTTI.hpp" />
     <ClInclude Include="Kx\RTTI\Common.h" />
     <ClInclude Include="Kx\RTTI\QueryInterface.h" />
@@ -804,6 +808,8 @@
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp" />
     <ClCompile Include="Kx\EventSystem\EventBuilder.cpp" />
     <ClCompile Include="Kx\EventSystem\EventHandlerStack.cpp" />
+    <ClCompile Include="Kx\FileSystem\Common.cpp" />
+    <ClCompile Include="Kx\FileSystem\FSPath.cpp" />
     <ClCompile Include="Kx\Sciter\Common.cpp" />
     <ClCompile Include="Kx\Sciter\Controls\Label.cpp" />
     <ClCompile Include="Kx\Sciter\Element.cpp" />
