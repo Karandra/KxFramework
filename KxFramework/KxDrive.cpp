@@ -1,129 +1,219 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxDrive.h"
-#include "KxFramework/KxFile.h"
+#include "KxFramework/KxFileStream.h"
+#include <Kx/FileSystem/FSPath.h>
 
-bool KxDrive::IsExist(char driveLetter)
+namespace
 {
-	wxString drivePath = ToDrivePath(driveLetter);
-	return driveLetter != ms_InvalidDrive && ::GetDriveTypeW(drivePath.wc_str()) != DRIVE_NO_ROOT_DIR;
+	constexpr char g_InvalidDrive = '\255';
 }
 
-KxDrive::DrivesArray KxDrive::Enumerate()
+void KxDrive::AssignFromChar(const wxUniChar& value)
 {
-	DrivesArray list;
+	if (!value.GetAsChar(&m_Drive))
+	{
+		m_Drive = g_InvalidDrive;
+	}
+}
+void KxDrive::AssignFromIndex(int index)
+{
+	m_Drive = g_InvalidDrive;
+	if (index >= 0 && index <= 26)
+	{
+		AssignFromChar(index + 'A');
+	}
+}
+
+KxDrive::Vector KxDrive::Enumerate()
+{
+	Vector drives;
 	DWORD length = ::GetLogicalDriveStringsW(0, nullptr);
 	if (length != 0)
 	{
-		LPWSTR string = new WCHAR[length];
-		length = ::GetLogicalDriveStringsW(length, string);
+		wxString string;
+		length = ::GetLogicalDriveStringsW(length, wxStringBuffer(string, length));
 
-		for (size_t i = 0; i <= length; i = i+sizeof(WCHAR)+2)
+		constexpr int itemsPerArray = 4;
+		drives.reserve(length / itemsPerArray);
+		for (size_t i = 0; i <= length; i += itemsPerArray)
 		{
-			list.push_back(KxDrive((int)i));
-			#if 0
-			wxString drive(string+i);
-			if (!drive.IsEmpty())
-			{
-				drive.Truncate(2);
-				list.push_back(KxDrive(drive));
-			}
-			#endif
+			drives.emplace_back(FromIndex(i));
 		}
-		delete[] string;
 	}
-	return list;
+	return drives;
 }
 
-KxDrive::KxDrive(const KxFile& filePath)
+bool KxDrive::IsValid() const
 {
-	FromString(filePath.GetDrive());
+	return m_Drive >= 'A' && m_Drive <= 'Z';
+}
+bool KxDrive::DoesExist() const
+{
+	if (IsValid())
+	{
+		wxString path = GetPath();
+		return ::GetDriveTypeW(path.wc_str()) != DRIVE_NO_ROOT_DIR;
+	}
+	return false;
 }
 
-int KxDrive::ToIndex() const
+wxString KxDrive::GetPath() const
 {
-	return m_Drive - 'A';
+	if (IsValid())
+	{
+		return wxString(m_Drive) + wxS(":\\");
+	}
+	return wxEmptyString;
 }
-KxDriveType KxDrive::GetType() const
+int KxDrive::GetIndex() const
 {
-	wxString drivePath = ToDrivePath(m_Drive);
-	return static_cast<KxDriveType>(::GetDriveTypeW(drivePath.wc_str()));
+	if (IsValid())
+	{
+		return m_Drive - 'A';
+	}
+	return -1;
 }
+char KxDrive::GetChar() const
+{
+	if (IsValid())
+	{
+		return m_Drive;
+	}
+	return g_InvalidDrive;
+}
+
 wxString KxDrive::GetLabel() const
 {
-	wxString drivePath = ToDrivePath(m_Drive);
-	wxString value;
-	const int maxLength = MAX_PATH + 1;
-	::GetVolumeInformationW(drivePath.wc_str(), wxStringBuffer(value, maxLength), maxLength, nullptr, nullptr, nullptr, nullptr, 0);
-	return value;
+	if (IsValid())
+	{
+		wxString path = GetPath();
+		wxString label;
+		const int maxLength = MAX_PATH + 1;
+		::GetVolumeInformationW(path.wc_str(), wxStringBuffer(label, maxLength), maxLength, nullptr, nullptr, nullptr, nullptr, 0);
+		return label;
+	}
+	return wxEmptyString;
 }
 bool KxDrive::SetLabel(const wxString& label)
 {
-	wxString drivePath = ToDrivePath(m_Drive);
-	return ::SetVolumeLabelW(drivePath.wc_str(), label.IsEmpty() ? nullptr : label.wc_str());
+	if (IsValid())
+	{
+		wxString path = GetPath();
+		return ::SetVolumeLabelW(path.wc_str(), label.IsEmpty() ? nullptr : label.wc_str());
+	}
+	return false;
+}
+
+KxDriveType KxDrive::GetType() const
+{
+	if (IsValid())
+	{
+		wxString path = GetPath();
+		return static_cast<KxDriveType>(::GetDriveTypeW(path.wc_str()));
+	}
+	return KxDriveType::Unknown;
 }
 wxString KxDrive::GetFileSystemName() const
 {
-	wxString drivePath = ToDrivePath(m_Drive);
-	wxString value;
-	const int maxLength = MAX_PATH + 1;
-	::GetVolumeInformationW(drivePath.wc_str(), nullptr, 0, nullptr, nullptr, nullptr, wxStringBuffer(value, maxLength), maxLength);
-	return value;
+	if (IsValid())
+	{
+		wxString path = GetPath();
+		wxString name;
+		const int maxLength = MAX_PATH + 1;
+		::GetVolumeInformationW(path.wc_str(), nullptr, 0, nullptr, nullptr, nullptr, wxStringBuffer(name, maxLength), maxLength);
+		return name;
+	}
+	return wxEmptyString;
 }
 uint32_t KxDrive::GetSerialNumber() const
 {
-	wxString drivePath = ToDrivePath(m_Drive);
-	DWORD value = 0;
-	::GetVolumeInformationW(drivePath.wc_str(), nullptr, 0, &value, nullptr, nullptr, nullptr, 0);
-	return value;
+	if (IsValid())
+	{
+		wxString path = GetPath();
+		DWORD serialNumber = 0;
+		::GetVolumeInformationW(path.wc_str(), nullptr, 0, &serialNumber, nullptr, nullptr, nullptr, 0);
+		return serialNumber;
+	}
+	return std::numeric_limits<uint32_t>::max();
+}
+
+KxDrive::DriveInfo KxDrive::GetInfo() const
+{
+	if (IsValid())
+	{
+		wxString path = GetPath();
+
+		DWORD fileSystemFlags = 0;
+		DWORD maximumComponentLength = 0;
+		::GetVolumeInformationW(path.wc_str(), nullptr, 0, nullptr, &maximumComponentLength, &fileSystemFlags, nullptr, 0);
+
+		DWORD bytesPerSector = 0;
+		DWORD sectorsPerCluster = 0;
+		DWORD numberOfFreeClusters = 0;
+		DWORD totalNumberOfClusters = 0;
+		::GetDiskFreeSpaceW(path.wc_str(), &sectorsPerCluster, &bytesPerSector, &numberOfFreeClusters, &totalNumberOfClusters);
+
+		DriveInfo driveInfo = {};
+		driveInfo.FileSystemFlags = fileSystemFlags;
+		driveInfo.SectorsPerCluster = sectorsPerCluster;
+		driveInfo.BytesPerSector = bytesPerSector;
+		driveInfo.NumberOfFreeClusters = numberOfFreeClusters;
+		driveInfo.TotalNumberOfClusters = totalNumberOfClusters;
+		driveInfo.LongFileNames = maximumComponentLength == 255;
+
+		return driveInfo;
+	}
+	return {};
 }
 wxFileOffset KxDrive::GetTotalSpace() const
 {
-	wxString drivePath = ToDrivePath(m_Drive);
-	ULARGE_INTEGER value;
-	::GetDiskFreeSpaceExW(drivePath.wc_str(), nullptr, &value, nullptr);
-	return value.QuadPart;
+	if (IsValid())
+	{
+		wxString path = GetPath();
+		ULARGE_INTEGER value = {};
+		::GetDiskFreeSpaceExW(path.wc_str(), nullptr, &value, nullptr);
+		return value.QuadPart;
+	}
+	return wxInvalidOffset;
 }
 wxFileOffset KxDrive::GetUsedSpace() const
 {
-	wxString drivePath = ToDrivePath(m_Drive);
+	if (IsValid())
+	{
+		wxString path = GetPath();
 
-	ULARGE_INTEGER total;
-	ULARGE_INTEGER free;
-	::GetDiskFreeSpaceExW(drivePath.wc_str(), nullptr, &total, nullptr);
-	::GetDiskFreeSpaceExW(drivePath.wc_str(), nullptr, nullptr, &free);
-	return total.QuadPart - free.QuadPart;
+		ULARGE_INTEGER total = {};
+		ULARGE_INTEGER free = {};
+		::GetDiskFreeSpaceExW(path.wc_str(), nullptr, &total, nullptr);
+		::GetDiskFreeSpaceExW(path.wc_str(), nullptr, nullptr, &free);
+		return total.QuadPart - free.QuadPart;
+	}
+	return wxInvalidOffset;
 }
 wxFileOffset KxDrive::GetFreeSpace() const
 {
-	wxString drivePath = ToDrivePath(m_Drive);
-	ULARGE_INTEGER value;
-	::GetDiskFreeSpaceExW(drivePath.wc_str(), nullptr, nullptr, &value);
-	return value.QuadPart;
-}
-KxDrive::DriveInfo KxDrive::GetInfo() const
-{
-	wxString drivePath = ToDrivePath(m_Drive);
-
-	DriveInfo info;
-	DWORD maximumComponentLength = 0;
-	::GetVolumeInformationW(drivePath.wc_str(), nullptr, 0, nullptr, &maximumComponentLength, &info.FileSystemFlags, nullptr, 0);
-	info.LongFileNames = maximumComponentLength == 255;
-	::GetDiskFreeSpaceW(drivePath.wc_str(), &info.SectorsPerCluster, &info.BytesPerSector, &info.NumberOfFreeClusters, &info.TotalNumberOfClusters);
-
-	return info;
-}
-bool KxDrive::Eject()
-{
-	bool ret = false;
-	wxString drivePath = wxS("\\\\.\\") + ToDrivePath(m_Drive);
-	HANDLE drive = ::CreateFileW(drivePath.wc_str(), GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE|FILE_SHARE_DELETE, 0, OPEN_EXISTING, 0, 0);
-	if (drive != INVALID_HANDLE_VALUE)
+	if (IsValid())
 	{
-		DWORD bytes = 0;
-		::DeviceIoControl(drive, FSCTL_LOCK_VOLUME, 0, 0, 0, 0, &bytes, 0);
-		::DeviceIoControl(drive, FSCTL_DISMOUNT_VOLUME, 0, 0, 0, 0, &bytes, 0);
-		ret = ::DeviceIoControl(drive, IOCTL_STORAGE_EJECT_MEDIA, 0, 0, 0, 0, &bytes, 0);
-		::CloseHandle(drive);
+		wxString path = GetPath();
+		ULARGE_INTEGER value = {};
+		::GetDiskFreeSpaceExW(path.wc_str(), nullptr, nullptr, &value);
+		return value.QuadPart;
 	}
-	return ret;
+	return wxInvalidOffset;
+}
+
+bool KxDrive::EjectMedia()
+{
+	if (IsValid())
+	{
+		KxFileStream stream(KxFSPath(GetPath()).GetFullPath(KxFSPathNamespace::Win32Device), KxFileStream::Access::Read, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Everything);
+		if (stream)
+		{
+			DWORD bytes = 0;
+			::DeviceIoControl(stream.GetHandle(), FSCTL_LOCK_VOLUME, nullptr, 0, nullptr, 0, &bytes, nullptr);
+			::DeviceIoControl(stream.GetHandle(), FSCTL_DISMOUNT_VOLUME, nullptr, 0, nullptr, 0, &bytes, nullptr);
+			return ::DeviceIoControl(stream.GetHandle(), IOCTL_STORAGE_EJECT_MEDIA, nullptr, 0, nullptr, 0, &bytes, nullptr);
+		}
+	}
+	return false;
 }

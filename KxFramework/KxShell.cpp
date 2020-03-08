@@ -126,7 +126,7 @@ DWORD KxShell::FormatDrive(wxWindow* window, const KxDrive& drive, DWORD options
 {
 	if (drive.IsOK())
 	{
-		return ::SHFormatDrive(GetOwnerHWND(window), (UINT)drive.ToIndex(), formatID, options);
+		return ::SHFormatDrive(GetOwnerHWND(window), (UINT)drive.GetIndex(), formatID, options);
 	}
 	return SHFMT_ERROR;
 }
