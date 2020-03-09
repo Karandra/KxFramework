@@ -3,64 +3,62 @@
 #include "NamespacePrefix.h"
 #include <KxFramework/KxComparator.h>
 
-namespace
+namespace KxFileSystem
 {
-	wxString ConcatWithNamespace(const wxString& path, KxFSPathNamespace withNamespace)
+	wxString ConcatWithNamespace(const wxString& path, PathNamespace withNamespace)
 	{
-		if (withNamespace != KxFSPathNamespace::None && !path.IsEmpty())
+		if (withNamespace != PathNamespace::None && !path.IsEmpty())
 		{
 			return KxFileSystem::GetNamespaceString(withNamespace) + path;
 		}
 		return path;
 	}
-	size_t DetectNamespacePrefix(const wxString& path, KxFSPathNamespace& ns)
+	size_t DetectNamespacePrefix(const wxString& path, PathNamespace& ns)
 	{
-		using namespace KxFileSystem;
-
 		// Test for every namespace starting from the longest prefix
 
 		// 10
 		if (path.StartsWith(NamespacePrefix::Win32Volume))
 		{
-			ns = KxFSPathNamespace::Win32Volume;
+			ns = PathNamespace::Win32Volume;
 			return std::size(NamespacePrefix::Win32Volume) - 1;
 		}
 
 		// 8
 		if (path.StartsWith(NamespacePrefix::Win32FileUNC))
 		{
-			ns = KxFSPathNamespace::Win32FileUNC;
+			ns = PathNamespace::Win32FileUNC;
 			return std::size(NamespacePrefix::Win32FileUNC) - 1;
 		}
 		else if (path.StartsWith(NamespacePrefix::NetworkUNC))
 		{
-			ns = KxFSPathNamespace::NetworkUNC;
+			ns = PathNamespace::NetworkUNC;
 			return std::size(NamespacePrefix::NetworkUNC) - 1;
 		}
 
 		// 4
 		if (path.StartsWith(NamespacePrefix::Win32File))
 		{
-			ns = KxFSPathNamespace::Win32File;
+			ns = PathNamespace::Win32File;
 			return std::size(NamespacePrefix::Win32File) - 1;
 		}
 		else if (path.StartsWith(NamespacePrefix::Win32Device))
 		{
-			ns = KxFSPathNamespace::Win32Device;
+			ns = PathNamespace::Win32Device;
 			return std::size(NamespacePrefix::Win32Device) - 1;
 		}
 
 		// 2
 		if (path.StartsWith(NamespacePrefix::Network))
 		{
-			ns = KxFSPathNamespace::Network;
+			ns = PathNamespace::Network;
 			return std::size(NamespacePrefix::Network) - 1;
 		}
 
 		// 1
 		if (path.StartsWith(NamespacePrefix::NT))
 		{
-			ns = KxFSPathNamespace::NT;
+			ns = PathNamespace::NT;
 			return std::size(NamespacePrefix::NT) - 1;
 		}
 
@@ -91,268 +89,271 @@ namespace
 	}
 }
 
-KxFSPath KxFSPath::FromStringUnchecked(const wxString& string)
+namespace KxFileSystem
 {
-	KxFSPath path;
-	path.m_Path = string;
-	return path;
-}
-
-bool KxFSPath::AssignFromPath(const wxString& path)
-{
-	m_Path = path;
-	if (!m_Path.IsEmpty())
+	KxFSPath KxFSPath::FromStringUnchecked(const wxString& string)
 	{
-		Normalize();
-		ProcessNamespace();
+		KxFSPath path;
+		path.m_Path = string;
+		return path;
 	}
-}
-void KxFSPath::ProcessNamespace()
-{
-	size_t namespacePrefixLength = DetectNamespacePrefix(m_Path, m_Namespace);
-	if (namespacePrefixLength != 0)
-	{
-		m_Path.Remove(0, namespacePrefixLength);
-	}
-}
-void KxFSPath::Normalize()
-{
-	const std::locale locale;
 
-	bool removeSpaces = true;
-	bool removeNextSlash = false;
-	for (size_t i = 0; i < m_Path.length(); i++)
+	bool KxFSPath::AssignFromPath(const wxString& path)
 	{
-		wxUniCharRef c = m_Path[i];
-
-		// Replace forward slashes with backward slashes
-		if (c == wxS('/'))
+		m_Path = path;
+		if (!m_Path.IsEmpty())
 		{
-			c = wxS('\\');
+			Normalize();
+			ProcessNamespace();
 		}
-
-		// Remove any leading space characters
-		if (removeSpaces)
+	}
+	void KxFSPath::ProcessNamespace()
+	{
+		size_t namespacePrefixLength = DetectNamespacePrefix(m_Path, m_Namespace);
+		if (namespacePrefixLength != 0)
 		{
-			if (std::isspace(static_cast<wxChar>(c), locale))
+			m_Path.Remove(0, namespacePrefixLength);
+		}
+	}
+	void KxFSPath::Normalize()
+	{
+		const std::locale locale;
+
+		bool removeSpaces = true;
+		bool removeNextSlash = false;
+		for (size_t i = 0; i < m_Path.length(); i++)
+		{
+			wxUniCharRef c = m_Path[i];
+
+			// Replace forward slashes with backward slashes
+			if (c == wxS('/'))
 			{
-				m_Path.Remove(i, 1);
-				i--;
+				c = wxS('\\');
+			}
+
+			// Remove any leading space characters
+			if (removeSpaces)
+			{
+				if (std::isspace(static_cast<wxChar>(c), locale))
+				{
+					m_Path.Remove(i, 1);
+					i--;
+				}
+				else
+				{
+					removeSpaces = false;
+				}
+			}
+
+			// Remove any duplicating slashes
+			if (c == wxS('\\'))
+			{
+				if (removeNextSlash || i + 1 == m_Path.length())
+				{
+					m_Path.Remove(i, 1);
+					i--;
+				}
+				else
+				{
+					removeNextSlash = true;
+				}
 			}
 			else
 			{
-				removeSpaces = false;
+				removeNextSlash = false;
 			}
 		}
+	}
 
-		// Remove any duplicating slashes
-		if (c == wxS('\\'))
+	bool KxFSPath::IsValid() const
+	{
+		return !m_Path.IsEmpty();
+	}
+	bool KxFSPath::IsSameAs(const KxFSPath& other, bool caseSensitive) const
+	{
+		return m_Namespace == other.m_Namespace && KxComparator::IsEqual(m_Path, other.m_Path, !caseSensitive);
+	}
+	bool KxFSPath::IsAbsolute() const
+	{
+		// Path is absolute if it has a namespace or starts with a disk designator
+		return m_Namespace != KxFileSystem::PathNamespace::None || HasDrive();
+	}
+	bool KxFSPath::IsRelative() const
+	{
+		return IsValid() && !IsAbsolute();
+	}
+	size_t KxFSPath::GetComponentCount() const
+	{
+		size_t count = 0;
+		for (wxChar c : m_Path)
 		{
-			if (removeNextSlash || i + 1 == m_Path.length())
+			if (c == wxS('\\'))
 			{
-				m_Path.Remove(i, 1);
-				i--;
-			}
-			else
-			{
-				removeNextSlash = true;
+				count++;
 			}
 		}
-		else
-		{
-			removeNextSlash = false;
-		}
+		return count;
 	}
-}
 
-bool KxFSPath::IsValid() const
-{
-	return !m_Path.IsEmpty();
-}
-bool KxFSPath::IsSameAs(const KxFSPath& other, bool caseSensitive) const
-{
-	return m_Namespace == other.m_Namespace && KxComparator::IsEqual(m_Path, other.m_Path, !caseSensitive);
-}
-bool KxFSPath::IsAbsolute() const
-{
-	// Path is absolute if it has a namespace or starts with a disk designator
-	return m_Namespace != KxFSPathNamespace::None || HasDrive();
-}
-bool KxFSPath::IsRelative() const
-{
-	return IsValid() && !IsAbsolute();
-}
-size_t KxFSPath::GetComponentCount() const
-{
-	size_t count = 0;
-	for (wxChar c: m_Path)
+	wxString KxFSPath::GetFullPath(KxFileSystem::PathNamespace withNamespace) const
 	{
-		if (c == wxS('\\'))
-		{
-			count++;
-		}
+		return ConcatWithNamespace(m_Path, withNamespace);
 	}
-	return count;
-}
 
-wxString KxFSPath::GetFullPath(KxFSPathNamespace withNamespace) const
-{
-	return ConcatWithNamespace(m_Path, withNamespace);
-}
-
-bool KxFSPath::HasDrive() const
-{
-	return m_Path.length() >= 2 && m_Path[1] == wxS(':');
-}
-KxDrive KxFSPath::GetDrive() const
-{
-	return ExtractBefore(m_Path, wxS(':'));
-}
-KxFSPath& KxFSPath::SetDrive(const KxDrive& drive)
-{
-	const size_t pos = m_Path.find(wxS(':'));
-	if (pos != wxString::npos)
+	bool KxFSPath::HasDrive() const
 	{
-		// Replace the disk designator
-		m_Path[pos - 1] = drive.GetChar();
+		return m_Path.length() >= 2 && m_Path[1] == wxS(':');
 	}
-	else
+	LegacyDrive KxFSPath::GetDrive() const
 	{
-		// Perpend a new disk designator
-		m_Path.Prepend(wxS(":\\"));
-		m_Path.Prepend(drive.GetChar());
+		return LegacyDrive::FromChar(ExtractBefore(m_Path, wxS(':')));
 	}
-	return *this;
-}
-
-wxString KxFSPath::GetPath() const
-{
-	// Return after drive designator or the path itself
-	wxString path = ExtractAfter(m_Path, wxS(':'));
-	return path.IsEmpty() ? m_Path : path;
-}
-KxFSPath& KxFSPath::SetPath(const wxString& path)
-{
-	// Don't check for '\' and '/' here
-	wxString forbiddenChars = KxFileSystem::GetForbiddenChars();
-	forbiddenChars.Replace(wxS('\\'), wxEmptyString);
-	forbiddenChars.Replace(wxS('/'), wxEmptyString);
-
-	if (!path.Contains(forbiddenChars))
+	KxFSPath& KxFSPath::SetDrive(const LegacyDrive& drive)
 	{
 		const size_t pos = m_Path.find(wxS(':'));
 		if (pos != wxString::npos)
 		{
-			// Replace after the disk designator
-			m_Path.Remove(pos + 1, wxString::npos);
-			m_Path += wxS("\\");
-			m_Path += path;
-
-			Normalize();
+			// Replace the disk designator
+			m_Path[pos - 1] = drive.GetChar();
 		}
 		else
 		{
-			// Replace full path
-			m_Path = path;
-			Normalize();
-
-			// It's possible to pass a path with a namespace here. It shouldn't be possible to change the namespace here.
-			KxFSPathNamespace ns = m_Namespace;
-			ProcessNamespace();
-			m_Namespace = ns;
+			// Perpend a new disk designator
+			m_Path.Prepend(wxS(":\\"));
+			m_Path.Prepend(drive.GetChar());
 		}
-		
+		return *this;
 	}
-	return *this;
-}
 
-wxString KxFSPath::GetName() const
-{
-	// Return everything after last path delimiter or itself
-	wxString path = ExtractAfter(m_Path, wxS('\\'), wxString::npos, true);
-	return path.IsEmpty() ? m_Path : path;
-}
-KxFSPath& KxFSPath::SetName(const wxString& name)
-{
-	if (!name.Contains(KxFileSystem::GetForbiddenChars()))
+	wxString KxFSPath::GetPath() const
 	{
-		const size_t pos = m_Path.rfind(wxS('\\'));
-		if (pos != wxString::npos)
-		{
-			const size_t dot = m_Path.find(wxS('.'), pos);
-			if (dot != wxString::npos)
-			{
-				m_Path.replace(pos + 1, dot - pos, name);
-			}
-			else
-			{
-				m_Path.replace(pos + 1, m_Path.length() - pos, name);
-			}
-			Normalize();
-		}
+		// Return after drive designator or the path itself
+		wxString path = ExtractAfter(m_Path, wxS(':'));
+		return path.IsEmpty() ? m_Path : path;
 	}
-	return *this;
-}
-
-wxString KxFSPath::GetExtension() const
-{
-	// Return extension without a dot
-	wxString path = ExtractAfter(m_Path, wxS('.'), wxString::npos, true);
-}
-KxFSPath& KxFSPath::SetExtension(const wxString& ext)
-{
-	if (!ext.Contains(KxFileSystem::GetForbiddenChars()))
+	KxFSPath& KxFSPath::SetPath(const wxString& path)
 	{
-		auto Replace = [this](const wxString& ext)
+		// Don't check for '\' and '/' here
+		wxString forbiddenChars = KxFileSystem::GetForbiddenChars();
+		forbiddenChars.Replace(wxS('\\'), wxEmptyString);
+		forbiddenChars.Replace(wxS('/'), wxEmptyString);
+
+		if (!path.Contains(forbiddenChars))
 		{
-			const size_t pos = m_Path.rfind(wxS('.'));
+			const size_t pos = m_Path.find(wxS(':'));
 			if (pos != wxString::npos)
 			{
-				m_Path.replace(pos + 1, m_Path.length() - pos, ext);
+				// Replace after the disk designator
+				m_Path.Remove(pos + 1, wxString::npos);
+				m_Path += wxS("\\");
+				m_Path += path;
+
+				Normalize();
 			}
 			else
 			{
-				m_Path += wxS('.');
-				m_Path += ext;
+				// Replace full path
+				m_Path = path;
+				Normalize();
+
+				// It's possible to pass a path with a namespace here. It shouldn't be possible to change the namespace here.
+				PathNamespace ns = m_Namespace;
+				ProcessNamespace();
+				m_Namespace = ns;
 			}
-		};
 
-		if (wxString extWithoutDot; ext.StartsWith(wxS('.'), &extWithoutDot))
-		{
-			Replace(extWithoutDot);
 		}
-		else
-		{
-			Replace(ext);
-		}
-		Normalize();
+		return *this;
 	}
-	return *this;
-}
 
-KxFSPath KxFSPath::GetParent() const
-{
-	return ExtractBefore(m_Path, wxS('\\'), true);
-}
-KxFSPath& KxFSPath::RemoveLast()
-{
-	*this = GetParent();
-	return *this;
-}
-KxFSPath& KxFSPath::Append(const KxFSPath& other)
-{
-	if (!IsValid() || other.IsRelative())
+	wxString KxFSPath::GetName() const
 	{
-		m_Path += wxS('\\');
-		m_Path += other.m_Path;
+		// Return everything after last path delimiter or itself
+		wxString path = ExtractAfter(m_Path, wxS('\\'), wxString::npos, true);
+		return path.IsEmpty() ? m_Path : path;
 	}
-	return *this;
-}
-KxFSPath& KxFSPath::Concat(const KxFSPath& other)
-{
-	if (!IsValid() || other.IsRelative())
+	KxFSPath& KxFSPath::SetName(const wxString& name)
 	{
-		m_Path += other.m_Path;
+		if (!name.Contains(KxFileSystem::GetForbiddenChars()))
+		{
+			const size_t pos = m_Path.rfind(wxS('\\'));
+			if (pos != wxString::npos)
+			{
+				const size_t dot = m_Path.find(wxS('.'), pos);
+				if (dot != wxString::npos)
+				{
+					m_Path.replace(pos + 1, dot - pos, name);
+				}
+				else
+				{
+					m_Path.replace(pos + 1, m_Path.length() - pos, name);
+				}
+				Normalize();
+			}
+		}
+		return *this;
 	}
-	return *this;
+
+	wxString KxFSPath::GetExtension() const
+	{
+		// Return extension without a dot
+		wxString path = ExtractAfter(m_Path, wxS('.'), wxString::npos, true);
+	}
+	KxFSPath& KxFSPath::SetExtension(const wxString& ext)
+	{
+		if (!ext.Contains(KxFileSystem::GetForbiddenChars()))
+		{
+			auto Replace = [this](const wxString& ext)
+			{
+				const size_t pos = m_Path.rfind(wxS('.'));
+				if (pos != wxString::npos)
+				{
+					m_Path.replace(pos + 1, m_Path.length() - pos, ext);
+				}
+				else
+				{
+					m_Path += wxS('.');
+					m_Path += ext;
+				}
+			};
+
+			if (wxString extWithoutDot; ext.StartsWith(wxS('.'), &extWithoutDot))
+			{
+				Replace(extWithoutDot);
+			}
+			else
+			{
+				Replace(ext);
+			}
+			Normalize();
+		}
+		return *this;
+	}
+
+	KxFSPath KxFSPath::GetParent() const
+	{
+		return ExtractBefore(m_Path, wxS('\\'), true);
+	}
+	KxFSPath& KxFSPath::RemoveLast()
+	{
+		*this = GetParent();
+		return *this;
+	}
+	KxFSPath& KxFSPath::Append(const KxFSPath& other)
+	{
+		if (!IsValid() || other.IsRelative())
+		{
+			m_Path += wxS('\\');
+			m_Path += other.m_Path;
+		}
+		return *this;
+	}
+	KxFSPath& KxFSPath::Concat(const KxFSPath& other)
+	{
+		if (!IsValid() || other.IsRelative())
+		{
+			m_Path += other.m_Path;
+		}
+		return *this;
+	}
 }

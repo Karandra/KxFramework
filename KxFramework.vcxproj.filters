@@ -313,9 +313,6 @@
     <ClInclude Include="KxFramework\KxFileFinder.h">
       <Filter>Header Files\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxDrive.h">
-      <Filter>Header Files\FileSystem</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxShell.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
@@ -1261,6 +1258,9 @@
     <ClInclude Include="Kx\FileSystem\NamespacePrefix.h">
       <Filter>Kx\FileSystem</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\FileSystem\LegacyDrive.h">
+      <Filter>Kx\FileSystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1301,9 +1301,6 @@
       <Filter>Source Files\FileSystem</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxFileFinder.cpp">
-      <Filter>Source Files\FileSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxDrive.cpp">
       <Filter>Source Files\FileSystem</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxShell.cpp">
@@ -1988,6 +1985,9 @@
       <Filter>Kx\FileSystem</Filter>
     </ClCompile>
     <ClCompile Include="Kx\FileSystem\Common.cpp">
+      <Filter>Kx\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\FileSystem\LegacyDrive.cpp">
       <Filter>Kx\FileSystem</Filter>
     </ClCompile>
   </ItemGroup>

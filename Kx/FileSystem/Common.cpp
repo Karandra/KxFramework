@@ -4,35 +4,35 @@
 
 namespace KxFileSystem
 {
-	wxString GetNamespaceString(KxFSPathNamespace type)
+	wxString GetNamespaceString(PathNamespace type)
 	{
 		switch (type)
 		{
-			case KxFSPathNamespace::NT:
+			case PathNamespace::NT:
 			{
 				return NamespacePrefix::NT;
 			}
-			case KxFSPathNamespace::Win32File:
+			case PathNamespace::Win32File:
 			{
 				return NamespacePrefix::Win32File;
 			}
-			case KxFSPathNamespace::Win32FileUNC:
+			case PathNamespace::Win32FileUNC:
 			{
 				return NamespacePrefix::Win32FileUNC;
 			}
-			case KxFSPathNamespace::Win32Device:
+			case PathNamespace::Win32Device:
 			{
 				return NamespacePrefix::Win32Device;
 			}
-			case KxFSPathNamespace::Win32Volume:
+			case PathNamespace::Win32Volume:
 			{
 				return NamespacePrefix::Win32Volume;
 			}
-			case KxFSPathNamespace::Network:
+			case PathNamespace::Network:
 			{
 				return NamespacePrefix::Network;
 			}
-			case KxFSPathNamespace::NetworkUNC:
+			case PathNamespace::NetworkUNC:
 			{
 				return NamespacePrefix::NetworkUNC;
 			}
