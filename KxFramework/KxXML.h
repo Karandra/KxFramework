@@ -77,7 +77,7 @@ class KX_API KxXMLAttribute final
 		}
 		bool operator!() const
 		{
-			return IsOK();
+			return !IsOK();
 		}
 };
 
@@ -86,26 +86,22 @@ class KX_API KxXMLNode: public KxXDocumentNode<KxXMLNode>
 	friend class KxXMLDocument;
 	friend class KxXMLAttribute;
 
-	protected:
-		const tinyxml2::XMLNode* GetNode() const
-		{
-			return const_cast<KxXMLNode&>(*this).GetNode();
-		}
-		virtual tinyxml2::XMLNode* GetNode()
-		{
-			return m_Node;
-		}
-		virtual void SetNode(tinyxml2::XMLNode* node)
-		{
-			m_Node = node;
-		}
-
 	private:
 		KxXMLDocument* m_Document = nullptr;
 		tinyxml2::XMLNode* m_Node = nullptr;
 
 	private:
 		KxXMLNode ConstructOrQueryElement(const wxString& xPath, bool allowCreate);
+
+	protected:
+		const tinyxml2::XMLNode* GetNode() const
+		{
+			return m_Node;
+		}
+		tinyxml2::XMLNode* GetNode()
+		{
+			return m_Node;
+		}
 
 	protected:
 		wxString DoGetValue(const wxString& defaultValue = wxEmptyString) const override;
@@ -242,15 +238,6 @@ class KX_API KxXMLDocument: public KxXMLNode
 		bool DoLoad(const char* xml, size_t length);
 		void DoUnload();
 
-	protected:
-		tinyxml2::XMLNode* GetNode() override
-		{
-			return &m_Document;
-		}
-		void SetNode(tinyxml2::XMLNode*) override
-		{
-		}
-
 	private:
 		KxXMLNode CreateElement(const wxString& name);
 		KxXMLNode CreateComment(const wxString& value);
@@ -265,38 +252,37 @@ class KX_API KxXMLDocument: public KxXMLNode
 			Init();
 		}
 		KxXMLDocument(const wxString& xml)
+			:KxXMLDocument()
 		{
-			Init();
 			Load(xml);
 		}
 		KxXMLDocument(std::string_view xml)
-			:KxXMLNode(&m_Document, *this)
+			:KxXMLDocument()
 		{
-			Init();
 			Load(xml);
 		}
 		KxXMLDocument(std::wstring_view xml)
-			:KxXMLNode(&m_Document, *this)
+			:KxXMLDocument()
 		{
-			Init();
 			Load(xml);
 		}
 		KxXMLDocument(const char* xml, size_t length = wxString::npos)
-			:KxXMLDocument(std::string_view(xml, length))
+			:KxXMLDocument()
 		{
+			Load(std::string_view(xml, length));
 		}
 		KxXMLDocument(const wchar_t* xml, size_t length = wxString::npos)
-			:KxXMLDocument(std::wstring_view(xml, length))
+			:KxXMLDocument()
 		{
+			Load(std::wstring_view(xml, length));
 		}
 		KxXMLDocument(wxInputStream& stream)
-			:KxXMLNode(&m_Document, *this)
+			:KxXMLDocument()
 		{
-			Init();
 			Load(stream);
 		}
 		KxXMLDocument(const KxXMLDocument& other)
-			:KxXMLNode(&m_Document, *this)
+			:KxXMLDocument()
 		{
 			*this = other;
 		}
