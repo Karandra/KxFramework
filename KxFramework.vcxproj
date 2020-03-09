@@ -461,6 +461,7 @@
     <ClInclude Include="KxFramework\KxWxRTTI.h" />
     <ClInclude Include="KxFramework\KxXDocumentNode.h" />
     <ClInclude Include="KxFramework\KxXML.h" />
+    <ClInclude Include="KxFramework\KxXMLUtility.h" />
     <ClInclude Include="KxFramework\KxZLibStream.h" />
     <ClInclude Include="KxFramework\OpenSSL\IncludeLibs.h" />
     <ClInclude Include="KxFramework\WebSocket\Common.h" />

@@ -1,11 +1,8 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxXML.h"
+#include "KxFramework/KxXMLUtility.h"
 #include "KxFramework/KxUtility.h"
-
-namespace
-{
-	const wxChar DefaultDeclaredEncoding[] = wxS("utf-8");
-}
+#include "KxFramework/KxStringUtility.h"
 
 wxString KxXMLDocument::GetLibraryName()
 {
@@ -16,10 +13,6 @@ wxString KxXMLDocument::GetLibraryVersion()
 	return KxString::Format(wxS("%1.%2.%3"), TIXML2_MAJOR_VERSION, TIXML2_MINOR_VERSION, TIXML2_PATCH_VERSION);
 }
 
-int KxXMLDocument::ExtractIndexFromName(wxString& elementName) const
-{
-	return KxXDocumentNode::ExtractIndexFromName(elementName, m_XPathDelimiter);
-}
 void KxXMLDocument::ReplaceDeclaration()
 {
 	if (m_Document.FirstChild() && m_Document.FirstChild()->ToDeclaration())
@@ -34,17 +27,19 @@ void KxXMLDocument::ReplaceDeclaration()
 
 void KxXMLDocument::Init()
 {
-	m_DeclaredEncoding = DefaultDeclaredEncoding;
-	m_XPathDelimiter = KxXDocumentNode::GetXPathIndexSeparator();
+	m_DeclaredEncoding = g_DefaultDeclaredEncoding;
+	m_XPathIndexSeparator = KxXDocumentNode::GetXPathIndexSeparator();
 	m_Document.SetBOM(false);
 }
-bool KxXMLDocument::Load(const char* xmlText, size_t length)
+bool KxXMLDocument::DoLoad(const char* xml, size_t length)
 {
-	m_Document.Parse(xmlText, length);
+	DoUnload();
+
+	m_Document.Parse(xml, length);
 	ReplaceDeclaration();
 	return !m_Document.Error();
 }
-void KxXMLDocument::UnLoad()
+void KxXMLDocument::DoUnload()
 {
 	m_Document.Clear();
 }
@@ -52,51 +47,34 @@ void KxXMLDocument::UnLoad()
 KxXMLNode KxXMLDocument::CreateElement(const wxString& name)
 {
 	auto utf8 = name.ToUTF8();
-	return KxXMLNode(m_Document.NewElement(utf8.data()), this);
+	return KxXMLNode(m_Document.NewElement(utf8.data()), *this);
 }
 KxXMLNode KxXMLDocument::CreateComment(const wxString& value)
 {
 	auto utf8 = value.ToUTF8();
-	return KxXMLNode(m_Document.NewComment(utf8.data()), this);
+	return KxXMLNode(m_Document.NewComment(utf8.data()), *this);
 }
 KxXMLNode KxXMLDocument::CreateText(const wxString& value)
 {
 	auto utf8 = value.ToUTF8();
-	return KxXMLNode(m_Document.NewText(utf8.data()), this);
+	return KxXMLNode(m_Document.NewText(utf8.data()), *this);
 }
 KxXMLNode KxXMLDocument::CreateDeclaration(const wxString& value)
 {
 	if (!value.IsEmpty())
 	{
 		auto utf8 = value.ToUTF8();
-		return KxXMLNode(m_Document.NewDeclaration(utf8.data()), this);
+		return KxXMLNode(m_Document.NewDeclaration(utf8.data()), *this);
 	}
 	else
 	{
-		return KxXMLNode(m_Document.NewDeclaration(), this);
+		return KxXMLNode(m_Document.NewDeclaration(), *this);
 	}
 }
 KxXMLNode KxXMLDocument::CreateUnknown(const wxString& value)
 {
 	auto utf8 = value.ToUTF8();
-	return KxXMLNode(m_Document.NewUnknown(utf8.data()), this);
-}
-
-KxXMLDocument::KxXMLDocument(const wxString& xmlText)
-	:KxXMLNode(&m_Document, this)
-{
-	Init();
-	Load(xmlText);
-}
-KxXMLDocument::KxXMLDocument(wxInputStream& stream)
-	:KxXMLNode(&m_Document, this)
-{
-	Init();
-	Load(stream);
-}
-KxXMLDocument::~KxXMLDocument()
-{
-	UnLoad();
+	return KxXMLNode(m_Document.NewUnknown(utf8.data()), *this);
 }
 
 bool KxXMLDocument::IsOK() const
@@ -109,32 +87,37 @@ wxString KxXMLDocument::GetXPath() const
 }
 wxString KxXMLDocument::GetXML(KxXMLPrintMode mode) const
 {
-	return PrintDocument(m_Document, mode);
+	return PrintDocument(m_Document, mode == KxXMLPrintMode::HTML5);
 }
 
-bool KxXMLDocument::Load(const wxString& xmlText)
+bool KxXMLDocument::Load(const wxString& xml)
 {
-	UnLoad();
-
-	auto utf8 = xmlText.ToUTF8();
-	Load(utf8.data(), utf8.length());
+	auto utf8 = xml.ToUTF8();
+	DoLoad(utf8.data(), utf8.length());
 	return IsOK();
+}
+bool KxXMLDocument::Load(std::string_view xml)
+{
+	DoLoad(xml.data(), xml.length());
+	return IsOK();
+}
+bool KxXMLDocument::Load(std::wstring_view xml)
+{
+	return Load(KxUtility::String::FromStringView(xml));
 }
 bool KxXMLDocument::Load(wxInputStream& stream)
 {
-	UnLoad();
-
 	wxMemoryBuffer buffer;
 	buffer.SetBufSize(stream.GetLength());
 	stream.Read(buffer.GetData(), buffer.GetBufSize());
 	buffer.SetDataLen(stream.LastRead());
 
-	Load((const char*)buffer.GetData(), buffer.GetDataLen());
+	DoLoad(reinterpret_cast<const char*>(buffer.GetData()), buffer.GetDataLen());
 	return IsOK();
 }
 bool KxXMLDocument::Save(wxOutputStream& stream) const
 {
-	KxXMLPrinter buffer;
+	DefaultXMLPrinter buffer;
 	m_Document.Print(&buffer);
 	stream.Write(buffer.CStr(), buffer.CStrSize() - 1);
 	return stream.IsOk();
@@ -153,4 +136,21 @@ bool KxXMLDocument::RemoveNode(KxXMLNode& node)
 		return true;
 	}
 	return false;
+}
+
+KxXMLDocument& KxXMLDocument::operator=(const KxXMLDocument& other)
+{
+	m_DeclaredEncoding = other.m_DeclaredEncoding;
+	m_XPathIndexSeparator = other.m_XPathIndexSeparator;
+
+	if (!other)
+	{
+		DoUnload();
+	}
+	else
+	{
+		// Serialize and parse into a new document
+		Load(other.GetXML());
+	}
+	return *this;
 }

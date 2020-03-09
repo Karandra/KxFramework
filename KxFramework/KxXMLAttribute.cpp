@@ -1,25 +1,28 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxXML.h"
 
-const KxXMLAttribute KxXMLAttribute::NullAttribute = KxXMLAttribute();
-
-KxXMLAttribute::KxXMLAttribute(const tinyxml2::XMLAttribute* attribute, KxXMLNode* node)
-	:m_Node(node), m_Attribute(const_cast<tinyxml2::XMLAttribute*>(attribute))
+KxXMLNode KxXMLAttribute::GetNode() const
 {
+	if (m_Node)
+	{
+		return *m_Node;
+	}
+	return {};
 }
-KxXMLAttribute::KxXMLAttribute(tinyxml2::XMLAttribute* attribute, KxXMLNode* node)
-	: m_Node(node), m_Attribute(attribute)
+KxXMLDocument* KxXMLAttribute::GetDocument() const
 {
-}
-KxXMLAttribute::~KxXMLAttribute()
-{
+	if (m_Node)
+	{
+		return &m_Node->GetDocument();
+	}
+	return nullptr;
 }
 
 wxString KxXMLAttribute::GetName() const
 {
 	if (IsOK())
 	{
-		return KxXMLNode::ToWxString(m_Attribute->Name());
+		return wxString::FromUTF8Unchecked(m_Attribute->Name());
 	}
 	return wxEmptyString;
 }
@@ -27,7 +30,7 @@ wxString KxXMLAttribute::GetValue() const
 {
 	if (IsOK())
 	{
-		return KxXMLNode::ToWxString(m_Attribute->Value());
+		return wxString::FromUTF8Unchecked(m_Attribute->Value());
 	}
 	return wxEmptyString;
 }
@@ -36,7 +39,10 @@ KxXMLAttribute KxXMLAttribute::Next() const
 {
 	if (IsOK())
 	{
-		return KxXMLAttribute(m_Attribute->Next(), m_Node);
+		if (const tinyxml2::XMLAttribute* attribute = m_Attribute->Next())
+		{
+			return KxXMLAttribute(*m_Node, *attribute);
+		}
 	}
-	return NullAttribute;
+	return {};
 }

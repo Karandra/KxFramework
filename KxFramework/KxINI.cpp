@@ -1,9 +1,3 @@
-/*
-Copyright © 2018 Kerber. All rights reserved.
-
-You should have received a copy of the GNU LGPL v3
-along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
-*/
 #include "KxStdAfx.h"
 #include "KxFramework/KxINI.h"
 
@@ -32,18 +26,18 @@ void KxINI::UnLoad()
 
 wxString KxINI::DoGetValue(const wxString& defaultValue) const
 {
-	return wxEmptyString;
+	return IniGetValue(wxEmptyString, wxEmptyString, defaultValue);
 }
-bool KxINI::DoSetValue(const wxString& value, AsCDATA asCDATA)
+bool KxINI::DoSetValue(const wxString& value, WriteEmpty writeEmpty, AsCDATA asCDATA)
 {
-	return false;
+	return IniSetValue(wxEmptyString, wxEmptyString, value, writeEmpty);
 }
 
 wxString KxINI::DoGetAttribute(const wxString& name, const wxString& defaultValue) const
 {
 	return wxEmptyString;
 }
-bool KxINI::DoSetAttribute(const wxString& name, const wxString& value)
+bool KxINI::DoSetAttribute(const wxString& name, const wxString& value, WriteEmpty writeEmpty)
 {
 	return false;
 }
@@ -56,14 +50,21 @@ wxString KxINI::IniGetValue(const wxString& sectionName, const wxString& keyName
 
 	return value ? wxString::FromUTF8Unchecked(value) : defaultValue;
 }
-bool KxINI::IniSetValue(const wxString& sectionName, const wxString& keyName, const wxString& value)
+bool KxINI::IniSetValue(const wxString& sectionName, const wxString& keyName, const wxString& value, WriteEmpty writeEmpty)
 {
-	auto sectionNameUTF8 = sectionName.ToUTF8();
-	auto keyNameUTF8 = keyName.ToUTF8();
-	auto valueUTF8 = value.ToUTF8();
+	if (writeEmpty == WriteEmpty::Never && value.IsEmpty())
+	{
+		return false;
+	}
+	else
+	{
+		auto sectionNameUTF8 = sectionName.ToUTF8();
+		auto keyNameUTF8 = keyName.ToUTF8();
+		auto valueUTF8 = value.ToUTF8();
 
-	SimpleINI::SI_Error status = m_Document.SetValue(sectionNameUTF8.data(), keyNameUTF8.data(), valueUTF8.data(), nullptr, true);
-	return status == SimpleINI::SI_UPDATED || status == SimpleINI::SI_INSERTED;
+		SimpleINI::SI_Error status = m_Document.SetValue(sectionNameUTF8.data(), keyNameUTF8.data(), valueUTF8.data(), nullptr, true);
+		return status == SimpleINI::SI_UPDATED || status == SimpleINI::SI_INSERTED;
+	}
 }
 
 KxINI::KxINI(const wxString& iniText)

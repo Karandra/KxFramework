@@ -129,17 +129,16 @@ bool KxTranslation::Init(const KxXMLDocument& xml)
 {
 	if (xml.IsOK())
 	{
-		KxXMLNode stringtTableNode = xml.QueryElement("Lang/StringTable");
-		if (stringtTableNode.IsOK())
+		if (KxXMLNode stringtTableNode = xml.QueryElement(wxS("Lang/StringTable")))
 		{
-			m_TranslatorName = xml.QueryElement("Lang/Info/Translator").GetValue();
+			m_TranslatorName = xml.QueryElement(wxS("Lang/Info/Translator")).GetValue();
 
-			for (KxXMLNode node = stringtTableNode.GetFirstChildElement(); node.IsOK(); node = node.GetNextSiblingElement())
+			for (KxXMLNode node = stringtTableNode.GetFirstChildElement(); node; node = node.GetNextSiblingElement())
 			{
 				wxString id = node.GetAttribute("ID");
 				if (!id.IsEmpty())
 				{
-					m_StringTable.insert(std::make_pair(id, node.GetValue()));
+					m_StringTable.emplace(id, node.GetValue());
 				}
 			}
 			return true;

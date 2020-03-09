@@ -1,11 +1,6 @@
-/*
-Copyright © 2019 Kerber. All rights reserved.
-
-You should have received a copy of the GNU LGPL v3
-along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
-*/
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include "KxFramework/KxString.h"
 
 class KX_API KxIXDocumentNode
 {
@@ -16,11 +11,18 @@ class KX_API KxIXDocumentNode
 			Always = 1,
 			Never = 0,
 		};
+		enum class WriteEmpty
+		{
+			Always = 1,
+			Never = 0,
+		};
 
 	public:
-		static int ExtractIndexFromName(wxString& elementName, const wxString& xPathSeparator);
+		static std::pair<wxStringView, int> ExtractIndexFromName(wxStringView elementName, wxStringView xPathSeparator);
 		static bool ContainsForbiddenCharactersForValue(const wxString& value);
-		template<class TNode> static wxString ConstructXPath(const TNode& thisNode)
+		
+		template<class TNode>
+		static wxString ConstructXPath(const TNode& thisNode)
 		{
 			wxString xPath;
 			const wxString xPathSep = thisNode.GetXPathSeparator();
@@ -32,7 +34,7 @@ class KX_API KxIXDocumentNode
 				const size_t index = node.GetIndexWithinParent();
 				if (index > 1)
 				{
-					xPath.Prepend(wxString::Format(wxS("%s%s%zu"), node.GetName(), xPathIndexSep, index));
+					xPath.Prepend(KxString::Format(wxS("%1%2%3"), node.GetName(), xPathIndexSep, index));
 				}
 				else
 				{
@@ -83,7 +85,7 @@ class KX_API KxIXDocumentNode
 		virtual wxString FormatFloat(double value, int precision = -1) const;
 		virtual wxString FormatBool(bool value) const;
 
-		virtual int64_t ParseInt(const wxString& value, int base = 10, int64_t defaultValue = 0) const;
+		virtual int64_t ParseInt(const wxString& value, int base, int64_t defaultValue = 0) const;
 		virtual void* ParsePointer(const wxString& value, void* defaultValue = nullptr) const;
 		virtual double ParseFloat(const wxString& value, double defaultValue = 0.0) const;
 		virtual bool ParseBool(const wxString& value, bool defaultValue = false) const;
@@ -102,7 +104,7 @@ class KX_API KxIXDocumentNode
 		{
 			return ParseBool(DoGetValue(), defaultValue);
 		}
-		virtual bool DoSetValue(const wxString& value, AsCDATA asCDATA = AsCDATA::Auto) = 0;
+		virtual bool DoSetValue(const wxString& value, WriteEmpty writeEmpty, AsCDATA asCDATA) = 0;
 
 		virtual wxString DoGetAttribute(const wxString& name, const wxString& defaultValue = wxEmptyString) const = 0;
 		virtual int64_t DoGetAttributeIntWithBase(const wxString& name, int base, int64_t defaultValue = 0) const
@@ -113,11 +115,11 @@ class KX_API KxIXDocumentNode
 		{
 			return ParseFloat(DoGetAttribute(name), defaultValue);
 		}
-		virtual bool DoGetAttributeBool(const wxString& name, bool defaultValue = false) const
+		virtual bool DoGetAttributeBool(const wxString& name, bool defaultValue = 0) const
 		{
 			return ParseBool(DoGetAttribute(name), defaultValue);
 		}
-		virtual bool DoSetAttribute(const wxString& name, const wxString& value) = 0;
+		virtual bool DoSetAttribute(const wxString& name, const wxString& value, WriteEmpty writeEmpty) = 0;
 
 	public:
 		virtual ~KxIXDocumentNode() = default;
@@ -130,22 +132,16 @@ class KX_API KxIXDocumentNode
 			return wxEmptyString;
 		}
 
-		wxString GetXPathSeparator() const
+		wxChar GetXPathSeparator() const
 		{
 			return wxS('/');
 		}
-		int ExtractIndexFromName(wxString& elementName) const
-		{
-			return ExtractIndexFromName(elementName, GetXPathIndexSeparator());
-		}
-
 		virtual wxString GetXPathIndexSeparator() const
 		{
-			return wxS(':');
+			return wxS("::");
 		}
-		virtual bool SetXPathIndexSeparator(const wxString& value)
+		virtual void SetXPathIndexSeparator(const wxString& value)
 		{
-			return false;
 		}
 
 		// Node
@@ -217,43 +213,43 @@ class KX_API KxIXDocumentNode
 			return static_cast<T>(DoGetValueIntWithBase(base, static_cast<int64_t>(defaultValue)));
 		}
 
-		bool SetValue(const char* value, AsCDATA asCDATA = AsCDATA::Auto)
+		bool SetValue(const char* value, WriteEmpty writeEmpty = WriteEmpty::Always, AsCDATA asCDATA = AsCDATA::Auto)
 		{
-			return DoSetValue(wxString::FromUTF8(value), asCDATA);
+			return DoSetValue(wxString::FromUTF8(value), writeEmpty, asCDATA);
 		}
-		bool SetValue(const wchar_t* value, AsCDATA asCDATA = AsCDATA::Auto)
+		bool SetValue(const wchar_t* value, WriteEmpty writeEmpty = WriteEmpty::Always, AsCDATA asCDATA = AsCDATA::Auto)
 		{
-			return DoSetValue(value, asCDATA);
+			return DoSetValue(value, writeEmpty, asCDATA);
 		}
-		bool SetValue(const wxString& value, AsCDATA asCDATA = AsCDATA::Auto)
+		bool SetValue(const wxString& value, WriteEmpty writeEmpty = WriteEmpty::Always, AsCDATA asCDATA = AsCDATA::Auto)
 		{
-			return DoSetValue(value, asCDATA);
+			return DoSetValue(value, writeEmpty, asCDATA);
 		}
 		bool SetValue(bool value)
 		{
-			return DoSetValue(FormatBool(value), AsCDATA::Never);
+			return DoSetValue(FormatBool(value), WriteEmpty::Always, AsCDATA::Never);
 		}
 		bool SetValue(float value, int precision = -1)
 		{
-			return DoSetValue(FormatFloat(static_cast<double>(value), precision), AsCDATA::Never);
+			return DoSetValue(FormatFloat(static_cast<double>(value), precision), WriteEmpty::Always, AsCDATA::Never);
 		}
 		bool SetValue(double value, int precision = -1)
 		{
-			return DoSetValue(FormatFloat(value, precision), AsCDATA::Never);
+			return DoSetValue(FormatFloat(value, precision), WriteEmpty::Always, AsCDATA::Never);
 		}
 		bool SetValue(const void* value)
 		{
-			return DoSetValue(FormatPointer(value));
+			return DoSetValue(FormatPointer(value), WriteEmpty::Always, AsCDATA::Never);
 		}
 		bool SetValue(std::nullptr_t)
 		{
-			return DoSetValue(FormatPointer(nullptr));
+			return DoSetValue(FormatPointer(nullptr), WriteEmpty::Always, AsCDATA::Never);
 		}
 
 		template<class T>
 		std::enable_if_t<TestIntType<T>(), bool> SetValue(T value, int base = 10)
 		{
-			return DoSetValue(FormatInt(static_cast<int64_t>(value), base), AsCDATA::Never);
+			return DoSetValue(FormatInt(static_cast<int64_t>(value), base), WriteEmpty::Always, AsCDATA::Never);
 		}
 
 		virtual bool IsCDATA() const
@@ -329,43 +325,43 @@ class KX_API KxIXDocumentNode
 			return static_cast<T>(DoGetAttributeIntWithBase(name, base, static_cast<int64_t>(defaultValue)));
 		}
 
-		bool SetAttribute(const wxString& name, const wxString& value)
+		bool SetAttribute(const wxString& name, const wxString& value, WriteEmpty writeEmpty = WriteEmpty::Always)
 		{
-			return DoSetAttribute(name, value);
+			return DoSetAttribute(name, value, writeEmpty);
 		}
-		bool SetAttribute(const wxString& name, const char* value)
+		bool SetAttribute(const wxString& name, const char* value, WriteEmpty writeEmpty = WriteEmpty::Always)
 		{
-			return DoSetAttribute(name, wxString::FromUTF8(value));
+			return DoSetAttribute(name, wxString::FromUTF8(value), writeEmpty);
 		}
-		bool SetAttribute(const wxString& name, const wchar_t* value)
+		bool SetAttribute(const wxString& name, const wchar_t* value, WriteEmpty writeEmpty = WriteEmpty::Always)
 		{
-			return DoSetAttribute(name, wxString(value));
+			return DoSetAttribute(name, wxString(value), writeEmpty);
 		}
 		bool SetAttribute(const wxString& name, bool value)
 		{
-			return DoSetAttribute(name, FormatBool(value));
+			return DoSetAttribute(name, FormatBool(value), WriteEmpty::Always);
 		}
 		bool SetAttribute(const wxString& name, float value, int precision = -1)
 		{
-			return DoSetAttribute(name, FormatFloat(static_cast<double>(value), precision));
+			return DoSetAttribute(name, FormatFloat(static_cast<double>(value), precision), WriteEmpty::Always);
 		}
 		bool SetAttribute(const wxString& name, double value, int precision = -1)
 		{
-			return DoSetAttribute(name, FormatFloat(value, precision));
+			return DoSetAttribute(name, FormatFloat(value, precision), WriteEmpty::Always);
 		}
 		bool SetAttribute(const wxString& name, const void* value)
 		{
-			return DoSetAttribute(name, FormatPointer(value));
+			return DoSetAttribute(name, FormatPointer(value), WriteEmpty::Always);
 		}
 		bool SetAttribute(const wxString& name, std::nullptr_t)
 		{
-			return DoSetAttribute(name, FormatPointer(nullptr));
+			return DoSetAttribute(name, FormatPointer(nullptr), WriteEmpty::Always);
 		}
 
 		template<class T>
 		std::enable_if_t<TestIntType<T>(), bool> SetAttribute(const wxString& name, T value, int base = 10)
 		{
-			return DoSetAttribute(name, FormatInt(static_cast<int64_t>(value), base));
+			return DoSetAttribute(name, FormatInt(static_cast<int64_t>(value), base), WriteEmpty::Always);
 		}
 
 	public:
@@ -392,7 +388,7 @@ class KxXDocumentNode: public KxIXDocumentNode
 		{
 			return {};
 		}
-		virtual Node QueryOrCreateElement(const wxString& XPath)
+		virtual Node ConstructElement(const wxString& XPath)
 		{
 			return {};
 		}

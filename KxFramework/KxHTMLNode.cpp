@@ -186,7 +186,7 @@ wxString KxHTMLNode::DoGetValue(const wxString& defaultValue) const
 	}
 	return defaultValue;
 }
-bool KxHTMLNode::DoSetValue(const wxString& value, AsCDATA asCDATA)
+bool KxHTMLNode::DoSetValue(const wxString& value, WriteEmpty writeEmpty, AsCDATA asCDATA)
 {
 	return false;
 }
@@ -204,7 +204,7 @@ wxString KxHTMLNode::DoGetAttribute(const wxString& name, const wxString& defaul
 	}
 	return defaultValue;
 }
-bool KxHTMLNode::DoSetAttribute(const wxString& name, const wxString& value)
+bool KxHTMLNode::DoSetAttribute(const wxString& name, const wxString& value, WriteEmpty writeEmpty)
 {
 	return false;
 }
@@ -213,7 +213,7 @@ KxHTMLNode KxHTMLNode::QueryElement(const wxString& XPath) const
 {
 	return NullNode;
 }
-KxHTMLNode KxHTMLNode::QueryOrCreateElement(const wxString& XPath)
+KxHTMLNode KxHTMLNode::ConstructElement(const wxString& XPath)
 {
 	return NullNode;
 }

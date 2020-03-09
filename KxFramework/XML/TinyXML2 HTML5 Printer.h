@@ -39,7 +39,7 @@ must not be misrepresented as being the original software.
 distribution.
 */
 
-
+#pragma once
 #include "tinyxml2.h"
 #include <iostream>
 

@@ -8,43 +8,45 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxFramework/KxXDocumentNode.h"
 #include "KxFramework/KxUtility.h"
 #include "KxFramework/KxString.h"
+#include "KxFramework/KxStringUtility.h"
 #include <charconv>
 
 namespace
 {
-	template<class TBuffer, class TValue> bool IntToChars(TBuffer&& buffer, TValue value, int base = 10)
+	template<class TBuffer, class TValue>
+	bool IntToChars(TBuffer&& buffer, TValue value, int base = 10)
 	{
 		return std::to_chars(std::begin(buffer), std::end(buffer), value, base).ec == std::errc();
 	}
-	template<class TBuffer, class TValue> bool FloatToChars(TBuffer&& buffer, TValue value, int precision)
+
+	template<class TBuffer, class TValue>
+	bool FloatToChars(TBuffer&& buffer, TValue value, int precision)
 	{
 		return std::to_chars(std::begin(buffer), std::end(buffer), value, std::chars_format::fixed, precision).ec == std::errc();
 	}
 }
 
-int KxIXDocumentNode::ExtractIndexFromName(wxString& elementName, const wxString& xPathSeparator)
+std::pair<wxStringView, int> KxIXDocumentNode::ExtractIndexFromName(wxStringView elementName, wxStringView xPathSeparator)
 {
-	long index = 1;
-	if (!xPathSeparator.IsEmpty())
+	int index = 0;
+	if (!xPathSeparator.empty())
 	{
 		size_t indexStart = elementName.find(xPathSeparator);
 		if (indexStart != wxString::npos)
 		{
-			if (elementName.Mid(indexStart + xPathSeparator.Length()).ToCLong(&index))
+			long value = 0;
+			if (KxUtility::String::FromStringView(elementName.substr(indexStart + xPathSeparator.length())).ToCLong(&value))
 			{
-				elementName.Truncate(indexStart);
-				if (index <= 0)
-				{
-					index = 1;
-				}
+				index = std::clamp<int>(value, 0, std::numeric_limits<int>::max());
+				elementName = elementName.substr(0, indexStart);
 			}
 		}
 	}
-	return index;
+	return {elementName, index};
 }
 bool KxIXDocumentNode::ContainsForbiddenCharactersForValue(const wxString& value)
 {
-	for (const auto& c: value)
+	for (wxChar c: value)
 	{
 		if (c == wxS('&') || c == wxS('<') || c == wxS('>'))
 		{

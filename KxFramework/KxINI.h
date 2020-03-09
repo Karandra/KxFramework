@@ -1,9 +1,3 @@
-/*
-Copyright © 2018 Kerber. All rights reserved.
-
-You should have received a copy of the GNU LGPL v3
-along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
-*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxXDocumentNode.h"
@@ -45,13 +39,13 @@ class KX_API KxINI: private KxXDocumentNode<KxINI>
 
 	protected:
 		wxString DoGetValue(const wxString& defaultValue = wxEmptyString) const override;
-		bool DoSetValue(const wxString& value, AsCDATA asCDATA = AsCDATA::Auto) override;
+		bool DoSetValue(const wxString& value, WriteEmpty writeEmpty = WriteEmpty::Always, AsCDATA asCDATA = AsCDATA::Auto) override;
 
 		wxString DoGetAttribute(const wxString& name, const wxString& defaultValue = wxEmptyString) const override;
-		bool DoSetAttribute(const wxString& name, const wxString& value) override;
+		bool DoSetAttribute(const wxString& name, const wxString& value, WriteEmpty writeEmpty = WriteEmpty::Always) override;
 
 		wxString IniGetValue(const wxString& sectionName, const wxString& keyName, const wxString& defaultValue = wxEmptyString) const;
-		bool IniSetValue(const wxString& sectionName, const wxString& keyName, const wxString& value);
+		bool IniSetValue(const wxString& sectionName, const wxString& keyName, const wxString& value, WriteEmpty writeEmpty = WriteEmpty::Always);
 
 	public:
 		KxINI(const KxINI&) = delete;
@@ -97,37 +91,37 @@ class KX_API KxINI: private KxXDocumentNode<KxINI>
 			return ParseBool(IniGetValue(sectionName, keyName), defaultValue);
 		}
 
-		bool SetValue(const wxString& sectionName, const wxString& keyName, const wxString& value)
+		bool SetValue(const wxString& sectionName, const wxString& keyName, const wxString& value, WriteEmpty writeEmpty = WriteEmpty::Always)
 		{
-			return IniSetValue(sectionName, keyName, value);
+			return IniSetValue(sectionName, keyName, value, writeEmpty);
 		}
-		bool SetValue(const wxString& sectionName, const wxString& keyName, const char* value)
+		bool SetValue(const wxString& sectionName, const wxString& keyName, const char* value, WriteEmpty writeEmpty = WriteEmpty::Always)
 		{
-			return IniSetValue(sectionName, keyName, wxString::FromUTF8(value));
+			return IniSetValue(sectionName, keyName, wxString::FromUTF8(value), writeEmpty);
 		}
-		bool SetValue(const wxString& sectionName, const wxString& keyName, const wchar_t* value)
+		bool SetValue(const wxString& sectionName, const wxString& keyName, const wchar_t* value, WriteEmpty writeEmpty = WriteEmpty::Always)
 		{
-			return IniSetValue(sectionName, keyName, wxString(value));
+			return IniSetValue(sectionName, keyName, wxString(value), writeEmpty);
 		}
 		bool SetValue(const wxString& sectionName, const wxString& keyName, int64_t value)
 		{
-			return IniSetValue(sectionName, keyName, FormatInt(value));
+			return IniSetValue(sectionName, keyName, FormatInt(value), WriteEmpty::Always);
 		}
 		bool SetValue(const wxString& sectionName, const wxString& keyName, int value)
 		{
-			return IniSetValue(sectionName, keyName, FormatInt(value));
+			return IniSetValue(sectionName, keyName, FormatInt(value), WriteEmpty::Always);
 		}
 		bool SetValue(const wxString& sectionName, const wxString& keyName, double value, int precision = -1)
 		{
-			return IniSetValue(sectionName, keyName, FormatFloat(value, precision));
+			return IniSetValue(sectionName, keyName, FormatFloat(value, precision), WriteEmpty::Always);
 		}
 		bool SetValue(const wxString& sectionName, const wxString& keyName, float value, int precision = -1)
 		{
-			return IniSetValue(sectionName, keyName, FormatFloat((double)value, precision));
+			return IniSetValue(sectionName, keyName, FormatFloat((double)value, precision), WriteEmpty::Always);
 		}
 		bool SetValue(const wxString& sectionName, const wxString& keyName, bool value)
 		{
-			return IniSetValue(sectionName, keyName, FormatBool(value));
+			return IniSetValue(sectionName, keyName, FormatBool(value), WriteEmpty::Always);
 		}
 
 		/* Deletion */

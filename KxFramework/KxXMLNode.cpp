@@ -1,62 +1,75 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxXML.h"
-#include "KxFramework/KxString.h"
+#include "KxFramework/KxXMLUtility.h"
 #include "KxFramework/KxUtility.h"
+#include "KxFramework/KxString.h"
+#include "KxFramework/KxStringUtility.h"
 #include "KxFramework/XML/TinyXML2 HTML5 Printer.h"
 
-const KxXMLNode KxXMLNode::NullNode = KxXMLNode();
+KxXMLNode KxXMLNode::ConstructOrQueryElement(const wxString& xPath, bool allowCreate)
+{
+	if (IsOK())
+	{
+		tinyxml2::XMLDocument& document = GetDocument().m_Document;
+		tinyxml2::XMLNode* currentNode = GetNode();
+		tinyxml2::XMLNode* previousNode = currentNode;
 
-std::string KxXMLNode::CleanText(const tinyxml2::XMLNode* node, const std::string& separator)
-{
-	std::string contents;
-	if (node->ToElement())
-	{
-		for (const tinyxml2::XMLNode* child = node->FirstChild(); child != nullptr; child = child->NextSibling())
+		size_t itemCount = KxUtility::String::SplitBySeparator(xPath, GetXPathSeparator(), [&](wxStringView name)
 		{
-			const std::string text = CleanText(child);
-			if (!separator.empty() && child != node && !text.empty())
+			// Save previous element
+			if (!currentNode)
 			{
-				contents.append(separator);
+				return false;
 			}
-			contents.append(text);
-		}
-	}
-	else if (!node->ToDocument())
-	{
-		contents.assign(node->Value());
-	}
-	return contents;
-}
-wxString KxXMLNode::PrintDocument(const tinyxml2::XMLDocument& document, KxXMLPrintMode mode)
-{
-	if (mode == KxXML_PRINT_HTML5)
-	{
-		return PrintDocument<tinyxml2::XMLPrinterHTML5>(document);
-	}
-	else
-	{
-		return PrintDocument(document);
-	}
-}
-size_t KxXMLNode::GetIndexWithinParent(const tinyxml2::XMLNode* node)
-{
-	size_t index = 0;
-	if (node && node->ToElement())
-	{
-		auto parentElement = node->Parent() ? node->Parent()->ToElement() : nullptr;
-		if (parentElement)
-		{
-			for (const tinyxml2::XMLElement* element = parentElement->FirstChildElement(); element != nullptr; element = element->NextSiblingElement())
+			previousNode = currentNode;
+
+			// Extract index from name and remove it from path, zero-based
+			// point/x -> 0, point/x::1 -> 1, point/y::0 -> 0, point/z::-7 -> 0
+			auto [elementName, index] = KxXDocumentNode::ExtractIndexFromName(name, KxUtility::String::ToStringView(GetDocument().m_XPathIndexSeparator));
+			auto elementNameUTF8 = KxUtility::String::FromStringView(name).ToUTF8();
+
+			// Get level 0
+			currentNode = previousNode->FirstChildElement(elementNameUTF8.data());
+			if (!currentNode)
 			{
-				index++;
-				if (element == node->ToElement())
+				if (allowCreate)
 				{
-					break;
+					currentNode = document.NewElement(elementNameUTF8.data());
+					previousNode->InsertEndChild(currentNode);
+				}
+				else
+				{
+					return false;
 				}
 			}
+
+			// We need to go down by 'index' more elements
+			for (int level = 1; level <= index; level++)
+			{
+				// Get next level
+				currentNode = currentNode->NextSiblingElement(elementNameUTF8.data());
+				if (!currentNode)
+				{
+					if (allowCreate)
+					{
+						currentNode = document.NewElement(elementNameUTF8.data());
+						previousNode->InsertAfterChild(previousNode, currentNode);
+					}
+					else
+					{
+						return false;
+					}
+				}
+			}
+			return true;
+		});
+
+		if (currentNode && itemCount != 0)
+		{
+			return KxXMLNode(currentNode, GetDocument());
 		}
 	}
-	return index;
+	return {};
 }
 
 wxString KxXMLNode::DoGetValue(const wxString& defaultValue) const
@@ -121,10 +134,14 @@ bool KxXMLNode::DoGetValueBool(bool defaultValue) const
 	}
 	return value;
 }
-bool KxXMLNode::DoSetValue(const wxString& value, AsCDATA asCDATA)
+bool KxXMLNode::DoSetValue(const wxString& value, WriteEmpty writeEmpty, AsCDATA asCDATA)
 {
-	auto node = GetNode();
-	if (node)
+	if (writeEmpty == WriteEmpty::Never && value.IsEmpty())
+	{
+		return false;
+	}
+
+	if (auto node = GetNode())
 	{
 		if (node->ToElement())
 		{
@@ -227,8 +244,13 @@ bool KxXMLNode::DoGetAttributeBool(const wxString& name, bool defaultValue) cons
 	}
 	return value;
 }
-bool KxXMLNode::DoSetAttribute(const wxString& name, const wxString& value)
+bool KxXMLNode::DoSetAttribute(const wxString& name, const wxString& value, WriteEmpty writeEmpty)
 {
+	if (writeEmpty == WriteEmpty::Never && value.IsEmpty())
+	{
+		return false;
+	}
+
 	if (GetNode())
 	{
 		if (auto node = GetNode()->ToElement())
@@ -242,123 +264,46 @@ bool KxXMLNode::DoSetAttribute(const wxString& name, const wxString& value)
 	return false;
 }
 
-KxXMLNode::KxXMLNode(tinyxml2::XMLNode* node, KxXMLDocument* document)
-	:m_Node(node), m_Document(document)
+KxXMLNode KxXMLNode::QueryElement(const wxString& xPath) const
 {
+	return const_cast<KxXMLNode&>(*this).ConstructOrQueryElement(xPath, false);
 }
-KxXMLNode::KxXMLNode(const tinyxml2::XMLNode* node, KxXMLDocument* document)
-	: m_Node(const_cast<tinyxml2::XMLNode*>(node)), m_Document(document)
+KxXMLNode KxXMLNode::ConstructElement(const wxString& xPath)
 {
-}
-
-KxXMLNode KxXMLNode::QueryElement(const wxString& XPath) const
-{
-	if (!IsOK())
-	{
-		return {};
-	}
-
-	KxStringVector elements = KxString::Split(XPath, wxS("/"));
-	if (!elements.empty())
-	{
-		const tinyxml2::XMLNode* currentNode = GetNode();
-		const tinyxml2::XMLNode* previousNode = currentNode;
-
-		for (wxString& name: elements)
-		{
-			if (!currentNode)
-			{
-				break;
-			}
-
-			// Save previous element
-			previousNode = currentNode;
-
-			// Extract index from name and remove it from path
-			// point/x -> 1, point/x::2 -> 2, point/y::0 -> 1, point/z::-7 -> 1
-			int index = m_Document->ExtractIndexFromName(name);
-			auto elementNameUTF8 = name.ToUTF8();
-
-			// Get level 1
-			currentNode = previousNode->FirstChildElement(elementNameUTF8.data());
-
-			// We need to go down by 'index' elements
-			if (index != 1 && currentNode)
-			{
-				for (int level = 1; level < index && currentNode; level++)
-				{
-					// Get next level
-					currentNode = currentNode->NextSiblingElement(elementNameUTF8.data());
-				}
-			}
-		}
-		return KxXMLNode(const_cast<tinyxml2::XMLNode*>(currentNode), const_cast<KxXMLDocument*>(GetDocumentNode()));
-	}
-	return NullNode;
-}
-KxXMLNode KxXMLNode::QueryOrCreateElement(const wxString& XPath)
-{
-	if (!m_Document)
-	{
-		return {};
-	}
-
-	KxStringVector elements = KxString::Split(XPath, wxS("/"));
-	if (!elements.empty())
-	{
-		KxXMLNode currentNode = *this;
-		KxXMLNode previousNode = currentNode;
-
-		for (wxString& name: elements)
-		{
-			// Save previous element
-			previousNode = currentNode;
-
-			// Extract index from name and remove it from path
-			// point/x -> 1, point/x::2 -> 2, point/y::0 -> 1, point/z::-7 -> 1
-			const int index = m_Document->ExtractIndexFromName(name);
-
-			// Get level 1
-			currentNode = previousNode.GetFirstChildElement(name);
-			if (!currentNode.IsOK())
-			{
-				currentNode = previousNode.NewElement(name, KxXML_INSERT_AS_LAST_CHILD);
-			}
-
-			// We need to get or create 'index' amount of elements
-			if (index > 1)
-			{
-				for (int level = 1; level < index; level++)
-				{
-					KxXMLNode tempNode = currentNode.GetNextSiblingElement(name);
-					if (tempNode.IsOK())
-					{
-						currentNode = tempNode;
-					}
-					else
-					{
-						currentNode = currentNode.NewElement(name, KxXML_INSERT_AFTER_CHILD);
-					}
-				}
-			}
-		}
-		return currentNode;
-	}
-	return NullNode;
+	return const_cast<KxXMLNode&>(*this).ConstructOrQueryElement(xPath, true);
 }
 
 wxString KxXMLNode::GetXPathIndexSeparator() const
 {
 	return m_Document ? m_Document->GetXPathIndexSeparator() : wxEmptyString;
 }
-bool KxXMLNode::SetXPathIndexSeparator(const wxString& value)
+void KxXMLNode::SetXPathIndexSeparator(const wxString& value)
 {
-	return m_Document ? m_Document->SetXPathIndexSeparator(value) : false;
+	if (m_Document)
+	{
+		m_Document->SetXPathIndexSeparator(value);
+	}
 }
 
 size_t KxXMLNode::GetIndexWithinParent() const
 {
-	return GetIndexWithinParent(GetNode());
+	if (auto node = GetNode(); node && node->ToElement())
+	{
+		if (auto parentElement = node->Parent() ? node->Parent()->ToElement() : nullptr)
+		{
+			size_t index = 0;
+			for (const tinyxml2::XMLElement* element = parentElement->FirstChildElement(); element; element = element->NextSiblingElement())
+			{
+				index++;
+				if (element == node->ToElement())
+				{
+					break;
+				}
+			}
+			return index;
+		}
+	}
+	return 0;
 }
 wxString KxXMLNode::GetName() const
 {
@@ -408,30 +353,30 @@ bool KxXMLNode::HasChildren() const
 }
 KxXMLNode::NodeVector KxXMLNode::GetChildren() const
 {
-	NodeVector list;
+	NodeVector items;
 	if (auto node = GetNode())
 	{
-		for (const tinyxml2::XMLNode* child = node->FirstChild(); child != nullptr; child = child->NextSibling())
+		for (const tinyxml2::XMLNode* child = node->FirstChild(); child; child = child->NextSibling())
 		{
-			list.push_back(KxXMLNode(const_cast<tinyxml2::XMLNode*>(child), m_Document));
+			items.emplace_back(KxXMLNode(child, *m_Document));
 		}
 	}
-	return list;
+	return items;
 }
 KxXMLNode::NodeVector KxXMLNode::GetChildrenElements(const wxString& searchPattern) const
 {
-	NodeVector list;
+	NodeVector items;
 	if (auto node = GetNode())
 	{
-		for (const tinyxml2::XMLElement* child = node->FirstChildElement(); child != nullptr; child = child->NextSiblingElement())
+		for (const tinyxml2::XMLElement* child = node->FirstChildElement(); child; child = child->NextSiblingElement())
 		{
-			if (searchPattern.IsEmpty() || wxString(child->Name()).Matches(searchPattern))
+			if (searchPattern.IsEmpty() || wxString::FromUTF8Unchecked(child->Name()).Matches(searchPattern))
 			{
-				list.push_back(KxXMLNode(const_cast<tinyxml2::XMLElement*>(child), m_Document));
+				items.emplace_back(KxXMLNode(child, *m_Document));
 			}
 		}
 	}
-	return list;
+	return items;
 }
 bool KxXMLNode::ClearChildren()
 {
@@ -456,7 +401,7 @@ wxString KxXMLNode::GetXML(KxXMLPrintMode mode) const
 	{
 		tinyxml2::XMLDocument subTree;
 		node->DeepClone(&subTree);
-		return PrintDocument(subTree, mode);
+		return PrintDocument(subTree, mode == KxXMLPrintMode::HTML5);
 	}
 	return wxEmptyString;
 }
@@ -467,30 +412,30 @@ KxXMLNodeType KxXMLNode::GetType() const
 	{
 		if (node->ToDocument())
 		{
-			return KxXML_NODE_DOCUMENT;
+			return KxXMLNodeType::Document;
 		}
 		else if (node->ToElement())
 		{
-			return KxXML_NODE_ELEMENT;
+			return KxXMLNodeType::Element;
 		}
 		else if (node->ToText())
 		{
-			return KxXML_NODE_TEXT;
+			return KxXMLNodeType::Text;
 		}
 		else if (node->ToComment())
 		{
-			return KxXML_NODE_COMMENT;
+			return KxXMLNodeType::Comment;
 		}
 		else if (node->ToDeclaration())
 		{
-			return KxXML_NODE_DECLARATION;
+			return KxXMLNodeType::Declaration;
 		}
 		else if (node->ToUnknown())
 		{
-			return KxXML_NODE_UNKNOWN;
+			return KxXMLNodeType::Unknown;
 		}
 	}
-	return KxXML_NODE_INVALID;
+	return KxXMLNodeType::Invalid;
 }
 bool KxXMLNode::IsElement() const
 {
@@ -511,13 +456,9 @@ bool KxXMLNode::IsText() const
 
 wxString KxXMLNode::GetValueText(const wxString& separator) const
 {
-	if (GetNode())
+	if (auto node = GetNode())
 	{
-		if (auto node = GetNode())
-		{
-			auto utf8 = separator.ToUTF8();
-			return ToWxString(CleanText(node, utf8.data()));
-		}
+		return CleanText(*node, KxUtility::String::ToStringView(separator));
 	}
 	return wxEmptyString;
 }
@@ -578,9 +519,9 @@ KxStringVector KxXMLNode::GetAttributes() const
 	{
 		if (auto node = GetNode()->ToElement())
 		{
-			for (const tinyxml2::XMLAttribute* attribute = node->FirstAttribute(); attribute != nullptr; attribute = attribute->Next())
+			for (const tinyxml2::XMLAttribute* attribute = node->FirstAttribute(); attribute; attribute = attribute->Next())
 			{
-				list.push_back(attribute->Name());
+				list.emplace_back(ToWxString(attribute->Name()));
 			}
 		}
 	}
@@ -647,7 +588,7 @@ KxXMLNode KxXMLNode::GetElementByAttribute(const wxString& name, const wxString&
 	{
 		if (GetAttribute(name) == value)
 		{
-			return KxXMLNode(GetNode(), m_Document);
+			return KxXMLNode(node, *m_Document);
 		}
 		else
 		{
@@ -661,7 +602,7 @@ KxXMLNode KxXMLNode::GetElementByAttribute(const wxString& name, const wxString&
 			}
 		}
 	}
-	return NullNode;
+	return {};
 }
 KxXMLNode KxXMLNode::GetElementByTag(const wxString& tagName) const
 {
@@ -670,16 +611,15 @@ KxXMLNode KxXMLNode::GetElementByTag(const wxString& tagName) const
 	{
 		if (GetName() == tagName)
 		{
-			return KxXMLNode(GetNode(), m_Document);
+			return KxXMLNode(node, *m_Document);
 		}
 		else
 		{
-			for (auto child = GetFirstChild(); child.IsOK(); child = child.GetNextSibling())
+			for (auto child = GetFirstChild(); child; child = child.GetNextSibling())
 			{
 				if (child.IsElement())
 				{
-					auto foundElement = child.GetElementByTag(tagName);
-					if (foundElement.IsOK())
+					if (KxXMLNode foundElement = child.GetElementByTag(tagName))
 					{
 						return foundElement;
 					}
@@ -687,23 +627,23 @@ KxXMLNode KxXMLNode::GetElementByTag(const wxString& tagName) const
 			}
 		}
 	}
-	return NullNode;
+	return {};
 }
 KxXMLNode KxXMLNode::GetParent() const
 {
 	if (auto node = GetNode())
 	{
-		return KxXMLNode(node->Parent(), m_Document);
+		return KxXMLNode(node->Parent(), *m_Document);
 	}
-	return NullNode;
+	return {};
 }
 KxXMLNode KxXMLNode::GetPreviousSibling() const
 {
 	if (auto node = GetNode())
 	{
-		return KxXMLNode(node->PreviousSibling(), m_Document);
+		return KxXMLNode(node->PreviousSibling(), *m_Document);
 	}
-	return NullNode;
+	return {};
 }
 KxXMLNode KxXMLNode::GetPreviousSiblingElement(const wxString& name) const
 {
@@ -711,23 +651,23 @@ KxXMLNode KxXMLNode::GetPreviousSiblingElement(const wxString& name) const
 	{
 		if (name.IsEmpty())
 		{
-			return KxXMLNode(node->PreviousSiblingElement(), m_Document);
+			return KxXMLNode(node->PreviousSiblingElement(), *m_Document);
 		}
 		else
 		{
 			auto utf8 = name.ToUTF8();
-			return KxXMLNode(node->PreviousSiblingElement(utf8.data()), m_Document);
+			return KxXMLNode(node->PreviousSiblingElement(utf8.data()), *m_Document);
 		}
 	}
-	return NullNode;
+	return {};
 }
 KxXMLNode KxXMLNode::GetNextSibling() const
 {
 	if (auto node = GetNode())
 	{
-		return KxXMLNode(node->NextSibling(), m_Document);
+		return KxXMLNode(node->NextSibling(), *m_Document);
 	}
-	return NullNode;
+	return {};
 }
 KxXMLNode KxXMLNode::GetNextSiblingElement(const wxString& name) const
 {
@@ -735,23 +675,23 @@ KxXMLNode KxXMLNode::GetNextSiblingElement(const wxString& name) const
 	{
 		if (name.IsEmpty())
 		{
-			return KxXMLNode(node->NextSiblingElement(), m_Document);
+			return KxXMLNode(node->NextSiblingElement(), *m_Document);
 		}
 		else
 		{
 			auto utf8 = name.ToUTF8();
-			return KxXMLNode(node->NextSiblingElement(utf8.data()), m_Document);
+			return KxXMLNode(node->NextSiblingElement(utf8.data()), *m_Document);
 		}
 	}
-	return NullNode;
+	return {};
 }
 KxXMLNode KxXMLNode::GetFirstChild() const
 {
 	if (auto node = GetNode())
 	{
-		return KxXMLNode(node->FirstChild(), m_Document);
+		return KxXMLNode(node->FirstChild(), *m_Document);
 	}
-	return NullNode;
+	return {};
 }
 KxXMLNode KxXMLNode::GetFirstChildElement(const wxString& name) const
 {
@@ -759,23 +699,23 @@ KxXMLNode KxXMLNode::GetFirstChildElement(const wxString& name) const
 	{
 		if (name.IsEmpty())
 		{
-			return KxXMLNode(node->FirstChildElement(), m_Document);
+			return KxXMLNode(node->FirstChildElement(), *m_Document);
 		}
 		else
 		{
 			auto utf8 = name.ToUTF8();
-			return KxXMLNode(node->FirstChildElement(utf8.data()), m_Document);
+			return KxXMLNode(node->FirstChildElement(utf8.data()), *m_Document);
 		}
 	}
-	return NullNode;
+	return {};
 }
 KxXMLNode KxXMLNode::GetLastChild() const
 {
 	if (auto node = GetNode())
 	{
-		return KxXMLNode(node->LastChild(), m_Document);
+		return KxXMLNode(node->LastChild(), *m_Document);
 	}
-	return NullNode;
+	return {};
 }
 KxXMLNode KxXMLNode::GetLastChildElement(const wxString& name) const
 {
@@ -783,15 +723,15 @@ KxXMLNode KxXMLNode::GetLastChildElement(const wxString& name) const
 	{
 		if (name.IsEmpty())
 		{
-			return KxXMLNode(node->LastChildElement(), m_Document);
+			return KxXMLNode(node->LastChildElement(), *m_Document);
 		}
 		else
 		{
 			auto utf8 = name.ToUTF8();
-			return KxXMLNode(node->LastChildElement(utf8.data()), m_Document);
+			return KxXMLNode(node->LastChildElement(utf8.data()), *m_Document);
 		}
 	}
-	return NullNode;
+	return {};
 }
 
 bool KxXMLNode::InsertAfterChild(KxXMLNode& newNode)
@@ -827,19 +767,19 @@ bool KxXMLNode::InsertLastChild(KxXMLNode& newNode)
 	}
 	return false;
 }
-bool KxXMLNode::Insert(KxXMLNode& node, KxXMLInsertNodeMode insertMode)
+bool KxXMLNode::Insert(KxXMLNode& node, KxXMLInsertNode insertMode)
 {
 	switch (insertMode)
 	{
-		case KxXML_INSERT_AFTER_CHILD:
+		case KxXMLInsertNode::AfterChild:
 		{
 			return InsertAfterChild(node);
 		}
-		case KxXML_INSERT_AS_FIRST_CHILD:
+		case KxXMLInsertNode::AsFirstChild:
 		{
 			return InsertFirstChild(node);
 		}
-		case KxXML_INSERT_AS_LAST_CHILD:
+		case KxXMLInsertNode::AsLastChild:
 		{
 			return InsertLastChild(node);
 		}
@@ -848,48 +788,63 @@ bool KxXMLNode::Insert(KxXMLNode& node, KxXMLInsertNodeMode insertMode)
 }
 
 // Insertion
-KxXMLNode KxXMLNode::NewElement(const wxString& name, KxXMLInsertNodeMode insertMode)
+KxXMLNode KxXMLNode::NewElement(const wxString& name, KxXMLInsertNode insertMode)
 {
 	if (m_Document)
 	{
 		KxXMLNode node = m_Document->CreateElement(name);
-		return Insert(node, insertMode) ? node : NullNode;
+		if (node && Insert(node, insertMode))
+		{
+			return node;
+		}
 	}
 	return {};
 }
-KxXMLNode KxXMLNode::NewComment(const wxString& value, KxXMLInsertNodeMode insertMode)
+KxXMLNode KxXMLNode::NewComment(const wxString& value, KxXMLInsertNode insertMode)
 {
 	if (m_Document)
 	{
 		KxXMLNode node = m_Document->CreateComment(value);
-		return Insert(node, insertMode) ? node : NullNode;
+		if (node && Insert(node, insertMode))
+		{
+			return node;
+		}
 	}
 	return {};
 }
-KxXMLNode KxXMLNode::NewText(const wxString& value, KxXMLInsertNodeMode insertMode)
+KxXMLNode KxXMLNode::NewText(const wxString& value, KxXMLInsertNode insertMode)
 {
 	if (m_Document)
 	{
 		KxXMLNode node = m_Document->CreateText(value);
-		return Insert(node, insertMode) ? node : NullNode;
+		if (node && Insert(node, insertMode))
+		{
+			return node;
+		}
 	}
 	return {};
 }
-KxXMLNode KxXMLNode::NewDeclaration(const wxString& value, KxXMLInsertNodeMode insertMode)
+KxXMLNode KxXMLNode::NewDeclaration(const wxString& value, KxXMLInsertNode insertMode)
 {
 	if (m_Document)
 	{
 		KxXMLNode node = m_Document->CreateDeclaration(value);
-		return Insert(node, insertMode) ? node : NullNode;
+		if (node && Insert(node, insertMode))
+		{
+			return node;
+		}
 	}
 	return {};
 }
-KxXMLNode KxXMLNode::NewUnknown(const wxString& value, KxXMLInsertNodeMode insertMode)
+KxXMLNode KxXMLNode::NewUnknown(const wxString& value, KxXMLInsertNode insertMode)
 {
 	if (m_Document)
 	{
 		KxXMLNode node = m_Document->CreateUnknown(value);
-		return Insert(node, insertMode) ? node : NullNode;
+		if (node && Insert(node, insertMode))
+		{
+			return node;
+		}
 	}
 	return {};
 }

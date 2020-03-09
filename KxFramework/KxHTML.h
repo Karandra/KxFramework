@@ -1,9 +1,3 @@
-/*
-Copyright © 2018 Kerber. All rights reserved.
-
-You should have received a copy of the GNU LGPL v3
-along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
-*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxXDocumentNode.h"
@@ -40,10 +34,10 @@ class KX_API KxHTMLNode: public KxXDocumentNode<KxHTMLNode>
 
 	protected:
 		wxString DoGetValue(const wxString& defaultValue = wxEmptyString) const override;
-		bool DoSetValue(const wxString& value, AsCDATA asCDATA = AsCDATA::Auto) override;
+		bool DoSetValue(const wxString& value, WriteEmpty writeEmpty, AsCDATA asCDATA) override;
 		
-		wxString DoGetAttribute(const wxString& name, const wxString& defaultValue = wxEmptyString) const override;
-		bool DoSetAttribute(const wxString& name, const wxString& value) override;
+		wxString DoGetAttribute(const wxString& name, const wxString& defaultValue) const override;
+		bool DoSetAttribute(const wxString& name, const wxString& value, WriteEmpty writeEmpty) override;
 
 	public:
 		KxHTMLNode()
@@ -68,7 +62,7 @@ class KX_API KxHTMLNode: public KxXDocumentNode<KxHTMLNode>
 			return m_Node && m_Document;
 		}
 		KxHTMLNode QueryElement(const wxString& XPath) const override;
-		KxHTMLNode QueryOrCreateElement(const wxString& XPath) override;
+		KxHTMLNode ConstructElement(const wxString& XPath) override;
 
 		/* Node */
 		size_t GetIndexWithinParent() const override;
