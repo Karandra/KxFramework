@@ -371,7 +371,7 @@ class KX_API KxIXDocumentNode
 		}
 		bool operator!() const
 		{
-			return IsOK();
+			return !IsOK();
 		}
 };
 
