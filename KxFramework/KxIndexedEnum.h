@@ -174,7 +174,7 @@ namespace KxIndexedEnum
 				using namespace KxUtility::String;
 
 				TInt intValue = static_cast<TInt>(initialValue);
-				SplitBySeparator(string, wxS('|'), [&intValue](TStdWxStringView value)
+				SplitBySeparator(string, wxS('|'), [&intValue](wxStringView value)
 				{
 					const TItem* item = FindByName(TString(value.data(), value.size()));
 					if (item)
