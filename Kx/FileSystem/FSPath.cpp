@@ -91,14 +91,14 @@ namespace KxFileSystem
 
 namespace KxFileSystem
 {
-	KxFSPath KxFSPath::FromStringUnchecked(const wxString& string)
+	FSPath FSPath::FromStringUnchecked(const wxString& string)
 	{
-		KxFSPath path;
+		FSPath path;
 		path.m_Path = string;
 		return path;
 	}
 
-	bool KxFSPath::AssignFromPath(const wxString& path)
+	bool FSPath::AssignFromPath(const wxString& path)
 	{
 		m_Path = path;
 		if (!m_Path.IsEmpty())
@@ -106,8 +106,10 @@ namespace KxFileSystem
 			Normalize();
 			ProcessNamespace();
 		}
+
+		return IsValid();
 	}
-	void KxFSPath::ProcessNamespace()
+	void FSPath::ProcessNamespace()
 	{
 		size_t namespacePrefixLength = DetectNamespacePrefix(m_Path, m_Namespace);
 		if (namespacePrefixLength != 0)
@@ -115,7 +117,7 @@ namespace KxFileSystem
 			m_Path.Remove(0, namespacePrefixLength);
 		}
 	}
-	void KxFSPath::Normalize()
+	void FSPath::Normalize()
 	{
 		const std::locale locale;
 
@@ -165,24 +167,24 @@ namespace KxFileSystem
 		}
 	}
 
-	bool KxFSPath::IsValid() const
+	bool FSPath::IsValid() const
 	{
 		return !m_Path.IsEmpty();
 	}
-	bool KxFSPath::IsSameAs(const KxFSPath& other, bool caseSensitive) const
+	bool FSPath::IsSameAs(const FSPath& other, bool caseSensitive) const
 	{
 		return m_Namespace == other.m_Namespace && KxComparator::IsEqual(m_Path, other.m_Path, !caseSensitive);
 	}
-	bool KxFSPath::IsAbsolute() const
+	bool FSPath::IsAbsolute() const
 	{
 		// Path is absolute if it has a namespace or starts with a disk designator
 		return m_Namespace != KxFileSystem::PathNamespace::None || HasDrive();
 	}
-	bool KxFSPath::IsRelative() const
+	bool FSPath::IsRelative() const
 	{
 		return IsValid() && !IsAbsolute();
 	}
-	size_t KxFSPath::GetComponentCount() const
+	size_t FSPath::GetComponentCount() const
 	{
 		size_t count = 0;
 		for (wxChar c : m_Path)
@@ -195,20 +197,20 @@ namespace KxFileSystem
 		return count;
 	}
 
-	wxString KxFSPath::GetFullPath(KxFileSystem::PathNamespace withNamespace) const
+	wxString FSPath::GetFullPath(KxFileSystem::PathNamespace withNamespace) const
 	{
 		return ConcatWithNamespace(m_Path, withNamespace);
 	}
 
-	bool KxFSPath::HasDrive() const
+	bool FSPath::HasDrive() const
 	{
 		return m_Path.length() >= 2 && m_Path[1] == wxS(':');
 	}
-	LegacyDrive KxFSPath::GetDrive() const
+	LegacyDrive FSPath::GetDrive() const
 	{
 		return LegacyDrive::FromChar(ExtractBefore(m_Path, wxS(':')));
 	}
-	KxFSPath& KxFSPath::SetDrive(const LegacyDrive& drive)
+	FSPath& FSPath::SetDrive(const LegacyDrive& drive)
 	{
 		const size_t pos = m_Path.find(wxS(':'));
 		if (pos != wxString::npos)
@@ -225,13 +227,13 @@ namespace KxFileSystem
 		return *this;
 	}
 
-	wxString KxFSPath::GetPath() const
+	wxString FSPath::GetPath() const
 	{
 		// Return after drive designator or the path itself
 		wxString path = ExtractAfter(m_Path, wxS(':'));
 		return path.IsEmpty() ? m_Path : path;
 	}
-	KxFSPath& KxFSPath::SetPath(const wxString& path)
+	FSPath& FSPath::SetPath(const wxString& path)
 	{
 		// Don't check for '\' and '/' here
 		wxString forbiddenChars = KxFileSystem::GetForbiddenChars();
@@ -266,13 +268,13 @@ namespace KxFileSystem
 		return *this;
 	}
 
-	wxString KxFSPath::GetName() const
+	wxString FSPath::GetName() const
 	{
 		// Return everything after last path delimiter or itself
 		wxString path = ExtractAfter(m_Path, wxS('\\'), wxString::npos, true);
 		return path.IsEmpty() ? m_Path : path;
 	}
-	KxFSPath& KxFSPath::SetName(const wxString& name)
+	FSPath& FSPath::SetName(const wxString& name)
 	{
 		if (!name.Contains(KxFileSystem::GetForbiddenChars()))
 		{
@@ -294,12 +296,12 @@ namespace KxFileSystem
 		return *this;
 	}
 
-	wxString KxFSPath::GetExtension() const
+	wxString FSPath::GetExtension() const
 	{
 		// Return extension without a dot
-		wxString path = ExtractAfter(m_Path, wxS('.'), wxString::npos, true);
+		return ExtractAfter(m_Path, wxS('.'), wxString::npos, true);
 	}
-	KxFSPath& KxFSPath::SetExtension(const wxString& ext)
+	FSPath& FSPath::SetExtension(const wxString& ext)
 	{
 		if (!ext.Contains(KxFileSystem::GetForbiddenChars()))
 		{
@@ -330,16 +332,16 @@ namespace KxFileSystem
 		return *this;
 	}
 
-	KxFSPath KxFSPath::GetParent() const
+	FSPath FSPath::GetParent() const
 	{
 		return ExtractBefore(m_Path, wxS('\\'), true);
 	}
-	KxFSPath& KxFSPath::RemoveLast()
+	FSPath& FSPath::RemoveLast()
 	{
 		*this = GetParent();
 		return *this;
 	}
-	KxFSPath& KxFSPath::Append(const KxFSPath& other)
+	FSPath& FSPath::Append(const FSPath& other)
 	{
 		if (!IsValid() || other.IsRelative())
 		{
@@ -348,7 +350,7 @@ namespace KxFileSystem
 		}
 		return *this;
 	}
-	KxFSPath& KxFSPath::Concat(const KxFSPath& other)
+	FSPath& FSPath::Concat(const FSPath& other)
 	{
 		if (!IsValid() || other.IsRelative())
 		{

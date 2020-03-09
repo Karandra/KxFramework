@@ -4,10 +4,10 @@
 
 namespace KxFileSystem
 {
-	class KX_API KxFSPath final
+	class KX_API FSPath final
 	{
 		public:
-			KxFSPath FromStringUnchecked(const wxString& string);
+			FSPath FromStringUnchecked(const wxString& string);
 
 		private:
 			wxString m_Path;
@@ -19,26 +19,26 @@ namespace KxFileSystem
 			void Normalize();
 
 		public:
-			KxFSPath() = default;
-			KxFSPath(const wxString& path)
+			FSPath() = default;
+			FSPath(const wxString& path)
 			{
 				AssignFromPath(path);
 			}
-			KxFSPath(const char* path)
+			FSPath(const char* path)
 			{
 				AssignFromPath(path);
 			}
-			KxFSPath(const wchar_t* path)
+			FSPath(const wchar_t* path)
 			{
 				AssignFromPath(path);
 			}
-			KxFSPath(const KxFSPath&) = default;
-			KxFSPath(KxFSPath&&) = default;
-			~KxFSPath() = default;
+			FSPath(const FSPath&) = default;
+			FSPath(FSPath&&) = default;
+			~FSPath() = default;
 
 		public:
 			bool IsValid() const;
-			bool IsSameAs(const KxFSPath& other, bool caseSensitive = false) const;
+			bool IsSameAs(const FSPath& other, bool caseSensitive = false) const;
 			bool IsAbsolute() const;
 			bool IsRelative() const;
 			bool IsUNCPath() const
@@ -55,7 +55,7 @@ namespace KxFileSystem
 			{
 				return m_Namespace;
 			}
-			KxFSPath& SetNamespace(PathNamespace ns)
+			FSPath& SetNamespace(PathNamespace ns)
 			{
 				m_Namespace = ns;
 				return *this;
@@ -69,38 +69,38 @@ namespace KxFileSystem
 
 			bool HasDrive() const;
 			LegacyDrive GetDrive() const;
-			KxFSPath& SetDrive(const LegacyDrive& drive);
+			FSPath& SetDrive(const LegacyDrive& drive);
 
 			wxString GetPath() const;
-			KxFSPath& SetPath(const wxString& path);
+			FSPath& SetPath(const wxString& path);
 
 			wxString GetName() const;
-			KxFSPath& SetName(const wxString& name);
+			FSPath& SetName(const wxString& name);
 
 			wxString GetExtension() const;
-			KxFSPath& SetExtension(const wxString& ext);
+			FSPath& SetExtension(const wxString& ext);
 
-			KxFSPath GetParent() const;
-			KxFSPath& RemoveLast();
+			FSPath GetParent() const;
+			FSPath& RemoveLast();
 
-			KxFSPath& Append(const KxFSPath& other);
-			KxFSPath& Append(const char* other)
+			FSPath& Append(const FSPath& other);
+			FSPath& Append(const char* other)
 			{
-				return Append(KxFSPath(other));
+				return Append(FSPath(other));
 			}
-			KxFSPath& Append(const wchar_t* other)
+			FSPath& Append(const wchar_t* other)
 			{
-				return Append(KxFSPath(other));
+				return Append(FSPath(other));
 			}
 
-			KxFSPath& Concat(const KxFSPath& other);
-			KxFSPath& Concat(const char* other)
+			FSPath& Concat(const FSPath& other);
+			FSPath& Concat(const char* other)
 			{
-				return Concat(KxFSPath(other));
+				return Concat(FSPath(other));
 			}
-			KxFSPath& Concat(const wchar_t* other)
+			FSPath& Concat(const wchar_t* other)
 			{
-				return Concat(KxFSPath(other));
+				return Concat(FSPath(other));
 			}
 
 		public:
@@ -117,44 +117,44 @@ namespace KxFileSystem
 				return !IsValid();
 			}
 
-			bool operator==(const KxFSPath& other) const
+			bool operator==(const FSPath& other) const
 			{
 				return IsSameAs(other, false);
 			}
-			bool operator!=(const KxFSPath& other) const
+			bool operator!=(const FSPath& other) const
 			{
 				return !(*this == other);
 			}
 
-			KxFSPath& operator+(const KxFSPath& other)
+			FSPath& operator+(const FSPath& other)
 			{
 				return Concat(other);
 			}
-			KxFSPath& operator+(const char* other)
+			FSPath& operator+(const char* other)
 			{
-				return Concat(KxFSPath(other));
+				return Concat(FSPath(other));
 			}
-			KxFSPath& operator+(const wchar_t* other)
+			FSPath& operator+(const wchar_t* other)
 			{
-				return Concat(KxFSPath(other));
+				return Concat(FSPath(other));
 			}
 		
-			KxFSPath& operator/(const KxFSPath& other)
+			FSPath& operator/(const FSPath& other)
 			{
 				return Append(other);
 			}
-			KxFSPath& operator/(const char* other)
+			FSPath& operator/(const char* other)
 			{
-				return Append(KxFSPath(other));
+				return Append(FSPath(other));
 			}
-			KxFSPath& operator/(const wchar_t* other)
+			FSPath& operator/(const wchar_t* other)
 			{
-				return Append(KxFSPath(other));
+				return Append(FSPath(other));
 			}
 
-			KxFSPath& operator=(const KxFSPath&) = default;
-			KxFSPath& operator=(KxFSPath&&) = default;
-			KxFSPath& operator=(const wxString& path)
+			FSPath& operator=(const FSPath&) = default;
+			FSPath& operator=(FSPath&&) = default;
+			FSPath& operator=(const wxString& path)
 			{
 				AssignFromPath(path);
 				return *this;

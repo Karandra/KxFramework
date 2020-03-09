@@ -244,7 +244,7 @@ namespace KxFileSystem
 	{
 		if (IsValid())
 		{
-			KxFileStream stream(KxFSPath(GetPath()).GetFullPath(PathNamespace::Win32Device), KxFileStream::Access::Read, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Everything);
+			KxFileStream stream(FSPath(GetPath()).GetFullPath(PathNamespace::Win32Device), KxFileStream::Access::Read, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Everything);
 			if (stream)
 			{
 				DWORD bytes = 0;
