@@ -6,11 +6,11 @@ namespace KxFileSystem
 {
 	struct LegacyDriveInfo
 	{
-		uint32_t FileSystemFlags = 0;
 		uint32_t SectorsPerCluster = 0;
 		uint32_t BytesPerSector = 0;
 		uint32_t NumberOfFreeClusters = 0;
 		uint32_t TotalNumberOfClusters = 0;
+		FileSystemFeature FileSystemFeatures = FileSystemFeature::None;
 		bool LongFileNames = false;
 	};
 }
@@ -20,6 +20,7 @@ namespace KxFileSystem
 	class KX_API LegacyDrive final
 	{
 		public:
+			static size_t Enumerate(std::function<bool(LegacyDrive)> func);
 			static std::vector<LegacyDrive> Enumerate();
 
 			static LegacyDrive FromChar(const wxUniChar& value)
@@ -68,6 +69,7 @@ namespace KxFileSystem
 
 			DriveType GetType() const;
 			wxString GetFileSystemName() const;
+			FileSystemFeature GetFileSystemFeatures() const;
 			uint32_t GetSerialNumber() const;
 
 			LegacyDriveInfo GetInfo() const;
