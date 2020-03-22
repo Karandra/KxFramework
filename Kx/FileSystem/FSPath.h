@@ -121,33 +121,49 @@ namespace KxFileSystem
 			{
 				return IsSameAs(other, false);
 			}
+			bool operator==(const char* other) const
+			{
+				return IsSameAs(other, false);
+			}
+			bool operator==(const wchar_t* other) const
+			{
+				return IsSameAs(other, false);
+			}
 			bool operator!=(const FSPath& other) const
 			{
 				return !(*this == other);
 			}
+			bool operator!=(const char* other) const
+			{
+				return !(*this == other);
+			}
+			bool operator!=(const wchar_t* other) const
+			{
+				return !(*this == other);
+			}
 
-			FSPath& operator+(const FSPath& other)
+			FSPath& operator+=(const FSPath& other)
 			{
 				return Concat(other);
 			}
-			FSPath& operator+(const char* other)
+			FSPath& operator+=(const char* other)
 			{
 				return Concat(FSPath(other));
 			}
-			FSPath& operator+(const wchar_t* other)
+			FSPath& operator+=(const wchar_t* other)
 			{
 				return Concat(FSPath(other));
 			}
-		
-			FSPath& operator/(const FSPath& other)
+
+			FSPath& operator/=(const FSPath& other)
 			{
 				return Append(other);
 			}
-			FSPath& operator/(const char* other)
+			FSPath& operator/=(const char* other)
 			{
 				return Append(FSPath(other));
 			}
-			FSPath& operator/(const wchar_t* other)
+			FSPath& operator/=(const wchar_t* other)
 			{
 				return Append(FSPath(other));
 			}
@@ -159,5 +175,27 @@ namespace KxFileSystem
 				AssignFromPath(path);
 				return *this;
 			}
+			FSPath& operator=(const char* path)
+			{
+				AssignFromPath(path);
+				return *this;
+			}
+			FSPath& operator=(const wchar_t* path)
+			{
+				AssignFromPath(path);
+				return *this;
+			}
 	};
+
+	template<class T>
+	FSPath operator+(const FSPath& left, T&& right)
+	{
+		return FSPath(left).Concat(std::forward<T>(right));
+	}
+
+	template<class T>
+	FSPath operator/(const FSPath& left, T&& right)
+	{
+		return FSPath(left).Append(std::forward<T>(right));
+	}
 }

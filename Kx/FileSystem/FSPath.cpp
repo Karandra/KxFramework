@@ -87,6 +87,31 @@ namespace KxFileSystem
 		}
 		return wxEmptyString;
 	}
+	size_t RemoveLeadingSpaces(wxString& path)
+	{
+		const std::locale locale;
+		size_t removedCount = 0;
+		bool removeSpaces = true;
+
+		for (size_t i = 0; i < path.length(); i++)
+		{
+			// Remove any leading space characters
+			if (removeSpaces)
+			{
+				if (std::isspace(static_cast<wxChar>(path[i]), locale))
+				{
+					path.Remove(i, 1);
+					removedCount++;
+					i--;
+				}
+				else
+				{
+					removeSpaces = false;
+				}
+			}
+		}
+		return removedCount;
+	}
 }
 
 namespace KxFileSystem
@@ -103,15 +128,21 @@ namespace KxFileSystem
 		m_Path = path;
 		if (!m_Path.IsEmpty())
 		{
-			Normalize();
+			// It's important to process namespace before normalization,
+			// because normalization can remove some namespace symbols.
 			ProcessNamespace();
+			Normalize();
 		}
 
 		return IsValid();
 	}
 	void FSPath::ProcessNamespace()
 	{
-		size_t namespacePrefixLength = DetectNamespacePrefix(m_Path, m_Namespace);
+		// We need to remove any leading spaces before searching for a namespace.
+		// This is duplicated in the 'Normalize' function but anyway we need it here.
+		RemoveLeadingSpaces(m_Path);
+
+		const size_t namespacePrefixLength = DetectNamespacePrefix(m_Path, m_Namespace);
 		if (namespacePrefixLength != 0)
 		{
 			m_Path.Remove(0, namespacePrefixLength);
