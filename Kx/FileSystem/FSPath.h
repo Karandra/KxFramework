@@ -50,6 +50,10 @@ namespace KxFramework
 				return m_Namespace == FSPathNamespace::Win32FileUNC || m_Namespace == FSPathNamespace::NetworkUNC;
 			}
 			size_t GetComponentCount() const;
+			size_t GetPathLength() const
+			{
+				return m_Path.length();
+			}
 
 			bool HasNamespace() const
 			{
@@ -64,11 +68,11 @@ namespace KxFramework
 				m_Namespace = ns;
 				return *this;
 			}
-		
+			
 			wxString GetFullPath(FSPathNamespace withNamespace = FSPathNamespace::None) const;
-			wxString GetFullPathWithNS() const
+			wxString GetFullPathWithNS(FSPathNamespace withNamespace = FSPathNamespace::None) const
 			{
-				return GetFullPath(m_Namespace);
+				return GetFullPath(m_Namespace != FSPathNamespace::None ? m_Namespace : withNamespace);
 			}
 
 			bool HasDrive() const;
