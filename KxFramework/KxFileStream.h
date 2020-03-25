@@ -2,6 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxStreamWrappers.h"
 #include "KxFramework/KxEnumClassOperations.h"
+#include "Kx/FileSystem/FSPath.h"
 
 class KX_API KxFileStream:
 	public KxStreamBase,
@@ -57,7 +58,7 @@ class KX_API KxFileStream:
 		Share m_ShareMode = DefaultShare;
 		Disposition m_Disposition = DefaultDisposition;
 		Flags m_Flags = DefaultFlags;
-		mutable wxString m_FilePath;
+		mutable KxFramework::FSPath m_FilePath;
 
 		size_t m_LastRead = 0;
 		size_t m_LastWrite = 0;
@@ -85,27 +86,27 @@ class KX_API KxFileStream:
 	public:
 		KxFileStream();
 		KxFileStream(HANDLE fileHandle, Access accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, Share shareMode = DefaultShare, Flags flags = DefaultFlags);
-		KxFileStream(const wxString& filePath, Access accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, Share shareMode = DefaultShare, Flags flags = DefaultFlags);
+		KxFileStream(const KxFramework::FSPath& filePath, Access accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, Share shareMode = DefaultShare, Flags flags = DefaultFlags);
 		KxFileStream(const char* filePath, Access accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, Share shareMode = DefaultShare, Flags flags = DefaultFlags)
-			:KxFileStream(wxString(filePath), accessMode, disposition, shareMode, flags)
+			:KxFileStream(KxFramework::FSPath(filePath), accessMode, disposition, shareMode, flags)
 		{
 		}
 		KxFileStream(const wchar_t* filePath, Access accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, Share shareMode = DefaultShare, Flags flags = DefaultFlags)
-			:KxFileStream(wxString(filePath), accessMode, disposition, shareMode, flags)
+			:KxFileStream(KxFramework::FSPath(filePath), accessMode, disposition, shareMode, flags)
 		{
 		}
 		virtual ~KxFileStream();
 		
 	public:
 		bool Open(HANDLE fileHandle, Access accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, Share shareMode = DefaultShare, Flags flags = DefaultFlags);
-		bool Open(const wxString& filePath, Access accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, Share shareMode = DefaultShare, Flags flags = DefaultFlags);
+		bool Open(const KxFramework::FSPath& filePath, Access accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, Share shareMode = DefaultShare, Flags flags = DefaultFlags);
 		bool Open(const char* filePath, Access accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, Share shareMode = DefaultShare, Flags flags = DefaultFlags)
 		{
-			return Open(wxString(filePath), accessMode, disposition, shareMode, flags);
+			return Open(KxFramework::FSPath(filePath), accessMode, disposition, shareMode, flags);
 		}
 		bool Open(const wchar_t* filePath, Access accessMode = DefaultAccess, Disposition disposition = DefaultDisposition, Share shareMode = DefaultShare, Flags flags = DefaultFlags)
 		{
-			return Open(wxString(filePath), accessMode, disposition, shareMode, flags);
+			return Open(KxFramework::FSPath(filePath), accessMode, disposition, shareMode, flags);
 		}
 		
 	public:
@@ -157,7 +158,7 @@ class KX_API KxFileStream:
 
 		bool Flush() override;
 		bool SetAllocationSize(Offset offset = InvalidOffset) override;
-		wxString GetFileName() const;
+		KxFramework::FSPath GetFileName() const;
 		HANDLE GetHandle() const;
 
 		std::optional<uint32_t> GetAttributes() const;

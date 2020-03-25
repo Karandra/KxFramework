@@ -3,6 +3,7 @@
 #include "KxFramework/KxUtility.h"
 #include <wx/ustring.h>
 
+using namespace KxFramework;
 using namespace KxEnumClassOperations;
 
 namespace
@@ -242,8 +243,7 @@ KxFileStream::KxFileStream(HANDLE fileHandle, Access accessMode, Disposition dis
 	SetLastStreamError(ERROR_SUCCESS, false);
 	Open(fileHandle, accessMode, disposition, shareMode, flags);
 }
-KxFileStream::KxFileStream(const wxString& filePath, Access accessMode, Disposition disposition, Share shareMode, Flags flags)
-	:m_FilePath(filePath), m_AccessMode((Access)accessMode), m_Disposition(disposition), m_ShareMode((Share)shareMode), m_Flags((Flags)flags)
+KxFileStream::KxFileStream(const FSPath& filePath, Access accessMode, Disposition disposition, Share shareMode, Flags flags)
 {
 	SetLastStreamError(ERROR_SUCCESS, false);
 	Open(filePath, accessMode, disposition, shareMode, flags);
@@ -262,17 +262,19 @@ bool KxFileStream::Open(HANDLE fileHandle, Access accessMode, Disposition dispos
 
 	return IsOk();
 }
-bool KxFileStream::Open(const wxString& filePath, Access accessMode, Disposition disposition, Share shareMode, Flags flags)
+bool KxFileStream::Open(const FSPath& filePath, Access accessMode, Disposition disposition, Share shareMode, Flags flags)
 {
 	DoClose();
-	if (!filePath.IsEmpty())
+	if (filePath)
 	{
 		m_AccessMode = (Access)accessMode;
 		m_Disposition = disposition;
 		m_ShareMode = (Share)shareMode;
 		m_Flags = (Flags)flags;
 		m_FilePath = filePath;
-		m_Handle = ::CreateFileW(m_FilePath.wc_str(), AccessModeToNative(m_AccessMode), ShareModeToNative(m_ShareMode), nullptr, DispositionToNative(m_Disposition), FlagsToNative(flags), nullptr);
+
+		wxString path = m_FilePath.GetFullPathWithNS(FSPathNamespace::Win32File);
+		m_Handle = ::CreateFileW(path.wc_str(), AccessModeToNative(m_AccessMode), ShareModeToNative(m_ShareMode), nullptr, DispositionToNative(m_Disposition), FlagsToNative(flags), nullptr);
 
 		return IsOk();
 	}
