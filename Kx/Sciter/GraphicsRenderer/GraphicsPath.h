@@ -2,13 +2,13 @@
 #include "Kx/Sciter/Common.h"
 #include "Kx/Sciter/Utility/HandleWrapper.h"
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	struct GraphicsPathHandle;
 	class ScriptValue;
 }
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	class KX_API GraphicsPath final: public HandleWrapper<GraphicsPath, GraphicsPathHandle>
 	{

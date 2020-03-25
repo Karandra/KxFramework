@@ -4,12 +4,12 @@
 #include "Host.h"
 #include "Element.h"
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	WidgetFactory* m_FirstFactory = nullptr;
 }
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	std::unique_ptr<Widget> WidgetFactory::NewWidget(Host& host, const Element& element, const wxString& className)
 	{

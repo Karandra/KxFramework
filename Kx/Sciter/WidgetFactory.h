@@ -1,14 +1,14 @@
 #pragma once
 #include "Kx/Sciter/Common.h"
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	class Host;
 	class Widget;
 	class Element;
 }
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	class KX_API WidgetFactory
 	{

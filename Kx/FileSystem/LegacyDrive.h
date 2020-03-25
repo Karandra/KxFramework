@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "KxFramework/KxWinUndef.h"
 
-namespace KxFileSystem
+namespace KxFramework
 {
 	struct LegacyDriveInfo
 	{
@@ -15,7 +15,7 @@ namespace KxFileSystem
 	};
 }
 
-namespace KxFileSystem
+namespace KxFramework
 {
 	class KX_API LegacyDrive final
 	{

@@ -1,7 +1,7 @@
 #pragma once
 #include "Event.h"
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	class KX_API TimerEvent: public Event
 	{
@@ -34,7 +34,7 @@ namespace KxSciter
 	};
 }
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	KxEVENT_DECLARE_ALIAS_TO_MEMBER(TimerEvent, Timer);
 }

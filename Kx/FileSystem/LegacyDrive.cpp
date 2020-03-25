@@ -3,7 +3,7 @@
 #include "FSPath.h"
 #include "KxFramework/KxFileStream.h"
 
-namespace KxFileSystem
+namespace KxFramework
 {
 	constexpr char g_InvalidDrive = '\255';
 	constexpr size_t g_MaxLegacyDrives = 'Z' - 'A' + 1;
@@ -78,7 +78,7 @@ namespace KxFileSystem
 	}
 }
 
-namespace KxFileSystem
+namespace KxFramework
 {
 	void LegacyDrive::AssignFromChar(const wxUniChar& value)
 	{
@@ -302,7 +302,7 @@ namespace KxFileSystem
 	{
 		if (IsValid())
 		{
-			KxFileStream stream(FSPath(GetPath()).GetFullPath(PathNamespace::Win32Device), KxFileStream::Access::Read, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Everything);
+			KxFileStream stream(FSPath(GetPath()).GetFullPath(FSPathNamespace::Win32Device), KxFileStream::Access::Read, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Everything);
 			if (stream)
 			{
 				DWORD bytes = 0;

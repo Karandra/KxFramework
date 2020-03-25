@@ -1,14 +1,17 @@
 #pragma once
 #include "Kx/EventSystem/Event.h"
 
-class KxNotifyEvent: public wxNotifyEvent
+namespace KxFramework
 {
-	public:
-		KxNotifyEvent() = default;
+	class NotifyEvent: public wxNotifyEvent
+	{
+		public:
+			NotifyEvent() = default;
 
-	public:
-		KxNotifyEvent* Clone() const override
-		{
-			return new KxNotifyEvent(*this);
-		}
-};
+		public:
+			NotifyEvent* Clone() const override
+			{
+				return new NotifyEvent(*this);
+			}
+	};
+}

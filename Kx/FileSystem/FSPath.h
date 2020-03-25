@@ -1,8 +1,12 @@
 #pragma once
 #include "Common.h"
-#include "LegacyDrive.h"
 
-namespace KxFileSystem
+namespace KxFramework
+{
+	class LegacyDrive;
+}
+
+namespace KxFramework
 {
 	class KX_API FSPath final
 	{
@@ -11,7 +15,7 @@ namespace KxFileSystem
 
 		private:
 			wxString m_Path;
-			PathNamespace m_Namespace = PathNamespace::None;
+			FSPathNamespace m_Namespace = FSPathNamespace::None;
 
 		private:
 			bool AssignFromPath(const wxString& path);
@@ -43,25 +47,25 @@ namespace KxFileSystem
 			bool IsRelative() const;
 			bool IsUNCPath() const
 			{
-				return m_Namespace == PathNamespace::Win32FileUNC || m_Namespace == PathNamespace::NetworkUNC;
+				return m_Namespace == FSPathNamespace::Win32FileUNC || m_Namespace == FSPathNamespace::NetworkUNC;
 			}
 			size_t GetComponentCount() const;
 
 			bool HasNamespace() const
 			{
-				return m_Namespace != PathNamespace::None;
+				return m_Namespace != FSPathNamespace::None;
 			}
-			PathNamespace GetNamespace() const
+			FSPathNamespace GetNamespace() const
 			{
 				return m_Namespace;
 			}
-			FSPath& SetNamespace(PathNamespace ns)
+			FSPath& SetNamespace(FSPathNamespace ns)
 			{
 				m_Namespace = ns;
 				return *this;
 			}
 		
-			wxString GetFullPath(PathNamespace withNamespace = PathNamespace::None) const;
+			wxString GetFullPath(FSPathNamespace withNamespace = FSPathNamespace::None) const;
 			wxString GetFullPathWithNS() const
 			{
 				return GetFullPath(m_Namespace);

@@ -1,7 +1,7 @@
 #pragma once
 #include "Event.h"
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	class KX_API SizeEvent: public Event
 	{
@@ -22,7 +22,7 @@ namespace KxSciter
 	};
 }
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	KxEVENT_DECLARE_ALIAS_TO_MEMBER(SizeEvent, Size);
 }

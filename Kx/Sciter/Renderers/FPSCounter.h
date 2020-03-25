@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <wx/datetime.h>
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	class FPSCounter final
 	{

@@ -3,7 +3,7 @@
 #include "Common.h"
 #include <KxFramework/KxLibrary.h>
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	ISciterAPI* GetSciterAPI()
 	{

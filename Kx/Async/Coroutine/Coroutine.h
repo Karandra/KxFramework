@@ -1,64 +1,71 @@
 #pragma once
 #include "Kx/Async/Common.h"
 #include "CoroutineImpl.h"
-#include "CoroutineInstruction.h"
+#include "YieldInstruction.h"
 
-class KX_API KxCoroutine: public KxAsync::BaseCoroutine
+namespace KxFramework
 {
-	private:
-		static KxCoroutine* DoRun(std::unique_ptr<KxCoroutine> coroutine)
-		{
-			return static_cast<KxCoroutine*>(BaseCoroutine::Run(std::move(coroutine)));
-		}
+	class KX_API Coroutine: public Async::CoroutineBase
+	{
+		private:
+			static Coroutine* DoRun(std::unique_ptr<Coroutine> coroutine)
+			{
+				return static_cast<Coroutine*>(CoroutineBase::Run(std::move(coroutine)));
+			}
 
-	public:
-		static KxCoroutine* Run(std::unique_ptr<KxCoroutine> coroutine)
-		{
-			return DoRun(std::move(coroutine));
-		}
-		template<class TCallable> static KxCoroutine* Run(TCallable func)
-		{
-			return DoRun(std::make_unique<KxAsync::CoroutineCallableWrapper<TCallable>>(std::move(func)));
-		}
-		template<class TClass> static KxCoroutine* Run(KxYieldInstruction(TClass::*method)(KxCoroutine&), TClass* object)
-		{
-			return DoRun(std::make_unique<KxAsync::CoroutineMethodWrapper<TClass>>(method, object));
-		}
-};
+		public:
+			static Coroutine* Run(std::unique_ptr<Coroutine> coroutine)
+			{
+				return DoRun(std::move(coroutine));
+			}
+			
+			template<class TCallable>
+			static Coroutine* Run(TCallable&& func)
+			{
+				return DoRun(std::make_unique<Async::CoroutineCallableWrapper<TCallable>>(std::forward<TCallable>(func)));
+			}
+			
+			template<class TClass>
+			static Coroutine* Run(Async::YieldInstruction(TClass::*method)(Coroutine&), TClass* object)
+			{
+				return DoRun(std::make_unique<Async::CoroutineMethodWrapper<TClass>>(method, object));
+			}
+	};
+}
 
-namespace KxAsync
+namespace KxFramework::Async
 {
 	template<class TCallable>
-	class CoroutineCallableWrapper: public KxCoroutine
+	class CoroutineCallableWrapper: public Coroutine
 	{
 		private:
 			TCallable m_Callable;
 
 		protected:
-			KxYieldInstruction Execute() override
+			YieldInstruction Execute() override
 			{
 				return std::invoke(m_Callable, *this);
 			}
 
 		public:
-			CoroutineCallableWrapper(TCallable func)
-				:m_Callable(std::move(func))
+			CoroutineCallableWrapper(TCallable&& func)
+				:m_Callable(std::forward<TCallable>(func))
 			{
 			}
 	};
 
 	template<class TClass>
-	class CoroutineMethodWrapper: public KxCoroutine
+	class CoroutineMethodWrapper: public Coroutine
 	{
 		public:
-			using TMethod = KxYieldInstruction(TClass::*)(KxCoroutine&);
+			using TMethod = YieldInstruction(TClass::*)(Coroutine&);
 
 		private:
 			TClass* m_Object = nullptr;
 			TMethod m_Method = nullptr;
 
 		protected:
-			KxYieldInstruction Execute() override
+			YieldInstruction Execute() override
 			{
 				return std::invoke(m_Method, m_Object, *this);
 			}

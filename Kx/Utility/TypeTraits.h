@@ -1,9 +1,10 @@
 #pragma once
 #include <type_traits>
 
-namespace KxUtility
+namespace KxFramework::Utility
 {
-	template<class> struct MethodTraits;
+	template<class>
+	struct MethodTraits;
 
 	template <class Return, class Object, class... Args>
 	struct MethodTraits<Return(Object::*)(Args...)>
@@ -14,10 +15,11 @@ namespace KxUtility
 		inline static constexpr size_t ArgumentCount = sizeof...(Args);
 	};
 
-	template<size_t N, typename... T> using NthTypeOf = typename std::tuple_element<N, std::tuple<T...>>::type;
+	template<size_t N, typename... T>
+	using NthTypeOf = typename std::tuple_element<N, std::tuple<T...>>::type;
 }
 
-namespace KxUtility
+namespace KxFramework::Utility
 {
 	template<class TCallable, class... Args>
 	struct CallableTraits

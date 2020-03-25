@@ -1,16 +1,20 @@
 #pragma once
 #include "Event.h"
 #include <optional>
-class KxBasicEvtHandler;
 
-namespace KxEventSystem
+namespace KxFramework
 {
-	class KX_API EventBuilder
+	class BasicEvtHandler;
+}
+
+namespace KxFramework::EventSystem
+{
+	class KX_API EventBuilderBase
 	{
 		protected:
-			KxBasicEvtHandler* m_EvtHandler = nullptr;
+			BasicEvtHandler* m_EvtHandler = nullptr;
 			wxEvent* m_Event = nullptr;
-			std::optional<KxEventID> m_EventID;
+			std::optional<EventID> m_EventID;
 
 			bool m_IsNotifyEvent = false;
 			bool m_IsAsync = false;
@@ -20,26 +24,26 @@ namespace KxEventSystem
 			bool m_IsProcessed = false;
 
 		private:
-			EventBuilder() = default;
+			EventBuilderBase() = default;
 
 		public:
-			EventBuilder(KxBasicEvtHandler& evtHandler, std::unique_ptr<wxEvent> event, std::optional<KxEventID> eventID = {})
+			EventBuilderBase(BasicEvtHandler& evtHandler, std::unique_ptr<wxEvent> event, std::optional<EventID> eventID = {})
 				:m_EvtHandler(&evtHandler), m_Event(event.release()), m_EventID(eventID), m_IsAsync(true)
 			{
 			}
-			EventBuilder(KxBasicEvtHandler& evtHandler, wxEvent& event, std::optional<KxEventID> eventID = {})
+			EventBuilderBase(BasicEvtHandler& evtHandler, wxEvent& event, std::optional<EventID> eventID = {})
 				:m_EvtHandler(&evtHandler), m_Event(&event), m_EventID(eventID), m_IsAsync(false)
 			{
 			}
-			EventBuilder(EventBuilder&& other)
+			EventBuilderBase(EventBuilderBase&& other)
 			{
 				*this = std::move(other);
 			}
-			EventBuilder(const EventBuilder&) = delete;
-			virtual ~EventBuilder();
+			EventBuilderBase(const EventBuilderBase&) = delete;
+			virtual ~EventBuilderBase();
 
 		public:
-			EventBuilder& Do();
+			EventBuilderBase& Do();
 
 			bool IsAsync() const
 			{
@@ -59,52 +63,57 @@ namespace KxEventSystem
 			}
 
 		public:
-			EventBuilder& operator=(EventBuilder&& other);
-			EventBuilder& operator=(const EventBuilder&) = delete;
+			EventBuilderBase& operator=(EventBuilderBase&& other);
+			EventBuilderBase& operator=(const EventBuilderBase&) = delete;
 	};
 }
 
-template<class TEvent>
-class KxEventBuilder: public KxEventSystem::EventBuilder
+namespace KxFramework::EventSystem
 {
-	private:
-		void TestEventClass()
-		{
-			m_IsNotifyEvent = std::is_base_of_v<wxNotifyEvent, TEvent>;
-		}
+	template<class TEvent>
+	class EventBuilder: public EventBuilderBase
+	{
+		private:
+			void TestEventClass()
+			{
+				m_IsNotifyEvent = std::is_base_of_v<wxNotifyEvent, TEvent>;
+			}
 
-	public:
-		KxEventBuilder(KxBasicEvtHandler& evtHandler, std::unique_ptr<TEvent> event, std::optional<KxEventID> eventID = {})
-			:EventBuilder(evtHandler, std::move(event), eventID)
-		{
-			TestEventClass();
-		}
-		KxEventBuilder(KxBasicEvtHandler& evtHandler, TEvent& event, std::optional<KxEventID> eventID = {})
-			:EventBuilder(evtHandler, event, eventID)
-		{
-			TestEventClass();
-		}
-		KxEventBuilder(KxEventBuilder&& other)
-			:EventBuilder(std::move(other))
-		{
-		}
+		public:
+			EventBuilder(BasicEvtHandler& evtHandler, std::unique_ptr<TEvent> event, std::optional<EventID> eventID = {})
+				:EventBuilderBase(evtHandler, std::move(event), eventID)
+			{
+				TestEventClass();
+			}
+			EventBuilder(BasicEvtHandler& evtHandler, TEvent& event, std::optional<EventID> eventID = {})
+				:EventBuilderBase(evtHandler, event, eventID)
+			{
+				TestEventClass();
+			}
+			EventBuilder(EventBuilder&& other)
+				:EventBuilderBase(std::move(other))
+			{
+			}
 
-	public:
-		template<class TFunctor> KxEventBuilder& On(TFunctor&& func)
-		{
-			std::invoke(func, static_cast<TEvent&>(*m_Event));
-			return *this;
-		}
-		KxEventBuilder& Do()
-		{
-			EventBuilder::Do();
-			return *this;
-		}
+		public:
+			template<class TFunctor>
+			EventBuilder& On(TFunctor&& func)
+			{
+				std::invoke(func, static_cast<TEvent&>(*m_Event));
+				return *this;
+			}
+			
+			EventBuilder& Do()
+			{
+				EventBuilderBase::Do();
+				return *this;
+			}
 
-	public:
-		KxEventBuilder& operator=(KxEventBuilder&& other)
-		{
-			static_cast<EventBuilder&>(*this) = std::move(other);
-			return *this;
-		}
-};
+		public:
+			EventBuilder& operator=(EventBuilder&& other)
+			{
+				static_cast<EventBuilderBase&>(*this) = std::move(other);
+				return *this;
+			}
+	};
+}

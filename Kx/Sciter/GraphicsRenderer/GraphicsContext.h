@@ -2,7 +2,7 @@
 #include "Kx/Sciter/Common.h"
 #include "Kx/Sciter/Utility/HandleWrapper.h"
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	struct GraphicsContextHandle;
 	class ScriptValue;
@@ -12,7 +12,7 @@ namespace KxSciter
 	class GraphicsMatrix;
 }
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	class KX_API GraphicsMatrix final
 	{
@@ -46,7 +46,7 @@ namespace KxSciter
 	};
 }
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	class KX_API GraphicsContext final: public HandleWrapper<GraphicsContext, GraphicsContextHandle>
 	{

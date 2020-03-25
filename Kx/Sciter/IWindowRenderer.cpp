@@ -2,7 +2,7 @@
 #include "IWindowRenderer.h"
 #include "Renderers/DirectX.h"
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	std::unique_ptr<IWindowRenderer> IWindowRenderer::CreateInstance(WindowRenderer type, Host& host)
 	{

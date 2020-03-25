@@ -1,64 +1,66 @@
 #include "KxStdAfx.h"
 #include "FSPath.h"
+#include "LegacyDrive.h"
 #include "NamespacePrefix.h"
 #include <KxFramework/KxComparator.h>
 
-namespace KxFileSystem
+namespace KxFramework
 {
-	wxString ConcatWithNamespace(const wxString& path, PathNamespace withNamespace)
+	wxString ConcatWithNamespace(const wxString& path, FSPathNamespace withNamespace)
 	{
-		if (withNamespace != PathNamespace::None && !path.IsEmpty())
+		if (withNamespace != FSPathNamespace::None && !path.IsEmpty())
 		{
-			return KxFileSystem::GetNamespaceString(withNamespace) + path;
+			return FileSystem::GetNamespaceString(withNamespace) + path;
 		}
 		return path;
 	}
-	size_t DetectNamespacePrefix(const wxString& path, PathNamespace& ns)
+	size_t DetectNamespacePrefix(const wxString& path, FSPathNamespace& ns)
 	{
+		using namespace FileSystem;
 		// Test for every namespace starting from the longest prefix
 
 		// 10
 		if (path.StartsWith(NamespacePrefix::Win32Volume))
 		{
-			ns = PathNamespace::Win32Volume;
+			ns = FSPathNamespace::Win32Volume;
 			return std::size(NamespacePrefix::Win32Volume) - 1;
 		}
 
 		// 8
 		if (path.StartsWith(NamespacePrefix::Win32FileUNC))
 		{
-			ns = PathNamespace::Win32FileUNC;
+			ns = FSPathNamespace::Win32FileUNC;
 			return std::size(NamespacePrefix::Win32FileUNC) - 1;
 		}
 		else if (path.StartsWith(NamespacePrefix::NetworkUNC))
 		{
-			ns = PathNamespace::NetworkUNC;
+			ns = FSPathNamespace::NetworkUNC;
 			return std::size(NamespacePrefix::NetworkUNC) - 1;
 		}
 
 		// 4
 		if (path.StartsWith(NamespacePrefix::Win32File))
 		{
-			ns = PathNamespace::Win32File;
+			ns = FSPathNamespace::Win32File;
 			return std::size(NamespacePrefix::Win32File) - 1;
 		}
 		else if (path.StartsWith(NamespacePrefix::Win32Device))
 		{
-			ns = PathNamespace::Win32Device;
+			ns = FSPathNamespace::Win32Device;
 			return std::size(NamespacePrefix::Win32Device) - 1;
 		}
 
 		// 2
 		if (path.StartsWith(NamespacePrefix::Network))
 		{
-			ns = PathNamespace::Network;
+			ns = FSPathNamespace::Network;
 			return std::size(NamespacePrefix::Network) - 1;
 		}
 
 		// 1
 		if (path.StartsWith(NamespacePrefix::NT))
 		{
-			ns = PathNamespace::NT;
+			ns = FSPathNamespace::NT;
 			return std::size(NamespacePrefix::NT) - 1;
 		}
 
@@ -114,7 +116,7 @@ namespace KxFileSystem
 	}
 }
 
-namespace KxFileSystem
+namespace KxFramework
 {
 	FSPath FSPath::FromStringUnchecked(const wxString& string)
 	{
@@ -209,7 +211,7 @@ namespace KxFileSystem
 	bool FSPath::IsAbsolute() const
 	{
 		// Path is absolute if it has a namespace or starts with a disk designator
-		return m_Namespace != KxFileSystem::PathNamespace::None || HasDrive();
+		return m_Namespace != KxFramework::FSPathNamespace::None || HasDrive();
 	}
 	bool FSPath::IsRelative() const
 	{
@@ -228,7 +230,7 @@ namespace KxFileSystem
 		return count;
 	}
 
-	wxString FSPath::GetFullPath(KxFileSystem::PathNamespace withNamespace) const
+	wxString FSPath::GetFullPath(KxFramework::FSPathNamespace withNamespace) const
 	{
 		return ConcatWithNamespace(m_Path, withNamespace);
 	}
@@ -267,7 +269,7 @@ namespace KxFileSystem
 	FSPath& FSPath::SetPath(const wxString& path)
 	{
 		// Don't check for '\' and '/' here
-		wxString forbiddenChars = KxFileSystem::GetForbiddenChars();
+		wxString forbiddenChars = FileSystem::GetForbiddenChars();
 		forbiddenChars.Replace(wxS('\\'), wxEmptyString);
 		forbiddenChars.Replace(wxS('/'), wxEmptyString);
 
@@ -290,7 +292,7 @@ namespace KxFileSystem
 				Normalize();
 
 				// It's possible to pass a path with a namespace here. It shouldn't be possible to change the namespace here.
-				PathNamespace ns = m_Namespace;
+				FSPathNamespace ns = m_Namespace;
 				ProcessNamespace();
 				m_Namespace = ns;
 			}
@@ -307,7 +309,7 @@ namespace KxFileSystem
 	}
 	FSPath& FSPath::SetName(const wxString& name)
 	{
-		if (!name.Contains(KxFileSystem::GetForbiddenChars()))
+		if (!name.Contains(FileSystem::GetForbiddenChars()))
 		{
 			const size_t pos = m_Path.rfind(wxS('\\'));
 			if (pos != wxString::npos)
@@ -334,7 +336,7 @@ namespace KxFileSystem
 	}
 	FSPath& FSPath::SetExtension(const wxString& ext)
 	{
-		if (!ext.Contains(KxFileSystem::GetForbiddenChars()))
+		if (!ext.Contains(FileSystem::GetForbiddenChars()))
 		{
 			auto Replace = [this](const wxString& ext)
 			{

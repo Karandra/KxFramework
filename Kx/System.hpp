@@ -2,7 +2,7 @@
 #include "Kx/Common.hpp"
 #include "Kx/System/Common.h"
 
-#include "Kx/System/FileType.h"
-#include "Kx/System/FileTypeInfo.h"
-#include "Kx/System/FileTypeManager.h"
+#include "Kx/System/ShellFileType.h"
+#include "Kx/System/ShellFileTypeInfo.h"
+#include "Kx/System/ShellFileTypeManager.h"
 

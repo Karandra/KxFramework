@@ -1,195 +1,174 @@
 #pragma once
 #include "Common.h"
+#include <Kx/General/NativeUUID.h>
+#include <Kx/Utility/Common.h>
 #include <Kx/Utility/TypeTraits.h>
 
-class KX_API KxIID final
+namespace KxFramework
 {
-	public:
-		struct GUID
-		{
-			uint32_t Data1 = 0;
-			uint16_t Data2 = 0;
-			uint16_t Data3 = 0;
-			uint8_t Data4[8] = {};
-
-			constexpr bool operator==(const GUID& other) const noexcept
+	class KX_API IID final
+	{
+		public:
+			template<class T>
+			constexpr static IID FromType() noexcept
 			{
-				if (Data1 == other.Data1 && Data2 == other.Data2 && Data3 == other.Data3)
-				{
-					for (size_t i = 0; i < sizeof(GUID::Data4); i++)
-					{
-						if (Data4[i] != other.Data4[i])
-						{
-							return false;
-						}
-					}
-					return true;
-				}
-				return false;
+				return T::ms_IID;
 			}
-			constexpr bool operator!=(const GUID& other) const noexcept
+
+		private:
+			NativeUUID m_ID;
+
+		public:
+			constexpr IID() noexcept = default;
+			constexpr IID(const NativeUUID& guid) noexcept
+				:m_ID(guid)
+			{
+			}
+		
+		public:
+			constexpr bool IsNull() const noexcept
+			{
+				return m_ID.IsNull();
+			}
+
+			template<class T>
+			constexpr bool IsOfType() const noexcept
+			{
+				return FromType<T>().m_ID == m_ID;
+			}
+
+			constexpr bool operator==(const IID& other) const noexcept
+			{
+				return this == &other || m_ID == other.m_ID;
+			}
+			constexpr bool operator!=(const IID& other) const noexcept
 			{
 				return !(*this == other);
 			}
-		};
-
-	public:
-		template<class T>
-		constexpr static KxIID FromType() noexcept
-		{
-			return T::IID;
-		}
-
-	private:
-		GUID m_GUID = {0, 0, 0, {0, 0, 0, 0, 0, 0, 0, 0}};
-
-	public:
-		constexpr KxIID() noexcept = default;
-		constexpr KxIID(const GUID& guid) noexcept
-			:m_GUID(guid)
-		{
-		}
-		
-	public:
-		constexpr bool IsNull() const noexcept
-		{
-			return m_GUID == KxIID().m_GUID;
-		}
-
-		template<class T>
-		constexpr bool IsOfType() const noexcept
-		{
-			return FromType<T>().m_GUID == m_GUID;
-		}
-
-		constexpr bool operator==(const KxIID& other) const noexcept
-		{
-			return this == &other || m_GUID == other.m_GUID;
-		}
-		constexpr bool operator!=(const KxIID& other) const noexcept
-		{
-			return !(*this == other);
-		}
-		
-		constexpr KxIID& operator=(const GUID& guid) noexcept
-		{
-			m_GUID = guid;
-			return *this;
-		}
-};
+			
+			constexpr IID& operator=(const NativeUUID& uuid) noexcept
+			{
+				m_ID = uuid;
+				return *this;
+			}
+	};
+}
 
 #define KxDecalreIID(T, ...)	\
 \
-friend class KxIID;	\
-friend constexpr KxIID KxIID::FromType<T>() noexcept;	\
+friend class KxFramework::IID;	\
+friend constexpr KxFramework::IID KxFramework::IID::FromType<T>() noexcept;	\
 \
 private:	\
-	static constexpr KxIID IID = KxIID::GUID __VA_ARGS__;	\
+	static constexpr KxFramework::IID ms_IID = KxFramework::NativeUUID __VA_ARGS__;	\
 \
 public:	\
-	KxIID GetIID() const noexcept override	\
+	KxFramework::IID GetIID() const noexcept override	\
 	{	\
-		return T::IID;	\
+		return T::ms_IID;	\
 	}	\
 
 
-class KX_API KxIObject
+namespace KxFramework
 {
-	friend class KxIID;
-	friend constexpr KxIID KxIID::FromType<KxIObject>() noexcept;
+	class KX_API IObject
+	{
+		friend class IID;
+		friend constexpr IID IID::FromType<IObject>() noexcept;
 
-	private:
-		static constexpr KxIID IID = KxIID::GUID {0, 0, 0, {0xC0, 0, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74}};
+		private:
+			static constexpr IID ms_IID = NativeUUID{0, 0, 0, {0xC0, 0, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74}};
 
-	protected:
-		template<class T>
-		static void* Cast(T& object, const KxIID& iid) noexcept
-		{
-			static_assert((std::is_base_of_v<KxIObject, T>), "T must inherit from 'KxIObject'");
-
-			if (iid.IsOfType<T>())
+		protected:
+			template<class T>
+			static void* Cast(T& object, const IID& iid) noexcept
 			{
-				return &object;
-			}
-			return nullptr;
-		}
+				static_assert((std::is_base_of_v<IObject, T>), "T must inherit from 'KxIObject'");
 
-		template<class... Args, class TSelf>
-		static void* QuerySelf(const KxIID& iid, TSelf& self) noexcept
-		{
-			if (iid.IsOfType<TSelf>())
+				if (iid.IsOfType<T>())
+				{
+					return &object;
+				}
+				return nullptr;
+			}
+
+			template<class... Args, class TSelf>
+			static void* QuerySelf(const IID& iid, TSelf& self) noexcept
 			{
-				return &self;
+				if (iid.IsOfType<TSelf>())
+				{
+					return &self;
+				}
+				else if (void* ptr = nullptr; ((ptr = static_cast<Args&>(self).Args::QueryInterface(iid), ptr != nullptr) || ...))
+				{
+					return ptr;
+				}
+				return self.IObject::QueryInterface(iid);
 			}
-			else if (void* ptr = nullptr; ((ptr = static_cast<Args&>(self).Args::QueryInterface(iid), ptr != nullptr) || ...))
+
+			template<class... Args>
+			static void* UseAnyOf(const IID& iid, std::add_lvalue_reference_t<Args>&&... arg) noexcept
 			{
-				return ptr;
+				void* ptr = nullptr;
+				return ((ptr = IObject::Cast<Args>(arg, iid), ptr != nullptr) || ...);
 			}
-			return self.KxIObject::QueryInterface(iid);
-		}
 
-		template<class... Args>
-		static void* UseAnyOf(const KxIID& iid, std::add_lvalue_reference_t<Args>&&... arg) noexcept
-		{
-			void* ptr = nullptr;
-			return ((ptr = KxIObject::Cast<Args>(arg, iid), ptr != nullptr) || ...);
-		}
+		public:
+			virtual ~IObject() = default;
 
-	public:
-		virtual ~KxIObject() = default;
-
-	public:
-		virtual KxIID GetIID() const noexcept = 0
-		{
-			return IID;
-		}
-
-		virtual void* QueryInterface(const KxIID& iid) noexcept
-		{
-			if (iid.IsOfType<KxIObject>())
+		public:
+			virtual IID GetIID() const noexcept = 0
 			{
-				return this;
+				return ms_IID;
 			}
-			return nullptr;
-		}
-		const void* QueryInterface(const KxIID& iid) const noexcept
-		{
-			return const_cast<KxIObject*>(this)->QueryInterface(iid);
-		}
 
-		template<class T> T* QueryInterface() noexcept
-		{
-			return static_cast<T*>(this->QueryInterface(KxIID::FromType<T>()));
-		}
-		template<class T> const T* QueryInterface() const noexcept
-		{
-			return static_cast<const T*>(this->QueryInterface(KxIID::FromType<T>()));
-		}
+			virtual void* QueryInterface(const IID& iid) noexcept
+			{
+				if (iid.IsOfType<IObject>())
+				{
+					return this;
+				}
+				return nullptr;
+			}
+			const void* QueryInterface(const IID& iid) const noexcept
+			{
+				return const_cast<IObject*>(this)->QueryInterface(iid);
+			}
 
-		template<class T> bool QueryInterface(T*& ptr) noexcept
-		{
-			ptr = this->QueryInterface<T>();
-			return ptr != nullptr;
-		}
-		template<class T> bool QueryInterface(const T*& ptr) const noexcept
-		{
-			ptr = this->QueryInterface<T>();
-			return ptr != nullptr;
-		}
-};
+			template<class T> T* QueryInterface() noexcept
+			{
+				return static_cast<T*>(this->QueryInterface(IID::FromType<T>()));
+			}
+			template<class T> const T* QueryInterface() const noexcept
+			{
+				return static_cast<const T*>(this->QueryInterface(IID::FromType<T>()));
+			}
 
-namespace KxRTTI
+			template<class T> bool QueryInterface(T*& ptr) noexcept
+			{
+				ptr = this->QueryInterface<T>();
+				return ptr != nullptr;
+			}
+			template<class T> bool QueryInterface(const T*& ptr) const noexcept
+			{
+				ptr = this->QueryInterface<T>();
+				return ptr != nullptr;
+			}
+	};
+}
+
+namespace KxFramework::RTTI
 {
 	template<class T>
-	class Interface: public virtual KxIObject
+	class Interface: public virtual IObject
 	{
 		public:
-			KxIID GetIID() const noexcept override = 0;
+			IID GetIID() const noexcept override = 0;
 
-			using KxIObject::QueryInterface;
-			void* QueryInterface(const KxIID& iid) noexcept override
+			using IObject::QueryInterface;
+			void* QueryInterface(const IID& iid) noexcept override
 			{
-				return KxIObject::QuerySelf(iid, static_cast<T&>(*this));
+				return IObject::QuerySelf(iid, static_cast<T&>(*this));
 			}
 	};
 
@@ -199,19 +178,19 @@ namespace KxRTTI
 		public:
 			ExtendInterface() = default;
 			template<class... Args> ExtendInterface(Args&&... arg) noexcept
-				:KxUtility::NthTypeOf<0, TBase...>(std::forward<Args>(arg)...)
+				:Utility::NthTypeOf<0, TBase...>(std::forward<Args>(arg)...)
 			{
 			}
 
 		public:
-			KxIID GetIID() const noexcept override = 0;
+			IID GetIID() const noexcept override = 0;
 
-			using KxIObject::QueryInterface;
-			void* QueryInterface(const KxIID& iid) noexcept override
+			using IObject::QueryInterface;
+			void* QueryInterface(const IID& iid) noexcept override
 			{
-				static_assert((std::is_base_of_v<KxIObject, TBase> && ...), "[...] must inherit from 'KxIObject'");
+				static_assert((std::is_base_of_v<IObject, TBase> && ...), "[...] must inherit from 'KxIObject'");
 
-				return KxIObject::QuerySelf<TBase...>(iid, static_cast<TDerived&>(*this));
+				return IObject::QuerySelf<TBase...>(iid, static_cast<TDerived&>(*this));
 			}
 	};
 
@@ -219,19 +198,19 @@ namespace KxRTTI
 	class ImplementInterface: public TBase...
 	{
 		public:
-			KxIID GetIID() const noexcept override
+			IID GetIID() const noexcept override
 			{
-				if constexpr(KxUtility::CountOfParameterPack<TBase...>() == 1)
+				if constexpr(Utility::CountOfParameterPack<TBase...>() == 1)
 				{
-					return KxUtility::NthTypeOf<0, TBase...>::GetIID();
+					return Utility::NthTypeOf<0, TBase...>::GetIID();
 				}
 				return {};
 			}
 
-			using KxIObject::QueryInterface;
-			void* QueryInterface(const KxIID& iid) noexcept override
+			using IObject::QueryInterface;
+			void* QueryInterface(const IID& iid) noexcept override
 			{
-				static_assert((std::is_base_of_v<KxIObject, TBase> && ...), "[...] must inherit from 'KxIObject'");
+				static_assert((std::is_base_of_v<IObject, TBase> && ...), "[...] must inherit from 'KxIObject'");
 
 				if (void* ptr = nullptr; ((ptr = TBase::QueryInterface(iid), ptr != nullptr) || ...))
 				{

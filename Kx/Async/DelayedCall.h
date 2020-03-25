@@ -2,20 +2,21 @@
 #include "Common.h"
 #include "Coroutine.h"
 
-namespace KxAsync
+namespace KxFramework::Async
 {
-	template<class TCallable> static void DelayedCall(TCallable func, const wxTimeSpan& delay)
+	template<class TCallable>
+	static void DelayedCall(TCallable&& func, const wxTimeSpan& delay)
 	{
-		KxCoroutine::Run([delay, func = std::move(func)](KxCoroutine& coroutine)
+		Coroutine::Run([delay, func = std::forward<TCallable>(func)](Coroutine& coroutine)
 		{
 			if (coroutine.GetNextState())
 			{
 				func();
-				return KxCoroutine::YieldStop();
+				return Coroutine::YieldStop();
 			}
 			else
 			{
-				return KxCoroutine::YieldWait(delay, true);
+				return Coroutine::YieldWait(delay, true);
 			}
 		});
 	}

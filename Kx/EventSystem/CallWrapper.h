@@ -3,26 +3,29 @@
 #include <functional>
 class wxEvtHandler;
 
-class KxEventCallWrapper
+namespace KxFramework
 {
-	public:
-		KxEventCallWrapper() = default;
-		virtual ~KxEventCallWrapper() = default;
+	class IEventCallWrapper
+	{
+		public:
+			IEventCallWrapper() = default;
+			virtual ~IEventCallWrapper() = default;
 
-	public:
-		virtual void Execute(wxEvtHandler& evtHandler, wxEvent& event) = 0;
-		virtual bool IsSameAs(const KxEventCallWrapper& other) const = 0;
-		virtual wxEvtHandler* GetTargetHandler()
-		{
-			return nullptr;
-		}
-};
+		public:
+			virtual void Execute(wxEvtHandler& evtHandler, wxEvent& event) = 0;
+			virtual bool IsSameAs(const IEventCallWrapper& other) const = 0;
+			virtual wxEvtHandler* GetTargetHandler()
+			{
+				return nullptr;
+			}
+	};
+}
 
-namespace KxEventSystem
+namespace KxFramework::EventSystem
 {
 	// Wrapper for lambda or class which implements 'operator()'
 	template<class aTEvent, class aTFunctor>
-	class FunctorWrapper: public KxEventCallWrapper
+	class FunctorWrapper: public IEventCallWrapper
 	{
 		public:
 			using TEvent = aTEvent;
@@ -43,7 +46,7 @@ namespace KxEventSystem
 			{
 				std::invoke(m_Functor, static_cast<TEvent&>(event));
 			}
-			bool IsSameAs(const KxEventCallWrapper& other) const override
+			bool IsSameAs(const IEventCallWrapper& other) const override
 			{
 				if (typeid(*this) == typeid(other))
 				{
@@ -55,7 +58,7 @@ namespace KxEventSystem
 
 	// Wrapper for free and static functions
 	template<class aTEvent>
-	class FunctionWrapper: public KxEventCallWrapper
+	class FunctionWrapper: public IEventCallWrapper
 	{
 		public:
 			using TEvent = aTEvent;
@@ -75,7 +78,7 @@ namespace KxEventSystem
 			{
 				std::invoke(m_Function, static_cast<TEvent&>(event));
 			}
-			bool IsSameAs(const KxEventCallWrapper& other) const override
+			bool IsSameAs(const IEventCallWrapper& other) const override
 			{
 				if (typeid(*this) == typeid(other))
 				{
@@ -87,7 +90,7 @@ namespace KxEventSystem
 
 	// Wrapper for class member function
 	template<class aTEvent, class aTClass, class aTEventArg, class aTHandler>
-	class MethodWrapper: public KxEventCallWrapper
+	class MethodWrapper: public IEventCallWrapper
 	{
 		public:
 			using TEvent = aTEvent;
@@ -118,7 +121,7 @@ namespace KxEventSystem
 
 				std::invoke(m_Method, realEvtHandler, static_cast<TEventArg&>(event));
 			}
-			bool IsSameAs(const KxEventCallWrapper& other) const override
+			bool IsSameAs(const IEventCallWrapper& other) const override
 			{
 				if (typeid(*this) == typeid(other))
 				{

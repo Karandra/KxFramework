@@ -1,7 +1,7 @@
 #pragma once
 #include <KxFramework/KxEnumClassOperations.h>
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	using namespace KxEnumClassOperations;
 
@@ -115,5 +115,5 @@ namespace KxSciter
 
 namespace KxEnumClassOperations
 {
-	KxAllowEnumCastOp(KxSciter::Alignment);
+	KxAllowEnumCastOp(KxFramework::Sciter::Alignment);
 }

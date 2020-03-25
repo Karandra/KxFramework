@@ -4,5 +4,10 @@
 #include <cstdint>
 #include <memory>
 
-using KxEventID = wxEventType;
-template<class T> using KxEventTag = wxEventTypeTag<T>;
+namespace KxFramework
+{
+	using EventID = wxEventType;
+	
+	template<class T>
+	using EventTag = wxEventTypeTag<T>;
+}

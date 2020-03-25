@@ -1,7 +1,7 @@
 #pragma once
 #include "Host.h"
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	template<class TWindow>
 	class WindowWrapper: public TWindow, public Host

@@ -2,7 +2,7 @@
 #include "Event.h"
 #include "Kx/Sciter/Host.h"
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	Element Event::RetrieveElement(ElementUID* uid) const
 	{

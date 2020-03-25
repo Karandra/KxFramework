@@ -1,7 +1,7 @@
 #pragma once
 #include "Event.h"
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	class KX_API FocusEvent: public Event
 	{
@@ -38,7 +38,7 @@ namespace KxSciter
 	};
 }
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	KxEVENT_DECLARE_ALIAS_TO_MEMBER(FocusEvent, SetFocus);
 	KxEVENT_DECLARE_ALIAS_TO_MEMBER(FocusEvent, KillFocus);

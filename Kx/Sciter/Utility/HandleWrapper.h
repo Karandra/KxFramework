@@ -1,7 +1,7 @@
 #pragma once
 #include <wx/wx.h>
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	template<class TObject, class THandle>
 	class HandleWrapper

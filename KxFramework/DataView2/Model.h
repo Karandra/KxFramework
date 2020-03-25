@@ -16,7 +16,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API Model: public KxRTTI::Interface<Model>
+	class KX_API Model: public KxFramework::RTTI::Interface<Model>
 	{
 		KxDecalreIID(Model, {0xf9971234, 0xa17b, 0x42bf, {0x84, 0x9a, 0xa9, 0x13, 0xf1, 0x20, 0xc9, 0x35}});
 
@@ -105,7 +105,7 @@ namespace KxDataView2
 //////////////////////////////////////////////////////////////////////////
 namespace KxDataView2
 {
-	class KX_API ListModel: public KxRTTI::ExtendInterface<ListModel, Model>
+	class KX_API ListModel: public KxFramework::RTTI::ExtendInterface<ListModel, Model>
 	{
 		KxDecalreIID(ListModel, {0x98e3d563, 0x5ddf, 0x458c, {0xa8, 0x8, 0x70, 0x55, 0xb0, 0x49, 0x2e, 0xb3}});
 
@@ -128,7 +128,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API VirtualListModel: public KxRTTI::ExtendInterface<VirtualListModel, Model>
+	class KX_API VirtualListModel: public KxFramework::RTTI::ExtendInterface<VirtualListModel, Model>
 	{
 		KxDecalreIID(VirtualListModel, {0x90797bbe, 0xe618, 0x4351, {0xa2, 0x86, 0x1, 0xea, 0xe8, 0x4c, 0x73, 0x48}});
 

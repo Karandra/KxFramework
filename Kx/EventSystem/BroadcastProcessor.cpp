@@ -1,11 +1,11 @@
 #include "KxStdAfx.h"
 #include "BroadcastProcessor.h"
 
-namespace KxEventSystem
+namespace KxFramework::EventSystem
 {
 	bool BroadcastProcessorHandler::TryBefore(wxEvent& event)
 	{
-		if (event.GetEventType() == KxIndirectCallEvent::EvtIndirectCall)
+		if (event.GetEventType() == IIndirectCallEvent::EvtIndirectCall)
 		{
 			return false;
 		}
@@ -18,20 +18,20 @@ namespace KxEventSystem
 		return true;
 	}
 
-	BroadcastProcessorHandler::BroadcastProcessorHandler(KxBroadcastProcessor& processor)
+	BroadcastProcessorHandler::BroadcastProcessorHandler(BroadcastProcessor& processor)
 		:m_Processor(processor)
 	{
 	}
 }
 
-namespace KxEventSystem
+namespace KxFramework::EventSystem
 {
 	bool BroadcastRecieverHandler::TryBefore(wxEvent& event)
 	{
 		TryHereOnly(event);
 		return true;
 	}
-	bool BroadcastRecieverHandler::UnbindAll(std::optional<KxEventID> eventID)
+	bool BroadcastRecieverHandler::UnbindAll(std::optional<EventID> eventID)
 	{
 		// See 'wxEvtHandler::DoUnbind' (wxWidgets/src/event.cpp) for details
 		if (m_dynamicEvents)
@@ -56,26 +56,29 @@ namespace KxEventSystem
 	}
 }
 
-bool KxBroadcastProcessor::AddReciever(KxBroadcastReciever& reciever)
+namespace KxFramework
 {
-	return m_Stack.Push(reciever.GetEvtHandler());
-}
-bool KxBroadcastProcessor::RemoveReciever(KxBroadcastReciever& reciever)
-{
-	return m_Stack.Remove(reciever.GetEvtHandler());
-}
+	bool BroadcastProcessor::AddReciever(BroadcastReciever& reciever)
+	{
+		return m_Stack.Push(reciever.GetEvtHandler());
+	}
+	bool BroadcastProcessor::RemoveReciever(BroadcastReciever& reciever)
+	{
+		return m_Stack.Remove(reciever.GetEvtHandler());
+	}
 
-bool KxBroadcastReciever::PreProcessEvent(wxEvent& event)
-{
-	event.StopPropagation();
-	return m_Processor.PreProcessEvent(event);
-}
-void KxBroadcastReciever::PostProcessEvent(wxEvent& event)
-{
-	m_Processor.PostProcessEvent(event);
-}
-void KxBroadcastReciever::FinalPostProcessEvent(wxEvent& event)
-{
-	event.Skip();
-	event.StopPropagation();
+	bool BroadcastReciever::PreProcessEvent(wxEvent& event)
+	{
+		event.StopPropagation();
+		return m_Processor.PreProcessEvent(event);
+	}
+	void BroadcastReciever::PostProcessEvent(wxEvent& event)
+	{
+		m_Processor.PostProcessEvent(event);
+	}
+	void BroadcastReciever::FinalPostProcessEvent(wxEvent& event)
+	{
+		event.Skip();
+		event.StopPropagation();
+	}
 }

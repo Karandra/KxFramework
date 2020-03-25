@@ -8,10 +8,10 @@
 #include "ScriptValue.h"
 #include "KxFramework/KxUtility.h"
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	template<class TEvent>
-	TEvent MakeEvent(BasicEventDispatcher& evtHandler, KxEventID eventID = wxEVT_NULL)
+	TEvent MakeEvent(BasicEventDispatcher& evtHandler, EventID eventID = wxEVT_NULL)
 	{
 		TEvent event(evtHandler.GetHost());
 		event.Allow();
@@ -123,7 +123,7 @@ namespace KxSciter
 	}
 }
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	BOOL BasicEventDispatcher::CallHandleEvent(void* context, ElementHandle* element, uint32_t eventGroupID, void* parameters)
 	{
@@ -901,7 +901,7 @@ namespace KxSciter
 	}
 }
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	wxEvtHandler& WidgetEventDispatcher::GetEvtHandler()
 	{

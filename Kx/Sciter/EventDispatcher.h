@@ -4,13 +4,13 @@
 #include "Element.h"
 #include "Events.h"
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	class Host;
 	class Widget;
 }
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	class KX_API BasicEventDispatcher
 	{
@@ -71,7 +71,7 @@ namespace KxSciter
 	};
 }
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	class KX_API EventDispatcher: public BasicEventDispatcher
 	{

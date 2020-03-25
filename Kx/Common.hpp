@@ -7,3 +7,7 @@
 #else
 #define KX_API
 #endif
+
+#include <cstdint>
+#include <utility>
+#include <memory>

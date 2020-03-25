@@ -1,36 +1,39 @@
 #pragma once
 #include "Kx/Async/Common.h"
-#include "CoroutineInstruction.h"
+#include "YieldInstruction.h"
 #include <wx/timer.h>
 #include <utility>
 #include <optional>
 #include <type_traits>
 
-class KX_API KxCoroutine;
-namespace KxAsync
+namespace KxFramework
 {
-	class KX_API BaseCoroutine;
+	class KX_API Coroutine;
+}
+namespace KxFramework::Async
+{
+	class KX_API CoroutineBase;
 }
 
-namespace KxAsync
+namespace KxFramework::Async
 {
-	class CoroutineTimer: public wxTimer
+	class CoroutineTimer final: public wxTimer
 	{
 		private:
-			std::unique_ptr<BaseCoroutine> m_Coroutine;
+			std::unique_ptr<CoroutineBase> m_Coroutine;
 
 		public:
 			void Notify() override;
-			void Wait(std::unique_ptr<BaseCoroutine> coroutine, const wxTimeSpan& time);
-			std::unique_ptr<BaseCoroutine> Relinquish();
+			void Wait(std::unique_ptr<CoroutineBase> coroutine, const wxTimeSpan& time);
+			std::unique_ptr<CoroutineBase> Relinquish();
 	};
-	class CoroutineExecutor: public wxAsyncMethodCallEvent
+	class CoroutineExecutor final: public wxAsyncMethodCallEvent
 	{
 		private:
-			std::unique_ptr<BaseCoroutine> m_Coroutine;
+			std::unique_ptr<CoroutineBase> m_Coroutine;
 
 		public:
-			CoroutineExecutor(std::unique_ptr<BaseCoroutine> coroutine);
+			CoroutineExecutor(std::unique_ptr<CoroutineBase> coroutine);
 
 		public:
 			CoroutineExecutor* Clone() const override
@@ -41,39 +44,44 @@ namespace KxAsync
 	};
 }
 
-namespace KxAsync
+namespace KxFramework::Async
 {
-	class KX_API BaseCoroutine: public wxObject
+	class KX_API CoroutineBase: public wxObject
 	{
 		friend class CoroutineTimer;
 		friend class CoroutineExecutor;
 
 		public:
-			static BaseCoroutine* Run(std::unique_ptr<BaseCoroutine> coroutine);
+			static CoroutineBase* Run(std::unique_ptr<CoroutineBase> coroutine);
 
-			template<class T = intptr_t> static KxYieldInstruction Yield(const T& nextState = 0)
+			template<class T = intptr_t>
+			static YieldInstruction Yield(const T& nextState = 0)
 			{
-				return KxYieldInstruction(InstructionType::Continue, nextState);
+				return YieldInstruction(InstructionType::Continue, nextState);
 			}
-			template<class T = intptr_t> static KxYieldInstruction YieldWait(const wxTimeSpan& interval, const T& nextState = 0)
+			
+			template<class T = intptr_t>
+			static YieldInstruction YieldWait(const wxTimeSpan& interval, const T& nextState = 0)
 			{
-				KxYieldInstruction instruction(InstructionType::Delay, nextState);
+				YieldInstruction instruction(InstructionType::Delay, nextState);
 				instruction.m_Delay = interval;
 				return instruction;
 			}
-			template<class T = intptr_t> static KxYieldInstruction YieldStop(const T& nextState = 0)
+			
+			template<class T = intptr_t>
+			static YieldInstruction YieldStop(const T& nextState = 0)
 			{
-				return KxYieldInstruction(InstructionType::Terminate, nextState);
+				return YieldInstruction(InstructionType::Terminate, nextState);
 			}
 
 		private:
-			static void QueueExecution(std::unique_ptr<BaseCoroutine> coroutine);
-			static void DelayExecution(std::unique_ptr<BaseCoroutine> coroutine, const wxTimeSpan& time);
-			static void AbortExecution(std::unique_ptr<BaseCoroutine> coroutine);
+			static void QueueExecution(std::unique_ptr<CoroutineBase> coroutine);
+			static void DelayExecution(std::unique_ptr<CoroutineBase> coroutine, const wxTimeSpan& time);
+			static void AbortExecution(std::unique_ptr<CoroutineBase> coroutine);
 
 		private:
 			CoroutineTimer m_DelayTimer;
-			KxYieldInstruction m_Instruction;
+			YieldInstruction m_Instruction;
 			wxTimeSpan m_TimeStampStart;
 			wxTimeSpan m_TimeStampBefore;
 			wxTimeSpan m_TimeStampAfter;
@@ -81,21 +89,22 @@ namespace KxAsync
 		private:
 			void BeforeExecute();
 			void AfterExecute();
-			void RunExecute(std::unique_ptr<BaseCoroutine> coroutine);
+			void RunExecute(std::unique_ptr<CoroutineBase> coroutine);
 
 			wxTimeSpan GetCurrentExecutionTime() const;
 
 		protected:
-			virtual KxYieldInstruction Execute() = 0;
+			virtual YieldInstruction Execute() = 0;
 
 		public:
-			BaseCoroutine();
-			virtual ~BaseCoroutine();
+			CoroutineBase();
+			virtual ~CoroutineBase();
 
 		public:
 			void Terminate();
 
-			template<class T = intptr_t> std::optional<T> GetNextState() const noexcept
+			template<class T = intptr_t>
+			std::optional<T> GetNextState() const noexcept
 			{
 				return m_Instruction.GetNextState<T>();
 			}

@@ -7,7 +7,7 @@
 #include "Kx/Sciter/SciterAPI.h"
 #include "Kx/Sciter/Internal.h"
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	void DoDrawPath(GraphicsContext& gc, const GraphicsPath& path, DRAW_PATH_MODE mode)
 	{
@@ -69,7 +69,7 @@ namespace KxSciter
 	}
 }
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	bool GraphicsContext::DoAcquire(GraphicsContextHandle* handle)
 	{

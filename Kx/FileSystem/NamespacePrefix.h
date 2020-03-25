@@ -1,7 +1,7 @@
 #pragma once
 #include <wx/wx.h>
 
-namespace KxFileSystem::NamespacePrefix
+namespace KxFramework::FileSystem::NamespacePrefix
 {
 	constexpr wxChar NT[] = wxS("\\");
 	constexpr wxChar Win32File[] = wxS("\\\\?\\");

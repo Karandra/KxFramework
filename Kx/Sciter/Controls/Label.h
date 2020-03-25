@@ -2,7 +2,7 @@
 #include "Kx/Sciter/WrapperWindow.h"
 #include <wx/control.h>
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	class KX_API Label: public WindowWrapper<wxControl>
 	{

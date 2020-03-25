@@ -2,37 +2,37 @@
 #include "Common.h"
 #include "NamespacePrefix.h"
 
-namespace KxFileSystem
+namespace KxFramework::FileSystem
 {
-	wxString GetNamespaceString(PathNamespace type)
+	wxString GetNamespaceString(FSPathNamespace type)
 	{
 		switch (type)
 		{
-			case PathNamespace::NT:
+			case FSPathNamespace::NT:
 			{
 				return NamespacePrefix::NT;
 			}
-			case PathNamespace::Win32File:
+			case FSPathNamespace::Win32File:
 			{
 				return NamespacePrefix::Win32File;
 			}
-			case PathNamespace::Win32FileUNC:
+			case FSPathNamespace::Win32FileUNC:
 			{
 				return NamespacePrefix::Win32FileUNC;
 			}
-			case PathNamespace::Win32Device:
+			case FSPathNamespace::Win32Device:
 			{
 				return NamespacePrefix::Win32Device;
 			}
-			case PathNamespace::Win32Volume:
+			case FSPathNamespace::Win32Volume:
 			{
 				return NamespacePrefix::Win32Volume;
 			}
-			case PathNamespace::Network:
+			case FSPathNamespace::Network:
 			{
 				return NamespacePrefix::Network;
 			}
-			case PathNamespace::NetworkUNC:
+			case FSPathNamespace::NetworkUNC:
 			{
 				return NamespacePrefix::NetworkUNC;
 			}

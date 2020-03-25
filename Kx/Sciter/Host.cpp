@@ -9,10 +9,10 @@
 #pragma warning(disable: 4302) // 'reinterpret_cast': truncation from 'void *' to 'UINT'
 #pragma warning(disable: 4311) // 'reinterpret_cast': pointer truncation from 'void *' to 'UINT'
 
-namespace
+namespace KxFramework::Sciter
 {
 	template<class TEvent>
-	TEvent MakeEvent(KxSciter::Host& host, KxEventID eventID = wxEVT_NULL)
+	TEvent MakeEvent(Host& host, EventID eventID = wxEVT_NULL)
 	{
 		TEvent event(host);
 		event.Allow();
@@ -23,7 +23,7 @@ namespace
 	}
 }
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	void Host::SetDefaultOptions()
 	{

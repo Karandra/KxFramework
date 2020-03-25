@@ -271,6 +271,9 @@
     <Filter Include="Kx\FileSystem">
       <UniqueIdentifier>{a95e1a0b-7728-4fee-bdea-a3a34c440c70}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\General">
+      <UniqueIdentifier>{7777f244-e0e6-49ac-b259-199b1aed7a28}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -1006,9 +1009,6 @@
     <ClInclude Include="Kx\Threading\Common.h">
       <Filter>Kx\Threading</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Threading\Thread.h">
-      <Filter>Kx\Threading</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\Common.hpp">
       <Filter>Kx</Filter>
     </ClInclude>
@@ -1024,16 +1024,7 @@
     <ClInclude Include="Kx\System.hpp">
       <Filter>Kx</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\FileTypeManager.h">
-      <Filter>Kx\System</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\System\Common.h">
-      <Filter>Kx\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\System\FileType.h">
-      <Filter>Kx\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\System\FileTypeInfo.h">
       <Filter>Kx\System</Filter>
     </ClInclude>
     <ClInclude Include="Kx\EventSystem.hpp">
@@ -1088,9 +1079,6 @@
       <Filter>Kx\Async\Coroutine</Filter>
     </ClInclude>
     <ClInclude Include="Kx\Async\Coroutine\CoroutineImpl.h">
-      <Filter>Kx\Async\Coroutine</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\Async\Coroutine\CoroutineInstruction.h">
       <Filter>Kx\Async\Coroutine</Filter>
     </ClInclude>
     <ClInclude Include="Kx\Async\Coroutine.h">
@@ -1263,6 +1251,30 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxXMLUtility.h">
       <Filter>Header Files\Parsers\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\Common.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\NativeUUID.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Async\Coroutine\YieldInstruction.h">
+      <Filter>Kx\Async\Coroutine</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\ShellFileType.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\ShellFileTypeInfo.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\ShellFileTypeManager.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Threading\JoinableThread.h">
+      <Filter>Kx\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Threading\AutoThread.h">
+      <Filter>Kx\Threading</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1873,9 +1885,6 @@
     <ClCompile Include="KxFramework\KxURI.cpp">
       <Filter>Source Files\Network</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Threading\Thread.cpp">
-      <Filter>Kx\Threading</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxCommandEvent.cpp">
       <Filter>Source Files\Events</Filter>
     </ClCompile>
@@ -1891,12 +1900,6 @@
     <ClCompile Include="Kx\Async\Coroutine\CoroutineImpl.cpp">
       <Filter>Kx\Async\Coroutine</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\FileTypeManager.cpp">
-      <Filter>Kx\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\System\FileType.cpp">
-      <Filter>Kx\System</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxAny.cpp">
       <Filter>Source Files\DataStructures</Filter>
     </ClCompile>
@@ -1911,9 +1914,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxDCUtility.cpp">
       <Filter>Source Files\Drawing</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\System\FileTypeInfo.cpp">
-      <Filter>Kx\System</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\HeaderCtrl2.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
@@ -1992,6 +1992,18 @@
     </ClCompile>
     <ClCompile Include="Kx\FileSystem\LegacyDrive.cpp">
       <Filter>Kx\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\ShellFileType.cpp">
+      <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\ShellFileTypeInfo.cpp">
+      <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\ShellFileTypeManager.cpp">
+      <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Threading\JoinableThread.cpp">
+      <Filter>Kx\Threading</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

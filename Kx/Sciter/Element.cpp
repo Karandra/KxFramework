@@ -9,7 +9,7 @@
 
 #pragma warning(disable: 4312) // 'reinterpret_cast': conversion from 'UINT' to 'void *' of greater size
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	template<class TFunc>
 	Element DoGetElemenet(ElementHandle* handle, TFunc&& func)
@@ -66,7 +66,7 @@ namespace KxSciter
 	}
 }
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	Element Element::Create(const wxString& tagName, const wxString& value)
 	{

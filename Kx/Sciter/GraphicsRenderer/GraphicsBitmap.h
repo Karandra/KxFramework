@@ -2,14 +2,14 @@
 #include "Kx/Sciter/Common.h"
 #include "Kx/Sciter/Utility/HandleWrapper.h"
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	struct GraphicsBitmapHandle;
 	class GraphicsContext;
 	class ScriptValue;
 }
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	class KX_API GraphicsBitmap final: public HandleWrapper<GraphicsBitmap, GraphicsBitmapHandle>
 	{

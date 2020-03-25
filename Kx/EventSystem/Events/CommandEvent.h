@@ -1,14 +1,17 @@
 #pragma once
 #include "Kx/EventSystem/Event.h"
 
-class KxCommandEvent: public wxCommandEvent
+namespace KxFramework
 {
-	public:
-		KxCommandEvent() = default;
+	class CommandEvent: public wxCommandEvent
+	{
+		public:
+			CommandEvent() = default;
 
-	public:
-		KxCommandEvent* Clone() const override
-		{
-			return new KxCommandEvent(*this);
-		}
-};
+		public:
+			CommandEvent* Clone() const override
+			{
+				return new CommandEvent(*this);
+			}
+	};
+}

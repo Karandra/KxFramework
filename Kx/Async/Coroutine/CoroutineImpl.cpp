@@ -11,29 +11,27 @@ namespace
 	}
 }
 
-namespace KxAsync
+namespace KxFramework::Async
 {
 	void CoroutineTimer::Notify()
 	{
-		BaseCoroutine::QueueExecution(std::move(m_Coroutine));
+		CoroutineBase::QueueExecution(std::move(m_Coroutine));
 	}
-	std::unique_ptr<BaseCoroutine> CoroutineTimer::Relinquish()
+	std::unique_ptr<CoroutineBase> CoroutineTimer::Relinquish()
 	{
 		wxTimer::Stop();
-
-		auto temp = std::move(m_Coroutine);
-		return temp;
+		return std::move(m_Coroutine);
 	}
-	void CoroutineTimer::Wait(std::unique_ptr<BaseCoroutine> coroutine, const wxTimeSpan& time)
+	void CoroutineTimer::Wait(std::unique_ptr<CoroutineBase> coroutine, const wxTimeSpan& time)
 	{
 		m_Coroutine = std::move(coroutine);
 		wxTimer::StartOnce(time.GetMilliseconds().GetValue());
 	}
 }
 
-namespace KxAsync
+namespace KxFramework::Async
 {
-	CoroutineExecutor::CoroutineExecutor(std::unique_ptr<BaseCoroutine> coroutine)
+	CoroutineExecutor::CoroutineExecutor(std::unique_ptr<CoroutineBase> coroutine)
 		:wxAsyncMethodCallEvent(wxApp::GetInstance()), m_Coroutine(std::move(coroutine))
 	{
 	}
@@ -44,28 +42,28 @@ namespace KxAsync
 	}
 }
 
-namespace KxAsync
+namespace KxFramework::Async
 {
-	BaseCoroutine* BaseCoroutine::Run(std::unique_ptr<BaseCoroutine> coroutine)
+	CoroutineBase* CoroutineBase::Run(std::unique_ptr<CoroutineBase> coroutine)
 	{
 		if (coroutine)
 		{
-			BaseCoroutine& ref = *coroutine;
+			CoroutineBase& ref = *coroutine;
 			QueueExecution(std::move(coroutine));
 			return &ref;
 		}
 		return nullptr;
 	}
 
-	void BaseCoroutine::QueueExecution(std::unique_ptr<BaseCoroutine> coroutine)
+	void CoroutineBase::QueueExecution(std::unique_ptr<CoroutineBase> coroutine)
 	{
 		wxApp::GetInstance()->QueueEvent(new CoroutineExecutor(std::move(coroutine)));
 	}
-	void BaseCoroutine::DelayExecution(std::unique_ptr<BaseCoroutine> coroutine, const wxTimeSpan& time)
+	void CoroutineBase::DelayExecution(std::unique_ptr<CoroutineBase> coroutine, const wxTimeSpan& time)
 	{
 		if (time.IsPositive())
 		{
-			BaseCoroutine& ref = *coroutine;
+			CoroutineBase& ref = *coroutine;
 			ref.m_DelayTimer.Wait(std::move(coroutine), time);
 		}
 		else
@@ -73,12 +71,12 @@ namespace KxAsync
 			QueueExecution(std::move(coroutine));
 		}
 	}
-	void BaseCoroutine::AbortExecution(std::unique_ptr<BaseCoroutine> coroutine)
+	void CoroutineBase::AbortExecution(std::unique_ptr<CoroutineBase> coroutine)
 	{
 		wxApp::GetInstance()->ScheduleForDestruction(coroutine.release());
 	}
 
-	void BaseCoroutine::BeforeExecute()
+	void CoroutineBase::BeforeExecute()
 	{
 		// Save starting time
 		if (m_TimeStampStart.IsNull())
@@ -93,11 +91,11 @@ namespace KxAsync
 			m_TimeStampAfter = m_TimeStampBefore;
 		}
 	}
-	void BaseCoroutine::AfterExecute()
+	void CoroutineBase::AfterExecute()
 	{
 		m_TimeStampAfter = GetCurrentExecutionTime();
 	}
-	void BaseCoroutine::RunExecute(std::unique_ptr<BaseCoroutine> coroutine)
+	void CoroutineBase::RunExecute(std::unique_ptr<CoroutineBase> coroutine)
 	{
 		if (m_Instruction.GetType() == InstructionType::Terminate)
 		{
@@ -129,22 +127,22 @@ namespace KxAsync
 		};
 	}
 
-	wxTimeSpan BaseCoroutine::GetCurrentExecutionTime() const
+	wxTimeSpan CoroutineBase::GetCurrentExecutionTime() const
 	{
 		return GetClockTime() - m_TimeStampStart;
 	}
 
-	BaseCoroutine::BaseCoroutine()
+	CoroutineBase::CoroutineBase()
 		:m_Instruction(InstructionType::Continue)
 	{
 	}
-	BaseCoroutine::~BaseCoroutine()
+	CoroutineBase::~CoroutineBase()
 	{
 	}
 
-	void BaseCoroutine::Terminate()
+	void CoroutineBase::Terminate()
 	{
-		m_Instruction = BaseCoroutine::YieldStop();
+		m_Instruction = CoroutineBase::YieldStop();
 
 		if (m_DelayTimer.IsRunning())
 		{
@@ -152,11 +150,11 @@ namespace KxAsync
 		}
 	}
 	
-	wxTimeSpan BaseCoroutine::GetTimeDelta() const
+	wxTimeSpan CoroutineBase::GetTimeDelta() const
 	{
 		return m_TimeStampBefore - m_TimeStampAfter;
 	}
-	wxTimeSpan BaseCoroutine::GetElapsedTime() const
+	wxTimeSpan CoroutineBase::GetElapsedTime() const
 	{
 		return std::max(m_TimeStampBefore, m_TimeStampAfter);
 	}

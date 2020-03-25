@@ -475,7 +475,7 @@
     <ClInclude Include="Kx\Async\Coroutine.h" />
     <ClInclude Include="Kx\Async\Coroutine\Coroutine.h" />
     <ClInclude Include="Kx\Async\Coroutine\CoroutineImpl.h" />
-    <ClInclude Include="Kx\Async\Coroutine\CoroutineInstruction.h" />
+    <ClInclude Include="Kx\Async\Coroutine\YieldInstruction.h" />
     <ClInclude Include="Kx\Async\DelayedCall.h" />
     <ClInclude Include="Kx\Common.hpp" />
     <ClInclude Include="Kx\EventSystem.hpp" />
@@ -495,6 +495,8 @@
     <ClInclude Include="Kx\FileSystem\FSPath.h" />
     <ClInclude Include="Kx\FileSystem\LegacyDrive.h" />
     <ClInclude Include="Kx\FileSystem\NamespacePrefix.h" />
+    <ClInclude Include="Kx\General\Common.h" />
+    <ClInclude Include="Kx\General\NativeUUID.h" />
     <ClInclude Include="Kx\RTTI.hpp" />
     <ClInclude Include="Kx\RTTI\Common.h" />
     <ClInclude Include="Kx\RTTI\QueryInterface.h" />
@@ -532,13 +534,14 @@
     <ClInclude Include="Kx\Sciter\WrapperWindow.h" />
     <ClInclude Include="Kx\System.hpp" />
     <ClInclude Include="Kx\System\Common.h" />
-    <ClInclude Include="Kx\System\FileType.h" />
-    <ClInclude Include="Kx\System\FileTypeInfo.h" />
-    <ClInclude Include="Kx\System\FileTypeManager.h" />
+    <ClInclude Include="Kx\System\ShellFileType.h" />
+    <ClInclude Include="Kx\System\ShellFileTypeInfo.h" />
+    <ClInclude Include="Kx\System\ShellFileTypeManager.h" />
     <ClInclude Include="Kx\Threading.hpp" />
+    <ClInclude Include="Kx\Threading\AutoThread.h" />
     <ClInclude Include="Kx\Threading\Common.h" />
     <ClInclude Include="Kx\Threading\Events\ThreadEvent.h" />
-    <ClInclude Include="Kx\Threading\Thread.h" />
+    <ClInclude Include="Kx\Threading\JoinableThread.h" />
     <ClInclude Include="Kx\Utility.hpp" />
     <ClInclude Include="Kx\Utility\Common.h" />
     <ClInclude Include="Kx\Utility\TypeTraits.h" />
@@ -831,10 +834,10 @@
     <ClCompile Include="Kx\Sciter\ScriptValue.cpp" />
     <ClCompile Include="Kx\Sciter\Widget.cpp" />
     <ClCompile Include="Kx\Sciter\WidgetFactory.cpp" />
-    <ClCompile Include="Kx\System\FileType.cpp" />
-    <ClCompile Include="Kx\System\FileTypeInfo.cpp" />
-    <ClCompile Include="Kx\System\FileTypeManager.cpp" />
-    <ClCompile Include="Kx\Threading\Thread.cpp" />
+    <ClCompile Include="Kx\System\ShellFileType.cpp" />
+    <ClCompile Include="Kx\System\ShellFileTypeInfo.cpp" />
+    <ClCompile Include="Kx\System\ShellFileTypeManager.cpp" />
+    <ClCompile Include="Kx\Threading\JoinableThread.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

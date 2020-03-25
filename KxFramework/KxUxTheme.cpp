@@ -420,7 +420,8 @@ KxUxTheme& KxUxTheme::operator=(KxUxTheme&& other)
 {
 	Close();
 
-	m_Handle = KxUtility::ExchangeResetAndReturn(other.m_Handle, nullptr);
-	m_Window = KxUtility::ExchangeResetAndReturn(other.m_Window, nullptr);
+	using namespace KxFramework;
+	m_Handle = Utility::ExchangeResetAndReturn(other.m_Handle, nullptr);
+	m_Window = Utility::ExchangeResetAndReturn(other.m_Window, nullptr);
 	return *this;
 }

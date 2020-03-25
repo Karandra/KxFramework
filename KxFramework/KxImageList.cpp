@@ -194,9 +194,10 @@ KxImageList& KxImageList::operator=(KxImageList&& other)
 		m_hImageList = nullptr;
 	}
 
-	m_hImageList = KxUtility::ExchangeResetAndReturn(other.m_hImageList, nullptr);
-	m_size = KxUtility::ExchangeResetAndReturn(other.m_size, wxDefaultSize);
-	m_Flags = KxUtility::ExchangeResetAndReturn(other.m_Flags, 0);
+	using namespace KxFramework;
+	m_hImageList = Utility::ExchangeResetAndReturn(other.m_hImageList, nullptr);
+	m_size = Utility::ExchangeResetAndReturn(other.m_size, wxDefaultSize);
+	m_Flags = Utility::ExchangeResetAndReturn(other.m_Flags, 0);
 
 	return *this;
 }

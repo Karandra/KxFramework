@@ -122,7 +122,7 @@ bool KxShell::FileOperationEx(KxShellOperationFunc func, const wxString& from, c
 	return returnCode == 0;
 }
 
-DWORD KxShell::FormatDrive(wxWindow* window, const KxFileSystem::LegacyDrive& drive, DWORD options, DWORD formatID)
+DWORD KxShell::FormatDrive(wxWindow* window, const KxFramework::LegacyDrive& drive, DWORD options, DWORD formatID)
 {
 	if (drive)
 	{

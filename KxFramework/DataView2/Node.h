@@ -27,7 +27,7 @@ namespace KxDataView2
 	class KX_API RootNode;
 	class KX_API VirtualNode;
 
-	class KX_API Node: public KxRTTI::Interface<Node>
+	class KX_API Node: public KxFramework::RTTI::Interface<Node>
 	{
 		KxDecalreIID(Node, {0x84870de7, 0x1623, 0x4b27, {0x9a, 0x8b, 0x79, 0x26, 0x81, 0x9d, 0xbf, 0x28}});
 
@@ -270,7 +270,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API RootNode: public KxRTTI::ExtendInterface<RootNode, Node>
+	class KX_API RootNode: public KxFramework::RTTI::ExtendInterface<RootNode, Node>
 	{
 		KxDecalreIID(RootNode, {0xe57d0d6b, 0xdea1, 0x43d9, {0xb3, 0xf2, 0x75, 0xd1, 0xce, 0xc2, 0x32, 0x59}});
 
@@ -306,7 +306,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API VirtualNode: public KxRTTI::ExtendInterface<VirtualNode, Node>
+	class KX_API VirtualNode: public KxFramework::RTTI::ExtendInterface<VirtualNode, Node>
 	{
 		KxDecalreIID(VirtualNode, {0x33a223b, 0xb6b6, 0x4a1c, {0xb2, 0xfe, 0xf0, 0x3d, 0xdf, 0x2a, 0x38, 0x16}});
 

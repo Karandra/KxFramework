@@ -4,7 +4,7 @@
 #include "Internal.h"
 #include <KxFramework/KxLibrary.h>
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	void* g_SciterLibrary = nullptr;
 
@@ -52,7 +52,7 @@ namespace KxSciter
 	}
 }
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	wxStringView SizeUnitToString(SizeUnit unit)
 	{

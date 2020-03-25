@@ -4,7 +4,7 @@
 #include <KxFramework/KxVersion.h>
 #include "CommonDefs.h"
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	wxString GetLibraryName();
 	KxVersion GetLibraryVersion();
@@ -14,7 +14,7 @@ namespace KxSciter
 	void FreeLibrary();
 }
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	wxStringView SizeUnitToString(SizeUnit unit);
 	

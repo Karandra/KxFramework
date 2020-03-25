@@ -10,7 +10,7 @@
 #include <d2d1_2helper.h>
 #include <dcomp.h>
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	class KX_API DirectX: public IWindowRenderer
 	{

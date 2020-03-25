@@ -2,7 +2,7 @@
 #include "Common.h"
 #include <utility>
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	enum class ScriptValueType: uint32_t
 	{
@@ -35,7 +35,7 @@ namespace KxSciter
 	};
 }
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	class KX_API ScriptValue final
 	{

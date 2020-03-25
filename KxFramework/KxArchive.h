@@ -128,7 +128,7 @@ namespace KxArchive
 
 namespace KxArchive
 {
-	class KX_API IArchive: public KxRTTI::Interface<IArchive>
+	class KX_API IArchive: public KxFramework::RTTI::Interface<IArchive>
 	{
 		KxDecalreIID(IArchive, {0xb4327a42, 0x17a7, 0x44db, {0x84, 0xb, 0xc3, 0x24, 0x5b, 0x29, 0xca, 0xe8}});
 
@@ -156,7 +156,7 @@ namespace KxArchive
 			}
 	};
 
-	class KX_API IArchiveItems: public KxRTTI::Interface<IArchiveItems>
+	class KX_API IArchiveItems: public KxFramework::RTTI::Interface<IArchiveItems>
 	{
 		KxDecalreIID(IArchiveItems, {0x1455f21f, 0x1a17, 0x4ca2, {0xb5, 0x57, 0xaa, 0xa8, 0x68, 0xfb, 0x4b, 0x7e}});
 
@@ -168,7 +168,7 @@ namespace KxArchive
 			virtual KxFileItem GetItem(size_t fileIndex) const = 0;
 	};
 	
-	class KX_API IArchiveSearch: public KxRTTI::Interface<IArchiveSearch>
+	class KX_API IArchiveSearch: public KxFramework::RTTI::Interface<IArchiveSearch>
 	{
 		KxDecalreIID(IArchiveSearch, {0x38c58054, 0x845d, 0x43c1, {0xa6, 0x6d, 0x46, 0xc4, 0xd2, 0x4d, 0x32, 0x3c}});
 
@@ -188,7 +188,7 @@ namespace KxArchive
 namespace KxArchive
 {
 	class KX_API IArchiveExtraction;
-	class KX_API IExtractionCallback: public KxRTTI::Interface<IExtractionCallback>
+	class KX_API IExtractionCallback: public KxFramework::RTTI::Interface<IExtractionCallback>
 	{
 		KxDecalreIID(IExtractionCallback, {0x8a6363c5, 0x35be, 0x4884, {0x8a, 0x35, 0x5e, 0x14, 0x5, 0x81, 0xbc, 0x25}});
 
@@ -281,7 +281,7 @@ namespace KxArchive
 			}
 	};
 
-	class KX_API IArchiveExtraction: public KxRTTI::Interface<IArchiveExtraction>
+	class KX_API IArchiveExtraction: public KxFramework::RTTI::Interface<IArchiveExtraction>
 	{
 		KxDecalreIID(IArchiveExtraction, {0x105f744b, 0x904d, 0x4822, {0xb4, 0x7a, 0x57, 0x8b, 0x3e, 0xd, 0x95, 0xe6}});
 
@@ -313,7 +313,7 @@ namespace KxArchive
 
 namespace KxArchive
 {
-	class KX_API IArchiveCompression: public KxRTTI::Interface<IArchiveCompression>
+	class KX_API IArchiveCompression: public KxFramework::RTTI::Interface<IArchiveCompression>
 	{
 		KxDecalreIID(IArchiveCompression, {0xcf9bb9ac, 0x6519, 0x49d4, {0xa3, 0xb4, 0xcd, 0x63, 0x17, 0x52, 0xe1, 0x55}});
 
@@ -339,7 +339,7 @@ namespace KxArchive
 
 namespace KxArchive
 {
-	class KX_API IArchiveProperties: public KxRTTI::Interface<IArchiveProperties>
+	class KX_API IArchiveProperties: public KxFramework::RTTI::Interface<IArchiveProperties>
 	{
 		KxDecalreIID(IArchiveProperties, {0x8ecede61, 0x7542, 0x4164, {0x99, 0x7c, 0xd6, 0x72, 0x57, 0x24, 0x94, 0x26}});
 

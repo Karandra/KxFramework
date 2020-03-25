@@ -9,7 +9,7 @@
 
 namespace KxArchive
 {
-	class ExtractorCallbackBase: public KxRTTI::ImplementInterface<ExtractorCallbackBase, IExtractionCallback>
+	class ExtractorCallbackBase: public KxFramework::RTTI::ImplementInterface<ExtractorCallbackBase, IExtractionCallback>
 	{
 		protected:
 			IArchiveItems& m_ArchiveItems;

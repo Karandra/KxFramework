@@ -10,7 +10,7 @@
 #include <KxFramework/KxURI.h>
 #include <wx/window.h>
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	class KX_API Host: public wxObject
 	{

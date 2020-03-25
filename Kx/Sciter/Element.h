@@ -5,7 +5,7 @@
 #include <KxFramework/KxColor.h>
 #include <utility>
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	class Node;
 	class Host;
@@ -14,7 +14,7 @@ namespace KxSciter
 	struct ElementUID;
 }
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	class KX_API Element final: public HandleWrapper<Element, ElementHandle>
 	{

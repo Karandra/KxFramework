@@ -2,7 +2,7 @@
 #include <wx/wx.h>
 #include "SciterAPI.h"
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	struct NodeHandle;
 	struct ElementHandle;
@@ -14,14 +14,14 @@ namespace KxSciter
 	struct GraphicsPathHandle;
 }
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	std::vector<BYTE> ToSciterUTF8(const wxString& text);
 	SC_COLOR CreateSciterColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 	SC_COLOR CreateSciterColor(const wxColour& color);
 }
 
-namespace KxSciter
+namespace KxFramework::Sciter
 {
 	inline HELEMENT ToSciterElement(ElementHandle* handle)
 	{

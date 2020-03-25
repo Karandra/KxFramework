@@ -3,11 +3,11 @@
 #include "BasicEvtHandler.h"
 #include "Kx/Utility/Common.h"
 
-namespace KxEventSystem
+namespace KxFramework::EventSystem
 {
-	EventBuilder::~EventBuilder()
+	EventBuilderBase::~EventBuilderBase()
 	{
-		// If the event wasn't sent using 'EventBuilder::Do', send it here
+		// If the event wasn't sent using 'EventBuilderBase::Do', send it here
 		if (!m_IsSent)
 		{
 			Do();
@@ -21,11 +21,11 @@ namespace KxEventSystem
 		}
 	}
 
-	EventBuilder& EventBuilder::Do()
+	EventBuilderBase& EventBuilderBase::Do()
 	{
 		if (m_IsAsync)
 		{
-			std::unique_ptr<wxEvent> event(KxUtility::ExchangeResetAndReturn(m_Event, nullptr));
+			std::unique_ptr<wxEvent> event(Utility::ExchangeResetAndReturn(m_Event, nullptr));
 			m_EvtHandler->DoQueueEvent(std::move(event), m_EventID);
 			m_IsSent = true;
 		}
@@ -39,10 +39,10 @@ namespace KxEventSystem
 		return *this;
 	}
 
-	EventBuilder& EventBuilder::operator=(EventBuilder&& other)
+	EventBuilderBase& EventBuilderBase::operator=(EventBuilderBase&& other)
 	{
-		using KxUtility::ExchangeAndReset;
-		const EventBuilder null;
+		using Utility::ExchangeAndReset;
+		const EventBuilderBase null;
 
 		ExchangeAndReset(m_EvtHandler, other.m_EvtHandler, null.m_EvtHandler);
 		ExchangeAndReset(m_Event, other.m_Event, null.m_Event);

@@ -3,21 +3,10 @@
 #include <KxFramework/KxEnumClassOperations.h>
 #include <wx/wx.h>
 
-namespace KxFileSystem
+namespace KxFramework
 {
 	using namespace KxEnumClassOperations;
 
-	enum class PathNamespace
-	{
-		None = 0,
-		NT,
-		Win32File,
-		Win32FileUNC,
-		Win32Device,
-		Win32Volume,
-		Network,
-		NetworkUNC,
-	};
 	enum class DriveType
 	{
 		Unknown = 0,
@@ -27,6 +16,17 @@ namespace KxFileSystem
 		Memory,
 		Optical,
 		Removable,
+	};
+	enum class FSPathNamespace
+	{
+		None = 0,
+		NT,
+		Win32File,
+		Win32FileUNC,
+		Win32Device,
+		Win32Volume,
+		Network,
+		NetworkUNC,
 	};
 	enum class FileSystemFeature
 	{
@@ -54,13 +54,13 @@ namespace KxFileSystem
 	};
 }
 
-namespace KxFileSystem
+namespace KxFramework::FileSystem
 {
-	wxString GetNamespaceString(PathNamespace type);
+	wxString GetNamespaceString(FSPathNamespace type);
 	wxString GetForbiddenChars();
 }
 
 namespace KxEnumClassOperations
 {
-	KxImplementEnum(KxFileSystem::FileSystemFeature);
+	KxImplementEnum(KxFramework::FileSystemFeature);
 }
