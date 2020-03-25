@@ -444,12 +444,3 @@ size_t KxString::Replace(wxString& source, const wxString& pattern, const wxStri
 	}
 	return replacementCount;
 }
-
-wxString KxString::AbbreviateFilePath(const wxString& source, size_t maxChars)
-{
-	maxChars++;
-
-	wxString result;
-	::PathCompactPathExW(wxStringBuffer(result, maxChars), source.wc_str(), maxChars, 0);
-	return result;
-}

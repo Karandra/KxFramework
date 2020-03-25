@@ -395,9 +395,9 @@ bool KxFileStream::SetAllocationSize(Offset offset)
 	}
 }
 
-wxString KxFileStream::GetFileName() const
+FSPath KxFileStream::GetFileName() const
 {
-	if (m_FilePath.IsEmpty())
+	if (!m_FilePath)
 	{
 		m_FilePath = GetFileNameByHandle(m_Handle);
 	}

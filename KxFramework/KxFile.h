@@ -145,7 +145,6 @@ class KX_API KxFile
 		wxString GetShortPath() const;
 		wxString GetLongPath() const;
 
-		wxString AbbreviatePath(size_t max) const;
 		bool IsRelative() const;
 		bool IsAbsolute() const;
 

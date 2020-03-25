@@ -1276,6 +1276,15 @@
     <ClInclude Include="Kx\Threading\AutoThread.h">
       <Filter>Kx\Threading</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\FileSystem\FileOperations.h">
+      <Filter>Kx\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\UndefWindows.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\BinarySize.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -2004,6 +2013,12 @@
     </ClCompile>
     <ClCompile Include="Kx\Threading\JoinableThread.cpp">
       <Filter>Kx\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\FileSystem\FileOperations.cpp">
+      <Filter>Kx\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\BinarySize.cpp">
+      <Filter>Kx\General</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

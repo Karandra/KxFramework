@@ -469,11 +469,6 @@ wxString KxFile::GetLongPath() const
 	return GetLongPath(m_Path);
 }
 
-wxString KxFile::AbbreviatePath(size_t max) const
-{
-	return KxString::AbbreviateFilePath(m_Path, max);
-}
-
 bool KxFile::IsRelative() const
 {
 	return !IsAbsolute();

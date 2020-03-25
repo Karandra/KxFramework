@@ -98,8 +98,6 @@ class KX_API KxString
 		static size_t Replace(wxString& source, const wxString& pattern, const wxString& replacement, size_t startAt = 0, bool caseSensetivity = true);
 		
 		/* Misc */
-		static wxString AbbreviateFilePath(const wxString& source, size_t maxChars);
-
 		static wxString& Trim(wxString& source, bool left, bool right)
 		{
 			if (left)
