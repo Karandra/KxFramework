@@ -24,11 +24,15 @@ namespace KxFramework
 				:m_ID(guid)
 			{
 			}
-		
+			
 		public:
 			constexpr bool IsNull() const noexcept
 			{
 				return m_ID.IsNull();
+			}
+			constexpr NativeUUID ToNativeUUID() const noexcept
+			{
+				return m_ID;
 			}
 
 			template<class T>
@@ -51,6 +55,15 @@ namespace KxFramework
 				m_ID = uuid;
 				return *this;
 			}
+	};
+}
+
+namespace std
+{
+	template<>
+	struct hash<KxFramework::IID>
+	{
+		size_t operator()(const KxFramework::IID& iid) const noexcept;
 	};
 }
 

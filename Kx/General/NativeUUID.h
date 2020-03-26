@@ -27,9 +27,22 @@ namespace KxFramework
 			return *this;
 		}
 
+		explicit constexpr operator bool() const noexcept
+		{
+			return !IsNull();
+		}
+		constexpr bool operator!() const noexcept
+		{
+			return IsNull();
+		}
+
 		constexpr bool operator==(const NativeUUID& other) const noexcept
 		{
-			if (Data1 == other.Data1 && Data2 == other.Data2 && Data3 == other.Data3)
+			if (this == &other)
+			{
+				return true;
+			}
+			else if (Data1 == other.Data1 && Data2 == other.Data2 && Data3 == other.Data3)
 			{
 				for (size_t i = 0; i < sizeof(NativeUUID::Data4); i++)
 				{
@@ -46,5 +59,14 @@ namespace KxFramework
 		{
 			return !(*this == other);
 		}
+	};
+}
+
+namespace std
+{
+	template<>
+	struct hash<KxFramework::NativeUUID>
+	{
+		size_t operator()(const KxFramework::NativeUUID& nativeUUID) const noexcept;
 	};
 }

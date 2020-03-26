@@ -500,6 +500,7 @@
     <ClInclude Include="Kx\General\Common.h" />
     <ClInclude Include="Kx\General\NativeUUID.h" />
     <ClInclude Include="Kx\General\UndefWindows.h" />
+    <ClInclude Include="Kx\General\UUID.h" />
     <ClInclude Include="Kx\RTTI.hpp" />
     <ClInclude Include="Kx\RTTI\Common.h" />
     <ClInclude Include="Kx\RTTI\QueryInterface.h" />
@@ -819,6 +820,9 @@
     <ClCompile Include="Kx\FileSystem\FSPath.cpp" />
     <ClCompile Include="Kx\FileSystem\LegacyDrive.cpp" />
     <ClCompile Include="Kx\General\BinarySize.cpp" />
+    <ClCompile Include="Kx\General\NativeUUID.cpp" />
+    <ClCompile Include="Kx\General\UUID.cpp" />
+    <ClCompile Include="Kx\RTTI\QueryInterface.cpp" />
     <ClCompile Include="Kx\Sciter\Common.cpp" />
     <ClCompile Include="Kx\Sciter\Controls\Label.cpp" />
     <ClCompile Include="Kx\Sciter\Element.cpp" />

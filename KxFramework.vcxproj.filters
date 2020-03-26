@@ -1285,6 +1285,9 @@
     <ClInclude Include="Kx\General\BinarySize.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\General\UUID.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -2018,6 +2021,15 @@
       <Filter>Kx\FileSystem</Filter>
     </ClCompile>
     <ClCompile Include="Kx\General\BinarySize.cpp">
+      <Filter>Kx\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\UUID.cpp">
+      <Filter>Kx\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\RTTI\QueryInterface.cpp">
+      <Filter>Kx\RTTI</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\NativeUUID.cpp">
       <Filter>Kx\General</Filter>
     </ClCompile>
   </ItemGroup>
