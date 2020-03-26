@@ -9,8 +9,9 @@ namespace KxFramework
 	class LegacyDrive;
 }
 
-namespace KxFramework
+namespace KxFramework::FileSystem
 {
+	FSPath GetTempPath(const FSPath& rootDirectory);
 	FSPath GetFullPathName(const FSPath& filePath);
 	FSPath GetLongPathName(const FSPath& filePath);
 	FSPath GetShortPathName(const FSPath& filePath);

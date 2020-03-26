@@ -30,8 +30,17 @@ namespace KxFramework
 	}
 }
 
-namespace KxFramework
+namespace KxFramework::FileSystem
 {
+	FSPath GetTempPath(const FSPath& rootDirectory)
+	{
+		FSPath fsPath = wxFileName::CreateTempFileName(rootDirectory.GetFullPath());
+		if (!fsPath.HasNamespace())
+		{
+			fsPath.SetNamespace(rootDirectory.GetNamespace());
+		}
+		return fsPath;
+	}
 	FSPath GetFullPathName(const FSPath& filePath)
 	{
 		wxString path = filePath.GetFullPath(FSPathNamespace::Win32File);
