@@ -68,6 +68,14 @@ namespace KxFramework
 				m_Namespace = ns;
 				return *this;
 			}
+			FSPath& EnsureNamespaceSet(FSPathNamespace ns)
+			{
+				if (m_Namespace == FSPathNamespace::None)
+				{
+					m_Namespace = ns;
+				}
+				return *this;
+			}
 			
 			wxString GetFullPath(FSPathNamespace withNamespace = FSPathNamespace::None) const;
 			wxString GetFullPathWithNS(FSPathNamespace withNamespace = FSPathNamespace::None) const

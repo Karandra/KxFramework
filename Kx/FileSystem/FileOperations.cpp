@@ -9,16 +9,19 @@
 namespace KxFramework
 {
 	template<class TFunc>
-	wxString CallWinAPIWithLengthPrecalc(const FSPath& filePath, TFunc&& func)
+	FSPath CallWinAPIWithLengthPrecalc(const FSPath& filePath, TFunc&& func)
 	{
 		wxString path = filePath.GetFullPath(FSPathNamespace::Win32File);
 
 		const DWORD length = func(path.wc_str(), nullptr, 0);
 		if (length)
 		{
-			wxString out;
-			func(path.wc_str(), wxStringBuffer(out, length), length);
-			return out;
+			wxString result;
+			func(path.wc_str(), wxStringBuffer(result, length), length);
+
+			FSPath fsPath = std::move(result);
+			fsPath.EnsureNamespaceSet(filePath.GetNamespace());
+			return fsPath;
 		}
 		return {};
 	}
@@ -35,10 +38,7 @@ namespace KxFramework::FileSystem
 	FSPath GetTempPath(const FSPath& rootDirectory)
 	{
 		FSPath fsPath = wxFileName::CreateTempFileName(rootDirectory.GetFullPath());
-		if (!fsPath.HasNamespace())
-		{
-			fsPath.SetNamespace(rootDirectory.GetNamespace());
-		}
+		fsPath.EnsureNamespaceSet(rootDirectory.GetNamespace());
 		return fsPath;
 	}
 	FSPath GetFullPathName(const FSPath& filePath)
@@ -48,10 +48,13 @@ namespace KxFramework::FileSystem
 		const DWORD length = ::GetFullPathNameW(path.wc_str(), 0, nullptr, nullptr);
 		if (length)
 		{
-			wxString out;
+			wxString result;
 			LPWSTR oldPathStart = nullptr;
-			::GetFullPathNameW(path.wc_str(), length, wxStringBuffer(out, length), &oldPathStart);
-			return out;
+			::GetFullPathNameW(path.wc_str(), length, wxStringBuffer(result, length), &oldPathStart);
+
+			FSPath fsPath = std::move(result);
+			fsPath.EnsureNamespaceSet(filePath.GetNamespace());
+			return fsPath;
 		}
 		return {};
 	}
@@ -76,11 +79,8 @@ namespace KxFramework::FileSystem
 				::PathCompactPathExW(wxStringBuffer(result, maxCharacters), source.wc_str(), maxCharacters, 0);
 
 				// Reinsert namespace information
-				FSPath fsPath(std::move(result));
-				if (!fsPath.HasNamespace())
-				{
-					fsPath.SetNamespace(filePath.GetNamespace());
-				}
+				FSPath fsPath = std::move(result);
+				fsPath.EnsureNamespaceSet(filePath.GetNamespace());
 				return fsPath;
 			}
 			else

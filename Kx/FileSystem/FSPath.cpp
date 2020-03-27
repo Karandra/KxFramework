@@ -220,7 +220,7 @@ namespace KxFramework
 	size_t FSPath::GetComponentCount() const
 	{
 		size_t count = 0;
-		for (wxChar c : m_Path)
+		for (wxChar c: m_Path)
 		{
 			if (c == wxS('\\'))
 			{
