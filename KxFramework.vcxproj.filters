@@ -1288,6 +1288,9 @@
     <ClInclude Include="Kx\General\UUID.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\FileSystem\FileItem.h">
+      <Filter>Kx\FileSystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -2031,6 +2034,9 @@
     </ClCompile>
     <ClCompile Include="Kx\General\NativeUUID.cpp">
       <Filter>Kx\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\FileSystem\FileItem.cpp">
+      <Filter>Kx\FileSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

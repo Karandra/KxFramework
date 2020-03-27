@@ -137,9 +137,12 @@ namespace KxFramework
 			}
 
 			// Conversion
-			constexpr int64_t GetBytes() const
+			template<class T = int64_t>
+			constexpr T GetBytes() const
 			{
-				return m_Value;
+				static_assert(std::is_integral_v<T> || std::is_floating_point_v<T>, "invalid numeric type");
+
+				return static_cast<T>(m_Value);
 			}
 			
 			template<class T = int64_t>

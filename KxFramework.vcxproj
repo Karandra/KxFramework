@@ -492,6 +492,7 @@
     <ClInclude Include="Kx\EventSystem\EvtHandler.h" />
     <ClInclude Include="Kx\FileSystem.hpp" />
     <ClInclude Include="Kx\FileSystem\Common.h" />
+    <ClInclude Include="Kx\FileSystem\FileItem.h" />
     <ClInclude Include="Kx\FileSystem\FileOperations.h" />
     <ClInclude Include="Kx\FileSystem\FSPath.h" />
     <ClInclude Include="Kx\FileSystem\LegacyDrive.h" />
@@ -816,6 +817,7 @@
     <ClCompile Include="Kx\EventSystem\EventBuilder.cpp" />
     <ClCompile Include="Kx\EventSystem\EventHandlerStack.cpp" />
     <ClCompile Include="Kx\FileSystem\Common.cpp" />
+    <ClCompile Include="Kx\FileSystem\FileItem.cpp" />
     <ClCompile Include="Kx\FileSystem\FileOperations.cpp" />
     <ClCompile Include="Kx\FileSystem\FSPath.cpp" />
     <ClCompile Include="Kx\FileSystem\LegacyDrive.cpp" />
