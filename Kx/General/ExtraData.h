@@ -9,6 +9,57 @@ namespace KxFramework
 		public:
 			virtual ~IExtraData() = default;
 	};
+}
+
+namespace KxFramework
+{
+	namespace Internal::ExtraDataContainer
+	{
+		template<class T>
+		constexpr void AssertUntypedStorageType()
+		{
+			using Tx = std::remove_reference_t<T>;
+			static_assert(sizeof(Tx) <= sizeof(void*) && (std::is_trivially_copyable_v<Tx>), "invalid type for untyped storage");
+		}
+
+		template<class T = void*>
+		T GetExtraData(void* data)
+		{
+			AssertUntypedStorageType<T>();
+
+			return reinterpret_cast<T>(data);
+		}
+
+		template<class T>
+		void* SetExtraData(T&& data)
+		{
+			AssertUntypedStorageType<T>();
+
+			return reinterpret_cast<void*>(data);
+		}
+	}
+
+	class KX_API TrivialExtraDataContainer
+	{
+		private:
+			void* m_Data = nullptr;
+
+		public:
+			virtual ~TrivialExtraDataContainer() = default;
+
+		public:
+			template<class T = void*>
+			T GetExtraData() const
+			{
+				return Internal::ExtraDataContainer::GetExtraData<T>(m_Data);
+			}
+
+			template<class T>
+			void SetExtraData(T&& data)
+			{
+				m_Data = Internal::ExtraDataContainer::SetExtraData(std::forward<T>(data));
+			}
+	};
 
 	class KX_API ExtraDataContainer
 	{
@@ -22,16 +73,11 @@ namespace KxFramework
 		private:
 			std::variant<void*, std::unique_ptr<IExtraData>> m_Data;
 
-		private:
-			template<class T>
-			static constexpr void AssertUntypedStorageType()
-			{
-				using Tx = std::remove_reference_t<T>;
-				static_assert(sizeof(Tx) <= sizeof(void*) && (std::is_null_pointer_v<Tx> || std::is_pointer_v<Tx> || std::is_integral_v<Tx> || std::is_enum_v<Tx> || std::is_floating_point_v<Tx>), "invalid type for untyped storage");
-			}
-
 		public:
-			virtual ~ExtraDataContainer() = default;
+			ExtraDataContainer() = default;
+			ExtraDataContainer(const ExtraDataContainer&) = delete;
+			ExtraDataContainer(ExtraDataContainer&&) = default;
+			virtual ~ExtraDataContainer();
 
 		public:
 			Type GetType() const
@@ -43,12 +89,10 @@ namespace KxFramework
 			template<class T = void*>
 			T GetExtraData() const
 			{
-				AssertUntypedStorageType<T>();
-
 				if (GetType() == Type::Untyped)
 				{
 					void* data = std::get<static_cast<size_t>(Type::Untyped)>(m_Data);
-					return reinterpret_cast<T>(data);
+					return Internal::ExtraDataContainer::GetExtraData<T>(data);
 				}
 				return T{};
 			}
@@ -56,9 +100,7 @@ namespace KxFramework
 			template<class T>
 			void SetExtraData(T&& data)
 			{
-				AssertUntypedStorageType<T>();
-
-				m_Data = reinterpret_cast<void*>(data);
+				m_Data = Internal::ExtraDataContainer::SetExtraData(std::forward<T>(data));
 			}
 			
 			// Typed data
@@ -82,5 +124,9 @@ namespace KxFramework
 			{
 				m_Data = std::move(extraObject);
 			}
+	
+		public:
+			ExtraDataContainer& operator=(const ExtraDataContainer&) = delete;
+			ExtraDataContainer& operator=(ExtraDataContainer&&) = default;
 	};
 }
