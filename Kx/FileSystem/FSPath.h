@@ -11,7 +11,7 @@ namespace KxFramework
 	class KX_API FSPath final
 	{
 		public:
-			FSPath FromStringUnchecked(const wxString& string, FSPathNamespace ns = FSPathNamespace::None);
+			static FSPath FromStringUnchecked(const wxString& string, FSPathNamespace ns = FSPathNamespace::None);
 
 		private:
 			wxString m_Path;
