@@ -1,4 +1,5 @@
 #pragma once
+#include "Kx/Common.hpp"
 #include <type_traits>
 
 namespace KxFramework::Utility
