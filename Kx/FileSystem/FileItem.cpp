@@ -9,18 +9,4 @@ namespace KxFramework
 		// TODO
 		return false;
 	}
-
-	bool FileItem::IsCurrentOrParent() const
-	{
-		if (m_Source.GetPathLength() >= 1)
-		{
-			const wxString name = m_Source.GetName();
-			return name == wxS("..") || name == wxS('.');
-		}
-		return false;
-	}
-	bool FileItem::IsDirectoryEmpty() const
-	{
-		return IsDirectory(); // && KxFileFinder::IsDirectoryEmpty(m_Source); TODO
-	}
 }

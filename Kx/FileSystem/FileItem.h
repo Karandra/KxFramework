@@ -6,95 +6,99 @@
 
 namespace KxFramework
 {
-	class KX_API FileItem final
+	class KX_API FileItem
 	{
 		private:
-			FSPath m_Source;
+			FSPath m_Path;
 			wxDateTime m_CreationTime;
 			wxDateTime m_LastAccessTime;
 			wxDateTime m_ModificationTime;
-			BinarySize m_FileSize;
-			BinarySize m_CompressedFileSize;
-			uint32_t m_Attributes = 0;
-			uint32_t m_ReparsePointAttributes = 0;
-			intptr_t m_ExtraData = -1;
+			BinarySize m_Size;
+			BinarySize m_CompressedSize;
+			FileAttribute m_Attributes = FileAttribute::None;
+			ReparsePointTag m_ReparsePointTags = ReparsePointTag::None;
 
-		private:
-			bool DoUpdateInfo();
+		protected:
+			virtual bool DoUpdateInfo();
+			virtual bool DoIsValid() const
+			{
+				return m_Path && m_Attributes != FileAttribute::Invalid;
+			}
 
 		public:
 			FileItem() = default;
 			FileItem(const FSPath& fullPath)
-				:m_Source(fullPath)
+				:m_Path(fullPath)
 			{
 				DoUpdateInfo();
 			}
 			FileItem(const FSPath& source, const FSPath& fileName)
-				:m_Source(source)
+				:m_Path(source)
 			{
-				m_Source.Append(fileName);
+				m_Path.Append(fileName);
 				DoUpdateInfo();
 			}
-			
 			FileItem(const FileItem&) = default;
 			FileItem(FileItem&&) = default;
+			virtual ~FileItem() = default;
 
 		public:
-			bool IsOK() const
-			{
-				return m_Attributes != INVALID_FILE_ATTRIBUTES;
-			}
+			// General
 			bool UpdateInfo()
 			{
 				return DoUpdateInfo();
 			}
-
-			template<class T> T GetExtraData() const
-			{
-				static_assert(sizeof(T) <= sizeof(m_ExtraData) && std::is_trivially_copyable_v<T>, "invalid data type");
-
-				return static_cast<T>(m_ExtraData);
-			}
-			template<class T> void SetExtraData(const T& value)
-			{
-				static_assert(sizeof(T) <= sizeof(m_ExtraData) && std::is_trivially_copyable_v<T>, "invalid data type");
-
-				m_ExtraData = static_cast<intptr_t>(value);
-			}
-
 			bool IsNormalItem() const
 			{
-				return IsOK() && !IsReparsePoint() && !IsCurrentOrParent();
+				return DoIsValid() && !IsReparsePoint() && !IsCurrentOrParent();
 			}
-			bool IsCurrentOrParent() const;
-			bool IsReparsePoint() const
+			bool IsCurrentOrParent() const
 			{
-				return m_Attributes & FILE_ATTRIBUTE_REPARSE_POINT;
+				if (m_Path.GetPathLength() >= 1)
+				{
+					const wxString name = m_Path.GetName();
+					return name == wxS("..") || name == wxS('.');
+				}
+				return false;
+			}
+
+			// Attributes
+			FileAttribute GetAttributes() const
+			{
+				return m_Attributes;
+			}
+			void SetAttributes(FileAttribute attributes)
+			{
+				m_Attributes = attributes;
+			}
+			
+			ReparsePointTag GetReparsePointTags() const
+			{
+				return m_ReparsePointTags;
+			}
+			void SetReparsePointTags(ReparsePointTag tags)
+			{
+				m_ReparsePointTags = tags;
 			}
 
 			bool IsDirectory() const
 			{
-				return m_Attributes & FILE_ATTRIBUTE_DIRECTORY;
+				return m_Attributes & FileAttribute::Directory;
 			}
-			bool IsDirectoryEmpty() const;
-
-			uint32_t GetAttributes() const
+			bool IsCompressed() const
 			{
-				return m_Attributes;
+				return m_Attributes & FileAttribute::Compressed;
 			}
-			void SetAttributes(uint32_t attributes)
+			bool IsReparsePoint() const
 			{
-				m_Attributes = attributes;
+				return m_Attributes & FileAttribute::ReparsePoint;
 			}
-			void SetNormalAttributes()
+			bool IsSymLink() const
 			{
-				m_Attributes = FILE_ATTRIBUTE_NORMAL;
-			}
-			uint32_t GetReparsePointAttributes() const
-			{
-				return m_ReparsePointAttributes;
+				return IsReparsePoint() && m_ReparsePointTags & ReparsePointTag::SymLink;
 			}
 
+			// Date and time
 			wxDateTime GetCreationTime() const
 			{
 				return m_CreationTime;
@@ -103,7 +107,7 @@ namespace KxFramework
 			{
 				m_CreationTime = value;
 			}
-		
+			
 			wxDateTime GetLastAccessTime() const
 			{
 				return m_LastAccessTime;
@@ -112,7 +116,7 @@ namespace KxFramework
 			{
 				m_LastAccessTime = value;
 			}
-		
+			
 			wxDateTime GetModificationTime() const
 			{
 				return m_ModificationTime;
@@ -122,71 +126,71 @@ namespace KxFramework
 				m_ModificationTime = value;
 			}
 
-			BinarySize GetFileSize() const
+			// Path and name
+			FSPath GetFullPath() const
 			{
-				return m_FileSize;
+				return m_Path;
 			}
-			void SetFileSize(BinarySize size)
+			void SetFullPath(const FSPath& fullPath)
 			{
-				m_FileSize = size;
-			}
-
-			BinarySize GetCompressedFileSize() const
-			{
-				return m_CompressedFileSize;
-			}
-			void SetCompressedFileSize(BinarySize size)
-			{
-				m_CompressedFileSize = size;
+				m_Path = fullPath;
 			}
 
-			bool IsCompressed() const
+			FSPath GetSource() const
 			{
-				return m_Attributes & FILE_ATTRIBUTE_COMPRESSED;
+				return m_Path.GetParent();
 			}
-			double GetCompressionRatio() const
+			void SetSource(const FSPath& source)
 			{
-				if (m_FileSize && m_CompressedFileSize)
-				{
-					return m_CompressedFileSize.GetBytes<double>() / m_FileSize.GetBytes<double>();
-				}
-				return -1;
-			}
+				wxString name = m_Path.GetName();
 
-			wxString GetSource() const
-			{
-				return m_Source;
+				m_Path = source;
+				m_Path.SetName(std::move(name));
 			}
-			void SetSource(const wxString& source)
-			{
-				m_Source = source;
-			}
-		
+			
 			wxString GetName() const
 			{
-				return m_Source.GetName();
+				return m_Path.GetName();
 			}
 			void SetName(const wxString& name)
 			{
-				m_Source.SetName(name);
+				m_Path.SetName(name);
 			}
 			
 			wxString GetFileExtension() const
 			{
-				return m_Source.GetExtension();
+				return m_Path.GetExtension();
 			}
 			void SetFileExtension(const wxString& ext)
 			{
-				m_Source.SetExtension(ext);
+				m_Path.SetExtension(ext);
 			}
 
-			FSPath GetFullPath() const
+			// Size
+			BinarySize GetSize() const
 			{
-				return m_Source;
+				return m_Size;
 			}
-			void SetFullPath(const FSPath& fullPath)
+			void SetSize(BinarySize size)
 			{
-				m_Source = fullPath;
+				m_Size = size;
+			}
+
+			BinarySize GetCompressedSize() const
+			{
+				return m_CompressedSize;
+			}
+			void SetCompressedSize(BinarySize size)
+			{
+				m_CompressedSize = size;
+			}
+			double GetCompressionRatio() const
+			{
+				if (IsCompressed() && m_CompressedSize)
+				{
+					return m_Size ? m_CompressedSize.GetBytes<double>() / m_Size.GetBytes<double>() : -1;
+				}
+				return 1;
 			}
 
 		public:
@@ -195,11 +199,11 @@ namespace KxFramework
 
 			explicit operator bool() const
 			{
-				return IsOK();
+				return DoIsValid();
 			}
 			bool operator!() const
 			{
-				return !IsOK();
+				return !DoIsValid();
 			}
 	};
 }
