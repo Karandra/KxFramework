@@ -1,12 +1,9 @@
 #pragma once
 #include "Kx/Common.hpp"
-#include <KxFramework/KxEnumClassOperations.h>
 #include <wx/wx.h>
 
 namespace KxFramework
 {
-	using namespace KxEnumClassOperations;
-
 	enum class DriveType: uint32_t
 	{
 		Unknown = 0,
