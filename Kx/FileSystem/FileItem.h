@@ -1,12 +1,13 @@
 #pragma once
 #include "Common.h"
 #include "FSPath.h"
+#include "Kx/General/ExtraData.h"
 #include "Kx/General/BinarySize.h"
 #include "Kx/General/UndefWindows.h"
 
 namespace KxFramework
 {
-	class KX_API FileItem
+	class KX_API FileItem final: public ExtraDataContainer
 	{
 		private:
 			FSPath m_Path;
@@ -19,8 +20,8 @@ namespace KxFramework
 			ReparsePointTag m_ReparsePointTags = ReparsePointTag::None;
 
 		protected:
-			virtual bool DoUpdateInfo();
-			virtual bool DoIsValid() const
+			bool DoUpdateInfo();
+			bool DoIsValid() const
 			{
 				return m_Path && m_Attributes != FileAttribute::Invalid;
 			}
@@ -40,7 +41,6 @@ namespace KxFramework
 			}
 			FileItem(const FileItem&) = default;
 			FileItem(FileItem&&) = default;
-			virtual ~FileItem() = default;
 
 		public:
 			// General
