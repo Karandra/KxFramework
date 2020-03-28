@@ -7,7 +7,7 @@ namespace KxFramework
 {
 	using namespace KxEnumClassOperations;
 
-	enum class DriveType
+	enum class DriveType: uint32_t
 	{
 		Unknown = 0,
 		NotMounted,
@@ -17,7 +17,7 @@ namespace KxFramework
 		Optical,
 		Removable,
 	};
-	enum class FSPathNamespace
+	enum class FSPathNamespace: uint32_t
 	{
 		None = 0,
 		NT,
@@ -28,7 +28,7 @@ namespace KxFramework
 		Network,
 		NetworkUNC,
 	};
-	enum class FileSystemFeature
+	enum class FileSystemFeature: uint32_t
 	{
 		None = 0,
 		CasePreservedNames = 1 << 0,
@@ -52,6 +52,35 @@ namespace KxFramework
 		Unicode = 1 << 18,
 		VolumeQuotas = 1 << 19
 	};
+	enum class FileAttribute: uint32_t
+	{
+		None = 0,
+		Invalid = std::numeric_limits<uint32_t>::max(),
+
+		Hidden = 1 << 0,
+		Archive = 1 << 1,
+		Directory = 1 << 2,
+		ReadOnly = 1 << 3,
+		System = 1 << 4,
+		Temporary = 1 << 5,
+		Compressed = 1 << 6,
+		Encrypted = 1 << 7,
+		ReparsePoint = 1 << 8,
+		SparseFile = 1 << 9,
+		Offline = 1 << 10,
+		ContentIndexed = 1 << 11,
+		RecallOnOpen = 1 << 12,
+		RecallOnDataAccess = 1 << 13,
+
+		Normal = std::numeric_limits<uint32_t>::max() >> 1,
+	};
+	enum class ReparsePointTag: uint32_t
+	{
+		None = 0,
+
+		MountPoint = 1 << 0,
+		SymLink = 1 << 1
+	};
 }
 
 namespace KxFramework::FileSystem
@@ -63,4 +92,6 @@ namespace KxFramework::FileSystem
 namespace KxEnumClassOperations
 {
 	KxImplementEnum(KxFramework::FileSystemFeature);
+	KxImplementEnum(KxFramework::FileAttribute);
+	KxImplementEnum(KxFramework::ReparsePointTag);
 }
