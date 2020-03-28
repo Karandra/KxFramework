@@ -118,10 +118,12 @@ namespace KxFramework
 
 namespace KxFramework
 {
-	FSPath FSPath::FromStringUnchecked(const wxString& string)
+	FSPath FSPath::FromStringUnchecked(const wxString& string, FSPathNamespace ns)
 	{
 		FSPath path;
 		path.m_Path = string;
+		path.m_Namespace = ns;
+
 		return path;
 	}
 
@@ -367,7 +369,7 @@ namespace KxFramework
 
 	FSPath FSPath::GetParent() const
 	{
-		return ExtractBefore(m_Path, wxS('\\'), true);
+		return FSPath(ExtractBefore(m_Path, wxS('\\'), true)).EnsureNamespaceSet(m_Namespace);
 	}
 	FSPath& FSPath::RemoveLast()
 	{
