@@ -495,12 +495,17 @@
     <ClInclude Include="Kx\FileSystem\FileItem.h" />
     <ClInclude Include="Kx\FileSystem\FileOperations.h" />
     <ClInclude Include="Kx\FileSystem\FSPath.h" />
+    <ClInclude Include="Kx\FileSystem\IFileSearcher.h" />
+    <ClInclude Include="Kx\FileSystem\IFileSystem.h" />
     <ClInclude Include="Kx\FileSystem\LegacyDrive.h" />
     <ClInclude Include="Kx\FileSystem\NamespacePrefix.h" />
+    <ClInclude Include="Kx\FileSystem\NativeFileSystem.h" />
+    <ClInclude Include="Kx\FileSystem\StatefulFileSystem.h" />
     <ClInclude Include="Kx\General\BinarySize.h" />
     <ClInclude Include="Kx\General\Common.h" />
     <ClInclude Include="Kx\General\ExtraData.h" />
     <ClInclude Include="Kx\General\NativeUUID.h" />
+    <ClInclude Include="Kx\General\Singleton.h" />
     <ClInclude Include="Kx\General\UndefWindows.h" />
     <ClInclude Include="Kx\General\UUID.h" />
     <ClInclude Include="Kx\RTTI.hpp" />
@@ -549,6 +554,7 @@
     <ClInclude Include="Kx\Threading\Events\ThreadEvent.h" />
     <ClInclude Include="Kx\Threading\JoinableThread.h" />
     <ClInclude Include="Kx\Utility.hpp" />
+    <ClInclude Include="Kx\Utility\CallAtScopeExit.h" />
     <ClInclude Include="Kx\Utility\Common.h" />
     <ClInclude Include="Kx\Utility\TypeTraits.h" />
   </ItemGroup>
@@ -822,8 +828,11 @@
     <ClCompile Include="Kx\FileSystem\FileOperations.cpp" />
     <ClCompile Include="Kx\FileSystem\FSPath.cpp" />
     <ClCompile Include="Kx\FileSystem\LegacyDrive.cpp" />
+    <ClCompile Include="Kx\FileSystem\NativeFileSystem.cpp" />
+    <ClCompile Include="Kx\FileSystem\StatefulFileSystem.cpp" />
     <ClCompile Include="Kx\General\BinarySize.cpp" />
     <ClCompile Include="Kx\General\NativeUUID.cpp" />
+    <ClCompile Include="Kx\General\Singleton.cpp" />
     <ClCompile Include="Kx\General\UUID.cpp" />
     <ClCompile Include="Kx\RTTI\QueryInterface.cpp" />
     <ClCompile Include="Kx\Sciter\Common.cpp" />

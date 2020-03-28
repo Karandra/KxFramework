@@ -1294,6 +1294,24 @@
     <ClInclude Include="Kx\General\ExtraData.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\FileSystem\IFileSearcher.h">
+      <Filter>Kx\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\FileSystem\IFileSystem.h">
+      <Filter>Kx\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\FileSystem\NativeFileSystem.h">
+      <Filter>Kx\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Utility\CallAtScopeExit.h">
+      <Filter>Kx\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\FileSystem\StatefulFileSystem.h">
+      <Filter>Kx\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\Singleton.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -2040,6 +2058,15 @@
     </ClCompile>
     <ClCompile Include="Kx\FileSystem\FileItem.cpp">
       <Filter>Kx\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\FileSystem\NativeFileSystem.cpp">
+      <Filter>Kx\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\FileSystem\StatefulFileSystem.cpp">
+      <Filter>Kx\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\Singleton.cpp">
+      <Filter>Kx\General</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
