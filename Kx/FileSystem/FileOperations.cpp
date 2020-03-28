@@ -2,7 +2,6 @@
 #include "FSPath.h"
 #include "LegacyDrive.h"
 #include "Kx/General/BinarySize.h"
-#include <KxFramework/KxFileStream.h>
 #include <shlwapi.h>
 #include "Kx/General/UndefWindows.h"
 
@@ -25,89 +24,80 @@ namespace KxFramework
 		}
 		return {};
 	}
-
-	uint32_t GetFileAttributes(const FSPath& filePath)
-	{
-		wxString path = filePath.GetFullPathWithNS(FSPathNamespace::Win32File);
-		return ::GetFileAttributesW(path.wc_str());
-	}
 }
 
 namespace KxFramework::FileSystem
 {
-	FSPath GetTempPath(const FSPath& rootDirectory)
+	FSPath CreateTempPathName(const FSPath& rootDirectory)
 	{
 		FSPath fsPath = wxFileName::CreateTempFileName(rootDirectory.GetFullPath());
 		fsPath.EnsureNamespaceSet(rootDirectory.GetNamespace());
 		return fsPath;
 	}
-	FSPath GetFullPathName(const FSPath& filePath)
+	FSPath GetFullPathName(const FSPath& path)
 	{
-		wxString path = filePath.GetFullPath(FSPathNamespace::Win32File);
+		wxString pathString = path.GetFullPath(FSPathNamespace::Win32File);
 
-		const DWORD length = ::GetFullPathNameW(path.wc_str(), 0, nullptr, nullptr);
+		const DWORD length = ::GetFullPathNameW(pathString.wc_str(), 0, nullptr, nullptr);
 		if (length)
 		{
 			wxString result;
 			LPWSTR oldPathStart = nullptr;
-			::GetFullPathNameW(path.wc_str(), length, wxStringBuffer(result, length), &oldPathStart);
+			::GetFullPathNameW(pathString.wc_str(), length, wxStringBuffer(result, length), &oldPathStart);
 
 			FSPath fsPath = std::move(result);
-			fsPath.EnsureNamespaceSet(filePath.GetNamespace());
+			fsPath.EnsureNamespaceSet(path.GetNamespace());
 			return fsPath;
 		}
 		return {};
 	}
-	FSPath GetLongPathName(const FSPath& filePath)
+	FSPath GetLongPathName(const FSPath& path)
 	{
-		return CallWinAPIWithLengthPrecalc(filePath, ::GetLongPathNameW);
+		return CallWinAPIWithLengthPrecalc(path, ::GetLongPathNameW);
 	}
-	FSPath GetShortPathName(const FSPath& filePath)
+	FSPath GetShortPathName(const FSPath& path)
 	{
-		return CallWinAPIWithLengthPrecalc(filePath, ::GetShortPathNameW);
+		return CallWinAPIWithLengthPrecalc(path, ::GetShortPathNameW);
 	}
-	FSPath AbbreviatePath(const FSPath& filePath, int maxCharacters)
+	FSPath AbbreviatePath(const FSPath& path, int maxCharacters)
 	{
 		if (maxCharacters > 0)
 		{
-			if (maxCharacters < filePath.GetPathLength())
+			const size_t sourceLength = path.GetPathLength();
+			if (maxCharacters < sourceLength && sourceLength < MAX_PATH)
 			{
 				maxCharacters++;
 
-				wxString source = filePath.GetFullPath();
+				wxString source = path.GetFullPath();
 				wxString result;
 				::PathCompactPathExW(wxStringBuffer(result, maxCharacters), source.wc_str(), maxCharacters, 0);
 
-				// Reinsert namespace information
-				FSPath fsPath = std::move(result);
-				fsPath.EnsureNamespaceSet(filePath.GetNamespace());
-				return fsPath;
+				return FSPath(std::move(result)).SetNamespace(path.GetNamespace());
 			}
-			else
+			else if (sourceLength >= MAX_PATH)
 			{
-				return filePath;
+				// PathCompactPathEx doesn't work for paths longer than 'MAX_PATH'
+				// Taking Jeff Atwood 's idea but with a bit different RegEx.
+				// Doesn't guarantees final length to not exceed 'maxCharacters'.
+				// https://blog.codinghorror.com/shortening-long-file-paths/
+
+				wxString source = path.GetFullPath();
+				wxRegEx regEx(wxS(R"((\w+:\\|)([^\\]+[^\\]+).*\\([^\\]+))"), wxRE_ADVANCED|wxRE_ICASE);
+				if (regEx.Matches(source))
+				{
+					regEx.ReplaceAll(&source, wxS(R"(\1\2\\...\\\3)"));
+
+					// If it's still longer just truncate it and add ellipsis
+					if (source.length() > maxCharacters)
+					{
+						source.RemoveLast(source.length() - maxCharacters - 3);
+						source += wxS("...");
+					}
+					return FSPath(std::move(source)).SetNamespace(path.GetNamespace());
+				}
 			}
+			return path;
 		}
-		return FSPath().SetNamespace(filePath.GetNamespace());
-	}
-
-	BinarySize GetFileSize(const FSPath& filePath)
-	{
-		return KxFileStream(filePath, KxFileStream::Access::ReadAttributes, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Everything).GetLength();
-	}
-
-	bool DoesExist(const FSPath& filePath)
-	{
-		return GetFileAttributes(filePath) != INVALID_FILE_ATTRIBUTES;
-	}
-	bool DoesFileExist(const FSPath& filePath)
-	{
-		const uint32_t attributes = GetFileAttributes(filePath);
-		return attributes != INVALID_FILE_ATTRIBUTES && !(attributes & FILE_ATTRIBUTE_DIRECTORY);
-	}
-	bool DoesDirectoryExist(const FSPath& filePath)
-	{
-		const uint32_t attributes = GetFileAttributes(filePath);
-		return attributes != INVALID_FILE_ATTRIBUTES && attributes & FILE_ATTRIBUTE_DIRECTORY;
+		return FSPath().SetNamespace(path.GetNamespace());
 	}
 }
