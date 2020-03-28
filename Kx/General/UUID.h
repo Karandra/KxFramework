@@ -4,6 +4,23 @@
 
 namespace KxFramework
 {
+	enum class UUIDStringFormat
+	{
+		None = 0, // 123e4567-e89b-12d3-a456-426655440000
+		URN = 1 << 1, // RFC 4122 format: urn:uuid:123e4567-e89b-12d3-a456-426655440000
+		CurlyBraces = 1 << 2, // {123e4567-e89b-12d3-a456-426655440000}
+		Parentheses = 1 << 3, // (123e4567-e89b-12d3-a456-426655440000)
+		UpperCase = 1 << 4 // 123E4567-E89B-12D3-A456-426655440000
+	};
+}
+
+namespace KxEnumClassOperations
+{
+	KxImplementEnum(KxFramework::UUIDStringFormat);
+}
+
+namespace KxFramework
+{
 	class KX_API UUID final
 	{
 		public:
@@ -44,7 +61,7 @@ namespace KxFramework
 			{
 				return m_ID;
 			}
-			wxString ToString() const;
+			wxString ToString(UUIDStringFormat format = UUIDStringFormat::None) const;
 
 		public:
 			UUID& operator=(const NativeUUID& other) noexcept

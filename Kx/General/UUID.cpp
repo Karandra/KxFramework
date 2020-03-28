@@ -82,16 +82,42 @@ namespace KxFramework
 		}
 		return 0;
 	}
-	wxString UUID::ToString() const
+	wxString UUID::ToString(UUIDStringFormat format) const
 	{
-		wchar_t* stringUUID = nullptr;
-		if (::UuidToStringW(AsUUID(m_ID), reinterpret_cast<RPC_WSTR*>(&stringUUID)) == RPC_S_OK && stringUUID)
+		wxString uuid = [&]() -> wxString
 		{
-			wxString temp = stringUUID;
-			::RpcStringFreeW(reinterpret_cast<RPC_WSTR*>(&stringUUID));
-			return temp;
+			wchar_t* stringUUID = nullptr;
+			if (::UuidToStringW(AsUUID(m_ID), reinterpret_cast<RPC_WSTR*>(&stringUUID)) == RPC_S_OK && stringUUID)
+			{
+				wxString temp = stringUUID;
+				::RpcStringFreeW(reinterpret_cast<RPC_WSTR*>(&stringUUID));
+				return temp;
+			}
+			return {};
+		}();
+
+		if (format & UUIDStringFormat::UpperCase)
+		{
+			uuid.MakeUpper();
 		}
-		return {};
+
+		if (format & UUIDStringFormat::URN)
+		{
+			uuid.Prepend(wxS("urn:uuid:"));
+		}
+
+		if (format & UUIDStringFormat::CurlyBraces)
+		{
+			uuid.Prepend(wxS('{'));
+			uuid.Append(wxS('}'));
+		}
+		else if (format & UUIDStringFormat::Parentheses)
+		{
+			uuid.Prepend(wxS('('));
+			uuid.Append(wxS(')'));
+		}
+
+		return uuid;
 	}
 
 	bool UUID::operator<(const NativeUUID& other) const noexcept
