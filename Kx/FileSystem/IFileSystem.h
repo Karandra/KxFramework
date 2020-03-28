@@ -30,5 +30,8 @@ namespace KxFramework
 		public:
 			virtual FileItem GetItem(const FSPath& path) const = 0;
 			virtual size_t EnumItems(const FSPath& directory, std::function<bool(const FileItem&)> func, const wxString& query = {}, FSEnumItemsFlag flags = FSEnumItemsFlag::None) const = 0;
+			
+			virtual bool ChangeAttributes(const FSPath& path, FileAttribute attributes) = 0;
+			virtual bool ChangeTimestamp(const FSPath& path, const wxDateTime& creationTime, const wxDateTime& modificationTime, const wxDateTime& lastAccessTime) = 0;
 	};
 }

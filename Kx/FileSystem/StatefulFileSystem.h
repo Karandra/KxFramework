@@ -42,6 +42,15 @@ namespace KxFramework
 			{
 				return m_FileSystem.EnumItems(m_CurrentLocation, std::move(func), query, flags);
 			}
+			
+			bool ChangeAttributes(FileAttribute attributes)
+			{
+				return m_FileSystem.ChangeAttributes(m_CurrentLocation, attributes);
+			}
+			bool SetFileTime(const wxDateTime& creationTime, const wxDateTime& modificationTime, const wxDateTime& lastAccessTime)
+			{
+				return m_FileSystem.ChangeTimestamp(m_CurrentLocation, creationTime, modificationTime, lastAccessTime);
+			}
 	};
 
 	class KX_API OwningStatefulFileSystem: public StatefulFileSystem

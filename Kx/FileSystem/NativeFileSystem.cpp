@@ -2,6 +2,7 @@
 #include "NativeFileSystem.h"
 #include "Kx/Utility/Common.h"
 #include "Kx/Utility/CallAtScopeExit.h"
+#include <KxFramework/KxFileStream.h>
 
 namespace KxFramework
 {
@@ -17,12 +18,6 @@ namespace KxFramework
 	bool CallFindClose(HANDLE handle)
 	{
 		return ::FindClose(handle);
-	}
-
-	uint32_t GetFileAttributes(const FSPath& filePath)
-	{
-		wxString path = filePath.GetFullPathWithNS(FSPathNamespace::Win32File);
-		return ::GetFileAttributesW(path.wc_str());
 	}
 
 	FileAttribute MapFileAttributes(uint32_t nativeAttributes)
@@ -56,6 +51,38 @@ namespace KxFramework
 			return attributes;
 		}
 	}
+	uint32_t MapFileAttributes(FileAttribute attributes)
+	{
+		if (attributes == FileAttribute::Invalid)
+		{
+			return INVALID_FILE_ATTRIBUTES;
+		}
+		else if (attributes == FileAttribute::Normal)
+		{
+			return FILE_ATTRIBUTE_NORMAL;
+		}
+		else
+		{
+			uint32_t nativeAttributes = 0;
+			Utility::ModFlagRef(nativeAttributes, FILE_ATTRIBUTE_HIDDEN, attributes & FileAttribute::Hidden);
+			Utility::ModFlagRef(nativeAttributes, FILE_ATTRIBUTE_ARCHIVE, attributes & FileAttribute::Archive);
+			Utility::ModFlagRef(nativeAttributes, FILE_ATTRIBUTE_DIRECTORY, attributes & FileAttribute::Directory);
+			Utility::ModFlagRef(nativeAttributes, FILE_ATTRIBUTE_READONLY, attributes & FileAttribute::ReadOnly);
+			Utility::ModFlagRef(nativeAttributes, FILE_ATTRIBUTE_SYSTEM, attributes & FileAttribute::System);
+			Utility::ModFlagRef(nativeAttributes, FILE_ATTRIBUTE_TEMPORARY, attributes & FileAttribute::Temporary);
+			Utility::ModFlagRef(nativeAttributes, FILE_ATTRIBUTE_COMPRESSED, attributes & FileAttribute::Compressed);
+			Utility::ModFlagRef(nativeAttributes, FILE_ATTRIBUTE_ENCRYPTED, attributes & FileAttribute::Encrypted);
+			Utility::ModFlagRef(nativeAttributes, FILE_ATTRIBUTE_REPARSE_POINT, attributes & FileAttribute::ReparsePoint);
+			Utility::ModFlagRef(nativeAttributes, FILE_ATTRIBUTE_SPARSE_FILE, attributes & FileAttribute::SparseFile);
+			Utility::ModFlagRef(nativeAttributes, FILE_ATTRIBUTE_OFFLINE, attributes & FileAttribute::Offline);
+			Utility::ModFlagRef(nativeAttributes, FILE_ATTRIBUTE_NOT_CONTENT_INDEXED, !(attributes & FileAttribute::ContentIndexed));
+			Utility::ModFlagRef(nativeAttributes, FILE_ATTRIBUTE_RECALL_ON_OPEN, attributes & FileAttribute::RecallOnOpen);
+			Utility::ModFlagRef(nativeAttributes, FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS, attributes & FileAttribute::RecallOnDataAccess);
+
+			return nativeAttributes;
+		}
+	}
+	
 	ReparsePointTag MapReparsePointTags(uint32_t nativeTags)
 	{
 		// https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-fscc/c8e77b37-3909-4fe6-a4ea-2b9d423b1ee4
@@ -133,21 +160,6 @@ namespace KxFramework
 
 namespace KxFramework
 {
-	bool NativeFileSystem::DoesExist(const FSPath& path) const
-	{
-		return GetFileAttributes(path) != INVALID_FILE_ATTRIBUTES;
-	}
-	bool NativeFileSystem::DoesFileExist(const FSPath& path) const
-	{
-		const uint32_t attributes = GetFileAttributes(path);
-		return attributes != INVALID_FILE_ATTRIBUTES && !(attributes & FILE_ATTRIBUTE_DIRECTORY);
-	}
-	bool NativeFileSystem::DoesDirectoryExist(const FSPath& path) const
-	{
-		const uint32_t attributes = GetFileAttributes(path);
-		return attributes != INVALID_FILE_ATTRIBUTES && attributes & FILE_ATTRIBUTE_DIRECTORY;
-	}
-
 	FileItem NativeFileSystem::GetItem(const FSPath& path) const
 	{
 		WIN32_FIND_DATAW findInfo = {};
@@ -219,5 +231,33 @@ namespace KxFramework
 			directories = std::move(roundDirectories);
 		}
 		return counter;
+	}
+	
+	bool NativeFileSystem::ChangeAttributes(const FSPath& path, FileAttribute attributes)
+	{
+		if (attributes != FileAttribute::Invalid)
+		{
+			wxString pathString = path.GetFullPathWithNS(FSPathNamespace::Win32File);
+			return ::SetFileAttributesW(pathString.wc_str(), MapFileAttributes(attributes));
+		}
+		return false;
+	}
+	bool NativeFileSystem::ChangeTimestamp(const FSPath& path, const wxDateTime& creationTime, const wxDateTime& modificationTime, const wxDateTime& lastAccessTime)
+	{
+		if (creationTime.IsValid() || modificationTime.IsValid() || lastAccessTime.IsValid())
+		{
+			const KxFileStream::Flags streamFlags = GetItem(path).IsDirectory() ? KxFileStream::Flags::BackupSemantics : KxFileStream::Flags::Normal;
+			KxFileStream stream(path, KxFileStream::Access::WriteAttributes, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Everything, streamFlags);
+			if (stream)
+			{
+				return stream.SetFileTime(creationTime, modificationTime, lastAccessTime);
+			}
+		}
+		return false;
+	}
+
+	bool NativeFileSystem::IsInUse(const FSPath& path) const
+	{
+		return KxFileStream(path, KxFileStream::Access::Read, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Exclusive).IsOk();
 	}
 }
