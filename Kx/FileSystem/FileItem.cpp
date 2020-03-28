@@ -1,12 +1,13 @@
 #include "KxStdAfx.h"
 #include "FSPath.h"
 #include "FileItem.h"
+#include "IFileSystem.h"
 
 namespace KxFramework
 {
-	bool FileItem::DoUpdateInfo()
+	FileItem& FileItem::Refresh(const IFileSystem& fileSystem)
 	{
-		// TODO
-		return false;
+		*this = fileSystem.GetItem(m_Path);
+		return *this;
 	}
 }

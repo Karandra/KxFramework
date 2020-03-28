@@ -7,50 +7,63 @@
 
 namespace KxFramework
 {
-	class KX_API FileItem final: public ExtraDataContainer
+	class IFileSystem;
+}
+
+namespace KxFramework
+{
+	class KX_API FileItem final: public TrivialExtraDataContainer
 	{
 		private:
 			FSPath m_Path;
+			BinarySize m_Size;
+			BinarySize m_CompressedSize;
 			wxDateTime m_CreationTime;
 			wxDateTime m_LastAccessTime;
 			wxDateTime m_ModificationTime;
-			BinarySize m_Size;
-			BinarySize m_CompressedSize;
 			FileAttribute m_Attributes = FileAttribute::None;
 			ReparsePointTag m_ReparsePointTags = ReparsePointTag::None;
 
-		protected:
-			bool DoUpdateInfo();
-			bool DoIsValid() const
-			{
-				return m_Path && m_Attributes != FileAttribute::Invalid;
-			}
-
 		public:
 			FileItem() = default;
+			FileItem(FileItem&&) = default;
+			FileItem(const FileItem&) = default;
+
 			FileItem(const FSPath& fullPath)
 				:m_Path(fullPath)
 			{
-				DoUpdateInfo();
 			}
 			FileItem(const FSPath& source, const FSPath& fileName)
 				:m_Path(source)
 			{
 				m_Path.Append(fileName);
-				DoUpdateInfo();
 			}
-			FileItem(const FileItem&) = default;
-			FileItem(FileItem&&) = default;
+			
+			FileItem(const IFileSystem& fileSystem, const FSPath& fullPath)
+				:FileItem(fullPath)
+			{
+				Refresh(fileSystem);
+			}
+			FileItem(const IFileSystem& fileSystem, const FSPath& source, const FSPath& fileName)
+				:FileItem(source, fileName)
+			{
+				Refresh(fileSystem);
+			}
 
 		public:
 			// General
-			bool UpdateInfo()
+			FileItem& Refresh(const IFileSystem& fileSystem)
 			{
 				return DoUpdateInfo();
 			}
+			
+			bool IsValid() const
+			{
+				return m_Path && m_Attributes != FileAttribute::Invalid;
+			}
 			bool IsNormalItem() const
 			{
-				return DoIsValid() && !IsReparsePoint() && !IsCurrentOrParent();
+				return IsValid() && !IsReparsePoint() && !IsCurrentOrParent();
 			}
 			bool IsCurrentOrParent() const
 			{
@@ -67,18 +80,20 @@ namespace KxFramework
 			{
 				return m_Attributes;
 			}
-			void SetAttributes(FileAttribute attributes)
+			FileItem& SetAttributes(FileAttribute attributes)
 			{
 				m_Attributes = attributes;
+				return *this;
 			}
 			
 			ReparsePointTag GetReparsePointTags() const
 			{
 				return m_ReparsePointTags;
 			}
-			void SetReparsePointTags(ReparsePointTag tags)
+			FileItem& SetReparsePointTags(ReparsePointTag tags)
 			{
 				m_ReparsePointTags = tags;
+				return *this;
 			}
 
 			bool IsDirectory() const
@@ -103,27 +118,30 @@ namespace KxFramework
 			{
 				return m_CreationTime;
 			}
-			void SetCreationTime(const wxDateTime& value)
+			FileItem& SetCreationTime(const wxDateTime& value)
 			{
 				m_CreationTime = value;
+				return *this;
 			}
 			
 			wxDateTime GetLastAccessTime() const
 			{
 				return m_LastAccessTime;
 			}
-			void SetLastAccessTime(const wxDateTime& value)
+			FileItem& SetLastAccessTime(const wxDateTime& value)
 			{
 				m_LastAccessTime = value;
+				return *this;
 			}
 			
 			wxDateTime GetModificationTime() const
 			{
 				return m_ModificationTime;
 			}
-			void SetModificationTime(const wxDateTime& value)
+			FileItem& SetModificationTime(const wxDateTime& value)
 			{
 				m_ModificationTime = value;
+				return *this;
 			}
 
 			// Path and name
@@ -131,39 +149,43 @@ namespace KxFramework
 			{
 				return m_Path;
 			}
-			void SetFullPath(const FSPath& fullPath)
+			FileItem& SetFullPath(const FSPath& fullPath)
 			{
 				m_Path = fullPath;
+				return *this;
 			}
 
 			FSPath GetSource() const
 			{
 				return m_Path.GetParent();
 			}
-			void SetSource(const FSPath& source)
+			FileItem& SetSource(const FSPath& source)
 			{
 				wxString name = m_Path.GetName();
-
 				m_Path = source;
 				m_Path.SetName(std::move(name));
+
+				return *this;
 			}
 			
 			wxString GetName() const
 			{
 				return m_Path.GetName();
 			}
-			void SetName(const wxString& name)
+			FileItem& SetName(const wxString& name)
 			{
 				m_Path.SetName(name);
+				return *this;
 			}
 			
 			wxString GetFileExtension() const
 			{
 				return m_Path.GetExtension();
 			}
-			void SetFileExtension(const wxString& ext)
+			FileItem& SetFileExtension(const wxString& ext)
 			{
 				m_Path.SetExtension(ext);
+				return *this;
 			}
 
 			// Size
@@ -171,19 +193,12 @@ namespace KxFramework
 			{
 				return m_Size;
 			}
-			void SetSize(BinarySize size)
+			FileItem& SetSize(BinarySize size)
 			{
 				m_Size = size;
+				return *this;
 			}
 
-			BinarySize GetCompressedSize() const
-			{
-				return m_CompressedSize;
-			}
-			void SetCompressedSize(BinarySize size)
-			{
-				m_CompressedSize = size;
-			}
 			double GetCompressionRatio() const
 			{
 				if (IsCompressed() && m_CompressedSize)
@@ -192,18 +207,27 @@ namespace KxFramework
 				}
 				return 1;
 			}
+			BinarySize GetCompressedSize() const
+			{
+				return m_CompressedSize;
+			}
+			FileItem& SetCompressedSize(BinarySize size)
+			{
+				m_CompressedSize = size;
+				return *this;
+			}
 
 		public:
-			FileItem& operator=(const FileItem&) = default;
 			FileItem& operator=(FileItem&&) = default;
+			FileItem& operator=(const FileItem&) = default;
 
 			explicit operator bool() const
 			{
-				return DoIsValid();
+				return IsValid();
 			}
 			bool operator!() const
 			{
-				return !DoIsValid();
+				return !IsValid();
 			}
 	};
 }
