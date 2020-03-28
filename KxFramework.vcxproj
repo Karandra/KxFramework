@@ -499,6 +499,7 @@
     <ClInclude Include="Kx\FileSystem\NamespacePrefix.h" />
     <ClInclude Include="Kx\General\BinarySize.h" />
     <ClInclude Include="Kx\General\Common.h" />
+    <ClInclude Include="Kx\General\ExtraData.h" />
     <ClInclude Include="Kx\General\NativeUUID.h" />
     <ClInclude Include="Kx\General\UndefWindows.h" />
     <ClInclude Include="Kx\General\UUID.h" />
