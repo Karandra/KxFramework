@@ -37,3 +37,4 @@
 #undef ExitWindows
 #undef GetCompressedFileSize
 #undef GetTempPath
+#undef CreateDirectory

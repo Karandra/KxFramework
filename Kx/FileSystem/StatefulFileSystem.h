@@ -43,6 +43,10 @@ namespace KxFramework
 				return m_FileSystem.EnumItems(m_CurrentLocation, std::move(func), query, flags);
 			}
 			
+			bool CreateDirectory()
+			{
+				return m_FileSystem.CreateDirectory(m_CurrentLocation);
+			}
 			bool ChangeAttributes(FileAttribute attributes)
 			{
 				return m_FileSystem.ChangeAttributes(m_CurrentLocation, attributes);

@@ -233,6 +233,26 @@ namespace KxFramework
 		return counter;
 	}
 	
+	bool NativeFileSystem::CreateDirectory(const FSPath& path)
+	{
+		if (!GetItem(path))
+		{
+			FSPath finalPath;
+			finalPath.SetNamespace(path.GetNamespace());
+
+			bool isCreated = false;
+			path.ForEachComponent([&](const wxString& part)
+			{
+				finalPath /= part;
+
+				wxString path = finalPath.GetFullPathWithNS(FSPathNamespace::Win32File);
+				isCreated = ::CreateDirectoryW(path.wc_str(), nullptr);
+				return true;
+			});
+			return isCreated;
+		}
+		return false;
+	}
 	bool NativeFileSystem::ChangeAttributes(const FSPath& path, FileAttribute attributes)
 	{
 		if (attributes != FileAttribute::Invalid)
