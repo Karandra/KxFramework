@@ -14,6 +14,10 @@ namespace KxFramework
 				return instance;
 			}
 
+		protected:
+			NativeFileSystem() = default;
+			~NativeFileSystem() = default;
+
 		public:
 			// IFileSystem
 			FileItem GetItem(const FSPath& path) const override;
@@ -22,6 +26,8 @@ namespace KxFramework
 			bool CreateDirectory(const FSPath& path) override;
 			bool ChangeAttributes(const FSPath& path, FileAttribute attributes) override;
 			bool ChangeTimestamp(const FSPath& path, const wxDateTime& creationTime, const wxDateTime& modificationTime, const wxDateTime& lastAccessTime) override;
+
+			bool RenameItem(const FSPath& existingPath, const FSPath& newPath, bool replaceIfExist = false) override;
 
 		public:
 			bool IsInUse(const FSPath& path) const;

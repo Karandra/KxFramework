@@ -35,5 +35,7 @@ namespace KxFramework
 			virtual bool CreateDirectory(const FSPath& path) = 0;
 			virtual bool ChangeAttributes(const FSPath& path, FileAttribute attributes) = 0;
 			virtual bool ChangeTimestamp(const FSPath& path, const wxDateTime& creationTime, const wxDateTime& modificationTime, const wxDateTime& lastAccessTime) = 0;
+
+			virtual bool RenameItem(const FSPath& existingPath, const FSPath& newPath, bool replaceIfExist = false) = 0;
 	};
 }

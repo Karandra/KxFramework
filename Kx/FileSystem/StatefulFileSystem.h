@@ -34,9 +34,9 @@ namespace KxFramework
 
 		public:
 			// IFileSystem
-			FileItem GetItem(const FSPath& path) const
+			FileItem GetItem() const
 			{
-				return m_FileSystem.GetItem(path);
+				return m_FileSystem.GetItem(m_CurrentLocation);
 			}
 			size_t EnumItems(std::function<bool(const FileItem&)> func, const wxString& query = {}, FSEnumItemsFlag flags = FSEnumItemsFlag::None) const
 			{
@@ -51,9 +51,14 @@ namespace KxFramework
 			{
 				return m_FileSystem.ChangeAttributes(m_CurrentLocation, attributes);
 			}
-			bool SetFileTime(const wxDateTime& creationTime, const wxDateTime& modificationTime, const wxDateTime& lastAccessTime)
+			bool ChangeTimestamp(const wxDateTime& creationTime, const wxDateTime& modificationTime, const wxDateTime& lastAccessTime)
 			{
 				return m_FileSystem.ChangeTimestamp(m_CurrentLocation, creationTime, modificationTime, lastAccessTime);
+			}
+
+			bool RenameItem(const FSPath& newPath, bool replaceIfExist = false)
+			{
+				return m_FileSystem.RenameItem(m_CurrentLocation, newPath, replaceIfExist);
 			}
 	};
 

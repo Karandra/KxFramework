@@ -276,6 +276,14 @@ namespace KxFramework
 		return false;
 	}
 
+	bool NativeFileSystem::RenameItem(const FSPath& existingPath, const FSPath& newPath, bool replaceIfExist)
+	{
+		const wxString source = existingPath.GetFullPathWithNS(FSPathNamespace::Win32File);
+		const wxString destination = newPath.GetFullPathWithNS(FSPathNamespace::Win32File);
+
+		return ::MoveFileExW(source.wc_str(), destination.wc_str(), replaceIfExist ? MOVEFILE_REPLACE_EXISTING : 0);
+	}
+
 	bool NativeFileSystem::IsInUse(const FSPath& path) const
 	{
 		return KxFileStream(path, KxFileStream::Access::Read, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Exclusive).IsOk();
