@@ -63,7 +63,7 @@ namespace KxFramework
 		}
 		else
 		{
-			uint32_t nativeAttributes = 0;
+			int32_t nativeAttributes = 0;
 			Utility::ModFlagRef(nativeAttributes, FILE_ATTRIBUTE_HIDDEN, attributes & FileAttribute::Hidden);
 			Utility::ModFlagRef(nativeAttributes, FILE_ATTRIBUTE_ARCHIVE, attributes & FileAttribute::Archive);
 			Utility::ModFlagRef(nativeAttributes, FILE_ATTRIBUTE_DIRECTORY, attributes & FileAttribute::Directory);

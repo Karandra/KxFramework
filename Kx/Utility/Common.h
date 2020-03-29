@@ -67,8 +67,22 @@ namespace KxFramework::Utility
 {
 	namespace Internal
 	{
+		template<class T, bool isEnum = std::is_enum_v<T>, bool isInteger = std::is_integral_v<T>>
+		struct UnderlyingType
+		{
+			using type = typename std::underlying_type<T>::type;
+		};
+
 		template<class T>
-		using FlagIntType = std::conditional_t<std::is_enum_v<T>, std::underlying_type_t<T>, T>;
+		struct UnderlyingType<T, false, true>
+		{
+			using type = typename T;
+		};
+	}
+	namespace Internal
+	{
+		template<class T>
+		using FlagIntType = typename UnderlyingType<T>::type;
 
 		template<class T>
 		constexpr bool TestFlagType()
