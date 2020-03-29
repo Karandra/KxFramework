@@ -16,6 +16,13 @@ namespace KxFramework
 	}
 	size_t DetectNamespacePrefix(const wxString& path, FSPathNamespace& ns)
 	{
+		// All namespaces starts from at least one'\'
+		if (path.IsEmpty() || path[0] != wxS('\\'))
+		{
+			ns = FSPathNamespace::None;
+			return 0;
+		}
+
 		using namespace FileSystem;
 		// Test for every namespace starting from the longest prefix
 
@@ -219,6 +226,7 @@ namespace KxFramework
 	{
 		return IsValid() && !IsAbsolute();
 	}
+	
 	size_t FSPath::GetComponentCount() const
 	{
 		size_t count = 0;
@@ -227,6 +235,32 @@ namespace KxFramework
 			if (c == wxS('\\'))
 			{
 				count++;
+			}
+		}
+		return count;
+	}
+	size_t FSPath::ForEachComponent(std::function<bool(const wxString&)> func) const
+	{
+		size_t count = 0;
+
+		size_t start = 0;
+		for (size_t i = 0; i < m_Path.length(); i++)
+		{
+			const bool isLastIndex = i + 1 == m_Path.length();
+			if (m_Path[i] == wxS('\\') || isLastIndex)
+			{
+				size_t end = isLastIndex ? i : i - 1;
+				if (func(m_Path.SubString(start, end)))
+				{
+					count++;
+				}
+				else
+				{
+					break;
+				}
+
+				// Set start to next character after the separator
+				start++;
 			}
 		}
 		return count;

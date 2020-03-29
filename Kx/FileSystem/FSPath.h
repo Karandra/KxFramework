@@ -49,11 +49,13 @@ namespace KxFramework
 			{
 				return m_Namespace == FSPathNamespace::Win32FileUNC || m_Namespace == FSPathNamespace::NetworkUNC;
 			}
-			size_t GetComponentCount() const;
+			
 			size_t GetPathLength() const
 			{
 				return m_Path.length();
 			}
+			size_t GetComponentCount() const;
+			size_t ForEachComponent(std::function<bool(const wxString&)> func) const;
 
 			bool HasNamespace() const
 			{
