@@ -283,6 +283,11 @@ namespace KxFramework
 
 		return ::MoveFileExW(source.wc_str(), destination.wc_str(), replaceIfExist ? MOVEFILE_REPLACE_EXISTING : 0);
 	}
+	bool NativeFileSystem::RemoveItem(const FSPath& path)
+	{
+		const wxString source = path.GetFullPathWithNS(FSPathNamespace::Win32File);
+		return ::SetFileAttributesW(source.wc_str(), FILE_ATTRIBUTE_NORMAL) && ::DeleteFileW(source.wc_str());
+	}
 
 	bool NativeFileSystem::IsInUse(const FSPath& path) const
 	{

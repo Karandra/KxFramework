@@ -28,6 +28,7 @@ namespace KxFramework
 			bool ChangeTimestamp(const FSPath& path, const wxDateTime& creationTime, const wxDateTime& modificationTime, const wxDateTime& lastAccessTime) override;
 
 			bool RenameItem(const FSPath& existingPath, const FSPath& newPath, bool replaceIfExist = false) override;
+			bool RemoveItem(const FSPath& path) override;
 
 		public:
 			bool IsInUse(const FSPath& path) const;

@@ -37,5 +37,6 @@ namespace KxFramework
 			virtual bool ChangeTimestamp(const FSPath& path, const wxDateTime& creationTime, const wxDateTime& modificationTime, const wxDateTime& lastAccessTime) = 0;
 
 			virtual bool RenameItem(const FSPath& existingPath, const FSPath& newPath, bool replaceIfExist = false) = 0;
+			virtual bool RemoveItem(const FSPath& path) = 0;
 	};
 }

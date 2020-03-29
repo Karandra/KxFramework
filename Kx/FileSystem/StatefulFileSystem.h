@@ -60,6 +60,10 @@ namespace KxFramework
 			{
 				return m_FileSystem.RenameItem(m_CurrentLocation, newPath, replaceIfExist);
 			}
+			bool RemoveItem()
+			{
+				return m_FileSystem.RemoveItem(m_CurrentLocation);
+			}
 	};
 
 	class KX_API OwningStatefulFileSystem: public StatefulFileSystem
