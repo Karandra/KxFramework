@@ -52,10 +52,7 @@ namespace KxFramework
 
 		public:
 			// General
-			FileItem& Refresh(const IFileSystem& fileSystem)
-			{
-				return DoUpdateInfo();
-			}
+			FileItem& Refresh(const IFileSystem& fileSystem);
 			
 			bool IsValid() const
 			{
