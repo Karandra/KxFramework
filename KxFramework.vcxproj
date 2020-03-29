@@ -832,7 +832,6 @@
     <ClCompile Include="Kx\FileSystem\StatefulFileSystem.cpp" />
     <ClCompile Include="Kx\General\BinarySize.cpp" />
     <ClCompile Include="Kx\General\NativeUUID.cpp" />
-    <ClCompile Include="Kx\General\Singleton.cpp" />
     <ClCompile Include="Kx\General\UUID.cpp" />
     <ClCompile Include="Kx\RTTI\QueryInterface.cpp" />
     <ClCompile Include="Kx\Sciter\Common.cpp" />

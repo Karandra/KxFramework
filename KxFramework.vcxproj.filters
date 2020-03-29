@@ -2065,9 +2065,6 @@
     <ClCompile Include="Kx\FileSystem\StatefulFileSystem.cpp">
       <Filter>Kx\FileSystem</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\Singleton.cpp">
-      <Filter>Kx\General</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
