@@ -12,7 +12,6 @@ namespace KxFramework
 		uint32_t NumberOfFreeClusters = 0;
 		uint32_t TotalNumberOfClusters = 0;
 		FileSystemFeature FileSystemFeatures = FileSystemFeature::None;
-		bool LongFileNames = false;
 	};
 }
 
@@ -22,7 +21,6 @@ namespace KxFramework
 	{
 		public:
 			static size_t Enumerate(std::function<bool(LegacyVolume)> func);
-			static std::vector<LegacyVolume> Enumerate();
 
 			static LegacyVolume FromChar(const wxUniChar& value)
 			{
@@ -49,7 +47,6 @@ namespace KxFramework
 		private:
 			void AssignFromChar(const wxUniChar& value);
 			void AssignFromIndex(int index);
-
 			wxString DoGetPath() const;
 
 		private:
@@ -65,7 +62,7 @@ namespace KxFramework
 
 			FSPath GetPath() const;
 			int GetIndex() const;
-			char GetChar() const;
+			wxUniChar GetChar() const;
 
 			wxString GetLabel() const;
 			bool SetLabel(const wxString& label);

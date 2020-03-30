@@ -5,6 +5,17 @@ namespace KxFramework
 {
 	class LegacyVolume;
 	class StorageVolume;
+
+	enum class FSPathFormat
+	{
+		None = 0,
+		TrailingSeparator = 1 << 0,
+	};
+}
+
+namespace KxEnumClassOperations
+{
+	KxImplementEnum(KxFramework::FSPathFormat);
 }
 
 namespace KxFramework
@@ -80,10 +91,10 @@ namespace KxFramework
 				return *this;
 			}
 			
-			wxString GetFullPath(FSPathNamespace withNamespace = FSPathNamespace::None) const;
-			wxString GetFullPathWithNS(FSPathNamespace withNamespace = FSPathNamespace::None) const
+			wxString GetFullPath(FSPathNamespace withNamespace = FSPathNamespace::None, FSPathFormat format = FSPathFormat::None) const;
+			wxString GetFullPathWithNS(FSPathNamespace withNamespace = FSPathNamespace::None, FSPathFormat format = FSPathFormat::None) const
 			{
-				return GetFullPath(m_Namespace != FSPathNamespace::None ? m_Namespace : withNamespace);
+				return GetFullPath(m_Namespace != FSPathNamespace::None ? m_Namespace : withNamespace, format);
 			}
 
 			bool HasAnyVolume() const

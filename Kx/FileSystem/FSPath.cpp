@@ -5,18 +5,29 @@
 #include "NamespacePrefix.h"
 #include <KxFramework/KxComparator.h>
 
-namespace KxFramework
+namespace
 {
-	wxString ConcatWithNamespace(const wxString& path, FSPathNamespace withNamespace)
+	constexpr size_t g_GUIDLength = 36;
+	constexpr size_t g_VolumePathPrefixLength = 6;
+	constexpr size_t g_VolumePathTotalLength = g_VolumePathPrefixLength + g_GUIDLength + 2;
+}
+
+namespace
+{
+	wxString ConcatWithNamespace(const wxString& path, KxFramework::FSPathNamespace withNamespace)
 	{
+		using namespace KxFramework;
+
 		if (withNamespace != FSPathNamespace::None && !path.IsEmpty())
 		{
 			return FileSystem::GetNamespaceString(withNamespace) + path;
 		}
 		return path;
 	}
-	size_t DetectNamespacePrefix(const wxString& path, FSPathNamespace& ns)
+	size_t DetectNamespacePrefix(const wxString& path, KxFramework::FSPathNamespace& ns)
 	{
+		using namespace KxFramework;
+
 		// All namespaces starts from at least one'\'
 		if (path.IsEmpty() || path[0] != wxS('\\'))
 		{
@@ -26,13 +37,6 @@ namespace KxFramework
 
 		using namespace FileSystem;
 		// Test for every namespace starting from the longest prefix
-
-		// 10
-		if (path.StartsWith(NamespacePrefix::Win32Volume))
-		{
-			ns = FSPathNamespace::Win32Volume;
-			return std::size(NamespacePrefix::Win32Volume) - 1;
-		}
 
 		// 8
 		if (path.StartsWith(NamespacePrefix::Win32FileUNC))
@@ -84,7 +88,12 @@ namespace KxFramework
 		const size_t pos = FindChar(path, c, reverse);
 		if (pos != wxString::npos)
 		{
-			return path.Left(pos);
+			wxString result = path.Left(pos);
+			if (!result.IsEmpty() && result.Last() == wxS('\\'))
+			{
+				result.RemoveLast(1);
+			}
+			return result;
 		}
 		return wxEmptyString;
 	}
@@ -93,7 +102,12 @@ namespace KxFramework
 		const size_t pos = FindChar(path, c, reverse);
 		if (pos != wxString::npos && pos + 1 < path.length())
 		{
-			return path.Mid(pos + 1, count);
+			wxString result = path.Mid(pos + 1, count);
+			if (!result.IsEmpty() && result[0] == wxS('\\'))
+			{
+				result.Remove(0, 1);
+			}
+			return result;
 		}
 		return wxEmptyString;
 	}
@@ -122,6 +136,29 @@ namespace KxFramework
 		}
 		return removedCount;
 	}
+
+	bool CheckLegacyVolume(const wxString& path)
+	{
+		using namespace KxFramework;
+
+		if (path.length() >= 2 && path[1] == wxS(':'))
+		{
+			return LegacyVolume::FromChar(path[0]).IsValid();
+		}
+		return false;
+	}
+	bool CheckVolumeGUID(const wxString& path)
+	{
+		// Format: '\\?\Volume{66843779-55ae-45c5-9abe-b67ccee14079}\', but we're store path without namespace and trailing separators
+		// so it'll be this instead: 'Volume{66843779-55ae-45c5-9abe-b67ccee14079}'.
+		if (path.length() >= g_VolumePathTotalLength)
+		{
+			const bool prefixCorrect = std::char_traits<wxChar>::compare(path.wc_str(), wxS("Volume"), g_VolumePathPrefixLength) == 0;
+			const bool bracesCorrect = path[g_VolumePathPrefixLength] == wxS('{') && path[g_VolumePathTotalLength - 1] == wxS('}');
+			return prefixCorrect && bracesCorrect;
+		}
+		return false;
+	}
 }
 
 namespace KxFramework
@@ -137,6 +174,11 @@ namespace KxFramework
 
 	bool FSPath::AssignFromPath(const wxString& path)
 	{
+		if (path.Contains(FileSystem::GetForbiddenChars()) && !CheckLegacyVolume(path))
+		{
+			return false;
+		}
+
 		m_Path = path;
 		if (!m_Path.IsEmpty())
 		{
@@ -145,7 +187,6 @@ namespace KxFramework
 			ProcessNamespace();
 			Normalize();
 		}
-
 		return IsValid();
 	}
 	void FSPath::ProcessNamespace()
@@ -266,59 +307,143 @@ namespace KxFramework
 		}
 		return count;
 	}
-
-	wxString FSPath::GetFullPath(FSPathNamespace withNamespace) const
+	wxString FSPath::GetFullPath(FSPathNamespace withNamespace, FSPathFormat format) const
 	{
-		return ConcatWithNamespace(m_Path, withNamespace);
+		wxString result = ConcatWithNamespace(m_Path, withNamespace);
+		if (!result.IsEmpty())
+		{
+			if (format & FSPathFormat::TrailingSeparator)
+			{
+				result += wxS('\\');
+			}
+		}
+		return result;
 	}
 
 	bool FSPath::HasVolume() const
 	{
-		return m_Namespace == FSPathNamespace::Win32Volume;
+		return CheckVolumeGUID(m_Path);
 	}
 	bool FSPath::HasLegacyVolume() const
 	{
-		return m_Namespace != FSPathNamespace::Win32Volume && m_Path.length() >= 2 && m_Path[1] == wxS(':');
+		return CheckLegacyVolume(m_Path);
 	}
 	StorageVolume FSPath::GetVolume() const
 	{
-		return {};
+		// StorageVolume constructor does the validity check and extracts volume path
+		return *this;
 	}
 	LegacyVolume FSPath::GetLegacyVolume() const
 	{
 		if (HasLegacyVolume())
 		{
-			return LegacyVolume::FromChar(ExtractBefore(m_Path, wxS(':')));
+			return LegacyVolume::FromChar(m_Path[0]);
 		}
 		return {};
 	}
 	FSPath& FSPath::SetVolume(const LegacyVolume& drive)
 	{
-		const size_t pos = m_Path.find(wxS(':'));
-		if (pos != wxString::npos)
+		if (HasLegacyVolume())
 		{
-			// Replace the disk designator
-			m_Path[pos - 1] = drive.GetChar();
+			if (drive)
+			{
+				// Replace the disk designator
+				m_Path[0] = drive.GetChar();
+			}
+			else
+			{
+				// Remove the disk designator
+				m_Path.Remove(0, 2);
+				Normalize();
+			}
+		}
+		else if (HasVolume())
+		{
+			if (drive)
+			{
+				// Replace with legacy drive path
+				char disk[] = "\0:\\";
+				disk[0] = drive.GetChar();
+				m_Path.replace(0, g_VolumePathTotalLength, disk, std::size(disk) - 1);
+			}
+			else
+			{
+				// Remove the volume
+				m_Path.Remove(0, g_VolumePathTotalLength);
+			}
+			Normalize();
 		}
 		else
 		{
 			// Perpend a new disk designator
-			m_Path.Prepend(wxS(":\\"));
-			m_Path.Prepend(drive.GetChar());
+			char disk[] = "\0:\\";
+			disk[0] = drive.GetChar();
+			m_Path.Prepend(disk);
+
+			Normalize();
 		}
 		return *this;
 	}
 	FSPath& FSPath::SetVolume(const StorageVolume& volume)
 	{
-		m_Namespace = FSPathNamespace::Win32Volume;
+		if (HasLegacyVolume())
+		{
+			if (volume)
+			{
+				// Replace with volume path
+				wxString path = volume.GetPath().GetFullPath(FSPathNamespace::None, FSPathFormat::TrailingSeparator);
+				m_Path.replace(0, 2, path);
+			}
+			else
+			{
+				// Remove the disk designator
+				m_Path.Remove(0, 2);
+			}
+			Normalize();
+		}
+		else if (HasVolume())
+		{
+			if (volume)
+			{
+				// Replace with a new volume path
+				wxString path = volume.GetPath().GetFullPath(FSPathNamespace::None, FSPathFormat::TrailingSeparator);
+				m_Path.replace(0, g_VolumePathTotalLength, path);
+			}
+			else
+			{
+				// Remove the volume
+				m_Path.Remove(0, g_VolumePathTotalLength);
+			}
+			Normalize();
+		}
+		else
+		{
+			// Prepend a new volume path
+			wxString path = volume.GetPath().GetFullPath(FSPathNamespace::None, FSPathFormat::TrailingSeparator);
+			m_Path.Prepend(path);
+
+			Normalize();
+		}
 		return *this;
 	}
 
 	wxString FSPath::GetPath() const
 	{
-		// Return after drive designator or the path itself
-		wxString path = ExtractAfter(m_Path, wxS(':'));
-		return path.IsEmpty() ? m_Path : path;
+		if (HasLegacyVolume())
+		{
+			// Return after the disk designator
+			return m_Path.Mid(2);
+		}
+		else if (HasVolume())
+		{
+			// Return after GUID path
+			return m_Path.Mid(g_VolumePathTotalLength);
+		}
+		else
+		{
+			// Return the path itself
+			return m_Path;
+		}
 	}
 	FSPath& FSPath::SetPath(const wxString& path)
 	{
@@ -327,30 +452,29 @@ namespace KxFramework
 		forbiddenChars.Replace(wxS('\\'), wxEmptyString);
 		forbiddenChars.Replace(wxS('/'), wxEmptyString);
 
-		if (!path.Contains(forbiddenChars))
+		FSPathNamespace ns = FSPathNamespace::None;
+		if (!path.Contains(forbiddenChars) && !CheckLegacyVolume(path) && !CheckVolumeGUID(path) && DetectNamespacePrefix(path, ns) == 0)
 		{
-			const size_t pos = m_Path.find(wxS(':'));
-			if (pos != wxString::npos)
+			if (HasLegacyVolume())
 			{
 				// Replace after the disk designator
-				m_Path.Remove(pos + 1, wxString::npos);
-				m_Path += wxS("\\");
+				m_Path.Remove(2, wxString::npos);
+				m_Path += wxS('\\');
 				m_Path += path;
-
-				Normalize();
+			}
+			else if (HasVolume())
+			{
+				// Replace after GUID path
+				m_Path.Truncate(g_VolumePathTotalLength);
+				m_Path += wxS('\\');
+				m_Path += path;
 			}
 			else
 			{
-				// Replace full path
+				// Replace the full path
 				m_Path = path;
-				Normalize();
-
-				// It's possible to pass a path with a namespace here. It shouldn't be possible to change the namespace here.
-				FSPathNamespace ns = m_Namespace;
-				ProcessNamespace();
-				m_Namespace = ns;
 			}
-
+			Normalize();
 		}
 		return *this;
 	}

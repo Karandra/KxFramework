@@ -73,31 +73,6 @@ namespace KxFramework
 
 namespace KxFramework
 {
-	void LegacyVolume::AssignFromChar(const wxUniChar& value)
-	{
-		if (!value.GetAsChar(&m_Drive))
-		{
-			m_Drive = g_InvalidDrive;
-		}
-	}
-	void LegacyVolume::AssignFromIndex(int index)
-	{
-		m_Drive = g_InvalidDrive;
-		if (index >= 0 && index <= 26)
-		{
-			AssignFromChar(index + 'A');
-		}
-	}
-	
-	wxString LegacyVolume::DoGetPath() const
-	{
-		if (IsValid())
-		{
-			return wxString(m_Drive) + wxS(":\\");
-		}
-		return wxEmptyString;
-	}
-
 	size_t LegacyVolume::Enumerate(std::function<bool(LegacyVolume)> func)
 	{
 		DWORD length = ::GetLogicalDriveStringsW(0, nullptr);
@@ -119,16 +94,29 @@ namespace KxFramework
 		}
 		return 0;
 	}
-	std::vector<LegacyVolume> LegacyVolume::Enumerate()
+
+	void LegacyVolume::AssignFromChar(const wxUniChar& value)
 	{
-		std::vector<LegacyVolume> drives;
-		drives.reserve(g_MaxLegacyDrives);
-		Enumerate([&](LegacyVolume drive)
+		if (!value.GetAsChar(&m_Drive))
 		{
-			drives.emplace_back(std::move(drive));
-			return true;
-		});
-		return drives;
+			m_Drive = g_InvalidDrive;
+		}
+	}
+	void LegacyVolume::AssignFromIndex(int index)
+	{
+		m_Drive = g_InvalidDrive;
+		if (index >= 0 && index <= 26)
+		{
+			AssignFromChar(index + 'A');
+		}
+	}
+	wxString LegacyVolume::DoGetPath() const
+	{
+		if (IsValid())
+		{
+			return wxString(m_Drive) + wxS(":\\");
+		}
+		return wxEmptyString;
 	}
 
 	bool LegacyVolume::IsValid() const
@@ -157,7 +145,7 @@ namespace KxFramework
 		}
 		return -1;
 	}
-	char LegacyVolume::GetChar() const
+	wxUniChar LegacyVolume::GetChar() const
 	{
 		if (IsValid())
 		{
@@ -213,9 +201,13 @@ namespace KxFramework
 	{
 		wxString path = DoGetPath();
 		DWORD nativeFeatures = 0;
-		if (::GetVolumeInformationW(path.wc_str(), nullptr, 0, nullptr, nullptr, &nativeFeatures, nullptr, 0))
+		DWORD maximumComponentLength = 0;
+		if (::GetVolumeInformationW(path.wc_str(), nullptr, 0, nullptr, &maximumComponentLength, &nativeFeatures, nullptr, 0))
 		{
-			return MapDiskFeatures(nativeFeatures);
+			FileSystemFeature features = MapDiskFeatures(nativeFeatures);
+			Utility::ModFlagRef(features, FileSystemFeature::LongFileNames, maximumComponentLength == 255);
+
+			return features;
 		}
 		return FileSystemFeature::None;
 	}
@@ -252,8 +244,9 @@ namespace KxFramework
 			driveInfo.BytesPerSector = bytesPerSector;
 			driveInfo.NumberOfFreeClusters = numberOfFreeClusters;
 			driveInfo.TotalNumberOfClusters = totalNumberOfClusters;
+			
 			driveInfo.FileSystemFeatures = MapDiskFeatures(fileSystemFlags);
-			driveInfo.LongFileNames = maximumComponentLength == 255;
+			Utility::ModFlagRef(driveInfo.FileSystemFeatures, FileSystemFeature::LongFileNames, maximumComponentLength == 255);
 
 			return driveInfo;
 		}
