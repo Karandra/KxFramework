@@ -149,15 +149,15 @@ namespace KxFramework
 		return !(findInfo.dwFileAttributes == INVALID_FILE_ATTRIBUTES || name.empty() || name == L".." || name == L".");
 	}
 
-	DWORD CopyCallback(LARGE_INTEGER TotalFileSize,
-					   LARGE_INTEGER TotalBytesTransferred,
-					   LARGE_INTEGER StreamSize,
-					   LARGE_INTEGER StreamBytesTransferred,
-					   DWORD dwStreamNumber,
-					   DWORD dwCallbackReason,
-					   HANDLE hSourceFile,
-					   HANDLE hDestinationFile,
-					   LPVOID lpData)
+	DWORD WINAPI CopyCallback(LARGE_INTEGER TotalFileSize,
+							  LARGE_INTEGER TotalBytesTransferred,
+							  LARGE_INTEGER StreamSize,
+							  LARGE_INTEGER StreamBytesTransferred,
+							  DWORD dwStreamNumber,
+							  DWORD dwCallbackReason,
+							  HANDLE hSourceFile,
+							  HANDLE hDestinationFile,
+							  LPVOID lpData)
 	{
 		IFileSystem::TCopyItemFunc& func = *reinterpret_cast<IFileSystem::TCopyItemFunc*>(lpData);
 		if (func == nullptr || std::invoke(func, BinarySize::FromBytes(TotalBytesTransferred.QuadPart), BinarySize::FromBytes(TotalFileSize.QuadPart)))
