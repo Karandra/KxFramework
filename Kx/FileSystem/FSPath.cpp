@@ -408,7 +408,7 @@ namespace KxFramework
 		// return: Common Files\Microsoft
 
 		wxString fullPath = GetFullPath();
-		if (KxComparator::IsEqual(fullPath.Left(start.GetPathLength()), start, true))
+		if (KxComparator::IsEqual(fullPath.Left(start.GetPathLength()), start.m_Path, true))
 		{
 			fullPath = fullPath.Remove(0, start.GetPathLength());
 		}
@@ -421,7 +421,7 @@ namespace KxFramework
 		// return: C:\Program Files (x86)
 
 		wxString fullPath = GetFullPath();
-		if (KxComparator::IsEqual(fullPath.Right(end.GetPathLength()), end, true))
+		if (KxComparator::IsEqual(fullPath.Right(end.GetPathLength()), end.m_Path, true))
 		{
 			fullPath = fullPath.Remove(fullPath.length() - end.GetPathLength(), end.GetPathLength());
 		}

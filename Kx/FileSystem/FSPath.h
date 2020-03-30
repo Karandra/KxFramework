@@ -124,10 +124,6 @@ namespace KxFramework
 			}
 
 		public:
-			operator wxString() const
-			{
-				return GetFullPath();
-			}
 			explicit operator bool() const noexcept
 			{
 				return IsValid();
