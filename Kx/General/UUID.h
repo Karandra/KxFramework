@@ -26,7 +26,10 @@ namespace KxFramework
 		public:
 			static UUID Create() noexcept;
 			static UUID CreateSequential() noexcept;
+
 			static UUID CreateFromString(const wxString& value) noexcept;
+			static UUID CreateFromString(const wchar_t* value) noexcept;
+			static UUID CreateFromString(const char* value) noexcept;
 
 		private:
 			NativeUUID m_ID;

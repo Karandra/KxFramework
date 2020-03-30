@@ -56,10 +56,24 @@ namespace KxFramework
 		}
 		return {};
 	}
+
 	UUID UUID::CreateFromString(const wxString& value) noexcept
 	{
+		return CreateFromString(value.wc_str());
+	}
+	UUID UUID::CreateFromString(const wchar_t* value) noexcept
+	{
 		NativeUUID uuid;
-		if (::UuidFromStringW(reinterpret_cast<RPC_WSTR>(const_cast<wchar_t*>(value.wc_str())), AsUUID(uuid)) == RPC_S_OK)
+		if (::UuidFromStringW(reinterpret_cast<RPC_WSTR>(const_cast<wchar_t*>(value)), AsUUID(uuid)) == RPC_S_OK)
+		{
+			return uuid;
+		}
+		return {};
+	}
+	UUID UUID::CreateFromString(const char* value) noexcept
+	{
+		NativeUUID uuid;
+		if (::UuidFromStringA(reinterpret_cast<RPC_CSTR>(const_cast<char*>(value)), AsUUID(uuid)) == RPC_S_OK)
 		{
 			return uuid;
 		}
