@@ -18,30 +18,30 @@ namespace KxFramework
 
 namespace KxFramework
 {
-	class KX_API LegacyDrive final
+	class KX_API LegacyVolume final
 	{
 		public:
-			static size_t Enumerate(std::function<bool(LegacyDrive)> func);
-			static std::vector<LegacyDrive> Enumerate();
+			static size_t Enumerate(std::function<bool(LegacyVolume)> func);
+			static std::vector<LegacyVolume> Enumerate();
 
-			static LegacyDrive FromChar(const wxUniChar& value)
+			static LegacyVolume FromChar(const wxUniChar& value)
 			{
-				LegacyDrive drive;
+				LegacyVolume drive;
 				drive.AssignFromChar(value);
 				return drive;
 			}
-			static LegacyDrive FromChar(const wxString& value)
+			static LegacyVolume FromChar(const wxString& value)
 			{
-				LegacyDrive drive;
+				LegacyVolume drive;
 				if (!value.IsEmpty())
 				{
 					drive.AssignFromChar(value[0]);
 				}
 				return drive;
 			}
-			static LegacyDrive FromIndex(int index)
+			static LegacyVolume FromIndex(int index)
 			{
-				LegacyDrive drive;
+				LegacyVolume drive;
 				drive.AssignFromIndex(index);
 				return drive;
 			}
@@ -56,8 +56,8 @@ namespace KxFramework
 			char m_Drive = 0;
 
 		public:
-			LegacyDrive() = default;
-			LegacyDrive(const LegacyDrive&) = default;
+			LegacyVolume() = default;
+			LegacyVolume(const LegacyVolume&) = default;
 
 		public:
 			bool IsValid() const;

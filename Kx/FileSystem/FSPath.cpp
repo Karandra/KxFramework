@@ -1,6 +1,7 @@
 #include "KxStdAfx.h"
 #include "FSPath.h"
-#include "LegacyDrive.h"
+#include "LegacyVolume.h"
+#include "StorageVolume.h"
 #include "NamespacePrefix.h"
 #include <KxFramework/KxComparator.h>
 
@@ -219,8 +220,8 @@ namespace KxFramework
 	}
 	bool FSPath::IsAbsolute() const
 	{
-		// Path is absolute if it has a namespace or starts with a disk designator
-		return m_Namespace != KxFramework::FSPathNamespace::None || HasDrive();
+		// Path is absolute if it has a namespace or starts with a volume (a disk designator)
+		return IsValid() && (m_Namespace != FSPathNamespace::None || HasAnyVolume());
 	}
 	bool FSPath::IsRelative() const
 	{
@@ -266,20 +267,32 @@ namespace KxFramework
 		return count;
 	}
 
-	wxString FSPath::GetFullPath(KxFramework::FSPathNamespace withNamespace) const
+	wxString FSPath::GetFullPath(FSPathNamespace withNamespace) const
 	{
 		return ConcatWithNamespace(m_Path, withNamespace);
 	}
 
-	bool FSPath::HasDrive() const
+	bool FSPath::HasVolume() const
 	{
-		return m_Path.length() >= 2 && m_Path[1] == wxS(':');
+		return m_Namespace == FSPathNamespace::Win32Volume;
 	}
-	LegacyDrive FSPath::GetDrive() const
+	bool FSPath::HasLegacyVolume() const
 	{
-		return LegacyDrive::FromChar(ExtractBefore(m_Path, wxS(':')));
+		return m_Namespace != FSPathNamespace::Win32Volume && m_Path.length() >= 2 && m_Path[1] == wxS(':');
 	}
-	FSPath& FSPath::SetDrive(const LegacyDrive& drive)
+	StorageVolume FSPath::GetVolume() const
+	{
+		return {};
+	}
+	LegacyVolume FSPath::GetLegacyVolume() const
+	{
+		if (HasLegacyVolume())
+		{
+			return LegacyVolume::FromChar(ExtractBefore(m_Path, wxS(':')));
+		}
+		return {};
+	}
+	FSPath& FSPath::SetVolume(const LegacyVolume& drive)
 	{
 		const size_t pos = m_Path.find(wxS(':'));
 		if (pos != wxString::npos)
@@ -293,6 +306,11 @@ namespace KxFramework
 			m_Path.Prepend(wxS(":\\"));
 			m_Path.Prepend(drive.GetChar());
 		}
+		return *this;
+	}
+	FSPath& FSPath::SetVolume(const StorageVolume& volume)
+	{
+		m_Namespace = FSPathNamespace::Win32Volume;
 		return *this;
 	}
 

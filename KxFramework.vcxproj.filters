@@ -1246,9 +1246,6 @@
     <ClInclude Include="Kx\FileSystem\NamespacePrefix.h">
       <Filter>Kx\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\FileSystem\LegacyDrive.h">
-      <Filter>Kx\FileSystem</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxXMLUtility.h">
       <Filter>Header Files\Parsers\XML</Filter>
     </ClInclude>
@@ -1308,6 +1305,12 @@
     </ClInclude>
     <ClInclude Include="Kx\General\Singleton.h">
       <Filter>Kx\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\FileSystem\LegacyVolume.h">
+      <Filter>Kx\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\FileSystem\StorageVolume.h">
+      <Filter>Kx\FileSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2023,9 +2026,6 @@
     <ClCompile Include="Kx\FileSystem\Common.cpp">
       <Filter>Kx\FileSystem</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\FileSystem\LegacyDrive.cpp">
-      <Filter>Kx\FileSystem</Filter>
-    </ClCompile>
     <ClCompile Include="Kx\System\ShellFileType.cpp">
       <Filter>Kx\System</Filter>
     </ClCompile>
@@ -2057,6 +2057,12 @@
       <Filter>Kx\FileSystem</Filter>
     </ClCompile>
     <ClCompile Include="Kx\FileSystem\NativeFileSystem.cpp">
+      <Filter>Kx\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\FileSystem\LegacyVolume.cpp">
+      <Filter>Kx\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\FileSystem\StorageVolume.cpp">
       <Filter>Kx\FileSystem</Filter>
     </ClCompile>
   </ItemGroup>

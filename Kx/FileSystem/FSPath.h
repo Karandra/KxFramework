@@ -3,7 +3,8 @@
 
 namespace KxFramework
 {
-	class LegacyDrive;
+	class LegacyVolume;
+	class StorageVolume;
 }
 
 namespace KxFramework
@@ -85,9 +86,16 @@ namespace KxFramework
 				return GetFullPath(m_Namespace != FSPathNamespace::None ? m_Namespace : withNamespace);
 			}
 
-			bool HasDrive() const;
-			LegacyDrive GetDrive() const;
-			FSPath& SetDrive(const LegacyDrive& drive);
+			bool HasAnyVolume() const
+			{
+				return HasVolume() || HasLegacyVolume();
+			}
+			bool HasVolume() const;
+			bool HasLegacyVolume() const;
+			StorageVolume GetVolume() const;
+			LegacyVolume GetLegacyVolume() const;
+			FSPath& SetVolume(const LegacyVolume& volume);
+			FSPath& SetVolume(const StorageVolume& volume);
 
 			wxString GetPath() const;
 			FSPath& SetPath(const wxString& path);

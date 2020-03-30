@@ -497,7 +497,8 @@
     <ClInclude Include="Kx\FileSystem\FSPath.h" />
     <ClInclude Include="Kx\FileSystem\IFileSearcher.h" />
     <ClInclude Include="Kx\FileSystem\IFileSystem.h" />
-    <ClInclude Include="Kx\FileSystem\LegacyDrive.h" />
+    <ClInclude Include="Kx\FileSystem\LegacyVolume.h" />
+    <ClInclude Include="Kx\FileSystem\StorageVolume.h" />
     <ClInclude Include="Kx\FileSystem\NamespacePrefix.h" />
     <ClInclude Include="Kx\FileSystem\NativeFileSystem.h" />
     <ClInclude Include="Kx\General\BinarySize.h" />
@@ -826,7 +827,8 @@
     <ClCompile Include="Kx\FileSystem\FileItem.cpp" />
     <ClCompile Include="Kx\FileSystem\FileOperations.cpp" />
     <ClCompile Include="Kx\FileSystem\FSPath.cpp" />
-    <ClCompile Include="Kx\FileSystem\LegacyDrive.cpp" />
+    <ClCompile Include="Kx\FileSystem\LegacyVolume.cpp" />
+    <ClCompile Include="Kx\FileSystem\StorageVolume.cpp" />
     <ClCompile Include="Kx\FileSystem\NativeFileSystem.cpp" />
     <ClCompile Include="Kx\General\BinarySize.cpp" />
     <ClCompile Include="Kx\General\NativeUUID.cpp" />

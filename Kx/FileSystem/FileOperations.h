@@ -1,13 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Kx/General/UndefWindows.h"
-
-namespace KxFramework
-{
-	class FSPath;
-	class BinarySize;
-	class LegacyDrive;
-}
+#include "FSPath.h"
 
 namespace KxFramework::FileSystem
 {

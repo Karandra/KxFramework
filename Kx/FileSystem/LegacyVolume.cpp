@@ -1,5 +1,5 @@
 #include "KxStdAfx.h"
-#include "LegacyDrive.h"
+#include "LegacyVolume.h"
 #include "FSPath.h"
 #include "Kx/Utility/Common.h"
 #include "KxFramework/KxFileStream.h"
@@ -73,14 +73,14 @@ namespace KxFramework
 
 namespace KxFramework
 {
-	void LegacyDrive::AssignFromChar(const wxUniChar& value)
+	void LegacyVolume::AssignFromChar(const wxUniChar& value)
 	{
 		if (!value.GetAsChar(&m_Drive))
 		{
 			m_Drive = g_InvalidDrive;
 		}
 	}
-	void LegacyDrive::AssignFromIndex(int index)
+	void LegacyVolume::AssignFromIndex(int index)
 	{
 		m_Drive = g_InvalidDrive;
 		if (index >= 0 && index <= 26)
@@ -89,7 +89,7 @@ namespace KxFramework
 		}
 	}
 	
-	wxString LegacyDrive::DoGetPath() const
+	wxString LegacyVolume::DoGetPath() const
 	{
 		if (IsValid())
 		{
@@ -98,7 +98,7 @@ namespace KxFramework
 		return wxEmptyString;
 	}
 
-	size_t LegacyDrive::Enumerate(std::function<bool(LegacyDrive)> func)
+	size_t LegacyVolume::Enumerate(std::function<bool(LegacyVolume)> func)
 	{
 		DWORD length = ::GetLogicalDriveStringsW(0, nullptr);
 		if (length != 0)
@@ -119,11 +119,11 @@ namespace KxFramework
 		}
 		return 0;
 	}
-	std::vector<LegacyDrive> LegacyDrive::Enumerate()
+	std::vector<LegacyVolume> LegacyVolume::Enumerate()
 	{
-		std::vector<LegacyDrive> drives;
+		std::vector<LegacyVolume> drives;
 		drives.reserve(g_MaxLegacyDrives);
-		Enumerate([&](LegacyDrive drive)
+		Enumerate([&](LegacyVolume drive)
 		{
 			drives.emplace_back(std::move(drive));
 			return true;
@@ -131,11 +131,11 @@ namespace KxFramework
 		return drives;
 	}
 
-	bool LegacyDrive::IsValid() const
+	bool LegacyVolume::IsValid() const
 	{
 		return m_Drive >= 'A' && m_Drive <= 'Z';
 	}
-	bool LegacyDrive::DoesExist() const
+	bool LegacyVolume::DoesExist() const
 	{
 		if (IsValid())
 		{
@@ -145,11 +145,11 @@ namespace KxFramework
 		return false;
 	}
 
-	FSPath LegacyDrive::GetPath() const
+	FSPath LegacyVolume::GetPath() const
 	{
 		return DoGetPath();
 	}
-	int LegacyDrive::GetIndex() const
+	int LegacyVolume::GetIndex() const
 	{
 		if (IsValid())
 		{
@@ -157,7 +157,7 @@ namespace KxFramework
 		}
 		return -1;
 	}
-	char LegacyDrive::GetChar() const
+	char LegacyVolume::GetChar() const
 	{
 		if (IsValid())
 		{
@@ -166,7 +166,7 @@ namespace KxFramework
 		return g_InvalidDrive;
 	}
 
-	wxString LegacyDrive::GetLabel() const
+	wxString LegacyVolume::GetLabel() const
 	{
 		if (IsValid())
 		{
@@ -178,7 +178,7 @@ namespace KxFramework
 		}
 		return wxEmptyString;
 	}
-	bool LegacyDrive::SetLabel(const wxString& label)
+	bool LegacyVolume::SetLabel(const wxString& label)
 	{
 		if (IsValid())
 		{
@@ -188,7 +188,7 @@ namespace KxFramework
 		return false;
 	}
 
-	DriveType LegacyDrive::GetType() const
+	DriveType LegacyVolume::GetType() const
 	{
 		if (IsValid())
 		{
@@ -197,7 +197,7 @@ namespace KxFramework
 		}
 		return DriveType::Unknown;
 	}
-	wxString LegacyDrive::GetFileSystemName() const
+	wxString LegacyVolume::GetFileSystemName() const
 	{
 		if (IsValid())
 		{
@@ -209,7 +209,7 @@ namespace KxFramework
 		}
 		return wxEmptyString;
 	}
-	FileSystemFeature LegacyDrive::GetFileSystemFeatures() const
+	FileSystemFeature LegacyVolume::GetFileSystemFeatures() const
 	{
 		wxString path = DoGetPath();
 		DWORD nativeFeatures = 0;
@@ -219,7 +219,7 @@ namespace KxFramework
 		}
 		return FileSystemFeature::None;
 	}
-	uint32_t LegacyDrive::GetSerialNumber() const
+	uint32_t LegacyVolume::GetSerialNumber() const
 	{
 		if (IsValid())
 		{
@@ -231,7 +231,7 @@ namespace KxFramework
 		return std::numeric_limits<uint32_t>::max();
 	}
 
-	LegacyDriveInfo LegacyDrive::GetInfo() const
+	LegacyDriveInfo LegacyVolume::GetInfo() const
 	{
 		if (IsValid())
 		{
@@ -259,7 +259,7 @@ namespace KxFramework
 		}
 		return {};
 	}
-	wxFileOffset LegacyDrive::GetTotalSpace() const
+	wxFileOffset LegacyVolume::GetTotalSpace() const
 	{
 		if (IsValid())
 		{
@@ -270,7 +270,7 @@ namespace KxFramework
 		}
 		return wxInvalidOffset;
 	}
-	wxFileOffset LegacyDrive::GetUsedSpace() const
+	wxFileOffset LegacyVolume::GetUsedSpace() const
 	{
 		if (IsValid())
 		{
@@ -284,7 +284,7 @@ namespace KxFramework
 		}
 		return wxInvalidOffset;
 	}
-	wxFileOffset LegacyDrive::GetFreeSpace() const
+	wxFileOffset LegacyVolume::GetFreeSpace() const
 	{
 		if (IsValid())
 		{
@@ -296,7 +296,7 @@ namespace KxFramework
 		return wxInvalidOffset;
 	}
 
-	bool LegacyDrive::EjectMedia()
+	bool LegacyVolume::EjectMedia()
 	{
 		if (IsValid())
 		{

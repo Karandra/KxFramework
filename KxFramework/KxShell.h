@@ -14,7 +14,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 
 namespace KxFramework
 {
-	class LegacyDrive;
+	class LegacyVolume;
 }
 class KX_API KxFileItem;
 
@@ -39,7 +39,7 @@ class KX_API KxShell
 		
 		static bool FileOperation(const wxString& fullPath, KxFileSearchType elementType, KxShellOperationFunc func, bool useRecycleBin = false, bool recurse = false, wxWindow* window = nullptr);
 		static bool FileOperationEx(KxShellOperationFunc func, const wxString& from, const wxString& to, wxWindow* window = nullptr, bool recurse = false, bool filesOnly = true, bool allowUndo = true, bool yesToAll = false);
-		static DWORD FormatDrive(wxWindow* window, const KxFramework::LegacyDrive& drive, DWORD options = SHFMT_OPT_FULL, DWORD formatID = SHFMT_ID_DEFAULT);
+		static DWORD FormatDrive(wxWindow* window, const KxFramework::LegacyVolume& drive, DWORD options = SHFMT_OPT_FULL, DWORD formatID = SHFMT_ID_DEFAULT);
 		static bool PinShortcut(const wxString& shortcutPath, KxShellShortcutPinMode mode);
 		
 		static wxString QueryAssocString(const wxString& string, KxShellAssocQuery infoType);

@@ -10,7 +10,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxFramework/KxFile.h"
 #include "KxFramework/KxFileFinder.h"
 #include "KxFramework/KxUtility.h"
-#include <Kx/FileSystem/LegacyDrive.h>
+#include <Kx/FileSystem/LegacyVolume.h>
 #include <KnownFolders.h>
 #include <winnls.h>
 #include <shobjidl.h>
@@ -122,7 +122,7 @@ bool KxShell::FileOperationEx(KxShellOperationFunc func, const wxString& from, c
 	return returnCode == 0;
 }
 
-DWORD KxShell::FormatDrive(wxWindow* window, const KxFramework::LegacyDrive& drive, DWORD options, DWORD formatID)
+DWORD KxShell::FormatDrive(wxWindow* window, const KxFramework::LegacyVolume& drive, DWORD options, DWORD formatID)
 {
 	if (drive)
 	{

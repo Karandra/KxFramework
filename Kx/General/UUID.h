@@ -33,6 +33,8 @@ namespace KxFramework
 
 		public:
 			UUID() noexcept = default;
+			UUID(UUID&&) = default;
+			UUID(const UUID&) = default;
 			UUID(const NativeUUID& other) noexcept
 			{
 				m_ID = other;
@@ -64,6 +66,8 @@ namespace KxFramework
 			wxString ToString(UUIDStringFormat format = UUIDStringFormat::None) const;
 
 		public:
+			UUID& operator=(UUID&&) = default;
+			UUID& operator=(const UUID&) = default;
 			UUID& operator=(const NativeUUID& other) noexcept
 			{
 				m_ID = other;

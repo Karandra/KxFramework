@@ -1,7 +1,5 @@
 #include "KxStdAfx.h"
-#include "FSPath.h"
-#include "LegacyDrive.h"
-#include "Kx/General/BinarySize.h"
+#include "FileOperations.h"
 #include <shlwapi.h>
 #include "Kx/General/UndefWindows.h"
 
