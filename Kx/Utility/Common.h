@@ -93,10 +93,7 @@ namespace KxFramework::Utility
 		template<class T1, class T2>
 		constexpr bool TestFlagsCompatibility()
 		{
-			using TInt1 = Internal::FlagIntType<T1>;
-			using TInt2 = Internal::FlagIntType<T2>;
-
-			return sizeof(T1) == sizeof(T2) && std::is_unsigned_v<TInt1> == std::is_unsigned_v<TInt2>;
+			return sizeof(T1) == sizeof(T2);
 		}
 
 		template<class T1, class T2>
