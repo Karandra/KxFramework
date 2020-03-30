@@ -11,14 +11,6 @@ namespace KxFramework
 		const DWORD searchFlags = FIND_FIRST_EX_LARGE_FETCH|(isCaseSensitive ? FIND_FIRST_EX_CASE_SENSITIVE : 0);
 		return ::FindFirstFileExW(query.wc_str(), FindExInfoBasic, &findInfo, FINDEX_SEARCH_OPS::FindExSearchNameMatch, nullptr, searchFlags);
 	}
-	bool CallFindNextFile(HANDLE handle, WIN32_FIND_DATAW& findInfo)
-	{
-		return ::FindNextFileW(handle, &findInfo);
-	}
-	bool CallFindClose(HANDLE handle)
-	{
-		return ::FindClose(handle);
-	}
 
 	FileAttribute MapFileAttributes(uint32_t nativeAttributes)
 	{
@@ -156,6 +148,63 @@ namespace KxFramework
 		std::wstring_view name = findInfo.cFileName;
 		return !(findInfo.dwFileAttributes == INVALID_FILE_ATTRIBUTES || name.empty() || name == L".." || name == L".");
 	}
+
+	DWORD CopyCallback(LARGE_INTEGER TotalFileSize,
+					   LARGE_INTEGER TotalBytesTransferred,
+					   LARGE_INTEGER StreamSize,
+					   LARGE_INTEGER StreamBytesTransferred,
+					   DWORD dwStreamNumber,
+					   DWORD dwCallbackReason,
+					   HANDLE hSourceFile,
+					   HANDLE hDestinationFile,
+					   LPVOID lpData)
+	{
+		IFileSystem::TCopyItemFunc& func = *reinterpret_cast<IFileSystem::TCopyItemFunc*>(lpData);
+		if (func == nullptr || std::invoke(func, BinarySize::FromBytes(TotalBytesTransferred.QuadPart), BinarySize::FromBytes(TotalFileSize.QuadPart)))
+		{
+			return PROGRESS_CONTINUE;
+		}
+		return PROGRESS_CANCEL;
+	}
+
+	bool CopyOrMoveDirectoryTree(NativeFileSystem& fileSystem, const FSPath& source, const FSPath& destination, NativeFileSystem::TCopyDirectoryTreeFunc func, FSCopyItemFlag flags, bool move)
+	{
+		return fileSystem.EnumItems(source, [&](FileItem item)
+		{
+			FSPath target = destination / item.GetFullPath().GetAfter(source);
+			if (item.IsDirectory())
+			{
+				if (!func || std::invoke(func, source, target, 0, 0))
+				{
+					fileSystem.CreateDirectory(target);
+					if (move)
+					{
+						fileSystem.RemoveItem(source);
+					}
+				}
+				else
+				{
+					return false;
+				}
+			}
+			else
+			{
+				if (func)
+				{
+					auto ForwardCallback = [&](BinarySize copied, BinarySize total)
+					{
+						return std::invoke(func, source, std::move(target), copied, total);
+					};
+					return move ? fileSystem.MoveItem(source, target, std::move(ForwardCallback), flags) : fileSystem.CopyItem(source, target, std::move(ForwardCallback), flags);
+				}
+				else
+				{
+					return move ? fileSystem.MoveItem(source, target, {}, flags) : fileSystem.CopyItem(source, target, {}, flags);
+				}
+			}
+			return true;
+		}, {}, FSEnumItemsFlag::Recursive) != 0;
+	}
 }
 
 namespace KxFramework
@@ -168,7 +217,7 @@ namespace KxFramework
 		{
 			Utility::CallAtScopeExit atExit([&]()
 			{
-				CallFindClose(handle);
+				::FindClose(handle);
 			});
 
 			if (IsValidFindItem(findInfo))
@@ -178,8 +227,13 @@ namespace KxFramework
 		}
 		return {};
 	}
-	size_t NativeFileSystem::EnumItems(const FSPath& directory, std::function<bool(const FileItem&)> func, const wxString& query, FSEnumItemsFlag flags) const
+	size_t NativeFileSystem::EnumItems(const FSPath& directory, TEnumItemsFunc func, const wxString& query, FSEnumItemsFlag flags) const
 	{
+		if (flags & FSEnumItemsFlag::LimitToFiles && flags & FSEnumItemsFlag::LimitToDirectories)
+		{
+			return 0;
+		}
+
 		size_t counter = 0;
 		auto SearchDirectory = [&](const FSPath& directory, std::vector<FSPath>& childDirectories)
 		{
@@ -191,7 +245,7 @@ namespace KxFramework
 			{
 				Utility::CallAtScopeExit atExit([&]()
 				{
-					CallFindClose(handle);
+					::FindClose(handle);
 				});
 
 				do
@@ -199,7 +253,26 @@ namespace KxFramework
 					// Skip invalid items and current and parent directory links
 					if (IsValidFindItem(findInfo))
 					{
-						if (func(ConvertFileInfo(findInfo, directory)))
+						const bool isDirectory = findInfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+
+						// Add directory to the stack if we need to scan child directories
+						if (isDirectory && flags & FSEnumItemsFlag::Recursive)
+						{
+							childDirectories.emplace_back(findInfo.cFileName).EnsureNamespaceSet(directory.GetNamespace());
+						}
+
+						// Filter files and/or directories
+						if (flags & FSEnumItemsFlag::LimitToFiles && isDirectory)
+						{
+							continue;
+						}
+						if (flags & FSEnumItemsFlag::LimitToDirectories && !isDirectory)
+						{
+							continue;
+						}
+
+						// Fetch the file info and invoke the callback
+						if (std::invoke(func, ConvertFileInfo(findInfo, directory)))
 						{
 							counter++;
 						}
@@ -207,14 +280,9 @@ namespace KxFramework
 						{
 							return;
 						}
-
-						if (findInfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY && flags & FSEnumItemsFlag::Recursive)
-						{
-							childDirectories.emplace_back(findInfo.cFileName).EnsureNamespaceSet(directory.GetNamespace());
-						}
 					}
 				}
-				while (CallFindNextFile(handle, findInfo));
+				while (::FindNextFileW(handle, &findInfo));
 			}
 		};
 		
@@ -276,21 +344,120 @@ namespace KxFramework
 		return false;
 	}
 
-	bool NativeFileSystem::RenameItem(const FSPath& existingPath, const FSPath& newPath, bool replaceIfExist)
+	bool NativeFileSystem::CopyItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func, FSCopyItemFlag flags)
 	{
-		const wxString source = existingPath.GetFullPathWithNS(FSPathNamespace::Win32File);
-		const wxString destination = newPath.GetFullPathWithNS(FSPathNamespace::Win32File);
+		BOOL cancel = FALSE;
+		DWORD copyFlags = COPY_FILE_ALLOW_DECRYPTED_DESTINATION|COPY_FILE_COPY_SYMLINK;
+		Utility::ModFlagRef(copyFlags, COPY_FILE_FAIL_IF_EXISTS, !(flags & FSCopyItemFlag::ReplaceIfExist));
+		Utility::ModFlagRef(copyFlags, COPY_FILE_NO_BUFFERING, flags & FSCopyItemFlag::NoBuffering);
 
-		return ::MoveFileExW(source.wc_str(), destination.wc_str(), replaceIfExist ? MOVEFILE_REPLACE_EXISTING : 0);
+		const wxString sourcePath = source.GetFullPathWithNS(FSPathNamespace::Win32File);
+		const wxString destinationPath = destination.GetFullPathWithNS(FSPathNamespace::Win32File);
+		return ::CopyFileExW(sourcePath.wc_str(), destinationPath.wc_str(), CopyCallback, func ? &func : nullptr, &cancel, copyFlags);
+	}
+	bool NativeFileSystem::MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func, FSCopyItemFlag flags)
+	{
+		DWORD moveFlags = MOVEFILE_COPY_ALLOWED;
+		Utility::ModFlagRef(moveFlags, MOVEFILE_REPLACE_EXISTING, flags & FSCopyItemFlag::ReplaceIfExist);
+		Utility::ModFlagRef(moveFlags, MOVEFILE_WRITE_THROUGH, flags & FSCopyItemFlag::NoBuffering);
+
+		const wxString sourcePath = source.GetFullPathWithNS(FSPathNamespace::Win32File);
+		const wxString destinationPath = destination.GetFullPathWithNS(FSPathNamespace::Win32File);
+		return ::MoveFileWithProgressW(sourcePath.wc_str(), destinationPath.wc_str(), CopyCallback, func ? &func : nullptr, moveFlags);
+	}
+	bool NativeFileSystem::RenameItem(const FSPath& source, const FSPath& destination, FSCopyItemFlag flags)
+	{
+		const wxString sourcePath = source.GetFullPathWithNS(FSPathNamespace::Win32File);
+		const wxString destinationPath = destination.GetFullPathWithNS(FSPathNamespace::Win32File);
+
+		DWORD moveFlags = flags & FSCopyItemFlag::ReplaceIfExist ? MOVEFILE_REPLACE_EXISTING : 0;
+		return ::MoveFileExW(sourcePath.wc_str(), destinationPath.wc_str(), moveFlags);
 	}
 	bool NativeFileSystem::RemoveItem(const FSPath& path)
 	{
-		const wxString source = path.GetFullPathWithNS(FSPathNamespace::Win32File);
-		return ::SetFileAttributesW(source.wc_str(), FILE_ATTRIBUTE_NORMAL) && ::DeleteFileW(source.wc_str());
+		const wxString sourcePath = path.GetFullPathWithNS(FSPathNamespace::Win32File);
+
+		const uint32_t attributes = ::GetFileAttributesW(sourcePath.wc_str());
+		if (attributes != INVALID_FILE_ATTRIBUTES)
+		{
+			if (::SetFileAttributesW(sourcePath.wc_str(), FILE_ATTRIBUTE_NORMAL))
+			{
+				if (attributes & FILE_ATTRIBUTE_DIRECTORY)
+				{
+					return ::RemoveDirectoryW(sourcePath.wc_str());
+				}
+				else
+				{
+					return ::DeleteFileW(sourcePath.wc_str());
+				}
+			}
+		}
+		return false;
 	}
 
 	bool NativeFileSystem::IsInUse(const FSPath& path) const
 	{
 		return KxFileStream(path, KxFileStream::Access::Read, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Exclusive).IsOk();
+	}
+	size_t NativeFileSystem::EnumStreams(const FSPath& path, TEnumStreamsFunc func) const
+	{
+		size_t counter = 0;
+		wxString pathString = path.GetFullPathWithNS(FSPathNamespace::Win32File);
+
+		WIN32_FIND_STREAM_DATA streamInfo = {};
+		HANDLE handle = ::FindFirstStreamW(pathString.wc_str(), STREAM_INFO_LEVELS::FindStreamInfoStandard, &streamInfo, 0);
+		if (handle && handle != INVALID_HANDLE_VALUE)
+		{
+			Utility::CallAtScopeExit atExit([&]()
+			{
+				::FindClose(handle);
+			});
+
+			do
+			{
+				// Fetch the file info and invoke the callback
+				if (std::invoke(func, streamInfo.cStreamName, BinarySize::FromBytes(streamInfo.StreamSize.QuadPart)))
+				{
+					counter++;
+				}
+				else
+				{
+					break;
+				}
+			}
+			while (::FindNextStreamW(handle, &streamInfo));
+		}
+		return counter;
+	}
+
+	bool NativeFileSystem::RemoveDirectoryTree(const FSPath& path)
+	{
+		std::vector<FSPath> directories;
+		EnumItems(path, [&](FileItem item)
+		{
+			if (item.IsDirectory())
+			{
+				directories.emplace_back(item.GetFullPath());
+			}
+			else
+			{
+				return RemoveItem(item.GetFullPath());
+			}
+			return true;
+		}, {}, FSEnumItemsFlag::Recursive);
+
+		for (const FSPath& directory: directories)
+		{
+			return RemoveItem(directory);
+		}
+		return RemoveItem(path);
+	}
+	bool NativeFileSystem::CopyDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func, FSCopyItemFlag flags) const
+	{
+		return CopyOrMoveDirectoryTree(const_cast<NativeFileSystem&>(*this), source, destination, std::move(func), flags, false);
+	}
+	bool NativeFileSystem::MoveDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func, FSCopyItemFlag flags)
+	{
+		return CopyOrMoveDirectoryTree(*this, source, destination, std::move(func), flags, true);
 	}
 }
