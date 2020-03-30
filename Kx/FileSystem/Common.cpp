@@ -24,10 +24,6 @@ namespace KxFramework::FileSystem
 			{
 				return NamespacePrefix::Win32Device;
 			}
-			case FSPathNamespace::Win32Volume:
-			{
-				return NamespacePrefix::Win32Volume;
-			}
 			case FSPathNamespace::Network:
 			{
 				return NamespacePrefix::Network;

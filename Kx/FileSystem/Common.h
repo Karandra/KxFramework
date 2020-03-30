@@ -21,7 +21,6 @@ namespace KxFramework
 		Win32File,
 		Win32FileUNC,
 		Win32Device,
-		Win32Volume,
 		Network,
 		NetworkUNC,
 	};
@@ -47,7 +46,8 @@ namespace KxFramework
 		Transactions = 1 << 16,
 		USNJournal = 1 << 17,
 		Unicode = 1 << 18,
-		VolumeQuotas = 1 << 19
+		VolumeQuotas = 1 << 19,
+		LongFileNames = 1 << 20
 	};
 	enum class FileAttribute: uint32_t
 	{
