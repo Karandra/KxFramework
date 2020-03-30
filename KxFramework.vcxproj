@@ -495,7 +495,6 @@
     <ClInclude Include="Kx\FileSystem\FileItem.h" />
     <ClInclude Include="Kx\FileSystem\FileOperations.h" />
     <ClInclude Include="Kx\FileSystem\FSPath.h" />
-    <ClInclude Include="Kx\FileSystem\IFileSearcher.h" />
     <ClInclude Include="Kx\FileSystem\IFileSystem.h" />
     <ClInclude Include="Kx\FileSystem\LegacyVolume.h" />
     <ClInclude Include="Kx\FileSystem\StorageVolume.h" />

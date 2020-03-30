@@ -1291,9 +1291,6 @@
     <ClInclude Include="Kx\General\ExtraData.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\FileSystem\IFileSearcher.h">
-      <Filter>Kx\FileSystem</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\FileSystem\IFileSystem.h">
       <Filter>Kx\FileSystem</Filter>
     </ClInclude>
