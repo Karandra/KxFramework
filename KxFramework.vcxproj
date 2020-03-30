@@ -500,7 +500,6 @@
     <ClInclude Include="Kx\FileSystem\LegacyDrive.h" />
     <ClInclude Include="Kx\FileSystem\NamespacePrefix.h" />
     <ClInclude Include="Kx\FileSystem\NativeFileSystem.h" />
-    <ClInclude Include="Kx\FileSystem\StatefulFileSystem.h" />
     <ClInclude Include="Kx\General\BinarySize.h" />
     <ClInclude Include="Kx\General\Common.h" />
     <ClInclude Include="Kx\General\ExtraData.h" />
@@ -829,7 +828,6 @@
     <ClCompile Include="Kx\FileSystem\FSPath.cpp" />
     <ClCompile Include="Kx\FileSystem\LegacyDrive.cpp" />
     <ClCompile Include="Kx\FileSystem\NativeFileSystem.cpp" />
-    <ClCompile Include="Kx\FileSystem\StatefulFileSystem.cpp" />
     <ClCompile Include="Kx\General\BinarySize.cpp" />
     <ClCompile Include="Kx\General\NativeUUID.cpp" />
     <ClCompile Include="Kx\General\UUID.cpp" />

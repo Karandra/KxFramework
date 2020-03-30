@@ -1306,9 +1306,6 @@
     <ClInclude Include="Kx\Utility\CallAtScopeExit.h">
       <Filter>Kx\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\FileSystem\StatefulFileSystem.h">
-      <Filter>Kx\FileSystem</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\General\Singleton.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
@@ -2060,9 +2057,6 @@
       <Filter>Kx\FileSystem</Filter>
     </ClCompile>
     <ClCompile Include="Kx\FileSystem\NativeFileSystem.cpp">
-      <Filter>Kx\FileSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\FileSystem\StatefulFileSystem.cpp">
       <Filter>Kx\FileSystem</Filter>
     </ClCompile>
   </ItemGroup>
