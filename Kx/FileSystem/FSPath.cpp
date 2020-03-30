@@ -401,15 +401,42 @@ namespace KxFramework
 		return *this;
 	}
 
+	FSPath FSPath::GetAfter(const FSPath& start) const
+	{
+		// this: C:\Program Files (x86)\Common Files\Microsoft
+		// start: C:\Program Files (x86)
+		// return: Common Files\Microsoft
+
+		wxString fullPath = GetFullPath();
+		if (KxComparator::IsEqual(fullPath.Left(start.GetPathLength()), start, true))
+		{
+			fullPath = fullPath.Remove(0, start.GetPathLength());
+		}
+		return FSPath(fullPath).EnsureNamespaceSet(m_Namespace);
+	}
+	FSPath FSPath::GetBefore(const FSPath& end) const
+	{
+		// this: C:\Program Files (x86)\Common Files\Microsoft
+		// end: Common Files\Microsoft
+		// return: C:\Program Files (x86)
+
+		wxString fullPath = GetFullPath();
+		if (KxComparator::IsEqual(fullPath.Right(end.GetPathLength()), end, true))
+		{
+			fullPath = fullPath.Remove(fullPath.length() - end.GetPathLength(), end.GetPathLength());
+		}
+		return FSPath(fullPath).EnsureNamespaceSet(m_Namespace);
+	}
 	FSPath FSPath::GetParent() const
 	{
 		return FSPath(ExtractBefore(m_Path, wxS('\\'), true)).EnsureNamespaceSet(m_Namespace);
 	}
-	FSPath& FSPath::RemoveLast()
+	FSPath& FSPath::RemoveLastPart()
 	{
 		*this = GetParent();
 		return *this;
 	}
+	
 	FSPath& FSPath::Append(const FSPath& other)
 	{
 		if (!IsValid() || other.IsRelative())

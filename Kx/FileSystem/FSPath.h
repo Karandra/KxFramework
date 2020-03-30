@@ -98,8 +98,10 @@ namespace KxFramework
 			wxString GetExtension() const;
 			FSPath& SetExtension(const wxString& ext);
 
+			FSPath GetAfter(const FSPath& start) const;
+			FSPath GetBefore(const FSPath& end) const;
 			FSPath GetParent() const;
-			FSPath& RemoveLast();
+			FSPath& RemoveLastPart();
 
 			FSPath& Append(const FSPath& other);
 			FSPath& Append(const char* other)
