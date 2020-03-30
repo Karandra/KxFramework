@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "FSPath.h"
 #include "KxFramework/KxWinUndef.h"
 
 namespace KxFramework
@@ -49,6 +50,8 @@ namespace KxFramework
 			void AssignFromChar(const wxUniChar& value);
 			void AssignFromIndex(int index);
 
+			wxString DoGetPath() const;
+
 		private:
 			char m_Drive = 0;
 
@@ -60,7 +63,7 @@ namespace KxFramework
 			bool IsValid() const;
 			bool DoesExist() const;
 
-			wxString GetPath() const;
+			FSPath GetPath() const;
 			int GetIndex() const;
 			char GetChar() const;
 

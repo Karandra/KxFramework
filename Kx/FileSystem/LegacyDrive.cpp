@@ -88,6 +88,15 @@ namespace KxFramework
 			AssignFromChar(index + 'A');
 		}
 	}
+	
+	wxString LegacyDrive::DoGetPath() const
+	{
+		if (IsValid())
+		{
+			return wxString(m_Drive) + wxS(":\\");
+		}
+		return wxEmptyString;
+	}
 
 	size_t LegacyDrive::Enumerate(std::function<bool(LegacyDrive)> func)
 	{
@@ -130,19 +139,15 @@ namespace KxFramework
 	{
 		if (IsValid())
 		{
-			wxString path = GetPath();
+			wxString path = DoGetPath();
 			return ::GetDriveTypeW(path.wc_str()) != DRIVE_NO_ROOT_DIR;
 		}
 		return false;
 	}
 
-	wxString LegacyDrive::GetPath() const
+	FSPath LegacyDrive::GetPath() const
 	{
-		if (IsValid())
-		{
-			return wxString(m_Drive) + wxS(":\\");
-		}
-		return wxEmptyString;
+		return DoGetPath();
 	}
 	int LegacyDrive::GetIndex() const
 	{
@@ -165,7 +170,7 @@ namespace KxFramework
 	{
 		if (IsValid())
 		{
-			wxString path = GetPath();
+			wxString path = DoGetPath();
 			wxString label;
 			const int maxLength = MAX_PATH + 1;
 			::GetVolumeInformationW(path.wc_str(), wxStringBuffer(label, maxLength), maxLength, nullptr, nullptr, nullptr, nullptr, 0);
@@ -177,7 +182,7 @@ namespace KxFramework
 	{
 		if (IsValid())
 		{
-			wxString path = GetPath();
+			wxString path = DoGetPath();
 			return ::SetVolumeLabelW(path.wc_str(), label.IsEmpty() ? nullptr : label.wc_str());
 		}
 		return false;
@@ -187,7 +192,7 @@ namespace KxFramework
 	{
 		if (IsValid())
 		{
-			wxString path = GetPath();
+			wxString path = DoGetPath();
 			return MapDriveType(::GetDriveTypeW(path.wc_str()));
 		}
 		return DriveType::Unknown;
@@ -196,7 +201,7 @@ namespace KxFramework
 	{
 		if (IsValid())
 		{
-			wxString path = GetPath();
+			wxString path = DoGetPath();
 			wxString name;
 			const int maxLength = MAX_PATH + 1;
 			::GetVolumeInformationW(path.wc_str(), nullptr, 0, nullptr, nullptr, nullptr, wxStringBuffer(name, maxLength), maxLength);
@@ -206,7 +211,7 @@ namespace KxFramework
 	}
 	FileSystemFeature LegacyDrive::GetFileSystemFeatures() const
 	{
-		wxString path = GetPath();
+		wxString path = DoGetPath();
 		DWORD nativeFeatures = 0;
 		if (::GetVolumeInformationW(path.wc_str(), nullptr, 0, nullptr, nullptr, &nativeFeatures, nullptr, 0))
 		{
@@ -218,7 +223,7 @@ namespace KxFramework
 	{
 		if (IsValid())
 		{
-			wxString path = GetPath();
+			wxString path = DoGetPath();
 			DWORD serialNumber = 0;
 			::GetVolumeInformationW(path.wc_str(), nullptr, 0, &serialNumber, nullptr, nullptr, nullptr, 0);
 			return serialNumber;
@@ -230,7 +235,7 @@ namespace KxFramework
 	{
 		if (IsValid())
 		{
-			wxString path = GetPath();
+			wxString path = DoGetPath();
 
 			DWORD fileSystemFlags = 0;
 			DWORD maximumComponentLength = 0;
@@ -258,7 +263,7 @@ namespace KxFramework
 	{
 		if (IsValid())
 		{
-			wxString path = GetPath();
+			wxString path = DoGetPath();
 			ULARGE_INTEGER value = {};
 			::GetDiskFreeSpaceExW(path.wc_str(), nullptr, &value, nullptr);
 			return value.QuadPart;
@@ -269,7 +274,7 @@ namespace KxFramework
 	{
 		if (IsValid())
 		{
-			wxString path = GetPath();
+			wxString path = DoGetPath();
 
 			ULARGE_INTEGER total = {};
 			ULARGE_INTEGER free = {};
@@ -283,7 +288,7 @@ namespace KxFramework
 	{
 		if (IsValid())
 		{
-			wxString path = GetPath();
+			wxString path = DoGetPath();
 			ULARGE_INTEGER value = {};
 			::GetDiskFreeSpaceExW(path.wc_str(), nullptr, nullptr, &value);
 			return value.QuadPart;
