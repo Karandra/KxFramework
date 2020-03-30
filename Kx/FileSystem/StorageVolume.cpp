@@ -10,6 +10,10 @@ namespace
 	constexpr size_t g_GUIDLength = 36;
 	constexpr size_t g_VolumePathPrefixLength = 10;
 	constexpr size_t g_VolumePathTotalLength = g_VolumePathPrefixLength + g_GUIDLength + 3;
+
+	constexpr size_t g_FirstLegacyVolume = 'A';
+	constexpr size_t g_LastLegacyVolume = 'Z';
+	constexpr size_t g_LegacyVolumesCount = g_LastLegacyVolume - g_FirstLegacyVolume + 1;
 }
 namespace
 {
@@ -81,7 +85,7 @@ namespace
 
 namespace KxFramework
 {
-	size_t StorageVolume::Enumerate(std::function<bool(StorageVolume)> func)
+	size_t StorageVolume::EnumVolumes(std::function<bool(StorageVolume)> func)
 	{
 		size_t count = 0;
 
@@ -98,15 +102,52 @@ namespace KxFramework
 			{
 				StorageVolume volume;
 				volume.AssignPath(volumeGuidPath);
-				if (volume && !std::invoke(func, std::move(volume)))
+				if (volume)
 				{
-					break;
+					if (std::invoke(func, std::move(volume)))
+					{
+						count++;
+					}
+					else
+					{
+						break;
+					}
 				}
 			}
 			while (::FindNextVolumeW(handle, volumeGuidPath, std::size(volumeGuidPath)));
 		}
 		return count;
 	}
+	size_t StorageVolume::EnumLegacyVolumes(std::function<bool(StorageVolume, LegacyVolume)> func)
+	{
+		size_t count = 0;
+
+		for (size_t driveLetter = g_FirstLegacyVolume; driveLetter <= g_LastLegacyVolume; driveLetter++)
+		{
+			wxChar disk[] = wxS("\0:\\");
+			disk[0] = driveLetter;
+
+			wxChar volumeGuidPath[64] = {};
+			if (::GetVolumeNameForVolumeMountPointW(disk, volumeGuidPath, std::size(volumeGuidPath)))
+			{
+				StorageVolume volume;
+				volume.AssignPath(volumeGuidPath);
+				if (volume)
+				{
+					if (std::invoke(func, std::move(volume), LegacyVolume::FromChar(wxUniChar(driveLetter))))
+					{
+						count++;
+					}
+					else
+					{
+						break;
+					}
+				}
+			}
+		}
+		return count;
+	}
+	
 	bool StorageVolume::RemoveMountPoint(const FSPath& path)
 	{
 		if (path)
@@ -157,7 +198,7 @@ namespace KxFramework
 
 	bool StorageVolume::IsValid() const
 	{
-		return m_Path[0] != wxS('\0') && std::char_traits<wxChar>::length(m_Path) == g_VolumePathTotalLength;
+		return m_Path[0] != wxS('\0') && m_Length == g_VolumePathTotalLength;
 	}
 	bool StorageVolume::DoesExist() const
 	{
@@ -197,6 +238,12 @@ namespace KxFramework
 		}
 		return DriveType::Unknown;
 	}
+	uint32_t StorageVolume::GetSerialNumber() const
+	{
+		DWORD serialNumber = std::numeric_limits<uint32_t>::max();
+		::GetVolumeInformationW(m_Path, nullptr, 0, &serialNumber, nullptr, nullptr, nullptr, 0);
+		return serialNumber;
+	}
 	wxString StorageVolume::GetFileSystem() const
 	{
 		wxChar buffer[MAX_PATH + 1] = {};
@@ -216,12 +263,6 @@ namespace KxFramework
 		}
 		return FileSystemFeature::None;
 	}
-	uint32_t StorageVolume::GetSerialNumber() const
-	{
-		DWORD serialNumber = std::numeric_limits<uint32_t>::max();
-		::GetVolumeInformationW(m_Path, nullptr, 0, &serialNumber, nullptr, nullptr, nullptr, 0);
-		return serialNumber;
-	}
 
 	auto StorageVolume::GetSpaceLayoutInfo() const -> std::optional<SpaceLayoutInfo>
 	{
@@ -234,8 +275,8 @@ namespace KxFramework
 			SpaceLayoutInfo layoutInfo = {};
 			layoutInfo.DataPerSector = BinarySize::FromBytes(bytesPerSector);
 			layoutInfo.SectorsPerCluster = sectorsPerCluster;
-			layoutInfo.NumberOfFreeClusters = numberOfFreeClusters;
-			layoutInfo.TotalNumberOfClusters = totalNumberOfClusters;
+			layoutInfo.FreeClusters = numberOfFreeClusters;
+			layoutInfo.TotalClusters = totalNumberOfClusters;
 
 			return layoutInfo;
 		}
@@ -271,6 +312,20 @@ namespace KxFramework
 		return {};
 	}
 
+	LegacyVolume StorageVolume::GetLegacyVolume() const
+	{
+		LegacyVolume result;
+		EnumLegacyVolumes([&](StorageVolume volume, LegacyVolume legacyVolume)
+		{
+			if (volume == *this)
+			{
+				result = legacyVolume;
+				return false;
+			}
+			return true;
+		});
+		return result;
+	}
 	size_t StorageVolume::EnumMountPoints(std::function<bool(FSPath)> func) const
 	{
 		size_t count = 0;
@@ -286,7 +341,11 @@ namespace KxFramework
 
 			do
 			{
-				if (!std::invoke(func, buffer))
+				if (std::invoke(func, buffer))
+				{
+					count++;
+				}
+				else
 				{
 					break;
 				}
