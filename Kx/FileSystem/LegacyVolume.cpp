@@ -75,24 +75,24 @@ namespace KxFramework
 {
 	size_t LegacyVolume::EnumVolumes(std::function<bool(LegacyVolume)> func)
 	{
-		DWORD length = ::GetLogicalDriveStringsW(0, nullptr);
-		if (length != 0)
-		{
-			wxString string;
-			length = ::GetLogicalDriveStringsW(length, wxStringBuffer(string, length));
+		size_t count = 0;
 
-			constexpr int itemsPerArray = 4;
-			size_t count = 0;
-			for (count = 0; count <= length; count += itemsPerArray)
+		const DWORD driveMask = ::GetLogicalDrives();
+		for (size_t i = 0; i < g_MaxLegacyDrives; i++)
+		{
+			if (driveMask & 1 << i)
 			{
-				if (!func(FromIndex(count)))
+				if (func(FromIndex(i)))
+				{
+					count++;
+				}
+				else
 				{
 					break;
 				}
 			}
-			return count;
 		}
-		return 0;
+		return count;
 	}
 
 	void LegacyVolume::AssignFromChar(const wxUniChar& value)
