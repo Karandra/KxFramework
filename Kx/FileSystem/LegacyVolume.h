@@ -20,13 +20,21 @@ namespace KxFramework
 	class KX_API LegacyVolume final
 	{
 		public:
-			static size_t Enumerate(std::function<bool(LegacyVolume)> func);
+			static size_t EnumVolumes(std::function<bool(LegacyVolume)> func);
 
 			static LegacyVolume FromChar(const wxUniChar& value)
 			{
 				LegacyVolume drive;
 				drive.AssignFromChar(value);
 				return drive;
+			}
+			static LegacyVolume FromChar(char value)
+			{
+				return FromChar(wxUniChar(value));
+			}
+			static LegacyVolume FromChar(wchar_t value)
+			{
+				return FromChar(wxUniChar(value));
 			}
 			static LegacyVolume FromChar(const wxString& value)
 			{

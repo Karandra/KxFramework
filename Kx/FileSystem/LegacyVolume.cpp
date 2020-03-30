@@ -73,7 +73,7 @@ namespace KxFramework
 
 namespace KxFramework
 {
-	size_t LegacyVolume::Enumerate(std::function<bool(LegacyVolume)> func)
+	size_t LegacyVolume::EnumVolumes(std::function<bool(LegacyVolume)> func)
 	{
 		DWORD length = ::GetLogicalDriveStringsW(0, nullptr);
 		if (length != 0)
