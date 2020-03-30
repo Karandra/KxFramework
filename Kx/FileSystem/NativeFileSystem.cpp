@@ -460,4 +460,22 @@ namespace KxFramework
 	{
 		return CopyOrMoveDirectoryTree(*this, source, destination, std::move(func), flags, true);
 	}
+
+	FSPath NativeFileSystem::GetWorkingDirectory() const
+	{
+		DWORD length = ::GetCurrentDirectoryW(0, nullptr);
+		if (length != 0)
+		{
+			wxString result;
+			::GetCurrentDirectoryW(length, wxStringBuffer(result, length));
+
+			return FSPath(result).EnsureNamespaceSet(FSPathNamespace::Win32File);
+		}
+		return {};
+	}
+	bool NativeFileSystem::SetWorkingDirectory(const FSPath& directory) const
+	{
+		wxString directoryString = directory.GetFullPathWithNS(FSPathNamespace::Win32File);
+		return ::SetCurrentDirectoryW(directoryString.wc_str());
+	}
 }

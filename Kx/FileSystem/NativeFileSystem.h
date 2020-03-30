@@ -43,5 +43,8 @@ namespace KxFramework
 			bool RemoveDirectoryTree(const FSPath& path);
 			bool CopyDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func = {}, FSCopyItemFlag flags = FSCopyItemFlag::None) const;
 			bool MoveDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func = {}, FSCopyItemFlag flags = FSCopyItemFlag::None);
+
+			FSPath GetWorkingDirectory() const;
+			bool SetWorkingDirectory(const FSPath& directory) const;
 	};
 }
