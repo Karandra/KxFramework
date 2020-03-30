@@ -1,3 +1,9 @@
 #pragma once
 #include "FileSystem/Common.h"
 #include "FileSystem/FSPath.h"
+#include "FileSystem/FileItem.h"
+#include "FileSystem/FileOperations.h"
+#include "FileSystem/IFileSystem.h"
+#include "FileSystem/NativeFileSystem.h"
+#include "FileSystem/LegacyVolume.h"
+#include "FileSystem/StorageVolume.h"
