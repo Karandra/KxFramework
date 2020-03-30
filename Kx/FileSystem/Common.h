@@ -83,7 +83,9 @@ namespace KxFramework
 namespace KxFramework::FileSystem
 {
 	wxString GetNamespaceString(FSPathNamespace type);
+
 	wxString GetForbiddenChars();
+	wxString GetForbiddenCharsExceptSeparators();
 }
 
 namespace KxEnumClassOperations

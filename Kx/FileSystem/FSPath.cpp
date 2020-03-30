@@ -11,7 +11,6 @@ namespace
 	constexpr size_t g_VolumePathPrefixLength = 6;
 	constexpr size_t g_VolumePathTotalLength = g_VolumePathPrefixLength + g_GUIDLength + 2;
 }
-
 namespace
 {
 	wxString ConcatWithNamespace(const wxString& path, KxFramework::FSPathNamespace withNamespace)
@@ -174,7 +173,7 @@ namespace KxFramework
 
 	bool FSPath::AssignFromPath(const wxString& path)
 	{
-		if (path.Contains(FileSystem::GetForbiddenChars()) && !CheckLegacyVolume(path))
+		if (path.Contains(FileSystem::GetForbiddenCharsExceptSeparators()) && !CheckLegacyVolume(path))
 		{
 			return false;
 		}
@@ -447,13 +446,8 @@ namespace KxFramework
 	}
 	FSPath& FSPath::SetPath(const wxString& path)
 	{
-		// Don't check for '\' and '/' here
-		wxString forbiddenChars = FileSystem::GetForbiddenChars();
-		forbiddenChars.Replace(wxS('\\'), wxEmptyString);
-		forbiddenChars.Replace(wxS('/'), wxEmptyString);
-
 		FSPathNamespace ns = FSPathNamespace::None;
-		if (!path.Contains(forbiddenChars) && !CheckLegacyVolume(path) && !CheckVolumeGUID(path) && DetectNamespacePrefix(path, ns) == 0)
+		if (!path.Contains(FileSystem::GetForbiddenCharsExceptSeparators()) && !CheckLegacyVolume(path) && !CheckVolumeGUID(path) && DetectNamespacePrefix(path, ns) == 0)
 		{
 			if (HasLegacyVolume())
 			{
