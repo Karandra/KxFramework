@@ -1309,6 +1309,12 @@
     <ClInclude Include="Kx\FileSystem\StorageVolume.h">
       <Filter>Kx\FileSystem</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\FileSystem\RecycleBin.h">
+      <Filter>Kx\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\ShellOperations.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -2061,6 +2067,12 @@
     </ClCompile>
     <ClCompile Include="Kx\FileSystem\StorageVolume.cpp">
       <Filter>Kx\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\FileSystem\RecycleBin.cpp">
+      <Filter>Kx\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\ShellOperations.cpp">
+      <Filter>Kx\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

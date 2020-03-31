@@ -497,6 +497,7 @@
     <ClInclude Include="Kx\FileSystem\FSPath.h" />
     <ClInclude Include="Kx\FileSystem\IFileSystem.h" />
     <ClInclude Include="Kx\FileSystem\LegacyVolume.h" />
+    <ClInclude Include="Kx\FileSystem\RecycleBin.h" />
     <ClInclude Include="Kx\FileSystem\StorageVolume.h" />
     <ClInclude Include="Kx\FileSystem\NamespacePrefix.h" />
     <ClInclude Include="Kx\FileSystem\NativeFileSystem.h" />
@@ -547,6 +548,7 @@
     <ClInclude Include="Kx\System\ShellFileType.h" />
     <ClInclude Include="Kx\System\ShellFileTypeInfo.h" />
     <ClInclude Include="Kx\System\ShellFileTypeManager.h" />
+    <ClInclude Include="Kx\System\ShellOperations.h" />
     <ClInclude Include="Kx\Threading.hpp" />
     <ClInclude Include="Kx\Threading\AutoThread.h" />
     <ClInclude Include="Kx\Threading\Common.h" />
@@ -827,6 +829,7 @@
     <ClCompile Include="Kx\FileSystem\FileOperations.cpp" />
     <ClCompile Include="Kx\FileSystem\FSPath.cpp" />
     <ClCompile Include="Kx\FileSystem\LegacyVolume.cpp" />
+    <ClCompile Include="Kx\FileSystem\RecycleBin.cpp" />
     <ClCompile Include="Kx\FileSystem\StorageVolume.cpp" />
     <ClCompile Include="Kx\FileSystem\NativeFileSystem.cpp" />
     <ClCompile Include="Kx\General\BinarySize.cpp" />
@@ -856,6 +859,7 @@
     <ClCompile Include="Kx\System\ShellFileType.cpp" />
     <ClCompile Include="Kx\System\ShellFileTypeInfo.cpp" />
     <ClCompile Include="Kx\System\ShellFileTypeManager.cpp" />
+    <ClCompile Include="Kx\System\ShellOperations.cpp" />
     <ClCompile Include="Kx\Threading\JoinableThread.cpp" />
   </ItemGroup>
   <ItemGroup>

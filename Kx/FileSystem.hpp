@@ -7,3 +7,4 @@
 #include "FileSystem/NativeFileSystem.h"
 #include "FileSystem/LegacyVolume.h"
 #include "FileSystem/StorageVolume.h"
+#include "FileSystem/RecycleBin.h"
