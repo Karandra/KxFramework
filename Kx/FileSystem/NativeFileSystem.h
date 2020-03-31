@@ -12,7 +12,7 @@ namespace KxFramework
 			using TEnumStreamsFunc = std::function<bool(const wxString&, BinarySize)>;
 
 		public:
-			NativeFileSystem& GetInstance()
+			static NativeFileSystem& GetInstance()
 			{
 				static NativeFileSystem instance;
 				return instance;
