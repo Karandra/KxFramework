@@ -4,7 +4,7 @@
 #include "Kx/Utility/CallAtScopeExit.h"
 #include <KxFramework/KxFileStream.h>
 
-namespace KxFramework
+namespace
 {
 	HANDLE CallFindFirstFile(const wxString& query, WIN32_FIND_DATAW& findInfo, bool isCaseSensitive = false)
 	{
@@ -12,8 +12,10 @@ namespace KxFramework
 		return ::FindFirstFileExW(query.wc_str(), FindExInfoBasic, &findInfo, FINDEX_SEARCH_OPS::FindExSearchNameMatch, nullptr, searchFlags);
 	}
 
-	FileAttribute MapFileAttributes(uint32_t nativeAttributes)
+	KxFramework::FileAttribute MapFileAttributes(uint32_t nativeAttributes)
 	{
+		using namespace KxFramework;
+
 		if (nativeAttributes == INVALID_FILE_ATTRIBUTES)
 		{
 			return FileAttribute::Invalid;
@@ -43,8 +45,10 @@ namespace KxFramework
 			return attributes;
 		}
 	}
-	uint32_t MapFileAttributes(FileAttribute attributes)
+	uint32_t MapFileAttributes(KxFramework::FileAttribute attributes)
 	{
+		using namespace KxFramework;
+
 		if (attributes == FileAttribute::Invalid)
 		{
 			return INVALID_FILE_ATTRIBUTES;
@@ -75,9 +79,10 @@ namespace KxFramework
 		}
 	}
 	
-	ReparsePointTag MapReparsePointTags(uint32_t nativeTags)
+	KxFramework::ReparsePointTag MapReparsePointTags(uint32_t nativeTags)
 	{
 		// https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-fscc/c8e77b37-3909-4fe6-a4ea-2b9d423b1ee4
+		using namespace KxFramework;
 
 		ReparsePointTag tags = ReparsePointTag::None;
 		Utility::ModFlagRef(tags, ReparsePointTag::MountPoint, nativeTags & IO_REPARSE_TAG_MOUNT_POINT);
@@ -98,8 +103,10 @@ namespace KxFramework
 		}
 		return wxInvalidDateTime;
 	}
-	FileItem ConvertFileInfo(const WIN32_FIND_DATAW& findInfo, const FSPath& location)
+	KxFramework::FileItem ConvertFileInfo(const WIN32_FIND_DATAW& findInfo, const KxFramework::FSPath& location)
 	{
+		using namespace KxFramework;
+
 		FileItem fileItem;
 		
 		// Construct path
@@ -159,6 +166,8 @@ namespace KxFramework
 							  HANDLE hDestinationFile,
 							  LPVOID lpData)
 	{
+		using namespace KxFramework;
+
 		IFileSystem::TCopyItemFunc& func = *reinterpret_cast<IFileSystem::TCopyItemFunc*>(lpData);
 		if (func == nullptr || std::invoke(func, BinarySize::FromBytes(TotalBytesTransferred.QuadPart), BinarySize::FromBytes(TotalFileSize.QuadPart)))
 		{
@@ -167,8 +176,14 @@ namespace KxFramework
 		return PROGRESS_CANCEL;
 	}
 
-	bool CopyOrMoveDirectoryTree(NativeFileSystem& fileSystem, const FSPath& source, const FSPath& destination, NativeFileSystem::TCopyDirectoryTreeFunc func, FSCopyItemFlag flags, bool move)
+	bool CopyOrMoveDirectoryTree(KxFramework::NativeFileSystem& fileSystem,
+								 const KxFramework::FSPath& source,
+								 const KxFramework::FSPath& destination,
+								 KxFramework::NativeFileSystem::TCopyDirectoryTreeFunc func,
+								 KxFramework::FSCopyItemFlag flags, bool move)
 	{
+		using namespace KxFramework;
+
 		return fileSystem.EnumItems(source, [&](FileItem item)
 		{
 			FSPath target = destination / item.GetFullPath().GetAfter(source);
