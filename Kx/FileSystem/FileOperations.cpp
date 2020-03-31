@@ -62,7 +62,7 @@ namespace KxFramework::FileSystem
 		if (maxCharacters > 0)
 		{
 			const size_t sourceLength = path.GetPathLength();
-			if (maxCharacters < sourceLength && sourceLength < MAX_PATH)
+			if (static_cast<size_t>(maxCharacters) < sourceLength && sourceLength < MAX_PATH)
 			{
 				maxCharacters++;
 
@@ -84,18 +84,17 @@ namespace KxFramework::FileSystem
 				if (regEx.Matches(source))
 				{
 					regEx.ReplaceAll(&source, wxS(R"(\1\2\\...\\\3)"));
-
-					// If it's still longer just truncate it and add ellipsis
-					if (source.length() > maxCharacters)
-					{
-						source.RemoveLast(source.length() - maxCharacters - 3);
-						source += wxS("...");
-					}
-					return FSPath(std::move(source)).SetNamespace(path.GetNamespace());
 				}
+
+				// If it's still longer just truncate it and add ellipsis
+				if (source.length() > maxCharacters)
+				{
+					source.RemoveLast(source.length() - maxCharacters - 3);
+					source += wxS("...");
+				}
+				return FSPath(std::move(source)).SetNamespace(path.GetNamespace());
 			}
-			return path;
 		}
-		return FSPath().SetNamespace(path.GetNamespace());
+		return {};
 	}
 }
