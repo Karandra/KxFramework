@@ -36,6 +36,8 @@ namespace KxFramework
 
 		public:
 			FSPath() = default;
+			FSPath(FSPath&&) = default;
+			FSPath(const FSPath&) = default;
 			FSPath(const wxString& path)
 			{
 				AssignFromPath(path);
@@ -48,8 +50,6 @@ namespace KxFramework
 			{
 				AssignFromPath(path);
 			}
-			FSPath(const FSPath&) = default;
-			FSPath(FSPath&&) = default;
 			~FSPath() = default;
 
 		public:
@@ -61,7 +61,12 @@ namespace KxFramework
 			{
 				return m_Namespace == FSPathNamespace::Win32FileUNC || m_Namespace == FSPathNamespace::NetworkUNC;
 			}
-			
+			bool Contains(const FSPath& path) const;
+			bool ContainsCharacters(const wxString& characters) const
+			{
+				return m_Path.Contains(characters);
+			}
+
 			size_t GetPathLength() const
 			{
 				return m_Path.length();
@@ -203,8 +208,8 @@ namespace KxFramework
 				return Append(FSPath(other));
 			}
 
-			FSPath& operator=(const FSPath&) = default;
 			FSPath& operator=(FSPath&&) = default;
+			FSPath& operator=(const FSPath&) = default;
 			FSPath& operator=(const wxString& path)
 			{
 				AssignFromPath(path);

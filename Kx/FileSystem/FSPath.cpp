@@ -267,7 +267,11 @@ namespace KxFramework
 	{
 		return IsValid() && !IsAbsolute();
 	}
-	
+	bool FSPath::Contains(const FSPath& path) const
+	{
+		return KxString::Find(m_Path, path.GetFullPath(), 0, false) != wxString::npos;
+	}
+
 	size_t FSPath::GetComponentCount() const
 	{
 		size_t count = 0;
