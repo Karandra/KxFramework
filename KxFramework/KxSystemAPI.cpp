@@ -17,6 +17,7 @@ KxSysAPI_DEFINE_LIBRARY(DbgHelp);
 /* NTDLL */
 KxSysAPI_DEFINE_FUNCTION(RtlGetVersion);
 KxSysAPI_DEFINE_FUNCTION(NtQueryInformationProcess);
+KxSysAPI_DEFINE_FUNCTION(RtlNtStatusToDosError);
 
 /* Kernel32 */
 KxSysAPI_DEFINE_FUNCTION(Wow64DisableWow64FsRedirection);
@@ -58,6 +59,7 @@ void KxSystemAPI::InitFunctions()
 	{
 		KxSysAPI_INIT_FUNCTION(NTDLL, RtlGetVersion);
 		KxSysAPI_INIT_FUNCTION(NTDLL, NtQueryInformationProcess);
+		KxSysAPI_INIT_FUNCTION(NTDLL, RtlNtStatusToDosError);
 	}
 	else
 	{
