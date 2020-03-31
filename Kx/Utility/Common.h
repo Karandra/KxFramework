@@ -91,16 +91,9 @@ namespace KxFramework::Utility
 		}
 
 		template<class T1, class T2>
-		constexpr bool TestFlagsCompatibility()
-		{
-			return sizeof(T1) == sizeof(T2);
-		}
-
-		template<class T1, class T2>
 		constexpr void AssertFlags()
 		{
 			static_assert(TestFlagType<T1>() && TestFlagType<T2>(), "flag must be integers or enums");
-			static_assert(TestFlagsCompatibility<T1, T2>(), "flags must be of the same size and sign");
 		}
 	}
 
@@ -110,17 +103,17 @@ namespace KxFramework::Utility
 		Internal::AssertFlags<TFlag, TFlagMod>();
 
 		using T1 = Internal::FlagIntType<TFlag>;
-		using T2 = Internal::FlagIntType<TFlag>;
+		using T2 = Internal::FlagIntType<TFlagMod>;
+		using Tx = std::conditional_t<sizeof(T1) >= sizeof(T2), T1, T2>;
 
 		if (set)
 		{
-			flag = static_cast<TFlag>(static_cast<T1>(flag) | static_cast<T2>(flagMod));
+			return static_cast<TFlag>(static_cast<Tx>(flag) | static_cast<Tx>(flagMod));
 		}
 		else
 		{
-			flag = static_cast<TFlag>(static_cast<T1>(flag) & ~static_cast<T2>(flagMod));
+			return static_cast<TFlag>(static_cast<Tx>(flag) & ~static_cast<Tx>(flagMod));
 		}
-		return flag;
 	}
 
 	template<class TFlag, class TFlagMod>
@@ -136,6 +129,8 @@ namespace KxFramework::Utility
 
 		using T1 = Internal::FlagIntType<TFlagLeft>;
 		using T2 = Internal::FlagIntType<TFlagRight>;
-		return static_cast<T1>(left) & static_cast<T2>(right);
+		using Tx = std::conditional_t<sizeof(T1) >= sizeof(T2), T1, T2>;
+
+		return static_cast<Tx>(left) & static_cast<Tx>(right) != static_cast<Tx>(0);
 	}
 }
