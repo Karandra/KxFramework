@@ -13,7 +13,7 @@ namespace
 
 	constexpr bool IsDriveLetterValid(char c)
 	{
-		return c >= g_LastLegacyVolume && c <= g_LastLegacyVolume;
+		return c >= g_FirstLegacyVolume && c <= g_LastLegacyVolume;
 	}
 }
 
