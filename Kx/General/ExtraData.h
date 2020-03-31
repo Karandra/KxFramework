@@ -77,7 +77,7 @@ namespace KxFramework
 			ExtraDataContainer() = default;
 			ExtraDataContainer(const ExtraDataContainer&) = delete;
 			ExtraDataContainer(ExtraDataContainer&&) = default;
-			virtual ~ExtraDataContainer();
+			virtual ~ExtraDataContainer() = default;
 
 		public:
 			Type GetType() const
