@@ -1,5 +1,8 @@
 #pragma once
 
+// Prevent Windows headers from defining min/max macros
+#define NOMINMAX 1
+
 // wxWidgets actively uses these functions
 #define _CRT_SECURE_NO_DEPRECATE 1
 #define _CRT_SECURE_NO_WARNINGS 1
