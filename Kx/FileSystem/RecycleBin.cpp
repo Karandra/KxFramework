@@ -2,12 +2,14 @@
 #include "RecycleBin.h"
 #include "NativeFileSystem.h"
 #include <shellapi.h>
-#include "Kx/General/UndefWindows.h"
+#include "Kx/System/UndefWindows.h"
 #include "Kx/System/ShellOperations.h"
 #include "Kx/Utility/Common.h"
 
 namespace
 {
+	// https://stackoverflow.com/questions/16160052/win32api-restore-file-from-recyclebin-using-shfilestruct
+	// https://stackoverflow.com/questions/23720519/how-to-safely-delete-folder-into-recycle-bin
 	// https://www.codeproject.com/Articles/2783/How-to-programmatically-use-the-Recycle-Bin
 	// https://oipapio.com/question-589504
 
@@ -46,6 +48,10 @@ namespace KxFramework
 	{
 		return m_Volume && !GetSize().IsValid();
 	}
+	void RecycleBin::SetWindow(wxWindow* window)
+	{
+		m_Window = wxGetTopLevelParent(window);
+	}
 
 	BinarySize RecycleBin::GetSize() const
 	{
@@ -63,6 +69,11 @@ namespace KxFramework
 		}
 		return 0;
 	}
+	bool RecycleBin::ClearItems(FSRecycleBinOpFlag flags)
+	{
+		DWORD emptyFlags = m_Window ? 0 : SHERB_NOCONFIRMATION|SHERB_NOPROGRESSUI|SHERB_NOSOUND;
+		return ::SHEmptyRecycleBinW(m_Window ? m_Window->GetHandle() : nullptr, m_Path, emptyFlags) == S_OK;
+	}
 
 	FileItem RecycleBin::GetItem(const FSPath& path) const
 	{
@@ -73,14 +84,14 @@ namespace KxFramework
 		throw std::logic_error(__FUNCTION__ ": the method or operation is not implemented.");
 	}
 	
-	bool RecycleBin::Recycle(const FSPath& path, FSRecycleItemFlag flags)
+	bool RecycleBin::Recycle(const FSPath& path, FSRecycleBinOpFlag flags)
 	{
 		if (path.ContainsCharacters(wxS("*?")))
 		{
-			if (flags & FSRecycleItemFlag::Recursive)
+			if (flags & FSRecycleBinOpFlag::Recursive)
 			{
 				SHOperationFlags shellFlags = SHOperationFlags::AllowUndo|SHOperationFlags::Recursive;
-				Utility::ModFlagRef(shellFlags, SHOperationFlags::LimitToFiles, flags & FSRecycleItemFlag::LimitToFiles);
+				Utility::ModFlagRef(shellFlags, SHOperationFlags::LimitToFiles, flags & FSRecycleBinOpFlag::LimitToFiles);
 
 				return Shell::FileOperation(SHOperationType::Delete, path, {}, m_Window, shellFlags);
 			}
@@ -93,7 +104,7 @@ namespace KxFramework
 				if (fileItem.IsDirectory())
 				{
 					SHOperationFlags shellFlags = SHOperationFlags::AllowUndo;
-					Utility::ModFlagRef(shellFlags, SHOperationFlags::Recursive, flags & FSRecycleItemFlag::Recursive);
+					Utility::ModFlagRef(shellFlags, SHOperationFlags::Recursive, flags & FSRecycleBinOpFlag::Recursive);
 
 					return Shell::FileOperation(SHOperationType::Delete, path, {}, m_Window, shellFlags);
 				}
@@ -105,7 +116,7 @@ namespace KxFramework
 		}
 		return false;
 	}
-	bool RecycleBin::Restore(const FSPath& path, FSRecycleItemFlag flags)
+	bool RecycleBin::Restore(const FSPath& path, FSRecycleBinOpFlag flags)
 	{
 		throw std::logic_error(__FUNCTION__ ": the method or operation is not implemented.");
 	}

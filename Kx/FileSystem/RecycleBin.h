@@ -9,7 +9,7 @@ namespace KxFramework
 {
 	class IFileSystem;
 
-	enum class FSRecycleItemFlag
+	enum class FSRecycleBinOpFlag
 	{
 		None = 0,
 
@@ -20,7 +20,7 @@ namespace KxFramework
 
 namespace KxEnumClassOperations
 {
-	KxImplementEnum(KxFramework::FSRecycleItemFlag);
+	KxImplementEnum(KxFramework::FSRecycleBinOpFlag);
 }
 
 namespace KxFramework
@@ -39,18 +39,16 @@ namespace KxFramework
 
 		public:
 			bool IsEnabled() const;
-			void SetWindow(wxWindow* window)
-			{
-				m_Window = window;
-			}
+			void SetWindow(wxWindow* window);
 
 			BinarySize GetSize() const;
 			size_t GetItemCount() const;
+			bool ClearItems(FSRecycleBinOpFlag flags = FSRecycleBinOpFlag::None);
 
 			FileItem GetItem(const FSPath& path) const;
 			size_t EnumItems(std::function<bool(FileItem)> func) const;
 
-			bool Recycle(const FSPath& path, FSRecycleItemFlag flags = FSRecycleItemFlag::None);
-			bool Restore(const FSPath& path, FSRecycleItemFlag flags = FSRecycleItemFlag::None);
+			bool Recycle(const FSPath& path, FSRecycleBinOpFlag flags = FSRecycleBinOpFlag::None);
+			bool Restore(const FSPath& path, FSRecycleBinOpFlag flags = FSRecycleBinOpFlag::None);
 	};
 }
