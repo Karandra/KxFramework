@@ -11,6 +11,7 @@
 // Standard library
 #include <cstdint>
 #include <utility>
+#include <optional>
 #include <memory>
 
 // Some generic headers
