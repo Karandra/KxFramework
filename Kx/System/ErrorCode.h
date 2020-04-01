@@ -14,7 +14,7 @@ namespace KxFramework
 			template<class T>
 			ErrorCode& AssignCode(T errorCode) noexcept
 			{
-				m_Value = errorCode.GetValue();
+				m_Value = static_cast<int64_t>(errorCode.GetValue());
 				m_Category = T::GetCategory();
 
 				return *this;
@@ -128,29 +128,29 @@ namespace KxFramework
 				return !IsSuccessful();
 			}
 
-			bool operator==(const ErrorCode& other) const
+			bool operator==(const ErrorCode& other) const noexcept
 			{
 				return m_Value == other.m_Value && m_Category == other.m_Category;
 			}
-			bool operator==(GenericErrorCode other) const
+			bool operator==(GenericErrorCode other) const noexcept
 			{
 				return IsEqualValue(other);
 			}
-			bool operator==(Win32ErrorCode other) const
+			bool operator==(Win32ErrorCode other) const noexcept
 			{
 				return IsEqualValue(other);
 			}
-			bool operator==(NtStatusCode other) const
+			bool operator==(NtStatusCode other) const noexcept
 			{
 				return IsEqualValue(other);
 			}
-			bool operator==(HRESULTCode other) const
+			bool operator==(HRESULTCode other) const noexcept
 			{
 				return IsEqualValue(other);
 			}
 
 			template<class T>
-			bool operator!=(const T& other) const
+			bool operator!=(T&& other) const noexcept
 			{
 				return !(*this == other);
 			}
