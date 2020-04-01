@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxDialog.h"
 #include "KxFramework/KxStdDialog.h"
-#include "KxFramework/KxCOM.h"
+#include "Kx/System/COM.h"
 #include <PropKey.h>
 #include <ShObjIDL.h>
 #include "KxFramework/KxWinUndef.h"
@@ -95,11 +95,11 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 	friend class KxFileBrowseDialogEvents;
 
 	public:
-		typedef std::vector<std::pair<wxString, wxString>> ItemList;
+		using ItemList = std::vector<std::pair<wxString, wxString>>;
 
 	private:
-		KxCOMPtr<IFileDialog> m_Instance;
-		KxCOMPtr<IFileDialog2> m_InstanceExtra;
+		KxFramework::COMPtr<IFileDialog> m_Instance;
+		KxFramework::COMPtr<IFileDialog2> m_InstanceExtra;
 
 		HWND m_Handle = nullptr;
 		wxWindow* m_Parent = nullptr;
@@ -149,7 +149,7 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 					int buttons = DefaultButtons,
 					long style = DefaultStyle
 		);
-		virtual ~KxFileBrowseDialog();
+		~KxFileBrowseDialog();
 
 	public:
 		virtual WXWidget GetHandle() const override
@@ -171,17 +171,17 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 		void SetOptions(KxFBD_Options options);
 		
 		// Show and close the dialog
-		virtual int ShowModal();
-		virtual bool Show(bool show = true) override;
-		virtual bool Close(bool force = false);
-		virtual bool IsVisible() const override;
+		int ShowModal() override;
+		bool Show(bool show = true) override;
+		bool Close(bool force = false);
+		bool IsVisible() const override;
 
 		// Window title
-		virtual wxString GetTitle() const override
+		wxString GetTitle() const override
 		{
 			return m_Title;
 		}
-		virtual void SetTitle(const wxString& title) override
+		void SetTitle(const wxString& title) override
 		{
 			m_Title = title;
 			if (m_Instance)
@@ -189,11 +189,11 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 				m_Instance->SetTitle(m_Title.IsEmpty() ? nullptr : m_Title.wc_str());
 			}
 		}
-		virtual wxString GetLabel() const
+		wxString GetLabel() const override
 		{
 			return m_Label;
 		}
-		virtual void SetLabel(const wxString& label) override
+		void SetLabel(const wxString& label) override
 		{
 			m_Label = label;
 			if (m_Instance)
@@ -201,31 +201,31 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 				m_Instance->SetFileNameLabel(m_Label.wc_str());
 			}
 		}
-		virtual wxString GetCaption() const
+		wxString GetCaption() const override
 		{
 			return GetTitle();
 		}
-		virtual void SetCaption(const wxString& label) override
+		void SetCaption(const wxString& label) override
 		{
 			SetTitle(label);
 		}
 
 		// Icons
-		virtual wxBitmap GetMainIcon() const
+		wxBitmap GetMainIcon() const override
 		{
 			return GetIcon();
 		}
-		virtual KxIconType GetMainIconID() const
+		KxIconType GetMainIconID() const override
 		{
 			return KxICON_NONE;
 		}
-		virtual void SetMainIcon(const wxBitmap& icon)
+		void SetMainIcon(const wxBitmap& icon) override
 		{
 			wxIcon temp;
 			temp.CopyFromBitmap(icon);
 			SetIcon(temp);
 		}
-		virtual void SetMainIcon(KxIconType iconID = DefaultIconID)
+		void SetMainIcon(KxIconType iconID = DefaultIconID) override
 		{
 		}
 
@@ -321,10 +321,10 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 		KxStringVector GetResults() const;
 
 		// Buttons
-		virtual void SetDefaultButton(wxWindowID id) override
+		void SetDefaultButton(wxWindowID id) override
 		{
 		}
-		virtual KxStdDialogControl GetButton(wxWindowID id) const override
+		KxStdDialogControl GetButton(wxWindowID id) const override
 		{
 			HWND hWnd = GetHandle();
 			if (hWnd)
@@ -334,7 +334,7 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 			}
 			return wxID_NONE;
 		}
-		virtual KxStdDialogControl AddButton(wxWindowID id, const wxString& label, bool prepend)
+		KxStdDialogControl AddButton(wxWindowID id, const wxString& label, bool prepend) override
 		{
 			return wxID_NONE;
 		}

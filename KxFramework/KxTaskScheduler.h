@@ -6,7 +6,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 */
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxCOM.h"
+#include "Kx/System/COM.h"
 class KX_API KxTaskScheduler;
 
 struct ITaskDefinition;
@@ -22,14 +22,14 @@ class KX_API KxTaskSchedulerTask
 	friend class KxTaskScheduler;
 
 	private:
-		KxCOMPtr<ITaskDefinition> m_Task;
-		KxCOMPtr<IRegistrationInfo> m_RegInfo;
-		KxCOMPtr<IPrincipal> m_Principal;
-		KxCOMPtr<ITaskSettings> m_Settings;
-		KxCOMPtr<IIdleSettings> m_IdleSettings;
+		KxFramework::COMPtr<ITaskDefinition> m_Task;
+		KxFramework::COMPtr<IRegistrationInfo> m_RegInfo;
+		KxFramework::COMPtr<IPrincipal> m_Principal;
+		KxFramework::COMPtr<ITaskSettings> m_Settings;
+		KxFramework::COMPtr<IIdleSettings> m_IdleSettings;
 		
-		KxCOMPtr<ITriggerCollection> m_TriggerCollection;
-		KxCOMPtr<IActionCollection> m_ActionCollection;
+		KxFramework::COMPtr<ITriggerCollection> m_TriggerCollection;
+		KxFramework::COMPtr<IActionCollection> m_ActionCollection;
 
 	private:
 		KxTaskSchedulerTask(ITaskDefinition* taskDef = nullptr);
@@ -55,9 +55,9 @@ struct ITaskFolder;
 class KX_API KxTaskScheduler
 {
 	private:
-		KxCOMInit m_COMInit;
-		KxCOMPtr<ITaskService> m_TaskService;
-		KxCOMPtr<ITaskFolder> m_TaskFolder;
+		KxFramework::COMInitGuard m_COMInit;
+		KxFramework::COMPtr<ITaskService> m_TaskService;
+		KxFramework::COMPtr<ITaskFolder> m_TaskFolder;
 
 	public:
 		KxTaskScheduler(const wxString& folder = wxEmptyString,

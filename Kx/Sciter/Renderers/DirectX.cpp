@@ -64,8 +64,8 @@ namespace KxFramework::Sciter
 		HRESULT result = E_FAIL;
 		for (D3D_DRIVER_TYPE driverType: g_DriverTypes)
 		{
-			KxCOMPtr<ID3D11Device> d3dDevice;
-			KxCOMPtr<ID3D11DeviceContext> deviceContext;
+			COMPtr<ID3D11Device> d3dDevice;
+			COMPtr<ID3D11DeviceContext> deviceContext;
 
 			m_DriverType = driverType;
 			result = D3D11CreateDevice(nullptr,
@@ -121,7 +121,7 @@ namespace KxFramework::Sciter
 		GetSciterAPI()->SciterCreateOnDirectXWindow(m_SciterWindow.GetHandle(), m_SwapChain);
 
 		// Create composition device
-		hr = DCompositionCreateDevice(m_DXGIDevice, __uuidof(IDCompositionDevice), reinterpret_cast<void**>(&m_CompositionDevice));
+		hr = DCompositionCreateDevice(m_DXGIDevice, __uuidof(IDCompositionDevice), m_CompositionDevice.GetAddress());
 		if (FAILED(hr))
 		{
 			return false;
@@ -170,22 +170,22 @@ namespace KxFramework::Sciter
 			auto fpsWatcher = m_FrameCounter.CreateWatcher();
 
 			// Create a single-threaded Direct2D factory with debugging information
-			KxCOMPtr<ID2D1Factory2> d2Factory;
+			COMPtr<ID2D1Factory2> d2Factory;
 			D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, {D2D1_DEBUG_LEVEL_INFORMATION}, &d2Factory);
 
 			// Create the Direct2D device that links back to the Direct3D device
-			KxCOMPtr<ID2D1Device1> d2Device;
+			COMPtr<ID2D1Device1> d2Device;
 			d2Factory->CreateDevice(m_DXGIDevice, &d2Device);
 
 			// Retrieve the swap chain's back buffer as surface for Sciter and as texture for render target
-			KxCOMPtr<IDXGISurface2> surface;
+			COMPtr<IDXGISurface2> surface;
 			m_SwapChain->GetBuffer(0, __uuidof(surface), reinterpret_cast<void**>(&surface));
 			
-			KxCOMPtr<ID3D11Texture2D> texture2D;
+			COMPtr<ID3D11Texture2D> texture2D;
 			m_SwapChain->GetBuffer(0, __uuidof(texture2D), reinterpret_cast<void**>(&texture2D));
 
 			// Create render target and set it as active
-			KxCOMPtr<ID3D11RenderTargetView> renderTarget;
+			COMPtr<ID3D11RenderTargetView> renderTarget;
 			m_D3DDevice->CreateRenderTargetView(texture2D, nullptr, &renderTarget);
 			m_DeviceContext->OMSetRenderTargets(1, &renderTarget, nullptr);
 
@@ -206,11 +206,11 @@ namespace KxFramework::Sciter
 			m_SwapChain->ResizeBuffers(0, size.GetWidth(), size.GetHeight(), DXGI_FORMAT_UNKNOWN, 0);
 
 			// Get buffer and create a render-target-view
-			KxCOMPtr<ID3D11Texture2D> texture2D;
+			COMPtr<ID3D11Texture2D> texture2D;
 			m_SwapChain->GetBuffer(0, __uuidof(texture2D), reinterpret_cast<void**>(&texture2D));
 
 			// Make it active
-			KxCOMPtr<ID3D11RenderTargetView> renderTarget;
+			COMPtr<ID3D11RenderTargetView> renderTarget;
 			m_D3DDevice->CreateRenderTargetView(texture2D, nullptr, &renderTarget);
 			m_DeviceContext->OMSetRenderTargets(1, &renderTarget, nullptr);
 

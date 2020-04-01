@@ -298,7 +298,6 @@
     <ClInclude Include="KxFramework\KxCheckBox.h" />
     <ClInclude Include="KxFramework\KxCollapsiblePane.h" />
     <ClInclude Include="KxFramework\KxColor.h" />
-    <ClInclude Include="KxFramework\KxCOM.h" />
     <ClInclude Include="KxFramework\KxComboBox.h" />
     <ClInclude Include="KxFramework\KxComboBoxDialog.h" />
     <ClInclude Include="KxFramework\KxComboControl.h" />
@@ -506,7 +505,6 @@
     <ClInclude Include="Kx\General\ExtraData.h" />
     <ClInclude Include="Kx\General\NativeUUID.h" />
     <ClInclude Include="Kx\General\Singleton.h" />
-    <ClInclude Include="Kx\General\UndefWindows.h" />
     <ClInclude Include="Kx\General\UUID.h" />
     <ClInclude Include="Kx\RTTI.hpp" />
     <ClInclude Include="Kx\RTTI\Common.h" />
@@ -544,11 +542,15 @@
     <ClInclude Include="Kx\Sciter\WidgetFactory.h" />
     <ClInclude Include="Kx\Sciter\WrapperWindow.h" />
     <ClInclude Include="Kx\System.hpp" />
+    <ClInclude Include="Kx\System\COM.h" />
     <ClInclude Include="Kx\System\Common.h" />
+    <ClInclude Include="Kx\System\ErrorCode.h" />
+    <ClInclude Include="Kx\System\IncludeNtStatus.h" />
     <ClInclude Include="Kx\System\ShellFileType.h" />
     <ClInclude Include="Kx\System\ShellFileTypeInfo.h" />
     <ClInclude Include="Kx\System\ShellFileTypeManager.h" />
     <ClInclude Include="Kx\System\ShellOperations.h" />
+    <ClInclude Include="Kx\System\UndefWindows.h" />
     <ClInclude Include="Kx\Threading.hpp" />
     <ClInclude Include="Kx\Threading\AutoThread.h" />
     <ClInclude Include="Kx\Threading\Common.h" />
@@ -663,7 +665,6 @@
     <ClCompile Include="KxFramework\KxCheckBox.cpp" />
     <ClCompile Include="KxFramework\KxCollapsiblePane.cpp" />
     <ClCompile Include="KxFramework\KxColor.cpp" />
-    <ClCompile Include="KxFramework\KxCOM.cpp" />
     <ClCompile Include="KxFramework\KxComboBox.cpp" />
     <ClCompile Include="KxFramework\KxComboBoxDialog.cpp" />
     <ClCompile Include="KxFramework\KxComboControl.cpp" />
@@ -856,6 +857,8 @@
     <ClCompile Include="Kx\Sciter\ScriptValue.cpp" />
     <ClCompile Include="Kx\Sciter\Widget.cpp" />
     <ClCompile Include="Kx\Sciter\WidgetFactory.cpp" />
+    <ClCompile Include="Kx\System\COM.cpp" />
+    <ClCompile Include="Kx\System\ErrorCode.cpp" />
     <ClCompile Include="Kx\System\ShellFileType.cpp" />
     <ClCompile Include="Kx\System\ShellFileTypeInfo.cpp" />
     <ClCompile Include="Kx\System\ShellFileTypeManager.cpp" />
@@ -864,6 +867,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="Kx\System\ErrorCodeNtStatus.i" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

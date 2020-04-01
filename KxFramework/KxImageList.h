@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxEnumClassOperations.h"
-#include "KxFramework/KxCOM.h"
+#include "Kx/System/COM.h"
 
 enum class KxImageListDrawMode
 {
@@ -39,7 +39,7 @@ class KX_API KxImageList: public wxImageList
 	public:
 		bool IsOk() const;
 		bool HasMask() const;
-		KxCOMPtr<IImageList2> QueryInterface() const;
+		KxFramework::COMPtr<IImageList2> QueryInterface() const;
 		
 		bool Create(int width, int height, int initialCount = 1);
 		bool Create(const wxSize& size, int initialCount = 1);

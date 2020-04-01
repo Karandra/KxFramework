@@ -91,10 +91,10 @@ bool KxImageList::HasMask() const
 {
 	return m_Flags & ILC_MASK;
 }
-KxCOMPtr<IImageList2> KxImageList::QueryInterface() const
+KxFramework::COMPtr<IImageList2> KxImageList::QueryInterface() const
 {
-	KxCOMPtr<IImageList2> imageList;
-	if (SUCCEEDED(::HIMAGELIST_QueryInterface(ToHImageList(m_hImageList), __uuidof(IImageList2), imageList.GetPVoid())))
+	KxFramework::COMPtr<IImageList2> imageList;
+	if (SUCCEEDED(::HIMAGELIST_QueryInterface(ToHImageList(m_hImageList), __uuidof(IImageList2), imageList.GetAddress())))
 	{
 		return imageList;
 	}

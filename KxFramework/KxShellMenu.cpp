@@ -17,7 +17,6 @@ namespace
 wxIMPLEMENT_DYNAMIC_CLASS(KxShellMenu, KxMenu);
 
 KxShellMenu::KxShellMenu()
-	:m_Initializer(COINIT_APARTMENTTHREADED)
 {
 }
 KxShellMenu::KxShellMenu(const wxString& path)
@@ -27,11 +26,11 @@ KxShellMenu::KxShellMenu(const wxString& path)
 	if (SUCCEEDED(res) && m_ShellItemList)
 	{
 		LPCITEMIDLIST childID = nullptr;
-		res = SHBindToParent(m_ShellItemList, IID_IShellFolder, m_ShellFolder.GetPVoid(), &childID);
+		res = SHBindToParent(m_ShellItemList, IID_IShellFolder, m_ShellFolder.GetAddress(), &childID);
 		if (SUCCEEDED(res) && m_ShellFolder)
 		{
 			wxWindow* window = wxTheApp->GetTopWindow();
-			res = m_ShellFolder->GetUIObjectOf(window ? window->GetHandle() : nullptr, 1, &childID, IID_IContextMenu, 0, m_ShellMenu.GetPVoid());
+			res = m_ShellFolder->GetUIObjectOf(window ? window->GetHandle() : nullptr, 1, &childID, IID_IContextMenu, 0, m_ShellMenu.GetAddress());
 			if (SUCCEEDED(res) && m_ShellMenu)
 			{
 				m_ShellMenu->QueryContextMenu(GetHMenu(), 0, MinShellItemID, MaxShellItemID, CMF_NORMAL);

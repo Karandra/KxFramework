@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxCOM.h"
 #include "KxFramework/KxMenu.h"
+#include "Kx/System/COM.h"
 #include <shobjidl.h>
 
 class KX_API KxShellMenu: public KxMenu
@@ -9,10 +9,10 @@ class KX_API KxShellMenu: public KxMenu
 	friend class KxMenu;
 
 	private:
-		KxCOMInit m_Initializer;
+		KxFramework::COMInitGuard m_Initializer;
 
-		KxCOMPtr<IContextMenu> m_ShellMenu;
-		KxCOMPtr<IShellFolder> m_ShellFolder;
+		KxFramework::COMPtr<IContextMenu> m_ShellMenu;
+		KxFramework::COMPtr<IShellFolder> m_ShellFolder;
 		ITEMIDLIST* m_ShellItemList = nullptr;
 
 	private:
@@ -32,7 +32,7 @@ class KX_API KxShellMenu: public KxMenu
 		virtual ~KxShellMenu();
 
 	public:
-		virtual bool IsOK() const override
+		bool IsOK() const override
 		{
 			return m_Initializer && m_ShellMenu && m_ShellFolder && m_ShellItemList;
 		}

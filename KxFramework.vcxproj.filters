@@ -706,9 +706,6 @@
     <ClInclude Include="KxFramework\KxFormat.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxCOM.h">
-      <Filter>Header Files\System</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxTaskScheduler.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
@@ -1276,9 +1273,6 @@
     <ClInclude Include="Kx\FileSystem\FileOperations.h">
       <Filter>Kx\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\UndefWindows.h">
-      <Filter>Kx\General</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\General\BinarySize.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
@@ -1313,6 +1307,18 @@
       <Filter>Kx\FileSystem</Filter>
     </ClInclude>
     <ClInclude Include="Kx\System\ShellOperations.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\COM.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\ErrorCode.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\IncludeNtStatus.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\UndefWindows.h">
       <Filter>Kx\System</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1729,9 +1735,6 @@
     <ClCompile Include="KxFramework\KxFormat.cpp">
       <Filter>Source Files\Misc</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxCOM.cpp">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxTaskScheduler.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
@@ -2074,8 +2077,17 @@
     <ClCompile Include="Kx\System\ShellOperations.cpp">
       <Filter>Kx\System</Filter>
     </ClCompile>
+    <ClCompile Include="Kx\System\COM.cpp">
+      <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\ErrorCode.cpp">
+      <Filter>Kx\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="Kx\System\ErrorCodeNtStatus.i">
+      <Filter>Kx\System</Filter>
+    </None>
   </ItemGroup>
 </Project>

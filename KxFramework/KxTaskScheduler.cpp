@@ -7,14 +7,29 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxStdAfx.h"
 #include "KxFramework/KxTaskScheduler.h"
 #include <taskschd.h>
-#include <comdef.h>
+
 #include <wincred.h>
 
 #pragma comment(lib, "taskschd.lib")
 #pragma comment(lib, "comsupp.lib")
 #pragma comment(lib, "credui.lib")
 
-namespace Util
+// Include COM. Since we undefined some Unicode macros we need to define a replacement
+// for some stuff that are using them in 'ComDef.h' and define NULL as nullptr to make
+// it compile correctly. Yes, it's that messy.
+#pragma push_macro("NULL")
+#undef NULL
+#define NULL nullptr
+
+namespace
+{
+	Kx_MakeWinUnicodeCallWrapper(FormatMessage);
+}
+
+#include <comdef.h>
+#pragma pop_macro("NULL")
+
+namespace
 {
 	_variant_t VariantFromString(const wxString& value = wxEmptyString)
 	{
@@ -43,6 +58,7 @@ namespace Util
 		return delay.Format("PT%HH%MM%SS");
 	}
 }
+
 //////////////////////////////////////////////////////////////////////////
 KxTaskSchedulerTask::KxTaskSchedulerTask(ITaskDefinition* taskDef)
 	:m_Task(taskDef)
@@ -77,16 +93,16 @@ bool KxTaskSchedulerTask::SetExecutable(const wxString& path, const wxString& ar
 {
 	if (m_ActionCollection)
 	{
-		KxCOMPtr<IAction> action;
+		KxFramework::COMPtr<IAction> action;
 		m_ActionCollection->Create(TASK_ACTION_EXEC, &action);
 		if (action)
 		{
-			KxCOMPtr<IExecAction> execAction;
+			KxFramework::COMPtr<IExecAction> execAction;
 			if (action->QueryInterface(&execAction); execAction)
 			{
-				HRESULT res1 = execAction->put_Path(Util::BstrFromString(path));
-				HRESULT res2 = execAction->put_Arguments(Util::BstrFromString_Null(arguments));
-				HRESULT res3 = execAction->put_WorkingDirectory(Util::BstrFromString_Null(workingDirectory));
+				HRESULT res1 = execAction->put_Path(BstrFromString(path));
+				HRESULT res2 = execAction->put_Arguments(BstrFromString_Null(arguments));
+				HRESULT res3 = execAction->put_WorkingDirectory(BstrFromString_Null(workingDirectory));
 
 				return SUCCEEDED(res1) && SUCCEEDED(res2) && SUCCEEDED(res3);
 			}
@@ -99,24 +115,24 @@ bool KxTaskSchedulerTask::SetTimeTrigger(const wxString& id, const wxDateTime& s
 	if (m_TriggerCollection)
 	{
 		// Add the time trigger to the task
-		KxCOMPtr<ITrigger> trigger;
+		KxFramework::COMPtr<ITrigger> trigger;
 		m_TriggerCollection->Create(TASK_TRIGGER_TIME, &trigger);
 		if (trigger)
 		{
-			KxCOMPtr<ITimeTrigger> timeTrigger;
+			KxFramework::COMPtr<ITimeTrigger> timeTrigger;
 			trigger->QueryInterface(&timeTrigger);
 			if (timeTrigger)
 			{
-				timeTrigger->put_Id(Util::BstrFromString(id));
+				timeTrigger->put_Id(BstrFromString(id));
 
 				// Set the task to start at a certain time. The time 
 				// format should be YYYY-MM-DDTHH:MM:SS(+-)(timezone).
-				HRESULT resStart = timeTrigger->put_StartBoundary(Util::BstrFromString(Util::FormatTimeAsTaskBoundary(start)));
+				HRESULT resStart = timeTrigger->put_StartBoundary(BstrFromString(FormatTimeAsTaskBoundary(start)));
 				
 				HRESULT resEnd = S_OK;
 				if (end.IsValid())
 				{
-					resEnd = timeTrigger->put_EndBoundary(Util::BstrFromString(Util::FormatTimeAsTaskBoundary(end)));
+					resEnd = timeTrigger->put_EndBoundary(BstrFromString(FormatTimeAsTaskBoundary(end)));
 				}
 
 				return SUCCEEDED(resStart) && SUCCEEDED(resEnd);
@@ -130,22 +146,22 @@ bool KxTaskSchedulerTask::SetRegistrationTrigger(const wxString& id, const wxTim
 	if (m_TriggerCollection)
 	{
 		// Add the registration trigger to the task.
-		KxCOMPtr<ITrigger> trigger;
+		KxFramework::COMPtr<ITrigger> trigger;
 		m_TriggerCollection->Create(TASK_TRIGGER_REGISTRATION, &trigger);
 		if (trigger)
 		{
-			KxCOMPtr<IRegistrationTrigger> regTrigger;
+			KxFramework::COMPtr<IRegistrationTrigger> regTrigger;
 			trigger->QueryInterface(&regTrigger);
 			if (regTrigger)
 			{
-				regTrigger->put_Id(Util::BstrFromString(id));
+				regTrigger->put_Id(BstrFromString(id));
 
-				HRESULT res = regTrigger->put_Delay(Util::BstrFromString(Util::FormatTimeAsTaskDelay(delay)));
+				HRESULT res = regTrigger->put_Delay(BstrFromString(FormatTimeAsTaskDelay(delay)));
 				
 				HRESULT resEnd = S_OK;
 				if (end.IsValid())
 				{
-					resEnd = regTrigger->put_EndBoundary(Util::BstrFromString(Util::FormatTimeAsTaskBoundary(end + delay)));
+					resEnd = regTrigger->put_EndBoundary(BstrFromString(FormatTimeAsTaskBoundary(end + delay)));
 				}
 
 				return SUCCEEDED(res) && SUCCEEDED(resEnd);
@@ -156,7 +172,7 @@ bool KxTaskSchedulerTask::SetRegistrationTrigger(const wxString& id, const wxTim
 }
 bool KxTaskSchedulerTask::DeleteExpiredTaskAfter(const wxTimeSpan& delay)
 {
-	return SUCCEEDED(m_Settings->put_DeleteExpiredTaskAfter(Util::BstrFromString(Util::FormatTimeAsTaskDelay(delay))));
+	return SUCCEEDED(m_Settings->put_DeleteExpiredTaskAfter(BstrFromString(FormatTimeAsTaskDelay(delay))));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -166,7 +182,6 @@ KxTaskScheduler::KxTaskScheduler(const wxString& folder,
 								 const wxString& domain,
 								 const wxString& password
 )
-	:m_COMInit(COINIT_APARTMENTTHREADED)
 {
 	if (m_COMInit)
 	{
@@ -174,20 +189,20 @@ KxTaskScheduler::KxTaskScheduler(const wxString& folder,
 		// Doesn't work, no idea why
 		//HRESULT res = ::CoInitializeSecurity(nullptr, -1, nullptr, nullptr, RPC_C_AUTHN_LEVEL_PKT_PRIVACY, RPC_C_IMP_LEVEL_IMPERSONATE, nullptr, 0, nullptr);
 		
-		HRESULT res S_OK;
+		HRESULT res = S_OK;
 		if (SUCCEEDED(res))
 		{
-			res = ::CoCreateInstance(CLSID_TaskScheduler, nullptr, CLSCTX_INPROC_SERVER, IID_ITaskService, m_TaskService.GetPVoid());
+			res = ::CoCreateInstance(CLSID_TaskScheduler, nullptr, CLSCTX_INPROC_SERVER, IID_ITaskService, m_TaskService.GetAddress());
 			if (SUCCEEDED(res))
 			{
-				res = m_TaskService->Connect(Util::VariantFromString_Null(serverName),
-											 Util::VariantFromString_Null(userName),
-											 Util::VariantFromString_Null(domain),
-											 Util::VariantFromString_Null(password)
+				res = m_TaskService->Connect(VariantFromString_Null(serverName),
+											 VariantFromString_Null(userName),
+											 VariantFromString_Null(domain),
+											 VariantFromString_Null(password)
 				);
 				if (SUCCEEDED(res))
 				{
-					res = m_TaskService->GetFolder(Util::BstrFromString(folder.IsEmpty() ? wxString("\\") : folder), &m_TaskFolder);
+					res = m_TaskService->GetFolder(BstrFromString(folder.IsEmpty() ? wxString("\\") : folder), &m_TaskFolder);
 					if (SUCCEEDED(res))
 					{
 						return;
@@ -213,8 +228,8 @@ KxTaskSchedulerTask KxTaskScheduler::NewTask()
 }
 bool KxTaskScheduler::SaveTask(const KxTaskSchedulerTask& task, const wxString& name)
 {
-	KxCOMPtr<IRegisteredTask> registeredTask;
-	HRESULT res = m_TaskFolder->RegisterTaskDefinition(Util::BstrFromString(name),
+	KxFramework::COMPtr<IRegisteredTask> registeredTask;
+	HRESULT res = m_TaskFolder->RegisterTaskDefinition(BstrFromString(name),
 													   task.m_Task.Get(),
 													   TASK_CREATE_OR_UPDATE,
 													   _variant_t(),
@@ -228,5 +243,5 @@ bool KxTaskScheduler::SaveTask(const KxTaskSchedulerTask& task, const wxString& 
 
 bool KxTaskScheduler::DeleteTask(const wxString& taskName)
 {
-	return SUCCEEDED(m_TaskFolder->DeleteTask(Util::BstrFromString(taskName), 0));
+	return SUCCEEDED(m_TaskFolder->DeleteTask(BstrFromString(taskName), 0));
 }

@@ -67,7 +67,7 @@ void KxFileBrowseDialog::InitHWND()
 	HWND hWnd = nullptr;
 	if (m_Instance)
 	{
-		KxCOMPtr<IOleWindow> window;
+		KxFramework::COMPtr<IOleWindow> window;
 		if (SUCCEEDED(m_Instance->QueryInterface(IID_PPV_ARGS(&window))) && window)
 		{
 			window->GetWindow(&hWnd);
@@ -229,7 +229,7 @@ void KxFileBrowseDialog::SetFolder(const wxString& path)
 {
 	if (m_Instance)
 	{
-		KxCOMPtr<IShellItem> folderPath;
+		KxFramework::COMPtr<IShellItem> folderPath;
 		SHCreateItemFromParsingName(path.wc_str(), nullptr, IID_PPV_ARGS(&folderPath));
 		if (folderPath)
 		{
@@ -241,7 +241,7 @@ void KxFileBrowseDialog::SetNavigationRoot(const wxString& path)
 {
 	if (m_InstanceExtra)
 	{
-		KxCOMPtr<IShellItem> folderPath;
+		KxFramework::COMPtr<IShellItem> folderPath;
 		SHCreateItemFromParsingName(path.wc_str(), nullptr, IID_PPV_ARGS(&folderPath));
 		if (folderPath)
 		{
@@ -253,7 +253,7 @@ void KxFileBrowseDialog::AddPlace(const wxString& path, const wxString& label, b
 {
 	if (m_Instance)
 	{
-		KxCOMPtr<IShellItem> pathItem;
+		KxFramework::COMPtr<IShellItem> pathItem;
 		SHCreateItemFromParsingName(path.wc_str(), nullptr, IID_PPV_ARGS(&pathItem));
 		if (pathItem)
 		{
