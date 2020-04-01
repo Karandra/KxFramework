@@ -28,11 +28,8 @@ namespace KxFramework
 		{
 			if (driveMask & 1 << i)
 			{
-				if (func(FromIndex(i)))
-				{
-					count++;
-				}
-				else
+				count++;
+				if (!std::invoke(func, FromIndex(i)))
 				{
 					break;
 				}

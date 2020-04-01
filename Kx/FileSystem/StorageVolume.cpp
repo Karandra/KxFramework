@@ -104,13 +104,11 @@ namespace KxFramework
 				volume.AssignPath(volumeGuidPath);
 				if (volume)
 				{
-					if (std::invoke(func, std::move(volume)))
-					{
-						count++;
-					}
-					else
+					count++;
+					if (!std::invoke(func, std::move(volume)))
 					{
 						break;
+						
 					}
 				}
 			}
@@ -134,11 +132,8 @@ namespace KxFramework
 				volume.AssignPath(volumeGuidPath);
 				if (volume)
 				{
-					if (std::invoke(func, std::move(volume), LegacyVolume::FromChar(wxUniChar(driveLetter))))
-					{
-						count++;
-					}
-					else
+					count++;
+					if (!std::invoke(func, std::move(volume), LegacyVolume::FromChar(wxUniChar(driveLetter))))
 					{
 						break;
 					}
@@ -341,11 +336,8 @@ namespace KxFramework
 
 			do
 			{
-				if (std::invoke(func, buffer))
-				{
-					count++;
-				}
-				else
+				count++;
+				if (!std::invoke(func, buffer))
 				{
 					break;
 				}
