@@ -8,7 +8,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxFramework/KxProcessThread.h"
 #include "KxFramework/KxProcess.h"
 #include "KxFramework/KxSystem.h"
-#include "KxFramework/KxFile.h"
+#include "Kx/FileSystem/NativeFileSystem.h"
 #include <wx/private/pipestream.h>
 #include <wx/private/streamtempinput.h>
 
@@ -150,7 +150,7 @@ bool KxProcessThread::CreateProcess(PROCESS_INFORMATION& processInfo)
 			workingFolder = m_EventHandler->m_ExecutablePath.BeforeLast('\\');
 			if (workingFolder.IsEmpty())
 			{
-				workingFolder = KxFile::GetCWD();
+				workingFolder = KxFramework::NativeFileSystem::Get().GetWorkingDirectory().GetFullPath();
 			}
 			workingFolderPtr = workingFolder.wc_str();
 		}

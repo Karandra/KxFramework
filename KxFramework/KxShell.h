@@ -7,13 +7,14 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxShellDefs.h"
-#include "KxFramework/KxFile.h"
 #include "KxFramework/KxURI.h"
 #include <SHLOBJ.h>
 #include <SHLWAPI.h>
 
 namespace KxFramework
 {
+	class FSPath;
+	class FileItem;
 	class LegacyVolume;
 }
 class KX_API KxFileItem;
@@ -37,7 +38,6 @@ class KX_API KxShell
 		static const KnownFoldersList& GetShellFolderList();
 		static wxString GetFolder(KxShellFolderID id, bool useDefault = false, bool create = false);
 		
-		static bool FileOperation(const wxString& fullPath, KxFileSearchType elementType, KxShellOperationFunc func, bool useRecycleBin = false, bool recurse = false, wxWindow* window = nullptr);
 		static bool FileOperationEx(KxShellOperationFunc func, const wxString& from, const wxString& to, wxWindow* window = nullptr, bool recurse = false, bool filesOnly = true, bool allowUndo = true, bool yesToAll = false);
 		static DWORD FormatDrive(wxWindow* window, const KxFramework::LegacyVolume& drive, DWORD options = SHFMT_OPT_FULL, DWORD formatID = SHFMT_ID_DEFAULT);
 		static bool PinShortcut(const wxString& shortcutPath, KxShellShortcutPinMode mode);
@@ -60,10 +60,10 @@ class KX_API KxShell
 		{
 			return QueryAssocString(ext, KxSH_AQ_COMMAND);
 		}
-		static wxString GetLocalizedName(const wxString& objectPath, int* resourceIDOut = nullptr);
+		static wxString GetLocalizedName(const wxString& objectPath, int* resourceID = nullptr);
 
 		static wxIcon GetFileIcon(const wxString& path, bool smallIcon = false);
-		static wxIcon GetFileIcon(const KxFileItem& item, bool smallIcon = false);
+		static wxIcon GetFileIcon(const KxFramework::FileItem& item, bool smallIcon = false);
 		
 		static bool Execute(wxWindow* window,
 							const wxString& filePath,

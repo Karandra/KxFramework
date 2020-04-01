@@ -7,10 +7,10 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxStdAfx.h"
 #include "KxFramework/KxShell.h"
 #include "KxFramework/KxSystem.h"
-#include "KxFramework/KxFile.h"
-#include "KxFramework/KxFileFinder.h"
-#include "KxFramework/KxUtility.h"
+#include <Kx/FileSystem/FSPath.h>
+#include <Kx/FileSystem/FileItem.h>
 #include <Kx/FileSystem/LegacyVolume.h>
+#include <Kx/FileSystem/NativeFileSystemUtility.h>
 #include <KnownFolders.h>
 #include <winnls.h>
 #include <shobjidl.h>
@@ -46,11 +46,6 @@ HWND KxShell::GetOwnerHWND(wxWindow* window)
 	}
 
 	return hWnd ? hWnd : ::GetShellWindow();
-}
-
-bool KxShell::FileOperation(const wxString& fullPath, KxFileSearchType elementType, KxShellOperationFunc func, bool useRecycleBin, bool recurse, wxWindow* window)
-{
-	return FileOperationEx(func, fullPath, wxEmptyString, window, recurse, elementType == KxFS_FILE, useRecycleBin);
 }
 bool KxShell::FileOperationEx(KxShellOperationFunc func, const wxString& from, const wxString& to, wxWindow* window, bool recurse, bool filesOnly, bool allowUndo, bool yesToAll)
 {
@@ -206,13 +201,13 @@ wxString KxShell::GetTypeIcon(const wxString& ext, int* indexOut)
 	wxString path = icon.BeforeLast(',');
 	return !path.IsEmpty() ? path : icon;
 }
-wxString KxShell::GetLocalizedName(const wxString& objectPath, int* resourceIDOut)
+wxString KxShell::GetLocalizedName(const wxString& objectPath, int* resourceID)
 {
 	wxString out;
-	int resourceID = 0;
-	if (::SHGetLocalizedName(objectPath.wc_str(), wxStringBuffer(out, INT16_MAX), INT16_MAX, &resourceID) == S_OK)
+	int resID = 0;
+	if (::SHGetLocalizedName(objectPath.wc_str(), wxStringBuffer(out, INT16_MAX), INT16_MAX, &resID) == S_OK)
 	{
-		KxUtility::SetIfNotNull(resourceIDOut, resourceID);
+		KxFramework::Utility::SetIfNotNull(resourceID, resID);
 		return out;
 	}
 	return wxEmptyString;
@@ -220,7 +215,7 @@ wxString KxShell::GetLocalizedName(const wxString& objectPath, int* resourceIDOu
 
 wxIcon KxShell::GetFileIcon(const wxString& path, bool smallIcon)
 {
-	SHFILEINFOW shellInfo = {0};
+	SHFILEINFOW shellInfo = {};
 	::SHGetFileInfoW(path.wc_str(), 0, &shellInfo, sizeof(shellInfo), SHGFI_ICON|(smallIcon ? SHGFI_SMALLICON : 0));
 	if (shellInfo.hIcon != nullptr)
 	{
@@ -232,10 +227,10 @@ wxIcon KxShell::GetFileIcon(const wxString& path, bool smallIcon)
 	}
 	return wxNullIcon;
 }
-wxIcon KxShell::GetFileIcon(const KxFileItem& item, bool smallIcon)
+wxIcon KxShell::GetFileIcon(const KxFramework::FileItem& item, bool smallIcon)
 {
-	SHFILEINFOW shellInfo = {0};
-	::SHGetFileInfoW(item.GetName().wc_str(), item.GetAttributes(), &shellInfo, sizeof(shellInfo), SHGFI_USEFILEATTRIBUTES|SHGFI_ICON|(smallIcon ? SHGFI_SMALLICON : 0));
+	SHFILEINFOW shellInfo = {};
+	::SHGetFileInfoW(item.GetName().wc_str(), KxFramework::FileSystem::NativeUtility::MapFileAttributes(item.GetAttributes()), &shellInfo, sizeof(shellInfo), SHGFI_USEFILEATTRIBUTES|SHGFI_ICON|(smallIcon ? SHGFI_SMALLICON : 0));
 	if (shellInfo.hIcon != nullptr)
 	{
 		wxIcon icon;

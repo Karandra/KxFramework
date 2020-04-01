@@ -5,8 +5,8 @@
 #include "KxFramework/KxLibrary.h"
 #include "KxFramework/KxFileStream.h"
 #include "KxFramework/KxUtility.h"
-#include "KxFramework/KxFileFinder.h"
 #include "KxFramework/KxXML.h"
+#include "Kx/FileSystem/NativeFileSystem.h"
 
 namespace
 {
@@ -78,27 +78,25 @@ wxString KxTranslation::LCIDToLocaleName(const LCID& lcid)
 
 KxTranslation::AvailableMap KxTranslation::FindTranslationsInDirectory(const wxString& folderPath)
 {
+	using namespace KxFramework;
+
 	KxStringToStringUMap translations;
-
-	KxFileFinder finder(folderPath, wxS("*.xml"));
-	for (KxFileItem item = finder.FindNext(); item.IsOK(); item = finder.FindNext())
+	NativeFileSystem::Get().EnumItems(folderPath, [&](const FileItem& item)
 	{
-		if (item.IsFile())
-		{
-			// Extract locale name from names like 'en-US.Application.xml'
-			wxString localeName = item.GetName().BeforeFirst(wxS('.'));
+		// Extract locale name from names like 'en-US.Application.xml'
+		wxString localeName = item.GetName().BeforeFirst(wxS('.'));
 
-			// Check locale name
-			if (!GetLanguageFullName(localeName).IsEmpty())
+		// Check locale name
+		if (!GetLanguageFullName(localeName).IsEmpty())
+		{
+			wxString name = item.GetName().BeforeLast(wxS('.'));
+			if (!name.IsEmpty())
 			{
-				wxString name = item.GetName().BeforeLast(wxS('.'));
-				if (!name.IsEmpty())
-				{
-					translations.insert(std::make_pair(name, item.GetFullPath()));
-				}
+				translations.insert(std::make_pair(name, item.GetFullPath()));
 			}
 		}
-	}
+		return true;
+	}, wxS("*.xml"), FSEnumItemsFlag::LimitToFiles);
 	return translations;
 }
 KxStringVector KxTranslation::FindTranslationsInResources()

@@ -1,12 +1,17 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxFileItem.h"
 #include <KxFramework/KxStreamDelegate.h>
-#include "KxFramework/KxWinUndef.h"
+#include "Kx/FileSystem/IFileSystem.h"
+#include "Kx/FileSystem/FSPath.h"
+#include "Kx/FileSystem/FileItem.h"
+#include "Kx/General/BinarySize.h"
+#include "Kx/System/UndefWindows.h"
 #include "Kx/RTTI.hpp"
 
 namespace KxArchive
 {
+	using namespace KxFramework;
+
 	using FileIndex = uint32_t;
 	using FileIndexVector = std::vector<FileIndex>;
 
@@ -139,11 +144,14 @@ namespace KxArchive
 			virtual bool IsOK() const = 0;
 			virtual bool Open(const wxString& filePath) = 0;
 			virtual void Close() = 0;
-			virtual wxString GetFilePath() const = 0;
+			virtual FSPath GetFilePath() const = 0;
 
-			virtual int64_t GetOriginalSize() const = 0;
-			virtual int64_t GetCompressedSize() const = 0;
-			double GetCompressionRatio() const;
+			virtual BinarySize GetOriginalSize() const = 0;
+			virtual BinarySize GetCompressedSize() const = 0;
+			double GetCompressionRatio() const
+			{
+				return GetSizeRatio(GetCompressedSize(), GetOriginalSize());
+			}
 
 		public:
 			explicit operator bool() const
@@ -165,23 +173,11 @@ namespace KxArchive
 
 		public:
 			virtual size_t GetItemCount() const = 0;
-			virtual KxFileItem GetItem(size_t fileIndex) const = 0;
-	};
-	
-	class KX_API IArchiveSearch: public KxFramework::RTTI::Interface<IArchiveSearch>
-	{
-		KxDecalreIID(IArchiveSearch, {0x38c58054, 0x845d, 0x43c1, {0xa6, 0x6d, 0x46, 0xc4, 0xd2, 0x4d, 0x32, 0x3c}});
-
-		public:
-			virtual ~IArchiveSearch() = default;
-
-		public:
-			virtual void* FindFirstFile(const wxString& searchQuery, KxFileItem& fileItem) const = 0;
-			virtual bool FindNextFile(void* handle, KxFileItem& item) const = 0;
-			virtual void FindClose(void* handle) const = 0;
-
-			bool FindFile(const wxString& searchQuery, KxFileItem& fileItem) const;
-			bool FindFileInFolder(const wxString& folder, const wxString& filter, KxFileItem& fileItem) const;
+			virtual FileItem GetItem(FileIndex fileIndex) const = 0;
+			virtual size_t EnumItems(const FSPath& directory, IFileSystem::TEnumItemsFunc func, const FSPathQuery& query = {}, FSEnumItemsFlag flags = FSEnumItemsFlag::None) const = 0;
+			
+			FileItem FindItem(const FSPathQuery& query) const;
+			FileItem FindItem(const FSPath& directory, const FSPathQuery& query) const;
 	};
 }
 
@@ -294,14 +290,14 @@ namespace KxArchive
 			virtual bool Extract(IExtractionCallback& callback, FileIndexView files) const = 0;
 
 			// Extract entire archive or only specified files into a directory
-			virtual bool ExtractToDirectory(const wxString& directory) const;
-			virtual bool ExtractToDirectory(const wxString& directory, FileIndexView files) const;
+			virtual bool ExtractToDirectory(const FSPath& directory) const;
+			virtual bool ExtractToDirectory(const FSPath& directory, FileIndexView files) const;
 			
 			// Extract specified file into a stream
 			virtual bool ExtractToStream(FileIndex fileIndex, wxOutputStream& stream) const;
 
 			// Extract single file into specified path
-			virtual bool ExtractToFile(FileIndex fileIndex, const wxString& targetPath) const;
+			virtual bool ExtractToFile(FileIndex fileIndex, const FSPath& targetPath) const;
 
 			template<class TOutStream = wxOutputStream>
 			ExtractWithOptions<TOutStream> ExtractWith() const
@@ -323,11 +319,11 @@ namespace KxArchive
 		public:
 			// Includes the last directory as the root in the archive, e.g. specifying "C:\Temp\MyFolder"
 			// makes "MyFolder" the single root item in archive with the files within it included.
-			virtual bool CompressDirectory(const wxString& directory, bool recursive) = 0;
+			virtual bool CompressDirectory(const FSPath& directory, bool recursive) = 0;
 
 			// Excludes the last directory as the root in the archive, its contents are at root instead. E.g.
 			// specifying "C:\Temp\MyFolder" make the files in "MyFolder" the root items in the archive.
-			virtual bool CompressFiles(const wxString& directory, const wxString& searchFilter, bool recursive) = 0;
+			virtual bool CompressFiles(const FSPath& directory, const FSPath& searchFilter, bool recursive) = 0;
 			virtual bool CompressSpecifiedFiles(const KxStringVector& sourcePaths, const KxStringVector& archivePaths) = 0;
 
 			// Compress just this single file as the root item in the archive.

@@ -22,9 +22,6 @@
     <Filter Include="Header Files\Sizers">
       <UniqueIdentifier>{febdb9fc-2421-477b-ab87-1e9d719c63a9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\FileSystem">
-      <UniqueIdentifier>{49204734-d8d6-454c-8374-cb1df5bbc503}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Events">
       <UniqueIdentifier>{bf54f086-d884-45dc-8670-5c65e6f09e19}</UniqueIdentifier>
     </Filter>
@@ -48,9 +45,6 @@
     </Filter>
     <Filter Include="Header Files\GUI\Windows">
       <UniqueIdentifier>{75e0a548-2dc9-4623-a2c1-9daef5598f15}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\FileSystem">
-      <UniqueIdentifier>{1c98282e-6b30-421a-98a6-607ca460419d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Events">
       <UniqueIdentifier>{e19724b4-11bc-44f5-a040-78994c9ee6ab}</UniqueIdentifier>
@@ -309,12 +303,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxFileStream.h">
       <Filter>Header Files\Streams</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxFile.h">
-      <Filter>Header Files\FileSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxFileFinder.h">
-      <Filter>Header Files\FileSystem</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxShell.h">
       <Filter>Header Files\System</Filter>
@@ -721,12 +709,6 @@
     <ClInclude Include="KxFramework\KxSharedMemory.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxFileItem.h">
-      <Filter>Header Files\FileSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxArchiveFileFinder.h">
-      <Filter>Header Files\Archive</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxWinUndef.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
@@ -735,9 +717,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxComparator.h">
       <Filter>Header Files\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxIFileFinder.h">
-      <Filter>Header Files\FileSystem</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxZLibStream.h">
       <Filter>Header Files\Streams</Filter>
@@ -1324,6 +1303,9 @@
     <ClInclude Include="Kx\System\ErrorCodeValue.h">
       <Filter>Kx\System</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\FileSystem\NativeFileSystemUtility.h">
+      <Filter>Kx\FileSystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1359,12 +1341,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxFileStream.cpp">
       <Filter>Source Files\Streams</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxFile.cpp">
-      <Filter>Source Files\FileSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxFileFinder.cpp">
-      <Filter>Source Files\FileSystem</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxShell.cpp">
       <Filter>Source Files\System</Filter>
@@ -1746,15 +1722,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxSharedMemory.cpp">
       <Filter>Source Files\System</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxFileItem.cpp">
-      <Filter>Source Files\FileSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxArchiveFileFinder.cpp">
-      <Filter>Source Files\Archive</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxIFileFinder.cpp">
-      <Filter>Source Files\FileSystem</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxZLibStream.cpp">
       <Filter>Source Files\Streams</Filter>

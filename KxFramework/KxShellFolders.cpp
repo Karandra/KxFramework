@@ -1,7 +1,7 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxShell.h"
 #include "KxFramework/KxSystem.h"
-#include "KxFramework/KxFile.h"
+#include "Kx/FileSystem/NativeFileSystem.h"
 
 namespace
 {
@@ -248,7 +248,7 @@ wxString KxShell::GetFolder(KxShellFolderID id, bool useDefault, bool create)
 
 	if ((isEnvUsed || isCustomMethodUsed) && create)
 	{
-		KxFile(out).CreateFolder();
+		KxFramework::NativeFileSystem::Get().CreateDirectory(out);
 	}
 	return out;
 }

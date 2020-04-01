@@ -9,14 +9,14 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxFramework/KxProcessThread.h"
 #include "KxFramework/KxComparator.h"
 #include "KxFramework/KxSystemAPI.h"
-#include "KxFramework/KxFile.h"
 #include "KxFramework/KxIncludeWindows.h"
 #include <PsAPI.h>
 #include <WInternl.h>
 #include <TlHelp32.h>
-#include "KxFramework/KxWinUndef.h"
 #include <wx/private/pipestream.h>
 #include <wx/private/streamtempinput.h>
+#include "Kx/FileSystem/FileOperations.h"
+#include "Kx/System/UndefWindows.h"
 #pragma warning (disable: 4312)
 
 KxEVENT_DEFINE_GLOBAL_AS(wxProcessEvent, PROCESS_END, wxEVT_END_PROCESS);
@@ -283,24 +283,24 @@ int KxProcess::Run(KxProcessWaitMode waitMode, bool hideUI)
 }
 bool KxProcess::Find()
 {
-	wxString searchFor = KxFile(m_ExecutablePath).GetFullName();
-	if (!searchFor.IsEmpty())
+	using namespace KxFramework;
+
+	if (!m_ExecutablePath.IsEmpty())
 	{
 		auto list = EnumProcesses();
-		if (list.empty() != true)
+		if (!list.empty())
 		{
-			wxString current;
 			DWORD length = INT16_MAX;
-			for (size_t i = 0; i < list.size(); i++)
+			for (DWORD pid: list)
 			{
-				HANDLE processHandle = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, list[i]);
+				HANDLE processHandle = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, pid);
 				if (processHandle)
 				{
+					wxString current;
 					DWORD thisLength = length;
 					if (::QueryFullProcessImageNameW(processHandle, 0, wxStringBuffer(current, length), &thisLength))
 					{
-						current = KxFile(current).GetFullName();
-						if (current.IsSameAs(searchFor, false))
+						if (FSPath(current) == m_ExecutablePath)
 						{
 							m_PID = ::GetProcessId(processHandle);
 							::CloseHandle(processHandle);
