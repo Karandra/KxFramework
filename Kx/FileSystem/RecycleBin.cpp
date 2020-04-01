@@ -29,7 +29,7 @@ namespace
 namespace KxFramework
 {
 	RecycleBin::RecycleBin(LegacyVolume volume)
-		:RecycleBin(volume, NativeFileSystem::GetInstance())
+		:RecycleBin(volume, NativeFileSystem::Get())
 	{
 	}
 	RecycleBin::RecycleBin(LegacyVolume volume, IFileSystem& fileSystem)
