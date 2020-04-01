@@ -1321,6 +1321,9 @@
     <ClInclude Include="Kx\System\UndefWindows.h">
       <Filter>Kx\System</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\System\ErrorCodeValue.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -2078,6 +2081,9 @@
       <Filter>Kx\System</Filter>
     </ClCompile>
     <ClCompile Include="Kx\System\COM.cpp">
+      <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\ErrorCodeValue.cpp">
       <Filter>Kx\System</Filter>
     </ClCompile>
     <ClCompile Include="Kx\System\ErrorCode.cpp">

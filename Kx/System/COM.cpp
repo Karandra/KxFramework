@@ -11,11 +11,11 @@ namespace KxFramework
 		{
 			case COMThreadingModel::Apartment:
 			{
-				m_Status = ErrorCode::FromHRESULT(::CoInitializeEx(nullptr, COINIT::COINIT_APARTMENTTHREADED));
+				m_Status = HRESULTCode(::CoInitializeEx(nullptr, COINIT::COINIT_APARTMENTTHREADED));
 			}
 			case COMThreadingModel::Concurrent:
 			{
-				m_Status = ErrorCode::FromHRESULT(::CoInitializeEx(nullptr, COINIT::COINIT_MULTITHREADED));
+				m_Status = HRESULTCode(::CoInitializeEx(nullptr, COINIT::COINIT_MULTITHREADED));
 			}
 		};
 	}
@@ -33,7 +33,7 @@ namespace KxFramework
 {
 	void OLEInitGuard::DoInitialize()
 	{
-		m_Status = ErrorCode::FromHRESULT(::OleInitialize(nullptr));
+		m_Status = HRESULTCode(::OleInitialize(nullptr));
 	}
 	void OLEInitGuard::DoUninitialize()
 	{

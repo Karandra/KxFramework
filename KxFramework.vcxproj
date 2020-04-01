@@ -545,6 +545,7 @@
     <ClInclude Include="Kx\System\COM.h" />
     <ClInclude Include="Kx\System\Common.h" />
     <ClInclude Include="Kx\System\ErrorCode.h" />
+    <ClInclude Include="Kx\System\ErrorCodeValue.h" />
     <ClInclude Include="Kx\System\IncludeNtStatus.h" />
     <ClInclude Include="Kx\System\ShellFileType.h" />
     <ClInclude Include="Kx\System\ShellFileTypeInfo.h" />
@@ -859,6 +860,7 @@
     <ClCompile Include="Kx\Sciter\WidgetFactory.cpp" />
     <ClCompile Include="Kx\System\COM.cpp" />
     <ClCompile Include="Kx\System\ErrorCode.cpp" />
+    <ClCompile Include="Kx\System\ErrorCodeValue.cpp" />
     <ClCompile Include="Kx\System\ShellFileType.cpp" />
     <ClCompile Include="Kx\System\ShellFileTypeInfo.cpp" />
     <ClCompile Include="Kx\System\ShellFileTypeManager.cpp" />

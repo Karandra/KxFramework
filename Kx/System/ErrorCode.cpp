@@ -6,22 +6,21 @@
 
 namespace
 {
-	// https://stackoverflow.com/questions/25566234/how-to-convert-specific-ntstatus-value-to-the-hresult
-
-	std::optional<DWORD> Win32FromNtStatus(NTSTATUS ntStatus) noexcept
+	std::optional<KxFramework::Win32ErrorCode> Win32FromNtStatus(NTSTATUS ntStatus) noexcept
 	{
+		// https://stackoverflow.com/questions/25566234/how-to-convert-specific-ntstatus-value-to-the-hresult
 		using namespace KxFramework;
 
 		if (ntStatus == STATUS_SUCCESS)
 		{
-			return ERROR_SUCCESS;
+			return Win32ErrorCode(ERROR_SUCCESS);
 		}
 		else if (KxSystemAPI::RtlNtStatusToDosError)
 		{
 			const ULONG win32Code = KxSystemAPI::RtlNtStatusToDosError(ntStatus);
 			if (win32Code != ERROR_MR_MID_NOT_FOUND)
 			{
-				return win32Code;
+				return Win32ErrorCode(win32Code);
 			}
 		}
 
@@ -47,20 +46,22 @@ namespace
 		const DWORD result = ::GetLastError();
 		if (result != ERROR_SUCCESS)
 		{
-			return result;
+			return Win32ErrorCode(result);
 		}
 		return {};
 	}
-	std::optional<DWORD> Win32FromHRESULT(HRESULT hresult) noexcept
+	std::optional<KxFramework::Win32ErrorCode> Win32FromHRESULT(HRESULT hresult) noexcept
 	{
+		using namespace KxFramework;
+
 		if (MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, 0) == static_cast<HRESULT>(hresult & 0xFFFF0000))
 		{
 			// Could have come from many values, but we choose this one
-			return HRESULT_CODE(hresult);
+			return Win32ErrorCode(HRESULT_CODE(hresult));
 		}
 		else if (hresult == S_OK)
 		{
-			return HRESULT_CODE(hresult);
+			return Win32ErrorCode(HRESULT_CODE(hresult));
 		}
 		else
 		{
@@ -68,128 +69,116 @@ namespace
 			return {};
 		}
 	}
-	std::optional<DWORD> NtStatusFromWin32(DWORD win32Code) noexcept
+	std::optional<KxFramework::NtStatusCode> NtStatusFromWin32(DWORD win32Code) noexcept
 	{
-		switch (win32Code)
+		using namespace KxFramework;
+
+		auto ntStatus = [win32Code]() -> std::optional<NTSTATUS>
 		{
-			#include "ErrorCodeNtStatus.i"
-		};
+			switch (win32Code)
+			{
+				#include "ErrorCodeNtStatus.i"
+			};
+			return {};
+		}();
+
+		if (ntStatus)
+		{
+			return NtStatusCode(*ntStatus);
+		}
 		return {};
 	}
 }
 
 namespace KxFramework
 {
-	std::optional<int64_t> ErrorCode::ConvertToWin32() const noexcept
+	std::optional<Win32ErrorCode> ErrorCode::ConvertToWin32() const noexcept
 	{
-		if (m_Value)
+		switch (m_Category)
 		{
-			switch (m_Category)
+			case ErrorCodeCategory::Generic:
 			{
-				case ErrorCodeCategory::Win32:
+				if (GenericErrorCode(m_Value).IsSuccessful())
 				{
-					return m_Value;
+					return Win32ErrorCode(ERROR_SUCCESS);
 				}
-				case ErrorCodeCategory::NtStatus:
-				{
-					return Win32FromNtStatus(*m_Value);
-				}
-				case ErrorCodeCategory::HRESULT:
-				{
-					return Win32FromHRESULT(*m_Value);
-				}
-			};
-		}
+				break;
+			}
+			case ErrorCodeCategory::Win32:
+			{
+				return Win32ErrorCode(m_Value);
+			}
+			case ErrorCodeCategory::NtStatus:
+			{
+				return Win32FromNtStatus(m_Value);
+			}
+			case ErrorCodeCategory::HRESULT:
+			{
+				return Win32FromHRESULT(m_Value);
+			}
+		};
 		return {};
 	}
-	std::optional<int64_t> ErrorCode::ConvertToNtStatus() const noexcept
+	std::optional<NtStatusCode> ErrorCode::ConvertToNtStatus() const noexcept
 	{
-		if (m_Value)
+		switch (m_Category)
 		{
-			switch (m_Category)
+			case ErrorCodeCategory::Generic:
 			{
-				case ErrorCodeCategory::Win32:
+				if (GenericErrorCode(m_Value).IsSuccessful())
 				{
-					return NtStatusFromWin32(*m_Value);
+					return NtStatusCode(STATUS_SUCCESS);
 				}
-				case ErrorCodeCategory::NtStatus:
+				break;
+			}
+			case ErrorCodeCategory::Win32:
+			{
+				return NtStatusFromWin32(m_Value);
+			}
+			case ErrorCodeCategory::NtStatus:
+			{
+				return NtStatusCode(m_Value);
+			}
+			case ErrorCodeCategory::HRESULT:
+			{
+				if (auto win32Code = Win32FromHRESULT(m_Value))
 				{
-					return m_Value;
+					return NtStatusFromWin32(*win32Code);
 				}
-				case ErrorCodeCategory::HRESULT:
-				{
-					if (auto win32Code = Win32FromHRESULT(*m_Value))
-					{
-						return NtStatusFromWin32(*win32Code);
-					}
-					break;
-				}
-			};
-		}
+				break;
+			}
+		};
 		return {};
 	}
-	std::optional<int64_t> ErrorCode::ConvertToHRESULT() const noexcept
+	std::optional<HRESULTCode> ErrorCode::ConvertToHRESULT() const noexcept
 	{
-		if (m_Value)
+		switch (m_Category)
 		{
-			switch (m_Category)
+			case ErrorCodeCategory::Generic:
 			{
-				case ErrorCodeCategory::Win32:
+				if (GenericErrorCode(m_Value).IsSuccessful())
 				{
-					return HRESULT_FROM_WIN32(*m_Value);
+					return HRESULTCode(S_OK);
 				}
-				case ErrorCodeCategory::NtStatus:
+				break;
+			}
+			case ErrorCodeCategory::Win32:
+			{
+				return HRESULTCode(HRESULT_FROM_WIN32(m_Value));
+			}
+			case ErrorCodeCategory::NtStatus:
+			{
+				if (auto ntStatus = Win32FromNtStatus(m_Value))
 				{
-					if (auto ntStatus = Win32FromNtStatus(*m_Value))
-					{
-						return HRESULT_FROM_WIN32(*ntStatus);
-					}
-					break;
+					return HRESULTCode(HRESULT_FROM_WIN32(*ntStatus));
 				}
-				case ErrorCodeCategory::HRESULT:
-				{
-					return m_Value;
-				}
-			};
-		}
+				break;
+			}
+			case ErrorCodeCategory::HRESULT:
+			{
+				return HRESULTCode(m_Value);
+			}
+		};
 		return {};
-	}
-
-	bool ErrorCode::IsSuccessful() const noexcept
-	{
-		if (m_Value)
-		{
-			switch (m_Category)
-			{
-				case ErrorCodeCategory::Unknown:
-				{
-					// We can not know this for unknown error category
-					return false;
-				}
-				case ErrorCodeCategory::Generic:
-				{
-					// Generic error codes use zero as the success (as most error codes do)
-					return *m_Value == 0;
-				}
-				case ErrorCodeCategory::Win32:
-				{
-					return static_cast<DWORD>(*m_Value) == ERROR_SUCCESS;
-				}
-				case ErrorCodeCategory::NtStatus:
-				{
-					return static_cast<NTSTATUS>(*m_Value) == STATUS_SUCCESS;
-				}
-				case ErrorCodeCategory::HRESULT:
-				{
-					// HRESULT code considered as successful when it's greater than or equal to zero.
-					return SUCCEEDED(static_cast<HRESULT>(*m_Value));
-				}
-			};
-		}
-		return false;
-	}
-	bool ErrorCode::IsFailed() const noexcept
-	{
-		return m_Value && m_Category != ErrorCodeCategory::Unknown && !IsSuccessful();
 	}
 }
