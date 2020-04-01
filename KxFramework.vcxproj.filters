@@ -157,12 +157,6 @@
     <Filter Include="Header Files\Misc">
       <UniqueIdentifier>{ce660ee4-5cc9-4fad-b667-b1c3c2924a59}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Archive">
-      <UniqueIdentifier>{061a2532-d388-4a05-857f-5335ebe6db48}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Archive">
-      <UniqueIdentifier>{d29cc565-a45c-48d4-9495-c962786927d0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\FFI">
       <UniqueIdentifier>{6014e573-e4e3-4185-8c8b-4300a5436fe1}</UniqueIdentifier>
     </Filter>
@@ -267,6 +261,9 @@
     </Filter>
     <Filter Include="Kx\General">
       <UniqueIdentifier>{7777f244-e0e6-49ac-b259-199b1aed7a28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx\Compression">
+      <UniqueIdentifier>{1ffb3494-f392-4267-b778-6c908ff721ea}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1105,9 +1102,6 @@
     <ClInclude Include="KxFramework\DataView2\HeaderCtrl2.h">
       <Filter>Header Files\GUI\DataView2</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxArchive.h">
-      <Filter>Header Files\Archive</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxStreamDelegate.h">
       <Filter>Header Files\Streams</Filter>
     </ClInclude>
@@ -1305,6 +1299,15 @@
     </ClInclude>
     <ClInclude Include="Kx\FileSystem\NativeFileSystemUtility.h">
       <Filter>Kx\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Compression\Common.h">
+      <Filter>Kx\Compression</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Compression\IArchive.h">
+      <Filter>Kx\Compression</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Compression\IArchiveImpl.h">
+      <Filter>Kx\Compression</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1930,9 +1933,6 @@
     <ClCompile Include="KxFramework\DataView2\HeaderCtrl2.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxArchive.cpp">
-      <Filter>Source Files\Archive</Filter>
-    </ClCompile>
     <ClCompile Include="Kx\Sciter\Node.cpp">
       <Filter>Kx\Sciter</Filter>
     </ClCompile>
@@ -2055,6 +2055,9 @@
     </ClCompile>
     <ClCompile Include="Kx\System\ErrorCode.cpp">
       <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Compression\IArchive.cpp">
+      <Filter>Kx\Compression</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

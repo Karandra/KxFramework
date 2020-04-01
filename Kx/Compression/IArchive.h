@@ -1,24 +1,22 @@
 #pragma once
-#include "KxFramework/KxFramework.h"
-#include <KxFramework/KxStreamDelegate.h>
+#include "Common.h"
 #include "Kx/FileSystem/IFileSystem.h"
 #include "Kx/FileSystem/FSPath.h"
 #include "Kx/FileSystem/FileItem.h"
 #include "Kx/General/BinarySize.h"
 #include "Kx/System/UndefWindows.h"
-#include "Kx/RTTI.hpp"
+#include "Kx/RTTI/QueryInterface.h"
+#include <KxFramework/KxStreamDelegate.h>
 
-namespace KxArchive
+namespace KxFramework::Compression
 {
-	using namespace KxFramework;
-
 	using FileIndex = uint32_t;
 	using FileIndexVector = std::vector<FileIndex>;
 
 	constexpr FileIndex InvalidFileIndex = std::numeric_limits<FileIndex>::max();
 }
 
-namespace KxArchive
+namespace KxFramework::Compression
 {
 	class FileIndexView final
 	{
@@ -131,9 +129,9 @@ namespace KxArchive
 	};
 }
 
-namespace KxArchive
+namespace KxFramework
 {
-	class KX_API IArchive: public KxFramework::RTTI::Interface<IArchive>
+	class KX_API IArchive: public RTTI::Interface<IArchive>
 	{
 		KxDecalreIID(IArchive, {0xb4327a42, 0x17a7, 0x44db, {0x84, 0xb, 0xc3, 0x24, 0x5b, 0x29, 0xca, 0xe8}});
 
@@ -164,7 +162,7 @@ namespace KxArchive
 			}
 	};
 
-	class KX_API IArchiveItems: public KxFramework::RTTI::Interface<IArchiveItems>
+	class KX_API IArchiveItems: public RTTI::Interface<IArchiveItems>
 	{
 		KxDecalreIID(IArchiveItems, {0x1455f21f, 0x1a17, 0x4ca2, {0xb5, 0x57, 0xaa, 0xa8, 0x68, 0xfb, 0x4b, 0x7e}});
 
@@ -173,7 +171,7 @@ namespace KxArchive
 
 		public:
 			virtual size_t GetItemCount() const = 0;
-			virtual FileItem GetItem(FileIndex fileIndex) const = 0;
+			virtual FileItem GetItem(Compression::FileIndex fileIndex) const = 0;
 			virtual size_t EnumItems(const FSPath& directory, IFileSystem::TEnumItemsFunc func, const FSPathQuery& query = {}, FSEnumItemsFlag flags = FSEnumItemsFlag::None) const = 0;
 			
 			FileItem FindItem(const FSPathQuery& query) const;
@@ -181,10 +179,10 @@ namespace KxArchive
 	};
 }
 
-namespace KxArchive
+namespace KxFramework
 {
 	class KX_API IArchiveExtraction;
-	class KX_API IExtractionCallback: public KxFramework::RTTI::Interface<IExtractionCallback>
+	class KX_API IExtractionCallback: public RTTI::Interface<IExtractionCallback>
 	{
 		KxDecalreIID(IExtractionCallback, {0x8a6363c5, 0x35be, 0x4884, {0x8a, 0x35, 0x5e, 0x14, 0x5, 0x81, 0xbc, 0x25}});
 
@@ -197,8 +195,8 @@ namespace KxArchive
 				return false;
 			}
 
-			virtual KxDelegateOutputStream OnGetStream(FileIndex fileIndex) = 0;
-			virtual bool OnOperationCompleted(FileIndex fileIndex, wxOutputStream& stream) = 0;
+			virtual KxDelegateOutputStream OnGetStream(Compression::FileIndex fileIndex) = 0;
+			virtual bool OnOperationCompleted(Compression::FileIndex fileIndex, wxOutputStream& stream) = 0;
 	};
 
 	template<class TOutStream = wxOutputStream>
@@ -208,8 +206,8 @@ namespace KxArchive
 			const IArchiveExtraction& m_Archive;
 
 			std::function<bool()> m_ShouldCancel;
-			std::function<KxDelegateOutputStream(FileIndex)> m_OnGetStream;
-			std::function<bool(FileIndex, wxOutputStream&)> m_OnOperationCompleted;
+			std::function<KxDelegateOutputStream(Compression::FileIndex)> m_OnGetStream;
+			std::function<bool(Compression::FileIndex, wxOutputStream&)> m_OnOperationCompleted;
 
 		private:
 			bool ShouldCancel() override
@@ -217,11 +215,11 @@ namespace KxArchive
 				return m_ShouldCancel ? m_ShouldCancel() : false;
 			}
 
-			KxDelegateOutputStream OnGetStream(FileIndex fileIndex) override
+			KxDelegateOutputStream OnGetStream(Compression::FileIndex fileIndex) override
 			{
 				return m_OnGetStream ? m_OnGetStream(fileIndex) : nullptr;
 			}
-			bool OnOperationCompleted(FileIndex fileIndex, wxOutputStream& stream) override
+			bool OnOperationCompleted(Compression::FileIndex fileIndex, wxOutputStream& stream) override
 			{
 				return m_OnOperationCompleted ? m_OnOperationCompleted(fileIndex, stream) : true;
 			}
@@ -238,7 +236,7 @@ namespace KxArchive
 			{
 				return m_Archive.Extract(*this);
 			}
-			bool Execute(FileIndexView files)
+			bool Execute(Compression::FileIndexView files)
 			{
 				return m_Archive.Extract(*this, files);
 			}
@@ -268,7 +266,7 @@ namespace KxArchive
 				else
 				{
 					// Wrap inside lambda and cast stream type
-					m_OnOperationCompleted = [func = std::forward<TFunc>(func)](FileIndex fileIndex, wxOutputStream& stream) -> bool
+					m_OnOperationCompleted = [func = std::forward<TFunc>(func)](Compression::FileIndex fileIndex, wxOutputStream& stream) -> bool
 					{
 						return std::invoke(func, fileIndex, static_cast<TOutStream&>(stream));
 					};
@@ -277,7 +275,7 @@ namespace KxArchive
 			}
 	};
 
-	class KX_API IArchiveExtraction: public KxFramework::RTTI::Interface<IArchiveExtraction>
+	class KX_API IArchiveExtraction: public RTTI::Interface<IArchiveExtraction>
 	{
 		KxDecalreIID(IArchiveExtraction, {0x105f744b, 0x904d, 0x4822, {0xb4, 0x7a, 0x57, 0x8b, 0x3e, 0xd, 0x95, 0xe6}});
 
@@ -287,17 +285,17 @@ namespace KxArchive
 		public:
 			// Extracts files using provided callback interface
 			virtual bool Extract(IExtractionCallback& callback) const = 0;
-			virtual bool Extract(IExtractionCallback& callback, FileIndexView files) const = 0;
+			virtual bool Extract(IExtractionCallback& callback, Compression::FileIndexView files) const = 0;
 
 			// Extract entire archive or only specified files into a directory
 			virtual bool ExtractToDirectory(const FSPath& directory) const;
-			virtual bool ExtractToDirectory(const FSPath& directory, FileIndexView files) const;
+			virtual bool ExtractToDirectory(const FSPath& directory, Compression::FileIndexView files) const;
 			
 			// Extract specified file into a stream
-			virtual bool ExtractToStream(FileIndex fileIndex, wxOutputStream& stream) const;
+			virtual bool ExtractToStream(Compression::FileIndex fileIndex, wxOutputStream& stream) const;
 
 			// Extract single file into specified path
-			virtual bool ExtractToFile(FileIndex fileIndex, const FSPath& targetPath) const;
+			virtual bool ExtractToFile(Compression::FileIndex fileIndex, const FSPath& targetPath) const;
 
 			template<class TOutStream = wxOutputStream>
 			ExtractWithOptions<TOutStream> ExtractWith() const
@@ -307,9 +305,9 @@ namespace KxArchive
 	};
 }
 
-namespace KxArchive
+namespace KxFramework
 {
-	class KX_API IArchiveCompression: public KxFramework::RTTI::Interface<IArchiveCompression>
+	class KX_API IArchiveCompression: public RTTI::Interface<IArchiveCompression>
 	{
 		KxDecalreIID(IArchiveCompression, {0xcf9bb9ac, 0x6519, 0x49d4, {0xa3, 0xb4, 0xcd, 0x63, 0x17, 0x52, 0xe1, 0x55}});
 
@@ -333,9 +331,9 @@ namespace KxArchive
 	};
 }
 
-namespace KxArchive
+namespace KxFramework
 {
-	class KX_API IArchiveProperties: public KxFramework::RTTI::Interface<IArchiveProperties>
+	class KX_API IArchiveProperties: public RTTI::Interface<IArchiveProperties>
 	{
 		KxDecalreIID(IArchiveProperties, {0x8ecede61, 0x7542, 0x4164, {0x99, 0x7c, 0xd6, 0x72, 0x57, 0x24, 0x94, 0x26}});
 
@@ -424,25 +422,25 @@ namespace KxArchive
 	};
 }
 
-namespace KxArchive
+namespace KxFramework::Compression
 {
-	#define KxArchiveDeclareUserProperty(section, name)	constexpr wxChar section##_##name[] = wxS("User/") wxS(#section) wxS("/") wxS(#name);
+	#define Kx_Compression_DeclareUserProperty(section, name)	constexpr wxChar section##_##name[] = wxS("User/") wxS(#section) wxS("/") wxS(#name);
 
 	namespace Property
 	{
-		#define KxArchiveDeclareBaseProperty(section, name) constexpr wxChar section##_##name[] = wxS("KxArchive/") wxS(#section) wxS("/") wxS(#name);
+		#define Kx_Compression_DeclareBaseProperty(section, name) constexpr wxChar section##_##name[] = wxS("Archive/") wxS(#section) wxS("/") wxS(#name);
 
-		KxArchiveDeclareBaseProperty(Common, FilePath);
-		KxArchiveDeclareBaseProperty(Common, ItemCount);
-		KxArchiveDeclareBaseProperty(Common, OriginalSize);
-		KxArchiveDeclareBaseProperty(Common, CompressedSize);
+		Kx_Compression_DeclareBaseProperty(Common, FilePath);
+		Kx_Compression_DeclareBaseProperty(Common, ItemCount);
+		Kx_Compression_DeclareBaseProperty(Common, OriginalSize);
+		Kx_Compression_DeclareBaseProperty(Common, CompressedSize);
 
-		KxArchiveDeclareBaseProperty(Compression, Level);
-		KxArchiveDeclareBaseProperty(Compression, Solid);
-		KxArchiveDeclareBaseProperty(Compression, Format);
-		KxArchiveDeclareBaseProperty(Compression, Method);
-		KxArchiveDeclareBaseProperty(Compression, MultiThreaded);
-		KxArchiveDeclareBaseProperty(Compression, DictionarySize);
+		Kx_Compression_DeclareBaseProperty(Compression, Level);
+		Kx_Compression_DeclareBaseProperty(Compression, Solid);
+		Kx_Compression_DeclareBaseProperty(Compression, Format);
+		Kx_Compression_DeclareBaseProperty(Compression, Method);
+		Kx_Compression_DeclareBaseProperty(Compression, MultiThreaded);
+		Kx_Compression_DeclareBaseProperty(Compression, DictionarySize);
 
 		#undef KxArchiveDeclareBaseProperty
 	}

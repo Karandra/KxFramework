@@ -352,7 +352,6 @@
     <ClInclude Include="KxFramework\KxGraphicsContext.h" />
     <ClInclude Include="KxFramework\KxHTML.h" />
     <ClInclude Include="KxFramework\KxHTMLWindow.h" />
-    <ClInclude Include="KxFramework\KxArchive.h" />
     <ClInclude Include="KxFramework\KxIconType.h" />
     <ClInclude Include="KxFramework\KxImageList.h" />
     <ClInclude Include="KxFramework\KxImageSet.h" />
@@ -472,6 +471,8 @@
     <ClInclude Include="Kx\Async\Coroutine\YieldInstruction.h" />
     <ClInclude Include="Kx\Async\DelayedCall.h" />
     <ClInclude Include="Kx\Common.hpp" />
+    <ClInclude Include="Kx\Compression\Common.h" />
+    <ClInclude Include="Kx\Compression\IArchive.h" />
     <ClInclude Include="Kx\EventSystem.hpp" />
     <ClInclude Include="Kx\EventSystem\BasicEvtHandler.h" />
     <ClInclude Include="Kx\EventSystem\BroadcastProcessor.h" />
@@ -712,7 +713,6 @@
       </DisableSpecificWarnings>
     </ClCompile>
     <ClCompile Include="KxFramework\KxHTMLWindow.cpp" />
-    <ClCompile Include="KxFramework\KxArchive.cpp" />
     <ClCompile Include="KxFramework\KxImageList.cpp" />
     <ClCompile Include="KxFramework\KxImageSet.cpp" />
     <ClCompile Include="KxFramework\KxImageView.cpp" />
@@ -814,6 +814,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Kx\Async\Coroutine\CoroutineImpl.cpp" />
+    <ClCompile Include="Kx\Compression\IArchive.cpp" />
+    <ClInclude Include="Kx\Compression\IArchiveImpl.h" />
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp" />
     <ClCompile Include="Kx\EventSystem\EventBuilder.cpp" />
     <ClCompile Include="Kx\EventSystem\EventHandlerStack.cpp" />

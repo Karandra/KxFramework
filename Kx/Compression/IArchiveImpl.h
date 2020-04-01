@@ -1,23 +1,27 @@
-#include "KxStdAfx.h"
-#include "KxFramework/KxArchive.h"
+#pragma once
+#include "Common.h"
+#include "IArchive.h"
 #include <KxFramework/KxFileStream.h>
-#include <KxFramework/KxStreamDelegate.h>
 #include "Kx/FileSystem/NativeFileSystemUtility.h"
 
-namespace KxArchive
+namespace KxFramework::Compression
 {
-	class ExtractorCallbackBase: public KxFramework::RTTI::ImplementInterface<ExtractorCallbackBase, IExtractionCallback>
+	class ExtractorCallbackBase: public RTTI::ImplementInterface<ExtractorCallbackBase, IExtractionCallback>
 	{
 		protected:
 			IArchiveItems& m_ArchiveItems;
+			IArchiveExtraction& m_ArchiveExtraction;
 
 		public:
 			ExtractorCallbackBase(IArchiveExtraction& archive)
-				:m_ArchiveItems(*archive.QueryInterface<IArchiveItems>())
+				:m_ArchiveItems(*archive.QueryInterface<IArchiveItems>()), m_ArchiveExtraction(archive)
 			{
 			}
 	};
+}
 
+namespace KxFramework::Compression
+{
 	class FileExtractionCallback: public ExtractorCallbackBase
 	{
 		private:
@@ -72,6 +76,7 @@ namespace KxArchive
 				return m_Directory / fileItem.GetFullPath();
 			}
 	};
+
 	class SingleFileExtractionCallback: public FileExtractionCallback
 	{
 		private:
@@ -89,6 +94,7 @@ namespace KxArchive
 				return m_TargetPath;
 			}
 	};
+
 	class SingleStreamExtractionCallback: public ExtractorCallbackBase
 	{
 		private:
@@ -115,53 +121,4 @@ namespace KxArchive
 				return true;
 			}
 	};
-}
-
-namespace KxArchive
-{
-	FileItem IArchiveItems::FindItem(const FSPathQuery& query) const
-	{
-		FileItem result;
-		EnumItems({}, [&](FileItem item)
-		{
-			result = std::move(item);
-			return false;
-		}, query, FSEnumItemsFlag::Recursive);
-		return result;
-	}
-	FileItem IArchiveItems::FindItem(const FSPath& directory, const FSPathQuery& query) const
-	{
-		FileItem result;
-		EnumItems(directory, [&](FileItem item)
-		{
-			result = std::move(item);
-			return false;
-		}, query, FSEnumItemsFlag::Recursive);
-		return result;
-	}
-}
-
-namespace KxArchive
-{
-	bool IArchiveExtraction::ExtractToDirectory(const FSPath& directory) const
-	{
-		FileExtractionCallback callback(const_cast<IArchiveExtraction&>(*this), directory);
-		return Extract(callback);
-	}
-	bool IArchiveExtraction::ExtractToDirectory(const FSPath& directory, FileIndexView files) const
-	{
-		FileExtractionCallback callback(const_cast<IArchiveExtraction&>(*this), directory);
-		return Extract(callback, files);
-	}
-
-	bool IArchiveExtraction::ExtractToStream(FileIndex fileIndex, wxOutputStream& stream) const
-	{
-		SingleStreamExtractionCallback callback(const_cast<IArchiveExtraction&>(*this), stream);
-		return Extract(callback, fileIndex);
-	}
-	bool IArchiveExtraction::ExtractToFile(FileIndex fileIndex, const FSPath& targetPath) const
-	{
-		SingleFileExtractionCallback callback(const_cast<IArchiveExtraction&>(*this), targetPath);
-		return Extract(callback, fileIndex);
-	}
 }
