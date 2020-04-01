@@ -35,17 +35,13 @@ namespace KxFramework::FileSystem
 		};
 		return wxEmptyString;
 	}
-	
-	wxString GetForbiddenChars()
+	wxString GetForbiddenCharsExceptSeparators(const wxString& except)
 	{
-		return wxFileName::GetForbiddenChars();
-	}
-	wxString GetForbiddenCharsExceptSeparators()
-	{
-		wxString forbiddenChars = FileSystem::GetForbiddenChars();
-		forbiddenChars.Replace(wxS('\\'), wxEmptyString);
-		forbiddenChars.Replace(wxS('/'), wxEmptyString);
-
+		wxString forbiddenChars = wxFileName::GetForbiddenChars();
+		for (wxChar c: except)
+		{
+			forbiddenChars.Replace(c, wxEmptyString, true);
+		}
 		return forbiddenChars;
 	}
 }
