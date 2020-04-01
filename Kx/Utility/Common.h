@@ -53,7 +53,7 @@ namespace KxFramework::Utility
 	template<class TPointer, class TValue>
 	constexpr void SetIfNotNull(TPointer* ptr, TValue&& value)
 	{
-		using T = std::remove_reference<TValue>;
+		using T = std::remove_reference_t<TValue>;
 		static_assert(std::is_same_v<TPointer, T> || std::is_convertible_v<T, TPointer>, "incompatible types");
 
 		if (ptr)
