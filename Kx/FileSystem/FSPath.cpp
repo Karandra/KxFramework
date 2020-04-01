@@ -23,61 +23,6 @@ namespace
 		}
 		return path;
 	}
-	size_t DetectNamespacePrefix(const wxString& path, KxFramework::FSPathNamespace& ns)
-	{
-		using namespace KxFramework;
-
-		// All namespaces starts from at least one'\'
-		if (path.IsEmpty() || path[0] != wxS('\\'))
-		{
-			ns = FSPathNamespace::None;
-			return 0;
-		}
-
-		using namespace FileSystem;
-		// Test for every namespace starting from the longest prefix
-
-		// 8
-		if (path.StartsWith(NamespacePrefix::Win32FileUNC))
-		{
-			ns = FSPathNamespace::Win32FileUNC;
-			return std::size(NamespacePrefix::Win32FileUNC) - 1;
-		}
-		else if (path.StartsWith(NamespacePrefix::NetworkUNC))
-		{
-			ns = FSPathNamespace::NetworkUNC;
-			return std::size(NamespacePrefix::NetworkUNC) - 1;
-		}
-
-		// 4
-		if (path.StartsWith(NamespacePrefix::Win32File))
-		{
-			ns = FSPathNamespace::Win32File;
-			return std::size(NamespacePrefix::Win32File) - 1;
-		}
-		else if (path.StartsWith(NamespacePrefix::Win32Device))
-		{
-			ns = FSPathNamespace::Win32Device;
-			return std::size(NamespacePrefix::Win32Device) - 1;
-		}
-
-		// 2
-		if (path.StartsWith(NamespacePrefix::Network))
-		{
-			ns = FSPathNamespace::Network;
-			return std::size(NamespacePrefix::Network) - 1;
-		}
-
-		// 1
-		if (path.StartsWith(NamespacePrefix::NT))
-		{
-			ns = FSPathNamespace::NT;
-			return std::size(NamespacePrefix::NT) - 1;
-		}
-
-		return 0;
-	}
-
 	size_t FindChar(const wxString& path, wxChar c, bool reverse = false)
 	{
 		return reverse ? path.rfind(c) : path.find(c);
@@ -135,29 +80,6 @@ namespace
 		}
 		return removedCount;
 	}
-
-	bool CheckLegacyVolume(const wxString& path)
-	{
-		using namespace KxFramework;
-
-		if (path.length() >= 2 && path[1] == wxS(':'))
-		{
-			return LegacyVolume::FromChar(path[0]).IsValid();
-		}
-		return false;
-	}
-	bool CheckVolumeGUID(const wxString& path)
-	{
-		// Format: '\\?\Volume{66843779-55ae-45c5-9abe-b67ccee14079}\', but we're store path without namespace and trailing separators
-		// so it'll be this instead: 'Volume{66843779-55ae-45c5-9abe-b67ccee14079}'.
-		if (path.length() >= g_VolumePathTotalLength)
-		{
-			const bool prefixCorrect = std::char_traits<wxChar>::compare(path.wc_str(), wxS("Volume"), g_VolumePathPrefixLength) == 0;
-			const bool bracesCorrect = path[g_VolumePathPrefixLength] == wxS('{') && path[g_VolumePathTotalLength - 1] == wxS('}');
-			return prefixCorrect && bracesCorrect;
-		}
-		return false;
-	}
 }
 
 namespace KxFramework
@@ -173,7 +95,7 @@ namespace KxFramework
 
 	bool FSPath::AssignFromPath(const wxString& path)
 	{
-		if (path.Contains(FileSystem::GetForbiddenCharsExceptSeparators()) && !CheckLegacyVolume(path))
+		if (!CheckStringOnAssignPath(path))
 		{
 			return false;
 		}
@@ -248,6 +170,100 @@ namespace KxFramework
 				removeNextSlash = false;
 			}
 		}
+	}
+
+	bool FSPath::CheckIsLegacyVolume(const wxString& path) const
+	{
+		if (path.length() >= 2 && path[1] == wxS(':'))
+		{
+			return LegacyVolume::FromChar(path[0]).IsValid();
+		}
+		return false;
+	}
+	bool FSPath::CheckIsVolumeGUID(const wxString& path) const
+	{
+		// Format: '\\?\Volume{66843779-55ae-45c5-9abe-b67ccee14079}\', but we're store path without namespace and trailing separators
+		// so it'll be this instead: 'Volume{66843779-55ae-45c5-9abe-b67ccee14079}'.
+		if (path.length() >= g_VolumePathTotalLength)
+		{
+			const bool prefixCorrect = std::char_traits<wxChar>::compare(path.wc_str(), wxS("Volume"), g_VolumePathPrefixLength) == 0;
+			const bool bracesCorrect = path[g_VolumePathPrefixLength] == wxS('{') && path[g_VolumePathTotalLength - 1] == wxS('}');
+			return prefixCorrect && bracesCorrect;
+		}
+		return false;
+	}
+	size_t FSPath::DetectNamespacePrefix(const wxString& path, KxFramework::FSPathNamespace& ns) const
+	{
+		// All namespaces starts from at least one'\'
+		if (path.IsEmpty() || path[0] != wxS('\\'))
+		{
+			ns = FSPathNamespace::None;
+			return 0;
+		}
+
+		using namespace FileSystem;
+		// Test for every namespace starting from the longest prefix
+
+		// 8
+		if (path.StartsWith(NamespacePrefix::Win32FileUNC))
+		{
+			ns = FSPathNamespace::Win32FileUNC;
+			return std::size(NamespacePrefix::Win32FileUNC) - 1;
+		}
+		else if (path.StartsWith(NamespacePrefix::NetworkUNC))
+		{
+			ns = FSPathNamespace::NetworkUNC;
+			return std::size(NamespacePrefix::NetworkUNC) - 1;
+		}
+
+		// 4
+		if (path.StartsWith(NamespacePrefix::Win32File))
+		{
+			ns = FSPathNamespace::Win32File;
+			return std::size(NamespacePrefix::Win32File) - 1;
+		}
+		else if (path.StartsWith(NamespacePrefix::Win32Device))
+		{
+			ns = FSPathNamespace::Win32Device;
+			return std::size(NamespacePrefix::Win32Device) - 1;
+		}
+
+		// 2
+		if (path.StartsWith(NamespacePrefix::Network))
+		{
+			ns = FSPathNamespace::Network;
+			return std::size(NamespacePrefix::Network) - 1;
+		}
+
+		// 1
+		if (path.StartsWith(NamespacePrefix::NT))
+		{
+			ns = FSPathNamespace::NT;
+			return std::size(NamespacePrefix::NT) - 1;
+		}
+
+		return 0;
+	}
+
+	bool FSPath::CheckStringOnInitialAssign(const wxString& path) const
+	{
+		if (path.Contains(FileSystem::GetForbiddenChars(m_SearchMaksAllowed ? wxS("\\/*?") : wxS("\\/"))))
+		{
+			return CheckIsLegacyVolume(path);
+		}
+		return true;
+	}
+	bool FSPath::CheckStringOnAssignPath(const wxString& path) const
+	{
+		FSPathNamespace ns = FSPathNamespace::None;
+		return !path.Contains(FileSystem::GetForbiddenChars(m_SearchMaksAllowed ? wxS("*?") : wxEmptyString)) &&
+			!CheckIsLegacyVolume(path) &&
+			!CheckIsVolumeGUID(path) &&
+			DetectNamespacePrefix(path, ns) == 0;
+	}
+	bool FSPath::CheckStringOnAssignName(const wxString& name) const
+	{
+		return CheckStringOnAssignPath(name);
 	}
 
 	bool FSPath::IsValid() const
@@ -325,11 +341,11 @@ namespace KxFramework
 
 	bool FSPath::HasVolume() const
 	{
-		return CheckVolumeGUID(m_Path);
+		return CheckIsVolumeGUID(m_Path);
 	}
 	bool FSPath::HasLegacyVolume() const
 	{
-		return CheckLegacyVolume(m_Path);
+		return CheckIsLegacyVolume(m_Path);
 	}
 	StorageVolume FSPath::GetVolume() const
 	{
@@ -450,8 +466,7 @@ namespace KxFramework
 	}
 	FSPath& FSPath::SetPath(const wxString& path)
 	{
-		FSPathNamespace ns = FSPathNamespace::None;
-		if (!path.Contains(FileSystem::GetForbiddenCharsExceptSeparators()) && !CheckLegacyVolume(path) && !CheckVolumeGUID(path) && DetectNamespacePrefix(path, ns) == 0)
+		if (CheckStringOnAssignPath(path))
 		{
 			if (HasLegacyVolume())
 			{
@@ -485,7 +500,7 @@ namespace KxFramework
 	}
 	FSPath& FSPath::SetName(const wxString& name)
 	{
-		if (!name.Contains(FileSystem::GetForbiddenChars()))
+		if (CheckStringOnAssignName(name))
 		{
 			const size_t pos = m_Path.rfind(wxS('\\'));
 			if (pos != wxString::npos)
