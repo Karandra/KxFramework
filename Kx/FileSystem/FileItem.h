@@ -3,7 +3,6 @@
 #include "FSPath.h"
 #include "Kx/General/ExtraData.h"
 #include "Kx/General/BinarySize.h"
-#include "Kx/General/UndefWindows.h"
 
 namespace KxFramework
 {

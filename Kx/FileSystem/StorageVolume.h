@@ -3,7 +3,6 @@
 #include "FSPath.h"
 #include "Kx/General/UUID.h"
 #include "Kx/General/BinarySize.h"
-#include "KxFramework/KxWinUndef.h"
 
 namespace KxFramework
 {

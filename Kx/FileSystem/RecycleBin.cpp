@@ -1,10 +1,10 @@
 #include "KxStdAfx.h"
 #include "RecycleBin.h"
 #include "NativeFileSystem.h"
-#include <shellapi.h>
-#include "Kx/System/UndefWindows.h"
 #include "Kx/System/ShellOperations.h"
 #include "Kx/Utility/Common.h"
+#include <shellapi.h>
+#include "Kx/System/UndefWindows.h"
 
 namespace
 {

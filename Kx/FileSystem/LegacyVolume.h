@@ -1,7 +1,6 @@
 #pragma once
 #include "Common.h"
 #include "FSPath.h"
-#include "KxFramework/KxWinUndef.h"
 
 namespace KxFramework
 {

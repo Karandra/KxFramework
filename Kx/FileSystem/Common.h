@@ -1,6 +1,7 @@
 #pragma once
 #include "Kx/Common.hpp"
 #include <wx/wx.h>
+#include "Kx/System/UndefWindows.h"
 
 namespace KxFramework
 {

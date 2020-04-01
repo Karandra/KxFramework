@@ -1,6 +1,27 @@
-#undef GetObject
+// Macro to make quick template function to resolve A/W functions
+
+#ifndef Kx_MakeWinUnicodeCallWrapper
+	#ifdef UNICODE
+		#define Kx_MakeWinUnicodeCallWrapper(funcName)	\
+			template<class... Args>	\
+			auto funcName(Args&&... arg)	\
+			{	\
+				return ::funcName##W(std::forward<Args>(arg)...);	\
+			}
+	#else
+		#define Kx_MakeWinUnicodeCallWrapper(funcName)	\
+					template<class... Args>	\
+					auto funcName(Args&&... arg)	\
+					{	\
+						return ::funcName##A(std::forward<Args>(arg)...);	\
+					}
+	#endif
+#endif
+
+// Undefine Unicode wrapper macros
 #undef min
 #undef max
+#undef GetObject
 #undef SetCurrentDirectory
 #undef CopyFile
 #undef MoveFile

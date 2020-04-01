@@ -1,7 +1,7 @@
 #include "KxStdAfx.h"
 #include "FileOperations.h"
 #include <shlwapi.h>
-#include "Kx/General/UndefWindows.h"
+#include "Kx/System/UndefWindows.h"
 
 namespace KxFramework
 {

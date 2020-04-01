@@ -1,9 +1,5 @@
-/*
-Copyright © 2018 Kerber. All rights reserved.
-
-You should have received a copy of the GNU LGPL v3
-along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
-*/
+#undef WIN32_LEAN_AND_MEAN
+#undef NOMINMAX
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 
@@ -15,4 +11,3 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
-

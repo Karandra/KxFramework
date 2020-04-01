@@ -22,3 +22,5 @@ namespace KxFramework
 	// Yes, this is the intended way of using 'KxEnumClassOperations' when you have your own namespace
 	using namespace KxEnumClassOperations;
 }
+
+#include "Kx/System/UndefWindows.h"

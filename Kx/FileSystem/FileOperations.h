@@ -1,6 +1,5 @@
 #pragma once
 #include "Common.h"
-#include "Kx/General/UndefWindows.h"
 #include "FSPath.h"
 
 namespace KxFramework::FileSystem

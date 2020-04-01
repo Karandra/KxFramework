@@ -1,6 +1,7 @@
 #include "KxStdAfx.h"
 #include "UUID.h"
 #include <rpcdce.h>
+#include "Kx/System/UndefWindows.h"
 
 namespace KxFramework
 {
