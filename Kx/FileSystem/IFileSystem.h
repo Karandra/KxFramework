@@ -44,7 +44,7 @@ namespace KxFramework
 
 		public:
 			virtual FileItem GetItem(const FSPath& path) const = 0;
-			virtual size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const wxString& query = {}, FSEnumItemsFlag flags = FSEnumItemsFlag::None) const = 0;
+			virtual size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query = {}, FSEnumItemsFlag flags = FSEnumItemsFlag::None) const = 0;
 			
 			virtual bool CreateDirectory(const FSPath& path) = 0;
 			virtual bool ChangeAttributes(const FSPath& path, FileAttribute attributes) = 0;

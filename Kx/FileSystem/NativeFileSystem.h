@@ -12,7 +12,7 @@ namespace KxFramework
 			using TEnumStreamsFunc = std::function<bool(const wxString&, BinarySize)>;
 
 		public:
-			static NativeFileSystem& GetInstance()
+			static NativeFileSystem& Get()
 			{
 				static NativeFileSystem instance;
 				return instance;
@@ -25,7 +25,7 @@ namespace KxFramework
 		public:
 			// IFileSystem
 			FileItem GetItem(const FSPath& path) const override;
-			size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const wxString& query = {}, FSEnumItemsFlag flags = FSEnumItemsFlag::None) const override;
+			size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query = {}, FSEnumItemsFlag flags = FSEnumItemsFlag::None) const override;
 			
 			bool CreateDirectory(const FSPath& path) override;
 			bool ChangeAttributes(const FSPath& path, FileAttribute attributes) override;
