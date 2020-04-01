@@ -1309,6 +1309,9 @@
     <ClInclude Include="Kx\Compression\IArchiveImpl.h">
       <Filter>Kx\Compression</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Compression.hpp">
+      <Filter>Kx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />

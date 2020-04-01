@@ -471,6 +471,7 @@
     <ClInclude Include="Kx\Async\Coroutine\YieldInstruction.h" />
     <ClInclude Include="Kx\Async\DelayedCall.h" />
     <ClInclude Include="Kx\Common.hpp" />
+    <ClInclude Include="Kx\Compression.hpp" />
     <ClInclude Include="Kx\Compression\Common.h" />
     <ClInclude Include="Kx\Compression\IArchive.h" />
     <ClInclude Include="Kx\EventSystem.hpp" />
