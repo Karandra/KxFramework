@@ -13,7 +13,7 @@ namespace KxFramework
 
 namespace KxFramework
 {
-	namespace Internal::ExtraDataContainer
+	namespace Private::ExtraDataContainer
 	{
 		template<class T>
 		constexpr void AssertUntypedStorageType()
@@ -51,13 +51,13 @@ namespace KxFramework
 			template<class T = void*>
 			T GetExtraData() const
 			{
-				return Internal::ExtraDataContainer::GetExtraData<T>(m_Data);
+				return Private::ExtraDataContainer::GetExtraData<T>(m_Data);
 			}
 
 			template<class T>
 			void SetExtraData(T&& data)
 			{
-				m_Data = Internal::ExtraDataContainer::SetExtraData(std::forward<T>(data));
+				m_Data = Private::ExtraDataContainer::SetExtraData(std::forward<T>(data));
 			}
 	};
 
@@ -92,7 +92,7 @@ namespace KxFramework
 				if (GetType() == Type::Untyped)
 				{
 					void* data = std::get<static_cast<size_t>(Type::Untyped)>(m_Data);
-					return Internal::ExtraDataContainer::GetExtraData<T>(data);
+					return Private::ExtraDataContainer::GetExtraData<T>(data);
 				}
 				return T{};
 			}
@@ -100,7 +100,7 @@ namespace KxFramework
 			template<class T>
 			void SetExtraData(T&& data)
 			{
-				m_Data = Internal::ExtraDataContainer::SetExtraData(std::forward<T>(data));
+				m_Data = Private::ExtraDataContainer::SetExtraData(std::forward<T>(data));
 			}
 			
 			// Typed data

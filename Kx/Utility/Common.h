@@ -65,7 +65,7 @@ namespace KxFramework::Utility
 
 namespace KxFramework::Utility
 {
-	namespace Internal
+	namespace Private
 	{
 		template<class T, bool isEnum = std::is_enum_v<T>, bool isInteger = std::is_integral_v<T>>
 		struct UnderlyingType
@@ -79,7 +79,7 @@ namespace KxFramework::Utility
 			using type = typename T;
 		};
 	}
-	namespace Internal
+	namespace Private
 	{
 		template<class T>
 		using FlagIntType = typename UnderlyingType<T>::type;
@@ -100,10 +100,10 @@ namespace KxFramework::Utility
 	template<class TFlag, class TFlagMod>
 	constexpr TFlag ModFlag(TFlag flag, TFlagMod flagMod, bool set)
 	{
-		Internal::AssertFlags<TFlag, TFlagMod>();
+		Private::AssertFlags<TFlag, TFlagMod>();
 
-		using T1 = Internal::FlagIntType<TFlag>;
-		using T2 = Internal::FlagIntType<TFlagMod>;
+		using T1 = Private::FlagIntType<TFlag>;
+		using T2 = Private::FlagIntType<TFlagMod>;
 		using Tx = std::conditional_t<sizeof(T1) >= sizeof(T2), T1, T2>;
 
 		if (set)
@@ -125,10 +125,10 @@ namespace KxFramework::Utility
 	template<class TFlagLeft, class TFlagRight>
 	constexpr bool HasFlag(TFlagLeft left, TFlagRight right)
 	{
-		Internal::AssertFlags<TFlagLeft, TFlagRight>();
+		Private::AssertFlags<TFlagLeft, TFlagRight>();
 
-		using T1 = Internal::FlagIntType<TFlagLeft>;
-		using T2 = Internal::FlagIntType<TFlagRight>;
+		using T1 = Private::FlagIntType<TFlagLeft>;
+		using T2 = Private::FlagIntType<TFlagRight>;
 		using Tx = std::conditional_t<sizeof(T1) >= sizeof(T2), T1, T2>;
 
 		return static_cast<Tx>(left) & static_cast<Tx>(right) != static_cast<Tx>(0);
