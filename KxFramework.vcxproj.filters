@@ -265,6 +265,9 @@
     <Filter Include="Kx\Compression">
       <UniqueIdentifier>{1ffb3494-f392-4267-b778-6c908ff721ea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\UI">
+      <UniqueIdentifier>{d35e1c06-a587-42a8-897d-b06fd84ea9cf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -1312,6 +1315,15 @@
     <ClInclude Include="Kx\Compression.hpp">
       <Filter>Kx</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\UI\Common.h">
+      <Filter>Kx\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Validator.h">
+      <Filter>Kx\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI.hpp">
+      <Filter>Kx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -2061,6 +2073,9 @@
     </ClCompile>
     <ClCompile Include="Kx\Compression\IArchive.cpp">
       <Filter>Kx\Compression</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Validator.cpp">
+      <Filter>Kx\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

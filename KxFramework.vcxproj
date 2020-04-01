@@ -555,6 +555,9 @@
     <ClInclude Include="Kx\Threading\Common.h" />
     <ClInclude Include="Kx\Threading\Events\ThreadEvent.h" />
     <ClInclude Include="Kx\Threading\JoinableThread.h" />
+    <ClInclude Include="Kx\UI.hpp" />
+    <ClInclude Include="Kx\UI\Common.h" />
+    <ClInclude Include="Kx\UI\Validator.h" />
     <ClInclude Include="Kx\Utility.hpp" />
     <ClInclude Include="Kx\Utility\CallAtScopeExit.h" />
     <ClInclude Include="Kx\Utility\Common.h" />
@@ -816,6 +819,7 @@
     </ClCompile>
     <ClCompile Include="Kx\Async\Coroutine\CoroutineImpl.cpp" />
     <ClCompile Include="Kx\Compression\IArchive.cpp" />
+    <ClCompile Include="Kx\UI\Validator.cpp" />
     <ClInclude Include="Kx\Compression\IArchiveImpl.h" />
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp" />
     <ClCompile Include="Kx\EventSystem\EventBuilder.cpp" />
