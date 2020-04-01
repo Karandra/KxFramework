@@ -228,6 +228,63 @@ namespace KxFramework
 				return m_Value >= other.m_Value;
 			}
 
+			// Arithmetics
+			constexpr BinarySize operator+(const BinarySize& other) const
+			{
+				return m_Value + other.m_Value;
+			}
+			constexpr BinarySize operator-(const BinarySize& other) const
+			{
+				return m_Value - other.m_Value;
+			}
+			constexpr BinarySize operator*(int64_t n) const
+			{
+				return m_Value * n;
+			}
+			constexpr BinarySize operator*(double n) const
+			{
+				return m_Value * n;
+			}
+			constexpr BinarySize operator/(int64_t n) const
+			{
+				return m_Value / n;
+			}
+			constexpr BinarySize operator/(double n) const
+			{
+				return m_Value / n;
+			}
+
+			constexpr BinarySize& operator+=(const BinarySize& other)
+			{
+				m_Value += other.m_Value;
+				return *this;
+			}
+			constexpr BinarySize& operator-=(const BinarySize& other)
+			{
+				m_Value -= other.m_Value;
+				return *this;
+			}
+			constexpr BinarySize& operator*=(int64_t n)
+			{
+				m_Value *= n;
+				return *this;
+			}
+			constexpr BinarySize& operator*=(double n)
+			{
+				m_Value *= n;
+				return *this;
+			}
+			constexpr BinarySize& operator/=(int64_t n)
+			{
+				m_Value /= n;
+				return *this;
+			}
+			constexpr BinarySize& operator/=(double n)
+			{
+				m_Value /= n;
+				return *this;
+			}
+
 			// Validity test (see  'IsValid')
 			constexpr explicit operator bool() const
 			{
@@ -238,4 +295,16 @@ namespace KxFramework
 				return !IsValid();
 			}
 	};
+}
+
+namespace KxFramework
+{
+	inline double GetSizeRatio(BinarySize smallerSize, BinarySize largerSize)
+	{
+		if (smallerSize && largerSize)
+		{
+			return smallerSize.GetBytes<double>() / largerSize.GetBytes<double>();
+		}
+		return -1;
+	}
 }
