@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "FSPath.h"
 #include "Kx/General/BinarySize.h"
+#include "Kx/RTTI/QueryInterface.h"
 
 namespace KxFramework
 {
@@ -33,8 +34,10 @@ namespace KxEnumClassOperations
 
 namespace KxFramework
 {
-	class KX_API IFileSystem
+	class KX_API IFileSystem: public RTTI::Interface<IFileSystem>
 	{
+		KxDecalreIID(IFileSystem, {0x950f74ec, 0x6352, 0x47a1, {0xac, 0x8f, 0x43, 0x6a, 0x6, 0x1e, 0x9f, 0x65}});
+
 		public:
 			using TEnumItemsFunc = std::function<bool(FileItem)>;
 			using TCopyItemFunc = std::function<bool(BinarySize, BinarySize)>;
