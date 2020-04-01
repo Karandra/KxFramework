@@ -199,7 +199,7 @@ namespace KxFramework
 			{
 				if (IsCompressed() && m_CompressedSize)
 				{
-					return m_Size ? m_CompressedSize.GetBytes<double>() / m_Size.GetBytes<double>() : -1;
+					return GetSizeRatio(m_CompressedSize, m_Size);
 				}
 				return 1;
 			}
