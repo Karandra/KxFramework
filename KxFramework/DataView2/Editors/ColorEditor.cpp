@@ -1,12 +1,14 @@
 #include "KxStdAfx.h"
 #include "ColorEditor.h"
 #include <wx/colordlg.h>
-#include <wx/generic/colrdlgg.h>
 
 namespace
 {
-	template<typename> struct ArraySize;
-	template<typename T, size_t N> struct ArraySize<std::array<T, N>>
+	template<typename>
+	struct ArraySize;
+	
+	template<typename T, size_t N>
+	struct ArraySize<std::array<T, N>>
 	{
 		static constexpr size_t size = N;
 	};
@@ -81,8 +83,11 @@ namespace KxDataView2
 
 		if (shouldUseGeneric)
 		{
-			genericDialog = new wxGenericColourDialog(parent, &colorData);
-			m_Dialog = genericDialog;
+			//genericDialog = new wxGenericColourDialog(parent, &colorData);
+			//m_Dialog = genericDialog;
+
+			nativeDialog = new wxColourDialog(parent, &colorData);
+			m_Dialog = nativeDialog;
 		}
 		else
 		{
@@ -101,7 +106,8 @@ namespace KxDataView2
 				}
 				else if (genericDialog)
 				{
-					m_Value.FromColorData(genericDialog->GetColourData());
+					//m_Value.FromColorData(genericDialog->GetColourData());
+					m_Value.FromColorData(nativeDialog->GetColourData());
 				}
 				EndEdit();
 			}

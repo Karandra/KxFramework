@@ -1861,9 +1861,6 @@
     <ClCompile Include="KxFramework\DataView2\Editors\SpinEditor.cpp">
       <Filter>Source Files\GUI\DataView2\Editors</Filter>
     </ClCompile>
-    <ClCompile Include="..\wxWidgets\src\generic\colrdlgg.cpp">
-      <Filter>Source Files\GUI\DataView2\Editors</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxDynamicCastAsIs.cpp">
       <Filter>Source Files\General</Filter>
     </ClCompile>

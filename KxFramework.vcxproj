@@ -568,16 +568,6 @@
     <ClInclude Include="Kx\Utility\TypeTraits.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\wxWidgets\src\generic\colrdlgg.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(Configuration) $(Platform)\%(RelativeDir)</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(Configuration) $(Platform)\%(RelativeDir)</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(Configuration) $(Platform)\%(RelativeDir)</ObjectFileName>
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(Configuration) $(Platform)\%(RelativeDir)</ObjectFileName>
-    </ClCompile>
     <ClCompile Include="KxFramework\ComponentSystem\Component.cpp" />
     <ClCompile Include="KxFramework\ComponentSystem\ComponentContainer.cpp" />
     <ClCompile Include="KxFramework\ComponentSystem\ComponentItem.cpp" />
