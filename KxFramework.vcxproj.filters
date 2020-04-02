@@ -718,20 +718,8 @@
     <ClInclude Include="KxFramework\KxComparator.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxZLibStream.h">
-      <Filter>Header Files\Streams</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxLZ4Stream.h">
-      <Filter>Header Files\Streams</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxAlignedAllocator.h">
       <Filter>Header Files\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxMemoryStream.h">
-      <Filter>Header Files\Streams</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxStreamWrappers.h">
-      <Filter>Header Files\Streams</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxAnimatedSplashWindow.h">
       <Filter>Header Files\GUI\Windows</Filter>
@@ -1339,6 +1327,12 @@
     <ClInclude Include="Kx\General\ExtraDataPrivate.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Compression\ZLibStream.h">
+      <Filter>Kx\Compression</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Compression\LZ4Stream.h">
+      <Filter>Kx\Compression</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1756,18 +1750,6 @@
     <ClCompile Include="KxFramework\KxSharedMemory.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxZLibStream.cpp">
-      <Filter>Source Files\Streams</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxLZ4Stream.cpp">
-      <Filter>Source Files\Streams</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxMemoryStream.cpp">
-      <Filter>Source Files\Streams</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxStreamWrappers.cpp">
-      <Filter>Source Files\Streams</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\XML\TinyXML2.cpp">
       <Filter>Source Files\Parsers\XML</Filter>
     </ClCompile>
@@ -2091,6 +2073,12 @@
     </ClCompile>
     <ClCompile Include="Kx\General\MemoryStream.cpp">
       <Filter>Kx\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Compression\ZLibStream.cpp">
+      <Filter>Kx\Compression</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Compression\LZ4Stream.cpp">
+      <Filter>Kx\Compression</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

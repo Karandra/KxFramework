@@ -1,16 +1,19 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxStreamWrappers.h"
 #include "KxFramework/KxEnumClassOperations.h"
 #include "Kx/FileSystem/FSPath.h"
+#include "Kx/General/StreamWrappers.h"
 
 class KX_API KxFileStream:
-	public KxStreamBase,
-	public KxIOStreamHelper<KxFileStream>,
-	public KxInputStreamWrapper<wxInputStream>,
-	public KxOutputStreamWrapper<wxOutputStream>
+	public KxFramework::IStreamWrapper,
+	public KxFramework::InputStreamWrapper<wxInputStream>,
+	public KxFramework::OutputStreamWrapper<wxOutputStream>,
+	public KxFramework::IOStreamWrapper<KxFileStream>
 {
 	public:
+		using Offset = wxFileOffset;
+		static constexpr Offset InvalidOffset = wxInvalidOffset;
+
 		enum class Access
 		{
 			Invalid = -1,
@@ -157,7 +160,7 @@ class KX_API KxFileStream:
 		bool IsReadable() const override;
 
 		bool Flush() override;
-		bool SetAllocationSize(Offset offset = InvalidOffset) override;
+		bool SetAllocationSize(KxFramework::BinarySize offset = {}) override;
 		KxFramework::FSPath GetFileName() const;
 		HANDLE GetHandle() const;
 

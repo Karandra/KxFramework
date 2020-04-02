@@ -5,7 +5,7 @@
 
 namespace KxFramework
 {
-	class KX_API MemoryInputStream: public IBaseStreamWrapper, public InputStreamWrapper<wxMemoryInputStream>
+	class KX_API MemoryInputStream: public IStreamWrapper, public InputStreamWrapper<wxMemoryInputStream>
 	{
 		public:
 			MemoryInputStream(const void* data, size_t size)
@@ -42,7 +42,7 @@ namespace KxFramework
 
 namespace KxFramework
 {
-	class KX_API MemoryOutputStream: public IBaseStreamWrapper, public OutputStreamWrapper<wxMemoryOutputStream>
+	class KX_API MemoryOutputStream: public IStreamWrapper, public OutputStreamWrapper<wxMemoryOutputStream>
 	{
 		public:
 			MemoryOutputStream(void* data = nullptr, size_t size = 0)

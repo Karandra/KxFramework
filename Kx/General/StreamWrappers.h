@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "BinarySize.h"
 #include "Kx/Utility/Common.h"
+#include "Kx/RTTI/QueryInterface.h"
 #include <vector>
 #include <array>
 #include <wx/ustring.h>
@@ -9,8 +10,10 @@
 
 namespace KxFramework
 {
-	class KX_API IBaseStreamWrapper
+	class KX_API IStreamWrapper: public RTTI::Interface<IStreamWrapper>
 	{
+		KxDecalreIID(IStreamWrapper, {0xbf4894d7, 0x8ec9, 0x4aed, {0x8d, 0xf, 0x18, 0xed, 0x32, 0xdd, 0x69, 0x8a}});
+
 		public:
 			enum class SeekMode
 			{
@@ -27,7 +30,7 @@ namespace KxFramework
 			};
 
 		public:
-			virtual ~IBaseStreamWrapper() = default;
+			virtual ~IStreamWrapper() = default;
 
 		public:
 			virtual bool Flush() = 0;
@@ -73,8 +76,6 @@ namespace KxFramework
 				:TBaseStream(std::forward<Args>(arg)...)
 			{
 			}
-			
-			virtual ~InputStreamWrapper() = default;
 
 		public:
 			InputStreamWrapper& operator=(const InputStreamWrapper&) = delete;
@@ -97,13 +98,16 @@ namespace KxFramework
 				return buffer;
 			}
 			
-			template<class T> bool ReadObject(T& object)
+			template<class T>
+			bool ReadObject(T& object)
 			{
 				static_assert(std::is_trivially_copyable_v<T>, "T must be trivially copyable");
 
 				return ReadBuffer(std::addressof(object), sizeof(object));
 			}
-			template<class T> T ReadObject()
+			
+			template<class T>
+			T ReadObject()
 			{
 				static_assert(std::is_default_constructible_v<T>, "T must be default constructible");
 
@@ -222,7 +226,7 @@ namespace KxFramework
 				ReadStringUTF8(value, size);
 				return value;
 			}
-		
+			
 			bool ReadStringUTF16(wxString& value, size_t size)
 			{
 				std::vector<wchar_t> buffer;
@@ -244,7 +248,7 @@ namespace KxFramework
 				ReadStringUTF16(value, size);
 				return value;
 			}
-		
+			
 			bool ReadStringUTF32(wxString& value, size_t size)
 			{
 				std::vector<wxChar32> buffer;
@@ -333,8 +337,6 @@ namespace KxFramework
 				:TBaseStream(std::forward<Args>(arg)...)
 			{
 			}
-			
-			virtual ~OutputStreamWrapper() = default;
 
 		public:
 			OutputStreamWrapper& operator=(const OutputStreamWrapper&) = delete;
@@ -409,10 +411,10 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework::Private
+namespace KxFramework
 {
 	template<class TBaseStream>
-	class IOStreamWrapperHelper
+	class IOStreamWrapper
 	{
 		private:
 			constexpr static bool IsInputStream()
@@ -470,30 +472,30 @@ namespace KxFramework::Private
 			}
 
 		public:
-			virtual ~IOStreamWrapperHelper() = default;
+			virtual ~IOStreamWrapper() = default;
 
 		public:
-			bool Skip(BinarySize offset)
-			{
-				return SeekIO(offset, wxSeekMode::wxFromCurrent) != IBaseStreamWrapper::InvalidOffset;
-			}
-			bool SkipToEnd()
-			{
-				return SeekIO(0, wxSeekMode::wxFromEnd) != IBaseStreamWrapper::InvalidOffset;
-			}
-			bool Rewind()
-			{
-				return SeekIO(BinarySize::FromBytes(0), wxSeekMode::wxFromStart) != IBaseStreamWrapper::InvalidOffset;
-			}
-			
 			template<class... Types>
 			bool Skip()
 			{
 				static_assert(sizeof...(Types) != 0, "KxIOStreamHelper::Skip<Types...>: Skipping 0 bytes is not allowed");
 
-				return SeekIO(Utility::SizeOfParameterPackValues<Types...>(), wxSeekMode::wxFromCurrent) != IBaseStreamWrapper::InvalidOffset;
+				return SeekIO(Utility::SizeOfParameterPackValues<Types...>(), wxSeekMode::wxFromCurrent) != IStreamWrapper::InvalidOffset;
 			}
 
+			bool Skip(BinarySize offset)
+			{
+				return SeekIO(offset, wxSeekMode::wxFromCurrent).IsValid();
+			}
+			bool SkipToEnd()
+			{
+				return SeekIO(0, wxSeekMode::wxFromEnd).IsValid();
+			}
+			bool Rewind()
+			{
+				return SeekIO(BinarySize::FromBytes(0), wxSeekMode::wxFromStart).IsValid();
+			}
+			
 			bool SeekFromStart(BinarySize offset)
 			{
 				return SeekIO(offset, wxSeekMode::wxFromStart).IsValid();
@@ -507,25 +509,9 @@ namespace KxFramework::Private
 			{
 				return TellIO();
 			}
-			BinarySize Seek(BinarySize offset, IBaseStreamWrapper::SeekMode mode = IBaseStreamWrapper::SeekMode::FromCurrent)
+			BinarySize Seek(BinarySize offset, IStreamWrapper::SeekMode mode = IStreamWrapper::SeekMode::FromCurrent)
 			{
 				return SeekIO(offset, static_cast<wxSeekMode>(mode));
 			}
-	};
-}
-
-namespace KxFramework
-{
-	template<class TBaseStream>
-	class IOStreamWrapper: public TBaseStream, public Private::IOStreamWrapperHelper<IOStreamWrapper<TBaseStream>>
-	{
-		public:
-			template<class... Args>
-			IOStreamWrapper(Args&&... arg)
-				:TBaseStream(std::forward<Args>(arg)...)
-			{
-			}
-			
-			virtual ~IOStreamWrapper() = default;
 	};
 }

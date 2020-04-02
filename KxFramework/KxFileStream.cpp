@@ -8,18 +8,18 @@ using namespace KxEnumClassOperations;
 
 namespace
 {
-	KxStreamBase::Offset GetFileSizeByHandle(HANDLE fileHandle)
+	KxFileStream::Offset GetFileSizeByHandle(HANDLE fileHandle)
 	{
 		LARGE_INTEGER size = {0};
 		if (::GetFileSizeEx(fileHandle, &size))
 		{
 			return size.QuadPart;
 		}
-		return KxStreamBase::InvalidOffset;
+		return wxInvalidOffset;
 	}
-	KxStreamBase::Offset SeekByHandle(HANDLE fileHandle, KxStreamBase::Offset offset, KxStreamBase::SeekMode seekMode)
+	KxFileStream::Offset SeekByHandle(HANDLE fileHandle, BinarySize offset, KxFileStream::SeekMode seekMode)
 	{
-		using SeekMode = KxStreamBase::SeekMode;
+		using SeekMode = KxFileStream::SeekMode;
 
 		DWORD seekModeWin = (DWORD)-1;
 		switch (seekMode)
@@ -41,21 +41,21 @@ namespace
 			}
 			default:
 			{
-				return KxStreamBase::InvalidOffset;
+				return wxInvalidOffset;
 			}
 		};
 
 		LARGE_INTEGER moveTo = {0};
-		moveTo.QuadPart = offset;
+		moveTo.QuadPart = offset.GetBytes();
 
 		LARGE_INTEGER newOffset = {0};
 		if (::SetFilePointerEx(fileHandle, moveTo, &newOffset, seekModeWin))
 		{
 			return newOffset.QuadPart;
 		}
-		return KxStreamBase::InvalidOffset;
+		return wxInvalidOffset;
 	}
-	KxStreamBase::Offset GetPositionByHandle(HANDLE fileHandle)
+	KxFileStream::Offset GetPositionByHandle(HANDLE fileHandle)
 	{
 		LARGE_INTEGER offset = {0};
 		::SetFilePointerEx(fileHandle, offset, &offset, FILE_CURRENT);
@@ -74,9 +74,9 @@ namespace
 		return out;
 	}
 
-	KxStreamBase::ErrorCode TranslateErrorCode(DWORD winErrorCode, bool isWrite)
+	KxFileStream::ErrorCode TranslateErrorCode(DWORD winErrorCode, bool isWrite)
 	{
-		using ErrorCode = KxStreamBase::ErrorCode;
+		using ErrorCode = KxFileStream::ErrorCode;
 
 		if (winErrorCode == ERROR_SUCCESS)
 		{
@@ -378,7 +378,7 @@ bool KxFileStream::Flush()
 {
 	return ::FlushFileBuffers(m_Handle);
 }
-bool KxFileStream::SetAllocationSize(Offset offset)
+bool KxFileStream::SetAllocationSize(KxFramework::BinarySize offset)
 {
 	if (offset != InvalidOffset)
 	{
