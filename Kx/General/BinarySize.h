@@ -32,7 +32,10 @@ namespace KxFramework
 	class KX_API BinarySize final
 	{
 		public:
-			static constexpr BinarySize FromBytes(int64_t bytes)
+			using SizeType = int64_t;
+
+		public:
+			static constexpr BinarySize FromBytes(SizeType bytes)
 			{
 				return bytes;
 			}
@@ -91,11 +94,11 @@ namespace KxFramework
 			}
 
 		private:
-			int64_t m_Value = -1;
+		SizeType m_Value = -1;
 
 		private:
 			template<class T>
-			constexpr T GetAs(int64_t value) const
+			constexpr T GetAs(SizeType value) const
 			{
 				if constexpr(std::is_floating_point_v<T>)
 				{
@@ -113,7 +116,7 @@ namespace KxFramework
 
 		public:
 			constexpr BinarySize() = default;
-			constexpr BinarySize(int64_t bytes)
+			constexpr BinarySize(SizeType bytes)
 				:m_Value(bytes)
 			{
 			}
@@ -138,7 +141,7 @@ namespace KxFramework
 			}
 
 			// Conversion
-			template<class T = int64_t>
+			template<class T = SizeType>
 			constexpr T GetBytes() const
 			{
 				static_assert(std::is_integral_v<T> || std::is_floating_point_v<T>, "invalid numeric type");
@@ -146,31 +149,31 @@ namespace KxFramework
 				return static_cast<T>(m_Value);
 			}
 			
-			template<class T = int64_t>
+			template<class T = SizeType>
 			constexpr T GetKB() const
 			{
 				return GetAs<T>(m_Value);
 			}
 			
-			template<class T = int64_t>
+			template<class T = SizeType>
 			constexpr T GetMB() const
 			{
 				return GetAs<T>(GetKB());
 			}
 			
-			template<class T = int64_t>
+			template<class T = SizeType>
 			constexpr T GetGB() const
 			{
 				return GetAs<T>(GetMB());
 			}
 			
-			template<class T = int64_t>
+			template<class T = SizeType>
 			constexpr T GetTB() const
 			{
 				return GetAs<T>(GetGB());
 			}
 			
-			template<class T = int64_t>
+			template<class T = SizeType>
 			constexpr T GetAsUnit(BinarySizeUnit unit) const
 			{
 				switch (unit)
@@ -238,7 +241,7 @@ namespace KxFramework
 			{
 				return m_Value - other.m_Value;
 			}
-			constexpr BinarySize operator*(int64_t n) const
+			constexpr BinarySize operator*(SizeType n) const
 			{
 				return m_Value * n;
 			}
@@ -246,7 +249,7 @@ namespace KxFramework
 			{
 				return m_Value * n;
 			}
-			constexpr BinarySize operator/(int64_t n) const
+			constexpr BinarySize operator/(SizeType n) const
 			{
 				return m_Value / n;
 			}
@@ -265,7 +268,7 @@ namespace KxFramework
 				m_Value -= other.m_Value;
 				return *this;
 			}
-			constexpr BinarySize& operator*=(int64_t n)
+			constexpr BinarySize& operator*=(SizeType n)
 			{
 				m_Value *= n;
 				return *this;
@@ -275,7 +278,7 @@ namespace KxFramework
 				m_Value *= n;
 				return *this;
 			}
-			constexpr BinarySize& operator/=(int64_t n)
+			constexpr BinarySize& operator/=(SizeType n)
 			{
 				m_Value /= n;
 				return *this;
