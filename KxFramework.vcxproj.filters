@@ -1330,6 +1330,12 @@
     <ClInclude Include="Kx\General\EnumClass.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\General\StreamWrappers.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\MemoryStream.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -2082,6 +2088,9 @@
     </ClCompile>
     <ClCompile Include="Kx\UI\Validator.cpp">
       <Filter>Kx\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\MemoryStream.cpp">
+      <Filter>Kx\General</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

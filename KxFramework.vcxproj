@@ -502,9 +502,11 @@
     <ClInclude Include="Kx\General\Common.h" />
     <ClInclude Include="Kx\General\EnumClass.h" />
     <ClInclude Include="Kx\General\ExtraData.h" />
+    <ClInclude Include="Kx\General\MemoryStream.h" />
     <ClInclude Include="Kx\General\NativeUUID.h" />
     <ClInclude Include="Kx\General\Singleton.h" />
     <ClInclude Include="Kx\General\StreamDelegate.h" />
+    <ClInclude Include="Kx\General\StreamWrappers.h" />
     <ClInclude Include="Kx\General\UUID.h" />
     <ClInclude Include="Kx\RTTI.hpp" />
     <ClInclude Include="Kx\RTTI\Common.h" />
@@ -821,6 +823,7 @@
     </ClCompile>
     <ClCompile Include="Kx\Async\Coroutine\CoroutineImpl.cpp" />
     <ClCompile Include="Kx\Compression\IArchive.cpp" />
+    <ClCompile Include="Kx\General\MemoryStream.cpp" />
     <ClCompile Include="Kx\UI\Validator.cpp" />
     <ClInclude Include="Kx\Compression\IArchiveImpl.h" />
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp" />
