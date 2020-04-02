@@ -1105,9 +1105,6 @@
     <ClInclude Include="KxFramework\DataView2\HeaderCtrl2.h">
       <Filter>Header Files\GUI\DataView2</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxStreamDelegate.h">
-      <Filter>Header Files\Streams</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\Sciter.hpp">
       <Filter>Kx</Filter>
     </ClInclude>
@@ -1323,6 +1320,9 @@
     </ClInclude>
     <ClInclude Include="Kx\UI.hpp">
       <Filter>Kx</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\StreamDelegate.h">
+      <Filter>Kx\General</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

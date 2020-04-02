@@ -36,7 +36,7 @@ namespace KxFramework::Compression
 			}
 
 		public:
-			KxDelegateOutputStream OnGetStream(FileIndex fileIndex) override
+			OutputStreamDelegate OnGetStream(FileIndex fileIndex) override
 			{
 				m_FileItem = m_ArchiveItems.GetItem(fileIndex);
 				if (m_FileItem)
@@ -107,7 +107,7 @@ namespace KxFramework::Compression
 			}
 
 		public:
-			KxDelegateOutputStream OnGetStream(FileIndex fileIndex) override
+			OutputStreamDelegate OnGetStream(FileIndex fileIndex) override
 			{
 				FileItem fileItem = m_ArchiveItems.GetItem(fileIndex);
 				if (fileItem && !fileItem.IsDirectory())

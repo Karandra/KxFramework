@@ -4,9 +4,9 @@
 #include "Kx/FileSystem/FSPath.h"
 #include "Kx/FileSystem/FileItem.h"
 #include "Kx/General/BinarySize.h"
+#include "Kx/General/StreamDelegate.h"
 #include "Kx/System/UndefWindows.h"
 #include "Kx/RTTI/QueryInterface.h"
-#include <KxFramework/KxStreamDelegate.h>
 
 namespace KxFramework::Compression
 {
@@ -195,7 +195,7 @@ namespace KxFramework
 				return false;
 			}
 
-			virtual KxDelegateOutputStream OnGetStream(Compression::FileIndex fileIndex) = 0;
+			virtual OutputStreamDelegate OnGetStream(Compression::FileIndex fileIndex) = 0;
 			virtual bool OnOperationCompleted(Compression::FileIndex fileIndex, wxOutputStream& stream) = 0;
 	};
 
@@ -206,7 +206,7 @@ namespace KxFramework
 			const IArchiveExtraction& m_Archive;
 
 			std::function<bool()> m_ShouldCancel;
-			std::function<KxDelegateOutputStream(Compression::FileIndex)> m_OnGetStream;
+			std::function<OutputStreamDelegate(Compression::FileIndex)> m_OnGetStream;
 			std::function<bool(Compression::FileIndex, wxOutputStream&)> m_OnOperationCompleted;
 
 		private:
@@ -215,7 +215,7 @@ namespace KxFramework
 				return m_ShouldCancel ? m_ShouldCancel() : false;
 			}
 
-			KxDelegateOutputStream OnGetStream(Compression::FileIndex fileIndex) override
+			OutputStreamDelegate OnGetStream(Compression::FileIndex fileIndex) override
 			{
 				return m_OnGetStream ? m_OnGetStream(fileIndex) : nullptr;
 			}

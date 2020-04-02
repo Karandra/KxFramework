@@ -285,7 +285,6 @@
     <ClInclude Include="KxFramework\KxHiDPIEnabledWindow.h" />
     <ClInclude Include="KxFramework\KxNotifyEvent.h" />
     <ClInclude Include="KxFramework\KxOptionSet.h" />
-    <ClInclude Include="KxFramework\KxStreamDelegate.h" />
     <ClInclude Include="KxFramework\KxSystemEnums.h" />
     <ClInclude Include="KxFramework\KxDPIAwareness.h" />
     <ClInclude Include="KxFramework\KxToolTipEx.h" />
@@ -503,6 +502,7 @@
     <ClInclude Include="Kx\General\ExtraData.h" />
     <ClInclude Include="Kx\General\NativeUUID.h" />
     <ClInclude Include="Kx\General\Singleton.h" />
+    <ClInclude Include="Kx\General\StreamDelegate.h" />
     <ClInclude Include="Kx\General\UUID.h" />
     <ClInclude Include="Kx\RTTI.hpp" />
     <ClInclude Include="Kx\RTTI\Common.h" />
