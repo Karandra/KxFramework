@@ -1,24 +1,15 @@
 #include "KxStdAfx.h"
 #include "ColorEditor.h"
+#include "Kx/Utility/Common.h"
 #include <wx/colordlg.h>
-
-namespace
-{
-	template<typename>
-	struct ArraySize;
-	
-	template<typename T, size_t N>
-	struct ArraySize<std::array<T, N>>
-	{
-		static constexpr size_t size = N;
-	};
-}
 
 namespace KxDataView2
 {
 	ColorValue::ColorValue(const KxColor& color):m_Color(color)
 	{
-		static_assert(wxColourData::NUM_CUSTOM == ArraySize<decltype(m_PaletteColors)>::size);
+		using namespace KxFramework::Utility;
+
+		static_assert(wxColourData::NUM_CUSTOM == ArraySize<decltype(m_PaletteColors)>::value);
 	}
 
 	bool ColorValue::FromAny(const wxAny& value)

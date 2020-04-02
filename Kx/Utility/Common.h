@@ -1,6 +1,8 @@
 #pragma once
 #include "Kx/Common.hpp"
 #include <type_traits>
+#include <utility>
+#include <array>
 
 namespace KxFramework::Utility
 {
@@ -61,6 +63,24 @@ namespace KxFramework::Utility
 			*ptr = static_cast<TPointer>(std::forward<TValue>(value));
 		}
 	}
+}
+
+namespace KxFramework::Utility
+{
+	template<typename>
+	struct ArraySize;
+
+	template<typename T, size_t N>
+	struct ArraySize<T[N]>
+	{
+		static constexpr size_t value = N;
+	};
+
+	template<typename T, size_t N>
+	struct ArraySize<std::array<T, N>>
+	{
+		static constexpr size_t value = N;
+	};
 }
 
 namespace KxFramework::Utility
