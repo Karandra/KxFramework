@@ -1336,6 +1336,9 @@
     <ClInclude Include="Kx\General\MemoryStream.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\General\ExtraDataPrivate.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />

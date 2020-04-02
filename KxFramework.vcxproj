@@ -502,6 +502,7 @@
     <ClInclude Include="Kx\General\Common.h" />
     <ClInclude Include="Kx\General\EnumClass.h" />
     <ClInclude Include="Kx\General\ExtraData.h" />
+    <ClInclude Include="Kx\General\ExtraDataPrivate.h" />
     <ClInclude Include="Kx\General\MemoryStream.h" />
     <ClInclude Include="Kx\General\NativeUUID.h" />
     <ClInclude Include="Kx\General\Singleton.h" />
