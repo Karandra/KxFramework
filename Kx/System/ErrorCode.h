@@ -50,7 +50,7 @@ namespace KxFramework
 			{
 				AssignCode(errorCode);
 			}
-			ErrorCode(HRESULTCode errorCode) noexcept
+			ErrorCode(HResultCode errorCode) noexcept
 			{
 				AssignCode(errorCode);
 			}
@@ -77,14 +77,14 @@ namespace KxFramework
 			{
 				return GetAsCode<NtStatusCode>();
 			}
-			std::optional<HRESULTCode> GetHRESULT() const noexcept
+			std::optional<HResultCode> GetHRESULT() const noexcept
 			{
-				return GetAsCode<HRESULTCode>();
+				return GetAsCode<HResultCode>();
 			}
 
 			std::optional<Win32ErrorCode> ConvertToWin32() const noexcept;
 			std::optional<NtStatusCode> ConvertToNtStatus() const noexcept;
-			std::optional<HRESULTCode> ConvertToHRESULT() const noexcept;
+			std::optional<HResultCode> ConvertToHRESULT() const noexcept;
 
 			bool IsSuccessful() const noexcept
 			{
@@ -102,9 +102,9 @@ namespace KxFramework
 					{
 						return NtStatusCode(m_Value).IsSuccessful();
 					}
-					case ErrorCodeCategory::HRESULT:
+					case ErrorCodeCategory::HResult:
 					{
-						return HRESULTCode(m_Value).IsSuccessful();
+						return HResultCode(m_Value).IsSuccessful();
 					}
 				};
 				return false;
@@ -144,7 +144,7 @@ namespace KxFramework
 			{
 				return IsEqualValue(other);
 			}
-			bool operator==(HRESULTCode other) const noexcept
+			bool operator==(HResultCode other) const noexcept
 			{
 				return IsEqualValue(other);
 			}

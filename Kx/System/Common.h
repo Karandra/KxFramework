@@ -9,7 +9,7 @@ namespace KxFramework
 
 		Generic,
 		Win32,
-		NtStatus,
-		HRESULT
+		HResult,
+		NtStatus
 	};
 }

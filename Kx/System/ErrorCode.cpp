@@ -112,7 +112,7 @@ namespace KxFramework
 			{
 				return Win32FromNtStatus(m_Value);
 			}
-			case ErrorCodeCategory::HRESULT:
+			case ErrorCodeCategory::HResult:
 			{
 				return Win32FromHRESULT(m_Value);
 			}
@@ -139,7 +139,7 @@ namespace KxFramework
 			{
 				return NtStatusCode(m_Value);
 			}
-			case ErrorCodeCategory::HRESULT:
+			case ErrorCodeCategory::HResult:
 			{
 				if (auto win32Code = Win32FromHRESULT(m_Value))
 				{
@@ -150,7 +150,7 @@ namespace KxFramework
 		};
 		return {};
 	}
-	std::optional<HRESULTCode> ErrorCode::ConvertToHRESULT() const noexcept
+	std::optional<HResultCode> ErrorCode::ConvertToHRESULT() const noexcept
 	{
 		switch (m_Category)
 		{
@@ -158,25 +158,25 @@ namespace KxFramework
 			{
 				if (GenericErrorCode(m_Value).IsSuccessful())
 				{
-					return HRESULTCode(S_OK);
+					return HResultCode(S_OK);
 				}
 				break;
 			}
 			case ErrorCodeCategory::Win32:
 			{
-				return HRESULTCode(HRESULT_FROM_WIN32(m_Value));
+				return HResultCode(HRESULT_FROM_WIN32(m_Value));
 			}
 			case ErrorCodeCategory::NtStatus:
 			{
 				if (auto ntStatus = Win32FromNtStatus(m_Value))
 				{
-					return HRESULTCode(HRESULT_FROM_WIN32(*ntStatus));
+					return HResultCode(HRESULT_FROM_WIN32(*ntStatus));
 				}
 				break;
 			}
-			case ErrorCodeCategory::HRESULT:
+			case ErrorCodeCategory::HResult:
 			{
-				return HRESULTCode(m_Value);
+				return HResultCode(m_Value);
 			}
 		};
 		return {};

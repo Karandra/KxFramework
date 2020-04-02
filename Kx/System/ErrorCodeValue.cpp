@@ -12,7 +12,7 @@ namespace KxFramework
 	{
 		return GetValue() == STATUS_SUCCESS;
 	}
-	bool HRESULTCode::IsSuccessful() const noexcept
+	bool HResultCode::IsSuccessful() const noexcept
 	{
 		return SUCCEEDED(GetValue());
 	}

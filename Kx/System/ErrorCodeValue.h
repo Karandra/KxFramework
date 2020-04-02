@@ -123,16 +123,16 @@ namespace KxFramework
 			}
 	};
 
-	class HRESULTCode final: public System::ErrorCodeValue<HRESULTCode, int32_t>
+	class HResultCode final: public System::ErrorCodeValue<HResultCode, int32_t>
 	{
 		public:
 			constexpr static ErrorCodeCategory GetCategory() noexcept
 			{
-				return ErrorCodeCategory::HRESULT;
+				return ErrorCodeCategory::HResult;
 			}
 
 		public:
-			explicit HRESULTCode(TValueType value) noexcept
+			explicit HResultCode(TValueType value) noexcept
 				:ErrorCodeValue(value)
 			{
 			}
