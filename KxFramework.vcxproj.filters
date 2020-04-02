@@ -1327,6 +1327,9 @@
     <ClInclude Include="Kx\General.hpp">
       <Filter>Kx</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\General\EnumClass.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />

@@ -19,13 +19,12 @@ namespace KxFramework
 		AllowUndo = 1 << 3,
 		NoConfirmation = 1 << 4,
 	};
-}
 
-namespace KxEnumClassOperations
-{
-	KxImplementEnum(KxFramework::SHOperationFlags);
+	namespace EnumClass
+	{
+		Kx_EnumClass_AllowEverything(SHOperationFlags);
+	}
 }
-
 namespace KxFramework::Shell
 {
 	bool FileOperation(SHOperationType opType, const FSPath& source, const FSPath& destination, wxWindow* window = nullptr, SHOperationFlags flags = SHOperationFlags::None);

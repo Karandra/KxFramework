@@ -14,13 +14,6 @@
 #include <optional>
 #include <memory>
 
-// Some generic headers
-#include <KxFramework/KxEnumClassOperations.h>
-
-namespace KxFramework
-{
-	// Yes, this is the intended way of using 'KxEnumClassOperations' when you have your own namespace
-	using namespace KxEnumClassOperations;
-}
-
+// Essential headers
+#include "Kx/General/EnumClass.h"
 #include "Kx/System/UndefWindows.h"

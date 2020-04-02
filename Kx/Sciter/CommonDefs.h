@@ -1,10 +1,8 @@
 #pragma once
-#include <KxFramework/KxEnumClassOperations.h>
+#include "Kx/Common.hpp"
 
 namespace KxFramework::Sciter
 {
-	using namespace KxEnumClassOperations;
-
 	enum class FontSmoothing
 	{
 		None = 0,
@@ -113,7 +111,7 @@ namespace KxFramework::Sciter
 	};
 }
 
-namespace KxEnumClassOperations
+namespace KxFramework::EnumClass
 {
-	KxAllowEnumCastOp(KxFramework::Sciter::Alignment);
+	Kx_EnumClass_AllowCast(Sciter::Alignment);
 }

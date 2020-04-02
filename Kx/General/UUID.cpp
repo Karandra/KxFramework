@@ -97,7 +97,7 @@ namespace KxFramework
 		}
 		return 0;
 	}
-	wxString UUID::ToString(UUIDStringFormat format) const
+	wxString UUID::ToString(UUIDToStringFormat format) const
 	{
 		wxString uuid = [&]() -> wxString
 		{
@@ -111,22 +111,22 @@ namespace KxFramework
 			return {};
 		}();
 
-		if (format & UUIDStringFormat::UpperCase)
+		if (format & UUIDToStringFormat::UpperCase)
 		{
 			uuid.MakeUpper();
 		}
 
-		if (format & UUIDStringFormat::URN)
+		if (format & UUIDToStringFormat::URN)
 		{
 			uuid.Prepend(wxS("urn:uuid:"));
 		}
 
-		if (format & UUIDStringFormat::CurlyBraces)
+		if (format & UUIDToStringFormat::CurlyBraces)
 		{
 			uuid.Prepend(wxS('{'));
 			uuid.Append(wxS('}'));
 		}
-		else if (format & UUIDStringFormat::Parentheses)
+		else if (format & UUIDToStringFormat::Parentheses)
 		{
 			uuid.Prepend(wxS('('));
 			uuid.Append(wxS(')'));

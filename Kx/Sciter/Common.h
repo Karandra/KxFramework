@@ -1,6 +1,5 @@
 #pragma once
 #include "Kx/Common.hpp"
-#include <KxFramework/KxEnumClassOperations.h>
 #include <KxFramework/KxVersion.h>
 #include "CommonDefs.h"
 

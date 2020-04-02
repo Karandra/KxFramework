@@ -19,11 +19,12 @@ namespace KxFramework
 		Fractional = 1 << 0,
 		WithLabel = 1 << 0,
 	};
-}
-namespace KxEnumClassOperations
-{
-	KxAllowEnumCastOp(KxFramework::BinarySizeUnit);
-	KxImplementEnum(KxFramework::BinarySizeFormat);
+
+	namespace EnumClass
+	{
+		Kx_EnumClass_AllowCast(BinarySizeUnit);
+		Kx_EnumClass_AllowEverything(BinarySizeFormat);
+	}
 }
 
 namespace KxFramework

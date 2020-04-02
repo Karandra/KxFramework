@@ -24,12 +24,12 @@ namespace KxFramework
 		ReplaceIfExist = 1 << 0,
 		NoBuffering = 1 << 1,
 	};
-}
 
-namespace KxEnumClassOperations
-{
-	KxImplementEnum(KxFramework::FSEnumItemsFlag);
-	KxImplementEnum(KxFramework::FSCopyItemFlag);
+	namespace EnumClass
+	{
+		Kx_EnumClass_AllowEverything(FSEnumItemsFlag);
+		Kx_EnumClass_AllowEverything(FSCopyItemFlag);
+	}
 }
 
 namespace KxFramework

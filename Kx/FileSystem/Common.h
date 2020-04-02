@@ -79,17 +79,17 @@ namespace KxFramework
 		MountPoint = 1 << 0,
 		SymLink = 1 << 1
 	};
+
+	namespace EnumClass
+	{
+		Kx_EnumClass_AllowEverything(FileSystemFeature);
+		Kx_EnumClass_AllowEverything(FileAttribute);
+		Kx_EnumClass_AllowEverything(ReparsePointTag);
+	}
 }
 
 namespace KxFramework::FileSystem
 {
 	wxString GetNamespaceString(FSPathNamespace type);
 	wxString GetForbiddenChars(const wxString& except = wxEmptyString);
-}
-
-namespace KxEnumClassOperations
-{
-	KxImplementEnum(KxFramework::FileSystemFeature);
-	KxImplementEnum(KxFramework::FileAttribute);
-	KxImplementEnum(KxFramework::ReparsePointTag);
 }

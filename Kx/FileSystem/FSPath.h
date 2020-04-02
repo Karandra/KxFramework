@@ -11,11 +11,11 @@ namespace KxFramework
 		None = 0,
 		TrailingSeparator = 1 << 0,
 	};
-}
 
-namespace KxEnumClassOperations
-{
-	KxImplementEnum(KxFramework::FSPathFormat);
+	namespace EnumClass
+	{
+		Kx_EnumClass_AllowEverything(FSPathFormat);
+	}
 }
 
 namespace KxFramework

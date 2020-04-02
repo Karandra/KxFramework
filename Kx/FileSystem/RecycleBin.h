@@ -16,11 +16,11 @@ namespace KxFramework
 		Recursive = 1 << 0,
 		LimitToFiles = 1 << 1
 	};
-}
 
-namespace KxEnumClassOperations
-{
-	KxImplementEnum(KxFramework::FSRecycleBinOpFlag);
+	namespace EnumClass
+	{
+		Kx_EnumClass_AllowEverything(FSRecycleBinOpFlag);
+	}
 }
 
 namespace KxFramework
