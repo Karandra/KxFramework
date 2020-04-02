@@ -1,5 +1,4 @@
 #pragma once
-#include "Kx/Common.hpp"
 #include "Kx/System/Common.h"
 
 #include "Kx/System/COM.h"

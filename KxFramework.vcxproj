@@ -497,6 +497,7 @@
     <ClInclude Include="Kx\FileSystem\StorageVolume.h" />
     <ClInclude Include="Kx\FileSystem\NamespacePrefix.h" />
     <ClInclude Include="Kx\FileSystem\NativeFileSystem.h" />
+    <ClInclude Include="Kx\General.hpp" />
     <ClInclude Include="Kx\General\BinarySize.h" />
     <ClInclude Include="Kx\General\Common.h" />
     <ClInclude Include="Kx\General\ExtraData.h" />

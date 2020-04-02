@@ -1,10 +1,10 @@
 #pragma once
-#include "EventSystem/Common.h"
-#include "EventSystem/Event.h"
-#include "EventSystem/EvtHandler.h"
-#include "EventSystem/BroadcastProcessor.h"
+#include "Kx/EventSystem/Common.h"
 
-#include "EventSystem/Events/NotifyEvent.h"
-#include "EventSystem/Events/CommandEvent.h"
-#include "EventSystem/Events/IndirectCallEvent.h"
+#include "Kx/EventSystem/Event.h"
+#include "Kx/EventSystem/EvtHandler.h"
+#include "Kx/EventSystem/BroadcastProcessor.h"
 
+#include "Kx/EventSystem/Events/NotifyEvent.h"
+#include "Kx/EventSystem/Events/CommandEvent.h"
+#include "Kx/EventSystem/Events/IndirectCallEvent.h"

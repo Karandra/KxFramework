@@ -1324,6 +1324,9 @@
     <ClInclude Include="Kx\General\StreamDelegate.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\General.hpp">
+      <Filter>Kx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
