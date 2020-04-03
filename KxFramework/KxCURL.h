@@ -9,8 +9,8 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxFramework/KxSingleton.h"
 #include "KxFramework/KxCURLStructs.h"
 #include "KxFramework/KxCURLEvent.h"
-#include "KxFramework/KxVersion.h"
 #include "KxFramework/KxURI.h"
+#include "Kx/General/Version.h"
 
 class KX_API KxCURL: public KxSingleton<KxCURL>
 {
@@ -18,7 +18,7 @@ class KX_API KxCURL: public KxSingleton<KxCURL>
 
 	public:
 		static wxString GetLibraryName();
-		static wxString GetLibraryVersion();
+		static KxFramework::Version GetLibraryVersion();
 
 	private:
 		bool m_IsInitialized = false;

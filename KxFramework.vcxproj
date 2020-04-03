@@ -434,9 +434,7 @@
     <ClInclude Include="KxFramework\KxTypedefs.h" />
     <ClInclude Include="KxFramework\KxUnownedBuffer.h" />
     <ClInclude Include="KxFramework\KxUtility.h" />
-    <ClInclude Include="KxFramework\KxUUID.h" />
     <ClInclude Include="KxFramework\KxUxTheme.h" />
-    <ClInclude Include="KxFramework\KxVersion.h" />
     <ClInclude Include="KxFramework\KxWebSocket.h" />
     <ClInclude Include="KxFramework\KxWebSocketEvent.h" />
     <ClInclude Include="KxFramework\KxWebView.h" />
@@ -502,10 +500,12 @@
     <ClInclude Include="Kx\General\MemoryStream.h" />
     <ClInclude Include="Kx\General\NativeUUID.h" />
     <ClInclude Include="Kx\General\Private\ExtraData.h" />
+    <ClInclude Include="Kx\General\Private\VersionImpl.h" />
     <ClInclude Include="Kx\General\Singleton.h" />
     <ClInclude Include="Kx\General\StreamDelegate.h" />
     <ClInclude Include="Kx\General\StreamWrappers.h" />
     <ClInclude Include="Kx\General\UUID.h" />
+    <ClInclude Include="Kx\General\Version.h" />
     <ClInclude Include="Kx\RTTI.hpp" />
     <ClInclude Include="Kx\RTTI\Common.h" />
     <ClInclude Include="Kx\RTTI\QueryInterface.h" />
@@ -782,10 +782,8 @@
     <ClCompile Include="KxFramework\KxURI.cpp" />
     <ClCompile Include="KxFramework\KxURL.cpp" />
     <ClCompile Include="KxFramework\KxUtility.cpp" />
-    <ClCompile Include="KxFramework\KxUUID.cpp" />
     <ClCompile Include="KxFramework\KxUxTheme.cpp" />
     <ClCompile Include="KxFramework\KxValidator.cpp" />
-    <ClCompile Include="KxFramework\KxVersion.cpp" />
     <ClCompile Include="KxFramework\KxWebSocket.cpp" />
     <ClCompile Include="KxFramework\KxWebSocketEvent.cpp" />
     <ClCompile Include="KxFramework\KxWebView.cpp" />
@@ -812,6 +810,8 @@
     <ClCompile Include="Kx\Compression\LZ4Stream.cpp" />
     <ClCompile Include="Kx\Compression\ZLibStream.cpp" />
     <ClCompile Include="Kx\General\MemoryStream.cpp" />
+    <ClCompile Include="Kx\General\Private\VersionImpl.cpp" />
+    <ClCompile Include="Kx\General\Version.cpp" />
     <ClCompile Include="Kx\UI\Validator.cpp" />
     <ClInclude Include="Kx\Compression\IArchiveImpl.h" />
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp" />

@@ -12,7 +12,7 @@ namespace KxFramework::Sciter
 	{
 		return wxS("Sciter");
 	}
-	KxVersion GetLibraryVersion()
+	Version GetLibraryVersion()
 	{
 		if (KxLibrary library(reinterpret_cast<HMODULE>(g_SciterLibrary)); library.IsOK())
 		{

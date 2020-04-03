@@ -283,9 +283,6 @@
     <ClInclude Include="KxFramework\KxString.h">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxVersion.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxColor.h">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
@@ -901,9 +898,6 @@
     <ClInclude Include="KxFramework\WebSocket\SecureClient.h">
       <Filter>Header Files\Network\WebSocket</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxUUID.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxWebSocket.h">
       <Filter>Header Files\Network</Filter>
     </ClInclude>
@@ -1345,13 +1339,16 @@
     <ClInclude Include="Kx\System\Private\EndIncludeCOM.h">
       <Filter>Kx\System\Private</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\General\Version.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\Private\VersionImpl.h">
+      <Filter>Kx\General\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
     <ClCompile Include="KxFramework\KxString.cpp">
-      <Filter>Source Files\DataStructures</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxVersion.cpp">
       <Filter>Source Files\DataStructures</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxColor.cpp">
@@ -1867,9 +1864,6 @@
     <ClCompile Include="KxFramework\WebSocket\SecureClient.cpp">
       <Filter>Source Files\Network\WebSocket</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxUUID.cpp">
-      <Filter>Source Files\DataStructures</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxWebSocket.cpp">
       <Filter>Source Files\Network</Filter>
     </ClCompile>
@@ -2091,6 +2085,12 @@
     </ClCompile>
     <ClCompile Include="Kx\Compression\LZ4Stream.cpp">
       <Filter>Kx\Compression</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\Version.cpp">
+      <Filter>Kx\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\Private\VersionImpl.cpp">
+      <Filter>Kx\General\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

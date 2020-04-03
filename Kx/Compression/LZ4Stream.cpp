@@ -29,7 +29,7 @@ namespace KxFramework::Compression::LZ4
 	{
 		return wxS("LZ4");
 	}
-	KxVersion GetLibraryVersion()
+	Version GetLibraryVersion()
 	{
 		return LZ4_versionString();
 	}

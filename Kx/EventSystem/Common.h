@@ -1,8 +1,6 @@
 #pragma once
 #include "Kx/Common.hpp"
 #include <wx/event.h>
-#include <cstdint>
-#include <memory>
 
 namespace KxFramework
 {

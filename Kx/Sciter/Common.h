@@ -1,12 +1,12 @@
 #pragma once
 #include "Kx/Common.hpp"
-#include <KxFramework/KxVersion.h>
+#include "Kx/General/Version.h"
 #include "CommonDefs.h"
 
 namespace KxFramework::Sciter
 {
 	wxString GetLibraryName();
-	KxVersion GetLibraryVersion();
+	Version GetLibraryVersion();
 
 	bool IsLibraryLoaded();
 	bool LoadLibrary(const wxString& path);

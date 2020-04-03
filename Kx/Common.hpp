@@ -11,8 +11,9 @@
 // Standard library
 #include <cstdint>
 #include <utility>
-#include <optional>
 #include <memory>
+#include <optional>
+#include <type_traits>
 
 // Essential headers
 #include "Kx/General/EnumClass.h"

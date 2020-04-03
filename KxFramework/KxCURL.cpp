@@ -84,7 +84,7 @@ wxString KxCURL::GetLibraryName()
 {
 	return wxS("libcurl");
 }
-wxString KxCURL::GetLibraryVersion()
+KxFramework::Version KxCURL::GetLibraryVersion()
 {
 	return LIBCURL_VERSION;
 }

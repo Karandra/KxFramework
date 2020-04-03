@@ -1,12 +1,12 @@
 #pragma once
 #include "Common.h"
 #include "Kx/General/StreamWrappers.h"
-#include <KxFramework/KxVersion.h>
+#include "Kx/General/Version.h"
 
 namespace KxFramework::Compression::LZ4
 {
 	wxString GetLibraryName();
-	KxVersion GetLibraryVersion();
+	Version GetLibraryVersion();
 
 	inline constexpr size_t CompressBound(size_t sourceSize)
 	{

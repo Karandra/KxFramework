@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Kx/General/StreamWrappers.h"
-#include <KxFramework/KxVersion.h>
+#include "Kx/General/Version.h"
 #include <wx/zstream.h>
 
 namespace KxFramework
@@ -23,7 +23,7 @@ namespace KxFramework
 namespace KxFramework::Compression::ZLib
 {
 	wxString GetLibraryName();
-	KxVersion GetLibraryVersion();
+	Version GetLibraryVersion();
 }
 
 namespace KxFramework
