@@ -763,9 +763,6 @@
     <ClInclude Include="KxFramework\KxTypedefs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxCompileTimeMap.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxIndexedEnum.h">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
