@@ -14,20 +14,13 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #pragma comment(lib, "comsupp.lib")
 #pragma comment(lib, "credui.lib")
 
-// Include COM. Since we undefined some Unicode macros we need to define a replacement
-// for some stuff that are using them in 'ComDef.h' and define NULL as nullptr to make
-// it compile correctly. Yes, it's that messy.
-#pragma push_macro("NULL")
-#undef NULL
-#define NULL nullptr
-
+#include "Kx/System/Private/BeginIncludeCOM.h"
 namespace
 {
 	Kx_MakeWinUnicodeCallWrapper(FormatMessage);
 }
-
 #include <comdef.h>
-#pragma pop_macro("NULL")
+#include "Kx/System/Private/EndIncludeCOM.h"
 
 namespace
 {

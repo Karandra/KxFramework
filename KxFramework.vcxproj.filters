@@ -268,6 +268,15 @@
     <Filter Include="Kx\UI">
       <UniqueIdentifier>{d35e1c06-a587-42a8-897d-b06fd84ea9cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\System\Private">
+      <UniqueIdentifier>{01514fbc-31c6-49d0-9360-d06809164ea6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx\FileSystem\Private">
+      <UniqueIdentifier>{8d4abda0-ae07-4c67-8215-582952c35bd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx\General\Private">
+      <UniqueIdentifier>{9bddb8ad-b98d-4558-90ae-2b5b7048b860}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -1201,9 +1210,6 @@
     <ClInclude Include="Kx\FileSystem\Common.h">
       <Filter>Kx\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\FileSystem\NamespacePrefix.h">
-      <Filter>Kx\FileSystem</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxXMLUtility.h">
       <Filter>Header Files\Parsers\XML</Filter>
     </ClInclude>
@@ -1276,9 +1282,6 @@
     <ClInclude Include="Kx\System\ErrorCode.h">
       <Filter>Kx\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\IncludeNtStatus.h">
-      <Filter>Kx\System</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\System\UndefWindows.h">
       <Filter>Kx\System</Filter>
     </ClInclude>
@@ -1324,14 +1327,26 @@
     <ClInclude Include="Kx\General\MemoryStream.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\ExtraDataPrivate.h">
-      <Filter>Kx\General</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\Compression\ZLibStream.h">
       <Filter>Kx\Compression</Filter>
     </ClInclude>
     <ClInclude Include="Kx\Compression\LZ4Stream.h">
       <Filter>Kx\Compression</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\Private\BeginIncludeCOM.h">
+      <Filter>Kx\System\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\FileSystem\Private\NamespacePrefix.h">
+      <Filter>Kx\FileSystem\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\Private\ExtraData.h">
+      <Filter>Kx\General\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\Private\IncludeNtStatus.h">
+      <Filter>Kx\System\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\Private\EndIncludeCOM.h">
+      <Filter>Kx\System\Private</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2083,8 +2098,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
-    <None Include="Kx\System\ErrorCodeNtStatus.i">
-      <Filter>Kx\System</Filter>
+    <None Include="Kx\System\Private\ErrorCodeNtStatus.i">
+      <Filter>Kx\System\Private</Filter>
     </None>
   </ItemGroup>
 </Project>

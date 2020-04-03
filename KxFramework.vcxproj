@@ -491,18 +491,18 @@
     <ClInclude Include="Kx\FileSystem\IFileSystem.h" />
     <ClInclude Include="Kx\FileSystem\LegacyVolume.h" />
     <ClInclude Include="Kx\FileSystem\NativeFileSystemUtility.h" />
+    <ClInclude Include="Kx\FileSystem\Private\NamespacePrefix.h" />
     <ClInclude Include="Kx\FileSystem\RecycleBin.h" />
     <ClInclude Include="Kx\FileSystem\StorageVolume.h" />
-    <ClInclude Include="Kx\FileSystem\NamespacePrefix.h" />
     <ClInclude Include="Kx\FileSystem\NativeFileSystem.h" />
     <ClInclude Include="Kx\General.hpp" />
     <ClInclude Include="Kx\General\BinarySize.h" />
     <ClInclude Include="Kx\General\Common.h" />
     <ClInclude Include="Kx\General\EnumClass.h" />
     <ClInclude Include="Kx\General\ExtraData.h" />
-    <ClInclude Include="Kx\General\ExtraDataPrivate.h" />
     <ClInclude Include="Kx\General\MemoryStream.h" />
     <ClInclude Include="Kx\General\NativeUUID.h" />
+    <ClInclude Include="Kx\General\Private\ExtraData.h" />
     <ClInclude Include="Kx\General\Singleton.h" />
     <ClInclude Include="Kx\General\StreamDelegate.h" />
     <ClInclude Include="Kx\General\StreamWrappers.h" />
@@ -547,7 +547,9 @@
     <ClInclude Include="Kx\System\Common.h" />
     <ClInclude Include="Kx\System\ErrorCode.h" />
     <ClInclude Include="Kx\System\ErrorCodeValue.h" />
-    <ClInclude Include="Kx\System\IncludeNtStatus.h" />
+    <ClInclude Include="Kx\System\Private\BeginIncludeCOM.h" />
+    <ClInclude Include="Kx\System\Private\EndIncludeCOM.h" />
+    <ClInclude Include="Kx\System\Private\IncludeNtStatus.h" />
     <ClInclude Include="Kx\System\ShellFileType.h" />
     <ClInclude Include="Kx\System\ShellFileTypeInfo.h" />
     <ClInclude Include="Kx\System\ShellFileTypeManager.h" />
@@ -859,7 +861,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
-    <None Include="Kx\System\ErrorCodeNtStatus.i" />
+    <None Include="Kx\System\Private\ErrorCodeNtStatus.i" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
