@@ -703,9 +703,6 @@
     <ClInclude Include="KxFramework\KxTaskScheduler.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxUnownedBuffer.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxIProgressBar.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
@@ -1341,6 +1338,9 @@
     </ClInclude>
     <ClInclude Include="Kx\General\Private\VersionImpl.h">
       <Filter>Kx\General\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\MemorySpan.h">
+      <Filter>Kx\General</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

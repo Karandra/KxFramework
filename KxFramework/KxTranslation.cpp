@@ -149,7 +149,7 @@ bool KxTranslation::LoadFromResourceInModule(const wxString& localeName, const K
 	m_Locale = localeName;
 	if (library.IsOK())
 	{
-		KxUnownedMemoryBuffer data = library.GetResource(g_TranslationResourceType, localeName);
+		KxFramework::UntypedMemorySpan data = library.GetResource(g_TranslationResourceType, localeName);
 		if (!data.empty())
 		{
 			KxXMLDocument xml(wxString::FromUTF8((const char*)data.data(), data.size()));

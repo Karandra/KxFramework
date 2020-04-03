@@ -431,7 +431,6 @@
     <ClInclude Include="KxFramework\KxTreeList.h" />
     <ClInclude Include="KxFramework\KxTreeView.h" />
     <ClInclude Include="KxFramework\KxTypedefs.h" />
-    <ClInclude Include="KxFramework\KxUnownedBuffer.h" />
     <ClInclude Include="KxFramework\KxUtility.h" />
     <ClInclude Include="KxFramework\KxUxTheme.h" />
     <ClInclude Include="KxFramework\KxWebSocket.h" />
@@ -496,6 +495,7 @@
     <ClInclude Include="Kx\General\Common.h" />
     <ClInclude Include="Kx\General\EnumClass.h" />
     <ClInclude Include="Kx\General\ExtraData.h" />
+    <ClInclude Include="Kx\General\MemorySpan.h" />
     <ClInclude Include="Kx\General\MemoryStream.h" />
     <ClInclude Include="Kx\General\NativeUUID.h" />
     <ClInclude Include="Kx\General\Private\ExtraData.h" />

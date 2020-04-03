@@ -1,14 +1,8 @@
-/*
-Copyright © 2018 Kerber. All rights reserved.
-
-You should have received a copy of the GNU LGPL v3
-along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
-*/
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxIOwned.h"
 #include "KxFramework/KxWinUndef.h"
-#include "KxFramework/KxUnownedBuffer.h"
+#include "Kx/General/MemorySpan.h"
 class KxLibraryUpdateLocker;
 
 class KX_API KxLibraryVersionInfo
@@ -139,8 +133,8 @@ class KX_API KxLibrary: public KxIOwnedSimple
 		// Version info
 		static wxString NumberVersionToString(DWORD mostSignificant, DWORD leastSignificant);
 		static void StringVersionToNumber(const wxString& version, DWORD& mostSignificant, DWORD& leastSignificant);
-		static void SaveVersionString(const KxLibraryVersionInfo& info, const wxString& queryTemplate, const KxUnownedMemoryBuffer& buffer, const wxString& rawFiledName, const wxString& infoFiledName);
-		static void LoadVersionString(KxLibraryVersionInfo& info, const wxString& queryTemplate, const KxUnownedMemoryBuffer& buffer, const wxString& rawFiledName, const wxString& infoFiledName);
+		static void SaveVersionString(const KxLibraryVersionInfo& info, const wxString& queryTemplate, const KxFramework::UntypedMemorySpan& buffer, const wxString& rawFiledName, const wxString& infoFiledName);
+		static void LoadVersionString(KxLibraryVersionInfo& info, const wxString& queryTemplate, const KxFramework::UntypedMemorySpan& buffer, const wxString& rawFiledName, const wxString& infoFiledName);
 		static wxMemoryBuffer CreateVersionInfoStruct(const wxString& templateString, const KxLibraryVersionInfo& info);
 		static KxLibraryVersionInfo GetVersionInfoFromFile(const wxString& filePath);
 
@@ -159,7 +153,7 @@ class KX_API KxLibrary: public KxIOwnedSimple
 		KxIntVector EnumResourceLanguages(const wxString& type, const wxString& name) const;
 		KxAnyVector EnumResourceTypes(WORD localeID = DefaultLocaleID) const;
 		KxAnyVector EnumResources(const wxString& type, WORD localeID = DefaultLocaleID) const;
-		KxUnownedMemoryBuffer GetResource(const wxString& type, const wxString& name, WORD localeID = DefaultLocaleID) const;
+		KxFramework::UntypedMemorySpan GetResource(const wxString& type, const wxString& name, WORD localeID = DefaultLocaleID) const;
 		
 		wxBitmap GetBitmap(const wxString& name, WORD localeID = DefaultLocaleID) const;
 		wxIcon GetIcon(const wxString& name, wxSize size = DefaultIconSize, WORD localeID = DefaultLocaleID) const;
@@ -170,7 +164,7 @@ class KX_API KxLibrary: public KxIOwnedSimple
 		
 		bool RemoveResource(const wxString& type, const wxString& name, WORD localeID = DefaultLocaleID, bool updateNow = false);
 		bool IsResourceExist(const wxString& type, const wxString& name, WORD localeID = DefaultLocaleID);
-		bool UpdateResource(const wxString& type, const wxString& name, const KxUnownedMemoryBuffer& data, bool overwrite = false, WORD localeID = DefaultLocaleID, bool updateNow = false);
+		bool UpdateResource(const wxString& type, const wxString& name, const KxFramework::UntypedMemorySpan& data, bool overwrite = false, WORD localeID = DefaultLocaleID, bool updateNow = false);
 		
 		wxString FormatMessage(DWORD messageID, WORD localeID = DefaultLocaleID) const;
 

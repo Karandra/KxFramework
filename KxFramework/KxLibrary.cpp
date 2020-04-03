@@ -1,9 +1,3 @@
-/*
-Copyright © 2018 Kerber. All rights reserved.
-
-You should have received a copy of the GNU LGPL v3
-along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
-*/
 #include "KxStdAfx.h"
 #include "KxFramework/KxLibrary.h"
 #include "KxFramework/KxSystem.h"
@@ -56,7 +50,7 @@ namespace Util
 	{
 		return ::FindResourceExW(handle, GetNameOrID(type), GetNameOrID(name), GetLangID(localeID));
 	}
-	KxUnownedMemoryBuffer GetResource(HMODULE handle, HRSRC resHandle)
+	KxFramework::UntypedMemorySpan GetResource(HMODULE handle, HRSRC resHandle)
 	{
 		if (resHandle)
 		{
@@ -67,11 +61,11 @@ namespace Util
 				DWORD resSize = SizeofResource(handle, resHandle);
 				if (resData && resSize != 0)
 				{
-					return KxUnownedMemoryBuffer(resData, resSize);
+					return KxFramework::UntypedMemorySpan(resData, resSize);
 				}
 			}
 		}
-		return KxUnownedMemoryBuffer();
+		return {};
 	}
 
 	HANDLE LoadGDIImageAux(HMODULE handle, const wxString& name, const wxString& type, UINT GDIType, wxSize size = DefaultIconSize, WORD localeID = DefaultLocaleID)
@@ -224,7 +218,7 @@ class KxLibraryUpdateLocker
 		}
 
 	public:
-		void UpdateResource(const wxString& type, const wxString& name, const KxUnownedMemoryBuffer& data, WORD localeID)
+		void UpdateResource(const wxString& type, const wxString& name, const KxFramework::UntypedMemorySpan& data, WORD localeID)
 		{
 			if (IsOK())
 			{
@@ -368,7 +362,7 @@ void KxLibrary::StringVersionToNumber(const wxString& version, DWORD& mostSignif
 	mostSignificant = MAKELONG(versionArray[1], versionArray[0]);
 	leastSignificant = MAKELONG(versionArray[3], versionArray[2]);
 }
-void KxLibrary::SaveVersionString(const KxLibraryVersionInfo& info, const wxString& queryTemplate, const KxUnownedMemoryBuffer& buffer, const wxString& rawFiledName, const wxString& infoFiledName)
+void KxLibrary::SaveVersionString(const KxLibraryVersionInfo& info, const wxString& queryTemplate, const KxFramework::UntypedMemorySpan& buffer, const wxString& rawFiledName, const wxString& infoFiledName)
 {
 	wxString query = wxString::Format(wxS("%s\\%s"), queryTemplate, rawFiledName);
 	UINT size = 0;
@@ -384,7 +378,7 @@ void KxLibrary::SaveVersionString(const KxLibraryVersionInfo& info, const wxStri
 		wcsncpy(stringInfo, value.wc_str(), size);
 	}
 }
-void KxLibrary::LoadVersionString(KxLibraryVersionInfo& info, const wxString& queryTemplate, const KxUnownedMemoryBuffer& buffer, const wxString& rawFiledName, const wxString& infoFiledName)
+void KxLibrary::LoadVersionString(KxLibraryVersionInfo& info, const wxString& queryTemplate, const KxFramework::UntypedMemorySpan& buffer, const wxString& rawFiledName, const wxString& infoFiledName)
 {
 	wxString query = wxString::Format(wxS("%s\\%s"), queryTemplate, rawFiledName);
 	UINT size = 0;
@@ -568,7 +562,7 @@ KxAnyVector KxLibrary::EnumResources(const wxString& type, WORD localeID) const
 	EnumResourceNamesExW(m_Handle, Util::GetNameOrID(type), Util::EnumResourcesProc, (LONG_PTR)&info, 0, Util::GetLangID(localeID));
 	return list;
 }
-KxUnownedMemoryBuffer KxLibrary::GetResource(const wxString& type, const wxString& name, WORD localeID) const
+KxFramework::UntypedMemorySpan KxLibrary::GetResource(const wxString& type, const wxString& name, WORD localeID) const
 {
 	return Util::GetResource(m_Handle, Util::GetResourceHandle(m_Handle, type, name, localeID));
 }
@@ -583,7 +577,7 @@ wxIcon KxLibrary::GetIcon(const wxString& name, wxSize size, WORD localeID) cons
 }
 wxIcon KxLibrary::GetIcon(const wxString& name, size_t index, WORD localeID) const
 {
-	KxUnownedMemoryBuffer groupBuffer = Util::GetResource(m_Handle, Util::GetResourceHandle(m_Handle, ResIDToName(RT_GROUP_ICON), name, localeID));
+	KxFramework::UntypedMemorySpan groupBuffer = Util::GetResource(m_Handle, Util::GetResourceHandle(m_Handle, ResIDToName(RT_GROUP_ICON), name, localeID));
 	if (!groupBuffer.empty())
 	{
 		Util::IconGroupDirectory* iconGroup = (Util::IconGroupDirectory*)groupBuffer.data();
@@ -596,7 +590,7 @@ wxIcon KxLibrary::GetIcon(const wxString& name, size_t index, WORD localeID) con
 		Util::IconGroupEntry* iconInfo = &iconGroup->idEntries[index];
 		WORD imageID = iconInfo->id;
 
-		KxUnownedMemoryBuffer iconBuffer = Util::GetResource(m_Handle, Util::GetResourceHandle(m_Handle, ResIDToName(RT_ICON), ResIDToName(imageID), localeID));
+		KxFramework::UntypedMemorySpan iconBuffer = Util::GetResource(m_Handle, Util::GetResourceHandle(m_Handle, ResIDToName(RT_ICON), ResIDToName(imageID), localeID));
 		if (!iconBuffer.empty())
 		{
 			int width = 0;
@@ -616,7 +610,7 @@ wxIcon KxLibrary::GetIcon(const wxString& name, size_t index, WORD localeID) con
 }
 size_t KxLibrary::GetIconCount(const wxString& name, WORD localeID) const
 {
-	KxUnownedMemoryBuffer groupBuffer = Util::GetResource(m_Handle, Util::GetResourceHandle(m_Handle, ResIDToName(RT_GROUP_ICON), name));
+	KxFramework::UntypedMemorySpan groupBuffer = Util::GetResource(m_Handle, Util::GetResourceHandle(m_Handle, ResIDToName(RT_GROUP_ICON), name));
 	if (!groupBuffer.empty())
 	{
 		Util::IconGroupDirectory* iconGroup = (Util::IconGroupDirectory*)groupBuffer.data();
@@ -649,7 +643,7 @@ wxString KxLibrary::GetString(const wxString& name, WORD localeID) const
 		long stringID = 0;
 		if (name.ToLong(&stringID))
 		{
-			KxUnownedMemoryBuffer data = GetResource(ResIDToName(RT_STRING), ResIDToName(MAKEINTRESOURCEW(stringID / 16 + 1)), localeID);
+			KxFramework::UntypedMemorySpan data = GetResource(ResIDToName(RT_STRING), ResIDToName(MAKEINTRESOURCEW(stringID / 16 + 1)), localeID);
 			if (!data.empty())
 			{
 				stringID = stringID % 16;
@@ -692,11 +686,11 @@ bool KxLibrary::RemoveResource(const wxString& type, const wxString& name, WORD 
 	KxLibraryUpdateLocker locker(this);
 	if (locker.IsOK())
 	{
-		locker.UpdateResource(type, name, KxUnownedMemoryBuffer(), localeID);
+		locker.UpdateResource(type, name, {}, localeID);
 	}
 	return locker.IsSuccess();
 }
-bool KxLibrary::UpdateResource(const wxString& type, const wxString& name, const KxUnownedMemoryBuffer& data, bool overwrite, WORD localeID, bool updateNow)
+bool KxLibrary::UpdateResource(const wxString& type, const wxString& name, const KxFramework::UntypedMemorySpan& data, bool overwrite, WORD localeID, bool updateNow)
 {
 	if (overwrite || !IsResourceExist(type, name, localeID))
 	{
