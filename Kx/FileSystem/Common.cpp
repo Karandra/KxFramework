@@ -1,11 +1,13 @@
 #include "KxStdAfx.h"
 #include "Common.h"
-#include "NamespacePrefix.h"
+#include "Private/NamespacePrefix.h"
 
 namespace KxFramework::FileSystem
 {
 	wxString GetNamespaceString(FSPathNamespace type)
 	{
+		using namespace Private;
+
 		switch (type)
 		{
 			case FSPathNamespace::NT:

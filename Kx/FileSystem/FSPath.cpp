@@ -2,7 +2,7 @@
 #include "FSPath.h"
 #include "LegacyVolume.h"
 #include "StorageVolume.h"
-#include "NamespacePrefix.h"
+#include "Private/NamespacePrefix.h"
 #include <KxFramework/KxComparator.h>
 
 namespace
@@ -194,6 +194,8 @@ namespace KxFramework
 	}
 	size_t FSPath::DetectNamespacePrefix(const wxString& path, KxFramework::FSPathNamespace& ns) const
 	{
+		using namespace FileSystem::Private;
+
 		// All namespaces starts from at least one'\'
 		if (path.IsEmpty() || path[0] != wxS('\\'))
 		{
@@ -201,10 +203,8 @@ namespace KxFramework
 			return 0;
 		}
 
-		using namespace FileSystem;
 		// Test for every namespace starting from the longest prefix
-
-		// 8
+		// Length: 8
 		if (path.StartsWith(NamespacePrefix::Win32FileUNC))
 		{
 			ns = FSPathNamespace::Win32FileUNC;
@@ -216,7 +216,7 @@ namespace KxFramework
 			return std::size(NamespacePrefix::NetworkUNC) - 1;
 		}
 
-		// 4
+		// Length: 4
 		if (path.StartsWith(NamespacePrefix::Win32File))
 		{
 			ns = FSPathNamespace::Win32File;
@@ -228,14 +228,14 @@ namespace KxFramework
 			return std::size(NamespacePrefix::Win32Device) - 1;
 		}
 
-		// 2
+		// Length: 2
 		if (path.StartsWith(NamespacePrefix::Network))
 		{
 			ns = FSPathNamespace::Network;
 			return std::size(NamespacePrefix::Network) - 1;
 		}
 
-		// 1
+		// Length: 1
 		if (path.StartsWith(NamespacePrefix::NT))
 		{
 			ns = FSPathNamespace::NT;
