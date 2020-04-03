@@ -739,9 +739,6 @@
     <ClInclude Include="KxFramework\KxTimer.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxMemberObject.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxCFunction.h">
       <Filter>Header Files\FFI</Filter>
     </ClInclude>

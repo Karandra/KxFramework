@@ -83,17 +83,20 @@ namespace KxFramework
 {
 	void LZ4InputStream::Init()
 	{
+		constexpr int a = sizeof(LZ4_streamDecode_t_internal);
+		constexpr int b = alignof(LZ4_streamDecode_t_internal);
+
 		// Set stream pointer
-		SetStream(m_StreamObject.data());
+		SetStream(m_StreamObject);
 
 		// Init stream with or without dictionary
 		if (!m_Dictionary.empty())
 		{
-			LZ4_setStreamDecode(m_StreamObject.GetAs<LZ4_streamDecode_t>(), reinterpret_cast<const char*>(m_Dictionary.data()), m_Dictionary.size());
+			LZ4_setStreamDecode(reinterpret_cast<LZ4_streamDecode_t*>(m_StreamObject), reinterpret_cast<const char*>(m_Dictionary.data()), m_Dictionary.size());
 		}
 		else
 		{
-			LZ4_setStreamDecode(m_StreamObject.GetAs<LZ4_streamDecode_t>(), nullptr, 0);
+			LZ4_setStreamDecode(reinterpret_cast<LZ4_streamDecode_t*>(m_StreamObject), nullptr, 0);
 		}
 	}
 	size_t LZ4InputStream::OnSysRead(void* buffer, size_t size)
@@ -101,7 +104,7 @@ namespace KxFramework
 		size_t totalProcessedCounter = 0;
 		for (size_t compressedCounter = 0; compressedCounter <= size; compressedCounter += ms_BlockSize)
 		{
-			uint8_t tempData[LZ4_COMPRESSBOUND(ms_BlockSize)] = {0};
+			uint8_t tempData[Compression::LZ4::CompressBound(ms_BlockSize)] = {0};
 			size_t tempDataLength = std::min(size, ms_BlockSize);
 			m_parent_i_stream->Read(tempData, tempDataLength);
 

@@ -1,7 +1,6 @@
 #pragma once
 #include "Common.h"
 #include "Kx/General/StreamWrappers.h"
-#include "KxFramework/KxMemberObject.h"
 #include <KxFramework/KxVersion.h>
 
 namespace KxFramework::Compression::LZ4
@@ -100,7 +99,7 @@ namespace KxFramework
 			using DictionaryBuffer = std::vector<uint8_t>;
 
 		private:
-			KxMemberObject<uint8_t[32], 32> m_StreamObject;
+			uint8_t m_StreamObject[64] = {};
 			DictionaryBuffer m_Dictionary;
 			size_t m_RingBufferIndex = 0;
 
