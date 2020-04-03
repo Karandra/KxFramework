@@ -77,55 +77,94 @@ namespace KxFramework
 			{
 				return GetAsCode<NtStatusCode>();
 			}
-			std::optional<HResultCode> GetHRESULT() const noexcept
+			std::optional<HResultCode> GetHResult() const noexcept
 			{
 				return GetAsCode<HResultCode>();
 			}
 
 			std::optional<Win32ErrorCode> ConvertToWin32() const noexcept;
 			std::optional<NtStatusCode> ConvertToNtStatus() const noexcept;
-			std::optional<HResultCode> ConvertToHRESULT() const noexcept;
+			std::optional<HResultCode> ConvertToHResult() const noexcept;
 
-			bool IsSuccessful() const noexcept
+			bool IsKnown() const noexcept
+			{
+				return m_Category != ErrorCodeCategory::Unknown;
+			}
+			bool IsSuccess() const noexcept
 			{
 				switch (m_Category)
 				{
 					case ErrorCodeCategory::Generic:
 					{
-						return GenericErrorCode(m_Value).IsSuccessful();
+						return GenericErrorCode(m_Value).IsSuccess();
 					}
 					case ErrorCodeCategory::Win32:
 					{
-						return Win32ErrorCode(m_Value).IsSuccessful();
+						return Win32ErrorCode(m_Value).IsSuccess();
 					}
 					case ErrorCodeCategory::NtStatus:
 					{
-						return NtStatusCode(m_Value).IsSuccessful();
+						return NtStatusCode(m_Value).IsSuccess();
 					}
 					case ErrorCodeCategory::HResult:
 					{
-						return HResultCode(m_Value).IsSuccessful();
+						return HResultCode(m_Value).IsSuccess();
 					}
 				};
 				return false;
 			}
-			bool IsFailed() const noexcept
+			bool IsFail() const noexcept
 			{
-				return IsKnown() && !IsSuccessful();
+				return IsKnown() && !IsSuccess();
 			}
-			bool IsKnown() const noexcept
+
+			wxString ToString() const
 			{
-				return m_Category != ErrorCodeCategory::Unknown;
+				switch (m_Category)
+				{
+					case ErrorCodeCategory::Win32:
+					{
+						return Win32ErrorCode(m_Value).ToString();
+					}
+					case ErrorCodeCategory::NtStatus:
+					{
+						return NtStatusCode(m_Value).ToString();
+					}
+					case ErrorCodeCategory::HResult:
+					{
+						return HResultCode(m_Value).ToString();
+					}
+				};
+				return {};
+			}
+			wxString GetMessage() const
+			{
+				switch (m_Category)
+				{
+					case ErrorCodeCategory::Win32:
+					{
+						return Win32ErrorCode(m_Value).GetMessage();
+					}
+					case ErrorCodeCategory::NtStatus:
+					{
+						return NtStatusCode(m_Value).GetMessage();
+					}
+					case ErrorCodeCategory::HResult:
+					{
+						return HResultCode(m_Value).GetMessage();
+					}
+				};
+				return {};
 			}
 
 		public:
 			explicit operator bool() const noexcept
 			{
-				return IsSuccessful();
+				return IsSuccess();
 			}
 			bool operator!() const noexcept
 			{
-				return !IsSuccessful();
+				return !IsSuccess();
 			}
 
 			bool operator==(const ErrorCode& other) const noexcept

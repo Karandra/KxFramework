@@ -38,7 +38,7 @@ namespace KxFramework
 			}
 			bool IsInitialized() const
 			{
-				return m_Status.IsSuccessful();
+				return m_Status.IsSuccess();
 			}
 			void Uninitialize()
 			{
@@ -90,7 +90,7 @@ namespace KxFramework
 			}
 			bool IsInitialized() const
 			{
-				return m_Status.IsSuccessful();
+				return m_Status.IsSuccess();
 			}
 			void Uninitialize()
 			{

@@ -2,7 +2,7 @@
 #include "ErrorCode.h"
 #include "Kx/Utility/CallAtScopeExit.h"
 #include <KxFramework/KxSystemAPI.h>
-#include "IncludeNtStatus.h"
+#include "Private/IncludeNtStatus.h"
 
 namespace
 {
@@ -77,7 +77,7 @@ namespace
 		{
 			switch (win32Code)
 			{
-				#include "ErrorCodeNtStatus.i"
+				#include "Private/ErrorCodeNtStatus.i"
 			};
 			return {};
 		}();
@@ -98,7 +98,7 @@ namespace KxFramework
 		{
 			case ErrorCodeCategory::Generic:
 			{
-				if (GenericErrorCode(m_Value).IsSuccessful())
+				if (GenericErrorCode(m_Value).IsSuccess())
 				{
 					return Win32ErrorCode(ERROR_SUCCESS);
 				}
@@ -125,7 +125,7 @@ namespace KxFramework
 		{
 			case ErrorCodeCategory::Generic:
 			{
-				if (GenericErrorCode(m_Value).IsSuccessful())
+				if (GenericErrorCode(m_Value).IsSuccess())
 				{
 					return NtStatusCode(STATUS_SUCCESS);
 				}
@@ -150,13 +150,13 @@ namespace KxFramework
 		};
 		return {};
 	}
-	std::optional<HResultCode> ErrorCode::ConvertToHRESULT() const noexcept
+	std::optional<HResultCode> ErrorCode::ConvertToHResult() const noexcept
 	{
 		switch (m_Category)
 		{
 			case ErrorCodeCategory::Generic:
 			{
-				if (GenericErrorCode(m_Value).IsSuccessful())
+				if (GenericErrorCode(m_Value).IsSuccess())
 				{
 					return HResultCode(S_OK);
 				}

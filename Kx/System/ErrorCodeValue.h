@@ -1,6 +1,11 @@
 #pragma once
 #include "Common.h"
 
+namespace KxFramework
+{
+	class UUID;
+}
+
 namespace KxFramework::System
 {
 	template<class TDerived, class T>
@@ -43,11 +48,20 @@ namespace KxFramework::System
 		public:
 			explicit operator bool() const noexcept
 			{
-				return Self().IsSuccessful();
+				return Self().IsSuccess();
 			}
 			bool operator!() const noexcept
 			{
-				return !Self().IsSuccessful();
+				return Self().IsFail();
+			}
+
+			bool operator==(const ErrorCodeValue& other) const noexcept
+			{
+				return m_Value == other.m_Value;
+			}
+			bool operator!=(const ErrorCodeValue& other) const noexcept
+			{
+				return !(*this == other);
 			}
 	};
 }
@@ -69,13 +83,13 @@ namespace KxFramework
 			}
 			
 		public:
-			bool IsSuccessful() const noexcept
+			bool IsSuccess() const noexcept
 			{
 				return GetValue() == 0;
 			}
-			bool IsFailed() const noexcept
+			bool IsFail() const noexcept
 			{
-				return !IsSuccessful();
+				return !IsSuccess();
 			}
 	};
 
@@ -94,33 +108,14 @@ namespace KxFramework
 			}
 			
 		public:
-			bool IsSuccessful() const noexcept;
-			bool IsFailed() const noexcept
+			bool IsSuccess() const noexcept;
+			bool IsFail() const noexcept
 			{
-				return !IsSuccessful();
-			}
-	};
-
-	class NtStatusCode final: public System::ErrorCodeValue<NtStatusCode, int32_t>
-	{
-		public:
-			constexpr static ErrorCodeCategory GetCategory() noexcept
-			{
-				return ErrorCodeCategory::NtStatus;
+				return !IsSuccess();
 			}
 
-		public:
-			explicit NtStatusCode(TValueType value) noexcept
-				:ErrorCodeValue(value)
-			{
-			}
-			
-		public:
-			bool IsSuccessful() const noexcept;
-			bool IsFailed() const noexcept
-			{
-				return !IsSuccessful();
-			}
+			wxString ToString() const;
+			wxString GetMessage() const;
 	};
 
 	class HResultCode final: public System::ErrorCodeValue<HResultCode, int32_t>
@@ -138,10 +133,51 @@ namespace KxFramework
 			}
 			
 		public:
-			bool IsSuccessful() const noexcept;
+			bool IsOK() const noexcept;
+			bool IsFalse() const noexcept;
+			bool IsSuccess() const noexcept;
+			bool IsFail() const noexcept
+			{
+				return !IsSuccess();
+			}
+
+			wxString ToString() const;
+			wxString GetMessage() const;
+
+			UUID GetUniqueID() const;
+			wxString GetSource() const;
+			wxString GetHelpFile() const;
+			uint32_t GetHelpContext() const;
+			wxString GetDescription() const;
+			uint32_t GetFacility() const noexcept;
+	};
+
+	class NtStatusCode final: public System::ErrorCodeValue<NtStatusCode, int32_t>
+	{
+		public:
+			constexpr static ErrorCodeCategory GetCategory() noexcept
+			{
+				return ErrorCodeCategory::NtStatus;
+			}
+
+		public:
+			explicit NtStatusCode(TValueType value) noexcept
+				:ErrorCodeValue(value)
+			{
+			}
+			
+		public:
+			bool IsError() const noexcept;
+			bool IsWarning() const noexcept;
+			bool IsInformation() const noexcept;
+			bool IsSuccess() const noexcept;
 			bool IsFailed() const noexcept
 			{
-				return !IsSuccessful();
+				return !IsSuccess();
 			}
+
+			wxString ToString() const;
+			wxString GetMessage() const;
+			uint32_t GetFacility() const noexcept;
 	};
 }
