@@ -1051,9 +1051,6 @@
     <ClInclude Include="KxFramework\KxEnumClassOperations.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxAny.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\RTTI.hpp">
       <Filter>Kx</Filter>
     </ClInclude>
@@ -1340,6 +1337,9 @@
       <Filter>Kx\General\Private</Filter>
     </ClInclude>
     <ClInclude Include="Kx\General\MemorySpan.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\Any.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1927,9 +1927,6 @@
     <ClCompile Include="Kx\Async\Coroutine\CoroutineImpl.cpp">
       <Filter>Kx\Async\Coroutine</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxAny.cpp">
-      <Filter>Source Files\DataStructures</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxHiDPIEnabledWindow.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
@@ -2088,6 +2085,9 @@
     </ClCompile>
     <ClCompile Include="Kx\General\Private\VersionImpl.cpp">
       <Filter>Kx\General\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\Any.cpp">
+      <Filter>Kx\General</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

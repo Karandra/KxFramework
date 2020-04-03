@@ -270,7 +270,6 @@
     <ClInclude Include="KxFramework\KxAlignedAllocator.h" />
     <ClInclude Include="KxFramework\KxAnimatedSplashWindow.h" />
     <ClInclude Include="KxFramework\KxAnimation.h" />
-    <ClInclude Include="KxFramework\KxAny.h" />
     <ClInclude Include="KxFramework\KxApp.h" />
     <ClInclude Include="KxFramework\KxArchiveEvent.h" />
     <ClInclude Include="KxFramework\KxAuiNotebook.h" />
@@ -491,6 +490,7 @@
     <ClInclude Include="Kx\FileSystem\StorageVolume.h" />
     <ClInclude Include="Kx\FileSystem\NativeFileSystem.h" />
     <ClInclude Include="Kx\General.hpp" />
+    <ClInclude Include="Kx\General\Any.h" />
     <ClInclude Include="Kx\General\BinarySize.h" />
     <ClInclude Include="Kx\General\Common.h" />
     <ClInclude Include="Kx\General\EnumClass.h" />
@@ -640,7 +640,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxAnimatedSplashWindow.cpp" />
     <ClCompile Include="KxFramework\KxAnimation.cpp" />
-    <ClCompile Include="KxFramework\KxAny.cpp" />
     <ClCompile Include="KxFramework\KxApp.cpp" />
     <ClCompile Include="KxFramework\KxArchiveEvent.cpp" />
     <ClCompile Include="KxFramework\KxAuiNotebook.cpp" />
@@ -808,6 +807,7 @@
     <ClCompile Include="Kx\Compression\IArchive.cpp" />
     <ClCompile Include="Kx\Compression\LZ4Stream.cpp" />
     <ClCompile Include="Kx\Compression\ZLibStream.cpp" />
+    <ClCompile Include="Kx\General\Any.cpp" />
     <ClCompile Include="Kx\General\MemoryStream.cpp" />
     <ClCompile Include="Kx\General\Private\VersionImpl.cpp" />
     <ClCompile Include="Kx\General\Version.cpp" />
