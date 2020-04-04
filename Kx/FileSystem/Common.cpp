@@ -37,7 +37,7 @@ namespace KxFramework::FileSystem
 		};
 		return wxEmptyString;
 	}
-	wxString GetForbiddenCharsExceptSeparators(const wxString& except)
+	wxString GetForbiddenChars(const wxString& except)
 	{
 		wxString forbiddenChars = wxFileName::GetForbiddenChars();
 		for (wxChar c: except)
