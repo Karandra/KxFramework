@@ -68,7 +68,7 @@ namespace KxFramework::Sciter
 			bool Load(wxInputStream& stream);
 			bool Save(wxOutputStream& stream, Format format, int quality = 100) const;
 
-			bool Clear(const KxColor& color);
+			bool Clear(const Color& color);
 			wxSize GetSize() const;
 			bool UsesAlpha() const;
 

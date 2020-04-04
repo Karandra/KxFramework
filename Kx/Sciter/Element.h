@@ -2,7 +2,6 @@
 #include "Common.h"
 #include "ScriptValue.h"
 #include "Utility/HandleWrapper.h"
-#include <KxFramework/KxColor.h>
 #include <utility>
 
 namespace KxFramework::Sciter
@@ -189,8 +188,8 @@ namespace KxFramework::Sciter
 				return SetStyleAttribute(name, wxString(value));
 			}
 
-			bool SetStyleAttribute(const wxString& name, const KxColor& value);
-			bool SetStyleAttribute(const char* name, const KxColor& value);
+			bool SetStyleAttribute(const wxString& name, const Color& value);
+			bool SetStyleAttribute(const char* name, const Color& value);
 
 			bool SetStyleAttribute(const wxString& name, int value, SizeUnit unit = SizeUnit::None);
 			bool SetStyleAttribute(const char* name, int value, SizeUnit unit = SizeUnit::None);

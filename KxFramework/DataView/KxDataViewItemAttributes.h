@@ -43,7 +43,7 @@ class KX_API KxDataViewItemAttributes
 
 		bool HasBackgroundColor() const
 		{
-			return m_BackgroundColor.IsOk();
+			return m_BackgroundColor.IsValid();
 		}
 		const KxColor& GetBackgroundColor() const
 		{
@@ -56,7 +56,7 @@ class KX_API KxDataViewItemAttributes
 
 		bool HasForegroundColor() const
 		{
-			return m_ForegroundColor.IsOk();
+			return m_ForegroundColor.IsValid();
 		}
 		const KxColor& GetForegroundColor() const
 		{

@@ -40,5 +40,7 @@ extern KX_API const wxString KxNullWxString;
 #include <KxFramework/KxButtonType.h>
 #include <KxFramework/KxIconType.h>
 #include "KxFramework/KxString.h"
-#include "KxFramework/KxColor.h"
 #include "KxFramework/KxMath.h"
+#include "Kx/General/Color.h"
+
+using KxColor = KxFramework::Color;

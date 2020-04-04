@@ -113,8 +113,8 @@ namespace KxFramework::Sciter
 			}
 			bool SetTransparent(wxByte alpha) override
 			{
-				KxColor color = TWindow::GetBackgroundColour();
-				color.SetA(alpha);
+				Color color = TWindow::GetBackgroundColour();
+				color.SetAlpha8(alpha);
 				return SetBackgroundColour(color);
 			}
 			

@@ -154,7 +154,7 @@ namespace KxDataView2
 		wxPaintDC dc(this);
 		dc.Clear();
 
-		if (m_BorderColor.IsOk())
+		if (m_BorderColor)
 		{
 			dc.SetPen(m_BorderColor);
 			dc.SetBrush(m_BorderColor);
@@ -841,7 +841,7 @@ namespace KxDataView2
 	void View::SetBorderColor(const KxColor& color, int size)
 	{
 		m_BorderColor = color;
-		int borderSize = m_BorderColor.IsOk() ? FromDIP(size) : 0;
+		int borderSize = m_BorderColor ? FromDIP(size) : 0;
 
 		m_ClientAreaSI->SetBorder(borderSize);
 		if (m_HeaderAreaSI)

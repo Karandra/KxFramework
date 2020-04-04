@@ -8,7 +8,6 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxFramework/KxSystemSettings.h"
 #include "KxFramework/KxSystem.h"
 #include "KxFramework/KxRegistry.h"
-#include "KxFramework/KxColor.h"
 
 KxColor KxSystemSettings::GetColor(wxSystemColour index)
 {

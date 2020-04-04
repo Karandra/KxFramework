@@ -63,7 +63,7 @@ namespace KxDataView2
 			if (!cellState.IsSelected())
 			{
 				KxColor lineColor = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
-				lineColor.SetA(48);
+				lineColor.SetAlpha8(48);
 
 				memDC.SetPen(lineColor);
 				memDC.DrawLine(wxPoint(0, 0), wxPoint(buttonRect.GetWidth() + 1, 0));

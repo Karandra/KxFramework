@@ -100,8 +100,8 @@ namespace KxFramework::Sciter
 
 			bool IsTransparentBackgroundSupported(wxString* reason = nullptr) const;
 			bool SetFont(const wxFont& font);
-			bool SetBackgroundColor(const KxColor& color);
-			bool SetForegroundColor(const KxColor& color);
+			bool SetBackgroundColor(const Color& color);
+			bool SetForegroundColor(const Color& color);
 
 			wxLayoutDirection GetLayoutDirection() const;
 			void SetLayoutDirection(wxLayoutDirection value);

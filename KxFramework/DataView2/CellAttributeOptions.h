@@ -60,7 +60,7 @@ namespace KxDataView2::CellAttributeOptions
 			}
 			void ChangeAlpha(KxColor& color, uint8_t alpha) const
 			{
-				color.SetA(alpha);
+				color.SetAlpha8(alpha);
 			}
 
 		public:
@@ -77,7 +77,7 @@ namespace KxDataView2::CellAttributeOptions
 
 			bool HasBackgroundColor() const
 			{
-				return m_BackgroundColor.IsOk();
+				return m_BackgroundColor.IsValid();
 			}
 			KxColor GetBackgroundColor() const
 			{
@@ -95,7 +95,7 @@ namespace KxDataView2::CellAttributeOptions
 
 			bool HasForegroundColor() const
 			{
-				return m_ForegroundColor.IsOk();
+				return m_ForegroundColor.IsValid();
 			}
 			KxColor GetForegroundColor() const
 			{

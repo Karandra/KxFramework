@@ -145,7 +145,7 @@ void KxDataViewRenderer::CallDrawCellBackground(const wxRect& cellRect, KxDataVi
 		if (!(cellState & KxDATAVIEW_CELL_SELECTED))
 		{
 			KxColor lineColor = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
-			lineColor.SetA(48);
+			lineColor.SetAlpha8(48);
 
 			memDC.SetPen(lineColor);
 			memDC.DrawLine(wxPoint(0, 0), wxPoint(buttonRect.GetWidth() + 1, 0));

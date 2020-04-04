@@ -1,6 +1,5 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxColor.h"
 
 namespace KxDCUtility
 {

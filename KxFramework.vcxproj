@@ -294,7 +294,6 @@
     <ClInclude Include="KxFramework\KxCallAtScopeExit.h" />
     <ClInclude Include="KxFramework\KxCheckBox.h" />
     <ClInclude Include="KxFramework\KxCollapsiblePane.h" />
-    <ClInclude Include="KxFramework\KxColor.h" />
     <ClInclude Include="KxFramework\KxComboBox.h" />
     <ClInclude Include="KxFramework\KxComboBoxDialog.h" />
     <ClInclude Include="KxFramework\KxComboControl.h" />
@@ -492,6 +491,8 @@
     <ClInclude Include="Kx\General.hpp" />
     <ClInclude Include="Kx\General\Any.h" />
     <ClInclude Include="Kx\General\BinarySize.h" />
+    <ClInclude Include="Kx\General\Color.h" />
+    <ClInclude Include="Kx\General\ColorDefines.h" />
     <ClInclude Include="Kx\General\Common.h" />
     <ClInclude Include="Kx\General\EnumClass.h" />
     <ClInclude Include="Kx\General\ExtraData.h" />
@@ -564,6 +565,7 @@
     <ClInclude Include="Kx\Utility.hpp" />
     <ClInclude Include="Kx\Utility\CallAtScopeExit.h" />
     <ClInclude Include="Kx\Utility\Common.h" />
+    <ClInclude Include="Kx\Utility\Numeric.h" />
     <ClInclude Include="Kx\Utility\TypeTraits.h" />
   </ItemGroup>
   <ItemGroup>
@@ -657,7 +659,6 @@
     <ClCompile Include="KxFramework\KxButton.cpp" />
     <ClCompile Include="KxFramework\KxCheckBox.cpp" />
     <ClCompile Include="KxFramework\KxCollapsiblePane.cpp" />
-    <ClCompile Include="KxFramework\KxColor.cpp" />
     <ClCompile Include="KxFramework\KxComboBox.cpp" />
     <ClCompile Include="KxFramework\KxComboBoxDialog.cpp" />
     <ClCompile Include="KxFramework\KxComboControl.cpp" />
@@ -808,6 +809,7 @@
     <ClCompile Include="Kx\Compression\LZ4Stream.cpp" />
     <ClCompile Include="Kx\Compression\ZLibStream.cpp" />
     <ClCompile Include="Kx\General\Any.cpp" />
+    <ClCompile Include="Kx\General\Color.cpp" />
     <ClCompile Include="Kx\General\MemoryStream.cpp" />
     <ClCompile Include="Kx\General\Private\VersionImpl.cpp" />
     <ClCompile Include="Kx\General\Version.cpp" />

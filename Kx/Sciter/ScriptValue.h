@@ -107,7 +107,7 @@ namespace KxFramework::Sciter
 			std::optional<double> GetFloat() const;
 			wxDateTime GetDateTime() const;
 			wxTimeSpan GetDuration() const;
-			KxColor GetColor() const;
+			Color GetColor() const;
 			std::optional<double> GetAngle() const;
 			const void* GetBytes(size_t& size) const;
 			std::optional<int64_t> GetCurrency() const;
@@ -144,7 +144,7 @@ namespace KxFramework::Sciter
 			}
 			ScriptValue& operator=(const wxDateTime& value);
 			ScriptValue& operator=(const wxTimeSpan& value);
-			ScriptValue& operator=(const KxColor& value);
+			ScriptValue& operator=(const Color& value);
 			ScriptValue& SetAngle(double radians);
 			ScriptValue& SetBytes(const void* data, size_t size);
 			ScriptValue& SetString(const wxString& value, StringType type = StringType::None)

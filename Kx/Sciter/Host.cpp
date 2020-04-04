@@ -453,11 +453,11 @@ namespace KxFramework::Sciter
 	{
 		return GetRootElement().SetStyleFont(font);
 	}
-	bool Host::SetBackgroundColor(const KxColor& color)
+	bool Host::SetBackgroundColor(const Color& color)
 	{
 		return GetRootElement().SetStyleAttribute(wxS("background-color"), color);
 	}
-	bool Host::SetForegroundColor(const KxColor& color)
+	bool Host::SetForegroundColor(const Color& color)
 	{
 		return GetRootElement().SetStyleAttribute(wxS("color"), color);
 	}

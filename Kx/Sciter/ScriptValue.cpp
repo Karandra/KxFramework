@@ -199,11 +199,11 @@ namespace KxFramework::Sciter
 		}
 		return {};
 	}
-	KxColor ScriptValue::GetColor() const
+	Color ScriptValue::GetColor() const
 	{
 		if (auto value = GetInt(); value && GetType() == ScriptValueType::Color)
 		{
-			return KxColor().SetCOLORREF(*value);
+			return Color().SetCOLORREF(*value);
 		}
 		return {};
 	}
@@ -292,7 +292,7 @@ namespace KxFramework::Sciter
 
 		return *this;
 	}
-	ScriptValue& ScriptValue::operator=(const KxColor& value)
+	ScriptValue& ScriptValue::operator=(const Color& value)
 	{
 		Clear();
 		GetSciterAPI()->ValueIntDataSet(ToSciterScriptValue(m_Value), value.GetCOLORREF(), T_COLOR, 0);

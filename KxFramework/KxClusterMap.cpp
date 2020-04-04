@@ -1,7 +1,6 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxClusterMap.h"
 #include "KxFramework/KxUxTheme.h"
-#include "KxFramework/KxColor.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxClusterMap, wxControl)
 

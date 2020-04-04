@@ -754,13 +754,13 @@ namespace KxFramework::Sciter
 		return GetSciterAPI()->SciterSetStyleAttribute(ToSciterElement(m_Handle), name, value.wc_str()) == SCDOM_OK;
 	}
 
-	bool Element::SetStyleAttribute(const wxString& name, const KxColor& value)
+	bool Element::SetStyleAttribute(const wxString& name, const Color& value)
 	{
-		return SetStyleAttribute(name, value.ToString(KxColor::C2S::CSS, KxColor::C2SAlpha::Always));
+		return SetStyleAttribute(name, value.ToString(C2SFormat::CSS, C2SAlpha::Always));
 	}
-	bool Element::SetStyleAttribute(const char* name, const KxColor& value)
+	bool Element::SetStyleAttribute(const char* name, const Color& value)
 	{
-		return SetStyleAttribute(name, value.ToString(KxColor::C2S::CSS, KxColor::C2SAlpha::Always));
+		return SetStyleAttribute(name, value.ToString(C2SFormat::CSS, C2SAlpha::Always));
 	}
 
 	bool Element::SetStyleAttribute(const wxString& name, int value, SizeUnit unit)

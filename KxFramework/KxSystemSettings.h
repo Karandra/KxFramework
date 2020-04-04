@@ -7,7 +7,6 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #pragma once
 #include "KxFramework/KxFramework.h"
 
-class KX_API KxColor;
 class KX_API KxSystemSettings
 {
 	public:

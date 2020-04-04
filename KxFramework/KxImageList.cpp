@@ -179,7 +179,7 @@ KxColor KxImageList::GetBackgroundColor() const
 }
 void KxImageList::SetBackgroundColor(const KxColor& color)
 {
-	::ImageList_SetBkColor(ToHImageList(m_hImageList), color.IsOk() ? color.GetCOLORREF() : CLR_NONE);
+	::ImageList_SetBkColor(ToHImageList(m_hImageList), color ? color.GetCOLORREF() : CLR_NONE);
 }
 bool KxImageList::SetOverlayImage(int index, int overlayIndex)
 {

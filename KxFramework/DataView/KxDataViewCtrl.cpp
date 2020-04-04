@@ -245,7 +245,7 @@ void KxDataViewCtrl::OnSize(wxSizeEvent& event)
 void KxDataViewCtrl::OnPaint(wxPaintEvent& event)
 {
 	wxPaintDC dc(this);
-	if (m_BorderColor.IsOk())
+	if (m_BorderColor)
 	{
 		dc.SetPen(m_BorderColor);
 		dc.SetBrush(m_BorderColor);
@@ -830,7 +830,7 @@ wxBorder KxDataViewCtrl::GetDefaultBorder() const
 void KxDataViewCtrl::SetBorderColor(const KxColor& color, int size)
 {
 	m_BorderColor = color;
-	int borderSize = m_BorderColor.IsOk() ? FromDIP(size) : 0;
+	int borderSize = m_BorderColor ? FromDIP(size) : 0;
 
 	m_ClientAreaSI->SetBorder(borderSize);
 	if (m_HeaderAreaSI)

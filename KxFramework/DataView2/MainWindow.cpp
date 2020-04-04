@@ -1161,7 +1161,7 @@ namespace KxDataView2
 		if (m_View->IsStyleEnabled(CtrlStyle::AlternatingRowColors))
 		{
 			KxColor altRowColor = m_View->m_AlternateRowColor;
-			if (!altRowColor.IsOk())
+			if (!altRowColor)
 			{
 				// Determine the alternate rows color automatically from the background color.
 				const wxColour bgColor = m_View->GetBackgroundColour();
@@ -1172,7 +1172,7 @@ namespace KxDataView2
 				
 				if (m_BackgroundBitmap.IsOk())
 				{
-					altRowColor.SetA(200);
+					altRowColor.SetAlpha8(200);
 				}
 			}
 
@@ -1946,7 +1946,7 @@ namespace KxDataView2
 		SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX));
 
 		KxColor rulesColor = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
-		rulesColor.SetA(85);
+		rulesColor.SetAlpha8(85);
 
 		m_PenRuleH = rulesColor;
 		m_PenRuleV = rulesColor;

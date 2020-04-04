@@ -283,9 +283,6 @@
     <ClInclude Include="KxFramework\KxString.h">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxColor.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxImageList.h">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
@@ -1342,13 +1339,19 @@
     <ClInclude Include="Kx\General\Any.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\General\Color.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\ColorDefines.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Utility\Numeric.h">
+      <Filter>Kx\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
     <ClCompile Include="KxFramework\KxString.cpp">
-      <Filter>Source Files\DataStructures</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxColor.cpp">
       <Filter>Source Files\DataStructures</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxImageList.cpp">
@@ -2087,6 +2090,9 @@
       <Filter>Kx\General\Private</Filter>
     </ClCompile>
     <ClCompile Include="Kx\General\Any.cpp">
+      <Filter>Kx\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\Color.cpp">
       <Filter>Kx\General</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,6 +1,5 @@
 ﻿#include "KxStdAfx.h"
 #include "KxFramework/KxUtility.h"
-#include "KxFramework/KxColor.h"
 #include "KxFramework/KxTranslation.h"
 #include "KxFramework/KxIncludeWindows.h"
 

@@ -1125,19 +1125,19 @@ void KxDataViewMainWindow::OnPaint(wxPaintEvent& event)
 	// Draw background of alternate rows specially if required
 	if (m_Owner->HasFlag(KxDV_ALTERNATING_ROW_COLORS))
 	{
-		KxColor altRowColour = m_Owner->m_AlternateRowColor;
-		if (!altRowColour.IsOk())
+		KxColor altRowColor = m_Owner->m_AlternateRowColor;
+		if (!altRowColor)
 		{
-			// Determine the alternate rows colour automatically from the background colour.
+			// Determine the alternate rows color automatically from the background color.
 			const wxColour bgColor = m_Owner->GetBackgroundColour();
 
 			// Depending on the background, alternate row color will be 3% more dark or 50% brighter.
 			int alpha = bgColor.GetRGB() > 0x808080 ? 97 : 150;
-			altRowColour = bgColor.ChangeLightness(alpha);
+			altRowColor = bgColor.ChangeLightness(alpha);
 		}
 
 		dc.SetPen(*wxTRANSPARENT_PEN);
-		dc.SetBrush(altRowColour);
+		dc.SetBrush(altRowColor);
 
 		// We only need to draw the visible part, so limit the rectangle to it.
 		const int xRect = m_Owner->CalcUnscrolledPosition(wxPoint(0, 0)).x;
@@ -1819,7 +1819,7 @@ KxDataViewMainWindow::KxDataViewMainWindow(KxDataViewCtrl* parent,
 	SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX));
 
 	KxColor rulesColor = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
-	rulesColor.SetA(127);
+	rulesColor.SetAlpha8(127);
 
 	m_PenRuleH = rulesColor;
 	m_PenRuleV = rulesColor;

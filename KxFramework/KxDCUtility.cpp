@@ -30,7 +30,7 @@ namespace KxDCUtility
 
 		if (pixelCount != 0)
 		{
-			return KxColor(r / pixelCount, g / pixelCount, b / pixelCount, a / pixelCount);
+			return KxColor().SetFixed8(r / pixelCount, g / pixelCount, b / pixelCount, a / pixelCount);
 		}
 		return {};
 	}

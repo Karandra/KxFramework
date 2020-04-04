@@ -39,7 +39,7 @@ namespace KxDataView2
 
 			bool HasColor() const
 			{
-				return m_Color.IsOk();
+				return m_Color.IsValid();
 			}
 			KxColor GetColor() const
 			{

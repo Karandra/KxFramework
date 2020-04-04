@@ -126,7 +126,7 @@ namespace KxFramework::Sciter
 		return false;
 	}
 
-	bool GraphicsBitmap::Clear(const KxColor& color)
+	bool GraphicsBitmap::Clear(const Color& color)
 	{
 		return GetGrapchicsAPI()->imageClear(ToSciterImage(m_Handle), CreateSciterColor(color)) == GRAPHIN_OK;
 	}
