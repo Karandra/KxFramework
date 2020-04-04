@@ -21,11 +21,11 @@ namespace KxFramework
 		{
 			case VersionType::Default:
 			{
-				return Private::Version::Parse(source, GetItem<VersionType::Default>(m_Value), m_ComponentCount);
+				return Private::Version::Parse(source, AssignDefault(), m_ComponentCount);
 			}
 			case VersionType::DateTime:
 			{
-				return Private::Version::Parse(source, GetItem<VersionType::DateTime>(m_Value));
+				return Private::Version::Parse(source, AssignDateTime());
 			}
 		};
 		return false;
@@ -33,11 +33,11 @@ namespace KxFramework
 	VersionType Version::ParseUnknown(const wxString& source)
 	{
 		// Order is important here
-		if (Private::Version::Parse(source, GetItem<VersionType::DateTime>(m_Value)))
+		if (Private::Version::Parse(source, AssignDateTime()))
 		{
 			return VersionType::DateTime;
 		}
-		else if (Private::Version::Parse(source, GetItem<VersionType::Default>(m_Value), m_ComponentCount))
+		else if (Private::Version::Parse(source, AssignDefault(), m_ComponentCount))
 		{
 			return VersionType::Default;
 		}
