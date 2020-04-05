@@ -110,10 +110,21 @@ namespace KxFramework
 			return !(*this == other);
 		}
 	};
+}
 
-	struct PackedHSL;
-	struct PackedHSV;
+namespace KxFramework::ColorWeight
+{
+	// https://ninedegreesbelow.com/photography/srgb-luminance.html
+	// https://en.wikipedia.org/wiki/Luma_(video)
 
+	constexpr PackedRGB<float> sRGB = {0.2126f, 0.7152f, 0.0722f};
+	constexpr PackedRGB<float> CCIR_601 = {0.299f, 0.587f, 0.114f};
+	constexpr PackedRGB<float> ITU_R = {0.2126f, 0.7152f, 0.0722f};
+	constexpr PackedRGB<float> HDTV = {0.212f, 0.701f, 0.087f};
+}
+
+namespace KxFramework
+{
 	struct PackedHSL final
 	{
 		using ValueType = float;
@@ -133,15 +144,27 @@ namespace KxFramework
 		float Alpha = 0;
 	};
 
-	namespace ColorWeight
+	inline constexpr PackedHSV ToHSV(const PackedHSL& hsl) noexcept
 	{
-		// https://ninedegreesbelow.com/photography/srgb-luminance.html
-		// https://en.wikipedia.org/wiki/Luma_(video)
+		// https://en.wikipedia.org/wiki/HSL_and_HSV#HSL_to_HSV
+		PackedHSV hsv;
+		hsv.Hue = hsl.Hue;
+		hsv.Value = hsl.Lightness + hsl.Saturation * std::min(hsl.Lightness, 1.0f - hsl.Lightness);
+		hsv.Saturation = hsv.Value == 0.0f ? 0 : 2.0f * (1.0f - hsl.Lightness / hsv.Value);
+		hsv.Alpha = hsl.Alpha;
 
-		constexpr PackedRGB<float> sRGB = {0.2126f, 0.7152f, 0.0722f};
-		constexpr PackedRGB<float> CCIR_601 = {0.299f, 0.587f, 0.114f};
-		constexpr PackedRGB<float> ITU_R = {0.2126f, 0.7152f, 0.0722f};
-		constexpr PackedRGB<float> HDTV = {0.212f, 0.701f, 0.087f};
+		return hsv;
+	}
+	inline constexpr PackedHSL ToHSL(const PackedHSV& hsv) noexcept
+	{
+		// https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_HSL
+		PackedHSL hsl;
+		hsl.Hue = hsv.Hue;
+		hsl.Lightness = hsv.Value * (1.0f - hsv.Saturation / 2.0f);
+		hsl.Saturation = hsl.Lightness == 0.0f || hsl.Lightness == 1.0f ? 0 : (hsv.Value - hsl.Lightness) / std::min(hsl.Lightness, 1.0f - hsl.Lightness);
+		hsl.Alpha = hsv.Alpha;
+
+		return hsl;
 	}
 }
 
