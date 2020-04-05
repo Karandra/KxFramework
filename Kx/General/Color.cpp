@@ -134,6 +134,11 @@ namespace
 
 namespace KxFramework
 {
+	Color Color::FromColorName(const wxString& name)
+	{
+		return wxTheColourDatabase->Find(name);
+	}
+
 	wxString Color::ToString(C2SFormat format, C2SAlpha alpha, ColorSpace colorSpace) const
 	{
 		switch (format)
@@ -171,14 +176,15 @@ namespace KxFramework
 		};
 		return {};
 	}
+	wxString Color::GetColorName() const
+	{
+		const auto rgb = GetFixed8();
+		return wxTheColourDatabase->FindName(wxColour(rgb.Red, rgb.Green, rgb.Blue, wxALPHA_OPAQUE));
+	}
+
 	Color Color::GetContrastColor(const wxWindow& window, const PackedRGB<float>& weight) const noexcept
 	{
-		const Color bg = window.GetBackgroundColour();
-		const Color fg = window.GetForegroundColour();
-
-		const Color light = SelectLighterColor(bg, fg, weight);
-		const Color dark = light == bg ? fg : bg;
-
+		auto [light, dark] = SelectLighterAndDarkerColor(window.GetBackgroundColour(), window.GetForegroundColour());
 		return GetContrastColor(light, dark);
 	}
 }

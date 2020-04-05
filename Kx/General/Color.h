@@ -66,32 +66,22 @@ namespace KxFramework
 			{
 				return FromNormalized(static_cast<float>(r), static_cast<float>(g), static_cast<float>(b), static_cast<float>(a));
 			}
-			static Color FromColorName(const wxString& name)
-			{
-				return wxColour(name);
-			}
-
-			// Range: [1, 21]
-			constexpr static float ContrastRatio(const Color& lighterColor, const Color& darkerColor, const PackedRGB<float>& weight = ColorWeight::sRGB) noexcept
-			{
-				return (lighterColor.GetLuminance(weight) + 0.05f) / (darkerColor.GetLuminance(weight) + 0.05f);
-			}
+			static Color FromColorName(const wxString& name);
 
 			constexpr static float AlphaBlend(float foreground, float background, float alpha) noexcept
 			{
 				return ColorTraits<float>::clamp(background + (alpha * (foreground - background)));
 			}
-			constexpr static Color AlphaBlend(const Color& foreground, const Color& background, float alpha) noexcept
+			constexpr static float ContrastRatio(const Color& left, const Color& right, const PackedRGB<float>& weight = ColorWeight::sRGB) noexcept
 			{
-				return AlphaBlend(foreground.GetNormalized(), background.GetNormalized(), alpha);
+				return (left.GetLuminance(weight) + 0.05f) / (right.GetLuminance(weight) + 0.05f);
 			}
-			constexpr static PackedRGBA<float> AlphaBlend(const PackedRGBA<float>& foreground, const PackedRGBA<float>& background, float alpha) noexcept
+			constexpr static float GetDifference(const Color& left, const Color& right) noexcept
 			{
-				const float r = AlphaBlend(foreground.Red, background.Red, alpha);
-				const float g = AlphaBlend(foreground.Green, background.Green, alpha);
-				const float b = AlphaBlend(foreground.Blue, background.Blue, alpha);
-				const float a = AlphaBlend(foreground.Alpha, background.Alpha, alpha);
-				return {r, g, b, a};
+				const auto l = left.GetNormalized();
+				const auto r = right.GetNormalized();
+
+				return (std::max(l.Red, r.Red) - std::min(l.Red, r.Red)) + (std::max(l.Green, r.Green) - std::min(l.Green, r.Green)) + (std::max(l.Blue, r.Blue) - std::min(l.Blue, r.Blue));
 			}
 
 			constexpr static Color SelectLighterColor(const Color& left, const Color& right, const PackedRGB<float>& weight = ColorWeight::sRGB) noexcept
@@ -107,6 +97,13 @@ namespace KxFramework
 				const float rightLuminance = right.GetLuminance(weight);
 
 				return leftLuminance < rightLuminance ? left : right;
+			}
+			constexpr static std::pair<Color, Color> SelectLighterAndDarkerColor(const Color& left, const Color& right, const PackedRGB<float>& weight = ColorWeight::sRGB) noexcept
+			{
+				Color lighter = SelectLighterColor(left, right, weight);
+				Color darker = lighter == left ? right : left;
+
+				return {lighter, darker};
 			}
 
 		private:
@@ -180,10 +177,7 @@ namespace KxFramework
 				}
 				return {};
 			}
-			wxString GetColorName() const
-			{
-				return ToWxColor().GetAsString(wxC2S_NAME);
-			}
+			wxString GetColorName() const;
 
 			// Normalized
 			constexpr PackedRGBA<float> GetNormalized() const noexcept
@@ -211,22 +205,22 @@ namespace KxFramework
 				return *this;
 			}
 
-			constexpr Color& SetRedNormalized(float r) noexcept
+			constexpr Color& SetNormalizedRed(float r) noexcept
 			{
 				m_Value.Red = r;
 				return *this;
 			}
-			constexpr Color& SetGreenNormalized(float g) noexcept
+			constexpr Color& SetNormalizedGreen(float g) noexcept
 			{
 				m_Value.Green = g;
 				return *this;
 			}
-			constexpr Color& SetBlueNormalized(float b) noexcept
+			constexpr Color& SetNormalizedBlue(float b) noexcept
 			{
 				m_Value.Blue = b;
 				return *this;
 			}
-			constexpr Color& SetAlphaNormalized(float a) noexcept
+			constexpr Color& SetNormalizedAlpha(float a) noexcept
 			{
 				m_Value.Alpha = a;
 				return *this;
@@ -485,26 +479,26 @@ namespace KxFramework
 			}
 			constexpr float GetLuminance(const PackedRGB<float>& weight = ColorWeight::sRGB) const noexcept
 			{
+				// https://www.w3.org/TR/WCAG/#dfn-relative-luminance
 				// https://stackoverflow.com/a/56678483/6512579
 				auto SRGBToLinear = [](float channel) constexpr noexcept
 				{
 					// Send this function a decimal sRGB gamma encoded color value
 					// between 0.0 and 1.0, and it returns a linearized value.
 
-					if (channel <= 0.04045f)
+					if (channel <= 0.03928f)
 					{
 						return channel / 12.92f;
 					}
 					else
 					{
-						return std::pow(((channel + 0.055f) / 1.055f), 2.4f);
+						return std::pow((channel + 0.055f) / 1.055f, 2.4f);
 					}
 				};
 
 				const float r = SRGBToLinear(m_Value.Red);
 				const float g = SRGBToLinear(m_Value.Green);
 				const float b = SRGBToLinear(m_Value.Blue);
-
 				return r * weight.Red + g * weight.Green + b * weight.Blue;
 			}
 			constexpr float GetPercievedLighteness(const PackedRGB<float>& weight = ColorWeight::sRGB) const noexcept
