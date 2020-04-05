@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "ScriptValue.h"
 #include "Utility/HandleWrapper.h"
-#include <utility>
+#include "Kx/General/Color.h"
 
 namespace KxFramework::Sciter
 {

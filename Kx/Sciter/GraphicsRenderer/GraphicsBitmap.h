@@ -1,6 +1,7 @@
 #pragma once
 #include "Kx/Sciter/Common.h"
 #include "Kx/Sciter/Utility/HandleWrapper.h"
+#include "Kx/General/Color.h"
 
 namespace KxFramework::Sciter
 {

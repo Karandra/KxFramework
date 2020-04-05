@@ -2,6 +2,8 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxEnumClassOperations.h"
 #include "Kx/System/COM.h"
+#include "Kx/General/Color.h"
+using KxColor = KxFramework::Color;
 
 enum class KxImageListDrawMode
 {

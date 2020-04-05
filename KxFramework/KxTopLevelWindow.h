@@ -3,6 +3,10 @@
 #include "KxFramework/KxUtility.h"
 #include "KxEvent.h"
 
+#include "Kx/General/Color.h"
+using KxColor = KxFramework::Color;
+
+
 KxEVENT_DECLARE_GLOBAL(wxNotifyEvent, DWM_GLASS_COLOR_CHANGED);
 KxEVENT_DECLARE_GLOBAL(wxNotifyEvent, DWM_COMPOSITION_CHANGED);
 KxEVENT_DECLARE_GLOBAL(wxNotifyEvent, WINDOW_DPI_CHANGED);

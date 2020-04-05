@@ -1,6 +1,8 @@
 #pragma once
 #include "KxStdAfx.h"
 #include <KxEnumClassOperations.h>
+#include "Kx/General/Color.h"
+using KxColor = KxFramework::Color;
 
 // https://docs.microsoft.com/ru-ru/windows/win32/controls/uxctl-ref
 // https://docs.microsoft.com/ru-ru/windows/win32/controls/theme-subclasses

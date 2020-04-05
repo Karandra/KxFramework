@@ -1,5 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include "Kx/General/Color.h"
+using KxColor = KxFramework::Color;
 
 namespace KxDCUtility
 {

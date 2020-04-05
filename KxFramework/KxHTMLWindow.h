@@ -2,6 +2,8 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxWindowRefreshScheduler.h"
 #include <wx/html/htmlwin.h>
+#include "Kx/General/Color.h"
+using KxColor = KxFramework::Color;
 class KX_API KxMenu;
 
 class KX_API KxHTMLWindow: public KxWindowRefreshScheduler<wxHtmlWindow>, public wxTextEntry

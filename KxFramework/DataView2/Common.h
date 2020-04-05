@@ -1,8 +1,11 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include "Kx/General/Color.h"
 
 namespace KxDataView2
 {
+	using KxColor = KxFramework::Color;
+
 	enum class CtrlStyle: uint32_t
 	{
 		None = 0,
