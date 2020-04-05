@@ -111,6 +111,9 @@ namespace KxFramework
 		}
 	};
 
+	struct PackedHSL;
+	struct PackedHSV;
+
 	struct PackedHSL final
 	{
 		using ValueType = float;
@@ -120,13 +123,13 @@ namespace KxFramework
 		float Lightness = 0;
 		float Alpha = 0;
 	};
-	struct PackedHSB final
+	struct PackedHSV final
 	{
 		using ValueType = float;
 
 		float Hue = 0;
 		float Saturation = 0;
-		float Brightness = 0;
+		float Value = 0;
 		float Alpha = 0;
 	};
 

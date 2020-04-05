@@ -26,7 +26,7 @@ namespace KxFramework
 
 		RGB,
 		HSL,
-		HSB
+		HSV
 	};
 }
 
@@ -35,13 +35,13 @@ namespace KxFramework
 	class KX_API Color final
 	{
 		public:
-			constexpr static Color FromHSB(const PackedHSB& color) noexcept
-			{
-				return Color().SetHSB(color);
-			}
 			constexpr static Color FromHSL(const PackedHSL& color) noexcept
 			{
 				return Color().SetHSL(color);
+			}
+			constexpr static Color FromHSV(const PackedHSV& color) noexcept
+			{
+				return Color().SetHSV(color);
 			}
 			constexpr static Color FromRGBA(uint32_t color) noexcept
 			{
@@ -62,6 +62,10 @@ namespace KxFramework
 			constexpr static Color FromNormalized(float r, float g, float b, float a = ColorTraits<float>::max()) noexcept
 			{
 				return Color().SetNormalized(r, g, b, a);
+			}
+			constexpr static Color FromNormalized(double r, double g, double b, double a = ColorTraits<float>::max()) noexcept
+			{
+				return FromNormalized(static_cast<float>(r), static_cast<float>(g), static_cast<float>(b), static_cast<float>(a));
 			}
 			static Color FromColorName(const wxString& name)
 			{
@@ -197,9 +201,19 @@ namespace KxFramework
 				m_Value = other;
 				return *this;
 			}
+			constexpr Color& SetNormalized(const PackedRGBA<double>& other) noexcept
+			{
+				SetNormalized(other.Red, other.Green, other.Blue, other.Alpha);
+				return *this;
+			}
 			constexpr Color& SetNormalized(float r, float g, float b, float a = ColorTraits<float>::max()) noexcept
 			{
 				m_Value = PackedRGBA(r, g, b, a);
+				return *this;
+			}
+			constexpr Color& SetNormalized(double r, double g, double b, double a = ColorTraits<float>::max()) noexcept
+			{
+				m_Value = PackedRGBA(static_cast<float>(r), static_cast<float>(g), static_cast<float>(b), static_cast<float>(a));
 				return *this;
 			}
 
@@ -304,79 +318,6 @@ namespace KxFramework
 			{
 				return SetABGR(color);
 			}
-			
-			constexpr PackedHSB GetHSB() const noexcept
-			{
-				PackedHSB hsb;
-
-				const float r = m_Value.Red;
-				const float g = m_Value.Green;
-				const float b = m_Value.Blue;
-
-				const float max = std::max(std::max(r, g), b);
-				const float min = std::min(std::min(r, g), b);
-				const float delta = max - min;
-
-				// Alpha
-				hsb.Alpha = m_Value.Alpha;
-
-				// Hue
-				hsb.Hue = 0;
-				if (max == r && g >= b)
-				{
-					hsb.Hue = 60.0f * ((g - b) / delta);
-				}
-				else if (max == r && g < b)
-				{
-					hsb.Hue = 60.0f * ((g - b) / delta) + 360.0f;
-				}
-				else if (max == g)
-				{
-					hsb.Hue = 60.0f * ((b - r)/ delta) + 120.0f;
-				}
-				else if (max == b)
-				{
-					hsb.Hue = 60.0f * ((r - g) / delta) + 240.0f;
-				}
-
-				// Saturation
-				hsb.Saturation = 0;
-				if (max != 0.0f)
-				{
-					hsb.Saturation = 1.0f - (min / max);
-				}
-
-				// Brightness
-				hsb.Brightness = max;
-
-				return hsb;
-			}
-			constexpr Color& SetHSB(PackedHSB hsb) noexcept
-			{
-				float n = 0;
-				uint8_t Hi = Utility::Floor(hsb.Hue / 60.0f);
-				Utility::ModF(Hi / 6.0f, &n);
-				Hi = static_cast<uint8_t>(n);
-
-				float Bmin = ((100.0f - hsb.Saturation) * hsb.Brightness) / 100.0f;
-				Utility::ModF(hsb.Hue / 60.0f, &n);
-				float a = (hsb.Brightness - Bmin) * (n / 60.0f);
-				float Binc = Bmin + a;
-				float Bdec = hsb.Brightness - a;
-
-				const float rgb[][3] =
-				{
-					{hsb.Brightness, Binc, Bmin},
-					{Bdec, hsb.Brightness, Bmin},
-					{Bmin, hsb.Brightness, Binc},
-					{Bmin, Bdec, hsb.Brightness},
-					{Binc, Bmin, hsb.Brightness},
-					{hsb.Brightness, Bmin, Bdec},
-				};
-
-				SetNormalized(rgb[Hi][0], rgb[Hi][1], rgb[Hi][2], hsb.Alpha);
-				return *this;
-			}
 
 			constexpr PackedHSL GetHSL() const noexcept
 			{
@@ -469,6 +410,79 @@ namespace KxFramework
 				rgb.Alpha = hsl.Alpha;
 
 				SetNormalized(rgb);
+				return *this;
+			}
+			
+			constexpr PackedHSV GetHSV() const noexcept
+			{
+				PackedHSV hsb;
+
+				const float r = m_Value.Red;
+				const float g = m_Value.Green;
+				const float b = m_Value.Blue;
+
+				const float max = std::max(std::max(r, g), b);
+				const float min = std::min(std::min(r, g), b);
+				const float delta = max - min;
+
+				// Alpha
+				hsb.Alpha = m_Value.Alpha;
+
+				// Hue
+				hsb.Hue = 0;
+				if (max == r && g >= b)
+				{
+					hsb.Hue = 60.0f * ((g - b) / delta);
+				}
+				else if (max == r && g < b)
+				{
+					hsb.Hue = 60.0f * ((g - b) / delta) + 360.0f;
+				}
+				else if (max == g)
+				{
+					hsb.Hue = 60.0f * ((b - r)/ delta) + 120.0f;
+				}
+				else if (max == b)
+				{
+					hsb.Hue = 60.0f * ((r - g) / delta) + 240.0f;
+				}
+
+				// Saturation
+				hsb.Saturation = 0;
+				if (max != 0.0f)
+				{
+					hsb.Saturation = 1.0f - (min / max);
+				}
+
+				// Value (brightness)
+				hsb.Value = max;
+
+				return hsb;
+			}
+			constexpr Color& SetHSV(PackedHSV hsb) noexcept
+			{
+				float n = 0;
+				uint8_t Hi = Utility::Floor(hsb.Hue / 60.0f);
+				Utility::ModF(Hi / 6.0f, &n);
+				Hi = static_cast<uint8_t>(n);
+
+				float Bmin = ((100.0f - hsb.Saturation) * hsb.Value) / 100.0f;
+				Utility::ModF(hsb.Hue / 60.0f, &n);
+				float a = (hsb.Value - Bmin) * (n / 60.0f);
+				float Binc = Bmin + a;
+				float Bdec = hsb.Value - a;
+
+				const float rgb[][3] =
+				{
+					{hsb.Value, Binc, Bmin},
+					{Bdec, hsb.Value, Bmin},
+					{Bmin, hsb.Value, Binc},
+					{Bmin, Bdec, hsb.Value},
+					{Binc, Bmin, hsb.Value},
+					{hsb.Value, Bmin, Bdec},
+				};
+
+				SetNormalized(rgb[Hi][0], rgb[Hi][1], rgb[Hi][2], hsb.Alpha);
 				return *this;
 			}
 			
