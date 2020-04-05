@@ -321,177 +321,82 @@ namespace KxFramework
 
 			constexpr PackedHSL GetHSL() const noexcept
 			{
+				// https://en.wikipedia.org/wiki/HSL_and_HSV#From_RGB
+
 				PackedHSL hsl;
-
-				double r = m_Value.Red;
-				double g = m_Value.Green;
-				double b = m_Value.Blue;
-
-				const double max = std::max(std::max(r, g), b);
-				const double min = std::min(std::min(r, g), b);
-				const double delta = max - min;
-
-				// Alpha
 				hsl.Alpha = m_Value.Alpha;
-
-				// Hue
-				hsl.Hue = 0;
-				if (max == r && g >= b)
-				{
-					hsl.Hue = 60.0 * ((g - b) / delta);
-				}
-				else if (max == r && g < b)
-				{
-					hsl.Hue = 60.0 * ((g - b) / delta) + 360.0;
-				}
-				else if (max == g)
-				{
-					hsl.Hue = 60.0 * ((b - r) / delta) + 120.0;
-				}
-				else if (max == b)
-				{
-					hsl.Hue = 60.0 * ((r - g) / delta) + 240.0;
-				}
-
-				// Saturation
-				hsl.Saturation = delta / (1.0 - Utility::Abs((1.0 - (max + min))));
-
-				// Lightness
-				hsl.Lightness = 0.5 * (max + min);
-
-				return hsl;
-			}
-			constexpr Color& SetHSL(PackedHSL hsl) noexcept
-			{
-				hsl.Hue /= 360.0f;
-				hsl.Saturation /= 100.0f;
-				hsl.Lightness /= 100.0f;
-
-				PackedRGBA<float> rgb;
-				if (hsl.Saturation == 0)
-				{
-					rgb.Red = hsl.Lightness;
-					rgb.Green = hsl.Lightness;
-					rgb.Blue = hsl.Lightness;
-				}
-				else
-				{
-					const float q = hsl.Lightness < 0.5f ? hsl.Lightness * (1.0f + hsl.Saturation) : hsl.Lightness + hsl.Saturation - hsl.Lightness * hsl.Saturation;
-					const float p = 2.0f * hsl.Lightness - q;
-
-					auto HUE2RGB = [](float p, float q, float t) constexpr
-					{
-						if (t < 0)
-						{
-							t += 1.0f;
-						}
-						if (t > 1)
-						{
-							t -= 1.0f;
-						}
-						if (t < 1.0f / 6.0f)
-						{
-							return p + (q - p) * 6.0f * t;
-						}
-						if (t < 1.0f / 2.0f)
-						{
-							return q;
-						}
-						if (t < 2.0f / 3.0f)
-						{
-							return p + (q - p) * (2.0f / 3.0f - t) * 6.0f;
-						}
-						return p;
-					};
-					rgb.Red = HUE2RGB(p, q, hsl.Hue + (1.0f / 3.0f));
-					rgb.Green = HUE2RGB(p, q, hsl.Hue);
-					rgb.Blue = HUE2RGB(p, q, hsl.Hue - (1.0f / 3.0f));
-				}
-				rgb.Alpha = hsl.Alpha;
-
-				SetNormalized(rgb);
-				return *this;
-			}
-			
-			constexpr PackedHSV GetHSV() const noexcept
-			{
-				PackedHSV hsb;
 
 				const float r = m_Value.Red;
 				const float g = m_Value.Green;
 				const float b = m_Value.Blue;
 
-				const float max = std::max(std::max(r, g), b);
-				const float min = std::min(std::min(r, g), b);
-				const float delta = max - min;
-
-				// Alpha
-				hsb.Alpha = m_Value.Alpha;
+				const float Xmax = std::max({r, g, b});
+				const float Xmin = std::min({r, g, b});
+				const float C = Xmax - Xmin;
+				const float V = Xmax;
 
 				// Hue
-				hsb.Hue = 0;
-				if (max == r && g >= b)
+				if (C == 0.0f)
 				{
-					hsb.Hue = 60.0f * ((g - b) / delta);
+					hsl.Hue = 0;
 				}
-				else if (max == r && g < b)
+				else if (V == r)
 				{
-					hsb.Hue = 60.0f * ((g - b) / delta) + 360.0f;
+					hsl.Hue = 60.0f * (0.0f + (g - b) / C);
 				}
-				else if (max == g)
+				else if (V == g)
 				{
-					hsb.Hue = 60.0f * ((b - r)/ delta) + 120.0f;
+					hsl.Hue = 60.0f * (2.0f + (b - r) / C);
 				}
-				else if (max == b)
+				else if (V == b)
 				{
-					hsb.Hue = 60.0f * ((r - g) / delta) + 240.0f;
+					hsl.Hue = 60.0f * (4.0f + (r - g) / C);
 				}
+
+				// Lightness
+				hsl.Lightness = (Xmax + Xmin) / 2.0f;
 
 				// Saturation
-				hsb.Saturation = 0;
-				if (max != 0.0f)
+				if (hsl.Lightness == 0.0f || hsl.Lightness == 1.0f)
 				{
-					hsb.Saturation = 1.0f - (min / max);
+					hsl.Saturation = 0.0f;
+				}
+				else
+				{
+					hsl.Saturation = (V - hsl.Lightness) / std::min(hsl.Lightness, 1.0f - hsl.Lightness);
 				}
 
-				// Value (brightness)
-				hsb.Value = max;
-
-				return hsb;
+				return hsl;
 			}
-			constexpr Color& SetHSV(PackedHSV hsb) noexcept
+			constexpr Color& SetHSL(const PackedHSL& hsl) noexcept
 			{
-				float n = 0;
-				uint8_t Hi = Utility::Floor(hsb.Hue / 60.0f);
-				Utility::ModF(Hi / 6.0f, &n);
-				Hi = static_cast<uint8_t>(n);
-
-				float Bmin = ((100.0f - hsb.Saturation) * hsb.Value) / 100.0f;
-				Utility::ModF(hsb.Hue / 60.0f, &n);
-				float a = (hsb.Value - Bmin) * (n / 60.0f);
-				float Binc = Bmin + a;
-				float Bdec = hsb.Value - a;
-
-				const float rgb[][3] =
+				// https://en.wikipedia.org/wiki/HSL_and_HSV#HSL_to_RGB_alternative
+				const float a = hsl.Saturation * std::min(hsl.Lightness, 1.0f - hsl.Lightness);
+				auto f = [&](int n)
 				{
-					{hsb.Value, Binc, Bmin},
-					{Bdec, hsb.Value, Bmin},
-					{Bmin, hsb.Value, Binc},
-					{Bmin, Bdec, hsb.Value},
-					{Binc, Bmin, hsb.Value},
-					{hsb.Value, Bmin, Bdec},
+					const float k = (n + static_cast<int>(hsl.Hue) / 30) % 12;
+					return hsl.Lightness - a * std::max(-1.0f, std::min({k - 3.0f, 9.0f - k, 1.0f}));
 				};
 
-				SetNormalized(rgb[Hi][0], rgb[Hi][1], rgb[Hi][2], hsb.Alpha);
+				SetNormalized(f(0), f(8), f(4), hsl.Alpha);
 				return *this;
 			}
 			
+			constexpr PackedHSV GetHSV() const noexcept
+			{
+				return ToHSV(GetHSL());
+			}
+			constexpr Color& SetHSV(const PackedHSV& hsv) noexcept
+			{
+				return SetHSL(ToHSL(hsv));
+			}
+			
 			// Operations
-			constexpr Color MakeMono(bool isOn = true) const noexcept
+			constexpr Color MakeMono(bool isWhite = true) const noexcept
 			{
 				using Traits = ColorTraits<float>;
 
-				const float value = isOn ? Traits::max() : Traits::min();
+				const float value = isWhite ? Traits::max() : Traits::min();
 				return FromNormalized(value, value, value, m_Value.Alpha);
 			}
 			constexpr Color MakeGray(const PackedRGB<float>& weight = ColorWeight::sRGB) const noexcept

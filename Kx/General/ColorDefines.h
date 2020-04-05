@@ -144,27 +144,34 @@ namespace KxFramework
 		float Alpha = 0;
 	};
 
-	inline constexpr PackedHSV ToHSV(const PackedHSL& hsl) noexcept
-	{
-		// https://en.wikipedia.org/wiki/HSL_and_HSV#HSL_to_HSV
-		PackedHSV hsv;
-		hsv.Hue = hsl.Hue;
-		hsv.Value = hsl.Lightness + hsl.Saturation * std::min(hsl.Lightness, 1.0f - hsl.Lightness);
-		hsv.Saturation = hsv.Value == 0.0f ? 0 : 2.0f * (1.0f - hsl.Lightness / hsv.Value);
-		hsv.Alpha = hsl.Alpha;
-
-		return hsv;
-	}
 	inline constexpr PackedHSL ToHSL(const PackedHSV& hsv) noexcept
 	{
 		// https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_HSL
 		PackedHSL hsl;
+		hsl.Alpha = hsv.Alpha;
 		hsl.Hue = hsv.Hue;
 		hsl.Lightness = hsv.Value * (1.0f - hsv.Saturation / 2.0f);
-		hsl.Saturation = hsl.Lightness == 0.0f || hsl.Lightness == 1.0f ? 0 : (hsv.Value - hsl.Lightness) / std::min(hsl.Lightness, 1.0f - hsl.Lightness);
-		hsl.Alpha = hsv.Alpha;
 
+		if (hsl.Lightness == 0.0f || hsl.Lightness == 1.0f)
+		{
+			hsl.Saturation = 0.0f;
+		}
+		else
+		{
+			hsl.Saturation = (hsv.Value - hsl.Lightness) / std::min(hsl.Lightness, 1.0f - hsl.Lightness);
+		}
 		return hsl;
+	}
+	inline constexpr PackedHSV ToHSV(const PackedHSL& hsl) noexcept
+	{
+		// https://en.wikipedia.org/wiki/HSL_and_HSV#HSL_to_HSV
+		PackedHSV hsv;
+		hsv.Alpha = hsl.Alpha;
+		hsv.Hue = hsl.Hue;
+		hsv.Value = hsl.Lightness + hsl.Saturation * std::min(hsl.Lightness, 1.0f - hsl.Lightness);
+		hsv.Saturation = hsv.Value == 0.0f ? 0 : 2.0f * (1.0f - hsl.Lightness / hsv.Value);
+
+		return hsv;
 	}
 }
 
