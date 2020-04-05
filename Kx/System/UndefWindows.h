@@ -59,3 +59,4 @@
 #undef GetCompressedFileSize
 #undef GetTempPath
 #undef CreateDirectory
+#undef CompareString
