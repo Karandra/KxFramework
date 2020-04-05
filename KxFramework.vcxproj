@@ -863,6 +863,9 @@
     <None Include="cpp.hint" />
     <None Include="Kx\System\Private\ErrorCodeNtStatus.i" />
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="Kx\General\Color.natvis" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

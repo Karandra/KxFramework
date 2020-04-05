@@ -2102,4 +2102,9 @@
       <Filter>Kx\System\Private</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="Kx\General\Color.natvis">
+      <Filter>Kx\General</Filter>
+    </Natvis>
+  </ItemGroup>
 </Project>

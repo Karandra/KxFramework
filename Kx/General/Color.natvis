@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+	<Type Name="KxFramework::Color">
+		<DisplayString Condition="m_Value.Red == -1 || m_Value.Green == -1 || m_Value.Blue == -1 || m_Value.Alpha == -1">RGBA: &lt;invalid&gt;</DisplayString>
+		<DisplayString>RGBA: {{{m_Value.Red * 255,g}, {m_Value.Green * 255,g}, {m_Value.Blue * 255,g}, {m_Value.Alpha * 255,g}}}</DisplayString>
+
+		<Expand>
+			<Synthetic Name="[RGBA&lt;uint8&gt;]">
+				<DisplayString>{{{m_Value.Red * 255,g}, {m_Value.Green * 255,g}, {m_Value.Blue * 255,g}, {m_Value.Alpha * 255,g}}}</DisplayString>
+				<Expand>
+					<Item Name="Red">m_Value.Red * 255,g</Item>
+					<Item Name="Green">m_Value.Green * 255,g</Item>
+					<Item Name="Blue">m_Value.Blue * 255,g</Item>
+					<Item Name="Alpha">m_Value.Alpha * 255,g</Item>
+				</Expand>
+			</Synthetic>
+			<Synthetic Name="[RGBA&lt;float32&gt;]">
+				<DisplayString>{{{m_Value.Red,g}, {m_Value.Green,g}, {m_Value.Blue,g}, {m_Value.Alpha,g}}}</DisplayString>
+				<Expand>
+					<Item Name="Red">m_Value.Red,g</Item>
+					<Item Name="Green">m_Value.Green,g</Item>
+					<Item Name="Blue">m_Value.Blue,g</Item>
+					<Item Name="Alpha">m_Value.Alpha,g</Item>
+				</Expand>
+			</Synthetic>
+		</Expand>
+	</Type>
+</AutoVisualizer>
