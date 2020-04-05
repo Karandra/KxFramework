@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
-#include <type_traits>
 #include <algorithm>
+#include <type_traits>
 
 namespace KxFramework
 {
@@ -21,6 +21,15 @@ namespace KxFramework
 		{
 			return std::numeric_limits<T>::max();
 		}
+	
+		static constexpr T clamp(T value) noexcept
+		{
+			return std::clamp(value, min(), max());
+		}
+		static constexpr bool test_range(T value) noexcept
+		{
+			return value == clamp(value);
+		}
 	};
 
 	template<class T>
@@ -33,6 +42,15 @@ namespace KxFramework
 		static constexpr T max() noexcept
 		{
 			return 1;
+		}
+		
+		static constexpr T clamp(T value) noexcept
+		{
+			return std::clamp(value, min(), max());
+		}
+		static constexpr bool test_range(T value) noexcept
+		{
+			return value == clamp(value);
 		}
 	};
 }

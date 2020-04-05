@@ -11,13 +11,13 @@ namespace KxFramework
 	enum class C2SFormat
 	{
 		CSS,
-		HTML,
+		HTML
 	};
 	enum class C2SAlpha
 	{
 		Auto,
 		Never,
-		Always,
+		Always
 	};
 	enum class ColorSpace
 	{
@@ -79,8 +79,7 @@ namespace KxFramework
 
 			constexpr static float AlphaBlend(float foreground, float background, float alpha) noexcept
 			{
-				using Traits = ColorTraits<float>;
-				return std::clamp(background + (alpha * (foreground - background)), Traits::min(), Traits::max());
+				return ColorTraits<float>::clamp(background + (alpha * (foreground - background)));
 			}
 			constexpr static Color AlphaBlend(const Color& foreground, const Color& background, float alpha) noexcept
 			{
@@ -154,12 +153,8 @@ namespace KxFramework
 			// General
 			constexpr bool IsValid() const noexcept
 			{
-				auto Test = [](float value) constexpr noexcept
-				{
-					using Traits = ColorTraits<float>;
-					return value == std::clamp(value, Traits::min(), Traits::max());
-				};
-				return Test(m_Value.Red) && Test(m_Value.Green) && Test(m_Value.Blue) && Test(m_Value.Alpha);
+				using Traits = ColorTraits<float>;
+				return Traits::test_range(m_Value.Red) && Traits::test_range(m_Value.Green) && Traits::test_range(m_Value.Blue) && Traits::test_range(m_Value.Alpha);
 			}
 			constexpr bool IsOpaque() const noexcept
 			{
@@ -566,11 +561,6 @@ namespace KxFramework
 
 			constexpr Color& operator=(Color&&) noexcept = default;
 			constexpr Color& operator=(const Color&) noexcept = default;
-			Color& operator=(const wxColour& other) noexcept
-			{
-				*this = Color(other);
-				return *this;
-			}
 
 			operator wxColour() const noexcept
 			{
