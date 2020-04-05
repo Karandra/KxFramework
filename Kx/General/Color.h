@@ -444,18 +444,18 @@ namespace KxFramework
 				}
 				return *this;
 			}
-			constexpr Color RotateHue(double angle) const noexcept
+			constexpr Color RotateHue(float angle) const noexcept
 			{
 				PackedHSL hsl = GetHSL();
 
 				hsl.Hue += angle;
-				if (hsl.Hue > 1.0f)
+				if (hsl.Hue > 360.0f)
 				{
-					hsl.Hue -= 1.0f;
+					hsl.Hue -= 360.0f;
 				}
 				else if (hsl.Hue < 0.0f)
 				{
-					hsl.Hue += 1.0f;
+					hsl.Hue += 360.0f;
 				}
 				return Color().SetHSL(hsl);
 			}
