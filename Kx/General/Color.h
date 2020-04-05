@@ -1,7 +1,6 @@
 #pragma once
 #include "Common.h"
 #include "ColorDefines.h"
-#include "Kx/Utility/Numeric.h"
 #include <wx/colour.h>
 #include <wx/brush.h>
 #include <wx/pen.h>
