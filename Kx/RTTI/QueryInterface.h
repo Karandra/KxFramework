@@ -58,15 +58,6 @@ namespace KxFramework
 	};
 }
 
-namespace std
-{
-	template<>
-	struct hash<KxFramework::IID>
-	{
-		size_t operator()(const KxFramework::IID& iid) const noexcept;
-	};
-}
-
 #define KxDecalreIID(T, ...)	\
 \
 friend class KxFramework::IID;	\

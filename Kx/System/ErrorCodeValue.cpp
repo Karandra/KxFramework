@@ -1,6 +1,6 @@
 #include "KxStdAfx.h"
 #include "ErrorCodeValue.h"
-#include "Kx/General/UUID.h"
+#include "Kx/General/UniversallyUniqueID.h"
 #include "Kx/Utility/CallAtScopeExit.h"
 #include "Private/IncludeNtStatus.h"
 
@@ -102,11 +102,6 @@ namespace KxFramework
 		return _com_error(GetValue()).ErrorMessage();
 	}
 
-	UUID HResultCode::GetUniqueID() const
-	{
-		GUID result = _com_error(GetValue()).GUID();
-		return *reinterpret_cast<NativeUUID*>(&result);
-	}
 	wxString HResultCode::GetSource() const
 	{
 		_bstr_t result = _com_error(GetValue()).Source();
@@ -117,7 +112,7 @@ namespace KxFramework
 		_bstr_t result = _com_error(GetValue()).HelpFile();
 		return static_cast<const wxChar*>(result);
 	}
-	uint32_t HResultCode::GetHelpContext() const
+	uint32_t HResultCode::GetHelpContext() const noexcept
 	{
 		return _com_error(GetValue()).HelpContext();
 	}
@@ -129,6 +124,11 @@ namespace KxFramework
 	uint32_t HResultCode::GetFacility() const noexcept
 	{
 		return HRESULT_FACILITY(static_cast<HRESULT>(GetValue()));
+	}
+	UniversallyUniqueID HResultCode::GetUniqueID() const noexcept
+	{
+		GUID result = _com_error(GetValue()).GUID();
+		return *reinterpret_cast<NativeUUID*>(&result);
 	}
 }
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "FSPath.h"
-#include "Kx/General/UUID.h"
+#include "Kx/General/UniversallyUniqueID.h"
 #include "Kx/General/BinarySize.h"
 
 namespace KxFramework
@@ -53,7 +53,7 @@ namespace KxFramework
 			StorageVolume() = default;
 			StorageVolume(StorageVolume&&) = default;
 			StorageVolume(const StorageVolume&) = default;
-			StorageVolume(const UUID& id);
+			StorageVolume(const UniversallyUniqueID& id);
 			StorageVolume(const FSPath& path);
 			StorageVolume(const LegacyVolume& legacyVolume);
 
@@ -61,7 +61,7 @@ namespace KxFramework
 			bool IsValid() const;
 			bool DoesExist() const;
 
-			UUID GetUniqueID() const;
+			UniversallyUniqueID GetUniqueID() const;
 			FSPath GetPath() const;
 
 			wxString GetLabel() const;

@@ -504,7 +504,7 @@
     <ClInclude Include="Kx\General\Singleton.h" />
     <ClInclude Include="Kx\General\StreamDelegate.h" />
     <ClInclude Include="Kx\General\StreamWrappers.h" />
-    <ClInclude Include="Kx\General\UUID.h" />
+    <ClInclude Include="Kx\General\UniversallyUniqueID.h" />
     <ClInclude Include="Kx\General\Version.h" />
     <ClInclude Include="Kx\RTTI.hpp" />
     <ClInclude Include="Kx\RTTI\Common.h" />
@@ -827,9 +827,7 @@
     <ClCompile Include="Kx\FileSystem\StorageVolume.cpp" />
     <ClCompile Include="Kx\FileSystem\NativeFileSystem.cpp" />
     <ClCompile Include="Kx\General\BinarySize.cpp" />
-    <ClCompile Include="Kx\General\NativeUUID.cpp" />
-    <ClCompile Include="Kx\General\UUID.cpp" />
-    <ClCompile Include="Kx\RTTI\QueryInterface.cpp" />
+    <ClCompile Include="Kx\General\UniversallyUniqueID.cpp" />
     <ClCompile Include="Kx\Sciter\Common.cpp" />
     <ClCompile Include="Kx\Sciter\Controls\Label.cpp" />
     <ClCompile Include="Kx\Sciter\Element.cpp" />

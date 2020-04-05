@@ -3,7 +3,7 @@
 
 namespace KxFramework
 {
-	class UUID;
+	class UniversallyUniqueID;
 }
 
 namespace KxFramework::System
@@ -144,12 +144,12 @@ namespace KxFramework
 			wxString ToString() const;
 			wxString GetMessage() const;
 
-			UUID GetUniqueID() const;
 			wxString GetSource() const;
 			wxString GetHelpFile() const;
-			uint32_t GetHelpContext() const;
+			uint32_t GetHelpContext() const noexcept;
 			wxString GetDescription() const;
 			uint32_t GetFacility() const noexcept;
+			UniversallyUniqueID GetUniqueID() const noexcept;
 	};
 
 	class NtStatusCode final: public System::ErrorCodeValue<NtStatusCode, int32_t>

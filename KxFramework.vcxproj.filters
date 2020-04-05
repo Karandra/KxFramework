@@ -1222,9 +1222,6 @@
     <ClInclude Include="Kx\General\BinarySize.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\UUID.h">
-      <Filter>Kx\General</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\FileSystem\FileItem.h">
       <Filter>Kx\FileSystem</Filter>
     </ClInclude>
@@ -1347,6 +1344,9 @@
     </ClInclude>
     <ClInclude Include="Kx\Utility\Numeric.h">
       <Filter>Kx\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\UniversallyUniqueID.h">
+      <Filter>Kx\General</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2032,15 +2032,6 @@
     <ClCompile Include="Kx\General\BinarySize.cpp">
       <Filter>Kx\General</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\UUID.cpp">
-      <Filter>Kx\General</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\RTTI\QueryInterface.cpp">
-      <Filter>Kx\RTTI</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\General\NativeUUID.cpp">
-      <Filter>Kx\General</Filter>
-    </ClCompile>
     <ClCompile Include="Kx\FileSystem\FileItem.cpp">
       <Filter>Kx\FileSystem</Filter>
     </ClCompile>
@@ -2093,6 +2084,9 @@
       <Filter>Kx\General</Filter>
     </ClCompile>
     <ClCompile Include="Kx\General\Color.cpp">
+      <Filter>Kx\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\UniversallyUniqueID.cpp">
       <Filter>Kx\General</Filter>
     </ClCompile>
   </ItemGroup>

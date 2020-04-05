@@ -1,5 +1,6 @@
 #include "KxStdAfx.h"
-#include "UUID.h"
+#include "UniversallyUniqueID.h"
+#include "Kx/System/ErrorCodeValue.h"
 #include <rpcdce.h>
 #include "Kx/System/UndefWindows.h"
 
@@ -35,20 +36,39 @@ namespace KxFramework
 		RPC_STATUS status = RPC_S_OK;
 		return ::UuidCompare(const_cast<::UUID*>(AsUUID(left)), const_cast<::UUID*>(AsUUID(right)), &status);
 	}
-}
 
-namespace KxFramework
-{
-	UUID UUID::Create() noexcept
+	KxFramework::NativeUUID CreateFromString(const wchar_t* value) noexcept
 	{
 		NativeUUID uuid;
-		if (SUCCEEDED(::CoCreateGuid(AsGUID(uuid))))
+		if (::UuidFromStringW(reinterpret_cast<RPC_WSTR>(const_cast<wchar_t*>(value)), AsUUID(uuid)) == RPC_S_OK)
 		{
 			return uuid;
 		}
 		return {};
 	}
-	UUID UUID::CreateSequential() noexcept
+	KxFramework::NativeUUID CreateFromString(const char* value) noexcept
+	{
+		NativeUUID uuid;
+		if (::UuidFromStringA(reinterpret_cast<RPC_CSTR>(const_cast<char*>(value)), AsUUID(uuid)) == RPC_S_OK)
+		{
+			return uuid;
+		}
+		return {};
+	}
+}
+
+namespace KxFramework
+{
+	UniversallyUniqueID UniversallyUniqueID::Create() noexcept
+	{
+		NativeUUID uuid;
+		if (HResultCode(::CoCreateGuid(AsGUID(uuid))))
+		{
+			return uuid;
+		}
+		return {};
+	}
+	UniversallyUniqueID UniversallyUniqueID::CreateSequential() noexcept
 	{
 		NativeUUID uuid;
 		if (::UuidCreateSequential(AsGUID(uuid)) == RPC_S_OK)
@@ -58,46 +78,20 @@ namespace KxFramework
 		return {};
 	}
 
-	UUID UUID::CreateFromString(const wxString& value) noexcept
+	UniversallyUniqueID::UniversallyUniqueID(const char* value) noexcept
+		:m_ID(CreateFromString(value))
 	{
-		return CreateFromString(value.wc_str());
 	}
-	UUID UUID::CreateFromString(const wchar_t* value) noexcept
+	UniversallyUniqueID::UniversallyUniqueID(const wchar_t* value) noexcept
+		:m_ID(CreateFromString(value))
 	{
-		NativeUUID uuid;
-		if (::UuidFromStringW(reinterpret_cast<RPC_WSTR>(const_cast<wchar_t*>(value)), AsUUID(uuid)) == RPC_S_OK)
-		{
-			return uuid;
-		}
-		return {};
 	}
-	UUID UUID::CreateFromString(const char* value) noexcept
+	UniversallyUniqueID::UniversallyUniqueID(const wxString& value) noexcept
+		:m_ID(CreateFromString(value.wx_str()))
 	{
-		NativeUUID uuid;
-		if (::UuidFromStringA(reinterpret_cast<RPC_CSTR>(const_cast<char*>(value)), AsUUID(uuid)) == RPC_S_OK)
-		{
-			return uuid;
-		}
-		return {};
 	}
 
-	size_t UUID::GetHash() const noexcept
-	{
-		static_assert(sizeof(m_ID) == 16, "UUID must be 16 bytes in size");
-
-		if constexpr(sizeof(size_t) == sizeof(uint64_t))
-		{
-			const size_t* parts = reinterpret_cast<const size_t*>(&m_ID);
-			return parts[0] ^ parts[1];
-		}
-		else if constexpr(sizeof(size_t) == sizeof(uint32_t))
-		{
-			const size_t* parts = reinterpret_cast<const size_t*>(&m_ID);
-			return parts[0] ^ parts[1] ^ parts[2] ^ parts[3];
-		}
-		return 0;
-	}
-	wxString UUID::ToString(UUIDToStringFormat format) const
+	wxString UniversallyUniqueID::ToString(UUIDToStringFormat format) const
 	{
 		wxString uuid = [&]() -> wxString
 		{
@@ -135,19 +129,19 @@ namespace KxFramework
 		return uuid;
 	}
 
-	bool UUID::operator<(const NativeUUID& other) const noexcept
+	bool UniversallyUniqueID::operator<(const NativeUUID& other) const noexcept
 	{
 		return Compare(m_ID, other) < 0;
 	}
-	bool UUID::operator<=(const NativeUUID& other) const noexcept
+	bool UniversallyUniqueID::operator<=(const NativeUUID& other) const noexcept
 	{
 		return Compare(m_ID, other) <= 0;
 	}
-	bool UUID::operator>(const NativeUUID& other) const noexcept
+	bool UniversallyUniqueID::operator>(const NativeUUID& other) const noexcept
 	{
 		return Compare(m_ID, other) > 0;
 	}
-	bool UUID::operator>=(const NativeUUID& other) const noexcept
+	bool UniversallyUniqueID::operator>=(const NativeUUID& other) const noexcept
 	{
 		return Compare(m_ID, other) >= 0;
 	}

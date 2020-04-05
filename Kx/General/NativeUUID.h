@@ -61,12 +61,3 @@ namespace KxFramework
 		}
 	};
 }
-
-namespace std
-{
-	template<>
-	struct hash<KxFramework::NativeUUID>
-	{
-		size_t operator()(const KxFramework::NativeUUID& nativeUUID) const noexcept;
-	};
-}

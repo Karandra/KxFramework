@@ -164,7 +164,7 @@ namespace KxFramework
 		return false;
 	}
 
-	StorageVolume::StorageVolume(const UUID& id)
+	StorageVolume::StorageVolume(const UniversallyUniqueID& id)
 	{
 		static_assert(ARRAYSIZE(StorageVolume::m_Path) >= g_VolumePathTotalLength + 1, "insufficient buffer size");
 
@@ -200,7 +200,7 @@ namespace KxFramework
 		return ::GetDriveTypeW(m_Path) != DRIVE_NO_ROOT_DIR;
 	}
 
-	UUID StorageVolume::GetUniqueID() const
+	UniversallyUniqueID StorageVolume::GetUniqueID() const
 	{
 		auto guid = std::wstring_view(m_Path).substr(g_VolumePathPrefixLength + 1, g_GUIDLength);
 
