@@ -95,7 +95,7 @@ namespace KxFramework
 
 	bool FSPath::AssignFromPath(const wxString& path)
 	{
-		if (!CheckStringOnAssignPath(path))
+		if (!CheckStringOnInitialAssign(path))
 		{
 			return false;
 		}
