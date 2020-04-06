@@ -7,7 +7,7 @@
 namespace KxFramework::Utility
 {
 	template<class TLeft, class TRight>
-	void ExchangeAndReset(TLeft& left, TLeft& right, TRight nullValue)
+	constexpr void ExchangeAndReset(TLeft& left, TLeft& right, TRight nullValue) noexcept
 	{
 		static_assert(std::is_trivially_move_assignable_v<TLeft> && std::is_trivially_move_assignable_v<TRight>,
 					  "can only use ExchangeAndReset for trivially move assignable types");
@@ -17,7 +17,7 @@ namespace KxFramework::Utility
 	}
 	
 	template<class TLeft, class TRight>
-	TLeft ExchangeResetAndReturn(TLeft& right, TRight nullValue)
+	constexpr TLeft ExchangeResetAndReturn(TLeft& right, TRight nullValue) noexcept
 	{
 		static_assert(std::is_default_constructible_v<TLeft>, "left type must be default constructible");
 
@@ -27,19 +27,19 @@ namespace KxFramework::Utility
 	}
 
 	template<class TFunc, class... Args>
-	void ForEachParameterPackItem(TFunc&& func, Args&&... arg)
+	constexpr void ForEachParameterPackItem(TFunc&& func, Args&&... arg) noexcept
 	{
 		std::initializer_list<int>{(func(std::forward<Args>(arg)), 0)...};
 	}
 
 	template<class... Args>
-	constexpr size_t CountOfParameterPack()
+	constexpr size_t CountOfParameterPack() noexcept
 	{
 		return sizeof...(Args);
 	}
 
 	template<class... Args>
-	constexpr size_t SizeOfParameterPackValues()
+	constexpr size_t SizeOfParameterPackValues() noexcept
 	{
 		const constexpr size_t count = CountOfParameterPack<Args...>();
 		const constexpr std::array<size_t, count> sizes = {sizeof(Args)...};
@@ -53,7 +53,7 @@ namespace KxFramework::Utility
 	}
 
 	template<class TPointer, class TValue>
-	constexpr void SetIfNotNull(TPointer* ptr, TValue&& value)
+	constexpr void SetIfNotNull(TPointer* ptr, TValue&& value) noexcept
 	{
 		using T = std::remove_reference_t<TValue>;
 		static_assert(std::is_same_v<TPointer, T> || std::is_convertible_v<T, TPointer>, "incompatible types");
@@ -105,20 +105,20 @@ namespace KxFramework::Utility
 		using FlagIntType = typename UnderlyingType<T>::type;
 
 		template<class T>
-		constexpr bool TestFlagType()
+		constexpr bool TestFlagType() noexcept
 		{
 			return std::is_integral_v<T> || std::is_enum_v<T>;
 		}
 
 		template<class T1, class T2>
-		constexpr void AssertFlags()
+		constexpr void AssertFlags() noexcept
 		{
 			static_assert(TestFlagType<T1>() && TestFlagType<T2>(), "flag must be integers or enums");
 		}
 	}
 
 	template<class TFlag, class TFlagMod>
-	constexpr TFlag ModFlag(TFlag flag, TFlagMod flagMod, bool set)
+	constexpr TFlag ModFlag(TFlag flag, TFlagMod flagMod, bool set) noexcept
 	{
 		Private::AssertFlags<TFlag, TFlagMod>();
 
@@ -137,13 +137,13 @@ namespace KxFramework::Utility
 	}
 
 	template<class TFlag, class TFlagMod>
-	constexpr void ModFlagRef(TFlag& flag, TFlagMod flagMod, bool set)
+	constexpr void ModFlagRef(TFlag& flag, TFlagMod flagMod, bool set) noexcept
 	{
 		flag = ModFlag(flag, flagMod, set);
 	}
 
 	template<class TFlagLeft, class TFlagRight>
-	constexpr bool HasFlag(TFlagLeft left, TFlagRight right)
+	constexpr bool HasFlag(TFlagLeft left, TFlagRight right) noexcept
 	{
 		Private::AssertFlags<TFlagLeft, TFlagRight>();
 

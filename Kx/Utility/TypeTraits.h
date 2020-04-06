@@ -6,7 +6,7 @@ namespace KxFramework::Utility
 	template<class>
 	struct MethodTraits;
 
-	template <class Return, class Object, class... Args>
+	template<class Return, class Object, class... Args>
 	struct MethodTraits<Return(Object::*)(Args...)>
 	{
 		using TReturn = Return;

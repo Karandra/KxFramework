@@ -10,11 +10,11 @@ namespace KxFramework::Utility
 			TFunc m_Func;
 
 		public:
-			CallAtScopeExit(TFunc&& func)
+			CallAtScopeExit(TFunc&& func) noexcept
 				:m_Func(std::forward<TFunc>(func))
 			{
 			}
-			~CallAtScopeExit()
+			~CallAtScopeExit() noexcept
 			{
 				std::invoke(m_Func);
 			}
