@@ -159,7 +159,7 @@ namespace KxFramework
 			}
 
 			template<class TFunc>
-			static size_t SplitBySeparator(const String& string, const String& sep, TFunc&& func, StringOpFlag flags = StringOpFlag::None) noexcept(TFunc)
+			static size_t SplitBySeparator(const String& string, const String& sep, TFunc&& func, StringOpFlag flags = StringOpFlag::None)
 			{
 				if (sep.empty() && !string.empty())
 				{
@@ -203,7 +203,7 @@ namespace KxFramework
 			}
 
 			template<class TFunc>
-			static size_t SplitByLength(const String& string, size_t length, TFunc&& func) noexcept(TFunc)
+			static size_t SplitByLength(const String& string, size_t length, TFunc&& func)
 			{
 				if (length != 0)
 				{
@@ -664,6 +664,18 @@ namespace KxFramework
 
 			String BeforeFirst(wxUniChar c, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
 			String BeforeLast(wxUniChar c, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
+
+			template<class TFunc>
+			size_t SplitBySeparator(const String& sep, TFunc&& func, StringOpFlag flags = StringOpFlag::None) const
+			{
+				return SplitBySeparator(*this, sep, std::forward<TFunc>(func), flags);
+			}
+
+			template<class TFunc>
+			size_t SplitByLength(size_t length, TFunc&& func) const
+			{
+				return SplitByLength(*this, length, std::forward<TFunc>(func));
+			}
 
 			// Case conversion
 			String& MakeLower() noexcept;
