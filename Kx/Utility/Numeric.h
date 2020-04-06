@@ -41,4 +41,16 @@ namespace KxFramework::Utility
 		const T sum = Abs(left + right);
 		return diff <= (std::numeric_limits<T>::epsilon() * sum * units) || diff < std::numeric_limits<T>::min();
 	}
+
+	template<class T>
+	constexpr std::enable_if_t<std::is_integral_v<T>, bool> TestRange(T value, T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<T>::max()) noexcept
+	{
+		return value == std::clamp(value, min, max);
+	}
+
+	template<class T>
+	constexpr std::enable_if_t<std::is_floating_point_v<T>, bool> TestRange(T value, T min = std::numeric_limits<T>::lowest(), T max = std::numeric_limits<T>::max()) noexcept
+	{
+		return value == std::clamp(value, min, max);
+	}
 }
