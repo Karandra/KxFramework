@@ -63,6 +63,14 @@ namespace KxFramework
 			{
 				return Compare(wxUniChar(left), wxUniChar(right), flags);
 			}
+			static int Compare(char left, char right, StringOpFlag flags = StringOpFlag::None) noexcept
+			{
+				return Compare(wxUniChar(left), wxUniChar(right), flags);
+			}
+			static int Compare(wchar_t left, wchar_t right, StringOpFlag flags = StringOpFlag::None) noexcept
+			{
+				return Compare(wxUniChar(left), wxUniChar(right), flags);
+			}
 
 			static bool Matches(const wxString& name, const wxString& expression, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
@@ -203,7 +211,7 @@ namespace KxFramework
 			}
 
 			template<class TFunc>
-			static size_t SplitByLength(const String& string, size_t length, TFunc&& func)
+			static size_t SplitByLength(StringView string, size_t length, TFunc&& func)
 			{
 				if (length != 0)
 				{
@@ -212,7 +220,7 @@ namespace KxFramework
 					size_t count = 0;
 					for (size_t i = 0; i < stringLength; i += length)
 					{
-						StringView stringPiece = string.GetView().substr(i, length);
+						StringView stringPiece = string.substr(i, length);
 						if (!stringPiece.empty())
 						{
 							count++;
@@ -226,7 +234,7 @@ namespace KxFramework
 				}
 				else
 				{
-					std::invoke(func, string.GetView());
+					std::invoke(func, string);
 					return 1;
 				}
 				return 0;
@@ -398,7 +406,22 @@ namespace KxFramework
 				m_String.Append(other.data(), other.length());
 				return *this;
 			}
-			String& Append(wxUniChar c, size_t count = 1)
+			String& Append(const wxUniChar& c, size_t count = 1)
+			{
+				m_String.Append(c, count);
+				return *this;
+			}
+			String& Append(const wxUniCharRef& c, size_t count = 1)
+			{
+				m_String.Append(c, count);
+				return *this;
+			}
+			String& Append(char c, size_t count = 1)
+			{
+				m_String.Append(c, count);
+				return *this;
+			}
+			String& Append(wchar_t c, size_t count = 1)
 			{
 				m_String.Append(c, count);
 				return *this;
@@ -429,9 +452,24 @@ namespace KxFramework
 				m_String.insert(0, other.data(), other.length());
 				return *this;
 			}
-			String& Prepend(wxUniChar c, size_t count = 1)
+			String& Prepend(const wxUniChar& c, size_t count = 1)
 			{
-				m_String.insert(0, c, count);
+				m_String.insert(0, count, c);
+				return *this;
+			}
+			String& Prepend(const wxUniCharRef& c, size_t count = 1)
+			{
+				m_String.insert(0, count, c);
+				return *this;
+			}
+			String& Prepend(char c, size_t count = 1)
+			{
+				m_String.insert(0, count, c);
+				return *this;
+			}
+			String& Prepend(wchar_t c, size_t count = 1)
+			{
+				m_String.insert(0, count, c);
 				return *this;
 			}
 			String& Prepend(const char* other)
@@ -460,9 +498,24 @@ namespace KxFramework
 				m_String.insert(pos, other.data(), other.length());
 				return *this;
 			}
-			String& Insert(size_t pos, wxUniChar c, size_t count = 1)
+			String& Insert(size_t pos, const wxUniChar& c, size_t count = 1)
 			{
-				m_String.insert(pos, c, count);
+				m_String.insert(pos, count, c);
+				return *this;
+			}
+			String& Insert(size_t pos, const wxUniCharRef& c, size_t count = 1)
+			{
+				m_String.insert(pos, count, c);
+				return *this;
+			}
+			String& Insert(size_t pos, char c, size_t count = 1)
+			{
+				m_String.insert(pos, count, c);
+				return *this;
+			}
+			String& Insert(size_t pos, wchar_t c, size_t count = 1)
+			{
+				m_String.insert(pos, count, c);
 				return *this;
 			}
 			String& Insert(size_t pos, const char* other)
@@ -479,31 +532,11 @@ namespace KxFramework
 			template<class T>
 			String& operator+=(const T& other)
 			{
-				m_String.Append(other);
-				return *this;
-			}
-
-			String& operator+=(const String& other)
-			{
-				return Append(other);
-			}
-			String& operator+=(StringView other)
-			{
 				return Append(other);
 			}
 
 			template<class T>
 			String& operator<<(const T& other)
-			{
-				m_String.Append(other);
-				return *this;
-			}
-
-			String& operator<<(const String& other)
-			{
-				return Append(other);
-			}
-			String& operator<<(StringView other)
 			{
 				return Append(other);
 			}
@@ -721,6 +754,14 @@ namespace KxFramework
 			{
 				return Find(wxUniChar(pattern), offset, flags);
 			}
+			size_t Find(char pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const noexcept
+			{
+				return Find(wxUniChar(pattern), offset, flags);
+			}
+			size_t Find(wchar_t pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const noexcept
+			{
+				return Find(wxUniChar(pattern), offset, flags);
+			}
 
 			size_t Replace(const wxString& pattern, const wxString& replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None)
 			{
@@ -733,6 +774,14 @@ namespace KxFramework
 			size_t Replace(StringView pattern, StringView replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None);
 			size_t Replace(const wxUniChar& c, wxUniChar replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) noexcept;
 			size_t Replace(const wxUniCharRef& c, wxUniChar replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) noexcept
+			{
+				return Replace(wxUniChar(c), wxUniChar(replacement), offset, flags);
+			}
+			size_t Replace(char c, wxUniChar replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) noexcept
+			{
+				return Replace(wxUniChar(c), wxUniChar(replacement), offset, flags);
+			}
+			size_t Replace(wchar_t c, wxUniChar replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
 				return Replace(wxUniChar(c), wxUniChar(replacement), offset, flags);
 			}
@@ -754,6 +803,14 @@ namespace KxFramework
 				return Find(c, 0, flags) != npos;
 			}
 			bool Contains(const wxUniCharRef& c, StringOpFlag flags = StringOpFlag::None) const
+			{
+				return Find(c, 0, flags) != npos;
+			}
+			bool Contains(char c, StringOpFlag flags = StringOpFlag::None) const
+			{
+				return Find(c, 0, flags) != npos;
+			}
+			bool Contains(wchar_t c, StringOpFlag flags = StringOpFlag::None) const
 			{
 				return Find(c, 0, flags) != npos;
 			}
@@ -1144,6 +1201,44 @@ namespace KxFramework
 
 	// Restore any disabled warnings
 	#pragma warning(pop)
+
+	// Concatenation
+	String operator+(const String& left, const String& right)
+	{
+		return left.Clone().Append(right);
+	}
+	String operator+(const String& left, const wxString& right)
+	{
+		return left.Clone().Append(right);
+	}
+	String operator+(const String& left, const char* right)
+	{
+		return left.Clone().Append(right);
+	}
+	String operator+(const String& left, const wchar_t* right)
+	{
+		return left.Clone().Append(right);
+	}
+	String operator+(const String& left, StringView right)
+	{
+		return left.Clone().Append(right);
+	}
+	String operator+(const String& left, const wxUniChar& right)
+	{
+		return left.Clone().Append(right);
+	}
+	String operator+(const String& left, const wxUniCharRef& right)
+	{
+		return left.Clone().Append(right);
+	}
+	String operator+(const String& left, char right)
+	{
+		return left.Clone().Append(right);
+	}
+	String operator+(const String& left, wchar_t right)
+	{
+		return left.Clone().Append(right);
+	}
 }
 
 namespace std
