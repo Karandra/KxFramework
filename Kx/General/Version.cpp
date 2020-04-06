@@ -109,16 +109,37 @@ namespace KxFramework
 
 		return Compare(*this, other) == Cmp::EQ;
 	}
+	bool Version::operator!=(const Version& other) const
+	{
+		using namespace Private::Version;
+
+		const Cmp cmp = Compare(*this, other);
+		return cmp != Cmp::EQ && cmp != Cmp::Invalid;
+	}
 	bool Version::operator<(const Version& other) const
 	{
 		using namespace Private::Version;
 
 		return Compare(*this, other) == Cmp::LT;
 	}
+	bool Version::operator<=(const Version& other) const
+	{
+		using namespace Private::Version;
+
+		const Cmp cmp = Compare(*this, other);
+		return cmp == Cmp::LT || cmp == Cmp::EQ;
+	}
 	bool Version::operator>(const Version& other) const
 	{
 		using namespace Private::Version;
 
 		return Compare(*this, other) == Cmp::GT;
+	}
+	bool Version::operator>=(const Version& other) const
+	{
+		using namespace Private::Version;
+
+		const Cmp cmp = Compare(*this, other);
+		return cmp == Cmp::GT || cmp == Cmp::EQ;
 	}
 }

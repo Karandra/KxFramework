@@ -90,20 +90,11 @@ namespace KxFramework
 			}
 
 			bool operator==(const Version& other) const;
-			bool operator!=(const Version& other) const
-			{
-				return !(*this == other);
-			}
+			bool operator!=(const Version& other) const;
 			bool operator<(const Version& other) const;
-			bool operator<=(const Version& other) const
-			{
-				return (*this < other) || (*this == other);
-			}
+			bool operator<=(const Version& other) const;
 			bool operator>(const Version& other) const;
-			bool operator>=(const Version& other) const
-			{
-				return (*this > other) || (*this == other);
-			}
+			bool operator>=(const Version& other) const;
 
 			operator wxString() const
 			{
