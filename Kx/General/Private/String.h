@@ -37,7 +37,7 @@ namespace KxFramework::Private
 	}
 	#endif
 
-	void MoveWxString(wxString& destination, wxString& source) noexcept(IsWxStringConvertibleToStd())
+	void MoveWxString(wxString& destination, wxString&& source) noexcept(IsWxStringConvertibleToStd())
 	{
 		if (&source != &destination)
 		{
