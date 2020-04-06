@@ -277,7 +277,7 @@ namespace KxFramework
 	{
 		return CompareStrings(left, right, flags & StringOpFlag::IgnoreCase);
 	}
-	int String::Compare(wxUniChar left, wxUniChar right, StringOpFlag flags) noexcept
+	int String::Compare(const wxUniChar& left, const wxUniChar& right, StringOpFlag flags) noexcept
 	{
 		if (flags & StringOpFlag::IgnoreCase)
 		{
@@ -347,20 +347,28 @@ namespace KxFramework
 	}
 
 	// Substring extraction
-	String String::AfterFirst(wxUniChar c, StringOpFlag flags) const
+	String String::AfterFirst(wxUniChar c, String* rest, StringOpFlag flags) const
 	{
 		const size_t pos = Find(c, 0, flags);
 		if (pos != npos)
 		{
+			if (rest)
+			{
+				*rest = SubString(0, pos);
+			}
 			return Mid(pos + 1);
 		}
 		return {};
 	}
-	String String::AfterLast(wxUniChar c, StringOpFlag flags) const
+	String String::AfterLast(wxUniChar c, String* rest, StringOpFlag flags) const
 	{
 		const size_t pos = Find(c, 0, flags|StringOpFlag::FromEnd);
 		if (pos != npos)
 		{
+			if (rest)
+			{
+				*rest = SubString(0, pos);
+			}
 			return Mid(pos + 1);
 		}
 		return {};
@@ -438,7 +446,7 @@ namespace KxFramework
 		}
 		return npos;
 	}
-	size_t String::Find(wxUniChar c, size_t offset, StringOpFlag flags) const
+	size_t String::Find(const wxUniChar& pattern, size_t offset, StringOpFlag flags) const noexcept
 	{
 		if (m_String.IsEmpty() || offset >= m_String.length())
 		{
@@ -449,7 +457,7 @@ namespace KxFramework
 		{
 			for (size_t i = m_String.length() - 1 - offset; i != 0; i--)
 			{
-				if (Compare(m_String[i], c, flags) == 0)
+				if (Compare(m_String[i], pattern, flags) == 0)
 				{
 					return i;
 				}
@@ -459,7 +467,7 @@ namespace KxFramework
 		{
 			for (size_t i = offset; i < m_String.length(); i++)
 			{
-				if (Compare(m_String[i], c, flags) == 0)
+				if (Compare(m_String[i], pattern, flags) == 0)
 				{
 					return i;
 				}
@@ -544,7 +552,7 @@ namespace KxFramework
 		}
 		return replacementCount;
 	}
-	size_t String::Replace(wxUniChar pattern, wxUniChar replacement, size_t offset, StringOpFlag flags)
+	size_t String::Replace(const wxUniChar& pattern, wxUniChar replacement, size_t offset, StringOpFlag flags) noexcept
 	{
 		if (m_String.IsEmpty() || offset >= m_String.length())
 		{
