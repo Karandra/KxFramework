@@ -12,7 +12,7 @@ namespace KxFramework
 
 		private:
 			template<class T>
-			ErrorCode& AssignCode(T errorCode) noexcept
+			constexpr ErrorCode& AssignCode(T errorCode) noexcept
 			{
 				m_Value = static_cast<int64_t>(errorCode.GetValue());
 				m_Category = T::GetCategory();
@@ -21,13 +21,13 @@ namespace KxFramework
 			}
 
 			template<class T>
-			bool IsEqualValue(T errorCode) const noexcept
+			constexpr bool IsEqualValue(T errorCode) const noexcept
 			{
 				return m_Category == T::GetCategory() && static_cast<typename T::TValueType>(m_Value) == errorCode.GetValue();
 			}
 
 			template<class T>
-			std::optional<T> GetAsCode() const noexcept
+			constexpr std::optional<T> GetAsCode() const noexcept
 			{
 				if (m_Category == T::GetCategory())
 				{
@@ -38,46 +38,46 @@ namespace KxFramework
 
 		public:
 			constexpr ErrorCode() noexcept = default;
-			ErrorCode(GenericErrorCode errorCode) noexcept
+			constexpr ErrorCode(GenericErrorCode errorCode) noexcept
 			{
 				AssignCode(errorCode);
 			}
-			ErrorCode(Win32ErrorCode errorCode) noexcept
+			constexpr ErrorCode(Win32ErrorCode errorCode) noexcept
 			{
 				AssignCode(errorCode);
 			}
-			ErrorCode(NtStatusCode errorCode) noexcept
+			constexpr ErrorCode(NtStatusCode errorCode) noexcept
 			{
 				AssignCode(errorCode);
 			}
-			ErrorCode(HResultCode errorCode) noexcept
+			constexpr ErrorCode(HResultCode errorCode) noexcept
 			{
 				AssignCode(errorCode);
 			}
-			ErrorCode(ErrorCode&& other) noexcept
+			constexpr ErrorCode(ErrorCode&& other) noexcept
 			{
 				*this = std::move(other);
 			}
-			ErrorCode(const ErrorCode&) noexcept = default;
+			constexpr ErrorCode(const ErrorCode&) noexcept = default;
 
 		public:
-			ErrorCodeCategory GetCategory() const noexcept
+			constexpr ErrorCodeCategory GetCategory() const noexcept
 			{
 				return m_Category;
 			}
-			std::optional<GenericErrorCode> GetGeneric() const noexcept
+			constexpr std::optional<GenericErrorCode> GetGeneric() const noexcept
 			{
 				return GetAsCode<GenericErrorCode>();
 			}
-			std::optional<Win32ErrorCode> GetWin32() const noexcept
+			constexpr std::optional<Win32ErrorCode> GetWin32() const noexcept
 			{
 				return GetAsCode<Win32ErrorCode>();
 			}
-			std::optional<NtStatusCode> GetNtStatus() const noexcept
+			constexpr std::optional<NtStatusCode> GetNtStatus() const noexcept
 			{
 				return GetAsCode<NtStatusCode>();
 			}
-			std::optional<HResultCode> GetHResult() const noexcept
+			constexpr std::optional<HResultCode> GetHResult() const noexcept
 			{
 				return GetAsCode<HResultCode>();
 			}
@@ -86,11 +86,11 @@ namespace KxFramework
 			std::optional<NtStatusCode> ConvertToNtStatus() const noexcept;
 			std::optional<HResultCode> ConvertToHResult() const noexcept;
 
-			bool IsKnown() const noexcept
+			constexpr bool IsKnown() const noexcept
 			{
 				return m_Category != ErrorCodeCategory::Unknown;
 			}
-			bool IsSuccess() const noexcept
+			constexpr bool IsSuccess() const noexcept
 			{
 				switch (m_Category)
 				{
@@ -113,7 +113,7 @@ namespace KxFramework
 				};
 				return false;
 			}
-			bool IsFail() const noexcept
+			constexpr bool IsFail() const noexcept
 			{
 				return IsKnown() && !IsSuccess();
 			}
@@ -158,43 +158,43 @@ namespace KxFramework
 			}
 
 		public:
-			explicit operator bool() const noexcept
+			constexpr explicit operator bool() const noexcept
 			{
 				return IsSuccess();
 			}
-			bool operator!() const noexcept
+			constexpr bool operator!() const noexcept
 			{
 				return !IsSuccess();
 			}
 
-			bool operator==(const ErrorCode& other) const noexcept
+			constexpr bool operator==(const ErrorCode& other) const noexcept
 			{
 				return m_Value == other.m_Value && m_Category == other.m_Category;
 			}
-			bool operator==(GenericErrorCode other) const noexcept
+			constexpr bool operator==(GenericErrorCode other) const noexcept
 			{
 				return IsEqualValue(other);
 			}
-			bool operator==(Win32ErrorCode other) const noexcept
+			constexpr bool operator==(Win32ErrorCode other) const noexcept
 			{
 				return IsEqualValue(other);
 			}
-			bool operator==(NtStatusCode other) const noexcept
+			constexpr bool operator==(NtStatusCode other) const noexcept
 			{
 				return IsEqualValue(other);
 			}
-			bool operator==(HResultCode other) const noexcept
+			constexpr bool operator==(HResultCode other) const noexcept
 			{
 				return IsEqualValue(other);
 			}
 
 			template<class T>
-			bool operator!=(T&& other) const noexcept
+			constexpr bool operator!=(T&& other) const noexcept
 			{
 				return !(*this == other);
 			}
 
-			ErrorCode& operator=(ErrorCode&& other) noexcept
+			constexpr ErrorCode& operator=(ErrorCode&& other) noexcept
 			{
 				constexpr ErrorCode null;
 
@@ -206,6 +206,6 @@ namespace KxFramework
 
 				return *this;
 			}
-			ErrorCode& operator=(const ErrorCode&) noexcept = default;
+			constexpr ErrorCode& operator=(const ErrorCode&) noexcept = default;
 	};
 }

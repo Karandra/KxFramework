@@ -18,48 +18,48 @@ namespace KxFramework::System
 			TValueType m_Value = 0;
 
 		private:
-			const TDerived& Self() const noexcept
+			constexpr const TDerived& Self() const noexcept
 			{
 				return static_cast<const TDerived&>(*this);
 			}
 
 		protected:
-			ErrorCodeValue(TValueType value) noexcept
+			constexpr ErrorCodeValue(TValueType value) noexcept
 				:m_Value(value)
 			{
 				static_assert(std::is_integral_v<T> || std::is_enum_v<T>, "invalid error code type");
 			}
 
 		public:
-			TValueType GetValue() const noexcept
+			constexpr TValueType GetValue() const noexcept
 			{
 				return m_Value;
 			}
-			ErrorCodeValue& SetValue(TValueType value) noexcept
+			constexpr ErrorCodeValue& SetValue(TValueType value) noexcept
 			{
 				m_Value = value;
 				return *this;
 			}
-			operator TValueType() const noexcept
+			constexpr operator TValueType() const noexcept
 			{
 				return GetValue();
 			}
 			
 		public:
-			explicit operator bool() const noexcept
+			constexpr explicit operator bool() const noexcept
 			{
 				return Self().IsSuccess();
 			}
-			bool operator!() const noexcept
+			constexpr bool operator!() const noexcept
 			{
 				return Self().IsFail();
 			}
 
-			bool operator==(const ErrorCodeValue& other) const noexcept
+			constexpr bool operator==(const ErrorCodeValue& other) const noexcept
 			{
 				return m_Value == other.m_Value;
 			}
-			bool operator!=(const ErrorCodeValue& other) const noexcept
+			constexpr bool operator!=(const ErrorCodeValue& other) const noexcept
 			{
 				return !(*this == other);
 			}
@@ -77,17 +77,17 @@ namespace KxFramework
 			}
 
 		public:
-			explicit GenericErrorCode(TValueType value) noexcept
+			constexpr GenericErrorCode(TValueType value) noexcept
 				:ErrorCodeValue(value)
 			{
 			}
 			
 		public:
-			bool IsSuccess() const noexcept
+			constexpr bool IsSuccess() const noexcept
 			{
 				return GetValue() == 0;
 			}
-			bool IsFail() const noexcept
+			constexpr bool IsFail() const noexcept
 			{
 				return !IsSuccess();
 			}
@@ -102,7 +102,7 @@ namespace KxFramework
 			}
 
 		public:
-			explicit Win32ErrorCode(TValueType value) noexcept
+			constexpr Win32ErrorCode(TValueType value) noexcept
 				:ErrorCodeValue(value)
 			{
 			}
@@ -127,7 +127,7 @@ namespace KxFramework
 			}
 
 		public:
-			explicit HResultCode(TValueType value) noexcept
+			constexpr HResultCode(TValueType value) noexcept
 				:ErrorCodeValue(value)
 			{
 			}
@@ -161,7 +161,7 @@ namespace KxFramework
 			}
 
 		public:
-			explicit NtStatusCode(TValueType value) noexcept
+			constexpr NtStatusCode(TValueType value) noexcept
 				:ErrorCodeValue(value)
 			{
 			}
