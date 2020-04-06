@@ -58,4 +58,7 @@ namespace KxFramework::Private
 			#endif
 		}
 	}
+
+	using ViewOrStringW = std::conditional_t<wxUSE_UNICODE_WCHAR, std::basic_string_view<wchar_t>, wxString>;
+	using ViewOrStringA = std::conditional_t<wxUSE_UNICODE_WCHAR, wxString, std::basic_string_view<char>>;
 }
