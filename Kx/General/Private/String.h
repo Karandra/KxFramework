@@ -1,6 +1,11 @@
 #pragma once
 #include <wx/string.h>
 
+namespace KxFramework
+{
+	class String;
+}
+
 namespace KxFramework::Private
 {
 	#define Kx_WxStringConvertibleToStd	wxUSE_STL_BASED_WXSTRING && !wxUSE_UNICODE_UTF8
@@ -59,6 +64,6 @@ namespace KxFramework::Private
 		}
 	}
 
-	using ViewOrStringW = std::conditional_t<wxUSE_UNICODE_WCHAR, std::basic_string_view<wchar_t>, wxString>;
-	using ViewOrStringA = std::conditional_t<wxUSE_UNICODE_WCHAR, wxString, std::basic_string_view<char>>;
+	using ViewOrWxStringW = std::conditional_t<wxUSE_UNICODE_WCHAR, std::basic_string_view<wchar_t>, wxString>;
+	using ViewOrWxStringA = std::conditional_t<wxUSE_UNICODE_WCHAR, wxString, std::basic_string_view<char>>;
 }

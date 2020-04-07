@@ -59,7 +59,18 @@ namespace
 		return result;
 	}
 
-	int CompareStrings(KxFramework::StringView left, KxFramework::StringView right, bool ignoreCase) noexcept
+	int CompareStrings(std::string_view left, std::string_view right, bool ignoreCase) noexcept
+	{
+		if (ignoreCase)
+		{
+			return KxFramework::String(left).MakeLower() == KxFramework::String(right).MakeLower();
+		}
+		else
+		{
+			return left.compare(right);
+		}
+	}
+	int CompareStrings(std::wstring_view left, std::wstring_view right, bool ignoreCase) noexcept
 	{
 		if (ignoreCase)
 		{
@@ -273,7 +284,11 @@ namespace
 
 namespace KxFramework
 {
-	int String::Compare(StringView left, StringView right, StringOpFlag flags) noexcept
+	int String::Compare(std::string_view left, std::string_view right, StringOpFlag flags) noexcept
+	{
+		return CompareStrings(left, right, flags & StringOpFlag::IgnoreCase);
+	}
+	int String::Compare(std::wstring_view left, std::wstring_view right, StringOpFlag flags) noexcept
 	{
 		return CompareStrings(left, right, flags & StringOpFlag::IgnoreCase);
 	}

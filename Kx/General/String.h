@@ -41,6 +41,8 @@ namespace KxFramework
 			static constexpr size_t npos = StringView::npos;
 
 		public:
+			static int Compare(std::string_view left, std::string_view right, StringOpFlag flags = StringOpFlag::None) noexcept;
+			static int Compare(std::wstring_view left, std::wstring_view right, StringOpFlag flags = StringOpFlag::None) noexcept;
 			static int Compare(const wxString& left, const wxString& right, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
 				return Compare(StringView(left.wx_str(), left.length()), StringView(right.wx_str(), right.length()), flags);
@@ -51,13 +53,13 @@ namespace KxFramework
 			}
 			static int Compare(const char* left, const char* right, StringOpFlag flags = StringOpFlag::None)
 			{
-				return Compare(Private::ViewOrStringA(left), Private::ViewOrStringA(right), flags);
+				return Compare(Private::ViewOrWxStringA(left), Private::ViewOrWxStringA(right), flags);
 			}
 			static int Compare(const wchar_t* left, const wchar_t* right, StringOpFlag flags = StringOpFlag::None)
 			{
-				return Compare(Private::ViewOrStringW(left), Private::ViewOrStringW(right), flags);
+				return Compare(Private::ViewOrWxStringW(left), Private::ViewOrWxStringW(right), flags);
 			}
-			static int Compare(StringView left, StringView right, StringOpFlag flags = StringOpFlag::None) noexcept;
+			
 			static int Compare(const wxUniChar& left, const wxUniChar& right, StringOpFlag flags = StringOpFlag::None) noexcept;
 			static int Compare(const wxUniCharRef& left, const wxUniCharRef& right, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
@@ -72,6 +74,8 @@ namespace KxFramework
 				return Compare(wxUniChar(left), wxUniChar(right), flags);
 			}
 
+			static bool Matches(std::string_view name, std::string_view expression, StringOpFlag flags = StringOpFlag::None) noexcept;
+			static bool Matches(std::wstring_view name, std::wstring_view expression, StringOpFlag flags = StringOpFlag::None) noexcept;
 			static bool Matches(const wxString& name, const wxString& expression, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
 				return Matches(StringView(name.wx_str(), name.length()), StringView(expression.wx_str(), expression.length()), flags);
@@ -88,8 +92,6 @@ namespace KxFramework
 			{
 				return Matches(std::wstring_view(name), std::wstring_view(expression), flags);
 			}
-			static bool Matches(std::string_view name, std::string_view expression, StringOpFlag flags = StringOpFlag::None) noexcept;
-			static bool Matches(std::wstring_view name, std::wstring_view expression, StringOpFlag flags = StringOpFlag::None) noexcept;
 			
 			static wxUniChar FromUTF8(char c)
 			{
@@ -274,12 +276,12 @@ namespace KxFramework
 				:m_String(data, length)
 			{
 			}
-			String(const std::string& other)
-				:m_String(other)
+			String(const std::string_view& other)
+				:m_String(other.data(), other.length())
 			{
 			}
-			String(const std::wstring& other)
-				:m_String(other)
+			String(const std::wstring_view& other)
+				:m_String(other.data(), other.length())
 			{
 			}
 			String(char c, size_t count = 1)
@@ -290,11 +292,11 @@ namespace KxFramework
 				:m_String(c, count)
 			{
 			}
-			String(wxUniChar c, size_t count = 1)
+			String(const wxUniChar& c, size_t count = 1)
 				:m_String(c, count)
 			{
 			}
-			String(wxUniCharRef c, size_t count = 1)
+			String(const wxUniCharRef& c, size_t count = 1)
 				:m_String(c, count)
 			{
 			}
@@ -542,26 +544,47 @@ namespace KxFramework
 			}
 
 			// Comparison
+			int CompareTo(std::string_view other, StringOpFlag flags = StringOpFlag::None) const noexcept
+			{
+				#if wxUSE_UNICODE_WCHAR
+				return Compare(*this, other, flags);
+				#else
+				return Compare(GetView(), other, flags);
+				#endif
+			}
+			int CompareTo(std::wstring_view other, StringOpFlag flags = StringOpFlag::None) const noexcept
+			{
+				#if wxUSE_UNICODE_WCHAR
+				return Compare(GetView(), other, flags);
+				#else
+				return Compare(*this, other, flags);
+				#endif
+			}
+			int CompareTo(const std::string& other, StringOpFlag flags = StringOpFlag::None) const noexcept
+			{
+				return CompareTo(std::string_view(other), flags);
+			}
+			int CompareTo(const std::wstring& other, StringOpFlag flags = StringOpFlag::None) const noexcept
+			{
+				return CompareTo(std::wstring_view(other), flags);
+			}
 			int CompareTo(const wxString& other, StringOpFlag flags = StringOpFlag::None) const noexcept
 			{
-				return Compare(GetView(), StringView(other.wx_str(), other.length()), flags);
+				return CompareTo(StringView(other.wx_str(), other.length()), flags);
 			}
 			int CompareTo(const String& other, StringOpFlag flags = StringOpFlag::None) const noexcept
 			{
-				return Compare(GetView(), other.GetView(), flags);
+				return CompareTo(other.GetView(), flags);
 			}
 			int CompareTo(const char* other, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return Compare(GetView(), Private::ViewOrStringA(other), flags);
+				return CompareTo(std::string_view(other), flags);
 			}
 			int CompareTo(const wchar_t* other, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return Compare(GetView(), Private::ViewOrStringW(other), flags);
+				return CompareTo(std::wstring_view(other), flags);
 			}
-			int CompareTo(StringView other, StringOpFlag flags = StringOpFlag::None) const noexcept
-			{
-				return Compare(GetView(), other, flags);
-			}
+			
 			int CompareTo(const wxUniChar& other, StringOpFlag flags = StringOpFlag::None) const noexcept
 			{
 				const XChar c[2] = {other, 0};
@@ -580,43 +603,13 @@ namespace KxFramework
 				return CompareTo(wxUniChar(other), flags);
 			}
 
-			bool IsSameAs(const wxString& other, StringOpFlag flags = StringOpFlag::None) const noexcept
+			template<class T>
+			bool IsSameAs(T&& other, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return CompareTo(other, flags) == 0;
-			}
-			bool IsSameAs(const String& other, StringOpFlag flags = StringOpFlag::None) const noexcept
-			{
-				return CompareTo(other, flags) == 0;
-			}
-			bool IsSameAs(const char* other, StringOpFlag flags = StringOpFlag::None) const
-			{
-				return CompareTo(Private::ViewOrStringA(other), flags) == 0;
-			}
-			bool IsSameAs(const wchar_t* other, StringOpFlag flags = StringOpFlag::None) const
-			{
-				return CompareTo(Private::ViewOrStringW(other), flags) == 0;
-			}
-			bool IsSameAs(StringView other, StringOpFlag flags = StringOpFlag::None) const noexcept
-			{
-				return CompareTo(other, flags) == 0;
-			}
-			bool IsSameAs(const wxUniChar& other, StringOpFlag flags = StringOpFlag::None) const noexcept
-			{
-				return CompareTo(other, flags) == 0;
-			}
-			bool IsSameAs(const wxUniCharRef& other, StringOpFlag flags = StringOpFlag::None) const noexcept
-			{
-				return CompareTo(other, flags) == 0;
-			}
-			bool IsSameAs(char other, StringOpFlag flags = StringOpFlag::None) const noexcept
-			{
-				return CompareTo(other, flags) == 0;
-			}
-			bool IsSameAs(wchar_t other, StringOpFlag flags = StringOpFlag::None) const noexcept
-			{
-				return CompareTo(other, flags) == 0;
+				return CompareTo(std::forward<T>(other), flags) == 0;
 			}
 
+			bool StartsWith(StringView pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
 			bool StartsWith(const wxString& pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const
 			{
 				return StartsWith(StringView(pattern.wx_str(), pattern.length()), rest, flags);
@@ -627,14 +620,14 @@ namespace KxFramework
 			}
 			bool StartsWith(const char* pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return StartsWith(Private::ViewOrStringA(pattern), rest, flags);
+				return StartsWith(std::string_view(pattern), rest, flags);
 			}
 			bool StartsWith(const wchar_t* pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return StartsWith(Private::ViewOrStringW(pattern), rest, flags);
+				return StartsWith(std::wstring_view(pattern), rest, flags);
 			}
-			bool StartsWith(StringView pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
 			
+			bool EndsWith(StringView pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
 			bool EndsWith(const wxString& pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const
 			{
 				return EndsWith(StringView(pattern.wx_str(), pattern.length()), rest, flags);
@@ -645,14 +638,17 @@ namespace KxFramework
 			}
 			bool EndsWith(const char* pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return EndsWith(Private::ViewOrStringA(pattern), rest, flags);
+				return EndsWith(Private::ViewOrWxStringA(pattern), rest, flags);
 			}
 			bool EndsWith(const wchar_t* pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return EndsWith(Private::ViewOrStringW(pattern), rest, flags);
+				return EndsWith(Private::ViewOrWxStringW(pattern), rest, flags);
 			}
-			bool EndsWith(StringView pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
 
+			bool Matches(StringView expression, StringOpFlag flags = StringOpFlag::None) noexcept
+			{
+				return Matches(GetView(), expression, flags);
+			}
 			bool Matches(const wxString& expression, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
 				return Matches(GetView(), StringView(expression.wx_str(), expression.length()), flags);
@@ -663,15 +659,19 @@ namespace KxFramework
 			}
 			bool Matches(const char* expression, StringOpFlag flags = StringOpFlag::None)
 			{
-				return Matches(GetView(), Private::ViewOrStringA(expression), flags);
+				#if wxUSE_UNICODE_WCHAR
+				return Matches(*this, expression, flags);
+				#else
+				return Matches(GetView(), expression, flags);
+				#endif
 			}
 			bool Matches(const wchar_t* expression, StringOpFlag flags = StringOpFlag::None)
 			{
-				return Matches(GetView(), Private::ViewOrStringW(expression), flags);
-			}
-			bool Matches(StringView expression, StringOpFlag flags = StringOpFlag::None) noexcept
-			{
+				#if wxUSE_UNICODE_WCHAR
 				return Matches(GetView(), expression, flags);
+				#else
+				return Matches(*this, expression, flags);
+				#endif
 			}
 
 			// Substring extraction
@@ -732,14 +732,11 @@ namespace KxFramework
 			}
 			String Capitalize() const
 			{
-				if (!m_String.IsEmpty())
-				{
-					return Clone().MakeCapitalized();
-				}
-				return {};
+				return Clone().MakeCapitalized();
 			}
 
 			// Searching and replacing
+			size_t Find(StringView pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const;
 			size_t Find(const wxString& pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const
 			{
 				return Find(StringView(pattern.wx_str(), pattern.length()), offset, flags);
@@ -748,7 +745,6 @@ namespace KxFramework
 			{
 				return Find(pattern.GetView(), offset, flags);
 			}
-			size_t Find(StringView pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const;
 			size_t Find(const wxUniChar& pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const noexcept;
 			size_t Find(const wxUniCharRef& pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const noexcept
 			{
@@ -763,6 +759,7 @@ namespace KxFramework
 				return Find(wxUniChar(pattern), offset, flags);
 			}
 
+			size_t Replace(StringView pattern, StringView replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None);
 			size_t Replace(const wxString& pattern, const wxString& replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None)
 			{
 				return Replace(StringView(pattern.wx_str(), pattern.length()), StringView(replacement.wx_str(), replacement.length()), offset, flags);
@@ -771,7 +768,6 @@ namespace KxFramework
 			{
 				return Replace(pattern.GetView(), pattern.GetView(), offset, flags);
 			}
-			size_t Replace(StringView pattern, StringView replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None);
 			size_t Replace(const wxUniChar& c, wxUniChar replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) noexcept;
 			size_t Replace(const wxUniCharRef& c, wxUniChar replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
@@ -786,33 +782,10 @@ namespace KxFramework
 				return Replace(wxUniChar(c), wxUniChar(replacement), offset, flags);
 			}
 
-			bool Contains(const wxString& pattern, StringOpFlag flags = StringOpFlag::None) const
+			template<class T>
+			bool Contains(T&& pattern, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return Find(pattern, 0, flags) != npos;
-			}
-			bool Contains(const String& pattern, StringOpFlag flags = StringOpFlag::None) const
-			{
-				return Find(pattern, 0, flags) != npos;
-			}
-			bool Contains(const StringView& pattern, StringOpFlag flags = StringOpFlag::None) const
-			{
-				return Find(pattern, 0, flags) != npos;
-			}
-			bool Contains(const wxUniChar& c, StringOpFlag flags = StringOpFlag::None) const
-			{
-				return Find(c, 0, flags) != npos;
-			}
-			bool Contains(const wxUniCharRef& c, StringOpFlag flags = StringOpFlag::None) const
-			{
-				return Find(c, 0, flags) != npos;
-			}
-			bool Contains(char c, StringOpFlag flags = StringOpFlag::None) const
-			{
-				return Find(c, 0, flags) != npos;
-			}
-			bool Contains(wchar_t c, StringOpFlag flags = StringOpFlag::None) const
-			{
-				return Find(c, 0, flags) != npos;
+				return Find(std::forward<T>(pattern), 0, flags) == npos;
 			}
 
 			// Conversion to numbers
@@ -1025,20 +998,20 @@ namespace KxFramework
 				return m_String.at(i);
 			}
 
-			wxUniChar front(size_t i) const
+			wxUniChar front() const
 			{
 				return m_String[0];
 			}
-			wxUniCharRef front(size_t i)
+			wxUniCharRef front()
 			{
 				return m_String[0];
 			}
 
-			wxUniChar back(size_t i) const
+			wxUniChar back() const
 			{
 				return m_String[m_String.length() - 1];
 			}
-			wxUniCharRef back(size_t i)
+			wxUniCharRef back()
 			{
 				return m_String[m_String.length() - 1];
 			}
@@ -1072,12 +1045,6 @@ namespace KxFramework
 			{
 				m_String = std::forward<T>(other);
 				return *this;
-			}
-
-			// Conversion
-			operator StringView() const noexcept
-			{
-				return GetView();
 			}
 	};
 }
@@ -1165,10 +1132,6 @@ namespace KxFramework
 	#define Kx_StringCmp(left, right, op)	left.GetWxString() op right.GetWxString()
 	wxFOR_ALL_COMPARISONS_3(wxDEFINE_COMPARISON, const String&, const String&, Kx_StringCmp);
 
-	// wxString <=> StringView
-	#define Kx_StringCmp(left, right, op)	StringView(left.wx_str(), left.length()) op right
-	wxDEFINE_ALL_COMPARISONS(const wxString&, StringView, Kx_StringCmp);
-
 	// String <=> wxString
 	#define Kx_StringCmp(left, right, op)	left.GetWxString() op right
 	wxDEFINE_ALL_COMPARISONS(const String&, const wxString&, Kx_StringCmp);
@@ -1180,22 +1143,6 @@ namespace KxFramework
 	// String <=> const wchar_t*
 	#define Kx_StringCmp(left, right, op)	left.GetWxString() op right
 	wxDEFINE_ALL_COMPARISONS(const String&, const wchar_t*, Kx_StringCmp);
-
-	// String <=> std::string
-	#define Kx_StringCmp(left, right, op)	left.GetWxString() op Private::ViewOrStringA(right.data(), right.length())
-	wxDEFINE_ALL_COMPARISONS(const String&, const std::string&, Kx_StringCmp);
-
-	// String <=> std::string_view
-	#define Kx_StringCmp(left, right, op)	left.GetWxString() op Private::ViewOrStringA(right.data(), right.length())
-	wxDEFINE_ALL_COMPARISONS(const String&, const std::string_view&, Kx_StringCmp);
-
-	// String <=> std::wstring
-	#define Kx_StringCmp(left, right, op)	left.GetWxString() op Private::ViewOrStringW(right.data(), right.length())
-	wxDEFINE_ALL_COMPARISONS(const String&, const std::wstring&, Kx_StringCmp);
-
-	// String <=> std::wstring_view
-	#define Kx_StringCmp(left, right, op)	left.GetWxString() op Private::ViewOrStringW(right.data(), right.length())
-	wxDEFINE_ALL_COMPARISONS(const String&, const std::wstring_view&, Kx_StringCmp);
 
 	#undef Kx_StringCmp
 
