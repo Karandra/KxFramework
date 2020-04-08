@@ -342,21 +342,21 @@ namespace KxFramework
 			virtual ~IArchiveProperties() = default;
 
 		public:
-			virtual std::optional<bool> GetPropertyBool(wxStringView property) const = 0;
-			virtual bool SetPropertyBool(wxStringView property, bool value) = 0;
+			virtual std::optional<bool> GetPropertyBool(StringView property) const = 0;
+			virtual bool SetPropertyBool(StringView property, bool value) = 0;
 
-			virtual std::optional<int64_t> GetPropertyInt(wxStringView property) const = 0;
-			virtual bool SetPropertyInt(wxStringView property, int64_t value) = 0;
+			virtual std::optional<int64_t> GetPropertyInt(StringView property) const = 0;
+			virtual bool SetPropertyInt(StringView property, int64_t value) = 0;
 
-			virtual std::optional<double> GetPropertyFloat(wxStringView property) const = 0;
-			virtual bool SetPropertyFloat(wxStringView property, double value) = 0;
+			virtual std::optional<double> GetPropertyFloat(StringView property) const = 0;
+			virtual bool SetPropertyFloat(StringView property, double value) = 0;
 
-			virtual std::optional<String> GetPropertyString(wxStringView property) const = 0;
-			virtual bool SetPropertyString(wxStringView property, wxStringView value) = 0;
+			virtual std::optional<String> GetPropertyString(StringView property) const = 0;
+			virtual bool SetPropertyString(StringView property, StringView value) = 0;
 
 		public:
 			template<class T>
-			auto GetProperty(wxStringView property) const
+			auto GetProperty(StringView property) const
 			{
 				if constexpr(std::is_same_v<T, bool>)
 				{
@@ -389,7 +389,7 @@ namespace KxFramework
 			}
 
 			template<class T>
-			bool SetProperty(const wxStringView& property, T&& value)
+			bool SetProperty(const StringView& property, T&& value)
 			{
 				if constexpr (std::is_same_v<T, bool>)
 				{
@@ -412,13 +412,14 @@ namespace KxFramework
 					static_assert(false, "invalid property type");
 				}
 			}
-			bool SetProperty(const wxStringView& property, wxStringView value)
+			
+			bool SetProperty(const StringView& property, StringView value)
 			{
 				return SetPropertyString(property, value);
 			}
-			bool SetProperty(const wxStringView& property, const String& value)
+			bool SetProperty(const StringView& property, const String& value)
 			{
-				return SetPropertyString(property, wxStringView(value.wc_str(), value.length()));
+				return SetPropertyString(property, StringViewOf(value));
 			}
 	};
 }
