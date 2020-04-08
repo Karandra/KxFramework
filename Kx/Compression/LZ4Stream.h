@@ -2,10 +2,11 @@
 #include "Common.h"
 #include "Kx/General/StreamWrappers.h"
 #include "Kx/General/Version.h"
+#include "Kx/General/String.h"
 
 namespace KxFramework::Compression::LZ4
 {
-	wxString GetLibraryName();
+	String GetLibraryName();
 	Version GetLibraryVersion();
 
 	inline constexpr size_t CompressBound(size_t sourceSize)

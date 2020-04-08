@@ -25,7 +25,7 @@ namespace
 
 namespace KxFramework::Compression::LZ4
 {
-	wxString GetLibraryName()
+	String GetLibraryName()
 	{
 		return wxS("LZ4");
 	}

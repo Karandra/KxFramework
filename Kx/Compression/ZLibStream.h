@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "Kx/General/StreamWrappers.h"
 #include "Kx/General/Version.h"
+#include "Kx/General/String.h"
 #include <wx/zstream.h>
 
 namespace KxFramework
@@ -22,7 +23,7 @@ namespace KxFramework
 
 namespace KxFramework::Compression::ZLib
 {
-	wxString GetLibraryName();
+	String GetLibraryName();
 	Version GetLibraryVersion();
 }
 

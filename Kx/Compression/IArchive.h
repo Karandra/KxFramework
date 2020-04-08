@@ -3,6 +3,7 @@
 #include "Kx/FileSystem/IFileSystem.h"
 #include "Kx/FileSystem/FSPath.h"
 #include "Kx/FileSystem/FileItem.h"
+#include "Kx/General/String.h"
 #include "Kx/General/BinarySize.h"
 #include "Kx/General/StreamDelegate.h"
 #include "Kx/System/UndefWindows.h"
@@ -140,7 +141,7 @@ namespace KxFramework
 
 		public:
 			virtual bool IsOK() const = 0;
-			virtual bool Open(const wxString& filePath) = 0;
+			virtual bool Open(const String& filePath) = 0;
 			virtual void Close() = 0;
 			virtual FSPath GetFilePath() const = 0;
 
@@ -326,8 +327,8 @@ namespace KxFramework
 
 			// Compress just this single file as the root item in the archive.
 			// Second overload places compressed file into 'archivePath' folder inside the archive.
-			virtual bool CompressFile(const wxString& sourcePath) = 0;
-			virtual bool CompressFile(const wxString& sourcePath, const wxString& archivePath) = 0;
+			virtual bool CompressFile(const String& sourcePath) = 0;
+			virtual bool CompressFile(const String& sourcePath, const String& archivePath) = 0;
 	};
 }
 
@@ -350,7 +351,7 @@ namespace KxFramework
 			virtual std::optional<double> GetPropertyFloat(wxStringView property) const = 0;
 			virtual bool SetPropertyFloat(wxStringView property, double value) = 0;
 
-			virtual std::optional<wxString> GetPropertyString(wxStringView property) const = 0;
+			virtual std::optional<String> GetPropertyString(wxStringView property) const = 0;
 			virtual bool SetPropertyString(wxStringView property, wxStringView value) = 0;
 
 		public:
@@ -377,7 +378,7 @@ namespace KxFramework
 					}
 					return std::optional<T>();
 				}
-				else if constexpr(std::is_same_v<T, wxString>)
+				else if constexpr(std::is_same_v<T, String>)
 				{
 					return GetPropertyString(property);
 				}
@@ -415,7 +416,7 @@ namespace KxFramework
 			{
 				return SetPropertyString(property, value);
 			}
-			bool SetProperty(const wxStringView& property, const wxString& value)
+			bool SetProperty(const wxStringView& property, const String& value)
 			{
 				return SetPropertyString(property, wxStringView(value.wc_str(), value.length()));
 			}

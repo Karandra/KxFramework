@@ -3,7 +3,7 @@
 
 namespace KxFramework::Compression::ZLib
 {
-	wxString GetLibraryName()
+	String GetLibraryName()
 	{
 		return wxGetZlibVersionInfo().GetName();
 	}
