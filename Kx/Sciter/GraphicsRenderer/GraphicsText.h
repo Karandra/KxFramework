@@ -41,8 +41,8 @@ namespace KxFramework::Sciter
 		public:
 			ScriptValue ToScriptValue() const;
 
-			bool CreateForElement(const wxString& text, const Element& element, const wxString& className = {});
-			bool CreateForElementAndStyle(const wxString& text, const Element& element, const wxString& style = {});
+			bool CreateForElement(const String& text, const Element& element, const String& className = {});
+			bool CreateForElementAndStyle(const String& text, const Element& element, const String& style = {});
 			
 			std::optional<TextMetrics> GetMetrics() const;
 			wxSize GetMinExtent() const

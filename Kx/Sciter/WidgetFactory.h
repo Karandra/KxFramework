@@ -13,7 +13,7 @@ namespace KxFramework::Sciter
 	class KX_API WidgetFactory
 	{
 		public:
-			static std::unique_ptr<Widget> NewWidget(Host& host, const Element& element, const wxString& className);
+			static std::unique_ptr<Widget> NewWidget(Host& host, const Element& element, const String& className);
 			static WidgetFactory* GetFirstFactory();
 
 			template<class TFunc>
@@ -30,15 +30,15 @@ namespace KxFramework::Sciter
 			}
 
 		private:
-			wxString m_ClassName;
+			String m_ClassName;
 			WidgetFactory* m_NextFactory = nullptr;
 
 		public:
-			WidgetFactory(const wxString& className);
+			WidgetFactory(const String& className);
 			virtual ~WidgetFactory() = default;
 
 		public:
-			wxString GetClassName() const
+			String GetClassName() const
 			{
 				return m_ClassName;
 			}
@@ -48,6 +48,6 @@ namespace KxFramework::Sciter
 			}
 			
 		public:
-			virtual std::unique_ptr<Widget> CreateWidget(Host& host, const Element& element, const wxString& className) = 0;
+			virtual std::unique_ptr<Widget> CreateWidget(Host& host, const Element& element, const String& className) = 0;
 	};
 }

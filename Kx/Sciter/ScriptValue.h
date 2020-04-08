@@ -57,7 +57,7 @@ namespace KxFramework::Sciter
 			void Clear();
 			void Copy(const ScriptNativeValue& other);
 			bool IsEqual(const ScriptNativeValue& other) const;
-			void AssingString(wxStringView data, StringType type);
+			void AssingString(StringView data, StringType type);
 
 		public:
 			ScriptValue()
@@ -101,7 +101,7 @@ namespace KxFramework::Sciter
 			}
 
 			// Retrieving
-			wxString GetString() const;
+			String GetString() const;
 			std::optional<int> GetInt() const;
 			std::optional<int64_t> GetInt64() const;
 			std::optional<double> GetFloat() const;
@@ -117,14 +117,14 @@ namespace KxFramework::Sciter
 			ScriptValue& operator=(int64_t value);
 			ScriptValue& operator=(double value);
 			ScriptValue& operator=(bool value);
-			ScriptValue& operator=(const wxString& value)
+			ScriptValue& operator=(const String& value)
 			{
 				SetString(value);
 				return *this;
 			}
 			ScriptValue& operator=(std::string_view value)
 			{
-				SetString(wxString::FromUTF8(value.data(), value.length()));
+				SetString(String::FromUTF8(value.data(), value.length()));
 				return *this;
 			}
 			ScriptValue& operator=(std::wstring_view value)
@@ -147,7 +147,7 @@ namespace KxFramework::Sciter
 			ScriptValue& operator=(const Color& value);
 			ScriptValue& SetAngle(double radians);
 			ScriptValue& SetBytes(const void* data, size_t size);
-			ScriptValue& SetString(const wxString& value, StringType type = StringType::None)
+			ScriptValue& SetString(const String& value, StringType type = StringType::None)
 			{
 				AssingString(wxStringView(value.wc_str(), value.length()), type);
 				return *this;

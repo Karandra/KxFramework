@@ -80,7 +80,7 @@ namespace KxFramework::Sciter
 			KxEVENT_MEMBER(BehaviorEvent, UIStateChanged);
 
 		protected:
-			wxString m_EventName;
+			String m_EventName;
 			ElementUID* m_SourceElement = nullptr;
 
 		public:
@@ -95,11 +95,11 @@ namespace KxFramework::Sciter
 				return new BehaviorEvent(*this);
 			}
 			
-			wxString GetEventName() const
+			String GetEventName() const
 			{
 				return m_EventName;
 			}
-			void SetEventName(const wxString& name)
+			void SetEventName(const String& name)
 			{
 				m_EventName = name;
 			}

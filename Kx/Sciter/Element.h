@@ -3,6 +3,7 @@
 #include "ScriptValue.h"
 #include "Utility/HandleWrapper.h"
 #include "Kx/General/Color.h"
+#include "Kx/General/String.h"
 
 namespace KxFramework::Sciter
 {
@@ -23,7 +24,7 @@ namespace KxFramework::Sciter
 			using TOnElement = std::function<bool(Element)>;
 
 		public:
-			static Element Create(const wxString& tagName, const wxString& value = {});
+			static Element Create(const String& tagName, const String& value = {});
 
 		private:
 			bool DoAcquire(ElementHandle* handle);
@@ -95,13 +96,13 @@ namespace KxFramework::Sciter
 			bool SetScrollPos(const wxPoint& pos) const;
 
 			// HTML content
-			wxString GetInnerHTML() const;
-			wxString GetOuterHTML() const;
-			bool SetInnerHTML(const wxString& html, ElementInnerHTML mode);
-			bool SetOuterHTML(const wxString& html, ElementOuterHTML mode);
+			String GetInnerHTML() const;
+			String GetOuterHTML() const;
+			bool SetInnerHTML(const String& html, ElementInnerHTML mode);
+			bool SetOuterHTML(const String& html, ElementOuterHTML mode);
 
-			wxString GetTagName() const;
-			bool SetTagName(const wxString& tagName);
+			String GetTagName() const;
+			bool SetTagName(const String& tagName);
 
 			// Children and parents
 			Element GetRoot() const;
@@ -137,91 +138,91 @@ namespace KxFramework::Sciter
 			HWND DetachNativeWindow();
 
 			// Text
-			wxString GetText() const;
-			bool SetText(const wxString& text) const;
+			String GetText() const;
+			bool SetText(const String& text) const;
 
 			// Value
-			wxString GetValue() const;
-			bool SetValue(const wxString& value) const;
+			String GetValue() const;
+			bool SetValue(StringView value) const;
 
 			// Attributes
 			size_t GetAttributeCount() const;
-			wxString GetAttributeNameAt(size_t index) const;
-			wxString GetAttributeValueAt(size_t index) const;
-			wxString GetAttribute(const wxString& name) const;
-			wxString GetAttribute(const char* name) const;
+			String GetAttributeNameAt(size_t index) const;
+			String GetAttributeValueAt(size_t index) const;
+			String GetAttribute(const String& name) const;
+			String GetAttribute(const char* name) const;
 
-			bool SetAttribute(const wxString& name, const wxString& value);
-			bool SetAttribute(const char* name, const wxString& value);
-			bool RemoveAttribute(const wxString& name);
+			bool SetAttribute(const String& name, const String& value);
+			bool SetAttribute(const char* name, const String& value);
+			bool RemoveAttribute(const String& name);
 			bool RemoveAttribute(const char* name);
 			bool ClearAttributes();
 
 			// Style (CSS) attributes
-			wxString GetStyleAttribute(const wxString& name) const;
-			wxString GetStyleAttribute(const char* name) const;
+			String GetStyleAttribute(const String& name) const;
+			String GetStyleAttribute(const char* name) const;
 
-			std::optional<int> GetStyleAttributeInt(const wxString& name) const;
+			std::optional<int> GetStyleAttributeInt(const String& name) const;
 			std::optional<int> GetStyleAttributeInt(const char* name) const;
 
-			std::optional<double> GetStyleAttributeFloat(const wxString& name) const;
+			std::optional<double> GetStyleAttributeFloat(const String& name) const;
 			std::optional<double> GetStyleAttributeFloat(const char* name) const;
 
-			bool SetStyleAttribute(const wxString& name, const wxString& value);
-			bool SetStyleAttribute(const char* name, const wxString& value);
+			bool SetStyleAttribute(const String& name, const String& value);
+			bool SetStyleAttribute(const char* name, const String& value);
 
-			bool SetStyleAttribute(const wxString& name, const char* value)
+			bool SetStyleAttribute(const String& name, const char* value)
 			{
-				return SetStyleAttribute(name, wxString(value));
+				return SetStyleAttribute(name, String(value));
 			}
 			bool SetStyleAttribute(const char* name, const char* value)
 			{
-				return SetStyleAttribute(name, wxString(value));
+				return SetStyleAttribute(name, String(value));
 			}
 
-			bool SetStyleAttribute(const wxString& name, const wchar_t* value)
+			bool SetStyleAttribute(const String& name, const wchar_t* value)
 			{
-				return SetStyleAttribute(name, wxString(value));
+				return SetStyleAttribute(name, String(value));
 			}
 			bool SetStyleAttribute(const char* name, const wchar_t* value)
 			{
-				return SetStyleAttribute(name, wxString(value));
+				return SetStyleAttribute(name, String(value));
 			}
 
-			bool SetStyleAttribute(const wxString& name, const Color& value);
+			bool SetStyleAttribute(const String& name, const Color& value);
 			bool SetStyleAttribute(const char* name, const Color& value);
 
-			bool SetStyleAttribute(const wxString& name, int value, SizeUnit unit = SizeUnit::None);
+			bool SetStyleAttribute(const String& name, int value, SizeUnit unit = SizeUnit::None);
 			bool SetStyleAttribute(const char* name, int value, SizeUnit unit = SizeUnit::None);
 
-			bool SetStyleAttribute(const wxString& name, double value, SizeUnit unit = SizeUnit::None);
+			bool SetStyleAttribute(const String& name, double value, SizeUnit unit = SizeUnit::None);
 			bool SetStyleAttribute(const char* name, double value, SizeUnit unit = SizeUnit::None);
 
-			bool RemoveStyleAttribute(const wxString& name);
+			bool RemoveStyleAttribute(const String& name);
 			bool RemoveStyleAttribute(const char* name);
 
 			bool SetStyleFont(const wxFont& font);
 
 			// Selectors
-			size_t Select(const wxString& query, TOnElement onElement) const;
-			Element SelectAny(const wxString& query) const;
-			std::vector<Element> SelectAll(const wxString& query) const;
+			size_t Select(const String& query, TOnElement onElement) const;
+			Element SelectAny(const String& query) const;
+			std::vector<Element> SelectAll(const String& query) const;
 
-			Element GetElementByAttribute(const wxString& name, const wxString& value) const
+			Element GetElementByAttribute(const String& name, const String& value) const
 			{
 				return SelectAny(KxString::Format(wxS("[%1=%2]"), name, value));
 			}
-			Element GetElementByID(const wxString& id) const
+			Element GetElementByID(const String& id) const
 			{
 				return SelectAny(KxString::Format(wxS("#%1"), id));
 			}
-			Element GetElementByClass(const wxString& name) const
+			Element GetElementByClass(const String& name) const
 			{
 				return SelectAny(KxString::Format(wxS(".%1"), name));
 			}
 
 			// Scripts
-			ScriptValue ExecuteScript(const wxString& script);
+			ScriptValue ExecuteScript(const String& script);
 
 		public:
 			Element& operator=(const Element& other)

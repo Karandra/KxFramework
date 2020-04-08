@@ -8,20 +8,20 @@ namespace KxFramework::Sciter
 	{
 		public:
 			Label() = default;
+			Label(const Label&) = delete;
 			Label(wxWindow* parent,
 				  wxWindowID id,
-				  const wxString& label,
+				  const String& label,
 				  const wxPoint& pos = wxDefaultPosition,
 				  const wxSize& size = wxDefaultSize,
 				  long style = wxBORDER_NONE)
 			{
 				Create(parent, id, label, pos, size, style);
 			}
-			Label(const Label&) = delete;
 
 			bool Create(wxWindow* parent,
 						wxWindowID id,
-						const wxString& label,
+						const String& label,
 						const wxPoint& pos = wxDefaultPosition,
 						const wxSize& size = wxDefaultSize,
 						long style = wxBORDER_NONE)

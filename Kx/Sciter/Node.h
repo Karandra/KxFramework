@@ -16,8 +16,8 @@ namespace KxFramework::Sciter
 		friend class HandleWrapper<Node, NodeHandle>;
 
 		public:
-			static Node CreateTextNode(const wxString& value);
-			static Node CreateCommentNode(const wxString& value);
+			static Node CreateTextNode(const String& value);
+			static Node CreateCommentNode(const String& value);
 
 		private:
 			NodeHandle* m_Handle = nullptr;
@@ -70,8 +70,8 @@ namespace KxFramework::Sciter
 			bool InsertBefore(const Node& node);
 			bool InsertAfter(const Node& node);
 
-			wxString GetValue() const;
-			bool SetValue(wxStringView value) const;
+			String GetValue() const;
+			bool SetValue(StringView value) const;
 
 		public:
 			Node& operator=(const Node& other)

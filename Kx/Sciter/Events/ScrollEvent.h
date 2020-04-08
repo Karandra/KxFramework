@@ -55,7 +55,7 @@ namespace KxFramework::Sciter
 			{
 				m_Position = value;
 			}
-	
+			
 			ScrollSource GetSource() const
 			{
 				return m_Source;

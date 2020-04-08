@@ -99,9 +99,9 @@ namespace KxFramework::Sciter
 				TWindow::SetThemeEnabled(true);
 			}
 			
-			bool IsTransparentBackgroundSupported(wxString* reason = nullptr) const
+			bool IsTransparentBackgroundSupported(wxString* reason = nullptr) const override
 			{
-				return Host::IsTransparentBackgroundSupported(reason);;
+				return Host::IsTransparentBackgroundSupported(reason);
 			}
 			bool HasTransparentBackground() override
 			{

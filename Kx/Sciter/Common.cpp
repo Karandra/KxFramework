@@ -8,7 +8,7 @@ namespace KxFramework::Sciter
 {
 	void* g_SciterLibrary = nullptr;
 
-	wxString GetLibraryName()
+	String GetLibraryName()
 	{
 		return wxS("Sciter");
 	}
@@ -29,7 +29,7 @@ namespace KxFramework::Sciter
 	{
 		return g_SciterLibrary != nullptr;
 	}
-	bool LoadLibrary(const wxString& path)
+	bool LoadLibrary(const String& path)
 	{
 		if (!g_SciterLibrary)
 		{
@@ -54,7 +54,7 @@ namespace KxFramework::Sciter
 
 namespace KxFramework::Sciter
 {
-	wxStringView SizeUnitToString(SizeUnit unit)
+	String SizeUnitToString(SizeUnit unit)
 	{
 		#define Map(unit)	\
 			case SizeUnit::##unit:	\
@@ -199,12 +199,12 @@ namespace KxFramework::Sciter
 		return wxALIGN_INVALID;
 	}
 
-	bool SetMasterCSS(const wxString& css)
+	bool SetMasterCSS(const String& css)
 	{
 		auto utf8 = ToSciterUTF8(css);
 		return GetSciterAPI()->SciterSetMasterCSS(utf8.data(), utf8.size());
 	}
-	bool AppendMasterCSS(const wxString& css)
+	bool AppendMasterCSS(const String& css)
 	{
 		auto utf8 = ToSciterUTF8(css);
 		return GetSciterAPI()->SciterAppendMasterCSS(utf8.data(), utf8.size());

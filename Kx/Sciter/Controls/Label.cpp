@@ -3,5 +3,4 @@
 
 namespace KxFramework::Sciter
 {
-
 }

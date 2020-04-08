@@ -35,7 +35,7 @@ namespace KxFramework::Sciter
 		return {};
 	}
 
-	bool GraphicsText::CreateForElement(const wxString& text, const Element& element, const wxString& className)
+	bool GraphicsText::CreateForElement(const String& text, const Element& element, const String& className)
 	{
 		HTEXT handle = nullptr;
 		if (GetGrapchicsAPI()->textCreateForElement(&handle, text.wc_str(), text.length(), ToSciterElement(element.GetHandle()), className.IsEmpty() ? nullptr : className.wc_str()) == GRAPHIN_OK)
@@ -45,7 +45,7 @@ namespace KxFramework::Sciter
 		}
 		return false;
 	}
-	bool GraphicsText::CreateForElementAndStyle(const wxString& text, const Element& element, const wxString& style)
+	bool GraphicsText::CreateForElementAndStyle(const String& text, const Element& element, const String& style)
 	{
 		const wxChar* stylePtr = style.IsEmpty() ? nullptr : style.wc_str();
 		size_t styleLength = style.IsEmpty() ? 0 : style.length();

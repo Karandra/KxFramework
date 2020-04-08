@@ -1,5 +1,5 @@
 #pragma once
-#include <wx/wx.h>
+#include "Kx/General/String.h"
 #include "SciterAPI.h"
 
 namespace KxFramework::Sciter
@@ -16,7 +16,7 @@ namespace KxFramework::Sciter
 
 namespace KxFramework::Sciter
 {
-	std::vector<BYTE> ToSciterUTF8(const wxString& text);
+	std::vector<BYTE> ToSciterUTF8(const String& text);
 	SC_COLOR CreateSciterColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 	SC_COLOR CreateSciterColor(const wxColour& color);
 }

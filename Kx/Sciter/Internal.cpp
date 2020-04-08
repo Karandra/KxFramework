@@ -3,7 +3,7 @@
 
 namespace KxFramework::Sciter
 {
-	std::vector<BYTE> ToSciterUTF8(const wxString& text)
+	std::vector<BYTE> ToSciterUTF8(const String& text)
 	{
 		if (!text.IsEmpty())
 		{

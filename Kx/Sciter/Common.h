@@ -1,25 +1,26 @@
 #pragma once
 #include "Kx/Common.hpp"
+#include "Kx/General/String.h"
 #include "Kx/General/Version.h"
 #include "CommonDefs.h"
 
 namespace KxFramework::Sciter
 {
-	wxString GetLibraryName();
+	String GetLibraryName();
 	Version GetLibraryVersion();
 
 	bool IsLibraryLoaded();
-	bool LoadLibrary(const wxString& path);
+	bool LoadLibrary(const String& path);
 	void FreeLibrary();
 }
 
 namespace KxFramework::Sciter
 {
-	wxStringView SizeUnitToString(SizeUnit unit);
+	String SizeUnitToString(SizeUnit unit);
 	
 	Alignment MapAlignment(wxAlignment alignment);
 	wxAlignment MapAlignment(Alignment alignment);
 
-	bool SetMasterCSS(const wxString& css);
-	bool AppendMasterCSS(const wxString& css);
+	bool SetMasterCSS(const String& css);
+	bool AppendMasterCSS(const String& css);
 }

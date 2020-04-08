@@ -18,7 +18,7 @@ namespace KxFramework::Sciter
 	}
 
 	template<class TNode = HELEMENT, class TFunc>
-	Node DoCreateTextNode(TFunc&& func, const wxString& value)
+	Node DoCreateTextNode(TFunc&& func, const String& value)
 	{
 		HNODE nativeNode = nullptr;
 		if (func(value.wc_str(), value.length(), &nativeNode) == SCDOM_OK)
@@ -45,11 +45,11 @@ namespace KxFramework::Sciter
 
 namespace KxFramework::Sciter
 {
-	Node Node::CreateTextNode(const wxString& value)
+	Node Node::CreateTextNode(const String& value)
 	{
 		return DoCreateTextNode(GetSciterAPI()->SciterCreateTextNode, value);
 	}
-	Node Node::CreateCommentNode(const wxString& value)
+	Node Node::CreateCommentNode(const String& value)
 	{
 		return DoCreateTextNode(GetSciterAPI()->SciterCreateCommentNode, value);
 	}
@@ -169,16 +169,16 @@ namespace KxFramework::Sciter
 		return DoInsertNode(*this, node, NODE_INS_TARGET::NIT_AFTER);
 	}
 
-	wxString Node::GetValue() const
+	String Node::GetValue() const
 	{
-		wxString result;
+		String result;
 		GetSciterAPI()->SciterNodeGetText(ToSciterNode(m_Handle), [](LPCWSTR value, UINT length, LPVOID context)
 		{
-			reinterpret_cast<wxString*>(context)->assign(value, length);
+			*reinterpret_cast<String*>(context) = String(value, length);
 		}, &result);
 		return result;
 	}
-	bool Node::SetValue(wxStringView value) const
+	bool Node::SetValue(StringView value) const
 	{
 		return GetSciterAPI()->SciterNodeSetText(ToSciterNode(m_Handle), value.data(), value.length()) == SCDOM_OK;
 	}

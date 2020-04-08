@@ -33,8 +33,8 @@ namespace KxFramework::Sciter
 			FontSmoothing m_Option_FontSmoothing = FontSmoothing::SystemDefault;
 			WindowRenderer m_Option_WindowRenderer = WindowRenderer::Default;
 
-			wxString m_DocumentPath;
-			wxString m_DocumentBasePath;
+			String m_DocumentPath;
+			String m_DocumentBasePath;
 			bool m_ReloadScheduled = false;
 
 		private:
@@ -107,11 +107,11 @@ namespace KxFramework::Sciter
 			void SetLayoutDirection(wxLayoutDirection value);
 
 		public:
-			bool LoadHTML(const wxString& html, const wxString& basePath = {});
-			bool LoadHTML(const wxString& html, const KxURI& baseURI);
-			bool SetCSS(const wxString& css);
+			bool LoadHTML(const String& html, const String& basePath = {});
+			bool LoadHTML(const String& html, const KxURI& baseURI);
+			bool SetCSS(const String& css);
 
-			bool LoadDocument(const wxString& localPath);
+			bool LoadDocument(const String& localPath);
 			bool LoadDocument(const KxURI& uri);
 			void ClearDocument();
 
@@ -123,7 +123,7 @@ namespace KxFramework::Sciter
 			Element GetHighlightedElement() const;
 			void SetHighlightedElement(const Element& node);
 
-			ScriptValue ExecuteScript(const wxString& script);
+			ScriptValue ExecuteScript(const String& script);
 
 		public:
 			Host& operator=(const Host&) = delete;

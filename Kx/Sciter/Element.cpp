@@ -3,6 +3,7 @@
 #include "Node.h"
 #include "Host.h"
 #include "EventDispatcher.h"
+#include "ScriptValue.h"
 #include "SciterAPI.h"
 #include "Internal.h"
 #include "KxFramework/KxUtility.h"
@@ -33,19 +34,14 @@ namespace KxFramework::Sciter
 	template<class TName>
 	std::optional<int> DoGetStyleAttributeInt(const Element& element, TName&& name)
 	{
-		wxString value = element.GetStyleAttribute(name);
-		if (long iValue = -1; value.ToCLong(&iValue))
-		{
-			return iValue;
-		}
-		return std::nullopt;
+		return element.GetStyleAttribute(name).ToInt<int>();
 	}
 
 	template<class TName>
 	std::optional<double> DoGetStyleAttributeFloat(const Element& element, TName&& name)
 	{
-		wxString value = element.GetStyleAttribute(name);
-		if (double fValue = -1; value.ToCDouble(&fValue))
+		String value = element.GetStyleAttribute(name);
+		if (double fValue = -1; value.ToCDouble(fValue))
 		{
 			return fValue;
 		}
@@ -54,11 +50,11 @@ namespace KxFramework::Sciter
 
 	void __stdcall ExtractWxString(const wchar_t* value, UINT length, void* context)
 	{
-		reinterpret_cast<wxString*>(context)->assign(value, length);
+		*reinterpret_cast<String*>(context) = String(value, length);
 	}
 	void __stdcall ExtractWxString(const char* value, UINT length, void* context)
 	{
-		*reinterpret_cast<wxString*>(context) = wxString::FromUTF8(value, length);
+		*reinterpret_cast<String*>(context) = String::FromUTF8(value, length);
 	}
 	void __stdcall ExtractWxString(const BYTE* value, UINT length, void* context)
 	{
@@ -68,7 +64,7 @@ namespace KxFramework::Sciter
 
 namespace KxFramework::Sciter
 {
-	Element Element::Create(const wxString& tagName, const wxString& value)
+	Element Element::Create(const String& tagName, const String& value)
 	{
 		Element node;
 
@@ -322,25 +318,25 @@ namespace KxFramework::Sciter
 	}
 
 	// HTML content
-	wxString Element::GetInnerHTML() const
+	String Element::GetInnerHTML() const
 	{
-		wxString result;
+		String result;
 		if (GetSciterAPI()->SciterGetElementHtmlCB(ToSciterElement(m_Handle), FALSE, ExtractWxString, &result) == SCDOM_OK)
 		{
 			return result;
 		}
 		return {};
 	}
-	wxString Element::GetOuterHTML() const
+	String Element::GetOuterHTML() const
 	{
-		wxString result;
+		String result;
 		if (GetSciterAPI()->SciterGetElementHtmlCB(ToSciterElement(m_Handle), TRUE, ExtractWxString, &result) == SCDOM_OK)
 		{
 			return result;
 		}
 		return {};
 	}
-	bool Element::SetInnerHTML(const wxString& html, ElementInnerHTML mode)
+	bool Element::SetInnerHTML(const String& html, ElementInnerHTML mode)
 	{
 		auto MapMode = [&]() -> std::optional<UINT>
 		{
@@ -369,7 +365,7 @@ namespace KxFramework::Sciter
 		}
 		return false;
 	}
-	bool Element::SetOuterHTML(const wxString& html, ElementOuterHTML mode)
+	bool Element::SetOuterHTML(const String& html, ElementOuterHTML mode)
 	{
 		auto MapMode = [&]() -> std::optional<UINT>
 		{
@@ -399,13 +395,13 @@ namespace KxFramework::Sciter
 		return false;
 	}
 
-	wxString Element::GetTagName() const
+	String Element::GetTagName() const
 	{
-		wxString result;
+		String result;
 		GetSciterAPI()->SciterGetElementTypeCB(ToSciterElement(m_Handle), ExtractWxString, &result);
 		return result;
 	}
-	bool Element::SetTagName(const wxString& tagName)
+	bool Element::SetTagName(const String& tagName)
 	{
 		if (GetTagName() == tagName)
 		{
@@ -429,7 +425,7 @@ namespace KxFramework::Sciter
 			// Collect all attributes
 			const size_t attributeCount = GetAttributeCount();
 
-			std::vector<std::pair<wxString, wxString>> attributes;
+			std::vector<std::pair<String, String>> attributes;
 			attributes.reserve(attributeCount);
 			for (size_t i = 0; i < attributeCount; i++)
 			{
@@ -449,7 +445,7 @@ namespace KxFramework::Sciter
 			}
 
 			// Add text node if needed
-			if (wxString value = GetValue(); !value.IsEmpty())
+			if (String value = GetValue(); !value.IsEmpty())
 			{
 				newElement.ToNode().Append(Node::CreateTextNode(value));
 			}
@@ -624,38 +620,31 @@ namespace KxFramework::Sciter
 	}
 
 	// Text
-	wxString Element::GetText() const
+	String Element::GetText() const
 	{
-		wxString result;
+		String result;
 		GetSciterAPI()->SciterGetElementTextCB(ToSciterElement(m_Handle), ExtractWxString, &result);
 		return result;
 	}
-	bool Element::SetText(const wxString& text) const
+	bool Element::SetText(const String& text) const
 	{
 		return GetSciterAPI()->SciterSetElementText(ToSciterElement(m_Handle), text.wc_str(), text.length()) == SCDOM_OK;
 	}
 
 	// Value
-	wxString Element::GetValue() const
+	String Element::GetValue() const
 	{
-		VALUE value = {};
-		if (GetSciterAPI()->SciterGetValue(ToSciterElement(m_Handle), &value) == SCDOM_OK && value.t == VALUE_TYPE::T_STRING)
+		ScriptValue scriptValue;
+		if (GetSciterAPI()->SciterGetValue(ToSciterElement(m_Handle), ToSciterScriptValue(scriptValue.GetNativeValue())) == SCDOM_OK)
 		{
-			aux::wchars slice;
-			if (GetSciterAPI()->ValueStringData(&value, &slice.start, &slice.length) == HV_OK)
-			{
-				return wxString(slice.begin(), slice.end());
-			}
+			return scriptValue.GetString();
 		}
 		return {};
 	}
-	bool Element::SetValue(const wxString& value) const
+	bool Element::SetValue(StringView value) const
 	{
-		VALUE nativeValue = {};
-		GetSciterAPI()->ValueInit(&nativeValue);
-		GetSciterAPI()->ValueStringDataSet(&nativeValue, value.wc_str(), value.length(), T_STRING);
-
-		return GetSciterAPI()->SciterSetValue(ToSciterElement(m_Handle), &nativeValue) == SCDOM_OK;
+		ScriptValue scriptValue = value;
+		return GetSciterAPI()->SciterSetValue(ToSciterElement(m_Handle), ToSciterScriptValue(scriptValue.GetNativeValue())) == SCDOM_OK;
 	}
 
 	// Attributes
@@ -665,41 +654,41 @@ namespace KxFramework::Sciter
 		GetSciterAPI()->SciterGetAttributeCount(ToSciterElement(m_Handle), &count);
 		return count;
 	}
-	wxString Element::GetAttributeNameAt(size_t index) const
+	String Element::GetAttributeNameAt(size_t index) const
 	{
-		wxString result;
+		String result;
 		GetSciterAPI()->SciterGetNthAttributeNameCB(ToSciterElement(m_Handle), index, ExtractWxString, &result);
 		return result;
 	}
-	wxString Element::GetAttributeValueAt(size_t index) const
+	String Element::GetAttributeValueAt(size_t index) const
 	{
-		wxString result;
+		String result;
 		GetSciterAPI()->SciterGetNthAttributeValueCB(ToSciterElement(m_Handle), index, ExtractWxString, &result);
 		return result;
 	}
-	wxString Element::GetAttribute(const wxString& name) const
+	String Element::GetAttribute(const String& name) const
 	{
 		auto nameUTF8 = name.ToUTF8();
 		return GetAttribute(nameUTF8.data());
 	}
-	wxString Element::GetAttribute(const char* name) const
+	String Element::GetAttribute(const char* name) const
 	{
-		wxString result;
+		String result;
 
 		GetSciterAPI()->SciterGetAttributeByNameCB(ToSciterElement(m_Handle), name, ExtractWxString, &result);
 		return result;
 	}
 
-	bool Element::SetAttribute(const wxString& name, const wxString& value)
+	bool Element::SetAttribute(const String& name, const String& value)
 	{
 		auto nameUTF8 = name.ToUTF8();
 		return SetAttribute(nameUTF8.data(), value);
 	}
-	bool Element::SetAttribute(const char* name, const wxString& value)
+	bool Element::SetAttribute(const char* name, const String& value)
 	{
 		return GetSciterAPI()->SciterSetAttributeByName(ToSciterElement(m_Handle), name, value.wc_str()) == SCDOM_OK;
 	}
-	bool Element::RemoveAttribute(const wxString& name)
+	bool Element::RemoveAttribute(const String& name)
 	{
 		auto nameUTF8 = name.ToUTF8();
 		return RemoveAttribute(nameUTF8.data());
@@ -714,14 +703,14 @@ namespace KxFramework::Sciter
 	}
 
 	// Style (CSS) attributes
-	wxString Element::GetStyleAttribute(const wxString& name) const
+	String Element::GetStyleAttribute(const String& name) const
 	{
 		auto nameUTF8 = name.ToUTF8();
 		return GetStyleAttribute(nameUTF8.data());
 	}
-	wxString Element::GetStyleAttribute(const char* name) const
+	String Element::GetStyleAttribute(const char* name) const
 	{
-		wxString result;
+		String result;
 		GetSciterAPI()->SciterGetStyleAttributeCB(ToSciterElement(m_Handle), name, ExtractWxString, &result);
 		return result;
 	}
@@ -730,12 +719,12 @@ namespace KxFramework::Sciter
 	{
 		return DoGetStyleAttributeInt(*this, name);
 	}
-	std::optional<int> Element::GetStyleAttributeInt(const wxString& name) const
+	std::optional<int> Element::GetStyleAttributeInt(const String& name) const
 	{
 		return DoGetStyleAttributeInt(*this, name);
 	}
 
-	std::optional<double> Element::GetStyleAttributeFloat(const wxString& name) const
+	std::optional<double> Element::GetStyleAttributeFloat(const String& name) const
 	{
 		return DoGetStyleAttributeFloat(*this, name);
 	}
@@ -744,17 +733,17 @@ namespace KxFramework::Sciter
 		return DoGetStyleAttributeFloat(*this, name);
 	}
 
-	bool Element::SetStyleAttribute(const wxString& name, const wxString& value)
+	bool Element::SetStyleAttribute(const String& name, const String& value)
 	{
 		auto nameUTF8 = name.ToUTF8();
 		return SetStyleAttribute(nameUTF8.data(), value);
 	}
-	bool Element::SetStyleAttribute(const char* name, const wxString& value)
+	bool Element::SetStyleAttribute(const char* name, const String& value)
 	{
 		return GetSciterAPI()->SciterSetStyleAttribute(ToSciterElement(m_Handle), name, value.wc_str()) == SCDOM_OK;
 	}
 
-	bool Element::SetStyleAttribute(const wxString& name, const Color& value)
+	bool Element::SetStyleAttribute(const String& name, const Color& value)
 	{
 		return SetStyleAttribute(name, value.ToString(C2SFormat::CSS, C2SAlpha::Always));
 	}
@@ -763,7 +752,7 @@ namespace KxFramework::Sciter
 		return SetStyleAttribute(name, value.ToString(C2SFormat::CSS, C2SAlpha::Always));
 	}
 
-	bool Element::SetStyleAttribute(const wxString& name, int value, SizeUnit unit)
+	bool Element::SetStyleAttribute(const String& name, int value, SizeUnit unit)
 	{
 		return SetStyleAttribute(name, KxString::Format(wxS("%1%2"), value, SizeUnitToString(unit)));
 	}
@@ -772,7 +761,7 @@ namespace KxFramework::Sciter
 		return SetStyleAttribute(name, KxString::Format(wxS("%1%2"), value, SizeUnitToString(unit)));
 	}
 
-	bool Element::SetStyleAttribute(const wxString& name, double value, SizeUnit unit)
+	bool Element::SetStyleAttribute(const String& name, double value, SizeUnit unit)
 	{
 		return SetStyleAttribute(name, KxString::Format(wxS("%1%2"), value, SizeUnitToString(unit)));
 	}
@@ -781,7 +770,7 @@ namespace KxFramework::Sciter
 		return SetStyleAttribute(name, KxString::Format(wxS("%1%2"), value, SizeUnitToString(unit)));
 	}
 
-	bool Element::RemoveStyleAttribute(const wxString& name)
+	bool Element::RemoveStyleAttribute(const String& name)
 	{
 		auto nameUTF8 = name.ToUTF8();
 		return RemoveStyleAttribute(nameUTF8.data());
@@ -795,7 +784,7 @@ namespace KxFramework::Sciter
 	{
 		if (!IsNull())
 		{
-			auto MapFamily = [&]() -> wxString
+			auto MapFamily = [&]() -> String
 			{
 				switch (font.GetFamily())
 				{
@@ -826,7 +815,7 @@ namespace KxFramework::Sciter
 				};
 				return {};
 			};
-			auto MapStyle = [&]() -> wxString
+			auto MapStyle = [&]() -> String
 			{
 				switch (font.GetStyle())
 				{
@@ -847,7 +836,7 @@ namespace KxFramework::Sciter
 			};
 
 			// Family
-			if (wxString family = MapFamily(); !family.IsEmpty())
+			if (String family = MapFamily(); !family.IsEmpty())
 			{
 				SetStyleAttribute("font-family", KxString::Format(wxS("\"%1\", %2"), font.GetFaceName(), family));
 			}
@@ -857,7 +846,7 @@ namespace KxFramework::Sciter
 			}
 
 			// Style
-			if (wxString style = MapStyle(); !style.IsEmpty())
+			if (String style = MapStyle(); !style.IsEmpty())
 			{
 				SetStyleAttribute("font-style", style);
 			}
@@ -878,7 +867,7 @@ namespace KxFramework::Sciter
 	}
 
 	// Selectors
-	size_t Element::Select(const wxString& query, TOnElement onElement) const
+	size_t Element::Select(const String& query, TOnElement onElement) const
 	{
 		struct CallContext
 		{
@@ -896,7 +885,7 @@ namespace KxFramework::Sciter
 		}, &context);
 		return context.Count;
 	}
-	Element Element::SelectAny(const wxString& query) const
+	Element Element::SelectAny(const String& query) const
 	{
 		Element result;
 		Select(query, [&result](Element element)
@@ -906,7 +895,7 @@ namespace KxFramework::Sciter
 		});
 		return result;
 	}
-	std::vector<Element> Element::SelectAll(const wxString& query) const
+	std::vector<Element> Element::SelectAll(const String& query) const
 	{
 		std::vector<Element> results;
 		Select(query, [&results](Element element)
@@ -917,7 +906,7 @@ namespace KxFramework::Sciter
 		return results;
 	}
 
-	ScriptValue Element::ExecuteScript(const wxString& script)
+	ScriptValue Element::ExecuteScript(const String& script)
 	{
 		ScriptValue result;
 		GetSciterAPI()->SciterEvalElementScript(ToSciterElement(m_Handle), script.wc_str(), script.length(), ToSciterScriptValue(result.GetNativeValue()));

@@ -187,7 +187,7 @@ namespace KxFramework::Sciter
 		{
 			if (auto root = GetRootElement())
 			{
-				wxString path = m_DocumentPath;
+				String path = m_DocumentPath;
 				LoadHTML(root.GetOuterHTML(), m_DocumentBasePath);
 				m_DocumentPath = std::move(path);
 			}
@@ -232,7 +232,7 @@ namespace KxFramework::Sciter
 
 			const wxPoint pos = m_SciterWindow.GetPosition();
 			const wxSize size = m_SciterWindow.GetSize();
-			const wxString title = m_SciterWindow.GetLabel();
+			const String title = m_SciterWindow.GetLabel();
 
 			// Destroy and detach original window
 			const HWND oldHandle = m_SciterWindow.GetHandle();
@@ -338,7 +338,7 @@ namespace KxFramework::Sciter
 			return false;
 		}
 
-		auto SetAttribute = [&](const wxString& value)
+		auto SetAttribute = [&](const String& value)
 		{
 			if (GetRootElement().SetAttribute(wxS("window-frame"), value))
 			{
@@ -380,7 +380,7 @@ namespace KxFramework::Sciter
 			return false;
 		}
 
-		auto SetAttribute = [&](const wxString& value)
+		auto SetAttribute = [&](const String& value)
 		{
 			GetRootElement().SetAttribute(wxS("window-blurbehind"), value);
 
@@ -435,7 +435,7 @@ namespace KxFramework::Sciter
 	{
 		if (m_SciterWindow.IsTopLevel())
 		{
-			KxUtility::SetIfNotNull(reason, wxS("Always supported for top-level window"));
+			KxUtility::SetIfNotNull(reason, wxS("Always supported for top-level windows"));
 			return true;
 		}
 		else if (m_Renderer)
@@ -464,7 +464,7 @@ namespace KxFramework::Sciter
 
 	wxLayoutDirection Host::GetLayoutDirection() const
 	{
-		wxString value = GetRootElement().GetStyleAttribute(wxS("direction"));
+		String value = GetRootElement().GetStyleAttribute(wxS("direction"));
 		if (value == wxS("ltr"))
 		{
 			return wxLayoutDirection::wxLayout_LeftToRight;
@@ -496,7 +496,7 @@ namespace KxFramework::Sciter
 		};
 	}
 
-	bool Host::LoadHTML(const wxString& html, const wxString& basePath)
+	bool Host::LoadHTML(const String& html, const String& basePath)
 	{
 		m_DocumentPath.clear();
 		m_DocumentBasePath = basePath;
@@ -504,7 +504,7 @@ namespace KxFramework::Sciter
 		{
 			m_DocumentBasePath.Prepend(wxS("file://"));
 		}
-		if (!m_DocumentBasePath.IsEmpty() && m_DocumentBasePath.Last() != wxS('\\'))
+		if (!m_DocumentBasePath.IsEmpty() && m_DocumentBasePath.back() != wxS('\\'))
 		{
 			m_DocumentBasePath += wxS('\\');
 		}
@@ -512,7 +512,7 @@ namespace KxFramework::Sciter
 		auto utf8 = ToSciterUTF8(html);
 		return GetSciterAPI()->SciterLoadHtml(m_SciterWindow.GetHandle(), utf8.data(), utf8.size(), m_DocumentBasePath.wc_str());
 	}
-	bool Host::LoadHTML(const wxString& html, const KxURI& baseURI)
+	bool Host::LoadHTML(const String& html, const KxURI& baseURI)
 	{
 		m_DocumentPath.clear();
 		m_DocumentBasePath = baseURI.BuildURI();
@@ -520,13 +520,13 @@ namespace KxFramework::Sciter
 		auto utf8 = ToSciterUTF8(html);
 		return GetSciterAPI()->SciterLoadHtml(m_SciterWindow.GetHandle(), utf8.data(), utf8.size(), m_DocumentBasePath.wc_str());
 	}
-	bool Host::SetCSS(const wxString& css)
+	bool Host::SetCSS(const String& css)
 	{
 		auto utf8 = ToSciterUTF8(css);
 		return GetSciterAPI()->SciterSetCSS(m_SciterWindow.GetHandle(), utf8.data(), utf8.size(), m_DocumentBasePath.wc_str(), nullptr);
 	}
 
-	bool Host::LoadDocument(const wxString& localPath)
+	bool Host::LoadDocument(const String& localPath)
 	{
 		m_DocumentPath = localPath;
 		m_DocumentBasePath = localPath.BeforeLast(wxS('\\'));
@@ -595,7 +595,7 @@ namespace KxFramework::Sciter
 		GetSciterAPI()->SciterSetHighlightedElement(m_SciterWindow.GetHandle(), (HELEMENT)node.GetHandle());
 	}
 
-	ScriptValue Host::ExecuteScript(const wxString& script)
+	ScriptValue Host::ExecuteScript(const String& script)
 	{
 		ScriptValue result;
 		GetSciterAPI()->SciterEval(m_SciterWindow.GetHandle(), script.wc_str(), script.length(), reinterpret_cast<SCITER_VALUE*>(&result.GetNativeValue()));

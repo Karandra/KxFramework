@@ -53,7 +53,7 @@ namespace KxFramework::Sciter
 				other.m_Handle = nullptr;
 			}
 			
-		public:
+		protected:
 			HandleWrapper() = default;
 			HandleWrapper(THandle* handle)
 			{

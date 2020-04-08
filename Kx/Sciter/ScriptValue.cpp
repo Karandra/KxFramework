@@ -125,7 +125,7 @@ namespace KxFramework::Sciter
 	{
 		return &m_Value == &other || GetSciterAPI()->ValueCompare(ToSciterScriptValue(m_Value), ToSciterScriptValue(other)) == HV_OK_TRUE;
 	}
-	void ScriptValue::AssingString(wxStringView data, StringType type)
+	void ScriptValue::AssingString(StringView data, StringType type)
 	{
 		Clear();
 		GetSciterAPI()->ValueStringDataSet(ToSciterScriptValue(m_Value), data.data(), data.length(), MapStringType(type));
@@ -141,13 +141,13 @@ namespace KxFramework::Sciter
 	}
 
 	// Retrieving
-	wxString ScriptValue::GetString() const
+	String ScriptValue::GetString() const
 	{
 		const wchar_t* data = nullptr;
 		uint32_t length = 0;
 		if (GetSciterAPI()->ValueStringData(ToSciterScriptValue(m_Value), &data, &length) == HV_OK)
 		{
-			return wxString(data, length);
+			return String(data, length);
 		}
 		return {};
 	}

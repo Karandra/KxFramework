@@ -11,7 +11,7 @@ namespace KxFramework::Sciter
 
 namespace KxFramework::Sciter
 {
-	std::unique_ptr<Widget> WidgetFactory::NewWidget(Host& host, const Element& element, const wxString& className)
+	std::unique_ptr<Widget> WidgetFactory::NewWidget(Host& host, const Element& element, const String& className)
 	{
 		WidgetFactory* factory = EnumFactories([&](WidgetFactory& factory)
 		{
@@ -24,7 +24,7 @@ namespace KxFramework::Sciter
 		return m_FirstFactory;
 	}
 
-	WidgetFactory::WidgetFactory(const wxString& className)
+	WidgetFactory::WidgetFactory(const String& className)
 		:m_ClassName(className)
 	{
 		// Add this factory to the list

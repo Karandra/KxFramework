@@ -6,7 +6,7 @@ namespace KxFramework::Sciter
 	// Layout
 	LayoutFlow Widget::GetLayoutFlow() const
 	{
-		wxString flow = m_Element.GetStyleAttribute("flow");
+		String flow = m_Element.GetStyleAttribute("flow");
 		if (flow == wxS("horizontal"))
 		{
 			return LayoutFlow::Horizontal;
