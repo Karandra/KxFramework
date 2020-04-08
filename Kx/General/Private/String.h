@@ -49,12 +49,8 @@ namespace KxFramework::Private
 		{
 			#if Kx_WxStringConvertibleToStd
 			{
+				// Also see a comment in the next overload
 				GetWxStringImpl(destination) = std::move(GetWxStringImpl(source));
-
-				// wxString contains an extra buffer (m_convertedTo[W]Char) to hold converted string
-				// returned by 'wxString::AsCharBuf' but it seems it can be left untouched since wxString
-				// always rewrites its content when requested to make conversion and only changes its size
-				// when needed.
 			}
 			#else
 			{
@@ -64,7 +60,25 @@ namespace KxFramework::Private
 			#endif
 		}
 	}
-	
-	using ViewOrWxStringW = std::conditional_t<wxUSE_UNICODE_WCHAR, std::basic_string_view<wchar_t>, wxString>;
-	using ViewOrWxStringA = std::conditional_t<wxUSE_UNICODE_WCHAR, wxString, std::basic_string_view<char>>;
+	inline void MoveWxString(wxString& destination, wxStringImpl&& source) noexcept(IsWxStringConvertibleToStd())
+	{
+		#if Kx_WxStringConvertibleToStd
+		{
+			// wxString contains an extra buffer (m_convertedTo[W]Char) to hold converted string
+			// returned by 'wxString::AsCharBuf' but it seems it can be left untouched since wxString
+			// always rewrites its content when requested to make conversion and only changes its size
+			// when needed.
+
+			if (&source != &GetWxStringImpl(destination))
+			{
+				GetWxStringImpl(destination) = std::move(source);
+			}
+		}
+		#else
+		{
+			destination = std::move(source);
+			source.clear();
+		}
+		#endif
+	}
 }

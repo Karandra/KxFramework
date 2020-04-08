@@ -4,15 +4,6 @@
 
 namespace
 {
-	const wxScopedCharTypeBuffer<wxChar> ToScopedBuffer(const wxString& data) noexcept
-	{
-		return wxScopedCharTypeBuffer<wxChar>::CreateNonOwned(data.wx_str(), data.length());
-	}
-	const wxScopedCharTypeBuffer<wxChar> ToScopedBuffer(KxFramework::StringView data) noexcept
-	{
-		return wxScopedCharTypeBuffer<wxChar>::CreateNonOwned(data.data(), data.length());
-	}
-
 	char CharToLower(char c)
 	{
 		#pragma warning(suppress: 4312)
@@ -292,7 +283,7 @@ namespace KxFramework
 	{
 		return CompareStrings(left, right, flags & StringOpFlag::IgnoreCase);
 	}
-	int String::Compare(const wxUniChar& left, const wxUniChar& right, StringOpFlag flags) noexcept
+	int String::Compare(wxUniChar left, wxUniChar right, StringOpFlag flags) noexcept
 	{
 		if (flags & StringOpFlag::IgnoreCase)
 		{
@@ -313,17 +304,22 @@ namespace KxFramework
 		return IsNameInExpression(name, expression, flags & StringOpFlag::IgnoreCase);
 	}
 
-	wxUniChar String::ToLower(const wxUniChar& c) noexcept
+	wxUniChar String::ToLower(wxUniChar c) noexcept
 	{
 		return CharToUpper(static_cast<wchar_t>(c));
 	}
-	wxUniChar String::ToUpper(const wxUniChar& c) noexcept
+	wxUniChar String::ToUpper(wxUniChar c) noexcept
 	{
 		return CharToLower(static_cast<wchar_t>(c));
 	}
 
 	// Comparison
-	bool String::StartsWith(StringView pattern, String* rest, StringOpFlag flags) const
+	bool String::StartsWith(std::string_view pattern, String* rest, StringOpFlag flags) const
+	{
+		String patternCopy = pattern;
+		return StartsWith(patternCopy, rest, flags);
+	}
+	bool String::StartsWith(std::wstring_view pattern, String* rest, StringOpFlag flags) const
 	{
 		if (pattern.empty())
 		{
@@ -342,7 +338,13 @@ namespace KxFramework
 		}
 		return false;
 	}
-	bool String::EndsWith(StringView pattern, String* rest, StringOpFlag flags) const
+	
+	bool String::EndsWith(std::string_view pattern, String* rest, StringOpFlag flags) const
+	{
+		String patternCopy = pattern;
+		return EndsWith(patternCopy, rest, flags);
+	}
+	bool String::EndsWith(std::wstring_view pattern, String* rest, StringOpFlag flags) const
 	{
 		if (pattern.empty())
 		{
@@ -429,14 +431,19 @@ namespace KxFramework
 	}
 
 	// Searching and replacing
-	size_t String::Find(StringView pattern, size_t offset, StringOpFlag flags) const
+	size_t String::Find(std::string_view pattern, size_t offset, StringOpFlag flags) const
+	{
+		String patternCopy = pattern;
+		return Find(patternCopy, offset, flags);
+	}
+	size_t String::Find(std::wstring_view pattern, size_t offset, StringOpFlag flags) const
 	{
 		if (m_String.IsEmpty() || offset >= m_String.length())
 		{
 			if (flags & StringOpFlag::IgnoreCase)
 			{
-				wxString sourceL = StringToLower(ToScopedBuffer(m_String));
-				wxString patternL = StringToLower(ToScopedBuffer(pattern));
+				wxString sourceL = StringToLower(ScopedCharBufferOf(m_String));
+				wxString patternL = StringToLower(ScopedCharBufferOf(pattern));
 
 				if (flags & StringOpFlag::FromEnd)
 				{
@@ -451,17 +458,17 @@ namespace KxFramework
 			{
 				if (flags & StringOpFlag::FromEnd)
 				{
-					return m_String.rfind(ToScopedBuffer(pattern), offset);
+					return m_String.rfind(ScopedCharBufferOf(pattern), offset);
 				}
 				else
 				{
-					return m_String.find(ToScopedBuffer(pattern), offset);
+					return m_String.find(ScopedCharBufferOf(pattern), offset);
 				}
 			}
 		}
 		return npos;
 	}
-	size_t String::Find(const wxUniChar& pattern, size_t offset, StringOpFlag flags) const noexcept
+	size_t String::Find(wxUniChar pattern, size_t offset, StringOpFlag flags) const noexcept
 	{
 		if (m_String.IsEmpty() || offset >= m_String.length())
 		{
@@ -491,7 +498,13 @@ namespace KxFramework
 		return npos;
 	}
 
-	size_t String::Replace(StringView pattern, StringView replacement, size_t offset, StringOpFlag flags)
+	size_t String::Replace(std::string_view pattern, std::string_view replacement, size_t offset, StringOpFlag flags)
+	{
+		String patternCopy = pattern;
+		String replacementCopy = replacement;
+		return Replace(patternCopy, replacementCopy, offset, flags);
+	}
+	size_t String::Replace(std::wstring_view pattern, std::wstring_view replacement, size_t offset, StringOpFlag flags)
 	{
 		const size_t replacementLength = replacement.length();
 		const size_t patternLength = pattern.length();
@@ -510,17 +523,17 @@ namespace KxFramework
 		{
 			if (flags & StringOpFlag::FromEnd)
 			{
-				pos = m_String.rfind(ToScopedBuffer(pattern), offset);
+				pos = m_String.rfind(ScopedCharBufferOf(pattern), offset);
 			}
 			else
 			{
-				pos = m_String.find(ToScopedBuffer(pattern), offset);
+				pos = m_String.find(ScopedCharBufferOf(pattern), offset);
 			}
 		}
 		else
 		{
-			Private::MoveWxString(patternL, StringToLower(ToScopedBuffer(m_String)));
-			Private::MoveWxString(patternL, StringToLower(ToScopedBuffer(pattern)));
+			Private::MoveWxString(patternL, StringToLower(ScopedCharBufferOf(m_String)));
+			Private::MoveWxString(patternL, StringToLower(ScopedCharBufferOf(pattern)));
 
 			if (flags & StringOpFlag::FromEnd)
 			{
@@ -546,11 +559,11 @@ namespace KxFramework
 			{
 				if (flags & StringOpFlag::FromEnd)
 				{
-					pos = m_String.rfind(ToScopedBuffer(pattern), pos + replacementLength);
+					pos = m_String.rfind(ScopedCharBufferOf(pattern), pos + replacementLength);
 				}
 				else
 				{
-					pos = m_String.find(ToScopedBuffer(pattern), pos + replacementLength);
+					pos = m_String.find(ScopedCharBufferOf(pattern), pos + replacementLength);
 				}
 			}
 			else
@@ -567,7 +580,7 @@ namespace KxFramework
 		}
 		return replacementCount;
 	}
-	size_t String::Replace(const wxUniChar& pattern, wxUniChar replacement, size_t offset, StringOpFlag flags) noexcept
+	size_t String::Replace(wxUniChar pattern, wxUniChar replacement, size_t offset, StringOpFlag flags) noexcept
 	{
 		if (m_String.IsEmpty() || offset >= m_String.length())
 		{

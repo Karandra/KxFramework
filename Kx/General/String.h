@@ -1,8 +1,8 @@
 #pragma once
 #include "Common.h"
 #include "Private/String.h"
+#include <string>
 #include <string_view>
-#include <wx/string.h>
 #include "Kx/System/UndefWindows.h"
 
 namespace KxFramework
@@ -21,6 +21,52 @@ namespace KxFramework
 	namespace EnumClass
 	{
 		Kx_EnumClass_AllowEverything(StringOpFlag);
+	}
+}
+
+namespace KxFramework
+{
+	template<class T>
+	std::basic_string_view<T> StringViewOf(const std::basic_string<T>& string) noexcept
+	{
+		return {string.data(), string.length()};
+	}
+
+	template<class T>
+	std::basic_string_view<T> StringViewOf(const std::basic_string_view<T>& view) noexcept
+	{
+		return view;
+	}
+
+	template<class T>
+	std::basic_string_view<T> StringViewOf(const wxScopedCharTypeBuffer<T>& buffer) noexcept
+	{
+		return {buffer.data(), buffer.length()};
+	}
+
+	template<class T>
+	std::enable_if_t<std::is_same_v<T, wxString> || std::is_same_v<T, String>, std::basic_string_view<XChar>> StringViewOf(const T& string) noexcept
+	{
+		return {string.wx_str(), string.length()};
+	}
+
+	template<class T>
+	std::enable_if_t<std::is_same_v<T, char> || std::is_same_v<T, wchar_t>, std::basic_string_view<T>> StringViewOf(const T* ptr) noexcept
+	{
+		if (ptr)
+		{
+			return ptr;
+		}
+		return {};
+	}
+
+	template<class T>
+	const auto ScopedCharBufferOf(T&& value) noexcept
+	{
+		auto view = StringViewOf(std::forward<T>(value));
+		using CharType = typename decltype(view)::value_type;
+
+		return wxScopedCharTypeBuffer<CharType>::CreateNonOwned(view.data(), view.length());
 	}
 }
 
@@ -45,7 +91,7 @@ namespace KxFramework
 			static int Compare(std::wstring_view left, std::wstring_view right, StringOpFlag flags = StringOpFlag::None) noexcept;
 			static int Compare(const wxString& left, const wxString& right, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
-				return Compare(StringView(left.wx_str(), left.length()), StringView(right.wx_str(), right.length()), flags);
+				return Compare(StringViewOf(left), StringViewOf(right), flags);
 			}
 			static int Compare(const String& left, const String& right, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
@@ -53,15 +99,15 @@ namespace KxFramework
 			}
 			static int Compare(const char* left, const char* right, StringOpFlag flags = StringOpFlag::None)
 			{
-				return Compare(Private::ViewOrWxStringA(left), Private::ViewOrWxStringA(right), flags);
+				return Compare(StringViewOf(left), StringViewOf(right), flags);
 			}
 			static int Compare(const wchar_t* left, const wchar_t* right, StringOpFlag flags = StringOpFlag::None)
 			{
-				return Compare(Private::ViewOrWxStringW(left), Private::ViewOrWxStringW(right), flags);
+				return Compare(StringViewOf(left), StringViewOf(right), flags);
 			}
 			
-			static int Compare(const wxUniChar& left, const wxUniChar& right, StringOpFlag flags = StringOpFlag::None) noexcept;
-			static int Compare(const wxUniCharRef& left, const wxUniCharRef& right, StringOpFlag flags = StringOpFlag::None) noexcept
+			static int Compare(wxUniChar left, wxUniChar right, StringOpFlag flags = StringOpFlag::None) noexcept;
+			static int Compare(wxUniCharRef left, wxUniCharRef right, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
 				return Compare(wxUniChar(left), wxUniChar(right), flags);
 			}
@@ -78,7 +124,7 @@ namespace KxFramework
 			static bool Matches(std::wstring_view name, std::wstring_view expression, StringOpFlag flags = StringOpFlag::None) noexcept;
 			static bool Matches(const wxString& name, const wxString& expression, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
-				return Matches(StringView(name.wx_str(), name.length()), StringView(expression.wx_str(), expression.length()), flags);
+				return Matches(StringViewOf(name), StringViewOf(expression), flags);
 			}
 			static bool Matches(const String& name, const String& expression, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
@@ -105,15 +151,15 @@ namespace KxFramework
 			}
 			static String FromUTF8(const char* utf8, size_t length = npos)
 			{
-				return wxString::FromUTF8(utf8, npos);
+				return wxString::FromUTF8(utf8, length);
 			}
 			static String FromUTF8(std::string_view utf8)
 			{
 				return wxString::FromUTF8(utf8.data(), utf8.length());
 			}
-			static String FromUTF8(const wxScopedCharBuffer& buffer)
+			static String FromUTF8(const wxScopedCharBuffer& utf8)
 			{
-				return wxString::FromUTF8(buffer.data(), buffer.length());
+				return wxString::FromUTF8(utf8.data(), utf8.length());
 			}
 
 			static wxUniChar FromASCII(char c)
@@ -133,26 +179,26 @@ namespace KxFramework
 			{
 				return wxString::FromAscii(ascii.data(), ascii.length());
 			}
-			static String FromASCII(const wxScopedCharBuffer& buffer)
+			static String FromASCII(const wxScopedCharBuffer& ascii)
 			{
-				return wxString::FromAscii(buffer.data(), buffer.length());
+				return wxString::FromAscii(ascii.data(), ascii.length());
 			}
 
-			static String From8BitData(const char* data, size_t length = npos)
+			static String From8BitData(const char* binaryData, size_t length = npos)
 			{
 				if (length != npos)
 				{
-					wxString::From8BitData(data, npos);
+					return wxString::From8BitData(binaryData, length);
 				}
-				return wxString::From8BitData(data);
+				return wxString::From8BitData(binaryData);
 			}
-			static String From8BitData(const wxScopedCharBuffer& buffer)
+			static String From8BitData(const wxScopedCharBuffer& binaryData)
 			{
-				return wxString::From8BitData(buffer.data(), buffer.length());
+				return wxString::From8BitData(binaryData.data(), binaryData.length());
 			}
 
-			static wxUniChar ToLower(const wxUniChar& c) noexcept;
-			static wxUniChar ToUpper(const wxUniChar& c) noexcept;
+			static wxUniChar ToLower(wxUniChar c) noexcept;
+			static wxUniChar ToUpper(wxUniChar c) noexcept;
 
 			template<class... Args>
 			static String Concat(Args&&... arg)
@@ -247,11 +293,15 @@ namespace KxFramework
 
 		public:
 			String() = default;
+
+			// Copy
 			String(const String&) = default;
 			String(const wxString& other)
 				:m_String(other)
 			{
 			}
+			
+			// Move
 			String(String&& other) noexcept(Private::IsWxStringMoveable())
 			{
 				*this = std::move(other);
@@ -260,10 +310,15 @@ namespace KxFramework
 			{
 				*this = std::move(other);
 			}
-			String(StringView other)
-				:m_String(other.data(), other.length())
+
+			#if Kx_WxStringConvertibleToStd
+			String(wxStringImpl&& other) noexcept(Private::IsWxStringMoveable())
 			{
+				*this = std::move(other);
 			}
+			#endif
+
+			// Char/wchar_t pointers
 			String(const char* data, size_t length = npos)
 				:m_String(data, length)
 			{
@@ -276,14 +331,34 @@ namespace KxFramework
 				:m_String(data, length)
 			{
 			}
-			String(const std::string_view& other)
+			
+			template<class T, size_t size>
+			String(const T(&data)[size])
+				:m_String(data, size - 1)
+			{
+			}
+			
+			template<size_t size>
+			String(const char(&data)[size], const wxMBConv& conv)
+				:m_String(data, conv, size - 1)
+			{
+			}
+
+			// std::[w]string_view
+			String(std::string_view other)
 				:m_String(other.data(), other.length())
 			{
 			}
-			String(const std::wstring_view& other)
+			String(std::string_view other, const wxMBConv& conv)
+				:m_String(other.data(), conv, other.length())
+			{
+			}
+			String(std::wstring_view other)
 				:m_String(other.data(), other.length())
 			{
 			}
+
+			// Single char
 			String(char c, size_t count = 1)
 				:m_String(c, count)
 			{
@@ -292,14 +367,15 @@ namespace KxFramework
 				:m_String(c, count)
 			{
 			}
-			String(const wxUniChar& c, size_t count = 1)
+			String(wxUniChar c, size_t count = 1)
 				:m_String(c, count)
 			{
 			}
-			String(const wxUniCharRef& c, size_t count = 1)
+			String(wxUniCharRef c, size_t count = 1)
 				:m_String(c, count)
 			{
 			}
+			
 			~String() noexcept = default;
 
 		public:
@@ -320,7 +396,7 @@ namespace KxFramework
 			// Character access
 			StringView GetView() const noexcept
 			{
-				return StringView(m_String.wx_str(), m_String.length());
+				return StringViewOf(m_String);
 			}
 			const char* c_str() const noexcept(std::is_same_v<XChar, char>)
 			{
@@ -393,6 +469,16 @@ namespace KxFramework
 			}
 
 			// Concatenation
+			String& Append(std::string_view other)
+			{
+				m_String.Append(other.data(), other.length());
+				return *this;
+			}
+			String& Append(std::wstring_view other)
+			{
+				m_String.Append(other.data(), other.length());
+				return *this;
+			}
 			String& Append(const String& other)
 			{
 				m_String.Append(other.m_String);
@@ -403,17 +489,30 @@ namespace KxFramework
 				m_String.Append(other);
 				return *this;
 			}
-			String& Append(StringView other)
+			String& Append(const char* other)
 			{
-				m_String.Append(other.data(), other.length());
+				m_String.Append(other);
 				return *this;
 			}
-			String& Append(const wxUniChar& c, size_t count = 1)
+			String& Append(const wchar_t* other)
+			{
+				m_String.Append(other);
+				return *this;
+			}
+			
+			template<class T, size_t size>
+			String& Append(const T(&other)[size])
+			{
+				m_String.Append(other, size - 1);
+				return *this;
+			}
+
+			String& Append(wxUniChar c, size_t count = 1)
 			{
 				m_String.Append(c, count);
 				return *this;
 			}
-			String& Append(const wxUniCharRef& c, size_t count = 1)
+			String& Append(wxUniCharRef c, size_t count = 1)
 			{
 				m_String.Append(c, count);
 				return *this;
@@ -428,17 +527,17 @@ namespace KxFramework
 				m_String.Append(c, count);
 				return *this;
 			}
-			String& Append(const char* other)
-			{
-				m_String.Append(other);
-				return *this;
-			}
-			String& Append(const wchar_t* other)
-			{
-				m_String.Append(other);
-				return *this;
-			}
 
+			String& Prepend(std::string_view other)
+			{
+				m_String.insert(0, other.data(), other.length());
+				return *this;
+			}
+			String& Prepend(std::wstring_view other)
+			{
+				m_String.insert(0, other.data(), other.length());
+				return *this;
+			}
 			String& Prepend(const String& other)
 			{
 				m_String.insert(0, other.m_String);
@@ -449,17 +548,30 @@ namespace KxFramework
 				m_String.insert(0, other);
 				return *this;
 			}
-			String& Prepend(StringView other)
+			String& Prepend(const char* other)
 			{
-				m_String.insert(0, other.data(), other.length());
+				m_String.insert(0, other);
 				return *this;
 			}
-			String& Prepend(const wxUniChar& c, size_t count = 1)
+			String& Prepend(const wchar_t* other)
+			{
+				m_String.insert(0, other);
+				return *this;
+			}
+			
+			template<class T, size_t size>
+			String& Prepend(const T(&other)[size])
+			{
+				m_String.insert(0, other, size - 1);
+				return *this;
+			}
+
+			String& Prepend(wxUniChar c, size_t count = 1)
 			{
 				m_String.insert(0, count, c);
 				return *this;
 			}
-			String& Prepend(const wxUniCharRef& c, size_t count = 1)
+			String& Prepend(wxUniCharRef c, size_t count = 1)
 			{
 				m_String.insert(0, count, c);
 				return *this;
@@ -474,17 +586,17 @@ namespace KxFramework
 				m_String.insert(0, count, c);
 				return *this;
 			}
-			String& Prepend(const char* other)
-			{
-				m_String.insert(0, other);
-				return *this;
-			}
-			String& Prepend(const wchar_t* other)
-			{
-				m_String.insert(0, other);
-				return *this;
-			}
 
+			String& Insert(size_t pos, std::string_view other)
+			{
+				m_String.insert(pos, other.data(), other.length());
+				return *this;
+			}
+			String& Insert(size_t pos, std::wstring_view other)
+			{
+				m_String.insert(pos, other.data(), other.length());
+				return *this;
+			}
 			String& Insert(size_t pos, const String& other)
 			{
 				m_String.insert(pos, other.m_String);
@@ -495,17 +607,30 @@ namespace KxFramework
 				m_String.insert(pos, other);
 				return *this;
 			}
-			String& Insert(size_t pos, StringView other)
+			String& Insert(size_t pos, const char* other)
 			{
-				m_String.insert(pos, other.data(), other.length());
+				m_String.insert(pos, other);
 				return *this;
 			}
-			String& Insert(size_t pos, const wxUniChar& c, size_t count = 1)
+			String& Insert(size_t pos, const wchar_t* other)
+			{
+				m_String.insert(pos, other);
+				return *this;
+			}
+			
+			template<class T, size_t size>
+			String& Insert(size_t pos, const T(&other)[size])
+			{
+				m_String.insert(pos, other, size - 1);
+				return *this;
+			}
+
+			String& Insert(size_t pos, wxUniChar c, size_t count = 1)
 			{
 				m_String.insert(pos, count, c);
 				return *this;
 			}
-			String& Insert(size_t pos, const wxUniCharRef& c, size_t count = 1)
+			String& Insert(size_t pos, wxUniCharRef c, size_t count = 1)
 			{
 				m_String.insert(pos, count, c);
 				return *this;
@@ -520,31 +645,21 @@ namespace KxFramework
 				m_String.insert(pos, count, c);
 				return *this;
 			}
-			String& Insert(size_t pos, const char* other)
+
+			template<class T>
+			String& operator+=(T&& other)
 			{
-				m_String.insert(pos, other);
-				return *this;
-			}
-			String& Insert(size_t pos, const wchar_t* other)
-			{
-				m_String.insert(pos, other);
-				return *this;
+				return Append(std::forward<T>(other));
 			}
 
 			template<class T>
-			String& operator+=(const T& other)
+			String& operator<<(T&& other)
 			{
-				return Append(other);
-			}
-
-			template<class T>
-			String& operator<<(const T& other)
-			{
-				return Append(other);
+				return Append(std::forward<T>(other));
 			}
 
 			// Comparison
-			int CompareTo(std::string_view other, StringOpFlag flags = StringOpFlag::None) const noexcept
+			int CompareTo(std::string_view other, StringOpFlag flags = StringOpFlag::None) const noexcept(std::is_same_v<XChar, char>)
 			{
 				#if wxUSE_UNICODE_WCHAR
 				return Compare(*this, other, flags);
@@ -552,45 +667,37 @@ namespace KxFramework
 				return Compare(GetView(), other, flags);
 				#endif
 			}
-			int CompareTo(std::wstring_view other, StringOpFlag flags = StringOpFlag::None) const noexcept
+			int CompareTo(std::wstring_view other, StringOpFlag flags = StringOpFlag::None) const noexcept(std::is_same_v<XChar, wchar_t>)
 			{
 				#if wxUSE_UNICODE_WCHAR
 				return Compare(GetView(), other, flags);
 				#else
 				return Compare(*this, other, flags);
 				#endif
-			}
-			int CompareTo(const std::string& other, StringOpFlag flags = StringOpFlag::None) const noexcept
-			{
-				return CompareTo(std::string_view(other), flags);
-			}
-			int CompareTo(const std::wstring& other, StringOpFlag flags = StringOpFlag::None) const noexcept
-			{
-				return CompareTo(std::wstring_view(other), flags);
 			}
 			int CompareTo(const wxString& other, StringOpFlag flags = StringOpFlag::None) const noexcept
 			{
-				return CompareTo(StringView(other.wx_str(), other.length()), flags);
+				return CompareTo(StringViewOf(other), flags);
 			}
 			int CompareTo(const String& other, StringOpFlag flags = StringOpFlag::None) const noexcept
 			{
-				return CompareTo(other.GetView(), flags);
+				return CompareTo(StringViewOf(other), flags);
 			}
 			int CompareTo(const char* other, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return CompareTo(std::string_view(other), flags);
+				return CompareTo(StringViewOf(other), flags);
 			}
 			int CompareTo(const wchar_t* other, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return CompareTo(std::wstring_view(other), flags);
+				return CompareTo(StringViewOf(other), flags);
 			}
 			
-			int CompareTo(const wxUniChar& other, StringOpFlag flags = StringOpFlag::None) const noexcept
+			int CompareTo(wxUniChar other, StringOpFlag flags = StringOpFlag::None) const noexcept
 			{
 				const XChar c[2] = {other, 0};
 				return Compare(GetView(), c, flags);
 			}
-			int CompareTo(const wxUniCharRef& other, StringOpFlag flags = StringOpFlag::None) const noexcept
+			int CompareTo(wxUniCharRef other, StringOpFlag flags = StringOpFlag::None) const noexcept
 			{
 				return CompareTo(wxUniChar(other), flags);
 			}
@@ -609,69 +716,77 @@ namespace KxFramework
 				return CompareTo(std::forward<T>(other), flags) == 0;
 			}
 
-			bool StartsWith(StringView pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
+			bool StartsWith(std::string_view pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
+			bool StartsWith(std::wstring_view pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
 			bool StartsWith(const wxString& pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return StartsWith(StringView(pattern.wx_str(), pattern.length()), rest, flags);
+				return StartsWith(StringViewOf(pattern), rest, flags);
 			}
 			bool StartsWith(const String& pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return StartsWith(pattern.GetView(), rest, flags);
+				return StartsWith(StringViewOf(pattern), rest, flags);
 			}
 			bool StartsWith(const char* pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return StartsWith(std::string_view(pattern), rest, flags);
+				return StartsWith(StringViewOf(pattern), rest, flags);
 			}
 			bool StartsWith(const wchar_t* pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return StartsWith(std::wstring_view(pattern), rest, flags);
+				return StartsWith(StringViewOf(pattern), rest, flags);
 			}
 			
-			bool EndsWith(StringView pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
+			bool EndsWith(std::string_view pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
+			bool EndsWith(std::wstring_view pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
 			bool EndsWith(const wxString& pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return EndsWith(StringView(pattern.wx_str(), pattern.length()), rest, flags);
+				return EndsWith(StringViewOf(pattern), rest, flags);
 			}
 			bool EndsWith(const String& pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return EndsWith(pattern.GetView(), rest, flags);
+				return EndsWith(StringViewOf(pattern), rest, flags);
 			}
 			bool EndsWith(const char* pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return EndsWith(Private::ViewOrWxStringA(pattern), rest, flags);
+				return EndsWith(StringViewOf(pattern), rest, flags);
 			}
 			bool EndsWith(const wchar_t* pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return EndsWith(Private::ViewOrWxStringW(pattern), rest, flags);
+				return EndsWith(StringViewOf(pattern), rest, flags);
 			}
 
-			bool Matches(StringView expression, StringOpFlag flags = StringOpFlag::None) noexcept
+			bool Matches(std::string_view expression, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
+				#if wxUSE_UNICODE_WCHAR
+				return Matches(*this, expression, flags);
+				#else
 				return Matches(GetView(), expression, flags);
+				#endif
+
+				return Matches(GetView(), expression, flags);
+			}
+			bool Matches(std::wstring_view expression, StringOpFlag flags = StringOpFlag::None) noexcept
+			{
+				#if wxUSE_UNICODE_WCHAR
+				return Matches(GetView(), expression, flags);
+				#else
+				return Matches(*this, expression, flags);
+				#endif
 			}
 			bool Matches(const wxString& expression, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
-				return Matches(GetView(), StringView(expression.wx_str(), expression.length()), flags);
+				return Matches(StringViewOf(expression), flags);
 			}
 			bool Matches(const String& expression, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
-				return Matches(GetView(), expression.GetView(), flags);
+				return Matches(StringViewOf(expression), flags);
 			}
 			bool Matches(const char* expression, StringOpFlag flags = StringOpFlag::None)
 			{
-				#if wxUSE_UNICODE_WCHAR
-				return Matches(*this, expression, flags);
-				#else
-				return Matches(GetView(), expression, flags);
-				#endif
+				return Matches(StringViewOf(expression), flags);
 			}
 			bool Matches(const wchar_t* expression, StringOpFlag flags = StringOpFlag::None)
 			{
-				#if wxUSE_UNICODE_WCHAR
-				return Matches(GetView(), expression, flags);
-				#else
-				return Matches(*this, expression, flags);
-				#endif
+				return Matches(StringViewOf(expression), flags);
 			}
 
 			// Substring extraction
@@ -707,7 +822,7 @@ namespace KxFramework
 			template<class TFunc>
 			size_t SplitByLength(size_t length, TFunc&& func) const
 			{
-				return SplitByLength(*this, length, std::forward<TFunc>(func));
+				return SplitByLength(StringViewOf(m_String), length, std::forward<TFunc>(func));
 			}
 
 			// Case conversion
@@ -736,17 +851,19 @@ namespace KxFramework
 			}
 
 			// Searching and replacing
-			size_t Find(StringView pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const;
+			size_t Find(std::string_view pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const;
+			size_t Find(std::wstring_view pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const;
 			size_t Find(const wxString& pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return Find(StringView(pattern.wx_str(), pattern.length()), offset, flags);
+				return Find(StringViewOf(pattern), offset, flags);
 			}
 			size_t Find(const String& pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return Find(pattern.GetView(), offset, flags);
+				return Find(StringViewOf(pattern), offset, flags);
 			}
-			size_t Find(const wxUniChar& pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const noexcept;
-			size_t Find(const wxUniCharRef& pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const noexcept
+			
+			size_t Find(wxUniChar pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const noexcept;
+			size_t Find(wxUniCharRef pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const noexcept
 			{
 				return Find(wxUniChar(pattern), offset, flags);
 			}
@@ -759,17 +876,19 @@ namespace KxFramework
 				return Find(wxUniChar(pattern), offset, flags);
 			}
 
-			size_t Replace(StringView pattern, StringView replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None);
+			size_t Replace(std::string_view pattern, std::string_view replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None);
+			size_t Replace(std::wstring_view pattern, std::wstring_view replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None);
 			size_t Replace(const wxString& pattern, const wxString& replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None)
 			{
-				return Replace(StringView(pattern.wx_str(), pattern.length()), StringView(replacement.wx_str(), replacement.length()), offset, flags);
+				return Replace(StringViewOf(pattern), StringViewOf(replacement), offset, flags);
 			}
 			size_t Replace(const String& pattern, const String& replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None)
 			{
-				return Replace(pattern.GetView(), pattern.GetView(), offset, flags);
+				return Replace(StringViewOf(pattern), StringViewOf(replacement), offset, flags);
 			}
-			size_t Replace(const wxUniChar& c, wxUniChar replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) noexcept;
-			size_t Replace(const wxUniCharRef& c, wxUniChar replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) noexcept
+			
+			size_t Replace(wxUniChar c, wxUniChar replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) noexcept;
+			size_t Replace(wxUniCharRef c, wxUniChar replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
 				return Replace(wxUniChar(c), wxUniChar(replacement), offset, flags);
 			}
@@ -1017,18 +1136,25 @@ namespace KxFramework
 			}
 
 		public:
-			// Assignment
+			// Copy assignment
 			String& operator=(const String&) = default;
 			String& operator=(const wxString& other)
 			{
 				m_String = other;
 				return *this;
 			}
-			String& operator=(StringView other)
+			String& operator=(std::string_view other)
 			{
-				m_String.assign(other.data(), other.length());
+				m_String = ScopedCharBufferOf(other);
 				return *this;
 			}
+			String& operator=(std::wstring_view other)
+			{
+				m_String = ScopedCharBufferOf(other);
+				return *this;
+			}
+			
+			// Move assignment
 			String& operator=(String&& other) noexcept(Private::IsWxStringMoveable())
 			{
 				Private::MoveWxString(m_String, std::move(other.m_String));
@@ -1040,23 +1166,24 @@ namespace KxFramework
 				return *this;
 			}
 
-			template<class T>
-			String& operator=(T&& other)
+			#if Kx_WxStringConvertibleToStd
+			String& operator=(wxStringImpl&& other) noexcept(Private::IsWxStringMoveable())
 			{
-				m_String = std::forward<T>(other);
+				Private::MoveWxString(m_String, std::move(other));
 				return *this;
 			}
+			#endif
 	};
 }
 
 namespace KxFramework
 {
 	// Comparison with char
-	inline bool operator==(const String& left, const wxUniChar& right)
+	inline bool operator==(const String& left, wxUniChar right)
 	{
 		return left.IsSameAs(right);
 	}
-	inline bool operator==(const String& left, const wxUniCharRef& right)
+	inline bool operator==(const String& left, wxUniCharRef right)
 	{
 		return left.IsSameAs(right);
 	}
@@ -1068,11 +1195,11 @@ namespace KxFramework
 	{
 		return left.IsSameAs(right);
 	}
-	inline bool operator==(const wxUniChar& left, const String& right)
+	inline bool operator==(wxUniChar left, const String& right)
 	{
 		return right.IsSameAs(left);
 	}
-	inline bool operator==(const wxUniCharRef& left, const String& right)
+	inline bool operator==(wxUniCharRef left, const String& right)
 	{
 		return right.IsSameAs(left);
 	}
@@ -1085,11 +1212,11 @@ namespace KxFramework
 		return right.IsSameAs(left);
 	}
 	
-	inline bool operator!=(const String& left, const wxUniChar& right)
+	inline bool operator!=(const String& left, wxUniChar right)
 	{
 		return !left.IsSameAs(right);
 	}
-	inline bool operator!=(const String& left, const wxUniCharRef& right)
+	inline bool operator!=(const String& left, wxUniCharRef right)
 	{
 		return !left.IsSameAs(right);
 	}
@@ -1101,11 +1228,11 @@ namespace KxFramework
 	{
 		return !left.IsSameAs(right);
 	}
-	inline bool operator!=(const wxUniChar& left, const String& right)
+	inline bool operator!=(wxUniChar left, const String& right)
 	{
 		return !right.IsSameAs(left);
 	}
-	inline bool operator!=(const wxUniCharRef& left, const String& right)
+	inline bool operator!=(wxUniCharRef left, const String& right)
 	{
 		return !right.IsSameAs(left);
 	}
@@ -1150,41 +1277,10 @@ namespace KxFramework
 	#pragma warning(pop)
 
 	// Concatenation
-	String operator+(const String& left, const String& right)
+	template<class T>
+	String operator+(const String& left, T&& right)
 	{
-		return left.Clone().Append(right);
-	}
-	String operator+(const String& left, const wxString& right)
-	{
-		return left.Clone().Append(right);
-	}
-	String operator+(const String& left, const char* right)
-	{
-		return left.Clone().Append(right);
-	}
-	String operator+(const String& left, const wchar_t* right)
-	{
-		return left.Clone().Append(right);
-	}
-	String operator+(const String& left, StringView right)
-	{
-		return left.Clone().Append(right);
-	}
-	String operator+(const String& left, const wxUniChar& right)
-	{
-		return left.Clone().Append(right);
-	}
-	String operator+(const String& left, const wxUniCharRef& right)
-	{
-		return left.Clone().Append(right);
-	}
-	String operator+(const String& left, char right)
-	{
-		return left.Clone().Append(right);
-	}
-	String operator+(const String& left, wchar_t right)
-	{
-		return left.Clone().Append(right);
+		return left.Clone().Append(std::forward<T>(right));
 	}
 }
 
