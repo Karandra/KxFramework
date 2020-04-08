@@ -434,11 +434,11 @@ namespace KxFramework
 	size_t String::Find(std::string_view pattern, size_t offset, StringOpFlag flags) const
 	{
 		String patternCopy = pattern;
-		return Find(patternCopy, offset, flags);
+		return Find(StringViewOf(patternCopy), offset, flags);
 	}
 	size_t String::Find(std::wstring_view pattern, size_t offset, StringOpFlag flags) const
 	{
-		if (m_String.IsEmpty() || offset >= m_String.length())
+		if (!m_String.IsEmpty() && offset < m_String.length())
 		{
 			if (flags & StringOpFlag::IgnoreCase)
 			{
@@ -502,7 +502,7 @@ namespace KxFramework
 	{
 		String patternCopy = pattern;
 		String replacementCopy = replacement;
-		return Replace(patternCopy, replacementCopy, offset, flags);
+		return Replace(StringViewOf(patternCopy), StringViewOf(replacementCopy), offset, flags);
 	}
 	size_t String::Replace(std::wstring_view pattern, std::wstring_view replacement, size_t offset, StringOpFlag flags)
 	{
