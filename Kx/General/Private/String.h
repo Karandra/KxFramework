@@ -1,5 +1,6 @@
 #pragma once
 #include <wx/string.h>
+#include <string>
 
 namespace KxFramework
 {
@@ -10,7 +11,7 @@ namespace KxFramework::Private
 {
 	#define Kx_WxStringConvertibleToStd	wxUSE_STL_BASED_WXSTRING && !wxUSE_UNICODE_UTF8
 
-	constexpr bool IsWxStringConvertibleToStd() noexcept
+	inline constexpr bool IsWxStringConvertibleToStd() noexcept
 	{
 		#if Kx_WxStringConvertibleToStd
 		return true;
@@ -18,13 +19,13 @@ namespace KxFramework::Private
 		return false;
 		#endif
 	}
-	constexpr bool IsWxStringMoveable() noexcept
+	inline constexpr bool IsWxStringMoveable() noexcept
 	{
 		return IsWxStringConvertibleToStd();
 	}
 
 	#if Kx_WxStringConvertibleToStd
-	const wxStringImpl& GetWxStringImpl(const wxString& string) noexcept
+	inline const wxStringImpl& GetWxStringImpl(const wxString& string) noexcept
 	{
 		#if wxUSE_UNICODE_WCHAR
 		return string.ToStdWstring();
@@ -32,7 +33,7 @@ namespace KxFramework::Private
 		return string.ToStdString();
 		#endif
 	}
-	wxStringImpl& GetWxStringImpl(wxString& string) noexcept
+	inline wxStringImpl& GetWxStringImpl(wxString& string) noexcept
 	{
 		#if wxUSE_UNICODE_WCHAR
 		return const_cast<wxStringImpl&>(string.ToStdWstring());
@@ -42,7 +43,7 @@ namespace KxFramework::Private
 	}
 	#endif
 
-	void MoveWxString(wxString& destination, wxString&& source) noexcept(IsWxStringConvertibleToStd())
+	inline void MoveWxString(wxString& destination, wxString&& source) noexcept(IsWxStringConvertibleToStd())
 	{
 		if (&source != &destination)
 		{
@@ -63,7 +64,7 @@ namespace KxFramework::Private
 			#endif
 		}
 	}
-
+	
 	using ViewOrWxStringW = std::conditional_t<wxUSE_UNICODE_WCHAR, std::basic_string_view<wchar_t>, wxString>;
 	using ViewOrWxStringA = std::conditional_t<wxUSE_UNICODE_WCHAR, wxString, std::basic_string_view<char>>;
 }
