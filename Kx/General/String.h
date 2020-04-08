@@ -22,6 +22,14 @@ namespace KxFramework
 	{
 		Kx_EnumClass_AllowEverything(StringOpFlag);
 	}
+
+	namespace StringFormater
+	{
+		class DefaultFormatTraits;
+
+		template<class T>
+		class StringFormater;
+	}
 }
 
 namespace KxFramework
@@ -286,6 +294,30 @@ namespace KxFramework
 					return 1;
 				}
 				return 0;
+			}
+
+			template<class TString, class... Args>
+			static String Format(TString&& format, Args&&... arg)
+			{
+				if constexpr((sizeof...(Args)) != 0)
+				{
+					StringFormater::StringFormater formatter(std::forward<TString>(format));
+					std::initializer_list<int>{((void)formatter(arg), 0) ...};
+					return formatter;
+				}
+				return std::forward<TString>(format);
+			}
+
+			template<class Traits, class TString, class... Args>
+			static String Format(TString&& format, Args&&... arg)
+			{
+				if constexpr ((sizeof...(Args)) != 0)
+				{
+					StringFormater::StringFormater<Traits> formatter(std::forward<TString>(format));
+					std::initializer_list<int>{((void)formatter(arg), 0) ...};
+					return formatter;
+				}
+				return std::forward<TString>(format);
 			}
 
 		private:
@@ -1287,7 +1319,7 @@ namespace KxFramework
 namespace std
 {
 	template<>
-	struct hash<KxFramework::String>
+	struct hash<KxFramework::String> final
 	{
 		size_t operator()(const KxFramework::String& string) const noexcept
 		{
