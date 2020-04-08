@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "String.h"
 
 namespace KxFramework
 {
@@ -203,7 +204,7 @@ namespace KxFramework
 			}
 
 			// Formatting
-			wxString Format(BinarySizeUnit unit = BinarySizeUnit::Auto, BinarySizeFormat format = BinarySizeFormat::Fractional|BinarySizeFormat::WithLabel, int precision = -1) const;
+			String Format(BinarySizeUnit unit = BinarySizeUnit::Auto, BinarySizeFormat format = BinarySizeFormat::Fractional|BinarySizeFormat::WithLabel, int precision = -1) const;
 
 		public:
 			// Comparison

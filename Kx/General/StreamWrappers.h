@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "BinarySize.h"
+#include "String.h"
 #include "Kx/Utility/Common.h"
 #include "Kx/RTTI/QueryInterface.h"
 #include <vector>
@@ -161,13 +162,13 @@ namespace KxFramework
 				return values;
 			}
 
-			bool ReadStringACP(wxString& value, size_t size)
+			bool ReadStringACP(String& value, size_t size)
 			{
 				std::vector<char> buffer;
 				if (ReadVector(buffer, size))
 				{
 					DoRemoveTrailingNulls(buffer);
-					value.assign(buffer.data(), buffer.size());
+					value = String(buffer.data(), buffer.size());
 					return true;
 				}
 				else
@@ -176,20 +177,20 @@ namespace KxFramework
 					return false;
 				}
 			}
-			wxString ReadStringACP(size_t size)
+			String ReadStringACP(size_t size)
 			{
-				wxString value;
+				String value;
 				ReadStringACP(value, size);
 				return value;
 			}
 
-			bool ReadStringASCII(wxString& value, size_t size)
+			bool ReadStringASCII(String& value, size_t size)
 			{
 				std::vector<char> buffer;
 				if (ReadVector(buffer, size))
 				{
 					DoRemoveTrailingNulls(buffer);
-					value = wxString::FromAscii(buffer.data(), buffer.size());
+					value = String::FromASCII(buffer.data(), buffer.size());
 					return true;
 				}
 				else
@@ -198,20 +199,20 @@ namespace KxFramework
 					return false;
 				}
 			}
-			wxString ReadStringASCII(size_t size)
+			String ReadStringASCII(size_t size)
 			{
-				wxString value;
+				String value;
 				ReadStringASCII(value, size);
 				return value;
 			}
 
-			bool ReadStringUTF8(wxString& value, size_t size)
+			bool ReadStringUTF8(String& value, size_t size)
 			{
 				std::vector<char> buffer;
 				if (ReadVector(buffer, size))
 				{
 					DoRemoveTrailingNulls(buffer);
-					value = wxString::FromUTF8(buffer.data(), buffer.size());
+					value = String::FromUTF8(buffer.data(), buffer.size());
 					return true;
 				}
 				else
@@ -220,20 +221,20 @@ namespace KxFramework
 					return false;
 				}
 			}
-			wxString ReadStringUTF8(size_t size)
+			String ReadStringUTF8(size_t size)
 			{
-				wxString value;
+				String value;
 				ReadStringUTF8(value, size);
 				return value;
 			}
 			
-			bool ReadStringUTF16(wxString& value, size_t size)
+			bool ReadStringUTF16(String& value, size_t size)
 			{
 				std::vector<wchar_t> buffer;
 				if (ReadVector(buffer, size))
 				{
 					DoRemoveTrailingNulls(buffer);
-					value.assign(buffer.data(), buffer.size());
+					value = String(buffer.data(), buffer.size());
 					return true;
 				}
 				else
@@ -242,14 +243,14 @@ namespace KxFramework
 					return false;
 				}
 			}
-			wxString ReadStringUTF16(size_t size)
+			String ReadStringUTF16(size_t size)
 			{
-				wxString value;
+				String value;
 				ReadStringUTF16(value, size);
 				return value;
 			}
 			
-			bool ReadStringUTF32(wxString& value, size_t size)
+			bool ReadStringUTF32(String& value, size_t size)
 			{
 				std::vector<wxChar32> buffer;
 				if (ReadVector(buffer, size))
@@ -264,9 +265,9 @@ namespace KxFramework
 					return false;
 				}
 			}
-			wxString ReadStringUTF32(size_t size)
+			String ReadStringUTF32(size_t size)
 			{
-				wxString value;
+				String value;
 				ReadStringUTF32(value, size);
 				return value;
 			}
@@ -383,27 +384,26 @@ namespace KxFramework
 				return DoWriteContainter(values);
 			}
 
-			bool WriteStringACP(const wxString& value)
+			bool WriteStringACP(const String& value)
 			{
 				const auto buffer = value.c_str().AsCharBuf();
 				return WriteBuffer(buffer.data(), buffer.length());
 			}
-			bool WriteStringASCII(const wxString& value, char replaceWith = '_')
+			bool WriteStringASCII(const String& value, char replaceWith = '_')
 			{
-				const auto buffer = value.ToAscii(replaceWith);
+				const auto buffer = value.ToASCII(replaceWith);
 				return WriteBuffer(buffer.data(), buffer.length());
 			}
-			bool WriteStringUTF8(const wxString& value)
+			bool WriteStringUTF8(const String& value)
 			{
 				const auto buffer = value.ToUTF8();
 				return WriteBuffer(buffer.data(), buffer.length());
 			}
-			bool WriteStringUTF16(const wxString& value)
+			bool WriteStringUTF16(const String& value)
 			{
-				const auto buffer = value.wchar_str();
-				return WriteBuffer(buffer.data(), buffer.length());
+				return WriteBuffer(value.wc_str(), value.length());
 			}
-			bool WriteStringUTF32(const wxString& value)
+			bool WriteStringUTF32(const String& value)
 			{
 				wxUString buffer(value);
 				return WriteBuffer(buffer.data(), buffer.length() * sizeof(wxChar32));

@@ -1,12 +1,12 @@
 #include "KxStdAfx.h"
 #include "BinarySize.h"
+#include "StringFormater.h"
 #include <KxFramework/KxTranslation.h>
 #include <KxFramework/KxMath.h>
-#include <KxFramework/KxString.h>
 
 namespace KxFramework
 {
-	wxString GetSizeUnitString(BinarySizeUnit unit)
+	String GetSizeUnitString(BinarySizeUnit unit)
 	{
 		switch (unit)
 		{
@@ -33,11 +33,11 @@ namespace KxFramework
 		};
 		return {};
 	}
-	bool AddUnitLabelIfNeeded(wxString& result, BinarySizeFormat format, BinarySizeUnit unit)
+	bool AddUnitLabelIfNeeded(String& result, BinarySizeFormat format, BinarySizeUnit unit)
 	{
 		if (format & BinarySizeFormat::WithLabel && !result.IsEmpty())
 		{
-			wxString label = GetSizeUnitString(unit);
+			String label = GetSizeUnitString(unit);
 			if (!label.IsEmpty())
 			{
 				result += wxS(' ');
@@ -50,23 +50,23 @@ namespace KxFramework
 	}
 	
 	template<class T>
-	wxString FormatWithUnitBase(T value, BinarySizeFormat format, BinarySizeUnit unit, int precision)
+	String FormatWithUnitBase(T value, BinarySizeFormat format, BinarySizeUnit unit, int precision)
 	{
-		wxString result;
+		String result;
 		if (format & BinarySizeFormat::Fractional)
 		{
 			// Default precision is 2 digits
-			result = wxString::FromCDouble(static_cast<double>(value), precision >= 0 ? precision : 2);
+			result = String::FromCDouble(static_cast<double>(value), precision >= 0 ? precision : 2);
 		}
 		else
 		{
-			result = KxString::Format(wxS("%1"), static_cast<int64_t>(value));
+			result = String::Format(wxS("%1"), static_cast<int64_t>(value));
 		}
 		AddUnitLabelIfNeeded(result, format, unit);
 
 		return result;
 	}
-	wxString FormatWithUnit(BinarySize value, BinarySizeFormat format, BinarySizeUnit unit, int precision)
+	String FormatWithUnit(BinarySize value, BinarySizeFormat format, BinarySizeUnit unit, int precision)
 	{
 		if (format & BinarySizeFormat::Fractional)
 		{
@@ -81,12 +81,12 @@ namespace KxFramework
 
 namespace KxFramework
 {
-	wxString BinarySize::Format(BinarySizeUnit unit, BinarySizeFormat format, int precision) const
+	String BinarySize::Format(BinarySizeUnit unit, BinarySizeFormat format, int precision) const
 	{
 		// Short-circuit for zero size
 		if (IsNull())
 		{
-			return KxString::Format(wxS("0 %1"), GetSizeUnitString(BinarySizeUnit::Bytes));
+			return String::Format(wxS("0 %1"), GetSizeUnitString(BinarySizeUnit::Bytes));
 		}
 
 		switch (unit)

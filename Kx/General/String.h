@@ -10,10 +10,10 @@ namespace KxFramework
 	using XChar = wxChar;
 	using StringView = std::basic_string_view<XChar>;
 
-	namespace StringFormater
+	namespace StringFormatter
 	{
 		template<class T>
-		class StringFormater;
+		class Formatter;
 	}
 
 	enum class StringOpFlag
@@ -320,7 +320,7 @@ namespace KxFramework
 			{
 				if constexpr((sizeof...(Args)) != 0)
 				{
-					StringFormater::StringFormater formatter(std::forward<TString>(format));
+					StringFormatter::Formatter formatter(std::forward<TString>(format));
 					std::initializer_list<int>{((void)formatter(arg), 0) ...};
 					return formatter;
 				}
@@ -332,7 +332,7 @@ namespace KxFramework
 			{
 				if constexpr ((sizeof...(Args)) != 0)
 				{
-					StringFormater::StringFormater<Traits> formatter(std::forward<TString>(format));
+					StringFormatter::Formatter<Traits> formatter(std::forward<TString>(format));
 					std::initializer_list<int>{((void)formatter(arg), 0) ...};
 					return formatter;
 				}
@@ -449,11 +449,11 @@ namespace KxFramework
 			{
 				return StringViewOf(m_String);
 			}
-			const char* c_str() const noexcept(std::is_same_v<XChar, char>)
+			auto c_str() const noexcept(std::is_same_v<XChar, char>)
 			{
 				return m_String.c_str();
 			}
-			const wchar_t* wc_str() const noexcept(std::is_same_v<XChar, wchar_t>)
+			auto wc_str() const noexcept(std::is_same_v<XChar, wchar_t>)
 			{
 				return m_String.wc_str();
 			}
@@ -1067,6 +1067,16 @@ namespace KxFramework
 				return *this;
 			}
 			#endif
+
+			// Conversions
+			operator const wxString&() const
+			{
+				return GetWxString();
+			}
+			operator wxString&()
+			{
+				return GetWxString();
+			}
 	};
 }
 

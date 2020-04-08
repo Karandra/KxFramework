@@ -3,9 +3,9 @@
 #include "StringFormaterTraits.h"
 #include "String.h"
 
-namespace KxFramework::StringFormater
+namespace KxFramework::StringFormatter
 {
-	class KX_API StringFormaterBase
+	class KX_API StringFormatterBase
 	{
 		private:
 			String m_String;
@@ -73,17 +73,17 @@ namespace KxFramework::StringFormater
 			};
 
 		public:
-			StringFormaterBase(const String& format)
+			StringFormatterBase(const String& format)
 				:m_String(format)
 			{
 			}
-			StringFormaterBase(String&& format) noexcept
+			StringFormatterBase(String&& format) noexcept
 				:m_String(std::move(format))
 			{
 			}
 
 		protected:
-			~StringFormaterBase() noexcept = default;
+			~StringFormatterBase() noexcept = default;
 
 		public:
 			String ToString() const&
@@ -112,12 +112,12 @@ namespace KxFramework::StringFormater
 			{
 				return m_IsUpperCase;
 			}
-			StringFormaterBase& UpperCase(bool value = true) noexcept
+			StringFormatterBase& UpperCase(bool value = true) noexcept
 			{
 				m_IsUpperCase = value;
 				return *this;
 			}
-			StringFormaterBase& LowerCase(bool value = true) noexcept
+			StringFormatterBase& LowerCase(bool value = true) noexcept
 			{
 				m_IsUpperCase = !value;
 				return *this;
@@ -125,10 +125,10 @@ namespace KxFramework::StringFormater
 	};
 }
 
-namespace KxFramework::StringFormater
+namespace KxFramework::StringFormatter
 {
 	template<class FmtTraits = DefaultFormatTraits>
-	class StringFormater: public StringFormaterBase
+	class Formatter: public StringFormatterBase
 	{
 		public:
 			using FormatTraits = FmtTraits;
@@ -145,32 +145,32 @@ namespace KxFramework::StringFormater
 			}
 
 		public:
-			StringFormater(const String& format)
-				:StringFormaterBase(format)
+			Formatter(const String& format)
+				:StringFormatterBase(format)
 			{
 			}
-			StringFormater(String&& format) noexcept
-				:StringFormaterBase(std::move(format))
+			Formatter(String&& format) noexcept
+				:StringFormatterBase(std::move(format))
 			{
 			}
 
 		public:
-			StringFormater& UpperCase(bool value = true) noexcept
+			Formatter& UpperCase(bool value = true) noexcept
 			{
-				StringFormaterBase::UpperCase(value);
+				StringFormatterBase::UpperCase(value);
 				return *this;
 			}
-			StringFormater& LowerCase(bool value = true) noexcept
+			Formatter& LowerCase(bool value = true) noexcept
 			{
-				StringFormaterBase::LowerCase(value);
+				StringFormatterBase::LowerCase(value);
 				return *this;
 			}
 
 		public:
 			template<class T>
-			typename std::enable_if_t<TypeTraits<T>::FmtString(), StringFormater&> operator()(const T& arg,
-																							  int fieldWidth = FormatTraits::StringFiledWidth(),
-																							  wxUniChar fillChar = FormatTraits::StringFillChar())
+			std::enable_if_t<TypeTraits<T>::FmtString(), Formatter&> operator()(const T& arg,
+																				int fieldWidth = FormatTraits::StringFiledWidth(),
+																				wxUniChar fillChar = FormatTraits::StringFillChar())
 			{
 				using Traits = TypeTraits<T>;
 				if constexpr(Traits::IsBool())
@@ -191,16 +191,16 @@ namespace KxFramework::StringFormater
 				}
 				else
 				{
-					static_assert(false, "StringFormater: unsupported type for string formatting");
+					static_assert(false, "Formatter: unsupported type for string formatting");
 				}
 				return *this;
 			}
 			
 			template<class T>
-			typename std::enable_if_t<TypeTraits<T>::FmtInteger(), StringFormater&> operator()(T arg,
-																							   int fieldWidth = FormatTraits::IntFiledWidth(),
-																							   int base = FormatTraits::IntBase(),
-																							   wxUniChar fillChar = FormatTraits::IntFillChar())
+			std::enable_if_t<TypeTraits<T>::FmtInteger(), Formatter&> operator()(T arg,
+																				 int fieldWidth = FormatTraits::IntFiledWidth(),
+																				 int base = FormatTraits::IntBase(),
+																				 wxUniChar fillChar = FormatTraits::IntFillChar())
 			{
 				if constexpr(TypeTraits<T>().IsEnum())
 				{
@@ -214,20 +214,20 @@ namespace KxFramework::StringFormater
 			}
 
 			template<class T>
-			typename std::enable_if_t<TypeTraits<T>::FmtPointer(), StringFormater&> operator()(T arg,
-																							   int fieldWidth = FormatTraits::PtrFiledWidth(),
-																							   wxUniChar fillChar = FormatTraits::PtrFillChar())
+			std::enable_if_t<TypeTraits<T>::FmtPointer(), Formatter&> operator()(T arg,
+																				 int fieldWidth = FormatTraits::PtrFiledWidth(),
+																				 wxUniChar fillChar = FormatTraits::PtrFillChar())
 			{
 				FormatPointer(arg, fieldWidth, fillChar);
 				return *this;
 			}
 
 			template<class T>
-			typename std::enable_if_t<TypeTraits<T>::FmtFloat(), StringFormater&> operator()(T arg,
-																							 int precision = FormatTraits::FloatPrecision(),
-																							 int fieldWidth = FormatTraits::FloatFiledWidth(),
-																							 wxUniChar format = FormatTraits::FloatFormat(),
-																							 wxUniChar fillChar = FormatTraits::FloatFillChar())
+			std::enable_if_t<TypeTraits<T>::FmtFloat(), Formatter&> operator()(T arg,
+																			   int precision = FormatTraits::FloatPrecision(),
+																			   int fieldWidth = FormatTraits::FloatFiledWidth(),
+																			   wxUniChar format = FormatTraits::FloatFormat(),
+																			   wxUniChar fillChar = FormatTraits::FloatFillChar())
 			{
 				FormatDouble(arg, precision, fieldWidth, format, fillChar);
 				return *this;

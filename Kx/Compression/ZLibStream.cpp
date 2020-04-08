@@ -9,6 +9,6 @@ namespace KxFramework::Compression::ZLib
 	}
 	Version GetLibraryVersion()
 	{
-		return wxGetZlibVersionInfo().GetVersionString();
+		return wxGetZlibVersionInfo();
 	}
 }

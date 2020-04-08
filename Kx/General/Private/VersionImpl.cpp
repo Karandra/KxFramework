@@ -1,6 +1,7 @@
 #include "KxStdAfx.h"
 #include "VersionImpl.h"
 #include "../Version.h"
+#include "Kx/General/StringFormater.h"
 
 namespace
 {
@@ -51,7 +52,7 @@ namespace KxFramework::Private::Version
 		return Cmp::Invalid;
 	}
 	
-	bool Parse(const wxString& source, DefaultFormat::Array& items, size_t& componentCount)
+	bool Parse(const String& source, DefaultFormat::Array& items, size_t& componentCount)
 	{
 		items.fill({});
 		componentCount = 0;
@@ -60,7 +61,7 @@ namespace KxFramework::Private::Version
 		{
 			// TODO: Rewrite this
 			size_t pos = 0;
-			while (pos != wxString::npos && componentCount < DefaultFormat::ItemCount)
+			while (pos != String::npos && componentCount < DefaultFormat::ItemCount)
 			{
 				wxChar* endPtr = nullptr;
 				size_t endIndex = (endPtr - source.wc_str()) / sizeof(wxChar);
@@ -69,11 +70,11 @@ namespace KxFramework::Private::Version
 				if (endPtr && endIndex != (size_t)pos && *endPtr != wxS('.'))
 				{
 					const wxChar* nextDotPtr = wcschr(endPtr, L'.');
-					items[componentCount].SetString(endPtr, (nextDotPtr ? nextDotPtr : source.wc_str() + source.Length()) - endPtr);
+					items[componentCount].SetString(endPtr, (nextDotPtr ? nextDotPtr : source.wc_str() + source.length()) - endPtr);
 				}
 				componentCount++;
 
-				pos = source.find(wxS('.'), pos + 1);
+				pos = source.Find(wxS('.'), pos + 1);
 			}
 
 			// Check
@@ -107,17 +108,17 @@ namespace KxFramework::Private::Version
 		componentCount = 0;
 		return false;
 	}
-	bool Parse(const wxString& source, wxDateTime& dateTime)
+	bool Parse(const String& source, wxDateTime& dateTime)
 	{
-		wxString::const_iterator it = source.begin();
+		String::const_iterator it = source.begin();
 		return dateTime.ParseISOCombined(source) || dateTime.ParseISOCombined(source, ' ') || dateTime.ParseISODate(source) || dateTime.ParseRfc822Date(source, &it);
 	}
 
-	wxString Format(const DefaultFormat::Array& items, size_t itemCount)
+	String Format(const DefaultFormat::Array& items, size_t itemCount)
 	{
 		if (!items.empty() && itemCount != 0)
 		{
-			wxString result;
+			String result;
 			result.reserve(itemCount * 2);
 
 			for (size_t i = 0; i < itemCount; i++)
@@ -132,7 +133,7 @@ namespace KxFramework::Private::Version
 				}
 				else
 				{
-					result << num;
+					result << String::Format(wxS("%1"), num);
 					if (string)
 					{
 						result << string;
@@ -149,7 +150,7 @@ namespace KxFramework::Private::Version
 		}
 		return {};
 	}
-	wxString Format(const wxDateTime& dateTime)
+	String Format(const wxDateTime& dateTime)
 	{
 		if (dateTime.IsValid())
 		{

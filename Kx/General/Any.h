@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include <wx/string.h>
+#include "String.h"
 #include <any>
 
 namespace KxFramework
@@ -29,7 +29,7 @@ namespace KxFramework
 			template<class T>
 			static bool ConvertTo(const Any& any, T& value) noexcept
 			{
-				if constexpr(std::is_same_v<T, wxString>)
+				if constexpr(std::is_same_v<T, String>)
 				{
 					// Convert to a string
 					if (value = any.IntToString(); !value.IsEmpty())
@@ -72,11 +72,11 @@ namespace KxFramework
 					if constexpr (std::is_signed_v<TIntType>)
 					{
 						// Convert to signed int
-						if (const wxString* ptr = any.AsPtr<wxString>())
+						if (const String* ptr = any.AsPtr<String>())
 						{
-							if (long long iValue = 0; ptr->ToLongLong(&iValue))
+							if (auto iValue = ptr->ToInt<int64_t>())
 							{
-								value = static_cast<T>(iValue);
+								value = static_cast<T>(*iValue);
 								return true;
 							}
 						}
@@ -84,11 +84,11 @@ namespace KxFramework
 					else if constexpr(std::is_unsigned_v<TIntType>)
 					{
 						// Convert to unsigned int
-						if (const wxString* ptr = any.AsPtr<wxString>())
+						if (const String* ptr = any.AsPtr<String>())
 						{
-							if (unsigned long long iValue = 0; ptr->ToULongLong(&iValue))
+							if (auto iValue = ptr->ToInt<uint64_t>())
 							{
-								value = static_cast<T>(iValue);
+								value = static_cast<T>(*iValue);
 								return true;
 							}
 						}
@@ -108,7 +108,7 @@ namespace KxFramework
 				else if constexpr(std::is_floating_point_v<T>)
 				{
 					// Convert to float or double
-					if (const wxString* ptr = any.AsPtr<wxString>())
+					if (const String* ptr = any.AsPtr<String>())
 					{
 						if (double dValue = 0; ptr->ToCDouble(&dValue))
 						{
@@ -139,9 +139,9 @@ namespace KxFramework
 				return std::any_cast<T>(&m_Any);
 			}
 
-			wxString IntToString() const noexcept;
-			wxString FloatToString() const noexcept;
-			wxString BoolToString() const noexcept;
+			String IntToString() const noexcept;
+			String FloatToString() const noexcept;
+			String BoolToString() const noexcept;
 			std::optional<bool> StringToBool() const noexcept;
 
 		public:
@@ -345,7 +345,7 @@ namespace KxFramework
 			{
 				ResetOnException([&]()
 				{
-					m_Any = wxString(value);
+					m_Any = String(value);
 				});
 				return *this;
 			}
@@ -353,7 +353,7 @@ namespace KxFramework
 			{
 				ResetOnException([&]()
 				{
-					m_Any = wxString(value);
+					m_Any = String(value);
 				});
 				return *this;
 			}

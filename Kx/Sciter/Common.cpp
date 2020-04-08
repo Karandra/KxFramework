@@ -19,7 +19,7 @@ namespace KxFramework::Sciter
 			KxLibraryVersionInfo versionInfo = KxLibrary::GetVersionInfoFromFile(library.GetFileName());
 			if (versionInfo.IsOK())
 			{
-				return versionInfo.GetString(wxS("ProductVersionString"));
+				return String(versionInfo.GetString(wxS("ProductVersionString")));
 			}
 		}
 		return {};

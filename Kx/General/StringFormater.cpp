@@ -7,14 +7,14 @@ namespace
 	constexpr size_t g_MaxReplacesCount = 1024;
 }
 
-namespace KxFramework::StringFormater
+namespace KxFramework::StringFormatter
 {
-	void StringFormaterBase::ReplaceNext(StringView string)
+	void StringFormatterBase::ReplaceNext(StringView string)
 	{
 		ReplaceAnchor(string, m_CurrentAnchor);
 		m_CurrentAnchor++;
 	}
-	void StringFormaterBase::ReplaceAnchor(StringView string, size_t index, size_t startAt)
+	void StringFormatterBase::ReplaceAnchor(StringView string, size_t index, size_t startAt)
 	{
 		wchar_t indexBuffer[64] = {0};
 		int indexLength = swprintf_s(indexBuffer, L"%%%zu", index);
@@ -34,7 +34,7 @@ namespace KxFramework::StringFormater
 			while (shouldContinue && count < g_MaxReplacesCount);
 		}
 	}
-	bool StringFormaterBase::DoReplace(StringView string, StringView index, size_t startAt, size_t& next)
+	bool StringFormatterBase::DoReplace(StringView string, StringView index, size_t startAt, size_t& next)
 	{
 		size_t pos = m_String.Find(index, startAt);
 		if (pos != String::npos && m_String.length() > pos + 1)
@@ -46,12 +46,12 @@ namespace KxFramework::StringFormater
 		return false;
 	}
 
-	void StringFormaterBase::FormatString(std::string_view arg, int fieldWidth, wxUniChar fillChar)
+	void StringFormatterBase::FormatString(std::string_view arg, int fieldWidth, wxUniChar fillChar)
 	{
 		String argCopy = String::FromView(arg);
 		FormatString(StringViewOf(argCopy), fieldWidth, fillChar);
 	}
-	void StringFormaterBase::FormatString(std::wstring_view arg, int fieldWidth, wxUniChar fillChar)
+	void StringFormatterBase::FormatString(std::wstring_view arg, int fieldWidth, wxUniChar fillChar)
 	{
 		if (fieldWidth == 0 || arg.length() >= (size_t)std::abs(fieldWidth))
 		{
@@ -70,12 +70,12 @@ namespace KxFramework::StringFormater
 			ReplaceNext(StringViewOf(copy));
 		}
 	}
-	void StringFormaterBase::FormatChar(wxUniChar arg, int fieldWidth, wxUniChar fillChar)
+	void StringFormatterBase::FormatChar(wxUniChar arg, int fieldWidth, wxUniChar fillChar)
 	{
 		String c = arg;
 		FormatString(StringViewOf(c), fieldWidth, fillChar);
 	}
-	void StringFormaterBase::FormatBool(bool arg, int fieldWidth, wxUniChar fillChar)
+	void StringFormatterBase::FormatBool(bool arg, int fieldWidth, wxUniChar fillChar)
 	{
 		static const wxChar ms_TrueU[] = wxS("TRUE");
 		static const wxChar ms_FalseU[] = wxS("FALSE");
@@ -93,13 +93,13 @@ namespace KxFramework::StringFormater
 		}
 	}
 
-	void StringFormaterBase::FormatPointer(const void* arg, int fieldWidth, wxUniChar fillChar)
+	void StringFormatterBase::FormatPointer(const void* arg, int fieldWidth, wxUniChar fillChar)
 	{
 		const size_t value = reinterpret_cast<size_t>(const_cast<void*>(arg));
 		String formatted = FormatIntWithBase(value, 16, m_IsUpperCase);
 		FormatString(StringViewOf(formatted), fieldWidth, fillChar);
 	}
-	void StringFormaterBase::FormatDouble(double arg, int precision, int fieldWidth, wxUniChar format, wxUniChar fillChar)
+	void StringFormatterBase::FormatDouble(double arg, int precision, int fieldWidth, wxUniChar format, wxUniChar fillChar)
 	{
 		switch (format.GetValue())
 		{
@@ -135,11 +135,11 @@ namespace KxFramework::StringFormater
 }
 
 #if 0
-namespace KxFramework::StringFormater
+namespace KxFramework::StringFormatter
 {
 	static void TestFunction()
 	{
-		StringFormater format("%1 %2 %3");
+		Formatter format("%1 %2 %3");
 
 		format(true);
 		format(false);

@@ -1,69 +1,69 @@
 #include "KxStdAfx.h"
 #include "Any.h"
-#include "KxFormat.h"
+#include "StringFormater.h"
 
 namespace
 {
-	class Formatter: public KxFormat<KxFormatTraits>
+	class Formatter2: public KxFramework::StringFormatter::Formatter<KxFramework::StringFormatter::DefaultFormatTraits>
 	{
 		public:
-			using KxFormat::KxFormat;
-			using KxFormat::FormatIntWithBase;
+			using Formatter::Formatter;
+			using Formatter::FormatIntWithBase;
 	};
 }
 
 namespace KxFramework
 {
-	wxString Any::IntToString() const noexcept
+	String Any::IntToString() const noexcept
 	{
 		if (auto value = AsPtr<int8_t>())
 		{
-			return Formatter::FormatIntWithBase(*value);
+			return Formatter2::FormatIntWithBase(*value);
 		}
 		else if (auto value = AsPtr<int16_t>())
 		{
-			return Formatter::FormatIntWithBase(*value);
+			return Formatter2::FormatIntWithBase(*value);
 		}
 		else if (auto value = AsPtr<int32_t>())
 		{
-			return Formatter::FormatIntWithBase(*value);
+			return Formatter2::FormatIntWithBase(*value);
 		}
 		else if (auto value = AsPtr<int64_t>())
 		{
-			return Formatter::FormatIntWithBase(*value);
+			return Formatter2::FormatIntWithBase(*value);
 		}
 
 		if (auto value = AsPtr<uint8_t>())
 		{
-			return Formatter::FormatIntWithBase(*value);
+			return Formatter2::FormatIntWithBase(*value);
 		}
 		else if (auto value = AsPtr<uint16_t>())
 		{
-			return Formatter::FormatIntWithBase(*value);
+			return Formatter2::FormatIntWithBase(*value);
 		}
 		else if (auto value = AsPtr<uint32_t>())
 		{
-			return Formatter::FormatIntWithBase(*value);
+			return Formatter2::FormatIntWithBase(*value);
 		}
 		else if (auto value = AsPtr<uint64_t>())
 		{
-			return Formatter::FormatIntWithBase(*value);
+			return Formatter2::FormatIntWithBase(*value);
 		}
 		return {};
 	}
-	wxString Any::FloatToString() const noexcept
+	String Any::FloatToString() const noexcept
 	{
 		if (auto value = AsPtr<float>())
 		{
-			return Formatter(wxS("%1"))(*value);
+			return Formatter2(wxS("%1"))(*value);
 		}
 		else if (auto value = AsPtr<double>())
 		{
-			return Formatter(wxS("%1"))(*value);
+			return Formatter2(wxS("%1"))(*value);
 		}
 		return {};
 	}
-	wxString Any::BoolToString() const noexcept
+	String Any::BoolToString() const noexcept
 	{
 		if (auto value = AsPtr<bool>())
 		{
@@ -73,7 +73,7 @@ namespace KxFramework
 	}
 	std::optional<bool> Any::StringToBool() const noexcept
 	{
-		if (const wxString* ptr = AsPtr<wxString>())
+		if (const String* ptr = AsPtr<String>())
 		{
 			if (*ptr == wxS("true") || *ptr == wxS("TRUE"))
 			{

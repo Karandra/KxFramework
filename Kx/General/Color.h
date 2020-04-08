@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "ColorDefines.h"
+#include "String.h"
 #include <wx/colour.h>
 #include <wx/brush.h>
 #include <wx/pen.h>
@@ -66,7 +67,7 @@ namespace KxFramework
 			{
 				return FromNormalized(static_cast<float>(r), static_cast<float>(g), static_cast<float>(b), static_cast<float>(a));
 			}
-			static Color FromColorName(const wxString& name);
+			static Color FromColorName(const String& name);
 
 			constexpr static float AlphaBlend(float foreground, float background, float alpha) noexcept
 			{
@@ -167,7 +168,7 @@ namespace KxFramework
 			}
 
 			// Conversion to other types
-			wxString ToString(C2SFormat format, C2SAlpha alpha = C2SAlpha::Auto, ColorSpace colorSpace = ColorSpace::RGB) const;
+			String ToString(C2SFormat format, C2SAlpha alpha = C2SAlpha::Auto, ColorSpace colorSpace = ColorSpace::RGB) const;
 			wxColour ToWxColor() const noexcept
 			{
 				if (IsValid())
@@ -177,7 +178,7 @@ namespace KxFramework
 				}
 				return {};
 			}
-			wxString GetColorName() const;
+			String GetColorName() const;
 
 			// Normalized
 			constexpr PackedRGBA<float> GetNormalized() const noexcept

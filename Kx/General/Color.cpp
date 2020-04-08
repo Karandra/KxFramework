@@ -1,11 +1,11 @@
 #include "KxStdAfx.h"
 #include "Color.h"
-#include <KxFramework/KxFormat.h>
+#include "StringFormater.h"
 #include "wx/window.h"
 
 namespace
 {
-	wxString CSS2RGB(const KxFramework::Color& color, KxFramework::C2SAlpha alpha)
+	KxFramework::String CSS2RGB(const KxFramework::Color& color, KxFramework::C2SAlpha alpha)
 	{
 		using namespace KxFramework;
 
@@ -29,7 +29,7 @@ namespace
 		};
 		return {};
 	}
-	wxString CSS2HSL(const KxFramework::Color& color, KxFramework::C2SAlpha alpha)
+	KxFramework::String CSS2HSL(const KxFramework::Color& color, KxFramework::C2SAlpha alpha)
 	{
 		using namespace KxFramework;
 
@@ -73,7 +73,7 @@ namespace
 		return {};
 	}
 
-	wxString HTML2RGB(const KxFramework::Color& color, KxFramework::C2SAlpha alpha)
+	KxFramework::String HTML2RGB(const KxFramework::Color& color, KxFramework::C2SAlpha alpha)
 	{
 		using namespace KxFramework;
 
@@ -83,7 +83,7 @@ namespace
 			{
 				const auto fixed = color.GetFixed8();
 
-				KxFormat formatter(wxS("#%1%2%3"));
+				StringFormatter::Formatter formatter(wxS("#%1%2%3"));
 				formatter(fixed.Red, 2, 16, '0');
 				formatter(fixed.Green, 2, 16, '0');
 				formatter(fixed.Blue, 2, 16, '0');
@@ -93,7 +93,7 @@ namespace
 			{
 				const auto fixed = color.GetFixed8();
 
-				KxFormat formatter(wxS("#%1%2%3%4"));
+				StringFormatter::Formatter formatter(wxS("#%1%2%3%4"));
 				formatter(fixed.Red, 2, 16, '0');
 				formatter(fixed.Green, 2, 16, '0');
 				formatter(fixed.Blue, 2, 16, '0');
@@ -107,7 +107,7 @@ namespace
 		};
 		return {};
 	}
-	wxString HTML2HSL(const KxFramework::Color& color, KxFramework::C2SAlpha alpha)
+	KxFramework::String HTML2HSL(const KxFramework::Color& color, KxFramework::C2SAlpha alpha)
 	{
 		using namespace KxFramework;
 
@@ -134,12 +134,12 @@ namespace
 
 namespace KxFramework
 {
-	Color Color::FromColorName(const wxString& name)
+	Color Color::FromColorName(const String& name)
 	{
-		return wxTheColourDatabase->Find(name);
+		return wxTheColourDatabase->Find(name.GetWxString());
 	}
 
-	wxString Color::ToString(C2SFormat format, C2SAlpha alpha, ColorSpace colorSpace) const
+	String Color::ToString(C2SFormat format, C2SAlpha alpha, ColorSpace colorSpace) const
 	{
 		switch (format)
 		{
@@ -176,10 +176,10 @@ namespace KxFramework
 		};
 		return {};
 	}
-	wxString Color::GetColorName() const
+	String Color::GetColorName() const
 	{
-		const auto rgb = GetFixed8();
-		return wxTheColourDatabase->FindName(wxColour(rgb.Red, rgb.Green, rgb.Blue, wxALPHA_OPAQUE));
+		const auto fixed8 = GetFixed8();
+		return wxTheColourDatabase->FindName(wxColour(fixed8.Red, fixed8.Green, fixed8.Blue, wxALPHA_OPAQUE));
 	}
 
 	Color Color::GetContrastColor(const wxWindow& window, const PackedRGB<float>& weight) const noexcept

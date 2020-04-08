@@ -98,7 +98,7 @@ namespace KxFramework::FileSystem::NativeUtility
 		}
 		return wxInvalidDateTime;
 	}
-	inline FileItem ConvertFileInfo(const WIN32_FIND_DATAW& findInfo, const KxFramework::FSPath& location)
+	inline FileItem ConvertFileInfo(const WIN32_FIND_DATAW& findInfo, const FSPath& location)
 	{
 		using namespace KxFramework;
 
@@ -169,11 +169,11 @@ namespace KxFramework::FileSystem::NativeUtility
 		return PROGRESS_CANCEL;
 	}
 
-	inline bool CopyOrMoveDirectoryTree(KxFramework::NativeFileSystem& fileSystem,
-										const KxFramework::FSPath& source,
-										const KxFramework::FSPath& destination,
-										KxFramework::NativeFileSystem::TCopyDirectoryTreeFunc func,
-										KxFramework::FSCopyItemFlag flags, bool move)
+	inline bool CopyOrMoveDirectoryTree(NativeFileSystem& fileSystem,
+										const FSPath& source,
+										const FSPath& destination,
+										NativeFileSystem::TCopyDirectoryTreeFunc func,
+										FSCopyItemFlag flags, bool move)
 	{
 		return fileSystem.EnumItems(source, [&](FileItem item)
 		{

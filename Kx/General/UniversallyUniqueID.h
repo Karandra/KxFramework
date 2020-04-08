@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "NativeUUID.h"
+#include "String.h"
 
 namespace KxFramework
 {
@@ -40,7 +41,7 @@ namespace KxFramework
 			}
 			UniversallyUniqueID(const char* value) noexcept;
 			UniversallyUniqueID(const wchar_t* value) noexcept;
-			UniversallyUniqueID(const wxString& value) noexcept;
+			UniversallyUniqueID(const String& value) noexcept;
 
 		public:
 			constexpr bool IsNull() const noexcept
@@ -63,7 +64,7 @@ namespace KxFramework
 			{
 				return m_ID;
 			}
-			wxString ToString(UUIDToStringFormat format = UUIDToStringFormat::None) const;
+			String ToString(UUIDToStringFormat format = UUIDToStringFormat::None) const;
 
 		public:
 			constexpr UniversallyUniqueID& operator=(UniversallyUniqueID&&) noexcept = default;
@@ -73,7 +74,7 @@ namespace KxFramework
 			{
 				return ToNativeUUID();
 			}
-			operator wxString() const
+			operator String() const
 			{
 				return ToString();
 			}

@@ -7,7 +7,7 @@ namespace KxFramework
 	class String;
 }
 
-namespace KxFramework::StringFormater
+namespace KxFramework::StringFormatter
 {
 	template<class T>
 	class TypeTraits final
@@ -138,7 +138,7 @@ namespace KxFramework::StringFormater
 	};
 }
 
-namespace KxFramework::StringFormater
+namespace KxFramework::StringFormatter
 {
 	class DefaultFormatTraits
 	{

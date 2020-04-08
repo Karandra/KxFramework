@@ -15,7 +15,7 @@ namespace
 
 namespace KxFramework
 {
-	bool Version::Parse(const wxString& source, VersionType type)
+	bool Version::Parse(const String& source, VersionType type)
 	{
 		switch (type)
 		{
@@ -30,7 +30,7 @@ namespace KxFramework
 		};
 		return false;
 	}
-	VersionType Version::ParseUnknown(const wxString& source)
+	VersionType Version::ParseUnknown(const String& source)
 	{
 		// Order is important here
 		if (Private::Version::Parse(source, AssignDateTime()))
@@ -68,7 +68,7 @@ namespace KxFramework
 		};
 		return 0;
 	}
-	wxString Version::ToString() const
+	String Version::ToString() const
 	{
 		switch (m_Type)
 		{
@@ -83,7 +83,7 @@ namespace KxFramework
 		};
 		return {};
 	}
-	wxVersionInfo Version::ToWxVersionInfo(const wxString& name, const wxString& description, const wxString& copyright) const
+	wxVersionInfo Version::ToWxVersionInfo(const String& name, const String& description, const String& copyright) const
 	{
 		const auto& items = GetItem<VersionType::Default>(m_Value);
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Private/VersionImpl.h"
+#include "String.h"
 class wxVersionInfo;
 
 namespace KxFramework
@@ -18,8 +19,8 @@ namespace KxFramework
 			size_t m_ComponentCount = 0;
 
 		private:
-			bool Parse(const wxString& source, VersionType type);
-			VersionType ParseUnknown(const wxString& source);
+			bool Parse(const String& source, VersionType type);
+			VersionType ParseUnknown(const String& source);
 
 			TDefaultItem& AssignDefault(TDefaultItem value = {})
 			{
@@ -34,7 +35,7 @@ namespace KxFramework
 
 		public:
 			Version() = default;
-			Version(const wxString& source, VersionType type = VersionType::None)
+			Version(const String& source, VersionType type = VersionType::None)
 			{
 				if (type == VersionType::None)
 				{
@@ -46,11 +47,11 @@ namespace KxFramework
 				}
 			}
 			Version(const char* data, VersionType type = VersionType::None)
-				:Version(wxString(data), type)
+				:Version(String(data), type)
 			{
 			}
 			Version(const wchar_t* data, VersionType type = VersionType::None)
-				:Version(wxString(data), type)
+				:Version(String(data), type)
 			{
 			}
 			Version(const wxDateTime& dateTime)
@@ -75,8 +76,8 @@ namespace KxFramework
 			}
 			size_t GetComponentCount() const;
 			
-			wxString ToString() const;
-			wxVersionInfo ToWxVersionInfo(const wxString& name = {}, const wxString& description = {}, const wxString& copyright = {}) const;
+			String ToString() const;
+			wxVersionInfo ToWxVersionInfo(const String& name = {}, const String& description = {}, const String& copyright = {}) const;
 			wxDateTime ToDateTime() const;
 
 		public:
@@ -96,7 +97,7 @@ namespace KxFramework
 			bool operator>(const Version& other) const;
 			bool operator>=(const Version& other) const;
 
-			operator wxString() const
+			operator String() const
 			{
 				return ToString();
 			}

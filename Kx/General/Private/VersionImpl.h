@@ -1,6 +1,6 @@
 #pragma once
 #include "../Common.h"
-#include <wx/string.h>
+#include "Kx/General/String.h"
 
 namespace KxFramework
 {
@@ -118,11 +118,11 @@ namespace KxFramework::Private::Version
 
 	Cmp Compare(const KxFramework::Version& left, const KxFramework::Version& right);
 
-	bool Parse(const wxString& source, DefaultFormat::Array& items, size_t& componentCount);
-	bool Parse(const wxString& source, wxDateTime& dateTime);
+	bool Parse(const String& source, DefaultFormat::Array& items, size_t& componentCount);
+	bool Parse(const String& source, wxDateTime& dateTime);
 
-	wxString Format(const DefaultFormat::Array& items, size_t itemCount);
-	wxString Format(const wxDateTime& dateTime);
+	String Format(const DefaultFormat::Array& items, size_t itemCount);
+	String Format(const wxDateTime& dateTime);
 
 	inline bool HasTimePart(const wxDateTime& dateTime)
 	{

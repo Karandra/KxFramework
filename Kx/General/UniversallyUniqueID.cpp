@@ -87,19 +87,19 @@ namespace KxFramework
 		:m_ID(CreateFromString(value))
 	{
 	}
-	UniversallyUniqueID::UniversallyUniqueID(const wxString& value) noexcept
+	UniversallyUniqueID::UniversallyUniqueID(const String& value) noexcept
 		:m_ID(CreateFromString(value.wx_str()))
 	{
 	}
 
-	wxString UniversallyUniqueID::ToString(UUIDToStringFormat format) const
+	String UniversallyUniqueID::ToString(UUIDToStringFormat format) const
 	{
-		wxString uuid = [&]() -> wxString
+		String uuid = [&]() -> String
 		{
 			wchar_t* stringUUID = nullptr;
 			if (::UuidToStringW(AsUUID(m_ID), reinterpret_cast<RPC_WSTR*>(&stringUUID)) == RPC_S_OK && stringUUID)
 			{
-				wxString temp = stringUUID;
+				String temp = stringUUID;
 				::RpcStringFreeW(reinterpret_cast<RPC_WSTR*>(&stringUUID));
 				return temp;
 			}
