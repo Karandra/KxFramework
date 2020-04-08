@@ -1354,6 +1354,12 @@
     <ClInclude Include="Kx\General\Private\String.h">
       <Filter>Kx\General\Private</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\General\StringFormater.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\StringFormaterTraits.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -2096,6 +2102,9 @@
       <Filter>Kx\General</Filter>
     </ClCompile>
     <ClCompile Include="Kx\General\String.cpp">
+      <Filter>Kx\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\StringFormater.cpp">
       <Filter>Kx\General</Filter>
     </ClCompile>
   </ItemGroup>

@@ -506,6 +506,8 @@
     <ClInclude Include="Kx\General\StreamDelegate.h" />
     <ClInclude Include="Kx\General\StreamWrappers.h" />
     <ClInclude Include="Kx\General\String.h" />
+    <ClInclude Include="Kx\General\StringFormater.h" />
+    <ClInclude Include="Kx\General\StringFormaterTraits.h" />
     <ClInclude Include="Kx\General\UniversallyUniqueID.h" />
     <ClInclude Include="Kx\General\Version.h" />
     <ClInclude Include="Kx\RTTI.hpp" />
@@ -815,6 +817,7 @@
     <ClCompile Include="Kx\General\MemoryStream.cpp" />
     <ClCompile Include="Kx\General\Private\VersionImpl.cpp" />
     <ClCompile Include="Kx\General\String.cpp" />
+    <ClCompile Include="Kx\General\StringFormater.cpp" />
     <ClCompile Include="Kx\General\Version.cpp" />
     <ClCompile Include="Kx\UI\Validator.cpp" />
     <ClInclude Include="Kx\Compression\IArchiveImpl.h" />
