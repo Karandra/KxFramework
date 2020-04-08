@@ -1360,6 +1360,9 @@
     <ClInclude Include="Kx\General\StringFormaterTraits.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Utility\String.h">
+      <Filter>Kx\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />

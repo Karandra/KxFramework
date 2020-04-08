@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "ErrorCodeValue.h"
+#include "Kx/General/String.h"
 
 namespace KxFramework
 {
@@ -118,7 +119,7 @@ namespace KxFramework
 				return IsKnown() && !IsSuccess();
 			}
 
-			wxString ToString() const
+			String ToString() const
 			{
 				switch (m_Category)
 				{
@@ -137,7 +138,7 @@ namespace KxFramework
 				};
 				return {};
 			}
-			wxString GetMessage() const
+			String GetMessage() const
 			{
 				switch (m_Category)
 				{

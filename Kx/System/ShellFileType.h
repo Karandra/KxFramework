@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "Kx/General/String.h"
 #include <wx/mimetype.h>
 #include <wx/iconloc.h>
 
@@ -11,7 +12,7 @@ namespace KxFramework
 			using MessageParameters = wxFileType::MessageParameters;
 
 		public:
-			static wxString ExpandCommand(const wxString &command, const MessageParameters& parameters)
+			static String ExpandCommand(const String &command, const MessageParameters& parameters)
 			{
 				return wxFileType::ExpandCommand(command, parameters);
 			}
@@ -42,13 +43,13 @@ namespace KxFramework
 			}
 
 		public:
-			wxString GetDescription() const
+			String GetDescription() const
 			{
 				wxString value;
 				m_FileType->GetDescription(&value);
 				return value;
 			}
-			wxString GetExtension() const
+			String GetExtension() const
 			{
 				wxArrayString extensions;
 				return m_FileType->GetExtensions(extensions) ? extensions.front() : wxEmptyString;
@@ -60,7 +61,7 @@ namespace KxFramework
 				return extensions;
 			}
 		
-			wxString GetMimeType() const
+			String GetMimeType() const
 			{
 				wxString value;
 				m_FileType->GetMimeType(&value);
@@ -86,36 +87,36 @@ namespace KxFramework
 				return icon;
 			}
 
-			wxString GetCommand(const MessageParameters& parameters, const wxString& action) const
+			String GetCommand(const MessageParameters& parameters, const String& action) const
 			{
-				wxString value;
+				String value;
 				m_FileType->GetExpandedCommand(action, parameters);
 				return value;
 			}
-			wxString GetCommand(const wxString& filePath, const wxString& action) const
+			String GetCommand(const String& filePath, const String& action) const
 			{
 				return GetCommand(MessageParameters(filePath), action);
 			}
 
-			wxString GetOpenCommand(const MessageParameters& parameters) const
+			String GetOpenCommand(const MessageParameters& parameters) const
 			{
 				wxString value;
 				m_FileType->GetOpenCommand(&value, parameters);
 				return value;
 			}
-			wxString GetOpenCommand(const wxString& filePath) const
+			String GetOpenCommand(const String& filePath) const
 			{
 				return GetOpenCommand(MessageParameters(filePath));
 			}
-			wxString GetOpenExecutable() const;
+			String GetOpenExecutable() const;
 
-			wxString GetPrintCommand(const MessageParameters& parameters) const
+			String GetPrintCommand(const MessageParameters& parameters) const
 			{
 				wxString value;
 				m_FileType->GetPrintCommand(&value, parameters);
 				return value;
 			}
-			wxString GetPrintCommand(const wxString& filePath) const
+			String GetPrintCommand(const String& filePath) const
 			{
 				return GetPrintCommand(MessageParameters(filePath));
 			}
@@ -124,7 +125,7 @@ namespace KxFramework
 			{
 				return m_FileType->GetAllCommands(&verbs, &commands, parameters);
 			}
-			bool IsURLProtocol(const wxString& extension) const;
+			bool IsURLProtocol(const String& extension) const;
 
 		public:
 			explicit operator bool() const noexcept

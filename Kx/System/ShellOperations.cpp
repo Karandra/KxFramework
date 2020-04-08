@@ -1,5 +1,6 @@
 #include "KxStdAfx.h"
 #include "ShellOperations.h"
+#include "Kx/General/String.h"
 #include "Kx/Utility/Common.h"
 #include "Kx/Utility/CallAtScopeExit.h"
 
@@ -57,13 +58,13 @@ namespace KxFramework::Shell
 		Utility::ModFlagRef(operationInfo.fFlags, FOF_NORECURSION, !(flags & SHOperationFlags::Recursive));
 
 		// Paths
-		auto CreateZZString = [](const wxString& s) -> std::wstring
+		auto CreateZZString = [](const String& s) -> std::wstring
 		{
 			if (!s.IsEmpty())
 			{
 				std::wstring stringZZ;
 				stringZZ.reserve(s.length() + 2);
-				stringZZ.append(s.wx_str(), s.length());
+				stringZZ.append(s.wc_str(), s.length());
 				stringZZ.append(2, L'\0');
 
 				return stringZZ;

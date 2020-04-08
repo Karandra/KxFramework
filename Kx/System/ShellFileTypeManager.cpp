@@ -6,20 +6,20 @@
 
 namespace KxFramework
 {
-	wxString ShellFileTypeManager::NormalizeFileExtension(const wxString& extension)
+	String ShellFileTypeManager::NormalizeFileExtension(const String& extension)
 	{
 		if (!extension.IsEmpty() && *extension.begin() == wxS('.'))
 		{
-			return wxString(extension).Remove(0, 1);
+			return String(extension).Remove(0, 1);
 		}
 		return extension;
 	}
 
-	ShellFileType ShellFileTypeManager::FileTypeFromExtension(const wxString& extension) const
+	ShellFileType ShellFileTypeManager::FileTypeFromExtension(const String& extension) const
 	{
 		return m_Manager.GetFileTypeFromExtension(extension);
 	}
-	ShellFileType ShellFileTypeManager::FileTypeFromMimeType(const wxString& mimeType) const
+	ShellFileType ShellFileTypeManager::FileTypeFromMimeType(const String& mimeType) const
 	{
 		return m_Manager.GetFileTypeFromMimeType(mimeType);
 	}
@@ -28,11 +28,11 @@ namespace KxFramework
 	{
 		if (wxFileType* fileType = m_Manager.Associate(fileTypeInfo.AsWxFileTypeInfo()))
 		{
-			for (const wxString& ext: fileTypeInfo.GetExtensions())
+			for (const String& ext: fileTypeInfo.GetExtensions())
 			{
 				if (fileTypeInfo.IsURLProtocol(ext))
 				{
-					wxString extWithoutDot = NormalizeFileExtension(ext);
+					String extWithoutDot = NormalizeFileExtension(ext);
 
 					KxRegistry::SetValue(KxREG_HKEY_CLASSES_ROOT, extWithoutDot, wxS("URL Protocol"), {}, KxREG_VALUE_SZ);
 					KxRegistry::SetValue(KxREG_HKEY_CLASSES_ROOT, extWithoutDot, {}, KxString::Format(wxS("URL:%1 Protocol"), KxString::ToUpper(extWithoutDot)), KxREG_VALUE_SZ);
@@ -42,7 +42,7 @@ namespace KxFramework
 		}
 		return nullptr;
 	}
-	bool ShellFileTypeManager::IsAssociatedWith(const ShellFileType& fileType, const wxString& executablePath) const
+	bool ShellFileTypeManager::IsAssociatedWith(const ShellFileType& fileType, const String& executablePath) const
 	{
 		if (fileType)
 		{

@@ -4,7 +4,7 @@
 
 namespace KxFramework
 {
-	bool ShellFileTypeInfo::IsURLProtocol(const wxString& ext) const
+	bool ShellFileTypeInfo::IsURLProtocol(const String& ext) const
 	{
 		auto it = m_URLProtocolMap.find(ShellFileTypeManager::NormalizeFileExtension(ext));
 		if (it != m_URLProtocolMap.end())
@@ -13,7 +13,7 @@ namespace KxFramework
 		}
 		return false;
 	}
-	ShellFileTypeInfo& ShellFileTypeInfo::SetURLProtocol(const wxString& ext, bool protocol)
+	ShellFileTypeInfo& ShellFileTypeInfo::SetURLProtocol(const String& ext, bool protocol)
 	{
 		m_URLProtocolMap.insert_or_assign(ShellFileTypeManager::NormalizeFileExtension(ext), protocol);
 		return *this;

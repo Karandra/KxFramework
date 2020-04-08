@@ -68,11 +68,11 @@ namespace KxFramework
 		return GetValue() == ERROR_SUCCESS;
 	}
 
-	wxString Win32ErrorCode::ToString() const
+	String Win32ErrorCode::ToString() const
 	{
 		return {};
 	}
-	wxString Win32ErrorCode::GetMessage() const
+	String Win32ErrorCode::GetMessage() const
 	{
 		return FormatSystemMessage(FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_MAX_WIDTH_MASK, nullptr, GetValue(), 0);
 	}
@@ -93,21 +93,21 @@ namespace KxFramework
 		return SUCCEEDED(GetValue());
 	}
 
-	wxString HResultCode::ToString() const
+	String HResultCode::ToString() const
 	{
 		return {};
 	}
-	wxString HResultCode::GetMessage() const
+	String HResultCode::GetMessage() const
 	{
 		return _com_error(GetValue()).ErrorMessage();
 	}
 
-	wxString HResultCode::GetSource() const
+	String HResultCode::GetSource() const
 	{
 		_bstr_t result = _com_error(GetValue()).Source();
 		return static_cast<const wxChar*>(result);
 	}
-	wxString HResultCode::GetHelpFile() const
+	String HResultCode::GetHelpFile() const
 	{
 		_bstr_t result = _com_error(GetValue()).HelpFile();
 		return static_cast<const wxChar*>(result);
@@ -116,7 +116,7 @@ namespace KxFramework
 	{
 		return _com_error(GetValue()).HelpContext();
 	}
-	wxString HResultCode::GetDescription() const
+	String HResultCode::GetDescription() const
 	{
 		_bstr_t result = _com_error(GetValue()).Description();
 		return static_cast<const wxChar*>(result);
@@ -151,11 +151,11 @@ namespace KxFramework
 		return NT_SUCCESS(GetValue());
 	}
 
-	wxString NtStatusCode::ToString() const
+	String NtStatusCode::ToString() const
 	{
 		return {};
 	}
-	wxString NtStatusCode::GetMessage() const
+	String NtStatusCode::GetMessage() const
 	{
 		return FormatSystemMessage(FORMAT_MESSAGE_FROM_HMODULE|FORMAT_MESSAGE_MAX_WIDTH_MASK, ::GetModuleHandleW(L"NtDLL.dll"), GetValue(), 0);
 	}

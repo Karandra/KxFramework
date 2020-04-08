@@ -2,6 +2,8 @@
 #include "Common.h"
 #include "ShellFileType.h"
 #include "ShellFileTypeInfo.h"
+#include "Kx/General/String.h"
+#include "Kx/FileSystem/FSPath.h"
 #include <wx/mimetype.h>
 
 namespace KxFramework
@@ -9,21 +11,21 @@ namespace KxFramework
 	class KX_API ShellFileTypeManager
 	{
 		public:
-			static bool IsOfType(const wxString& mimeType, const wxString& wildcard)
+			static bool IsOfType(const String& mimeType, const String& wildcard)
 			{
 				return wxMimeTypesManager::IsOfType(mimeType, wildcard);
 			}
-			static wxString NormalizeFileExtension(const wxString& extension);
+			static String NormalizeFileExtension(const String& extension);
 
 		private:
 			mutable wxMimeTypesManager m_Manager;
 
 		public:
-			ShellFileType FileTypeFromExtension(const wxString& extension) const;
-			ShellFileType FileTypeFromMimeType(const wxString& mimeType) const;
+			ShellFileType FileTypeFromExtension(const String& extension) const;
+			ShellFileType FileTypeFromMimeType(const String& mimeType) const;
 
 			ShellFileType Associate(const ShellFileTypeInfo& fileTypeInfo);
-			bool IsAssociatedWith(const ShellFileType& fileType, const wxString& executablePath) const;
+			bool IsAssociatedWith(const ShellFileType& fileType, const String& executablePath) const;
 			bool Unassociate(ShellFileType& fileType);
 
 			wxArrayString EnumAllFileTypes() const
@@ -34,12 +36,12 @@ namespace KxFramework
 			}
 			template<class TFunc> size_t EnumFileTypes(TFunc&& func) const
 			{
-				using T = std::invoke_result_t<TFunc, const wxString&>;
+				using T = std::invoke_result_t<TFunc, const String&>;
 
 				size_t counter = 0;
 				wxArrayString mimetypes = EnumAllFileTypes();
 
-				for (const wxString& mime: mimetypes)
+				for (const String& mime: mimetypes)
 				{
 					if constexpr(std::is_same_v<T, bool>)
 					{

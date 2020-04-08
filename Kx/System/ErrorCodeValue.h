@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "Kx/General/String.h"
 
 namespace KxFramework
 {
@@ -114,8 +115,8 @@ namespace KxFramework
 				return !IsSuccess();
 			}
 
-			wxString ToString() const;
-			wxString GetMessage() const;
+			String ToString() const;
+			String GetMessage() const;
 	};
 
 	class HResultCode final: public System::ErrorCodeValue<HResultCode, int32_t>
@@ -141,13 +142,13 @@ namespace KxFramework
 				return !IsSuccess();
 			}
 
-			wxString ToString() const;
-			wxString GetMessage() const;
+			String ToString() const;
+			String GetMessage() const;
 
-			wxString GetSource() const;
-			wxString GetHelpFile() const;
+			String GetSource() const;
+			String GetHelpFile() const;
 			uint32_t GetHelpContext() const noexcept;
-			wxString GetDescription() const;
+			String GetDescription() const;
 			uint32_t GetFacility() const noexcept;
 			UniversallyUniqueID GetUniqueID() const noexcept;
 	};
@@ -176,8 +177,8 @@ namespace KxFramework
 				return !IsSuccess();
 			}
 
-			wxString ToString() const;
-			wxString GetMessage() const;
+			String ToString() const;
+			String GetMessage() const;
 			uint32_t GetFacility() const noexcept;
 	};
 }

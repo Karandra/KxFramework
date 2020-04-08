@@ -35,6 +35,7 @@ namespace KxFramework
 			T GetExitCode() const
 			{
 				Threading::AssertThreadExitCode<T>();
+
 				return static_cast<T>(m_ExitCode);
 			}
 			
@@ -42,6 +43,7 @@ namespace KxFramework
 			void SetExitCode(T code)
 			{
 				Threading::AssertThreadExitCode<T>();
+
 				m_ExitCode = static_cast<wxThread::ExitCode>(code);
 			}
 	};

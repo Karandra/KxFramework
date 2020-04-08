@@ -570,6 +570,7 @@
     <ClInclude Include="Kx\Utility\CallAtScopeExit.h" />
     <ClInclude Include="Kx\Utility\Common.h" />
     <ClInclude Include="Kx\Utility\Numeric.h" />
+    <ClInclude Include="Kx\Utility\String.h" />
     <ClInclude Include="Kx\Utility\TypeTraits.h" />
   </ItemGroup>
   <ItemGroup>
