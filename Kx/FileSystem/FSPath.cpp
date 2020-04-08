@@ -308,7 +308,7 @@ namespace KxFramework
 		}
 		return count;
 	}
-	size_t FSPath::ForEachComponent(std::function<bool(const String&)> func) const
+	size_t FSPath::ForEachComponent(std::function<bool(String)> func) const
 	{
 		size_t count = 0;
 
@@ -319,11 +319,9 @@ namespace KxFramework
 			if (m_Path[i] == wxS('\\') || isLastIndex)
 			{
 				size_t end = isLastIndex ? i : i - 1;
-				if (func(m_Path.SubString(start, end)))
-				{
-					count++;
-				}
-				else
+
+				count++;
+				if (!func(m_Path.SubString(start, end)))
 				{
 					break;
 				}

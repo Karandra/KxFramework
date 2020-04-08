@@ -104,12 +104,12 @@ namespace KxFramework
 			finalPath.SetNamespace(path.GetNamespace());
 
 			bool isCreated = false;
-			path.ForEachComponent([&](String part)
+			path.ForEachComponent([&](String currentDirectoryName)
 			{
-				finalPath /= std::move(part);
+				finalPath /= std::move(currentDirectoryName);
 
-				String path = finalPath.GetFullPathWithNS(FSPathNamespace::Win32File);
-				isCreated = ::CreateDirectoryW(path.wc_str(), nullptr);
+				String currentPath = finalPath.GetFullPathWithNS(FSPathNamespace::Win32File);
+				isCreated = ::CreateDirectoryW(currentPath.wc_str(), nullptr);
 				return true;
 			});
 			return isCreated;

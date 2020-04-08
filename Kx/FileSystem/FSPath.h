@@ -92,7 +92,7 @@ namespace KxFramework
 				return m_Path.length();
 			}
 			size_t GetComponentCount() const;
-			size_t ForEachComponent(std::function<bool(const String&)> func) const;
+			size_t ForEachComponent(std::function<bool(String)> func) const;
 
 			bool HasNamespace() const
 			{
