@@ -852,7 +852,7 @@ namespace KxFramework
 			template<class T>
 			bool Contains(T&& pattern, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return Find(std::forward<T>(pattern), 0, flags) == npos;
+				return Find(std::forward<T>(pattern), 0, flags) != npos;
 			}
 
 			// Conversion to numbers
