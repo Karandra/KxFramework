@@ -37,7 +37,7 @@ namespace KxFramework::StringFormater
 	bool StringFormaterBase::DoReplace(StringView string, StringView index, size_t startAt, size_t& next)
 	{
 		size_t pos = m_String.Find(index, startAt);
-		if (pos != wxString::npos && m_String.length() > pos + 1)
+		if (pos != String::npos && m_String.length() > pos + 1)
 		{
 			m_String.GetWxString().replace(pos, index.length(), string.data(), string.size());
 			next = pos + string.length();
@@ -48,7 +48,7 @@ namespace KxFramework::StringFormater
 
 	void StringFormaterBase::FormatString(std::string_view arg, int fieldWidth, wxUniChar fillChar)
 	{
-		String argCopy = arg;
+		String argCopy = String::FromView(arg);
 		FormatString(StringViewOf(argCopy), fieldWidth, fillChar);
 	}
 	void StringFormaterBase::FormatString(std::wstring_view arg, int fieldWidth, wxUniChar fillChar)
@@ -65,7 +65,7 @@ namespace KxFramework::StringFormater
 		}
 		else
 		{
-			String copy = arg;
+			String copy = String::FromView(arg);
 			copy.Append(fillChar, static_cast<size_t>(-fieldWidth) - arg.length());
 			ReplaceNext(StringViewOf(copy));
 		}

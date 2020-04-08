@@ -316,7 +316,7 @@ namespace KxFramework
 	// Comparison
 	bool String::StartsWith(std::string_view pattern, String* rest, StringOpFlag flags) const
 	{
-		String patternCopy = pattern;
+		String patternCopy = FromView(pattern);
 		return StartsWith(patternCopy, rest, flags);
 	}
 	bool String::StartsWith(std::wstring_view pattern, String* rest, StringOpFlag flags) const
@@ -341,7 +341,7 @@ namespace KxFramework
 	
 	bool String::EndsWith(std::string_view pattern, String* rest, StringOpFlag flags) const
 	{
-		String patternCopy = pattern;
+		String patternCopy = FromView(pattern);
 		return EndsWith(patternCopy, rest, flags);
 	}
 	bool String::EndsWith(std::wstring_view pattern, String* rest, StringOpFlag flags) const
@@ -433,7 +433,7 @@ namespace KxFramework
 	// Searching and replacing
 	size_t String::Find(std::string_view pattern, size_t offset, StringOpFlag flags) const
 	{
-		String patternCopy = pattern;
+		String patternCopy = FromView(pattern);
 		return Find(StringViewOf(patternCopy), offset, flags);
 	}
 	size_t String::Find(std::wstring_view pattern, size_t offset, StringOpFlag flags) const
@@ -500,8 +500,8 @@ namespace KxFramework
 
 	size_t String::Replace(std::string_view pattern, std::string_view replacement, size_t offset, StringOpFlag flags)
 	{
-		String patternCopy = pattern;
-		String replacementCopy = replacement;
+		String patternCopy = FromView(pattern);
+		String replacementCopy = FromView(replacement);
 		return Replace(StringViewOf(patternCopy), StringViewOf(replacementCopy), offset, flags);
 	}
 	size_t String::Replace(std::wstring_view pattern, std::wstring_view replacement, size_t offset, StringOpFlag flags)

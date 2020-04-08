@@ -116,6 +116,7 @@ namespace KxFramework
 			static constexpr size_t npos = StringView::npos;
 
 		public:
+			// Comparison
 			static int Compare(std::string_view left, std::string_view right, StringOpFlag flags = StringOpFlag::None) noexcept;
 			static int Compare(std::wstring_view left, std::wstring_view right, StringOpFlag flags = StringOpFlag::None) noexcept;
 			static int Compare(wxUniChar left, wxUniChar right, StringOpFlag flags = StringOpFlag::None) noexcept;
@@ -140,6 +141,16 @@ namespace KxFramework
 			static int Matches(T1&& name, T2&& expression, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
 				return Matches(StringViewOf(std::forward<T1>(name)), StringViewOf(std::forward<T2>(expression)), flags);
+			}
+
+			// Conversions
+			static String FromView(const std::string_view view)
+			{
+				return String(view);
+			}
+			static String FromView(const std::wstring_view view)
+			{
+				return String(view);
 			}
 
 			static wxUniChar FromUTF8(char c)
@@ -200,9 +211,20 @@ namespace KxFramework
 				return wxString::From8BitData(binaryData.data(), binaryData.length());
 			}
 
+			static String FromDouble(double value, int precision = -1)
+			{
+				return wxString::FromDouble(value, precision);
+			}
+			static String FromCDouble(double value, int precision = -1)
+			{
+				return wxString::FromCDouble(value, precision);
+			}
+
+			// Case conversion
 			static wxUniChar ToLower(wxUniChar c) noexcept;
 			static wxUniChar ToUpper(wxUniChar c) noexcept;
 
+			// Concatenation
 			template<class... Args>
 			static String Concat(Args&&... arg)
 			{
@@ -217,6 +239,7 @@ namespace KxFramework
 				return value;
 			}
 
+			// Substring extraction
 			template<class TFunc>
 			static size_t SplitBySeparator(const String& string, const String& sep, TFunc&& func, StringOpFlag flags = StringOpFlag::None)
 			{
@@ -291,6 +314,7 @@ namespace KxFramework
 				return 0;
 			}
 
+			// Formatting
 			template<class TString, class... Args>
 			static String Format(TString&& format, Args&&... arg)
 			{
@@ -300,7 +324,7 @@ namespace KxFramework
 					std::initializer_list<int>{((void)formatter(arg), 0) ...};
 					return formatter;
 				}
-				return std::forward<TString>(format);
+				return format;
 			}
 
 			template<class Traits, class TString, class... Args>
@@ -312,7 +336,7 @@ namespace KxFramework
 					std::initializer_list<int>{((void)formatter(arg), 0) ...};
 					return formatter;
 				}
-				return std::forward<TString>(format);
+				return format;
 			}
 
 		private:
@@ -372,15 +396,15 @@ namespace KxFramework
 			}
 
 			// std::[w]string_view
-			String(std::string_view other)
+			explicit String(std::string_view other)
 				:m_String(other.data(), other.length())
 			{
 			}
-			String(std::string_view other, const wxMBConv& conv)
+			explicit String(std::string_view other, const wxMBConv& conv)
 				:m_String(other.data(), conv, other.length())
 			{
 			}
-			String(std::wstring_view other)
+			explicit String(std::wstring_view other)
 				:m_String(other.data(), other.length())
 			{
 			}
