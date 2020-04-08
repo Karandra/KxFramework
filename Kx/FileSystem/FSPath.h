@@ -33,7 +33,7 @@ namespace KxFramework
 			bool m_SearchMaksAllowed = false;
 
 		protected:
-			bool AssignFromPath(String path);
+			void AssignFromPath(String path);
 			void ProcessNamespace();
 			void Normalize();
 

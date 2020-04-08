@@ -2,6 +2,7 @@
 #include "FSPath.h"
 #include "LegacyVolume.h"
 #include "StorageVolume.h"
+#include "Kx/Utility/CallAtScopeExit.h"
 #include "Private/NamespacePrefix.h"
 
 namespace
@@ -98,12 +99,15 @@ namespace KxFramework
 		return path;
 	}
 
-	bool FSPath::AssignFromPath(String path)
+	void FSPath::AssignFromPath(String path)
 	{
-		if (!CheckStringOnInitialAssign(path))
+		Utility::CallAtScopeExit atExit([&]()
 		{
-			return false;
-		}
+			if (!CheckStringOnInitialAssign(m_Path))
+			{
+				m_Path.Clear();
+			}
+		});
 
 		m_Path = std::move(path);
 		if (!m_Path.IsEmpty())
@@ -113,7 +117,6 @@ namespace KxFramework
 			ProcessNamespace();
 			Normalize();
 		}
-		return IsValid();
 	}
 	void FSPath::ProcessNamespace()
 	{
@@ -290,7 +293,7 @@ namespace KxFramework
 	}
 	bool FSPath::Contains(const FSPath& path) const
 	{
-		return KxString::Find(m_Path, path.GetFullPath(), 0, false) != String::npos;
+		return m_Path.Contains(path.GetFullPath(), StringOpFlag::IgnoreCase);
 	}
 
 	size_t FSPath::GetComponentCount() const
