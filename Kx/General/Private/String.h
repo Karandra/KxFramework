@@ -81,4 +81,17 @@ namespace KxFramework::Private
 		}
 		#endif
 	}
+
+	template<class T>
+	constexpr bool IsAnyCharType() noexcept
+	{
+		using Tx = std::remove_const_t<std::remove_reference_t<T>>;
+		return !std::is_array_v<T> && !std::is_pointer_v<T> && (std::is_same_v<Tx, char> || std::is_same_v<Tx, wchar_t> || std::is_same_v<Tx, wxUniChar> || std::is_same_v<Tx, wxUniCharRef>);
+	}
+
+	template<class T>
+	constexpr bool IsAnyStringType() noexcept
+	{
+		return !IsAnyCharType<T>();
+	}
 }
