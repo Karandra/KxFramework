@@ -5,7 +5,7 @@
 
 namespace KxFramework::FileSystem::NativeUtility
 {
-	inline HANDLE CallFindFirstFile(const wxString& query, WIN32_FIND_DATAW& findInfo, bool isCaseSensitive = false)
+	inline HANDLE CallFindFirstFile(const String& query, WIN32_FIND_DATAW& findInfo, bool isCaseSensitive = false)
 	{
 		const DWORD searchFlags = FIND_FIRST_EX_LARGE_FETCH|(isCaseSensitive ? FIND_FIRST_EX_CASE_SENSITIVE : 0);
 		return ::FindFirstFileExW(query.wc_str(), FindExInfoBasic, &findInfo, FINDEX_SEARCH_OPS::FindExSearchNameMatch, nullptr, searchFlags);
@@ -130,7 +130,7 @@ namespace KxFramework::FileSystem::NativeUtility
 		{
 			ULARGE_INTEGER compressedSize = {};
 
-			wxString path = fsPath.GetFullPathWithNS();
+			String path = fsPath.GetFullPathWithNS();
 			compressedSize.LowPart = ::GetCompressedFileSizeW(path.wc_str(), &compressedSize.HighPart);
 			fileItem.SetCompressedSize(BinarySize::FromBytes(compressedSize.QuadPart));
 		}

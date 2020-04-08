@@ -58,11 +58,11 @@ namespace KxFramework
 			AssignFromChar(index + g_FirstLegacyVolume);
 		}
 	}
-	wxString LegacyVolume::DoGetPath() const
+	String LegacyVolume::DoGetPath() const
 	{
 		if (IsValid())
 		{
-			wxChar disk[] = wxS("\0:\\");
+			XChar disk[] = wxS("\0:\\");
 			disk[0] = wxUniChar(m_Drive);
 			return disk;
 		}
@@ -77,7 +77,7 @@ namespace KxFramework
 	{
 		if (IsValid())
 		{
-			wxString path = DoGetPath();
+			String path = DoGetPath();
 			return ::GetDriveTypeW(path.wc_str()) != DRIVE_NO_ROOT_DIR;
 		}
 		return false;

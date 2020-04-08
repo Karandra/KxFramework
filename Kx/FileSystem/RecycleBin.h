@@ -28,7 +28,7 @@ namespace KxFramework
 	class RecycleBin final
 	{
 		private:
-			wxChar m_Path[4] = {};
+			XChar m_Path[4] = {};
 			LegacyVolume m_Volume;
 			IFileSystem* m_FileSystem = nullptr;
 			wxWindow* m_Window = nullptr;

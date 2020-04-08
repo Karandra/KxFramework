@@ -37,7 +37,7 @@ namespace KxFramework
 		{
 			WIN32_FIND_DATAW findInfo = {};
 
-			const wxString fullQuery = (directory / (!query ? wxS("*") : query)).GetFullPathWithNS(FSPathNamespace::Win32File);
+			const String fullQuery = (directory / (!query ? wxS("*") : query)).GetFullPathWithNS(FSPathNamespace::Win32File);
 			HANDLE handle = FileSystem::NativeUtility::CallFindFirstFile(fullQuery, findInfo, flags & FSEnumItemsFlag::CaseSensitive);
 			if (handle && handle != INVALID_HANDLE_VALUE)
 			{
@@ -104,11 +104,11 @@ namespace KxFramework
 			finalPath.SetNamespace(path.GetNamespace());
 
 			bool isCreated = false;
-			path.ForEachComponent([&](const wxString& part)
+			path.ForEachComponent([&](String part)
 			{
-				finalPath /= part;
+				finalPath /= std::move(part);
 
-				wxString path = finalPath.GetFullPathWithNS(FSPathNamespace::Win32File);
+				String path = finalPath.GetFullPathWithNS(FSPathNamespace::Win32File);
 				isCreated = ::CreateDirectoryW(path.wc_str(), nullptr);
 				return true;
 			});
@@ -120,7 +120,7 @@ namespace KxFramework
 	{
 		if (attributes != FileAttribute::Invalid)
 		{
-			wxString pathString = path.GetFullPathWithNS(FSPathNamespace::Win32File);
+			String pathString = path.GetFullPathWithNS(FSPathNamespace::Win32File);
 			return ::SetFileAttributesW(pathString.wc_str(), FileSystem::NativeUtility::MapFileAttributes(attributes));
 		}
 		return false;
@@ -146,8 +146,8 @@ namespace KxFramework
 		Utility::ModFlagRef(copyFlags, COPY_FILE_FAIL_IF_EXISTS, !(flags & FSCopyItemFlag::ReplaceIfExist));
 		Utility::ModFlagRef(copyFlags, COPY_FILE_NO_BUFFERING, flags & FSCopyItemFlag::NoBuffering);
 
-		const wxString sourcePath = source.GetFullPathWithNS(FSPathNamespace::Win32File);
-		const wxString destinationPath = destination.GetFullPathWithNS(FSPathNamespace::Win32File);
+		const String sourcePath = source.GetFullPathWithNS(FSPathNamespace::Win32File);
+		const String destinationPath = destination.GetFullPathWithNS(FSPathNamespace::Win32File);
 		return ::CopyFileExW(sourcePath.wc_str(), destinationPath.wc_str(), FileSystem::NativeUtility::CopyCallback, func ? &func : nullptr, &cancel, copyFlags);
 	}
 	bool NativeFileSystem::MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func, FSCopyItemFlag flags)
@@ -156,21 +156,21 @@ namespace KxFramework
 		Utility::ModFlagRef(moveFlags, MOVEFILE_REPLACE_EXISTING, flags & FSCopyItemFlag::ReplaceIfExist);
 		Utility::ModFlagRef(moveFlags, MOVEFILE_WRITE_THROUGH, flags & FSCopyItemFlag::NoBuffering);
 
-		const wxString sourcePath = source.GetFullPathWithNS(FSPathNamespace::Win32File);
-		const wxString destinationPath = destination.GetFullPathWithNS(FSPathNamespace::Win32File);
+		const String sourcePath = source.GetFullPathWithNS(FSPathNamespace::Win32File);
+		const String destinationPath = destination.GetFullPathWithNS(FSPathNamespace::Win32File);
 		return ::MoveFileWithProgressW(sourcePath.wc_str(), destinationPath.wc_str(), FileSystem::NativeUtility::CopyCallback, func ? &func : nullptr, moveFlags);
 	}
 	bool NativeFileSystem::RenameItem(const FSPath& source, const FSPath& destination, FSCopyItemFlag flags)
 	{
-		const wxString sourcePath = source.GetFullPathWithNS(FSPathNamespace::Win32File);
-		const wxString destinationPath = destination.GetFullPathWithNS(FSPathNamespace::Win32File);
+		const String sourcePath = source.GetFullPathWithNS(FSPathNamespace::Win32File);
+		const String destinationPath = destination.GetFullPathWithNS(FSPathNamespace::Win32File);
 
 		DWORD moveFlags = flags & FSCopyItemFlag::ReplaceIfExist ? MOVEFILE_REPLACE_EXISTING : 0;
 		return ::MoveFileExW(sourcePath.wc_str(), destinationPath.wc_str(), moveFlags);
 	}
 	bool NativeFileSystem::RemoveItem(const FSPath& path)
 	{
-		const wxString sourcePath = path.GetFullPathWithNS(FSPathNamespace::Win32File);
+		const String sourcePath = path.GetFullPathWithNS(FSPathNamespace::Win32File);
 
 		const uint32_t attributes = ::GetFileAttributesW(sourcePath.wc_str());
 		if (attributes != INVALID_FILE_ATTRIBUTES)
@@ -197,7 +197,7 @@ namespace KxFramework
 	size_t NativeFileSystem::EnumStreams(const FSPath& path, TEnumStreamsFunc func) const
 	{
 		size_t counter = 0;
-		wxString pathString = path.GetFullPathWithNS(FSPathNamespace::Win32File);
+		String pathString = path.GetFullPathWithNS(FSPathNamespace::Win32File);
 
 		WIN32_FIND_STREAM_DATA streamInfo = {};
 		HANDLE handle = ::FindFirstStreamW(pathString.wc_str(), STREAM_INFO_LEVELS::FindStreamInfoStandard, &streamInfo, 0);
@@ -258,7 +258,7 @@ namespace KxFramework
 		DWORD length = ::GetCurrentDirectoryW(0, nullptr);
 		if (length != 0)
 		{
-			wxString result;
+			String result;
 			::GetCurrentDirectoryW(length, wxStringBuffer(result, length));
 
 			return FSPath(result).EnsureNamespaceSet(FSPathNamespace::Win32File);
@@ -267,7 +267,7 @@ namespace KxFramework
 	}
 	bool NativeFileSystem::SetWorkingDirectory(const FSPath& directory) const
 	{
-		wxString directoryString = directory.GetFullPathWithNS(FSPathNamespace::Win32File);
+		String directoryString = directory.GetFullPathWithNS(FSPathNamespace::Win32File);
 		return ::SetCurrentDirectoryW(directoryString.wc_str());
 	}
 }

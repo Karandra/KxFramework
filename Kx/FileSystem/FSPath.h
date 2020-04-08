@@ -25,40 +25,44 @@ namespace KxFramework
 		friend class FSPathQuery;
 
 		public:
-			static FSPath FromStringUnchecked(const wxString& string, FSPathNamespace ns = FSPathNamespace::None);
+			static FSPath FromStringUnchecked(String string, FSPathNamespace ns = FSPathNamespace::None);
 
 		protected:
-			wxString m_Path;
+			String m_Path;
 			FSPathNamespace m_Namespace = FSPathNamespace::None;
 			bool m_SearchMaksAllowed = false;
 
 		protected:
-			bool AssignFromPath(const wxString& path);
+			bool AssignFromPath(String path);
 			void ProcessNamespace();
 			void Normalize();
 
-			bool CheckIsLegacyVolume(const wxString& path) const;
-			bool CheckIsVolumeGUID(const wxString& path) const;
-			size_t DetectNamespacePrefix(const wxString& path, KxFramework::FSPathNamespace& ns) const;
+			bool CheckIsLegacyVolume(const String& path) const;
+			bool CheckIsVolumeGUID(const String& path) const;
+			size_t DetectNamespacePrefix(const String& path, KxFramework::FSPathNamespace& ns) const;
 
-			bool CheckStringOnInitialAssign(const wxString& path) const;
-			bool CheckStringOnAssignPath(const wxString& path) const;
-			bool CheckStringOnAssignName(const wxString& name) const;
+			bool CheckStringOnInitialAssign(const String& path) const;
+			bool CheckStringOnAssignPath(const String& path) const;
+			bool CheckStringOnAssignName(const String& name) const;
 
 		public:
 			FSPath() = default;
 			FSPath(FSPath&&) = default;
 			FSPath(const FSPath&) = default;
-			FSPath(const wxString& path)
+			FSPath(String path)
 			{
-				AssignFromPath(path);
+				AssignFromPath(std::move(path));
+			}
+			FSPath(wxString path)
+			{
+				AssignFromPath(std::move(path));
 			}
 			FSPath(const char* path)
-				:FSPath(wxString(path))
+				:FSPath(String(path))
 			{
 			}
 			FSPath(const wchar_t* path)
-				:FSPath(wxString(path))
+				:FSPath(String(path))
 			{
 			}
 			virtual ~FSPath() = default;
@@ -74,7 +78,7 @@ namespace KxFramework
 			}
 			
 			bool Contains(const FSPath& path) const;
-			bool ContainsCharacters(const wxString& characters) const
+			bool ContainsCharacters(const String& characters) const
 			{
 				return m_Path.Contains(characters);
 			}
@@ -88,7 +92,7 @@ namespace KxFramework
 				return m_Path.length();
 			}
 			size_t GetComponentCount() const;
-			size_t ForEachComponent(std::function<bool(const wxString&)> func) const;
+			size_t ForEachComponent(std::function<bool(const String&)> func) const;
 
 			bool HasNamespace() const
 			{
@@ -112,8 +116,8 @@ namespace KxFramework
 				return *this;
 			}
 			
-			wxString GetFullPath(FSPathNamespace withNamespace = FSPathNamespace::None, FSPathFormat format = FSPathFormat::None) const;
-			wxString GetFullPathWithNS(FSPathNamespace withNamespace = FSPathNamespace::None, FSPathFormat format = FSPathFormat::None) const
+			String GetFullPath(FSPathNamespace withNamespace = FSPathNamespace::None, FSPathFormat format = FSPathFormat::None) const;
+			String GetFullPathWithNS(FSPathNamespace withNamespace = FSPathNamespace::None, FSPathFormat format = FSPathFormat::None) const
 			{
 				return GetFullPath(m_Namespace != FSPathNamespace::None ? m_Namespace : withNamespace, format);
 			}
@@ -129,14 +133,14 @@ namespace KxFramework
 			FSPath& SetVolume(const LegacyVolume& volume);
 			FSPath& SetVolume(const StorageVolume& volume);
 
-			wxString GetPath() const;
-			FSPath& SetPath(const wxString& path);
+			String GetPath() const;
+			FSPath& SetPath(const String& path);
 
-			wxString GetName() const;
-			FSPath& SetName(const wxString& name);
+			String GetName() const;
+			FSPath& SetName(const String& name);
 
-			wxString GetExtension() const;
-			FSPath& SetExtension(const wxString& ext);
+			String GetExtension() const;
+			FSPath& SetExtension(const String& ext);
 
 			FSPath GetAfter(const FSPath& start) const;
 			FSPath GetBefore(const FSPath& end) const;
@@ -173,10 +177,14 @@ namespace KxFramework
 				return !IsValid();
 			}
 
-			operator const wxString&() const
+			operator const String&() const&
 			{
 				// Without any formatting options we can just return normalized internal representation
 				return m_Path;
+			}
+			operator String() const&&
+			{
+				return std::move(m_Path);
 			}
 
 			bool operator==(const FSPath& other) const
@@ -184,6 +192,10 @@ namespace KxFramework
 				return IsSameAs(other, false);
 			}
 			bool operator==(const wxString& other) const
+			{
+				return IsSameAs(other, false);
+			}
+			bool operator==(const String& other) const
 			{
 				return IsSameAs(other, false);
 			}
@@ -202,7 +214,7 @@ namespace KxFramework
 				return !(*this == other);
 			}
 
-			bool operator!=(const wxString& other) const
+			bool operator!=(const String& other) const
 			{
 				return !(*this == other);
 			}
@@ -219,7 +231,7 @@ namespace KxFramework
 			{
 				return Concat(other);
 			}
-			FSPath& operator+=(const wxString& other)
+			FSPath& operator+=(const String& other)
 			{
 				return Concat(other);
 			}
@@ -236,7 +248,7 @@ namespace KxFramework
 			{
 				return Append(other);
 			}
-			FSPath& operator/=(const wxString& other)
+			FSPath& operator/=(const String& other)
 			{
 				return Append(other);
 			}
@@ -251,7 +263,7 @@ namespace KxFramework
 
 			FSPath& operator=(FSPath&&) = default;
 			FSPath& operator=(const FSPath&) = default;
-			FSPath& operator=(const wxString& path)
+			FSPath& operator=(const String& path)
 			{
 				AssignFromPath(path);
 				return *this;
@@ -269,15 +281,15 @@ namespace KxFramework
 	};
 
 	template<class T>
-	FSPath operator+(const FSPath& left, T&& right)
+	FSPath operator+(FSPath left, T&& right)
 	{
-		return FSPath(left).Concat(std::forward<T>(right));
+		return left.Concat(std::forward<T>(right));
 	}
 
 	template<class T>
-	FSPath operator/(const FSPath& left, T&& right)
+	FSPath operator/(FSPath left, T&& right)
 	{
-		return FSPath(left).Append(std::forward<T>(right));
+		return left.Append(std::forward<T>(right));
 	}
 }
 
@@ -298,17 +310,17 @@ namespace KxFramework
 			}
 			FSPathQuery(FSPathQuery&&) = default;
 			FSPathQuery(const FSPathQuery&) = default;
-			FSPathQuery(const wxString& path)
+			FSPathQuery(String path)
 				:FSPathQuery()
 			{
-				AssignFromPath(path);
+				AssignFromPath(std::move(path));
 			}
 			FSPathQuery(const char* path)
-				:FSPathQuery(wxString(path))
+				:FSPathQuery(String(path))
 			{
 			}
 			FSPathQuery(const wchar_t* path)
-				:FSPathQuery(wxString(path))
+				:FSPathQuery(String(path))
 			{
 			}
 			FSPathQuery(const FSPath& path)
@@ -331,17 +343,21 @@ namespace KxFramework
 			{
 				return FSPath::GetParent();
 			}
+
+		public:
+			FSPathQuery& operator=(FSPathQuery&&) = default;
+			FSPathQuery& operator=(const FSPathQuery&) = default;
 	};
 
 	template<class T>
-	FSPathQuery operator+(const FSPathQuery& left, T&& right)
+	FSPathQuery operator+(FSPathQuery left, T&& right)
 	{
-		return FSPathQuery(left).Concat(std::forward<T>(right));
+		return left.Concat(std::forward<T>(right));
 	}
 
 	template<class T>
-	FSPathQuery operator/(const FSPathQuery& left, T&& right)
+	FSPathQuery operator/(FSPathQuery left, T&& right)
 	{
-		return FSPathQuery(left).Append(std::forward<T>(right));
+		return left.Append(std::forward<T>(right));
 	}
 }

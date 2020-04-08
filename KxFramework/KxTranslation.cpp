@@ -92,7 +92,7 @@ KxTranslation::AvailableMap KxTranslation::FindTranslationsInDirectory(const wxS
 			wxString name = item.GetName().BeforeLast(wxS('.'));
 			if (!name.IsEmpty())
 			{
-				translations.insert(std::make_pair(name, item.GetFullPath()));
+				translations.insert(std::make_pair(name, item.GetFullPath().GetFullPath().GetWxString()));
 			}
 		}
 		return true;

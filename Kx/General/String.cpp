@@ -275,6 +275,11 @@ namespace
 
 namespace KxFramework
 {
+	const String NullString;
+}
+
+namespace KxFramework
+{
 	int String::Compare(std::string_view left, std::string_view right, StringOpFlag flags) noexcept
 	{
 		return CompareStrings(left, right, flags & StringOpFlag::IgnoreCase);

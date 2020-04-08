@@ -1,10 +1,11 @@
 #include "KxStdAfx.h"
 #include "Common.h"
+#include "Kx/General/String.h"
 #include "Private/NamespacePrefix.h"
 
 namespace KxFramework::FileSystem
 {
-	wxString GetNamespaceString(FSPathNamespace type)
+	String GetNamespaceString(FSPathNamespace type)
 	{
 		using namespace Private;
 
@@ -37,12 +38,12 @@ namespace KxFramework::FileSystem
 		};
 		return wxEmptyString;
 	}
-	wxString GetForbiddenChars(const wxString& except)
+	String GetForbiddenChars(const String& except)
 	{
-		wxString forbiddenChars = wxFileName::GetForbiddenChars();
-		for (wxChar c: except)
+		String forbiddenChars = wxFileName::GetForbiddenChars();
+		for (XChar c: except)
 		{
-			forbiddenChars.Replace(c, wxEmptyString, true);
+			forbiddenChars.Replace(c, NullString);
 		}
 		return forbiddenChars;
 	}

@@ -1,7 +1,12 @@
 #pragma once
 #include "Kx/Common.hpp"
-#include <wx/wx.h>
+#include "Kx/General/String.h"
 #include "Kx/System/UndefWindows.h"
+
+namespace KxFramework
+{
+	class String;
+}
 
 namespace KxFramework
 {
@@ -90,6 +95,6 @@ namespace KxFramework
 
 namespace KxFramework::FileSystem
 {
-	wxString GetNamespaceString(FSPathNamespace type);
-	wxString GetForbiddenChars(const wxString& except = wxEmptyString);
+	String GetNamespaceString(FSPathNamespace type);
+	String GetForbiddenChars(const String& except = {});
 }

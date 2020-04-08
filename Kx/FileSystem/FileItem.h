@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "FSPath.h"
+#include "Kx/General/String.h"
 #include "Kx/General/ExtraData.h"
 #include "Kx/General/BinarySize.h"
 
@@ -65,7 +66,7 @@ namespace KxFramework
 			{
 				if (m_Path.GetPathLength() >= 1)
 				{
-					const wxString name = m_Path.GetName();
+					const String name = m_Path.GetName();
 					return name == wxS("..") || name == wxS('.');
 				}
 				return false;
@@ -157,28 +158,28 @@ namespace KxFramework
 			}
 			FileItem& SetSource(const FSPath& source)
 			{
-				wxString name = m_Path.GetName();
+				String name = m_Path.GetName();
 				m_Path = source;
 				m_Path.SetName(std::move(name));
 
 				return *this;
 			}
 			
-			wxString GetName() const
+			String GetName() const
 			{
 				return m_Path.GetName();
 			}
-			FileItem& SetName(const wxString& name)
+			FileItem& SetName(const String& name)
 			{
 				m_Path.SetName(name);
 				return *this;
 			}
 			
-			wxString GetFileExtension() const
+			String GetFileExtension() const
 			{
 				return m_Path.GetExtension();
 			}
-			FileItem& SetFileExtension(const wxString& ext)
+			FileItem& SetFileExtension(const String& ext)
 			{
 				m_Path.SetExtension(ext);
 				return *this;

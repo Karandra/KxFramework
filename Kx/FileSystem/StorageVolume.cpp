@@ -147,7 +147,7 @@ namespace KxFramework
 	{
 		if (path)
 		{
-			wxString mountPoint = path.GetFullPathWithNS(FSPathNamespace::Win32File);
+			String mountPoint = path.GetFullPathWithNS(FSPathNamespace::Win32File);
 			return ::DeleteVolumeMountPointW(mountPoint.wc_str());
 		}
 		return false;
@@ -170,24 +170,24 @@ namespace KxFramework
 
 		AssignPath(KxString::Format(wxS("(\\\\?\\Volume{%1}\\"), id.ToString()));
 	}
+	StorageVolume::StorageVolume(const LegacyVolume& legacyVolume)
+	{
+		if (legacyVolume)
+		{
+			String volumePath = legacyVolume.GetPath().GetFullPath(FSPathNamespace::None, FSPathFormat::TrailingSeparator);
+			XChar volumeGuidPath[64] = {};
+			if (::GetVolumeNameForVolumeMountPointW(volumePath.wc_str(), volumeGuidPath, std::size(volumeGuidPath)))
+			{
+				AssignPath(volumeGuidPath);
+			}
+		}
+	}
 	StorageVolume::StorageVolume(const FSPath& path)
 	{
 		if (path.HasVolume())
 		{
 			// Volume paths should be in following format: '\\?\Volume{66843779-55ae-45c5-9abe-b67ccee14079}\'.
 			AssignPath(path.GetFullPathWithNS(FSPathNamespace::Win32File, FSPathFormat::TrailingSeparator).Left(g_VolumePathTotalLength));
-		}
-	}
-	StorageVolume::StorageVolume(const LegacyVolume& legacyVolume)
-	{
-		if (legacyVolume)
-		{
-			wxString volumePath = legacyVolume.GetPath().GetFullPath(FSPathNamespace::None, FSPathFormat::TrailingSeparator);
-			wxChar volumeGuidPath[64] = {};
-			if (::GetVolumeNameForVolumeMountPointW(volumePath.wc_str(), volumeGuidPath, std::size(volumeGuidPath)))
-			{
-				AssignPath(volumeGuidPath);
-			}
 		}
 	}
 
@@ -202,10 +202,10 @@ namespace KxFramework
 
 	UniversallyUniqueID StorageVolume::GetUniqueID() const
 	{
-		auto guid = std::wstring_view(m_Path).substr(g_VolumePathPrefixLength + 1, g_GUIDLength);
+		auto guid = StringViewOf(m_Path).substr(g_VolumePathPrefixLength + 1, g_GUIDLength);
 
-		wxChar buffer[64] = {};
-		std::char_traits<wxChar>::copy(buffer, guid.data(), guid.length());
+		XChar buffer[64] = {};
+		std::char_traits<XChar>::copy(buffer, guid.data(), guid.length());
 		return buffer;
 	}
 	FSPath StorageVolume::GetPath() const
@@ -214,13 +214,13 @@ namespace KxFramework
 		return m_Path;
 	}
 
-	wxString StorageVolume::GetLabel() const
+	String StorageVolume::GetLabel() const
 	{
 		wxChar buffer[MAX_PATH + 1] = {};
 		::GetVolumeInformationW(m_Path, buffer, std::size(buffer), nullptr, nullptr, nullptr, nullptr, 0);
 		return buffer;
 	}
-	bool StorageVolume::SetLabel(const wxString& label)
+	bool StorageVolume::SetLabel(const String& label)
 	{
 		return ::SetVolumeLabelW(m_Path, label.IsEmpty() ? nullptr : label.wc_str());
 	}
@@ -239,7 +239,7 @@ namespace KxFramework
 		::GetVolumeInformationW(m_Path, nullptr, 0, &serialNumber, nullptr, nullptr, nullptr, 0);
 		return serialNumber;
 	}
-	wxString StorageVolume::GetFileSystem() const
+	String StorageVolume::GetFileSystem() const
 	{
 		wxChar buffer[MAX_PATH + 1] = {};
 		::GetVolumeInformationW(m_Path, nullptr, 0, nullptr, nullptr, nullptr, buffer, std::size(buffer));
@@ -350,7 +350,7 @@ namespace KxFramework
 	{
 		if (path)
 		{
-			wxString mountPoint = path.GetFullPathWithNS(FSPathNamespace::Win32File);
+			String mountPoint = path.GetFullPathWithNS(FSPathNamespace::Win32File);
 			return ::SetVolumeMountPointW(mountPoint.wc_str(), m_Path);
 		}
 		return false;

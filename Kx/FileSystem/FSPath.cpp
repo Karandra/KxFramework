@@ -3,7 +3,6 @@
 #include "LegacyVolume.h"
 #include "StorageVolume.h"
 #include "Private/NamespacePrefix.h"
-#include <KxFramework/KxComparator.h>
 
 namespace
 {
@@ -13,7 +12,7 @@ namespace
 }
 namespace
 {
-	wxString ConcatWithNamespace(const wxString& path, KxFramework::FSPathNamespace withNamespace)
+	KxFramework::String ConcatWithNamespace(const KxFramework::String& path, KxFramework::FSPathNamespace withNamespace)
 	{
 		using namespace KxFramework;
 
@@ -23,30 +22,36 @@ namespace
 		}
 		return path;
 	}
-	size_t FindChar(const wxString& path, wxChar c, bool reverse = false)
+	size_t FindChar(const KxFramework::String& path, wxChar c, bool reverse = false)
 	{
-		return reverse ? path.rfind(c) : path.find(c);
+		using namespace KxFramework;
+
+		return path.Find(c, 0, reverse ? StringOpFlag::FromEnd : StringOpFlag::None);
 	}
-	wxString ExtractBefore(const wxString& path, wxChar c, bool reverse = false)
+	KxFramework::String ExtractBefore(const KxFramework::String& path, wxChar c, bool reverse = false)
 	{
+		using namespace KxFramework;
+
 		const size_t pos = FindChar(path, c, reverse);
-		if (pos != wxString::npos)
+		if (pos != String::npos)
 		{
-			wxString result = path.Left(pos);
-			if (!result.IsEmpty() && result.Last() == wxS('\\'))
+			String result = path.Left(pos);
+			if (!result.IsEmpty() && result.back() == wxS('\\'))
 			{
-				result.RemoveLast(1);
+				result.RemoveFromEnd(1);
 			}
 			return result;
 		}
 		return wxEmptyString;
 	}
-	wxString ExtractAfter(const wxString& path, wxChar c, size_t count = wxString::npos, bool reverse = false)
+	KxFramework::String ExtractAfter(const KxFramework::String& path, wxChar c, size_t count = KxFramework::String::npos, bool reverse = false)
 	{
+		using namespace KxFramework;
+
 		const size_t pos = FindChar(path, c, reverse);
-		if (pos != wxString::npos && pos + 1 < path.length())
+		if (pos != String::npos && pos + 1 < path.length())
 		{
-			wxString result = path.Mid(pos + 1, count);
+			String result = path.Mid(pos + 1, count);
 			if (!result.IsEmpty() && result[0] == wxS('\\'))
 			{
 				result.Remove(0, 1);
@@ -55,7 +60,7 @@ namespace
 		}
 		return wxEmptyString;
 	}
-	size_t RemoveLeadingSpaces(wxString& path)
+	size_t RemoveLeadingSpaces(KxFramework::String& path)
 	{
 		const std::locale locale;
 		size_t removedCount = 0;
@@ -84,23 +89,23 @@ namespace
 
 namespace KxFramework
 {
-	FSPath FSPath::FromStringUnchecked(const wxString& string, FSPathNamespace ns)
+	FSPath FSPath::FromStringUnchecked(String string, FSPathNamespace ns)
 	{
 		FSPath path;
-		path.m_Path = string;
+		path.m_Path = std::move(string);
 		path.m_Namespace = ns;
 
 		return path;
 	}
 
-	bool FSPath::AssignFromPath(const wxString& path)
+	bool FSPath::AssignFromPath(String path)
 	{
 		if (!CheckStringOnInitialAssign(path))
 		{
 			return false;
 		}
 
-		m_Path = path;
+		m_Path = std::move(path);
 		if (!m_Path.IsEmpty())
 		{
 			// It's important to process namespace before normalization,
@@ -172,7 +177,7 @@ namespace KxFramework
 		}
 	}
 
-	bool FSPath::CheckIsLegacyVolume(const wxString& path) const
+	bool FSPath::CheckIsLegacyVolume(const String& path) const
 	{
 		if (path.length() >= 2 && path[1] == wxS(':'))
 		{
@@ -180,7 +185,7 @@ namespace KxFramework
 		}
 		return false;
 	}
-	bool FSPath::CheckIsVolumeGUID(const wxString& path) const
+	bool FSPath::CheckIsVolumeGUID(const String& path) const
 	{
 		// Format: '\\?\Volume{66843779-55ae-45c5-9abe-b67ccee14079}\', but we're store path without namespace and trailing separators
 		// so it'll be this instead: 'Volume{66843779-55ae-45c5-9abe-b67ccee14079}'.
@@ -192,7 +197,7 @@ namespace KxFramework
 		}
 		return false;
 	}
-	size_t FSPath::DetectNamespacePrefix(const wxString& path, KxFramework::FSPathNamespace& ns) const
+	size_t FSPath::DetectNamespacePrefix(const String& path, KxFramework::FSPathNamespace& ns) const
 	{
 		using namespace FileSystem::Private;
 
@@ -245,7 +250,7 @@ namespace KxFramework
 		return 0;
 	}
 
-	bool FSPath::CheckStringOnInitialAssign(const wxString& path) const
+	bool FSPath::CheckStringOnInitialAssign(const String& path) const
 	{
 		if (path.Contains(FileSystem::GetForbiddenChars(m_SearchMaksAllowed ? wxS("\\/*?") : wxS("\\/"))))
 		{
@@ -253,7 +258,7 @@ namespace KxFramework
 		}
 		return true;
 	}
-	bool FSPath::CheckStringOnAssignPath(const wxString& path) const
+	bool FSPath::CheckStringOnAssignPath(const String& path) const
 	{
 		FSPathNamespace ns = FSPathNamespace::None;
 		return !path.Contains(FileSystem::GetForbiddenChars(m_SearchMaksAllowed ? wxS("*?") : wxEmptyString)) &&
@@ -261,7 +266,7 @@ namespace KxFramework
 			!CheckIsVolumeGUID(path) &&
 			DetectNamespacePrefix(path, ns) == 0;
 	}
-	bool FSPath::CheckStringOnAssignName(const wxString& name) const
+	bool FSPath::CheckStringOnAssignName(const String& name) const
 	{
 		return CheckStringOnAssignPath(name);
 	}
@@ -272,7 +277,7 @@ namespace KxFramework
 	}
 	bool FSPath::IsSameAs(const FSPath& other, bool caseSensitive) const
 	{
-		return m_Namespace == other.m_Namespace && KxComparator::IsEqual(m_Path, other.m_Path, !caseSensitive);
+		return m_Namespace == other.m_Namespace && m_Path.IsSameAs(other.m_Path, caseSensitive ? StringOpFlag::None : StringOpFlag::IgnoreCase);
 	}
 	bool FSPath::IsAbsolute() const
 	{
@@ -285,7 +290,7 @@ namespace KxFramework
 	}
 	bool FSPath::Contains(const FSPath& path) const
 	{
-		return KxString::Find(m_Path, path.GetFullPath(), 0, false) != wxString::npos;
+		return KxString::Find(m_Path, path.GetFullPath(), 0, false) != String::npos;
 	}
 
 	size_t FSPath::GetComponentCount() const
@@ -300,7 +305,7 @@ namespace KxFramework
 		}
 		return count;
 	}
-	size_t FSPath::ForEachComponent(std::function<bool(const wxString&)> func) const
+	size_t FSPath::ForEachComponent(std::function<bool(const String&)> func) const
 	{
 		size_t count = 0;
 
@@ -326,9 +331,9 @@ namespace KxFramework
 		}
 		return count;
 	}
-	wxString FSPath::GetFullPath(FSPathNamespace withNamespace, FSPathFormat format) const
+	String FSPath::GetFullPath(FSPathNamespace withNamespace, FSPathFormat format) const
 	{
-		wxString result = ConcatWithNamespace(m_Path, withNamespace);
+		String result = ConcatWithNamespace(m_Path, withNamespace);
 		if (!result.IsEmpty())
 		{
 			if (format & FSPathFormat::TrailingSeparator)
@@ -383,7 +388,7 @@ namespace KxFramework
 				// Replace with legacy drive path
 				char disk[] = "\0:\\";
 				disk[0] = drive.GetChar();
-				m_Path.replace(0, g_VolumePathTotalLength, disk, std::size(disk) - 1);
+				m_Path.GetWxString().replace(0, g_VolumePathTotalLength, disk, std::size(disk) - 1);
 			}
 			else
 			{
@@ -410,8 +415,8 @@ namespace KxFramework
 			if (volume)
 			{
 				// Replace with volume path
-				wxString path = volume.GetPath().GetFullPath(FSPathNamespace::None, FSPathFormat::TrailingSeparator);
-				m_Path.replace(0, 2, path);
+				String path = volume.GetPath().GetFullPath(FSPathNamespace::None, FSPathFormat::TrailingSeparator);
+				m_Path.GetWxString().replace(0, 2, path);
 			}
 			else
 			{
@@ -425,8 +430,8 @@ namespace KxFramework
 			if (volume)
 			{
 				// Replace with a new volume path
-				wxString path = volume.GetPath().GetFullPath(FSPathNamespace::None, FSPathFormat::TrailingSeparator);
-				m_Path.replace(0, g_VolumePathTotalLength, path);
+				String path = volume.GetPath().GetFullPath(FSPathNamespace::None, FSPathFormat::TrailingSeparator);
+				m_Path.GetWxString().replace(0, g_VolumePathTotalLength, path);
 			}
 			else
 			{
@@ -438,15 +443,15 @@ namespace KxFramework
 		else
 		{
 			// Prepend a new volume path
-			wxString path = volume.GetPath().GetFullPath(FSPathNamespace::None, FSPathFormat::TrailingSeparator);
-			m_Path.Prepend(path);
+			String path = volume.GetPath().GetFullPath(FSPathNamespace::None, FSPathFormat::TrailingSeparator);
+			m_Path.Prepend(std::move(path));
 
 			Normalize();
 		}
 		return *this;
 	}
 
-	wxString FSPath::GetPath() const
+	String FSPath::GetPath() const
 	{
 		if (HasLegacyVolume())
 		{
@@ -464,14 +469,14 @@ namespace KxFramework
 			return m_Path;
 		}
 	}
-	FSPath& FSPath::SetPath(const wxString& path)
+	FSPath& FSPath::SetPath(const String& path)
 	{
 		if (CheckStringOnAssignPath(path))
 		{
 			if (HasLegacyVolume())
 			{
 				// Replace after the disk designator
-				m_Path.Remove(2, wxString::npos);
+				m_Path.Remove(2, String::npos);
 				m_Path += wxS('\\');
 				m_Path += path;
 			}
@@ -492,27 +497,27 @@ namespace KxFramework
 		return *this;
 	}
 
-	wxString FSPath::GetName() const
+	String FSPath::GetName() const
 	{
 		// Return everything after last path delimiter or itself
-		wxString path = ExtractAfter(m_Path, wxS('\\'), wxString::npos, true);
+		String path = ExtractAfter(m_Path, wxS('\\'), String::npos, true);
 		return path.IsEmpty() ? m_Path : path;
 	}
-	FSPath& FSPath::SetName(const wxString& name)
+	FSPath& FSPath::SetName(const String& name)
 	{
 		if (CheckStringOnAssignName(name))
 		{
-			const size_t pos = m_Path.rfind(wxS('\\'));
-			if (pos != wxString::npos)
+			const size_t pos = m_Path.Find(wxS('\\'), 0, StringOpFlag::FromEnd);
+			if (pos != String::npos)
 			{
-				const size_t dot = m_Path.find(wxS('.'), pos);
-				if (dot != wxString::npos)
+				const size_t dot = m_Path.Find(wxS('.'), pos);
+				if (dot != String::npos)
 				{
-					m_Path.replace(pos + 1, dot - pos, name);
+					m_Path.GetWxString().replace(pos + 1, dot - pos, name);
 				}
 				else
 				{
-					m_Path.replace(pos + 1, m_Path.length() - pos, name);
+					m_Path.GetWxString().replace(pos + 1, m_Path.length() - pos, name);
 				}
 				Normalize();
 			}
@@ -520,21 +525,21 @@ namespace KxFramework
 		return *this;
 	}
 
-	wxString FSPath::GetExtension() const
+	String FSPath::GetExtension() const
 	{
 		// Return extension without a dot
-		return ExtractAfter(m_Path, wxS('.'), wxString::npos, true);
+		return ExtractAfter(m_Path, wxS('.'), String::npos, true);
 	}
-	FSPath& FSPath::SetExtension(const wxString& ext)
+	FSPath& FSPath::SetExtension(const String& ext)
 	{
 		if (!ext.Contains(FileSystem::GetForbiddenChars()))
 		{
-			auto Replace = [this](const wxString& ext)
+			auto Replace = [this](const String& ext)
 			{
-				const size_t pos = m_Path.rfind(wxS('.'));
-				if (pos != wxString::npos)
+				const size_t pos = m_Path.Find(wxS('.'), 0, StringOpFlag::FromEnd);
+				if (pos != String::npos)
 				{
-					m_Path.replace(pos + 1, m_Path.length() - pos, ext);
+					m_Path.GetWxString().replace(pos + 1, m_Path.length() - pos, ext);
 				}
 				else
 				{
@@ -543,7 +548,7 @@ namespace KxFramework
 				}
 			};
 
-			if (wxString extWithoutDot; ext.StartsWith(wxS('.'), &extWithoutDot))
+			if (String extWithoutDot; ext.StartsWith(wxS('.'), &extWithoutDot))
 			{
 				Replace(extWithoutDot);
 			}
@@ -562,12 +567,12 @@ namespace KxFramework
 		// start: C:\Program Files (x86)
 		// return: Common Files\Microsoft
 
-		wxString fullPath = GetFullPath();
-		if (KxComparator::IsEqual(fullPath.Left(start.GetPathLength()), start.m_Path, true))
+		String fullPath = GetFullPath();
+		if (fullPath.Left(start.GetPathLength()).IsSameAs(start.m_Path, StringOpFlag::IgnoreCase))
 		{
 			fullPath = fullPath.Remove(0, start.GetPathLength());
 		}
-		return FSPath(fullPath).EnsureNamespaceSet(m_Namespace);
+		return FSPath(std::move(fullPath)).EnsureNamespaceSet(m_Namespace);
 	}
 	FSPath FSPath::GetBefore(const FSPath& end) const
 	{
@@ -575,12 +580,12 @@ namespace KxFramework
 		// end: Common Files\Microsoft
 		// return: C:\Program Files (x86)
 
-		wxString fullPath = GetFullPath();
-		if (KxComparator::IsEqual(fullPath.Right(end.GetPathLength()), end.m_Path, true))
+		String fullPath = GetFullPath();
+		if (fullPath.Right(end.GetPathLength()).IsSameAs(end.m_Path, StringOpFlag::IgnoreCase))
 		{
 			fullPath = fullPath.Remove(fullPath.length() - end.GetPathLength(), end.GetPathLength());
 		}
-		return FSPath(fullPath).EnsureNamespaceSet(m_Namespace);
+		return FSPath(std::move(fullPath)).EnsureNamespaceSet(m_Namespace);
 	}
 	FSPath FSPath::GetParent() const
 	{

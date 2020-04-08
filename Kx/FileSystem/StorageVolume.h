@@ -30,21 +30,21 @@ namespace KxFramework
 			static bool RemoveMountPoint(const LegacyVolume& volume);
 
 		private:
-			wxChar m_Path[64 - sizeof(size_t)] = {};
+			XChar m_Path[64 - sizeof(size_t)] = {};
 			size_t m_Length = 0;
 
 		private:
-			void AssignPath(const wxChar* path, size_t length = wxString::npos)
+			void AssignPath(const XChar* path, size_t length = String::npos)
 			{
-				if (length == wxString::npos)
+				if (length == String::npos)
 				{
-					length = std::char_traits<wxChar>::length(path);
+					length = std::char_traits<XChar>::length(path);
 				}
 
 				m_Length = std::min(length, std::size(m_Path) - 1);
-				std::char_traits<wxChar>::copy(m_Path, path, m_Length);
+				std::char_traits<XChar>::copy(m_Path, path, m_Length);
 			}
-			void AssignPath(const wxString& path)
+			void AssignPath(const String& path)
 			{
 				AssignPath(path.wc_str(), path.length());
 			}
@@ -54,8 +54,8 @@ namespace KxFramework
 			StorageVolume(StorageVolume&&) = default;
 			StorageVolume(const StorageVolume&) = default;
 			StorageVolume(const UniversallyUniqueID& id);
-			StorageVolume(const FSPath& path);
 			StorageVolume(const LegacyVolume& legacyVolume);
+			StorageVolume(const FSPath& path);
 
 		public:
 			bool IsValid() const;
@@ -64,12 +64,12 @@ namespace KxFramework
 			UniversallyUniqueID GetUniqueID() const;
 			FSPath GetPath() const;
 
-			wxString GetLabel() const;
-			bool SetLabel(const wxString& label);
+			String GetLabel() const;
+			bool SetLabel(const String& label);
 
 			DriveType GetType() const;
 			uint32_t GetSerialNumber() const;
-			wxString GetFileSystem() const;
+			String GetFileSystem() const;
 			FileSystemFeature GetFileSystemFeatures() const;
 
 			std::optional<SpaceLayoutInfo> GetSpaceLayoutInfo() const;

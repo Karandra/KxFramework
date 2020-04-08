@@ -23,7 +23,7 @@ namespace KxFramework
 			{
 				return FromChar(wxUniChar(value));
 			}
-			static LegacyVolume FromChar(const wxString& value)
+			static LegacyVolume FromChar(const String& value)
 			{
 				LegacyVolume drive;
 				if (!value.IsEmpty())
@@ -42,7 +42,7 @@ namespace KxFramework
 		private:
 			void AssignFromChar(const wxUniChar& value);
 			void AssignFromIndex(int index);
-			wxString DoGetPath() const;
+			String DoGetPath() const;
 
 		private:
 			char m_Drive = 0;

@@ -9,12 +9,7 @@ namespace KxFramework
 {
 	using XChar = wxChar;
 	using StringView = std::basic_string_view<XChar>;
-
-	namespace StringFormatter
-	{
-		template<class T>
-		class Formatter;
-	}
+	extern const String NullString;
 
 	enum class StringOpFlag
 	{
@@ -27,6 +22,11 @@ namespace KxFramework
 	namespace EnumClass
 	{
 		Kx_EnumClass_AllowEverything(StringOpFlag);
+	}
+	namespace StringFormatter
+	{
+		template<class T>
+		class Formatter;
 	}
 }
 
@@ -660,20 +660,44 @@ namespace KxFramework
 
 			bool StartsWith(std::string_view pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
 			bool StartsWith(std::wstring_view pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
-			
+			bool StartsWith(wxUniChar c, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const noexcept
+			{
+				const XChar pattern[2] = {c, 0};
+				return StartsWith(StringViewOf(pattern), rest, flags);
+			}
+
 			template<class T>
 			bool StartsWith(T&& pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return StartsWith(StringViewOf(std::forward<T>(pattern)), rest, flags);
+				if constexpr(Private::IsAnyCharType<T>())
+				{
+					return StartsWith(UniCharOf(std::forward<T>(pattern)), rest, flags);
+				}
+				else
+				{
+					return StartsWith(StringViewOf(std::forward<T>(pattern)), rest, flags);
+				}
 			}
 
 			bool EndsWith(std::string_view pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
 			bool EndsWith(std::wstring_view pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
-			
+			bool EndsWith(wxUniChar c, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const noexcept
+			{
+				const XChar pattern[2] = {c, 0};
+				return EndsWith(StringViewOf(pattern), rest, flags);
+			}
+
 			template<class T>
 			bool EndsWith(T&& pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return EndsWith(StringViewOf(std::forward<T>(pattern)), rest, flags);
+				if constexpr(Private::IsAnyCharType<T>())
+				{
+					return EndsWith(UniCharOf(std::forward<T>(pattern)), rest, flags);
+				}
+				else
+				{
+					return EndsWith(StringViewOf(std::forward<T>(pattern)), rest, flags);
+				}
 			}
 
 			bool Matches(std::string_view expression, StringOpFlag flags = StringOpFlag::None) noexcept
@@ -692,15 +716,27 @@ namespace KxFramework
 				return Matches(*this, String(expression), flags);
 				#endif
 			}
-			
+			bool Matches(wxUniChar c, StringOpFlag flags = StringOpFlag::None) const noexcept
+			{
+				const XChar expression[2] = {c, 0};
+				return Matches(StringViewOf(expression), flags);
+			}
+
 			template<class T>
 			bool Matches(T&& expression, StringOpFlag flags = StringOpFlag::None) const
 			{
-				return Matches(StringViewOf(std::forward<T>(expression)), flags);
+				if constexpr(Private::IsAnyCharType<T>())
+				{
+					return Matches(UniCharOf(std::forward<T>(expression)), flags);
+				}
+				else
+				{
+					return Matches(StringViewOf(std::forward<T>(expression)), flags);
+				}
 			}
 
 			// Substring extraction
-			String Mid(size_t offset, size_t count = wxString::npos) const
+			String Mid(size_t offset, size_t count = String::npos) const
 			{
 				return m_String.Mid(offset, count);
 			}
@@ -781,17 +817,35 @@ namespace KxFramework
 			size_t Replace(std::string_view pattern, std::string_view replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None);
 			size_t Replace(std::wstring_view pattern, std::wstring_view replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None);
 			size_t Replace(wxUniChar c, wxUniChar replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) noexcept;
+			size_t Replace(wxUniChar c, std::string_view replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) noexcept
+			{
+				const char pattern[2] = {c, 0};
+				return Replace(StringViewOf(pattern), replacement, offset, flags);
+			}
+			size_t Replace(wxUniChar c, std::wstring_view replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) noexcept
+			{
+				const wchar_t pattern[2] = {c, 0};
+				return Replace(StringViewOf(pattern), replacement, offset, flags);
+			}
 			
 			template<class T1, class T2>
 			size_t Replace(T1&& pattern, T2&& replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const
 			{
-				if constexpr(Private::IsAnyCharType<T1>() && Private::IsAnyCharType<T2>())
+				if constexpr(Private::IsAnyStringType<T1>() && Private::IsAnyStringType<T2>())
+				{
+					return Replace(StringViewOf(std::forward<T1>(pattern)), StringViewOf(std::forward<T2>(replacement)), offset, flags);
+				}
+				else if constexpr(Private::IsAnyCharType<T1>() && Private::IsAnyCharType<T2>())
 				{
 					return Replace(UniCharOf(std::forward<T1>(pattern)), UniCharOf(std::forward<T2>(replacement)), offset, flags);
 				}
+				else if constexpr(Private::IsAnyCharType<T1>() && Private::IsAnyStringType<T2>())
+				{
+					return Replace(UniCharOf(std::forward<T1>(pattern)), StringViewOf(std::forward<T2>(replacement)), offset, flags);
+				}
 				else
 				{
-					return Replace(StringViewOf(std::forward<T1>(pattern)), StringViewOf(std::forward<T2>(replacement)), offset, flags);
+					static_assert(false, "invalid argument types");
 				}
 			}
 

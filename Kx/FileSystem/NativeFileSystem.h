@@ -9,7 +9,7 @@ namespace KxFramework
 	{
 		public:
 			using TCopyDirectoryTreeFunc = std::function<bool(FSPath, FSPath, BinarySize, BinarySize)>;
-			using TEnumStreamsFunc = std::function<bool(const wxString&, BinarySize)>;
+			using TEnumStreamsFunc = std::function<bool(String, BinarySize)>;
 
 		public:
 			static NativeFileSystem& Get()

@@ -3,17 +3,18 @@
 #include <shlwapi.h>
 #include "Kx/System/UndefWindows.h"
 
-namespace KxFramework
+namespace
 {
 	template<class TFunc>
-	FSPath CallWinAPIWithLengthPrecalc(const FSPath& filePath, TFunc&& func)
+	KxFramework::FSPath CallWinAPIWithLengthPrecalc(const KxFramework::FSPath& filePath, TFunc&& func)
 	{
-		wxString path = filePath.GetFullPath(FSPathNamespace::Win32File);
+		using namespace KxFramework;
 
+		String path = filePath.GetFullPath(FSPathNamespace::Win32File);
 		const DWORD length = func(path.wc_str(), nullptr, 0);
 		if (length)
 		{
-			wxString result;
+			String result;
 			func(path.wc_str(), wxStringBuffer(result, length), length);
 
 			FSPath fsPath = std::move(result);
@@ -34,12 +35,12 @@ namespace KxFramework::FileSystem
 	}
 	FSPath GetFullPathName(const FSPath& path)
 	{
-		wxString pathString = path.GetFullPath(FSPathNamespace::Win32File);
+		String pathString = path.GetFullPath(FSPathNamespace::Win32File);
 
 		const DWORD length = ::GetFullPathNameW(pathString.wc_str(), 0, nullptr, nullptr);
 		if (length)
 		{
-			wxString result;
+			String result;
 			LPWSTR oldPathStart = nullptr;
 			::GetFullPathNameW(pathString.wc_str(), length, wxStringBuffer(result, length), &oldPathStart);
 
@@ -66,8 +67,8 @@ namespace KxFramework::FileSystem
 			{
 				maxCharacters++;
 
-				wxString source = path.GetFullPath();
-				wxString result;
+				String source = path.GetFullPath();
+				String result;
 				::PathCompactPathExW(wxStringBuffer(result, maxCharacters), source.wc_str(), maxCharacters, 0);
 
 				return FSPath(std::move(result)).SetNamespace(path.GetNamespace());
@@ -79,17 +80,17 @@ namespace KxFramework::FileSystem
 				// Doesn't guarantees final length to not exceed 'maxCharacters'.
 				// https://blog.codinghorror.com/shortening-long-file-paths/
 
-				wxString source = path.GetFullPath();
+				String source = path.GetFullPath();
 				wxRegEx regEx(wxS(R"((\w+:\\|)([^\\]+[^\\]+).*\\([^\\]+))"), wxRE_ADVANCED|wxRE_ICASE);
 				if (regEx.Matches(source))
 				{
-					regEx.ReplaceAll(&source, wxS(R"(\1\2\\...\\\3)"));
+					regEx.ReplaceAll(&source.GetWxString(), wxS(R"(\1\2\\...\\\3)"));
 				}
 
 				// If it's still longer just truncate it and add ellipsis
 				if (source.length() > maxCharacters)
 				{
-					source.RemoveLast(source.length() - maxCharacters - 3);
+					source.RemoveFromEnd(source.length() - maxCharacters - 3);
 					source += wxS("...");
 				}
 				return FSPath(std::move(source)).SetNamespace(path.GetNamespace());
