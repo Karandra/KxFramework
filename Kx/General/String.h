@@ -1102,6 +1102,13 @@ namespace KxFramework
 				return *this;
 			}
 			
+			template<class T>
+			String& operator=(const T& other)
+			{
+				m_String = other;
+				return *this;
+			}
+
 			// Move assignment
 			String& operator=(String&& other) noexcept(Private::IsWxStringMoveable())
 			{
