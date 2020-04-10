@@ -1366,6 +1366,12 @@
     <ClInclude Include="Kx\System\NativeAPI.h">
       <Filter>Kx\System</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\System\SystemInformation.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\SystemInformationDefines.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -2114,6 +2120,9 @@
       <Filter>Kx\General</Filter>
     </ClCompile>
     <ClCompile Include="Kx\System\NativeAPI.cpp">
+      <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\SystemInformation.cpp">
       <Filter>Kx\System</Filter>
     </ClCompile>
   </ItemGroup>
