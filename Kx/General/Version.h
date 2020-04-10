@@ -64,6 +64,7 @@ namespace KxFramework
 				}
 			}
 			Version(const wxVersionInfo& versionInfo);
+			Version(std::initializer_list<int> items);
 
 		public:
 			bool IsEmpty() const

@@ -52,6 +52,32 @@ namespace KxFramework
 		version[1].m_Numeric = versionInfo.GetMinor();
 		version[2].m_Numeric = versionInfo.GetMicro();
 	}
+	Version::Version(std::initializer_list<int> items)
+	{
+		auto& version = AssignDefault();
+
+		size_t i = 0;
+		for (int item: items)
+		{
+			if (item <= 0)
+			{
+				break;
+			}
+			if (i + 1 >= Private::Version::DefaultFormat::ItemCount)
+			{
+				break;
+			}
+
+			version[i].m_Numeric = item;
+			i++;
+		}
+
+		m_ComponentCount = i - 1;
+		if (m_ComponentCount != 0)
+		{
+			m_Type = VersionType::Default;
+		}
+	}
 
 	size_t Version::GetComponentCount() const
 	{
