@@ -6,26 +6,25 @@
 
 namespace KxFramework
 {
-	String ShellFileType::GetOpenExecutable() const
+	FSPath ShellFileType::GetOpenExecutable() const
 	{
-		String openCommand = GetOpenCommand(wxEmptyString);
+		String openCommand = GetOpenCommand(NullString);
 		if (wxRegEx regEx(u8R"(\"(.+?)\")", wxRE_ADVANCED|wxRE_ICASE); regEx.Matches(openCommand))
 		{
 			return regEx.GetMatch(openCommand, 1);
 		}
-		return wxEmptyString;
+		return {};
 	}
 
-	bool ShellFileType::IsURLProtocol(const String& extension) const
+	bool ShellFileType::IsURLProtocol(const FSPath& extension) const
 	{
-		if (m_FileType && !extension.IsEmpty())
+		if (m_FileType && extension)
 		{
-			String extWithoutDot = ShellFileTypeManager::NormalizeFileExtension(extension);
 			for (const String& ext: GetAllExtensions())
 			{
-				if (ext.IsSameAs(extWithoutDot, StringOpFlag::IgnoreCase))
+				if (ext == extension)
 				{
-					return !KxRegistry::GetValue(KxREG_HKEY_CLASSES_ROOT, extWithoutDot, wxS("URL Protocol"), KxREG_VALUE_SZ).IsNull();
+					return !KxRegistry::GetValue(KxREG_HKEY_CLASSES_ROOT, extension.GetExtension(), wxS("URL Protocol"), KxREG_VALUE_SZ).IsNull();
 				}
 			}
 		}

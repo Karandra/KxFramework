@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Kx/General/String.h"
+#include "Kx/FileSystem/FSPath.h"
 #include <wx/mimetype.h>
 #include <wx/iconloc.h>
 
@@ -60,7 +61,7 @@ namespace KxFramework
 				m_FileType->GetExtensions(extensions);
 				return extensions;
 			}
-		
+
 			String GetMimeType() const
 			{
 				wxString value;
@@ -104,11 +105,11 @@ namespace KxFramework
 				m_FileType->GetOpenCommand(&value, parameters);
 				return value;
 			}
-			String GetOpenCommand(const String& filePath) const
+			String GetOpenCommand(const FSPath& filePath) const
 			{
-				return GetOpenCommand(MessageParameters(filePath));
+				return GetOpenCommand(MessageParameters(filePath.GetFullPath()));
 			}
-			String GetOpenExecutable() const;
+			FSPath GetOpenExecutable() const;
 
 			String GetPrintCommand(const MessageParameters& parameters) const
 			{
@@ -125,7 +126,7 @@ namespace KxFramework
 			{
 				return m_FileType->GetAllCommands(&verbs, &commands, parameters);
 			}
-			bool IsURLProtocol(const String& extension) const;
+			bool IsURLProtocol(const FSPath& extension) const;
 
 		public:
 			explicit operator bool() const noexcept

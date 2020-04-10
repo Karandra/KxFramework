@@ -1,20 +1,10 @@
 #include "KxStdAfx.h"
 #include "ShellFileTypeManager.h"
-#include <KxFramework/KxComparator.h>
+#include "Kx/General/StringFormater.h"
 #include <KxFramework/KxRegistry.h>
-#include <KxFramework/KxString.h>
 
 namespace KxFramework
 {
-	String ShellFileTypeManager::NormalizeFileExtension(const String& extension)
-	{
-		if (!extension.IsEmpty() && *extension.begin() == wxS('.'))
-		{
-			return String(extension).Remove(0, 1);
-		}
-		return extension;
-	}
-
 	ShellFileType ShellFileTypeManager::FileTypeFromExtension(const String& extension) const
 	{
 		return m_Manager.GetFileTypeFromExtension(extension);
@@ -28,25 +18,24 @@ namespace KxFramework
 	{
 		if (wxFileType* fileType = m_Manager.Associate(fileTypeInfo.AsWxFileTypeInfo()))
 		{
-			for (const String& ext: fileTypeInfo.GetExtensions())
+			for (const String& extension: fileTypeInfo.GetExtensions())
 			{
+				String ext = FSPath(extension).GetExtension();
 				if (fileTypeInfo.IsURLProtocol(ext))
 				{
-					String extWithoutDot = NormalizeFileExtension(ext);
-
-					KxRegistry::SetValue(KxREG_HKEY_CLASSES_ROOT, extWithoutDot, wxS("URL Protocol"), {}, KxREG_VALUE_SZ);
-					KxRegistry::SetValue(KxREG_HKEY_CLASSES_ROOT, extWithoutDot, {}, KxString::Format(wxS("URL:%1 Protocol"), KxString::ToUpper(extWithoutDot)), KxREG_VALUE_SZ);
+					KxRegistry::SetValue(KxREG_HKEY_CLASSES_ROOT, ext, wxS("URL Protocol"), {}, KxREG_VALUE_SZ);
+					KxRegistry::SetValue(KxREG_HKEY_CLASSES_ROOT, ext, {}, String::Format(wxS("URL:%1 Protocol"), ext.MakeUpper()), KxREG_VALUE_SZ);
 				}
 			}
 			return fileType;
 		}
 		return nullptr;
 	}
-	bool ShellFileTypeManager::IsAssociatedWith(const ShellFileType& fileType, const String& executablePath) const
+	bool ShellFileTypeManager::IsAssociatedWith(const ShellFileType& fileType, const FSPath& executablePath) const
 	{
 		if (fileType)
 		{
-			return KxComparator::IsEqual(fileType.GetOpenExecutable(), executablePath, true);
+			return fileType.GetOpenExecutable() == executablePath;
 		}
 		return false;
 	}

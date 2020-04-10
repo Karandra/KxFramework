@@ -15,7 +15,6 @@ namespace KxFramework
 			{
 				return wxMimeTypesManager::IsOfType(mimeType, wildcard);
 			}
-			static String NormalizeFileExtension(const String& extension);
 
 		private:
 			mutable wxMimeTypesManager m_Manager;
@@ -25,43 +24,38 @@ namespace KxFramework
 			ShellFileType FileTypeFromMimeType(const String& mimeType) const;
 
 			ShellFileType Associate(const ShellFileTypeInfo& fileTypeInfo);
-			bool IsAssociatedWith(const ShellFileType& fileType, const String& executablePath) const;
+			bool IsAssociatedWith(const ShellFileType& fileType, const FSPath& executablePath) const;
 			bool Unassociate(ShellFileType& fileType);
 
-			wxArrayString EnumAllFileTypes() const
-			{
-				wxArrayString mimetypes;
-				m_Manager.EnumAllFileTypes(mimetypes);
-				return mimetypes;
-			}
-			template<class TFunc> size_t EnumFileTypes(TFunc&& func) const
+			template<class TFunc>
+			size_t EnumFileTypes(TFunc&& func) const
 			{
 				using T = std::invoke_result_t<TFunc, const String&>;
 
 				size_t counter = 0;
-				wxArrayString mimetypes = EnumAllFileTypes();
+				wxArrayString mimetypes = m_Manager.EnumAllFileTypes();
 
-				for (const String& mime: mimetypes)
+				for (wxString& mime: mimetypes)
 				{
 					if constexpr(std::is_same_v<T, bool>)
 					{
-						if (!func(mime))
+						counter++;
+						if (!std::invoke(func, String(std::move(mime))))
 						{
 							break;
 						}
-						counter++;
-						return counter;
 					}
-					if constexpr(std::is_same_v<T, void>)
+					else if constexpr(std::is_same_v<T, void>)
 					{
-						func(mime);
+						counter++;
+						std::invoke(func, String(std::move(mime)));
 					}
 					else
 					{
-						static_assert(false, "invalid return value");
+						static_assert(false, "invalid return type");
 					}
 				}
-				return mimetypes.size();
+				return counter;
 			}
 
 			void AddFallback(const ShellFileTypeInfo& fileTypeInfo)

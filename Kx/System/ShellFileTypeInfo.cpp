@@ -4,18 +4,18 @@
 
 namespace KxFramework
 {
-	bool ShellFileTypeInfo::IsURLProtocol(const String& ext) const
+	bool ShellFileTypeInfo::IsURLProtocol(const FSPath& ext) const
 	{
-		auto it = m_URLProtocolMap.find(ShellFileTypeManager::NormalizeFileExtension(ext));
+		auto it = m_URLProtocolMap.find(ext.GetExtension());
 		if (it != m_URLProtocolMap.end())
 		{
 			return it->second;
 		}
 		return false;
 	}
-	ShellFileTypeInfo& ShellFileTypeInfo::SetURLProtocol(const String& ext, bool protocol)
+	ShellFileTypeInfo& ShellFileTypeInfo::SetURLProtocol(const FSPath& ext, bool protocol)
 	{
-		m_URLProtocolMap.insert_or_assign(ShellFileTypeManager::NormalizeFileExtension(ext), protocol);
+		m_URLProtocolMap.insert_or_assign(ext.GetExtension(), protocol);
 		return *this;
 	}
 }

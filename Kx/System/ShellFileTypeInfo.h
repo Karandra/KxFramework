@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Kx/General/String.h"
+#include "Kx/FileSystem/FSPath.h"
 #include "Kx/Utility/Common.h"
 #include "Kx/Utility/String.h"
 #include <wx/mimetype.h>
@@ -26,10 +27,10 @@ namespace KxFramework
 						   const String& openCommand,
 						   const String& printCommand,
 						   const String& description,
-						   const String& extension,
+						   const FSPath& extension,
 						   Args&& ... arg
 			)
-				:m_FileTypeInfo(mimeType, openCommand, printCommand, description, extension)
+				:m_FileTypeInfo(mimeType, openCommand, printCommand, description, extension.GetExtension())
 			{
 				AddExtensions(std::forward<Args>(arg)...);
 			}
@@ -130,27 +131,18 @@ namespace KxFramework
 			{
 				return m_FileTypeInfo.GetIconIndex();
 			}
-			const String& GetIconFile() const
+			FSPath GetIconFile() const
 			{
 				return m_FileTypeInfo.GetIconFile();
 			}
-			wxIconLocation GetIcon() const
+			ShellFileTypeInfo& SetIcon(const FSPath& filePath, int index = 0)
 			{
-				return wxIconLocation(m_FileTypeInfo.GetIconFile(), m_FileTypeInfo.GetIconIndex());
-			}
-			ShellFileTypeInfo& SetIcon(const wxIconLocation& icon)
-			{
-				m_FileTypeInfo.SetIcon(icon.GetFileName(), icon.GetIndex());
-				return *this;
-			}
-			ShellFileTypeInfo& SetIcon(const String& filePath, int index = 0)
-			{
-				m_FileTypeInfo.SetIcon(filePath, index);
+				m_FileTypeInfo.SetIcon(filePath.GetFullPath(), index);
 				return *this;
 			}
 
-			bool IsURLProtocol(const String& ext) const;
-			ShellFileTypeInfo& SetURLProtocol(const String& ext, bool protocol = true);
+			bool IsURLProtocol(const FSPath& ext) const;
+			ShellFileTypeInfo& SetURLProtocol(const FSPath& ext, bool protocol = true);
 
 		public:
 			explicit operator bool() const noexcept
