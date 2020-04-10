@@ -9,7 +9,10 @@ namespace KxFramework
 		Apartment,
 		Concurrent
 	};
+}
 
+namespace KxFramework
+{
 	class KX_API COMInitGuard final
 	{
 		private:
@@ -58,10 +61,7 @@ namespace KxFramework
 			COMInitGuard& operator=(COMInitGuard&&) = default;
 			COMInitGuard& operator=(const COMInitGuard&) = delete;
 	};
-}
 
-namespace KxFramework
-{
 	class KX_API OLEInitGuard final
 	{
 		private:

@@ -1,7 +1,7 @@
 #include "KxStdAfx.h"
 #include "ErrorCode.h"
+#include "NativeAPI.h"
 #include "Kx/Utility/CallAtScopeExit.h"
-#include <KxFramework/KxSystemAPI.h>
 #include "Private/IncludeNtStatus.h"
 
 namespace
@@ -15,9 +15,9 @@ namespace
 		{
 			return Win32ErrorCode(ERROR_SUCCESS);
 		}
-		else if (KxSystemAPI::RtlNtStatusToDosError)
+		else if (NativeAPI::NtDLL::RtlNtStatusToDosError)
 		{
-			const ULONG win32Code = KxSystemAPI::RtlNtStatusToDosError(ntStatus);
+			const ULONG win32Code = NativeAPI::NtDLL::RtlNtStatusToDosError(ntStatus);
 			if (win32Code != ERROR_MR_MID_NOT_FOUND)
 			{
 				return Win32ErrorCode(win32Code);
