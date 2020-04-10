@@ -557,6 +557,7 @@
     <ClInclude Include="Kx\System\ShellFileTypeInfo.h" />
     <ClInclude Include="Kx\System\ShellFileTypeManager.h" />
     <ClInclude Include="Kx\System\ShellOperations.h" />
+    <ClInclude Include="Kx\System\NativeAPI.h" />
     <ClInclude Include="Kx\System\UndefWindows.h" />
     <ClInclude Include="Kx\Threading.hpp" />
     <ClInclude Include="Kx\Threading\AutoThread.h" />
@@ -820,6 +821,7 @@
     <ClCompile Include="Kx\General\String.cpp" />
     <ClCompile Include="Kx\General\StringFormater.cpp" />
     <ClCompile Include="Kx\General\Version.cpp" />
+    <ClCompile Include="Kx\System\NativeAPI.cpp" />
     <ClCompile Include="Kx\UI\Validator.cpp" />
     <ClInclude Include="Kx\Compression\IArchiveImpl.h" />
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp" />

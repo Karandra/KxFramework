@@ -1363,6 +1363,9 @@
     <ClInclude Include="Kx\Utility\String.h">
       <Filter>Kx\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\System\NativeAPI.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -2109,6 +2112,9 @@
     </ClCompile>
     <ClCompile Include="Kx\General\StringFormater.cpp">
       <Filter>Kx\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\NativeAPI.cpp">
+      <Filter>Kx\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
