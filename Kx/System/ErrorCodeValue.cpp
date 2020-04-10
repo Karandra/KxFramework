@@ -63,6 +63,11 @@ namespace
 
 namespace KxFramework
 {
+	Win32ErrorCode Win32ErrorCode::GetLastError() noexcept
+	{
+		return ::GetLastError();
+	}
+
 	bool Win32ErrorCode::IsSuccess() const noexcept
 	{
 		return GetValue() == ERROR_SUCCESS;

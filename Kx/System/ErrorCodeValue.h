@@ -101,6 +101,7 @@ namespace KxFramework
 			{
 				return ErrorCodeCategory::Win32;
 			}
+			static Win32ErrorCode GetLastError() noexcept;
 
 		public:
 			constexpr Win32ErrorCode(TValueType value) noexcept
