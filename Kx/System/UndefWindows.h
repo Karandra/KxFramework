@@ -60,3 +60,4 @@
 #undef GetTempPath
 #undef CreateDirectory
 #undef CompareString
+#undef EnumDisplayDevices
