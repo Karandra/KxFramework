@@ -4,6 +4,7 @@
 #include "Kx/Utility/Common.h"
 #include "Kx/Utility/CallAtScopeExit.h"
 #include "KxFramework/KxRegistry.h"
+#include <wx/settings.h>
 #include <SDDL.h>
 
 namespace
@@ -265,6 +266,7 @@ namespace KxFramework::System
 		}
 		return {};
 	}
+	
 	std::optional<UserInfo> GetUserInfo()
 	{
 		UserInfo userInfo;
@@ -337,6 +339,108 @@ namespace KxFramework::System
 			}
 		}
 		return {};
+	}
+
+	Color GetColor(wxSystemColour index) noexcept
+	{
+		return wxSystemSettings::GetColour(index);
+	}
+	int GetMetric(wxSystemMetric index, const wxWindow* window) noexcept
+	{
+		return wxSystemSettings::GetMetric(index, window);
+	}
+	size_t EnumStandardSounds(std::function<bool(String)> func)
+	{
+		size_t count = 0;
+		for (wxString& name: KxRegistry::GetKeyNames(KxREG_HKEY_CURRENT_USER, wxS("AppEvents\\EventLabels")))
+		{
+			count++;
+			if (!std::invoke(func, std::move(name)))
+			{
+				break;
+			}
+		}
+		return count;
+	}
+
+	std::optional<DisplayInfo> GetDisplayInfo() noexcept
+	{
+		HDC desktopDC = ::GetDC(nullptr);
+		if (desktopDC)
+		{
+			Utility::CallAtScopeExit atExit([&]()
+			{
+				::ReleaseDC(nullptr, desktopDC);
+			});
+
+			DisplayInfo displayInfo;
+			displayInfo.Width = ::GetDeviceCaps(desktopDC, DESKTOPHORZRES);
+			displayInfo.Height = ::GetDeviceCaps(desktopDC, DESKTOPVERTRES);
+			displayInfo.Depth = ::GetDeviceCaps(desktopDC, BITSPIXEL);
+			displayInfo.Frequency = ::GetDeviceCaps(desktopDC, VREFRESH);
+			return displayInfo;
+		}
+		return {};
+	}
+	size_t EnumDisplayModes(std::function<bool(DisplayInfo)> func, const String& deviceName)
+	{
+		size_t count = 0;
+
+		DEVMODEW deviceMode = {};
+		deviceMode.dmSize = sizeof(deviceMode);
+		while (::EnumDisplaySettingsW(deviceName.IsEmpty() ? nullptr : deviceName.wc_str(), count, &deviceMode))
+		{
+			DisplayInfo displayInfo;
+			displayInfo.Width = deviceMode.dmPelsWidth;
+			displayInfo.Height = deviceMode.dmPelsHeight;
+			displayInfo.Depth = deviceMode.dmBitsPerPel;
+			displayInfo.Frequency = deviceMode.dmDisplayFrequency;
+
+			count++;
+			if (!std::invoke(func, std::move(displayInfo)))
+			{
+				break;
+			}
+		}
+		return count;
+	}
+	size_t EnumDisplayDevices(std::function<bool(DisplayDeviceInfo)> func)
+	{
+		bool isSuccess = false;
+		DWORD index = 0;
+
+		DISPLAY_DEVICE displayDevice = {};
+		displayDevice.cb = sizeof(displayDevice);
+
+		size_t count = 0;
+		std::unordered_set<String> hash;
+		do
+		{
+			isSuccess = ::EnumDisplayDevicesW(nullptr, index, &displayDevice, 0);
+			if ((displayDevice.StateFlags & DISPLAY_DEVICE_ATTACHED_TO_DESKTOP) || (displayDevice.StateFlags == 0 && std::wcscmp(displayDevice.DeviceString, L"") != 0))
+			{
+				if (hash.insert(displayDevice.DeviceString).second)
+				{
+					DisplayDeviceInfo deviceInfo;
+					deviceInfo.DeviceName = displayDevice.DeviceName;
+					deviceInfo.DeviceDescription = displayDevice.DeviceString;
+					Utility::ModFlagRef(deviceInfo.Flags, DisplayDeviceFlag::Active, displayDevice.StateFlags & DISPLAY_DEVICE_ACTIVE);
+					Utility::ModFlagRef(deviceInfo.Flags, DisplayDeviceFlag::Primary, displayDevice.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE);
+					Utility::ModFlagRef(deviceInfo.Flags, DisplayDeviceFlag::Removable, displayDevice.StateFlags & DISPLAY_DEVICE_REMOVABLE);
+					Utility::ModFlagRef(deviceInfo.Flags, DisplayDeviceFlag::VGACompatible, displayDevice.StateFlags & DISPLAY_DEVICE_VGA_COMPATIBLE);
+					Utility::ModFlagRef(deviceInfo.Flags, DisplayDeviceFlag::MirroringDriver, displayDevice.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER);
+
+					count++;
+					if (!std::invoke(func, std::move(deviceInfo)))
+					{
+						break;
+					}
+				}
+			}
+			index++;
+		}
+		while (isSuccess);
+		return count;
 	}
 
 	String GetEnvironmentVariable(const String& name)

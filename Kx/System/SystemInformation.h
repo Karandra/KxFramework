@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "ErrorCodeValue.h"
 #include "Kx/General/String.h"
+#include "Kx/General/Color.h"
 #include "Kx/General/Version.h"
 #include "Kx/General/BinarySize.h"
 #include "SystemInformationDefines.h"
@@ -68,6 +69,19 @@ namespace KxFramework::System
 		bool AdminRights = false;
 		bool LimitedAdminRights = false;
 	};
+	struct DisplayInfo final
+	{
+		int Width = 0;
+		int Height = 0;
+		int Depth = 0;
+		int Frequency = 0;
+	};
+	struct DisplayDeviceInfo final
+	{
+		String DeviceName;
+		String DeviceDescription;
+		DisplayDeviceFlag Flags = DisplayDeviceFlag::None;
+	};
 }
 
 namespace KxFramework::System
@@ -81,8 +95,17 @@ namespace KxFramework::System
 	std::optional<VersionInfo> GetVersionInfo() noexcept;
 	std::optional<MemoryStatus> GetGlobalMemoryStatus() noexcept;
 	BinarySize GetPhysicallyInstalledMemory() noexcept;
+	
 	std::optional<UserInfo> GetUserInfo();
 	String GetUserSID();
+
+	Color GetColor(wxSystemColour index) noexcept;
+	int GetMetric(wxSystemMetric index, const wxWindow* window = nullptr) noexcept;
+	size_t EnumStandardSounds(std::function<bool(String)> func);
+
+	std::optional<DisplayInfo> GetDisplayInfo() noexcept;
+	size_t EnumDisplayModes(std::function<bool(DisplayInfo)> func, const String& deviceName = {});
+	size_t EnumDisplayDevices(std::function<bool(DisplayDeviceInfo)> func);
 
 	String GetEnvironmentVariable(const String& name);
 	bool SetEnvironmentVariable(const String& name, const String& value);

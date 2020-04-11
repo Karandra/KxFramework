@@ -28,6 +28,16 @@ namespace KxFramework
 		Force = 1 << 8,
 		ForceHung = 1 << 9,
 	};
+	enum class DisplayDeviceFlag
+	{
+		None = 0,
+
+		Active = 1 << 0,
+		Primary = 1 << 1,
+		Removable = 1 << 2,
+		VGACompatible = 1 << 3,
+		MirroringDriver = 1 << 4,
+	};
 
 	enum class SystemType
 	{
@@ -206,6 +216,7 @@ namespace KxFramework
 	namespace EnumClass
 	{
 		Kx_EnumClass_AllowEverything(ExitWorkstationCommand);
+		Kx_EnumClass_AllowEverything(DisplayDeviceFlag);
 
 		Kx_EnumClass_AllowCast(SystemType);
 		Kx_EnumClass_AllowCast(SystemPlatformID);
