@@ -1372,6 +1372,15 @@
     <ClInclude Include="Kx\System\SystemInformationDefines.h">
       <Filter>Kx\System</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\System\CredentialStore.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\ISecretStore.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\SecretValue.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -2124,6 +2133,12 @@
     </ClCompile>
     <ClCompile Include="Kx\System\SystemInformation.cpp">
       <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\CredentialStore.cpp">
+      <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\SecretValue.cpp">
+      <Filter>Kx\General</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

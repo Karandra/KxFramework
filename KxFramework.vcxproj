@@ -496,12 +496,14 @@
     <ClInclude Include="Kx\General\Common.h" />
     <ClInclude Include="Kx\General\EnumClass.h" />
     <ClInclude Include="Kx\General\ExtraData.h" />
+    <ClInclude Include="Kx\General\ISecretStore.h" />
     <ClInclude Include="Kx\General\MemorySpan.h" />
     <ClInclude Include="Kx\General\MemoryStream.h" />
     <ClInclude Include="Kx\General\NativeUUID.h" />
     <ClInclude Include="Kx\General\Private\ExtraData.h" />
     <ClInclude Include="Kx\General\Private\String.h" />
     <ClInclude Include="Kx\General\Private\VersionImpl.h" />
+    <ClInclude Include="Kx\General\SecretValue.h" />
     <ClInclude Include="Kx\General\Singleton.h" />
     <ClInclude Include="Kx\General\StreamDelegate.h" />
     <ClInclude Include="Kx\General\StreamWrappers.h" />
@@ -553,6 +555,7 @@
     <ClInclude Include="Kx\System\Private\BeginIncludeCOM.h" />
     <ClInclude Include="Kx\System\Private\EndIncludeCOM.h" />
     <ClInclude Include="Kx\System\Private\IncludeNtStatus.h" />
+    <ClInclude Include="Kx\System\CredentialStore.h" />
     <ClInclude Include="Kx\System\ShellFileType.h" />
     <ClInclude Include="Kx\System\ShellFileTypeInfo.h" />
     <ClInclude Include="Kx\System\ShellFileTypeManager.h" />
@@ -820,10 +823,12 @@
     <ClCompile Include="Kx\General\Color.cpp" />
     <ClCompile Include="Kx\General\MemoryStream.cpp" />
     <ClCompile Include="Kx\General\Private\VersionImpl.cpp" />
+    <ClCompile Include="Kx\General\SecretValue.cpp" />
     <ClCompile Include="Kx\General\String.cpp" />
     <ClCompile Include="Kx\General\StringFormater.cpp" />
     <ClCompile Include="Kx\General\Version.cpp" />
     <ClCompile Include="Kx\System\NativeAPI.cpp" />
+    <ClCompile Include="Kx\System\CredentialStore.cpp" />
     <ClCompile Include="Kx\System\SystemInformation.cpp" />
     <ClCompile Include="Kx\UI\Validator.cpp" />
     <ClInclude Include="Kx\Compression\IArchiveImpl.h" />
