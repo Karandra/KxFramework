@@ -1372,6 +1372,9 @@
     <ClInclude Include="Kx\System\Private\CFunctionCompiler.h">
       <Filter>Kx\System\Private</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\System\Registry.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -2126,6 +2129,9 @@
       <Filter>Kx\Crypto</Filter>
     </ClCompile>
     <ClCompile Include="Kx\System\CFunctionCompiler.cpp">
+      <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\Registry.cpp">
       <Filter>Kx\System</Filter>
     </ClCompile>
   </ItemGroup>
