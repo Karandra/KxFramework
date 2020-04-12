@@ -1,11 +1,11 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxTranslation.h"
 #include "KxFramework/KxXML.h"
-#include "KxFramework/KxSystem.h"
 #include "KxFramework/KxLibrary.h"
 #include "KxFramework/KxFileStream.h"
 #include "KxFramework/KxUtility.h"
 #include "KxFramework/KxXML.h"
+#include "Kx/System/SystemInformation.h"
 #include "Kx/FileSystem/NativeFileSystem.h"
 
 namespace
@@ -54,7 +54,7 @@ wxString KxTranslation::GetSystemPreferredLocale()
 
 wxString KxTranslation::GetLanguageFullName(const wxString& localeName)
 {
-	LCTYPE lcType = KxSystem::IsWindows7OrGreater() ? LOCALE_SLOCALIZEDDISPLAYNAME : LOCALE_SLOCALIZEDLANGUAGENAME;
+	LCTYPE lcType = KxFramework::System::IsWindows7OrGreater() ? LOCALE_SLOCALIZEDDISPLAYNAME : LOCALE_SLOCALIZEDLANGUAGENAME;
 
 	int length = ::GetLocaleInfoEx(localeName.wc_str(), lcType, nullptr, 0);
 	if (length != 0)

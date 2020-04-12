@@ -1,6 +1,6 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxToolTipEx.h"
-#include "KxFramework/KxRegistry.h"
+#include "Kx/System/Registry.h"
 #include <CommCtrl.h>
 
 namespace
@@ -10,12 +10,14 @@ namespace
 
 	bool IsBalloonStyleSupported()
 	{
-		wxAny value = KxRegistry::GetValue(KxREG_HKEY_CURRENT_USER,
-										   wxS("Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced"),
-										   wxS("EnableBalloonTips"),
-										   KxREG_VALUE_DWORD
-		);
-		return value.IsNull() || value.As<DWORD>() != 0;
+		using namespace KxFramework;
+
+		RegistryKey key(RegistryBaseKey::CurrentUser, wxS("Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced"), RegistryAccess::Read);
+		if (key)
+		{
+			return key.GetUInt32Value(wxS("EnableBalloonTips")) != 0;
+		}
+		return true;
 	}
 	TTTOOLINFOW MakeToolInfo(const KxToolTipEx& tooltip, const wxString& message)
 	{

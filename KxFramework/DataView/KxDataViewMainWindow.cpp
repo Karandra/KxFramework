@@ -6,13 +6,13 @@
 #include "KxFramework/DataView/KxDataViewTreeNode.h"
 #include "KxFramework/DataView/KxDataViewCtrl.h"
 #include "KxFramework/KxDataViewEvent.h"
-#include "KxFramework/KxSystemSettings.h"
 #include "KxFramework/KxSplashWindow.h"
 #include "KxFramework/KxDCClipper.h"
 #include "KxFramework/KxUtility.h"
 #include "KxFramework/KxUxTheme.h"
 #include "KxFramework/KxUxThemePartsAndStates.h"
 #include "KxFramework/KxFrame.h"
+#include "Kx/System/SystemInformation.h"
 #include <wx/popupwin.h>
 #include <wx/generic/private/widthcalc.h>
 
@@ -2381,8 +2381,8 @@ void KxDataViewMainWindow::SetUniformRowHeight(int height)
 int KxDataViewMainWindow::GetDefaultRowHeight(KxDataViewDefaultRowHeightType type) const
 {
 	int resultHeight = 0;
-	const int iconMargin = 6 * KxSystemSettings::GetMetric(wxSYS_BORDER_Y, this);
-	const int iconHeight = KxSystemSettings::GetMetric(wxSYS_SMALLICON_Y, this);
+	const int iconMargin = 6 * KxFramework::System::GetMetric(wxSYS_BORDER_Y, this);
+	const int iconHeight = KxFramework::System::GetMetric(wxSYS_SMALLICON_Y, this);
 
 	switch (type)
 	{

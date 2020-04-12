@@ -7,7 +7,6 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxStdAfx.h"
 #include "KxFramework/KxProcessThread.h"
 #include "KxFramework/KxProcess.h"
-#include "KxFramework/KxSystem.h"
 #include "Kx/FileSystem/NativeFileSystem.h"
 #include <wx/private/pipestream.h>
 #include <wx/private/streamtempinput.h>

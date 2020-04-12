@@ -8,7 +8,6 @@
 #include "Node.h"
 #include "View.h"
 #include "KxFramework/KxDataView2Event.h"
-#include "KxFramework/KxSystemSettings.h"
 #include "KxFramework/KxSplashWindow.h"
 #include "KxFramework/KxCallAtScopeExit.h"
 #include "KxFramework/KxUtility.h"
@@ -16,6 +15,7 @@
 #include "KxFramework/KxUxTheme.h"
 #include "KxFramework/KxUxThemePartsAndStates.h"
 #include "KxFramework/KxGCUtility.h"
+#include "Kx/System/SystemInformation.h"
 #include <wx/popupwin.h>
 #include <wx/generic/private/widthcalc.h>
 #include <wx/minifram.h>
@@ -2213,8 +2213,8 @@ namespace KxDataView2
 	int MainWindow::GetDefaultRowHeight(UniformHeight type) const
 	{
 		int resultHeight = 0;
-		const int iconMargin = 6 * KxSystemSettings::GetMetric(wxSYS_BORDER_Y, this);
-		const int iconHeight = KxSystemSettings::GetMetric(wxSYS_SMALLICON_Y, this);
+		const int iconMargin = 6 * KxFramework::System::GetMetric(wxSYS_BORDER_Y, this);
+		const int iconHeight = KxFramework::System::GetMetric(wxSYS_SMALLICON_Y, this);
 
 		switch (type)
 		{

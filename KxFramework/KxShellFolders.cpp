@@ -1,6 +1,6 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxShell.h"
-#include "KxFramework/KxSystem.h"
+#include "Kx/System/SystemInformation.h"
 #include "Kx/FileSystem/NativeFileSystem.h"
 
 namespace
@@ -156,8 +156,8 @@ wxString KxShell::GetFolder(KxShellFolderID id, bool useDefault, bool create)
 	bool isEnvUsed = false;
 	bool isCustomMethodUsed = false;
 
-	// In non 64-bit systems this function will retrieve 32-bit versions of this paths.
-	if (!KxSystem::Is64Bit())
+	// For non 64-bit systems this function will retrieve 32-bit versions of these paths
+	if (!KxFramework::System::Is64Bit())
 	{
 		switch (id)
 		{

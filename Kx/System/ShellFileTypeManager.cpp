@@ -1,7 +1,7 @@
 #include "KxStdAfx.h"
 #include "ShellFileTypeManager.h"
+#include "Registry.h"
 #include "Kx/General/StringFormater.h"
-#include <KxFramework/KxRegistry.h>
 
 namespace KxFramework
 {
@@ -23,8 +23,13 @@ namespace KxFramework
 				String ext = FSPath(extension).GetExtension();
 				if (fileTypeInfo.IsURLProtocol(ext))
 				{
-					KxRegistry::SetValue(KxREG_HKEY_CLASSES_ROOT, ext, wxS("URL Protocol"), {}, KxREG_VALUE_SZ);
-					KxRegistry::SetValue(KxREG_HKEY_CLASSES_ROOT, ext, {}, String::Format(wxS("URL:%1 Protocol"), ext.MakeUpper()), KxREG_VALUE_SZ);
+					RegistryKey classesRoot(RegistryBaseKey::ClassesRoot, {}, RegistryAccess::Create);
+					if (classesRoot)
+					{
+						RegistryKey key = classesRoot.CreateKey(ext, RegistryAccess::Write);
+						key.SetStringValue({}, String::Format(wxS("URL:%1 Protocol"), ext.MakeUpper()));
+						key.SetStringValue(wxS("URL Protocol"), {});
+					}
 				}
 			}
 			return fileType;

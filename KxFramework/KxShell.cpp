@@ -6,7 +6,6 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 */
 #include "KxStdAfx.h"
 #include "KxFramework/KxShell.h"
-#include "KxFramework/KxSystem.h"
 #include <Kx/FileSystem/FSPath.h>
 #include <Kx/FileSystem/FileItem.h>
 #include <Kx/FileSystem/LegacyVolume.h>

@@ -1,9 +1,9 @@
 #include "KxStdAfx.h"
 #include "SystemInformation.h"
 #include "NativeAPI.h"
+#include "Registry.h"
 #include "Kx/Utility/Common.h"
 #include "Kx/Utility/CallAtScopeExit.h"
-#include "KxFramework/KxRegistry.h"
 #include <wx/settings.h>
 #include <SDDL.h>
 
@@ -290,7 +290,14 @@ namespace KxFramework::System
 		}
 
 		// Organization
-		userInfo.Organization = KxRegistry::GetValue(KxREG_HKEY_LOCAL_MACHINE, R"(SOFTWARE\Microsoft\Windows NT\CurrentVersion)", wxS("RegisteredOrganization"), KxREG_VALUE_SZ).As<wxString>();
+		RegistryKey key(RegistryBaseKey::LocalMachine, wxS("Software\\Microsoft\\Windows NT\\CurrentVersion"), RegistryAccess::Read);
+		if (key)
+		{
+			if (auto value = key.GetStringValue(wxS("RegisteredOrganization")))
+			{
+				userInfo.Organization = std::move(*value);
+			}
+		}
 
 		// Is administrator
 		HANDLE tokenHandle = nullptr;
@@ -361,16 +368,12 @@ namespace KxFramework::System
 	}
 	size_t EnumStandardSounds(std::function<bool(String)> func)
 	{
-		size_t count = 0;
-		for (wxString& name: KxRegistry::GetKeyNames(KxREG_HKEY_CURRENT_USER, wxS("AppEvents\\EventLabels")))
+		RegistryKey key(RegistryBaseKey::CurrentUser, wxS("AppEvents\\EventLabels"), RegistryAccess::Read|RegistryAccess::Enumerate);
+		if (key)
 		{
-			count++;
-			if (!std::invoke(func, std::move(name)))
-			{
-				break;
-			}
+			return key.EnumKeyNames(std::move(func));
 		}
-		return count;
+		return 0;
 	}
 
 	std::optional<DisplayInfo> GetDisplayInfo() noexcept

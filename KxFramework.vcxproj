@@ -285,7 +285,6 @@
     <ClInclude Include="KxFramework\KxHiDPIEnabledWindow.h" />
     <ClInclude Include="KxFramework\KxNotifyEvent.h" />
     <ClInclude Include="KxFramework\KxOptionSet.h" />
-    <ClInclude Include="KxFramework\KxSystemEnums.h" />
     <ClInclude Include="KxFramework\KxDPIAwareness.h" />
     <ClInclude Include="KxFramework\KxToolTipEx.h" />
     <ClInclude Include="KxFramework\KxBitmapComboBox.h" />
@@ -384,7 +383,6 @@
     <ClInclude Include="KxFramework\KxProgressBar.h" />
     <ClInclude Include="KxFramework\KxProgressDialog.h" />
     <ClInclude Include="KxFramework\KxRadioButton.h" />
-    <ClInclude Include="KxFramework\KxRegistry.h" />
     <ClInclude Include="KxFramework\KxRichToolTip.h" />
     <ClInclude Include="KxFramework\KxDynamicCastAsIs.h" />
     <ClInclude Include="KxFramework\KxSearchBox.h" />
@@ -411,9 +409,7 @@
     <ClInclude Include="KxFramework\KxStyledTextBox.h" />
     <ClInclude Include="KxFramework\KxStyledTextBox_Scintilla.h" />
     <ClInclude Include="KxFramework\KxStyledTextBox_SciPosition.h" />
-    <ClInclude Include="KxFramework\KxSystem.h" />
     <ClInclude Include="KxFramework\KxSystemAPI.h" />
-    <ClInclude Include="KxFramework\KxSystemSettings.h" />
     <ClInclude Include="KxFramework\KxTaskDialog.h" />
     <ClInclude Include="KxFramework\KxTaskScheduler.h" />
     <ClInclude Include="KxFramework\KxTextBox.h" />
@@ -754,7 +750,6 @@
     <ClCompile Include="KxFramework\KxProgressBar.cpp" />
     <ClCompile Include="KxFramework\KxProgressDialog.cpp" />
     <ClCompile Include="KxFramework\KxRadioButton.cpp" />
-    <ClCompile Include="KxFramework\KxRegistry.cpp" />
     <ClCompile Include="KxFramework\KxRichToolTip.cpp" />
     <ClCompile Include="KxFramework\KxDynamicCastAsIs.cpp" />
     <ClCompile Include="KxFramework\KxSearchBox.cpp" />
@@ -777,9 +772,7 @@
     <ClCompile Include="KxFramework\KxStdDialogSimple.cpp" />
     <ClCompile Include="KxFramework\KxString.cpp" />
     <ClCompile Include="KxFramework\KxStyledTextBox.cpp" />
-    <ClCompile Include="KxFramework\KxSystem.cpp" />
     <ClCompile Include="KxFramework\KxSystemAPI.cpp" />
-    <ClCompile Include="KxFramework\KxSystemSettings.cpp" />
     <ClCompile Include="KxFramework\KxTaskDialog.cpp" />
     <ClCompile Include="KxFramework\KxTaskScheduler.cpp" />
     <ClCompile Include="KxFramework\KxTextBox.cpp" />

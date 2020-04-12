@@ -1,8 +1,7 @@
 #include "KxStdAfx.h"
 #include "ShellFileType.h"
 #include "ShellFileTypeManager.h"
-#include <KxFramework/KxString.h>
-#include <KxFramework/KxRegistry.h>
+#include "Registry.h"
 
 namespace KxFramework
 {
@@ -24,7 +23,8 @@ namespace KxFramework
 			{
 				if (ext == extension)
 				{
-					return !KxRegistry::GetValue(KxREG_HKEY_CLASSES_ROOT, extension.GetExtension(), wxS("URL Protocol"), KxREG_VALUE_SZ).IsNull();
+					RegistryKey key(RegistryBaseKey::ClassesRoot, extension.GetExtension(), RegistryAccess::Read);
+					return key.DoesValueExist(wxS("URL Protocol"));
 				}
 			}
 		}

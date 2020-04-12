@@ -1,6 +1,5 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxLibrary.h"
-#include "KxFramework/KxSystem.h"
 #include "KxFramework/KxSystemAPI.h"
 #include "KxFramework/KxTranslation.h"
 #include "KxFramework/KxIncludeWindows.h"
@@ -674,7 +673,9 @@ wxString KxLibrary::GetString(const wxString& name, WORD localeID) const
 
 wxString KxLibrary::FormatMessage(DWORD messageID, WORD localeID) const
 {
-	return KxSystem::FormatMessage(FORMAT_MESSAGE_IGNORE_INSERTS|FORMAT_MESSAGE_FROM_HMODULE, m_Handle, messageID, Util::GetLangID(localeID));
+	// TODO: Add new formatting function.
+	//return KxSystem::FormatMessage(FORMAT_MESSAGE_IGNORE_INSERTS|FORMAT_MESSAGE_FROM_HMODULE, m_Handle, messageID, Util::GetLangID(localeID));
+	return {};
 }
 
 bool KxLibrary::IsResourceExist(const wxString& type, const wxString& name, WORD localeID)
