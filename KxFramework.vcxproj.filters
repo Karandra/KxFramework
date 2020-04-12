@@ -28,9 +28,6 @@
     <Filter Include="Header Files\DataStructures">
       <UniqueIdentifier>{312cd0fc-b7a6-4e7c-a90b-eae4862d5112}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Crypto">
-      <UniqueIdentifier>{2047d07e-443c-43d9-ab37-12d9c37dac22}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\GUI">
       <UniqueIdentifier>{6c310c16-9644-4de9-afd3-8862008629ff}</UniqueIdentifier>
     </Filter>
@@ -51,9 +48,6 @@
     </Filter>
     <Filter Include="Source Files\DataStructures">
       <UniqueIdentifier>{5500debe-4bea-4b8a-8086-b9379f060578}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Crypto">
-      <UniqueIdentifier>{cf5a9b3f-5223-40f4-8980-34ff0a6f7eea}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Sizers">
       <UniqueIdentifier>{683c7eaa-1b43-4e61-9fcd-b25cc37d9d64}</UniqueIdentifier>
@@ -342,9 +336,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxSplitterWindow.h">
       <Filter>Header Files\GUI\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxCrypto.h">
-      <Filter>Header Files\Crypto</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxStdDialogButtonSizer.h">
       <Filter>Header Files\Sizers</Filter>
@@ -1461,9 +1452,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxSplitterWindow.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxCrypto.cpp">
-      <Filter>Source Files\Crypto</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxStdDialogButtonSizer.cpp">
       <Filter>Source Files\Sizers</Filter>
