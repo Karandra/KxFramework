@@ -331,7 +331,7 @@ namespace KxFramework
 			return false;
 		}
 
-		Utility::ModFlagRef(flags, StringOpFlag::FromEnd, false);
+		Utility::RemoveFlag(flags, StringOpFlag::FromEnd);
 		const size_t pos = Find(pattern, 0, flags);
 		if (pos == 0)
 		{

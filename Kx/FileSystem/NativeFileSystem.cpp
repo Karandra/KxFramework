@@ -143,8 +143,8 @@ namespace KxFramework
 	{
 		BOOL cancel = FALSE;
 		DWORD copyFlags = COPY_FILE_ALLOW_DECRYPTED_DESTINATION|COPY_FILE_COPY_SYMLINK;
-		Utility::ModFlagRef(copyFlags, COPY_FILE_FAIL_IF_EXISTS, !(flags & FSCopyItemFlag::ReplaceIfExist));
-		Utility::ModFlagRef(copyFlags, COPY_FILE_NO_BUFFERING, flags & FSCopyItemFlag::NoBuffering);
+		Utility::AddFlagRef(copyFlags, COPY_FILE_FAIL_IF_EXISTS, !(flags & FSCopyItemFlag::ReplaceIfExist));
+		Utility::AddFlagRef(copyFlags, COPY_FILE_NO_BUFFERING, flags & FSCopyItemFlag::NoBuffering);
 
 		const String sourcePath = source.GetFullPathWithNS(FSPathNamespace::Win32File);
 		const String destinationPath = destination.GetFullPathWithNS(FSPathNamespace::Win32File);
@@ -153,8 +153,8 @@ namespace KxFramework
 	bool NativeFileSystem::MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func, FSCopyItemFlag flags)
 	{
 		DWORD moveFlags = MOVEFILE_COPY_ALLOWED;
-		Utility::ModFlagRef(moveFlags, MOVEFILE_REPLACE_EXISTING, flags & FSCopyItemFlag::ReplaceIfExist);
-		Utility::ModFlagRef(moveFlags, MOVEFILE_WRITE_THROUGH, flags & FSCopyItemFlag::NoBuffering);
+		Utility::AddFlagRef(moveFlags, MOVEFILE_REPLACE_EXISTING, flags & FSCopyItemFlag::ReplaceIfExist);
+		Utility::AddFlagRef(moveFlags, MOVEFILE_WRITE_THROUGH, flags & FSCopyItemFlag::NoBuffering);
 
 		const String sourcePath = source.GetFullPathWithNS(FSPathNamespace::Win32File);
 		const String destinationPath = destination.GetFullPathWithNS(FSPathNamespace::Win32File);

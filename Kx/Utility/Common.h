@@ -117,31 +117,7 @@ namespace KxFramework::Utility
 		}
 	}
 
-	template<class TFlag, class TFlagMod>
-	constexpr TFlag ModFlag(TFlag flag, TFlagMod flagMod, bool set) noexcept
-	{
-		Private::AssertFlags<TFlag, TFlagMod>();
-
-		using T1 = Private::FlagIntType<TFlag>;
-		using T2 = Private::FlagIntType<TFlagMod>;
-		using Tx = std::conditional_t<sizeof(T1) >= sizeof(T2), T1, T2>;
-
-		if (set)
-		{
-			return static_cast<TFlag>(static_cast<Tx>(flag) | static_cast<Tx>(flagMod));
-		}
-		else
-		{
-			return static_cast<TFlag>(static_cast<Tx>(flag) & ~static_cast<Tx>(flagMod));
-		}
-	}
-
-	template<class TFlag, class TFlagMod>
-	constexpr void ModFlagRef(TFlag& flag, TFlagMod flagMod, bool set) noexcept
-	{
-		flag = ModFlag(flag, flagMod, set);
-	}
-
+	// Test
 	template<class TFlagLeft, class TFlagRight>
 	constexpr bool HasFlag(TFlagLeft left, TFlagRight right) noexcept
 	{
@@ -152,5 +128,101 @@ namespace KxFramework::Utility
 		using Tx = std::conditional_t<sizeof(T1) >= sizeof(T2), T1, T2>;
 
 		return static_cast<Tx>(left) & static_cast<Tx>(right) != static_cast<Tx>(0);
+	}
+
+	// Add
+	template<class TFlag, class TFlagMod>
+	constexpr TFlag AddFlag(TFlag flag, TFlagMod flagMod) noexcept
+	{
+		Private::AssertFlags<TFlag, TFlagMod>();
+
+		using T1 = Private::FlagIntType<TFlag>;
+		using T2 = Private::FlagIntType<TFlagMod>;
+		using Tx = std::conditional_t<sizeof(T1) >= sizeof(T2), T1, T2>;
+
+		return static_cast<TFlag>(static_cast<Tx>(flag) | static_cast<Tx>(flagMod));
+	}
+
+	template<class TFlag, class TFlagMod>
+	constexpr TFlag AddFlag(TFlag flag, TFlagMod flagMod, bool condition) noexcept
+	{
+		if (condition)
+		{
+			return AddFlag(flag, flagMod);
+		}
+		return flag;
+	}
+
+	template<class TFlag, class TFlagMod>
+	constexpr void AddFlagRef(TFlag& flag, TFlagMod flagMod) noexcept
+	{
+		flag = AddFlag(flag, flagMod);
+	}
+
+	template<class TFlag, class TFlagMod>
+	constexpr void AddFlagRef(TFlag& flag, TFlagMod flagMod, bool condition) noexcept
+	{
+		flag = AddFlag(flag, flagMod, condition);
+	}
+
+	// Remove
+	template<class TFlag, class TFlagMod>
+	constexpr TFlag RemoveFlag(TFlag flag, TFlagMod flagMod) noexcept
+	{
+		Private::AssertFlags<TFlag, TFlagMod>();
+
+		using T1 = Private::FlagIntType<TFlag>;
+		using T2 = Private::FlagIntType<TFlagMod>;
+		using Tx = std::conditional_t<sizeof(T1) >= sizeof(T2), T1, T2>;
+
+		return static_cast<TFlag>(static_cast<Tx>(flag) & ~static_cast<Tx>(flagMod));
+	}
+
+	template<class TFlag, class TFlagMod>
+	constexpr TFlag RemoveFlag(TFlag flag, TFlagMod flagMod, bool condition) noexcept
+	{
+		if (condition)
+		{
+			return RemoveFlag(flag, flagMod);
+		}
+		return flag;
+	}
+
+	template<class TFlag, class TFlagMod>
+	constexpr void RemoveFlagRef(TFlag& flag, TFlagMod flagMod) noexcept
+	{
+		flag = RemoveFlag(flag, flagMod);
+	}
+
+	template<class TFlag, class TFlagMod>
+	constexpr void RemoveFlagRef(TFlag& flag, TFlagMod flagMod, bool condition) noexcept
+	{
+		flag = RemoveFlag(flag, flagMod, condition);
+	}
+
+	// Mod flag
+	template<class TFlag, class TFlagMod>
+	constexpr TFlag ModFlag(TFlag flag, TFlagMod flagMod, bool condition) noexcept
+	{
+		return condition ? AddFlag(flag, flagMod) : RemoveFlag(flag, flagMod);
+	}
+
+	template<class TFlag, class TFlagMod>
+	constexpr void ModFlagRef(TFlag& flag, TFlagMod flagMod, bool condition) noexcept
+	{
+		flag = ModFlag(flag, flagMod, condition);
+	}
+
+	// Toggle flag
+	template<class TFlag, class TFlagMod>
+	constexpr TFlag ToggleFlag(TFlag flag, TFlagMod flagMod) noexcept
+	{
+		return HasFlag(flag, flagMod) ? AddFlag(flag, flagMod) : RemoveFlag(flag, flagMod);
+	}
+
+	template<class TFlag, class TFlagMod>
+	constexpr void ToggleFlagRef(TFlag& flag, TFlagMod flagMod) noexcept
+	{
+		flag = ToggleFlag(flag, flagMod);
 	}
 }

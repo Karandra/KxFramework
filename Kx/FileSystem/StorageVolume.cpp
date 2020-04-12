@@ -59,25 +59,25 @@ namespace
 		using namespace KxFramework;
 
 		FileSystemFeature features = FileSystemFeature::None;
-		Utility::ModFlagRef(features, FileSystemFeature::CasePreservedNames, nativeFeatures & FILE_CASE_PRESERVED_NAMES);
-		Utility::ModFlagRef(features, FileSystemFeature::CaseSensitiveSearch, nativeFeatures & FILE_CASE_SENSITIVE_SEARCH);
-		Utility::ModFlagRef(features, FileSystemFeature::FileCompression, nativeFeatures & FILE_FILE_COMPRESSION);
-		Utility::ModFlagRef(features, FileSystemFeature::NamedStreams, nativeFeatures & FILE_NAMED_STREAMS);
-		Utility::ModFlagRef(features, FileSystemFeature::PersistentACLS, nativeFeatures & FILE_PERSISTENT_ACLS);
-		Utility::ModFlagRef(features, FileSystemFeature::ReadOnlyVolume, nativeFeatures & FILE_READ_ONLY_VOLUME);
-		Utility::ModFlagRef(features, FileSystemFeature::SequentialWrite, nativeFeatures & FILE_SEQUENTIAL_WRITE_ONCE);
-		Utility::ModFlagRef(features, FileSystemFeature::Encryption, nativeFeatures & FILE_SUPPORTS_ENCRYPTION);
-		Utility::ModFlagRef(features, FileSystemFeature::ExtendedAttributes, nativeFeatures & FILE_SUPPORTS_EXTENDED_ATTRIBUTES);
-		Utility::ModFlagRef(features, FileSystemFeature::HardLinks, nativeFeatures & FILE_SUPPORTS_HARD_LINKS);
-		Utility::ModFlagRef(features, FileSystemFeature::ObjectIDs, nativeFeatures & FILE_SUPPORTS_OBJECT_IDS);
-		Utility::ModFlagRef(features, FileSystemFeature::OpenFileByID, nativeFeatures & FILE_SUPPORTS_OPEN_BY_FILE_ID);
-		Utility::ModFlagRef(features, FileSystemFeature::ReparsePoints, nativeFeatures & FILE_SUPPORTS_REPARSE_POINTS);
-		Utility::ModFlagRef(features, FileSystemFeature::SparseFiles, nativeFeatures & FILE_SUPPORTS_SPARSE_FILES);
-		Utility::ModFlagRef(features, FileSystemFeature::Transactions, nativeFeatures & FILE_SUPPORTS_TRANSACTIONS);
-		Utility::ModFlagRef(features, FileSystemFeature::USNJournal, nativeFeatures & FILE_SUPPORTS_USN_JOURNAL);
-		Utility::ModFlagRef(features, FileSystemFeature::Unicode, nativeFeatures & FILE_UNICODE_ON_DISK);
-		Utility::ModFlagRef(features, FileSystemFeature::CompressedVolume, nativeFeatures & FILE_VOLUME_IS_COMPRESSED);
-		Utility::ModFlagRef(features, FileSystemFeature::VolumeQuotas, nativeFeatures & FILE_VOLUME_QUOTAS);
+		Utility::AddFlagRef(features, FileSystemFeature::CasePreservedNames, nativeFeatures & FILE_CASE_PRESERVED_NAMES);
+		Utility::AddFlagRef(features, FileSystemFeature::CaseSensitiveSearch, nativeFeatures & FILE_CASE_SENSITIVE_SEARCH);
+		Utility::AddFlagRef(features, FileSystemFeature::FileCompression, nativeFeatures & FILE_FILE_COMPRESSION);
+		Utility::AddFlagRef(features, FileSystemFeature::NamedStreams, nativeFeatures & FILE_NAMED_STREAMS);
+		Utility::AddFlagRef(features, FileSystemFeature::PersistentACLS, nativeFeatures & FILE_PERSISTENT_ACLS);
+		Utility::AddFlagRef(features, FileSystemFeature::ReadOnlyVolume, nativeFeatures & FILE_READ_ONLY_VOLUME);
+		Utility::AddFlagRef(features, FileSystemFeature::SequentialWrite, nativeFeatures & FILE_SEQUENTIAL_WRITE_ONCE);
+		Utility::AddFlagRef(features, FileSystemFeature::Encryption, nativeFeatures & FILE_SUPPORTS_ENCRYPTION);
+		Utility::AddFlagRef(features, FileSystemFeature::ExtendedAttributes, nativeFeatures & FILE_SUPPORTS_EXTENDED_ATTRIBUTES);
+		Utility::AddFlagRef(features, FileSystemFeature::HardLinks, nativeFeatures & FILE_SUPPORTS_HARD_LINKS);
+		Utility::AddFlagRef(features, FileSystemFeature::ObjectIDs, nativeFeatures & FILE_SUPPORTS_OBJECT_IDS);
+		Utility::AddFlagRef(features, FileSystemFeature::OpenFileByID, nativeFeatures & FILE_SUPPORTS_OPEN_BY_FILE_ID);
+		Utility::AddFlagRef(features, FileSystemFeature::ReparsePoints, nativeFeatures & FILE_SUPPORTS_REPARSE_POINTS);
+		Utility::AddFlagRef(features, FileSystemFeature::SparseFiles, nativeFeatures & FILE_SUPPORTS_SPARSE_FILES);
+		Utility::AddFlagRef(features, FileSystemFeature::Transactions, nativeFeatures & FILE_SUPPORTS_TRANSACTIONS);
+		Utility::AddFlagRef(features, FileSystemFeature::USNJournal, nativeFeatures & FILE_SUPPORTS_USN_JOURNAL);
+		Utility::AddFlagRef(features, FileSystemFeature::Unicode, nativeFeatures & FILE_UNICODE_ON_DISK);
+		Utility::AddFlagRef(features, FileSystemFeature::CompressedVolume, nativeFeatures & FILE_VOLUME_IS_COMPRESSED);
+		Utility::AddFlagRef(features, FileSystemFeature::VolumeQuotas, nativeFeatures & FILE_VOLUME_QUOTAS);
 
 		return features;
 	}

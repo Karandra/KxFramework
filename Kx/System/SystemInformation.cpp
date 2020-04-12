@@ -40,7 +40,17 @@ namespace KxFramework::System
 		return isWow64 != FALSE;
 		#endif
 	}
-	
+	void GetRegistryQuota(BinarySize& used, BinarySize& allowed) noexcept
+	{
+		DWORD usedBytes = 0;
+		DWORD allowedBytes = 0;
+		if (::GetSystemRegistryQuota(&allowedBytes, &usedBytes))
+		{
+			used = BinarySize::FromBytes(usedBytes);
+			allowed = BinarySize::FromBytes(allowedBytes);
+		}
+	}
+
 	String GetProductName()
 	{
 		if (const auto versionInfo = GetVersionInfo())
@@ -424,11 +434,11 @@ namespace KxFramework::System
 					DisplayDeviceInfo deviceInfo;
 					deviceInfo.DeviceName = displayDevice.DeviceName;
 					deviceInfo.DeviceDescription = displayDevice.DeviceString;
-					Utility::ModFlagRef(deviceInfo.Flags, DisplayDeviceFlag::Active, displayDevice.StateFlags & DISPLAY_DEVICE_ACTIVE);
-					Utility::ModFlagRef(deviceInfo.Flags, DisplayDeviceFlag::Primary, displayDevice.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE);
-					Utility::ModFlagRef(deviceInfo.Flags, DisplayDeviceFlag::Removable, displayDevice.StateFlags & DISPLAY_DEVICE_REMOVABLE);
-					Utility::ModFlagRef(deviceInfo.Flags, DisplayDeviceFlag::VGACompatible, displayDevice.StateFlags & DISPLAY_DEVICE_VGA_COMPATIBLE);
-					Utility::ModFlagRef(deviceInfo.Flags, DisplayDeviceFlag::MirroringDriver, displayDevice.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER);
+					Utility::AddFlagRef(deviceInfo.Flags, DisplayDeviceFlag::Active, displayDevice.StateFlags & DISPLAY_DEVICE_ACTIVE);
+					Utility::AddFlagRef(deviceInfo.Flags, DisplayDeviceFlag::Primary, displayDevice.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE);
+					Utility::AddFlagRef(deviceInfo.Flags, DisplayDeviceFlag::Removable, displayDevice.StateFlags & DISPLAY_DEVICE_REMOVABLE);
+					Utility::AddFlagRef(deviceInfo.Flags, DisplayDeviceFlag::VGACompatible, displayDevice.StateFlags & DISPLAY_DEVICE_VGA_COMPATIBLE);
+					Utility::AddFlagRef(deviceInfo.Flags, DisplayDeviceFlag::MirroringDriver, displayDevice.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER);
 
 					count++;
 					if (!std::invoke(func, std::move(deviceInfo)))
@@ -513,16 +523,16 @@ namespace KxFramework::System
 	bool ExitWorkstation(ExitWorkstationCommand command) noexcept
 	{
 		UINT modeEWX = 0;
-		Utility::ModFlagRef(modeEWX, EWX_LOGOFF, command & ExitWorkstationCommand::LogOff);
-		Utility::ModFlagRef(modeEWX, EWX_POWEROFF, command & ExitWorkstationCommand::PowerOff);
-		Utility::ModFlagRef(modeEWX, EWX_SHUTDOWN, command & ExitWorkstationCommand::Shutdown);
-		Utility::ModFlagRef(modeEWX, EWX_REBOOT, command & ExitWorkstationCommand::Reboot);
-		Utility::ModFlagRef(modeEWX, EWX_QUICKRESOLVE, command & ExitWorkstationCommand::QuickResolve);
-		Utility::ModFlagRef(modeEWX, EWX_RESTARTAPPS, command & ExitWorkstationCommand::RestartApps);
-		Utility::ModFlagRef(modeEWX, EWX_HYBRID_SHUTDOWN, command & ExitWorkstationCommand::HybridShutdown);
-		Utility::ModFlagRef(modeEWX, EWX_BOOTOPTIONS, command & ExitWorkstationCommand::BootOptions);
-		Utility::ModFlagRef(modeEWX, EWX_FORCE, command & ExitWorkstationCommand::Force);
-		Utility::ModFlagRef(modeEWX, EWX_FORCEIFHUNG, command & ExitWorkstationCommand::ForceHung);
+		Utility::AddFlagRef(modeEWX, EWX_LOGOFF, command & ExitWorkstationCommand::LogOff);
+		Utility::AddFlagRef(modeEWX, EWX_POWEROFF, command & ExitWorkstationCommand::PowerOff);
+		Utility::AddFlagRef(modeEWX, EWX_SHUTDOWN, command & ExitWorkstationCommand::Shutdown);
+		Utility::AddFlagRef(modeEWX, EWX_REBOOT, command & ExitWorkstationCommand::Reboot);
+		Utility::AddFlagRef(modeEWX, EWX_QUICKRESOLVE, command & ExitWorkstationCommand::QuickResolve);
+		Utility::AddFlagRef(modeEWX, EWX_RESTARTAPPS, command & ExitWorkstationCommand::RestartApps);
+		Utility::AddFlagRef(modeEWX, EWX_HYBRID_SHUTDOWN, command & ExitWorkstationCommand::HybridShutdown);
+		Utility::AddFlagRef(modeEWX, EWX_BOOTOPTIONS, command & ExitWorkstationCommand::BootOptions);
+		Utility::AddFlagRef(modeEWX, EWX_FORCE, command & ExitWorkstationCommand::Force);
+		Utility::AddFlagRef(modeEWX, EWX_FORCEIFHUNG, command & ExitWorkstationCommand::ForceHung);
 
 		return ::ExitWindowsEx(modeEWX, SHTDN_REASON_MAJOR_OTHER|SHTDN_REASON_MINOR_OTHER|SHTDN_REASON_FLAG_PLANNED);
 	}

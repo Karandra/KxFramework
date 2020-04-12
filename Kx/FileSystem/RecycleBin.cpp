@@ -91,7 +91,7 @@ namespace KxFramework
 			if (flags & FSRecycleBinOpFlag::Recursive)
 			{
 				SHOperationFlags shellFlags = SHOperationFlags::AllowUndo|SHOperationFlags::Recursive;
-				Utility::ModFlagRef(shellFlags, SHOperationFlags::LimitToFiles, flags & FSRecycleBinOpFlag::LimitToFiles);
+				Utility::AddFlag(shellFlags, SHOperationFlags::LimitToFiles, flags & FSRecycleBinOpFlag::LimitToFiles);
 
 				return Shell::FileOperation(SHOperationType::Delete, path, {}, m_Window, shellFlags);
 			}
@@ -104,7 +104,7 @@ namespace KxFramework
 				if (fileItem.IsDirectory())
 				{
 					SHOperationFlags shellFlags = SHOperationFlags::AllowUndo;
-					Utility::ModFlagRef(shellFlags, SHOperationFlags::Recursive, flags & FSRecycleBinOpFlag::Recursive);
+					Utility::AddFlag(shellFlags, SHOperationFlags::Recursive, flags & FSRecycleBinOpFlag::Recursive);
 
 					return Shell::FileOperation(SHOperationType::Delete, path, {}, m_Window, shellFlags);
 				}

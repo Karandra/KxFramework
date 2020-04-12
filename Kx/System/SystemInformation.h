@@ -87,6 +87,7 @@ namespace KxFramework::System
 namespace KxFramework::System
 {
 	bool Is64Bit() noexcept;
+	void GetRegistryQuota(BinarySize& used, BinarySize& allowed) noexcept;
 
 	String GetProductName();
 	String GetProductName(const VersionInfo& versionInfo, bool is64Bit);
