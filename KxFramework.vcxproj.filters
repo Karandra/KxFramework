@@ -142,12 +142,6 @@
     <Filter Include="Header Files\Misc">
       <UniqueIdentifier>{ce660ee4-5cc9-4fad-b667-b1c3c2924a59}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\FFI">
-      <UniqueIdentifier>{6014e573-e4e3-4185-8c8b-4300a5436fe1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\FFI">
-      <UniqueIdentifier>{9e36dc1d-166b-46a6-a68d-83443a639d1a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\GUI\DataView2">
       <UniqueIdentifier>{eb022c58-7685-4933-83db-3ae2a7c99660}</UniqueIdentifier>
     </Filter>
@@ -705,9 +699,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxTimer.h">
       <Filter>Header Files\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxCFunction.h">
-      <Filter>Header Files\FFI</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxFunctional.h">
       <Filter>Header Files\Misc</Filter>
@@ -1372,6 +1363,18 @@
     <ClInclude Include="Kx\Crypto\ISecretStore.h">
       <Filter>Kx\Crypto</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\System\CFunction.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\Private\CFunction.h">
+      <Filter>Kx\System\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\CFunctionCompiler.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\Private\CFunctionCompiler.h">
+      <Filter>Kx\System\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1786,9 +1789,6 @@
     <ClCompile Include="KxFramework\KxTimer.cpp">
       <Filter>Source Files\Misc</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxCFunction.cpp">
-      <Filter>Source Files\FFI</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\HTML\clean_text.cpp">
       <Filter>Source Files\Parsers\HTML</Filter>
     </ClCompile>
@@ -2130,6 +2130,9 @@
     </ClCompile>
     <ClCompile Include="Kx\Crypto\SecretValue.cpp">
       <Filter>Kx\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\CFunctionCompiler.cpp">
+      <Filter>Kx\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

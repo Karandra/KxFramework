@@ -331,7 +331,6 @@
     <ClInclude Include="KxFramework\KxDialog.h" />
     <ClInclude Include="KxFramework\KxDualInputDialog.h" />
     <ClInclude Include="KxFramework\KxDualProgressDialog.h" />
-    <ClInclude Include="KxFramework\KxCFunction.h" />
     <ClInclude Include="KxFramework\KxFileBrowseDialog.h" />
     <ClInclude Include="KxFramework\KxFileOperationEvent.h" />
     <ClInclude Include="KxFramework\KxFileStream.h" />
@@ -550,11 +549,15 @@
     <ClInclude Include="Kx\Sciter\WidgetFactory.h" />
     <ClInclude Include="Kx\Sciter\WrapperWindow.h" />
     <ClInclude Include="Kx\System.hpp" />
+    <ClInclude Include="Kx\System\CFunction.h" />
+    <ClInclude Include="Kx\System\CFunctionCompiler.h" />
     <ClInclude Include="Kx\System\COM.h" />
     <ClInclude Include="Kx\System\Common.h" />
     <ClInclude Include="Kx\System\ErrorCode.h" />
     <ClInclude Include="Kx\System\ErrorCodeValue.h" />
     <ClInclude Include="Kx\System\Private\BeginIncludeCOM.h" />
+    <ClInclude Include="Kx\System\Private\CFunction.h" />
+    <ClInclude Include="Kx\System\Private\CFunctionCompiler.h" />
     <ClInclude Include="Kx\System\Private\EndIncludeCOM.h" />
     <ClInclude Include="Kx\System\Private\IncludeNtStatus.h" />
     <ClInclude Include="Kx\System\CredentialStore.h" />
@@ -707,7 +710,6 @@
     <ClCompile Include="KxFramework\KxDialog.cpp" />
     <ClCompile Include="KxFramework\KxDualInputDialog.cpp" />
     <ClCompile Include="KxFramework\KxDualProgressDialog.cpp" />
-    <ClCompile Include="KxFramework\KxCFunction.cpp" />
     <ClCompile Include="KxFramework\KxFileBrowseDialog.cpp" />
     <ClCompile Include="KxFramework\KxFileOperationEvent.cpp" />
     <ClCompile Include="KxFramework\KxFileStream.cpp" />
@@ -830,6 +832,7 @@
     <ClCompile Include="Kx\General\String.cpp" />
     <ClCompile Include="Kx\General\StringFormater.cpp" />
     <ClCompile Include="Kx\General\Version.cpp" />
+    <ClCompile Include="Kx\System\CFunctionCompiler.cpp" />
     <ClCompile Include="Kx\System\NativeAPI.cpp" />
     <ClCompile Include="Kx\System\CredentialStore.cpp" />
     <ClCompile Include="Kx\System\SystemInformation.cpp" />
