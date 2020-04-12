@@ -6,10 +6,11 @@ You'll need [Visual Studio 2019](https://visualstudio.microsoft.com/) and [VCPkg
 
 - Download and install **VCPkg**.
 - Build **VCPkg** using its instructions (run `bootstrap-vcpkg.bat`, wait for build to complete and run `vcpkg.exe` from command line or PowerShell).
-- Download and build following packages for both x86 (`:x86-windows-static-md`) and x64 (`:x64-windows-static-md`) targets.
+- Download and build following packages for both x86 (`x86-windows-static-md`) and x64 (`x64-windows-static-md`) targets.
 	- [wxWidgets](https://www.wxwidgets.org) - `wxwidgets`.
 	- [Boost](https://www.boost.org) - `boost`. The framework doesn't use Boost itself, only as a dependency for other libraries.
-	- [LibCurl](https://curl.haxx.se) - `curl`. I'm using the following options: `curl[non-http,http2, winssl]`.
+	- [LibCurl](https://curl.haxx.se) - `curl`. I'm using the following options: `curl[non-http,http2,openssl]`.
+	- [OpenSSL](https://www.openssl.org) - `openssl` and `openssl-windows`. Should be downloaded as a dependency for LibCurl but it's used directly as well.
 	- [WebSocket++](https://github.com/zaphoyd/websocketpp) - `websocketpp`.
 	- [Gumbo HTML5 Parser](https://github.com/google/gumbo-parser) - `gumbo`.
 	- [LibFFI](https://github.com/libffi/libffi) - `libffi`.
