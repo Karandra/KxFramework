@@ -268,6 +268,9 @@
     <Filter Include="Kx\wxWidgets">
       <UniqueIdentifier>{025a1a1a-8594-467f-b759-9e5ca71ddd88}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\Crypto">
+      <UniqueIdentifier>{a22e20b9-4de3-47e4-ace6-bcc7101c470c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -1366,6 +1369,18 @@
     <ClInclude Include="Kx\wxWidgets\Setup.h">
       <Filter>Kx\wxWidgets</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Crypto\Crypto.h">
+      <Filter>Kx\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Crypto\Common.h">
+      <Filter>Kx\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Crypto.hpp">
+      <Filter>Kx</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Crypto\HashValue.h">
+      <Filter>Kx\Crypto</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -2121,6 +2136,12 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxINI.cpp">
       <Filter>Source Files\Parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Crypto\Crypto.cpp">
+      <Filter>Kx\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Crypto\Common.cpp">
+      <Filter>Kx\Crypto</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

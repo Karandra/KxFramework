@@ -463,6 +463,10 @@
     <ClInclude Include="Kx\Compression\IArchive.h" />
     <ClInclude Include="Kx\Compression\LZ4Stream.h" />
     <ClInclude Include="Kx\Compression\ZLibStream.h" />
+    <ClInclude Include="Kx\Crypto.hpp" />
+    <ClInclude Include="Kx\Crypto\Common.h" />
+    <ClInclude Include="Kx\Crypto\Crypto.h" />
+    <ClInclude Include="Kx\Crypto\HashValue.h" />
     <ClInclude Include="Kx\EventSystem.hpp" />
     <ClInclude Include="Kx\EventSystem\BasicEvtHandler.h" />
     <ClInclude Include="Kx\EventSystem\BroadcastProcessor.h" />
@@ -818,6 +822,8 @@
     <ClCompile Include="Kx\Compression\IArchive.cpp" />
     <ClCompile Include="Kx\Compression\LZ4Stream.cpp" />
     <ClCompile Include="Kx\Compression\ZLibStream.cpp" />
+    <ClCompile Include="Kx\Crypto\Common.cpp" />
+    <ClCompile Include="Kx\Crypto\Crypto.cpp" />
     <ClCompile Include="Kx\General\Any.cpp" />
     <ClCompile Include="Kx\General\Color.cpp" />
     <ClCompile Include="Kx\General\MemoryStream.cpp" />
