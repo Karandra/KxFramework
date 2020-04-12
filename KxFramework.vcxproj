@@ -352,11 +352,7 @@
     <ClInclude Include="KxFramework\KxImageView.h" />
     <ClInclude Include="KxFramework\KxIncludeWindows.h" />
     <ClInclude Include="KxFramework\KxIndexedEnum.h" />
-    <ClInclude Include="KxFramework\KxINet.h" />
-    <ClInclude Include="KxFramework\KxINetEvent.h" />
-    <ClInclude Include="KxFramework\KxINetRequest.h" />
     <ClInclude Include="KxFramework\KxINI.h" />
-    <ClInclude Include="KxFramework\KxINetConnection.h" />
     <ClInclude Include="KxFramework\KxURI.h" />
     <ClInclude Include="KxFramework\KxURL.h" />
     <ClInclude Include="KxFramework\KxUxThemePartsAndStates.h" />
@@ -508,6 +504,8 @@
     <ClInclude Include="Kx\General\StringFormaterTraits.h" />
     <ClInclude Include="Kx\General\UniversallyUniqueID.h" />
     <ClInclude Include="Kx\General\Version.h" />
+    <ClInclude Include="Kx\Network.hpp" />
+    <ClInclude Include="Kx\Network\Common.h" />
     <ClInclude Include="Kx\RTTI.hpp" />
     <ClInclude Include="Kx\RTTI\Common.h" />
     <ClInclude Include="Kx\RTTI\QueryInterface.h" />
@@ -724,10 +722,6 @@
     <ClCompile Include="KxFramework\KxImageList.cpp" />
     <ClCompile Include="KxFramework\KxImageSet.cpp" />
     <ClCompile Include="KxFramework\KxImageView.cpp" />
-    <ClCompile Include="KxFramework\KxINet.cpp" />
-    <ClCompile Include="KxFramework\KxINetConnection.cpp" />
-    <ClCompile Include="KxFramework\KxINetEvent.cpp" />
-    <ClCompile Include="KxFramework\KxINetRequest.cpp" />
     <ClCompile Include="KxFramework\KxINI.cpp" />
     <ClCompile Include="KxFramework\KxIOwned.cpp" />
     <ClCompile Include="KxFramework\KxIProgressBar.cpp" />
@@ -824,6 +818,7 @@
     <ClCompile Include="Kx\General\String.cpp" />
     <ClCompile Include="Kx\General\StringFormater.cpp" />
     <ClCompile Include="Kx\General\Version.cpp" />
+    <ClCompile Include="Kx\Network\Common.cpp" />
     <ClCompile Include="Kx\System\CFunctionCompiler.cpp" />
     <ClCompile Include="Kx\System\NativeAPI.cpp" />
     <ClCompile Include="Kx\System\CredentialStore.cpp" />

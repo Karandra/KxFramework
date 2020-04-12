@@ -259,6 +259,9 @@
     <Filter Include="Kx\Crypto">
       <UniqueIdentifier>{a22e20b9-4de3-47e4-ace6-bcc7101c470c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\Network">
+      <UniqueIdentifier>{503679ad-0476-4a11-beb0-ba123ce47580}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -469,12 +472,6 @@
     <ClInclude Include="KxFramework\KxDataViewListModelEx.h">
       <Filter>Header Files\GUI\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxINet.h">
-      <Filter>Header Files\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxINetEvent.h">
-      <Filter>Header Files\Events</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxArchiveEvent.h">
       <Filter>Header Files\Events</Filter>
     </ClInclude>
@@ -489,9 +486,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxProcessEvent.h">
       <Filter>Header Files\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxINetConnection.h">
-      <Filter>Header Files\Network</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxApp.h">
       <Filter>Header Files\General</Filter>
@@ -609,9 +603,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxFramework.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxINetRequest.h">
-      <Filter>Header Files\Network</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxWebSocketEvent.h">
       <Filter>Header Files\Events</Filter>
@@ -1363,6 +1354,12 @@
     <ClInclude Include="Kx\System\Registry.h">
       <Filter>Kx\System</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Network.hpp">
+      <Filter>Kx</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Network\Common.h">
+      <Filter>Kx\Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1576,12 +1573,6 @@
     <ClCompile Include="KxFramework\KxDataViewTreeModelEx.cpp">
       <Filter>Source Files\GUI\DataView</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxINet.cpp">
-      <Filter>Source Files\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxINetConnection.cpp">
-      <Filter>Source Files\Network</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxArchiveEvent.cpp">
       <Filter>Source Files\Events</Filter>
     </ClCompile>
@@ -1589,9 +1580,6 @@
       <Filter>Source Files\Events</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxFileOperationEvent.cpp">
-      <Filter>Source Files\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxINetEvent.cpp">
       <Filter>Source Files\Events</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxMenuEvent.cpp">
@@ -1710,9 +1698,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxCredentialsDialog.cpp">
       <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxINetRequest.cpp">
-      <Filter>Source Files\Network</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxWebSocketEvent.cpp">
       <Filter>Source Files\Events</Filter>
@@ -2112,6 +2097,9 @@
     </ClCompile>
     <ClCompile Include="Kx\System\Registry.cpp">
       <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Network\Common.cpp">
+      <Filter>Kx\Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
