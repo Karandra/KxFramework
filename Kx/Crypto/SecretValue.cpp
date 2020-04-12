@@ -3,7 +3,7 @@
 
 namespace KxFramework
 {
-	String SecretValue::GetAsString(const wxMBConv& conv) const
+	String SecretValue::ToString(const wxMBConv& conv) const
 	{
 		return wxString(m_Storage.data(), conv, m_Storage.size());
 	}

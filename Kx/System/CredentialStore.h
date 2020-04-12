@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
-#include "Kx/General/SecretValue.h"
-#include "Kx/General/ISecretStore.h"
+#include "Kx/Crypto/SecretValue.h"
+#include "Kx/Crypto/ISecretStore.h"
 
 namespace KxFramework
 {

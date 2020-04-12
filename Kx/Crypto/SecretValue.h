@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "String.h"
+#include "Kx/General/String.h"
 #include <vector>
 
 namespace KxFramework
@@ -48,7 +48,7 @@ namespace KxFramework
 				return m_Storage.data();
 			}
 			
-			String GetAsString(const wxMBConv& conv = wxConvWhateverWorks) const;
+			String ToString(const wxMBConv& conv = wxConvWhateverWorks) const;
 			void Wipe() noexcept;
 
 		public:

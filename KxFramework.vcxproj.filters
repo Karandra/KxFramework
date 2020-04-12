@@ -1354,12 +1354,6 @@
     <ClInclude Include="Kx\System\CredentialStore.h">
       <Filter>Kx\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\ISecretStore.h">
-      <Filter>Kx\General</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\General\SecretValue.h">
-      <Filter>Kx\General</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxINI.h">
       <Filter>Header Files\Parsers</Filter>
     </ClInclude>
@@ -1379,6 +1373,12 @@
       <Filter>Kx</Filter>
     </ClInclude>
     <ClInclude Include="Kx\Crypto\HashValue.h">
+      <Filter>Kx\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Crypto\SecretValue.h">
+      <Filter>Kx\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Crypto\ISecretStore.h">
       <Filter>Kx\Crypto</Filter>
     </ClInclude>
   </ItemGroup>
@@ -2131,9 +2131,6 @@
     <ClCompile Include="Kx\System\CredentialStore.cpp">
       <Filter>Kx\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\SecretValue.cpp">
-      <Filter>Kx\General</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxINI.cpp">
       <Filter>Source Files\Parsers</Filter>
     </ClCompile>
@@ -2141,6 +2138,9 @@
       <Filter>Kx\Crypto</Filter>
     </ClCompile>
     <ClCompile Include="Kx\Crypto\Common.cpp">
+      <Filter>Kx\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Crypto\SecretValue.cpp">
       <Filter>Kx\Crypto</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "String.h"
+#include "Kx/General/String.h"
 #include "Kx/RTTI/QueryInterface.h"
 
 namespace KxFramework

@@ -467,6 +467,8 @@
     <ClInclude Include="Kx\Crypto\Common.h" />
     <ClInclude Include="Kx\Crypto\Crypto.h" />
     <ClInclude Include="Kx\Crypto\HashValue.h" />
+    <ClInclude Include="Kx\Crypto\ISecretStore.h" />
+    <ClInclude Include="Kx\Crypto\SecretValue.h" />
     <ClInclude Include="Kx\EventSystem.hpp" />
     <ClInclude Include="Kx\EventSystem\BasicEvtHandler.h" />
     <ClInclude Include="Kx\EventSystem\BroadcastProcessor.h" />
@@ -499,14 +501,12 @@
     <ClInclude Include="Kx\General\Common.h" />
     <ClInclude Include="Kx\General\EnumClass.h" />
     <ClInclude Include="Kx\General\ExtraData.h" />
-    <ClInclude Include="Kx\General\ISecretStore.h" />
     <ClInclude Include="Kx\General\MemorySpan.h" />
     <ClInclude Include="Kx\General\MemoryStream.h" />
     <ClInclude Include="Kx\General\NativeUUID.h" />
     <ClInclude Include="Kx\General\Private\ExtraData.h" />
     <ClInclude Include="Kx\General\Private\String.h" />
     <ClInclude Include="Kx\General\Private\VersionImpl.h" />
-    <ClInclude Include="Kx\General\SecretValue.h" />
     <ClInclude Include="Kx\General\Singleton.h" />
     <ClInclude Include="Kx\General\StreamDelegate.h" />
     <ClInclude Include="Kx\General\StreamWrappers.h" />
@@ -824,11 +824,11 @@
     <ClCompile Include="Kx\Compression\ZLibStream.cpp" />
     <ClCompile Include="Kx\Crypto\Common.cpp" />
     <ClCompile Include="Kx\Crypto\Crypto.cpp" />
+    <ClCompile Include="Kx\Crypto\SecretValue.cpp" />
     <ClCompile Include="Kx\General\Any.cpp" />
     <ClCompile Include="Kx\General\Color.cpp" />
     <ClCompile Include="Kx\General\MemoryStream.cpp" />
     <ClCompile Include="Kx\General\Private\VersionImpl.cpp" />
-    <ClCompile Include="Kx\General\SecretValue.cpp" />
     <ClCompile Include="Kx\General\String.cpp" />
     <ClCompile Include="Kx\General\StringFormater.cpp" />
     <ClCompile Include="Kx\General\Version.cpp" />
