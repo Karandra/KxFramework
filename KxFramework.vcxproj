@@ -388,7 +388,6 @@
     <ClInclude Include="KxFramework\KxRichToolTip.h" />
     <ClInclude Include="KxFramework\KxDynamicCastAsIs.h" />
     <ClInclude Include="KxFramework\KxSearchBox.h" />
-    <ClInclude Include="KxFramework\KxSecretStore.h" />
     <ClInclude Include="KxFramework\KxSharedMemory.h" />
     <ClInclude Include="KxFramework\KxShell.h" />
     <ClInclude Include="KxFramework\KxShellDefs.h" />
@@ -758,7 +757,6 @@
     <ClCompile Include="KxFramework\KxRichToolTip.cpp" />
     <ClCompile Include="KxFramework\KxDynamicCastAsIs.cpp" />
     <ClCompile Include="KxFramework\KxSearchBox.cpp" />
-    <ClCompile Include="KxFramework\KxSecretStore.cpp" />
     <ClCompile Include="KxFramework\KxSharedMemory.cpp" />
     <ClCompile Include="KxFramework\KxShell.cpp" />
     <ClCompile Include="KxFramework\KxShellFolders.cpp" />

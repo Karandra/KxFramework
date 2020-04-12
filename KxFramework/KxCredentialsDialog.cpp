@@ -1,6 +1,7 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxCredentialsDialog.h"
 #include "KxFramework/KxUtility.h"
+#include "Kx/Utility/CallAtScopeExit.h"
 #include <wincred.h>
 #pragma comment(lib, "CredUI.lib")
 
@@ -19,12 +20,10 @@ bool KxCredentialsDialog::Create(wxWindow* parent,
 	m_Message = message;
 	return true;
 }
-KxCredentialsDialog::~KxCredentialsDialog()
-{
-}
-
 int KxCredentialsDialog::ShowModal()
 {
+	using namespace KxFramework;
+
 	m_UserName.clear();
 	m_Password.Wipe();
 
@@ -41,6 +40,14 @@ int KxCredentialsDialog::ShowModal()
 	PVOID authBlob = nullptr;
 	ULONG authBlobSize = 0;
 	BOOL saveCredentials = m_SaveCredentials;
+	Utility::CallAtScopeExit ZeroAndFreeAuthBlob([&]()
+	{
+		if (authBlob)
+		{
+			::RtlSecureZeroMemory(authBlob, authBlobSize);
+			::CoTaskMemFree(authBlob);
+		}
+	});
 
 	DWORD ret = ::CredUIPromptForWindowsCredentialsW(&credentialInfoUI,
 													 0,
@@ -71,6 +78,12 @@ int KxCredentialsDialog::ShowModal()
 		WCHAR name[nameLengthMax] = {0};
 		WCHAR password[passwordLengthMax] = {0};
 		WCHAR domain[domainLengthMax] = {0};
+		Utility::CallAtScopeExit zeroCredentials([&]()
+		{
+			RtlSecureZeroMemory(name, sizeof(name));
+			RtlSecureZeroMemory(password, sizeof(password));
+			RtlSecureZeroMemory(domain, sizeof(domain));
+		});
 
 		BOOL unpacked = ::CredUnPackAuthenticationBufferW(CRED_PACK_PROTECTED_CREDENTIALS,
 														  authBlob,
@@ -85,17 +98,8 @@ int KxCredentialsDialog::ShowModal()
 		if (unpacked)
 		{
 			m_UserName = wxString(name, nameLength);
-			m_Password = KxSecretValue(wxString(password, passwordLength));
+			m_Password = SecretValue::FromString(password, passwordLength);
 		}
-
-		RtlSecureZeroMemory(name, sizeof(name));
-		RtlSecureZeroMemory(password, sizeof(password));
-	}
-
-	if (authBlob)
-	{
-		::RtlSecureZeroMemory(authBlob, authBlobSize);
-		::CoTaskMemFree(authBlob);
 	}
 	return ret == ERROR_SUCCESS ? KxID_OK : KxID_CANCEL;
 }

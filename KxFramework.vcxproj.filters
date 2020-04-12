@@ -613,9 +613,6 @@
     <ClInclude Include="KxFramework\KxSearchBox.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxSecretStore.h">
-      <Filter>Header Files\System</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxCredentialsDialog.h">
       <Filter>Header Files\GUI\Dialogs</Filter>
     </ClInclude>
@@ -1728,9 +1725,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxSearchBox.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxSecretStore.cpp">
-      <Filter>Source Files\System</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxCredentialsDialog.cpp">
       <Filter>Source Files\GUI\Dialogs</Filter>

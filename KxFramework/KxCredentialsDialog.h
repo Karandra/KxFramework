@@ -3,8 +3,7 @@
 #include "KxFramework/KxDialog.h"
 #include "KxFramework/KxStdDialog.h"
 #include "KxFramework/KxUtility.h"
-#include "KxFramework/KxSecretStore.h"
-#include "KxFramework/KxWinUndef.h"
+#include "Kx/Crypto/SecretValue.h"
 
 class KX_API KxCredentialsDialog: public KxDialog
 {
@@ -17,7 +16,7 @@ class KX_API KxCredentialsDialog: public KxDialog
 		bool m_EnableSaveCredentialsCheckBox = false;
 
 		wxString m_UserName;
-		KxSecretValue m_Password;
+		KxFramework::SecretValue m_Password;
 
 	private:
 		inline LPCWSTR GetStringOrNull(const wxString& text)
@@ -26,7 +25,7 @@ class KX_API KxCredentialsDialog: public KxDialog
 		}
 
 	public:
-		KxCredentialsDialog() {}
+		KxCredentialsDialog() = default;
 		KxCredentialsDialog(wxWindow* parent,
 							wxWindowID id,
 							const wxString& caption,
@@ -40,7 +39,6 @@ class KX_API KxCredentialsDialog: public KxDialog
 					const wxString& caption,
 					const wxString& message
 		);
-		virtual ~KxCredentialsDialog();
 
 	public:
 		wxString GetCaption() const
@@ -61,20 +59,20 @@ class KX_API KxCredentialsDialog: public KxDialog
 			m_Message = value;
 		}
 
-		virtual wxString GetTitle() const override
+		wxString GetTitle() const override
 		{
 			return GetCaption();
 		}
-		virtual void SetTitle(const wxString& value) override
+		void SetTitle(const wxString& value) override
 		{
 			SetCaption(value);
 		}
 		
-		virtual wxString GetLabel() const override
+		wxString GetLabel() const override
 		{
 			return GetCaption();
 		}
-		virtual void SetLabel(const wxString& value) override
+		void SetLabel(const wxString& value) override
 		{
 			SetCaption(value);
 		}
@@ -103,11 +101,9 @@ class KX_API KxCredentialsDialog: public KxDialog
 		{
 			return m_UserName;
 		}
-		bool GetPassword(KxSecretValue& password)
+		KxFramework::SecretValue GetPassword()
 		{
-			password = m_Password;
-			m_Password.Wipe();
-			return password.IsOk();
+			return std::move(m_Password);
 		}
 
 	public:
