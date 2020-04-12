@@ -1,4 +1,5 @@
 #pragma once
+#include "Kx/wxWidgets/Setup.h"
 #include <wx/string.h>
 #include <string>
 

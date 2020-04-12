@@ -94,17 +94,8 @@
     <Filter Include="Source Files\Parsers\XML">
       <UniqueIdentifier>{685d523b-d479-4166-9951-3e5ed5b913cf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Parsers\INI">
-      <UniqueIdentifier>{b6d56553-25fd-47ff-b4ee-2a294ac8afbd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Parsers\INI">
-      <UniqueIdentifier>{e301e825-14cc-4c52-bffb-e2a81ddcb605}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Parsers\HTML">
       <UniqueIdentifier>{b01af409-c039-4b8b-874e-86dececf4df7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Parsers\HTML">
-      <UniqueIdentifier>{fca23f05-6e0a-487d-9716-a8dd7f671d8e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\General">
       <UniqueIdentifier>{78ce2f9b-2a99-4d3f-8e20-2ce7526e49da}</UniqueIdentifier>
@@ -199,9 +190,6 @@
     <Filter Include="Source Files\General\ComponentSystem">
       <UniqueIdentifier>{4a75dadd-4514-4c7e-9ed8-32e75e3b7eb5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Crypto\OpenSSL">
-      <UniqueIdentifier>{29801532-0096-4e62-b43d-d8c85439da90}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Kx">
       <UniqueIdentifier>{b754c7f1-7cfc-4648-b498-fd9750d8b242}</UniqueIdentifier>
     </Filter>
@@ -277,6 +265,9 @@
     <Filter Include="Kx\General\Private">
       <UniqueIdentifier>{9bddb8ad-b98d-4558-90ae-2b5b7048b860}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\wxWidgets">
+      <UniqueIdentifier>{025a1a1a-8594-467f-b759-9e5ca71ddd88}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -325,17 +316,8 @@
     <ClInclude Include="KxFramework\XML\TinyXML2 HTML5 Printer.h">
       <Filter>Header Files\Parsers\XML</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxINI.h">
-      <Filter>Header Files\Parsers\INI</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\INI\SimpleINI.h">
-      <Filter>Header Files\Parsers\INI</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxTextFile.h">
       <Filter>Header Files\Parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxHTML.h">
-      <Filter>Header Files\Parsers\HTML</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxTopLevelWindow.h">
       <Filter>Header Files\GUI\Windows</Filter>
@@ -736,9 +718,6 @@
     <ClInclude Include="KxFramework\KxFunctional.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\XML\TinyXML2.h">
-      <Filter>Header Files\Parsers\XML</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxButtonType.h">
       <Filter>Header Files\General</Filter>
     </ClInclude>
@@ -954,9 +933,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxURL.h">
       <Filter>Header Files\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\OpenSSL\IncludeLibs.h">
-      <Filter>Header Files\Crypto\OpenSSL</Filter>
     </ClInclude>
     <ClInclude Include="Kx\Threading.hpp">
       <Filter>Kx</Filter>
@@ -1381,6 +1357,15 @@
     <ClInclude Include="Kx\General\SecretValue.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxINI.h">
+      <Filter>Header Files\Parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="KxFramework\KxHTML.h">
+      <Filter>Header Files\Parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\wxWidgets\Setup.h">
+      <Filter>Kx\wxWidgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1434,9 +1419,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxXML.cpp">
       <Filter>Source Files\Parsers\XML</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxINI.cpp">
-      <Filter>Source Files\Parsers\INI</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxTextFile.cpp">
       <Filter>Source Files\Parsers</Filter>
@@ -1792,9 +1774,6 @@
     <ClCompile Include="KxFramework\KxSharedMemory.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\XML\TinyXML2.cpp">
-      <Filter>Source Files\Parsers\XML</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxAnimatedSplashWindow.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
     </ClCompile>
@@ -2140,11 +2119,31 @@
     <ClCompile Include="Kx\General\SecretValue.cpp">
       <Filter>Kx\General</Filter>
     </ClCompile>
+    <ClCompile Include="KxFramework\KxINI.cpp">
+      <Filter>Source Files\Parsers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="cpp.hint" />
     <None Include="Kx\System\Private\ErrorCodeNtStatus.i">
       <Filter>Kx\System\Private</Filter>
+    </None>
+    <None Include=".gitattributes">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include=".gitignore">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Copyright header template">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LICENSE">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="README.md">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="cpp.hint">
+      <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

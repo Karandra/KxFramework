@@ -4,13 +4,7 @@
 
 #pragma warning(disable: 4005) // macro redefinition
 #include "gumbo.h"
-#include "error.h"
-
-#if defined _WIN64
-#pragma comment(lib, "KxFramework/HTML/Gumbo x64.lib")
-#else
-#pragma comment(lib, "KxFramework/HTML/Gumbo x86.lib")
-#endif
+#include "HTML/error.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace

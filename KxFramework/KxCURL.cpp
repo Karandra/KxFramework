@@ -2,19 +2,9 @@
 #include "KxFramework/KxCURL.h"
 
 #define CURL_STATICLIB 1
-#include "KxFramework/cURL/curl.h"
-#include "KxFramework/cURL/urlapi.h"
-#include "KxFramework/cURL/curlver.h"
-
-#pragma comment(lib, "Wldap32.lib")
-#pragma comment(lib, "Crypt32.lib")
-#pragma comment(lib, "WS2_32.lib")
-#pragma comment(lib, "Normaliz.lib")
-#if defined _WIN64
-#pragma comment(lib, "KxFramework/cURL/libcurl x64.lib")
-#else
-#pragma comment(lib, "KxFramework/cURL/libcurl x86.lib")
-#endif
+#include <cURL/curl.h>
+#include <cURL/urlapi.h>
+#include <cURL/curlver.h>
 
 namespace cURL
 {

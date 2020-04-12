@@ -23,6 +23,8 @@
     <ProjectGuid>{157DA1E6-2B05-4203-8284-9A9EDD0F1235}</ProjectGuid>
     <RootNamespace>KxFramework</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <VcpkgTriplet Condition="'$(Platform)'=='Win32'">x86-windows-static-md</VcpkgTriplet>
+    <VcpkgTriplet Condition="'$(Platform)'=='x64'">x64-windows-static-md</VcpkgTriplet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -147,8 +149,8 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>KxStdAfx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)KxFramework;$(SolutionDir)..\wxWidgets\include;$(SolutionDir)..\wxWidgets\lib\vc_lib\mswu;$(SolutionDir)..\Gumbo HTML5 Parser\src;$(BOOST_ROOT);$(ProjectDir)KxFramework\OpenSSL\Include;$(ProjectDir)KxFramework\HTML;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>KXFRAMEWORK_LIBRARY;WXMAKINGDLL;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>KXFRAMEWORK_LIBRARY;WXMAKINGDLL;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
@@ -160,7 +162,7 @@
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>$(ProjectDir);$(SolutionDir)..\Gumbo HTML5 Parser\visualc\Release;$(SolutionDir)..\wxWidgets\lib\vc_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
       <Command>copy /Y "$(ProjectDir)$(Configuration)\$(TargetName)$(TargetExt)" "$(ProjectDir)Bin\$(TargetName)$(TargetExt)"</Command>
@@ -176,8 +178,8 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>KxStdAfx.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)KxFramework;$(SolutionDir)..\wxWidgets\include;$(SolutionDir)..\wxWidgets\lib\vc_x64_lib\mswu;$(SolutionDir)..\Gumbo HTML5 Parser\src;$(BOOST_ROOT);$(ProjectDir)KxFramework\OpenSSL\Include;$(ProjectDir)KxFramework\HTML;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>KXFRAMEWORK_LIBRARY;WXMAKINGDLL;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>KXFRAMEWORK_LIBRARY;WXMAKINGDLL;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
@@ -189,7 +191,7 @@
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>$(ProjectDir);$(SolutionDir)..\Gumbo HTML5 Parser\visualc\Release x64;$(SolutionDir)..\wxWidgets\lib\vc_x64_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
       <Command>copy /Y "$(ProjectDir)$(Configuration)\$(TargetName)$(TargetExt)" "$(ProjectDir)Bin\$(TargetName)$(TargetExt)"</Command>
@@ -266,7 +268,6 @@
     <ClInclude Include="KxFramework\DataView\KxDataViewTimeEditor.h" />
     <ClInclude Include="KxFramework\DataView\KxDataViewToggleRenderer.h" />
     <ClInclude Include="KxFramework\DataView\KxDataViewTreeNode.h" />
-    <ClInclude Include="KxFramework\INI\SimpleINI.h" />
     <ClInclude Include="KxFramework\KxAlignedAllocator.h" />
     <ClInclude Include="KxFramework\KxAnimatedSplashWindow.h" />
     <ClInclude Include="KxFramework\KxAnimation.h" />
@@ -444,12 +445,10 @@
     <ClInclude Include="KxFramework\KxXDocumentNode.h" />
     <ClInclude Include="KxFramework\KxXML.h" />
     <ClInclude Include="KxFramework\KxXMLUtility.h" />
-    <ClInclude Include="KxFramework\OpenSSL\IncludeLibs.h" />
     <ClInclude Include="KxFramework\WebSocket\Common.h" />
     <ClInclude Include="KxFramework\WebSocket\IClient.h" />
     <ClInclude Include="KxFramework\WebSocket\SecureClient.h" />
     <ClInclude Include="KxFramework\XML\TinyXML2 HTML5 Printer.h" />
-    <ClInclude Include="KxFramework\XML\TinyXML2.h" />
     <ClInclude Include="KxStdAfx.h" />
     <ClInclude Include="Kx\Async.hpp" />
     <ClInclude Include="Kx\Async\Common.h" />
@@ -578,6 +577,7 @@
     <ClInclude Include="Kx\Utility\Numeric.h" />
     <ClInclude Include="Kx\Utility\String.h" />
     <ClInclude Include="Kx\Utility\TypeTraits.h" />
+    <ClInclude Include="Kx\wxWidgets\Setup.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxFramework\ComponentSystem\Component.cpp" />
@@ -808,7 +808,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="KxFramework\XML\TinyXML2.cpp" />
     <ClCompile Include="KxStdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -875,8 +874,13 @@
     <ClCompile Include="Kx\Threading\JoinableThread.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".gitattributes" />
+    <None Include=".gitignore" />
+    <None Include="Copyright header template" />
     <None Include="cpp.hint" />
     <None Include="Kx\System\Private\ErrorCodeNtStatus.i" />
+    <None Include="LICENSE" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Kx\General\Color.natvis" />

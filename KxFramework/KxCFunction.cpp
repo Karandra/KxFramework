@@ -2,14 +2,7 @@
 #include "KxFramework/KxCFunction.h"
 #include <type_traits>
 
-#define FFI_BUILDING 1
-#include "KxFramework/LibFFI/ffi.h"
-
-#if defined _WIN64
-	#pragma comment(lib, "KxFramework/LibFFI/libffi x64.lib")
-#else
-	#pragma comment(lib, "KxFramework/LibFFI/libffi x86.lib")
-#endif
+#include <ffi.h>
 
 namespace
 {

@@ -1,6 +1,6 @@
 #pragma once
 #include "KxStdAfx.h"
-#include <KxEnumClassOperations.h>
+#include "KxFramework/KxEnumClassOperations.h"
 #include "Kx/General/Color.h"
 using KxColor = KxFramework::Color;
 

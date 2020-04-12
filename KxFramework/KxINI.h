@@ -4,10 +4,7 @@
 
 namespace SimpleINI
 {
-	#define _SILENCE_CXX17_ADAPTOR_TYPEDEFS_DEPRECATION_WARNING 1
-	#define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS 1
-
-	#include "KxFramework/INI/SimpleINI.h"
+	#include "SimpleIni.h"
 }
 
 class KX_API KxINI: private KxXDocumentNode<KxINI>

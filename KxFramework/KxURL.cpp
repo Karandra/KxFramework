@@ -1,7 +1,6 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxURL.h"
 #include "KxFramework/KxCURL.h"
-#include "OpenSSL/IncludeLibs.h"
 
 class KxURLStream: public wxInputStream
 {

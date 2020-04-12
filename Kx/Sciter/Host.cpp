@@ -4,7 +4,7 @@
 #include "Internal.h"
 #include "KxFramework/KxUtility.h"
 #include <WindowsX.h>
-#include "KxWinUndef.h"
+#include "Kx/System/UndefWindows.h"
 
 #pragma warning(disable: 4302) // 'reinterpret_cast': truncation from 'void *' to 'UINT'
 #pragma warning(disable: 4311) // 'reinterpret_cast': pointer truncation from 'void *' to 'UINT'

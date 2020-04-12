@@ -229,7 +229,7 @@ static std::string serialize(GumboNode* node) {
 
   // build attr string  
   const GumboVector * attribs = &node->v.element.attributes;
-  for (int i=0; i< attribs->length; ++i) {
+  for (size_t i = 0; i < static_cast<size_t>(attribs->length); ++i) {
     GumboAttribute* at = static_cast<GumboAttribute*>(attribs->data[i]);
     atts.append(build_attributes(at, no_entity_substitution));
   }

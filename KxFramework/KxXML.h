@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxXDocumentNode.h"
-#include "KxFramework/XML/TinyXML2.h"
+#include "TinyXML2.h"
 class KX_API KxXMLNode;
 class KX_API KxXMLDocument;
 class KX_API KxXMLAttribute;

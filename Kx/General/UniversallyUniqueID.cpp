@@ -1,8 +1,10 @@
 #include "KxStdAfx.h"
 #include "UniversallyUniqueID.h"
 #include "Kx/System/ErrorCodeValue.h"
+
 #include <rpcdce.h>
 #include "Kx/System/UndefWindows.h"
+#pragma comment(lib, "Rpcrt4.lib")
 
 namespace KxFramework
 {

@@ -6,7 +6,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 */
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 
 using KxJSONObject = nlohmann::json;
 class KX_API KxJSON: public KxJSONObject
@@ -29,7 +29,8 @@ class KX_API KxJSON: public KxJSONObject
 
 namespace nlohmann
 {
-	template<> struct KX_API adl_serializer<wxString>
+	template<>
+	struct KX_API adl_serializer<wxString>
 	{
 		static void to_json(json& j, const wxString& value)
 		{

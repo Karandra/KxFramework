@@ -33,6 +33,9 @@
 #include <limits>
 
 /* wxWidgets */
+// Required by wxWidgets network module which doesn't link to this library itself for some reason
+#pragma comment(lib, "WS2_32.lib")
+
 // General
 #include <wx/wx.h>
 #include <wx/event.h>

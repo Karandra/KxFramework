@@ -1,6 +1,5 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/XML/TinyXML2.h"
 #include "KxFramework/XML/TinyXML2 HTML5 Printer.h"
 
 namespace

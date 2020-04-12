@@ -1,12 +1,6 @@
 #include "KxStdAfx.h"
 #include "LZ4Stream.h"
-#include "LZ4/lz4.h"
-
-#if defined _WIN64
-#pragma comment(lib, "KxFramework/LZ4/liblz4 x64")
-#else
-#pragma comment(lib, "KxFramework/LZ4/liblz4 x86")
-#endif
+#include <lz4.h>
 
 namespace
 {
