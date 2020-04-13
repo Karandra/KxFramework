@@ -1387,6 +1387,9 @@
     <ClInclude Include="Kx\General\Private\HTML\token_type.h">
       <Filter>Kx\General\Private\HTML</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\General\TextDocument.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -2130,6 +2133,9 @@
     </ClCompile>
     <ClCompile Include="Kx\General\Private\HTML\clean_text.cpp">
       <Filter>Kx\General\Private\HTML</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\TextDocument.cpp">
+      <Filter>Kx\General</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

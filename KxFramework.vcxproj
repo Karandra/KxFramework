@@ -505,6 +505,7 @@
     <ClInclude Include="Kx\General\String.h" />
     <ClInclude Include="Kx\General\StringFormater.h" />
     <ClInclude Include="Kx\General\StringFormaterTraits.h" />
+    <ClInclude Include="Kx\General\TextDocument.h" />
     <ClInclude Include="Kx\General\UniversallyUniqueID.h" />
     <ClInclude Include="Kx\General\Version.h" />
     <ClInclude Include="Kx\General\XDocument.h" />
@@ -807,6 +808,7 @@
     <ClCompile Include="Kx\General\Private\VersionImpl.cpp" />
     <ClCompile Include="Kx\General\String.cpp" />
     <ClCompile Include="Kx\General\StringFormater.cpp" />
+    <ClCompile Include="Kx\General\TextDocument.cpp" />
     <ClCompile Include="Kx\General\Version.cpp" />
     <ClCompile Include="Kx\General\XDocument.cpp" />
     <ClCompile Include="Kx\General\XMLAttribute.cpp" />
