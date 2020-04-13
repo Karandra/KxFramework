@@ -42,7 +42,7 @@ namespace KxFramework::EnumClass::Private
 			}
 
 		public:
-			constexpr ValueWrapper() = default;
+			constexpr ValueWrapper() noexcept = default;
 			constexpr ValueWrapper(TEnum value) noexcept
 				:m_Value(value)
 			{
@@ -67,26 +67,26 @@ namespace KxFramework::EnumClass::Private
 namespace KxFramework
 {
 	template<class TEnum>
-	constexpr std::enable_if_t<EnumClass::Private::IntCastAllowed<TEnum>, bool> ToBool(TEnum value)
+	constexpr std::enable_if_t<EnumClass::Private::IntCastAllowed<TEnum>, bool> ToBool(TEnum value) noexcept
 	{
 		using Tint = std::underlying_type_t<TEnum>;
 		return static_cast<Tint>(value) != 0;
 	}
 
 	template<class TInt, class TEnum>
-	constexpr std::enable_if_t<EnumClass::Private::IntCastAllowed<TEnum>, TInt> ToInt(TEnum value)
+	constexpr std::enable_if_t<EnumClass::Private::IntCastAllowed<TEnum>, TInt> ToInt(TEnum value) noexcept
 	{
 		return static_cast<TInt>(value);
 	}
 
 	template<class TEnum, class TInt = std::underlying_type_t<TEnum>>
-	constexpr std::enable_if_t<EnumClass::Private::IntCastAllowed<TEnum>, TInt> ToInt(TEnum value)
+	constexpr std::enable_if_t<EnumClass::Private::IntCastAllowed<TEnum>, TInt> ToInt(TEnum value) noexcept
 	{
 		return static_cast<TInt>(value);
 	}
 
 	template<class TEnum, class TInt>
-	constexpr std::enable_if_t<EnumClass::Private::IntCastAllowed<TEnum>, TEnum> FromInt(TInt value)
+	constexpr std::enable_if_t<EnumClass::Private::IntCastAllowed<TEnum>, TEnum> FromInt(TInt value) noexcept
 	{
 		return static_cast<TEnum>(value);
 	}
@@ -95,35 +95,35 @@ namespace KxFramework
 namespace KxFramework
 {
 	template<class TEnum>
-	constexpr std::enable_if_t<EnumClass::IsBitwiseAllowed_v<TEnum>, EnumClass::Private::ValueWrapper<TEnum>> operator&(TEnum left, TEnum right)
+	constexpr std::enable_if_t<EnumClass::IsBitwiseAllowed_v<TEnum>, EnumClass::Private::ValueWrapper<TEnum>> operator&(TEnum left, TEnum right) noexcept
 	{
 		using Tint = std::underlying_type_t<TEnum>;
 		return static_cast<TEnum>(static_cast<Tint>(left) & static_cast<Tint>(right));
 	}
 
 	template<class TEnum>
-	constexpr std::enable_if_t<EnumClass::IsBitwiseAllowed_v<TEnum>, TEnum> operator|(TEnum left, TEnum right)
+	constexpr std::enable_if_t<EnumClass::IsBitwiseAllowed_v<TEnum>, TEnum> operator|(TEnum left, TEnum right) noexcept
 	{
 		using Tint = std::underlying_type_t<TEnum>;
 		return static_cast<TEnum>(static_cast<Tint>(left) | static_cast<Tint>(right));
 	}
 
 	template<class TEnum>
-	constexpr std::enable_if_t<EnumClass::IsBitwiseAllowed_v<TEnum>, TEnum&> operator&=(TEnum& left, TEnum right)
+	constexpr std::enable_if_t<EnumClass::IsBitwiseAllowed_v<TEnum>, TEnum&> operator&=(TEnum& left, TEnum right) noexcept
 	{
 		left = left & right;
 		return left;
 	}
 
 	template<class TEnum>
-	constexpr std::enable_if_t<EnumClass::IsBitwiseAllowed_v<TEnum>, TEnum&> operator|=(TEnum& left, TEnum right)
+	constexpr std::enable_if_t<EnumClass::IsBitwiseAllowed_v<TEnum>, TEnum&> operator|=(TEnum& left, TEnum right) noexcept
 	{
 		left = left | right;
 		return left;
 	}
 
 	template<class TEnum>
-	constexpr std::enable_if_t<EnumClass::IsBitwiseAllowed_v<TEnum>, TEnum> operator~(TEnum value)
+	constexpr std::enable_if_t<EnumClass::IsBitwiseAllowed_v<TEnum>, TEnum> operator~(TEnum value) noexcept
 	{
 		using Tint = std::underlying_type_t<TEnum>;
 		return static_cast<TEnum>(~static_cast<Tint>(value));
