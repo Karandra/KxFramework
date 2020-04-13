@@ -262,6 +262,9 @@
     <Filter Include="Kx\Network">
       <UniqueIdentifier>{503679ad-0476-4a11-beb0-ba123ce47580}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\General\Private\HTML">
+      <UniqueIdentifier>{aff7ee86-f7ed-4189-957b-55c4c7417581}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -1378,6 +1381,42 @@
     <ClInclude Include="Kx\General\IndexedEnum.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\General\Private\XDocument.h">
+      <Filter>Kx\General\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\INIDocument.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\JSONDocument.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\Private\XML.h">
+      <Filter>Kx\General\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\XMLDocument.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\Private\TinyXML2 HTML5 Printer.h">
+      <Filter>Kx\General\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\XDocument.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\HTMLDocument.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\Private\HTML\error.h">
+      <Filter>Kx\General\Private\HTML</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\Private\HTML\insertion_mode.h">
+      <Filter>Kx\General\Private\HTML</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\Private\HTML\string_buffer.h">
+      <Filter>Kx\General\Private\HTML</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\Private\HTML\token_type.h">
+      <Filter>Kx\General\Private\HTML</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -2121,6 +2160,36 @@
     </ClCompile>
     <ClCompile Include="Kx\Utility\System.cpp">
       <Filter>Kx\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\INIDocument.cpp">
+      <Filter>Kx\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\JSONDocument.cpp">
+      <Filter>Kx\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\XMLNode.cpp">
+      <Filter>Kx\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\XMLAttribute.cpp">
+      <Filter>Kx\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\XMLDocument.cpp">
+      <Filter>Kx\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\XDocument.cpp">
+      <Filter>Kx\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\HTMLNode.cpp">
+      <Filter>Kx\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\HTMLDocument.cpp">
+      <Filter>Kx\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\Private\HTML\serialize.cpp">
+      <Filter>Kx\General\Private\HTML</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\Private\HTML\clean_text.cpp">
+      <Filter>Kx\General\Private\HTML</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
