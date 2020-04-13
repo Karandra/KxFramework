@@ -76,12 +76,6 @@
     <Filter Include="Source Files\GUI\Menus">
       <UniqueIdentifier>{4f8ee5ef-125d-45f2-8fa5-32764cd79734}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Parsers">
-      <UniqueIdentifier>{05175b32-2de3-4cd5-8b49-64b03465aa49}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Parsers">
-      <UniqueIdentifier>{f682b692-ee4a-429b-83fd-84db024f4639}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\General">
       <UniqueIdentifier>{78ce2f9b-2a99-4d3f-8e20-2ce7526e49da}</UniqueIdentifier>
     </Filter>
@@ -288,9 +282,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxProcessThread.h">
       <Filter>Header Files\System</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxTextFile.h">
-      <Filter>Header Files\Parsers</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxTopLevelWindow.h">
       <Filter>Header Files\GUI\Windows</Filter>
@@ -1425,9 +1416,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxProcessThread.cpp">
       <Filter>Source Files\System</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxTextFile.cpp">
-      <Filter>Source Files\Parsers</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxTopLevelWindow.cpp">
       <Filter>Source Files\GUI\Windows</Filter>

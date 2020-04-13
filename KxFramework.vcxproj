@@ -405,7 +405,6 @@
     <ClInclude Include="KxFramework\KxTaskScheduler.h" />
     <ClInclude Include="KxFramework\KxTextBox.h" />
     <ClInclude Include="KxFramework\KxTextBoxDialog.h" />
-    <ClInclude Include="KxFramework\KxTextFile.h" />
     <ClInclude Include="KxFramework\KxThumbView.h" />
     <ClInclude Include="KxFramework\KxTimer.h" />
     <ClInclude Include="KxFramework\KxToolBar.h" />
@@ -760,7 +759,6 @@
     <ClCompile Include="KxFramework\KxTaskScheduler.cpp" />
     <ClCompile Include="KxFramework\KxTextBox.cpp" />
     <ClCompile Include="KxFramework\KxTextBoxDialog.cpp" />
-    <ClCompile Include="KxFramework\KxTextFile.cpp" />
     <ClCompile Include="KxFramework\KxThumbView.cpp" />
     <ClCompile Include="KxFramework\KxTimer.cpp" />
     <ClCompile Include="KxFramework\KxToolBar.cpp" />
