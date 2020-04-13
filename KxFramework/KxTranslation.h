@@ -6,8 +6,11 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 */
 #pragma once
 #include "KxFramework/KxFramework.h"
-class KxXMLDocument;
 class KxLibrary;
+namespace KxFramework
+{
+	class XMLDocument;
+}
 
 class KX_API KxTranslation
 {
@@ -38,7 +41,7 @@ class KX_API KxTranslation
 
 	private:
 		void Clear();
-		bool Init(const KxXMLDocument& xml);
+		bool Init(const KxFramework::XMLDocument& xml);
 		bool LoadFromResourceInModule(const wxString& localeName, const KxLibrary& library);
 
 	public:

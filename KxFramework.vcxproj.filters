@@ -82,15 +82,6 @@
     <Filter Include="Source Files\Parsers">
       <UniqueIdentifier>{f682b692-ee4a-429b-83fd-84db024f4639}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Parsers\XML">
-      <UniqueIdentifier>{4d628c7c-94d3-4b7d-9265-49265654548e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Parsers\XML">
-      <UniqueIdentifier>{685d523b-d479-4166-9951-3e5ed5b913cf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Parsers\HTML">
-      <UniqueIdentifier>{b01af409-c039-4b8b-874e-86dececf4df7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\General">
       <UniqueIdentifier>{78ce2f9b-2a99-4d3f-8e20-2ce7526e49da}</UniqueIdentifier>
     </Filter>
@@ -298,12 +289,6 @@
     <ClInclude Include="KxFramework\KxProcessThread.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxXML.h">
-      <Filter>Header Files\Parsers\XML</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\XML\TinyXML2 HTML5 Printer.h">
-      <Filter>Header Files\Parsers\XML</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxTextFile.h">
       <Filter>Header Files\Parsers</Filter>
     </ClInclude>
@@ -493,9 +478,6 @@
     <ClInclude Include="KxFramework\KxApp.h">
       <Filter>Header Files\General</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxXDocumentNode.h">
-      <Filter>Header Files\Parsers</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxMenu.h">
       <Filter>Header Files\GUI\Menus</Filter>
     </ClInclude>
@@ -612,9 +594,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxCURL.h">
       <Filter>Header Files\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxJSON.h">
-      <Filter>Header Files\Parsers</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxCURLStructs.h">
       <Filter>Header Files\Network</Filter>
@@ -1123,9 +1102,6 @@
     <ClInclude Include="Kx\FileSystem\Common.h">
       <Filter>Kx\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxXMLUtility.h">
-      <Filter>Header Files\Parsers\XML</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\General\Common.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
@@ -1309,12 +1285,6 @@
     <ClInclude Include="Kx\System\CredentialStore.h">
       <Filter>Kx\System</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxINI.h">
-      <Filter>Header Files\Parsers</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxHTML.h">
-      <Filter>Header Files\Parsers</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\wxWidgets\Setup.h">
       <Filter>Kx\wxWidgets</Filter>
     </ClInclude>
@@ -1453,23 +1423,8 @@
     <ClCompile Include="KxFramework\KxProcessThread.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxXMLAttribute.cpp">
-      <Filter>Source Files\Parsers\XML</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxXMLNode.cpp">
-      <Filter>Source Files\Parsers\XML</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxXML.cpp">
-      <Filter>Source Files\Parsers\XML</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxTextFile.cpp">
       <Filter>Source Files\Parsers</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxHTML.cpp">
-      <Filter>Source Files\Parsers\HTML</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxHTMLNode.cpp">
-      <Filter>Source Files\Parsers\HTML</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxTopLevelWindow.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
@@ -1648,9 +1603,6 @@
     <ClCompile Include="KxFramework\KxApp.cpp">
       <Filter>Source Files\General</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxXDocumentNode.cpp">
-      <Filter>Source Files\Parsers</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxMenu.cpp">
       <Filter>Source Files\GUI\Menus</Filter>
     </ClCompile>
@@ -1762,9 +1714,6 @@
     <ClCompile Include="KxFramework\KxCURL.cpp">
       <Filter>Source Files\Network</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxJSON.cpp">
-      <Filter>Source Files\Parsers</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxCURLEvent.cpp">
       <Filter>Source Files\Events</Filter>
     </ClCompile>
@@ -1806,12 +1755,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxTimer.cpp">
       <Filter>Source Files\Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\HTML\clean_text.cpp">
-      <Filter>Source Files\Parsers\HTML</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\HTML\serialize.cpp">
-      <Filter>Source Files\Parsers\HTML</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\Editor.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
@@ -2133,9 +2076,6 @@
     </ClCompile>
     <ClCompile Include="Kx\System\CredentialStore.cpp">
       <Filter>Kx\System</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxINI.cpp">
-      <Filter>Source Files\Parsers</Filter>
     </ClCompile>
     <ClCompile Include="Kx\Crypto\Crypto.cpp">
       <Filter>Kx\Crypto</Filter>

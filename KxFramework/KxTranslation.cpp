@@ -1,10 +1,9 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxTranslation.h"
-#include "KxFramework/KxXML.h"
 #include "KxFramework/KxLibrary.h"
 #include "KxFramework/KxFileStream.h"
 #include "KxFramework/KxUtility.h"
-#include "KxFramework/KxXML.h"
+#include "Kx/General/XMLDocument.h"
 #include "Kx/System/SystemInformation.h"
 #include "Kx/FileSystem/NativeFileSystem.h"
 
@@ -123,22 +122,24 @@ void KxTranslation::Clear()
 	m_StringTable.clear();
 	m_TranslatorName.clear();
 }
-bool KxTranslation::Init(const KxXMLDocument& xml)
+bool KxTranslation::Init(const KxFramework::XMLDocument& xml)
 {
-	if (xml.IsOK())
+	using namespace KxFramework;
+
+	if (xml)
 	{
-		if (KxXMLNode stringtTableNode = xml.QueryElement(wxS("Lang/StringTable")))
+		if (XMLNode stringtTableNode = xml.QueryElement(wxS("Lang/StringTable")))
 		{
 			m_TranslatorName = xml.QueryElement(wxS("Lang/Info/Translator")).GetValue();
-
-			for (KxXMLNode node = stringtTableNode.GetFirstChildElement(); node; node = node.GetNextSiblingElement())
+			stringtTableNode.EnumChildElements([&](XMLNode node)
 			{
-				wxString id = node.GetAttribute("ID");
+				String id = node.GetAttribute(wxS("ID"));
 				if (!id.IsEmpty())
 				{
-					m_StringTable.emplace(id, node.GetValue());
+					m_StringTable.emplace(id, node.GetValue().GetWxString());
 				}
-			}
+				return true;
+			});
 			return true;
 		}
 	}
@@ -146,13 +147,14 @@ bool KxTranslation::Init(const KxXMLDocument& xml)
 }
 bool KxTranslation::LoadFromResourceInModule(const wxString& localeName, const KxLibrary& library)
 {
+	using namespace KxFramework;
+
 	m_Locale = localeName;
 	if (library.IsOK())
 	{
-		KxFramework::UntypedMemorySpan data = library.GetResource(g_TranslationResourceType, localeName);
-		if (!data.empty())
+		if (UntypedMemorySpan data = library.GetResource(g_TranslationResourceType, localeName))
 		{
-			KxXMLDocument xml(wxString::FromUTF8((const char*)data.data(), data.size()));
+			KxFramework::XMLDocument xml(String::FromUTF8(reinterpret_cast<const char*>(data.data()), data.size()));
 			return Init(xml);
 		}
 	}
@@ -194,7 +196,7 @@ bool KxTranslation::LoadFromFile(const wxString& filePath)
 	KxFileStream stream(filePath, KxFileStream::Access::Read, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Read);
 	if (stream.IsOk())
 	{
-		return Init(KxXMLDocument(stream));
+		return Init(KxFramework::XMLDocument(stream));
 	}
 	return false;
 }

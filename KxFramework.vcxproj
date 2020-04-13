@@ -344,14 +344,12 @@
     <ClInclude Include="KxFramework\KxIncludes.h" />
     <ClInclude Include="KxFramework\KxFunctional.h" />
     <ClInclude Include="KxFramework\KxGraphicsContext.h" />
-    <ClInclude Include="KxFramework\KxHTML.h" />
     <ClInclude Include="KxFramework\KxHTMLWindow.h" />
     <ClInclude Include="KxFramework\KxIconType.h" />
     <ClInclude Include="KxFramework\KxImageList.h" />
     <ClInclude Include="KxFramework\KxImageSet.h" />
     <ClInclude Include="KxFramework\KxImageView.h" />
     <ClInclude Include="KxFramework\KxIncludeWindows.h" />
-    <ClInclude Include="KxFramework\KxINI.h" />
     <ClInclude Include="KxFramework\KxURI.h" />
     <ClInclude Include="KxFramework\KxURL.h" />
     <ClInclude Include="KxFramework\KxUxThemePartsAndStates.h" />
@@ -359,7 +357,6 @@
     <ClInclude Include="KxFramework\KxIOwned.h" />
     <ClInclude Include="KxFramework\KxIProgressBar.h" />
     <ClInclude Include="KxFramework\KxISerializer.h" />
-    <ClInclude Include="KxFramework\KxJSON.h" />
     <ClInclude Include="KxFramework\KxLabel.h" />
     <ClInclude Include="KxFramework\KxLibrary.h" />
     <ClInclude Include="KxFramework\KxListBox.h" />
@@ -429,13 +426,9 @@
     <ClInclude Include="KxFramework\KxWithImageList.h" />
     <ClInclude Include="KxFramework\KxWithOptions.h" />
     <ClInclude Include="KxFramework\KxWxRTTI.h" />
-    <ClInclude Include="KxFramework\KxXDocumentNode.h" />
-    <ClInclude Include="KxFramework\KxXML.h" />
-    <ClInclude Include="KxFramework\KxXMLUtility.h" />
     <ClInclude Include="KxFramework\WebSocket\Common.h" />
     <ClInclude Include="KxFramework\WebSocket\IClient.h" />
     <ClInclude Include="KxFramework\WebSocket\SecureClient.h" />
-    <ClInclude Include="KxFramework\XML\TinyXML2 HTML5 Printer.h" />
     <ClInclude Include="KxStdAfx.h" />
     <ClInclude Include="Kx\Async.hpp" />
     <ClInclude Include="Kx\Async\Common.h" />
@@ -657,18 +650,6 @@
     <ClCompile Include="KxFramework\DataView\KxDataViewTimeEditor.cpp" />
     <ClCompile Include="KxFramework\DataView\KxDataViewToggleRenderer.cpp" />
     <ClCompile Include="KxFramework\DataView\KxDataViewTreeNode.cpp" />
-    <ClCompile Include="KxFramework\HTML\clean_text.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="KxFramework\HTML\serialize.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxAnimatedSplashWindow.cpp" />
     <ClCompile Include="KxFramework\KxAnimation.cpp" />
     <ClCompile Include="KxFramework\KxApp.cpp" />
@@ -728,23 +709,13 @@
     <ClCompile Include="KxFramework\KxFormat.cpp" />
     <ClCompile Include="KxFramework\KxFrame.cpp" />
     <ClCompile Include="KxFramework\KxGraphicsContext.cpp" />
-    <ClCompile Include="KxFramework\KxHTML.cpp">
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </DisableSpecificWarnings>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxHTMLNode.cpp">
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </DisableSpecificWarnings>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxHTMLWindow.cpp" />
     <ClCompile Include="KxFramework\KxImageList.cpp" />
     <ClCompile Include="KxFramework\KxImageSet.cpp" />
     <ClCompile Include="KxFramework\KxImageView.cpp" />
-    <ClCompile Include="KxFramework\KxINI.cpp" />
     <ClCompile Include="KxFramework\KxIOwned.cpp" />
     <ClCompile Include="KxFramework\KxIProgressBar.cpp" />
     <ClCompile Include="KxFramework\KxISerializer.cpp" />
-    <ClCompile Include="KxFramework\KxJSON.cpp" />
     <ClCompile Include="KxFramework\KxLabel.cpp" />
     <ClCompile Include="KxFramework\KxLibrary.cpp" />
     <ClCompile Include="KxFramework\KxListBox.cpp" />
@@ -806,10 +777,6 @@
     <ClCompile Include="KxFramework\KxWebView.cpp" />
     <ClCompile Include="KxFramework\KxWithDropdownMenu.cpp" />
     <ClCompile Include="KxFramework\KxWithImageList.cpp" />
-    <ClCompile Include="KxFramework\KxXDocumentNode.cpp" />
-    <ClCompile Include="KxFramework\KxXML.cpp" />
-    <ClCompile Include="KxFramework\KxXMLAttribute.cpp" />
-    <ClCompile Include="KxFramework\KxXMLNode.cpp" />
     <ClCompile Include="KxFramework\WebSocket\IClient.cpp" />
     <ClCompile Include="KxFramework\WebSocket\SecureClient.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
