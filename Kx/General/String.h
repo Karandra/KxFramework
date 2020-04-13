@@ -856,34 +856,30 @@ namespace KxFramework
 			}
 
 			// Conversion to numbers
-			bool ToFloat(float& value) const noexcept
+			template<class T = double>
+			std::optional<T> ToFloatingPoint() const noexcept
 			{
-				double dValue = value;
-				if (m_String.ToDouble(&dValue))
+				static_assert(std::is_floating_point_v<T>, "floating point type is required");
+
+				double value = 0;
+				if (m_String.ToDouble(&value))
 				{
-					value = static_cast<float>(dValue);
-					return true;
+					return static_cast<T>(value);
 				}
-				return false;
-			}
-			bool ToCFloat(float& value) const noexcept
-			{
-				double dValue = value;
-				if (m_String.ToCDouble(&dValue))
-				{
-					value = static_cast<float>(dValue);
-					return true;
-				}
-				return false;
+				return {};
 			}
 
-			bool ToDouble(double& value) const noexcept
+			template<class T = double>
+			std::optional<T> ToCFloatingPoint() const noexcept
 			{
-				return m_String.ToDouble(&value);
-			}
-			bool ToCDouble(double& value) const noexcept
-			{
-				return m_String.ToCDouble(&value);
+				static_assert(std::is_floating_point_v<T>, "floating point type is required");
+
+				double value = 0;
+				if (m_String.ToCDouble(&value))
+				{
+					return static_cast<T>(value);
+				}
+				return {};
 			}
 
 			template<class T>

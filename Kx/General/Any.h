@@ -110,9 +110,9 @@ namespace KxFramework
 					// Convert to float or double
 					if (const String* ptr = any.AsPtr<String>())
 					{
-						if (double dValue = 0; ptr->ToCDouble(&dValue))
+						if (auto fValue = ptr->ToFloatingPoint<double>())
 						{
-							value = dValue;
+							value = *fValue;
 							return true;
 						}
 					}

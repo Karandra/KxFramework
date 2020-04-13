@@ -40,12 +40,7 @@ namespace KxFramework::Sciter
 	template<class TName>
 	std::optional<double> DoGetStyleAttributeFloat(const Element& element, TName&& name)
 	{
-		String value = element.GetStyleAttribute(name);
-		if (double fValue = -1; value.ToCDouble(fValue))
-		{
-			return fValue;
-		}
-		return std::nullopt;
+		return element.GetStyleAttribute(name).ToFloatingPoint<double>();
 	}
 
 	void __stdcall ExtractWxString(const wchar_t* value, UINT length, void* context)
