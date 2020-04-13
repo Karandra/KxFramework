@@ -640,9 +640,6 @@
     <ClInclude Include="KxFramework\KxComparator.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxAlignedAllocator.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxAnimatedSplashWindow.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
@@ -1380,6 +1377,9 @@
     </ClInclude>
     <ClInclude Include="Kx\General\TextDocument.h">
       <Filter>Kx\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Utility\Memory.h">
+      <Filter>Kx\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

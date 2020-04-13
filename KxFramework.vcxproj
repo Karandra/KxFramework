@@ -268,7 +268,6 @@
     <ClInclude Include="KxFramework\DataView\KxDataViewTimeEditor.h" />
     <ClInclude Include="KxFramework\DataView\KxDataViewToggleRenderer.h" />
     <ClInclude Include="KxFramework\DataView\KxDataViewTreeNode.h" />
-    <ClInclude Include="KxFramework\KxAlignedAllocator.h" />
     <ClInclude Include="KxFramework\KxAnimatedSplashWindow.h" />
     <ClInclude Include="KxFramework\KxAnimation.h" />
     <ClInclude Include="KxFramework\KxApp.h" />
@@ -584,6 +583,7 @@
     <ClInclude Include="Kx\Utility\Common.h" />
     <ClInclude Include="Kx\Utility\Container.h" />
     <ClInclude Include="Kx\Utility\Drawing.h" />
+    <ClInclude Include="Kx\Utility\Memory.h" />
     <ClInclude Include="Kx\Utility\Numeric.h" />
     <ClInclude Include="Kx\Utility\String.h" />
     <ClInclude Include="Kx\Utility\System.h" />
