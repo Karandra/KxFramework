@@ -700,9 +700,6 @@
     <ClInclude Include="KxFramework\KxTypedefs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxIndexedEnum.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\DataView\KxDataViewSortOrder.h">
       <Filter>Header Files\GUI\DataView\Control</Filter>
     </ClInclude>
@@ -809,9 +806,6 @@
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxWxRTTI.h">
-      <Filter>Header Files\General</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxDynamicCastAsIs.h">
       <Filter>Header Files\General</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\DataView2\TypeAliases.h">
@@ -1854,9 +1848,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\Editors\SpinEditor.cpp">
       <Filter>Source Files\GUI\DataView2\Editors</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxDynamicCastAsIs.cpp">
-      <Filter>Source Files\General</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\WebSocket\IClient.cpp">
       <Filter>Source Files\Network\WebSocket</Filter>

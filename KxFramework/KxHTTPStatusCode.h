@@ -6,11 +6,11 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 */
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxIndexedEnum.h"
+#include "Kx/General/IndexedEnum.h"
 
 enum class KxHTTPStatusCode: int32_t
 {
-	INVALID_CODE = -1,
+	Unknown = -1,
 
 	Continue = 100,
 	SwitchingProtocols = 101,
@@ -79,9 +79,9 @@ enum class KxHTTPStatusCode: int32_t
 	NetworkAuthenticationRequired = 511
 };
 
-struct KxHTTPStatusCodeDefinition: public KxIndexedEnum::Definition<KxHTTPStatusCodeDefinition, KxHTTPStatusCode, std::basic_string_view<wxChar, std::char_traits<wxChar>>, true>
+struct KxHTTPStatusCodeDefinition: public KxFramework::IndexedEnumDefinition<KxHTTPStatusCodeDefinition, KxHTTPStatusCode, std::basic_string_view<wxChar, std::char_traits<wxChar>>, true>
 {
-	inline static constexpr const TItem ms_Index[] =
+	inline static constexpr TItem Items[] =
 	{
 		{KxHTTPStatusCode::Continue, wxS("Continue")},
 		{KxHTTPStatusCode::SwitchingProtocols, wxS("SwitchingProtocols")},
@@ -151,48 +151,55 @@ struct KxHTTPStatusCodeDefinition: public KxIndexedEnum::Definition<KxHTTPStatus
 	};
 };
 
-class KxHTTPStatusValue: public KxIndexedEnum::Value<KxHTTPStatusCodeDefinition, KxHTTPStatusCode::INVALID_CODE>
+class KxHTTPStatusValue: public KxFramework::IndexedEnumValue<KxHTTPStatusCodeDefinition, KxHTTPStatusCode::Unknown>
 {
 	public:
-		KxHTTPStatusValue() = default;
-		KxHTTPStatusValue(KxHTTPStatusCode value)
-			:Value(value)
+		constexpr KxHTTPStatusValue() noexcept = default;
+		constexpr KxHTTPStatusValue(KxHTTPStatusCode value) noexcept
+			:IndexedEnumValue(value)
 		{
 		}
-		KxHTTPStatusValue(TInt value)
+		constexpr KxHTTPStatusValue(TInt value) noexcept
 			:KxHTTPStatusValue(static_cast<KxHTTPStatusCode>(value))
 		{
 		}
 
 	public:
-		bool IsInformational() const
+		constexpr bool IsInformational() const noexcept
 		{
-			return GetInt() >= 100 && GetInt() < 200;
+			// [100, 200)
+			return IsInRange(100, 199);
 		}
-		bool IsSuccessful() const
+		constexpr bool IsSuccessful() const noexcept
 		{
-			return GetInt() >= 200 && GetInt() < 300;
+			// [200, 300)
+			return IsInRange(200, 299);
 		}
-		bool IsRedirection() const
+		constexpr bool IsRedirection() const noexcept
 		{
-			return GetInt() >= 300 && GetInt() < 400;
+			// [300, 400)
+			return IsInRange(300, 399);
 		}
-		bool IsClientError() const
+		constexpr bool IsClientError() const noexcept
 		{
-			return GetInt() >= 400 && GetInt() < 500;
+			// [400, 500)
+			return IsInRange(400, 499);
 		}
-		bool IsServerError() const
+		constexpr bool IsServerError() const noexcept
 		{
-			return GetInt() >= 500 && GetInt() < 600;
+			// [500, 600)
+			return IsInRange(500, 599);
 		}
-		bool IsError() const
+		constexpr bool IsAnyError() const noexcept
 		{
-			return GetInt() >= 400;
+			// [400, +]
+			return ToInt() >= 400;
 		}
 
 	public:
-		void AddFlag(TEnum value) = delete;
-		void RemoveFlag(TEnum value) = delete;
-		bool HasFlag(TEnum value) const = delete;
-		bool HasAnyFlag(TEnum valueCombo) const = delete;
+		void AddFlag(TEnum value) noexcept = delete;
+		void RemoveFlag(TEnum value) noexcept = delete;
+		void ModFlag(TEnum value, bool condition) noexcept = delete;
+		bool HasFlag(TEnum value) const noexcept = delete;
+		bool HasSpecifiedFlagOnly(TEnum value) const noexcept = delete;
 };

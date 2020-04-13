@@ -351,7 +351,6 @@
     <ClInclude Include="KxFramework\KxImageSet.h" />
     <ClInclude Include="KxFramework\KxImageView.h" />
     <ClInclude Include="KxFramework\KxIncludeWindows.h" />
-    <ClInclude Include="KxFramework\KxIndexedEnum.h" />
     <ClInclude Include="KxFramework\KxINI.h" />
     <ClInclude Include="KxFramework\KxURI.h" />
     <ClInclude Include="KxFramework\KxURL.h" />
@@ -380,7 +379,6 @@
     <ClInclude Include="KxFramework\KxProgressDialog.h" />
     <ClInclude Include="KxFramework\KxRadioButton.h" />
     <ClInclude Include="KxFramework\KxRichToolTip.h" />
-    <ClInclude Include="KxFramework\KxDynamicCastAsIs.h" />
     <ClInclude Include="KxFramework\KxSearchBox.h" />
     <ClInclude Include="KxFramework\KxSharedMemory.h" />
     <ClInclude Include="KxFramework\KxShell.h" />
@@ -753,7 +751,6 @@
     <ClCompile Include="KxFramework\KxProgressDialog.cpp" />
     <ClCompile Include="KxFramework\KxRadioButton.cpp" />
     <ClCompile Include="KxFramework\KxRichToolTip.cpp" />
-    <ClCompile Include="KxFramework\KxDynamicCastAsIs.cpp" />
     <ClCompile Include="KxFramework\KxSearchBox.cpp" />
     <ClCompile Include="KxFramework\KxSharedMemory.cpp" />
     <ClCompile Include="KxFramework\KxShell.cpp" />
