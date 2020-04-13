@@ -1,5 +1,7 @@
-// Macro to make quick template function to resolve A/W functions
+// No include guard, we need to include this file multiple times
+#include <utility>
 
+// Macro to make quick template function to resolve A/W functions
 #ifndef Kx_MakeWinUnicodeCallWrapper
 	#ifdef UNICODE
 		#define Kx_MakeWinUnicodeCallWrapper(funcName)	\
