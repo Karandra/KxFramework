@@ -490,6 +490,7 @@
     <ClInclude Include="Kx\General\Common.h" />
     <ClInclude Include="Kx\General\EnumClass.h" />
     <ClInclude Include="Kx\General\ExtraData.h" />
+    <ClInclude Include="Kx\General\IndexedEnum.h" />
     <ClInclude Include="Kx\General\StandardID.h" />
     <ClInclude Include="Kx\General\MemorySpan.h" />
     <ClInclude Include="Kx\General\MemoryStream.h" />

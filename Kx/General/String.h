@@ -243,16 +243,18 @@ namespace KxFramework
 			template<class TFunc>
 			static size_t SplitBySeparator(const String& string, const String& sep, TFunc&& func, StringOpFlag flags = StringOpFlag::None)
 			{
+				const StringView view = string.GetView();
+
 				if (sep.empty() && !string.empty())
 				{
-					std::invoke(func, string.GetView());
+					std::invoke(func, view);
 					return 1;
 				}
 
 				size_t separatorPos = string.Find(sep, 0, flags);
 				if (separatorPos == String::npos)
 				{
-					std::invoke(func, string.GetView());
+					std::invoke(func, view);
 					return 1;
 				}
 
@@ -260,7 +262,7 @@ namespace KxFramework
 				size_t count = 0;
 				while (pos < string.length() && separatorPos <= string.length())
 				{
-					StringView stringPiece = string.GetView().substr(pos, separatorPos - pos);
+					StringView stringPiece = view.substr(pos, separatorPos - pos);
 					const size_t stringPieceLength = stringPiece.length();
 
 					if (!stringPiece.empty())
@@ -289,12 +291,12 @@ namespace KxFramework
 			{
 				if (length != 0)
 				{
-					const size_t stringLength = string.length();
+					const StringView view = string.GetView();
 
 					size_t count = 0;
-					for (size_t i = 0; i < stringLength; i += length)
+					for (size_t i = 0; i < view.length(); i += length)
 					{
-						StringView stringPiece = string.substr(i, length);
+						StringView stringPiece = view.substr(i, length);
 						if (!stringPiece.empty())
 						{
 							count++;
@@ -308,7 +310,7 @@ namespace KxFramework
 				}
 				else
 				{
-					std::invoke(func, string);
+					std::invoke(func, string.GetView());
 					return 1;
 				}
 				return 0;

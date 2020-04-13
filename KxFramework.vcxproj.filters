@@ -1381,6 +1381,9 @@
     <ClInclude Include="Kx\Utility\System.h">
       <Filter>Kx\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\General\IndexedEnum.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
