@@ -6,7 +6,7 @@
 
 namespace KxFramework::Utility
 {
-	struct StringEqualToNoCase
+	struct StringEqualToNoCase final
 	{
 		template<class T>
 		bool operator()(T&& left, T&& right) const noexcept
@@ -15,14 +15,14 @@ namespace KxFramework::Utility
 		}
 	};
 
-	struct StringHashNoCase
+	struct StringHashNoCase final
 	{
 		// From Boost
 		template<class T>
 		static void hash_combine(size_t& seed, const T& v) noexcept
 		{
 			std::hash<T> hasher;
-			seed ^= hasher(v) + size_t(0x9e3779b9u) + (seed << 6) + (seed >> 2);
+			seed ^= hasher(v) + static_cast<size_t>(0x9e3779b9u) + (seed << 6) + (seed >> 2);
 		}
 
 		template<class T>
@@ -42,4 +42,9 @@ namespace KxFramework::Utility
 	
 	template<class TValue>
 	using UnorderedSetNoCase = std::unordered_set<TValue, StringHashNoCase, StringEqualToNoCase>;
+}
+
+namespace KxFramework::Utility
+{
+	std::optional<bool> ParsePool(const String& value);
 }

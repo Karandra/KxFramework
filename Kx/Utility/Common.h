@@ -226,3 +226,63 @@ namespace KxFramework::Utility
 		flag = ToggleFlag(flag, flagMod);
 	}
 }
+
+namespace KxFramework::Utility
+{
+	namespace Private
+	{
+		template<class TOUT, bool highPart, class TIN>
+		constexpr TOUT GetIntPart(TIN value) noexcept
+		{
+			static_assert(std::is_integral_v<TIN> && std::is_integral_v<TOUT>, "only integral types allowed");
+			static_assert(sizeof(TIN) == 2 * sizeof(TOUT), "sizeof(TIN) not equal to 2 * sizeof(TOUT)");
+
+			union
+			{
+				struct
+				{
+					TOUT High;
+					TOUT Low;
+				};
+				TIN Full;
+			} value;
+			value.Full = value;
+
+			return highPart ? value.High : value.Low;
+		}
+	}
+
+	template<class TOUT, class TIN1, class TIN2>
+	constexpr TOUT IntFromLowHigh(TIN1 low, TIN2 high) noexcept
+	{
+		static_assert(std::is_integral_v<TIN1> && std::is_integral_v<TIN2> && std::is_integral_v<TOUT>, "only integral types allowed");
+		static_assert(sizeof(TIN1) == sizeof(TIN2), "sizeof(TIN1) not equal to sizeof(TIN2)");
+		static_assert(sizeof(TOUT) == sizeof(TIN1) + sizeof(TIN2), "sizeof(TIN1) + sizeof(TIN2) not equal to sizeof(TOUT)");
+
+		union
+		{
+			struct
+			{
+				TIN2 High;
+				TIN1 Low;
+			};
+			TOUT Full;
+		} value;
+		
+		value.Low = low;
+		value.High = high;
+		return value.Full;
+	}
+
+	template<class TOUT, class TIN>
+	constexpr TOUT IntLowPart(TIN value) noexcept
+	{
+		return Private::GetIntPart<TOUT, false>(value);
+	}
+
+	template<class TOUT, class TIN>
+	constexpr TOUT IntHighPart(TIN value) noexcept
+	{
+		return Private::GetIntPart<TOUT, true>(value);
+	}
+}

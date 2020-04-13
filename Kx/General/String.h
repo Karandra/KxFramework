@@ -285,7 +285,7 @@ namespace KxFramework
 			}
 
 			template<class TFunc>
-			static size_t SplitByLength(StringView string, size_t length, TFunc&& func)
+			static size_t SplitByLength(const String& string, size_t length, TFunc&& func)
 			{
 				if (length != 0)
 				{

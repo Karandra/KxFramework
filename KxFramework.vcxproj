@@ -490,6 +490,7 @@
     <ClInclude Include="Kx\General\Common.h" />
     <ClInclude Include="Kx\General\EnumClass.h" />
     <ClInclude Include="Kx\General\ExtraData.h" />
+    <ClInclude Include="Kx\General\StandardID.h" />
     <ClInclude Include="Kx\General\MemorySpan.h" />
     <ClInclude Include="Kx\General\MemoryStream.h" />
     <ClInclude Include="Kx\General\NativeUUID.h" />
@@ -509,6 +510,7 @@
     <ClInclude Include="Kx\RTTI.hpp" />
     <ClInclude Include="Kx\RTTI\Common.h" />
     <ClInclude Include="Kx\RTTI\QueryInterface.h" />
+    <ClInclude Include="Kx\RTTI\WxRTTI.h" />
     <ClInclude Include="Kx\Sciter.hpp" />
     <ClInclude Include="Kx\Sciter\Common.h" />
     <ClInclude Include="Kx\Sciter\CommonDefs.h" />
@@ -570,12 +572,17 @@
     <ClInclude Include="Kx\Threading\JoinableThread.h" />
     <ClInclude Include="Kx\UI.hpp" />
     <ClInclude Include="Kx\UI\Common.h" />
+    <ClInclude Include="Kx\UI\StdButton.h" />
+    <ClInclude Include="Kx\UI\StdIcon.h" />
     <ClInclude Include="Kx\UI\Validator.h" />
     <ClInclude Include="Kx\Utility.hpp" />
     <ClInclude Include="Kx\Utility\CallAtScopeExit.h" />
     <ClInclude Include="Kx\Utility\Common.h" />
+    <ClInclude Include="Kx\Utility\Container.h" />
+    <ClInclude Include="Kx\Utility\Drawing.h" />
     <ClInclude Include="Kx\Utility\Numeric.h" />
     <ClInclude Include="Kx\Utility\String.h" />
+    <ClInclude Include="Kx\Utility\System.h" />
     <ClInclude Include="Kx\Utility\TypeTraits.h" />
     <ClInclude Include="Kx\wxWidgets\Setup.h" />
   </ItemGroup>
@@ -825,6 +832,8 @@
     <ClCompile Include="Kx\System\Registry.cpp" />
     <ClCompile Include="Kx\System\SystemInformation.cpp" />
     <ClCompile Include="Kx\UI\Validator.cpp" />
+    <ClCompile Include="Kx\Utility\String.cpp" />
+    <ClCompile Include="Kx\Utility\System.cpp" />
     <ClInclude Include="Kx\Compression\IArchiveImpl.h" />
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp" />
     <ClCompile Include="Kx\EventSystem\EventBuilder.cpp" />

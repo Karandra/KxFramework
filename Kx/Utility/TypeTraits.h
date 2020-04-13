@@ -30,3 +30,34 @@ namespace KxFramework::Utility
 		inline static constexpr bool IsFunctor = IsInvokable && (!IsFreeFunction && !IsMemberFunction);
 	};
 }
+
+namespace KxFramework::Utility
+{
+	template<class T>
+	struct is_unique_ptr: std::false_type
+	{
+	};
+
+	template<class T, class D>
+	struct is_unique_ptr<std::unique_ptr<T, D>>: std::true_type
+	{
+	};
+
+	template<class T, class D>
+	struct is_unique_ptr<const std::unique_ptr<T, D>>: std::true_type
+	{
+	};
+
+	template<class T, class D>
+	struct is_unique_ptr<std::unique_ptr<T, D>&>: std::true_type
+	{
+	};
+
+	template<class T, class D>
+	struct is_unique_ptr<const std::unique_ptr<T, D>&>: std::true_type
+	{
+	};
+
+	template<class T>
+	inline constexpr bool is_unique_ptr_v = is_unique_ptr<T>::value;
+}

@@ -1360,6 +1360,27 @@
     <ClInclude Include="Kx\Network\Common.h">
       <Filter>Kx\Network</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\RTTI\WxRTTI.h">
+      <Filter>Kx\RTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\StdButton.h">
+      <Filter>Kx\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\StdIcon.h">
+      <Filter>Kx\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\StandardID.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Utility\Container.h">
+      <Filter>Kx\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Utility\Drawing.h">
+      <Filter>Kx\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Utility\System.h">
+      <Filter>Kx\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -2100,6 +2121,12 @@
     </ClCompile>
     <ClCompile Include="Kx\Network\Common.cpp">
       <Filter>Kx\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Utility\String.cpp">
+      <Filter>Kx\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Utility\System.cpp">
+      <Filter>Kx\Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
