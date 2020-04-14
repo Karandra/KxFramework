@@ -167,6 +167,10 @@ namespace KxFramework
 			{
 				return wxString::FromUTF8(utf8, length);
 			}
+			static String FromUTF8(const std::string& utf8)
+			{
+				return wxString::FromUTF8(utf8.data(), utf8.length());
+			}
 			static String FromUTF8(std::string_view utf8)
 			{
 				return wxString::FromUTF8(utf8.data(), utf8.length());
@@ -507,6 +511,11 @@ namespace KxFramework
 			std::wstring ToStdWString() const
 			{
 				return m_String.ToStdWstring();
+			}
+			std::string ToStdStringUTF8() const
+			{
+				auto utf8 = m_String.ToUTF8();
+				return std::string(utf8.data(), utf8.length());
 			}
 			const wxScopedCharBuffer ToUTF8() const
 			{
