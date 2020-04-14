@@ -275,7 +275,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxDataViewEvent.h" />
     <ClInclude Include="KxFramework\KxDCClipper.h" />
     <ClInclude Include="KxFramework\KxDialog.h" />
     <ClInclude Include="KxFramework\KxDualInputDialog.h" />
@@ -351,11 +350,8 @@
     <ClInclude Include="KxFramework\KxTextBoxDialog.h" />
     <ClInclude Include="KxFramework\KxThumbView.h" />
     <ClInclude Include="KxFramework\KxTimer.h" />
-    <ClInclude Include="KxFramework\KxToolBar.h" />
     <ClInclude Include="KxFramework\KxTopLevelWindow.h" />
     <ClInclude Include="KxFramework\KxTranslation.h" />
-    <ClInclude Include="KxFramework\KxTreeList.h" />
-    <ClInclude Include="KxFramework\KxTreeView.h" />
     <ClInclude Include="KxFramework\KxTypedefs.h" />
     <ClInclude Include="KxFramework\KxUtility.h" />
     <ClInclude Include="KxFramework\KxUxTheme.h" />
@@ -612,7 +608,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxDataViewEvent.cpp" />
     <ClCompile Include="KxFramework\KxDCClipper.cpp" />
     <ClCompile Include="KxFramework\KxDialog.cpp" />
     <ClCompile Include="KxFramework\KxDualInputDialog.cpp" />
@@ -671,11 +666,8 @@
     <ClCompile Include="KxFramework\KxTextBoxDialog.cpp" />
     <ClCompile Include="KxFramework\KxThumbView.cpp" />
     <ClCompile Include="KxFramework\KxTimer.cpp" />
-    <ClCompile Include="KxFramework\KxToolBar.cpp" />
     <ClCompile Include="KxFramework\KxTopLevelWindow.cpp" />
     <ClCompile Include="KxFramework\KxTranslation.cpp" />
-    <ClCompile Include="KxFramework\KxTreeList.cpp" />
-    <ClCompile Include="KxFramework\KxTreeView.cpp" />
     <ClCompile Include="KxFramework\KxUtility.cpp" />
     <ClCompile Include="KxFramework\KxUxTheme.cpp" />
     <ClCompile Include="KxFramework\KxValidator.cpp" />
