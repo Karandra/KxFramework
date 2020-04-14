@@ -92,6 +92,15 @@ namespace KxFramework
 			{
 				return !IsSuccess();
 			}
+
+			String ToString() const
+			{
+				return {};
+			}
+			String GetMessage() const
+			{
+				return {};
+			}
 	};
 
 	class Win32ErrorCode final: public System::ErrorCodeValue<Win32ErrorCode, uint32_t>
