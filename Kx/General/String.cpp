@@ -436,12 +436,12 @@ namespace KxFramework
 	}
 
 	// Searching and replacing
-	size_t String::Find(std::string_view pattern, size_t offset, StringOpFlag flags) const
+	size_t String::DoFind(std::string_view pattern, size_t offset, StringOpFlag flags) const
 	{
 		String patternCopy = FromView(pattern);
 		return Find(StringViewOf(patternCopy), offset, flags);
 	}
-	size_t String::Find(std::wstring_view pattern, size_t offset, StringOpFlag flags) const
+	size_t String::DoFind(std::wstring_view pattern, size_t offset, StringOpFlag flags) const
 	{
 		if (!m_String.IsEmpty() && offset < m_String.length())
 		{
@@ -473,7 +473,7 @@ namespace KxFramework
 		}
 		return npos;
 	}
-	size_t String::Find(wxUniChar pattern, size_t offset, StringOpFlag flags) const noexcept
+	size_t String::DoFind(wxUniChar pattern, size_t offset, StringOpFlag flags) const noexcept
 	{
 		if (m_String.IsEmpty() || offset >= m_String.length())
 		{
@@ -503,13 +503,13 @@ namespace KxFramework
 		return npos;
 	}
 
-	size_t String::Replace(std::string_view pattern, std::string_view replacement, size_t offset, StringOpFlag flags)
+	size_t String::DoReplace(std::string_view pattern, std::string_view replacement, size_t offset, StringOpFlag flags)
 	{
 		String patternCopy = FromView(pattern);
 		String replacementCopy = FromView(replacement);
 		return Replace(StringViewOf(patternCopy), StringViewOf(replacementCopy), offset, flags);
 	}
-	size_t String::Replace(std::wstring_view pattern, std::wstring_view replacement, size_t offset, StringOpFlag flags)
+	size_t String::DoReplace(std::wstring_view pattern, std::wstring_view replacement, size_t offset, StringOpFlag flags)
 	{
 		const size_t replacementLength = replacement.length();
 		const size_t patternLength = pattern.length();
@@ -585,7 +585,7 @@ namespace KxFramework
 		}
 		return replacementCount;
 	}
-	size_t String::Replace(wxUniChar pattern, wxUniChar replacement, size_t offset, StringOpFlag flags) noexcept
+	size_t String::DoReplace(wxUniChar pattern, wxUniChar replacement, size_t offset, StringOpFlag flags) noexcept
 	{
 		if (m_String.IsEmpty() || offset >= m_String.length())
 		{

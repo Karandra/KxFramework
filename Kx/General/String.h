@@ -799,51 +799,55 @@ namespace KxFramework
 			}
 
 			// Searching and replacing
-			size_t Find(std::string_view pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const;
-			size_t Find(std::wstring_view pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const;
-			size_t Find(wxUniChar pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const noexcept;
+		private:
+			size_t DoFind(std::string_view pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const;
+			size_t DoFind(std::wstring_view pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const;
+			size_t DoFind(wxUniChar pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const noexcept;
 			
+		public:
 			template<class T>
 			size_t Find(T&& pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const
 			{
 				if constexpr(Private::IsAnyCharType<T>())
 				{
-					return Find(UniCharOf(std::forward<T>(pattern)), offset, flags);
+					return DoFind(UniCharOf(std::forward<T>(pattern)), offset, flags);
 				}
 				else
 				{
-					return Find(StringViewOf(std::forward<T>(pattern)), offset, flags);
+					return DoFind(StringViewOf(std::forward<T>(pattern)), offset, flags);
 				}
 			}
 
-			size_t Replace(std::string_view pattern, std::string_view replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None);
-			size_t Replace(std::wstring_view pattern, std::wstring_view replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None);
-			size_t Replace(wxUniChar c, wxUniChar replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) noexcept;
-			size_t Replace(wxUniChar c, std::string_view replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) noexcept
+		private:
+			size_t DoReplace(std::string_view pattern, std::string_view replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None);
+			size_t DoReplace(std::wstring_view pattern, std::wstring_view replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None);
+			size_t DoReplace(wxUniChar c, wxUniChar replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) noexcept;
+			size_t DoReplace(wxUniChar c, std::string_view replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
 				const char pattern[2] = {c, 0};
 				return Replace(StringViewOf(pattern), replacement, offset, flags);
 			}
-			size_t Replace(wxUniChar c, std::wstring_view replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) noexcept
+			size_t DoReplace(wxUniChar c, std::wstring_view replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
 				const wchar_t pattern[2] = {c, 0};
 				return Replace(StringViewOf(pattern), replacement, offset, flags);
 			}
 			
+		public:
 			template<class T1, class T2>
-			size_t Replace(T1&& pattern, T2&& replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const
+			size_t Replace(T1&& pattern, T2&& replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None)
 			{
 				if constexpr(Private::IsAnyStringType<T1>() && Private::IsAnyStringType<T2>())
 				{
-					return Replace(StringViewOf(std::forward<T1>(pattern)), StringViewOf(std::forward<T2>(replacement)), offset, flags);
+					return DoReplace(StringViewOf(std::forward<T1>(pattern)), StringViewOf(std::forward<T2>(replacement)), offset, flags);
 				}
 				else if constexpr(Private::IsAnyCharType<T1>() && Private::IsAnyCharType<T2>())
 				{
-					return Replace(UniCharOf(std::forward<T1>(pattern)), UniCharOf(std::forward<T2>(replacement)), offset, flags);
+					return DoReplace(UniCharOf(std::forward<T1>(pattern)), UniCharOf(std::forward<T2>(replacement)), offset, flags);
 				}
 				else if constexpr(Private::IsAnyCharType<T1>() && Private::IsAnyStringType<T2>())
 				{
-					return Replace(UniCharOf(std::forward<T1>(pattern)), StringViewOf(std::forward<T2>(replacement)), offset, flags);
+					return DoReplace(UniCharOf(std::forward<T1>(pattern)), StringViewOf(std::forward<T2>(replacement)), offset, flags);
 				}
 				else
 				{
