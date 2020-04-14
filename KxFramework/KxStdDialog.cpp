@@ -4,8 +4,8 @@
 #include "KxFramework/KxTopLevelWindow.h"
 #include "KxFramework/KxButton.h"
 #include "KxFramework/KxUtility.h"
-#include "KxFramework/KxUxTheme.h"
 #include "KxFramework/KxIncludeWindows.h"
+#include "Kx/Drawing/UxTheme.h"
 
 KxEVENT_DEFINE_GLOBAL(wxNotifyEvent, STDDIALOG_BUTTON);
 KxEVENT_DEFINE_GLOBAL(wxNotifyEvent, STDDIALOG_NAVIGATE);
@@ -191,6 +191,8 @@ bool KxStdDialog::Create(wxWindow* parent,
 
 	if (KxDialog::Create(parent, id, GetDefaultTitle(), pos, size, style))
 	{
+		using namespace KxFramework;
+
 		// Default interface
 		m_GripperWindow.Create(this, wxID_NONE, GetGripperWindow());
 		m_GripperWindowSize = m_GripperWindow.GetSize();
@@ -201,7 +203,7 @@ bool KxStdDialog::Create(wxWindow* parent,
 
 		m_CaptionLabel = new KxLabel(m_ContentPanel, wxID_NONE, caption, KxLABEL_CAPTION); // wxLLabel::DefaultStyle|KxLABEL_CAPTION
 		m_CaptionLabel->SetMaxSize(FromDIP(wxSize(wxDefaultCoord, 23)));
-		m_CaptionLabel->SetForegroundColour(KxUxTheme::GetDialogMainInstructionColor(*m_ContentPanel));
+		m_CaptionLabel->SetForegroundColour(UxTheme::GetDialogMainInstructionColor(*m_ContentPanel));
 
 		m_ViewLabel = new KxLabel(m_ContentPanel, wxID_NONE, wxEmptyString, KxLabel::DefaultStyle & ~(KxLABEL_LINE|KxLABEL_COLORED|KxLABEL_CAPTION|KxLABEL_SELECTION));
 		m_ViewLabel->SetMaxSize(FromDIP(wxSize(wxDefaultCoord, 23)));

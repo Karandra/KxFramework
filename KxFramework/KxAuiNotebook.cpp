@@ -1,7 +1,7 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxAuiNotebook.h"
 #include "KxFramework/KxPanel.h"
-#include "KxFramework/KxUxTheme.h"
+#include "Kx/Drawing/UxTheme.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxAuiNotebook, wxAuiNotebook);
 
@@ -80,13 +80,15 @@ void KxAuiNotebookDockArtProvider::DrawBackground(wxDC& dc, wxWindow* window, in
 }
 void KxAuiNotebookDockArtProvider::DrawBorder(wxDC& dc, wxWindow* window, const wxRect& rect, wxAuiPaneInfo& pane)
 {
+	using namespace KxFramework;
+
 	KxAuiDefaultDockArtBase::DrawBorder(dc, window, rect, pane);
 
 	// Top horizontal line
 	wxRect topLine(rect.GetLeftTop(), rect.GetRightTop());
 	topLine.height = 1;
 	topLine.width += 1;
-	KxUxTheme::DrawParentBackground(*m_Notebook, dc, topLine);
+	UxTheme::DrawParentBackground(*m_Notebook, dc, topLine);
 
 	// Right vertical line
 	wxRect rightLine = wxRect(topLine.GetRightTop(), topLine.GetRightBottom());
@@ -94,7 +96,7 @@ void KxAuiNotebookDockArtProvider::DrawBorder(wxDC& dc, wxWindow* window, const 
 	rightLine.y -= 2;
 	rightLine.width += 5;
 	rightLine.height += 2;
-	KxUxTheme::DrawParentBackground(*m_Notebook, dc, rightLine);
+	UxTheme::DrawParentBackground(*m_Notebook, dc, rightLine);
 
 	// Left vertical line
 	wxRect leftLine;
@@ -102,5 +104,5 @@ void KxAuiNotebookDockArtProvider::DrawBorder(wxDC& dc, wxWindow* window, const 
 	leftLine.y = 0;
 	leftLine.width = m_Notebook->GetTabIndent();
 	leftLine.height = m_Notebook->GetTabCtrlHeight() - 1;
-	KxUxTheme::DrawParentBackground(*m_Notebook, dc, leftLine);
+	UxTheme::DrawParentBackground(*m_Notebook, dc, leftLine);
 }

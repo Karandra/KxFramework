@@ -11,9 +11,9 @@
 #include "KxFramework/KxSplashWindow.h"
 #include "KxFramework/KxUtility.h"
 #include "KxFramework/KxFrame.h"
-#include "KxFramework/KxUxTheme.h"
-#include "KxFramework/KxUxThemePartsAndStates.h"
 #include "Kx/System/SystemInformation.h"
+#include "Kx/Drawing/UxTheme.h"
+#include "Kx/Drawing/Private/UxThemeDefines.h"
 #include "Kx/Drawing/DCOperations.h"
 #include "Kx/Drawing/GCOperations.h"
 #include <wx/popupwin.h>
@@ -1041,6 +1041,8 @@ namespace KxDataView2
 	// Drawing
 	void MainWindow::OnPaint(wxPaintEvent& event)
 	{
+		using namespace KxFramework;
+
 		const wxSize clientSize = GetClientSize();
 		wxAutoBufferedPaintDC paintDC(this);
 		paintDC.SetPen(*wxTRANSPARENT_PEN);
@@ -1344,8 +1346,8 @@ namespace KxDataView2
 
 				// Clip DC to current column
 				const wxRect columnRect(cellRect.GetX(), 0, cellRect.GetWidth(), m_virtualSize.GetHeight());
-				KxFramework::DCClip clipDC(paintDC, columnRect);
-				KxFramework::GCClip clipGC(gc, columnRect);
+				DCClip clipDC(paintDC, columnRect);
+				GCClip clipGC(gc, columnRect);
 
 				// Draw the cell
 				if (!isCategoryRow || currentColumnIndex == 0)
@@ -1410,7 +1412,7 @@ namespace KxDataView2
 					}
 					else
 					{
-						if (KxUxTheme theme(*this, KxUxThemeClass::TreeView); theme)
+						if (UxTheme theme(*this, UxThemeClass::TreeView); theme)
 						{
 							const int partID = flags & wxCONTROL_CURRENT ? TVP_HOTGLYPH : TVP_GLYPH;
 							const int stateID = flags & wxCONTROL_EXPANDED ? GLPS_OPENED : GLPS_CLOSED;

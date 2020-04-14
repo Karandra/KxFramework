@@ -1,6 +1,6 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxLabel.h"
-#include "KxFramework/KxUxTheme.h"
+#include "Kx/Drawing/UxTheme.h"
 
 namespace
 {
@@ -88,6 +88,8 @@ void KxLabel::OnMouseUp(wxMouseEvent& event)
 }
 void KxLabel::OnPaint(wxPaintEvent& event)
 {
+	using namespace KxFramework;
+
 	wxAutoBufferedPaintDC dc(this);
 	if (IsFrozen())
 	{
@@ -98,7 +100,7 @@ void KxLabel::OnPaint(wxPaintEvent& event)
 	dc.SetBackground(GetParent()->GetBackgroundColour());
 
 	wxRect rect(wxPoint(0, 0), GetSize());
-	KxUxTheme::DrawParentBackground(*this, dc, rect);
+	UxTheme::DrawParentBackground(*this, dc, rect);
 
 	bool isSelected = m_State == wxCONTROL_FOCUSED || m_State == wxCONTROL_PRESSED;
 	const wxColour& color = GetStateColor();
@@ -186,6 +188,8 @@ bool KxLabel::Create(wxWindow* parent,
 					 long style
 )
 {
+	using namespace KxFramework;
+
 	m_Style = style;
 	m_IsMultilne = IsLabelMultiline(label);
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
@@ -205,7 +209,7 @@ bool KxLabel::Create(wxWindow* parent,
 		}
 		if (m_Style & KxLABEL_COLORED)
 		{
-			color = KxUxTheme::GetDialogMainInstructionColor(*this);
+			color = UxTheme::GetDialogMainInstructionColor(*this);
 		}
 		SetupColors(color);
 

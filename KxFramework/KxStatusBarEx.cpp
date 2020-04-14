@@ -1,19 +1,21 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxStatusBarEx.h"
 #include "KxFramework/KxUtility.h"
-#include "KxFramework/KxUxTheme.h"
-#include "KxFramework/KxUxThemePartsAndStates.h"
+#include "Kx/Drawing/UxTheme.h"
+#include "Kx/Drawing/Private/UxThemeDefines.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxStatusBarEx, KxStatusBar);
 
 void KxStatusBarEx::OnPaint(wxPaintEvent& event)
 {
+	using namespace KxFramework;
+
 	wxAutoBufferedPaintDC dc(this);
 	dc.SetBackgroundMode(wxBRUSHSTYLE_TRANSPARENT);
 	dc.SetTextForeground(GetForegroundColour());
 	
 	const wxSize clientSize = GetClientSize();
-	KxUxTheme::DrawParentBackground(*this, dc, clientSize);
+	UxTheme::DrawParentBackground(*this, dc, clientSize);
 
 	// Draw background
 	{
@@ -25,7 +27,7 @@ void KxStatusBarEx::OnPaint(wxPaintEvent& event)
 
 		if (m_ProgressPos > 0 && m_ProgressRange > 0)
 		{
-			if (KxUxTheme theme(*this, KxUxThemeClass::Progress); theme)
+			if (UxTheme theme(*this, UxThemeClass::Progress); theme)
 			{
 				theme.DrawProgressBar(dc, -1, PP_FILL, m_State & wxCONTROL_CURRENT ? PBFS_PARTIAL : PBFS_NORMAL, backgroundRect, m_ProgressPos, m_ProgressRange);
 			}
@@ -33,7 +35,7 @@ void KxStatusBarEx::OnPaint(wxPaintEvent& event)
 			{
 				backgroundRect.SetWidth(m_ProgressPos == m_ProgressRange ? clientSize.GetWidth() : clientSize.GetWidth() * ((double)m_ProgressPos / m_ProgressRange));
 
-				dc.SetBrush(KxColor(GetBackgroundColour()).RotateHue(30));
+				dc.SetBrush(Color(GetBackgroundColour()).RotateHue(30));
 				dc.DrawRectangle(backgroundRect);
 			}
 		}
@@ -51,7 +53,7 @@ void KxStatusBarEx::OnPaint(wxPaintEvent& event)
 	const wxTopLevelWindow* topLevelWindow = GetTLWParent();
 	if (topLevelWindow && !topLevelWindow->IsMaximized() && topLevelWindow->HasFlag(wxRESIZE_BORDER))
 	{
-		if (KxUxTheme theme(*this, KxUxThemeClass::Status); theme)
+		if (UxTheme theme(*this, UxThemeClass::Status); theme)
 		{
 			wxSize gripSize = theme.GetPartSize(dc, SP_GRIPPER, 0);
 			wxPoint gripPos(clientSize.GetWidth() - gripSize.GetWidth() - 1, GetMinHeight() - gripSize.GetHeight() - 1);
@@ -189,6 +191,8 @@ bool KxStatusBarEx::Create(wxWindow* parent,
 						   long style
 )
 {
+	using namespace KxFramework;
+
 	if (KxStatusBar::Create(parent, id, KxUtility::ModFlag(style, KxSBE_MASK, false)))
 	{
 		EnableSystemTheme();
@@ -198,7 +202,7 @@ bool KxStatusBarEx::Create(wxWindow* parent,
 		if (style & KxSBE_INHERIT_COLORS)
 		{
 			SetBackgroundColour(GetParent()->GetBackgroundColour().ChangeLightness(110));
-			SetForegroundColour(KxColor(GetBackgroundColour()).Negate());
+			SetForegroundColour(Color(GetBackgroundColour()).Negate());
 			SetBorderColor(GetParent()->GetBackgroundColour().ChangeLightness(75));
 		}
 		else

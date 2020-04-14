@@ -76,12 +76,6 @@
     <Filter Include="Source Files\GUI\Controls">
       <UniqueIdentifier>{f01e130d-7ea9-414e-b8c5-c061c1b75cf9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Drawing">
-      <UniqueIdentifier>{4a01e57e-89c2-4ec8-89f5-a9a005121141}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Drawing">
-      <UniqueIdentifier>{73e89795-488c-4434-8a05-9cc9d88ce2a0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Misc">
       <UniqueIdentifier>{9369ebc3-44af-42ee-9987-724cc1b026c9}</UniqueIdentifier>
     </Filter>
@@ -733,12 +727,6 @@
     <ClInclude Include="KxFramework\KxDPIAwareness.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxUxTheme.h">
-      <Filter>Header Files\Drawing</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxUxThemePartsAndStates.h">
-      <Filter>Header Files\Drawing</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\DataView2\HeaderCtrl2.h">
       <Filter>Header Files\GUI\DataView2</Filter>
     </ClInclude>
@@ -1225,6 +1213,12 @@
     <ClInclude Include="Kx\Drawing\GCOperations.h">
       <Filter>Kx\Drawing</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Drawing\Private\UxThemeDefines.h">
+      <Filter>Kx\Drawing\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Drawing\UxTheme.h">
+      <Filter>Kx\Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1579,9 +1573,6 @@
     <ClCompile Include="KxFramework\KxDPIAwareness.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxUxTheme.cpp">
-      <Filter>Source Files\Drawing</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\DataView2\HeaderCtrl2.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
     </ClCompile>
@@ -1850,6 +1841,9 @@
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
     <ClCompile Include="Kx\Drawing\DCOperations.cpp">
+      <Filter>Kx\Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Drawing\UxTheme.cpp">
       <Filter>Kx\Drawing</Filter>
     </ClCompile>
   </ItemGroup>

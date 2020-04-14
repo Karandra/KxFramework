@@ -2,7 +2,7 @@
 #include "KxFramework/KxButton.h"
 #include "KxFramework/KxLibrary.h"
 #include "KxFramework/KxMenu.h"
-#include "KxFramework/KxUxTheme.h"
+#include "Kx/Drawing/UxTheme.h"
 #include "KxFramework/KxIncludeWindows.h"
 
 KxEVENT_DEFINE_GLOBAL_AS(wxCommandEvent, BUTTON, wxEVT_BUTTON);
@@ -51,8 +51,10 @@ wxSize KxButton::GetDefaultSize()
 
 void KxButton::OnPaint(wxPaintEvent& event)
 {
+	using namespace KxFramework;
+
 	wxAutoBufferedPaintDC dc(this);
-	KxUxTheme::ClearDC(*this, dc);
+	UxTheme::ClearDC(*this, dc);
 	wxRendererNative& renderer = wxRendererNative::Get();
 
 	const bool isEnabled = IsThisEnabled();

@@ -1,6 +1,6 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxPanel.h"
-#include "KxFramework/KxUxTheme.h"
+#include "Kx/Drawing/UxTheme.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxPanel, wxPanel);
 
@@ -110,6 +110,8 @@ void KxDrawablePanel::DrawTransparencyPattern(wxDC& dc)
 
 void KxDrawablePanel::OnDrawBackground(wxEraseEvent& event)
 {
+	using namespace KxFramework;
+
 	wxDC* dc = event.GetDC();
 	dc->SetBackgroundMode(wxBG_STYLE_TRANSPARENT);
 	dc->SetBackground(*wxTRANSPARENT_BRUSH);
@@ -135,7 +137,7 @@ void KxDrawablePanel::OnDrawBackground(wxEraseEvent& event)
 		{
 			window = GetParent();
 		}
-		KxUxTheme::DrawParentBackground(*window, *dc, wxRect(wxPoint(0, 0), GetSize()));
+		UxTheme::DrawParentBackground(*window, *dc, wxRect(wxPoint(0, 0), GetSize()));
 	}
 
 	if (mode & KxPANEL_BG_IMAGE)

@@ -283,7 +283,6 @@
     <ClInclude Include="KxFramework\KxIconType.h" />
     <ClInclude Include="KxFramework\KxImageView.h" />
     <ClInclude Include="KxFramework\KxIncludeWindows.h" />
-    <ClInclude Include="KxFramework\KxUxThemePartsAndStates.h" />
     <ClInclude Include="KxFramework\KxIOwned.h" />
     <ClInclude Include="KxFramework\KxIProgressBar.h" />
     <ClInclude Include="KxFramework\KxISerializer.h" />
@@ -339,7 +338,6 @@
     <ClInclude Include="KxFramework\KxTranslation.h" />
     <ClInclude Include="KxFramework\KxTypedefs.h" />
     <ClInclude Include="KxFramework\KxUtility.h" />
-    <ClInclude Include="KxFramework\KxUxTheme.h" />
     <ClInclude Include="KxFramework\KxWebView.h" />
     <ClInclude Include="KxFramework\KxWindowRefreshScheduler.h" />
     <ClInclude Include="KxFramework\KxWindowUpdateLocker.h" />
@@ -378,6 +376,8 @@
     <ClInclude Include="Kx\Drawing\ImageList.h" />
     <ClInclude Include="Kx\Drawing\ImageSet.h" />
     <ClInclude Include="Kx\Drawing\Private\GraphicsCanvas.h" />
+    <ClInclude Include="Kx\Drawing\Private\UxThemeDefines.h" />
+    <ClInclude Include="Kx\Drawing\UxTheme.h" />
     <ClInclude Include="Kx\Drawing\WithImageList.h" />
     <ClInclude Include="Kx\EventSystem.hpp" />
     <ClInclude Include="Kx\EventSystem\BasicEvtHandler.h" />
@@ -655,7 +655,6 @@
     <ClCompile Include="KxFramework\KxTopLevelWindow.cpp" />
     <ClCompile Include="KxFramework\KxTranslation.cpp" />
     <ClCompile Include="KxFramework\KxUtility.cpp" />
-    <ClCompile Include="KxFramework\KxUxTheme.cpp" />
     <ClCompile Include="KxFramework\KxWebView.cpp" />
     <ClCompile Include="KxFramework\KxWithDropdownMenu.cpp" />
     <ClCompile Include="KxStdAfx.cpp">
@@ -676,6 +675,7 @@
     <ClCompile Include="Kx\Drawing\DCOperations.cpp" />
     <ClCompile Include="Kx\Drawing\ImageList.cpp" />
     <ClCompile Include="Kx\Drawing\ImageSet.cpp" />
+    <ClCompile Include="Kx\Drawing\UxTheme.cpp" />
     <ClCompile Include="Kx\FileSystem\FileOperationEvent.cpp" />
     <ClCompile Include="Kx\General\Any.cpp" />
     <ClCompile Include="Kx\General\Color.cpp" />

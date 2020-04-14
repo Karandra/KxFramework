@@ -1,20 +1,22 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxClusterMap.h"
-#include "KxFramework/KxUxTheme.h"
+#include "Kx/Drawing/UxTheme.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxClusterMap, wxControl)
 
 void KxClusterMap::OnPaint(wxPaintEvent& event)
 {
+	using namespace KxFramework;
+
 	wxPaintDC dc(this);
 
 	const DrawInfo drawInfo = GetDrawInfo();
-	KxUxTheme::DrawParentBackground(*this, dc, wxRect({0, 0}, drawInfo.ClientSize));
+	UxTheme::DrawParentBackground(*this, dc, wxRect({0, 0}, drawInfo.ClientSize));
 
 	if (m_ItemCount != 0 && m_ItemSize > 0)
 	{
 		const int contrast = 40;
-		const KxColor color = GetForegroundColour();
+		const Color color = GetForegroundColour();
 		dc.SetBrush(color);
 		dc.SetPen(color.GetContrastColor(color.ChangeLightness(100 + contrast), color.ChangeLightness(100 - contrast)));
 		

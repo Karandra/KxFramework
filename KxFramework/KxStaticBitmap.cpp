@@ -1,13 +1,15 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxStaticBitmap.h"
-#include "KxFramework/KxUxTheme.h"
+#include "Kx/Drawing/UxTheme.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxStaticBitmap, wxGenericStaticBitmap);
 
 void KxStaticBitmap::OnPaint(wxPaintEvent& event)
 {
+	using namespace KxFramework;
+
 	wxBufferedPaintDC dc(this);
-	KxUxTheme::DrawParentBackground(*this, dc, wxRect(wxPoint(0, 0), GetSize()));
+	UxTheme::DrawParentBackground(*this, dc, wxRect(wxPoint(0, 0), GetSize()));
 	event.Skip();
 }
 

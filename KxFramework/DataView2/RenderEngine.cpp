@@ -4,11 +4,10 @@
 #include "Column.h"
 #include "View.h"
 #include "MainWindow.h"
-#include "KxFramework/KxUxTheme.h"
+#include "Kx/Drawing/UxTheme.h"
+#include "Kx/Drawing/Private/UxThemeDefines.h"
 #include "Kx/Drawing/GCOperations.h"
 #include "wx/generic/private/markuptext.h"
-
-#include "KxFramework/KxUxThemePartsAndStates.h"
 
 namespace
 {
@@ -396,6 +395,8 @@ namespace KxDataView2
 	}
 	bool RenderEngine::DrawProgressBar(const wxRect& cellRect, CellState cellState, int value, int range, ProgressState state, KxColor* averageBackgroundColor)
 	{
+		using namespace KxFramework;
+
 		// Progress bar looks really ugly when it's smaller than 10x10 pixels,
 		// so don't draw it at all in this case.
 		const wxSize minSize = FromDIP(10, 10);
@@ -404,7 +405,7 @@ namespace KxDataView2
 			return false;
 		}
 
-		if (KxUxTheme theme(*m_Renderer.GetView(), KxUxThemeClass::Progress); theme)
+		if (UxTheme theme(*m_Renderer.GetView(), UxThemeClass::Progress); theme)
 		{
 			switch (state)
 			{
@@ -536,7 +537,9 @@ namespace KxDataView2
 	}
 	void RenderEngine::DrawSelectionRect(wxWindow* window, wxDC& dc, const wxRect& cellRect, int flags)
 	{
-		if (KxUxTheme theme(*window, KxUxThemeClass::TreeView); theme)
+		using namespace KxFramework;
+
+		if (UxTheme theme(*window, UxThemeClass::TreeView); theme)
 		{
 			const int itemState = GetTreeItemState(flags);
 			theme.DrawBackground(dc, TVP_TREEITEM, GetTreeItemState(flags), cellRect);
