@@ -691,9 +691,6 @@
     <ClInclude Include="KxFramework\KxWindowRefreshScheduler.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxHiDPIEnabledWindow.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\DataView2\HeaderCtrl2.h">
       <Filter>Header Files\GUI\DataView2</Filter>
     </ClInclude>
@@ -1204,6 +1201,9 @@
     <ClInclude Include="Kx\System\WOW64FSRedirection.h">
       <Filter>Kx\System</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\UI\HiDPIEnabledWindow.h">
+      <Filter>Kx\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1534,9 +1534,6 @@
     <ClCompile Include="Kx\Async\Coroutine\CoroutineImpl.cpp">
       <Filter>Kx\Async\Coroutine</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxHiDPIEnabledWindow.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\DataView2\HeaderCtrl2.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
     </ClCompile>
@@ -1818,6 +1815,9 @@
     </ClCompile>
     <ClCompile Include="Kx\System\WOW64FSRedirection.cpp">
       <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\HiDPIEnabledWindow.cpp">
+      <Filter>Kx\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

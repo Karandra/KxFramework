@@ -7,7 +7,7 @@ namespace KxFramework::UI::Private
 	void GetValidatorControlValue(const wxValidator& validator, wxString& value, int& position, wxChar& character);
 }
 
-namespace KxFramework
+namespace KxFramework::UI
 {
 	template<class T>
 	class IntegerValidator: public wxIntegerValidator<T>

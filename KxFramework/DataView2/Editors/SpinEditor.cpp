@@ -6,7 +6,8 @@
 
 namespace
 {
-	template<class T> T CastAndGetValue(wxWindow* control)
+	template<class T>
+	T CastAndGetValue(wxWindow* control)
 	{
 		if constexpr(std::is_floating_point<T>::value)
 		{
@@ -80,14 +81,14 @@ namespace KxDataView2
 		// See 'KxValidator.cpp' file for details.
 		if (m_Type == Type::Integer)
 		{
-			KxFramework::IntegerValidator<int> validator(nullptr, wxNUM_VAL_NO_TRAILING_ZEROES);
+			KxFramework::UI::IntegerValidator<int> validator(nullptr, wxNUM_VAL_NO_TRAILING_ZEROES);
 			validator.SetMin(m_IntMin);
 			validator.SetMax(m_IntMax);
 			editor->SetValidator(validator);
 		}
 		else
 		{
-			KxFramework::FloatingPointValidator<double> validator(nullptr, wxNUM_VAL_NO_TRAILING_ZEROES);
+			KxFramework::UI::FloatingPointValidator<double> validator(nullptr, wxNUM_VAL_NO_TRAILING_ZEROES);
 			validator.SetMin(m_FloatMin);
 			validator.SetMax(m_FloatMax);
 			editor->SetValidator(validator);

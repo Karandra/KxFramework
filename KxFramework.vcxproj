@@ -248,7 +248,6 @@
     <ClInclude Include="KxFramework\KxClusterMap.h" />
     <ClInclude Include="KxFramework\KxCommandEvent.h" />
     <ClInclude Include="KxFramework\KxEvent.h" />
-    <ClInclude Include="KxFramework\KxHiDPIEnabledWindow.h" />
     <ClInclude Include="KxFramework\KxNotifyEvent.h" />
     <ClInclude Include="KxFramework\KxToolTipEx.h" />
     <ClInclude Include="KxFramework\KxBitmapComboBox.h" />
@@ -517,6 +516,7 @@
     <ClInclude Include="Kx\Threading\JoinableThread.h" />
     <ClInclude Include="Kx\UI.hpp" />
     <ClInclude Include="Kx\UI\Common.h" />
+    <ClInclude Include="Kx\UI\HiDPIEnabledWindow.h" />
     <ClInclude Include="Kx\UI\StdButton.h" />
     <ClInclude Include="Kx\UI\StdIcon.h" />
     <ClInclude Include="Kx\UI\Validator.h" />
@@ -574,7 +574,6 @@
     <ClCompile Include="KxFramework\KxAuiToolBarItem.cpp" />
     <ClCompile Include="KxFramework\KxClusterMap.cpp" />
     <ClCompile Include="KxFramework\KxCommandEvent.cpp" />
-    <ClCompile Include="KxFramework\KxHiDPIEnabledWindow.cpp" />
     <ClCompile Include="KxFramework\KxNotifyEvent.cpp" />
     <ClCompile Include="KxFramework\KxToolTipEx.cpp" />
     <ClCompile Include="KxFramework\KxBitmapComboBox.cpp" />
@@ -702,6 +701,7 @@
     <ClCompile Include="Kx\System\Registry.cpp" />
     <ClCompile Include="Kx\System\SystemInformation.cpp" />
     <ClCompile Include="Kx\System\WOW64FSRedirection.cpp" />
+    <ClCompile Include="Kx\UI\HiDPIEnabledWindow.cpp" />
     <ClCompile Include="Kx\UI\Validator.cpp" />
     <ClCompile Include="Kx\Utility\String.cpp" />
     <ClCompile Include="Kx\Utility\System.cpp" />
