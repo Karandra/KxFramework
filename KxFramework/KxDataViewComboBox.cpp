@@ -1,232 +1,233 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxDataViewComboBox.h"
+#include "KxFramework/DataView2/MainWindow.h"
 #include "KxFramework/KxComboControl.h"
 #include "KxFramework/KxPanel.h"
-#include "KxFramework/DataView/KxDataViewMainWindow.h"
 
-KxEVENT_DEFINE_GLOBAL(KxDataViewEvent, DVCB_GET_STRING_VALUE);
-KxEVENT_DEFINE_GLOBAL(KxDataViewEvent, DVCB_SET_STRING_VALUE);
-
-wxIMPLEMENT_ABSTRACT_CLASS(KxDataViewComboBox, KxDataViewCtrl);
-
-int KxDataViewComboBox::CalculateItemsHeight() const
+namespace KxDataView2
 {
-	int height = 0;
-	if (m_MaxVisibleItems != -1)
+	KxEVENT_DEFINE_GLOBAL(Event, DVCB_GET_STRING_VALUE);
+	KxEVENT_DEFINE_GLOBAL(Event, DVCB_SET_STRING_VALUE);
+}
+
+namespace KxDataView2
+{
+	wxIMPLEMENT_ABSTRACT_CLASS(ComboBoxCtrl, View);
+
+	int ComboBoxCtrl::CalculateItemsHeight() const
 	{
-		if (const wxHeaderCtrl* header = GetHeaderCtrl())
+		int height = 0;
+		if (m_MaxVisibleItems != -1)
 		{
-			height += header->GetSize().GetHeight() + FromDIP(4);
+			if (const wxHeaderCtrl* header = GetHeaderCtrl())
+			{
+				height += header->GetSize().GetHeight() + FromDIP(4);
+			}
+
+			int items = std::min<int>(m_MaxVisibleItems, GetMainWindow()->GetRowCount());
+			height += (items * FromDIP(4)) + (items * GetUniformRowHeight());
+		}
+		else
+		{
+			height = GetUniformRowHeight();
+		}
+		return std::clamp(height, 0, wxSystemSettings::GetMetric(wxSYS_SCREEN_Y));
+	}
+	void ComboBoxCtrl::UpdatePopupHeight()
+	{
+		if (m_MaxVisibleItems == -1)
+		{
+			m_ComboCtrl->SetPopupMaxHeight(-1);
+		}
+		else
+		{
+			int height = CalculateItemsHeight();
+
+			// Setting max height to zero doesn't seems to work
+			m_ComboCtrl->SetPopupMaxHeight(height == 0 ? 1 : height);
+		}
+	}
+
+	void ComboBoxCtrl::OnInternalIdle()
+	{
+		View::OnInternalIdle();
+	}
+	void ComboBoxCtrl::OnSelectItem(Event& event)
+	{
+		event.Skip();
+
+		m_Selection = event.GetNode();
+		if (IsOptionEnabled(KxDVCB_OPTION_DISMISS_ON_SELECT))
+		{
+			m_ComboCtrl->Dismiss();
+		}
+	}
+	void ComboBoxCtrl::OnScroll(wxMouseEvent& event)
+	{
+		event.Skip();
+
+		int rateX = 0;
+		int rateY = 0;
+		GetScrollPixelsPerUnit(&rateX, &rateY);
+		wxPoint startPos = GetViewStart();
+
+		wxCoord value = -event.GetWheelRotation();
+		if (event.GetWheelAxis() == wxMOUSE_WHEEL_VERTICAL)
+		{
+			Scroll(wxDefaultCoord, startPos.y + (float)value / (rateY != 0 ? rateY : 1));
+		}
+		else
+		{
+			Scroll(startPos.x + (float)value / (rateX != 0 ? rateX : 1), wxDefaultCoord);
+		}
+	}
+
+	bool ComboBoxCtrl::FindItem(const wxString& value, wxString* pTrueItem)
+	{
+		return true;
+	}
+	void ComboBoxCtrl::OnPopup()
+	{
+		SetFocus();
+	}
+	void ComboBoxCtrl::OnDismiss()
+	{
+		if (m_Selection)
+		{
+			Select(*m_Selection);
 		}
 
-		int items = std::min(m_MaxVisibleItems, (int)GetMainWindow()->GetRowCount());
-		height += (items * FromDIP(4)) + (items * GetUniformRowHeight());
+		if (IsOptionEnabled(KxDVCB_OPTION_FORCE_GET_STRING_VALUE_ON_DISMISS))
+		{
+			m_ComboCtrl->SetText(GetStringValue());
+		}
 	}
-	else
+	void ComboBoxCtrl::OnDoShowPopup()
 	{
-		height = GetUniformRowHeight();
+		UpdatePopupHeight();
 	}
-	return std::clamp(height, 0, wxSystemSettings::GetMetric(wxSYS_SCREEN_Y));
-}
-void KxDataViewComboBox::UpdatePopupHeight()
-{
-	if (m_MaxVisibleItems == -1)
+	bool ComboBoxCtrl::Create(wxWindow* window)
 	{
-		m_ComboCtrl->SetPopupMaxHeight(-1);
-	}
-	else
-	{
-		int height = CalculateItemsHeight();
+		m_Sizer = new wxBoxSizer(IsOptionEnabled(KxDVCB_OPTION_HORIZONTAL_SIZER) ? wxHORIZONTAL : wxVERTICAL);
+		m_BackgroundWindow = new KxPanel(window, wxID_NONE, KxPanel::DefaultStyle|wxBORDER_THEME);
+		m_BackgroundWindow->SetSizer(m_Sizer);
+		if (ShouldInheritColours())
+		{
+			m_BackgroundWindow->SetBackgroundColour(m_ComboCtrl->GetBackgroundColour());
+			m_BackgroundWindow->SetForegroundColour(m_ComboCtrl->GetForegroundColour());
+		}
 
-		// Setting max height to zero doesn't seems to work
-		m_ComboCtrl->SetPopupMaxHeight(height == 0 ? 1 : height);
+		if (View::Create(m_BackgroundWindow, wxID_NONE, m_DataViewFlags))
+		{
+			View::SetPosition(wxPoint(0, 0));
+			m_Sizer->Add(this, 1, wxEXPAND);
+
+			// DataView events
+			m_EvtHandler_DataView.Bind(EvtITEM_SELECTED, &ComboBoxCtrl::OnSelectItem, this);
+			PushEventHandler(&m_EvtHandler_DataView);
+
+			// ComboCtrl Events
+			m_ComboCtrl->PushEventHandler(&m_EvtHandler_ComboCtrl);
+			if (!IsOptionEnabled(KxDVCB_OPTION_ALT_POPUP_WINDOW))
+			{
+				m_EvtHandler_ComboCtrl.Bind(wxEVT_MOUSEWHEEL, &ComboBoxCtrl::OnScroll, this);
+			}
+			return true;
+		}
+		return false;
 	}
-}
 
-void KxDataViewComboBox::OnInternalIdle()
-{
-	KxDataViewCtrl::OnInternalIdle();
-}
-void KxDataViewComboBox::OnSelectItem(KxDataViewEvent& event)
-{
-	event.Skip();
-
-	KxDataViewItem item = event.GetItem();
-	if (item.IsOK())
+	bool ComboBoxCtrl::Create(wxWindow* parent,
+									wxWindowID id,
+									long style,
+									const wxValidator& validator
+	)
 	{
-		m_Selection = item;
+		m_ComboCtrl = new KxComboControl();
+		m_ComboCtrl->UseAltPopupWindow(IsOptionEnabled(KxDVCB_OPTION_ALT_POPUP_WINDOW));
+
+		if (m_ComboCtrl->Create(parent, id, wxEmptyString, style, validator))
+		{
+			m_ComboCtrl->SetFocusDrawMode(KxComboControl::DrawFocus::Never);
+			m_ComboCtrl->SetPopupControl(this);
+
+			return true;
+		}
+		return false;
 	}
-	if (IsOptionEnabled(KxDVCB_OPTION_DISMISS_ON_SELECT))
+	ComboBoxCtrl::~ComboBoxCtrl()
+	{
+		PopEventHandler();
+		m_ComboCtrl->PopEventHandler();
+	}
+
+	wxWindow* ComboBoxCtrl::GetControl()
+	{
+		return m_BackgroundWindow;
+	}
+	wxComboCtrl* ComboBoxCtrl::GetComboControl()
+	{
+		return m_ComboCtrl;
+	}
+	wxWindow* ComboBoxCtrl::ComboGetBackgroundWindow()
+	{
+		return m_BackgroundWindow;
+	}
+
+	wxString ComboBoxCtrl::GetStringValue() const
+	{
+		Event event(KxEVT_DVCB_GET_STRING_VALUE, GetId());
+		event.SetEventObject(const_cast<ComboBoxCtrl*>(this));
+		event.SetNode(m_Selection);
+
+		HandleWindowEvent(event);
+		return event.GetString();
+	}
+	void ComboBoxCtrl::SetStringValue(const wxString& value)
+	{
+		Event event(KxEVT_DVCB_SET_STRING_VALUE, GetId());
+		event.SetEventObject(const_cast<ComboBoxCtrl*>(this));
+		event.SetString(value);
+
+		HandleWindowEvent(event);
+		if (Node* node = event.GetNode())
+		{
+			Select(*node);
+		}
+	}
+
+	void ComboBoxCtrl::ComboPopup()
+	{
+		m_ComboCtrl->Popup();
+	}
+	void ComboBoxCtrl::ComboDismiss()
 	{
 		m_ComboCtrl->Dismiss();
 	}
-}
-void KxDataViewComboBox::OnScroll(wxMouseEvent& event)
-{
-	event.Skip();
-
-	int rateX = 0;
-	int rateY = 0;
-	GetScrollPixelsPerUnit(&rateX, &rateY);
-	wxPoint startPos = GetViewStart();
-
-	wxCoord value = -event.GetWheelRotation();
-	if (event.GetWheelAxis() == wxMOUSE_WHEEL_VERTICAL)
-	{
-		Scroll(wxDefaultCoord, startPos.y + (float)value / (rateY != 0 ? rateY : 1));
-	}
-	else
-	{
-		Scroll(startPos.x + (float)value / (rateX != 0 ? rateX : 1), wxDefaultCoord);
-	}
-}
-
-bool KxDataViewComboBox::FindItem(const wxString& value, wxString* pTrueItem)
-{
-	return true;
-}
-void KxDataViewComboBox::OnPopup()
-{
-	SetFocus();
-}
-void KxDataViewComboBox::OnDismiss()
-{
-	if (m_Selection.IsOK())
-	{
-		Select(m_Selection);
-	}
-
-	if (IsOptionEnabled(KxDVCB_OPTION_FORCE_GET_STRING_VALUE_ON_DISMISS))
+	void ComboBoxCtrl::ComboRefreshLabel()
 	{
 		m_ComboCtrl->SetText(GetStringValue());
 	}
-}
-void KxDataViewComboBox::OnDoShowPopup()
-{
-	UpdatePopupHeight();
-}
-bool KxDataViewComboBox::Create(wxWindow* window)
-{
-	m_Sizer = new wxBoxSizer(IsOptionEnabled(KxDVCB_OPTION_HORIZONTAL_SIZER) ? wxHORIZONTAL : wxVERTICAL);
-	m_BackgroundWindow = new KxPanel(window, wxID_NONE, KxPanel::DefaultStyle|wxBORDER_THEME);
-	m_BackgroundWindow->SetSizer(m_Sizer);
-	if (ShouldInheritColours())
+
+	int ComboBoxCtrl::ComboGetMaxVisibleItems() const
 	{
-		m_BackgroundWindow->SetBackgroundColour(m_ComboCtrl->GetBackgroundColour());
-		m_BackgroundWindow->SetForegroundColour(m_ComboCtrl->GetForegroundColour());
+		return m_MaxVisibleItems;
+	}
+	void ComboBoxCtrl::ComboSetMaxVisibleItems(int count)
+	{
+		m_MaxVisibleItems = count;
 	}
 
-	if (KxDataViewCtrl::Create(m_BackgroundWindow, 1, m_DataViewFlags))
+	void ComboBoxCtrl::ComboSetPopupExtents(int nLeft, int nRight)
 	{
-		KxDataViewCtrl::SetPosition(wxPoint(0, 0));
-		m_Sizer->Add(this, 1, wxEXPAND);
-
-		// DataView events
-		m_EvtHandler_DataView.Bind(KxEVT_DATAVIEW_ITEM_SELECTED, &KxDataViewComboBox::OnSelectItem, this);
-		PushEventHandler(&m_EvtHandler_DataView);
-
-		// ComboCtrl Events
-		m_ComboCtrl->PushEventHandler(&m_EvtHandler_ComboCtrl);
-		if (!IsOptionEnabled(KxDVCB_OPTION_ALT_POPUP_WINDOW))
-		{
-			m_EvtHandler_ComboCtrl.Bind(wxEVT_MOUSEWHEEL, &KxDataViewComboBox::OnScroll, this);
-		}
-		return true;
+		m_ComboCtrl->SetPopupExtents(nLeft, nRight);
 	}
-	return false;
-}
-
-bool KxDataViewComboBox::Create(wxWindow* parent,
-								 wxWindowID id,
-								 long style,
-								 const wxValidator& validator
-)
-{
-	m_ComboCtrl = new KxComboControl();
-	m_ComboCtrl->UseAltPopupWindow(IsOptionEnabled(KxDVCB_OPTION_ALT_POPUP_WINDOW));
-
-	if (m_ComboCtrl->Create(parent, id, wxEmptyString, style, validator))
+	void ComboBoxCtrl::ComboSetPopupMinWidth(int width)
 	{
-		m_ComboCtrl->SetFocusDrawMode(KxComboControl::DrawFocus::Never);
-		m_ComboCtrl->SetPopupControl(this);
-
-		return true;
+		m_ComboCtrl->SetPopupMinWidth(width);
 	}
-	return false;
-}
-KxDataViewComboBox::~KxDataViewComboBox()
-{
-	PopEventHandler();
-	m_ComboCtrl->PopEventHandler();
-}
-
-wxWindow* KxDataViewComboBox::GetControl()
-{
-	return m_BackgroundWindow;
-}
-wxComboCtrl* KxDataViewComboBox::GetComboControl()
-{
-	return m_ComboCtrl;
-}
-wxWindow* KxDataViewComboBox::ComboGetBackgroundWindow()
-{
-	return m_BackgroundWindow;
-}
-
-wxString KxDataViewComboBox::GetStringValue() const
-{
-	KxDataViewEvent event(KxEVT_DVCB_GET_STRING_VALUE, GetId());
-	event.SetEventObject(const_cast<KxDataViewComboBox*>(this));
-	event.SetItem(m_Selection);
-
-	HandleWindowEvent(event);
-	return event.GetString();
-}
-void KxDataViewComboBox::SetStringValue(const wxString& value)
-{
-	KxDataViewEvent event(KxEVT_DVCB_SET_STRING_VALUE, GetId());
-	event.SetEventObject(const_cast<KxDataViewComboBox*>(this));
-	event.SetString(value);
-
-	HandleWindowEvent(event);
-	KxDataViewItem item = event.GetItem();
-	if (item.IsOK())
+	void ComboBoxCtrl::ComboSetPopupAnchor(wxDirection nSide)
 	{
-		Select(item);
+		m_ComboCtrl->SetPopupAnchor(nSide);
 	}
-}
-
-void KxDataViewComboBox::ComboPopup()
-{
-	m_ComboCtrl->Popup();
-}
-void KxDataViewComboBox::ComboDismiss()
-{
-	m_ComboCtrl->Dismiss();
-}
-void KxDataViewComboBox::ComboRefreshLabel()
-{
-	m_ComboCtrl->SetText(GetStringValue());
-}
-
-int KxDataViewComboBox::ComboGetMaxVisibleItems() const
-{
-	return m_MaxVisibleItems;
-}
-void KxDataViewComboBox::ComboSetMaxVisibleItems(int count)
-{
-	m_MaxVisibleItems = count;
-}
-
-void KxDataViewComboBox::ComboSetPopupExtents(int nLeft, int nRight)
-{
-	m_ComboCtrl->SetPopupExtents(nLeft, nRight);
-}
-void KxDataViewComboBox::ComboSetPopupMinWidth(int width)
-{
-	m_ComboCtrl->SetPopupMinWidth(width);
-}
-void KxDataViewComboBox::ComboSetPopupAnchor(wxDirection nSide)
-{
-	m_ComboCtrl->SetPopupAnchor(nSide);
 }

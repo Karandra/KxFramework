@@ -79,12 +79,6 @@
     <Filter Include="Source Files\General">
       <UniqueIdentifier>{04351464-70db-4e69-82eb-8d33f862f80f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\GUI\DataView">
-      <UniqueIdentifier>{0fe22d6e-38bc-4d59-bc5d-4bfd844c92d3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\GUI\DataView">
-      <UniqueIdentifier>{af1dbe62-c0ef-4f3c-aa12-01e66874f910}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\GUI\Controls">
       <UniqueIdentifier>{f01e130d-7ea9-414e-b8c5-c061c1b75cf9}</UniqueIdentifier>
     </Filter>
@@ -414,9 +408,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxTaskDialog.h">
       <Filter>Header Files\GUI\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxDataViewComboBox.h">
-      <Filter>Header Files\GUI\DataView</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxAuiToolBarEvent.h">
       <Filter>Header Files\Events</Filter>
@@ -1279,6 +1270,9 @@
     <ClInclude Include="Kx\Drawing\WithImageList.h">
       <Filter>Kx\Drawing</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxDataViewComboBox.h">
+      <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1473,9 +1467,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxShellMenu.cpp">
       <Filter>Source Files\GUI\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxDataViewComboBox.cpp">
-      <Filter>Source Files\GUI\DataView</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxDataViewEvent.cpp">
       <Filter>Source Files\Events</Filter>
@@ -1932,6 +1923,9 @@
     </ClCompile>
     <ClCompile Include="Kx\Drawing\ImageSet.cpp">
       <Filter>Kx\Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="KxFramework\KxDataViewComboBox.cpp">
+      <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
