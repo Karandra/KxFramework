@@ -1,8 +1,8 @@
 #pragma once
-#include "Common.h"
-#include "WebSocketEvent.h"
-#include "WebSocketCloseCode.h"
-#include "URI.h"
+#include "../Common.h"
+#include "../URI.h"
+#include "Event.h"
+#include "CloseCode.h"
 #include "Kx/RTTI/QueryInterface.h"
 
 namespace KxFramework

@@ -1,10 +1,9 @@
 #pragma once
-#include "Common.h"
+#include "Kx/Network/Common.h"
 #include "Private/CURL.h"
-#include "CURLReply.h"
-#include "CURLEvent.h"
-#include "URI.h"
-#include "Kx/General/Version.h"
+#include "Reply.h"
+#include "Event.h"
+#include "Kx/Network/URI.h"
 
 namespace KxFramework
 {

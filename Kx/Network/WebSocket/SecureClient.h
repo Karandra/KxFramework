@@ -1,7 +1,7 @@
 #pragma once
-#include "Common.h"
-#include "IWebSocketClient.h"
+#include "../Common.h"
 #include "Kx/Threading/JoinableThread.h"
+#include "IClient.h"
 
 #include <websocketpp/config/asio_client.hpp>
 #include <websocketpp/client.hpp>

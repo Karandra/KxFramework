@@ -1,5 +1,5 @@
 #include "KxStdAfx.h"
-#include "CURLSession.h"
+#include "Session.h"
 #include "Kx/General/StringFormater.h"
 #include "Kx/Utility/CallAtScopeExit.h"
 
@@ -7,7 +7,6 @@
 #include <curl/curl.h>
 #include <curl/urlapi.h>
 #include <curl/curlver.h>
-
 
 namespace KxFramework
 {

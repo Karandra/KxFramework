@@ -1,10 +1,10 @@
 #pragma once
 #include "Common.h"
-#include "URI.h"
-#include "WebSocketEvent.h"
-#include "IWebSocketClient.h"
+#include "WebSocket/Event.h"
+#include "WebSocket/IClient.h"
 #include "Kx/General/String.h"
 #include "Kx/General/Version.h"
+#include "URI.h"
 
 namespace KxFramework::WebSocket
 {

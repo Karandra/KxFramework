@@ -1,6 +1,6 @@
 #include "KxStdAfx.h"
 #include "URL.h"
-#include "CURLSession.h"
+#include "CURL/Session.h"
 
 namespace KxFramework::Network::Private
 {

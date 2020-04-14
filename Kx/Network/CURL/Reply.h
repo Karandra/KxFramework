@@ -1,6 +1,6 @@
 #pragma once
-#include "Common.h"
-#include "HTTPStatusCode.h"
+#include "../Common.h"
+#include "../HTTPStatusCode.h"
 #include "Kx/RTTI/QueryInterface.h"
 
 namespace KxFramework

@@ -1,7 +1,7 @@
 #pragma once
-#include "Common.h"
+#include "../Common.h"
+#include "../URI.h"
 #include "Kx/EventSystem/Event.h"
-#include "URI.h"
 
 namespace KxFramework
 {

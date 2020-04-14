@@ -1,6 +1,6 @@
 #include "KxStdAfx.h"
-#include "CURLEvent.h"
-#include "CURLSession.h"
+#include "Event.h"
+#include "Session.h"
 
 namespace
 {

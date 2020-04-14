@@ -238,6 +238,15 @@
     <Filter Include="Kx\Network\Private">
       <UniqueIdentifier>{297f6ab2-a16f-4533-8457-4978880f4f39}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\Network\CURL">
+      <UniqueIdentifier>{7a962409-a4c6-438c-bc0a-e182899e59fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx\Network\WebSocket">
+      <UniqueIdentifier>{2a3b5b6b-016a-40ee-a07e-4b956e81b039}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx\Network\CURL\Private">
+      <UniqueIdentifier>{356be2a4-c6d5-4264-a9c0-cc7e9c6e4d8a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -1339,20 +1348,8 @@
     <ClInclude Include="Kx\Network\Private\URXHelper.h">
       <Filter>Kx\Network\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Network\CURLEvent.h">
-      <Filter>Kx\Network</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\Network\HTTPStatusCode.h">
       <Filter>Kx\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\Network\CURLReply.h">
-      <Filter>Kx\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\Network\CURLSession.h">
-      <Filter>Kx\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\Network\Private\CURL.h">
-      <Filter>Kx\Network\Private</Filter>
     </ClInclude>
     <ClInclude Include="Kx\FileSystem\FileOperationEvent.h">
       <Filter>Kx\FileSystem</Filter>
@@ -1366,17 +1363,29 @@
     <ClInclude Include="Kx\Network\WebSocket.h">
       <Filter>Kx\Network</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Network\WebSocketEvent.h">
-      <Filter>Kx\Network</Filter>
+    <ClInclude Include="Kx\Network\WebSocket\SecureClient.h">
+      <Filter>Kx\Network\WebSocket</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Network\IWebSocketClient.h">
-      <Filter>Kx\Network</Filter>
+    <ClInclude Include="Kx\Network\WebSocket\IClient.h">
+      <Filter>Kx\Network\WebSocket</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Network\SecureWebSocketClient.h">
-      <Filter>Kx\Network</Filter>
+    <ClInclude Include="Kx\Network\WebSocket\CloseCode.h">
+      <Filter>Kx\Network\WebSocket</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Network\WebSocketCloseCode.h">
-      <Filter>Kx\Network</Filter>
+    <ClInclude Include="Kx\Network\WebSocket\Event.h">
+      <Filter>Kx\Network\WebSocket</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Network\CURL\Private\CURL.h">
+      <Filter>Kx\Network\CURL\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Network\CURL\Event.h">
+      <Filter>Kx\Network\CURL</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Network\CURL\Session.h">
+      <Filter>Kx\Network\CURL</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Network\CURL\Reply.h">
+      <Filter>Kx\Network\CURL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2092,18 +2101,6 @@
     <ClCompile Include="Kx\Network\URL.cpp">
       <Filter>Kx\Network</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Network\CURLEvent.cpp">
-      <Filter>Kx\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\Network\CURLReply.cpp">
-      <Filter>Kx\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\Network\CURLSession.cpp">
-      <Filter>Kx\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\Network\Private\CURL.cpp">
-      <Filter>Kx\Network\Private</Filter>
-    </ClCompile>
     <ClCompile Include="Kx\Network\CURL.cpp">
       <Filter>Kx\Network</Filter>
     </ClCompile>
@@ -2116,11 +2113,23 @@
     <ClCompile Include="Kx\Network\WebSocket.cpp">
       <Filter>Kx\Network</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Network\WebSocketEvent.cpp">
-      <Filter>Kx\Network</Filter>
+    <ClCompile Include="Kx\Network\WebSocket\SecureClient.cpp">
+      <Filter>Kx\Network\WebSocket</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Network\SecureWebSocketClient.cpp">
-      <Filter>Kx\Network</Filter>
+    <ClCompile Include="Kx\Network\WebSocket\Event.cpp">
+      <Filter>Kx\Network\WebSocket</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Network\CURL\Private\CURL.cpp">
+      <Filter>Kx\Network\CURL\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Network\CURL\Event.cpp">
+      <Filter>Kx\Network\CURL</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Network\CURL\Session.cpp">
+      <Filter>Kx\Network\CURL</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Network\CURL\Reply.cpp">
+      <Filter>Kx\Network\CURL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,6 @@
 #include "KxStdAfx.h"
-#include "CURLReply.h"
-#include "CURL.h"
+#include "Reply.h"
+#include "../CURL.h"
 
 namespace KxFramework
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include "../Common.h"
+#include "Kx/Network/Common.h"
 #include "Kx/General/String.h"
 
 namespace KxFramework

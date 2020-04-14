@@ -1,6 +1,6 @@
 #include "KxStdAfx.h"
 #include "WebSocket.h"
-#include "SecureWebSocketClient.h"
+#include "WebSocket/SecureClient.h"
 #include <websocketpp/version.hpp>
 
 namespace KxFramework::WebSocket

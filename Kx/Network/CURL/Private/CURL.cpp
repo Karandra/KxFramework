@@ -1,6 +1,6 @@
 #include "KxStdAfx.h"
 #include "CURL.h"
-#include "Kx/Network/CURLSession.h"
+#include "Kx/Network/CURL/Session.h"
 
 #define CURL_STATICLIB 1
 #include <curl/curl.h>
