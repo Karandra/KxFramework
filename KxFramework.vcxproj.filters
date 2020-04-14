@@ -406,9 +406,6 @@
     <ClInclude Include="KxFramework\KxShellMenu.h">
       <Filter>Header Files\GUI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxGraphicsContext.h">
-      <Filter>Header Files\Drawing</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxSplashWindow.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
@@ -1407,9 +1404,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxShellMenu.cpp">
       <Filter>Source Files\GUI\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxGraphicsContext.cpp">
-      <Filter>Source Files\Drawing</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxSplashWindow.cpp">
       <Filter>Source Files\GUI\Windows</Filter>

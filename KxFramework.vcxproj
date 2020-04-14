@@ -285,7 +285,6 @@
     <ClInclude Include="KxFramework\KxGraphicsCanvas.h" />
     <ClInclude Include="KxFramework\KxImageGraphicsCanvas.h" />
     <ClInclude Include="KxFramework\KxIncludes.h" />
-    <ClInclude Include="KxFramework\KxGraphicsContext.h" />
     <ClInclude Include="KxFramework\KxHTMLWindow.h" />
     <ClInclude Include="KxFramework\KxIconType.h" />
     <ClInclude Include="KxFramework\KxImageView.h" />
@@ -607,7 +606,6 @@
     <ClCompile Include="KxFramework\KxFileBrowseDialog.cpp" />
     <ClCompile Include="KxFramework\KxFileStream.cpp" />
     <ClCompile Include="KxFramework\KxFrame.cpp" />
-    <ClCompile Include="KxFramework\KxGraphicsContext.cpp" />
     <ClCompile Include="KxFramework\KxHTMLWindow.cpp" />
     <ClCompile Include="KxFramework\KxImageView.cpp" />
     <ClCompile Include="KxFramework\KxIOwned.cpp" />
