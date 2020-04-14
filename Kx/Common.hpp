@@ -13,6 +13,7 @@
 #include <utility>
 #include <memory>
 #include <optional>
+#include <functional>
 #include <type_traits>
 
 // Essential headers
