@@ -1,6 +1,5 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxTimer.h"
 #include "KxFramework/KxToolTipEx.h"
 #include "Common.h"
 #include "View.h"
@@ -91,7 +90,7 @@ namespace KxDataView2
 
 			// Tooltip
 			KxToolTipEx m_ToolTip;
-			KxTimerMethod<MainWindow> m_ToolTipTimer;
+			wxTimer m_ToolTipTimer;
 
 			// Drag and Drop
 			DnDInfo m_DragDropInfo;

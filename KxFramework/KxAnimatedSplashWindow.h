@@ -1,14 +1,13 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxSplashWindow.h"
-#include "KxFramework/KxTimer.h"
 #include <wx/animate.h>
 
 class KX_API KxAnimatedSplashWindow: public KxSplashWindow
 {
 	private:
 		std::unique_ptr<wxAnimation> m_Animation;
-		KxTimerMethod<KxAnimatedSplashWindow> m_Timer;
+		wxTimer m_Timer;
 		size_t m_CurrentFrame = 0;
 		bool m_ShouldLoop = false;
 		bool m_ShouldStop = false;

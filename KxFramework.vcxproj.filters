@@ -433,9 +433,6 @@
     <ClInclude Include="KxFramework\KxAnimatedSplashWindow.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxTimer.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxButtonType.h">
       <Filter>Header Files\General</Filter>
     </ClInclude>

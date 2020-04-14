@@ -1958,7 +1958,8 @@ namespace KxDataView2
 
 		// Tooltip
 		m_ToolTip.Create(this);
-		m_ToolTipTimer.BindFunction(&MainWindow::OnTooltipEvent, this);
+		m_ToolTipTimer.SetOwner(this, wxID_ANY);
+		Bind(wxEVT_TIMER, &MainWindow::OnTooltipEvent, this);
 
 		// Bind events
 		Bind(wxEVT_PAINT, &MainWindow::OnPaint, this);

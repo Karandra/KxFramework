@@ -327,7 +327,6 @@
     <ClInclude Include="KxFramework\KxTextBox.h" />
     <ClInclude Include="KxFramework\KxTextBoxDialog.h" />
     <ClInclude Include="KxFramework\KxThumbView.h" />
-    <ClInclude Include="KxFramework\KxTimer.h" />
     <ClInclude Include="KxFramework\KxTopLevelWindow.h" />
     <ClInclude Include="KxFramework\KxTranslation.h" />
     <ClInclude Include="KxFramework\KxTypedefs.h" />

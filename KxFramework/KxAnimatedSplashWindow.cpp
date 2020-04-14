@@ -53,7 +53,7 @@ bool KxAnimatedSplashWindow::Create(wxWindow* parent,
 
 	if (KxSplashWindow::Create(parent, m_Animation->GetFrame(0), size, timeout, style))
 	{
-		m_Timer.BindFunction(&KxAnimatedSplashWindow::OnTimer, this);
+		m_Timer.Bind(wxEVT_TIMER, &KxAnimatedSplashWindow::OnTimer, this);
 		return true;
 	}
 	return false;
