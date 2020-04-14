@@ -15,7 +15,14 @@ namespace KxFramework::Private::ExtraData
 	{
 		AssertUntypedStorageType<T>();
 
-		return reinterpret_cast<T>(data);
+		union
+		{
+			std::remove_reference_t<T> m_Typed;
+			void* m_Untyped = nullptr;
+		} value;
+		value.m_Untyped = data;
+
+		return value.m_Typed;
 	}
 
 	template<class T>
@@ -23,6 +30,13 @@ namespace KxFramework::Private::ExtraData
 	{
 		AssertUntypedStorageType<T>();
 
-		return reinterpret_cast<void*>(data);
+		union
+		{
+			std::remove_reference_t<T> m_Typed;
+			void* m_Untyped = nullptr;
+		} value;
+		value.m_Typed = std::forward<T>(data);
+
+		return value.m_Untyped;
 	}
 }
