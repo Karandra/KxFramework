@@ -434,6 +434,8 @@
     <ClInclude Include="Kx\Crypto\HashValue.h" />
     <ClInclude Include="Kx\Crypto\ISecretStore.h" />
     <ClInclude Include="Kx\Crypto\SecretValue.h" />
+    <ClInclude Include="Kx\Drawing.hpp" />
+    <ClInclude Include="Kx\Drawing\Common.h" />
     <ClInclude Include="Kx\EventSystem.hpp" />
     <ClInclude Include="Kx\EventSystem\BasicEvtHandler.h" />
     <ClInclude Include="Kx\EventSystem\BroadcastProcessor.h" />
@@ -781,6 +783,7 @@
     <ClCompile Include="Kx\Crypto\Common.cpp" />
     <ClCompile Include="Kx\Crypto\Crypto.cpp" />
     <ClCompile Include="Kx\Crypto\SecretValue.cpp" />
+    <ClCompile Include="Kx\Drawing\Common.cpp" />
     <ClCompile Include="Kx\FileSystem\FileOperationEvent.cpp" />
     <ClCompile Include="Kx\General\Any.cpp" />
     <ClCompile Include="Kx\General\Color.cpp" />

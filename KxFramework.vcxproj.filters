@@ -247,6 +247,9 @@
     <Filter Include="Kx\Network\CURL\Private">
       <UniqueIdentifier>{356be2a4-c6d5-4264-a9c0-cc7e9c6e4d8a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\Drawing">
+      <UniqueIdentifier>{fbcc6e41-fe9c-453d-967a-8c07c5a548f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -1384,6 +1387,12 @@
     <ClInclude Include="Kx\Network\CURL\Reply.h">
       <Filter>Kx\Network\CURL</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Drawing.hpp">
+      <Filter>Kx</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Drawing\Common.h">
+      <Filter>Kx\Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -2124,6 +2133,9 @@
     </ClCompile>
     <ClCompile Include="Kx\Network\CURL\Reply.cpp">
       <Filter>Kx\Network\CURL</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Drawing\Common.cpp">
+      <Filter>Kx\Drawing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
