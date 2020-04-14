@@ -240,34 +240,6 @@
     <ClInclude Include="KxFramework\DataView2\MainWindow.h" />
     <ClInclude Include="KxFramework\DataView2\Node.h" />
     <ClInclude Include="KxFramework\DataView2\Renderer.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewBitmapRenderer.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewBitmapTextRenderer.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewBitmapTextToggleRenderer.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewColorEditor.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewColumn.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewComboBoxEditor.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewConstants.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewCtrl.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewDateEditor.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewDVComboBoxEditor.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewEditor.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewImageListRenderer.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewNullRenderer.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewProgressRenderer.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewSortOrder.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewSpinEditor.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewTextEditor.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewHeaderCtrl.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewHTMLRenderer.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewItem.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewItemAttributes.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewMainWindow.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewModel.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewRenderer.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewTextRenderer.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewTimeEditor.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewToggleRenderer.h" />
-    <ClInclude Include="KxFramework\DataView\KxDataViewTreeNode.h" />
     <ClInclude Include="KxFramework\KxAnimatedSplashWindow.h" />
     <ClInclude Include="KxFramework\KxApp.h" />
     <ClInclude Include="KxFramework\KxAuiNotebook.h" />
@@ -298,28 +270,12 @@
     <ClInclude Include="KxFramework\KxComparator.h" />
     <ClInclude Include="KxFramework\KxComponentSystem.h" />
     <ClInclude Include="KxFramework\KxCredentialsDialog.h" />
-    <ClInclude Include="KxFramework\KxDataView.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxDataView2Event.h" />
     <ClInclude Include="KxFramework\KxDataViewComboBox.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="KxFramework\KxDataViewEvent.h" />
-    <ClInclude Include="KxFramework\KxDataViewListModelEx.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxDataViewModelExBase.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxDataViewTreeModelEx.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxDCClipper.h" />
     <ClInclude Include="KxFramework\KxDialog.h" />
     <ClInclude Include="KxFramework\KxDualInputDialog.h" />
@@ -338,8 +294,6 @@
     <ClInclude Include="KxFramework\KxGraphicsContext.h" />
     <ClInclude Include="KxFramework\KxHTMLWindow.h" />
     <ClInclude Include="KxFramework\KxIconType.h" />
-    <ClInclude Include="KxFramework\KxImageList.h" />
-    <ClInclude Include="KxFramework\KxImageSet.h" />
     <ClInclude Include="KxFramework\KxImageView.h" />
     <ClInclude Include="KxFramework\KxIncludeWindows.h" />
     <ClInclude Include="KxFramework\KxUxThemePartsAndStates.h" />
@@ -410,7 +364,6 @@
     <ClInclude Include="KxFramework\KxWindowUpdateLocker.h" />
     <ClInclude Include="KxFramework\KxWinUndef.h" />
     <ClInclude Include="KxFramework\KxWithDropdownMenu.h" />
-    <ClInclude Include="KxFramework\KxWithImageList.h" />
     <ClInclude Include="KxFramework\KxWithOptions.h" />
     <ClInclude Include="KxFramework\KxWxRTTI.h" />
     <ClInclude Include="KxStdAfx.h" />
@@ -436,6 +389,9 @@
     <ClInclude Include="Kx\Crypto\SecretValue.h" />
     <ClInclude Include="Kx\Drawing.hpp" />
     <ClInclude Include="Kx\Drawing\Common.h" />
+    <ClInclude Include="Kx\Drawing\ImageList.h" />
+    <ClInclude Include="Kx\Drawing\ImageSet.h" />
+    <ClInclude Include="Kx\Drawing\WithImageList.h" />
     <ClInclude Include="Kx\EventSystem.hpp" />
     <ClInclude Include="Kx\EventSystem\BasicEvtHandler.h" />
     <ClInclude Include="Kx\EventSystem\BroadcastProcessor.h" />
@@ -629,31 +585,6 @@
     <ClCompile Include="KxFramework\DataView2\MainWindow.cpp" />
     <ClCompile Include="KxFramework\DataView2\Node.cpp" />
     <ClCompile Include="KxFramework\DataView2\Renderer.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewBitmapRenderer.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewBitmapTextRenderer.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewBitmapTextToggleRenderer.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewColorEditor.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewColumn.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewComboBoxEditor.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewCtrl.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewDateEditor.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewDVComboBoxEditor.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewEditor.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewImageListRenderer.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewProgressRenderer.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewSpinEditor.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewTextEditor.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewHeaderCtrl.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewHTMLRenderer.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewItem.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewItemAttributes.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewMainWindow.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewModel.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewRenderer.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewTextRenderer.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewTimeEditor.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewToggleRenderer.cpp" />
-    <ClCompile Include="KxFramework\DataView\KxDataViewTreeNode.cpp" />
     <ClCompile Include="KxFramework\KxAnimatedSplashWindow.cpp" />
     <ClCompile Include="KxFramework\KxApp.cpp" />
     <ClCompile Include="KxFramework\KxAuiNotebook.cpp" />
@@ -676,28 +607,12 @@
     <ClCompile Include="KxFramework\KxComboControl.cpp" />
     <ClCompile Include="KxFramework\KxComboPopup.cpp" />
     <ClCompile Include="KxFramework\KxCredentialsDialog.cpp" />
-    <ClCompile Include="KxFramework\KxDataView.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxDataView2Event.cpp" />
     <ClCompile Include="KxFramework\KxDataViewComboBox.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="KxFramework\KxDataViewEvent.cpp" />
-    <ClCompile Include="KxFramework\KxDataViewListModelEx.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxDataViewModelExBase.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxDataViewTreeModelEx.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxDCClipper.cpp" />
     <ClCompile Include="KxFramework\KxDialog.cpp" />
     <ClCompile Include="KxFramework\KxDualInputDialog.cpp" />
@@ -708,8 +623,6 @@
     <ClCompile Include="KxFramework\KxFrame.cpp" />
     <ClCompile Include="KxFramework\KxGraphicsContext.cpp" />
     <ClCompile Include="KxFramework\KxHTMLWindow.cpp" />
-    <ClCompile Include="KxFramework\KxImageList.cpp" />
-    <ClCompile Include="KxFramework\KxImageSet.cpp" />
     <ClCompile Include="KxFramework\KxImageView.cpp" />
     <ClCompile Include="KxFramework\KxIOwned.cpp" />
     <ClCompile Include="KxFramework\KxIProgressBar.cpp" />
@@ -768,7 +681,6 @@
     <ClCompile Include="KxFramework\KxValidator.cpp" />
     <ClCompile Include="KxFramework\KxWebView.cpp" />
     <ClCompile Include="KxFramework\KxWithDropdownMenu.cpp" />
-    <ClCompile Include="KxFramework\KxWithImageList.cpp" />
     <ClCompile Include="KxStdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -784,6 +696,8 @@
     <ClCompile Include="Kx\Crypto\Crypto.cpp" />
     <ClCompile Include="Kx\Crypto\SecretValue.cpp" />
     <ClCompile Include="Kx\Drawing\Common.cpp" />
+    <ClCompile Include="Kx\Drawing\ImageList.cpp" />
+    <ClCompile Include="Kx\Drawing\ImageSet.cpp" />
     <ClCompile Include="Kx\FileSystem\FileOperationEvent.cpp" />
     <ClCompile Include="Kx\General\Any.cpp" />
     <ClCompile Include="Kx\General\Color.cpp" />

@@ -88,29 +88,11 @@
     <Filter Include="Source Files\GUI\Controls">
       <UniqueIdentifier>{f01e130d-7ea9-414e-b8c5-c061c1b75cf9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\GUI\DataView\Renderers">
-      <UniqueIdentifier>{a260eaae-04af-4750-a90b-e6e2a37b9d61}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\GUI\DataView\Control">
-      <UniqueIdentifier>{81dcaf89-0671-4a8c-a3aa-526023d151fd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\GUI\DataView\Control">
-      <UniqueIdentifier>{4f89bf7e-0439-4a4d-8286-4434d40ba063}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\GUI\DataView\Editors">
-      <UniqueIdentifier>{84e4b97e-893e-4ac1-a2a9-6b669b925eab}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\GUI\DataView\Editors">
-      <UniqueIdentifier>{4b2caae1-b072-4848-87bb-7b0daa696d8f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Drawing">
       <UniqueIdentifier>{4a01e57e-89c2-4ec8-89f5-a9a005121141}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Drawing">
       <UniqueIdentifier>{73e89795-488c-4434-8a05-9cc9d88ce2a0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\GUI\DataView\Renderers">
-      <UniqueIdentifier>{3fd7a1f7-8b73-4520-b739-dcc014c8e2c8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Misc">
       <UniqueIdentifier>{9369ebc3-44af-42ee-9987-724cc1b026c9}</UniqueIdentifier>
@@ -254,12 +236,6 @@
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
     <ClInclude Include="KxFramework\KxString.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxImageList.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxImageSet.h">
       <Filter>Header Files\DataStructures</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxSystemAPI.h">
@@ -439,16 +415,7 @@
     <ClInclude Include="KxFramework\KxTaskDialog.h">
       <Filter>Header Files\GUI\Dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxDataView.h">
-      <Filter>Header Files\GUI\DataView</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxDataViewComboBox.h">
-      <Filter>Header Files\GUI\DataView</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxDataViewModelExBase.h">
-      <Filter>Header Files\GUI\DataView</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxDataViewListModelEx.h">
       <Filter>Header Files\GUI\DataView</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxAuiToolBarEvent.h">
@@ -472,89 +439,8 @@
     <ClInclude Include="KxFramework\KxShellMenu.h">
       <Filter>Header Files\GUI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewColumn.h">
-      <Filter>Header Files\GUI\DataView\Control</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewCtrl.h">
-      <Filter>Header Files\GUI\DataView\Control</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewHeaderCtrl.h">
-      <Filter>Header Files\GUI\DataView\Control</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewItem.h">
-      <Filter>Header Files\GUI\DataView\Control</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewModel.h">
-      <Filter>Header Files\GUI\DataView\Control</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewRenderer.h">
-      <Filter>Header Files\GUI\DataView\Control</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewMainWindow.h">
-      <Filter>Header Files\GUI\DataView\Control</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewTreeNode.h">
-      <Filter>Header Files\GUI\DataView\Control</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxDataViewEvent.h">
       <Filter>Header Files\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewEditor.h">
-      <Filter>Header Files\GUI\DataView\Control</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewItemAttributes.h">
-      <Filter>Header Files\GUI\DataView\Control</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewTextEditor.h">
-      <Filter>Header Files\GUI\DataView\Editors</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewSpinEditor.h">
-      <Filter>Header Files\GUI\DataView\Editors</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewComboBoxEditor.h">
-      <Filter>Header Files\GUI\DataView\Editors</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewTimeEditor.h">
-      <Filter>Header Files\GUI\DataView\Editors</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewDateEditor.h">
-      <Filter>Header Files\GUI\DataView\Editors</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewColorEditor.h">
-      <Filter>Header Files\GUI\DataView\Editors</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewConstants.h">
-      <Filter>Header Files\GUI\DataView</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxDataViewTreeModelEx.h">
-      <Filter>Header Files\GUI\DataView</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewToggleRenderer.h">
-      <Filter>Header Files\GUI\DataView\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewTextRenderer.h">
-      <Filter>Header Files\GUI\DataView\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewProgressRenderer.h">
-      <Filter>Header Files\GUI\DataView\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewImageListRenderer.h">
-      <Filter>Header Files\GUI\DataView\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewHTMLRenderer.h">
-      <Filter>Header Files\GUI\DataView\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewBitmapTextToggleRenderer.h">
-      <Filter>Header Files\GUI\DataView\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewBitmapTextRenderer.h">
-      <Filter>Header Files\GUI\DataView\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewBitmapRenderer.h">
-      <Filter>Header Files\GUI\DataView\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewDVComboBoxEditor.h">
-      <Filter>Header Files\GUI\DataView\Editors</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxGraphicsContext.h">
       <Filter>Header Files\Drawing</Filter>
@@ -589,14 +475,8 @@
     <ClInclude Include="KxFramework\KxWithDropdownMenu.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxWithImageList.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxWithOptions.h">
       <Filter>Header Files\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewNullRenderer.h">
-      <Filter>Header Files\GUI\DataView\Renderers</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxFormat.h">
       <Filter>Header Files\Misc</Filter>
@@ -648,9 +528,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxTypedefs.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView\KxDataViewSortOrder.h">
-      <Filter>Header Files\GUI\DataView\Control</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\DataView2\DataView2.h">
       <Filter>Header Files\GUI\DataView2</Filter>
@@ -1393,16 +1270,19 @@
     <ClInclude Include="Kx\Drawing\Common.h">
       <Filter>Kx\Drawing</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Drawing\ImageList.h">
+      <Filter>Kx\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Drawing\ImageSet.h">
+      <Filter>Kx\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Drawing\WithImageList.h">
+      <Filter>Kx\Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
     <ClCompile Include="KxFramework\KxString.cpp">
-      <Filter>Source Files\DataStructures</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxImageList.cpp">
-      <Filter>Source Files\DataStructures</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxImageSet.cpp">
       <Filter>Source Files\DataStructures</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxSystemAPI.cpp">
@@ -1573,18 +1453,6 @@
     <ClCompile Include="KxFramework\KxTaskDialog.cpp">
       <Filter>Source Files\GUI\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxDataView.cpp">
-      <Filter>Source Files\GUI\DataView</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxDataViewModelExBase.cpp">
-      <Filter>Source Files\GUI\DataView</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxDataViewListModelEx.cpp">
-      <Filter>Source Files\GUI\DataView</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxDataViewTreeModelEx.cpp">
-      <Filter>Source Files\GUI\DataView</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxAuiToolBarEvent.cpp">
       <Filter>Source Files\Events</Filter>
     </ClCompile>
@@ -1609,83 +1477,8 @@
     <ClCompile Include="KxFramework\KxDataViewComboBox.cpp">
       <Filter>Source Files\GUI\DataView</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewColumn.cpp">
-      <Filter>Source Files\GUI\DataView\Control</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewCtrl.cpp">
-      <Filter>Source Files\GUI\DataView\Control</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewHeaderCtrl.cpp">
-      <Filter>Source Files\GUI\DataView\Control</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewItem.cpp">
-      <Filter>Source Files\GUI\DataView\Control</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewModel.cpp">
-      <Filter>Source Files\GUI\DataView\Control</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewRenderer.cpp">
-      <Filter>Source Files\GUI\DataView\Control</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewMainWindow.cpp">
-      <Filter>Source Files\GUI\DataView\Control</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewTreeNode.cpp">
-      <Filter>Source Files\GUI\DataView\Control</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxDataViewEvent.cpp">
       <Filter>Source Files\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewEditor.cpp">
-      <Filter>Source Files\GUI\DataView\Control</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewItemAttributes.cpp">
-      <Filter>Source Files\GUI\DataView\Control</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewTextEditor.cpp">
-      <Filter>Source Files\GUI\DataView\Editors</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewSpinEditor.cpp">
-      <Filter>Source Files\GUI\DataView\Editors</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewComboBoxEditor.cpp">
-      <Filter>Source Files\GUI\DataView\Editors</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewTimeEditor.cpp">
-      <Filter>Source Files\GUI\DataView\Editors</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewDateEditor.cpp">
-      <Filter>Source Files\GUI\DataView\Editors</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewColorEditor.cpp">
-      <Filter>Source Files\GUI\DataView\Editors</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewBitmapRenderer.cpp">
-      <Filter>Source Files\GUI\DataView\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewBitmapTextRenderer.cpp">
-      <Filter>Source Files\GUI\DataView\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewBitmapTextToggleRenderer.cpp">
-      <Filter>Source Files\GUI\DataView\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewHTMLRenderer.cpp">
-      <Filter>Source Files\GUI\DataView\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewImageListRenderer.cpp">
-      <Filter>Source Files\GUI\DataView\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewProgressRenderer.cpp">
-      <Filter>Source Files\GUI\DataView\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewTextRenderer.cpp">
-      <Filter>Source Files\GUI\DataView\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewToggleRenderer.cpp">
-      <Filter>Source Files\GUI\DataView\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView\KxDataViewDVComboBoxEditor.cpp">
-      <Filter>Source Files\GUI\DataView\Editors</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxGraphicsContext.cpp">
       <Filter>Source Files\Drawing</Filter>
@@ -1712,9 +1505,6 @@
       <Filter>Source Files\Misc</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxSingleton.cpp">
-      <Filter>Source Files\Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxWithImageList.cpp">
       <Filter>Source Files\Misc</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxWithDropdownMenu.cpp">
@@ -2135,6 +1925,12 @@
       <Filter>Kx\Network\CURL</Filter>
     </ClCompile>
     <ClCompile Include="Kx\Drawing\Common.cpp">
+      <Filter>Kx\Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Drawing\ImageList.cpp">
+      <Filter>Kx\Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Drawing\ImageSet.cpp">
       <Filter>Kx\Drawing</Filter>
     </ClCompile>
   </ItemGroup>
