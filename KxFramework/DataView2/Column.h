@@ -3,7 +3,7 @@
 #include "Editor.h"
 #include "Renderer.h"
 #include "ColumnID.h"
-#include "KxFramework/KxOptionSet.h"
+#include "Kx/General/OptionSet.h"
 #include <Kx/RTTI.hpp>
 
 namespace KxDataView2
@@ -100,7 +100,7 @@ namespace KxDataView2
 			wxAlignment m_TitleAlignment = wxALIGN_INVALID;
 			bool m_IsChecked = false;
 
-			KxOptionSet<ColumnStyle, ColumnStyle::Default> m_Style;
+			KxFramework::OptionSet<ColumnStyle, ColumnStyle::Default> m_Style;
 			ColumnWidth m_Width;
 			int m_MinWidth = 0;
 			int m_BestWidth = 0;
@@ -147,11 +147,11 @@ namespace KxDataView2
 
 			ColumnStyle GetStyleFlags() const
 			{
-				return m_Style.GetValue();
+				return m_Style.RawGetValue();
 			}
 			void SetStyleFlags(ColumnStyle style)
 			{
-				m_Style.SetValue(style);
+				m_Style.RawSetValue(style);
 			}
 
 			const NativeColumn& GetNativeColumn() const

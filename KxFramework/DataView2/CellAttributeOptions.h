@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include <KxFramework/KxOptionSet.h>
+#include "Kx/General/OptionSet.h"
 
 namespace KxDataView2
 {
@@ -43,7 +43,7 @@ namespace KxDataView2::CellAttributeOptions::Enums
 
 namespace KxDataView2::CellAttributeOptions
 {
-	class Options final: public KxOptionSet<Enums::Option, Enums::Option::Default>
+	class Options final: public KxFramework::OptionSet<Enums::Option, Enums::Option::Default>
 	{
 		friend class Renderer;
 		friend class RenderEngine;
@@ -66,7 +66,7 @@ namespace KxDataView2::CellAttributeOptions
 		public:
 			bool IsDefault() const
 			{
-				return !HasColors() && !HasAlignment() && GetValue() == Enums::Option::Default;
+				return !HasColors() && !HasAlignment() && RawGetValue() == Enums::Option::Default;
 			}
 
 			// Colors
@@ -133,7 +133,7 @@ namespace KxDataView2::CellAttributeOptions
 
 namespace KxDataView2::CellAttributeOptions
 {
-	class FontOptions final: public KxOptionSet<Enums::FontOption, Enums::FontOption::Default>
+	class FontOptions final: public KxFramework::OptionSet<Enums::FontOption, Enums::FontOption::Default>
 	{
 		friend class Renderer;
 		friend class RenderEngine;
@@ -145,7 +145,7 @@ namespace KxDataView2::CellAttributeOptions
 		private:
 			bool NeedDCAlteration() const
 			{
-				return HasFontFace() || HasFontSize() || GetValue() != Enums::FontOption::Default;
+				return HasFontFace() || HasFontSize() || RawGetValue() != Enums::FontOption::Default;
 			}
 
 		public:
@@ -184,7 +184,7 @@ namespace KxDataView2::CellAttributeOptions
 
 namespace KxDataView2::CellAttributeOptions
 {
-	class BGOptions final: public KxOptionSet<Enums::BGOption, Enums::BGOption::Default>
+	class BGOptions final: public KxFramework::OptionSet<Enums::BGOption, Enums::BGOption::Default>
 	{
 		friend class Renderer;
 		friend class RenderEngine;
@@ -192,7 +192,7 @@ namespace KxDataView2::CellAttributeOptions
 		private:
 			bool NeedDCAlteration() const
 			{
-				return GetValue() != Enums::BGOption::Default;
+				return RawGetValue() != Enums::BGOption::Default;
 			}
 
 		public:

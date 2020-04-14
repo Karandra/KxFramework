@@ -1,6 +1,6 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxOptionSet.h"
+#include "Kx/General/OptionSet.h"
 #include "Common.h"
 #include "Row.h"
 #include "Node.h"
@@ -38,8 +38,8 @@ namespace KxDataView2
 			using ViewBase = wxSystemThemedControl<wxScrolled<wxWindow>>;
 
 		private:
-			KxOptionSet<CtrlStyle, CtrlStyle::Default> m_Styles;
-			KxOptionSet<CtrlExtraStyle, CtrlExtraStyle::None> m_ExtraStyles;
+			KxFramework::OptionSet<CtrlStyle, CtrlStyle::Default> m_Styles;
+			KxFramework::OptionSet<CtrlExtraStyle, CtrlExtraStyle::None> m_ExtraStyles;
 
 			HeaderCtrl* m_HeaderArea = nullptr;
 			MainWindow* m_ClientArea = nullptr;

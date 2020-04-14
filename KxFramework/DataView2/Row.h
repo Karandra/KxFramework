@@ -1,6 +1,5 @@
 #pragma once
 #include "Common.h"
-#include <KxFramework/KxWithOptions.h>
 
 namespace KxDataView2
 {

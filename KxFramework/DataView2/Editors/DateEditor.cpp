@@ -1,18 +1,20 @@
 #include "KxStdAfx.h"
 #include "DateEditor.h"
+#include "Kx/Utility/Common.h"
 #include <wx/datectrl.h>
 
 namespace
 {
 	int ConvertControlStyle(const KxDataView2::DateTimeValue& value)
 	{
+		using namespace KxFramework;
 		using Option = KxDataView2::DateEditorOptions;
 
 		int style = 0;
-		KxUtility::ModFlagRef(style, wxDP_SPIN, value.IsOptionEnabled(Option::Spin));
-		KxUtility::ModFlagRef(style, wxDP_DROPDOWN, value.IsOptionEnabled(Option::Dropdown));
-		KxUtility::ModFlagRef(style, wxDP_ALLOWNONE, value.IsOptionEnabled(Option::AllowNone));
-		KxUtility::ModFlagRef(style, wxDP_SHOWCENTURY, value.IsOptionEnabled(Option::ShowCentury));
+		Utility::ModFlagRef(style, wxDP_SPIN, value.IsOptionEnabled(Option::Spin));
+		Utility::ModFlagRef(style, wxDP_DROPDOWN, value.IsOptionEnabled(Option::Dropdown));
+		Utility::ModFlagRef(style, wxDP_ALLOWNONE, value.IsOptionEnabled(Option::AllowNone));
+		Utility::ModFlagRef(style, wxDP_SHOWCENTURY, value.IsOptionEnabled(Option::ShowCentury));
 
 		return style;
 	}

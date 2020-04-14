@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView2/Editor.h"
-#include "KxFramework/KxWithOptions.h"
+#include "Kx/General/WithOptions.h"
 class wxGenericColourDialog;
 
 namespace KxDataView2
@@ -18,7 +18,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API ColorValue: public KxWithOptions<ColorEditorOptions, ColorEditorOptions::None>
+	class KX_API ColorValue: public KxFramework::WithOptions<ColorEditorOptions, ColorEditorOptions::None>
 	{
 		public:
 			using Options = ColorEditorOptions;

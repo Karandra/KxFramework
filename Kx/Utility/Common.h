@@ -127,7 +127,7 @@ namespace KxFramework::Utility
 		using T2 = Private::FlagIntType<TFlagRight>;
 		using Tx = std::conditional_t<sizeof(T1) >= sizeof(T2), T1, T2>;
 
-		return static_cast<Tx>(left) & static_cast<Tx>(right) != static_cast<Tx>(0);
+		return static_cast<Tx>(left) & static_cast<Tx>(right);
 	}
 
 	// Add

@@ -1,6 +1,5 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxWithOptions.h"
 #include "Common.h"
 #include "CellState.h"
 #include "CellAttributes.h"

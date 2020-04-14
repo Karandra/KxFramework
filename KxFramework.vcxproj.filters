@@ -427,9 +427,6 @@
     <ClInclude Include="KxFramework\KxWithDropdownMenu.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxWithOptions.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxTaskScheduler.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
@@ -603,9 +600,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\DataView2\CellAttributeOptions.h">
       <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxOptionSet.h">
-      <Filter>Header Files\Misc</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\DataView2\Renderers\ImageListRenderer.h">
       <Filter>Header Files\GUI\DataView2\Renderers</Filter>
@@ -1220,6 +1214,12 @@
       <Filter>Kx\General</Filter>
     </ClInclude>
     <ClInclude Include="Kx\General\Math.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\WithOptions.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\OptionSet.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
   </ItemGroup>

@@ -2,6 +2,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView2/Editor.h"
+#include "Kx/General/WithOptions.h"
 
 namespace KxDataView2
 {
@@ -18,7 +19,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API DateTimeValue: public KxWithOptions<DateEditorOptions, DateEditorOptions::None>
+	class KX_API DateTimeValue: public KxFramework::WithOptions<DateEditorOptions, DateEditorOptions::None>
 	{
 		public:
 			using Options = DateEditorOptions;

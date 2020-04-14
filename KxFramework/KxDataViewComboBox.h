@@ -1,8 +1,8 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxWithOptions.h"
 #include "KxFramework/KxComboPopup.h"
 #include "KxFramework/DataView2/DataView2.h"
+#include "Kx/General/WithOptions.h"
 class KX_API KxComboControl;
 class KX_API KxPanel;
 
@@ -27,7 +27,7 @@ namespace KxDataView2
 	class KX_API ComboBoxCtrl:
 		public View,
 		public KxComboPopup,
-		public KxWithOptions<CBOptions, KxDVCB_OPTION_DEFAULT>
+		public KxFramework::WithOptions<CBOptions, KxDVCB_OPTION_DEFAULT>
 	{
 		protected:
 			CtrlStyle m_DataViewFlags = DefaultDataViewStyle;

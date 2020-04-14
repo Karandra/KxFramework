@@ -1,6 +1,6 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxWithOptions.h"
+#include "Kx/General/WithOptions.h"
 #include <wx/nativewin.h>
 
 enum class KxToolTipExOption
@@ -12,7 +12,7 @@ enum class KxToolTipExOption
 	AutoHide = 1 << 3,
 };
 
-class KX_API KxToolTipEx: public wxNativeWindow, public KxWithOptions<KxToolTipExOption, KxToolTipExOption::None>
+class KX_API KxToolTipEx: public wxNativeWindow, public KxFramework::WithOptions<KxToolTipExOption, KxToolTipExOption::None>
 {
 	private:
 		wxString m_Caption;

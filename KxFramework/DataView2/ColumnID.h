@@ -1,10 +1,9 @@
 #pragma once
 #include "Common.h"
-#include <KxFramework/KxWithOptions.h>
 
 namespace KxDataView2
 {
-	class ColumnID
+	class ColumnID final
 	{
 		public:
 			using TValue = int32_t;
@@ -15,11 +14,14 @@ namespace KxDataView2
 				return std::numeric_limits<TValue>::min();
 			}
 			
-			template<class T> constexpr static bool CheckType()
+			template<class T>
+			constexpr static bool CheckType()
 			{
 				return std::is_integral_v<T> || std::is_enum_v<T> || std::is_same_v<T, ColumnID>;
 			}
-			template<class T> static void AssertType()
+			
+			template<class T>
+			static void AssertType()
 			{
 				static_assert(CheckType<T>(), "only integer types or ColumnID are allowed");
 			}
@@ -48,22 +50,13 @@ namespace KxDataView2
 			}
 
 		public:
-			bool IsOK() const noexcept
+			bool IsNull() const noexcept
 			{
-				return m_Value != GetInvalidValue();
+				return m_Value == GetInvalidValue();
 			}
 			void MakeNull() noexcept
 			{
 				m_Value = GetInvalidValue();
-			}
-			
-			explicit operator bool() const noexcept
-			{
-				return IsOK();
-			}
-			bool operator!() const noexcept
-			{
-				return !IsOK();
 			}
 			
 			TValue GetValue() const noexcept
@@ -75,12 +68,25 @@ namespace KxDataView2
 				return GetValue();
 			}
 			
-			template<class T> T GetValue() const noexcept
+			explicit operator bool() const noexcept
+			{
+				return !IsNull();
+			}
+			bool operator!() const noexcept
+			{
+				return IsNull();
+			}
+			
+			template<class T>
+			T GetValue() const noexcept
 			{
 				AssertType<T>();
+
 				return static_cast<T>(m_Value);
 			}
-			template<class T> operator T() const noexcept
+			
+			template<class T>
+			operator T() const noexcept
 			{
 				return GetValue<T>();
 			}

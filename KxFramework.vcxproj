@@ -252,7 +252,6 @@
     <ClInclude Include="KxFramework\KxEvent.h" />
     <ClInclude Include="KxFramework\KxHiDPIEnabledWindow.h" />
     <ClInclude Include="KxFramework\KxNotifyEvent.h" />
-    <ClInclude Include="KxFramework\KxOptionSet.h" />
     <ClInclude Include="KxFramework\KxDPIAwareness.h" />
     <ClInclude Include="KxFramework\KxToolTipEx.h" />
     <ClInclude Include="KxFramework\KxBitmapComboBox.h" />
@@ -342,7 +341,6 @@
     <ClInclude Include="KxFramework\KxWindowUpdateLocker.h" />
     <ClInclude Include="KxFramework\KxWinUndef.h" />
     <ClInclude Include="KxFramework\KxWithDropdownMenu.h" />
-    <ClInclude Include="KxFramework\KxWithOptions.h" />
     <ClInclude Include="KxFramework\KxWxRTTI.h" />
     <ClInclude Include="KxStdAfx.h" />
     <ClInclude Include="Kx\Async.hpp" />
@@ -417,6 +415,7 @@
     <ClInclude Include="Kx\General\INIDocument.h" />
     <ClInclude Include="Kx\General\JSONDocument.h" />
     <ClInclude Include="Kx\General\Math.h" />
+    <ClInclude Include="Kx\General\OptionSet.h" />
     <ClInclude Include="Kx\General\Private\HTML\error.h" />
     <ClInclude Include="Kx\General\Private\HTML\insertion_mode.h" />
     <ClInclude Include="Kx\General\Private\HTML\string_buffer.h" />
@@ -440,6 +439,7 @@
     <ClInclude Include="Kx\General\TextDocument.h" />
     <ClInclude Include="Kx\General\UniversallyUniqueID.h" />
     <ClInclude Include="Kx\General\Version.h" />
+    <ClInclude Include="Kx\General\WithOptions.h" />
     <ClInclude Include="Kx\General\XDocument.h" />
     <ClInclude Include="Kx\General\XMLDocument.h" />
     <ClInclude Include="Kx\Network.hpp" />

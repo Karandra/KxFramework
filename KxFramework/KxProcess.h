@@ -6,8 +6,8 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 */
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxWithOptions.h"
-#include "KxFramework/KxWinUndef.h"
+#include "Kx/General/WithOptions.h"
+#include "Kx/System/UndefWindows.h"
 #include "KxEvent.h"
 #include <wx/process.h>
 #include <wx/stream.h>
@@ -36,7 +36,7 @@ enum KxProcessWaitMode
 };
 
 using KxProcessEnvMap = std::unordered_map<wxString, wxString>;
-class KX_API KxProcess: public wxEvtHandler, public KxWithOptions<KxProcessOptions, KxPROCESS_DEFAULT_OPTIONS>
+class KX_API KxProcess: public wxEvtHandler, public KxFramework::WithOptions<KxProcessOptions, KxPROCESS_DEFAULT_OPTIONS>
 {
 	friend class KxProcessThread;
 

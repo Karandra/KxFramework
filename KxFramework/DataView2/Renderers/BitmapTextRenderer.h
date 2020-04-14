@@ -1,6 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView2/Renderer.h"
+#include "Kx/General/WithOptions.h"
 #include "TextRenderer.h"
 #include "BitmapRenderer.h"
 
@@ -15,7 +16,7 @@ namespace KxDataView2
 	class KX_API BitmapTextValue:
 		public TextValue,
 		public BitmapValue,
-		public KxWithOptions<BitmapTextValueOptions, BitmapTextValueOptions::None>
+		public KxFramework::WithOptions<BitmapTextValueOptions, BitmapTextValueOptions::None>
 	{
 		public:
 			using Options = BitmapTextValueOptions;
@@ -41,7 +42,7 @@ namespace KxDataView2
 			{
 				TextValue::Clear();
 				BitmapValue::Clear();
-				KxWithOptions::SetOptionsValue(BitmapTextValueOptions::None);
+				WithOptions::RawSetOptions(BitmapTextValueOptions::None);
 			}
 	};
 }

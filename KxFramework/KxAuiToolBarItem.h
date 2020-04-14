@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxWithDropdownMenu.h"
-#include "KxFramework/KxWithOptions.h"
+#include "Kx/General/WithOptions.h"
 #include <wx/aui/auibar.h>
 class KxAuiToolBar;
 
@@ -16,7 +16,7 @@ enum KxAuiToolBarItem_Options
 class KX_API KxAuiToolBarItem:
 	public wxEvtHandler,
 	public KxWithDropdownMenu,
-	public KxWithOptions<KxAuiToolBarItem_Options, KxAUI_TBITEM_OPTION_NONE>
+	public KxFramework::WithOptions<KxAuiToolBarItem_Options, KxAUI_TBITEM_OPTION_NONE>
 {
 	friend class KxAuiToolBar;
 
