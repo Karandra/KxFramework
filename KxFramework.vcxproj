@@ -269,7 +269,6 @@
     <ClInclude Include="KxFramework\DataView\KxDataViewToggleRenderer.h" />
     <ClInclude Include="KxFramework\DataView\KxDataViewTreeNode.h" />
     <ClInclude Include="KxFramework\KxAnimatedSplashWindow.h" />
-    <ClInclude Include="KxFramework\KxAnimation.h" />
     <ClInclude Include="KxFramework\KxApp.h" />
     <ClInclude Include="KxFramework\KxAuiNotebook.h" />
     <ClInclude Include="KxFramework\KxAuiToolBar.h" />
@@ -654,7 +653,6 @@
     <ClCompile Include="KxFramework\DataView\KxDataViewToggleRenderer.cpp" />
     <ClCompile Include="KxFramework\DataView\KxDataViewTreeNode.cpp" />
     <ClCompile Include="KxFramework\KxAnimatedSplashWindow.cpp" />
-    <ClCompile Include="KxFramework\KxAnimation.cpp" />
     <ClCompile Include="KxFramework\KxApp.cpp" />
     <ClCompile Include="KxFramework\KxAuiNotebook.cpp" />
     <ClCompile Include="KxFramework\KxAuiToolBar.cpp" />
