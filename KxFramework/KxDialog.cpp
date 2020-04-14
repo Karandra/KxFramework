@@ -94,8 +94,7 @@ void KxDialog::SetStdLabels(wxSizer* sizer)
 	{
 		if (wxWindow* window = sizerItem->GetWindow())
 		{
-			wxString label = Localization::GetStandardLocalizedString(window->GetId());
-			window->SetLabel(label);
+			window->SetLabel(Localization::GetStandardLocalizedString(window->GetId()));
 
 			wxSize size = window->GetSize();
 			size.Scale(0.85f, 1.0f);

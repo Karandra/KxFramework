@@ -185,7 +185,7 @@ const wxString& KxTranslation::GetString(const wxString& id, bool* isSuccessOut)
 }
 wxString KxTranslation::GetString(wxStandardID id, bool* isSuccessOut) const
 {
-	String result = Localization::GetStandardLocalizedString(id);
+	String result = Localization::GetStandardLocalizedString(static_cast<StandardID>(id));
 	Utility::SetIfNotNull(isSuccessOut, !result.IsEmpty());
 
 	return result;

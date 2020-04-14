@@ -214,6 +214,9 @@
     <Filter Include="Kx\Localization">
       <UniqueIdentifier>{78fcd35b-5cf3-4408-b0d1-c3feaddb2f37}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\Localization\Private">
+      <UniqueIdentifier>{11dc96d7-85e1-4fc8-bdc8-d72ddfd34013}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -1207,6 +1210,9 @@
     <ClInclude Include="Kx\Localization\Common.h">
       <Filter>Kx\Localization</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Localization\Private\StandardLocalization.h">
+      <Filter>Kx\Localization\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1821,6 +1827,9 @@
     </ClCompile>
     <ClCompile Include="Kx\Localization\Common.cpp">
       <Filter>Kx\Localization</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Localization\Private\StandardLocalization.cpp">
+      <Filter>Kx\Localization\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

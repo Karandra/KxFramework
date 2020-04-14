@@ -431,6 +431,7 @@
     <ClInclude Include="Kx\General\XMLDocument.h" />
     <ClInclude Include="Kx\Localization.hpp" />
     <ClInclude Include="Kx\Localization\Common.h" />
+    <ClInclude Include="Kx\Localization\Private\StandardLocalization.h" />
     <ClInclude Include="Kx\Network.hpp" />
     <ClInclude Include="Kx\Network\Common.h" />
     <ClInclude Include="Kx\Network\CURL\Event.h" />
@@ -683,6 +684,7 @@
     <ClCompile Include="Kx\General\XMLDocument.cpp" />
     <ClCompile Include="Kx\General\XMLNode.cpp" />
     <ClCompile Include="Kx\Localization\Common.cpp" />
+    <ClCompile Include="Kx\Localization\Private\StandardLocalization.cpp" />
     <ClCompile Include="Kx\Network\Common.cpp" />
     <ClCompile Include="Kx\Network\CURL.cpp" />
     <ClCompile Include="Kx\Network\CURL\Event.cpp" />

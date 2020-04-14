@@ -123,7 +123,7 @@ namespace KxFramework
 		Indent = wxID_INDENT,
 		Unindent = wxID_UNINDENT,
 		Zoom100 = wxID_ZOOM_100,
-		ZoomFir = wxID_ZOOM_FIT,
+		ZoomFit = wxID_ZOOM_FIT,
 		ZoomIn = wxID_ZOOM_IN,
 		ZoomOut = wxID_ZOOM_OUT,
 		Undelete = wxID_UNDELETE,

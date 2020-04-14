@@ -1,15 +1,15 @@
 #include "KxStdAfx.h"
 #include "Common.h"
-#include "Kx/General/StringFormater.h"
+#include "Private/StandardLocalization.h"
 
 namespace KxFramework::Localization
 {
 	String GetStandardLocalizedString(int id)
 	{
-		return {};
+		return Private::LocalizeLabelString(FromInt<StandardID>(id));
 	}
 	String GetStandardLocalizedString(StandardID id)
 	{
-		return GetStandardLocalizedString(ToInt(id));
+		return Private::LocalizeLabelString(id);
 	}
 }
