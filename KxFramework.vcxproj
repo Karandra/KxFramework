@@ -510,6 +510,9 @@
     <ClInclude Include="Kx\General\XMLDocument.h" />
     <ClInclude Include="Kx\Network.hpp" />
     <ClInclude Include="Kx\Network\Common.h" />
+    <ClInclude Include="Kx\Network\Private\URXHelper.h" />
+    <ClInclude Include="Kx\Network\URI.h" />
+    <ClInclude Include="Kx\Network\URL.h" />
     <ClInclude Include="Kx\RTTI.hpp" />
     <ClInclude Include="Kx\RTTI\Common.h" />
     <ClInclude Include="Kx\RTTI\QueryInterface.h" />
@@ -813,6 +816,8 @@
     <ClCompile Include="Kx\General\XMLDocument.cpp" />
     <ClCompile Include="Kx\General\XMLNode.cpp" />
     <ClCompile Include="Kx\Network\Common.cpp" />
+    <ClCompile Include="Kx\Network\URI.cpp" />
+    <ClCompile Include="Kx\Network\URL.cpp" />
     <ClCompile Include="Kx\System\CFunctionCompiler.cpp" />
     <ClCompile Include="Kx\System\NativeAPI.cpp" />
     <ClCompile Include="Kx\System\CredentialStore.cpp" />

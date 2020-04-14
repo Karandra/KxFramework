@@ -7,7 +7,7 @@
 #include "EventDispatcher.h"
 #include "IWindowRenderer.h"
 #include "Renderers/FPSCounter.h"
-#include <KxFramework/KxURI.h>
+#include "Kx/Network/URI.h"
 #include <wx/window.h>
 
 namespace KxFramework::Sciter
@@ -108,11 +108,11 @@ namespace KxFramework::Sciter
 
 		public:
 			bool LoadHTML(const String& html, const String& basePath = {});
-			bool LoadHTML(const String& html, const KxURI& baseURI);
+			bool LoadHTML(const String& html, const URI& baseURI);
 			bool SetCSS(const String& css);
 
 			bool LoadDocument(const String& localPath);
-			bool LoadDocument(const KxURI& uri);
+			bool LoadDocument(const URI& uri);
 			void ClearDocument();
 
 			Element GetRootElement() const;

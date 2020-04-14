@@ -250,6 +250,9 @@
     <Filter Include="Kx\General\Private\HTML">
       <UniqueIdentifier>{aff7ee86-f7ed-4189-957b-55c4c7417581}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\Network\Private">
+      <UniqueIdentifier>{297f6ab2-a16f-4533-8457-4978880f4f39}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -1381,6 +1384,15 @@
     <ClInclude Include="Kx\Utility\Memory.h">
       <Filter>Kx\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Network\URI.h">
+      <Filter>Kx\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Network\URL.h">
+      <Filter>Kx\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Network\Private\URXHelper.h">
+      <Filter>Kx\Network\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -2124,6 +2136,12 @@
     </ClCompile>
     <ClCompile Include="Kx\General\TextDocument.cpp">
       <Filter>Kx\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Network\URI.cpp">
+      <Filter>Kx\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Network\URL.cpp">
+      <Filter>Kx\Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

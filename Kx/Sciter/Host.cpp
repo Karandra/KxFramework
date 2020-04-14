@@ -512,7 +512,7 @@ namespace KxFramework::Sciter
 		auto utf8 = ToSciterUTF8(html);
 		return GetSciterAPI()->SciterLoadHtml(m_SciterWindow.GetHandle(), utf8.data(), utf8.size(), m_DocumentBasePath.wc_str());
 	}
-	bool Host::LoadHTML(const String& html, const KxURI& baseURI)
+	bool Host::LoadHTML(const String& html, const URI& baseURI)
 	{
 		m_DocumentPath.clear();
 		m_DocumentBasePath = baseURI.BuildURI();
@@ -532,7 +532,7 @@ namespace KxFramework::Sciter
 		m_DocumentBasePath = localPath.BeforeLast(wxS('\\'));
 		return GetSciterAPI()->SciterLoadFile(m_SciterWindow.GetHandle(), m_DocumentPath.wc_str());
 	}
-	bool Host::LoadDocument(const KxURI& uri)
+	bool Host::LoadDocument(const URI& uri)
 	{
 		m_DocumentPath = uri.BuildURI();
 		m_DocumentBasePath = m_DocumentPath;

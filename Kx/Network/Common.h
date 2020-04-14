@@ -1,19 +1,46 @@
 #pragma once
 #include "Kx/Common.hpp"
 #include "Kx/General/String.h"
-class KxURI;
 
-namespace KxFramework::Network
+namespace KxFramework
 {
-	enum class IP
+	class URI;
+	class URL;
+
+	enum class NetworkHostType
 	{
-		v4,
-		v6
+		None = -1,
+
+		RegName,
+		IPvUnknown,
+		IPv4,
+		IPv6,
 	};
+	enum class URIFlag
+	{
+		None = 0,
+		Strict = 1 << 0
+	};
+	enum class URLStatus
+	{
+		Success = 0,
+		Unknown,
+		Syntax,
+		NoProtocol,
+		NoHost,
+		NoPath,
+		ConnectionError,
+		ProtocolError
+	};
+
+	namespace EnumClass
+	{
+		Kx_EnumClass_AllowEverything(URIFlag);
+	}
 }
 
 namespace KxFramework::Network
 {
 	bool IsInternetAvailable() noexcept;
-	String LookupIP(const KxURI& uri, IP ip = IP::v4);
+	String LookupIP(const URI& uri, NetworkHostType ip);
 }
