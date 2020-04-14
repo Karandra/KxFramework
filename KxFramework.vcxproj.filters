@@ -412,9 +412,6 @@
     <ClInclude Include="KxFramework\KxSplashWindow.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxDCClipper.h">
-      <Filter>Header Files\Drawing</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxSearchBox.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
@@ -589,9 +586,6 @@
     <ClInclude Include="KxFramework\DataView2\DragAndDrop.h">
       <Filter>Header Files\GUI\DataView2</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxGCUtility.h">
-      <Filter>Header Files\Drawing</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxComponentSystem.h">
       <Filter>Header Files\General</Filter>
     </ClInclude>
@@ -743,9 +737,6 @@
       <Filter>Header Files\Drawing</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxUxThemePartsAndStates.h">
-      <Filter>Header Files\Drawing</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxDCUtility.h">
       <Filter>Header Files\Drawing</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\DataView2\HeaderCtrl2.h">
@@ -1228,6 +1219,12 @@
     <ClInclude Include="Kx\Drawing\ImageGraphicsCanvas.h">
       <Filter>Kx\Drawing</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Drawing\DCOperations.h">
+      <Filter>Kx\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Drawing\GCOperations.h">
+      <Filter>Kx\Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1414,9 +1411,6 @@
     <ClCompile Include="KxFramework\KxSplashWindow.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxDCClipper.cpp">
-      <Filter>Source Files\Drawing</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxSearchBox.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
@@ -1586,9 +1580,6 @@
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxUxTheme.cpp">
-      <Filter>Source Files\Drawing</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxDCUtility.cpp">
       <Filter>Source Files\Drawing</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\HeaderCtrl2.cpp">
@@ -1857,6 +1848,9 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxDataViewComboBox.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Drawing\DCOperations.cpp">
+      <Filter>Kx\Drawing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -5,7 +5,7 @@
 #include "View.h"
 #include "MainWindow.h"
 #include "KxFramework/KxUxTheme.h"
-#include "KxFramework/KxGCUtility.h"
+#include "Kx/Drawing/GCOperations.h"
 #include "wx/generic/private/markuptext.h"
 
 #include "KxFramework/KxUxThemePartsAndStates.h"
@@ -358,7 +358,7 @@ namespace KxDataView2
 
 			if (bitmap.GetSize() > cellRect.GetSize())
 			{
-				KxGCClipper clip(context, cellRect);
+				KxFramework::GCClip clip(context, cellRect);
 				DrawBitmap();
 			}
 			else

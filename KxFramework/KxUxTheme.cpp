@@ -1,7 +1,7 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxUxTheme.h"
 #include "KxFramework/KxUtility.h"
-#include "KxFramework/KxDCUtility.h"
+#include "Kx/Drawing/DCOperations.h"
 #include "Kx/Utility/Common.h"
 #include <wx/fontutil.h>
 
@@ -410,7 +410,7 @@ bool KxUxTheme::DrawProgressBar(wxDC& dc, int iBarPartId, int iFillPartId, int i
 
 		if (averageBackgroundColor)
 		{
-			*averageBackgroundColor = KxDCUtility::GetAverageColor(dc, fillRect);
+			*averageBackgroundColor = KxFramework::Drawing::GetAreaAverageColor(dc, fillRect);
 		}
 	}
 	return result;
