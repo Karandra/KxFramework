@@ -9,7 +9,6 @@
 #include "View.h"
 #include "KxFramework/KxDataView2Event.h"
 #include "KxFramework/KxSplashWindow.h"
-#include "KxFramework/KxCallAtScopeExit.h"
 #include "KxFramework/KxUtility.h"
 #include "KxFramework/KxFrame.h"
 #include "KxFramework/KxUxTheme.h"

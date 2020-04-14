@@ -7,7 +7,6 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxStdAfx.h"
 #include "KxFramework/KxProcess.h"
 #include "KxFramework/KxProcessThread.h"
-#include "KxFramework/KxComparator.h"
 #include "KxFramework/KxSystemAPI.h"
 #include "KxFramework/KxIncludeWindows.h"
 #include <PsAPI.h>
@@ -439,7 +438,7 @@ wxString KxProcess::GetCommandLine() const
 {
 	// http://stackoverflow.com/questions/18358150/ntqueryinformationprocess-keep-to-fail
 	
-	wxString out;
+	wxString result;
 	if (KxSystemAPI::NtQueryInformationProcess)
 	{
 		HANDLE processHandle = ::OpenProcess(PROCESS_QUERY_INFORMATION|PROCESS_VM_READ, false, GetPID());
@@ -461,10 +460,15 @@ wxString KxProcess::GetCommandLine() const
 						if (processParameters.CommandLine.Length != 0)
 						{
 							DWORD needLength = (processParameters.CommandLine.Length + 1) / sizeof(WCHAR);
-							::ReadProcessMemory(processHandle, processParameters.CommandLine.Buffer, wxStringBuffer(out, needLength), processParameters.CommandLine.Length, &read);
+							::ReadProcessMemory(processHandle, processParameters.CommandLine.Buffer, wxStringBuffer(result, needLength), processParameters.CommandLine.Length, &read);
+							result.StartsWith(m_ExecutablePath, &result);
+							
+							using namespace KxFramework;
 
-							out.StartsWith(m_ExecutablePath, &out);
-							KxString::Trim(out, true, true);
+							String temp = std::move(result);
+							temp.Trim();
+							temp.Trim(StringOpFlag::FromEnd);
+							result = std::move(temp);
 						}
 					}
 				}
@@ -472,7 +476,7 @@ wxString KxProcess::GetCommandLine() const
 			::CloseHandle(processHandle);
 		}
 	}
-	return out;
+	return result;
 }
 const KxProcessEnvMap& KxProcess::GetEnvironment() const
 {
@@ -483,15 +487,17 @@ const KxProcessEnvMap& KxProcess::GetEnvironment() const
 
 bool KxProcess::Attach(KxProcessWaitMode waitMode)
 {
+	using namespace KxFramework;
+
 	if (m_PID == DefaultPID)
 	{
-		const wxString thisName = GetImageName().AfterLast(wxS('\\'));
+		const String thisName = GetImageName().AfterLast(wxS('\\'));
 		if (!thisName.IsEmpty())
 		{
 			for (DWORD pid: EnumProcesses())
 			{
-				const wxString otherName = KxProcess(pid).GetImageName().AfterLast(wxS('\\'));
-				if (KxComparator::IsEqual(thisName, otherName, true))
+				const String otherName = KxProcess(pid).GetImageName().AfterLast(wxS('\\'));
+				if (thisName.IsSameAs(otherName, StringOpFlag::IgnoreCase))
 				{
 					m_PID = pid;
 					break;

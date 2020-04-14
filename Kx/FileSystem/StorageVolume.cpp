@@ -2,6 +2,7 @@
 #include "StorageVolume.h"
 #include "LegacyVolume.h"
 #include "FSPath.h"
+#include "Kx/General/StringFormater.h"
 #include "Kx/Utility/CallAtScopeExit.h"
 #include <KxFramework/KxFileStream.h>
 
@@ -168,7 +169,7 @@ namespace KxFramework
 	{
 		static_assert(ARRAYSIZE(StorageVolume::m_Path) >= g_VolumePathTotalLength + 1, "insufficient buffer size");
 
-		AssignPath(KxString::Format(wxS("(\\\\?\\Volume{%1}\\"), id.ToString()));
+		AssignPath(String::Format(wxS(R"(\\?\Volume{%1}\)"), id.ToString()));
 	}
 	StorageVolume::StorageVolume(const LegacyVolume& legacyVolume)
 	{

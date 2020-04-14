@@ -4,6 +4,7 @@
 #include "Utility/HandleWrapper.h"
 #include "Kx/General/Color.h"
 #include "Kx/General/String.h"
+#include "Kx/General/StringFormater.h"
 
 namespace KxFramework::Sciter
 {
@@ -210,15 +211,15 @@ namespace KxFramework::Sciter
 
 			Element GetElementByAttribute(const String& name, const String& value) const
 			{
-				return SelectAny(KxString::Format(wxS("[%1=%2]"), name, value));
+				return SelectAny(String::Format(wxS("[%1=%2]"), name, value));
 			}
 			Element GetElementByID(const String& id) const
 			{
-				return SelectAny(KxString::Format(wxS("#%1"), id));
+				return SelectAny(String::Format(wxS("#%1"), id));
 			}
 			Element GetElementByClass(const String& name) const
 			{
-				return SelectAny(KxString::Format(wxS(".%1"), name));
+				return SelectAny(String::Format(wxS(".%1"), name));
 			}
 
 			// Scripts

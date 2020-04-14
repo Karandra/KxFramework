@@ -25,9 +25,6 @@
     <Filter Include="Header Files\Events">
       <UniqueIdentifier>{bf54f086-d884-45dc-8670-5c65e6f09e19}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\DataStructures">
-      <UniqueIdentifier>{312cd0fc-b7a6-4e7c-a90b-eae4862d5112}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\GUI">
       <UniqueIdentifier>{6c310c16-9644-4de9-afd3-8862008629ff}</UniqueIdentifier>
     </Filter>
@@ -45,9 +42,6 @@
     </Filter>
     <Filter Include="Source Files\Events">
       <UniqueIdentifier>{e19724b4-11bc-44f5-a040-78994c9ee6ab}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\DataStructures">
-      <UniqueIdentifier>{5500debe-4bea-4b8a-8086-b9379f060578}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Streams">
       <UniqueIdentifier>{721309c3-9280-403a-863b-7f43020c5be9}</UniqueIdentifier>
@@ -111,12 +105,6 @@
     </Filter>
     <Filter Include="Source Files\GUI\DataView2\Editors">
       <UniqueIdentifier>{321f7c2c-c979-46bd-b38d-fc6ed07d9e83}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Validators">
-      <UniqueIdentifier>{bbc0997b-3c55-47c5-b40b-57d95eb7aae2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Validators">
-      <UniqueIdentifier>{a2b339a6-8565-4769-8878-831496b2828e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\General\ComponentSystem">
       <UniqueIdentifier>{b296e85e-06b9-48e1-820c-8ee15beb6b5d}</UniqueIdentifier>
@@ -229,9 +217,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
-    <ClInclude Include="KxFramework\KxString.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxSystemAPI.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
@@ -457,17 +442,11 @@
     <ClInclude Include="KxFramework\KxWithOptions.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxFormat.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxTaskScheduler.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxIProgressBar.h">
       <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxCallAtScopeExit.h">
-      <Filter>Header Files\Misc</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxSharedMemory.h">
       <Filter>Header Files\System</Filter>
@@ -478,16 +457,10 @@
     <ClInclude Include="KxFramework\KxIncludeWindows.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxComparator.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxAnimatedSplashWindow.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxTimer.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxFunctional.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxButtonType.h">
@@ -601,12 +574,6 @@
     <ClInclude Include="KxFramework\DataView2\Editors\SpinEditor.h">
       <Filter>Header Files\GUI\DataView2\Editors</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxStringUtility.h">
-      <Filter>Header Files\DataStructures</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxFormatTraits.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxWxRTTI.h">
       <Filter>Header Files\General</Filter>
     </ClInclude>
@@ -633,9 +600,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxImageGraphicsCanvas.h">
       <Filter>Header Files\Drawing</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxValidator.h">
-      <Filter>Header Files\Validators</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxComponentSystem.h">
       <Filter>Header Files\General</Filter>
@@ -1264,9 +1228,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
-    <ClCompile Include="KxFramework\KxString.cpp">
-      <Filter>Source Files\DataStructures</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxSystemAPI.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
@@ -1477,9 +1438,6 @@
     <ClCompile Include="KxFramework\KxWithDropdownMenu.cpp">
       <Filter>Source Files\Misc</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxFormat.cpp">
-      <Filter>Source Files\Misc</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxTaskScheduler.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
@@ -1575,9 +1533,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\Common.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxValidator.cpp">
-      <Filter>Source Files\Validators</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\ComponentSystem\ComponentItem.cpp">
       <Filter>Source Files\General\ComponentSystem</Filter>

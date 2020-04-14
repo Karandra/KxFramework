@@ -1,7 +1,7 @@
 #include "KxStdAfx.h"
 #include "SpinEditor.h"
 #include "KxFramework/DataView2/Node.h"
-#include "KxFramework/KxValidator.h"
+#include "Kx/UI/Validator.h"
 #include <wx/spinctrl.h>
 
 namespace
@@ -80,14 +80,14 @@ namespace KxDataView2
 		// See 'KxValidator.cpp' file for details.
 		if (m_Type == Type::Integer)
 		{
-			KxIntegerValidator<int> validator(nullptr, wxNUM_VAL_NO_TRAILING_ZEROES);
+			KxFramework::IntegerValidator<int> validator(nullptr, wxNUM_VAL_NO_TRAILING_ZEROES);
 			validator.SetMin(m_IntMin);
 			validator.SetMax(m_IntMax);
 			editor->SetValidator(validator);
 		}
 		else
 		{
-			KxFloatingPointValidator<double> validator(nullptr, wxNUM_VAL_NO_TRAILING_ZEROES);
+			KxFramework::FloatingPointValidator<double> validator(nullptr, wxNUM_VAL_NO_TRAILING_ZEROES);
 			validator.SetMin(m_FloatMin);
 			validator.SetMax(m_FloatMax);
 			editor->SetValidator(validator);

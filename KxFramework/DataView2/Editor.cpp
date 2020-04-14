@@ -4,7 +4,7 @@
 #include "Column.h"
 #include "View.h"
 #include "MainWindow.h"
-#include <KxFramework/KxCallAtScopeExit.h>
+#include "Kx/Utility/CallAtScopeExit.h"
 
 namespace KxDataView2
 {
@@ -74,10 +74,10 @@ namespace KxDataView2
 		if (m_Node && m_Column)
 		{
 			m_IsEditFinished = true;
-			KxCallAtScopeExit atExit([this]()
+			KxFramework::Utility::CallAtScopeExit atExit = [this]()
 			{
 				OnEndEdit();
-			});
+			};
 
 			if (m_Control)
 			{

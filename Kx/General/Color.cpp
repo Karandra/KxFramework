@@ -14,13 +14,13 @@ namespace
 			case C2SAlpha::Never:
 			{
 				const auto fixed = color.GetFixed8();
-				return KxString::Format(wxS("rgb(%1, %2, %3)"), fixed.Red, fixed.Green, fixed.Blue);
+				return String::Format(wxS("rgb(%1, %2, %3)"), fixed.Red, fixed.Green, fixed.Blue);
 			}
 			case C2SAlpha::Always:
 			{
 				const auto fixed = color.GetFixed8();
 				const auto normalized = color.GetNormalized();
-				return KxString::Format(wxS("rgba(%1, %2, %3, %4)"), fixed.Red, fixed.Green, fixed.Blue, normalized.Alpha);
+				return String::Format(wxS("rgba(%1, %2, %3, %4)"), fixed.Red, fixed.Green, fixed.Blue, normalized.Alpha);
 			}
 			case C2SAlpha::Auto:
 			{
@@ -38,13 +38,13 @@ namespace
 			case C2SAlpha::Never:
 			{
 				const auto hsl = color.GetHSL();
-				return KxString::Format(wxS("hsl(%1, %2, %3)"), hsl.Hue, hsl.Saturation, hsl.Lightness);
+				return String::Format(wxS("hsl(%1, %2, %3)"), hsl.Hue, hsl.Saturation, hsl.Lightness);
 			}
 			case C2SAlpha::Always:
 			{
 				const auto hsl = color.GetHSL();
 				const auto normalized = color.GetNormalized();
-				return KxString::Format(wxS("hsla(%1, %2, %3, %4)"), hsl.Hue, hsl.Saturation, hsl.Lightness, normalized.Alpha);
+				return String::Format(wxS("hsla(%1, %2, %3, %4)"), hsl.Hue, hsl.Saturation, hsl.Lightness, normalized.Alpha);
 			}
 			case C2SAlpha::Auto:
 			{
@@ -57,13 +57,13 @@ namespace
 			case C2SAlpha::Never:
 			{
 				const auto fixed = color.GetFixed8();
-				return KxString::Format(wxS("rgb(%1, %2, %3)"), fixed.Red, fixed.Green, fixed.Blue);
+				return String::Format(wxS("rgb(%1, %2, %3)"), fixed.Red, fixed.Green, fixed.Blue);
 			}
 			case C2SAlpha::Always:
 			{
 				const auto fixed = color.GetFixed8();
 				const auto normalized = color.GetNormalized();
-				return KxString::Format(wxS("rgba(%1, %2, %3, %4)"), fixed.Red, fixed.Green, fixed.Blue, normalized.Alpha);
+				return String::Format(wxS("rgba(%1, %2, %3, %4)"), fixed.Red, fixed.Green, fixed.Blue, normalized.Alpha);
 			}
 			case C2SAlpha::Auto:
 			{
@@ -116,12 +116,12 @@ namespace
 			case C2SAlpha::Never:
 			{
 				const auto hsl = color.GetHSL();
-				return KxString::Format(wxS("hsl(%1, %2%, %3%)"), static_cast<int>(hsl.Hue), static_cast<int>(hsl.Saturation * 100), static_cast<int>(hsl.Lightness * 100));
+				return String::Format(wxS("hsl(%1, %2%, %3%)"), static_cast<int>(hsl.Hue), static_cast<int>(hsl.Saturation * 100), static_cast<int>(hsl.Lightness * 100));
 			}
 			case C2SAlpha::Always:
 			{
 				const auto hsl = color.GetHSL();
-				return KxString::Format(wxS("hsl(%1, %2%, %3%, %4)"), static_cast<int>(hsl.Hue), static_cast<int>(hsl.Saturation * 100), static_cast<int>(hsl.Lightness * 100), hsl.Alpha);
+				return String::Format(wxS("hsl(%1, %2%, %3%, %4)"), static_cast<int>(hsl.Hue), static_cast<int>(hsl.Saturation * 100), static_cast<int>(hsl.Lightness * 100), hsl.Alpha);
 			}
 			case C2SAlpha::Auto:
 			{

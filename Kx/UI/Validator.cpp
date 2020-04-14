@@ -1,5 +1,6 @@
 #include "KxStdAfx.h"
 #include "Validator.h"
+#include "Kx/General/StringFormater.h"
 #include <wx/spinctrl.h>
 #include "Kx/System/UndefWindows.h"
 
@@ -99,7 +100,7 @@ namespace KxFramework::UI::Private
 		{
 			if (HWND textArea = ::GetWindow(spinInteger->GetHandle(), GW_HWNDPREV))
 			{
-				value = KxFormat(wxS("%1"))(spinInteger->GetValue(), 0, spinInteger->GetBase());
+				value = StringFormatter::Formatter(wxS("%1"))(spinInteger->GetValue(), 0, spinInteger->GetBase()).ToString();
 
 				auto [selectionStart, selectionEnd] = ProcessSelectionRange(textArea, value, position);
 				ProcessTextSelection(value, position, selectionStart, selectionEnd);

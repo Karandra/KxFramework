@@ -5,8 +5,8 @@
 #include "Column.h"
 #include "SortOrder.h"
 #include "ToolTip.h"
-#include "KxFramework/KxFunctional.h"
-#include <Kx/RTTI.hpp>
+#include "Kx/RTTI.hpp"
+#include "Kx/Utility/TypeTraits.h"
 
 namespace KxDataView2
 {
@@ -177,7 +177,7 @@ namespace KxDataView2
 				auto GetRawPointer = [](auto& node)
 				{
 					using TValue = std::decay_t<decltype(node)>;
-					if constexpr(KxFunctional::is_unique_ptr_v<TValue>)
+					if constexpr(KxFramework::Utility::is_unique_ptr_v<TValue>)
 					{
 						return node.get();
 					}

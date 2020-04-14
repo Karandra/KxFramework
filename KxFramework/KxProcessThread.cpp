@@ -7,6 +7,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxStdAfx.h"
 #include "KxFramework/KxProcessThread.h"
 #include "KxFramework/KxProcess.h"
+#include "Kx/General/StringFormater.h"
 #include "Kx/FileSystem/NativeFileSystem.h"
 #include <wx/private/pipestream.h>
 #include <wx/private/streamtempinput.h>
@@ -95,6 +96,8 @@ void KxProcessThread::SendEventSyncAsync(wxEvent* event)
 
 bool KxProcessThread::CreateProcess(PROCESS_INFORMATION& processInfo)
 {
+	using namespace KxFramework;
+
 	// Configure startup
 	m_IsProcessCreated = false;
 	STARTUPINFOW startupInfo = {0};
@@ -130,11 +133,11 @@ bool KxProcessThread::CreateProcess(PROCESS_INFORMATION& processInfo)
 		wxString commandLine = m_EventHandler->m_Arguments;
 		if (commandLine.IsEmpty())
 		{
-			commandLine = KxString::Format(wxS("\"%1\""), m_EventHandler->m_ExecutablePath);
+			commandLine = String::Format(wxS("\"%1\""), m_EventHandler->m_ExecutablePath);
 		}
 		else
 		{
-			commandLine = KxString::Format(wxS("\"%1\" %2"), m_EventHandler->m_ExecutablePath, commandLine);
+			commandLine = String::Format(wxS("\"%1\" %2"), m_EventHandler->m_ExecutablePath, commandLine);
 		}
 
 		const size_t commandLineBufferSize = commandLine.length() * sizeof(wchar_t) + sizeof(wchar_t);

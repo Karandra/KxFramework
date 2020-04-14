@@ -749,20 +749,20 @@ namespace KxFramework::Sciter
 
 	bool Element::SetStyleAttribute(const String& name, int value, SizeUnit unit)
 	{
-		return SetStyleAttribute(name, KxString::Format(wxS("%1%2"), value, SizeUnitToString(unit)));
+		return SetStyleAttribute(name, String::Format(wxS("%1%2"), value, SizeUnitToString(unit)));
 	}
 	bool Element::SetStyleAttribute(const char* name, int value, SizeUnit unit)
 	{
-		return SetStyleAttribute(name, KxString::Format(wxS("%1%2"), value, SizeUnitToString(unit)));
+		return SetStyleAttribute(name, String::Format(wxS("%1%2"), value, SizeUnitToString(unit)));
 	}
 
 	bool Element::SetStyleAttribute(const String& name, double value, SizeUnit unit)
 	{
-		return SetStyleAttribute(name, KxString::Format(wxS("%1%2"), value, SizeUnitToString(unit)));
+		return SetStyleAttribute(name, String::Format(wxS("%1%2"), value, SizeUnitToString(unit)));
 	}
 	bool Element::SetStyleAttribute(const char* name, double value, SizeUnit unit)
 	{
-		return SetStyleAttribute(name, KxString::Format(wxS("%1%2"), value, SizeUnitToString(unit)));
+		return SetStyleAttribute(name, String::Format(wxS("%1%2"), value, SizeUnitToString(unit)));
 	}
 
 	bool Element::RemoveStyleAttribute(const String& name)
@@ -833,11 +833,11 @@ namespace KxFramework::Sciter
 			// Family
 			if (String family = MapFamily(); !family.IsEmpty())
 			{
-				SetStyleAttribute("font-family", KxString::Format(wxS("\"%1\", %2"), font.GetFaceName(), family));
+				SetStyleAttribute("font-family", String::Format(wxS(R"("%1", %2)"), font.GetFaceName(), family));
 			}
 			else
 			{
-				SetStyleAttribute("font-family", KxString::Format(wxS("\"%1\""), font.GetFaceName()));
+				SetStyleAttribute("font-family", String::Format(wxS(R"("%1")"), font.GetFaceName()));
 			}
 
 			// Style

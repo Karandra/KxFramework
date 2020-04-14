@@ -363,7 +363,7 @@ namespace KxFramework
 	}
 	KxHTMLNode KxHTMLNode::GetElementByTag(const String& tagName) const
 	{
-		return KxHTMLNode(HTML::Private::GetElementByTag(ToGumboNode(GetNode()), KxString::ToLower(tagName)), m_Document);
+		return KxHTMLNode(HTML::Private::GetElementByTag(ToGumboNode(GetNode()), tagName.ToLower()), m_Document);
 	}
 
 	KxHTMLNode KxHTMLNode::GetParent() const

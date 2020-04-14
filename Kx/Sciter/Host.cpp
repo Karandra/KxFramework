@@ -2,7 +2,8 @@
 #include "Host.h"
 #include "SciterAPI.h"
 #include "Internal.h"
-#include "KxFramework/KxUtility.h"
+#include "Kx/General/StringFormater.h"
+#include "Kx/Utility/Common.h"
 #include <WindowsX.h>
 #include "Kx/System/UndefWindows.h"
 
@@ -386,7 +387,7 @@ namespace KxFramework::Sciter
 
 			if (!value.IsEmpty())
 			{
-				return !ExecuteScript(KxString::Format(wxS("view.windowBlurbehind = #%1;"), value)).IsNone();
+				return !ExecuteScript(String::Format(wxS("view.windowBlurbehind = #%1;"), value)).IsNone();
 			}
 			return !ExecuteScript(wxS("view.windowBlurbehind = undefined;")).IsNone();
 		};
@@ -435,17 +436,17 @@ namespace KxFramework::Sciter
 	{
 		if (m_SciterWindow.IsTopLevel())
 		{
-			KxUtility::SetIfNotNull(reason, wxS("Always supported for top-level windows"));
+			Utility::SetIfNotNull(reason, wxS("Always supported for top-level windows"));
 			return true;
 		}
 		else if (m_Renderer)
 		{
-			KxUtility::SetIfNotNull(reason, wxS("Graphics renderer can enable transparency even for child windows"));
+			Utility::SetIfNotNull(reason, wxS("Graphics renderer can enable transparency even for child windows"));
 			return true;
 		}
 		else
 		{
-			KxUtility::SetIfNotNull(reason, wxS("Not a top-level window and doesn't use a graphics renderer"));
+			Utility::SetIfNotNull(reason, wxS("Not a top-level window and doesn't use a graphics renderer"));
 			return false;
 		}
 	}
