@@ -6,7 +6,7 @@
 #include "ScriptValue.h"
 #include "SciterAPI.h"
 #include "Internal.h"
-#include "KxFramework/KxUtility.h"
+#include "Kx/Utility/Drawing.h"
 
 #pragma warning(disable: 4312) // 'reinterpret_cast': conversion from 'UINT' to 'void *' of greater size
 
@@ -171,7 +171,7 @@ namespace KxFramework::Sciter
 	}
 	bool Element::UpdateRect(const wxRect& rect)
 	{
-		return GetSciterAPI()->SciterRefreshElementArea(ToSciterElement(m_Handle), KxUtility::CopyRectToRECT(rect)) == SCDOM_OK;
+		return GetSciterAPI()->SciterRefreshElementArea(ToSciterElement(m_Handle), Utility::ToWindowsRect(rect)) == SCDOM_OK;
 	}
 
 	// Size and position
@@ -180,7 +180,7 @@ namespace KxFramework::Sciter
 		RECT nativeRect = {};
 		if (GetSciterAPI()->SciterGetElementLocation(ToSciterElement(m_Handle), &nativeRect, ELEMENT_AREAS::VIEW_RELATIVE) == SCDOM_OK)
 		{
-			return KxUtility::CopyRECTToRect(nativeRect);
+			return Utility::FromWindowsRect(nativeRect);
 		}
 		return {};
 	}
@@ -302,7 +302,7 @@ namespace KxFramework::Sciter
 		RECT range = {};
 		if (GetSciterAPI()->SciterGetScrollInfo(ToSciterElement(m_Handle), nullptr, &range, nullptr) == SCDOM_OK)
 		{
-			return KxUtility::CopyRECTToRect(range).GetSize();
+			return Utility::FromWindowsRect(range).GetSize();
 		}
 		return wxDefaultSize;
 	}

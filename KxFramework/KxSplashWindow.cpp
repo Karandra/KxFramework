@@ -1,7 +1,9 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxSplashWindow.h"
-#include "KxFramework/KxUtility.h"
+#include "Kx/Utility/System.h"
 #include <wx/rawbmp.h>
+
+using namespace KxFramework;
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxSplashWindow, wxFrame)
 
@@ -87,7 +89,7 @@ bool KxSplashWindow::Create(wxWindow* parent,
 
 	if (wxFrame::Create(parent, wxID_NONE, wxEmptyString, wxDefaultPosition, size, frameStyle, GetClassInfo()->GetClassName()))
 	{
-		KxUtility::ToggleWindowStyle(GetHandle(), GWL_EXSTYLE, WS_EX_LAYERED|WS_EX_TOOLWINDOW, true);
+		Utility::ModWindowStyle(GetHandle(), GWL_EXSTYLE, WS_EX_LAYERED|WS_EX_TOOLWINDOW, true);
 		m_Timer.Bind(wxEVT_TIMER, &KxSplashWindow::OnTimer, this);
 		m_Timer.Bind(wxEVT_SIZE, &KxSplashWindow::OnSize, this);
 

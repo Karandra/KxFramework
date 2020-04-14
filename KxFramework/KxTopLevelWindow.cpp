@@ -2,9 +2,11 @@
 #include "KxFramework/KxTopLevelWindow.h"
 #include "KxFramework/KxSystemAPI.h"
 #include "KxFramework/KxMenu.h"
-#include "KxFramework/KxUtility.h"
 #include "KxFramework/KxIncludeWindows.h"
+#include "Kx/Utility/System.h"
 #include <DWMAPI.h>
+
+using namespace KxFramework;
 
 KxEVENT_DEFINE_GLOBAL(wxNotifyEvent, DWM_GLASS_COLOR_CHANGED);
 KxEVENT_DEFINE_GLOBAL(wxNotifyEvent, DWM_COMPOSITION_CHANGED);
@@ -162,7 +164,7 @@ bool KxTLWInternal::DWMExtendFrame(wxWindow* window)
 	if (KxSystemAPI::DwmExtendFrameIntoClientArea)
 	{
 		HWND hWnd = window->GetHandle();
-		KxUtility::ToggleWindowStyle(hWnd, GWL_EXSTYLE, WS_EX_LAYERED, false);
+		Utility::ModWindowStyle(hWnd, GWL_EXSTYLE, WS_EX_LAYERED, false);
 
 		MARGINS margins = {0};
 		return KxSystemAPI::DwmExtendFrameIntoClientArea(hWnd, &margins) == S_OK;
@@ -174,7 +176,7 @@ bool KxTLWInternal::DWMExtendFrame(wxWindow* window, const wxRect& rect, const w
 	if (KxSystemAPI::DwmExtendFrameIntoClientArea)
 	{
 		HWND hWnd = window->GetHandle();
-		KxUtility::ToggleWindowStyle(hWnd, GWL_EXSTYLE, WS_EX_LAYERED, true);
+		Utility::ModWindowStyle(hWnd, GWL_EXSTYLE, WS_EX_LAYERED, true);
 
 		if (color.IsOk())
 		{

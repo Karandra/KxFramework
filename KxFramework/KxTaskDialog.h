@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxDialog.h"
 #include "KxFramework/KxStdDialog.h"
-#include "KxFramework/KxUtility.h"
+#include "Kx/Utility/Common.h"
 #include <CommCtrl.h>
 
 enum KxTD_Options
@@ -74,11 +74,11 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 		}
 		void SetFlagTDI(TASKDIALOG_FLAGS flag, bool set = true)
 		{
-			KxUtility::ModFlagRef(m_DialogConfig.dwFlags, flag, set);
+			KxFramework::Utility::ModFlagRef(m_DialogConfig.dwFlags, flag, set);
 		}
 		bool IsFlagSetTDI(TASKDIALOG_FLAGS flag) const
 		{
-			return KxUtility::HasFlag(m_DialogConfig.dwFlags, flag);
+			return KxFramework::Utility::HasFlag(m_DialogConfig.dwFlags, flag);
 		}
 
 		void UpdateButtonArrays(const KxStringVector& labels, ButtonSpecArray& array);
@@ -140,7 +140,7 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 		}
 		void SetOptionEnabled(KxTD_Options flag, bool isEnabled = true)
 		{
-			SetOptions(KxUtility::ModFlag(m_Options, flag, isEnabled));
+			SetOptions(KxFramework::Utility::ModFlag(m_Options, flag, isEnabled));
 		}
 		KxTD_Options GetOptions() const
 		{

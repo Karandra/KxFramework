@@ -327,10 +327,8 @@
     <ClInclude Include="KxFramework\KxTopLevelWindow.h" />
     <ClInclude Include="KxFramework\KxTranslation.h" />
     <ClInclude Include="KxFramework\KxTypedefs.h" />
-    <ClInclude Include="KxFramework\KxUtility.h" />
     <ClInclude Include="KxFramework\KxWebView.h" />
     <ClInclude Include="KxFramework\KxWithDropdownMenu.h" />
-    <ClInclude Include="KxFramework\KxWxRTTI.h" />
     <ClInclude Include="KxStdAfx.h" />
     <ClInclude Include="Kx\Async.hpp" />
     <ClInclude Include="Kx\Async\Common.h" />
@@ -431,6 +429,8 @@
     <ClInclude Include="Kx\General\WithOptions.h" />
     <ClInclude Include="Kx\General\XDocument.h" />
     <ClInclude Include="Kx\General\XMLDocument.h" />
+    <ClInclude Include="Kx\Localization.hpp" />
+    <ClInclude Include="Kx\Localization\Common.h" />
     <ClInclude Include="Kx\Network.hpp" />
     <ClInclude Include="Kx\Network\Common.h" />
     <ClInclude Include="Kx\Network\CURL\Event.h" />
@@ -641,7 +641,6 @@
     <ClCompile Include="KxFramework\KxThumbView.cpp" />
     <ClCompile Include="KxFramework\KxTopLevelWindow.cpp" />
     <ClCompile Include="KxFramework\KxTranslation.cpp" />
-    <ClCompile Include="KxFramework\KxUtility.cpp" />
     <ClCompile Include="KxFramework\KxWebView.cpp" />
     <ClCompile Include="KxFramework\KxWithDropdownMenu.cpp" />
     <ClCompile Include="KxStdAfx.cpp">
@@ -683,6 +682,7 @@
     <ClCompile Include="Kx\General\XMLAttribute.cpp" />
     <ClCompile Include="Kx\General\XMLDocument.cpp" />
     <ClCompile Include="Kx\General\XMLNode.cpp" />
+    <ClCompile Include="Kx\Localization\Common.cpp" />
     <ClCompile Include="Kx\Network\Common.cpp" />
     <ClCompile Include="Kx\Network\CURL.cpp" />
     <ClCompile Include="Kx\Network\CURL\Event.cpp" />

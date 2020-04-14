@@ -14,7 +14,7 @@ class KX_API KxListBoxDialog: public KxStdDialog
 	public:
 		static const int DefaultStyle = KxStdDialog::DefaultStyle;
 
-		KxListBoxDialog() {}
+		KxListBoxDialog() = default;
 		KxListBoxDialog(wxWindow* parent,
 						wxWindowID id,
 						const wxString& caption,
@@ -34,7 +34,6 @@ class KX_API KxListBoxDialog: public KxStdDialog
 					int buttons = DefaultButtons,
 					long style = DefaultStyle
 		);
-		virtual ~KxListBoxDialog();
 
 	public:
 		KxListBox* GetListBox() const

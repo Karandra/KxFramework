@@ -1,6 +1,8 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxFileBrowseDialog.h"
-#include "KxFramework/KxUtility.h"
+#include "Kx/Utility/Common.h"
+
+using namespace KxFramework;
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxFileBrowseDialog, KxStdDialog);
 
@@ -200,7 +202,7 @@ void KxFileBrowseDialog::SetOptionEnabled(KxFBD_Options flag, bool isEnabled)
 	if (m_Instance && SUCCEEDED(m_Instance->GetOptions(&options)))
 	{
 		AdjustModeFromOptions(flag, isEnabled);
-		options = KxUtility::ModFlag(options, flag, isEnabled);
+		Utility::ModFlagRef(options, flag, isEnabled);
 		m_Instance->SetOptions(options);
 	}
 }

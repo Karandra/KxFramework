@@ -1,6 +1,8 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxTaskDialog.h"
-#include "KxFramework/KxUtility.h"
+#include "Kx/Localization/Common.h"
+
+using namespace KxFramework;
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxTaskDialog, KxStdDialog);
 
@@ -451,7 +453,7 @@ KxStdDialogControl KxTaskDialog::AddButton(wxWindowID id, const wxString& label,
 {
 	if (label.IsEmpty())
 	{
-		m_ButtonLabels.push_back(KxUtility::GetStandardLocalizedString(id));
+		m_ButtonLabels.push_back(Localization::GetStandardLocalizedString(id));
 	}
 	else
 	{
@@ -467,7 +469,7 @@ KxStdDialogControl KxTaskDialog::AddRadioButton(wxWindowID id, const wxString& l
 {
 	if (label.IsEmpty())
 	{
-		m_RadioButtonLabels.push_back(KxUtility::GetStandardLocalizedString(id));
+		m_RadioButtonLabels.push_back(Localization::GetStandardLocalizedString(id));
 	}
 	else
 	{

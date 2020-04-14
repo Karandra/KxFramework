@@ -3,7 +3,7 @@
 #include "KxFramework/KxMenuItem.h"
 #include "KxFramework/KxMenuEvent.h"
 #include "KxFramework/KxSystemAPI.h"
-#include "KxFramework/KxWxRTTI.h"
+#include "Kx/RTTI/WxRTTI.h"
 
 KxWxRTTI_ImplementClassDynamic2(KxMenuItem, KxMenuItem, wxEvtHandler, wxMenuItem); // wxIMPLEMENT_DYNAMIC_CLASS2(KxMenuItem, wxEvtHandler, wxMenuItem);
 wxObject* KxMenuItem::wxCreateObject()

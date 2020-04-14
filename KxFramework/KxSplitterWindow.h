@@ -15,7 +15,7 @@ class KX_API KxSplitterWindow: public wxSplitterWindow
 	public:
 		static const long DefaultStyle = wxSP_LIVE_UPDATE|wxSP_NOBORDER|wxSP_3DSASH|wxSP_THIN_SASH;
 
-		KxSplitterWindow() {}
+		KxSplitterWindow() = default;
 		KxSplitterWindow(wxWindow* parent,
 						 wxWindowID id = wxID_ANY,
 						 long style = DefaultStyle
@@ -27,7 +27,6 @@ class KX_API KxSplitterWindow: public wxSplitterWindow
 					wxWindowID id = wxID_ANY,
 					long style = DefaultStyle
 		);
-		virtual ~KxSplitterWindow();
 
 	public:
 		virtual bool ShouldInheritColours() const override

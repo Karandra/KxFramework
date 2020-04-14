@@ -1,6 +1,5 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxFileStream.h"
-#include "KxFramework/KxUtility.h"
 #include <wx/ustring.h>
 
 using namespace KxFramework;
@@ -101,10 +100,10 @@ namespace
 		else if (mode != Access::Invalid)
 		{
 			DWORD nativeMode = 0;
-			KxUtility::ModFlagRef(nativeMode, GENERIC_READ, mode & Access::Read);
-			KxUtility::ModFlagRef(nativeMode, GENERIC_WRITE, mode & Access::Write);
-			KxUtility::ModFlagRef(nativeMode, FILE_READ_ATTRIBUTES, mode & Access::ReadAttributes);
-			KxUtility::ModFlagRef(nativeMode, FILE_WRITE_ATTRIBUTES, mode & Access::WriteAttributes);
+			Utility::ModFlagRef(nativeMode, GENERIC_READ, mode & Access::Read);
+			Utility::ModFlagRef(nativeMode, GENERIC_WRITE, mode & Access::Write);
+			Utility::ModFlagRef(nativeMode, FILE_READ_ATTRIBUTES, mode & Access::ReadAttributes);
+			Utility::ModFlagRef(nativeMode, FILE_WRITE_ATTRIBUTES, mode & Access::WriteAttributes);
 			return nativeMode;
 		}
 		return std::numeric_limits<DWORD>::max();
@@ -120,9 +119,9 @@ namespace
 		else if (mode != Share::Invalid)
 		{
 			DWORD nativeMode = 0;
-			KxUtility::ModFlagRef(nativeMode, FILE_SHARE_READ, mode & Share::Read);
-			KxUtility::ModFlagRef(nativeMode, FILE_SHARE_WRITE, mode & Share::Write);
-			KxUtility::ModFlagRef(nativeMode, FILE_SHARE_DELETE, mode & Share::Delete);
+			Utility::ModFlagRef(nativeMode, FILE_SHARE_READ, mode & Share::Read);
+			Utility::ModFlagRef(nativeMode, FILE_SHARE_WRITE, mode & Share::Write);
+			Utility::ModFlagRef(nativeMode, FILE_SHARE_DELETE, mode & Share::Delete);
 			return nativeMode;
 		}
 		return std::numeric_limits<DWORD>::max();
@@ -157,8 +156,8 @@ namespace
 		using Flags = KxFileStream::Flags;
 
 		DWORD nativeMode = 0;
-		KxUtility::ModFlagRef(nativeMode, FILE_ATTRIBUTE_NORMAL, flags & Flags::Normal);
-		KxUtility::ModFlagRef(nativeMode, FILE_FLAG_BACKUP_SEMANTICS, flags & Flags::BackupSemantics);
+		Utility::ModFlagRef(nativeMode, FILE_ATTRIBUTE_NORMAL, flags & Flags::Normal);
+		Utility::ModFlagRef(nativeMode, FILE_FLAG_BACKUP_SEMANTICS, flags & Flags::BackupSemantics);
 		return nativeMode;
 	}
 }

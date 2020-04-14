@@ -3,9 +3,12 @@
 #include "KxFramework/KxStdDialogButtonSizer.h"
 #include "KxFramework/KxTopLevelWindow.h"
 #include "KxFramework/KxButton.h"
-#include "KxFramework/KxUtility.h"
 #include "KxFramework/KxIncludeWindows.h"
 #include "Kx/Drawing/UxTheme.h"
+#include "Kx/Utility/Common.h"
+#include "Kx/Utility/System.h"
+
+using namespace KxFramework;
 
 KxEVENT_DEFINE_GLOBAL(wxNotifyEvent, STDDIALOG_BUTTON);
 KxEVENT_DEFINE_GLOBAL(wxNotifyEvent, STDDIALOG_NAVIGATE);
@@ -267,13 +270,13 @@ bool KxStdDialog::IsEscapeAllowed(wxWindowID* idOut) const
 		{
 			if (id == wxID_CANCEL || id == wxID_NO || id == wxID_CLOSE)
 			{
-				KxUtility::SetIfNotNull(idOut, id);
+				Utility::SetIfNotNull(idOut, id);
 				return true;
 			}
 		}
 	}
 
-	KxUtility::SetIfNotNull(idOut, wxID_NONE);
+	Utility::SetIfNotNull(idOut, wxID_NONE);
 	return false;
 }
 bool KxStdDialog::IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut) const
@@ -289,13 +292,13 @@ bool KxStdDialog::IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut) const
 		{
 			if (Check(wxOK, wxID_OK, id) || Check(wxYES, wxID_YES, id) || Check(wxAPPLY, wxID_APPLY, id))
 			{
-				KxUtility::SetIfNotNull(idOut, id);
+				Utility::SetIfNotNull(idOut, id);
 				return true;
 			}
 		}
 	}
 
-	KxUtility::SetIfNotNull(idOut, wxID_NONE);
+	Utility::SetIfNotNull(idOut, wxID_NONE);
 	return false;
 }
 void KxStdDialog::SetResizingBehavior()
@@ -325,7 +328,7 @@ void KxStdDialog::SetResizingBehavior()
 			break;
 		}
 	};
-	KxUtility::ToggleWindowStyle(GetHandle(), GWL_STYLE, WS_MAXIMIZEBOX, nSide == wxBOTH);
+	Utility::ModWindowStyle(GetHandle(), GWL_STYLE, WS_MAXIMIZEBOX, nSide == wxBOTH);
 }
 void KxStdDialog::PostCreate(const wxPoint& pos)
 {

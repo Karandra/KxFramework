@@ -1,6 +1,5 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxProgressDialog.h"
-#include "KxFramework/KxUtility.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxProgressDialog, KxStdDialog);
 
@@ -25,9 +24,6 @@ bool KxProgressDialog::Create(wxWindow* parent,
 		return true;
 	}
 	return false;
-}
-KxProgressDialog::~KxProgressDialog()
-{
 }
 
 bool KxProgressDialog::IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut) const

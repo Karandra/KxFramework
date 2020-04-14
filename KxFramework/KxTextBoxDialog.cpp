@@ -1,6 +1,8 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxTextBoxDialog.h"
-#include "KxFramework/KxUtility.h"
+#include "Kx/Utility/Common.h"
+
+using namespace KxFramework;
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxTextBoxDialog, KxStdDialog);
 
@@ -8,7 +10,7 @@ bool KxTextBoxDialog::IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut) const
 {
 	if (IsMultiLine() || GetStyledTextBox() != nullptr)
 	{
-		KxUtility::SetIfNotNull(idOut, wxID_NONE);
+		Utility::SetIfNotNull(idOut, wxID_NONE);
 		return false;
 	}
 	return KxStdDialog::IsEnterAllowed(event, idOut);
@@ -48,7 +50,7 @@ bool KxTextBoxDialog::Create(wxWindow* parent,
 	m_DialogResizeSide = static_cast<wxOrientation>(-1);
 	m_Options = static_cast<KxTBD_Options>(style & KxTBD_MASK);
 
-	if (KxStdDialog::Create(parent, id, caption, pos, size, buttons, KxUtility::ModFlag(style, KxTBD_MASK, false)))
+	if (KxStdDialog::Create(parent, id, caption, pos, size, buttons, Utility::ModFlag(style, KxTBD_MASK, false)))
 	{
 		wxSize size(DefaultWidth, wxDefaultCoord);
 
@@ -98,7 +100,4 @@ bool KxTextBoxDialog::Create(wxWindow* parent,
 		return true;
 	}
 	return false;
-}
-KxTextBoxDialog::~KxTextBoxDialog()
-{
 }

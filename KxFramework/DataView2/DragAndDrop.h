@@ -1,6 +1,5 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxUtility.h"
 #include "Common.h"
 #include "Row.h"
 class wxDragImage;

@@ -2,7 +2,9 @@
 #include "KxFramework/KxAuiToolBarItem.h"
 #include "KxFramework/KxAuiToolBar.h"
 #include "KxFramework/KxMenu.h"
-#include "KxFramework/KxUtility.h"
+#include "Kx/Utility/Common.h"
+
+using namespace KxFramework;
 
 wxPoint KxAuiToolBarItem::DoGetDropdownMenuPosition(DWORD* alignment, bool leftAlign) const
 {
@@ -11,12 +13,12 @@ wxPoint KxAuiToolBarItem::DoGetDropdownMenuPosition(DWORD* alignment, bool leftA
 	{
 		if (leftAlign)
 		{
-			KxUtility::SetIfNotNull(alignment, TPM_LEFTALIGN|TPM_TOPALIGN);
+			Utility::SetIfNotNull(alignment, TPM_LEFTALIGN|TPM_TOPALIGN);
 			return rect.GetLeftBottom() + wxPoint(0, 2);
 		}
 		else
 		{
-			KxUtility::SetIfNotNull(alignment, TPM_RIGHTALIGN|TPM_TOPALIGN);
+			Utility::SetIfNotNull(alignment, TPM_RIGHTALIGN|TPM_TOPALIGN);
 			return rect.GetRightBottom() + wxPoint(0, 2);
 		}
 	}

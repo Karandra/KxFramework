@@ -1,9 +1,10 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxCredentialsDialog.h"
-#include "KxFramework/KxUtility.h"
 #include "Kx/Utility/CallAtScopeExit.h"
 #include <wincred.h>
 #pragma comment(lib, "CredUI.lib")
+
+using namespace KxFramework;
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxCredentialsDialog, KxStdDialog);
 
@@ -22,8 +23,6 @@ bool KxCredentialsDialog::Create(wxWindow* parent,
 }
 int KxCredentialsDialog::ShowModal()
 {
-	using namespace KxFramework;
-
 	m_UserName.clear();
 	m_Password.Wipe();
 

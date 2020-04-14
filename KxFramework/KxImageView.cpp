@@ -1,7 +1,6 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxImageView.h"
 #include "KxFramework/KxPanel.h"
-#include "KxFramework/KxUtility.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxImageView, wxControl);
 
@@ -83,60 +82,6 @@ bool KxImageView::Create(wxWindow* parent,
 	}
 	return false;
 }
-KxImageView::~KxImageView()
-{
-}
-
-#if 0
-wxAnimation KxImageView::GetAnimation() const
-{
-	if (m_IsAnimation)
-	{
-		return wxAnimationCtrl::GetAnimation();
-	}
-	return wxNullAnimation;
-}
-void KxImageView::SetAnimation(const wxAnimation& anim)
-{
-	m_IsAnimation = true;
-	m_Bitmap = wxNullBitmap;
-	Unbind(wxEVT_PAINT, &KxImageView::OnDrawForeground, this);
-	wxAnimationCtrl::SetAnimation(anim);
-	Refresh();
-}
-bool KxImageView::IsPlaying() const
-{
-	return m_IsAnimation && wxAnimationCtrl::IsPlaying();
-}
-bool KxImageView::Play()
-{
-	if (m_IsAnimation)
-	{
-		return wxAnimationCtrl::Play();
-	}
-	return false;
-}
-bool KxImageView::Play(bool isLoop)
-{
-	if (m_IsAnimation)
-	{
-		return wxAnimationCtrl::Play(isLoop);
-	}
-	return false;
-}
-void KxImageView::Stop()
-{
-	if (m_IsAnimation)
-	{
-		wxAnimationCtrl::Stop();
-	}
-}
-void KxImageView::SetInactiveBitmap(const wxBitmap& bitmap)
-{
-	SetBitmap(bitmap);
-	wxAnimationCtrl::SetInactiveBitmap(bitmap);
-}
-#endif
 
 void KxImageView::SetScaleFactor(double factor)
 {

@@ -2,7 +2,6 @@
 #include "KxFramework/KxAuiToolBar.h"
 #include "KxFramework/KxAuiToolBarItem.h"
 #include "KxFramework/KxMenu.h"
-#include "KxFramework/KxUtility.h"
 
 namespace
 {

@@ -9,13 +9,12 @@
 #include "View.h"
 #include "KxFramework/KxDataView2Event.h"
 #include "KxFramework/KxSplashWindow.h"
-#include "KxFramework/KxUtility.h"
 #include "KxFramework/KxFrame.h"
-#include "Kx/System/SystemInformation.h"
 #include "Kx/Drawing/UxTheme.h"
 #include "Kx/Drawing/Private/UxThemeDefines.h"
 #include "Kx/Drawing/DCOperations.h"
 #include "Kx/Drawing/GCOperations.h"
+#include "Kx/System/SystemInformation.h"
 #include <wx/popupwin.h>
 #include <wx/generic/private/widthcalc.h>
 #include <wx/minifram.h>

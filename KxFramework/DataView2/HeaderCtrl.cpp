@@ -4,12 +4,15 @@
 #include "MainWindow.h"
 #include "Column.h"
 #include "KxFramework/KxDataView2Event.h"
-#include "KxFramework/KxUtility.h"
+#include "Kx/Utility/System.h"
+#include "Kx/Utility/Drawing.h"
 #include "KxFramework/KxMenu.h"
 #include <CommCtrl.h>
 
 namespace
 {
+	using namespace KxFramework;
+
 	enum class MouseButton
 	{
 		Left = 0,
@@ -71,7 +74,7 @@ namespace KxDataView2
 		if (m_HeaderCtrlHandle)
 		{
 			// Needed to display checkboxes
-			KxUtility::ToggleWindowStyle(m_HeaderCtrlHandle, GWL_STYLE, HDS_CHECKBOXES, true);
+			Utility::ModWindowStyle(m_HeaderCtrlHandle, GWL_STYLE, HDS_CHECKBOXES, true);
 		}
 
 		event.Skip();
@@ -607,7 +610,7 @@ namespace KxDataView2
 	{
 		RECT rect = {};
 		Header_GetItemDropDownRect(GetHeaderCtrlHandle(), index, &rect);
-		return KxUtility::CopyRECTToRect(rect);
+		return Utility::FromWindowsRect(rect);
 	}
 	wxRect HeaderCtrl::GetDropdownRect(const Column& column) const
 	{

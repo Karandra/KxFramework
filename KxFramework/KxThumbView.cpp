@@ -1,7 +1,6 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxThumbView.h"
 #include "KxFramework/KxPanel.h"
-#include "KxFramework/KxUtility.h"
 
 KxEVENT_DEFINE_GLOBAL(wxCommandEvent, THUMBVIEW_SELECTED);
 KxEVENT_DEFINE_GLOBAL(wxCommandEvent, THUMBVIEW_ACTIVATED);
@@ -249,9 +248,6 @@ bool KxThumbView::Create(wxWindow* parent,
 		return true;
 	}
 	return false;
-}
-KxThumbView::~KxThumbView()
-{
 }
 
 wxSize KxThumbView::GetThumbSize() const

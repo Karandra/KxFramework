@@ -5,7 +5,9 @@
 #include "HeaderCtrl.h"
 #include "Renderer.h"
 #include "Editor.h"
-#include "KxFramework/KxUtility.h"
+#include "Kx/Utility/Common.h"
+
+using namespace KxFramework;
 
 namespace KxDataView2
 {
@@ -57,13 +59,13 @@ namespace KxDataView2
 	int NativeColumn::GetFlags() const
 	{
 		int flags = 0;
-		KxUtility::ModFlagRef(flags, wxCOL_RESIZABLE, m_Column.IsSizeable());
-		KxUtility::ModFlagRef(flags, wxCOL_SORTABLE, m_Column.IsSortable());
-		KxUtility::ModFlagRef(flags, wxCOL_REORDERABLE, m_Column.IsMoveable());
+		Utility::ModFlagRef(flags, wxCOL_RESIZABLE, m_Column.IsSizeable());
+		Utility::ModFlagRef(flags, wxCOL_SORTABLE, m_Column.IsSortable());
+		Utility::ModFlagRef(flags, wxCOL_REORDERABLE, m_Column.IsMoveable());
 		
 		// Use raw visibility flag. Native control does some weird things
 		// if the flag value is calculated using column width.
-		KxUtility::ModFlagRef(flags, wxCOL_HIDDEN, !m_Column.IsVisible());
+		Utility::ModFlagRef(flags, wxCOL_HIDDEN, !m_Column.IsVisible());
 
 		return flags;
 	}

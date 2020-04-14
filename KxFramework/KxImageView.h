@@ -16,7 +16,7 @@ enum KxImageView_ScaleMode
 	KxIV_SCALE_ASPECT_FILL = wxStaticBitmapBase::Scale_AspectFill,
 };
 
-class KX_API KxImageView: public KxFramework::WindowRefreshScheduler<wxSystemThemedControl<wxControl>>
+class KX_API KxImageView: public wxSystemThemedControl<KxFramework::WindowRefreshScheduler<wxControl>>
 {
 	private:
 		wxGraphicsRenderer* m_Renderer = nullptr;
@@ -40,7 +40,7 @@ class KX_API KxImageView: public KxFramework::WindowRefreshScheduler<wxSystemThe
 	public:
 		static const long DefaultStyle = wxBORDER_THEME;
 		
-		KxImageView() {}
+		KxImageView() = default;
 		KxImageView(wxWindow* parent,
 					wxWindowID id,
 					long style = DefaultStyle
@@ -52,18 +52,6 @@ class KX_API KxImageView: public KxFramework::WindowRefreshScheduler<wxSystemThe
 					wxWindowID id,
 					long style = DefaultStyle
 		);
-		virtual ~KxImageView();
-
-		#if 0
-	public:
-		virtual wxAnimation GetAnimation() const override;
-		virtual void SetAnimation(const wxAnimation& anim) override;
-		virtual bool IsPlaying() const override;
-		virtual bool Play() override;
-		bool Play(bool isLoop);
-		virtual void Stop() override;
-		virtual void SetInactiveBitmap(const wxBitmap& bitmap) override;
-		#endif
 
 	public:
 		KxImageView_BGMode GetBackgroundMode()

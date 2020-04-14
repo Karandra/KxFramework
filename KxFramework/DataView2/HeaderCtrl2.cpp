@@ -4,12 +4,14 @@
 #include "MainWindow.h"
 #include "Column.h"
 #include "KxFramework/KxDataView2Event.h"
-#include "KxFramework/KxUtility.h"
+#include "Kx/Utility/Common.h"
 #include "KxFramework/KxMenu.h"
 #include <CommCtrl.h>
 
 namespace
 {
+	using namespace KxFramework;
+
 	enum class MouseButton
 	{
 		Left = 0,
@@ -671,14 +673,14 @@ namespace KxDataView2
 			// If the column is resizable, check if we're approximatively over the line separating it from the next column
 			if (column->IsSizeable() && std::abs(xLogical - xOffset) < separatorClickMargin)
 			{
-				KxUtility::SetIfNotNull(separator, true);
+				Utility::SetIfNotNull(separator, true);
 				return column;
 			}
 
 			// If we're inside the column
 			if (xLogical < xOffset)
 			{
-				KxUtility::SetIfNotNull(separator, false);
+				Utility::SetIfNotNull(separator, false);
 				return column;
 			}
 		}

@@ -2,7 +2,10 @@
 #include "DragAndDrop.h"
 #include "MainWindow.h"
 #include "KxFramework/KxSplashWindow.h"
+#include "Kx/Utility/Common.h"
 #include <wx/dragimag.h>
+
+using namespace KxFramework;
 
 namespace KxDataView2
 {
@@ -10,7 +13,7 @@ namespace KxDataView2
 	{
 		if (const DNDOperationInfo* info = GetOperationInfo(format))
 		{
-			return KxUtility::HasFlag(info->GetType(), desiredType);
+			return Utility::HasFlag(info->GetType(), desiredType);
 		}
 		return false;
 	}

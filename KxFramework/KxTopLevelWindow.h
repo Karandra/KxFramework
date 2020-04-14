@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxUtility.h"
 #include "KxEvent.h"
+#include "Kx/Utility/System.h"
 
 #include "Kx/General/Color.h"
 using KxColor = KxFramework::Color;
@@ -117,12 +117,16 @@ class KxTopLevelWindow: public T
 		}
 		bool EnableMinimizeButton(bool enable = true) override
 		{
-			KxUtility::ToggleWindowStyle(GetThis()->GetHandle(), GWL_STYLE, WS_MINIMIZEBOX, enable);
+			using namespace KxFramework;
+
+			Utility::ModWindowStyle(GetThis()->GetHandle(), GWL_STYLE, WS_MINIMIZEBOX, enable);
 			return true;
 		}
 		bool EnableMaximizeButton(bool enable = true) override
 		{
-			KxUtility::ToggleWindowStyle(GetThis()->GetHandle(), GWL_STYLE, WS_MAXIMIZEBOX, enable);
+			using namespace KxFramework;
+
+			Utility::ModWindowStyle(GetThis()->GetHandle(), GWL_STYLE, WS_MAXIMIZEBOX, enable);
 			return true;
 		}
 

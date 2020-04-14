@@ -15,6 +15,7 @@ enum KxTBD_Options
 
 	KxTBD_MASK = KxTBD_MULTILINE|KxTBD_PASSWORD|KxTBD_READONLY|KxTBD_STYLED
 };
+
 class KX_API KxTextBoxDialog: public KxStdDialog
 {
 	private:
@@ -37,7 +38,7 @@ class KX_API KxTextBoxDialog: public KxStdDialog
 		static const int DefaultMLWidth = 450;
 		static const int DefaultMLHeight = 200;
 
-		KxTextBoxDialog() {}
+		KxTextBoxDialog() = default;
 		KxTextBoxDialog(wxWindow* parent,
 						wxWindowID id,
 						const wxString& caption,
@@ -57,14 +58,13 @@ class KX_API KxTextBoxDialog: public KxStdDialog
 					int buttons = DefaultButtons,
 					long style = DefaultStyle
 		);
-		virtual ~KxTextBoxDialog();
 
 	public:
-		virtual wxWindow* GetDialogMainCtrl() const override
+		wxWindow* GetDialogMainCtrl() const override
 		{
 			return m_View;
 		}
-		virtual int GetViewSizerProportion() const override
+		int GetViewSizerProportion() const override
 		{
 			return IsMultiLine() ? 1 : 0;
 		}

@@ -232,7 +232,7 @@ namespace KxFramework::Utility
 	namespace Private
 	{
 		template<class TOUT, bool highPart, class TIN>
-		constexpr TOUT GetIntPart(TIN value) noexcept
+		constexpr TOUT GetIntPart(TIN fullValue) noexcept
 		{
 			static_assert(std::is_integral_v<TIN> && std::is_integral_v<TOUT>, "only integral types allowed");
 			static_assert(sizeof(TIN) == 2 * sizeof(TOUT), "sizeof(TIN) not equal to 2 * sizeof(TOUT)");
@@ -246,7 +246,7 @@ namespace KxFramework::Utility
 				};
 				TIN Full;
 			} value;
-			value.Full = value;
+			value.Full = fullValue;
 
 			return highPart ? value.High : value.Low;
 		}

@@ -2,7 +2,9 @@
 #include "KxFramework/KxDialog.h"
 #include "KxFramework/KxButton.h"
 #include "KxFramework/KxStdDialogButtonSizer.h"
-#include "KxFramework/KxUtility.h"
+#include "Kx/Localization/Common.h"
+
+using namespace KxFramework;
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxDialog, wxDialog);
 
@@ -88,13 +90,11 @@ KxStdDialogButtonSizer* KxDialog::CreateStdDialogButtonSizer(int buttons)
 }
 void KxDialog::SetStdLabels(wxSizer* sizer)
 {
-	auto list = sizer->GetChildren();
-	for (size_t i = 0; i < list.size(); i++)
+	for (auto& sizerItem: sizer->GetChildren())
 	{
-		wxWindow* window = list[i]->GetWindow();
-		if (window != nullptr)
+		if (wxWindow* window = sizerItem->GetWindow())
 		{
-			wxString label = KxUtility::GetStandardLocalizedString(window->GetId());
+			wxString label = Localization::GetStandardLocalizedString(window->GetId());
 			window->SetLabel(label);
 
 			wxSize size = window->GetSize();

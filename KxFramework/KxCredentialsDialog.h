@@ -2,7 +2,6 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxDialog.h"
 #include "KxFramework/KxStdDialog.h"
-#include "KxFramework/KxUtility.h"
 #include "Kx/Crypto/SecretValue.h"
 
 class KX_API KxCredentialsDialog: public KxDialog

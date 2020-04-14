@@ -1,6 +1,5 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxDualProgressDialog.h"
-#include "KxFramework/KxUtility.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxDualProgressDialog, KxStdDialog);
 

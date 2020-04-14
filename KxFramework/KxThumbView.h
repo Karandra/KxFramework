@@ -29,7 +29,7 @@ class KX_API KxThumbViewItem final
 		}
 };
 
-class KX_API KxThumbView: public KxFramework::WindowRefreshScheduler<wxSystemThemedControl<wxVScrolledWindow>>
+class KX_API KxThumbView: public wxSystemThemedControl<KxFramework::WindowRefreshScheduler<wxVScrolledWindow>>
 {
 	private:
 		enum: size_t
@@ -72,7 +72,7 @@ class KX_API KxThumbView: public KxFramework::WindowRefreshScheduler<wxSystemThe
 		static const wxSize DefaultThumbSize;
 		static const double ThumbPaddingScale;
 		
-		KxThumbView() {}
+		KxThumbView() = default;
 		KxThumbView(wxWindow* parent,
 					wxWindowID id,
 					long style = DefaultStyle
@@ -84,7 +84,6 @@ class KX_API KxThumbView: public KxFramework::WindowRefreshScheduler<wxSystemThe
 					wxWindowID id,
 					long style = DefaultStyle
 		);
-		virtual ~KxThumbView();
 
 	public:
 		wxBorder GetDefaultBorder() const override

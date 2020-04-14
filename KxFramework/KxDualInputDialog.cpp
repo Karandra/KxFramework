@@ -1,6 +1,5 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxDualInputDialog.h"
-#include "KxFramework/KxUtility.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxDualInputDialog, KxStdDialog);
 

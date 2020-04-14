@@ -1,6 +1,5 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxSplitterWindow.h"
-#include "KxFramework/KxUtility.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxSplitterWindow, wxSplitterWindow);
 
@@ -40,9 +39,6 @@ bool KxSplitterWindow::Create(wxWindow* parent,
 		return true;
 	}
 	return false;
-}
-KxSplitterWindow::~KxSplitterWindow()
-{
 }
 
 bool KxSplitterWindow::SplitHorizontally(wxWindow* window1, wxWindow* window2, int sashPosition)

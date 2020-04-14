@@ -23,7 +23,6 @@ class KX_API KxRichToolTip: public wxObject
 		static const int DefaultDelay = 0;
 
 		KxRichToolTip(const wxString& title = wxEmptyString, const wxString& message = wxEmptyString);
-		virtual ~KxRichToolTip();
 
 	public:
 		const wxString& GetTitle() const

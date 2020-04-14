@@ -16,7 +16,7 @@ class KX_API KxProgressDialog: public KxStdDialog, public KxProgressBarWrapper
 		static const int DefaultProgressWidth = 300;
 		static const int DefaultProgressHeight = 16;
 
-		KxProgressDialog() {}
+		KxProgressDialog() = default;
 		KxProgressDialog(wxWindow* parent,
 						  wxWindowID id,
 						  const wxString& caption,
@@ -36,7 +36,6 @@ class KX_API KxProgressDialog: public KxStdDialog, public KxProgressBarWrapper
 					int buttons = DefaultButtons,
 					long style = DefaultStyle
 		);
-		virtual ~KxProgressDialog();
 
 	public:
 		KxProgressBar* GetProgressBar() const

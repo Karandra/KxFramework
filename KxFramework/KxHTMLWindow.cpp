@@ -2,7 +2,6 @@
 #include "KxFramework/KxHTMLWindow.h"
 #include "KxFramework/KxTranslation.h"
 #include "KxFramework/KxMenu.h"
-#include "KxFramework/KxUtility.h"
 #include <wx/clipbrd.h>
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxHTMLWindow, wxHtmlWindow);

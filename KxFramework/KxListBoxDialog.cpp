@@ -1,6 +1,5 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxListBoxDialog.h"
-#include "KxFramework/KxUtility.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxListBoxDialog, KxStdDialog);
 
@@ -29,7 +28,4 @@ bool KxListBoxDialog::Create(wxWindow* parent,
 		return true;
 	}
 	return false;
-}
-KxListBoxDialog::~KxListBoxDialog()
-{
 }

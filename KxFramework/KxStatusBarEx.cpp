@@ -1,15 +1,15 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxStatusBarEx.h"
-#include "KxFramework/KxUtility.h"
 #include "Kx/Drawing/UxTheme.h"
 #include "Kx/Drawing/Private/UxThemeDefines.h"
+#include "Kx/Utility/Common.h"
+
+using namespace KxFramework;
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxStatusBarEx, KxStatusBar);
 
 void KxStatusBarEx::OnPaint(wxPaintEvent& event)
 {
-	using namespace KxFramework;
-
 	wxAutoBufferedPaintDC dc(this);
 	dc.SetBackgroundMode(wxBRUSHSTYLE_TRANSPARENT);
 	dc.SetTextForeground(GetForegroundColour());
@@ -193,7 +193,7 @@ bool KxStatusBarEx::Create(wxWindow* parent,
 {
 	using namespace KxFramework;
 
-	if (KxStatusBar::Create(parent, id, KxUtility::ModFlag(style, KxSBE_MASK, false)))
+	if (KxStatusBar::Create(parent, id, Utility::ModFlag(style, KxSBE_MASK, false)))
 	{
 		EnableSystemTheme();
 		SetBackgroundStyle(wxBG_STYLE_PAINT);

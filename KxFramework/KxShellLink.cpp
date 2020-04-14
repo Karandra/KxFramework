@@ -1,13 +1,9 @@
-/*
-Copyright © 2018 Kerber. All rights reserved.
-
-You should have received a copy of the GNU LGPL v3
-along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
-*/
 #include "KxStdAfx.h"
 #include "KxFramework/KxShellLink.h"
-#include "KxFramework/KxUtility.h"
+#include "Kx/Utility/Common.h"
 #include <ShObjIDL.h>
+
+using namespace KxFramework;
 
 KxShellLink::KxShellLink(const wxString& filePath)
 {
@@ -109,7 +105,7 @@ wxString KxShellLink::GetIconLocation(int* indexOut) const
 
 	m_Instance->GetIconLocation(wxStringBuffer(out, INT16_MAX), INT16_MAX, &index);
 	out.Shrink();
-	KxUtility::SetIfNotNull(indexOut, index);
+	Utility::SetIfNotNull(indexOut, index);
 	return out;
 }
 void KxShellLink::SetIconLocation(const wxString& value, int index)
@@ -147,9 +143,9 @@ wxKeyEvent KxShellLink::GetHotKey() const
 	WORD hotKeys = 0;
 	if (SUCCEEDED(m_Instance->GetHotkey(&hotKeys)))
 	{
-		keyState.m_keyCode = KxUtility::GetIntLowPart<BYTE>(hotKeys);//LOBYTE(nHotKeys);
+		keyState.m_keyCode = Utility::IntLowPart<BYTE>(hotKeys);//LOBYTE(nHotKeys);
 
-		BYTE modifiers = KxUtility::GetIntHighPart<BYTE>(hotKeys);//HIBYTE(nHotKeys);
+		BYTE modifiers = Utility::IntHighPart<BYTE>(hotKeys);//HIBYTE(nHotKeys);
 		keyState.m_controlDown = modifiers & HOTKEYF_CONTROL;
 		keyState.m_altDown = modifiers & HOTKEYF_ALT;
 		keyState.m_shiftDown = modifiers & HOTKEYF_SHIFT;
@@ -171,5 +167,5 @@ void KxShellLink::SetHotKey(const wxKeyEvent& keyState)
 	{
 		modifiers |= HOTKEYF_SHIFT;
 	}
-	m_Instance->SetHotkey(KxUtility::MakeInt<WORD>((BYTE)keyState.GetKeyCode(), modifiers));
+	m_Instance->SetHotkey(Utility::IntFromLowHigh<WORD>(modifiers, static_cast<BYTE>(keyState.GetKeyCode())));
 }

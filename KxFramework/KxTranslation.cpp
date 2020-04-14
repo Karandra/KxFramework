@@ -2,14 +2,17 @@
 #include "KxFramework/KxTranslation.h"
 #include "KxFramework/KxLibrary.h"
 #include "KxFramework/KxFileStream.h"
-#include "KxFramework/KxUtility.h"
+#include "Kx/FileSystem/NativeFileSystem.h"
 #include "Kx/General/XMLDocument.h"
 #include "Kx/System/SystemInformation.h"
-#include "Kx/FileSystem/NativeFileSystem.h"
+#include "Kx/Localization/Common.h"
+#include "Kx/Utility/Common.h"
 
 namespace
 {
-	static wxString g_TranslationResourceType = "Translation";
+	using namespace KxFramework;
+
+	static wxString g_TranslationResourceType = wxS("Translation");
 	
 	static const KxTranslation g_DefaultTranslation;
 	static const KxTranslation* g_CurrentTranslation = &g_DefaultTranslation;
@@ -100,7 +103,7 @@ KxTranslation::AvailableMap KxTranslation::FindTranslationsInDirectory(const wxS
 }
 KxStringVector KxTranslation::FindTranslationsInResources()
 {
-	KxLibrary appLib(KxUtility::GetAppHandle());
+	KxLibrary appLib(nullptr);
 	if (appLib.IsOK())
 	{
 		KxAnyVector resourseList = appLib.EnumResources(g_TranslationResourceType);
@@ -173,20 +176,23 @@ const wxString& KxTranslation::GetString(const wxString& id, bool* isSuccessOut)
 	auto it = m_StringTable.find(id);
 	if (it != m_StringTable.end())
 	{
-		KxUtility::SetIfNotNull(isSuccessOut, true);
+		Utility::SetIfNotNull(isSuccessOut, true);
 		return it->second;
 	}
 
-	KxUtility::SetIfNotNull(isSuccessOut, false);
+	Utility::SetIfNotNull(isSuccessOut, false);
 	return KxNullWxString;
 }
 wxString KxTranslation::GetString(wxStandardID id, bool* isSuccessOut) const
 {
-	return KxUtility::GetStandardLocalizedString(id, isSuccessOut);
+	String result = Localization::GetStandardLocalizedString(id);
+	Utility::SetIfNotNull(isSuccessOut, !result.IsEmpty());
+
+	return result;
 }
 wxString KxTranslation::GetString(KxStandardID id, bool* isSuccessOut) const
 {
-	return KxUtility::GetStandardLocalizedString(id, isSuccessOut);
+	return GetString(static_cast<wxStandardID>(id), isSuccessOut);
 }
 
 bool KxTranslation::LoadFromFile(const wxString& filePath)
@@ -203,7 +209,7 @@ bool KxTranslation::LoadFromFile(const wxString& filePath)
 bool KxTranslation::LoadFromResource(const wxString& localeName)
 {
 	Clear();
-	return LoadFromResourceInModule(localeName, KxLibrary(KxUtility::GetAppHandle()));
+	return LoadFromResourceInModule(localeName, KxLibrary(nullptr));
 }
 bool KxTranslation::LoadFromResource(const wxString& localeName, const KxLibrary& library)
 {

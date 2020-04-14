@@ -6,7 +6,7 @@
 #include "WidgetFactory.h"
 #include "Host.h"
 #include "ScriptValue.h"
-#include "KxFramework/KxUtility.h"
+#include "Kx/Utility/Drawing.h"
 
 namespace KxFramework::Sciter
 {
@@ -479,7 +479,7 @@ namespace KxFramework::Sciter
 		{
 			event.SetElement(element);
 			event.SetGraphicsContext(FromSciterGraphicsContext(parameters.gfx));
-			event.SetRect(KxUtility::CopyRECTToRect(parameters.area));
+			event.SetRect(Utility::FromWindowsRect(parameters.area));
 
 			return ProcessEvent(event);
 		}
