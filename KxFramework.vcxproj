@@ -292,7 +292,6 @@
     <ClInclude Include="KxFramework\KxListBoxDialog.h" />
     <ClInclude Include="KxFramework\KxListView.h" />
     <ClInclude Include="KxFramework\KxMainDefs.h" />
-    <ClInclude Include="KxFramework\KxMath.h" />
     <ClInclude Include="KxFramework\KxMenu.h" />
     <ClInclude Include="KxFramework\KxMenuEvent.h" />
     <ClInclude Include="KxFramework\KxMenuItem.h" />
@@ -417,6 +416,7 @@
     <ClInclude Include="Kx\General\IndexedEnum.h" />
     <ClInclude Include="Kx\General\INIDocument.h" />
     <ClInclude Include="Kx\General\JSONDocument.h" />
+    <ClInclude Include="Kx\General\Math.h" />
     <ClInclude Include="Kx\General\Private\HTML\error.h" />
     <ClInclude Include="Kx\General\Private\HTML\insertion_mode.h" />
     <ClInclude Include="Kx\General\Private\HTML\string_buffer.h" />
@@ -615,7 +615,6 @@
     <ClCompile Include="KxFramework\KxListBox.cpp" />
     <ClCompile Include="KxFramework\KxListBoxDialog.cpp" />
     <ClCompile Include="KxFramework\KxListView.cpp" />
-    <ClCompile Include="KxFramework\KxMath.cpp" />
     <ClCompile Include="KxFramework\KxMenu.cpp" />
     <ClCompile Include="KxFramework\KxMenuEvent.cpp" />
     <ClCompile Include="KxFramework\KxMenuItem.cpp" />
@@ -684,6 +683,7 @@
     <ClCompile Include="Kx\General\HTMLNode.cpp" />
     <ClCompile Include="Kx\General\INIDocument.cpp" />
     <ClCompile Include="Kx\General\JSONDocument.cpp" />
+    <ClCompile Include="Kx\General\Math.cpp" />
     <ClCompile Include="Kx\General\MemoryStream.cpp" />
     <ClCompile Include="Kx\General\Private\HTML\clean_text.cpp" />
     <ClCompile Include="Kx\General\Private\HTML\serialize.cpp" />

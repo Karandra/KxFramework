@@ -1,8 +1,8 @@
 #include "KxStdAfx.h"
 #include "BinarySize.h"
 #include "StringFormater.h"
+#include "Math.h"
 #include <KxFramework/KxTranslation.h>
-#include <KxFramework/KxMath.h>
 
 namespace KxFramework
 {
@@ -95,7 +95,7 @@ namespace KxFramework
 			{
 				// https://programming.guide/worlds-most-copied-so-snippet.html
 				// 0 for bytes, 1 for KB, 2 for MB and so on. Matches the values in 'BinarySizeUnit'.
-				const int digitGroups = KxMath::Log(m_Value, 1024);
+				const int digitGroups = Math::Log(m_Value, 1024);
 				const double value = m_Value / std::pow(1024, digitGroups);
 
 				return FormatWithUnitBase(value, format, FromInt<BinarySizeUnit>(digitGroups), precision);

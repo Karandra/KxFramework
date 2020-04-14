@@ -18,4 +18,3 @@ extern KX_API const wxString KxNullWxString;
 #include <KxFramework/KxStandardID.h>
 #include <KxFramework/KxButtonType.h>
 #include <KxFramework/KxIconType.h>
-#include "KxFramework/KxMath.h"

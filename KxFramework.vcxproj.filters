@@ -421,9 +421,6 @@
     <ClInclude Include="KxFramework\KxIOwned.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxMath.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxSingleton.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
@@ -1222,6 +1219,9 @@
     <ClInclude Include="Kx\General\Angle.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\General\Math.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1418,9 +1418,6 @@
       <Filter>Source Files\Misc</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxIOwned.cpp">
-      <Filter>Source Files\Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxMath.cpp">
       <Filter>Source Files\Misc</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxSingleton.cpp">
@@ -1848,6 +1845,9 @@
     </ClCompile>
     <ClCompile Include="Kx\Drawing\UxTheme.cpp">
       <Filter>Kx\Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\Math.cpp">
+      <Filter>Kx\General</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
