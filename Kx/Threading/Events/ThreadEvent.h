@@ -12,23 +12,23 @@ namespace KxFramework::Threading
 
 namespace KxFramework
 {
-	class KxThreadEvent: public wxThreadEvent
+	class ThreadEvent: public wxThreadEvent
 	{
 		public:
-			KxEVENT_MEMBER(KxThreadEvent, Execute);
-			KxEVENT_MEMBER(KxThreadEvent, Started);
-			KxEVENT_MEMBER(KxThreadEvent, Finished);
+			KxEVENT_MEMBER(ThreadEvent, Execute);
+			KxEVENT_MEMBER(ThreadEvent, Started);
+			KxEVENT_MEMBER(ThreadEvent, Finished);
 
 		private:
 			wxThread::ExitCode m_ExitCode = nullptr;
 
 		public:
-			KxThreadEvent() = default;
+			ThreadEvent() = default;
 
 		public:
-			KxThreadEvent* Clone() const override
+			ThreadEvent* Clone() const override
 			{
-				return new KxThreadEvent(*this);
+				return new ThreadEvent(*this);
 			}
 
 			template<class T = wxThread::ExitCode>

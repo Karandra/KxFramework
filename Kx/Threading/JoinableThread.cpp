@@ -5,12 +5,12 @@ namespace KxFramework
 {
 	wxThread::ExitCode JoinableThread::Entry()
 	{
-		QueueEvent(KxThreadEvent::EvtStarted);
+		QueueEvent(ThreadEvent::EvtStarted);
 
-		KxThreadEvent event;
-		ProcessEvent(event, KxThreadEvent::EvtExecute);
+		ThreadEvent event;
+		ProcessEvent(event, ThreadEvent::EvtExecute);
 
-		QueueEvent(KxThreadEvent::EvtFinished);
+		QueueEvent(ThreadEvent::EvtFinished);
 
 		return event.GetExitCode();
 	}
