@@ -694,9 +694,6 @@
     <ClInclude Include="KxFramework\KxHiDPIEnabledWindow.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxDPIAwareness.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\DataView2\HeaderCtrl2.h">
       <Filter>Header Files\GUI\DataView2</Filter>
     </ClInclude>
@@ -1201,6 +1198,12 @@
     <ClInclude Include="Kx\General\OptionSet.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\System\DPIAwareness.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\WOW64FSRedirection.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1405,9 +1408,6 @@
     <ClCompile Include="KxFramework\KxSharedMemory.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxTimer.cpp">
-      <Filter>Source Files\Misc</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\DataView2\Editor.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
     </ClCompile>
@@ -1535,9 +1535,6 @@
       <Filter>Kx\Async\Coroutine</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxHiDPIEnabledWindow.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxDPIAwareness.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\HeaderCtrl2.cpp">
@@ -1815,6 +1812,12 @@
     </ClCompile>
     <ClCompile Include="Kx\General\Math.cpp">
       <Filter>Kx\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\DPIAwareness.cpp">
+      <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\WOW64FSRedirection.cpp">
+      <Filter>Kx\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

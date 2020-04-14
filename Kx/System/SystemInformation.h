@@ -166,16 +166,3 @@ namespace KxFramework::System
 		return IsWindowsVersionOrGreater(5, 1);
 	}
 };
-
-namespace KxFramework::System
-{
-	class KX_API DisableFSRedirection final
-	{
-		private:
-			void* m_Value = nullptr;
-
-		public:
-			DisableFSRedirection() noexcept;
-			~DisableFSRedirection() noexcept;
-	};
-}

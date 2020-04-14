@@ -250,7 +250,6 @@
     <ClInclude Include="KxFramework\KxEvent.h" />
     <ClInclude Include="KxFramework\KxHiDPIEnabledWindow.h" />
     <ClInclude Include="KxFramework\KxNotifyEvent.h" />
-    <ClInclude Include="KxFramework\KxDPIAwareness.h" />
     <ClInclude Include="KxFramework\KxToolTipEx.h" />
     <ClInclude Include="KxFramework\KxBitmapComboBox.h" />
     <ClInclude Include="KxFramework\KxButton.h" />
@@ -492,6 +491,7 @@
     <ClInclude Include="Kx\System\CFunctionCompiler.h" />
     <ClInclude Include="Kx\System\COM.h" />
     <ClInclude Include="Kx\System\Common.h" />
+    <ClInclude Include="Kx\System\DPIAwareness.h" />
     <ClInclude Include="Kx\System\ErrorCode.h" />
     <ClInclude Include="Kx\System\ErrorCodeValue.h" />
     <ClInclude Include="Kx\System\Private\BeginIncludeCOM.h" />
@@ -509,6 +509,7 @@
     <ClInclude Include="Kx\System\SystemInformation.h" />
     <ClInclude Include="Kx\System\SystemInformationDefines.h" />
     <ClInclude Include="Kx\System\UndefWindows.h" />
+    <ClInclude Include="Kx\System\WOW64FSRedirection.h" />
     <ClInclude Include="Kx\Threading.hpp" />
     <ClInclude Include="Kx\Threading\AutoThread.h" />
     <ClInclude Include="Kx\Threading\Common.h" />
@@ -575,7 +576,6 @@
     <ClCompile Include="KxFramework\KxCommandEvent.cpp" />
     <ClCompile Include="KxFramework\KxHiDPIEnabledWindow.cpp" />
     <ClCompile Include="KxFramework\KxNotifyEvent.cpp" />
-    <ClCompile Include="KxFramework\KxDPIAwareness.cpp" />
     <ClCompile Include="KxFramework\KxToolTipEx.cpp" />
     <ClCompile Include="KxFramework\KxBitmapComboBox.cpp" />
     <ClCompile Include="KxFramework\KxButton.cpp" />
@@ -640,7 +640,6 @@
     <ClCompile Include="KxFramework\KxTextBox.cpp" />
     <ClCompile Include="KxFramework\KxTextBoxDialog.cpp" />
     <ClCompile Include="KxFramework\KxThumbView.cpp" />
-    <ClCompile Include="KxFramework\KxTimer.cpp" />
     <ClCompile Include="KxFramework\KxTopLevelWindow.cpp" />
     <ClCompile Include="KxFramework\KxTranslation.cpp" />
     <ClCompile Include="KxFramework\KxUtility.cpp" />
@@ -697,10 +696,12 @@
     <ClCompile Include="Kx\Network\WebSocket\SecureClient.cpp" />
     <ClCompile Include="Kx\Network\WebSocket\Event.cpp" />
     <ClCompile Include="Kx\System\CFunctionCompiler.cpp" />
+    <ClCompile Include="Kx\System\DPIAwareness.cpp" />
     <ClCompile Include="Kx\System\NativeAPI.cpp" />
     <ClCompile Include="Kx\System\CredentialStore.cpp" />
     <ClCompile Include="Kx\System\Registry.cpp" />
     <ClCompile Include="Kx\System\SystemInformation.cpp" />
+    <ClCompile Include="Kx\System\WOW64FSRedirection.cpp" />
     <ClCompile Include="Kx\UI\Validator.cpp" />
     <ClCompile Include="Kx\Utility\String.cpp" />
     <ClCompile Include="Kx\Utility\System.cpp" />
