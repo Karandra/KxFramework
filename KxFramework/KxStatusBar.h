@@ -1,8 +1,8 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxWindowRefreshScheduler.h"
+#include "Kx/UI/WindowRefreshScheduler.h"
 
-class KX_API KxStatusBar: public wxSystemThemedControl<KxWindowRefreshScheduler<wxStatusBar>>
+class KX_API KxStatusBar: public wxSystemThemedControl<KxFramework::WindowRefreshScheduler<wxStatusBar>>
 {
 	private:
 		void SetFieldsCount(int count, const int* widths) override;

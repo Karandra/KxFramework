@@ -552,7 +552,7 @@ namespace KxDataView2
 	void HeaderCtrl2::OnInternalIdle()
 	{
 		wxControl::OnInternalIdle();
-		KxWindowRefreshScheduler::OnInternalIdle();
+		WindowRefreshScheduler::OnInternalIdle();
 	}
 
 	wxRect HeaderCtrl2::GetDropdownRect(const Column& column) const

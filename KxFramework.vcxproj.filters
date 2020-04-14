@@ -685,12 +685,6 @@
     <ClInclude Include="Kx\RTTI\Common.h">
       <Filter>Kx\RTTI</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxWindowUpdateLocker.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxWindowRefreshScheduler.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\DataView2\HeaderCtrl2.h">
       <Filter>Header Files\GUI\DataView2</Filter>
     </ClInclude>
@@ -1205,6 +1199,9 @@
       <Filter>Kx\UI</Filter>
     </ClInclude>
     <ClInclude Include="Kx\UI\WindowUpdateLocker.h">
+      <Filter>Kx\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\WindowRefreshScheduler.h">
       <Filter>Kx\UI</Filter>
     </ClInclude>
   </ItemGroup>

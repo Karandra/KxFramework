@@ -1,6 +1,6 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxWindowRefreshScheduler.h"
+#include "Kx/UI/WindowRefreshScheduler.h"
 
 enum KxImageView_BGMode
 {
@@ -16,7 +16,7 @@ enum KxImageView_ScaleMode
 	KxIV_SCALE_ASPECT_FILL = wxStaticBitmapBase::Scale_AspectFill,
 };
 
-class KX_API KxImageView: public KxWindowRefreshScheduler<wxSystemThemedControl<wxControl>>
+class KX_API KxImageView: public KxFramework::WindowRefreshScheduler<wxSystemThemedControl<wxControl>>
 {
 	private:
 		wxGraphicsRenderer* m_Renderer = nullptr;

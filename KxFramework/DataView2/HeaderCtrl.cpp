@@ -591,7 +591,7 @@ namespace KxDataView2
 			m_UpdateColumns = false;
 		}
 		wxHeaderCtrl::OnInternalIdle();
-		KxWindowRefreshScheduler::OnInternalIdle();
+		WindowRefreshScheduler::OnInternalIdle();
 	}
 
 	void HeaderCtrl::UpdateColumn(const Column& column)

@@ -223,7 +223,7 @@ void KxThumbView::OnInternalIdle()
 	}
 
 	wxVScrolledWindow::OnInternalIdle();
-	KxWindowRefreshScheduler::OnInternalIdle();
+	WindowRefreshScheduler::OnInternalIdle();
 }
 
 bool KxThumbView::Create(wxWindow* parent,

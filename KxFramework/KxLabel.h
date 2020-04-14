@@ -1,6 +1,6 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxWindowRefreshScheduler.h"
+#include "Kx/UI/WindowRefreshScheduler.h"
 
 enum
 {
@@ -13,7 +13,7 @@ enum
 	KxLABEL_COLORED = 1 << 4,
 };
 
-class KX_API KxLabel: public KxWindowRefreshScheduler<wxSystemThemedControl<wxStaticText>>
+class KX_API KxLabel: public KxFramework::WindowRefreshScheduler<wxSystemThemedControl<wxStaticText>>
 {
 	private:
 		wxEvtHandler m_EvtHandler;

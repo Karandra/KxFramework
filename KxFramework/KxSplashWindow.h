@@ -1,6 +1,6 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxWindowRefreshScheduler.h"
+#include "Kx/UI/WindowRefreshScheduler.h"
 
 enum
 {
@@ -8,7 +8,7 @@ enum
 	KxSPLASH_CENTER_ON_PARENT = 1 << 0,
 };
 
-class KX_API KxSplashWindow: public KxWindowRefreshScheduler<wxFrame>
+class KX_API KxSplashWindow: public KxFramework::WindowRefreshScheduler<wxFrame>
 {
 	private:
 		wxBitmap m_Bitmap;

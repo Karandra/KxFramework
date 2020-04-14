@@ -1,6 +1,6 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxWindowRefreshScheduler.h"
+#include "Kx/UI/WindowRefreshScheduler.h"
 #include "KxEvent.h"
 
 KxEVENT_DECLARE_GLOBAL(wxCommandEvent, THUMBVIEW_SELECTED);
@@ -29,7 +29,7 @@ class KX_API KxThumbViewItem final
 		}
 };
 
-class KX_API KxThumbView: public KxWindowRefreshScheduler<wxSystemThemedControl<wxVScrolledWindow>>
+class KX_API KxThumbView: public KxFramework::WindowRefreshScheduler<wxSystemThemedControl<wxVScrolledWindow>>
 {
 	private:
 		enum: size_t

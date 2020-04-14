@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxDataView2Event.h"
 #include "Kx/Drawing/ImageList.h"
-#include "KxFramework/KxWindowRefreshScheduler.h"
+#include "Kx/UI/WindowRefreshScheduler.h"
 #include <wx/headerctrl.h>
 #include <wx/overlay.h>
 
@@ -16,7 +16,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API HeaderCtrl2: public KxWindowRefreshScheduler<wxSystemThemedControl<wxControl>>
+	class KX_API HeaderCtrl2: public KxFramework::WindowRefreshScheduler<wxSystemThemedControl<wxControl>>
 	{
 		friend class View;
 		friend class MainWindow;

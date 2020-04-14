@@ -1,12 +1,12 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxWindowRefreshScheduler.h"
+#include "Kx/UI/WindowRefreshScheduler.h"
 #include <wx/html/htmlwin.h>
 #include "Kx/General/Color.h"
 using KxColor = KxFramework::Color;
 class KX_API KxMenu;
 
-class KX_API KxHTMLWindow: public KxWindowRefreshScheduler<wxHtmlWindow>, public wxTextEntry
+class KX_API KxHTMLWindow: public KxFramework::WindowRefreshScheduler<wxHtmlWindow>, public wxTextEntry
 {
 	public:
 		static wxString ProcessPlainText(const wxString& text);
@@ -51,7 +51,7 @@ class KX_API KxHTMLWindow: public KxWindowRefreshScheduler<wxHtmlWindow>, public
 	public:
 		static const long DefaultStyle = wxHW_DEFAULT_STYLE;
 		
-		KxHTMLWindow() {}
+		KxHTMLWindow() = default;
 		KxHTMLWindow(wxWindow* parent,
 					  wxWindowID id,
 					  const wxString& text = wxEmptyString,

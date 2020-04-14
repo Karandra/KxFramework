@@ -329,8 +329,6 @@
     <ClInclude Include="KxFramework\KxTypedefs.h" />
     <ClInclude Include="KxFramework\KxUtility.h" />
     <ClInclude Include="KxFramework\KxWebView.h" />
-    <ClInclude Include="KxFramework\KxWindowRefreshScheduler.h" />
-    <ClInclude Include="KxFramework\KxWindowUpdateLocker.h" />
     <ClInclude Include="KxFramework\KxWithDropdownMenu.h" />
     <ClInclude Include="KxFramework\KxWxRTTI.h" />
     <ClInclude Include="KxStdAfx.h" />
@@ -520,6 +518,7 @@
     <ClInclude Include="Kx\UI\StdButton.h" />
     <ClInclude Include="Kx\UI\StdIcon.h" />
     <ClInclude Include="Kx\UI\Validator.h" />
+    <ClInclude Include="Kx\UI\WindowRefreshScheduler.h" />
     <ClInclude Include="Kx\UI\WindowUpdateLocker.h" />
     <ClInclude Include="Kx\Utility.hpp" />
     <ClInclude Include="Kx\Utility\CallAtScopeExit.h" />

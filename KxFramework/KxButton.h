@@ -1,14 +1,14 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxWithDropdownMenu.h"
-#include "KxFramework/KxWindowRefreshScheduler.h"
+#include "Kx/UI/WindowRefreshScheduler.h"
 #include "KxEvent.h"
 
 KxEVENT_DECLARE_GLOBAL(wxCommandEvent, BUTTON);
 KxEVENT_DECLARE_GLOBAL(wxContextMenuEvent, BUTTON_MENU);
 
 class KX_API KxButton:
-	public KxWindowRefreshScheduler<wxSystemThemedControl<wxAnyButton>>,
+	public KxFramework::WindowRefreshScheduler<wxSystemThemedControl<wxAnyButton>>,
 	public KxWithDropdownMenu
 {
 	public:
@@ -37,7 +37,7 @@ class KX_API KxButton:
 		wxSize DoGetSizeFromTextSize(int xlen, int ylen = -1) const override;
 
 	public:
-		KxButton() {}
+		KxButton() = default;
 		KxButton(wxWindow* parent,
 				  wxWindowID id,
 				  const wxString& label,
