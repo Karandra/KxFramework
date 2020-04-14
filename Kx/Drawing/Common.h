@@ -5,6 +5,18 @@
 #include <wx/bitmap.h>
 #include "Kx/System/UndefWindows.h"
 
+namespace KxFramework
+{
+	enum class GraphicsRendererType
+	{
+		None = -1,
+		Direct2D,
+		GDIPlus,
+		Sciter,
+		Cairo
+	};
+}
+
 namespace KxFramework::Drawing
 {
 	constexpr int InvalidImageIndex = -1;

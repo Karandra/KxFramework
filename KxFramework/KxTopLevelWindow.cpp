@@ -3,7 +3,6 @@
 #include "KxFramework/KxSystemAPI.h"
 #include "KxFramework/KxMenu.h"
 #include "KxFramework/KxUtility.h"
-#include "KxFramework/KxGraphicsContext.h"
 #include "KxFramework/KxIncludeWindows.h"
 #include <DWMAPI.h>
 

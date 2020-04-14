@@ -214,6 +214,9 @@
     <Filter Include="Kx\Drawing">
       <UniqueIdentifier>{fbcc6e41-fe9c-453d-967a-8c07c5a548f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\Drawing\Private">
+      <UniqueIdentifier>{d0521874-4a25-4cdf-b542-c5159ced03de}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -586,16 +589,7 @@
     <ClInclude Include="KxFramework\DataView2\DragAndDrop.h">
       <Filter>Header Files\GUI\DataView2</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxGraphicsCanvas.h">
-      <Filter>Header Files\Drawing</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxBitmapGraphicsCanvas.h">
-      <Filter>Header Files\Drawing</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxGCUtility.h">
-      <Filter>Header Files\Drawing</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxImageGraphicsCanvas.h">
       <Filter>Header Files\Drawing</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxComponentSystem.h">
@@ -1221,6 +1215,18 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxDataViewComboBox.h">
       <Filter>Header Files\GUI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Drawing\GraphicsCanvas.h">
+      <Filter>Kx\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Drawing\BitmapGraphicsCanvas.h">
+      <Filter>Kx\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Drawing\Private\GraphicsCanvas.h">
+      <Filter>Kx\Drawing\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Drawing\ImageGraphicsCanvas.h">
+      <Filter>Kx\Drawing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

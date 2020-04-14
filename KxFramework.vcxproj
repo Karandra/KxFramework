@@ -257,7 +257,6 @@
     <ClInclude Include="KxFramework\KxDPIAwareness.h" />
     <ClInclude Include="KxFramework\KxToolTipEx.h" />
     <ClInclude Include="KxFramework\KxBitmapComboBox.h" />
-    <ClInclude Include="KxFramework\KxBitmapGraphicsCanvas.h" />
     <ClInclude Include="KxFramework\KxButton.h" />
     <ClInclude Include="KxFramework\KxButtonType.h" />
     <ClInclude Include="KxFramework\KxCheckBox.h" />
@@ -282,8 +281,6 @@
     <ClInclude Include="KxFramework\KxFrame.h" />
     <ClInclude Include="KxFramework\KxFramework.h" />
     <ClInclude Include="KxFramework\KxGCUtility.h" />
-    <ClInclude Include="KxFramework\KxGraphicsCanvas.h" />
-    <ClInclude Include="KxFramework\KxImageGraphicsCanvas.h" />
     <ClInclude Include="KxFramework\KxIncludes.h" />
     <ClInclude Include="KxFramework\KxHTMLWindow.h" />
     <ClInclude Include="KxFramework\KxIconType.h" />
@@ -375,9 +372,13 @@
     <ClInclude Include="Kx\Crypto\ISecretStore.h" />
     <ClInclude Include="Kx\Crypto\SecretValue.h" />
     <ClInclude Include="Kx\Drawing.hpp" />
+    <ClInclude Include="Kx\Drawing\BitmapGraphicsCanvas.h" />
     <ClInclude Include="Kx\Drawing\Common.h" />
+    <ClInclude Include="Kx\Drawing\GraphicsCanvas.h" />
+    <ClInclude Include="Kx\Drawing\ImageGraphicsCanvas.h" />
     <ClInclude Include="Kx\Drawing\ImageList.h" />
     <ClInclude Include="Kx\Drawing\ImageSet.h" />
+    <ClInclude Include="Kx\Drawing\Private\GraphicsCanvas.h" />
     <ClInclude Include="Kx\Drawing\WithImageList.h" />
     <ClInclude Include="Kx\EventSystem.hpp" />
     <ClInclude Include="Kx\EventSystem\BasicEvtHandler.h" />
