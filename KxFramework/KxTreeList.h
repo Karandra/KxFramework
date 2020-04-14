@@ -1,6 +1,6 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxWithImageList.h"
+#include "KX/Drawing/WithImageList.h"
 #include "KxEvent.h"
 
 KxEVENT_DECLARE_GLOBAL(wxTreeListEvent, TREELIST_ITEM_ACTIVATED);
@@ -153,7 +153,7 @@ class KX_API KxTreeListItem
 typedef std::vector<KxTreeListItem> KxTreeListItems;
 
 //////////////////////////////////////////////////////////////////////////
-class KX_API KxTreeList: public KxWithImageListWrapper<wxTreeListCtrl>
+class KX_API KxTreeList: public KxFramework::WithImageListWrapper<wxTreeListCtrl>
 {
 	friend class KxTreeListItem;
 

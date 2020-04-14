@@ -88,12 +88,12 @@ void KxStatusBarEx::OnPaint(wxPaintEvent& event)
 		}
 
 		// If icons are enabled update max width
-		int imageIndex = NO_IMAGE;
+		int imageIndex = KxFramework::Drawing::InvalidImageIndex;
 		if (auto it = m_Images.find(i); it != m_Images.end())
 		{
 			imageIndex = it->second;
 		}
-		if (imageIndex != NO_IMAGE && HasImageList())
+		if (imageIndex != KxFramework::Drawing::InvalidImageIndex && HasImageList())
 		{
 			maxWidth -= GetImageList()->GetSize().GetWidth();
 		}
@@ -105,7 +105,7 @@ void KxStatusBarEx::OnPaint(wxPaintEvent& event)
 		}
 
 		// Draw the label and/or icon
-		if (imageIndex == NO_IMAGE || !HasImageList())
+		if (imageIndex == KxFramework::Drawing::InvalidImageIndex || !HasImageList())
 		{
 			dc.DrawLabel(label, rect, wxALIGN_CENTER_VERTICAL);
 		}
@@ -213,7 +213,7 @@ bool KxStatusBarEx::Create(wxWindow* parent,
 		SetStatusWidths(KxIntVector(fieldsCount, -1));
 		for (int i = 0; i < GetFieldsCount(); i++)
 		{
-			m_Images[i] = NO_IMAGE;
+			m_Images[i] = KxFramework::Drawing::InvalidImageIndex;
 		}
 
 		Bind(wxEVT_PAINT, &KxStatusBarEx::OnPaint, this);

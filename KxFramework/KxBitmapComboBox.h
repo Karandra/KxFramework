@@ -1,8 +1,8 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxWithImageList.h"
+#include "Kx/Drawing/WithImageList.h"
 
-class KX_API KxBitmapComboBox: public wxSystemThemedControl<wxBitmapComboBox>, public KxWithImageList
+class KX_API KxBitmapComboBox: public wxSystemThemedControl<wxBitmapComboBox>, public KxFramework::WithImageList
 {
 	public:
 		static const long DefaultStyle = wxTE_PROCESS_ENTER|wxCB_DROPDOWN|wxCB_READONLY;
@@ -55,13 +55,13 @@ class KX_API KxBitmapComboBox: public wxSystemThemedControl<wxBitmapComboBox>, p
 
 	public:
 		void SetVisibleItemsCount(size_t count);
-		int InsertItem(const wxString& s, size_t i, int imageID = NO_IMAGE);
-		int AddItem(const wxString& s, int imageID = NO_IMAGE);
+		int InsertItem(const wxString& s, size_t i, int imageID = KxFramework::Drawing::InvalidImageIndex);
+		int AddItem(const wxString& s, int imageID = KxFramework::Drawing::InvalidImageIndex);
 		void RemoveItem(size_t i);
 		void Clear() override;
 
 		int GetItemImage(size_t i) const;
-		void SetItemImage(size_t i, int imageID = NO_IMAGE);
+		void SetItemImage(size_t i, int imageID = KxFramework::Drawing::InvalidImageIndex);
 
 		wxSize GetBitmapSize() const override
 		{

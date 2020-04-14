@@ -12,9 +12,9 @@ namespace KxDataView2
 		{
 			return true;
 		}
-		else if (const KxImageList* imageList = nullptr; value.GetAs(&imageList))
+		else if (const KxFramework::ImageList* imageList = nullptr; value.GetAs(&imageList))
 		{
-			KxWithImageList::SetImageList(imageList);
+			WithImageList::SetImageList(imageList);
 			return true;
 		}
 		return false;

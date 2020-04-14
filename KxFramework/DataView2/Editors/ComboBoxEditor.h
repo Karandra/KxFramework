@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView2/Editor.h"
-#include <KxFramework/KxWithImageList.h>
+#include "Kx/Drawing/WithImageList.h"
 
 namespace KxDataView2
 {
@@ -54,7 +54,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API ComboBoxEditor: public Editor, public ComboBoxEditorBase, public KxWithImageList
+	class KX_API ComboBoxEditor: public Editor, public ComboBoxEditorBase, public KxFramework::WithImageList
 	{
 		private:
 			KxStringVector m_Items;

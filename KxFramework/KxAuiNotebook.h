@@ -1,10 +1,10 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxWithImageList.h"
+#include "Kx/Drawing/WithImageList.h"
 #include <wx/aui/auibook.h>
 #include <wx/aui/dockart.h>
 
-class KX_API KxAuiNotebook: public KxWithImageListWrapper<wxAuiNotebook>
+class KX_API KxAuiNotebook: public KxFramework::WithImageListWrapper<wxAuiNotebook>
 {
 	public:
 		enum RendererType
@@ -21,7 +21,7 @@ class KX_API KxAuiNotebook: public KxWithImageListWrapper<wxAuiNotebook>
 	public:
 		static const long DefaultStyle = wxAUI_NB_TOP|wxAUI_NB_SCROLL_BUTTONS;
 
-		KxAuiNotebook() {}
+		KxAuiNotebook() = default;
 		KxAuiNotebook(wxWindow* parent,
 					  wxWindowID id,
 					  long style = DefaultStyle

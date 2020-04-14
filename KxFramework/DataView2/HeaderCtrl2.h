@@ -1,8 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/DataView/KxDataViewConstants.h"
 #include "KxFramework/KxDataView2Event.h"
-#include "KxFramework/KxImageList.h"
+#include "Kx/Drawing/ImageList.h"
 #include "KxFramework/KxWindowRefreshScheduler.h"
 #include <wx/headerctrl.h>
 #include <wx/overlay.h>

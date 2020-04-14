@@ -7,6 +7,11 @@
 
 namespace KxFramework::Drawing
 {
+	constexpr int InvalidImageIndex = -1;
+}
+
+namespace KxFramework::Drawing
+{
 	wxIcon ToIcon(const wxImage& image);
 	wxIcon ToIcon(const wxBitmap& bitmap);
 

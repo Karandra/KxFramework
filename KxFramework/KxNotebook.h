@@ -1,13 +1,13 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxWithImageList.h"
+#include "Kx/Drawing/WithImageList.h"
 
-class KX_API KxNotebook: public KxWithImageListWrapper<wxNotebook>
+class KX_API KxNotebook: public KxFramework::WithImageListWrapper<wxNotebook>
 {
 	public:
 		static const long DefaultStyle = 0;
 
-		KxNotebook() {}
+		KxNotebook() = default;
 		KxNotebook(wxWindow* parent,
 				   wxWindowID id,
 				   long style = DefaultStyle

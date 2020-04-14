@@ -1,6 +1,6 @@
 #pragma once
 #include "KxFramework/KxStatusBar.h"
-#include "KxFramework/KxWithImageList.h"
+#include "Kx/Drawing/WithImageList.h"
 #include "KxFramework/KxIProgressBar.h"
 
 enum
@@ -11,7 +11,7 @@ enum
 	KxSBE_MASK = KxSBE_INHERIT_COLORS|KxSBE_SEPARATORS_ENABLED
 };
 
-class KX_API KxStatusBarEx:	public KxStatusBar,	public KxWithImageList,	public KxIProgressBar
+class KX_API KxStatusBarEx:	public KxStatusBar,	public KxFramework::WithImageList, public KxIProgressBar
 {
 	private:
 		std::unordered_map<int, int> m_Images;

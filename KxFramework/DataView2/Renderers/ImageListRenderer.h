@@ -1,12 +1,12 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView2/Renderer.h"
-#include <KxFramework/KxWithImageList.h>
+#include "Kx/Drawing/WithImageList.h"
 #include "BitmapListRenderer.h"
 
 namespace KxDataView2
 {
-	class KX_API ImageListValue: public TextValue, public BitmapValueBase, public KxWithImageList
+	class KX_API ImageListValue: public TextValue, public BitmapValueBase, public KxFramework::WithImageList
 	{
 		public:
 			ImageListValue() = default;
@@ -14,13 +14,13 @@ namespace KxDataView2
 				:TextValue(text)
 			{
 			}
-			ImageListValue(const KxImageList& imageList)
+			ImageListValue(const KxFramework::ImageList& imageList)
 			{
-				KxWithImageList::SetImageList(&imageList);
+				WithImageList::SetImageList(&imageList);
 			}
-			ImageListValue(KxImageList* imageList)
+			ImageListValue(KxFramework::ImageList* imageList)
 			{
-				KxWithImageList::AssignImageList(imageList);
+				WithImageList::AssignImageList(imageList);
 			}
 
 		public:
@@ -38,7 +38,7 @@ namespace KxDataView2
 			}
 			size_t GetBitmapsCount() const
 			{
-				if (const KxImageList* imageList = KxWithImageList::GetImageList())
+				if (const KxFramework::ImageList* imageList = WithImageList::GetImageList())
 				{
 					return imageList->GetImageCount();
 				}
@@ -46,7 +46,7 @@ namespace KxDataView2
 			}
 			wxBitmap GetBitmap(size_t index) const
 			{
-				const KxImageList* imageList = KxWithImageList::GetImageList();
+				const KxFramework::ImageList* imageList = WithImageList::GetImageList();
 				if (imageList && index < (size_t)imageList->GetImageCount())
 				{
 					return imageList->GetBitmap(index);
@@ -55,14 +55,14 @@ namespace KxDataView2
 			}
 			void AddBitmap(const wxBitmap& bitmap)
 			{
-				if (KxImageList* imageList = KxWithImageList::GetImageList())
+				if (KxFramework::ImageList* imageList = WithImageList::GetImageList())
 				{
 					imageList->Add(bitmap);
 				}
 			}
 			void ClearBitmaps()
 			{
-				KxWithImageList::SetImageList(nullptr);
+				WithImageList::SetImageList(nullptr);
 			}
 	};
 }

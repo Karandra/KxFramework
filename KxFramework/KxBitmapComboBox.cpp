@@ -30,7 +30,7 @@ void KxBitmapComboBox::SetVisibleItemsCount(size_t count)
 int KxBitmapComboBox::InsertItem(const wxString& s, size_t i, int imageID)
 {
 	int index = -1;
-	if (HasImageList() && imageID != NO_IMAGE)
+	if (HasImageList() && imageID != KxFramework::Drawing::InvalidImageIndex)
 	{
 		index = wxBitmapComboBox::Insert(s, GetImageList()->GetBitmap(imageID), i);
 	}
@@ -66,13 +66,13 @@ int KxBitmapComboBox::GetItemImage(size_t i) const
 	{
 		return m_ImageIDs.at(i);
 	}
-	return NO_IMAGE;
+	return KxFramework::Drawing::InvalidImageIndex;
 }
 void KxBitmapComboBox::SetItemImage(size_t i, int imageID)
 {
 	if (HasImageList())
 	{
-		if (imageID != NO_IMAGE)
+		if (imageID != KxFramework::Drawing::InvalidImageIndex)
 		{
 			m_ImageIDs[i] = imageID;
 			wxBitmapComboBox::SetItemBitmap(i, GetImageList()->GetBitmap(imageID));

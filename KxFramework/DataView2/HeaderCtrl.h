@@ -1,8 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/DataView/KxDataViewConstants.h"
 #include "KxFramework/KxDataView2Event.h"
-#include "KxFramework/KxImageList.h"
+#include "KX/Drawing/ImageList.h"
 #include "KxFramework/KxWindowRefreshScheduler.h"
 struct _HD_ITEMW;
 
@@ -33,7 +32,7 @@ namespace KxDataView2
 			View* m_View = nullptr;
 			HWND m_HeaderCtrlHandle = nullptr;
 
-			std::unique_ptr<KxImageList> m_ImageList;
+			std::unique_ptr<KxFramework::ImageList> m_ImageList;
 			Column* m_DraggedColumn = nullptr;
 			Column* m_ResizedColumn = nullptr;
 			bool m_UpdateColumns = false;

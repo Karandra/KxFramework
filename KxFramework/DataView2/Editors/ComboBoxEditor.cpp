@@ -50,7 +50,7 @@ namespace KxDataView2
 		{
 			for (size_t i = 0; i < m_Items.size(); i++)
 			{
-				static_cast<KxBitmapComboBox*>(editor)->AddItem(m_Items[i], i < m_BitmapIndexes.size() ? m_BitmapIndexes[i] : NO_IMAGE);
+				static_cast<KxBitmapComboBox*>(editor)->AddItem(m_Items[i], i < m_BitmapIndexes.size() ? m_BitmapIndexes[i] : KxFramework::Drawing::InvalidImageIndex);
 			}
 		}
 		else

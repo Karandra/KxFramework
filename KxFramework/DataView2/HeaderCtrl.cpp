@@ -246,7 +246,7 @@ namespace KxDataView2
 
 			if (!m_ImageList)
 			{
-				m_ImageList = std::make_unique<KxImageList>(bitmap.GetWidth(), bitmap.GetHeight());
+				m_ImageList = std::make_unique<KxFramework::ImageList>(bitmap.GetWidth(), bitmap.GetHeight());
 				Header_SetImageList(GetHeaderCtrlHandle(), m_ImageList->GetHIMAGELIST());
 			}
 			item.iImage = m_ImageList->Add(bitmap);

@@ -1,5 +1,4 @@
 #include "KxStdAfx.h"
-#include "KxFramework/KxImageList.h"
 #include "KxFramework/KxButton.h"
 #include "KxFramework/KxLibrary.h"
 #include "KxFramework/KxMenu.h"
