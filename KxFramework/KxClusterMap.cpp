@@ -15,10 +15,10 @@ void KxClusterMap::OnPaint(wxPaintEvent& event)
 
 	if (m_ItemCount != 0 && m_ItemSize > 0)
 	{
-		const int contrast = 40;
+		constexpr float contrast = 0.7f;
 		const Color color = GetForegroundColour();
 		dc.SetBrush(color);
-		dc.SetPen(color.GetContrastColor(color.ChangeLightness(100 + contrast), color.ChangeLightness(100 - contrast)));
+		dc.SetPen(color.GetContrastColor(color.ChangeLightness(Angle::FromNormalized(contrast)), color.ChangeLightness(Angle::FromNormalized(-contrast))));
 		
 		wxPoint pos;
 		int blocksDrawn = 0;

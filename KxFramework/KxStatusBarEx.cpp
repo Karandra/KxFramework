@@ -35,7 +35,7 @@ void KxStatusBarEx::OnPaint(wxPaintEvent& event)
 			{
 				backgroundRect.SetWidth(m_ProgressPos == m_ProgressRange ? clientSize.GetWidth() : clientSize.GetWidth() * ((double)m_ProgressPos / m_ProgressRange));
 
-				dc.SetBrush(Color(GetBackgroundColour()).RotateHue(30));
+				dc.SetBrush(Color(GetBackgroundColour()).RotateHue(Angle::FromDegrees(30)));
 				dc.DrawRectangle(backgroundRect);
 			}
 		}

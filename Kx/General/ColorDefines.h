@@ -1,4 +1,5 @@
 #pragma once
+#include "Angle.h"
 #include <cstdint>
 #include <algorithm>
 #include <type_traits>
@@ -147,7 +148,7 @@ namespace KxFramework
 	{
 		using ValueType = float;
 
-		float Hue = 0;
+		Angle Hue = Angle::FromNormalized(0);
 		float Saturation = 0;
 		float Lightness = 0;
 		float Alpha = 0;
@@ -156,7 +157,7 @@ namespace KxFramework
 	{
 		using ValueType = float;
 
-		float Hue = 0;
+		Angle Hue = Angle::FromNormalized(0);
 		float Saturation = 0;
 		float Value = 0;
 		float Alpha = 0;

@@ -1219,6 +1219,9 @@
     <ClInclude Include="Kx\Drawing\UxTheme.h">
       <Filter>Kx\Drawing</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\General\Angle.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />

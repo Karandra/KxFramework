@@ -90,9 +90,11 @@ void KxStdDialog::EnableGlassFrame()
 }
 void KxStdDialog::OnDrawFrameBorder(wxPaintEvent& event)
 {
+	using namespace KxFramework;
+
 	wxAutoBufferedPaintDC dc(GetContentWindow());
 	dc.Clear();
-	dc.SetPen(KxTopLevelWindow::DWMGetGlassColor().ChangeLightness(115));
+	dc.SetPen(KxTopLevelWindow::DWMGetGlassColor().ChangeLightness(Angle::FromNormalized(0.6f)));
 	dc.SetBrush(*wxTRANSPARENT_BRUSH);
 	dc.SetBackground(*wxTRANSPARENT_BRUSH);
 

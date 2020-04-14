@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "ColorDefines.h"
+#include "Angle.h"
 #include "String.h"
 #include <wx/colour.h>
 #include <wx/brush.h>
@@ -327,19 +328,19 @@ namespace KxFramework
 				// Hue
 				if (C == 0.0f)
 				{
-					hsl.Hue = 0;
+					hsl.Hue = Angle::FromDegrees(0);
 				}
 				else if (V == r)
 				{
-					hsl.Hue = 60.0f * (0.0f + (g - b) / C);
+					hsl.Hue = Angle::FromDegrees(60.0f * (0.0f + (g - b) / C));
 				}
 				else if (V == g)
 				{
-					hsl.Hue = 60.0f * (2.0f + (b - r) / C);
+					hsl.Hue = Angle::FromDegrees(60.0f * (2.0f + (b - r) / C));
 				}
 				else if (V == b)
 				{
-					hsl.Hue = 60.0f * (4.0f + (r - g) / C);
+					hsl.Hue = Angle::FromDegrees(60.0f * (4.0f + (r - g) / C));
 				}
 
 				// Lightness
@@ -363,7 +364,7 @@ namespace KxFramework
 				const float a = hsl.Saturation * std::min(hsl.Lightness, 1.0f - hsl.Lightness);
 				auto f = [&](int n)
 				{
-					const float k = (n + static_cast<int>(hsl.Hue) / 30) % 12;
+					const float k = static_cast<int>(n + hsl.Hue.ToDegrees() / 30.0f) % 12;
 					return hsl.Lightness - a * std::max(-1.0f, std::min({k - 3.0f, 9.0f - k, 1.0f}));
 				};
 
@@ -405,8 +406,9 @@ namespace KxFramework
 
 				return temp;
 			}
-			constexpr Color ChangeLightness(float alpha) const noexcept
+			constexpr Color ChangeLightness(Angle alphaAngle) const noexcept
 			{
+				float alpha = alphaAngle.ToNormalized();
 				if (alpha != 0.5f)
 				{
 					using Traits = ColorTraits<float>;
@@ -415,14 +417,14 @@ namespace KxFramework
 					if (alpha > 0.5f)
 					{
 						// Blend with white
+						alpha = 1.0f - alpha;
 						background = Traits::max();
-						alpha = 1.0f - alpha; 
 					}
 					else
 					{
 						// Blend with black
-						background = 0;
 						alpha = 1.0f + alpha;
+						background = 0;
 					}
 
 					auto temp = GetNormalized();
@@ -433,25 +435,17 @@ namespace KxFramework
 				}
 				return *this;
 			}
-			constexpr Color RotateHue(float angle) const noexcept
+			constexpr Color RotateHue(Angle angle) const noexcept
 			{
 				PackedHSL hsl = GetHSL();
-
 				hsl.Hue += angle;
-				if (hsl.Hue > 360.0f)
-				{
-					hsl.Hue -= 360.0f;
-				}
-				else if (hsl.Hue < 0.0f)
-				{
-					hsl.Hue += 360.0f;
-				}
-				return Color().SetHSL(hsl);
+
+				return Color::FromHSL(hsl);
 			}
 			constexpr Color Invert() const noexcept
 			{
 				PackedHSL hsl = GetHSL();
-				hsl.Hue = static_cast<int>(hsl.Hue + 180.0f) % 360;
+				hsl.Hue += Angle::FromNormalized(0.5f);
 
 				return Color().SetHSL(hsl);
 			}
@@ -524,11 +518,11 @@ namespace KxFramework
 			}
 
 		public:
-			constexpr explicit operator bool() const
+			constexpr explicit operator bool() const noexcept
 			{
 				return IsValid();
 			}
-			constexpr bool operator!() const
+			constexpr bool operator!() const noexcept
 			{
 				return !IsValid();
 			}

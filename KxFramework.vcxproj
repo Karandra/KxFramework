@@ -405,6 +405,7 @@
     <ClInclude Include="Kx\FileSystem\StorageVolume.h" />
     <ClInclude Include="Kx\FileSystem\NativeFileSystem.h" />
     <ClInclude Include="Kx\General.hpp" />
+    <ClInclude Include="Kx\General\Angle.h" />
     <ClInclude Include="Kx\General\Any.h" />
     <ClInclude Include="Kx\General\BinarySize.h" />
     <ClInclude Include="Kx\General\Color.h" />
