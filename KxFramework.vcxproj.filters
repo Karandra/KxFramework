@@ -454,13 +454,7 @@
     <ClInclude Include="KxFramework\KxDataViewListModelEx.h">
       <Filter>Header Files\GUI\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxArchiveEvent.h">
-      <Filter>Header Files\Events</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxAuiToolBarEvent.h">
-      <Filter>Header Files\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxFileOperationEvent.h">
       <Filter>Header Files\Events</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxMenuEvent.h">
@@ -584,15 +578,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxWebSocketEvent.h">
-      <Filter>Header Files\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxCURL.h">
-      <Filter>Header Files\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxCURLStructs.h">
-      <Filter>Header Files\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxCURLEvent.h">
       <Filter>Header Files\Events</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxISerializer.h">
@@ -1393,6 +1378,30 @@
     <ClInclude Include="Kx\Network\Private\URXHelper.h">
       <Filter>Kx\Network\Private</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Network\CURLEvent.h">
+      <Filter>Kx\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Network\HTTPStatusCode.h">
+      <Filter>Kx\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Network\CURLReply.h">
+      <Filter>Kx\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Network\CURLSession.h">
+      <Filter>Kx\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Network\Private\CURL.h">
+      <Filter>Kx\Network\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\FileSystem\FileOperationEvent.h">
+      <Filter>Kx\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Network\CURL.h">
+      <Filter>Kx\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Compression\ArchiveEvent.h">
+      <Filter>Kx\Compression</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1588,13 +1597,7 @@
     <ClCompile Include="KxFramework\KxDataViewTreeModelEx.cpp">
       <Filter>Source Files\GUI\DataView</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxArchiveEvent.cpp">
-      <Filter>Source Files\Events</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxAuiToolBarEvent.cpp">
-      <Filter>Source Files\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxFileOperationEvent.cpp">
       <Filter>Source Files\Events</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxMenuEvent.cpp">
@@ -1712,12 +1715,6 @@
       <Filter>Source Files\GUI\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxWebSocketEvent.cpp">
-      <Filter>Source Files\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxCURL.cpp">
-      <Filter>Source Files\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxCURLEvent.cpp">
       <Filter>Source Files\Events</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxISerializer.cpp">
@@ -1866,9 +1863,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\CellState.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxCURLStructs.cpp">
-      <Filter>Source Files\Network</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\ToolTip.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
@@ -2142,6 +2136,27 @@
     </ClCompile>
     <ClCompile Include="Kx\Network\URL.cpp">
       <Filter>Kx\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Network\CURLEvent.cpp">
+      <Filter>Kx\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Network\CURLReply.cpp">
+      <Filter>Kx\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Network\CURLSession.cpp">
+      <Filter>Kx\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Network\Private\CURL.cpp">
+      <Filter>Kx\Network\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Network\CURL.cpp">
+      <Filter>Kx\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Compression\ArchiveEvent.cpp">
+      <Filter>Kx\Compression</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\FileSystem\FileOperationEvent.cpp">
+      <Filter>Kx\FileSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

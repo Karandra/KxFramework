@@ -271,7 +271,6 @@
     <ClInclude Include="KxFramework\KxAnimatedSplashWindow.h" />
     <ClInclude Include="KxFramework\KxAnimation.h" />
     <ClInclude Include="KxFramework\KxApp.h" />
-    <ClInclude Include="KxFramework\KxArchiveEvent.h" />
     <ClInclude Include="KxFramework\KxAuiNotebook.h" />
     <ClInclude Include="KxFramework\KxAuiToolBar.h" />
     <ClInclude Include="KxFramework\KxAuiToolBarEvent.h" />
@@ -300,9 +299,6 @@
     <ClInclude Include="KxFramework\KxComparator.h" />
     <ClInclude Include="KxFramework\KxComponentSystem.h" />
     <ClInclude Include="KxFramework\KxCredentialsDialog.h" />
-    <ClInclude Include="KxFramework\KxCURL.h" />
-    <ClInclude Include="KxFramework\KxCURLEvent.h" />
-    <ClInclude Include="KxFramework\KxCURLStructs.h" />
     <ClInclude Include="KxFramework\KxDataView.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </ExcludedFromBuild>
@@ -330,7 +326,6 @@
     <ClInclude Include="KxFramework\KxDualInputDialog.h" />
     <ClInclude Include="KxFramework\KxDualProgressDialog.h" />
     <ClInclude Include="KxFramework\KxFileBrowseDialog.h" />
-    <ClInclude Include="KxFramework\KxFileOperationEvent.h" />
     <ClInclude Include="KxFramework\KxFileStream.h" />
     <ClInclude Include="KxFramework\KxFormat.h" />
     <ClInclude Include="KxFramework\KxFormatTraits.h" />
@@ -437,6 +432,7 @@
     <ClInclude Include="Kx\Async\DelayedCall.h" />
     <ClInclude Include="Kx\Common.hpp" />
     <ClInclude Include="Kx\Compression.hpp" />
+    <ClInclude Include="Kx\Compression\ArchiveEvent.h" />
     <ClInclude Include="Kx\Compression\Common.h" />
     <ClInclude Include="Kx\Compression\IArchive.h" />
     <ClInclude Include="Kx\Compression\LZ4Stream.h" />
@@ -462,6 +458,7 @@
     <ClInclude Include="Kx\FileSystem.hpp" />
     <ClInclude Include="Kx\FileSystem\Common.h" />
     <ClInclude Include="Kx\FileSystem\FileItem.h" />
+    <ClInclude Include="Kx\FileSystem\FileOperationEvent.h" />
     <ClInclude Include="Kx\FileSystem\FileOperations.h" />
     <ClInclude Include="Kx\FileSystem\FSPath.h" />
     <ClInclude Include="Kx\FileSystem\IFileSystem.h" />
@@ -510,6 +507,12 @@
     <ClInclude Include="Kx\General\XMLDocument.h" />
     <ClInclude Include="Kx\Network.hpp" />
     <ClInclude Include="Kx\Network\Common.h" />
+    <ClInclude Include="Kx\Network\CURL.h" />
+    <ClInclude Include="Kx\Network\CURLSession.h" />
+    <ClInclude Include="Kx\Network\CURLEvent.h" />
+    <ClInclude Include="Kx\Network\CURLReply.h" />
+    <ClInclude Include="Kx\Network\HTTPStatusCode.h" />
+    <ClInclude Include="Kx\Network\Private\CURL.h" />
     <ClInclude Include="Kx\Network\Private\URXHelper.h" />
     <ClInclude Include="Kx\Network\URI.h" />
     <ClInclude Include="Kx\Network\URL.h" />
@@ -656,7 +659,6 @@
     <ClCompile Include="KxFramework\KxAnimatedSplashWindow.cpp" />
     <ClCompile Include="KxFramework\KxAnimation.cpp" />
     <ClCompile Include="KxFramework\KxApp.cpp" />
-    <ClCompile Include="KxFramework\KxArchiveEvent.cpp" />
     <ClCompile Include="KxFramework\KxAuiNotebook.cpp" />
     <ClCompile Include="KxFramework\KxAuiToolBar.cpp" />
     <ClCompile Include="KxFramework\KxAuiToolBarEvent.cpp" />
@@ -677,9 +679,6 @@
     <ClCompile Include="KxFramework\KxComboControl.cpp" />
     <ClCompile Include="KxFramework\KxComboPopup.cpp" />
     <ClCompile Include="KxFramework\KxCredentialsDialog.cpp" />
-    <ClCompile Include="KxFramework\KxCURL.cpp" />
-    <ClCompile Include="KxFramework\KxCURLEvent.cpp" />
-    <ClCompile Include="KxFramework\KxCURLStructs.cpp" />
     <ClCompile Include="KxFramework\KxDataView.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </ExcludedFromBuild>
@@ -707,7 +706,6 @@
     <ClCompile Include="KxFramework\KxDualInputDialog.cpp" />
     <ClCompile Include="KxFramework\KxDualProgressDialog.cpp" />
     <ClCompile Include="KxFramework\KxFileBrowseDialog.cpp" />
-    <ClCompile Include="KxFramework\KxFileOperationEvent.cpp" />
     <ClCompile Include="KxFramework\KxFileStream.cpp" />
     <ClCompile Include="KxFramework\KxFormat.cpp" />
     <ClCompile Include="KxFramework\KxFrame.cpp" />
@@ -791,12 +789,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Kx\Async\Coroutine\CoroutineImpl.cpp" />
+    <ClCompile Include="Kx\Compression\ArchiveEvent.cpp" />
     <ClCompile Include="Kx\Compression\IArchive.cpp" />
     <ClCompile Include="Kx\Compression\LZ4Stream.cpp" />
     <ClCompile Include="Kx\Compression\ZLibStream.cpp" />
     <ClCompile Include="Kx\Crypto\Common.cpp" />
     <ClCompile Include="Kx\Crypto\Crypto.cpp" />
     <ClCompile Include="Kx\Crypto\SecretValue.cpp" />
+    <ClCompile Include="Kx\FileSystem\FileOperationEvent.cpp" />
     <ClCompile Include="Kx\General\Any.cpp" />
     <ClCompile Include="Kx\General\Color.cpp" />
     <ClCompile Include="Kx\General\HTMLDocument.cpp" />
@@ -816,6 +816,11 @@
     <ClCompile Include="Kx\General\XMLDocument.cpp" />
     <ClCompile Include="Kx\General\XMLNode.cpp" />
     <ClCompile Include="Kx\Network\Common.cpp" />
+    <ClCompile Include="Kx\Network\CURL.cpp" />
+    <ClCompile Include="Kx\Network\CURLSession.cpp" />
+    <ClCompile Include="Kx\Network\CURLEvent.cpp" />
+    <ClCompile Include="Kx\Network\CURLReply.cpp" />
+    <ClCompile Include="Kx\Network\Private\CURL.cpp" />
     <ClCompile Include="Kx\Network\URI.cpp" />
     <ClCompile Include="Kx\Network\URL.cpp" />
     <ClCompile Include="Kx\System\CFunctionCompiler.cpp" />

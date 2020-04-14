@@ -1,13 +1,13 @@
 #include "KxStdAfx.h"
 #include "URL.h"
-#include "KxFramework/KxCURL.h"
+#include "CURLSession.h"
 
 namespace KxFramework::Network::Private
 {
 	class URLStream final: public wxInputStream
 	{
 		private:
-			KxCURLSession m_Session;
+			CURLSession m_Session;
 			std::vector<uint8_t> m_Data;
 			bool m_IsDownloaded = false;
 
@@ -16,14 +16,14 @@ namespace KxFramework::Network::Private
 			wxFileOffset m_ContentLength = 0;
 
 		private:
-			void OnDownload(KxCURLEvent& event)
+			void OnDownload(CURLEvent& event)
 			{
-				m_ContentLength = event.GetMajorProcessed();
+				m_ContentLength = event.GetProcessed().GetBytes();
 			}
 			void DownloadData()
 			{
 				wxMemoryOutputStream stream;
-				KxCURLStreamReply reply(stream);
+				CURLStreamReply reply(stream);
 				m_Session.Download(reply);
 
 				m_Data.resize(m_ContentLength);
@@ -55,7 +55,7 @@ namespace KxFramework::Network::Private
 			URLStream(const URL& url)
 				:m_Session(url)
 			{
-				m_Session.Bind(KxEVT_CURL_DOWNLOAD, &URLStream::OnDownload, this);
+				m_Session.Bind(CURLEvent::EvtDownload, &URLStream::OnDownload, this);
 			}
 
 		public:
