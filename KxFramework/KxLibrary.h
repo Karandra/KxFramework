@@ -1,7 +1,6 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxIOwned.h"
-#include "KxFramework/KxWinUndef.h"
+#include "Kx/System/UndefWindows.h"
 #include "Kx/General/MemorySpan.h"
 class KxLibraryUpdateLocker;
 
@@ -91,7 +90,7 @@ class KX_API KxLibraryVersionInfo
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KX_API KxLibrary: public KxIOwnedSimple
+class KX_API KxLibrary
 {
 	friend class KxLibraryUpdateLocker;
 
@@ -114,15 +113,25 @@ class KX_API KxLibrary: public KxIOwnedSimple
 		wxString m_FilePath;
 		HMODULE m_Handle = nullptr;
 		DWORD m_LoadFlags = 0;
+		bool m_OwnHandle = false;
 
 	private:
 		void SetHandle(HMODULE handle);
 
 	public:
-		KxLibrary();
-		KxLibrary(HMODULE libraryHandle);
-		KxLibrary(const wxString& libraryPath, DWORD flags = 0);
-		virtual ~KxLibrary();
+		KxLibrary() = default;
+		KxLibrary(HMODULE libraryHandle)
+		{
+			Load(libraryHandle);
+		}
+		KxLibrary(const wxString& libraryPath, DWORD flags = 0)
+		{
+			Load(libraryPath, flags);
+		}
+		virtual ~KxLibrary()
+		{
+			Unload();
+		}
 
 	public:
 		bool Load(HMODULE libraryHandle);

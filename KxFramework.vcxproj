@@ -248,7 +248,6 @@
     <ClInclude Include="KxFramework\KxAuiToolBarItem.h" />
     <ClInclude Include="KxFramework\KxClusterMap.h" />
     <ClInclude Include="KxFramework\KxCommandEvent.h" />
-    <ClInclude Include="KxFramework\KxEnumClassOperations.h" />
     <ClInclude Include="KxFramework\KxEvent.h" />
     <ClInclude Include="KxFramework\KxHiDPIEnabledWindow.h" />
     <ClInclude Include="KxFramework\KxNotifyEvent.h" />
@@ -282,9 +281,7 @@
     <ClInclude Include="KxFramework\KxIconType.h" />
     <ClInclude Include="KxFramework\KxImageView.h" />
     <ClInclude Include="KxFramework\KxIncludeWindows.h" />
-    <ClInclude Include="KxFramework\KxIOwned.h" />
     <ClInclude Include="KxFramework\KxIProgressBar.h" />
-    <ClInclude Include="KxFramework\KxISerializer.h" />
     <ClInclude Include="KxFramework\KxLabel.h" />
     <ClInclude Include="KxFramework\KxLibrary.h" />
     <ClInclude Include="KxFramework\KxListBox.h" />
@@ -310,7 +307,6 @@
     <ClInclude Include="KxFramework\KxShellLink.h" />
     <ClInclude Include="KxFramework\KxShellMenu.h" />
     <ClInclude Include="KxFramework\KxSimplebook.h" />
-    <ClInclude Include="KxFramework\KxSingleton.h" />
     <ClInclude Include="KxFramework\KxSlider.h" />
     <ClInclude Include="KxFramework\KxSplashWindow.h" />
     <ClInclude Include="KxFramework\KxSplitterWindow.h" />
@@ -339,7 +335,6 @@
     <ClInclude Include="KxFramework\KxWebView.h" />
     <ClInclude Include="KxFramework\KxWindowRefreshScheduler.h" />
     <ClInclude Include="KxFramework\KxWindowUpdateLocker.h" />
-    <ClInclude Include="KxFramework\KxWinUndef.h" />
     <ClInclude Include="KxFramework\KxWithDropdownMenu.h" />
     <ClInclude Include="KxFramework\KxWxRTTI.h" />
     <ClInclude Include="KxStdAfx.h" />
@@ -607,9 +602,7 @@
     <ClCompile Include="KxFramework\KxFrame.cpp" />
     <ClCompile Include="KxFramework\KxHTMLWindow.cpp" />
     <ClCompile Include="KxFramework\KxImageView.cpp" />
-    <ClCompile Include="KxFramework\KxIOwned.cpp" />
     <ClCompile Include="KxFramework\KxIProgressBar.cpp" />
-    <ClCompile Include="KxFramework\KxISerializer.cpp" />
     <ClCompile Include="KxFramework\KxLabel.cpp" />
     <ClCompile Include="KxFramework\KxLibrary.cpp" />
     <ClCompile Include="KxFramework\KxListBox.cpp" />
@@ -634,7 +627,6 @@
     <ClCompile Include="KxFramework\KxShellLink.cpp" />
     <ClCompile Include="KxFramework\KxShellMenu.cpp" />
     <ClCompile Include="KxFramework\KxSimplebook.cpp" />
-    <ClCompile Include="KxFramework\KxSingleton.cpp" />
     <ClCompile Include="KxFramework\KxSlider.cpp" />
     <ClCompile Include="KxFramework\KxSplashWindow.cpp" />
     <ClCompile Include="KxFramework\KxSplitterWindow.cpp" />

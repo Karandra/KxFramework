@@ -1,6 +1,5 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxEnumClassOperations.h"
 #include "Kx/FileSystem/FSPath.h"
 #include "Kx/General/StreamWrappers.h"
 
@@ -184,10 +183,10 @@ class KX_API KxFileStream:
 		wxDECLARE_ABSTRACT_CLASS(KxFileStream);
 };
 
-namespace KxEnumClassOperations
+namespace KxFramework::EnumClass
 {
-	KxImplementEnum(KxFileStream::Access);
-	KxImplementEnum(KxFileStream::Share);
-	KxAllowEnumCastOp(KxFileStream::Disposition);
-	KxImplementEnum(KxFileStream::Flags);
+	Kx_EnumClass_AllowEverything(KxFileStream::Access);
+	Kx_EnumClass_AllowEverything(KxFileStream::Share);
+	Kx_EnumClass_AllowEverything(KxFileStream::Flags);
+	Kx_EnumClass_AllowCast(KxFileStream::Disposition);
 }

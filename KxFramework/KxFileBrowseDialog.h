@@ -5,7 +5,7 @@
 #include "Kx/System/COM.h"
 #include <PropKey.h>
 #include <ShObjIDL.h>
-#include "KxFramework/KxWinUndef.h"
+#include "Kx/System/UndefWindows.h"
 
 enum KxFBD_Mode
 {

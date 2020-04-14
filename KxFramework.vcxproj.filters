@@ -415,15 +415,6 @@
     <ClInclude Include="KxFramework\KxFramework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxISerializer.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxIOwned.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxSingleton.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxWithDropdownMenu.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
@@ -435,9 +426,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxSharedMemory.h">
       <Filter>Header Files\System</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxWinUndef.h">
-      <Filter>Header Files\Misc</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxIncludeWindows.h">
       <Filter>Header Files\Misc</Filter>
@@ -693,9 +681,6 @@
     </ClInclude>
     <ClInclude Include="Kx\Async\DelayedCall.h">
       <Filter>Kx\Async</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxEnumClassOperations.h">
-      <Filter>Header Files\Misc</Filter>
     </ClInclude>
     <ClInclude Include="Kx\RTTI.hpp">
       <Filter>Kx</Filter>
@@ -1413,15 +1398,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxCredentialsDialog.cpp">
       <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxISerializer.cpp">
-      <Filter>Source Files\Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxIOwned.cpp">
-      <Filter>Source Files\Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxSingleton.cpp">
-      <Filter>Source Files\Misc</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxWithDropdownMenu.cpp">
       <Filter>Source Files\Misc</Filter>

@@ -280,25 +280,6 @@ bool KxLibrary::RemoveSearchFolder(const void* pathCookie)
 	return false;
 }
 
-KxLibrary::KxLibrary()
-	:KxIOwnedSimple(false)
-{
-}
-KxLibrary::KxLibrary(HMODULE libraryHandle)
-	:KxIOwnedSimple(false)
-{
-	Load(libraryHandle);
-}
-KxLibrary::KxLibrary(const wxString& libraryPath, DWORD flags)
-	:KxIOwnedSimple(true)
-{
-	Load(libraryPath, flags);
-}
-KxLibrary::~KxLibrary()
-{
-	Unload();
-}
-
 bool KxLibrary::Load(HMODULE libraryHandle)
 {
 	if (!IsOK())
@@ -306,6 +287,7 @@ bool KxLibrary::Load(HMODULE libraryHandle)
 		m_Handle = libraryHandle;
 		m_FilePath = GetFileName();
 		
+		m_OwnHandle = false;
 		m_LoadFlags = 0;
 		if (IsDataFile())
 		{
@@ -316,7 +298,6 @@ bool KxLibrary::Load(HMODULE libraryHandle)
 			m_LoadFlags |= LOAD_LIBRARY_AS_IMAGE_RESOURCE;
 		}
 
-		Disown();
 		return IsOK();
 	}
 	return false;
@@ -328,19 +309,20 @@ bool KxLibrary::Load(const wxString& libraryPath, DWORD flags)
 		m_FilePath = libraryPath;
 		m_LoadFlags = flags;
 		m_Handle = ::LoadLibraryExW(libraryPath.wc_str(), nullptr, flags);
+		m_OwnHandle = true;
 
-		TakeOwnership();
 		return IsOK();
 	}
 	return false;
 }
 void KxLibrary::Unload()
 {
-	if (IsOwned() && IsOK())
+	if (m_OwnHandle && IsOK())
 	{
 		::FreeLibrary(m_Handle);
+		m_Handle = nullptr;
 	}
-	Disown();
+	m_OwnHandle = false;
 }
 
 // Version info

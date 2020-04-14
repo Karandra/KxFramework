@@ -4,7 +4,6 @@
 #include <wx/ustring.h>
 
 using namespace KxFramework;
-using namespace KxEnumClassOperations;
 
 namespace
 {
