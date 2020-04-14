@@ -284,18 +284,20 @@ namespace KxFramework
 				return TDefinition::ToOrExpression(m_Value);
 			}
 
-			constexpr void AddFlag(TEnum value) noexcept
+			constexpr IndexedEnumValue& AddFlag(TEnum value) noexcept
 			{
 				Utility::AddFlagRef(m_Value, value);
+				return *this;
 			}
-			constexpr void RemoveFlag(TEnum value) noexcept
+			constexpr IndexedEnumValue& RemoveFlag(TEnum value) noexcept
 			{
 				Utility::RemoveFlagRef(m_Value, value);
-				*reinterpret_cast<TInt*>(&m_Value) &= ~static_cast<TInt>(value);
+				return *this;
 			}
-			constexpr void ModFlag(TEnum value, bool condition) noexcept
+			constexpr IndexedEnumValue& ModFlag(TEnum value, bool condition) noexcept
 			{
 				Utility::ModFlagRef(m_Value, value, condition);
+				return *this;
 			}
 			constexpr bool HasFlag(TEnum value) const noexcept
 			{
@@ -310,6 +312,12 @@ namespace KxFramework
 			{
 				return m_Value;
 			}
+			constexpr IndexedEnumValue& SetValue(TEnum value) noexcept
+			{
+				m_Value = value;
+				return *this;
+			}
+
 			constexpr TInt ToInt() const noexcept
 			{
 				return static_cast<TInt>(m_Value);
