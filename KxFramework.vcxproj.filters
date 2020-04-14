@@ -49,9 +49,6 @@
     <Filter Include="Source Files\DataStructures">
       <UniqueIdentifier>{5500debe-4bea-4b8a-8086-b9379f060578}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Sizers">
-      <UniqueIdentifier>{683c7eaa-1b43-4e61-9fcd-b25cc37d9d64}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Streams">
       <UniqueIdentifier>{721309c3-9280-403a-863b-7f43020c5be9}</UniqueIdentifier>
     </Filter>
@@ -115,12 +112,6 @@
     <Filter Include="Source Files\GUI\DataView\Renderers">
       <UniqueIdentifier>{3fd7a1f7-8b73-4520-b739-dcc014c8e2c8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Network">
-      <UniqueIdentifier>{862b0d50-977d-4836-aaf1-77f2c6b9e809}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Network">
-      <UniqueIdentifier>{0935cad5-6ab0-410b-b7e6-9e9a0919f579}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Misc">
       <UniqueIdentifier>{9369ebc3-44af-42ee-9987-724cc1b026c9}</UniqueIdentifier>
     </Filter>
@@ -144,12 +135,6 @@
     </Filter>
     <Filter Include="Source Files\GUI\DataView2\Editors">
       <UniqueIdentifier>{321f7c2c-c979-46bd-b38d-fc6ed07d9e83}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Network\WebSocket">
-      <UniqueIdentifier>{d735d763-f912-4371-a8ea-da356c992a13}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Network\WebSocket">
-      <UniqueIdentifier>{df1ef961-dfbe-4512-8860-e66b35662195}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Validators">
       <UniqueIdentifier>{bbc0997b-3c55-47c5-b40b-57d95eb7aae2}</UniqueIdentifier>
@@ -577,9 +562,6 @@
     <ClInclude Include="KxFramework\KxFramework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxWebSocketEvent.h">
-      <Filter>Header Files\Events</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxISerializer.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
@@ -660,9 +642,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\DataView\KxDataViewSortOrder.h">
       <Filter>Header Files\GUI\DataView\Control</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxHTTPStatusCode.h">
-      <Filter>Header Files\Network</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\DataView2\DataView2.h">
       <Filter>Header Files\GUI\DataView2</Filter>
@@ -775,18 +754,6 @@
     <ClInclude Include="KxFramework\DataView2\DataView2Fwd.h">
       <Filter>Header Files\GUI\DataView2</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\WebSocket\IClient.h">
-      <Filter>Header Files\Network\WebSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\WebSocket\Common.h">
-      <Filter>Header Files\Network\WebSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\WebSocket\SecureClient.h">
-      <Filter>Header Files\Network\WebSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxWebSocket.h">
-      <Filter>Header Files\Network</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\DataView2\DragAndDrop.h">
       <Filter>Header Files\GUI\DataView2</Filter>
     </ClInclude>
@@ -841,14 +808,8 @@
     <ClInclude Include="KxFramework\KxClusterMap.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxURI.h">
-      <Filter>Header Files\Network</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxEvent.h">
       <Filter>Header Files\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxURL.h">
-      <Filter>Header Files\Network</Filter>
     </ClInclude>
     <ClInclude Include="Kx\Threading.hpp">
       <Filter>Kx</Filter>
@@ -1402,6 +1363,21 @@
     <ClInclude Include="Kx\Compression\ArchiveEvent.h">
       <Filter>Kx\Compression</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Network\WebSocket.h">
+      <Filter>Kx\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Network\WebSocketEvent.h">
+      <Filter>Kx\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Network\IWebSocketClient.h">
+      <Filter>Kx\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Network\SecureWebSocketClient.h">
+      <Filter>Kx\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Network\WebSocketCloseCode.h">
+      <Filter>Kx\Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1455,9 +1431,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxSplitterWindow.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxStdDialogButtonSizer.cpp">
-      <Filter>Source Files\Sizers</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxButton.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
@@ -1714,9 +1687,6 @@
     <ClCompile Include="KxFramework\KxCredentialsDialog.cpp">
       <Filter>Source Files\GUI\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxWebSocketEvent.cpp">
-      <Filter>Source Files\Events</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxISerializer.cpp">
       <Filter>Source Files\Misc</Filter>
     </ClCompile>
@@ -1831,15 +1801,6 @@
     <ClCompile Include="KxFramework\DataView2\Editors\SpinEditor.cpp">
       <Filter>Source Files\GUI\DataView2\Editors</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\WebSocket\IClient.cpp">
-      <Filter>Source Files\Network\WebSocket</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\WebSocket\SecureClient.cpp">
-      <Filter>Source Files\Network\WebSocket</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxWebSocket.cpp">
-      <Filter>Source Files\Network</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\DataView2\DragAndDrop.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
     </ClCompile>
@@ -1878,12 +1839,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxClusterMap.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxURL.cpp">
-      <Filter>Source Files\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxURI.cpp">
-      <Filter>Source Files\Network</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxCommandEvent.cpp">
       <Filter>Source Files\Events</Filter>
@@ -2157,6 +2112,15 @@
     </ClCompile>
     <ClCompile Include="Kx\FileSystem\FileOperationEvent.cpp">
       <Filter>Kx\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Network\WebSocket.cpp">
+      <Filter>Kx\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Network\WebSocketEvent.cpp">
+      <Filter>Kx\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Network\SecureWebSocketClient.cpp">
+      <Filter>Kx\Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

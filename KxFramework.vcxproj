@@ -333,7 +333,6 @@
     <ClInclude Include="KxFramework\KxFramework.h" />
     <ClInclude Include="KxFramework\KxGCUtility.h" />
     <ClInclude Include="KxFramework\KxGraphicsCanvas.h" />
-    <ClInclude Include="KxFramework\KxHTTPStatusCode.h" />
     <ClInclude Include="KxFramework\KxImageGraphicsCanvas.h" />
     <ClInclude Include="KxFramework\KxIncludes.h" />
     <ClInclude Include="KxFramework\KxFunctional.h" />
@@ -344,8 +343,6 @@
     <ClInclude Include="KxFramework\KxImageSet.h" />
     <ClInclude Include="KxFramework\KxImageView.h" />
     <ClInclude Include="KxFramework\KxIncludeWindows.h" />
-    <ClInclude Include="KxFramework\KxURI.h" />
-    <ClInclude Include="KxFramework\KxURL.h" />
     <ClInclude Include="KxFramework\KxUxThemePartsAndStates.h" />
     <ClInclude Include="KxFramework\KxValidator.h" />
     <ClInclude Include="KxFramework\KxIOwned.h" />
@@ -409,8 +406,6 @@
     <ClInclude Include="KxFramework\KxTypedefs.h" />
     <ClInclude Include="KxFramework\KxUtility.h" />
     <ClInclude Include="KxFramework\KxUxTheme.h" />
-    <ClInclude Include="KxFramework\KxWebSocket.h" />
-    <ClInclude Include="KxFramework\KxWebSocketEvent.h" />
     <ClInclude Include="KxFramework\KxWebView.h" />
     <ClInclude Include="KxFramework\KxWindowRefreshScheduler.h" />
     <ClInclude Include="KxFramework\KxWindowUpdateLocker.h" />
@@ -419,9 +414,6 @@
     <ClInclude Include="KxFramework\KxWithImageList.h" />
     <ClInclude Include="KxFramework\KxWithOptions.h" />
     <ClInclude Include="KxFramework\KxWxRTTI.h" />
-    <ClInclude Include="KxFramework\WebSocket\Common.h" />
-    <ClInclude Include="KxFramework\WebSocket\IClient.h" />
-    <ClInclude Include="KxFramework\WebSocket\SecureClient.h" />
     <ClInclude Include="KxStdAfx.h" />
     <ClInclude Include="Kx\Async.hpp" />
     <ClInclude Include="Kx\Async\Common.h" />
@@ -507,15 +499,20 @@
     <ClInclude Include="Kx\General\XMLDocument.h" />
     <ClInclude Include="Kx\Network.hpp" />
     <ClInclude Include="Kx\Network\Common.h" />
+    <ClInclude Include="Kx\Network\WebSocketCloseCode.h" />
     <ClInclude Include="Kx\Network\CURL.h" />
     <ClInclude Include="Kx\Network\CURLSession.h" />
     <ClInclude Include="Kx\Network\CURLEvent.h" />
     <ClInclude Include="Kx\Network\CURLReply.h" />
     <ClInclude Include="Kx\Network\HTTPStatusCode.h" />
+    <ClInclude Include="Kx\Network\IWebSocketClient.h" />
     <ClInclude Include="Kx\Network\Private\CURL.h" />
     <ClInclude Include="Kx\Network\Private\URXHelper.h" />
+    <ClInclude Include="Kx\Network\SecureWebSocketClient.h" />
     <ClInclude Include="Kx\Network\URI.h" />
     <ClInclude Include="Kx\Network\URL.h" />
+    <ClInclude Include="Kx\Network\WebSocket.h" />
+    <ClInclude Include="Kx\Network\WebSocketEvent.h" />
     <ClInclude Include="Kx\RTTI.hpp" />
     <ClInclude Include="Kx\RTTI\Common.h" />
     <ClInclude Include="Kx\RTTI\QueryInterface.h" />
@@ -751,7 +748,6 @@
     <ClCompile Include="KxFramework\KxStatusBar.cpp" />
     <ClCompile Include="KxFramework\KxStatusBarEx.cpp" />
     <ClCompile Include="KxFramework\KxStdDialog.cpp" />
-    <ClCompile Include="KxFramework\KxStdDialogButtonSizer.cpp" />
     <ClCompile Include="KxFramework\KxStdDialogSimple.cpp" />
     <ClCompile Include="KxFramework\KxString.cpp" />
     <ClCompile Include="KxFramework\KxStyledTextBox.cpp" />
@@ -767,21 +763,12 @@
     <ClCompile Include="KxFramework\KxTranslation.cpp" />
     <ClCompile Include="KxFramework\KxTreeList.cpp" />
     <ClCompile Include="KxFramework\KxTreeView.cpp" />
-    <ClCompile Include="KxFramework\KxURI.cpp" />
-    <ClCompile Include="KxFramework\KxURL.cpp" />
     <ClCompile Include="KxFramework\KxUtility.cpp" />
     <ClCompile Include="KxFramework\KxUxTheme.cpp" />
     <ClCompile Include="KxFramework\KxValidator.cpp" />
-    <ClCompile Include="KxFramework\KxWebSocket.cpp" />
-    <ClCompile Include="KxFramework\KxWebSocketEvent.cpp" />
     <ClCompile Include="KxFramework\KxWebView.cpp" />
     <ClCompile Include="KxFramework\KxWithDropdownMenu.cpp" />
     <ClCompile Include="KxFramework\KxWithImageList.cpp" />
-    <ClCompile Include="KxFramework\WebSocket\IClient.cpp" />
-    <ClCompile Include="KxFramework\WebSocket\SecureClient.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="KxStdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -821,8 +808,11 @@
     <ClCompile Include="Kx\Network\CURLEvent.cpp" />
     <ClCompile Include="Kx\Network\CURLReply.cpp" />
     <ClCompile Include="Kx\Network\Private\CURL.cpp" />
+    <ClCompile Include="Kx\Network\SecureWebSocketClient.cpp" />
     <ClCompile Include="Kx\Network\URI.cpp" />
     <ClCompile Include="Kx\Network\URL.cpp" />
+    <ClCompile Include="Kx\Network\WebSocket.cpp" />
+    <ClCompile Include="Kx\Network\WebSocketEvent.cpp" />
     <ClCompile Include="Kx\System\CFunctionCompiler.cpp" />
     <ClCompile Include="Kx\System\NativeAPI.cpp" />
     <ClCompile Include="Kx\System\CredentialStore.cpp" />

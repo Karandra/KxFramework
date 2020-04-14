@@ -10,6 +10,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include <Kx/FileSystem/FileItem.h>
 #include <Kx/FileSystem/LegacyVolume.h>
 #include <Kx/FileSystem/NativeFileSystemUtility.h>
+#include "Kx/Network/URI.h"
 #include <KnownFolders.h>
 #include <winnls.h>
 #include <shobjidl.h>
@@ -269,7 +270,7 @@ bool KxShell::Execute(wxWindow* window,
 	::CoUninitialize();
 	return status;
 }
-bool KxShell::OpenURI(wxWindow* window, const KxURI& uri, bool hideUI)
+bool KxShell::OpenURI(wxWindow* window, const KxFramework::URI& uri, bool hideUI)
 {
 	return Execute(window, uri.BuildUnescapedURI(), {}, {}, {}, SW_SHOWDEFAULT, hideUI);
 }
