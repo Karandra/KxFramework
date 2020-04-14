@@ -1204,6 +1204,9 @@
     <ClInclude Include="Kx\UI\HiDPIEnabledWindow.h">
       <Filter>Kx\UI</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\UI\WindowUpdateLocker.h">
+      <Filter>Kx\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
