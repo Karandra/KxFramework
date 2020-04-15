@@ -37,6 +37,6 @@ namespace KxFramework::Utility
 	intptr_t ModWindowStyle(void* windowHandle, int index, intptr_t style, bool enable) noexcept
 	{
 		const HWND handle = reinterpret_cast<HWND>(windowHandle);
-		::SetWindowLongPtrW(handle, index, ModFlag(::GetWindowLongPtrW(handle, index), style, enable));
+		return ::SetWindowLongPtrW(handle, index, ModFlag(::GetWindowLongPtrW(handle, index), style, enable));
 	}
 }
