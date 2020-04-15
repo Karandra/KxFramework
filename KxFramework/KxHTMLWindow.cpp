@@ -1,7 +1,7 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxHTMLWindow.h"
 #include "KxFramework/KxMenu.h"
-#include "Kx/General/StandardID.h"
+#include "Kx/General/StdID.h"
 #include "Kx/Localization/Common.h"
 #include <wx/clipbrd.h>
 
@@ -90,7 +90,7 @@ void KxHTMLWindow::CreateContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link)
 	}
 	if (link != nullptr)
 	{
-		KxMenuItem* item = MakeItem(ToInt(StandardID::CopyLink));
+		KxMenuItem* item = MakeItem(ToInt(StdID::CopyLink));
 	}
 	{
 		KxMenuItem* item = MakeItem(wxID_PASTE);
@@ -115,7 +115,7 @@ void KxHTMLWindow::ExecuteContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link)
 			Copy();
 			break;
 		}
-		case ToInt(StandardID::CopyLink):
+		case ToInt(StdID::CopyLink):
 		{
 			CopyTextToClipboard(link->GetHref());
 			break;
@@ -295,7 +295,4 @@ bool KxHTMLWindow::Create(wxWindow* parent,
 		return true;
 	}
 	return false;
-}
-KxHTMLWindow::~KxHTMLWindow()
-{
 }

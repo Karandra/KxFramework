@@ -997,9 +997,6 @@
     <ClInclude Include="Kx\UI\StdIcon.h">
       <Filter>Kx\UI</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\StandardID.h">
-      <Filter>Kx\General</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\Utility\Container.h">
       <Filter>Kx\Utility</Filter>
     </ClInclude>
@@ -1200,6 +1197,9 @@
     </ClInclude>
     <ClInclude Include="Kx\Localization\LocalizationPack.h">
       <Filter>Kx\Localization</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\StdID.h">
+      <Filter>Kx\General</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

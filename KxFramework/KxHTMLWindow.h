@@ -65,7 +65,7 @@ class KX_API KxHTMLWindow: public KxFramework::WindowRefreshScheduler<wxHtmlWind
 					const wxString& text = {},
 					long style = DefaultStyle
 		);
-		~KxHTMLWindow();
+		~KxHTMLWindow() = default;
 
 	public:
 		// KxHTMLWindow

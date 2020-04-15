@@ -32,15 +32,15 @@ namespace
 
 namespace KxFramework::Localization::Private
 {
-	String LocalizeLabelString(StandardID id, wxStockLabelQueryFlag flags)
+	String LocalizeLabelString(StdID id, wxStockLabelQueryFlag flags)
 	{
 		// Special case: the "Cancel" button shouldn't have a mnemonic under Windows
 		// for consistency with the native dialogs (which don't use any mnemonic for it
 		// because it is already bound to an 'Esc' key implicitly).
-		Utility::RemoveFlagRef(flags, wxStockLabelQueryFlag::wxSTOCK_WITH_MNEMONIC, id == StandardID::Cancel);
+		Utility::RemoveFlagRef(flags, wxStockLabelQueryFlag::wxSTOCK_WITH_MNEMONIC, id == StdID::Cancel);
 
 		#define STOCKITEM(stockid, defaultLabel)																\
-		case StandardID::##stockid:																				\
+		case StdID::##stockid:																					\
 		{																										\
 			result = DoGetLocalizedString(wxS(#stockid), flags).value_or(wxS(defaultLabel));					\
 			break;																								\
@@ -166,12 +166,12 @@ namespace KxFramework::Localization::Private
 			return result;
 		}
 	}
-	String LocalizeHelpString(StandardID id, wxStockHelpStringClient client)
+	String LocalizeHelpString(StdID id, wxStockHelpStringClient client)
 	{
 		constexpr wxStockLabelQueryFlag flags = wxStockLabelQueryFlag::wxSTOCK_NOFLAGS;
 
 		#define STOCKITEM(stockid, ctx, defaultLabel)															\
-        case StandardID::##stockid:																				\
+        case StdID::##stockid:																					\
 		{																										\
 			if (client == ctx)																					\
 			{																									\

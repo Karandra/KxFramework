@@ -5,7 +5,7 @@
 
 namespace KxFramework
 {
-	enum class StandardID: int
+	enum class StdID: int
 	{
 		// wxWidgets IDs
 		WX_AUTO_LOWEST = wxID_AUTO_LOWEST,
@@ -188,18 +188,18 @@ namespace KxFramework
 
 	namespace EnumClass
 	{
-		Kx_EnumClass_AllowCast(StandardID);
+		Kx_EnumClass_AllowCast(StdID);
 	}
 }
 
 namespace KxFramework
 {
-	constexpr inline StandardID FromWxStandardID(int stdWxID) noexcept
+	constexpr inline StdID FromWxStdID(int id) noexcept
 	{
-		return FromInt<StandardID>(stdWxID);
+		return FromInt<StdID>(id);
 	}
-	constexpr inline int ToWxStandardID(StandardID stdID) noexcept
+	constexpr inline int ToWxStdID(StdID id) noexcept
 	{
-		return ToInt(stdID);
+		return ToInt(id);
 	}
 }

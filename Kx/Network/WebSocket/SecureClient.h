@@ -37,7 +37,7 @@ namespace KxFramework::WebSocket
 
 			std::unique_ptr<WebSocketEvent> NewEvent(EventID eventType)
 			{
-				auto event = std::make_unique<WebSocketEvent>(eventType, ToInt(StandardID::None));
+				auto event = std::make_unique<WebSocketEvent>(eventType, ToInt(StdID::None));
 				event->SetURI(m_Address);
 
 				return event;

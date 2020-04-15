@@ -6,9 +6,9 @@ namespace KxFramework::Localization
 {
 	String GetStandardLocalizedString(int id)
 	{
-		return Private::LocalizeLabelString(FromInt<StandardID>(id));
+		return Private::LocalizeLabelString(FromInt<StdID>(id));
 	}
-	String GetStandardLocalizedString(StandardID id)
+	String GetStandardLocalizedString(StdID id)
 	{
 		return Private::LocalizeLabelString(id);
 	}

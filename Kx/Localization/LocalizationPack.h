@@ -55,7 +55,7 @@ namespace KxFramework
 				}
 				return {};
 			}
-			std::optional<String> GetString(StandardID id) const
+			std::optional<String> GetString(StdID id) const
 			{
 				return Localization::GetStandardLocalizedString(id);
 			}

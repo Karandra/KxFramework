@@ -19,7 +19,7 @@
 // Essential headers
 #include "Kx/wxWidgets/Setup.h"
 #include "Kx/General/EnumClass.h"
-#include "Kx/General/StandardID.h"
+#include "Kx/General/StdID.h"
 #include "Kx/System/UndefWindows.h"
 
 // wxWidgets

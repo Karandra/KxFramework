@@ -46,5 +46,5 @@ namespace KxFramework
 namespace KxFramework::Localization
 {
 	String GetStandardLocalizedString(int id);
-	String GetStandardLocalizedString(StandardID id);
+	String GetStandardLocalizedString(StdID id);
 }

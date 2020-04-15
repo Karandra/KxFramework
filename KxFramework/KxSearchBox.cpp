@@ -2,7 +2,7 @@
 #include "KxFramework/KxSearchBox.h"
 #include "KxFramework/KxIncludeWindows.h"
 #include "Kx/Localization/LocalizationPack.h"
-#include "Kx/General/StandardID.h"
+#include "Kx/General/StdID.h"
 
 using namespace KxFramework;
 
@@ -54,7 +54,7 @@ bool KxSearchBox::Create(wxWindow* parent,
 	{
 		ShowCancelButton(true);
 		ShowSearchButton(true);
-		if (auto value = LocalizationPack::GetActive().GetString(StandardID::Search))
+		if (auto value = LocalizationPack::GetActive().GetString(StdID::Search))
 		{
 			SetDescriptiveText(*value);
 		}

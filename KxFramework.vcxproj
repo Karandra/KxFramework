@@ -404,7 +404,7 @@
     <ClInclude Include="Kx\General\Private\TinyXML2 HTML5 Printer.h" />
     <ClInclude Include="Kx\General\Private\XDocument.h" />
     <ClInclude Include="Kx\General\Private\XML.h" />
-    <ClInclude Include="Kx\General\StandardID.h" />
+    <ClInclude Include="Kx\General\StdID.h" />
     <ClInclude Include="Kx\General\MemorySpan.h" />
     <ClInclude Include="Kx\General\MemoryStream.h" />
     <ClInclude Include="Kx\General\NativeUUID.h" />
