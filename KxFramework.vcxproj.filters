@@ -1195,6 +1195,12 @@
     <ClInclude Include="Kx\UI\WithDropdownMenu.h">
       <Filter>Kx\UI</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Localization\Locale.h">
+      <Filter>Kx\Localization</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Localization\Private\LocaleOptions.h">
+      <Filter>Kx\Localization\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1809,6 +1815,12 @@
     </ClCompile>
     <ClCompile Include="Kx\UI\StdDialogButtonSizer.cpp">
       <Filter>Kx\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Localization\Locale.cpp">
+      <Filter>Kx\Localization</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Localization\Private\LocaleOptions.cpp">
+      <Filter>Kx\Localization\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
