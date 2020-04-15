@@ -1,7 +1,6 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxDialog.h"
 #include "KxFramework/KxButton.h"
-#include "KxFramework/KxStdDialogButtonSizer.h"
 #include "Kx/Localization/Common.h"
 
 using namespace KxFramework;
@@ -36,21 +35,21 @@ KxDialog::~KxDialog()
 {
 }
 
-KxStdDialogButtonSizer* KxDialog::CreateStdDialogButtonSizer(int buttons)
+UI::StdDialogButtonSizer* KxDialog::CreateStdDialogButtonSizer(StdButton buttons, StdButton defaultButtons)
 {
-	KxStdDialogButtonSizer* stdButtonSizer = new KxStdDialogButtonSizer();
+	auto* stdButtonSizer = new UI::StdDialogButtonSizer();
 
 	const bool addToList = true;
-	KxButton* ok = stdButtonSizer->CreateButton(this, buttons, KxBTN_OK, wxID_OK, addToList);
-	KxButton* yes = stdButtonSizer->CreateButton(this, buttons, KxBTN_YES, wxID_YES, addToList);
-	KxButton* no = stdButtonSizer->CreateButton(this, buttons, KxBTN_NO, wxID_NO, addToList);
-	stdButtonSizer->CreateButton(this, buttons, KxBTN_RETRY, wxID_RETRY, addToList);
-	stdButtonSizer->CreateButton(this, buttons, KxBTN_APPLY, wxID_APPLY, addToList);
-	stdButtonSizer->CreateButton(this, buttons, KxBTN_CLOSE, wxID_CLOSE, addToList);
-	stdButtonSizer->CreateButton(this, buttons, KxBTN_CANCEL, wxID_CANCEL, addToList);
-	stdButtonSizer->CreateButton(this, buttons, KxBTN_HELP, wxID_HELP, addToList);
+	KxButton* ok = stdButtonSizer->CreateButton(this, buttons, StdButton::OK, wxID_OK, addToList);
+	KxButton* yes = stdButtonSizer->CreateButton(this, buttons, StdButton::Yes, wxID_YES, addToList);
+	KxButton* no = stdButtonSizer->CreateButton(this, buttons, StdButton::No, wxID_NO, addToList);
+	stdButtonSizer->CreateButton(this, buttons, StdButton::Retry, wxID_RETRY, addToList);
+	stdButtonSizer->CreateButton(this, buttons, StdButton::Apply, wxID_APPLY, addToList);
+	stdButtonSizer->CreateButton(this, buttons, StdButton::Close, wxID_CLOSE, addToList);
+	stdButtonSizer->CreateButton(this, buttons, StdButton::Cancel, wxID_CANCEL, addToList);
+	stdButtonSizer->CreateButton(this, buttons, StdButton::Help, wxID_HELP, addToList);
 
-	if (buttons & wxNO_DEFAULT)
+	if (defaultButtons & StdButton::No)
 	{
 		if (no)
 		{
@@ -72,15 +71,15 @@ KxStdDialogButtonSizer* KxDialog::CreateStdDialogButtonSizer(int buttons)
 		}
 	}
 
-	if (buttons & wxOK)
+	if (buttons & StdButton::OK)
 	{
 		SetAffirmativeId(wxID_OK);
 	}
-	else if (buttons & wxYES)
+	else if (buttons & StdButton::Yes)
 	{
 		SetAffirmativeId(wxID_YES);
 	}
-	else if (buttons & wxCLOSE)
+	else if (buttons & StdButton::Close)
 	{
 		SetAffirmativeId(wxID_CLOSE);
 	}

@@ -44,7 +44,7 @@ class KX_API KxTextBoxDialog: public KxStdDialog
 						const wxString& caption,
 						const wxPoint& pos = wxDefaultPosition,
 						const wxSize& size = wxDefaultSize,
-						int buttons = DefaultButtons,
+						StdButton buttons = DefaultButtons,
 						long style = DefaultStyle
 		)
 		{
@@ -55,7 +55,7 @@ class KX_API KxTextBoxDialog: public KxStdDialog
 					const wxString& caption,
 					const wxPoint& pos = wxDefaultPosition,
 					const wxSize& size = wxDefaultSize,
-					int buttons = DefaultButtons,
+					StdButton buttons = DefaultButtons,
 					long style = DefaultStyle
 		);
 

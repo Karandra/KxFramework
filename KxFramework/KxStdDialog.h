@@ -1,9 +1,10 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxDialog.h"
-#include "KxFramework/KxStdDialogButtonSizer.h"
 #include "KxFramework/KxLabel.h"
 #include "KxFramework/KxPanel.h"
+#include "Kx/UI/StdButton.h"
+#include "Kx/UI/StdDialogButtonSizer.h"
 class KX_API KxButton;
 
 KxEVENT_DECLARE_GLOBAL(wxNotifyEvent, STDDIALOG_BUTTON);
@@ -84,8 +85,11 @@ class KX_API KxStdDialogControl
 class KX_API KxIStdDialog
 {
 	public:
+		using StdButton = KxFramework::StdButton;
+
+	public:
 		static const KxIconType DefaultIconID = KxICON_INFO;
-		static const int DefaultButtons = KxBTN_OK|KxBTN_CANCEL;
+		static const StdButton DefaultButtons = StdButton::OK|StdButton::Cancel;
 
 	protected:
 		bool ShowNativeWindow(wxDialog* window, bool show); // Will show/hide window if GetHandle() != nullptr and call ShowModal() otherwise
@@ -150,7 +154,7 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 		wxSizer* m_ContentSizerBase = nullptr;
 		wxSizer* m_ContentSizer = nullptr;
 		wxSizer* m_IconSizer = nullptr;
-		KxStdDialogButtonSizer* m_ButtonsSizer = nullptr;
+		KxFramework::UI::StdDialogButtonSizer* m_ButtonsSizer = nullptr;
 		bool m_IsGlassFrameEnabled = false;
 		wxNativeWindow m_GripperWindow;
 		wxSize m_GripperWindowSize;
@@ -160,7 +164,7 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 
 		StdButtonsIDs m_CloseIDs = ms_DefaultCloseIDs;
 		StdButtonsIDs m_EnterIDs = ms_DefaultEnterIDs;
-		int m_SelectedButtons = 0;
+		StdButton m_SelectedButtons = StdButton::None;
 
 	protected:
 		void PostCreate(const wxPoint& pos = wxDefaultPosition);
@@ -257,7 +261,7 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 					 const wxString& caption,
 					 const wxPoint& pos = wxDefaultPosition,
 					 const wxSize& size = wxDefaultSize,
-					 int buttons = DefaultButtons,
+					StdButton buttons = DefaultButtons,
 					 long style = DefaultStyle
 		)
 		{
@@ -268,7 +272,7 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 					const wxString& caption,
 					const wxPoint& pos = wxDefaultPosition,
 					const wxSize& size = wxDefaultSize,
-					int buttons = DefaultButtons,
+					StdButton buttons = DefaultButtons,
 					long style = DefaultStyle
 		);
 		~KxStdDialog();

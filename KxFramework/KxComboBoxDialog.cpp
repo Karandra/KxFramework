@@ -23,7 +23,7 @@ bool KxComboBoxDialog::Create(wxWindow* parent,
 							  const wxString& caption,
 							  const wxPoint& pos,
 							  const wxSize& size,
-							  int buttons,
+							  StdButton buttons,
 							  long style
 )
 {
@@ -59,7 +59,4 @@ bool KxComboBoxDialog::Create(wxWindow* parent,
 		return true;
 	}
 	return false;
-}
-KxComboBoxDialog::~KxComboBoxDialog()
-{
 }

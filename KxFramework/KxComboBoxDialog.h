@@ -20,13 +20,13 @@ class KX_API KxComboBoxDialog: public KxStdDialog
 		static const long DefaultStyle = KxStdDialog::DefaultStyle|KxCBD_READONLY;
 		static const int DefaultComboBoxWidth = 300;
 
-		KxComboBoxDialog() {}
+		KxComboBoxDialog() = default;
 		KxComboBoxDialog(wxWindow* parent,
 						 wxWindowID id,
 						 const wxString& caption,
 						 const wxPoint& pos = wxDefaultPosition,
 						 const wxSize& size = wxDefaultSize,
-						 int buttons = DefaultButtons,
+						 StdButton buttons = DefaultButtons,
 						 long style = DefaultStyle
 		)
 		{
@@ -37,21 +37,20 @@ class KX_API KxComboBoxDialog: public KxStdDialog
 					const wxString& caption,
 					const wxPoint& pos = wxDefaultPosition,
 					const wxSize& size = wxDefaultSize,
-					int buttons = DefaultButtons,
+					StdButton buttons = DefaultButtons,
 					long style = DefaultStyle
 		);
-		virtual ~KxComboBoxDialog();
 
 	public:
 		wxComboBox* GetComboBox() const
 		{
 			return m_View;
 		}
-		virtual wxWindow* GetDialogMainCtrl() const override
+		wxWindow* GetDialogMainCtrl() const override
 		{
 			return GetComboBox();
 		}
-		virtual int GetViewSizerProportion() const
+		int GetViewSizerProportion() const override
 		{
 			return 0;
 		}

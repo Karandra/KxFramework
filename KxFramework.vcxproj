@@ -252,7 +252,6 @@
     <ClInclude Include="KxFramework\KxToolTipEx.h" />
     <ClInclude Include="KxFramework\KxBitmapComboBox.h" />
     <ClInclude Include="KxFramework\KxButton.h" />
-    <ClInclude Include="KxFramework\KxButtonType.h" />
     <ClInclude Include="KxFramework\KxCheckBox.h" />
     <ClInclude Include="KxFramework\KxCollapsiblePane.h" />
     <ClInclude Include="KxFramework\KxComboBox.h" />
@@ -517,6 +516,7 @@
     <ClInclude Include="Kx\UI\Common.h" />
     <ClInclude Include="Kx\UI\HiDPIEnabledWindow.h" />
     <ClInclude Include="Kx\UI\StdButton.h" />
+    <ClInclude Include="Kx\UI\StdDialogButtonSizer.h" />
     <ClInclude Include="Kx\UI\StdIcon.h" />
     <ClInclude Include="Kx\UI\Validator.h" />
     <ClInclude Include="Kx\UI\WindowRefreshScheduler.h" />
@@ -704,6 +704,7 @@
     <ClCompile Include="Kx\System\SystemInformation.cpp" />
     <ClCompile Include="Kx\System\WOW64FSRedirection.cpp" />
     <ClCompile Include="Kx\UI\HiDPIEnabledWindow.cpp" />
+    <ClCompile Include="Kx\UI\StdDialogButtonSizer.cpp" />
     <ClCompile Include="Kx\UI\Validator.cpp" />
     <ClCompile Include="Kx\Utility\String.cpp" />
     <ClCompile Include="Kx\Utility\System.cpp" />

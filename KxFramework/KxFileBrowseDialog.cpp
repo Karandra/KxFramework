@@ -92,7 +92,7 @@ bool KxFileBrowseDialog::Create(wxWindow* parent,
 								const wxString& caption,
 								const wxPoint& pos,
 								const wxSize& size,
-								int buttons,
+								StdButton buttons,
 								long style
 )
 {

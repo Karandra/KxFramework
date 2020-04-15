@@ -4,12 +4,12 @@
 wxIMPLEMENT_DYNAMIC_CLASS(KxProgressDialog, KxStdDialog);
 
 bool KxProgressDialog::Create(wxWindow* parent,
-							   wxWindowID id,
-							   const wxString& caption,
-							   const wxPoint& pos,
-							   const wxSize& size,
-							   int buttons,
-							   long style
+							  wxWindowID id,
+							  const wxString& caption,
+							  const wxPoint& pos,
+							  const wxSize& size,
+							  StdButton buttons,
+							  long style
 )
 {
 	m_DialogResizeSide = wxHORIZONTAL;

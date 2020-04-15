@@ -21,13 +21,13 @@ class KX_API KxDualInputDialog: public KxStdDialog
 		static const long DefaultStyle = KxStdDialog::DefaultStyle;
 		static const int DefaultWidth = 300;
 
-		KxDualInputDialog() {}
+		KxDualInputDialog() = default;
 		KxDualInputDialog(wxWindow* parent,
 						  wxWindowID id,
 						  const wxString& caption,
 						  const wxPoint& pos = wxDefaultPosition,
 						  const wxSize& size = wxDefaultSize,
-						  int buttons = DefaultButtons,
+						  StdButton buttons = DefaultButtons,
 						  long style = DefaultStyle
 		)
 		{
@@ -38,10 +38,9 @@ class KX_API KxDualInputDialog: public KxStdDialog
 					const wxString& caption,
 					const wxPoint& pos = wxDefaultPosition,
 					const wxSize& size = wxDefaultSize,
-					int buttons = DefaultButtons,
+					StdButton buttons = DefaultButtons,
 					long style = DefaultStyle
 		);
-		virtual ~KxDualInputDialog();
 
 	public:
 		wxWindow* GetDialogMainCtrl() const override

@@ -6,34 +6,34 @@ using namespace KxFramework;
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxTaskDialog, KxStdDialog);
 
-int KxTaskDialog::SetStdButtonsFromWx(KxButtonType buttons)
+int KxTaskDialog::SetStdButtonsFromWx(StdButton buttons)
 {
 	m_DialogConfig.dwCommonButtons = 0;
-	if (buttons & KxBTN_OK)
+	if (buttons & StdButton::OK)
 	{
 		m_DialogConfig.dwCommonButtons |= TDCBF_OK_BUTTON;
 	}
-	if (buttons & KxBTN_YES)
+	if (buttons & StdButton::Yes)
 	{
 		m_DialogConfig.dwCommonButtons |= TDCBF_YES_BUTTON;
 	}
-	if (buttons & KxBTN_NO)
+	if (buttons & StdButton::No)
 	{
 		m_DialogConfig.dwCommonButtons |= TDCBF_NO_BUTTON;
 	}
-	if (buttons & KxBTN_CANCEL)
+	if (buttons & StdButton::Cancel)
 	{
 		m_DialogConfig.dwCommonButtons |= TDCBF_CANCEL_BUTTON;
 	}
-	if (buttons & KxBTN_RETRY)
+	if (buttons & StdButton::Retry)
 	{
 		m_DialogConfig.dwCommonButtons |= TDCBF_RETRY_BUTTON;
 	}
-	if (buttons & KxBTN_CLOSE)
+	if (buttons & StdButton::Close)
 	{
 		m_DialogConfig.dwCommonButtons |= TDCBF_CLOSE_BUTTON;
 	}
-	if (buttons & KxBTN_YES)
+	if (buttons & StdButton::Yes)
 	{
 		m_DialogConfig.dwCommonButtons |= TDCBF_YES_BUTTON;
 	}
@@ -41,42 +41,41 @@ int KxTaskDialog::SetStdButtonsFromWx(KxButtonType buttons)
 
 	return m_DialogConfig.dwCommonButtons;
 }
-int KxTaskDialog::SetAutoDefaultButton(KxButtonType buttons)
+int KxTaskDialog::SetAutoDefaultButton(StdButton buttons)
 {
 	m_DialogConfig.nDefaultButton = 0;
-	if (buttons & KxBTN_CANCEL)
+	if (buttons & StdButton::Cancel)
 	{
 		m_DialogConfig.nDefaultButton = IDCANCEL;
 	}
-	if (buttons & KxBTN_ABORT)
+	if (buttons & StdButton::Abort)
 	{
 		m_DialogConfig.nDefaultButton = IDABORT;
 	}
-	else if (buttons & KxBTN_CLOSE)
+	else if (buttons & StdButton::Close)
 	{
 		m_DialogConfig.nDefaultButton = IDCLOSE;
 	}
-	else if (buttons & KxBTN_NO)
+	else if (buttons & StdButton::No)
 	{
 		m_DialogConfig.nDefaultButton = IDNO;
 	}
-	else if (buttons & KxBTN_HELP)
+	else if (buttons & StdButton::Help)
 	{
 		m_DialogConfig.nDefaultButton = IDHELP;
 	}
-	else if (buttons & KxBTN_RETRY)
+	else if (buttons & StdButton::Retry)
 	{
 		m_DialogConfig.nDefaultButton = IDRETRY;
 	}
-	else if (buttons & KxBTN_YES)
+	else if (buttons & StdButton::Yes)
 	{
 		m_DialogConfig.nDefaultButton = IDYES;
 	}
-	else if (buttons & KxBTN_OK)
+	else if (buttons & StdButton::OK)
 	{
 		m_DialogConfig.nDefaultButton = IDOK;
 	}
-
 	return m_DialogConfig.nDefaultButton;
 }
 
@@ -374,7 +373,7 @@ bool KxTaskDialog::Create(wxWindow* parent,
 						  wxWindowID id,
 						  const wxString& caption,
 						  const wxString& message,
-						  int buttons,
+						  StdButton buttons,
 						  KxIconType mainIcon,
 						  wxPoint pos,
 						  wxSize size,

@@ -127,14 +127,14 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 		static const int DefaultFlags = FOS_OVERWRITEPROMPT|FOS_DONTADDTORECENT|FOS_FORCEFILESYSTEM;
 		static const SIGDN DefaultItemType = SIGDN_FILESYSPATH;
 
-		KxFileBrowseDialog() {}
+		KxFileBrowseDialog() = default;
 		KxFileBrowseDialog(wxWindow* parent,
 						   wxWindowID id,
 						   KxFBD_Mode mode,
 						   const wxString& caption = wxEmptyString,
 						   const wxPoint& pos = wxDefaultPosition,
 						   const wxSize& size = wxDefaultSize,
-						   int buttons = DefaultButtons,
+						   StdButton buttons = DefaultButtons,
 						   long style = DefaultStyle
 		)
 		{
@@ -146,7 +146,7 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 					const wxString& caption = wxEmptyString,
 					const wxPoint& pos = wxDefaultPosition,
 					const wxSize& size = wxDefaultSize,
-					int buttons = DefaultButtons,
+					StdButton buttons = DefaultButtons,
 					long style = DefaultStyle
 		);
 		~KxFileBrowseDialog();

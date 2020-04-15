@@ -20,13 +20,13 @@ class KX_API KxDualProgressDialog: public KxStdDialog
 		static const int DefaultProgressWidth = 300;
 		static const int DefaultProgressHeight = 16;
 
-		KxDualProgressDialog() {}
+		KxDualProgressDialog() = default;
 		KxDualProgressDialog(wxWindow* parent,
 							 wxWindowID id,
 							 const wxString& caption,
 							 const wxPoint& pos = wxDefaultPosition,
 							 const wxSize& size = wxDefaultSize,
-							 int buttons = DefaultButtons,
+							 StdButton buttons = DefaultButtons,
 							 long style = DefaultStyle
 		)
 		{
@@ -37,10 +37,9 @@ class KX_API KxDualProgressDialog: public KxStdDialog
 					const wxString& caption,
 					const wxPoint& pos = wxDefaultPosition,
 					const wxSize& size = wxDefaultSize,
-					int buttons = DefaultButtons,
+					StdButton buttons = DefaultButtons,
 					long style = DefaultStyle
 		);
-		virtual ~KxDualProgressDialog();
 
 	public:
 		KxProgressBar* GetPB1() const
@@ -52,11 +51,11 @@ class KX_API KxDualProgressDialog: public KxStdDialog
 			return m_PB2;
 		}
 		
-		virtual wxWindow* GetDialogMainCtrl() const
+		wxWindow* GetDialogMainCtrl() const override
 		{
 			return m_View;
 		}
-		virtual int GetViewSizerProportion() const
+		int GetViewSizerProportion() const override
 		{
 			return 0;
 		}

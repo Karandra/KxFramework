@@ -23,22 +23,19 @@ class KX_API KxStdDialogSimple: public KxStdDialog
 					const wxString& caption,
 					const wxPoint& pos = wxDefaultPosition,
 					const wxSize& size = wxDefaultSize,
-					int buttons = DefaultButtons,
+					StdButton buttons = DefaultButtons,
 					long style = DefaultStyle
 		);
 		virtual ~KxStdDialogSimple();
 
 	public:
-		virtual wxWindow* GetDialogMainCtrl() const override
+		wxWindow* GetDialogMainCtrl() const override
 		{
 			return m_View;
 		}
-		virtual int GetViewSizerProportion() const
+		int GetViewSizerProportion() const override
 		{
 			return 1;
-		}
-		virtual void ResetState()
-		{
 		}
 
 	public:

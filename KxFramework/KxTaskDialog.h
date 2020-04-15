@@ -61,8 +61,8 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 		int DoShowDialog(bool isModal = true);
 		void OnClose(wxCloseEvent& event);
 
-		int SetStdButtonsFromWx(KxButtonType buttons);
-		int SetAutoDefaultButton(KxButtonType buttons);
+		int SetStdButtonsFromWx(StdButton buttons);
+		int SetAutoDefaultButton(StdButton buttons);
 
 		wxWindowID TranslateButtonID_WinToWx(int idWin) const;
 		int TranslateButtonID_WxToWin(wxWindowID idWx) const;
@@ -85,14 +85,14 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 
 	public:
 		static const KxTD_Options DefaultStyle = KxTD_NONE;
-		static const int DefaultButtons = KxBTN_OK;
+		static const StdButton DefaultButtons = StdButton::OK;
 		
-		KxTaskDialog() {}
+		KxTaskDialog() = default;
 		KxTaskDialog(wxWindow* parent,
 					 wxWindowID id,
 					 const wxString& caption = wxEmptyString,
 					 const wxString& message = wxEmptyString,
-					 int buttons = DefaultButtons,
+					 StdButton buttons = DefaultButtons,
 					 KxIconType mainIcon = KxICON_NONE,
 					 wxPoint pos = wxDefaultPosition,
 					 wxSize size = wxDefaultSize,
@@ -105,7 +105,7 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 					wxWindowID id,
 					const wxString& caption = wxEmptyString,
 					const wxString& message = wxEmptyString,
-					int buttons = DefaultButtons,
+					StdButton buttons = DefaultButtons,
 					KxIconType mainIcon = KxICON_NONE,
 					wxPoint pos = wxDefaultPosition,
 					wxSize size = wxDefaultSize,
@@ -298,9 +298,9 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 		}
 
 		// Buttons
-		void SetStandardButtons(int buttons)
+		void SetStandardButtons(StdButton buttons)
 		{
-			SetStdButtonsFromWx(static_cast<KxButtonType>(buttons));
+			SetStdButtonsFromWx(buttons);
 		}
 		void SetDefaultButton(wxWindowID id) override
 		{

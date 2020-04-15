@@ -1,9 +1,10 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxTopLevelWindow.h"
+#include "Kx/UI/StdDialogButtonSizer.h"
+#include "Kx/UI/StdButton.h"
 
 class KX_API KxButton;
-class KX_API KxStdDialogButtonSizer;
 class KX_API KxDialog: public KxTopLevelWindow<wxDialog>
 {
 	public:
@@ -12,7 +13,7 @@ class KX_API KxDialog: public KxTopLevelWindow<wxDialog>
 	public:
 		static const long DefaultStyle = wxDEFAULT_DIALOG_STYLE|wxFRAME_SHAPED|wxRESIZE_BORDER;
 
-		KxDialog() {}
+		KxDialog() = default;
 		KxDialog(wxWindow* parent,
 				 wxWindowID id,
 				 const wxString& title,
@@ -34,7 +35,7 @@ class KX_API KxDialog: public KxTopLevelWindow<wxDialog>
 
 	public:
 		virtual void CenterIfNoPosition(const wxPoint& pos);
-		KxStdDialogButtonSizer* CreateStdDialogButtonSizer(int buttons);
+		KxFramework::UI::StdDialogButtonSizer* CreateStdDialogButtonSizer(KxFramework::StdButton buttons, KxFramework::StdButton defaultButtons = KxFramework::StdButton::None);
 
 	public:
 		wxDECLARE_DYNAMIC_CLASS(KxDialog);

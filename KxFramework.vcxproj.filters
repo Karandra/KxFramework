@@ -433,9 +433,6 @@
     <ClInclude Include="KxFramework\KxIncludeWindows.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxButtonType.h">
-      <Filter>Header Files\General</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxIconType.h">
       <Filter>Header Files\General</Filter>
     </ClInclude>
@@ -1213,6 +1210,9 @@
     <ClInclude Include="Kx\Localization\Private\StandardLocalization.h">
       <Filter>Kx\Localization\Private</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\UI\StdDialogButtonSizer.h">
+      <Filter>Kx\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1830,6 +1830,9 @@
     </ClCompile>
     <ClCompile Include="Kx\Localization\Private\StandardLocalization.cpp">
       <Filter>Kx\Localization\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\StdDialogButtonSizer.cpp">
+      <Filter>Kx\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -25,7 +25,7 @@ bool KxDualProgressDialog::Create(wxWindow* parent,
 								  const wxString& caption,
 								  const wxPoint& pos,
 								  const wxSize& size,
-								  int buttons,
+								  StdButton buttons,
 								  long style
 )
 {
@@ -46,7 +46,4 @@ bool KxDualProgressDialog::Create(wxWindow* parent,
 		return true;
 	}
 	return false;
-}
-KxDualProgressDialog::~KxDualProgressDialog()
-{
 }

@@ -18,12 +18,12 @@ class KX_API KxProgressDialog: public KxStdDialog, public KxProgressBarWrapper
 
 		KxProgressDialog() = default;
 		KxProgressDialog(wxWindow* parent,
-						  wxWindowID id,
-						  const wxString& caption,
-						  const wxPoint& pos = wxDefaultPosition,
-						  const wxSize& size = wxDefaultSize,
-						  int buttons = DefaultButtons,
-						  long style = DefaultStyle
+						 wxWindowID id,
+						 const wxString& caption,
+						 const wxPoint& pos = wxDefaultPosition,
+						 const wxSize& size = wxDefaultSize,
+						 StdButton buttons = DefaultButtons,
+						 long style = DefaultStyle
 		)
 		{
 			Create(parent, id, caption, pos, size, buttons, style);
@@ -33,7 +33,7 @@ class KX_API KxProgressDialog: public KxStdDialog, public KxProgressBarWrapper
 					const wxString& caption,
 					const wxPoint& pos = wxDefaultPosition,
 					const wxSize& size = wxDefaultSize,
-					int buttons = DefaultButtons,
+					StdButton buttons = DefaultButtons,
 					long style = DefaultStyle
 		);
 

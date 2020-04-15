@@ -4,13 +4,13 @@
 wxIMPLEMENT_DYNAMIC_CLASS(KxStdDialogSimple, KxStdDialog);
 
 bool KxStdDialogSimple::Create(wxWindow* parent,
-								wxWindowID id,
-								wxWindow* pView,
-								const wxString& caption,
-								const wxPoint& pos,
-								const wxSize& size,
-								int buttons,
-								long style
+							   wxWindowID id,
+							   wxWindow* pView,
+							   const wxString& caption,
+							   const wxPoint& pos,
+							   const wxSize& size,
+							   StdButton buttons,
+							   long style
 )
 {
 	m_View = pView;

@@ -1,6 +1,5 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxStdDialog.h"
-#include "KxFramework/KxStdDialogButtonSizer.h"
 #include "KxFramework/KxTopLevelWindow.h"
 #include "KxFramework/KxButton.h"
 #include "KxFramework/KxIncludeWindows.h"
@@ -40,27 +39,62 @@ const wxColour KxStdDialog::ms_LineBackgroundColor = wxSystemSettings::GetColour
 
 wxWindowID KxStdDialog::TranslateButtonConstantsToIDs(int btnValue)
 {
-	#define Translate(name)		case KxBTN_##name: return wxID_##name
-
-	switch (btnValue)
+	switch (FromInt<StdButton>(btnValue))
 	{
-		Translate(OK);
-		Translate(YES);
-		Translate(NO);
-		Translate(CANCEL);
-		Translate(APPLY);
-		Translate(CLOSE);
-		Translate(HELP);
-		Translate(FORWARD);
-		Translate(BACKWARD);
-		Translate(RESET);
-		Translate(MORE);
-		Translate(SETUP);
-		Translate(RETRY);
+		case StdButton::OK:
+		{
+			return wxID_OK;
+		}
+		case StdButton::Yes:
+		{
+			return wxID_YES;
+		}
+		case StdButton::No:
+		{
+			return wxID_NO;
+		}
+		case StdButton::Cancel:
+		{
+			return wxID_CANCEL;
+		}
+		case StdButton::Apply:
+		{
+			return wxID_APPLY;
+		}
+		case StdButton::Close:
+		{
+			return wxID_CLOSE;
+		}
+		case StdButton::Help:
+		{
+			return wxID_HELP;
+		}
+		case StdButton::Forward:
+		{
+			return wxID_FORWARD;
+		}
+		case StdButton::Backward:
+		{
+			return wxID_BACKWARD;
+		}
+		case StdButton::Reset:
+		{
+			return wxID_RESET;
+		}
+		case StdButton::More:
+		{
+			return wxID_MORE;
+		}
+		case StdButton::Setup:
+		{
+			return wxID_SETUP;
+		}
+		case StdButton::Retry:
+		{
+			return wxID_RETRY;
+		}
 	};
 	return wxID_NONE;
-
-	#undef Translate
 }
 bool KxStdDialog::MSWTranslateMessage(WXMSG* msg)
 {
@@ -180,12 +214,12 @@ void KxStdDialog::OnEscape(wxKeyEvent& event)
 }
 
 bool KxStdDialog::Create(wxWindow* parent,
-						  wxWindowID id,
-						  const wxString& caption,
-						  const wxPoint& pos,
-						  const wxSize& size,
-						  int buttons,
-						  long style
+						 wxWindowID id,
+						 const wxString& caption,
+						 const wxPoint& pos,
+						 const wxSize& size,
+						 StdButton buttons,
+						 long style
 )
 {
 	m_SelectedButtons = buttons;
@@ -264,7 +298,7 @@ wxOrientation KxStdDialog::GetViewLabelSizerOrientation() const
 }
 bool KxStdDialog::IsEscapeAllowed(wxWindowID* idOut) const
 {
-	if (m_SelectedButtons & KxBTN_OK || m_SelectedButtons & KxBTN_CANCEL || m_SelectedButtons & KxBTN_NO || m_SelectedButtons & KxBTN_CLOSE)
+	if (m_SelectedButtons & StdButton::OK || m_SelectedButtons & StdButton::Cancel || m_SelectedButtons & StdButton::No || m_SelectedButtons & StdButton::Close)
 	{
 		for (int id: m_CloseIDs)
 		{
@@ -281,16 +315,16 @@ bool KxStdDialog::IsEscapeAllowed(wxWindowID* idOut) const
 }
 bool KxStdDialog::IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut) const
 {
-	auto Check = [this](int btn, int id, int enterId)
+	auto Check = [this](StdButton btn, int id, int enterId)
 	{
 		return m_SelectedButtons & btn && enterId == id;
 	};
 
-	if (m_SelectedButtons & wxOK || m_SelectedButtons & wxYES || m_SelectedButtons & wxAPPLY)
+	if (m_SelectedButtons & StdButton::OK || m_SelectedButtons & StdButton::Yes || m_SelectedButtons & StdButton::Apply)
 	{
 		for (int id: m_EnterIDs)
 		{
-			if (Check(wxOK, wxID_OK, id) || Check(wxYES, wxID_YES, id) || Check(wxAPPLY, wxID_APPLY, id))
+			if (Check(StdButton::OK, wxID_OK, id) || Check(StdButton::Yes, wxID_YES, id) || Check(StdButton::Apply, wxID_APPLY, id))
 			{
 				Utility::SetIfNotNull(idOut, id);
 				return true;
@@ -471,7 +505,7 @@ KxStdDialogControl KxStdDialog::GetButton(wxWindowID id) const
 }
 KxStdDialogControl KxStdDialog::AddButton(wxWindowID id, const wxString& label, bool prepend)
 {
-	KxButton* button = m_ButtonsSizer->CreateButton(this, 1, 1, id, false);
+	KxButton* button = m_ButtonsSizer->CreateButton(this, StdButton::WX_LAST_STD, StdButton::WX_LAST_STD, id, false);
 	m_ButtonsSizer->AddCustomButton(button, label, prepend);
 	m_CloseIDs.push_back(id);
 

@@ -20,7 +20,7 @@ class KX_API KxListBoxDialog: public KxStdDialog
 						const wxString& caption,
 						const wxPoint& pos = wxDefaultPosition,
 						const wxSize& size = wxDefaultSize,
-						int buttons = DefaultButtons,
+						StdButton buttons = DefaultButtons,
 						long style = DefaultStyle
 		)
 		{
@@ -31,7 +31,7 @@ class KX_API KxListBoxDialog: public KxStdDialog
 					const wxString& caption,
 					const wxPoint& pos = wxDefaultPosition,
 					const wxSize& size = wxDefaultSize,
-					int buttons = DefaultButtons,
+					StdButton buttons = DefaultButtons,
 					long style = DefaultStyle
 		);
 
@@ -40,11 +40,11 @@ class KX_API KxListBoxDialog: public KxStdDialog
 		{
 			return m_View;
 		}
-		virtual KxListBox* GetDialogMainCtrl() const
+		KxListBox* GetDialogMainCtrl() const override
 		{
 			return GetListBox();
 		}
-		virtual int GetViewSizerProportion() const
+		int GetViewSizerProportion() const override
 		{
 			return 1;
 		}
