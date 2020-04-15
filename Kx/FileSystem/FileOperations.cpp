@@ -88,7 +88,7 @@ namespace KxFramework::FileSystem
 				}
 
 				// If it's still longer just truncate it and add ellipsis
-				if (source.length() > maxCharacters)
+				if (source.length() > static_cast<size_t>(maxCharacters))
 				{
 					source.RemoveFromEnd(source.length() - maxCharacters - 3);
 					source += wxS("...");
