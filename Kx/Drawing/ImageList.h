@@ -2,6 +2,8 @@
 #include "Common.h"
 #include "Kx/General/Color.h"
 #include <wx/imaglist.h>
+
+#pragma comment(lib, "Comctl32.lib")
 struct IImageList2;
 
 namespace KxFramework
