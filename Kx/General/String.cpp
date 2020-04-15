@@ -280,15 +280,15 @@ namespace KxFramework
 
 namespace KxFramework
 {
-	int String::Compare(std::string_view left, std::string_view right, StringOpFlag flags) noexcept
+	int String::DoCompare(std::string_view left, std::string_view right, StringOpFlag flags) noexcept
 	{
 		return CompareStrings(left, right, flags & StringOpFlag::IgnoreCase);
 	}
-	int String::Compare(std::wstring_view left, std::wstring_view right, StringOpFlag flags) noexcept
+	int String::DoCompare(std::wstring_view left, std::wstring_view right, StringOpFlag flags) noexcept
 	{
 		return CompareStrings(left, right, flags & StringOpFlag::IgnoreCase);
 	}
-	int String::Compare(wxUniChar left, wxUniChar right, StringOpFlag flags) noexcept
+	int String::DoCompare(wxUniChar left, wxUniChar right, StringOpFlag flags) noexcept
 	{
 		if (flags & StringOpFlag::IgnoreCase)
 		{
@@ -300,11 +300,11 @@ namespace KxFramework
 		}
 	}
 
-	bool String::Matches(std::string_view name, std::string_view expression, StringOpFlag flags) noexcept
+	bool String::DoMatches(std::string_view name, std::string_view expression, StringOpFlag flags) noexcept
 	{
 		return IsNameInExpression(name, expression, flags & StringOpFlag::IgnoreCase);
 	}
-	bool String::Matches(std::wstring_view name, std::wstring_view expression, StringOpFlag flags) noexcept
+	bool String::DoMatches(std::wstring_view name, std::wstring_view expression, StringOpFlag flags) noexcept
 	{
 		return IsNameInExpression(name, expression, flags & StringOpFlag::IgnoreCase);
 	}
@@ -319,12 +319,12 @@ namespace KxFramework
 	}
 
 	// Comparison
-	bool String::StartsWith(std::string_view pattern, String* rest, StringOpFlag flags) const
+	bool String::DoStartsWith(std::string_view pattern, String* rest, StringOpFlag flags) const
 	{
 		String patternCopy = FromView(pattern);
 		return StartsWith(patternCopy, rest, flags);
 	}
-	bool String::StartsWith(std::wstring_view pattern, String* rest, StringOpFlag flags) const
+	bool String::DoStartsWith(std::wstring_view pattern, String* rest, StringOpFlag flags) const
 	{
 		if (pattern.empty())
 		{
@@ -344,12 +344,12 @@ namespace KxFramework
 		return false;
 	}
 	
-	bool String::EndsWith(std::string_view pattern, String* rest, StringOpFlag flags) const
+	bool String::DoEndsWith(std::string_view pattern, String* rest, StringOpFlag flags) const
 	{
 		String patternCopy = FromView(pattern);
 		return EndsWith(patternCopy, rest, flags);
 	}
-	bool String::EndsWith(std::wstring_view pattern, String* rest, StringOpFlag flags) const
+	bool String::DoEndsWith(std::wstring_view pattern, String* rest, StringOpFlag flags) const
 	{
 		if (pattern.empty())
 		{

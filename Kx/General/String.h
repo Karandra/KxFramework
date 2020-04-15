@@ -39,7 +39,7 @@ namespace KxFramework
 	}
 
 	template<class T>
-	std::basic_string_view<T> StringViewOf(const std::basic_string_view<T>& view) noexcept
+	std::basic_string_view<T> StringViewOf(std::basic_string_view<T> view) noexcept
 	{
 		return view;
 	}
@@ -115,32 +115,35 @@ namespace KxFramework
 		public:
 			static constexpr size_t npos = StringView::npos;
 
-		public:
 			// Comparison
-			static int Compare(std::string_view left, std::string_view right, StringOpFlag flags = StringOpFlag::None) noexcept;
-			static int Compare(std::wstring_view left, std::wstring_view right, StringOpFlag flags = StringOpFlag::None) noexcept;
-			static int Compare(wxUniChar left, wxUniChar right, StringOpFlag flags = StringOpFlag::None) noexcept;
+		private:
+			static int DoCompare(std::string_view left, std::string_view right, StringOpFlag flags = StringOpFlag::None) noexcept;
+			static int DoCompare(std::wstring_view left, std::wstring_view right, StringOpFlag flags = StringOpFlag::None) noexcept;
+			static int DoCompare(wxUniChar left, wxUniChar right, StringOpFlag flags = StringOpFlag::None) noexcept;
 			
+		public:
 			template<class T1, class T2>
 			static int Compare(T1&& left, T2&& right, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
 				if constexpr(Private::IsAnyCharType<T1>() && Private::IsAnyCharType<T2>())
 				{
-					return Compare(UniCharOf(std::forward<T1>(left)), UniCharOf(std::forward<T2>(right)), flags);
+					return DoCompare(UniCharOf(std::forward<T1>(left)), UniCharOf(std::forward<T2>(right)), flags);
 				}
 				else
 				{
-					return Compare(StringViewOf(std::forward<T1>(left)), StringViewOf(std::forward<T2>(right)), flags);
+					return DoCompare(StringViewOf(std::forward<T1>(left)), StringViewOf(std::forward<T2>(right)), flags);
 				}
 			}
 
-			static bool Matches(std::string_view name, std::string_view expression, StringOpFlag flags = StringOpFlag::None) noexcept;
-			static bool Matches(std::wstring_view name, std::wstring_view expression, StringOpFlag flags = StringOpFlag::None) noexcept;
+		private:
+			static bool DoMatches(std::string_view name, std::string_view expression, StringOpFlag flags = StringOpFlag::None) noexcept;
+			static bool DoMatches(std::wstring_view name, std::wstring_view expression, StringOpFlag flags = StringOpFlag::None) noexcept;
 
+		public:
 			template<class T1, class T2>
 			static int Matches(T1&& name, T2&& expression, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
-				return Matches(StringViewOf(std::forward<T1>(name)), StringViewOf(std::forward<T2>(expression)), flags);
+				return DoMatches(StringViewOf(std::forward<T1>(name)), StringViewOf(std::forward<T2>(expression)), flags);
 			}
 
 			// Conversions
@@ -232,7 +235,7 @@ namespace KxFramework
 			template<class... Args>
 			static String Concat(Args&&... arg)
 			{
-				return (String(arg) + ...);
+				return (String(std::forward<Args>(arg)) + ...);
 			}
 
 			template<class... Args>
@@ -531,88 +534,34 @@ namespace KxFramework
 			}
 
 			// Concatenation
-			String& Append(std::string_view other)
+		private:
+			String& DoAppend(std::string_view other)
 			{
 				m_String.Append(other.data(), other.length());
 				return *this;
 			}
-			String& Append(std::wstring_view other)
+			String& DoAppend(std::wstring_view other)
 			{
 				m_String.Append(other.data(), other.length());
 				return *this;
 			}
-			String& Append(wxUniChar c, size_t count = 1)
+			String& DoAppend(wxUniChar c, size_t count = 1)
 			{
 				m_String.Append(c, count);
 				return *this;
 			}
 
+		public:
 			template<class T>
 			std::enable_if_t<Private::IsAnyStringType<T>(), String&> Append(T&& other)
 			{
-				return Append(StringViewOf(std::forward<T>(other)));
+				return DoAppend(StringViewOf(std::forward<T>(other)));
 			}
 
 			template<class T>
 			std::enable_if_t<Private::IsAnyCharType<T>(), String&> Append(T&& other, size_t count = 1)
 			{
-				return Append(UniCharOf(std::forward<T>(other)), count);
-			}
-
-			String& Prepend(std::string_view other)
-			{
-				m_String.insert(0, other.data(), other.length());
-				return *this;
-			}
-			String& Prepend(std::wstring_view other)
-			{
-				m_String.insert(0, other.data(), other.length());
-				return *this;
-			}
-			String& Prepend(wxUniChar c, size_t count = 1)
-			{
-				m_String.insert(0, count, c);
-				return *this;
-			}
-			
-			template<class T>
-			std::enable_if_t<Private::IsAnyStringType<T>(), String&> Prepend(T&& other)
-			{
-				return Prepend(StringViewOf(std::forward<T>(other)));
-			}
-
-			template<class T>
-			std::enable_if_t<Private::IsAnyCharType<T>(), String&> Prepend(T&& other, size_t count = 1)
-			{
-				return Prepend(UniCharOf(std::forward<T>(other)), count);
-			}
-
-			String& Insert(size_t pos, std::string_view other)
-			{
-				m_String.insert(pos, other.data(), other.length());
-				return *this;
-			}
-			String& Insert(size_t pos, std::wstring_view other)
-			{
-				m_String.insert(pos, other.data(), other.length());
-				return *this;
-			}
-			String& Insert(size_t pos, wxUniChar c, size_t count = 1)
-			{
-				m_String.insert(pos, count, c);
-				return *this;
-			}
-			
-			template<class T>
-			std::enable_if_t<Private::IsAnyStringType<T>(), String&> Insert(size_t pos, T&& other)
-			{
-				return Insert(pos, StringViewOf(std::forward<T>(other)));
-			}
-
-			template<class T>
-			std::enable_if_t<Private::IsAnyCharType<T>(), String&> Insert(size_t pos, T&& other, size_t count = 1)
-			{
-				return Insert(pos, UniCharOf(std::forward<T>(other)), count);
+				return DoAppend(UniCharOf(std::forward<T>(other)), count);
 			}
 
 			template<class T>
@@ -627,8 +576,69 @@ namespace KxFramework
 				return Append(std::forward<T>(other));
 			}
 
+		private:
+			String& DoPrepend(std::string_view other)
+			{
+				m_String.insert(0, other.data(), other.length());
+				return *this;
+			}
+			String& DoPrepend(std::wstring_view other)
+			{
+				m_String.insert(0, other.data(), other.length());
+				return *this;
+			}
+			String& DoPrepend(wxUniChar c, size_t count = 1)
+			{
+				m_String.insert(0, count, c);
+				return *this;
+			}
+			
+		public:
+			template<class T>
+			std::enable_if_t<Private::IsAnyStringType<T>(), String&> Prepend(T&& other)
+			{
+				return DoPrepend(StringViewOf(std::forward<T>(other)));
+			}
+
+			template<class T>
+			std::enable_if_t<Private::IsAnyCharType<T>(), String&> Prepend(T&& other, size_t count = 1)
+			{
+				return DoPrepend(UniCharOf(std::forward<T>(other)), count);
+			}
+
+		private:
+			String& DoInsert(size_t pos, std::string_view other)
+			{
+				m_String.insert(pos, other.data(), other.length());
+				return *this;
+			}
+			String& DoInsert(size_t pos, std::wstring_view other)
+			{
+				m_String.insert(pos, other.data(), other.length());
+				return *this;
+			}
+			String& DoInsert(size_t pos, wxUniChar c, size_t count = 1)
+			{
+				m_String.insert(pos, count, c);
+				return *this;
+			}
+			
+		public:
+			template<class T>
+			std::enable_if_t<Private::IsAnyStringType<T>(), String&> Insert(size_t pos, T&& other)
+			{
+				return DoInsert(pos, StringViewOf(std::forward<T>(other)));
+			}
+
+			template<class T>
+			std::enable_if_t<Private::IsAnyCharType<T>(), String&> Insert(size_t pos, T&& other, size_t count = 1)
+			{
+				return DoInsert(pos, UniCharOf(std::forward<T>(other)), count);
+			}
+
 			// Comparison
-			int CompareTo(std::string_view other, StringOpFlag flags = StringOpFlag::None) const noexcept(std::is_same_v<XChar, char>)
+		private:
+			int DoCompareTo(std::string_view other, StringOpFlag flags = StringOpFlag::None) const noexcept(std::is_same_v<XChar, char>)
 			{
 				#if wxUSE_UNICODE_WCHAR
 				return Compare(*this, String(other), flags);
@@ -636,7 +646,7 @@ namespace KxFramework
 				return Compare(GetView(), other, flags);
 				#endif
 			}
-			int CompareTo(std::wstring_view other, StringOpFlag flags = StringOpFlag::None) const noexcept(std::is_same_v<XChar, wchar_t>)
+			int DoCompareTo(std::wstring_view other, StringOpFlag flags = StringOpFlag::None) const noexcept(std::is_same_v<XChar, wchar_t>)
 			{
 				#if wxUSE_UNICODE_WCHAR
 				return Compare(GetView(), other, flags);
@@ -644,22 +654,23 @@ namespace KxFramework
 				return Compare(*this, String(other), flags);
 				#endif
 			}
-			int CompareTo(wxUniChar other, StringOpFlag flags = StringOpFlag::None) const noexcept
+			int DoCompareTo(wxUniChar other, StringOpFlag flags = StringOpFlag::None) const noexcept
 			{
 				const XChar c[2] = {other, 0};
 				return Compare(GetView(), StringViewOf(c), flags);
 			}
 
+		public:
 			template<class T>
 			int CompareTo(T&& other, StringOpFlag flags = StringOpFlag::None) const
 			{
 				if constexpr(Private::IsAnyCharType<T>())
 				{
-					return CompareTo(UniCharOf(std::forward<T>(other)), flags);
+					return DoCompareTo(UniCharOf(std::forward<T>(other)), flags);
 				}
 				else
 				{
-					return CompareTo(StringViewOf(std::forward<T>(other)), flags);
+					return DoCompareTo(StringViewOf(std::forward<T>(other)), flags);
 				}
 			}
 
@@ -669,80 +680,88 @@ namespace KxFramework
 				return CompareTo(std::forward<T>(other), flags) == 0;
 			}
 
-			bool StartsWith(std::string_view pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
-			bool StartsWith(std::wstring_view pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
-			bool StartsWith(wxUniChar c, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const noexcept
+		private:
+			bool DoStartsWith(std::string_view pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
+			bool DoStartsWith(std::wstring_view pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
+			bool DoStartsWith(wxUniChar c, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const noexcept
 			{
 				const XChar pattern[2] = {c, 0};
 				return StartsWith(StringViewOf(pattern), rest, flags);
 			}
 
+		public:
 			template<class T>
 			bool StartsWith(T&& pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const
 			{
 				if constexpr(Private::IsAnyCharType<T>())
 				{
-					return StartsWith(UniCharOf(std::forward<T>(pattern)), rest, flags);
+					return DoStartsWith(UniCharOf(std::forward<T>(pattern)), rest, flags);
 				}
 				else
 				{
-					return StartsWith(StringViewOf(std::forward<T>(pattern)), rest, flags);
+					return DoStartsWith(StringViewOf(std::forward<T>(pattern)), rest, flags);
 				}
 			}
 
-			bool EndsWith(std::string_view pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
-			bool EndsWith(std::wstring_view pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
-			bool EndsWith(wxUniChar c, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const noexcept
+		private:
+			bool DoEndsWith(std::string_view pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
+			bool DoEndsWith(std::wstring_view pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
+			bool DoEndsWith(wxUniChar c, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const noexcept
 			{
 				const XChar pattern[2] = {c, 0};
 				return EndsWith(StringViewOf(pattern), rest, flags);
 			}
 
+		public:
 			template<class T>
 			bool EndsWith(T&& pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const
 			{
 				if constexpr(Private::IsAnyCharType<T>())
 				{
-					return EndsWith(UniCharOf(std::forward<T>(pattern)), rest, flags);
+					return DoEndsWith(UniCharOf(std::forward<T>(pattern)), rest, flags);
 				}
 				else
 				{
-					return EndsWith(StringViewOf(std::forward<T>(pattern)), rest, flags);
+					return DoEndsWith(StringViewOf(std::forward<T>(pattern)), rest, flags);
 				}
 			}
 
-			bool Matches(std::string_view expression, StringOpFlag flags = StringOpFlag::None) noexcept
+		private:
+			bool DoMatches(std::string_view expression, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
 				#if wxUSE_UNICODE_WCHAR
-				return Matches(*this, String(expression), flags);
+				String temp = FromView(expression);
+				return DoMatches(GetView(), StringViewOf(temp), flags);
 				#else
-				return Matches(GetView(), expression, flags);
+				return DoMatches(GetView(), expression, flags);
 				#endif
 			}
-			bool Matches(std::wstring_view expression, StringOpFlag flags = StringOpFlag::None) noexcept
+			bool DoMatches(std::wstring_view expression, StringOpFlag flags = StringOpFlag::None) noexcept
 			{
 				#if wxUSE_UNICODE_WCHAR
-				return Matches(GetView(), expression, flags);
+				return DoMatches(GetView(), expression, flags);
 				#else
-				return Matches(*this, String(expression), flags);
+				String temp = FromView(expression);
+				return DoMatches(GetView(), StringViewOf(temp), flags);
 				#endif
 			}
-			bool Matches(wxUniChar c, StringOpFlag flags = StringOpFlag::None) const noexcept
+			bool DoMatches(wxUniChar c, StringOpFlag flags = StringOpFlag::None) const noexcept
 			{
 				const XChar expression[2] = {c, 0};
-				return Matches(StringViewOf(expression), flags);
+				return DoMatches(GetView(), StringViewOf(expression), flags);
 			}
 
+		public:
 			template<class T>
 			bool Matches(T&& expression, StringOpFlag flags = StringOpFlag::None) const
 			{
 				if constexpr(Private::IsAnyCharType<T>())
 				{
-					return Matches(UniCharOf(std::forward<T>(expression)), flags);
+					return DoMatches(UniCharOf(std::forward<T>(expression)), flags);
 				}
 				else
 				{
-					return Matches(StringViewOf(std::forward<T>(expression)), flags);
+					return DoMatches(StringViewOf(std::forward<T>(expression)), flags);
 				}
 			}
 
