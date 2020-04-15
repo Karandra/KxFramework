@@ -100,5 +100,5 @@ int KxCredentialsDialog::ShowModal()
 			m_Password = SecretValue::FromString(password, passwordLength);
 		}
 	}
-	return ret == ERROR_SUCCESS ? KxID_OK : KxID_CANCEL;
+	return ret == ERROR_SUCCESS ? wxID_OK : wxID_CANCEL;
 }

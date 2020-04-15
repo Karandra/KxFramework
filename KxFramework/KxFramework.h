@@ -13,7 +13,3 @@ extern KX_API const wxRect KxNullWxRect;
 #if !defined KxNullWxString
 extern KX_API const wxString KxNullWxString;
 #endif
-
-// Main library includes
-#include <KxFramework/KxStandardID.h>
-

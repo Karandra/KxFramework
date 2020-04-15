@@ -241,9 +241,6 @@
     <ClInclude Include="KxFramework\KxTopLevelWindow.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxStandardID.h">
-      <Filter>Header Files\General</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxTranslation.h">
       <Filter>Header Files\General</Filter>
     </ClInclude>

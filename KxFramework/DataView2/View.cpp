@@ -799,7 +799,7 @@ namespace KxDataView2
 	Column* View::OnColumnSelectionMenu(KxMenu& menu)
 	{
 		wxWindowID retID = menu.Show(this);
-		if (retID != KxID_NONE)
+		if (retID != wxID_NONE)
 		{
 			KxMenuItem* menuItem = menu.FindItem(retID);
 			Column* column = static_cast<Column*>(menuItem->GetClientData());

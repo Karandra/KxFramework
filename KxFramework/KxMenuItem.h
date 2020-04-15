@@ -14,7 +14,7 @@ class KX_API KxMenuItem: public wxEvtHandler, public wxMenuItem
 		}
 
 	private:
-		wxWindowID m_EffectiveID = KxID_NONE;
+		wxWindowID m_EffectiveID = wxID_NONE;
 
 	private:
 		void OnCreate();

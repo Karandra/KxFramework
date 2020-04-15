@@ -49,7 +49,7 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 		wxString m_FooterMessage;
 		wxString m_CheckBoxLabel;
 		BOOL m_CheckBoxChecked = FALSE;
-		wxWindowID m_SelectedRadioButton = KxID_NONE;
+		wxWindowID m_SelectedRadioButton = wxID_NONE;
 
 		KxStringVector m_ButtonLabels;
 		KxStringVector m_RadioButtonLabels;

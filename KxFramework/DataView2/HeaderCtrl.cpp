@@ -623,7 +623,7 @@ namespace KxDataView2
 		Bind(wxEVT_CREATE, &HeaderCtrl::OnCreate, this);
 		Bind(wxEVT_DESTROY, &HeaderCtrl::OnDestroy, this);
 
-		if (wxHeaderCtrl::Create(parent, KxID_NONE))
+		if (wxHeaderCtrl::Create(parent, wxID_NONE))
 		{
 			// See comment in 'HeaderCtrl::SetBackgroundColour' for details
 			// about why double-buffering needs to be disabled.

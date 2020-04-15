@@ -2,7 +2,10 @@
 #include "KxFramework/KxHTMLWindow.h"
 #include "KxFramework/KxTranslation.h"
 #include "KxFramework/KxMenu.h"
+#include "Kx/General/StandardID.h"
 #include <wx/clipbrd.h>
+
+using namespace KxFramework;
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxHTMLWindow, wxHtmlWindow);
 
@@ -62,44 +65,44 @@ void KxHTMLWindow::CopyTextToClipboard(const wxString& value) const
 }
 void KxHTMLWindow::CreateContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link)
 {
-	auto MakeItem = [&menu](KxStandardID id)
+	auto MakeItem = [&menu](int id)
 	{
 		return menu.AddItem(id, KxTranslation::GetCurrent().GetString(id));
 	};
 
 	{
-		KxMenuItem* item = MakeItem(KxID_UNDO);
+		KxMenuItem* item = MakeItem(wxID_UNDO);
 		item->Enable(CanUndo());
 	}
 	{
-		KxMenuItem* item = MakeItem(KxID_REDO);
+		KxMenuItem* item = MakeItem(wxID_REDO);
 		item->Enable(CanRedo());
 	}
 	menu.AddSeparator();
 
 	{
-		KxMenuItem* item = MakeItem(KxID_CUT);
+		KxMenuItem* item = MakeItem(wxID_CUT);
 		item->Enable(CanCut());
 	}
 	{
-		KxMenuItem* item = MakeItem(KxID_COPY);
+		KxMenuItem* item = MakeItem(wxID_COPY);
 		item->Enable(CanCopy());
 	}
 	if (link != nullptr)
 	{
-		KxMenuItem* item = MakeItem(KxID_COPY_LINK);
+		KxMenuItem* item = MakeItem(ToInt(StandardID::CopyLink));
 	}
 	{
-		KxMenuItem* item = MakeItem(KxID_PASTE);
+		KxMenuItem* item = MakeItem(wxID_PASTE);
 		item->Enable(CanPaste());
 	}
 	{
-		KxMenuItem* item = MakeItem(KxID_DELETE);
+		KxMenuItem* item = MakeItem(wxID_DELETE);
 		item->Enable(IsEditable());
 	}
 	menu.AddSeparator();
 	{
-		KxMenuItem* item = MakeItem(KxID_SELECTALL);
+		KxMenuItem* item = MakeItem(wxID_SELECTALL);
 		item->Enable(!IsEmpty());
 	}
 }
@@ -107,17 +110,17 @@ void KxHTMLWindow::ExecuteContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link)
 {
 	switch (menu.Show(this))
 	{
-		case KxID_COPY:
+		case wxID_COPY:
 		{
 			Copy();
 			break;
 		}
-		case KxID_COPY_LINK:
+		case ToInt(StandardID::CopyLink):
 		{
 			CopyTextToClipboard(link->GetHref());
 			break;
 		}
-		case KxID_SELECTALL:
+		case wxID_SELECTALL:
 		{
 			SelectAll();
 			break;

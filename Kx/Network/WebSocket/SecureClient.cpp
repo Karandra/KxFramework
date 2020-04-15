@@ -121,7 +121,7 @@ namespace KxFramework::WebSocket
 		{
 			AddRequestHeaders();
 
-			WebSocketEvent event(WebSocketEvent::EvtConnecting, KxID_NONE);
+			WebSocketEvent event(WebSocketEvent::EvtConnecting, ToInt(StandardID::None));
 			event.SetURI(address);
 			event.SetEventObject(this);
 			ProcessEvent(event);

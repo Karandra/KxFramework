@@ -190,7 +190,7 @@ wxString KxTranslation::GetString(wxStandardID id, bool* isSuccessOut) const
 
 	return result;
 }
-wxString KxTranslation::GetString(KxStandardID id, bool* isSuccessOut) const
+wxString KxTranslation::GetString(int id, bool* isSuccessOut) const
 {
 	return GetString(static_cast<wxStandardID>(id), isSuccessOut);
 }

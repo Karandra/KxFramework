@@ -77,7 +77,7 @@ class KX_API KxTranslation
 			return GetString(wxString::FromUTF8Unchecked(id), isSuccessOut);
 		}
 		wxString GetString(wxStandardID id, bool* isSuccessOut = nullptr) const;
-		wxString GetString(KxStandardID id, bool* isSuccessOut = nullptr) const;
+		wxString GetString(int id, bool* isSuccessOut = nullptr) const;
 
 		bool LoadFromFile(const wxString& filePath);
 		bool LoadFromResource(const wxString& localeName);

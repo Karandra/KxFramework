@@ -305,7 +305,6 @@
     <ClInclude Include="KxFramework\KxSlider.h" />
     <ClInclude Include="KxFramework\KxSplashWindow.h" />
     <ClInclude Include="KxFramework\KxSplitterWindow.h" />
-    <ClInclude Include="KxFramework\KxStandardID.h" />
     <ClInclude Include="KxFramework\KxStaticBitmap.h" />
     <ClInclude Include="KxFramework\KxStaticText.h" />
     <ClInclude Include="KxFramework\KxStatusBar.h" />

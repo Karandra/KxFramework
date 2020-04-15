@@ -2,6 +2,9 @@
 #include "KxFramework/KxSearchBox.h"
 #include "KxFramework/KxTranslation.h"
 #include "KxFramework/KxIncludeWindows.h"
+#include "Kx/General/StandardID.h"
+
+using namespace KxFramework;
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxSearchBox, wxSearchCtrl)
 
@@ -51,7 +54,7 @@ bool KxSearchBox::Create(wxWindow* parent,
 	{
 		ShowCancelButton(true);
 		ShowSearchButton(true);
-		SetDescriptiveText(KxTranslation::GetCurrent().GetString(KxID_SEARCH));
+		SetDescriptiveText(KxTranslation::GetCurrent().GetString(ToInt(StandardID::Search)));
 		Refresh();
 
 		m_EvtHandler.Bind(wxEVT_TEXT, &KxSearchBox::OnText, this);
