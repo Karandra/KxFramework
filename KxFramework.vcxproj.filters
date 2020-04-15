@@ -385,9 +385,6 @@
     <ClInclude Include="KxFramework\KxProcessEvent.h">
       <Filter>Header Files\Events</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxApp.h">
-      <Filter>Header Files\General</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxMenu.h">
       <Filter>Header Files\GUI\Menus</Filter>
     </ClInclude>
@@ -1201,6 +1198,9 @@
     <ClInclude Include="Kx\UI\StdDialogButtonSizer.h">
       <Filter>Kx\UI</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\General\BasicApplication.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1821,6 +1821,9 @@
     </ClCompile>
     <ClCompile Include="Kx\UI\StdDialogButtonSizer.cpp">
       <Filter>Kx\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\BasicApplication.cpp">
+      <Filter>Kx\General</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

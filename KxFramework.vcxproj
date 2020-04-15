@@ -240,7 +240,6 @@
     <ClInclude Include="KxFramework\DataView2\MainWindow.h" />
     <ClInclude Include="KxFramework\DataView2\Node.h" />
     <ClInclude Include="KxFramework\DataView2\Renderer.h" />
-    <ClInclude Include="KxFramework\KxApp.h" />
     <ClInclude Include="KxFramework\KxAuiNotebook.h" />
     <ClInclude Include="KxFramework\KxAuiToolBar.h" />
     <ClInclude Include="KxFramework\KxAuiToolBarEvent.h" />
@@ -387,6 +386,7 @@
     <ClInclude Include="Kx\General.hpp" />
     <ClInclude Include="Kx\General\Angle.h" />
     <ClInclude Include="Kx\General\Any.h" />
+    <ClInclude Include="Kx\General\BasicApplication.h" />
     <ClInclude Include="Kx\General\BinarySize.h" />
     <ClInclude Include="Kx\General\Color.h" />
     <ClInclude Include="Kx\General\ColorDefines.h" />
@@ -662,6 +662,7 @@
     <ClCompile Include="Kx\Drawing\UxTheme.cpp" />
     <ClCompile Include="Kx\FileSystem\FileOperationEvent.cpp" />
     <ClCompile Include="Kx\General\Any.cpp" />
+    <ClCompile Include="Kx\General\BasicApplication.cpp" />
     <ClCompile Include="Kx\General\Color.cpp" />
     <ClCompile Include="Kx\General\HTMLDocument.cpp" />
     <ClCompile Include="Kx\General\HTMLNode.cpp" />
