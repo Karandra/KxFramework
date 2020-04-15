@@ -34,7 +34,7 @@ namespace KxFramework::Network
 			if (::DnsQuery_W(hostName.wc_str(), ip == NetworkHostType::IPv6 ? DNS_TYPE_A6 : DNS_TYPE_A, DNS_QUERY_STANDARD|DNS_QUERY_BYPASS_CACHE, nullptr, &infoDNS, nullptr) == 0)
 			{
 				bool isSuccess = false;
-				wchar_t buffer[64] = {0};
+				wchar_t buffer[64] = {};
 
 				if (ip == NetworkHostType::IPv6)
 				{

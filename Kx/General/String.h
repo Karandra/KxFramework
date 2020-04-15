@@ -392,18 +392,6 @@ namespace KxFramework
 			{
 			}
 			
-			template<class T, size_t size>
-			String(const T(&data)[size])
-				:m_String(data, size - 1)
-			{
-			}
-			
-			template<size_t size>
-			String(const char(&data)[size], const wxMBConv& conv)
-				:m_String(data, conv, size - 1)
-			{
-			}
-
 			// std::[w]string_view
 			explicit String(std::string_view other)
 				:m_String(other.data(), other.length())
