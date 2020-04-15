@@ -5,11 +5,6 @@
 #include <wx/app.h>
 #include <wx/cmdline.h>
 
-namespace KxFramework::Private
-{
-	bool ParseCommandLine(wxAppConsole& app, wxCmdLineParser& parser);
-}
-
 namespace KxFramework
 {
 	template<class TDerived, class TBase>
@@ -52,7 +47,8 @@ namespace KxFramework
 		public:
 			bool ParseCommandLine()
 			{
-				return KxAppInternal::ParseCommandLine(this, m_CmdLineParser);
+				m_CmdLineParser.SetCmdLine(this->argc, this->argv);
+				return m_CmdLineParser.Parse() == 0;
 			}
 			const wxCmdLineParser& GetCmdLineParser() const
 			{

@@ -1,7 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxWithDropdownMenu.h"
 #include "Kx/UI/WindowRefreshScheduler.h"
+#include "Kx/UI/WithDropdownMenu.h"
 #include "KxEvent.h"
 
 KxEVENT_DECLARE_GLOBAL(wxCommandEvent, BUTTON);
@@ -9,7 +9,7 @@ KxEVENT_DECLARE_GLOBAL(wxContextMenuEvent, BUTTON_MENU);
 
 class KX_API KxButton:
 	public KxFramework::WindowRefreshScheduler<wxSystemThemedControl<wxAnyButton>>,
-	public KxWithDropdownMenu
+	public KxFramework::WithDropdownMenu
 {
 	public:
 		static wxSize GetDefaultSize();

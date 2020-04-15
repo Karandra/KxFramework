@@ -323,7 +323,6 @@
     <ClInclude Include="KxFramework\KxTranslation.h" />
     <ClInclude Include="KxFramework\KxTypedefs.h" />
     <ClInclude Include="KxFramework\KxWebView.h" />
-    <ClInclude Include="KxFramework\KxWithDropdownMenu.h" />
     <ClInclude Include="KxStdAfx.h" />
     <ClInclude Include="Kx\Async.hpp" />
     <ClInclude Include="Kx\Async\Common.h" />
@@ -518,6 +517,7 @@
     <ClInclude Include="Kx\UI\Validator.h" />
     <ClInclude Include="Kx\UI\WindowRefreshScheduler.h" />
     <ClInclude Include="Kx\UI\WindowUpdateLocker.h" />
+    <ClInclude Include="Kx\UI\WithDropdownMenu.h" />
     <ClInclude Include="Kx\Utility.hpp" />
     <ClInclude Include="Kx\Utility\CallAtScopeExit.h" />
     <ClInclude Include="Kx\Utility\Common.h" />
@@ -565,7 +565,6 @@
     <ClCompile Include="KxFramework\DataView2\MainWindow.cpp" />
     <ClCompile Include="KxFramework\DataView2\Node.cpp" />
     <ClCompile Include="KxFramework\DataView2\Renderer.cpp" />
-    <ClCompile Include="KxFramework\KxApp.cpp" />
     <ClCompile Include="KxFramework\KxAuiNotebook.cpp" />
     <ClCompile Include="KxFramework\KxAuiToolBar.cpp" />
     <ClCompile Include="KxFramework\KxAuiToolBarEvent.cpp" />
@@ -640,7 +639,6 @@
     <ClCompile Include="KxFramework\KxTopLevelWindow.cpp" />
     <ClCompile Include="KxFramework\KxTranslation.cpp" />
     <ClCompile Include="KxFramework\KxWebView.cpp" />
-    <ClCompile Include="KxFramework\KxWithDropdownMenu.cpp" />
     <ClCompile Include="KxStdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -662,7 +660,6 @@
     <ClCompile Include="Kx\Drawing\UxTheme.cpp" />
     <ClCompile Include="Kx\FileSystem\FileOperationEvent.cpp" />
     <ClCompile Include="Kx\General\Any.cpp" />
-    <ClCompile Include="Kx\General\BasicApplication.cpp" />
     <ClCompile Include="Kx\General\Color.cpp" />
     <ClCompile Include="Kx\General\HTMLDocument.cpp" />
     <ClCompile Include="Kx\General\HTMLNode.cpp" />

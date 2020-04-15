@@ -73,12 +73,6 @@
     <Filter Include="Source Files\GUI\Controls">
       <UniqueIdentifier>{f01e130d-7ea9-414e-b8c5-c061c1b75cf9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Misc">
-      <UniqueIdentifier>{9369ebc3-44af-42ee-9987-724cc1b026c9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Misc">
-      <UniqueIdentifier>{ce660ee4-5cc9-4fad-b667-b1c3c2924a59}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\GUI\DataView2">
       <UniqueIdentifier>{eb022c58-7685-4933-83db-3ae2a7c99660}</UniqueIdentifier>
     </Filter>
@@ -406,9 +400,6 @@
     <ClInclude Include="KxFramework\KxFramework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxWithDropdownMenu.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxTaskScheduler.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
@@ -417,9 +408,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxSharedMemory.h">
       <Filter>Header Files\System</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxIncludeWindows.h">
-      <Filter>Header Files\Misc</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxShellDefs.h">
       <Filter>Header Files\System</Filter>
@@ -1201,6 +1189,12 @@
     <ClInclude Include="Kx\General\BasicApplication.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxIncludeWindows.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\WithDropdownMenu.h">
+      <Filter>Kx\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1369,9 +1363,6 @@
     <ClCompile Include="KxFramework\KxProcessEvent.cpp">
       <Filter>Source Files\Events</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxApp.cpp">
-      <Filter>Source Files\General</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxMenu.cpp">
       <Filter>Source Files\GUI\Menus</Filter>
     </ClCompile>
@@ -1389,9 +1380,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxCredentialsDialog.cpp">
       <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxWithDropdownMenu.cpp">
-      <Filter>Source Files\Misc</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxTaskScheduler.cpp">
       <Filter>Source Files\System</Filter>
@@ -1821,9 +1809,6 @@
     </ClCompile>
     <ClCompile Include="Kx\UI\StdDialogButtonSizer.cpp">
       <Filter>Kx\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\General\BasicApplication.cpp">
-      <Filter>Kx\General</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
