@@ -252,7 +252,7 @@ namespace KxFramework
 		{
 			return region;
 		}
-		return KxNullWxRegion;
+		return {};
 	}
 	std::optional<wxRect> UxTheme::GetBackgroundContentRect(const wxDC& dc, int iPartId, int iStateId, const wxRect& rect) const noexcept
 	{

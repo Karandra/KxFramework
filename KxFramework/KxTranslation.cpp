@@ -181,7 +181,7 @@ const wxString& KxTranslation::GetString(const wxString& id, bool* isSuccessOut)
 	}
 
 	Utility::SetIfNotNull(isSuccessOut, false);
-	return KxNullWxString;
+	return {};
 }
 wxString KxTranslation::GetString(wxStandardID id, bool* isSuccessOut) const
 {

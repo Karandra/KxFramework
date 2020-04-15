@@ -22,7 +22,7 @@ namespace KxDataView2
 			bool SetValue(const wxAny& value) override;
 			ToolTip CreateToolTip() const override;
 
-			void PrepareRenderer(wxHtmlDCRenderer& htmlRenderer, wxDC& dc, const wxRect& cellRect = KxNullWxRect) const;
+			void PrepareRenderer(wxHtmlDCRenderer& htmlRenderer, wxDC& dc, const wxRect& cellRect = {}) const;
 			void DrawCellContent(const wxRect& cellRect, CellState cellState) override;
 			wxSize GetCellSize() const override;
 

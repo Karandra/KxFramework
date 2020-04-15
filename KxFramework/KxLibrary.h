@@ -75,13 +75,13 @@ class KX_API KxLibraryVersionInfo
 		{
 			return m_Strings.count(name);
 		}
-		const wxString& GetString(const wxString& name) const
+		wxString GetString(const wxString& name) const
 		{
 			if (HasString(name))
 			{
 				return m_Strings.at(name);
 			}
-			return KxNullWxString;
+			return {};
 		}
 		void SetString(const wxString& name, const wxString& value = wxEmptyString)
 		{

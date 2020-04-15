@@ -48,7 +48,7 @@ class KX_API KxRichToolTip: public wxObject
 			m_ToolTip.SetTipKind(kind);
 		}
 		
-		void Show(wxWindow* window, const wxRect& rect = KxNullWxRect)
+		void Show(wxWindow* window, const wxRect& rect = {})
 		{
 			m_ToolTip.ShowFor(window, rect.IsEmpty() ? nullptr : &rect);
 		}
