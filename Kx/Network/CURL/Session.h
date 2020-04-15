@@ -34,18 +34,18 @@ namespace KxFramework
 		public:
 			CURLSession(const URI& url = {});
 			CURLSession(const CURLSession&) = delete;
-			CURLSession(CURLSession&& other)
+			CURLSession(CURLSession&& other) noexcept
 			{
 				*this = std::move(other);
 			}
-			~CURLSession()
+			~CURLSession() noexcept
 			{
 				Close();
 			}
 
 		public:
-			void Close();
-			CURL::Private::SessionHandle GetHandle() const
+			void Close() noexcept;
+			CURL::Private::SessionHandle GetHandle() const noexcept
 			{
 				return m_Handle;
 			}
@@ -65,23 +65,23 @@ namespace KxFramework
 			void Download(CURLStreamReply& reply);
 			size_t EnumReplyCookies(std::function<bool(String)> func) const;
 
-			bool IsPaused() const
+			bool IsPaused() const noexcept
 			{
 				return m_IsPaused;
 			}
-			bool Pause();
-			bool Resume();
+			bool Pause() noexcept;
+			bool Resume() noexcept;
 
-			bool IsStopped() const
+			bool IsStopped() const noexcept
 			{
 				return m_IsStopped;
 			}
-			void Stop();
+			void Stop() noexcept;
 
 			void SetURI(const URI& uri);
 			void SetPostData(const String& data);
 
-			void ClearHeaders()
+			void ClearHeaders() noexcept
 			{
 				m_SessionHeaders.clear();
 			}
@@ -92,11 +92,20 @@ namespace KxFramework
 				m_UserAgent = userAgent;
 			}
 
-			void SetTimeout(const wxTimeSpan& timeout);
-			void SetConnectionTimeout(const wxTimeSpan& timeout);
+			void SetTimeout(const wxTimeSpan& timeout) noexcept;
+			void SetConnectionTimeout(const wxTimeSpan& timeout) noexcept;
 
 		public:
 			CURLSession& operator=(const CURLSession&) = delete;
-			CURLSession& operator=(CURLSession&& other);
+			CURLSession& operator=(CURLSession&& other) noexcept;
+
+			explicit operator bool() const noexcept
+			{
+				return !m_Handle.IsNull();
+			}
+			bool operator!() const noexcept
+			{
+				return m_Handle.IsNull();
+			}
 	};
 }

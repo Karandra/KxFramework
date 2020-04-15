@@ -143,7 +143,7 @@ namespace KxFramework
 		SetURI(url);
 	}
 
-	void CURLSession::Close()
+	void CURLSession::Close() noexcept
 	{
 		if (m_HeadersSList)
 		{
@@ -197,7 +197,7 @@ namespace KxFramework
 		return 0;
 	}
 
-	bool CURLSession::Pause()
+	bool CURLSession::Pause() noexcept
 	{
 		if (curl_easy_pause(m_Handle.GetNativeHandle(), CURLPAUSE_ALL) == CURLE_OK)
 		{
@@ -206,7 +206,7 @@ namespace KxFramework
 		}
 		return false;
 	}
-	bool CURLSession::Resume()
+	bool CURLSession::Resume() noexcept
 	{
 		if (curl_easy_pause(m_Handle.GetNativeHandle(), CURLPAUSE_CONT) == CURLE_OK)
 		{
@@ -215,7 +215,7 @@ namespace KxFramework
 		}
 		return false;
 	}
-	void CURLSession::Stop()
+	void CURLSession::Stop() noexcept
 	{
 		m_IsStopped = true;
 	}
@@ -238,16 +238,16 @@ namespace KxFramework
 		m_SessionHeaders.emplace_back(value.ToStdString());
 	}
 
-	void CURLSession::SetTimeout(const wxTimeSpan& timeout)
+	void CURLSession::SetTimeout(const wxTimeSpan& timeout) noexcept
 	{
 		m_Handle.SetOption(CURLOPT_TIMEOUT_MS, timeout.GetMilliseconds().GetValue());
 	}
-	void CURLSession::SetConnectionTimeout(const wxTimeSpan& timeout)
+	void CURLSession::SetConnectionTimeout(const wxTimeSpan& timeout) noexcept
 	{
 		m_Handle.SetOption(CURLOPT_CONNECTTIMEOUT_MS, timeout.GetMilliseconds().GetValue());
 	}
 
-	CURLSession& CURLSession::operator=(CURLSession&& other)
+	CURLSession& CURLSession::operator=(CURLSession&& other) noexcept
 	{
 		if (this != &other)
 		{
