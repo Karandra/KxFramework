@@ -67,9 +67,9 @@ class KX_API KxShell
 		
 		static bool Execute(wxWindow* window,
 							const wxString& filePath,
-							const wxString& operation = wxEmptyString,
-							const wxString& arguments = wxEmptyString,
-							const wxString& workingFolder = wxEmptyString,
+							const wxString& operation = {},
+							const wxString& arguments = {},
+							const wxString& workingFolder = {},
 							int windowMode = SW_SHOWNORMAL,
 							bool hideUI = false
 		);

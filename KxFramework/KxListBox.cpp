@@ -72,7 +72,7 @@ bool KxListBox::Create(wxWindow* parent,
 	if (KxListView::Create(parent, winid, style))
 	{
 		SetSingleStyle(wxLC_VRULES, false);
-		AddColumn(wxEmptyString, wxLIST_AUTOSIZE, -1);
+		AddColumn({}, wxLIST_AUTOSIZE, -1);
 		//SetColumnWidth(0, GetColumnWidth(0)-4);
 
 		Bind(wxEVT_LIST_ITEM_SELECTED, &KxListBox::OnSelect, this);

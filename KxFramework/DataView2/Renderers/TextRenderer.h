@@ -10,7 +10,7 @@ namespace KxDataView2
 			wxString m_Text;
 
 		public:
-			TextValue(const wxString& text = wxEmptyString)
+			TextValue(const wxString& text = {})
 				:m_Text(text)
 			{
 			}

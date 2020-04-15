@@ -9,7 +9,7 @@ class KX_API KxProgressBar: public wxGauge, public KxIProgressBar
 
 	private:
 		wxString m_Label = "%0.2f%%";
-		wxString m_PulseLabel = wxEmptyString;
+		wxString m_PulseLabel = {};
 		int m_Step = DefaultStep;
 		bool m_InPulseMode = false;
 

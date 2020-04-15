@@ -25,7 +25,7 @@ class KX_API KxComboControl: public wxComboCtrl
 		KxComboControl() {}
 		KxComboControl(wxWindow* window,
 					   wxWindowID id,
-					   const wxString& value = wxEmptyString,
+					   const wxString& value = {},
 					   long style = DefaultStyle,
 					   const wxValidator& validator = wxDefaultValidator
 		)
@@ -34,7 +34,7 @@ class KX_API KxComboControl: public wxComboCtrl
 		}
 		bool Create(wxWindow* window,
 					wxWindowID id,
-					const wxString& value = wxEmptyString,
+					const wxString& value = {},
 					long style = DefaultStyle,
 					const wxValidator& validator = wxDefaultValidator
 		);

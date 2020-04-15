@@ -84,7 +84,7 @@ bool KxTextBoxDialog::Create(wxWindow* parent,
 				flags |= wxTE_PASSWORD;
 			}
 
-			KxTextBox* textBox = new KxTextBox(m_ContentPanel, wxID_NONE, wxEmptyString, flags);
+			KxTextBox* textBox = new KxTextBox(m_ContentPanel, wxID_NONE, {}, flags);
 			textBox->SetEditable(!(style & KxTBD_READONLY));
 			if (!textBox->IsMultiLine())
 			{

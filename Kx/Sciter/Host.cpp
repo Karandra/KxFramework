@@ -542,7 +542,7 @@ namespace KxFramework::Sciter
 	void Host::ClearDocument()
 	{
 		m_DocumentBasePath.clear();
-		LoadHTML(wxEmptyString);
+		LoadHTML({});
 	}
 
 	Element Host::GetRootElement() const

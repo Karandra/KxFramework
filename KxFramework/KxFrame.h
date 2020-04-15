@@ -30,11 +30,11 @@ class KX_API KxFrame: public KxTopLevelWindow<wxFrame>
 					const wxPoint& pos = wxDefaultPosition,
 					const wxSize& size = wxDefaultSize,
 					long style = DefaultStyle,
-					const wxString& name = wxEmptyString
+					const wxString& name = {}
 		)
 		{
 			SetName(name);
-			return Create(parent, id, wxEmptyString, pos, size, style);
+			return Create(parent, id, {}, pos, size, style);
 		}
 		virtual ~KxFrame();
 		

@@ -11,7 +11,7 @@ namespace KxDataView2
 		public ToggleValue
 	{
 		public:
-			BitmapTextToggleValue(const wxString& text = wxEmptyString,
+			BitmapTextToggleValue(const wxString& text = {},
 								  const wxBitmap& bitmap = wxNullBitmap,
 								  ToggleState state = ToggleState::None,
 								  ToggleType type = ToggleType::None
@@ -21,15 +21,15 @@ namespace KxDataView2
 			}
 
 			BitmapTextToggleValue(const wxBitmap& bitmap)
-				:BitmapTextToggleValue(wxEmptyString, bitmap)
+				:BitmapTextToggleValue({}, bitmap)
 			{
 			}
 			BitmapTextToggleValue(ToggleState state, ToggleType type = ToggleType::None)
-				:BitmapTextToggleValue(wxEmptyString, wxNullBitmap, state, type)
+				:BitmapTextToggleValue({}, wxNullBitmap, state, type)
 			{
 			}
 			BitmapTextToggleValue(bool checked, ToggleType type = ToggleType::None)
-				:BitmapTextToggleValue(wxEmptyString, wxNullBitmap, ToggleState::None, type)
+				:BitmapTextToggleValue({}, wxNullBitmap, ToggleState::None, type)
 			{
 				SetChecked(checked);
 			}

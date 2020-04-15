@@ -24,20 +24,20 @@ namespace
 
 namespace
 {
-	_variant_t VariantFromString(const wxString& value = wxEmptyString)
+	_variant_t VariantFromString(const wxString& value = {})
 	{
 		return value.wc_str();
 	}
-	_variant_t VariantFromString_Null(const wxString& value = wxEmptyString)
+	_variant_t VariantFromString_Null(const wxString& value = {})
 	{
 		return value.IsEmpty() ? _variant_t() : VariantFromString(value);
 	}
 
-	_bstr_t BstrFromString(const wxString& value = wxEmptyString)
+	_bstr_t BstrFromString(const wxString& value = {})
 	{
 		return value.wc_str();
 	}
-	_bstr_t BstrFromString_Null(const wxString& value = wxEmptyString)
+	_bstr_t BstrFromString_Null(const wxString& value = {})
 	{
 		return value.IsEmpty() ? _bstr_t() : BstrFromString(value);
 	}

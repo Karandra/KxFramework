@@ -54,7 +54,7 @@ class KX_API KxHTMLWindow: public KxFramework::WindowRefreshScheduler<wxHtmlWind
 		KxHTMLWindow() = default;
 		KxHTMLWindow(wxWindow* parent,
 					  wxWindowID id,
-					  const wxString& text = wxEmptyString,
+					  const wxString& text = {},
 					  long style = DefaultStyle
 		)
 		{
@@ -62,7 +62,7 @@ class KX_API KxHTMLWindow: public KxFramework::WindowRefreshScheduler<wxHtmlWind
 		}
 		bool Create(wxWindow* parent,
 					wxWindowID id,
-					const wxString& text = wxEmptyString,
+					const wxString& text = {},
 					long style = DefaultStyle
 		);
 		~KxHTMLWindow();
@@ -109,7 +109,7 @@ class KX_API KxHTMLWindow: public KxFramework::WindowRefreshScheduler<wxHtmlWind
 		wxString GetPage() const
 		{
 			const wxString* source = wxHtmlWindow::GetParser()->GetSource();
-			return source ? *source : wxEmptyString;
+			return source ? *source : wxS("");
 		}
 		bool IsEmpty() const
 		{
@@ -141,7 +141,7 @@ class KX_API KxHTMLWindow: public KxFramework::WindowRefreshScheduler<wxHtmlWind
 		}
 		void Clear() override
 		{
-			wxHtmlWindow::SetPage(wxEmptyString);
+			wxHtmlWindow::SetPage({});
 		}
 		
 		void Cut() override
@@ -244,7 +244,7 @@ class KX_API KxHTMLWindow: public KxFramework::WindowRefreshScheduler<wxHtmlWind
 
 		wxString GetHint() const override
 		{
-			return wxEmptyString;
+			return {};
 		}
 		bool SetHint(const wxString& hint) override
 		{

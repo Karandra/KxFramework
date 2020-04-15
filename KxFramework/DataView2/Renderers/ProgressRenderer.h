@@ -134,11 +134,11 @@ namespace KxDataView2
 				:ProgressValueBase(position, range, state)
 			{
 			}
-			ProgressValue(int position, int range, const wxString& text = wxEmptyString, ProgressState state = ProgressState::Normal)
+			ProgressValue(int position, int range, const wxString& text = {}, ProgressState state = ProgressState::Normal)
 				:ProgressValueBase(position, range, state), TextValue(text)
 			{
 			}
-			ProgressValue(int position, const wxString& text = wxEmptyString, ProgressState state = ProgressState::Normal)
+			ProgressValue(int position, const wxString& text = {}, ProgressState state = ProgressState::Normal)
 				:TextValue(text), ProgressValueBase(position, state)
 			{
 			}

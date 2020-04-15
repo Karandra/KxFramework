@@ -26,7 +26,7 @@ class KX_API KxRichToolTip: public wxObject
 		static const wxTipKind DefaultKind = wxTipKind_Auto;
 		static const int DefaultDelay = 0;
 
-		KxRichToolTip(const wxString& title = wxEmptyString, const wxString& message = wxEmptyString);
+		KxRichToolTip(const wxString& title = {}, const wxString& message = {});
 
 	public:
 		const wxString& GetTitle() const

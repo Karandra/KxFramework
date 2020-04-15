@@ -131,7 +131,7 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 		KxFileBrowseDialog(wxWindow* parent,
 						   wxWindowID id,
 						   KxFBD_Mode mode,
-						   const wxString& caption = wxEmptyString,
+						   const wxString& caption = {},
 						   const wxPoint& pos = wxDefaultPosition,
 						   const wxSize& size = wxDefaultSize,
 						   StdButton buttons = DefaultButtons,
@@ -143,7 +143,7 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 		bool Create(wxWindow* parent,
 					wxWindowID id,
 					KxFBD_Mode mode,
-					const wxString& caption = wxEmptyString,
+					const wxString& caption = {},
 					const wxPoint& pos = wxDefaultPosition,
 					const wxSize& size = wxDefaultSize,
 					StdButton buttons = DefaultButtons,
@@ -258,7 +258,7 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 					return out;
 				}
 			}
-			return wxEmptyString;
+			return {};
 		}
 		void SetFileName(const wxString& text)
 		{
@@ -312,8 +312,8 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 		}
 
 		// Pinned places and filters
-		void AddPlace(const wxString& path, const wxString& label = wxEmptyString, bool top = true);
-		size_t AddFilter(const wxString& filter, const wxString& label = wxEmptyString);
+		void AddPlace(const wxString& path, const wxString& label = {}, bool top = true);
+		size_t AddFilter(const wxString& filter, const wxString& label = {});
 		size_t AddFilter();
 
 		// Results

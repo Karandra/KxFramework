@@ -43,7 +43,7 @@ namespace
 			}
 			return result;
 		}
-		return wxEmptyString;
+		return {};
 	}
 	KxFramework::String ExtractAfter(const KxFramework::String& path, wxChar c, size_t count = KxFramework::String::npos, bool reverse = false)
 	{
@@ -59,7 +59,7 @@ namespace
 			}
 			return result;
 		}
-		return wxEmptyString;
+		return {};
 	}
 	size_t RemoveLeadingSpaces(KxFramework::String& path)
 	{
@@ -264,7 +264,7 @@ namespace KxFramework
 	bool FSPath::CheckStringOnAssignPath(const String& path) const
 	{
 		FSPathNamespace ns = FSPathNamespace::None;
-		return !path.Contains(FileSystem::GetForbiddenChars(m_SearchMaksAllowed ? wxS("*?") : wxEmptyString)) &&
+		return !path.Contains(FileSystem::GetForbiddenChars(m_SearchMaksAllowed ? wxS("*?") : wxS(""))) &&
 			!CheckIsLegacyVolume(path) &&
 			!CheckIsVolumeGUID(path) &&
 			DetectNamespacePrefix(path, ns) == 0;

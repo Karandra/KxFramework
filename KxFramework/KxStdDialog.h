@@ -112,7 +112,7 @@ class KX_API KxIStdDialog
 
 		virtual void SetDefaultButton(wxWindowID id) = 0;
 		virtual KxStdDialogControl GetButton(wxWindowID id) const = 0;
-		virtual KxStdDialogControl AddButton(wxWindowID id, const wxString& label = wxEmptyString, bool prepend = false) = 0;
+		virtual KxStdDialogControl AddButton(wxWindowID id, const wxString& label = {}, bool prepend = false) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -412,7 +412,7 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 		// Buttons customization
 		void SetDefaultButton(wxWindowID id) override;
 		KxStdDialogControl GetButton(wxWindowID id) const override;
-		KxStdDialogControl AddButton(wxWindowID id, const wxString& label = wxEmptyString, bool prepend = false) override;
+		KxStdDialogControl AddButton(wxWindowID id, const wxString& label = {}, bool prepend = false) override;
 
 		// Keyboard control
 		StdButtonsIDs GetCloseIDs() const

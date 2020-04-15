@@ -43,7 +43,7 @@ class KX_API KxTaskSchedulerTask
 			return m_Task && m_RegInfo && m_Principal && m_Settings && m_IdleSettings;
 		}
 
-		bool SetExecutable(const wxString& path, const wxString& arguments = wxEmptyString, const wxString& workingDirectory = wxEmptyString);
+		bool SetExecutable(const wxString& path, const wxString& arguments = {}, const wxString& workingDirectory = {});
 		bool SetTimeTrigger(const wxString& id, const wxDateTime& start, const wxDateTime& end);
 		bool SetRegistrationTrigger(const wxString& id, const wxTimeSpan& delay, const wxDateTime& end = wxDefaultDateTime);
 		bool DeleteExpiredTaskAfter(const wxTimeSpan& delay);
@@ -60,11 +60,11 @@ class KX_API KxTaskScheduler
 		KxFramework::COMPtr<ITaskFolder> m_TaskFolder;
 
 	public:
-		KxTaskScheduler(const wxString& folder = wxEmptyString,
-						const wxString& serverName = wxEmptyString,
-						const wxString& userName = wxEmptyString,
-						const wxString& domain = wxEmptyString,
-						const wxString& password = wxEmptyString
+		KxTaskScheduler(const wxString& folder = {},
+						const wxString& serverName = {},
+						const wxString& userName = {},
+						const wxString& domain = {},
+						const wxString& password = {}
 		);
 		virtual ~KxTaskScheduler();
 

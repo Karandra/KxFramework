@@ -34,14 +34,14 @@ namespace KxDataView2
 		// Create the control
 		if (m_UseBitmap)
 		{
-			KxBitmapComboBox* bitmapEditor = new KxBitmapComboBox(parent, wxID_NONE, wxEmptyString, cellRect.GetPosition(), cellRect.GetSize(), comboBoxStyles, GetValidator());
+			KxBitmapComboBox* bitmapEditor = new KxBitmapComboBox(parent, wxID_NONE, {}, cellRect.GetPosition(), cellRect.GetSize(), comboBoxStyles, GetValidator());
 			bitmapEditor->SetImageList(GetImageList());
 
 			editor = bitmapEditor;
 		}
 		else
 		{
-			editor = new KxComboBox(parent, wxID_NONE, wxEmptyString, cellRect.GetPosition(), cellRect.GetSize(), comboBoxStyles, GetValidator());
+			editor = new KxComboBox(parent, wxID_NONE, {}, cellRect.GetPosition(), cellRect.GetSize(), comboBoxStyles, GetValidator());
 		}
 		editor->SetMaxSize(cellRect.GetSize());
 

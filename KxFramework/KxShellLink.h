@@ -24,7 +24,7 @@ class KX_API KxShellLink
 		IShellLinkW* m_Instance = nullptr;
 
 	public:
-		KxShellLink(const wxString& filePath = wxEmptyString);
+		KxShellLink(const wxString& filePath = {});
 		virtual ~KxShellLink();
 
 	public:

@@ -327,7 +327,7 @@ KxMenuItem* KxMenu::Add(KxMenu* subMenu, const wxString& label, const wxString& 
 }
 KxMenuItem* KxMenu::AddSeparator()
 {
-	return Add(new KxMenuItem(wxID_SEPARATOR, wxEmptyString, wxEmptyString, wxITEM_SEPARATOR));
+	return Add(new KxMenuItem(wxID_SEPARATOR, {}, {}, wxITEM_SEPARATOR));
 }
 
 KxMenuItem* KxMenu::Insert(size_t pos, KxMenuItem* item)
@@ -347,7 +347,7 @@ KxMenuItem* KxMenu::Insert(size_t pos, KxMenu* subMenu, const wxString& label, c
 }
 KxMenuItem* KxMenu::InsertSeparator(size_t pos)
 {
-	return Insert(pos, new KxMenuItem(wxID_SEPARATOR, wxEmptyString, wxEmptyString, wxITEM_SEPARATOR));
+	return Insert(pos, new KxMenuItem(wxID_SEPARATOR, {}, {}, wxITEM_SEPARATOR));
 }
 
 KxMenuItem* KxMenu::Prepend(KxMenuItem* item)
@@ -367,7 +367,7 @@ KxMenuItem* KxMenu::Prepend(KxMenu* subMenu, const wxString& label, const wxStri
 }
 KxMenuItem* KxMenu::PrependSeparator()
 {
-	return Prepend(new KxMenuItem(wxID_SEPARATOR, wxEmptyString, wxEmptyString, wxITEM_SEPARATOR));
+	return Prepend(new KxMenuItem(wxID_SEPARATOR, {}, {}, wxITEM_SEPARATOR));
 }
 
 KxMenuItem* KxMenu::FindChildItem(wxWindowID id, size_t* posPtr) const

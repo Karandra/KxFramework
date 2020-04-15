@@ -146,7 +146,7 @@ namespace KxDataView2
 		m_ComboCtrl = new KxComboControl();
 		m_ComboCtrl->UseAltPopupWindow(IsOptionEnabled(KxDVCB_OPTION_ALT_POPUP_WINDOW));
 
-		if (m_ComboCtrl->Create(parent, id, wxEmptyString, style, validator))
+		if (m_ComboCtrl->Create(parent, id, {}, style, validator))
 		{
 			m_ComboCtrl->SetFocusDrawMode(KxComboControl::DrawFocus::Never);
 			m_ComboCtrl->SetPopupControl(this);

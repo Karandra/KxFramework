@@ -53,7 +53,7 @@ namespace KxFramework
 			String GetExtension() const
 			{
 				wxArrayString extensions;
-				return m_FileType->GetExtensions(extensions) ? extensions.front() : wxEmptyString;
+				return m_FileType->GetExtensions(extensions) ? extensions.front() : wxS("");
 			}
 			wxArrayString GetAllExtensions() const
 			{

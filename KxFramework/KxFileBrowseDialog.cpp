@@ -15,7 +15,7 @@ wxString KxFileBrowseDialog::GetDisplayName(IShellItem* shellItem, SIGDN type)
 		CoTaskMemFree(name);
 		return out;
 	}
-	return wxEmptyString;
+	return {};
 }
 
 wxString KxFileBrowseDialog::NormalizeFileFilter(const wxString& rawFilter) const
@@ -334,7 +334,7 @@ wxString KxFileBrowseDialog::GetResult() const
 			}
 		}
 	}
-	return wxEmptyString;
+	return {};
 }
 KxStringVector KxFileBrowseDialog::GetResults() const
 {

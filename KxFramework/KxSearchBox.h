@@ -20,7 +20,7 @@ class KX_API KxSearchBox: public wxSearchCtrl
 		KxSearchBox() {}
 		KxSearchBox(wxWindow* parent,
 					wxWindowID id,
-					const wxString& value = wxEmptyString,
+					const wxString& value = {},
 					long style = DefaultStyle,
 					const wxValidator& validator = wxDefaultValidator
 		)
@@ -29,7 +29,7 @@ class KX_API KxSearchBox: public wxSearchCtrl
 		}
 		bool Create(wxWindow* parent,
 					wxWindowID id,
-					const wxString& value = wxEmptyString,
+					const wxString& value = {},
 					long style = DefaultStyle,
 					const wxValidator& validator = wxDefaultValidator
 		);

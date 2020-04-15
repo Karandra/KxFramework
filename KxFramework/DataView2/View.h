@@ -155,7 +155,7 @@ namespace KxDataView2
 						const wxPoint& pos = wxDefaultPosition,
 						const wxSize& size = wxDefaultSize,
 						long style = static_cast<long>(CtrlStyle::Default),
-						const wxString& name = wxEmptyString
+						const wxString& name = {}
 			);
 			bool Create(wxWindow* parent, wxWindowID id, CtrlStyle style = CtrlStyle::Default)
 			{

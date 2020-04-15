@@ -66,7 +66,7 @@ namespace KxFramework
 			disk[0] = wxUniChar(m_Drive);
 			return disk;
 		}
-		return wxEmptyString;
+		return {};
 	}
 
 	bool LegacyVolume::IsValid() const

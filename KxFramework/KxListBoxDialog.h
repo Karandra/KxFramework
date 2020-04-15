@@ -99,7 +99,7 @@ class KX_API KxListBoxDialog: public KxStdDialog
 			{
 				return GetListBox()->GetItemText(GetSelection(), 0);
 			}
-			return wxEmptyString;
+			return {};
 		}
 		void SetItemLabel(int index, const wxString& label)
 		{

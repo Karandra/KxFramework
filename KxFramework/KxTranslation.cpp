@@ -51,7 +51,7 @@ wxString KxTranslation::GetSystemPreferredLocale()
 			return buffer.data();
 		}
 	}
-	return wxEmptyString;
+	return {};
 }
 
 wxString KxTranslation::GetLanguageFullName(const wxString& localeName)
@@ -65,7 +65,7 @@ wxString KxTranslation::GetLanguageFullName(const wxString& localeName)
 		::GetLocaleInfoEx(localeName.wc_str(), lcType, wxStringBuffer(langName, length), length);
 		return langName;
 	}
-	return wxEmptyString;
+	return {};
 }
 wxString KxTranslation::LangIDToLocaleName(const LANGID& langID, DWORD sortOrder)
 {

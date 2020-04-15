@@ -72,7 +72,7 @@ wxString KxShellMenu::GetString(WORD menuWinID, DWORD index) const
 		m_ShellMenu->GetCommandString((UINT_PTR)(menuWinID - 1), index, nullptr, (CHAR*)buffer, length - sizeof(WCHAR));
 		return buffer;
 	}
-	return wxEmptyString;
+	return {};
 }
 wxString KxShellMenu::GetCommandString(WORD menuWinID) const
 {

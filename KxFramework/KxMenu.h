@@ -73,7 +73,7 @@ class KX_API KxMenu: public wxMenu
 	public:
 		static const DWORD DefaultAlignment = TPM_LEFTALIGN|TPM_TOPALIGN;
 
-		KxMenu(const wxString& label = wxEmptyString, long style = 0);
+		KxMenu(const wxString& label = {}, long style = 0);
 		virtual ~KxMenu();
 
 	public:
@@ -88,15 +88,15 @@ class KX_API KxMenu: public wxMenu
 
 	public:
 		virtual KxMenuItem* Add(KxMenuItem* item);
-		KxMenuItem* Add(KxMenu* subMenu, const wxString& label, const wxString& helpString = wxEmptyString);
+		KxMenuItem* Add(KxMenu* subMenu, const wxString& label, const wxString& helpString = {});
 		KxMenuItem* AddSeparator();
 
 		virtual KxMenuItem* Insert(size_t pos, KxMenuItem* item);
-		KxMenuItem* Insert(size_t pos, KxMenu* subMenu, const wxString& label, const wxString& helpString = wxEmptyString);
+		KxMenuItem* Insert(size_t pos, KxMenu* subMenu, const wxString& label, const wxString& helpString = {});
 		KxMenuItem* InsertSeparator(size_t pos);
 
 		virtual KxMenuItem* Prepend(KxMenuItem* item);
-		KxMenuItem* Prepend(KxMenu* subMenu, const wxString& label, const wxString& helpString = wxEmptyString);
+		KxMenuItem* Prepend(KxMenu* subMenu, const wxString& label, const wxString& helpString = {});
 		KxMenuItem* PrependSeparator();
 
 		KxMenuItem* FindChildItem(wxWindowID id, size_t* posPtr = nullptr) const;

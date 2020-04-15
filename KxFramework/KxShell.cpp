@@ -186,7 +186,7 @@ wxString KxShell::GetTypeIcon(const wxString& ext, int* indexOut)
 	wxString icon = QueryAssocString(ext, KxSH_AQ_DEFAULT_ICON);
 	if (icon == "%1")
 	{
-		icon = wxEmptyString;
+		icon.Clear();
 	}
 
 	if (indexOut)
@@ -210,7 +210,7 @@ wxString KxShell::GetLocalizedName(const wxString& objectPath, int* resourceID)
 		KxFramework::Utility::SetIfNotNull(resourceID, resID);
 		return out;
 	}
-	return wxEmptyString;
+	return {};
 }
 
 wxIcon KxShell::GetFileIcon(const wxString& path, bool smallIcon)

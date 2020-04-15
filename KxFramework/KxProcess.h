@@ -107,7 +107,7 @@ class KX_API KxProcess: public wxEvtHandler, public KxFramework::WithOptions<KxP
 	public:
 		KxProcess();
 		KxProcess(DWORD pid);
-		KxProcess(const wxString& executablePath, const wxString& arguments = wxEmptyString, const wxString& workingFolder = wxEmptyString);
+		KxProcess(const wxString& executablePath, const wxString& arguments = {}, const wxString& workingFolder = {});
 		virtual ~KxProcess();
 
 		int Run(KxProcessWaitMode waitMode = KxPROCESS_RUN_ASYNC, bool hideUI = false);

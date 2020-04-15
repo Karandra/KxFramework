@@ -25,7 +25,7 @@ class KX_API KxPanel: public wxPanel
 					const wxPoint& pos,
 					const wxSize& size,
 					long style = DefaultStyle,
-					const wxString& name = wxEmptyString
+					const wxString& name = {}
 		)
 		{
 			return Create(parent, id, style);
@@ -107,7 +107,7 @@ class KX_API KxDrawablePanel: public KxPanel
 					const wxPoint& pos,
 					const wxSize& size,
 					long style = DefaultStyle,
-					const wxString& name = wxEmptyString
+					const wxString& name = {}
 		)
 		{
 			return Create(parent, id, style);

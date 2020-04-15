@@ -789,7 +789,7 @@ namespace KxDataView2
 				title << wxS('<') << i + 1 << wxS('>');
 			}
 
-			KxMenuItem* menuItem = menu.AddItem(title, wxEmptyString, wxITEM_CHECK);
+			KxMenuItem* menuItem = menu.AddItem(title, wxS(""), wxITEM_CHECK);
 			menuItem->Check(column->IsVisible());
 			menuItem->SetBitmap(column->m_Bitmap);
 			menuItem->SetClientData(column);

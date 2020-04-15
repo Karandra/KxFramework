@@ -96,7 +96,7 @@ class KX_API KxTextBoxDialog: public KxStdDialog
 			{
 				return GetStyledTextBox()->GetValue();
 			}
-			return wxEmptyString;
+			return {};
 		}
 		void SetValue(const wxString& value)
 		{

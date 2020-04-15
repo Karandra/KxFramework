@@ -51,7 +51,7 @@ namespace KxDataView2
 			bool Show(const Node& node, const Column& column);
 
 		public:
-			ToolTip(const wxString& message = wxEmptyString, StdIcon icon = StdIcon::None)
+			ToolTip(const wxString& message = {}, StdIcon icon = StdIcon::None)
 				:m_Message(message), m_Icon(icon)
 			{
 			}

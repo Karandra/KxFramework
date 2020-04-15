@@ -51,7 +51,7 @@ class KX_API KxButton:
 		}
 		KxButton(wxWindow* parent,
 				 wxWindowID id,
-				 const wxString& label = wxEmptyString,
+				 const wxString& label = {},
 				 long style = 0,
 				 const wxValidator& validator = wxDefaultValidator
 		)
@@ -71,7 +71,7 @@ class KX_API KxButton:
 		);
 		bool Create(wxWindow* parent,
 					wxWindowID id,
-					const wxString& label = wxEmptyString,
+					const wxString& label = {},
 					long style = 0,
 					const wxValidator& validator = wxDefaultValidator
 		)

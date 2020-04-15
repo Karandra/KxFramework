@@ -650,7 +650,7 @@ wxString KxLibrary::GetString(const wxString& name, WORD localeID) const
 			}
 		}
 	}
-	return wxEmptyString;
+	return {};
 }
 
 wxString KxLibrary::FormatMessage(DWORD messageID, WORD localeID) const

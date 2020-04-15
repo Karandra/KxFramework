@@ -8,7 +8,7 @@
 KxWxRTTI_ImplementClassDynamic2(KxMenuItem, KxMenuItem, wxEvtHandler, wxMenuItem); // wxIMPLEMENT_DYNAMIC_CLASS2(KxMenuItem, wxEvtHandler, wxMenuItem);
 wxObject* KxMenuItem::wxCreateObject()
 {
-	return static_cast<wxEvtHandler*>(new KxMenuItem(wxID_SEPARATOR, wxEmptyString, wxEmptyString, wxITEM_SEPARATOR));
+	return static_cast<wxEvtHandler*>(new KxMenuItem(wxID_SEPARATOR, {}, {}, wxITEM_SEPARATOR));
 }
 
 void KxMenuItem::OnCreate()

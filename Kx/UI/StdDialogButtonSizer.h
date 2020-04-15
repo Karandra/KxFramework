@@ -41,7 +41,7 @@ namespace KxFramework::UI
 			// Checks button ID against system IDs and sets one of the pointers below
 			// to this button. Does not do any sizer-related things here.
 			bool AddButton(wxAnyButton* button);
-			void AddCustomButton(KxButton* button, const wxString& label = wxEmptyString, bool prepend = false);
+			void AddCustomButton(KxButton* button, const wxString& label = {}, bool prepend = false);
 
 			// Use these if no standard ID can/should be used
 			void SetAffirmativeButton(wxAnyButton* button)

@@ -19,10 +19,10 @@ bool KxDualInputDialog::Create(wxWindow* parent,
 
 		m_View = new KxPanel(m_ContentPanel, wxID_NONE);
 
-		m_TextBox1 = new KxTextBox(m_View, wxID_NONE, wxEmptyString, flags);
+		m_TextBox1 = new KxTextBox(m_View, wxID_NONE, {}, flags);
 		m_TextBox1->SetInitialSize(size);
 
-		m_TextBox2 = new KxTextBox(m_View, wxID_NONE, wxEmptyString, flags);
+		m_TextBox2 = new KxTextBox(m_View, wxID_NONE, {}, flags);
 		m_TextBox2->SetInitialSize(size);
 
 		wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);

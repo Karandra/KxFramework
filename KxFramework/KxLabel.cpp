@@ -137,7 +137,7 @@ void KxLabel::OnPaint(wxPaintEvent& event)
 			wxRect rect2 = labelRect;
 			rect2.y += ConvertDialogToPixels(wxSize(0, 2)).GetHeight();
 
-			dc.DrawLabel(wxEmptyString, image, rect2, m_MultiLineAlignStyle);
+			dc.DrawLabel({}, image, rect2, m_MultiLineAlignStyle);
 			offset = image.GetWidth() + ConvertDialogToPixels(wxSize(2, 0)).GetWidth();
 		}
 

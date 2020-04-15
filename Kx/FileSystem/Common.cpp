@@ -36,7 +36,7 @@ namespace KxFramework::FileSystem
 				return NamespacePrefix::NetworkUNC;
 			}
 		};
-		return wxEmptyString;
+		return {};
 	}
 	String GetForbiddenChars(const String& except)
 	{

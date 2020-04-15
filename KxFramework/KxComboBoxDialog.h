@@ -77,7 +77,7 @@ class KX_API KxComboBoxDialog: public KxStdDialog
 			{
 				return GetComboBox()->GetValue();
 			}
-			return wxEmptyString;
+			return {};
 		}
 		void SetValue(const wxString& string)
 		{

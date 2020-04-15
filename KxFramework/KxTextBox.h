@@ -13,7 +13,7 @@ class KX_API KxTextBox: public wxTextCtrl
 		KxTextBox() {}
 		KxTextBox(wxWindow* parent,
 				  wxWindowID id,
-				  const wxString& value = wxEmptyString,
+				  const wxString& value = {},
 				  long style = DefaultStyle,
 				  const wxValidator& validator = wxDefaultValidator
 		)
@@ -33,7 +33,7 @@ class KX_API KxTextBox: public wxTextCtrl
 		}
 		bool Create(wxWindow* parent,
 					wxWindowID id,
-					const wxString& value = wxEmptyString,
+					const wxString& value = {},
 					long style = DefaultStyle,
 					const wxValidator& validator = wxDefaultValidator
 		)

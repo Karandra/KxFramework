@@ -35,7 +35,7 @@ namespace KxDataView2
 		public:
 			wxString GetTextValue(const wxAny& value) const override
 			{
-				return wxEmptyString;
+				return {};
 			}
 	};
 }

@@ -41,7 +41,7 @@ bool KxComboBoxDialog::Create(wxWindow* parent,
 				comboBoxFlags |= wxCB_READONLY;
 			}
 
-			m_View = new KxBitmapComboBox(m_ContentPanel, wxID_ANY, wxEmptyString, comboBoxFlags);
+			m_View = new KxBitmapComboBox(m_ContentPanel, wxID_ANY, {}, comboBoxFlags);
 		}
 		else
 		{
@@ -51,7 +51,7 @@ bool KxComboBoxDialog::Create(wxWindow* parent,
 				comboBoxFlags |= wxCB_READONLY;
 			}
 
-			m_View = new KxComboBox(m_ContentPanel, wxID_ANY, wxEmptyString, comboBoxFlags);
+			m_View = new KxComboBox(m_ContentPanel, wxID_ANY, {}, comboBoxFlags);
 		}
 		m_View->SetInitialSize(size);
 		PostCreate(pos);

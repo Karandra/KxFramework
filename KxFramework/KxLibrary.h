@@ -83,7 +83,7 @@ class KX_API KxLibraryVersionInfo
 			}
 			return {};
 		}
-		void SetString(const wxString& name, const wxString& value = wxEmptyString)
+		void SetString(const wxString& name, const wxString& value = {})
 		{
 			m_Strings[name] = value;
 		}

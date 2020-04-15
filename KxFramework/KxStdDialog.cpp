@@ -244,7 +244,7 @@ bool KxStdDialog::Create(wxWindow* parent,
 		m_CaptionLabel->SetMaxSize(FromDIP(wxSize(wxDefaultCoord, 23)));
 		m_CaptionLabel->SetForegroundColour(UxTheme::GetDialogMainInstructionColor(*m_ContentPanel));
 
-		m_ViewLabel = new KxLabel(m_ContentPanel, wxID_NONE, wxEmptyString, KxLabel::DefaultStyle & ~(KxLABEL_LINE|KxLABEL_COLORED|KxLABEL_CAPTION|KxLABEL_SELECTION));
+		m_ViewLabel = new KxLabel(m_ContentPanel, wxID_NONE, {}, KxLabel::DefaultStyle & ~(KxLABEL_LINE|KxLABEL_COLORED|KxLABEL_CAPTION|KxLABEL_SELECTION));
 		m_ViewLabel->SetMaxSize(FromDIP(wxSize(wxDefaultCoord, 23)));
 
 		m_ContentPanelLine = new KxPanel(this, wxID_NONE, wxBORDER_NONE);

@@ -260,7 +260,7 @@ wxString KxListView::GetColumnLabel(int i) const
 	{
 		return column.GetText();
 	}
-	return wxEmptyString;
+	return {};
 }
 void KxListView::SetColumnLabel(int i, const wxString& label)
 {

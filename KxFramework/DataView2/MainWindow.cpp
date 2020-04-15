@@ -1561,7 +1561,7 @@ namespace KxDataView2
 	{
 		m_ToolTipTimer.Stop();
 		m_ToolTip.Dismiss();
-		SetToolTip(wxEmptyString);
+		SetToolTip({});
 	}
 
 	// Columns

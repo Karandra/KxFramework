@@ -69,12 +69,12 @@ class KX_API KxAuiToolBar: public wxAuiToolBar
 			return wxAuiToolBar::GetToolBarFits();
 		}
 
-		KxAuiToolBarItem* AddTool(const wxString& label, const wxBitmap& bitmap, wxItemKind kind = wxITEM_NORMAL, const wxString& shortHelp = wxEmptyString);
-		KxAuiToolBarItem* AddTool(const wxString& label, const wxBitmap& bitmap, const wxBitmap& disabledBitmap, wxItemKind kind = wxITEM_NORMAL, const wxString& shortHelp = wxEmptyString);
-		KxAuiToolBarItem* AddTool(const wxBitmap& bitmap, const wxBitmap& disabledBitmap, bool isToggle = false, const wxString& shortHelp = wxEmptyString, const wxString& longHelp = wxEmptyString);
+		KxAuiToolBarItem* AddTool(const wxString& label, const wxBitmap& bitmap, wxItemKind kind = wxITEM_NORMAL, const wxString& shortHelp = {});
+		KxAuiToolBarItem* AddTool(const wxString& label, const wxBitmap& bitmap, const wxBitmap& disabledBitmap, wxItemKind kind = wxITEM_NORMAL, const wxString& shortHelp = {});
+		KxAuiToolBarItem* AddTool(const wxBitmap& bitmap, const wxBitmap& disabledBitmap, bool isToggle = false, const wxString& shortHelp = {}, const wxString& longHelp = {});
 
 		KxAuiToolBarItem* AddLabel(const wxString& label, const int width = -1);
-		KxAuiToolBarItem* AddControl(wxControl* control, const wxString& label = wxEmptyString);
+		KxAuiToolBarItem* AddControl(wxControl* control, const wxString& label = {});
 		KxAuiToolBarItem* AddSeparator();
 		KxAuiToolBarItem* AddSpacer(int pixels);
 		KxAuiToolBarItem* AddStretchSpacer(int proportion = 1);
@@ -93,9 +93,9 @@ class KX_API KxAuiToolBar: public wxAuiToolBar
 		void UpdateUI();
 
 	private:
-		wxAuiToolBarItem* AddTool(int tool_id, const wxString &label, const wxBitmap &bitmap, const wxString &short_help_string = wxEmptyString, wxItemKind kind = wxITEM_NORMAL) = delete;
+		wxAuiToolBarItem* AddTool(int tool_id, const wxString &label, const wxBitmap &bitmap, const wxString &short_help_string = {}, wxItemKind kind = wxITEM_NORMAL) = delete;
 		wxAuiToolBarItem* AddTool(int tool_id, const wxString &label, const wxBitmap &bitmap, const wxBitmap &disabled_bitmap, wxItemKind kind, const wxString &short_help_string, const wxString &long_help_string, wxObject* client_data) = delete;
-		wxAuiToolBarItem* AddTool(int tool_id, const wxBitmap &bitmap, const wxBitmap &disabled_bitmap, bool toggle = false, wxObject* client_data = nullptr, const wxString &short_help_string = wxEmptyString, const wxString &long_help_string = wxEmptyString) = delete;
+		wxAuiToolBarItem* AddTool(int tool_id, const wxBitmap &bitmap, const wxBitmap &disabled_bitmap, bool toggle = false, wxObject* client_data = nullptr, const wxString &short_help_string = {}, const wxString &long_help_string = {}) = delete;
 		bool GetOverflowVisible() const = delete;
 		bool GetToolBarFits() const = delete;
 		bool GetGripperVisible() const = delete;

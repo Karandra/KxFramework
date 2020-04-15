@@ -15,7 +15,7 @@ class KX_API KxBitmapComboBox: public wxSystemThemedControl<wxBitmapComboBox>, p
 		KxBitmapComboBox() {}
 		KxBitmapComboBox(wxWindow* parent,
 						 wxWindowID id,
-						 const wxString& value = wxEmptyString,
+						 const wxString& value = {},
 						 long style = DefaultStyle,
 						 const wxValidator& validator = wxDefaultValidator
 		)
@@ -37,7 +37,7 @@ class KX_API KxBitmapComboBox: public wxSystemThemedControl<wxBitmapComboBox>, p
 	public:
 		bool Create(wxWindow* parent,
 					wxWindowID id,
-					const wxString& value = wxEmptyString,
+					const wxString& value = {},
 					long style = DefaultStyle,
 					const wxValidator& validator = wxDefaultValidator
 		)

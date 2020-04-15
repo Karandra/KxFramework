@@ -9,7 +9,7 @@ class KX_API KxComboBox: public wxSystemThemedControl<wxComboBox>
 		KxComboBox() {}
 		KxComboBox(wxWindow* parent,
 				   wxWindowID id,
-				   const wxString& value = wxEmptyString,
+				   const wxString& value = {},
 				   long style = DefaultStyle,
 				   const wxValidator& validator = wxDefaultValidator
 		)
@@ -29,7 +29,7 @@ class KX_API KxComboBox: public wxSystemThemedControl<wxComboBox>
 		}
 		bool Create(wxWindow* parent,
 					wxWindowID id,
-					const wxString& value = wxEmptyString,
+					const wxString& value = {},
 					long style = DefaultStyle,
 					const wxValidator& validator = wxDefaultValidator
 		)

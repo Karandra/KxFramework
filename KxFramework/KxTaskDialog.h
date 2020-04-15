@@ -90,8 +90,8 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 		KxTaskDialog() = default;
 		KxTaskDialog(wxWindow* parent,
 					 wxWindowID id,
-					 const wxString& caption = wxEmptyString,
-					 const wxString& message = wxEmptyString,
+					 const wxString& caption = {},
+					 const wxString& message = {},
 					 StdButton buttons = DefaultButtons,
 					 StdIcon mainIcon = StdIcon::None,
 					 wxPoint pos = wxDefaultPosition,
@@ -103,8 +103,8 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 		}
 		bool Create(wxWindow* parent,
 					wxWindowID id,
-					const wxString& caption = wxEmptyString,
-					const wxString& message = wxEmptyString,
+					const wxString& caption = {},
+					const wxString& message = {},
 					StdButton buttons = DefaultButtons,
 					StdIcon mainIcon = StdIcon::None,
 					wxPoint pos = wxDefaultPosition,
@@ -230,7 +230,7 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 		{
 			return m_Title;
 		}
-		void SetTitle(const wxString& string = wxEmptyString) override
+		void SetTitle(const wxString& string = {}) override
 		{
 			if (string.IsEmpty())
 			{
@@ -315,8 +315,8 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 		{
 			return id;
 		}
-		KxStdDialogControl AddButton(wxWindowID id, const wxString& label = wxEmptyString, bool prepend = false) override;
-		KxStdDialogControl AddRadioButton(wxWindowID id, const wxString& label = wxEmptyString);
+		KxStdDialogControl AddButton(wxWindowID id, const wxString& label = {}, bool prepend = false) override;
+		KxStdDialogControl AddRadioButton(wxWindowID id, const wxString& label = {});
 		
 		bool IsCheckBoxChecked() const
 		{

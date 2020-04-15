@@ -195,7 +195,7 @@ KxAuiToolBarItem* KxAuiToolBar::AddTool(const wxString& label, const wxBitmap& b
 }
 KxAuiToolBarItem* KxAuiToolBar::AddTool(const wxString& label, const wxBitmap& bitmap, const wxBitmap& disabledBitmap, wxItemKind kind, const wxString& shortHelp)
 {
-	return DoCreateTool(wxAuiToolBar::AddTool(wxID_ANY, label, bitmap, disabledBitmap, kind, shortHelp, wxEmptyString, nullptr));
+	return DoCreateTool(wxAuiToolBar::AddTool(wxID_ANY, label, bitmap, disabledBitmap, kind, shortHelp, {}, nullptr));
 }
 KxAuiToolBarItem* KxAuiToolBar::AddTool(const wxBitmap& bitmap, const wxBitmap& disabledBitmap, bool toggle, const wxString& shortHelp, const wxString& longHelp)
 {

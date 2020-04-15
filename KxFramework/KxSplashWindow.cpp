@@ -87,7 +87,7 @@ bool KxSplashWindow::Create(wxWindow* parent,
 		frameStyle |= wxFRAME_FLOAT_ON_PARENT;
 	}
 
-	if (wxFrame::Create(parent, wxID_NONE, wxEmptyString, wxDefaultPosition, size, frameStyle, GetClassInfo()->GetClassName()))
+	if (wxFrame::Create(parent, wxID_NONE, {}, wxDefaultPosition, size, frameStyle, GetClassInfo()->GetClassName()))
 	{
 		Utility::ModWindowStyle(GetHandle(), GWL_EXSTYLE, WS_EX_LAYERED|WS_EX_TOOLWINDOW, true);
 		m_Timer.Bind(wxEVT_TIMER, &KxSplashWindow::OnTimer, this);

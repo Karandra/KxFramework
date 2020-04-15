@@ -594,7 +594,7 @@ wxString KxProcess::GetStdOut() const
 		RIO_ReadStream(m_RIO_StreamOut, buffer);
 		return RIO_StreamDataToString(buffer);
 	}
-	return wxEmptyString;
+	return {};
 }
 wxString KxProcess::GetStdErr() const
 {
@@ -604,5 +604,5 @@ wxString KxProcess::GetStdErr() const
 		RIO_ReadStream(m_RIO_StreamError, buffer);
 		return RIO_StreamDataToString(buffer);
 	}
-	return wxEmptyString;
+	return {};
 }
