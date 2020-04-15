@@ -14,7 +14,7 @@ namespace KxFramework
 	{
 		public:
 			static const LocalizationPack& GetActive() noexcept;
-			static const LocalizationPack& SetActive(const LocalizationPack& translator) noexcept;
+			static const LocalizationPack& SetActive(const LocalizationPack& localizationPack) noexcept;
 
 		private:
 			std::unordered_map<String, String> m_StringTable;

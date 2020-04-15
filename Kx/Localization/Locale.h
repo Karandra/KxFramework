@@ -16,6 +16,7 @@ namespace KxFramework
 	class KX_API Locale final
 	{
 		public:
+			static Locale GetInvariant() noexcept;
 			static Locale GetUserDefault() noexcept;
 			static Locale GetSystemDefault() noexcept;
 			static Locale GetSystemPreferred() noexcept;
@@ -25,7 +26,7 @@ namespace KxFramework
 			static Locale FromLangID(Localization::LangID langID) noexcept;
 
 		private:
-			wchar_t m_LocaleName[128] = {};
+			wchar_t m_LocaleName[128] = {std::numeric_limits<wchar_t>::max()};
 
 		public:
 			Locale() noexcept = default;
@@ -72,11 +73,19 @@ namespace KxFramework
 
 			bool operator==(const Locale& other) noexcept
 			{
-				return std::wstring_view(m_LocaleName) == std::wstring_view(other.m_LocaleName);
+				if (this == &other)
+				{
+					return true;
+				}
+				else if (!IsNull() && !other.IsNull())
+				{
+					return std::wstring_view(m_LocaleName) == std::wstring_view(other.m_LocaleName);
+				}
+				return false;
 			}
 			bool operator!=(const Locale& other) noexcept
 			{
-				return std::wstring_view(m_LocaleName) != std::wstring_view(other.m_LocaleName);
+				return !(*this == other);
 			}
 	};
 }

@@ -6,6 +6,20 @@
 namespace
 {
 	using CharTraits = std::char_traits<wchar_t>;
+	constexpr wchar_t g_InvalidChar = std::numeric_limits<wchar_t>::max();
+
+	template<size_t N>
+	void CopyToBuffer(wchar_t(&buffer)[N], std::wstring_view localeName) noexcept
+	{
+		CharTraits::copy(buffer, localeName.data(), std::min(std::size(buffer) - 1, localeName.length()));
+	}
+
+	template<size_t N>
+	void InvalidateBuffer(wchar_t(&buffer)[N]) noexcept
+	{
+		buffer[0] = std::numeric_limits<wchar_t>::max();
+		buffer[1] = L'\0';
+	}
 
 	template<size_t N, class TFunc>
 	bool CallGetLocale1(wchar_t(&localeName)[N], TFunc&& func) noexcept
@@ -18,11 +32,9 @@ namespace
 	{
 		ULONG langCount = 0;
 		ULONG bufferSize = 0;
-		if (!std::invoke(func, MUI_LANGUAGE_NAME, &langCount, nullptr, &bufferSize))
+		if (std::invoke(func, MUI_LANGUAGE_NAME, &langCount, nullptr, &bufferSize))
 		{
-			std::wstring buffer;
 			buffer.resize(bufferSize);
-
 			return std::invoke(func, MUI_LANGUAGE_NAME, &langCount, buffer.data(), &bufferSize);
 		}
 		return false;
@@ -55,16 +67,17 @@ namespace
 		}
 		return {};
 	}
-
-	template<size_t N>
-	bool IsEmptyLocaleString(const wchar_t(&localeName)[N]) noexcept
-	{
-		return *localeName == L'\0' || CharTraits::length(localeName) == 0 || !GetLocaleInfoInt(localeName, LOCALE_ITIME).has_value();
-	}
 }
 
 namespace KxFramework
 {
+	Locale Locale::GetInvariant() noexcept
+	{
+		Locale locale;
+		CharTraits::copy(locale.m_LocaleName, LOCALE_NAME_INVARIANT, std::size(LOCALE_NAME_INVARIANT));
+
+		return locale;
+	}
 	Locale Locale::GetUserDefault() noexcept
 	{
 		Locale locale;
@@ -88,7 +101,7 @@ namespace KxFramework
 		std::wstring buffer;
 		if (CallGetLocale2(buffer, ::GetSystemPreferredUILanguages))
 		{
-			return StringViewOf(buffer);
+			return StringViewOf(buffer.c_str());
 		}
 		return {};
 	}
@@ -97,7 +110,7 @@ namespace KxFramework
 		std::wstring buffer;
 		if (CallGetLocale2(buffer, ::GetThreadPreferredUILanguages))
 		{
-			return StringViewOf(buffer);
+			return StringViewOf(buffer.c_str());
 		}
 		return {};
 	}
@@ -117,20 +130,34 @@ namespace KxFramework
 	}
 
 	Locale::Locale(std::string_view localeName) noexcept
-		:Locale(String::FromUTF8(localeName))
 	{
+		if (!localeName.empty())
+		{
+			String temp = String::FromUTF8(localeName);
+			CopyToBuffer(m_LocaleName, StringViewOf(temp));
+		}
+		else
+		{
+			InvalidateBuffer(m_LocaleName);
+		}
 	}
 	Locale::Locale(std::wstring_view localeName) noexcept
 	{
-		constexpr size_t bufferSize = Utility::ArraySize<decltype(m_LocaleName)>::value;
-		static_assert(bufferSize >= LOCALE_NAME_MAX_LENGTH, "insufficient locale name buffer");
+		static_assert(Utility::ArraySize<decltype(m_LocaleName)>::value >= LOCALE_NAME_MAX_LENGTH, "insufficient locale name buffer");
 
-		CharTraits::copy(m_LocaleName, localeName.data(), std::min(std::size(m_LocaleName) - 1, localeName.length()));
+		if (!localeName.empty())
+		{
+			CopyToBuffer(m_LocaleName, localeName);
+		}
+		else
+		{
+			InvalidateBuffer(m_LocaleName);
+		}
 	}
 
 	bool Locale::IsNull() const noexcept
 	{
-		return IsEmptyLocaleString(m_LocaleName);
+		return *m_LocaleName == g_InvalidChar || !::IsValidLocaleName(m_LocaleName);
 	}
 
 	std::optional<String> Locale::GetOption(LocaleStrOption option) const
