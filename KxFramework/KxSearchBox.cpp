@@ -1,7 +1,7 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxSearchBox.h"
-#include "KxFramework/KxTranslation.h"
 #include "KxFramework/KxIncludeWindows.h"
+#include "Kx/Localization/LocalizationPack.h"
 #include "Kx/General/StandardID.h"
 
 using namespace KxFramework;
@@ -54,7 +54,11 @@ bool KxSearchBox::Create(wxWindow* parent,
 	{
 		ShowCancelButton(true);
 		ShowSearchButton(true);
-		SetDescriptiveText(KxTranslation::GetCurrent().GetString(ToInt(StandardID::Search)));
+		if (auto value = LocalizationPack::GetActive().GetString(StandardID::Search))
+		{
+			SetDescriptiveText(*value);
+		}
+		
 		Refresh();
 
 		m_EvtHandler.Bind(wxEVT_TEXT, &KxSearchBox::OnText, this);

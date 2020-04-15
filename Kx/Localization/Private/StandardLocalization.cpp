@@ -1,8 +1,7 @@
 #include "KxStdAfx.h"
 #include "StandardLocalization.h"
 #include "Kx/General/StringFormater.h"
-#include "Kx/Utility/Common.h"
-#include "KxFramework/KxTranslation.h"
+#include "Kx/Localization/LocalizationPack.h"
 
 namespace
 {
@@ -12,21 +11,19 @@ namespace
 	{
 		using namespace KxFramework;
 
-		if (flags & wxStockLabelQueryFlag::wxSTOCK_WITH_MNEMONIC)
+		if (const LocalizationPack& translator = LocalizationPack::GetActive())
 		{
-			id += g_MnemonicSuffix;
-		}
+			if (flags & wxStockLabelQueryFlag::wxSTOCK_WITH_MNEMONIC)
+			{
+				id += g_MnemonicSuffix;
+			}
 
-		bool isSuccess = false;
-		String value = KxTranslation::GetCurrent().GetString(id, &isSuccess);
-		if (!isSuccess && flags & wxStockLabelQueryFlag::wxSTOCK_WITH_MNEMONIC)
-		{
-			id.RemoveFromEnd(std::size(g_MnemonicSuffix) - 1);
-			value = KxTranslation::GetCurrent().GetString(id, &isSuccess);
-		}
-
-		if (isSuccess)
-		{
+			auto value = translator.GetString(id);
+			if (!value)
+			{
+				id.RemoveFromEnd(std::size(g_MnemonicSuffix) - 1);
+				value = translator.GetString(id);
+			}
 			return value;
 		}
 		return {};

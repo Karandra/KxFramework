@@ -1,8 +1,8 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxHTMLWindow.h"
-#include "KxFramework/KxTranslation.h"
 #include "KxFramework/KxMenu.h"
 #include "Kx/General/StandardID.h"
+#include "Kx/Localization/Common.h"
 #include <wx/clipbrd.h>
 
 using namespace KxFramework;
@@ -67,7 +67,7 @@ void KxHTMLWindow::CreateContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link)
 {
 	auto MakeItem = [&menu](int id)
 	{
-		return menu.AddItem(id, KxTranslation::GetCurrent().GetString(id));
+		return menu.AddItem(id, Localization::GetStandardLocalizedString(id));
 	};
 
 	{

@@ -235,9 +235,6 @@
     <ClInclude Include="KxFramework\KxTopLevelWindow.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxTranslation.h">
-      <Filter>Header Files\General</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxFrame.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
@@ -1201,6 +1198,9 @@
     <ClInclude Include="Kx\Localization\Private\LocaleOptions.h">
       <Filter>Kx\Localization\Private</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Localization\LocalizationPack.h">
+      <Filter>Kx\Localization</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1230,9 +1230,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxTopLevelWindow.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxTranslation.cpp">
-      <Filter>Source Files\General</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxFrame.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
@@ -1821,6 +1818,9 @@
     </ClCompile>
     <ClCompile Include="Kx\Localization\Private\LocaleOptions.cpp">
       <Filter>Kx\Localization\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Localization\LocalizationPack.cpp">
+      <Filter>Kx\Localization</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

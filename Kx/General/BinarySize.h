@@ -304,7 +304,7 @@ namespace KxFramework
 
 namespace KxFramework
 {
-	inline double GetSizeRatio(BinarySize smallerSize, BinarySize largerSize)
+	inline double GetSizeRatio(BinarySize smallerSize, BinarySize largerSize) noexcept
 	{
 		if (smallerSize && largerSize)
 		{

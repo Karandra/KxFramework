@@ -1,7 +1,6 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxLibrary.h"
 #include "KxFramework/KxSystemAPI.h"
-#include "KxFramework/KxTranslation.h"
 #include "KxFramework/KxIncludeWindows.h"
 #include <PsAPI.h>
 #include <DbgHelp.h>
@@ -287,18 +286,20 @@ bool KxLibrary::Load(HMODULE libraryHandle)
 		m_Handle = libraryHandle;
 		m_FilePath = GetFileName();
 		
-		m_OwnHandle = false;
-		m_LoadFlags = 0;
-		if (IsDataFile())
+		if (IsOK())
 		{
-			m_LoadFlags |= LOAD_LIBRARY_AS_DATAFILE;
+			m_OwnHandle = false;
+			m_LoadFlags = 0;
+			if (IsDataFile())
+			{
+				m_LoadFlags |= LOAD_LIBRARY_AS_DATAFILE;
+			}
+			if (IsImageDataFile())
+			{
+				m_LoadFlags |= LOAD_LIBRARY_AS_IMAGE_RESOURCE;
+			}
+			return true;
 		}
-		if (IsImageDataFile())
-		{
-			m_LoadFlags |= LOAD_LIBRARY_AS_IMAGE_RESOURCE;
-		}
-
-		return IsOK();
 	}
 	return false;
 }
@@ -317,12 +318,14 @@ bool KxLibrary::Load(const wxString& libraryPath, DWORD flags)
 }
 void KxLibrary::Unload()
 {
-	if (m_OwnHandle && IsOK())
+	if (m_Handle && m_OwnHandle)
 	{
 		::FreeLibrary(m_Handle);
-		m_Handle = nullptr;
 	}
+
+	m_Handle = nullptr;
 	m_OwnHandle = false;
+	m_FilePath.Clear();
 }
 
 // Version info
@@ -472,7 +475,7 @@ KxLibraryVersionInfo KxLibrary::GetVersionInfoFromFile(const wxString& filePath)
 // Properties
 bool KxLibrary::IsOK() const
 {
-	return m_Handle != nullptr;
+	return m_Handle || !m_FilePath.IsEmpty();
 }
 
 bool KxLibrary::IsDataFile() const

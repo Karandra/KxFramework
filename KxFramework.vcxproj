@@ -320,7 +320,6 @@
     <ClInclude Include="KxFramework\KxTextBoxDialog.h" />
     <ClInclude Include="KxFramework\KxThumbView.h" />
     <ClInclude Include="KxFramework\KxTopLevelWindow.h" />
-    <ClInclude Include="KxFramework\KxTranslation.h" />
     <ClInclude Include="KxFramework\KxTypedefs.h" />
     <ClInclude Include="KxFramework\KxWebView.h" />
     <ClInclude Include="KxStdAfx.h" />
@@ -429,6 +428,7 @@
     <ClInclude Include="Kx\Localization\Locale.h" />
     <ClInclude Include="Kx\Localization\Private\LocaleOptions.h" />
     <ClInclude Include="Kx\Localization\Private\StandardLocalization.h" />
+    <ClInclude Include="Kx\Localization\LocalizationPack.h" />
     <ClInclude Include="Kx\Network.hpp" />
     <ClInclude Include="Kx\Network\Common.h" />
     <ClInclude Include="Kx\Network\CURL\Event.h" />
@@ -639,7 +639,6 @@
     <ClCompile Include="KxFramework\KxTextBoxDialog.cpp" />
     <ClCompile Include="KxFramework\KxThumbView.cpp" />
     <ClCompile Include="KxFramework\KxTopLevelWindow.cpp" />
-    <ClCompile Include="KxFramework\KxTranslation.cpp" />
     <ClCompile Include="KxFramework\KxWebView.cpp" />
     <ClCompile Include="KxStdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -684,6 +683,7 @@
     <ClCompile Include="Kx\Localization\Locale.cpp" />
     <ClCompile Include="Kx\Localization\Private\LocaleOptions.cpp" />
     <ClCompile Include="Kx\Localization\Private\StandardLocalization.cpp" />
+    <ClCompile Include="Kx\Localization\LocalizationPack.cpp" />
     <ClCompile Include="Kx\Network\Common.cpp" />
     <ClCompile Include="Kx\Network\CURL.cpp" />
     <ClCompile Include="Kx\Network\CURL\Event.cpp" />

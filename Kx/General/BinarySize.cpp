@@ -2,46 +2,49 @@
 #include "BinarySize.h"
 #include "StringFormater.h"
 #include "Math.h"
-#include <KxFramework/KxTranslation.h>
+#include "Kx/Localization/LocalizationPack.h"
 
-namespace KxFramework
+namespace
 {
-	String GetSizeUnitString(BinarySizeUnit unit)
+	std::optional<KxFramework::String> GetSizeUnitString(KxFramework::BinarySizeUnit unit)
 	{
+		using namespace KxFramework;
+
 		switch (unit)
 		{
 			case BinarySizeUnit::Bytes:
 			{
-				return KxTranslation::GetCurrent().GetString(wxS("BinarySizeUnit.Bytes"));
+				return LocalizationPack::GetActive().GetString(wxS("BinarySizeUnit.Bytes"));
 			}
 			case BinarySizeUnit::KiloBytes:
 			{
-				return KxTranslation::GetCurrent().GetString(wxS("BinarySizeUnit.KB"));
+				return LocalizationPack::GetActive().GetString(wxS("BinarySizeUnit.KB"));
 			}
 			case BinarySizeUnit::MegaBytes:
 			{
-				return KxTranslation::GetCurrent().GetString(wxS("BinarySizeUnit.MB"));
+				return LocalizationPack::GetActive().GetString(wxS("BinarySizeUnit.MB"));
 			}
 			case BinarySizeUnit::GigaBytes:
 			{
-				return KxTranslation::GetCurrent().GetString(wxS("BinarySizeUnit.GB"));
+				return LocalizationPack::GetActive().GetString(wxS("BinarySizeUnit.GB"));
 			}
 			case BinarySizeUnit::TeraBytes:
 			{
-				return KxTranslation::GetCurrent().GetString(wxS("BinarySizeUnit.TB"));
+				return LocalizationPack::GetActive().GetString(wxS("BinarySizeUnit.TB"));
 			}
 		};
 		return {};
 	}
-	bool AddUnitLabelIfNeeded(String& result, BinarySizeFormat format, BinarySizeUnit unit)
+	bool AddUnitLabelIfNeeded(KxFramework::String& result, KxFramework::BinarySizeFormat format, KxFramework::BinarySizeUnit unit)
 	{
+		using namespace KxFramework;
+
 		if (format & BinarySizeFormat::WithLabel && !result.IsEmpty())
 		{
-			String label = GetSizeUnitString(unit);
-			if (!label.IsEmpty())
+			if (auto label = GetSizeUnitString(unit))
 			{
 				result += wxS(' ');
-				result += label;
+				result += *label;
 
 				return true;
 			}
@@ -50,8 +53,10 @@ namespace KxFramework
 	}
 	
 	template<class T>
-	String FormatWithUnitBase(T value, BinarySizeFormat format, BinarySizeUnit unit, int precision)
+	KxFramework::String FormatWithUnitBase(T value, KxFramework::BinarySizeFormat format, KxFramework::BinarySizeUnit unit, int precision)
 	{
+		using namespace KxFramework;
+
 		String result;
 		if (format & BinarySizeFormat::Fractional)
 		{
@@ -66,8 +71,11 @@ namespace KxFramework
 
 		return result;
 	}
-	String FormatWithUnit(BinarySize value, BinarySizeFormat format, BinarySizeUnit unit, int precision)
+	
+	KxFramework::String FormatWithUnit(KxFramework::BinarySize value, KxFramework::BinarySizeFormat format, KxFramework::BinarySizeUnit unit, int precision)
 	{
+		using namespace KxFramework;
+
 		if (format & BinarySizeFormat::Fractional)
 		{
 			return FormatWithUnitBase(value.GetAsUnit<double>(unit), format, unit, precision);
@@ -83,10 +91,14 @@ namespace KxFramework
 {
 	String BinarySize::Format(BinarySizeUnit unit, BinarySizeFormat format, int precision) const
 	{
-		// Short-circuit for zero size
+		// Short-circuit for zero
 		if (IsNull())
 		{
-			return String::Format(wxS("0 %1"), GetSizeUnitString(BinarySizeUnit::Bytes));
+			if (auto label = GetSizeUnitString(BinarySizeUnit::Bytes))
+			{
+				return String::Format(wxS("0 %1"), *label);
+			}
+			return wxS("0");
 		}
 
 		switch (unit)
