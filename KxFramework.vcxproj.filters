@@ -19,9 +19,6 @@
     <Filter Include="Header Files\Streams">
       <UniqueIdentifier>{cc10d6e8-b56c-4746-911a-b4f749466e83}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Sizers">
-      <UniqueIdentifier>{febdb9fc-2421-477b-ab87-1e9d719c63a9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Events">
       <UniqueIdentifier>{bf54f086-d884-45dc-8670-5c65e6f09e19}</UniqueIdentifier>
     </Filter>
@@ -259,9 +256,6 @@
     <ClInclude Include="KxFramework\KxSplitterWindow.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxStdDialogButtonSizer.h">
-      <Filter>Header Files\Sizers</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxButton.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
@@ -432,9 +426,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxIncludeWindows.h">
       <Filter>Header Files\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxIconType.h">
-      <Filter>Header Files\General</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxShellDefs.h">
       <Filter>Header Files\System</Filter>

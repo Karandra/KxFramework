@@ -3,6 +3,8 @@
 #include "Kx/System/Registry.h"
 #include <CommCtrl.h>
 
+using namespace KxFramework;
+
 namespace
 {
 	constexpr uint32_t g_DefaultStyle = WS_POPUP;
@@ -103,10 +105,10 @@ void KxToolTipEx::UpdateCaption()
 			::SendMessageW(hwnd, TTM_SETTITLE, reinterpret_cast<WPARAM>(icon->GetHandle()), reinterpret_cast<LPARAM>(m_Caption.wc_str()));
 			return true;
 		}
-		else if (const KxIconType* iconType = std::get_if<KxIconType>(&m_Icon))
+		else if (const StdIcon* iconType = std::get_if<StdIcon>(&m_Icon))
 		{
 			// There's no corresponding question icon in tooltip icons enum, so get it ourselves
-			if (*iconType == KxICON_QUESTION)
+			if (*iconType == StdIcon::Question)
 			{
 				if (IsOptionEnabled(KxToolTipExOption::LargeIcons))
 				{
@@ -153,20 +155,20 @@ void KxToolTipEx::UpdateStyle()
 
 	::SetWindowLongPtrW(GetHandle(), GWL_STYLE, style);
 }
-int KxToolTipEx::ConvertIconID(KxIconType icon) const
+int KxToolTipEx::ConvertIconID(StdIcon icon) const
 {
 	const bool largeIcons = IsOptionEnabled(KxToolTipExOption::LargeIcons);
 	switch (icon)
 	{
-		case KxICON_INFORMATION:
+		case StdIcon::Information:
 		{
 			return largeIcons ? TTI_INFO_LARGE : TTI_INFO;
 		}
-		case KxICON_WARNING:
+		case StdIcon::Warning:
 		{
 			return largeIcons ? TTI_WARNING_LARGE : TTI_WARNING;
 		}
-		case KxICON_ERROR:
+		case StdIcon::Error:
 		{
 			return largeIcons ? TTI_ERROR_LARGE : TTI_ERROR;
 		}
@@ -259,13 +261,13 @@ void KxToolTipEx::Dismiss()
 	::SendMessageW(GetHandle(), TTM_TRACKACTIVATE, FALSE, reinterpret_cast<LPARAM>(&info));
 }
 
-KxIconType KxToolTipEx::GetIconID() const
+StdIcon KxToolTipEx::GetIconID() const
 {
-	if (const KxIconType* iconType = std::get_if<KxIconType>(&m_Icon))
+	if (const StdIcon* iconType = std::get_if<StdIcon>(&m_Icon))
 	{
 		return *iconType;
 	}
-	return KxIconType::KxICON_NONE;
+	return StdIcon::None;
 }
 wxIcon KxToolTipEx::GetIcon() const
 {
@@ -279,21 +281,21 @@ void KxToolTipEx::SetIcon(const wxIcon& icon)
 {
 	m_Icon = icon;
 }
-void KxToolTipEx::SetIcon(KxIconType iconID)
+void KxToolTipEx::SetIcon(StdIcon iconID)
 {
 	switch (iconID)
 	{
-		case KxICON_ERROR:
-		case KxICON_WARNING:
-		case KxICON_QUESTION:
-		case KxICON_INFORMATION:
+		case StdIcon::Error:
+		case StdIcon::Warning:
+		case StdIcon::Question:
+		case StdIcon::Information:
 		{
 			m_Icon = iconID;
 			break;
 		}
 		default:
 		{
-			m_Icon = KxICON_NONE;
+			m_Icon = StdIcon::None;
 			break;
 		}
 	};

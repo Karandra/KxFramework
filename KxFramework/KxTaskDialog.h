@@ -37,8 +37,8 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 
 		wxIcon m_MainIcon;
 		wxIcon m_FooterIcon;
-		KxIconType m_MainIconID = KxICON_INFORMATION;
-		KxIconType m_FooterIconID = KxICON_NONE;
+		StdIcon m_MainIconID = StdIcon::Information;
+		StdIcon m_FooterIconID = StdIcon::None;
 
 		wxString m_Title;
 		wxString m_Caption;
@@ -66,7 +66,7 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 
 		wxWindowID TranslateButtonID_WinToWx(int idWin) const;
 		int TranslateButtonID_WxToWin(wxWindowID idWx) const;
-		LPCWSTR TranslateIconIDToTDI(KxIconType id) const;
+		LPCWSTR TranslateIconIDToTDI(StdIcon id) const;
 
 		const wxChar* GetStringOrNull(const wxString& text)
 		{
@@ -93,7 +93,7 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 					 const wxString& caption = wxEmptyString,
 					 const wxString& message = wxEmptyString,
 					 StdButton buttons = DefaultButtons,
-					 KxIconType mainIcon = KxICON_NONE,
+					 StdIcon mainIcon = StdIcon::None,
 					 wxPoint pos = wxDefaultPosition,
 					 wxSize size = wxDefaultSize,
 					 long style = DefaultStyle
@@ -106,7 +106,7 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 					const wxString& caption = wxEmptyString,
 					const wxString& message = wxEmptyString,
 					StdButton buttons = DefaultButtons,
-					KxIconType mainIcon = KxICON_NONE,
+					StdIcon mainIcon = StdIcon::None,
 					wxPoint pos = wxDefaultPosition,
 					wxSize size = wxDefaultSize,
 					long style = DefaultStyle
@@ -149,7 +149,7 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 		void SetOptions(KxTD_Options options);
 
 		// Icons
-		KxIconType GetMainIconID() const override
+		StdIcon GetMainIconID() const override
 		{
 			return m_MainIconID;
 		}
@@ -164,9 +164,9 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 				return wxArtProvider::GetMessageBoxIcon(TranslateIconIDToWx(GetMainIconID()));
 			}
 		}
-		void SetMainIcon(KxIconType iconID) override
+		void SetMainIcon(StdIcon iconID) override
 		{
-			if (iconID != KxICON_QUESTION)
+			if (iconID != StdIcon::Question)
 			{
 				m_MainIconID = iconID;
 				m_MainIcon = wxNullIcon;
@@ -183,7 +183,7 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 		}
 		void SetMainIcon(const wxBitmap& icon) override
 		{
-			m_MainIconID = KxICON_NONE;
+			m_MainIconID = StdIcon::None;
 			m_MainIcon.CopyFromBitmap(icon);
 
 			SetFlagTDI(TDF_USE_HICON_MAIN, true);
@@ -191,7 +191,7 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 			m_DialogConfig.hMainIcon = m_MainIcon.GetHICON();
 		}
 		
-		KxIconType GetFooterIconID()
+		StdIcon GetFooterIconID()
 		{
 			return m_FooterIconID;
 		}
@@ -206,7 +206,7 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 				return wxArtProvider::GetMessageBoxIcon(TranslateIconIDToWx(GetFooterIconID()));
 			}
 		}
-		void SetFooterIcon(KxIconType iconID)
+		void SetFooterIcon(StdIcon iconID)
 		{
 			m_FooterIconID = iconID;
 			m_FooterIcon = wxNullIcon;
@@ -217,7 +217,7 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 		}
 		void SetFooterIcon(const wxBitmap& icon)
 		{
-			m_FooterIconID = KxICON_NONE;
+			m_FooterIconID = StdIcon::None;
 			m_FooterIcon.CopyFromBitmap(icon);
 
 			SetFlagTDI(TDF_USE_HICON_FOOTER, true);

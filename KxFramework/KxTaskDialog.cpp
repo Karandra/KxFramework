@@ -157,7 +157,7 @@ int KxTaskDialog::TranslateButtonID_WxToWin(wxWindowID idWx) const
 	};
 	return idWx;
 }
-LPCWSTR KxTaskDialog::TranslateIconIDToTDI(KxIconType id) const
+LPCWSTR KxTaskDialog::TranslateIconIDToTDI(StdIcon id) const
 {
 	enum class TDI_IconID: int
 	{
@@ -175,49 +175,49 @@ LPCWSTR KxTaskDialog::TranslateIconIDToTDI(KxIconType id) const
 		ICON_SHIELDGRAY
 	};
 
-	if (id != KxICON_QUESTION)
+	if (id != StdIcon::Question)
 	{
-		if (id != KxICON_NONE)
+		if (id != StdIcon::None)
 		{
 			TDI_IconID idTDI = TDI_IconID::ICON_NONE;
 			switch (id)
 			{
-				case KxICON_INFORMATION:
+				case StdIcon::Information:
 				{
 					idTDI = TDI_IconID::ICON_INFORMATION;
 					break;
 				}
-				case KxICON_WARNING:
+				case StdIcon::Warning:
 				{
 					idTDI = TDI_IconID::ICON_WARNING;
 					break;
 				}
-				case KxICON_ERROR:
+				case StdIcon::Error:
 				{
 					idTDI = TDI_IconID::ICON_ERROR;
 					break;
 				}
-				case KxICON_SHIELD:
+				case StdIcon::Shield:
 				{
 					idTDI = TDI_IconID::ICON_SHIELD;
 					break;
 				}
-				case KxICON_SHIELDWARNING:
+				case StdIcon::Shield|StdIcon::Warning:
 				{
 					idTDI = TDI_IconID::ICON_SHIELDWARNING;
 					break;
 				}
-				case KxICON_SHIELDERROR:
+				case StdIcon::Shield|StdIcon::Error:
 				{
 					idTDI = TDI_IconID::ICON_SHIELDERROR;
 					break;
 				}
-				case KxICON_SHIELDSUCCESS:
+				case StdIcon::Shield|StdIcon::Success:
 				{
 					idTDI = TDI_IconID::ICON_SHIELDSUCCESS;
 					break;
 				}
-				case KxICON_SHIELDGRAY:
+				case StdIcon::Shield|StdIcon::Neutral:
 				{
 					idTDI = TDI_IconID::ICON_SHIELDGRAY;
 					break;
@@ -374,7 +374,7 @@ bool KxTaskDialog::Create(wxWindow* parent,
 						  const wxString& caption,
 						  const wxString& message,
 						  StdButton buttons,
-						  KxIconType mainIcon,
+						  StdIcon mainIcon,
 						  wxPoint pos,
 						  wxSize size,
 						  long style

@@ -215,9 +215,9 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 		{
 			return GetIcon();
 		}
-		KxIconType GetMainIconID() const override
+		StdIcon GetMainIconID() const override
 		{
-			return KxICON_NONE;
+			return StdIcon::None;
 		}
 		void SetMainIcon(const wxBitmap& icon) override
 		{
@@ -225,7 +225,7 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 			temp.CopyFromBitmap(icon);
 			SetIcon(temp);
 		}
-		void SetMainIcon(KxIconType iconID = DefaultIconID) override
+		void SetMainIcon(StdIcon iconID = DefaultIconID) override
 		{
 		}
 

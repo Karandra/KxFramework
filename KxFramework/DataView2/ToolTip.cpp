@@ -45,7 +45,7 @@ namespace KxDataView2
 			textExtent += icon.GetSize() * 1.5;
 			offset = smallIcon / 2;
 		}
-		else if (auto icon = GetIconID(); icon != KxICON_NONE)
+		else if (auto icon = GetIconID(); icon != StdIcon::None)
 		{
 			textExtent += smallIcon * 1.5;
 			offset = smallIcon / 2;

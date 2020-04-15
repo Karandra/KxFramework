@@ -1,6 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "Common.h"
+#include "Kx/UI/StdIcon.h"
 
 namespace KxDataView2
 {
@@ -17,7 +18,11 @@ namespace KxDataView2
 		friend class MainWindow;
 
 		public:
-			template<class... Args> static ToolTip CreateDefaultForRenderer(Args&&... arg)
+			using StdIcon = KxFramework::StdIcon;
+
+		public:
+			template<class... Args>
+			static ToolTip CreateDefaultForRenderer(Args&&... arg)
 			{
 				ToolTip tooltip(std::forward<Args>(arg)...);
 				tooltip.DisplayOnlyIfClipped();
@@ -27,7 +32,7 @@ namespace KxDataView2
 		private:
 			wxString m_Caption;
 			wxString m_Message;
-			std::variant<wxBitmap, KxIconType> m_Icon;
+			std::variant<wxBitmap, StdIcon> m_Icon;
 			const Column* m_AnchorColumn = nullptr;
 
 			const Column* m_ClipTestColumn = nullptr;
@@ -46,11 +51,11 @@ namespace KxDataView2
 			bool Show(const Node& node, const Column& column);
 
 		public:
-			ToolTip(const wxString& message = wxEmptyString, KxIconType icon = KxICON_NONE)
+			ToolTip(const wxString& message = wxEmptyString, StdIcon icon = StdIcon::None)
 				:m_Message(message), m_Icon(icon)
 			{
 			}
-			ToolTip(const wxString& caption, const wxString& message, KxIconType icon = KxICON_NONE)
+			ToolTip(const wxString& caption, const wxString& message, StdIcon icon = StdIcon::None)
 				:m_Caption(caption), m_Message(message), m_Icon(icon)
 			{
 			}
@@ -82,15 +87,15 @@ namespace KxDataView2
 
 			bool HasAnyIcon() const
 			{
-				return !m_Icon.valueless_by_exception() && (GetIconID() != KxICON_NONE || GetIconBitmap().IsOk());
+				return !m_Icon.valueless_by_exception() && (GetIconID() != StdIcon::None || GetIconBitmap().IsOk());
 			}
-			KxIconType GetIconID() const
+			StdIcon GetIconID() const
 			{
-				if (const auto& value = std::get_if<KxIconType>(&m_Icon))
+				if (const auto& value = std::get_if<StdIcon>(&m_Icon))
 				{
 					return *value;
 				}
-				return KxICON_NONE;
+				return StdIcon::None;
 			}
 			wxBitmap GetIconBitmap() const
 			{
@@ -100,7 +105,7 @@ namespace KxDataView2
 				}
 				return wxNullBitmap;
 			}
-			void SetIcon(KxIconType icon)
+			void SetIcon(StdIcon icon)
 			{
 				m_Icon = icon;
 			}

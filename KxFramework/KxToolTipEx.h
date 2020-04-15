@@ -1,6 +1,7 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "Kx/General/WithOptions.h"
+#include "Kx/UI/StdIcon.h"
 #include <wx/nativewin.h>
 
 enum class KxToolTipExOption
@@ -14,10 +15,13 @@ enum class KxToolTipExOption
 
 class KX_API KxToolTipEx: public wxNativeWindow, public KxFramework::WithOptions<KxToolTipExOption, KxToolTipExOption::None>
 {
+	public:
+		using StdIcon = KxFramework::StdIcon;
+
 	private:
 		wxString m_Caption;
 		wxString m_Message;
-		std::variant<wxIcon, KxIconType> m_Icon = KxIconType::KxICON_NONE;
+		std::variant<wxIcon, StdIcon> m_Icon = StdIcon::None;
 		wxIcon m_QuestionIcon;
 		int m_MaxWidth = -1;
 		bool m_IsBalloonStyleSupported = false;
@@ -27,7 +31,7 @@ class KX_API KxToolTipEx: public wxNativeWindow, public KxFramework::WithOptions
 		bool CreateToolTip();
 		void UpdateCaption();
 		void UpdateStyle();
-		int ConvertIconID(KxIconType icon) const;
+		int ConvertIconID(StdIcon icon) const;
 		void DoRedraw();
 
 	protected:
@@ -68,7 +72,7 @@ class KX_API KxToolTipEx: public wxNativeWindow, public KxFramework::WithOptions
 			m_Message = value;
 		}
 
-		KxIconType GetIconID() const;
+		StdIcon GetIconID() const;
 		wxIcon GetIcon() const;
 		void SetIcon(const wxIcon& icon);
 		void SetIcon(const wxBitmap& bitmap)
@@ -77,7 +81,7 @@ class KX_API KxToolTipEx: public wxNativeWindow, public KxFramework::WithOptions
 			icon.CopyFromBitmap(bitmap);
 			SetIcon(icon);
 		}
-		void SetIcon(KxIconType iconID);
+		void SetIcon(StdIcon iconID);
 
 		int GetMaxWidth() const
 		{

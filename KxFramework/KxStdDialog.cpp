@@ -535,51 +535,51 @@ bool KxIStdDialog::ShowNativeWindow(wxDialog* window, bool show)
 	}
 	return ret;
 }
-int KxIStdDialog::TranslateIconIDToWx(KxIconType id) const
+int KxIStdDialog::TranslateIconIDToWx(StdIcon id) const
 {
 	switch (id)
 	{
-		case KxICON_QUESTION:
+		case StdIcon::Question:
 		{
 			return wxICON_QUESTION;
 		}
-		case KxICON_ERROR:
+		case StdIcon::Error:
 		{
 			return wxICON_ERROR;
 		}
-		case KxICON_WARNING:
+		case StdIcon::Warning:
 		{
 			return wxICON_WARNING;
 		}
-		case KxICON_INFO:
+		case StdIcon::Information:
 		{
 			return wxICON_INFORMATION;
 		}
 	};
 	return wxICON_NONE;
 }
-KxIconType KxIStdDialog::TranslateIconIDFromWx(int id) const
+StdIcon KxIStdDialog::TranslateIconIDFromWx(int id) const
 {
 	switch (id)
 	{
 		case wxICON_QUESTION:
 		{
-			return KxICON_QUESTION;
+			return StdIcon::Question;
 		}
 		case wxICON_ERROR:
 		{
-			return KxICON_ERROR;
+			return StdIcon::Error;
 		}
 		case wxICON_WARNING:
 		{
-			return KxICON_WARNING;
+			return StdIcon::Warning;
 		}
 		case wxICON_INFORMATION:
 		{
-			return KxICON_INFO;
+			return StdIcon::Information;
 		}
 	};
-	return KxICON_NONE;
+	return StdIcon::None;
 }
 
 //////////////////////////////////////////////////////////////////////////

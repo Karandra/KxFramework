@@ -3,6 +3,7 @@
 #include "KxFramework/KxDialog.h"
 #include "KxFramework/KxLabel.h"
 #include "KxFramework/KxPanel.h"
+#include "Kx/UI/StdIcon.h"
 #include "Kx/UI/StdButton.h"
 #include "Kx/UI/StdDialogButtonSizer.h"
 class KX_API KxButton;
@@ -86,15 +87,16 @@ class KX_API KxIStdDialog
 {
 	public:
 		using StdButton = KxFramework::StdButton;
+		using StdIcon = KxFramework::StdIcon;
 
 	public:
-		static const KxIconType DefaultIconID = KxICON_INFO;
+		static const StdIcon DefaultIconID = StdIcon::Information;
 		static const StdButton DefaultButtons = StdButton::OK|StdButton::Cancel;
 
 	protected:
 		bool ShowNativeWindow(wxDialog* window, bool show); // Will show/hide window if GetHandle() != nullptr and call ShowModal() otherwise
-		int TranslateIconIDToWx(KxIconType id) const;
-		KxIconType TranslateIconIDFromWx(int id) const;
+		int TranslateIconIDToWx(StdIcon id) const;
+		StdIcon TranslateIconIDFromWx(int id) const;
 
 	public:
 		virtual wxString GetCaption() const = 0;
@@ -104,9 +106,9 @@ class KX_API KxIStdDialog
 		virtual void SetLabel(const wxString& label) = 0;
 
 		virtual wxBitmap GetMainIcon() const = 0;
-		virtual KxIconType GetMainIconID() const = 0;
+		virtual StdIcon GetMainIconID() const = 0;
 		virtual void SetMainIcon(const wxBitmap& icon) = 0;
-		virtual void SetMainIcon(KxIconType iconID = DefaultIconID) = 0;
+		virtual void SetMainIcon(StdIcon iconID = DefaultIconID) = 0;
 
 		virtual void SetDefaultButton(wxWindowID id) = 0;
 		virtual KxStdDialogControl GetButton(wxWindowID id) const = 0;
@@ -144,7 +146,7 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 		KxPanel* m_ContentPanel = nullptr;
 		wxStaticBitmap* m_IconView = nullptr;
 		wxBitmap m_MainIcon = wxNullBitmap;
-		KxIconType m_MainIconID = DefaultIconID;
+		StdIcon m_MainIconID = DefaultIconID;
 		std::vector<wxWindow*> m_UserControls;
 		bool m_IsAutoSizeEnabled = true;
 
@@ -193,7 +195,7 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 		void OnEscape(wxKeyEvent& event);
 		void InitIcon()
 		{
-			if (m_MainIcon.IsOk() != true && m_MainIconID != wxICON_NONE)
+			if (m_MainIcon.IsOk() != true && m_MainIconID != StdIcon::None)
 			{
 				SetMainIcon();
 				LoadIcon();
@@ -209,7 +211,7 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 		}
 		void SetIconVisibility()
 		{
-			if (m_MainIconID == wxICON_NONE || m_MainIcon.IsOk() != true)
+			if (m_MainIconID == StdIcon::None || !m_MainIcon.IsOk())
 			{
 				m_ContentSizerBase->Hide(m_IconSizer);
 			}
@@ -361,7 +363,7 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 		{
 			return m_MainIcon;
 		}
-		KxIconType GetMainIconID() const override
+		StdIcon GetMainIconID() const override
 		{
 			return m_MainIconID;
 		}
@@ -370,21 +372,21 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 			if (icon.IsOk())
 			{
 				m_MainIcon = icon;
-				m_MainIconID = KxICON_NONE;
+				m_MainIconID = StdIcon::None;
 				LoadIcon();
 			}
 			else
 			{
-				m_MainIconID = KxICON_NONE;
+				m_MainIconID = StdIcon::None;
 			}
 			SetIconVisibility();
 		}
-		void SetMainIcon(KxIconType iconID = DefaultIconID) override
+		void SetMainIcon(StdIcon iconID = DefaultIconID) override
 		{
 			m_MainIconID = iconID;
-			if (iconID != KxICON_NONE)
+			if (iconID != StdIcon::None)
 			{
-				m_MainIcon = wxArtProvider::GetMessageBoxIcon(iconID);
+				m_MainIcon = wxArtProvider::GetMessageBoxIcon(KxFramework::UI::ToWxStdIcon(iconID));
 				LoadIcon();
 			}
 			SetIconVisibility();

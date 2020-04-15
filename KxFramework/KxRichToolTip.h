@@ -1,8 +1,12 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
+#include "Kx/UI/StdIcon.h"
 
 class KX_API KxRichToolTip: public wxObject
 {
+	public:
+		using StdIcon = KxFramework::StdIcon;
+
 	private:
 		wxRichToolTip m_ToolTip;
 
@@ -10,7 +14,7 @@ class KX_API KxRichToolTip: public wxObject
 		wxString m_Message;
 		wxIcon m_Icon;
 		wxFont m_Font;
-		KxIconType m_IconID = DefaultIcon;
+		StdIcon m_IconID = DefaultIcon;
 		wxTipKind m_Kind = DefaultKind;
 		wxColour m_Color1;
 		wxColour m_Color2;
@@ -18,7 +22,7 @@ class KX_API KxRichToolTip: public wxObject
 		int m_Delay = -1;
 
 	public:
-		static const KxIconType DefaultIcon = KxICON_INFO;
+		static const StdIcon DefaultIcon = StdIcon::Information;
 		static const wxTipKind DefaultKind = wxTipKind_Auto;
 		static const int DefaultDelay = 0;
 
@@ -68,7 +72,7 @@ class KX_API KxRichToolTip: public wxObject
 		void GetBackgroundColour(wxColour* color1 = nullptr, wxColour* color2 = nullptr) const;
 
 		// Icon
-		KxIconType GetIconID() const
+		StdIcon GetIconID() const
 		{
 			return m_IconID;
 		}
@@ -83,14 +87,14 @@ class KX_API KxRichToolTip: public wxObject
 		void SetIcon(const wxIcon& icon)
 		{
 			m_Icon = icon;
-			m_IconID = KxICON_NONE;
+			m_IconID = StdIcon::None;
 			m_ToolTip.SetIcon(icon);
 		}
-		void SetIcon(KxIconType iconID)
+		void SetIcon(StdIcon iconID)
 		{
 			m_Icon = wxNullIcon;
 			m_IconID = iconID;
-			m_ToolTip.SetIcon(iconID);
+			m_ToolTip.SetIcon(KxFramework::UI::ToWxStdIcon(iconID));
 		}
 
 		// Animation

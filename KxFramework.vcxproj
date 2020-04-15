@@ -274,7 +274,6 @@
     <ClInclude Include="KxFramework\KxFramework.h" />
     <ClInclude Include="KxFramework\KxIncludes.h" />
     <ClInclude Include="KxFramework\KxHTMLWindow.h" />
-    <ClInclude Include="KxFramework\KxIconType.h" />
     <ClInclude Include="KxFramework\KxImageView.h" />
     <ClInclude Include="KxFramework\KxIncludeWindows.h" />
     <ClInclude Include="KxFramework\KxIProgressBar.h" />
@@ -312,7 +311,6 @@
     <ClInclude Include="KxFramework\KxStatusBar.h" />
     <ClInclude Include="KxFramework\KxStatusBarEx.h" />
     <ClInclude Include="KxFramework\KxStdDialog.h" />
-    <ClInclude Include="KxFramework\KxStdDialogButtonSizer.h" />
     <ClInclude Include="KxFramework\KxStdDialogSimple.h" />
     <ClInclude Include="KxFramework\KxStyledTextBox.h" />
     <ClInclude Include="KxFramework\KxStyledTextBox_Scintilla.h" />
