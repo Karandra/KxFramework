@@ -248,72 +248,88 @@ namespace
 
 		return Win32Error(::RegSetKeyValueW(hkey, nullptr, valueName.wc_str(), type, value.wc_str(), value.length() * sizeof(wchar_t) + sizeof(wchar_t)));
 	}
+
+	bool CheckIsBaseKey(HKEY handle) noexcept
+	{
+		if (handle)
+		{
+			return handle == HKEY_LOCAL_MACHINE ||
+				handle == HKEY_USERS ||
+				handle == HKEY_CLASSES_ROOT ||
+				handle == HKEY_CURRENT_USER ||
+				handle == HKEY_CURRENT_USER_LOCAL_SETTINGS ||
+				handle == HKEY_CURRENT_CONFIG ||
+				handle == HKEY_PERFORMANCE_DATA ||
+				handle == HKEY_PERFORMANCE_TEXT ||
+				handle == HKEY_PERFORMANCE_NLSTEXT ||
+				handle == HKEY_DYN_DATA;
+		}
+		return false;
+	}
 }
 
 namespace KxFramework
 {
-	RegistryKey::RegistryKey(RegistryBaseKey baseKey, const FSPath& subKey, RegistryAccess access, RegistryWOW64 wow64) noexcept
+	void* RegistryKey::DoGetBaseKey(RegistryBaseKey baseKey) const noexcept
 	{
-		HKEY handle = nullptr;
-
-		String subKeyPath = subKey.GetFullPath();
-		if (Win32Error(::RegOpenKeyExW(MapBaseKey(baseKey), subKeyPath.wc_str(), 0, MapAccessMode(access)|MapWOW64(wow64), &handle)))
-		{
-			m_Handle = handle;
-		}
+		return MapBaseKey(baseKey);
 	}
-	RegistryKey::~RegistryKey() noexcept
+	bool RegistryKey::DoOpenKey(void* rootKey, const FSPath& subKey, RegistryAccess access, RegistryWOW64 wow64)
 	{
-		if (m_Handle && !IsBaseKey())
+		if (rootKey)
 		{
-			::RegCloseKey(AsHKEY(m_Handle));
+			HKEY handle = nullptr;
+			const String subKeyPath = subKey.GetFullPath();
+			if (Win32Error(::RegOpenKeyExW(AsHKEY(rootKey), subKeyPath.wc_str(), 0, MapAccessMode(access)|MapWOW64(wow64), &handle)))
+			{
+				m_Handle = handle;
+				return true;
+			}
+		}
+		return false;
+	}
+	bool RegistryKey::DoCreateKey(void* rootKey, const FSPath& subKey, RegistryAccess access, RegistryKeyFlag flags, RegistryWOW64 wow64)
+	{
+		if (rootKey)
+		{
+			DWORD nativeFlags = 0;
+			Utility::AddFlag(nativeFlags, REG_OPTION_VOLATILE, flags & RegistryKeyFlag::Volatile);
+
+			HKEY handle = nullptr;
+			String subKeyPath = subKey.GetFullPath();
+			if (Win32Error(::RegCreateKeyExW(AsHKEY(rootKey), subKeyPath.wc_str(), 0, nullptr, nativeFlags, MapAccessMode(access)|MapWOW64(wow64), nullptr, &handle, nullptr)))
+			{
+				m_Handle = handle;
+				return true;
+			}
+		}
+		return false;
+	}
+	void RegistryKey::DoCloseKey(void* handle) noexcept
+	{
+		if (handle && !CheckIsBaseKey(AsHKEY(handle)))
+		{
+			::RegCloseKey(AsHKEY(handle));
 		}
 	}
 
 	bool RegistryKey::IsBaseKey() const noexcept
 	{
-		if (m_Handle)
-		{
-			return m_Handle == HKEY_CLASSES_ROOT ||
-				m_Handle == HKEY_USERS ||
-				m_Handle == HKEY_CLASSES_ROOT ||
-				m_Handle == HKEY_CURRENT_USER ||
-				m_Handle == HKEY_CURRENT_USER_LOCAL_SETTINGS ||
-				m_Handle == HKEY_CURRENT_CONFIG ||
-				m_Handle == HKEY_PERFORMANCE_DATA ||
-				m_Handle == HKEY_PERFORMANCE_TEXT ||
-				m_Handle == HKEY_PERFORMANCE_NLSTEXT ||
-				m_Handle == HKEY_DYN_DATA;
-		}
-		return false;
+		return m_Handle && CheckIsBaseKey(AsHKEY(m_Handle));
 	}
-
-	RegistryKey RegistryKey::CreateKey(const String& subKey, RegistryAccess access, RegistryKeyFlag flags)
+	
+	bool RegistryKey::RemoveKey(const FSPath& subKey, bool resursive)
 	{
-		DWORD nativeFlags = 0;
-		Utility::AddFlag(nativeFlags, REG_OPTION_VOLATILE, flags & RegistryKeyFlag::Volatile);
-
-		HKEY handle = nullptr;
-		if (Win32Error(::RegCreateKeyExW(AsHKEY(m_Handle), subKey.wc_str(), 0, nullptr, nativeFlags, MapAccessMode(access), nullptr, &handle, nullptr)))
-		{
-			RegistryKey key;
-			key.m_Handle = handle;
-			return key;
-		}
-		return {};
-	}
-	bool RegistryKey::RemoveKey(const String& subKey, bool resursive)
-	{
+		String subKeyPath = subKey.GetFullPath();
 		if (resursive)
 		{
-			return Win32Error(::RegDeleteTreeW(AsHKEY(m_Handle), subKey.wc_str()));
+			return Win32Error(::RegDeleteTreeW(AsHKEY(m_Handle), subKeyPath.wc_str()));
 		}
 		else
 		{
-			return Win32Error(::RegDeleteKeyExW(AsHKEY(m_Handle), subKey.wc_str(), 0, 0));
+			return Win32Error(::RegDeleteKeyExW(AsHKEY(m_Handle), subKeyPath.wc_str(), 0, 0));
 		}
 	}
-	
 	bool RegistryKey::RemoveValue(const String& valueName)
 	{
 		return  Win32Error(::RegDeleteKeyValueW(AsHKEY(m_Handle), nullptr, valueName.wc_str()));

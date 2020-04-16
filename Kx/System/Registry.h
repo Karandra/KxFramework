@@ -78,18 +78,45 @@ namespace KxFramework
 {
 	class RegistryKey final
 	{
+		public:
+			static RegistryKey CreateKey(RegistryBaseKey baseKey, const FSPath& subKey, RegistryAccess access, RegistryKeyFlag flags = RegistryKeyFlag::None, RegistryWOW64 wow64 = RegistryWOW64::Default)
+			{
+				RegistryKey key(baseKey, {}, RegistryAccess::Create, wow64);
+				if (key)
+				{
+					return key.CreateKey(subKey, access, flags, wow64);
+				}
+				return {};
+			}
+
 		private:
 			void* m_Handle = nullptr;
 
+		private:
+			void* DoGetBaseKey(RegistryBaseKey baseKey) const noexcept;
+			bool DoOpenKey(void* rootKey, const FSPath& subKey, RegistryAccess access, RegistryWOW64 wow64);
+			bool DoCreateKey(void* rootKey, const FSPath& subKey, RegistryAccess access, RegistryKeyFlag flags, RegistryWOW64 wow64);
+			void DoCloseKey(void* handle) noexcept;
+
 		public:
 			RegistryKey() noexcept = default;
-			RegistryKey(RegistryBaseKey baseKey, const FSPath& subKey, RegistryAccess access, RegistryWOW64 wow64 = RegistryWOW64::Default) noexcept;
+			RegistryKey(RegistryBaseKey baseKey) noexcept
+				:m_Handle(DoGetBaseKey(baseKey))
+			{
+			}
+			RegistryKey(RegistryBaseKey baseKey, const FSPath& subKey, RegistryAccess access, RegistryWOW64 wow64 = RegistryWOW64::Default)
+			{
+				DoOpenKey(DoGetBaseKey(baseKey), subKey, access, wow64);
+			}
 			RegistryKey(const RegistryKey&) = delete;
 			RegistryKey(RegistryKey&& other) noexcept
 			{
 				*this = std::move(other);
 			}
-			~RegistryKey() noexcept;
+			~RegistryKey() noexcept
+			{
+				DoCloseKey(m_Handle);
+			}
 
 		public:
 			bool IsNull() const noexcept
@@ -97,9 +124,45 @@ namespace KxFramework
 				return m_Handle == nullptr;
 			}
 			bool IsBaseKey() const noexcept;
+			void Close() noexcept
+			{
+				DoCloseKey(m_Handle);
+				m_Handle = nullptr;
+			}
 
-			RegistryKey CreateKey(const String& subKey, RegistryAccess access, RegistryKeyFlag flags = RegistryKeyFlag::None);
-			bool RemoveKey(const String& subKey, bool resursive = false);
+			RegistryKey& AttachHandle(void* handle) noexcept
+			{
+				DoCloseKey(m_Handle);
+				m_Handle = handle;
+
+				return *this;
+			}
+			void* DetachHandle() noexcept
+			{
+				void* handle = m_Handle;
+				m_Handle = nullptr;
+				return handle;
+			}
+
+			RegistryKey OpenKey(const FSPath& subKey, RegistryAccess access, RegistryWOW64 wow64 = RegistryWOW64::Default)
+			{
+				RegistryKey key;
+				if (key.DoOpenKey(m_Handle, subKey, access, wow64))
+				{
+					return key;
+				}
+				return {};
+			}
+			RegistryKey CreateKey(const FSPath& subKey, RegistryAccess access, RegistryKeyFlag flags = RegistryKeyFlag::None, RegistryWOW64 wow64 = RegistryWOW64::Default)
+			{
+				RegistryKey key;
+				if (key.DoCreateKey(m_Handle, subKey, access, flags, wow64))
+				{
+					return key;
+				}
+				return {};
+			}
+			bool RemoveKey(const FSPath& subKey, bool resursive = false);
 
 			bool RemoveValue(const String& valueName);
 			bool DoesValueExist(const String& valueName) const;
