@@ -9,7 +9,7 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include <Kx/FileSystem/FSPath.h>
 #include <Kx/FileSystem/FileItem.h>
 #include <Kx/FileSystem/LegacyVolume.h>
-#include <Kx/FileSystem/NativeFileSystemUtility.h>
+#include "Kx/FileSystem/Private/NativeFileSystem.h"
 #include "Kx/Network/URI.h"
 #include <KnownFolders.h>
 #include <winnls.h>
@@ -229,8 +229,10 @@ wxIcon KxShell::GetFileIcon(const wxString& path, bool smallIcon)
 }
 wxIcon KxShell::GetFileIcon(const KxFramework::FileItem& item, bool smallIcon)
 {
+	using namespace KxFramework;
+
 	SHFILEINFOW shellInfo = {};
-	::SHGetFileInfoW(item.GetName().wc_str(), KxFramework::FileSystem::NativeUtility::MapFileAttributes(item.GetAttributes()), &shellInfo, sizeof(shellInfo), SHGFI_USEFILEATTRIBUTES|SHGFI_ICON|(smallIcon ? SHGFI_SMALLICON : 0));
+	::SHGetFileInfoW(item.GetName().wc_str(), FileSystem::Private::MapFileAttributes(item.GetAttributes()), &shellInfo, sizeof(shellInfo), SHGFI_USEFILEATTRIBUTES|SHGFI_ICON|(smallIcon ? SHGFI_SMALLICON : 0));
 	if (shellInfo.hIcon != nullptr)
 	{
 		wxIcon icon;

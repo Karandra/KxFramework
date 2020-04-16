@@ -4,6 +4,7 @@
 #include "Kx/General/String.h"
 #include "Kx/General/ExtraData.h"
 #include "Kx/General/BinarySize.h"
+#include <wx/datetime.h>
 
 namespace KxFramework
 {

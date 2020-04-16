@@ -1,19 +1,20 @@
 #include "KxStdAfx.h"
 #include "FileStream.h"
-#include "NativeFileSystemUtility.h"
+#include "Kx/System/ErrorCodeValue.h"
+#include "Kx/FileSystem/Private/NativeFileSystem.h"
 
 namespace
 {
-	wxFileOffset GetFileSizeByHandle(HANDLE fileHandle)
+	wxFileOffset GetFileSizeByHandle(HANDLE handle) noexcept
 	{
 		LARGE_INTEGER size = {};
-		if (::GetFileSizeEx(fileHandle, &size))
+		if (::GetFileSizeEx(handle, &size))
 		{
 			return size.QuadPart;
 		}
 		return wxInvalidOffset;
 	}
-	wxFileOffset SeekByHandle(HANDLE fileHandle, KxFramework::BinarySize offset, KxFramework::StreamSeekMode seekMode)
+	wxFileOffset SeekByHandle(HANDLE handle, KxFramework::BinarySize offset, KxFramework::StreamSeekMode seekMode) noexcept
 	{
 		using namespace KxFramework;
 
@@ -45,28 +46,28 @@ namespace
 		moveTo.QuadPart = offset.GetBytes();
 
 		LARGE_INTEGER newOffset = {};
-		if (::SetFilePointerEx(fileHandle, moveTo, &newOffset, seekModeWin))
+		if (::SetFilePointerEx(handle, moveTo, &newOffset, seekModeWin))
 		{
 			return newOffset.QuadPart;
 		}
 		return wxInvalidOffset;
 	}
-	wxFileOffset GetPositionByHandle(HANDLE fileHandle)
+	wxFileOffset GetPositionByHandle(HANDLE handle) noexcept
 	{
-		LARGE_INTEGER offset = {0};
-		::SetFilePointerEx(fileHandle, offset, &offset, FILE_CURRENT);
+		LARGE_INTEGER offset = {};
+		::SetFilePointerEx(handle, offset, &offset, FILE_CURRENT);
 		return offset.QuadPart;
 	}
-	KxFramework::FSPath GetFileNameByHandle(HANDLE fileHandle)
+	KxFramework::FSPath GetFileNameByHandle(HANDLE handle)
 	{
 		using namespace KxFramework;
 
 		constexpr DWORD flags = VOLUME_NAME_DOS|FILE_NAME_NORMALIZED;
-		const DWORD length = ::GetFinalPathNameByHandleW(fileHandle, nullptr, 0, flags);
+		const DWORD length = ::GetFinalPathNameByHandleW(handle, nullptr, 0, flags);
 		if (length != 0)
 		{
 			String result;
-			if (::GetFinalPathNameByHandleW(fileHandle, wxStringBuffer(result, length), length, flags) != 0)
+			if (::GetFinalPathNameByHandleW(handle, wxStringBuffer(result, length), length, flags) != 0)
 			{
 				return FSPath(std::move(result));
 			}
@@ -74,15 +75,15 @@ namespace
 		return {};
 	}
 
-	KxFramework::StreamErrorCode TranslateErrorCode(DWORD winErrorCode, bool isWrite)
+	constexpr KxFramework::StreamErrorCode TranslateErrorCode(KxFramework::Win32ErrorCode win32Error, bool isWrite) noexcept
 	{
 		using namespace KxFramework;
 
-		if (winErrorCode == ERROR_SUCCESS)
+		if (win32Error.GetValue() == ERROR_SUCCESS)
 		{
 			return StreamErrorCode::Success;
 		}
-		else if (winErrorCode == ERROR_HANDLE_EOF)
+		else if (win32Error.GetValue() == ERROR_HANDLE_EOF)
 		{
 			return StreamErrorCode::EndOfstream;
 		}
@@ -91,7 +92,7 @@ namespace
 			return isWrite ? StreamErrorCode::WriteError : StreamErrorCode::ReadError;
 		}
 	}
-	DWORD AccessModeToNative(KxFramework::FileStreamAccess mode)
+	constexpr DWORD AccessModeToNative(KxFramework::FileStreamAccess mode) noexcept
 	{
 		using namespace KxFramework;
 
@@ -110,7 +111,7 @@ namespace
 		}
 		return std::numeric_limits<DWORD>::max();
 	}
-	DWORD ShareModeToNative(KxFramework::FileStreamShare mode)
+	constexpr DWORD ShareModeToNative(KxFramework::FileStreamShare mode) noexcept
 	{
 		using namespace KxFramework;
 
@@ -128,7 +129,7 @@ namespace
 		}
 		return std::numeric_limits<DWORD>::max();
 	}
-	DWORD DispositionToNative(KxFramework::FileStreamDisposition mode)
+	constexpr DWORD DispositionToNative(KxFramework::FileStreamDisposition mode) noexcept
 	{
 		using namespace KxFramework;
 
@@ -153,7 +154,7 @@ namespace
 		};
 		return 0;
 	}
-	DWORD FlagsToNative(KxFramework::FileStreamFlags flags)
+	constexpr DWORD FlagsToNative(KxFramework::FileStreamFlags flags) noexcept
 	{
 		using namespace KxFramework;
 
@@ -260,13 +261,12 @@ namespace KxFramework
 
 		if (handle && handle != INVALID_HANDLE_VALUE)
 		{
-			m_Handle = handle;
 			m_AccessMode = access;
 			m_Disposition = disposition;
 			m_ShareMode = share;
 			m_Flags = flags;
-
 			m_Handle = ::ReOpenFile(handle, AccessModeToNative(m_AccessMode), ShareModeToNative(m_ShareMode), FlagsToNative(flags));
+
 			return DoIsOpened();
 		}
 		return false;
@@ -359,7 +359,7 @@ namespace KxFramework
 			BY_HANDLE_FILE_INFORMATION info = {};
 			if (::GetFileInformationByHandle(m_Handle, &info))
 			{
-				return FileSystem::NativeUtility::MapFileAttributes(info.dwFileAttributes);
+				return FileSystem::Private::MapFileAttributes(info.dwFileAttributes);
 			}
 		}
 		return FileAttribute::Invalid;
@@ -371,7 +371,7 @@ namespace KxFramework
 			FILE_BASIC_INFO basicInfo = {};
 			if (::GetFileInformationByHandleEx(m_Handle, FILE_INFO_BY_HANDLE_CLASS::FileBasicInfo, &basicInfo, sizeof(basicInfo)))
 			{
-				basicInfo.FileAttributes = FileSystem::NativeUtility::MapFileAttributes(attributes);
+				basicInfo.FileAttributes = FileSystem::Private::MapFileAttributes(attributes);
 				return ::SetFileInformationByHandle(m_Handle, FILE_INFO_BY_HANDLE_CLASS::FileBasicInfo, &basicInfo, sizeof(basicInfo));
 			}
 		}

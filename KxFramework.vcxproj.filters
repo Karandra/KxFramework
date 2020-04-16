@@ -826,9 +826,6 @@
     <ClInclude Include="Kx\System\ErrorCodeValue.h">
       <Filter>Kx\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\FileSystem\NativeFileSystemUtility.h">
-      <Filter>Kx\FileSystem</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\Compression\Common.h">
       <Filter>Kx\Compression</Filter>
     </ClInclude>
@@ -1194,6 +1191,9 @@
     </ClInclude>
     <ClInclude Include="Kx\FileSystem\FileStream.h">
       <Filter>Kx\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\FileSystem\Private\NativeFileSystem.h">
+      <Filter>Kx\FileSystem\Private</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

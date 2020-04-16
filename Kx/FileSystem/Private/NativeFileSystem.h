@@ -1,9 +1,14 @@
 #pragma once
-#include "Common.h"
-#include "NativeFileSystem.h"
+#include "../Common.h"
+#include "../FileItem.h"
+#include "../FSPath.h"
+#include "../NativeFileSystem.h"
 #include "Kx/Utility/Common.h"
 
-namespace KxFramework::FileSystem::NativeUtility
+#include <Windows.h>
+#include "Kx/System/UndefWindows.h"
+
+namespace KxFramework::FileSystem::Private
 {
 	inline HANDLE CallFindFirstFile(const String& query, WIN32_FIND_DATAW& findInfo, bool isCaseSensitive = false)
 	{

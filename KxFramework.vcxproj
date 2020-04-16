@@ -376,8 +376,8 @@
     <ClInclude Include="Kx\FileSystem\FSPath.h" />
     <ClInclude Include="Kx\FileSystem\IFileSystem.h" />
     <ClInclude Include="Kx\FileSystem\LegacyVolume.h" />
-    <ClInclude Include="Kx\FileSystem\NativeFileSystemUtility.h" />
     <ClInclude Include="Kx\FileSystem\Private\NamespacePrefix.h" />
+    <ClInclude Include="Kx\FileSystem\Private\NativeFileSystem.h" />
     <ClInclude Include="Kx\FileSystem\RecycleBin.h" />
     <ClInclude Include="Kx\FileSystem\StorageVolume.h" />
     <ClInclude Include="Kx\FileSystem\NativeFileSystem.h" />

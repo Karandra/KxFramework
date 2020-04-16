@@ -1,6 +1,6 @@
 #include "KxStdAfx.h"
 #include "NativeFileSystem.h"
-#include "NativeFileSystemUtility.h"
+#include "Private/NativeFileSystem.h"
 #include "FileStream.h"
 #include "Kx/Utility/Common.h"
 #include "Kx/Utility/CallAtScopeExit.h"
@@ -10,7 +10,7 @@ namespace KxFramework
 	FileItem NativeFileSystem::GetItem(const FSPath& path) const
 	{
 		WIN32_FIND_DATAW findInfo = {};
-		HANDLE handle = FileSystem::NativeUtility::CallFindFirstFile(path.GetFullPathWithNS(), findInfo);
+		HANDLE handle = FileSystem::Private::CallFindFirstFile(path.GetFullPathWithNS(), findInfo);
 		if (handle && handle != INVALID_HANDLE_VALUE)
 		{
 			Utility::CallAtScopeExit atExit([&]()
@@ -18,9 +18,9 @@ namespace KxFramework
 				::FindClose(handle);
 			});
 
-			if (FileSystem::NativeUtility::IsValidFindItem(findInfo))
+			if (FileSystem::Private::IsValidFindItem(findInfo))
 			{
-				return FileSystem::NativeUtility::ConvertFileInfo(findInfo, path);
+				return FileSystem::Private::ConvertFileInfo(findInfo, path);
 			}
 		}
 		return {};
@@ -38,7 +38,7 @@ namespace KxFramework
 			WIN32_FIND_DATAW findInfo = {};
 
 			const String fullQuery = (directory / (!query ? wxS("*") : query)).GetFullPathWithNS(FSPathNamespace::Win32File);
-			HANDLE handle = FileSystem::NativeUtility::CallFindFirstFile(fullQuery, findInfo, flags & FSEnumItemsFlag::CaseSensitive);
+			HANDLE handle = FileSystem::Private::CallFindFirstFile(fullQuery, findInfo, flags & FSEnumItemsFlag::CaseSensitive);
 			if (handle && handle != INVALID_HANDLE_VALUE)
 			{
 				Utility::CallAtScopeExit atExit([&]()
@@ -49,7 +49,7 @@ namespace KxFramework
 				do
 				{
 					// Skip invalid items and current and parent directory links
-					if (FileSystem::NativeUtility::IsValidFindItem(findInfo))
+					if (FileSystem::Private::IsValidFindItem(findInfo))
 					{
 						const bool isDirectory = findInfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
@@ -71,7 +71,7 @@ namespace KxFramework
 
 						// Fetch the file info and invoke the callback
 						counter++;
-						if (!std::invoke(func, FileSystem::NativeUtility::ConvertFileInfo(findInfo, directory)))
+						if (!std::invoke(func, FileSystem::Private::ConvertFileInfo(findInfo, directory)))
 						{
 							break;
 						}
@@ -121,7 +121,7 @@ namespace KxFramework
 		if (attributes != FileAttribute::Invalid)
 		{
 			String pathString = path.GetFullPathWithNS(FSPathNamespace::Win32File);
-			return ::SetFileAttributesW(pathString.wc_str(), FileSystem::NativeUtility::MapFileAttributes(attributes));
+			return ::SetFileAttributesW(pathString.wc_str(), FileSystem::Private::MapFileAttributes(attributes));
 		}
 		return false;
 	}
@@ -148,7 +148,7 @@ namespace KxFramework
 
 		const String sourcePath = source.GetFullPathWithNS(FSPathNamespace::Win32File);
 		const String destinationPath = destination.GetFullPathWithNS(FSPathNamespace::Win32File);
-		return ::CopyFileExW(sourcePath.wc_str(), destinationPath.wc_str(), FileSystem::NativeUtility::CopyCallback, func ? &func : nullptr, &cancel, copyFlags);
+		return ::CopyFileExW(sourcePath.wc_str(), destinationPath.wc_str(), FileSystem::Private::CopyCallback, func ? &func : nullptr, &cancel, copyFlags);
 	}
 	bool NativeFileSystem::MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func, FSCopyItemFlag flags)
 	{
@@ -158,7 +158,7 @@ namespace KxFramework
 
 		const String sourcePath = source.GetFullPathWithNS(FSPathNamespace::Win32File);
 		const String destinationPath = destination.GetFullPathWithNS(FSPathNamespace::Win32File);
-		return ::MoveFileWithProgressW(sourcePath.wc_str(), destinationPath.wc_str(), FileSystem::NativeUtility::CopyCallback, func ? &func : nullptr, moveFlags);
+		return ::MoveFileWithProgressW(sourcePath.wc_str(), destinationPath.wc_str(), FileSystem::Private::CopyCallback, func ? &func : nullptr, moveFlags);
 	}
 	bool NativeFileSystem::RenameItem(const FSPath& source, const FSPath& destination, FSCopyItemFlag flags)
 	{
@@ -246,11 +246,11 @@ namespace KxFramework
 	}
 	bool NativeFileSystem::CopyDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func, FSCopyItemFlag flags) const
 	{
-		return FileSystem::NativeUtility::CopyOrMoveDirectoryTree(const_cast<NativeFileSystem&>(*this), source, destination, std::move(func), flags, false);
+		return FileSystem::Private::CopyOrMoveDirectoryTree(const_cast<NativeFileSystem&>(*this), source, destination, std::move(func), flags, false);
 	}
 	bool NativeFileSystem::MoveDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func, FSCopyItemFlag flags)
 	{
-		return FileSystem::NativeUtility::CopyOrMoveDirectoryTree(*this, source, destination, std::move(func), flags, true);
+		return FileSystem::Private::CopyOrMoveDirectoryTree(*this, source, destination, std::move(func), flags, true);
 	}
 
 	FSPath NativeFileSystem::GetWorkingDirectory() const
