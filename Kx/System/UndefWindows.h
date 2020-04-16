@@ -63,3 +63,4 @@
 #undef CreateDirectory
 #undef CompareString
 #undef EnumDisplayDevices
+#undef ExpandEnvironmentStrings
