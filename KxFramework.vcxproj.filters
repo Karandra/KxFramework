@@ -214,9 +214,6 @@
     <ClInclude Include="KxFramework\KxShell.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxShellLink.h">
-      <Filter>Header Files\System</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxProcess.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
@@ -1198,6 +1195,12 @@
     <ClInclude Include="Kx\Utility.hpp">
       <Filter>Kx\&lt;Modules&gt;</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\System\ShellLink.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\Private\Shell.h">
+      <Filter>Kx\System\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1208,9 +1211,6 @@
       <Filter>Source Files\System</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxShellFolders.cpp">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxShellLink.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxProcess.cpp">
@@ -1815,6 +1815,12 @@
     </ClCompile>
     <ClCompile Include="Kx\FileSystem\FileStream.cpp">
       <Filter>Kx\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\ShellLink.cpp">
+      <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\Private\Shell.cpp">
+      <Filter>Kx\System\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

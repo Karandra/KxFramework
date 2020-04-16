@@ -297,7 +297,6 @@
     <ClInclude Include="KxFramework\KxSharedMemory.h" />
     <ClInclude Include="KxFramework\KxShell.h" />
     <ClInclude Include="KxFramework\KxShellDefs.h" />
-    <ClInclude Include="KxFramework\KxShellLink.h" />
     <ClInclude Include="KxFramework\KxShellMenu.h" />
     <ClInclude Include="KxFramework\KxSimplebook.h" />
     <ClInclude Include="KxFramework\KxSlider.h" />
@@ -495,10 +494,12 @@
     <ClInclude Include="Kx\System\Private\ErrorCodeValue.h" />
     <ClInclude Include="Kx\System\Private\IncludeNtStatus.h" />
     <ClInclude Include="Kx\System\CredentialStore.h" />
+    <ClInclude Include="Kx\System\Private\Shell.h" />
     <ClInclude Include="Kx\System\Registry.h" />
     <ClInclude Include="Kx\System\ShellFileType.h" />
     <ClInclude Include="Kx\System\ShellFileTypeInfo.h" />
     <ClInclude Include="Kx\System\ShellFileTypeManager.h" />
+    <ClInclude Include="Kx\System\ShellLink.h" />
     <ClInclude Include="Kx\System\ShellOperations.h" />
     <ClInclude Include="Kx\System\NativeAPI.h" />
     <ClInclude Include="Kx\System\SystemInformation.h" />
@@ -618,7 +619,6 @@
     <ClCompile Include="KxFramework\KxSharedMemory.cpp" />
     <ClCompile Include="KxFramework\KxShell.cpp" />
     <ClCompile Include="KxFramework\KxShellFolders.cpp" />
-    <ClCompile Include="KxFramework\KxShellLink.cpp" />
     <ClCompile Include="KxFramework\KxShellMenu.cpp" />
     <ClCompile Include="KxFramework\KxSimplebook.cpp" />
     <ClCompile Include="KxFramework\KxSlider.cpp" />
@@ -698,7 +698,9 @@
     <ClCompile Include="Kx\System\DPIAwareness.cpp" />
     <ClCompile Include="Kx\System\NativeAPI.cpp" />
     <ClCompile Include="Kx\System\CredentialStore.cpp" />
+    <ClCompile Include="Kx\System\Private\Shell.cpp" />
     <ClCompile Include="Kx\System\Registry.cpp" />
+    <ClCompile Include="Kx\System\ShellLink.cpp" />
     <ClCompile Include="Kx\System\SystemInformation.cpp" />
     <ClCompile Include="Kx\System\WOW64FSRedirection.cpp" />
     <ClCompile Include="Kx\UI\HiDPIEnabledWindow.cpp" />
