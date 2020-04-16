@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "ImageList.h"
 #include "Kx/System/COM.h"
 #include "Kx/Utility/Common.h"

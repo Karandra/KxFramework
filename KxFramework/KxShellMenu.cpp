@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxShellMenu.h"
 #include <winnls.h>
 #include <shobjidl.h>

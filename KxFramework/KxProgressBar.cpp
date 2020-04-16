@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxProgressBar.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxProgressBar, wxGauge);

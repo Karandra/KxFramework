@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "EventDispatcher.h"
 #include "SciterAPI.h"
 #include "Internal.h"

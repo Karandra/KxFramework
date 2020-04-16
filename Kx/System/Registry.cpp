@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "Registry.h"
 #include "Kx/Utility/Common.h"
 #include "Kx/System/ErrorCodeValue.h"

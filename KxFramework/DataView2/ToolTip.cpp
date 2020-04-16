@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "ToolTip.h"
 #include "Column.h"
 #include "Node.h"

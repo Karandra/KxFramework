@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "Crypto.h"
 #include "Kx/General/BinarySize.h"
 #include "Kx/Utility/CallAtScopeExit.h"

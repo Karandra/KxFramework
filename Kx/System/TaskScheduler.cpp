@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "TaskScheduler.h"
 
 #include <taskschd.h>

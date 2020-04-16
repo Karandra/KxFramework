@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxStaticText.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxStaticText, wxStaticText)

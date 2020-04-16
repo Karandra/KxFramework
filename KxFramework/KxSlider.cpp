@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxSlider.h"
 #include "Kx/Utility/Common.h"
 #include "Kx/Utility/System.h" 

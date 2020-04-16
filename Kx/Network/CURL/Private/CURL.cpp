@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "CURL.h"
 #include "Kx/Network/CURL/Session.h"
 

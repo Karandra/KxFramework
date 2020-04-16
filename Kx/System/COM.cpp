@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "COM.h"
 #include "Kx/Utility/Common.h"
 #include <combaseapi.h>

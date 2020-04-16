@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "ShellLink.h"
 #include "Private/Shell.h"
 #include "Kx/Utility/Common.h"

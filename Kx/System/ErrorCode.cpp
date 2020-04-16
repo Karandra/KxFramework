@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "ErrorCode.h"
 #include "NativeAPI.h"
 #include "Kx/Utility/CallAtScopeExit.h"

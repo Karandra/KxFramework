@@ -16,7 +16,7 @@
 //
 // Gets the cleantext of a page.
 
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include <fstream>
 #include <iostream>
 #include <stdlib.h>

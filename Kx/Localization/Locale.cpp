@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "Locale.h"
 #include "Private/LocaleOptions.h"
 #include "Kx/Utility/Common.h"

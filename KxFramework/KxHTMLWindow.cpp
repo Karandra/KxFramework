@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxHTMLWindow.h"
 #include "KxFramework/KxMenu.h"
 #include "Kx/General/StdID.h"

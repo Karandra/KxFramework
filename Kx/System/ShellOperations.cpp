@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "ShellOperations.h"
 #include "SystemInformation.h"
 #include "COM.h"

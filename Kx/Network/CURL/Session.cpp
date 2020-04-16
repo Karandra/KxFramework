@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "Session.h"
 #include "Kx/General/StringFormater.h"
 #include "Kx/Utility/CallAtScopeExit.h"

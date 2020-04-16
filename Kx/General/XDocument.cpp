@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "XDocument.h"
 #include "Kx/Utility/String.h"
 #include <charconv>

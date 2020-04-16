@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxWebView.h"
 
 wxIMPLEMENT_ABSTRACT_CLASS(KxWebView, wxWebView);

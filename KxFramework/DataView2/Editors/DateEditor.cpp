@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "DateEditor.h"
 #include "Kx/Utility/Common.h"
 #include <wx/datectrl.h>

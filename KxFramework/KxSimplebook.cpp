@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxSimplebook.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxSimplebook, wxSimplebook);

@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "TextEditor.h"
 #include "KxFramework/DataView2/Renderers/TextRenderer.h"
 #include "KxFramework/KxTextBox.h"

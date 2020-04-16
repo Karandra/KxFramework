@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "LocalizationPack.h"
 #include "Kx/General/XMLDocument.h"
 #include "Kx/System/SystemInformation.h"

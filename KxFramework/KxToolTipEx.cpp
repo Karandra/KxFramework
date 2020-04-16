@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxToolTipEx.h"
 #include "Kx/System/Registry.h"
 #include <CommCtrl.h>

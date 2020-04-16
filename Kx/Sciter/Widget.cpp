@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "Widget.h"
 
 namespace KxFramework::Sciter

@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxAuiToolBar.h"
 #include "KxFramework/KxAuiToolBarItem.h"
 #include "KxFramework/KxMenu.h"

@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "GraphicsPath.h"
 #include "Kx/Sciter/ScriptValue.h"
 #include "Kx/Sciter/SciterAPI.h"

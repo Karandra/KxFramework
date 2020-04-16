@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxRadioButton.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxRadioButton, wxRadioButton);

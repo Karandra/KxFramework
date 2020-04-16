@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxSearchBox.h"
 #include "Kx/Localization/LocalizationPack.h"
 #include "Kx/General/StdID.h"

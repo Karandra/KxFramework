@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxDataViewComboBox.h"
 #include "KxFramework/DataView2/MainWindow.h"
 #include "KxFramework/KxComboControl.h"

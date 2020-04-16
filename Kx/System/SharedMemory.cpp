@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "SharedMemory.h"
 #include <Windows.h>
 #include "UndefWindows.h"

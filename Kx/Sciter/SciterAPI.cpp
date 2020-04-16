@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "SciterAPI.h"
 #include "Common.h"
 #include <KxFramework/KxLibrary.h>

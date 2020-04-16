@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "XMLDocument.h"
 #include "StringFormater.h"
 #include "Private/XML.h"

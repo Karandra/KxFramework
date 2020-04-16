@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "CURL.h"
 
 #define CURL_STATICLIB 1

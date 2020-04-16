@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxLibrary.h"
 #include "Kx/System/NativeAPI.h"
 #include <PsAPI.h>

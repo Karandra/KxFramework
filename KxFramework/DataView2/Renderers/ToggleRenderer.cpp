@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "ToggleRenderer.h"
 #include "KxFramework/DataView2/View.h"
 #include "KxFramework/DataView2/Node.h"

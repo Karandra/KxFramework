@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "HiDPIEnabledWindow.h"
 #include "Kx/System/NativeAPI.h"
 

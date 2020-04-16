@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxTextBox.h"
 #include <CommCtrl.h>
 #include "Kx/System/UndefWindows.h"

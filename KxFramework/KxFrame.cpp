@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxFrame.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxFrame, wxFrame)

@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxThumbView.h"
 #include "KxFramework/KxPanel.h"
 

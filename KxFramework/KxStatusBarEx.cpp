@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxStatusBarEx.h"
 #include "Kx/Drawing/UxTheme.h"
 #include "Kx/Drawing/Private/UxThemeDefines.h"

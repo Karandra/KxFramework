@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "CredentialStore.h"
 #include "Kx/Utility/CallAtScopeExit.h"
 #include <wincred.h>

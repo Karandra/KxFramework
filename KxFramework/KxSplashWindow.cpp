@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxSplashWindow.h"
 #include "Kx/Utility/System.h"
 #include <wx/rawbmp.h>

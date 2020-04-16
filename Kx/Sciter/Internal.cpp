@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "Internal.h"
 
 namespace KxFramework::Sciter

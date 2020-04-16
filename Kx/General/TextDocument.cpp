@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "TextDocument.h"
 #include "Kx/FileSystem/FileStream.h"
 #include "Kx/Utility/CallAtScopeExit.h"

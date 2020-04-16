@@ -207,7 +207,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="KxStdAfx.h" />
     <ClInclude Include="KxFramework\KxLibrary.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
@@ -1183,9 +1182,9 @@
     <ClInclude Include="Kx\System\Private\KnownDirectoryGUID.h">
       <Filter>Kx\System\Private</Filter>
     </ClInclude>
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="KxStdAfx.cpp" />
     <ClCompile Include="KxFramework\KxLibrary.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
@@ -1792,6 +1791,7 @@
     <ClCompile Include="Kx\UI\Common.cpp">
       <Filter>Kx\UI</Filter>
     </ClCompile>
+    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Kx\System\Private\ErrorCodeNtStatus.i">

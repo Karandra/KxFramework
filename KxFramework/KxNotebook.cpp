@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxNotebook.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxNotebook, wxNotebook);

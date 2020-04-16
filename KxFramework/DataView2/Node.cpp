@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "Node.h"
 #include "MainWindow.h"
 #include "View.h"

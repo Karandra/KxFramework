@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "UniversallyUniqueID.h"
 #include "Kx/System/ErrorCodeValue.h"
 

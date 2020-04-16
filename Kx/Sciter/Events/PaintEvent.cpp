@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "PaintEvent.h"
 #include "Kx/Sciter/GraphicsRenderer/GraphicsContext.h"
 

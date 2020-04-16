@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "DirectX.h"
 #include "Kx/Sciter/SciterAPI.h"
 #include "Kx/Sciter/Host.h"

@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "DragAndDrop.h"
 #include "MainWindow.h"
 #include "KxFramework/KxSplashWindow.h"

@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "NativeFileSystem.h"
 #include "Private/NativeFileSystem.h"
 #include "FileStream.h"

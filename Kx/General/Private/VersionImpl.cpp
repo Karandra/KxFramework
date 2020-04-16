@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "VersionImpl.h"
 #include "../Version.h"
 #include "Kx/General/StringFormater.h"

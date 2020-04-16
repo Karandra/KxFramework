@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "EventBuilder.h"
 #include "BasicEvtHandler.h"
 #include "Kx/Utility/Common.h"

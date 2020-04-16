@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "StandardLocalization.h"
 #include "Kx/General/StringFormater.h"
 #include "Kx/Localization/LocalizationPack.h"

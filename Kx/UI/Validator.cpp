@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "Validator.h"
 #include "Kx/General/StringFormater.h"
 #include <wx/spinctrl.h>

@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "RecycleBin.h"
 #include "NativeFileSystem.h"
 #include "Kx/System/ShellOperations.h"

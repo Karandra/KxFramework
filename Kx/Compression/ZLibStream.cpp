@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "ZLibStream.h"
 
 namespace KxFramework::Compression::ZLib

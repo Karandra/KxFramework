@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "Version.h"
 #include <wx/versioninfo.h>
 

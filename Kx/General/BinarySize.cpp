@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "BinarySize.h"
 #include "StringFormater.h"
 #include "Math.h"

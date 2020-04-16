@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxSplitterWindow.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxSplitterWindow, wxSplitterWindow);

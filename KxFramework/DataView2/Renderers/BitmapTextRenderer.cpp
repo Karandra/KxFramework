@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "BitmapTextRenderer.h"
 #include "TextRenderer.h"
 #include "BitmapRenderer.h"

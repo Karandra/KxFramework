@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxRichToolTip.h"
 #include "Kx/Utility/Common.h"
 

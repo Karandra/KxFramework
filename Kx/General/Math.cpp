@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "Math.h"
 #include "StringFormater.h"
 #include <locale>

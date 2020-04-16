@@ -1,2 +1,2 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "Component.h"

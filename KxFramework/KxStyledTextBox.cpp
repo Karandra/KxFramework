@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxStyledTextBox.h"
 #include "KxFramework/KxStyledTextBox_Scintilla.h"
 #include "KxFramework/KxStyledTextBox_SciPosition.h"

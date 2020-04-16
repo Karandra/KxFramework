@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "StdDialogButtonSizer.h"
 #include "Kx/Localization/Common.h"
 #include "KxFramework/KxDialog.h"

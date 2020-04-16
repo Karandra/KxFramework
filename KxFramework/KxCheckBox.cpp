@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxCheckBox.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxCheckBox, wxCheckBox);

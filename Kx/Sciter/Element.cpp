@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "Element.h"
 #include "Node.h"
 #include "Host.h"

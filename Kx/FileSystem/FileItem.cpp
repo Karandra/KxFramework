@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "FSPath.h"
 #include "FileItem.h"
 #include "IFileSystem.h"

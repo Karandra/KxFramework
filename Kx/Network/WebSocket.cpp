@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "WebSocket.h"
 #include "WebSocket/SecureClient.h"
 #include <websocketpp/version.hpp>

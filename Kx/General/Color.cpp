@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "Color.h"
 #include "StringFormater.h"
 #include "wx/window.h"

@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "SpinEditor.h"
 #include "KxFramework/DataView2/Node.h"
 #include "Kx/UI/Validator.h"

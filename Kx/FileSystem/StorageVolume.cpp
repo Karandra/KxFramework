@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "StorageVolume.h"
 #include "LegacyVolume.h"
 #include "FSPath.h"

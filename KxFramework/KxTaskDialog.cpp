@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxTaskDialog.h"
 #include "Kx/Localization/Common.h"
 

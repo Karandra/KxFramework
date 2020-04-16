@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "UxTheme.h"
 #include "DCOperations.h"
 #include "Kx/Utility/Common.h"

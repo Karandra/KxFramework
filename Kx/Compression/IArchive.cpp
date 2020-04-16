@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "IArchive.h"
 #include "IArchiveImpl.h"
 

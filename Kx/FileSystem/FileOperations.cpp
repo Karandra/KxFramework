@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "FileOperations.h"
 #include <shlwapi.h>
 #include "Kx/System/UndefWindows.h"

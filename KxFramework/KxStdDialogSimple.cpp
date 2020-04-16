@@ -1,4 +1,4 @@
-#include "KxStdAfx.h"
+#include "stdafx.h"
 #include "KxFramework/KxStdDialogSimple.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxStdDialogSimple, KxStdDialog);
