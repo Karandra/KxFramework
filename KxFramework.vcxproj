@@ -280,7 +280,6 @@
     <ClInclude Include="KxFramework\KxListBox.h" />
     <ClInclude Include="KxFramework\KxListBoxDialog.h" />
     <ClInclude Include="KxFramework\KxListView.h" />
-    <ClInclude Include="KxFramework\KxMainDefs.h" />
     <ClInclude Include="KxFramework\KxMenu.h" />
     <ClInclude Include="KxFramework\KxMenuEvent.h" />
     <ClInclude Include="KxFramework\KxMenuItem.h" />
