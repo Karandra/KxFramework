@@ -59,3 +59,19 @@ namespace KxFramework
 		}
 	}
 }
+
+namespace KxFramework::COM
+{
+	void* AllocateMemory(size_t size) noexcept
+	{
+		return ::CoTaskMemAlloc(size);
+	}
+	void* ReallocateMemory(void* address, size_t size) noexcept
+	{
+		return ::CoTaskMemRealloc(address, size);
+	}
+	void FreeMemory(void* address) noexcept
+	{
+		::CoTaskMemFree(address);
+	}
+}

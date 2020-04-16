@@ -255,3 +255,10 @@ namespace KxFramework
 			}
 	};
 }
+
+namespace KxFramework::COM
+{
+	void* AllocateMemory(size_t size) noexcept;
+	void* ReallocateMemory(void* address, size_t size) noexcept;
+	void FreeMemory(void* address) noexcept;
+}
