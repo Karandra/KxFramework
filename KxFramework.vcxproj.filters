@@ -202,6 +202,9 @@
     <Filter Include="Kx\Localization\Private">
       <UniqueIdentifier>{11dc96d7-85e1-4fc8-bdc8-d72ddfd34013}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\&lt;Modules&gt;">
+      <UniqueIdentifier>{916829f1-4a51-4891-9918-1b9723789c5a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -547,9 +550,6 @@
     <ClInclude Include="KxFramework\KxEvent.h">
       <Filter>Header Files\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Threading.hpp">
-      <Filter>Kx</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\Threading\Common.h">
       <Filter>Kx\Threading</Filter>
     </ClInclude>
@@ -565,14 +565,8 @@
     <ClInclude Include="KxFramework\KxNotifyEvent.h">
       <Filter>Header Files\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System.hpp">
-      <Filter>Kx</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\System\Common.h">
       <Filter>Kx\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\EventSystem.hpp">
-      <Filter>Kx</Filter>
     </ClInclude>
     <ClInclude Include="Kx\EventSystem\BasicEvtHandler.h">
       <Filter>Kx\EventSystem</Filter>
@@ -604,9 +598,6 @@
     <ClInclude Include="Kx\EventSystem\Events\CommandEvent.h">
       <Filter>Kx\EventSystem\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Utility.hpp">
-      <Filter>Kx</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\Utility\Common.h">
       <Filter>Kx\Utility</Filter>
     </ClInclude>
@@ -615,9 +606,6 @@
     </ClInclude>
     <ClInclude Include="Kx\Async\Common.h">
       <Filter>Kx\Async</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\Async.hpp">
-      <Filter>Kx</Filter>
     </ClInclude>
     <ClInclude Include="Kx\Async\Coroutine\Coroutine.h">
       <Filter>Kx\Async\Coroutine</Filter>
@@ -631,9 +619,6 @@
     <ClInclude Include="Kx\Async\DelayedCall.h">
       <Filter>Kx\Async</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\RTTI.hpp">
-      <Filter>Kx</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\RTTI\QueryInterface.h">
       <Filter>Kx\RTTI</Filter>
     </ClInclude>
@@ -642,9 +627,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\DataView2\HeaderCtrl2.h">
       <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\Sciter.hpp">
-      <Filter>Kx</Filter>
     </ClInclude>
     <ClInclude Include="Kx\Sciter\Common.h">
       <Filter>Kx\Sciter</Filter>
@@ -742,9 +724,6 @@
     <ClInclude Include="Kx\Sciter\GraphicsRenderer\GraphicsContext.h">
       <Filter>Kx\Sciter\GraphicsRenderer</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\FileSystem.hpp">
-      <Filter>Kx</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\FileSystem\FSPath.h">
       <Filter>Kx\FileSystem</Filter>
     </ClInclude>
@@ -832,23 +811,14 @@
     <ClInclude Include="Kx\Compression\IArchiveImpl.h">
       <Filter>Kx\Compression</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Compression.hpp">
-      <Filter>Kx</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\UI\Common.h">
       <Filter>Kx\UI</Filter>
     </ClInclude>
     <ClInclude Include="Kx\UI\Validator.h">
       <Filter>Kx\UI</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI.hpp">
-      <Filter>Kx</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\General\StreamDelegate.h">
       <Filter>Kx\General</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\General.hpp">
-      <Filter>Kx</Filter>
     </ClInclude>
     <ClInclude Include="Kx\General\EnumClass.h">
       <Filter>Kx\General</Filter>
@@ -940,9 +910,6 @@
     <ClInclude Include="Kx\Crypto\Common.h">
       <Filter>Kx\Crypto</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Crypto.hpp">
-      <Filter>Kx</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\Crypto\HashValue.h">
       <Filter>Kx\Crypto</Filter>
     </ClInclude>
@@ -966,9 +933,6 @@
     </ClInclude>
     <ClInclude Include="Kx\System\Registry.h">
       <Filter>Kx\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\Network.hpp">
-      <Filter>Kx</Filter>
     </ClInclude>
     <ClInclude Include="Kx\Network\Common.h">
       <Filter>Kx\Network</Filter>
@@ -1084,9 +1048,6 @@
     <ClInclude Include="Kx\Network\CURL\Reply.h">
       <Filter>Kx\Network\CURL</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Drawing.hpp">
-      <Filter>Kx</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\Drawing\Common.h">
       <Filter>Kx\Drawing</Filter>
     </ClInclude>
@@ -1153,9 +1114,6 @@
     <ClInclude Include="Kx\UI\WindowRefreshScheduler.h">
       <Filter>Kx\UI</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Localization.hpp">
-      <Filter>Kx</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\Localization\Common.h">
       <Filter>Kx\Localization</Filter>
     </ClInclude>
@@ -1194,6 +1152,51 @@
     </ClInclude>
     <ClInclude Include="Kx\System\Private\ErrorCodeValue.h">
       <Filter>Kx\System\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Async.hpp">
+      <Filter>Kx\&lt;Modules&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Compression.hpp">
+      <Filter>Kx\&lt;Modules&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Crypto.hpp">
+      <Filter>Kx\&lt;Modules&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Drawing.hpp">
+      <Filter>Kx\&lt;Modules&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\EventSystem.hpp">
+      <Filter>Kx\&lt;Modules&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\FileSystem.hpp">
+      <Filter>Kx\&lt;Modules&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General.hpp">
+      <Filter>Kx\&lt;Modules&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Localization.hpp">
+      <Filter>Kx\&lt;Modules&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Network.hpp">
+      <Filter>Kx\&lt;Modules&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\RTTI.hpp">
+      <Filter>Kx\&lt;Modules&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Sciter.hpp">
+      <Filter>Kx\&lt;Modules&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System.hpp">
+      <Filter>Kx\&lt;Modules&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Threading.hpp">
+      <Filter>Kx\&lt;Modules&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI.hpp">
+      <Filter>Kx\&lt;Modules&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Utility.hpp">
+      <Filter>Kx\&lt;Modules&gt;</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
