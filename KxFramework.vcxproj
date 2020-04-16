@@ -493,6 +493,7 @@
     <ClInclude Include="Kx\System\Private\CFunction.h" />
     <ClInclude Include="Kx\System\Private\CFunctionCompiler.h" />
     <ClInclude Include="Kx\System\Private\EndIncludeCOM.h" />
+    <ClInclude Include="Kx\System\Private\ErrorCodeValue.h" />
     <ClInclude Include="Kx\System\Private\IncludeNtStatus.h" />
     <ClInclude Include="Kx\System\CredentialStore.h" />
     <ClInclude Include="Kx\System\Registry.h" />

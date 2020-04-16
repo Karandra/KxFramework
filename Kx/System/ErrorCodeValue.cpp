@@ -63,21 +63,21 @@ namespace
 
 namespace KxFramework
 {
-	Win32ErrorCode Win32ErrorCode::GetLastError() noexcept
+	Win32Error Win32Error::GetLastError() noexcept
 	{
 		return ::GetLastError();
 	}
 
-	bool Win32ErrorCode::IsSuccess() const noexcept
+	bool Win32Error::IsSuccess() const noexcept
 	{
 		return GetValue() == ERROR_SUCCESS;
 	}
 
-	String Win32ErrorCode::ToString() const
+	String Win32Error::ToString() const
 	{
 		return {};
 	}
-	String Win32ErrorCode::GetMessage() const
+	String Win32Error::GetMessage() const
 	{
 		return FormatSystemMessage(FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_MAX_WIDTH_MASK, nullptr, GetValue(), 0);
 	}
@@ -85,52 +85,52 @@ namespace KxFramework
 
 namespace KxFramework
 {
-	bool HResultCode::IsOK() const noexcept
+	bool HResult::IsOK() const noexcept
 	{
 		return GetValue() == S_OK;
 	}
-	bool HResultCode::IsFalse() const noexcept
+	bool HResult::IsFalse() const noexcept
 	{
 		return GetValue() == S_FALSE;
 	}
-	bool HResultCode::IsSuccess() const noexcept
+	bool HResult::IsSuccess() const noexcept
 	{
 		return SUCCEEDED(GetValue());
 	}
 
-	String HResultCode::ToString() const
+	String HResult::ToString() const
 	{
 		return {};
 	}
-	String HResultCode::GetMessage() const
+	String HResult::GetMessage() const
 	{
 		return _com_error(GetValue()).ErrorMessage();
 	}
 
-	String HResultCode::GetSource() const
+	String HResult::GetSource() const
 	{
 		_bstr_t result = _com_error(GetValue()).Source();
 		return static_cast<const wxChar*>(result);
 	}
-	String HResultCode::GetHelpFile() const
+	String HResult::GetHelpFile() const
 	{
 		_bstr_t result = _com_error(GetValue()).HelpFile();
 		return static_cast<const wxChar*>(result);
 	}
-	uint32_t HResultCode::GetHelpContext() const noexcept
+	uint32_t HResult::GetHelpContext() const noexcept
 	{
 		return _com_error(GetValue()).HelpContext();
 	}
-	String HResultCode::GetDescription() const
+	String HResult::GetDescription() const
 	{
 		_bstr_t result = _com_error(GetValue()).Description();
 		return static_cast<const wxChar*>(result);
 	}
-	uint32_t HResultCode::GetFacility() const noexcept
+	uint32_t HResult::GetFacility() const noexcept
 	{
 		return HRESULT_FACILITY(static_cast<HRESULT>(GetValue()));
 	}
-	UniversallyUniqueID HResultCode::GetUniqueID() const noexcept
+	UniversallyUniqueID HResult::GetUniqueID() const noexcept
 	{
 		GUID result = _com_error(GetValue()).GUID();
 		return *reinterpret_cast<NativeUUID*>(&result);
@@ -139,32 +139,32 @@ namespace KxFramework
 
 namespace KxFramework
 {
-	bool NtStatusCode::IsError() const noexcept
+	bool NtStatus::IsError() const noexcept
 	{
 		return NT_ERROR(GetValue());
 	}
-	bool NtStatusCode::IsWarning() const noexcept
+	bool NtStatus::IsWarning() const noexcept
 	{
 		return NT_WARNING(GetValue());
 	}
-	bool NtStatusCode::IsInformation() const noexcept
+	bool NtStatus::IsInformation() const noexcept
 	{
 		return NT_INFORMATION(GetValue());
 	}
-	bool NtStatusCode::IsSuccess() const noexcept
+	bool NtStatus::IsSuccess() const noexcept
 	{
 		return NT_SUCCESS(GetValue());
 	}
 
-	String NtStatusCode::ToString() const
+	String NtStatus::ToString() const
 	{
 		return {};
 	}
-	String NtStatusCode::GetMessage() const
+	String NtStatus::GetMessage() const
 	{
 		return FormatSystemMessage(FORMAT_MESSAGE_FROM_HMODULE|FORMAT_MESSAGE_MAX_WIDTH_MASK, ::GetModuleHandleW(L"NtDLL.dll"), GetValue(), 0);
 	}
-	uint32_t NtStatusCode::GetFacility() const noexcept
+	uint32_t NtStatus::GetFacility() const noexcept
 	{
 		return NT_FACILITY(GetValue());
 	}

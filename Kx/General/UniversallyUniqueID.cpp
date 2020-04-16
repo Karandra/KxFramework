@@ -64,7 +64,7 @@ namespace KxFramework
 	UniversallyUniqueID UniversallyUniqueID::Create() noexcept
 	{
 		NativeUUID uuid;
-		if (HResultCode(::CoCreateGuid(AsGUID(uuid))))
+		if (HResult(::CoCreateGuid(AsGUID(uuid))))
 		{
 			return uuid;
 		}
@@ -73,7 +73,7 @@ namespace KxFramework
 	UniversallyUniqueID UniversallyUniqueID::CreateSequential() noexcept
 	{
 		NativeUUID uuid;
-		Win32ErrorCode error(::UuidCreateSequential(AsGUID(uuid)));
+		Win32Error error(::UuidCreateSequential(AsGUID(uuid)));
 		if (error.IsSuccess() || error.GetValue() == RPC_S_UUID_LOCAL_ONLY)
 		{
 			return uuid;

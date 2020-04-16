@@ -23,7 +23,7 @@ namespace KxFramework::NativeAPI::Private
 	using DPI_AWARENESS_CONTEXT = void*;
 	using RTL_OSVERSIONINFOEXW = void;
 	using HANDLE = void*;
-	using NTSTATUS = NtStatusCode::TValueType;
+	using NTSTATUS = NtStatus::TValueType;
 
 	class Loader final
 	{
@@ -68,8 +68,8 @@ namespace KxFramework::NativeAPI
 		using RTL_OSVERSIONINFOEXW = void;
 		using DLL_DIRECTORY_COOKIE = void*;
 		using HANDLE = void*;
-		using NTSTATUS = NtStatusCode::TValueType;
-		using HRESULT = HResultCode::TValueType;
+		using NTSTATUS = NtStatus::TValueType;
+		using HRESULT = HResult::TValueType;
 	}
 
 	namespace NtDLL

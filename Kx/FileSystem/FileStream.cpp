@@ -75,7 +75,7 @@ namespace
 		return {};
 	}
 
-	constexpr KxFramework::StreamErrorCode TranslateErrorCode(KxFramework::Win32ErrorCode win32Error, bool isWrite) noexcept
+	constexpr KxFramework::StreamErrorCode TranslateErrorCode(KxFramework::Win32Error win32Error, bool isWrite) noexcept
 	{
 		using namespace KxFramework;
 

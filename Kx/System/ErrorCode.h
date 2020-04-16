@@ -39,19 +39,19 @@ namespace KxFramework
 
 		public:
 			constexpr ErrorCode() noexcept = default;
-			constexpr ErrorCode(GenericErrorCode errorCode) noexcept
+			constexpr ErrorCode(GenericError errorCode) noexcept
 			{
 				AssignCode(errorCode);
 			}
-			constexpr ErrorCode(Win32ErrorCode errorCode) noexcept
+			constexpr ErrorCode(Win32Error errorCode) noexcept
 			{
 				AssignCode(errorCode);
 			}
-			constexpr ErrorCode(NtStatusCode errorCode) noexcept
+			constexpr ErrorCode(NtStatus errorCode) noexcept
 			{
 				AssignCode(errorCode);
 			}
-			constexpr ErrorCode(HResultCode errorCode) noexcept
+			constexpr ErrorCode(HResult errorCode) noexcept
 			{
 				AssignCode(errorCode);
 			}
@@ -66,26 +66,26 @@ namespace KxFramework
 			{
 				return m_Category;
 			}
-			constexpr std::optional<GenericErrorCode> GetGeneric() const noexcept
+			constexpr std::optional<GenericError> GetGeneric() const noexcept
 			{
-				return GetAsCode<GenericErrorCode>();
+				return GetAsCode<GenericError>();
 			}
-			constexpr std::optional<Win32ErrorCode> GetWin32() const noexcept
+			constexpr std::optional<Win32Error> GetWin32() const noexcept
 			{
-				return GetAsCode<Win32ErrorCode>();
+				return GetAsCode<Win32Error>();
 			}
-			constexpr std::optional<NtStatusCode> GetNtStatus() const noexcept
+			constexpr std::optional<NtStatus> GetNtStatus() const noexcept
 			{
-				return GetAsCode<NtStatusCode>();
+				return GetAsCode<NtStatus>();
 			}
-			constexpr std::optional<HResultCode> GetHResult() const noexcept
+			constexpr std::optional<HResult> GetHResult() const noexcept
 			{
-				return GetAsCode<HResultCode>();
+				return GetAsCode<HResult>();
 			}
 
-			std::optional<Win32ErrorCode> ConvertToWin32() const noexcept;
-			std::optional<NtStatusCode> ConvertToNtStatus() const noexcept;
-			std::optional<HResultCode> ConvertToHResult() const noexcept;
+			std::optional<Win32Error> ConvertToWin32() const noexcept;
+			std::optional<NtStatus> ConvertToNtStatus() const noexcept;
+			std::optional<HResult> ConvertToHResult() const noexcept;
 
 			constexpr bool IsKnown() const noexcept
 			{
@@ -97,19 +97,19 @@ namespace KxFramework
 				{
 					case ErrorCodeCategory::Generic:
 					{
-						return GenericErrorCode(m_Value).IsSuccess();
+						return GenericError(m_Value).IsSuccess();
 					}
 					case ErrorCodeCategory::Win32:
 					{
-						return Win32ErrorCode(m_Value).IsSuccess();
+						return Win32Error(m_Value).IsSuccess();
 					}
 					case ErrorCodeCategory::NtStatus:
 					{
-						return NtStatusCode(m_Value).IsSuccess();
+						return NtStatus(m_Value).IsSuccess();
 					}
 					case ErrorCodeCategory::HResult:
 					{
-						return HResultCode(m_Value).IsSuccess();
+						return HResult(m_Value).IsSuccess();
 					}
 				};
 				return false;
@@ -125,15 +125,15 @@ namespace KxFramework
 				{
 					case ErrorCodeCategory::Win32:
 					{
-						return Win32ErrorCode(m_Value).ToString();
+						return Win32Error(m_Value).ToString();
 					}
 					case ErrorCodeCategory::NtStatus:
 					{
-						return NtStatusCode(m_Value).ToString();
+						return NtStatus(m_Value).ToString();
 					}
 					case ErrorCodeCategory::HResult:
 					{
-						return HResultCode(m_Value).ToString();
+						return HResult(m_Value).ToString();
 					}
 				};
 				return {};
@@ -144,15 +144,15 @@ namespace KxFramework
 				{
 					case ErrorCodeCategory::Win32:
 					{
-						return Win32ErrorCode(m_Value).GetMessage();
+						return Win32Error(m_Value).GetMessage();
 					}
 					case ErrorCodeCategory::NtStatus:
 					{
-						return NtStatusCode(m_Value).GetMessage();
+						return NtStatus(m_Value).GetMessage();
 					}
 					case ErrorCodeCategory::HResult:
 					{
-						return HResultCode(m_Value).GetMessage();
+						return HResult(m_Value).GetMessage();
 					}
 				};
 				return {};
@@ -172,19 +172,19 @@ namespace KxFramework
 			{
 				return m_Value == other.m_Value && m_Category == other.m_Category;
 			}
-			constexpr bool operator==(GenericErrorCode other) const noexcept
+			constexpr bool operator==(GenericError other) const noexcept
 			{
 				return IsEqualValue(other);
 			}
-			constexpr bool operator==(Win32ErrorCode other) const noexcept
+			constexpr bool operator==(Win32Error other) const noexcept
 			{
 				return IsEqualValue(other);
 			}
-			constexpr bool operator==(NtStatusCode other) const noexcept
+			constexpr bool operator==(NtStatus other) const noexcept
 			{
 				return IsEqualValue(other);
 			}
-			constexpr bool operator==(HResultCode other) const noexcept
+			constexpr bool operator==(HResult other) const noexcept
 			{
 				return IsEqualValue(other);
 			}

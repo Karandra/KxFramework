@@ -6,21 +6,21 @@
 
 namespace
 {
-	std::optional<KxFramework::Win32ErrorCode> Win32FromNtStatus(NTSTATUS ntStatus) noexcept
+	std::optional<KxFramework::Win32Error> Win32FromNtStatus(NTSTATUS ntStatus) noexcept
 	{
 		// https://stackoverflow.com/questions/25566234/how-to-convert-specific-ntstatus-value-to-the-hresult
 		using namespace KxFramework;
 
 		if (ntStatus == STATUS_SUCCESS)
 		{
-			return Win32ErrorCode(ERROR_SUCCESS);
+			return Win32Error(ERROR_SUCCESS);
 		}
 		else if (NativeAPI::NtDLL::RtlNtStatusToDosError)
 		{
 			const ULONG win32Code = NativeAPI::NtDLL::RtlNtStatusToDosError(ntStatus);
 			if (win32Code != ERROR_MR_MID_NOT_FOUND)
 			{
-				return Win32ErrorCode(win32Code);
+				return Win32Error(win32Code);
 			}
 		}
 
@@ -46,22 +46,22 @@ namespace
 		const DWORD result = ::GetLastError();
 		if (result != ERROR_SUCCESS)
 		{
-			return Win32ErrorCode(result);
+			return Win32Error(result);
 		}
 		return {};
 	}
-	std::optional<KxFramework::Win32ErrorCode> Win32FromHRESULT(HRESULT hresult) noexcept
+	std::optional<KxFramework::Win32Error> Win32FromHRESULT(HRESULT hresult) noexcept
 	{
 		using namespace KxFramework;
 
 		if (MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, 0) == static_cast<HRESULT>(hresult & 0xFFFF0000))
 		{
 			// Could have come from many values, but we choose this one
-			return Win32ErrorCode(HRESULT_CODE(hresult));
+			return Win32Error(HRESULT_CODE(hresult));
 		}
 		else if (hresult == S_OK)
 		{
-			return Win32ErrorCode(HRESULT_CODE(hresult));
+			return Win32Error(HRESULT_CODE(hresult));
 		}
 		else
 		{
@@ -69,7 +69,7 @@ namespace
 			return {};
 		}
 	}
-	std::optional<KxFramework::NtStatusCode> NtStatusFromWin32(DWORD win32Code) noexcept
+	std::optional<KxFramework::NtStatus> NtStatusFromWin32(DWORD win32Code) noexcept
 	{
 		using namespace KxFramework;
 
@@ -84,7 +84,7 @@ namespace
 
 		if (ntStatus)
 		{
-			return NtStatusCode(*ntStatus);
+			return NtStatus(*ntStatus);
 		}
 		return {};
 	}
@@ -92,21 +92,21 @@ namespace
 
 namespace KxFramework
 {
-	std::optional<Win32ErrorCode> ErrorCode::ConvertToWin32() const noexcept
+	std::optional<Win32Error> ErrorCode::ConvertToWin32() const noexcept
 	{
 		switch (m_Category)
 		{
 			case ErrorCodeCategory::Generic:
 			{
-				if (GenericErrorCode(m_Value).IsSuccess())
+				if (GenericError(m_Value).IsSuccess())
 				{
-					return Win32ErrorCode(ERROR_SUCCESS);
+					return Win32Error(ERROR_SUCCESS);
 				}
 				break;
 			}
 			case ErrorCodeCategory::Win32:
 			{
-				return Win32ErrorCode(m_Value);
+				return Win32Error(m_Value);
 			}
 			case ErrorCodeCategory::NtStatus:
 			{
@@ -119,15 +119,15 @@ namespace KxFramework
 		};
 		return {};
 	}
-	std::optional<NtStatusCode> ErrorCode::ConvertToNtStatus() const noexcept
+	std::optional<NtStatus> ErrorCode::ConvertToNtStatus() const noexcept
 	{
 		switch (m_Category)
 		{
 			case ErrorCodeCategory::Generic:
 			{
-				if (GenericErrorCode(m_Value).IsSuccess())
+				if (GenericError(m_Value).IsSuccess())
 				{
-					return NtStatusCode(STATUS_SUCCESS);
+					return NtStatus(STATUS_SUCCESS);
 				}
 				break;
 			}
@@ -137,7 +137,7 @@ namespace KxFramework
 			}
 			case ErrorCodeCategory::NtStatus:
 			{
-				return NtStatusCode(m_Value);
+				return NtStatus(m_Value);
 			}
 			case ErrorCodeCategory::HResult:
 			{
@@ -150,33 +150,33 @@ namespace KxFramework
 		};
 		return {};
 	}
-	std::optional<HResultCode> ErrorCode::ConvertToHResult() const noexcept
+	std::optional<HResult> ErrorCode::ConvertToHResult() const noexcept
 	{
 		switch (m_Category)
 		{
 			case ErrorCodeCategory::Generic:
 			{
-				if (GenericErrorCode(m_Value).IsSuccess())
+				if (GenericError(m_Value).IsSuccess())
 				{
-					return HResultCode(S_OK);
+					return HResult(S_OK);
 				}
 				break;
 			}
 			case ErrorCodeCategory::Win32:
 			{
-				return HResultCode(HRESULT_FROM_WIN32(m_Value));
+				return HResult(HRESULT_FROM_WIN32(m_Value));
 			}
 			case ErrorCodeCategory::NtStatus:
 			{
 				if (auto ntStatus = Win32FromNtStatus(m_Value))
 				{
-					return HResultCode(HRESULT_FROM_WIN32(*ntStatus));
+					return HResult(HRESULT_FROM_WIN32(*ntStatus));
 				}
 				break;
 			}
 			case ErrorCodeCategory::HResult:
 			{
-				return HResultCode(m_Value);
+				return HResult(m_Value);
 			}
 		};
 		return {};

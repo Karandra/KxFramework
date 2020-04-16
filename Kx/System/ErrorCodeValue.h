@@ -1,75 +1,16 @@
 #pragma once
 #include "Common.h"
 #include "Kx/General/String.h"
+#include "Private/ErrorCodeValue.h"
 
 namespace KxFramework
 {
 	class UniversallyUniqueID;
 }
 
-namespace KxFramework::System
-{
-	template<class TDerived, class T>
-	class ErrorCodeValue
-	{
-		public:
-			using TValueType = T;
-
-		private:
-			TValueType m_Value = 0;
-
-		private:
-			constexpr const TDerived& Self() const noexcept
-			{
-				return static_cast<const TDerived&>(*this);
-			}
-
-		protected:
-			constexpr ErrorCodeValue(TValueType value) noexcept
-				:m_Value(value)
-			{
-				static_assert(std::is_integral_v<T> || std::is_enum_v<T>, "invalid error code type");
-			}
-
-		public:
-			constexpr TValueType GetValue() const noexcept
-			{
-				return m_Value;
-			}
-			constexpr ErrorCodeValue& SetValue(TValueType value) noexcept
-			{
-				m_Value = value;
-				return *this;
-			}
-			constexpr operator TValueType() const noexcept
-			{
-				return GetValue();
-			}
-			
-		public:
-			constexpr explicit operator bool() const noexcept
-			{
-				return Self().IsSuccess();
-			}
-			constexpr bool operator!() const noexcept
-			{
-				return Self().IsFail();
-			}
-
-			constexpr bool operator==(const ErrorCodeValue& other) const noexcept
-			{
-				return m_Value == other.m_Value;
-			}
-			constexpr bool operator!=(const ErrorCodeValue& other) const noexcept
-			{
-				return !(*this == other);
-			}
-	};
-}
-
 namespace KxFramework
 {
-	class GenericErrorCode final: public System::ErrorCodeValue<GenericErrorCode, uint32_t>
+	class GenericError final: public System::Private::ErrorCodeValue<GenericError, uint32_t>
 	{
 		public:
 			constexpr static ErrorCodeCategory GetCategory() noexcept
@@ -78,7 +19,7 @@ namespace KxFramework
 			}
 
 		public:
-			constexpr GenericErrorCode(TValueType value) noexcept
+			constexpr GenericError(TValueType value) noexcept
 				:ErrorCodeValue(value)
 			{
 			}
@@ -103,17 +44,17 @@ namespace KxFramework
 			}
 	};
 
-	class Win32ErrorCode final: public System::ErrorCodeValue<Win32ErrorCode, uint32_t>
+	class Win32Error final: public System::Private::ErrorCodeValue<Win32Error, uint32_t>
 	{
 		public:
 			constexpr static ErrorCodeCategory GetCategory() noexcept
 			{
 				return ErrorCodeCategory::Win32;
 			}
-			static Win32ErrorCode GetLastError() noexcept;
+			static Win32Error GetLastError() noexcept;
 
 		public:
-			constexpr Win32ErrorCode(TValueType value) noexcept
+			constexpr Win32Error(TValueType value) noexcept
 				:ErrorCodeValue(value)
 			{
 			}
@@ -129,7 +70,7 @@ namespace KxFramework
 			String GetMessage() const;
 	};
 
-	class HResultCode final: public System::ErrorCodeValue<HResultCode, int32_t>
+	class HResult final: public System::Private::ErrorCodeValue<HResult, int32_t>
 	{
 		public:
 			constexpr static ErrorCodeCategory GetCategory() noexcept
@@ -138,7 +79,7 @@ namespace KxFramework
 			}
 
 		public:
-			constexpr HResultCode(TValueType value) noexcept
+			constexpr HResult(TValueType value) noexcept
 				:ErrorCodeValue(value)
 			{
 			}
@@ -163,7 +104,7 @@ namespace KxFramework
 			UniversallyUniqueID GetUniqueID() const noexcept;
 	};
 
-	class NtStatusCode final: public System::ErrorCodeValue<NtStatusCode, int32_t>
+	class NtStatus final: public System::Private::ErrorCodeValue<NtStatus, int32_t>
 	{
 		public:
 			constexpr static ErrorCodeCategory GetCategory() noexcept
@@ -172,7 +113,7 @@ namespace KxFramework
 			}
 
 		public:
-			constexpr NtStatusCode(TValueType value) noexcept
+			constexpr NtStatus(TValueType value) noexcept
 				:ErrorCodeValue(value)
 			{
 			}

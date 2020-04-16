@@ -1195,6 +1195,9 @@
     <ClInclude Include="Kx\FileSystem\Private\NativeFileSystem.h">
       <Filter>Kx\FileSystem\Private</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\System\Private\ErrorCodeValue.h">
+      <Filter>Kx\System\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
