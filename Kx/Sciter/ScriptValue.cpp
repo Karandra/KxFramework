@@ -207,13 +207,13 @@ namespace KxFramework::Sciter
 		}
 		return {};
 	}
-	std::optional<double> ScriptValue::GetAngle() const
+	Angle ScriptValue::GetAngle() const
 	{
 		if (auto value = GetFloat(); value && GetType() == ScriptValueType::Angle)
 		{
-			return value;
+			return Angle::FromRadians(static_cast<float>(*value));
 		}
-		return std::nullopt;
+		return {};
 	}
 	const void* ScriptValue::GetBytes(size_t& size) const
 	{
@@ -299,10 +299,10 @@ namespace KxFramework::Sciter
 
 		return *this;
 	}
-	ScriptValue& ScriptValue::SetAngle(double radians)
+	ScriptValue& ScriptValue::SetAngle(Angle angle)
 	{
 		Clear();
-		GetSciterAPI()->ValueFloatDataSet(ToSciterScriptValue(m_Value), radians, T_ANGLE, 0);
+		GetSciterAPI()->ValueFloatDataSet(ToSciterScriptValue(m_Value), angle.ToRadians(), T_ANGLE, 0);
 
 		return *this;
 	}

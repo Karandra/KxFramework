@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Kx/General/Color.h"
+#include "Kx/General/Angle.h"
 
 namespace KxFramework::Sciter
 {
@@ -108,7 +109,7 @@ namespace KxFramework::Sciter
 			wxDateTime GetDateTime() const;
 			wxTimeSpan GetDuration() const;
 			Color GetColor() const;
-			std::optional<double> GetAngle() const;
+			Angle GetAngle() const;
 			const void* GetBytes(size_t& size) const;
 			std::optional<int64_t> GetCurrency() const;
 
@@ -145,7 +146,7 @@ namespace KxFramework::Sciter
 			ScriptValue& operator=(const wxDateTime& value);
 			ScriptValue& operator=(const wxTimeSpan& value);
 			ScriptValue& operator=(const Color& value);
-			ScriptValue& SetAngle(double radians);
+			ScriptValue& SetAngle(Angle angle);
 			ScriptValue& SetBytes(const void* data, size_t size);
 			ScriptValue& SetString(const String& value, StringType type = StringType::None)
 			{
