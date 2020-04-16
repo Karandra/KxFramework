@@ -4,28 +4,28 @@
 
 namespace KxFramework::Shell::Private
 {
-	std::optional<uint32_t> MapWindowVisibilityOption(WindowVisibilityOption option) noexcept
+	std::optional<uint32_t> MapSHWindowCommand(SHWindowCommand option) noexcept
 	{
 		// Show
-		if (option & WindowVisibilityOption::Show)
+		if (option & SHWindowCommand::Show)
 		{
-			if (option & WindowVisibilityOption::Default)
+			if (option & SHWindowCommand::Default)
 			{
 				return SW_SHOWDEFAULT;
 			}
-			else if (option & WindowVisibilityOption::Minimize)
+			else if (option & SHWindowCommand::Minimize)
 			{
-				if (option & WindowVisibilityOption::Inactive)
+				if (option & SHWindowCommand::Inactive)
 				{
 					return SW_SHOWMINNOACTIVE;
 				}
 				return SW_SHOWMINIMIZED;
 			}
-			else if (option & WindowVisibilityOption::Maximize)
+			else if (option & SHWindowCommand::Maximize)
 			{
 				return SW_SHOWMAXIMIZED;
 			}
-			else if (option & WindowVisibilityOption::Inactive)
+			else if (option & SHWindowCommand::Inactive)
 			{
 				// Or should I use 'SW_SHOWNA'? I don't really see the difference.
 				return SW_SHOWNOACTIVATE;
@@ -34,15 +34,15 @@ namespace KxFramework::Shell::Private
 		}
 
 		// Hide
-		if (option & WindowVisibilityOption::Hide)
+		if (option & SHWindowCommand::Hide)
 		{
 			return SW_HIDE;
 		}
 
 		// Maximize
-		if (option & WindowVisibilityOption::Minimize)
+		if (option & SHWindowCommand::Minimize)
 		{
-			if (option & WindowVisibilityOption::Force)
+			if (option & SHWindowCommand::Force)
 			{
 				return SW_FORCEMINIMIZE;
 			}
@@ -50,64 +50,64 @@ namespace KxFramework::Shell::Private
 		}
 
 		// Maximize
-		if (option & WindowVisibilityOption::Maximize)
+		if (option & SHWindowCommand::Maximize)
 		{
 			return SW_MAXIMIZE;
 		}
 
 		// Restore
-		if (option & WindowVisibilityOption::Restore)
+		if (option & SHWindowCommand::Restore)
 		{
 			return SW_RESTORE;
 		}
 		return {};
 	}
-	WindowVisibilityOption MapWindowVisibilityOption(uint32_t option) noexcept
+	SHWindowCommand MapSHWindowCommand(uint32_t option) noexcept
 	{
 		switch (option)
 		{
 			case SW_SHOWNORMAL:
 			{
-				return WindowVisibilityOption::Show;
+				return SHWindowCommand::Show;
 			}
 			case SW_SHOWDEFAULT:
 			{
-				return WindowVisibilityOption::Show|WindowVisibilityOption::Default;
+				return SHWindowCommand::Show|SHWindowCommand::Default;
 			}
 			case SW_SHOWMINIMIZED:
 			{
-				return WindowVisibilityOption::Show|WindowVisibilityOption::Minimize;
+				return SHWindowCommand::Show|SHWindowCommand::Minimize;
 			}
 			case SW_SHOWMINNOACTIVE:
 			{
-				return WindowVisibilityOption::Show|WindowVisibilityOption::Minimize|WindowVisibilityOption::Inactive;
+				return SHWindowCommand::Show|SHWindowCommand::Minimize|SHWindowCommand::Inactive;
 			}
 			case SW_SHOWMAXIMIZED:
 			{
-				return WindowVisibilityOption::Show|WindowVisibilityOption::Maximize;
+				return SHWindowCommand::Show|SHWindowCommand::Maximize;
 			}
 			case SW_SHOWNA:
 			case SW_SHOWNOACTIVATE:
 			{
-				return WindowVisibilityOption::Show|WindowVisibilityOption::Inactive;
+				return SHWindowCommand::Show|SHWindowCommand::Inactive;
 			}
 			case SW_HIDE:
 			{
-				return WindowVisibilityOption::Hide;
+				return SHWindowCommand::Hide;
 			}
 			case SW_MINIMIZE:
 			{
-				return WindowVisibilityOption::Minimize;
+				return SHWindowCommand::Minimize;
 			}
 			case SW_FORCEMINIMIZE:
 			{
-				return WindowVisibilityOption::Minimize|WindowVisibilityOption::Force;
+				return SHWindowCommand::Minimize|SHWindowCommand::Force;
 			}
 			case SW_RESTORE:
 			{
-				return WindowVisibilityOption::Restore;
+				return SHWindowCommand::Restore;
 			}
 		}
-		return WindowVisibilityOption::None;
+		return SHWindowCommand::None;
 	}
 }

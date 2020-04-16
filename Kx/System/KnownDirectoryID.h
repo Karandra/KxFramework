@@ -1,0 +1,118 @@
+#pragma once
+#include "Common.h"
+
+namespace KxFramework
+{
+	enum class KnownDirectoryID
+	{
+		Music,
+		MusicCommon,
+		MusicLibrary,
+		MusicSample,
+		MusicPlaylists,
+		MusicSamplePlaylists,
+
+		Pictures,
+		PicturesCommon,
+		PicturesLibrary,
+		PicturesPhotoalbums,
+		PicturesSkydrive,
+		PicturesScreenshots,
+		PicturesSampleCommon,
+		PicturesAccounts,
+		PicturesAccountsCommon,
+		PicturesSaved,
+		PicturesSavedLibrary,
+		PicturesCameraRoll,
+		PicturesCameraRollOneDrive,
+
+		Videos,
+		VideosCommon,
+		VideosLibrary,
+		VideosSample,
+
+		Desktop,
+		DesktopCommon,
+
+		Documents,
+		DocumentsCommon,
+		DocumentsLibrary,
+		DocumentsOneDrive,
+
+		StartMenu,
+		StartMenuCommon,
+
+		StartMenuPrograms,
+		StartMenuProgramsCommon,
+
+		Startup,
+		StartupCommon,
+
+		CommonFiles,
+		CommonFilesX86,
+		CommonFilesX64,
+
+		ProgramFiles,
+		ProgramFilesX86,
+		ProgramFilesX64,
+
+		SystemDrive,
+		Windows,
+		Fonts,
+		Temp,
+
+		System,
+		SystemX86,
+
+		ApplicationData,
+		ApplicationDataLocal,
+		ApplicationDataLocalLow,
+
+		AdminTools,
+		AdminToolsCommon,
+		ApplicationShortcuts,
+		CDBurning,
+		OEMLinksCommon,
+		Templates,
+		TemplatesCommon,
+		Contacts,
+		Cookies,
+		DeviceMetaDataStore,
+		Downloads,
+		Favorites,
+		GameTasks,
+		GameTasksCommon,
+		History,
+		ImplicitAppShortcuts,
+		InternetCache,
+		Libraries,
+		LibrariesCommon,
+		Links,
+		LocalizedResources,
+		NetHood,
+		OriginalImages,
+		PrintHood,
+		UserProfile,
+		ProgramData,
+		ProgramDataCommon,
+		Ringtones,
+		RingtonesCommon,
+		QuickLaunch,
+		Recent,
+		RecordedtvLibrary,
+		ResourceDir,
+		RoamedTileImages,
+		RoamingTiles,
+		SavedGames,
+		SearchHistory,
+		SearchTemplates,
+		SendTo,
+		SidebarParts,
+		SidebarPartsDefault,
+		OneDrive,
+		UserPinned,
+		UserProfiles,
+		UserProgramFiles,
+		UserProgramFilesCommon,
+	};
+}

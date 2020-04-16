@@ -138,18 +138,18 @@ namespace KxFramework
 		return {};
 	}
 
-	WindowVisibilityOption ShellLink::GetShowCommand() const noexcept
+	SHWindowCommand ShellLink::GetShowCommand() const noexcept
 	{
 		int command = 0;
 		if (HResult(m_ShellLink->GetShowCmd(&command)))
 		{
-			return Shell::Private::MapWindowVisibilityOption(command);
+			return Shell::Private::MapSHWindowCommand(command);
 		}
-		return WindowVisibilityOption::None;
+		return SHWindowCommand::None;
 	}
-	HResult ShellLink::SetShowCommand(WindowVisibilityOption command) noexcept
+	HResult ShellLink::SetShowCommand(SHWindowCommand command) noexcept
 	{
-		return m_ShellLink->SetShowCmd(Shell::Private::MapWindowVisibilityOption(command).value_or(SW_SHOWNORMAL));
+		return m_ShellLink->SetShowCmd(Shell::Private::MapSHWindowCommand(command).value_or(SW_SHOWNORMAL));
 	}
 
 	wxKeyEvent ShellLink::GetHotKey() const noexcept

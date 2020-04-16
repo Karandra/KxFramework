@@ -12,7 +12,7 @@ namespace KxFramework
 		HResult,
 		NtStatus
 	};
-	enum class WindowVisibilityOption: uint32_t
+	enum class SHWindowCommand: uint32_t
 	{
 		None = 0,
 
@@ -42,7 +42,7 @@ namespace KxFramework
 
 	namespace EnumClass
 	{
-		Kx_EnumClass_AllowEverything(WindowVisibilityOption);
+		Kx_EnumClass_AllowEverything(SHWindowCommand);
 		Kx_EnumClass_AllowEverything(MemoryProtection);
 	}
 }

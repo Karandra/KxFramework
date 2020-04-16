@@ -8,6 +8,8 @@
 #include <Shldisp.h>
 #include <ShlObj.h>
 
+using namespace KxFramework;
+
 namespace
 {
 	const int MinShellItemID = 0x1;
@@ -17,6 +19,7 @@ namespace
 wxIMPLEMENT_DYNAMIC_CLASS(KxShellMenu, KxMenu);
 
 KxShellMenu::KxShellMenu()
+	:m_Initializer(COMThreadingModel::Apartment)
 {
 }
 KxShellMenu::KxShellMenu(const wxString& path)

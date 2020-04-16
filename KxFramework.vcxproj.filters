@@ -211,9 +211,6 @@
     <ClInclude Include="KxFramework\KxLibrary.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxShell.h">
-      <Filter>Header Files\System</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxProcess.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
@@ -385,17 +382,8 @@
     <ClInclude Include="KxFramework\KxFramework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxTaskScheduler.h">
-      <Filter>Header Files\System</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxIProgressBar.h">
       <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxSharedMemory.h">
-      <Filter>Header Files\System</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxShellDefs.h">
-      <Filter>Header Files\System</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxIncludes.h">
       <Filter>Header Files</Filter>
@@ -1207,16 +1195,19 @@
     <ClInclude Include="Kx\System\SharedMemory.h">
       <Filter>Kx\System</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\System\KnownDirectoryID.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\Private\KnownDirectoryDefinition.h">
+      <Filter>Kx\System\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\Private\KnownDirectoryGUID.h">
+      <Filter>Kx\System\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
     <ClCompile Include="KxFramework\KxLibrary.cpp">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxShell.cpp">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxShellFolders.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxProcess.cpp">
@@ -1827,6 +1818,9 @@
     </ClCompile>
     <ClCompile Include="Kx\System\SharedMemory.cpp">
       <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Common.cpp">
+      <Filter>Kx\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
