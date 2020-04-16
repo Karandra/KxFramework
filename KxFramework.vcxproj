@@ -496,6 +496,7 @@
     <ClInclude Include="Kx\System\CredentialStore.h" />
     <ClInclude Include="Kx\System\Private\Shell.h" />
     <ClInclude Include="Kx\System\Registry.h" />
+    <ClInclude Include="Kx\System\SharedMemory.h" />
     <ClInclude Include="Kx\System\ShellFileType.h" />
     <ClInclude Include="Kx\System\ShellFileTypeInfo.h" />
     <ClInclude Include="Kx\System\ShellFileTypeManager.h" />
@@ -617,7 +618,6 @@
     <ClCompile Include="KxFramework\KxRadioButton.cpp" />
     <ClCompile Include="KxFramework\KxRichToolTip.cpp" />
     <ClCompile Include="KxFramework\KxSearchBox.cpp" />
-    <ClCompile Include="KxFramework\KxSharedMemory.cpp" />
     <ClCompile Include="KxFramework\KxShell.cpp" />
     <ClCompile Include="KxFramework\KxShellFolders.cpp" />
     <ClCompile Include="KxFramework\KxShellMenu.cpp" />
@@ -700,6 +700,7 @@
     <ClCompile Include="Kx\System\CredentialStore.cpp" />
     <ClCompile Include="Kx\System\Private\Shell.cpp" />
     <ClCompile Include="Kx\System\Registry.cpp" />
+    <ClCompile Include="Kx\System\SharedMemory.cpp" />
     <ClCompile Include="Kx\System\ShellLink.cpp" />
     <ClCompile Include="Kx\System\SystemInformation.cpp" />
     <ClCompile Include="Kx\System\TaskScheduler.cpp" />

@@ -1204,6 +1204,9 @@
     <ClInclude Include="Kx\System\TaskScheduler.h">
       <Filter>Kx\System</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\System\SharedMemory.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1380,9 +1383,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxIProgressBar.cpp">
       <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxSharedMemory.cpp">
-      <Filter>Source Files\System</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\Editor.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
@@ -1823,6 +1823,9 @@
       <Filter>Kx\System\Private</Filter>
     </ClCompile>
     <ClCompile Include="Kx\System\TaskScheduler.cpp">
+      <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\SharedMemory.cpp">
       <Filter>Kx\System</Filter>
     </ClCompile>
   </ItemGroup>

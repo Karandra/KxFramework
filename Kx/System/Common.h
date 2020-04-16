@@ -28,9 +28,21 @@ namespace KxFramework
 		Default = 1 << 17,
 		Inactive = 1 << 18,
 	};
+	enum class MemoryProtection: uint32_t
+	{
+		None = 0,
+		Read = 1 << 0,
+		Write = 1 << 1,
+		Execute = 1 << 2,
+
+		RW = Read|Write,
+		RX = Read|Execute,
+		RWX = Read|Write|Execute,
+	};
 
 	namespace EnumClass
 	{
 		Kx_EnumClass_AllowEverything(WindowVisibilityOption);
+		Kx_EnumClass_AllowEverything(MemoryProtection);
 	}
 }
