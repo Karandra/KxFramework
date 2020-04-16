@@ -270,7 +270,6 @@
     <ClInclude Include="KxFramework\KxFileBrowseDialog.h" />
     <ClInclude Include="KxFramework\KxFrame.h" />
     <ClInclude Include="KxFramework\KxFramework.h" />
-    <ClInclude Include="KxFramework\KxIncludes.h" />
     <ClInclude Include="KxFramework\KxHTMLWindow.h" />
     <ClInclude Include="KxFramework\KxImageView.h" />
     <ClInclude Include="KxFramework\KxIProgressBar.h" />
