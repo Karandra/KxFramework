@@ -187,6 +187,21 @@ namespace KxFramework
 				return {};
 			}
 			
+			template<class TFunc>
+			constexpr static size_t EnumItems(TFunc&& func)
+			{
+				size_t count = 0;
+				for (const TItem& item: GetItems())
+				{
+					count++;
+					if (!std::invoke(func, item))
+					{
+						break;
+					}
+				}
+				return count;
+			}
+
 			static TEnum FromOrExpression(const TString& string, TEnum initialValue = GetNullValue())
 			{
 				TInt intValue = static_cast<TInt>(initialValue);
