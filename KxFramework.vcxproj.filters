@@ -16,9 +16,6 @@
     <Filter Include="Header Files\System">
       <UniqueIdentifier>{35a0ad53-72d1-47cc-be83-6ab87cda5688}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Events">
-      <UniqueIdentifier>{bf54f086-d884-45dc-8670-5c65e6f09e19}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\GUI">
       <UniqueIdentifier>{6c310c16-9644-4de9-afd3-8862008629ff}</UniqueIdentifier>
     </Filter>
@@ -33,9 +30,6 @@
     </Filter>
     <Filter Include="Header Files\GUI\Windows">
       <UniqueIdentifier>{75e0a548-2dc9-4623-a2c1-9daef5598f15}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Events">
-      <UniqueIdentifier>{e19724b4-11bc-44f5-a040-78994c9ee6ab}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\System">
       <UniqueIdentifier>{849b76ae-a5dc-47bf-8753-1b70f7aa091a}</UniqueIdentifier>
@@ -205,6 +199,12 @@
     <Filter Include="Kx\&lt;Modules&gt;">
       <UniqueIdentifier>{916829f1-4a51-4891-9918-1b9723789c5a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\GUI\Events">
+      <UniqueIdentifier>{bf54f086-d884-45dc-8670-5c65e6f09e19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI\Events">
+      <UniqueIdentifier>{e19724b4-11bc-44f5-a040-78994c9ee6ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
@@ -344,13 +344,13 @@
       <Filter>Header Files\GUI\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxAuiToolBarEvent.h">
-      <Filter>Header Files\Events</Filter>
+      <Filter>Header Files\GUI\Events</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxMenuEvent.h">
-      <Filter>Header Files\Events</Filter>
+      <Filter>Header Files\GUI\Events</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxProcessEvent.h">
-      <Filter>Header Files\Events</Filter>
+      <Filter>Header Files\GUI\Events</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxMenu.h">
       <Filter>Header Files\GUI\Menus</Filter>
@@ -416,7 +416,7 @@
       <Filter>Header Files\GUI\DataView2</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxDataView2Event.h">
-      <Filter>Header Files\Events</Filter>
+      <Filter>Header Files\GUI\Events</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\DataView2\Common.h">
       <Filter>Header Files\GUI\DataView2</Filter>
@@ -518,7 +518,7 @@
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxEvent.h">
-      <Filter>Header Files\Events</Filter>
+      <Filter>Header Files\GUI\Events</Filter>
     </ClInclude>
     <ClInclude Include="Kx\Threading\Common.h">
       <Filter>Kx\Threading</Filter>
@@ -530,10 +530,10 @@
       <Filter>Kx\Threading\Events</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxCommandEvent.h">
-      <Filter>Header Files\Events</Filter>
+      <Filter>Header Files\GUI\Events</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxNotifyEvent.h">
-      <Filter>Header Files\Events</Filter>
+      <Filter>Header Files\GUI\Events</Filter>
     </ClInclude>
     <ClInclude Include="Kx\System\Common.h">
       <Filter>Kx\System</Filter>
@@ -1319,13 +1319,13 @@
       <Filter>Source Files\GUI\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxAuiToolBarEvent.cpp">
-      <Filter>Source Files\Events</Filter>
+      <Filter>Source Files\GUI\Events</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxMenuEvent.cpp">
-      <Filter>Source Files\Events</Filter>
+      <Filter>Source Files\GUI\Events</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxProcessEvent.cpp">
-      <Filter>Source Files\Events</Filter>
+      <Filter>Source Files\GUI\Events</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxMenu.cpp">
       <Filter>Source Files\GUI\Menus</Filter>
@@ -1373,7 +1373,7 @@
       <Filter>Source Files\GUI\DataView2</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxDataView2Event.cpp">
-      <Filter>Source Files\Events</Filter>
+      <Filter>Source Files\GUI\Events</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\Renderers\TextRenderer.cpp">
       <Filter>Source Files\GUI\DataView2\Renderers</Filter>
@@ -1460,10 +1460,10 @@
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxCommandEvent.cpp">
-      <Filter>Source Files\Events</Filter>
+      <Filter>Source Files\GUI\Events</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxNotifyEvent.cpp">
-      <Filter>Source Files\Events</Filter>
+      <Filter>Source Files\GUI\Events</Filter>
     </ClCompile>
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp">
       <Filter>Kx\EventSystem</Filter>
