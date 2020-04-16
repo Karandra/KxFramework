@@ -295,12 +295,6 @@
     <ClInclude Include="KxFramework\KxThumbView.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxListView.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxListBox.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxWebView.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
@@ -332,9 +326,6 @@
       <Filter>Header Files\GUI\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxProgressDialog.h">
-      <Filter>Header Files\GUI\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxListBoxDialog.h">
       <Filter>Header Files\GUI\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxComboBoxDialog.h">
@@ -1105,9 +1096,6 @@
     <ClInclude Include="Kx\General\BasicApplication.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxIncludeWindows.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\UI\WithDropdownMenu.h">
       <Filter>Kx\UI</Filter>
     </ClInclude>
@@ -1282,12 +1270,6 @@
     <ClCompile Include="KxFramework\KxThumbView.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxListView.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxListBox.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxWebView.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
@@ -1319,9 +1301,6 @@
       <Filter>Source Files\GUI\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxProgressDialog.cpp">
-      <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxListBoxDialog.cpp">
       <Filter>Source Files\GUI\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxComboBoxDialog.cpp">

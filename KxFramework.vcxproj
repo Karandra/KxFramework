@@ -273,13 +273,9 @@
     <ClInclude Include="KxFramework\KxIncludes.h" />
     <ClInclude Include="KxFramework\KxHTMLWindow.h" />
     <ClInclude Include="KxFramework\KxImageView.h" />
-    <ClInclude Include="KxFramework\KxIncludeWindows.h" />
     <ClInclude Include="KxFramework\KxIProgressBar.h" />
     <ClInclude Include="KxFramework\KxLabel.h" />
     <ClInclude Include="KxFramework\KxLibrary.h" />
-    <ClInclude Include="KxFramework\KxListBox.h" />
-    <ClInclude Include="KxFramework\KxListBoxDialog.h" />
-    <ClInclude Include="KxFramework\KxListView.h" />
     <ClInclude Include="KxFramework\KxMenu.h" />
     <ClInclude Include="KxFramework\KxMenuEvent.h" />
     <ClInclude Include="KxFramework\KxMenuItem.h" />
@@ -599,9 +595,6 @@
     <ClCompile Include="KxFramework\KxIProgressBar.cpp" />
     <ClCompile Include="KxFramework\KxLabel.cpp" />
     <ClCompile Include="KxFramework\KxLibrary.cpp" />
-    <ClCompile Include="KxFramework\KxListBox.cpp" />
-    <ClCompile Include="KxFramework\KxListBoxDialog.cpp" />
-    <ClCompile Include="KxFramework\KxListView.cpp" />
     <ClCompile Include="KxFramework\KxMenu.cpp" />
     <ClCompile Include="KxFramework\KxMenuEvent.cpp" />
     <ClCompile Include="KxFramework\KxMenuItem.cpp" />
