@@ -1,9 +1,9 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxLibrary.h"
-#include "KxFramework/KxIncludeWindows.h"
 #include "Kx/System/NativeAPI.h"
 #include <PsAPI.h>
 #include <DbgHelp.h>
+#include "Kx/System/UndefWindows.h"
 #pragma comment(lib, "DbgHelp.lib")
 
 using namespace KxFramework;

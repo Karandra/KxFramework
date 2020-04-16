@@ -1,6 +1,5 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxSearchBox.h"
-#include "KxFramework/KxIncludeWindows.h"
 #include "Kx/Localization/LocalizationPack.h"
 #include "Kx/General/StdID.h"
 

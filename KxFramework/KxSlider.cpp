@@ -1,8 +1,10 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxSlider.h"
 #include "Kx/Utility/Common.h"
-#include "Kx/Utility/System.h"
-#include "KxFramework/KxIncludeWindows.h"
+#include "Kx/Utility/System.h" 
+
+#include <CommCtrl.h>
+#include "Kx/System/UndefWindows.h" 
 
 using namespace KxFramework;
 

@@ -1,10 +1,10 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxTopLevelWindow.h"
 #include "KxFramework/KxMenu.h"
-#include "KxFramework/KxIncludeWindows.h"
 #include "Kx/System/NativeAPI.h"
 #include "Kx/Utility/System.h"
 #include <DWMAPI.h>
+#include "Kx/System/UndefWindows.h"
 #undef DWMAPI
 
 using namespace KxFramework;

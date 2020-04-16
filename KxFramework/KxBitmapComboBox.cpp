@@ -1,6 +1,7 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxBitmapComboBox.h"
-#include "KxFramework/KxIncludeWindows.h"
+#include <CommCtrl.h>
+#include "Kx/System/UndefWindows.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxBitmapComboBox, wxBitmapComboBox)
 

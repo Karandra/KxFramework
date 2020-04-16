@@ -3,7 +3,6 @@
 #include "KxFramework/KxLibrary.h"
 #include "KxFramework/KxMenu.h"
 #include "Kx/Drawing/UxTheme.h"
-#include "KxFramework/KxIncludeWindows.h"
 
 KxEVENT_DEFINE_GLOBAL_AS(wxCommandEvent, BUTTON, wxEVT_BUTTON);
 KxEVENT_DEFINE_GLOBAL(wxContextMenuEvent, BUTTON_MENU);

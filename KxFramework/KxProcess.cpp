@@ -7,7 +7,6 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxStdAfx.h"
 #include "KxFramework/KxProcess.h"
 #include "KxFramework/KxProcessThread.h"
-#include "KxFramework/KxIncludeWindows.h"
 #include <PsAPI.h>
 #include <WInternl.h>
 #include <TlHelp32.h>

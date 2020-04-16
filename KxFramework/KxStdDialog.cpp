@@ -2,7 +2,6 @@
 #include "KxFramework/KxStdDialog.h"
 #include "KxFramework/KxTopLevelWindow.h"
 #include "KxFramework/KxButton.h"
-#include "KxFramework/KxIncludeWindows.h"
 #include "Kx/Drawing/UxTheme.h"
 #include "Kx/Utility/Common.h"
 #include "Kx/Utility/System.h"

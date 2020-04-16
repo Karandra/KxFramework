@@ -1,6 +1,7 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxComboBox.h"
-#include "KxFramework/KxIncludeWindows.h"
+#include <CommCtrl.h>
+#include "Kx/System/UndefWindows.h"
 
 bool KxComboBox::Create(wxWindow* parent,
 						wxWindowID id,
