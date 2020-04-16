@@ -504,6 +504,7 @@
     <ClInclude Include="Kx\System\NativeAPI.h" />
     <ClInclude Include="Kx\System\SystemInformation.h" />
     <ClInclude Include="Kx\System\SystemInformationDefines.h" />
+    <ClInclude Include="Kx\System\TaskScheduler.h" />
     <ClInclude Include="Kx\System\UndefWindows.h" />
     <ClInclude Include="Kx\System\WOW64FSRedirection.h" />
     <ClInclude Include="Kx\Threading.hpp" />
@@ -632,7 +633,6 @@
     <ClCompile Include="KxFramework\KxStdDialogSimple.cpp" />
     <ClCompile Include="KxFramework\KxStyledTextBox.cpp" />
     <ClCompile Include="KxFramework\KxTaskDialog.cpp" />
-    <ClCompile Include="KxFramework\KxTaskScheduler.cpp" />
     <ClCompile Include="KxFramework\KxTextBox.cpp" />
     <ClCompile Include="KxFramework\KxTextBoxDialog.cpp" />
     <ClCompile Include="KxFramework\KxThumbView.cpp" />
@@ -702,6 +702,7 @@
     <ClCompile Include="Kx\System\Registry.cpp" />
     <ClCompile Include="Kx\System\ShellLink.cpp" />
     <ClCompile Include="Kx\System\SystemInformation.cpp" />
+    <ClCompile Include="Kx\System\TaskScheduler.cpp" />
     <ClCompile Include="Kx\System\WOW64FSRedirection.cpp" />
     <ClCompile Include="Kx\UI\HiDPIEnabledWindow.cpp" />
     <ClCompile Include="Kx\UI\StdDialogButtonSizer.cpp" />

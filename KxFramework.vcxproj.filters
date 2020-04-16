@@ -1201,6 +1201,9 @@
     <ClInclude Include="Kx\System\Private\Shell.h">
       <Filter>Kx\System\Private</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\System\TaskScheduler.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1374,9 +1377,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxCredentialsDialog.cpp">
       <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxTaskScheduler.cpp">
-      <Filter>Source Files\System</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxIProgressBar.cpp">
       <Filter>Source Files\GUI</Filter>
@@ -1821,6 +1821,9 @@
     </ClCompile>
     <ClCompile Include="Kx\System\Private\Shell.cpp">
       <Filter>Kx\System\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\TaskScheduler.cpp">
+      <Filter>Kx\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
