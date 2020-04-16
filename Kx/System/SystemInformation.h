@@ -108,6 +108,7 @@ namespace KxFramework::System
 	size_t EnumDisplayModes(std::function<bool(DisplayInfo)> func, const String& deviceName = {});
 	size_t EnumDisplayDevices(std::function<bool(DisplayDeviceInfo)> func);
 
+	String ExpandEnvironmentStrings(const String& strings);
 	String GetEnvironmentVariable(const String& name);
 	bool SetEnvironmentVariable(const String& name, const String& value);
 	size_t EnumEnvironmentVariables(std::function<bool(String, String)> func);

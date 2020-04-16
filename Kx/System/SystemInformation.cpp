@@ -456,6 +456,19 @@ namespace KxFramework::System
 		return count;
 	}
 
+	String ExpandEnvironmentStrings(const String& strings)
+	{
+		DWORD length = ::ExpandEnvironmentStringsW(strings.wc_str(), nullptr, 0);
+		if (length != 0)
+		{
+			String result;
+			if (::ExpandEnvironmentStringsW(strings.wc_str(), wxStringBuffer(result, length - 1), length) != 0)
+			{
+				return result;
+			}
+		}
+		return {};
+	}
 	String GetEnvironmentVariable(const String& name)
 	{
 		DWORD length = ::GetEnvironmentVariableW(name.wc_str(), nullptr, 0);
