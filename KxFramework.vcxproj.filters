@@ -205,9 +205,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxStdAfx.h" />
-    <ClInclude Include="KxFramework\KxSystemAPI.h">
-      <Filter>Header Files\System</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxLibrary.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
@@ -1201,9 +1198,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
-    <ClCompile Include="KxFramework\KxSystemAPI.cpp">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxLibrary.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>

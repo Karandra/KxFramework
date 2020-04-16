@@ -312,7 +312,6 @@
     <ClInclude Include="KxFramework\KxStyledTextBox.h" />
     <ClInclude Include="KxFramework\KxStyledTextBox_Scintilla.h" />
     <ClInclude Include="KxFramework\KxStyledTextBox_SciPosition.h" />
-    <ClInclude Include="KxFramework\KxSystemAPI.h" />
     <ClInclude Include="KxFramework\KxTaskDialog.h" />
     <ClInclude Include="KxFramework\KxTaskScheduler.h" />
     <ClInclude Include="KxFramework\KxTextBox.h" />
@@ -632,7 +631,6 @@
     <ClCompile Include="KxFramework\KxStdDialog.cpp" />
     <ClCompile Include="KxFramework\KxStdDialogSimple.cpp" />
     <ClCompile Include="KxFramework\KxStyledTextBox.cpp" />
-    <ClCompile Include="KxFramework\KxSystemAPI.cpp" />
     <ClCompile Include="KxFramework\KxTaskDialog.cpp" />
     <ClCompile Include="KxFramework\KxTaskScheduler.cpp" />
     <ClCompile Include="KxFramework\KxTextBox.cpp" />

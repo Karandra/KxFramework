@@ -1,10 +1,12 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxLibrary.h"
-#include "KxFramework/KxSystemAPI.h"
 #include "KxFramework/KxIncludeWindows.h"
+#include "Kx/System/NativeAPI.h"
 #include <PsAPI.h>
 #include <DbgHelp.h>
 #pragma comment(lib, "DbgHelp.lib")
+
+using namespace KxFramework;
 
 namespace Util
 {
@@ -252,29 +254,29 @@ const wxSize KxLibrary::DefaultIconSize = Util::DefaultIconSize;
 
 bool KxLibrary::SetSearchFolder(const wxString& path)
 {
-	if (KxSystemAPI::SetDllDirectoryW)
+	if (NativeAPI::Kernel32::SetDllDirectoryW)
 	{
 		if (path.IsEmpty())
 		{
-			return KxSystemAPI::SetDllDirectoryW(nullptr);
+			return NativeAPI::Kernel32::SetDllDirectoryW(nullptr);
 		}
-		return KxSystemAPI::SetDllDirectoryW(path.wc_str());
+		return NativeAPI::Kernel32::SetDllDirectoryW(path.wc_str());
 	}
 	return false;
 }
 const void* KxLibrary::AddSearchFolder(const wxString& path)
 {
-	if (KxSystemAPI::AddDllDirectory)
+	if (NativeAPI::Kernel32::AddDllDirectory)
 	{
-		return reinterpret_cast<const void*>(KxSystemAPI::AddDllDirectory(path.wc_str()));
+		return reinterpret_cast<const void*>(NativeAPI::Kernel32::AddDllDirectory(path.wc_str()));
 	}
 	return nullptr;
 }
 bool KxLibrary::RemoveSearchFolder(const void* pathCookie)
 {
-	if (KxSystemAPI::RemoveDllDirectory)
+	if (NativeAPI::Kernel32::RemoveDllDirectory)
 	{
-		return KxSystemAPI::RemoveDllDirectory(reinterpret_cast<DLL_DIRECTORY_COOKIE>(const_cast<void*>(pathCookie)));
+		return NativeAPI::Kernel32::RemoveDllDirectory(reinterpret_cast<DLL_DIRECTORY_COOKIE>(const_cast<void*>(pathCookie)));
 	}
 	return false;
 }

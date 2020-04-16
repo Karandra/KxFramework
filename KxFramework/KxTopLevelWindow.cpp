@@ -1,10 +1,11 @@
 #include "KxStdAfx.h"
 #include "KxFramework/KxTopLevelWindow.h"
-#include "KxFramework/KxSystemAPI.h"
 #include "KxFramework/KxMenu.h"
 #include "KxFramework/KxIncludeWindows.h"
+#include "Kx/System/NativeAPI.h"
 #include "Kx/Utility/System.h"
 #include <DWMAPI.h>
+#undef DWMAPI
 
 using namespace KxFramework;
 
@@ -15,9 +16,9 @@ KxEVENT_DEFINE_GLOBAL(wxNotifyEvent, WINDOW_DPI_CHANGED);
 bool KxTLWInternal::DWMIsCompositionEnabled()
 {
 	BOOL result = FALSE;
-	if (KxSystemAPI::DwmIsCompositionEnabled)
+	if (NativeAPI::DWMAPI::DwmIsCompositionEnabled)
 	{
-		KxSystemAPI::DwmIsCompositionEnabled(&result);
+		NativeAPI::DWMAPI::DwmIsCompositionEnabled(&result);
 	}
 	return result;
 }
@@ -25,20 +26,20 @@ bool KxTLWInternal::DWMIsGlassOpaque()
 {
 	DWORD dwmColor = 0;
 	BOOL isOpaqueColor = FALSE;
-	if (KxSystemAPI::DwmGetColorizationColor)
+	if (NativeAPI::DWMAPI::DwmGetColorizationColor)
 	{
-		KxSystemAPI::DwmGetColorizationColor(&dwmColor, &isOpaqueColor);
+		NativeAPI::DWMAPI::DwmGetColorizationColor(&dwmColor, &isOpaqueColor);
 	}
 	return isOpaqueColor;
 }
 KxColor KxTLWInternal::DWMGetGlassColor()
 {
 	KxColor color;
-	if (KxSystemAPI::DwmGetColorizationColor)
+	if (NativeAPI::DWMAPI::DwmGetColorizationColor)
 	{
 		DWORD dwmColor = 0;
 		BOOL isOpaqueColor = FALSE;
-		KxSystemAPI::DwmGetColorizationColor(&dwmColor, &isOpaqueColor);
+		NativeAPI::DWMAPI::DwmGetColorizationColor(&dwmColor, &isOpaqueColor);
 
 		color.SetARGB(dwmColor);
 	}
@@ -56,9 +57,9 @@ bool KxTLWInternal::MSWWindowProc(wxWindow* window, WXLRESULT& result, WXUINT ms
 	{
 		case WM_NCCREATE:
 		{
-			if (KxSystemAPI::EnableNonClientDpiScaling)
+			if (NativeAPI::User32::EnableNonClientDpiScaling)
 			{
-				KxSystemAPI::EnableNonClientDpiScaling(window->GetHandle());
+				NativeAPI::User32::EnableNonClientDpiScaling(window->GetHandle());
 			}
 			return false;
 		}
@@ -161,19 +162,19 @@ KxColor KxTLWInternal::DWMGetColorKey(const wxWindow* window)
 }
 bool KxTLWInternal::DWMExtendFrame(wxWindow* window)
 {
-	if (KxSystemAPI::DwmExtendFrameIntoClientArea)
+	if (NativeAPI::DWMAPI::DwmExtendFrameIntoClientArea)
 	{
 		HWND hWnd = window->GetHandle();
 		Utility::ModWindowStyle(hWnd, GWL_EXSTYLE, WS_EX_LAYERED, false);
 
-		MARGINS margins = {0};
-		return KxSystemAPI::DwmExtendFrameIntoClientArea(hWnd, &margins) == S_OK;
+		MARGINS margins = {};
+		return NativeAPI::DWMAPI::DwmExtendFrameIntoClientArea(hWnd, &margins) == S_OK;
 	}
 	return false;
 }
 bool KxTLWInternal::DWMExtendFrame(wxWindow* window, const wxRect& rect, const wxColour& color)
 {
-	if (KxSystemAPI::DwmExtendFrameIntoClientArea)
+	if (NativeAPI::DWMAPI::DwmExtendFrameIntoClientArea)
 	{
 		HWND hWnd = window->GetHandle();
 		Utility::ModWindowStyle(hWnd, GWL_EXSTYLE, WS_EX_LAYERED, true);
@@ -192,13 +193,13 @@ bool KxTLWInternal::DWMExtendFrame(wxWindow* window, const wxRect& rect, const w
 		margins.cxRightWidth = rect.GetY();
 		margins.cyTopHeight = rect.GetWidth();
 		margins.cyBottomHeight = rect.GetHeight();
-		return KxSystemAPI::DwmExtendFrameIntoClientArea(hWnd, &margins) == S_OK;
+		return NativeAPI::DWMAPI::DwmExtendFrameIntoClientArea(hWnd, &margins) == S_OK;
 	}
 	return false;
 }
 bool KxTLWInternal::DWMBlurBehind(wxWindow* window, bool enable, const wxRegion& region)
 {
-	if (KxSystemAPI::DwmEnableBlurBehindWindow)
+	if (NativeAPI::DWMAPI::DwmEnableBlurBehindWindow)
 	{
 		DWM_BLURBEHIND blurInfo = {0};
 		blurInfo.fEnable = enable;
@@ -210,7 +211,7 @@ bool KxTLWInternal::DWMBlurBehind(wxWindow* window, bool enable, const wxRegion&
 			blurInfo.hRgnBlur = region.GetHRGN();
 		}
 
-		return KxSystemAPI::DwmEnableBlurBehindWindow(window->GetHandle(), &blurInfo);
+		return NativeAPI::DWMAPI::DwmEnableBlurBehindWindow(window->GetHandle(), &blurInfo);
 	}
 	return false;
 }

@@ -7,7 +7,6 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include "KxStdAfx.h"
 #include "KxFramework/KxProcess.h"
 #include "KxFramework/KxProcessThread.h"
-#include "KxFramework/KxSystemAPI.h"
 #include "KxFramework/KxIncludeWindows.h"
 #include <PsAPI.h>
 #include <WInternl.h>
@@ -15,8 +14,11 @@ along with KxFramework. If not, see https://www.gnu.org/licenses/lgpl-3.0.html.
 #include <wx/private/pipestream.h>
 #include <wx/private/streamtempinput.h>
 #include "Kx/FileSystem/FileOperations.h"
+#include "Kx/System/NativeAPI.h"
 #include "Kx/System/UndefWindows.h"
 #pragma warning (disable: 4312)
+
+using namespace KxFramework;
 
 KxEVENT_DEFINE_GLOBAL_AS(wxProcessEvent, PROCESS_END, wxEVT_END_PROCESS);
 KxEVENT_DEFINE_GLOBAL(wxProcessEvent, PROCESS_IDLE);
@@ -390,9 +392,9 @@ bool KxProcess::Is64Bit() const
 	if (processHandle)
 	{
 		BOOL Is64Bit = FALSE;
-		if (KxSystemAPI::IsWow64Process)
+		if (NativeAPI::Kernel32::IsWow64Process)
 		{
-			if (KxSystemAPI::IsWow64Process(processHandle, &Is64Bit))
+			if (NativeAPI::Kernel32::IsWow64Process(processHandle, &Is64Bit))
 			{
 				Is64Bit = !Is64Bit;
 			}
@@ -439,14 +441,14 @@ wxString KxProcess::GetCommandLine() const
 	// http://stackoverflow.com/questions/18358150/ntqueryinformationprocess-keep-to-fail
 	
 	wxString result;
-	if (KxSystemAPI::NtQueryInformationProcess)
+	if (NativeAPI::NtDLL::NtQueryInformationProcess)
 	{
 		HANDLE processHandle = ::OpenProcess(PROCESS_QUERY_INFORMATION|PROCESS_VM_READ, false, GetPID());
 		if (processHandle)
 		{
 			PROCESS_BASIC_INFORMATION processInformation = {0};
 			ULONG retLength = 0;
-			if (KxSystemAPI::NtQueryInformationProcess(processHandle, PROCESSINFOCLASS::ProcessBasicInformation, &processInformation, sizeof(processInformation), &retLength) >= 0)
+			if (NativeAPI::NtDLL::NtQueryInformationProcess(processHandle, PROCESSINFOCLASS::ProcessBasicInformation, &processInformation, sizeof(processInformation), &retLength) >= 0)
 			{
 				// Read PEB memory block
 				SIZE_T read = 0;
