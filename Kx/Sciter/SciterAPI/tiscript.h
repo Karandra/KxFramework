@@ -1,8 +1,10 @@
 #ifndef __tis_h__
 #define __tis_h__
 
+#include "sciter-x-types.h"
+
 #if defined(__GNUC__)
-  #define TIS_CDECL __attribute__((__cdecl__))
+  #define TIS_CDECL /*__attribute__((cdecl))*/
 #else
   #define TIS_CDECL __cdecl
 #endif
@@ -82,6 +84,7 @@ typedef void TISAPI tiscript_callback(tiscript_VM *c,void* prm);
 typedef struct tiscript_method_def
 {
   void*             dispatch; // a.k.a. VTBL
+  UINT32            id;
   const char*       name;
   tiscript_method*  handler;  // or tiscript_tagged_method if tag is not 0
   void*             tag;
@@ -91,6 +94,7 @@ typedef struct tiscript_method_def
 typedef struct tiscript_prop_def
 {
   void*                dispatch; // a.k.a. VTBL
+  UINT32               id;
   const char*          name;
   tiscript_get_prop*   getter;
   tiscript_set_prop*   setter;
