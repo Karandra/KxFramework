@@ -99,12 +99,12 @@ class KX_API KxListView: public wxListView
 		void ClearItems();
 		void RemoveItem(int i);
 		int GetSelection() const;
-		KxIntVector GetSelections() const;
-		KxIntVector GetCheckedItems() const;
+		std::vector<int> GetSelections() const;
+		std::vector<int> GetCheckedItems() const;
 		int InsertItem(const wxString& label, size_t index, int imageID = wxWithImages::NO_IMAGE);
-		int InsertItem(const KxStringVector& labels, size_t index, int imageID = wxWithImages::NO_IMAGE);
+		int InsertItem(const std::vector<wxString>& labels, size_t index, int imageID = wxWithImages::NO_IMAGE);
 		int AddItem(const wxString& label, int imageID = wxWithImages::NO_IMAGE);
-		int AddItem(const KxStringVector& labels, int imageID = wxWithImages::NO_IMAGE);
+		int AddItem(const std::vector<wxString>& labels, int imageID = wxWithImages::NO_IMAGE);
 		bool IsItemSelected(int i) const;
 		void FocusItem(int i);
 		void SetAllItemSelected(bool b);
@@ -113,9 +113,9 @@ class KX_API KxListView: public wxListView
 		void SetHotItem(int i);
 
 		wxString GetItemLabel(int row, int columnIndex) const;
-		KxStringVector GetItemLabels(int row) const;
+		std::vector<wxString> GetItemLabels(int row) const;
 		void SetItemLabel(const wxString& label, int row, int columnIndex);
-		void SetItemLabels(const KxStringVector& labels, int row);
+		void SetItemLabels(const std::vector<wxString>& labels, int row);
 		int GetItemImage(int row, int columnIndex) const;
 		void SetItemImage(int row, int columnIndex, int imageID = wxWithImages::NO_IMAGE);
 		void SetItemChecked(int row, bool b);

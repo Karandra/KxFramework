@@ -315,7 +315,7 @@ namespace KxFramework
 			// Excludes the last directory as the root in the archive, its contents are at root instead. E.g.
 			// specifying "C:\Temp\MyFolder" make the files in "MyFolder" the root items in the archive.
 			virtual bool CompressFiles(const FSPath& directory, const FSPath& searchFilter, bool recursive) = 0;
-			virtual bool CompressSpecifiedFiles(const KxStringVector& sourcePaths, const KxStringVector& archivePaths) = 0;
+			virtual bool CompressSpecifiedFiles(const std::vector<wxString>& sourcePaths, const std::vector<wxString>& archivePaths) = 0;
 
 			// Compress just this single file as the root item in the archive.
 			// Second overload places compressed file into 'archivePath' folder inside the archive.

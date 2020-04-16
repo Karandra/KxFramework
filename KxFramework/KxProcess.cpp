@@ -158,12 +158,12 @@ BOOL KxProcess::SafeTerminateProcess(HANDLE processHandle, UINT exitCode)
 	}
 	return isSuccess;
 }
-KxUInt32Vector KxProcess::EnumProcesses(bool enumX64)
+std::vector<uint32_t> KxProcess::EnumProcesses(bool enumX64)
 {
 	(void)enumX64;
 	const DWORD arrayLength = 1024;
 	DWORD list[arrayLength] = {0};
-	KxUInt32Vector processes;
+	std::vector<uint32_t> processes;
 
 	DWORD retSize = 0;
 	if (K32EnumProcesses(list, arrayLength*sizeof(DWORD), &retSize))
@@ -177,7 +177,7 @@ KxUInt32Vector KxProcess::EnumProcesses(bool enumX64)
 	}
 	return processes;
 }
-DWORD KxProcess::GetMainThread(const KxUInt32Vector& threadIDsList)
+DWORD KxProcess::GetMainThread(const std::vector<uint32_t>& threadIDsList)
 {
 	DWORD mainThreadID = 0;
 	for (size_t i = 0; i < threadIDsList.size(); i++)
@@ -538,9 +538,9 @@ bool KxProcess::Attach(KxProcessWaitMode waitMode)
 	}
 	return false;
 }
-KxUInt32Vector KxProcess::EnumThreads() const
+std::vector<uint32_t> KxProcess::EnumThreads() const
 {
-	KxUInt32Vector array;
+	std::vector<uint32_t> array;
 	HANDLE snapshotHandle = ::CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
 	if (snapshotHandle != INVALID_HANDLE_VALUE)
 	{

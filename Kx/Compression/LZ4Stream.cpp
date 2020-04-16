@@ -35,7 +35,7 @@ namespace KxFramework::Compression::LZ4
 	}
 	std::vector<uint8_t> Compress(const void* sourceBuffer, size_t sourceSize)
 	{
-		KxUInt8Vector destinationBuffer;
+		std::vector<uint8_t> destinationBuffer;
 		destinationBuffer.resize(CompressBound(sourceSize));
 
 		size_t resultSize = Compress(sourceBuffer, sourceSize, destinationBuffer.data(), destinationBuffer.size());
@@ -51,7 +51,7 @@ namespace KxFramework::Compression::LZ4
 	}
 	std::vector<uint8_t> Decompress(const void* sourceBuffer, size_t sourceSize)
 	{
-		KxUInt8Vector destinationBuffer;
+		std::vector<uint8_t> destinationBuffer;
 		destinationBuffer.resize(sourceSize);
 
 		size_t resultSize = Decompress(sourceBuffer, sourceSize, destinationBuffer.data(), destinationBuffer.size());

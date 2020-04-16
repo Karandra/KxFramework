@@ -313,7 +313,6 @@
     <ClInclude Include="KxFramework\KxTextBoxDialog.h" />
     <ClInclude Include="KxFramework\KxThumbView.h" />
     <ClInclude Include="KxFramework\KxTopLevelWindow.h" />
-    <ClInclude Include="KxFramework\KxTypedefs.h" />
     <ClInclude Include="KxFramework\KxWebView.h" />
     <ClInclude Include="KxStdAfx.h" />
     <ClInclude Include="Kx\Async.hpp" />

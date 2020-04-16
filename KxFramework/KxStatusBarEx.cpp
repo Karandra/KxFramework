@@ -214,7 +214,7 @@ bool KxStatusBarEx::Create(wxWindow* parent,
 
 		// Configure fields
 		SetFieldsCount(fieldsCount);
-		SetStatusWidths(KxIntVector(fieldsCount, -1));
+		SetStatusWidths(std::vector<int>(fieldsCount, -1));
 		for (int i = 0; i < GetFieldsCount(); i++)
 		{
 			m_Images[i] = KxFramework::Drawing::InvalidImageIndex;

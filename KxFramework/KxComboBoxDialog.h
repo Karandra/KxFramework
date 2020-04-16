@@ -113,7 +113,7 @@ class KX_API KxComboBoxDialog: public KxStdDialog
 			}
 			return -1;
 		}
-		void SetItems(const KxStringVector& list)
+		void SetItems(const std::vector<wxString>& list)
 		{
 			if (GetComboBox())
 			{

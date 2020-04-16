@@ -336,9 +336,9 @@ wxString KxFileBrowseDialog::GetResult() const
 	}
 	return {};
 }
-KxStringVector KxFileBrowseDialog::GetResults() const
+std::vector<wxString> KxFileBrowseDialog::GetResults() const
 {
-	KxStringVector list;
+	std::vector<wxString> list;
 	if (m_Instance)
 	{
 		if (GetMode() == KxFBD_SAVE)

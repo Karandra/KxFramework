@@ -57,8 +57,8 @@ namespace KxDataView2
 	class KX_API ComboBoxEditor: public Editor, public ComboBoxEditorBase, public KxFramework::WithImageList
 	{
 		private:
-			KxStringVector m_Items;
-			KxIntVector m_BitmapIndexes;
+			std::vector<wxString> m_Items;
+			std::vector<int> m_BitmapIndexes;
 			bool m_AlwaysUseStringSelection = false;
 			bool m_UseBitmap = false;
 
@@ -75,11 +75,11 @@ namespace KxDataView2
 			wxAny GetValue(wxWindow* control) const override;
 
 		public:
-			const KxStringVector& GetItems() const
+			const std::vector<wxString>& GetItems() const
 			{
 				return m_Items;
 			}
-			void SetItems(const KxStringVector& items)
+			void SetItems(const std::vector<wxString>& items)
 			{
 				m_Items = items;
 			}
@@ -92,11 +92,11 @@ namespace KxDataView2
 				m_Items.clear();
 			}
 
-			const KxIntVector& GetBitmapIndexes() const
+			const std::vector<int>& GetBitmapIndexes() const
 			{
 				return m_BitmapIndexes;
 			}
-			void SetBitmapIndexes(const KxIntVector& tValues)
+			void SetBitmapIndexes(const std::vector<int>& tValues)
 			{
 				m_BitmapIndexes = tValues;
 			}

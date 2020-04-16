@@ -351,9 +351,9 @@ int KxListView::GetSelection() const
 {
 	return GetFirstSelected();
 }
-KxIntVector KxListView::GetSelections() const
+std::vector<int> KxListView::GetSelections() const
 {
-	KxIntVector list;
+	std::vector<int> list;
 	list.reserve(GetSelectedItemCount());
 	for (int i = GetFirstSelected(); i != -1; i = GetNextSelected(i))
 	{
@@ -361,9 +361,9 @@ KxIntVector KxListView::GetSelections() const
 	}
 	return list;
 }
-KxIntVector KxListView::GetCheckedItems() const
+std::vector<int> KxListView::GetCheckedItems() const
 {
-	KxIntVector list;
+	std::vector<int> list;
 	if (HasCheckBoxes())
 	{
 		int count = GetItemCount();
@@ -393,7 +393,7 @@ int KxListView::InsertItem(const wxString& label, size_t index, int imageID)
 	}
 	return newIndex;
 }
-int KxListView::InsertItem(const KxStringVector& labels, size_t index, int imageID)
+int KxListView::InsertItem(const std::vector<wxString>& labels, size_t index, int imageID)
 {
 	wxListItem item;
 	item.SetMask(wxLIST_MASK_TEXT|wxLIST_MASK_IMAGE);
@@ -422,7 +422,7 @@ int KxListView::AddItem(const wxString& label, int imageID)
 {
 	return InsertItem(label, GetItemCount() + 1, imageID);
 }
-int KxListView::AddItem(const KxStringVector& labels, int imageID)
+int KxListView::AddItem(const std::vector<wxString>& labels, int imageID)
 {
 	return InsertItem(labels, GetItemCount() + 1, imageID);
 }
@@ -462,9 +462,9 @@ wxString KxListView::GetItemLabel(int row, int columnIndex) const
 {
 	return GetItemText(row, columnIndex);
 }
-KxStringVector KxListView::GetItemLabels(int row) const
+std::vector<wxString> KxListView::GetItemLabels(int row) const
 {
-	KxStringVector labels;
+	std::vector<wxString> labels;
 	labels.reserve(GetColumnCount());
 	for (int i = 0; i < GetColumnCount(); i++)
 	{
@@ -486,7 +486,7 @@ void KxListView::SetItemLabel(const wxString& label, int row, int columnIndex)
 	}
 	SetItem(row, item.GetColumn(), label, nImage);
 }
-void KxListView::SetItemLabels(const KxStringVector& labels, int row)
+void KxListView::SetItemLabels(const std::vector<wxString>& labels, int row)
 {
 	wxListItem item;
 	int nImage = -1;

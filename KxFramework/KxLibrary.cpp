@@ -145,7 +145,7 @@ namespace Util
 	BOOL CALLBACK EnumResourcesProc(HMODULE moduleHandle, LPCTSTR resType, LPTSTR resName, LONG_PTR lParam)
 	{
 		CallbackInfo* info = (CallbackInfo*)lParam;
-		KxAnyVector* list = reinterpret_cast<KxAnyVector*>(info->Data);
+		std::vector<wxAny>* list = reinterpret_cast<std::vector<wxAny>*>(info->Data);
 
 		if (IS_INTRESOURCE(resName))
 		{
@@ -164,7 +164,7 @@ namespace Util
 	BOOL CALLBACK EnumResourceTypesProc(HMODULE moduleHandle, LPTSTR resType, LONG_PTR lParam)
 	{
 		CallbackInfo* info = (CallbackInfo*)lParam;
-		KxAnyVector* list = reinterpret_cast<KxAnyVector*>(info->Data);
+		std::vector<wxAny>* list = reinterpret_cast<std::vector<wxAny>*>(info->Data);
 
 		if (IS_INTRESOURCE(resType))
 		{
@@ -183,7 +183,7 @@ namespace Util
 	BOOL CALLBACK EnumResourceLanguagesProc(HMODULE moduleHandle, LPCTSTR resType, LPTSTR resName, WORD langID, LONG_PTR lParam)
 	{
 		CallbackInfo* info = (CallbackInfo*)lParam;
-		KxAnyVector* list = reinterpret_cast<KxAnyVector*>(info->Data);
+		std::vector<wxAny>* list = reinterpret_cast<std::vector<wxAny>*>(info->Data);
 
 		list->push_back(langID);
 		return TRUE;
@@ -524,25 +524,25 @@ DWORD KxLibrary::GetLoadFlags() const
 }
 
 // Resources
-KxIntVector KxLibrary::EnumResourceLanguages(const wxString& type, const wxString& name) const
+std::vector<int> KxLibrary::EnumResourceLanguages(const wxString& type, const wxString& name) const
 {
-	KxIntVector list;
+	std::vector<int> list;
 
 	Util::CallbackInfo info(const_cast<KxLibrary*>(this), &list);
 	EnumResourceLanguagesW(m_Handle, Util::GetNameOrID(type), Util::GetNameOrID(name), (ENUMRESLANGPROCW)Util::EnumResourceLanguagesProc, (LONG_PTR)&info);
 	return list;
 }
-KxAnyVector KxLibrary::EnumResourceTypes(WORD localeID) const
+std::vector<wxAny> KxLibrary::EnumResourceTypes(WORD localeID) const
 {
-	KxAnyVector list;
+	std::vector<wxAny> list;
 
 	Util::CallbackInfo info(const_cast<KxLibrary*>(this), &list);
 	EnumResourceTypesExW(m_Handle, Util::EnumResourceTypesProc, (LONG_PTR)&info, 0, Util::GetLangID(localeID));
 	return list;
 }
-KxAnyVector KxLibrary::EnumResources(const wxString& type, WORD localeID) const
+std::vector<wxAny> KxLibrary::EnumResources(const wxString& type, WORD localeID) const
 {
-	KxAnyVector list;
+	std::vector<wxAny> list;
 
 	Util::CallbackInfo info(const_cast<KxLibrary*>(this), &list);
 	EnumResourceNamesExW(m_Handle, Util::GetNameOrID(type), Util::EnumResourcesProc, (LONG_PTR)&info, 0, Util::GetLangID(localeID));
@@ -693,9 +693,9 @@ bool KxLibrary::UpdateResource(const wxString& type, const wxString& name, const
 }
 
 // Functions
-KxStringVector KxLibrary::EnumFunctions() const
+std::vector<wxString> KxLibrary::EnumFunctions() const
 {
-	KxStringVector functionNames;
+	std::vector<wxString> functionNames;
 
 	HANDLE fileHandle = ::CreateFileW(GetFileName().wc_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	if (fileHandle != INVALID_HANDLE_VALUE)

@@ -318,7 +318,7 @@ class KX_API KxFileBrowseDialog: public KxDialog, public KxIStdDialog
 
 		// Results
 		wxString GetResult() const;
-		KxStringVector GetResults() const;
+		std::vector<wxString> GetResults() const;
 
 		// Buttons
 		void SetDefaultButton(wxWindowID id) override

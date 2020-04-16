@@ -71,7 +71,7 @@ class KX_API KxListBoxDialog: public KxStdDialog
 		{
 			return GetListBox()->GetSelection();
 		}
-		KxIntVector GetSelections() const
+		std::vector<int> GetSelections() const
 		{
 			return GetListBox()->GetSelections();
 		}
@@ -88,7 +88,7 @@ class KX_API KxListBoxDialog: public KxStdDialog
 		{
 			GetListBox()->CheckItem(index, check);
 		}
-		KxIntVector GetCheckedItems() const
+		std::vector<int> GetCheckedItems() const
 		{
 			return GetListBox()->GetCheckedItems();
 		}
@@ -118,7 +118,7 @@ class KX_API KxListBoxDialog: public KxStdDialog
 		{
 			return InsertItem(GetListBox()->GetItemCount(), label);
 		}
-		void AddItems(const KxStringVector& list)
+		void AddItems(const std::vector<wxString>& list)
 		{
 			for (const wxString& s: list)
 			{

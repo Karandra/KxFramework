@@ -27,7 +27,7 @@ class KX_API KxStatusBar: public wxSystemThemedControl<KxFramework::WindowRefres
 
 	public:
 		void SetStatusWidth(int width, int index);
-		void SetStatusWidths(const KxIntVector& widths)
+		void SetStatusWidths(const std::vector<int>& widths)
 		{
 			wxStatusBar::SetStatusWidths((int)widths.size(), widths.data());
 		}
@@ -36,7 +36,7 @@ class KX_API KxStatusBar: public wxSystemThemedControl<KxFramework::WindowRefres
 		{
 			wxStatusBar::SetFieldsCount(count);
 		}
-		virtual void SetFieldsCount(const KxIntVector& widths)
+		virtual void SetFieldsCount(const std::vector<int>& widths)
 		{
 			wxStatusBar::SetFieldsCount((int)std::min(widths.size(), (size_t)GetFieldsCount()), widths.data());
 		}

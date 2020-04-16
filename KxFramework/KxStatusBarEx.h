@@ -146,7 +146,7 @@ class KX_API KxStatusBarEx:	public KxStatusBar,	public KxFramework::WithImageLis
 			KxStatusBar::SetFieldsCount(count);
 			ScheduleRefresh();
 		}
-		void SetFieldsCount(const KxIntVector& widths) override
+		void SetFieldsCount(const std::vector<int>& widths) override
 		{
 			KxStatusBar::SetFieldsCount(widths);
 			ScheduleRefresh();

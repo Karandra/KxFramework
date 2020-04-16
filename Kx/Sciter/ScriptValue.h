@@ -149,7 +149,7 @@ namespace KxFramework::Sciter
 			ScriptValue& SetBytes(const void* data, size_t size);
 			ScriptValue& SetString(const String& value, StringType type = StringType::None)
 			{
-				AssingString(wxStringView(value.wc_str(), value.length()), type);
+				AssingString(StringView(value.wc_str(), value.length()), type);
 				return *this;
 			}
 			ScriptValue& SetCurrency(int64_t value);

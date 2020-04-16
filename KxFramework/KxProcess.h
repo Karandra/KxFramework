@@ -97,8 +97,8 @@ class KX_API KxProcess: public wxEvtHandler, public KxFramework::WithOptions<KxP
 
 	public:
 		static BOOL SafeTerminateProcess(HANDLE processHandle, UINT exitCode);
-		static KxUInt32Vector EnumProcesses(bool enumX64 = false);
-		static DWORD GetMainThread(const KxUInt32Vector& threadIDsList);
+		static std::vector<uint32_t> EnumProcesses(bool enumX64 = false);
+		static DWORD GetMainThread(const std::vector<uint32_t>& threadIDsList);
 		static DWORD GetCurrentThreadID()
 		{
 			return ::GetCurrentThreadId();
@@ -179,7 +179,7 @@ class KX_API KxProcess: public wxEvtHandler, public KxFramework::WithOptions<KxP
 		}
 		
 		bool Attach(KxProcessWaitMode waitMode = KxPROCESS_RUN_ASYNC); // There can't be KxPROCESS_WAIT_NO
-		KxUInt32Vector EnumThreads() const;
+		std::vector<uint32_t> EnumThreads() const;
 		HWNDVector EnumWindows() const;
 
 		bool IsRedirected() const

@@ -233,7 +233,7 @@ LPCWSTR KxTaskDialog::TranslateIconIDToTDI(StdIcon id) const
 	return (LPCWSTR)-1;
 }
 
-void KxTaskDialog::UpdateButtonArrays(const KxStringVector& labels, ButtonSpecArray& array)
+void KxTaskDialog::UpdateButtonArrays(const std::vector<wxString>& labels, ButtonSpecArray& array)
 {
 	for (size_t i = 0; i < labels.size(); i++)
 	{

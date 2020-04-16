@@ -14,7 +14,7 @@ void KxStatusBar::SetFieldsCount(int count, const int* widths)
 	{
 		if (count = GetFieldsCount(); count > 0)
 		{
-			KxIntVector newWidths;
+			std::vector<int> newWidths;
 			newWidths.resize(count);
 			for (size_t i = 0; i < count; i++)
 			{
@@ -50,7 +50,7 @@ void KxStatusBar::SetStatusWidth(int width, int index)
 	int count = GetFieldsCount();
 	if (count > 0 && index < count)
 	{
-		KxIntVector widths(count, 0);
+		std::vector<int> widths(count, 0);
 		for (int i = 0; i < count; i++)
 		{
 			widths[i] = GetStatusWidth(i);

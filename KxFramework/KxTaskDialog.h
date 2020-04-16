@@ -51,8 +51,8 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 		BOOL m_CheckBoxChecked = FALSE;
 		wxWindowID m_SelectedRadioButton = wxID_NONE;
 
-		KxStringVector m_ButtonLabels;
-		KxStringVector m_RadioButtonLabels;
+		std::vector<wxString> m_ButtonLabels;
+		std::vector<wxString> m_RadioButtonLabels;
 		std::vector<TASKDIALOG_BUTTON> m_ButtonsID;
 		std::vector<TASKDIALOG_BUTTON> m_RadioButtonsID;
 
@@ -81,7 +81,7 @@ class KX_API KxTaskDialog: public KxDialog, public KxIStdDialog
 			return KxFramework::Utility::HasFlag(m_DialogConfig.dwFlags, flag);
 		}
 
-		void UpdateButtonArrays(const KxStringVector& labels, ButtonSpecArray& array);
+		void UpdateButtonArrays(const std::vector<wxString>& labels, ButtonSpecArray& array);
 
 	public:
 		static const KxTD_Options DefaultStyle = KxTD_NONE;

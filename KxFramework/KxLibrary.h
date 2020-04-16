@@ -2,6 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "Kx/System/UndefWindows.h"
 #include "Kx/General/MemorySpan.h"
+#include <wx/any.h>
 class KxLibraryUpdateLocker;
 
 class KX_API KxLibraryVersionInfo
@@ -159,9 +160,9 @@ class KX_API KxLibrary
 		DWORD GetLoadFlags() const;
 
 		// Resources
-		KxIntVector EnumResourceLanguages(const wxString& type, const wxString& name) const;
-		KxAnyVector EnumResourceTypes(WORD localeID = DefaultLocaleID) const;
-		KxAnyVector EnumResources(const wxString& type, WORD localeID = DefaultLocaleID) const;
+		std::vector<int> EnumResourceLanguages(const wxString& type, const wxString& name) const;
+		std::vector<wxAny> EnumResourceTypes(WORD localeID = DefaultLocaleID) const;
+		std::vector<wxAny> EnumResources(const wxString& type, WORD localeID = DefaultLocaleID) const;
 		KxFramework::UntypedMemorySpan GetResource(const wxString& type, const wxString& name, WORD localeID = DefaultLocaleID) const;
 		
 		wxBitmap GetBitmap(const wxString& name, WORD localeID = DefaultLocaleID) const;
@@ -178,7 +179,7 @@ class KX_API KxLibrary
 		wxString FormatMessage(DWORD messageID, WORD localeID = DefaultLocaleID) const;
 
 		// Functions
-		KxStringVector EnumFunctions() const;
+		std::vector<wxString> EnumFunctions() const;
 		
 		void* GetProcAddress(const char* name) const;
 		void* GetProcAddress(const wchar_t* name) const;
