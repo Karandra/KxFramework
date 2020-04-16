@@ -2,9 +2,9 @@
 #include "StorageVolume.h"
 #include "LegacyVolume.h"
 #include "FSPath.h"
+#include "Kx/FileSystem/FileStream.h"
 #include "Kx/General/StringFormater.h"
 #include "Kx/Utility/CallAtScopeExit.h"
-#include <KxFramework/KxFileStream.h>
 
 namespace
 {
@@ -370,7 +370,7 @@ namespace KxFramework
 
 	bool StorageVolume::EjectMedia()
 	{
-		KxFileStream stream(m_Path, KxFileStream::Access::Read, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Everything);
+		FileStream stream(m_Path, FileStreamAccess::Read, FileStreamDisposition::OpenExisting, FileStreamShare::Everything);
 		if (stream)
 		{
 			DWORD bytes = 0;

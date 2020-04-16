@@ -1,9 +1,9 @@
 #include "KxStdAfx.h"
 #include "NativeFileSystem.h"
 #include "NativeFileSystemUtility.h"
+#include "FileStream.h"
 #include "Kx/Utility/Common.h"
 #include "Kx/Utility/CallAtScopeExit.h"
-#include <KxFramework/KxFileStream.h>
 
 namespace KxFramework
 {
@@ -129,11 +129,11 @@ namespace KxFramework
 	{
 		if (creationTime.IsValid() || modificationTime.IsValid() || lastAccessTime.IsValid())
 		{
-			const KxFileStream::Flags streamFlags = GetItem(path).IsDirectory() ? KxFileStream::Flags::BackupSemantics : KxFileStream::Flags::Normal;
-			KxFileStream stream(path, KxFileStream::Access::WriteAttributes, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Everything, streamFlags);
+			const FileStreamFlags streamFlags = GetItem(path).IsDirectory() ? FileStreamFlags::BackupSemantics : FileStreamFlags::Normal;
+			FileStream stream(path, FileStreamAccess::WriteAttributes, FileStreamDisposition::OpenExisting, FileStreamShare::Everything, streamFlags);
 			if (stream)
 			{
-				return stream.SetFileTime(creationTime, modificationTime, lastAccessTime);
+				return stream.ChangeTimestamp(creationTime, modificationTime, lastAccessTime);
 			}
 		}
 		return false;
@@ -192,7 +192,7 @@ namespace KxFramework
 
 	bool NativeFileSystem::IsInUse(const FSPath& path) const
 	{
-		return KxFileStream(path, KxFileStream::Access::Read, KxFileStream::Disposition::OpenExisting, KxFileStream::Share::Exclusive).IsOk();
+		return FileStream(path, FileStreamAccess::Read, FileStreamDisposition::OpenExisting, FileStreamShare::None).IsOk();
 	}
 	size_t NativeFileSystem::EnumStreams(const FSPath& path, TEnumStreamsFunc func) const
 	{

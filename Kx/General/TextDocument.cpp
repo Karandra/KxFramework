@@ -1,7 +1,7 @@
 #include "KxStdAfx.h"
 #include "TextDocument.h"
+#include "Kx/FileSystem/FileStream.h"
 #include "Kx/Utility/CallAtScopeExit.h"
-#include "KxFramework/KxFileStream.h"
 #include <wx/textfile.h>
 
 namespace
@@ -74,9 +74,9 @@ namespace KxFramework::TextDocument
 
 	bool Write(const FSPath& filePath, const String& text, bool append, LineBreakFormat lineBreakFormat)
 	{
-		const KxFileStream::Disposition disposition = append ? KxFileStream::Disposition::OpenExisting : KxFileStream::Disposition::CreateAlways;
-		KxFileStream stream(filePath, KxFileStream::Access::Write, disposition, KxFileStream::Share::Read);
-		if (stream.IsOk())
+		const FileStreamDisposition disposition = append ? FileStreamDisposition::OpenExisting : FileStreamDisposition::CreateAlways;
+		FileStream stream(filePath, FileStreamAccess::Write, disposition, FileStreamShare::Read);
+		if (stream)
 		{
 			bool isSuccess = true;
 			const wxTextFileType lineBreakFormatWx = MapLineBreakType(lineBreakFormat);
@@ -93,9 +93,9 @@ namespace KxFramework::TextDocument
 	}
 	bool Write(const FSPath& filePath, std::function<String()> func, bool append, LineBreakFormat lineBreakFormat)
 	{
-		const KxFileStream::Disposition disposition = append ? KxFileStream::Disposition::OpenExisting : KxFileStream::Disposition::CreateAlways;
-		KxFileStream stream(filePath, KxFileStream::Access::Write, disposition, KxFileStream::Share::Read);
-		if (stream.IsOk())
+		const FileStreamDisposition disposition = append ? FileStreamDisposition::OpenExisting : FileStreamDisposition::CreateAlways;
+		FileStream stream(filePath, FileStreamAccess::Write, disposition, FileStreamShare::Read);
+		if (stream)
 		{
 			const wxTextFileType lineBreakFormatWx = MapLineBreakType(lineBreakFormat);
 			const wxChar* lineBreak = wxTextFile::GetEOL(lineBreakFormatWx);

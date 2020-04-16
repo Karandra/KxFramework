@@ -16,21 +16,6 @@ namespace KxFramework
 		KxDecalreIID(IStreamWrapper, {0xbf4894d7, 0x8ec9, 0x4aed, {0x8d, 0xf, 0x18, 0xed, 0x32, 0xdd, 0x69, 0x8a}});
 
 		public:
-			enum class SeekMode
-			{
-				FromStart = wxSeekMode::wxFromStart,
-				FromEnd = wxSeekMode::wxFromEnd,
-				FromCurrent = wxSeekMode::wxFromCurrent,
-			};
-			enum class ErrorCode
-			{
-				Success = wxSTREAM_NO_ERROR,
-				EndOfFile = wxSTREAM_EOF,
-				ReadError = wxSTREAM_WRITE_ERROR,
-				WriteError = wxSTREAM_READ_ERROR
-			};
-
-		public:
 			virtual ~IStreamWrapper() = default;
 
 		public:
@@ -417,36 +402,37 @@ namespace KxFramework
 	class IOStreamWrapper
 	{
 		private:
-			constexpr static bool IsInputStream()
+			constexpr static bool IsInputStream() noexcept
 			{
-				return std::is_base_of<wxInputStream, TBaseStream>::value;
+				return std::is_base_of_v<wxInputStream, TBaseStream>;
 			}
-			constexpr static bool IsOutputStream()
+			constexpr static bool IsOutputStream() noexcept
 			{
-				return std::is_base_of<wxOutputStream, TBaseStream>::value;
+				return std::is_base_of_v<wxOutputStream, TBaseStream>;
 			}
 
 		private:
-			TBaseStream* GetThis()
+			TBaseStream& GetThis() noexcept
 			{
-				return static_cast<TBaseStream*>(this);
+				return static_cast<TBaseStream&>(*this);
 			}
-			const TBaseStream* GetThis() const
+			const TBaseStream& GetThis() const noexcept
 			{
-				return static_cast<const TBaseStream*>(this);
+				return static_cast<const TBaseStream&>(*this);
 			}
 
 			BinarySize SeekIO(BinarySize offset, wxSeekMode mode)
 			{
 				if (offset)
 				{
-					if constexpr (IsInputStream())
+					// If the class is derived from both input classes it should be fine to call any Seek function.
+					if constexpr(IsInputStream())
 					{
-						return GetThis()->SeekI(offset.GetBytes(), mode) != wxInvalidOffset;
+						return GetThis().SeekI(offset.GetBytes(), mode) != wxInvalidOffset;
 					}
-					else if constexpr (IsOutputStream())
+					else if constexpr(IsOutputStream())
 					{
-						return GetThis()->SeekO(offset.GetBytes(), mode) != wxInvalidOffset;
+						return GetThis().SeekO(offset.GetBytes(), mode) != wxInvalidOffset;
 					}
 					else
 					{
@@ -459,11 +445,11 @@ namespace KxFramework
 			{
 				if constexpr(IsInputStream())
 				{
-					return BinarySize::FromBytes(GetThis()->TellI());
+					return BinarySize::FromBytes(GetThis().TellI());
 				}
 				else if constexpr(IsOutputStream())
 				{
-					return BinarySize::FromBytes(GetThis()->TellO());
+					return BinarySize::FromBytes(GetThis().TellO());
 				}
 				else
 				{
@@ -475,17 +461,17 @@ namespace KxFramework
 			virtual ~IOStreamWrapper() = default;
 
 		public:
-			template<class... Types>
+			template<class... T>
 			bool Skip()
 			{
-				static_assert(sizeof...(Types) != 0, "KxIOStreamHelper::Skip<Types...>: Skipping 0 bytes is not allowed");
+				static_assert(sizeof...(T) != 0, "IOStreamWrapper::Skip<T...>: Skipping 0 bytes is not allowed");
 
-				return SeekIO(Utility::SizeOfParameterPackValues<Types...>(), wxSeekMode::wxFromCurrent) != IStreamWrapper::InvalidOffset;
+				return SeekIO(Utility::SizeOfParameterPackValues<T...>(), wxSeekMode::wxFromCurrent);
 			}
 
-			bool Skip(BinarySize offset)
+			bool Skip(BinarySize count)
 			{
-				return SeekIO(offset, wxSeekMode::wxFromCurrent).IsValid();
+				return SeekIO(count, wxSeekMode::wxFromCurrent).IsValid();
 			}
 			bool SkipToEnd()
 			{
@@ -509,7 +495,7 @@ namespace KxFramework
 			{
 				return TellIO();
 			}
-			BinarySize Seek(BinarySize offset, IStreamWrapper::SeekMode mode = IStreamWrapper::SeekMode::FromCurrent)
+			BinarySize Seek(BinarySize offset, StreamSeekMode mode = StreamSeekMode::FromCurrent)
 			{
 				return SeekIO(offset, static_cast<wxSeekMode>(mode));
 			}

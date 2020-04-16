@@ -2,7 +2,6 @@
 #include "LegacyVolume.h"
 #include "FSPath.h"
 #include "Kx/Utility/Common.h"
-#include "KxFramework/KxFileStream.h"
 
 namespace
 {

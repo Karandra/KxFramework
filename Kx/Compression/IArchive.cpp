@@ -1,8 +1,6 @@
 #include "KxStdAfx.h"
 #include "IArchive.h"
 #include "IArchiveImpl.h"
-#include <KxFramework/KxFileStream.h>
-#include "Kx/FileSystem/NativeFileSystemUtility.h"
 
 namespace KxFramework
 {

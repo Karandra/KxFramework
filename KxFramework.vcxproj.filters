@@ -16,9 +16,6 @@
     <Filter Include="Header Files\System">
       <UniqueIdentifier>{35a0ad53-72d1-47cc-be83-6ab87cda5688}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Streams">
-      <UniqueIdentifier>{cc10d6e8-b56c-4746-911a-b4f749466e83}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Events">
       <UniqueIdentifier>{bf54f086-d884-45dc-8670-5c65e6f09e19}</UniqueIdentifier>
     </Filter>
@@ -39,9 +36,6 @@
     </Filter>
     <Filter Include="Source Files\Events">
       <UniqueIdentifier>{e19724b4-11bc-44f5-a040-78994c9ee6ab}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Streams">
-      <UniqueIdentifier>{721309c3-9280-403a-863b-7f43020c5be9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\System">
       <UniqueIdentifier>{849b76ae-a5dc-47bf-8753-1b70f7aa091a}</UniqueIdentifier>
@@ -216,9 +210,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxLibrary.h">
       <Filter>Header Files\System</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxFileStream.h">
-      <Filter>Header Files\Streams</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxShell.h">
       <Filter>Header Files\System</Filter>
@@ -1201,6 +1192,9 @@
     <ClInclude Include="Kx\General\StdID.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\FileSystem\FileStream.h">
+      <Filter>Kx\FileSystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxStdAfx.cpp" />
@@ -1209,9 +1203,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxLibrary.cpp">
       <Filter>Source Files\System</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxFileStream.cpp">
-      <Filter>Source Files\Streams</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxShell.cpp">
       <Filter>Source Files\System</Filter>
@@ -1821,6 +1812,9 @@
     </ClCompile>
     <ClCompile Include="Kx\Localization\LocalizationPack.cpp">
       <Filter>Kx\Localization</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\FileSystem\FileStream.cpp">
+      <Filter>Kx\FileSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

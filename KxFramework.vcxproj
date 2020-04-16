@@ -268,7 +268,6 @@
     <ClInclude Include="KxFramework\KxDualInputDialog.h" />
     <ClInclude Include="KxFramework\KxDualProgressDialog.h" />
     <ClInclude Include="KxFramework\KxFileBrowseDialog.h" />
-    <ClInclude Include="KxFramework\KxFileStream.h" />
     <ClInclude Include="KxFramework\KxFrame.h" />
     <ClInclude Include="KxFramework\KxFramework.h" />
     <ClInclude Include="KxFramework\KxIncludes.h" />
@@ -373,6 +372,7 @@
     <ClInclude Include="Kx\FileSystem\FileItem.h" />
     <ClInclude Include="Kx\FileSystem\FileOperationEvent.h" />
     <ClInclude Include="Kx\FileSystem\FileOperations.h" />
+    <ClInclude Include="Kx\FileSystem\FileStream.h" />
     <ClInclude Include="Kx\FileSystem\FSPath.h" />
     <ClInclude Include="Kx\FileSystem\IFileSystem.h" />
     <ClInclude Include="Kx\FileSystem\LegacyVolume.h" />
@@ -593,7 +593,6 @@
     <ClCompile Include="KxFramework\KxDualInputDialog.cpp" />
     <ClCompile Include="KxFramework\KxDualProgressDialog.cpp" />
     <ClCompile Include="KxFramework\KxFileBrowseDialog.cpp" />
-    <ClCompile Include="KxFramework\KxFileStream.cpp" />
     <ClCompile Include="KxFramework\KxFrame.cpp" />
     <ClCompile Include="KxFramework\KxHTMLWindow.cpp" />
     <ClCompile Include="KxFramework\KxImageView.cpp" />
@@ -660,6 +659,7 @@
     <ClCompile Include="Kx\Drawing\ImageSet.cpp" />
     <ClCompile Include="Kx\Drawing\UxTheme.cpp" />
     <ClCompile Include="Kx\FileSystem\FileOperationEvent.cpp" />
+    <ClCompile Include="Kx\FileSystem\FileStream.cpp" />
     <ClCompile Include="Kx\General\Any.cpp" />
     <ClCompile Include="Kx\General\Color.cpp" />
     <ClCompile Include="Kx\General\HTMLDocument.cpp" />

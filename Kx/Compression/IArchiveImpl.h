@@ -1,8 +1,8 @@
 #pragma once
 #include "Common.h"
 #include "IArchive.h"
-#include <KxFramework/KxFileStream.h>
-#include "Kx/FileSystem/NativeFileSystemUtility.h"
+#include "Kx/FileSystem/FileStream.h"
+#include "Kx/FileSystem/NativeFileSystem.h"
 
 namespace KxFramework::Compression
 {
@@ -27,7 +27,7 @@ namespace KxFramework::Compression
 		private:
 			FSPath m_Directory;
 			FileItem m_FileItem;
-			KxFileStream m_Stream;
+			FileStream m_Stream;
 
 		public:
 			FileExtractionCallback(IArchiveExtraction& archive, const FSPath& directory = {})
@@ -52,7 +52,7 @@ namespace KxFramework::Compression
 					else
 					{
 						NativeFileSystem::Get().CreateDirectory(targetPath.GetParent());
-						m_Stream.Open(targetPath, KxFileStream::Access::Write, KxFileStream::Disposition::CreateAlways, KxFileStream::Share::Read);
+						m_Stream.Open(targetPath, FileStreamAccess::Write, FileStreamDisposition::CreateAlways, FileStreamShare::Read);
 						return m_Stream;
 					}
 				}
@@ -62,8 +62,8 @@ namespace KxFramework::Compression
 			{
 				if (m_FileItem)
 				{
-					m_Stream.SetAttributes(FileSystem::NativeUtility::MapFileAttributes(m_FileItem.GetAttributes()));
-					m_Stream.SetFileTime(m_FileItem.GetCreationTime(), m_FileItem.GetModificationTime(), m_FileItem.GetLastAccessTime());
+					m_Stream.SetAttributes(m_FileItem.GetAttributes());
+					m_Stream.ChangeTimestamp(m_FileItem.GetCreationTime(), m_FileItem.GetModificationTime(), m_FileItem.GetLastAccessTime());
 					m_Stream.Close();
 
 					return true;

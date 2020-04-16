@@ -85,11 +85,51 @@ namespace KxFramework
 		SymLink = 1 << 1
 	};
 
+	enum class FileStreamAccess: uint32_t
+	{
+		None = 0,
+		Read = 1 << 0,
+		Write = 1 << 1,
+		ReadAttributes = 1 << 2,
+		WriteAttributes = 1 << 3,
+
+		RW = Read|Write,
+		AllAccess = RW|ReadAttributes|WriteAttributes
+	};
+	enum class FileStreamShare: uint32_t
+	{
+		None = 0,
+		Read = 1 << 0,
+		Write = 1 << 1,
+		Delete = 1 << 2,
+
+		Everything = Read|Write|Delete
+	};
+	enum class FileStreamDisposition: uint32_t
+	{
+		OpenExisting,
+		OpenAlways,
+		CreateNew,
+		CreateAlways,
+	};
+	enum class FileStreamFlags: uint32_t
+	{
+		None = 0,
+
+		Normal = 1 << 0,
+		BackupSemantics = 1 << 1,
+	};
+
 	namespace EnumClass
 	{
 		Kx_EnumClass_AllowEverything(FileSystemFeature);
 		Kx_EnumClass_AllowEverything(FileAttribute);
 		Kx_EnumClass_AllowEverything(ReparsePointTag);
+
+		Kx_EnumClass_AllowEverything(FileStreamAccess);
+		Kx_EnumClass_AllowEverything(FileStreamShare);
+		Kx_EnumClass_AllowEverything(FileStreamFlags);
+		Kx_EnumClass_AllowCast(FileStreamDisposition);
 	}
 }
 
