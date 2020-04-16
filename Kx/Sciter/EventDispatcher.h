@@ -17,8 +17,8 @@ namespace KxFramework::Sciter
 		friend class Host;
 
 		private:
-			static BOOL CallHandleEvent(void* context, ElementHandle* element, uint32_t eventGroupID, void* parameters);
-			static UINT CallHandleNotification(void* notification, void* context);
+			static BOOL __stdcall CallHandleEvent(void* context, ElementHandle* element, uint32_t eventGroupID, void* parameters);
+			static UINT __stdcall CallHandleNotification(void* notification, void* context);
 
 		private:
 			Host& m_Host;

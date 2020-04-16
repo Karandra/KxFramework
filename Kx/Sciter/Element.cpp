@@ -43,15 +43,15 @@ namespace KxFramework::Sciter
 		return element.GetStyleAttribute(name).ToFloatingPoint<double>();
 	}
 
-	void __stdcall ExtractWxString(const wchar_t* value, UINT length, void* context)
+	void SC_CALLBACK ExtractWxString(const wchar_t* value, UINT length, void* context)
 	{
 		*reinterpret_cast<String*>(context) = String(value, length);
 	}
-	void __stdcall ExtractWxString(const char* value, UINT length, void* context)
+	void SC_CALLBACK ExtractWxString(const char* value, UINT length, void* context)
 	{
 		*reinterpret_cast<String*>(context) = String::FromUTF8(value, length);
 	}
-	void __stdcall ExtractWxString(const BYTE* value, UINT length, void* context)
+	void SC_CALLBACK ExtractWxString(const BYTE* value, UINT length, void* context)
 	{
 		ExtractWxString(reinterpret_cast<const char*>(value), length, context);
 	}
