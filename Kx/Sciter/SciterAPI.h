@@ -1,7 +1,7 @@
 #pragma once
-#include "Kx/Sciter/SciterAPI/sciter-x.h"
-#include "Kx/Sciter/SciterAPI/sciter-x-api.h"
-#include "Kx/Sciter/SciterAPI/sciter-x-behavior.h"
+#include <sciter/sciter-x.h>
+#include <sciter/sciter-x-api.h>
+#include <sciter/sciter-x-behavior.h>
 
 namespace KxFramework::Sciter
 {
