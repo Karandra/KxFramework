@@ -876,9 +876,6 @@
     <ClInclude Include="Kx\Network\Common.h">
       <Filter>Kx\Network</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\RTTI\WxRTTI.h">
-      <Filter>Kx\RTTI</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\UI\StdButton.h">
       <Filter>Kx\UI</Filter>
     </ClInclude>
@@ -1158,6 +1155,9 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Kx\RTTI\ComponentSystem.h">
       <Filter>Kx\RTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\wxWidgets\RTTI.h">
+      <Filter>Kx\wxWidgets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

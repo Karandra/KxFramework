@@ -302,6 +302,7 @@
     <ClInclude Include="KxFramework\KxTopLevelWindow.h" />
     <ClInclude Include="KxFramework\KxWebView.h" />
     <ClInclude Include="Kx\RTTI\ComponentSystem.h" />
+    <ClInclude Include="Kx\wxWidgets\RTTI.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Kx\Async.hpp" />
     <ClInclude Include="Kx\Async\Common.h" />
@@ -429,7 +430,6 @@
     <ClInclude Include="Kx\RTTI.hpp" />
     <ClInclude Include="Kx\RTTI\Common.h" />
     <ClInclude Include="Kx\RTTI\QueryInterface.h" />
-    <ClInclude Include="Kx\RTTI\WxRTTI.h" />
     <ClInclude Include="Kx\Sciter.hpp" />
     <ClInclude Include="Kx\Sciter\Common.h" />
     <ClInclude Include="Kx\Sciter\CommonDefs.h" />
