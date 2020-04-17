@@ -6,9 +6,9 @@ You'll need [Visual Studio 2019](https://visualstudio.microsoft.com/) and [VCPkg
 
 - Download and install **VCPkg**.
 - Build **VCPkg** using its instructions (run `bootstrap-vcpkg.bat`, wait for build to complete and run `vcpkg.exe` from command line or PowerShell).
-- Download and build following packages for both x86 (`x86-windows-static-md`) and x64 (`x64-windows-static-md`) targets*.
+- Download and build following packages for both x86 (`x86-windows-static-md`) and x64 (`x64-windows-static-md`) targets.
 	- [wxWidgets](https://www.wxwidgets.org) - `wxwidgets`.
-	- [Sciter](https://github.com/c-smile/sciter-sdk) - `sciter`.
+	- [Sciter](https://github.com/c-smile/sciter-sdk) - `sciter` (see notes).
 	- [Boost](https://www.boost.org) - `boost`. The framework doesn't use Boost itself, only as a dependency for other libraries.
 	- [LibCurl](https://curl.haxx.se) - `curl`. I'm using the following options: `curl[non-http,http2,openssl]`.
 	- [OpenSSL](https://www.openssl.org) - `openssl` and `openssl-windows`. Should be downloaded as a dependency for LibCurl but it's used directly as well.
@@ -23,7 +23,8 @@ You'll need [Visual Studio 2019](https://visualstudio.microsoft.com/) and [VCPkg
 - Set this instance of **VCPkg** as default or use project-specific linking.
 - Open KxFramework solution in Visual Studio and Build **Release** configuration for x86 and x64. 
 
-* Sciter can't be built using the default `windows-static-md` triplet because it's dynamic library. Modified triplet configuration  is provided in `VCPkg\triplets\community` folder.
+### Notes
+Sciter can't be built using the default `windows-static-md` triplet because it's a dynamic library. Modified triplet configuration  is provided in `VCPkg\triplets\community` folder.
 
 # Configuration
 KxFramework project file `KxFramework.vcxproj` is configured to use `x86-windows-static-md` and `x64-windows-static-md` triplets. If you're using any oher combination it might or might not be automatically detected by Visual Studio and then you'll need to change triplets in the `.vcxproj` (or even better `.vcxproj.user`) file as follows:
