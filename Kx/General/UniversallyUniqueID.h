@@ -48,17 +48,6 @@ namespace KxFramework
 			{
 				return m_ID.IsNull();
 			}
-			constexpr size_t GetHash() const noexcept
-			{
-				size_t hash = m_ID.Data1;
-				hash ^= m_ID.Data2;
-				hash ^= m_ID.Data3;
-				for (uint8_t d4: m_ID.Data4)
-				{
-					hash ^= d4;
-				}
-				return hash;
-			}
 
 			constexpr NativeUUID ToNativeUUID() const noexcept
 			{
@@ -132,20 +121,11 @@ namespace KxFramework
 namespace std
 {
 	template<>
-	struct hash<KxFramework::NativeUUID>
-	{
-		constexpr size_t operator()(const KxFramework::NativeUUID& nativeUUID) const noexcept
-		{
-			return KxFramework::UniversallyUniqueID(nativeUUID).GetHash();
-		}
-	};
-
-	template<>
 	struct hash<KxFramework::UniversallyUniqueID>
 	{
 		constexpr size_t operator()(const KxFramework::UniversallyUniqueID& uuid) const noexcept
 		{
-			return uuid.GetHash();
+			return uuid.ToNativeUUID().GetHash();
 		}
 	};
 }

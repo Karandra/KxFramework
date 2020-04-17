@@ -26,6 +26,18 @@ namespace KxFramework
 
 			return *this;
 		}
+		constexpr size_t GetHash() const noexcept
+		{
+			size_t hash = Data1;
+			hash ^= Data2;
+			hash ^= Data3;
+			for (uint8_t d4: Data4)
+			{
+				hash ^= d4;
+			}
+
+			return hash;
+		}
 
 		explicit constexpr operator bool() const noexcept
 		{

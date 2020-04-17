@@ -58,6 +58,18 @@ namespace KxFramework
 	};
 }
 
+namespace std
+{
+	template<>
+	struct hash<KxFramework::IID>
+	{
+		constexpr size_t operator()(const KxFramework::IID& iid) const noexcept
+		{
+			return iid.ToNativeUUID().GetHash();
+		}
+	};
+}
+
 #define KxDecalreIID(T, ...)	\
 \
 friend class KxFramework::IID;	\
@@ -139,21 +151,27 @@ namespace KxFramework
 				return const_cast<IObject*>(this)->QueryInterface(iid);
 			}
 
-			template<class T> T* QueryInterface() noexcept
+			template<class T>
+			T* QueryInterface() noexcept
 			{
 				return static_cast<T*>(this->QueryInterface(IID::FromType<T>()));
 			}
-			template<class T> const T* QueryInterface() const noexcept
+			
+			template<class T>
+			const T* QueryInterface() const noexcept
 			{
 				return static_cast<const T*>(this->QueryInterface(IID::FromType<T>()));
 			}
 
-			template<class T> bool QueryInterface(T*& ptr) noexcept
+			template<class T>
+			bool QueryInterface(T*& ptr) noexcept
 			{
 				ptr = this->QueryInterface<T>();
 				return ptr != nullptr;
 			}
-			template<class T> bool QueryInterface(const T*& ptr) const noexcept
+			
+			template<class T>
+			bool QueryInterface(const T*& ptr) const noexcept
 			{
 				ptr = this->QueryInterface<T>();
 				return ptr != nullptr;
@@ -181,7 +199,9 @@ namespace KxFramework::RTTI
 	{
 		public:
 			ExtendInterface() = default;
-			template<class... Args> ExtendInterface(Args&&... arg) noexcept
+			
+			template<class... Args>
+			ExtendInterface(Args&&... arg) noexcept
 				:Utility::NthTypeOf<0, TBase...>(std::forward<Args>(arg)...)
 			{
 			}
