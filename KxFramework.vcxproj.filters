@@ -52,12 +52,6 @@
     <Filter Include="Source Files\GUI\Menus">
       <UniqueIdentifier>{4f8ee5ef-125d-45f2-8fa5-32764cd79734}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\General">
-      <UniqueIdentifier>{78ce2f9b-2a99-4d3f-8e20-2ce7526e49da}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\General">
-      <UniqueIdentifier>{04351464-70db-4e69-82eb-8d33f862f80f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\GUI\Controls">
       <UniqueIdentifier>{f01e130d-7ea9-414e-b8c5-c061c1b75cf9}</UniqueIdentifier>
     </Filter>
@@ -78,12 +72,6 @@
     </Filter>
     <Filter Include="Source Files\GUI\DataView2\Editors">
       <UniqueIdentifier>{321f7c2c-c979-46bd-b38d-fc6ed07d9e83}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\General\ComponentSystem">
-      <UniqueIdentifier>{b296e85e-06b9-48e1-820c-8ee15beb6b5d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\General\ComponentSystem">
-      <UniqueIdentifier>{4a75dadd-4514-4c7e-9ed8-32e75e3b7eb5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Kx">
       <UniqueIdentifier>{b754c7f1-7cfc-4648-b498-fd9750d8b242}</UniqueIdentifier>
@@ -479,21 +467,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\DataView2\DragAndDrop.h">
       <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxComponentSystem.h">
-      <Filter>Header Files\General</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\ComponentSystem\ComponentItem.h">
-      <Filter>Header Files\General\ComponentSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\ComponentSystem\IComponentContainer.h">
-      <Filter>Header Files\General\ComponentSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\ComponentSystem\Component.h">
-      <Filter>Header Files\General\ComponentSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\ComponentSystem\ComponentContainer.h">
-      <Filter>Header Files\General\ComponentSystem</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\DataView2\ToolTip.h">
       <Filter>Header Files\GUI\DataView2</Filter>
@@ -1183,6 +1156,9 @@
       <Filter>Kx\System\Private</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Kx\RTTI\ComponentSystem.h">
+      <Filter>Kx\RTTI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxFramework\KxLibrary.cpp">
@@ -1424,18 +1400,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\Common.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\ComponentSystem\ComponentItem.cpp">
-      <Filter>Source Files\General\ComponentSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\ComponentSystem\IComponentContainer.cpp">
-      <Filter>Source Files\General\ComponentSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\ComponentSystem\Component.cpp">
-      <Filter>Source Files\General\ComponentSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\ComponentSystem\ComponentContainer.cpp">
-      <Filter>Source Files\General\ComponentSystem</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\CellState.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
@@ -1792,6 +1756,9 @@
       <Filter>Kx\UI</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Kx\RTTI\ComponentSystem.cpp">
+      <Filter>Kx\RTTI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Kx\System\Private\ErrorCodeNtStatus.i">
