@@ -305,6 +305,7 @@
     <ClInclude Include="Kx\System\ExecutableVersionResource.h" />
     <ClInclude Include="Kx\System\Private\BinaryResourceDefines.h" />
     <ClInclude Include="Kx\System\Private\System.h" />
+    <ClInclude Include="Kx\System\Process.h" />
     <ClInclude Include="Kx\wxWidgets\RTTI.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Kx\Async.hpp" />
@@ -621,6 +622,7 @@
     <ClCompile Include="Kx\System\DynamicLibrary.cpp" />
     <ClCompile Include="Kx\System\ExecutableVersionResource.cpp" />
     <ClCompile Include="Kx\System\Private\System.cpp" />
+    <ClCompile Include="Kx\System\Process.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

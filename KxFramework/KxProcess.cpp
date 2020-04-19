@@ -47,59 +47,6 @@ void KxProcess::RIO_CloseStreams()
 	m_RIO_StreamError = nullptr;
 }
 
-#if defined RtCFunction
-bool KxProcess::WH_RegisterForCreateWindow(DWORD nThreadID)
-{
-	if (WH_CreateWindowHookHandle == nullptr && WH_Callback == nullptr)
-	{
-		using RtCFunctionWrapper = RtCFunctionWrapperT<LRESULT, KxProcess, int, WPARAM, LPARAM>;
-		auto WH_CallbackW = new RtCFunctionWrapper(Lua::IntegerArray{Rt_int32::ClassID, Rt_pointer::ClassID, Rt_pointer::ClassID}, Rt_pointer::ClassID, RtCFunctionABI::CFunction_STDCALL);
-		WH_CallbackW->Wrap([](RtCFunctionWrapper::ClassType* pCF, RtCFunctionWrapper::UserDataType* self, const RtCFunctionWrapper::ArgsTupleType& tArgs) -> RtCFunctionWrapper::RetType
-		{
-			int code = std::get<0>(tArgs);
-			WPARAM wParam = std::get<1>(tArgs);
-			LPARAM lParam = std::get<2>(tArgs);
-
-			switch (code)
-			{
-				case HSHELL_WINDOWCREATED:
-				{
-					HWND hWnd = (HWND)wParam;
-					//DWORD pid = -1;
-					//::GetWindowThreadProcessId(hWnd, &pid);
-					//if (pid == self->GetPID())
-					{
-						auto event = new wxProcessEvent(0, self->GetPID(), self->m_ExitCode);
-						event->SetEventType(KxEVT_WINDOW_CREATED);
-						event->SetEventObject(self);
-						event->SetId((int)hWnd);
-						self->QueueEvent(event);
-					}
-					break;
-				}
-			};
-			return CallNextHookEx(nullptr, code, wParam, lParam);
-		}, this);
-
-		WH_Callback = WH_CallbackW;
-		WH_CreateWindowHookHandle = ::SetWindowsHookExW(WH_SHELL, WH_Callback->GetPointer<HOOKPROC>(), nullptr, nThreadID);
-		return WH_CreateWindowHookHandle;
-	}
-	return false;
-}
-void KxProcess::WH_UnRegisterForCreateWindow()
-{
-	if (WH_CreateWindowHookHandle)
-	{
-		::UnhookWindowsHookEx(WH_CreateWindowHookHandle);
-		WH_CreateWindowHookHandle = nullptr;
-		
-		delete WH_Callback;
-		WH_Callback = nullptr;
-	}
-}
-#endif
-
 BOOL KxProcess::SafeTerminateProcess(HANDLE processHandle, UINT exitCode)
 {
 	HANDLE processHandleDuplicate = INVALID_HANDLE_VALUE;
@@ -157,25 +104,6 @@ BOOL KxProcess::SafeTerminateProcess(HANDLE processHandle, UINT exitCode)
 	}
 	return isSuccess;
 }
-std::vector<uint32_t> KxProcess::EnumProcesses(bool enumX64)
-{
-	(void)enumX64;
-	const DWORD arrayLength = 1024;
-	DWORD list[arrayLength] = {0};
-	std::vector<uint32_t> processes;
-
-	DWORD retSize = 0;
-	if (K32EnumProcesses(list, arrayLength*sizeof(DWORD), &retSize))
-	{
-		DWORD processesCount = retSize / sizeof(DWORD);
-		processes.reserve(processesCount);
-		for (DWORD i = 0; i < processesCount; i++)
-		{
-			processes.push_back(list[i]);
-		}
-	}
-	return processes;
-}
 DWORD KxProcess::GetMainThread(const std::vector<uint32_t>& threadIDsList)
 {
 	DWORD mainThreadID = 0;
@@ -206,24 +134,6 @@ DWORD KxProcess::GetMainThread(const std::vector<uint32_t>& threadIDsList)
 	}
 	return mainThreadID;
 }
-
-#if defined RtCFunction
-bool KxProcess::OnDynamicBind(wxDynamicEventTableEntry& entry)
-{
-	if (entry.m_eventType == KxEVT_WINDOW_CREATED)
-	{
-		return WH_RegisterForCreateWindow(GetMainThread(EnumThreads()));
-	}
-	return wxEvtHandler::OnDynamicBind(entry);
-}
-void KxProcess::OnDynamicUnbind(wxDynamicEventTableEntry& entry)
-{
-	if (entry.m_eventType = KxEVT_WINDOW_CREATED)
-	{
-		WH_UnRegisterForCreateWindow();
-	}
-}
-#endif
 
 KxProcess::KxProcess()
 {
@@ -283,35 +193,6 @@ int KxProcess::Run(KxProcessWaitMode waitMode, bool hideUI)
 }
 bool KxProcess::Find()
 {
-	using namespace KxFramework;
-
-	if (!m_ExecutablePath.IsEmpty())
-	{
-		auto list = EnumProcesses();
-		if (!list.empty())
-		{
-			DWORD length = INT16_MAX;
-			for (DWORD pid: list)
-			{
-				HANDLE processHandle = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, pid);
-				if (processHandle)
-				{
-					wxString current;
-					DWORD thisLength = length;
-					if (::QueryFullProcessImageNameW(processHandle, 0, wxStringBuffer(current, length), &thisLength))
-					{
-						if (FSPath(current) == m_ExecutablePath)
-						{
-							m_PID = ::GetProcessId(processHandle);
-							::CloseHandle(processHandle);
-							return true;
-						}
-					}
-					::CloseHandle(processHandle);
-				}
-			}
-		}
-	}
 	return false;
 }
 DWORD KxProcess::GetPID() const
@@ -488,53 +369,6 @@ const KxProcessEnvMap& KxProcess::GetEnvironment() const
 
 bool KxProcess::Attach(KxProcessWaitMode waitMode)
 {
-	using namespace KxFramework;
-
-	if (m_PID == DefaultPID)
-	{
-		const String thisName = GetImageName().AfterLast(wxS('\\'));
-		if (!thisName.IsEmpty())
-		{
-			for (DWORD pid: EnumProcesses())
-			{
-				const String otherName = KxProcess(pid).GetImageName().AfterLast(wxS('\\'));
-				if (thisName.IsSameAs(otherName, StringOpFlag::IgnoreCase))
-				{
-					m_PID = pid;
-					break;
-				}
-			}
-		}
-	}
-	
-	if (m_PID != DefaultPID)
-	{
-		HANDLE processHandle = ::OpenProcess(SYNCHRONIZE|PROCESS_QUERY_LIMITED_INFORMATION, false, m_PID);
-		if (processHandle)
-		{
-			if (waitMode == KxPROCESS_RUN_ASYNC)
-			{
-				auto thread = new KxProcessThread(this, waitMode, false, processHandle);
-				if (thread->Run() != wxTHREAD_NO_ERROR)
-				{
-					delete thread;
-					if (IsDetached())
-					{
-						delete this;
-					}
-
-					::CloseHandle(processHandle);
-					return false;
-				}
-				return true;
-			}
-			else if (waitMode == KxPROCESS_RUN_SYNC)
-			{
-				KxProcessThread(this, waitMode, false, processHandle).RunHere();
-				return true;
-			}
-		}
-	}
 	return false;
 }
 std::vector<uint32_t> KxProcess::EnumThreads() const

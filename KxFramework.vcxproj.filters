@@ -1168,6 +1168,9 @@
     <ClInclude Include="Kx\System\ExecutableVersionResource.h">
       <Filter>Kx\System</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\System\Process.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxFramework\KxProcess.cpp">
@@ -1772,6 +1775,9 @@
       <Filter>Kx\System\Private</Filter>
     </ClCompile>
     <ClCompile Include="Kx\System\ExecutableVersionResource.cpp">
+      <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\Process.cpp">
       <Filter>Kx\System</Filter>
     </ClCompile>
   </ItemGroup>

@@ -67,18 +67,7 @@ class KX_API KxProcess: public wxEvtHandler, public KxFramework::WithOptions<KxP
 		wxPipeInputStream* m_RIO_StreamOut = nullptr;
 		wxPipeInputStream* m_RIO_StreamError = nullptr;
 
-		// Windows hooks
-		#if defined RtCFunction
-		RtCFunction* WH_Callback = nullptr;
-		HHOOK WH_CreateWindowHookHandle = nullptr;
-		#endif
-
 	private:
-		#if defined RtCFunction
-		virtual bool OnDynamicBind(wxDynamicEventTableEntry& entry) override;
-		virtual void OnDynamicUnbind(wxDynamicEventTableEntry& entry) override;
-		#endif
-
 		bool IsDetached() const
 		{
 			return IsOptionEnabled(KxPROCESS_DETACHED);
@@ -89,15 +78,8 @@ class KX_API KxProcess: public wxEvtHandler, public KxFramework::WithOptions<KxP
 		static wxString RIO_StreamDataToString(const wxMemoryBuffer& buffer);
 		void RIO_CloseStreams();
 
-		// Window hooks
-		#if defined RtCFunction
-		bool WH_RegisterForCreateWindow(DWORD nThreadID);
-		void WH_UnRegisterForCreateWindow();
-		#endif
-
 	public:
 		static BOOL SafeTerminateProcess(HANDLE processHandle, UINT exitCode);
-		static std::vector<uint32_t> EnumProcesses(bool enumX64 = false);
 		static DWORD GetMainThread(const std::vector<uint32_t>& threadIDsList);
 		static DWORD GetCurrentThreadID()
 		{
