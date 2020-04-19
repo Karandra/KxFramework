@@ -8,6 +8,12 @@ namespace KxFramework::Localization
 	{
 		uint16_t ID = 0;
 		uint16_t SortOrder = 0;
+
+		LangID() noexcept = default;
+		LangID(uint16_t id, uint16_t sortOrder) noexcept
+			:ID(id), SortOrder(sortOrder)
+		{
+		}
 	};
 }
 
@@ -47,6 +53,7 @@ namespace KxFramework
 
 		public:
 			bool IsNull() const noexcept;
+			bool IsInvariant() const noexcept;
 			String GetName() const
 			{
 				return m_LocaleName;
@@ -71,7 +78,7 @@ namespace KxFramework
 				return IsNull();
 			}
 
-			bool operator==(const Locale& other) noexcept
+			bool operator==(const Locale& other) const noexcept
 			{
 				if (this == &other)
 				{
@@ -83,7 +90,7 @@ namespace KxFramework
 				}
 				return false;
 			}
-			bool operator!=(const Locale& other) noexcept
+			bool operator!=(const Locale& other) const noexcept
 			{
 				return !(*this == other);
 			}

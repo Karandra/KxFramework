@@ -138,21 +138,21 @@ namespace KxFramework
 				};
 				return {};
 			}
-			String GetMessage() const
+			String GetMessage(const Locale& locale = {}) const
 			{
 				switch (m_Category)
 				{
 					case ErrorCodeCategory::Win32:
 					{
-						return Win32Error(m_Value).GetMessage();
+						return Win32Error(m_Value).GetMessage(locale);
 					}
 					case ErrorCodeCategory::NtStatus:
 					{
-						return NtStatus(m_Value).GetMessage();
+						return NtStatus(m_Value).GetMessage(locale);
 					}
 					case ErrorCodeCategory::HResult:
 					{
-						return HResult(m_Value).GetMessage();
+						return HResult(m_Value).GetMessage(locale);
 					}
 				};
 				return {};

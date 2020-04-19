@@ -2,7 +2,8 @@
 #include "Common.h"
 #include "SciterAPI.h"
 #include "Internal.h"
-#include <KxFramework/KxLibrary.h>
+#include "Kx/System/DynamicLibrary.h"
+#include "Kx/System/ExecutableVersionResource.h"
 
 namespace KxFramework::Sciter
 {
@@ -14,12 +15,15 @@ namespace KxFramework::Sciter
 	}
 	Version GetLibraryVersion()
 	{
-		if (KxLibrary library(reinterpret_cast<HMODULE>(g_SciterLibrary)); library.IsOK())
+		if (g_SciterLibrary)
 		{
-			KxLibraryVersionInfo versionInfo = KxLibrary::GetVersionInfoFromFile(library.GetFileName());
-			if (versionInfo.IsOK())
+			DynamicLibrary library;
+			library.AttachHandle(g_SciterLibrary);
+
+			ExecutableVersionResource versionResource(library.GetFilePath());
+			if (versionResource)
 			{
-				return String(versionInfo.GetString(wxS("ProductVersionString")));
+				return versionResource.GetAnyVersion();
 			}
 		}
 		return {};

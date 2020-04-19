@@ -195,9 +195,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="KxFramework\KxLibrary.h">
-      <Filter>Header Files\System</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxProcess.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
@@ -1159,11 +1156,20 @@
     <ClInclude Include="Kx\wxWidgets\RTTI.h">
       <Filter>Kx\wxWidgets</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\System\DynamicLibrary.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\Private\System.h">
+      <Filter>Kx\System\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\Private\BinaryResourceDefines.h">
+      <Filter>Kx\System\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\ExecutableVersionResource.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="KxFramework\KxLibrary.cpp">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxProcess.cpp">
       <Filter>Source Files\System</Filter>
     </ClCompile>
@@ -1758,6 +1764,15 @@
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Kx\RTTI\ComponentSystem.cpp">
       <Filter>Kx\RTTI</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\DynamicLibrary.cpp">
+      <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\Private\System.cpp">
+      <Filter>Kx\System\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\ExecutableVersionResource.cpp">
+      <Filter>Kx\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

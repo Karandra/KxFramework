@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Kx/General/String.h"
+#include "Kx/Localization/Locale.h"
 #include "Private/ErrorCodeValue.h"
 
 namespace KxFramework
@@ -38,7 +39,7 @@ namespace KxFramework
 			{
 				return {};
 			}
-			String GetMessage() const
+			String GetMessage(const Locale& locale = {}) const
 			{
 				return {};
 			}
@@ -67,7 +68,7 @@ namespace KxFramework
 			}
 
 			String ToString() const;
-			String GetMessage() const;
+			String GetMessage(const Locale& locale = {}) const;
 	};
 
 	class HResult final: public System::Private::ErrorCodeValue<HResult, int32_t>
@@ -94,7 +95,7 @@ namespace KxFramework
 			}
 
 			String ToString() const;
-			String GetMessage() const;
+			String GetMessage(const Locale& locale = {}) const;
 
 			String GetSource() const;
 			String GetHelpFile() const;
@@ -129,7 +130,7 @@ namespace KxFramework
 			}
 
 			String ToString() const;
-			String GetMessage() const;
+			String GetMessage(const Locale& locale = {}) const;
 			uint32_t GetFacility() const noexcept;
 	};
 }

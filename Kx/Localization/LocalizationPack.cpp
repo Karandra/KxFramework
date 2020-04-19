@@ -2,14 +2,14 @@
 #include "LocalizationPack.h"
 #include "Kx/General/XMLDocument.h"
 #include "Kx/System/SystemInformation.h"
-#include "KxFramework/KxLibrary.h"
+#include "Kx/System/DynamicLibrary.h"
 
 namespace
 {
-	constexpr wxChar g_LibraryResourceType[] = wxS("Translation");
+	constexpr wxChar g_EmbeddedResourceType[] = wxS("Translation");
 	
-	static const KxFramework::LocalizationPack g_NullLocalizationPack;
-	static const KxFramework::LocalizationPack* g_ActiveLocalizationPack = &g_NullLocalizationPack;
+	const KxFramework::LocalizationPack g_NullLocalizationPack;
+	const KxFramework::LocalizationPack* g_ActiveLocalizationPack = &g_NullLocalizationPack;
 
 	KxFramework::Locale LocaleFromFileName(const KxFramework::String& name)
 	{
@@ -77,27 +77,28 @@ namespace KxFramework
 		return *previous;
 	}
 
-	bool LocalizationPack::Load(const String& xml, Locale locale)
+	bool LocalizationPack::Load(const String& xml, const Locale& locale)
 	{
-		m_Locale = std::move(locale);
+		m_Locale = locale;
 		return DoLoadLocalizationPack(XMLDocument(xml), m_StringTable, m_Author, m_Description);
 	}
-	bool LocalizationPack::Load(wxInputStream& stream, Locale locale)
+	bool LocalizationPack::Load(wxInputStream& stream, const Locale& locale)
 	{
-		m_Locale = std::move(locale);
+		m_Locale = locale;
 		return DoLoadLocalizationPack(XMLDocument(stream), m_StringTable, m_Author, m_Description);
 	}
-	bool LocalizationPack::Load(const KxLibrary& library, const FSPath& name, Locale locale)
+	bool LocalizationPack::Load(const DynamicLibrary& library, const FSPath& name, const Locale& locale)
 	{
-		if (library.IsOK())
+		if (library)
 		{
-			if (UntypedMemorySpan data = library.GetResource(g_LibraryResourceType, name.GetName()))
+			if (auto data = library.GetResource(g_EmbeddedResourceType, name.GetName()))
 			{
-				if (!locale)
+				Locale usedLcoale = locale;
+				if (!usedLcoale)
 				{
-					locale = LocaleFromFileName(name);
+					usedLcoale = LocaleFromFileName(name);
 				}
-				return Load(String::FromUTF8(reinterpret_cast<const char*>(data.data()), data.size()), std::move(locale));
+				return Load(String::FromUTF8(data), std::move(usedLcoale));
 			}
 		}
 		return false;
@@ -113,24 +114,14 @@ namespace KxFramework::Localization
 			return OnSearchTranslation(func, std::move(item));
 		}, wxS("*.xml"), FSEnumItemsFlag::LimitToFiles);
 	}
-	size_t SearchLocalizationPacks(const KxLibrary& library, std::function<bool(Locale, FileItem)> func)
+	size_t SearchLocalizationPacks(const DynamicLibrary& library, std::function<bool(Locale, FileItem)> func)
 	{
-		if (library.IsOK())
+		if (library)
 		{
-			auto resourseList = library.EnumResources(g_LibraryResourceType);
-			if (resourseList.empty())
+			return library.EnumResourceNames(g_EmbeddedResourceType, [&](String name)
 			{
-				size_t count = 0;
-				for (const wxAny& any: resourseList)
-				{
-					count++;
-					if (!OnSearchTranslation(func, FileItem(any.As<wxString>())))
-					{
-						break;
-					}
-				}
-				return count;
-			}
+				return OnSearchTranslation(func, FileItem(std::move(name)));
+			});
 		}
 		return 0;
 	}

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "SciterAPI.h"
 #include "Common.h"
-#include <KxFramework/KxLibrary.h>
 
 namespace KxFramework::Sciter
 {

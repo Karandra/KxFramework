@@ -159,6 +159,10 @@ namespace KxFramework
 	{
 		return *m_LocaleName == g_InvalidChar || !::IsValidLocaleName(m_LocaleName);
 	}
+	bool Locale::IsInvariant() const noexcept
+	{
+		return !IsNull() && std::wstring_view(m_LocaleName) == LOCALE_NAME_INVARIANT;
+	}
 
 	std::optional<String> Locale::GetOption(LocaleStrOption option) const
 	{
@@ -199,11 +203,7 @@ namespace KxFramework
 	{
 		if (auto value = GetLocaleInfoInt(m_LocaleName, LOCALE_ILANGUAGE))
 		{
-			Localization::LangID langID;
-			langID.ID = PRIMARYLANGID(*value);
-			langID.ID = SUBLANGID(*value);
-
-			return langID;
+			return Localization::LangID(PRIMARYLANGID(*value), SUBLANGID(*value));
 		}
 		return {};
 	}

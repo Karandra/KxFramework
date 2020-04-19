@@ -6,7 +6,11 @@
 #include "Kx/FileSystem/IFileSystem.h"
 #include "Locale.h"
 #include <unordered_map>
-class KxLibrary;
+
+namespace KxFramework
+{
+	class DynamicLibrary;
+}
 
 namespace KxFramework
 {
@@ -64,9 +68,9 @@ namespace KxFramework
 				return Localization::GetStandardLocalizedString(id);
 			}
 
-			bool Load(const String& xml, Locale locale);
-			bool Load(wxInputStream& stream, Locale locale);
-			bool Load(const KxLibrary& library, const FSPath& name, Locale locale = {});
+			bool Load(const String& xml, const Locale& locale);
+			bool Load(wxInputStream& stream, const Locale& locale);
+			bool Load(const DynamicLibrary& library, const FSPath& name, const Locale& locale = {});
 
 		public:
 			explicit operator bool() const noexcept
@@ -86,5 +90,5 @@ namespace KxFramework
 namespace KxFramework::Localization
 {
 	size_t SearchLocalizationPacks(const IFileSystem& fileSystem, const FSPath& directory, std::function<bool(Locale, FileItem)> func);
-	size_t SearchLocalizationPacks(const KxLibrary& library, std::function<bool(Locale, FileItem)> func);
+	size_t SearchLocalizationPacks(const DynamicLibrary& library, std::function<bool(Locale, FileItem)> func);
 }

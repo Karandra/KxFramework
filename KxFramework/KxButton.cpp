@@ -1,8 +1,11 @@
 #include "stdafx.h"
 #include "KxFramework/KxButton.h"
-#include "KxFramework/KxLibrary.h"
 #include "KxFramework/KxMenu.h"
 #include "Kx/Drawing/UxTheme.h"
+#include "Kx/System/DynamicLibrary.h"
+#include "Kx/System/Private/System.h"
+
+using namespace KxFramework;
 
 KxEVENT_DEFINE_GLOBAL_AS(wxCommandEvent, BUTTON, wxEVT_BUTTON);
 KxEVENT_DEFINE_GLOBAL(wxContextMenuEvent, BUTTON_MENU);
@@ -270,8 +273,8 @@ void KxButton::SetAuthNeeded(bool show)
 
 	if (m_IsAuthNeeded)
 	{
-		KxLibrary library("ImageRes.dll", LOAD_LIBRARY_AS_DATAFILE);
-		if (library.IsOK())
+		DynamicLibrary library(wxS("ImageRes.dll"), DynamicLibraryLoadFlag::DataFile);
+		if (library)
 		{
 			int iconSize = 16;
 			const int height = GetSize().GetHeight();
@@ -300,12 +303,10 @@ void KxButton::SetAuthNeeded(bool show)
 				iconSize = 512;
 			}
 
-			auto langs = library.EnumResourceLanguages(KxLibrary::ResIDToName(RT_GROUP_ICON), wxS("78"));
-			if (!langs.empty())
+			wxIcon icon = library.GetIconResource(wxS("78"), wxSize(iconSize, iconSize));
+			if (icon.IsOk())
 			{
-				wxBitmap bitmap;
-				bitmap.CopyFromIcon(library.GetIcon("78", wxSize(iconSize, iconSize), langs[0]));
-				SetBitmap(bitmap);
+				SetBitmap(Drawing::ToBitmap(icon));
 				return;
 			}
 		}

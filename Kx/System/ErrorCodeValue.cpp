@@ -3,6 +3,7 @@
 #include "Kx/General/UniversallyUniqueID.h"
 #include "Kx/Utility/CallAtScopeExit.h"
 #include "Private/IncludeNtStatus.h"
+#include "Private/System.h"
 
 #include "Private/BeginIncludeCOM.h"
 namespace
@@ -14,30 +15,6 @@ namespace
 
 namespace
 {
-	wxString FormatSystemMessage(uint32_t flags, const void* source, uint32_t messageID, uint32_t langID)
-	{
-		using namespace KxFramework;
-
-		wchar_t* formattedMessage = nullptr;
-		uint32_t length = ::FormatMessageW(flags|FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_IGNORE_INSERTS,
-										   source,
-										   messageID,
-										   MAKELCID(langID, SORT_DEFAULT),
-										   reinterpret_cast<LPWSTR>(&formattedMessage),
-										   0,
-										   nullptr
-		);
-		if (length != 0 && formattedMessage)
-		{
-			Utility::CallAtScopeExit atExit([&]()
-			{
-				::LocalFree(formattedMessage);
-			});
-			return wxString(formattedMessage, length);
-		}
-		return {};
-	}
-
 	// Inclusion of 'NtDef.h' causes too much compile errors
 	bool NT_SUCCESS(NTSTATUS status)
 	{
@@ -77,9 +54,9 @@ namespace KxFramework
 	{
 		return {};
 	}
-	String Win32Error::GetMessage() const
+	String Win32Error::GetMessage(const Locale& locale) const
 	{
-		return FormatSystemMessage(FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_MAX_WIDTH_MASK, nullptr, GetValue(), 0);
+		return System::Private::FormatMessage(nullptr, GetValue(), FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_MAX_WIDTH_MASK, locale);
 	}
 }
 
@@ -102,7 +79,7 @@ namespace KxFramework
 	{
 		return {};
 	}
-	String HResult::GetMessage() const
+	String HResult::GetMessage(const Locale& locale) const
 	{
 		return _com_error(GetValue()).ErrorMessage();
 	}
@@ -160,9 +137,9 @@ namespace KxFramework
 	{
 		return {};
 	}
-	String NtStatus::GetMessage() const
+	String NtStatus::GetMessage(const Locale& locale) const
 	{
-		return FormatSystemMessage(FORMAT_MESSAGE_FROM_HMODULE|FORMAT_MESSAGE_MAX_WIDTH_MASK, ::GetModuleHandleW(L"NtDLL.dll"), GetValue(), 0);
+		return System::Private::FormatMessage(::GetModuleHandleW(L"NtDLL.dll"), GetValue(), FORMAT_MESSAGE_FROM_HMODULE, locale);
 	}
 	uint32_t NtStatus::GetFacility() const noexcept
 	{
