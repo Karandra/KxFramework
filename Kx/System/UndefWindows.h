@@ -64,3 +64,4 @@
 #undef CompareString
 #undef EnumDisplayDevices
 #undef ExpandEnvironmentStrings
+#undef EnumResourceNames
