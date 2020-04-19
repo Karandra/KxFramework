@@ -51,7 +51,6 @@
 #undef FormatMessage
 #undef GetCommandLine
 #undef CreateProcess
-#undef EnumProcesses
 #undef GetUserName
 #undef FindFirstFile
 #undef FindNextFile
