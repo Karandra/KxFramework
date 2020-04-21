@@ -43,4 +43,92 @@ namespace KxFramework::System::Private
 	{
 		return MAKEINTRESOURCEW(resID);
 	}
+
+	uint32_t MapSystemProcessAccess(SystemProcessAccess access) noexcept
+	{
+		if (access == SystemProcessAccess::Everything)
+		{
+			return PROCESS_ALL_ACCESS;
+		}
+		else
+		{
+			uint32_t nativeAccess = 0;
+			Utility::AddFlagRef(nativeAccess, PROCESS_CREATE_PROCESS, access & SystemProcessAccess::CreateProcess);
+			Utility::AddFlagRef(nativeAccess, PROCESS_CREATE_THREAD, access & SystemProcessAccess::CreateThread);
+			Utility::AddFlagRef(nativeAccess, PROCESS_QUERY_INFORMATION, access & SystemProcessAccess::QueryInformation);
+			Utility::AddFlagRef(nativeAccess, PROCESS_QUERY_LIMITED_INFORMATION, access & SystemProcessAccess::QueryLimitedInformation);
+			Utility::AddFlagRef(nativeAccess, PROCESS_SET_INFORMATION, access & SystemProcessAccess::SetInformation);
+			Utility::AddFlagRef(nativeAccess, PROCESS_SUSPEND_RESUME, access & SystemProcessAccess::SuspendResume);
+			Utility::AddFlagRef(nativeAccess, PROCESS_TERMINATE, access & SystemProcessAccess::Terminate);
+			Utility::AddFlagRef(nativeAccess, PROCESS_VM_OPERATION, access & SystemProcessAccess::VMOperation);
+			Utility::AddFlagRef(nativeAccess, PROCESS_VM_READ, access & SystemProcessAccess::VMRead);
+			Utility::AddFlagRef(nativeAccess, PROCESS_VM_WRITE, access & SystemProcessAccess::VMWrite);
+			Utility::AddFlagRef(nativeAccess, SYNCHRONIZE, access & SystemProcessAccess::Synchronize);
+
+			return nativeAccess;
+		}
+	}
+
+	std::optional<uint32_t> MapSystemProcessPriority(SystemProcessPriority priority) noexcept
+	{
+		switch (priority)
+		{
+			case SystemProcessPriority::AboveNormal:
+			{
+				return ABOVE_NORMAL_PRIORITY_CLASS;
+			}
+			case SystemProcessPriority::BelowNormal:
+			{
+				return BELOW_NORMAL_PRIORITY_CLASS;
+			}
+			case SystemProcessPriority::High:
+			{
+				return HIGH_PRIORITY_CLASS;
+			}
+			case SystemProcessPriority::Idle:
+			{
+				return IDLE_PRIORITY_CLASS;
+			}
+			case SystemProcessPriority::Normal:
+			{
+				return NORMAL_PRIORITY_CLASS;
+			}
+			case SystemProcessPriority::Realtime:
+			{
+				return REALTIME_PRIORITY_CLASS;
+			}
+		};
+		return {};
+	}
+	SystemProcessPriority MapSystemProcessPriority(uint32_t priority) noexcept
+	{
+		switch (priority)
+		{
+			case ABOVE_NORMAL_PRIORITY_CLASS:
+			{
+				return SystemProcessPriority::AboveNormal;
+			}
+			case BELOW_NORMAL_PRIORITY_CLASS:
+			{
+				return SystemProcessPriority::BelowNormal;
+			}
+			case HIGH_PRIORITY_CLASS:
+			{
+				return SystemProcessPriority::High;
+			}
+			case IDLE_PRIORITY_CLASS:
+			{
+				return SystemProcessPriority::Idle;
+			}
+			case NORMAL_PRIORITY_CLASS:
+			{
+				return SystemProcessPriority::Normal;
+			}
+			case REALTIME_PRIORITY_CLASS:
+			{
+				return SystemProcessPriority::Realtime;
+			}
+		};
+		return SystemProcessPriority::None;
+	}
 }

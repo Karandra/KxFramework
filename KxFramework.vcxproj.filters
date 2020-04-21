@@ -13,9 +13,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Header Files\System">
-      <UniqueIdentifier>{35a0ad53-72d1-47cc-be83-6ab87cda5688}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\GUI">
       <UniqueIdentifier>{6c310c16-9644-4de9-afd3-8862008629ff}</UniqueIdentifier>
     </Filter>
@@ -30,9 +27,6 @@
     </Filter>
     <Filter Include="Header Files\GUI\Windows">
       <UniqueIdentifier>{75e0a548-2dc9-4623-a2c1-9daef5598f15}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\System">
-      <UniqueIdentifier>{849b76ae-a5dc-47bf-8753-1b70f7aa091a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\GUI">
       <UniqueIdentifier>{60049398-3826-4dd1-9fea-0cca7f82949e}</UniqueIdentifier>
@@ -193,14 +187,11 @@
     <Filter Include="Source Files\GUI\Events">
       <UniqueIdentifier>{e19724b4-11bc-44f5-a040-78994c9ee6ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\System\SystemProcess">
+      <UniqueIdentifier>{a47c3ad0-99a9-47ac-abb2-cebc2abc27b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="KxFramework\KxProcess.h">
-      <Filter>Header Files\System</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxProcessThread.h">
-      <Filter>Header Files\System</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxTopLevelWindow.h">
       <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
@@ -1168,17 +1159,32 @@
     <ClInclude Include="Kx\System\ExecutableVersionResource.h">
       <Filter>Kx\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\Process.h">
+    <ClInclude Include="Kx\System\SystemProcess\RunningSystemProcess.h">
+      <Filter>Kx\System\SystemProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\SystemProcess\ISystemProcess.h">
+      <Filter>Kx\System\SystemProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\SystemProcess\ISystemProcessStdIO.h">
+      <Filter>Kx\System\SystemProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\SystemProcess\SystemProcessInfo.h">
+      <Filter>Kx\System\SystemProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\SystemProcess\RunningSystemProcessStdIO.h">
+      <Filter>Kx\System\SystemProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\SystemProcess\ProcessEvent.h">
+      <Filter>Kx\System\SystemProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\SystemProcess\CreateProcessExecutor.h">
+      <Filter>Kx\System\SystemProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\SystemProcess.h">
       <Filter>Kx\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="KxFramework\KxProcess.cpp">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxProcessThread.cpp">
-      <Filter>Source Files\System</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxTopLevelWindow.cpp">
       <Filter>Source Files\GUI\Windows</Filter>
     </ClCompile>
@@ -1777,7 +1783,22 @@
     <ClCompile Include="Kx\System\ExecutableVersionResource.cpp">
       <Filter>Kx\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\Process.cpp">
+    <ClCompile Include="Kx\System\SystemProcess\RunningSystemProcess.cpp">
+      <Filter>Kx\System\SystemProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\SystemProcess\SystemProcessInfo.cpp">
+      <Filter>Kx\System\SystemProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\SystemProcess\RunningSystemProcessStdIO.cpp">
+      <Filter>Kx\System\SystemProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\SystemProcess\ProcessEvent.cpp">
+      <Filter>Kx\System\SystemProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\SystemProcess\CreateProcessExecutor.cpp">
+      <Filter>Kx\System\SystemProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\SystemProcess.cpp">
       <Filter>Kx\System</Filter>
     </ClCompile>
   </ItemGroup>

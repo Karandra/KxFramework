@@ -10,4 +10,9 @@ namespace KxFramework::System::Private
 	String ResourceTypeToName(size_t id);
 	String ResourceTypeToName(const wchar_t* id);
 	const wchar_t* MakeIntResource(int resID);
+
+	uint32_t MapSystemProcessAccess(SystemProcessAccess access) noexcept;
+
+	std::optional<uint32_t> MapSystemProcessPriority(SystemProcessPriority priority) noexcept;
+	SystemProcessPriority MapSystemProcessPriority(uint32_t priority) noexcept;
 }

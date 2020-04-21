@@ -272,9 +272,7 @@
     <ClInclude Include="KxFramework\KxMenuItem.h" />
     <ClInclude Include="KxFramework\KxNotebook.h" />
     <ClInclude Include="KxFramework\KxPanel.h" />
-    <ClInclude Include="KxFramework\KxProcess.h" />
     <ClInclude Include="KxFramework\KxProcessEvent.h" />
-    <ClInclude Include="KxFramework\KxProcessThread.h" />
     <ClInclude Include="KxFramework\KxProgressBar.h" />
     <ClInclude Include="KxFramework\KxProgressDialog.h" />
     <ClInclude Include="KxFramework\KxRadioButton.h" />
@@ -305,7 +303,14 @@
     <ClInclude Include="Kx\System\ExecutableVersionResource.h" />
     <ClInclude Include="Kx\System\Private\BinaryResourceDefines.h" />
     <ClInclude Include="Kx\System\Private\System.h" />
-    <ClInclude Include="Kx\System\Process.h" />
+    <ClInclude Include="Kx\System\SystemProcess.h" />
+    <ClInclude Include="Kx\System\SystemProcess\CreateProcessExecutor.h" />
+    <ClInclude Include="Kx\System\SystemProcess\ISystemProcess.h" />
+    <ClInclude Include="Kx\System\SystemProcess\ISystemProcessStdIO.h" />
+    <ClInclude Include="Kx\System\SystemProcess\ProcessEvent.h" />
+    <ClInclude Include="Kx\System\SystemProcess\RunningSystemProcess.h" />
+    <ClInclude Include="Kx\System\SystemProcess\RunningSystemProcessStdIO.h" />
+    <ClInclude Include="Kx\System\SystemProcess\SystemProcessInfo.h" />
     <ClInclude Include="Kx\wxWidgets\RTTI.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Kx\Async.hpp" />
@@ -592,9 +597,7 @@
     <ClCompile Include="KxFramework\KxMenuItem.cpp" />
     <ClCompile Include="KxFramework\KxNotebook.cpp" />
     <ClCompile Include="KxFramework\KxPanel.cpp" />
-    <ClCompile Include="KxFramework\KxProcess.cpp" />
     <ClCompile Include="KxFramework\KxProcessEvent.cpp" />
-    <ClCompile Include="KxFramework\KxProcessThread.cpp" />
     <ClCompile Include="KxFramework\KxProgressBar.cpp" />
     <ClCompile Include="KxFramework\KxProgressDialog.cpp" />
     <ClCompile Include="KxFramework\KxRadioButton.cpp" />
@@ -622,7 +625,12 @@
     <ClCompile Include="Kx\System\DynamicLibrary.cpp" />
     <ClCompile Include="Kx\System\ExecutableVersionResource.cpp" />
     <ClCompile Include="Kx\System\Private\System.cpp" />
-    <ClCompile Include="Kx\System\Process.cpp" />
+    <ClCompile Include="Kx\System\SystemProcess.cpp" />
+    <ClCompile Include="Kx\System\SystemProcess\CreateProcessExecutor.cpp" />
+    <ClCompile Include="Kx\System\SystemProcess\ProcessEvent.cpp" />
+    <ClCompile Include="Kx\System\SystemProcess\RunningSystemProcess.cpp" />
+    <ClCompile Include="Kx\System\SystemProcess\RunningSystemProcessStdIO.cpp" />
+    <ClCompile Include="Kx\System\SystemProcess\SystemProcessInfo.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

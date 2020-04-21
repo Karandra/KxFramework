@@ -1,7 +1,8 @@
 #include "stdafx.h"
-#include "Process.h"
+#include "RunningSystemProcess.h"
 #include "Kx/System/NativeAPI.h"
 #include "Kx/System/ErrorCodeValue.h"
+#include "Kx/System/Private/System.h"
 #include "Kx/FileSystem/NativeFileSystem.h"
 #include "Kx/Utility/Common.h"
 #include "Kx/Utility/CallAtScopeExit.h"
@@ -11,40 +12,13 @@
 #include <PsAPI.h>
 #include <WInternl.h>
 #include <TlHelp32.h>
-#include "UndefWindows.h"
+#include "Kx/System/UndefWindows.h"
 
 namespace
 {
 	// Get environment variables of another process
 	// http://stackoverflow.com/questions/38297878/get-startupinfo-for-given-process
 	// https://msdn.microsoft.com/en-us/library/bb432286(v=vs.85).aspx
-
-	constexpr DWORD MapSystemProcessAccess(KxFramework::SystemProcessAccess access) noexcept
-	{
-		using namespace KxFramework;
-
-		if (access == SystemProcessAccess::Everything)
-		{
-			return PROCESS_ALL_ACCESS;
-		}
-		else
-		{
-			DWORD nativeAccess = 0;
-			Utility::AddFlagRef(nativeAccess, PROCESS_CREATE_PROCESS, access & SystemProcessAccess::CreateProcess);
-			Utility::AddFlagRef(nativeAccess, PROCESS_CREATE_THREAD, access & SystemProcessAccess::CreateThread);
-			Utility::AddFlagRef(nativeAccess, PROCESS_QUERY_INFORMATION, access & SystemProcessAccess::QueryInformation);
-			Utility::AddFlagRef(nativeAccess, PROCESS_QUERY_LIMITED_INFORMATION, access & SystemProcessAccess::QueryLimitedInformation);
-			Utility::AddFlagRef(nativeAccess, PROCESS_SET_INFORMATION, access & SystemProcessAccess::SetInformation);
-			Utility::AddFlagRef(nativeAccess, PROCESS_SUSPEND_RESUME, access & SystemProcessAccess::SuspendResume);
-			Utility::AddFlagRef(nativeAccess, PROCESS_TERMINATE, access & SystemProcessAccess::Terminate);
-			Utility::AddFlagRef(nativeAccess, PROCESS_VM_OPERATION, access & SystemProcessAccess::VMOperation);
-			Utility::AddFlagRef(nativeAccess, PROCESS_VM_READ, access & SystemProcessAccess::VMRead);
-			Utility::AddFlagRef(nativeAccess, PROCESS_VM_WRITE, access & SystemProcessAccess::VMWrite);
-			Utility::AddFlagRef(nativeAccess, SYNCHRONIZE, access & SystemProcessAccess::Synchronize);
-
-			return nativeAccess;
-		}
-	}
 
 	bool SafeTerminateProcess(HANDLE processHandle, uint32_t exitCode) noexcept
 	{
@@ -125,7 +99,7 @@ namespace KxFramework
 
 	void RunningSystemProcess::Open(uint32_t pid, SystemProcessAccess access)
 	{
-		m_Handle = ::OpenProcess(MapSystemProcessAccess(access), FALSE, pid);
+		m_Handle = ::OpenProcess(System::Private::MapSystemProcessAccess(access), FALSE, pid);
 	}
 	void RunningSystemProcess::Close()
 	{
@@ -159,64 +133,14 @@ namespace KxFramework
 	
 	SystemProcessPriority RunningSystemProcess::GetPriority() const
 	{
-		switch (::GetPriorityClass(m_Handle))
-		{
-			case ABOVE_NORMAL_PRIORITY_CLASS:
-			{
-				return SystemProcessPriority::AboveNormal;
-			}
-			case BELOW_NORMAL_PRIORITY_CLASS:
-			{
-				return SystemProcessPriority::BelowNormal;
-			}
-			case HIGH_PRIORITY_CLASS:
-			{
-				return SystemProcessPriority::High;
-			}
-			case IDLE_PRIORITY_CLASS:
-			{
-				return SystemProcessPriority::Idle;
-			}
-			case NORMAL_PRIORITY_CLASS:
-			{
-				return SystemProcessPriority::Normal;
-			}
-			case REALTIME_PRIORITY_CLASS:
-			{
-				return SystemProcessPriority::Realtime;
-			}
-		};
-		return SystemProcessPriority::None;
+		return System::Private::MapSystemProcessPriority(::GetPriorityClass(m_Handle));
 	}
 	bool RunningSystemProcess::SetPriority(SystemProcessPriority value)
 	{
-		switch (value)
+		if (auto priority = System::Private::MapSystemProcessPriority(value))
 		{
-			case SystemProcessPriority::AboveNormal:
-			{
-				return ::SetPriorityClass(m_Handle, ABOVE_NORMAL_PRIORITY_CLASS);
-			}
-			case SystemProcessPriority::BelowNormal:
-			{
-				return ::SetPriorityClass(m_Handle, BELOW_NORMAL_PRIORITY_CLASS);
-			}
-			case SystemProcessPriority::High:
-			{
-				return ::SetPriorityClass(m_Handle, HIGH_PRIORITY_CLASS);
-			}
-			case SystemProcessPriority::Idle:
-			{
-				return ::SetPriorityClass(m_Handle, IDLE_PRIORITY_CLASS);
-			}
-			case SystemProcessPriority::Normal:
-			{
-				return ::SetPriorityClass(m_Handle, NORMAL_PRIORITY_CLASS);
-			}
-			case SystemProcessPriority::Realtime:
-			{
-				return ::SetPriorityClass(m_Handle, REALTIME_PRIORITY_CLASS);
-			}
-		};
+			return ::SetPriorityClass(m_Handle, *priority);
+		}
 		return false;
 	}
 
@@ -237,6 +161,23 @@ namespace KxFramework
 	bool RunningSystemProcess::Terminate(uint32_t exitCode, bool force)
 	{
 		return force ? ::TerminateProcess(m_Handle, exitCode) : SafeTerminateProcess(m_Handle, exitCode);
+	}
+
+	bool RunningSystemProcess::SuspendProcess()
+	{
+		if (NativeAPI::NtDLL::NtSuspendProcess)
+		{
+			return NativeAPI::NtDLL::NtSuspendProcess(m_Handle) != 0;
+		}
+		return false;
+	}
+	bool RunningSystemProcess::ResumeProcess()
+	{
+		if (NativeAPI::NtDLL::NtResumeProcess)
+		{
+			return NativeAPI::NtDLL::NtResumeProcess(m_Handle) != 0;
+		}
+		return false;
 	}
 
 	FSPath RunningSystemProcess::GetExecutablePath() const
@@ -408,44 +349,5 @@ namespace KxFramework
 			}
 			return true;
 		});
-	}
-}
-
-namespace KxFramework
-{
-	SystemProcessInfo SystemProcessInfo::GetCurrentProcess()
-	{
-		return SystemProcessInfo(::GetCurrentProcessId());
-	}
-
-	bool SystemProcessInfo::IsCurrent() const
-	{
-		return m_PID == ::GetCurrentProcessId();
-	}
-}
-
-namespace KxFramework::System
-{
-	size_t EnumRunningProcesses(std::function<bool(uint32_t)> func)
-	{
-		DWORD buffer[4096] = {};
-		DWORD validBufferSize = 0;
-
-		if (EnumProcesses(buffer, std::size(buffer) * sizeof(DWORD), &validBufferSize))
-		{
-			const size_t totalCount = validBufferSize / sizeof(DWORD);
-
-			size_t count = 0;
-			for (size_t i = 0; i < totalCount; i++)
-			{
-				count++;
-				if (!std::invoke(func, buffer[i]))
-				{
-					break;
-				}
-			}
-			return count;
-		}
-		return 0;
 	}
 }

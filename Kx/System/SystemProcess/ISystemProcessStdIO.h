@@ -1,0 +1,25 @@
+#pragma once
+#include "../Common.h"
+#include "Kx/General/String.h"
+#include "Kx/FileSystem/FSPath.h"
+#include "Kx/RTTI/QueryInterface.h"
+#include <wx/stream.h>
+
+namespace KxFramework
+{
+	class KX_API ISystemProcessStdIO: public RTTI::Interface<ISystemProcessStdIO>
+	{
+		KxDecalreIID(ISystemProcessStdIO, {0xbeb81b73, 0x3c92, 0x4e7b, {0x8a, 0x85, 0x7, 0x69, 0x4, 0x24, 0xe3, 0xa8}});
+
+		public:
+			virtual ~ISystemProcessStdIO() = default;
+
+		public:
+			virtual wxOutputStream& GetStdIn() = 0;
+			virtual wxInputStream& GetStdOut() = 0;
+			virtual wxInputStream& GetStdErr() = 0;
+
+			virtual String ReadStdOut() const = 0;
+			virtual String ReadStdErr() const = 0;
+	};
+}
