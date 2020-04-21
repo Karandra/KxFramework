@@ -77,6 +77,8 @@ namespace KxFramework::NativeAPI
 		Kx_NativeAPI_DeclateFunc(NTSTATUS, WINAPI, RtlGetVersion, RTL_OSVERSIONINFOEXW*);
 		Kx_NativeAPI_DeclateFunc(NTSTATUS, NTAPI, NtQueryInformationProcess, HANDLE, int, void*, ULONG, ULONG*);
 		Kx_NativeAPI_DeclateFunc(ULONG, NTAPI, RtlNtStatusToDosError, ULONG);
+		Kx_NativeAPI_DeclateFunc(LONG, NTAPI, NtSuspendProcess, HANDLE);
+		Kx_NativeAPI_DeclateFunc(LONG, NTAPI, NtResumeProcess, HANDLE);
 	}
 	namespace Kernel32
 	{

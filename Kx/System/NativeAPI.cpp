@@ -65,6 +65,8 @@ namespace KxFramework::NativeAPI::Private
 			INIT_FUNCTION(NtDLL, RtlGetVersion);
 			INIT_FUNCTION(NtDLL, NtQueryInformationProcess);
 			INIT_FUNCTION(NtDLL, RtlNtStatusToDosError);
+			INIT_FUNCTION(NtDLL, NtSuspendProcess);
+			INIT_FUNCTION(NtDLL, NtResumeProcess);
 		}
 	}
 	void Loader::LoadKernel32() noexcept
@@ -152,6 +154,8 @@ namespace KxFramework::NativeAPI
 		DEFINE_FUNCTION(RtlGetVersion);
 		DEFINE_FUNCTION(NtQueryInformationProcess);
 		DEFINE_FUNCTION(RtlNtStatusToDosError);
+		DEFINE_FUNCTION(NtSuspendProcess);
+		DEFINE_FUNCTION(NtResumeProcess);
 	}
 	namespace Kernel32
 	{
