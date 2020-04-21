@@ -224,10 +224,6 @@ namespace KxFramework::RTTI
 		public:
 			IID GetIID() const noexcept override
 			{
-				if constexpr(Utility::CountOfParameterPack<TBase...>() == 1)
-				{
-					return Utility::NthTypeOf<0, TBase...>::GetIID();
-				}
 				return {};
 			}
 
