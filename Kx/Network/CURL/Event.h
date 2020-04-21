@@ -15,8 +15,8 @@ namespace KxFramework
 		friend class CURLSession;
 
 		public:
-			KxEVENT_DECLARE_MEMBER(CURLEvent, Download);
-			KxEVENT_DECLARE_MEMBER(CURLEvent, ResponseHeader);
+			KxEVENT_MEMBER(CURLEvent, Download);
+			KxEVENT_MEMBER(CURLEvent, ResponseHeader);
 
 		private:
 			CURLSession* m_Session = nullptr;

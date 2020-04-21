@@ -8,11 +8,11 @@ namespace KxFramework
 	class KX_API WebSocketEvent: public wxNotifyEvent
 	{
 		public:
-			KxEVENT_DECLARE_MEMBER(WebSocketEvent, Open);
-			KxEVENT_DECLARE_MEMBER(WebSocketEvent, Fail);
-			KxEVENT_DECLARE_MEMBER(WebSocketEvent, Close);
-			KxEVENT_DECLARE_MEMBER(WebSocketEvent, Message);
-			KxEVENT_DECLARE_MEMBER(WebSocketEvent, Connecting);
+			KxEVENT_MEMBER(WebSocketEvent, Open);
+			KxEVENT_MEMBER(WebSocketEvent, Fail);
+			KxEVENT_MEMBER(WebSocketEvent, Close);
+			KxEVENT_MEMBER(WebSocketEvent, Message);
+			KxEVENT_MEMBER(WebSocketEvent, Connecting);
 
 		private:
 			URI m_URI;

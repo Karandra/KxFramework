@@ -10,12 +10,12 @@ namespace KxFramework
 	class KX_API ArchiveEvent: public FileOperationEvent
 	{
 		public:
-			KxEVENT_DECLARE_MEMBER(ArchiveEvent, Process);
-			KxEVENT_DECLARE_MEMBER(ArchiveEvent, Search);
-			KxEVENT_DECLARE_MEMBER(ArchiveEvent, Done);
+			KxEVENT_MEMBER(ArchiveEvent, Process);
+			KxEVENT_MEMBER(ArchiveEvent, Search);
+			KxEVENT_MEMBER(ArchiveEvent, Done);
 
-			KxEVENT_DECLARE_MEMBER(ArchiveEvent, GetInputStream);
-			KxEVENT_DECLARE_MEMBER(ArchiveEvent, GetOutputStream);
+			KxEVENT_MEMBER(ArchiveEvent, GetInputStream);
+			KxEVENT_MEMBER(ArchiveEvent, GetOutputStream);
 
 		private:
 			String m_Method;

@@ -9,11 +9,11 @@ namespace KxFramework
 	class KX_API FileOperationEvent: public wxNotifyEvent
 	{
 		public:
-			KxEVENT_DECLARE_MEMBER(FileOperationEvent, Copy);
-			KxEVENT_DECLARE_MEMBER(FileOperationEvent, Move);
-			KxEVENT_DECLARE_MEMBER(FileOperationEvent, Rename);
-			KxEVENT_DECLARE_MEMBER(FileOperationEvent, Remove);
-			KxEVENT_DECLARE_MEMBER(FileOperationEvent, Search);
+			KxEVENT_MEMBER(FileOperationEvent, Copy);
+			KxEVENT_MEMBER(FileOperationEvent, Move);
+			KxEVENT_MEMBER(FileOperationEvent, Rename);
+			KxEVENT_MEMBER(FileOperationEvent, Remove);
+			KxEVENT_MEMBER(FileOperationEvent, Search);
 
 		private:
 			String m_Source;
