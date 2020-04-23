@@ -2,7 +2,7 @@
 #include "Common.h"
 #include <wx/window.h>
 
-namespace KxFramework
+namespace KxFramework::UI
 {
 	template<class TWindow>
 	class WindowRefreshScheduler: public TWindow
@@ -53,13 +53,6 @@ namespace KxFramework
 
 		protected:
 			WindowRefreshScheduler() = default;
-			
-			template<class... Args>
-			WindowRefreshScheduler(Args&&... arg)
-				:TWindow(std::forward<Args>(arg)...)
-			{
-			}
-
 			~WindowRefreshScheduler() = default;
 
 		public:

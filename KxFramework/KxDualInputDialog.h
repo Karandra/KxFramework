@@ -6,7 +6,7 @@
 class KX_API KxDualInputDialog: public KxStdDialog
 {
 	private:
-		KxPanel* m_View = nullptr;
+		KxFramework::UI::Panel* m_View = nullptr;
 
 		KxTextBox* m_TextBox1 = nullptr;
 		KxTextBox* m_TextBox2 = nullptr;

@@ -4,8 +4,10 @@
 #include "Node.h"
 #include "View.h"
 #include "MainWindow.h"
-#include "KxFramework/KxToolTipEx.h"
+#include "Kx/UI/Windows/ToolTipEx.h"
 #include <wx/textwrapper.h>
+
+using namespace KxFramework::UI;
 
 namespace KxDataView2
 {
@@ -83,11 +85,11 @@ namespace KxDataView2
 		{
 			if (!m_Caption.IsEmpty())
 			{
-				KxToolTipEx& tooltip = mainWindow->m_ToolTip;
+				ToolTipEx& tooltip = mainWindow->m_ToolTip;
 				tooltip.SetCaption(StripMarkupIfNeeded(node, column, m_Caption));
 				tooltip.SetMessage(StripMarkupIfNeeded(node, column, m_Message));
 
-				tooltip.SetOptionEnabled(KxToolTipExOption::LargeIcons, false);
+				tooltip.SetOptionEnabled(ToolTipExStyle::LargeIcons, false);
 				if (auto icon = GetIconBitmap(); icon.IsOk())
 				{
 					tooltip.SetIcon(icon);

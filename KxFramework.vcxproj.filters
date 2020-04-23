@@ -25,9 +25,6 @@
     <Filter Include="Header Files\GUI\AUI">
       <UniqueIdentifier>{be656ce5-feb3-4b1b-b4f3-bd15257ac986}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\GUI\Windows">
-      <UniqueIdentifier>{75e0a548-2dc9-4623-a2c1-9daef5598f15}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\GUI">
       <UniqueIdentifier>{60049398-3826-4dd1-9fea-0cca7f82949e}</UniqueIdentifier>
     </Filter>
@@ -36,9 +33,6 @@
     </Filter>
     <Filter Include="Source Files\GUI\Dialogs">
       <UniqueIdentifier>{b38ef96b-40e1-4dff-a767-e3fb73f75187}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\GUI\Windows">
-      <UniqueIdentifier>{74472426-6df0-499b-9379-045dc38d5d4f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\GUI\Menus">
       <UniqueIdentifier>{f2b5ce1f-c739-47f9-bf55-bcbe305ca3f2}</UniqueIdentifier>
@@ -190,25 +184,28 @@
     <Filter Include="Kx\System\SystemProcess">
       <UniqueIdentifier>{a47c3ad0-99a9-47ac-abb2-cebc2abc27b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\UI\Windows">
+      <UniqueIdentifier>{9450c2a9-a27f-432e-b708-f3e989d2763e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx\UI\Menus">
+      <UniqueIdentifier>{c3edb610-29df-482b-bdff-75b57ad747ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx\UI\Dialogs">
+      <UniqueIdentifier>{9a1c22ff-1e4f-4029-a1a7-eb61d618611e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx\UI\Controls">
+      <UniqueIdentifier>{10404d08-ff3e-46e1-a037-fafea63e7a3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx\UI\Controls\DataView">
+      <UniqueIdentifier>{f9fe5111-7aa9-4688-9f65-1c21caf83ac0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx\UI\Controls\AUI">
+      <UniqueIdentifier>{51ba4e52-464f-4d32-a8b4-d68239db9572}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="KxFramework\KxTopLevelWindow.h">
-      <Filter>Header Files\GUI\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxFrame.h">
-      <Filter>Header Files\GUI\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxPanel.h">
-      <Filter>Header Files\GUI\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxSplitterWindow.h">
-      <Filter>Header Files\GUI\Windows</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxButton.h">
       <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxCollapsiblePane.h">
-      <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxLabel.h">
       <Filter>Header Files\GUI\Controls</Filter>
@@ -228,9 +225,6 @@
     <ClInclude Include="KxFramework\KxHTMLWindow.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxImageView.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxProgressBar.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
@@ -241,9 +235,6 @@
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxSlider.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxStaticBitmap.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxStaticText.h">
@@ -265,9 +256,6 @@
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxTextBox.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxThumbView.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxWebView.h">
@@ -336,9 +324,6 @@
     <ClInclude Include="KxFramework\KxShellMenu.h">
       <Filter>Header Files\GUI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxSplashWindow.h">
-      <Filter>Header Files\GUI\Windows</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxSearchBox.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
@@ -347,9 +332,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxFramework.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxIProgressBar.h">
-      <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\DataView2\DataView2.h">
       <Filter>Header Files\GUI\DataView2</Filter>
@@ -458,12 +440,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\DataView2\ToolTip.h">
       <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxToolTipEx.h">
-      <Filter>Header Files\GUI\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxRichToolTip.h">
-      <Filter>Header Files\GUI\Windows</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\DataView2\CellAttributeOptions.h">
       <Filter>Header Files\GUI\DataView2</Filter>
@@ -1183,25 +1159,49 @@
     <ClInclude Include="Kx\System\SystemProcess.h">
       <Filter>Kx\System</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\IProgressMeter.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Windows\SplashWindow.h">
+      <Filter>Kx\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Windows\SplitterWindow.h">
+      <Filter>Kx\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Windows\TopLevelWindow.h">
+      <Filter>Kx\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Windows\ToolTipEx.h">
+      <Filter>Kx\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Windows\RichToolTip.h">
+      <Filter>Kx\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Windows\CollapsiblePane.h">
+      <Filter>Kx\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Windows\Panel.h">
+      <Filter>Kx\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Windows\DrawablePanel.h">
+      <Filter>Kx\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Windows\Frame.h">
+      <Filter>Kx\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\ImageView.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\ThumbView.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\StaticBitmap.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="KxFramework\KxTopLevelWindow.cpp">
-      <Filter>Source Files\GUI\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxFrame.cpp">
-      <Filter>Source Files\GUI\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxPanel.cpp">
-      <Filter>Source Files\GUI\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxSplitterWindow.cpp">
-      <Filter>Source Files\GUI\Windows</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxButton.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxCollapsiblePane.cpp">
-      <Filter>Source Files\GUI\Windows</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxLabel.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
@@ -1221,9 +1221,6 @@
     <ClCompile Include="KxFramework\KxHTMLWindow.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxImageView.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxProgressBar.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
@@ -1234,9 +1231,6 @@
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxSlider.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxStaticBitmap.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxStaticText.cpp">
@@ -1252,9 +1246,6 @@
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxTextBox.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxThumbView.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxWebView.cpp">
@@ -1323,17 +1314,11 @@
     <ClCompile Include="KxFramework\KxShellMenu.cpp">
       <Filter>Source Files\GUI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxSplashWindow.cpp">
-      <Filter>Source Files\GUI\Windows</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxSearchBox.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxCredentialsDialog.cpp">
       <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxIProgressBar.cpp">
-      <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\Editor.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
@@ -1421,12 +1406,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\ToolTip.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxRichToolTip.cpp">
-      <Filter>Source Files\GUI\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxToolTipEx.cpp">
-      <Filter>Source Files\GUI\Windows</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\Renderers\ImageListRenderer.cpp">
       <Filter>Source Files\GUI\DataView2\Renderers</Filter>
@@ -1800,6 +1779,42 @@
     </ClCompile>
     <ClCompile Include="Kx\System\SystemProcess.cpp">
       <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Windows\SplashWindow.cpp">
+      <Filter>Kx\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Windows\SplitterWindow.cpp">
+      <Filter>Kx\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Windows\TopLevelWindow.cpp">
+      <Filter>Kx\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Windows\ToolTipEx.cpp">
+      <Filter>Kx\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Windows\RichToolTip.cpp">
+      <Filter>Kx\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Windows\CollapsiblePane.cpp">
+      <Filter>Kx\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Windows\Panel.cpp">
+      <Filter>Kx\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Windows\DrawablePanel.cpp">
+      <Filter>Kx\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Windows\Frame.cpp">
+      <Filter>Kx\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\ImageView.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\ThumbView.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\StaticBitmap.cpp">
+      <Filter>Kx\UI\Controls</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

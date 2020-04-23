@@ -1,9 +1,9 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxIProgressBar.h"
+#include "Kx/UI/Controls/IProgressMeter.h"
 class KX_API KxIProgressBarWrapper;
 
-class KX_API KxProgressBar: public wxGauge, public KxIProgressBar
+class KX_API KxProgressBar: public wxGauge, public KxFramework::UI::IProgressMeter
 {
 	friend class KxProgressBarWrapper;
 
@@ -17,36 +17,36 @@ class KX_API KxProgressBar: public wxGauge, public KxIProgressBar
 		void OnPaint(wxPaintEvent& event);
 
 	protected:
-		virtual int DoGetRange() const override
+		int DoGetRange() const override
 		{
 			return wxGauge::GetRange();
 		}
-		virtual void DoSetRange(int range)
+		void DoSetRange(int range) override
 		{
 			wxGauge::SetRange(range);
 		}
 
-		virtual int DoGetValue() const override
+		int DoGetValue() const override
 		{
 			return wxGauge::GetValue();
 		}
-		virtual void DoSetValue(int value) override
+		void DoSetValue(int value) override
 		{
 			m_InPulseMode = false;
 			wxGauge::SetValue(value);
 		}
 
-		virtual int DoGetStep() const override
+		int DoGetStep() const override
 		{
 			return m_Step;
 		}
-		virtual void DoSetStep(int step) override
+		void DoSetStep(int step) override
 		{
 			const int range = DoGetRange();
 			m_Step = step <= range ? step : range;
 		}
 
-		virtual void DoPulse() override
+		void DoPulse() override
 		{
 			if (!m_InPulseMode)
 			{
@@ -54,7 +54,7 @@ class KX_API KxProgressBar: public wxGauge, public KxIProgressBar
 			}
 			m_InPulseMode = true;
 		}
-		virtual bool DoIsPulsing() const override
+		bool DoIsPulsing() const override
 		{
 			return m_InPulseMode;
 		}
@@ -80,11 +80,11 @@ class KX_API KxProgressBar: public wxGauge, public KxIProgressBar
 		);
 
 	public:
-		virtual wxString GetLabel() const override
+		wxString GetLabel() const override
 		{
 			return m_Label;
 		}
-		virtual void SetLabel(const wxString& label) override
+		void SetLabel(const wxString& label) override
 		{
 			m_Label = label;
 			Refresh();
@@ -101,31 +101,31 @@ class KX_API KxProgressBar: public wxGauge, public KxIProgressBar
 		}
 
 		// Resolve ambiguity
-		virtual void Pulse() override
+		void Pulse() override
 		{
-			KxIProgressBar::Pulse();
+			IProgressMeter::Pulse();
 		}
 
 		int GetRange() const
 		{
-			return KxIProgressBar::GetRange();
+			return IProgressMeter::GetRange();
 		}
 		void SetRange(int range)
 		{
-			KxIProgressBar::SetRange(range);
+			IProgressMeter::SetRange(range);
 		}
 
 		int GetValue() const
 		{
-			return KxIProgressBar::GetValue();
+			return IProgressMeter::GetValue();
 		}
 		void SetValue(int value)
 		{
-			KxIProgressBar::SetValue(value);
+			IProgressMeter::SetValue(value);
 		}
 		void SetValue(int64_t current, int64_t max)
 		{
-			KxIProgressBar::SetValue(current, max);
+			IProgressMeter::SetValue(current, max);
 		}
 
 	public:
@@ -133,7 +133,7 @@ class KX_API KxProgressBar: public wxGauge, public KxIProgressBar
 };
 
 //////////////////////////////////////////////////////////////////////////
-class KX_API KxProgressBarWrapper: public KxIProgressBar
+class KX_API KxProgressBarWrapper: public KxFramework::UI::IProgressMeter
 {
 	private:
 		KxProgressBar* m_ProgressBar = nullptr;
@@ -149,38 +149,38 @@ class KX_API KxProgressBarWrapper: public KxIProgressBar
 		}
 
 	protected:
-		virtual int DoGetRange() const override
+		int DoGetRange() const override
 		{
 			return m_ProgressBar->DoGetRange();
 		}
-		virtual void DoSetRange(int range) override
+		void DoSetRange(int range) override
 		{
 			m_ProgressBar->DoSetRange(range);
 		}
 
-		virtual int DoGetValue() const override
+		int DoGetValue() const override
 		{
 			return m_ProgressBar->DoGetValue();
 		}
-		virtual void DoSetValue(int value) override
+		void DoSetValue(int value) override
 		{
 			m_ProgressBar->DoSetValue(value);
 		}
 
-		virtual int DoGetStep() const override
+		int DoGetStep() const override
 		{
 			return m_ProgressBar->DoGetStep();
 		}
-		virtual void DoSetStep(int step) override
+		void DoSetStep(int step) override
 		{
 			m_ProgressBar->DoSetStep(step);
 		}
 
-		virtual void DoPulse() override
+		void DoPulse() override
 		{
 			m_ProgressBar->DoPulse();
 		}
-		virtual bool DoIsPulsing() const override
+		bool DoIsPulsing() const override
 		{
 			return m_ProgressBar->DoIsPulsing();
 		}

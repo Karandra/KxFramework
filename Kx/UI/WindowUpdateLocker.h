@@ -2,7 +2,7 @@
 #include "Common.h"
 #include <wx/window.h>
 
-namespace KxFramework
+namespace KxFramework::UI
 {
 	class WindowUpdateLocker final
 	{

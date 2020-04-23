@@ -17,10 +17,10 @@ namespace KxFramework::UI::Private
 	};
 }
 
-namespace KxFramework
+namespace KxFramework::UI
 {
 	template<class TWindow>
-	class HiDPIEnabledWindow: public TWindow, public UI::Private::HiDPIEnabledWindowBase
+	class HiDPIEnabledWindow: public TWindow, public Private::HiDPIEnabledWindowBase
 	{
 		public:
 			bool EnableNonClientDPIScaling(bool enable = true) override

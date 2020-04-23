@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "KxFramework/KxStdDialog.h"
-#include "KxFramework/KxTopLevelWindow.h"
+#include "Kx/UI/Windows/TopLevelWindow.h"
 #include "KxFramework/KxButton.h"
 #include "Kx/Drawing/UxTheme.h"
 #include "Kx/Utility/Common.h"
@@ -130,7 +130,7 @@ void KxStdDialog::OnDrawFrameBorder(wxPaintEvent& event)
 
 	wxAutoBufferedPaintDC dc(GetContentWindow());
 	dc.Clear();
-	dc.SetPen(KxTopLevelWindow::DWMGetGlassColor().ChangeLightness(Angle::FromNormalized(0.6f)));
+	dc.SetPen(DWMGetGlassColor().ChangeLightness(Angle::FromNormalized(0.6f)));
 	dc.SetBrush(*wxTRANSPARENT_BRUSH);
 	dc.SetBackground(*wxTRANSPARENT_BRUSH);
 
@@ -230,13 +230,14 @@ bool KxStdDialog::Create(wxWindow* parent,
 	if (KxDialog::Create(parent, id, GetDefaultTitle(), pos, size, style))
 	{
 		using namespace KxFramework;
+		using namespace KxFramework::UI;
 
 		// Default interface
 		m_GripperWindow.Create(this, wxID_NONE, GetGripperWindow());
 		m_GripperWindowSize = m_GripperWindow.GetSize();
 		SetBackgroundColour(ms_WindowBackgroundColor);
 
-		m_ContentPanel = new KxPanel(this, wxID_NONE);
+		m_ContentPanel = new UI::Panel(this, wxID_NONE);
 		m_ContentPanel->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 
 		m_CaptionLabel = new KxLabel(m_ContentPanel, wxID_NONE, caption, KxLABEL_CAPTION); // wxLLabel::DefaultStyle|KxLABEL_CAPTION
@@ -246,7 +247,7 @@ bool KxStdDialog::Create(wxWindow* parent,
 		m_ViewLabel = new KxLabel(m_ContentPanel, wxID_NONE, {}, KxLabel::DefaultStyle & ~(KxLABEL_LINE|KxLABEL_COLORED|KxLABEL_CAPTION|KxLABEL_SELECTION));
 		m_ViewLabel->SetMaxSize(FromDIP(wxSize(wxDefaultCoord, 23)));
 
-		m_ContentPanelLine = new KxPanel(this, wxID_NONE, wxBORDER_NONE);
+		m_ContentPanelLine = new UI::Panel(this, wxID_NONE, EnumClass::Combine<WindowStyle>(WindowBorder::None));
 		m_ContentPanelLine->SetPosition(wxPoint(0, 0));
 		m_ContentPanelLine->SetBackgroundColour(ms_LineBackgroundColor);
 		m_ContentPanelLine->SetMaxSize(FromDIP(wxSize(wxDefaultCoord, 1)));

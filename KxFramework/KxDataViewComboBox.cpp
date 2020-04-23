@@ -2,7 +2,7 @@
 #include "KxFramework/KxDataViewComboBox.h"
 #include "KxFramework/DataView2/MainWindow.h"
 #include "KxFramework/KxComboControl.h"
-#include "KxFramework/KxPanel.h"
+#include "Kx/UI/Windows/Panel.h"
 
 namespace KxDataView2
 {
@@ -108,8 +108,11 @@ namespace KxDataView2
 	}
 	bool ComboBoxCtrl::Create(wxWindow* window)
 	{
+		using namespace KxFramework;
+		using namespace KxFramework::UI;
+
 		m_Sizer = new wxBoxSizer(IsOptionEnabled(KxDVCB_OPTION_HORIZONTAL_SIZER) ? wxHORIZONTAL : wxVERTICAL);
-		m_BackgroundWindow = new KxPanel(window, wxID_NONE, KxPanel::DefaultStyle|wxBORDER_THEME);
+		m_BackgroundWindow = new KxFramework::UI::Panel(window, wxID_NONE, EnumClass::Combine<WindowStyle>(Panel::DefaultStyle, WindowBorder::Theme));
 		m_BackgroundWindow->SetSizer(m_Sizer);
 		if (ShouldInheritColours())
 		{

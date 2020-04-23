@@ -1,5 +1,4 @@
 #pragma once
-#include "Common.h"
 #include <wx/defs.h>
 #include "Kx/System/UndefWindows.h"
 

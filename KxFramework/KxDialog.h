@@ -1,11 +1,11 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxTopLevelWindow.h"
+#include "Kx/UI/Windows/TopLevelWindow.h"
 #include "Kx/UI/StdDialogButtonSizer.h"
 #include "Kx/UI/StdButton.h"
 
 class KX_API KxButton;
-class KX_API KxDialog: public KxTopLevelWindow<wxDialog>
+class KX_API KxDialog: public KxFramework::UI::TopLevelWindow<wxDialog>
 {
 	public:
 		static void SetStdLabels(wxSizer* sizer);

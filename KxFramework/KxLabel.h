@@ -13,7 +13,7 @@ enum
 	KxLABEL_COLORED = 1 << 4,
 };
 
-class KX_API KxLabel: public KxFramework::WindowRefreshScheduler<wxSystemThemedControl<wxStaticText>>
+class KX_API KxLabel: public KxFramework::UI::WindowRefreshScheduler<wxSystemThemedControl<wxStaticText>>
 {
 	private:
 		wxEvtHandler m_EvtHandler;

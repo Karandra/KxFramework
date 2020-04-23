@@ -1,11 +1,12 @@
 #include "stdafx.h"
 #include "DragAndDrop.h"
 #include "MainWindow.h"
-#include "KxFramework/KxSplashWindow.h"
+#include "Kx/UI/Windows/SplashWindow.h"
 #include "Kx/Utility/Common.h"
 #include <wx/dragimag.h>
 
 using namespace KxFramework;
+using namespace KxFramework::UI;
 
 namespace KxDataView2
 {
@@ -84,7 +85,7 @@ namespace KxDataView2
 			m_Distance.y = mousePos.y - linePos.y;
 			m_HintPosition = GetHintPosition(mousePos);
 
-			m_DragImage = new KxSplashWindow(m_MainWindow, m_HintBitmap, 0, wxSTAY_ON_TOP);
+			m_DragImage = new SplashWindow(m_MainWindow, m_HintBitmap, 0, EnumClass::Combine<SplashWindowStyle>(TopLevelWindowStyle::StayOnTop));
 			m_DragImage->SetTransparent(225);
 			m_DragImage->Update();
 			m_DragImage->Show();

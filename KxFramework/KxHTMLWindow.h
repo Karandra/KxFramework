@@ -6,7 +6,7 @@
 using KxColor = KxFramework::Color;
 class KX_API KxMenu;
 
-class KX_API KxHTMLWindow: public KxFramework::WindowRefreshScheduler<wxHtmlWindow>, public wxTextEntry
+class KX_API KxHTMLWindow: public KxFramework::UI::WindowRefreshScheduler<wxHtmlWindow>, public wxTextEntry
 {
 	public:
 		static wxString ProcessPlainText(const wxString& text);

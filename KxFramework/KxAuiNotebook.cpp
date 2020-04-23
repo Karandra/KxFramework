@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "KxFramework/KxAuiNotebook.h"
-#include "KxFramework/KxPanel.h"
 #include "Kx/Drawing/UxTheme.h"
 
 wxIMPLEMENT_DYNAMIC_CLASS(KxAuiNotebook, wxAuiNotebook);

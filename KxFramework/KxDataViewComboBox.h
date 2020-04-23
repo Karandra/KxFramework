@@ -4,7 +4,11 @@
 #include "KxFramework/DataView2/DataView2.h"
 #include "Kx/General/WithOptions.h"
 class KX_API KxComboControl;
-class KX_API KxPanel;
+
+namespace KxFramework::UI
+{
+	class Panel;
+}
 
 namespace KxDataView2
 {
@@ -31,7 +35,7 @@ namespace KxDataView2
 	{
 		protected:
 			CtrlStyle m_DataViewFlags = DefaultDataViewStyle;
-			KxPanel* m_BackgroundWindow = nullptr;
+			KxFramework::UI::Panel* m_BackgroundWindow = nullptr;
 			wxBoxSizer* m_Sizer = nullptr;
 
 			KxComboControl* m_ComboCtrl = nullptr;

@@ -6,7 +6,7 @@
 class KX_API KxDualProgressDialog: public KxStdDialog
 {
 	private:
-		KxPanel* m_View = nullptr;
+		KxFramework::UI::Panel* m_View = nullptr;
 		KxProgressBar* m_PB1 = nullptr;
 		KxProgressBar* m_PB2 = nullptr;
 

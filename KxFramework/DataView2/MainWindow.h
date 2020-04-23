@@ -1,6 +1,6 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxFramework/KxToolTipEx.h"
+#include "Kx/UI/Windows/ToolTipEx.h"
 #include "Common.h"
 #include "View.h"
 #include "Node.h"
@@ -89,7 +89,7 @@ namespace KxDataView2
 			Column* m_HotTrackColumn = nullptr;
 
 			// Tooltip
-			KxToolTipEx m_ToolTip;
+			KxFramework::UI::ToolTipEx m_ToolTip;
 			wxTimer m_ToolTipTimer;
 
 			// Drag and Drop

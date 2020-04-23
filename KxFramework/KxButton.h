@@ -8,7 +8,7 @@ KxEVENT_DECLARE_GLOBAL(wxCommandEvent, BUTTON);
 KxEVENT_DECLARE_GLOBAL(wxContextMenuEvent, BUTTON_MENU);
 
 class KX_API KxButton:
-	public KxFramework::WindowRefreshScheduler<wxSystemThemedControl<wxAnyButton>>,
+	public KxFramework::UI::WindowRefreshScheduler<wxSystemThemedControl<wxAnyButton>>,
 	public KxFramework::WithDropdownMenu
 {
 	public:

@@ -3,7 +3,10 @@
 #include "Common.h"
 #include "Row.h"
 class wxDragImage;
-class KX_API KxSplashWindow;
+namespace KxFramework::UI
+{
+	class SplashWindow;
+}
 
 namespace KxDataView2
 {
@@ -12,7 +15,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class DNDOperationInfo
+	class DNDOperationInfo final
 	{
 		private:
 			wxDataObjectSimple* m_DropDataObject = nullptr;
@@ -51,7 +54,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API DnDInfo
+	class KX_API DnDInfo final
 	{
 		public:
 			enum class Result
@@ -113,7 +116,7 @@ namespace KxDataView2
 	{
 		private:
 			MainWindow* m_MainWindow = nullptr;
-			KxSplashWindow* m_DragImage = nullptr;
+			KxFramework::UI::SplashWindow* m_DragImage = nullptr;
 			wxBitmap m_HintBitmap;
 			wxPoint m_HintPosition;
 
@@ -122,13 +125,13 @@ namespace KxDataView2
 
 		private:
 			void OnScroll(wxMouseEvent& event);
-			virtual bool GiveFeedback(wxDragResult effect) override;
+			bool GiveFeedback(wxDragResult effect) override;
 
 			wxPoint GetHintPosition(const wxPoint& mousePos) const;
 
 		public:
 			DropSource(MainWindow* mainWindow, Row row);
-			virtual ~DropSource();
+			~DropSource();
 	};
 }
 
@@ -143,12 +146,12 @@ namespace KxDataView2
 			wxDataFormat GetReceivedFormat() const;
 			bool IsFormatSupported(const wxDataFormat& format, wxDataObjectSimple*& dataObject) const;
 
-			virtual wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult dragResult) override;
-			virtual bool OnDrop(wxCoord x, wxCoord y) override;
-			virtual wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult dragResult) override;
+			wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult dragResult) override;
+			bool OnDrop(wxCoord x, wxCoord y) override;
+			wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult dragResult) override;
 
-			virtual wxDragResult OnEnter(wxCoord x, wxCoord y, wxDragResult dragResult) override;
-			virtual void OnLeave() override;
+			wxDragResult OnEnter(wxCoord x, wxCoord y, wxDragResult dragResult) override;
+			void OnLeave() override;
 
 		public:
 			DropTarget(wxDataObject* dataObject, MainWindow* mainWindow);

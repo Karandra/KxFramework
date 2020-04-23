@@ -15,7 +15,7 @@ namespace KxDataView2
 
 namespace KxDataView2
 {
-	class KX_API HeaderCtrl: public KxFramework::WindowRefreshScheduler<wxHeaderCtrl>
+	class KX_API HeaderCtrl: public KxFramework::UI::WindowRefreshScheduler<wxHeaderCtrl>
 	{
 		friend class View;
 		friend class MainWindow;

@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/KxDialog.h"
 #include "KxFramework/KxLabel.h"
-#include "KxFramework/KxPanel.h"
+#include "Kx/UI/Windows/Panel.h"
 #include "Kx/UI/StdIcon.h"
 #include "Kx/UI/StdButton.h"
 #include "Kx/UI/StdDialogButtonSizer.h"
@@ -143,7 +143,7 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 		wxOrientation m_DialogResizeSide = wxBOTH;
 		KxLabel* m_CaptionLabel = nullptr;
 		KxLabel* m_ViewLabel = nullptr;
-		KxPanel* m_ContentPanel = nullptr;
+		KxFramework::UI::Panel* m_ContentPanel = nullptr;
 		wxStaticBitmap* m_IconView = nullptr;
 		wxBitmap m_MainIcon = wxNullBitmap;
 		StdIcon m_MainIconID = DefaultIconID;
@@ -151,7 +151,7 @@ class KX_API KxStdDialog: public KxDialog, public KxIStdDialog
 		bool m_IsAutoSizeEnabled = true;
 
 	private:
-		KxPanel* m_ContentPanelLine = nullptr;
+		KxFramework::UI::Panel* m_ContentPanelLine = nullptr;
 		wxSizer* m_DialogSizer = nullptr;
 		wxSizer* m_ContentSizerBase = nullptr;
 		wxSizer* m_ContentSizer = nullptr;

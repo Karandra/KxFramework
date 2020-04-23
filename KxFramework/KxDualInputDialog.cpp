@@ -17,7 +17,7 @@ bool KxDualInputDialog::Create(wxWindow* parent,
 		wxSize size(DefaultWidth, wxDefaultCoord);
 		const int flags = KxTextBox::DefaultStyle|wxTE_PROCESS_ENTER;
 
-		m_View = new KxPanel(m_ContentPanel, wxID_NONE);
+		m_View = new KxFramework::UI::Panel(m_ContentPanel, wxID_NONE);
 
 		m_TextBox1 = new KxTextBox(m_View, wxID_NONE, {}, flags);
 		m_TextBox1->SetInitialSize(size);

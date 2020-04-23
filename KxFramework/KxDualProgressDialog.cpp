@@ -33,7 +33,7 @@ bool KxDualProgressDialog::Create(wxWindow* parent,
 
 	if (KxStdDialog::Create(parent, id, caption, pos, size, buttons, style))
 	{
-		m_View = new KxPanel(m_ContentPanel, wxID_NONE);
+		m_View = new KxFramework::UI::Panel(m_ContentPanel, wxID_NONE);
 		m_PB1 = CreateProgressBar();
 		m_PB2 = CreateProgressBar();
 
