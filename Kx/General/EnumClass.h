@@ -129,3 +129,12 @@ namespace KxFramework
 		return static_cast<TEnum>(~static_cast<Tint>(value));
 	}
 }
+
+namespace KxFramework::EnumClass
+{
+	template<class TEnum, class... Args>
+	constexpr std::enable_if_t<(IsBitwiseAllowed_v<std::remove_const_t<std::remove_reference_t<Args>>> && ...), TEnum> Combine(Args&&... arg) noexcept
+	{
+		return static_cast<TEnum>((static_cast<std::underlying_type_t<std::remove_const_t<std::remove_reference_t<Args>>>>(arg) | ...));
+	}
+}
