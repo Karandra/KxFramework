@@ -349,5 +349,6 @@ namespace KxFramework
 			}
 			return true;
 		});
+		return result;
 	}
 }
