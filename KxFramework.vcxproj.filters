@@ -202,6 +202,21 @@
     <Filter Include="Kx\UI\Controls\AUI">
       <UniqueIdentifier>{51ba4e52-464f-4d32-a8b4-d68239db9572}</UniqueIdentifier>
     </Filter>
+    <Filter Include="VcPkg">
+      <UniqueIdentifier>{cca4e5fe-4a6a-4c71-9b15-0192dbe9f56a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VcPkg\ports">
+      <UniqueIdentifier>{ae77cf63-eee5-4ec9-a5ff-ec2a598f59a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VcPkg\triplets">
+      <UniqueIdentifier>{b1c52d0b-84cd-499f-a89c-93d979873dfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VcPkg\triplets\community">
+      <UniqueIdentifier>{7962b0c5-a73a-435e-81c8-d700627df6f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VcPkg\ports\kxframework">
+      <UniqueIdentifier>{f9a22f03-a441-4cbc-86b4-ef8ad6849955}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KxFramework\KxButton.h">
@@ -1838,6 +1853,21 @@
     </None>
     <None Include="cpp.hint">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="VCPkg\triplets\community\x64-windows-static-md.cmake">
+      <Filter>VcPkg\triplets\community</Filter>
+    </None>
+    <None Include="VCPkg\triplets\community\x86-windows-static-md.cmake">
+      <Filter>VcPkg\triplets\community</Filter>
+    </None>
+    <None Include="VCPkg\ports\kxframework\portfile.cmake">
+      <Filter>VcPkg\ports\kxframework</Filter>
+    </None>
+    <None Include="VCPkg\ports\kxframework\vcpkg.targets">
+      <Filter>VcPkg\ports\kxframework</Filter>
+    </None>
+    <None Include="VCPkg\ports\kxframework\CONTROL">
+      <Filter>VcPkg\ports\kxframework</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

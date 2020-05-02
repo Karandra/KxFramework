@@ -745,6 +745,11 @@
     <None Include="Kx\System\Private\ErrorCodeNtStatus.i" />
     <None Include="LICENSE" />
     <None Include="README.md" />
+    <None Include="VCPkg\ports\kxframework\CONTROL" />
+    <None Include="VCPkg\ports\kxframework\portfile.cmake" />
+    <None Include="VCPkg\ports\kxframework\vcpkg.targets" />
+    <None Include="VCPkg\triplets\community\x64-windows-static-md.cmake" />
+    <None Include="VCPkg\triplets\community\x86-windows-static-md.cmake" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="Kx\General\Color.natvis" />
