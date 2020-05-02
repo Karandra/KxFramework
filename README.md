@@ -31,7 +31,7 @@ KxFramework can be built as a **VCPkg** pacckage. Install **VCPkg** as usual and
 Sciter can't be built using the default `windows-static-md` triplet because it's a dynamic library. Modified triplet configuration  is provided in `VCPkg\triplets\community` folder.
 
 # Configuration
-KxFramework project file `KxFramework.vcxproj` is configured to use `x86-windows-static-md` and `x64-windows-static-md` triplets. If you're using any oher combination it might or might not be automatically detected by Visual Studio and then you'll need to change triplets in the `.vcxproj` (or even better `.vcxproj.user`) file as follows:
+KxFramework project file `KxFramework.vcxproj` isn't configured to use any triplets. Suitable triplet might or might not be automatically detected by Visual Studio so you'll need to change triplets in the `.vcxproj` (or even better `.vcxproj.user`) file as follows (example for `x86-windows-static-md` and `x64-windows-static-md`):
 ```xml
 <PropertyGroup Label="Globals">
 	...
