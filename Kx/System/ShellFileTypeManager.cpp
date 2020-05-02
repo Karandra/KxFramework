@@ -18,20 +18,22 @@ namespace KxFramework
 	{
 		if (wxFileType* fileType = m_Manager.Associate(fileTypeInfo.AsWxFileTypeInfo()))
 		{
-			for (const String& extension: fileTypeInfo.GetExtensions())
+			fileTypeInfo.EnumExtensions([&](String extension)
 			{
-				String ext = FSPath(extension).GetExtension();
-				if (fileTypeInfo.IsURLProtocol(ext))
+				if (fileTypeInfo.IsURLProtocol(extension))
 				{
 					RegistryKey classesRoot(RegistryBaseKey::ClassesRoot, {}, RegistryAccess::Create);
 					if (classesRoot)
 					{
+						String ext = FSPath(std::move(extension)).GetExtension();
+
 						RegistryKey key = classesRoot.CreateKey(ext, RegistryAccess::Write);
 						key.SetStringValue({}, String::Format(wxS("URL:%1 Protocol"), ext.MakeUpper()));
 						key.SetStringValue(wxS("URL Protocol"), {});
 					}
 				}
-			}
+				return true;
+			});
 			return fileType;
 		}
 		return nullptr;

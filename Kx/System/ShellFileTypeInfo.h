@@ -57,7 +57,7 @@ namespace KxFramework
 			}
 
 		public:
-			const String& GetDescription() const
+			String GetDescription() const
 			{
 				return m_FileTypeInfo.GetDescription();
 			}
@@ -67,7 +67,7 @@ namespace KxFramework
 				return *this;
 			}
 		
-			const String& GetShortDescription() const
+			String GetShortDescription() const
 			{
 				return m_FileTypeInfo.GetShortDesc();
 			}
@@ -77,12 +77,12 @@ namespace KxFramework
 				return *this;
 			}
 		
-			const String& GetMimeType() const
+			String GetMimeType() const
 			{
 				return m_FileTypeInfo.GetMimeType();
 			}
 
-			const String& GetOpenCommand() const
+			String GetOpenCommand() const
 			{
 				return m_FileTypeInfo.GetOpenCommand();
 			}
@@ -92,7 +92,7 @@ namespace KxFramework
 				return *this;
 			}
 
-			const String& GetPrintCommand() const
+			String GetPrintCommand() const
 			{
 				return m_FileTypeInfo.GetPrintCommand();
 			}
@@ -102,27 +102,40 @@ namespace KxFramework
 				return *this;
 			}
 
-			const wxArrayString& GetExtensions() const
+			template<class TFunc>
+			size_t EnumExtensions(TFunc&& func) const
 			{
-				return m_FileTypeInfo.GetExtensions();
+				size_t count = 0;
+				for (const wxString& value: m_FileTypeInfo.GetExtensions())
+				{
+					count++;
+					if (!std::invoke(func, FSPath(value).GetExtension()))
+					{
+						break;
+					}
+				}
+				return count;
 			}
+
 			size_t GetExtensionsCount() const
 			{
 				return m_FileTypeInfo.GetExtensionsCount();
 			}
-			ShellFileTypeInfo& AddExtension(const String& ext, bool isURLProtocol = false)
+			ShellFileTypeInfo& AddExtension(const FSPath& extension, bool isURLProtocol = false)
 			{
+				String ext = extension.GetExtension();
+
 				m_FileTypeInfo.AddExtension(ext);
-				m_URLProtocolMap.insert_or_assign(ext, isURLProtocol);
+				m_URLProtocolMap.insert_or_assign(std::move(ext), isURLProtocol);
 				return *this;
 			}
 			
 			template<class... Args>
 			ShellFileTypeInfo& AddExtensions(Args&&... arg)
 			{
-				Utility::ForEachParameterPackItem([this](const String& ext)
+				Utility::ForEachParameterPackItem([this](FSPath ext)
 				{
-					m_FileTypeInfo.AddExtension(ext);
+					AddExtension(std::move(ext));
 				}, std::forward<Args>(arg)...);
 				return *this;
 			}
