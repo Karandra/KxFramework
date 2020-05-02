@@ -2,6 +2,7 @@
 Support library for [Kortex Mod Manager](https://github.com/KerberX/Kortex-Mod-Manager).
 
 # Build
+## For development
 You'll need [Visual Studio 2019](https://visualstudio.microsoft.com/) and [VCPkg](https://github.com/microsoft/vcpkg) package manager.
 
 - Download and install **VCPkg**.
@@ -23,7 +24,10 @@ You'll need [Visual Studio 2019](https://visualstudio.microsoft.com/) and [VCPkg
 - Set this instance of **VCPkg** as default or use project-specific linking.
 - Open KxFramework solution in Visual Studio and Build **Release** configuration for x86 and x64. 
 
-### Notes
+## As a dependency
+KxFramework can be built as a **VCPkg** pacckage. Install **VCPkg** as usual and copy `VCPkg` folder contents into your **VCPkg** installation and build `kxframework` port (preferrably with `[x86|x64]-windows-static-md` triplet).
+
+### Build notes
 Sciter can't be built using the default `windows-static-md` triplet because it's a dynamic library. Modified triplet configuration  is provided in `VCPkg\triplets\community` folder.
 
 # Configuration
