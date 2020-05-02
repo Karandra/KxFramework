@@ -50,7 +50,7 @@ namespace KxFramework
 		return hr;
 	}
 
-	String ShellLink::GetTarget() const
+	FSPath ShellLink::GetTarget() const
 	{
 		wxChar buffer[INT16_MAX] = {};
 		WIN32_FIND_DATAW findData = {};
@@ -58,6 +58,7 @@ namespace KxFramework
 		{
 			return buffer;
 		}
+		return {};
 	}
 	HResult ShellLink::SetTarget(const FSPath& path)
 	{
@@ -79,7 +80,7 @@ namespace KxFramework
 		return m_ShellLink->SetArguments(value.wc_str());
 	}
 
-	String ShellLink::GetWorkingDirectory() const
+	FSPath ShellLink::GetWorkingDirectory() const
 	{
 		wxChar buffer[INT16_MAX] = {};
 		if (HResult(m_ShellLink->GetWorkingDirectory(buffer, std::size(buffer))))

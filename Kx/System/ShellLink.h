@@ -25,13 +25,13 @@ namespace KxFramework
 			HResult Load(const FSPath& path);
 			HResult Save(const FSPath& path) const;
 
-			String GetTarget() const;
+			FSPath GetTarget() const;
 			HResult SetTarget(const FSPath& value);
 
 			String GetArguments() const;
 			HResult SetArguments(const String& value);
 
-			String GetWorkingDirectory() const;
+			FSPath GetWorkingDirectory() const;
 			HResult SetWorkingDirectory(const FSPath& value);
 
 			String GetDescription() const;
