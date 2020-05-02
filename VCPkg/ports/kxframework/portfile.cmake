@@ -68,7 +68,8 @@ set(VcpkgTriplet ${TARGET_TRIPLET})
 if (VCPKG_LIBRARY_LINKAGE STREQUAL static)
     vcpkg_install_msbuild(
 		SOURCE_PATH ${SOURCE_PATH}
-		PROJECT_SUBPATH KxFramework.sln
+		PROJECT_SUBPATH KxFramework.vcxproj
+		PLATFORM ${BUILD_ARCH}
 		OPTIONS /p:OverrideVcpkgTriplet=true
 		OPTIONS /p:OverrideVcpkgTripletName=${TARGET_TRIPLET}
 		OPTIONS /p:ForceImportBeforeCppTargets=${CURRENT_PORT_DIR}/vcpkg.targets
