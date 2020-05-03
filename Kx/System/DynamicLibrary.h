@@ -3,6 +3,9 @@
 #include "Kx/General/String.h"
 #include "Kx/FileSystem/FSPath.h"
 #include "Kx/Localization/Locale.h"
+#include <wx/bitmap.h>
+#include <wx/icon.h>
+#include <wx/cursor.h>
 
 namespace KxFramework
 {
@@ -118,7 +121,6 @@ namespace KxFramework
 			bool IsImageResource() const noexcept;
 			bool IsAnyResource() const noexcept;
 
-			
 			bool IsResourceExist(const String& resType, const String& resName, const Locale& locale = {}) const;
 			size_t EnumResourceTypes(std::function<bool(String)> func, const Locale& locale = {}) const;
 			size_t EnumResourceNames(const String& resType, std::function<bool(String)> func, const Locale& locale = {}) const;
