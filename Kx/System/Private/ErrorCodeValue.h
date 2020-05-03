@@ -35,10 +35,6 @@ namespace KxFramework::System::Private
 				m_Value = value;
 				return *this;
 			}
-			constexpr operator TValueType() const noexcept
-			{
-				return GetValue();
-			}
 			
 		public:
 			constexpr explicit operator bool() const noexcept
@@ -57,6 +53,11 @@ namespace KxFramework::System::Private
 			constexpr bool operator!=(const ErrorCodeValue& other) const noexcept
 			{
 				return !(*this == other);
+			}
+
+			constexpr TValueType operator*() const noexcept
+			{
+				return GetValue();
 			}
 	};
 }

@@ -143,7 +143,7 @@ namespace KxFramework
 			{
 				if (auto win32Code = Win32FromHRESULT(m_Value))
 				{
-					return NtStatusFromWin32(*win32Code);
+					return NtStatusFromWin32(win32Code->GetValue());
 				}
 				break;
 			}
@@ -170,7 +170,7 @@ namespace KxFramework
 			{
 				if (auto ntStatus = Win32FromNtStatus(m_Value))
 				{
-					return HResult(HRESULT_FROM_WIN32(*ntStatus));
+					return HResult(HRESULT_FROM_WIN32(ntStatus->GetValue()));
 				}
 				break;
 			}

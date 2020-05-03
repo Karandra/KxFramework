@@ -246,7 +246,7 @@ namespace
 	{
 		using namespace KxFramework;
 
-		return Win32Error(::RegSetKeyValueW(hkey, nullptr, valueName.wc_str(), type, value.wc_str(), value.length() * sizeof(wchar_t) + sizeof(wchar_t)));
+		return Win32Error(::RegSetKeyValueW(hkey, nullptr, valueName.wc_str(), type, value.wc_str(), value.length() * sizeof(wchar_t) + sizeof(wchar_t))).IsSuccess();
 	}
 
 	bool CheckIsBaseKey(HKEY handle) noexcept
@@ -323,16 +323,16 @@ namespace KxFramework
 		String subKeyPath = subKey.GetFullPath();
 		if (resursive)
 		{
-			return Win32Error(::RegDeleteTreeW(AsHKEY(m_Handle), subKeyPath.wc_str()));
+			return Win32Error(::RegDeleteTreeW(AsHKEY(m_Handle), subKeyPath.wc_str())).IsSuccess();
 		}
 		else
 		{
-			return Win32Error(::RegDeleteKeyExW(AsHKEY(m_Handle), subKeyPath.wc_str(), 0, 0));
+			return Win32Error(::RegDeleteKeyExW(AsHKEY(m_Handle), subKeyPath.wc_str(), 0, 0)).IsSuccess();
 		}
 	}
 	bool RegistryKey::RemoveValue(const String& valueName)
 	{
-		return  Win32Error(::RegDeleteKeyValueW(AsHKEY(m_Handle), nullptr, valueName.wc_str()));
+		return Win32Error(::RegDeleteKeyValueW(AsHKEY(m_Handle), nullptr, valueName.wc_str())).IsSuccess();
 	}
 	bool RegistryKey::DoesValueExist(const String& valueName) const
 	{
@@ -497,7 +497,7 @@ namespace KxFramework
 	}
 	bool RegistryKey::SetBinaryValue(const String& valueName, const void* data, size_t size)
 	{
-		return Win32Error(::RegSetKeyValueW(AsHKEY(m_Handle), nullptr, valueName.wc_str(), REG_BINARY, data, size));
+		return Win32Error(::RegSetKeyValueW(AsHKEY(m_Handle), nullptr, valueName.wc_str(), REG_BINARY, data, size)).IsSuccess();
 	}
 
 	std::optional<uint32_t> RegistryKey::GetUInt32Value(const String& valueName) const
@@ -515,7 +515,7 @@ namespace KxFramework
 		{
 			value = _byteswap_ulong(value);
 		}
-		return Win32Error(::RegSetKeyValueW(AsHKEY(m_Handle), nullptr, valueName.wc_str(), REG_DWORD_LITTLE_ENDIAN, &value, sizeof(value)));
+		return Win32Error(::RegSetKeyValueW(AsHKEY(m_Handle), nullptr, valueName.wc_str(), REG_DWORD_LITTLE_ENDIAN, &value, sizeof(value))).IsSuccess();
 	}
 
 	std::optional<uint64_t> RegistryKey::GetUInt64Value(const String& valueName) const
@@ -533,6 +533,6 @@ namespace KxFramework
 		{
 			value = _byteswap_uint64(value);
 		}
-		return Win32Error(::RegSetKeyValueW(AsHKEY(m_Handle), nullptr, valueName.wc_str(), REG_QWORD, &value, sizeof(value)));
+		return Win32Error(::RegSetKeyValueW(AsHKEY(m_Handle), nullptr, valueName.wc_str(), REG_QWORD, &value, sizeof(value))).IsSuccess();
 	}
 }
