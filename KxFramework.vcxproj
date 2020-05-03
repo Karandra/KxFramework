@@ -599,6 +599,7 @@
     <ClCompile Include="KxFramework\KxTextBox.cpp" />
     <ClCompile Include="KxFramework\KxTextBoxDialog.cpp" />
     <ClCompile Include="KxFramework\KxWebView.cpp" />
+    <ClCompile Include="Kx\General\Common.cpp" />
     <ClCompile Include="Kx\RTTI\ComponentSystem.cpp" />
     <ClCompile Include="Kx\System\DynamicLibrary.cpp" />
     <ClCompile Include="Kx\System\ExecutableVersionResource.cpp" />

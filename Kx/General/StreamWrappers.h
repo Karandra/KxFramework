@@ -428,11 +428,11 @@ namespace KxFramework
 					// If the class is derived from both input classes it should be fine to call any Seek function.
 					if constexpr(IsInputStream())
 					{
-						return GetThis().SeekI(offset.GetBytes(), mode) != wxInvalidOffset;
+						return BinarySize::FromBytes(GetThis().SeekI(offset.GetBytes(), mode));
 					}
 					else if constexpr(IsOutputStream())
 					{
-						return GetThis().SeekO(offset.GetBytes(), mode) != wxInvalidOffset;
+						return BinarySize::FromBytes(GetThis().SeekO(offset.GetBytes(), mode));
 					}
 					else
 					{
@@ -497,7 +497,11 @@ namespace KxFramework
 			}
 			BinarySize Seek(BinarySize offset, StreamSeekMode mode = StreamSeekMode::FromCurrent)
 			{
-				return SeekIO(offset, static_cast<wxSeekMode>(mode));
+				if (auto seek = ToWxSeekMode(mode))
+				{
+					return SeekIO(offset, *seek);
+				}
+				return {};
 			}
 	};
 }

@@ -85,7 +85,7 @@ namespace
 		}
 		else if (win32Error.GetValue() == ERROR_HANDLE_EOF)
 		{
-			return StreamErrorCode::EndOfstream;
+			return StreamErrorCode::EndOfStream;
 		}
 		else
 		{

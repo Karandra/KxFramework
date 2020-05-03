@@ -1831,6 +1831,9 @@
     <ClCompile Include="Kx\UI\Controls\StaticBitmap.cpp">
       <Filter>Kx\UI\Controls</Filter>
     </ClCompile>
+    <ClCompile Include="Kx\General\Common.cpp">
+      <Filter>Kx\General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Kx\System\Private\ErrorCodeNtStatus.i">
