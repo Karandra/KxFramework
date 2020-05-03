@@ -1,6 +1,8 @@
 #pragma once
 #include <Kx/Common.hpp>
 #include "Kx/General/EnumClass.h"
+enum wxSeekMode: int;
+enum wxStreamError: int;
 
 namespace KxFramework
 {

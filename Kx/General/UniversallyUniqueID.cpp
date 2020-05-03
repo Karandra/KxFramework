@@ -4,7 +4,6 @@
 
 #include <rpcdce.h>
 #include "Kx/System/UndefWindows.h"
-#pragma comment(lib, "Rpcrt4.lib")
 
 namespace KxFramework
 {

@@ -6,8 +6,6 @@
 #include <WinINet.h>
 #include <WinDNS.h>
 #include <ws2tcpip.h>
-#pragma comment(lib, "DNSAPI.lib")
-#pragma comment(lib, "WinINet.lib")
 #include "Kx/System/UndefWindows.h"
 
 namespace KxFramework::Network

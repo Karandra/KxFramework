@@ -23,5 +23,15 @@
 #include "Kx/System/UndefWindows.h"
 
 // wxWidgets
-// Required by wxWidgets network module which doesn't link to this library itself for some reason
+// Link some libraries that aren't linked by wxWidgets itself for some reason
+
+// Required by pretty much any UI component
+#pragma comment(lib, "Comctl32.lib")
+
+// Required by network module
 #pragma comment(lib, "WS2_32.lib")
+#pragma comment(lib, "DNSAPI.lib")
+#pragma comment(lib, "WinINet.lib")
+
+// Required by UUID/GUID functions
+#pragma comment(lib, "Rpcrt4.lib")

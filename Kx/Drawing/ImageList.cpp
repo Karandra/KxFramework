@@ -6,7 +6,6 @@
 #include <Shlobj.h>
 #include <commoncontrols.h>
 #include "Kx/System/UndefWindows.h"
-#pragma comment(lib, "Comctl32.lib")
 
 namespace
 {
