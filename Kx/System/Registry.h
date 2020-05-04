@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "Kx/General/String.h"
 #include "Kx/FileSystem/FSPath.h"
+#include "Kx/System/ErrorCodeValue.h"
 
 namespace KxFramework
 {
@@ -91,6 +92,7 @@ namespace KxFramework
 
 		private:
 			void* m_Handle = nullptr;
+			mutable Win32Error m_LastError = 0;
 
 		private:
 			void* DoGetBaseKey(RegistryBaseKey baseKey) const noexcept;
@@ -128,6 +130,10 @@ namespace KxFramework
 			{
 				DoCloseKey(m_Handle);
 				m_Handle = nullptr;
+			}
+			Win32Error GetLastError() const noexcept
+			{
+				return m_LastError;
 			}
 
 			RegistryKey& AttachHandle(void* handle) noexcept

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Registry.h"
 #include "Kx/Utility/Common.h"
-#include "Kx/System/ErrorCodeValue.h"
 
 namespace
 {
@@ -203,16 +202,16 @@ namespace
 	}
 
 	template<class T>
-	std::optional<T> DoGetNumericValue(HKEY hkey, const KxFramework::String& valueName, DWORD& actualType) noexcept
+	std::optional<T> DoGetNumericValue(HKEY hkey, const KxFramework::String& valueName, DWORD& actualType, KxFramework::Win32Error& lastError) noexcept
 	{
 		using namespace KxFramework;
 
 		DWORD dataSize = 0;
-		const Win32Error error = ::RegGetValueW(hkey, nullptr, valueName.wc_str(), RRF_RT_ANY, &actualType, nullptr, &dataSize);
-		if (error.IsSuccess() && dataSize == sizeof(T))
+		lastError = ::RegGetValueW(hkey, nullptr, valueName.wc_str(), RRF_RT_ANY, &actualType, nullptr, &dataSize);
+		if (lastError.IsSuccess() && dataSize == sizeof(T))
 		{
 			T value = 0;
-			if (Win32Error(::RegGetValueW(hkey, nullptr, valueName.wc_str(), RRF_RT_ANY, &actualType, &value, &dataSize)))
+			if (lastError = ::RegGetValueW(hkey, nullptr, valueName.wc_str(), RRF_RT_ANY, &actualType, &value, &dataSize))
 			{
 				if constexpr(std::is_same_v<T, uint32_t>)
 				{
@@ -227,26 +226,28 @@ namespace
 		return {};
 	}
 
-	std::optional<KxFramework::String> DoGetStringValue(HKEY hkey, const KxFramework::String& valueName, DWORD& actualType, DWORD desiredType, DWORD flags = 0)
+	std::optional<KxFramework::String> DoGetStringValue(HKEY hkey, const KxFramework::String& valueName, DWORD& actualType, KxFramework::Win32Error& lastError, DWORD desiredType, DWORD flags = 0)
 	{
 		using namespace KxFramework;
 
 		DWORD dataSize = 0;
-		if (Win32Error(::RegGetValueW(hkey, nullptr, valueName.wc_str(), desiredType|flags, &actualType, nullptr, &dataSize)) && dataSize != 0)
+		lastError = ::RegGetValueW(hkey, nullptr, valueName.wc_str(), desiredType|flags, &actualType, nullptr, &dataSize);
+		if (lastError && dataSize != 0)
 		{
 			String result;
-			if (Win32Error(::RegGetValueW(hkey, nullptr, valueName.wc_str(), desiredType|flags, &actualType, wxStringBuffer(result, dataSize - 1), &dataSize)))
+			if (lastError = ::RegGetValueW(hkey, nullptr, valueName.wc_str(), desiredType|flags, &actualType, wxStringBuffer(result, dataSize - 1), &dataSize))
 			{
 				return result;
 			}
 		}
 		return {};
 	}
-	bool DoSetStringValue(HKEY hkey, const KxFramework::String& valueName, const KxFramework::String& value, DWORD type)
+	bool DoSetStringValue(HKEY hkey, const KxFramework::String& valueName, const KxFramework::String& value, DWORD type, KxFramework::Win32Error& lastError)
 	{
 		using namespace KxFramework;
 
-		return Win32Error(::RegSetKeyValueW(hkey, nullptr, valueName.wc_str(), type, value.wc_str(), value.length() * sizeof(wchar_t) + sizeof(wchar_t))).IsSuccess();
+		lastError = ::RegSetKeyValueW(hkey, nullptr, valueName.wc_str(), type, value.wc_str(), value.length() * sizeof(wchar_t) + sizeof(wchar_t));
+		return lastError.IsSuccess();
 	}
 
 	bool CheckIsBaseKey(HKEY handle) noexcept
@@ -280,7 +281,7 @@ namespace KxFramework
 		{
 			HKEY handle = nullptr;
 			const String subKeyPath = subKey.GetFullPath();
-			if (Win32Error(::RegOpenKeyExW(AsHKEY(rootKey), subKeyPath.wc_str(), 0, MapAccessMode(access)|MapWOW64(wow64), &handle)))
+			if (m_LastError = ::RegOpenKeyExW(AsHKEY(rootKey), subKeyPath.wc_str(), 0, MapAccessMode(access)|MapWOW64(wow64), &handle))
 			{
 				m_Handle = handle;
 				return true;
@@ -297,7 +298,7 @@ namespace KxFramework
 
 			HKEY handle = nullptr;
 			String subKeyPath = subKey.GetFullPath();
-			if (Win32Error(::RegCreateKeyExW(AsHKEY(rootKey), subKeyPath.wc_str(), 0, nullptr, nativeFlags, MapAccessMode(access)|MapWOW64(wow64), nullptr, &handle, nullptr)))
+			if (m_LastError = ::RegCreateKeyExW(AsHKEY(rootKey), subKeyPath.wc_str(), 0, nullptr, nativeFlags, MapAccessMode(access)|MapWOW64(wow64), nullptr, &handle, nullptr))
 			{
 				m_Handle = handle;
 				return true;
@@ -309,7 +310,7 @@ namespace KxFramework
 	{
 		if (handle && !CheckIsBaseKey(AsHKEY(handle)))
 		{
-			::RegCloseKey(AsHKEY(handle));
+			m_LastError = ::RegCloseKey(AsHKEY(handle));
 		}
 	}
 
@@ -323,25 +324,28 @@ namespace KxFramework
 		String subKeyPath = subKey.GetFullPath();
 		if (resursive)
 		{
-			return Win32Error(::RegDeleteTreeW(AsHKEY(m_Handle), subKeyPath.wc_str())).IsSuccess();
+			m_LastError = ::RegDeleteTreeW(AsHKEY(m_Handle), subKeyPath.wc_str());
 		}
 		else
 		{
-			return Win32Error(::RegDeleteKeyExW(AsHKEY(m_Handle), subKeyPath.wc_str(), 0, 0)).IsSuccess();
+			m_LastError = ::RegDeleteKeyExW(AsHKEY(m_Handle), subKeyPath.wc_str(), 0, 0);
 		}
+		return m_LastError.IsSuccess();
 	}
 	bool RegistryKey::RemoveValue(const String& valueName)
 	{
-		return Win32Error(::RegDeleteKeyValueW(AsHKEY(m_Handle), nullptr, valueName.wc_str())).IsSuccess();
+		m_LastError = ::RegDeleteKeyValueW(AsHKEY(m_Handle), nullptr, valueName.wc_str());
+		return m_LastError.IsSuccess();
 	}
 	bool RegistryKey::DoesValueExist(const String& valueName) const
 	{
-		return Win32Error(::RegQueryValueExW(AsHKEY(m_Handle), valueName.wc_str(), nullptr, nullptr, nullptr, nullptr)).IsSuccess();
+		m_LastError = ::RegQueryValueExW(AsHKEY(m_Handle), valueName.wc_str(), nullptr, nullptr, nullptr, nullptr);
+		return m_LastError.IsSuccess();
 	}
 	RegistryValueType RegistryKey::GetValueType(const String& valueName) const
 	{
 		DWORD actualType = REG_NONE;
-		if (Win32Error(::RegQueryValueExW(AsHKEY(m_Handle), valueName.wc_str(), nullptr, &actualType, nullptr, nullptr)))
+		if (m_LastError = ::RegQueryValueExW(AsHKEY(m_Handle), valueName.wc_str(), nullptr, &actualType, nullptr, nullptr))
 		{
 			return MapValueType(actualType);
 		}
@@ -351,7 +355,8 @@ namespace KxFramework
 	size_t RegistryKey::EnumKeyNames(std::function<bool(String)> func) const
 	{
 		DWORD keyCount = 0;
-		if (Win32Error(::RegQueryInfoKeyW(AsHKEY(m_Handle), nullptr, nullptr, nullptr, &keyCount, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr)) && keyCount != 0)
+		m_LastError = ::RegQueryInfoKeyW(AsHKEY(m_Handle), nullptr, nullptr, nullptr, &keyCount, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+		if (m_LastError && keyCount != 0)
 		{
 			wchar_t keyNameBuffer[g_MaxKeyNameLength] = {};
 
@@ -359,7 +364,7 @@ namespace KxFramework
 			for (size_t i = 0; i < keyCount; i++)
 			{
 				DWORD keyNameLength = std::size(keyNameBuffer);
-				if (Win32Error(::RegEnumKeyExW(AsHKEY(m_Handle), i, keyNameBuffer, &keyNameLength, nullptr, nullptr, nullptr, nullptr)))
+				if (m_LastError = ::RegEnumKeyExW(AsHKEY(m_Handle), i, keyNameBuffer, &keyNameLength, nullptr, nullptr, nullptr, nullptr))
 				{
 					count++;
 					if (!std::invoke(func, String(keyNameBuffer, keyNameLength)))
@@ -375,7 +380,8 @@ namespace KxFramework
 	size_t RegistryKey::EnumValueNames(std::function<bool(String)> func) const
 	{
 		DWORD valueCount = 0;
-		if (Win32Error(::RegQueryInfoKeyW(AsHKEY(m_Handle), nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &valueCount, nullptr, nullptr, nullptr, nullptr)) && valueCount != 0)
+		m_LastError = ::RegQueryInfoKeyW(AsHKEY(m_Handle), nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &valueCount, nullptr, nullptr, nullptr, nullptr);
+		if (m_LastError && valueCount != 0)
 		{
 			wchar_t valueNameBuffer[g_MaxValueNameLength] = {};
 
@@ -383,7 +389,7 @@ namespace KxFramework
 			for (size_t i = 0; i < valueCount; i++)
 			{
 				DWORD valueNameLength = std::size(valueNameBuffer);
-				if (Win32Error(::RegEnumValueW(AsHKEY(m_Handle), i, valueNameBuffer, &valueNameLength, nullptr, nullptr, nullptr, nullptr)))
+				if (m_LastError = ::RegEnumValueW(AsHKEY(m_Handle), i, valueNameBuffer, &valueNameLength, nullptr, nullptr, nullptr, nullptr))
 				{
 					count++;
 					if (!std::invoke(func, String(valueNameBuffer, valueNameLength)))
@@ -400,27 +406,27 @@ namespace KxFramework
 	std::optional<String> RegistryKey::GetStringValue(const String& valueName) const
 	{
 		DWORD actualType = REG_NONE;
-		return DoGetStringValue(AsHKEY(m_Handle), valueName, actualType, RRF_RT_REG_SZ);
+		return DoGetStringValue(AsHKEY(m_Handle), valueName, actualType, m_LastError, RRF_RT_REG_SZ);
 	}
 	bool RegistryKey::SetStringValue(const String& valueName, const String& value)
 	{
-		return DoSetStringValue(AsHKEY(m_Handle), valueName, value, REG_SZ);
+		return DoSetStringValue(AsHKEY(m_Handle), valueName, value, REG_SZ, m_LastError);
 	}
 	
 	std::optional<String> RegistryKey::GetStringExpandValue(const String& valueName, bool noAutoExpand) const
 	{
 		DWORD actualType = REG_NONE;
-		return DoGetStringValue(AsHKEY(m_Handle), valueName, actualType, RRF_RT_REG_MULTI_SZ, noAutoExpand ? RRF_NOEXPAND : 0);
+		return DoGetStringValue(AsHKEY(m_Handle), valueName, actualType, m_LastError, RRF_RT_REG_MULTI_SZ, noAutoExpand ? RRF_NOEXPAND : 0);
 	}
 	bool RegistryKey::SetStringExpandValue(const String& valueName, const String& value)
 	{
-		return DoSetStringValue(AsHKEY(m_Handle), valueName, value, REG_EXPAND_SZ);
+		return DoSetStringValue(AsHKEY(m_Handle), valueName, value, REG_EXPAND_SZ, m_LastError);
 	}
 	
 	size_t RegistryKey::GetStringArrayValue(const String& valueName, std::function<bool(String)> func) const
 	{
 		DWORD actualType = REG_NONE;
-		if (auto value = DoGetStringValue(AsHKEY(m_Handle), valueName, actualType, RRF_RT_REG_MULTI_SZ))
+		if (auto value = DoGetStringValue(AsHKEY(m_Handle), valueName, actualType, m_LastError, RRF_RT_REG_MULTI_SZ))
 		{
 			const size_t length = value->length();
 
@@ -473,7 +479,7 @@ namespace KxFramework
 			multiValue = L"\0\0";
 		}
 
-		return DoSetStringValue(AsHKEY(m_Handle), valueName, multiValue, REG_MULTI_SZ);
+		return DoSetStringValue(AsHKEY(m_Handle), valueName, multiValue, REG_MULTI_SZ, m_LastError);
 	}
 
 	std::optional<std::vector<uint8_t>> RegistryKey::GetBinaryValue(const String& valueName) const
@@ -483,12 +489,13 @@ namespace KxFramework
 		DWORD actualType = REG_NONE;
 		DWORD dataSize = 0;
 
-		if (Win32Error(::RegGetValueW(AsHKEY(m_Handle), nullptr, valueName.wc_str(), desiredType|flags, &actualType, nullptr, &dataSize)) && dataSize != 0)
+		m_LastError = ::RegGetValueW(AsHKEY(m_Handle), nullptr, valueName.wc_str(), desiredType|flags, &actualType, nullptr, &dataSize);
+		if (m_LastError && dataSize != 0)
 		{
 			std::vector<uint8_t> buffer;
 			buffer.resize(dataSize);
 
-			if (Win32Error(::RegGetValueW(AsHKEY(m_Handle), nullptr, valueName.wc_str(), desiredType|flags, &actualType, buffer.data(), &dataSize)))
+			if (m_LastError = ::RegGetValueW(AsHKEY(m_Handle), nullptr, valueName.wc_str(), desiredType|flags, &actualType, buffer.data(), &dataSize))
 			{
 				return buffer;
 			}
@@ -497,13 +504,14 @@ namespace KxFramework
 	}
 	bool RegistryKey::SetBinaryValue(const String& valueName, const void* data, size_t size)
 	{
-		return Win32Error(::RegSetKeyValueW(AsHKEY(m_Handle), nullptr, valueName.wc_str(), REG_BINARY, data, size)).IsSuccess();
+		m_LastError = ::RegSetKeyValueW(AsHKEY(m_Handle), nullptr, valueName.wc_str(), REG_BINARY, data, size);
+		return m_LastError.IsSuccess();
 	}
 
 	std::optional<uint32_t> RegistryKey::GetUInt32Value(const String& valueName) const
 	{
 		DWORD actualType = REG_NONE;
-		if (auto value = DoGetNumericValue<uint32_t>(AsHKEY(m_Handle), valueName, actualType) && (actualType == REG_DWORD_LITTLE_ENDIAN || actualType == REG_DWORD_BIG_ENDIAN))
+		if (auto value = DoGetNumericValue<uint32_t>(AsHKEY(m_Handle), valueName, actualType, m_LastError) && (actualType == REG_DWORD_LITTLE_ENDIAN || actualType == REG_DWORD_BIG_ENDIAN))
 		{
 			return value;
 		}
@@ -515,13 +523,14 @@ namespace KxFramework
 		{
 			value = _byteswap_ulong(value);
 		}
-		return Win32Error(::RegSetKeyValueW(AsHKEY(m_Handle), nullptr, valueName.wc_str(), REG_DWORD_LITTLE_ENDIAN, &value, sizeof(value))).IsSuccess();
+		m_LastError = ::RegSetKeyValueW(AsHKEY(m_Handle), nullptr, valueName.wc_str(), REG_DWORD_LITTLE_ENDIAN, &value, sizeof(value));
+		return m_LastError.IsSuccess();
 	}
 
 	std::optional<uint64_t> RegistryKey::GetUInt64Value(const String& valueName) const
 	{
 		DWORD actualType = REG_NONE;
-		if (auto value = DoGetNumericValue<uint64_t>(AsHKEY(m_Handle), valueName, actualType) && actualType == REG_QWORD)
+		if (auto value = DoGetNumericValue<uint64_t>(AsHKEY(m_Handle), valueName, actualType, m_LastError) && actualType == REG_QWORD)
 		{
 			return value;
 		}
@@ -533,6 +542,7 @@ namespace KxFramework
 		{
 			value = _byteswap_uint64(value);
 		}
-		return Win32Error(::RegSetKeyValueW(AsHKEY(m_Handle), nullptr, valueName.wc_str(), REG_QWORD, &value, sizeof(value))).IsSuccess();
+		m_LastError = ::RegSetKeyValueW(AsHKEY(m_Handle), nullptr, valueName.wc_str(), REG_QWORD, &value, sizeof(value));
+		return m_LastError.IsSuccess();
 	}
 }
