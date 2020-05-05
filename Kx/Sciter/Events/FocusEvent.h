@@ -10,10 +10,8 @@ namespace KxFramework::Sciter
 			KxEVENT_MEMBER(FocusEvent, KillFocus);
 			KxEVENT_MEMBER(FocusEvent, ContainerSetFocus);
 			KxEVENT_MEMBER(FocusEvent, ContainerKillFocus);
-			KxEVENT_MEMBER(FocusEvent, Request);
-
-		protected:
-			bool m_ByMouseClick = false;
+			KxEVENT_MEMBER(FocusEvent, RequestFocus);
+			KxEVENT_MEMBER(FocusEvent, RequestFocusAdvanced);
 
 		public:
 			FocusEvent(Host& host)
@@ -26,15 +24,6 @@ namespace KxFramework::Sciter
 			{
 				return new FocusEvent(*this);
 			}
-
-			bool IsByMouseClick() const
-			{
-				return m_ByMouseClick;
-			}
-			void SetByMouseClick(bool byMouseClick = true)
-			{
-				m_ByMouseClick = byMouseClick;
-			}
 	};
 }
 
@@ -44,5 +33,6 @@ namespace KxFramework::Sciter
 	KxEVENT_DECLARE_ALIAS_TO_MEMBER(FocusEvent, KillFocus);
 	KxEVENT_DECLARE_ALIAS_TO_MEMBER(FocusEvent, ContainerSetFocus);
 	KxEVENT_DECLARE_ALIAS_TO_MEMBER(FocusEvent, ContainerKillFocus);
-	KxEVENT_DECLARE_ALIAS_TO_MEMBER(FocusEvent, Request);
+	KxEVENT_DECLARE_ALIAS_TO_MEMBER(FocusEvent, RequestFocus);
+	KxEVENT_DECLARE_ALIAS_TO_MEMBER(FocusEvent, RequestFocusAdvanced);
 }

@@ -348,13 +348,22 @@ namespace KxFramework::Sciter
 				event.SetEventType(EvtContainerKillFocus);
 				break;
 			}
+			case FOCUS_EVENTS::FOCUS_REQUEST:
+			{
+				event.SetEventType(EvtRequestFocus);
+				break;
+			}
+			case FOCUS_EVENTS::FOCUS_ADVANCE_REQUEST:
+			{
+				event.SetEventType(EvtRequestFocusAdvanced);
+				break;
+			}
 		};
 
 		if (event.GetEventType() != wxEVT_NULL)
 		{
 			event.SetElement(element);
 			event.SetTargetElement(FromSciterElement(parameters.target));
-			event.SetByMouseClick(parameters.by_mouse_click);
 
 			const bool result = ProcessEvent(event);
 			parameters.cancel = !event.IsAllowed();
