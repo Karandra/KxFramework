@@ -29,20 +29,21 @@
 #
 # 	See additional helpful variables in /docs/maintainers/vcpkg_common_definitions.md
 
-# # Specifies if the port install should fail immediately given a condition
+# Specifies if the port install should fail immediately given a condition
 # vcpkg_fail_port_install(MESSAGE "kxframework currently only supports Linux and Mac platforms" ON_TARGET "Windows")
 
 include(vcpkg_common_functions)
 
 if (NOT VCPKG_LIBRARY_LINKAGE STREQUAL static)
-    message(FATAL_ERROR "Unsupported linkage: ${VCPKG_LIBRARY_LINKAGE}")
+	message(FATAL_ERROR "Unsupported linkage: ${VCPKG_LIBRARY_LINKAGE}")
 endif()
 
+set(VCPKG_USE_HEAD_VERSION ON)
 vcpkg_from_github(
 	OUT_SOURCE_PATH SOURCE_PATH
 	REPO KerberX/KxFramework
-	REF c93cff87ddb382ef70df776461e4fb12dfa34d9c
-	SHA512 3fbfd7b2e1ec66d7ddd1e0d76b4de81a44ea37ce36737781eef66977ec19c22b3e5c2856b92089d73e769d8d2f365fe7c5ec5e4c9879529d388a6c3acf03f801
+	REF master
+	SHA512 1
 	HEAD_REF master
 )
 
@@ -50,23 +51,23 @@ vcpkg_from_github(
 # # See /docs/maintainers/vcpkg_check_features.md for more details
 # vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
 #   FEATURES # <- Keyword FEATURES is required because INVERTED_FEATURES are being used
-#     tbb   WITH_TBB
+#		tbb		WITH_TBB
 #   INVERTED_FEATURES
-#     tbb   ROCKSDB_IGNORE_PACKAGE_TBB
+#		tbb		ROCKSDB_IGNORE_PACKAGE_TBB
 # )
 
 if (VCPKG_TARGET_ARCHITECTURE MATCHES "x86")
-    set(BUILD_ARCH "Win32")
-    set(OUTPUT_DIR "Win32")
+	set(BUILD_ARCH "Win32")
+	set(OUTPUT_DIR "Win32")
 elseif (VCPKG_TARGET_ARCHITECTURE MATCHES "x64")
-    set(BUILD_ARCH "x64")
+	set(BUILD_ARCH "x64")
 else()
-    message(FATAL_ERROR "Unsupported architecture: ${VCPKG_TARGET_ARCHITECTURE}")
+	message(FATAL_ERROR "Unsupported architecture: ${VCPKG_TARGET_ARCHITECTURE}")
 endif()
 
 set(VcpkgTriplet ${TARGET_TRIPLET})
 if (VCPKG_LIBRARY_LINKAGE STREQUAL static)
-    vcpkg_install_msbuild(
+	vcpkg_install_msbuild(
 		SOURCE_PATH ${SOURCE_PATH}
 		PROJECT_SUBPATH KxFramework.vcxproj
 		PLATFORM ${BUILD_ARCH}
