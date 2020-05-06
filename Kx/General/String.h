@@ -194,7 +194,7 @@ namespace KxFramework
 			}
 			static String FromASCII(const char* ascii, size_t length = npos)
 			{
-				return wxString::FromAscii(ascii, npos);
+				return wxString::FromAscii(ascii, length);
 			}
 			static String FromASCII(std::string_view ascii)
 			{
