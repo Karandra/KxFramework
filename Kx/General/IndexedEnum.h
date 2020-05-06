@@ -141,7 +141,7 @@ namespace KxFramework
 			{
 				if (const TItem* item = FindByValue(value))
 				{
-					return item;
+					return item->GetName();
 				}
 				return {};
 			}

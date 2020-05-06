@@ -466,7 +466,7 @@ namespace KxFramework
 			{
 				static_assert(sizeof...(T) != 0, "IOStreamWrapper::Skip<T...>: Skipping 0 bytes is not allowed");
 
-				return SeekIO(Utility::SizeOfParameterPackValues<T...>(), wxSeekMode::wxFromCurrent);
+				return SeekIO(Utility::SizeOfParameterPackValues<T...>(), wxSeekMode::wxFromCurrent).IsValid();
 			}
 
 			bool Skip(BinarySize count)
