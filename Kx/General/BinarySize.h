@@ -36,37 +36,37 @@ namespace KxFramework
 			using SizeType = int64_t;
 
 		public:
-			static constexpr BinarySize FromBytes(SizeType bytes)
+			static constexpr BinarySize FromBytes(SizeType bytes) noexcept
 			{
 				return bytes;
 			}
 			
 			template<class T>
-			static constexpr BinarySize FromKB(T value)
+			static constexpr BinarySize FromKB(T value) noexcept
 			{
 				return FromBytes(value * 1024);
 			}
 			
 			template<class T>
-			static constexpr BinarySize FromMB(T value)
+			static constexpr BinarySize FromMB(T value) noexcept
 			{
 				return FromKB(value * 1024);
 			}
 			
 			template<class T>
-			static constexpr BinarySize FromGB(T value)
+			static constexpr BinarySize FromGB(T value) noexcept
 			{
 				return FromMB(value * 1024);
 			}
 			
 			template<class T>
-			static constexpr BinarySize FromTB(T value)
+			static constexpr BinarySize FromTB(T value) noexcept
 			{
 				return FromGB(value * 1024);
 			}
 
 			template<class T>
-			static constexpr BinarySize FromUnit(T value, BinarySizeUnit unit)
+			static constexpr BinarySize FromUnit(T value, BinarySizeUnit unit) noexcept
 			{
 				switch (unit)
 				{
@@ -95,11 +95,11 @@ namespace KxFramework
 			}
 
 		private:
-		SizeType m_Value = -1;
+			SizeType m_Value = -1;
 
 		private:
 			template<class T>
-			constexpr T GetAs(SizeType value) const
+			constexpr T GetAs(SizeType value) const noexcept
 			{
 				if constexpr(std::is_floating_point_v<T>)
 				{
@@ -116,34 +116,34 @@ namespace KxFramework
 			}
 
 		public:
-			constexpr BinarySize() = default;
-			constexpr BinarySize(SizeType bytes)
+			constexpr BinarySize() noexcept = default;
+			constexpr BinarySize(SizeType bytes) noexcept
 				:m_Value(bytes)
 			{
 			}
 
 		public:
 			// Value testing
-			constexpr bool IsNull() const
+			constexpr bool IsNull() const noexcept
 			{
 				return m_Value == 0;
 			}
-			constexpr bool IsPositive() const
+			constexpr bool IsPositive() const noexcept
 			{
 				return m_Value > 0;
 			}
-			constexpr bool IsNegative() const
+			constexpr bool IsNegative() const noexcept
 			{
 				return m_Value < 0;
 			}
-			constexpr bool IsValid() const
+			constexpr bool IsValid() const noexcept
 			{
 				return m_Value >= 0;
 			}
 
 			// Conversion
 			template<class T = SizeType>
-			constexpr T GetBytes() const
+			constexpr T GetBytes() const noexcept
 			{
 				static_assert(std::is_integral_v<T> || std::is_floating_point_v<T>, "invalid numeric type");
 
@@ -151,31 +151,31 @@ namespace KxFramework
 			}
 			
 			template<class T = SizeType>
-			constexpr T GetKB() const
+			constexpr T GetKB() const noexcept
 			{
 				return GetAs<T>(m_Value);
 			}
 			
 			template<class T = SizeType>
-			constexpr T GetMB() const
+			constexpr T GetMB() const noexcept
 			{
 				return GetAs<T>(GetKB());
 			}
 			
 			template<class T = SizeType>
-			constexpr T GetGB() const
+			constexpr T GetGB() const noexcept
 			{
 				return GetAs<T>(GetMB());
 			}
 			
 			template<class T = SizeType>
-			constexpr T GetTB() const
+			constexpr T GetTB() const noexcept
 			{
 				return GetAs<T>(GetGB());
 			}
 			
 			template<class T = SizeType>
-			constexpr T GetAsUnit(BinarySizeUnit unit) const
+			constexpr T GetAsUnit(BinarySizeUnit unit) const noexcept
 			{
 				switch (unit)
 				{
@@ -208,94 +208,94 @@ namespace KxFramework
 
 		public:
 			// Comparison
-			constexpr bool operator==(const BinarySize& other) const
+			constexpr bool operator==(const BinarySize& other) const noexcept
 			{
 				return m_Value == other.m_Value;
 			}
-			constexpr bool operator!=(const BinarySize& other) const
+			constexpr bool operator!=(const BinarySize& other) const noexcept
 			{
 				return m_Value != other.m_Value;
 			}
-			constexpr bool operator<(const BinarySize& other) const
+			constexpr bool operator<(const BinarySize& other) const noexcept
 			{
 				return m_Value < other.m_Value;
 			}
-			constexpr bool operator<=(const BinarySize& other) const
+			constexpr bool operator<=(const BinarySize& other) const noexcept
 			{
 				return m_Value <= other.m_Value;
 			}
-			constexpr bool operator>(const BinarySize& other) const
+			constexpr bool operator>(const BinarySize& other) const noexcept
 			{
 				return m_Value >= other.m_Value;
 			}
-			constexpr bool operator>=(const BinarySize& other) const
+			constexpr bool operator>=(const BinarySize& other) const noexcept
 			{
 				return m_Value >= other.m_Value;
 			}
 
 			// Arithmetics
-			constexpr BinarySize operator+(const BinarySize& other) const
+			constexpr BinarySize operator+(const BinarySize& other) const noexcept
 			{
 				return m_Value + other.m_Value;
 			}
-			constexpr BinarySize operator-(const BinarySize& other) const
+			constexpr BinarySize operator-(const BinarySize& other) const noexcept
 			{
 				return m_Value - other.m_Value;
 			}
-			constexpr BinarySize operator*(SizeType n) const
+			constexpr BinarySize operator*(SizeType n) const noexcept
 			{
 				return m_Value * n;
 			}
-			constexpr BinarySize operator*(double n) const
+			constexpr BinarySize operator*(double n) const noexcept
 			{
 				return m_Value * n;
 			}
-			constexpr BinarySize operator/(SizeType n) const
+			constexpr BinarySize operator/(SizeType n) const noexcept
 			{
 				return m_Value / n;
 			}
-			constexpr BinarySize operator/(double n) const
+			constexpr BinarySize operator/(double n) const noexcept
 			{
 				return m_Value / n;
 			}
 
-			constexpr BinarySize& operator+=(const BinarySize& other)
+			constexpr BinarySize& operator+=(const BinarySize& other) noexcept
 			{
 				m_Value += other.m_Value;
 				return *this;
 			}
-			constexpr BinarySize& operator-=(const BinarySize& other)
+			constexpr BinarySize& operator-=(const BinarySize& other) noexcept
 			{
 				m_Value -= other.m_Value;
 				return *this;
 			}
-			constexpr BinarySize& operator*=(SizeType n)
+			constexpr BinarySize& operator*=(SizeType n) noexcept
 			{
 				m_Value *= n;
 				return *this;
 			}
-			constexpr BinarySize& operator*=(double n)
+			constexpr BinarySize& operator*=(double n) noexcept
 			{
 				m_Value *= n;
 				return *this;
 			}
-			constexpr BinarySize& operator/=(SizeType n)
+			constexpr BinarySize& operator/=(SizeType n) noexcept
 			{
 				m_Value /= n;
 				return *this;
 			}
-			constexpr BinarySize& operator/=(double n)
+			constexpr BinarySize& operator/=(double n) noexcept
 			{
 				m_Value /= n;
 				return *this;
 			}
 
 			// Validity test (see  'IsValid')
-			constexpr explicit operator bool() const
+			constexpr explicit operator bool() const noexcept
 			{
 				return IsValid();
 			}
-			constexpr bool operator!() const
+			constexpr bool operator!() const noexcept
 			{
 				return !IsValid();
 			}
