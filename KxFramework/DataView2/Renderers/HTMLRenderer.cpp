@@ -3,7 +3,7 @@
 #include "KxFramework/DataView2/View.h"
 #include "KxFramework/DataView2/Node.h"
 #include "KxFramework/DataView2/Column.h"
-#include "KxFramework/KxHTMLWindow.h"
+#include "Kx/UI/Controls/HTMLWindow.h"
 #include <wx/html/htmprint.h>
 
 namespace
@@ -40,7 +40,7 @@ namespace KxDataView2
 
 		if (m_Value.FromAny(value))
 		{
-			m_ContentHTML = KxHTMLWindow::ProcessPlainText(m_Value.GetText());
+			m_ContentHTML = KxFramework::UI::HTMLWindow::ProcessPlainText(m_Value.GetText());
 			return true;
 		}
 		return false;
@@ -65,9 +65,9 @@ namespace KxDataView2
 		// Setup fonts. This needs to be done after a call to 'wxHtmlDCRenderer::SetHtmlText',
 		// otherwise text scales really weirdly.
 		int pointSize = 0;
-		wxString normalFace;
-		wxString fixedFace;
-		if (KxHTMLWindow::SetupFontsUsing(dc.GetFont(), normalFace, fixedFace, pointSize))
+		KxFramework::String normalFace;
+		KxFramework::String fixedFace;
+		if (KxFramework::UI::HTMLWindow::SetupFontsUsing(dc.GetFont(), normalFace, fixedFace, pointSize))
 		{
 			htmlRenderer.SetFonts(normalFace, fixedFace);
 			htmlRenderer.SetStandardFonts(pointSize, normalFace, fixedFace);

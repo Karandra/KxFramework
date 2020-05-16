@@ -22,14 +22,8 @@
     <Filter Include="Header Files\GUI\Controls">
       <UniqueIdentifier>{5121c935-f7ad-4116-b589-cb0d930683c6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\GUI\AUI">
-      <UniqueIdentifier>{be656ce5-feb3-4b1b-b4f3-bd15257ac986}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\GUI">
       <UniqueIdentifier>{60049398-3826-4dd1-9fea-0cca7f82949e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\GUI\AUI">
-      <UniqueIdentifier>{3e8be801-67ab-4b56-978f-86556053e602}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\GUI\Dialogs">
       <UniqueIdentifier>{b38ef96b-40e1-4dff-a767-e3fb73f75187}</UniqueIdentifier>
@@ -231,34 +225,7 @@
     <ClInclude Include="KxFramework\KxBitmapComboBox.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxComboControl.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxComboPopup.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxHTMLWindow.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxProgressBar.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxRadioButton.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxCheckBox.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxSlider.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxStaticText.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxStatusBar.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxStatusBarEx.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxStyledTextBox.h">
@@ -271,24 +238,6 @@
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxTextBox.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxWebView.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxAuiToolBarItem.h">
-      <Filter>Header Files\GUI\AUI</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxAuiToolBar.h">
-      <Filter>Header Files\GUI\AUI</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxAuiNotebook.h">
-      <Filter>Header Files\GUI\AUI</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxNotebook.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxSimplebook.h">
       <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxDialog.h">
@@ -321,9 +270,6 @@
     <ClInclude Include="KxFramework\KxTaskDialog.h">
       <Filter>Header Files\GUI\Dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxAuiToolBarEvent.h">
-      <Filter>Header Files\GUI\Events</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxMenuEvent.h">
       <Filter>Header Files\GUI\Events</Filter>
     </ClInclude>
@@ -338,9 +284,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxShellMenu.h">
       <Filter>Header Files\GUI\Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxSearchBox.h">
-      <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxCredentialsDialog.h">
       <Filter>Header Files\GUI\Dialogs</Filter>
@@ -461,9 +404,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\DataView2\Renderers\ImageListRenderer.h">
       <Filter>Header Files\GUI\DataView2\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxClusterMap.h">
-      <Filter>Header Files\GUI\Controls</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxEvent.h">
       <Filter>Header Files\GUI\Events</Filter>
@@ -975,9 +915,6 @@
     <ClInclude Include="Kx\Drawing\WithImageList.h">
       <Filter>Kx\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxDataViewComboBox.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\Drawing\GraphicsCanvas.h">
       <Filter>Kx\Drawing</Filter>
     </ClInclude>
@@ -1213,6 +1150,63 @@
     <ClInclude Include="Kx\UI\Controls\StaticBitmap.h">
       <Filter>Kx\UI\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\Slider.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\WebView.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\StaticText.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\SearchBox.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\Simplebook.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\CheckBox.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\Notebook.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\StatusBar.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\StatusBarEx.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\ClusterMap.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\RadioButton.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\ComboControl.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\ComboPopup.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataViewComboBox.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\HTMLWindow.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\AUI\AuiNotebook.h">
+      <Filter>Kx\UI\Controls\AUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\AUI\AuiToolBar.h">
+      <Filter>Kx\UI\Controls\AUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\AUI\AuiToolBarEvent.h">
+      <Filter>Kx\UI\Controls\AUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\AUI\AuiToolBarItem.h">
+      <Filter>Kx\UI\Controls\AUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxFramework\KxButton.cpp">
@@ -1227,58 +1221,13 @@
     <ClCompile Include="KxFramework\KxBitmapComboBox.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxComboControl.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxComboPopup.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxHTMLWindow.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxProgressBar.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxRadioButton.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxCheckBox.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxSlider.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxStaticText.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxStatusBar.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxStatusBarEx.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxStyledTextBox.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxTextBox.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxWebView.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxAuiNotebook.cpp">
-      <Filter>Source Files\GUI\AUI</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxAuiToolBar.cpp">
-      <Filter>Source Files\GUI\AUI</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxAuiToolBarItem.cpp">
-      <Filter>Source Files\GUI\AUI</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxNotebook.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxSimplebook.cpp">
       <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxDialog.cpp">
@@ -1311,9 +1260,6 @@
     <ClCompile Include="KxFramework\KxTaskDialog.cpp">
       <Filter>Source Files\GUI\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxAuiToolBarEvent.cpp">
-      <Filter>Source Files\GUI\Events</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxMenuEvent.cpp">
       <Filter>Source Files\GUI\Events</Filter>
     </ClCompile>
@@ -1328,9 +1274,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxShellMenu.cpp">
       <Filter>Source Files\GUI\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxSearchBox.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxCredentialsDialog.cpp">
       <Filter>Source Files\GUI\Dialogs</Filter>
@@ -1424,9 +1367,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\Renderers\ImageListRenderer.cpp">
       <Filter>Source Files\GUI\DataView2\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxClusterMap.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxCommandEvent.cpp">
       <Filter>Source Files\GUI\Events</Filter>
@@ -1707,9 +1647,6 @@
     <ClCompile Include="Kx\Drawing\ImageSet.cpp">
       <Filter>Kx\Drawing</Filter>
     </ClCompile>
-    <ClCompile Include="KxFramework\KxDataViewComboBox.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
     <ClCompile Include="Kx\Drawing\DCOperations.cpp">
       <Filter>Kx\Drawing</Filter>
     </ClCompile>
@@ -1833,6 +1770,60 @@
     </ClCompile>
     <ClCompile Include="Kx\General\Common.cpp">
       <Filter>Kx\General</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\Slider.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\WebView.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\StaticText.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\SearchBox.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\Simplebook.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\CheckBox.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\Notebook.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\StatusBar.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\StatusBarEx.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\ClusterMap.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\RadioButton.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\ComboControl.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataViewComboBox.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\HTMLWindow.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\AUI\AuiNotebook.cpp">
+      <Filter>Kx\UI\Controls\AUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\AUI\AuiToolBarEvent.cpp">
+      <Filter>Kx\UI\Controls\AUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\AUI\AuiToolBarItem.cpp">
+      <Filter>Kx\UI\Controls\AUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\AUI\AuiToolBar.cpp">
+      <Filter>Kx\UI\Controls\AUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
