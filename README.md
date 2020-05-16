@@ -20,6 +20,7 @@ You'll need [Visual Studio 2019](https://visualstudio.microsoft.com/) and [VCPkg
 	- [JSON for Modern C++](https://github.com/nlohmann/json) - `nlohmann-json`.
 	- [SimpleINI](https://github.com/brofield/simpleini) - `simpleini`.
 	- [TinyXML2](https://github.com/leethomason/tinyxml2) - `tinyxml2`.
+	- [Scintilla](https://www.scintilla.org) - `scintilla`. It's built-in into wxWidgets but KxFramework needs its headers.
 	
 - Set this instance of **VCPkg** as default or use project-specific linking.
 - Open KxFramework solution in Visual Studio and Build **Release** configuration for x86 and x64. 
