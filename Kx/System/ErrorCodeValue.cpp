@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ErrorCodeValue.h"
+#include "NativeAPI.h"
 #include "Kx/General/UniversallyUniqueID.h"
 #include "Kx/Utility/CallAtScopeExit.h"
 #include "Private/IncludeNtStatus.h"
@@ -15,7 +16,7 @@ namespace
 
 namespace
 {
-	// Inclusion of 'NtDef.h' causes too much compile errors
+	// Inclusion of 'NtDef.h' causes too many compilation errors
 	bool NT_SUCCESS(NTSTATUS status)
 	{
 		return status >= 0;
@@ -36,18 +37,110 @@ namespace
 	{
 		return status & 0xFFF0000u;
 	}
+
+	std::optional<KxFramework::Win32Error> Win32FromNtStatus(NTSTATUS ntStatus) noexcept
+	{
+		// https://stackoverflow.com/questions/25566234/how-to-convert-specific-ntstatus-value-to-the-hresult
+		using namespace KxFramework;
+
+		if (ntStatus == STATUS_SUCCESS)
+		{
+			return Win32Error(ERROR_SUCCESS);
+		}
+		else if (NativeAPI::NtDLL::RtlNtStatusToDosError)
+		{
+			const ULONG win32Code = NativeAPI::NtDLL::RtlNtStatusToDosError(ntStatus);
+			if (win32Code != ERROR_MR_MID_NOT_FOUND)
+			{
+				return Win32Error(win32Code);
+			}
+		}
+
+		// Using GetOverlappedResult hack
+		OVERLAPPED overlapped = {};
+		overlapped.Internal = ntStatus;
+		overlapped.InternalHigh = 0;
+		overlapped.Offset = 0;
+		overlapped.OffsetHigh = 0;
+		overlapped.hEvent = nullptr;
+
+		// Remember current error and reset it
+		const DWORD previousError = ::GetLastError();
+		::SetLastError(ERROR_SUCCESS);
+		Utility::CallAtScopeExit atExit([&]()
+		{
+			::SetLastError(previousError);
+		});
+
+		DWORD bytes = 0;
+		::GetOverlappedResult(nullptr, &overlapped, &bytes, FALSE);
+
+		const DWORD result = ::GetLastError();
+		if (result != ERROR_SUCCESS)
+		{
+			return Win32Error(result);
+		}
+		return {};
+	}
+	std::optional<KxFramework::Win32Error> Win32FromHRESULT(HRESULT hresult) noexcept
+	{
+		using namespace KxFramework;
+
+		if (MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, 0) == static_cast<HRESULT>(hresult & 0xFFFF0000))
+		{
+			// Could have come from many values, but we choose this one
+			return Win32Error(HRESULT_CODE(hresult));
+		}
+		else if (hresult == S_OK)
+		{
+			return Win32Error(HRESULT_CODE(hresult));
+		}
+		else
+		{
+			// Otherwise, we got an impossible value
+			return {};
+		}
+	}
+	std::optional<KxFramework::NtStatus> NtStatusFromWin32(DWORD win32Code) noexcept
+	{
+		using namespace KxFramework;
+
+		auto ntStatus = [win32Code]() -> std::optional<NTSTATUS>
+		{
+			switch (win32Code)
+			{
+				#include "Private/ErrorCodeNtStatus.i"
+			};
+			return {};
+		}();
+
+		if (ntStatus)
+		{
+			return NtStatus(*ntStatus);
+		}
+		return {};
+	}
 }
 
 namespace KxFramework
 {
+	Win32Error Win32Error::Success() noexcept
+	{
+		return ERROR_SUCCESS;
+	}
+	Win32Error Win32Error::Fail() noexcept
+	{
+		// There isn't any generic fail code but this should suffice
+		return std::numeric_limits<TValueType>::max();
+	}
+
 	Win32Error Win32Error::GetLastError() noexcept
 	{
 		return ::GetLastError();
 	}
-
-	bool Win32Error::IsSuccess() const noexcept
+	void Win32Error::SetLastError(Win32Error error) noexcept
 	{
-		return GetValue() == ERROR_SUCCESS;
+		::SetLastError(*error);
 	}
 
 	String Win32Error::ToString() const
@@ -58,18 +151,32 @@ namespace KxFramework
 	{
 		return System::Private::FormatMessage(nullptr, GetValue(), FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_MAX_WIDTH_MASK, locale);
 	}
+
+	std::optional<HResult> Win32Error::ToHResult() const noexcept
+	{
+		return HRESULT_FROM_WIN32(GetValue());
+	}
+	std::optional<NtStatus> Win32Error::ToNtStatus() const noexcept
+	{
+		return NtStatusFromWin32(GetValue());
+	}
 }
 
 namespace KxFramework
 {
-	bool HResult::IsOK() const noexcept
+	HResult HResult::Success() noexcept
 	{
-		return GetValue() == S_OK;
+		return S_OK;
 	}
-	bool HResult::IsFalse() const noexcept
+	HResult HResult::False() noexcept
 	{
-		return GetValue() == S_FALSE;
+		return S_FALSE;
 	}
+	HResult HResult::Fail() noexcept
+	{
+		return E_FAIL;
+	}
+
 	bool HResult::IsSuccess() const noexcept
 	{
 		return SUCCEEDED(GetValue());
@@ -81,26 +188,26 @@ namespace KxFramework
 	}
 	String HResult::GetMessage(const Locale& locale) const
 	{
-		return _com_error(GetValue()).ErrorMessage();
+		return _com_error(GetValue(), m_ErrorInfo).ErrorMessage();
 	}
 
 	String HResult::GetSource() const
 	{
-		_bstr_t result = _com_error(GetValue()).Source();
+		_bstr_t result = _com_error(GetValue(), m_ErrorInfo).Source();
 		return static_cast<const wxChar*>(result);
 	}
 	String HResult::GetHelpFile() const
 	{
-		_bstr_t result = _com_error(GetValue()).HelpFile();
+		_bstr_t result = _com_error(GetValue(), m_ErrorInfo).HelpFile();
 		return static_cast<const wxChar*>(result);
 	}
 	uint32_t HResult::GetHelpContext() const noexcept
 	{
-		return _com_error(GetValue()).HelpContext();
+		return _com_error(GetValue(), m_ErrorInfo).HelpContext();
 	}
 	String HResult::GetDescription() const
 	{
-		_bstr_t result = _com_error(GetValue()).Description();
+		_bstr_t result = _com_error(GetValue(), m_ErrorInfo).Description();
 		return static_cast<const wxChar*>(result);
 	}
 	uint32_t HResult::GetFacility() const noexcept
@@ -109,13 +216,36 @@ namespace KxFramework
 	}
 	UniversallyUniqueID HResult::GetUniqueID() const noexcept
 	{
-		GUID result = _com_error(GetValue()).GUID();
+		GUID result = _com_error(GetValue(), m_ErrorInfo).GUID();
 		return *reinterpret_cast<NativeUUID*>(&result);
+	}
+
+	std::optional<Win32Error> HResult::ToWin32() const noexcept
+	{
+		return Win32FromHRESULT(GetValue());
+	}
+	std::optional<NtStatus> HResult::ToNtStatus() const noexcept
+	{
+		if (auto win32Code = Win32FromHRESULT(GetValue()))
+		{
+			return NtStatusFromWin32(win32Code->GetValue());
+		}
+		return {};
 	}
 }
 
 namespace KxFramework
 {
+	NtStatus NtStatus::Success() noexcept
+	{
+		return STATUS_SUCCESS;
+	}
+	NtStatus NtStatus::Fail() noexcept
+	{
+		// Same as with Win32 codes, there isn't any generic fail code for NtStatus
+		return std::numeric_limits<TValueType>::max();
+	}
+
 	bool NtStatus::IsError() const noexcept
 	{
 		return NT_ERROR(GetValue());
@@ -144,5 +274,17 @@ namespace KxFramework
 	uint32_t NtStatus::GetFacility() const noexcept
 	{
 		return NT_FACILITY(GetValue());
+	}
+
+	std::optional<Win32Error> NtStatus::ToWin32() const noexcept
+	{
+		return Win32FromNtStatus(GetValue());
+	}
+	std::optional<HResult> NtStatus::ToHResult() const noexcept
+	{
+		if (auto win32 = Win32FromNtStatus(GetValue()))
+		{
+			return HRESULT_FROM_WIN32(win32->GetValue());
+		}
 	}
 }

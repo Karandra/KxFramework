@@ -3,10 +3,15 @@
 #include "Kx/General/String.h"
 #include "Kx/Localization/Locale.h"
 #include "Private/ErrorCodeValue.h"
+struct IErrorInfo;
 
 namespace KxFramework
 {
 	class UniversallyUniqueID;
+
+	class Win32Error;
+	class HResult;
+	class NtStatus;
 }
 
 namespace KxFramework
@@ -17,6 +22,15 @@ namespace KxFramework
 			constexpr static ErrorCodeCategory GetCategory() noexcept
 			{
 				return ErrorCodeCategory::Generic;
+			}
+			
+			constexpr static GenericError Success() noexcept
+			{
+				return 0;
+			}
+			constexpr static GenericError Fail() noexcept
+			{
+				return std::numeric_limits<TValueType>::max();
 			}
 
 		public:
@@ -52,7 +66,12 @@ namespace KxFramework
 			{
 				return ErrorCodeCategory::Win32;
 			}
+			
+			static Win32Error Success() noexcept;
+			static Win32Error Fail() noexcept;
+
 			static Win32Error GetLastError() noexcept;
+			static void SetLastError(Win32Error error) noexcept;
 
 		public:
 			constexpr Win32Error(TValueType value) noexcept
@@ -61,7 +80,10 @@ namespace KxFramework
 			}
 			
 		public:
-			bool IsSuccess() const noexcept;
+			bool IsSuccess() const noexcept
+			{
+				return *this == Success();
+			}
 			bool IsFail() const noexcept
 			{
 				return !IsSuccess();
@@ -69,6 +91,9 @@ namespace KxFramework
 
 			String ToString() const;
 			String GetMessage(const Locale& locale = {}) const;
+
+			std::optional<HResult> ToHResult() const noexcept;
+			std::optional<NtStatus> ToNtStatus() const noexcept;
 	};
 
 	class HResult final: public System::Private::ErrorCodeValue<HResult, int32_t>
@@ -79,15 +104,28 @@ namespace KxFramework
 				return ErrorCodeCategory::HResult;
 			}
 
+			static HResult Success() noexcept;
+			static HResult False() noexcept;
+			static HResult Fail() noexcept;
+
+		private:
+			IErrorInfo* m_ErrorInfo = nullptr;
+
 		public:
-			constexpr HResult(TValueType value) noexcept
-				:ErrorCodeValue(value)
+			constexpr HResult(TValueType value, IErrorInfo* errorInfo = nullptr) noexcept
+				:ErrorCodeValue(value), m_ErrorInfo(errorInfo)
 			{
 			}
 			
 		public:
-			bool IsOK() const noexcept;
-			bool IsFalse() const noexcept;
+			bool IsOK() const noexcept
+			{
+				return *this == Success();
+			}
+			bool IsFalse() const noexcept
+			{
+				return *this == False();
+			}
 			bool IsSuccess() const noexcept;
 			bool IsFail() const noexcept
 			{
@@ -103,6 +141,9 @@ namespace KxFramework
 			String GetDescription() const;
 			uint32_t GetFacility() const noexcept;
 			UniversallyUniqueID GetUniqueID() const noexcept;
+
+			std::optional<Win32Error> ToWin32() const noexcept;
+			std::optional<NtStatus> ToNtStatus() const noexcept;
 	};
 
 	class NtStatus final: public System::Private::ErrorCodeValue<NtStatus, int32_t>
@@ -112,6 +153,9 @@ namespace KxFramework
 			{
 				return ErrorCodeCategory::NtStatus;
 			}
+
+			static NtStatus Success() noexcept;
+			static NtStatus Fail() noexcept;
 
 		public:
 			constexpr NtStatus(TValueType value) noexcept
@@ -132,5 +176,8 @@ namespace KxFramework
 			String ToString() const;
 			String GetMessage(const Locale& locale = {}) const;
 			uint32_t GetFacility() const noexcept;
+
+			std::optional<Win32Error> ToWin32() const noexcept;
+			std::optional<HResult> ToHResult() const noexcept;
 	};
 }

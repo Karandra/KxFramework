@@ -1,94 +1,5 @@
 #include "stdafx.h"
 #include "ErrorCode.h"
-#include "NativeAPI.h"
-#include "Kx/Utility/CallAtScopeExit.h"
-#include "Private/IncludeNtStatus.h"
-
-namespace
-{
-	std::optional<KxFramework::Win32Error> Win32FromNtStatus(NTSTATUS ntStatus) noexcept
-	{
-		// https://stackoverflow.com/questions/25566234/how-to-convert-specific-ntstatus-value-to-the-hresult
-		using namespace KxFramework;
-
-		if (ntStatus == STATUS_SUCCESS)
-		{
-			return Win32Error(ERROR_SUCCESS);
-		}
-		else if (NativeAPI::NtDLL::RtlNtStatusToDosError)
-		{
-			const ULONG win32Code = NativeAPI::NtDLL::RtlNtStatusToDosError(ntStatus);
-			if (win32Code != ERROR_MR_MID_NOT_FOUND)
-			{
-				return Win32Error(win32Code);
-			}
-		}
-
-		// Using GetOverlappedResult hack
-		OVERLAPPED overlapped = {};
-		overlapped.Internal = ntStatus;
-		overlapped.InternalHigh = 0;
-		overlapped.Offset = 0;
-		overlapped.OffsetHigh = 0;
-		overlapped.hEvent = nullptr;
-
-		// Remember current error and reset it
-		const DWORD previousError = ::GetLastError();
-		::SetLastError(ERROR_SUCCESS);
-		Utility::CallAtScopeExit atExit([&]()
-		{
-			::SetLastError(previousError);
-		});
-
-		DWORD bytes = 0;
-		::GetOverlappedResult(nullptr, &overlapped, &bytes, FALSE);
-
-		const DWORD result = ::GetLastError();
-		if (result != ERROR_SUCCESS)
-		{
-			return Win32Error(result);
-		}
-		return {};
-	}
-	std::optional<KxFramework::Win32Error> Win32FromHRESULT(HRESULT hresult) noexcept
-	{
-		using namespace KxFramework;
-
-		if (MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, 0) == static_cast<HRESULT>(hresult & 0xFFFF0000))
-		{
-			// Could have come from many values, but we choose this one
-			return Win32Error(HRESULT_CODE(hresult));
-		}
-		else if (hresult == S_OK)
-		{
-			return Win32Error(HRESULT_CODE(hresult));
-		}
-		else
-		{
-			// Otherwise, we got an impossible value
-			return {};
-		}
-	}
-	std::optional<KxFramework::NtStatus> NtStatusFromWin32(DWORD win32Code) noexcept
-	{
-		using namespace KxFramework;
-
-		auto ntStatus = [win32Code]() -> std::optional<NTSTATUS>
-		{
-			switch (win32Code)
-			{
-				#include "Private/ErrorCodeNtStatus.i"
-			};
-			return {};
-		}();
-
-		if (ntStatus)
-		{
-			return NtStatus(*ntStatus);
-		}
-		return {};
-	}
-}
 
 namespace KxFramework
 {
@@ -98,11 +9,7 @@ namespace KxFramework
 		{
 			case ErrorCodeCategory::Generic:
 			{
-				if (GenericError(m_Value).IsSuccess())
-				{
-					return Win32Error(ERROR_SUCCESS);
-				}
-				break;
+				return GenericError(m_Value) ? Win32Error::Success() : Win32Error::Fail();
 			}
 			case ErrorCodeCategory::Win32:
 			{
@@ -110,11 +17,11 @@ namespace KxFramework
 			}
 			case ErrorCodeCategory::NtStatus:
 			{
-				return Win32FromNtStatus(m_Value);
+				return NtStatus(m_Value).ToWin32();
 			}
 			case ErrorCodeCategory::HResult:
 			{
-				return Win32FromHRESULT(m_Value);
+				return HResult(m_Value).ToWin32();
 			}
 		};
 		return {};
@@ -125,15 +32,11 @@ namespace KxFramework
 		{
 			case ErrorCodeCategory::Generic:
 			{
-				if (GenericError(m_Value).IsSuccess())
-				{
-					return NtStatus(STATUS_SUCCESS);
-				}
-				break;
+				return GenericError(m_Value) ? NtStatus::Success() : NtStatus::Fail();
 			}
 			case ErrorCodeCategory::Win32:
 			{
-				return NtStatusFromWin32(m_Value);
+				return Win32Error(m_Value).ToNtStatus();
 			}
 			case ErrorCodeCategory::NtStatus:
 			{
@@ -141,11 +44,7 @@ namespace KxFramework
 			}
 			case ErrorCodeCategory::HResult:
 			{
-				if (auto win32Code = Win32FromHRESULT(m_Value))
-				{
-					return NtStatusFromWin32(win32Code->GetValue());
-				}
-				break;
+				return HResult(m_Value).ToNtStatus();
 			}
 		};
 		return {};
@@ -156,23 +55,15 @@ namespace KxFramework
 		{
 			case ErrorCodeCategory::Generic:
 			{
-				if (GenericError(m_Value).IsSuccess())
-				{
-					return HResult(S_OK);
-				}
-				break;
+				return GenericError(m_Value) ? HResult::Success() : HResult::Fail();
 			}
 			case ErrorCodeCategory::Win32:
 			{
-				return HResult(HRESULT_FROM_WIN32(m_Value));
+				return Win32Error(m_Value).ToHResult();
 			}
 			case ErrorCodeCategory::NtStatus:
 			{
-				if (auto ntStatus = Win32FromNtStatus(m_Value))
-				{
-					return HResult(HRESULT_FROM_WIN32(ntStatus->GetValue()));
-				}
-				break;
+				return NtStatus(m_Value).ToHResult();
 			}
 			case ErrorCodeCategory::HResult:
 			{
