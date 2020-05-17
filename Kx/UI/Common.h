@@ -3,6 +3,8 @@
 #include "Kx/General/Color.h"
 #include "Kx/General/String.h"
 #include "Kx/General/StdID.h"
+#include "Kx/EventSystem/Common.h"
+#include "Kx/EventSystem/Event.h"
 #include "Kx/UI/StdIcon.h"
 #include "Kx/UI/StdButton.h"
 #include <wx/window.h>
