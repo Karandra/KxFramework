@@ -36,15 +36,10 @@ namespace
 	{
 		using namespace KxFramework;
 
-		wchar_t* result = nullptr;
-		Utility::CallAtScopeExit atExit = [result]()
-		{
-			COM::FreeMemory(result);
-		};
-
+		COMMemoryPtr<wchar_t> result;
 		if (HResult(shellItem.GetDisplayName(type, &result)))
 		{
-			return result;
+			return String(result);
 		}
 		return {};
 	}
@@ -65,9 +60,9 @@ namespace KxFramework::UI
 			m_FilterListSpec.resize(m_FilterList.size());
 			for (size_t i = 0; i < m_FilterList.size(); i++)
 			{
-				auto& spec = m_FilterListSpec[i];
-				spec.Filter = m_FilterList[i].first.wc_str();
-				spec.Name = m_FilterList[i].second.wc_str();
+				Private::FilterSpecItem& spec = m_FilterListSpec[i];
+				spec.Name = m_FilterList[i].Name.wc_str();
+				spec.Filter = m_FilterList[i].Filter.wc_str();
 			}
 			m_Instance->SetFileTypes(m_FilterListSpec.size(), reinterpret_cast<const COMDLG_FILTERSPEC*>(m_FilterListSpec.data()));
 		}
@@ -129,7 +124,7 @@ namespace KxFramework::UI
 		if (m_Instance)
 		{
 			// Add empty filter if there is no user filters
-			if (m_FilterListSpec.empty())
+			if (m_FilterList.empty())
 			{
 				AddUnivsersalFilter();
 			}
@@ -157,7 +152,7 @@ namespace KxFramework::UI
 		}
 		return Dialog::Close(force);
 	}
-	bool FileBrowseDialog::IsVisible() const
+	bool FileBrowseDialog::IsShown() const
 	{
 		return GetHandle() && ::IsWindowVisible(GetHandle());
 	}
@@ -239,15 +234,10 @@ namespace KxFramework::UI
 	{
 		if (m_Instance)
 		{
-			wchar_t* result = nullptr;
-			Utility::CallAtScopeExit atExit = [result]()
-			{
-				COM::FreeMemory(result);
-			};
-
+			COMMemoryPtr<wchar_t> result;
 			if (HResult(m_Instance->GetFileName(&result)))
 			{
-				return result;
+				return String(result);
 			}
 		}
 		return {};
@@ -308,18 +298,12 @@ namespace KxFramework::UI
 			{
 				if (!label.IsEmpty())
 				{
-					const size_t length = label.length() * sizeof(wchar_t) + sizeof(wchar_t);
-					wchar_t* labelCOM = reinterpret_cast<wchar_t*>(COM::AllocateMemory(length));
-					wsprintfW(labelCOM, L"%s", label.wc_str());
-					Utility::CallAtScopeExit atExit = [&]()
-					{
-						COM::FreeMemory(labelCOM);
-					};
+					auto labelCOM = COM::AllocateRawString(label);
 
-					PROPVARIANT nameVariant = {};
-					nameVariant.vt = VT_LPWSTR;
-					nameVariant.pwszVal = labelCOM;
-					::SHSetTemporaryPropertyForItem(pathItem, PKEY_ItemNameDisplay, nameVariant);
+					PROPVARIANT property = {};
+					property.vt = VT_LPWSTR;
+					property.pwszVal = labelCOM;
+					::SHSetTemporaryPropertyForItem(pathItem, ::PKEY_ItemNameDisplay, property);
 				}
 
 				return HResult(m_Instance->AddPlace(pathItem, top ? FDAP_TOP : FDAP_BOTTOM)).IsSuccess();
@@ -338,13 +322,17 @@ namespace KxFramework::UI
 				temp.Replace(wxS(";"), wxS(", "), true);
 				temp = String::Format(wxS("%1 (%1)"), label, temp);
 
-				m_FilterList.emplace_back(std::make_pair(filter, temp));
+				auto& item = m_FilterList.emplace_back();
+				item.Name = std::move(temp);
+				item.Filter = filter;
 			}
 			else
 			{
-				m_FilterList.emplace_back(std::make_pair(filter, label));
+				auto& item = m_FilterList.emplace_back();
+				item.Name = label;
+				item.Filter = filter;
 			}
-			return m_FilterListSpec.size() - 1;
+			return m_FilterList.size() - 1;
 		}
 		return std::numeric_limits<size_t>::max();
 	}
@@ -358,7 +346,7 @@ namespace KxFramework::UI
 		if (m_Instance)
 		{
 			HResult hr = HResult::Fail();
-			if (m_Style & FileBrowseDialogStyle::Multiselect && GetMode() != FileBrowseDialogMode::Save)
+			if (m_Style & FileBrowseDialogStyle::Multiselect && m_Mode != FileBrowseDialogMode::Save)
 			{
 				IFileOpenDialog* dialog = static_cast<IFileOpenDialog*>(m_Instance.Get());
 				COMPtr<IShellItemArray> shellList;

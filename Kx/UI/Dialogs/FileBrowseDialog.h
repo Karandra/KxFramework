@@ -15,6 +15,11 @@ namespace KxFramework::UI
 
 		struct FilterItem final
 		{
+			String Name;
+			String Filter;
+		};
+		struct FilterSpecItem final
+		{
 			const wchar_t* Name;
 			const wchar_t* Filter;
 		};
@@ -72,8 +77,8 @@ namespace KxFramework::UI
 		
 			String m_Caption;
 			String m_Label;
-			std::vector<std::pair<String, String>> m_FilterList;
-			std::vector<Private::FilterItem> m_FilterListSpec;
+			std::vector<Private::FilterItem> m_FilterList;
+			std::vector<Private::FilterSpecItem> m_FilterListSpec;
 
 		private:
 			void ApplyFileFilters();
@@ -114,7 +119,11 @@ namespace KxFramework::UI
 			int ShowModal() override;
 			bool Show(bool show = true) override;
 			bool Close(bool force = false);
-			bool IsVisible() const override;
+			bool IsShown() const override;
+			bool IsTopLevel() const override
+			{
+				return true;
+			}
 
 			// Window title
 			wxString GetTitle() const override
@@ -163,7 +172,7 @@ namespace KxFramework::UI
 			bool SetButtonLabel(StdID buttonID, const String& text);
 			
 			String GetItemName() const;
-			void SetItemName(const String& text);
+			void SetItemName(const String& name);
 			void SetDefaultExtension(const String& extension);
 			
 			size_t GetSelectedFilter() const;

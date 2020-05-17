@@ -341,16 +341,11 @@ namespace KxFramework::Shell
 	{
 		HResult hr = E_FAIL;
 
-		LPITEMIDLIST item = nullptr;
 		SFGAOF attributes = 0;
 		String pathString = path.GetFullPath();
+		COMMemoryPtr<ITEMIDLIST> item;
 		if (hr = ::SHParseDisplayName(pathString.wc_str(), nullptr, &item, 0, &attributes))
 		{
-			Utility::CallAtScopeExit atExit = [&]()
-			{
-				COM::FreeMemory(item);
-			};
-
 			COMInitGuard comInit(COMThreadingModel::Apartment);
 			return ::SHOpenFolderAndSelectItems(item, 0, nullptr, 0);
 		}
@@ -508,16 +503,11 @@ namespace KxFramework::Shell
 			});
 			if (it != end && it->second != GUID_NULL)
 			{
-				PWSTR knownPath = nullptr;
-				Utility::CallAtScopeExit freeMemory = [&]()
-				{
-					COM::FreeMemory(knownPath);
-				};
-
 				DWORD nativeFlags = KF_FLAG_DONT_VERIFY;
 				Utility::AddFlagRef(nativeFlags, KF_FLAG_DEFAULT_PATH, flags & SHGetKnownDirectoryFlag::UseDefaultLocation);
 				Utility::AddFlagRef(nativeFlags, KF_FLAG_CREATE|KF_FLAG_INIT, flags & SHGetKnownDirectoryFlag::CreateIfDoesNotExist);
 
+				COMMemoryPtr<wchar_t> knownPath;
 				if (HResult(::SHGetKnownFolderPath(it->second, nativeFlags, nullptr, &knownPath)))
 				{
 					result = knownPath;

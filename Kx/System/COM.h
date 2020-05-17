@@ -1,6 +1,8 @@
 #pragma once
 #include "Common.h"
 #include "ErrorCode.h"
+#include "Kx/General/String.h"
+#include "Private/COM.h"
 struct IUnknown;
 
 namespace KxFramework
@@ -22,6 +24,13 @@ namespace KxFramework
 	{
 		Kx_EnumClass_AllowEverything(COMInitFlag);
 	}
+}
+
+namespace KxFramework::COM
+{
+	void* AllocateMemory(size_t size) noexcept;
+	void* ReallocateMemory(void* address, size_t size) noexcept;
+	void FreeMemory(void* address) noexcept;
 }
 
 namespace KxFramework
@@ -127,138 +136,106 @@ namespace KxFramework
 
 namespace KxFramework
 {
-	template<class T>
-	class COMPtr final
+	namespace COM::Private
 	{
-		public:
-			using TObject = T;
+		template<class TValue>
+		class PtrTraits final
+		{
+			private:
+				TValue*& m_Value = nullptr;
 
-		private:
-			TObject* m_Object = nullptr;
-
-		public:
-			COMPtr(TObject* ptr = nullptr) noexcept
-				:m_Object(ptr)
-			{
-				static_assert(std::is_base_of_v<IUnknown, T>, "class T is not derived from IUnknown");
-			}
-			COMPtr(COMPtr&& other) noexcept
-			{
-				*this = std::move(other);
-			}
-			~COMPtr() noexcept
-			{
-				Reset();
-			}
-
-		public:
-			void Reset(TObject* newPtr = nullptr) noexcept
-			{
-				if (m_Object)
+			public:
+				PtrTraits(TValue*& ptr)
+					:m_Value(ptr)
 				{
-					m_Object->Release();
 				}
-				m_Object = newPtr;
-			}
-			TObject* Detach() noexcept
-			{
-				TObject* ptr = m_Object;
-				m_Object = nullptr;
-				return ptr;
-			}
 
-			TObject* Get() const noexcept
-			{
-				return m_Object;
-			}
-			void** GetAddress() const noexcept
-			{
-				return reinterpret_cast<void**>(const_cast<TObject**>(&m_Object));
-			}
-			
-			operator const TObject*() const noexcept
-			{
-				return m_Object;
-			}
-			operator TObject*() noexcept
-			{
-				return m_Object;
-			}
+			public:
+				void Reset(TValue* ptr = nullptr) noexcept
+				{
+					if (m_Value)
+					{
+						m_Value->Release();
+					}
+					m_Value = ptr;
+				}
+		};
 
-			const TObject& operator*() const noexcept
-			{
-				return *m_Object;
-			}
-			TObject& operator*() noexcept
-			{
-				return *m_Object;
-			}
-			TObject** operator&() noexcept
-			{
-				return &m_Object;
-			}
+		template<class TValue>
+		class MemoryPtrTraits final
+		{
+			private:
+				TValue*& m_Value = nullptr;
 
-			TObject* operator->() const noexcept
-			{
-				return m_Object;
-			}
-			TObject* operator->() noexcept
-			{
-				return m_Object;
-			}
+			public:
+				MemoryPtrTraits(TValue*& ptr)
+					:m_Value(ptr)
+				{
+				}
 
-		public:
-			explicit operator bool() const noexcept
-			{
-				return m_Object != nullptr;
-			}
-			bool operator!() const noexcept
-			{
-				return m_Object == nullptr;
-			}
+			public:
+				void Reset(TValue* ptr = nullptr) noexcept
+				{
+					COM::FreeMemory(m_Value);
+					m_Value = ptr;
+				}
+		};
+	}
 
-			bool operator==(const COMPtr& other) const noexcept
-			{
-				return m_Object == other.m_Object;
-			}
-			bool operator==(const TObject* other) const noexcept
-			{
-				return m_Object == other;
-			}
-			bool operator==(const TObject& other) const noexcept
-			{
-				return m_Object == &other;
-			}
-			bool operator!=(const COMPtr& other) const noexcept
-			{
-				return !(*this == other);
-			}
-			bool operator!=(const TObject* other) const noexcept
-			{
-				return !(*this == other);
-			}
-			bool operator!=(const TObject& other) const noexcept
-			{
-				return !(*this == other);
-			}
+	template<class T>
+	using COMPtr = COM::Private::BasicPtr<T, COM::Private::PtrTraits<T>>;
 
-			COMPtr& operator=(const COMPtr&) = delete;
-			COMPtr& operator=(COMPtr&& other) noexcept
-			{
-				Reset(other.Detach());
-				return *this;
-			}
-			COMPtr& operator=(TObject* ptr) noexcept
-			{
-				Reset(ptr);
-				return *this;
-			}
-	};
+	template<class T>
+	using COMMemoryPtr = COM::Private::BasicPtr<T, COM::Private::MemoryPtrTraits<T>>;
 }
 
 namespace KxFramework::COM
 {
-	void* AllocateMemory(size_t size) noexcept;
-	void* ReallocateMemory(void* address, size_t size) noexcept;
-	void FreeMemory(void* address) noexcept;
+	template<class TChar>
+	COMMemoryPtr<TChar> AllocateRawString(std::basic_string_view<TChar> value) noexcept
+	{
+		const size_t size = value.length() * sizeof(TChar);
+		if (size != 0)
+		{
+			if (TChar* buffer = reinterpret_cast<TChar*>(AllocateMemory(size + sizeof(TChar))))
+			{
+				std::memcpy(buffer, value.data(), size);
+				buffer[size] = 0;
+
+				return buffer;
+			}
+		}
+		else
+		{
+			if (TChar* buffer = reinterpret_cast<TChar*>(AllocateMemory(1)))
+			{
+				buffer[0] = 0;
+				return buffer;
+			}
+		}
+		return nullptr;
+	}
+
+	template<class T>
+	auto AllocateRawString(const T& value) noexcept
+	{
+		return AllocateRawString(StringViewOf<T>(value));
+	}
+
+	template<class TObject>
+	COMMemoryPtr<TObject> AllocateObject() noexcept
+	{
+		return reinterpret_cast<TObject*>(AllocateMemory(sizeof(TObject)));
+	}
+
+	template<class TObject>
+	COMMemoryPtr<TObject> AllocateObject(TObject object) noexcept(std::is_nothrow_move_assignable_v<TObject>)
+	{
+		auto buffer = AllocateObject<TObject>();
+		if (buffer)
+		{
+			*buffer = std::move(object);
+		}
+		return buffer;
+	}
 }

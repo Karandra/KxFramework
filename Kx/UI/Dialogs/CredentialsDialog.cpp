@@ -51,15 +51,14 @@ namespace KxFramework::UI
 		ULONG authPackage = 0;
 		void* inAuthBlob = nullptr;
 		ULONG inAuthBlobSize = 0;
-		void* authBlob = nullptr;
+		COMMemoryPtr<uint8_t> authBlob;
 		ULONG authBlobSize = 0;
 		BOOL saveCredentials = m_SaveCredentials;
-		Utility::CallAtScopeExit zeroAndFreeAuthBlob = ([&]()
+		Utility::CallAtScopeExit zeroAuthBlob = ([&]()
 		{
 			if (authBlob)
 			{
 				Utility::SecureZeroMemory(authBlob, authBlobSize);
-				COM::FreeMemory(authBlob);
 			}
 		});
 
@@ -68,7 +67,7 @@ namespace KxFramework::UI
 																 &authPackage,
 																 inAuthBlob,
 																 inAuthBlobSize,
-																 &authBlob,
+																 reinterpret_cast<void**>(&authBlob),
 																 &authBlobSize,
 																 m_EnableSaveCredentialsCheckBox ? &saveCredentials : nullptr,
 																 CREDUIWIN_GENERIC

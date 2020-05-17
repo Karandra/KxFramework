@@ -1,14 +1,12 @@
 #pragma once
 #include "Common.h"
 #include "Kx/General/Color.h"
+#include "Kx/System/COM.h"
 #include <wx/imaglist.h>
 struct IImageList2;
 
 namespace KxFramework
 {
-	template<class T>
-	class COMPtr;
-
 	enum class ImageListDrawItemFlag
 	{
 		None = 0,

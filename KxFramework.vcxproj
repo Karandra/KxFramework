@@ -234,6 +234,7 @@
     <ClInclude Include="Kx\System\DynamicLibrary.h" />
     <ClInclude Include="Kx\System\ExecutableVersionResource.h" />
     <ClInclude Include="Kx\System\Private\BinaryResourceDefines.h" />
+    <ClInclude Include="Kx\System\Private\COM.h" />
     <ClInclude Include="Kx\System\Private\System.h" />
     <ClInclude Include="Kx\System\SystemProcess.h" />
     <ClInclude Include="Kx\System\SystemProcess\CreateProcessExecutor.h" />

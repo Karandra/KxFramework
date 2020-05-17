@@ -65,12 +65,11 @@ namespace
 		overlapped.hEvent = nullptr;
 
 		// Remember current error and reset it
-		const DWORD previousError = ::GetLastError();
-		::SetLastError(ERROR_SUCCESS);
-		Utility::CallAtScopeExit atExit([&]()
+		Utility::CallAtScopeExit atExit = ([previousError = ::GetLastError()]()
 		{
 			::SetLastError(previousError);
 		});
+		::SetLastError(ERROR_SUCCESS);
 
 		DWORD bytes = 0;
 		::GetOverlappedResult(nullptr, &overlapped, &bytes, FALSE);

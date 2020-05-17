@@ -22,15 +22,10 @@ namespace
 	{
 		using namespace KxFramework;
 
-		wchar_t* result = nullptr;
-		Utility::CallAtScopeExit atExit = [result]()
-		{
-			COM::FreeMemory(result);
-		};
-
+		COMMemoryPtr<wchar_t> result;
 		if (HResult(shellItem.GetDisplayName(type, &result)))
 		{
-			return result;
+			return String(result);
 		}
 		return {};
 	}

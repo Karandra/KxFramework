@@ -18,6 +18,22 @@ namespace
 	}
 }
 
+namespace KxFramework::COM
+{
+	void* AllocateMemory(size_t size) noexcept
+	{
+		return ::CoTaskMemAlloc(size);
+	}
+	void* ReallocateMemory(void* address, size_t size) noexcept
+	{
+		return ::CoTaskMemRealloc(address, size);
+	}
+	void FreeMemory(void* address) noexcept
+	{
+		::CoTaskMemFree(address);
+	}
+}
+
 namespace KxFramework
 {
 	void COMInitGuard::DoInitialize(COMThreadingModel threadingModel, COMInitFlag flags) noexcept
@@ -57,21 +73,5 @@ namespace KxFramework
 			::OleUninitialize();
 			m_Status = {};
 		}
-	}
-}
-
-namespace KxFramework::COM
-{
-	void* AllocateMemory(size_t size) noexcept
-	{
-		return ::CoTaskMemAlloc(size);
-	}
-	void* ReallocateMemory(void* address, size_t size) noexcept
-	{
-		return ::CoTaskMemRealloc(address, size);
-	}
-	void FreeMemory(void* address) noexcept
-	{
-		::CoTaskMemFree(address);
 	}
 }

@@ -78,7 +78,7 @@ namespace KxFramework
 	COMPtr<IImageList2> ImageList::QueryInterface() const noexcept
 	{
 		COMPtr<IImageList2> imageList;
-		if (SUCCEEDED(::HIMAGELIST_QueryInterface(ToHImageList(m_hImageList), __uuidof(IImageList2), imageList.GetAddress())))
+		if (HResult(::HIMAGELIST_QueryInterface(ToHImageList(m_hImageList), __uuidof(IImageList2), imageList.GetAddress())))
 		{
 			return imageList;
 		}

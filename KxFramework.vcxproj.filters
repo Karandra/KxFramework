@@ -1180,6 +1180,9 @@
     <ClInclude Include="Kx\UI\Dialogs\TaskDialog.h">
       <Filter>Kx\UI\Dialogs</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\System\Private\COM.h">
+      <Filter>Kx\System\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxFramework\KxMenuEvent.cpp">
