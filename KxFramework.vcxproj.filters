@@ -1183,6 +1183,9 @@
     <ClInclude Include="Kx\System\Private\COM.h">
       <Filter>Kx\System\Private</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\UI\Dialogs\Private\TaskDialogNativeInfo.h">
+      <Filter>Kx\UI\Dialogs\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KxFramework\KxMenuEvent.cpp">
@@ -1791,6 +1794,9 @@
     </ClCompile>
     <ClCompile Include="Kx\UI\Dialogs\TaskDialog.cpp">
       <Filter>Kx\UI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Dialogs\Private\TaskDialogNativeInfo.cpp">
+      <Filter>Kx\UI\Dialogs\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
