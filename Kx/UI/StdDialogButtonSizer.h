@@ -4,8 +4,11 @@
 #include <wx/sizer.h>
 #include <wx/anybutton.h>
 
-class KX_API KxDialog;
-class KX_API KxButton;
+namespace KxFramework::UI
+{
+	class Dialog;
+	class Button;
+}
 
 namespace KxFramework::UI
 {
@@ -36,12 +39,12 @@ namespace KxFramework::UI
 			StdDialogButtonSizer();
 
 		public:
-			KxButton* CreateButton(KxDialog* dialog, StdButton buttons, StdButton singleButton, wxWindowID id, bool addToList = true);
+			Button* CreateButton(Dialog* dialog, StdButton buttons, StdButton singleButton, wxWindowID id, bool addToList = true);
 		
 			// Checks button ID against system IDs and sets one of the pointers below
 			// to this button. Does not do any sizer-related things here.
 			bool AddButton(wxAnyButton* button);
-			void AddCustomButton(KxButton* button, const wxString& label = {}, bool prepend = false);
+			void AddCustomButton(Button* button, const String& label = {}, bool prepend = false);
 
 			// Use these if no standard ID can/should be used
 			void SetAffirmativeButton(wxAnyButton* button)

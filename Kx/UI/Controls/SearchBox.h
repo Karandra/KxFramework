@@ -39,6 +39,6 @@ namespace KxFramework::UI
 			~SearchBox();
 
 		public:
-			wxDECLARE_DYNAMIC_CLASS(KxTextBox);
+			wxDECLARE_DYNAMIC_CLASS(SearchBox);
 	};
 }

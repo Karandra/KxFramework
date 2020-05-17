@@ -223,36 +223,13 @@
     <ClInclude Include="KxFramework\DataView2\MainWindow.h" />
     <ClInclude Include="KxFramework\DataView2\Node.h" />
     <ClInclude Include="KxFramework\DataView2\Renderer.h" />
-    <ClInclude Include="KxFramework\KxCommandEvent.h" />
     <ClInclude Include="KxFramework\KxEvent.h" />
-    <ClInclude Include="KxFramework\KxNotifyEvent.h" />
-    <ClInclude Include="KxFramework\KxBitmapComboBox.h" />
-    <ClInclude Include="KxFramework\KxButton.h" />
-    <ClInclude Include="KxFramework\KxComboBox.h" />
-    <ClInclude Include="KxFramework\KxComboBoxDialog.h" />
-    <ClInclude Include="KxFramework\KxCredentialsDialog.h" />
     <ClInclude Include="KxFramework\KxDataView2Event.h" />
-    <ClInclude Include="KxFramework\KxDialog.h" />
-    <ClInclude Include="KxFramework\KxDualInputDialog.h" />
-    <ClInclude Include="KxFramework\KxDualProgressDialog.h" />
-    <ClInclude Include="KxFramework\KxFileBrowseDialog.h" />
     <ClInclude Include="KxFramework\KxFramework.h" />
-    <ClInclude Include="KxFramework\KxLabel.h" />
     <ClInclude Include="KxFramework\KxMenu.h" />
     <ClInclude Include="KxFramework\KxMenuEvent.h" />
     <ClInclude Include="KxFramework\KxMenuItem.h" />
-    <ClInclude Include="KxFramework\KxProcessEvent.h" />
-    <ClInclude Include="KxFramework\KxProgressBar.h" />
-    <ClInclude Include="KxFramework\KxProgressDialog.h" />
     <ClInclude Include="KxFramework\KxShellMenu.h" />
-    <ClInclude Include="KxFramework\KxStdDialog.h" />
-    <ClInclude Include="KxFramework\KxStdDialogSimple.h" />
-    <ClInclude Include="KxFramework\KxStyledTextBox.h" />
-    <ClInclude Include="KxFramework\KxStyledTextBox_Scintilla.h" />
-    <ClInclude Include="KxFramework\KxStyledTextBox_SciPosition.h" />
-    <ClInclude Include="KxFramework\KxTaskDialog.h" />
-    <ClInclude Include="KxFramework\KxTextBox.h" />
-    <ClInclude Include="KxFramework\KxTextBoxDialog.h" />
     <ClInclude Include="Kx\RTTI\ComponentSystem.h" />
     <ClInclude Include="Kx\System\DynamicLibrary.h" />
     <ClInclude Include="Kx\System\ExecutableVersionResource.h" />
@@ -270,15 +247,20 @@
     <ClInclude Include="Kx\UI\Controls\AUI\AuiToolBar.h" />
     <ClInclude Include="Kx\UI\Controls\AUI\AuiToolBarEvent.h" />
     <ClInclude Include="Kx\UI\Controls\AUI\AuiToolBarItem.h" />
+    <ClInclude Include="Kx\UI\Controls\BitmapComboBox.h" />
+    <ClInclude Include="Kx\UI\Controls\Button.h" />
     <ClInclude Include="Kx\UI\Controls\CheckBox.h" />
     <ClInclude Include="Kx\UI\Controls\ClusterMap.h" />
+    <ClInclude Include="Kx\UI\Controls\ComboBox.h" />
     <ClInclude Include="Kx\UI\Controls\ComboControl.h" />
     <ClInclude Include="Kx\UI\Controls\ComboPopup.h" />
     <ClInclude Include="Kx\UI\Controls\DataViewComboBox.h" />
     <ClInclude Include="Kx\UI\Controls\HTMLWindow.h" />
     <ClInclude Include="Kx\UI\Controls\ImageView.h" />
     <ClInclude Include="Kx\UI\Controls\IProgressMeter.h" />
+    <ClInclude Include="Kx\UI\Controls\Label.h" />
     <ClInclude Include="Kx\UI\Controls\Notebook.h" />
+    <ClInclude Include="Kx\UI\Controls\ProgressBar.h" />
     <ClInclude Include="Kx\UI\Controls\RadioButton.h" />
     <ClInclude Include="Kx\UI\Controls\SearchBox.h" />
     <ClInclude Include="Kx\UI\Controls\Simplebook.h" />
@@ -287,8 +269,25 @@
     <ClInclude Include="Kx\UI\Controls\StaticText.h" />
     <ClInclude Include="Kx\UI\Controls\StatusBar.h" />
     <ClInclude Include="Kx\UI\Controls\StatusBarEx.h" />
+    <ClInclude Include="Kx\UI\Controls\StyledTextBox.h" />
+    <ClInclude Include="Kx\UI\Controls\TextBox.h" />
     <ClInclude Include="Kx\UI\Controls\ThumbView.h" />
     <ClInclude Include="Kx\UI\Controls\WebView.h" />
+    <ClInclude Include="Kx\UI\Dialogs\Dialog.h" />
+    <ClInclude Include="Kx\UI\Dialogs\ComboBoxDialog.h" />
+    <ClInclude Include="Kx\UI\Dialogs\CredentialsDialog.h" />
+    <ClInclude Include="Kx\UI\Dialogs\FileBrowseDialog.h" />
+    <ClInclude Include="Kx\UI\Dialogs\Private\FileBrowseDialogEvents.h" />
+    <ClInclude Include="Kx\UI\Dialogs\ProgressDialog.h" />
+    <ClInclude Include="Kx\UI\Dialogs\TaskDialog.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Dialogs\TextBoxDialog.h" />
+    <ClInclude Include="Kx\UI\Dialogs\StdDialog.h" />
+    <ClInclude Include="Kx\UI\Dialogs\SimpleStdDialog.h" />
     <ClInclude Include="Kx\UI\Windows\CollapsiblePane.h" />
     <ClInclude Include="Kx\UI\Windows\DrawablePanel.h" />
     <ClInclude Include="Kx\UI\Windows\Frame.h" />
@@ -548,32 +547,11 @@
     <ClCompile Include="KxFramework\DataView2\MainWindow.cpp" />
     <ClCompile Include="KxFramework\DataView2\Node.cpp" />
     <ClCompile Include="KxFramework\DataView2\Renderer.cpp" />
-    <ClCompile Include="KxFramework\KxCommandEvent.cpp" />
-    <ClCompile Include="KxFramework\KxNotifyEvent.cpp" />
-    <ClCompile Include="KxFramework\KxBitmapComboBox.cpp" />
-    <ClCompile Include="KxFramework\KxButton.cpp" />
-    <ClCompile Include="KxFramework\KxComboBox.cpp" />
-    <ClCompile Include="KxFramework\KxComboBoxDialog.cpp" />
-    <ClCompile Include="KxFramework\KxCredentialsDialog.cpp" />
     <ClCompile Include="KxFramework\KxDataView2Event.cpp" />
-    <ClCompile Include="KxFramework\KxDialog.cpp" />
-    <ClCompile Include="KxFramework\KxDualInputDialog.cpp" />
-    <ClCompile Include="KxFramework\KxDualProgressDialog.cpp" />
-    <ClCompile Include="KxFramework\KxFileBrowseDialog.cpp" />
-    <ClCompile Include="KxFramework\KxLabel.cpp" />
     <ClCompile Include="KxFramework\KxMenu.cpp" />
     <ClCompile Include="KxFramework\KxMenuEvent.cpp" />
     <ClCompile Include="KxFramework\KxMenuItem.cpp" />
-    <ClCompile Include="KxFramework\KxProcessEvent.cpp" />
-    <ClCompile Include="KxFramework\KxProgressBar.cpp" />
-    <ClCompile Include="KxFramework\KxProgressDialog.cpp" />
     <ClCompile Include="KxFramework\KxShellMenu.cpp" />
-    <ClCompile Include="KxFramework\KxStdDialog.cpp" />
-    <ClCompile Include="KxFramework\KxStdDialogSimple.cpp" />
-    <ClCompile Include="KxFramework\KxStyledTextBox.cpp" />
-    <ClCompile Include="KxFramework\KxTaskDialog.cpp" />
-    <ClCompile Include="KxFramework\KxTextBox.cpp" />
-    <ClCompile Include="KxFramework\KxTextBoxDialog.cpp" />
     <ClCompile Include="Kx\General\Common.cpp" />
     <ClCompile Include="Kx\RTTI\ComponentSystem.cpp" />
     <ClCompile Include="Kx\System\DynamicLibrary.cpp" />
@@ -589,13 +567,18 @@
     <ClCompile Include="Kx\UI\Controls\AUI\AuiToolBar.cpp" />
     <ClCompile Include="Kx\UI\Controls\AUI\AuiToolBarEvent.cpp" />
     <ClCompile Include="Kx\UI\Controls\AUI\AuiToolBarItem.cpp" />
+    <ClCompile Include="Kx\UI\Controls\BitmapComboBox.cpp" />
+    <ClCompile Include="Kx\UI\Controls\Button.cpp" />
     <ClCompile Include="Kx\UI\Controls\CheckBox.cpp" />
     <ClCompile Include="Kx\UI\Controls\ClusterMap.cpp" />
+    <ClCompile Include="Kx\UI\Controls\ComboBox.cpp" />
     <ClCompile Include="Kx\UI\Controls\ComboControl.cpp" />
     <ClCompile Include="Kx\UI\Controls\DataViewComboBox.cpp" />
     <ClCompile Include="Kx\UI\Controls\HTMLWindow.cpp" />
     <ClCompile Include="Kx\UI\Controls\ImageView.cpp" />
+    <ClCompile Include="Kx\UI\Controls\Label.cpp" />
     <ClCompile Include="Kx\UI\Controls\Notebook.cpp" />
+    <ClCompile Include="Kx\UI\Controls\ProgressBar.cpp" />
     <ClCompile Include="Kx\UI\Controls\RadioButton.cpp" />
     <ClCompile Include="Kx\UI\Controls\SearchBox.cpp" />
     <ClCompile Include="Kx\UI\Controls\Simplebook.cpp" />
@@ -604,8 +587,25 @@
     <ClCompile Include="Kx\UI\Controls\StaticText.cpp" />
     <ClCompile Include="Kx\UI\Controls\StatusBar.cpp" />
     <ClCompile Include="Kx\UI\Controls\StatusBarEx.cpp" />
+    <ClCompile Include="Kx\UI\Controls\StyledTextBox.cpp" />
+    <ClCompile Include="Kx\UI\Controls\TextBox.cpp" />
     <ClCompile Include="Kx\UI\Controls\ThumbView.cpp" />
     <ClCompile Include="Kx\UI\Controls\WebView.cpp" />
+    <ClCompile Include="Kx\UI\Dialogs\Dialog.cpp" />
+    <ClCompile Include="Kx\UI\Dialogs\ComboBoxDialog.cpp" />
+    <ClCompile Include="Kx\UI\Dialogs\CredentialsDialog.cpp" />
+    <ClCompile Include="Kx\UI\Dialogs\FileBrowseDialog.cpp" />
+    <ClCompile Include="Kx\UI\Dialogs\Private\FileBrowseDialogEvents.cpp" />
+    <ClCompile Include="Kx\UI\Dialogs\ProgressDialog.cpp" />
+    <ClCompile Include="Kx\UI\Dialogs\TaskDialog.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Dialogs\TextBoxDialog.cpp" />
+    <ClCompile Include="Kx\UI\Dialogs\StdDialog.cpp" />
+    <ClCompile Include="Kx\UI\Dialogs\SimpleStdDialog.cpp" />
     <ClCompile Include="Kx\UI\Windows\CollapsiblePane.cpp" />
     <ClCompile Include="Kx\UI\Windows\DrawablePanel.cpp" />
     <ClCompile Include="Kx\UI\Windows\Frame.cpp" />
@@ -615,6 +615,7 @@
     <ClCompile Include="Kx\UI\Windows\SplitterWindow.cpp" />
     <ClCompile Include="Kx\UI\Windows\ToolTipEx.cpp" />
     <ClCompile Include="Kx\UI\Windows\TopLevelWindow.cpp" />
+    <ClCompile Include="Kx\Utility\Memory.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

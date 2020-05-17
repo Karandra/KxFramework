@@ -1,6 +1,12 @@
 #pragma once
 #include "Kx/Common.hpp"
 #include <memory>
+#include "Kx/System/UndefWindows.h"
+
+namespace KxFramework::Utility
+{
+	void SecureZeroMemory(void* ptr, size_t size);
+}
 
 namespace KxFramework::Utility
 {
@@ -18,13 +24,13 @@ namespace KxFramework::Utility
 			size_t m_Size = 0;
 
 		public:
-			AlignedHeapBuffer(size_t size)
+			AlignedHeapBuffer(size_t size = alignof(T))
 				:m_Size(size)
 			{
 				m_Source = m_Allocator.allocate(size + alignof(ValueType));
 
 				void* toAlign = m_Source;
-				m_Aligned = std::align(bound, sizeof(T), toAlign, m_Size);
+				m_Aligned = std::align(size, sizeof(T), toAlign, m_Size);
 			}
 			AlignedHeapBuffer(const AlignedHeapBuffer&) = delete;
 			AlignedHeapBuffer(AlignedHeapBuffer&& other) noexcept

@@ -18,7 +18,7 @@ namespace KxFramework::UI
 			{
 				std::vector<int> newWidths;
 				newWidths.resize(count);
-				for (size_t i = 0; i < count; i++)
+				for (size_t i = 0; i < static_cast<size_t>(count); i++)
 				{
 					newWidths[i] = GetStatusWidth(i);
 				}

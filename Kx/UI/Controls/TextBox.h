@@ -1,0 +1,108 @@
+#pragma once
+#include "Kx/UI/Common.h"
+#include "Kx/UI/WindowRefreshScheduler.h"
+#include <wx/textctrl.h>
+
+namespace KxFramework::UI
+{
+	enum class TextBoxStyle
+	{
+		None = 0,
+
+		AlignLeft = wxTE_LEFT,
+		AlignRight = wxTE_RIGHT,
+		AlignCenter = wxTE_CENTER,
+
+		ProcessEnter = wxTE_PROCESS_ENTER,
+		ProcessTab = wxTE_PROCESS_TAB,
+		Capitalize = wxTE_CAPITALIZE,
+		Multiline = wxTE_MULTILINE,
+		Password = wxTE_PASSWORD,
+		ReadOnly = wxTE_READONLY,
+		Rich = wxTE_RICH,
+		Rich2 = wxTE_RICH2,
+		AutoURL = wxTE_AUTO_URL,
+		NoNideSelection = wxTE_NOHIDESEL,
+		NoVScroll = wxTE_NO_VSCROLL,
+		DoNotWrap = wxTE_DONTWRAP,
+		CharWrap = wxTE_CHARWRAP,
+		WordWrap = wxTE_WORDWRAP,
+		BetsWrap = wxTE_BESTWRAP,
+	};
+}
+namespace KxFramework::EnumClass
+{
+	Kx_EnumClass_AllowEverything(UI::TextBoxStyle);
+}
+
+namespace KxFramework::UI
+{
+	class KX_API TextBox: public WindowRefreshScheduler<wxTextCtrl>
+	{
+		public:
+			static constexpr TextBoxStyle DefaultStyle = TextBoxStyle::AlignLeft;
+
+		private:
+			WXLRESULT MSWWindowProc(WXUINT msg, WXWPARAM wParam, WXLPARAM lParam) override;
+
+		public:
+			TextBox() = default;
+			TextBox(wxWindow* parent,
+					  wxWindowID id,
+					  const String& value = {},
+					  TextBoxStyle style = DefaultStyle,
+					  const wxValidator& validator = wxDefaultValidator
+			)
+			{
+				Create(parent, id, value, style, validator);
+			}
+			TextBox(wxWindow* parent,
+					  wxWindowID id,
+					  const String& value,
+					  const wxPoint& pos,
+					  const wxSize& size,
+					  TextBoxStyle style = DefaultStyle,
+					  const wxValidator& validator = wxDefaultValidator
+			)
+			{
+				Create(parent, id, value, pos, size, style, validator);
+			}
+			bool Create(wxWindow* parent,
+						wxWindowID id,
+						const String& value = {},
+						TextBoxStyle style = DefaultStyle,
+						const wxValidator& validator = wxDefaultValidator
+			)
+			{
+				return Create(parent, id, value, wxDefaultPosition, wxDefaultSize, style, validator);
+			}
+			bool Create(wxWindow* parent,
+						wxWindowID id,
+						const String& value,
+						const wxPoint& pos,
+						const wxSize& size,
+						TextBoxStyle style = DefaultStyle,
+						const wxValidator& validator = wxDefaultValidator
+			);
+
+		public:
+			bool SetTabWidth(size_t width = 16);
+			void SetLimit(size_t max);
+		
+			bool SetPasswordChar(const wxUniChar& c);
+			bool SetDefaultPasswordChar()
+			{
+				// Bold dot
+				return SetPasswordChar(0x25CF);
+			}
+			bool SetHint(const wxString& label) override;
+		
+			void SetValue(const wxString& value) override;
+			void SetValueEvent(const String& value);
+		
+			void Clear() override;
+			void ClearEvent();
+
+			wxDECLARE_DYNAMIC_CLASS(TextBox);
+	};
+}

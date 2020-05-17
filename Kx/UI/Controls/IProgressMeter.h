@@ -3,11 +3,6 @@
 
 namespace KxFramework::UI
 {
-	class KX_API KxProgressBar;
-}
-
-namespace KxFramework::UI
-{
 	class KX_API IProgressMeter
 	{
 		protected:

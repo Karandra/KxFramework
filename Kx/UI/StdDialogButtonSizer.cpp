@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "StdDialogButtonSizer.h"
 #include "Kx/Localization/Common.h"
-#include "KxFramework/KxDialog.h"
-#include "KxFramework/KxButton.h"
+#include "Kx/UI/Controls/Button.h"
+#include "Kx/UI/Dialogs/Dialog.h"
 
 namespace KxFramework::UI
 {
@@ -31,11 +31,11 @@ namespace KxFramework::UI
 		}
 	}
 
-	KxButton* StdDialogButtonSizer::CreateButton(KxDialog* dialog, StdButton buttons, StdButton singleButton, wxWindowID id, bool addToList)
+	Button* StdDialogButtonSizer::CreateButton(Dialog* dialog, StdButton buttons, StdButton singleButton, wxWindowID id, bool addToList)
 	{
 		if (buttons & singleButton)
 		{
-			KxButton* button = new KxButton(dialog, id);
+			Button* button = new Button(dialog, id);
 			button->SetAllowDrawFocus(true);
 			if (addToList)
 			{
@@ -97,7 +97,7 @@ namespace KxFramework::UI
 		ConfigureButton(button);
 		return isStandard;
 	}
-	void StdDialogButtonSizer::AddCustomButton(KxButton* button, const wxString& label, bool prepend)
+	void StdDialogButtonSizer::AddCustomButton(Button* button, const String& label, bool prepend)
 	{
 		if (label.IsEmpty())
 		{

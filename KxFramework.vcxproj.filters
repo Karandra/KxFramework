@@ -16,26 +16,14 @@
     <Filter Include="Header Files\GUI">
       <UniqueIdentifier>{6c310c16-9644-4de9-afd3-8862008629ff}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\GUI\Dialogs">
-      <UniqueIdentifier>{0de5f247-aaf3-442a-bc48-a8a16daa22e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\GUI\Controls">
-      <UniqueIdentifier>{5121c935-f7ad-4116-b589-cb0d930683c6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\GUI">
       <UniqueIdentifier>{60049398-3826-4dd1-9fea-0cca7f82949e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\GUI\Dialogs">
-      <UniqueIdentifier>{b38ef96b-40e1-4dff-a767-e3fb73f75187}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\GUI\Menus">
       <UniqueIdentifier>{f2b5ce1f-c739-47f9-bf55-bcbe305ca3f2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\GUI\Menus">
       <UniqueIdentifier>{4f8ee5ef-125d-45f2-8fa5-32764cd79734}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\GUI\Controls">
-      <UniqueIdentifier>{f01e130d-7ea9-414e-b8c5-c061c1b75cf9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\GUI\DataView2">
       <UniqueIdentifier>{eb022c58-7685-4933-83db-3ae2a7c99660}</UniqueIdentifier>
@@ -196,84 +184,27 @@
     <Filter Include="Kx\UI\Controls\AUI">
       <UniqueIdentifier>{51ba4e52-464f-4d32-a8b4-d68239db9572}</UniqueIdentifier>
     </Filter>
-    <Filter Include="VcPkg">
+    <Filter Include="VCPkg">
       <UniqueIdentifier>{cca4e5fe-4a6a-4c71-9b15-0192dbe9f56a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="VcPkg\ports">
+    <Filter Include="VCPkg\ports">
       <UniqueIdentifier>{ae77cf63-eee5-4ec9-a5ff-ec2a598f59a9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="VcPkg\triplets">
+    <Filter Include="VCPkg\ports\kxframework">
+      <UniqueIdentifier>{f9a22f03-a441-4cbc-86b4-ef8ad6849955}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="VCPkg\triplets">
       <UniqueIdentifier>{b1c52d0b-84cd-499f-a89c-93d979873dfd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="VcPkg\triplets\community">
+    <Filter Include="VCPkg\triplets\community">
       <UniqueIdentifier>{7962b0c5-a73a-435e-81c8-d700627df6f1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="VcPkg\ports\kxframework">
-      <UniqueIdentifier>{f9a22f03-a441-4cbc-86b4-ef8ad6849955}</UniqueIdentifier>
+    <Filter Include="Kx\UI\Dialogs\Private">
+      <UniqueIdentifier>{8748a1a3-30f0-4977-9c4b-3fffaf785b0e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="KxFramework\KxButton.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxLabel.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxComboBox.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxBitmapComboBox.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxProgressBar.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxStyledTextBox.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxStyledTextBox_Scintilla.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxStyledTextBox_SciPosition.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxTextBox.h">
-      <Filter>Header Files\GUI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxDialog.h">
-      <Filter>Header Files\GUI\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxStdDialog.h">
-      <Filter>Header Files\GUI\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxStdDialogSimple.h">
-      <Filter>Header Files\GUI\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxTextBoxDialog.h">
-      <Filter>Header Files\GUI\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxProgressDialog.h">
-      <Filter>Header Files\GUI\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxComboBoxDialog.h">
-      <Filter>Header Files\GUI\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxDualInputDialog.h">
-      <Filter>Header Files\GUI\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxDualProgressDialog.h">
-      <Filter>Header Files\GUI\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxFileBrowseDialog.h">
-      <Filter>Header Files\GUI\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxTaskDialog.h">
-      <Filter>Header Files\GUI\Dialogs</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxMenuEvent.h">
-      <Filter>Header Files\GUI\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxProcessEvent.h">
       <Filter>Header Files\GUI\Events</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxMenu.h">
@@ -284,9 +215,6 @@
     </ClInclude>
     <ClInclude Include="KxFramework\KxShellMenu.h">
       <Filter>Header Files\GUI\Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxCredentialsDialog.h">
-      <Filter>Header Files\GUI\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="KxFramework\KxFramework.h">
       <Filter>Header Files</Filter>
@@ -416,12 +344,6 @@
     </ClInclude>
     <ClInclude Include="Kx\Threading\Events\ThreadEvent.h">
       <Filter>Kx\Threading\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxCommandEvent.h">
-      <Filter>Header Files\GUI\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxNotifyEvent.h">
-      <Filter>Header Files\GUI\Events</Filter>
     </ClInclude>
     <ClInclude Include="Kx\System\Common.h">
       <Filter>Kx\System</Filter>
@@ -1207,63 +1129,60 @@
     <ClInclude Include="Kx\UI\Controls\AUI\AuiToolBarItem.h">
       <Filter>Kx\UI\Controls\AUI</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\TextBox.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\StyledTextBox.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\ProgressBar.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\ComboBox.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\BitmapComboBox.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\Label.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\Button.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Dialogs\Dialog.h">
+      <Filter>Kx\UI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Dialogs\StdDialog.h">
+      <Filter>Kx\UI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Dialogs\ComboBoxDialog.h">
+      <Filter>Kx\UI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Dialogs\SimpleStdDialog.h">
+      <Filter>Kx\UI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Dialogs\TextBoxDialog.h">
+      <Filter>Kx\UI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Dialogs\ProgressDialog.h">
+      <Filter>Kx\UI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Dialogs\CredentialsDialog.h">
+      <Filter>Kx\UI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Dialogs\FileBrowseDialog.h">
+      <Filter>Kx\UI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Dialogs\Private\FileBrowseDialogEvents.h">
+      <Filter>Kx\UI\Dialogs\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Dialogs\TaskDialog.h">
+      <Filter>Kx\UI\Dialogs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="KxFramework\KxButton.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxLabel.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxComboBox.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxBitmapComboBox.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxProgressBar.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxStyledTextBox.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxTextBox.cpp">
-      <Filter>Source Files\GUI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxDialog.cpp">
-      <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxStdDialog.cpp">
-      <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxStdDialogSimple.cpp">
-      <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxTextBoxDialog.cpp">
-      <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxProgressDialog.cpp">
-      <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxComboBoxDialog.cpp">
-      <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxDualInputDialog.cpp">
-      <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxDualProgressDialog.cpp">
-      <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxFileBrowseDialog.cpp">
-      <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxTaskDialog.cpp">
-      <Filter>Source Files\GUI\Dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\KxMenuEvent.cpp">
-      <Filter>Source Files\GUI\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxProcessEvent.cpp">
       <Filter>Source Files\GUI\Events</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\KxMenu.cpp">
@@ -1274,9 +1193,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\KxShellMenu.cpp">
       <Filter>Source Files\GUI\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxCredentialsDialog.cpp">
-      <Filter>Source Files\GUI\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\Editor.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
@@ -1367,12 +1283,6 @@
     </ClCompile>
     <ClCompile Include="KxFramework\DataView2\Renderers\ImageListRenderer.cpp">
       <Filter>Source Files\GUI\DataView2\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxCommandEvent.cpp">
-      <Filter>Source Files\GUI\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxNotifyEvent.cpp">
-      <Filter>Source Files\GUI\Events</Filter>
     </ClCompile>
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp">
       <Filter>Kx\EventSystem</Filter>
@@ -1825,6 +1735,60 @@
     <ClCompile Include="Kx\UI\Controls\AUI\AuiToolBar.cpp">
       <Filter>Kx\UI\Controls\AUI</Filter>
     </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\TextBox.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\StyledTextBox.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\ProgressBar.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\ComboBox.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\BitmapComboBox.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\Label.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\Button.cpp">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Dialogs\Dialog.cpp">
+      <Filter>Kx\UI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Dialogs\StdDialog.cpp">
+      <Filter>Kx\UI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Dialogs\ComboBoxDialog.cpp">
+      <Filter>Kx\UI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Dialogs\SimpleStdDialog.cpp">
+      <Filter>Kx\UI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Dialogs\TextBoxDialog.cpp">
+      <Filter>Kx\UI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Dialogs\ProgressDialog.cpp">
+      <Filter>Kx\UI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Dialogs\CredentialsDialog.cpp">
+      <Filter>Kx\UI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\Utility\Memory.cpp">
+      <Filter>Kx\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Dialogs\FileBrowseDialog.cpp">
+      <Filter>Kx\UI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Dialogs\Private\FileBrowseDialogEvents.cpp">
+      <Filter>Kx\UI\Dialogs\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Dialogs\TaskDialog.cpp">
+      <Filter>Kx\UI\Dialogs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Kx\System\Private\ErrorCodeNtStatus.i">
@@ -1849,19 +1813,19 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="VCPkg\triplets\community\x64-windows-static-md.cmake">
-      <Filter>VcPkg\triplets\community</Filter>
+      <Filter>VCPkg\triplets\community</Filter>
     </None>
     <None Include="VCPkg\triplets\community\x86-windows-static-md.cmake">
-      <Filter>VcPkg\triplets\community</Filter>
+      <Filter>VCPkg\triplets\community</Filter>
     </None>
     <None Include="VCPkg\ports\kxframework\portfile.cmake">
-      <Filter>VcPkg\ports\kxframework</Filter>
+      <Filter>VCPkg\ports\kxframework</Filter>
     </None>
     <None Include="VCPkg\ports\kxframework\vcpkg.targets">
-      <Filter>VcPkg\ports\kxframework</Filter>
+      <Filter>VCPkg\ports\kxframework</Filter>
     </None>
     <None Include="VCPkg\ports\kxframework\CONTROL">
-      <Filter>VcPkg\ports\kxframework</Filter>
+      <Filter>VCPkg\ports\kxframework</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
