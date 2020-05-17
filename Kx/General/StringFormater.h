@@ -73,11 +73,7 @@ namespace KxFramework::StringFormatter
 			};
 
 		public:
-			StringFormatterBase(const String& format)
-				:m_String(format)
-			{
-			}
-			StringFormatterBase(String&& format) noexcept
+			StringFormatterBase(String format) noexcept
 				:m_String(std::move(format))
 			{
 			}
@@ -145,11 +141,7 @@ namespace KxFramework::StringFormatter
 			}
 
 		public:
-			Formatter(const String& format)
-				:StringFormatterBase(format)
-			{
-			}
-			Formatter(String&& format) noexcept
+			Formatter(String format) noexcept
 				:StringFormatterBase(std::move(format))
 			{
 			}
