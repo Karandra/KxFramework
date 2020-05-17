@@ -221,7 +221,6 @@
     <ClInclude Include="KxFramework\DataView2\MainWindow.h" />
     <ClInclude Include="KxFramework\DataView2\Node.h" />
     <ClInclude Include="KxFramework\DataView2\Renderer.h" />
-    <ClInclude Include="KxFramework\KxEvent.h" />
     <ClInclude Include="KxFramework\KxDataView2Event.h" />
     <ClInclude Include="KxFramework\KxFramework.h" />
     <ClInclude Include="KxFramework\KxMenu.h" />

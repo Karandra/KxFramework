@@ -2,7 +2,7 @@
 #include "KxFramework/KxFramework.h"
 #include "KxFramework/DataView2/Common.h"
 #include "KxFramework/DataView2/Row.h"
-#include "KxEvent.h"
+#include "Kx/EventSystem/Event.h"
 
 namespace KxDataView2
 {

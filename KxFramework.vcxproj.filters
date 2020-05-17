@@ -333,9 +333,6 @@
     <ClInclude Include="KxFramework\DataView2\Renderers\ImageListRenderer.h">
       <Filter>Header Files\GUI\DataView2\Renderers</Filter>
     </ClInclude>
-    <ClInclude Include="KxFramework\KxEvent.h">
-      <Filter>Header Files\GUI\Events</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\Threading\Common.h">
       <Filter>Kx\Threading</Filter>
     </ClInclude>

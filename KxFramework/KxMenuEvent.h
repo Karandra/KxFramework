@@ -1,6 +1,6 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
-#include "KxEvent.h"
+#include "Kx/EventSystem/Event.h"
 class KX_API KxMenu;
 class KX_API KxMenuItem;
 
