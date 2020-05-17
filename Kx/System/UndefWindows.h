@@ -64,3 +64,19 @@
 #undef EnumDisplayDevices
 #undef ExpandEnvironmentStrings
 #undef EnumResourceNames
+
+#ifdef ZeroMemory
+#undef ZeroMemory
+inline void* ZeroMemory(void* ptr, size_t size) noexcept
+{
+	return std::memset(ptr, 0, size);
+}
+#endif
+
+#ifdef SecureZeroMemory
+#undef SecureZeroMemory
+inline void* SecureZeroMemory(void* ptr, size_t size) noexcept
+{
+	return ::RtlSecureZeroMemory(ptr, size);
+}
+#endif
