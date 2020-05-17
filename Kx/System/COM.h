@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "ErrorCode.h"
 #include "Kx/General/String.h"
+#include "Kx/General/NativeUUID.h"
 #include "Private/COM.h"
 struct IUnknown;
 
@@ -19,10 +20,31 @@ namespace KxFramework
 		DisableOLE1DDE = 1 << 0,
 		SppedOverMemory = 1 << 1
 	};
+	enum class ClassContext
+	{
+		InprocServer = 0 << 0,
+		InprocHandler = 0 << 1,
+		LocalServer = 0 << 2,
+		RemoteServer = 0 << 3,
+		EnableCodeDownload = 0 << 4,
+		NoCodeDownload = 0 << 5,
+		NoCustomMarshal = 0 << 6,
+		NoFailureLog = 0 << 7,
+		DisableAAA = 0 << 8,
+		EnableAAA = 0 << 9,
+		ActivateAAAAsIU = 0 << 10,
+		FromDefaultContext = 0 << 11,
+		Activate32BitServer = 0 << 12,
+		Activate64BitServer = 0 << 13,
+		ActivateARM32Server = 0 << 14,
+		EnableCloaking = 0 << 15,
+		AppContainer = 0 << 16
+	};
 
 	namespace EnumClass
 	{
 		Kx_EnumClass_AllowEverything(COMInitFlag);
+		Kx_EnumClass_AllowEverything(ClassContext);
 	}
 }
 
@@ -31,6 +53,66 @@ namespace KxFramework::COM
 	void* AllocateMemory(size_t size) noexcept;
 	void* ReallocateMemory(void* address, size_t size) noexcept;
 	void FreeMemory(void* address) noexcept;
+
+	constexpr ::GUID ToGUID(const NativeUUID& uuid) noexcept
+	{
+		::GUID guid = {};
+		guid.Data1 = uuid.Data1;
+		guid.Data2 = uuid.Data2;
+		guid.Data3 = uuid.Data3;
+		for (size_t i = 0; i < std::size(guid.Data4); i++)
+		{
+			guid.Data4[i] = uuid.Data4[i];
+		}
+
+		return guid;
+	}
+	constexpr NativeUUID FromGUID(const ::GUID& guid) noexcept
+	{
+		NativeUUID uuid;
+		uuid.Data1 = guid.Data1;
+		uuid.Data2 = guid.Data2;
+		uuid.Data3 = guid.Data3;
+		for (size_t i = 0; i < std::size(uuid.Data4); i++)
+		{
+			uuid.Data4[i] = guid.Data4[i];
+		}
+
+		return uuid;
+	}
+}
+
+namespace KxFramework::COM
+{
+	template<class T>
+	constexpr NativeUUID UUIDOf() noexcept
+	{
+		return FromGUID(__uuidof(T));
+	}
+
+	inline constexpr NativeUUID ToUUID(const NativeUUID& uuid) noexcept
+	{
+		return uuid;
+	}
+	inline constexpr NativeUUID ToUUID(const ::GUID& guid) noexcept
+	{
+		return FromGUID(guid);
+	}
+}
+
+namespace KxFramework::COM
+{
+	HResult CreateInstance(const NativeUUID& classID, ClassContext classContext, const NativeUUID& iid, void** result, IUnknown* outer = nullptr) noexcept;
+	inline HResult CreateInstance(const ::GUID& classID, ClassContext classContext, const ::GUID& iid, void** result, IUnknown* outer = nullptr) noexcept
+	{
+		return CreateInstance(FromGUID(classID), classContext, FromGUID(iid), result, outer);
+	}
+
+	template<class AnyID, class T>
+	HResult CreateInstance(const AnyID& classID, ClassContext classContext, T** result, IUnknown* outer = nullptr) noexcept
+	{
+		return CreateInstance(ToUUID(classID), classContext, UUIDOf<T>(), reinterpret_cast<void**>(result), outer);
+	}
 }
 
 namespace KxFramework

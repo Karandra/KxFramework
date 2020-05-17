@@ -188,12 +188,12 @@ namespace KxFramework::System
 		// Doesn't work, no idea why. Doesn't seems to be required for the task scheduler to work.
 		//HRESULT res = ::CoInitializeSecurity(nullptr, -1, nullptr, nullptr, RPC_C_AUTHN_LEVEL_PKT_PRIVACY, RPC_C_IMP_LEVEL_IMPERSONATE, nullptr, 0, nullptr);
 
-		if (HResult(::CoCreateInstance(CLSID_TaskScheduler, nullptr, CLSCTX_INPROC_SERVER, IID_ITaskService, m_TaskService.GetAddress())))
+		if (HResult hr = COM::CreateInstance(CLSID_TaskScheduler, ClassContext::InprocServer, &m_TaskService))
 		{
-			HResult hr = m_TaskService->Connect(VariantFromString_Null(serverName),
-												VariantFromString_Null(userName),
-												VariantFromString_Null(domain),
-												VariantFromString_Null(password.ToString())
+			hr = m_TaskService->Connect(VariantFromString_Null(serverName),
+										VariantFromString_Null(userName),
+										VariantFromString_Null(domain),
+										VariantFromString_Null(password.ToString())
 			);
 			if (hr)
 			{

@@ -86,11 +86,11 @@ namespace KxFramework::UI
 			HResult hr = HResult::Fail();
 			if (m_Mode == FileBrowseDialogMode::Save)
 			{
-				hr = ::CoCreateInstance(CLSID_FileSaveDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&m_Instance));
+				hr = COM::CreateInstance(CLSID_FileSaveDialog, ClassContext::InprocServer, &m_Instance);
 			}
 			else
 			{
-				hr = ::CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&m_Instance));
+				hr = COM::CreateInstance(CLSID_FileOpenDialog, ClassContext::InprocServer, &m_Instance);
 			}
 
 			if (m_Instance && hr)

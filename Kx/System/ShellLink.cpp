@@ -10,7 +10,7 @@ namespace KxFramework
 	ShellLink::ShellLink() noexcept
 	{
 		COMPtr<IShellLinkW> shellLink;
-		if (HResult(::CoCreateInstance(CLSID_ShellLink, nullptr, CLSCTX_INPROC_SERVER, IID_IShellLinkW, shellLink.GetAddress())))
+		if (COM::CreateInstance(CLSID_ShellLink, ClassContext::InprocServer, &shellLink))
 		{
 			m_ShellLink = std::move(shellLink);
 		}
