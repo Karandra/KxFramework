@@ -193,11 +193,9 @@ namespace KxFramework::UI
 			}
 			StdDialogControl GetButton(wxWindowID id) const override
 			{
-				HWND hWnd = GetHandle();
-				if (hWnd)
+				if (m_Handle && (id == wxID_OK || id == wxID_CANCEL))
 				{
 					return id;
-					//return reinterpret_cast<wxWindow*>(GetDlgItem(hWnd, id));
 				}
 				return wxID_NONE;
 			}
