@@ -2,23 +2,23 @@
 #include "AuiToolBarItem.h"
 #include "AuiToolBar.h"
 #include "Kx/Utility/Common.h"
-#include "KxFramework/KxMenu.h"
+#include "Kx/UI/Menus/Menu.h"
 
 namespace KxFramework::UI
 {
-	wxPoint AuiToolBarItem::DoGetDropdownMenuPosition(DWORD* alignment, bool leftAlign) const
+	wxPoint AuiToolBarItem::DoGetDropdownMenuPosition(wxAlignment* alignment, bool leftAlign) const
 	{
 		wxRect rect = GetRect();
 		if (!rect.IsEmpty())
 		{
 			if (leftAlign)
 			{
-				Utility::SetIfNotNull(alignment, TPM_LEFTALIGN|TPM_TOPALIGN);
+				Utility::SetIfNotNull(alignment, static_cast<wxAlignment>(wxALIGN_LEFT|wxALIGN_TOP));
 				return rect.GetLeftBottom() + wxPoint(0, 2);
 			}
 			else
 			{
-				Utility::SetIfNotNull(alignment, TPM_RIGHTALIGN|TPM_TOPALIGN);
+				Utility::SetIfNotNull(alignment, static_cast<wxAlignment>(wxALIGN_RIGHT|wxALIGN_TOP));
 				return rect.GetRightBottom() + wxPoint(0, 2);
 			}
 		}
@@ -26,7 +26,7 @@ namespace KxFramework::UI
 	}
 	wxWindowID AuiToolBarItem::DoShowDropdownMenu(bool leftAlign)
 	{
-		DWORD alignment = 0;
+		wxAlignment alignment = Menu::DefaultAlignment;
 		wxPoint pos = DoGetDropdownMenuPosition(&alignment, leftAlign);
 		wxWindowID ret = GetDropdownMenu()->Show(m_ToolBar, pos, alignment);
 

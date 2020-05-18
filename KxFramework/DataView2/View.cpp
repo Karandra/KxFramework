@@ -777,7 +777,7 @@ namespace KxDataView2
 	}
 
 	// Window
-	bool View::CreateColumnSelectionMenu(KxMenu& menu)
+	bool View::CreateColumnSelectionMenu(Menu& menu)
 	{
 		size_t count = GetColumnCount();
 		for (size_t i = 0; i < count; i++)
@@ -789,19 +789,19 @@ namespace KxDataView2
 				title << wxS('<') << i + 1 << wxS('>');
 			}
 
-			KxMenuItem* menuItem = menu.AddItem(title, wxS(""), wxITEM_CHECK);
+			MenuItem* menuItem = menu.AddItem(title, wxS(""), wxITEM_CHECK);
 			menuItem->Check(column->IsVisible());
 			menuItem->SetBitmap(column->m_Bitmap);
 			menuItem->SetClientData(column);
 		}
 		return menu.GetMenuItemCount() != 0;
 	}
-	Column* View::OnColumnSelectionMenu(KxMenu& menu)
+	Column* View::OnColumnSelectionMenu(Menu& menu)
 	{
 		wxWindowID retID = menu.Show(this);
 		if (retID != wxID_NONE)
 		{
-			KxMenuItem* menuItem = menu.FindItem(retID);
+			MenuItem* menuItem = menu.FindItem(retID);
 			Column* column = static_cast<Column*>(menuItem->GetClientData());
 			column->AssignVisible(menuItem->IsChecked());
 

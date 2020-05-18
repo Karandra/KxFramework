@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "TopLevelWindow.h"
-#include "KxFramework/KxMenu.h"
-#include "Kx/Drawing/Common.h"
+#include "Kx/UI/Menus/Menu.h"
 #include "Kx/System/NativeAPI.h"
+#include "Kx/Drawing/Common.h"
 #include "Kx/Utility/System.h"
 #include <DWMAPI.h>
 #include "Kx/System/UndefWindows.h"
@@ -154,10 +154,10 @@ namespace KxFramework::UI::Private
 				int nItemID = LOWORD(wParam);
 				int flags = HIWORD(wParam);
 
-				KxMenu* menu = KxMenu::GetCurrentMenu();
+				Menu* menu = Menu::GetCurrentMenu();
 				if (menu && flags & MF_MOUSESELECT)
 				{
-					KxMenuItem* item = nullptr;
+					MenuItem* item = nullptr;
 					if (flags & MF_POPUP)
 					{
 						item = menu->FindItemByPosition(nItemID);
@@ -168,17 +168,17 @@ namespace KxFramework::UI::Private
 						nItemID = item->GetId();
 
 						// If this is popup menu container send sub-menu open event
-						KxMenu* subMenu = item->GetSubMenu();
+						Menu* subMenu = item->GetSubMenu();
 						if (flags & MF_POPUP && subMenu)
 						{
-							KxMenuEvent eventOpen(KxEVT_MENU_OPEN, subMenu, item);
+							MenuEvent eventOpen(MenuEvent::EvtOpen, subMenu, item);
 							eventOpen.SetId(nItemID);
 							eventOpen.SetEventObject(subMenu);
 							subMenu->ProcessEvent(eventOpen);
 						}
 						else
 						{
-							KxMenuEvent event(KxEVT_MENU_HOVER, menu, item);
+							MenuEvent event(MenuEvent::EvtHover, menu, item);
 							event.SetId(nItemID);
 							event.SetEventObject(item->GetEventHandler());
 							if (!item->ProcessEvent(event))

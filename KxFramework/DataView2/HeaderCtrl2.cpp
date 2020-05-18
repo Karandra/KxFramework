@@ -4,13 +4,14 @@
 #include "MainWindow.h"
 #include "Column.h"
 #include "KxFramework/KxDataView2Event.h"
+#include "Kx/UI/Menus/Menu.h"
 #include "Kx/Utility/Common.h"
-#include "KxFramework/KxMenu.h"
 #include <CommCtrl.h>
 
 namespace
 {
 	using namespace KxFramework;
+	using namespace KxFramework::UI;
 
 	enum class MouseButton
 	{
@@ -495,7 +496,7 @@ namespace KxDataView2
 			// Event wasn't processed somewhere, use default behavior
 			if (!SendCtrlEvent(EvtCOLUMN_HEADER_RCLICK, column).Processed && m_View)
 			{
-				if (KxMenu menu; m_View->CreateColumnSelectionMenu(menu))
+				if (Menu menu; m_View->CreateColumnSelectionMenu(menu))
 				{
 					m_View->OnColumnSelectionMenu(menu);
 				}

@@ -37,7 +37,7 @@ namespace KxFramework::UI
 			wxAuiToolBarItem* m_Item = nullptr;
 
 		private:
-			wxPoint DoGetDropdownMenuPosition(DWORD* alignment, bool leftAlign) const;
+			wxPoint DoGetDropdownMenuPosition(wxAlignment* alignment, bool leftAlign) const;
 			wxWindowID DoShowDropdownMenu(bool leftAlign);
 
 		public:
@@ -58,15 +58,15 @@ namespace KxFramework::UI
 				return *m_ToolBar;
 			}
 
-			wxPoint GetDropdownMenuPosition(DWORD* alignment = nullptr) const
+			wxPoint GetDropdownMenuPosition(wxAlignment* alignment = nullptr) const
 			{
 				return DoGetDropdownMenuPosition(alignment, !HasDropDown());
 			}
-			wxPoint GetDropdownMenuPosLeftAlign(DWORD* alignment = nullptr) const
+			wxPoint GetDropdownMenuPosLeftAlign(wxAlignment* alignment = nullptr) const
 			{
 				return DoGetDropdownMenuPosition(alignment, true);
 			}
-			wxPoint GetDropdownMenuPosRightAlign(DWORD* alignment = nullptr) const
+			wxPoint GetDropdownMenuPosRightAlign(wxAlignment* alignment = nullptr) const
 			{
 				return DoGetDropdownMenuPosition(alignment, false);
 			}

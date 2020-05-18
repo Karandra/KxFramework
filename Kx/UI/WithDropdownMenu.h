@@ -1,13 +1,13 @@
 #pragma once
 #include "Common.h"
-#include "KxFramework/KxMenu.h"
+#include "Kx/UI/Menus/Menu.h"
 
-namespace KxFramework
+namespace KxFramework::UI
 {
 	class KX_API WithDropdownMenu
 	{
 		private:
-			KxMenu* m_Menu = nullptr;
+			Menu* m_Menu = nullptr;
 			bool m_IsOwned = false;
 
 		private:
@@ -39,21 +39,21 @@ namespace KxFramework
 				return m_IsOwned;
 			}
 
-			KxMenu* GetDropdownMenu()
+			Menu* GetDropdownMenu()
 			{
 				return m_Menu;
 			}
-			const KxMenu* GetDropdownMenu() const
+			const Menu* GetDropdownMenu() const
 			{
 				return m_Menu;
 			}
-			virtual void SetDropdownMenu(const KxMenu* menu)
+			virtual void SetDropdownMenu(const Menu* menu)
 			{
 				DeleteIfNeeded();
 				m_IsOwned = false;
-				m_Menu = const_cast<KxMenu*>(menu);
+				m_Menu = const_cast<Menu*>(menu);
 			}
-			virtual void AssignDropdownMenu(KxMenu* menu)
+			virtual void AssignDropdownMenu(Menu* menu)
 			{
 				DeleteIfNeeded();
 				m_IsOwned = true;

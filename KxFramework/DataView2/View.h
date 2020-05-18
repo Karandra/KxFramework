@@ -1,18 +1,22 @@
 #pragma once
 #include "KxFramework/KxFramework.h"
 #include "Kx/General/OptionSet.h"
+#include "Kx/UI/Menus/Menu.h"
 #include "Common.h"
 #include "Row.h"
 #include "Node.h"
 #include "Column.h"
 #include "ColumnID.h"
-class KX_API KxMenu;
 
 namespace KxDataView2
 {
 	class KX_API HeaderCtrl;
 	class KX_API MainWindow;
 	class KX_API Model;
+
+	using Menu = KxFramework::UI::Menu;
+	using MenuItem = KxFramework::UI::MenuItem;
+	using MenuEvent = KxFramework::UI::MenuEvent;
 }
 
 namespace KxDataView2
@@ -356,8 +360,8 @@ namespace KxDataView2
 				return m_ClientArea;
 			}
 
-			bool CreateColumnSelectionMenu(KxMenu& menu);
-			Column* OnColumnSelectionMenu(KxMenu& menu);
+			bool CreateColumnSelectionMenu(Menu& menu);
+			Column* OnColumnSelectionMenu(Menu& menu);
 
 			wxString GetEmptyControlLabel() const;
 			void SetEmptyControlLabel(const wxString& value);

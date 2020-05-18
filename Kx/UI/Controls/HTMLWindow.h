@@ -3,10 +3,11 @@
 #include "Kx/UI/WindowRefreshScheduler.h"
 #include <wx/html/htmlwin.h>
 #include <wx/textentry.h>
-class KxMenu;
 
 namespace KxFramework::UI
 {
+	class Menu;
+
 	enum class HTMLWindowStyle
 	{
 		None = 0,
@@ -41,8 +42,8 @@ namespace KxFramework::UI
 
 		private:
 			void CopyTextToClipboard(const String& value) const;
-			void CreateContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link = nullptr);
-			void ExecuteContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link = nullptr);
+			void CreateContextMenu(Menu& menu, const wxHtmlLinkInfo* link = nullptr);
+			void ExecuteContextMenu(Menu& menu, const wxHtmlLinkInfo* link = nullptr);
 		
 			void OnContextMenu(wxContextMenuEvent& event);
 			void OnKey(wxKeyEvent& event);

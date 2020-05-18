@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "HTMLWindow.h"
 #include "Kx/Localization/Common.h"
-#include "KxFramework/KxMenu.h"
+#include "Kx/UI/Menus/Menu.h"
 #include <wx/clipbrd.h>
 
 namespace KxFramework::UI
@@ -62,7 +62,7 @@ namespace KxFramework::UI
 			wxTheClipboard->Close();
 		}
 	}
-	void HTMLWindow::CreateContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link)
+	void HTMLWindow::CreateContextMenu(Menu& menu, const wxHtmlLinkInfo* link)
 	{
 		auto MakeItem = [&menu](int id)
 		{
@@ -70,42 +70,42 @@ namespace KxFramework::UI
 		};
 
 		{
-			KxMenuItem* item = MakeItem(wxID_UNDO);
+			MenuItem* item = MakeItem(wxID_UNDO);
 			item->Enable(CanUndo());
 		}
 		{
-			KxMenuItem* item = MakeItem(wxID_REDO);
+			MenuItem* item = MakeItem(wxID_REDO);
 			item->Enable(CanRedo());
 		}
 		menu.AddSeparator();
 
 		{
-			KxMenuItem* item = MakeItem(wxID_CUT);
+			MenuItem* item = MakeItem(wxID_CUT);
 			item->Enable(CanCut());
 		}
 		{
-			KxMenuItem* item = MakeItem(wxID_COPY);
+			MenuItem* item = MakeItem(wxID_COPY);
 			item->Enable(CanCopy());
 		}
 		if (link != nullptr)
 		{
-			KxMenuItem* item = MakeItem(ToInt(StdID::CopyLink));
+			MenuItem* item = MakeItem(ToInt(StdID::CopyLink));
 		}
 		{
-			KxMenuItem* item = MakeItem(wxID_PASTE);
+			MenuItem* item = MakeItem(wxID_PASTE);
 			item->Enable(CanPaste());
 		}
 		{
-			KxMenuItem* item = MakeItem(wxID_DELETE);
+			MenuItem* item = MakeItem(wxID_DELETE);
 			item->Enable(IsEditable());
 		}
 		menu.AddSeparator();
 		{
-			KxMenuItem* item = MakeItem(wxID_SELECTALL);
+			MenuItem* item = MakeItem(wxID_SELECTALL);
 			item->Enable(!IsEmpty());
 		}
 	}
-	void HTMLWindow::ExecuteContextMenu(KxMenu& menu, const wxHtmlLinkInfo* link)
+	void HTMLWindow::ExecuteContextMenu(Menu& menu, const wxHtmlLinkInfo* link)
 	{
 		switch (menu.Show(this))
 		{
@@ -129,7 +129,7 @@ namespace KxFramework::UI
 
 	void HTMLWindow::OnContextMenu(wxContextMenuEvent& event)
 	{
-		KxMenu menu;
+		Menu menu;
 		CreateContextMenu(menu);
 		ExecuteContextMenu(menu);
 
@@ -165,7 +165,7 @@ namespace KxFramework::UI
 		const wxMouseEvent* event = link.GetEvent();
 		if (event && event->RightUp())
 		{
-			KxMenu menu;
+			Menu menu;
 			CreateContextMenu(menu, &link);
 			ExecuteContextMenu(menu, &link);
 		}

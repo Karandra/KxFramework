@@ -223,10 +223,6 @@
     <ClInclude Include="KxFramework\DataView2\Renderer.h" />
     <ClInclude Include="KxFramework\KxDataView2Event.h" />
     <ClInclude Include="KxFramework\KxFramework.h" />
-    <ClInclude Include="KxFramework\KxMenu.h" />
-    <ClInclude Include="KxFramework\KxMenuEvent.h" />
-    <ClInclude Include="KxFramework\KxMenuItem.h" />
-    <ClInclude Include="KxFramework\KxShellMenu.h" />
     <ClInclude Include="Kx\RTTI\ComponentSystem.h" />
     <ClInclude Include="Kx\System\DynamicLibrary.h" />
     <ClInclude Include="Kx\System\ExecutableVersionResource.h" />
@@ -282,6 +278,10 @@
     <ClInclude Include="Kx\UI\Dialogs\TextBoxDialog.h" />
     <ClInclude Include="Kx\UI\Dialogs\StdDialog.h" />
     <ClInclude Include="Kx\UI\Dialogs\SimpleStdDialog.h" />
+    <ClInclude Include="Kx\UI\Menus\Menu.h" />
+    <ClInclude Include="Kx\UI\Menus\MenuEvent.h" />
+    <ClInclude Include="Kx\UI\Menus\MenuItem.h" />
+    <ClInclude Include="Kx\UI\Menus\ShellMenu.h" />
     <ClInclude Include="Kx\UI\Windows\CollapsiblePane.h" />
     <ClInclude Include="Kx\UI\Windows\DrawablePanel.h" />
     <ClInclude Include="Kx\UI\Windows\Frame.h" />
@@ -542,10 +542,6 @@
     <ClCompile Include="KxFramework\DataView2\Node.cpp" />
     <ClCompile Include="KxFramework\DataView2\Renderer.cpp" />
     <ClCompile Include="KxFramework\KxDataView2Event.cpp" />
-    <ClCompile Include="KxFramework\KxMenu.cpp" />
-    <ClCompile Include="KxFramework\KxMenuEvent.cpp" />
-    <ClCompile Include="KxFramework\KxMenuItem.cpp" />
-    <ClCompile Include="KxFramework\KxShellMenu.cpp" />
     <ClCompile Include="Kx\General\Common.cpp" />
     <ClCompile Include="Kx\RTTI\ComponentSystem.cpp" />
     <ClCompile Include="Kx\System\DynamicLibrary.cpp" />
@@ -596,6 +592,10 @@
     <ClCompile Include="Kx\UI\Dialogs\TextBoxDialog.cpp" />
     <ClCompile Include="Kx\UI\Dialogs\StdDialog.cpp" />
     <ClCompile Include="Kx\UI\Dialogs\SimpleStdDialog.cpp" />
+    <ClCompile Include="Kx\UI\Menus\Menu.cpp" />
+    <ClCompile Include="Kx\UI\Menus\MenuEvent.cpp" />
+    <ClCompile Include="Kx\UI\Menus\MenuItem.cpp" />
+    <ClCompile Include="Kx\UI\Menus\ShellMenu.cpp" />
     <ClCompile Include="Kx\UI\Windows\CollapsiblePane.cpp" />
     <ClCompile Include="Kx\UI\Windows\DrawablePanel.cpp" />
     <ClCompile Include="Kx\UI\Windows\Frame.cpp" />

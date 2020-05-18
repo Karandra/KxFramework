@@ -19,12 +19,6 @@
     <Filter Include="Source Files\GUI">
       <UniqueIdentifier>{60049398-3826-4dd1-9fea-0cca7f82949e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\GUI\Menus">
-      <UniqueIdentifier>{f2b5ce1f-c739-47f9-bf55-bcbe305ca3f2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\GUI\Menus">
-      <UniqueIdentifier>{4f8ee5ef-125d-45f2-8fa5-32764cd79734}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\GUI\DataView2">
       <UniqueIdentifier>{eb022c58-7685-4933-83db-3ae2a7c99660}</UniqueIdentifier>
     </Filter>
@@ -204,18 +198,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="KxFramework\KxMenuEvent.h">
-      <Filter>Header Files\GUI\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxMenu.h">
-      <Filter>Header Files\GUI\Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxMenuItem.h">
-      <Filter>Header Files\GUI\Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxShellMenu.h">
-      <Filter>Header Files\GUI\Menus</Filter>
-    </ClInclude>
     <ClInclude Include="KxFramework\KxFramework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1183,20 +1165,20 @@
     <ClInclude Include="Kx\UI\Dialogs\Private\TaskDialogNativeInfo.h">
       <Filter>Kx\UI\Dialogs\Private</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\UI\Menus\MenuEvent.h">
+      <Filter>Kx\UI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Menus\MenuItem.h">
+      <Filter>Kx\UI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Menus\Menu.h">
+      <Filter>Kx\UI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Menus\ShellMenu.h">
+      <Filter>Kx\UI\Menus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="KxFramework\KxMenuEvent.cpp">
-      <Filter>Source Files\GUI\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxMenu.cpp">
-      <Filter>Source Files\GUI\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxMenuItem.cpp">
-      <Filter>Source Files\GUI\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxShellMenu.cpp">
-      <Filter>Source Files\GUI\Menus</Filter>
-    </ClCompile>
     <ClCompile Include="KxFramework\DataView2\Editor.cpp">
       <Filter>Source Files\GUI\DataView2</Filter>
     </ClCompile>
@@ -1794,6 +1776,18 @@
     </ClCompile>
     <ClCompile Include="Kx\UI\Dialogs\Private\TaskDialogNativeInfo.cpp">
       <Filter>Kx\UI\Dialogs\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Menus\MenuEvent.cpp">
+      <Filter>Kx\UI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Menus\MenuItem.cpp">
+      <Filter>Kx\UI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Menus\Menu.cpp">
+      <Filter>Kx\UI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Menus\ShellMenu.cpp">
+      <Filter>Kx\UI\Menus</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
