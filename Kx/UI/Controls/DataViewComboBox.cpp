@@ -2,7 +2,7 @@
 #include "DataViewComboBox.h"
 #include "ComboControl.h"
 #include "Kx/UI/Windows/Panel.h"
-#include "KxFramework/DataView2/MainWindow.h"
+#include "Kx/UI/Controls//DataView/MainWindow.h"
 
 namespace KxFramework::UI::DataView
 {
@@ -46,7 +46,7 @@ namespace KxFramework::UI::DataView
 	{
 		View::OnInternalIdle();
 	}
-	void ComboCtrl::OnSelectItem(KxDataView2::Event& event)
+	void ComboCtrl::OnSelectItem(ItemEvent& event)
 	{
 		event.Skip();
 
@@ -117,7 +117,7 @@ namespace KxFramework::UI::DataView
 			m_Sizer->Add(this, 1, wxEXPAND);
 
 			// DataView events
-			m_EvtHandler_DataView.Bind(EvtITEM_SELECTED, &ComboCtrl::OnSelectItem, this);
+			m_EvtHandler_DataView.Bind(ItemEvent::EvtItemSelected, &ComboCtrl::OnSelectItem, this);
 			PushEventHandler(&m_EvtHandler_DataView);
 
 			// ComboCtrl Events
@@ -132,9 +132,9 @@ namespace KxFramework::UI::DataView
 	}
 
 	bool ComboCtrl::Create(wxWindow* parent,
-									wxWindowID id,
-									long style,
-									const wxValidator& validator
+						   wxWindowID id,
+						   long style,
+						   const wxValidator& validator
 	)
 	{
 		m_ComboCtrl = new ComboControl();
@@ -170,7 +170,7 @@ namespace KxFramework::UI::DataView
 
 	wxString ComboCtrl::GetStringValue() const
 	{
-		KxDataView2::Event event(EvtGetStringValue, GetId());
+		ItemEvent event(EvtGetStringValue, GetId());
 		event.SetEventObject(const_cast<ComboCtrl*>(this));
 		event.SetNode(m_Selection);
 
@@ -179,7 +179,7 @@ namespace KxFramework::UI::DataView
 	}
 	void ComboCtrl::SetStringValue(const wxString& value)
 	{
-		KxDataView2::Event event(EvtSetStringValue, GetId());
+		ItemEvent event(EvtSetStringValue, GetId());
 		event.SetEventObject(const_cast<ComboCtrl*>(this));
 		event.SetString(value);
 

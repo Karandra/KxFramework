@@ -2,7 +2,7 @@
 #include "Kx/UI/Common.h"
 #include "ComboPopup.h"
 #include "Kx/General/WithOptions.h"
-#include "KxFramework/DataView2/DataView2.h"
+#include "Kx/UI/Controls/DataView/DataView2.h"
 
 namespace KxFramework::UI
 {
@@ -12,7 +12,7 @@ namespace KxFramework::UI
 
 namespace KxFramework::UI::DataView
 {
-	using namespace KxDataView2;
+	using namespace KxFramework::UI::DataView;
 
 	enum class ComboCtrlOption
 	{
@@ -39,8 +39,8 @@ namespace KxFramework::UI::DataView
 			static constexpr int DefaultStyle = wxCB_READONLY;
 			static constexpr CtrlStyle DefaultDataViewStyle = CtrlStyle::Default;
 
-			KxEVENT_MEMBER(KxDataView2::Event, GetStringValue);
-			KxEVENT_MEMBER(KxDataView2::Event, SetStringValue);
+			KxEVENT_MEMBER(ItemEvent, GetStringValue);
+			KxEVENT_MEMBER(ItemEvent, SetStringValue);
 
 		protected:
 			CtrlStyle m_DataViewFlags = DefaultDataViewStyle;
@@ -60,7 +60,7 @@ namespace KxFramework::UI::DataView
 
 		protected:
 			void OnInternalIdle() override;
-			void OnSelectItem(KxDataView2::Event& event);
+			void OnSelectItem(ItemEvent& event);
 			void OnScroll(wxMouseEvent& event);
 
 			bool FindItem(const wxString& value, wxString* trueItem = nullptr) override;

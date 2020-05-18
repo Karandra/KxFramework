@@ -13,30 +13,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Header Files\GUI">
-      <UniqueIdentifier>{6c310c16-9644-4de9-afd3-8862008629ff}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\GUI">
-      <UniqueIdentifier>{60049398-3826-4dd1-9fea-0cca7f82949e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\GUI\DataView2">
-      <UniqueIdentifier>{eb022c58-7685-4933-83db-3ae2a7c99660}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\GUI\DataView2">
-      <UniqueIdentifier>{fa41b0a9-7ee7-4c1a-bfa0-7986c249353d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\GUI\DataView2\Renderers">
-      <UniqueIdentifier>{da4451a3-78ba-4565-93b1-f88adc5ac89e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\GUI\DataView2\Editors">
-      <UniqueIdentifier>{bc00aaeb-8f46-4ec8-a154-9824fdddd46d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\GUI\DataView2\Renderers">
-      <UniqueIdentifier>{faa6af25-b64e-43b3-ad87-e31b4b5c1615}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\GUI\DataView2\Editors">
-      <UniqueIdentifier>{321f7c2c-c979-46bd-b38d-fc6ed07d9e83}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Kx">
       <UniqueIdentifier>{b754c7f1-7cfc-4648-b498-fd9750d8b242}</UniqueIdentifier>
     </Filter>
@@ -151,12 +127,6 @@
     <Filter Include="Kx\&lt;Modules&gt;">
       <UniqueIdentifier>{916829f1-4a51-4891-9918-1b9723789c5a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\GUI\Events">
-      <UniqueIdentifier>{bf54f086-d884-45dc-8670-5c65e6f09e19}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\GUI\Events">
-      <UniqueIdentifier>{e19724b4-11bc-44f5-a040-78994c9ee6ab}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Kx\System\SystemProcess">
       <UniqueIdentifier>{a47c3ad0-99a9-47ac-abb2-cebc2abc27b9}</UniqueIdentifier>
     </Filter>
@@ -196,125 +166,20 @@
     <Filter Include="Kx\UI\Dialogs\Private">
       <UniqueIdentifier>{8748a1a3-30f0-4977-9c4b-3fffaf785b0e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\UI\Controls\DataView\Editors">
+      <UniqueIdentifier>{88feb086-33ff-447b-9a97-120aa1397e12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx\UI\Controls\DataView\Renderers">
+      <UniqueIdentifier>{687104a4-b178-491f-9bbd-4786d1510946}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx\UI\Controls\&lt;Controls&gt;">
+      <UniqueIdentifier>{8d89f944-d9f8-4f7c-b28d-82616536aae2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx\UI\&lt;UI&gt;">
+      <UniqueIdentifier>{e51dc976-b3e3-4424-aac5-de85a4e6e3c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="KxFramework\KxFramework.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\DataView2.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Editor.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\HeaderCtrl.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\MainWindow.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Node.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Renderer.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Column.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\View.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\SortOrder.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\CellState.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Row.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Model.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\KxDataView2Event.h">
-      <Filter>Header Files\GUI\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Common.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Renderers\TextRenderer.h">
-      <Filter>Header Files\GUI\DataView2\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Editors\TextEditor.h">
-      <Filter>Header Files\GUI\DataView2\Editors</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Renderers\NullRenderer.h">
-      <Filter>Header Files\GUI\DataView2\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\RenderEngine.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Renderers\ToggleRenderer.h">
-      <Filter>Header Files\GUI\DataView2\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Renderers\BitmapRenderer.h">
-      <Filter>Header Files\GUI\DataView2\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Renderers\BitmapTextRenderer.h">
-      <Filter>Header Files\GUI\DataView2\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Renderers\BitmapTextToggleRenderer.h">
-      <Filter>Header Files\GUI\DataView2\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Renderers\ProgressRenderer.h">
-      <Filter>Header Files\GUI\DataView2\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Renderers\HTMLRenderer.h">
-      <Filter>Header Files\GUI\DataView2\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Renderers\BitmapListRenderer.h">
-      <Filter>Header Files\GUI\DataView2\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\CellAttributes.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Editors\TimeEditor.h">
-      <Filter>Header Files\GUI\DataView2\Editors</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Editors\DateEditor.h">
-      <Filter>Header Files\GUI\DataView2\Editors</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Editors\ComboBoxEditor.h">
-      <Filter>Header Files\GUI\DataView2\Editors</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Editors\ColorEditor.h">
-      <Filter>Header Files\GUI\DataView2\Editors</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Editors\SpinEditor.h">
-      <Filter>Header Files\GUI\DataView2\Editors</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\TypeAliases.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\ColumnID.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\DataView2Fwd.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\DragAndDrop.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\ToolTip.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\CellAttributeOptions.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\Renderers\ImageListRenderer.h">
-      <Filter>Header Files\GUI\DataView2\Renderers</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\Threading\Common.h">
       <Filter>Kx\Threading</Filter>
     </ClInclude>
@@ -383,9 +248,6 @@
     </ClInclude>
     <ClInclude Include="Kx\RTTI\Common.h">
       <Filter>Kx\RTTI</Filter>
-    </ClInclude>
-    <ClInclude Include="KxFramework\DataView2\HeaderCtrl2.h">
-      <Filter>Header Files\GUI\DataView2</Filter>
     </ClInclude>
     <ClInclude Include="Kx\Sciter\Common.h">
       <Filter>Kx\Sciter</Filter>
@@ -570,12 +432,6 @@
     <ClInclude Include="Kx\Compression\IArchiveImpl.h">
       <Filter>Kx\Compression</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Common.h">
-      <Filter>Kx\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Validator.h">
-      <Filter>Kx\UI</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\General\StreamDelegate.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
@@ -695,12 +551,6 @@
     </ClInclude>
     <ClInclude Include="Kx\Network\Common.h">
       <Filter>Kx\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\StdButton.h">
-      <Filter>Kx\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\StdIcon.h">
-      <Filter>Kx\UI</Filter>
     </ClInclude>
     <ClInclude Include="Kx\Utility\Container.h">
       <Filter>Kx\Utility</Filter>
@@ -858,29 +708,14 @@
     <ClInclude Include="Kx\System\WOW64FSRedirection.h">
       <Filter>Kx\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\HiDPIEnabledWindow.h">
-      <Filter>Kx\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\WindowUpdateLocker.h">
-      <Filter>Kx\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\WindowRefreshScheduler.h">
-      <Filter>Kx\UI</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\Localization\Common.h">
       <Filter>Kx\Localization</Filter>
     </ClInclude>
     <ClInclude Include="Kx\Localization\Private\StandardLocalization.h">
       <Filter>Kx\Localization\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\StdDialogButtonSizer.h">
-      <Filter>Kx\UI</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\General\BasicApplication.h">
       <Filter>Kx\General</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\WithDropdownMenu.h">
-      <Filter>Kx\UI</Filter>
     </ClInclude>
     <ClInclude Include="Kx\Localization\Locale.h">
       <Filter>Kx\Localization</Filter>
@@ -1012,9 +847,6 @@
     <ClInclude Include="Kx\System\SystemProcess.h">
       <Filter>Kx\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\IProgressMeter.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\UI\Windows\SplashWindow.h">
       <Filter>Kx\UI\Windows</Filter>
     </ClInclude>
@@ -1042,60 +874,6 @@
     <ClInclude Include="Kx\UI\Windows\Frame.h">
       <Filter>Kx\UI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\ImageView.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\ThumbView.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\StaticBitmap.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\Slider.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\WebView.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\StaticText.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\SearchBox.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\Simplebook.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\CheckBox.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\Notebook.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\StatusBar.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\StatusBarEx.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\ClusterMap.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\RadioButton.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\ComboControl.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\ComboPopup.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataViewComboBox.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\HTMLWindow.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\UI\Controls\AUI\AuiNotebook.h">
       <Filter>Kx\UI\Controls\AUI</Filter>
     </ClInclude>
@@ -1107,27 +885,6 @@
     </ClInclude>
     <ClInclude Include="Kx\UI\Controls\AUI\AuiToolBarItem.h">
       <Filter>Kx\UI\Controls\AUI</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\TextBox.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\StyledTextBox.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\ProgressBar.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\ComboBox.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\BitmapComboBox.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\Label.h">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\Button.h">
-      <Filter>Kx\UI\Controls</Filter>
     </ClInclude>
     <ClInclude Include="Kx\UI\Dialogs\Dialog.h">
       <Filter>Kx\UI\Dialogs</Filter>
@@ -1177,98 +934,230 @@
     <ClInclude Include="Kx\UI\Menus\ShellMenu.h">
       <Filter>Kx\UI\Menus</Filter>
     </ClInclude>
+    <ClInclude Include="KxFramework\KxFramework.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\CellState.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Column.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\ColumnID.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Common.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\DataView2.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\DataView2Fwd.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\DragAndDrop.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Editor.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Event.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\HeaderCtrl.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\HeaderCtrl2.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\MainWindow.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Model.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Node.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\RenderEngine.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Renderer.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Row.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\SortOrder.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\ToolTip.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\View.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\CellAttributeOptions.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Editors\ColorEditor.h">
+      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Editors\ComboBoxEditor.h">
+      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Editors\DateEditor.h">
+      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Editors\SpinEditor.h">
+      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Editors\TextEditor.h">
+      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Editors\TimeEditor.h">
+      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Renderers\BitmapRenderer.h">
+      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Renderers\BitmapTextRenderer.h">
+      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Renderers\BitmapTextToggleRenderer.h">
+      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Renderers\HTMLRenderer.h">
+      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Renderers\ImageListRenderer.h">
+      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Renderers\NullRenderer.h">
+      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Renderers\ProgressRenderer.h">
+      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Renderers\TextRenderer.h">
+      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Renderers\ToggleRenderer.h">
+      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\Renderers\BitmapListRenderer.h">
+      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\BitmapComboBox.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\Button.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\CheckBox.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\ClusterMap.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\ComboBox.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\ComboControl.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\ComboPopup.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataViewComboBox.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\HTMLWindow.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\ImageView.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\IProgressMeter.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\Label.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\Notebook.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\ProgressBar.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\RadioButton.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\SearchBox.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\Simplebook.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\Slider.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\StaticBitmap.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\StaticText.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\StatusBar.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\StatusBarEx.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\StyledTextBox.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\TextBox.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\ThumbView.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\WebView.h">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Common.h">
+      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\HiDPIEnabledWindow.h">
+      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\StdButton.h">
+      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\StdDialogButtonSizer.h">
+      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\StdIcon.h">
+      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Validator.h">
+      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\WindowRefreshScheduler.h">
+      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\WindowUpdateLocker.h">
+      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\WithDropdownMenu.h">
+      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\CellAttribute.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="KxFramework\DataView2\Editor.cpp">
-      <Filter>Source Files\GUI\DataView2</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\HeaderCtrl.cpp">
-      <Filter>Source Files\GUI\DataView2</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\MainWindow.cpp">
-      <Filter>Source Files\GUI\DataView2</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\Node.cpp">
-      <Filter>Source Files\GUI\DataView2</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\Renderer.cpp">
-      <Filter>Source Files\GUI\DataView2</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\Column.cpp">
-      <Filter>Source Files\GUI\DataView2</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\View.cpp">
-      <Filter>Source Files\GUI\DataView2</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\Model.cpp">
-      <Filter>Source Files\GUI\DataView2</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\KxDataView2Event.cpp">
-      <Filter>Source Files\GUI\Events</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\Renderers\TextRenderer.cpp">
-      <Filter>Source Files\GUI\DataView2\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\Editors\TextEditor.cpp">
-      <Filter>Source Files\GUI\DataView2\Editors</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\RenderEngine.cpp">
-      <Filter>Source Files\GUI\DataView2</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\Renderers\ToggleRenderer.cpp">
-      <Filter>Source Files\GUI\DataView2\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\Renderers\BitmapRenderer.cpp">
-      <Filter>Source Files\GUI\DataView2\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\Renderers\BitmapTextRenderer.cpp">
-      <Filter>Source Files\GUI\DataView2\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\Renderers\BitmapTextToggleRenderer.cpp">
-      <Filter>Source Files\GUI\DataView2\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\Renderers\ProgressRenderer.cpp">
-      <Filter>Source Files\GUI\DataView2\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\Renderers\HTMLRenderer.cpp">
-      <Filter>Source Files\GUI\DataView2\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\Renderers\BitmapListRenderer.cpp">
-      <Filter>Source Files\GUI\DataView2\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\CellAttributes.cpp">
-      <Filter>Source Files\GUI\DataView2</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\Editors\TimeEditor.cpp">
-      <Filter>Source Files\GUI\DataView2\Editors</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\Editors\DateEditor.cpp">
-      <Filter>Source Files\GUI\DataView2\Editors</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\Editors\ComboBoxEditor.cpp">
-      <Filter>Source Files\GUI\DataView2\Editors</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\Editors\ColorEditor.cpp">
-      <Filter>Source Files\GUI\DataView2\Editors</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\Editors\SpinEditor.cpp">
-      <Filter>Source Files\GUI\DataView2\Editors</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\DragAndDrop.cpp">
-      <Filter>Source Files\GUI\DataView2</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\Common.cpp">
-      <Filter>Source Files\GUI\DataView2</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\CellState.cpp">
-      <Filter>Source Files\GUI\DataView2</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\ToolTip.cpp">
-      <Filter>Source Files\GUI\DataView2</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\Renderers\ImageListRenderer.cpp">
-      <Filter>Source Files\GUI\DataView2\Renderers</Filter>
-    </ClCompile>
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp">
       <Filter>Kx\EventSystem</Filter>
     </ClCompile>
@@ -1277,9 +1166,6 @@
     </ClCompile>
     <ClCompile Include="Kx\Async\Coroutine\CoroutineImpl.cpp">
       <Filter>Kx\Async\Coroutine</Filter>
-    </ClCompile>
-    <ClCompile Include="KxFramework\DataView2\HeaderCtrl2.cpp">
-      <Filter>Source Files\GUI\DataView2</Filter>
     </ClCompile>
     <ClCompile Include="Kx\Sciter\Node.cpp">
       <Filter>Kx\Sciter</Filter>
@@ -1397,9 +1283,6 @@
     </ClCompile>
     <ClCompile Include="Kx\Compression\IArchive.cpp">
       <Filter>Kx\Compression</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Validator.cpp">
-      <Filter>Kx\UI</Filter>
     </ClCompile>
     <ClCompile Include="Kx\General\MemoryStream.cpp">
       <Filter>Kx\General</Filter>
@@ -1557,17 +1440,11 @@
     <ClCompile Include="Kx\System\WOW64FSRedirection.cpp">
       <Filter>Kx\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\HiDPIEnabledWindow.cpp">
-      <Filter>Kx\UI</Filter>
-    </ClCompile>
     <ClCompile Include="Kx\Localization\Common.cpp">
       <Filter>Kx\Localization</Filter>
     </ClCompile>
     <ClCompile Include="Kx\Localization\Private\StandardLocalization.cpp">
       <Filter>Kx\Localization\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\StdDialogButtonSizer.cpp">
-      <Filter>Kx\UI</Filter>
     </ClCompile>
     <ClCompile Include="Kx\Localization\Locale.cpp">
       <Filter>Kx\Localization</Filter>
@@ -1592,9 +1469,6 @@
     </ClCompile>
     <ClCompile Include="Kx\System\SharedMemory.cpp">
       <Filter>Kx\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Common.cpp">
-      <Filter>Kx\UI</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Kx\RTTI\ComponentSystem.cpp">
@@ -1654,59 +1528,8 @@
     <ClCompile Include="Kx\UI\Windows\Frame.cpp">
       <Filter>Kx\UI\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\ImageView.cpp">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\ThumbView.cpp">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\StaticBitmap.cpp">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClCompile>
     <ClCompile Include="Kx\General\Common.cpp">
       <Filter>Kx\General</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\Slider.cpp">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\WebView.cpp">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\StaticText.cpp">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\SearchBox.cpp">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\Simplebook.cpp">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\CheckBox.cpp">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\Notebook.cpp">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\StatusBar.cpp">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\StatusBarEx.cpp">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\ClusterMap.cpp">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\RadioButton.cpp">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\ComboControl.cpp">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataViewComboBox.cpp">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\HTMLWindow.cpp">
-      <Filter>Kx\UI\Controls</Filter>
     </ClCompile>
     <ClCompile Include="Kx\UI\Controls\AUI\AuiNotebook.cpp">
       <Filter>Kx\UI\Controls\AUI</Filter>
@@ -1719,27 +1542,6 @@
     </ClCompile>
     <ClCompile Include="Kx\UI\Controls\AUI\AuiToolBar.cpp">
       <Filter>Kx\UI\Controls\AUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\TextBox.cpp">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\StyledTextBox.cpp">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\ProgressBar.cpp">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\ComboBox.cpp">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\BitmapComboBox.cpp">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\Label.cpp">
-      <Filter>Kx\UI\Controls</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\Button.cpp">
-      <Filter>Kx\UI\Controls</Filter>
     </ClCompile>
     <ClCompile Include="Kx\UI\Dialogs\Dialog.cpp">
       <Filter>Kx\UI\Dialogs</Filter>
@@ -1788,6 +1590,183 @@
     </ClCompile>
     <ClCompile Include="Kx\UI\Menus\ShellMenu.cpp">
       <Filter>Kx\UI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\CellState.cpp">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\Column.cpp">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\Common.cpp">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\DragAndDrop.cpp">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\Editor.cpp">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\Event.cpp">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\HeaderCtrl.cpp">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\HeaderCtrl2.cpp">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\MainWindow.cpp">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\Model.cpp">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\Node.cpp">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\RenderEngine.cpp">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\Renderer.cpp">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\ToolTip.cpp">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\View.cpp">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\Editors\ColorEditor.cpp">
+      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\Editors\ComboBoxEditor.cpp">
+      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\Editors\DateEditor.cpp">
+      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\Editors\SpinEditor.cpp">
+      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\Editors\TextEditor.cpp">
+      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\Editors\TimeEditor.cpp">
+      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\Renderers\BitmapRenderer.cpp">
+      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\Renderers\BitmapTextRenderer.cpp">
+      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\Renderers\BitmapTextToggleRenderer.cpp">
+      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\Renderers\HTMLRenderer.cpp">
+      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\Renderers\ImageListRenderer.cpp">
+      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\Renderers\ProgressRenderer.cpp">
+      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\Renderers\TextRenderer.cpp">
+      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\Renderers\ToggleRenderer.cpp">
+      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\Renderers\BitmapListRenderer.cpp">
+      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\BitmapComboBox.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\Button.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\CheckBox.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\ClusterMap.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\ComboBox.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\ComboControl.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataViewComboBox.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\HTMLWindow.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\ImageView.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\Label.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\Notebook.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\ProgressBar.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\RadioButton.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\SearchBox.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\Simplebook.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\Slider.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\StaticBitmap.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\StaticText.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\StatusBar.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\StatusBarEx.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\StyledTextBox.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\TextBox.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\ThumbView.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\WebView.cpp">
+      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Common.cpp">
+      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\HiDPIEnabledWindow.cpp">
+      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\StdDialogButtonSizer.cpp">
+      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Validator.cpp">
+      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Controls\DataView\CellAttribute.cpp">
+      <Filter>Kx\UI\Controls\DataView</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
