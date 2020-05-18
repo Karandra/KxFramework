@@ -1,9 +1,10 @@
 #pragma once
-#include "KxFramework/KxFramework.h"
+#include "Common.h"
 #include "XDocument.h"
 #include "String.h"
 #include "Version.h"
 #include "TinyXML2.h"
+#include <wx/stream.h>
 
 namespace KxFramework
 {

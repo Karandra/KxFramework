@@ -6,6 +6,7 @@
 #include "Kx/General/Version.h"
 #include "Kx/General/BinarySize.h"
 #include "SystemInformationDefines.h"
+#include <wx/settings.h>
 #include "UndefWindows.h"
 
 namespace KxFramework::System

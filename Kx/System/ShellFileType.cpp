@@ -2,6 +2,7 @@
 #include "ShellFileType.h"
 #include "ShellFileTypeManager.h"
 #include "Registry.h"
+#include <wx/regex.h>
 
 namespace KxFramework
 {

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DrawablePanel.h"
 #include "Kx/Drawing/UxTheme.h"
+#include <wx/bookctrl.h>
 
 namespace
 {

@@ -1,6 +1,7 @@
 #pragma once
 #include "../Editor.h"
 #include "Kx/General/WithOptions.h"
+#include <wx/colourdata.h>
 class wxGenericColourDialog;
 
 namespace KxFramework::UI::DataView
@@ -21,7 +22,7 @@ namespace KxFramework::EnumClass
 
 namespace KxFramework::UI::DataView
 {
-	class KX_API ColorValue: public KxFramework::WithOptions<ColorEditorOption, ColorEditorOption::None>
+	class KX_API ColorValue: public WithOptions<ColorEditorOption, ColorEditorOption::None>
 	{
 		protected:
 			Color m_Color;

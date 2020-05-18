@@ -2,8 +2,7 @@
 #include "../Common.h"
 #include "Kx/General/NativeUUID.h"
 #include "Kx/System/KnownDirectoryID.h"
-#include <cguid.h>
-#include <guiddef.h>
+#include <Windows.h>
 #include <KnownFolders.h>
 #include "Kx/System/UndefWindows.h"
 
@@ -12,7 +11,7 @@ namespace KxFramework::Shell::Private
 	#define KSHDItem(id, guid)	{KnownDirectoryID::##id, guid}
 	struct KnownDirectoryGUID final
 	{
-		static inline std::pair<KnownDirectoryID, ::GUID> Items[] =
+		static inline std::pair<KnownDirectoryID, ::_GUID> Items[] =
 		{
 			KSHDItem(Music, FOLDERID_Music),
 			KSHDItem(MusicCommon, FOLDERID_PublicMusic),

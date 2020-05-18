@@ -1,6 +1,7 @@
 #pragma once
-#include "KxFramework/KxFramework.h"
+#include "Kx/UI/Common.h"
 #include "MenuEvent.h"
+#include <wx/menuitem.h>
 
 namespace KxFramework::UI
 {

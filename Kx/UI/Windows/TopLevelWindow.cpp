@@ -21,7 +21,7 @@ namespace KxFramework::UI::Private
 	}
 	bool TopLevelWindowBase::DWMIsGlassOpaque()
 	{
-		DWORD dwmColor = 0;
+		uint32_t dwmColor = 0;
 		BOOL isOpaqueColor = FALSE;
 		if (NativeAPI::DWMAPI::DwmGetColorizationColor)
 		{
@@ -34,7 +34,7 @@ namespace KxFramework::UI::Private
 		Color color;
 		if (NativeAPI::DWMAPI::DwmGetColorizationColor)
 		{
-			DWORD dwmColor = 0;
+			uint32_t dwmColor = 0;
 			BOOL isOpaqueColor = FALSE;
 			NativeAPI::DWMAPI::DwmGetColorizationColor(&dwmColor, &isOpaqueColor);
 

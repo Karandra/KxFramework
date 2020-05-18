@@ -1,6 +1,9 @@
 #pragma once
 #include "Kx/UI/Common.h"
 #include "Kx/UI/WindowRefreshScheduler.h"
+#include <wx/systhemectrl.h>
+#include <wx/stattext.h>
+#include <wx/renderer.h>
 
 namespace KxFramework::UI
 {

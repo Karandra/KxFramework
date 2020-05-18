@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "ExecutableVersionResource.h"
 #include "Kx/General/StringFormater.h"
+#include <Windows.h>
+#include "UndefWindows.h"
 
 namespace
 {

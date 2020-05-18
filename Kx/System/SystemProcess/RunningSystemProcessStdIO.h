@@ -1,7 +1,9 @@
 #pragma once
 #include "ISystemProcessStdIO.h"
+#include <Windows.h>
 #include <wx/private/pipestream.h>
 #include <wx/private/streamtempinput.h>
+#include "Kx/System/UndefWindows.h"
 
 namespace KxFramework
 {

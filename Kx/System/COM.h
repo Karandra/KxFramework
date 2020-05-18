@@ -5,6 +5,7 @@
 #include "Kx/General/NativeUUID.h"
 #include "Private/COM.h"
 struct IUnknown;
+struct _GUID;
 
 namespace KxFramework
 {
@@ -54,47 +55,27 @@ namespace KxFramework::COM
 	void* ReallocateMemory(void* address, size_t size) noexcept;
 	void FreeMemory(void* address) noexcept;
 
-	constexpr ::GUID ToGUID(const NativeUUID& uuid) noexcept
-	{
-		::GUID guid = {};
-		guid.Data1 = uuid.Data1;
-		guid.Data2 = uuid.Data2;
-		guid.Data3 = uuid.Data3;
-		for (size_t i = 0; i < std::size(guid.Data4); i++)
-		{
-			guid.Data4[i] = uuid.Data4[i];
-		}
-
-		return guid;
-	}
-	constexpr NativeUUID FromGUID(const ::GUID& guid) noexcept
-	{
-		NativeUUID uuid;
-		uuid.Data1 = guid.Data1;
-		uuid.Data2 = guid.Data2;
-		uuid.Data3 = guid.Data3;
-		for (size_t i = 0; i < std::size(uuid.Data4); i++)
-		{
-			uuid.Data4[i] = guid.Data4[i];
-		}
-
-		return uuid;
-	}
+	::_GUID ToGUID(const NativeUUID& uuid) noexcept;
+	NativeUUID FromGUID(const ::_GUID& guid) noexcept;
 }
 
 namespace KxFramework::COM
 {
 	template<class T>
-	constexpr NativeUUID UUIDOf() noexcept
+	NativeUUID UUIDOf() noexcept
 	{
+		#ifdef _MSC_EXTENSIONS
 		return FromGUID(__uuidof(T));
+		#else
+		#error Microsoft language extensions support required
+		#endif
 	}
 
-	inline constexpr NativeUUID ToUUID(const NativeUUID& uuid) noexcept
+	inline NativeUUID ToUUID(const NativeUUID& uuid) noexcept
 	{
 		return uuid;
 	}
-	inline constexpr NativeUUID ToUUID(const ::GUID& guid) noexcept
+	inline NativeUUID ToUUID(const ::_GUID& guid) noexcept
 	{
 		return FromGUID(guid);
 	}
@@ -103,7 +84,7 @@ namespace KxFramework::COM
 namespace KxFramework::COM
 {
 	HResult CreateInstance(const NativeUUID& classID, ClassContext classContext, const NativeUUID& iid, void** result, IUnknown* outer = nullptr) noexcept;
-	inline HResult CreateInstance(const ::GUID& classID, ClassContext classContext, const ::GUID& iid, void** result, IUnknown* outer = nullptr) noexcept
+	inline HResult CreateInstance(const ::_GUID& classID, ClassContext classContext, const ::_GUID& iid, void** result, IUnknown* outer = nullptr) noexcept
 	{
 		return CreateInstance(FromGUID(classID), classContext, FromGUID(iid), result, outer);
 	}

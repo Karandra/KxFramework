@@ -2,19 +2,23 @@
 #include "SystemInformation.h"
 #include "NativeAPI.h"
 #include "Registry.h"
+#include "Private/SystemInformationDefinesMapping.h"
 #include "Kx/Utility/Common.h"
 #include "Kx/Utility/CallAtScopeExit.h"
 #include <wx/settings.h>
+
+#include <Windows.h>
 #include <SDDL.h>
+#include "UndefWindows.h"
 
 namespace
 {
-	bool CheckKernerlversion(const KxFramework::System::KernelVersion& kernelVersion)
+	constexpr bool CheckKernerlversion(const KxFramework::System::KernelVersion& kernelVersion) noexcept
 	{
 		// Major version should always be > 0, others are allowed to be zero.
 		return kernelVersion.Major > 0 && kernelVersion.Minor >= 0 && kernelVersion.Build >= 0 && kernelVersion.ServicePackMajor >= 0 && kernelVersion.ServicePackMinor >= 0;
 	}
-	bool CheckVersionInfo(const KxFramework::System::VersionInfo& versionInfo)
+	constexpr bool CheckVersionInfo(const KxFramework::System::VersionInfo& versionInfo) noexcept
 	{
 		using namespace KxFramework;
 
@@ -222,9 +226,9 @@ namespace KxFramework::System
 
 			if (CheckKernerlversion(versionInfo.Kernel))
 			{
-				versionInfo.PlatformID = FromInt<SystemPlatformID>(infoEx.dwPlatformId);
-				versionInfo.SystemType = FromInt<SystemType>(infoEx.wProductType);
-				versionInfo.ProductSuite = FromInt<SystemProductSuite>(infoEx.wSuiteMask);
+				versionInfo.PlatformID = Private::MapSystemPlatformID(infoEx.dwPlatformId);
+				versionInfo.SystemType = Private::MapSystemType(infoEx.wProductType);
+				versionInfo.ProductSuite = Private::MapSystemProductSuite(infoEx.wSuiteMask);
 				try
 				{
 					versionInfo.ServicePack = infoEx.szCSDVersion;
@@ -237,7 +241,7 @@ namespace KxFramework::System
 				DWORD productType = 0;
 				if (::GetProductInfo(infoEx.dwMajorVersion, infoEx.dwMinorVersion, infoEx.wServicePackMajor, infoEx.wServicePackMinor, &productType))
 				{
-					versionInfo.ProductType = FromInt<SystemProductType>(productType);
+					versionInfo.ProductType = Private::MapSystemProductType(productType);
 				}
 
 				if (CheckVersionInfo(versionInfo))

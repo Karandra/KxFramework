@@ -2,6 +2,8 @@
 #include "ToolTipEx.h"
 #include "Kx/System/Registry.h"
 #include <CommCtrl.h>
+#include <wx/artprov.h>
+#include "Kx/System/UndefWindows.h"
 
 namespace
 {

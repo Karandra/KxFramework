@@ -3,6 +3,7 @@
 #include "Kx/General/String.h"
 #include "Kx/Localization/Locale.h"
 #include "Private/ErrorCodeValue.h"
+#include "UndefWindows.h"
 struct IErrorInfo;
 
 namespace KxFramework

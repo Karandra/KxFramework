@@ -8,11 +8,11 @@
 
 namespace KxFramework
 {
-	class KX_API Coroutine;
+	class Coroutine;
 }
 namespace KxFramework::Async
 {
-	class KX_API CoroutineBase;
+	class CoroutineBase;
 }
 
 namespace KxFramework::Async

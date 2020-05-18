@@ -3,6 +3,8 @@
 #include "String.h"
 #include "Version.h"
 #include "XDocument.h"
+#include <map>
+#include <wx/stream.h>
 
 namespace SimpleINI
 {

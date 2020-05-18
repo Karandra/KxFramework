@@ -1,10 +1,12 @@
 #pragma once
-#include "KxFramework/KxFramework.h"
 #include "Common.h"
 #include "CellState.h"
 #include "CellAttribute.h"
 #include "RenderEngine.h"
 #include "ToolTip.h"
+#include <wx/dc.h>
+#include <wx/graphics.h>
+#include <wx/dcgraph.h>
 
 namespace KxFramework::UI::DataView
 {

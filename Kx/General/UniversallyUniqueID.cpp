@@ -2,6 +2,7 @@
 #include "UniversallyUniqueID.h"
 #include "Kx/System/ErrorCodeValue.h"
 
+#include <Windows.h>
 #include <rpcdce.h>
 #include "Kx/System/UndefWindows.h"
 

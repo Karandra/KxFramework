@@ -3,6 +3,7 @@
 #include "Kx/UI/WindowRefreshScheduler.h"
 #include <wx/html/htmlwin.h>
 #include <wx/textentry.h>
+#include <wx/graphics.h>
 
 namespace KxFramework::UI
 {

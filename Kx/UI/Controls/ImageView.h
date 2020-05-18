@@ -5,6 +5,7 @@
 #include <wx/control.h>
 #include <wx/statbmp.h>
 #include <wx/graphics.h>
+#include <wx/systhemectrl.h>
 
 namespace KxFramework::UI
 {
@@ -18,7 +19,7 @@ namespace KxFramework::UI
 
 namespace KxFramework::UI
 {
-	class KX_API ImageView: public wxSystemThemedControl<WindowRefreshScheduler<wxControl>>
+	class KX_API ImageView: public WindowRefreshScheduler<wxSystemThemedControl<wxControl>>
 	{
 		public:
 			static constexpr WindowStyle DefaultStyle = EnumClass::Combine<WindowStyle>(WindowBorder::Theme);

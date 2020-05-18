@@ -1,6 +1,5 @@
 #pragma once
-#include "KxFramework/KxFramework.h"
-#include "KxFramework/DataView2/Renderer.h"
+#include "../Renderer.h"
 
 namespace KxFramework::UI::DataView
 {

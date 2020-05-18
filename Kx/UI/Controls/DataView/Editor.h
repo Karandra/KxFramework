@@ -1,7 +1,8 @@
 #pragma once
-#include "KxFramework/KxFramework.h"
 #include "Common.h"
 #include "Renderer.h"
+#include <wx/window.h>
+#include <wx/weakref.h>
 
 namespace KxFramework::UI::DataView
 {

@@ -15,6 +15,7 @@
 #include "Kx/Utility/Common.h"
 #include "Kx/Utility/CallAtScopeExit.h"
 
+#include <Windows.h>
 #include <winnls.h>
 #include <shobjidl.h>
 #include <Shlobj.h>

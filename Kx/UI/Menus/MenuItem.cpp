@@ -3,6 +3,7 @@
 #include "MenuItem.h"
 #include "MenuEvent.h"
 #include "Kx/wxWidgets/RTTI.h"
+#include <wx/sysopt.h>
 
 namespace KxFramework::UI
 {

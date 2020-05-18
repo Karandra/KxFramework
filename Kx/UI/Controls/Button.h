@@ -2,6 +2,9 @@
 #include "Kx/UI/Common.h"
 #include "Kx/UI/WindowRefreshScheduler.h"
 #include "Kx/UI/WithDropdownMenu.h"
+#include <wx/renderer.h>
+#include <wx/anybutton.h>
+#include <wx/systhemectrl.h>
 
 namespace KxFramework::UI
 {

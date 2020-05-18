@@ -4,6 +4,7 @@
 #include <locale>
 #include <random>
 #include <cmath>
+#include <iostream>
 
 namespace
 {

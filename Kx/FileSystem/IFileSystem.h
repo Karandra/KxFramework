@@ -3,6 +3,7 @@
 #include "FSPath.h"
 #include "Kx/General/BinarySize.h"
 #include "Kx/RTTI/QueryInterface.h"
+#include <wx/datetime.h>
 
 namespace KxFramework
 {

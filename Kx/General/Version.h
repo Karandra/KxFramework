@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "Private/VersionImpl.h"
 #include "String.h"
+#include <variant>
 class wxVersionInfo;
 
 namespace KxFramework

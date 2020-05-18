@@ -1,6 +1,5 @@
 #pragma once
-#include <winnt.h>
-#include "UndefWindows.h"
+#include "Common.h"
 
 namespace KxFramework
 {
@@ -43,184 +42,181 @@ namespace KxFramework
 	{
 		Unknown = -1,
 
-		Server = VER_NT_SERVER,
-		Workstation = VER_NT_WORKSTATION,
-		DomainController = VER_NT_DOMAIN_CONTROLLER,
+		Server,
+		Workstation,
+		DomainController,
 	};
 	enum class SystemPlatformID
 	{
 		Unknown = -1,
 
-		Win3x = VER_PLATFORM_WIN32s,
-		Win9x = VER_PLATFORM_WIN32_WINDOWS,
-		WinNT = VER_PLATFORM_WIN32_NT,
+		Win3x,
+		Win9x,
+		WinNT,
 	};
-	enum class SystemProductType: uint32_t
+	enum class SystemProductType
 	{
-		Unknown = PRODUCT_UNDEFINED, // An unknown product
+		Unknown = -2, // An unknown product
+		Unlicensed = -1, // An unlicensed product
 
-		Business = PRODUCT_BUSINESS, // Business
-		BusinessN = PRODUCT_BUSINESS_N, // Business N
-		ClusterServer = PRODUCT_CLUSTER_SERVER, // HPC Edition
-		ClusterServerV = PRODUCT_CLUSTER_SERVER_V, // Server Hyper Core V
-		Core = PRODUCT_CORE, // Windows 10 Home
-		CoreN = PRODUCT_CORE_N, // Windows 10 Home N
-		CoreCountrySpecific = PRODUCT_CORE_COUNTRYSPECIFIC, // Windows 10 Home China
-		CoreSingleLanguage = PRODUCT_CORE_SINGLELANGUAGE, // Windows 10 Home Single Language
-		DatacenterEvaluationServer = PRODUCT_DATACENTER_EVALUATION_SERVER, // Server Datacenter (evaluation installation)
-		DatacenterAServerCore = PRODUCT_DATACENTER_A_SERVER_CORE, // Server Datacenter, Semi-Annual Channel (core installation)
-		StandardAServerCore = PRODUCT_STANDARD_A_SERVER_CORE, // Server Standard, Semi-Annual Channel (core installation)
-		DatacenterServer = PRODUCT_DATACENTER_SERVER, // Server Datacenter (full installation. For Server Core installations of Windows Server 2012 and later, use the method, Determining whether Server Core is running.)
-		DatacenterServerCore = PRODUCT_DATACENTER_SERVER_CORE, // Server Datacenter (core installation, Windows Server 2008 R2 and earlier)
-		DatacenterServerCoreV = PRODUCT_DATACENTER_SERVER_CORE_V, // Server Datacenter without Hyper-V (core installation)
-		DatacenterServerV = PRODUCT_DATACENTER_SERVER_V, // Server Datacenter without Hyper-V (full installation)
-		Education = PRODUCT_EDUCATION, // Windows 10 Education
-		EducationN = PRODUCT_EDUCATION_N, // Windows 10 Education N
-		Enterprise = PRODUCT_ENTERPRISE, // Windows 10 Enterprise
-		EnterpriseE = PRODUCT_ENTERPRISE_E, // Windows 10 Enterprise E
-		EnterpriseEvaluation = PRODUCT_ENTERPRISE_EVALUATION, // Windows 10 Enterprise Evaluation
-		EnterpriseN = PRODUCT_ENTERPRISE_N, // Windows 10 Enterprise N
-		EnterpriseNEvaluation = PRODUCT_ENTERPRISE_N_EVALUATION, // Windows 10 Enterprise N Evaluation
-		EnterpriseS = PRODUCT_ENTERPRISE_S, // Windows 10 Enterprise 2015 LTSB
-		EnterpriseSEvaluation = PRODUCT_ENTERPRISE_S_EVALUATION, // Windows 10 Enterprise 2015 LTSB Evaluation
-		EnterpriseSN = PRODUCT_ENTERPRISE_S_N, // Windows 10 Enterprise 2015 LTSB N
-		EnterpriseSNEvaluation = PRODUCT_ENTERPRISE_S_N_EVALUATION, // Windows 10 Enterprise 2015 LTSB N Evaluation
-		EnterpriseServer = PRODUCT_ENTERPRISE_SERVER, // Server Enterprise (full installation)
-		EnterpriseServerCore = PRODUCT_ENTERPRISE_SERVER_CORE, // Server Enterprise (core installation)
-		EnterpriseServerCoreV = PRODUCT_ENTERPRISE_SERVER_CORE_V, // Server Enterprise without Hyper-V (core installation)
-		EnterpriseServer_IA64 = PRODUCT_ENTERPRISE_SERVER_IA64, // Server Enterprise for Itanium-based Systems
-		EnterpriseServerV = PRODUCT_ENTERPRISE_SERVER_V, // Server Enterprise without Hyper-V (full installation)
-		EssentialbusinessServerADDL = PRODUCT_ESSENTIALBUSINESS_SERVER_ADDL, // Windows Essential Server Solution Additional
-		EssentialbusinessServerADDLSVC = PRODUCT_ESSENTIALBUSINESS_SERVER_ADDLSVC, // Windows Essential Server Solution Additional SVC
-		EssentialbusinessServerMGMT = PRODUCT_ESSENTIALBUSINESS_SERVER_MGMT, // Windows Essential Server Solution Management
-		EssentialbusinessServerMGMTSVC = PRODUCT_ESSENTIALBUSINESS_SERVER_MGMTSVC, // Windows Essential Server Solution Management SVC
-		HomeBasic = PRODUCT_HOME_BASIC, // Home Basic
-		HomeBasicE = PRODUCT_HOME_BASIC_E, // Not supported
-		HomeBasicN = PRODUCT_HOME_BASIC_N, // Home Basic N
-		HomePremium = PRODUCT_HOME_PREMIUM, // Home Premium
-		HomePremiumE = PRODUCT_HOME_PREMIUM_E, // Not supported
-		HomePremiumN = PRODUCT_HOME_PREMIUM_N, // Home Premium N
-		HomePremiumServer = PRODUCT_HOME_PREMIUM_SERVER, // Windows Home Server 2011
-		HomeServer = PRODUCT_HOME_SERVER, // Windows Storage Server 2008 R2 Essentials
-		HyperV = PRODUCT_HYPERV, // Microsoft Hyper-V Server
-		IoTUAP = PRODUCT_IOTUAP, // Windows 10 IoT Core
-		IoTUAPCommercial = 0x00000083, // PRODUCT_IOTUAPCOMMERCIAL Windows 10 IoT Core Commercial
-		MediumBusinessServerManagement = PRODUCT_MEDIUMBUSINESS_SERVER_MANAGEMENT, // Windows Essential Business Server Management Server
-		MediumBusinessServerMessaging = PRODUCT_MEDIUMBUSINESS_SERVER_MESSAGING, // Windows Essential Business Server Messaging Server
-		MediumBusinessServerSecurity = PRODUCT_MEDIUMBUSINESS_SERVER_SECURITY, // Windows Essential Business Server Security Server
-		MobileCore = 0x00000068, // PRODUCT_MOBILE_CORE Windows 10 Mobile
-		MobileEnterprise = 0x00000085, // PRODUCT_MOBILE_ENTERPRISE Windows 10 Mobile Enterprise
-		MultipointPremiumServer = PRODUCT_MULTIPOINT_PREMIUM_SERVER, // Windows MultiPoint Server Premium (full installation)
-		MultipointStandardServer = PRODUCT_MULTIPOINT_STANDARD_SERVER, // Windows MultiPoint Server Standard (full installation)
-		ProWorkstation = PRODUCT_PRO_WORKSTATION, // Windows 10 Pro for Workstations
-		ProWorkstationN = PRODUCT_PRO_WORKSTATION_N, // Windows 10 Pro for Workstations N
-		Professional = PRODUCT_PROFESSIONAL, // Windows 10 Pro
-		ProfessionalE = PRODUCT_PROFESSIONAL_E, // Not supported
-		ProfessionalN = PRODUCT_PROFESSIONAL_N, // Windows 10 Pro N
-		ProfessionalWMC = PRODUCT_PROFESSIONAL_WMC, // Professional with Media Center
-		SbSolutionServer = PRODUCT_SB_SOLUTION_SERVER, // Windows Small Business Server 2011 Essentials
-		SbSolutionServerEM = PRODUCT_SB_SOLUTION_SERVER_EM, // Server For SB Solutions EM
-		ServerForSbSolutions = PRODUCT_SERVER_FOR_SB_SOLUTIONS, // Server For SB Solutions
-		ServerForSbSolutionsEM = PRODUCT_SERVER_FOR_SB_SOLUTIONS_EM, // Server For SB Solutions EM
-		ServerForSmallBusiness = PRODUCT_SERVER_FOR_SMALLBUSINESS, // Windows Server 2008 for Windows Essential Server Solutions
-		ServerForSmallBusinessV = PRODUCT_SERVER_FOR_SMALLBUSINESS_V, // Windows Server 2008 without Hyper-V for Windows Essential Server Solutions
-		ServerFoundation = PRODUCT_SERVER_FOUNDATION, // Server Foundation
-		SmallBusinessServer = PRODUCT_SMALLBUSINESS_SERVER, // Windows Small Business Server
-		SmallBusinessServerPremium = PRODUCT_SMALLBUSINESS_SERVER_PREMIUM, // Small Business Server Premium
-		SmallBusinessServerPremiumCore = PRODUCT_SMALLBUSINESS_SERVER_PREMIUM_CORE, // Small Business Server Premium (core installation)
-		SolutionEmbeddedserver = PRODUCT_SOLUTION_EMBEDDEDSERVER, // Windows MultiPoint Server
-		StandardEvaluationServer = PRODUCT_STANDARD_EVALUATION_SERVER, // Server Standard (evaluation installation)
-		StandardServer = PRODUCT_STANDARD_SERVER, // Server Standard (full installation. For Server Core installations of Windows Server 2012 and later, use the method, Determining whether Server Core is running.)
-		StandardServerCore = PRODUCT_STANDARD_SERVER_CORE, // Server Standard (core installation, Windows Server 2008 R2 and earlier)
-		StandardServerCoreV = PRODUCT_STANDARD_SERVER_CORE_V, // Server Standard without Hyper-V (core installation)
-		StandardServerV = PRODUCT_STANDARD_SERVER_V, // Server Standard without Hyper-V
-		StandardServerSolutions = PRODUCT_STANDARD_SERVER_SOLUTIONS, // Server Solutions Premium
-		StandardServerSolutionsCore = PRODUCT_STANDARD_SERVER_SOLUTIONS_CORE, // Server Solutions Premium (core installation)
-		Starter = PRODUCT_STARTER, // Starter
-		StarterE = PRODUCT_STARTER_E, // Not supported
-		StarterN = PRODUCT_STARTER_N, // Starter N
-		StorageEnterpriseServer = PRODUCT_STORAGE_ENTERPRISE_SERVER, // Storage Server Enterprise
-		StorageEnterpriseServerCore = PRODUCT_STORAGE_ENTERPRISE_SERVER_CORE, // Storage Server Enterprise (core installation)
-		StorageExpressServer = PRODUCT_STORAGE_EXPRESS_SERVER, // Storage Server Express
-		StorageExpressServerCore = PRODUCT_STORAGE_EXPRESS_SERVER_CORE, // Storage Server Express (core installation)
-		StorageStandardEvaluationServer = PRODUCT_STORAGE_STANDARD_EVALUATION_SERVER, // Storage Server Standard (evaluation installation)
-		StorageStandardServer = PRODUCT_STORAGE_STANDARD_SERVER, // Storage Server Standard
-		StorageStandardServerCore = PRODUCT_STORAGE_STANDARD_SERVER_CORE, // Storage Server Standard (core installation)
-		StorageWorkgroupEvaluationServer = PRODUCT_STORAGE_WORKGROUP_EVALUATION_SERVER, // Storage Server Workgroup (evaluation installation)
-		StorageWorkgroupServer = PRODUCT_STORAGE_WORKGROUP_SERVER, // Storage Server Workgroup
-		StorageWorkgroupServerCore = PRODUCT_STORAGE_WORKGROUP_SERVER_CORE, // Storage Server Workgroup (core installation)
-		Ultimate = PRODUCT_ULTIMATE, // Ultimate
-		UltimateE = PRODUCT_ULTIMATE_E, // Not supported
-		UltimateN = PRODUCT_ULTIMATE_N, // Ultimate N
-		WebServer = PRODUCT_WEB_SERVER, // Web Server (full installation)
-		WebServerCore = PRODUCT_WEB_SERVER_CORE // Web Server (core installation)
+		Business, // Business
+		BusinessN, // Business N
+		ClusterServer, // HPC Edition
+		ClusterServerV, // Server Hyper Core V
+		Core, // Windows 10 Home
+		CoreN, // Windows 10 Home N
+		CoreCountrySpecific, // Windows 10 Home China
+		CoreSingleLanguage, // Windows 10 Home Single Language
+		DatacenterEvaluationServer, // Server Datacenter (evaluation installation)
+		DatacenterAServerCore, // Server Datacenter, Semi-Annual Channel (core installation)
+		StandardAServerCore, // Server Standard, Semi-Annual Channel (core installation)
+		DatacenterServer, // Server Datacenter (full installation. For Server Core installations of Windows Server 2012 and later, use the method, Determining whether Server Core is running.)
+		DatacenterServerCore, // Server Datacenter (core installation, Windows Server 2008 R2 and earlier)
+		DatacenterServerCoreV, // Server Datacenter without Hyper-V (core installation)
+		DatacenterServerV, // Server Datacenter without Hyper-V (full installation)
+		Education, // Windows 10 Education
+		EducationN, // Windows 10 Education N
+		Enterprise, // Windows 10 Enterprise
+		EnterpriseE, // Windows 10 Enterprise E
+		EnterpriseEvaluation, // Windows 10 Enterprise Evaluation
+		EnterpriseN, // Windows 10 Enterprise N
+		EnterpriseNEvaluation, // Windows 10 Enterprise N Evaluation
+		EnterpriseS, // Windows 10 Enterprise 2015 LTSB
+		EnterpriseSEvaluation, // Windows 10 Enterprise 2015 LTSB Evaluation
+		EnterpriseSN, // Windows 10 Enterprise 2015 LTSB N
+		EnterpriseSNEvaluation, // Windows 10 Enterprise 2015 LTSB N Evaluation
+		EnterpriseServer, // Server Enterprise (full installation)
+		EnterpriseServerCore, // Server Enterprise (core installation)
+		EnterpriseServerCoreV, // Server Enterprise without Hyper-V (core installation)
+		EnterpriseServer_IA64, // Server Enterprise for Itanium-based Systems
+		EnterpriseServerV, // Server Enterprise without Hyper-V (full installation)
+		EssentialbusinessServerADDL, // Windows Essential Server Solution Additional
+		EssentialbusinessServerADDLSVC, // Windows Essential Server Solution Additional SVC
+		EssentialbusinessServerMGMT, // Windows Essential Server Solution Management
+		EssentialbusinessServerMGMTSVC, // Windows Essential Server Solution Management SVC
+		HomeBasic, // Home Basic
+		HomeBasicE, // Not supported
+		HomeBasicN, // Home Basic N
+		HomePremium, // Home Premium
+		HomePremiumE, // Not supported
+		HomePremiumN, // Home Premium N
+		HomePremiumServer, // Windows Home Server 2011
+		HomeServer, // Windows Storage Server 2008 R2 Essentials
+		HyperV, // Microsoft Hyper-V Server
+		IoTUAP, // Windows 10 IoT Core
+		IoTUAPCommercial, // PRODUCT_IOTUAPCOMMERCIAL Windows 10 IoT Core Commercial
+		MediumBusinessServerManagement, // Windows Essential Business Server Management Server
+		MediumBusinessServerMessaging, // Windows Essential Business Server Messaging Server
+		MediumBusinessServerSecurity, // Windows Essential Business Server Security Server
+		MobileCore, // PRODUCT_MOBILE_CORE Windows 10 Mobile
+		MobileEnterprise, // PRODUCT_MOBILE_ENTERPRISE Windows 10 Mobile Enterprise
+		MultipointPremiumServer, // Windows MultiPoint Server Premium (full installation)
+		MultipointStandardServer, // Windows MultiPoint Server Standard (full installation)
+		ProWorkstation, // Windows 10 Pro for Workstations
+		ProWorkstationN, // Windows 10 Pro for Workstations N
+		Professional, // Windows 10 Pro
+		ProfessionalE, // Not supported
+		ProfessionalN, // Windows 10 Pro N
+		ProfessionalWMC, // Professional with Media Center
+		SbSolutionServer, // Windows Small Business Server 2011 Essentials
+		SbSolutionServerEM, // Server For SB Solutions EM
+		ServerForSbSolutions, // Server For SB Solutions
+		ServerForSbSolutionsEM, // Server For SB Solutions EM
+		ServerForSmallBusiness, // Windows Server 2008 for Windows Essential Server Solutions
+		ServerForSmallBusinessV, // Windows Server 2008 without Hyper-V for Windows Essential Server Solutions
+		ServerFoundation, // Server Foundation
+		SmallBusinessServer, // Windows Small Business Server
+		SmallBusinessServerPremium, // Small Business Server Premium
+		SmallBusinessServerPremiumCore, // Small Business Server Premium (core installation)
+		SolutionEmbeddedserver, // Windows MultiPoint Server
+		StandardEvaluationServer, // Server Standard (evaluation installation)
+		StandardServer, // Server Standard (full installation. For Server Core installations of Windows Server 2012 and later, use the method, Determining whether Server Core is running.)
+		StandardServerCore, // Server Standard (core installation, Windows Server 2008 R2 and earlier)
+		StandardServerCoreV, // Server Standard without Hyper-V (core installation)
+		StandardServerV, // Server Standard without Hyper-V
+		StandardServerSolutions, // Server Solutions Premium
+		StandardServerSolutionsCore, // Server Solutions Premium (core installation)
+		Starter, // Starter
+		StarterE, // Not supported
+		StarterN, // Starter N
+		StorageEnterpriseServer, // Storage Server Enterprise
+		StorageEnterpriseServerCore, // Storage Server Enterprise (core installation)
+		StorageExpressServer, // Storage Server Express
+		StorageExpressServerCore, // Storage Server Express (core installation)
+		StorageStandardEvaluationServer, // Storage Server Standard (evaluation installation)
+		StorageStandardServer, // Storage Server Standard
+		StorageStandardServerCore, // Storage Server Standard (core installation)
+		StorageWorkgroupEvaluationServer, // Storage Server Workgroup (evaluation installation)
+		StorageWorkgroupServer, // Storage Server Workgroup
+		StorageWorkgroupServerCore, // Storage Server Workgroup (core installation)
+		Ultimate, // Ultimate
+		UltimateE, // Not supported
+		UltimateN, // Ultimate N
+		WebServer, // Web Server (full installation)
+		WebServerCore // Web Server (core installation)
 	};
 	enum class SystemProductSuite: uint32_t
 	{
 		None = 0,
 
-		ServerNT = VER_SERVER_NT,
-		WorkstationNT = VER_WORKSTATION_NT,
-		Communications = VER_SUITE_COMMUNICATIONS,
-		EmbeddedRestricted = VER_SUITE_EMBEDDED_RESTRICTED,
-		SecurityAppliance = VER_SUITE_SECURITY_APPLIANCE,
+		ServerNT = 1 << 0,
+		WorkstationNT = 1 << 1,
+		Communications = 1 << 2,
+		SecurityAppliance = 1 << 3,
 
 		// Windows Server 2008 Enterprise, Windows Server 2003, Enterprise Edition,
 		// or Windows 2000 Advanced Server is installed.
-		Enterprise = VER_SUITE_ENTERPRISE,
+		Enterprise = 1 << 4,
 
 		// Microsoft BackOffice components are installed.
-		Backoffice = VER_SUITE_BACKOFFICE,
+		BackOffice = 1 << 5,
 
 		// Terminal Services is installed. This value is always set. If VER_SUITE_TERMINAL is set
 		// but VER_SUITE_SINGLEUSERTS is not set, the system is running in application server mode.
-		Terminal = VER_SUITE_TERMINAL,
+		Terminal = 1 << 6,
 
 		// Microsoft Small Business Server was once installed on the system, but may have been upgraded
 		// to another version of Windows.
-		SmallBusiness = VER_SUITE_SMALLBUSINESS,
+		SmallBusiness = 1 << 7,
 
 		// Microsoft Small Business Server is installed with the restrictive client license in force.
-		SmallBusinessRestricted = VER_SUITE_SMALLBUSINESS_RESTRICTED,
+		SmallBusinessRestricted = 1 << 8,
 
 		// Windows XP Embedded is installed.
-		EmbeddedNT = VER_SUITE_EMBEDDEDNT,
+		EmbeddedNT = 1 << 9,
+		EmbeddedRestricted = 1 << 10,
 
 		// Windows Server 2008 Datacenter, Windows Server 2003, Datacenter Edition,
 		// or Windows 2000 Datacenter Server is installed.
-		DataCenter = VER_SUITE_DATACENTER,
+		DataCenter = 1 << 11,
 
 		// Remote Desktop is supported, but only one interactive session is supported.
 		// This value is set unless the system is running in application server mode.
-		SingleUserTS = VER_SUITE_SINGLEUSERTS,
+		SingleUserTS = 1 << 12,
 
 		// AppServer mode is enabled.
-		MultiUserTS = VER_SUITE_MULTIUSERTS,
+		MultiUserTS = 1 << 13,
 
 		// Windows Vista Home Premium, Windows Vista Home Basic, or Windows XP Home Edition is installed.
-		Personal = VER_SUITE_PERSONAL,
+		Personal = 1 << 14,
 
 		// Windows Server 2003, Web Edition is installed.
-		Blade = VER_SUITE_BLADE,
+		Blade = 1 << 15,
 
 		// Windows Storage Server 2003 R2 or Windows Storage Server 2003is installed.
-		StorageServer = VER_SUITE_STORAGE_SERVER,
+		StorageServer = 1 << 16,
 
 		// Windows Server 2003, Compute Cluster Edition is installed.
-		ComputeServer = VER_SUITE_COMPUTE_SERVER,
+		ComputeServer = 1 << 17,
 
 		// Windows Home Server is installed.
-		HomeServer = VER_SUITE_WH_SERVER
+		HomeServer = 1 << 18
 	};
 
 	namespace EnumClass
 	{
 		Kx_EnumClass_AllowEverything(ExitWorkstationCommand);
 		Kx_EnumClass_AllowEverything(DisplayDeviceFlag);
-
-		Kx_EnumClass_AllowCast(SystemType);
-		Kx_EnumClass_AllowCast(SystemPlatformID);
-		Kx_EnumClass_AllowEverything(SystemProductType);
 		Kx_EnumClass_AllowEverything(SystemProductSuite);
 	}
 }

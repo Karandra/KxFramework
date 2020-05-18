@@ -2,6 +2,8 @@
 #include "Common.h"
 #include "FSPath.h"
 #include "Kx/General/StreamWrappers.h"
+#include <wx/stream.h>
+#include <wx/datetime.h>
 
 namespace KxFramework
 {

@@ -1,5 +1,4 @@
 #pragma once
-#include "KxFramework/KxFramework.h"
 #include "Common.h"
 
 namespace KxFramework::UI::DataView
@@ -14,7 +13,7 @@ namespace KxFramework::UI::DataView
 	class SortOrder final
 	{
 		private:
-			enum class SortWhat: uint8_t
+			enum class SortWhat
 			{
 				// Sort specified column
 				Column = 0,
@@ -27,15 +26,15 @@ namespace KxFramework::UI::DataView
 			};
 
 		public:
-			static SortOrder UseColumn(const Column& column, bool isAscending = true)
+			static SortOrder UseColumn(const Column& column, bool isAscending = true) noexcept
 			{
 				return SortOrder(column, isAscending);
 			}
-			static SortOrder UseDefault(bool isAscending = true)
+			static SortOrder UseDefault(bool isAscending = true) noexcept
 			{
 				return SortOrder(SortWhat::Default, isAscending);
 			}
-			static SortOrder UseNone(bool isAscending = true)
+			static SortOrder UseNone(bool isAscending = true) noexcept
 			{
 				return SortOrder(SortWhat::None, isAscending);
 			}
@@ -45,40 +44,40 @@ namespace KxFramework::UI::DataView
 			bool m_IsAscending = true;
 
 		private:
-			SortOrder(SortWhat sortWhat = SortWhat::None, bool isAscending = true)
+			SortOrder(SortWhat sortWhat = SortWhat::None, bool isAscending = true) noexcept
 				:m_SortWhat(sortWhat), m_IsAscending(isAscending)
 			{
 			}
-			SortOrder(const Column& column, bool isAscending = true)
+			SortOrder(const Column& column, bool isAscending = true) noexcept
 				:m_SortWhat(SortWhat::Column), m_IsAscending(isAscending)
 			{
 			}
 
 		public:
-			bool IsAscending() const
+			bool IsAscending() const noexcept
 			{
 				return m_IsAscending;
 			}
 
-			bool IsNone() const
+			bool IsNone() const noexcept
 			{
 				return m_SortWhat == SortWhat::None;
 			}
-			bool IsDefault() const
+			bool IsDefault() const noexcept
 			{
 				return m_SortWhat == SortWhat::Default;
 			}
-			bool IsColumn() const
+			bool IsColumn() const noexcept
 			{
 				return m_SortWhat == SortWhat::Column;
 			}
 
 		public:
-			bool operator==(const SortOrder& other) const
+			bool operator==(const SortOrder& other) const noexcept
 			{
 				return m_SortWhat == other.m_SortWhat && m_IsAscending == other.m_IsAscending;
 			}
-			bool operator!=(const SortOrder& other) const
+			bool operator!=(const SortOrder& other) const noexcept
 			{
 				return !(*this == other);
 			}

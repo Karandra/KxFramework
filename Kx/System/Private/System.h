@@ -2,6 +2,7 @@
 #include "../Common.h"
 #include "Kx/General/String.h"
 #include "Kx/Localization/Locale.h"
+#include "Kx/System/UndefWindows.h"
 
 namespace KxFramework::System::Private
 {

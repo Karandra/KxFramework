@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "SearchBox.h"
-#include "Kx/Localization/LocalizationPack.h"
+#include "Kx/Localization/LocalizationPackage.h"
 #include "Kx/General/StdID.h"
 
 namespace KxFramework::UI
@@ -54,7 +54,7 @@ namespace KxFramework::UI
 		{
 			ShowCancelButton(true);
 			ShowSearchButton(true);
-			if (auto value = LocalizationPack::GetActive().GetString(StdID::Search))
+			if (auto value = LocalizationPackage::GetActive().GetString(StdID::Search))
 			{
 				SetDescriptiveText(*value);
 			}

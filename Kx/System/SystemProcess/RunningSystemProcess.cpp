@@ -6,9 +6,7 @@
 #include "Kx/FileSystem/NativeFileSystem.h"
 #include "Kx/Utility/Common.h"
 #include "Kx/Utility/CallAtScopeExit.h"
-#include <wx/private/pipestream.h>
-#include <wx/private/streamtempinput.h>
-
+#include <Windows.h>
 #include <PsAPI.h>
 #include <WInternl.h>
 #include <TlHelp32.h>
@@ -223,7 +221,7 @@ namespace KxFramework
 		if (NativeAPI::NtDLL::NtQueryInformationProcess)
 		{
 			PROCESS_BASIC_INFORMATION processInformation = {};
-			ULONG processInformationSize = 0;
+			uint32_t processInformationSize = 0;
 			if (NativeAPI::NtDLL::NtQueryInformationProcess(m_Handle, PROCESSINFOCLASS::ProcessBasicInformation, &processInformation, sizeof(processInformation), &processInformationSize) >= 0)
 			{
 				// Read PEB memory block

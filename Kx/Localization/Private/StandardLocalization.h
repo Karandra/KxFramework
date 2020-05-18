@@ -1,5 +1,6 @@
 #pragma once
 #include "../Common.h"
+#include <wx/stockitem.h>
 
 namespace KxFramework::Localization::Private
 {

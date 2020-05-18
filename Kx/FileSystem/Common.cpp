@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "Kx/General/String.h"
 #include "Private/NamespacePrefix.h"
+#include <wx/filename.h>
 
 namespace KxFramework::FileSystem
 {

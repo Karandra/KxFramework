@@ -7,13 +7,16 @@
 #include "Kx/Utility/Common.h"
 #include "Kx/Utility/CallAtScopeExit.h"
 
+#include <Windows.h>
 #include <DbgHelp.h>
 #include <cwchar>
-#include "Kx/System/UndefWindows.h"
+#include "UndefWindows.h"
 #pragma comment(lib, "DbgHelp.lib")
 
 namespace
 {
+	EXTERN_C IMAGE_DOS_HEADER __ImageBase;
+
 	HMODULE AsHMODULE(void* handle) noexcept
 	{
 		return reinterpret_cast<HMODULE>(handle);
@@ -136,6 +139,16 @@ namespace KxFramework
 {
 	DynamicLibrary DynamicLibrary::GetCurrentModule() noexcept
 	{
+		// Retrieve the HMODULE for the current DLL or EXE using this symbol that the linker provides for every module
+
+		DynamicLibrary library;
+		library.m_Handle = reinterpret_cast<void*>(&__ImageBase);
+		library.m_ShouldUnload = false;
+
+		return library;
+	}
+	DynamicLibrary DynamicLibrary::GetExecutingModule() noexcept
+	{
 		DynamicLibrary library;
 		library.m_Handle = reinterpret_cast<void*>(::GetModuleHandleW(nullptr));
 		library.m_ShouldUnload = false;
@@ -156,16 +169,16 @@ namespace KxFramework
 		return {};
 	}
 
-	DynamicLibrarySearchPath* DynamicLibrary::AddSearchDirectory(const FSPath& path)
+	DynamicLibrary::SearchDirectory* DynamicLibrary::AddSearchDirectory(const FSPath& path)
 	{
 		if (NativeAPI::Kernel32::AddDllDirectory)
 		{
 			String pathString = path.GetFullPathWithNS(FSPathNamespace::Win32File);
-			return reinterpret_cast<DynamicLibrarySearchPath*>(NativeAPI::Kernel32::AddDllDirectory(pathString.wc_str()));
+			return reinterpret_cast<SearchDirectory*>(NativeAPI::Kernel32::AddDllDirectory(pathString.wc_str()));
 		}
 		return nullptr;
 	}
-	bool DynamicLibrary::RemoveSearchDirectory(DynamicLibrarySearchPath& handle)
+	bool DynamicLibrary::RemoveSearchDirectory(SearchDirectory& handle)
 	{
 		if (NativeAPI::Kernel32::RemoveDllDirectory)
 		{

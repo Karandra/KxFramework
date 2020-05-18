@@ -3,6 +3,7 @@
 #include "String.h"
 #include "Version.h"
 #include "XDocument.h"
+#include <wx/stream.h>
 
 namespace KxFramework::HTML
 {

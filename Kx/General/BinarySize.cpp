@@ -2,7 +2,7 @@
 #include "BinarySize.h"
 #include "StringFormater.h"
 #include "Math.h"
-#include "Kx/Localization/LocalizationPack.h"
+#include "Kx/Localization/LocalizationPackage.h"
 
 namespace
 {
@@ -14,23 +14,23 @@ namespace
 		{
 			case BinarySizeUnit::Bytes:
 			{
-				return LocalizationPack::GetActive().GetString(wxS("BinarySizeUnit.Bytes"));
+				return LocalizationPackage::GetActive().GetString(wxS("BinarySizeUnit.Bytes"));
 			}
 			case BinarySizeUnit::KiloBytes:
 			{
-				return LocalizationPack::GetActive().GetString(wxS("BinarySizeUnit.KB"));
+				return LocalizationPackage::GetActive().GetString(wxS("BinarySizeUnit.KB"));
 			}
 			case BinarySizeUnit::MegaBytes:
 			{
-				return LocalizationPack::GetActive().GetString(wxS("BinarySizeUnit.MB"));
+				return LocalizationPackage::GetActive().GetString(wxS("BinarySizeUnit.MB"));
 			}
 			case BinarySizeUnit::GigaBytes:
 			{
-				return LocalizationPack::GetActive().GetString(wxS("BinarySizeUnit.GB"));
+				return LocalizationPackage::GetActive().GetString(wxS("BinarySizeUnit.GB"));
 			}
 			case BinarySizeUnit::TeraBytes:
 			{
-				return LocalizationPack::GetActive().GetString(wxS("BinarySizeUnit.TB"));
+				return LocalizationPackage::GetActive().GetString(wxS("BinarySizeUnit.TB"));
 			}
 		};
 		return {};

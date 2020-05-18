@@ -4,6 +4,7 @@
 #include "StorageVolume.h"
 #include "Kx/Utility/CallAtScopeExit.h"
 #include "Private/NamespacePrefix.h"
+#include <locale>
 
 namespace
 {

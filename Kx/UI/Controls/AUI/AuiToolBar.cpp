@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "AuiToolBar.h"
-#include "KxFramework/KxMenu.h"
+#include "Kx/UI/Menus/Menu.h"
+#include <wx/wupdlock.h>
+#include <wx/dc.h>
 
 namespace
 {

@@ -1,6 +1,7 @@
 #pragma once
 #include "../Common.h"
 #include "Kx/General/String.h"
+#include <wx/datetime.h>
 
 namespace KxFramework
 {

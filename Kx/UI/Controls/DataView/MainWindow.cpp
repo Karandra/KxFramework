@@ -7,7 +7,6 @@
 #include "Column.h"
 #include "Node.h"
 #include "View.h"
-#include "KxFramework/KxDataView2Event.h"
 #include "Kx/UI/Windows/Frame.h"
 #include "Kx/Drawing/UxTheme.h"
 #include "Kx/Drawing/Private/UxThemeDefines.h"
@@ -18,6 +17,7 @@
 #include <wx/generic/private/widthcalc.h>
 #include <wx/minifram.h>
 #include <wx/rawbmp.h>
+#include <wx/sysopt.h>
 
 namespace
 {
@@ -2221,7 +2221,7 @@ namespace KxFramework::UI::DataView
 		{
 			case UniformHeight::Default:
 			{
-				int userHeight = wxSystemOptions::GetOptionInt("KxDataView2::DefaultRowHeight");
+				int userHeight = wxSystemOptions::GetOptionInt(wxS("Kx::UI::DataView::DefaultRowHeight"));
 				if (userHeight > 0)
 				{
 					return userHeight;

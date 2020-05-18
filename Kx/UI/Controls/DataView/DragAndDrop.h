@@ -1,7 +1,7 @@
 #pragma once
-#include "KxFramework/KxFramework.h"
 #include "Common.h"
 #include "Row.h"
+#include <wx/dnd.h>
 
 class wxDragImage;
 namespace KxFramework::UI
@@ -116,7 +116,7 @@ namespace KxFramework::UI::DataView
 	{
 		private:
 			MainWindow* m_MainWindow = nullptr;
-			KxFramework::UI::SplashWindow* m_DragImage = nullptr;
+			SplashWindow* m_DragImage = nullptr;
 			wxBitmap m_HintBitmap;
 			wxPoint m_HintPosition;
 

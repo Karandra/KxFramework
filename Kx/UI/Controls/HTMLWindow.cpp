@@ -3,6 +3,8 @@
 #include "Kx/Localization/Common.h"
 #include "Kx/UI/Menus/Menu.h"
 #include <wx/clipbrd.h>
+#include <wx/dcbuffer.h>
+#include <wx/dcgraph.h>
 
 namespace KxFramework::UI
 {

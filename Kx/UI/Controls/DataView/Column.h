@@ -5,14 +5,15 @@
 #include "ColumnID.h"
 #include "Kx/General/OptionSet.h"
 #include <Kx/RTTI.hpp>
+#include <wx/headercol.h>
 
 namespace KxFramework::UI::DataView
 {
-	class KX_API View;
-	class KX_API MainWindow;
-	class KX_API HeaderCtrl;
-	class KX_API Renderer;
-	class KX_API Editor;
+	class View;
+	class MainWindow;
+	class HeaderCtrl;
+	class Renderer;
+	class Editor;
 }
 
 namespace KxFramework::UI::DataView

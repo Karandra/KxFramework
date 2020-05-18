@@ -2,6 +2,7 @@
 #include "FileOperations.h"
 #include <shlwapi.h>
 #include "Kx/System/UndefWindows.h"
+#include <wx/filename.h>
 
 namespace
 {

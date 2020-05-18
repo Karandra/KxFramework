@@ -6,6 +6,7 @@
 #include "Kx/FileSystem/IFileSystem.h"
 #include "Locale.h"
 #include <unordered_map>
+#include <wx/stream.h>
 
 namespace KxFramework
 {
@@ -14,11 +15,11 @@ namespace KxFramework
 
 namespace KxFramework
 {
-	class KX_API LocalizationPack
+	class KX_API LocalizationPackage
 	{
 		public:
-			static const LocalizationPack& GetActive() noexcept;
-			static const LocalizationPack& SetActive(const LocalizationPack& localizationPack) noexcept;
+			static const LocalizationPackage& GetActive() noexcept;
+			static const LocalizationPackage& SetActive(const LocalizationPackage& package) noexcept;
 
 		private:
 			std::unordered_map<String, String> m_StringTable;
@@ -27,10 +28,10 @@ namespace KxFramework
 			String m_Description;
 
 		public:
-			LocalizationPack() = default;
-			LocalizationPack(const LocalizationPack&) = delete;
-			LocalizationPack(LocalizationPack&&) noexcept = default;
-			virtual ~LocalizationPack() = default;
+			LocalizationPackage() = default;
+			LocalizationPackage(const LocalizationPackage&) = delete;
+			LocalizationPackage(LocalizationPackage&&) noexcept = default;
+			virtual ~LocalizationPackage() = default;
 
 		public:
 			bool IsEmpty() const noexcept
@@ -82,13 +83,13 @@ namespace KxFramework
 				return IsEmpty();
 			}
 
-			LocalizationPack& operator=(const LocalizationPack&) = delete;
-			LocalizationPack& operator=(LocalizationPack&&) noexcept = default;
+			LocalizationPackage& operator=(const LocalizationPackage&) = delete;
+			LocalizationPackage& operator=(LocalizationPackage&&) noexcept = default;
 	};
 }
 
 namespace KxFramework::Localization
 {
-	size_t SearchLocalizationPacks(const IFileSystem& fileSystem, const FSPath& directory, std::function<bool(Locale, FileItem)> func);
-	size_t SearchLocalizationPacks(const DynamicLibrary& library, std::function<bool(Locale, FileItem)> func);
+	size_t SearchLocalizationPackages(const IFileSystem& fileSystem, const FSPath& directory, std::function<bool(Locale, FileItem)> func);
+	size_t SearchLocalizationPackages(const DynamicLibrary& library, std::function<bool(Locale, FileItem)> func);
 }

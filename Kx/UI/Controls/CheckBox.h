@@ -1,5 +1,6 @@
 #pragma once
 #include "Kx/UI/Common.h"
+#include <wx/checkbox.h>
 
 namespace KxFramework::UI
 {

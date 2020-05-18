@@ -7,6 +7,8 @@
 #include "Kx/UI/Windows/Panel.h"
 #include "Kx/UI/StdIcon.h"
 #include "Kx/UI/StdButton.h"
+#include <wx/nativewin.h>
+#include <wx/artprov.h>
 
 namespace KxFramework::UI
 {
@@ -252,7 +254,7 @@ namespace KxFramework::UI
 		
 			bool MSWTranslateMessage(WXMSG* msg) override;
 			void EnableGlassFrame();
-			wxNativeWindowHandle GetGripperWindow();
+			void* GetGripperWindow();
 			void OnDrawFrameBorder(wxPaintEvent& event);
 
 		public:
@@ -384,7 +386,7 @@ namespace KxFramework::UI
 				m_MainIconID = iconID;
 				if (iconID != StdIcon::None)
 				{
-					m_MainIcon = wxArtProvider::GetMessageBoxIcon(KxFramework::UI::ToWxStdIcon(iconID));
+					m_MainIcon = wxArtProvider::GetMessageBoxIcon(ToWxStdIcon(iconID));
 					LoadIcon();
 				}
 				SetIconVisibility();

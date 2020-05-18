@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "StandardLocalization.h"
 #include "Kx/General/StringFormater.h"
-#include "Kx/Localization/LocalizationPack.h"
+#include "Kx/Localization/LocalizationPackage.h"
 
 namespace
 {
@@ -11,7 +11,7 @@ namespace
 	{
 		using namespace KxFramework;
 
-		if (const LocalizationPack& translator = LocalizationPack::GetActive())
+		if (const LocalizationPackage& translator = LocalizationPackage::GetActive())
 		{
 			if (flags & wxStockLabelQueryFlag::wxSTOCK_WITH_MNEMONIC)
 			{

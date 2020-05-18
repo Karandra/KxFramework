@@ -21,6 +21,7 @@
 #include "Kx/General/EnumClass.h"
 #include "Kx/General/StdID.h"
 #include "Kx/System/UndefWindows.h"
+#include "Kx/wxWidgets/Setup.h"
 
 // wxWidgets
 // Link some libraries that aren't linked by wxWidgets itself for some reason

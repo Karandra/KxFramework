@@ -1,9 +1,11 @@
 #include "stdafx.h"
 #include "Button.h"
-#include "KxFramework/KxMenu.h"
 #include "Kx/Drawing/UxTheme.h"
+#include "Kx/UI/Menus/Menu.h"
 #include "Kx/System/DynamicLibrary.h"
 #include "Kx/System/Private/System.h"
+#include <wx/toplevel.h>
+#include <wx/button.h>
 
 namespace
 {
@@ -41,7 +43,7 @@ namespace
 
 namespace KxFramework::UI
 {
-	wxIMPLEMENT_DYNAMIC_CLASS(Button, wxButton);
+	wxIMPLEMENT_DYNAMIC_CLASS(Button, wxAnyButton);
 
 	wxSize Button::GetDefaultSize()
 	{

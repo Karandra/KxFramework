@@ -2,6 +2,7 @@
 #include "Kx/UI/Common.h"
 #include "MenuEvent.h"
 #include "MenuItem.h"
+#include <wx/menu.h>
 
 namespace KxFramework::UI
 {

@@ -1,5 +1,4 @@
 #pragma once
-#include "KxFramework/KxFramework.h"
 #include "Common.h"
 #include "Row.h"
 #include "Column.h"

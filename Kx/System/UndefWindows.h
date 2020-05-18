@@ -64,6 +64,7 @@
 #undef EnumDisplayDevices
 #undef ExpandEnvironmentStrings
 #undef EnumResourceNames
+#undef GetMessage
 
 #ifdef ZeroMemory
 #undef ZeroMemory

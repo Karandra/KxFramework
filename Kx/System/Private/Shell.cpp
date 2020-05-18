@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Shell.h"
-#include <WinUser.h>
+#include <Windows.h>
+#include "Kx/System/UndefWindows.h"
 
 namespace KxFramework::Shell::Private
 {

@@ -9,8 +9,6 @@
 
 namespace KxFramework
 {
-	class DynamicLibrarySearchPath;
-
 	enum class DynamicLibraryLoadFlag
 	{
 		None = 0,
@@ -33,11 +31,15 @@ namespace KxFramework
 	class KX_API DynamicLibrary final
 	{
 		public:
+			class SearchDirectory;
+
+		public:
 			static DynamicLibrary GetCurrentModule() noexcept;
+			static DynamicLibrary GetExecutingModule() noexcept;
 			static DynamicLibrary GetLoadedModule(const String& name) noexcept;
 
-			static DynamicLibrarySearchPath* AddSearchDirectory(const FSPath& path);
-			static bool RemoveSearchDirectory(DynamicLibrarySearchPath& handle);
+			static SearchDirectory* AddSearchDirectory(const FSPath& path);
+			static bool RemoveSearchDirectory(SearchDirectory& handle);
 
 		private:
 			std::optional<void*> m_Handle;

@@ -1,8 +1,11 @@
 #include "stdafx.h"
 #include "COM.h"
 #include "Kx/Utility/Common.h"
+
+#include <Windows.h>
 #include <combaseapi.h>
 #include <unknwn.h>
+#include "UndefWindows.h"
 
 namespace
 {
@@ -56,6 +59,33 @@ namespace KxFramework::COM
 	void FreeMemory(void* address) noexcept
 	{
 		::CoTaskMemFree(address);
+	}
+
+	::_GUID ToGUID(const NativeUUID& uuid) noexcept
+	{
+		::GUID guid = {};
+		guid.Data1 = uuid.Data1;
+		guid.Data2 = uuid.Data2;
+		guid.Data3 = uuid.Data3;
+		for (size_t i = 0; i < std::size(guid.Data4); i++)
+		{
+			guid.Data4[i] = uuid.Data4[i];
+		}
+
+		return guid;
+	}
+	NativeUUID FromGUID(const ::_GUID& guid) noexcept
+	{
+		NativeUUID uuid;
+		uuid.Data1 = guid.Data1;
+		uuid.Data2 = guid.Data2;
+		uuid.Data3 = guid.Data3;
+		for (size_t i = 0; i < std::size(uuid.Data4); i++)
+		{
+			uuid.Data4[i] = guid.Data4[i];
+		}
+
+		return uuid;
 	}
 
 	HResult CreateInstance(const NativeUUID& classID, ClassContext classContext, const NativeUUID& iid, void** result, IUnknown* outer) noexcept

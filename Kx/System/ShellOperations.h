@@ -4,6 +4,7 @@
 #include "Kx/General/String.h"
 #include "Kx/FileSystem/FSPath.h"
 #include "Kx/System/ErrorCodeValue.h"
+#include <wx/icon.h>
 class wxWindow;
 
 namespace KxFramework

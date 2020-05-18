@@ -2,8 +2,11 @@
 #include "RunningSystemProcess.h"
 #include "RunningSystemProcessStdIO.h"
 #include <wx/thread.h>
+#include <wx/stream.h>
+#include <wx/event.h>
 #include <atomic>
-struct _STARTUPINFOW;
+#include <Windows.h>
+#include "Kx/System/UndefWindows.h"
 
 namespace KxFramework::System
 {

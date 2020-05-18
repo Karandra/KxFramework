@@ -1,11 +1,12 @@
 #pragma once
 #include "Kx/UI/Common.h"
 #include "Kx/UI/WindowRefreshScheduler.h"
+#include <wx/control.h>
 #include <wx/systhemectrl.h>
 
 namespace KxFramework::UI
 {
-	class KX_API ClusterMap: public WindowRefreshScheduler<wxSystemThemedControl<wxWindow>>
+	class KX_API ClusterMap: public WindowRefreshScheduler<wxSystemThemedControl<wxControl>>
 	{
 		private:
 			struct DrawInfo

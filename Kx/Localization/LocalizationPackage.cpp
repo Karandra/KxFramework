@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "LocalizationPack.h"
+#include "LocalizationPackage.h"
 #include "Kx/General/XMLDocument.h"
 #include "Kx/System/SystemInformation.h"
 #include "Kx/System/DynamicLibrary.h"
@@ -8,8 +8,8 @@ namespace
 {
 	constexpr wxChar g_EmbeddedResourceType[] = wxS("Translation");
 	
-	const KxFramework::LocalizationPack g_NullLocalizationPack;
-	const KxFramework::LocalizationPack* g_ActiveLocalizationPack = &g_NullLocalizationPack;
+	const KxFramework::LocalizationPackage g_NullLocalizationPack;
+	const KxFramework::LocalizationPackage* g_ActiveLocalizationPack = &g_NullLocalizationPack;
 
 	KxFramework::Locale LocaleFromFileName(const KxFramework::String& name)
 	{
@@ -66,28 +66,28 @@ namespace
 
 namespace KxFramework
 {
-	const LocalizationPack& LocalizationPack::GetActive() noexcept
+	const LocalizationPackage& LocalizationPackage::GetActive() noexcept
 	{
 		return *g_ActiveLocalizationPack;
 	}
-	const LocalizationPack& LocalizationPack::SetActive(const LocalizationPack& localizationPack) noexcept
+	const LocalizationPackage& LocalizationPackage::SetActive(const LocalizationPackage& package) noexcept
 	{
-		const LocalizationPack* previous = g_ActiveLocalizationPack;
-		g_ActiveLocalizationPack = &localizationPack;
+		const LocalizationPackage* previous = g_ActiveLocalizationPack;
+		g_ActiveLocalizationPack = &package;
 		return *previous;
 	}
 
-	bool LocalizationPack::Load(const String& xml, const Locale& locale)
+	bool LocalizationPackage::Load(const String& xml, const Locale& locale)
 	{
 		m_Locale = locale;
 		return DoLoadLocalizationPack(XMLDocument(xml), m_StringTable, m_Author, m_Description);
 	}
-	bool LocalizationPack::Load(wxInputStream& stream, const Locale& locale)
+	bool LocalizationPackage::Load(wxInputStream& stream, const Locale& locale)
 	{
 		m_Locale = locale;
 		return DoLoadLocalizationPack(XMLDocument(stream), m_StringTable, m_Author, m_Description);
 	}
-	bool LocalizationPack::Load(const DynamicLibrary& library, const FSPath& name, const Locale& locale)
+	bool LocalizationPackage::Load(const DynamicLibrary& library, const FSPath& name, const Locale& locale)
 	{
 		if (library)
 		{
@@ -107,14 +107,14 @@ namespace KxFramework
 
 namespace KxFramework::Localization
 {
-	size_t SearchLocalizationPacks(const IFileSystem& fileSystem, const FSPath& directory, std::function<bool(Locale, FileItem)> func)
+	size_t SearchLocalizationPackages(const IFileSystem& fileSystem, const FSPath& directory, std::function<bool(Locale, FileItem)> func)
 	{
 		return fileSystem.EnumItems(directory, [&](FileItem item)
 		{
 			return OnSearchTranslation(func, std::move(item));
 		}, wxS("*.xml"), FSEnumItemsFlag::LimitToFiles);
 	}
-	size_t SearchLocalizationPacks(const DynamicLibrary& library, std::function<bool(Locale, FileItem)> func)
+	size_t SearchLocalizationPackages(const DynamicLibrary& library, std::function<bool(Locale, FileItem)> func)
 	{
 		if (library)
 		{

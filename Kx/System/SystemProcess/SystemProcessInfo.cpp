@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SystemProcessInfo.h"
+#include <Windows.h>
 #include <PsAPI.h>
 #include "Kx/System/UndefWindows.h"
 
@@ -15,4 +16,3 @@ namespace KxFramework
 		return m_PID == ::GetCurrentProcessId();
 	}
 }
-

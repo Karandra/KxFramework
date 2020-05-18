@@ -183,13 +183,13 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="KxFramework\KxFramework.h" />
     <ClInclude Include="Kx\RTTI\ComponentSystem.h" />
     <ClInclude Include="Kx\System\DynamicLibrary.h" />
     <ClInclude Include="Kx\System\ExecutableVersionResource.h" />
     <ClInclude Include="Kx\System\Private\BinaryResourceDefines.h" />
     <ClInclude Include="Kx\System\Private\COM.h" />
     <ClInclude Include="Kx\System\Private\System.h" />
+    <ClInclude Include="Kx\System\Private\SystemInformationDefinesMapping.h" />
     <ClInclude Include="Kx\System\SystemProcess.h" />
     <ClInclude Include="Kx\System\SystemProcess\CreateProcessExecutor.h" />
     <ClInclude Include="Kx\System\SystemProcess\ISystemProcess.h" />
@@ -217,7 +217,6 @@
     <ClInclude Include="Kx\UI\Controls\DataView\ColumnID.h" />
     <ClInclude Include="Kx\UI\Controls\DataView\Common.h" />
     <ClInclude Include="Kx\UI\Controls\DataView\DataView2.h" />
-    <ClInclude Include="Kx\UI\Controls\DataView\DataView2Fwd.h" />
     <ClInclude Include="Kx\UI\Controls\DataView\DragAndDrop.h" />
     <ClInclude Include="Kx\UI\Controls\DataView\Editor.h" />
     <ClInclude Include="Kx\UI\Controls\DataView\Editors\ColorEditor.h" />
@@ -398,7 +397,7 @@
     <ClInclude Include="Kx\Localization\Locale.h" />
     <ClInclude Include="Kx\Localization\Private\LocaleOptions.h" />
     <ClInclude Include="Kx\Localization\Private\StandardLocalization.h" />
-    <ClInclude Include="Kx\Localization\LocalizationPack.h" />
+    <ClInclude Include="Kx\Localization\LocalizationPackage.h" />
     <ClInclude Include="Kx\Network.hpp" />
     <ClInclude Include="Kx\Network\Common.h" />
     <ClInclude Include="Kx\Network\CURL\Event.h" />
@@ -604,6 +603,7 @@
     <ClCompile Include="Kx\UI\Windows\SplitterWindow.cpp" />
     <ClCompile Include="Kx\UI\Windows\ToolTipEx.cpp" />
     <ClCompile Include="Kx\UI\Windows\TopLevelWindow.cpp" />
+    <ClCompile Include="Kx\Utility\Drawing.cpp" />
     <ClCompile Include="Kx\Utility\Memory.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -649,7 +649,7 @@
     <ClCompile Include="Kx\Localization\Locale.cpp" />
     <ClCompile Include="Kx\Localization\Private\LocaleOptions.cpp" />
     <ClCompile Include="Kx\Localization\Private\StandardLocalization.cpp" />
-    <ClCompile Include="Kx\Localization\LocalizationPack.cpp" />
+    <ClCompile Include="Kx\Localization\LocalizationPackage.cpp" />
     <ClCompile Include="Kx\Network\Common.cpp" />
     <ClCompile Include="Kx\Network\CURL.cpp" />
     <ClCompile Include="Kx\Network\CURL\Event.cpp" />

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "System.h"
 #include "Kx/Utility/CallAtScopeExit.h"
+#include <Windows.h>
+#include "Kx/System/UndefWindows.h"
 
 namespace KxFramework::System::Private
 {

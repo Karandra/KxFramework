@@ -1,6 +1,4 @@
 #pragma once
-#include "KxFramework/KxFramework.h"
-#include "Kx/UI/Windows/ToolTipEx.h"
 #include "Common.h"
 #include "View.h"
 #include "Node.h"
@@ -10,6 +8,7 @@
 #include "SortOrder.h"
 #include "DragAndDrop.h"
 #include "Renderers/NullRenderer.h"
+#include "Kx/UI/Windows/ToolTipEx.h"
 #include <wx/selstore.h>
 
 namespace KxFramework::UI::DataView

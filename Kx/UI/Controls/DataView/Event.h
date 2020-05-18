@@ -1,8 +1,9 @@
 #pragma once
-#include "KxFramework/KxFramework.h"
 #include "Kx/EventSystem/Event.h"
 #include "Common.h"
 #include "Row.h"
+#include <wx/dnd.h>
+#include <wx/dataobj.h>
 
 namespace KxFramework::UI::DataView
 {

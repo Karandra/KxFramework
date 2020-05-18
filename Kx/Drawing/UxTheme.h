@@ -6,6 +6,10 @@
 #include <wx/window.h>
 #include <wx/gdicmn.h>
 #include <wx/dc.h>
+#include <wx/dcgraph.h>
+#include <wx/dcclient.h>
+#include <wx/dcbuffer.h>
+#include <wx/renderer.h>
 
 // https://docs.microsoft.com/ru-ru/windows/win32/controls/uxctl-ref
 // https://docs.microsoft.com/ru-ru/windows/win32/controls/theme-subclasses

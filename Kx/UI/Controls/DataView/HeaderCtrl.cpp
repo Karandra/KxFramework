@@ -3,7 +3,6 @@
 #include "View.h"
 #include "MainWindow.h"
 #include "Column.h"
-#include "KxFramework/KxDataView2Event.h"
 #include "Kx/UI/Menus/Menu.h"
 #include "Kx/Utility/System.h"
 #include "Kx/Utility/Drawing.h"

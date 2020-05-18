@@ -3,6 +3,8 @@
 #include "NativeAPI.h"
 #include "Kx/General/UniversallyUniqueID.h"
 #include "Kx/Utility/CallAtScopeExit.h"
+
+#include <Windows.h>
 #include "Private/IncludeNtStatus.h"
 #include "Private/System.h"
 
@@ -13,6 +15,8 @@ namespace
 }
 #include <comdef.h>
 #include "Private/EndIncludeCOM.h"
+
+#include "UndefWindows.h"
 
 namespace
 {

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "String.h"
 #include "Kx/Utility/Common.h"
+#include <Windows.h>
+#include <Kx/System/UndefWindows.h>
 
 namespace
 {

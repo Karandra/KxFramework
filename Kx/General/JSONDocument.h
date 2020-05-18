@@ -3,6 +3,7 @@
 #include "String.h"
 #include "Version.h"
 #include <nlohmann/json.hpp>
+#include <wx/stream.h>
 
 namespace KxFramework
 {

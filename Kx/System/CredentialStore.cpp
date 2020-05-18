@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "CredentialStore.h"
 #include "Kx/Utility/CallAtScopeExit.h"
+#include <Windows.h>
 #include <wincred.h>
+#include "UndefWindows.h"
 
 namespace KxFramework
 {

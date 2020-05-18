@@ -1,13 +1,17 @@
 #include "stdafx.h"
 #include "NativeAPI.h"
 #include "Kx/Utility/Common.h"
+#include <Windows.h>
+#include <wx/module.h>
+#include <wx/log.h>
+#include "UndefWindows.h"
 
 #define DECLARE_LIBRARY(name)	\
 static_assert(static_cast<size_t>(NativeLibrary::##name) < Utility::ArraySize<decltype(m_LoadedLibraries)>::value);	\
 m_LoadedLibraries[static_cast<size_t>(NativeLibrary::##name)].Name = L#name".dll"
 
 #define DEFINE_FUNCTION(name)										T##name name = nullptr
-#define INIT_FUNCTION_AS(dll, name, in_dll_name)					dll##::name = reinterpret_cast<dll##::T##name>(::GetProcAddress((m_LoadedLibraries[static_cast<size_t>(NativeLibrary::##dll)].Handle), #in_dll_name))
+#define INIT_FUNCTION_AS(dll, name, in_dll_name)					dll##::name = reinterpret_cast<dll##::T##name>(::GetProcAddress(reinterpret_cast<HMODULE>(m_LoadedLibraries[static_cast<size_t>(NativeLibrary::##dll)].Handle), #in_dll_name))
 #define INIT_FUNCTION(dll, name)									INIT_FUNCTION_AS(dll, name, name)
 
 namespace KxFramework::NativeAPI::Private
@@ -45,7 +49,7 @@ namespace KxFramework::NativeAPI::Private
 		{
 			if (library.Handle)
 			{
-				::FreeLibrary(library.Handle);
+				::FreeLibrary(reinterpret_cast<HMODULE>(library.Handle));
 				library.Handle = nullptr;
 				count++;
 			}

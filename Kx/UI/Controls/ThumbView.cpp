@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "ThumbView.h"
 #include "Kx/UI/Windows/DrawablePanel.h"
+#include <wx/renderer.h>
+#include <wx/dcgraph.h>
 
 namespace KxFramework::UI
 {

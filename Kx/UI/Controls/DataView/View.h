@@ -1,14 +1,18 @@
 #pragma once
-#include "KxFramework/KxFramework.h"
-#include "Kx/General/OptionSet.h"
-#include "Kx/UI/WindowRefreshScheduler.h"
-#include "Kx/UI/Menus/Menu.h"
 #include "Common.h"
 #include "Row.h"
 #include "Node.h"
 #include "Column.h"
 #include "ColumnID.h"
+#include "Kx/General/OptionSet.h"
+#include "Kx/UI/WindowRefreshScheduler.h"
+#include <wx/systhemectrl.h>
+#include <wx/scrolwin.h>
 
+namespace KxFramework::UI
+{
+	class Menu;
+}
 namespace KxFramework::UI::DataView
 {
 	class HeaderCtrl;

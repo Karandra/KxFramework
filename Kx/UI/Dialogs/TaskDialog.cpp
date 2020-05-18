@@ -288,7 +288,7 @@ namespace KxFramework::UI
 		}
 		else
 		{
-			m_Title = DynamicLibrary::GetCurrentModule().GetFilePath().GetName();
+			m_Title = DynamicLibrary::GetExecutingModule().GetFilePath().GetName();
 		}
 		Dialog::SetTitle(m_Title);
 	}

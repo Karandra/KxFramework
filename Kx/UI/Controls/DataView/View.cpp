@@ -5,7 +5,7 @@
 #include "MainWindow.h"
 #include "Column.h"
 #include "Renderer.h"
-#include "KxFramework/KxMenu.h"
+#include "Kx/UI/Menus/Menu.h"
 
 namespace
 {

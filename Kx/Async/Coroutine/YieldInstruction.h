@@ -1,14 +1,15 @@
 #pragma once
 #include "Kx/Async/Common.h"
 #include "CoroutineImpl.h"
+#include <wx/datetime.h>
 
 namespace KxFramework
 {
-	class KX_API Coroutine;
+	class Coroutine;
 }
 namespace KxFramework::Async
 {
-	class KX_API CoroutineBase;
+	class CoroutineBase;
 
 	enum class InstructionType
 	{

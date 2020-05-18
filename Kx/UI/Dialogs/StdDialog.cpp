@@ -222,7 +222,7 @@ namespace KxFramework::UI
 			//GetContentWindow()->Unbind(wxEVT_PAINT, &KxStdDialog::OnDrawFrameBorder, this);
 		}
 	}
-	wxNativeWindowHandle StdDialog::GetGripperWindow()
+	void* StdDialog::GetGripperWindow()
 	{
 		return ::FindWindowExW(this->GetHandle(), nullptr, L"ScrollBar", L"");
 	}
@@ -329,7 +329,7 @@ namespace KxFramework::UI
 		if (Dialog::Create(parent, id, GetDefaultTitle(), pos, size, style))
 		{
 			// Default interface
-			m_GripperWindow.Create(this, wxID_NONE, GetGripperWindow());
+			m_GripperWindow.Create(this, wxID_NONE, reinterpret_cast<wxNativeWindowHandle>(GetGripperWindow()));
 			m_GripperWindowSize = m_GripperWindow.GetSize();
 			SetBackgroundColour(ms_WindowBackgroundColor);
 
