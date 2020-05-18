@@ -258,7 +258,7 @@ namespace KxFramework
 			public:
 				void Reset(TValue* ptr = nullptr) noexcept
 				{
-					COM::FreeMemory(m_Value);
+					COM::FreeMemory(reinterpret_cast<void*>(const_cast<std::remove_cv_t<TValue>*>(m_Value)));
 					m_Value = ptr;
 				}
 		};
