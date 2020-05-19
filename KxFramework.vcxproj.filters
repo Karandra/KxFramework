@@ -170,6 +170,15 @@
     <Filter Include="Kx\UI\&lt;UI&gt;">
       <UniqueIdentifier>{e51dc976-b3e3-4424-aac5-de85a4e6e3c5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\General\&lt;Streams&gt;">
+      <UniqueIdentifier>{e2a71647-d82a-4fcc-a695-e60446c1dcf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx\General\&lt;Parsers&gt;">
+      <UniqueIdentifier>{f17608a3-623d-460f-a418-6b51e01ec8d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kx\General\&lt;DateTime&gt;">
+      <UniqueIdentifier>{073e2d6c-cfc9-4471-90ed-fc3f9dc3733b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Kx\Threading\Common.h">
@@ -424,16 +433,7 @@
     <ClInclude Include="Kx\Compression\IArchiveImpl.h">
       <Filter>Kx\Compression</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\StreamDelegate.h">
-      <Filter>Kx\General</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\General\EnumClass.h">
-      <Filter>Kx\General</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\General\StreamWrappers.h">
-      <Filter>Kx\General</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\General\MemoryStream.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
     <ClInclude Include="Kx\Compression\ZLibStream.h">
@@ -559,26 +559,11 @@
     <ClInclude Include="Kx\General\Private\XDocument.h">
       <Filter>Kx\General\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\INIDocument.h">
-      <Filter>Kx\General</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\General\JSONDocument.h">
-      <Filter>Kx\General</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\General\Private\XML.h">
       <Filter>Kx\General\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\XMLDocument.h">
-      <Filter>Kx\General</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\General\Private\TinyXML2 HTML5 Printer.h">
       <Filter>Kx\General\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\General\XDocument.h">
-      <Filter>Kx\General</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\General\HTMLDocument.h">
-      <Filter>Kx\General</Filter>
     </ClInclude>
     <ClInclude Include="Kx\General\Private\HTML\error.h">
       <Filter>Kx\General\Private\HTML</Filter>
@@ -591,9 +576,6 @@
     </ClInclude>
     <ClInclude Include="Kx\General\Private\HTML\token_type.h">
       <Filter>Kx\General\Private\HTML</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\General\TextDocument.h">
-      <Filter>Kx\General</Filter>
     </ClInclude>
     <ClInclude Include="Kx\Utility\Memory.h">
       <Filter>Kx\Utility</Filter>
@@ -1145,6 +1127,42 @@
     <ClInclude Include="Kx\System\Private\SystemInformationDefinesMapping.h">
       <Filter>Kx\System\Private</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\General\StreamWrappers.h">
+      <Filter>Kx\General\&lt;Streams&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\StreamDelegate.h">
+      <Filter>Kx\General\&lt;Streams&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\MemoryStream.h">
+      <Filter>Kx\General\&lt;Streams&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\XMLDocument.h">
+      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\XDocument.h">
+      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\TextDocument.h">
+      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\JSONDocument.h">
+      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\INIDocument.h">
+      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\HTMLDocument.h">
+      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\TimeClock.h">
+      <Filter>Kx\General\&lt;DateTime&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\TimeSpan.h">
+      <Filter>Kx\General\&lt;DateTime&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\ITimeClock.h">
+      <Filter>Kx\General\&lt;DateTime&gt;</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp">
@@ -1273,9 +1291,6 @@
     <ClCompile Include="Kx\Compression\IArchive.cpp">
       <Filter>Kx\Compression</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\MemoryStream.cpp">
-      <Filter>Kx\General</Filter>
-    </ClCompile>
     <ClCompile Include="Kx\Compression\ZLibStream.cpp">
       <Filter>Kx\Compression</Filter>
     </ClCompile>
@@ -1336,38 +1351,11 @@
     <ClCompile Include="Kx\Utility\System.cpp">
       <Filter>Kx\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\INIDocument.cpp">
-      <Filter>Kx\General</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\General\JSONDocument.cpp">
-      <Filter>Kx\General</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\General\XMLNode.cpp">
-      <Filter>Kx\General</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\General\XMLAttribute.cpp">
-      <Filter>Kx\General</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\General\XMLDocument.cpp">
-      <Filter>Kx\General</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\General\XDocument.cpp">
-      <Filter>Kx\General</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\General\HTMLNode.cpp">
-      <Filter>Kx\General</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\General\HTMLDocument.cpp">
-      <Filter>Kx\General</Filter>
-    </ClCompile>
     <ClCompile Include="Kx\General\Private\HTML\serialize.cpp">
       <Filter>Kx\General\Private\HTML</Filter>
     </ClCompile>
     <ClCompile Include="Kx\General\Private\HTML\clean_text.cpp">
       <Filter>Kx\General\Private\HTML</Filter>
-    </ClCompile>
-    <ClCompile Include="Kx\General\TextDocument.cpp">
-      <Filter>Kx\General</Filter>
     </ClCompile>
     <ClCompile Include="Kx\Network\URI.cpp">
       <Filter>Kx\Network</Filter>
@@ -1759,6 +1747,42 @@
     </ClCompile>
     <ClCompile Include="Kx\Localization\LocalizationPackage.cpp">
       <Filter>Kx\Localization</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\MemoryStream.cpp">
+      <Filter>Kx\General\&lt;Streams&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\XMLNode.cpp">
+      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\XMLDocument.cpp">
+      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\XMLAttribute.cpp">
+      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\XDocument.cpp">
+      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\TextDocument.cpp">
+      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\JSONDocument.cpp">
+      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\INIDocument.cpp">
+      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\HTMLNode.cpp">
+      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\HTMLDocument.cpp">
+      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\TimeClock.cpp">
+      <Filter>Kx\General\&lt;DateTime&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\TimeSpan.cpp">
+      <Filter>Kx\General\&lt;DateTime&gt;</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
