@@ -4,6 +4,7 @@
 
 namespace KxFramework
 {
+	class Locale;
 	class ITimeClock;
 }
 
@@ -125,6 +126,15 @@ namespace KxFramework
 			}
 
 			String Format(const String& format) const;
+			String Format(const char* format) const
+			{
+				return Format(String(format));
+			}
+			String Format(const wchar_t* format) const
+			{
+				return Format(String(format));
+			}
+			String Format(const Locale& locale, TimeFormatFlag flags = TimeFormatFlag::None) const;
 
 		public:
 			constexpr TimeSpan& operator=(const TimeSpan&) noexcept = default;

@@ -1,6 +1,8 @@
 #pragma once
 #include "Common.h"
 #include "Kx/General/String.h"
+#include "Kx/General/DateTime.h"
+#include "Kx/System/UndefWindows.h"
 
 namespace KxFramework::Localization
 {
@@ -67,6 +69,9 @@ namespace KxFramework
 
 			std::optional<uint32_t> GetLCID() const noexcept;
 			std::optional<Localization::LangID> GetLangID() const noexcept;
+
+			String FormatDate(const wxDateTime& dateTime, DateFormatFlag flags = DateFormatFlag::None) const;
+			String FormatTime(const wxDateTime& dateTime, TimeFormatFlag flags = TimeFormatFlag::None) const;
 
 		public:
 			explicit operator bool() const noexcept

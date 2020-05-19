@@ -207,4 +207,46 @@ namespace KxFramework
 		}
 		return {};
 	}
+
+	String Locale::FormatDate(const wxDateTime& dateTime, DateFormatFlag flags) const
+	{
+		if (dateTime.IsValid())
+		{
+			DWORD nativeFlags = DATE_AUTOLAYOUT;
+			Utility::AddFlagRef(nativeFlags, DATE_LONGDATE, flags & DateFormatFlag::Long);
+			Utility::AddFlagRef(nativeFlags, DATE_YEARMONTH, flags & DateFormatFlag::YearMonth);
+			Utility::AddFlagRef(nativeFlags, DATE_MONTHDAY, flags & DateFormatFlag::MonthDay);
+
+			SYSTEMTIME localTime = {};
+			dateTime.GetAsMSWSysTime(&localTime);
+
+			wchar_t formatted[1024] = {};
+			if (::GetDateFormatEx(m_LocaleName, nativeFlags, &localTime, nullptr, formatted, std::size(formatted), nullptr) != 0)
+			{
+				return formatted;
+			}
+		}
+		return {};
+	}
+	String Locale::FormatTime(const wxDateTime& dateTime, TimeFormatFlag flags) const
+	{
+		if (dateTime.IsValid())
+		{
+			DWORD nativeFlags = 0;
+			Utility::AddFlagRef(nativeFlags, TIME_NOSECONDS, flags & TimeFormatFlag::NoSeconds);
+			Utility::AddFlagRef(nativeFlags, TIME_NOTIMEMARKER, flags & TimeFormatFlag::NoTimeMarker);
+			Utility::AddFlagRef(nativeFlags, TIME_NOMINUTESORSECONDS, flags & TimeFormatFlag::NoMinutes);
+			Utility::AddFlagRef(nativeFlags, TIME_FORCE24HOURFORMAT, flags & TimeFormatFlag::Force24Hour);
+
+			SYSTEMTIME localTime = {};
+			dateTime.GetAsMSWSysTime(&localTime);
+
+			wchar_t formatted[1024] = {};
+			if (::GetTimeFormatEx(m_LocaleName, nativeFlags, &localTime, nullptr, formatted, std::size(formatted)) != 0)
+			{
+				return formatted;
+			}
+		}
+		return {};
+	}
 }
