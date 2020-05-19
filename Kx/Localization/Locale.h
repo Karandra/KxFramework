@@ -23,6 +23,8 @@ namespace KxFramework
 {
 	class KX_API Locale final
 	{
+		friend class DateTime;
+
 		public:
 			static Locale GetInvariant() noexcept;
 			static Locale GetUserDefault() noexcept;
@@ -70,8 +72,8 @@ namespace KxFramework
 			std::optional<uint32_t> GetLCID() const noexcept;
 			std::optional<Localization::LangID> GetLangID() const noexcept;
 
-			String FormatDate(const wxDateTime& dateTime, DateFormatFlag flags = DateFormatFlag::None) const;
-			String FormatTime(const wxDateTime& dateTime, TimeFormatFlag flags = TimeFormatFlag::None) const;
+			std::optional<String> GetMonthName(Month month, UnitNameFlag flags = UnitNameFlag::None) const;
+			std::optional<String> GetWeekDayName(WeekDay weekDay, UnitNameFlag flags = UnitNameFlag::None) const;
 
 		public:
 			explicit operator bool() const noexcept

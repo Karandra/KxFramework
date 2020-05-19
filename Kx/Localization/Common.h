@@ -32,6 +32,48 @@ namespace KxFramework
 		ShortTime, // For example, if the long time format is 'h:mm:ss tt', the short time format is most likely 'h:mm tt'.
 		LongDate, // For example, the Spanish (Spain) long date is "dddd, dd' de 'MMMM' de 'yyyy".
 		LongTime, //  For example, a format such as "03:56'23" is valid.
+
+		NativeMonthJanuary,
+		NativeMonthFebruary,
+		NativeMonthMarch,
+		NativeMonthApril,
+		NativeMonthMay,
+		NativeMonthJune,
+		NativeMonthJuly,
+		NativeMonthAugust,
+		NativeMonthSeptember,
+		NativeMonthOctober,
+		NativeMonthNovember,
+		NativeMonthDecember,
+
+		NativeMonthAbbrJanuary,
+		NativeMonthAbbrFebruary,
+		NativeMonthAbbrMarch,
+		NativeMonthAbbrApril,
+		NativeMonthAbbrMay,
+		NativeMonthAbbrJune,
+		NativeMonthAbbrJuly,
+		NativeMonthAbbrAugust,
+		NativeMonthAbbrSeptember,
+		NativeMonthAbbrOctober,
+		NativeMonthAbbrNovember,
+		NativeMonthAbbrDecember,
+
+		NativeDayMonday,
+		NativeDayTuesday,
+		NativeDayWednesday,
+		NativeDayThursday,
+		NativeDayFriday,
+		NativeDaySaturday,
+		NativeDaySunday,
+
+		NativeDayAbbrMonday,
+		NativeDayAbbrTuesday,
+		NativeDayAbbrWednesday,
+		NativeDayAbbrThursday,
+		NativeDayAbbrFriday,
+		NativeDayAbbrSaturday,
+		NativeDayAbbrSunday
 	};
 	enum class LocaleIntOption
 	{

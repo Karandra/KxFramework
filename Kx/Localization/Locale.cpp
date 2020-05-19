@@ -208,45 +208,104 @@ namespace KxFramework
 		return {};
 	}
 
-	String Locale::FormatDate(const wxDateTime& dateTime, DateFormatFlag flags) const
+	std::optional<String> Locale::GetMonthName(Month month, UnitNameFlag flags) const
 	{
-		if (dateTime.IsValid())
+		auto GetValue = [&](LocaleStrOption full, LocaleStrOption abbreviated)
 		{
-			DWORD nativeFlags = DATE_AUTOLAYOUT;
-			Utility::AddFlagRef(nativeFlags, DATE_LONGDATE, flags & DateFormatFlag::Long);
-			Utility::AddFlagRef(nativeFlags, DATE_YEARMONTH, flags & DateFormatFlag::YearMonth);
-			Utility::AddFlagRef(nativeFlags, DATE_MONTHDAY, flags & DateFormatFlag::MonthDay);
+			return GetOption(flags & UnitNameFlag::Abbreviated ? abbreviated : full);
+		};
 
-			SYSTEMTIME localTime = {};
-			dateTime.GetAsMSWSysTime(&localTime);
-
-			wchar_t formatted[1024] = {};
-			if (::GetDateFormatEx(m_LocaleName, nativeFlags, &localTime, nullptr, formatted, std::size(formatted), nullptr) != 0)
+		switch (month)
+		{
+			case Month::January:
 			{
-				return formatted;
+				return GetValue(LocaleStrOption::NativeMonthJanuary, LocaleStrOption::NativeMonthAbbrJanuary);
 			}
-		}
+			case Month::February:
+			{
+				return GetValue(LocaleStrOption::NativeMonthFebruary, LocaleStrOption::NativeMonthAbbrFebruary);
+			}
+			case Month::March:
+			{
+				return GetValue(LocaleStrOption::NativeMonthMarch, LocaleStrOption::NativeMonthAbbrMarch);
+			}
+			case Month::April:
+			{
+				return GetValue(LocaleStrOption::NativeMonthApril, LocaleStrOption::NativeMonthAbbrApril);
+			}
+			case Month::May:
+			{
+				return GetValue(LocaleStrOption::NativeMonthMay, LocaleStrOption::NativeMonthAbbrMay);
+			}
+			case Month::June:
+			{
+				return GetValue(LocaleStrOption::NativeMonthJune, LocaleStrOption::NativeMonthAbbrJune);
+			}
+			case Month::July:
+			{
+				return GetValue(LocaleStrOption::NativeMonthJuly, LocaleStrOption::NativeMonthAbbrJuly);
+			}
+			case Month::August:
+			{
+				return GetValue(LocaleStrOption::NativeMonthAugust, LocaleStrOption::NativeMonthAbbrAugust);
+			}
+			case Month::September:
+			{
+				return GetValue(LocaleStrOption::NativeMonthSeptember, LocaleStrOption::NativeMonthAbbrSeptember);
+			}
+			case Month::October:
+			{
+				return GetValue(LocaleStrOption::NativeMonthOctober, LocaleStrOption::NativeMonthAbbrOctober);
+			}
+			case Month::November:
+			{
+				return GetValue(LocaleStrOption::NativeMonthNovember, LocaleStrOption::NativeMonthAbbrNovember);
+			}
+			case Month::December:
+			{
+				return GetValue(LocaleStrOption::NativeMonthDecember, LocaleStrOption::NativeMonthAbbrDecember);
+			}
+		};
 		return {};
 	}
-	String Locale::FormatTime(const wxDateTime& dateTime, TimeFormatFlag flags) const
+	std::optional<String> Locale::GetWeekDayName(WeekDay weekDay, UnitNameFlag flags) const
 	{
-		if (dateTime.IsValid())
+		auto GetValue = [&](LocaleStrOption full, LocaleStrOption abbreviated)
 		{
-			DWORD nativeFlags = 0;
-			Utility::AddFlagRef(nativeFlags, TIME_NOSECONDS, flags & TimeFormatFlag::NoSeconds);
-			Utility::AddFlagRef(nativeFlags, TIME_NOTIMEMARKER, flags & TimeFormatFlag::NoTimeMarker);
-			Utility::AddFlagRef(nativeFlags, TIME_NOMINUTESORSECONDS, flags & TimeFormatFlag::NoMinutes);
-			Utility::AddFlagRef(nativeFlags, TIME_FORCE24HOURFORMAT, flags & TimeFormatFlag::Force24Hour);
+			return GetOption(flags & UnitNameFlag::Abbreviated ? abbreviated : full);
+		};
 
-			SYSTEMTIME localTime = {};
-			dateTime.GetAsMSWSysTime(&localTime);
-
-			wchar_t formatted[1024] = {};
-			if (::GetTimeFormatEx(m_LocaleName, nativeFlags, &localTime, nullptr, formatted, std::size(formatted)) != 0)
+		switch (weekDay)
+		{
+			case WeekDay::Monday:
 			{
-				return formatted;
+				return GetValue(LocaleStrOption::NativeDayMonday, LocaleStrOption::NativeDayAbbrMonday);
 			}
-		}
+			case WeekDay::Tuesday:
+			{
+				return GetValue(LocaleStrOption::NativeDayTuesday, LocaleStrOption::NativeDayAbbrTuesday);
+			}
+			case WeekDay::Wednesday:
+			{
+				return GetValue(LocaleStrOption::NativeDayWednesday, LocaleStrOption::NativeDayAbbrWednesday);
+			}
+			case WeekDay::Thursday:
+			{
+				return GetValue(LocaleStrOption::NativeDayTuesday, LocaleStrOption::NativeDayAbbrThursday);
+			}
+			case WeekDay::Friday:
+			{
+				return GetValue(LocaleStrOption::NativeDayFriday, LocaleStrOption::NativeDayAbbrFriday);
+			}
+			case WeekDay::Saturday:
+			{
+				return GetValue(LocaleStrOption::NativeDaySaturday, LocaleStrOption::NativeDayAbbrSaturday);
+			}
+			case WeekDay::Sunday:
+			{
+				return GetValue(LocaleStrOption::NativeDaySunday, LocaleStrOption::NativeDayAbbrSunday);
+			}
+		};
 		return {};
 	}
 }

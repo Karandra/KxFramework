@@ -26,10 +26,18 @@ namespace KxFramework
 		ReadError,
 		WriteError
 	};
+	enum class UnitNameFlag
+	{
+		None = 0,
+
+		Abbreviated = 1 << 0,
+		GenetiveCase = 1 << 1,
+	};
 
 	namespace EnumClass
 	{
 		Kx_EnumClass_AllowCast(VersionType);
+		Kx_EnumClass_AllowEverything(UnitNameFlag);
 	}
 }
 
