@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "TimeSpan.h"
 #include "TimeClock.h"
-#include "Kx/Localization/Locale.h"
 
 namespace KxFramework
 {
@@ -27,6 +26,17 @@ namespace KxFramework
 	}
 	String TimeSpan::Format(const Locale& locale, TimeFormatFlag flags) const
 	{
-		return locale.FormatTime(wxDateTime().SetMillisecond(m_Value), flags);
+		if (flags & TimeFormatFlag::NoMinutes)
+		{
+			return Format(wxS("%H"));
+		}
+		else if (flags & TimeFormatFlag::NoSeconds)
+		{
+			return Format(wxS("%H:%M"));
+		}
+		else
+		{
+			return Format(wxS("%H:%M:%S"));
+		}
 	}
 }

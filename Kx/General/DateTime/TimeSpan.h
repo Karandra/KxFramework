@@ -1,6 +1,5 @@
 #pragma once
 #include "Common.h"
-#include "String.h"
 
 namespace KxFramework
 {
@@ -145,7 +144,7 @@ namespace KxFramework
 			}
 			operator wxTimeSpan() const noexcept
 			{
-				return TimeSpan::Milliseconds(m_Value);
+				return TimeSpan::GetMilliseconds();
 			}
 
 			constexpr bool operator==(const TimeSpan& other) const noexcept

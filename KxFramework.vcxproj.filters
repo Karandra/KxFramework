@@ -179,6 +179,9 @@
     <Filter Include="Kx\General\DateTime">
       <UniqueIdentifier>{073e2d6c-cfc9-4471-90ed-fc3f9dc3733b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Kx\General\DateTime\Private">
+      <UniqueIdentifier>{1927ba84-01dd-4b98-90dd-7496ee4a3211}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Kx\Threading\Common.h">
@@ -1169,6 +1172,15 @@
     <ClInclude Include="Kx\General\DateTime\Common.h">
       <Filter>Kx\General\DateTime</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\General\DateTime\DateTime.h">
+      <Filter>Kx\General\DateTime</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\DateTime\TimeZone.h">
+      <Filter>Kx\General\DateTime</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\DateTime\Private\Mapping.h">
+      <Filter>Kx\General\DateTime\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp">
@@ -1788,6 +1800,12 @@
       <Filter>Kx\General\DateTime</Filter>
     </ClCompile>
     <ClCompile Include="Kx\General\DateTime\TimeClock.cpp">
+      <Filter>Kx\General\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\DateTime\DateTime.cpp">
+      <Filter>Kx\General\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\DateTime\TimeZone.cpp">
       <Filter>Kx\General\DateTime</Filter>
     </ClCompile>
   </ItemGroup>
