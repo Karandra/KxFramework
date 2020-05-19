@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "Kx/General/Color.h"
 #include "Kx/General/Angle.h"
-#include "Kx/General/TimeSpan.h"
+#include "Kx/General/DateTime.h"
 
 namespace KxFramework::Sciter
 {

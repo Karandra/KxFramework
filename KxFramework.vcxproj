@@ -183,9 +183,11 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Kx\General\ITimeClock.h" />
-    <ClInclude Include="Kx\General\TimeClock.h" />
-    <ClInclude Include="Kx\General\TimeSpan.h" />
+    <ClInclude Include="Kx\General\DateTime.h" />
+    <ClInclude Include="Kx\General\DateTime\Common.h" />
+    <ClInclude Include="Kx\General\DateTime\ITimeClock.h" />
+    <ClInclude Include="Kx\General\DateTime\TimeClock.h" />
+    <ClInclude Include="Kx\General\DateTime\TimeSpan.h" />
     <ClInclude Include="Kx\RTTI\ComponentSystem.h" />
     <ClInclude Include="Kx\System\DynamicLibrary.h" />
     <ClInclude Include="Kx\System\ExecutableVersionResource.h" />
@@ -513,8 +515,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kx\General\Common.cpp" />
-    <ClCompile Include="Kx\General\TimeClock.cpp" />
-    <ClCompile Include="Kx\General\TimeSpan.cpp" />
+    <ClCompile Include="Kx\General\DateTime\TimeClock.cpp" />
+    <ClCompile Include="Kx\General\DateTime\TimeSpan.cpp" />
     <ClCompile Include="Kx\RTTI\ComponentSystem.cpp" />
     <ClCompile Include="Kx\System\DynamicLibrary.cpp" />
     <ClCompile Include="Kx\System\ExecutableVersionResource.cpp" />

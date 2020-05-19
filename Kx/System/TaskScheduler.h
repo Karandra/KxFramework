@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "COM.h"
 #include "ErrorCodeValue.h"
-#include "Kx/General/TimeSpan.h"
+#include "Kx/General/DateTime.h"
 #include "Kx/FileSystem/FSPath.h"
 #include "Kx/Crypto/SecretValue.h"
 struct ITaskDefinition;

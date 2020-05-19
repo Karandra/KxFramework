@@ -1,7 +1,7 @@
 #pragma once
 #include "Kx/Common.hpp"
 #include "Kx/General/String.h"
-#include "Kx/General/TimeSpan.h"
+#include "Kx/General/DateTime.h"
 
 namespace KxFramework
 {

@@ -176,7 +176,7 @@
     <Filter Include="Kx\General\&lt;Parsers&gt;">
       <UniqueIdentifier>{f17608a3-623d-460f-a418-6b51e01ec8d9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\General\&lt;DateTime&gt;">
+    <Filter Include="Kx\General\DateTime">
       <UniqueIdentifier>{073e2d6c-cfc9-4471-90ed-fc3f9dc3733b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -1154,14 +1154,20 @@
     <ClInclude Include="Kx\General\HTMLDocument.h">
       <Filter>Kx\General\&lt;Parsers&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\TimeClock.h">
-      <Filter>Kx\General\&lt;DateTime&gt;</Filter>
+    <ClInclude Include="Kx\General\DateTime\TimeClock.h">
+      <Filter>Kx\General\DateTime</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\TimeSpan.h">
-      <Filter>Kx\General\&lt;DateTime&gt;</Filter>
+    <ClInclude Include="Kx\General\DateTime\TimeSpan.h">
+      <Filter>Kx\General\DateTime</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\ITimeClock.h">
-      <Filter>Kx\General\&lt;DateTime&gt;</Filter>
+    <ClInclude Include="Kx\General\DateTime\ITimeClock.h">
+      <Filter>Kx\General\DateTime</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\DateTime.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\DateTime\Common.h">
+      <Filter>Kx\General\DateTime</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1778,11 +1784,11 @@
     <ClCompile Include="Kx\General\HTMLDocument.cpp">
       <Filter>Kx\General\&lt;Parsers&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\TimeClock.cpp">
-      <Filter>Kx\General\&lt;DateTime&gt;</Filter>
+    <ClCompile Include="Kx\General\DateTime\TimeSpan.cpp">
+      <Filter>Kx\General\DateTime</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\TimeSpan.cpp">
-      <Filter>Kx\General\&lt;DateTime&gt;</Filter>
+    <ClCompile Include="Kx\General\DateTime\TimeClock.cpp">
+      <Filter>Kx\General\DateTime</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

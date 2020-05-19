@@ -2,7 +2,6 @@
 #include "TimeSpan.h"
 #include "TimeClock.h"
 
-
 namespace KxFramework
 {
 	TimeSpan TimeSpan::Now() noexcept
