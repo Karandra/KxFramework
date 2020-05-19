@@ -5,7 +5,7 @@
 namespace KxFramework::Async
 {
 	template<class TCallable>
-	static void DelayedCall(TCallable&& func, const wxTimeSpan& delay)
+	static void DelayedCall(TCallable&& func, const TimeSpan& delay)
 	{
 		Coroutine::Run([delay, func = std::forward<TCallable>(func)](Coroutine& coroutine)
 		{

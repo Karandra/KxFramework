@@ -24,7 +24,7 @@ namespace KxFramework::Async
 
 		public:
 			void Notify() override;
-			void Wait(std::unique_ptr<CoroutineBase> coroutine, const wxTimeSpan& time);
+			void Wait(std::unique_ptr<CoroutineBase> coroutine, const TimeSpan& time);
 			std::unique_ptr<CoroutineBase> Relinquish();
 	};
 	class CoroutineExecutor final: public wxAsyncMethodCallEvent
@@ -61,7 +61,7 @@ namespace KxFramework::Async
 			}
 			
 			template<class T = intptr_t>
-			static YieldInstruction YieldWait(const wxTimeSpan& interval, const T& nextState = 0)
+			static YieldInstruction YieldWait(const TimeSpan& interval, const T& nextState = 0)
 			{
 				YieldInstruction instruction(InstructionType::Delay, nextState);
 				instruction.m_Delay = interval;
@@ -76,22 +76,22 @@ namespace KxFramework::Async
 
 		private:
 			static void QueueExecution(std::unique_ptr<CoroutineBase> coroutine);
-			static void DelayExecution(std::unique_ptr<CoroutineBase> coroutine, const wxTimeSpan& time);
+			static void DelayExecution(std::unique_ptr<CoroutineBase> coroutine, const TimeSpan& time);
 			static void AbortExecution(std::unique_ptr<CoroutineBase> coroutine);
 
 		private:
 			CoroutineTimer m_DelayTimer;
 			YieldInstruction m_Instruction;
-			wxTimeSpan m_TimeStampStart;
-			wxTimeSpan m_TimeStampBefore;
-			wxTimeSpan m_TimeStampAfter;
+			TimeSpan m_TimeStampStart;
+			TimeSpan m_TimeStampBefore;
+			TimeSpan m_TimeStampAfter;
 
 		private:
 			void BeforeExecute();
 			void AfterExecute();
 			void RunExecute(std::unique_ptr<CoroutineBase> coroutine);
 
-			wxTimeSpan GetCurrentExecutionTime() const;
+			TimeSpan GetCurrentExecutionTime() const;
 
 		protected:
 			virtual YieldInstruction Execute() = 0;
@@ -109,7 +109,7 @@ namespace KxFramework::Async
 				return m_Instruction.GetNextState<T>();
 			}
 
-			wxTimeSpan GetTimeDelta() const;
-			wxTimeSpan GetElapsedTime() const;
+			TimeSpan GetTimeDelta() const;
+			TimeSpan GetElapsedTime() const;
 	};
 }

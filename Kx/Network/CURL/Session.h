@@ -92,8 +92,8 @@ namespace KxFramework
 				m_UserAgent = userAgent;
 			}
 
-			void SetTimeout(const wxTimeSpan& timeout) noexcept;
-			void SetConnectionTimeout(const wxTimeSpan& timeout) noexcept;
+			void SetTimeout(const TimeSpan& timeout) noexcept;
+			void SetConnectionTimeout(const TimeSpan& timeout) noexcept;
 
 		public:
 			CURLSession& operator=(const CURLSession&) = delete;

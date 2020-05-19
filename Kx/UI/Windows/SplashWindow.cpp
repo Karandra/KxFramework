@@ -74,7 +74,7 @@ namespace KxFramework::UI
 	bool SplashWindow::Create(wxWindow* parent,
 							  const wxBitmap& bitmap,
 							  const wxSize& size,
-							  wxTimeSpan timeout,
+							  TimeSpan timeout,
 							  SplashWindowStyle style
 	)
 	{
@@ -114,9 +114,9 @@ namespace KxFramework::UI
 	bool SplashWindow::Show(bool show)
 	{
 		const bool result = wxFrame::Show(show);
-		if (result && show && m_Timeout > 0)
+		if (result && show && m_Timeout.IsPositive())
 		{
-			m_Timer.StartOnce(m_Timeout.GetMilliseconds().GetValue());
+			m_Timer.StartOnce(m_Timeout.GetMilliseconds());
 		}
 		return result;
 	}

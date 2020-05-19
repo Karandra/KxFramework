@@ -123,7 +123,7 @@ namespace KxFramework::UI
 
 		if (m_Handle)
 		{
-			::SendMessageW(reinterpret_cast<HWND>(m_Handle), TDM_SET_PROGRESS_BAR_MARQUEE, TRUE, m_ProgressPulseInterval.GetMilliseconds().GetValue());
+			::SendMessageW(reinterpret_cast<HWND>(m_Handle), TDM_SET_PROGRESS_BAR_MARQUEE, TRUE, m_ProgressPulseInterval.GetMilliseconds());
 		}
 	}
 

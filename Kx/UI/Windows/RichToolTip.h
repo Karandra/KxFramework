@@ -25,7 +25,7 @@ namespace KxFramework::UI
 		public:
 			static constexpr StdIcon DefaultIcon = StdIcon::Information;
 			static constexpr RichToolTipKind DefaultKind = RichToolTipKind::Auto;
-			static inline const wxTimeSpan DefaultDelay = wxTimeSpan::Milliseconds(0);
+			static inline const TimeSpan DefaultDelay = TimeSpan::Milliseconds(0);
 
 		private:
 			wxRichToolTip m_ToolTip;
@@ -38,8 +38,8 @@ namespace KxFramework::UI
 			RichToolTipKind m_Kind = DefaultKind;
 			Color m_Color1;
 			Color m_Color2;
-			wxTimeSpan m_Timeout = wxTimeSpan::Milliseconds(-1);
-			wxTimeSpan m_Delay = wxTimeSpan::Milliseconds(-1);
+			TimeSpan m_Timeout = TimeSpan::Milliseconds(-1);
+			TimeSpan m_Delay = TimeSpan::Milliseconds(-1);
 
 		public:
 			RichToolTip(String title = {}, String message = {})
@@ -121,24 +121,24 @@ namespace KxFramework::UI
 			}
 
 			// Animation
-			wxTimeSpan GetTimeout() const
+			TimeSpan GetTimeout() const
 			{
 				return m_Timeout;
 			}
-			void SetTimeout(wxTimeSpan timeout)
+			void SetTimeout(TimeSpan timeout)
 			{
 				m_Timeout = timeout;
-				m_ToolTip.SetTimeout(timeout.GetMilliseconds().GetValue(), GetDelay().GetMilliseconds().GetValue());
+				m_ToolTip.SetTimeout(timeout.GetMilliseconds(), GetDelay().GetMilliseconds());
 			}
 		
-			wxTimeSpan GetDelay() const
+			TimeSpan GetDelay() const
 			{
 				return m_Delay;
 			}
-			void SetDelay(wxTimeSpan delay)
+			void SetDelay(TimeSpan delay)
 			{
 				m_Delay = delay;
-				m_ToolTip.SetTimeout(GetTimeout().GetMilliseconds().GetValue(), delay.GetMilliseconds().GetValue());
+				m_ToolTip.SetTimeout(GetTimeout().GetMilliseconds(), delay.GetMilliseconds());
 			}
 
 		public:

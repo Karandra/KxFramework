@@ -8,7 +8,7 @@ namespace KxFramework::Sciter
 	}
 	void FPSCounter::OnEndRender()
 	{
-		const int64_t trackTime = m_TrackTime.GetMilliseconds().GetValue();
+		const int64_t trackTime = m_TrackTime.GetMilliseconds();
 		const int64_t now = ::GetTickCount64();
 		const int64_t before = now - trackTime;
 

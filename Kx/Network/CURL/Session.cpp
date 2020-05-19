@@ -238,13 +238,13 @@ namespace KxFramework
 		m_SessionHeaders.emplace_back(value.ToStdString());
 	}
 
-	void CURLSession::SetTimeout(const wxTimeSpan& timeout) noexcept
+	void CURLSession::SetTimeout(const TimeSpan& timeout) noexcept
 	{
-		m_Handle.SetOption(CURLOPT_TIMEOUT_MS, timeout.GetMilliseconds().GetValue());
+		m_Handle.SetOption(CURLOPT_TIMEOUT_MS, timeout.GetMilliseconds());
 	}
-	void CURLSession::SetConnectionTimeout(const wxTimeSpan& timeout) noexcept
+	void CURLSession::SetConnectionTimeout(const TimeSpan& timeout) noexcept
 	{
-		m_Handle.SetOption(CURLOPT_CONNECTTIMEOUT_MS, timeout.GetMilliseconds().GetValue());
+		m_Handle.SetOption(CURLOPT_CONNECTTIMEOUT_MS, timeout.GetMilliseconds());
 	}
 
 	CURLSession& CURLSession::operator=(CURLSession&& other) noexcept

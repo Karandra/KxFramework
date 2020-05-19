@@ -83,7 +83,7 @@ namespace KxFramework::UI
 			int m_ProgressPos = 0;
 			int m_ProgressStep = 10;
 			int m_ProgressRange = 100;
-			wxTimeSpan m_ProgressPulseInterval;
+			TimeSpan m_ProgressPulseInterval;
 
 		private:
 			HResult OnDialogEvent(void* windowHandle, uint32_t notification, void* wParam, void* lParam);

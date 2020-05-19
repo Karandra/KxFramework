@@ -39,7 +39,7 @@ namespace
 	{
 		return date.FormatISOCombined();
 	}
-	KxFramework::String FormatTimeAsTaskDelay(const wxTimeSpan& delay)
+	KxFramework::String FormatTimeAsTaskDelay(const KxFramework::TimeSpan& delay)
 	{
 		return delay.Format(wxS("PT%HH%MM%SS"));
 	}
@@ -141,7 +141,7 @@ namespace KxFramework::System
 		}
 		return hr;
 	}
-	HResult ScheduledTask::SetRegistrationTrigger(const String& id, const wxTimeSpan& delay, const wxDateTime& end)
+	HResult ScheduledTask::SetRegistrationTrigger(const String& id, const TimeSpan& delay, const wxDateTime& end)
 	{
 		HResult hr = E_INVALIDARG;
 
@@ -169,7 +169,7 @@ namespace KxFramework::System
 		}
 		return hr;
 	}
-	HResult ScheduledTask::DeleteExpiredTaskAfter(const wxTimeSpan& delay)
+	HResult ScheduledTask::DeleteExpiredTaskAfter(const TimeSpan& delay)
 	{
 		return m_Settings->put_DeleteExpiredTaskAfter(BstrFromString(FormatTimeAsTaskDelay(delay)));
 	}

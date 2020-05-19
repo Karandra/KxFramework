@@ -1,7 +1,6 @@
 #pragma once
 #include "Kx/Async/Common.h"
 #include "CoroutineImpl.h"
-#include <wx/datetime.h>
 
 namespace KxFramework
 {
@@ -35,7 +34,7 @@ namespace KxFramework::Async
 		private:
 			InstructionType m_Type = InstructionType::Continue;
 			std::optional<intptr_t> m_NextState;
-			wxTimeSpan m_Delay;
+			TimeSpan m_Delay;
 
 		protected:
 			YieldInstruction(InstructionType instruction) noexcept
@@ -55,7 +54,7 @@ namespace KxFramework::Async
 			{
 				return m_Type;
 			}
-			wxTimeSpan GetDelay() const
+			TimeSpan GetDelay() const
 			{
 				return m_Delay;
 			}

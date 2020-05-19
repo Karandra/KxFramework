@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "Kx/General/Color.h"
 #include "Kx/General/Angle.h"
+#include "Kx/General/TimeSpan.h"
 
 namespace KxFramework::Sciter
 {
@@ -107,7 +108,7 @@ namespace KxFramework::Sciter
 			std::optional<int64_t> GetInt64() const;
 			std::optional<double> GetFloat() const;
 			wxDateTime GetDateTime() const;
-			wxTimeSpan GetDuration() const;
+			TimeSpan GetDuration() const;
 			Color GetColor() const;
 			Angle GetAngle() const;
 			const void* GetBytes(size_t& size) const;
@@ -144,7 +145,7 @@ namespace KxFramework::Sciter
 				return *this;
 			}
 			ScriptValue& operator=(const wxDateTime& value);
-			ScriptValue& operator=(const wxTimeSpan& value);
+			ScriptValue& operator=(const TimeSpan& value);
 			ScriptValue& operator=(const Color& value);
 			ScriptValue& SetAngle(Angle angle);
 			ScriptValue& SetBytes(const void* data, size_t size);

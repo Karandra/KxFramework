@@ -1,6 +1,5 @@
 #pragma once
-#include <cstdint>
-#include <wx/datetime.h>
+#include "Kx/General/TimeSpan.h"
 #include <deque>
 
 namespace KxFramework::Sciter
@@ -28,10 +27,10 @@ namespace KxFramework::Sciter
 		private:
 			std::deque<int64_t> m_FrameTime;
 			double m_AverageFrameCount = 0.0;
-			wxTimeSpan m_TrackTime;
+			TimeSpan m_TrackTime;
 
 		public:
-			FPSCounter(const wxTimeSpan& trackTime = wxTimeSpan::Milliseconds(1000))
+			FPSCounter(const TimeSpan& trackTime = TimeSpan::Milliseconds(1000))
 				:m_TrackTime(trackTime)
 			{
 			}

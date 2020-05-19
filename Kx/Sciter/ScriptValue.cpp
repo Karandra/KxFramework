@@ -191,11 +191,11 @@ namespace KxFramework::Sciter
 		}
 		return wxInvalidDateTime;
 	}
-	wxTimeSpan ScriptValue::GetDuration() const
+	TimeSpan ScriptValue::GetDuration() const
 	{
 		if (GetType() == ScriptValueType::Duration)
 		{
-			return wxTimeSpan::Milliseconds(GetFloat().value_or(0) * 1000);
+			return TimeSpan::Milliseconds(GetFloat().value_or(0) * 1000);
 		}
 		return {};
 	}
@@ -283,11 +283,12 @@ namespace KxFramework::Sciter
 		}
 		return *this;
 	}
-	ScriptValue& ScriptValue::operator=(const wxTimeSpan& value)
+	ScriptValue& ScriptValue::operator=(const TimeSpan& value)
 	{
 		Clear();
 
-		double seconds = value.GetMilliseconds().GetValue() * 1000;
+		// We need precise value in seconds as a floating point number so get seconds and multiply ourselves
+		double seconds = value.GetMilliseconds() * 1000;
 		GetSciterAPI()->ValueFloatDataSet(ToSciterScriptValue(m_Value), seconds, T_DURATION, 0);
 
 		return *this;

@@ -2,6 +2,7 @@
 #include "Kx/Common.hpp"
 #include "Kx/General/Color.h"
 #include "Kx/General/String.h"
+#include "Kx/General/TimeSpan.h"
 #include "Kx/General/StdID.h"
 #include "Kx/EventSystem/Common.h"
 #include "Kx/EventSystem/Event.h"

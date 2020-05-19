@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "COM.h"
 #include "ErrorCodeValue.h"
+#include "Kx/General/TimeSpan.h"
 #include "Kx/FileSystem/FSPath.h"
 #include "Kx/Crypto/SecretValue.h"
 struct ITaskDefinition;
@@ -46,8 +47,8 @@ namespace KxFramework::System
 
 			HResult SetExecutable(const FSPath& path, const String& arguments = {}, const FSPath& workingDirectory = {});
 			HResult SetTimeTrigger(const String& id, const wxDateTime& start, const wxDateTime& end);
-			HResult SetRegistrationTrigger(const String& id, const wxTimeSpan& delay, const wxDateTime& end = {});
-			HResult DeleteExpiredTaskAfter(const wxTimeSpan& delay);
+			HResult SetRegistrationTrigger(const String& id, const TimeSpan& delay, const wxDateTime& end = {});
+			HResult DeleteExpiredTaskAfter(const TimeSpan& delay);
 
 		public:
 			explicit operator bool() const noexcept

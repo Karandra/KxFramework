@@ -2,15 +2,6 @@
 #include "CoroutineImpl.h"
 #include <chrono>
 
-namespace
-{
-	wxTimeSpan GetClockTime()
-	{
-		using namespace std::chrono;
-		return wxTimeSpan::Milliseconds(duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count());
-	}
-}
-
 namespace KxFramework::Async
 {
 	void CoroutineTimer::Notify()
@@ -22,10 +13,10 @@ namespace KxFramework::Async
 		wxTimer::Stop();
 		return std::move(m_Coroutine);
 	}
-	void CoroutineTimer::Wait(std::unique_ptr<CoroutineBase> coroutine, const wxTimeSpan& time)
+	void CoroutineTimer::Wait(std::unique_ptr<CoroutineBase> coroutine, const TimeSpan& time)
 	{
 		m_Coroutine = std::move(coroutine);
-		wxTimer::StartOnce(time.GetMilliseconds().GetValue());
+		wxTimer::StartOnce(time.GetMilliseconds());
 	}
 }
 
@@ -59,7 +50,7 @@ namespace KxFramework::Async
 	{
 		wxApp::GetInstance()->QueueEvent(new CoroutineExecutor(std::move(coroutine)));
 	}
-	void CoroutineBase::DelayExecution(std::unique_ptr<CoroutineBase> coroutine, const wxTimeSpan& time)
+	void CoroutineBase::DelayExecution(std::unique_ptr<CoroutineBase> coroutine, const TimeSpan& time)
 	{
 		if (time.IsPositive())
 		{
@@ -81,7 +72,7 @@ namespace KxFramework::Async
 		// Save starting time
 		if (m_TimeStampStart.IsNull())
 		{
-			m_TimeStampStart = GetClockTime();
+			m_TimeStampStart = TimeSpan::Now();
 		}
 
 		// Save before-after timestamps
@@ -127,9 +118,9 @@ namespace KxFramework::Async
 		};
 	}
 
-	wxTimeSpan CoroutineBase::GetCurrentExecutionTime() const
+	TimeSpan CoroutineBase::GetCurrentExecutionTime() const
 	{
-		return GetClockTime() - m_TimeStampStart;
+		return TimeSpan::Now() - m_TimeStampStart;
 	}
 
 	CoroutineBase::CoroutineBase()
@@ -150,11 +141,11 @@ namespace KxFramework::Async
 		}
 	}
 	
-	wxTimeSpan CoroutineBase::GetTimeDelta() const
+	TimeSpan CoroutineBase::GetTimeDelta() const
 	{
 		return m_TimeStampBefore - m_TimeStampAfter;
 	}
-	wxTimeSpan CoroutineBase::GetElapsedTime() const
+	TimeSpan CoroutineBase::GetElapsedTime() const
 	{
 		return std::max(m_TimeStampBefore, m_TimeStampAfter);
 	}

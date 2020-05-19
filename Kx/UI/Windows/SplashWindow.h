@@ -29,7 +29,7 @@ namespace KxFramework::UI
 			uint8_t m_Alpha = 255;
 		
 			wxTimer m_Timer;
-			wxTimeSpan m_Timeout;
+			TimeSpan m_Timeout;
 			SplashWindowStyle m_Style = DefaultStyle;
 
 		private:
@@ -45,7 +45,7 @@ namespace KxFramework::UI
 			SplashWindow() = default;
 			SplashWindow(wxWindow* parent,
 						 const wxBitmap& bitmap,
-						 wxTimeSpan timeout = {},
+						 TimeSpan timeout = {},
 						 SplashWindowStyle style = DefaultStyle
 			)
 			{
@@ -54,7 +54,7 @@ namespace KxFramework::UI
 			SplashWindow(wxWindow* parent,
 						 const wxBitmap& bitmap,
 						 const wxSize& size,
-						 wxTimeSpan timeout = {},
+						 TimeSpan timeout = {},
 						 SplashWindowStyle style = DefaultStyle
 			)
 			{
@@ -62,7 +62,7 @@ namespace KxFramework::UI
 			}
 			bool Create(wxWindow* parent,
 						const wxBitmap& bitmap,
-						wxTimeSpan timeout = {},
+						TimeSpan timeout = {},
 						SplashWindowStyle style = DefaultStyle
 			)
 			{
@@ -71,7 +71,7 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						const wxBitmap& bitmap,
 						const wxSize& size,
-						wxTimeSpan timeout = {},
+						TimeSpan timeout = {},
 						SplashWindowStyle style = DefaultStyle
 			);
 			virtual ~SplashWindow();
@@ -109,11 +109,11 @@ namespace KxFramework::UI
 			}
 			void SetSplashAlpha(uint8_t value);
 		
-			wxTimeSpan GetTimeout() const
+			TimeSpan GetTimeout() const
 			{
 				return m_Timeout;
 			}
-			void SetTimeout(wxTimeSpan timeout)
+			void SetTimeout(TimeSpan timeout)
 			{
 				m_Timeout = timeout;
 			}
