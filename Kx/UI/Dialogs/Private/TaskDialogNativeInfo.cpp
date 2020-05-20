@@ -439,9 +439,13 @@ namespace KxFramework::UI::Private
 		m_TaskDialog.SetReturnCode(wxID_CANCEL);
 		m_TaskDialog.m_SelectedRadioButton = wxID_NONE;
 		m_TaskDialog.m_CheckBoxValue = false;
+
+		wxWindowID result = wxID_CANCEL;
 		if (HResult(::TaskDialogIndirect(&m_DialogConfig, &pushButtonCode, &radioButtonCode, checkedPtr)))
 		{
-			m_TaskDialog.SetReturnCode(MapButtonIDFromNative(pushButtonCode));
+			result = MapButtonIDFromNative(pushButtonCode);
+
+			m_TaskDialog.SetReturnCode(result);
 			m_TaskDialog.m_SelectedRadioButton = radioButtonCode;
 			m_TaskDialog.m_CheckBoxValue = checkedPtr ? *checkedPtr : false;
 		}
@@ -454,5 +458,7 @@ namespace KxFramework::UI::Private
 			event.SetShow(false);
 			m_TaskDialog.ProcessWindowEvent(event);
 		}
+
+		return result;
 	}
 }
