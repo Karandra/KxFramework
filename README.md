@@ -28,6 +28,19 @@ You'll need [Visual Studio 2019](https://visualstudio.microsoft.com/) and [VCPkg
 ## As a dependency
 KxFramework can be built as a **VCPkg** pacckage. Install **VCPkg** as usual and copy `VCPkg` folder contents into your **VCPkg** installation and build `kxframework` port (preferrably with `[x86|x64]-windows-static-md` triplet).
 
+If you're using precompiled headers in your project don't forget to include `Kx/pch.hpp` file in your precompiled header file.
+```cpp
+#pragma once
+
+// Unfortunately wxWidgets uses deprecated insecure functions
+#define _CRT_SECURE_NO_DEPRECATE
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <Kx/pch.hpp>
+
+// Additional headers
+```
+
 ### Build notes
 Sciter can't be built using the default `windows-static-md` triplet because it's a dynamic library. Modified triplet configuration  is provided in `VCPkg\triplets\community` folder.
 

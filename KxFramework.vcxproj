@@ -191,6 +191,7 @@
     <ClInclude Include="Kx\General\DateTime\TimeClock.h" />
     <ClInclude Include="Kx\General\DateTime\TimeSpan.h" />
     <ClInclude Include="Kx\General\DateTime\TimeZone.h" />
+    <ClInclude Include="Kx\pch.hpp" />
     <ClInclude Include="Kx\RTTI\ComponentSystem.h" />
     <ClInclude Include="Kx\System\DynamicLibrary.h" />
     <ClInclude Include="Kx\System\ExecutableVersionResource.h" />

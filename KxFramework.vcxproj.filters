@@ -1181,6 +1181,9 @@
     <ClInclude Include="Kx\General\DateTime\Private\Mapping.h">
       <Filter>Kx\General\DateTime\Private</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\pch.hpp">
+      <Filter>Kx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp">
