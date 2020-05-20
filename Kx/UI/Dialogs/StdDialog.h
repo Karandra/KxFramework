@@ -9,6 +9,8 @@
 #include "Kx/UI/StdButton.h"
 #include <wx/nativewin.h>
 #include <wx/artprov.h>
+#include <wx/statbmp.h>
+#include <wx/app.h>
 
 namespace KxFramework::UI
 {

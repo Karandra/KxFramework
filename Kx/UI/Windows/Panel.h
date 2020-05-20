@@ -1,6 +1,7 @@
 #pragma once
 #include "Kx/UI/Common.h"
 #include <wx/panel.h>
+#include <wx/scrolwin.h>
 #include <wx/systhemectrl.h>
 
 namespace KxFramework::UI

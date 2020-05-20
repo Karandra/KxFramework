@@ -3,6 +3,7 @@
 #include "Kx/UI/Windows/TopLevelWindow.h"
 #include "Kx/UI/StdDialogButtonSizer.h"
 #include "Kx/UI/StdButton.h"
+#include <wx/dialog.h>
 
 namespace KxFramework::UI
 {

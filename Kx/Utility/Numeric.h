@@ -1,5 +1,6 @@
 #pragma once
 #include <type_traits>
+#include <algorithm>
 #include <cstdint>
 #include <limits>
 
