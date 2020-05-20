@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Common.h"
+#include "Kx/General/RegEx.h"
 #include "OpenSSL/opensslv.h"
 
 namespace KxFramework::Crypto
@@ -10,7 +11,7 @@ namespace KxFramework::Crypto
 	}
 	Version GetLibraryVersion()
 	{
-		wxRegEx reg(R"(OpenSSL(?:\s+)([\d+\w+\.]+))", wxRE_ICASE|wxRE_ADVANCED);
+		RegEx reg(R"(OpenSSL(?:\s+)([\d+\w+\.]+))");
 		if (reg.Matches(OPENSSL_VERSION_TEXT))
 		{
 			return String(reg.GetMatch(OPENSSL_VERSION_TEXT, 1));

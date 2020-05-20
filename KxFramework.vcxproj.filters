@@ -1187,6 +1187,9 @@
     <ClInclude Include="Kx\General\DateTime\DateSpan.h">
       <Filter>Kx\General\DateTime</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\General\RegEx.h">
+      <Filter>Kx\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp">

@@ -2,6 +2,7 @@
 #include "ShellFileType.h"
 #include "ShellFileTypeManager.h"
 #include "Registry.h"
+#include "Kx/General/RegEx.h"
 #include <wx/regex.h>
 
 namespace KxFramework
@@ -9,7 +10,7 @@ namespace KxFramework
 	FSPath ShellFileType::GetOpenExecutable() const
 	{
 		String openCommand = GetOpenCommand(NullString);
-		if (wxRegEx regEx(u8R"(\"(.+?)\")", wxRE_ADVANCED|wxRE_ICASE); regEx.Matches(openCommand))
+		if (RegEx regEx(u8R"(\"(.+?)\")", RegExFlag::IgnoreCase); regEx.Matches(openCommand))
 		{
 			return regEx.GetMatch(openCommand, 1);
 		}

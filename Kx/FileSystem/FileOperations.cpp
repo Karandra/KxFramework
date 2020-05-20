@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "FileOperations.h"
+#include "Kx/General/RegEx.h"
 #include <shlwapi.h>
-#include "Kx/System/UndefWindows.h"
 #include <wx/filename.h>
+#include "Kx/System/UndefWindows.h"
 
 namespace
 {
@@ -82,10 +83,10 @@ namespace KxFramework::FileSystem
 				// https://blog.codinghorror.com/shortening-long-file-paths/
 
 				String source = path.GetFullPath();
-				wxRegEx regEx(wxS(R"((\w+:\\|)([^\\]+[^\\]+).*\\([^\\]+))"), wxRE_ADVANCED|wxRE_ICASE);
+				RegEx regEx(wxS(R"((\w+:\\|)([^\\]+[^\\]+).*\\([^\\]+))"));
 				if (regEx.Matches(source))
 				{
-					regEx.ReplaceAll(&source.GetWxString(), wxS(R"(\1\2\\...\\\3)"));
+					regEx.ReplaceAll(source, wxS(R"(\1\2\\...\\\3)"));
 				}
 
 				// If it's still longer just truncate it and add ellipsis
