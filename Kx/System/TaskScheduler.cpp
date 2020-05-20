@@ -35,7 +35,7 @@ namespace
 		return value.IsEmpty() ? _bstr_t() : BstrFromString(value);
 	}
 
-	KxFramework::String FormatTimeAsTaskBoundary(const wxDateTime& date)
+	KxFramework::String FormatTimeAsTaskBoundary(const KxFramework::DateTime& date)
 	{
 		return date.FormatISOCombined();
 	}
@@ -113,7 +113,7 @@ namespace KxFramework::System
 		}
 		return hr;
 	}
-	HResult ScheduledTask::SetTimeTrigger(const String& id, const wxDateTime& start, const wxDateTime& end)
+	HResult ScheduledTask::SetTimeTrigger(const String& id, const DateTime& start, const DateTime& end)
 	{
 		HResult hr = E_INVALIDARG;
 
@@ -141,7 +141,7 @@ namespace KxFramework::System
 		}
 		return hr;
 	}
-	HResult ScheduledTask::SetRegistrationTrigger(const String& id, const TimeSpan& delay, const wxDateTime& end)
+	HResult ScheduledTask::SetRegistrationTrigger(const String& id, const TimeSpan& delay, const DateTime& end)
 	{
 		HResult hr = E_INVALIDARG;
 

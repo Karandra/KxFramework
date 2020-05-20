@@ -90,15 +90,15 @@ namespace KxFramework::FileSystem::Private
 
 		return tags;
 	}
-	inline wxDateTime ConvertDateTime(const FILETIME& fileTime)
+	inline DateTime ConvertDateTime(const FILETIME& fileTime)
 	{
 		if (fileTime.dwHighDateTime != 0 && fileTime.dwLowDateTime != 0)
 		{
-			SYSTEMTIME systemTime = {0};
-			SYSTEMTIME localTime = {0};
+			SYSTEMTIME systemTime = {};
+			SYSTEMTIME localTime = {};
 			if (::FileTimeToSystemTime(&fileTime, &systemTime) && ::SystemTimeToTzSpecificLocalTime(nullptr, &systemTime, &localTime))
 			{
-				return wxDateTime().SetFromMSWSysTime(localTime);
+				return DateTime().SetSystemTime(localTime);
 			}
 		}
 		return wxInvalidDateTime;

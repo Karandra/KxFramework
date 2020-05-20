@@ -147,8 +147,8 @@ namespace KxFramework
 			FileAttribute GetAttributes() const;
 			bool SetAttributes(FileAttribute attributes);
 
-			bool GetTimestamp(wxDateTime& creationTime, wxDateTime& modificationTime, wxDateTime& lastAccessTime) const;
-			bool ChangeTimestamp(const wxDateTime& creationTime, const wxDateTime& modificationTime, const wxDateTime& lastAccessTime);
+			bool GetTimestamp(DateTime& creationTime, DateTime& modificationTime, DateTime& lastAccessTime) const;
+			bool ChangeTimestamp(DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime);
 
 		public:
 			explicit operator bool() const

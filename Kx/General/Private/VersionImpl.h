@@ -1,7 +1,7 @@
 #pragma once
 #include "../Common.h"
 #include "Kx/General/String.h"
-#include <wx/datetime.h>
+#include "Kx/General/DateTime.h"
 
 namespace KxFramework
 {
@@ -120,12 +120,12 @@ namespace KxFramework::Private::Version
 	Cmp Compare(const KxFramework::Version& left, const KxFramework::Version& right);
 
 	bool Parse(const String& source, DefaultFormat::Array& items, size_t& componentCount);
-	bool Parse(const String& source, wxDateTime& dateTime);
+	bool Parse(const String& source, DateTime& dateTime);
 
 	String Format(const DefaultFormat::Array& items, size_t itemCount);
-	String Format(const wxDateTime& dateTime);
+	String Format(const DateTime& dateTime);
 
-	inline bool HasTimePart(const wxDateTime& dateTime)
+	inline bool HasTimePart(const DateTime& dateTime)
 	{
 		return dateTime.GetHour() != 0 || dateTime.GetMinute() != 0 || dateTime.GetSecond() != 0 || dateTime.GetMillisecond() != 0;
 	}

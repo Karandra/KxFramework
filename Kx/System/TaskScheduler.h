@@ -46,8 +46,8 @@ namespace KxFramework::System
 			}
 
 			HResult SetExecutable(const FSPath& path, const String& arguments = {}, const FSPath& workingDirectory = {});
-			HResult SetTimeTrigger(const String& id, const wxDateTime& start, const wxDateTime& end);
-			HResult SetRegistrationTrigger(const String& id, const TimeSpan& delay, const wxDateTime& end = {});
+			HResult SetTimeTrigger(const String& id, const DateTime& start, const DateTime& end);
+			HResult SetRegistrationTrigger(const String& id, const TimeSpan& delay, const DateTime& end = {});
 			HResult DeleteExpiredTaskAfter(const TimeSpan& delay);
 
 		public:

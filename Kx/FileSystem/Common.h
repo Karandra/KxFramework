@@ -1,6 +1,7 @@
 #pragma once
 #include "Kx/Common.hpp"
 #include "Kx/General/String.h"
+#include "Kx/General/DateTime.h"
 #include "Kx/System/UndefWindows.h"
 
 namespace KxFramework

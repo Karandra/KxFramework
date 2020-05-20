@@ -106,6 +106,10 @@ namespace KxFramework
 			{
 				return m_Value.GetValue() > 0;
 			}
+			void MakeNull() noexcept
+			{
+				m_Value = {};
+			}
 			DateTime Clone() const noexcept
 			{
 				return *this;
@@ -152,11 +156,11 @@ namespace KxFramework
 				return *this;
 			}
 
-			int GetDayOfMonth(const TimeZoneOffset& tz = TimeZone::Local) const noexcept
+			int GetDay(const TimeZoneOffset& tz = TimeZone::Local) const noexcept
 			{
 				return m_Value.GetDay(tz);
 			}
-			DateTime& SetDayOfMonth(int value) noexcept
+			DateTime& SetDay(int value) noexcept
 			{
 				m_Value.SetDay(value);
 				return *this;
@@ -373,30 +377,36 @@ namespace KxFramework
 				return m_Value.FormatISOCombined(sep);
 			}
 
-			bool ParseDate(const String& date, String::const_iterator* end)
+			bool ParseDate(const String& date, String::const_iterator* end = nullptr)
 			{
-				return m_Value.ParseDate(date, end);
+				String::const_iterator it;
+				return m_Value.ParseDate(date, end ? end : &it);
 			}
-			bool ParseTime(const String& time, String::const_iterator* end)
+			bool ParseTime(const String& time, String::const_iterator* end = nullptr)
 			{
-				return m_Value.ParseTime(time, end);
+				String::const_iterator it;
+				return m_Value.ParseTime(time, end ? end : &it);
 			}
-			bool ParseCombined(const String& dateTime, String::const_iterator* end)
+			bool ParseCombined(const String& dateTime, String::const_iterator* end = nullptr)
 			{
-				return m_Value.ParseDateTime(dateTime, end);
+				String::const_iterator it;
+				return m_Value.ParseDateTime(dateTime, end ? end : &it);
 			}
 
-			bool ParseFormat(const String& dateTime, wxString::const_iterator* end)
+			bool ParseFormat(const String& dateTime, wxString::const_iterator* end = nullptr)
 			{
-				return m_Value.ParseFormat(dateTime, end);
+				String::const_iterator it;
+				return m_Value.ParseFormat(dateTime, end ? end : &it);
 			}
-			bool ParseFormat(const String& dateTime, const String& format, wxString::const_iterator* end)
+			bool ParseFormat(const String& dateTime, const String& format, wxString::const_iterator* end = nullptr)
 			{
-				return m_Value.ParseFormat(dateTime, format, end);
+				String::const_iterator it;
+				return m_Value.ParseFormat(dateTime, format, end ? end : &it);
 			}
-			bool ParseFormat(const String& dateTime, const String& format, const DateTime& dateDefault, wxString::const_iterator* end)
+			bool ParseFormat(const String& dateTime, const String& format, const DateTime& dateDefault, wxString::const_iterator* end = nullptr)
 			{
-				return m_Value.ParseFormat(dateTime, format, dateDefault, end);
+				String::const_iterator it;
+				return m_Value.ParseFormat(dateTime, format, dateDefault, end ? end : &it);
 			}
 
 			bool ParseISODate(const String& date)

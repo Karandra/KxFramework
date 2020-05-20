@@ -24,16 +24,16 @@ namespace KxFramework::UI::DataView
 	class KX_API DateTimeValue: public KxFramework::WithOptions<DateEditorOption, DateEditorOption::None>
 	{
 		protected:
-			wxDateTime m_Value;
-			wxDateTime m_RangeLower;
-			wxDateTime m_RangeUpper;
+			DateTime m_Value;
+			DateTime m_RangeLower;
+			DateTime m_RangeUpper;
 
 		public:
-			DateTimeValue(const wxDateTime& value = {})
+			DateTimeValue(const DateTime& value = {})
 				:m_Value(value)
 			{
 			}
-			DateTimeValue(const wxDateTime& value, const wxDateTime& lower, const wxDateTime& upper)
+			DateTimeValue(const DateTime& value, const DateTime& lower, const DateTime& upper)
 				:m_Value(value)
 			{
 				SetDateTimeRange(lower, upper);
@@ -50,28 +50,28 @@ namespace KxFramework::UI::DataView
 			{
 				return m_Value.IsValid();
 			}
-			wxDateTime GetDateTime() const
+			DateTime GetDateTime() const
 			{
 				return m_Value;
 			}
-			void SetDateTime(const wxDateTime& value)
+			void SetDateTime(const DateTime& value)
 			{
 				m_Value = value;
 			}
 			void ClearDateTime()
 			{
-				m_Value = {};
+				m_Value.MakeNull();
 			}
 			
 			bool HasDateRange() const
 			{
 				return m_RangeLower.IsValid() && m_RangeUpper.IsValid();
 			}
-			std::pair<wxDateTime, wxDateTime> GetDateTimeRange() const
+			std::pair<DateTime, DateTime> GetDateTimeRange() const
 			{
 				return {m_RangeLower, m_RangeUpper};
 			}
-			void SetDateTimeRange(const wxDateTime& lower, const wxDateTime& upper)
+			void SetDateTimeRange(const DateTime& lower, const DateTime& upper)
 			{
 				m_RangeLower = lower;
 				m_RangeUpper = upper;
@@ -83,8 +83,8 @@ namespace KxFramework::UI::DataView
 			}
 			void ClearDateTimeRange()
 			{
-				m_RangeLower = {};
-				m_RangeUpper = {};
+				m_RangeLower.MakeNull();
+				m_RangeUpper.MakeNull();
 			}
 	};
 }

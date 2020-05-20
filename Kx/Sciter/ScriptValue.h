@@ -107,7 +107,7 @@ namespace KxFramework::Sciter
 			std::optional<int> GetInt() const;
 			std::optional<int64_t> GetInt64() const;
 			std::optional<double> GetFloat() const;
-			wxDateTime GetDateTime() const;
+			DateTime GetDateTime() const;
 			TimeSpan GetDuration() const;
 			Color GetColor() const;
 			Angle GetAngle() const;
@@ -144,7 +144,7 @@ namespace KxFramework::Sciter
 				*this = std::wstring_view(value ? value : L"");
 				return *this;
 			}
-			ScriptValue& operator=(const wxDateTime& value);
+			ScriptValue& operator=(const DateTime& value);
 			ScriptValue& operator=(const TimeSpan& value);
 			ScriptValue& operator=(const Color& value);
 			ScriptValue& SetAngle(Angle angle);

@@ -15,7 +15,7 @@ namespace KxFramework
 			using TDefaultItem = Private::Version::DefaultFormat::Array;
 
 		private:
-			std::variant<TDefaultItem, wxDateTime> m_Value;
+			std::variant<TDefaultItem, DateTime> m_Value;
 			VersionType m_Type = VersionType::None;
 			size_t m_ComponentCount = 0;
 
@@ -28,7 +28,7 @@ namespace KxFramework
 				m_Value = std::move(value);
 				return std::get<ToInt(VersionType::Default)>(m_Value);
 			}
-			wxDateTime& AssignDateTime(wxDateTime value = {})
+			DateTime& AssignDateTime(DateTime value = {})
 			{
 				m_Value = std::move(value);
 				return std::get<ToInt(VersionType::DateTime)>(m_Value);
@@ -55,7 +55,7 @@ namespace KxFramework
 				:Version(String(data), type)
 			{
 			}
-			Version(const wxDateTime& dateTime)
+			Version(const DateTime& dateTime)
 			{
 				if (dateTime.IsValid())
 				{
@@ -80,7 +80,7 @@ namespace KxFramework
 			
 			String ToString() const;
 			wxVersionInfo ToWxVersionInfo(const String& name = {}, const String& description = {}, const String& copyright = {}) const;
-			wxDateTime ToDateTime() const;
+			DateTime ToDateTime() const;
 
 		public:
 			explicit operator bool() const noexcept

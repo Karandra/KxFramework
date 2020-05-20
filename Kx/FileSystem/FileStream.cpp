@@ -378,22 +378,22 @@ namespace KxFramework
 		return false;
 	}
 
-	bool FileStream::GetTimestamp(wxDateTime& creationTime, wxDateTime& modificationTime, wxDateTime& lastAccessTime) const
+	bool FileStream::GetTimestamp(DateTime& creationTime, DateTime& modificationTime, DateTime& lastAccessTime) const
 	{
 		FILETIME creationTimeFile = {};
 		FILETIME modificationTimeFile = {};
 		FILETIME lastAccessTimeFile = {};
 		if (m_Handle && ::GetFileTime(m_Handle, &creationTimeFile, &lastAccessTimeFile, &modificationTimeFile))
 		{
-			auto ToDateTime = [](const FILETIME& fileTime)
+			auto ToDateTime = [](const FILETIME& fileTime) -> DateTime
 			{
 				SYSTEMTIME systemTime = {};
 				SYSTEMTIME localTime = {};
 				if (::FileTimeToSystemTime(&fileTime, &systemTime) && ::SystemTimeToTzSpecificLocalTime(nullptr, &systemTime, &localTime))
 				{
-					return wxDateTime().SetFromMSWSysTime(localTime);
+					return DateTime().SetSystemTime(localTime);
 				}
-				return wxInvalidDateTime;
+				return {};
 			};
 
 			creationTime = ToDateTime(creationTimeFile);
@@ -404,19 +404,17 @@ namespace KxFramework
 		}
 		return false;
 	}
-	bool FileStream::ChangeTimestamp(const wxDateTime& creationTime, const wxDateTime& modificationTime, const wxDateTime& lastAccessTime)
+	bool FileStream::ChangeTimestamp(DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime)
 	{
 		if (m_Handle)
 		{
-			auto ToFileTime = [](const wxDateTime& dateTime)
+			auto ToFileTime = [](DateTime dateTime)
 			{
 				FILETIME fileTime = {0, 0};
 				if (dateTime.IsValid())
 				{
 					SYSTEMTIME localTime = {};
-					SYSTEMTIME systemTime = {};
-					dateTime.GetAsMSWSysTime(&localTime);
-
+					SYSTEMTIME systemTime = dateTime.GetSystemTime();
 					if (::TzSpecificLocalTimeToSystemTime(nullptr, &localTime, &systemTime) && ::SystemTimeToFileTime(&systemTime, &fileTime))
 					{
 						return fileTime;

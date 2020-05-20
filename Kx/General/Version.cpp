@@ -120,7 +120,7 @@ namespace KxFramework
 		};
 		return wxVersionInfo(name, GetPart(0), GetPart(1), GetPart(2), description, copyright);
 	}
-	wxDateTime Version::ToDateTime() const
+	DateTime Version::ToDateTime() const
 	{
 		if (m_Type == VersionType::DateTime)
 		{

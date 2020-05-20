@@ -108,10 +108,10 @@ namespace KxFramework::Private::Version
 		componentCount = 0;
 		return false;
 	}
-	bool Parse(const String& source, wxDateTime& dateTime)
+	bool Parse(const String& source, DateTime& dateTime)
 	{
 		String::const_iterator it = source.begin();
-		return dateTime.ParseISOCombined(source) || dateTime.ParseISOCombined(source, ' ') || dateTime.ParseISODate(source) || dateTime.ParseRfc822Date(source, &it);
+		return dateTime.ParseISOCombined(source) || dateTime.ParseISOCombined(source, ' ') || dateTime.ParseISODate(source) || dateTime.ParseRFC822Date(source, &it);
 	}
 
 	String Format(const DefaultFormat::Array& items, size_t itemCount)
@@ -150,7 +150,7 @@ namespace KxFramework::Private::Version
 		}
 		return {};
 	}
-	String Format(const wxDateTime& dateTime)
+	String Format(const DateTime& dateTime)
 	{
 		if (dateTime.IsValid())
 		{

@@ -29,7 +29,7 @@ namespace KxFramework
 			
 			bool CreateDirectory(const FSPath& path) override;
 			bool ChangeAttributes(const FSPath& path, FileAttribute attributes) override;
-			bool ChangeTimestamp(const FSPath& path, const wxDateTime& creationTime, const wxDateTime& modificationTime, const wxDateTime& lastAccessTime) override;
+			bool ChangeTimestamp(const FSPath& path, DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime) override;
 
 			bool CopyItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FSCopyItemFlag flags = FSCopyItemFlag::None) override;
 			bool MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FSCopyItemFlag flags = FSCopyItemFlag::None) override;

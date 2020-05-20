@@ -25,7 +25,7 @@ namespace KxFramework
 		tm.tm_min = GetMinute(tz);
 		tm.tm_sec = GetSecond(tz);
 
-		tm.tm_mday = GetDayOfMonth(tz);
+		tm.tm_mday = GetDay(tz);
 		tm.tm_wday = static_cast<int>(Private::MapWeekDay(GetWeekDay(tz)));
 		tm.tm_yday = GetDayOfYear(tz);
 		tm.tm_isdst = m_Value.IsDST();

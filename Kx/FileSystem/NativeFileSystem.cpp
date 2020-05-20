@@ -125,7 +125,7 @@ namespace KxFramework
 		}
 		return false;
 	}
-	bool NativeFileSystem::ChangeTimestamp(const FSPath& path, const wxDateTime& creationTime, const wxDateTime& modificationTime, const wxDateTime& lastAccessTime)
+	bool NativeFileSystem::ChangeTimestamp(const FSPath& path, DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime)
 	{
 		if (creationTime.IsValid() || modificationTime.IsValid() || lastAccessTime.IsValid())
 		{

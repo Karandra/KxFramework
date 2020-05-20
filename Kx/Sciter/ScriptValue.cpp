@@ -178,7 +178,7 @@ namespace KxFramework::Sciter
 		}
 		return std::nullopt;
 	}
-	wxDateTime ScriptValue::GetDateTime() const
+	DateTime ScriptValue::GetDateTime() const
 	{
 		if (auto value64 = GetInt64(); value64 && GetType() == ScriptValueType::DateTime)
 		{
@@ -186,7 +186,7 @@ namespace KxFramework::Sciter
 			SYSTEMTIME systemTime = {};
 			if (::FileTimeToSystemTime(&fileTime, &systemTime))
 			{
-				return wxDateTime().SetFromMSWSysTime(systemTime);
+				return DateTime().SetSystemTime(systemTime);
 			}
 		}
 		return wxInvalidDateTime;
@@ -270,13 +270,12 @@ namespace KxFramework::Sciter
 
 		return *this;
 	}
-	ScriptValue& ScriptValue::operator=(const wxDateTime& value)
+	ScriptValue& ScriptValue::operator=(const DateTime& value)
 	{
 		Clear();
 
-		SYSTEMTIME systemTime = {};
-		FILETIME fileTime = {};
-		if (value.GetAsMSWSysDate(&systemTime); ::SystemTimeToFileTime(&systemTime, &fileTime))
+		SYSTEMTIME systemTime = value.GetSystemTime();
+		if (FILETIME fileTime = {}; ::SystemTimeToFileTime(&systemTime, &fileTime))
 		{
 			constexpr bool isUTC = false;
 			GetSciterAPI()->ValueInt64DataSet(ToSciterScriptValue(m_Value), *reinterpret_cast<uint64_t*>(&fileTime), T_DATE, isUTC);

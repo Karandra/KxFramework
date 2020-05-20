@@ -19,9 +19,9 @@ namespace KxFramework
 			FSPath m_Path;
 			BinarySize m_Size;
 			BinarySize m_CompressedSize;
-			wxDateTime m_CreationTime;
-			wxDateTime m_LastAccessTime;
-			wxDateTime m_ModificationTime;
+			DateTime m_CreationTime;
+			DateTime m_LastAccessTime;
+			DateTime m_ModificationTime;
 			FileAttribute m_Attributes = FileAttribute::None;
 			ReparsePointTag m_ReparsePointTags = ReparsePointTag::None;
 
@@ -112,31 +112,31 @@ namespace KxFramework
 			}
 
 			// Date and time
-			wxDateTime GetCreationTime() const
+			DateTime GetCreationTime() const
 			{
 				return m_CreationTime;
 			}
-			FileItem& SetCreationTime(const wxDateTime& value)
+			FileItem& SetCreationTime(DateTime value)
 			{
 				m_CreationTime = value;
 				return *this;
 			}
 			
-			wxDateTime GetLastAccessTime() const
+			DateTime GetLastAccessTime() const
 			{
 				return m_LastAccessTime;
 			}
-			FileItem& SetLastAccessTime(const wxDateTime& value)
+			FileItem& SetLastAccessTime(DateTime value)
 			{
 				m_LastAccessTime = value;
 				return *this;
 			}
 			
-			wxDateTime GetModificationTime() const
+			DateTime GetModificationTime() const
 			{
 				return m_ModificationTime;
 			}
-			FileItem& SetModificationTime(const wxDateTime& value)
+			FileItem& SetModificationTime(DateTime value)
 			{
 				m_ModificationTime = value;
 				return *this;

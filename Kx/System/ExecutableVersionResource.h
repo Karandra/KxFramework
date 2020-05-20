@@ -49,7 +49,7 @@ namespace KxFramework
 
 			Version GetFileVersion() const;
 			Version GetProductVersion() const;
-			wxDateTime GetFileDate() const;
+			DateTime GetFileDate() const;
 			String GetStringField(ExecutableVersionField fieldName) const;
 
 			String GetAnyVersion() const;

@@ -52,7 +52,7 @@ namespace KxFramework
 			
 			virtual bool CreateDirectory(const FSPath& path) = 0;
 			virtual bool ChangeAttributes(const FSPath& path, FileAttribute attributes) = 0;
-			virtual bool ChangeTimestamp(const FSPath& path, const wxDateTime& creationTime, const wxDateTime& modificationTime, const wxDateTime& lastAccessTime) = 0;
+			virtual bool ChangeTimestamp(const FSPath& path, DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime) = 0;
 
 			virtual bool CopyItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FSCopyItemFlag flags = FSCopyItemFlag::None) = 0;
 			virtual bool MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FSCopyItemFlag flags = FSCopyItemFlag::None) = 0;

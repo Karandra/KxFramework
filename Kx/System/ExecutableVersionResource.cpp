@@ -79,7 +79,7 @@ namespace KxFramework
 		}
 		return {};
 	}
-	wxDateTime ExecutableVersionResource::GetFileDate() const
+	DateTime ExecutableVersionResource::GetFileDate() const
 	{
 		if (const VS_FIXEDFILEINFO* fixedInfo = GetFixedFileVersionInfo(m_Buffer.data()))
 		{

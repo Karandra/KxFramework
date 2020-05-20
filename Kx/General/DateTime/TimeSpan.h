@@ -7,7 +7,7 @@ namespace KxFramework
 	class ITimeClock;
 }
 
-namespace KxFramework::Private::DateTime
+namespace KxFramework::Private
 {
 	constexpr int MillisecondsInSecond = 1000;
 	constexpr int MillisecondsInMinute = MillisecondsInSecond * 60;
@@ -27,23 +27,23 @@ namespace KxFramework
 			}
 			static constexpr TimeSpan Seconds(int64_t seconds) noexcept
 			{
-				return seconds * Private::DateTime::MillisecondsInSecond;
+				return seconds * Private::MillisecondsInSecond;
 			}
 			static constexpr TimeSpan Minutes(int64_t minutes) noexcept
 			{
-				return minutes * Private::DateTime::MillisecondsInMinute;
+				return minutes * Private::MillisecondsInMinute;
 			}
 			static constexpr TimeSpan Hours(int64_t hours) noexcept
 			{
-				return hours * Private::DateTime::MillisecondsInHour;
+				return hours * Private::MillisecondsInHour;
 			}
 			static constexpr TimeSpan Days(int64_t days) noexcept
 			{
-				return days * Private::DateTime::MillisecondsInDay;
+				return days * Private::MillisecondsInDay;
 			}
 			static constexpr TimeSpan Weeks(int64_t weeks) noexcept
 			{
-				return weeks * Private::DateTime::MillisecondsInWeek;
+				return weeks * Private::MillisecondsInWeek;
 			}
 
 			static TimeSpan Now() noexcept;
@@ -82,23 +82,23 @@ namespace KxFramework
 
 			constexpr int64_t GetWeeks() const noexcept
 			{
-				return m_Value / Private::DateTime::MillisecondsInWeek;
+				return m_Value / Private::MillisecondsInWeek;
 			}
 			constexpr int64_t GetDays() const noexcept
 			{
-				return m_Value / Private::DateTime::MillisecondsInDay;
+				return m_Value / Private::MillisecondsInDay;
 			}
 			constexpr int64_t GetHours() const noexcept
 			{
-				return m_Value / Private::DateTime::MillisecondsInHour;
+				return m_Value / Private::MillisecondsInHour;
 			}
 			constexpr int64_t GetMinutes() const noexcept
 			{
-				return m_Value / Private::DateTime::MillisecondsInMinute;
+				return m_Value / Private::MillisecondsInMinute;
 			}
 			constexpr int64_t GetSeconds() const noexcept
 			{
-				return m_Value / Private::DateTime::MillisecondsInSecond;
+				return m_Value / Private::MillisecondsInSecond;
 			}
 			constexpr int64_t GetMilliseconds() const noexcept
 			{

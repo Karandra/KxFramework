@@ -30,20 +30,20 @@ namespace KxFramework::UI::DataView
 		}
 		else if (SYSTEMTIME systemTime; value.CheckType<SYSTEMTIME>() && value.GetAs(&systemTime))
 		{
-			m_Value.SetFromMSWSysTime(systemTime);
+			m_Value.SetSystemTime(systemTime);
 			return true;
 		}
 		else if (FILETIME fileTime; value.CheckType<FILETIME>() && value.GetAs(&fileTime))
 		{
 			if (::FileTimeToSystemTime(&fileTime, &systemTime))
 			{
-				m_Value.SetFromMSWSysTime(systemTime);
+				m_Value.SetSystemTime(systemTime);
 				return true;
 			}
 		}
 		else if (time_t unixTime = 0; value.CheckType<time_t>() && value.GetAs(&unixTime))
 		{
-			m_Value.Set(unixTime);
+			m_Value.SetUnixTime(unixTime);
 			return true;
 		}
 		else if (wxString string; value.GetAs(&string))

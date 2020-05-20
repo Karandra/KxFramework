@@ -5,14 +5,15 @@
 
 namespace
 {
-	wxDateTime ResetDate(const wxDateTime& date)
+	KxFramework::DateTime ResetDate(KxFramework::DateTime date)
 	{
-		wxDateTime copy = date;
-		copy.SetDay(0);
-		copy.SetMonth(wxDateTime::Inv_Month);
-		copy.SetYear(wxDateTime::Inv_Year);
+		using namespace KxFramework;
 
-		return copy;
+		date.SetDay(0);
+		date.SetMonth(Month::None);
+		date.SetYear(DateTime::InvalidYear);
+
+		return date;
 	}
 }
 
