@@ -127,6 +127,18 @@ namespace KxFramework::UI
 		}
 	}
 
+	TaskDialog::TaskDialog() = default;
+	TaskDialog::TaskDialog(wxWindow* parent,
+						   wxWindowID id,
+						   String caption,
+						   String message,
+						   StdButton buttons,
+						   StdIcon mainIcon,
+						   TaskDialogStyle style
+	)
+	{
+		Create(parent, id, std::move(caption), std::move(message), buttons, mainIcon, style);
+	}
 	bool TaskDialog::Create(wxWindow* parent,
 							wxWindowID id,
 							String caption,

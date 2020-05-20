@@ -119,7 +119,7 @@ namespace KxFramework::UI
 			void DoPulse() override;
 
 		public:
-			TaskDialog() = default;
+			TaskDialog();
 			TaskDialog(wxWindow* parent,
 					   wxWindowID id,
 					   String caption = {},
@@ -127,10 +127,7 @@ namespace KxFramework::UI
 					   StdButton buttons = DefaultButtons,
 					   StdIcon mainIcon = StdIcon::None,
 					   TaskDialogStyle style = DefaultStyle
-			)
-			{
-				Create(parent, id, std::move(caption), std::move(message), buttons, mainIcon, style);
-			}
+			);
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						String caption = {},
