@@ -185,6 +185,7 @@
   <ItemGroup>
     <ClInclude Include="Kx\General\DateTime.h" />
     <ClInclude Include="Kx\General\DateTime\Common.h" />
+    <ClInclude Include="Kx\General\DateTime\DateSpan.h" />
     <ClInclude Include="Kx\General\DateTime\DateTime.h" />
     <ClInclude Include="Kx\General\DateTime\ITimeClock.h" />
     <ClInclude Include="Kx\General\DateTime\Private\Mapping.h" />
@@ -519,6 +520,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kx\General\Common.cpp" />
+    <ClCompile Include="Kx\General\DateTime\DateSpan.cpp" />
     <ClCompile Include="Kx\General\DateTime\DateTime.cpp" />
     <ClCompile Include="Kx\General\DateTime\TimeClock.cpp" />
     <ClCompile Include="Kx\General\DateTime\TimeSpan.cpp" />

@@ -39,12 +39,12 @@ namespace KxFramework::UI
 	}
 
 	bool TextBoxDialog::Create(wxWindow* parent,
-								 wxWindowID id,
-								 const String& caption,
-								 const wxPoint& pos,
-								 const wxSize& size,
-								 StdButton buttons,
-								 TextBoxDialogStyle style
+							   wxWindowID id,
+							   const String& caption,
+							   const wxPoint& pos,
+							   const wxSize& size,
+							   StdButton buttons,
+							   TextBoxDialogStyle style
 	)
 	{
 		m_DialogResizeSide = static_cast<wxOrientation>(-1);

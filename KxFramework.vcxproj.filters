@@ -1184,6 +1184,9 @@
     <ClInclude Include="Kx\pch.hpp">
       <Filter>Kx</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\General\DateTime\DateSpan.h">
+      <Filter>Kx\General\DateTime</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp">
@@ -1809,6 +1812,9 @@
       <Filter>Kx\General\DateTime</Filter>
     </ClCompile>
     <ClCompile Include="Kx\General\DateTime\TimeZone.cpp">
+      <Filter>Kx\General\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\General\DateTime\DateSpan.cpp">
       <Filter>Kx\General\DateTime</Filter>
     </ClCompile>
   </ItemGroup>

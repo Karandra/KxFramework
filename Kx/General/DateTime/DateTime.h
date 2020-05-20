@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "TimeSpan.h"
+#include "DateSpan.h"
 #include "TimeZone.h"
 #include "Private/Mapping.h"
 
@@ -218,7 +219,10 @@ namespace KxFramework
 			DateTime& SetTm(const std::tm& value) noexcept;
 
 			TimeSpan GetTimeSpan(const TimeZoneOffset& tz = TimeZone::Local) const noexcept;
-			 DateTime& SetTimeSpan(const TimeSpan& span) noexcept;
+			DateTime& SetTimeSpan(const TimeSpan& span) noexcept;
+
+			DateSpan GetDateSpan(const TimeZoneOffset& tz = TimeZone::Local) const noexcept;
+			DateTime& SetDateSpan(const DateSpan& span) noexcept;
 
 			time_t GetUnixTime() const noexcept
 			{
@@ -295,7 +299,7 @@ namespace KxFramework
 			}
 
 			// Arithmetics
-			wxDateSpan Difference(const DateTime& other) const noexcept
+			DateSpan Difference(const DateTime& other) const noexcept
 			{
 				return m_Value.DiffAsDateSpan(other.m_Value);
 			}
@@ -308,11 +312,11 @@ namespace KxFramework
 			{
 				return m_Value - other;
 			}
-			DateTime operator+(const wxDateSpan& other) const noexcept
+			DateTime operator+(const DateSpan& other) const noexcept
 			{
 				return m_Value + other;
 			}
-			DateTime operator-(const wxDateSpan& other) const noexcept
+			DateTime operator-(const DateSpan& other) const noexcept
 			{
 				return m_Value - other;
 			}
@@ -331,12 +335,12 @@ namespace KxFramework
 				m_Value -= other;
 				return *this;
 			}
-			DateTime& operator+=(const wxDateSpan& other) noexcept
+			DateTime& operator+=(const DateSpan& other) noexcept
 			{
 				m_Value += other;
 				return *this;
 			}
-			DateTime& operator-=(const wxDateSpan& other) noexcept
+			DateTime& operator-=(const DateSpan& other) noexcept
 			{
 				m_Value -= other;
 				return *this;

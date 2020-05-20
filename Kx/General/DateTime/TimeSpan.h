@@ -62,8 +62,8 @@ namespace KxFramework
 			constexpr TimeSpan() noexcept = default;
 			constexpr TimeSpan(const TimeSpan&) noexcept = default;
 			TimeSpan(const wxTimeSpan& other) noexcept
-				:m_Value(other.GetMilliseconds().GetValue())
 			{
+				*this = other;
 			}
 
 		public:
@@ -114,7 +114,7 @@ namespace KxFramework
 				return TimeSpan(-m_Value);
 			}
 
-			// Compare two time spans. Works with the absolute values.
+			// Compare two time spans, works with the absolute values
 			constexpr bool IsLongerThan(const TimeSpan& other) const noexcept
 			{
 				return Abs() > other.Abs();
@@ -182,7 +182,7 @@ namespace KxFramework
 				m_Value -= other.m_Value;
 				return *this;
 			}
-			constexpr TimeSpan& operator*=(int64_t multiplier) noexcept
+			constexpr TimeSpan& operator*=(int multiplier) noexcept
 			{
 				m_Value *= multiplier;
 				return *this;
@@ -200,7 +200,7 @@ namespace KxFramework
 			{
 				return m_Value - other.m_Value;
 			}
-			constexpr TimeSpan operator*(int64_t multiplier) const noexcept
+			constexpr TimeSpan operator*(int multiplier) const noexcept
 			{
 				return m_Value * multiplier;
 			}

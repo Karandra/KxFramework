@@ -48,6 +48,36 @@ namespace KxFramework
 		return *this;
 	}
 
+	DateSpan DateTime::GetDateSpan(const TimeZoneOffset& tz) const noexcept
+	{
+		if (m_Value.IsValid())
+		{
+			int years = GetYear(tz);
+			if (years == wxDateTime::Inv_Year)
+			{
+				years = 0;
+			}
+
+			int months = m_Value.GetMonth(tz);
+			if (months == wxDateTime::Inv_Month)
+			{
+				months = 0;
+			}
+
+			return DateSpan(years, months, 0, m_Value.GetDay(tz));
+		}
+		return {};
+	}
+	DateTime& DateTime::SetDateSpan(const DateSpan& span) noexcept
+	{
+		m_Value.ResetTime();
+		m_Value.SetYear(span.GetYears());
+		m_Value.SetMonth(static_cast<wxDateTime::Month>(span.GetMonths()));
+		m_Value.SetDay(span.GetDays());
+
+		return *this;
+	}
+
 	_SYSTEMTIME DateTime::GetSystemTime(const TimeZoneOffset& tz) const noexcept
 	{
 		SYSTEMTIME systemTime = {};
