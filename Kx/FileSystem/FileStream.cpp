@@ -405,7 +405,7 @@ namespace KxFramework
 			FILETIME creationTimeFile = ToFileTime(creationTime);
 			FILETIME modificationTimeFile = ToFileTime(modificationTime);
 			FILETIME lastAccessTimeFile = ToFileTime(lastAccessTime);
-			return ::SetFileTime(m_Handle, &creationTimeFile, &modificationTimeFile, &lastAccessTimeFile);
+			return ::SetFileTime(m_Handle, &creationTimeFile, &lastAccessTimeFile, &modificationTimeFile);
 		}
 		return false;
 	}
