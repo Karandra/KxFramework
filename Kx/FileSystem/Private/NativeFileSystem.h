@@ -146,8 +146,24 @@ namespace KxFramework::FileSystem::Private
 		FileItem fileItem;
 
 		// Construct path
-		FSPath fsPath(findInfo.cFileName);
-		fsPath.EnsureNamespaceSet(location.GetNamespace());
+		FSPath path;
+		if (location.IsAbsolute())
+		{
+			if (findInfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+			{
+				path = location / findInfo.cFileName;
+			}
+			else
+			{
+				path = location.GetParent() / findInfo.cFileName;
+			}
+			path.EnsureNamespaceSet(location.GetNamespace());
+		}
+		else if (FSPath cwd = NativeFileSystem::Get().GetWorkingDirectory())
+		{
+			path = cwd / findInfo.cFileName;
+			path.EnsureNamespaceSet(cwd.GetNamespace());
+		}
 
 		// Attributes and reparse point
 		fileItem.SetAttributes(MapFileAttributes(findInfo.dwFileAttributes));
@@ -171,8 +187,8 @@ namespace KxFramework::FileSystem::Private
 		{
 			ULARGE_INTEGER compressedSize = {};
 
-			String path = fsPath.GetFullPathWithNS();
-			compressedSize.LowPart = ::GetCompressedFileSizeW(path.wc_str(), &compressedSize.HighPart);
+			String pathName = path.GetFullPathWithNS();
+			compressedSize.LowPart = ::GetCompressedFileSizeW(pathName.wc_str(), &compressedSize.HighPart);
 			fileItem.SetCompressedSize(BinarySize::FromBytes(compressedSize.QuadPart));
 		}
 
@@ -182,7 +198,7 @@ namespace KxFramework::FileSystem::Private
 		fileItem.SetLastAccessTime(ConvertDateTime(findInfo.ftLastAccessTime));
 
 		// Assign path
-		fileItem.SetFullPath(std::move(fsPath));
+		fileItem.SetFullPath(std::move(path));
 
 		return fileItem;
 	}
