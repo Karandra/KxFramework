@@ -183,6 +183,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Kx\Crypto\UserCredentials.h" />
     <ClInclude Include="Kx\General\DateTime.h" />
     <ClInclude Include="Kx\General\DateTime\Common.h" />
     <ClInclude Include="Kx\General\DateTime\DateSpan.h" />
@@ -209,6 +210,7 @@
     <ClInclude Include="Kx\System\SystemProcess\RunningSystemProcess.h" />
     <ClInclude Include="Kx\System\SystemProcess\RunningSystemProcessStdIO.h" />
     <ClInclude Include="Kx\System\SystemProcess\SystemProcessInfo.h" />
+    <ClInclude Include="Kx\System\UserName.h" />
     <ClInclude Include="Kx\UI\Controls\AUI\AuiNotebook.h" />
     <ClInclude Include="Kx\UI\Controls\AUI\AuiToolBar.h" />
     <ClInclude Include="Kx\UI\Controls\AUI\AuiToolBarEvent.h" />
@@ -536,6 +538,7 @@
     <ClCompile Include="Kx\System\SystemProcess\RunningSystemProcess.cpp" />
     <ClCompile Include="Kx\System\SystemProcess\RunningSystemProcessStdIO.cpp" />
     <ClCompile Include="Kx\System\SystemProcess\SystemProcessInfo.cpp" />
+    <ClCompile Include="Kx\System\UserName.cpp" />
     <ClCompile Include="Kx\UI\Controls\AUI\AuiNotebook.cpp" />
     <ClCompile Include="Kx\UI\Controls\AUI\AuiToolBar.cpp" />
     <ClCompile Include="Kx\UI\Controls\AUI\AuiToolBarEvent.cpp" />

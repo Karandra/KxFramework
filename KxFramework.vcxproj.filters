@@ -1190,6 +1190,12 @@
     <ClInclude Include="Kx\General\RegEx.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\Crypto\UserCredentials.h">
+      <Filter>Kx\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\System\UserName.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp">
@@ -1819,6 +1825,9 @@
     </ClCompile>
     <ClCompile Include="Kx\General\DateTime\DateSpan.cpp">
       <Filter>Kx\General\DateTime</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\UserName.cpp">
+      <Filter>Kx\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

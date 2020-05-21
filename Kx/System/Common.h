@@ -1,5 +1,6 @@
 #pragma once
 #include "Kx/Common.hpp"
+#include "Kx/General/String.h"
 
 namespace KxFramework
 {
@@ -38,6 +39,19 @@ namespace KxFramework
 		Force = 1 << 16,
 		Default = 1 << 17,
 		Inactive = 1 << 18,
+	};
+	enum class UserNameFormat
+	{
+		None = -1,
+
+		Display,
+		UniqueID,
+		DownLevel,
+		Canonical,
+		CanonicalEx,
+		UserPrincipal,
+		ServicePrincipal,
+		FullyQualifiedDN
 	};
 
 	enum class SystemProcessAccess
