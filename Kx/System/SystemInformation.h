@@ -1,11 +1,12 @@
 #pragma once
 #include "Common.h"
+#include "SystemInformationDefines.h"
 #include "ErrorCodeValue.h"
+#include "UserName.h"
 #include "Kx/General/String.h"
 #include "Kx/General/Color.h"
 #include "Kx/General/Version.h"
 #include "Kx/General/BinarySize.h"
-#include "SystemInformationDefines.h"
 #include <wx/settings.h>
 #include "UndefWindows.h"
 
@@ -65,7 +66,7 @@ namespace KxFramework::System
 	};
 	struct UserInfo final
 	{
-		String Name;
+		UserName Name;
 		String Organization;
 		bool AdminRights = false;
 		bool LimitedAdminRights = false;

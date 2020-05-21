@@ -5,6 +5,7 @@
 #include "Kx/General/DateTime.h"
 #include "Kx/FileSystem/FSPath.h"
 #include "Kx/Crypto/SecretValue.h"
+#include "Kx/Crypto/UserCredentials.h"
 struct ITaskDefinition;
 struct IRegistrationInfo;
 struct IPrincipal;
@@ -73,9 +74,7 @@ namespace KxFramework::System
 		public:
 			TaskScheduler(const FSPath& taskFolder = {},
 						  const String& serverName = {},
-						  const String& userName = {},
-						  const String& domain = {},
-						  const SecretValue& password = {}
+						  const UserCredentials& userCredentials = {}
 			);
 			~TaskScheduler() noexcept;
 

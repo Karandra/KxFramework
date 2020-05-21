@@ -286,12 +286,14 @@ namespace KxFramework::System
 		UserInfo userInfo;
 
 		// User name
+		String userName;
 		DWORD userNameLength = 0;
 		::GetUserNameW(nullptr, &userNameLength);
-		if (!::GetUserNameW(wxStringBuffer(userInfo.Name, userNameLength), &userNameLength))
+		if (!::GetUserNameW(wxStringBuffer(userName, userNameLength), &userNameLength))
 		{
 			return {};
 		}
+		userInfo.Name = std::move(userName);
 
 		// Organization
 		RegistryKey key(RegistryBaseKey::LocalMachine, wxS("Software\\Microsoft\\Windows NT\\CurrentVersion"), RegistryAccess::Read);

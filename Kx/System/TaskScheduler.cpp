@@ -179,9 +179,7 @@ namespace KxFramework::System
 {
 	TaskScheduler::TaskScheduler(const FSPath& taskFolder,
 								 const String& serverName,
-								 const String& userName,
-								 const String& domain,
-								 const SecretValue& password
+								 const UserCredentials& userCredentials
 	)
 	{
 		// https://docs.microsoft.com/en-us/windows/desktop/TaskSchd/starting-an-executable-at-a-spcific-time
@@ -191,9 +189,9 @@ namespace KxFramework::System
 		if (HResult hr = COM::CreateInstance(CLSID_TaskScheduler, ClassContext::InprocServer, &m_TaskService))
 		{
 			hr = m_TaskService->Connect(VariantFromString_Null(serverName),
-										VariantFromString_Null(userName),
-										VariantFromString_Null(domain),
-										VariantFromString_Null(password.ToString())
+										VariantFromString_Null(userCredentials.GetName()),
+										VariantFromString_Null(userCredentials.GetDomain()),
+										VariantFromString_Null(userCredentials.GetSecret().ToString())
 			);
 			if (hr)
 			{
