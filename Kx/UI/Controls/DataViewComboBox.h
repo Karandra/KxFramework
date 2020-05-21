@@ -2,7 +2,7 @@
 #include "Kx/UI/Common.h"
 #include "ComboPopup.h"
 #include "Kx/General/WithOptions.h"
-#include "Kx/UI/Controls/DataView/DataView2.h"
+#include "Kx/UI/Controls/DataView.h"
 
 namespace KxFramework::UI
 {

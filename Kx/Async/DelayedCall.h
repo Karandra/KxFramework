@@ -5,18 +5,24 @@
 namespace KxFramework::Async
 {
 	template<class TCallable>
-	static void DelayedCall(TCallable&& func, const TimeSpan& delay)
+	static void DelayedCall(TCallable&& func, TimeSpan delay)
 	{
+		enum class State
+		{
+			Wait,
+			Execute
+		};
+
 		Coroutine::Run([delay, func = std::forward<TCallable>(func)](Coroutine& coroutine)
 		{
-			if (coroutine.GetNextState())
+			if (coroutine.GetNextState<State::Execute>())
 			{
-				func();
+				std::invoke(func);
 				return Coroutine::YieldStop();
 			}
 			else
 			{
-				return Coroutine::YieldWait(delay, true);
+				return Coroutine::YieldWait(delay, State::Execute);
 			}
 		});
 	}

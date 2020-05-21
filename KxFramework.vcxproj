@@ -211,6 +211,8 @@
     <ClInclude Include="Kx\System\SystemProcess\RunningSystemProcessStdIO.h" />
     <ClInclude Include="Kx\System\SystemProcess\SystemProcessInfo.h" />
     <ClInclude Include="Kx\System\UserName.h" />
+    <ClInclude Include="Kx\Threading\ThreadEvent.h" />
+    <ClInclude Include="Kx\UI\Controls\AUI.h" />
     <ClInclude Include="Kx\UI\Controls\AUI\AuiNotebook.h" />
     <ClInclude Include="Kx\UI\Controls\AUI\AuiToolBar.h" />
     <ClInclude Include="Kx\UI\Controls\AUI\AuiToolBarEvent.h" />
@@ -222,6 +224,7 @@
     <ClInclude Include="Kx\UI\Controls\ComboBox.h" />
     <ClInclude Include="Kx\UI\Controls\ComboControl.h" />
     <ClInclude Include="Kx\UI\Controls\ComboPopup.h" />
+    <ClInclude Include="Kx\UI\Controls\DataView.h" />
     <ClInclude Include="Kx\UI\Controls\DataViewComboBox.h" />
     <ClInclude Include="Kx\UI\Controls\DataView\CellAttributeOptions.h" />
     <ClInclude Include="Kx\UI\Controls\DataView\CellAttribute.h" />
@@ -229,7 +232,7 @@
     <ClInclude Include="Kx\UI\Controls\DataView\Column.h" />
     <ClInclude Include="Kx\UI\Controls\DataView\ColumnID.h" />
     <ClInclude Include="Kx\UI\Controls\DataView\Common.h" />
-    <ClInclude Include="Kx\UI\Controls\DataView\DataView2.h" />
+    <ClInclude Include="Kx\UI\Controls\DataView\DataView.h" />
     <ClInclude Include="Kx\UI\Controls\DataView\DragAndDrop.h" />
     <ClInclude Include="Kx\UI\Controls\DataView\Editor.h" />
     <ClInclude Include="Kx\UI\Controls\DataView\Editors\ColorEditor.h" />
@@ -497,7 +500,6 @@
     <ClInclude Include="Kx\Threading.hpp" />
     <ClInclude Include="Kx\Threading\AutoThread.h" />
     <ClInclude Include="Kx\Threading\Common.h" />
-    <ClInclude Include="Kx\Threading\Events\ThreadEvent.h" />
     <ClInclude Include="Kx\Threading\JoinableThread.h" />
     <ClInclude Include="Kx\UI.hpp" />
     <ClInclude Include="Kx\UI\Common.h" />

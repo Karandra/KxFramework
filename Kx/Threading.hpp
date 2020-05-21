@@ -3,5 +3,4 @@
 
 #include "Kx/Threading/AutoThread.h"
 #include "Kx/Threading/JoinableThread.h"
-
-#include "Kx/Threading/Events/ThreadEvent.h"
+#include "Kx/Threading/ThreadEvent.h"

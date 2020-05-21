@@ -11,9 +11,6 @@
     <Filter Include="Kx\Threading">
       <UniqueIdentifier>{ccbec7f3-86f7-4bda-acbe-9a8176c4626d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Threading\Events">
-      <UniqueIdentifier>{737b854d-e62c-4e0c-94df-859ffce23b3f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Kx\System">
       <UniqueIdentifier>{7b228bc2-9ef1-4a57-ad08-f8ed2e2297f8}</UniqueIdentifier>
     </Filter>
@@ -189,9 +186,6 @@
     </ClInclude>
     <ClInclude Include="Kx\Common.hpp">
       <Filter>Kx</Filter>
-    </ClInclude>
-    <ClInclude Include="Kx\Threading\Events\ThreadEvent.h">
-      <Filter>Kx\Threading\Events</Filter>
     </ClInclude>
     <ClInclude Include="Kx\System\Common.h">
       <Filter>Kx\System</Filter>
@@ -920,9 +914,6 @@
     <ClInclude Include="Kx\UI\Controls\DataView\Common.h">
       <Filter>Kx\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\DataView2.h">
-      <Filter>Kx\UI\Controls\DataView</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\UI\Controls\DataView\DragAndDrop.h">
       <Filter>Kx\UI\Controls\DataView</Filter>
     </ClInclude>
@@ -1195,6 +1186,18 @@
     </ClInclude>
     <ClInclude Include="Kx\System\UserName.h">
       <Filter>Kx\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\Threading\ThreadEvent.h">
+      <Filter>Kx\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView\DataView.h">
+      <Filter>Kx\UI\Controls\DataView</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\DataView.h">
+      <Filter>Kx\UI\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Controls\AUI.h">
+      <Filter>Kx\UI\Controls</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

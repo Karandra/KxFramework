@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
-#include "Events/ThreadEvent.h"
 #include "Kx/EventSystem/EvtHandler.h"
+#include "ThreadEvent.h"
 #include <wx/thread.h>
 
 namespace KxFramework
