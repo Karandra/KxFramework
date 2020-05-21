@@ -10,13 +10,7 @@
 
 namespace KxFramework::FileSystem::Private
 {
-	inline HANDLE CallFindFirstFile(const String& query, WIN32_FIND_DATAW& findInfo, bool isCaseSensitive = false)
-	{
-		const DWORD searchFlags = FIND_FIRST_EX_LARGE_FETCH|(isCaseSensitive ? FIND_FIRST_EX_CASE_SENSITIVE : 0);
-		return ::FindFirstFileExW(query.wc_str(), FindExInfoBasic, &findInfo, FINDEX_SEARCH_OPS::FindExSearchNameMatch, nullptr, searchFlags);
-	}
-
-	inline FileAttribute MapFileAttributes(uint32_t nativeAttributes)
+	constexpr inline FileAttribute MapFileAttributes(uint32_t nativeAttributes) noexcept
 	{
 		if (nativeAttributes == INVALID_FILE_ATTRIBUTES)
 		{
@@ -47,7 +41,7 @@ namespace KxFramework::FileSystem::Private
 			return attributes;
 		}
 	}
-	inline uint32_t MapFileAttributes(FileAttribute attributes)
+	constexpr inline uint32_t MapFileAttributes(FileAttribute attributes) noexcept
 	{
 		if (attributes == FileAttribute::Invalid)
 		{
@@ -78,11 +72,9 @@ namespace KxFramework::FileSystem::Private
 			return nativeAttributes;
 		}
 	}
-
-	inline ReparsePointTag MapReparsePointTags(uint32_t nativeTags)
+	constexpr inline ReparsePointTag MapReparsePointTags(uint32_t nativeTags) noexcept
 	{
 		// https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-fscc/c8e77b37-3909-4fe6-a4ea-2b9d423b1ee4
-		using namespace KxFramework;
 
 		ReparsePointTag tags = ReparsePointTag::None;
 		Utility::AddFlagRef(tags, ReparsePointTag::MountPoint, nativeTags & IO_REPARSE_TAG_MOUNT_POINT);
@@ -90,23 +82,67 @@ namespace KxFramework::FileSystem::Private
 
 		return tags;
 	}
-	inline DateTime ConvertDateTime(const FILETIME& fileTime)
+
+	inline DateTime ConvertDateTime(const SYSTEMTIME& systemTime) noexcept
+	{
+		SYSTEMTIME localTime = {};
+		if (::SystemTimeToTzSpecificLocalTime(nullptr, &systemTime, &localTime))
+		{
+			return DateTime().SetSystemTime(localTime);
+		}
+		return wxInvalidDateTime;
+	}
+	inline DateTime ConvertDateTime(const FILETIME& fileTime) noexcept
 	{
 		if (fileTime.dwHighDateTime != 0 && fileTime.dwLowDateTime != 0)
 		{
 			SYSTEMTIME systemTime = {};
-			SYSTEMTIME localTime = {};
-			if (::FileTimeToSystemTime(&fileTime, &systemTime) && ::SystemTimeToTzSpecificLocalTime(nullptr, &systemTime, &localTime))
+			if (::FileTimeToSystemTime(&fileTime, &systemTime))
 			{
-				return DateTime().SetSystemTime(localTime);
+				return ConvertDateTime(systemTime);
 			}
 		}
 		return wxInvalidDateTime;
 	}
+
+	inline std::optional<SYSTEMTIME> ConvertDateTimeToSystemTime(DateTime dateTime) noexcept
+	{
+		if (dateTime)
+		{
+			SYSTEMTIME localTime = dateTime.GetSystemTime();
+			SYSTEMTIME systemTime = {};
+			if (::TzSpecificLocalTimeToSystemTime(nullptr, &localTime, &systemTime))
+			{
+				return systemTime;
+			}
+		}
+		return {};
+	}
+	inline std::optional<FILETIME> ConvertDateTimeToFileTime(DateTime dateTime) noexcept
+	{
+		if (auto systemTime = ConvertDateTimeToSystemTime(dateTime))
+		{
+			FILETIME fileTime = {};
+			if (::SystemTimeToFileTime(&*systemTime, &fileTime))
+			{
+				return fileTime;
+			}
+		}
+		return {};
+	}
+	
+	inline bool IsValidFindItem(const WIN32_FIND_DATAW& findInfo) noexcept
+	{
+		std::wstring_view name = findInfo.cFileName;
+		return !(findInfo.dwFileAttributes == INVALID_FILE_ATTRIBUTES || name.empty() || name == L".." || name == L".");
+	}
+	inline HANDLE CallFindFirstFile(const String& query, WIN32_FIND_DATAW& findInfo, bool isCaseSensitive = false)
+	{
+		const DWORD searchFlags = FIND_FIRST_EX_LARGE_FETCH|(isCaseSensitive ? FIND_FIRST_EX_CASE_SENSITIVE : 0);
+		return ::FindFirstFileExW(query.wc_str(), FindExInfoBasic, &findInfo, FINDEX_SEARCH_OPS::FindExSearchNameMatch, nullptr, searchFlags);
+	}
 	inline FileItem ConvertFileInfo(const WIN32_FIND_DATAW& findInfo, const FSPath& location)
 	{
-		using namespace KxFramework;
-
 		FileItem fileItem;
 
 		// Construct path
@@ -150,11 +186,6 @@ namespace KxFramework::FileSystem::Private
 
 		return fileItem;
 	}
-	inline bool IsValidFindItem(const WIN32_FIND_DATAW& findInfo)
-	{
-		std::wstring_view name = findInfo.cFileName;
-		return !(findInfo.dwFileAttributes == INVALID_FILE_ATTRIBUTES || name.empty() || name == L".." || name == L".");
-	}
 
 	inline DWORD CALLBACK CopyCallback(LARGE_INTEGER TotalFileSize,
 									   LARGE_INTEGER TotalBytesTransferred,
@@ -166,7 +197,7 @@ namespace KxFramework::FileSystem::Private
 									   HANDLE hDestinationFile,
 									   LPVOID lpData)
 	{
-		IFileSystem::TCopyItemFunc& func = *reinterpret_cast<IFileSystem::TCopyItemFunc*>(lpData);
+		auto& func = *reinterpret_cast<IFileSystem::TCopyItemFunc*>(lpData);
 		if (func == nullptr || std::invoke(func, BinarySize::FromBytes(TotalBytesTransferred.QuadPart), BinarySize::FromBytes(TotalFileSize.QuadPart)))
 		{
 			return PROGRESS_CONTINUE;

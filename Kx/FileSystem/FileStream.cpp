@@ -385,20 +385,9 @@ namespace KxFramework
 		FILETIME lastAccessTimeFile = {};
 		if (m_Handle && ::GetFileTime(m_Handle, &creationTimeFile, &lastAccessTimeFile, &modificationTimeFile))
 		{
-			auto ToDateTime = [](const FILETIME& fileTime) -> DateTime
-			{
-				SYSTEMTIME systemTime = {};
-				SYSTEMTIME localTime = {};
-				if (::FileTimeToSystemTime(&fileTime, &systemTime) && ::SystemTimeToTzSpecificLocalTime(nullptr, &systemTime, &localTime))
-				{
-					return DateTime().SetSystemTime(localTime);
-				}
-				return {};
-			};
-
-			creationTime = ToDateTime(creationTimeFile);
-			modificationTime = ToDateTime(modificationTimeFile);
-			lastAccessTime = ToDateTime(lastAccessTimeFile);
+			creationTime = FileSystem::Private::ConvertDateTime(creationTimeFile);
+			modificationTime = FileSystem::Private::ConvertDateTime(modificationTimeFile);
+			lastAccessTime = FileSystem::Private::ConvertDateTime(lastAccessTimeFile);
 
 			return true;
 		}
@@ -410,17 +399,7 @@ namespace KxFramework
 		{
 			auto ToFileTime = [](DateTime dateTime)
 			{
-				FILETIME fileTime = {0, 0};
-				if (dateTime.IsValid())
-				{
-					SYSTEMTIME localTime = {};
-					SYSTEMTIME systemTime = dateTime.GetSystemTime();
-					if (::TzSpecificLocalTimeToSystemTime(nullptr, &localTime, &systemTime) && ::SystemTimeToFileTime(&systemTime, &fileTime))
-					{
-						return fileTime;
-					}
-				}
-				return fileTime;
+				return FileSystem::Private::ConvertDateTimeToFileTime(dateTime).value_or(FILETIME{0, 0});
 			};
 
 			FILETIME creationTimeFile = ToFileTime(creationTime);
