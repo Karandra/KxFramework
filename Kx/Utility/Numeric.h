@@ -44,6 +44,12 @@ namespace KxFramework::Utility
 	}
 
 	template<class T>
+	constexpr std::enable_if_t<std::is_floating_point_v<T>, bool> AlmostZero(T value, size_t units = 2) noexcept
+	{
+		return AlmostEqual(value, 0, units);
+	}
+
+	template<class T>
 	constexpr std::enable_if_t<std::is_integral_v<T>, bool> TestRange(T value, T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<T>::max()) noexcept
 	{
 		return value == std::clamp(value, min, max);
