@@ -1199,6 +1199,12 @@
     <ClInclude Include="Kx\UI\Controls\AUI.h">
       <Filter>Kx\UI\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\wxWidgets\SystemOptions.h">
+      <Filter>Kx\wxWidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\wxWidgets\Common.h">
+      <Filter>Kx\wxWidgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp">
