@@ -1205,6 +1205,9 @@
     <ClInclude Include="Kx\wxWidgets\Common.h">
       <Filter>Kx\wxWidgets</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\System\SystemAppearance.h">
+      <Filter>Kx\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp">
@@ -1836,6 +1839,9 @@
       <Filter>Kx\General\DateTime</Filter>
     </ClCompile>
     <ClCompile Include="Kx\System\UserName.cpp">
+      <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\System\SystemAppearance.cpp">
       <Filter>Kx\System</Filter>
     </ClCompile>
   </ItemGroup>

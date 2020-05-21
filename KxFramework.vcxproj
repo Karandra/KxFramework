@@ -202,6 +202,7 @@
     <ClInclude Include="Kx\System\Private\COM.h" />
     <ClInclude Include="Kx\System\Private\System.h" />
     <ClInclude Include="Kx\System\Private\SystemInformationDefinesMapping.h" />
+    <ClInclude Include="Kx\System\SystemAppearance.h" />
     <ClInclude Include="Kx\System\SystemProcess.h" />
     <ClInclude Include="Kx\System\SystemProcess\CreateProcessExecutor.h" />
     <ClInclude Include="Kx\System\SystemProcess\ISystemProcess.h" />
@@ -536,6 +537,7 @@
     <ClCompile Include="Kx\System\DynamicLibrary.cpp" />
     <ClCompile Include="Kx\System\ExecutableVersionResource.cpp" />
     <ClCompile Include="Kx\System\Private\System.cpp" />
+    <ClCompile Include="Kx\System\SystemAppearance.cpp" />
     <ClCompile Include="Kx\System\SystemProcess.cpp" />
     <ClCompile Include="Kx\System\SystemProcess\CreateProcessExecutor.cpp" />
     <ClCompile Include="Kx\System\SystemProcess\ProcessEvent.cpp" />
