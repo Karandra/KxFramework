@@ -7,7 +7,9 @@
 #include "Kx/General/Color.h"
 #include "Kx/General/Version.h"
 #include "Kx/General/BinarySize.h"
+#include "Kx/General/DateTime.h"
 #include <wx/settings.h>
+#include <wx/gdicmn.h>
 #include "UndefWindows.h"
 
 namespace KxFramework::System
@@ -102,8 +104,13 @@ namespace KxFramework::System
 	std::optional<UserInfo> GetUserInfo();
 	String GetUserSID();
 
-	Color GetColor(wxSystemColour index) noexcept;
-	int GetMetric(wxSystemMetric index, const wxWindow* window = nullptr) noexcept;
+	Color GetColor(SystemColor index) noexcept;
+	wxFont GetFont(SystemFont index);
+	SystemScreenType GetScreenType() noexcept;
+	int GetMetric(SystemMetric index, const wxWindow* window = nullptr) noexcept;
+	wxSize GetMetric(SystemSizeMetric index, const wxWindow* window = nullptr) noexcept;
+	TimeSpan GetMetric(SystemTimeMetric index, const wxWindow* window = nullptr) noexcept;
+	bool HasFeature(SystemFeature feature) noexcept;
 	size_t EnumStandardSounds(std::function<bool(String)> func);
 
 	std::optional<DisplayInfo> GetDisplayInfo() noexcept;

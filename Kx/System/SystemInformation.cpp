@@ -364,13 +364,97 @@ namespace KxFramework::System
 		return {};
 	}
 
-	Color GetColor(wxSystemColour index) noexcept
+	Color GetColor(SystemColor index) noexcept
 	{
-		return wxSystemSettings::GetColour(index);
+		return wxSystemSettings::GetColour(static_cast<wxSystemColour>(index));
 	}
-	int GetMetric(wxSystemMetric index, const wxWindow* window) noexcept
+	SystemScreenType GetScreenType() noexcept
 	{
-		return wxSystemSettings::GetMetric(index, window);
+		return static_cast<SystemScreenType>(wxSystemSettings::GetScreenType());
+	}
+	wxFont GetFont(SystemFont index)
+	{
+		return wxSystemSettings::GetFont(static_cast<wxSystemFont>(index));
+	}
+	int GetMetric(SystemMetric index, const wxWindow* window) noexcept
+	{
+		return wxSystemSettings::GetMetric(static_cast<wxSystemMetric>(index), window);
+	}
+	wxSize GetMetric(SystemSizeMetric index, const wxWindow* window) noexcept
+	{
+		auto GetValue = [&](wxSystemMetric x, wxSystemMetric y)
+		{
+			return wxSize(wxSystemSettings::GetMetric(x, window), wxSystemSettings::GetMetric(y, window));
+		};
+
+		switch (index)
+		{
+			case SystemSizeMetric::Border:
+			{
+				return GetValue(wxSYS_BORDER_X, wxSYS_BORDER_Y);
+			}
+			case SystemSizeMetric::Cursor:
+			{
+				return GetValue(wxSYS_CURSOR_X, wxSYS_CURSOR_Y);
+			}
+			case SystemSizeMetric::DragThreshold:
+			{
+				return GetValue(wxSYS_DRAG_X, wxSYS_DRAG_Y);
+			}
+			case SystemSizeMetric::DClickThreshold:
+			{
+				return GetValue(wxSYS_DCLICK_X, wxSYS_DCLICK_Y);
+			}
+			case SystemSizeMetric::Edge:
+			{
+				return GetValue(wxSYS_EDGE_X, wxSYS_EDGE_Y);
+			}
+			case SystemSizeMetric::ScrollBar:
+			{
+				return GetValue(wxSYS_VSCROLL_X, wxSYS_HSCROLL_Y);
+			}
+			case SystemSizeMetric::ScrollThumb:
+			{
+				return GetValue(wxSYS_HTHUMB_X, wxSYS_VTHUMB_Y);
+			}
+			case SystemSizeMetric::ScrollArrowVertical:
+			{
+				return GetValue(wxSYS_VSCROLL_ARROW_X, wxSYS_VSCROLL_ARROW_Y);
+			}
+			case SystemSizeMetric::ScrollArrowHorizontal:
+			{
+				return GetValue(wxSYS_HSCROLL_ARROW_X, wxSYS_HSCROLL_ARROW_Y);
+			}
+			case SystemSizeMetric::Icon:
+			{
+				return GetValue(wxSYS_ICON_X, wxSYS_ICON_Y);
+			}
+			case SystemSizeMetric::IconSmall:
+			{
+				return GetValue(wxSYS_SMALLICON_X, wxSYS_SMALLICON_Y);
+			}
+			case SystemSizeMetric::IconSpacing:
+			{
+				return GetValue(wxSYS_ICONSPACING_X, wxSYS_ICONSPACING_Y);
+			}
+			case SystemSizeMetric::WindowMin:
+			{
+				return GetValue(wxSYS_WINDOWMIN_X, wxSYS_WINDOWMIN_Y);
+			}
+			case SystemSizeMetric::ThickFrame:
+			{
+				return GetValue(wxSYS_FRAMESIZE_X, wxSYS_FRAMESIZE_Y);
+			}
+		};
+		return wxDefaultSize;
+	}
+	TimeSpan GetMetric(SystemTimeMetric index, const wxWindow* window) noexcept
+	{
+		return TimeSpan::Milliseconds(wxSystemSettings::GetMetric(static_cast<wxSystemMetric>(index), window));
+	}
+	bool HasFeature(SystemFeature feature) noexcept
+	{
+		return wxSystemSettings::HasFeature(static_cast<wxSystemFeature>(feature));
 	}
 	size_t EnumStandardSounds(std::function<bool(String)> func)
 	{

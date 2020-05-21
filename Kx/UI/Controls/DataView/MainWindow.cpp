@@ -2214,8 +2214,8 @@ namespace KxFramework::UI::DataView
 	int MainWindow::GetDefaultRowHeight(UniformHeight type) const
 	{
 		int resultHeight = 0;
-		const int iconMargin = 6 * KxFramework::System::GetMetric(wxSYS_BORDER_Y, this);
-		const int iconHeight = KxFramework::System::GetMetric(wxSYS_SMALLICON_Y, this);
+		const int iconMargin = 6 * System::GetMetric(SystemSizeMetric::Border, this).GetWidth();
+		const int iconHeight = System::GetMetric(SystemSizeMetric::IconSmall, this).GetHeight();
 
 		switch (type)
 		{

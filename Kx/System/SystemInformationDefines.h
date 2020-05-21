@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include <wx/settings.h>
 
 namespace KxFramework
 {
@@ -212,11 +213,115 @@ namespace KxFramework
 		// Windows Home Server is installed.
 		HomeServer = 1 << 18
 	};
+	enum class SystemFeature
+	{
+		None = 0,
+
+		FrameDecorations = wxSYS_CAN_DRAW_FRAME_DECORATIONS,
+		MinimizeFrame = wxSYS_CAN_ICONIZE_FRAME,
+		TabletPresent = wxSYS_TABLET_PRESENT,
+	};
+
+	enum class SystemColor
+	{
+		Desktop = wxSYS_COLOUR_DESKTOP,
+		ScrollBar = wxSYS_COLOUR_SCROLLBAR,
+		AppWorkspace = wxSYS_COLOUR_APPWORKSPACE,
+
+		ActiveCaption = wxSYS_COLOUR_ACTIVECAPTION,
+		ActiveCaptionGradient = wxSYS_COLOUR_GRADIENTACTIVECAPTION,
+		InactiveCaption = wxSYS_COLOUR_INACTIVECAPTION,
+		InactiveCaptionGradient = wxSYS_COLOUR_GRADIENTINACTIVECAPTION,
+		InactiveCaptionText = wxSYS_COLOUR_INACTIVECAPTIONTEXT,
+		CaptionText = wxSYS_COLOUR_CAPTIONTEXT,
+		ActiveBroder = wxSYS_COLOUR_ACTIVEBORDER,
+		InactiveBroder = wxSYS_COLOUR_INACTIVEBORDER,
+
+		Menu = wxSYS_COLOUR_MENU,
+		MenuText = wxSYS_COLOUR_MENUTEXT,
+		MenuHighlight = wxSYS_COLOUR_MENUHILIGHT,
+		MenuBar = wxSYS_COLOUR_MENUBAR,
+
+		Window = wxSYS_COLOUR_WINDOW,
+		WindowFrame = wxSYS_COLOUR_WINDOWFRAME,
+		WindowText = wxSYS_COLOUR_WINDOWTEXT,
+		Highlight = wxSYS_COLOUR_HIGHLIGHT,
+		HighlightText = wxSYS_COLOUR_HIGHLIGHTTEXT,
+		DisabledText = wxSYS_COLOUR_GRAYTEXT,
+		ShadowDark3D = wxSYS_COLOUR_3DDKSHADOW,
+		Light3D = wxSYS_COLOUR_3DLIGHT,
+		LightHot = wxSYS_COLOUR_HOTLIGHT,
+
+		ButtonFace = wxSYS_COLOUR_BTNFACE,
+		ButtonShadow = wxSYS_COLOUR_BTNSHADOW,
+		ButtonHighlight = wxSYS_COLOUR_BTNHIGHLIGHT,
+		ButtonText = wxSYS_COLOUR_BTNTEXT,
+
+		TooltipText = wxSYS_COLOUR_INFOTEXT,
+		TooltipBackground = wxSYS_COLOUR_INFOBK,
+
+		ListBoxBackground = wxSYS_COLOUR_LISTBOX,
+		ListBoxText = wxSYS_COLOUR_LISTBOXTEXT,
+		ListBoxTextHighlight = wxSYS_COLOUR_LISTBOXHIGHLIGHTTEXT,
+	};
+	enum class SystemFont
+	{
+		Default = wxSYS_SYSTEM_FONT,
+		DefaultGUI = wxSYS_DEFAULT_GUI_FONT,
+		DefaultDevice = wxSYS_DEVICE_DEFAULT_FONT,
+		FixedOEM = wxSYS_OEM_FIXED_FONT,
+		FixedANSI = wxSYS_ANSI_FIXED_FONT,
+		VariableANSI = wxSYS_ANSI_VAR_FONT,
+	};
+	enum class SystemScreenType
+	{
+		None = wxSYS_SCREEN_NONE,
+		Tiny = wxSYS_SCREEN_TINY,
+		PDA = wxSYS_SCREEN_PDA,
+		Small = wxSYS_SCREEN_SMALL,
+		Desktop = wxSYS_SCREEN_DESKTOP,
+	};
+
+	enum class SystemMetric
+	{
+		MouseButtonCount = wxSYS_MOUSE_BUTTONS,
+		SwapMouseButtons = wxSYS_SWAP_BUTTONS,
+		CaptionHeight = wxSYS_CAPTION_Y,
+		MenuBarHeight = wxSYS_MENU_Y,
+		NetworkPresent = wxSYS_NETWORK_PRESENT,
+		PenWindowPresent = wxSYS_PENWINDOWS_PRESENT,
+		ShowSounds = wxSYS_SHOW_SOUNDS,
+	};
+	enum class SystemSizeMetric
+	{
+		Border,
+		Cursor,
+		DragThreshold,
+		DClickThreshold,
+		Edge,
+		ScrollBar,
+		ScrollThumb,
+		ScrollArrowVertical,
+		ScrollArrowHorizontal,
+		Icon,
+		IconSmall,
+		IconSpacing,
+		WindowMin,
+		ThickFrame,
+	};
+	enum class SystemTimeMetric
+	{
+		DClick = wxSYS_DCLICK_MSEC,
+		CaretOn = wxSYS_CARET_ON_MSEC,
+		CaretOff = wxSYS_CARET_OFF_MSEC,
+		CaretTimeout = wxSYS_CARET_TIMEOUT_MSEC,
+	};
 
 	namespace EnumClass
 	{
 		Kx_EnumClass_AllowEverything(ExitWorkstationCommand);
 		Kx_EnumClass_AllowEverything(DisplayDeviceFlag);
 		Kx_EnumClass_AllowEverything(SystemProductSuite);
+		Kx_EnumClass_AllowEverything(SystemFeature);
 	}
 }

@@ -188,7 +188,7 @@ namespace KxFramework
 			Color color = theme.GetColor(TEXT_MAININSTRUCTION, 0, TMT_TEXTCOLOR);
 
 			// Approximation of caption color for default Aero style
-			return color ? color : System::GetColor(wxSYS_COLOUR_HOTLIGHT).ChangeLightness(Angle::FromDegrees(65));
+			return color ? color : System::GetColor(SystemColor::LightHot).ChangeLightness(Angle::FromDegrees(65));
 		}
 		return {};
 	}
