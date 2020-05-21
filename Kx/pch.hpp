@@ -34,5 +34,15 @@
 // Main KxFramework header
 #include "Kx/Common.hpp"
 
+#include "Kx/General/String.h"
+#include "Kx/General/StringFormater.h"
+#include "Kx/General/Color.h"
+#include "Kx/General/Angle.h"
+#include "Kx/General/DateTime.h"
+#include "Kx/General/StdID.h"
+#include "Kx/Drawing/Geometry.h"
+#include "Kx/UI/StdButton.h"
+#include "Kx/UI/StdIcon.h"
+
 // Undef any remaining Windows headers stuff
 #include "Kx/System/UndefWindows.h"

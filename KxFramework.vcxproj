@@ -184,6 +184,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Kx\Crypto\UserCredentials.h" />
+    <ClInclude Include="Kx\Drawing\Geometry.h" />
     <ClInclude Include="Kx\General\DateTime.h" />
     <ClInclude Include="Kx\General\DateTime\Common.h" />
     <ClInclude Include="Kx\General\DateTime\DateSpan.h" />

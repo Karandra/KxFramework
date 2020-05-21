@@ -1,6 +1,7 @@
 #pragma once
 #include "Kx/Drawing/Common.h"
 
+#include "Kx/Drawing/Geometry.h"
 #include "Kx/Drawing/DCOperations.h"
 #include "Kx/Drawing/GCOperations.h"
 #include "Kx/Drawing/GraphicsCanvas.h"
