@@ -5,11 +5,25 @@
 #include <cmath>
 #include "Kx/General/Common.h"
 #include "Kx/General/Angle.h"
+#include <Kx/Utility/Common.h>
 #include <Kx/Utility/Numeric.h>
 
 namespace KxFramework::Geometry
 {
 	constexpr wxCoord DefaultCoord = wxDefaultCoord;
+
+	enum class OutCode: uint32_t
+	{
+		Inside = 0,
+		OutLeft = 1 << 0,
+		OutRight = 1 << 1,
+		OutTop = 1 << 2,
+		OutBottom = 1 << 3
+	};
+}
+namespace KxFramework::EnumClass
+{
+	Kx_EnumClass_AllowEverything(Geometry::OutCode);
 }
 
 namespace KxFramework::Geometry
@@ -518,6 +532,16 @@ namespace KxFramework::Geometry
 				m_X = left;
 				return Self();
 			}
+			constexpr TDerived& MoveLeftBy(TValue value) noexcept
+			{
+				m_X += value;
+				return Self();
+			}
+			constexpr TDerived& MoveLeftTo(TValue value) noexcept
+			{
+				m_X = value;
+				return Self();
+			}
 
 			constexpr TValue GetTop() const noexcept
 			{
@@ -526,6 +550,16 @@ namespace KxFramework::Geometry
 			constexpr TDerived& SetTop(TValue top) noexcept
 			{
 				m_Y = top;
+				return Self();
+			}
+			constexpr TDerived& MoveTopBy(TValue left) noexcept
+			{
+				m_Y += left;
+				return Self();
+			}
+			constexpr TDerived& MoveTopTo(TValue value) noexcept
+			{
+				m_Y = value;
 				return Self();
 			}
 
@@ -538,6 +572,16 @@ namespace KxFramework::Geometry
 				m_Width = right - m_X + 1;
 				return Self();
 			}
+			constexpr TDerived& MoveRightBy(TValue value) noexcept
+			{
+				m_Width += value;
+				return Self();
+			}
+			constexpr TDerived& MoveRightTo(TValue value) noexcept
+			{
+				m_X = value - m_Width;
+				return Self();
+			}
 
 			constexpr TValue GetBottom() const noexcept
 			{
@@ -548,7 +592,18 @@ namespace KxFramework::Geometry
 				m_Height = bottom - m_Y + 1;
 				return Self();
 			}
+			constexpr TDerived& MoveBottomBy(TValue value) noexcept
+			{
+				m_Height += value;
+				return Self();
+			}
+			constexpr TDerived& MoveBottomTo(TValue value) noexcept
+			{
+				m_Y = value - m_Height;
+				return Self();
+			}
 
+		public:
 			constexpr TPoint GetTopLeft() const noexcept
 			{
 				return GetPosition();
@@ -623,7 +678,6 @@ namespace KxFramework::Geometry
 				return SetBottomLeft(value);
 			}
 
-		public:
 			constexpr bool Contains(TValue x, TValue y) const noexcept
 			{
 				return (x >= m_X) && (y >= m_Y) && (y - m_Y < m_Height) && (x - m_X < m_Width);
@@ -779,6 +833,111 @@ namespace KxFramework::Geometry
 			constexpr TDerived& Deflate(const TSize& dxy) noexcept
 			{
 				return Inflate(dxy.GetWidth(), dxy.GetHeight());
+			}
+
+		public:
+			constexpr bool EqualSize(const TDerived& other) noexcept
+			{
+				return GetSize() == other.GetSize();
+			}
+			constexpr void ConstrainTo(const TDerived& other) noexcept
+			{
+				if (GetLeft() < other.GetLeft())
+				{
+					SetLeft(other.GetLeft());
+				}
+				if (GetRight() > other.GetRight())
+				{
+					SetRight(other.GetRight());
+				}
+				if (GetBottom() > other.GetBottom())
+				{
+					SetBottom(other.GetBottom());
+				}
+				if (GetTop() < other.GetTop())
+				{
+					SetTop(other.GetTop());
+				}
+			}
+
+			constexpr TPoint GetCenter() const noexcept
+			{
+				return {m_X + m_Width / 2, m_Y + m_Height / 2};
+			}
+			constexpr TDerived& MoveCentreTo(const TPoint& center) noexcept
+			{
+				m_X += center.m_X - (m_X + m_Width / 2);
+				m_Y += center.m_Y - (m_Y + m_Height / 2);
+
+				return Self();
+			}
+			constexpr OutCode GetOutCode(const TPoint& point) const noexcept
+			{
+				OutCode outCode = OutCode::Inside;
+				Utility::AddFlagRef(outCode, OutCode::OutLeft, point.GetX() < m_X);
+				Utility::AddFlagRef(outCode, OutCode::OutRight, point.GetX() > m_X + m_Width);
+				Utility::AddFlagRef(outCode, OutCode::OutTop, point.GetY() < m_Y);
+				Utility::AddFlagRef(outCode, OutCode::OutBottom, point.GetY() > m_Y + m_Height);
+
+				return outCode;
+			}
+
+			constexpr TDerived& Inset(const TPoint& point) noexcept
+			{
+				m_X += point.GetX();
+				m_Y += point.GetY();
+				m_Width -= 2 * point.GetX();
+				m_Height -= 2 * point.GetY();
+
+				return Self();
+			}
+			constexpr TDerived& Inset(const TDerived& other) noexcept
+			{
+				m_X += other.GetLeft();
+				m_Y += other.GetTop();
+				m_Width -= other.GetLeft() + other.GetRight();
+				m_Height -= other.GetTop() + other.GetBottom();
+
+				return Self();
+			}
+			
+			constexpr TDerived& Scale(double dx, double dy, double dw, double dh) noexcept
+			{
+				m_X *= dx;
+				m_Y *= dy;
+				m_Width *= dw;
+				m_Height *= dh;
+
+				return Self();
+			}
+			constexpr TDerived& Scale(double dxy, double dwh) noexcept
+			{
+				return Scale(dxy, dxy, dwh, dwh);
+			}
+			constexpr TDerived& Scale(double scale) noexcept
+			{
+				return Scale(scale, scale);
+			}
+			constexpr TDerived& ScaleByRatio(double numerator, double denominator) noexcept
+			{
+				if (denominator != 0)
+				{
+					const double value = numerator / denominator;
+
+					m_X *= value;
+					m_Y *= value;
+					m_Width *= value;
+					m_Height *= value;
+				}
+				else
+				{
+					*this = {};
+				}
+				return Self();
+			}
+			constexpr TPoint Interpolate(double widthFactor, double heightFactor) const noexcept
+			{
+				return {m_X + m_Width * widthFactor, m_Y + m_Height * heightFactor};
 			}
 
 		public:
