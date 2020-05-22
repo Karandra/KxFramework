@@ -825,6 +825,12 @@ namespace KxFramework
 	class Point final: public Geometry::BasicPoint<Point, int>
 	{
 		public:
+			static constexpr Point UnspecifiedPosition() noexcept
+			{
+				return {Geometry::DefaultCoord, Geometry::DefaultCoord};
+			}
+
+		public:
 			using BasicPoint::BasicPoint;
 			constexpr Point(const wxPoint& other) noexcept
 				:BasicPoint(other.x, other.y)
@@ -877,6 +883,12 @@ namespace KxFramework
 
 	class Size final: public Geometry::BasicPoint<Size, int>
 	{
+		public:
+			static constexpr Size UnspecifiedSize() noexcept
+			{
+				return {Geometry::DefaultCoord, Geometry::DefaultCoord};
+			}
+
 		public:
 			using BasicPoint::BasicPoint;
 			constexpr Size(const wxSize& other) noexcept
