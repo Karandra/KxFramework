@@ -295,7 +295,7 @@ namespace KxFramework::Sciter
 		{
 			return Point(pos.x, pos.y);
 		}
-		return wxDefaultPosition;
+		return Point::UnspecifiedPosition();
 	}
 	Size Element::GetScrollRange() const
 	{
@@ -304,7 +304,7 @@ namespace KxFramework::Sciter
 		{
 			return Utility::FromWindowsRect(range).GetSize();
 		}
-		return wxDefaultSize;
+		return Size::UnspecifiedSize();
 	}
 	bool Element::SetScrollPos(const Point& pos) const
 	{

@@ -10,7 +10,7 @@ namespace KxFramework::UI
 						  NotebookStyle style
 	)
 	{
-		if (wxNotebook::Create(parent, id, wxDefaultPosition, wxDefaultSize, ToInt(style)))
+		if (wxNotebook::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style)))
 		{
 			return true;
 		}

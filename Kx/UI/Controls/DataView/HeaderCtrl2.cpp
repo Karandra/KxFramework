@@ -566,7 +566,7 @@ namespace KxFramework::UI::DataView
 	{
 		m_View = parent;
 
-		if (wxControl::Create(parent, wxID_NONE, wxDefaultPosition, wxDefaultSize, style))
+		if (wxControl::Create(parent, wxID_NONE, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style))
 		{
 			EnableSystemTheme();
 			SetDoubleBuffered(true);

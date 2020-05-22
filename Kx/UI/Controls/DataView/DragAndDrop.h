@@ -120,7 +120,7 @@ namespace KxFramework::UI::DataView
 			wxBitmap m_HintBitmap;
 			Point m_HintPosition;
 
-			Point m_Distance = wxDefaultPosition;
+			Point m_Distance = Point::UnspecifiedPosition();
 			Row m_Row;
 
 		private:

@@ -132,7 +132,7 @@ namespace KxFramework::Sciter
 	}
 	Size GraphicsBitmap::GetSize() const
 	{
-		Size size = wxDefaultSize;
+		Size size = Size::UnspecifiedSize();
 		bool usesAlpha = false;
 		DoGetImageInfo(ToSciterImage(m_Handle), size, usesAlpha);
 
@@ -140,7 +140,7 @@ namespace KxFramework::Sciter
 	}
 	bool GraphicsBitmap::UsesAlpha() const
 	{
-		Size size = wxDefaultSize;
+		Size size = Size::UnspecifiedSize();
 		bool usesAlpha = false;
 		DoGetImageInfo(ToSciterImage(m_Handle), size, usesAlpha);
 

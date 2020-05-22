@@ -21,7 +21,7 @@ namespace KxFramework::UI
 								 CollapsiblePaneStyle style
 	)
 	{
-		if (wxCollapsiblePane::Create(parent, id, label, wxDefaultPosition, wxDefaultSize, ToInt(style), wxDefaultValidator))
+		if (wxCollapsiblePane::Create(parent, id, label, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style), wxDefaultValidator))
 		{
 			SetDoubleBuffered(true);
 			if (ShouldInheritColours())

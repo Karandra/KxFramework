@@ -242,7 +242,7 @@ namespace KxFramework
 		{
 			return Size(size.cx, size.cy);
 		}
-		return wxDefaultSize;
+		return Size::UnspecifiedSize();
 	}
 	wxRegion UxTheme::GetBackgroundRegion(const wxDC& dc, int iPartId, int iStateId, const Rect& rect) const noexcept
 	{
@@ -344,7 +344,7 @@ namespace KxFramework
 		{
 			return Point(value.x, value.y);
 		}
-		return wxDefaultPosition;
+		return Point::UnspecifiedPosition();
 	}
 
 	bool UxTheme::DrawEdge(wxDC& dc, int iPartId, int iStateId, uint32_t edge, uint32_t flags, const Rect& rect, Rect* boundingRect) noexcept

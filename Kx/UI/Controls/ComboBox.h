@@ -58,7 +58,7 @@ namespace KxFramework::UI
 						const wxValidator& validator = wxDefaultValidator
 			)
 			{
-				return Create(parent, id, value, wxDefaultPosition, wxDefaultSize, style, validator);
+				return Create(parent, id, value, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style, validator);
 			}
 			bool Create(wxWindow* parent,
 						wxWindowID id,

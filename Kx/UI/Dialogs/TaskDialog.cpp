@@ -148,7 +148,7 @@ namespace KxFramework::UI
 							TaskDialogStyle style
 	)
 	{
-		if (Dialog::Create(m_Parent, id, caption, wxDefaultPosition, wxDefaultSize, EnumClass::Combine<DialogStyle>(style)))
+		if (Dialog::Create(m_Parent, id, caption, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), EnumClass::Combine<DialogStyle>(style)))
 		{
 			m_Style = style;
 			m_Parent = wxGetTopLevelParent(parent);

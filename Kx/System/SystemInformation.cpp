@@ -446,7 +446,7 @@ namespace KxFramework::System
 				return GetValue(wxSYS_FRAMESIZE_X, wxSYS_FRAMESIZE_Y);
 			}
 		};
-		return wxDefaultSize;
+		return Size::UnspecifiedSize();
 	}
 	TimeSpan GetMetric(SystemTimeMetric index, const wxWindow* window) noexcept
 	{

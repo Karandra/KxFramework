@@ -11,7 +11,7 @@ namespace KxFramework::UI
 							 long style
 	)
 	{
-		if (wxRadioButton::Create(parent, id, label, wxDefaultPosition, wxDefaultSize, style))
+		if (wxRadioButton::Create(parent, id, label, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style))
 		{
 			return true;
 		}

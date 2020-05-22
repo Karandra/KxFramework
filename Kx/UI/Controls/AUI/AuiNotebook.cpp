@@ -11,7 +11,7 @@ namespace KxFramework::UI
 							 AuiNotebookStyle style
 	)
 	{
-		if (wxAuiNotebook::Create(parent, id, wxDefaultPosition, wxDefaultSize, ToInt(style)))
+		if (wxAuiNotebook::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style)))
 		{
 			wxFont font = parent->GetFont();
 			SetNormalFont(font);

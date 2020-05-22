@@ -50,8 +50,8 @@ namespace KxFramework::UI
 			TextBoxDialog(wxWindow* parent,
 						  wxWindowID id,
 						  const String& caption,
-						  const Point& pos = wxDefaultPosition,
-						  const Size& size = wxDefaultSize,
+						  const Point& pos = Point::UnspecifiedPosition(),
+						  const Size& size = Size::UnspecifiedSize(),
 						  StdButton buttons = DefaultButtons,
 						  TextBoxDialogStyle style = DefaultStyle
 			)
@@ -61,8 +61,8 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const String& caption,
-						const Point& pos = wxDefaultPosition,
-						const Size& size = wxDefaultSize,
+						const Point& pos = Point::UnspecifiedPosition(),
+						const Size& size = Size::UnspecifiedSize(),
 						StdButton buttons = DefaultButtons,
 						TextBoxDialogStyle style = DefaultStyle
 			);

@@ -22,7 +22,7 @@ namespace KxFramework::UI
 	)
 	{
 		SetBackgroundStyle(wxBG_STYLE_PAINT);
-		if (wxGenericStaticBitmap::Create(parent, id, bitmap, wxDefaultPosition, wxDefaultSize, ToInt(style)))
+		if (wxGenericStaticBitmap::Create(parent, id, bitmap, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style)))
 		{
 			m_InitialSize = bitmap.IsOk() ? bitmap.GetSize() : this->GetSize();
 

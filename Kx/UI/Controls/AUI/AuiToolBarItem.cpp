@@ -22,7 +22,7 @@ namespace KxFramework::UI
 				return rect.GetRightBottom() + Point(0, 2);
 			}
 		}
-		return wxDefaultPosition;
+		return Point::UnspecifiedPosition();
 	}
 	wxWindowID AuiToolBarItem::DoShowDropdownMenu(bool leftAlign)
 	{

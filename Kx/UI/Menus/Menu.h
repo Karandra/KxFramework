@@ -55,7 +55,7 @@ namespace KxFramework::UI
 			}
 
 		public:
-			wxWindowID Show(wxWindow* window = nullptr, const Point& pos = wxDefaultPosition, wxAlignment alignment = DefaultAlignment);
+			wxWindowID Show(wxWindow* window = nullptr, const Point& pos = Point::UnspecifiedPosition(), wxAlignment alignment = DefaultAlignment);
 			wxWindowID ShowAsPopup(wxWindow* window, int offset = 1, wxAlignment alignment = DefaultAlignment);
 
 		public:

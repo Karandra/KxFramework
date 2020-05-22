@@ -114,7 +114,7 @@ namespace KxFramework
 				}
 			};
 		};
-		return wxDefaultSize;
+		return Size::UnspecifiedSize();
 	}
 	const wxObject* ImageSet::QueryItem(const String& id, ItemType* type) const
 	{

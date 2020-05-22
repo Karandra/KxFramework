@@ -56,8 +56,8 @@ namespace KxFramework::UI
 			ClusterMap() = default;
 			ClusterMap(wxWindow* parent,
 					   wxWindowID id,
-					   const Point& pos = wxDefaultPosition,
-					   const Size& size = wxDefaultSize,
+					   const Point& pos = Point::UnspecifiedPosition(),
+					   const Size& size = Size::UnspecifiedSize(),
 					   long style = 0
 			)
 			{
@@ -65,8 +65,8 @@ namespace KxFramework::UI
 			}
 			bool Create(wxWindow* parent,
 						wxWindowID id,
-						const Point& pos = wxDefaultPosition,
-						const Size& size = wxDefaultSize,
+						const Point& pos = Point::UnspecifiedPosition(),
+						const Size& size = Size::UnspecifiedSize(),
 						long style = 0
 			);
 			~ClusterMap();

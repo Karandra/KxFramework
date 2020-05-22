@@ -280,7 +280,7 @@ namespace KxFramework::UI
 							HTMLWindowStyle style
 	)
 	{
-		if (wxHtmlWindow::Create(parent, id, wxDefaultPosition, wxDefaultSize, ToInt(style), wxS("HTMLWindow")))
+		if (wxHtmlWindow::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style), wxS("HTMLWindow")))
 		{
 			m_BackgroundColor = wxHtmlWindow::GetBackgroundColour();
 			SetBorders(2);

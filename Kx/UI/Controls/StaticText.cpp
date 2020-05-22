@@ -30,7 +30,7 @@ namespace KxFramework::UI
 							StaticTextStyle style
 	)
 	{
-		if (wxStaticText::Create(parent, id, label, wxDefaultPosition, wxDefaultSize, ToInt(style)))
+		if (wxStaticText::Create(parent, id, label, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style)))
 		{
 			m_ColorNormal = GetForegroundColour();
 			m_ColorHighlight = m_ColorNormal;

@@ -47,7 +47,7 @@ namespace KxFramework::UI
 			static constexpr size_t InvalidItemIndex = std::numeric_limits<size_t>::max();
 
 		private:
-			Size m_ThumbSize = wxDefaultSize;
+			Size m_ThumbSize = Size::UnspecifiedSize();
 			Size m_Spacing = Size(1, 1);
 			size_t m_Focused = InvalidItemIndex;
 			size_t m_Selected = InvalidItemIndex;

@@ -76,7 +76,7 @@ namespace KxFramework::UI
 								  FileBrowseDialogStyle style
 	)
 	{
-		if (Dialog::Create(parent, id, caption, wxDefaultPosition, wxDefaultSize, EnumClass::Combine<DialogStyle>(style)))
+		if (Dialog::Create(parent, id, caption, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), EnumClass::Combine<DialogStyle>(style)))
 		{
 			m_Parent = parent;
 			m_Style = style;

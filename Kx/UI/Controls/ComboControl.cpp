@@ -19,7 +19,7 @@ namespace KxFramework::UI
 							  const wxValidator& validator
 	)
 	{
-		if (wxComboCtrl::Create(window, id, value, wxDefaultPosition, wxDefaultSize, style, validator))
+		if (wxComboCtrl::Create(window, id, value, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style, validator))
 		{
 			return true;
 		}

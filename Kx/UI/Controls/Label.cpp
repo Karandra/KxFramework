@@ -196,7 +196,7 @@ namespace KxFramework::UI
 		SetBackgroundStyle(wxBG_STYLE_PAINT);
 		PushEventHandler(&m_EvtHandler);
 
-		if (wxStaticText::Create(parent, id, label, wxDefaultPosition, wxDefaultSize, ToInt(style)|wxBORDER_NONE))
+		if (wxStaticText::Create(parent, id, label, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style)|wxBORDER_NONE))
 		{
 			EnableSystemTheme();
 			SetDoubleBuffered(true);

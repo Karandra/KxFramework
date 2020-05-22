@@ -179,7 +179,7 @@ namespace KxFramework::UI
 			StdButton m_SelectedButtons = StdButton::None;
 
 		protected:
-			void PostCreate(const Point& pos = wxDefaultPosition);
+			void PostCreate(const Point& pos = Point::UnspecifiedPosition());
 			virtual int GetViewSizerProportion() const
 			{
 				return 1;
@@ -264,8 +264,8 @@ namespace KxFramework::UI
 			StdDialog(wxWindow* parent,
 					  wxWindowID id,
 					  const String& caption,
-					  const Point& pos = wxDefaultPosition,
-					  const Size& size = wxDefaultSize,
+					  const Point& pos = Point::UnspecifiedPosition(),
+					  const Size& size = Size::UnspecifiedSize(),
 					  StdButton buttons = DefaultButtons,
 					  DialogStyle style = DefaultStyle
 			)
@@ -275,8 +275,8 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const String& caption,
-						const Point& pos = wxDefaultPosition,
-						const Size& size = wxDefaultSize,
+						const Point& pos = Point::UnspecifiedPosition(),
+						const Size& size = Size::UnspecifiedSize(),
 						StdButton buttons = DefaultButtons,
 						DialogStyle style = DefaultStyle
 			);
@@ -310,7 +310,7 @@ namespace KxFramework::UI
 			}
 
 			virtual int ShowModal() override;
-			void AdjustWindow(const Point &pos = Point(-2, -2), const Size& minSize = wxDefaultSize);
+			void AdjustWindow(const Point &pos = Point(-2, -2), const Size& minSize = Size::UnspecifiedSize());
 			void AddUserWindow(wxWindow* window)
 			{
 				m_UserControls.push_back(window);

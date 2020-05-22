@@ -60,7 +60,7 @@ namespace KxFramework::UI
 						   WindowStyle style
 	)
 	{
-		if (wxControl::Create(parent, id, wxDefaultPosition, wxDefaultSize, ToInt(style)))
+		if (wxControl::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style)))
 		{
 			EnableSystemTheme();
 			SetDoubleBuffered(true);

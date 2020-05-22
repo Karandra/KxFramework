@@ -25,7 +25,7 @@ namespace KxFramework::UI
 								   const String& message
 	)
 	{
-		if (Dialog::Create(parent, id, caption, wxDefaultPosition, wxDefaultSize, Dialog::DefaultStyle))
+		if (Dialog::Create(parent, id, caption, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), Dialog::DefaultStyle))
 		{
 			m_Parent = parent;
 			m_Caption = caption;

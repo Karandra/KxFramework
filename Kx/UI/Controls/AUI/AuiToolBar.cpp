@@ -166,7 +166,7 @@ namespace KxFramework::UI
 							AuiToolBarStyle style
 	)
 	{
-		if (wxAuiToolBar::Create(parent, id, wxDefaultPosition, wxDefaultSize, ToInt(style)))
+		if (wxAuiToolBar::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style)))
 		{
 			SetMargins(0, 0, 0, 0);
 			SetArtProvider(new AuiToolBarArt(*this));

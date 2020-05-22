@@ -32,7 +32,7 @@ namespace KxFramework::UI
 							 ProgressBarStyle style
 	)
 	{
-		if (wxGauge::Create(parent, id, range, wxDefaultPosition, wxDefaultSize, ToInt(style)))
+		if (wxGauge::Create(parent, id, range, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style)))
 		{
 			Bind(wxEVT_PAINT, &ProgressBar::OnPaint, this);
 			return true;

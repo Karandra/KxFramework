@@ -21,8 +21,8 @@ namespace KxFramework::UI
 						wxWindowID id,
 						wxWindow* pView,
 						const wxString& caption,
-						const Point& pos = wxDefaultPosition,
-						const Size& size = wxDefaultSize,
+						const Point& pos = Point::UnspecifiedPosition(),
+						const Size& size = Size::UnspecifiedSize(),
 						StdButton buttons = DefaultButtons,
 						DialogStyle style = DefaultStyle
 			);

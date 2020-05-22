@@ -157,14 +157,14 @@ namespace KxFramework::UI::DataView
 			
 			bool Create(wxWindow* parent,
 						wxWindowID id,
-						const Point& pos = wxDefaultPosition,
-						const Size& size = wxDefaultSize,
+						const Point& pos = Point::UnspecifiedPosition(),
+						const Size& size = Size::UnspecifiedSize(),
 						long style = static_cast<long>(CtrlStyle::Default),
 						const wxString& name = {}
 			);
 			bool Create(wxWindow* parent, wxWindowID id, CtrlStyle style = CtrlStyle::Default)
 			{
-				return Create(parent, id, wxDefaultPosition, wxDefaultSize, static_cast<int>(style));
+				return Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), static_cast<int>(style));
 			}
 
 		public:

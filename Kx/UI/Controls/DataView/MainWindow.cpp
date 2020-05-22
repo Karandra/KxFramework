@@ -1936,7 +1936,7 @@ namespace KxFramework::UI::DataView
 	}
 
 	MainWindow::MainWindow(View* parent, wxWindowID id)
-		:wxWindow(parent, id, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS|wxBORDER_NONE, GetClassInfo()->GetClassName()),
+		:wxWindow(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), wxWANTS_CHARS|wxBORDER_NONE, GetClassInfo()->GetClassName()),
 		m_TreeRoot(this), m_VirtualNode(m_TreeRoot), m_View(parent)
 	{
 		// Setup drawing
@@ -2749,7 +2749,7 @@ namespace KxFramework::UI::DataView
 
 	void MainWindow::HitTest(const Point& pos, Node** nodeOut, Column** columnOut)
 	{
-		Point unscrolledPos = wxDefaultPosition;
+		Point unscrolledPos = Point::UnspecifiedPosition();
 		if (nodeOut)
 		{
 			m_View->CalcUnscrolledPosition(pos.GetX(), pos.GetY(), &unscrolledPos.X(), &unscrolledPos.Y());

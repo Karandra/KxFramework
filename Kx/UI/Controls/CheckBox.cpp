@@ -11,7 +11,7 @@ namespace KxFramework::UI
 						  CheckBoxStyle style
 	)
 	{
-		if (wxCheckBox::Create(parent, id, label, wxDefaultPosition, wxDefaultSize, ToInt(style)))
+		if (wxCheckBox::Create(parent, id, label, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style)))
 		{
 			return true;
 		}

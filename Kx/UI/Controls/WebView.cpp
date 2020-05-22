@@ -12,6 +12,6 @@ namespace KxFramework::UI
 							  long style
 	)
 	{
-		return wxWebView::New(parent, id, defaultURL, wxDefaultPosition, wxDefaultSize, backend, style);
+		return wxWebView::New(parent, id, defaultURL, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), backend, style);
 	}
 }

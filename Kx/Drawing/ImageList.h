@@ -79,7 +79,7 @@ namespace KxFramework
 
 			bool Draw(wxDC& dc, int index, const Point& point, DrawItemFlag flags = DrawItemFlag::None) noexcept
 			{
-				return DoDraw(dc, index, Rect(point, wxDefaultSize), flags);
+				return DoDraw(dc, index, Rect(point, Size::UnspecifiedSize()), flags);
 			}
 			bool Draw(wxDC& dc, int index, const Rect& rect, DrawItemFlag flags = DrawItemFlag::None) noexcept
 			{
@@ -88,7 +88,7 @@ namespace KxFramework
 
 			bool DrawOverlay(wxDC& dc, int index, int overlayIndex, const Point& point, DrawItemFlag flags = DrawItemFlag::None) noexcept
 			{
-				return DoDraw(dc, index, Rect(point, wxDefaultSize), flags, overlayIndex);
+				return DoDraw(dc, index, Rect(point, Size::UnspecifiedSize()), flags, overlayIndex);
 			}
 			bool DrawOverlay(wxDC& dc, int index, int overlayIndex, const Rect& rect, DrawItemFlag flags = DrawItemFlag::None) noexcept
 			{

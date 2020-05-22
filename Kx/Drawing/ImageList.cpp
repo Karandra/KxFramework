@@ -173,7 +173,7 @@ namespace KxFramework
 		}
 
 		m_hImageList = Utility::ExchangeResetAndReturn(other.m_hImageList, nullptr);
-		m_size = Utility::ExchangeResetAndReturn(other.m_size, wxDefaultSize);
+		m_size = Utility::ExchangeResetAndReturn(other.m_size, Size::UnspecifiedSize());
 		m_Flags = Utility::ExchangeResetAndReturn(other.m_Flags, 0);
 
 		return *this;

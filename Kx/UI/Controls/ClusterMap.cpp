@@ -106,7 +106,7 @@ namespace KxFramework::UI
 		{
 			return {pos.GetX() / drawInfo.Increment, pos.GetY() / drawInfo.Increment};
 		}
-		return wxDefaultPosition;
+		return Point::UnspecifiedPosition();
 	}
 	int ClusterMap::CoordToIndex(const DrawInfo& drawInfo, const Point& pos) const
 	{
@@ -131,7 +131,7 @@ namespace KxFramework::UI
 
 			return {x, y};
 		}
-		return wxDefaultPosition;
+		return Point::UnspecifiedPosition();
 	}
 	int ClusterMap::XYToIndex(const DrawInfo& drawInfo, const Point& xy) const
 	{

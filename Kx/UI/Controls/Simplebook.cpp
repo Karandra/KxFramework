@@ -10,7 +10,7 @@ namespace KxFramework::UI
 							  long style
 	)
 	{
-		if (wxSimplebook::Create(parent, id, wxDefaultPosition, wxDefaultSize, style))
+		if (wxSimplebook::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style))
 		{
 			if (ShouldInheritColours())
 			{

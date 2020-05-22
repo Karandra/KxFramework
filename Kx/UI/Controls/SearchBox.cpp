@@ -50,7 +50,7 @@ namespace KxFramework::UI
 		m_Value = value;
 		PushEventHandler(&m_EvtHandler);
 
-		if (wxSearchCtrl::Create(parent, id, value, wxDefaultPosition, wxDefaultSize, style, validator))
+		if (wxSearchCtrl::Create(parent, id, value, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style, validator))
 		{
 			ShowCancelButton(true);
 			ShowSearchButton(true);

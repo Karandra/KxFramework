@@ -101,7 +101,7 @@ namespace KxFramework::UI
 			{
 				return m_Bitmap;
 			}
-			void SetSplashBitmap(const wxBitmap& bitmap, const Size& size = wxDefaultSize);
+			void SetSplashBitmap(const wxBitmap& bitmap, const Size& size = Size::UnspecifiedSize());
 		
 			uint8_t GetSplashAlpha() const
 			{

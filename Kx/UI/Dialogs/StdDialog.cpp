@@ -436,7 +436,7 @@ namespace KxFramework::UI
 		{
 			case wxBOTH:
 			{
-				SetMaxSize(wxDefaultSize);
+				SetMaxSize(Size::UnspecifiedSize());
 				break;
 			}
 			case wxHORIZONTAL:
@@ -522,7 +522,7 @@ namespace KxFramework::UI
 			}
 			else
 			{
-				SetMaxSize(wxDefaultSize);
+				SetMaxSize(Size::UnspecifiedSize());
 				SetMinSize(m_DialogSizer->Fit(this));
 			}
 			SetSize(GetMinSize());

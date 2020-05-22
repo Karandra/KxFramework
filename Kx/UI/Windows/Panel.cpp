@@ -10,7 +10,7 @@ namespace KxFramework::UI
 					   WindowStyle style
 	)
 	{
-		if (wxPanel::Create(parent, id, wxDefaultPosition, wxDefaultSize, ToInt(style)))
+		if (wxPanel::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style)))
 		{
 			EnableSystemTheme();
 			return true;

@@ -106,7 +106,7 @@ namespace KxFramework::UI::DataView
 	}
 	DropSource::~DropSource()
 	{
-		m_HintPosition = wxDefaultPosition;
+		m_HintPosition = Point::UnspecifiedPosition();
 		if (m_DragImage)
 		{
 			m_DragImage->Destroy();

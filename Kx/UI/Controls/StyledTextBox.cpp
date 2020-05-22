@@ -19,7 +19,7 @@ namespace KxFramework::UI
 							   const wxValidator& validator
 	)
 	{
-		if (wxStyledTextCtrl::Create(parent, id, wxDefaultPosition, wxDefaultSize, style))
+		if (wxStyledTextCtrl::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style))
 		{
 			SetValidator(validator);
 

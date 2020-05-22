@@ -18,7 +18,7 @@ namespace KxFramework::Sciter
 			KxEVENT_MEMBER(MouseEvent, MouseIdle);
 
 		protected:
-			Point m_RelativePosition = wxDefaultPosition;
+			Point m_RelativePosition = Point::UnspecifiedPosition();
 			wxStockCursor m_CursorType = wxStockCursor::wxCURSOR_NONE;
 			bool m_IsOnIcon = false;
 

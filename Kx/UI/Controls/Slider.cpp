@@ -23,7 +23,7 @@ namespace KxFramework::UI
 		Utility::ModFlagRef(style, SliderStyle::Horizontal, style & (SliderStyle::Top|SliderStyle::Both));
 
 		// Remove 'SliderStyle::NoThumb' from default wx flags. Just in case.
-		if (wxSlider::Create(parent, id, value, minValue, maxValue, wxDefaultPosition, wxDefaultSize, ToInt(Utility::ModFlag(style, SliderStyle::NoThumb, false)), validator))
+		if (wxSlider::Create(parent, id, value, minValue, maxValue, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(Utility::ModFlag(style, SliderStyle::NoThumb, false)), validator))
 		{
 			if (style & SliderStyle::Both)
 			{

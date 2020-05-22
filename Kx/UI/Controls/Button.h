@@ -97,7 +97,7 @@ namespace KxFramework::UI
 						const wxValidator& validator = wxDefaultValidator
 			)
 			{
-				return Create(parent, id, label, wxDefaultPosition, wxDefaultSize, style, validator);
+				return Create(parent, id, label, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style, validator);
 			}
 			~Button()
 			{

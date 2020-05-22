@@ -45,8 +45,8 @@ namespace KxFramework::UI
 			Dialog(wxWindow* parent,
 				   wxWindowID id,
 				   const String& title,
-				   const Point& pos = wxDefaultPosition,
-				   const Size& size = wxDefaultSize,
+				   const Point& pos = Point::UnspecifiedPosition(),
+				   const Size& size = Size::UnspecifiedSize(),
 				   DialogStyle style = DefaultStyle
 			)
 			{
@@ -55,8 +55,8 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const String& title,
-						const Point& pos = wxDefaultPosition,
-						const Size& size = wxDefaultSize,
+						const Point& pos = Point::UnspecifiedPosition(),
+						const Size& size = Size::UnspecifiedSize(),
 						DialogStyle style = DefaultStyle
 			);
 

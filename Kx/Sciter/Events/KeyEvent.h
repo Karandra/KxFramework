@@ -11,7 +11,7 @@ namespace KxFramework::Sciter
 			KxEVENT_MEMBER(KeyEvent, KeyDown);
 
 		protected:
-			Point m_Position = wxDefaultPosition;
+			Point m_Position = Point::UnspecifiedPosition();
 			wxKeyCode m_KeyCode = wxKeyCode::WXK_NONE;
 			wxChar m_UnicodeKey = 0;
 

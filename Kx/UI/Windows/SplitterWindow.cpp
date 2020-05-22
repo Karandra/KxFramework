@@ -35,7 +35,7 @@ namespace KxFramework::UI
 								SplitterWindowStyle style
 	)
 	{
-		if (wxSplitterWindow::Create(parent, id, wxDefaultPosition, wxDefaultSize, ToInt(style)))
+		if (wxSplitterWindow::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style)))
 		{
 			wxSplitterWindow::m_isHot = true;
 			return true;
