@@ -417,7 +417,7 @@ namespace KxFramework::UI::DataView
 			bool IsLast() const;
 			bool IsDisplayedLast() const;
 
-			wxRect GetRect() const;
-			wxRect GetDropdownRect() const;
+			Rect GetRect() const;
+			Rect GetDropdownRect() const;
 	};
 }

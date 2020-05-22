@@ -63,8 +63,8 @@ namespace KxFramework::UI::DataView
 			{
 				return ToolTip::CreateDefaultForRenderer(m_Value.GetText());
 			}
-			void DrawCellContent(const wxRect& cellRect, CellState cellState) override;
-			wxSize GetCellSize() const override;
+			void DrawCellContent(const Rect& cellRect, CellState cellState) override;
+			Size GetCellSize() const override;
 
 		public:
 			BitmapTextRenderer(int alignment = wxALIGN_INVALID)

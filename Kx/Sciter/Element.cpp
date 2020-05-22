@@ -169,13 +169,13 @@ namespace KxFramework::Sciter
 	{
 		return GetSciterAPI()->SciterUpdateElement(ToSciterElement(m_Handle), force) == SCDOM_OK;
 	}
-	bool Element::UpdateRect(const wxRect& rect)
+	bool Element::UpdateRect(const Rect& rect)
 	{
 		return GetSciterAPI()->SciterRefreshElementArea(ToSciterElement(m_Handle), Utility::ToWindowsRect(rect)) == SCDOM_OK;
 	}
 
 	// Size and position
-	wxRect Element::GetRect() const
+	Rect Element::GetRect() const
 	{
 		RECT nativeRect = {};
 		if (GetSciterAPI()->SciterGetElementLocation(ToSciterElement(m_Handle), &nativeRect, ELEMENT_AREAS::VIEW_RELATIVE) == SCDOM_OK)
@@ -184,16 +184,16 @@ namespace KxFramework::Sciter
 		}
 		return {};
 	}
-	wxPoint Element::GetPosition() const
+	Point Element::GetPosition() const
 	{
 		return GetRect().GetPosition();
 	}
-	wxSize Element::GetSize() const
+	Size Element::GetSize() const
 	{
 		return GetRect().GetSize();
 	}
 
-	wxSize Element::GetMinSize() const
+	Size Element::GetMinSize() const
 	{
 		INT minWidth = 0;
 		INT maxWidth = 0;
@@ -201,9 +201,9 @@ namespace KxFramework::Sciter
 		GetSciterAPI()->SciterGetElementIntrinsicWidths(ToSciterElement(m_Handle), &minWidth, &maxWidth);
 		GetSciterAPI()->SciterGetElementIntrinsicHeight(ToSciterElement(m_Handle), minWidth, &height);
 
-		return wxSize(minWidth, height);
+		return Size(minWidth, height);
 	}
-	wxSize Element::GetMaxSize() const
+	Size Element::GetMaxSize() const
 	{
 		INT minWidth = 0;
 		INT maxWidth = 0;
@@ -211,7 +211,7 @@ namespace KxFramework::Sciter
 		GetSciterAPI()->SciterGetElementIntrinsicWidths(ToSciterElement(m_Handle), &minWidth, &maxWidth);
 		GetSciterAPI()->SciterGetElementIntrinsicHeight(ToSciterElement(m_Handle), maxWidth, &height);
 
-		return wxSize(maxWidth, height);
+		return Size(maxWidth, height);
 	}
 
 	// Visibility
@@ -288,16 +288,16 @@ namespace KxFramework::Sciter
 
 		GetSciterAPI()->SciterScrollToView(ToSciterElement(m_Handle), nativeFlags);
 	}
-	wxPoint Element::GetScrollPos() const
+	Point Element::GetScrollPos() const
 	{
 		POINT pos = {};
 		if (GetSciterAPI()->SciterGetScrollInfo(ToSciterElement(m_Handle), &pos, nullptr, nullptr) == SCDOM_OK)
 		{
-			return wxPoint(pos.x, pos.y);
+			return Point(pos.x, pos.y);
 		}
 		return wxDefaultPosition;
 	}
-	wxSize Element::GetScrollRange() const
+	Size Element::GetScrollRange() const
 	{
 		RECT range = {};
 		if (GetSciterAPI()->SciterGetScrollInfo(ToSciterElement(m_Handle), nullptr, &range, nullptr) == SCDOM_OK)
@@ -306,10 +306,10 @@ namespace KxFramework::Sciter
 		}
 		return wxDefaultSize;
 	}
-	bool Element::SetScrollPos(const wxPoint& pos) const
+	bool Element::SetScrollPos(const Point& pos) const
 	{
 		const Host* host = GetHost();
-		return GetSciterAPI()->SciterSetScrollPos(ToSciterElement(m_Handle), {pos.x, pos.y}, host ? host->IsSmoothScrollingEnabled() : false) == SCDOM_OK;
+		return GetSciterAPI()->SciterSetScrollPos(ToSciterElement(m_Handle), {pos.GetX(), pos.GetY()}, host ? host->IsSmoothScrollingEnabled() : false) == SCDOM_OK;
 	}
 
 	// HTML content

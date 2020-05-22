@@ -59,7 +59,7 @@ namespace KxFramework::UI::DataView
 					renderer.BeginCellSetup(*node, m_Column);
 					renderer.SetupCellValue();
 					renderer.SetupCellAttributes(m_MainWindow->GetCellStateForRow(row));
-					UpdateWithWidth(renderer.GetCellSize().x + indent);
+					UpdateWithWidth(renderer.GetCellSize().GetWidth() + indent);
 					renderer.EndCellSetup();
 				}
 			}
@@ -141,7 +141,7 @@ namespace KxFramework::UI::DataView
 					Column* activatableColumn = FindInteractibleColumn(*node, InteractibleCell::Activator);
 					if (activatableColumn)
 					{
-						const wxRect cellRect = m_View->GetItemRect(*node, activatableColumn);
+						const Rect cellRect = m_View->GetItemRect(*node, activatableColumn);
 
 						Renderer& renderer = node->GetRenderer(*activatableColumn);
 						renderer.BeginCellSetup(*node, *activatableColumn);
@@ -459,7 +459,7 @@ namespace KxFramework::UI::DataView
 		{
 			const int x = event.GetX();
 			const int y = event.GetY();
-			wxSize size = m_View->GetClientSize();
+			Size size = m_View->GetClientSize();
 
 			return x >= 0 && y >= 0 && x <= size.GetWidth() && y <= size.GetHeight();
 		};
@@ -603,8 +603,8 @@ namespace KxFramework::UI::DataView
 
 			if (event.LeftIsDown())
 			{
-				m_View->CalcUnscrolledPosition(m_DragStart.x, m_DragStart.y, &m_DragStart.x, &m_DragStart.y);
-				const Row draggedRow = GetRowAt(m_DragStart.y);
+				m_View->CalcUnscrolledPosition(m_DragStart.GetX(), m_DragStart.GetY(), &m_DragStart.X(), &m_DragStart.Y());
+				const Row draggedRow = GetRowAt(m_DragStart.GetY());
 				Node* const draggedNode = GetNodeByRow(draggedRow);
 
 				// Don't allow invalid items
@@ -663,7 +663,7 @@ namespace KxFramework::UI::DataView
 				itemOffset = m_Indent * node->GetIndentLevel();
 			}
 
-			wxRect rect(xpos + itemOffset, GetRowStart(row) + (GetRowHeight(row) - m_UniformRowHeight) / 2, m_UniformRowHeight, m_UniformRowHeight);
+			Rect rect(xpos + itemOffset, GetRowStart(row) + (GetRowHeight(row) - m_UniformRowHeight) / 2, m_UniformRowHeight, m_UniformRowHeight);
 			return rect.Contains(x, y);
 		};
 
@@ -898,7 +898,7 @@ namespace KxFramework::UI::DataView
 			if (IsCellInteractible(*currentNode, *currentColumn, InteractibleCell::Activator))
 			{
 				// Notify cell about click
-				wxRect cellRect(xpos + itemOffset, GetRowStart(currentRow), currentColumn->GetWidth() - itemOffset, GetRowHeight(currentRow));
+				Rect cellRect(xpos + itemOffset, GetRowStart(currentRow), currentColumn->GetWidth() - itemOffset, GetRowHeight(currentRow));
 
 				// Note that SetupCellAttributes() should be called after GetRowStart()
 				// call in 'cellRect' initialization above as GetRowStart() calls
@@ -921,37 +921,37 @@ namespace KxFramework::UI::DataView
 				// adjust the rectangle ourselves to account for the alignment
 				const wxAlignment align = renderer.GetEffectiveAlignment();
 
-				wxRect rectItem = cellRect;
-				const wxSize size = renderer.GetCellSize();
-				if (size.x >= 0 && size.x < cellRect.width)
+				Rect rectItem = cellRect;
+				const Size size = renderer.GetCellSize();
+				if (size.GetWidth() >= 0 && size.GetWidth() < cellRect.GetWidth())
 				{
 					if (align & wxALIGN_CENTER_HORIZONTAL)
 					{
-						rectItem.x += (cellRect.width - size.x) / 2;
+						rectItem.X() += (cellRect.GetWidth() - size.GetWidth()) / 2;
 					}
 					else if (align & wxALIGN_RIGHT)
 					{
-						rectItem.x += cellRect.width - size.x;
+						rectItem.X() += cellRect.GetWidth() - size.GetWidth();
 					}
 					// else: wxALIGN_LEFT is the default
 				}
 
-				if (size.y >= 0 && size.y < cellRect.height)
+				if (size.GetHeight() >= 0 && size.GetHeight() < cellRect.GetHeight())
 				{
 					if (align & wxALIGN_CENTER_VERTICAL)
 					{
-						rectItem.y += (cellRect.height - size.y)/2;
+						rectItem.Y() += (cellRect.GetHeight() - size.GetHeight()) / 2;
 					}
 					else if (align & wxALIGN_BOTTOM)
 					{
-						rectItem.y += cellRect.height - size.y;
+						rectItem.Y() += cellRect.GetHeight() - size.GetHeight();
 					}
 					// else: wxALIGN_TOP is the default
 				}
 
 				wxMouseEvent event2(event);
-				event2.m_x -= rectItem.x;
-				event2.m_y -= rectItem.y;
+				event2.m_x -= rectItem.GetX();
+				event2.m_y -= rectItem.GetY();
 				m_View->CalcUnscrolledPosition(event2.m_x, event2.m_y, &event2.m_x, &event2.m_y);
 
 				renderer.CallOnActivateCell(*currentNode, cellRect, &event2);
@@ -1039,13 +1039,11 @@ namespace KxFramework::UI::DataView
 	// Drawing
 	void MainWindow::OnPaint(wxPaintEvent& event)
 	{
-		using namespace KxFramework;
-
-		const wxSize clientSize = GetClientSize();
+		const Size clientSize = GetClientSize();
 		wxAutoBufferedPaintDC paintDC(this);
 		paintDC.SetPen(*wxTRANSPARENT_PEN);
 		paintDC.SetBrush(m_View->GetBackgroundColour());
-		paintDC.DrawRectangle(clientSize);
+		paintDC.DrawRectangle(Rect(clientSize));
 
 		m_View->PrepareDC(paintDC);
 		wxGCDC dc(paintDC);
@@ -1057,19 +1055,19 @@ namespace KxFramework::UI::DataView
 
 		if (m_BackgroundBitmap.IsOk())
 		{
-			wxPoint pos;
+			Point pos;
 			if (m_BackgroundBitmapAlignment & wxALIGN_RIGHT)
 			{
-				pos.x = clientSize.x - m_BackgroundBitmap.GetWidth();
+				pos.X() = clientSize.GetWidth() - m_BackgroundBitmap.GetWidth();
 			}
 			if (m_BackgroundBitmapAlignment & wxALIGN_BOTTOM)
 			{
-				pos.y = clientSize.y - m_BackgroundBitmap.GetHeight();
+				pos.Y() = clientSize.GetHeight() - m_BackgroundBitmap.GetHeight();
 			}
 
 			if (m_FitBackgroundBitmap && m_BackgroundBitmap.GetSize() != clientSize)
 			{
-				gc.DrawBitmap(m_BackgroundBitmap, pos.x, pos.y, clientSize.GetWidth(), clientSize.GetHeight());
+				gc.DrawBitmap(m_BackgroundBitmap, pos.GetX(), pos.GetY(), clientSize.GetWidth(), clientSize.GetHeight());
 			}
 			else
 			{
@@ -1083,7 +1081,7 @@ namespace KxFramework::UI::DataView
 			if (!m_EmptyControlLabel.IsEmpty())
 			{
 				const int y = GetCharHeight() * 2;
-				const wxRect rect(0, y, clientSize.GetWidth(), clientSize.GetHeight() - y);
+				const Rect rect(0, y, clientSize.GetWidth(), clientSize.GetHeight() - y);
 
 				paintDC.SetTextForeground(m_View->GetForegroundColour().MakeDisabled());
 				paintDC.DrawLabel(m_EmptyControlLabel, rect, wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP);
@@ -1093,12 +1091,12 @@ namespace KxFramework::UI::DataView
 			return;
 		}
 
-		wxRect updateRect = GetUpdateRegion().GetBox();
-		m_View->CalcUnscrolledPosition(updateRect.x, updateRect.y, &updateRect.x, &updateRect.y);
+		Rect updateRect = GetUpdateRegion().GetBox();
+		m_View->CalcUnscrolledPosition(updateRect.GetX(), updateRect.GetY(), &updateRect.X(), &updateRect.Y());
 
 		// Compute which rows needs to be redrawn
-		const Row rowStart = GetRowAt(std::max(0, updateRect.y));
-		const size_t rowCount = std::min(*GetRowAt(std::max(0, updateRect.y + updateRect.height)) - *rowStart + 1, GetRowCount() - *rowStart);
+		const Row rowStart = GetRowAt(std::max(0, updateRect.GetY()));
+		const size_t rowCount = std::min(*GetRowAt(std::max(0, updateRect.GetY() + updateRect.GetHeight())) - *rowStart + 1, GetRowCount() - *rowStart);
 		const Row rowEnd = rowStart + rowCount;
 
 		// Send the event to the control itself.
@@ -1120,7 +1118,7 @@ namespace KxFramework::UI::DataView
 			int width = 0;
 			if (column->IsExposed(width))
 			{
-				if (xCoordStart + width >= updateRect.x)
+				if (xCoordStart + width >= updateRect.GetX())
 				{
 					break;
 				}
@@ -1180,8 +1178,8 @@ namespace KxFramework::UI::DataView
 			dc.SetBrush(altRowColor);
 
 			// We only need to draw the visible part, so limit the rectangle to it.
-			const int x = m_View->CalcUnscrolledPosition(wxPoint(0, 0)).x;
-			const int widthRect = clientSize.x;
+			const int x = m_View->CalcUnscrolledPosition(Point(0, 0)).x;
+			const int widthRect = clientSize.GetWidth();
 			for (size_t currentRow = *rowStart; currentRow < *rowEnd; currentRow++)
 			{
 				if (currentRow % 2)
@@ -1204,25 +1202,25 @@ namespace KxFramework::UI::DataView
 				continue;
 			}
 
-			const wxRect cellInitialRect(xCoordStart, GetRowStart(currentRow), 0, GetRowHeight(currentRow));
-			wxRect cellRect = cellInitialRect;
+			const Rect cellInitialRect(xCoordStart, GetRowStart(currentRow), 0, GetRowHeight(currentRow));
+			Rect cellRect = cellInitialRect;
 			const CellState cellState = GetCellStateForRow(currentRow);
 
 			const bool isCategoryRow = node->IsCategoryNode();
 			int categoryRowOffset = -1;
 
 			int expanderIndent = 0;
-			wxRect expanderRect;
-			wxRect focusCellRect;
+			Rect expanderRect;
+			Rect focusCellRect;
 
 			auto GetRowRect = [&cellInitialRect, &expanderIndent, xCoordEnd, xCoordStart, expanderColumn]()
 			{
-				wxRect rowRect = cellInitialRect;
+				Rect rowRect = cellInitialRect;
 				rowRect.SetWidth(xCoordEnd - xCoordStart);
 				if (expanderColumn->IsDisplayedFirst())
 				{
-					rowRect.x += expanderIndent;
-					rowRect.width -= expanderIndent;
+					rowRect.X() += expanderIndent;
+					rowRect.Width() -= expanderIndent;
 				}
 				return rowRect;
 			};
@@ -1230,7 +1228,7 @@ namespace KxFramework::UI::DataView
 			for (size_t currentColumnIndex = coulumnIndexStart; currentColumnIndex < coulmnIndexEnd; currentColumnIndex++)
 			{
 				Column* column = m_View->GetColumnDisplayedAt(currentColumnIndex);
-				if (!column->IsExposed(cellRect.width))
+				if (!column->IsExposed(cellRect.Width()))
 				{
 					continue;
 				}
@@ -1244,11 +1242,11 @@ namespace KxFramework::UI::DataView
 
 					if (node->HasChildren())
 					{
-						auto ClacExpanderRect = [&expanderRect, &cellRect, indentOffset](const wxSize& size, int margin = 0, int offset = 0)
+						auto ClacExpanderRect = [&expanderRect, &cellRect, indentOffset](const Size& size, int margin = 0, int offset = 0)
 						{
 							// We reserve 'm_UniformRowHeight' of horizontal space for the expander but leave EXPANDER_MARGIN around the expander itself
-							expanderRect.SetX(cellRect.x + indentOffset + margin);
-							expanderRect.SetY(cellRect.y + (cellRect.height - size.GetHeight()) / 2 + margin - offset);
+							expanderRect.SetX(cellRect.GetX() + indentOffset + margin);
+							expanderRect.SetY(cellRect.GetY() + (cellRect.GetHeight() - size.GetHeight()) / 2 + margin - offset);
 							expanderRect.SetWidth(size.GetWidth());
 							expanderRect.SetHeight(size.GetHeight());
 						};
@@ -1259,7 +1257,7 @@ namespace KxFramework::UI::DataView
 						}
 						else
 						{
-							ClacExpanderRect(wxSize(m_UniformRowHeight, m_UniformRowHeight), EXPANDER_MARGIN, EXPANDER_OFFSET);
+							ClacExpanderRect(Size(m_UniformRowHeight, m_UniformRowHeight), EXPANDER_MARGIN, EXPANDER_OFFSET);
 						}
 					}
 				}
@@ -1272,49 +1270,49 @@ namespace KxFramework::UI::DataView
 					const bool first = column->IsDisplayedFirst();
 					if (column == expanderColumn && first)
 					{
-						focusCellRect.x += expanderIndent;
-						focusCellRect.width -= expanderIndent;
+						focusCellRect.X() += expanderIndent;
+						focusCellRect.Width() -= expanderIndent;
 
 						if (!verticalRulesEnabled)
 						{
-							focusCellRect.width += 1;
+							focusCellRect.Width() += 1;
 						}
 					}
 					if (!first)
 					{
-						focusCellRect.x -= 1;
+						focusCellRect.X() -= 1;
 						if (column->IsDisplayedLast())
 						{
-							focusCellRect.width += 1;
+							focusCellRect.Width() += 1;
 						}
 						else
 						{
-							focusCellRect.width += verticalRulesEnabled ? 1 : 2;
+							focusCellRect.Width() += verticalRulesEnabled ? 1 : 2;
 						}
 					}
 				}
 
 				// Move coordinates to next column
-				cellRect.x += cellRect.width;
+				cellRect.X() += cellRect.GetWidth();
 			}
 
 			cellRect = cellInitialRect;
 			for (size_t currentColumnIndex = coulumnIndexStart; currentColumnIndex < coulmnIndexEnd; currentColumnIndex++)
 			{
 				Column* column = m_View->GetColumnDisplayedAt(currentColumnIndex);
-				if (!column->IsExposed(cellRect.width))
+				if (!column->IsExposed(cellRect.Width()))
 				{
 					continue;
 				}
 
 				// Adjust cell rectangle
-				wxRect adjustedCellRect = cellRect;
+				Rect adjustedCellRect = cellRect;
 				adjustedCellRect.Deflate(PADDING_RIGHTLEFT, 0);
 
 				if (column == expanderColumn)
 				{
-					adjustedCellRect.x += expanderIndent;
-					adjustedCellRect.width -= expanderIndent;
+					adjustedCellRect.X() += expanderIndent;
+					adjustedCellRect.Width() -= expanderIndent;
 				}
 
 				// Draw vertical rules but don't draw the rule for last column is we have only one column
@@ -1324,7 +1322,7 @@ namespace KxFramework::UI::DataView
 					wxDCBrushChanger brush(dc, *wxTRANSPARENT_BRUSH);
 
 					// Draw vertical rules in column's last pixel, so they will align with header control dividers
-					const int x = cellRect.x + cellRect.width - 1;
+					const int x = cellRect.GetX() + cellRect.GetWidth() - 1;
 					int yAdd = 0;
 					if (currentRow + 1 == rowEnd)
 					{
@@ -1343,7 +1341,7 @@ namespace KxFramework::UI::DataView
 				}
 
 				// Clip DC to current column
-				const wxRect columnRect(cellRect.GetX(), 0, cellRect.GetWidth(), m_virtualSize.GetHeight());
+				const Rect columnRect(cellRect.GetX(), 0, cellRect.GetWidth(), m_virtualSize.GetHeight());
 				DCClip clipDC(paintDC, columnRect);
 				GCClip clipGC(gc, columnRect);
 
@@ -1382,7 +1380,7 @@ namespace KxFramework::UI::DataView
 				}
 
 				// Move coordinates to next column
-				cellRect.x += cellRect.width;
+				cellRect.X() += cellRect.GetWidth();
 
 				// Draw expander
 				if (column == expanderColumn && !expanderRect.IsEmpty())
@@ -1399,7 +1397,7 @@ namespace KxFramework::UI::DataView
 
 					if (isCategoryRow)
 					{
-						wxRect rect(expanderRect.GetPosition(), nativeRenderer.GetCollapseButtonSize(this, dc));
+						Rect rect(expanderRect.GetPosition(), nativeRenderer.GetCollapseButtonSize(this, dc));
 						rect = rect.CenterIn(expanderRect);
 
 						nativeRenderer.DrawCollapseButton(this, paintDC, rect, flags);
@@ -1415,7 +1413,7 @@ namespace KxFramework::UI::DataView
 							const int partID = flags & wxCONTROL_CURRENT ? TVP_HOTGLYPH : TVP_GLYPH;
 							const int stateID = flags & wxCONTROL_EXPANDED ? GLPS_OPENED : GLPS_CLOSED;
 
-							wxRect rect(expanderRect.GetPosition(), theme.GetPartSize(dc, partID, stateID));
+							Rect rect(expanderRect.GetPosition(), (wxSize)theme.GetPartSize(dc, partID, stateID));
 							theme.DrawBackground(paintDC, partID, stateID, rect.CenterIn(expanderRect));
 						}
 						else
@@ -1431,7 +1429,7 @@ namespace KxFramework::UI::DataView
 					// Focus rect looks ugly in it's narrower 3px
 					if (focusCellRect.GetWidth() > 3)
 					{
-						nativeRenderer.DrawFocusRect(this, paintDC, wxRect(focusCellRect).Deflate(FromDIP(wxSize(1, 1))), wxCONTROL_SELECTED);
+						nativeRenderer.DrawFocusRect(this, paintDC, Rect(focusCellRect).Deflate(FromDIP(wxSize(1, 1))), wxCONTROL_SELECTED);
 					}
 				}
 
@@ -1439,7 +1437,7 @@ namespace KxFramework::UI::DataView
 				#if wxUSE_DRAG_AND_DROP
 				if (cellState.IsDropTarget())
 				{
-					wxRect rowRect = GetRowRect();
+					Rect rowRect = GetRowRect();
 					nativeRenderer.DrawFocusRect(this, paintDC, rowRect, wxCONTROL_SELECTED);
 				}
 				#endif
@@ -1454,8 +1452,8 @@ namespace KxFramework::UI::DataView
 					categoryRowOffset = 0;
 				}
 
-				wxPoint pos1(cellInitialRect.GetX() + categoryRowOffset, cellRect.GetY() + cellRect.GetHeight() / 2);
-				wxPoint pos2(cellInitialRect.GetX() + xCoordEnd - xCoordStart - categoryRowOffset, pos1.y);
+				Point pos1(cellInitialRect.GetX() + categoryRowOffset, cellRect.GetY() + cellRect.GetHeight() / 2);
+				Point pos2(cellInitialRect.GetX() + xCoordEnd - xCoordStart - categoryRowOffset, pos1.GetY());
 				dc.DrawLine(pos1, pos2);
 			}
 			#endif
@@ -1502,7 +1500,7 @@ namespace KxFramework::UI::DataView
 	}
 	void MainWindow::DoSetVirtualSize(int x, int y)
 	{
-		if (x != m_virtualSize.x || y != m_virtualSize.y)
+		if (x != m_virtualSize.GetX() || y != m_virtualSize.GetY())
 		{
 			wxWindow::DoSetVirtualSize(x, y);
 		}
@@ -1530,12 +1528,12 @@ namespace KxFramework::UI::DataView
 				Renderer& clipTestRenderer = node.GetRenderer(clipTestColumn);
 				clipTestRenderer.BeginCellSetup(node, const_cast<Column&>(clipTestColumn));
 				clipTestRenderer.SetupCellValue();
-				const wxSize cellSize = clipTestRenderer.GetCellSize();
+				const Size cellSize = clipTestRenderer.GetCellSize();
 				clipTestRenderer.EndCellSetup();
 
 				// Test for clipping
 				shouldShow = false;
-				const wxRect cellRect = clipTestColumn.GetRect();
+				const Rect cellRect = clipTestColumn.GetRect();
 				auto CompareWidth = [&cellSize](int width)
 				{
 					return width - (2 * PADDING_RIGHTLEFT) <= cellSize.GetWidth();
@@ -1654,8 +1652,8 @@ namespace KxFramework::UI::DataView
 			calculator.UpdateWithWidth(m_View->GetHeaderCtrl()->GetColumnTitleWidth(column.GetNativeColumn()));
 		}
 
-		const wxPoint origin = m_View->CalcUnscrolledPosition(wxPoint(0, 0));
-		calculator.ComputeBestColumnWidth(rowCount, *GetRowAt(origin.y), *GetRowAt(origin.y + GetClientSize().y));
+		const Point origin = m_View->CalcUnscrolledPosition(Point(0, 0));
+		calculator.ComputeBestColumnWidth(rowCount, *GetRowAt(origin.GetY()), *GetRowAt(origin.GetY() + GetClientSize().GetY()));
 
 		int maxWidth = calculator.GetMaxWidth();
 		if (maxWidth > 0)
@@ -1702,7 +1700,7 @@ namespace KxFramework::UI::DataView
 					if (desiredWidth < lastVisibleColumn->CalcBestSize() && !fitToClient)
 					{
 						SetColumnWidth(lastVisibleColumn->GetWidth());
-						SetVirtualSize(virtualWidth, m_virtualSize.y);
+						SetVirtualSize(virtualWidth, m_virtualSize.GetY());
 						return true;
 					}
 					SetColumnWidth(desiredWidth);
@@ -1711,8 +1709,8 @@ namespace KxFramework::UI::DataView
 					// To prevent flickering scrollbar when resizing the window to be
 					// narrower, force-set the virtual width to 0 here. It will eventually
 					// be corrected at idle time.
-					SetVirtualSize(0, m_virtualSize.y);
-					RefreshRect(wxRect(lastColumnLeft, 0, clientWidth - lastColumnLeft, GetSize().y));
+					SetVirtualSize(0, m_virtualSize.GetY());
+					RefreshRect(Rect(lastColumnLeft, 0, clientWidth - lastColumnLeft, GetSize().GetY()));
 
 					return true;
 				}
@@ -1720,7 +1718,7 @@ namespace KxFramework::UI::DataView
 				{
 					// Don't bother, the columns won't fit anyway
 					SetColumnWidth(lastVisibleColumn->GetWidth());
-					SetVirtualSize(virtualWidth, m_virtualSize.y);
+					SetVirtualSize(virtualWidth, m_virtualSize.GetY());
 
 					return true;
 				}
@@ -2027,12 +2025,12 @@ namespace KxFramework::UI::DataView
 	// Refreshing
 	void MainWindow::RefreshRows(Row from, Row to)
 	{
-		wxRect rect = GetRowsRect(from, to);
-		m_View->CalcScrolledPosition(rect.x, rect.y, &rect.x, &rect.y);
+		Rect rect = GetRowsRect(from, to);
+		m_View->CalcScrolledPosition(rect.GetX(), rect.GetY(), &rect.X(), &rect.Y());
 
-		wxSize clientSize = GetClientSize();
-		wxRect clientRect(0, 0, clientSize.x, clientSize.y);
-		wxRect intersectRect = clientRect.Intersect(rect);
+		Size clientSize = GetClientSize();
+		Rect clientRect(0, 0, clientSize.GetWidth(), clientSize.GetHeight());
+		Rect intersectRect = clientRect.Intersect(rect);
 		if (!intersectRect.IsEmpty())
 		{
 			RefreshRect(intersectRect, true);
@@ -2040,19 +2038,19 @@ namespace KxFramework::UI::DataView
 	}
 	void MainWindow::RefreshRowsAfter(Row firstRow)
 	{
-		wxSize clientSize = GetClientSize();
+		Size clientSize = GetClientSize();
 		int start = GetRowStart(firstRow);
 		m_View->CalcScrolledPosition(start, 0, &start, nullptr);
 
-		if (start <= clientSize.y)
+		if (start <= clientSize.GetHeight())
 		{
-			wxRect rect(0, start, clientSize.x, clientSize.y - start);
+			Rect rect(0, start, clientSize.GetWidth(), clientSize.GetHeight() - start);
 			RefreshRect(rect, true);
 		}
 	}
 	void MainWindow::RefreshColumn(const Column& column)
 	{
-		wxSize size = GetClientSize();
+		Size size = GetClientSize();
 
 		// Find X coordinate of this column
 		int left = 0;
@@ -2069,36 +2067,36 @@ namespace KxFramework::UI::DataView
 			}
 		}
 
-		RefreshRect(wxRect(left, 0, column.GetWidth(), size.GetHeight()));
+		RefreshRect(Rect(left, 0, column.GetWidth(), size.GetHeight()));
 	}
 
 	// Item rect
-	wxRect MainWindow::GetRowsRect(Row rowFrom, Row rowTo) const
+	Rect MainWindow::GetRowsRect(Row rowFrom, Row rowTo) const
 	{
 		if (rowFrom > rowTo)
 		{
 			std::swap(rowFrom, rowTo);
 		}
 
-		wxRect rect;
-		rect.x = 0;
-		rect.y = GetRowStart(rowFrom);
+		Rect rect;
+		rect.X() = 0;
+		rect.Y() = GetRowStart(rowFrom);
 
 		// Don't calculate exact width of the row, because GetEndOfLastCol() is
 		// expensive to call, and controls with rows not spanning entire width rare.
 		// It is more efficient to e.g. repaint empty parts of the window needlessly.
-		rect.width = std::numeric_limits<decltype(rect.width)>::max();
+		rect.Width() = std::numeric_limits<decltype(rect.GetWidth())>::max();
 		if (rowFrom == rowTo)
 		{
-			rect.height = GetRowHeight(rowFrom);
+			rect.Height() = GetRowHeight(rowFrom);
 		}
 		else
 		{
-			rect.height = GetRowStart(rowTo) - rect.y + GetRowHeight(rowTo);
+			rect.Height() = GetRowStart(rowTo) - rect.GetY() + GetRowHeight(rowTo);
 		}
 		return rect;
 	}
-	wxRect MainWindow::GetRowRect(Row row) const
+	Rect MainWindow::GetRowRect(Row row) const
 	{
 		return GetRowsRect(row, row);
 	}
@@ -2213,10 +2211,13 @@ namespace KxFramework::UI::DataView
 	}
 	int MainWindow::GetDefaultRowHeight(UniformHeight type) const
 	{
-		int resultHeight = 0;
-		const int iconMargin = 6 * System::GetMetric(SystemSizeMetric::Border, this).GetWidth();
-		const int iconHeight = System::GetMetric(SystemSizeMetric::IconSmall, this).GetHeight();
+		const Size iconSpacing =
+		{
+			System::GetMetric(SystemSizeMetric::Border, this).GetWidth() * 6,
+			System::GetMetric(SystemSizeMetric::IconSmall, this).GetHeight()
+		};
 
+		int resultHeight = 0;
 		switch (type)
 		{
 			case UniformHeight::Default:
@@ -2228,22 +2229,22 @@ namespace KxFramework::UI::DataView
 				}
 				else
 				{
-					resultHeight = std::max(iconHeight + iconMargin, GetCharHeight() + iconMargin);
+					resultHeight = std::max(iconSpacing.GetHeight() + iconSpacing.GetWidth(), GetCharHeight() + iconSpacing.GetWidth());
 				}
 				break;
 			}
 			case UniformHeight::ListView:
 			{
-				resultHeight = std::max(m_View->FromDIP(17), GetCharHeight() + iconMargin);
+				resultHeight = std::max(m_View->FromDIP(17), GetCharHeight() + iconSpacing.GetWidth());
 				break;
 			}
 			case UniformHeight::Explorer:
 			{
-				resultHeight = std::max(m_View->FromDIP(22), GetCharHeight() + iconMargin);
+				resultHeight = std::max(m_View->FromDIP(22), GetCharHeight() + iconSpacing.GetWidth());
 				break;
 			}
 		};
-		return resultHeight >= iconHeight ? resultHeight : iconHeight;
+		return resultHeight >= iconSpacing.GetHeight() ? resultHeight : iconSpacing.GetHeight();
 	}
 
 	// Drag and Drop
@@ -2260,7 +2261,7 @@ namespace KxFramework::UI::DataView
 			indent = indent + m_UniformRowHeight;
 		}
 		width -= indent;
-		wxRect itemRect = wxRect(0, 0, width, height);
+		Rect itemRect = Rect(0, 0, width, height);
 
 		wxBitmap bitmap(width, height, 24);
 		{
@@ -2294,7 +2295,7 @@ namespace KxFramework::UI::DataView
 					Renderer& renderer = node->GetRenderer(*column);
 					renderer.BeginCellRendering(*node, *column, gcdc, &memoryDC);
 
-					wxRect cellRect(x, 0, width, height);
+					Rect cellRect(x, 0, width, height);
 
 					renderer.SetupCellValue();
 					renderer.SetupCellAttributes(cellState);
@@ -2345,16 +2346,16 @@ namespace KxFramework::UI::DataView
 		return value != Result::OperationRemoved || value == Result::None;
 	}
 
-	std::tuple<Row, Node*> MainWindow::DragDropHitTest(const wxPoint& pos) const
+	std::tuple<Row, Node*> MainWindow::DragDropHitTest(const Point& pos) const
 	{
 		// Get row
-		wxPoint unscrolledPos;
-		m_View->CalcUnscrolledPosition(pos.x, pos.y, &unscrolledPos.x, &unscrolledPos.y);
-		Row row = GetRowAt(unscrolledPos.y);
+		Point unscrolledPos;
+		m_View->CalcUnscrolledPosition(pos.GetX(), pos.GetY(), &unscrolledPos.X(), &unscrolledPos.Y());
+		Row row = GetRowAt(unscrolledPos.GetY());
 
 		// Get item
 		Node* node = nullptr;
-		if (row < GetRowCount() && pos.y <= GetRowWidth())
+		if (row < GetRowCount() && pos.GetY() <= GetRowWidth())
 		{
 			node = GetNodeByRow(row);
 		}
@@ -2370,7 +2371,7 @@ namespace KxFramework::UI::DataView
 			m_DropHintLine.MakeNull();
 		}
 	}
-	wxDragResult MainWindow::OnDragOver(const wxDataObjectSimple& dataObject, const wxPoint& pos, wxDragResult dragResult)
+	wxDragResult MainWindow::OnDragOver(const wxDataObjectSimple& dataObject, const Point& pos, wxDragResult dragResult)
 	{
 		auto [row, node] = DragDropHitTest(pos);
 		if (row != 0 && row < GetRowCount())
@@ -2415,7 +2416,7 @@ namespace KxFramework::UI::DataView
 		}
 		return dragResult;
 	}
-	wxDragResult MainWindow::OnDropData(wxDataObjectSimple& dataObject, const wxPoint& pos, wxDragResult dragResult)
+	wxDragResult MainWindow::OnDropData(wxDataObjectSimple& dataObject, const Point& pos, wxDragResult dragResult)
 	{
 		auto [row, node] = DragDropHitTest(pos);
 
@@ -2431,7 +2432,7 @@ namespace KxFramework::UI::DataView
 		}
 		return dragResult;
 	}
-	bool MainWindow::TestDropPossible(const wxDataObjectSimple& dataObject, const wxPoint& pos)
+	bool MainWindow::TestDropPossible(const wxDataObjectSimple& dataObject, const Point& pos)
 	{
 		RemoveDropHint();
 		auto [row, node] = DragDropHitTest(pos);
@@ -2448,7 +2449,7 @@ namespace KxFramework::UI::DataView
 		return true;
 	}
 	
-	wxDragResult MainWindow::OnDragDropEnter(const wxDataObjectSimple& dataObject, const wxPoint& pos, wxDragResult dragResult)
+	wxDragResult MainWindow::OnDragDropEnter(const wxDataObjectSimple& dataObject, const Point& pos, wxDragResult dragResult)
 	{
 		return dragResult;
 	}
@@ -2458,9 +2459,18 @@ namespace KxFramework::UI::DataView
 	}
 
 	// Scrolling
-	void MainWindow::ScrollWindow(int dx, int dy, const wxRect* rect)
+	void MainWindow::ScrollWindow(int dx, int dy, const Rect* rect)
 	{
-		wxWindow::ScrollWindow(dx, dy, rect);
+		if (rect)
+		{
+			wxRect temp = *rect;
+			wxWindow::ScrollWindow(dx, dy, &temp);
+		}
+		else
+		{
+			wxWindow::ScrollWindow(dx, dy, nullptr);
+		}
+
 		if (wxHeaderCtrl* header = m_View->GetHeaderCtrl())
 		{
 			header->ScrollWindow(dx, 0);
@@ -2468,16 +2478,16 @@ namespace KxFramework::UI::DataView
 	}
 	void MainWindow::ScrollTo(Row row, size_t column)
 	{
-		wxPoint pos;
-		m_View->GetScrollPixelsPerUnit(&pos.x, &pos.y);
-		wxPoint scrollPos(-1, GetRowStart(row) / pos.y);
+		Point pos;
+		m_View->GetScrollPixelsPerUnit(&pos.X(), &pos.Y());
+		Point scrollPos(-1, GetRowStart(row) / pos.GetY());
 
 		if (column != INVALID_COLUMN)
 		{
-			wxRect rect = GetClientRect();
+			Rect rect = GetClientRect();
 
-			wxPoint unscrolledPos;
-			m_View->CalcUnscrolledPosition(rect.x, rect.y, &unscrolledPos.x, &unscrolledPos.y);
+			Point unscrolledPos;
+			m_View->CalcUnscrolledPosition(rect.GetX(), rect.GetY(), &unscrolledPos.X(), &unscrolledPos.Y());
 
 			int columnWidth = 0;
 			int x_start = 0;
@@ -2490,14 +2500,14 @@ namespace KxFramework::UI::DataView
 			}
 
 			int x_end = x_start + columnWidth;
-			int xe = unscrolledPos.x + rect.width;
-			if (x_end > xe && scrollPos.x != 0)
+			int xe = unscrolledPos.GetX() + rect.GetWidth();
+			if (x_end > xe && scrollPos.GetX() != 0)
 			{
-				scrollPos.x = (unscrolledPos.x + x_end - xe) / scrollPos.x;
+				scrollPos.X() = (unscrolledPos.GetX() + x_end - xe) / scrollPos.GetX();
 			}
-			if (x_start < unscrolledPos.x && scrollPos.x)
+			if (x_start < unscrolledPos.GetX() && scrollPos.GetX())
 			{
-				scrollPos.x = x_start / scrollPos.x;
+				scrollPos.X() = x_start / scrollPos.GetX();
 			}
 		}
 		m_View->Scroll(scrollPos);
@@ -2718,32 +2728,32 @@ namespace KxFramework::UI::DataView
 	}
 	size_t MainWindow::GetCountPerPage() const
 	{
-		wxSize size = GetClientSize();
-		return size.y / m_UniformRowHeight;
+		Size size = GetClientSize();
+		return size.GetHeight() / m_UniformRowHeight;
 	}
 	Row MainWindow::GetFirstVisibleRow() const
 	{
-		wxPoint pos(0, 0);
-		m_View->CalcUnscrolledPosition(pos.x, pos.y, &pos.x, &pos.y);
-		return GetRowAt(pos.y);
+		Point pos(0, 0);
+		m_View->CalcUnscrolledPosition(pos.GetX(), pos.GetY(), &pos.X(), &pos.Y());
+		return GetRowAt(pos.GetY());
 	}
 	Row MainWindow::GetLastVisibleRow() const
 	{
-		wxSize size = GetClientSize();
-		m_View->CalcUnscrolledPosition(size.x, size.y, &size.x, &size.y);
+		Size size = GetClientSize();
+		m_View->CalcUnscrolledPosition(size.GetWidth(), size.GetHeight(), &size.Width(), &size.Height());
 
 		// We should deal with the pixel here.
-		size_t row = *GetRowAt(size.y) - 1;
+		size_t row = *GetRowAt(size.GetHeight()) - 1;
 		return std::min(GetRowCount() - 1, row);
 	}
 
-	void MainWindow::HitTest(const wxPoint& pos, Node** nodeOut, Column** columnOut)
+	void MainWindow::HitTest(const Point& pos, Node** nodeOut, Column** columnOut)
 	{
-		wxPoint unscrolledPos = wxDefaultPosition;
+		Point unscrolledPos = wxDefaultPosition;
 		if (nodeOut)
 		{
-			m_View->CalcUnscrolledPosition(pos.x, pos.y, &unscrolledPos.x, &unscrolledPos.y);
-			*nodeOut = GetNodeByRow(GetRowAt(unscrolledPos.y));
+			m_View->CalcUnscrolledPosition(pos.GetX(), pos.GetY(), &unscrolledPos.X(), &unscrolledPos.Y());
+			*nodeOut = GetNodeByRow(GetRowAt(unscrolledPos.GetY()));
 		}
 
 		if (columnOut)
@@ -2753,7 +2763,7 @@ namespace KxFramework::UI::DataView
 
 			if (!unscrolledPos.IsFullySpecified())
 			{
-				m_View->CalcUnscrolledPosition(pos.x, pos.y, &unscrolledPos.x, &unscrolledPos.y);
+				m_View->CalcUnscrolledPosition(pos.GetX(), pos.GetY(), &unscrolledPos.X(), &unscrolledPos.Y());
 			}
 			for (size_t colnumIndex = 0; colnumIndex < columnCount; colnumIndex++)
 			{
@@ -2762,7 +2772,7 @@ namespace KxFramework::UI::DataView
 				int width = 0;
 				if (column->IsExposed(width))
 				{
-					if (x_start + width >= unscrolledPos.x)
+					if (x_start + width >= unscrolledPos.GetX())
 					{
 						*columnOut = column;
 						return;
@@ -2772,7 +2782,7 @@ namespace KxFramework::UI::DataView
 			}
 		}
 	}
-	wxRect MainWindow::GetItemRect(const Node& item, const Column* column)
+	Rect MainWindow::GetItemRect(const Node& item, const Column* column)
 	{
 		int xpos = 0;
 		int width = 0;
@@ -2812,7 +2822,7 @@ namespace KxFramework::UI::DataView
 		if (!row)
 		{
 			// This means the row is currently not visible at all.
-			return wxRect();
+			return Rect();
 		}
 
 		// We have to take an expander column into account and compute its indentation
@@ -2827,8 +2837,8 @@ namespace KxFramework::UI::DataView
 			indent += m_UniformRowHeight;
 		}
 
-		wxRect itemRect(xpos + indent, GetRowStart(row), width - indent, GetRowHeight(row));
-		m_View->CalcScrolledPosition(itemRect.x, itemRect.y, &itemRect.x, &itemRect.y);
+		Rect itemRect(xpos + indent, GetRowStart(row), width - indent, GetRowHeight(row));
+		m_View->CalcScrolledPosition(itemRect.GetX(), itemRect.GetY(), &itemRect.X(), &itemRect.Y());
 		return itemRect;
 	}
 	
@@ -3046,7 +3056,7 @@ namespace KxFramework::UI::DataView
 			m_View->EnsureVisible(node, &column);
 			m_View->SetFocus();
 
-			const wxRect itemRect = GetItemRect(node, &column);
+			const Rect itemRect = GetItemRect(node, &column);
 			if (editor->BeginEdit(node, column, itemRect))
 			{
 				// Save the renderer to be able to finish/cancel editing it later.

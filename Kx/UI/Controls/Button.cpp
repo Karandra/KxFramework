@@ -22,20 +22,20 @@ namespace
 		return window->FromDIP(wxSize(wxDefaultCoord, value)).GetHeight();
 	}
 
-	wxSize CalcBestSize(const KxFramework::UI::Button& button, wxSize size)
+	KxFramework::Size CalcBestSize(const KxFramework::UI::Button& button, KxFramework::Size size)
 	{
 		if (!size.IsFullySpecified())
 		{
 			size = button.GetSizeFromTextSize(button.GetTextExtent(button.GetLabelText()));
 		}
 
-		if (size.x <= 0)
+		if (size.GetWidth() <= 0)
 		{
-			size.x = FromDIPX(&button, g_DefaultButtonWidth);
+			size.SetWidth(FromDIPX(&button, g_DefaultButtonWidth));
 		}
-		if (size.y <= 0 || std::abs(size.y - g_DefaultButtonHeight) <= button.GetCharHeight())
+		if (size.GetHeight() <= 0 || std::abs(size.GetHeight() - g_DefaultButtonHeight) <= button.GetCharHeight())
 		{
-			size.y = FromDIPY(&button, g_DefaultButtonHeight);
+			size.SetHeight(FromDIPY(&button, g_DefaultButtonHeight));
 		}
 		return size;
 	}
@@ -45,7 +45,7 @@ namespace KxFramework::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(Button, wxAnyButton);
 
-	wxSize Button::GetDefaultSize()
+	Size Button::GetDefaultSize()
 	{
 		return wxButton::GetDefaultSize();
 	}
@@ -59,8 +59,8 @@ namespace KxFramework::UI
 		wxRendererNative& renderer = wxRendererNative::Get();
 
 		const bool isEnabled = IsThisEnabled();
-		const wxSize clientSize = GetSize();
-		const wxRect contentRect = wxRect(FromDIP(wxPoint(2, 2)), clientSize - FromDIP(wxSize(4, 4)));
+		const Size clientSize = GetSize();
+		const Rect contentRect = Rect(FromDIP(Point(2, 2)), (wxSize)clientSize - FromDIP(wxSize(4, 4)));
 		int width = clientSize.GetWidth();
 		int widthMod = 2;
 		if (m_IsSliptterEnabled)
@@ -68,7 +68,7 @@ namespace KxFramework::UI
 			width -= g_ArrowButtonWidth;
 			widthMod = 5;
 		}
-		wxRect rect(-1, -1, width + widthMod, clientSize.GetHeight() + 2);
+		Rect rect(-1, -1, width + widthMod, clientSize.GetHeight() + 2);
 
 		int controlState = m_ControlState;
 		if (!isEnabled)
@@ -104,11 +104,11 @@ namespace KxFramework::UI
 		// Draw second part of the button
 		if (m_IsSliptterEnabled)
 		{
-			wxRect splitRect = rect;
-			splitRect.x = width + FromDIPX(this, 1);
-			splitRect.y = -1;
-			splitRect.width = FromDIPX(this, g_ArrowButtonWidth);
-			splitRect.height = clientSize.GetHeight() + FromDIPX(this, 2);
+			Rect splitRect = rect;
+			splitRect.X() = width + FromDIPX(this, 1);
+			splitRect.Y() = -1;
+			splitRect.Width() = FromDIPX(this, g_ArrowButtonWidth);
+			splitRect.Height() = clientSize.GetHeight() + FromDIPX(this, 2);
 
 			renderer.DrawPushButton(this, dc, splitRect, controlState);
 			renderer.DrawDropArrow(this, dc, splitRect, controlState);
@@ -145,8 +145,8 @@ namespace KxFramework::UI
 		ScheduleRefresh();
 		m_ControlState = wxCONTROL_NONE;
 
-		const wxPoint pos = event.GetPosition();
-		if (m_IsSliptterEnabled && pos.x > (GetClientSize().GetWidth() - g_ArrowButtonWidth))
+		const Point pos = event.GetPosition();
+		if (m_IsSliptterEnabled && pos.GetX() > (GetClientSize().GetWidth() - g_ArrowButtonWidth))
 		{
 			wxContextMenuEvent menuEvent(EvtMenu, this->GetId());
 			menuEvent.SetPosition(pos);
@@ -183,14 +183,14 @@ namespace KxFramework::UI
 	}
 	wxSize Button::DoGetSizeFromTextSize(int xlen, int ylen) const
 	{
-		wxSize size = ConvertDialogToPixels(wxSize(16, 0));
+		Size size = ConvertDialogToPixels(wxSize(16, 0));
 		if (xlen > 0)
 		{
-			size.x += xlen;
+			size.Width() += xlen;
 		}
 		if (ylen > 0)
 		{
-			size.y += ylen;
+			size.Height() += ylen;
 		}
 		return size;
 	}
@@ -198,8 +198,8 @@ namespace KxFramework::UI
 	bool Button::Create(wxWindow* parent,
 						wxWindowID id,
 						const String& label,
-						const wxPoint& pos,
-						const wxSize& size,
+						const Point& pos,
+						const Size& size,
 						ButtonStyle style,
 						const wxValidator& validator
 	)
@@ -286,7 +286,7 @@ namespace KxFramework::UI
 					iconSize = 512;
 				}
 
-				wxIcon icon = library.GetIconResource(wxS("78"), wxSize(iconSize, iconSize));
+				wxIcon icon = library.GetIconResource(wxS("78"), Size(iconSize, iconSize));
 				if (icon.IsOk())
 				{
 					SetBitmap(Drawing::ToBitmap(icon));

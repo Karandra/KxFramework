@@ -8,8 +8,8 @@ namespace KxFramework::UI
 	bool Frame::Create(wxWindow* parent,
 					   wxWindowID id,
 					   const String& title,
-					   const wxPoint& pos,
-					   const wxSize& size,
+					   const Point& pos,
+					   const Size& size,
 					   FrameStyle style
 	)
 	{

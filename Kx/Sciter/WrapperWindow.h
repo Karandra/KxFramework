@@ -148,7 +148,7 @@ namespace KxFramework::Sciter
 			{
 				return Host::GetDPI();
 			}
-			wxSize GetBestSize() const
+			Size GetBestSize() const
 			{
 				return TWindow::GetBestSize();
 			}

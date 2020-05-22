@@ -169,7 +169,7 @@ namespace KxFramework::UI
 		if (wxAuiToolBar::Create(parent, id, wxDefaultPosition, wxDefaultSize, ToInt(style)))
 		{
 			SetMargins(0, 0, 0, 0);
-			SetArtProvider(new KxAuiToolBarArt(*this));
+			SetArtProvider(new AuiToolBarArt(*this));
 
 			Bind(wxEVT_MENU, &AuiToolBar::OnLeftClick, this);
 			Bind(wxEVT_AUITOOLBAR_MIDDLE_CLICK, &AuiToolBar::EventHandler, this);
@@ -220,9 +220,9 @@ namespace KxFramework::UI
 		return DoCreateTool(wxAuiToolBar::AddStretchSpacer(proportion));
 	}
 
-	AuiToolBarItem* AuiToolBar::FindToolByPosition(const wxPoint& pos) const
+	AuiToolBarItem* AuiToolBar::FindToolByPosition(const Point& pos) const
 	{
-		if (wxAuiToolBarItem* item = wxAuiToolBar::FindToolByPosition(pos.x, pos.y))
+		if (wxAuiToolBarItem* item = wxAuiToolBar::FindToolByPosition(pos.GetX(), pos.GetY()))
 		{
 			return const_cast<AuiToolBar&>(*this).DoGetTool(*item);
 		}
@@ -271,10 +271,9 @@ namespace KxFramework::UI
 
 namespace KxFramework::UI
 {
-	void KxAuiToolBarArt::DrawPlainBackground(wxDC& dc, wxWindow* window, const wxRect& rect)
+	void AuiToolBarArt::DrawPlainBackground(wxDC& dc, wxWindow* window, const wxRect& rect)
 	{
-		wxColour colorBG = m_Instance->GetBackgroundColour();
-		if (colorBG.IsOk())
+		if (Color colorBG = m_Instance->GetBackgroundColour())
 		{
 			dc.SetBackground(colorBG);
 			dc.Clear();
@@ -284,11 +283,10 @@ namespace KxFramework::UI
 			wxAuiDefaultToolBarArt::DrawPlainBackground(dc, window, rect);
 		}
 
-		wxColour colorBorder = m_Instance->GetBorderColor();
-		if (colorBorder.IsOk())
+		if (Color colorBorder = m_Instance->GetBorderColor())
 		{
 			dc.SetPen(colorBorder);
-			dc.DrawLine(rect.GetLeftBottom(), rect.GetRightBottom() + wxPoint(1, 0));
+			dc.DrawLine(rect.GetLeftBottom(), rect.GetRightBottom() + Point(1, 0));
 		}
 	}
 }

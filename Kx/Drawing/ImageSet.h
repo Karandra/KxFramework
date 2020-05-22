@@ -69,13 +69,13 @@ namespace KxFramework
 			wxBitmap GetBitmap(const String& id) const;
 			wxIcon GetIcon(const String& id) const;
 
-			wxSize GetItemSize(const String& id) const;
+			Size GetItemSize(const String& id) const;
 			const wxObject* QueryItem(const String& id, ItemType* type = nullptr) const;
 			const wxImage* QueryImage(const String& id) const;
 			const wxBitmap* QueryBitmap(const String& id) const;
 			const wxIcon* QueryIcon(const String& id) const;
 
-			std::unique_ptr<ImageList> CreateImageList(const wxSize& size) const;
+			std::unique_ptr<ImageList> CreateImageList(const Size& size) const;
 
 		public:
 			ImageSet& operator=(const ImageSet&) = delete;

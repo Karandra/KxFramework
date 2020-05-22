@@ -22,7 +22,7 @@ namespace
 
 namespace KxFramework::UI::DataView
 {
-	wxWindow* SpinEditor::CreateControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value)
+	wxWindow* SpinEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value)
 	{
 		int style = wxSP_ARROW_KEYS|wxTE_PROCESS_ENTER|m_Alignment;
 		if (m_IsWrapping)
@@ -34,8 +34,8 @@ namespace KxFramework::UI::DataView
 			style |= wxTE_READONLY;
 		}
 
-		wxPoint pos = cellRect.GetTopLeft();
-		wxSize size = cellRect.GetSize();
+		Point pos = cellRect.GetTopLeft();
+		Size size = cellRect.GetSize();
 
 		wxControl* editor = nullptr;
 		if (m_Type == Type::Integer)
@@ -54,7 +54,7 @@ namespace KxFramework::UI::DataView
 			else
 			{
 				// For some reason 'wxSpinCtrl' created 2 px left relative to given position
-				pos.x += 2;
+				pos.X() += 2;
 
 				wxSpinCtrl* spin = new wxSpinCtrl(parent, wxID_NONE, {}, pos, size, style, m_IntMin, m_IntMax, initialValue);
 				spin->SetBase(m_IntBase);

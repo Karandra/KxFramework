@@ -48,7 +48,7 @@ namespace KxFramework::UI::DataView
 		private:
 			Node* m_Node = nullptr;
 			Column* m_Column = nullptr;
-			std::optional<wxRect> m_Rect;
+			std::optional<Rect> m_Rect;
 			std::pair<Row, Row> m_CacheHints;
 
 		public:
@@ -84,11 +84,11 @@ namespace KxFramework::UI::DataView
 				m_Column = column;
 			}
 
-			wxRect GetRect() const
+			Rect GetRect() const
 			{
-				return m_Rect ? *m_Rect : wxRect();
+				return m_Rect ? *m_Rect : Rect();
 			}
-			void SetRect(const wxRect& rect)
+			void SetRect(const Rect& rect)
 			{
 				m_Rect = rect;
 			}
@@ -97,9 +97,9 @@ namespace KxFramework::UI::DataView
 				m_Rect.reset();
 			}
 
-			wxPoint GetPosition() const 
+			Point GetPosition() const 
 			{
-				return m_Rect ? m_Rect->GetPosition() : wxDefaultPosition;
+				return m_Rect ? m_Rect->GetPosition() : Point::UnspecifiedPosition();
 			}
 			void SetPosition(int x, int y)
 			{
@@ -107,29 +107,29 @@ namespace KxFramework::UI::DataView
 				{
 					m_Rect = {};
 				}
-				m_Rect->x = x;
-				m_Rect->y = y;
+				m_Rect->X() = x;
+				m_Rect->Y() = y;
 			}
-			void SetPosition(const wxPoint& pos)
+			void SetPosition(const Point& pos)
 			{
-				SetPosition(pos.x, pos.y);
+				SetPosition(pos.GetX(), pos.GetY());
 			}
 			void ResetPosition()
 			{
 				m_Rect.reset();
 			}
 
-			wxSize GetSize() const
+			Size GetSize() const
 			{
-				return m_Rect ? m_Rect->GetSize() : wxDefaultSize;
+				return m_Rect ? m_Rect->GetSize() : Size::UnspecifiedSize();
 			}
-			void SetSize(const wxSize& size)
+			void SetSize(const Size& size)
 			{
 				m_Rect = size;
 			}
 			int GetWidth() const
 			{
-				return GetSize().x;
+				return GetSize().GetWidth();
 			}
 			void SetWidth(int width)
 			{
@@ -137,7 +137,7 @@ namespace KxFramework::UI::DataView
 			}
 			int GetHeight() const
 			{
-				return GetSize().y;
+				return GetSize().GetHeight();
 			}
 			void SetHeight(int height)
 			{

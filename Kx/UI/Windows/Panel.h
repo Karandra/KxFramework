@@ -26,8 +26,8 @@ namespace KxFramework::UI
 			);
 			bool Create(wxWindow* parent,
 						wxWindowID id,
-						const wxPoint& pos,
-						const wxSize& size,
+						const Point& pos,
+						const Size& size,
 						WindowStyle style = DefaultStyle,
 						const String& name = {}
 			)

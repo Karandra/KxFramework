@@ -49,7 +49,7 @@ namespace KxFramework::UI::DataView
 			MarkupMode m_MarkupMode = MarkupMode::Disabled;
 			CellAttribute m_Attributes;
 			
-			wxRect m_PaintRect;
+			Rect m_PaintRect;
 			const Node* m_Node = nullptr;
 			Column* m_Column = nullptr;
 
@@ -87,16 +87,16 @@ namespace KxFramework::UI::DataView
 			void SetupCellValue();
 			void SetupCellAttributes(CellState cellState);
 			
-			void CallDrawCellBackground(const wxRect& cellRect, CellState cellState, bool noUserBackground = false);
-			void CallDrawCellContent(const wxRect& cellRect, CellState cellState, bool alwaysUseGC = false);
-			void CallOnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent = nullptr);
+			void CallDrawCellBackground(const Rect& cellRect, CellState cellState, bool noUserBackground = false);
+			void CallDrawCellContent(const Rect& cellRect, CellState cellState, bool alwaysUseGC = false);
+			void CallOnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent = nullptr);
 
 		protected:
 			const CellAttribute& GetAttributes() const
 			{
 				return m_Attributes;
 			}
-			wxRect GetPaintRect() const
+			Rect GetPaintRect() const
 			{
 				return m_PaintRect;
 			}
@@ -105,7 +105,7 @@ namespace KxFramework::UI::DataView
 			{
 				return false;
 			}
-			virtual wxAny OnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent = nullptr)
+			virtual wxAny OnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent = nullptr)
 			{
 				return {};
 			}
@@ -117,11 +117,11 @@ namespace KxFramework::UI::DataView
 
 			virtual bool HasSolidBackground() const;
 			virtual bool HasSpecialBackground() const;
-			virtual void DrawCellBackground(const wxRect& cellRect, CellState cellState)
+			virtual void DrawCellBackground(const Rect& cellRect, CellState cellState)
 			{
 			}
-			virtual void DrawCellContent(const wxRect& cellRect, CellState cellState) = 0;
-			virtual wxSize GetCellSize() const;
+			virtual void DrawCellContent(const Rect& cellRect, CellState cellState) = 0;
+			virtual Size GetCellSize() const;
 
 			template<class TValue> TValue FromAnyUsing(const wxAny& value) const
 			{

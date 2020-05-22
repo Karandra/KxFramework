@@ -49,7 +49,7 @@ namespace KxFramework::UI::Private
 		public:
 			Color DWMGetColorKey() const;
 			bool DWMExtendFrame();
-			bool DWMExtendFrame(const wxRect& rect, const Color& color);
+			bool DWMExtendFrame(const Rect& rect, const Color& color);
 			bool DWMBlurBehind(bool enable, const wxRegion& region);
 
 			void SetDefaultBackgroundColor();
@@ -134,7 +134,7 @@ namespace KxFramework::UI
 			{
 				return m_TLW.DWMExtendFrame();
 			}
-			bool DWMExtendFrame(const wxRect& rect, const Color& color = {})
+			bool DWMExtendFrame(const Rect& rect, const Color& color = {})
 			{
 				return m_TLW.DWMExtendFrame(rect, color);
 			}

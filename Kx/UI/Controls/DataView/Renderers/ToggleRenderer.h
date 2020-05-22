@@ -89,7 +89,7 @@ namespace KxFramework::UI::DataView
 			ToggleValue& m_Value;
 
 		protected:
-			bool DoOnActivateCell(const wxRect& toggleRect, ToggleState& state, const wxMouseEvent* mouseEvent = nullptr) const;
+			bool DoOnActivateCell(const Rect& toggleRect, ToggleState& state, const wxMouseEvent* mouseEvent = nullptr) const;
 
 		public:
 			ToggleRendererBase(ToggleValue& value)
@@ -111,11 +111,11 @@ namespace KxFramework::UI::DataView
 			{
 				return true;
 			}
-			wxAny OnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent = nullptr) override;
+			wxAny OnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent = nullptr) override;
 			
 			bool SetValue(const wxAny& value) override;
-			void DrawCellContent(const wxRect& cellRect, CellState cellState) override;
-			wxSize GetCellSize() const override;
+			void DrawCellContent(const Rect& cellRect, CellState cellState) override;
+			Size GetCellSize() const override;
 
 		public:
 			ToggleRenderer(int alignment = wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL)

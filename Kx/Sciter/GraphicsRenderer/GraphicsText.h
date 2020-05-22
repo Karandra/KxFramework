@@ -32,11 +32,11 @@ namespace KxFramework::Sciter
 				:HandleWrapper(other)
 			{
 			}
+			GraphicsText(const ScriptValue& value);
 			GraphicsText(GraphicsText&& other)
 				:HandleWrapper(std::move(other))
 			{
 			}
-			GraphicsText(const ScriptValue& value);
 
 		public:
 			ScriptValue ToScriptValue() const;
@@ -45,15 +45,15 @@ namespace KxFramework::Sciter
 			bool CreateForElementAndStyle(const String& text, const Element& element, const String& style = {});
 			
 			std::optional<TextMetrics> GetMetrics() const;
-			wxSize GetMinExtent() const
+			Size GetMinExtent() const
 			{
 				auto metrics = GetMetrics();
-				return metrics ? wxSize(metrics->MinWidth, metrics->Height) : wxDefaultSize;
+				return metrics ? Size(metrics->MinWidth, metrics->Height) : Size::UnspecifiedSize();
 			}
-			wxSize GetMaxExtent() const
+			Size GetMaxExtent() const
 			{
 				auto metrics = GetMetrics();
-				return metrics ? wxSize(metrics->MaxWidth, metrics->Height) : wxDefaultSize;
+				return metrics ? Size(metrics->MaxWidth, metrics->Height) : Size::UnspecifiedSize();
 			}
 			int GetLineCount() const
 			{
@@ -62,7 +62,7 @@ namespace KxFramework::Sciter
 			}
 
 			bool SetBox(double width, double height);
-			bool SetBox(const wxSize& box)
+			bool SetBox(const Size& box)
 			{
 				return SetBox(box.GetWidth(), box.GetHeight());
 			}

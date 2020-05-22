@@ -27,7 +27,7 @@ namespace KxFramework::UI
 				if (height)
 				{
 					const wxBitmap& bitmap = GetBitmap(IsChecked());
-					const int margin = window->FromDIP(wxSize(wxDefaultCoord, 6)).GetHeight();
+					const int margin = window->FromDIP(Size(wxDefaultCoord, 6)).GetHeight();
 
 					*height = std::max({(int)*height, wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y) + margin, bitmap.GetHeight() + margin});
 				}

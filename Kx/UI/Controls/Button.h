@@ -36,7 +36,7 @@ namespace KxFramework::UI
 			KxEVENT_MEMBER(wxContextMenuEvent, Menu);
 
 		public:
-			static wxSize GetDefaultSize();
+			static Size GetDefaultSize();
 
 		private:
 			wxEvtHandler m_EventHandler;
@@ -65,8 +65,8 @@ namespace KxFramework::UI
 			Button(wxWindow* parent,
 				   wxWindowID id,
 				   const String& label,
-				   const wxPoint& pos,
-				   const wxSize& size,
+				   const Point& pos,
+				   const Size& size,
 				   ButtonStyle style = DefaultStyle,
 				   const wxValidator& validator = wxDefaultValidator
 			)
@@ -85,8 +85,8 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const String& label,
-						const wxPoint& pos,
-						const wxSize& size,
+						const Point& pos,
+						const Size& size,
 						ButtonStyle style = DefaultStyle,
 						const wxValidator& validator = wxDefaultValidator
 			);
@@ -122,7 +122,7 @@ namespace KxFramework::UI
 			bool IsDefault() const;
 			virtual wxWindow* SetDefault();
 
-			wxSize GetBitmapMargins() const
+			Size GetBitmapMargins() const
 			{
 				return const_cast<Button*>(this)->wxAnyButton::GetBitmapMargins();
 			}
@@ -130,7 +130,7 @@ namespace KxFramework::UI
 			{
 				wxAnyButton::SetBitmapMargins(x, y);
 			}
-			void SetBitmapMargins(const wxSize& margins)
+			void SetBitmapMargins(const Size& margins)
 			{
 				wxAnyButton::SetBitmapMargins(margins);
 			}

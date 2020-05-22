@@ -48,9 +48,11 @@ namespace
 		}
 	}
 
-	wxPoint TranslateCoordinates(wxWindow* window, const wxPoint& showPos)
+	KxFramework::Point TranslateCoordinates(wxWindow* window, const KxFramework::Point& showPos)
 	{
-		wxPoint pos = showPos;
+		using namespace KxFramework;
+
+		Point pos = showPos;
 		if (!pos.IsFullySpecified())
 		{
 			pos = wxGetMousePosition();
@@ -61,18 +63,20 @@ namespace
 		}
 		return pos;
 	}
-	wxPoint TranslateCoordinatesAsPopup(wxWindow* window, int offset, uint32_t alignment)
+	KxFramework::Point TranslateCoordinatesAsPopup(wxWindow* window, int offset, uint32_t alignment)
 	{
+		using namespace KxFramework;
+
 		offset = std::abs(offset);
-		wxSize size = window->GetSize();
-		wxPoint pos(0, size.GetHeight() + offset); // TPM_LEFTALIGN|TPM_TOPALIGN == 0
+		Size size = window->GetSize();
+		Point pos(0, size.GetHeight() + offset); // TPM_LEFTALIGN|TPM_TOPALIGN == 0
 		if (alignment & TPM_RIGHTALIGN)
 		{
-			pos.x = size.GetWidth();
+			pos.X() = size.GetWidth();
 		}
 		if (alignment & TPM_BOTTOMALIGN)
 		{
-			pos.y = -offset;
+			pos.Y() = -offset;
 		}
 		return pos;
 	}
@@ -107,14 +111,14 @@ namespace
 			menu->QueueEvent(event.Clone());
 		}
 	}
-	void SendOnShowEvent(Menu* menu, const wxPoint& pos)
+	void SendOnShowEvent(Menu* menu, const KxFramework::Point& pos)
 	{
 		MenuEvent event(MenuEvent::EvtOpen, menu);
 		event.SetPosition(pos);
 		event.SetPopup(true);
 		menu->ProcessEvent(event);
 	}
-	void SendOnCloseEvent(Menu* menu, const wxPoint& pos)
+	void SendOnCloseEvent(Menu* menu, const KxFramework::Point& pos)
 	{
 		MenuEvent event(MenuEvent::EvtClose, menu);
 		event.SetPosition(pos);
@@ -231,9 +235,9 @@ namespace KxFramework::UI
 		event.Skip(false);
 	}
 
-	uint16_t Menu::DoShowMenu(wxWindow* window, const wxPoint& showPos, wxAlignment alignment, bool async)
+	uint16_t Menu::DoShowMenu(wxWindow* window, const Point& showPos, wxAlignment alignment, bool async)
 	{
-		wxPoint pos = TranslateCoordinates(window, showPos);
+		Point pos = TranslateCoordinates(window, showPos);
 		HWND hWnd = GetParentWindowHandle(window);
 
 		ShowMenuScope showMenuScope(*this, window, hWnd);
@@ -244,7 +248,7 @@ namespace KxFramework::UI
 			g_CurrentMenu = this;
 		}
 
-		const int ret = ::TrackPopupMenu(GetHMenu(), (async ? 0 : TPM_RETURNCMD)|TPM_RECURSE|TPM_LEFTBUTTON|MapMenuAlignment(alignment), pos.x, pos.y, 0, hWnd, nullptr);
+		const int ret = ::TrackPopupMenu(GetHMenu(), (async ? 0 : TPM_RETURNCMD)|TPM_RECURSE|TPM_LEFTBUTTON|MapMenuAlignment(alignment), pos.GetX(), pos.GetY(), 0, hWnd, nullptr);
 
 		if (!async)
 		{
@@ -310,7 +314,7 @@ namespace KxFramework::UI
 		Bind(wxEVT_MENU_HIGHLIGHT, &Menu::OnHoverItem, this);
 	}
 
-	wxWindowID Menu::Show(wxWindow* window, const wxPoint& pos, wxAlignment alignment)
+	wxWindowID Menu::Show(wxWindow* window, const Point& pos, wxAlignment alignment)
 	{
 		uint16_t menuWinID = DoShowMenu(window, pos, alignment, false);
 		wxWindowID id = GetSelectedItemID(this, menuWinID);
@@ -323,7 +327,7 @@ namespace KxFramework::UI
 	}
 	wxWindowID Menu::ShowAsPopup(wxWindow* window, int offset, wxAlignment alignment)
 	{
-		wxPoint pos = TranslateCoordinatesAsPopup(window, offset, alignment);
+		Point pos = TranslateCoordinatesAsPopup(window, offset, alignment);
 		return Show(window, pos, alignment);
 	}
 

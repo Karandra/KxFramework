@@ -317,8 +317,8 @@ namespace KxFramework::UI
 	bool StdDialog::Create(wxWindow* parent,
 						   wxWindowID id,
 						   const String& caption,
-						   const wxPoint& pos,
-						   const wxSize& size,
+						   const Point& pos,
+						   const Size& size,
 						   StdButton buttons,
 						   DialogStyle style
 	)
@@ -337,16 +337,16 @@ namespace KxFramework::UI
 			m_ContentPanel->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 
 			m_CaptionLabel = new Label(m_ContentPanel, wxID_NONE, caption, LabelStyle::Caption); // wxLLabel::DefaultStyle|KxLABEL_CAPTION
-			m_CaptionLabel->SetMaxSize(FromDIP(wxSize(wxDefaultCoord, 23)));
+			m_CaptionLabel->SetMaxSize(FromDIP(Size(wxDefaultCoord, 23)));
 			m_CaptionLabel->SetForegroundColour(UxTheme::GetDialogMainInstructionColor(*m_ContentPanel));
 
 			m_ViewLabel = new Label(m_ContentPanel, wxID_NONE, {}, LabelStyle::None);
-			m_ViewLabel->SetMaxSize(FromDIP(wxSize(wxDefaultCoord, 23)));
+			m_ViewLabel->SetMaxSize(FromDIP(Size(wxDefaultCoord, 23)));
 
 			m_ContentPanelLine = new UI::Panel(this, wxID_NONE, EnumClass::Combine<WindowStyle>(WindowBorder::None));
-			m_ContentPanelLine->SetPosition(wxPoint(0, 0));
+			m_ContentPanelLine->SetPosition(Point(0, 0));
 			m_ContentPanelLine->SetBackgroundColour(ms_LineBackgroundColor);
-			m_ContentPanelLine->SetMaxSize(FromDIP(wxSize(wxDefaultCoord, 1)));
+			m_ContentPanelLine->SetMaxSize(FromDIP(Size(wxDefaultCoord, 1)));
 
 			m_IconView = new wxStaticBitmap(m_ContentPanel, wxID_NONE, m_MainIcon);
 			if (m_MainIcon.IsOk())
@@ -430,7 +430,7 @@ namespace KxFramework::UI
 	}
 	void StdDialog::SetResizingBehavior()
 	{
-		wxSize size = GetMinSize();
+		Size size = GetMinSize();
 		wxOrientation nSide = GetWindowResizeSide();
 		switch ((int)nSide)
 		{
@@ -441,12 +441,12 @@ namespace KxFramework::UI
 			}
 			case wxHORIZONTAL:
 			{
-				SetMaxSize(wxSize(wxDefaultCoord, size.GetHeight()));
+				SetMaxSize(Size(wxDefaultCoord, size.GetHeight()));
 				break;
 			}
 			case wxVERTICAL:
 			{
-				SetMaxSize(wxSize(size.GetWidth(), wxDefaultCoord));
+				SetMaxSize(Size(size.GetWidth(), wxDefaultCoord));
 				break;
 			}
 			case 0:
@@ -457,7 +457,7 @@ namespace KxFramework::UI
 		};
 		Utility::ModWindowStyle(GetHandle(), GWL_STYLE, WS_MAXIMIZEBOX, nSide == wxBOTH);
 	}
-	void StdDialog::PostCreate(const wxPoint& pos)
+	void StdDialog::PostCreate(const Point& pos)
 	{
 		m_DialogSizer->Add(m_ContentPanel, 1, wxEXPAND);
 		m_DialogSizer->Add(m_ContentPanelLine, 0, wxEXPAND);
@@ -512,7 +512,7 @@ namespace KxFramework::UI
 		InitIcon();
 		AdjustWindow(pos);
 	}
-	void StdDialog::AdjustWindow(const wxPoint& pos, const wxSize& minSize)
+	void StdDialog::AdjustWindow(const Point& pos, const Size& minSize)
 	{
 		if (IsAutoSizeEnabled())
 		{
@@ -529,7 +529,7 @@ namespace KxFramework::UI
 		}
 
 		SetResizingBehavior();
-		if (pos != wxPoint(-2, -2))
+		if (pos != Point(-2, -2))
 		{
 			CenterIfNoPosition(pos);
 		}

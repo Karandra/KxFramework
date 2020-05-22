@@ -6,13 +6,13 @@ namespace KxFramework::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(ImageView, wxControl);
 
-	void ImageView::DoSetBitmap(const wxGraphicsBitmap& bitmap, const wxSize& size)
+	void ImageView::DoSetBitmap(const wxGraphicsBitmap& bitmap, const Size& size)
 	{
 		ScheduleRefresh();
 
 		m_Bitmap = bitmap;
 		m_ImageSize = size;
-		m_ScaledImageSize = wxSize(0, 0);
+		m_ScaledImageSize = Size(0, 0);
 		m_IsAnimation = false;
 	}
 	
@@ -47,7 +47,7 @@ namespace KxFramework::UI
 		wxPaintDC dc(this);
 		std::unique_ptr<wxGraphicsContext> context(m_Renderer->CreateContext(dc));
 
-		m_ScaledImageSize = DrawablePanel::DrawScaledBitmap(&*context, m_Bitmap, m_ImageSize, wxRect(wxPoint(0, 0), GetClientSize()), m_ScaleMode, m_ScaleFactor);
+		m_ScaledImageSize = DrawablePanel::DrawScaledBitmap(&*context, m_Bitmap, m_ImageSize, Rect(Point(0, 0), GetClientSize()), m_ScaleMode, m_ScaleFactor);
 	}
 	void ImageView::OnSize(wxSizeEvent& event)
 	{
@@ -101,7 +101,7 @@ namespace KxFramework::UI
 	{
 		DoSetBitmap(m_Renderer->CreateBitmapFromImage(image), image.GetSize());
 	}
-	void ImageView::SetBitmap(const wxGraphicsBitmap& bitmap, const wxSize& size)
+	void ImageView::SetBitmap(const wxGraphicsBitmap& bitmap, const Size& size)
 	{
 		DoSetBitmap(bitmap, size);
 	}

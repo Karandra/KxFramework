@@ -65,15 +65,15 @@ namespace KxFramework::Sciter
 
 			// Refreshing
 			bool Update(bool force = false);
-			bool UpdateRect(const wxRect& rect);
+			bool UpdateRect(const Rect& rect);
 
 			// Size and position
-			wxRect GetRect() const;
-			wxPoint GetPosition() const;
-			wxSize GetSize() const;
+			Rect GetRect() const;
+			Point GetPosition() const;
+			Size GetSize() const;
 
-			wxSize GetMinSize() const;
-			wxSize GetMaxSize() const;
+			Size GetMinSize() const;
+			Size GetMaxSize() const;
 
 			// Visibility
 			bool IsVisible() const;
@@ -92,9 +92,9 @@ namespace KxFramework::Sciter
 
 			// Scrolling
 			void ScrollIntoView(bool toTop = false);
-			wxPoint GetScrollPos() const;
-			wxSize GetScrollRange() const;
-			bool SetScrollPos(const wxPoint& pos) const;
+			Point GetScrollPos() const;
+			Size GetScrollRange() const;
+			bool SetScrollPos(const Point& pos) const;
 
 			// HTML content
 			String GetInnerHTML() const;

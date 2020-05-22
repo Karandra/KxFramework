@@ -38,8 +38,8 @@ namespace KxFramework::UI
 			ComboBoxDialog(wxWindow* parent,
 						   wxWindowID id,
 						   const String& caption,
-						   const wxPoint& pos = wxDefaultPosition,
-						   const wxSize& size = wxDefaultSize,
+						   const Point& pos = wxDefaultPosition,
+						   const Size& size = wxDefaultSize,
 						   StdButton buttons = DefaultButtons,
 						   ComboBoxDialogStyle style = DefaultStyle
 			)
@@ -49,8 +49,8 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const String& caption,
-						const wxPoint& pos = wxDefaultPosition,
-						const wxSize& size = wxDefaultSize,
+						const Point& pos = wxDefaultPosition,
+						const Size& size = wxDefaultSize,
 						StdButton buttons = DefaultButtons,
 						ComboBoxDialogStyle style = DefaultStyle
 			);

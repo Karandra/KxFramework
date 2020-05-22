@@ -28,10 +28,10 @@ namespace KxFramework::UI
 	class KX_API DrawablePanel: public WindowRefreshScheduler<Panel>
 	{
 		public:
-			static wxSize DrawScaledBitmap(wxGraphicsContext* gc, const wxGraphicsBitmap& bitmap, const wxSize& bitmapSize, const wxRect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
-			static wxSize DrawScaledBitmap(wxGraphicsContext* gc, const wxBitmap& bitmap, const wxRect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
-			static wxSize DrawScaledBitmap(wxWindowDC& dc, const wxBitmap& bitmap, const wxRect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
-			static wxSize DrawScaledBitmap(wxMemoryDC& dc, const wxBitmap& bitmap, const wxRect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
+			static Size DrawScaledBitmap(wxGraphicsContext* gc, const wxGraphicsBitmap& bitmap, const Size& bitmapSize, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
+			static Size DrawScaledBitmap(wxGraphicsContext* gc, const wxBitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
+			static Size DrawScaledBitmap(wxWindowDC& dc, const wxBitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
+			static Size DrawScaledBitmap(wxMemoryDC& dc, const wxBitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
 			static void DrawTransparencyPattern(wxDC& dc);
 
 		private:
@@ -39,7 +39,7 @@ namespace KxFramework::UI
 			BitmapScaleMode m_ImageScaleMode = BitmapScaleMode::None;
 			DrawablePanelMode m_BackgroundMode = DrawablePanelMode::Soild;
 			wxDirection m_GradientDirection = wxDOWN;
-			wxSize m_ScaledImageSize;
+			Size m_ScaledImageSize;
 			double m_ScaleFactor = 1.0;
 
 		private:
@@ -61,8 +61,8 @@ namespace KxFramework::UI
 			);
 			bool Create(wxWindow* parent,
 						wxWindowID id,
-						const wxPoint& pos,
-						const wxSize& size,
+						const Point& pos,
+						const Size& size,
 						WindowStyle style = DefaultStyle,
 						const String& name = {}
 			)
@@ -115,7 +115,7 @@ namespace KxFramework::UI
 				ScheduleRefresh();
 			}
 
-			wxSize GetScaledImageSize() const
+			Size GetScaledImageSize() const
 			{
 				return m_ScaledImageSize;
 			}

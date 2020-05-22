@@ -40,7 +40,7 @@ namespace KxFramework::Sciter
 	}
 
 	// Size and position
-	void Widget::SetSize(const wxSize& size)
+	void Widget::SetSize(const Size& size)
 	{
 		if (size.GetWidth() != wxDefaultCoord)
 		{
@@ -60,21 +60,21 @@ namespace KxFramework::Sciter
 			m_Element.RemoveStyleAttribute("height");
 		}
 	}
-	void Widget::SetPosition(const wxPoint& pos)
+	void Widget::SetPosition(const Point& pos)
 	{
 		m_Element.SetStyleAttribute("position", "relative");
-		if (pos.x != wxDefaultCoord)
+		if (pos.GetX() != wxDefaultCoord)
 		{
-			m_Element.SetStyleAttribute("left", pos.x, SizeUnit::dip);
+			m_Element.SetStyleAttribute("left", pos.GetX(), SizeUnit::dip);
 		}
 		else
 		{
 			m_Element.RemoveStyleAttribute("left");
 		}
 
-		if (pos.y != wxDefaultCoord)
+		if (pos.GetY() != wxDefaultCoord)
 		{
-			m_Element.SetStyleAttribute("top", pos.y, SizeUnit::dip);
+			m_Element.SetStyleAttribute("top", pos.GetY(), SizeUnit::dip);
 		}
 		else
 		{

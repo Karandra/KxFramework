@@ -445,7 +445,7 @@ namespace KxFramework::UI::DataView
 		return m_DisplayIndex + 1 == m_View->GetVisibleColumnCount();
 	}
 
-	wxRect Column::GetRect() const
+	Rect Column::GetRect() const
 	{
 		int x = 0;
 		for (size_t i = 0; i < m_View->GetColumnCount(); i++)
@@ -467,7 +467,7 @@ namespace KxFramework::UI::DataView
 
 		return {x, 0, GetWidth(), m_View->GetMainWindow()->GetClientSize().GetHeight()};
 	}
-	wxRect Column::GetDropdownRect() const
+	Rect Column::GetDropdownRect() const
 	{
 		if (m_View && m_View->m_HeaderArea && IsVisible())
 		{

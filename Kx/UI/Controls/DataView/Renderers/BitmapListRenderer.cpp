@@ -10,10 +10,10 @@ namespace
 	{
 		return window->FromDIP(wxSize(value, 0)).GetWidth();
 	}
-	wxSize GetSmallIconSize(const KxFramework::UI::DataView::BitmapValueBase& bitmapValue)
+	KxFramework::Size GetSmallIconSize(const KxFramework::UI::DataView::BitmapValueBase& bitmapValue)
 	{
 		const int x = bitmapValue.IsDefaultBitmapWidthSpecified() ? bitmapValue.GetDefaultBitmapWidth() : wxSystemSettings::GetMetric(wxSYS_SMALLICON_X);
-		return wxSize(x, wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y));
+		return {x, wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y)};
 	}
 }
 
@@ -27,14 +27,14 @@ namespace KxFramework::UI::DataView
 
 namespace KxFramework::UI::DataView
 {
-	void BitmapListRendererBase::DrawCellContent(const wxRect& cellRect, CellState cellState)
+	void BitmapListRendererBase::DrawCellContent(const Rect& cellRect, CellState cellState)
 	{
 		RenderEngine renderEngine = GetRenderEngine();
 
 		int offsetX = 0;
 		if (size_t bitmapCount = GetBitmapCount(); bitmapCount != 0)
 		{
-			const wxSize smallIcon = GetSmallIconSize(m_BitmapValueBase);
+			const Size smallIcon = GetSmallIconSize(m_BitmapValueBase);
 			const int spacing = CalcSpacing(GetView(), m_BitmapValueBase.GetSpacing());
 
 			for (size_t i = 0; i < bitmapCount; i++)
@@ -42,9 +42,9 @@ namespace KxFramework::UI::DataView
 				wxBitmap bitmap = GetBitmap(i);
 				if (bitmap.IsOk() || !m_BitmapValueBase.ShouldDrawInvalidBitmaps())
 				{
-					const wxSize bitmapSize = bitmap.IsOk() ? bitmap.GetSize() : smallIcon;
+					const Size bitmapSize = bitmap.IsOk() ? Size(bitmap.GetSize()) : smallIcon;
 
-					wxRect bitmapRect = cellRect;
+					Rect bitmapRect = cellRect;
 					bitmapRect.SetX(cellRect.GetX() + offsetX);
 					bitmapRect.SetWidth(bitmapSize.GetWidth());
 					bitmapRect.SetHeight(std::clamp(bitmapSize.GetHeight(), 0, cellRect.GetHeight()));
@@ -66,19 +66,19 @@ namespace KxFramework::UI::DataView
 			renderEngine.DrawText(cellRect, cellState, m_TextValue.GetText(), offsetX);
 		}
 	}
-	wxSize BitmapListRendererBase::GetCellSize() const
+	Size BitmapListRendererBase::GetCellSize() const
 	{
-		wxSize totalSize;
+		Size totalSize;
 		if (m_TextValue.HasText())
 		{
 			RenderEngine renderEngine = GetRenderEngine();
 
 			totalSize = renderEngine.GetTextExtent(m_TextValue.GetText());
-			totalSize.x += renderEngine.GetInterTextSpacing();
+			totalSize.X() += renderEngine.GetInterTextSpacing();
 		}
 		if (size_t bitmapCount = GetBitmapCount(); bitmapCount != 0)
 		{
-			const wxSize smallIcon = GetSmallIconSize(m_BitmapValueBase);
+			const Size smallIcon = GetSmallIconSize(m_BitmapValueBase);
 			const int spacing = CalcSpacing(GetView(), m_BitmapValueBase.GetSpacing());
 
 			for (size_t i = 0; i < bitmapCount; i++)
@@ -86,10 +86,10 @@ namespace KxFramework::UI::DataView
 				wxBitmap bitmap = GetBitmap(i);
 				if (bitmap.IsOk() || !m_BitmapValueBase.ShouldDrawInvalidBitmaps())
 				{
-					const wxSize bitmapSize = bitmap.IsOk() ? bitmap.GetSize() : smallIcon;
+					const Size bitmapSize = bitmap.IsOk() ? Size(bitmap.GetSize()) : smallIcon;
 
-					totalSize.x += bitmapSize.GetWidth() + spacing;
-					totalSize.y = std::max(totalSize.y, bitmapSize.GetHeight());
+					totalSize.X() += bitmapSize.GetWidth() + spacing;
+					totalSize.Y() = std::max(totalSize.GetY(), bitmapSize.GetHeight());
 				}
 			}
 		}

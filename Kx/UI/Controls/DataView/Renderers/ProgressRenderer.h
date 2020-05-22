@@ -166,9 +166,9 @@ namespace KxFramework::UI::DataView
 				return ToolTip::CreateDefaultForRenderer(m_Value.GetText());
 			}
 			
-			void DrawCellContent(const wxRect& cellRect, CellState cellState) override;
-			wxSize GetCellSize() const override;
-			wxRect GetBarRect() const;
+			void DrawCellContent(const Rect& cellRect, CellState cellState) override;
+			Size GetCellSize() const override;
+			Rect GetBarRect() const;
 
 		public:
 			ProgressRenderer(int alignment = wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL)

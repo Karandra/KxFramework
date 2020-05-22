@@ -3,7 +3,7 @@
 
 namespace KxFramework::Drawing
 {
-	Color GetAreaAverageColor(const wxDC& dc, const wxRect& rect)
+	Color GetAreaAverageColor(const wxDC& dc, const Rect& rect)
 	{
 		PackedRGBA<uint32_t> rgba;
 		size_t pixelCount = 0;
@@ -13,7 +13,7 @@ namespace KxFramework::Drawing
 			for (int x = 0; x < rect.GetWidth(); x++)
 			{
 				wxColour pixel;
-				if (dc.GetPixel(rect.GetPosition() + wxPoint(x, y), &pixel))
+				if (dc.GetPixel(rect.GetPosition() + Point(x, y), &pixel))
 				{
 					rgba.Red += pixel.Red();
 					rgba.Green += pixel.Green();

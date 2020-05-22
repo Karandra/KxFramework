@@ -15,7 +15,7 @@ namespace KxFramework::UI
 
 		private:
 			std::unordered_map<size_t, int> m_ImageIDs;
-			std::optional<wxSize> m_DefaultBitmapSize;
+			std::optional<Size> m_DefaultBitmapSize;
 
 		public:
 			BitmapComboBox() = default;
@@ -31,8 +31,8 @@ namespace KxFramework::UI
 			BitmapComboBox(wxWindow* parent,
 						   wxWindowID id,
 						   const String& value,
-						   const wxPoint& pos,
-						   const wxSize& size,
+						   const Point& pos,
+						   const Size& size,
 						   ComboBoxStyle style = DefaultStyle,
 						   const wxValidator& validator = wxDefaultValidator
 			)
@@ -51,8 +51,8 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const String& value,
-						const wxPoint& pos,
-						const wxSize& size,
+						const Point& pos,
+						const Size& size,
 						ComboBoxStyle style = DefaultStyle,
 						const wxValidator& validator = wxDefaultValidator
 			);
@@ -75,7 +75,7 @@ namespace KxFramework::UI
 				}
 				return wxBitmapComboBox::GetBitmapSize();
 			}
-			void SetDefaultBitmapSize(const wxSize& size)
+			void SetDefaultBitmapSize(const Size& size)
 			{
 				m_DefaultBitmapSize = size;
 			}

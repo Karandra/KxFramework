@@ -169,13 +169,13 @@ namespace KxFramework
 {
 	bool UxTheme::ClearDC(wxWindow& window, wxDC& dc) noexcept
 	{
-		return DrawParentBackground(window, dc, wxRect(wxPoint(0, 0), dc.GetSize()));
+		return DrawParentBackground(window, dc, Rect(Point(0, 0), dc.GetSize()));
 	}
 	bool UxTheme::DrawParentBackground(wxWindow& window, wxDC& dc) noexcept
 	{
 		return ::DrawThemeParentBackground(window.GetHandle(), dc.GetHDC(), nullptr) == S_OK;
 	}
-	bool UxTheme::DrawParentBackground(wxWindow& window, wxDC& dc, const wxRect& rect) noexcept
+	bool UxTheme::DrawParentBackground(wxWindow& window, wxDC& dc, const Rect& rect) noexcept
 	{
 		RECT rectWin = Utility::ToWindowsRect(rect);
 		return ::DrawThemeParentBackground(window.GetHandle(), dc.GetHDC(), &rectWin) == S_OK;
@@ -233,18 +233,18 @@ namespace KxFramework
 		}
 	}
 
-	wxSize UxTheme::GetPartSize(const wxDC& dc, int iPartId, int iStateId, std::optional<int> sizeVariant) const noexcept
+	Size UxTheme::GetPartSize(const wxDC& dc, int iPartId, int iStateId, std::optional<int> sizeVariant) const noexcept
 	{
 		const THEMESIZE themeSize = static_cast<THEMESIZE>(sizeVariant ? *sizeVariant : TS_DRAW);
 
 		SIZE size = {};
 		if (::GetThemePartSize(m_Handle, dc.GetHDC(), iPartId, iStateId, nullptr, themeSize, &size) == S_OK)
 		{
-			return wxSize(size.cx, size.cy);
+			return Size(size.cx, size.cy);
 		}
 		return wxDefaultSize;
 	}
-	wxRegion UxTheme::GetBackgroundRegion(const wxDC& dc, int iPartId, int iStateId, const wxRect& rect) const noexcept
+	wxRegion UxTheme::GetBackgroundRegion(const wxDC& dc, int iPartId, int iStateId, const Rect& rect) const noexcept
 	{
 		HRGN region = nullptr;
 		RECT rectWin = Utility::ToWindowsRect(rect);
@@ -254,7 +254,7 @@ namespace KxFramework
 		}
 		return {};
 	}
-	std::optional<wxRect> UxTheme::GetBackgroundContentRect(const wxDC& dc, int iPartId, int iStateId, const wxRect& rect) const noexcept
+	std::optional<Rect> UxTheme::GetBackgroundContentRect(const wxDC& dc, int iPartId, int iStateId, const Rect& rect) const noexcept
 	{
 		RECT rectWin = Utility::ToWindowsRect(rect);
 		RECT value = {};
@@ -328,7 +328,7 @@ namespace KxFramework
 		}
 		return 0;
 	}
-	wxRect UxTheme::GetRect(int iPartId, int iStateId, int iPropId) const noexcept
+	Rect UxTheme::GetRect(int iPartId, int iStateId, int iPropId) const noexcept
 	{
 		RECT value = {};
 		if (::GetThemeRect(m_Window->GetHandle(), iPartId, iStateId, iPropId, &value) == S_OK)
@@ -337,17 +337,17 @@ namespace KxFramework
 		}
 		return {};
 	}
-	wxPoint UxTheme::GetPosition(int iPartId, int iStateId, int iPropId) const noexcept
+	Point UxTheme::GetPosition(int iPartId, int iStateId, int iPropId) const noexcept
 	{
 		POINT value = {};
 		if (::GetThemePosition(m_Window->GetHandle(), iPartId, iStateId, iPropId, &value) == S_OK)
 		{
-			return wxPoint(value.x, value.y);
+			return Point(value.x, value.y);
 		}
 		return wxDefaultPosition;
 	}
 
-	bool UxTheme::DrawEdge(wxDC& dc, int iPartId, int iStateId, uint32_t edge, uint32_t flags, const wxRect& rect, wxRect* boundingRect) noexcept
+	bool UxTheme::DrawEdge(wxDC& dc, int iPartId, int iStateId, uint32_t edge, uint32_t flags, const Rect& rect, Rect* boundingRect) noexcept
 	{
 		RECT rectWin = Utility::ToWindowsRect(rect);
 		RECT clipRectWin = {};
@@ -358,43 +358,43 @@ namespace KxFramework
 		}
 		return false;
 	}
-	bool UxTheme::DrawIcon(wxDC& dc, int iPartId, int iStateId, const wxImageList& imageList, int index, const wxRect& rect, wxRect* boundingRect) noexcept
+	bool UxTheme::DrawIcon(wxDC& dc, int iPartId, int iStateId, const wxImageList& imageList, int index, const Rect& rect, Rect* boundingRect) noexcept
 	{
 		RECT rectWin = Utility::ToWindowsRect(rect);
 		if (::DrawThemeIcon(m_Handle, dc.GetHDC(), iPartId, iStateId, &rectWin, reinterpret_cast<HIMAGELIST>(imageList.GetHIMAGELIST()), index) == S_OK)
 		{
 			if (boundingRect)
 			{
-				boundingRect->x = rect.x;
-				boundingRect->y = rect.y;
-				imageList.GetSize(index, boundingRect->width, boundingRect->height);
+				boundingRect->X() = rect.GetX();
+				boundingRect->Y() = rect.GetY();
+				imageList.GetSize(index, boundingRect->Width(), boundingRect->Height());
 			}
 			return true;
 		}
 		return false;
 	}
-	bool UxTheme::DrawText(wxDC& dc, int iPartId, int iStateId, std::wstring_view text, uint32_t flags1, uint32_t flags2, const wxRect& rect) noexcept
+	bool UxTheme::DrawText(wxDC& dc, int iPartId, int iStateId, std::wstring_view text, uint32_t flags1, uint32_t flags2, const Rect& rect) noexcept
 	{
 		RECT rectWin = Utility::ToWindowsRect(rect);
 		return ::DrawThemeText(m_Handle, dc.GetHDC(), iPartId, iStateId, text.data(), text.length(), flags1, flags2, &rectWin) == S_OK;
 	}
 
-	bool UxTheme::DrawBackground(wxDC& dc, int iPartId, int iStateId, const wxRect& rect) noexcept
+	bool UxTheme::DrawBackground(wxDC& dc, int iPartId, int iStateId, const Rect& rect) noexcept
 	{
 		RECT rectWin = Utility::ToWindowsRect(rect);
 		return ::DrawThemeBackground(m_Handle, dc.GetHDC(), iPartId, iStateId, &rectWin, nullptr) == S_OK;
 	}
-	bool UxTheme::DrawProgressBar(wxDC& dc, int iBarPartId, int iFillPartId, int iFillStateId, const wxRect& rect, int position, int range, Color* averageBackgroundColor) noexcept
+	bool UxTheme::DrawProgressBar(wxDC& dc, int iBarPartId, int iFillPartId, int iFillStateId, const Rect& rect, int position, int range, Color* averageBackgroundColor) noexcept
 	{
 		const bool isVertical = iBarPartId == PP_BARVERT && iFillPartId == PP_FILLVERT;
-		const wxSize padding = isVertical ? wxSize(0, 0) : m_Window->FromDIP(wxSize(2, 0));
+		const Size padding = isVertical ? wxSize(0, 0) : m_Window->FromDIP(wxSize(2, 0));
 
 		// Draw background part
 		bool result = true;
-		wxRect fillRect = rect;
+		Rect fillRect = rect;
 		if (iBarPartId > 0)
 		{
-			result = DrawBackground(dc, iBarPartId, 0, rect.Deflate(padding.GetWidth(), padding.GetHeight()));
+			result = DrawBackground(dc, iBarPartId, 0, rect.Clone().Deflate(padding.GetWidth(), padding.GetHeight()));
 			fillRect = GetBackgroundContentRect(dc, iBarPartId, 0, rect).value_or(rect);
 		}
 
@@ -408,7 +408,7 @@ namespace KxFramework
 
 			if (iBarPartId > 0)
 			{
-				fillRect.Deflate(m_Window->FromDIP(wxSize(1, 1)) + padding);
+				fillRect.Deflate(m_Window->FromDIP(Size(1, 1)) + padding);
 			}
 			result = DrawBackground(dc, iFillPartId, iFillStateId, fillRect);
 

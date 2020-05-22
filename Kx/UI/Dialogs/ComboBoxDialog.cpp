@@ -23,8 +23,8 @@ namespace KxFramework::UI
 	bool ComboBoxDialog::Create(wxWindow* parent,
 								wxWindowID id,
 								const String& caption,
-								const wxPoint& pos,
-								const wxSize& size,
+								const Point& pos,
+								const Size& size,
 								StdButton buttons,
 								ComboBoxDialogStyle style
 	)
@@ -33,7 +33,7 @@ namespace KxFramework::UI
 
 		if (StdDialog::Create(parent, id, caption, pos, size, buttons, EnumClass::Combine<DialogStyle>(style)))
 		{
-			const wxSize size(DefaultComboBoxWidth, wxDefaultCoord);
+			const Size size(DefaultComboBoxWidth, wxDefaultCoord);
 			const ComboBoxStyle comboBoxFlags = Utility::ModFlag(ComboBox::DefaultStyle, ComboBoxStyle::ReadOnly, style & ComboBoxDialogStyle::ReadOnly);
 
 			if (style & ComboBoxDialogStyle::Bitmap)

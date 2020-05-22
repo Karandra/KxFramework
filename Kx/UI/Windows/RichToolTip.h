@@ -48,9 +48,17 @@ namespace KxFramework::UI
 			}
 
 		public:
-			void Show(wxWindow* window, const wxRect& rect = {})
+			void Show(wxWindow* window, const Rect& rect = {})
 			{
-				m_ToolTip.ShowFor(window, rect.IsEmpty() ? nullptr : &rect);
+				if (rect.IsEmpty())
+				{
+					m_ToolTip.ShowFor(window, nullptr);
+				}
+				else
+				{
+					wxRect temp = rect;
+					m_ToolTip.ShowFor(window, &temp);
+				}
 			}
 			
 			String GetTitle() const

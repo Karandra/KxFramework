@@ -72,7 +72,7 @@ namespace
 		}
 	};
 
-	const wxSize g_DefaultIconSize = wxSize(0, 0);
+	constexpr KxFramework::Size g_DefaultIconSize = {0, 0};
 
 	HRSRC GetResourceHandle(HMODULE handle, const KxFramework::String& type, const KxFramework::String& name, const KxFramework::Locale& locale)
 	{
@@ -95,7 +95,7 @@ namespace
 		return {};
 	}
 
-	HANDLE DoLoadGDIImage(HMODULE handle, const KxFramework::String& name, const KxFramework::String& type, UINT gdiType, wxSize size, const KxFramework::Locale& locale)
+	HANDLE DoLoadGDIImage(HMODULE handle, const KxFramework::String& name, const KxFramework::String& type, UINT gdiType, KxFramework::Size size, const KxFramework::Locale& locale)
 	{
 		if (HGLOBAL resDataHandle = ::LoadResource(handle, GetResourceHandle(handle, type, name, locale)))
 		{
@@ -105,7 +105,7 @@ namespace
 	}
 	
 	template<class T>
-	T LoadGDIImage(HMODULE handle, const KxFramework::String& name, const KxFramework::String& type, UINT gdiType, wxSize size, const KxFramework::Locale& locale)
+	T LoadGDIImage(HMODULE handle, const KxFramework::String& name, const KxFramework::String& type, UINT gdiType, KxFramework::Size size, const KxFramework::Locale& locale)
 	{
 		if (HANDLE imageHandle = DoLoadGDIImage(handle, name, type, gdiType, size, locale))
 		{
@@ -123,7 +123,7 @@ namespace
 	}
 	
 	template<>
-	wxIcon LoadGDIImage<wxIcon>(HMODULE handle, const KxFramework::String& name, const KxFramework::String& type, UINT gdiType, wxSize size, const KxFramework::Locale& locale)
+	wxIcon LoadGDIImage<wxIcon>(HMODULE handle, const KxFramework::String& name, const KxFramework::String& type, UINT gdiType, KxFramework::Size size, const KxFramework::Locale& locale)
 	{
 		if (HANDLE imageHandle = DoLoadGDIImage(handle, name, type, gdiType, size, locale))
 		{
@@ -402,7 +402,7 @@ namespace KxFramework
 	{
 		return LoadGDIImage<wxBitmap>(AsHMODULE(*m_Handle), name, System::Private::ResourceTypeToName(RT_BITMAP), IMAGE_BITMAP, g_DefaultIconSize, locale);
 	}
-	wxIcon DynamicLibrary::GetIconResource(const String& name, const wxSize& size, const Locale& locale) const
+	wxIcon DynamicLibrary::GetIconResource(const String& name, const Size& size, const Locale& locale) const
 	{
 		return LoadGDIImage<wxIcon>(AsHMODULE(*m_Handle), name, System::Private::ResourceTypeToName(RT_GROUP_ICON), IMAGE_ICON, size, locale);
 	}

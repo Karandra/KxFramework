@@ -51,35 +51,35 @@ namespace KxFramework::UI::DataView
 			int rateX = 0;
 			int rateY = 0;
 			view->GetScrollPixelsPerUnit(&rateX, &rateY);
-			wxPoint startPos = view->GetViewStart();
+			Point startPos = view->GetViewStart();
 
 			wxCoord value = -event.GetWheelRotation();
 			if (event.GetWheelAxis() == wxMOUSE_WHEEL_VERTICAL)
 			{
-				view->Scroll(wxDefaultCoord, startPos.y + (float)value / (rateY != 0 ? rateY : 1));
+				view->Scroll(wxDefaultCoord, startPos.GetY() + (float)value / (rateY != 0 ? rateY : 1));
 			}
 			else
 			{
-				view->Scroll(startPos.x + (float)value / (rateX != 0 ? rateX : 1), wxDefaultCoord);
+				view->Scroll(startPos.GetX() + (float)value / (rateX != 0 ? rateX : 1), wxDefaultCoord);
 			}
 		}
 		event.Skip();
 	}
 	bool DropSource::GiveFeedback(wxDragResult effect)
 	{
-		wxPoint mousePos = wxGetMousePosition();
+		Point mousePos = wxGetMousePosition();
 		if (m_DragImage == nullptr)
 		{
-			wxPoint linePos(0, m_MainWindow->GetRowStart(m_Row));
+			Point linePos(0, m_MainWindow->GetRowStart(m_Row));
 
-			m_MainWindow->GetView()->CalcUnscrolledPosition(0, linePos.y, nullptr, &linePos.y);
-			m_MainWindow->ClientToScreen(&linePos.x, &linePos.y);
+			m_MainWindow->GetView()->CalcUnscrolledPosition(0, linePos.GetY(), nullptr, &linePos.Y());
+			m_MainWindow->ClientToScreen(&linePos.X(), &linePos.Y());
 
 			int rowIndent = 0;
 			m_HintBitmap = m_MainWindow->CreateItemBitmap(m_Row, rowIndent);
 
-			m_Distance.x = (mousePos.x - linePos.x) - rowIndent;
-			m_Distance.y = mousePos.y - linePos.y;
+			m_Distance.X() = (mousePos.GetX() - linePos.GetX()) - rowIndent;
+			m_Distance.Y() = mousePos.GetY() - linePos.GetY();
 			m_HintPosition = GetHintPosition(mousePos);
 
 			m_DragImage = new SplashWindow(m_MainWindow, m_HintBitmap, {}, EnumClass::Combine<SplashWindowStyle>(TopLevelWindowStyle::StayOnTop));
@@ -95,9 +95,9 @@ namespace KxFramework::UI::DataView
 		return false;
 	}
 
-	wxPoint DropSource::GetHintPosition(const wxPoint& mousePos) const
+	Point DropSource::GetHintPosition(const Point& mousePos) const
 	{
-		return wxPoint(mousePos.x - m_Distance.x, mousePos.y + 5);
+		return Point(mousePos.GetX() - m_Distance.GetX(), mousePos.GetY() + 5);
 	}
 
 	DropSource::DropSource(MainWindow* mainWindow, Row row)
@@ -135,7 +135,7 @@ namespace KxFramework::UI::DataView
 		wxDataObjectSimple* dataObject = nullptr;
 		if (wxDataFormat format = GetReceivedFormat(); IsFormatSupported(format, dataObject))
 		{
-			return m_MainWindow->OnDragOver(*dataObject, wxPoint(x, y), dragResult);
+			return m_MainWindow->OnDragOver(*dataObject, Point(x, y), dragResult);
 		}
 		return wxDragNone;
 	}
@@ -144,7 +144,7 @@ namespace KxFramework::UI::DataView
 		wxDataObjectSimple* dataObject = nullptr;
 		if (wxDataFormat format = GetReceivedFormat(); IsFormatSupported(format, dataObject))
 		{
-			return m_MainWindow->TestDropPossible(*dataObject, wxPoint(x, y));
+			return m_MainWindow->TestDropPossible(*dataObject, Point(x, y));
 		}
 		return false;
 	}
@@ -154,7 +154,7 @@ namespace KxFramework::UI::DataView
 		if (wxDataFormat format = GetReceivedFormat(); IsFormatSupported(format, dataObject))
 		{
 			GetData();
-			return m_MainWindow->OnDropData(*dataObject, wxPoint(x, y), dragResult);
+			return m_MainWindow->OnDropData(*dataObject, Point(x, y), dragResult);
 		}
 		return wxDragNone;
 	}
@@ -164,7 +164,7 @@ namespace KxFramework::UI::DataView
 		wxDataObjectSimple* dataObject = nullptr;
 		if (wxDataFormat format = GetReceivedFormat(); GetData() && IsFormatSupported(format, dataObject))
 		{
-			return m_MainWindow->OnDragDropEnter(*dataObject, wxPoint(x, y), dragResult);
+			return m_MainWindow->OnDragDropEnter(*dataObject, Point(x, y), dragResult);
 		}
 		return wxDragNone;
 	}

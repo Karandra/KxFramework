@@ -169,7 +169,7 @@ namespace KxFramework::UI
 			StdDialogButtonSizer* m_ButtonsSizer = nullptr;
 			bool m_IsGlassFrameEnabled = false;
 			wxNativeWindow m_GripperWindow;
-			wxSize m_GripperWindowSize;
+			Size m_GripperWindowSize;
 
 			wxSizerItem* m_ViewLabelSpacerSI = nullptr;
 			wxSizerItem* m_ViewLabelSI = nullptr;
@@ -179,7 +179,7 @@ namespace KxFramework::UI
 			StdButton m_SelectedButtons = StdButton::None;
 
 		protected:
-			void PostCreate(const wxPoint& pos = wxDefaultPosition);
+			void PostCreate(const Point& pos = wxDefaultPosition);
 			virtual int GetViewSizerProportion() const
 			{
 				return 1;
@@ -194,9 +194,9 @@ namespace KxFramework::UI
 			virtual bool IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut = nullptr) const;
 			void SetResizingBehavior();
 			static wxWindowID TranslateButtonConstantsToIDs(int btnValue);
-			virtual wxRect GetGlassRect() const
+			virtual Rect GetGlassRect() const
 			{
-				return wxRect(0, 0, 0, m_ButtonsSizer->GetSize().GetHeight() + 1);
+				return Rect(0, 0, 0, m_ButtonsSizer->GetSize().GetHeight() + 1);
 			}
 
 		private:
@@ -264,8 +264,8 @@ namespace KxFramework::UI
 			StdDialog(wxWindow* parent,
 					  wxWindowID id,
 					  const String& caption,
-					  const wxPoint& pos = wxDefaultPosition,
-					  const wxSize& size = wxDefaultSize,
+					  const Point& pos = wxDefaultPosition,
+					  const Size& size = wxDefaultSize,
 					  StdButton buttons = DefaultButtons,
 					  DialogStyle style = DefaultStyle
 			)
@@ -275,8 +275,8 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const String& caption,
-						const wxPoint& pos = wxDefaultPosition,
-						const wxSize& size = wxDefaultSize,
+						const Point& pos = wxDefaultPosition,
+						const Size& size = wxDefaultSize,
 						StdButton buttons = DefaultButtons,
 						DialogStyle style = DefaultStyle
 			);
@@ -310,7 +310,7 @@ namespace KxFramework::UI
 			}
 
 			virtual int ShowModal() override;
-			void AdjustWindow(const wxPoint &pos = wxPoint(-2, -2), const wxSize& minSize = wxDefaultSize);
+			void AdjustWindow(const Point &pos = Point(-2, -2), const Size& minSize = wxDefaultSize);
 			void AddUserWindow(wxWindow* window)
 			{
 				m_UserControls.push_back(window);
@@ -348,14 +348,14 @@ namespace KxFramework::UI
 					m_GripperWindow.SetSize(m_GripperWindowSize);
 					m_GripperWindow.Show();
 
-					wxSize size = GetSize();
-					SetSize(size.x + 1, size.y + 1);
+					Size size = GetSize();
+					SetSize(size.GetX() + 1, size.GetY() + 1);
 					SetSize(size);
 					Refresh();
 				}
 				else
 				{
-					m_GripperWindow.SetSize(wxSize(0, 0));
+					m_GripperWindow.SetSize(Size(0, 0));
 					m_GripperWindow.Hide();
 				}
 			}

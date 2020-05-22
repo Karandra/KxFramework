@@ -8,8 +8,8 @@ namespace KxFramework::UI
 	bool ProgressDialog::Create(wxWindow* parent,
 								wxWindowID id,
 								const String& caption,
-								const wxPoint& pos,
-								const wxSize& size,
+								const Point& pos,
+								const Size& size,
 								StdButton buttons,
 								DialogStyle style
 	)
@@ -19,7 +19,7 @@ namespace KxFramework::UI
 		if (StdDialog::Create(parent, id, caption, pos, size, buttons, style))
 		{
 			m_View = new ProgressBar(m_ContentPanel, wxID_NONE, 100);
-			m_View->SetInitialSize(FromDIP(wxSize(DefaultProgressWidth, DefaultProgressHeight)));
+			m_View->SetInitialSize(FromDIP(Size(DefaultProgressWidth, DefaultProgressHeight)));
 			SetProgressBar(m_View);
 
 			PostCreate(pos);

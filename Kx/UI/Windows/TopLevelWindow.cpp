@@ -67,7 +67,7 @@ namespace KxFramework::UI::Private
 		}
 		return false;
 	}
-	bool TopLevelWindowBase::DWMExtendFrame(const wxRect& rect, const Color& color)
+	bool TopLevelWindowBase::DWMExtendFrame(const Rect& rect, const Color& color)
 	{
 		if (NativeAPI::DWMAPI::DwmExtendFrameIntoClientArea)
 		{

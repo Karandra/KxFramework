@@ -14,14 +14,14 @@ namespace KxFramework::UI
 		dc.SetBackgroundMode(wxBRUSHSTYLE_TRANSPARENT);
 		dc.SetTextForeground(GetForegroundColour());
 
-		const wxSize clientSize = GetClientSize();
+		const Size clientSize = GetClientSize();
 		UxTheme::DrawParentBackground(*this, dc, clientSize);
 
 		// Draw the background
 		{
 			dc.SetBrush(GetBackgroundColour());
 
-			wxRect backgroundRect(wxPoint(0, 0), clientSize);
+			Rect backgroundRect(Point(0, 0), (wxSize)clientSize);
 			backgroundRect.Inflate(2);
 			dc.DrawRectangle(backgroundRect);
 
@@ -57,7 +57,7 @@ namespace KxFramework::UI
 			{
 				wxSize gripSize = theme.GetPartSize(dc, SP_GRIPPER, 0);
 				wxPoint gripPos(clientSize.GetWidth() - gripSize.GetWidth() - 1, GetMinHeight() - gripSize.GetHeight() - 1);
-				theme.DrawBackground(dc, SP_GRIPPER, 0, wxRect(gripPos, gripSize));
+				theme.DrawBackground(dc, SP_GRIPPER, 0, Rect(gripPos, gripSize));
 			}
 			else
 			{
@@ -68,13 +68,14 @@ namespace KxFramework::UI
 		// Draw text
 		int spacer = 3;
 		int splitterX = 0;
-		wxRect rect(spacer, 0, 0, GetMinHeight());
+		Rect rect(spacer, 0, 0, GetMinHeight());
 
 		const size_t fieldsCount = GetFieldsCount();
 		for (size_t i = 0; i < fieldsCount; i++)
 		{
-			if (GetFieldRect(i, rect))
+			if (wxRect tempRect; GetFieldRect(i, tempRect))
 			{
+				rect = tempRect;
 				rect.SetX(rect.GetX() + spacer);
 
 				String label;
@@ -121,7 +122,7 @@ namespace KxFramework::UI
 				{
 					splitterX += rect.GetWidth();
 					dc.SetPen(m_BorderColor);
-					dc.DrawLine(wxPoint(splitterX, spacer), wxPoint(splitterX, GetMinHeight() - spacer));
+					dc.DrawLine(Point(splitterX, spacer), Point(splitterX, GetMinHeight() - spacer));
 				}
 			}
 		}
@@ -185,9 +186,9 @@ namespace KxFramework::UI
 	}
 
 	bool StatusBarEx::Create(wxWindow* parent,
-							   wxWindowID id,
-							   int fieldsCount,
-							   StatusBarStyle style
+							 wxWindowID id,
+							 int fieldsCount,
+							 StatusBarStyle style
 	)
 	{
 		if (StatusBar::Create(parent, id, fieldsCount, style))
@@ -242,7 +243,7 @@ namespace KxFramework::UI
 		wxFrame* parentFrame = dynamic_cast<wxFrame*>(GetParent());
 		if (parentFrame)
 		{
-			SetMinSize(wxSize(wxDefaultCoord, height));
+			SetMinSize(Size(wxDefaultCoord, height));
 			parentFrame->SetStatusBar(this);
 		}
 		ScheduleRefresh();

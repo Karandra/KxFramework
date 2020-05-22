@@ -231,8 +231,8 @@ namespace KxFramework::Sciter
 			WXDWORD nativeStyle = m_SciterWindow.MSWGetStyle(style, &nativeExStyle);
 			const wxChar* nativeClassName = m_SciterWindow.GetMSWClassName(style);
 
-			const wxPoint pos = m_SciterWindow.GetPosition();
-			const wxSize size = m_SciterWindow.GetSize();
+			const Point pos = m_SciterWindow.GetPosition();
+			const Size size = m_SciterWindow.GetSize();
 			const String title = m_SciterWindow.GetLabel();
 
 			// Destroy and detach original window
@@ -261,7 +261,7 @@ namespace KxFramework::Sciter
 		m_ReloadScheduled = true;
 	}
 
-	wxSize Host::GetBestSize() const
+	Size Host::GetBestSize() const
 	{
 		const int paddingX = wxSystemSettings::GetMetric(wxSYS_SMALLICON_X, &m_SciterWindow);
 		const int paddingY = wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y, &m_SciterWindow);
@@ -269,15 +269,15 @@ namespace KxFramework::Sciter
 		int width = GetSciterAPI()->SciterGetMinWidth(m_SciterWindow.GetHandle()) + paddingX;
 		int height = GetSciterAPI()->SciterGetMinHeight(m_SciterWindow.GetHandle(), width) + paddingY;
 
-		return m_SciterWindow.FromDIP(wxSize(width, height));
+		return m_SciterWindow.FromDIP(Size(width, height));
 	}
-	wxSize Host::GetDPI() const
+	Size Host::GetDPI() const
 	{
 		UINT x = 0;
 		UINT y = 0;
 		GetSciterAPI()->SciterGetPPI(m_SciterWindow.GetHandle(), &x, &y);
 
-		return wxSize(x, y);
+		return Size(x, y);
 	}
 	double Host::GetFPS() const
 	{
@@ -572,10 +572,10 @@ namespace KxFramework::Sciter
 		}
 		return {};
 	}
-	Element Host::GetElementFromPoint(const wxPoint& pos) const
+	Element Host::GetElementFromPoint(const Point& pos) const
 	{
 		HELEMENT node = nullptr;
-		if (GetSciterAPI()->SciterFindElement(m_SciterWindow.GetHandle(), {pos.x, pos.y}, &node) == SCDOM_OK)
+		if (GetSciterAPI()->SciterFindElement(m_SciterWindow.GetHandle(), {pos.GetX(), pos.GetY()}, &node) == SCDOM_OK)
 		{
 			return reinterpret_cast<ElementHandle*>(node);
 		}

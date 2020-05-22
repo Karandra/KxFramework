@@ -79,8 +79,8 @@ namespace KxFramework::Sciter
 				return m_SciterWindow;
 			}
 
-			wxSize GetBestSize() const;
-			wxSize GetDPI() const;
+			Size GetBestSize() const;
+			Size GetDPI() const;
 			double GetFPS() const;
 
 			bool IsSystemThemeEnabled() const;
@@ -118,7 +118,7 @@ namespace KxFramework::Sciter
 			Element GetRootElement() const;
 			Element GetFocusedElement() const;
 			Element GetElementByUID(ElementUID* id) const;
-			Element GetElementFromPoint(const wxPoint& pos) const;
+			Element GetElementFromPoint(const Point& pos) const;
 
 			Element GetHighlightedElement() const;
 			void SetHighlightedElement(const Element& node);

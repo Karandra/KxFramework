@@ -43,8 +43,8 @@ namespace KxFramework::UI::DataView
 			const Column& SelectAnchorColumn(const Column& currentColumn) const;
 			const Column& SelectClipTestColumn(const Column& currentColumn) const;
 
-			wxPoint GetPopupPosition(const Node& node, const Column& column) const;
-			wxPoint AdjustPopupPosition(const Node& node, const wxPoint& pos) const;
+			Point GetPopupPosition(const Node& node, const Column& column) const;
+			Point AdjustPopupPosition(const Node& node, const Point& pos) const;
 			wxString StripMarkupIfNeeded(const Node& node, const Column& column, const wxString& text) const;
 
 			bool Show(const Node& node, const Column& column);

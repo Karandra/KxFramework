@@ -5,7 +5,7 @@
 
 namespace KxFramework::UI::DataView
 {
-	wxWindow* TextEditor::CreateControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value)
+	wxWindow* TextEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value)
 	{
 		const TextBoxStyle style = TextBox::DefaultStyle|TextBoxStyle::ProcessEnter|(IsEditable() ? TextBoxStyle::None : TextBoxStyle::ReadOnly);
 		const TextValue textValue = FromAnyUsing<TextValue>(value);
@@ -21,8 +21,8 @@ namespace KxFramework::UI::DataView
 
 		// Adjust size of 'KxTextBox' editor to fit text, even if it means being
 		// wider than the corresponding column (this is how Explorer behaves).
-		const int fittingWidth = editor->GetSizeFromTextSize(editor->GetTextExtent(editor->GetValue())).x;
-		const int currentWidth = editor->GetSize().x;
+		const int fittingWidth = editor->GetSizeFromTextSize(editor->GetTextExtent(editor->GetValue())).GetX();
+		const int currentWidth = editor->GetSize().GetX();
 		const int maxWidth = editor->GetParent()->GetSize().x - editor->GetPosition().x;
 
 		// Adjust size so that it fits all content. Don't change anything if the allocated
@@ -30,7 +30,7 @@ namespace KxFramework::UI::DataView
 		const int width = std::min(std::max(currentWidth, fittingWidth), maxWidth);
 		if (width != currentWidth)
 		{
-			editor->SetSize(wxSize(width, -1));
+			editor->SetSize(Size(width, -1));
 		}
 
 		// Select the text in the control and place the cursor at the end

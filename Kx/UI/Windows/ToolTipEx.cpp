@@ -120,7 +120,7 @@ namespace KxFramework::UI
 					{
 						const int width = wxSystemSettings::GetMetric(wxSYS_SMALLICON_X);
 						const int height = wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y);
-						m_QuestionIcon = wxArtProvider::GetIcon(wxART_QUESTION, wxART_MESSAGE_BOX, wxSize(width, height));
+						m_QuestionIcon = wxArtProvider::GetIcon(wxART_QUESTION, wxART_MESSAGE_BOX, Size(width, height));
 					}
 
 					if (m_QuestionIcon.IsOk())
@@ -237,7 +237,7 @@ namespace KxFramework::UI
 		return false;
 	}
 
-	bool ToolTipEx::Popup(const wxPoint& position, wxWindow* window)
+	bool ToolTipEx::Popup(const Point& position, wxWindow* window)
 	{
 		if (CreateToolTip())
 		{
@@ -245,8 +245,8 @@ namespace KxFramework::UI
 
 			if (HWND hwnd = GetHandle())
 			{
-				wxPoint pos = (window ? window : GetParent())->ClientToScreen(position);
-				::SendMessageW(hwnd, TTM_TRACKPOSITION, 0, static_cast<LPARAM>(MAKELONG(pos.x, pos.y)));
+				Point pos = (window ? window : GetParent())->ClientToScreen(position);
+				::SendMessageW(hwnd, TTM_TRACKPOSITION, 0, static_cast<LPARAM>(MAKELONG(pos.GetX(), pos.GetY())));
 
 				TTTOOLINFOW info = MakeToolInfo(*this, m_Message);
 				::SendMessageW(hwnd, TTM_TRACKACTIVATE, TRUE, reinterpret_cast<LPARAM>(&info));

@@ -107,10 +107,10 @@ namespace KxFramework::UI
 			AuiToolBarItem* AddSpacer(int pixels);
 			AuiToolBarItem* AddStretchSpacer(int proportion = 1);
 
-			AuiToolBarItem* FindToolByPosition(const wxPoint& pos) const;
+			AuiToolBarItem* FindToolByPosition(const Point& pos) const;
 			AuiToolBarItem* FindToolByPosition(wxCoord x, wxCoord y) const
 			{
-				return FindToolByPosition(wxPoint(x, y));
+				return FindToolByPosition(Point(x, y));
 			}
 			AuiToolBarItem* FindToolByIndex(int index) const;
 			AuiToolBarItem* FindToolByID(wxWindowID id) const;
@@ -138,7 +138,7 @@ namespace KxFramework::UI
 			bool GetToolDropDown(int tool_id) const = delete;
 			void SetToolProportion(int tool_id, int proportion) = delete;
 			int GetToolProportion(int tool_id) const = delete;
-			wxRect GetToolRect(int tool_id) const = delete;
+			Rect GetToolRect(int tool_id) const = delete;
 			void SetToolSticky(int tool_id, bool sticky) = delete;
 			bool GetToolSticky(int tool_id) const = delete;
 			String GetToolLabel(int tool_id) const = delete;
@@ -162,13 +162,13 @@ namespace KxFramework::UI
 
 namespace KxFramework::UI
 {
-	class KX_API KxAuiToolBarArt: public wxAuiDefaultToolBarArt
+	class KX_API AuiToolBarArt: public wxAuiDefaultToolBarArt
 	{
 		private:
 			AuiToolBar* m_Instance = nullptr;
 
 		public:
-			KxAuiToolBarArt(AuiToolBar& object)
+			AuiToolBarArt(AuiToolBar& object)
 				:m_Instance(&object)
 			{
 			}

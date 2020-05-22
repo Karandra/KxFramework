@@ -58,7 +58,7 @@ namespace KxFramework::UI
 			}
 
 		public:
-			bool Popup(const wxPoint& position, wxWindow* window = nullptr);
+			bool Popup(const Point& position, wxWindow* window = nullptr);
 			void Dismiss();
 			void Disown() = delete;
 

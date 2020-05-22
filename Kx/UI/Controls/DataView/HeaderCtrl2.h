@@ -62,8 +62,8 @@ namespace KxFramework::UI::DataView
 			void EndResizing(int xPhysical);
 
 			void FinishEditing();
-			EventResult SendCtrlEvent(ItemEvent& event, wxEventType type, Column* column = nullptr, std::optional<wxRect> rect = {});
-			EventResult SendCtrlEvent(wxEventType type, Column* column = nullptr, std::optional<wxRect> rect = {})
+			EventResult SendCtrlEvent(ItemEvent& event, wxEventType type, Column* column = nullptr, std::optional<Rect> rect = {});
+			EventResult SendCtrlEvent(wxEventType type, Column* column = nullptr, std::optional<Rect> rect = {})
 			{
 				ItemEvent event;
 				return SendCtrlEvent(event, type, column, std::move(rect));
@@ -82,7 +82,7 @@ namespace KxFramework::UI::DataView
 			wxSize DoGetBestSize() const override;
 			void OnInternalIdle() override;
 
-			wxRect GetDropdownRect(const Column& column) const;
+			Rect GetDropdownRect(const Column& column) const;
 
 		public:
 			HeaderCtrl2(View* parent, long style = wxHD_DEFAULT_STYLE)

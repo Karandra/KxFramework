@@ -11,7 +11,7 @@ namespace KxFramework::Sciter
 			KxEVENT_MEMBER(KeyEvent, KeyDown);
 
 		protected:
-			wxPoint m_Position = wxDefaultPosition;
+			Point m_Position = wxDefaultPosition;
 			wxKeyCode m_KeyCode = wxKeyCode::WXK_NONE;
 			wxChar m_UnicodeKey = 0;
 
@@ -47,17 +47,17 @@ namespace KxFramework::Sciter
 	
 			wxCoord GetX() const
 			{
-				return m_Position.x;
+				return m_Position.GetX();
 			}
 			wxCoord GetY() const
 			{
-				return m_Position.y;
+				return m_Position.GetY();
 			}
-			wxPoint GetPosition() const
+			Point GetPosition() const
 			{
 				return m_Position;
 			}
-			void SetPosition(const wxPoint& pos)
+			void SetPosition(const Point& pos)
 			{
 				m_Position = pos;
 			}

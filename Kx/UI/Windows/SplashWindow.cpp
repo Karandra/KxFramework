@@ -17,10 +17,10 @@ namespace KxFramework::UI
 		event.Skip();
 	}
 
-	void SplashWindow::DoSetSplash(const wxBitmap& bitmap, const wxSize& size)
+	void SplashWindow::DoSetSplash(const wxBitmap& bitmap, const Size& size)
 	{
 		m_Bitmap = bitmap;
-		SetSize(size.IsFullySpecified() ? size : GetSize());
+		SetSize(size.IsFullySpecified() ? size : Size(GetSize()));
 	}
 	bool SplashWindow::DoUpdateSplash()
 	{
@@ -40,7 +40,7 @@ namespace KxFramework::UI
 			}
 
 			// Scale the image for window size
-			if (wxSize size = GetSize(); size != image.GetSize())
+			if (Size size = GetSize(); size != image.GetSize())
 			{
 				image.Rescale(size.GetWidth(), size.GetHeight(), wxImageResizeQuality::wxIMAGE_QUALITY_HIGH);
 			}
@@ -73,7 +73,7 @@ namespace KxFramework::UI
 
 	bool SplashWindow::Create(wxWindow* parent,
 							  const wxBitmap& bitmap,
-							  const wxSize& size,
+							  const Size& size,
 							  TimeSpan timeout,
 							  SplashWindowStyle style
 	)
@@ -129,7 +129,7 @@ namespace KxFramework::UI
 		DoUpdateSplash();
 	}
 
-	void SplashWindow::SetSplashBitmap(const wxBitmap& bitmap, const wxSize& size)
+	void SplashWindow::SetSplashBitmap(const wxBitmap& bitmap, const Size& size)
 	{
 		DoSetSplash(bitmap, size);
 		DoCenterWindow();

@@ -241,9 +241,9 @@ namespace KxFramework::UI::DataView
 			}
 			void EnsureVisible(const Column* column = nullptr);
 
-			wxRect GetCellRect(const Column* column = nullptr) const;
-			wxRect GetClientCellRect(const Column* column = nullptr) const;
-			wxPoint GetDropdownMenuPosition(const Column* column = nullptr) const;
+			Rect GetCellRect(const Column* column = nullptr) const;
+			Rect GetClientCellRect(const Column* column = nullptr) const;
+			Point GetDropdownMenuPosition(const Column* column = nullptr) const;
 
 		public:
 			bool IsEditable(const Column& column) const;

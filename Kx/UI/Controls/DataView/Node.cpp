@@ -448,7 +448,7 @@ namespace KxFramework::UI::DataView
 		}
 	}
 
-	wxRect Node::GetCellRect(const Column* column) const
+	Rect Node::GetCellRect(const Column* column) const
 	{
 		if (View* view = GetView())
 		{
@@ -456,7 +456,7 @@ namespace KxFramework::UI::DataView
 		}
 		return {};
 	}
-	wxRect Node::GetClientCellRect(const Column* column) const
+	Rect Node::GetClientCellRect(const Column* column) const
 	{
 		if (View* view = GetView())
 		{
@@ -464,7 +464,7 @@ namespace KxFramework::UI::DataView
 		}
 		return {};
 	}
-	wxPoint Node::GetDropdownMenuPosition(const Column* column) const
+	Point Node::GetDropdownMenuPosition(const Column* column) const
 	{
 		if (View* view = GetView())
 		{

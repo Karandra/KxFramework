@@ -33,11 +33,20 @@ namespace KxFramework
 		Abbreviated = 1 << 0,
 		GenetiveCase = 1 << 1,
 	};
+	enum class Orientation
+	{
+		None = 0,
+
+		Horizontal = wxOrientation::wxHORIZONTAL,
+		Vertical = wxOrientation::wxVERTICAL,
+		Both = wxOrientation::wxBOTH,
+	};
 
 	namespace EnumClass
 	{
 		Kx_EnumClass_AllowCast(VersionType);
 		Kx_EnumClass_AllowEverything(UnitNameFlag);
+		Kx_EnumClass_AllowEverything(Orientation);
 	}
 }
 
@@ -48,4 +57,13 @@ namespace KxFramework
 
 	std::optional<wxStreamError> ToWxStreamError(StreamErrorCode streamError) noexcept;
 	std::optional<StreamErrorCode> FromWxStreamError(wxStreamError streamError) noexcept;
+
+	constexpr wxOrientation MapOrientation(Orientation value) noexcept
+	{
+		return static_cast<wxOrientation>(value);
+	}
+	constexpr Orientation MapOrientation(wxOrientation value) noexcept
+	{
+		return static_cast<Orientation>(value);
+	}
 }

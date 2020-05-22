@@ -34,12 +34,12 @@ namespace KxFramework
 
 		private:
 			void OnCreate(int width, int height, bool mask, int initialCount) noexcept;
-			bool DoDraw(wxDC& dc, int index, const wxRect& rect, DrawItemFlag flags = DrawItemFlag::None, int overlayIndex = Drawing::InvalidImageIndex) noexcept;
+			bool DoDraw(wxDC& dc, int index, const Rect& rect, DrawItemFlag flags = DrawItemFlag::None, int overlayIndex = Drawing::InvalidImageIndex) noexcept;
 
 		public:
 			ImageList() noexcept;
 			ImageList(int width, int height, int initialCount = 1) noexcept;
-			ImageList(const wxSize& size, int initialCount = 1) noexcept
+			ImageList(const Size& size, int initialCount = 1) noexcept
 				:ImageList(size.GetWidth(), size.GetWidth(), initialCount)
 			{
 			}
@@ -55,7 +55,7 @@ namespace KxFramework
 			COMPtr<IImageList2> QueryInterface() const noexcept;
 		
 			bool Create(int width, int height, int initialCount = 1) noexcept;
-			bool Create(const wxSize& size, int initialCount = 1) noexcept;
+			bool Create(const Size& size, int initialCount = 1) noexcept;
 
 			bool Clear() noexcept;
 			bool RemoveAll() noexcept;
@@ -77,20 +77,20 @@ namespace KxFramework
 			void SetBackgroundColor(const Color& color) noexcept;
 			bool SetOverlayImage(int index, int overlayIndex) noexcept;
 
-			bool Draw(wxDC& dc, int index, const wxPoint& point, DrawItemFlag flags = DrawItemFlag::None) noexcept
+			bool Draw(wxDC& dc, int index, const Point& point, DrawItemFlag flags = DrawItemFlag::None) noexcept
 			{
-				return DoDraw(dc, index, wxRect(point, wxDefaultSize), flags);
+				return DoDraw(dc, index, Rect(point, wxDefaultSize), flags);
 			}
-			bool Draw(wxDC& dc, int index, const wxRect& rect, DrawItemFlag flags = DrawItemFlag::None) noexcept
+			bool Draw(wxDC& dc, int index, const Rect& rect, DrawItemFlag flags = DrawItemFlag::None) noexcept
 			{
 				return DoDraw(dc, index, rect, flags);
 			}
 
-			bool DrawOverlay(wxDC& dc, int index, int overlayIndex, const wxPoint& point, DrawItemFlag flags = DrawItemFlag::None) noexcept
+			bool DrawOverlay(wxDC& dc, int index, int overlayIndex, const Point& point, DrawItemFlag flags = DrawItemFlag::None) noexcept
 			{
-				return DoDraw(dc, index, wxRect(point, wxDefaultSize), flags, overlayIndex);
+				return DoDraw(dc, index, Rect(point, wxDefaultSize), flags, overlayIndex);
 			}
-			bool DrawOverlay(wxDC& dc, int index, int overlayIndex, const wxRect& rect, DrawItemFlag flags = DrawItemFlag::None) noexcept
+			bool DrawOverlay(wxDC& dc, int index, int overlayIndex, const Rect& rect, DrawItemFlag flags = DrawItemFlag::None) noexcept
 			{
 				return DoDraw(dc, index, rect, flags, overlayIndex);
 			}

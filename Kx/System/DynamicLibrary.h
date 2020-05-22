@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Kx/General/String.h"
+#include "Kx/Drawing/Geometry.h"
 #include "Kx/FileSystem/FSPath.h"
 #include "Kx/Localization/Locale.h"
 #include <wx/bitmap.h>
@@ -130,7 +131,7 @@ namespace KxFramework
 			wxScopedCharBuffer GetResource(const String& resType, const String& resName, const Locale& locale = {}) const;
 
 			wxBitmap GetBitmapResource(const String& name, const Locale& locale = {}) const;
-			wxIcon GetIconResource(const String& name, const wxSize& size = wxDefaultSize, const Locale& locale = {}) const;
+			wxIcon GetIconResource(const String& name, const Size& size = wxDefaultSize, const Locale& locale = {}) const;
 			wxIcon GetIconResource(const String& name, size_t index, const Locale& locale = {}) const;
 			size_t GetIconResourceCount(const String& name, const Locale& locale = {}) const;
 			wxCursor GetCursorResource(const String& name, const Locale& locale = {}) const;

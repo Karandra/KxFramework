@@ -11,8 +11,8 @@ namespace KxFramework::UI
 	bool TextBox::Create(wxWindow* parent,
 						   wxWindowID id,
 						   const String& value,
-						   const wxPoint& pos,
-						   const wxSize& size,
+						   const Point& pos,
+						   const Size& size,
 						   TextBoxStyle style,
 						   const wxValidator& validator
 	)

@@ -77,7 +77,7 @@ namespace KxFramework::UI::DataView
 
 namespace KxFramework::UI::DataView
 {
-	bool ToggleRendererBase::DoOnActivateCell(const wxRect& toggleRect, ToggleState& state, const wxMouseEvent* mouseEvent) const
+	bool ToggleRendererBase::DoOnActivateCell(const Rect& toggleRect, ToggleState& state, const wxMouseEvent* mouseEvent) const
 	{
 		// Only react to clicks directly on the checkbox, not elsewhere in the same cell.
 		if (mouseEvent && !toggleRect.Contains(mouseEvent->GetPosition()))
@@ -113,7 +113,7 @@ namespace KxFramework::UI::DataView
 
 namespace KxFramework::UI::DataView
 {
-	wxAny ToggleRenderer::OnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent)
+	wxAny ToggleRenderer::OnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent)
 	{
 		ToggleState state = m_Value.GetState();
 		if (DoOnActivateCell(GetRenderEngine().GetToggleSize(), state, mouseEvent))
@@ -128,19 +128,19 @@ namespace KxFramework::UI::DataView
 		return m_Value.FromAny(value);
 	}
 
-	void ToggleRenderer::DrawCellContent(const wxRect& cellRect, CellState cellState)
+	void ToggleRenderer::DrawCellContent(const Rect& cellRect, CellState cellState)
 	{
 		if (m_Value.HasType())
 		{
 			GetRenderEngine().DrawToggle(GetGraphicsDC(), cellRect, cellState, m_Value.GetState(), m_Value.GetType());
 		}
 	}
-	wxSize ToggleRenderer::GetCellSize() const
+	Size ToggleRenderer::GetCellSize() const
 	{
 		if (m_Value.HasType())
 		{
 			return GetRenderEngine().GetToggleSize();
 		}
-		return wxSize(0, 0);
+		return Size(0, 0);
 	}
 }

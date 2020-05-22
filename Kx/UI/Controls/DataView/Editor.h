@@ -39,12 +39,12 @@ namespace KxFramework::UI::DataView
 			virtual void DestroyControl();
 			virtual EditorControlHandler* CreateControlHandler();
 
-			virtual bool BeginEdit(Node& node, Column& column, const wxRect& cellRect);
+			virtual bool BeginEdit(Node& node, Column& column, const Rect& cellRect);
 			virtual bool EndEdit();
 			virtual void CancelEdit();
 
 		protected:
-			virtual wxWindow* CreateControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value) = 0;
+			virtual wxWindow* CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value) = 0;
 			virtual wxAny GetValue(wxWindow* control) const = 0;
 			template<class TValue> TValue FromAnyUsing(const wxAny& value) const
 			{
@@ -192,7 +192,7 @@ namespace KxFramework::UI::DataView
 				m_SetFocusOnIdle = focus;
 			}
 
-			bool BeginEdit(Node& item, Column& column, const wxRect& cellRect)
+			bool BeginEdit(Node& item, Column& column, const Rect& cellRect)
 			{
 				return m_Editor->BeginEdit(item, column, cellRect);
 			}

@@ -11,11 +11,11 @@
 
 namespace KxFramework::UI::DataView
 {
-	static bool operator<(const wxSize& left, const wxSize& right)
+	static bool operator<(const Size& left, const Size& right)
 	{
 		return left.GetWidth() < right.GetWidth() || left.GetHeight() < right.GetHeight();
 	}
-	static bool operator>(const wxSize& left, const wxSize& right)
+	static bool operator>(const Size& left, const Size& right)
 	{
 		return left.GetWidth() > right.GetWidth() || left.GetHeight() > right.GetHeight();
 	}
@@ -51,7 +51,7 @@ namespace KxFramework::UI::DataView::Markup
 			}
 
 		public:
-			wxSize GetTextExtent(wxDC& dc) const
+			Size GetTextExtent(wxDC& dc) const
 			{
 				return Measure(dc);
 			}
@@ -65,7 +65,7 @@ namespace KxFramework::UI::DataView::Markup
 			}
 
 		public:
-			wxSize GetTextExtent(wxDC& dc) const
+			Size GetTextExtent(wxDC& dc) const
 			{
 				return Measure(dc);
 			}
@@ -87,11 +87,11 @@ namespace KxFramework::UI::DataView::Markup
 		}
 	}
 
-	wxSize GetTextExtent(const wxMarkupTextBase& markup, wxDC& dc)
+	Size GetTextExtent(const wxMarkupTextBase& markup, wxDC& dc)
 	{
 		return markup.Measure(dc);
 	}
-	wxSize GetTextExtent(MarkupMode mode, wxDC& dc, const wxString& string)
+	Size GetTextExtent(MarkupMode mode, wxDC& dc, const wxString& string)
 	{
 		switch (mode)
 		{
@@ -104,10 +104,10 @@ namespace KxFramework::UI::DataView::Markup
 				return Create<MarkupMode::WithMnemonics>(string).GetTextExtent(dc);
 			}
 		};
-		return wxSize(0, 0);
+		return Size(0, 0);
 	}
 	
-	template<class T> void DrawText(T& markup, wxWindow* window, wxDC& dc, const wxRect& rect, int flags, wxEllipsizeMode ellipsizeMode)
+	template<class T> void DrawText(T& markup, wxWindow* window, wxDC& dc, const Rect& rect, int flags, wxEllipsizeMode ellipsizeMode)
 	{
 		if constexpr(std::is_same_v<T, WithMnemonics>)
 		{
@@ -118,7 +118,7 @@ namespace KxFramework::UI::DataView::Markup
 			markup.Render(window, dc, rect, flags, ellipsizeMode);
 		}
 	}
-	void DrawText(MarkupMode mode, const wxString& string, wxWindow* window, wxDC& dc, const wxRect& rect, int flags, wxEllipsizeMode ellipsizeMode)
+	void DrawText(MarkupMode mode, const wxString& string, wxWindow* window, wxDC& dc, const Rect& rect, int flags, wxEllipsizeMode ellipsizeMode)
 	{
 		switch (mode)
 		{
@@ -162,9 +162,9 @@ namespace KxFramework::UI::DataView
 		}
 		return margins / 2;
 	}
-	wxSize RenderEngine::FromDIP(const wxSize& size) const
+	Size RenderEngine::FromDIP(const Size& size) const
 	{
-		return m_Renderer.GetView()->FromDIP(size);
+		return m_Renderer.GetView()->FromDIP((wxSize)size);
 	}
 
 	size_t RenderEngine::FindFirstLineBreak(const wxString& string) const
@@ -205,7 +205,7 @@ namespace KxFramework::UI::DataView
 		return wxControl::RemoveMnemonics(markup);
 	}
 
-	wxSize RenderEngine::GetTextExtent(const wxString& string) const
+	Size RenderEngine::GetTextExtent(const wxString& string) const
 	{
 		if (wxDC* dc = GetTextRenderingDC())
 		{
@@ -218,7 +218,7 @@ namespace KxFramework::UI::DataView
 			return GetTextExtent(clientDC, string);
 		}
 	}
-	wxSize RenderEngine::GetTextExtent(wxDC& dc, const wxString& string) const
+	Size RenderEngine::GetTextExtent(wxDC& dc, const wxString& string) const
 	{
 		const CellAttribute& attributes = m_Renderer.GetAttributes();
 
@@ -244,8 +244,8 @@ namespace KxFramework::UI::DataView
 			};
 			auto MeasureString = [&dc](const wxString& text, const wxFont& font = wxNullFont)
 			{
-				wxSize extent;
-				dc.GetTextExtent(text, &extent.x, &extent.y, nullptr, nullptr, font.IsOk() ? &font : nullptr);
+				Size extent;
+				dc.GetTextExtent(text, &extent.X(), &extent.Y(), nullptr, nullptr, font.IsOk() ? &font : nullptr);
 				return extent;
 			};
 
@@ -261,7 +261,7 @@ namespace KxFramework::UI::DataView
 		}
 	}
 
-	wxSize RenderEngine::GetMultilineTextExtent(const wxString& string) const
+	Size RenderEngine::GetMultilineTextExtent(const wxString& string) const
 	{
 		if (wxDC* dc = GetTextRenderingDC())
 		{
@@ -274,7 +274,7 @@ namespace KxFramework::UI::DataView
 			return GetMultilineTextExtent(clientDC, string);
 		}
 	}
-	wxSize RenderEngine::GetMultilineTextExtent(wxDC& dc, const wxString& string) const
+	Size RenderEngine::GetMultilineTextExtent(wxDC& dc, const wxString& string) const
 	{
 		// Markup doesn't support multiline text so we are ignoring it for now.
 
@@ -289,7 +289,7 @@ namespace KxFramework::UI::DataView
 		return dc.GetMultiLineTextExtent(string);
 	}
 
-	bool RenderEngine::DrawText(const wxRect& cellRect, CellState cellState, const wxString& string, int offsetX)
+	bool RenderEngine::DrawText(const Rect& cellRect, CellState cellState, const wxString& string, int offsetX)
 	{
 		if (wxDC* dc = GetTextRenderingDC())
 		{
@@ -297,15 +297,15 @@ namespace KxFramework::UI::DataView
 		}
 		return false;
 	}
-	bool RenderEngine::DrawText(wxDC& dc, const wxRect& cellRect, CellState cellState, const wxString& string, int offsetX)
+	bool RenderEngine::DrawText(wxDC& dc, const Rect& cellRect, CellState cellState, const wxString& string, int offsetX)
 	{
 		if (!string.IsEmpty())
 		{
 			const CellAttribute& attributes = m_Renderer.GetAttributes();
 
-			wxRect textRect = cellRect;
-			textRect.x += offsetX;
-			textRect.width -= offsetX;
+			Rect textRect = cellRect;
+			textRect.X() += offsetX;
+			textRect.Width() -= offsetX;
 
 			int flags = 0;
 			if (m_Renderer.IsMarkupWithMnemonicsEnabled() && attributes.Options().IsEnabled(CellOption::ShowAccelerators))
@@ -339,7 +339,7 @@ namespace KxFramework::UI::DataView
 		return false;
 	}
 
-	bool RenderEngine::DrawBitmap(const wxRect& cellRect, CellState cellState, const wxBitmap& bitmap, int reservedWidth)
+	bool RenderEngine::DrawBitmap(const Rect& cellRect, CellState cellState, const wxBitmap& bitmap, int reservedWidth)
 	{
 		if (bitmap.IsOk())
 		{
@@ -348,11 +348,11 @@ namespace KxFramework::UI::DataView
 
 			auto DrawBitmap = [&]()
 			{
-				const wxPoint pos = cellRect.GetPosition();
-				const wxSize size = bitmap.GetSize();
+				const Point pos = cellRect.GetPosition();
+				const Size size = bitmap.GetSize();
 				const bool isEnabled = attributes.Options().IsEnabled(CellOption::Enabled);
 
-				context.DrawBitmap(isEnabled ? bitmap : bitmap.ConvertToDisabled(), pos.x, pos.y, size.GetWidth(), size.GetHeight());
+				context.DrawBitmap(isEnabled ? bitmap : bitmap.ConvertToDisabled(), pos.GetX(), pos.GetY(), size.GetWidth(), size.GetHeight());
 			};
 
 			if (bitmap.GetSize() > cellRect.GetSize())
@@ -372,18 +372,18 @@ namespace KxFramework::UI::DataView
 		}
 		return false;
 	}
-	int RenderEngine::DrawBitmapWithText(const wxRect& cellRect, CellState cellState, int offsetX, const wxString& text, const wxBitmap& bitmap, bool centerTextV, int reservedWidth)
+	int RenderEngine::DrawBitmapWithText(const Rect& cellRect, CellState cellState, int offsetX, const wxString& text, const wxBitmap& bitmap, bool centerTextV, int reservedWidth)
 	{
 		if (bitmap.IsOk() || reservedWidth > 0)
 		{
-			DrawBitmap(wxRect(cellRect.GetX() + offsetX, cellRect.GetY(), cellRect.GetWidth() - offsetX, cellRect.GetHeight()), cellState, bitmap, reservedWidth);
+			DrawBitmap(Rect(cellRect.GetX() + offsetX, cellRect.GetY(), cellRect.GetWidth() - offsetX, cellRect.GetHeight()), cellState, bitmap, reservedWidth);
 			offsetX += (reservedWidth > 0 ? reservedWidth : bitmap.GetWidth()) + FromDIPX(GetInterTextSpacing());
 		}
 		if (!text.IsEmpty())
 		{
 			if (bitmap.IsOk() && centerTextV)
 			{
-				const wxRect textRect = CenterTextInside(cellRect, GetTextExtent(text));
+				const Rect textRect = CenterTextInside(cellRect, GetTextExtent(text));
 				DrawText(textRect, cellState, text, offsetX);
 			}
 			else
@@ -393,13 +393,13 @@ namespace KxFramework::UI::DataView
 		}
 		return offsetX;
 	}
-	bool RenderEngine::DrawProgressBar(const wxRect& cellRect, CellState cellState, int value, int range, ProgressState state, Color* averageBackgroundColor)
+	bool RenderEngine::DrawProgressBar(const Rect& cellRect, CellState cellState, int value, int range, ProgressState state, Color* averageBackgroundColor)
 	{
 		using namespace KxFramework;
 
 		// Progress bar looks really ugly when it's smaller than 10x10 pixels,
 		// so don't draw it at all in this case.
-		const wxSize minSize = FromDIP(10, 10);
+		const Size minSize = FromDIP(10, 10);
 		if (cellRect.GetWidth() < minSize.GetWidth() || cellRect.GetHeight() < minSize.GetHeight())
 		{
 			return false;
@@ -437,11 +437,11 @@ namespace KxFramework::UI::DataView
 		return true;
 	}
 
-	wxSize RenderEngine::GetToggleSize() const
+	Size RenderEngine::GetToggleSize() const
 	{
 		return wxRendererNative::Get().GetCheckBoxSize(m_Renderer.GetView());
 	}
-	wxSize RenderEngine::DrawToggle(wxDC& dc, const wxRect& cellRect, CellState cellState, ToggleState toggleState, ToggleType toggleType)
+	Size RenderEngine::DrawToggle(wxDC& dc, const Rect& cellRect, CellState cellState, ToggleState toggleState, ToggleType toggleType)
 	{
 		int flags = GetControlFlags(cellState);
 		switch (toggleState)
@@ -462,8 +462,8 @@ namespace KxFramework::UI::DataView
 		// otherwise DrawCheckBox() doesn't really work well. If this size is greater than
 		// the cell size, the checkbox will be truncated but this is a lesser evil.
 		View* view = m_Renderer.GetView();
-		wxRect toggleRect = cellRect;
-		wxSize size = toggleRect.GetSize();
+		Rect toggleRect = cellRect;
+		Size size = toggleRect.GetSize();
 		size.IncTo(GetToggleSize());
 		toggleRect.SetSize(size);
 
@@ -481,24 +481,24 @@ namespace KxFramework::UI::DataView
 
 namespace KxFramework::UI::DataView
 {
-	void RenderEngine::DrawPlusMinusExpander(wxWindow* window, wxDC& dc, const wxRect& canvasRect, int flags)
+	void RenderEngine::DrawPlusMinusExpander(wxWindow* window, wxDC& dc, const Rect& canvasRect, int flags)
 	{
 		const bool isActive = flags & wxCONTROL_CURRENT;
 		const bool isExpanded = flags & wxCONTROL_EXPANDED;
 
-		wxRect rect(canvasRect.GetPosition(), canvasRect.GetSize() / 2);
-		if (rect.width % 2 == 0)
+		Rect rect(canvasRect.GetPosition(), canvasRect.GetSize() / 2);
+		if (rect.GetWidth() % 2 == 0)
 		{
-			rect.x++;
-			rect.width--;
+			rect.X()++;
+			rect.Width()--;
 		}
-		if (rect.height % 2 == 0)
+		if (rect.GetHeight() % 2 == 0)
 		{
-			rect.y++;
-			rect.height--;
+			rect.Y()++;
+			rect.Height()--;
 		}
-		rect.x += rect.width / 2;
-		rect.y += rect.height / 2;
+		rect.X() += rect.GetWidth() / 2;
+		rect.Y() += rect.GetHeight() / 2;
 
 		// Draw inner rectangle
 		dc.SetBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
@@ -519,12 +519,12 @@ namespace KxFramework::UI::DataView
 		int baseY = width / 2;
 		auto GetXY = [&]()
 		{
-			return wxPoint(rect.x + baseX, rect.y + baseY);
+			return Point(rect.GetX() + baseX, rect.GetY() + baseY);
 		};
 
 		// Draw horizontal line
-		wxPoint pos = GetXY();
-		dc.DrawLine(pos, {pos.x + length, pos.y});
+		Point pos = GetXY();
+		dc.DrawLine(pos, {pos.GetX() + length, pos.GetY()});
 		if (isExpanded)
 		{
 			return;
@@ -533,9 +533,9 @@ namespace KxFramework::UI::DataView
 		// Draw vertical line
 		std::swap(baseX, baseY);
 		pos = GetXY();
-		dc.DrawLine(pos, {pos.x, pos.y + length});
+		dc.DrawLine(pos, {pos.GetX(), pos.GetY() + length});
 	}
-	void RenderEngine::DrawSelectionRect(wxWindow* window, wxDC& dc, const wxRect& cellRect, int flags)
+	void RenderEngine::DrawSelectionRect(wxWindow* window, wxDC& dc, const Rect& cellRect, int flags)
 	{
 		using namespace KxFramework;
 

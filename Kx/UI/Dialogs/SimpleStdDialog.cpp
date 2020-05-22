@@ -9,8 +9,8 @@ namespace KxFramework::UI
 								   wxWindowID id,
 								   wxWindow* pView,
 								   const wxString& caption,
-								   const wxPoint& pos,
-								   const wxSize& size,
+								   const Point& pos,
+								   const Size& size,
 								   StdButton buttons,
 								   DialogStyle style
 	)

@@ -144,7 +144,7 @@ namespace KxFramework::UI::DataView
 		// shouldn't happen as the control shouldn't let itself be resized beneath
 		// its minimal height but avoid the display artifacts that appear if it
 		// does happen, e.g. because there is really not enough vertical space.
-		if (m_HeaderArea && m_HeaderArea->GetSize().y <= m_HeaderArea->GetBestSize().y)
+		if (m_HeaderArea && m_HeaderArea->GetSize().GetY() <= m_HeaderArea->GetBestSize().GetY())
 		{
 			m_HeaderArea->ScheduleRefresh();
 		}
@@ -164,10 +164,10 @@ namespace KxFramework::UI::DataView
 
 	wxSize View::GetSizeAvailableForScrollTarget(const wxSize& size)
 	{
-		wxSize newSize = size;
+		Size newSize = size;
 		if (m_HeaderArea)
 		{
-			newSize.y -= m_HeaderArea->GetSize().y;
+			newSize.Height() -= m_HeaderArea->GetSize().GetHeight();
 		}
 		return newSize;
 	}
@@ -191,7 +191,7 @@ namespace KxFramework::UI::DataView
 		return displayOrder;
 	}
 
-	bool View::Create(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
+	bool View::Create(wxWindow* parent, wxWindowID id, const Point& pos, const Size& size, long style, const wxString& name)
 	{
 		if (ViewBase::Create(parent, id, pos, size, style|wxScrolledWindowStyle, GetClassInfo()->GetClassName()))
 		{
@@ -686,26 +686,26 @@ namespace KxFramework::UI::DataView
 			}
 		}
 	}
-	void View::HitTest(const wxPoint& point, Node*& item, Column*& column) const
+	void View::HitTest(const Point& point, Node*& item, Column*& column) const
 	{
 		m_ClientArea->HitTest(point, item, column);
 	}
-	wxRect View::GetItemRect(const Node& item, const Column* column) const
+	Rect View::GetItemRect(const Node& item, const Column* column) const
 	{
 		return m_ClientArea->GetItemRect(item, column);
 	}
-	wxRect View::GetAdjustedItemRect(const Node& item, const Column* column) const
+	Rect View::GetAdjustedItemRect(const Node& item, const Column* column) const
 	{
-		wxRect rect = GetItemRect(item, column);
+		Rect rect = GetItemRect(item, column);
 		if (HasHeaderCtrl())
 		{
 			rect.SetTop(rect.GetTop() + GetHeaderCtrl()->GetSize().GetHeight());
 		}
 		return rect;
 	}
-	wxPoint View::GetDropdownMenuPosition(const Node& item, const Column* column) const
+	Point View::GetDropdownMenuPosition(const Node& item, const Column* column) const
 	{
-		return GetAdjustedItemRect(item, column).GetLeftBottom() + FromDIP(wxPoint(0, 1));
+		return GetAdjustedItemRect(item, column).GetLeftBottom() + FromDIP(Point(0, 1));
 	}
 
 	int View::GetUniformRowHeight() const

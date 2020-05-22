@@ -75,25 +75,25 @@ namespace KxFramework::UI
 		AuiDefaultDockArtBase::DrawBorder(dc, window, rect, pane);
 
 		// Top horizontal line
-		wxRect topLine(rect.GetLeftTop(), rect.GetRightTop());
-		topLine.height = 1;
-		topLine.width += 1;
+		Rect topLine(rect.GetLeftTop(), rect.GetRightTop());
+		topLine.Width() += 1;
+		topLine.Height() = 1;
 		UxTheme::DrawParentBackground(*m_Notebook, dc, topLine);
 
 		// Right vertical line
-		wxRect rightLine = wxRect(topLine.GetRightTop(), topLine.GetRightBottom());
-		rightLine.x += 1;
-		rightLine.y -= 2;
-		rightLine.width += 5;
-		rightLine.height += 2;
+		Rect rightLine = wxRect(topLine.GetRightTop(), topLine.GetRightBottom());
+		rightLine.X() += 1;
+		rightLine.Y() -= 2;
+		rightLine.Width() += 5;
+		rightLine.Height() += 2;
 		UxTheme::DrawParentBackground(*m_Notebook, dc, rightLine);
 
 		// Left vertical line
-		wxRect leftLine;
-		leftLine.x = 0;
-		leftLine.y = 0;
-		leftLine.width = m_Notebook->GetTabIndent();
-		leftLine.height = m_Notebook->GetTabCtrlHeight() - 1;
+		Rect leftLine;
+		leftLine.X() = 0;
+		leftLine.Y() = 0;
+		leftLine.Width() = m_Notebook->GetTabIndent();
+		leftLine.Height() = m_Notebook->GetTabCtrlHeight() - 1;
 		UxTheme::DrawParentBackground(*m_Notebook, dc, leftLine);
 	}
 }

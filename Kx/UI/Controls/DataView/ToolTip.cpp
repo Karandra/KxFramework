@@ -28,19 +28,19 @@ namespace KxFramework::UI::DataView
 		return currentColumn;
 	}
 
-	wxPoint ToolTip::GetPopupPosition(const Node& node, const Column& column) const
+	Point ToolTip::GetPopupPosition(const Node& node, const Column& column) const
 	{
-		const wxRect rect = node.GetClientCellRect(&SelectAnchorColumn(column));
-		return rect.GetPosition() + wxPoint(0, rect.GetHeight() + 1);
+		const Rect rect = node.GetClientCellRect(&SelectAnchorColumn(column));
+		return rect.GetPosition() + Point(0, rect.GetHeight() + 1);
 	}
-	wxPoint ToolTip::AdjustPopupPosition(const Node& node, const wxPoint& pos) const
+	Point ToolTip::AdjustPopupPosition(const Node& node, const Point& pos) const
 	{
 		MainWindow* mainWindow = node.GetMainWindow();
-		const wxSize screenSize = {wxSystemSettings::GetMetric(wxSYS_SCREEN_X), wxSystemSettings::GetMetric(wxSYS_SCREEN_Y)};
-		const wxSize smallIcon = {wxSystemSettings::GetMetric(wxSYS_SMALLICON_X), wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y)};
+		const Size screenSize = {wxSystemSettings::GetMetric(wxSYS_SCREEN_X), wxSystemSettings::GetMetric(wxSYS_SCREEN_Y)};
+		const Size smallIcon = {wxSystemSettings::GetMetric(wxSYS_SMALLICON_X), wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y)};
 
-		wxSize textExtent = wxClientDC(mainWindow).GetMultiLineTextExtent(m_Message);
-		wxSize offset;
+		Size textExtent = wxClientDC(mainWindow).GetMultiLineTextExtent(m_Message);
+		Size offset;
 
 		if (auto icon = GetIconBitmap(); icon.IsOk())
 		{
@@ -58,14 +58,14 @@ namespace KxFramework::UI::DataView
 		}
 
 		
-		wxPoint adjustedPos = mainWindow->ClientToScreen(pos);
-		if (int right = adjustedPos.x + textExtent.GetWidth(); right > screenSize.GetWidth())
+		Point adjustedPos = mainWindow->ClientToScreen(pos);
+		if (int right = adjustedPos.GetX() + textExtent.GetWidth(); right > screenSize.GetWidth())
 		{
-			adjustedPos.x -= (right - screenSize.GetWidth()) + offset.GetWidth();
+			adjustedPos.X() -= (right - screenSize.GetWidth()) + offset.GetWidth();
 		}
-		if (int bottom = adjustedPos.y + textExtent.GetHeight(); bottom > screenSize.GetHeight())
+		if (int bottom = adjustedPos.GetY() + textExtent.GetHeight(); bottom > screenSize.GetHeight())
 		{
-			adjustedPos.y -= (bottom - screenSize.GetHeight()) + offset.GetHeight();
+			adjustedPos.Y() -= (bottom - screenSize.GetHeight()) + offset.GetHeight();
 		}
 		return mainWindow->ScreenToClient(adjustedPos);
 	}
@@ -99,7 +99,7 @@ namespace KxFramework::UI::DataView
 					tooltip.SetIcon(GetIconID());
 				}
 
-				const wxPoint pos = AdjustPopupPosition(node, GetPopupPosition(node, column));
+				const Point pos = AdjustPopupPosition(node, GetPopupPosition(node, column));
 				tooltip.Popup(pos);
 				return true;
 			}

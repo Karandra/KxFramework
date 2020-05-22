@@ -6,20 +6,20 @@
 
 namespace KxFramework::UI
 {
-	wxPoint AuiToolBarItem::DoGetDropdownMenuPosition(wxAlignment* alignment, bool leftAlign) const
+	Point AuiToolBarItem::DoGetDropdownMenuPosition(wxAlignment* alignment, bool leftAlign) const
 	{
-		wxRect rect = GetRect();
+		Rect rect = GetRect();
 		if (!rect.IsEmpty())
 		{
 			if (leftAlign)
 			{
 				Utility::SetIfNotNull(alignment, static_cast<wxAlignment>(wxALIGN_LEFT|wxALIGN_TOP));
-				return rect.GetLeftBottom() + wxPoint(0, 2);
+				return rect.GetLeftBottom() + Point(0, 2);
 			}
 			else
 			{
 				Utility::SetIfNotNull(alignment, static_cast<wxAlignment>(wxALIGN_RIGHT|wxALIGN_TOP));
-				return rect.GetRightBottom() + wxPoint(0, 2);
+				return rect.GetRightBottom() + Point(0, 2);
 			}
 		}
 		return wxDefaultPosition;
@@ -27,7 +27,7 @@ namespace KxFramework::UI
 	wxWindowID AuiToolBarItem::DoShowDropdownMenu(bool leftAlign)
 	{
 		wxAlignment alignment = Menu::DefaultAlignment;
-		wxPoint pos = DoGetDropdownMenuPosition(&alignment, leftAlign);
+		Point pos = DoGetDropdownMenuPosition(&alignment, leftAlign);
 		wxWindowID ret = GetDropdownMenu()->Show(m_ToolBar, pos, alignment);
 
 		// To make parent window respond to mouse events without clicking to window manually
@@ -46,7 +46,7 @@ namespace KxFramework::UI
 	{
 		return m_Item->GetId();
 	}
-	wxRect AuiToolBarItem::GetRect() const
+	Rect AuiToolBarItem::GetRect() const
 	{
 		return m_ToolBar->wxAuiToolBar::GetToolRect(GetID());
 	}

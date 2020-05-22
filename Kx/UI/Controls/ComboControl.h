@@ -30,10 +30,10 @@ namespace KxFramework::UI
 		public:
 			ComboControl() = default;
 			ComboControl(wxWindow* window,
-						   wxWindowID id,
-						   const String& value = {},
-						   long style = DefaultStyle,
-						   const wxValidator& validator = wxDefaultValidator
+						 wxWindowID id,
+						 const String& value = {},
+						 long style = DefaultStyle,
+						 const wxValidator& validator = wxDefaultValidator
 			)
 			{
 				Create(window, id, value, style, validator);

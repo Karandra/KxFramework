@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "Geometry.h"
 #include <wx/dc.h>
 #include <wx/dcclient.h>
 #include <wx/dcmemory.h>
@@ -78,13 +79,13 @@ namespace KxFramework
 				Flush();
 				return m_GDC.GetAsBitmap();
 			}
-			virtual wxSize GetSize() const
+			virtual Size GetSize() const
 			{
 				return m_GDC.GetSize();
 			}
-			wxRect GetRect() const
+			Rect GetRect() const
 			{
-				return wxRect({0, 0}, GetSize());
+				return Rect({0, 0}, GetSize());
 			}
 
 			GraphicsRendererType GetRendererType() const
@@ -120,7 +121,7 @@ namespace KxFramework
 			}
 
 			template<class TFunc>
-			void DrawIndirect(const wxRect& rect, TFunc&& func)
+			void DrawIndirect(const Rect& rect, TFunc&& func)
 			{
 				wxBitmap bitmap(rect.GetSize(), 32);
 				bitmap.UseAlpha(true);
@@ -128,7 +129,7 @@ namespace KxFramework
 					wxMemoryDC memoryDC(bitmap);
 					memoryDC.CopyAttributes(m_DC);
 
-					wxRect rect2 = rect;
+					Rect rect2 = rect;
 					rect2.SetPosition({0, 0});
 					std::invoke(func, memoryDC, std::move(rect2));
 				}
@@ -154,7 +155,7 @@ namespace KxFramework
 			}
 
 		public:
-			wxSize GetSize() const override
+			Size GetSize() const override
 			{
 				return GetWindow()->GetClientSize();
 			}
@@ -166,7 +167,7 @@ namespace KxFramework
 			{
 				return GetWindow()->GetUpdateRegion();
 			}
-			wxRect GetUpdateClientRect() const
+			Rect GetUpdateClientRect() const
 			{
 				return GetWindow()->GetUpdateClientRect();
 			}

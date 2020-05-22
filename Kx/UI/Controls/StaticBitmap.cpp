@@ -11,7 +11,7 @@ namespace KxFramework::UI
 		using namespace KxFramework;
 
 		wxBufferedPaintDC dc(this);
-		UxTheme::DrawParentBackground(*this, dc, wxRect(wxPoint(0, 0), GetSize()));
+		UxTheme::DrawParentBackground(*this, dc, Rect(Point(0, 0), GetSize()));
 		event.Skip();
 	}
 

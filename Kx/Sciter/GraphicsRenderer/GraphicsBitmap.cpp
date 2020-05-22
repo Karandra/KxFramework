@@ -30,7 +30,7 @@ namespace KxFramework::Sciter
 		};
 		return std::nullopt;
 	}
-	bool DoGetImageInfo(HIMG image, wxSize& size, bool& usesAlpha)
+	bool DoGetImageInfo(HIMG image, Size& size, bool& usesAlpha)
 	{
 		UINT width = 0;
 		UINT height = 0;
@@ -57,7 +57,7 @@ namespace KxFramework::Sciter
 		GetGrapchicsAPI()->imageRelease(ToSciterImage(m_Handle));
 	}
 
-	GraphicsBitmap::GraphicsBitmap(const wxSize& size, bool withAlpha)
+	GraphicsBitmap::GraphicsBitmap(const Size& size, bool withAlpha)
 	{
 		HIMG image = nullptr;
 		if (GetGrapchicsAPI()->imageCreate(&image, size.GetWidth(), size.GetHeight(), withAlpha) == GRAPHIN_OK)
@@ -87,7 +87,7 @@ namespace KxFramework::Sciter
 		}
 	}
 
-	bool GraphicsBitmap::CreateFromPixmap(const wxSize& size, const char* pixmapData, bool withAlpha)
+	bool GraphicsBitmap::CreateFromPixmap(const Size& size, const char* pixmapData, bool withAlpha)
 	{
 		HIMG image = nullptr;
 		if (GetGrapchicsAPI()->imageCreateFromPixmap(&image, size.GetWidth(), size.GetHeight(), withAlpha, reinterpret_cast<const BYTE*>(pixmapData)) == GRAPHIN_OK)
@@ -130,9 +130,9 @@ namespace KxFramework::Sciter
 	{
 		return GetGrapchicsAPI()->imageClear(ToSciterImage(m_Handle), CreateSciterColor(color)) == GRAPHIN_OK;
 	}
-	wxSize GraphicsBitmap::GetSize() const
+	Size GraphicsBitmap::GetSize() const
 	{
-		wxSize size = wxDefaultSize;
+		Size size = wxDefaultSize;
 		bool usesAlpha = false;
 		DoGetImageInfo(ToSciterImage(m_Handle), size, usesAlpha);
 
@@ -140,7 +140,7 @@ namespace KxFramework::Sciter
 	}
 	bool GraphicsBitmap::UsesAlpha() const
 	{
-		wxSize size = wxDefaultSize;
+		Size size = wxDefaultSize;
 		bool usesAlpha = false;
 		DoGetImageInfo(ToSciterImage(m_Handle), size, usesAlpha);
 
@@ -187,7 +187,7 @@ namespace KxFramework::Sciter
 				}
 
 			public:
-				void Execute(GraphicsContextHandle* handle, const wxSize& size)
+				void Execute(GraphicsContextHandle* handle, const Size& size)
 				{
 					GraphicsContext graphicsContext(handle);
 					std::invoke(m_Func, graphicsContext, size);
@@ -197,7 +197,7 @@ namespace KxFramework::Sciter
 		CallContext context(func);
 		GetGrapchicsAPI()->imagePaint(ToSciterImage(m_Handle), [](void* context, HGFX handle, UINT width, UINT height)
 		{
-			reinterpret_cast<CallContext*>(context)->Execute(FromSciterGraphicsContext(handle), wxSize(width, height));
+			reinterpret_cast<CallContext*>(context)->Execute(FromSciterGraphicsContext(handle), Size(width, height));
 		}, &context);
 	}
 }

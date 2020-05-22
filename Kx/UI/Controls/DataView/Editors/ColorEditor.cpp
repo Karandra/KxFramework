@@ -63,7 +63,7 @@ namespace KxFramework::UI::DataView
 
 namespace KxFramework::UI::DataView
 {
-	wxWindow* ColorEditor::CreateControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value)
+	wxWindow* ColorEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value)
 	{
 		m_Value = FromAnyUsing<ColorValue>(value);
 		wxColourData colorData = m_Value.ToColorData();

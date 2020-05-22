@@ -12,9 +12,9 @@ namespace KxFramework::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(DrawablePanel, Panel);
 
-	wxSize DrawablePanel::DrawScaledBitmap(wxGraphicsContext* gc, const wxGraphicsBitmap& bitmap, const wxSize& bitmapSize, const wxRect& rect, BitmapScaleMode scaleMode, double globalScale)
+	Size DrawablePanel::DrawScaledBitmap(wxGraphicsContext* gc, const wxGraphicsBitmap& bitmap, const Size& bitmapSize, const Rect& rect, BitmapScaleMode scaleMode, double globalScale)
 	{
-		wxSize scaledImageSize;
+		Size scaledImageSize;
 		double x = 0;
 		double y = 0;
 		double width = 0;
@@ -59,21 +59,21 @@ namespace KxFramework::UI
 		x = (rect.GetWidth() - width) / 2;
 		y = (rect.GetHeight() - height) / 2;
 
-		scaledImageSize.x = width;
-		scaledImageSize.y = height;
+		scaledImageSize.X() = width;
+		scaledImageSize.Y() = height;
 		gc->DrawBitmap(!bitmap.IsNull() ? bitmap : gc->CreateBitmap(g_EmptyBitmap), rect.GetX() + x, rect.GetY() + y, width, height);
 		return scaledImageSize;
 	}
-	wxSize DrawablePanel::DrawScaledBitmap(wxGraphicsContext* gc, const wxBitmap& bitmap, const wxRect& rect, BitmapScaleMode scaleMode, double globalScale)
+	Size DrawablePanel::DrawScaledBitmap(wxGraphicsContext* gc, const wxBitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale)
 	{
 		return DrawScaledBitmap(gc, gc->CreateBitmap(bitmap), bitmap.GetSize(), rect, scaleMode, globalScale);
 	}
-	wxSize DrawablePanel::DrawScaledBitmap(wxWindowDC& dc, const wxBitmap& bitmap, const wxRect& rect, BitmapScaleMode scaleMode, double globalScale)
+	Size DrawablePanel::DrawScaledBitmap(wxWindowDC& dc, const wxBitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale)
 	{
 		wxGCDC gcdc(dc);
 		return DrawScaledBitmap(gcdc.GetGraphicsContext(), bitmap, rect, scaleMode, globalScale);
 	}
-	wxSize DrawablePanel::DrawScaledBitmap(wxMemoryDC& dc, const wxBitmap& bitmap, const wxRect& rect, BitmapScaleMode scaleMode, double globalScale)
+	Size DrawablePanel::DrawScaledBitmap(wxMemoryDC& dc, const wxBitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale)
 	{
 		wxGCDC gcdc(dc);
 		return DrawScaledBitmap(gcdc.GetGraphicsContext(), bitmap, rect, scaleMode, globalScale);
@@ -126,13 +126,13 @@ namespace KxFramework::UI
 			{
 				window = GetParent();
 			}
-			UxTheme::DrawParentBackground(*window, *dc, wxRect(wxPoint(0, 0), GetSize()));
+			UxTheme::DrawParentBackground(*window, *dc, Rect(Point(0, 0), GetSize()));
 		}
 
 		if (mode & DrawablePanelMode::BGImage)
 		{
 			m_ScaledImageSize = m_Bitmap.GetSize();
-			dc->DrawBitmap(m_Bitmap, wxPoint(0, 0), false);
+			dc->DrawBitmap(m_Bitmap, Point(0, 0), false);
 		}
 	}
 	void DrawablePanel::OnDrawForeground(wxPaintEvent& event)
@@ -140,7 +140,7 @@ namespace KxFramework::UI
 		wxPaintDC dc(this);
 		if (m_BackgroundMode & DrawablePanelMode::FGImage)
 		{
-			m_ScaledImageSize = DrawScaledBitmap(dc, m_Bitmap, wxRect(wxPoint(0, 0), GetClientSize()), m_ImageScaleMode, m_ScaleFactor);
+			m_ScaledImageSize = DrawScaledBitmap(dc, m_Bitmap, Rect(Point(0, 0), GetClientSize()), m_ImageScaleMode, m_ScaleFactor);
 		}
 		else
 		{

@@ -36,7 +36,7 @@ namespace KxFramework::UI
 	{
 		public:
 			static constexpr WindowStyle DefaultStyle = WindowStyle::None;
-			static inline const wxSize DefaultThumbSize = wxSize(256, 144);
+			static inline const Size DefaultThumbSize = Size(256, 144);
 			static constexpr double ThumbPaddingScale = 0.9;
 
 			KxEVENT_MEMBER(wxCommandEvent, Selected);
@@ -47,8 +47,8 @@ namespace KxFramework::UI
 			static constexpr size_t InvalidItemIndex = std::numeric_limits<size_t>::max();
 
 		private:
-			wxSize m_ThumbSize = wxDefaultSize;
-			wxSize m_Spacing = wxSize(1, 1);
+			Size m_ThumbSize = wxDefaultSize;
+			Size m_Spacing = Size(1, 1);
 			size_t m_Focused = InvalidItemIndex;
 			size_t m_Selected = InvalidItemIndex;
 			std::vector<ThumbViewItem> m_Items;
@@ -60,9 +60,9 @@ namespace KxFramework::UI
 			void OnKillFocus(wxFocusEvent& event);
 
 			size_t GetIndexByRowColumn(size_t row, size_t columnIndex, size_t itemsInRow) const;
-			wxRect GetThumbRect(size_t row, size_t columnIndex, size_t beginRow);
-			wxRect GetFullThumbRect(size_t row, size_t columnIndex, size_t beginRow);
-			wxSize GetFinalThumbSize() const;
+			Rect GetThumbRect(size_t row, size_t columnIndex, size_t beginRow);
+			Rect GetFullThumbRect(size_t row, size_t columnIndex, size_t beginRow);
+			Size GetFinalThumbSize() const;
 			size_t CalcItemsPerRow() const;
 
 			int OnGetRowHeight(size_t i) const override
@@ -72,7 +72,7 @@ namespace KxFramework::UI
 			size_t CalcRowCount() const;
 			void UpdateRowCount();
 			ThumbViewItem& GetThumb(size_t i);
-			wxBitmap CreateThumb(const wxBitmap& bitmap, const wxSize& size) const;
+			wxBitmap CreateThumb(const wxBitmap& bitmap, const Size& size) const;
 
 			void OnInternalIdle() override;
 
@@ -100,10 +100,10 @@ namespace KxFramework::UI
 				return true;
 			}
 
-			wxSize GetThumbSize() const;
-			void SetThumbSize(const wxSize& size);
-			wxSize GetSpacing() const;
-			void SetSpacing(const wxSize& spacing);
+			Size GetThumbSize() const;
+			void SetThumbSize(const Size& size);
+			Size GetSpacing() const;
+			void SetSpacing(const Size& spacing);
 
 			int GetSelectedThumb() const;
 			void SetSelectedThumb(int index);

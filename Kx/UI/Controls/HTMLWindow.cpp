@@ -214,11 +214,11 @@ namespace KxFramework::UI
 		if (m_BackgroundBitmap.IsOk())
 		{
 			// Draw the background bitmap tiling it over the entire window area.
-			const wxSize virtualSize = GetVirtualSize();
-			const wxSize bitmapSize = m_BackgroundBitmap.GetSize();
-			for (wxCoord x = 0; x < virtualSize.x; x += bitmapSize.x)
+			const Size virtualSize = GetVirtualSize();
+			const Size bitmapSize = m_BackgroundBitmap.GetSize();
+			for (wxCoord x = 0; x < virtualSize.GetWidth(); x += bitmapSize.GetWidth())
 			{
-				for (wxCoord y = 0; y < virtualSize.y; y += bitmapSize.y)
+				for (wxCoord y = 0; y < virtualSize.GetWidth(); y += bitmapSize.GetWidth())
 				{
 					dc.DrawBitmap(m_BackgroundBitmap, x, y);
 				}
@@ -236,11 +236,11 @@ namespace KxFramework::UI
 
 		int x, y;
 		GetViewStart(&x, &y);
-		const wxRect rect = GetUpdateRegion().GetBox();
+		const Rect rect = GetUpdateRegion().GetBox();
 
 		// Don't bother drawing the empty window.
-		const wxSize clientSize = GetClientSize();
-		if (clientSize.x == 0 || clientSize.y == 0)
+		const Size clientSize = GetClientSize();
+		if (clientSize.GetWidth() == 0 || clientSize.GetHeight() == 0)
 		{
 			return;
 		}

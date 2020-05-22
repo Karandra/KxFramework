@@ -37,7 +37,7 @@ namespace KxFramework::UI
 			void OnSize(wxSizeEvent& event);
 
 		protected:
-			virtual void DoSetSplash(const wxBitmap& bitmap, const wxSize& size);
+			virtual void DoSetSplash(const wxBitmap& bitmap, const Size& size);
 			virtual bool DoUpdateSplash();
 			virtual void DoCenterWindow();
 
@@ -53,7 +53,7 @@ namespace KxFramework::UI
 			}
 			SplashWindow(wxWindow* parent,
 						 const wxBitmap& bitmap,
-						 const wxSize& size,
+						 const Size& size,
 						 TimeSpan timeout = {},
 						 SplashWindowStyle style = DefaultStyle
 			)
@@ -70,7 +70,7 @@ namespace KxFramework::UI
 			}
 			bool Create(wxWindow* parent,
 						const wxBitmap& bitmap,
-						const wxSize& size,
+						const Size& size,
 						TimeSpan timeout = {},
 						SplashWindowStyle style = DefaultStyle
 			);
@@ -101,7 +101,7 @@ namespace KxFramework::UI
 			{
 				return m_Bitmap;
 			}
-			void SetSplashBitmap(const wxBitmap& bitmap, const wxSize& size = wxDefaultSize);
+			void SetSplashBitmap(const wxBitmap& bitmap, const Size& size = wxDefaultSize);
 		
 			uint8_t GetSplashAlpha() const
 			{

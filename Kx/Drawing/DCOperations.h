@@ -7,7 +7,7 @@
 
 namespace KxFramework::Drawing
 {
-	Color GetAreaAverageColor(const wxDC& dc, const wxRect& rect);
+	Color GetAreaAverageColor(const wxDC& dc, const Rect& rect);
 }
 
 namespace KxFramework
@@ -19,7 +19,7 @@ namespace KxFramework
 			wxRegion m_Region;
 
 		public:
-			DCClip(wxDC& dc, const wxRect& rect)
+			DCClip(wxDC& dc, const Rect& rect)
 				:m_DC(dc), m_Region(rect)
 			{
 			}
@@ -40,7 +40,7 @@ namespace KxFramework
 			{
 				return m_Region.Union(region);
 			}
-			bool Add(const wxRect& rect)
+			bool Add(const Rect& rect)
 			{
 				return m_Region.Union(rect);
 			}
@@ -49,7 +49,7 @@ namespace KxFramework
 			{
 				return m_Region.Subtract(region);
 			}
-			bool Remove(const wxRect& rect)
+			bool Remove(const Rect& rect)
 			{
 				return m_Region.Subtract(rect);
 			}

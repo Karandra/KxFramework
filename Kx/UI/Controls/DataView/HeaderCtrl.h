@@ -42,8 +42,8 @@ namespace KxFramework::UI::DataView
 			HWND GetHeaderCtrlHandle() const;
 
 			void FinishEditing();
-			EventResult SendCtrlEvent(ItemEvent& event, wxEventType type, Column* column = nullptr, std::optional<wxRect> rect = {});
-			EventResult SendCtrlEvent(wxEventType type, Column* column = nullptr, std::optional<wxRect> rect = {})
+			EventResult SendCtrlEvent(ItemEvent& event, wxEventType type, Column* column = nullptr, std::optional<Rect> rect = {});
+			EventResult SendCtrlEvent(wxEventType type, Column* column = nullptr, std::optional<Rect> rect = {})
 			{
 				ItemEvent event;
 				return SendCtrlEvent(event, type, column, std::move(rect));
@@ -75,8 +75,8 @@ namespace KxFramework::UI::DataView
 			void UpdateColumn(const Column& column);
 			void UpdateColumnCount();
 
-			wxRect GetDropdownRect(const Column& column) const;
-			wxRect GetDropdownRect(size_t index) const;
+			Rect GetDropdownRect(const Column& column) const;
+			Rect GetDropdownRect(size_t index) const;
 
 		public:
 			HeaderCtrl(View* parent);

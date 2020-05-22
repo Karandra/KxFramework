@@ -79,7 +79,7 @@ namespace KxFramework::UI
 		return GetString(menuWinID, GCS_HELPTEXTW);
 	}
 
-	uint16_t ShellMenu::DoShowMenu(wxWindow* window, const wxPoint& pos, wxAlignment alignment, bool async)
+	uint16_t ShellMenu::DoShowMenu(wxWindow* window, const Point& pos, wxAlignment alignment, bool async)
 	{
 		// Async is not supported here
 		uint16_t winID = Menu::DoShowMenu(window, pos, alignment, false);

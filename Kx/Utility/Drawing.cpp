@@ -5,28 +5,28 @@
 
 namespace KxFramework::Utility
 {
-	void FromWindowsRect(const tagRECT& winRect, wxRect& rect) noexcept
+	void FromWindowsRect(const tagRECT& winRect, Rect& rect) noexcept
 	{
-		rect.y = winRect.top;
-		rect.x = winRect.left;
-		rect.width = winRect.right - winRect.left;
-		rect.height = winRect.bottom - winRect.top;
+		rect.X() = winRect.left;
+		rect.Y() = winRect.top;
+		rect.Width() = winRect.right - winRect.left;
+		rect.Height() = winRect.bottom - winRect.top;
 	}
-	wxRect FromWindowsRect(const tagRECT& winRect) noexcept
+	Rect FromWindowsRect(const tagRECT& winRect) noexcept
 	{
-		wxRect rect;
+		Rect rect;
 		FromWindowsRect(winRect, rect);
 		return rect;
 	}
 
-	void ToWindowsRect(const wxRect& rect, tagRECT& winRect) noexcept
+	void ToWindowsRect(const Rect& rect, tagRECT& winRect) noexcept
 	{
-		winRect.top = rect.y;
-		winRect.left = rect.x;
-		winRect.right = rect.x + rect.width;
-		winRect.bottom = rect.y + rect.height;
+		winRect.left = rect.GetX();
+		winRect.top = rect.GetY();
+		winRect.right = rect.GetX() + rect.GetWidth();
+		winRect.bottom = rect.GetY() + rect.GetHeight();
 	}
-	tagRECT ToWindowsRect(const wxRect& rect) noexcept
+	tagRECT ToWindowsRect(const Rect& rect) noexcept
 	{
 		tagRECT winRect;
 		ToWindowsRect(rect, winRect);

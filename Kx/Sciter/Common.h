@@ -2,6 +2,7 @@
 #include "Kx/Common.hpp"
 #include "Kx/General/String.h"
 #include "Kx/General/Version.h"
+#include "Kx/Drawing/Geometry.h"
 #include "CommonDefs.h"
 
 namespace KxFramework::Sciter

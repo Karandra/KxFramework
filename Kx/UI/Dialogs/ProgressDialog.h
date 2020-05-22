@@ -23,8 +23,8 @@ namespace KxFramework::UI
 			ProgressDialog(wxWindow* parent,
 						   wxWindowID id,
 						   const String& caption,
-						   const wxPoint& pos = wxDefaultPosition,
-						   const wxSize& size = wxDefaultSize,
+						   const Point& pos = wxDefaultPosition,
+						   const Size& size = wxDefaultSize,
 						   StdButton buttons = DefaultButtons,
 						   DialogStyle style = DefaultStyle
 			)
@@ -34,8 +34,8 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const String& caption,
-						const wxPoint& pos = wxDefaultPosition,
-						const wxSize& size = wxDefaultSize,
+						const Point& pos = wxDefaultPosition,
+						const Size& size = wxDefaultSize,
 						StdButton buttons = DefaultButtons,
 						DialogStyle style = DefaultStyle
 			);

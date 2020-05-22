@@ -12,7 +12,7 @@ namespace KxFramework::UI
 		{
 			wxPaintDC dc(this);
 			wxGauge::OnPaint(event);
-			wxRect rect(wxPoint(0, 0), GetSize());
+			Rect rect(Point(0, 0), GetSize());
 
 			// Draw label
 			const String label = GetLabel();

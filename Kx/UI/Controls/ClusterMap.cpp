@@ -13,7 +13,7 @@ namespace KxFramework::UI
 		wxPaintDC dc(this);
 
 		const DrawInfo drawInfo = GetDrawInfo();
-		UxTheme::DrawParentBackground(*this, dc, wxRect({0, 0}, drawInfo.ClientSize));
+		UxTheme::DrawParentBackground(*this, dc, Rect({0, 0}, (wxSize)drawInfo.ClientSize));
 
 		if (m_ItemCount != 0 && m_ItemSize > 0)
 		{
@@ -22,12 +22,12 @@ namespace KxFramework::UI
 			dc.SetBrush(color);
 			dc.SetPen(color.GetContrastColor(color.ChangeLightness(Angle::FromNormalized(contrast)), color.ChangeLightness(Angle::FromNormalized(-contrast))));
 
-			wxPoint pos;
+			Point pos;
 			int blocksDrawn = 0;
 			for (size_t i = 0; i < m_ItemCount; i++)
 			{
 				// Draw the block
-				wxRect blockRect(pos.x, pos.y, m_ItemSize, m_ItemSize);
+				Rect blockRect(pos.GetX(), pos.GetY(), m_ItemSize, m_ItemSize);
 				if (m_UnderMouseIndex != -1 && i == m_UnderMouseIndex)
 				{
 					blockRect.Deflate(FromDIP(wxSize(1, 1)));
@@ -36,15 +36,15 @@ namespace KxFramework::UI
 				blocksDrawn++;
 
 				// Move right
-				pos.x += drawInfo.Increment;
+				pos.X() += drawInfo.Increment;
 
 				// See if we need to move one row down
 
 				if (blocksDrawn == drawInfo.ItemsY)
 				{
 					// Rewind to left side and move down 
-					pos.x = 0;
-					pos.y += drawInfo.Increment;
+					pos.X() = 0;
+					pos.X() += drawInfo.Increment;
 
 					// Reset counter
 					blocksDrawn = 0;
@@ -98,19 +98,19 @@ namespace KxFramework::UI
 		return info;
 	}
 
-	wxPoint ClusterMap::CoordToXY(const DrawInfo& drawInfo, const wxPoint& pos) const
+	Point ClusterMap::CoordToXY(const DrawInfo& drawInfo, const Point& pos) const
 	{
 		// See if we are inside actual space used by blocks
-		const wxRect effectiveRect(0, 0, drawInfo.ItemsY * drawInfo.Increment, drawInfo.ItemsX * drawInfo.Increment);
+		const Rect effectiveRect(0, 0, drawInfo.ItemsY * drawInfo.Increment, drawInfo.ItemsX * drawInfo.Increment);
 		if (effectiveRect.Contains(pos))
 		{
-			return {pos.x / drawInfo.Increment, pos.y / drawInfo.Increment};
+			return {pos.GetX() / drawInfo.Increment, pos.GetY() / drawInfo.Increment};
 		}
 		return wxDefaultPosition;
 	}
-	int ClusterMap::CoordToIndex(const DrawInfo& drawInfo, const wxPoint& pos) const
+	int ClusterMap::CoordToIndex(const DrawInfo& drawInfo, const Point& pos) const
 	{
-		wxPoint xy = CoordToXY(drawInfo, pos);
+		Point xy = CoordToXY(drawInfo, pos);
 		if (xy.IsFullySpecified())
 		{
 			int index = XYToIndex(drawInfo, xy);
@@ -122,7 +122,7 @@ namespace KxFramework::UI
 		return -1;
 	}
 
-	wxPoint ClusterMap::IndexToXY(const DrawInfo& drawInfo, int index) const
+	Point ClusterMap::IndexToXY(const DrawInfo& drawInfo, int index) const
 	{
 		if (index >= 0 && (size_t)index < m_ItemCount)
 		{
@@ -133,21 +133,21 @@ namespace KxFramework::UI
 		}
 		return wxDefaultPosition;
 	}
-	int ClusterMap::XYToIndex(const DrawInfo& drawInfo, const wxPoint& xy) const
+	int ClusterMap::XYToIndex(const DrawInfo& drawInfo, const Point& xy) const
 	{
 		if (xy.IsFullySpecified())
 		{
 			int index = -1;
-			if (xy.y == 0)
+			if (xy.GetY() == 0)
 			{
-				index = xy.x;
+				index = xy.GetX();
 			}
 			else
 			{
-				index = (xy.y * drawInfo.ItemsY) + xy.x;
+				index = (xy.GetY() * drawInfo.ItemsY) + xy.GetX();
 			}
 
-			if (index >= 0 && (size_t)index < m_ItemCount)
+			if (index >= 0 && static_cast<size_t>(index) < m_ItemCount)
 			{
 				return index;
 			}
@@ -155,24 +155,24 @@ namespace KxFramework::UI
 		return -1;
 	}
 
-	wxRect ClusterMap::XYToCoordRect(const DrawInfo& drawInfo, const wxPoint& xy) const
+	Rect ClusterMap::XYToCoordRect(const DrawInfo& drawInfo, const Point& xy) const
 	{
-		return {xy.x * drawInfo.Increment, xy.y * drawInfo.Increment, m_ItemSize, m_ItemSize};
+		return {xy.GetX() * drawInfo.Increment, xy.GetY() * drawInfo.Increment, m_ItemSize, m_ItemSize};
 	}
-	wxRect ClusterMap::IndexToCoordRect(const DrawInfo& drawInfo, int index) const
+	Rect ClusterMap::IndexToCoordRect(const DrawInfo& drawInfo, int index) const
 	{
-		wxPoint xy = IndexToXY(drawInfo, index);
+		Point xy = IndexToXY(drawInfo, index);
 		if (xy.IsFullySpecified())
 		{
-			return wxRect(xy.x * drawInfo.Increment, xy.y * drawInfo.Increment, m_ItemSize, m_ItemSize);
+			return Rect(xy.GetX() * drawInfo.Increment, xy.GetY() * drawInfo.Increment, m_ItemSize, m_ItemSize);
 		}
 		return {};
 	}
 
 	bool ClusterMap::Create(wxWindow* parent,
 							wxWindowID id,
-							const wxPoint& pos,
-							const wxSize& size,
+							const Point& pos,
+							const Size& size,
 							long style
 	)
 	{

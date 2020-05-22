@@ -28,7 +28,7 @@ namespace KxFramework::UI
 		private:
 			int GetSpacing(wxAnyButton* button)
 			{
-				return button->ConvertDialogToPixels(wxSize(2, 0)).GetX();
+				return button->ConvertDialogToPixels(Size(2, 0)).GetX();
 			}
 			void ConfigureButton(wxAnyButton* button);
 

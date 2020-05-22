@@ -10,8 +10,8 @@ namespace KxFramework::UI
 	bool Dialog::Create(wxWindow* parent,
 						wxWindowID id,
 						const String& title,
-						const wxPoint& pos,
-						const wxSize& size,
+						const Point& pos,
+						const Size& size,
 						DialogStyle style
 	)
 	{
@@ -86,14 +86,14 @@ namespace KxFramework::UI
 			{
 				window->SetLabel(Localization::GetStandardLocalizedString(window->GetId()));
 
-				wxSize size = window->GetSize();
+				Size size = window->GetSize();
 				size.Scale(0.85f, 1.0f);
 				size.SetHeight(23);
 				window->SetMaxSize(size);
 			}
 		}
 	}
-	void Dialog::CenterIfNoPosition(const wxPoint& pos)
+	void Dialog::CenterIfNoPosition(const Point& pos)
 	{
 		if (!pos.IsFullySpecified())
 		{

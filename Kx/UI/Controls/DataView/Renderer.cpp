@@ -29,13 +29,13 @@ namespace KxFramework::UI::DataView
 		SetValue(m_Node->GetValue(*m_Column));
 	}
 
-	void Renderer::CallDrawCellBackground(const wxRect& cellRect, CellState cellState, bool noUserBackground)
+	void Renderer::CallDrawCellBackground(const Rect& cellRect, CellState cellState, bool noUserBackground)
 	{
 		wxDC& dc = GetGraphicsDC();
 		const auto& cellOptions = m_Attributes.Options();
 		const auto& cellBGOptions = m_Attributes.BGOptions();
 		
-		auto ClipRectIfNeeded = [this, &cellState](const wxRect& rect)
+		auto ClipRectIfNeeded = [this, &cellState](const Rect& rect)
 		{
 			if (GetView()->IsStyleEnabled(CtrlStyle::VerticalRules))
 			{
@@ -43,7 +43,7 @@ namespace KxFramework::UI::DataView
 				{
 					return rect;
 				}
-				return wxRect(rect.GetX(), rect.GetY(), rect.GetWidth() - 1, rect.GetHeight());
+				return Rect(rect.GetX(), rect.GetY(), rect.GetWidth() - 1, rect.GetHeight());
 			}
 			return rect;
 		};
@@ -51,29 +51,29 @@ namespace KxFramework::UI::DataView
 		// Special backgrounds
 		if (cellBGOptions.IsEnabled(CellBGOption::Header))
 		{
-			wxSize offsetSize = GetView()->FromDIP(wxSize(0, 1));
+			Size offsetSize = GetView()->FromDIP(wxSize(0, 1));
 
-			wxRect buttonRect = cellRect;
-			buttonRect.width += offsetSize.x;
-			buttonRect.height += offsetSize.y;
+			Rect buttonRect = cellRect;
+			buttonRect.Width() += offsetSize.GetX();
+			buttonRect.Height() += offsetSize.GetY();
 
 			wxBitmap canvas(cellRect.GetSize(), 32);
 			wxMemoryDC memDC(canvas);
-			wxRendererNative::Get().DrawHeaderButton(GetView(), memDC, wxRect(-1, 0, buttonRect.GetWidth() + 1, buttonRect.GetHeight()), GetRenderEngine().GetControlFlags(cellState), wxHDR_SORT_ICON_NONE);
+			wxRendererNative::Get().DrawHeaderButton(GetView(), memDC, Rect(-1, 0, buttonRect.GetWidth() + 1, buttonRect.GetHeight()), GetRenderEngine().GetControlFlags(cellState), wxHDR_SORT_ICON_NONE);
 			if (!cellState.IsSelected())
 			{
 				Color lineColor = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
 				lineColor.SetAlpha8(48);
 
 				memDC.SetPen(lineColor);
-				memDC.DrawLine(wxPoint(0, 0), wxPoint(buttonRect.GetWidth() + 1, 0));
+				memDC.DrawLine(Point(0, 0), Point(buttonRect.GetWidth() + 1, 0));
 			}
 
 			dc.DrawBitmap(canvas, cellRect.GetPosition());
 		}
 		else if (cellBGOptions.IsEnabled(CellBGOption::Button))
 		{
-			wxRect buttonRect = cellRect.Inflate(1, 1);
+			Rect buttonRect = cellRect.Clone().Inflate(1, 1);
 			wxRendererNative::Get().DrawPushButton(GetView(), dc, buttonRect, GetRenderEngine().GetControlFlags(cellState));
 		}
 		else if (cellBGOptions.IsEnabled(CellBGOption::ComboBox))
@@ -103,7 +103,7 @@ namespace KxFramework::UI::DataView
 			DrawCellBackground(cellRect, cellState);
 		}
 	}
-	void Renderer::CallDrawCellContent(const wxRect& cellRect, CellState cellState, bool alwaysUseGC)
+	void Renderer::CallDrawCellContent(const Rect& cellRect, CellState cellState, bool alwaysUseGC)
 	{
 		m_PaintRect = cellRect;
 		m_AlwaysUseGC = alwaysUseGC;
@@ -135,8 +135,8 @@ namespace KxFramework::UI::DataView
 		}
 
 		// Adjust the rectangle ourselves to account for the alignment
-		const wxSize cellSize = GetCellSize();
-		wxRect adjustedCellRect(cellRect);
+		const Size cellSize = GetCellSize();
+		Rect adjustedCellRect(cellRect);
 
 		// Restrict height to row height.
 		if (GetView()->IsStyleEnabled(CtrlStyle::VariableRowHeight))
@@ -151,11 +151,11 @@ namespace KxFramework::UI::DataView
 		{
 			if (alignment & wxALIGN_CENTER_HORIZONTAL)
 			{
-				adjustedCellRect.x += renderEngine.CalcCenter(cellRect.GetWidth(), cellSize.GetWidth());
+				adjustedCellRect.X() += renderEngine.CalcCenter(cellRect.GetWidth(), cellSize.GetWidth());
 			}
 			else if (alignment & wxALIGN_RIGHT)
 			{
-				adjustedCellRect.x += cellRect.GetWidth() - cellSize.GetWidth();
+				adjustedCellRect.X() += cellRect.GetWidth() - cellSize.GetWidth();
 			}
 			adjustedCellRect.SetWidth(cellSize.GetWidth());
 		}
@@ -163,13 +163,13 @@ namespace KxFramework::UI::DataView
 		{
 			if (alignment & wxALIGN_CENTER_VERTICAL)
 			{
-				adjustedCellRect.y += renderEngine.CalcCenter(cellRect.GetHeight(), cellSize.GetHeight());
+				adjustedCellRect.Y() += renderEngine.CalcCenter(cellRect.GetHeight(), cellSize.GetHeight());
 			}
 			else if (alignment & wxALIGN_BOTTOM)
 			{
-				adjustedCellRect.y += cellRect.GetHeight() - cellSize.GetHeight();
+				adjustedCellRect.Y() += cellRect.GetHeight() - cellSize.GetHeight();
 			}
-			adjustedCellRect.SetHeight(cellSize.y);
+			adjustedCellRect.SetHeight(cellSize.GetY());
 		}
 
 		// Draw highlighting selection
@@ -177,7 +177,7 @@ namespace KxFramework::UI::DataView
 		{
 			MainWindow* mainWindow = GetMainWindow();
 
-			wxRect highlightRect = wxRect(adjustedCellRect).Inflate(2);
+			Rect highlightRect = Rect(adjustedCellRect).Inflate(2);
 			RenderEngine::DrawSelectionRect(mainWindow, dc, highlightRect, cellState.ToItemState(mainWindow));
 		}
 
@@ -185,7 +185,7 @@ namespace KxFramework::UI::DataView
 		DrawCellContent(adjustedCellRect, cellState);
 		m_PaintRect = {};
 	}
-	void Renderer::CallOnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent)
+	void Renderer::CallOnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent)
 	{
 		wxAny value = OnActivateCell(node, cellRect, mouseEvent);
 		if (!value.IsNull() && node.SetValue(*m_Column, value))
@@ -202,9 +202,9 @@ namespace KxFramework::UI::DataView
 	{
 		return !m_Attributes.BGOptions().IsDefault();
 	}
-	wxSize Renderer::GetCellSize() const
+	Size Renderer::GetCellSize() const
 	{
-		return wxSize(0, 0);
+		return Size(0, 0);
 	}
 
 	MainWindow* Renderer::GetMainWindow() const

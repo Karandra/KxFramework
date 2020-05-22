@@ -30,19 +30,19 @@ namespace KxFramework::UI::DataView
 		m_Value.Clear();
 		return m_Value.FromAny(value);
 	}
-	void BitmapRenderer::DrawCellContent(const wxRect& cellRect, CellState cellState)
+	void BitmapRenderer::DrawCellContent(const Rect& cellRect, CellState cellState)
 	{
 		if (m_Value.HasBitmap())
 		{
 			GetRenderEngine().DrawBitmap(cellRect, cellState, m_Value.GetBitmap());
 		}
 	}
-	wxSize BitmapRenderer::GetCellSize() const
+	Size BitmapRenderer::GetCellSize() const
 	{
 		if (m_Value.HasBitmap())
 		{
 			return m_Value.GetBitmap().GetSize();
 		}
-		return wxSize(0, 0);
+		return Size(0, 0);
 	}
 }

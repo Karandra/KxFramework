@@ -50,12 +50,12 @@ namespace KxFramework::UI::DataView
 		return ToolTip::CreateDefaultForRenderer(m_Value.GetText());
 	}
 
-	void HTMLRenderer::PrepareRenderer(wxHtmlDCRenderer& htmlRenderer, wxDC& dc, const wxRect& cellRect) const
+	void HTMLRenderer::PrepareRenderer(wxHtmlDCRenderer& htmlRenderer, wxDC& dc, const Rect& cellRect) const
 	{
 		htmlRenderer.SetDC(&dc, g_UserScale * m_PixelScale, g_UserScale * m_FontScale);
 
 		// Size
-		wxSize size = cellRect.GetSize();
+		Size size = cellRect.GetSize();
 		size.IncTo(GetCellSize());
 		htmlRenderer.SetSize(size.GetWidth(), size.GetHeight());
 
@@ -73,14 +73,14 @@ namespace KxFramework::UI::DataView
 			htmlRenderer.SetStandardFonts(pointSize, normalFace, fixedFace);
 		}
 	}
-	void HTMLRenderer::DrawCellContent(const wxRect& cellRect, CellState cellState)
+	void HTMLRenderer::DrawCellContent(const Rect& cellRect, CellState cellState)
 	{
 		if (m_Value.HasText())
 		{
 			// Prefer regular DC
 			wxDC& dc = HasRegularDC() ? GetRegularDC() : GetGraphicsDC();
 			DCUserScaleSaver userScaleSaver(dc);
-			wxDCClipper clip(dc, cellRect.Deflate(0, GetRenderEngine().FromDIPY(2)));
+			wxDCClipper clip(dc, cellRect.Clone().Deflate(0, GetRenderEngine().FromDIPY(2)));
 
 			// Render text
 			wxHtmlDCRenderer htmlRenderer;
@@ -88,13 +88,13 @@ namespace KxFramework::UI::DataView
 			htmlRenderer.Render(cellRect.GetX(), cellRect.GetY(), m_VisibleCellFrom, m_VisibleCellTo);
 		}
 	}
-	wxSize HTMLRenderer::GetCellSize() const
+	Size HTMLRenderer::GetCellSize() const
 	{
 		if (m_Value.HasText())
 		{
 			return GetRenderEngine().GetMultilineTextExtent(m_Value.GetText());
 		}
-		return wxSize(0, 0);
+		return Size(0, 0);
 	}
 
 	HTMLRenderer::HTMLRenderer(int alignment)

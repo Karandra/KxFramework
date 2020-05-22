@@ -24,7 +24,7 @@ namespace KxFramework::UI
 			void OnHoverItem(wxMenuEvent& event);
 
 		protected:
-			virtual uint16_t DoShowMenu(wxWindow* window, const wxPoint& pos, wxAlignment alignment, bool async);
+			virtual uint16_t DoShowMenu(wxWindow* window, const Point& pos, wxAlignment alignment, bool async);
 			void ProcessItemSelection(int menuWxID, wxCommandEvent* event = nullptr);
 
 		public:
@@ -55,7 +55,7 @@ namespace KxFramework::UI
 			}
 
 		public:
-			wxWindowID Show(wxWindow* window = nullptr, const wxPoint& pos = wxDefaultPosition, wxAlignment alignment = DefaultAlignment);
+			wxWindowID Show(wxWindow* window = nullptr, const Point& pos = wxDefaultPosition, wxAlignment alignment = DefaultAlignment);
 			wxWindowID ShowAsPopup(wxWindow* window, int offset = 1, wxAlignment alignment = DefaultAlignment);
 
 		public:

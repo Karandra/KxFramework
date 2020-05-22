@@ -118,16 +118,16 @@ namespace KxFramework::UI::DataView
 			MainWindow* m_MainWindow = nullptr;
 			SplashWindow* m_DragImage = nullptr;
 			wxBitmap m_HintBitmap;
-			wxPoint m_HintPosition;
+			Point m_HintPosition;
 
-			wxPoint m_Distance = wxDefaultPosition;
+			Point m_Distance = wxDefaultPosition;
 			Row m_Row;
 
 		private:
 			void OnScroll(wxMouseEvent& event);
 			bool GiveFeedback(wxDragResult effect) override;
 
-			wxPoint GetHintPosition(const wxPoint& mousePos) const;
+			Point GetHintPosition(const Point& mousePos) const;
 
 		public:
 			DropSource(MainWindow* mainWindow, Row row);

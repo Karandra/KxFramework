@@ -12,8 +12,8 @@ namespace KxFramework::Sciter
 			Label(wxWindow* parent,
 				  wxWindowID id,
 				  const String& label,
-				  const wxPoint& pos = wxDefaultPosition,
-				  const wxSize& size = wxDefaultSize,
+				  const Point& pos = wxDefaultPosition,
+				  const Size& size = wxDefaultSize,
 				  long style = wxBORDER_NONE)
 			{
 				Create(parent, id, label, pos, size, style);
@@ -22,8 +22,8 @@ namespace KxFramework::Sciter
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const String& label,
-						const wxPoint& pos = wxDefaultPosition,
-						const wxSize& size = wxDefaultSize,
+						const Point& pos = wxDefaultPosition,
+						const Size& size = wxDefaultSize,
 						long style = wxBORDER_NONE)
 			{
 				if (WindowWrapper::Create(parent, id, pos, size, style))

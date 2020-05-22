@@ -63,16 +63,16 @@ namespace KxFramework::UI::DataView
 		int rateX = 0;
 		int rateY = 0;
 		GetScrollPixelsPerUnit(&rateX, &rateY);
-		wxPoint startPos = GetViewStart();
+		Point startPos = GetViewStart();
 
 		wxCoord value = -event.GetWheelRotation();
 		if (event.GetWheelAxis() == wxMOUSE_WHEEL_VERTICAL)
 		{
-			Scroll(wxDefaultCoord, startPos.y + (float)value / (rateY != 0 ? rateY : 1));
+			Scroll(wxDefaultCoord, startPos.GetY() + (float)value / (rateY != 0 ? rateY : 1));
 		}
 		else
 		{
-			Scroll(startPos.x + (float)value / (rateX != 0 ? rateX : 1), wxDefaultCoord);
+			Scroll(startPos.GetX() + (float)value / (rateX != 0 ? rateX : 1), wxDefaultCoord);
 		}
 	}
 
@@ -113,7 +113,7 @@ namespace KxFramework::UI::DataView
 
 		if (View::Create(m_BackgroundWindow, wxID_NONE, m_DataViewFlags))
 		{
-			View::SetPosition(wxPoint(0, 0));
+			View::SetPosition(Point(0, 0));
 			m_Sizer->Add(this, 1, wxEXPAND);
 
 			// DataView events

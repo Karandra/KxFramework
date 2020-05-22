@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "Kx/General/Color.h"
 #include "Kx/General/String.h"
+#include "Geometry.h"
 #include <wx/imaglist.h>
 #include <wx/window.h>
 #include <wx/gdicmn.h>
@@ -76,7 +77,7 @@ namespace KxFramework
 		public:
 			static bool ClearDC(wxWindow& window, wxDC& dc) noexcept;
 			static bool DrawParentBackground(wxWindow& window, wxDC& dc) noexcept;
-			static bool DrawParentBackground(wxWindow& window, wxDC& dc, const wxRect& rect) noexcept;
+			static bool DrawParentBackground(wxWindow& window, wxDC& dc, const Rect& rect) noexcept;
 
 			static Color GetDialogMainInstructionColor(const wxWindow& window) noexcept;
 
@@ -123,9 +124,9 @@ namespace KxFramework
 				return *m_Window;
 			}
 
-			wxSize GetPartSize(const wxDC& dc, int iPartId, int iStateId, std::optional<int> sizeVariant = {}) const noexcept;
-			wxRegion GetBackgroundRegion(const wxDC& dc, int iPartId, int iStateId, const wxRect& rect) const noexcept;
-			std::optional<wxRect> GetBackgroundContentRect(const wxDC& dc, int iPartId, int iStateId, const wxRect& rect) const noexcept;
+			Size GetPartSize(const wxDC& dc, int iPartId, int iStateId, std::optional<int> sizeVariant = {}) const noexcept;
+			wxRegion GetBackgroundRegion(const wxDC& dc, int iPartId, int iStateId, const Rect& rect) const noexcept;
+			std::optional<Rect> GetBackgroundContentRect(const wxDC& dc, int iPartId, int iStateId, const Rect& rect) const noexcept;
 
 			Color GetColor(int iPartId, int iStateId, int iPropId) const noexcept;
 			wxFont GetFont(const wxDC& dc, int iPartId, int iStateId, int iPropId) const noexcept;
@@ -133,23 +134,23 @@ namespace KxFramework
 			std::optional<int> GetInt(int iPartId, int iStateId, int iPropId) const noexcept;
 			std::optional<int> GetEnum(int iPartId, int iStateId, int iPropId) const noexcept;
 			size_t GetIntList(int iPartId, int iStateId, int iPropId, std::function<bool(int)> func) const;
-			wxRect GetRect(int iPartId, int iStateId, int iPropId) const noexcept;
-			wxPoint GetPosition(int iPartId, int iStateId, int iPropId) const noexcept;
+			Rect GetRect(int iPartId, int iStateId, int iPropId) const noexcept;
+			Point GetPosition(int iPartId, int iStateId, int iPropId) const noexcept;
 
-			bool DrawEdge(wxDC& dc, int iPartId, int iStateId, uint32_t edge, uint32_t flags, const wxRect& rect, wxRect* boundingRect = nullptr) noexcept;
-			bool DrawIcon(wxDC& dc, int iPartId, int iStateId, const wxImageList& imageList, int index, const wxRect& rect, wxRect* boundingRect = nullptr) noexcept;
-			bool DrawText(wxDC& dc, int iPartId, int iStateId, std::wstring_view text, uint32_t flags1, uint32_t flags2, const wxRect& rect) noexcept;
+			bool DrawEdge(wxDC& dc, int iPartId, int iStateId, uint32_t edge, uint32_t flags, const Rect& rect, Rect* boundingRect = nullptr) noexcept;
+			bool DrawIcon(wxDC& dc, int iPartId, int iStateId, const wxImageList& imageList, int index, const Rect& rect, Rect* boundingRect = nullptr) noexcept;
+			bool DrawText(wxDC& dc, int iPartId, int iStateId, std::wstring_view text, uint32_t flags1, uint32_t flags2, const Rect& rect) noexcept;
 
-			bool DrawBackground(wxDC& dc, int iPartId, int iStateId, const wxRect& rect) noexcept;
+			bool DrawBackground(wxDC& dc, int iPartId, int iStateId, const Rect& rect) noexcept;
 			bool DrawParentBackground(wxDC& dc) noexcept
 			{
 				return DrawParentBackground(*m_Window, dc);
 			}
-			bool DrawParentBackground(wxDC& dc, const wxRect& rect) noexcept
+			bool DrawParentBackground(wxDC& dc, const Rect& rect) noexcept
 			{
 				return DrawParentBackground(*m_Window, dc, rect);
 			}
-			bool DrawProgressBar(wxDC& dc, int iBarPartId, int iFillPartId, int iFillStateId, const wxRect& rect, int position, int range, Color* averageBackgroundColor = nullptr) noexcept;
+			bool DrawProgressBar(wxDC& dc, int iBarPartId, int iFillPartId, int iFillStateId, const Rect& rect, int position, int range, Color* averageBackgroundColor = nullptr) noexcept;
 
 		public:
 			explicit operator bool() const

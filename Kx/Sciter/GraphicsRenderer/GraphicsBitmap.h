@@ -17,7 +17,7 @@ namespace KxFramework::Sciter
 		friend class HandleWrapper<GraphicsBitmap, GraphicsBitmapHandle>;
 		
 		public:
-			using TDrawOnFunc = std::function<void(GraphicsContext&, const wxSize& size)>;
+			using TDrawOnFunc = std::function<void(GraphicsContext&, const Size& size)>;
 			enum class Format
 			{
 				None = 0,
@@ -48,8 +48,8 @@ namespace KxFramework::Sciter
 				:HandleWrapper(std::move(other))
 			{
 			}
-			GraphicsBitmap(const wxSize& size, bool withAlpha);
-			GraphicsBitmap(const wxSize& size, const char* pixmapData, bool withAlpha)
+			GraphicsBitmap(const Size& size, bool withAlpha);
+			GraphicsBitmap(const Size& size, const char* pixmapData, bool withAlpha)
 			{
 				CreateFromPixmap(size, pixmapData, withAlpha);
 			}
@@ -64,13 +64,13 @@ namespace KxFramework::Sciter
 		public:
 			// Construct image from B[n+0], G[n+1], R[n+2], A[n+3] data.
 			// Size of pixmap data is (pixmapWidth * pixmapHeight * 4).
-			bool CreateFromPixmap(const wxSize& size, const char* pixmapData, bool withAlpha);
+			bool CreateFromPixmap(const Size& size, const char* pixmapData, bool withAlpha);
 
 			bool Load(wxInputStream& stream);
 			bool Save(wxOutputStream& stream, Format format, int quality = 100) const;
 
 			bool Clear(const Color& color);
-			wxSize GetSize() const;
+			Size GetSize() const;
 			bool UsesAlpha() const;
 
 			wxImage ConvertToImage() const;

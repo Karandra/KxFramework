@@ -113,30 +113,30 @@ namespace KxFramework::Sciter
 			void SetLayoutFlow(LayoutFlow flow);
 
 			// Size and position
-			wxRect GetRect() const
+			Rect GetRect() const
 			{
 				return m_Element.GetRect();
 			}
-			wxSize GetSize() const
+			Size GetSize() const
 			{
 				return GetRect().GetSize();
 			}
-			void SetSize(const wxSize& size);
+			void SetSize(const Size& size);
 
-			wxSize GetMinSize() const
+			Size GetMinSize() const
 			{
 				return m_Element.GetMinSize();
 			}
-			wxSize GetMaxSize() const
+			Size GetMaxSize() const
 			{
 				return m_Element.GetMaxSize();
 			}
 
-			wxPoint GetPosition() const
+			Point GetPosition() const
 			{
 				return GetRect().GetPosition();
 			}
-			void SetPosition(const wxPoint& pos);
+			void SetPosition(const Point& pos);
 			
 			// Focus
 			bool IsFocusable() const

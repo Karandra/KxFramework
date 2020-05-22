@@ -43,10 +43,10 @@ namespace KxFramework
 			m_Flags |= ILC_MASK;
 		}
 	}
-	bool ImageList::DoDraw(wxDC& dc, int index, const wxRect& rect, DrawItemFlag flags, int overlayIndex) noexcept
+	bool ImageList::DoDraw(wxDC& dc, int index, const Rect& rect, DrawItemFlag flags, int overlayIndex) noexcept
 	{
-		wxSize size = rect.GetSize();
-		size.SetDefaults(wxSize(0, 0));
+		Size size = rect.GetSize();
+		size.SetDefaults(Size(0, 0));
 
 		uint32_t nativeDrawMode = MapDrawMode(flags);
 		if (overlayIndex > 0)
@@ -91,7 +91,7 @@ namespace KxFramework
 		OnCreate(width, height, g_UseMask, initialCount);
 		return result;
 	}
-	bool ImageList::Create(const wxSize& size, int initialCount) noexcept
+	bool ImageList::Create(const Size& size, int initialCount) noexcept
 	{
 		return Create(size.GetWidth(), size.GetHeight(), initialCount);
 	}

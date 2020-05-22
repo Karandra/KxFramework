@@ -22,7 +22,7 @@ namespace KxFramework::UI
 			static constexpr WindowStyle DefaultStyle = WindowStyle::None;
 
 		private:
-			wxSize m_InitialSize;
+			Size m_InitialSize;
 
 		private:
 			void OnPaint(wxPaintEvent& event);

@@ -41,8 +41,8 @@ namespace KxFramework::UI
 	bool TextBoxDialog::Create(wxWindow* parent,
 							   wxWindowID id,
 							   const String& caption,
-							   const wxPoint& pos,
-							   const wxSize& size,
+							   const Point& pos,
+							   const Size& size,
 							   StdButton buttons,
 							   TextBoxDialogStyle style
 	)
@@ -52,7 +52,7 @@ namespace KxFramework::UI
 
 		if (StdDialog::Create(parent, id, caption, pos, size, buttons, EnumClass::Combine<DialogStyle>(style)))
 		{
-			wxSize size(DefaultWidth, wxDefaultCoord);
+			Size size(DefaultWidth, wxDefaultCoord);
 
 			if (style & TextBoxDialogStyle::Styled)
 			{

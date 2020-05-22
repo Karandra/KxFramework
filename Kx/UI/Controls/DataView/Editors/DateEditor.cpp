@@ -56,7 +56,7 @@ namespace KxFramework::UI::DataView
 
 namespace KxFramework::UI::DataView
 {
-	wxWindow* DateEditor::CreateControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value)
+	wxWindow* DateEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value)
 	{
 		const DateTimeValue dateTimeValue = FromAnyUsing<DateTimeValue>(value);
 		const int style = ConvertControlStyle(dateTimeValue);

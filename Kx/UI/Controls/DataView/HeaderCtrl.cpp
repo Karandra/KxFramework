@@ -36,9 +36,9 @@ namespace
 		return wxEVT_NULL;
 	}
 
-	wxRect MakeWidthRect(int value)
+	KxFramework::Rect MakeWidthRect(int value)
 	{
-		return wxRect(0, 0, value, 0);
+		return {0, 0, value, 0};
 	};
 }
 
@@ -53,7 +53,7 @@ namespace KxFramework::UI::DataView
 	{
 		m_View->GetMainWindow()->EndEdit();
 	}
-	HeaderCtrl::EventResult HeaderCtrl::SendCtrlEvent(ItemEvent& event, wxEventType type, Column* column, std::optional<wxRect> rect)
+	HeaderCtrl::EventResult HeaderCtrl::SendCtrlEvent(ItemEvent& event, wxEventType type, Column* column, std::optional<Rect> rect)
 	{
 		event.SetEventType(type);
 		if (rect)
@@ -136,8 +136,8 @@ namespace KxFramework::UI::DataView
 	}
 	void HeaderCtrl::OnWindowClick(wxMouseEvent& event)
 	{
-		wxPoint pos = event.GetPosition();
-		if (pos.x > m_View->GetMainWindow()->GetRowWidth())
+		Point pos = event.GetPosition();
+		if (pos.GetX() > m_View->GetMainWindow()->GetRowWidth())
 		{
 			SendCtrlEvent(event.GetEventType() == wxEVT_LEFT_UP ? ItemEvent::EvtColumnHeaderClick : ItemEvent::EvtColumnHeaderRClick, nullptr);
 		}
@@ -603,13 +603,13 @@ namespace KxFramework::UI::DataView
 		DoSetCount();
 	}
 
-	wxRect HeaderCtrl::GetDropdownRect(size_t index) const
+	Rect HeaderCtrl::GetDropdownRect(size_t index) const
 	{
 		RECT rect = {};
 		Header_GetItemDropDownRect(GetHeaderCtrlHandle(), index, &rect);
 		return Utility::FromWindowsRect(rect);
 	}
-	wxRect HeaderCtrl::GetDropdownRect(const Column& column) const
+	Rect HeaderCtrl::GetDropdownRect(const Column& column) const
 	{
 		return GetDropdownRect(column.GetPhysicalDisplayIndex());
 	}

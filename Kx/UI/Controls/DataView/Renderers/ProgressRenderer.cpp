@@ -24,7 +24,7 @@ namespace KxFramework::UI::DataView
 		return m_Value.FromAny(value);
 	}
 
-	void ProgressRenderer::DrawCellContent(const wxRect& cellRect, CellState cellState)
+	void ProgressRenderer::DrawCellContent(const Rect& cellRect, CellState cellState)
 	{
 		RenderEngine renderEngine = GetRenderEngine();
 
@@ -37,12 +37,12 @@ namespace KxFramework::UI::DataView
 			renderEngine.DrawText(cellRect, cellState, m_Value.GetText());
 		}
 	}
-	wxSize ProgressRenderer::GetCellSize() const
+	Size ProgressRenderer::GetCellSize() const
 	{
 		if (m_Value.HasText())
 		{
 			RenderEngine renderEngine = GetRenderEngine();
-			wxSize size = renderEngine.GetTextExtent(m_Value.GetText());
+			Size size = renderEngine.GetTextExtent(m_Value.GetText());
 
 			// If we need to draw a progress bar, then add a small margin to prevent clipping
 			if (m_Value.HasPosition())
@@ -53,15 +53,15 @@ namespace KxFramework::UI::DataView
 		}
 		else
 		{
-			return wxSize(wxDefaultCoord, GetBarRect().GetHeight());
+			return Size(wxDefaultCoord, GetBarRect().GetHeight());
 		}
 	}
-	wxRect ProgressRenderer::GetBarRect() const
+	Rect ProgressRenderer::GetBarRect() const
 	{
 		RenderEngine renderEngine = GetRenderEngine();
-		const wxRect paintRect = GetPaintRect();
+		const Rect paintRect = GetPaintRect();
 
-		wxRect barRect = paintRect;
+		Rect barRect = paintRect;
 		auto SetHeight = [&](int desiredHeight, int margin = 0)
 		{
 			if (desiredHeight < barRect.GetHeight())

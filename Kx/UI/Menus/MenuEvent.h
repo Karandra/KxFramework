@@ -22,7 +22,7 @@ namespace KxFramework::UI
 			bool m_IsPopup = false;
 			Menu* m_Menu = nullptr;
 			MenuItem* m_Item = nullptr;
-			wxPoint m_Position = wxDefaultPosition;
+			Point m_Position = wxDefaultPosition;
 			String m_HelpString;
 
 		public:
@@ -62,11 +62,11 @@ namespace KxFramework::UI
 				m_Item = menu;
 			}
 		
-			wxPoint GetPosition() const
+			Point GetPosition() const
 			{
 				return m_Position;
 			}
-			void SetPosition(const wxPoint& position)
+			void SetPosition(const Point& position)
 			{
 				m_Position = position;
 			}

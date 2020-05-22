@@ -17,19 +17,19 @@ namespace KxFramework::UI::DataView
 		return m_Value.FromAny(value);
 	}
 
-	void TextRenderer::DrawCellContent(const wxRect& cellRect, CellState cellState)
+	void TextRenderer::DrawCellContent(const Rect& cellRect, CellState cellState)
 	{
 		if (m_Value.HasText())
 		{
 			GetRenderEngine().DrawText(cellRect, cellState, m_Value.GetText());
 		}
 	}
-	wxSize TextRenderer::GetCellSize() const
+	Size TextRenderer::GetCellSize() const
 	{
 		if (m_Value.HasText())
 		{
 			return GetRenderEngine().GetTextExtent(m_Value.GetText());
 		}
-		return wxSize(0, 0);
+		return Size(0, 0);
 	}
 }

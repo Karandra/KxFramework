@@ -18,7 +18,7 @@ namespace KxFramework::Sciter
 			KxEVENT_MEMBER(MouseEvent, MouseIdle);
 
 		protected:
-			wxPoint m_RelativePosition = wxDefaultPosition;
+			Point m_RelativePosition = wxDefaultPosition;
 			wxStockCursor m_CursorType = wxStockCursor::wxCURSOR_NONE;
 			bool m_IsOnIcon = false;
 
@@ -34,11 +34,11 @@ namespace KxFramework::Sciter
 				return new MouseEvent(*this);
 			}
 
-			wxPoint GetRelativePosition() const
+			Point GetRelativePosition() const
 			{
 				return m_RelativePosition;
 			}
-			void SetRelativePosition(const wxPoint& pos)
+			void SetRelativePosition(const Point& pos)
 			{
 				m_RelativePosition = pos;
 			}

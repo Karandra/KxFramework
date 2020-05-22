@@ -93,7 +93,7 @@ namespace KxFramework
 		return wxNullIcon;
 	}
 
-	wxSize ImageSet::GetItemSize(const String& id) const
+	Size ImageSet::GetItemSize(const String& id) const
 	{
 		ItemType type = ItemType::None;
 		if (const wxObject* object = QueryItem(id, &type))
@@ -157,7 +157,7 @@ namespace KxFramework
 		return GetPtr<wxIcon>(*this, id, ItemType::Icon);
 	}
 
-	std::unique_ptr<ImageList> ImageSet::CreateImageList(const wxSize& size) const
+	std::unique_ptr<ImageList> ImageSet::CreateImageList(const Size& size) const
 	{
 		std::unique_ptr<ImageList> imageList = std::make_unique<ImageList>(size, GetCount());
 

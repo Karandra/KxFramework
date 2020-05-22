@@ -59,15 +59,15 @@ namespace KxFramework::UI::DataView
 			{
 				return true;
 			}
-			wxAny OnActivateCell(Node& node, const wxRect& cellRect, const wxMouseEvent* mouseEvent = nullptr) override;
+			wxAny OnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent = nullptr) override;
 
 			bool SetValue(const wxAny& value);
 			ToolTip CreateToolTip() const override
 			{
 				return ToolTip::CreateDefaultForRenderer(m_Value.GetText());
 			}
-			void DrawCellContent(const wxRect& cellRect, CellState cellState) override;
-			wxSize GetCellSize() const override;
+			void DrawCellContent(const Rect& cellRect, CellState cellState) override;
+			Size GetCellSize() const override;
 
 		public:
 			BitmapTextToggleRenderer(int alignment = wxALIGN_INVALID)

@@ -40,7 +40,7 @@ namespace KxFramework::UI
 			Color m_ColorHighlight;
 			Color m_ColorClick;
 			Color m_ColorDisabled;
-			wxSize m_BestSize;
+			Size m_BestSize;
 
 			LabelStyle m_Style = DefaultStyle;
 			int m_WrapLength = -1;
@@ -70,7 +70,7 @@ namespace KxFramework::UI
 			{
 				return label.Find('\r') != wxNOT_FOUND || label.Find('\n') != wxNOT_FOUND;
 			}
-			wxSize CalcBestSize(wxDC* dc = nullptr);
+			Size CalcBestSize(wxDC* dc = nullptr);
 
 		protected:
 			void DoEnable(bool enable) override

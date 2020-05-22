@@ -380,11 +380,11 @@ namespace KxFramework::System
 	{
 		return wxSystemSettings::GetMetric(static_cast<wxSystemMetric>(index), window);
 	}
-	wxSize GetMetric(SystemSizeMetric index, const wxWindow* window) noexcept
+	Size GetMetric(SystemSizeMetric index, const wxWindow* window) noexcept
 	{
 		auto GetValue = [&](wxSystemMetric x, wxSystemMetric y)
 		{
-			return wxSize(wxSystemSettings::GetMetric(x, window), wxSystemSettings::GetMetric(y, window));
+			return Size(wxSystemSettings::GetMetric(x, window), wxSystemSettings::GetMetric(y, window));
 		};
 
 		switch (index)

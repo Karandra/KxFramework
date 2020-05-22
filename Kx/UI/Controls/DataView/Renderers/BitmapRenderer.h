@@ -105,8 +105,8 @@ namespace KxFramework::UI::DataView
 
 		protected:
 			bool SetValue(const wxAny& value) override;
-			void DrawCellContent(const wxRect& cellRect, CellState cellState) override;
-			wxSize GetCellSize() const override;
+			void DrawCellContent(const Rect& cellRect, CellState cellState) override;
+			Size GetCellSize() const override;
 
 		public:
 			BitmapRenderer(int alignment = wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL)

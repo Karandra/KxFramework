@@ -11,12 +11,12 @@ namespace KxFramework::UI::DataView
 				return false;
 			}
 
-			void DrawCellContent(const wxRect& cellRect, CellState cellState) override
+			void DrawCellContent(const Rect& cellRect, CellState cellState) override
 			{
 			}
-			wxSize GetCellSize() const override
+			Size GetCellSize() const override
 			{
-				return wxSize(0, 0);
+				return Size(0, 0);
 			}
 
 		public:

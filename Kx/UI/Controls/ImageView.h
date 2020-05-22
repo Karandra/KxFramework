@@ -33,11 +33,11 @@ namespace KxFramework::UI
 			bool m_IsAnimation = false;
 
 			wxGraphicsBitmap m_Bitmap;
-			wxSize m_ScaledImageSize;
-			wxSize m_ImageSize;
+			Size m_ScaledImageSize;
+			Size m_ImageSize;
 
 		private:
-			void DoSetBitmap(const wxGraphicsBitmap& bitmap, const wxSize& size);
+			void DoSetBitmap(const wxGraphicsBitmap& bitmap, const Size& size);
 			void OnDrawBackground(wxEraseEvent& event);
 			void OnDrawForeground(wxPaintEvent& event);
 			void OnSize(wxSizeEvent& event);
@@ -78,7 +78,7 @@ namespace KxFramework::UI
 				ScheduleRefresh();
 			}
 
-			wxSize GetScaledImageSize() const
+			Size GetScaledImageSize() const
 			{
 				return m_ScaledImageSize;
 			}
@@ -112,7 +112,7 @@ namespace KxFramework::UI
 			}
 			void SetBitmap(const wxBitmap& image);
 			void SetBitmap(const wxImage& image);
-			void SetBitmap(const wxGraphicsBitmap& image, const wxSize& size);
+			void SetBitmap(const wxGraphicsBitmap& image, const Size& size);
 
 			void LoadFile(const String& filePath, wxBitmapType type = wxBITMAP_TYPE_ANY, int index = -1);
 			void LoadFile(wxInputStream& stream, wxBitmapType type = wxBITMAP_TYPE_ANY, int index = -1);

@@ -34,8 +34,8 @@ namespace KxFramework::UI
 			Frame(wxWindow* parent,
 				  wxWindowID id,
 				  const String& title,
-				  const wxPoint& pos = wxDefaultPosition,
-				  const wxSize& size = wxDefaultSize,
+				  const Point& pos = wxDefaultPosition,
+				  const Size& size = wxDefaultSize,
 				  FrameStyle style = DefaultStyle
 			)
 			{
@@ -44,14 +44,14 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const String& title,
-						const wxPoint& pos = wxDefaultPosition,
-						const wxSize& size = wxDefaultSize,
+						const Point& pos = wxDefaultPosition,
+						const Size& size = wxDefaultSize,
 						FrameStyle style = DefaultStyle
 			);
 			bool Create(wxWindow* parent,
 						wxWindowID id,
-						const wxPoint& pos = wxDefaultPosition,
-						const wxSize& size = wxDefaultSize,
+						const Point& pos = wxDefaultPosition,
+						const Size& size = wxDefaultSize,
 						FrameStyle style = DefaultStyle,
 						const String& name = {}
 			)

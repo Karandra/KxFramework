@@ -59,8 +59,8 @@ namespace KxFramework::UI
 			TextBox(wxWindow* parent,
 					  wxWindowID id,
 					  const String& value,
-					  const wxPoint& pos,
-					  const wxSize& size,
+					  const Point& pos,
+					  const Size& size,
 					  TextBoxStyle style = DefaultStyle,
 					  const wxValidator& validator = wxDefaultValidator
 			)
@@ -79,8 +79,8 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const String& value,
-						const wxPoint& pos,
-						const wxSize& size,
+						const Point& pos,
+						const Size& size,
 						TextBoxStyle style = DefaultStyle,
 						const wxValidator& validator = wxDefaultValidator
 			);

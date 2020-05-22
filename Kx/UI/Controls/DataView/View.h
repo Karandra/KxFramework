@@ -157,8 +157,8 @@ namespace KxFramework::UI::DataView
 			
 			bool Create(wxWindow* parent,
 						wxWindowID id,
-						const wxPoint& pos = wxDefaultPosition,
-						const wxSize& size = wxDefaultSize,
+						const Point& pos = wxDefaultPosition,
+						const Size& size = wxDefaultSize,
 						long style = static_cast<long>(CtrlStyle::Default),
 						const wxString& name = {}
 			);
@@ -318,10 +318,10 @@ namespace KxFramework::UI::DataView
 			}
 
 			void EnsureVisible(Node& item, const Column* column = nullptr);
-			void HitTest(const wxPoint& point, Node*& item, Column*& column) const;
-			wxRect GetItemRect(const Node& item, const Column* column = nullptr) const;
-			wxRect GetAdjustedItemRect(const Node& item, const Column* column = nullptr) const;
-			wxPoint GetDropdownMenuPosition(const Node& item, const Column* column = nullptr) const;
+			void HitTest(const Point& point, Node*& item, Column*& column) const;
+			Rect GetItemRect(const Node& item, const Column* column = nullptr) const;
+			Rect GetAdjustedItemRect(const Node& item, const Column* column = nullptr) const;
+			Point GetDropdownMenuPosition(const Node& item, const Column* column = nullptr) const;
 
 			int GetUniformRowHeight() const;
 			void SetUniformRowHeight(int rowHeight);

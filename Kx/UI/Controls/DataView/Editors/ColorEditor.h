@@ -95,7 +95,7 @@ namespace KxFramework::UI::DataView
 			wxDialog* m_Dialog = nullptr;
 
 		protected:
-			wxWindow* CreateControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value) override;
+			wxWindow* CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value) override;
 			wxAny GetValue(wxWindow* control) const override;
 	};
 }

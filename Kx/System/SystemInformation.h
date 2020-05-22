@@ -8,6 +8,7 @@
 #include "Kx/General/Version.h"
 #include "Kx/General/BinarySize.h"
 #include "Kx/General/DateTime.h"
+#include "Kx/Drawing/Geometry.h"
 #include <wx/settings.h>
 #include <wx/gdicmn.h>
 #include "UndefWindows.h"
@@ -108,7 +109,7 @@ namespace KxFramework::System
 	wxFont GetFont(SystemFont index);
 	SystemScreenType GetScreenType() noexcept;
 	int GetMetric(SystemMetric index, const wxWindow* window = nullptr) noexcept;
-	wxSize GetMetric(SystemSizeMetric index, const wxWindow* window = nullptr) noexcept;
+	Size GetMetric(SystemSizeMetric index, const wxWindow* window = nullptr) noexcept;
 	TimeSpan GetMetric(SystemTimeMetric index, const wxWindow* window = nullptr) noexcept;
 	bool HasFeature(SystemFeature feature) noexcept;
 	size_t EnumStandardSounds(std::function<bool(String)> func);

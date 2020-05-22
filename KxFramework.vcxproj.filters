@@ -1085,9 +1085,6 @@
     <ClInclude Include="Kx\UI\Controls\WebView.h">
       <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Common.h">
-      <Filter>Kx\UI\&lt;UI&gt;</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\UI\HiDPIEnabledWindow.h">
       <Filter>Kx\UI\&lt;UI&gt;</Filter>
     </ClInclude>
@@ -1210,6 +1207,9 @@
     </ClInclude>
     <ClInclude Include="Kx\Drawing\Geometry.h">
       <Filter>Kx\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\UI\Common.h">
+      <Filter>Kx\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1775,9 +1775,6 @@
     <ClCompile Include="Kx\UI\Controls\WebView.cpp">
       <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Common.cpp">
-      <Filter>Kx\UI\&lt;UI&gt;</Filter>
-    </ClCompile>
     <ClCompile Include="Kx\UI\HiDPIEnabledWindow.cpp">
       <Filter>Kx\UI\&lt;UI&gt;</Filter>
     </ClCompile>
@@ -1846,6 +1843,9 @@
     </ClCompile>
     <ClCompile Include="Kx\System\SystemAppearance.cpp">
       <Filter>Kx\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Kx\UI\Common.cpp">
+      <Filter>Kx\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

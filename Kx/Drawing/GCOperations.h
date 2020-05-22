@@ -121,7 +121,7 @@ namespace KxFramework
 			wxGraphicsContext& m_GC;
 
 		public:
-			GCClip(wxGraphicsContext& gc, const wxRect& rect)
+			GCClip(wxGraphicsContext& gc, const Rect& rect)
 				:m_GC(gc)
 			{
 				m_GC.PushState();

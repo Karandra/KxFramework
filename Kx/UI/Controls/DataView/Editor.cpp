@@ -47,7 +47,7 @@ namespace KxFramework::UI::DataView
 		m_Column = nullptr;
 	}
 
-	bool Editor::BeginEdit(Node& node, Column& column, const wxRect& cellRect)
+	bool Editor::BeginEdit(Node& node, Column& column, const Rect& cellRect)
 	{
 		OnBeginEdit(node, column);
 
@@ -183,7 +183,7 @@ namespace KxFramework::UI::DataView
 	}
 	void EditorControlHandler::DoOnMouse(wxMouseEvent& event)
 	{
-		const wxPoint originalPos = event.GetPosition();
+		const Point originalPos = event.GetPosition();
 		event.SetPosition(m_EditorCtrl->GetPosition());
 		GetEditor()->GetMainWindow()->ProcessWindowEvent(event);
 		event.SetPosition(originalPos);

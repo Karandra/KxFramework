@@ -38,7 +38,7 @@ namespace KxFramework
 				Flush();
 				return m_BitmapRef.Get();
 			}
-			wxSize GetSize() const override
+			Size GetSize() const override
 			{
 				return m_BitmapRef.Get().GetSize();
 			}

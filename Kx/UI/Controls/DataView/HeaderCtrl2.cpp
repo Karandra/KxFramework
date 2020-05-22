@@ -38,9 +38,9 @@ namespace
 		return wxEVT_NULL;
 	}
 
-	wxRect MakeWidthRect(int value)
+	Rect MakeWidthRect(int value)
 	{
-		return wxRect(0, 0, value, 0);
+		return Rect(0, 0, value, 0);
 	};
 }
 
@@ -55,7 +55,7 @@ namespace KxFramework::UI::DataView
 		dc.SetDeviceOrigin(m_ScrollOffset, 0);
 
 		wxRendererNative& nativeRenderer = wxRendererNative::Get();
-		wxSize clientSize = GetClientSize();
+		Size clientSize = GetClientSize();
 		const bool isEnabled = IsEnabled();
 
 		int offsetX = 0;
@@ -88,7 +88,7 @@ namespace KxFramework::UI::DataView
 			headerParameters.m_labelText = column->GetTitle();
 			headerParameters.m_labelBitmap = column->GetBitmap();
 			headerParameters.m_labelAlignment = column->GetTitleAlignment();
-			nativeRenderer.DrawHeaderButton(this, dc, wxRect(offsetX, 0, width, clientSize.GetHeight()), state, sortArrow, &headerParameters);
+			nativeRenderer.DrawHeaderButton(this, dc, Rect(offsetX, 0, width, clientSize.GetHeight()), state, sortArrow, &headerParameters);
 
 			// Move to next column
 			offsetX += width;
@@ -98,7 +98,7 @@ namespace KxFramework::UI::DataView
 		if (offsetX < clientSize.GetWidth())
 		{
 			int state = isEnabled ? wxCONTROL_DIRTY : wxCONTROL_DISABLED;
-			nativeRenderer.DrawHeaderButton(this, dc, wxRect(offsetX, 0, clientSize.GetWidth() - offsetX, clientSize.GetHeight()), state);
+			nativeRenderer.DrawHeaderButton(this, dc, Rect(offsetX, 0, clientSize.GetWidth() - offsetX, clientSize.GetHeight()), state);
 		}
 	}
 	void HeaderCtrl2::OnMouse(wxMouseEvent& mevent)
@@ -277,7 +277,7 @@ namespace KxFramework::UI::DataView
 
 		// Draw the phantom position of the column being dragged
 		const int x = xPhysical - m_DragOffset;
-		const int y = GetClientSize().y;
+		const int y = GetClientSize().GetY();
 		dc.DrawRectangle(x, 0, m_DraggedColumn->GetWidth(), y);
 
 		// And also a hint indicating where it is going to be inserted if it's dropped now
@@ -438,7 +438,7 @@ namespace KxFramework::UI::DataView
 	{
 		m_View->GetMainWindow()->EndEdit();
 	}
-	HeaderCtrl2::EventResult HeaderCtrl2::SendCtrlEvent(ItemEvent& event, wxEventType type, Column* column, std::optional<wxRect> rect)
+	HeaderCtrl2::EventResult HeaderCtrl2::SendCtrlEvent(ItemEvent& event, wxEventType type, Column* column, std::optional<Rect> rect)
 	{
 		event.SetEventType(type);
 		if (rect)
@@ -504,8 +504,8 @@ namespace KxFramework::UI::DataView
 	}
 	void HeaderCtrl2::OnWindowClick(wxMouseEvent& event)
 	{
-		wxPoint pos = event.GetPosition();
-		if (pos.x > m_View->GetMainWindow()->GetRowWidth())
+		Point pos = event.GetPosition();
+		if (pos.GetX() > m_View->GetMainWindow()->GetRowWidth())
 		{
 			SendCtrlEvent(event.GetEventType() == wxEVT_LEFT_UP ? ItemEvent::EvtColumnHeaderClick : ItemEvent::EvtColumnHeaderRClick, nullptr);
 		}
@@ -557,7 +557,7 @@ namespace KxFramework::UI::DataView
 		WindowRefreshScheduler::OnInternalIdle();
 	}
 
-	wxRect HeaderCtrl2::GetDropdownRect(const Column& column) const
+	Rect HeaderCtrl2::GetDropdownRect(const Column& column) const
 	{
 		return {};
 	}
@@ -645,14 +645,14 @@ namespace KxFramework::UI::DataView
 
 	void HeaderCtrl2::RefreshColumn(Column& column)
 	{
-		wxRect rect = column.GetRect();
+		Rect rect = column.GetRect();
 		rect.SetHeight(GetClientSize().GetHeight());
 
 		ScheduleRefreshRect(rect);
 	}
 	void HeaderCtrl2::RefreshColumnsAfter(Column& column)
 	{
-		wxRect rect = column.GetRect();
+		Rect rect = column.GetRect();
 		rect.SetWidth(GetClientSize().GetWidth() - rect.GetX());
 
 		ScheduleRefreshRect(rect);

@@ -22,7 +22,7 @@ namespace KxFramework::UI
 				size_t thumbIndex = GetIndexByRowColumn(row, columnIndex, itemsInRow);
 				if (thumbIndex < GetThumbsCount())
 				{
-					wxRect thumbRect = GetFullThumbRect(row, columnIndex, beginRow);
+					Rect thumbRect = GetFullThumbRect(row, columnIndex, beginRow);
 					if (thumbIndex == m_Focused)
 					{
 						wxRendererNative::Get().DrawItemSelectionRect(this, dc, thumbRect, wxCONTROL_CURRENT|wxCONTROL_CELL);
@@ -33,7 +33,7 @@ namespace KxFramework::UI
 					}
 
 					const wxBitmap& bitmap = m_Items[thumbIndex].GetBitmap();
-					wxPoint newPos = thumbRect.GetTopLeft() + (m_ThumbSize - bitmap.GetSize()) / 2;
+					wxPoint newPos = thumbRect.GetTopLeft() + ((wxSize)m_ThumbSize - bitmap.GetSize()) / 2;
 					dc.DrawBitmap(bitmap, newPos);
 				}
 				else
@@ -94,18 +94,18 @@ namespace KxFramework::UI
 
 		const bool isSelectionEvent = IsSelectionEvent(event);
 		const int itemsInRow = CalcItemsPerRow();
-		const wxPoint pos = event.GetPosition();
-		const int row = VirtualHitTest(pos.y);
+		const Point pos = event.GetPosition();
+		const int row = VirtualHitTest(pos.GetY());
 
 		const size_t oldSelection = m_Selected;
 		const size_t oldFocus = m_Focused;
-		if (row != wxNOT_FOUND && pos.x != 0)
+		if (row != wxNOT_FOUND && pos.GetX() != 0)
 		{
 			const size_t beginRow = GetVisibleRowsBegin();
 			for (int columnIndex = 0; columnIndex < itemsInRow; columnIndex++)
 			{
-				const wxRect thumbRect = GetFullThumbRect(row, columnIndex, beginRow);
-				if (pos.x >= thumbRect.GetLeft() && pos.x <= thumbRect.GetRight())
+				const Rect thumbRect = GetFullThumbRect(row, columnIndex, beginRow);
+				if (pos.GetX() >= thumbRect.GetLeft() && pos.GetX() <= thumbRect.GetRight())
 				{
 					const size_t index = GetIndexByRowColumn(row, columnIndex, itemsInRow);
 					const size_t focus = index < GetThumbsCount() ? index : InvalidItemIndex;
@@ -152,24 +152,24 @@ namespace KxFramework::UI
 	{
 		return row * itemsInRow + columnIndex;
 	}
-	wxRect ThumbView::GetThumbRect(size_t row, size_t columnIndex, size_t beginRow)
+	Rect ThumbView::GetThumbRect(size_t row, size_t columnIndex, size_t beginRow)
 	{
-		return wxRect(wxPoint(columnIndex * m_ThumbSize.GetWidth(), row * m_ThumbSize.GetHeight()), m_ThumbSize);
+		return Rect(wxPoint(columnIndex * m_ThumbSize.GetWidth(), row * m_ThumbSize.GetHeight()), (wxSize)m_ThumbSize);
 	}
-	wxRect ThumbView::GetFullThumbRect(size_t row, size_t columnIndex, size_t beginRow)
+	Rect ThumbView::GetFullThumbRect(size_t row, size_t columnIndex, size_t beginRow)
 	{
-		wxPoint pos(columnIndex * m_ThumbSize.GetWidth(), row * m_ThumbSize.GetHeight());
+		Point pos(columnIndex * m_ThumbSize.GetWidth(), row * m_ThumbSize.GetHeight());
 		if (columnIndex != 0)
 		{
-			pos.x += m_Spacing.x * columnIndex;
+			pos.X() += m_Spacing.GetWidth() * columnIndex;
 		}
 		if (row != 0 && row != beginRow)
 		{
-			pos.y += m_Spacing.y * (row - beginRow);
+			pos.Y() += m_Spacing.GetHeight() * (row - beginRow);
 		}
-		return wxRect(pos, m_ThumbSize);
+		return Rect((wxPoint)pos, (wxSize)m_ThumbSize);
 	}
-	wxSize ThumbView::GetFinalThumbSize() const
+	Size ThumbView::GetFinalThumbSize() const
 	{
 		return m_ThumbSize + m_Spacing;
 	}
@@ -197,7 +197,7 @@ namespace KxFramework::UI
 	{
 		return m_Items[i];
 	}
-	wxBitmap ThumbView::CreateThumb(const wxBitmap& bitmap, const wxSize& size) const
+	wxBitmap ThumbView::CreateThumb(const wxBitmap& bitmap, const Size& size) const
 	{
 		wxBitmap result(size, 32);
 		result.UseAlpha(true);
@@ -206,7 +206,7 @@ namespace KxFramework::UI
 		gcdc.SetBackground(*wxTRANSPARENT_BRUSH);
 		gcdc.Clear();
 
-		DrawablePanel::DrawScaledBitmap(gcdc.GetGraphicsContext(), bitmap, wxRect(wxPoint(0, 0), size), BitmapScaleMode::AspectFit);
+		DrawablePanel::DrawScaledBitmap(gcdc.GetGraphicsContext(), bitmap, Rect(Point(0, 0), (wxSize)size), BitmapScaleMode::AspectFit);
 		return result;
 	}
 
@@ -232,7 +232,7 @@ namespace KxFramework::UI
 			EnableSystemTheme();
 			SetDoubleBuffered(true);
 
-			m_ThumbSize = FromDIP(DefaultThumbSize);
+			m_ThumbSize = FromDIP((wxSize)DefaultThumbSize);
 			SetRowCount(0);
 
 			Bind(wxEVT_SIZE, &ThumbView::OnSize, this);
@@ -247,28 +247,28 @@ namespace KxFramework::UI
 		return false;
 	}
 
-	wxSize ThumbView::GetThumbSize() const
+	Size ThumbView::GetThumbSize() const
 	{
 		return m_ThumbSize;
 	}
-	void ThumbView::SetThumbSize(const wxSize& size)
+	void ThumbView::SetThumbSize(const Size& size)
 	{
 		m_ThumbSize = size;
-		if (!m_ThumbSize.IsFullySpecified() || m_ThumbSize == wxSize(0, 0))
+		if (!m_ThumbSize.IsFullySpecified() || m_ThumbSize == Size(0, 0))
 		{
-			m_ThumbSize = FromDIP(DefaultThumbSize);
+			m_ThumbSize = FromDIP((wxSize)DefaultThumbSize);
 		}
 
 		ScheduleRefresh();
 	}
-	wxSize ThumbView::GetSpacing() const
+	Size ThumbView::GetSpacing() const
 	{
 		return m_Spacing;
 	}
-	void ThumbView::SetSpacing(const wxSize& spacing)
+	void ThumbView::SetSpacing(const Size& spacing)
 	{
 		m_Spacing = spacing;
-		m_Spacing.SetDefaults(wxSize(0, 0));
+		m_Spacing.SetDefaults(Size(0, 0));
 
 		ScheduleRefresh();
 	}
@@ -298,7 +298,7 @@ namespace KxFramework::UI
 		ScheduleRefresh();
 		UpdateRowCount();
 
-		m_Items.emplace_back(ThumbViewItem(CreateThumb(bitmap, wxSize(m_ThumbSize).Scale(ThumbPaddingScale, ThumbPaddingScale))));
+		m_Items.emplace_back(ThumbViewItem(CreateThumb(bitmap, Size(m_ThumbSize).Scale(ThumbPaddingScale, ThumbPaddingScale))));
 		return m_Items.size() - 1;
 	}
 	size_t ThumbView::AddThumb(const String& filePath, wxBitmapType type, int index)

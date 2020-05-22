@@ -45,8 +45,8 @@ namespace KxFramework::UI
 			Dialog(wxWindow* parent,
 				   wxWindowID id,
 				   const String& title,
-				   const wxPoint& pos = wxDefaultPosition,
-				   const wxSize& size = wxDefaultSize,
+				   const Point& pos = wxDefaultPosition,
+				   const Size& size = wxDefaultSize,
 				   DialogStyle style = DefaultStyle
 			)
 			{
@@ -55,13 +55,13 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const String& title,
-						const wxPoint& pos = wxDefaultPosition,
-						const wxSize& size = wxDefaultSize,
+						const Point& pos = wxDefaultPosition,
+						const Size& size = wxDefaultSize,
 						DialogStyle style = DefaultStyle
 			);
 
 		public:
-			virtual void CenterIfNoPosition(const wxPoint& pos);
+			virtual void CenterIfNoPosition(const Point& pos);
 			StdDialogButtonSizer* CreateStdDialogButtonSizer(StdButton buttons, StdButton defaultButtons = StdButton::None);
 
 		public:

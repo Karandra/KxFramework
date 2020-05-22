@@ -10,10 +10,10 @@ namespace KxFramework::UI
 		private:
 			bool m_RefreshScheduled = false;
 			bool m_EraseBackground = false;
-			std::optional<wxRect> m_Rect;
+			std::optional<Rect> m_Rect;
 
 		private:
-			void DoScheduleRefresh(bool eraseBackground, const wxRect* rect = nullptr)
+			void DoScheduleRefresh(bool eraseBackground, const Rect* rect = nullptr)
 			{
 				m_RefreshScheduled = true;
 				m_EraseBackground = eraseBackground;
@@ -34,9 +34,17 @@ namespace KxFramework::UI
 					m_Rect = std::nullopt;
 				}
 			}
-			void DoOnInternalIdle(bool eraseBackground, std::optional<wxRect> rect)
+			void DoOnInternalIdle(bool eraseBackground, std::optional<Rect> rect)
 			{
-				wxWindow::Refresh(eraseBackground, rect ? &*rect : nullptr);
+				if (rect)
+				{
+					wxRect temp = *rect;
+					wxWindow::Refresh(eraseBackground, &temp);
+				}
+				else
+				{
+					wxWindow::Refresh(eraseBackground, nullptr);
+				}
 			}
 
 		protected:
@@ -71,7 +79,7 @@ namespace KxFramework::UI
 			{
 				DoScheduleRefresh(eraseBackground);
 			}
-			void ScheduleRefreshRect(const wxRect& rect, bool eraseBackground = true)
+			void ScheduleRefreshRect(const Rect& rect, bool eraseBackground = true)
 			{
 				DoScheduleRefresh(eraseBackground, &rect);
 			}

@@ -98,7 +98,7 @@ namespace KxFramework::UI::DataView
 			DropSource* m_DragSource = nullptr;
 			size_t m_DragCount = 0;
 
-			wxPoint m_DragStart = wxPoint(0, 0);
+			Point m_DragStart = Point(0, 0);
 			Row m_DropHintLine;
 			bool m_DropHint = false;
 
@@ -289,8 +289,8 @@ namespace KxFramework::UI::DataView
 			void RefreshColumn(const Column& column);
 
 			// Item rect
-			wxRect GetRowRect(Row row) const;
-			wxRect GetRowsRect(Row rowFrom, Row rowTo) const;
+			Rect GetRowRect(Row row) const;
+			Rect GetRowsRect(Row rowFrom, Row rowTo) const;
 
 			int GetRowStart(Row row) const;
 			int GetRowHeight(Row row) const;
@@ -311,17 +311,17 @@ namespace KxFramework::UI::DataView
 			bool EnableDND(std::unique_ptr<wxDataObjectSimple> dataObject, DNDOpType type, bool isPreferredDrop = false);
 			bool DisableDND(const wxDataFormat& format);
 
-			std::tuple<Row, Node*> DragDropHitTest(const wxPoint& pos) const;
+			std::tuple<Row, Node*> DragDropHitTest(const Point& pos) const;
 			void RemoveDropHint();
-			wxDragResult OnDragOver(const wxDataObjectSimple& dataObject, const wxPoint& pos, wxDragResult dragResult);
-			wxDragResult OnDropData(wxDataObjectSimple& dataObject, const wxPoint& pos, wxDragResult dragResult);
-			bool TestDropPossible(const wxDataObjectSimple& dataObject, const wxPoint& pos);
+			wxDragResult OnDragOver(const wxDataObjectSimple& dataObject, const Point& pos, wxDragResult dragResult);
+			wxDragResult OnDropData(wxDataObjectSimple& dataObject, const Point& pos, wxDragResult dragResult);
+			bool TestDropPossible(const wxDataObjectSimple& dataObject, const Point& pos);
 			
-			wxDragResult OnDragDropEnter(const wxDataObjectSimple& format, const wxPoint& pos, wxDragResult dragResult);
+			wxDragResult OnDragDropEnter(const wxDataObjectSimple& format, const Point& pos, wxDragResult dragResult);
 			void OnDragDropLeave();
 
 			// Scrolling
-			void ScrollWindow(int dx, int dy, const wxRect* rect = nullptr);
+			void ScrollWindow(int dx, int dy, const Rect* rect = nullptr);
 			void ScrollTo(Row row, size_t column = INVALID_COLUMN);
 			void EnsureVisible(Row row, size_t column = INVALID_COLUMN);
 
@@ -408,24 +408,24 @@ namespace KxFramework::UI::DataView
 			Row GetFirstVisibleRow() const;
 			Row GetLastVisibleRow() const;
 
-			void HitTest(const wxPoint& pos, Node** nodeOut = nullptr, Column** columnOut = nullptr);
-			void HitTest(const wxPoint& pos, Node*& node, Column*& column)
+			void HitTest(const Point& pos, Node** nodeOut = nullptr, Column** columnOut = nullptr);
+			void HitTest(const Point& pos, Node*& node, Column*& column)
 			{
 				return HitTest(pos, &node, &column);
 			}
-			Node* HitTestNode(const wxPoint& pos)
+			Node* HitTestNode(const Point& pos)
 			{
 				Node* node = nullptr;
 				HitTest(pos, &node);
 				return node;
 			}
-			Column* HitTestColumn(const wxPoint& pos)
+			Column* HitTestColumn(const Point& pos)
 			{
 				Column* column = nullptr;
 				HitTest(pos, nullptr, &column);
 				return column;
 			}
-			wxRect GetItemRect(const Node& item, const Column* column = nullptr);
+			Rect GetItemRect(const Node& item, const Column* column = nullptr);
 
 			// Rows
 			void Expand(Row row);

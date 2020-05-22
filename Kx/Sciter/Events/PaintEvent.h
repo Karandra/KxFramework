@@ -19,7 +19,7 @@ namespace KxFramework::Sciter
 
 		protected:
 			GraphicsContextHandle* m_GraphicsContext = nullptr;
-			wxRect m_Rect;
+			Rect m_Rect;
 
 		public:
 			PaintEvent(Host& host)
@@ -36,11 +36,11 @@ namespace KxFramework::Sciter
 			GraphicsContext GetGraphicsContext() const;
 			void SetGraphicsContext(GraphicsContextHandle* handle);
 
-			wxRect GetRect() const
+			Rect GetRect() const
 			{
 				return m_Rect;
 			}
-			void SetRect(const wxRect& rect)
+			void SetRect(const Rect& rect)
 			{
 				m_Rect = rect;
 			}

@@ -19,7 +19,7 @@ namespace
 
 namespace KxFramework::UI::DataView
 {
-	wxWindow* TimeEditor::CreateControl(wxWindow* parent, const wxRect& cellRect, const wxAny& value)
+	wxWindow* TimeEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value)
 	{
 		const DateTimeValue dateValue = FromAnyUsing<DateTimeValue>(value);
 

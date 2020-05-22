@@ -4,6 +4,7 @@
 #include "Kx/General/String.h"
 #include "Kx/General/DateTime.h"
 #include "Kx/General/StdID.h"
+#include "Kx/Drawing/Geometry.h"
 #include "Kx/EventSystem/Common.h"
 #include "Kx/EventSystem/Event.h"
 #include "Kx/UI/StdIcon.h"

@@ -13,10 +13,10 @@ namespace KxFramework::UI
 	}
 
 	bool ComboControl::Create(wxWindow* window,
-								wxWindowID id,
-								const String& value,
-								long style,
-								const wxValidator& validator
+							  wxWindowID id,
+							  const String& value,
+							  long style,
+							  const wxValidator& validator
 	)
 	{
 		if (wxComboCtrl::Create(window, id, value, wxDefaultPosition, wxDefaultSize, style, validator))

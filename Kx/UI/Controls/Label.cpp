@@ -35,13 +35,13 @@ namespace KxFramework::UI
 		}
 		return m_ColorDisabled;
 	}
-	wxSize Label::CalcBestSize(wxDC* dc)
+	Size Label::CalcBestSize(wxDC* dc)
 	{
-		const wxSize padding = ConvertDialogToPixels(wxSize(3, 1));
+		const Size padding = ConvertDialogToPixels(wxSize(3, 1));
 
 		if (m_IsMultilne)
 		{
-			wxSize textExtent;
+			Size textExtent;
 			if (dc)
 			{
 				textExtent = dc->GetMultiLineTextExtent(m_Label);
@@ -55,7 +55,7 @@ namespace KxFramework::UI
 		}
 		else
 		{
-			return (dc ? dc->GetTextExtent(m_Label) : GetTextExtent(m_Label)) + padding;
+			return (dc ? dc->GetTextExtent(m_Label) : GetTextExtent(m_Label)) + (wxSize)padding;
 		}
 	}
 
@@ -100,7 +100,7 @@ namespace KxFramework::UI
 			return;
 		}
 
-		const wxRect rect(wxPoint(0, 0), GetSize());
+		const Rect rect(Point(0, 0), GetSize());
 		const bool isSelected = m_State == wxCONTROL_FOCUSED || m_State == wxCONTROL_PRESSED;
 		const bool isEnabled = IsThisEnabled();
 		const Color color = GetStateColor();
@@ -127,10 +127,10 @@ namespace KxFramework::UI
 			image = m_IconDisabled;
 		}
 		dc.SetTextForeground(color);
-		wxRect labelRect = wxRect(rect);
+		Rect labelRect = Rect(rect);
 		labelRect.SetLeft(2);
 
-		wxSize contentSize;
+		Size contentSize;
 		if (m_IsMultilne)
 		{
 			contentSize = CalcBestSize(&dc);
@@ -138,24 +138,24 @@ namespace KxFramework::UI
 			int offset = 0;
 			if (image.IsOk())
 			{
-				wxRect rect2 = labelRect;
-				rect2.y += ConvertDialogToPixels(wxSize(0, 2)).GetHeight();
+				Rect rect2 = labelRect;
+				rect2.Y() += ConvertDialogToPixels(wxSize(0, 2)).GetHeight();
 
 				dc.DrawLabel({}, image, rect2, m_MultiLineAlignStyle);
 				offset = image.GetWidth() + ConvertDialogToPixels(wxSize(2, 0)).GetWidth();
 			}
 
-			wxPoint pos = labelRect.GetPosition();
-			pos.x += offset;
+			Point pos = labelRect.GetPosition();
+			pos.X() += offset;
 
 			int spacingV = ConvertDialogToPixels(wxSize(0, 1)).GetHeight();
-			pos.y += spacingV + spacingV / 2;
+			pos.Y() += spacingV + spacingV / 2;
 			dc.DrawText(label, pos);
 
 			// Calculate best size
 			if (image.IsOk())
 			{
-				contentSize.x += image.GetWidth();
+				contentSize.X() += image.GetWidth();
 			}
 			m_BestSize = contentSize;
 		}
@@ -168,11 +168,11 @@ namespace KxFramework::UI
 
 		if (m_Style & LabelStyle::HeaderLine)
 		{
-			wxPoint pos1 = wxPoint(contentSize.GetWidth() + 5, rect.GetHeight() / 2 + 1);
-			wxPoint pos2 = wxPoint(rect.GetWidth() - 4, rect.GetHeight() / 2 + 1);
+			Point pos1 = Point(contentSize.GetWidth() + 5, rect.GetHeight() / 2 + 1);
+			Point pos2 = Point(rect.GetWidth() - 4, rect.GetHeight() / 2 + 1);
 			if (image.IsOk())
 			{
-				pos1.x += image.GetWidth() + 4;
+				pos1.X() += image.GetWidth() + 4;
 			}
 
 			Color lineColor = wxSystemSettings::GetColour(wxSYS_COLOUR_SCROLLBAR);
@@ -238,7 +238,7 @@ namespace KxFramework::UI
 			m_Icon = image;
 			m_IconDisabled = image.ConvertToDisabled();
 
-			wxSize size = GetSize();
+			Size size = GetSize();
 			if (size.GetHeight() <= image.GetHeight())
 			{
 				SetSize(size.GetWidth(), image.GetHeight()+4);

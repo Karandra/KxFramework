@@ -10,8 +10,8 @@ namespace KxFramework::UI
 
 	void StdDialogButtonSizer::ConfigureButton(wxAnyButton* button)
 	{
-		wxSize size = button->GetBestSize();
-		const int defaultWidth = button->FromDIP(wxSize(72, wxDefaultCoord).GetWidth());
+		Size size = button->GetBestSize();
+		const int defaultWidth = button->FromDIP(Size(72, wxDefaultCoord).GetWidth());
 
 		if (size.GetWidth() < defaultWidth)
 		{
@@ -115,7 +115,7 @@ namespace KxFramework::UI
 			if (!m_HasFirstPrepend)
 			{
 				m_HasFirstPrepend = true;
-				InsertSpacer(0, button->FromDIP(wxSize(6, wxDefaultCoord).GetWidth()));
+				InsertSpacer(0, button->FromDIP(Size(6, wxDefaultCoord).GetWidth()));
 			}
 			Insert(1, button, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT, border);
 		}
@@ -134,7 +134,7 @@ namespace KxFramework::UI
 		{
 			if (button)
 			{
-				Add(button, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT, button->ConvertDialogToPixels(wxSize(2, 0)).GetWidth());
+				Add(button, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT, button->ConvertDialogToPixels(Size(2, 0)).GetWidth());
 			}
 		};
 		AddStdButton(m_ButtonAffirmative);

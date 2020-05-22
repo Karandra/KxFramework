@@ -11,7 +11,7 @@ namespace KxFramework::UI
 		private:
 			struct DrawInfo
 			{
-				wxSize ClientSize;
+				Size ClientSize;
 				int Increment = 0;
 				int ItemsX = 0;
 				int ItemsY = 0;
@@ -43,21 +43,21 @@ namespace KxFramework::UI
 				return {240, 120};
 			}
 
-			wxPoint CoordToXY(const DrawInfo& drawInfo, const wxPoint& pos) const;
-			int CoordToIndex(const DrawInfo& drawInfo, const wxPoint& pos) const;
+			Point CoordToXY(const DrawInfo& drawInfo, const Point& pos) const;
+			int CoordToIndex(const DrawInfo& drawInfo, const Point& pos) const;
 
-			wxPoint IndexToXY(const DrawInfo& drawInfo, int index) const;
-			int XYToIndex(const DrawInfo& drawInfo, const wxPoint& xy) const;
+			Point IndexToXY(const DrawInfo& drawInfo, int index) const;
+			int XYToIndex(const DrawInfo& drawInfo, const Point& xy) const;
 
-			wxRect XYToCoordRect(const DrawInfo& drawInfo, const wxPoint& xy) const;
-			wxRect IndexToCoordRect(const DrawInfo& drawInfo, int index) const;
+			Rect XYToCoordRect(const DrawInfo& drawInfo, const Point& xy) const;
+			Rect IndexToCoordRect(const DrawInfo& drawInfo, int index) const;
 
 		public:
 			ClusterMap() = default;
 			ClusterMap(wxWindow* parent,
 					   wxWindowID id,
-					   const wxPoint& pos = wxDefaultPosition,
-					   const wxSize& size = wxDefaultSize,
+					   const Point& pos = wxDefaultPosition,
+					   const Size& size = wxDefaultSize,
 					   long style = 0
 			)
 			{
@@ -65,22 +65,22 @@ namespace KxFramework::UI
 			}
 			bool Create(wxWindow* parent,
 						wxWindowID id,
-						const wxPoint& pos = wxDefaultPosition,
-						const wxSize& size = wxDefaultSize,
+						const Point& pos = wxDefaultPosition,
+						const Size& size = wxDefaultSize,
 						long style = 0
 			);
 			~ClusterMap();
 
 		public:
-			int HitTest(const wxPoint& pos) const
+			int HitTest(const Point& pos) const
 			{
 				return CoordToIndex(GetDrawInfo(), pos);
 			}
-			wxRect GetItemRect(int x, int y) const
+			Rect GetItemRect(int x, int y) const
 			{
 				return XYToCoordRect(GetDrawInfo(), {x, y});
 			}
-			wxRect GetItemRect(int index) const
+			Rect GetItemRect(int index) const
 			{
 				return IndexToCoordRect(GetDrawInfo(), index);
 			}
