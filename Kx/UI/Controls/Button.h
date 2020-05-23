@@ -20,9 +20,9 @@ namespace KxFramework::UI
 		NoText = wxBU_NOTEXT
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::ButtonStyle);
+	Kx_DeclareFlagSet(UI::ButtonStyle);
 }
 
 namespace KxFramework::UI
@@ -30,7 +30,7 @@ namespace KxFramework::UI
 	class KX_API Button: public WindowRefreshScheduler<wxSystemThemedControl<wxAnyButton>>, public WithDropdownMenu
 	{
 		public:
-			static constexpr ButtonStyle DefaultStyle = ButtonStyle::None;
+			static constexpr FlagSet<ButtonStyle> DefaultStyle = ButtonStyle::None;
 
 			KxEVENT_MEMBER(wxCommandEvent, Click);
 			KxEVENT_MEMBER(wxContextMenuEvent, Menu);
@@ -67,7 +67,7 @@ namespace KxFramework::UI
 				   const String& label,
 				   const Point& pos,
 				   const Size& size,
-				   ButtonStyle style = DefaultStyle,
+				   FlagSet<ButtonStyle> style = DefaultStyle,
 				   const wxValidator& validator = wxDefaultValidator
 			)
 			{
@@ -76,7 +76,7 @@ namespace KxFramework::UI
 			Button(wxWindow* parent,
 				   wxWindowID id,
 				   const String& label = {},
-				   ButtonStyle style = DefaultStyle,
+				   FlagSet<ButtonStyle> style = DefaultStyle,
 				   const wxValidator& validator = wxDefaultValidator
 			)
 			{
@@ -87,13 +87,13 @@ namespace KxFramework::UI
 						const String& label,
 						const Point& pos,
 						const Size& size,
-						ButtonStyle style = DefaultStyle,
+						FlagSet<ButtonStyle> style = DefaultStyle,
 						const wxValidator& validator = wxDefaultValidator
 			);
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const String& label = {},
-						ButtonStyle style = DefaultStyle,
+						FlagSet<ButtonStyle> style = DefaultStyle,
 						const wxValidator& validator = wxDefaultValidator
 			)
 			{

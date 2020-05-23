@@ -5,7 +5,7 @@
 
 namespace KxFramework::Shell::Private
 {
-	std::optional<uint32_t> MapSHWindowCommand(SHWindowCommand option) noexcept
+	std::optional<uint32_t> MapSHWindowCommand(FlagSet<SHWindowCommand> option) noexcept
 	{
 		// Show
 		if (option & SHWindowCommand::Show)
@@ -63,7 +63,7 @@ namespace KxFramework::Shell::Private
 		}
 		return {};
 	}
-	SHWindowCommand MapSHWindowCommand(uint32_t option) noexcept
+	FlagSet<SHWindowCommand> MapSHWindowCommand(uint32_t option) noexcept
 	{
 		switch (option)
 		{

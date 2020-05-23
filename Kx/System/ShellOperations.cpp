@@ -29,10 +29,10 @@
 
 namespace
 {
-	constexpr UINT MapSHGetFileIconFlag(KxFramework::SHGetFileIconFlag flags) noexcept
-	{
-		using namespace KxFramework;
+	using namespace KxFramework;
 
+	constexpr UINT MapSHGetFileIconFlag(FlagSet<SHGetFileIconFlag> flags) noexcept
+	{
 		UINT nativeFlags = SHGFI_ICON;
 		Utility::AddFlagRef(nativeFlags, SHGFI_SMALLICON, flags & SHGetFileIconFlag::Small);
 		Utility::AddFlagRef(nativeFlags, SHGFI_LARGEICON, flags & SHGetFileIconFlag::Large);
@@ -54,10 +54,8 @@ namespace
 		return {};
 	}
 
-	KxFramework::String DoQueryAssociation(const KxFramework::String& value, KxFramework::SHQueryAssociation option, KxFramework::Any* extraData)
+	String DoQueryAssociation(const String& value, SHQueryAssociation option, Any* extraData)
 	{
-		using namespace KxFramework;
-
 		auto Query = [&](ASSOCSTR option) -> String
 		{
 			constexpr ASSOCF flags = ASSOCF_INIT_DEFAULTTOSTAR|ASSOCF_NOTRUNCATE|ASSOCF_REMAPRUNDLL;
@@ -157,7 +155,7 @@ namespace
 
 namespace KxFramework::Shell
 {
-	bool FileOperation(SHOperationType opType, const FSPath& source, const FSPath& destination, wxWindow* window, SHOperationFlags flags)
+	bool FileOperation(SHOperationType opType, const FSPath& source, const FSPath& destination, wxWindow* window, FlagSet<SHOperationFlags> flags)
 	{
 		// SHFileOperation doesn't work for paths longer than 'MAX_PATH'
 		if (source.GetPathLength() >= MAX_PATH || destination.GetPathLength() >= MAX_PATH)
@@ -307,8 +305,8 @@ namespace KxFramework::Shell
 				 const String& command,
 				 const String& parameters,
 				 const FSPath& workingDirectory,
-				 SHWindowCommand showWindow,
-				 SHExexuteFlag flags
+				 FlagSet<SHWindowCommand> showWindow,
+				 FlagSet<SHExexuteFlag> flags
 	)
 	{
 		SHELLEXECUTEINFOW executeInfo = {};
@@ -334,7 +332,7 @@ namespace KxFramework::Shell
 		COMInitGuard comInit(COMThreadingModel::Apartment, COMInitFlag::DisableOLE1DDE);
 		return ::ShellExecuteExW(&executeInfo);
 	}
-	bool OpenURI(const wxWindow* window, const URI& uri, SHWindowCommand showWindow, SHExexuteFlag flags)
+	bool OpenURI(const wxWindow* window, const URI& uri, FlagSet<SHWindowCommand> showWindow, FlagSet<SHExexuteFlag> flags)
 	{
 		return Execute(window, uri.BuildUnescapedURI(), {}, {}, {}, showWindow, flags);
 	}
@@ -353,7 +351,7 @@ namespace KxFramework::Shell
 		return hr;
 	}
 
-	wxIcon GetFileIcon(const FSPath& path, SHGetFileIconFlag flags)
+	wxIcon GetFileIcon(const FSPath& path, FlagSet<SHGetFileIconFlag> flags)
 	{
 		SHFILEINFOW shellInfo = {};
 
@@ -364,7 +362,7 @@ namespace KxFramework::Shell
 		}
 		return {};
 	}
-	wxIcon GetFileIcon(const FileItem& item, SHGetFileIconFlag flags)
+	wxIcon GetFileIcon(const FileItem& item, FlagSet<SHGetFileIconFlag> flags)
 	{
 		SHFILEINFOW shellInfo = {};
 
@@ -388,7 +386,7 @@ namespace KxFramework::Shell
 	}
 	String QueryAssociation(const UniversallyUniqueID& classID, SHQueryAssociation option, Any* extraData)
 	{
-		return DoQueryAssociation(classID.ToString(UUIDToStringFormat::CurlyBraces), option, extraData);
+		return DoQueryAssociation(classID.ToString(UUIDFormat::CurlyBraces), option, extraData);
 	}
 
 	String GetLocalizedName(const FSPath& path, int* resourceID)
@@ -410,7 +408,7 @@ namespace KxFramework::Shell
 		return ::SHSetLocalizedName(pathString.wc_str(), resourse.wc_str(), resourceID);
 	}
 
-	FSPath GetKnownDirectory(KnownDirectoryID id, SHGetKnownDirectoryFlag flags)
+	FSPath GetKnownDirectory(KnownDirectoryID id, FlagSet<SHGetKnownDirectoryFlag> flags)
 	{
 		FSPath result;
 		bool isEnvUsed = false;

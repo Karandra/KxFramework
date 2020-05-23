@@ -72,8 +72,8 @@ namespace KxFramework
 			std::optional<uint32_t> GetLCID() const noexcept;
 			std::optional<Localization::LangID> GetLangID() const noexcept;
 
-			std::optional<String> GetMonthName(Month month, UnitNameFlag flags = UnitNameFlag::None) const;
-			std::optional<String> GetWeekDayName(WeekDay weekDay, UnitNameFlag flags = UnitNameFlag::None) const;
+			std::optional<String> GetMonthName(Month month, FlagSet<UnitNameFlag> flags = UnitNameFlag::None) const;
+			std::optional<String> GetWeekDayName(WeekDay weekDay, FlagSet<UnitNameFlag> flags = UnitNameFlag::None) const;
 
 		public:
 			explicit operator bool() const noexcept

@@ -57,7 +57,7 @@ namespace KxFramework::System
 	{
 		private:
 			wxEvtHandler* m_EvtHandler = nullptr;
-			CreateSystemProcessFlag m_Flags = CreateSystemProcessFlag::None;
+			FlagSet<CreateSystemProcessFlag> m_Flags;
 
 			STARTUPINFOW m_StartupInfo = {};
 			PROCESS_INFORMATION m_ProcessInfo = {};
@@ -95,7 +95,7 @@ namespace KxFramework::System
 			void SendProcessTerminationEvent();
 
 		public:
-			CreateProcessExecutor(wxEvtHandler* evtHandler, CreateSystemProcessFlag flags);
+			CreateProcessExecutor(wxEvtHandler* evtHandler, FlagSet<CreateSystemProcessFlag> flags);
 			~CreateProcessExecutor();
 
 		public:

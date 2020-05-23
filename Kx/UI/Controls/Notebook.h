@@ -19,9 +19,9 @@ namespace KxFramework::UI
 		NoPageTheme = wxNB_NOPAGETHEME,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::NotebookStyle);
+	Kx_DeclareFlagSet(UI::NotebookStyle);
 }
 
 namespace KxFramework::UI
@@ -29,20 +29,20 @@ namespace KxFramework::UI
 	class KX_API Notebook: public KxFramework::WithImageListWrapper<wxNotebook>
 	{
 		public:
-			static constexpr NotebookStyle DefaultStyle = NotebookStyle::Top;
+			static constexpr FlagSet<NotebookStyle> DefaultStyle = NotebookStyle::Top;
 
 		public:
 			Notebook() = default;
 			Notebook(wxWindow* parent,
 					 wxWindowID id,
-					 NotebookStyle style = DefaultStyle
+					 FlagSet<NotebookStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, id, style);
 			}
 			bool Create(wxWindow* parent,
 						wxWindowID id,
-						NotebookStyle style = DefaultStyle
+						FlagSet<NotebookStyle> style = DefaultStyle
 			);
 
 		public:

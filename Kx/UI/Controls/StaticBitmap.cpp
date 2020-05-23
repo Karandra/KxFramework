@@ -18,11 +18,11 @@ namespace KxFramework::UI
 	bool StaticBitmap::Create(wxWindow* parent,
 							  wxWindowID id,
 							  const wxBitmap& bitmap,
-							  WindowStyle style
+							  FlagSet<WindowStyle> style
 	)
 	{
 		SetBackgroundStyle(wxBG_STYLE_PAINT);
-		if (wxGenericStaticBitmap::Create(parent, id, bitmap, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style)))
+		if (wxGenericStaticBitmap::Create(parent, id, bitmap, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style.ToInt()))
 		{
 			m_InitialSize = bitmap.IsOk() ? bitmap.GetSize() : this->GetSize();
 

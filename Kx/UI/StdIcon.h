@@ -22,11 +22,7 @@ namespace KxFramework
 		Neutral = 1 << 7,
 		Header = 1 << 8,
 	};
-
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowEverything(StdIcon);
-	}
+	Kx_DeclareFlagSet(StdIcon);
 }
 
 namespace KxFramework::UI
@@ -42,7 +38,7 @@ namespace KxFramework::UI
 
 		return stdIcon;
 	}
-	constexpr inline int ToWxStdIcon(StdIcon stdIcon) noexcept
+	constexpr inline int ToWxStdIcon(FlagSet<StdIcon> stdIcon) noexcept
 	{
 		int wxStdIcon = wxICON_NONE;
 		Utility::AddFlagRef(wxStdIcon, wxICON_ERROR, stdIcon & StdIcon::Error);

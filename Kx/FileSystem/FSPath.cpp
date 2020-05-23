@@ -333,7 +333,7 @@ namespace KxFramework
 		}
 		return count;
 	}
-	String FSPath::GetFullPath(FSPathNamespace withNamespace, FSPathFormat format) const
+	String FSPath::GetFullPath(FSPathNamespace withNamespace, FlagSet<FSPathFormat> format) const
 	{
 		String result = ConcatWithNamespace(m_Path, withNamespace);
 		if (!result.IsEmpty())

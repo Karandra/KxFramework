@@ -11,7 +11,7 @@ namespace KxFramework::Private
 		}
 		else
 		{
-			return ToInt<wxDateTime::Month>(month);
+			return static_cast<wxDateTime::Month>(month);
 		}
 	}
 	constexpr Month MapMonth(wxDateTime::Month month) noexcept
@@ -22,7 +22,7 @@ namespace KxFramework::Private
 		}
 		else
 		{
-			return FromInt<Month>(month);
+			return static_cast<Month>(month);
 		}
 	}
 
@@ -190,7 +190,7 @@ namespace KxFramework::Private
 		};
 		return wxDateTime::Gregorian;
 	}
-	constexpr wxDateTime::NameFlags MapWeekDayName(UnitNameFlag flags) noexcept
+	constexpr wxDateTime::NameFlags MapWeekDayName(FlagSet<UnitNameFlag> flags) noexcept
 	{
 		if (flags & UnitNameFlag::Abbreviated)
 		{

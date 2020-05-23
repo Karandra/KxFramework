@@ -8,7 +8,10 @@
 
 namespace
 {
-	const wxChar* GetStringOrNull(const KxFramework::String& text)
+	using namespace KxFramework;
+	using namespace KxFramework::UI;
+
+	const wxChar* GetStringOrNull(const String& text)
 	{
 		return text.IsEmpty() ? nullptr : text.wc_str();
 	}
@@ -105,9 +108,8 @@ namespace
 		return id;
 	}
 
-	constexpr const wchar_t* MapIconID(KxFramework::StdIcon id) noexcept
+	constexpr const wchar_t* MapIconID(StdIcon id) noexcept
 	{
-		using namespace KxFramework;
 		enum class TDIIcon
 		{
 			ICON_NONE = 0,
@@ -178,7 +180,7 @@ namespace
 		}
 		return reinterpret_cast<LPCWSTR>(-1);
 	}
-	constexpr TASKDIALOG_FLAGS MapTaskDialogStyle(KxFramework::UI::TaskDialogStyle style) noexcept
+	constexpr TASKDIALOG_FLAGS MapTaskDialogStyle(FlagSet<TaskDialogStyle> style) noexcept
 	{
 		using namespace KxFramework;
 		using namespace KxFramework::UI;
@@ -298,7 +300,7 @@ namespace KxFramework::UI::Private
 		m_DialogConfig.nDefaultRadioButton = m_TaskDialog.m_DefaultRadioButton;
 		Utility::AddFlagRef(m_DialogConfig.dwFlags, TDF_NO_DEFAULT_RADIO_BUTTON, m_TaskDialog.m_DefaultRadioButton == wxID_NONE);
 	}
-	void TaskDialogNativeInfo::UpdateStdButtons(StdButton buttons)
+	void TaskDialogNativeInfo::UpdateStdButtons(FlagSet<StdButton> buttons)
 	{
 		m_DialogConfig.dwCommonButtons = 0;
 		if (buttons & StdButton::OK)
@@ -330,7 +332,7 @@ namespace KxFramework::UI::Private
 			m_DialogConfig.dwCommonButtons |= TDCBF_YES_BUTTON;
 		}
 	}
-	void TaskDialogNativeInfo::UpdateAutoDefaultButton(StdButton buttons)
+	void TaskDialogNativeInfo::UpdateAutoDefaultButton(FlagSet<StdButton> buttons)
 	{
 		m_DialogConfig.nDefaultButton = 0;
 		if (buttons & StdButton::Cancel)

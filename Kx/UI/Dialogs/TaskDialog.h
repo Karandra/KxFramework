@@ -29,9 +29,9 @@ namespace KxFramework::UI
 		SizeToContent = 1 << 10
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::TaskDialogStyle);
+	Kx_DeclareFlagSet(UI::TaskDialogStyle);
 }
 
 namespace KxFramework::UI
@@ -41,8 +41,8 @@ namespace KxFramework::UI
 		friend class Private::TaskDialogNativeInfo;
 
 		public:
-			static constexpr TaskDialogStyle DefaultStyle = TaskDialogStyle::None;
-			static constexpr StdButton DefaultButtons = StdButton::OK;
+			static constexpr FlagSet<TaskDialogStyle> DefaultStyle = TaskDialogStyle::None;
+			static constexpr FlagSet<StdButton> DefaultButtons = StdButton::OK;
 
 		private:
 			struct ButtonItem final
@@ -53,7 +53,7 @@ namespace KxFramework::UI
 
 		private:
 			std::unique_ptr<Private::TaskDialogNativeInfo> m_NativeInfo;
-			TaskDialogStyle m_Style = TaskDialogStyle::None;
+			FlagSet<TaskDialogStyle> m_Style;
 			wxWindow* m_Parent = nullptr;
 			void* m_Handle = nullptr;
 
@@ -70,7 +70,7 @@ namespace KxFramework::UI
 			String m_ButtonCollapse;
 			String m_FooterMessage;
 			String m_CheckBoxLabel;
-			StdButton m_StandardButtons = DefaultButtons;
+			FlagSet<StdButton> m_StandardButtons = DefaultButtons;
 			wxWindowID m_DefaultButton = wxID_NONE;
 			wxWindowID m_DefaultRadioButton = wxID_NONE;
 			wxWindowID m_SelectedRadioButton = wxID_NONE;
@@ -124,17 +124,17 @@ namespace KxFramework::UI
 					   wxWindowID id,
 					   String caption = {},
 					   String message = {},
-					   StdButton buttons = DefaultButtons,
+					   FlagSet<StdButton> buttons = DefaultButtons,
 					   StdIcon mainIcon = StdIcon::None,
-					   TaskDialogStyle style = DefaultStyle
+					   FlagSet<TaskDialogStyle> style = DefaultStyle
 			);
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						String caption = {},
 						String message = {},
-						StdButton buttons = DefaultButtons,
+						FlagSet<StdButton> buttons = DefaultButtons,
 						StdIcon mainIcon = StdIcon::None,
-						TaskDialogStyle style = DefaultStyle
+						FlagSet<TaskDialogStyle> style = DefaultStyle
 			);
 			~TaskDialog();
 
@@ -208,7 +208,7 @@ namespace KxFramework::UI
 			void SetCheckBoxLabel(String text);
 
 			// Buttons
-			void SetStandardButtons(StdButton buttons)
+			void SetStandardButtons(FlagSet<StdButton> buttons)
 			{
 				m_StandardButtons = buttons;
 			}

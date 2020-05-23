@@ -282,15 +282,15 @@ namespace KxFramework
 
 namespace KxFramework
 {
-	int String::DoCompare(std::string_view left, std::string_view right, StringOpFlag flags) noexcept
+	int String::DoCompare(std::string_view left, std::string_view right, FlagSet<StringOpFlag> flags) noexcept
 	{
 		return CompareStrings(left, right, flags & StringOpFlag::IgnoreCase);
 	}
-	int String::DoCompare(std::wstring_view left, std::wstring_view right, StringOpFlag flags) noexcept
+	int String::DoCompare(std::wstring_view left, std::wstring_view right, FlagSet<StringOpFlag> flags) noexcept
 	{
 		return CompareStrings(left, right, flags & StringOpFlag::IgnoreCase);
 	}
-	int String::DoCompare(wxUniChar left, wxUniChar right, StringOpFlag flags) noexcept
+	int String::DoCompare(wxUniChar left, wxUniChar right, FlagSet<StringOpFlag> flags) noexcept
 	{
 		if (flags & StringOpFlag::IgnoreCase)
 		{
@@ -302,11 +302,11 @@ namespace KxFramework
 		}
 	}
 
-	bool String::DoMatches(std::string_view name, std::string_view expression, StringOpFlag flags) noexcept
+	bool String::DoMatches(std::string_view name, std::string_view expression, FlagSet<StringOpFlag> flags) noexcept
 	{
 		return IsNameInExpression(name, expression, flags & StringOpFlag::IgnoreCase);
 	}
-	bool String::DoMatches(std::wstring_view name, std::wstring_view expression, StringOpFlag flags) noexcept
+	bool String::DoMatches(std::wstring_view name, std::wstring_view expression, FlagSet<StringOpFlag> flags) noexcept
 	{
 		return IsNameInExpression(name, expression, flags & StringOpFlag::IgnoreCase);
 	}
@@ -321,19 +321,19 @@ namespace KxFramework
 	}
 
 	// Comparison
-	bool String::DoStartsWith(std::string_view pattern, String* rest, StringOpFlag flags) const
+	bool String::DoStartsWith(std::string_view pattern, String* rest, FlagSet<StringOpFlag> flags) const
 	{
 		String patternCopy = FromView(pattern);
 		return StartsWith(patternCopy, rest, flags);
 	}
-	bool String::DoStartsWith(std::wstring_view pattern, String* rest, StringOpFlag flags) const
+	bool String::DoStartsWith(std::wstring_view pattern, String* rest, FlagSet<StringOpFlag> flags) const
 	{
 		if (pattern.empty())
 		{
 			return false;
 		}
 
-		Utility::RemoveFlag(flags, StringOpFlag::FromEnd);
+		flags.Remove(StringOpFlag::FromEnd);
 		const size_t pos = Find(pattern, 0, flags);
 		if (pos == 0)
 		{
@@ -346,12 +346,12 @@ namespace KxFramework
 		return false;
 	}
 	
-	bool String::DoEndsWith(std::string_view pattern, String* rest, StringOpFlag flags) const
+	bool String::DoEndsWith(std::string_view pattern, String* rest, FlagSet<StringOpFlag> flags) const
 	{
 		String patternCopy = FromView(pattern);
 		return EndsWith(patternCopy, rest, flags);
 	}
-	bool String::DoEndsWith(std::wstring_view pattern, String* rest, StringOpFlag flags) const
+	bool String::DoEndsWith(std::wstring_view pattern, String* rest, FlagSet<StringOpFlag> flags) const
 	{
 		if (pattern.empty())
 		{
@@ -371,7 +371,7 @@ namespace KxFramework
 	}
 
 	// Substring extraction
-	String String::AfterFirst(wxUniChar c, String* rest, StringOpFlag flags) const
+	String String::AfterFirst(wxUniChar c, String* rest, FlagSet<StringOpFlag> flags) const
 	{
 		const size_t pos = Find(c, 0, flags);
 		if (pos != npos)
@@ -384,7 +384,7 @@ namespace KxFramework
 		}
 		return {};
 	}
-	String String::AfterLast(wxUniChar c, String* rest, StringOpFlag flags) const
+	String String::AfterLast(wxUniChar c, String* rest, FlagSet<StringOpFlag> flags) const
 	{
 		const size_t pos = Find(c, 0, flags|StringOpFlag::FromEnd);
 		if (pos != npos)
@@ -398,7 +398,7 @@ namespace KxFramework
 		return {};
 	}
 
-	String String::BeforeFirst(wxUniChar c, String* rest, StringOpFlag flags) const
+	String String::BeforeFirst(wxUniChar c, String* rest, FlagSet<StringOpFlag> flags) const
 	{
 		const size_t pos = Find(c, 0, flags);
 		if (pos != npos)
@@ -411,7 +411,7 @@ namespace KxFramework
 		}
 		return {};
 	}
-	String String::BeforeLast(wxUniChar c, String* rest, StringOpFlag flags) const
+	String String::BeforeLast(wxUniChar c, String* rest, FlagSet<StringOpFlag> flags) const
 	{
 		const size_t pos = Find(c, 0, flags|StringOpFlag::FromEnd);
 		if (pos != npos)
@@ -438,12 +438,12 @@ namespace KxFramework
 	}
 
 	// Searching and replacing
-	size_t String::DoFind(std::string_view pattern, size_t offset, StringOpFlag flags) const
+	size_t String::DoFind(std::string_view pattern, size_t offset, FlagSet<StringOpFlag> flags) const
 	{
 		String patternCopy = FromView(pattern);
 		return Find(StringViewOf(patternCopy), offset, flags);
 	}
-	size_t String::DoFind(std::wstring_view pattern, size_t offset, StringOpFlag flags) const
+	size_t String::DoFind(std::wstring_view pattern, size_t offset, FlagSet<StringOpFlag> flags) const
 	{
 		if (!m_String.IsEmpty() && offset < m_String.length())
 		{
@@ -475,7 +475,7 @@ namespace KxFramework
 		}
 		return npos;
 	}
-	size_t String::DoFind(wxUniChar pattern, size_t offset, StringOpFlag flags) const noexcept
+	size_t String::DoFind(wxUniChar pattern, size_t offset, FlagSet<StringOpFlag> flags) const noexcept
 	{
 		if (m_String.IsEmpty() || offset >= m_String.length())
 		{
@@ -505,13 +505,13 @@ namespace KxFramework
 		return npos;
 	}
 
-	size_t String::DoReplace(std::string_view pattern, std::string_view replacement, size_t offset, StringOpFlag flags)
+	size_t String::DoReplace(std::string_view pattern, std::string_view replacement, size_t offset, FlagSet<StringOpFlag> flags)
 	{
 		String patternCopy = FromView(pattern);
 		String replacementCopy = FromView(replacement);
 		return Replace(StringViewOf(patternCopy), StringViewOf(replacementCopy), offset, flags);
 	}
-	size_t String::DoReplace(std::wstring_view pattern, std::wstring_view replacement, size_t offset, StringOpFlag flags)
+	size_t String::DoReplace(std::wstring_view pattern, std::wstring_view replacement, size_t offset, FlagSet<StringOpFlag> flags)
 	{
 		const size_t replacementLength = replacement.length();
 		const size_t patternLength = pattern.length();
@@ -587,7 +587,7 @@ namespace KxFramework
 		}
 		return replacementCount;
 	}
-	size_t String::DoReplace(wxUniChar pattern, wxUniChar replacement, size_t offset, StringOpFlag flags) noexcept
+	size_t String::DoReplace(wxUniChar pattern, wxUniChar replacement, size_t offset, FlagSet<StringOpFlag> flags) noexcept
 	{
 		if (m_String.IsEmpty() || offset >= m_String.length())
 		{

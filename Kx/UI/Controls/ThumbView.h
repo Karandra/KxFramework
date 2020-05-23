@@ -35,7 +35,7 @@ namespace KxFramework::UI
 	class KX_API ThumbView: public wxSystemThemedControl<WindowRefreshScheduler<wxVScrolledWindow>>
 	{
 		public:
-			static constexpr WindowStyle DefaultStyle = WindowStyle::None;
+			static constexpr FlagSet<WindowStyle> DefaultStyle = WindowStyle::None;
 			static inline const Size DefaultThumbSize = Size(256, 144);
 			static constexpr double ThumbPaddingScale = 0.9;
 
@@ -80,14 +80,14 @@ namespace KxFramework::UI
 			ThumbView() = default;
 			ThumbView(wxWindow* parent,
 					  wxWindowID id,
-					  WindowStyle style = DefaultStyle
+					  FlagSet<WindowStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, id, style);
 			}
 			bool Create(wxWindow* parent,
 						wxWindowID id,
-						WindowStyle style = DefaultStyle
+						FlagSet<WindowStyle> style = DefaultStyle
 			);
 
 		public:

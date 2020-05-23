@@ -103,7 +103,7 @@ namespace KxFramework::UI::DataView
 	bool ComboCtrl::Create(wxWindow* window)
 	{
 		m_Sizer = new wxBoxSizer(IsOptionEnabled(ComboCtrlOption::HorizontalLayout) ? wxHORIZONTAL : wxVERTICAL);
-		m_BackgroundWindow = new KxFramework::UI::Panel(window, wxID_NONE, EnumClass::Combine<WindowStyle>(Panel::DefaultStyle, WindowBorder::Theme));
+		m_BackgroundWindow = new KxFramework::UI::Panel(window, wxID_NONE, CombineFlags<WindowStyle>(*Panel::DefaultStyle, WindowBorder::Theme));
 		m_BackgroundWindow->SetSizer(m_Sizer);
 		if (ShouldInheritColours())
 		{
@@ -133,7 +133,7 @@ namespace KxFramework::UI::DataView
 
 	bool ComboCtrl::Create(wxWindow* parent,
 						   wxWindowID id,
-						   long style,
+						   FlagSet<ComboBoxStyle>  style,
 						   const wxValidator& validator
 	)
 	{

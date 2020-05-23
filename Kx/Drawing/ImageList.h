@@ -15,11 +15,7 @@ namespace KxFramework
 		Selected = 1 << 1,
 		Focused = 1 << 2,
 	};
-
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowEverything(ImageListDrawItemFlag);
-	}
+	Kx_DeclareFlagSet(ImageListDrawItemFlag);
 }
 
 namespace KxFramework
@@ -34,7 +30,7 @@ namespace KxFramework
 
 		private:
 			void OnCreate(int width, int height, bool mask, int initialCount) noexcept;
-			bool DoDraw(wxDC& dc, int index, const Rect& rect, DrawItemFlag flags = DrawItemFlag::None, int overlayIndex = Drawing::InvalidImageIndex) noexcept;
+			bool DoDraw(wxDC& dc, int index, const Rect& rect, FlagSet<DrawItemFlag> flags = {}, int overlayIndex = Drawing::InvalidImageIndex) noexcept;
 
 		public:
 			ImageList() noexcept;
@@ -77,20 +73,20 @@ namespace KxFramework
 			void SetBackgroundColor(const Color& color) noexcept;
 			bool SetOverlayImage(int index, int overlayIndex) noexcept;
 
-			bool Draw(wxDC& dc, int index, const Point& point, DrawItemFlag flags = DrawItemFlag::None) noexcept
+			bool Draw(wxDC& dc, int index, const Point& point, FlagSet<DrawItemFlag> flags = {}) noexcept
 			{
 				return DoDraw(dc, index, Rect(point, Size::UnspecifiedSize()), flags);
 			}
-			bool Draw(wxDC& dc, int index, const Rect& rect, DrawItemFlag flags = DrawItemFlag::None) noexcept
+			bool Draw(wxDC& dc, int index, const Rect& rect, FlagSet<DrawItemFlag> flags = {}) noexcept
 			{
 				return DoDraw(dc, index, rect, flags);
 			}
 
-			bool DrawOverlay(wxDC& dc, int index, int overlayIndex, const Point& point, DrawItemFlag flags = DrawItemFlag::None) noexcept
+			bool DrawOverlay(wxDC& dc, int index, int overlayIndex, const Point& point, FlagSet<DrawItemFlag> flags = {}) noexcept
 			{
 				return DoDraw(dc, index, Rect(point, Size::UnspecifiedSize()), flags, overlayIndex);
 			}
-			bool DrawOverlay(wxDC& dc, int index, int overlayIndex, const Rect& rect, DrawItemFlag flags = DrawItemFlag::None) noexcept
+			bool DrawOverlay(wxDC& dc, int index, int overlayIndex, const Rect& rect, FlagSet<DrawItemFlag> flags = {}) noexcept
 			{
 				return DoDraw(dc, index, rect, flags, overlayIndex);
 			}

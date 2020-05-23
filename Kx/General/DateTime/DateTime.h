@@ -77,8 +77,8 @@ namespace KxFramework
 				return wxDateTime::GetNumberOfDays(Private::MapMonth(month), year, Private::MapCalendar(calendar));
 			}
 
-			static String GetMonthName(Month month, const Locale& locale, UnitNameFlag flags = UnitNameFlag::None);
-			static String GetWeekDayName(WeekDay weekDay, const Locale& locale, UnitNameFlag flags = UnitNameFlag::None);
+			static String GetMonthName(Month month, const Locale& locale, FlagSet<UnitNameFlag> flags = UnitNameFlag::None);
+			static String GetWeekDayName(WeekDay weekDay, const Locale& locale, FlagSet<UnitNameFlag> flags = UnitNameFlag::None);
 
 		private:
 			wxDateTime m_Value;
@@ -361,8 +361,8 @@ namespace KxFramework
 				return Format(String(format), tz);
 			}
 
-			String FormatDate(const Locale& locale, DateFormatFlag flags = DateFormatFlag::None, const TimeZoneOffset& tz = TimeZone::Local) const;
-			String FormatTime(const Locale& locale, TimeFormatFlag flags = TimeFormatFlag::None, const TimeZoneOffset& tz = TimeZone::Local) const;
+			String FormatDate(const Locale& locale, FlagSet<DateFormatFlag> flags = DateFormatFlag::None, const TimeZoneOffset& tz = TimeZone::Local) const;
+			String FormatTime(const Locale& locale, FlagSet<TimeFormatFlag> flags = TimeFormatFlag::None, const TimeZoneOffset& tz = TimeZone::Local) const;
 
 			String FormatISODate() const
 			{

@@ -26,7 +26,7 @@ namespace KxFramework
 		}
 		else if (UniversallyUniqueID uuid(name); !uuid.IsNull())
 		{
-			m_Name = uuid.ToString(UUIDToStringFormat::CurlyBraces);
+			m_Name = uuid.ToString(UUIDFormat::CurlyBraces);
 			m_NameFormat = UserNameFormat::UniqueID;
 		}
 		else

@@ -7,7 +7,7 @@ namespace KxFramework::UI::DataView
 {
 	wxWindow* TextEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value)
 	{
-		const TextBoxStyle style = TextBox::DefaultStyle|TextBoxStyle::ProcessEnter|(IsEditable() ? TextBoxStyle::None : TextBoxStyle::ReadOnly);
+		const FlagSet<TextBoxStyle> style = TextBox::DefaultStyle|TextBoxStyle::ProcessEnter|(IsEditable() ? TextBoxStyle::None : TextBoxStyle::ReadOnly);
 		const TextValue textValue = FromAnyUsing<TextValue>(value);
 
 		TextBox* editor = new TextBox(parent,

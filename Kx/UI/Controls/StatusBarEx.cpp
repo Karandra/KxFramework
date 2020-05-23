@@ -188,7 +188,7 @@ namespace KxFramework::UI
 	bool StatusBarEx::Create(wxWindow* parent,
 							 wxWindowID id,
 							 int fieldsCount,
-							 StatusBarStyle style
+							 FlagSet<StatusBarStyle> style
 	)
 	{
 		if (StatusBar::Create(parent, id, fieldsCount, style))

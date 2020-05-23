@@ -105,7 +105,7 @@ namespace KxFramework::UI
 	void TaskDialog::DoSetValue(int value)
 	{
 		const bool wasPulsing = m_Style & TaskDialogStyle::ProgressBarPulse;
-		Utility::RemoveFlagRef(m_Style, TaskDialogStyle::ProgressBarPulse);
+		m_Style.Remove(TaskDialogStyle::ProgressBarPulse);
 		m_ProgressPos = value;
 
 		if (m_Handle)
@@ -119,7 +119,7 @@ namespace KxFramework::UI
 	}
 	void TaskDialog::DoPulse()
 	{
-		Utility::AddFlagRef(m_Style, TaskDialogStyle::ProgressBarPulse);
+		m_Style.Add(TaskDialogStyle::ProgressBarPulse);
 
 		if (m_Handle)
 		{
@@ -132,9 +132,9 @@ namespace KxFramework::UI
 						   wxWindowID id,
 						   String caption,
 						   String message,
-						   StdButton buttons,
+						   FlagSet<StdButton> buttons,
 						   StdIcon mainIcon,
-						   TaskDialogStyle style
+						   FlagSet<TaskDialogStyle> style
 	)
 	{
 		Create(parent, id, std::move(caption), std::move(message), buttons, mainIcon, style);
@@ -143,12 +143,12 @@ namespace KxFramework::UI
 							wxWindowID id,
 							String caption,
 							String message,
-							StdButton buttons,
+							FlagSet<StdButton> buttons,
 							StdIcon mainIcon,
-							TaskDialogStyle style
+							FlagSet<TaskDialogStyle> style
 	)
 	{
-		if (Dialog::Create(m_Parent, id, caption, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), EnumClass::Combine<DialogStyle>(style)))
+		if (Dialog::Create(m_Parent, id, caption, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), CombineFlags<DialogStyle>(*style)))
 		{
 			m_Style = style;
 			m_Parent = wxGetTopLevelParent(parent);

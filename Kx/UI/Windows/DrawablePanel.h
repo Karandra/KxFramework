@@ -18,9 +18,9 @@ namespace KxFramework::UI
 		FGImage = 1 << 4,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::DrawablePanelMode);
+	Kx_DeclareFlagSet(UI::DrawablePanelMode);
 }
 
 namespace KxFramework::UI
@@ -37,7 +37,7 @@ namespace KxFramework::UI
 		private:
 			wxBitmap m_Bitmap;
 			BitmapScaleMode m_ImageScaleMode = BitmapScaleMode::None;
-			DrawablePanelMode m_BackgroundMode = DrawablePanelMode::Soild;
+			FlagSet<DrawablePanelMode> m_BackgroundMode = DrawablePanelMode::Soild;
 			wxDirection m_GradientDirection = wxDOWN;
 			Size m_ScaledImageSize;
 			double m_ScaleFactor = 1.0;
@@ -50,20 +50,20 @@ namespace KxFramework::UI
 			DrawablePanel() = default;
 			DrawablePanel(wxWindow* parent,
 						  wxWindowID id,
-						  WindowStyle style = DefaultStyle
+						  FlagSet<WindowStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, id, style);
 			}
 			bool Create(wxWindow* parent,
 						wxWindowID id,
-						WindowStyle style = DefaultStyle
+						FlagSet<WindowStyle> style = DefaultStyle
 			);
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const Point& pos,
 						const Size& size,
-						WindowStyle style = DefaultStyle,
+						FlagSet<WindowStyle> style = DefaultStyle,
 						const String& name = {}
 			)
 			{
@@ -95,11 +95,11 @@ namespace KxFramework::UI
 				ScheduleRefresh();
 			}
 			
-			DrawablePanelMode GetBGMode() const
+			FlagSet<DrawablePanelMode> GetBGMode() const
 			{
 				return m_BackgroundMode;
 			}
-			void SetBGMode(DrawablePanelMode mode)
+			void SetBGMode(FlagSet<DrawablePanelMode> mode)
 			{
 				m_BackgroundMode = mode;
 				ScheduleRefresh();

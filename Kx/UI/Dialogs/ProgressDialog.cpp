@@ -10,8 +10,8 @@ namespace KxFramework::UI
 								const String& caption,
 								const Point& pos,
 								const Size& size,
-								StdButton buttons,
-								DialogStyle style
+								FlagSet<StdButton> buttons,
+								FlagSet<DialogStyle> style
 	)
 	{
 		m_DialogResizeSide = wxHORIZONTAL;

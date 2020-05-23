@@ -20,12 +20,7 @@ namespace KxFramework
 		Fractional = 1 << 0,
 		WithLabel = 1 << 0,
 	};
-
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowCast(BinarySizeUnit);
-		Kx_EnumClass_AllowEverything(BinarySizeFormat);
-	}
+	Kx_DeclareFlagSet(BinarySizeFormat);
 }
 
 namespace KxFramework
@@ -204,7 +199,7 @@ namespace KxFramework
 			}
 
 			// Formatting
-			String Format(BinarySizeUnit unit = BinarySizeUnit::Auto, BinarySizeFormat format = BinarySizeFormat::Fractional|BinarySizeFormat::WithLabel, int precision = -1) const;
+			String Format(BinarySizeUnit unit = BinarySizeUnit::Auto, FlagSet<BinarySizeFormat> format = {}, int precision = -1) const;
 
 		public:
 			// Comparison

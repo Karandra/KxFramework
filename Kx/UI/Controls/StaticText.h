@@ -19,9 +19,9 @@ namespace KxFramework::UI
 		EllipsizeEnd = wxST_ELLIPSIZE_END,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::StaticTextStyle);
+	Kx_DeclareFlagSet(UI::StaticTextStyle);
 }
 
 namespace KxFramework::UI
@@ -29,7 +29,7 @@ namespace KxFramework::UI
 	class KX_API StaticText: public WindowRefreshScheduler<wxStaticText>
 	{
 		public:
-			static constexpr StaticTextStyle DefaultStyle = StaticTextStyle::None;
+			static constexpr FlagSet<StaticTextStyle> DefaultStyle = StaticTextStyle::None;
 
 		private:
 			Color m_ColorNormal;
@@ -46,7 +46,7 @@ namespace KxFramework::UI
 			StaticText(wxWindow* parent,
 					   wxWindowID id,
 					   const String& label,
-					   StaticTextStyle style = DefaultStyle
+					   FlagSet<StaticTextStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, id, label, style);
@@ -54,7 +54,7 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const String& label,
-						StaticTextStyle style = DefaultStyle
+						FlagSet<StaticTextStyle> style = DefaultStyle
 			);
 
 		public:

@@ -17,11 +17,13 @@ namespace
 {
 	EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 
+	using namespace KxFramework;
+
 	HMODULE AsHMODULE(void* handle) noexcept
 	{
 		return reinterpret_cast<HMODULE>(handle);
 	}
-	LPCWSTR GetNameOrID(const KxFramework::String& name)
+	LPCWSTR GetNameOrID(const String& name)
 	{
 		if (auto id = name.ToInt<ULONG>())
 		{
@@ -29,7 +31,7 @@ namespace
 		}
 		return name.wc_str();
 	}
-	DWORD GetLangID(const KxFramework::Locale& locale) noexcept
+	DWORD GetLangID(const Locale& locale) noexcept
 	{
 		if (auto langID = locale.GetLangID())
 		{
@@ -47,10 +49,8 @@ namespace
 		return reinterpret_cast<ULONG_PTR>(handle) & static_cast<ULONG_PTR>(2);
 	}
 
-	constexpr DWORD MapDynamicLibraryLoadFlags(KxFramework::DynamicLibraryLoadFlag flags) noexcept
+	constexpr DWORD MapDynamicLibraryLoadFlags(FlagSet<DynamicLibraryLoadFlag> flags) noexcept
 	{
-		using namespace KxFramework;
-
 		DWORD nativeFlags = 0;
 		Utility::AddFlagRef(nativeFlags, LOAD_LIBRARY_AS_DATAFILE, flags & DynamicLibraryLoadFlag::DataFile);
 		Utility::AddFlagRef(nativeFlags, LOAD_LIBRARY_AS_DATAFILE_EXCLUSIVE, flags & DynamicLibraryLoadFlag::DataFile && flags & DynamicLibraryLoadFlag::Exclusive);
@@ -72,9 +72,9 @@ namespace
 		}
 	};
 
-	constexpr KxFramework::Size g_DefaultIconSize = {0, 0};
+	constexpr Size g_DefaultIconSize = {0, 0};
 
-	HRSRC GetResourceHandle(HMODULE handle, const KxFramework::String& type, const KxFramework::String& name, const KxFramework::Locale& locale)
+	HRSRC GetResourceHandle(HMODULE handle, const String& type, const String& name, const Locale& locale)
 	{
 		return ::FindResourceExW(handle, GetNameOrID(type), GetNameOrID(name), GetLangID(locale));
 	}
@@ -95,7 +95,7 @@ namespace
 		return {};
 	}
 
-	HANDLE DoLoadGDIImage(HMODULE handle, const KxFramework::String& name, const KxFramework::String& type, UINT gdiType, KxFramework::Size size, const KxFramework::Locale& locale)
+	HANDLE DoLoadGDIImage(HMODULE handle, const String& name, const String& type, UINT gdiType, Size size, const Locale& locale)
 	{
 		if (HGLOBAL resDataHandle = ::LoadResource(handle, GetResourceHandle(handle, type, name, locale)))
 		{
@@ -105,7 +105,7 @@ namespace
 	}
 	
 	template<class T>
-	T LoadGDIImage(HMODULE handle, const KxFramework::String& name, const KxFramework::String& type, UINT gdiType, KxFramework::Size size, const KxFramework::Locale& locale)
+	T LoadGDIImage(HMODULE handle, const String& name, const String& type, UINT gdiType, Size size, const Locale& locale)
 	{
 		if (HANDLE imageHandle = DoLoadGDIImage(handle, name, type, gdiType, size, locale))
 		{
@@ -123,7 +123,7 @@ namespace
 	}
 	
 	template<>
-	wxIcon LoadGDIImage<wxIcon>(HMODULE handle, const KxFramework::String& name, const KxFramework::String& type, UINT gdiType, KxFramework::Size size, const KxFramework::Locale& locale)
+	wxIcon LoadGDIImage<wxIcon>(HMODULE handle, const String& name, const String& type, UINT gdiType, Size size, const Locale& locale)
 	{
 		if (HANDLE imageHandle = DoLoadGDIImage(handle, name, type, gdiType, size, locale))
 		{
@@ -201,7 +201,7 @@ namespace KxFramework
 		return {};
 	}
 
-	bool DynamicLibrary::Load(const FSPath& path, DynamicLibraryLoadFlag flags)
+	bool DynamicLibrary::Load(const FSPath& path, FlagSet<DynamicLibraryLoadFlag> flags)
 	{
 		Unload();
 

@@ -16,9 +16,9 @@ namespace KxFramework::UI
 		NoXPTheme = wxSP_NO_XP_THEME,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::SplitterWindowStyle);
+	Kx_DeclareFlagSet(UI::SplitterWindowStyle);
 }
 
 namespace KxFramework::UI
@@ -26,7 +26,7 @@ namespace KxFramework::UI
 	class KX_API SplitterWindow: public wxSplitterWindow
 	{
 		public:
-			static constexpr SplitterWindowStyle DefaultStyle = SplitterWindowStyle::LiveUpdate|SplitterWindowStyle::Sash3D;
+			static constexpr FlagSet<SplitterWindowStyle> DefaultStyle = SplitterWindowStyle::LiveUpdate|SplitterWindowStyle::Sash3D;
 
 		private:
 			Color m_SashColor;
@@ -40,14 +40,14 @@ namespace KxFramework::UI
 			SplitterWindow() = default;
 			SplitterWindow(wxWindow* parent,
 						   wxWindowID id = wxID_ANY,
-						   SplitterWindowStyle style = DefaultStyle
+						   FlagSet<SplitterWindowStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, id, style);
 			}
 			bool Create(wxWindow* parent,
 						wxWindowID id = wxID_ANY,
-						SplitterWindowStyle style = DefaultStyle
+						FlagSet<SplitterWindowStyle> style = DefaultStyle
 			);
 
 		public:

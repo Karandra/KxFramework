@@ -27,10 +27,10 @@ namespace KxFramework::UI
 	bool StaticText::Create(wxWindow* parent,
 							wxWindowID id,
 							const String& label,
-							StaticTextStyle style
+							FlagSet<StaticTextStyle> style
 	)
 	{
-		if (wxStaticText::Create(parent, id, label, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style)))
+		if (wxStaticText::Create(parent, id, label, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style.ToInt()))
 		{
 			m_ColorNormal = GetForegroundColour();
 			m_ColorHighlight = m_ColorNormal;

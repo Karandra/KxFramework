@@ -68,11 +68,8 @@ namespace KxFramework
 		FullResourceDescriptor,
 	};
 
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowEverything(RegistryAccess);
-		Kx_EnumClass_AllowEverything(RegistryKeyFlag);
-	}
+	Kx_DeclareFlagSet(RegistryAccess);
+	Kx_DeclareFlagSet(RegistryKeyFlag);
 }
 
 namespace KxFramework
@@ -80,7 +77,7 @@ namespace KxFramework
 	class RegistryKey final
 	{
 		public:
-			static RegistryKey CreateKey(RegistryBaseKey baseKey, const FSPath& subKey, RegistryAccess access, RegistryKeyFlag flags = RegistryKeyFlag::None, RegistryWOW64 wow64 = RegistryWOW64::Default)
+		static RegistryKey CreateKey(RegistryBaseKey baseKey, const FSPath& subKey, FlagSet<RegistryAccess> access, FlagSet<RegistryKeyFlag> flags = {}, RegistryWOW64 wow64 = RegistryWOW64::Default)
 			{
 				RegistryKey key(baseKey, {}, RegistryAccess::Create, wow64);
 				if (key)
@@ -96,8 +93,8 @@ namespace KxFramework
 
 		private:
 			void* DoGetBaseKey(RegistryBaseKey baseKey) const noexcept;
-			bool DoOpenKey(void* rootKey, const FSPath& subKey, RegistryAccess access, RegistryWOW64 wow64);
-			bool DoCreateKey(void* rootKey, const FSPath& subKey, RegistryAccess access, RegistryKeyFlag flags, RegistryWOW64 wow64);
+			bool DoOpenKey(void* rootKey, const FSPath& subKey, FlagSet<RegistryAccess> access, RegistryWOW64 wow64);
+			bool DoCreateKey(void* rootKey, const FSPath& subKey, FlagSet<RegistryAccess> access, FlagSet<RegistryKeyFlag> flags, RegistryWOW64 wow64);
 			void DoCloseKey(void* handle) noexcept;
 
 		public:
@@ -106,7 +103,7 @@ namespace KxFramework
 				:m_Handle(DoGetBaseKey(baseKey))
 			{
 			}
-			RegistryKey(RegistryBaseKey baseKey, const FSPath& subKey, RegistryAccess access, RegistryWOW64 wow64 = RegistryWOW64::Default)
+			RegistryKey(RegistryBaseKey baseKey, const FSPath& subKey, FlagSet<RegistryAccess> access, RegistryWOW64 wow64 = RegistryWOW64::Default)
 			{
 				DoOpenKey(DoGetBaseKey(baseKey), subKey, access, wow64);
 			}
@@ -150,7 +147,7 @@ namespace KxFramework
 				return handle;
 			}
 
-			RegistryKey OpenKey(const FSPath& subKey, RegistryAccess access, RegistryWOW64 wow64 = RegistryWOW64::Default)
+			RegistryKey OpenKey(const FSPath& subKey, FlagSet<RegistryAccess> access, RegistryWOW64 wow64 = RegistryWOW64::Default)
 			{
 				RegistryKey key;
 				if (key.DoOpenKey(m_Handle, subKey, access, wow64))
@@ -159,7 +156,7 @@ namespace KxFramework
 				}
 				return {};
 			}
-			RegistryKey CreateKey(const FSPath& subKey, RegistryAccess access, RegistryKeyFlag flags = RegistryKeyFlag::None, RegistryWOW64 wow64 = RegistryWOW64::Default)
+			RegistryKey CreateKey(const FSPath& subKey, FlagSet<RegistryAccess> access, FlagSet<RegistryKeyFlag> flags = {}, RegistryWOW64 wow64 = RegistryWOW64::Default)
 			{
 				RegistryKey key;
 				if (key.DoCreateKey(m_Handle, subKey, access, flags, wow64))

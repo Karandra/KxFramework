@@ -3,6 +3,6 @@
 
 namespace KxFramework::Shell::Private
 {
-	std::optional<uint32_t> MapSHWindowCommand(SHWindowCommand option) noexcept;
-	SHWindowCommand MapSHWindowCommand(uint32_t option) noexcept;
+	std::optional<uint32_t> MapSHWindowCommand(FlagSet<SHWindowCommand> option) noexcept;
+	FlagSet<SHWindowCommand> MapSHWindowCommand(uint32_t option) noexcept;
 }

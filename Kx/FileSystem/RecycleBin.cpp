@@ -69,7 +69,7 @@ namespace KxFramework
 		}
 		return 0;
 	}
-	bool RecycleBin::ClearItems(FSRecycleBinOpFlag flags)
+	bool RecycleBin::ClearItems(FlagSet<FSRecycleBinOpFlag> flags)
 	{
 		DWORD emptyFlags = m_Window ? 0 : SHERB_NOCONFIRMATION|SHERB_NOPROGRESSUI|SHERB_NOSOUND;
 		return ::SHEmptyRecycleBinW(m_Window ? m_Window->GetHandle() : nullptr, m_Path, emptyFlags) == S_OK;
@@ -84,7 +84,7 @@ namespace KxFramework
 		throw std::logic_error(__FUNCTION__ ": the method or operation is not implemented.");
 	}
 	
-	bool RecycleBin::Recycle(const FSPath& path, FSRecycleBinOpFlag flags)
+	bool RecycleBin::Recycle(const FSPath& path, FlagSet<FSRecycleBinOpFlag> flags)
 	{
 		if (path.ContainsCharacters(wxS("*?")))
 		{
@@ -116,7 +116,7 @@ namespace KxFramework
 		}
 		return false;
 	}
-	bool RecycleBin::Restore(const FSPath& path, FSRecycleBinOpFlag flags)
+	bool RecycleBin::Restore(const FSPath& path, FlagSet<FSRecycleBinOpFlag> flags)
 	{
 		throw std::logic_error(__FUNCTION__ ": the method or operation is not implemented.");
 	}

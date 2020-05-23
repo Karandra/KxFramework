@@ -7,11 +7,11 @@
 
 namespace KxFramework
 {
-	String DateTime::GetMonthName(Month month, const Locale& locale, UnitNameFlag flags)
+	String DateTime::GetMonthName(Month month, const Locale& locale, FlagSet<UnitNameFlag> flags)
 	{
 		return locale.GetMonthName(month, flags).value_or(NullString);
 	}
-	String DateTime::GetWeekDayName(WeekDay weekDay, const Locale& locale, UnitNameFlag flags)
+	String DateTime::GetWeekDayName(WeekDay weekDay, const Locale& locale, FlagSet<UnitNameFlag> flags)
 	{
 		return locale.GetWeekDayName(weekDay, flags).value_or(NullString);
 	}
@@ -20,7 +20,7 @@ namespace KxFramework
 	{
 		std::tm tm;
 		tm.tm_year = GetYear(tz);
-		tm.tm_mon = ToInt(GetMonth(tz));
+		tm.tm_mon = static_cast<int>(GetMonth(tz));
 		tm.tm_hour = GetHour(tz);
 		tm.tm_min = GetMinute(tz);
 		tm.tm_sec = GetSecond(tz);
@@ -124,7 +124,7 @@ namespace KxFramework
 			return m_Value.Format(format, tz);
 		}
 	}
-	String DateTime::FormatDate(const Locale& locale, DateFormatFlag flags, const TimeZoneOffset& tz) const
+	String DateTime::FormatDate(const Locale& locale, FlagSet<DateFormatFlag> flags, const TimeZoneOffset& tz) const
 	{
 		if (m_Value.IsValid())
 		{
@@ -142,7 +142,7 @@ namespace KxFramework
 		}
 		return {};
 	}
-	String DateTime::FormatTime(const Locale& locale, TimeFormatFlag flags, const TimeZoneOffset& tz) const
+	String DateTime::FormatTime(const Locale& locale, FlagSet<TimeFormatFlag> flags, const TimeZoneOffset& tz) const
 	{
 		if (m_Value.IsValid())
 		{

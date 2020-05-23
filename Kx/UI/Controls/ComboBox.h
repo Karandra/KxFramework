@@ -17,9 +17,9 @@ namespace KxFramework::UI
 		SortAlphabetical = wxCB_SORT,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::ComboBoxStyle);
+	Kx_DeclareFlagSet(UI::ComboBoxStyle);
 }
 
 namespace KxFramework::UI
@@ -27,14 +27,14 @@ namespace KxFramework::UI
 	class KX_API ComboBox: public WindowRefreshScheduler<wxSystemThemedControl<wxComboBox>>
 	{
 		public:
-			static constexpr ComboBoxStyle DefaultStyle = ComboBoxStyle::ProcessEnter|ComboBoxStyle::Dropdown|ComboBoxStyle::ReadOnly;
+			static constexpr FlagSet<ComboBoxStyle> DefaultStyle = ComboBoxStyle::ProcessEnter|ComboBoxStyle::Dropdown|ComboBoxStyle::ReadOnly;
 
 		public:
 			ComboBox() = default;
 			ComboBox(wxWindow* parent,
 					 wxWindowID id,
 					 const String& value = {},
-					 ComboBoxStyle style = DefaultStyle,
+					 FlagSet<ComboBoxStyle> style = DefaultStyle,
 					 const wxValidator& validator = wxDefaultValidator
 			)
 			{
@@ -45,7 +45,7 @@ namespace KxFramework::UI
 					 const String& value,
 					 const Point& pos,
 					 const Size& size,
-					 ComboBoxStyle style = DefaultStyle,
+					 FlagSet<ComboBoxStyle> style = DefaultStyle,
 					 const wxValidator& validator = wxDefaultValidator
 			)
 			{
@@ -54,7 +54,7 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const String& value = {},
-						ComboBoxStyle style = DefaultStyle,
+						FlagSet<ComboBoxStyle> style = DefaultStyle,
 						const wxValidator& validator = wxDefaultValidator
 			)
 			{
@@ -65,7 +65,7 @@ namespace KxFramework::UI
 						const String& value,
 						const Point& pos,
 						const Size& size,
-						ComboBoxStyle style = DefaultStyle,
+						FlagSet<ComboBoxStyle> style = DefaultStyle,
 						const wxValidator& validator = wxDefaultValidator
 			);
 

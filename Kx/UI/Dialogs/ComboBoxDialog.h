@@ -13,9 +13,9 @@ namespace KxFramework::UI
 		ReadOnly = 1 << 1
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::ComboBoxDialogStyle);
+	Kx_DeclareFlagSet(UI::ComboBoxDialogStyle);
 }
 
 namespace KxFramework::UI
@@ -23,7 +23,7 @@ namespace KxFramework::UI
 	class KX_API ComboBoxDialog: public StdDialog
 	{
 		public:
-			static constexpr ComboBoxDialogStyle DefaultStyle = EnumClass::Combine<ComboBoxDialogStyle>(StdDialog::DefaultStyle, ComboBoxDialogStyle::ReadOnly);
+			static constexpr FlagSet<ComboBoxDialogStyle> DefaultStyle = CombineFlags<ComboBoxDialogStyle>(*StdDialog::DefaultStyle, ComboBoxDialogStyle::ReadOnly);
 			static constexpr int DefaultComboBoxWidth = 300;
 
 		private:
@@ -40,8 +40,8 @@ namespace KxFramework::UI
 						   const String& caption,
 						   const Point& pos = Point::UnspecifiedPosition(),
 						   const Size& size = Size::UnspecifiedSize(),
-						   StdButton buttons = DefaultButtons,
-						   ComboBoxDialogStyle style = DefaultStyle
+						   FlagSet<StdButton> buttons = DefaultButtons,
+						   FlagSet<ComboBoxDialogStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, id, caption, pos, size, buttons, style);
@@ -51,8 +51,8 @@ namespace KxFramework::UI
 						const String& caption,
 						const Point& pos = Point::UnspecifiedPosition(),
 						const Size& size = Size::UnspecifiedSize(),
-						StdButton buttons = DefaultButtons,
-						ComboBoxDialogStyle style = DefaultStyle
+						FlagSet<StdButton> buttons = DefaultButtons,
+						FlagSet<ComboBoxDialogStyle> style = DefaultStyle
 			);
 
 		public:

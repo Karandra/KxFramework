@@ -191,7 +191,7 @@ namespace KxFramework::System
 		}
 	}
 
-	CreateProcessExecutor::CreateProcessExecutor(wxEvtHandler* evtHandler, CreateSystemProcessFlag flags)
+	CreateProcessExecutor::CreateProcessExecutor(wxEvtHandler* evtHandler, FlagSet<CreateSystemProcessFlag> flags)
 		:wxThread(wxTHREAD_JOINABLE), m_EvtHandler(evtHandler), m_Flags(flags), m_EnvironmentBuffer(0), m_CommandLineBuffer(0)
 	{
 		m_StartupInfo.cb = sizeof(m_StartupInfo);

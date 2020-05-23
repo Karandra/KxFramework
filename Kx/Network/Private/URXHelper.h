@@ -142,7 +142,7 @@ namespace KxFramework::Network::Private
 			{
 				return MapHostType(AsBase().GetHostType());
 			}
-			bool Resolve(const URI& base, URIFlag flags = URIFlag::Strict)
+			bool Resolve(const URI& base, FlagSet<URIFlag> flags = URIFlag::Strict)
 			{
 				AsBase().Resolve(base, flags & URIFlag::Strict ? wxURI_STRICT : 0);
 				return !AsDerived().IsNull();

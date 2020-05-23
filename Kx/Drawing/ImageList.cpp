@@ -9,12 +9,12 @@
 
 namespace
 {
+	using namespace KxFramework;
+
 	constexpr bool g_UseMask = false;
 
-	constexpr uint32_t MapDrawMode(KxFramework::ImageListDrawItemFlag drawMode) noexcept
+	constexpr uint32_t MapDrawMode(FlagSet<ImageListDrawItemFlag> drawMode) noexcept
 	{
-		using namespace KxFramework;
-
 		uint32_t nativeDrawMode = ILD_IMAGE|ILD_NORMAL;
 		Utility::AddFlagRef(nativeDrawMode, ILD_TRANSPARENT, drawMode & ImageListDrawItemFlag::Transparent);
 		Utility::AddFlagRef(nativeDrawMode, ILD_SELECTED, drawMode & ImageListDrawItemFlag::Selected);
@@ -43,7 +43,7 @@ namespace KxFramework
 			m_Flags |= ILC_MASK;
 		}
 	}
-	bool ImageList::DoDraw(wxDC& dc, int index, const Rect& rect, DrawItemFlag flags, int overlayIndex) noexcept
+	bool ImageList::DoDraw(wxDC& dc, int index, const Rect& rect, FlagSet<DrawItemFlag> flags, int overlayIndex) noexcept
 	{
 		Size size = rect.GetSize();
 		size.SetDefaults(Size(0, 0));

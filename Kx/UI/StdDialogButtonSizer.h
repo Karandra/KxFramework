@@ -39,7 +39,7 @@ namespace KxFramework::UI
 			StdDialogButtonSizer();
 
 		public:
-			Button* CreateButton(Dialog* dialog, StdButton buttons, StdButton singleButton, wxWindowID id, bool addToList = true);
+			Button* CreateButton(Dialog* dialog, FlagSet<StdButton> buttons, StdButton singleButton, wxWindowID id, bool addToList = true);
 		
 			// Checks button ID against system IDs and sets one of the pointers below
 			// to this button. Does not do any sizer-related things here.

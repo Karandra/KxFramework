@@ -6,10 +6,10 @@
 
 namespace
 {
-	std::optional<KxFramework::String> GetSizeUnitString(KxFramework::BinarySizeUnit unit)
-	{
-		using namespace KxFramework;
+	using namespace KxFramework;
 
+	std::optional<String> GetSizeUnitString(BinarySizeUnit unit)
+	{
 		switch (unit)
 		{
 			case BinarySizeUnit::Bytes:
@@ -35,10 +35,8 @@ namespace
 		};
 		return {};
 	}
-	bool AddUnitLabelIfNeeded(KxFramework::String& result, KxFramework::BinarySizeFormat format, KxFramework::BinarySizeUnit unit)
+	bool AddUnitLabelIfNeeded(String& result, FlagSet<BinarySizeFormat> format, BinarySizeUnit unit)
 	{
-		using namespace KxFramework;
-
 		if (format & BinarySizeFormat::WithLabel && !result.IsEmpty())
 		{
 			if (auto label = GetSizeUnitString(unit))
@@ -53,10 +51,8 @@ namespace
 	}
 	
 	template<class T>
-	KxFramework::String FormatWithUnitBase(T value, KxFramework::BinarySizeFormat format, KxFramework::BinarySizeUnit unit, int precision)
+	String FormatWithUnitBase(T value, FlagSet<BinarySizeFormat> format, BinarySizeUnit unit, int precision)
 	{
-		using namespace KxFramework;
-
 		String result;
 		if (format & BinarySizeFormat::Fractional)
 		{
@@ -72,10 +68,8 @@ namespace
 		return result;
 	}
 	
-	KxFramework::String FormatWithUnit(KxFramework::BinarySize value, KxFramework::BinarySizeFormat format, KxFramework::BinarySizeUnit unit, int precision)
+	String FormatWithUnit(BinarySize value, FlagSet<BinarySizeFormat> format, BinarySizeUnit unit, int precision)
 	{
-		using namespace KxFramework;
-
 		if (format & BinarySizeFormat::Fractional)
 		{
 			return FormatWithUnitBase(value.GetAsUnit<double>(unit), format, unit, precision);
@@ -89,7 +83,7 @@ namespace
 
 namespace KxFramework
 {
-	String BinarySize::Format(BinarySizeUnit unit, BinarySizeFormat format, int precision) const
+	String BinarySize::Format(BinarySizeUnit unit, FlagSet<BinarySizeFormat> format, int precision) const
 	{
 		// Short-circuit for zero
 		if (IsNull())
@@ -110,7 +104,7 @@ namespace KxFramework
 				const int digitGroups = Math::Log(m_Value, 1024);
 				const double value = m_Value / std::pow(1024, digitGroups);
 
-				return FormatWithUnitBase(value, format, FromInt<BinarySizeUnit>(digitGroups), precision);
+				return FormatWithUnitBase(value, format, static_cast<BinarySizeUnit>(digitGroups), precision);
 			}
 			case BinarySizeUnit::Bytes:
 			case BinarySizeUnit::KiloBytes:

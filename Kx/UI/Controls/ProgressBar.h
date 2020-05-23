@@ -17,9 +17,9 @@ namespace KxFramework::UI
 		ReflectOnTaskbar = wxGA_PROGRESS,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::ProgressBarStyle);
+	Kx_DeclareFlagSet(UI::ProgressBarStyle);
 }
 
 namespace KxFramework::UI
@@ -29,7 +29,7 @@ namespace KxFramework::UI
 		friend class ProgressBarWrapper;
 
 		public:
-			static constexpr ProgressBarStyle DefaultStyle = ProgressBarStyle::Horizontal|ProgressBarStyle::Smooth;
+			static constexpr FlagSet<ProgressBarStyle> DefaultStyle = ProgressBarStyle::Horizontal|ProgressBarStyle::Smooth;
 			static constexpr int DefaultStep = 10;
 			static constexpr int DefaultRange = 100;
 
@@ -86,9 +86,9 @@ namespace KxFramework::UI
 		public:
 			ProgressBar() {}
 			ProgressBar(wxWindow* parent,
-						  wxWindowID id,
-						  int range = DefaultRange,
-						  ProgressBarStyle style = DefaultStyle
+						wxWindowID id,
+						int range = DefaultRange,
+						FlagSet<ProgressBarStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, id, range, style);
@@ -96,7 +96,7 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						int range = DefaultRange,
-						ProgressBarStyle style = DefaultStyle
+						FlagSet<ProgressBarStyle> style = DefaultStyle
 			);
 
 		public:

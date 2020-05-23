@@ -1,5 +1,4 @@
 #pragma once
-#include "EnumClass.h"
 #include "Kx/System/UndefWindows.h"
 #include <wx/defs.h>
 
@@ -185,21 +184,16 @@ namespace KxFramework
 
 		KX_HIGHEST
 	};
-
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowCast(StdID);
-	}
 }
 
 namespace KxFramework
 {
 	constexpr inline StdID FromWxStdID(int id) noexcept
 	{
-		return FromInt<StdID>(id);
+		return static_cast<StdID>(id);
 	}
 	constexpr inline int ToWxStdID(StdID id) noexcept
 	{
-		return ToInt(id);
+		return static_cast<int>(id);
 	}
 }

@@ -10,7 +10,7 @@
 
 namespace KxFramework::FileSystem::Private
 {
-	constexpr inline FileAttribute MapFileAttributes(uint32_t nativeAttributes) noexcept
+	constexpr inline FlagSet<FileAttribute> MapFileAttributes(uint32_t nativeAttributes) noexcept
 	{
 		if (nativeAttributes == INVALID_FILE_ATTRIBUTES)
 		{
@@ -41,7 +41,7 @@ namespace KxFramework::FileSystem::Private
 			return attributes;
 		}
 	}
-	constexpr inline uint32_t MapFileAttributes(FileAttribute attributes) noexcept
+	constexpr inline uint32_t MapFileAttributes(FlagSet<FileAttribute> attributes) noexcept
 	{
 		if (attributes == FileAttribute::Invalid)
 		{
@@ -225,7 +225,7 @@ namespace KxFramework::FileSystem::Private
 										const FSPath& source,
 										const FSPath& destination,
 										NativeFileSystem::TCopyDirectoryTreeFunc func,
-										FSCopyItemFlag flags, bool move)
+										FlagSet<FSCopyItemFlag> flags, bool move)
 	{
 		return fileSystem.EnumItems(source, [&](FileItem item)
 		{

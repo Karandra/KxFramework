@@ -5,6 +5,8 @@
 
 namespace
 {
+	using namespace KxFramework;
+
 	wxFileOffset GetFileSizeByHandle(HANDLE handle) noexcept
 	{
 		LARGE_INTEGER size = {};
@@ -14,10 +16,8 @@ namespace
 		}
 		return wxInvalidOffset;
 	}
-	wxFileOffset SeekByHandle(HANDLE handle, KxFramework::BinarySize offset, KxFramework::StreamSeekMode seekMode) noexcept
+	wxFileOffset SeekByHandle(HANDLE handle, BinarySize offset, StreamSeekMode seekMode) noexcept
 	{
-		using namespace KxFramework;
-
 		DWORD seekModeWin = std::numeric_limits<DWORD>::max();
 		switch (seekMode)
 		{
@@ -58,10 +58,8 @@ namespace
 		::SetFilePointerEx(handle, offset, &offset, FILE_CURRENT);
 		return offset.QuadPart;
 	}
-	KxFramework::FSPath GetFileNameByHandle(HANDLE handle)
+	FSPath GetFileNameByHandle(HANDLE handle)
 	{
-		using namespace KxFramework;
-
 		constexpr DWORD flags = VOLUME_NAME_DOS|FILE_NAME_NORMALIZED;
 		const DWORD length = ::GetFinalPathNameByHandleW(handle, nullptr, 0, flags);
 		if (length != 0)
@@ -75,10 +73,8 @@ namespace
 		return {};
 	}
 
-	constexpr KxFramework::StreamErrorCode TranslateErrorCode(KxFramework::Win32Error win32Error, bool isWrite) noexcept
+	constexpr StreamErrorCode TranslateErrorCode(Win32Error win32Error, bool isWrite) noexcept
 	{
-		using namespace KxFramework;
-
 		if (win32Error.GetValue() == ERROR_SUCCESS)
 		{
 			return StreamErrorCode::Success;
@@ -92,10 +88,8 @@ namespace
 			return isWrite ? StreamErrorCode::WriteError : StreamErrorCode::ReadError;
 		}
 	}
-	constexpr DWORD AccessModeToNative(KxFramework::FileStreamAccess mode) noexcept
+	constexpr DWORD AccessModeToNative(FlagSet<FileStreamAccess> mode) noexcept
 	{
-		using namespace KxFramework;
-
 		if (mode == FileStreamAccess::None)
 		{
 			return 0;
@@ -111,10 +105,8 @@ namespace
 		}
 		return std::numeric_limits<DWORD>::max();
 	}
-	constexpr DWORD ShareModeToNative(KxFramework::FileStreamShare mode) noexcept
+	constexpr DWORD ShareModeToNative(FlagSet<FileStreamShare> mode) noexcept
 	{
-		using namespace KxFramework;
-
 		if (mode == FileStreamShare::None)
 		{
 			return 0;
@@ -129,10 +121,8 @@ namespace
 		}
 		return std::numeric_limits<DWORD>::max();
 	}
-	constexpr DWORD DispositionToNative(KxFramework::FileStreamDisposition mode) noexcept
+	constexpr DWORD DispositionToNative(FileStreamDisposition mode) noexcept
 	{
-		using namespace KxFramework;
-
 		switch (mode)
 		{
 			case FileStreamDisposition::OpenExisting:
@@ -154,10 +144,8 @@ namespace
 		};
 		return 0;
 	}
-	constexpr DWORD FlagsToNative(KxFramework::FileStreamFlags flags) noexcept
+	constexpr DWORD FlagsToNative(FlagSet<FileStreamFlags> flags) noexcept
 	{
-		using namespace KxFramework;
-
 		DWORD nativeMode = 0;
 		Utility::AddFlagRef(nativeMode, FILE_ATTRIBUTE_NORMAL, flags & FileStreamFlags::Normal);
 		Utility::AddFlagRef(nativeMode, FILE_FLAG_BACKUP_SEMANTICS, flags & FileStreamFlags::BackupSemantics);
@@ -254,7 +242,7 @@ namespace KxFramework
 		m_Handle = handle;
 		return DoIsOpened();
 	}
-	bool FileStream::AttachHandle(void* handle, FileStreamAccess access, FileStreamDisposition disposition, FileStreamShare share, FileStreamFlags flags)
+	bool FileStream::AttachHandle(void* handle, FlagSet<FileStreamAccess> access, FileStreamDisposition disposition, FlagSet<FileStreamShare> share, FlagSet<FileStreamFlags> flags)
 	{
 		DoClose();
 		DoSetLastError(0, false);
@@ -277,7 +265,7 @@ namespace KxFramework
 		m_Handle = nullptr;
 		return handle;
 	}
-	bool FileStream::Open(const FSPath& path, FileStreamAccess access, FileStreamDisposition disposition, FileStreamShare share, FileStreamFlags flags)
+	bool FileStream::Open(const FSPath& path, FlagSet<FileStreamAccess> access, FileStreamDisposition disposition, FlagSet<FileStreamShare> share, FlagSet<FileStreamFlags> flags)
 	{
 		DoClose();
 		DoSetLastError(0, false);
@@ -352,7 +340,7 @@ namespace KxFramework
 		return ::SetEndOfFile(m_Handle);
 	}
 
-	FileAttribute FileStream::GetAttributes() const
+	FlagSet<FileAttribute> FileStream::GetAttributes() const
 	{
 		if (m_Handle)
 		{
@@ -364,7 +352,7 @@ namespace KxFramework
 		}
 		return FileAttribute::Invalid;
 	}
-	bool FileStream::SetAttributes(FileAttribute attributes)
+	bool FileStream::SetAttributes(FlagSet<FileAttribute> attributes)
 	{
 		if (m_Handle)
 		{

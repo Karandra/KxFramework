@@ -12,10 +12,10 @@ namespace KxFramework::UI
 						const String& title,
 						const Point& pos,
 						const Size& size,
-						DialogStyle style
+						FlagSet<DialogStyle> style
 	)
 	{
-		if (wxDialog::Create(parent, id, title, pos, size, ToInt(style)))
+		if (wxDialog::Create(parent, id, title, pos, size, style.ToInt()))
 		{
 			SetInitialSize(size);
 			SetDefaultBackgroundColor();
@@ -26,7 +26,7 @@ namespace KxFramework::UI
 		return false;
 	}
 
-	StdDialogButtonSizer* Dialog::CreateStdDialogButtonSizer(StdButton buttons, StdButton defaultButtons)
+	StdDialogButtonSizer* Dialog::CreateStdDialogButtonSizer(FlagSet<StdButton> buttons, FlagSet<StdButton> defaultButtons)
 	{
 		auto* stdButtonSizer = new UI::StdDialogButtonSizer();
 

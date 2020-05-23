@@ -25,8 +25,8 @@ namespace KxFramework::UI
 						   const String& caption,
 						   const Point& pos = Point::UnspecifiedPosition(),
 						   const Size& size = Size::UnspecifiedSize(),
-						   StdButton buttons = DefaultButtons,
-						   DialogStyle style = DefaultStyle
+						   FlagSet<StdButton> buttons = DefaultButtons,
+						   FlagSet<DialogStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, id, caption, pos, size, buttons, style);
@@ -36,8 +36,8 @@ namespace KxFramework::UI
 						const String& caption,
 						const Point& pos = Point::UnspecifiedPosition(),
 						const Size& size = Size::UnspecifiedSize(),
-						StdButton buttons = DefaultButtons,
-						DialogStyle style = DefaultStyle
+						FlagSet<StdButton> buttons = DefaultButtons,
+						FlagSet<DialogStyle> style = DefaultStyle
 			);
 
 		public:

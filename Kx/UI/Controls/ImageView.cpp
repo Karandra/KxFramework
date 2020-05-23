@@ -57,10 +57,10 @@ namespace KxFramework::UI
 
 	bool ImageView::Create(wxWindow* parent,
 						   wxWindowID id,
-						   WindowStyle style
+						   FlagSet<WindowStyle> style
 	)
 	{
-		if (wxControl::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style)))
+		if (wxControl::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style.ToInt()))
 		{
 			EnableSystemTheme();
 			SetDoubleBuffered(true);

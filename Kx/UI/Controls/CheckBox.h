@@ -17,9 +17,9 @@ namespace KxFramework::UI
 		AlignCenterHorizontal = wxALIGN_CENTRE_HORIZONTAL
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::CheckBoxStyle);
+	Kx_DeclareFlagSet(UI::CheckBoxStyle);
 }
 
 namespace KxFramework::UI
@@ -27,14 +27,14 @@ namespace KxFramework::UI
 	class KX_API CheckBox: public wxCheckBox
 	{
 		public:
-			static constexpr CheckBoxStyle DefaultStyle = CheckBoxStyle::TwoState;
+			static constexpr FlagSet<CheckBoxStyle> DefaultStyle = CheckBoxStyle::TwoState;
 
 		public:
 			CheckBox() = default;
 			CheckBox(wxWindow* parent,
 					 wxWindowID id,
 					 const String& label,
-					 CheckBoxStyle style = DefaultStyle
+					 FlagSet<CheckBoxStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, id, label, style);
@@ -42,7 +42,7 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const String& label,
-						CheckBoxStyle style = DefaultStyle
+						FlagSet<CheckBoxStyle> style = DefaultStyle
 			);
 
 		public:

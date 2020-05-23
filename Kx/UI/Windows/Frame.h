@@ -17,9 +17,9 @@ namespace KxFramework::UI
 		DefaultStyle = wxDEFAULT_FRAME_STYLE
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::FrameStyle);
+	Kx_DeclareFlagSet(UI::FrameStyle);
 }
 
 namespace KxFramework::UI
@@ -36,7 +36,7 @@ namespace KxFramework::UI
 				  const String& title,
 				  const Point& pos = Point::UnspecifiedPosition(),
 				  const Size& size = Size::UnspecifiedSize(),
-				  FrameStyle style = DefaultStyle
+				  FlagSet<FrameStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, id, title, pos, size, style);
@@ -46,13 +46,13 @@ namespace KxFramework::UI
 						const String& title,
 						const Point& pos = Point::UnspecifiedPosition(),
 						const Size& size = Size::UnspecifiedSize(),
-						FrameStyle style = DefaultStyle
+						FlagSet<FrameStyle> style = DefaultStyle
 			);
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const Point& pos = Point::UnspecifiedPosition(),
 						const Size& size = Size::UnspecifiedSize(),
-						FrameStyle style = DefaultStyle,
+						FlagSet<FrameStyle> style = DefaultStyle,
 						const String& name = {}
 			)
 			{

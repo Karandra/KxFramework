@@ -49,10 +49,9 @@ namespace KxFramework::UI
 		AllowStreamableItems,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowCast(UI::FileBrowseDialogMode);
-	Kx_EnumClass_AllowEverything(UI::FileBrowseDialogStyle);
+	Kx_DeclareFlagSet(UI::FileBrowseDialogStyle);
 }
 
 namespace KxFramework::UI
@@ -62,7 +61,7 @@ namespace KxFramework::UI
 		friend class Private::FileBrowseDialogEvents;
 
 		public:
-			static constexpr FileBrowseDialogStyle DefaultStyle = FileBrowseDialogStyle::WarnOverwrite|FileBrowseDialogStyle::ForceFileSystem;
+			static constexpr  FlagSet<FileBrowseDialogStyle> DefaultStyle = FileBrowseDialogStyle::WarnOverwrite|FileBrowseDialogStyle::ForceFileSystem;
 
 		private:
 			COMPtr<IFileDialog> m_Instance;
@@ -73,7 +72,7 @@ namespace KxFramework::UI
 			wxWindow* m_Parent = nullptr;
 			HResult m_ShowStatus = HResult::Fail();
 			FileBrowseDialogMode m_Mode = FileBrowseDialogMode::Open;
-			FileBrowseDialogStyle m_Style = FileBrowseDialogStyle::None;
+			FlagSet<FileBrowseDialogStyle> m_Style;
 		
 			String m_Caption;
 			String m_Label;
@@ -89,8 +88,8 @@ namespace KxFramework::UI
 							 wxWindowID id,
 							 FileBrowseDialogMode mode,
 							 const String& caption = {},
-							 StdButton buttons = DefaultButtons,
-							 FileBrowseDialogStyle style = DefaultStyle
+							 FlagSet<StdButton> buttons = DefaultButtons,
+							 FlagSet<FileBrowseDialogStyle> style = DefaultStyle
 
 			)
 			{
@@ -100,8 +99,8 @@ namespace KxFramework::UI
 						wxWindowID id,
 						FileBrowseDialogMode mode,
 						const String& caption = {},
-						StdButton buttons = DefaultButtons,
-						FileBrowseDialogStyle style = DefaultStyle
+						FlagSet<StdButton> buttons = DefaultButtons,
+						FlagSet<FileBrowseDialogStyle> style = DefaultStyle
 			);
 			~FileBrowseDialog();
 

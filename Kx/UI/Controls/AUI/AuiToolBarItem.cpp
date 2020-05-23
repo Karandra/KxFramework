@@ -156,7 +156,7 @@ namespace KxFramework::UI
 		return m_Item->GetWindow();
 	}
 
-	const String& AuiToolBarItem::GetLabel() const
+	String AuiToolBarItem::GetLabel() const
 	{
 		return m_Item->GetLabel();
 	}
@@ -165,7 +165,7 @@ namespace KxFramework::UI
 		m_Item->SetLabel(label);
 	}
 
-	const String& AuiToolBarItem::GetShortHelp() const
+	String AuiToolBarItem::GetShortHelp() const
 	{
 		return m_Item->GetShortHelp();
 	}
@@ -174,7 +174,7 @@ namespace KxFramework::UI
 		m_Item->SetShortHelp(helpString);
 	}
 
-	const String& AuiToolBarItem::GetLongHelp() const
+	String AuiToolBarItem::GetLongHelp() const
 	{
 		return m_Item->GetLongHelp();
 	}

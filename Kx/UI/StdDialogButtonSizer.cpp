@@ -31,7 +31,7 @@ namespace KxFramework::UI
 		}
 	}
 
-	Button* StdDialogButtonSizer::CreateButton(Dialog* dialog, StdButton buttons, StdButton singleButton, wxWindowID id, bool addToList)
+	Button* StdDialogButtonSizer::CreateButton(Dialog* dialog, FlagSet<StdButton> buttons, StdButton singleButton, wxWindowID id, bool addToList)
 	{
 		if (buttons & singleButton)
 		{

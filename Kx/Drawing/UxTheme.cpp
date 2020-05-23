@@ -193,7 +193,7 @@ namespace KxFramework
 		return {};
 	}
 
-	void UxTheme::Open(wxWindow& window, const wchar_t* classes, UxThemeFlag flags) noexcept
+	void UxTheme::Open(wxWindow& window, const wchar_t* classes, FlagSet<UxThemeFlag> flags) noexcept
 	{
 		DWORD dwFlags = 0;
 		if (flags & UxThemeFlag::ForceRectSizing)
@@ -225,7 +225,7 @@ namespace KxFramework
 		m_Window = nullptr;
 	}
 
-	UxTheme::UxTheme(wxWindow& window, UxThemeClass KxUxThemeClass, UxThemeFlag flags) noexcept
+	UxTheme::UxTheme(wxWindow& window, UxThemeClass KxUxThemeClass, FlagSet<UxThemeFlag> flags) noexcept
 	{
 		if (const wchar_t* name = MapKxUxThemeClassToName(KxUxThemeClass))
 		{

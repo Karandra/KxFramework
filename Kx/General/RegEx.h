@@ -14,6 +14,8 @@ namespace KxFramework
 		NoSubstitution = 1 << 1,
 		NewLine = 1 << 2,
 	};
+	Kx_DeclareFlagSet(RegExFlag);
+
 	enum class RegExCompileFlag
 	{
 		None = 0,
@@ -21,12 +23,7 @@ namespace KxFramework
 		NotBegin = 1 << 0,
 		NodEnd = 1 << 1
 	};
-
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowEverything(RegExFlag);
-		Kx_EnumClass_AllowEverything(RegExCompileFlag);
-	}
+	Kx_DeclareFlagSet(RegExCompileFlag);
 }
 
 namespace KxFramework
@@ -44,7 +41,7 @@ namespace KxFramework
 
 		public:
 			RegEx() = default;
-			RegEx(const String& expression, RegExFlag flags = RegExFlag::None)
+			RegEx(const String& expression, FlagSet<RegExFlag> flags = {})
 			{
 				Compile(expression, flags);
 			}
@@ -55,9 +52,9 @@ namespace KxFramework
 			{
 				return m_RegEx.IsValid();
 			}
-			bool Compile(const String& expression, RegExFlag flags = RegExFlag::None)
+			bool Compile(const String& expression, FlagSet<RegExFlag> flags = {})
 			{
-				constexpr auto MapRegExFlag = [](RegExFlag flags) noexcept
+				constexpr auto MapRegExFlag = [](FlagSet<RegExFlag> flags) noexcept
 				{
 					int nativeFlags = 0;
 					Utility::AddFlagRef(nativeFlags, wxRE_ICASE, flags & RegExFlag::IgnoreCase);
@@ -70,9 +67,9 @@ namespace KxFramework
 				return m_RegEx.Compile(expression, wxRE_EXTENDED|wxRE_ADVANCED|MapRegExFlag(flags));
 			}
 
-			bool Matches(const String& text, RegExCompileFlag flags = RegExCompileFlag::None) const
+			bool Matches(const String& text, FlagSet<RegExCompileFlag> flags = {}) const
 			{
-				constexpr auto MapRegExCompileFlag = [](RegExCompileFlag flags) noexcept
+				constexpr auto MapRegExCompileFlag = [](FlagSet<RegExCompileFlag> flags) noexcept
 				{
 					int nativeFlags = 0;
 					Utility::AddFlagRef(nativeFlags, wxRE_NOTBOL, flags & RegExCompileFlag::NotBegin);

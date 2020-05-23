@@ -26,12 +26,12 @@ namespace KxFramework
 			TDefaultItem& AssignDefault(TDefaultItem value = {})
 			{
 				m_Value = std::move(value);
-				return std::get<ToInt(VersionType::Default)>(m_Value);
+				return std::get<static_cast<size_t>(VersionType::Default)>(m_Value);
 			}
 			DateTime& AssignDateTime(DateTime value = {})
 			{
 				m_Value = std::move(value);
-				return std::get<ToInt(VersionType::DateTime)>(m_Value);
+				return std::get<static_cast<size_t>(VersionType::DateTime)>(m_Value);
 			}
 
 		public:

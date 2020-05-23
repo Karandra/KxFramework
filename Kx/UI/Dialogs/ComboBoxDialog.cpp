@@ -25,16 +25,16 @@ namespace KxFramework::UI
 								const String& caption,
 								const Point& pos,
 								const Size& size,
-								StdButton buttons,
-								ComboBoxDialogStyle style
+								FlagSet<StdButton> buttons,
+								FlagSet<ComboBoxDialogStyle> style
 	)
 	{
 		m_DialogResizeSide = wxHORIZONTAL;
 
-		if (StdDialog::Create(parent, id, caption, pos, size, buttons, EnumClass::Combine<DialogStyle>(style)))
+		if (StdDialog::Create(parent, id, caption, pos, size, buttons, CombineFlags<DialogStyle>(*style)))
 		{
 			const Size size(DefaultComboBoxWidth, wxDefaultCoord);
-			const ComboBoxStyle comboBoxFlags = Utility::ModFlag(ComboBox::DefaultStyle, ComboBoxStyle::ReadOnly, style & ComboBoxDialogStyle::ReadOnly);
+			const FlagSet<ComboBoxStyle> comboBoxFlags = ComboBox::DefaultStyle.Clone().Mod(ComboBoxStyle::ReadOnly, style & ComboBoxDialogStyle::ReadOnly);
 
 			if (style & ComboBoxDialogStyle::Bitmap)
 			{

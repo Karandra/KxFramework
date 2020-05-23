@@ -19,7 +19,7 @@ namespace KxFramework::UI
 	class KX_API StaticBitmap: public wxGenericStaticBitmap
 	{
 		public:
-			static constexpr WindowStyle DefaultStyle = WindowStyle::None;
+			static constexpr FlagSet<WindowStyle> DefaultStyle = WindowStyle::None;
 
 		private:
 			Size m_InitialSize;
@@ -32,7 +32,7 @@ namespace KxFramework::UI
 			StaticBitmap(wxWindow* parent,
 						 wxWindowID id,
 						 const wxBitmap& bitmap = {},
-						 WindowStyle style = DefaultStyle
+						 FlagSet<WindowStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, id, bitmap, style);
@@ -40,7 +40,7 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const wxBitmap& bitmap = {},
-						WindowStyle style = DefaultStyle
+						FlagSet<WindowStyle> style = DefaultStyle
 			);
 
 		public:

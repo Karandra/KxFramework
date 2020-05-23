@@ -319,12 +319,12 @@ namespace KxFramework::UI
 						   const String& caption,
 						   const Point& pos,
 						   const Size& size,
-						   StdButton buttons,
-						   DialogStyle style
+						   FlagSet<StdButton> buttons,
+						   FlagSet<DialogStyle> style
 	)
 	{
 		m_SelectedButtons = buttons;
-		Utility::RemoveFlagRef(style, TopLevelWindowStyle::CloseBox, !IsCloseBoxEnabled());
+		style.Remove(static_cast<DialogStyle>(TopLevelWindowStyle::CloseBox), !IsCloseBoxEnabled());
 
 		if (Dialog::Create(parent, id, GetDefaultTitle(), pos, size, style))
 		{
@@ -343,7 +343,7 @@ namespace KxFramework::UI
 			m_ViewLabel = new Label(m_ContentPanel, wxID_NONE, {}, LabelStyle::None);
 			m_ViewLabel->SetMaxSize(FromDIP(Size(wxDefaultCoord, 23)));
 
-			m_ContentPanelLine = new UI::Panel(this, wxID_NONE, EnumClass::Combine<WindowStyle>(WindowBorder::None));
+			m_ContentPanelLine = new UI::Panel(this, wxID_NONE, CombineFlags<WindowStyle>(WindowBorder::None));
 			m_ContentPanelLine->SetPosition(Point(0, 0));
 			m_ContentPanelLine->SetBackgroundColour(ms_LineBackgroundColor);
 			m_ContentPanelLine->SetMaxSize(FromDIP(Size(wxDefaultCoord, 1)));

@@ -188,7 +188,7 @@ namespace KxFramework::UI
 	bool Label::Create(wxWindow* parent,
 					   wxWindowID id,
 					   const String& label,
-					   LabelStyle style
+					   FlagSet<LabelStyle> style
 	)
 	{
 		m_Style = style;
@@ -196,7 +196,7 @@ namespace KxFramework::UI
 		SetBackgroundStyle(wxBG_STYLE_PAINT);
 		PushEventHandler(&m_EvtHandler);
 
-		if (wxStaticText::Create(parent, id, label, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style)|wxBORDER_NONE))
+		if (wxStaticText::Create(parent, id, label, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style.ToInt()|wxBORDER_NONE))
 		{
 			EnableSystemTheme();
 			SetDoubleBuffered(true);

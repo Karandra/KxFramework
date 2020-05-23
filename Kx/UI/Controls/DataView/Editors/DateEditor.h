@@ -14,9 +14,9 @@ namespace KxFramework::UI::DataView
 		ShowCentury = 1 << 4,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::DataView::DateEditorOption);
+	Kx_DeclareFlagSet(UI::DataView::DateEditorOption);
 }
 
 namespace KxFramework::UI::DataView

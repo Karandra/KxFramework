@@ -30,7 +30,7 @@ namespace KxFramework::System
 		return 0;
 	}
 
-	std::unique_ptr<ISystemProcess> CreateProcess(const ISystemProcess& info, wxEvtHandler* evtHandler, CreateSystemProcessFlag flags)
+	std::unique_ptr<ISystemProcess> CreateProcess(const ISystemProcess& info, wxEvtHandler* evtHandler, FlagSet<CreateSystemProcessFlag> flags)
 	{
 		auto executor = std::make_unique<CreateProcessExecutor>(evtHandler, flags);
 		if (flags & CreateSystemProcessFlag::Async)

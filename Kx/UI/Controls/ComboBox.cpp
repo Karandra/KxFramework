@@ -12,11 +12,11 @@ namespace KxFramework::UI
 						  const String& value,
 						  const Point& pos,
 						  const Size& size,
-						  ComboBoxStyle style,
+						  FlagSet<ComboBoxStyle> style,
 						  const wxValidator& validator
 	)
 	{
-		if (wxComboBox::Create(parent, id, value, pos, size, 0, nullptr, ToInt(style), validator))
+		if (wxComboBox::Create(parent, id, value, pos, size, 0, nullptr, style.ToInt(), validator))
 		{
 			EnableSystemTheme();
 			return true;

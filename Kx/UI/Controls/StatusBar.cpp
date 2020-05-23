@@ -33,10 +33,10 @@ namespace KxFramework::UI
 	bool StatusBar::Create(wxWindow* parent,
 						   wxWindowID id,
 						   int fieldCount,
-						   StatusBarStyle style
+						   FlagSet<StatusBarStyle> style
 	)
 	{
-		if (wxStatusBar::Create(parent, id, ToInt(style)))
+		if (wxStatusBar::Create(parent, id, style.ToInt()))
 		{
 			EnableSystemTheme();
 			SetDoubleBuffered(true);

@@ -32,9 +32,9 @@ namespace KxFramework::UI
 		TabFixedWidth = wxAUI_NB_TAB_FIXED_WIDTH,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::AuiNotebookStyle);
+	Kx_DeclareFlagSet(UI::AuiNotebookStyle);
 }
 
 namespace KxFramework::UI
@@ -48,7 +48,7 @@ namespace KxFramework::UI
 				Generic,
 				Simple
 			};
-			static constexpr AuiNotebookStyle DefaultStyle = AuiNotebookStyle::Top|AuiNotebookStyle::ScrollButtons;
+			static constexpr FlagSet<AuiNotebookStyle> DefaultStyle = AuiNotebookStyle::Top|AuiNotebookStyle::ScrollButtons;
 
 		private:
 			int m_TabIndent = 3;
@@ -58,14 +58,14 @@ namespace KxFramework::UI
 			AuiNotebook() = default;
 			AuiNotebook(wxWindow* parent,
 						wxWindowID id,
-						AuiNotebookStyle style = DefaultStyle
+						FlagSet<AuiNotebookStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, id, style);
 			}
 			bool Create(wxWindow* parent,
 						wxWindowID id,
-						AuiNotebookStyle style = DefaultStyle
+						FlagSet<AuiNotebookStyle> style = DefaultStyle
 			);
 
 		public:

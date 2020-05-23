@@ -121,13 +121,13 @@ namespace KxFramework::UI
 			void SetWindow(wxWindow* window);
 			wxWindow* GetWindow();
 
-			const String& GetLabel() const;
+			String GetLabel() const;
 			void SetLabel(const String& label);
 
-			const String& GetShortHelp() const;
+			String GetShortHelp() const;
 			void SetShortHelp(const String& helpString);
 
-			const String& GetLongHelp() const;
+			String GetLongHelp() const;
 			void SetLongHelp(const String& helpString);
 
 			const wxBitmap& GetBitmap() const;

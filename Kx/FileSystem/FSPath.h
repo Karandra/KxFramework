@@ -11,11 +11,7 @@ namespace KxFramework
 		None = 0,
 		TrailingSeparator = 1 << 0,
 	};
-
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowEverything(FSPathFormat);
-	}
+	Kx_DeclareFlagSet(FSPathFormat);
 }
 
 namespace KxFramework
@@ -116,8 +112,8 @@ namespace KxFramework
 				return *this;
 			}
 			
-			String GetFullPath(FSPathNamespace withNamespace = FSPathNamespace::None, FSPathFormat format = FSPathFormat::None) const;
-			String GetFullPathWithNS(FSPathNamespace withNamespace = FSPathNamespace::None, FSPathFormat format = FSPathFormat::None) const
+			String GetFullPath(FSPathNamespace withNamespace = FSPathNamespace::None, FlagSet<FSPathFormat> format = {}) const;
+			String GetFullPathWithNS(FSPathNamespace withNamespace = FSPathNamespace::None, FlagSet<FSPathFormat> format = {}) const
 			{
 				return GetFullPath(m_Namespace != FSPathNamespace::None ? m_Namespace : withNamespace, format);
 			}

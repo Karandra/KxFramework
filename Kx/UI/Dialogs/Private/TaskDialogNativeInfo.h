@@ -31,8 +31,8 @@ namespace KxFramework::UI::Private
 			void UpdateText();
 			void UpdateIcons();
 			void UpdateButtonSpecs();
-			void UpdateStdButtons(StdButton buttons);
-			void UpdateAutoDefaultButton(StdButton buttons);
+			void UpdateStdButtons(FlagSet<StdButton> buttons);
+			void UpdateAutoDefaultButton(FlagSet<StdButton> buttons);
 			
 			void Realize();
 			bool UpdateWindowUI(bool sendNavigateEvents = false);

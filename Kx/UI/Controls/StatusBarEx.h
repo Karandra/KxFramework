@@ -11,11 +11,11 @@ namespace KxFramework::UI
 	class KX_API StatusBarEx: public StatusBar, public WithImageList, public IProgressMeter
 	{
 		public:
-			static constexpr StatusBarStyle DefaultStyle = StatusBar::DefaultStyle;
+			static constexpr FlagSet<StatusBarStyle> DefaultStyle = StatusBar::DefaultStyle;
 
 		private:
 			std::unordered_map<int, int> m_Images;
-			StatusBarStyle m_Style = DefaultStyle;
+			FlagSet<StatusBarStyle> m_Style = DefaultStyle;
 			Color m_BorderColor;
 			int m_State = wxCONTROL_NONE;
 			bool m_IsSeparatorsVisible = false;
@@ -78,9 +78,9 @@ namespace KxFramework::UI
 		public:
 			StatusBarEx() = default;
 			StatusBarEx(wxWindow* parent,
-						  wxWindowID id,
-						  int fieldsCount = 1,
-						  StatusBarStyle style = DefaultStyle
+						wxWindowID id,
+						int fieldsCount = 1,
+						FlagSet<StatusBarStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, id, fieldsCount, style);
@@ -88,7 +88,7 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						int fieldsCount = 1,
-						StatusBarStyle style = DefaultStyle
+						FlagSet<StatusBarStyle> style = DefaultStyle
 			);
 
 		public:

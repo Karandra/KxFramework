@@ -9,7 +9,7 @@ namespace
 	{
 		using namespace KxFramework;
 
-		return std::get<ToInt(type)>(items);
+		return std::get<static_cast<size_t>(type)>(items);
 	}
 }
 

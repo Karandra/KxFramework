@@ -150,7 +150,7 @@ namespace KxFramework::UI
 
 	bool DrawablePanel::Create(wxWindow* parent,
 							   wxWindowID id,
-							   WindowStyle style
+							   FlagSet<WindowStyle> style
 	)
 	{
 		if (Panel::Create(parent, id, style|WindowStyle::FullRepaintOnResize))

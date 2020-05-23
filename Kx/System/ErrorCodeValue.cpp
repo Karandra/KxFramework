@@ -289,5 +289,6 @@ namespace KxFramework
 		{
 			return HRESULT_FROM_WIN32(win32->GetValue());
 		}
+		return {};
 	}
 }

@@ -208,7 +208,7 @@ namespace KxFramework
 		return {};
 	}
 
-	std::optional<String> Locale::GetMonthName(Month month, UnitNameFlag flags) const
+	std::optional<String> Locale::GetMonthName(Month month, FlagSet<UnitNameFlag> flags) const
 	{
 		auto GetValue = [&](LocaleStrOption full, LocaleStrOption abbreviated)
 		{
@@ -268,7 +268,7 @@ namespace KxFramework
 		};
 		return {};
 	}
-	std::optional<String> Locale::GetWeekDayName(WeekDay weekDay, UnitNameFlag flags) const
+	std::optional<String> Locale::GetWeekDayName(WeekDay weekDay, FlagSet<UnitNameFlag> flags) const
 	{
 		auto GetValue = [&](LocaleStrOption full, LocaleStrOption abbreviated)
 		{

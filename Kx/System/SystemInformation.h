@@ -47,7 +47,7 @@ namespace KxFramework::System
 			SystemType SystemType = SystemType::Unknown;
 			SystemPlatformID PlatformID = SystemPlatformID::Unknown;
 			SystemProductType ProductType = SystemProductType::Unknown;
-			SystemProductSuite ProductSuite = SystemProductSuite::None;
+			FlagSet<SystemProductSuite> ProductSuite;
 
 		public:
 			VersionInfo() noexcept = default;
@@ -85,7 +85,7 @@ namespace KxFramework::System
 	{
 		String DeviceName;
 		String DeviceDescription;
-		DisplayDeviceFlag Flags = DisplayDeviceFlag::None;
+		FlagSet<DisplayDeviceFlag> Flags;
 	};
 }
 
@@ -124,7 +124,7 @@ namespace KxFramework::System
 	size_t EnumEnvironmentVariables(std::function<bool(String, String)> func);
 
 	bool LockWorkstation(LockWorkstationCommand command) noexcept;
-	bool ExitWorkstation(ExitWorkstationCommand command) noexcept;
+	bool ExitWorkstation(FlagSet<ExitWorkstationCommand> command) noexcept;
 
 	bool IsWindowsServer() noexcept;
 	bool IsWindowsVersionOrGreater(int majorVersion, int minorVersion, int servicePackMajor = -1) noexcept;

@@ -5,7 +5,7 @@
 
 namespace KxFramework
 {
-	enum class UUIDToStringFormat
+	enum class UUIDFormat
 	{
 		None = 0, // 123e4567-e89b-12d3-a456-426655440000
 		URN = 1 << 1, // RFC 4122 format: urn:uuid:123e4567-e89b-12d3-a456-426655440000
@@ -13,11 +13,7 @@ namespace KxFramework
 		Parentheses = 1 << 3, // (123e4567-e89b-12d3-a456-426655440000)
 		UpperCase = 1 << 4 // 123E4567-E89B-12D3-A456-426655440000
 	};
-
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowEverything(UUIDToStringFormat);
-	}
+	Kx_DeclareFlagSet(UUIDFormat);
 }
 
 namespace KxFramework
@@ -53,7 +49,7 @@ namespace KxFramework
 			{
 				return m_ID;
 			}
-			String ToString(UUIDToStringFormat format = UUIDToStringFormat::None) const;
+			String ToString(FlagSet<UUIDFormat> format = {}) const;
 
 		public:
 			constexpr UniversallyUniqueID& operator=(UniversallyUniqueID&&) noexcept = default;

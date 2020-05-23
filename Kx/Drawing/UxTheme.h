@@ -23,6 +23,8 @@ namespace KxFramework
 		NonClient = 1 << 0,
 		ForceRectSizing = 1 << 1,
 	};
+	Kx_DeclareFlagSet(UxThemeFlag);
+
 	enum class UxThemeClass
 	{
 		Button,
@@ -62,12 +64,6 @@ namespace KxFramework
 		TreeView,
 		Window
 	};
-
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowEverything(UxThemeFlag);
-		Kx_EnumClass_AllowCast(UxThemeClass);
-	}
 }
 
 namespace KxFramework
@@ -86,20 +82,20 @@ namespace KxFramework
 			wxWindow* m_Window = nullptr;
 
 		private:
-			void Open(wxWindow& window, const wchar_t* classes, UxThemeFlag flags = UxThemeFlag::None) noexcept;
+			void Open(wxWindow& window, const wchar_t* classes, FlagSet<UxThemeFlag> flags = {}) noexcept;
 			void Close() noexcept;
 
 		public:
 			UxTheme() noexcept = default;
-			UxTheme(wxWindow& window, const wchar_t* classes, UxThemeFlag flags = UxThemeFlag::None) noexcept
+			UxTheme(wxWindow& window, const wchar_t* classes, FlagSet<UxThemeFlag> flags = {}) noexcept
 			{
 				Open(window, classes, flags);
 			}
-			UxTheme(wxWindow& window, const String& classes, UxThemeFlag flags = UxThemeFlag::None) noexcept
+			UxTheme(wxWindow& window, const String& classes, FlagSet<UxThemeFlag> flags = {}) noexcept
 			{
 				Open(window, classes.wc_str(), flags);
 			}
-			UxTheme(wxWindow& window, UxThemeClass themeClass, UxThemeFlag flags = UxThemeFlag::None) noexcept;
+			UxTheme(wxWindow& window, UxThemeClass themeClass, FlagSet<UxThemeFlag> flags = {}) noexcept;
 			UxTheme(const UxTheme&) = delete;
 			UxTheme(UxTheme&& other) noexcept
 			{

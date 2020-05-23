@@ -43,8 +43,8 @@ namespace KxFramework::UI::DataView
 			using ViewBase = wxSystemThemedControl<wxScrolled<wxWindow>>;
 
 		private:
-			OptionSet<CtrlStyle, CtrlStyle::Default> m_Styles;
-			OptionSet<CtrlExtraStyle, CtrlExtraStyle::None> m_ExtraStyles;
+			FlagSet<CtrlStyle> m_Styles = CtrlStyle::Default;
+			FlagSet<CtrlExtraStyle> m_ExtraStyles;
 
 			HeaderCtrl* m_HeaderArea = nullptr;
 			MainWindow* m_ClientArea = nullptr;
@@ -149,7 +149,7 @@ namespace KxFramework::UI::DataView
 
 		public:
 			View() = default;
-			View(wxWindow* parent, wxWindowID id, CtrlStyle style = CtrlStyle::Default)
+			View(wxWindow* parent, wxWindowID id, FlagSet<CtrlStyle> style = CtrlStyle::Default)
 			{
 				Create(parent, id, style);
 			}
@@ -159,32 +159,32 @@ namespace KxFramework::UI::DataView
 						wxWindowID id,
 						const Point& pos = Point::UnspecifiedPosition(),
 						const Size& size = Size::UnspecifiedSize(),
-						long style = static_cast<long>(CtrlStyle::Default),
+						FlagSet<CtrlStyle> style = CtrlStyle::Default,
 						const wxString& name = {}
 			);
-			bool Create(wxWindow* parent, wxWindowID id, CtrlStyle style = CtrlStyle::Default)
+			bool Create(wxWindow* parent, wxWindowID id, FlagSet<CtrlStyle> style = CtrlStyle::Default)
 			{
-				return Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), static_cast<int>(style));
+				return Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style);
 			}
 
 		public:
 			// Styles
 			bool IsStyleEnabled(CtrlStyle style) const
 			{
-				return m_Styles.IsEnabled(style);
+				return m_Styles.Contains(style);
 			}
 			void EnableStyle(CtrlStyle style, bool enable = true)
 			{
-				m_Styles.Enable(style, enable);
+				m_Styles.Mod(style, enable);
 			}
 			
 			bool IsExtraStyleEnabled(CtrlExtraStyle style) const
 			{
-				return m_ExtraStyles.IsEnabled(style);
+				return m_ExtraStyles.Contains(style);
 			}
 			void EnableExtraStyle(CtrlExtraStyle style, bool enable = true)
 			{
-				m_ExtraStyles.Enable(style, enable);
+				m_ExtraStyles.Mod(style, enable);
 			}
 
 			// Model

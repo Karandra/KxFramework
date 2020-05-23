@@ -16,11 +16,7 @@ namespace KxFramework
 		Recursive = 1 << 0,
 		LimitToFiles = 1 << 1
 	};
-
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowEverything(FSRecycleBinOpFlag);
-	}
+	Kx_DeclareFlagSet(FSRecycleBinOpFlag);
 }
 
 namespace KxFramework
@@ -43,12 +39,12 @@ namespace KxFramework
 
 			BinarySize GetSize() const;
 			size_t GetItemCount() const;
-			bool ClearItems(FSRecycleBinOpFlag flags = FSRecycleBinOpFlag::None);
+			bool ClearItems(FlagSet<FSRecycleBinOpFlag> flags = {});
 
 			FileItem GetItem(const FSPath& path) const;
 			size_t EnumItems(std::function<bool(FileItem)> func) const;
 
-			bool Recycle(const FSPath& path, FSRecycleBinOpFlag flags = FSRecycleBinOpFlag::None);
-			bool Restore(const FSPath& path, FSRecycleBinOpFlag flags = FSRecycleBinOpFlag::None);
+			bool Recycle(const FSPath& path, FlagSet<FSRecycleBinOpFlag> flags = {});
+			bool Restore(const FSPath& path, FlagSet<FSRecycleBinOpFlag> flags = {});
 	};
 }

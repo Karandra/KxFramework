@@ -24,10 +24,10 @@ namespace KxFramework::UI
 		Metal = wxDIALOG_EX_METAL,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::DialogStyle);
-	Kx_EnumClass_AllowEverything(UI::DialogExStyle);
+	Kx_DeclareFlagSet(UI::DialogStyle);
+	Kx_DeclareFlagSet(UI::DialogExStyle);
 }
 
 namespace KxFramework::UI
@@ -35,7 +35,7 @@ namespace KxFramework::UI
 	class KX_API Dialog: public TopLevelWindow<wxDialog>
 	{
 		public:
-			static constexpr DialogStyle DefaultStyle = EnumClass::Combine<DialogStyle>(DialogStyle::DefaultStyle|DialogStyle::Shaped, TopLevelWindowStyle::Resizeable);
+			static constexpr FlagSet<DialogStyle> DefaultStyle = CombineFlags<DialogStyle>(DialogStyle::DefaultStyle|DialogStyle::Shaped, TopLevelWindowStyle::Resizeable);
 
 		public:
 			static void SetStdLabels(wxSizer* sizer);
@@ -47,7 +47,7 @@ namespace KxFramework::UI
 				   const String& title,
 				   const Point& pos = Point::UnspecifiedPosition(),
 				   const Size& size = Size::UnspecifiedSize(),
-				   DialogStyle style = DefaultStyle
+				   FlagSet<DialogStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, id, title, pos, size, style);
@@ -57,12 +57,12 @@ namespace KxFramework::UI
 						const String& title,
 						const Point& pos = Point::UnspecifiedPosition(),
 						const Size& size = Size::UnspecifiedSize(),
-						DialogStyle style = DefaultStyle
+						FlagSet<DialogStyle> style = DefaultStyle
 			);
 
 		public:
 			virtual void CenterIfNoPosition(const Point& pos);
-			StdDialogButtonSizer* CreateStdDialogButtonSizer(StdButton buttons, StdButton defaultButtons = StdButton::None);
+			StdDialogButtonSizer* CreateStdDialogButtonSizer(FlagSet<StdButton> buttons, FlagSet<StdButton> defaultButtons = StdButton::None);
 
 		public:
 			wxDECLARE_DYNAMIC_CLASS(Dialog);

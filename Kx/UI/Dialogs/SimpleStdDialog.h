@@ -23,8 +23,8 @@ namespace KxFramework::UI
 						const wxString& caption,
 						const Point& pos = Point::UnspecifiedPosition(),
 						const Size& size = Size::UnspecifiedSize(),
-						StdButton buttons = DefaultButtons,
-						DialogStyle style = DefaultStyle
+						FlagSet<StdButton> buttons = DefaultButtons,
+						FlagSet<DialogStyle> style = DefaultStyle
 			);
 
 		public:

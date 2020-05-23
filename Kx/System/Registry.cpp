@@ -6,6 +6,8 @@
 
 namespace
 {
+	using namespace KxFramework;
+
 	constexpr size_t g_MaxKeyNameLength = std::numeric_limits<uint8_t>::max() + 1;
 	constexpr size_t g_MaxValueNameLength = std::numeric_limits<int16_t>::max() + 1;
 
@@ -14,10 +16,8 @@ namespace
 		return reinterpret_cast<HKEY>(handle);
 	}
 
-	HKEY MapBaseKey(KxFramework::RegistryBaseKey baseKey) noexcept
+	HKEY MapBaseKey(RegistryBaseKey baseKey) noexcept
 	{
-		using namespace KxFramework;
-
 		switch (baseKey)
 		{
 			case RegistryBaseKey::LocalMachine:
@@ -63,7 +63,7 @@ namespace
 		};
 		return nullptr;
 	}
-	REGSAM MapAccessMode(KxFramework::RegistryAccess access) noexcept
+	REGSAM MapAccessMode(FlagSet<RegistryAccess> access) noexcept
 	{
 		using namespace KxFramework;
 
@@ -84,7 +84,7 @@ namespace
 			return nativeAccess;
 		}
 	}
-	REGSAM MapWOW64(KxFramework::RegistryWOW64 wow64) noexcept
+	REGSAM MapWOW64(RegistryWOW64 wow64) noexcept
 	{
 		using namespace KxFramework;
 
@@ -102,10 +102,8 @@ namespace
 		return 0;
 	}
 	
-	DWORD MapValueType(KxFramework::RegistryValueType type) noexcept
+	DWORD MapValueType(RegistryValueType type) noexcept
 	{
-		using namespace KxFramework;
-
 		switch (type)
 		{
 			case RegistryValueType::String:
@@ -157,10 +155,8 @@ namespace
 		};
 		return REG_NONE;
 	}
-	KxFramework::RegistryValueType MapValueType(DWORD type) noexcept
+	RegistryValueType MapValueType(DWORD type) noexcept
 	{
-		using namespace KxFramework;
-
 		switch (type)
 		{
 			case REG_SZ:
@@ -204,10 +200,8 @@ namespace
 	}
 
 	template<class T>
-	std::optional<T> DoGetNumericValue(HKEY hkey, const KxFramework::String& valueName, DWORD& actualType, KxFramework::Win32Error& lastError) noexcept
+	std::optional<T> DoGetNumericValue(HKEY hkey, const String& valueName, DWORD& actualType, Win32Error& lastError) noexcept
 	{
-		using namespace KxFramework;
-
 		DWORD dataSize = 0;
 		lastError = ::RegGetValueW(hkey, nullptr, valueName.wc_str(), RRF_RT_ANY, &actualType, nullptr, &dataSize);
 		if (lastError.IsSuccess() && dataSize == sizeof(T))
@@ -228,10 +222,8 @@ namespace
 		return {};
 	}
 
-	std::optional<KxFramework::String> DoGetStringValue(HKEY hkey, const KxFramework::String& valueName, DWORD& actualType, KxFramework::Win32Error& lastError, DWORD desiredType, DWORD flags = 0)
+	std::optional<String> DoGetStringValue(HKEY hkey, const String& valueName, DWORD& actualType, Win32Error& lastError, DWORD desiredType, DWORD flags = 0)
 	{
-		using namespace KxFramework;
-
 		DWORD dataSize = 0;
 		lastError = ::RegGetValueW(hkey, nullptr, valueName.wc_str(), desiredType|flags, &actualType, nullptr, &dataSize);
 		if (lastError && dataSize != 0)
@@ -244,10 +236,8 @@ namespace
 		}
 		return {};
 	}
-	bool DoSetStringValue(HKEY hkey, const KxFramework::String& valueName, const KxFramework::String& value, DWORD type, KxFramework::Win32Error& lastError)
+	bool DoSetStringValue(HKEY hkey, const String& valueName, const String& value, DWORD type, Win32Error& lastError)
 	{
-		using namespace KxFramework;
-
 		lastError = ::RegSetKeyValueW(hkey, nullptr, valueName.wc_str(), type, value.wc_str(), value.length() * sizeof(wchar_t) + sizeof(wchar_t));
 		return lastError.IsSuccess();
 	}
@@ -277,7 +267,7 @@ namespace KxFramework
 	{
 		return MapBaseKey(baseKey);
 	}
-	bool RegistryKey::DoOpenKey(void* rootKey, const FSPath& subKey, RegistryAccess access, RegistryWOW64 wow64)
+	bool RegistryKey::DoOpenKey(void* rootKey, const FSPath& subKey, FlagSet<RegistryAccess> access, RegistryWOW64 wow64)
 	{
 		if (rootKey)
 		{
@@ -291,7 +281,7 @@ namespace KxFramework
 		}
 		return false;
 	}
-	bool RegistryKey::DoCreateKey(void* rootKey, const FSPath& subKey, RegistryAccess access, RegistryKeyFlag flags, RegistryWOW64 wow64)
+	bool RegistryKey::DoCreateKey(void* rootKey, const FSPath& subKey, FlagSet<RegistryAccess> access, FlagSet<RegistryKeyFlag> flags, RegistryWOW64 wow64)
 	{
 		if (rootKey)
 		{

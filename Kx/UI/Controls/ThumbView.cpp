@@ -224,10 +224,10 @@ namespace KxFramework::UI
 
 	bool ThumbView::Create(wxWindow* parent,
 						   wxWindowID id,
-						   WindowStyle style
+						   FlagSet<WindowStyle> style
 	)
 	{
-		if (wxVScrolledWindow::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style), wxS("ThumbView")))
+		if (wxVScrolledWindow::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style.ToInt(), wxS("ThumbView")))
 		{
 			EnableSystemTheme();
 			SetDoubleBuffered(true);

@@ -43,14 +43,14 @@ namespace KxFramework::UI
 							   const String& caption,
 							   const Point& pos,
 							   const Size& size,
-							   StdButton buttons,
-							   TextBoxDialogStyle style
+							   FlagSet<StdButton> buttons,
+							   FlagSet<TextBoxDialogStyle> style
 	)
 	{
 		m_DialogResizeSide = static_cast<wxOrientation>(-1);
 		m_Options = style;
 
-		if (StdDialog::Create(parent, id, caption, pos, size, buttons, EnumClass::Combine<DialogStyle>(style)))
+		if (StdDialog::Create(parent, id, caption, pos, size, buttons, CombineFlags<DialogStyle>(*style)))
 		{
 			Size size(DefaultWidth, wxDefaultCoord);
 
@@ -68,7 +68,7 @@ namespace KxFramework::UI
 			}
 			else
 			{
-				TextBoxStyle flags = TextBoxStyle::ProcessTab;
+				FlagSet<TextBoxStyle> flags = TextBoxStyle::ProcessTab;
 				if (style & TextBoxDialogStyle::Multiline)
 				{
 					flags |= TextBoxStyle::Multiline;

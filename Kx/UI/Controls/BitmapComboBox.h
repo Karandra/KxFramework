@@ -11,7 +11,7 @@ namespace KxFramework::UI
 	class KX_API BitmapComboBox: public WindowRefreshScheduler<wxSystemThemedControl<wxBitmapComboBox>>, public WithImageList
 	{
 		public:
-			static constexpr ComboBoxStyle DefaultStyle = ComboBoxStyle::ProcessEnter|ComboBoxStyle::Dropdown|ComboBoxStyle::ReadOnly;
+			static constexpr FlagSet<ComboBoxStyle> DefaultStyle = ComboBoxStyle::ProcessEnter|ComboBoxStyle::Dropdown|ComboBoxStyle::ReadOnly;
 
 		private:
 			std::unordered_map<size_t, int> m_ImageIDs;
@@ -22,7 +22,7 @@ namespace KxFramework::UI
 			BitmapComboBox(wxWindow* parent,
 						   wxWindowID id,
 						   const String& value = {},
-						   ComboBoxStyle style = DefaultStyle,
+						   FlagSet<ComboBoxStyle> style = DefaultStyle,
 						   const wxValidator& validator = wxDefaultValidator
 			)
 			{
@@ -33,7 +33,7 @@ namespace KxFramework::UI
 						   const String& value,
 						   const Point& pos,
 						   const Size& size,
-						   ComboBoxStyle style = DefaultStyle,
+						   FlagSet<ComboBoxStyle> style = DefaultStyle,
 						   const wxValidator& validator = wxDefaultValidator
 			)
 			{
@@ -42,7 +42,7 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const String& value = {},
-						ComboBoxStyle style = DefaultStyle,
+						FlagSet<ComboBoxStyle> style = DefaultStyle,
 						const wxValidator& validator = wxDefaultValidator
 			)
 			{
@@ -53,7 +53,7 @@ namespace KxFramework::UI
 						const String& value,
 						const Point& pos,
 						const Size& size,
-						ComboBoxStyle style = DefaultStyle,
+						FlagSet<ComboBoxStyle> style = DefaultStyle,
 						const wxValidator& validator = wxDefaultValidator
 			);
 

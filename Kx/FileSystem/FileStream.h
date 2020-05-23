@@ -15,10 +15,10 @@ namespace KxFramework
 	{
 		private:
 			void* m_Handle = nullptr;
-			FileStreamAccess m_AccessMode = FileStreamAccess::None;
-			FileStreamShare m_ShareMode = FileStreamShare::Read;
+			FlagSet<FileStreamAccess> m_AccessMode;
+			FlagSet<FileStreamShare> m_ShareMode;
+			FlagSet<FileStreamFlags> m_Flags;
 			FileStreamDisposition m_Disposition = FileStreamDisposition::OpenExisting;
-			FileStreamFlags m_Flags = FileStreamFlags::None;
 
 			wxFileOffset m_Position = 0;
 			StreamErrorCode m_LastError = StreamErrorCode::Success;
@@ -41,10 +41,10 @@ namespace KxFramework
 				DoSetLastError(0, false);
 			}
 			FileStream(const FSPath& path,
-					   FileStreamAccess access = FileStreamAccess::Read,
+					   FlagSet<FileStreamAccess> access = FileStreamAccess::Read,
 					   FileStreamDisposition disposition = FileStreamDisposition::OpenExisting,
-					   FileStreamShare share = FileStreamShare::Read,
-					   FileStreamFlags flags = FileStreamFlags::None
+					   FlagSet<FileStreamShare> share = FileStreamShare::Read,
+					   FlagSet<FileStreamFlags> flags = FileStreamFlags::None
 			)
 				:FileStream()
 			{
@@ -65,17 +65,19 @@ namespace KxFramework
 			FSPath GetFileSystemPath() const;
 
 			bool AttachHandle(void* handle);
-			bool AttachHandle(void* handle, FileStreamAccess access = FileStreamAccess::Read,
+			bool AttachHandle(void* handle,
+							  FlagSet<FileStreamAccess> access = FileStreamAccess::Read,
 							  FileStreamDisposition disposition = FileStreamDisposition::OpenExisting,
-							  FileStreamShare share = FileStreamShare::Read,
-							  FileStreamFlags flags = FileStreamFlags::None
+							  FlagSet<FileStreamShare> share = FileStreamShare::Read,
+							  FlagSet<FileStreamFlags> flags = FileStreamFlags::None
 			);
 			void* DetachHandle();
 
-			bool Open(const FSPath& path, FileStreamAccess access = FileStreamAccess::Read,
+			bool Open(const FSPath& path,
+					  FlagSet<FileStreamAccess> access = FileStreamAccess::Read,
 					  FileStreamDisposition disposition = FileStreamDisposition::OpenExisting,
-					  FileStreamShare share = FileStreamShare::Read,
-					  FileStreamFlags flags = FileStreamFlags::None
+					  FlagSet<FileStreamShare> share = FileStreamShare::Read,
+					  FlagSet<FileStreamFlags> flags = FileStreamFlags::None
 			);
 			bool Close() override
 			{
@@ -144,8 +146,8 @@ namespace KxFramework
 			bool Flush() override;
 			bool SetAllocationSize(BinarySize offset = {}) override;
 
-			FileAttribute GetAttributes() const;
-			bool SetAttributes(FileAttribute attributes);
+			FlagSet<FileAttribute> GetAttributes() const;
+			bool SetAttributes(FlagSet<FileAttribute> attributes);
 
 			bool GetTimestamp(DateTime& creationTime, DateTime& modificationTime, DateTime& lastAccessTime) const;
 			bool ChangeTimestamp(DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime);

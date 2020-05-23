@@ -18,9 +18,9 @@ namespace KxFramework::UI
 		ThemeColors = 1 << 4,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::LabelStyle);
+	Kx_DeclareFlagSet(UI::LabelStyle);
 }
 
 namespace KxFramework::UI
@@ -28,7 +28,7 @@ namespace KxFramework::UI
 	class KX_API Label: public WindowRefreshScheduler<wxSystemThemedControl<wxStaticText>>
 	{
 		public:
-			static constexpr LabelStyle DefaultStyle = LabelStyle::None;
+			static constexpr FlagSet<LabelStyle> DefaultStyle = LabelStyle::None;
 
 		private:
 			wxEvtHandler m_EvtHandler;
@@ -42,7 +42,7 @@ namespace KxFramework::UI
 			Color m_ColorDisabled;
 			Size m_BestSize;
 
-			LabelStyle m_Style = DefaultStyle;
+			FlagSet<LabelStyle> m_Style = DefaultStyle;
 			int m_WrapLength = -1;
 			int m_State = wxCONTROL_NONE;
 			int m_MultiLineAlignStyle = wxALIGN_LEFT|wxALIGN_TOP;
@@ -100,7 +100,7 @@ namespace KxFramework::UI
 			Label(wxWindow* parent,
 				  wxWindowID id,
 				  const String& label,
-				  LabelStyle style = DefaultStyle
+				  FlagSet<LabelStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, id, label, style);
@@ -108,7 +108,7 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const String& label,
-						LabelStyle style = DefaultStyle
+						FlagSet<LabelStyle> style = DefaultStyle
 			);
 			~Label()
 			{
@@ -118,11 +118,11 @@ namespace KxFramework::UI
 		public:
 			long GetWindowStyleFlag() const override
 			{
-				return ToInt(m_Style)|wxStaticText::GetWindowStyleFlag();
+				return m_Style.ToInt()|wxStaticText::GetWindowStyleFlag();
 			}
 			void SetWindowStyleFlag(long style) override
 			{
-				m_Style = FromInt<LabelStyle>(style);
+				m_Style = static_cast<LabelStyle>(style);
 				wxStaticText::SetWindowStyleFlag(style);
 			}
 			void Wrap(int width)

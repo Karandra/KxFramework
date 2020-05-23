@@ -317,11 +317,8 @@ namespace KxFramework
 		CaretTimeout = wxSYS_CARET_TIMEOUT_MSEC,
 	};
 
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowEverything(ExitWorkstationCommand);
-		Kx_EnumClass_AllowEverything(DisplayDeviceFlag);
-		Kx_EnumClass_AllowEverything(SystemProductSuite);
-		Kx_EnumClass_AllowEverything(SystemFeature);
-	}
+	Kx_DeclareFlagSet(ExitWorkstationCommand);
+	Kx_DeclareFlagSet(DisplayDeviceFlag);
+	Kx_DeclareFlagSet(SystemProductSuite);
+	Kx_DeclareFlagSet(SystemFeature);
 }

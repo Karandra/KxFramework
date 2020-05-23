@@ -17,11 +17,14 @@ namespace KxFramework
 		IPv4,
 		IPv6,
 	};
+
 	enum class URIFlag
 	{
 		None = 0,
 		Strict = 1 << 0
 	};
+	Kx_DeclareFlagSet(URIFlag);
+
 	enum class URLStatus
 	{
 		Success = 0,
@@ -33,11 +36,6 @@ namespace KxFramework
 		ConnectionError,
 		ProtocolError
 	};
-
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowEverything(URIFlag);
-	}
 }
 
 namespace KxFramework::Network

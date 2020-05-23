@@ -40,11 +40,11 @@ namespace KxFramework::UI::DataView
 		Default = None
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::DataView::CellOption);
-	Kx_EnumClass_AllowEverything(UI::DataView::CellBGOption);
-	Kx_EnumClass_AllowEverything(UI::DataView::CellFontOption);
+	Kx_DeclareFlagSet(UI::DataView::CellOption);
+	Kx_DeclareFlagSet(UI::DataView::CellBGOption);
+	Kx_DeclareFlagSet(UI::DataView::CellFontOption);
 }
 
 namespace KxFramework::UI::DataView::CellAttributes

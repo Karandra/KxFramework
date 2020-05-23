@@ -18,6 +18,8 @@ namespace KxFramework
 		LimitToFiles = 1 << 2,
 		LimitToDirectories = 1 << 3,
 	};
+	Kx_DeclareFlagSet(FSEnumItemsFlag);
+
 	enum class FSCopyItemFlag
 	{
 		None = 0,
@@ -25,12 +27,7 @@ namespace KxFramework
 		ReplaceIfExist = 1 << 0,
 		NoBuffering = 1 << 1,
 	};
-
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowEverything(FSEnumItemsFlag);
-		Kx_EnumClass_AllowEverything(FSCopyItemFlag);
-	}
+	Kx_DeclareFlagSet(FSCopyItemFlag);
 }
 
 namespace KxFramework
@@ -48,15 +45,15 @@ namespace KxFramework
 
 		public:
 			virtual FileItem GetItem(const FSPath& path) const = 0;
-			virtual size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query = {}, FSEnumItemsFlag flags = FSEnumItemsFlag::None) const = 0;
+			virtual size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query = {}, FlagSet<FSEnumItemsFlag> flags = {}) const = 0;
 			
 			virtual bool CreateDirectory(const FSPath& path) = 0;
 			virtual bool ChangeAttributes(const FSPath& path, FileAttribute attributes) = 0;
 			virtual bool ChangeTimestamp(const FSPath& path, DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime) = 0;
 
-			virtual bool CopyItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FSCopyItemFlag flags = FSCopyItemFlag::None) = 0;
-			virtual bool MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FSCopyItemFlag flags = FSCopyItemFlag::None) = 0;
-			virtual bool RenameItem(const FSPath& source, const FSPath& destination, FSCopyItemFlag flags = FSCopyItemFlag::None) = 0;
+			virtual bool CopyItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) = 0;
+			virtual bool MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) = 0;
+			virtual bool RenameItem(const FSPath& source, const FSPath& destination, FlagSet<FSCopyItemFlag> flags = {}) = 0;
 			virtual bool RemoveItem(const FSPath& path) = 0;
 	};
 }

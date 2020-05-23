@@ -22,7 +22,7 @@ namespace KxFramework::UI
 	class KX_API ImageView: public WindowRefreshScheduler<wxSystemThemedControl<wxControl>>
 	{
 		public:
-			static constexpr WindowStyle DefaultStyle = EnumClass::Combine<WindowStyle>(WindowBorder::Theme);
+			static constexpr FlagSet<WindowStyle> DefaultStyle = CombineFlags<WindowStyle>(WindowBorder::Theme);
 
 		private:
 			wxGraphicsRenderer* m_Renderer = nullptr;
@@ -47,14 +47,14 @@ namespace KxFramework::UI
 			ImageView() = default;
 			ImageView(wxWindow* parent,
 					  wxWindowID id,
-					  WindowStyle style = DefaultStyle
+					  FlagSet<WindowStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, id, style);
 			}
 			bool Create(wxWindow* parent,
 						wxWindowID id,
-						WindowStyle style = DefaultStyle
+						FlagSet<WindowStyle> style = DefaultStyle
 			);
 
 		public:

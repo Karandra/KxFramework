@@ -21,9 +21,9 @@ namespace KxFramework::Geometry
 		OutBottom = 1 << 3
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(Geometry::OutCode);
+	Kx_DeclareFlagSet(Geometry::OutCode);
 }
 
 namespace KxFramework::Geometry
@@ -762,7 +762,7 @@ namespace KxFramework::Geometry
 				return Clone().Union(other);
 			}
 
-			constexpr TDerived CenterIn(const TDerived& other, Orientation direction = Orientation::Both) const noexcept
+			constexpr TDerived CenterIn(const TDerived& other, FlagSet<Orientation> direction = Orientation::Both) const noexcept
 			{
 				return
 				{
@@ -871,13 +871,13 @@ namespace KxFramework::Geometry
 
 				return Self();
 			}
-			constexpr OutCode GetOutCode(const TPoint& point) const noexcept
+			constexpr FlagSet<OutCode> GetOutCode(const TPoint& point) const noexcept
 			{
-				OutCode outCode = OutCode::Inside;
-				Utility::AddFlagRef(outCode, OutCode::OutLeft, point.GetX() < m_X);
-				Utility::AddFlagRef(outCode, OutCode::OutRight, point.GetX() > m_X + m_Width);
-				Utility::AddFlagRef(outCode, OutCode::OutTop, point.GetY() < m_Y);
-				Utility::AddFlagRef(outCode, OutCode::OutBottom, point.GetY() > m_Y + m_Height);
+				FlagSet<OutCode> outCode;
+				outCode.Add(OutCode::OutLeft, point.GetX() < m_X);
+				outCode.Add(outCode, OutCode::OutRight, point.GetX() > m_X + m_Width);
+				outCode.Add(outCode, OutCode::OutTop, point.GetY() < m_Y);
+				outCode.Add(outCode, OutCode::OutBottom, point.GetY() > m_Y + m_Height);
 
 				return outCode;
 			}

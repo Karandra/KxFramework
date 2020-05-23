@@ -50,11 +50,11 @@ namespace KxFramework::UI
 		Theme = wxBORDER_THEME,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::WindowStyle);
-	Kx_EnumClass_AllowEverything(UI::WindowExtraStyle);
-	Kx_EnumClass_AllowEverything(UI::WindowBorder);
+	Kx_DeclareFlagSet(UI::WindowStyle);
+	Kx_DeclareFlagSet(UI::WindowExtraStyle);
+	Kx_DeclareFlagSet(UI::WindowBorder);
 }
 
 namespace KxFramework::UI

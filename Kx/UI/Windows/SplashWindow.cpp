@@ -75,7 +75,7 @@ namespace KxFramework::UI
 							  const wxBitmap& bitmap,
 							  const Size& size,
 							  TimeSpan timeout,
-							  SplashWindowStyle style
+							  FlagSet<SplashWindowStyle> style
 	)
 	{
 		m_Style = style;
@@ -103,12 +103,6 @@ namespace KxFramework::UI
 	SplashWindow::~SplashWindow()
 	{
 		m_Timer.Stop();
-	}
-
-	void SplashWindow::SetWindowStyleFlag(long style)
-	{
-		m_Style = FromInt<SplashWindowStyle>(style);
-		ScheduleRefresh();
 	}
 
 	bool SplashWindow::Show(bool show)

@@ -18,10 +18,10 @@ namespace KxFramework::UI
 	bool CollapsiblePane::Create(wxWindow* parent,
 								 wxWindowID id,
 								 const wxString& label,
-								 CollapsiblePaneStyle style
+								 FlagSet<CollapsiblePaneStyle> style
 	)
 	{
-		if (wxCollapsiblePane::Create(parent, id, label, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style), wxDefaultValidator))
+		if (wxCollapsiblePane::Create(parent, id, label, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style.ToInt(), wxDefaultValidator))
 		{
 			SetDoubleBuffered(true);
 			if (ShouldInheritColours())

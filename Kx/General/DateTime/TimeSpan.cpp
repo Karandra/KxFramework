@@ -24,7 +24,7 @@ namespace KxFramework
 			return wxTimeSpan::Milliseconds(m_Value).Format(format);
 		}
 	}
-	String TimeSpan::Format(const Locale& locale, TimeFormatFlag flags) const
+	String TimeSpan::Format(const Locale& locale, FlagSet<TimeFormatFlag> flags) const
 	{
 		if (flags & TimeFormatFlag::NoMinutes)
 		{

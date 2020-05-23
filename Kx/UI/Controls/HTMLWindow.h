@@ -18,9 +18,9 @@ namespace KxFramework::UI
 		NoSelection = wxHW_NO_SELECTION,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::HTMLWindowStyle);
+	Kx_DeclareFlagSet(UI::HTMLWindowStyle);
 }
 
 namespace KxFramework::UI
@@ -28,7 +28,7 @@ namespace KxFramework::UI
 	class KX_API HTMLWindow: public WindowRefreshScheduler<wxHtmlWindow>, public wxTextEntry
 	{
 		public:
-			static constexpr HTMLWindowStyle DefaultStyle = HTMLWindowStyle::ScrollbarAuto;
+			static constexpr FlagSet<HTMLWindowStyle> DefaultStyle = HTMLWindowStyle::ScrollbarAuto;
 
 		public:
 			static String ProcessPlainText(const String& text);
@@ -73,9 +73,9 @@ namespace KxFramework::UI
 		public:
 			HTMLWindow() = default;
 			HTMLWindow(wxWindow* parent,
-						  wxWindowID id,
-						  const String& text = {},
-						  HTMLWindowStyle style = DefaultStyle
+					   wxWindowID id,
+					   const String& text = {},
+					   FlagSet<HTMLWindowStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, id, text, style);
@@ -83,7 +83,7 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const String& text = {},
-						HTMLWindowStyle style = DefaultStyle
+						FlagSet<HTMLWindowStyle> style = DefaultStyle
 			);
 			~HTMLWindow() = default;
 

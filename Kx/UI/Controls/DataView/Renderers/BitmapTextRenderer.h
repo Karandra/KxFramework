@@ -45,9 +45,9 @@ namespace KxFramework::UI::DataView
 			}
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::DataView::BitmapTextValueOption);
+	Kx_DeclareFlagSet(UI::DataView::BitmapTextValueOption);
 }
 
 namespace KxFramework::UI::DataView

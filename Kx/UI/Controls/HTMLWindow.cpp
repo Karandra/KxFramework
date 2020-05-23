@@ -91,7 +91,7 @@ namespace KxFramework::UI
 		}
 		if (link != nullptr)
 		{
-			MenuItem* item = MakeItem(ToInt(StdID::CopyLink));
+			MenuItem* item = MakeItem(static_cast<wxWindowID>(StdID::CopyLink));
 		}
 		{
 			MenuItem* item = MakeItem(wxID_PASTE);
@@ -116,7 +116,7 @@ namespace KxFramework::UI
 				Copy();
 				break;
 			}
-			case ToInt(StdID::CopyLink):
+			case static_cast<wxWindowID>(StdID::CopyLink) :
 			{
 				CopyTextToClipboard(link->GetHref());
 				break;
@@ -277,10 +277,10 @@ namespace KxFramework::UI
 	bool HTMLWindow::Create(wxWindow* parent,
 							wxWindowID id,
 							const String& text,
-							HTMLWindowStyle style
+							FlagSet<HTMLWindowStyle> style
 	)
 	{
-		if (wxHtmlWindow::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style), wxS("HTMLWindow")))
+		if (wxHtmlWindow::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style.ToInt(), wxS("HTMLWindow")))
 		{
 			m_BackgroundColor = wxHtmlWindow::GetBackgroundColour();
 			SetBorders(2);

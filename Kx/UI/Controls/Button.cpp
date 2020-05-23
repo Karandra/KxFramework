@@ -200,12 +200,12 @@ namespace KxFramework::UI
 						const String& label,
 						const Point& pos,
 						const Size& size,
-						ButtonStyle style,
+						FlagSet<ButtonStyle> style,
 						const wxValidator& validator
 	)
 	{
 		
-		if (wxAnyButton::Create(parent, id, pos, size, ToInt(style), validator))
+		if (wxAnyButton::Create(parent, id, pos, size, style.ToInt(), validator))
 		{
 			SetLabel(label);
 			SetBackgroundStyle(wxBG_STYLE_PAINT);

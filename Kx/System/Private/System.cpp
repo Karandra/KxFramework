@@ -46,7 +46,7 @@ namespace KxFramework::System::Private
 		return MAKEINTRESOURCEW(resID);
 	}
 
-	uint32_t MapSystemProcessAccess(SystemProcessAccess access) noexcept
+	uint32_t MapSystemProcessAccess(FlagSet<SystemProcessAccess> access) noexcept
 	{
 		if (access == SystemProcessAccess::Everything)
 		{

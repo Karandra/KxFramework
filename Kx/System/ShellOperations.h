@@ -41,13 +41,6 @@ namespace KxFramework
 		PinTaskbar,
 		UnpinTaskbar,
 	};
-	enum class SHGetKnownDirectoryFlag
-	{
-		None = 0,
-
-		UseDefaultLocation = 1 << 0,
-		CreateIfDoesNotExist = 1 << 1,
-	};
 	enum class SHQueryAssociation
 	{
 		None = -1,
@@ -67,6 +60,13 @@ namespace KxFramework
 		AppID,
 		AppPublisher,
 		AppIconReference,
+	};
+	enum class SHGetKnownDirectoryFlag
+	{
+		None = 0,
+
+		UseDefaultLocation = 1 << 0,
+		CreateIfDoesNotExist = 1 << 1,
 	};
 	enum class SHGetFileIconFlag
 	{
@@ -89,18 +89,15 @@ namespace KxFramework
 		InheritConsole = 1 << 2,
 	};
 
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowEverything(SHOperationFlags);
-		Kx_EnumClass_AllowEverything(SHGetKnownDirectoryFlag);
-		Kx_EnumClass_AllowEverything(SHGetFileIconFlag);
-		Kx_EnumClass_AllowEverything(SHExexuteFlag);
-	}
+	Kx_DeclareFlagSet(SHOperationFlags);
+	Kx_DeclareFlagSet(SHGetKnownDirectoryFlag);
+	Kx_DeclareFlagSet(SHGetFileIconFlag);
+	Kx_DeclareFlagSet(SHExexuteFlag);
 }
 
 namespace KxFramework::Shell
 {
-	bool FileOperation(SHOperationType opType, const FSPath& source, const FSPath& destination, wxWindow* window = nullptr, SHOperationFlags flags = SHOperationFlags::None);
+	bool FileOperation(SHOperationType opType, const FSPath& source, const FSPath& destination, wxWindow* window = nullptr, FlagSet<SHOperationFlags> flags = {});
 	bool FormatVolume(const wxWindow* window, const LegacyVolume& volume, bool quickFormat = false) noexcept;
 	bool PinShortcut(const FSPath& filePath, SHPinShortcutCommand command);
 
@@ -109,14 +106,14 @@ namespace KxFramework::Shell
 				 const String& command = {},
 				 const String& parameters = {},
 				 const FSPath& workingDirectory = {},
-				 SHWindowCommand showWindow = SHWindowCommand::Show,
-				 SHExexuteFlag flags = SHExexuteFlag::None
+				 FlagSet<SHWindowCommand> showWindow = SHWindowCommand::Show,
+				 FlagSet<SHExexuteFlag> flags = {}
 	);
-	bool OpenURI(const wxWindow* window, const URI& uri, SHWindowCommand showWindow = SHWindowCommand::Show, SHExexuteFlag flags = SHExexuteFlag::None);
+	bool OpenURI(const wxWindow* window, const URI& uri, FlagSet<SHWindowCommand> showWindow = SHWindowCommand::Show, FlagSet<SHExexuteFlag> flags = {});
 	HResult ExploreToItem(const FSPath& path);
 
-	wxIcon GetFileIcon(const FSPath& path, SHGetFileIconFlag flags);
-	wxIcon GetFileIcon(const FileItem& item, SHGetFileIconFlag flags);
+	wxIcon GetFileIcon(const FSPath& path, FlagSet<SHGetFileIconFlag> flags);
+	wxIcon GetFileIcon(const FileItem& item, FlagSet<SHGetFileIconFlag> flags);
 
 	String QueryAssociation(const FSPath& filePath, SHQueryAssociation option, Any* extraData = nullptr);
 	String QueryAssociation(const UniversallyUniqueID& classID, SHQueryAssociation option, Any* extraData = nullptr);
@@ -124,6 +121,6 @@ namespace KxFramework::Shell
 	String GetLocalizedName(const FSPath& path, int* resourceID = nullptr);
 	HResult SetLocalizedName(const FSPath& path, const String& resourse, int resourceID);
 
-	FSPath GetKnownDirectory(KnownDirectoryID id, SHGetKnownDirectoryFlag flags = SHGetKnownDirectoryFlag::None);
+	FSPath GetKnownDirectory(KnownDirectoryID id, FlagSet<SHGetKnownDirectoryFlag> flags = {});
 	size_t EnumKnownDirectories(std::function<bool(KnownDirectoryID, String)> func);
 }

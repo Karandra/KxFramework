@@ -2,6 +2,7 @@
 #include "Kx/UI/Common.h"
 #include "ComboPopup.h"
 #include "Kx/General/WithOptions.h"
+#include "Kx/UI/Controls/ComboBox.h"
 #include "Kx/UI/Controls/DataView.h"
 
 namespace KxFramework::UI
@@ -23,9 +24,9 @@ namespace KxFramework::UI::DataView
 		HorizontalLayout = 1 << 3,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::DataView::ComboCtrlOption);
+	Kx_DeclareFlagSet(UI::DataView::ComboCtrlOption);
 }
 
 namespace KxFramework::UI::DataView
@@ -36,14 +37,14 @@ namespace KxFramework::UI::DataView
 		public WithOptions<ComboCtrlOption, ComboCtrlOption::ForceGetStringOnDismiss|ComboCtrlOption::AltPopupWindow>
 	{
 		public:
-			static constexpr int DefaultStyle = wxCB_READONLY;
-			static constexpr CtrlStyle DefaultDataViewStyle = CtrlStyle::Default;
+			static constexpr FlagSet<ComboBoxStyle> DefaultStyle = ComboBoxStyle::ReadOnly;
+			static constexpr FlagSet<CtrlStyle> DefaultDataViewStyle = CtrlStyle::Default;
 
 			KxEVENT_MEMBER(ItemEvent, GetStringValue);
 			KxEVENT_MEMBER(ItemEvent, SetStringValue);
 
 		protected:
-			CtrlStyle m_DataViewFlags = DefaultDataViewStyle;
+			FlagSet<CtrlStyle> m_DataViewFlags = DefaultDataViewStyle;
 			wxBoxSizer* m_Sizer = nullptr;
 			Panel* m_BackgroundWindow = nullptr;
 
@@ -73,7 +74,7 @@ namespace KxFramework::UI::DataView
 			ComboCtrl() = default;
 			ComboCtrl(wxWindow* parent,
 						 wxWindowID id,
-						 long style = DefaultStyle,
+						 FlagSet<ComboBoxStyle>  style = DefaultStyle,
 						 const wxValidator& validator = wxDefaultValidator
 			)
 			{
@@ -81,7 +82,7 @@ namespace KxFramework::UI::DataView
 			}
 			bool Create(wxWindow* parent,
 						wxWindowID id,
-						long style = DefaultStyle,
+						FlagSet<ComboBoxStyle>  style = DefaultStyle,
 						const wxValidator& validator = wxDefaultValidator
 			);
 			~ComboCtrl();
@@ -93,11 +94,11 @@ namespace KxFramework::UI::DataView
 			wxString GetStringValue() const override;
 			void SetStringValue(const wxString& value) override;
 
-			CtrlStyle GetDataViewFlags() const
+			FlagSet<CtrlStyle> GetDataViewFlags() const
 			{
 				return m_DataViewFlags;
 			}
-			void SetDataViewFlags(CtrlStyle flags)
+			void SetDataViewFlags(FlagSet<CtrlStyle> flags)
 			{
 				m_DataViewFlags = flags;
 			}

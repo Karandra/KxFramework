@@ -29,10 +29,10 @@ namespace KxFramework::UI
 	bool ProgressBar::Create(wxWindow* parent,
 							 wxWindowID id,
 							 int range,
-							 ProgressBarStyle style
+							 FlagSet<ProgressBarStyle> style
 	)
 	{
-		if (wxGauge::Create(parent, id, range, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style)))
+		if (wxGauge::Create(parent, id, range, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style.ToInt()))
 		{
 			Bind(wxEVT_PAINT, &ProgressBar::OnPaint, this);
 			return true;

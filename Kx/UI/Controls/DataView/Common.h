@@ -113,10 +113,10 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::DataView::CtrlStyle);
-	Kx_EnumClass_AllowEverything(UI::DataView::CtrlExtraStyle);
-	Kx_EnumClass_AllowEverything(UI::DataView::ColumnStyle);
-	Kx_EnumClass_AllowEverything(UI::DataView::DNDOpType);
+	Kx_DeclareFlagSet(UI::DataView::CtrlStyle);
+	Kx_DeclareFlagSet(UI::DataView::CtrlExtraStyle);
+	Kx_DeclareFlagSet(UI::DataView::ColumnStyle);
+	Kx_DeclareFlagSet(UI::DataView::DNDOpType);
 }

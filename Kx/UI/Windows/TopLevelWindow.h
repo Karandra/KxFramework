@@ -19,9 +19,9 @@ namespace KxFramework::UI
 		Resizeable = wxRESIZE_BORDER,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::TopLevelWindowStyle);
+	Kx_DeclareFlagSet(UI::TopLevelWindowStyle);
 }
 
 namespace KxFramework::UI::Private

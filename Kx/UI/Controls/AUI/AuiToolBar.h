@@ -20,9 +20,9 @@ namespace KxFramework::UI
 		Horizontal = wxAUI_TB_HORZ_LAYOUT,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::AuiToolBarStyle);
+	Kx_DeclareFlagSet(UI::AuiToolBarStyle);
 }
 
 namespace KxFramework::UI
@@ -32,7 +32,7 @@ namespace KxFramework::UI
 		friend class AuiToolBarItem;
 
 		public:
-			static constexpr AuiToolBarStyle DefaultStyle = AuiToolBarStyle::Horizontal|AuiToolBarStyle::Text;
+			static constexpr FlagSet<AuiToolBarStyle> DefaultStyle = AuiToolBarStyle::Horizontal|AuiToolBarStyle::Text;
 			static constexpr int DefaultSeparatorSize = 2;
 
 		private:
@@ -58,14 +58,14 @@ namespace KxFramework::UI
 			AuiToolBar() = default;
 			AuiToolBar(wxWindow* parent,
 					   wxWindowID id,
-					   AuiToolBarStyle style = DefaultStyle
+					   FlagSet<AuiToolBarStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, id, style);
 			}
 			bool Create(wxWindow* parent,
 						wxWindowID id,
-						AuiToolBarStyle style = DefaultStyle
+						FlagSet<AuiToolBarStyle> style = DefaultStyle
 			);
 			~AuiToolBar()
 			{

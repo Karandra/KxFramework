@@ -17,9 +17,9 @@ namespace KxFramework::UI
 		AutoHide = 1 << 3,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::ToolTipExStyle);
+	Kx_DeclareFlagSet(UI::ToolTipExStyle);
 }
 
 namespace KxFramework::UI

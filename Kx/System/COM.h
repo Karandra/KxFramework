@@ -42,11 +42,8 @@ namespace KxFramework
 		AppContainer = 0 << 16
 	};
 
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowEverything(COMInitFlag);
-		Kx_EnumClass_AllowEverything(ClassContext);
-	}
+	Kx_DeclareFlagSet(COMInitFlag);
+	Kx_DeclareFlagSet(ClassContext);
 }
 
 namespace KxFramework::COM
@@ -104,11 +101,11 @@ namespace KxFramework
 			ErrorCode m_Status;
 
 		private:
-			void DoInitialize(COMThreadingModel threadingModel, COMInitFlag flags) noexcept;
+			void DoInitialize(COMThreadingModel threadingModel, FlagSet<COMInitFlag> flags) noexcept;
 			void DoUninitialize() noexcept;
 
 		public:
-			COMInitGuard(COMThreadingModel threadingModel, COMInitFlag flags = COMInitFlag::None) noexcept
+			COMInitGuard(COMThreadingModel threadingModel, FlagSet<COMInitFlag> flags = {}) noexcept
 			{
 				DoInitialize(threadingModel, flags);
 			}

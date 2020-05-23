@@ -30,11 +30,7 @@ namespace KxFramework
 		DoNotSave = WX_LAST_STD << 4,
 		ContextHelp = WX_LAST_STD << 5,
 	};
-
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowEverything(StdButton);
-	}
+	Kx_DeclareFlagSet(StdButton);
 }
 
 namespace KxFramework::UI

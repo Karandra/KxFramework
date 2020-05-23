@@ -133,7 +133,7 @@ namespace KxFramework
 			{
 				return Format(String(format));
 			}
-			String Format(const Locale& locale, TimeFormatFlag flags = TimeFormatFlag::None) const;
+			String Format(const Locale& locale, FlagSet<TimeFormatFlag> flags = {}) const;
 
 		public:
 			constexpr TimeSpan& operator=(const TimeSpan&) noexcept = default;

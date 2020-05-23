@@ -9,20 +9,18 @@
 
 namespace
 {
-	constexpr DWORD MapCOMInitFlag(KxFramework::COMInitFlag flags) noexcept
-	{
-		using namespace KxFramework;
+	using namespace KxFramework;
 
+	constexpr DWORD MapCOMInitFlag(FlagSet<COMInitFlag> flags) noexcept
+	{
 		DWORD nativeFlags = 0;
 		Utility::AddFlagRef(nativeFlags, COINIT::COINIT_DISABLE_OLE1DDE, flags & COMInitFlag::DisableOLE1DDE);
 		Utility::AddFlagRef(nativeFlags, COINIT::COINIT_SPEED_OVER_MEMORY, flags & COMInitFlag::SppedOverMemory);
 
 		return nativeFlags;
 	}
-	constexpr CLSCTX MapClassContext(KxFramework::ClassContext context) noexcept
+	constexpr CLSCTX MapClassContext(FlagSet<ClassContext> context) noexcept
 	{
-		using namespace KxFramework;
-		
 		CLSCTX nativeContext = static_cast<CLSCTX>(0);
 		Utility::AddFlagRef(nativeContext, CLSCTX::CLSCTX_INPROC_SERVER, context & ClassContext::InprocServer);
 		Utility::AddFlagRef(nativeContext, CLSCTX::CLSCTX_INPROC_HANDLER, context & ClassContext::InprocHandler);
@@ -96,7 +94,7 @@ namespace KxFramework::COM
 
 namespace KxFramework
 {
-	void COMInitGuard::DoInitialize(COMThreadingModel threadingModel, COMInitFlag flags) noexcept
+	void COMInitGuard::DoInitialize(COMThreadingModel threadingModel, FlagSet<COMInitFlag> flags) noexcept
 	{
 		switch (threadingModel)
 		{

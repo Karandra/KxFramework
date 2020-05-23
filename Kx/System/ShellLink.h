@@ -41,8 +41,8 @@ namespace KxFramework
 			HResult SetIconLocation(const FSPath& path, int index = 0);
 			std::optional<int> GetIconIndex() const noexcept;
 
-			SHWindowCommand GetShowCommand() const noexcept;
-			HResult SetShowCommand(SHWindowCommand command) noexcept;
+			FlagSet<SHWindowCommand> GetShowCommand() const noexcept;
+			HResult SetShowCommand(FlagSet<SHWindowCommand> command) noexcept;
 
 			wxKeyEvent GetHotKey() const noexcept;
 			HResult SetHotKey(const wxKeyEvent& keyState) noexcept;

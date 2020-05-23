@@ -8,10 +8,10 @@ namespace KxFramework::UI
 	bool CheckBox::Create(wxWindow* parent,
 						  wxWindowID id,
 						  const String& label,
-						  CheckBoxStyle style
+						  FlagSet<CheckBoxStyle> style
 	)
 	{
-		if (wxCheckBox::Create(parent, id, label, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style)))
+		if (wxCheckBox::Create(parent, id, label, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style.ToInt()))
 		{
 			return true;
 		}

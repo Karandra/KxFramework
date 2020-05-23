@@ -121,17 +121,13 @@ namespace KxFramework
 		BackupSemantics = 1 << 1,
 	};
 
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowEverything(FileSystemFeature);
-		Kx_EnumClass_AllowEverything(FileAttribute);
-		Kx_EnumClass_AllowEverything(ReparsePointTag);
+	Kx_DeclareFlagSet(FileSystemFeature);
+	Kx_DeclareFlagSet(FileAttribute);
+	Kx_DeclareFlagSet(ReparsePointTag);
 
-		Kx_EnumClass_AllowEverything(FileStreamAccess);
-		Kx_EnumClass_AllowEverything(FileStreamShare);
-		Kx_EnumClass_AllowEverything(FileStreamFlags);
-		Kx_EnumClass_AllowCast(FileStreamDisposition);
-	}
+	Kx_DeclareFlagSet(FileStreamAccess);
+	Kx_DeclareFlagSet(FileStreamShare);
+	Kx_DeclareFlagSet(FileStreamFlags);
 }
 
 namespace KxFramework::FileSystem

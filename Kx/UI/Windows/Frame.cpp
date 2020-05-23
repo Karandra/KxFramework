@@ -10,10 +10,10 @@ namespace KxFramework::UI
 					   const String& title,
 					   const Point& pos,
 					   const Size& size,
-					   FrameStyle style
+					   FlagSet<FrameStyle> style
 	)
 	{
-		if (wxFrame::Create(parent, id, title, pos, size, ToInt(style)))
+		if (wxFrame::Create(parent, id, title, pos, size, style.ToInt()))
 		{
 			SetStatusBarPane(-1);
 			SetDefaultBackgroundColor();

@@ -90,7 +90,7 @@ namespace KxFramework::UI
 
 		public:
 			static constexpr StdIcon DefaultIconID = StdIcon::Information;
-			static constexpr StdButton DefaultButtons = StdButton::OK|StdButton::Cancel;
+			static constexpr FlagSet<StdButton> DefaultButtons = StdButton::OK|StdButton::Cancel;
 
 			KxEVENT_MEMBER(wxNotifyEvent, Button);
 			KxEVENT_MEMBER(wxNotifyEvent, Navigate);
@@ -130,7 +130,7 @@ namespace KxFramework::UI
 		public:
 			using StdButtonsIDs = std::vector<wxWindowID>;
 
-			static constexpr DialogStyle DefaultStyle = Dialog::DefaultStyle;
+			static constexpr FlagSet<DialogStyle> DefaultStyle = Dialog::DefaultStyle;
 			static const StdButtonsIDs ms_DefaultCloseIDs;
 			static const StdButtonsIDs ms_DefaultEnterIDs;
 			static const Color ms_WindowBackgroundColor;
@@ -176,7 +176,7 @@ namespace KxFramework::UI
 
 			StdButtonsIDs m_CloseIDs = ms_DefaultCloseIDs;
 			StdButtonsIDs m_EnterIDs = ms_DefaultEnterIDs;
-			StdButton m_SelectedButtons = StdButton::None;
+			FlagSet<StdButton> m_SelectedButtons = StdButton::None;
 
 		protected:
 			void PostCreate(const Point& pos = Point::UnspecifiedPosition());
@@ -266,8 +266,8 @@ namespace KxFramework::UI
 					  const String& caption,
 					  const Point& pos = Point::UnspecifiedPosition(),
 					  const Size& size = Size::UnspecifiedSize(),
-					  StdButton buttons = DefaultButtons,
-					  DialogStyle style = DefaultStyle
+					  FlagSet<StdButton> buttons = DefaultButtons,
+					  FlagSet<DialogStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, id, caption, pos, size, buttons, style);
@@ -277,8 +277,8 @@ namespace KxFramework::UI
 						const String& caption,
 						const Point& pos = Point::UnspecifiedPosition(),
 						const Size& size = Size::UnspecifiedSize(),
-						StdButton buttons = DefaultButtons,
-						DialogStyle style = DefaultStyle
+						FlagSet<StdButton> buttons = DefaultButtons,
+						FlagSet<DialogStyle> style = DefaultStyle
 			);
 
 		public:
@@ -393,7 +393,7 @@ namespace KxFramework::UI
 				}
 				SetIconVisibility();
 			}
-		
+			
 			// Caption
 			wxString GetCaption() const override
 			{

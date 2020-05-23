@@ -22,8 +22,8 @@ namespace KxFramework
 			DateTime m_CreationTime;
 			DateTime m_LastAccessTime;
 			DateTime m_ModificationTime;
-			FileAttribute m_Attributes = FileAttribute::None;
-			ReparsePointTag m_ReparsePointTags = ReparsePointTag::None;
+			FlagSet<FileAttribute> m_Attributes;
+			FlagSet<ReparsePointTag> m_ReparsePointTags;
 
 		public:
 			FileItem() = default;
@@ -74,21 +74,21 @@ namespace KxFramework
 			}
 
 			// Attributes
-			FileAttribute GetAttributes() const
+			FlagSet<FileAttribute> GetAttributes() const
 			{
 				return m_Attributes;
 			}
-			FileItem& SetAttributes(FileAttribute attributes)
+			FileItem& SetAttributes(FlagSet<FileAttribute> attributes)
 			{
 				m_Attributes = attributes;
 				return *this;
 			}
 			
-			ReparsePointTag GetReparsePointTags() const
+			FlagSet<ReparsePointTag> GetReparsePointTags() const
 			{
 				return m_ReparsePointTags;
 			}
-			FileItem& SetReparsePointTags(ReparsePointTag tags)
+			FileItem& SetReparsePointTags(FlagSet<ReparsePointTag> tags)
 			{
 				m_ReparsePointTags = tags;
 				return *this;

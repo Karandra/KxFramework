@@ -18,11 +18,8 @@ namespace KxFramework
 		FromEnd = 1 << 1,
 		FirstMatchOnly = 1 << 2,
 	};
+	Kx_DeclareFlagSet(StringOpFlag);
 
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowEverything(StringOpFlag);
-	}
 	namespace StringFormatter
 	{
 		template<class T>
@@ -117,13 +114,13 @@ namespace KxFramework
 
 			// Comparison
 		private:
-			static int DoCompare(std::string_view left, std::string_view right, StringOpFlag flags = StringOpFlag::None) noexcept;
-			static int DoCompare(std::wstring_view left, std::wstring_view right, StringOpFlag flags = StringOpFlag::None) noexcept;
-			static int DoCompare(wxUniChar left, wxUniChar right, StringOpFlag flags = StringOpFlag::None) noexcept;
+			static int DoCompare(std::string_view left, std::string_view right, FlagSet<StringOpFlag> flags = {}) noexcept;
+			static int DoCompare(std::wstring_view left, std::wstring_view right, FlagSet<StringOpFlag> flags = {}) noexcept;
+			static int DoCompare(wxUniChar left, wxUniChar right, FlagSet<StringOpFlag> flags = {}) noexcept;
 			
 		public:
 			template<class T1, class T2>
-			static int Compare(T1&& left, T2&& right, StringOpFlag flags = StringOpFlag::None) noexcept
+			static int Compare(T1&& left, T2&& right, FlagSet<StringOpFlag> flags = {}) noexcept
 			{
 				if constexpr(Private::IsAnyCharType<T1>() && Private::IsAnyCharType<T2>())
 				{
@@ -136,12 +133,12 @@ namespace KxFramework
 			}
 
 		private:
-			static bool DoMatches(std::string_view name, std::string_view expression, StringOpFlag flags = StringOpFlag::None) noexcept;
-			static bool DoMatches(std::wstring_view name, std::wstring_view expression, StringOpFlag flags = StringOpFlag::None) noexcept;
+			static bool DoMatches(std::string_view name, std::string_view expression, FlagSet<StringOpFlag> flags = {}) noexcept;
+			static bool DoMatches(std::wstring_view name, std::wstring_view expression, FlagSet<StringOpFlag> flags = {}) noexcept;
 
 		public:
 			template<class T1, class T2>
-			static int Matches(T1&& name, T2&& expression, StringOpFlag flags = StringOpFlag::None) noexcept
+			static int Matches(T1&& name, T2&& expression, FlagSet<StringOpFlag> flags = {}) noexcept
 			{
 				return DoMatches(StringViewOf(std::forward<T1>(name)), StringViewOf(std::forward<T2>(expression)), flags);
 			}
@@ -248,7 +245,7 @@ namespace KxFramework
 
 			// Substring extraction
 			template<class TFunc>
-			static size_t SplitBySeparator(const String& string, const String& sep, TFunc&& func, StringOpFlag flags = StringOpFlag::None)
+			static size_t SplitBySeparator(const String& string, const String& sep, TFunc&& func, FlagSet<StringOpFlag> flags = {})
 			{
 				const StringView view = string.GetView();
 
@@ -626,7 +623,7 @@ namespace KxFramework
 
 			// Comparison
 		private:
-			int DoCompareTo(std::string_view other, StringOpFlag flags = StringOpFlag::None) const noexcept(std::is_same_v<XChar, char>)
+			int DoCompareTo(std::string_view other, FlagSet<StringOpFlag> flags = {}) const noexcept(std::is_same_v<XChar, char>)
 			{
 				#if wxUSE_UNICODE_WCHAR
 				return Compare(*this, String(other), flags);
@@ -634,7 +631,7 @@ namespace KxFramework
 				return Compare(GetView(), other, flags);
 				#endif
 			}
-			int DoCompareTo(std::wstring_view other, StringOpFlag flags = StringOpFlag::None) const noexcept(std::is_same_v<XChar, wchar_t>)
+			int DoCompareTo(std::wstring_view other, FlagSet<StringOpFlag> flags = {}) const noexcept(std::is_same_v<XChar, wchar_t>)
 			{
 				#if wxUSE_UNICODE_WCHAR
 				return Compare(GetView(), other, flags);
@@ -642,7 +639,7 @@ namespace KxFramework
 				return Compare(*this, String(other), flags);
 				#endif
 			}
-			int DoCompareTo(wxUniChar other, StringOpFlag flags = StringOpFlag::None) const noexcept
+			int DoCompareTo(wxUniChar other, FlagSet<StringOpFlag> flags = {}) const noexcept
 			{
 				const XChar c[2] = {other, 0};
 				return Compare(GetView(), StringViewOf(c), flags);
@@ -650,7 +647,7 @@ namespace KxFramework
 
 		public:
 			template<class T>
-			int CompareTo(T&& other, StringOpFlag flags = StringOpFlag::None) const
+			int CompareTo(T&& other, FlagSet<StringOpFlag> flags = {}) const
 			{
 				if constexpr(Private::IsAnyCharType<T>())
 				{
@@ -663,15 +660,15 @@ namespace KxFramework
 			}
 
 			template<class T>
-			bool IsSameAs(T&& other, StringOpFlag flags = StringOpFlag::None) const
+			bool IsSameAs(T&& other, FlagSet<StringOpFlag> flags = {}) const
 			{
 				return CompareTo(std::forward<T>(other), flags) == 0;
 			}
 
 		private:
-			bool DoStartsWith(std::string_view pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
-			bool DoStartsWith(std::wstring_view pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
-			bool DoStartsWith(wxUniChar c, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const noexcept
+			bool DoStartsWith(std::string_view pattern, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const;
+			bool DoStartsWith(std::wstring_view pattern, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const;
+			bool DoStartsWith(wxUniChar c, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const noexcept
 			{
 				const XChar pattern[2] = {c, 0};
 				return StartsWith(StringViewOf(pattern), rest, flags);
@@ -679,7 +676,7 @@ namespace KxFramework
 
 		public:
 			template<class T>
-			bool StartsWith(T&& pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const
+			bool StartsWith(T&& pattern, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const
 			{
 				if constexpr(Private::IsAnyCharType<T>())
 				{
@@ -692,9 +689,9 @@ namespace KxFramework
 			}
 
 		private:
-			bool DoEndsWith(std::string_view pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
-			bool DoEndsWith(std::wstring_view pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
-			bool DoEndsWith(wxUniChar c, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const noexcept
+			bool DoEndsWith(std::string_view pattern, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const;
+			bool DoEndsWith(std::wstring_view pattern, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const;
+			bool DoEndsWith(wxUniChar c, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const noexcept
 			{
 				const XChar pattern[2] = {c, 0};
 				return EndsWith(StringViewOf(pattern), rest, flags);
@@ -702,7 +699,7 @@ namespace KxFramework
 
 		public:
 			template<class T>
-			bool EndsWith(T&& pattern, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const
+			bool EndsWith(T&& pattern, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const
 			{
 				if constexpr(Private::IsAnyCharType<T>())
 				{
@@ -715,7 +712,7 @@ namespace KxFramework
 			}
 
 		private:
-			bool DoMatches(std::string_view expression, StringOpFlag flags = StringOpFlag::None) noexcept
+			bool DoMatches(std::string_view expression, FlagSet<StringOpFlag> flags = {}) noexcept
 			{
 				#if wxUSE_UNICODE_WCHAR
 				String temp = FromView(expression);
@@ -724,7 +721,7 @@ namespace KxFramework
 				return DoMatches(GetView(), expression, flags);
 				#endif
 			}
-			bool DoMatches(std::wstring_view expression, StringOpFlag flags = StringOpFlag::None) noexcept
+			bool DoMatches(std::wstring_view expression, FlagSet<StringOpFlag> flags = {}) noexcept
 			{
 				#if wxUSE_UNICODE_WCHAR
 				return DoMatches(GetView(), expression, flags);
@@ -733,7 +730,7 @@ namespace KxFramework
 				return DoMatches(GetView(), StringViewOf(temp), flags);
 				#endif
 			}
-			bool DoMatches(wxUniChar c, StringOpFlag flags = StringOpFlag::None) const noexcept
+			bool DoMatches(wxUniChar c, FlagSet<StringOpFlag> flags = {}) const noexcept
 			{
 				const XChar expression[2] = {c, 0};
 				return DoMatches(GetView(), StringViewOf(expression), flags);
@@ -741,7 +738,7 @@ namespace KxFramework
 
 		public:
 			template<class T>
-			bool Matches(T&& expression, StringOpFlag flags = StringOpFlag::None) const
+			bool Matches(T&& expression, FlagSet<StringOpFlag> flags = {}) const
 			{
 				if constexpr(Private::IsAnyCharType<T>())
 				{
@@ -771,14 +768,14 @@ namespace KxFramework
 				return m_String.SubString(from, to);
 			}
 
-			String AfterFirst(wxUniChar c, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
-			String AfterLast(wxUniChar c, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
+			String AfterFirst(wxUniChar c, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const;
+			String AfterLast(wxUniChar c, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const;
 
-			String BeforeFirst(wxUniChar c, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
-			String BeforeLast(wxUniChar c, String* rest = nullptr, StringOpFlag flags = StringOpFlag::None) const;
+			String BeforeFirst(wxUniChar c, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const;
+			String BeforeLast(wxUniChar c, String* rest = nullptr, FlagSet<StringOpFlag> flags = {}) const;
 
 			template<class TFunc>
-			size_t SplitBySeparator(const String& sep, TFunc&& func, StringOpFlag flags = StringOpFlag::None) const
+			size_t SplitBySeparator(const String& sep, TFunc&& func, FlagSet<StringOpFlag> flags = {}) const
 			{
 				return SplitBySeparator(*this, sep, std::forward<TFunc>(func), flags);
 			}
@@ -816,13 +813,13 @@ namespace KxFramework
 
 			// Searching and replacing
 		private:
-			size_t DoFind(std::string_view pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const;
-			size_t DoFind(std::wstring_view pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const;
-			size_t DoFind(wxUniChar pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const noexcept;
+			size_t DoFind(std::string_view pattern, size_t offset = 0, FlagSet<StringOpFlag> flags = {}) const;
+			size_t DoFind(std::wstring_view pattern, size_t offset = 0, FlagSet<StringOpFlag> flags = {}) const;
+			size_t DoFind(wxUniChar pattern, size_t offset = 0, FlagSet<StringOpFlag> flags = {}) const noexcept;
 			
 		public:
 			template<class T>
-			size_t Find(T&& pattern, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) const
+			size_t Find(T&& pattern, size_t offset = 0, FlagSet<StringOpFlag> flags = {}) const
 			{
 				if constexpr(Private::IsAnyCharType<T>())
 				{
@@ -835,15 +832,15 @@ namespace KxFramework
 			}
 
 		private:
-			size_t DoReplace(std::string_view pattern, std::string_view replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None);
-			size_t DoReplace(std::wstring_view pattern, std::wstring_view replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None);
-			size_t DoReplace(wxUniChar c, wxUniChar replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) noexcept;
-			size_t DoReplace(wxUniChar c, std::string_view replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) noexcept
+			size_t DoReplace(std::string_view pattern, std::string_view replacement, size_t offset = 0, FlagSet<StringOpFlag> flags = {});
+			size_t DoReplace(std::wstring_view pattern, std::wstring_view replacement, size_t offset = 0, FlagSet<StringOpFlag> flags = {});
+			size_t DoReplace(wxUniChar c, wxUniChar replacement, size_t offset = 0, FlagSet<StringOpFlag> flags = {}) noexcept;
+			size_t DoReplace(wxUniChar c, std::string_view replacement, size_t offset = 0, FlagSet<StringOpFlag> flags = {}) noexcept
 			{
 				const char pattern[2] = {c, 0};
 				return Replace(StringViewOf(pattern), replacement, offset, flags);
 			}
-			size_t DoReplace(wxUniChar c, std::wstring_view replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None) noexcept
+			size_t DoReplace(wxUniChar c, std::wstring_view replacement, size_t offset = 0, FlagSet<StringOpFlag> flags = {}) noexcept
 			{
 				const wchar_t pattern[2] = {c, 0};
 				return Replace(StringViewOf(pattern), replacement, offset, flags);
@@ -851,7 +848,7 @@ namespace KxFramework
 			
 		public:
 			template<class T1, class T2>
-			size_t Replace(T1&& pattern, T2&& replacement, size_t offset = 0, StringOpFlag flags = StringOpFlag::None)
+			size_t Replace(T1&& pattern, T2&& replacement, size_t offset = 0, FlagSet<StringOpFlag> flags = {})
 			{
 				if constexpr(Private::IsAnyStringType<T1>() && Private::IsAnyStringType<T2>())
 				{
@@ -872,7 +869,7 @@ namespace KxFramework
 			}
 
 			template<class T>
-			bool Contains(T&& pattern, StringOpFlag flags = StringOpFlag::None) const
+			bool Contains(T&& pattern, FlagSet<StringOpFlag> flags = {}) const
 			{
 				return Find(std::forward<T>(pattern), 0, flags) != npos;
 			}
@@ -979,7 +976,7 @@ namespace KxFramework
 				m_String.Truncate(length);
 				return *this;
 			}
-			String& Trim(StringOpFlag flags = StringOpFlag::None)
+			String& Trim(FlagSet<StringOpFlag> flags = {})
 			{
 				m_String.Trim(flags & StringOpFlag::FromEnd);
 				return *this;

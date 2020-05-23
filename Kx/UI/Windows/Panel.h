@@ -9,26 +9,26 @@ namespace KxFramework::UI
 	class KX_API Panel: public wxSystemThemedControl<wxPanel>
 	{
 		public:
-			static constexpr WindowStyle DefaultStyle = EnumClass::Combine<WindowStyle>(WindowStyle::TabTraversal, WindowBorder::None);
+			static constexpr FlagSet<WindowStyle> DefaultStyle = CombineFlags<WindowStyle>(WindowStyle::TabTraversal, WindowBorder::None);
 
 		public:
 			Panel() = default;
 			Panel(wxWindow* parent,
 				  wxWindowID id,
-				  WindowStyle style = DefaultStyle
+				  FlagSet<WindowStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, id, style);
 			}
 			bool Create(wxWindow* parent,
 						wxWindowID id,
-						WindowStyle style = DefaultStyle
+						FlagSet<WindowStyle> style = DefaultStyle
 			);
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const Point& pos,
 						const Size& size,
-						WindowStyle style = DefaultStyle,
+						FlagSet<WindowStyle> style = DefaultStyle,
 						const String& name = {}
 			)
 			{

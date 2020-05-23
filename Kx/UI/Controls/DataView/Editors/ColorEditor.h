@@ -15,9 +15,9 @@ namespace KxFramework::UI::DataView
 		ShowAlpha = 1 << 2,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::DataView::ColorEditorOption);
+	Kx_DeclareFlagSet(UI::DataView::ColorEditorOption);
 }
 
 namespace KxFramework::UI::DataView

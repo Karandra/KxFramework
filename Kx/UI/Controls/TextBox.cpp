@@ -13,11 +13,11 @@ namespace KxFramework::UI
 						   const String& value,
 						   const Point& pos,
 						   const Size& size,
-						   TextBoxStyle style,
+						   FlagSet<TextBoxStyle> style,
 						   const wxValidator& validator
 	)
 	{
-		if (wxTextCtrl::Create(parent, id, value, pos, size, ToInt(style), validator))
+		if (wxTextCtrl::Create(parent, id, value, pos, size, style.ToInt(), validator))
 		{
 			SetDoubleBuffered(true);
 			SetTabWidth();

@@ -110,8 +110,3 @@ namespace KxFramework::Sciter
 		BottomRight = 3,
 	};
 }
-
-namespace KxFramework::EnumClass
-{
-	Kx_EnumClass_AllowCast(Sciter::Alignment);
-}

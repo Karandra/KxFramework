@@ -96,12 +96,9 @@ namespace KxFramework
 		Async = 1 << 16
 	};
 
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowEverything(MemoryProtection);
-		Kx_EnumClass_AllowEverything(SHWindowCommand);
+	Kx_DeclareFlagSet(MemoryProtection);
+	Kx_DeclareFlagSet(SHWindowCommand);
 
-		Kx_EnumClass_AllowEverything(SystemProcessAccess);
-		Kx_EnumClass_AllowEverything(CreateSystemProcessFlag);
-	}
+	Kx_DeclareFlagSet(SystemProcessAccess);
+	Kx_DeclareFlagSet(CreateSystemProcessFlag);
 }

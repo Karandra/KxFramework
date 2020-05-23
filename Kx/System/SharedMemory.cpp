@@ -5,10 +5,10 @@
 
 namespace
 {
-	constexpr DWORD ConvertProtection(KxFramework::MemoryProtection protection) noexcept
-	{
-		using namespace KxFramework;
+	using namespace KxFramework;
 
+	constexpr DWORD ConvertProtection(FlagSet<MemoryProtection> protection) noexcept
+	{
 		if (protection & MemoryProtection::Execute)
 		{
 			if (protection & MemoryProtection::RW)
@@ -33,10 +33,8 @@ namespace
 		}
 		return 0;
 	}
-	constexpr DWORD ConvertMemoryAccess(KxFramework::MemoryProtection protection) noexcept
+	constexpr DWORD ConvertMemoryAccess(FlagSet<MemoryProtection> protection) noexcept
 	{
-		using namespace KxFramework;
-
 		DWORD value = 0;
 		if (protection & MemoryProtection::RW)
 		{
@@ -61,7 +59,7 @@ namespace
 
 namespace KxFramework::System
 {
-	void* AllocateSharedMemoryRegion(void*& buffer, size_t size, MemoryProtection protection, const wchar_t* name) noexcept
+	void* AllocateSharedMemoryRegion(void*& buffer, size_t size, FlagSet<MemoryProtection> protection, const wchar_t* name) noexcept
 	{
 		ULARGE_INTEGER sizeULI = {};
 		sizeULI.QuadPart = size;
@@ -81,7 +79,7 @@ namespace KxFramework::System
 		}
 		return nullptr;
 	}
-	void* OpenSharedMemoryRegion(void*& buffer, const wchar_t* name, size_t size, MemoryProtection protection) noexcept
+	void* OpenSharedMemoryRegion(void*& buffer, const wchar_t* name, size_t size, FlagSet<MemoryProtection> protection) noexcept
 	{
 		const DWORD memoryAccessWin32 = ConvertMemoryAccess(protection);
 		void* handle = ::OpenFileMappingW(memoryAccessWin32, FALSE, name);

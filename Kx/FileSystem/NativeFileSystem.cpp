@@ -25,7 +25,7 @@ namespace KxFramework
 		}
 		return {};
 	}
-	size_t NativeFileSystem::EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query, FSEnumItemsFlag flags) const
+	size_t NativeFileSystem::EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query, FlagSet<FSEnumItemsFlag> flags) const
 	{
 		if (flags & FSEnumItemsFlag::LimitToFiles && flags & FSEnumItemsFlag::LimitToDirectories)
 		{
@@ -139,7 +139,7 @@ namespace KxFramework
 		return false;
 	}
 
-	bool NativeFileSystem::CopyItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func, FSCopyItemFlag flags)
+	bool NativeFileSystem::CopyItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func, FlagSet<FSCopyItemFlag> flags)
 	{
 		BOOL cancel = FALSE;
 		DWORD copyFlags = COPY_FILE_ALLOW_DECRYPTED_DESTINATION|COPY_FILE_COPY_SYMLINK;
@@ -150,7 +150,7 @@ namespace KxFramework
 		const String destinationPath = destination.GetFullPathWithNS(FSPathNamespace::Win32File);
 		return ::CopyFileExW(sourcePath.wc_str(), destinationPath.wc_str(), FileSystem::Private::CopyCallback, func ? &func : nullptr, &cancel, copyFlags);
 	}
-	bool NativeFileSystem::MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func, FSCopyItemFlag flags)
+	bool NativeFileSystem::MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func, FlagSet<FSCopyItemFlag> flags)
 	{
 		DWORD moveFlags = MOVEFILE_COPY_ALLOWED;
 		Utility::AddFlagRef(moveFlags, MOVEFILE_REPLACE_EXISTING, flags & FSCopyItemFlag::ReplaceIfExist);
@@ -160,7 +160,7 @@ namespace KxFramework
 		const String destinationPath = destination.GetFullPathWithNS(FSPathNamespace::Win32File);
 		return ::MoveFileWithProgressW(sourcePath.wc_str(), destinationPath.wc_str(), FileSystem::Private::CopyCallback, func ? &func : nullptr, moveFlags);
 	}
-	bool NativeFileSystem::RenameItem(const FSPath& source, const FSPath& destination, FSCopyItemFlag flags)
+	bool NativeFileSystem::RenameItem(const FSPath& source, const FSPath& destination, FlagSet<FSCopyItemFlag> flags)
 	{
 		const String sourcePath = source.GetFullPathWithNS(FSPathNamespace::Win32File);
 		const String destinationPath = destination.GetFullPathWithNS(FSPathNamespace::Win32File);
@@ -244,11 +244,11 @@ namespace KxFramework
 		}
 		return RemoveItem(path);
 	}
-	bool NativeFileSystem::CopyDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func, FSCopyItemFlag flags) const
+	bool NativeFileSystem::CopyDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func, FlagSet<FSCopyItemFlag> flags) const
 	{
 		return FileSystem::Private::CopyOrMoveDirectoryTree(const_cast<NativeFileSystem&>(*this), source, destination, std::move(func), flags, false);
 	}
-	bool NativeFileSystem::MoveDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func, FSCopyItemFlag flags)
+	bool NativeFileSystem::MoveDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func, FlagSet<FSCopyItemFlag> flags)
 	{
 		return FileSystem::Private::CopyOrMoveDirectoryTree(*this, source, destination, std::move(func), flags, true);
 	}

@@ -16,9 +16,9 @@ namespace KxFramework::UI
 		Styled = 1 << 3
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::TextBoxDialogStyle);
+	Kx_DeclareFlagSet(UI::TextBoxDialogStyle);
 }
 
 namespace KxFramework::UI
@@ -26,14 +26,14 @@ namespace KxFramework::UI
 	class KX_API TextBoxDialog: public StdDialog
 	{
 		public:
-			static constexpr TextBoxDialogStyle DefaultStyle = EnumClass::Combine<TextBoxDialogStyle>(StdDialog::DefaultStyle);
+			static constexpr FlagSet<TextBoxDialogStyle> DefaultStyle = CombineFlags<TextBoxDialogStyle>(*StdDialog::DefaultStyle);
 			static constexpr int DefaultWidth = 300;
 			static constexpr int DefaultMLWidth = 450;
 			static constexpr int DefaultMLHeight = 200;
 
 		private:
 			wxControl* m_View = nullptr;
-			TextBoxDialogStyle m_Options = TextBoxDialogStyle::None;
+			FlagSet<TextBoxDialogStyle> m_Options = TextBoxDialogStyle::None;
 
 		private:
 			wxOrientation GetViewLabelSizerOrientation() const override;
@@ -52,8 +52,8 @@ namespace KxFramework::UI
 						  const String& caption,
 						  const Point& pos = Point::UnspecifiedPosition(),
 						  const Size& size = Size::UnspecifiedSize(),
-						  StdButton buttons = DefaultButtons,
-						  TextBoxDialogStyle style = DefaultStyle
+						  FlagSet<StdButton> buttons = DefaultButtons,
+						  FlagSet<TextBoxDialogStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, id, caption, pos, size, buttons, style);
@@ -63,8 +63,8 @@ namespace KxFramework::UI
 						const String& caption,
 						const Point& pos = Point::UnspecifiedPosition(),
 						const Size& size = Size::UnspecifiedSize(),
-						StdButton buttons = DefaultButtons,
-						TextBoxDialogStyle style = DefaultStyle
+						FlagSet<StdButton> buttons = DefaultButtons,
+						FlagSet<TextBoxDialogStyle> style = DefaultStyle
 			);
 
 		public:

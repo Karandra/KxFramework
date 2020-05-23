@@ -20,11 +20,7 @@ namespace KxFramework
 
 		Exclusive = 1 << 16
 	};
-
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowEverything(DynamicLibraryLoadFlag);
-	}
+	Kx_DeclareFlagSet(DynamicLibraryLoadFlag);
 }
 
 namespace KxFramework
@@ -44,12 +40,12 @@ namespace KxFramework
 
 		private:
 			std::optional<void*> m_Handle;
-			DynamicLibraryLoadFlag m_LoadFlags = DynamicLibraryLoadFlag::None;
+			FlagSet<DynamicLibraryLoadFlag> m_LoadFlags;
 			bool m_ShouldUnload = false;
 
 		public:
 			DynamicLibrary() noexcept = default;
-			DynamicLibrary(const FSPath& path, DynamicLibraryLoadFlag flags = DynamicLibraryLoadFlag::None)
+			DynamicLibrary(const FSPath& path, FlagSet<DynamicLibraryLoadFlag> flags = {})
 			{
 				Load(path, flags);
 			}
@@ -79,7 +75,7 @@ namespace KxFramework
 			}
 			FSPath GetFilePath() const;
 
-			bool Load(const FSPath& path, DynamicLibraryLoadFlag flags = DynamicLibraryLoadFlag::None);
+			bool Load(const FSPath& path, FlagSet<DynamicLibraryLoadFlag> flags = {});
 			void Unload();
 
 			void AttachHandle(void* handle, bool takeOwnership = false) noexcept

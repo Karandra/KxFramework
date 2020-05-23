@@ -7,10 +7,10 @@ namespace KxFramework::UI
 
 	bool Panel::Create(wxWindow* parent,
 					   wxWindowID id,
-					   WindowStyle style
+					   FlagSet<WindowStyle> style
 	)
 	{
-		if (wxPanel::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style)))
+		if (wxPanel::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style.ToInt()))
 		{
 			EnableSystemTheme();
 			return true;

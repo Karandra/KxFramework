@@ -7,14 +7,14 @@
 
 namespace
 {
+	using namespace KxFramework;
+	using namespace KxFramework::UI;
+
 	constexpr SIGDN g_ItemType = SIGDN_FILESYSPATH;
 	constexpr FILEOPENDIALOGOPTIONS g_RequiredOptions = FOS_NOCHANGEDIR|FOS_NOVALIDATE|FOS_NOTESTFILECREATE;
 
-	constexpr _FILEOPENDIALOGOPTIONS MapDialogStyle(KxFramework::UI::FileBrowseDialogStyle style) noexcept
+	constexpr _FILEOPENDIALOGOPTIONS MapDialogStyle(FlagSet<FileBrowseDialogStyle> style) noexcept
 	{
-		using namespace KxFramework;
-		using namespace KxFramework::UI;
-
 		_FILEOPENDIALOGOPTIONS nativeStyle = static_cast<_FILEOPENDIALOGOPTIONS>(0);
 		Utility::AddFlagRef(nativeStyle, FOS_CREATEPROMPT, style & FileBrowseDialogStyle::WarnCreate);
 		Utility::AddFlagRef(nativeStyle, FOS_OVERWRITEPROMPT, style & FileBrowseDialogStyle::WarnOverwrite);
@@ -32,10 +32,8 @@ namespace
 
 		return nativeStyle;
 	}
-	KxFramework::String GetDisplayName(IShellItem& shellItem, SIGDN type)
+	String GetDisplayName(IShellItem& shellItem, SIGDN type)
 	{
-		using namespace KxFramework;
-
 		COMMemoryPtr<wchar_t> result;
 		if (HResult(shellItem.GetDisplayName(type, &result)))
 		{
@@ -43,7 +41,7 @@ namespace
 		}
 		return {};
 	}
-	KxFramework::HResult InitIFileDialog2(IFileDialog& fileDialog, KxFramework::COMPtr<IFileDialog2>& fileDialog2)
+	HResult InitIFileDialog2(IFileDialog& fileDialog, COMPtr<IFileDialog2>& fileDialog2)
 	{
 		return fileDialog.QueryInterface(IID_PPV_ARGS(&fileDialog2));
 	}
@@ -72,11 +70,11 @@ namespace KxFramework::UI
 								  wxWindowID id,
 								  FileBrowseDialogMode mode,
 								  const String& caption,
-								  StdButton buttons,
-								  FileBrowseDialogStyle style
+								  FlagSet<StdButton> buttons,
+								  FlagSet<FileBrowseDialogStyle> style
 	)
 	{
-		if (Dialog::Create(parent, id, caption, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), EnumClass::Combine<DialogStyle>(style)))
+		if (Dialog::Create(parent, id, caption, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), CombineFlags<DialogStyle>(*style)))
 		{
 			m_Parent = parent;
 			m_Style = style;

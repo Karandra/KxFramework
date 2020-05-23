@@ -527,11 +527,11 @@ namespace KxFramework::System
 					DisplayDeviceInfo deviceInfo;
 					deviceInfo.DeviceName = displayDevice.DeviceName;
 					deviceInfo.DeviceDescription = displayDevice.DeviceString;
-					Utility::AddFlagRef(deviceInfo.Flags, DisplayDeviceFlag::Active, displayDevice.StateFlags & DISPLAY_DEVICE_ACTIVE);
-					Utility::AddFlagRef(deviceInfo.Flags, DisplayDeviceFlag::Primary, displayDevice.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE);
-					Utility::AddFlagRef(deviceInfo.Flags, DisplayDeviceFlag::Removable, displayDevice.StateFlags & DISPLAY_DEVICE_REMOVABLE);
-					Utility::AddFlagRef(deviceInfo.Flags, DisplayDeviceFlag::VGACompatible, displayDevice.StateFlags & DISPLAY_DEVICE_VGA_COMPATIBLE);
-					Utility::AddFlagRef(deviceInfo.Flags, DisplayDeviceFlag::MirroringDriver, displayDevice.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER);
+					deviceInfo.Flags.Add(DisplayDeviceFlag::Active, displayDevice.StateFlags & DISPLAY_DEVICE_ACTIVE);
+					deviceInfo.Flags.Add(DisplayDeviceFlag::Primary, displayDevice.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE);
+					deviceInfo.Flags.Add(DisplayDeviceFlag::Removable, displayDevice.StateFlags & DISPLAY_DEVICE_REMOVABLE);
+					deviceInfo.Flags.Add(DisplayDeviceFlag::VGACompatible, displayDevice.StateFlags & DISPLAY_DEVICE_VGA_COMPATIBLE);
+					deviceInfo.Flags.Add(DisplayDeviceFlag::MirroringDriver, displayDevice.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER);
 
 					count++;
 					if (!std::invoke(func, std::move(deviceInfo)))
@@ -626,7 +626,7 @@ namespace KxFramework::System
 		};
 		return false;
 	}
-	bool ExitWorkstation(ExitWorkstationCommand command) noexcept
+	bool ExitWorkstation(FlagSet<ExitWorkstationCommand> command) noexcept
 	{
 		UINT modeEWX = 0;
 		Utility::AddFlagRef(modeEWX, EWX_LOGOFF, command & ExitWorkstationCommand::LogOff);

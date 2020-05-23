@@ -191,11 +191,11 @@ namespace KxFramework::UI::DataView
 		return displayOrder;
 	}
 
-	bool View::Create(wxWindow* parent, wxWindowID id, const Point& pos, const Size& size, long style, const wxString& name)
+	bool View::Create(wxWindow* parent, wxWindowID id, const Point& pos, const Size& size, FlagSet<CtrlStyle> style, const wxString& name)
 	{
-		if (ViewBase::Create(parent, id, pos, size, style|wxScrolledWindowStyle, GetClassInfo()->GetClassName()))
+		if (ViewBase::Create(parent, id, pos, size, style.ToInt()|wxScrolledWindowStyle, GetClassInfo()->GetClassName()))
 		{
-			m_Styles = static_cast<CtrlStyle>(style);
+			m_Styles = style;
 			m_ClientArea = new MainWindow(this, wxID_NONE);
 
 			// We use the cursor keys for moving the selection, not scrolling, so call

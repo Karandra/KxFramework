@@ -94,7 +94,7 @@ namespace KxFramework
 	{
 	}
 
-	String UniversallyUniqueID::ToString(UUIDToStringFormat format) const
+	String UniversallyUniqueID::ToString(FlagSet<UUIDFormat> format) const
 	{
 		String uuid = [&]() -> String
 		{
@@ -108,22 +108,22 @@ namespace KxFramework
 			return {};
 		}();
 
-		if (format & UUIDToStringFormat::UpperCase)
+		if (format & UUIDFormat::UpperCase)
 		{
 			uuid.MakeUpper();
 		}
 
-		if (format & UUIDToStringFormat::URN)
+		if (format & UUIDFormat::URN)
 		{
 			uuid.Prepend(wxS("urn:uuid:"));
 		}
 
-		if (format & UUIDToStringFormat::CurlyBraces)
+		if (format & UUIDFormat::CurlyBraces)
 		{
 			uuid.Prepend(wxS('{'));
 			uuid.Append(wxS('}'));
 		}
-		else if (format & UUIDToStringFormat::Parentheses)
+		else if (format & UUIDFormat::Parentheses)
 		{
 			uuid.Prepend(wxS('('));
 			uuid.Append(wxS(')'));

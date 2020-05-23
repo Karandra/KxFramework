@@ -82,7 +82,7 @@ namespace KxFramework::UI::DataView
 			m_Distance.Y() = mousePos.GetY() - linePos.GetY();
 			m_HintPosition = GetHintPosition(mousePos);
 
-			m_DragImage = new SplashWindow(m_MainWindow, m_HintBitmap, {}, EnumClass::Combine<SplashWindowStyle>(TopLevelWindowStyle::StayOnTop));
+			m_DragImage = new SplashWindow(m_MainWindow, m_HintBitmap, {}, CombineFlags<SplashWindowStyle>(TopLevelWindowStyle::StayOnTop));
 			m_DragImage->SetTransparent(225);
 			m_DragImage->Update();
 			m_DragImage->Show();

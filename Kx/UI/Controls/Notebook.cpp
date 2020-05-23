@@ -7,10 +7,10 @@ namespace KxFramework::UI
 
 	bool Notebook::Create(wxWindow* parent,
 						  wxWindowID id,
-						  NotebookStyle style
+						  FlagSet<NotebookStyle> style
 	)
 	{
-		if (wxNotebook::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style)))
+		if (wxNotebook::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style.ToInt()))
 		{
 			return true;
 		}

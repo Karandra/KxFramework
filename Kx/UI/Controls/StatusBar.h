@@ -18,9 +18,9 @@ namespace KxFramework::UI
 		EllipsizeEnd = wxSTB_ELLIPSIZE_END,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::StatusBarStyle);
+	Kx_DeclareFlagSet(UI::StatusBarStyle);
 }
 
 namespace KxFramework::UI
@@ -28,7 +28,7 @@ namespace KxFramework::UI
 	class KX_API StatusBar: public wxSystemThemedControl<WindowRefreshScheduler<wxStatusBar>>
 	{
 		public:
-			static constexpr StatusBarStyle DefaultStyle = EnumClass::Combine<StatusBarStyle>(StatusBarStyle::SizeGrip|StatusBarStyle::ShowTips|StatusBarStyle::EllipsizeEnd, WindowStyle::FullRepaintOnResize);;
+			static constexpr FlagSet<StatusBarStyle> DefaultStyle = CombineFlags<StatusBarStyle>(StatusBarStyle::SizeGrip|StatusBarStyle::ShowTips|StatusBarStyle::EllipsizeEnd, WindowStyle::FullRepaintOnResize);;
 
 		private:
 			void SetFieldsCount(int count, const int* widths) override;
@@ -38,7 +38,7 @@ namespace KxFramework::UI
 			StatusBar(wxWindow* parent,
 					  wxWindowID id,
 					  int fieldCount = 1,
-					  StatusBarStyle style = DefaultStyle
+					  FlagSet<StatusBarStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, id, fieldCount, style);
@@ -46,7 +46,7 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						int fieldCount = 1,
-						StatusBarStyle style = DefaultStyle
+						FlagSet<StatusBarStyle> style = DefaultStyle
 			);
 
 		public:

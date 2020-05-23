@@ -30,9 +30,9 @@ namespace KxFramework::UI
 		BetsWrap = wxTE_BESTWRAP,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::TextBoxStyle);
+	Kx_DeclareFlagSet(UI::TextBoxStyle);
 }
 
 namespace KxFramework::UI
@@ -40,7 +40,7 @@ namespace KxFramework::UI
 	class KX_API TextBox: public WindowRefreshScheduler<wxTextCtrl>
 	{
 		public:
-			static constexpr TextBoxStyle DefaultStyle = TextBoxStyle::AlignLeft;
+			static constexpr FlagSet<TextBoxStyle> DefaultStyle = TextBoxStyle::AlignLeft;
 
 		private:
 			WXLRESULT MSWWindowProc(WXUINT msg, WXWPARAM wParam, WXLPARAM lParam) override;
@@ -50,7 +50,7 @@ namespace KxFramework::UI
 			TextBox(wxWindow* parent,
 					  wxWindowID id,
 					  const String& value = {},
-					  TextBoxStyle style = DefaultStyle,
+					FlagSet<TextBoxStyle> style = DefaultStyle,
 					  const wxValidator& validator = wxDefaultValidator
 			)
 			{
@@ -61,7 +61,7 @@ namespace KxFramework::UI
 					  const String& value,
 					  const Point& pos,
 					  const Size& size,
-					  TextBoxStyle style = DefaultStyle,
+					FlagSet<TextBoxStyle> style = DefaultStyle,
 					  const wxValidator& validator = wxDefaultValidator
 			)
 			{
@@ -70,7 +70,7 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const String& value = {},
-						TextBoxStyle style = DefaultStyle,
+						FlagSet<TextBoxStyle> style = DefaultStyle,
 						const wxValidator& validator = wxDefaultValidator
 			)
 			{
@@ -81,7 +81,7 @@ namespace KxFramework::UI
 						const String& value,
 						const Point& pos,
 						const Size& size,
-						TextBoxStyle style = DefaultStyle,
+						FlagSet<TextBoxStyle> style = DefaultStyle,
 						const wxValidator& validator = wxDefaultValidator
 			);
 

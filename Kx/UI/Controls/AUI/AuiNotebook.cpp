@@ -8,10 +8,10 @@ namespace KxFramework::UI
 
 	bool AuiNotebook::Create(wxWindow* parent,
 							 wxWindowID id,
-							 AuiNotebookStyle style
+							 FlagSet<AuiNotebookStyle> style
 	)
 	{
-		if (wxAuiNotebook::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), ToInt(style)))
+		if (wxAuiNotebook::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style.ToInt()))
 		{
 			wxFont font = parent->GetFont();
 			SetNormalFont(font);

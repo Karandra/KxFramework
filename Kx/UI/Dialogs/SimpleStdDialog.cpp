@@ -6,13 +6,13 @@ namespace KxFramework::UI
 	wxIMPLEMENT_DYNAMIC_CLASS(SimpleStdDialog, StdDialog);
 
 	bool SimpleStdDialog::Create(wxWindow* parent,
-								   wxWindowID id,
-								   wxWindow* pView,
-								   const wxString& caption,
-								   const Point& pos,
-								   const Size& size,
-								   StdButton buttons,
-								   DialogStyle style
+								 wxWindowID id,
+								 wxWindow* pView,
+								 const wxString& caption,
+								 const Point& pos,
+								 const Size& size,
+								 FlagSet<StdButton> buttons,
+								 FlagSet<DialogStyle> style
 	)
 	{
 		m_View = pView;

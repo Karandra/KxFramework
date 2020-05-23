@@ -24,9 +24,9 @@ namespace KxFramework::UI
 		Bottom = wxSL_BOTTOM,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::SliderStyle);
+	Kx_DeclareFlagSet(UI::SliderStyle);
 }
 
 namespace KxFramework::UI
@@ -34,7 +34,7 @@ namespace KxFramework::UI
 	class KX_API Slider: public wxSlider
 	{
 		public:
-			static constexpr SliderStyle DefaultStyle = SliderStyle::Horizontal;
+			static constexpr FlagSet<SliderStyle> DefaultStyle = SliderStyle::Horizontal;
 			static constexpr int DefaultStep = 10;
 
 		private:
@@ -47,7 +47,7 @@ namespace KxFramework::UI
 				   int value,
 				   int minValue,
 				   int maxValue,
-				   SliderStyle style = DefaultStyle,
+				   FlagSet<SliderStyle> style = DefaultStyle,
 				   const wxValidator& validator = wxDefaultValidator
 			)
 			{
@@ -58,7 +58,7 @@ namespace KxFramework::UI
 						int value,
 						int minValue,
 						int maxValue,
-						SliderStyle style = DefaultStyle,
+						FlagSet<SliderStyle> style = DefaultStyle,
 						const wxValidator& validator = wxDefaultValidator
 			);
 

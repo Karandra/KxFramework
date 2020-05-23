@@ -5,8 +5,8 @@
 
 namespace KxFramework::System
 {
-	void* AllocateSharedMemoryRegion(void*& buffer, size_t size, MemoryProtection protection, const wchar_t* name = nullptr) noexcept;
-	void* OpenSharedMemoryRegion(void*& buffer, const wchar_t* name, size_t size, MemoryProtection protection) noexcept;
+	void* AllocateSharedMemoryRegion(void*& buffer, size_t size, FlagSet<MemoryProtection> protection, const wchar_t* name = nullptr) noexcept;
+	void* OpenSharedMemoryRegion(void*& buffer, const wchar_t* name, size_t size, FlagSet<MemoryProtection> protection) noexcept;
 	void FreeSharedMemoryRegion(void* handle, void* buffer) noexcept;
 }
 
@@ -18,7 +18,7 @@ namespace KxFramework
 			void* m_Handle = nullptr;
 			void* m_Buffer = nullptr;
 			size_t m_Size = 0;
-			MemoryProtection m_Protection = MemoryProtection::None;
+			FlagSet<MemoryProtection> m_Protection;
 
 		private:
 			void MakeNull() noexcept
@@ -31,11 +31,11 @@ namespace KxFramework
 
 		public:
 			SharedMemoryBuffer() noexcept = default;
-			SharedMemoryBuffer(size_t size, MemoryProtection protection, const String& name)
+			SharedMemoryBuffer(size_t size, FlagSet<MemoryProtection> protection, const String& name)
 			{
 				Allocate(size, protection, name);
 			}
-			SharedMemoryBuffer(size_t size, MemoryProtection protection = MemoryProtection::RW, const wchar_t* name = nullptr)
+			SharedMemoryBuffer(size_t size, FlagSet<MemoryProtection> protection, const wchar_t* name = nullptr)
 			{
 				Allocate(size, protection, name);
 			}
@@ -55,13 +55,13 @@ namespace KxFramework
 				return !m_Handle || !m_Buffer || m_Size == 0;
 			}
 
-			bool Open(const wchar_t* name, size_t size, MemoryProtection protection = MemoryProtection::RW) noexcept
+			bool Open(const wchar_t* name, size_t size, FlagSet<MemoryProtection> protection) noexcept
 			{
 				Free();
 				if (m_Handle = System::OpenSharedMemoryRegion(m_Buffer, name, size, protection))
 				{
 					m_Size = size;
-					m_Protection = static_cast<MemoryProtection>(protection);
+					m_Protection = protection;
 					return true;
 				}
 				else
@@ -70,22 +70,22 @@ namespace KxFramework
 					return false;
 				}
 			}
-			bool Open(const String& name, size_t size, MemoryProtection protection = MemoryProtection::RW) noexcept
+			bool Open(const String& name, size_t size, FlagSet<MemoryProtection> protection) noexcept
 			{
 				return Open(name.wc_str(), size, protection);
 			}
 
-			bool Allocate(size_t size, MemoryProtection protection, const String& name) noexcept
+			bool Allocate(size_t size, FlagSet<MemoryProtection> protection, const String& name) noexcept
 			{
 				return Allocate(size, protection, name.IsEmpty() ? nullptr : name.wc_str());
 			}
-			bool Allocate(size_t size, MemoryProtection protection, const wchar_t* name = nullptr) noexcept
+			bool Allocate(size_t size, FlagSet<MemoryProtection> protection, const wchar_t* name = nullptr) noexcept
 			{
 				Free();
 				if (m_Handle = System::AllocateSharedMemoryRegion(m_Buffer, size, protection, name))
 				{
 					m_Size = size;
-					m_Protection = static_cast<MemoryProtection>(protection);
+					m_Protection = protection;
 					return true;
 				}
 				else
@@ -117,7 +117,7 @@ namespace KxFramework
 			}
 			void ZeroBuffer() noexcept;
 
-			void Acquire(void* handle, void* data, size_t size, MemoryProtection protection) noexcept
+			void Acquire(void* handle, void* data, size_t size, FlagSet<MemoryProtection> protection) noexcept
 			{
 				Free();
 				
@@ -133,7 +133,7 @@ namespace KxFramework
 				return handle;
 			}
 
-			MemoryProtection GetProtection() const noexcept
+			FlagSet<MemoryProtection> GetProtection() const noexcept
 			{
 				return m_Protection;
 			}

@@ -11,9 +11,9 @@ namespace KxFramework::UI
 		NoTLWResize = wxCP_NO_TLW_RESIZE,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::CollapsiblePaneStyle);
+	Kx_DeclareFlagSet(UI::CollapsiblePaneStyle);
 }
 
 namespace KxFramework::UI
@@ -21,7 +21,7 @@ namespace KxFramework::UI
 	class KX_API CollapsiblePane: public wxCollapsiblePane
 	{
 		public:
-			static constexpr CollapsiblePaneStyle DefaultStyle = EnumClass::Combine<CollapsiblePaneStyle>(CollapsiblePaneStyle::NoTLWResize, WindowStyle::TabTraversal, WindowBorder::None);
+			static constexpr FlagSet<CollapsiblePaneStyle> DefaultStyle = CombineFlags<CollapsiblePaneStyle>(CollapsiblePaneStyle::NoTLWResize, WindowStyle::TabTraversal, WindowBorder::None);
 
 		private:
 			wxEvtHandler m_EvtHandler;
@@ -37,7 +37,7 @@ namespace KxFramework::UI
 			CollapsiblePane(wxWindow* parent,
 							wxWindowID id,
 							const wxString& label,
-							CollapsiblePaneStyle style = DefaultStyle
+							FlagSet<CollapsiblePaneStyle> style = DefaultStyle
 			)
 				:CollapsiblePane()
 			{
@@ -46,7 +46,7 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const wxString& label,
-						CollapsiblePaneStyle style = DefaultStyle
+						FlagSet<CollapsiblePaneStyle> style = DefaultStyle
 			);
 			~CollapsiblePane()
 			{

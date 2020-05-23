@@ -12,9 +12,9 @@ namespace KxFramework::UI
 		CenterOnParent = 1 << 0,
 	};
 }
-namespace KxFramework::EnumClass
+namespace KxFramework
 {
-	Kx_EnumClass_AllowEverything(UI::SplashWindowStyle);
+	Kx_DeclareFlagSet(UI::SplashWindowStyle);
 }
 
 namespace KxFramework::UI
@@ -22,7 +22,7 @@ namespace KxFramework::UI
 	class KX_API SplashWindow: public WindowRefreshScheduler<Frame>
 	{
 		public:
-			static constexpr SplashWindowStyle DefaultStyle = SplashWindowStyle::None;
+			static constexpr FlagSet<SplashWindowStyle> DefaultStyle = SplashWindowStyle::None;
 
 		private:
 			wxBitmap m_Bitmap;
@@ -30,7 +30,7 @@ namespace KxFramework::UI
 		
 			wxTimer m_Timer;
 			TimeSpan m_Timeout;
-			SplashWindowStyle m_Style = DefaultStyle;
+			FlagSet<SplashWindowStyle> m_Style;
 
 		private:
 			void OnTimer(wxTimerEvent& event);
@@ -46,7 +46,7 @@ namespace KxFramework::UI
 			SplashWindow(wxWindow* parent,
 						 const wxBitmap& bitmap,
 						 TimeSpan timeout = {},
-						 SplashWindowStyle style = DefaultStyle
+						 FlagSet<SplashWindowStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, bitmap, timeout, style);
@@ -55,7 +55,7 @@ namespace KxFramework::UI
 						 const wxBitmap& bitmap,
 						 const Size& size,
 						 TimeSpan timeout = {},
-						 SplashWindowStyle style = DefaultStyle
+						 FlagSet<SplashWindowStyle> style = DefaultStyle
 			)
 			{
 				Create(parent, bitmap, size, timeout, style);
@@ -63,7 +63,7 @@ namespace KxFramework::UI
 			bool Create(wxWindow* parent,
 						const wxBitmap& bitmap,
 						TimeSpan timeout = {},
-						SplashWindowStyle style = DefaultStyle
+						FlagSet<SplashWindowStyle> style = DefaultStyle
 			)
 			{
 				return Create(parent, bitmap, bitmap.GetSize(), timeout, style);
@@ -72,16 +72,20 @@ namespace KxFramework::UI
 						const wxBitmap& bitmap,
 						const Size& size,
 						TimeSpan timeout = {},
-						SplashWindowStyle style = DefaultStyle
+						FlagSet<SplashWindowStyle> style = DefaultStyle
 			);
 			virtual ~SplashWindow();
 
 		public:
 			long GetWindowStyleFlag() const override
 			{
-				return ToInt(m_Style);
+				return m_Style.ToInt();
 			}
-			void SetWindowStyleFlag(long style) override;
+			void SetWindowStyleFlag(long style) override
+			{
+				m_Style.FromInt(style);
+				ScheduleRefresh();
+			}
 		
 			bool CanSetTransparent() override
 			{

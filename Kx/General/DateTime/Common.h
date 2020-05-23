@@ -13,6 +13,8 @@ namespace KxFramework
 		YearMonth = 1 << 1,
 		MonthDay = 1 << 2,
 	};
+	Kx_DeclareFlagSet(DateFormatFlag);
+
 	enum class TimeFormatFlag
 	{
 		None = 0,
@@ -22,6 +24,7 @@ namespace KxFramework
 		NoTimeMarker = 1 << 2,
 		Force24Hour = 1 << 3
 	};
+	Kx_DeclareFlagSet(TimeFormatFlag);
 
 	enum class Month
 	{
@@ -76,13 +79,4 @@ namespace KxFramework
 		Gregorian,
 		Julian
 	};
-
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowEverything(DateFormatFlag);
-		Kx_EnumClass_AllowEverything(TimeFormatFlag);
-
-		Kx_EnumClass_AllowEverything(Month);
-		Kx_EnumClass_AllowEverything(WeekDay);
-	}
 }

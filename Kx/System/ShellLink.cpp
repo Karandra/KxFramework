@@ -139,16 +139,16 @@ namespace KxFramework
 		return {};
 	}
 
-	SHWindowCommand ShellLink::GetShowCommand() const noexcept
+	FlagSet<SHWindowCommand> ShellLink::GetShowCommand() const noexcept
 	{
 		int command = 0;
 		if (HResult(m_ShellLink->GetShowCmd(&command)))
 		{
 			return Shell::Private::MapSHWindowCommand(command);
 		}
-		return SHWindowCommand::None;
+		return {};
 	}
-	HResult ShellLink::SetShowCommand(SHWindowCommand command) noexcept
+	HResult ShellLink::SetShowCommand(FlagSet<SHWindowCommand> command) noexcept
 	{
 		return m_ShellLink->SetShowCmd(Shell::Private::MapSHWindowCommand(command).value_or(SW_SHOWNORMAL));
 	}

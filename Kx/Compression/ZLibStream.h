@@ -14,11 +14,6 @@ namespace KxFramework
 		ZLib = wxZLIB_ZLIB,
 		GZip = wxZLIB_GZIP,
 	};
-
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowCast(ZLibHeaderType);
-	}
 }
 
 namespace KxFramework::Compression::ZLib
@@ -32,12 +27,12 @@ namespace KxFramework
 	class ZLibInputStream: public IStreamWrapper, public InputStreamWrapper<wxZlibInputStream>
 	{
 		public:
-			ZLibInputStream(wxInputStream& stream, ZLibHeaderType flags = ZLibHeaderType::Auto)
-				:InputStreamWrapper(stream, ToInt(flags))
+			ZLibInputStream(wxInputStream& stream, ZLibHeaderType header = ZLibHeaderType::Auto)
+				:InputStreamWrapper(stream, ToInt(header))
 			{
 			}
-			ZLibInputStream(wxInputStream* stream, ZLibHeaderType flags = ZLibHeaderType::Auto)
-				:InputStreamWrapper(stream, ToInt(flags))
+			ZLibInputStream(wxInputStream* stream, ZLibHeaderType header = ZLibHeaderType::Auto)
+				:InputStreamWrapper(stream, ToInt(header))
 			{
 			}
 
@@ -55,12 +50,12 @@ namespace KxFramework
 	class ZLibOutputStream: public IStreamWrapper, public OutputStreamWrapper<wxZlibOutputStream>
 	{
 		public:
-			ZLibOutputStream(wxOutputStream& stream, ZLibHeaderType flags = ZLibHeaderType::Auto)
-				:OutputStreamWrapper(stream, ToInt(flags))
+			ZLibOutputStream(wxOutputStream& stream, ZLibHeaderType header = ZLibHeaderType::Auto)
+				:OutputStreamWrapper(stream, ToInt(header))
 			{
 			}
-			ZLibOutputStream(wxOutputStream* stream, ZLibHeaderType flags = ZLibHeaderType::Auto)
-				:OutputStreamWrapper(stream, ToInt(flags))
+			ZLibOutputStream(wxOutputStream* stream, ZLibHeaderType header = ZLibHeaderType::Auto)
+				:OutputStreamWrapper(stream, ToInt(header))
 			{
 			}
 
