@@ -430,9 +430,6 @@
     <ClInclude Include="Kx\Compression\IArchiveImpl.h">
       <Filter>Kx\Compression</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\EnumClass.h">
-      <Filter>Kx\General</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\Compression\ZLibStream.h">
       <Filter>Kx\Compression</Filter>
     </ClInclude>
@@ -1210,6 +1207,9 @@
     </ClInclude>
     <ClInclude Include="Kx\UI\Common.h">
       <Filter>Kx\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Kx\General\FlagSet.h">
+      <Filter>Kx\General</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

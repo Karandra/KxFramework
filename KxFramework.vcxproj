@@ -378,7 +378,7 @@
     <ClInclude Include="Kx\General\Color.h" />
     <ClInclude Include="Kx\General\ColorDefines.h" />
     <ClInclude Include="Kx\General\Common.h" />
-    <ClInclude Include="Kx\General\EnumClass.h" />
+    <ClInclude Include="Kx\General\FlagSet.h" />
     <ClInclude Include="Kx\General\ExtraData.h" />
     <ClInclude Include="Kx\General\HTMLDocument.h" />
     <ClInclude Include="Kx\General\IndexedEnum.h" />

@@ -1,6 +1,6 @@
 #pragma once
 #include <Kx/Common.hpp>
-#include "Kx/General/EnumClass.h"
+#include "Kx/General/FlagSet.h"
 enum wxSeekMode: int;
 enum wxStreamError: int;
 
@@ -42,12 +42,8 @@ namespace KxFramework
 		Both = wxOrientation::wxBOTH,
 	};
 
-	namespace EnumClass
-	{
-		Kx_EnumClass_AllowCast(VersionType);
-		Kx_EnumClass_AllowEverything(UnitNameFlag);
-		Kx_EnumClass_AllowEverything(Orientation);
-	}
+	Kx_DeclareFlagSet(UnitNameFlag);
+	Kx_DeclareFlagSet(Orientation);
 }
 
 namespace KxFramework
