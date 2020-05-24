@@ -94,9 +94,13 @@ namespace KxFramework::Crypto
 			}
 
 		public:
-			operator String() const
+			constexpr bool operator==(const HashValue& other) const noexcept
 			{
-				return ToString();
+				return m_Hash == other.m_Hash;
+			}
+			constexpr bool operator!=(const HashValue& other) const noexcept
+			{
+				return m_Hash != other.m_Hash;
 			}
 	};
 }
