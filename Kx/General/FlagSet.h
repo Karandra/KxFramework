@@ -52,8 +52,6 @@ namespace KxFramework
 	template<class TEnum_>
 	class FlagSet final
 	{
-		static_assert(IsFlagSet_v<TEnum_>, "FlagSet is not declared for this type");
-
 		public:
 			using TEnum = TEnum_;
 			using TInt = std::underlying_type_t<TEnum_>;
@@ -75,13 +73,24 @@ namespace KxFramework
 			{
 				return ToInt() == 0;
 			}
+			constexpr FlagSet& Clear() noexcept
+			{
+				m_Value = static_cast<TEnum>(0);
+				return *this;
+			}
 			constexpr FlagSet Clone() const noexcept
 			{
 				return *this;
 			}
+			
 			constexpr TEnum GetValue() const noexcept
 			{
 				return m_Value;
+			}
+			constexpr FlagSet& SetValue(TEnum value) noexcept
+			{
+				m_Value = value;
+				return *this;
 			}
 			constexpr TEnum operator*() const noexcept
 			{
