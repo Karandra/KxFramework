@@ -307,6 +307,7 @@
     <ClInclude Include="Kx\UI\Windows\SplitterWindow.h" />
     <ClInclude Include="Kx\UI\Windows\ToolTipEx.h" />
     <ClInclude Include="Kx\UI\Windows\TopLevelWindow.h" />
+    <ClInclude Include="Kx\UI\WindowWithStyles.h" />
     <ClInclude Include="Kx\wxWidgets\Common.h" />
     <ClInclude Include="Kx\wxWidgets\RTTI.h" />
     <ClInclude Include="Kx\wxWidgets\SystemOptions.h" />

@@ -1208,6 +1208,9 @@
     <ClInclude Include="Kx\General\FlagSet.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
+    <ClInclude Include="Kx\UI\WindowWithStyles.h">
+      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp">
