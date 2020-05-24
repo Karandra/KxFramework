@@ -44,7 +44,7 @@ namespace KxFramework::UI::DataView
 			};
 
 		private:
-			wxAlignment m_Alignment = wxALIGN_INVALID;
+			FlagSet<Alignment> m_Alignment = Alignment::Invalid;
 			wxEllipsizeMode m_EllipsizeMode = wxELLIPSIZE_END;
 			MarkupMode m_MarkupMode = MarkupMode::Disabled;
 			CellAttribute m_Attributes;
@@ -157,11 +157,11 @@ namespace KxFramework::UI::DataView
 			{
 				return RenderEngine(const_cast<Renderer&>(*this), m_AlwaysUseGC);
 			}
-			virtual wxString GetTextValue(const wxAny& value) const = 0;
+			virtual String GetTextValue(const wxAny& value) const = 0;
 
 		public:
-			Renderer(int alignment = wxALIGN_INVALID)
-				:m_Alignment(static_cast<wxAlignment>(alignment))
+			Renderer(FlagSet<Alignment> alignment = Alignment::Invalid)
+				:m_Alignment(alignment)
 			{
 			}
 			virtual ~Renderer() = default;
@@ -178,18 +178,14 @@ namespace KxFramework::UI::DataView
 				return m_Node;
 			}
 
-			virtual wxAlignment GetEffectiveAlignment() const;
-			wxAlignment GetAlignment() const
+			virtual FlagSet<Alignment> GetEffectiveAlignment() const;
+			FlagSet<Alignment> GetAlignment() const
 			{
 				return m_Alignment;
 			}
-			void SetAlignment(wxAlignment alignment)
+			void SetAlignment(FlagSet<Alignment> alignment)
 			{
 				m_Alignment = alignment;
-			}
-			void SetAlignment(int alignment)
-			{
-				m_Alignment = static_cast<wxAlignment>(alignment);
 			}
 
 			wxEllipsizeMode GetEllipsizeMode() const

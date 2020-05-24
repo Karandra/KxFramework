@@ -50,7 +50,7 @@ namespace KxFramework::UI::DataView
 			rect.Width() -= offsetFromToggle;
 
 			const int reservedWidth = m_Value.GetDefaultBitmapWidth();
-			const bool centerTextV = m_Value.IsOptionEnabled(BitmapTextValueOption::VCenterText);
+			const bool centerTextV = m_Value.ContainsOption(BitmapTextValueOption::VCenterText);
 			GetRenderEngine().DrawBitmapWithText(rect, cellState, offsetX, m_Value.GetText(), m_Value.GetBitmap(), centerTextV, reservedWidth);
 		}
 	}

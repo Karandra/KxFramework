@@ -12,8 +12,8 @@ namespace KxFramework::UI
 		TriState = wxCHK_3STATE,
 		AllowSelectThirdState = wxCHK_ALLOW_3RD_STATE_FOR_USER,
 
-		AlignLeft = wxALIGN_LEFT,
-		AlignRight = wxALIGN_RIGHT,
+		AlignLeft = Alignment::Left,
+		AlignRight = Alignment::Right,
 		AlignCenterHorizontal = wxALIGN_CENTRE_HORIZONTAL
 	};
 }

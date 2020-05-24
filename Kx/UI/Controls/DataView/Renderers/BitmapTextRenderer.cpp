@@ -21,7 +21,7 @@ namespace KxFramework::UI::DataView
 
 	void BitmapTextRenderer::DrawCellContent(const Rect& cellRect, CellState cellState)
 	{
-		const bool centerTextV = m_Value.IsOptionEnabled(BitmapTextValueOption::VCenterText);
+		const bool centerTextV = m_Value.ContainsOption(BitmapTextValueOption::VCenterText);
 		const int reservedWidth = m_Value.GetDefaultBitmapWidth();
 
 		GetRenderEngine().DrawBitmapWithText(cellRect, cellState, 0, m_Value.GetText(), m_Value.GetBitmap(), centerTextV, reservedWidth);

@@ -51,7 +51,7 @@ namespace KxFramework::UI::DataView
 		event.Skip();
 
 		m_Selection = event.GetNode();
-		if (IsOptionEnabled(ComboCtrlOption::DismissOnSelect))
+		if (ContainsOption(ComboCtrlOption::DismissOnSelect))
 		{
 			m_ComboCtrl->Dismiss();
 		}
@@ -91,7 +91,7 @@ namespace KxFramework::UI::DataView
 			Select(*m_Selection);
 		}
 
-		if (IsOptionEnabled(ComboCtrlOption::ForceGetStringOnDismiss))
+		if (ContainsOption(ComboCtrlOption::ForceGetStringOnDismiss))
 		{
 			m_ComboCtrl->SetText(GetStringValue());
 		}
@@ -102,7 +102,7 @@ namespace KxFramework::UI::DataView
 	}
 	bool ComboCtrl::Create(wxWindow* window)
 	{
-		m_Sizer = new wxBoxSizer(IsOptionEnabled(ComboCtrlOption::HorizontalLayout) ? wxHORIZONTAL : wxVERTICAL);
+		m_Sizer = new wxBoxSizer(ContainsOption(ComboCtrlOption::HorizontalLayout) ? wxHORIZONTAL : wxVERTICAL);
 		m_BackgroundWindow = new KxFramework::UI::Panel(window, wxID_NONE, CombineFlags<WindowStyle>(*Panel::DefaultStyle, WindowBorder::Theme));
 		m_BackgroundWindow->SetSizer(m_Sizer);
 		if (ShouldInheritColours())
@@ -122,7 +122,7 @@ namespace KxFramework::UI::DataView
 
 			// ComboCtrl Events
 			m_ComboCtrl->PushEventHandler(&m_EvtHandler_ComboCtrl);
-			if (!IsOptionEnabled(ComboCtrlOption::AltPopupWindow))
+			if (!ContainsOption(ComboCtrlOption::AltPopupWindow))
 			{
 				m_EvtHandler_ComboCtrl.Bind(wxEVT_MOUSEWHEEL, &ComboCtrl::OnScroll, this);
 			}
@@ -138,7 +138,7 @@ namespace KxFramework::UI::DataView
 	)
 	{
 		m_ComboCtrl = new ComboControl();
-		m_ComboCtrl->UseAltPopupWindow(IsOptionEnabled(ComboCtrlOption::AltPopupWindow));
+		m_ComboCtrl->UseAltPopupWindow(ContainsOption(ComboCtrlOption::AltPopupWindow));
 
 		if (m_ComboCtrl->Create(parent, id, {}, style, validator))
 		{

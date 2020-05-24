@@ -101,106 +101,106 @@ namespace KxFramework::Sciter
 		#undef Map
 	}
 
-	Alignment MapAlignment(wxAlignment alignment)
+	CornerAlignment MapCornerAlignment(FlagSet<Alignment> alignment)
 	{
-		if (alignment == wxALIGN_INVALID)
+		if (alignment == Alignment::Invalid)
 		{
-			return Alignment::Unspecified;
+			return CornerAlignment::Unspecified;
 		}
-		else if (alignment & wxALIGN_RIGHT)
+		else if (alignment & Alignment::Right)
 		{
 			// Right alignment
-			if (alignment & wxALIGN_CENTER_VERTICAL)
+			if (alignment & Alignment::CenterVertical)
 			{
-				return Alignment::MiddleRight;
+				return CornerAlignment::MiddleRight;
 			}
-			else if (alignment & wxALIGN_BOTTOM)
+			else if (alignment & Alignment::Bottom)
 			{
-				return Alignment::BottomRight;
+				return CornerAlignment::BottomRight;
 			}
 			else
 			{
-				return Alignment::TopRight;
+				return CornerAlignment::TopRight;
 			}
 		}
 		else if (alignment & wxALIGN_CENTRE_HORIZONTAL)
 		{
 			// Horizontally-centered
-			if (alignment & wxALIGN_CENTER_VERTICAL)
+			if (alignment & Alignment::CenterVertical)
 			{
-				return Alignment::MiddleCenter;
+				return CornerAlignment::MiddleCenter;
 			}
-			else if (alignment & wxALIGN_BOTTOM)
+			else if (alignment & Alignment::Bottom)
 			{
-				return Alignment::BottomCenter;
+				return CornerAlignment::BottomCenter;
 			}
 			else
 			{
-				return Alignment::TopCenter;
+				return CornerAlignment::TopCenter;
 			}
 		}
 		else
 		{
 			// Left aligned
-			if (alignment & wxALIGN_CENTER_VERTICAL)
+			if (alignment & Alignment::CenterVertical)
 			{
-				return Alignment::MiddleLeft;
+				return CornerAlignment::MiddleLeft;
 			}
-			else if (alignment & wxALIGN_BOTTOM)
+			else if (alignment & Alignment::Bottom)
 			{
-				return Alignment::BottomLeft;
+				return CornerAlignment::BottomLeft;
 			}
 			else
 			{
-				return Alignment::TopLeft;
+				return CornerAlignment::TopLeft;
 			}
 		}
-		return Alignment::Unspecified;
+		return CornerAlignment::Unspecified;
 	}
-	wxAlignment MapAlignment(Alignment alignment)
+	FlagSet<Alignment> MapCornerAlignment(CornerAlignment alignment)
 	{
 		switch (alignment)
 		{
-			case Alignment::TopLeft:
+			case CornerAlignment::TopLeft:
 			{
-				return wxALIGN_LEFT;
+				return Alignment::Left;
 			}
-			case Alignment::TopCenter:
+			case CornerAlignment::TopCenter:
 			{
-				return wxALIGN_CENTER_HORIZONTAL;
+				return Alignment::CenterHorizontal;
 			}
-			case Alignment::TopRight:
+			case CornerAlignment::TopRight:
 			{
-				return wxALIGN_RIGHT;
-			}
-
-			case Alignment::MiddleLeft:
-			{
-				return wxALIGN_CENTER_VERTICAL;
-			}
-			case Alignment::MiddleCenter:
-			{
-				return static_cast<wxAlignment>(wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL);
-			}
-			case Alignment::MiddleRight:
-			{
-				return static_cast<wxAlignment>(wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL);
+				return Alignment::Right;
 			}
 
-			case Alignment::BottomLeft:
+			case CornerAlignment::MiddleLeft:
 			{
-				return wxALIGN_BOTTOM;
+				return Alignment::CenterVertical;
 			}
-			case Alignment::BottomCenter:
+			case CornerAlignment::MiddleCenter:
 			{
-				return static_cast<wxAlignment>(wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL);
+				return Alignment::CenterVertical|Alignment::CenterHorizontal;
 			}
-			case Alignment::BottomRight:
+			case CornerAlignment::MiddleRight:
 			{
-				return static_cast<wxAlignment>(wxALIGN_BOTTOM|wxALIGN_RIGHT);
+				return Alignment::Right|Alignment::CenterVertical;
+			}
+
+			case CornerAlignment::BottomLeft:
+			{
+				return Alignment::Bottom;
+			}
+			case CornerAlignment::BottomCenter:
+			{
+				return Alignment::Bottom|Alignment::CenterHorizontal;
+			}
+			case CornerAlignment::BottomRight:
+			{
+				return Alignment::Bottom|Alignment::Right;
 			}
 		};
-		return wxALIGN_INVALID;
+		return Alignment::Invalid;
 	}
 
 	bool SetMasterCSS(const String& css)

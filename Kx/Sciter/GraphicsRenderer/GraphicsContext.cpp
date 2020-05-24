@@ -216,7 +216,7 @@ namespace KxFramework::Sciter
 									  &drawOpacity);
 		return wxRect2DDouble(x, y, width, height);
 	}
-	void GraphicsContext::DrawText(const GraphicsText& text, const wxPoint2DDouble& pos, Alignment alignment)
+	void GraphicsContext::DrawText(const GraphicsText& text, const wxPoint2DDouble& pos, CornerAlignment alignment)
 	{
 		GetGrapchicsAPI()->gDrawText(ToSciterGraphicsContext(m_Handle), ToSciterText(text.GetHandle()), pos.m_x, pos.m_y, ToInt(alignment));
 	}

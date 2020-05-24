@@ -27,12 +27,12 @@ namespace KxFramework::UI
 				if (type == wxEVT_AUITOOLBAR_RIGHT_CLICK)
 				{
 					type = AuiToolBarEvent::EvtItemRightClick;
-					canShowMenu = item->HasDropdownMenu() && item->IsOptionEnabled(AuiToolBarItemOption::MenuOnRightClick);
+					canShowMenu = item->HasDropdownMenu() && item->ContainsOption(AuiToolBarItemOption::MenuOnRightClick);
 				}
 				else if (type == wxEVT_AUITOOLBAR_MIDDLE_CLICK)
 				{
 					type = AuiToolBarEvent::EvtItemMiddleClick;
-					canShowMenu = item->HasDropdownMenu() && item->IsOptionEnabled(AuiToolBarItemOption::MenuOnMiddleClick);
+					canShowMenu = item->HasDropdownMenu() && item->ContainsOption(AuiToolBarItemOption::MenuOnMiddleClick);
 				}
 				else if (type == wxEVT_AUITOOLBAR_TOOL_DROPDOWN)
 				{
@@ -85,7 +85,7 @@ namespace KxFramework::UI
 				bool bProcessed = item->ProcessEvent(newEvent);
 
 				// Handle dropdown menu
-				if (item->IsOptionEnabled(AuiToolBarItemOption::MenuOnLeftClick) && item->HasDropdownMenu() && (!bProcessed || newEvent.GetSkipped()))
+				if (item->ContainsOption(AuiToolBarItemOption::MenuOnLeftClick) && item->HasDropdownMenu() && (!bProcessed || newEvent.GetSkipped()))
 				{
 					item->ShowDropdownMenu();
 					item->Refresh();

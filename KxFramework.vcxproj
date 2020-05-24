@@ -385,7 +385,6 @@
     <ClInclude Include="Kx\General\INIDocument.h" />
     <ClInclude Include="Kx\General\JSONDocument.h" />
     <ClInclude Include="Kx\General\Math.h" />
-    <ClInclude Include="Kx\General\OptionSet.h" />
     <ClInclude Include="Kx\General\Private\HTML\error.h" />
     <ClInclude Include="Kx\General\Private\HTML\insertion_mode.h" />
     <ClInclude Include="Kx\General\Private\HTML\string_buffer.h" />

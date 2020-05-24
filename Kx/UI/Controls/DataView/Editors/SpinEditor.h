@@ -16,7 +16,7 @@ namespace KxFramework::UI::DataView
 			Type m_Type = Type::Integer;
 			Type m_EffectiveType = Type::Integer;
 			bool m_IsWrapping = false;
-			wxAlignment m_Alignment = wxALIGN_NOT;
+			FlagSet<Alignment> m_Alignment;
 
 			int m_IntMin = std::numeric_limits<int>::lowest();
 			int m_IntMax = std::numeric_limits<int>::max();
@@ -66,17 +66,13 @@ namespace KxFramework::UI::DataView
 				m_IsWrapping = wrap;
 			}
 
-			wxAlignment GetAlignment() const
+			FlagSet<Alignment> GetAlignment() const
 			{
 				return m_Alignment;
 			}
-			void SetAlignment(wxAlignment alignment)
+			void SetAlignment(FlagSet<Alignment> alignment)
 			{
 				m_Alignment = alignment;
-			}
-			void SetAlignment(int alignment)
-			{
-				m_Alignment = static_cast<wxAlignment>(alignment);
 			}
 
 			// Integer

@@ -133,11 +133,11 @@ namespace KxFramework::UI::DataView
 				:ProgressValueBase(position, range, state)
 			{
 			}
-			ProgressValue(int position, int range, const wxString& text = {}, ProgressState state = ProgressState::Normal)
+			ProgressValue(int position, int range, const String& text = {}, ProgressState state = ProgressState::Normal)
 				:ProgressValueBase(position, range, state), TextValue(text)
 			{
 			}
-			ProgressValue(int position, const wxString& text = {}, ProgressState state = ProgressState::Normal)
+			ProgressValue(int position, const String& text = {}, ProgressState state = ProgressState::Normal)
 				:TextValue(text), ProgressValueBase(position, state)
 			{
 			}
@@ -171,13 +171,13 @@ namespace KxFramework::UI::DataView
 			Rect GetBarRect() const;
 
 		public:
-			ProgressRenderer(int alignment = wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL)
+			ProgressRenderer(FlagSet<Alignment> alignment = Alignment::CenterVertical|Alignment::CenterHorizontal)
 				:Renderer(alignment)
 			{
 			}
 			
 		public:
-			wxString GetTextValue(const wxAny& value) const override
+			String GetTextValue(const wxAny& value) const override
 			{
 				return FromAnyUsing<decltype(m_Value)>(value).GetText();
 			}

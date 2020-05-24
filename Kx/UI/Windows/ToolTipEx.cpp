@@ -112,7 +112,7 @@ namespace KxFramework::UI
 				// There's no corresponding question icon in tooltip icons enum, so get it ourselves
 				if (*iconType == StdIcon::Question)
 				{
-					if (IsOptionEnabled(ToolTipExStyle::LargeIcons))
+					if (ContainsOption(ToolTipExStyle::LargeIcons))
 					{
 						m_QuestionIcon = wxArtProvider::GetMessageBoxIcon(wxICON_QUESTION);
 					}
@@ -146,11 +146,11 @@ namespace KxFramework::UI
 	void ToolTipEx::UpdateStyle()
 	{
 		uint32_t style = g_DefaultStyle|TTS_ALWAYSTIP|TTS_NOPREFIX;
-		if (IsOptionEnabled(ToolTipExStyle::Ballon) && m_IsBalloonStyleSupported)
+		if (ContainsOption(ToolTipExStyle::Ballon) && m_IsBalloonStyleSupported)
 		{
 			style |= TTS_BALLOON;
 		}
-		if (IsOptionEnabled(ToolTipExStyle::CloseButton))
+		if (ContainsOption(ToolTipExStyle::CloseButton))
 		{
 			style |= TTS_CLOSE;
 		}
@@ -159,7 +159,7 @@ namespace KxFramework::UI
 	}
 	int ToolTipEx::ConvertIconID(StdIcon icon) const
 	{
-		const bool largeIcons = IsOptionEnabled(ToolTipExStyle::LargeIcons);
+		const bool largeIcons = ContainsOption(ToolTipExStyle::LargeIcons);
 		switch (icon)
 		{
 			case StdIcon::Information:

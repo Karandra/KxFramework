@@ -919,34 +919,34 @@ namespace KxFramework::UI::DataView
 				// see #12270.
 
 				// adjust the rectangle ourselves to account for the alignment
-				const wxAlignment align = renderer.GetEffectiveAlignment();
+				const FlagSet<Alignment> align = renderer.GetEffectiveAlignment();
 
 				Rect rectItem = cellRect;
 				const Size size = renderer.GetCellSize();
 				if (size.GetWidth() >= 0 && size.GetWidth() < cellRect.GetWidth())
 				{
-					if (align & wxALIGN_CENTER_HORIZONTAL)
+					if (align & Alignment::CenterHorizontal)
 					{
 						rectItem.X() += (cellRect.GetWidth() - size.GetWidth()) / 2;
 					}
-					else if (align & wxALIGN_RIGHT)
+					else if (align & Alignment::Right)
 					{
 						rectItem.X() += cellRect.GetWidth() - size.GetWidth();
 					}
-					// else: wxALIGN_LEFT is the default
+					// else: Alignment::Left is the default
 				}
 
 				if (size.GetHeight() >= 0 && size.GetHeight() < cellRect.GetHeight())
 				{
-					if (align & wxALIGN_CENTER_VERTICAL)
+					if (align & Alignment::CenterVertical)
 					{
 						rectItem.Y() += (cellRect.GetHeight() - size.GetHeight()) / 2;
 					}
-					else if (align & wxALIGN_BOTTOM)
+					else if (align & Alignment::Bottom)
 					{
 						rectItem.Y() += cellRect.GetHeight() - size.GetHeight();
 					}
-					// else: wxALIGN_TOP is the default
+					// else: Alignment::Top is the default
 				}
 
 				wxMouseEvent event2(event);
@@ -1056,11 +1056,11 @@ namespace KxFramework::UI::DataView
 		if (m_BackgroundBitmap.IsOk())
 		{
 			Point pos;
-			if (m_BackgroundBitmapAlignment & wxALIGN_RIGHT)
+			if (m_BackgroundBitmapAlignment & Alignment::Right)
 			{
 				pos.X() = clientSize.GetWidth() - m_BackgroundBitmap.GetWidth();
 			}
-			if (m_BackgroundBitmapAlignment & wxALIGN_BOTTOM)
+			if (m_BackgroundBitmapAlignment & Alignment::Bottom)
 			{
 				pos.Y() = clientSize.GetHeight() - m_BackgroundBitmap.GetHeight();
 			}
@@ -1084,7 +1084,7 @@ namespace KxFramework::UI::DataView
 				const Rect rect(0, y, clientSize.GetWidth(), clientSize.GetHeight() - y);
 
 				paintDC.SetTextForeground(m_View->GetForegroundColour().MakeDisabled());
-				paintDC.DrawLabel(m_EmptyControlLabel, rect, wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP);
+				paintDC.DrawLabel(m_EmptyControlLabel, rect, ToInt(Alignment::CenterHorizontal|Alignment::Top));
 			}
 
 			// We assume that we have at least one column below and painting an empty control is unnecessary anyhow

@@ -667,9 +667,6 @@
     <ClInclude Include="Kx\General\WithOptions.h">
       <Filter>Kx\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\OptionSet.h">
-      <Filter>Kx\General</Filter>
-    </ClInclude>
     <ClInclude Include="Kx\System\DPIAwareness.h">
       <Filter>Kx\System</Filter>
     </ClInclude>

@@ -12,7 +12,7 @@ namespace KxFramework::UI::DataView
 
 		public:
 			BitmapListValue() = default;
-			BitmapListValue(const wxString& text)
+			BitmapListValue(const String& text)
 				:TextValue(text)
 			{
 			}
@@ -20,7 +20,7 @@ namespace KxFramework::UI::DataView
 			{
 				AddBitmap(bitmap);
 			}
-			BitmapListValue(const wxString& text, const wxBitmap& bitmap)
+			BitmapListValue(const String& text, const wxBitmap& bitmap)
 				:TextValue(text)
 			{
 				AddBitmap(bitmap);
@@ -75,7 +75,7 @@ namespace KxFramework::UI::DataView
 			virtual wxBitmap GetBitmap(size_t index) const = 0;
 
 		public:
-			BitmapListRendererBase(TextValue& textValue, BitmapValueBase& bitmapValueBase, int alignment = wxALIGN_INVALID)
+			BitmapListRendererBase(TextValue& textValue, BitmapValueBase& bitmapValueBase, FlagSet<Alignment> alignment = Alignment::Invalid)
 				:Renderer(alignment), m_TextValue(textValue), m_BitmapValueBase(bitmapValueBase)
 			{
 			}
@@ -102,13 +102,13 @@ namespace KxFramework::UI::DataView
 			}
 
 		public:
-			BitmapListRenderer(int alignment = wxALIGN_INVALID)
+			BitmapListRenderer(FlagSet<Alignment> alignment = Alignment::Invalid)
 				:BitmapListRendererBase(m_Value, m_Value, alignment)
 			{
 			}
 	
 		public:
-			wxString GetTextValue(const wxAny& value) const override
+			String GetTextValue(const wxAny& value) const override
 			{
 				return FromAnyUsing<decltype(m_Value)>(value).GetText();
 			}

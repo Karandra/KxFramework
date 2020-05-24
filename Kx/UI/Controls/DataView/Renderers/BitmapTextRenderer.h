@@ -26,11 +26,11 @@ namespace KxFramework::UI::DataView
 				:BitmapValue(bitmap)
 			{
 			}
-			BitmapTextValue(const wxString& text)
+			BitmapTextValue(const String& text)
 				:TextValue(text)
 			{
 			}
-			BitmapTextValue(const wxString& text, const wxBitmap& bitmap)
+			BitmapTextValue(const String& text, const wxBitmap& bitmap)
 				:TextValue(text), BitmapValue(bitmap)
 			{
 			}
@@ -41,7 +41,7 @@ namespace KxFramework::UI::DataView
 			{
 				TextValue::Clear();
 				BitmapValue::Clear();
-				WithOptions::RawSetOptions(BitmapTextValueOption::None);
+				WithOptions::SetOptionFlags(BitmapTextValueOption::None);
 			}
 	};
 }
@@ -67,13 +67,13 @@ namespace KxFramework::UI::DataView
 			Size GetCellSize() const override;
 
 		public:
-			BitmapTextRenderer(int alignment = wxALIGN_INVALID)
+			BitmapTextRenderer(FlagSet<Alignment> alignment = Alignment::Invalid)
 				:Renderer(alignment)
 			{
 			}
 			
 		public:
-			wxString GetTextValue(const wxAny& value) const override
+			String GetTextValue(const wxAny& value) const override
 			{
 				return FromAnyUsing<decltype(m_Value)>(value).GetText();
 			}

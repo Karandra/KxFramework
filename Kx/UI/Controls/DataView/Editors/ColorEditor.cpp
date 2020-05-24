@@ -43,8 +43,8 @@ namespace KxFramework::UI::DataView
 			colorData.SetCustomColour(i, m_PaletteColors[i]);
 		}
 
-		colorData.SetChooseFull(IsOptionEnabled(ColorEditorOption::FullEditor));
-		colorData.SetChooseAlpha(IsOptionEnabled(ColorEditorOption::ShowAlpha));
+		colorData.SetChooseFull(ContainsOption(ColorEditorOption::FullEditor));
+		colorData.SetChooseAlpha(ContainsOption(ColorEditorOption::ShowAlpha));
 
 		return colorData;
 	}
@@ -56,8 +56,8 @@ namespace KxFramework::UI::DataView
 			m_PaletteColors[i] = colorData.GetCustomColour(i);
 		}
 
-		SetOptionEnabled(ColorEditorOption::FullEditor, colorData.GetChooseFull());
-		SetOptionEnabled(ColorEditorOption::ShowAlpha, colorData.GetChooseAlpha());
+		AddOption(ColorEditorOption::FullEditor, colorData.GetChooseFull());
+		AddOption(ColorEditorOption::ShowAlpha, colorData.GetChooseAlpha());
 	}
 }
 
@@ -70,7 +70,7 @@ namespace KxFramework::UI::DataView
 
 		wxColourDialog* nativeDialog = nullptr;
 		wxGenericColourDialog* genericDialog = nullptr;
-		const bool shouldUseGeneric = m_Value.IsOptionEnabled(ColorEditorOption::GenericEditor) || m_Value.IsOptionEnabled(ColorEditorOption::ShowAlpha);
+		const bool shouldUseGeneric = m_Value.ContainsOption(ColorEditorOption::GenericEditor) || m_Value.ContainsOption(ColorEditorOption::ShowAlpha);
 
 		if (shouldUseGeneric)
 		{

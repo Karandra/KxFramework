@@ -184,7 +184,7 @@ namespace KxFramework::UI::DataView
 		const Column* column = m_Renderer.GetColumn();
 
 		int flags = wxCONTROL_NONE;
-		if (!m_Renderer.GetAttributes().Options().IsEnabled(CellOption::Enabled))
+		if (!m_Renderer.GetAttributes().Options().ContainsOption(CellOption::Enabled))
 		{
 			flags |= wxCONTROL_DISABLED;
 		}
@@ -308,7 +308,7 @@ namespace KxFramework::UI::DataView
 			textRect.Width() -= offsetX;
 
 			int flags = 0;
-			if (m_Renderer.IsMarkupWithMnemonicsEnabled() && attributes.Options().IsEnabled(CellOption::ShowAccelerators))
+			if (m_Renderer.IsMarkupWithMnemonicsEnabled() && attributes.Options().ContainsOption(CellOption::ShowAccelerators))
 			{
 				flags |= wxMarkupText::Render_ShowAccels;
 			}
@@ -350,7 +350,7 @@ namespace KxFramework::UI::DataView
 			{
 				const Point pos = cellRect.GetPosition();
 				const Size size = bitmap.GetSize();
-				const bool isEnabled = attributes.Options().IsEnabled(CellOption::Enabled);
+				const bool isEnabled = attributes.Options().ContainsOption(CellOption::Enabled);
 
 				context.DrawBitmap(isEnabled ? bitmap : bitmap.ConvertToDisabled(), pos.GetX(), pos.GetY(), size.GetWidth(), size.GetHeight());
 			};

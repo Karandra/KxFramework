@@ -3,7 +3,6 @@
 #include "Editor.h"
 #include "Renderer.h"
 #include "ColumnID.h"
-#include "Kx/General/OptionSet.h"
 #include <Kx/RTTI.hpp>
 #include <wx/headercol.h>
 
@@ -68,7 +67,7 @@ namespace KxFramework::UI::DataView
 
 namespace KxFramework::UI::DataView
 {
-	class KX_API Column: public KxFramework::RTTI::Interface<Column>, public wxClientDataContainer
+	class KX_API Column: public RTTI::Interface<Column>, public wxClientDataContainer
 	{
 		KxDecalreIID(Column, {0x95e43f36, 0x4b4a, 0x4d43, {0xa9, 0x8, 0xab, 0x1e, 0x25, 0x42, 0x9, 0xfa}});
 
@@ -98,10 +97,10 @@ namespace KxFramework::UI::DataView
 
 			wxBitmap m_Bitmap;
 			wxString m_Title;
-			wxAlignment m_TitleAlignment = wxALIGN_INVALID;
+			FlagSet<Alignment> m_TitleAlignment = Alignment::Invalid;
 			bool m_IsChecked = false;
 
-			KxFramework::OptionSet<ColumnStyle, ColumnStyle::Default> m_Style;
+			FlagSet<ColumnStyle> m_Style = ColumnStyle::Default;
 			ColumnWidth m_Width;
 			int m_MinWidth = 0;
 			int m_BestWidth = 0;
@@ -148,11 +147,11 @@ namespace KxFramework::UI::DataView
 
 			ColumnStyle GetStyleFlags() const
 			{
-				return m_Style.RawGetValue();
+				return m_Style.GetValue();
 			}
 			void SetStyleFlags(ColumnStyle style)
 			{
-				m_Style.RawSetValue(style);
+				m_Style.SetValue(style);
 			}
 
 			const NativeColumn& GetNativeColumn() const
@@ -263,7 +262,7 @@ namespace KxFramework::UI::DataView
 
 			bool HasCheckBox() const
 			{
-				return m_Style.IsEnabled(ColumnStyle::CheckBox);
+				return m_Style.Contains(ColumnStyle::CheckBox);
 			}
 			bool IsChecked() const
 			{
@@ -305,11 +304,11 @@ namespace KxFramework::UI::DataView
 			int CalcBestSize();
 
 			int GetTitleWidth() const;
-			wxAlignment GetTitleAlignment() const
+			FlagSet<Alignment> GetTitleAlignment() const
 			{
 				return m_TitleAlignment;
 			}
-			void SetTitleAlignment(wxAlignment alignment)
+			void SetTitleAlignment(FlagSet<Alignment> alignment)
 			{
 				m_TitleAlignment = alignment;
 				UpdateDisplay();
@@ -344,38 +343,38 @@ namespace KxFramework::UI::DataView
 
 			bool IsSortable() const
 			{
-				return m_Style.IsEnabled(ColumnStyle::Sort);
+				return m_Style.Contains(ColumnStyle::Sort);
 			}
 			void SetSortable(bool value)
 			{
-				m_Style.Enable(ColumnStyle::Sort, value);
+				m_Style.Mod(ColumnStyle::Sort, value);
 			}
 			
 			bool IsMoveable() const
 			{
-				return m_Style.IsEnabled(ColumnStyle::Move);
+				return m_Style.Contains(ColumnStyle::Move);
 			}
 			void SetMoveable(bool value)
 			{
-				m_Style.Enable(ColumnStyle::Move, value);
+				m_Style.Mod(ColumnStyle::Move, value);
 			}
 			
 			bool IsSizeable() const
 			{
-				return m_Style.IsEnabled(ColumnStyle::Size);
+				return m_Style.Contains(ColumnStyle::Size);
 			}
 			void SetSizeable(bool value)
 			{
-				m_Style.Enable(ColumnStyle::Size, value);
+				m_Style.Mod(ColumnStyle::Size, value);
 			}
 
 			bool HasDropdown() const
 			{
-				return m_Style.IsEnabled(ColumnStyle::Dropdown);
+				return m_Style.Contains(ColumnStyle::Dropdown);
 			}
 			void ShowDropdown(bool value)
 			{
-				m_Style.Enable(ColumnStyle::Dropdown, value);
+				m_Style.Mod(ColumnStyle::Dropdown, value);
 			}
 
 			bool IsExposed(int& width) const;

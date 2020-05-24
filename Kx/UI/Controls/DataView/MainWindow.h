@@ -116,7 +116,7 @@ namespace KxFramework::UI::DataView
 
 			// Background bitmap
 			wxBitmap m_BackgroundBitmap;
-			wxAlignment m_BackgroundBitmapAlignment = wxALIGN_INVALID;
+			FlagSet<Alignment> m_BackgroundBitmapAlignment = Alignment::Invalid;
 			bool m_FitBackgroundBitmap = false;
 
 			// This is the tree structure of the model.
@@ -126,7 +126,7 @@ namespace KxFramework::UI::DataView
 			size_t m_ItemsCount = INVALID_COUNT;
 
 			// String to display when the control is empty
-			wxString m_EmptyControlLabel;
+			String m_EmptyControlLabel;
 
 			// This is the tree node under the cursor
 			Node* m_TreeNodeUnderMouse = nullptr;
@@ -271,10 +271,10 @@ namespace KxFramework::UI::DataView
 			{
 				return m_BackgroundBitmap;
 			}
-			void SetBackgroundBitmap(const wxBitmap& bitmap, int align = wxALIGN_INVALID, bool fit = false)
+			void SetBackgroundBitmap(const wxBitmap& bitmap, FlagSet<Alignment> align = Alignment::Invalid, bool fit = false)
 			{
 				m_BackgroundBitmap = bitmap;
-				m_BackgroundBitmapAlignment = static_cast<wxAlignment>(align != wxALIGN_INVALID ? align : wxALIGN_NOT);
+				m_BackgroundBitmapAlignment = static_cast<FlagSet<Alignment>>(align != Alignment::Invalid ? align : Alignment::None);
 				m_FitBackgroundBitmap = fit;
 				Refresh();
 			}

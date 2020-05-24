@@ -101,11 +101,11 @@ namespace KxFramework::Sciter
 				return DrawBitmap(bitmap, wxRect2DDouble(pos.m_x, pos.m_y, -1, -1), opacity);
 			}
 
-			void DrawText(const GraphicsText& text, const wxPoint2DDouble& pos, wxAlignment alignment = wxALIGN_NOT)
+			void DrawText(const GraphicsText& text, const wxPoint2DDouble& pos, FlagSet<Alignment> alignment = Alignment::None)
 			{
-				DrawText(text, pos, MapAlignment(alignment));
+				DrawText(text, pos, MapCornerAlignment(alignment));
 			}
-			void DrawText(const GraphicsText& text, const wxPoint2DDouble& pos, Alignment alignment = Alignment::Unspecified);
+			void DrawText(const GraphicsText& text, const wxPoint2DDouble& pos, CornerAlignment alignment = CornerAlignment::Unspecified);
 
 			// Brush and pen functions
 			void SetPen(const wxPen& pen);

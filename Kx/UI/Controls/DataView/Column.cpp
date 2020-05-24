@@ -49,11 +49,11 @@ namespace KxFramework::UI::DataView
 
 	wxAlignment NativeColumn::GetAlignment() const
 	{
-		return m_Column.GetTitleAlignment();
+		return m_Column.GetTitleAlignment().ToInt<wxAlignment>();
 	}
 	void NativeColumn::SetAlignment(wxAlignment alignment)
 	{
-		m_Column.SetTitleAlignment(alignment);
+		m_Column.SetTitleAlignment(FlagSet<Alignment>().FromInt(alignment));
 	}
 
 	int NativeColumn::GetFlags() const

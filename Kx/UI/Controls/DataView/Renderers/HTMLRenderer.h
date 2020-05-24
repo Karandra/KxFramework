@@ -9,7 +9,7 @@ namespace KxFramework::UI::DataView
 	{
 		private:
 			TextValue m_Value;
-			wxString m_ContentHTML;
+			String m_ContentHTML;
 
 			double m_PixelScale = 1.0;
 			double m_FontScale = 1.0;
@@ -26,11 +26,13 @@ namespace KxFramework::UI::DataView
 			Size GetCellSize() const override;
 
 		public:
-			HTMLRenderer(int alignment = wxALIGN_INVALID);
-			~HTMLRenderer();
+			HTMLRenderer(FlagSet<Alignment> alignment = Alignment::Invalid)
+				:Renderer(alignment)
+			{
+			}
 
 		public:
-			wxString GetTextValue(const wxAny& value) const override
+			String GetTextValue(const wxAny& value) const override
 			{
 				return FromAnyUsing<decltype(m_Value)>(value).GetText();
 			}

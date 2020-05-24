@@ -191,7 +191,7 @@ namespace KxFramework::UI::DataView
 		return displayOrder;
 	}
 
-	bool View::Create(wxWindow* parent, wxWindowID id, const Point& pos, const Size& size, FlagSet<CtrlStyle> style, const wxString& name)
+	bool View::Create(wxWindow* parent, wxWindowID id, const Point& pos, const Size& size, FlagSet<CtrlStyle> style, const String& name)
 	{
 		if (ViewBase::Create(parent, id, pos, size, style.ToInt()|wxScrolledWindowStyle, GetClassInfo()->GetClassName()))
 		{
@@ -783,13 +783,13 @@ namespace KxFramework::UI::DataView
 		for (size_t i = 0; i < count; i++)
 		{
 			Column* column = GetColumn(i);
-			wxString title = column->GetTitle();
+			String title = column->GetTitle();
 			if (title.IsEmpty())
 			{
-				title << wxS('<') << i + 1 << wxS('>');
+				title = String::Format(wxS("<%1>"), i + 1);
 			}
 
-			MenuItem* menuItem = menu.AddItem(title, wxS(""), wxITEM_CHECK);
+			MenuItem* menuItem = menu.AddItem(title, NullString, wxITEM_CHECK);
 			menuItem->Check(column->IsVisible());
 			menuItem->SetBitmap(column->m_Bitmap);
 			menuItem->SetClientData(column);
@@ -820,11 +820,11 @@ namespace KxFramework::UI::DataView
 		return nullptr;
 	}
 
-	wxString View::GetEmptyControlLabel() const
+	String View::GetEmptyControlLabel() const
 	{
 		return m_ClientArea->m_EmptyControlLabel;
 	}
-	void View::SetEmptyControlLabel(const wxString& value)
+	void View::SetEmptyControlLabel(const String& value)
 	{
 		m_ClientArea->m_EmptyControlLabel = value;
 		if (m_ClientArea->IsEmpty())
@@ -872,7 +872,7 @@ namespace KxFramework::UI::DataView
 	{
 		return m_ClientArea->GetBackgroundBitmap();
 	}
-	void View::SetBackgroundBitmap(const wxBitmap& bitmap, int align, bool fit)
+	void View::SetBackgroundBitmap(const wxBitmap& bitmap, FlagSet<Alignment> align, bool fit)
 	{
 		m_ClientArea->SetBackgroundBitmap(bitmap, align, fit);
 	}

@@ -11,7 +11,7 @@ namespace KxFramework::UI
 
 namespace KxFramework::UI
 {
-	enum class AuiToolBarItemOption
+	enum class AuiToolBarItemOption: uint32_t
 	{
 		None = 0,
 		MenuOnLeftClick = 1 << 0,
@@ -19,13 +19,14 @@ namespace KxFramework::UI
 		MenuOnRightClick = 1 << 2,
 	};
 }
+namespace KxFramework
+{
+	Kx_DeclareFlagSet(UI::AuiToolBarItemOption);
+}
 
 namespace KxFramework::UI
 {
-	class KX_API AuiToolBarItem:
-		public wxEvtHandler,
-		public WithDropdownMenu,
-		public WithOptions<AuiToolBarItemOption, AuiToolBarItemOption::None>
+	class KX_API AuiToolBarItem: public wxEvtHandler, public WithDropdownMenu, public WithOptions<AuiToolBarItemOption>
 	{
 		friend class AuiToolBar;
 
@@ -37,7 +38,7 @@ namespace KxFramework::UI
 			wxAuiToolBarItem* m_Item = nullptr;
 
 		private:
-			Point DoGetDropdownMenuPosition(wxAlignment* alignment, bool leftAlign) const;
+			Point DoGetDropdownMenuPosition(FlagSet<Alignment>* alignment, bool leftAlign) const;
 			wxWindowID DoShowDropdownMenu(bool leftAlign);
 
 		public:
@@ -58,15 +59,15 @@ namespace KxFramework::UI
 				return *m_ToolBar;
 			}
 
-			Point GetDropdownMenuPosition(wxAlignment* alignment = nullptr) const
+			Point GetDropdownMenuPosition(FlagSet<Alignment>* alignment = nullptr) const
 			{
 				return DoGetDropdownMenuPosition(alignment, !HasDropDown());
 			}
-			Point GetDropdownMenuPosLeftAlign(wxAlignment* alignment = nullptr) const
+			Point GetDropdownMenuPosLeftAlign(FlagSet<Alignment>* alignment = nullptr) const
 			{
 				return DoGetDropdownMenuPosition(alignment, true);
 			}
-			Point GetDropdownMenuPosRightAlign(wxAlignment* alignment = nullptr) const
+			Point GetDropdownMenuPosRightAlign(FlagSet<Alignment>* alignment = nullptr) const
 			{
 				return DoGetDropdownMenuPosition(alignment, false);
 			}
@@ -109,8 +110,8 @@ namespace KxFramework::UI
 			int GetProportion() const;
 			void SetProportion(int proportion);
 
-			wxAlignment GetAlignment() const;
-			void SetAlignment(wxAlignment alignment);
+			FlagSet<Alignment> GetAlignment() const;
+			void SetAlignment(FlagSet<Alignment> alignment);
 
 			int GetSpacerPixels() const;
 			void SetSpacerPixels(int pixels);

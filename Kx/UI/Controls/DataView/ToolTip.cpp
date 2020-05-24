@@ -69,7 +69,7 @@ namespace KxFramework::UI::DataView
 		}
 		return mainWindow->ScreenToClient(adjustedPos);
 	}
-	wxString ToolTip::StripMarkupIfNeeded(const Node& node, const Column& column, const wxString& text) const
+	String ToolTip::StripMarkupIfNeeded(const Node& node, const Column& column, const String& text) const
 	{
 		const Renderer& renderer = node.GetRenderer(column);
 		if (renderer.IsMarkupEnabled())
@@ -89,7 +89,7 @@ namespace KxFramework::UI::DataView
 				tooltip.SetCaption(StripMarkupIfNeeded(node, column, m_Caption));
 				tooltip.SetMessage(StripMarkupIfNeeded(node, column, m_Message));
 
-				tooltip.SetOptionEnabled(ToolTipExStyle::LargeIcons, false);
+				tooltip.RemoveOption(ToolTipExStyle::LargeIcons);
 				if (auto icon = GetIconBitmap(); icon.IsOk())
 				{
 					tooltip.SetIcon(icon);

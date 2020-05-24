@@ -9,8 +9,8 @@ namespace KxFramework::UI
 	{
 		None = 0,
 
-		AlignLeft = wxALIGN_LEFT,
-		AlignRight = wxALIGN_RIGHT,
+		AlignLeft = Alignment::Left,
+		AlignRight = Alignment::Right,
 		AlignCenterHorizontal = wxALIGN_CENTRE_HORIZONTAL,
 		NoAutoResize = wxST_NO_AUTORESIZE,
 

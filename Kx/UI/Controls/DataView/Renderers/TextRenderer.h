@@ -6,10 +6,10 @@ namespace KxFramework::UI::DataView
 	class KX_API TextValue
 	{
 		protected:
-			wxString m_Text;
+			String m_Text;
 
 		public:
-			TextValue(const wxString& text = {})
+			TextValue(const String& text = {})
 				:m_Text(text)
 			{
 			}
@@ -25,11 +25,11 @@ namespace KxFramework::UI::DataView
 			{
 				return !m_Text.IsEmpty();
 			}
-			const wxString& GetText() const
+			const String& GetText() const
 			{
 				return m_Text;
 			}
-			void SetText(const wxString& text)
+			void SetText(const String& text)
 			{
 				m_Text = text;
 			}
@@ -58,13 +58,13 @@ namespace KxFramework::UI::DataView
 			Size GetCellSize() const override;
 
 		public:
-			TextRenderer(int alignment = wxALIGN_INVALID)
+			TextRenderer(FlagSet<Alignment> alignment = Alignment::Invalid)
 				:Renderer(alignment)
 			{
 			}
 			
 		public:
-			wxString GetTextValue(const wxAny& value) const override
+			String GetTextValue(const wxAny& value) const override
 			{
 				return FromAnyUsing<decltype(m_Value)>(value).GetText();
 			}

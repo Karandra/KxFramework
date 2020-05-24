@@ -9,7 +9,7 @@ namespace KxFramework::UI::DataView
 	class KX_API BitmapTextToggleValue: public BitmapTextValue, public ToggleValue
 	{
 		public:
-			BitmapTextToggleValue(const wxString& text = {},
+			BitmapTextToggleValue(const String& text = {},
 								  const wxBitmap& bitmap = wxNullBitmap,
 								  ToggleState state = ToggleState::None,
 								  ToggleType type = ToggleType::None
@@ -31,7 +31,7 @@ namespace KxFramework::UI::DataView
 			{
 				SetChecked(checked);
 			}
-			BitmapTextToggleValue(bool checked, const wxString& text, const wxBitmap& bitmap = wxNullBitmap, ToggleType type = ToggleType::None)
+			BitmapTextToggleValue(bool checked, const String& text, const wxBitmap& bitmap = wxNullBitmap, ToggleType type = ToggleType::None)
 				:BitmapTextToggleValue(text, bitmap, ToggleState::None, type)
 			{
 				SetChecked(checked);
@@ -70,13 +70,13 @@ namespace KxFramework::UI::DataView
 			Size GetCellSize() const override;
 
 		public:
-			BitmapTextToggleRenderer(int alignment = wxALIGN_INVALID)
+			BitmapTextToggleRenderer(FlagSet<Alignment> alignment = Alignment::Invalid)
 				:Renderer(alignment), ToggleRendererBase(m_Value)
 			{
 			}
 			
 		public:
-			wxString GetTextValue(const wxAny& value) const override
+			String GetTextValue(const wxAny& value) const override
 			{
 				return FromAnyUsing<decltype(m_Value)>(value).GetText();
 			}

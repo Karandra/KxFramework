@@ -118,13 +118,13 @@ namespace KxFramework::UI::DataView
 			Size GetCellSize() const override;
 
 		public:
-			ToggleRenderer(int alignment = wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL)
+			ToggleRenderer(FlagSet<Alignment> alignment = Alignment::CenterVertical|Alignment::CenterHorizontal)
 				:Renderer(alignment), ToggleRendererBase(m_Value)
 			{
 			}
 			
 		public:
-			wxString GetTextValue(const wxAny& value) const override
+			String GetTextValue(const wxAny& value) const override
 			{
 				return {};
 			}

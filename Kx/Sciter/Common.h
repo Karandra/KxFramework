@@ -19,8 +19,8 @@ namespace KxFramework::Sciter
 {
 	String SizeUnitToString(SizeUnit unit);
 	
-	Alignment MapAlignment(wxAlignment alignment);
-	wxAlignment MapAlignment(Alignment alignment);
+	CornerAlignment MapCornerAlignment(FlagSet<Alignment> alignment);
+	FlagSet<Alignment> MapCornerAlignment(CornerAlignment alignment);
 
 	bool SetMasterCSS(const String& css);
 	bool AppendMasterCSS(const String& css);

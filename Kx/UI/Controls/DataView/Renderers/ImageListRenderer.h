@@ -9,7 +9,7 @@ namespace KxFramework::UI::DataView
 	{
 		public:
 			ImageListValue() = default;
-			ImageListValue(const wxString& text)
+			ImageListValue(const String& text)
 				:TextValue(text)
 			{
 			}
@@ -86,13 +86,13 @@ namespace KxFramework::UI::DataView
 			}
 
 		public:
-			ImageListRenderer(int alignment = wxALIGN_INVALID)
+			ImageListRenderer(FlagSet<Alignment> alignment = Alignment::Invalid)
 				:BitmapListRendererBase(m_Value, m_Value, alignment)
 			{
 			}
 			
 		public:
-			wxString GetTextValue(const wxAny& value) const override
+			String GetTextValue(const wxAny& value) const override
 			{
 				return FromAnyUsing<decltype(m_Value)>(value).GetText();
 			}

@@ -96,12 +96,4 @@ namespace KxFramework::UI::DataView
 		}
 		return Size(0, 0);
 	}
-
-	HTMLRenderer::HTMLRenderer(int alignment)
-		:Renderer(alignment)
-	{
-	}
-	HTMLRenderer::~HTMLRenderer()
-	{
-	}
 }

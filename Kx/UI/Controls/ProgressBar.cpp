@@ -21,7 +21,7 @@ namespace KxFramework::UI
 				StringFormatter::Formatter format(std::move(label));
 				format(((double)DoGetValue() / (double)DoGetRange()) * 100.0, 2);
 
-				dc.DrawLabel(format.ToString(), rect, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTRE_VERTICAL);
+				dc.DrawLabel(format.ToString(), rect, ToInt(Alignment::Center));
 			}
 		}
 	}

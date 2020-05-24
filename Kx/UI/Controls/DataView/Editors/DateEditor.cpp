@@ -11,10 +11,10 @@ namespace
 		using namespace KxFramework::UI::DataView;
 
 		int style = 0;
-		Utility::AddFlagRef(style, wxDP_SPIN, value.IsOptionEnabled(DateEditorOption::Spin));
-		Utility::AddFlagRef(style, wxDP_DROPDOWN, value.IsOptionEnabled(DateEditorOption::Dropdown));
-		Utility::AddFlagRef(style, wxDP_ALLOWNONE, value.IsOptionEnabled(DateEditorOption::AllowNone));
-		Utility::AddFlagRef(style, wxDP_SHOWCENTURY, value.IsOptionEnabled(DateEditorOption::ShowCentury));
+		Utility::AddFlagRef(style, wxDP_SPIN, value.ContainsOption(DateEditorOption::Spin));
+		Utility::AddFlagRef(style, wxDP_DROPDOWN, value.ContainsOption(DateEditorOption::Dropdown));
+		Utility::AddFlagRef(style, wxDP_ALLOWNONE, value.ContainsOption(DateEditorOption::AllowNone));
+		Utility::AddFlagRef(style, wxDP_SHOWCENTURY, value.ContainsOption(DateEditorOption::ShowCentury));
 
 		return style;
 	}

@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "Kx/General/OptionSet.h"
+#include "Kx/General/WithOptions.h"
 
 namespace KxFramework::UI::DataView
 {
@@ -49,7 +49,7 @@ namespace KxFramework
 
 namespace KxFramework::UI::DataView::CellAttributes
 {
-	class Options final: public OptionSet<CellOption, CellOption::Default>
+	class Options final: public WithOptions<CellOption, CellOption::Default>
 	{
 		friend class Renderer;
 		friend class RenderEngine;
@@ -57,7 +57,7 @@ namespace KxFramework::UI::DataView::CellAttributes
 		private:
 			Color m_ForegroundColor;
 			Color m_BackgroundColor;
-			wxAlignment m_Alignment = wxALIGN_INVALID;
+			FlagSet<Alignment> m_Alignment = Alignment::Invalid;
 
 		private:
 			bool NeedDCAlteration() const
@@ -72,7 +72,7 @@ namespace KxFramework::UI::DataView::CellAttributes
 		public:
 			bool IsDefault() const
 			{
-				return !HasColors() && !HasAlignment() && RawGetValue() == CellOption::Default;
+				return !HasColors() && !HasAlignment() && GetOptionFlags() == CellOption::Default;
 			}
 
 			// Colors
@@ -120,26 +120,22 @@ namespace KxFramework::UI::DataView::CellAttributes
 			// Alignment
 			bool HasAlignment() const
 			{
-				return m_Alignment != wxALIGN_INVALID;
+				return m_Alignment != Alignment::Invalid;
 			}
-			wxAlignment GetAlignment() const
+			FlagSet<Alignment> GetAlignment() const
 			{
 				return m_Alignment;
 			}
-			void SetAlignment(wxAlignment alignment)
+			void SetAlignment(FlagSet<Alignment> alignment)
 			{
 				m_Alignment = alignment;
-			}
-			void SetAlignment(int alignment)
-			{
-				m_Alignment = static_cast<wxAlignment>(alignment);
 			}
 	};
 }
 
 namespace KxFramework::UI::DataView::CellAttributes
 {
-	class FontOptions final: public OptionSet<CellFontOption, CellFontOption::Default>
+	class FontOptions final: public WithOptions<CellFontOption, CellFontOption::Default>
 	{
 		friend class Renderer;
 		friend class RenderEngine;
@@ -151,7 +147,7 @@ namespace KxFramework::UI::DataView::CellAttributes
 		private:
 			bool NeedDCAlteration() const
 			{
-				return HasFontFace() || HasFontSize() || RawGetValue() != CellFontOption::Default;
+				return HasFontFace() || HasFontSize() || GetOptionFlags() != CellFontOption::Default;
 			}
 
 		public:
@@ -190,7 +186,7 @@ namespace KxFramework::UI::DataView::CellAttributes
 
 namespace KxFramework::UI::DataView::CellAttributes
 {
-	class BGOptions final: public OptionSet<CellBGOption, CellBGOption::Default>
+	class BGOptions final: public WithOptions<CellBGOption, CellBGOption::Default>
 	{
 		friend class Renderer;
 		friend class RenderEngine;
@@ -198,7 +194,7 @@ namespace KxFramework::UI::DataView::CellAttributes
 		private:
 			bool NeedDCAlteration() const
 			{
-				return RawGetValue() != CellBGOption::Default;
+				return GetOptionFlags() != CellBGOption::Default;
 			}
 
 		public:

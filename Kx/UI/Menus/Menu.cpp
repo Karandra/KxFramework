@@ -6,9 +6,8 @@
 
 namespace
 {
-	using KxFramework::UI::Menu;
-	using KxFramework::UI::MenuItem;
-	using KxFramework::UI::MenuEvent;
+	using namespace KxFramework;
+	using namespace KxFramework::UI;
 
 	Menu* g_CurrentMenu = nullptr;
 
@@ -48,10 +47,8 @@ namespace
 		}
 	}
 
-	KxFramework::Point TranslateCoordinates(wxWindow* window, const KxFramework::Point& showPos)
+	Point TranslateCoordinates(wxWindow* window, const Point& showPos)
 	{
-		using namespace KxFramework;
-
 		Point pos = showPos;
 		if (!pos.IsFullySpecified())
 		{
@@ -63,10 +60,8 @@ namespace
 		}
 		return pos;
 	}
-	KxFramework::Point TranslateCoordinatesAsPopup(wxWindow* window, int offset, uint32_t alignment)
+	Point TranslateCoordinatesAsPopup(wxWindow* window, int offset, uint32_t alignment)
 	{
-		using namespace KxFramework;
-
 		offset = std::abs(offset);
 		Size size = window->GetSize();
 		Point pos(0, size.GetHeight() + offset); // TPM_LEFTALIGN|TPM_TOPALIGN == 0
@@ -93,7 +88,7 @@ namespace
 		}
 		return nullptr;
 	}
-	wxWindowID GetSelectedItemID(KxFramework::UI::Menu* menu, uint16_t winID)
+	wxWindowID GetSelectedItemID(Menu* menu, uint16_t winID)
 	{
 		wxWindowID menuWxID = Menu::WinMenuRetToWx(winID);
 		MenuItem* item = dynamic_cast<MenuItem*>(menu->wxMenu::FindItem(menuWxID));
@@ -111,14 +106,14 @@ namespace
 			menu->QueueEvent(event.Clone());
 		}
 	}
-	void SendOnShowEvent(Menu* menu, const KxFramework::Point& pos)
+	void SendOnShowEvent(Menu* menu, const Point& pos)
 	{
 		MenuEvent event(MenuEvent::EvtOpen, menu);
 		event.SetPosition(pos);
 		event.SetPopup(true);
 		menu->ProcessEvent(event);
 	}
-	void SendOnCloseEvent(Menu* menu, const KxFramework::Point& pos)
+	void SendOnCloseEvent(Menu* menu, const Point& pos)
 	{
 		MenuEvent event(MenuEvent::EvtClose, menu);
 		event.SetPosition(pos);
@@ -134,17 +129,15 @@ namespace
 		return nullptr;
 	}
 
-	constexpr uint32_t MapMenuAlignment(wxAlignment alignment) noexcept
+	constexpr uint32_t MapMenuAlignment(FlagSet<Alignment> alignment) noexcept
 	{
-		using namespace KxFramework;
-
 		uint32_t nativeAlignment = 0;
-		Utility::AddFlagRef(nativeAlignment, TPM_LEFTALIGN, alignment & wxAlignment::wxALIGN_LEFT);
-		Utility::AddFlagRef(nativeAlignment, TPM_RIGHTALIGN, alignment & wxAlignment::wxALIGN_RIGHT);
-		Utility::AddFlagRef(nativeAlignment, TPM_CENTERALIGN, alignment & wxAlignment::wxALIGN_CENTER_HORIZONTAL);
-		Utility::AddFlagRef(nativeAlignment, TPM_TOPALIGN, alignment & wxAlignment::wxALIGN_TOP);
-		Utility::AddFlagRef(nativeAlignment, TPM_BOTTOMALIGN, alignment & wxAlignment::wxALIGN_BOTTOM);
-		Utility::AddFlagRef(nativeAlignment, TPM_VCENTERALIGN, alignment & wxAlignment::wxALIGN_CENTER_VERTICAL);
+		Utility::AddFlagRef(nativeAlignment, TPM_LEFTALIGN, alignment & Alignment::Left);
+		Utility::AddFlagRef(nativeAlignment, TPM_RIGHTALIGN, alignment & Alignment::Right);
+		Utility::AddFlagRef(nativeAlignment, TPM_CENTERALIGN, alignment & Alignment::CenterHorizontal);
+		Utility::AddFlagRef(nativeAlignment, TPM_TOPALIGN, alignment & Alignment::Top);
+		Utility::AddFlagRef(nativeAlignment, TPM_BOTTOMALIGN, alignment & Alignment::Bottom);
+		Utility::AddFlagRef(nativeAlignment, TPM_VCENTERALIGN, alignment & Alignment::CenterVertical);
 
 		return nativeAlignment;
 	}
@@ -235,7 +228,7 @@ namespace KxFramework::UI
 		event.Skip(false);
 	}
 
-	uint16_t Menu::DoShowMenu(wxWindow* window, const Point& showPos, wxAlignment alignment, bool async)
+	uint16_t Menu::DoShowMenu(wxWindow* window, const Point& showPos, FlagSet<Alignment> alignment, bool async)
 	{
 		Point pos = TranslateCoordinates(window, showPos);
 		HWND hWnd = GetParentWindowHandle(window);
@@ -314,7 +307,7 @@ namespace KxFramework::UI
 		Bind(wxEVT_MENU_HIGHLIGHT, &Menu::OnHoverItem, this);
 	}
 
-	wxWindowID Menu::Show(wxWindow* window, const Point& pos, wxAlignment alignment)
+	wxWindowID Menu::Show(wxWindow* window, const Point& pos, FlagSet<Alignment> alignment)
 	{
 		uint16_t menuWinID = DoShowMenu(window, pos, alignment, false);
 		wxWindowID id = GetSelectedItemID(this, menuWinID);
@@ -325,7 +318,7 @@ namespace KxFramework::UI
 		}
 		return id;
 	}
-	wxWindowID Menu::ShowAsPopup(wxWindow* window, int offset, wxAlignment alignment)
+	wxWindowID Menu::ShowAsPopup(wxWindow* window, int offset, FlagSet<Alignment> alignment)
 	{
 		Point pos = TranslateCoordinatesAsPopup(window, offset, alignment);
 		return Show(window, pos, alignment);

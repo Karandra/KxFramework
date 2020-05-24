@@ -20,19 +20,19 @@ namespace KxFramework::UI::DataView
 			}
 
 		public:
-			NullRenderer(int = wxALIGN_INVALID)
-				:Renderer(wxALIGN_INVALID)
+			NullRenderer(FlagSet<Alignment> = Alignment::Invalid)
+				:Renderer(Alignment::Invalid)
 			{
 			}
 			
 		public:
-			wxAlignment GetEffectiveAlignment() const override
+			FlagSet<Alignment> GetEffectiveAlignment() const override
 			{
-				return wxALIGN_INVALID;
+				return Alignment::Invalid;
 			}
 			
 		public:
-			wxString GetTextValue(const wxAny& value) const override
+			String GetTextValue(const wxAny& value) const override
 			{
 				return {};
 			}

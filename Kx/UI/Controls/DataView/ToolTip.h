@@ -29,14 +29,13 @@ namespace KxFramework::UI::DataView
 			}
 
 		private:
-			wxString m_Caption;
-			wxString m_Message;
+			String m_Caption;
+			String m_Message;
 			std::variant<wxBitmap, StdIcon> m_Icon;
 			const Column* m_AnchorColumn = nullptr;
 
 			const Column* m_ClipTestColumn = nullptr;
 			bool m_DisplayOnlyIfClipped = false;
-
 			bool m_AutoHide = true;
 
 		private:
@@ -45,20 +44,20 @@ namespace KxFramework::UI::DataView
 
 			Point GetPopupPosition(const Node& node, const Column& column) const;
 			Point AdjustPopupPosition(const Node& node, const Point& pos) const;
-			wxString StripMarkupIfNeeded(const Node& node, const Column& column, const wxString& text) const;
+			String StripMarkupIfNeeded(const Node& node, const Column& column, const String& text) const;
 
 			bool Show(const Node& node, const Column& column);
 
 		public:
-			ToolTip(const wxString& message = {}, StdIcon icon = StdIcon::None)
+			ToolTip(const String& message = {}, StdIcon icon = StdIcon::None)
 				:m_Message(message), m_Icon(icon)
 			{
 			}
-			ToolTip(const wxString& caption, const wxString& message, StdIcon icon = StdIcon::None)
+			ToolTip(const String& caption, const String& message, StdIcon icon = StdIcon::None)
 				:m_Caption(caption), m_Message(message), m_Icon(icon)
 			{
 			}
-			ToolTip(const wxString& caption, const wxString& message, const wxBitmap& bitmap)
+			ToolTip(const String& caption, const String& message, const wxBitmap& bitmap)
 				:m_Caption(caption), m_Message(message), m_Icon(bitmap)
 			{
 			}
@@ -66,20 +65,20 @@ namespace KxFramework::UI::DataView
 		public:
 			bool IsOK() const;
 			
-			wxString GetCaption() const
+			String GetCaption() const
 			{
 				return m_Caption;
 			}
-			void SetCaption(const wxString& value)
+			void SetCaption(const String& value)
 			{
 				m_Caption = value;
 			}
 
-			wxString GetMessage() const
+			String GetMessage() const
 			{
 				return m_Message;
 			}
-			void SetMessage(const wxString& value)
+			void SetMessage(const String& value)
 			{
 				m_Message = value;
 			}

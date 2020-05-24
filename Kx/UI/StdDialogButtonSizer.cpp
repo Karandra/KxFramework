@@ -117,11 +117,11 @@ namespace KxFramework::UI
 				m_HasFirstPrepend = true;
 				InsertSpacer(0, button->FromDIP(Size(6, wxDefaultCoord).GetWidth()));
 			}
-			Insert(1, button, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT, border);
+			Insert(1, button, 0, CombineFlags<int>(Alignment::Center, Direction::Left|Direction::Right), border);
 		}
 		else
 		{
-			Add(button, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT, border);
+			Add(button, 0, CombineFlags<int>(Alignment::Center, Direction::Left|Direction::Right), border);
 		}
 	}
 	void StdDialogButtonSizer::Realize()
@@ -134,7 +134,7 @@ namespace KxFramework::UI
 		{
 			if (button)
 			{
-				Add(button, 0, wxALIGN_CENTER|wxLEFT|wxRIGHT, button->ConvertDialogToPixels(Size(2, 0)).GetWidth());
+				Add(button, 0, CombineFlags<int>(Alignment::Center, Direction::Left|Direction::Right), button->ConvertDialogToPixels(Size(2, 0)).GetWidth());
 			}
 		};
 		AddStdButton(m_ButtonAffirmative);
@@ -143,7 +143,7 @@ namespace KxFramework::UI
 		AddStdButton(m_ButtonApply);
 		AddStdButton(m_ButtonHelp);
 
-		/* Custom layout */
+		// Custom layout
 		auto SetLabel = [this](wxAnyButton* button)
 		{
 			if (button)
@@ -159,7 +159,7 @@ namespace KxFramework::UI
 
 		for (wxAnyButton* button: m_NonStandardButtons)
 		{
-			Add(button, 0, wxALIGN_CENTER|wxRIGHT, GetSpacing(button));
+			Add(button, 0, CombineFlags<int>(Alignment::Center, Direction::Right), GetSpacing(button));
 		}
 	}
 }

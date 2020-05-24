@@ -9,7 +9,7 @@ namespace KxFramework::UI
 	class KX_API Menu: public wxMenu
 	{
 		public:
-			static constexpr wxAlignment DefaultAlignment = static_cast<wxAlignment>(wxALIGN_LEFT|wxALIGN_TOP);
+			static constexpr FlagSet<Alignment> DefaultAlignment = Alignment::Left|Alignment::Top;
 
 		public:
 			static bool EndMenu();
@@ -24,7 +24,7 @@ namespace KxFramework::UI
 			void OnHoverItem(wxMenuEvent& event);
 
 		protected:
-			virtual uint16_t DoShowMenu(wxWindow* window, const Point& pos, wxAlignment alignment, bool async);
+			virtual uint16_t DoShowMenu(wxWindow* window, const Point& pos, FlagSet<Alignment> alignment, bool async);
 			void ProcessItemSelection(int menuWxID, wxCommandEvent* event = nullptr);
 
 		public:
@@ -55,8 +55,8 @@ namespace KxFramework::UI
 			}
 
 		public:
-			wxWindowID Show(wxWindow* window = nullptr, const Point& pos = Point::UnspecifiedPosition(), wxAlignment alignment = DefaultAlignment);
-			wxWindowID ShowAsPopup(wxWindow* window, int offset = 1, wxAlignment alignment = DefaultAlignment);
+			wxWindowID Show(wxWindow* window = nullptr, const Point& pos = Point::UnspecifiedPosition(), FlagSet<Alignment> alignment = DefaultAlignment);
+			wxWindowID ShowAsPopup(wxWindow* window, int offset = 1, FlagSet<Alignment> alignment = DefaultAlignment);
 
 		public:
 			virtual MenuItem* Add(MenuItem* item);

@@ -8,19 +8,19 @@ namespace KxFramework::UI::DataView
 		if (!m_FontOptions.IsDefault())
 		{
 			wxFont font(baseFont);
-			if (m_FontOptions.IsEnabled(CellFontOption::Bold))
+			if (m_FontOptions.ContainsOption(CellFontOption::Bold))
 			{
 				font.MakeBold();
 			}
-			if (m_FontOptions.IsEnabled(CellFontOption::Italic))
+			if (m_FontOptions.ContainsOption(CellFontOption::Italic))
 			{
 				font.MakeItalic();
 			}
-			if (m_FontOptions.IsEnabled(CellFontOption::Underlined))
+			if (m_FontOptions.ContainsOption(CellFontOption::Underlined))
 			{
 				font.MakeUnderlined();
 			}
-			if (m_FontOptions.IsEnabled(CellFontOption::Strikethrough))
+			if (m_FontOptions.ContainsOption(CellFontOption::Strikethrough))
 			{
 				font.MakeStrikethrough();
 			}

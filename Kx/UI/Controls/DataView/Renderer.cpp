@@ -49,7 +49,7 @@ namespace KxFramework::UI::DataView
 		};
 
 		// Special backgrounds
-		if (cellBGOptions.IsEnabled(CellBGOption::Header))
+		if (cellBGOptions.ContainsOption(CellBGOption::Header))
 		{
 			Size offsetSize = GetView()->FromDIP(wxSize(0, 1));
 
@@ -71,14 +71,14 @@ namespace KxFramework::UI::DataView
 
 			dc.DrawBitmap(canvas, cellRect.GetPosition());
 		}
-		else if (cellBGOptions.IsEnabled(CellBGOption::Button))
+		else if (cellBGOptions.ContainsOption(CellBGOption::Button))
 		{
 			Rect buttonRect = cellRect.Clone().Inflate(1, 1);
 			wxRendererNative::Get().DrawPushButton(GetView(), dc, buttonRect, GetRenderEngine().GetControlFlags(cellState));
 		}
-		else if (cellBGOptions.IsEnabled(CellBGOption::ComboBox))
+		else if (cellBGOptions.ContainsOption(CellBGOption::ComboBox))
 		{
-			if (cellOptions.IsEnabled(CellOption::Editable))
+			if (cellOptions.ContainsOption(CellOption::Editable))
 			{
 				wxRendererNative::Get().DrawComboBox(GetView(), dc, cellRect, GetRenderEngine().GetControlFlags(cellState));
 			}
@@ -116,13 +116,13 @@ namespace KxFramework::UI::DataView
 		if (m_Attributes.Options().HasForegroundColor())
 		{
 			Color color = m_Attributes.Options().GetForegroundColor();
-			if (!m_Attributes.Options().IsEnabled(CellOption::Enabled))
+			if (!m_Attributes.Options().ContainsOption(CellOption::Enabled))
 			{
 				color.MakeDisabled();
 			}
 			changeTextColor.Set(color);
 		}
-		else if (!m_Attributes.Options().IsEnabled(CellOption::Enabled))
+		else if (!m_Attributes.Options().ContainsOption(CellOption::Enabled))
 		{
 			changeTextColor.Set(GetView()->GetForegroundColour().MakeDisabled());
 		}
@@ -145,15 +145,15 @@ namespace KxFramework::UI::DataView
 		}
 
 		// Take alignment into account only if there is enough space, otherwise show as much contents as possible.
-		const wxAlignment alignment = m_Attributes.Options().HasAlignment() ? m_Attributes.Options().GetAlignment() : GetEffectiveAlignment();
+		const auto alignment = m_Attributes.Options().HasAlignment() ? m_Attributes.Options().GetAlignment() : GetEffectiveAlignment();
 
 		if (cellSize.GetWidth() >= 0 && cellSize.GetWidth() < cellRect.GetWidth())
 		{
-			if (alignment & wxALIGN_CENTER_HORIZONTAL)
+			if (alignment & Alignment::CenterHorizontal)
 			{
 				adjustedCellRect.X() += renderEngine.CalcCenter(cellRect.GetWidth(), cellSize.GetWidth());
 			}
-			else if (alignment & wxALIGN_RIGHT)
+			else if (alignment & Alignment::Right)
 			{
 				adjustedCellRect.X() += cellRect.GetWidth() - cellSize.GetWidth();
 			}
@@ -161,11 +161,11 @@ namespace KxFramework::UI::DataView
 		}
 		if (cellSize.GetHeight() >= 0 && cellSize.GetHeight() < cellRect.GetHeight())
 		{
-			if (alignment & wxALIGN_CENTER_VERTICAL)
+			if (alignment & Alignment::CenterVertical)
 			{
 				adjustedCellRect.Y() += renderEngine.CalcCenter(cellRect.GetHeight(), cellSize.GetHeight());
 			}
-			else if (alignment & wxALIGN_BOTTOM)
+			else if (alignment & Alignment::Bottom)
 			{
 				adjustedCellRect.Y() += cellRect.GetHeight() - cellSize.GetHeight();
 			}
@@ -173,7 +173,7 @@ namespace KxFramework::UI::DataView
 		}
 
 		// Draw highlighting selection
-		if (m_Attributes.Options().IsEnabled(CellOption::HighlightItem) && !adjustedCellRect.IsEmpty())
+		if (m_Attributes.Options().ContainsOption(CellOption::HighlightItem) && !adjustedCellRect.IsEmpty())
 		{
 			MainWindow* mainWindow = GetMainWindow();
 
@@ -216,19 +216,19 @@ namespace KxFramework::UI::DataView
 		return m_Column ? m_Column->GetView() : nullptr;
 	}
 
-	wxAlignment Renderer::GetEffectiveAlignment() const
+	FlagSet<Alignment> Renderer::GetEffectiveAlignment() const
 	{
-		if (m_Alignment == wxALIGN_INVALID)
+		if (m_Alignment == Alignment::Invalid)
 		{
 			// If we don't have an explicit alignment ourselves, use that of the
 			// column in horizontal direction and default vertical alignment
 
-			wxAlignment columnAlignment = m_Column->GetTitleAlignment();
-			if (columnAlignment == wxALIGN_INVALID)
+			FlagSet<Alignment> columnAlignment = m_Column->GetTitleAlignment();
+			if (columnAlignment == Alignment::Invalid)
 			{
-				columnAlignment = wxALIGN_LEFT;
+				columnAlignment = Alignment::Left;
 			}
-			return static_cast<wxAlignment>(columnAlignment|wxALIGN_CENTER_VERTICAL);
+			return columnAlignment|Alignment::CenterVertical;
 		}
 		return m_Alignment;
 	}

@@ -259,24 +259,24 @@ namespace KxFramework::UI::DataView
 		}
 
 		// Alignment
-		if (column.GetTitleAlignment() != wxALIGN_NOT)
+		if (column.GetTitleAlignment() != Alignment::None)
 		{
 			item.mask |= HDF_LEFT;
-			switch (column.GetTitleAlignment())
+			switch (*column.GetTitleAlignment())
 			{
-				case wxALIGN_LEFT:
+				case Alignment::Left:
 				{
 					item.fmt |= HDF_LEFT;
 					break;
 				}
-				case wxALIGN_CENTER:
-				case wxALIGN_CENTER_VERTICAL:
-				case wxALIGN_CENTER_HORIZONTAL:
+				case Alignment::Center:
+				case Alignment::CenterVertical:
+				case Alignment::CenterHorizontal:
 				{
 					item.fmt |= HDF_CENTER;
 					break;
 				}
-				case wxALIGN_RIGHT:
+				case Alignment::Right:
 				{
 					item.fmt |= HDF_RIGHT;
 					break;

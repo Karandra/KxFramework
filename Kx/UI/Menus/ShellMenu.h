@@ -28,7 +28,7 @@ namespace KxFramework::UI
 			String GetHelpString(uint16_t menuWinID) const;
 
 		protected:
-			uint16_t DoShowMenu(wxWindow* window, const Point& pos, wxAlignment alignment, bool async) override;
+			uint16_t DoShowMenu(wxWindow* window, const Point& pos, FlagSet<Alignment> alignment, bool async) override;
 
 		public:
 			ShellMenu();

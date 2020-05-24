@@ -1,6 +1,5 @@
 #pragma once
 #include "Common.h"
-#include "Kx/General/OptionSet.h"
 
 namespace KxFramework::UI::DataView
 {
@@ -21,35 +20,35 @@ namespace KxFramework::UI::DataView
 			};
 
 		private:
-			OptionSet<Value, Value::None> m_Value;
+			FlagSet<Value> m_Value;
 
 		public:
 			bool IsSelected() const
 			{
-				return m_Value.IsEnabled(Value::Selected);
+				return m_Value.Contains(Value::Selected);
 			}
 			bool IsHotTracked() const
 			{
-				return m_Value.IsEnabled(Value::HotTracked);
+				return m_Value.Contains(Value::HotTracked);
 			}
 			bool IsDropTarget() const
 			{
-				return m_Value.IsEnabled(Value::DropTarget);
+				return m_Value.Contains(Value::DropTarget);
 			}
 
 			CellState& SetSelected()
 			{
-				m_Value.Enable(Value::Selected);
+				m_Value.Add(Value::Selected);
 				return *this;
 			}
 			CellState& SetHotTracked()
 			{
-				m_Value.Enable(Value::HotTracked);
+				m_Value.Add(Value::HotTracked);
 				return *this;
 			}
 			CellState& SetDropTarget()
 			{
-				m_Value.Enable(Value::DropTarget);
+				m_Value.Add(Value::DropTarget);
 				return *this;
 			}
 	

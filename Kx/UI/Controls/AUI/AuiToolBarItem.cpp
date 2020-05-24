@@ -6,19 +6,19 @@
 
 namespace KxFramework::UI
 {
-	Point AuiToolBarItem::DoGetDropdownMenuPosition(wxAlignment* alignment, bool leftAlign) const
+	Point AuiToolBarItem::DoGetDropdownMenuPosition(FlagSet<Alignment>* alignment, bool leftAlign) const
 	{
 		Rect rect = GetRect();
 		if (!rect.IsEmpty())
 		{
 			if (leftAlign)
 			{
-				Utility::SetIfNotNull(alignment, static_cast<wxAlignment>(wxALIGN_LEFT|wxALIGN_TOP));
+				Utility::SetIfNotNull(alignment, Alignment::Left|Alignment::Top);
 				return rect.GetLeftBottom() + Point(0, 2);
 			}
 			else
 			{
-				Utility::SetIfNotNull(alignment, static_cast<wxAlignment>(wxALIGN_RIGHT|wxALIGN_TOP));
+				Utility::SetIfNotNull(alignment, Alignment::Right|Alignment::Top);
 				return rect.GetRightBottom() + Point(0, 2);
 			}
 		}
@@ -26,7 +26,7 @@ namespace KxFramework::UI
 	}
 	wxWindowID AuiToolBarItem::DoShowDropdownMenu(bool leftAlign)
 	{
-		wxAlignment alignment = Menu::DefaultAlignment;
+		FlagSet<Alignment> alignment = Menu::DefaultAlignment;
 		Point pos = DoGetDropdownMenuPosition(&alignment, leftAlign);
 		wxWindowID ret = GetDropdownMenu()->Show(m_ToolBar, pos, alignment);
 
@@ -120,11 +120,11 @@ namespace KxFramework::UI
 		m_ToolBar->wxAuiToolBar::SetToolProportion(GetID(), proportion);
 	}
 
-	wxAlignment AuiToolBarItem::GetAlignment() const
+	FlagSet<Alignment> AuiToolBarItem::GetAlignment() const
 	{
-		return static_cast<wxAlignment>(m_Item->GetAlignment());
+		return FlagSet<Alignment>().FromInt(m_Item->GetAlignment());
 	}
-	void AuiToolBarItem::SetAlignment(wxAlignment alignment)
+	void AuiToolBarItem::SetAlignment(FlagSet<Alignment> alignment)
 	{
 		m_Item->SetAlignment(alignment);
 	}

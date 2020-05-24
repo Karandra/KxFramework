@@ -109,13 +109,13 @@ namespace KxFramework::UI::DataView
 			Size GetCellSize() const override;
 
 		public:
-			BitmapRenderer(int alignment = wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL)
+			BitmapRenderer(FlagSet<Alignment> alignment = Alignment::CenterHorizontal|Alignment::CenterVertical)
 				:Renderer(alignment)
 			{
 			}
 			
 		public:
-			wxString GetTextValue(const wxAny& value) const override
+			String GetTextValue(const wxAny& value) const override
 			{
 				return {};
 			}

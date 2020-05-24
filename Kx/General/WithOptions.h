@@ -1,58 +1,76 @@
 #pragma once
 #include "Common.h"
-#include "Kx/Utility/Common.h"
+#include "FlagSet.h"
 
 namespace KxFramework
 {
-	template<class T, T t_InitialValue = static_cast<T>(0)>
+	template<class TEnum, TEnum initialValue = static_cast<TEnum>(0)>
 	class WithOptions
 	{
-		public:
-			using TEnum = T;
-			using TInt = std::underlying_type_t<TEnum>;
-
 		private:
-			TEnum m_Value = t_InitialValue;
+			FlagSet<TEnum> m_Flags = initialValue;
 
 		protected:
 			constexpr WithOptions() noexcept = default;
-			constexpr WithOptions(TEnum value) noexcept
-				:m_Value(value)
+			constexpr WithOptions(FlagSet<TEnum> flags) noexcept
+				:m_Flags(flags)
 			{
 			}
-			~WithOptions() noexcept = default;
 
 		public:
-			constexpr TEnum RawGetOptions() const noexcept
+			constexpr FlagSet<TEnum> GetOptionFlags() const noexcept
 			{
-				return m_Value;
+				return m_Flags;
 			}
-			constexpr void RawSetOptions(TEnum options) noexcept
+			constexpr WithOptions& SetOptionFlags(FlagSet<TEnum> option) noexcept
 			{
-				m_Value = options;
-			}
-			constexpr void RawSetOptions(TInt options) noexcept
-			{
-				m_Value = static_cast<TEnum>(options);
+				m_Flags = option;
+				return *this;
 			}
 
-			constexpr bool IsOptionEnabled(TEnum option) const noexcept
+			constexpr bool ContainsOption(FlagSet<TEnum> option) const noexcept
 			{
-				return Utility::HasFlag(m_Value, option);
+				return m_Flags.Contains(option);
 			}
-			constexpr void SetOptionEnabled(TEnum option, bool enable = true) noexcept
+			constexpr WithOptions& AddOption(FlagSet<TEnum> option) noexcept
 			{
-				Utility::ModFlagRef(m_Value, option, enable);
+				m_Flags.Add(option);
+				return *this;
+			}
+			constexpr WithOptions& AddOption(FlagSet<TEnum> option, bool condition) noexcept
+			{
+				m_Flags.Add(option, condition);
+				return *this;
+			}
+			constexpr WithOptions& RemoveOption(FlagSet<TEnum> option) noexcept
+			{
+				m_Flags.Remove(option);
+				return *this;
+			}
+			constexpr WithOptions& RemoveOption(FlagSet<TEnum> option, bool condition) noexcept
+			{
+				m_Flags.Remove(option, condition);
+				return *this;
+			}
+			constexpr WithOptions& ToggleOption(FlagSet<TEnum> option) noexcept
+			{
+				m_Flags.Toggle(option);
+				return *this;
+			}
+			constexpr WithOptions& ModOption(FlagSet<TEnum> option, bool enable) noexcept
+			{
+				m_Flags.Mod(option, enable);
+				return *this;
 			}
 
 		public:
 			constexpr bool operator==(const WithOptions& other) const noexcept
 			{
-				return m_Value == other.m_Value;
+				return m_Flags == other.m_Flags;
 			}
 			constexpr bool operator!=(const WithOptions& other) const noexcept
 			{
-				return m_Value != other.m_Value;
+				return m_Flags != other.m_Flags;
 			}
 	};
 }

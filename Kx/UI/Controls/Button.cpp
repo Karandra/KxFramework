@@ -94,11 +94,11 @@ namespace KxFramework::UI
 			{
 				bitmap = bitmap.ConvertToDisabled();
 			}
-			dc.DrawLabel(GetLabelText(), bitmap, contentRect, wxALIGN_CENTER);
+			dc.DrawLabel(GetLabelText(), bitmap, contentRect, ToInt(Alignment::Center));
 		}
 		else
 		{
-			dc.DrawLabel(GetLabelText(), contentRect, wxALIGN_CENTER);
+			dc.DrawLabel(GetLabelText(), contentRect, ToInt(Alignment::Center));
 		}
 
 		// Draw second part of the button

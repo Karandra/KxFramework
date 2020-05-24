@@ -4,7 +4,6 @@
 #include "Node.h"
 #include "Column.h"
 #include "ColumnID.h"
-#include "Kx/General/OptionSet.h"
 #include "Kx/UI/WindowRefreshScheduler.h"
 #include <wx/systhemectrl.h>
 #include <wx/scrolwin.h>
@@ -160,7 +159,7 @@ namespace KxFramework::UI::DataView
 						const Point& pos = Point::UnspecifiedPosition(),
 						const Size& size = Size::UnspecifiedSize(),
 						FlagSet<CtrlStyle> style = CtrlStyle::Default,
-						const wxString& name = {}
+						const String& name = {}
 			);
 			bool Create(wxWindow* parent, wxWindowID id, FlagSet<CtrlStyle> style = CtrlStyle::Default)
 			{
@@ -201,21 +200,21 @@ namespace KxFramework::UI::DataView
 			Renderer& InsertColumn(size_t index, Column* column);
 
 			template<class TRenderer = void, class TEditor = void>
-			auto AppendColumn(const wxString& title, ColumnID id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::Default)
+			auto AppendColumn(const String& title, ColumnID id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::Default)
 			{
-				return InsertColumnEx<ICEAction::Append, wxString, TRenderer, TEditor>(title, id, width, style);
+				return InsertColumnEx<ICEAction::Append, String, TRenderer, TEditor>(title, id, width, style);
 			}
 
 			template<class TRenderer = void, class TEditor = void>
-			auto PrependColumn(const wxString& title, ColumnID id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::Default)
+			auto PrependColumn(const String& title, ColumnID id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::Default)
 			{
-				return InsertColumnEx<ICEAction::Prepend, wxString, TRenderer, TEditor>(title, id, width, style);
+				return InsertColumnEx<ICEAction::Prepend, String, TRenderer, TEditor>(title, id, width, style);
 			}
 
 			template<class TRenderer = void, class TEditor = void>
-			auto InsertColumn(size_t index, const wxString& title, ColumnID id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::Default)
+			auto InsertColumn(size_t index, const String& title, ColumnID id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::Default)
 			{
-				return InsertColumnEx<ICEAction::Insert, wxString, TRenderer, TEditor>(title, id, width, style, index);
+				return InsertColumnEx<ICEAction::Insert, String, TRenderer, TEditor>(title, id, width, style, index);
 			}
 
 			size_t GetColumnCount() const
@@ -364,8 +363,8 @@ namespace KxFramework::UI::DataView
 			bool CreateColumnSelectionMenu(Menu& menu);
 			Column* OnColumnSelectionMenu(Menu& menu);
 
-			wxString GetEmptyControlLabel() const;
-			void SetEmptyControlLabel(const wxString& value);
+			String GetEmptyControlLabel() const;
+			void SetEmptyControlLabel(const String& value);
 
 			// Control visuals
 			static wxVisualAttributes GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL)
@@ -397,7 +396,7 @@ namespace KxFramework::UI::DataView
 			void SetBorderColor(const Color& color, int size = 1);
 
 			wxBitmap GetBackgroundBitmap() const;
-			void SetBackgroundBitmap(const wxBitmap& bitmap, int align = wxALIGN_INVALID, bool fit = false);
+			void SetBackgroundBitmap(const wxBitmap& bitmap, FlagSet<Alignment> align = Alignment::Invalid, bool fit = false);
 
 		private:
 			// Called by header window after reorder

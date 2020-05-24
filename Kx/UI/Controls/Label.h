@@ -45,9 +45,9 @@ namespace KxFramework::UI
 			FlagSet<LabelStyle> m_Style = DefaultStyle;
 			int m_WrapLength = -1;
 			int m_State = wxCONTROL_NONE;
-			int m_MultiLineAlignStyle = wxALIGN_LEFT|wxALIGN_TOP;
-			int m_AlignStyle = wxALIGN_CENTER_VERTICAL;
 			bool m_IsMultilne = false;
+			FlagSet<Alignment> m_MultiLineAlignStyle = Alignment::Left|Alignment::Top;
+			FlagSet<Alignment> m_AlignStyle = Alignment::CenterVertical;
 		
 		private:
 			void OnPaint(wxPaintEvent& event);
@@ -143,7 +143,7 @@ namespace KxFramework::UI
 			{
 				DoSetLabel(label);
 			}
-			void SetLabelAlignment(int singleLine, int multiLine = wxALIGN_LEFT|wxALIGN_TOP)
+			void SetLabelAlignment(FlagSet<Alignment> singleLine, FlagSet<Alignment> multiLine = Alignment::Left|Alignment::Top)
 			{
 				ScheduleRefresh();
 
