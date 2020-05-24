@@ -36,3 +36,6 @@
 
 // Required by UUID/GUID functions
 #pragma comment(lib, "Rpcrt4.lib")
+
+// Required by Crypto module
+#pragma comment(lib, "Crypt32.lib")

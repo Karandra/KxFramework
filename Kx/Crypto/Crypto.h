@@ -24,6 +24,12 @@ namespace KxFramework::Crypto
 	std::optional<HashValue<384>> SHA3_384(wxInputStream& stream) noexcept;
 	std::optional<HashValue<512>> SHA3_512(wxInputStream& stream) noexcept;
 
+	std::optional<HashValue<32>> xxHash_32(const void* data, size_t size) noexcept;
+	std::optional<HashValue<64>> xxHash_64(const void* data, size_t size) noexcept;
+	std::optional<HashValue<128>> xxHash_128(const void* data, size_t size) noexcept;
+	std::optional<HashValue<32>> xxHash_32(wxInputStream& stream) noexcept;
+	std::optional<HashValue<64>> xxHash_64(wxInputStream& stream) noexcept;
+
 	bool Base64Encode(wxInputStream& inputStream, wxOutputStream& outputStream);
 	bool Base64Decode(wxInputStream& inputStream, wxOutputStream& outputStream);
 };

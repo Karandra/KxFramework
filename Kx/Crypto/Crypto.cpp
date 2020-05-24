@@ -9,15 +9,19 @@
 #include "OpenSSL/sha.h"
 #include "OpenSSL/evp.h"
 
+#define XXH_STATIC_LINKING_ONLY
+#include <xxhash.h>
+
 namespace
 {
-	constexpr size_t g_StreamBlockSize = KxFramework::BinarySize::FromKB(64).GetBytes();
+	using namespace KxFramework;
+	using namespace KxFramework::Crypto;
+
+	constexpr size_t g_StreamBlockSize = BinarySize::FromKB(64).GetBytes();
 
 	template<class THashContext, size_t hashLength, class TInitFunc, class TUpdateFunc, class TFinalFunc>
-	std::optional<KxFramework::Crypto::HashValue<hashLength * 8>> DoCalcHash1(wxInputStream& stream, TInitFunc&& initFunc, TUpdateFunc&& updateFunc, TFinalFunc&& finalFunc) noexcept
+	std::optional<HashValue<hashLength * 8>> DoCalcHash1(wxInputStream& stream, TInitFunc&& initFunc, TUpdateFunc&& updateFunc, TFinalFunc&& finalFunc) noexcept
 	{
-		using namespace KxFramework::Crypto;
-
 		THashContext hashContext;
 		if (std::invoke(initFunc, &hashContext) != 0)
 		{
@@ -44,11 +48,8 @@ namespace
 	}
 
 	template<size_t bitLength, class THashAlgorithm>
-	std::optional<KxFramework::Crypto::HashValue<bitLength>> DoCalcHash2(wxInputStream& stream, THashAlgorithm&& algorithFunc) noexcept
+	std::optional<HashValue<bitLength>> DoCalcHash2(wxInputStream& stream, THashAlgorithm&& algorithFunc) noexcept
 	{
-		using namespace KxFramework;
-		using namespace KxFramework::Crypto;
-
 		if (const EVP_MD* algorithm = std::invoke(algorithFunc))
 		{
 			EVP_MD_CTX* context = EVP_MD_CTX_create();
@@ -84,6 +85,51 @@ namespace
 				{
 					return hash;
 				}
+			}
+		}
+		return {};
+	}
+
+	template<size_t hashLength, class TInitFunc, class TFreeFunc, class TResetFunc, class TUpdateFunc, class TFinalFunc>
+	std::optional<HashValue<hashLength>> DoCalcXXHash(wxInputStream& stream,
+													  TInitFunc&& initFunc,
+													  TFreeFunc&& freeFunc,
+													  TResetFunc&& resetFunc,
+													  TUpdateFunc&& updateFunc,
+													  TFinalFunc&& finalFunc
+	) noexcept
+	{
+		if (auto* state = std::invoke(initFunc))
+		{
+			Utility::CallAtScopeExit atExit = [&]()
+			{
+				// State can be re-used, here it's simply freed
+				std::invoke(freeFunc, state);
+			};
+
+			// Initialize state with selected seed (or with 0)
+			if (std::invoke(resetFunc, state, 0) != XXH_ERROR)
+			{
+				// Feed the state with input data, any size, any number of times
+				uint8_t buffer[g_StreamBlockSize] = {};
+				while (stream.CanRead())
+				{
+					if (stream.Read(buffer, std::size(buffer)).LastRead() != 0)
+					{
+						if (std::invoke(updateFunc, state, buffer, stream.LastRead()) == XXH_ERROR)
+						{
+							break;
+						}
+					}
+					else
+					{
+						break;
+					}
+				}
+
+				// Get the hash
+				auto hash = std::invoke(finalFunc, state);
+				return HashValue<hashLength>(&hash, sizeof(hash));
 			}
 		}
 		return {};
@@ -221,6 +267,28 @@ namespace KxFramework::Crypto
 	std::optional<HashValue<512>> SHA3_512(wxInputStream& stream) noexcept
 	{
 		return DoCalcHash2<512>(stream, EVP_sha3_512);
+	}
+
+	std::optional<HashValue<32>> xxHash_32(const void* data, size_t size) noexcept
+	{
+		return XXH32(data, size, 0);
+	}
+	std::optional<HashValue<64>> xxHash_64(const void* data, size_t size) noexcept
+	{
+		return XXH64(data, size, 0);
+	}
+	std::optional<HashValue<128>> xxHash_128(const void* data, size_t size) noexcept
+	{
+		XXH128_hash_t result = XXH3_128bits(data, size);
+		return HashValue<128>(&result, sizeof(result));
+	}
+	std::optional<HashValue<32>> xxHash_32(wxInputStream& stream) noexcept
+	{
+		return DoCalcXXHash<32>(stream, XXH32_createState, XXH32_freeState, XXH32_reset, XXH32_update, XXH32_digest);
+	}
+	std::optional<HashValue<64>> xxHash_64(wxInputStream& stream) noexcept
+	{
+		return DoCalcXXHash<64>(stream, XXH64_createState, XXH64_freeState, XXH64_reset, XXH64_update, XXH64_digest);
 	}
 
 	bool Base64Encode(wxInputStream& inputStream, wxOutputStream& outputStream)

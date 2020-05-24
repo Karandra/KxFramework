@@ -2,5 +2,5 @@ Source: kxframework
 Version: 2.0a
 Homepage: https://github.com/KerberX/KxFramework
 Description: Support library for Kortex Mod Manager.
-Build-Depends: wxwidgets, sciter, boost, curl[non-http,http2,openssl], openssl, openssl-windows, websocketpp, gumbo, libffi, lz4, nlohmann-json, simpleini, tinyxml2, scintilla
+Build-Depends: wxwidgets, sciter, boost, curl[non-http,http2,openssl], openssl, openssl-windows, websocketpp, gumbo, libffi, lz4, nlohmann-json, simpleini, tinyxml2, scintilla, xxhash
 Default-Features:
