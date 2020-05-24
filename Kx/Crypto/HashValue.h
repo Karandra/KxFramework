@@ -17,6 +17,8 @@ namespace KxFramework::Crypto
 	template<size_t bitLength>
 	class HashValue final
 	{
+		static_assert(bitLength >= 8 && (static_cast<size_t>(bitLength / 8.0) * 8 == bitLength), "hash value length should be >= 8 bits and evenly divisible by 8");
+
 		public:
 			static constexpr size_t bit_length() noexcept
 			{
