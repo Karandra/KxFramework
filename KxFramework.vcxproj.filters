@@ -5,136 +5,136 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Kx">
+    <Filter Include="kxf">
       <UniqueIdentifier>{b754c7f1-7cfc-4648-b498-fd9750d8b242}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Threading">
+    <Filter Include="kxf\Threading">
       <UniqueIdentifier>{ccbec7f3-86f7-4bda-acbe-9a8176c4626d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\System">
+    <Filter Include="kxf\System">
       <UniqueIdentifier>{7b228bc2-9ef1-4a57-ad08-f8ed2e2297f8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\EventSystem">
+    <Filter Include="kxf\EventSystem">
       <UniqueIdentifier>{92dd9a25-4dd3-43b6-93d2-2e7e3aca0fee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\EventSystem\Events">
+    <Filter Include="kxf\EventSystem\Events">
       <UniqueIdentifier>{d9095824-780a-4122-9f03-6015b95cf0ec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Utility">
+    <Filter Include="kxf\Utility">
       <UniqueIdentifier>{52fc7bb7-70b1-4c6a-bf5f-529badf3d413}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Async">
+    <Filter Include="kxf\Async">
       <UniqueIdentifier>{fc09224a-8afc-4d5f-8e30-38510a31f4ff}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Async\Coroutine">
+    <Filter Include="kxf\Async\Coroutine">
       <UniqueIdentifier>{5af1a9f7-b496-4a12-82b1-164394d2a34c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\RTTI">
+    <Filter Include="kxf\RTTI">
       <UniqueIdentifier>{9f4d2d8d-8aa1-4b1f-a11f-51ca03f6bba8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Sciter">
+    <Filter Include="kxf\Sciter">
       <UniqueIdentifier>{d52584cf-315c-4912-80d6-95b031065ed1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Sciter\Windows">
+    <Filter Include="kxf\Sciter\Windows">
       <UniqueIdentifier>{651bbcaa-5289-4581-90c4-73dc49119514}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Sciter\Controls">
+    <Filter Include="kxf\Sciter\Controls">
       <UniqueIdentifier>{aacb0ec0-4f97-43ee-a76e-16f29cea9351}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Sciter\Events">
+    <Filter Include="kxf\Sciter\Events">
       <UniqueIdentifier>{49eb5c51-d7e1-45ec-9167-7e05b2a547ae}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Sciter\Renderers">
+    <Filter Include="kxf\Sciter\Renderers">
       <UniqueIdentifier>{79730e57-63ef-4d10-a119-9ef02463b0b9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Sciter\Widgets">
+    <Filter Include="kxf\Sciter\Widgets">
       <UniqueIdentifier>{7a7710b7-f10d-4cdd-aab6-3deb50927777}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Sciter\GraphicsRenderer">
+    <Filter Include="kxf\Sciter\GraphicsRenderer">
       <UniqueIdentifier>{d79eb026-949d-4566-8c1b-6a403a1f46f0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Sciter\Utility">
+    <Filter Include="kxf\Sciter\Utility">
       <UniqueIdentifier>{8e318e71-b1be-4b4e-9f7b-d62888b30ea5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\FileSystem">
+    <Filter Include="kxf\FileSystem">
       <UniqueIdentifier>{a95e1a0b-7728-4fee-bdea-a3a34c440c70}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\General">
+    <Filter Include="kxf\General">
       <UniqueIdentifier>{7777f244-e0e6-49ac-b259-199b1aed7a28}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Compression">
+    <Filter Include="kxf\Compression">
       <UniqueIdentifier>{1ffb3494-f392-4267-b778-6c908ff721ea}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\UI">
+    <Filter Include="kxf\UI">
       <UniqueIdentifier>{d35e1c06-a587-42a8-897d-b06fd84ea9cf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\System\Private">
+    <Filter Include="kxf\System\Private">
       <UniqueIdentifier>{01514fbc-31c6-49d0-9360-d06809164ea6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\FileSystem\Private">
+    <Filter Include="kxf\FileSystem\Private">
       <UniqueIdentifier>{8d4abda0-ae07-4c67-8215-582952c35bd2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\General\Private">
+    <Filter Include="kxf\General\Private">
       <UniqueIdentifier>{9bddb8ad-b98d-4558-90ae-2b5b7048b860}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\wxWidgets">
+    <Filter Include="kxf\wxWidgets">
       <UniqueIdentifier>{025a1a1a-8594-467f-b759-9e5ca71ddd88}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Crypto">
+    <Filter Include="kxf\Crypto">
       <UniqueIdentifier>{a22e20b9-4de3-47e4-ace6-bcc7101c470c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Network">
+    <Filter Include="kxf\Network">
       <UniqueIdentifier>{503679ad-0476-4a11-beb0-ba123ce47580}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\General\Private\HTML">
+    <Filter Include="kxf\General\Private\HTML">
       <UniqueIdentifier>{aff7ee86-f7ed-4189-957b-55c4c7417581}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Network\Private">
+    <Filter Include="kxf\Network\Private">
       <UniqueIdentifier>{297f6ab2-a16f-4533-8457-4978880f4f39}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Network\CURL">
+    <Filter Include="kxf\Network\CURL">
       <UniqueIdentifier>{7a962409-a4c6-438c-bc0a-e182899e59fb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Network\WebSocket">
+    <Filter Include="kxf\Network\WebSocket">
       <UniqueIdentifier>{2a3b5b6b-016a-40ee-a07e-4b956e81b039}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Network\CURL\Private">
+    <Filter Include="kxf\Network\CURL\Private">
       <UniqueIdentifier>{356be2a4-c6d5-4264-a9c0-cc7e9c6e4d8a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Drawing">
+    <Filter Include="kxf\Drawing">
       <UniqueIdentifier>{fbcc6e41-fe9c-453d-967a-8c07c5a548f6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Drawing\Private">
+    <Filter Include="kxf\Drawing\Private">
       <UniqueIdentifier>{d0521874-4a25-4cdf-b542-c5159ced03de}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Localization">
+    <Filter Include="kxf\Localization">
       <UniqueIdentifier>{78fcd35b-5cf3-4408-b0d1-c3feaddb2f37}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\Localization\Private">
+    <Filter Include="kxf\Localization\Private">
       <UniqueIdentifier>{11dc96d7-85e1-4fc8-bdc8-d72ddfd34013}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\&lt;Modules&gt;">
+    <Filter Include="kxf\&lt;Modules&gt;">
       <UniqueIdentifier>{916829f1-4a51-4891-9918-1b9723789c5a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\System\SystemProcess">
+    <Filter Include="kxf\System\SystemProcess">
       <UniqueIdentifier>{a47c3ad0-99a9-47ac-abb2-cebc2abc27b9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\UI\Windows">
+    <Filter Include="kxf\UI\Windows">
       <UniqueIdentifier>{9450c2a9-a27f-432e-b708-f3e989d2763e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\UI\Menus">
+    <Filter Include="kxf\UI\Menus">
       <UniqueIdentifier>{c3edb610-29df-482b-bdff-75b57ad747ff}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\UI\Dialogs">
+    <Filter Include="kxf\UI\Dialogs">
       <UniqueIdentifier>{9a1c22ff-1e4f-4029-a1a7-eb61d618611e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\UI\Controls">
+    <Filter Include="kxf\UI\Controls">
       <UniqueIdentifier>{10404d08-ff3e-46e1-a037-fafea63e7a3f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\UI\Controls\DataView">
+    <Filter Include="kxf\UI\Controls\DataView">
       <UniqueIdentifier>{f9fe5111-7aa9-4688-9f65-1c21caf83ac0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\UI\Controls\AUI">
+    <Filter Include="kxf\UI\Controls\AUI">
       <UniqueIdentifier>{51ba4e52-464f-4d32-a8b4-d68239db9572}</UniqueIdentifier>
     </Filter>
     <Filter Include="VCPkg">
@@ -152,1705 +152,1705 @@
     <Filter Include="VCPkg\triplets\community">
       <UniqueIdentifier>{7962b0c5-a73a-435e-81c8-d700627df6f1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\UI\Dialogs\Private">
+    <Filter Include="kxf\UI\Dialogs\Private">
       <UniqueIdentifier>{8748a1a3-30f0-4977-9c4b-3fffaf785b0e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\UI\Controls\DataView\Editors">
+    <Filter Include="kxf\UI\Controls\DataView\Editors">
       <UniqueIdentifier>{88feb086-33ff-447b-9a97-120aa1397e12}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\UI\Controls\DataView\Renderers">
+    <Filter Include="kxf\UI\Controls\DataView\Renderers">
       <UniqueIdentifier>{687104a4-b178-491f-9bbd-4786d1510946}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\UI\Controls\&lt;Controls&gt;">
+    <Filter Include="kxf\UI\Controls\&lt;Controls&gt;">
       <UniqueIdentifier>{8d89f944-d9f8-4f7c-b28d-82616536aae2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\UI\&lt;UI&gt;">
+    <Filter Include="kxf\UI\&lt;UI&gt;">
       <UniqueIdentifier>{e51dc976-b3e3-4424-aac5-de85a4e6e3c5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\General\&lt;Streams&gt;">
+    <Filter Include="kxf\General\&lt;Streams&gt;">
       <UniqueIdentifier>{e2a71647-d82a-4fcc-a695-e60446c1dcf1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\General\&lt;Parsers&gt;">
+    <Filter Include="kxf\General\&lt;Parsers&gt;">
       <UniqueIdentifier>{f17608a3-623d-460f-a418-6b51e01ec8d9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\General\DateTime">
+    <Filter Include="kxf\General\DateTime">
       <UniqueIdentifier>{073e2d6c-cfc9-4471-90ed-fc3f9dc3733b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kx\General\DateTime\Private">
+    <Filter Include="kxf\General\DateTime\Private">
       <UniqueIdentifier>{1927ba84-01dd-4b98-90dd-7496ee4a3211}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Kx\Threading\Common.h">
-      <Filter>Kx\Threading</Filter>
+    <ClInclude Include="kxf\Threading\Common.h">
+      <Filter>kxf\Threading</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Common.hpp">
-      <Filter>Kx</Filter>
+    <ClInclude Include="kxf\Common.hpp">
+      <Filter>kxf</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\Common.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\Common.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\EventSystem\BasicEvtHandler.h">
-      <Filter>Kx\EventSystem</Filter>
+    <ClInclude Include="kxf\EventSystem\BasicEvtHandler.h">
+      <Filter>kxf\EventSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\EventSystem\BroadcastProcessor.h">
-      <Filter>Kx\EventSystem</Filter>
+    <ClInclude Include="kxf\EventSystem\BroadcastProcessor.h">
+      <Filter>kxf\EventSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\EventSystem\CallWrapper.h">
-      <Filter>Kx\EventSystem</Filter>
+    <ClInclude Include="kxf\EventSystem\CallWrapper.h">
+      <Filter>kxf\EventSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\EventSystem\Common.h">
-      <Filter>Kx\EventSystem</Filter>
+    <ClInclude Include="kxf\EventSystem\Common.h">
+      <Filter>kxf\EventSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\EventSystem\Event.h">
-      <Filter>Kx\EventSystem</Filter>
+    <ClInclude Include="kxf\EventSystem\Event.h">
+      <Filter>kxf\EventSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\EventSystem\EventBuilder.h">
-      <Filter>Kx\EventSystem</Filter>
+    <ClInclude Include="kxf\EventSystem\EventBuilder.h">
+      <Filter>kxf\EventSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\EventSystem\EvtHandler.h">
-      <Filter>Kx\EventSystem</Filter>
+    <ClInclude Include="kxf\EventSystem\EvtHandler.h">
+      <Filter>kxf\EventSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\EventSystem\Events\IndirectCallEvent.h">
-      <Filter>Kx\EventSystem\Events</Filter>
+    <ClInclude Include="kxf\EventSystem\Events\IndirectCallEvent.h">
+      <Filter>kxf\EventSystem\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\EventSystem\Events\NotifyEvent.h">
-      <Filter>Kx\EventSystem\Events</Filter>
+    <ClInclude Include="kxf\EventSystem\Events\NotifyEvent.h">
+      <Filter>kxf\EventSystem\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\EventSystem\Events\CommandEvent.h">
-      <Filter>Kx\EventSystem\Events</Filter>
+    <ClInclude Include="kxf\EventSystem\Events\CommandEvent.h">
+      <Filter>kxf\EventSystem\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Utility\Common.h">
-      <Filter>Kx\Utility</Filter>
+    <ClInclude Include="kxf\Utility\Common.h">
+      <Filter>kxf\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Utility\TypeTraits.h">
-      <Filter>Kx\Utility</Filter>
+    <ClInclude Include="kxf\Utility\TypeTraits.h">
+      <Filter>kxf\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Async\Common.h">
-      <Filter>Kx\Async</Filter>
+    <ClInclude Include="kxf\Async\Common.h">
+      <Filter>kxf\Async</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Async\Coroutine\Coroutine.h">
-      <Filter>Kx\Async\Coroutine</Filter>
+    <ClInclude Include="kxf\Async\Coroutine\Coroutine.h">
+      <Filter>kxf\Async\Coroutine</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Async\Coroutine\CoroutineImpl.h">
-      <Filter>Kx\Async\Coroutine</Filter>
+    <ClInclude Include="kxf\Async\Coroutine\CoroutineImpl.h">
+      <Filter>kxf\Async\Coroutine</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Async\Coroutine.h">
-      <Filter>Kx\Async</Filter>
+    <ClInclude Include="kxf\Async\Coroutine.h">
+      <Filter>kxf\Async</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Async\DelayedCall.h">
-      <Filter>Kx\Async</Filter>
+    <ClInclude Include="kxf\Async\DelayedCall.h">
+      <Filter>kxf\Async</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\RTTI\QueryInterface.h">
-      <Filter>Kx\RTTI</Filter>
+    <ClInclude Include="kxf\RTTI\QueryInterface.h">
+      <Filter>kxf\RTTI</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\RTTI\Common.h">
-      <Filter>Kx\RTTI</Filter>
+    <ClInclude Include="kxf\RTTI\Common.h">
+      <Filter>kxf\RTTI</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\Common.h">
-      <Filter>Kx\Sciter</Filter>
+    <ClInclude Include="kxf\Sciter\Common.h">
+      <Filter>kxf\Sciter</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\Node.h">
-      <Filter>Kx\Sciter</Filter>
+    <ClInclude Include="kxf\Sciter\Node.h">
+      <Filter>kxf\Sciter</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\Element.h">
-      <Filter>Kx\Sciter</Filter>
+    <ClInclude Include="kxf\Sciter\Element.h">
+      <Filter>kxf\Sciter</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\Controls\Label.h">
-      <Filter>Kx\Sciter\Controls</Filter>
+    <ClInclude Include="kxf\Sciter\Controls\Label.h">
+      <Filter>kxf\Sciter\Controls</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\Host.h">
-      <Filter>Kx\Sciter</Filter>
+    <ClInclude Include="kxf\Sciter\Host.h">
+      <Filter>kxf\Sciter</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\WrapperWindow.h">
-      <Filter>Kx\Sciter</Filter>
+    <ClInclude Include="kxf\Sciter\WrapperWindow.h">
+      <Filter>kxf\Sciter</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\SciterAPI.h">
-      <Filter>Kx\Sciter</Filter>
+    <ClInclude Include="kxf\Sciter\SciterAPI.h">
+      <Filter>kxf\Sciter</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\Internal.h">
-      <Filter>Kx\Sciter</Filter>
+    <ClInclude Include="kxf\Sciter\Internal.h">
+      <Filter>kxf\Sciter</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\Events.h">
-      <Filter>Kx\Sciter</Filter>
+    <ClInclude Include="kxf\Sciter\Events.h">
+      <Filter>kxf\Sciter</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\Events\Event.h">
-      <Filter>Kx\Sciter\Events</Filter>
+    <ClInclude Include="kxf\Sciter\Events\Event.h">
+      <Filter>kxf\Sciter\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\Events\KeyEvent.h">
-      <Filter>Kx\Sciter\Events</Filter>
+    <ClInclude Include="kxf\Sciter\Events\KeyEvent.h">
+      <Filter>kxf\Sciter\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\Events\MouseEvent.h">
-      <Filter>Kx\Sciter\Events</Filter>
+    <ClInclude Include="kxf\Sciter\Events\MouseEvent.h">
+      <Filter>kxf\Sciter\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\Events\FocusEvent.h">
-      <Filter>Kx\Sciter\Events</Filter>
+    <ClInclude Include="kxf\Sciter\Events\FocusEvent.h">
+      <Filter>kxf\Sciter\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\Events\TimerEvent.h">
-      <Filter>Kx\Sciter\Events</Filter>
+    <ClInclude Include="kxf\Sciter\Events\TimerEvent.h">
+      <Filter>kxf\Sciter\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\Events\SizeEvent.h">
-      <Filter>Kx\Sciter\Events</Filter>
+    <ClInclude Include="kxf\Sciter\Events\SizeEvent.h">
+      <Filter>kxf\Sciter\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\Events\ScrollEvent.h">
-      <Filter>Kx\Sciter\Events</Filter>
+    <ClInclude Include="kxf\Sciter\Events\ScrollEvent.h">
+      <Filter>kxf\Sciter\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\Events\PaintEvent.h">
-      <Filter>Kx\Sciter\Events</Filter>
+    <ClInclude Include="kxf\Sciter\Events\PaintEvent.h">
+      <Filter>kxf\Sciter\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\Events\BehaviorEvent.h">
-      <Filter>Kx\Sciter\Events</Filter>
+    <ClInclude Include="kxf\Sciter\Events\BehaviorEvent.h">
+      <Filter>kxf\Sciter\Events</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\IWindowRenderer.h">
-      <Filter>Kx\Sciter</Filter>
+    <ClInclude Include="kxf\Sciter\IWindowRenderer.h">
+      <Filter>kxf\Sciter</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\Renderers\DirectX.h">
-      <Filter>Kx\Sciter\Renderers</Filter>
+    <ClInclude Include="kxf\Sciter\Renderers\DirectX.h">
+      <Filter>kxf\Sciter\Renderers</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\Renderers\FPSCounter.h">
-      <Filter>Kx\Sciter\Renderers</Filter>
+    <ClInclude Include="kxf\Sciter\Renderers\FPSCounter.h">
+      <Filter>kxf\Sciter\Renderers</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\Widget.h">
-      <Filter>Kx\Sciter</Filter>
+    <ClInclude Include="kxf\Sciter\Widget.h">
+      <Filter>kxf\Sciter</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\EventSystem\EventHandlerStack.h">
-      <Filter>Kx\EventSystem</Filter>
+    <ClInclude Include="kxf\EventSystem\EventHandlerStack.h">
+      <Filter>kxf\EventSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\EventDispatcher.h">
-      <Filter>Kx\Sciter</Filter>
+    <ClInclude Include="kxf\Sciter\EventDispatcher.h">
+      <Filter>kxf\Sciter</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\CommonDefs.h">
-      <Filter>Kx\Sciter</Filter>
+    <ClInclude Include="kxf\Sciter\CommonDefs.h">
+      <Filter>kxf\Sciter</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\WidgetFactory.h">
-      <Filter>Kx\Sciter</Filter>
+    <ClInclude Include="kxf\Sciter\WidgetFactory.h">
+      <Filter>kxf\Sciter</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\ScriptValue.h">
-      <Filter>Kx\Sciter</Filter>
+    <ClInclude Include="kxf\Sciter\ScriptValue.h">
+      <Filter>kxf\Sciter</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\GraphicsRenderer\GraphicsBitmap.h">
-      <Filter>Kx\Sciter\GraphicsRenderer</Filter>
+    <ClInclude Include="kxf\Sciter\GraphicsRenderer\GraphicsBitmap.h">
+      <Filter>kxf\Sciter\GraphicsRenderer</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\GraphicsRenderer\GraphicsText.h">
-      <Filter>Kx\Sciter\GraphicsRenderer</Filter>
+    <ClInclude Include="kxf\Sciter\GraphicsRenderer\GraphicsText.h">
+      <Filter>kxf\Sciter\GraphicsRenderer</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\Utility\HandleWrapper.h">
-      <Filter>Kx\Sciter\Utility</Filter>
+    <ClInclude Include="kxf\Sciter\Utility\HandleWrapper.h">
+      <Filter>kxf\Sciter\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\GraphicsRenderer\GraphicsPath.h">
-      <Filter>Kx\Sciter\GraphicsRenderer</Filter>
+    <ClInclude Include="kxf\Sciter\GraphicsRenderer\GraphicsPath.h">
+      <Filter>kxf\Sciter\GraphicsRenderer</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter\GraphicsRenderer\GraphicsContext.h">
-      <Filter>Kx\Sciter\GraphicsRenderer</Filter>
+    <ClInclude Include="kxf\Sciter\GraphicsRenderer\GraphicsContext.h">
+      <Filter>kxf\Sciter\GraphicsRenderer</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\FileSystem\FSPath.h">
-      <Filter>Kx\FileSystem</Filter>
+    <ClInclude Include="kxf\FileSystem\FSPath.h">
+      <Filter>kxf\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\FileSystem\Common.h">
-      <Filter>Kx\FileSystem</Filter>
+    <ClInclude Include="kxf\FileSystem\Common.h">
+      <Filter>kxf\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\Common.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\Common.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\NativeUUID.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\NativeUUID.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Async\Coroutine\YieldInstruction.h">
-      <Filter>Kx\Async\Coroutine</Filter>
+    <ClInclude Include="kxf\Async\Coroutine\YieldInstruction.h">
+      <Filter>kxf\Async\Coroutine</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\ShellFileType.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\ShellFileType.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\ShellFileTypeInfo.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\ShellFileTypeInfo.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\ShellFileTypeManager.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\ShellFileTypeManager.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Threading\JoinableThread.h">
-      <Filter>Kx\Threading</Filter>
+    <ClInclude Include="kxf\Threading\JoinableThread.h">
+      <Filter>kxf\Threading</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Threading\AutoThread.h">
-      <Filter>Kx\Threading</Filter>
+    <ClInclude Include="kxf\Threading\AutoThread.h">
+      <Filter>kxf\Threading</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\FileSystem\FileOperations.h">
-      <Filter>Kx\FileSystem</Filter>
+    <ClInclude Include="kxf\FileSystem\FileOperations.h">
+      <Filter>kxf\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\BinarySize.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\BinarySize.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\FileSystem\FileItem.h">
-      <Filter>Kx\FileSystem</Filter>
+    <ClInclude Include="kxf\FileSystem\FileItem.h">
+      <Filter>kxf\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\ExtraData.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\ExtraData.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\FileSystem\IFileSystem.h">
-      <Filter>Kx\FileSystem</Filter>
+    <ClInclude Include="kxf\FileSystem\IFileSystem.h">
+      <Filter>kxf\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\FileSystem\NativeFileSystem.h">
-      <Filter>Kx\FileSystem</Filter>
+    <ClInclude Include="kxf\FileSystem\NativeFileSystem.h">
+      <Filter>kxf\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Utility\CallAtScopeExit.h">
-      <Filter>Kx\Utility</Filter>
+    <ClInclude Include="kxf\Utility\CallAtScopeExit.h">
+      <Filter>kxf\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\Singleton.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\Singleton.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\FileSystem\LegacyVolume.h">
-      <Filter>Kx\FileSystem</Filter>
+    <ClInclude Include="kxf\FileSystem\LegacyVolume.h">
+      <Filter>kxf\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\FileSystem\StorageVolume.h">
-      <Filter>Kx\FileSystem</Filter>
+    <ClInclude Include="kxf\FileSystem\StorageVolume.h">
+      <Filter>kxf\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\FileSystem\RecycleBin.h">
-      <Filter>Kx\FileSystem</Filter>
+    <ClInclude Include="kxf\FileSystem\RecycleBin.h">
+      <Filter>kxf\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\ShellOperations.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\ShellOperations.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\COM.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\COM.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\ErrorCode.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\ErrorCode.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\UndefWindows.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\UndefWindows.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\ErrorCodeValue.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\ErrorCodeValue.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Compression\Common.h">
-      <Filter>Kx\Compression</Filter>
+    <ClInclude Include="kxf\Compression\Common.h">
+      <Filter>kxf\Compression</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Compression\IArchive.h">
-      <Filter>Kx\Compression</Filter>
+    <ClInclude Include="kxf\Compression\IArchive.h">
+      <Filter>kxf\Compression</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Compression\IArchiveImpl.h">
-      <Filter>Kx\Compression</Filter>
+    <ClInclude Include="kxf\Compression\IArchiveImpl.h">
+      <Filter>kxf\Compression</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Compression\ZLibStream.h">
-      <Filter>Kx\Compression</Filter>
+    <ClInclude Include="kxf\Compression\ZLibStream.h">
+      <Filter>kxf\Compression</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Compression\LZ4Stream.h">
-      <Filter>Kx\Compression</Filter>
+    <ClInclude Include="kxf\Compression\LZ4Stream.h">
+      <Filter>kxf\Compression</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\Private\BeginIncludeCOM.h">
-      <Filter>Kx\System\Private</Filter>
+    <ClInclude Include="kxf\System\Private\BeginIncludeCOM.h">
+      <Filter>kxf\System\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\FileSystem\Private\NamespacePrefix.h">
-      <Filter>Kx\FileSystem\Private</Filter>
+    <ClInclude Include="kxf\FileSystem\Private\NamespacePrefix.h">
+      <Filter>kxf\FileSystem\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\Private\ExtraData.h">
-      <Filter>Kx\General\Private</Filter>
+    <ClInclude Include="kxf\General\Private\ExtraData.h">
+      <Filter>kxf\General\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\Private\IncludeNtStatus.h">
-      <Filter>Kx\System\Private</Filter>
+    <ClInclude Include="kxf\System\Private\IncludeNtStatus.h">
+      <Filter>kxf\System\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\Private\EndIncludeCOM.h">
-      <Filter>Kx\System\Private</Filter>
+    <ClInclude Include="kxf\System\Private\EndIncludeCOM.h">
+      <Filter>kxf\System\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\Version.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\Version.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\Private\VersionImpl.h">
-      <Filter>Kx\General\Private</Filter>
+    <ClInclude Include="kxf\General\Private\VersionImpl.h">
+      <Filter>kxf\General\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\MemorySpan.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\MemorySpan.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\Any.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\Any.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\Color.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\Color.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\ColorDefines.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\ColorDefines.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Utility\Numeric.h">
-      <Filter>Kx\Utility</Filter>
+    <ClInclude Include="kxf\Utility\Numeric.h">
+      <Filter>kxf\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\UniversallyUniqueID.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\UniversallyUniqueID.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\String.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\String.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\Private\String.h">
-      <Filter>Kx\General\Private</Filter>
+    <ClInclude Include="kxf\General\Private\String.h">
+      <Filter>kxf\General\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\StringFormater.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\StringFormater.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\StringFormaterTraits.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\StringFormaterTraits.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Utility\String.h">
-      <Filter>Kx\Utility</Filter>
+    <ClInclude Include="kxf\Utility\String.h">
+      <Filter>kxf\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\NativeAPI.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\NativeAPI.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\SystemInformation.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\SystemInformation.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\SystemInformationDefines.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\SystemInformationDefines.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\CredentialStore.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\CredentialStore.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\wxWidgets\Setup.h">
-      <Filter>Kx\wxWidgets</Filter>
+    <ClInclude Include="kxf\wxWidgets\Setup.h">
+      <Filter>kxf\wxWidgets</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Crypto\Crypto.h">
-      <Filter>Kx\Crypto</Filter>
+    <ClInclude Include="kxf\Crypto\Crypto.h">
+      <Filter>kxf\Crypto</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Crypto\Common.h">
-      <Filter>Kx\Crypto</Filter>
+    <ClInclude Include="kxf\Crypto\Common.h">
+      <Filter>kxf\Crypto</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Crypto\HashValue.h">
-      <Filter>Kx\Crypto</Filter>
+    <ClInclude Include="kxf\Crypto\HashValue.h">
+      <Filter>kxf\Crypto</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Crypto\SecretValue.h">
-      <Filter>Kx\Crypto</Filter>
+    <ClInclude Include="kxf\Crypto\SecretValue.h">
+      <Filter>kxf\Crypto</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Crypto\ISecretStore.h">
-      <Filter>Kx\Crypto</Filter>
+    <ClInclude Include="kxf\Crypto\ISecretStore.h">
+      <Filter>kxf\Crypto</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\CFunction.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\CFunction.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\Private\CFunction.h">
-      <Filter>Kx\System\Private</Filter>
+    <ClInclude Include="kxf\System\Private\CFunction.h">
+      <Filter>kxf\System\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\CFunctionCompiler.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\CFunctionCompiler.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\Private\CFunctionCompiler.h">
-      <Filter>Kx\System\Private</Filter>
+    <ClInclude Include="kxf\System\Private\CFunctionCompiler.h">
+      <Filter>kxf\System\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\Registry.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\Registry.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Network\Common.h">
-      <Filter>Kx\Network</Filter>
+    <ClInclude Include="kxf\Network\Common.h">
+      <Filter>kxf\Network</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Utility\Container.h">
-      <Filter>Kx\Utility</Filter>
+    <ClInclude Include="kxf\Utility\Container.h">
+      <Filter>kxf\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Utility\Drawing.h">
-      <Filter>Kx\Utility</Filter>
+    <ClInclude Include="kxf\Utility\Drawing.h">
+      <Filter>kxf\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Utility\System.h">
-      <Filter>Kx\Utility</Filter>
+    <ClInclude Include="kxf\Utility\System.h">
+      <Filter>kxf\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\IndexedEnum.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\IndexedEnum.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\Private\XDocument.h">
-      <Filter>Kx\General\Private</Filter>
+    <ClInclude Include="kxf\General\Private\XDocument.h">
+      <Filter>kxf\General\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\Private\XML.h">
-      <Filter>Kx\General\Private</Filter>
+    <ClInclude Include="kxf\General\Private\XML.h">
+      <Filter>kxf\General\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\Private\TinyXML2 HTML5 Printer.h">
-      <Filter>Kx\General\Private</Filter>
+    <ClInclude Include="kxf\General\Private\TinyXML2 HTML5 Printer.h">
+      <Filter>kxf\General\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\Private\HTML\error.h">
-      <Filter>Kx\General\Private\HTML</Filter>
+    <ClInclude Include="kxf\General\Private\HTML\error.h">
+      <Filter>kxf\General\Private\HTML</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\Private\HTML\insertion_mode.h">
-      <Filter>Kx\General\Private\HTML</Filter>
+    <ClInclude Include="kxf\General\Private\HTML\insertion_mode.h">
+      <Filter>kxf\General\Private\HTML</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\Private\HTML\string_buffer.h">
-      <Filter>Kx\General\Private\HTML</Filter>
+    <ClInclude Include="kxf\General\Private\HTML\string_buffer.h">
+      <Filter>kxf\General\Private\HTML</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\Private\HTML\token_type.h">
-      <Filter>Kx\General\Private\HTML</Filter>
+    <ClInclude Include="kxf\General\Private\HTML\token_type.h">
+      <Filter>kxf\General\Private\HTML</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Utility\Memory.h">
-      <Filter>Kx\Utility</Filter>
+    <ClInclude Include="kxf\Utility\Memory.h">
+      <Filter>kxf\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Network\URI.h">
-      <Filter>Kx\Network</Filter>
+    <ClInclude Include="kxf\Network\URI.h">
+      <Filter>kxf\Network</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Network\URL.h">
-      <Filter>Kx\Network</Filter>
+    <ClInclude Include="kxf\Network\URL.h">
+      <Filter>kxf\Network</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Network\Private\URXHelper.h">
-      <Filter>Kx\Network\Private</Filter>
+    <ClInclude Include="kxf\Network\Private\URXHelper.h">
+      <Filter>kxf\Network\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Network\HTTPStatusCode.h">
-      <Filter>Kx\Network</Filter>
+    <ClInclude Include="kxf\Network\HTTPStatusCode.h">
+      <Filter>kxf\Network</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\FileSystem\FileOperationEvent.h">
-      <Filter>Kx\FileSystem</Filter>
+    <ClInclude Include="kxf\FileSystem\FileOperationEvent.h">
+      <Filter>kxf\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Network\CURL.h">
-      <Filter>Kx\Network</Filter>
+    <ClInclude Include="kxf\Network\CURL.h">
+      <Filter>kxf\Network</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Compression\ArchiveEvent.h">
-      <Filter>Kx\Compression</Filter>
+    <ClInclude Include="kxf\Compression\ArchiveEvent.h">
+      <Filter>kxf\Compression</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Network\WebSocket.h">
-      <Filter>Kx\Network</Filter>
+    <ClInclude Include="kxf\Network\WebSocket.h">
+      <Filter>kxf\Network</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Network\WebSocket\SecureClient.h">
-      <Filter>Kx\Network\WebSocket</Filter>
+    <ClInclude Include="kxf\Network\WebSocket\SecureClient.h">
+      <Filter>kxf\Network\WebSocket</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Network\WebSocket\IClient.h">
-      <Filter>Kx\Network\WebSocket</Filter>
+    <ClInclude Include="kxf\Network\WebSocket\IClient.h">
+      <Filter>kxf\Network\WebSocket</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Network\WebSocket\CloseCode.h">
-      <Filter>Kx\Network\WebSocket</Filter>
+    <ClInclude Include="kxf\Network\WebSocket\CloseCode.h">
+      <Filter>kxf\Network\WebSocket</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Network\WebSocket\Event.h">
-      <Filter>Kx\Network\WebSocket</Filter>
+    <ClInclude Include="kxf\Network\WebSocket\Event.h">
+      <Filter>kxf\Network\WebSocket</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Network\CURL\Private\CURL.h">
-      <Filter>Kx\Network\CURL\Private</Filter>
+    <ClInclude Include="kxf\Network\CURL\Private\CURL.h">
+      <Filter>kxf\Network\CURL\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Network\CURL\Event.h">
-      <Filter>Kx\Network\CURL</Filter>
+    <ClInclude Include="kxf\Network\CURL\Event.h">
+      <Filter>kxf\Network\CURL</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Network\CURL\Session.h">
-      <Filter>Kx\Network\CURL</Filter>
+    <ClInclude Include="kxf\Network\CURL\Session.h">
+      <Filter>kxf\Network\CURL</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Network\CURL\Reply.h">
-      <Filter>Kx\Network\CURL</Filter>
+    <ClInclude Include="kxf\Network\CURL\Reply.h">
+      <Filter>kxf\Network\CURL</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Drawing\Common.h">
-      <Filter>Kx\Drawing</Filter>
+    <ClInclude Include="kxf\Drawing\Common.h">
+      <Filter>kxf\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Drawing\ImageList.h">
-      <Filter>Kx\Drawing</Filter>
+    <ClInclude Include="kxf\Drawing\ImageList.h">
+      <Filter>kxf\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Drawing\ImageSet.h">
-      <Filter>Kx\Drawing</Filter>
+    <ClInclude Include="kxf\Drawing\ImageSet.h">
+      <Filter>kxf\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Drawing\WithImageList.h">
-      <Filter>Kx\Drawing</Filter>
+    <ClInclude Include="kxf\Drawing\WithImageList.h">
+      <Filter>kxf\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Drawing\GraphicsCanvas.h">
-      <Filter>Kx\Drawing</Filter>
+    <ClInclude Include="kxf\Drawing\GraphicsCanvas.h">
+      <Filter>kxf\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Drawing\BitmapGraphicsCanvas.h">
-      <Filter>Kx\Drawing</Filter>
+    <ClInclude Include="kxf\Drawing\BitmapGraphicsCanvas.h">
+      <Filter>kxf\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Drawing\Private\GraphicsCanvas.h">
-      <Filter>Kx\Drawing\Private</Filter>
+    <ClInclude Include="kxf\Drawing\Private\GraphicsCanvas.h">
+      <Filter>kxf\Drawing\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Drawing\ImageGraphicsCanvas.h">
-      <Filter>Kx\Drawing</Filter>
+    <ClInclude Include="kxf\Drawing\ImageGraphicsCanvas.h">
+      <Filter>kxf\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Drawing\DCOperations.h">
-      <Filter>Kx\Drawing</Filter>
+    <ClInclude Include="kxf\Drawing\DCOperations.h">
+      <Filter>kxf\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Drawing\GCOperations.h">
-      <Filter>Kx\Drawing</Filter>
+    <ClInclude Include="kxf\Drawing\GCOperations.h">
+      <Filter>kxf\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Drawing\Private\UxThemeDefines.h">
-      <Filter>Kx\Drawing\Private</Filter>
+    <ClInclude Include="kxf\Drawing\Private\UxThemeDefines.h">
+      <Filter>kxf\Drawing\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Drawing\UxTheme.h">
-      <Filter>Kx\Drawing</Filter>
+    <ClInclude Include="kxf\Drawing\UxTheme.h">
+      <Filter>kxf\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\Angle.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\Angle.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\Math.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\Math.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\WithOptions.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\WithOptions.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\DPIAwareness.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\DPIAwareness.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\WOW64FSRedirection.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\WOW64FSRedirection.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Localization\Common.h">
-      <Filter>Kx\Localization</Filter>
+    <ClInclude Include="kxf\Localization\Common.h">
+      <Filter>kxf\Localization</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Localization\Private\StandardLocalization.h">
-      <Filter>Kx\Localization\Private</Filter>
+    <ClInclude Include="kxf\Localization\Private\StandardLocalization.h">
+      <Filter>kxf\Localization\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\BasicApplication.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\BasicApplication.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Localization\Locale.h">
-      <Filter>Kx\Localization</Filter>
+    <ClInclude Include="kxf\Localization\Locale.h">
+      <Filter>kxf\Localization</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Localization\Private\LocaleOptions.h">
-      <Filter>Kx\Localization\Private</Filter>
+    <ClInclude Include="kxf\Localization\Private\LocaleOptions.h">
+      <Filter>kxf\Localization\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\StdID.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\StdID.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\FileSystem\FileStream.h">
-      <Filter>Kx\FileSystem</Filter>
+    <ClInclude Include="kxf\FileSystem\FileStream.h">
+      <Filter>kxf\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\FileSystem\Private\NativeFileSystem.h">
-      <Filter>Kx\FileSystem\Private</Filter>
+    <ClInclude Include="kxf\FileSystem\Private\NativeFileSystem.h">
+      <Filter>kxf\FileSystem\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\Private\ErrorCodeValue.h">
-      <Filter>Kx\System\Private</Filter>
+    <ClInclude Include="kxf\System\Private\ErrorCodeValue.h">
+      <Filter>kxf\System\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Async.hpp">
-      <Filter>Kx\&lt;Modules&gt;</Filter>
+    <ClInclude Include="kxf\Async.hpp">
+      <Filter>kxf\&lt;Modules&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Compression.hpp">
-      <Filter>Kx\&lt;Modules&gt;</Filter>
+    <ClInclude Include="kxf\Compression.hpp">
+      <Filter>kxf\&lt;Modules&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Crypto.hpp">
-      <Filter>Kx\&lt;Modules&gt;</Filter>
+    <ClInclude Include="kxf\Crypto.hpp">
+      <Filter>kxf\&lt;Modules&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Drawing.hpp">
-      <Filter>Kx\&lt;Modules&gt;</Filter>
+    <ClInclude Include="kxf\Drawing.hpp">
+      <Filter>kxf\&lt;Modules&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\EventSystem.hpp">
-      <Filter>Kx\&lt;Modules&gt;</Filter>
+    <ClInclude Include="kxf\EventSystem.hpp">
+      <Filter>kxf\&lt;Modules&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\FileSystem.hpp">
-      <Filter>Kx\&lt;Modules&gt;</Filter>
+    <ClInclude Include="kxf\FileSystem.hpp">
+      <Filter>kxf\&lt;Modules&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General.hpp">
-      <Filter>Kx\&lt;Modules&gt;</Filter>
+    <ClInclude Include="kxf\General.hpp">
+      <Filter>kxf\&lt;Modules&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Localization.hpp">
-      <Filter>Kx\&lt;Modules&gt;</Filter>
+    <ClInclude Include="kxf\Localization.hpp">
+      <Filter>kxf\&lt;Modules&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Network.hpp">
-      <Filter>Kx\&lt;Modules&gt;</Filter>
+    <ClInclude Include="kxf\Network.hpp">
+      <Filter>kxf\&lt;Modules&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\RTTI.hpp">
-      <Filter>Kx\&lt;Modules&gt;</Filter>
+    <ClInclude Include="kxf\RTTI.hpp">
+      <Filter>kxf\&lt;Modules&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Sciter.hpp">
-      <Filter>Kx\&lt;Modules&gt;</Filter>
+    <ClInclude Include="kxf\Sciter.hpp">
+      <Filter>kxf\&lt;Modules&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System.hpp">
-      <Filter>Kx\&lt;Modules&gt;</Filter>
+    <ClInclude Include="kxf\System.hpp">
+      <Filter>kxf\&lt;Modules&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Threading.hpp">
-      <Filter>Kx\&lt;Modules&gt;</Filter>
+    <ClInclude Include="kxf\Threading.hpp">
+      <Filter>kxf\&lt;Modules&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI.hpp">
-      <Filter>Kx\&lt;Modules&gt;</Filter>
+    <ClInclude Include="kxf\UI.hpp">
+      <Filter>kxf\&lt;Modules&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Utility.hpp">
-      <Filter>Kx\&lt;Modules&gt;</Filter>
+    <ClInclude Include="kxf\Utility.hpp">
+      <Filter>kxf\&lt;Modules&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\ShellLink.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\ShellLink.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\Private\Shell.h">
-      <Filter>Kx\System\Private</Filter>
+    <ClInclude Include="kxf\System\Private\Shell.h">
+      <Filter>kxf\System\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\TaskScheduler.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\TaskScheduler.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\SharedMemory.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\SharedMemory.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\KnownDirectoryID.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\KnownDirectoryID.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\Private\KnownDirectoryDefinition.h">
-      <Filter>Kx\System\Private</Filter>
+    <ClInclude Include="kxf\System\Private\KnownDirectoryDefinition.h">
+      <Filter>kxf\System\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\Private\KnownDirectoryGUID.h">
-      <Filter>Kx\System\Private</Filter>
+    <ClInclude Include="kxf\System\Private\KnownDirectoryGUID.h">
+      <Filter>kxf\System\Private</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Kx\RTTI\ComponentSystem.h">
-      <Filter>Kx\RTTI</Filter>
+    <ClInclude Include="kxf\RTTI\ComponentSystem.h">
+      <Filter>kxf\RTTI</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\wxWidgets\RTTI.h">
-      <Filter>Kx\wxWidgets</Filter>
+    <ClInclude Include="kxf\wxWidgets\RTTI.h">
+      <Filter>kxf\wxWidgets</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\DynamicLibrary.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\DynamicLibrary.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\Private\System.h">
-      <Filter>Kx\System\Private</Filter>
+    <ClInclude Include="kxf\System\Private\System.h">
+      <Filter>kxf\System\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\Private\BinaryResourceDefines.h">
-      <Filter>Kx\System\Private</Filter>
+    <ClInclude Include="kxf\System\Private\BinaryResourceDefines.h">
+      <Filter>kxf\System\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\ExecutableVersionResource.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\ExecutableVersionResource.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\SystemProcess\RunningSystemProcess.h">
-      <Filter>Kx\System\SystemProcess</Filter>
+    <ClInclude Include="kxf\System\SystemProcess\RunningSystemProcess.h">
+      <Filter>kxf\System\SystemProcess</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\SystemProcess\ISystemProcess.h">
-      <Filter>Kx\System\SystemProcess</Filter>
+    <ClInclude Include="kxf\System\SystemProcess\ISystemProcess.h">
+      <Filter>kxf\System\SystemProcess</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\SystemProcess\ISystemProcessStdIO.h">
-      <Filter>Kx\System\SystemProcess</Filter>
+    <ClInclude Include="kxf\System\SystemProcess\ISystemProcessStdIO.h">
+      <Filter>kxf\System\SystemProcess</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\SystemProcess\SystemProcessInfo.h">
-      <Filter>Kx\System\SystemProcess</Filter>
+    <ClInclude Include="kxf\System\SystemProcess\SystemProcessInfo.h">
+      <Filter>kxf\System\SystemProcess</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\SystemProcess\RunningSystemProcessStdIO.h">
-      <Filter>Kx\System\SystemProcess</Filter>
+    <ClInclude Include="kxf\System\SystemProcess\RunningSystemProcessStdIO.h">
+      <Filter>kxf\System\SystemProcess</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\SystemProcess\ProcessEvent.h">
-      <Filter>Kx\System\SystemProcess</Filter>
+    <ClInclude Include="kxf\System\SystemProcess\ProcessEvent.h">
+      <Filter>kxf\System\SystemProcess</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\SystemProcess\CreateProcessExecutor.h">
-      <Filter>Kx\System\SystemProcess</Filter>
+    <ClInclude Include="kxf\System\SystemProcess\CreateProcessExecutor.h">
+      <Filter>kxf\System\SystemProcess</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\SystemProcess.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\SystemProcess.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Windows\SplashWindow.h">
-      <Filter>Kx\UI\Windows</Filter>
+    <ClInclude Include="kxf\UI\Windows\SplashWindow.h">
+      <Filter>kxf\UI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Windows\SplitterWindow.h">
-      <Filter>Kx\UI\Windows</Filter>
+    <ClInclude Include="kxf\UI\Windows\SplitterWindow.h">
+      <Filter>kxf\UI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Windows\TopLevelWindow.h">
-      <Filter>Kx\UI\Windows</Filter>
+    <ClInclude Include="kxf\UI\Windows\TopLevelWindow.h">
+      <Filter>kxf\UI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Windows\ToolTipEx.h">
-      <Filter>Kx\UI\Windows</Filter>
+    <ClInclude Include="kxf\UI\Windows\ToolTipEx.h">
+      <Filter>kxf\UI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Windows\RichToolTip.h">
-      <Filter>Kx\UI\Windows</Filter>
+    <ClInclude Include="kxf\UI\Windows\RichToolTip.h">
+      <Filter>kxf\UI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Windows\CollapsiblePane.h">
-      <Filter>Kx\UI\Windows</Filter>
+    <ClInclude Include="kxf\UI\Windows\CollapsiblePane.h">
+      <Filter>kxf\UI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Windows\Panel.h">
-      <Filter>Kx\UI\Windows</Filter>
+    <ClInclude Include="kxf\UI\Windows\Panel.h">
+      <Filter>kxf\UI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Windows\DrawablePanel.h">
-      <Filter>Kx\UI\Windows</Filter>
+    <ClInclude Include="kxf\UI\Windows\DrawablePanel.h">
+      <Filter>kxf\UI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Windows\Frame.h">
-      <Filter>Kx\UI\Windows</Filter>
+    <ClInclude Include="kxf\UI\Windows\Frame.h">
+      <Filter>kxf\UI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\AUI\AuiNotebook.h">
-      <Filter>Kx\UI\Controls\AUI</Filter>
+    <ClInclude Include="kxf\UI\Controls\AUI\AuiNotebook.h">
+      <Filter>kxf\UI\Controls\AUI</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\AUI\AuiToolBar.h">
-      <Filter>Kx\UI\Controls\AUI</Filter>
+    <ClInclude Include="kxf\UI\Controls\AUI\AuiToolBar.h">
+      <Filter>kxf\UI\Controls\AUI</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\AUI\AuiToolBarEvent.h">
-      <Filter>Kx\UI\Controls\AUI</Filter>
+    <ClInclude Include="kxf\UI\Controls\AUI\AuiToolBarEvent.h">
+      <Filter>kxf\UI\Controls\AUI</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\AUI\AuiToolBarItem.h">
-      <Filter>Kx\UI\Controls\AUI</Filter>
+    <ClInclude Include="kxf\UI\Controls\AUI\AuiToolBarItem.h">
+      <Filter>kxf\UI\Controls\AUI</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Dialogs\Dialog.h">
-      <Filter>Kx\UI\Dialogs</Filter>
+    <ClInclude Include="kxf\UI\Dialogs\Dialog.h">
+      <Filter>kxf\UI\Dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Dialogs\StdDialog.h">
-      <Filter>Kx\UI\Dialogs</Filter>
+    <ClInclude Include="kxf\UI\Dialogs\StdDialog.h">
+      <Filter>kxf\UI\Dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Dialogs\ComboBoxDialog.h">
-      <Filter>Kx\UI\Dialogs</Filter>
+    <ClInclude Include="kxf\UI\Dialogs\ComboBoxDialog.h">
+      <Filter>kxf\UI\Dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Dialogs\SimpleStdDialog.h">
-      <Filter>Kx\UI\Dialogs</Filter>
+    <ClInclude Include="kxf\UI\Dialogs\SimpleStdDialog.h">
+      <Filter>kxf\UI\Dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Dialogs\TextBoxDialog.h">
-      <Filter>Kx\UI\Dialogs</Filter>
+    <ClInclude Include="kxf\UI\Dialogs\TextBoxDialog.h">
+      <Filter>kxf\UI\Dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Dialogs\ProgressDialog.h">
-      <Filter>Kx\UI\Dialogs</Filter>
+    <ClInclude Include="kxf\UI\Dialogs\ProgressDialog.h">
+      <Filter>kxf\UI\Dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Dialogs\CredentialsDialog.h">
-      <Filter>Kx\UI\Dialogs</Filter>
+    <ClInclude Include="kxf\UI\Dialogs\CredentialsDialog.h">
+      <Filter>kxf\UI\Dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Dialogs\FileBrowseDialog.h">
-      <Filter>Kx\UI\Dialogs</Filter>
+    <ClInclude Include="kxf\UI\Dialogs\FileBrowseDialog.h">
+      <Filter>kxf\UI\Dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Dialogs\Private\FileBrowseDialogEvents.h">
-      <Filter>Kx\UI\Dialogs\Private</Filter>
+    <ClInclude Include="kxf\UI\Dialogs\Private\FileBrowseDialogEvents.h">
+      <Filter>kxf\UI\Dialogs\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Dialogs\TaskDialog.h">
-      <Filter>Kx\UI\Dialogs</Filter>
+    <ClInclude Include="kxf\UI\Dialogs\TaskDialog.h">
+      <Filter>kxf\UI\Dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\Private\COM.h">
-      <Filter>Kx\System\Private</Filter>
+    <ClInclude Include="kxf\System\Private\COM.h">
+      <Filter>kxf\System\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Dialogs\Private\TaskDialogNativeInfo.h">
-      <Filter>Kx\UI\Dialogs\Private</Filter>
+    <ClInclude Include="kxf\UI\Dialogs\Private\TaskDialogNativeInfo.h">
+      <Filter>kxf\UI\Dialogs\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Menus\MenuEvent.h">
-      <Filter>Kx\UI\Menus</Filter>
+    <ClInclude Include="kxf\UI\Menus\MenuEvent.h">
+      <Filter>kxf\UI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Menus\MenuItem.h">
-      <Filter>Kx\UI\Menus</Filter>
+    <ClInclude Include="kxf\UI\Menus\MenuItem.h">
+      <Filter>kxf\UI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Menus\Menu.h">
-      <Filter>Kx\UI\Menus</Filter>
+    <ClInclude Include="kxf\UI\Menus\Menu.h">
+      <Filter>kxf\UI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Menus\ShellMenu.h">
-      <Filter>Kx\UI\Menus</Filter>
+    <ClInclude Include="kxf\UI\Menus\ShellMenu.h">
+      <Filter>kxf\UI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\CellState.h">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\CellState.h">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Column.h">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Column.h">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\ColumnID.h">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\ColumnID.h">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Common.h">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Common.h">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\DragAndDrop.h">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\DragAndDrop.h">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Editor.h">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Editor.h">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Event.h">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Event.h">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\HeaderCtrl.h">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\HeaderCtrl.h">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\HeaderCtrl2.h">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\HeaderCtrl2.h">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\MainWindow.h">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\MainWindow.h">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Model.h">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Model.h">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Node.h">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Node.h">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\RenderEngine.h">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\RenderEngine.h">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Renderer.h">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderer.h">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Row.h">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Row.h">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\SortOrder.h">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\SortOrder.h">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\ToolTip.h">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\ToolTip.h">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\View.h">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\View.h">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\CellAttributeOptions.h">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\CellAttributeOptions.h">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Editors\ColorEditor.h">
-      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Editors\ColorEditor.h">
+      <Filter>kxf\UI\Controls\DataView\Editors</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Editors\ComboBoxEditor.h">
-      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Editors\ComboBoxEditor.h">
+      <Filter>kxf\UI\Controls\DataView\Editors</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Editors\DateEditor.h">
-      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Editors\DateEditor.h">
+      <Filter>kxf\UI\Controls\DataView\Editors</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Editors\SpinEditor.h">
-      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Editors\SpinEditor.h">
+      <Filter>kxf\UI\Controls\DataView\Editors</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Editors\TextEditor.h">
-      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Editors\TextEditor.h">
+      <Filter>kxf\UI\Controls\DataView\Editors</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Editors\TimeEditor.h">
-      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Editors\TimeEditor.h">
+      <Filter>kxf\UI\Controls\DataView\Editors</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Renderers\BitmapRenderer.h">
-      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\BitmapRenderer.h">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Renderers\BitmapTextRenderer.h">
-      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\BitmapTextRenderer.h">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Renderers\BitmapTextToggleRenderer.h">
-      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\BitmapTextToggleRenderer.h">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Renderers\HTMLRenderer.h">
-      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\HTMLRenderer.h">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Renderers\ImageListRenderer.h">
-      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\ImageListRenderer.h">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Renderers\NullRenderer.h">
-      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\NullRenderer.h">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Renderers\ProgressRenderer.h">
-      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\ProgressRenderer.h">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Renderers\TextRenderer.h">
-      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\TextRenderer.h">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Renderers\ToggleRenderer.h">
-      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\ToggleRenderer.h">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\Renderers\BitmapListRenderer.h">
-      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\BitmapListRenderer.h">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\BitmapComboBox.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\BitmapComboBox.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\Button.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\Button.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\CheckBox.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\CheckBox.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\ClusterMap.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\ClusterMap.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\ComboBox.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\ComboBox.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\ComboControl.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\ComboControl.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\ComboPopup.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\ComboPopup.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataViewComboBox.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataViewComboBox.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\HTMLWindow.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\HTMLWindow.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\ImageView.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\ImageView.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\IProgressMeter.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\IProgressMeter.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\Label.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\Label.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\Notebook.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\Notebook.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\ProgressBar.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\ProgressBar.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\RadioButton.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\RadioButton.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\SearchBox.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\SearchBox.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\Simplebook.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\Simplebook.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\Slider.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\Slider.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\StaticBitmap.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\StaticBitmap.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\StaticText.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\StaticText.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\StatusBar.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\StatusBar.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\StatusBarEx.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\StatusBarEx.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\StyledTextBox.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\StyledTextBox.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\TextBox.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\TextBox.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\ThumbView.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\ThumbView.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\WebView.h">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClInclude Include="kxf\UI\Controls\WebView.h">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\HiDPIEnabledWindow.h">
-      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    <ClInclude Include="kxf\UI\HiDPIEnabledWindow.h">
+      <Filter>kxf\UI\&lt;UI&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\StdButton.h">
-      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    <ClInclude Include="kxf\UI\StdButton.h">
+      <Filter>kxf\UI\&lt;UI&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\StdDialogButtonSizer.h">
-      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    <ClInclude Include="kxf\UI\StdDialogButtonSizer.h">
+      <Filter>kxf\UI\&lt;UI&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\StdIcon.h">
-      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    <ClInclude Include="kxf\UI\StdIcon.h">
+      <Filter>kxf\UI\&lt;UI&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Validator.h">
-      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    <ClInclude Include="kxf\UI\Validator.h">
+      <Filter>kxf\UI\&lt;UI&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\WindowRefreshScheduler.h">
-      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    <ClInclude Include="kxf\UI\WindowRefreshScheduler.h">
+      <Filter>kxf\UI\&lt;UI&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\WindowUpdateLocker.h">
-      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    <ClInclude Include="kxf\UI\WindowUpdateLocker.h">
+      <Filter>kxf\UI\&lt;UI&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\WithDropdownMenu.h">
-      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    <ClInclude Include="kxf\UI\WithDropdownMenu.h">
+      <Filter>kxf\UI\&lt;UI&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\CellAttribute.h">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\CellAttribute.h">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Localization\LocalizationPackage.h">
-      <Filter>Kx\Localization</Filter>
+    <ClInclude Include="kxf\Localization\LocalizationPackage.h">
+      <Filter>kxf\Localization</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\Private\SystemInformationDefinesMapping.h">
-      <Filter>Kx\System\Private</Filter>
+    <ClInclude Include="kxf\System\Private\SystemInformationDefinesMapping.h">
+      <Filter>kxf\System\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\StreamWrappers.h">
-      <Filter>Kx\General\&lt;Streams&gt;</Filter>
+    <ClInclude Include="kxf\General\StreamWrappers.h">
+      <Filter>kxf\General\&lt;Streams&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\StreamDelegate.h">
-      <Filter>Kx\General\&lt;Streams&gt;</Filter>
+    <ClInclude Include="kxf\General\StreamDelegate.h">
+      <Filter>kxf\General\&lt;Streams&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\MemoryStream.h">
-      <Filter>Kx\General\&lt;Streams&gt;</Filter>
+    <ClInclude Include="kxf\General\MemoryStream.h">
+      <Filter>kxf\General\&lt;Streams&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\XMLDocument.h">
-      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    <ClInclude Include="kxf\General\XMLDocument.h">
+      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\XDocument.h">
-      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    <ClInclude Include="kxf\General\XDocument.h">
+      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\TextDocument.h">
-      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    <ClInclude Include="kxf\General\TextDocument.h">
+      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\JSONDocument.h">
-      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    <ClInclude Include="kxf\General\JSONDocument.h">
+      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\INIDocument.h">
-      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    <ClInclude Include="kxf\General\INIDocument.h">
+      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\HTMLDocument.h">
-      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    <ClInclude Include="kxf\General\HTMLDocument.h">
+      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\DateTime\TimeClock.h">
-      <Filter>Kx\General\DateTime</Filter>
+    <ClInclude Include="kxf\General\DateTime\TimeClock.h">
+      <Filter>kxf\General\DateTime</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\DateTime\TimeSpan.h">
-      <Filter>Kx\General\DateTime</Filter>
+    <ClInclude Include="kxf\General\DateTime\TimeSpan.h">
+      <Filter>kxf\General\DateTime</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\DateTime\ITimeClock.h">
-      <Filter>Kx\General\DateTime</Filter>
+    <ClInclude Include="kxf\General\DateTime\ITimeClock.h">
+      <Filter>kxf\General\DateTime</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\DateTime.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\DateTime.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\DateTime\Common.h">
-      <Filter>Kx\General\DateTime</Filter>
+    <ClInclude Include="kxf\General\DateTime\Common.h">
+      <Filter>kxf\General\DateTime</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\DateTime\DateTime.h">
-      <Filter>Kx\General\DateTime</Filter>
+    <ClInclude Include="kxf\General\DateTime\DateTime.h">
+      <Filter>kxf\General\DateTime</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\DateTime\TimeZone.h">
-      <Filter>Kx\General\DateTime</Filter>
+    <ClInclude Include="kxf\General\DateTime\TimeZone.h">
+      <Filter>kxf\General\DateTime</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\DateTime\Private\Mapping.h">
-      <Filter>Kx\General\DateTime\Private</Filter>
+    <ClInclude Include="kxf\General\DateTime\Private\Mapping.h">
+      <Filter>kxf\General\DateTime\Private</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\pch.hpp">
-      <Filter>Kx</Filter>
+    <ClInclude Include="kxf\pch.hpp">
+      <Filter>kxf</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\DateTime\DateSpan.h">
-      <Filter>Kx\General\DateTime</Filter>
+    <ClInclude Include="kxf\General\DateTime\DateSpan.h">
+      <Filter>kxf\General\DateTime</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\RegEx.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\RegEx.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Crypto\UserCredentials.h">
-      <Filter>Kx\Crypto</Filter>
+    <ClInclude Include="kxf\Crypto\UserCredentials.h">
+      <Filter>kxf\Crypto</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\UserName.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\UserName.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Threading\ThreadEvent.h">
-      <Filter>Kx\Threading</Filter>
+    <ClInclude Include="kxf\Threading\ThreadEvent.h">
+      <Filter>kxf\Threading</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView\DataView.h">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView\DataView.h">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\DataView.h">
-      <Filter>Kx\UI\Controls</Filter>
+    <ClInclude Include="kxf\UI\Controls\DataView.h">
+      <Filter>kxf\UI\Controls</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Controls\AUI.h">
-      <Filter>Kx\UI\Controls</Filter>
+    <ClInclude Include="kxf\UI\Controls\AUI.h">
+      <Filter>kxf\UI\Controls</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\wxWidgets\SystemOptions.h">
-      <Filter>Kx\wxWidgets</Filter>
+    <ClInclude Include="kxf\wxWidgets\SystemOptions.h">
+      <Filter>kxf\wxWidgets</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\wxWidgets\Common.h">
-      <Filter>Kx\wxWidgets</Filter>
+    <ClInclude Include="kxf\wxWidgets\Common.h">
+      <Filter>kxf\wxWidgets</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\System\SystemAppearance.h">
-      <Filter>Kx\System</Filter>
+    <ClInclude Include="kxf\System\SystemAppearance.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\Drawing\Geometry.h">
-      <Filter>Kx\Drawing</Filter>
+    <ClInclude Include="kxf\Drawing\Geometry.h">
+      <Filter>kxf\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\Common.h">
-      <Filter>Kx\UI</Filter>
+    <ClInclude Include="kxf\UI\Common.h">
+      <Filter>kxf\UI</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\General\FlagSet.h">
-      <Filter>Kx\General</Filter>
+    <ClInclude Include="kxf\General\FlagSet.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="Kx\UI\WindowWithStyles.h">
-      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    <ClInclude Include="kxf\UI\WindowWithStyles.h">
+      <Filter>kxf\UI\&lt;UI&gt;</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Kx\EventSystem\BroadcastProcessor.cpp">
-      <Filter>Kx\EventSystem</Filter>
+    <ClCompile Include="kxf\EventSystem\BroadcastProcessor.cpp">
+      <Filter>kxf\EventSystem</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\EventSystem\EventBuilder.cpp">
-      <Filter>Kx\EventSystem</Filter>
+    <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
+      <Filter>kxf\EventSystem</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Async\Coroutine\CoroutineImpl.cpp">
-      <Filter>Kx\Async\Coroutine</Filter>
+    <ClCompile Include="kxf\Async\Coroutine\CoroutineImpl.cpp">
+      <Filter>kxf\Async\Coroutine</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\Node.cpp">
-      <Filter>Kx\Sciter</Filter>
+    <ClCompile Include="kxf\Sciter\Node.cpp">
+      <Filter>kxf\Sciter</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\Element.cpp">
-      <Filter>Kx\Sciter</Filter>
+    <ClCompile Include="kxf\Sciter\Element.cpp">
+      <Filter>kxf\Sciter</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\Controls\Label.cpp">
-      <Filter>Kx\Sciter\Controls</Filter>
+    <ClCompile Include="kxf\Sciter\Controls\Label.cpp">
+      <Filter>kxf\Sciter\Controls</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\Host.cpp">
-      <Filter>Kx\Sciter</Filter>
+    <ClCompile Include="kxf\Sciter\Host.cpp">
+      <Filter>kxf\Sciter</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\Common.cpp">
-      <Filter>Kx\Sciter</Filter>
+    <ClCompile Include="kxf\Sciter\Common.cpp">
+      <Filter>kxf\Sciter</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\SciterAPI.cpp">
-      <Filter>Kx\Sciter</Filter>
+    <ClCompile Include="kxf\Sciter\SciterAPI.cpp">
+      <Filter>kxf\Sciter</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\Internal.cpp">
-      <Filter>Kx\Sciter</Filter>
+    <ClCompile Include="kxf\Sciter\Internal.cpp">
+      <Filter>kxf\Sciter</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\Events\Event.cpp">
-      <Filter>Kx\Sciter\Events</Filter>
+    <ClCompile Include="kxf\Sciter\Events\Event.cpp">
+      <Filter>kxf\Sciter\Events</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\IWindowRenderer.cpp">
-      <Filter>Kx\Sciter</Filter>
+    <ClCompile Include="kxf\Sciter\IWindowRenderer.cpp">
+      <Filter>kxf\Sciter</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\Renderers\DirectX.cpp">
-      <Filter>Kx\Sciter\Renderers</Filter>
+    <ClCompile Include="kxf\Sciter\Renderers\DirectX.cpp">
+      <Filter>kxf\Sciter\Renderers</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\Renderers\FPSCounter.cpp">
-      <Filter>Kx\Sciter\Renderers</Filter>
+    <ClCompile Include="kxf\Sciter\Renderers\FPSCounter.cpp">
+      <Filter>kxf\Sciter\Renderers</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\Widget.cpp">
-      <Filter>Kx\Sciter</Filter>
+    <ClCompile Include="kxf\Sciter\Widget.cpp">
+      <Filter>kxf\Sciter</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\EventSystem\EventHandlerStack.cpp">
-      <Filter>Kx\EventSystem</Filter>
+    <ClCompile Include="kxf\EventSystem\EventHandlerStack.cpp">
+      <Filter>kxf\EventSystem</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\EventDispatcher.cpp">
-      <Filter>Kx\Sciter</Filter>
+    <ClCompile Include="kxf\Sciter\EventDispatcher.cpp">
+      <Filter>kxf\Sciter</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\WidgetFactory.cpp">
-      <Filter>Kx\Sciter</Filter>
+    <ClCompile Include="kxf\Sciter\WidgetFactory.cpp">
+      <Filter>kxf\Sciter</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\ScriptValue.cpp">
-      <Filter>Kx\Sciter</Filter>
+    <ClCompile Include="kxf\Sciter\ScriptValue.cpp">
+      <Filter>kxf\Sciter</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\GraphicsRenderer\GraphicsBitmap.cpp">
-      <Filter>Kx\Sciter\GraphicsRenderer</Filter>
+    <ClCompile Include="kxf\Sciter\GraphicsRenderer\GraphicsBitmap.cpp">
+      <Filter>kxf\Sciter\GraphicsRenderer</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\GraphicsRenderer\GraphicsText.cpp">
-      <Filter>Kx\Sciter\GraphicsRenderer</Filter>
+    <ClCompile Include="kxf\Sciter\GraphicsRenderer\GraphicsText.cpp">
+      <Filter>kxf\Sciter\GraphicsRenderer</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\GraphicsRenderer\GraphicsPath.cpp">
-      <Filter>Kx\Sciter\GraphicsRenderer</Filter>
+    <ClCompile Include="kxf\Sciter\GraphicsRenderer\GraphicsPath.cpp">
+      <Filter>kxf\Sciter\GraphicsRenderer</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\GraphicsRenderer\GraphicsContext.cpp">
-      <Filter>Kx\Sciter\GraphicsRenderer</Filter>
+    <ClCompile Include="kxf\Sciter\GraphicsRenderer\GraphicsContext.cpp">
+      <Filter>kxf\Sciter\GraphicsRenderer</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Sciter\Events\PaintEvent.cpp">
-      <Filter>Kx\Sciter\Events</Filter>
+    <ClCompile Include="kxf\Sciter\Events\PaintEvent.cpp">
+      <Filter>kxf\Sciter\Events</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\FileSystem\FSPath.cpp">
-      <Filter>Kx\FileSystem</Filter>
+    <ClCompile Include="kxf\FileSystem\FSPath.cpp">
+      <Filter>kxf\FileSystem</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\FileSystem\Common.cpp">
-      <Filter>Kx\FileSystem</Filter>
+    <ClCompile Include="kxf\FileSystem\Common.cpp">
+      <Filter>kxf\FileSystem</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\ShellFileType.cpp">
-      <Filter>Kx\System</Filter>
+    <ClCompile Include="kxf\System\ShellFileType.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\ShellFileTypeInfo.cpp">
-      <Filter>Kx\System</Filter>
+    <ClCompile Include="kxf\System\ShellFileTypeInfo.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\ShellFileTypeManager.cpp">
-      <Filter>Kx\System</Filter>
+    <ClCompile Include="kxf\System\ShellFileTypeManager.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Threading\JoinableThread.cpp">
-      <Filter>Kx\Threading</Filter>
+    <ClCompile Include="kxf\Threading\JoinableThread.cpp">
+      <Filter>kxf\Threading</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\FileSystem\FileOperations.cpp">
-      <Filter>Kx\FileSystem</Filter>
+    <ClCompile Include="kxf\FileSystem\FileOperations.cpp">
+      <Filter>kxf\FileSystem</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\BinarySize.cpp">
-      <Filter>Kx\General</Filter>
+    <ClCompile Include="kxf\General\BinarySize.cpp">
+      <Filter>kxf\General</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\FileSystem\FileItem.cpp">
-      <Filter>Kx\FileSystem</Filter>
+    <ClCompile Include="kxf\FileSystem\FileItem.cpp">
+      <Filter>kxf\FileSystem</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\FileSystem\NativeFileSystem.cpp">
-      <Filter>Kx\FileSystem</Filter>
+    <ClCompile Include="kxf\FileSystem\NativeFileSystem.cpp">
+      <Filter>kxf\FileSystem</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\FileSystem\LegacyVolume.cpp">
-      <Filter>Kx\FileSystem</Filter>
+    <ClCompile Include="kxf\FileSystem\LegacyVolume.cpp">
+      <Filter>kxf\FileSystem</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\FileSystem\StorageVolume.cpp">
-      <Filter>Kx\FileSystem</Filter>
+    <ClCompile Include="kxf\FileSystem\StorageVolume.cpp">
+      <Filter>kxf\FileSystem</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\FileSystem\RecycleBin.cpp">
-      <Filter>Kx\FileSystem</Filter>
+    <ClCompile Include="kxf\FileSystem\RecycleBin.cpp">
+      <Filter>kxf\FileSystem</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\ShellOperations.cpp">
-      <Filter>Kx\System</Filter>
+    <ClCompile Include="kxf\System\ShellOperations.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\COM.cpp">
-      <Filter>Kx\System</Filter>
+    <ClCompile Include="kxf\System\COM.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\ErrorCodeValue.cpp">
-      <Filter>Kx\System</Filter>
+    <ClCompile Include="kxf\System\ErrorCodeValue.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\ErrorCode.cpp">
-      <Filter>Kx\System</Filter>
+    <ClCompile Include="kxf\System\ErrorCode.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Compression\IArchive.cpp">
-      <Filter>Kx\Compression</Filter>
+    <ClCompile Include="kxf\Compression\IArchive.cpp">
+      <Filter>kxf\Compression</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Compression\ZLibStream.cpp">
-      <Filter>Kx\Compression</Filter>
+    <ClCompile Include="kxf\Compression\ZLibStream.cpp">
+      <Filter>kxf\Compression</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Compression\LZ4Stream.cpp">
-      <Filter>Kx\Compression</Filter>
+    <ClCompile Include="kxf\Compression\LZ4Stream.cpp">
+      <Filter>kxf\Compression</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\Version.cpp">
-      <Filter>Kx\General</Filter>
+    <ClCompile Include="kxf\General\Version.cpp">
+      <Filter>kxf\General</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\Private\VersionImpl.cpp">
-      <Filter>Kx\General\Private</Filter>
+    <ClCompile Include="kxf\General\Private\VersionImpl.cpp">
+      <Filter>kxf\General\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\Any.cpp">
-      <Filter>Kx\General</Filter>
+    <ClCompile Include="kxf\General\Any.cpp">
+      <Filter>kxf\General</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\Color.cpp">
-      <Filter>Kx\General</Filter>
+    <ClCompile Include="kxf\General\Color.cpp">
+      <Filter>kxf\General</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\UniversallyUniqueID.cpp">
-      <Filter>Kx\General</Filter>
+    <ClCompile Include="kxf\General\UniversallyUniqueID.cpp">
+      <Filter>kxf\General</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\String.cpp">
-      <Filter>Kx\General</Filter>
+    <ClCompile Include="kxf\General\String.cpp">
+      <Filter>kxf\General</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\StringFormater.cpp">
-      <Filter>Kx\General</Filter>
+    <ClCompile Include="kxf\General\StringFormater.cpp">
+      <Filter>kxf\General</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\NativeAPI.cpp">
-      <Filter>Kx\System</Filter>
+    <ClCompile Include="kxf\System\NativeAPI.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\SystemInformation.cpp">
-      <Filter>Kx\System</Filter>
+    <ClCompile Include="kxf\System\SystemInformation.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\CredentialStore.cpp">
-      <Filter>Kx\System</Filter>
+    <ClCompile Include="kxf\System\CredentialStore.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Crypto\Crypto.cpp">
-      <Filter>Kx\Crypto</Filter>
+    <ClCompile Include="kxf\Crypto\Crypto.cpp">
+      <Filter>kxf\Crypto</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Crypto\Common.cpp">
-      <Filter>Kx\Crypto</Filter>
+    <ClCompile Include="kxf\Crypto\Common.cpp">
+      <Filter>kxf\Crypto</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Crypto\SecretValue.cpp">
-      <Filter>Kx\Crypto</Filter>
+    <ClCompile Include="kxf\Crypto\SecretValue.cpp">
+      <Filter>kxf\Crypto</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\CFunctionCompiler.cpp">
-      <Filter>Kx\System</Filter>
+    <ClCompile Include="kxf\System\CFunctionCompiler.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\Registry.cpp">
-      <Filter>Kx\System</Filter>
+    <ClCompile Include="kxf\System\Registry.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Network\Common.cpp">
-      <Filter>Kx\Network</Filter>
+    <ClCompile Include="kxf\Network\Common.cpp">
+      <Filter>kxf\Network</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Utility\String.cpp">
-      <Filter>Kx\Utility</Filter>
+    <ClCompile Include="kxf\Utility\String.cpp">
+      <Filter>kxf\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Utility\System.cpp">
-      <Filter>Kx\Utility</Filter>
+    <ClCompile Include="kxf\Utility\System.cpp">
+      <Filter>kxf\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\Private\HTML\serialize.cpp">
-      <Filter>Kx\General\Private\HTML</Filter>
+    <ClCompile Include="kxf\General\Private\HTML\serialize.cpp">
+      <Filter>kxf\General\Private\HTML</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\Private\HTML\clean_text.cpp">
-      <Filter>Kx\General\Private\HTML</Filter>
+    <ClCompile Include="kxf\General\Private\HTML\clean_text.cpp">
+      <Filter>kxf\General\Private\HTML</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Network\URI.cpp">
-      <Filter>Kx\Network</Filter>
+    <ClCompile Include="kxf\Network\URI.cpp">
+      <Filter>kxf\Network</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Network\URL.cpp">
-      <Filter>Kx\Network</Filter>
+    <ClCompile Include="kxf\Network\URL.cpp">
+      <Filter>kxf\Network</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Network\CURL.cpp">
-      <Filter>Kx\Network</Filter>
+    <ClCompile Include="kxf\Network\CURL.cpp">
+      <Filter>kxf\Network</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Compression\ArchiveEvent.cpp">
-      <Filter>Kx\Compression</Filter>
+    <ClCompile Include="kxf\Compression\ArchiveEvent.cpp">
+      <Filter>kxf\Compression</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\FileSystem\FileOperationEvent.cpp">
-      <Filter>Kx\FileSystem</Filter>
+    <ClCompile Include="kxf\FileSystem\FileOperationEvent.cpp">
+      <Filter>kxf\FileSystem</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Network\WebSocket.cpp">
-      <Filter>Kx\Network</Filter>
+    <ClCompile Include="kxf\Network\WebSocket.cpp">
+      <Filter>kxf\Network</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Network\WebSocket\SecureClient.cpp">
-      <Filter>Kx\Network\WebSocket</Filter>
+    <ClCompile Include="kxf\Network\WebSocket\SecureClient.cpp">
+      <Filter>kxf\Network\WebSocket</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Network\WebSocket\Event.cpp">
-      <Filter>Kx\Network\WebSocket</Filter>
+    <ClCompile Include="kxf\Network\WebSocket\Event.cpp">
+      <Filter>kxf\Network\WebSocket</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Network\CURL\Private\CURL.cpp">
-      <Filter>Kx\Network\CURL\Private</Filter>
+    <ClCompile Include="kxf\Network\CURL\Private\CURL.cpp">
+      <Filter>kxf\Network\CURL\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Network\CURL\Event.cpp">
-      <Filter>Kx\Network\CURL</Filter>
+    <ClCompile Include="kxf\Network\CURL\Event.cpp">
+      <Filter>kxf\Network\CURL</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Network\CURL\Session.cpp">
-      <Filter>Kx\Network\CURL</Filter>
+    <ClCompile Include="kxf\Network\CURL\Session.cpp">
+      <Filter>kxf\Network\CURL</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Network\CURL\Reply.cpp">
-      <Filter>Kx\Network\CURL</Filter>
+    <ClCompile Include="kxf\Network\CURL\Reply.cpp">
+      <Filter>kxf\Network\CURL</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Drawing\Common.cpp">
-      <Filter>Kx\Drawing</Filter>
+    <ClCompile Include="kxf\Drawing\Common.cpp">
+      <Filter>kxf\Drawing</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Drawing\ImageList.cpp">
-      <Filter>Kx\Drawing</Filter>
+    <ClCompile Include="kxf\Drawing\ImageList.cpp">
+      <Filter>kxf\Drawing</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Drawing\ImageSet.cpp">
-      <Filter>Kx\Drawing</Filter>
+    <ClCompile Include="kxf\Drawing\ImageSet.cpp">
+      <Filter>kxf\Drawing</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Drawing\DCOperations.cpp">
-      <Filter>Kx\Drawing</Filter>
+    <ClCompile Include="kxf\Drawing\DCOperations.cpp">
+      <Filter>kxf\Drawing</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Drawing\UxTheme.cpp">
-      <Filter>Kx\Drawing</Filter>
+    <ClCompile Include="kxf\Drawing\UxTheme.cpp">
+      <Filter>kxf\Drawing</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\Math.cpp">
-      <Filter>Kx\General</Filter>
+    <ClCompile Include="kxf\General\Math.cpp">
+      <Filter>kxf\General</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\DPIAwareness.cpp">
-      <Filter>Kx\System</Filter>
+    <ClCompile Include="kxf\System\DPIAwareness.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\WOW64FSRedirection.cpp">
-      <Filter>Kx\System</Filter>
+    <ClCompile Include="kxf\System\WOW64FSRedirection.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Localization\Common.cpp">
-      <Filter>Kx\Localization</Filter>
+    <ClCompile Include="kxf\Localization\Common.cpp">
+      <Filter>kxf\Localization</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Localization\Private\StandardLocalization.cpp">
-      <Filter>Kx\Localization\Private</Filter>
+    <ClCompile Include="kxf\Localization\Private\StandardLocalization.cpp">
+      <Filter>kxf\Localization\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Localization\Locale.cpp">
-      <Filter>Kx\Localization</Filter>
+    <ClCompile Include="kxf\Localization\Locale.cpp">
+      <Filter>kxf\Localization</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Localization\Private\LocaleOptions.cpp">
-      <Filter>Kx\Localization\Private</Filter>
+    <ClCompile Include="kxf\Localization\Private\LocaleOptions.cpp">
+      <Filter>kxf\Localization\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\FileSystem\FileStream.cpp">
-      <Filter>Kx\FileSystem</Filter>
+    <ClCompile Include="kxf\FileSystem\FileStream.cpp">
+      <Filter>kxf\FileSystem</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\ShellLink.cpp">
-      <Filter>Kx\System</Filter>
+    <ClCompile Include="kxf\System\ShellLink.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\Private\Shell.cpp">
-      <Filter>Kx\System\Private</Filter>
+    <ClCompile Include="kxf\System\Private\Shell.cpp">
+      <Filter>kxf\System\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\TaskScheduler.cpp">
-      <Filter>Kx\System</Filter>
+    <ClCompile Include="kxf\System\TaskScheduler.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\SharedMemory.cpp">
-      <Filter>Kx\System</Filter>
+    <ClCompile Include="kxf\System\SharedMemory.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Kx\RTTI\ComponentSystem.cpp">
-      <Filter>Kx\RTTI</Filter>
+    <ClCompile Include="kxf\RTTI\ComponentSystem.cpp">
+      <Filter>kxf\RTTI</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\DynamicLibrary.cpp">
-      <Filter>Kx\System</Filter>
+    <ClCompile Include="kxf\System\DynamicLibrary.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\Private\System.cpp">
-      <Filter>Kx\System\Private</Filter>
+    <ClCompile Include="kxf\System\Private\System.cpp">
+      <Filter>kxf\System\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\ExecutableVersionResource.cpp">
-      <Filter>Kx\System</Filter>
+    <ClCompile Include="kxf\System\ExecutableVersionResource.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\SystemProcess\RunningSystemProcess.cpp">
-      <Filter>Kx\System\SystemProcess</Filter>
+    <ClCompile Include="kxf\System\SystemProcess\RunningSystemProcess.cpp">
+      <Filter>kxf\System\SystemProcess</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\SystemProcess\SystemProcessInfo.cpp">
-      <Filter>Kx\System\SystemProcess</Filter>
+    <ClCompile Include="kxf\System\SystemProcess\SystemProcessInfo.cpp">
+      <Filter>kxf\System\SystemProcess</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\SystemProcess\RunningSystemProcessStdIO.cpp">
-      <Filter>Kx\System\SystemProcess</Filter>
+    <ClCompile Include="kxf\System\SystemProcess\RunningSystemProcessStdIO.cpp">
+      <Filter>kxf\System\SystemProcess</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\SystemProcess\ProcessEvent.cpp">
-      <Filter>Kx\System\SystemProcess</Filter>
+    <ClCompile Include="kxf\System\SystemProcess\ProcessEvent.cpp">
+      <Filter>kxf\System\SystemProcess</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\SystemProcess\CreateProcessExecutor.cpp">
-      <Filter>Kx\System\SystemProcess</Filter>
+    <ClCompile Include="kxf\System\SystemProcess\CreateProcessExecutor.cpp">
+      <Filter>kxf\System\SystemProcess</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\SystemProcess.cpp">
-      <Filter>Kx\System</Filter>
+    <ClCompile Include="kxf\System\SystemProcess.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Windows\SplashWindow.cpp">
-      <Filter>Kx\UI\Windows</Filter>
+    <ClCompile Include="kxf\UI\Windows\SplashWindow.cpp">
+      <Filter>kxf\UI\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Windows\SplitterWindow.cpp">
-      <Filter>Kx\UI\Windows</Filter>
+    <ClCompile Include="kxf\UI\Windows\SplitterWindow.cpp">
+      <Filter>kxf\UI\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Windows\TopLevelWindow.cpp">
-      <Filter>Kx\UI\Windows</Filter>
+    <ClCompile Include="kxf\UI\Windows\TopLevelWindow.cpp">
+      <Filter>kxf\UI\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Windows\ToolTipEx.cpp">
-      <Filter>Kx\UI\Windows</Filter>
+    <ClCompile Include="kxf\UI\Windows\ToolTipEx.cpp">
+      <Filter>kxf\UI\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Windows\RichToolTip.cpp">
-      <Filter>Kx\UI\Windows</Filter>
+    <ClCompile Include="kxf\UI\Windows\RichToolTip.cpp">
+      <Filter>kxf\UI\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Windows\CollapsiblePane.cpp">
-      <Filter>Kx\UI\Windows</Filter>
+    <ClCompile Include="kxf\UI\Windows\CollapsiblePane.cpp">
+      <Filter>kxf\UI\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Windows\Panel.cpp">
-      <Filter>Kx\UI\Windows</Filter>
+    <ClCompile Include="kxf\UI\Windows\Panel.cpp">
+      <Filter>kxf\UI\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Windows\DrawablePanel.cpp">
-      <Filter>Kx\UI\Windows</Filter>
+    <ClCompile Include="kxf\UI\Windows\DrawablePanel.cpp">
+      <Filter>kxf\UI\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Windows\Frame.cpp">
-      <Filter>Kx\UI\Windows</Filter>
+    <ClCompile Include="kxf\UI\Windows\Frame.cpp">
+      <Filter>kxf\UI\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\Common.cpp">
-      <Filter>Kx\General</Filter>
+    <ClCompile Include="kxf\General\Common.cpp">
+      <Filter>kxf\General</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\AUI\AuiNotebook.cpp">
-      <Filter>Kx\UI\Controls\AUI</Filter>
+    <ClCompile Include="kxf\UI\Controls\AUI\AuiNotebook.cpp">
+      <Filter>kxf\UI\Controls\AUI</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\AUI\AuiToolBarEvent.cpp">
-      <Filter>Kx\UI\Controls\AUI</Filter>
+    <ClCompile Include="kxf\UI\Controls\AUI\AuiToolBarEvent.cpp">
+      <Filter>kxf\UI\Controls\AUI</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\AUI\AuiToolBarItem.cpp">
-      <Filter>Kx\UI\Controls\AUI</Filter>
+    <ClCompile Include="kxf\UI\Controls\AUI\AuiToolBarItem.cpp">
+      <Filter>kxf\UI\Controls\AUI</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\AUI\AuiToolBar.cpp">
-      <Filter>Kx\UI\Controls\AUI</Filter>
+    <ClCompile Include="kxf\UI\Controls\AUI\AuiToolBar.cpp">
+      <Filter>kxf\UI\Controls\AUI</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Dialogs\Dialog.cpp">
-      <Filter>Kx\UI\Dialogs</Filter>
+    <ClCompile Include="kxf\UI\Dialogs\Dialog.cpp">
+      <Filter>kxf\UI\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Dialogs\StdDialog.cpp">
-      <Filter>Kx\UI\Dialogs</Filter>
+    <ClCompile Include="kxf\UI\Dialogs\StdDialog.cpp">
+      <Filter>kxf\UI\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Dialogs\ComboBoxDialog.cpp">
-      <Filter>Kx\UI\Dialogs</Filter>
+    <ClCompile Include="kxf\UI\Dialogs\ComboBoxDialog.cpp">
+      <Filter>kxf\UI\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Dialogs\SimpleStdDialog.cpp">
-      <Filter>Kx\UI\Dialogs</Filter>
+    <ClCompile Include="kxf\UI\Dialogs\SimpleStdDialog.cpp">
+      <Filter>kxf\UI\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Dialogs\TextBoxDialog.cpp">
-      <Filter>Kx\UI\Dialogs</Filter>
+    <ClCompile Include="kxf\UI\Dialogs\TextBoxDialog.cpp">
+      <Filter>kxf\UI\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Dialogs\ProgressDialog.cpp">
-      <Filter>Kx\UI\Dialogs</Filter>
+    <ClCompile Include="kxf\UI\Dialogs\ProgressDialog.cpp">
+      <Filter>kxf\UI\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Dialogs\CredentialsDialog.cpp">
-      <Filter>Kx\UI\Dialogs</Filter>
+    <ClCompile Include="kxf\UI\Dialogs\CredentialsDialog.cpp">
+      <Filter>kxf\UI\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Utility\Memory.cpp">
-      <Filter>Kx\Utility</Filter>
+    <ClCompile Include="kxf\Utility\Memory.cpp">
+      <Filter>kxf\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Dialogs\FileBrowseDialog.cpp">
-      <Filter>Kx\UI\Dialogs</Filter>
+    <ClCompile Include="kxf\UI\Dialogs\FileBrowseDialog.cpp">
+      <Filter>kxf\UI\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Dialogs\Private\FileBrowseDialogEvents.cpp">
-      <Filter>Kx\UI\Dialogs\Private</Filter>
+    <ClCompile Include="kxf\UI\Dialogs\Private\FileBrowseDialogEvents.cpp">
+      <Filter>kxf\UI\Dialogs\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Dialogs\TaskDialog.cpp">
-      <Filter>Kx\UI\Dialogs</Filter>
+    <ClCompile Include="kxf\UI\Dialogs\TaskDialog.cpp">
+      <Filter>kxf\UI\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Dialogs\Private\TaskDialogNativeInfo.cpp">
-      <Filter>Kx\UI\Dialogs\Private</Filter>
+    <ClCompile Include="kxf\UI\Dialogs\Private\TaskDialogNativeInfo.cpp">
+      <Filter>kxf\UI\Dialogs\Private</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Menus\MenuEvent.cpp">
-      <Filter>Kx\UI\Menus</Filter>
+    <ClCompile Include="kxf\UI\Menus\MenuEvent.cpp">
+      <Filter>kxf\UI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Menus\MenuItem.cpp">
-      <Filter>Kx\UI\Menus</Filter>
+    <ClCompile Include="kxf\UI\Menus\MenuItem.cpp">
+      <Filter>kxf\UI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Menus\Menu.cpp">
-      <Filter>Kx\UI\Menus</Filter>
+    <ClCompile Include="kxf\UI\Menus\Menu.cpp">
+      <Filter>kxf\UI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Menus\ShellMenu.cpp">
-      <Filter>Kx\UI\Menus</Filter>
+    <ClCompile Include="kxf\UI\Menus\ShellMenu.cpp">
+      <Filter>kxf\UI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\CellState.cpp">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\CellState.cpp">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\Column.cpp">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\Column.cpp">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\Common.cpp">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\Common.cpp">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\DragAndDrop.cpp">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\DragAndDrop.cpp">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\Editor.cpp">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\Editor.cpp">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\Event.cpp">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\Event.cpp">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\HeaderCtrl.cpp">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\HeaderCtrl.cpp">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\HeaderCtrl2.cpp">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\HeaderCtrl2.cpp">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\MainWindow.cpp">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\MainWindow.cpp">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\Model.cpp">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\Model.cpp">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\Node.cpp">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\Node.cpp">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\RenderEngine.cpp">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\RenderEngine.cpp">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\Renderer.cpp">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderer.cpp">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\ToolTip.cpp">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\ToolTip.cpp">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\View.cpp">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\View.cpp">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\Editors\ColorEditor.cpp">
-      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\Editors\ColorEditor.cpp">
+      <Filter>kxf\UI\Controls\DataView\Editors</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\Editors\ComboBoxEditor.cpp">
-      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\Editors\ComboBoxEditor.cpp">
+      <Filter>kxf\UI\Controls\DataView\Editors</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\Editors\DateEditor.cpp">
-      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\Editors\DateEditor.cpp">
+      <Filter>kxf\UI\Controls\DataView\Editors</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\Editors\SpinEditor.cpp">
-      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\Editors\SpinEditor.cpp">
+      <Filter>kxf\UI\Controls\DataView\Editors</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\Editors\TextEditor.cpp">
-      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\Editors\TextEditor.cpp">
+      <Filter>kxf\UI\Controls\DataView\Editors</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\Editors\TimeEditor.cpp">
-      <Filter>Kx\UI\Controls\DataView\Editors</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\Editors\TimeEditor.cpp">
+      <Filter>kxf\UI\Controls\DataView\Editors</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\Renderers\BitmapRenderer.cpp">
-      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\BitmapRenderer.cpp">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\Renderers\BitmapTextRenderer.cpp">
-      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\BitmapTextRenderer.cpp">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\Renderers\BitmapTextToggleRenderer.cpp">
-      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\BitmapTextToggleRenderer.cpp">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\Renderers\HTMLRenderer.cpp">
-      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\HTMLRenderer.cpp">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\Renderers\ImageListRenderer.cpp">
-      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\ImageListRenderer.cpp">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\Renderers\ProgressRenderer.cpp">
-      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\ProgressRenderer.cpp">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\Renderers\TextRenderer.cpp">
-      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\TextRenderer.cpp">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\Renderers\ToggleRenderer.cpp">
-      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\ToggleRenderer.cpp">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\Renderers\BitmapListRenderer.cpp">
-      <Filter>Kx\UI\Controls\DataView\Renderers</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\BitmapListRenderer.cpp">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\BitmapComboBox.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\BitmapComboBox.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\Button.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\Button.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\CheckBox.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\CheckBox.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\ClusterMap.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\ClusterMap.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\ComboBox.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\ComboBox.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\ComboControl.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\ComboControl.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataViewComboBox.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataViewComboBox.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\HTMLWindow.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\HTMLWindow.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\ImageView.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\ImageView.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\Label.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\Label.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\Notebook.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\Notebook.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\ProgressBar.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\ProgressBar.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\RadioButton.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\RadioButton.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\SearchBox.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\SearchBox.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\Simplebook.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\Simplebook.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\Slider.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\Slider.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\StaticBitmap.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\StaticBitmap.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\StaticText.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\StaticText.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\StatusBar.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\StatusBar.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\StatusBarEx.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\StatusBarEx.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\StyledTextBox.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\StyledTextBox.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\TextBox.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\TextBox.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\ThumbView.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\ThumbView.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\WebView.cpp">
-      <Filter>Kx\UI\Controls\&lt;Controls&gt;</Filter>
+    <ClCompile Include="kxf\UI\Controls\WebView.cpp">
+      <Filter>kxf\UI\Controls\&lt;Controls&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\HiDPIEnabledWindow.cpp">
-      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    <ClCompile Include="kxf\UI\HiDPIEnabledWindow.cpp">
+      <Filter>kxf\UI\&lt;UI&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\StdDialogButtonSizer.cpp">
-      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    <ClCompile Include="kxf\UI\StdDialogButtonSizer.cpp">
+      <Filter>kxf\UI\&lt;UI&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Validator.cpp">
-      <Filter>Kx\UI\&lt;UI&gt;</Filter>
+    <ClCompile Include="kxf\UI\Validator.cpp">
+      <Filter>kxf\UI\&lt;UI&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Controls\DataView\CellAttribute.cpp">
-      <Filter>Kx\UI\Controls\DataView</Filter>
+    <ClCompile Include="kxf\UI\Controls\DataView\CellAttribute.cpp">
+      <Filter>kxf\UI\Controls\DataView</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Utility\Drawing.cpp">
-      <Filter>Kx\Utility</Filter>
+    <ClCompile Include="kxf\Utility\Drawing.cpp">
+      <Filter>kxf\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\Localization\LocalizationPackage.cpp">
-      <Filter>Kx\Localization</Filter>
+    <ClCompile Include="kxf\Localization\LocalizationPackage.cpp">
+      <Filter>kxf\Localization</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\MemoryStream.cpp">
-      <Filter>Kx\General\&lt;Streams&gt;</Filter>
+    <ClCompile Include="kxf\General\MemoryStream.cpp">
+      <Filter>kxf\General\&lt;Streams&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\XMLNode.cpp">
-      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    <ClCompile Include="kxf\General\XMLNode.cpp">
+      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\XMLDocument.cpp">
-      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    <ClCompile Include="kxf\General\XMLDocument.cpp">
+      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\XMLAttribute.cpp">
-      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    <ClCompile Include="kxf\General\XMLAttribute.cpp">
+      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\XDocument.cpp">
-      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    <ClCompile Include="kxf\General\XDocument.cpp">
+      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\TextDocument.cpp">
-      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    <ClCompile Include="kxf\General\TextDocument.cpp">
+      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\JSONDocument.cpp">
-      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    <ClCompile Include="kxf\General\JSONDocument.cpp">
+      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\INIDocument.cpp">
-      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    <ClCompile Include="kxf\General\INIDocument.cpp">
+      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\HTMLNode.cpp">
-      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    <ClCompile Include="kxf\General\HTMLNode.cpp">
+      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\HTMLDocument.cpp">
-      <Filter>Kx\General\&lt;Parsers&gt;</Filter>
+    <ClCompile Include="kxf\General\HTMLDocument.cpp">
+      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\DateTime\TimeSpan.cpp">
-      <Filter>Kx\General\DateTime</Filter>
+    <ClCompile Include="kxf\General\DateTime\TimeSpan.cpp">
+      <Filter>kxf\General\DateTime</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\DateTime\TimeClock.cpp">
-      <Filter>Kx\General\DateTime</Filter>
+    <ClCompile Include="kxf\General\DateTime\TimeClock.cpp">
+      <Filter>kxf\General\DateTime</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\DateTime\DateTime.cpp">
-      <Filter>Kx\General\DateTime</Filter>
+    <ClCompile Include="kxf\General\DateTime\DateTime.cpp">
+      <Filter>kxf\General\DateTime</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\DateTime\TimeZone.cpp">
-      <Filter>Kx\General\DateTime</Filter>
+    <ClCompile Include="kxf\General\DateTime\TimeZone.cpp">
+      <Filter>kxf\General\DateTime</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\General\DateTime\DateSpan.cpp">
-      <Filter>Kx\General\DateTime</Filter>
+    <ClCompile Include="kxf\General\DateTime\DateSpan.cpp">
+      <Filter>kxf\General\DateTime</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\UserName.cpp">
-      <Filter>Kx\System</Filter>
+    <ClCompile Include="kxf\System\UserName.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\System\SystemAppearance.cpp">
-      <Filter>Kx\System</Filter>
+    <ClCompile Include="kxf\System\SystemAppearance.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="Kx\UI\Common.cpp">
-      <Filter>Kx\UI</Filter>
+    <ClCompile Include="kxf\UI\Common.cpp">
+      <Filter>kxf\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Kx\System\Private\ErrorCodeNtStatus.i">
-      <Filter>Kx\System\Private</Filter>
+    <None Include="kxf\System\Private\ErrorCodeNtStatus.i">
+      <Filter>kxf\System\Private</Filter>
     </None>
     <None Include=".gitattributes">
       <Filter>Resource Files</Filter>
@@ -1887,8 +1887,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Natvis Include="Kx\General\Color.natvis">
-      <Filter>Kx\General</Filter>
+    <Natvis Include="kxf\General\Color.natvis">
+      <Filter>kxf\General</Filter>
     </Natvis>
   </ItemGroup>
 </Project>

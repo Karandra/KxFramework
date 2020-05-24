@@ -36,7 +36,7 @@ If you're using precompiled headers in your project don't forget to include `Kx/
 #define _CRT_SECURE_NO_DEPRECATE
 #define _CRT_SECURE_NO_WARNINGS
 
-#include <Kx/pch.hpp>
+#include <kxf/pch.hpp>
 
 // Additional headers
 ```
