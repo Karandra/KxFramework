@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Widget.h"
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	// Layout
 	LayoutFlow Widget::GetLayoutFlow() const

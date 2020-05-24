@@ -3,9 +3,9 @@
 #include "Kx/Drawing/WithImageList.h"
 #include "BitmapListRenderer.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
-	class KX_API ImageListValue: public TextValue, public BitmapValueBase, public KxFramework::WithImageList
+	class KX_API ImageListValue: public TextValue, public BitmapValueBase, public kxf::WithImageList
 	{
 		public:
 			ImageListValue() = default;
@@ -13,11 +13,11 @@ namespace KxFramework::UI::DataView
 				:TextValue(text)
 			{
 			}
-			ImageListValue(const KxFramework::ImageList& imageList)
+			ImageListValue(const kxf::ImageList& imageList)
 			{
 				WithImageList::SetImageList(&imageList);
 			}
-			ImageListValue(KxFramework::ImageList* imageList)
+			ImageListValue(kxf::ImageList* imageList)
 			{
 				WithImageList::AssignImageList(imageList);
 			}
@@ -37,7 +37,7 @@ namespace KxFramework::UI::DataView
 			}
 			size_t GetBitmapsCount() const
 			{
-				if (const KxFramework::ImageList* imageList = WithImageList::GetImageList())
+				if (const kxf::ImageList* imageList = WithImageList::GetImageList())
 				{
 					return imageList->GetImageCount();
 				}
@@ -45,7 +45,7 @@ namespace KxFramework::UI::DataView
 			}
 			wxBitmap GetBitmap(size_t index) const
 			{
-				const KxFramework::ImageList* imageList = WithImageList::GetImageList();
+				const kxf::ImageList* imageList = WithImageList::GetImageList();
 				if (imageList && index < (size_t)imageList->GetImageCount())
 				{
 					return imageList->GetBitmap(index);
@@ -54,7 +54,7 @@ namespace KxFramework::UI::DataView
 			}
 			void AddBitmap(const wxBitmap& bitmap)
 			{
-				if (KxFramework::ImageList* imageList = WithImageList::GetImageList())
+				if (kxf::ImageList* imageList = WithImageList::GetImageList())
 				{
 					imageList->Add(bitmap);
 				}
@@ -66,7 +66,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API ImageListRenderer: public BitmapListRendererBase
 	{

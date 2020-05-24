@@ -4,7 +4,7 @@
 #include <wx/colourdata.h>
 class wxGenericColourDialog;
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	enum class ColorEditorOption
 	{
@@ -15,12 +15,12 @@ namespace KxFramework::UI::DataView
 		ShowAlpha = 1 << 2,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::DataView::ColorEditorOption);
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API ColorValue: public WithOptions<ColorEditorOption, ColorEditorOption::None>
 	{
@@ -86,7 +86,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API ColorEditor: public Editor
 	{

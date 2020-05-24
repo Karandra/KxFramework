@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "EventHandlerStack.h"
 
-namespace KxFramework
+namespace kxf
 {
 	bool EvtHandlerStack::Push(wxEvtHandler& evtHandler)
 	{

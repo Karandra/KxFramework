@@ -2,7 +2,7 @@
 #include "CFunction.h"
 #include <ffi.h>
 
-namespace KxFramework::FFI::Private
+namespace kxf::FFI::Private
 {
 	constexpr const ffi_type* GetFFIType(TypeID type) noexcept
 	{
@@ -77,7 +77,7 @@ namespace KxFramework::FFI::Private
 	};
 }
 
-namespace KxFramework::FFI
+namespace kxf::FFI
 {
 	bool CFunctionCompiler::IsCreated() const noexcept
 	{

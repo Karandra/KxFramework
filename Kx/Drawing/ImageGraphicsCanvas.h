@@ -3,7 +3,7 @@
 #include "GraphicsCanvas.h"
 #include "Private/GraphicsCanvas.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API ImageGraphicsCanvas: public GraphicsCanvas
 	{

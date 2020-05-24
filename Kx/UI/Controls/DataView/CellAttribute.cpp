@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CellAttribute.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	wxFont CellAttribute::GetEffectiveFont(const wxFont& baseFont) const
 	{

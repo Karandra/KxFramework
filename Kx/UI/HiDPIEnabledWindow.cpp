@@ -2,7 +2,7 @@
 #include "HiDPIEnabledWindow.h"
 #include "Kx/System/NativeAPI.h"
 
-namespace KxFramework::UI::Private
+namespace kxf::UI::Private
 {
 	bool HiDPIEnabledWindowBase::DoEnableNonClientDPIScaling(wxWindow& window, bool enable)
 	{

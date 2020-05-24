@@ -5,7 +5,7 @@
 #include "LegacyVolume.h"
 #include "Kx/General/BinarySize.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class IFileSystem;
 
@@ -19,7 +19,7 @@ namespace KxFramework
 	Kx_DeclareFlagSet(FSRecycleBinOpFlag);
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class RecycleBin final
 	{

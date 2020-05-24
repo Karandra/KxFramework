@@ -4,7 +4,7 @@
 #include "Kx/System/UndefWindows.h"
 #include "Kx/System/ErrorCodeValue.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(TextBox, wxTextCtrl);
 

@@ -4,16 +4,16 @@
 
 namespace
 {
-	template<KxFramework::VersionType type, class T>
+	template<kxf::VersionType type, class T>
 	auto&& GetItem(T&& items)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		return std::get<static_cast<size_t>(type)>(items);
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	bool Version::Parse(const String& source, VersionType type)
 	{

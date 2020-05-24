@@ -6,7 +6,7 @@
 #include "MainWindow.h"
 #include "Kx/Utility/CallAtScopeExit.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	void Editor::DestroyControl()
 	{
@@ -74,7 +74,7 @@ namespace KxFramework::UI::DataView
 		if (m_Node && m_Column)
 		{
 			m_IsEditFinished = true;
-			KxFramework::Utility::CallAtScopeExit atExit = [this]()
+			kxf::Utility::CallAtScopeExit atExit = [this]()
 			{
 				OnEndEdit();
 			};
@@ -123,7 +123,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	void EditorControlHandler::DoOnIdle(wxIdleEvent& event)
 	{

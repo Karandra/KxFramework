@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Internal.h"
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	std::vector<BYTE> ToSciterUTF8(const String& text)
 	{

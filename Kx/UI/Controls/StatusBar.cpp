@@ -6,7 +6,7 @@ namespace
 	constexpr int g_DefaultMinHeight = 23;
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(StatusBar, wxStatusBar);
 

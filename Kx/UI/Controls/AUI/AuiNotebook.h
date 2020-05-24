@@ -5,7 +5,7 @@
 #include <wx/aui/auibook.h>
 #include <wx/aui/dockart.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	using AuiDefaultTabArtBase = wxAuiDefaultTabArt;
 	using AuiDefaultDockArtBase = wxAuiDefaultDockArt;
@@ -32,12 +32,12 @@ namespace KxFramework::UI
 		TabFixedWidth = wxAUI_NB_TAB_FIXED_WIDTH,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::AuiNotebookStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API AuiNotebook: public WithImageListWrapper<wxAuiNotebook>
 	{
@@ -94,7 +94,7 @@ namespace KxFramework::UI
 	};
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API AuiDefaultTabArt: public AuiDefaultTabArtBase
 	{
@@ -128,7 +128,7 @@ namespace KxFramework::UI
 	};
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API AuiNotebookDockArtProvider: public AuiDefaultDockArtBase
 	{

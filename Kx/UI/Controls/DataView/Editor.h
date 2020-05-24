@@ -4,7 +4,7 @@
 #include <wx/window.h>
 #include <wx/weakref.h>
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class Node;
 	class View;
@@ -14,7 +14,7 @@ namespace KxFramework::UI::DataView
 	class EditorControlHandler;
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API Editor
 	{
@@ -121,7 +121,7 @@ namespace KxFramework::UI::DataView
 }
 
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API EditorControlHandler: public wxEvtHandler
 	{

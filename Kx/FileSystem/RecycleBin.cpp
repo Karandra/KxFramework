@@ -26,7 +26,7 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	RecycleBin::RecycleBin(LegacyVolume volume)
 		:RecycleBin(volume, NativeFileSystem::Get())

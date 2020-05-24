@@ -1,7 +1,7 @@
 #pragma once
 #include "../Common.h"
 
-namespace KxFramework::Private::ExtraData
+namespace kxf::Private::ExtraData
 {
 	template<class T>
 	constexpr void AssertUntypedStorageType()

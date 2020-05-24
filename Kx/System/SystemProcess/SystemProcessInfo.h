@@ -3,7 +3,7 @@
 #include "RunningSystemProcess.h"
 #include <unordered_map>
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API SystemProcessInfo: public ISystemProcess
 	{

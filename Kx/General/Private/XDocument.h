@@ -2,7 +2,7 @@
 #include "../Common.h"
 #include <type_traits>
 
-namespace KxFramework::XDocument::Private
+namespace kxf::XDocument::Private
 {
 	template<class T>
 	using RemoveRCV = std::remove_cv_t<std::remove_reference_t<T>>;

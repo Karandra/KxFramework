@@ -3,7 +3,7 @@
 #include "FileItem.h"
 #include "IFileSystem.h"
 
-namespace KxFramework
+namespace kxf
 {
 	FileItem& FileItem::Refresh(const IFileSystem& fileSystem)
 	{

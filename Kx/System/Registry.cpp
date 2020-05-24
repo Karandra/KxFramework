@@ -6,7 +6,7 @@
 
 namespace
 {
-	using namespace KxFramework;
+	using namespace kxf;
 
 	constexpr size_t g_MaxKeyNameLength = std::numeric_limits<uint8_t>::max() + 1;
 	constexpr size_t g_MaxValueNameLength = std::numeric_limits<int16_t>::max() + 1;
@@ -65,7 +65,7 @@ namespace
 	}
 	REGSAM MapAccessMode(FlagSet<RegistryAccess> access) noexcept
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		if (access == RegistryAccess::Everything)
 		{
@@ -86,7 +86,7 @@ namespace
 	}
 	REGSAM MapWOW64(RegistryWOW64 wow64) noexcept
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		switch (wow64)
 		{
@@ -261,7 +261,7 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	void* RegistryKey::DoGetBaseKey(RegistryBaseKey baseKey) const noexcept
 	{

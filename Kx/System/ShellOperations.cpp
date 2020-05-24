@@ -29,7 +29,7 @@
 
 namespace
 {
-	using namespace KxFramework;
+	using namespace kxf;
 
 	constexpr UINT MapSHGetFileIconFlag(FlagSet<SHGetFileIconFlag> flags) noexcept
 	{
@@ -153,7 +153,7 @@ namespace
 	}
 }
 
-namespace KxFramework::Shell
+namespace kxf::Shell
 {
 	bool FileOperation(SHOperationType opType, const FSPath& source, const FSPath& destination, wxWindow* window, FlagSet<SHOperationFlags> flags)
 	{

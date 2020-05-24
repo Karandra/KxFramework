@@ -1,7 +1,7 @@
 #pragma once
 #include "Kx/Common.hpp"
 
-namespace KxFramework::Compression
+namespace kxf::Compression
 {
 	using FileIndex = uint32_t;
 	using FileIndexVector = std::vector<FileIndex>;

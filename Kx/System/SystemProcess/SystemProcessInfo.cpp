@@ -4,7 +4,7 @@
 #include <PsAPI.h>
 #include "Kx/System/UndefWindows.h"
 
-namespace KxFramework
+namespace kxf
 {
 	SystemProcessInfo SystemProcessInfo::GetCurrentProcess()
 	{

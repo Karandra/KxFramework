@@ -8,9 +8,9 @@
 namespace
 {
 	template<class TFunc>
-	KxFramework::FSPath CallWinAPIWithLengthPrecalc(const KxFramework::FSPath& filePath, TFunc&& func)
+	kxf::FSPath CallWinAPIWithLengthPrecalc(const kxf::FSPath& filePath, TFunc&& func)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		String path = filePath.GetFullPath(FSPathNamespace::Win32File);
 		const DWORD length = func(path.wc_str(), nullptr, 0);
@@ -27,7 +27,7 @@ namespace
 	}
 }
 
-namespace KxFramework::FileSystem
+namespace kxf::FileSystem
 {
 	FSPath CreateTempPathName(const FSPath& rootDirectory)
 	{

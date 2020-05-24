@@ -1,7 +1,7 @@
 #pragma once
 #include "../Common.h"
 
-namespace KxFramework::COM::Private
+namespace kxf::COM::Private
 {
 	template<class T, class Traits>
 	class BasicPtr

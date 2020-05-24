@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 
-namespace KxFramework
+namespace kxf
 {
 	enum class DPIAwarenessContext
 	{
@@ -15,7 +15,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class ChangeDPIAwareness final
 	{

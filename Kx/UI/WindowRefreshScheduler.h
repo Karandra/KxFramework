@@ -2,7 +2,7 @@
 #include "Common.h"
 #include <wx/window.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	template<class TWindow>
 	class WindowRefreshScheduler: public TWindow

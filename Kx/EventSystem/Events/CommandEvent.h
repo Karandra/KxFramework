@@ -1,7 +1,7 @@
 #pragma once
 #include "Kx/EventSystem/Event.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class CommandEvent: public wxCommandEvent
 	{

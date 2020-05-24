@@ -3,7 +3,7 @@
 #include "Kx/Localization/LocalizationPackage.h"
 #include "Kx/General/StdID.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(SearchBox, wxSearchCtrl);
 

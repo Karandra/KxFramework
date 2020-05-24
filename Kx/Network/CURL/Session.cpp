@@ -8,7 +8,7 @@
 #include <curl/urlapi.h>
 #include <curl/curlver.h>
 
-namespace KxFramework
+namespace kxf
 {
 	size_t CURLSession::OnWriteResponse(char* data, size_t size, size_t count, void* userData)
 	{

@@ -9,7 +9,7 @@
 #include "Kx/Drawing/GCOperations.h"
 #include "wx/generic/private/markuptext.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	static bool operator<(const Size& left, const Size& right)
 	{
@@ -40,7 +40,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView::Markup
+namespace kxf::UI::DataView::Markup
 {
 	class TextOnly: public wxItemMarkupText
 	{
@@ -72,7 +72,7 @@ namespace KxFramework::UI::DataView::Markup
 	};
 }
 
-namespace KxFramework::UI::DataView::Markup
+namespace kxf::UI::DataView::Markup
 {
 	using MarkupMode = Renderer::MarkupMode;
 	template<MarkupMode t_Mode> auto Create(const wxString& string = {})
@@ -136,7 +136,7 @@ namespace KxFramework::UI::DataView::Markup
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	wxDC* RenderEngine::GetTextRenderingDC() const
 	{
@@ -395,7 +395,7 @@ namespace KxFramework::UI::DataView
 	}
 	bool RenderEngine::DrawProgressBar(const Rect& cellRect, CellState cellState, int value, int range, ProgressState state, Color* averageBackgroundColor)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		// Progress bar looks really ugly when it's smaller than 10x10 pixels,
 		// so don't draw it at all in this case.
@@ -479,7 +479,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	void RenderEngine::DrawPlusMinusExpander(wxWindow* window, wxDC& dc, const Rect& canvasRect, int flags)
 	{
@@ -537,7 +537,7 @@ namespace KxFramework::UI::DataView
 	}
 	void RenderEngine::DrawSelectionRect(wxWindow* window, wxDC& dc, const Rect& cellRect, int flags)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		if (UxTheme theme(*window, UxThemeClass::TreeView); theme)
 		{

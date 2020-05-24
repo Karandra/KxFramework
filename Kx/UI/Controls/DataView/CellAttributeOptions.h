@@ -2,13 +2,13 @@
 #include "Common.h"
 #include "Kx/General/WithOptions.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class Renderer;
 	class RenderEngine;
 }
 
-namespace KxFramework::UI::DataView 
+namespace kxf::UI::DataView 
 {
 	enum class CellOption
 	{
@@ -40,14 +40,14 @@ namespace KxFramework::UI::DataView
 		Default = None
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::DataView::CellOption);
 	Kx_DeclareFlagSet(UI::DataView::CellBGOption);
 	Kx_DeclareFlagSet(UI::DataView::CellFontOption);
 }
 
-namespace KxFramework::UI::DataView::CellAttributes
+namespace kxf::UI::DataView::CellAttributes
 {
 	class Options final: public WithOptions<CellOption, CellOption::Default>
 	{
@@ -133,7 +133,7 @@ namespace KxFramework::UI::DataView::CellAttributes
 	};
 }
 
-namespace KxFramework::UI::DataView::CellAttributes
+namespace kxf::UI::DataView::CellAttributes
 {
 	class FontOptions final: public WithOptions<CellFontOption, CellFontOption::Default>
 	{
@@ -184,7 +184,7 @@ namespace KxFramework::UI::DataView::CellAttributes
 	};
 }
 
-namespace KxFramework::UI::DataView::CellAttributes
+namespace kxf::UI::DataView::CellAttributes
 {
 	class BGOptions final: public WithOptions<CellBGOption, CellBGOption::Default>
 	{

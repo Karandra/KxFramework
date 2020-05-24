@@ -3,12 +3,12 @@
 #include <wx/string.h>
 #include <string>
 
-namespace KxFramework
+namespace kxf
 {
 	class String;
 }
 
-namespace KxFramework::Private
+namespace kxf::Private
 {
 	#define Kx_WxStringConvertibleToStd	wxUSE_STL_BASED_WXSTRING && !wxUSE_UNICODE_UTF8
 

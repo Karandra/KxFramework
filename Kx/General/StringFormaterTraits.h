@@ -2,12 +2,12 @@
 #include "Common.h"
 #include <wx/string.h>
 
-namespace KxFramework
+namespace kxf
 {
 	class String;
 }
 
-namespace KxFramework::StringFormatter
+namespace kxf::StringFormatter
 {
 	template<class T>
 	class TypeTraits final
@@ -138,7 +138,7 @@ namespace KxFramework::StringFormatter
 	};
 }
 
-namespace KxFramework::StringFormatter
+namespace kxf::StringFormatter
 {
 	class DefaultFormatTraits
 	{

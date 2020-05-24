@@ -7,7 +7,7 @@ namespace
 	constexpr size_t g_MaxReplacesCount = 1024;
 }
 
-namespace KxFramework::StringFormatter
+namespace kxf::StringFormatter
 {
 	void StringFormatterBase::ReplaceNext(StringView string)
 	{
@@ -135,7 +135,7 @@ namespace KxFramework::StringFormatter
 }
 
 #if 0
-namespace KxFramework::StringFormatter
+namespace kxf::StringFormatter
 {
 	static void TestFunction()
 	{

@@ -4,7 +4,7 @@
 #include "Kx/UI/Controls/Button.h"
 #include "Kx/UI/Dialogs/Dialog.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_CLASS(StdDialogButtonSizer, wxBoxSizer);
 

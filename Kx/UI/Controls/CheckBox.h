@@ -2,7 +2,7 @@
 #include "Kx/UI/Common.h"
 #include <wx/checkbox.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class CheckBoxStyle
 	{
@@ -17,12 +17,12 @@ namespace KxFramework::UI
 		AlignCenterHorizontal = wxALIGN_CENTRE_HORIZONTAL
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::CheckBoxStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API CheckBox: public wxCheckBox
 	{

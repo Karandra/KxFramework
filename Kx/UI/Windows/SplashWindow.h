@@ -3,7 +3,7 @@
 #include "Frame.h"
 #include "Kx/UI/WindowRefreshScheduler.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class SplashWindowStyle
 	{
@@ -12,12 +12,12 @@ namespace KxFramework::UI
 		CenterOnParent = 1 << 0,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::SplashWindowStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API SplashWindow: public WindowRefreshScheduler<Frame>
 	{

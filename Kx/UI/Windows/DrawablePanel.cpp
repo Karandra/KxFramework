@@ -8,7 +8,7 @@ namespace
 	const wxBitmap g_EmptyBitmap = wxBitmap(8, 8, 32);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(DrawablePanel, Panel);
 

@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "UndefWindows.h"
 
-namespace KxFramework::SystemAppearance
+namespace kxf::SystemAppearance
 {
 	String GetName();
 	bool IsDark();

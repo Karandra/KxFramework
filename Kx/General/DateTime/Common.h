@@ -3,7 +3,7 @@
 #include "../String.h"
 #include <wx/datetime.h>
 
-namespace KxFramework
+namespace kxf
 {
 	enum class DateFormatFlag
 	{

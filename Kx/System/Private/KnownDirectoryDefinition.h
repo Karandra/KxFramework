@@ -3,7 +3,7 @@
 #include "Kx/General/IndexedEnum.h"
 #include "Kx/System/KnownDirectoryID.h"
 
-namespace KxFramework::Shell::Private
+namespace kxf::Shell::Private
 {
 	#define KSHDItem(id)	{KnownDirectoryID::##id, wxS(#id)}
 	struct KnownDirectoryDefinition final: IndexedEnumDefinition<KnownDirectoryDefinition, KnownDirectoryID, StringView, true>

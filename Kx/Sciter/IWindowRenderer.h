@@ -1,12 +1,12 @@
 #pragma once
 #include "Common.h"
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	class Host;
 }
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	class KX_API IWindowRenderer
 	{

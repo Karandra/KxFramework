@@ -5,7 +5,7 @@
 #include "Kx/Sciter/Internal.h"
 #include "Kx/Sciter/Element.h"
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	bool GraphicsText::DoAcquire(GraphicsTextHandle* handle)
 	{

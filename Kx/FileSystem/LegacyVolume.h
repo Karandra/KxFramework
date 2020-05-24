@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "FSPath.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API LegacyVolume final
 	{

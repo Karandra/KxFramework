@@ -5,7 +5,7 @@
 #include "Kx/Drawing/Geometry.h"
 #include "CommonDefs.h"
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	String GetLibraryName();
 	Version GetLibraryVersion();
@@ -15,7 +15,7 @@ namespace KxFramework::Sciter
 	void FreeLibrary();
 }
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	String SizeUnitToString(SizeUnit unit);
 	

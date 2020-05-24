@@ -5,12 +5,12 @@
 #include <wx/gdicmn.h>
 #include <wx/region.h>
 
-namespace KxFramework::Drawing
+namespace kxf::Drawing
 {
 	Color GetAreaAverageColor(const wxDC& dc, const Rect& rect);
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API DCClip final
 	{

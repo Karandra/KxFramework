@@ -4,12 +4,12 @@
 #include "Kx/UI/WithDropdownMenu.h"
 #include <wx/aui/auibar.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class AuiToolBar;
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class AuiToolBarItemOption: uint32_t
 	{
@@ -19,12 +19,12 @@ namespace KxFramework::UI
 		MenuOnRightClick = 1 << 2,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::AuiToolBarItemOption);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API AuiToolBarItem: public wxEvtHandler, public WithDropdownMenu, public WithOptions<AuiToolBarItemOption>
 	{

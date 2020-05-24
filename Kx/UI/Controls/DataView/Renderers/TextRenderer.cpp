@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "TextRenderer.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	bool TextValue::FromAny(const wxAny& value)
 	{
@@ -9,7 +9,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	bool TextRenderer::SetValue(const wxAny& value)
 	{

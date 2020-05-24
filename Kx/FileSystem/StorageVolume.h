@@ -4,12 +4,12 @@
 #include "Kx/General/UniversallyUniqueID.h"
 #include "Kx/General/BinarySize.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class LegacyVolume;
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API StorageVolume final
 	{

@@ -5,16 +5,16 @@
 namespace
 {
 	template<class TClock>
-	KxFramework::TimeSpan ChronoClockTimeNow() noexcept
+	kxf::TimeSpan ChronoClockTimeNow() noexcept
 	{
 		using namespace std::chrono;
-		using namespace KxFramework;
+		using namespace kxf;
 
 		return TimeSpan::Milliseconds(duration_cast<milliseconds>(TClock::now().time_since_epoch()).count());
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	TimeSpan SystemClock::Now() const noexcept
 	{

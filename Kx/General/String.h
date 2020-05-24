@@ -5,7 +5,7 @@
 #include <string_view>
 #include "Kx/System/UndefWindows.h"
 
-namespace KxFramework
+namespace kxf
 {
 	using XChar = wxChar;
 	using StringView = std::basic_string_view<XChar>;
@@ -27,7 +27,7 @@ namespace KxFramework
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	template<class T>
 	std::basic_string_view<T> StringViewOf(const std::basic_string<T>& string) noexcept
@@ -96,7 +96,7 @@ namespace KxFramework
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API String final
 	{
@@ -1156,7 +1156,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	// Comparison with char
 	inline bool operator==(const String& left, wxUniChar right)
@@ -1267,11 +1267,11 @@ namespace KxFramework
 namespace std
 {
 	template<>
-	struct hash<KxFramework::String> final
+	struct hash<kxf::String> final
 	{
-		size_t operator()(const KxFramework::String& string) const noexcept
+		size_t operator()(const kxf::String& string) const noexcept
 		{
-			return std::hash<KxFramework::StringView>()(string.GetView());
+			return std::hash<kxf::StringView>()(string.GetView());
 		}
 	};
 }

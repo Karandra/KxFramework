@@ -8,7 +8,7 @@
 #include <wx/icon.h>
 #include <wx/cursor.h>
 
-namespace KxFramework
+namespace kxf
 {
 	enum class DynamicLibraryLoadFlag
 	{
@@ -23,7 +23,7 @@ namespace KxFramework
 	Kx_DeclareFlagSet(DynamicLibraryLoadFlag);
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API DynamicLibrary final
 	{

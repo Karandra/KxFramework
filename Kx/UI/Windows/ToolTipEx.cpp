@@ -12,7 +12,7 @@ namespace
 
 	bool IsBalloonStyleSupported()
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		RegistryKey key(RegistryBaseKey::CurrentUser, wxS("Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced"), RegistryAccess::Read);
 		if (key)
@@ -21,7 +21,7 @@ namespace
 		}
 		return true;
 	}
-	TTTOOLINFOW MakeToolInfo(const KxFramework::UI::ToolTipEx& tooltip, const KxFramework::String& message)
+	TTTOOLINFOW MakeToolInfo(const kxf::UI::ToolTipEx& tooltip, const kxf::String& message)
 	{
 		TTTOOLINFOW info = {};
 		info.cbSize = sizeof(info);
@@ -33,7 +33,7 @@ namespace
 	}
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	bool ToolTipEx::CreateWindow(wxWindow* parent)
 	{

@@ -3,7 +3,7 @@
 #include "Kx/General/String.h"
 #include <array>
 
-namespace KxFramework::Crypto::Private
+namespace kxf::Crypto::Private
 {
 	template<size_t bitLength, class T>
 	constexpr bool IsHashConvertibleToInteger() noexcept
@@ -12,7 +12,7 @@ namespace KxFramework::Crypto::Private
 	}
 }
 
-namespace KxFramework::Crypto
+namespace kxf::Crypto
 {
 	template<size_t bitLength>
 	class HashValue final

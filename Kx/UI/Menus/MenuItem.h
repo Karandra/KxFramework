@@ -3,12 +3,12 @@
 #include "MenuEvent.h"
 #include <wx/menuitem.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class Menu;
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API MenuItem: public wxEvtHandler, public wxMenuItem
 	{
@@ -87,7 +87,7 @@ namespace KxFramework::UI
 	};
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	template<class TItem, class TMenu>
 	class MenuItemIterator

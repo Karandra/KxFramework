@@ -2,7 +2,7 @@
 #include "Common.h"
 #include <wx/window.h>
 
-namespace KxFramework::UI::Private
+namespace kxf::UI::Private
 {
 	class HiDPIEnabledWindowBase
 	{
@@ -17,7 +17,7 @@ namespace KxFramework::UI::Private
 	};
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	template<class TWindow>
 	class HiDPIEnabledWindow: public TWindow, public Private::HiDPIEnabledWindowBase

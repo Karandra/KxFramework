@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "BitmapRenderer.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	bool BitmapValue::FromAny(const wxAny& value)
 	{
@@ -23,7 +23,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	bool BitmapRenderer::SetValue(const wxAny& value)
 	{

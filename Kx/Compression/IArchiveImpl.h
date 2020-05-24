@@ -4,7 +4,7 @@
 #include "Kx/FileSystem/FileStream.h"
 #include "Kx/FileSystem/NativeFileSystem.h"
 
-namespace KxFramework::Compression
+namespace kxf::Compression
 {
 	class ExtractorCallbackBase: public RTTI::ImplementInterface<ExtractorCallbackBase, IExtractionCallback>
 	{
@@ -20,7 +20,7 @@ namespace KxFramework::Compression
 	};
 }
 
-namespace KxFramework::Compression
+namespace kxf::Compression
 {
 	class FileExtractionCallback: public ExtractorCallbackBase
 	{

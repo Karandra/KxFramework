@@ -4,7 +4,7 @@
 #include "MenuItem.h"
 #include <wx/menu.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API Menu: public wxMenu
 	{

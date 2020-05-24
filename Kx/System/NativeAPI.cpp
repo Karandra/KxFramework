@@ -14,7 +14,7 @@ m_LoadedLibraries[static_cast<size_t>(NativeLibrary::##name)].Name = L#name".dll
 #define INIT_FUNCTION_AS(dll, name, in_dll_name)					dll##::name = reinterpret_cast<dll##::T##name>(::GetProcAddress(reinterpret_cast<HMODULE>(m_LoadedLibraries[static_cast<size_t>(NativeLibrary::##dll)].Handle), #in_dll_name))
 #define INIT_FUNCTION(dll, name)									INIT_FUNCTION_AS(dll, name, name)
 
-namespace KxFramework::NativeAPI::Private
+namespace kxf::NativeAPI::Private
 {
 	Loader::Loader() noexcept
 	{
@@ -118,7 +118,7 @@ namespace KxFramework::NativeAPI::Private
 	}
 }
 
-namespace KxFramework::NativeAPI::Private
+namespace kxf::NativeAPI::Private
 {
 	class InitializationModule final: public wxModule
 	{
@@ -151,7 +151,7 @@ namespace KxFramework::NativeAPI::Private
 	wxIMPLEMENT_DYNAMIC_CLASS(InitializationModule, wxModule);
 }
 
-namespace KxFramework::NativeAPI
+namespace kxf::NativeAPI
 {
 	namespace NtDLL
 	{

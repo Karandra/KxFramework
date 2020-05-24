@@ -4,12 +4,12 @@
 #include "Kx/General/DateTime.h"
 #include "Kx/System/UndefWindows.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class String;
 }
 
-namespace KxFramework
+namespace kxf
 {
 	enum class DriveType: uint32_t
 	{
@@ -130,7 +130,7 @@ namespace KxFramework
 	Kx_DeclareFlagSet(FileStreamFlags);
 }
 
-namespace KxFramework::FileSystem
+namespace kxf::FileSystem
 {
 	String GetNamespaceString(FSPathNamespace type);
 	String GetForbiddenChars(const String& except = {});

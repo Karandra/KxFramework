@@ -42,10 +42,10 @@ namespace
 		return status & 0xFFF0000u;
 	}
 
-	std::optional<KxFramework::Win32Error> Win32FromNtStatus(NTSTATUS ntStatus) noexcept
+	std::optional<kxf::Win32Error> Win32FromNtStatus(NTSTATUS ntStatus) noexcept
 	{
 		// https://stackoverflow.com/questions/25566234/how-to-convert-specific-ntstatus-value-to-the-hresult
-		using namespace KxFramework;
+		using namespace kxf;
 
 		if (ntStatus == STATUS_SUCCESS)
 		{
@@ -85,9 +85,9 @@ namespace
 		}
 		return {};
 	}
-	std::optional<KxFramework::Win32Error> Win32FromHRESULT(HRESULT hresult) noexcept
+	std::optional<kxf::Win32Error> Win32FromHRESULT(HRESULT hresult) noexcept
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		if (MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, 0) == static_cast<HRESULT>(hresult & 0xFFFF0000))
 		{
@@ -104,9 +104,9 @@ namespace
 			return {};
 		}
 	}
-	std::optional<KxFramework::NtStatus> NtStatusFromWin32(DWORD win32Code) noexcept
+	std::optional<kxf::NtStatus> NtStatusFromWin32(DWORD win32Code) noexcept
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		auto ntStatus = [win32Code]() -> std::optional<NTSTATUS>
 		{
@@ -125,7 +125,7 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	Win32Error Win32Error::Success() noexcept
 	{
@@ -165,7 +165,7 @@ namespace KxFramework
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	HResult HResult::Success() noexcept
 	{
@@ -237,7 +237,7 @@ namespace KxFramework
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	NtStatus NtStatus::Success() noexcept
 	{

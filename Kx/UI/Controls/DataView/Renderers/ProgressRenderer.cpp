@@ -4,7 +4,7 @@
 #include "../Node.h"
 #include "../Column.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	bool ProgressValueBase::FromAny(const wxAny& value)
 	{
@@ -16,7 +16,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	bool ProgressRenderer::SetValue(const wxAny& value)
 	{

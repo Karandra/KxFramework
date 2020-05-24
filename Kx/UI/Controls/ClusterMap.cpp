@@ -2,13 +2,13 @@
 #include "ClusterMap.h"
 #include "Kx/Drawing/UxTheme.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(ClusterMap, wxControl);
 
 	void ClusterMap::OnPaint(wxPaintEvent& event)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		wxPaintDC dc(this);
 

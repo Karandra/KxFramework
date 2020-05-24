@@ -8,8 +8,8 @@
 
 namespace
 {
-	using namespace KxFramework;
-	using namespace KxFramework::UI;
+	using namespace kxf;
+	using namespace kxf::UI;
 
 	const wxChar* GetStringOrNull(const String& text)
 	{
@@ -182,8 +182,8 @@ namespace
 	}
 	constexpr TASKDIALOG_FLAGS MapTaskDialogStyle(FlagSet<TaskDialogStyle> style) noexcept
 	{
-		using namespace KxFramework;
-		using namespace KxFramework::UI;
+		using namespace kxf;
+		using namespace kxf::UI;
 
 		TASKDIALOG_FLAGS nativeFlags = 0;
 		Utility::AddFlagRef(nativeFlags, TDF_ENABLE_HYPERLINKS, style & TaskDialogStyle::Hyperlinks);
@@ -201,7 +201,7 @@ namespace
 	}
 }
 
-namespace KxFramework::UI::Private
+namespace kxf::UI::Private
 {
 	wxNotifyEvent TaskDialogNativeInfo::CreateEvent(EventID eventID)
 	{

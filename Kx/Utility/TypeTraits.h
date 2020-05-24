@@ -1,7 +1,7 @@
 #pragma once
 #include <type_traits>
 
-namespace KxFramework::Utility
+namespace kxf::Utility
 {
 	template<class>
 	struct MethodTraits;
@@ -19,7 +19,7 @@ namespace KxFramework::Utility
 	using NthTypeOf = typename std::tuple_element<N, std::tuple<T...>>::type;
 }
 
-namespace KxFramework::Utility
+namespace kxf::Utility
 {
 	template<class TCallable, class... Args>
 	struct CallableTraits
@@ -31,7 +31,7 @@ namespace KxFramework::Utility
 	};
 }
 
-namespace KxFramework::Utility
+namespace kxf::Utility
 {
 	template<class T>
 	struct is_unique_ptr: std::false_type

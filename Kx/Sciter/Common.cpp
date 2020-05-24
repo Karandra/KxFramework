@@ -5,7 +5,7 @@
 #include "Kx/System/DynamicLibrary.h"
 #include "Kx/System/ExecutableVersionResource.h"
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	void* g_SciterLibrary = nullptr;
 
@@ -56,7 +56,7 @@ namespace KxFramework::Sciter
 	}
 }
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	String SizeUnitToString(SizeUnit unit)
 	{

@@ -4,7 +4,7 @@
 #include "IProgressMeter.h"
 #include <wx/gauge.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class ProgressBarStyle
 	{
@@ -17,12 +17,12 @@ namespace KxFramework::UI
 		ReflectOnTaskbar = wxGA_PROGRESS,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::ProgressBarStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API ProgressBar: public WindowRefreshScheduler<wxGauge>, public IProgressMeter
 	{
@@ -133,7 +133,7 @@ namespace KxFramework::UI
 	};
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API ProgressBarWrapper: public IProgressMeter
 	{

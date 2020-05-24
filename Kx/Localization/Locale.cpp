@@ -52,9 +52,9 @@ namespace
 	}
 	
 	template<class T>
-	std::optional<KxFramework::String> GetLocaleInfoString(T&& localeName, uint32_t option) noexcept
+	std::optional<kxf::String> GetLocaleInfoString(T&& localeName, uint32_t option) noexcept
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		int length = ::GetLocaleInfoEx(localeName, option, nullptr, 0);
 		if (length != 0)
@@ -69,7 +69,7 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	Locale Locale::GetInvariant() noexcept
 	{

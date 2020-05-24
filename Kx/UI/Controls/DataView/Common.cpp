@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Common.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	bool ColumnWidth::AssignValue(int value) noexcept
 	{

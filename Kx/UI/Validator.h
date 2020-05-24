@@ -2,12 +2,12 @@
 #include "Common.h"
 #include <wx/valnum.h>
 
-namespace KxFramework::UI::Private
+namespace kxf::UI::Private
 {
 	void GetValidatorControlValue(const wxValidator& validator, wxString& value, int& position, wxChar& character);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	template<class T>
 	class IntegerValidator: public wxIntegerValidator<T>

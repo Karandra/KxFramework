@@ -3,7 +3,7 @@
 #include "WebSocket/SecureClient.h"
 #include <websocketpp/version.hpp>
 
-namespace KxFramework::WebSocket
+namespace kxf::WebSocket
 {
 	String GetLibraryName()
 	{
@@ -16,7 +16,7 @@ namespace KxFramework::WebSocket
 	}
 }
 
-namespace KxFramework::WebSocket
+namespace kxf::WebSocket
 {
 	std::unique_ptr<IWebSocketClient> NewSecureClient(const URI& address)
 	{

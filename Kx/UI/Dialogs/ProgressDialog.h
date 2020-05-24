@@ -3,7 +3,7 @@
 #include "StdDialog.h"
 #include "Kx/UI/Controls/ProgressBar.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API ProgressDialog: public RTTI::ImplementInterface<ProgressDialog, StdDialog, ProgressBarWrapper>
 	{

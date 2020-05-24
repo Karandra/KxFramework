@@ -14,7 +14,7 @@ namespace
 	constexpr int g_MaxShellItemID = 0x7FFF;
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(ShellMenu, Menu);
 

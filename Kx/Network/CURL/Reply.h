@@ -3,12 +3,12 @@
 #include "../HTTPStatusCode.h"
 #include "Kx/RTTI/QueryInterface.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class CURLSession;
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API ICURLReply: public RTTI::Interface<ICURLReply>
 	{
@@ -40,7 +40,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API CURLReplyBase: public ICURLReply
 	{
@@ -90,7 +90,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API CURLStringReply: public CURLReplyBase
 	{
@@ -146,7 +146,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API CURLBinaryReply: public CURLReplyBase
 	{
@@ -193,7 +193,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API CURLStreamReply: public CURLReplyBase
 	{

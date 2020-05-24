@@ -6,12 +6,12 @@
 #include "Kx/General/BinarySize.h"
 #include <wx/datetime.h>
 
-namespace KxFramework
+namespace kxf
 {
 	class IFileSystem;
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API FileItem final: public TrivialExtraDataContainer
 	{

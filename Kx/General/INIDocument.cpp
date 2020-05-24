@@ -3,21 +3,21 @@
 
 namespace
 {
-	KxFramework::String ToWxString(const std::string& stdString)
+	kxf::String ToWxString(const std::string& stdString)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		return String::FromUTF8(stdString.c_str(), stdString.size());
 	}
-	KxFramework::String ToWxString(const char* charString)
+	kxf::String ToWxString(const char* charString)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		return String::FromUTF8(charString);
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	String INIDocument::GetLibraryName()
 	{

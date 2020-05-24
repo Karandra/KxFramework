@@ -4,16 +4,16 @@
 #include <wx/dnd.h>
 
 class wxDragImage;
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class SplashWindow;
 }
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class MainWindow;
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class DNDOperationInfo final
 	{
@@ -52,7 +52,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API DnDInfo final
 	{
@@ -110,7 +110,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API DropSource: public wxDropSource
 	{
@@ -135,7 +135,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API DropTarget: public wxDropTarget
 	{

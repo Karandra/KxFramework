@@ -6,7 +6,7 @@
 #include <websocketpp/config/asio_client.hpp>
 #include <websocketpp/client.hpp>
 
-namespace KxFramework::WebSocket
+namespace kxf::WebSocket
 {
 	class KX_API SecureClient: public IWebSocketClient
 	{

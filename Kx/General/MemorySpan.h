@@ -2,7 +2,7 @@
 #include "Common.h"
 #include <wx/buffer.h>
 
-namespace KxFramework
+namespace kxf
 {
 	template<class T>
 	class KX_API MemorySpan final

@@ -17,7 +17,7 @@ namespace
 	}
 }
 
-namespace KxFramework::Compression::LZ4
+namespace kxf::Compression::LZ4
 {
 	String GetLibraryName()
 	{
@@ -61,7 +61,7 @@ namespace KxFramework::Compression::LZ4
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	bool LZ4BaseStream::SetDictionary(const void* data, size_t size)
 	{
@@ -73,7 +73,7 @@ namespace KxFramework
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	void LZ4InputStream::Init()
 	{

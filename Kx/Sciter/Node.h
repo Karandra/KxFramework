@@ -3,13 +3,13 @@
 #include "Utility/HandleWrapper.h"
 #include <utility>
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	class Element;
 	struct NodeHandle;
 }
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	class KX_API Node final: public HandleWrapper<Node, NodeHandle>
 	{

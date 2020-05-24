@@ -56,7 +56,7 @@ namespace
 	{
 		if (ignoreCase)
 		{
-			return KxFramework::String(left).MakeLower() == KxFramework::String(right).MakeLower();
+			return kxf::String(left).MakeLower() == kxf::String(right).MakeLower();
 		}
 		else
 		{
@@ -275,12 +275,12 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	const String NullString;
 }
 
-namespace KxFramework
+namespace kxf
 {
 	int String::DoCompare(std::string_view left, std::string_view right, FlagSet<StringOpFlag> flags) noexcept
 	{

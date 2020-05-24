@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Panel.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(Panel, wxPanel);
 

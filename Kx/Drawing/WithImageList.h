@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "ImageList.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API WithImageList
 	{
@@ -64,7 +64,7 @@ namespace KxFramework
 
 // Derive from this class to use 'WithImageList' functions on class that derived from 'wxWithImages'.
 // Like this: 'class wxNotebook: public WithImageListWrapper<wxNotebook> { ... };'
-namespace KxFramework
+namespace kxf
 {
 	template<class TBase>
 	class WithImageListWrapper: public TBase

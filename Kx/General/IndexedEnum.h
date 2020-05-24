@@ -3,7 +3,7 @@
 #include "String.h"
 #include "Kx/Utility/Common.h"
 
-namespace KxFramework
+namespace kxf
 {
 	template<class TEnum, class TString>
 	class IndexedEnumItem final
@@ -234,7 +234,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	template<class TDefinition_, typename TDefinition_::TEnum t_DefaultValue>
 	class IndexedEnumValue

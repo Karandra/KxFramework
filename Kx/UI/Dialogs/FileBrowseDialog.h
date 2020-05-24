@@ -7,7 +7,7 @@
 struct IFileDialog;
 struct IFileDialog2;
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	namespace Private
 	{
@@ -49,12 +49,12 @@ namespace KxFramework::UI
 		AllowStreamableItems,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::FileBrowseDialogStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API FileBrowseDialog: public Dialog, public IStdDialog
 	{

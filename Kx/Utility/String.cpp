@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "String.h"
 
-namespace KxFramework::Utility
+namespace kxf::Utility
 {
 	std::optional<bool> ParsePool(const String& value)
 	{

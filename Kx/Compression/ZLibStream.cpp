@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ZLibStream.h"
 
-namespace KxFramework::Compression::ZLib
+namespace kxf::Compression::ZLib
 {
 	String GetLibraryName()
 	{

@@ -4,7 +4,7 @@
 
 namespace
 {
-	class Formatter2: public KxFramework::StringFormatter::Formatter<KxFramework::StringFormatter::DefaultFormatTraits>
+	class Formatter2: public kxf::StringFormatter::Formatter<kxf::StringFormatter::DefaultFormatTraits>
 	{
 		public:
 			using Formatter::Formatter;
@@ -12,7 +12,7 @@ namespace
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	String Any::IntToString() const noexcept
 	{

@@ -3,7 +3,7 @@
 #include "String.h"
 #include "Private/XDocument.h"
 
-namespace KxFramework::XDocument
+namespace kxf::XDocument
 {
 	enum class AsCDATA
 	{
@@ -18,7 +18,7 @@ namespace KxFramework::XDocument
 	};
 }
 
-namespace KxFramework::XDocument
+namespace kxf::XDocument
 {
 	class KX_API IXNode
 	{
@@ -457,7 +457,7 @@ namespace KxFramework::XDocument
 	};
 }
 
-namespace KxFramework::XDocument
+namespace kxf::XDocument
 {
 	template<class TNode_>
 	class XNode: public IXNode

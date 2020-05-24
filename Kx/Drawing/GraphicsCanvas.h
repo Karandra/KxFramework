@@ -8,7 +8,7 @@
 #include <wx/graphics.h>
 #include <wx/window.h>
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API GraphicsCanvas
 	{
@@ -138,7 +138,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API PaintGraphicsCanvas: public GraphicsCanvas
 	{

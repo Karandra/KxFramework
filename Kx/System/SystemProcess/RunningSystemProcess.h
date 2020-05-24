@@ -1,7 +1,7 @@
 #pragma once
 #include "ISystemProcess.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API RunningSystemProcess: public ISystemProcess
 	{

@@ -4,7 +4,7 @@
 #include "Kx/General/Angle.h"
 #include "Kx/General/DateTime.h"
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	enum class ScriptValueType: uint32_t
 	{
@@ -37,7 +37,7 @@ namespace KxFramework::Sciter
 	};
 }
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	class KX_API ScriptValue final
 	{

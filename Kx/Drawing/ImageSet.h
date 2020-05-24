@@ -3,7 +3,7 @@
 #include "Kx/General/String.h"
 #include <variant>
 
-namespace KxFramework
+namespace kxf
 {
 	class ImageList;
 
@@ -17,7 +17,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API ImageSet: public wxObject
 	{

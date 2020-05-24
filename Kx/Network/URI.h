@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "Private/URXHelper.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API URI: public wxURI, public Network::Private::URXHelper<URI, wxURI>
 	{

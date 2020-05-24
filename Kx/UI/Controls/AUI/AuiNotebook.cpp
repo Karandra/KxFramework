@@ -2,7 +2,7 @@
 #include "AuiNotebook.h"
 #include "Kx/Drawing/UxTheme.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(AuiNotebook, wxAuiNotebook);
 
@@ -48,7 +48,7 @@ namespace KxFramework::UI
 	}
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	void AuiDefaultTabArt::DrawBackground(wxDC& dc, wxWindow* window, const wxRect& rect)
 	{
@@ -64,7 +64,7 @@ namespace KxFramework::UI
 	}
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	void AuiNotebookDockArtProvider::DrawBackground(wxDC& dc, wxWindow* window, int orientation, const wxRect& rect)
 	{

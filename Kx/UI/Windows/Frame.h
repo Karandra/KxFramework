@@ -3,7 +3,7 @@
 #include "TopLevelWindow.h"
 #include <wx/frame.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class FrameStyle
 	{
@@ -17,12 +17,12 @@ namespace KxFramework::UI
 		DefaultStyle = wxDEFAULT_FRAME_STYLE
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::FrameStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API Frame: public TopLevelWindow<wxFrame>
 	{

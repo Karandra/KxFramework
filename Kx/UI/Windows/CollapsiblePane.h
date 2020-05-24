@@ -2,7 +2,7 @@
 #include "Kx/UI/Common.h"
 #include <wx/collpane.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class CollapsiblePaneStyle
 	{
@@ -11,12 +11,12 @@ namespace KxFramework::UI
 		NoTLWResize = wxCP_NO_TLW_RESIZE,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::CollapsiblePaneStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API CollapsiblePane: public wxCollapsiblePane
 	{

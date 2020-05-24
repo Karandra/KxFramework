@@ -4,7 +4,7 @@
 #include "Private/URXHelper.h"
 #include <wx/url.h>
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API URL: public wxURL, public Network::Private::URXHelper<URL, wxURL>
 	{

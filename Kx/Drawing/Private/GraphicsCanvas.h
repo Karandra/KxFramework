@@ -3,7 +3,7 @@
 #include <wx/bitmap.h>
 #include <wx/image.h>
 
-namespace KxFramework::Drawing::Private
+namespace kxf::Drawing::Private
 {
 	class AlphaBitmapRef final
 	{

@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <type_traits>
 
-namespace KxFramework
+namespace kxf
 {
 	template<class T, bool isInteger = std::is_integral_v<T> && std::is_unsigned_v<T>, bool isFloatingPoint = std::is_floating_point_v<T>>
 	struct ColorTraits
@@ -56,7 +56,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	template<class T>
 	struct PackedRGB final
@@ -131,7 +131,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework::ColorWeight
+namespace kxf::ColorWeight
 {
 	// https://ninedegreesbelow.com/photography/srgb-luminance.html
 	// https://en.wikipedia.org/wiki/Luma_(video)
@@ -142,7 +142,7 @@ namespace KxFramework::ColorWeight
 	constexpr PackedRGB<float> HDTV = {0.212f, 0.701f, 0.087f};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	struct PackedHSL final
 	{
@@ -194,7 +194,7 @@ namespace KxFramework
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	namespace Private
 	{

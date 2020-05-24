@@ -2,7 +2,7 @@
 #include "ShellFileTypeInfo.h"
 #include "ShellFileTypeManager.h"
 
-namespace KxFramework
+namespace kxf
 {
 	bool ShellFileTypeInfo::IsURLProtocol(const FSPath& ext) const
 	{

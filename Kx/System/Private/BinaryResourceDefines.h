@@ -2,7 +2,7 @@
 #include <Windows.h>
 #include "Kx/System/UndefWindows.h"
 
-namespace KxFramework::System::Private
+namespace kxf::System::Private
 {
 	#pragma pack(push)
 	#pragma pack(2)

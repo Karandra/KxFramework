@@ -3,7 +3,7 @@
 #include "Kx/UI/Controls/ComboBox.h"
 #include "Kx/UI/Controls/BitmapComboBox.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(ComboBoxDialog, StdDialog);
 

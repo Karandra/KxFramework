@@ -4,7 +4,7 @@
 #include "Kx/General/String.h"
 #include <wx/sysopt.h>
 
-namespace KxFramework::wxWidgets::SystemOption
+namespace kxf::wxWidgets::SystemOption
 {
 	// If set to non-zero value, abort the program if an assertion fails. The default behaviour
 	// in case of assertion failure depends on the build mode and can be changed by overriding
@@ -42,7 +42,7 @@ namespace KxFramework::wxWidgets::SystemOption
 	constexpr wxChar NoProofQuality[] = wxS("msw.font.no-proof-quality");
 }
 
-namespace KxFramework::wxWidgets
+namespace kxf::wxWidgets
 {
 	class KX_API SystemOptions final
 	{

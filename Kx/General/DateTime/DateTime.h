@@ -11,12 +11,12 @@ namespace std
 {
 	struct tm;
 }
-namespace KxFramework
+namespace kxf
 {
 	class Locale;
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API DateTime final
 	{

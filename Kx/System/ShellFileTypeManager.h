@@ -6,7 +6,7 @@
 #include "Kx/FileSystem/FSPath.h"
 #include <wx/mimetype.h>
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API ShellFileTypeManager
 	{

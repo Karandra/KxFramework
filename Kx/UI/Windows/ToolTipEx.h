@@ -5,7 +5,7 @@
 #include <variant>
 struct tagNMHDR;
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class ToolTipExStyle
 	{
@@ -17,12 +17,12 @@ namespace KxFramework::UI
 		AutoHide = 1 << 3,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::ToolTipExStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API ToolTipEx: public wxNativeWindow, public WithOptions<ToolTipExStyle, ToolTipExStyle::None>
 	{

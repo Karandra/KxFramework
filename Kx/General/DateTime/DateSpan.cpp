@@ -2,7 +2,7 @@
 #include "DateSpan.h"
 #include "DateTime.h"
 
-namespace KxFramework
+namespace kxf
 {
 	String DateSpan::Format(const String& format) const
 	{

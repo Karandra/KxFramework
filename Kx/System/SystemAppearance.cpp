@@ -2,7 +2,7 @@
 #include "SystemAppearance.h"
 #include <wx/settings.h>
 
-namespace KxFramework::SystemAppearance
+namespace kxf::SystemAppearance
 {
 	String GetName()
 	{

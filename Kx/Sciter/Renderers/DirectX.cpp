@@ -32,7 +32,7 @@ namespace
 	constexpr float g_ClearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 }
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	DirectX::DirectX(Host& host)
 		:m_SciterHost(host), m_SciterWindow(host.GetWindow())

@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class Row final
 	{

@@ -4,7 +4,7 @@
 #include <utility>
 #include <type_traits>
 
-namespace KxFramework::Utility
+namespace kxf::Utility
 {
 	template<class TOut, class TSource, class TFunc>
 	void ConvertVector(std::vector<TOut>& destination, const std::vector<TSource>& source, TFunc&& func)

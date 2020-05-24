@@ -8,20 +8,20 @@ namespace
 {
 	constexpr wxChar g_EmbeddedResourceType[] = wxS("Translation");
 	
-	const KxFramework::LocalizationPackage g_NullLocalizationPack;
-	const KxFramework::LocalizationPackage* g_ActiveLocalizationPack = &g_NullLocalizationPack;
+	const kxf::LocalizationPackage g_NullLocalizationPack;
+	const kxf::LocalizationPackage* g_ActiveLocalizationPack = &g_NullLocalizationPack;
 
-	KxFramework::Locale LocaleFromFileName(const KxFramework::String& name)
+	kxf::Locale LocaleFromFileName(const kxf::String& name)
 	{
 		return name.BeforeFirst(wxS('.'));
 	}
-	bool DoLoadLocalizationPack(const KxFramework::XMLDocument& xml,
-						 std::unordered_map<KxFramework::String, KxFramework::String>& stringTable,
-						 KxFramework::String& author,
-						 KxFramework::String& description
+	bool DoLoadLocalizationPack(const kxf::XMLDocument& xml,
+						 std::unordered_map<kxf::String, kxf::String>& stringTable,
+						 kxf::String& author,
+						 kxf::String& description
 						 )
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		if (XMLNode rootNode = xml.QueryElement(wxS("Localization")))
 		{
@@ -47,9 +47,9 @@ namespace
 	}
 
 	template<class TFunc>
-	bool OnSearchTranslation(TFunc&& func, KxFramework::FileItem item)
+	bool OnSearchTranslation(TFunc&& func, kxf::FileItem item)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		// Extract locale name from names like 'en-US.Application.xml'
 		if (Locale locale = LocaleFromFileName(item.GetName()))
@@ -64,7 +64,7 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	const LocalizationPackage& LocalizationPackage::GetActive() noexcept
 	{
@@ -105,7 +105,7 @@ namespace KxFramework
 	}
 }
 
-namespace KxFramework::Localization
+namespace kxf::Localization
 {
 	size_t SearchLocalizationPackages(const IFileSystem& fileSystem, const FSPath& directory, std::function<bool(Locale, FileItem)> func)
 	{

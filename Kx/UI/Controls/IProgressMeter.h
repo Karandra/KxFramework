@@ -2,7 +2,7 @@
 #include "Kx/UI/Common.h"
 #include "Kx/RTTI/QueryInterface.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API IProgressMeter: public RTTI::Interface<IProgressMeter>
 	{

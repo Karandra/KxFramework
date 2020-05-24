@@ -7,7 +7,7 @@
 #include <wx/graphics.h>
 #include <wx/systhemectrl.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class ImageViewBackground
 	{
@@ -17,7 +17,7 @@ namespace KxFramework::UI
 	};
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API ImageView: public WindowRefreshScheduler<wxSystemThemedControl<wxControl>>
 	{

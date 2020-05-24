@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SecureClient.h"
 
-namespace KxFramework::WebSocket
+namespace kxf::WebSocket
 {
 	void SecureClient::RegisterHandlers()
 	{

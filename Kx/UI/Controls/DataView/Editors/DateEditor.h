@@ -2,7 +2,7 @@
 #include "../Editor.h"
 #include "Kx/General/WithOptions.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	enum class DateEditorOption
 	{
@@ -14,14 +14,14 @@ namespace KxFramework::UI::DataView
 		ShowCentury = 1 << 4,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::DataView::DateEditorOption);
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
-	class KX_API DateTimeValue: public KxFramework::WithOptions<DateEditorOption, DateEditorOption::None>
+	class KX_API DateTimeValue: public kxf::WithOptions<DateEditorOption, DateEditorOption::None>
 	{
 		protected:
 			DateTime m_Value;
@@ -89,7 +89,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API DateEditor: public Editor
 	{

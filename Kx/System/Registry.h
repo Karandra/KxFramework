@@ -4,7 +4,7 @@
 #include "Kx/FileSystem/FSPath.h"
 #include "Kx/System/ErrorCodeValue.h"
 
-namespace KxFramework
+namespace kxf
 {
 	enum class RegistryBaseKey
 	{
@@ -72,7 +72,7 @@ namespace KxFramework
 	Kx_DeclareFlagSet(RegistryKeyFlag);
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class RegistryKey final
 	{

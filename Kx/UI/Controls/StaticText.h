@@ -3,7 +3,7 @@
 #include "Kx/UI/WindowRefreshScheduler.h"
 #include <wx/stattext.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class StaticTextStyle
 	{
@@ -19,12 +19,12 @@ namespace KxFramework::UI
 		EllipsizeEnd = wxST_ELLIPSIZE_END,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::StaticTextStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API StaticText: public WindowRefreshScheduler<wxStaticText>
 	{

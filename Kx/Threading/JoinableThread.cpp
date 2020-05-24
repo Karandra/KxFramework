@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "JoinableThread.h"
 
-namespace KxFramework
+namespace kxf
 {
 	wxThread::ExitCode JoinableThread::Entry()
 	{

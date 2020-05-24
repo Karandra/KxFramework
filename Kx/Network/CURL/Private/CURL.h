@@ -2,13 +2,13 @@
 #include "Kx/Network/Common.h"
 #include "Kx/General/String.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class CURLSession;
 	class CURLReplyBase;
 }
 
-namespace KxFramework::CURL::Private
+namespace kxf::CURL::Private
 {
 	enum class SessionHandleType
 	{

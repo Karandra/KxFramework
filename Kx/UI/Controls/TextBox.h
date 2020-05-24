@@ -3,7 +3,7 @@
 #include "Kx/UI/WindowRefreshScheduler.h"
 #include <wx/textctrl.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class TextBoxStyle
 	{
@@ -30,12 +30,12 @@ namespace KxFramework::UI
 		BetsWrap = wxTE_BESTWRAP,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::TextBoxStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API TextBox: public WindowRefreshScheduler<wxTextCtrl>
 	{

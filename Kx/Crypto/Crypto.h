@@ -5,7 +5,7 @@
 #include <wx/stream.h>
 #include <array>
 
-namespace KxFramework::Crypto
+namespace kxf::Crypto
 {
 	size_t Rot13(String& source) noexcept;
 

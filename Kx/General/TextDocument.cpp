@@ -6,9 +6,9 @@
 
 namespace
 {
-	wxTextFileType MapLineBreakType(KxFramework::TextDocument::LineBreakFormat lineBreakFormat) noexcept
+	wxTextFileType MapLineBreakType(kxf::TextDocument::LineBreakFormat lineBreakFormat) noexcept
 	{
-		using namespace KxFramework::TextDocument;
+		using namespace kxf::TextDocument;
 
 		switch (lineBreakFormat)
 		{
@@ -29,7 +29,7 @@ namespace
 	}
 }
 
-namespace KxFramework::TextDocument
+namespace kxf::TextDocument
 {
 	size_t Read(const FSPath& filePath, std::function<bool(String)> func)
 	{

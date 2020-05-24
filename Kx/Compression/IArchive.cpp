@@ -2,7 +2,7 @@
 #include "IArchive.h"
 #include "IArchiveImpl.h"
 
-namespace KxFramework
+namespace kxf
 {
 	FileItem IArchiveItems::FindItem(const FSPathQuery& query) const
 	{
@@ -26,7 +26,7 @@ namespace KxFramework
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	bool IArchiveExtraction::ExtractToDirectory(const FSPath& directory) const
 	{

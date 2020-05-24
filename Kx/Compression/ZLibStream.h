@@ -5,7 +5,7 @@
 #include "Kx/General/String.h"
 #include <wx/zstream.h>
 
-namespace KxFramework
+namespace kxf
 {
 	enum class ZLibHeaderType
 	{
@@ -16,13 +16,13 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework::Compression::ZLib
+namespace kxf::Compression::ZLib
 {
 	String GetLibraryName();
 	Version GetLibraryVersion();
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class ZLibInputStream: public IStreamWrapper, public InputStreamWrapper<wxZlibInputStream>
 	{

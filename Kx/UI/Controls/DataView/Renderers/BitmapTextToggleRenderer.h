@@ -4,7 +4,7 @@
 #include "ToggleRenderer.h"
 #include "BitmapTextRenderer.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API BitmapTextToggleValue: public BitmapTextValue, public ToggleValue
 	{
@@ -47,7 +47,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API BitmapTextToggleRenderer: public Renderer, public ToggleRendererBase
 	{

@@ -2,7 +2,7 @@
 #include "BasicEvtHandler.h"
 #include <wx/window.h>
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API EvtHandler: public BasicEvtHandler
 	{

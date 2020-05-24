@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "Private/StandardLocalization.h"
 
-namespace KxFramework::Localization
+namespace kxf::Localization
 {
 	String GetStandardLocalizedString(int id)
 	{

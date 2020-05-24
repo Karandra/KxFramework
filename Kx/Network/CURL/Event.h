@@ -2,13 +2,13 @@
 #include "../Common.h"
 #include "Kx/FileSystem/FileOperationEvent.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API CURLSession;
 	class KX_API ICURLReply;
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API CURLEvent: public FileOperationEvent
 	{

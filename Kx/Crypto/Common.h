@@ -3,7 +3,7 @@
 #include "Kx/General/String.h"
 #include "Kx/General/Version.h"
 
-namespace KxFramework::Crypto
+namespace kxf::Crypto
 {
 	String GetLibraryName();
 	Version GetLibraryVersion();

@@ -3,7 +3,7 @@
 #include "Internal.h"
 #include "SciterAPI.h"
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	ScriptValueType MapValueType(uint32_t nativeType)
 	{
@@ -107,7 +107,7 @@ namespace KxFramework::Sciter
 	}
 }
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	void ScriptValue::Init()
 	{

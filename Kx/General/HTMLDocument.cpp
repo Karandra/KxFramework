@@ -17,7 +17,7 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	void KxHTMLDocument::Init()
 	{

@@ -5,7 +5,7 @@
 #include "Kx/RTTI/QueryInterface.h"
 #include <wx/datetime.h>
 
-namespace KxFramework
+namespace kxf
 {
 	class FileItem;
 
@@ -30,7 +30,7 @@ namespace KxFramework
 	Kx_DeclareFlagSet(FSCopyItemFlag);
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API IFileSystem: public RTTI::Interface<IFileSystem>
 	{

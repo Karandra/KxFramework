@@ -5,7 +5,7 @@
 #include <wx/stattext.h>
 #include <wx/renderer.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class LabelStyle
 	{
@@ -18,12 +18,12 @@ namespace KxFramework::UI
 		ThemeColors = 1 << 4,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::LabelStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API Label: public WindowRefreshScheduler<wxSystemThemedControl<wxStaticText>>
 	{

@@ -3,7 +3,7 @@
 #include "TextRenderer.h"
 #include "BitmapRenderer.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API BitmapListValue: public TextValue, public BitmapValueBase
 	{
@@ -58,7 +58,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API BitmapListRendererBase: public Renderer
 	{
@@ -82,7 +82,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API BitmapListRenderer: public BitmapListRendererBase
 	{

@@ -4,7 +4,7 @@
 #include <functional>
 #include <type_traits>
 
-namespace KxFramework
+namespace kxf
 {
 	class IIndirectCallEvent: public wxAsyncMethodCallEvent
 	{
@@ -32,7 +32,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework::EventSystem
+namespace kxf::EventSystem
 {
 	// Wrapper for lambda function or a class which implements 'operator()'
 	template<class TCallable, class... Args>

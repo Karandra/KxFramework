@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include "Kx/System/UndefWindows.h"
 
-namespace KxFramework::Shell::Private
+namespace kxf::Shell::Private
 {
 	std::optional<uint32_t> MapSHWindowCommand(FlagSet<SHWindowCommand> option) noexcept
 	{

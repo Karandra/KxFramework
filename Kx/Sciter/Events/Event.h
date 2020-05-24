@@ -4,7 +4,7 @@
 #include "Kx/EventSystem/Event.h"
 #include "Kx/EventSystem/Events/NotifyEvent.h"
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	class KX_API Event: public NotifyEvent
 	{
@@ -67,7 +67,7 @@ namespace KxFramework::Sciter
 	};
 }
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	KxEVENT_DECLARE_ALIAS_TO_MEMBER(Event, Attached);
 	KxEVENT_DECLARE_ALIAS_TO_MEMBER(Event, Detached);

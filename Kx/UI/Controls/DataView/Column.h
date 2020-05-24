@@ -6,7 +6,7 @@
 #include <Kx/RTTI.hpp>
 #include <wx/headercol.h>
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class View;
 	class MainWindow;
@@ -15,7 +15,7 @@ namespace KxFramework::UI::DataView
 	class Editor;
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API Column;
 
@@ -65,7 +65,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API Column: public RTTI::Interface<Column>, public wxClientDataContainer
 	{

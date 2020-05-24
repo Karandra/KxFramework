@@ -17,7 +17,7 @@ namespace
 {
 	EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 
-	using namespace KxFramework;
+	using namespace kxf;
 
 	HMODULE AsHMODULE(void* handle) noexcept
 	{
@@ -135,7 +135,7 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	DynamicLibrary DynamicLibrary::GetCurrentModule() noexcept
 	{

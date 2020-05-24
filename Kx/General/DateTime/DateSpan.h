@@ -2,13 +2,13 @@
 #include "Common.h"
 #include "TimeSpan.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class Locale;
 	class ITimeClock;
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API DateSpan final
 	{

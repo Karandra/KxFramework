@@ -14,9 +14,9 @@ namespace
 }
 namespace
 {
-	KxFramework::String ConcatWithNamespace(const KxFramework::String& path, KxFramework::FSPathNamespace withNamespace)
+	kxf::String ConcatWithNamespace(const kxf::String& path, kxf::FSPathNamespace withNamespace)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		if (withNamespace != FSPathNamespace::None && !path.IsEmpty())
 		{
@@ -24,15 +24,15 @@ namespace
 		}
 		return path;
 	}
-	size_t FindChar(const KxFramework::String& path, wxChar c, bool reverse = false)
+	size_t FindChar(const kxf::String& path, wxChar c, bool reverse = false)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		return path.Find(c, 0, reverse ? StringOpFlag::FromEnd : StringOpFlag::None);
 	}
-	KxFramework::String ExtractBefore(const KxFramework::String& path, wxChar c, bool reverse = false)
+	kxf::String ExtractBefore(const kxf::String& path, wxChar c, bool reverse = false)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		const size_t pos = FindChar(path, c, reverse);
 		if (pos != String::npos)
@@ -46,9 +46,9 @@ namespace
 		}
 		return {};
 	}
-	KxFramework::String ExtractAfter(const KxFramework::String& path, wxChar c, size_t count = KxFramework::String::npos, bool reverse = false)
+	kxf::String ExtractAfter(const kxf::String& path, wxChar c, size_t count = kxf::String::npos, bool reverse = false)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		const size_t pos = FindChar(path, c, reverse);
 		if (pos != String::npos && pos + 1 < path.length())
@@ -62,7 +62,7 @@ namespace
 		}
 		return {};
 	}
-	size_t RemoveLeadingSpaces(KxFramework::String& path)
+	size_t RemoveLeadingSpaces(kxf::String& path)
 	{
 		const std::locale locale;
 		size_t removedCount = 0;
@@ -89,7 +89,7 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	FSPath FSPath::FromStringUnchecked(String string, FSPathNamespace ns)
 	{
@@ -201,7 +201,7 @@ namespace KxFramework
 		}
 		return false;
 	}
-	size_t FSPath::DetectNamespacePrefix(const String& path, KxFramework::FSPathNamespace& ns) const
+	size_t FSPath::DetectNamespacePrefix(const String& path, kxf::FSPathNamespace& ns) const
 	{
 		using namespace FileSystem::Private;
 

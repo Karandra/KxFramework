@@ -6,7 +6,7 @@
 #include <KnownFolders.h>
 #include "Kx/System/UndefWindows.h"
 
-namespace KxFramework::Shell::Private
+namespace kxf::Shell::Private
 {
 	#define KSHDItem(id, guid)	{KnownDirectoryID::##id, guid}
 	struct KnownDirectoryGUID final

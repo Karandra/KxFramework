@@ -31,7 +31,7 @@ namespace
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	bool HTMLRenderer::SetValue(const wxAny& value)
 	{
@@ -40,7 +40,7 @@ namespace KxFramework::UI::DataView
 
 		if (m_Value.FromAny(value))
 		{
-			m_ContentHTML = KxFramework::UI::HTMLWindow::ProcessPlainText(m_Value.GetText());
+			m_ContentHTML = kxf::UI::HTMLWindow::ProcessPlainText(m_Value.GetText());
 			return true;
 		}
 		return false;
@@ -65,9 +65,9 @@ namespace KxFramework::UI::DataView
 		// Setup fonts. This needs to be done after a call to 'wxHtmlDCRenderer::SetHtmlText',
 		// otherwise text scales really weirdly.
 		int pointSize = 0;
-		KxFramework::String normalFace;
-		KxFramework::String fixedFace;
-		if (KxFramework::UI::HTMLWindow::SetupFontsUsing(dc.GetFont(), normalFace, fixedFace, pointSize))
+		kxf::String normalFace;
+		kxf::String fixedFace;
+		if (kxf::UI::HTMLWindow::SetupFontsUsing(dc.GetFont(), normalFace, fixedFace, pointSize))
 		{
 			htmlRenderer.SetFonts(normalFace, fixedFace);
 			htmlRenderer.SetStandardFonts(pointSize, normalFace, fixedFace);

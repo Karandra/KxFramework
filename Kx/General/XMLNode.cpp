@@ -3,7 +3,7 @@
 #include "StringFormater.h"
 #include "Private/XML.h"
 
-namespace KxFramework
+namespace kxf
 {
 	XMLNode XMLNode::ConstructOrQueryElement(const String& xPath, bool allowCreate)
 	{

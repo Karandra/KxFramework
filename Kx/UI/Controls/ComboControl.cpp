@@ -2,7 +2,7 @@
 #include "ComboControl.h"
 #include "ComboPopup.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_ABSTRACT_CLASS(ComboControl, wxComboCtrl);
 

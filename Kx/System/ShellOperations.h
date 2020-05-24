@@ -7,7 +7,7 @@
 #include <wx/icon.h>
 class wxWindow;
 
-namespace KxFramework
+namespace kxf
 {
 	class Any;
 	class URI;
@@ -16,7 +16,7 @@ namespace KxFramework
 	class UniversallyUniqueID;
 }
 
-namespace KxFramework
+namespace kxf
 {
 	enum class SHOperationType
 	{
@@ -95,7 +95,7 @@ namespace KxFramework
 	Kx_DeclareFlagSet(SHExexuteFlag);
 }
 
-namespace KxFramework::Shell
+namespace kxf::Shell
 {
 	bool FileOperation(SHOperationType opType, const FSPath& source, const FSPath& destination, wxWindow* window = nullptr, FlagSet<SHOperationFlags> flags = {});
 	bool FormatVolume(const wxWindow* window, const LegacyVolume& volume, bool quickFormat = false) noexcept;

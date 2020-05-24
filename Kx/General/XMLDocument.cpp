@@ -3,7 +3,7 @@
 #include "StringFormater.h"
 #include "Private/XML.h"
 
-namespace KxFramework::XML
+namespace kxf::XML
 {
 	String GetLibraryName()
 	{
@@ -15,7 +15,7 @@ namespace KxFramework::XML
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	void XMLDocument::ReplaceDeclaration()
 	{

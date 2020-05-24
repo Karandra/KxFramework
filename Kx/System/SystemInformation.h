@@ -13,7 +13,7 @@
 #include <wx/gdicmn.h>
 #include "UndefWindows.h"
 
-namespace KxFramework::System
+namespace kxf::System
 {
 	struct KernelVersion final
 	{
@@ -89,7 +89,7 @@ namespace KxFramework::System
 	};
 }
 
-namespace KxFramework::System
+namespace kxf::System
 {
 	bool Is64Bit() noexcept;
 	void GetRegistryQuota(BinarySize& used, BinarySize& allowed) noexcept;

@@ -1,7 +1,7 @@
 #pragma once
 #include "Kx/Common.hpp"
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	enum class FontSmoothing
 	{

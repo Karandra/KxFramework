@@ -1,7 +1,7 @@
 #pragma once
 #include "Kx/UI/Common.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	enum class CtrlStyle: uint32_t
 	{
@@ -113,7 +113,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::DataView::CtrlStyle);
 	Kx_DeclareFlagSet(UI::DataView::CtrlExtraStyle);

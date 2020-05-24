@@ -14,7 +14,7 @@
 
 // https://docs.microsoft.com/ru-ru/windows/win32/controls/uxctl-ref
 // https://docs.microsoft.com/ru-ru/windows/win32/controls/theme-subclasses
-namespace KxFramework
+namespace kxf
 {
 	enum class UxThemeFlag: uint32_t
 	{
@@ -66,7 +66,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class UxTheme final
 	{

@@ -5,7 +5,7 @@
 #include "Row.h"
 #include <Kx/RTTI.hpp>
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class View;
 	class Column;
@@ -13,7 +13,7 @@ namespace KxFramework::UI::DataView
 	class CellAttribute;
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API Model: public RTTI::Interface<Model>
 	{
@@ -102,7 +102,7 @@ namespace KxFramework::UI::DataView
 }
 
 //////////////////////////////////////////////////////////////////////////
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API ListModel: public RTTI::ExtendInterface<ListModel, Model>
 	{
@@ -125,7 +125,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API VirtualListModel: public RTTI::ExtendInterface<VirtualListModel, Model>
 	{

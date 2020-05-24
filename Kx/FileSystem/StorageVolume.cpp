@@ -18,9 +18,9 @@ namespace
 }
 namespace
 {
-	KxFramework::DriveType MapDriveType(UINT type)
+	kxf::DriveType MapDriveType(UINT type)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		switch (type)
 		{
@@ -55,9 +55,9 @@ namespace
 		};
 		return DriveType::Unknown;
 	}
-	KxFramework::FileSystemFeature MapDiskFeatures(DWORD nativeFeatures)
+	kxf::FileSystemFeature MapDiskFeatures(DWORD nativeFeatures)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		FileSystemFeature features = FileSystemFeature::None;
 		Utility::AddFlagRef(features, FileSystemFeature::CasePreservedNames, nativeFeatures & FILE_CASE_PRESERVED_NAMES);
@@ -84,7 +84,7 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	size_t StorageVolume::EnumVolumes(std::function<bool(StorageVolume)> func)
 	{

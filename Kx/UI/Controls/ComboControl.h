@@ -2,12 +2,12 @@
 #include "Kx/UI/Common.h"
 #include <wx/combo.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class ComboPopup;
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API ComboControl: public wxComboCtrl
 	{

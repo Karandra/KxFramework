@@ -5,18 +5,18 @@
 #include "XDocument.h"
 #include <wx/stream.h>
 
-namespace KxFramework::HTML
+namespace kxf::HTML
 {
 	enum class NodeType;
 	enum class TagType;
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KxHTMLDocument;
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API KxHTMLNode: public XDocument::XNode<KxHTMLNode>
 	{
@@ -115,7 +115,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API KxHTMLDocument: public KxHTMLNode
 	{
@@ -195,7 +195,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework::HTML
+namespace kxf::HTML
 {
 	enum class NodeType
 	{

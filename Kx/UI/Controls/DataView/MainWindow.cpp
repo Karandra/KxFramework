@@ -32,7 +32,7 @@ namespace
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class MaxWidthCalculator final: public wxMaxWidthCalculatorBase
 	{
@@ -73,7 +73,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	wxIMPLEMENT_ABSTRACT_CLASS(MainWindow, wxWindow);
 

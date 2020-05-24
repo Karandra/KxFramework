@@ -2,7 +2,7 @@
 #include "Common.h"
 #include <wx/stream.h>
 
-namespace KxFramework::Private
+namespace kxf::Private
 {
 	template<class TBaseStream_>
 	class DelegateStreamBase: public TBaseStream_
@@ -135,7 +135,7 @@ namespace KxFramework::Private
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API InputStreamDelegate: public Private::DelegateStreamBase<wxInputStream>
 	{

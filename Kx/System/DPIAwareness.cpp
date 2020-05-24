@@ -6,9 +6,9 @@
 
 namespace
 {
-	DPI_AWARENESS_CONTEXT MapAwarenessContext(KxFramework::DPIAwarenessContext context)
+	DPI_AWARENESS_CONTEXT MapAwarenessContext(kxf::DPIAwarenessContext context)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		switch (context)
 		{
@@ -37,7 +37,7 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	ChangeDPIAwareness::ChangeDPIAwareness(DPIAwarenessContext newContext)
 	{

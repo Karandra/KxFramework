@@ -5,7 +5,7 @@
 #include "Kx/UI/Controls/StaticBitmap.h"
 #include <wx/graphics.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class DrawablePanelMode
 	{
@@ -18,12 +18,12 @@ namespace KxFramework::UI
 		FGImage = 1 << 4,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::DrawablePanelMode);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API DrawablePanel: public WindowRefreshScheduler<Panel>
 	{

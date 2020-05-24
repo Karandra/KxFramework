@@ -4,7 +4,7 @@
 #include <utility>
 #include <array>
 
-namespace KxFramework::Utility
+namespace kxf::Utility
 {
 	template<class TLeft, class TRight>
 	constexpr void ExchangeAndReset(TLeft& left, TLeft& right, TRight nullValue) noexcept
@@ -65,7 +65,7 @@ namespace KxFramework::Utility
 	}
 }
 
-namespace KxFramework::Utility
+namespace kxf::Utility
 {
 	template<typename>
 	struct ArraySize;
@@ -83,7 +83,7 @@ namespace KxFramework::Utility
 	};
 }
 
-namespace KxFramework::Utility
+namespace kxf::Utility
 {
 	namespace Private
 	{
@@ -227,7 +227,7 @@ namespace KxFramework::Utility
 	}
 }
 
-namespace KxFramework::Utility
+namespace kxf::Utility
 {
 	namespace Private
 	{

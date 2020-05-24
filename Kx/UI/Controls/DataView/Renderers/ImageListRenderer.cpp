@@ -4,7 +4,7 @@
 #include "../Node.h"
 #include "../Column.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	bool ImageListValue::FromAny(const wxAny& value)
 	{
@@ -12,7 +12,7 @@ namespace KxFramework::UI::DataView
 		{
 			return true;
 		}
-		else if (const KxFramework::ImageList* imageList = nullptr; value.GetAs(&imageList))
+		else if (const kxf::ImageList* imageList = nullptr; value.GetAs(&imageList))
 		{
 			WithImageList::SetImageList(imageList);
 			return true;
@@ -21,7 +21,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	bool ImageListRenderer::SetValue(const wxAny& value)
 	{

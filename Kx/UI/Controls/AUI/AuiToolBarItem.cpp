@@ -4,7 +4,7 @@
 #include "Kx/Utility/Common.h"
 #include "Kx/UI/Menus/Menu.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	Point AuiToolBarItem::DoGetDropdownMenuPosition(FlagSet<Alignment>* alignment, bool leftAlign) const
 	{

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "FPSCounter.h"
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	void FPSCounter::OnStartRender()
 	{

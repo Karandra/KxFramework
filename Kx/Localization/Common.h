@@ -2,7 +2,7 @@
 #include "Kx/Common.hpp"
 #include "Kx/General/String.h"
 
-namespace KxFramework
+namespace kxf
 {
 	enum class LocaleStrOption
 	{
@@ -85,7 +85,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework::Localization
+namespace kxf::Localization
 {
 	String GetStandardLocalizedString(int id);
 	String GetStandardLocalizedString(StdID id);

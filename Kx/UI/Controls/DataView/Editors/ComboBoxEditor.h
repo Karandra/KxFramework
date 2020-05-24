@@ -2,7 +2,7 @@
 #include "../Editor.h"
 #include "Kx/Drawing/WithImageList.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API ComboBoxEditorBase
 	{
@@ -51,9 +51,9 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
-	class KX_API ComboBoxEditor: public Editor, public ComboBoxEditorBase, public KxFramework::WithImageList
+	class KX_API ComboBoxEditor: public Editor, public ComboBoxEditorBase, public kxf::WithImageList
 	{
 		private:
 			std::vector<wxString> m_Items;
@@ -125,7 +125,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API ComboBoxEditorControlHandler: public EditorControlHandler
 	{

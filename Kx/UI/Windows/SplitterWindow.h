@@ -2,7 +2,7 @@
 #include "Kx/UI/Common.h"
 #include <wx/splitter.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class SplitterWindowStyle
 	{
@@ -16,12 +16,12 @@ namespace KxFramework::UI
 		NoXPTheme = wxSP_NO_XP_THEME,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::SplitterWindowStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API SplitterWindow: public wxSplitterWindow
 	{

@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "FSPath.h"
 
-namespace KxFramework::FileSystem
+namespace kxf::FileSystem
 {
 	FSPath CreateTempPathName(const FSPath& rootDirectory);
 	FSPath GetFullPathName(const FSPath& path);

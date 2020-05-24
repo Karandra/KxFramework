@@ -4,7 +4,7 @@
 #include <wx/control.h>
 #include <wx/systhemectrl.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API ClusterMap: public WindowRefreshScheduler<wxSystemThemedControl<wxControl>>
 	{

@@ -4,7 +4,7 @@
 #include "Kx/UI/Controls/BitmapComboBox.h"
 #include "../Renderers/TextRenderer.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	void ComboBoxEditor::OnSelectItem(wxCommandEvent& event)
 	{
@@ -50,7 +50,7 @@ namespace KxFramework::UI::DataView
 		{
 			for (size_t i = 0; i < m_Items.size(); i++)
 			{
-				static_cast<BitmapComboBox*>(editor)->AddItem(m_Items[i], i < m_BitmapIndexes.size() ? m_BitmapIndexes[i] : KxFramework::Drawing::InvalidImageIndex);
+				static_cast<BitmapComboBox*>(editor)->AddItem(m_Items[i], i < m_BitmapIndexes.size() ? m_BitmapIndexes[i] : kxf::Drawing::InvalidImageIndex);
 			}
 		}
 		else
@@ -134,7 +134,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	void ComboBoxEditorControlHandler::DoOnKillFocus(wxFocusEvent& event)
 	{

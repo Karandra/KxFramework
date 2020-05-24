@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "Kx/UI/StdIcon.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class View;
 	class MainWindow;
@@ -10,14 +10,14 @@ namespace KxFramework::UI::DataView
 	class Column;
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API ToolTip final
 	{
 		friend class MainWindow;
 
 		public:
-			using StdIcon = KxFramework::StdIcon;
+			using StdIcon = kxf::StdIcon;
 
 		public:
 			template<class... Args>

@@ -5,7 +5,7 @@
 
 namespace
 {
-	using namespace KxFramework;
+	using namespace kxf;
 
 	wxFileOffset GetFileSizeByHandle(HANDLE handle) noexcept
 	{
@@ -153,7 +153,7 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	wxIMPLEMENT_CLASS2(FileStream, wxInputStream, wxOutputStream);
 

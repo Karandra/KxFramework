@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 
-namespace KxFramework::Utility
+namespace kxf::Utility
 {
 	template<class TFunc>
 	class KX_API CallAtScopeExit final

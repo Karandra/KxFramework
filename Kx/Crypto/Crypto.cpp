@@ -14,8 +14,8 @@
 
 namespace
 {
-	using namespace KxFramework;
-	using namespace KxFramework::Crypto;
+	using namespace kxf;
+	using namespace kxf::Crypto;
 
 	constexpr size_t g_StreamBlockSize = BinarySize::FromKB(64).GetBytes();
 
@@ -136,7 +136,7 @@ namespace
 	}
 }
 
-namespace KxFramework::Crypto
+namespace kxf::Crypto
 {
 	size_t Rot13(String& source) noexcept
 	{

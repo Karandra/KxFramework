@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "FlagSet.h"
 
-namespace KxFramework
+namespace kxf
 {
 	template<class TEnum, TEnum initialValue = static_cast<TEnum>(0)>
 	class WithOptions

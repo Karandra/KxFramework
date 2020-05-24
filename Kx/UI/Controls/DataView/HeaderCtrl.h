@@ -6,7 +6,7 @@
 #include <wx/headerctrl.h>
 struct _HD_ITEMW;
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class View;
 	class MainWindow;
@@ -14,7 +14,7 @@ namespace KxFramework::UI::DataView
 	class ItemEvent;
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API HeaderCtrl: public WindowRefreshScheduler<wxHeaderCtrl>
 	{

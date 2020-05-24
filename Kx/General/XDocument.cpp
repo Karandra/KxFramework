@@ -18,7 +18,7 @@ namespace
 	}
 }
 
-namespace KxFramework::XDocument
+namespace kxf::XDocument
 {
 	std::pair<StringView, int> IXNode::ExtractIndexFromName(StringView elementName, StringView xPathSeparator)
 	{

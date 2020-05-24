@@ -1,7 +1,7 @@
 #pragma once
 #include "Event.h"
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	class KX_API BehaviorEvent: public Event
 	{

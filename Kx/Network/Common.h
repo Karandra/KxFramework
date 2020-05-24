@@ -3,7 +3,7 @@
 #include "Kx/General/String.h"
 #include "Kx/General/DateTime.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class URI;
 	class URL;
@@ -38,7 +38,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework::Network
+namespace kxf::Network
 {
 	bool IsInternetAvailable() noexcept;
 	String LookupIP(const URI& uri, NetworkHostType ip);

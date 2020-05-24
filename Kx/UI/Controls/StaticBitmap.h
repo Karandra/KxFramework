@@ -3,7 +3,7 @@
 #include "Kx/UI/WindowRefreshScheduler.h"
 #include <wx/generic/statbmpg.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class BitmapScaleMode
 	{
@@ -14,7 +14,7 @@ namespace KxFramework::UI
 	};
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API StaticBitmap: public wxGenericStaticBitmap
 	{

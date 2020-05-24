@@ -3,12 +3,12 @@
 #include <memory>
 #include "Kx/System/UndefWindows.h"
 
-namespace KxFramework::Utility
+namespace kxf::Utility
 {
 	void SecureZeroMemory(void* ptr, size_t size);
 }
 
-namespace KxFramework::Utility
+namespace kxf::Utility
 {
 	template<class T>
 	class AlignedHeapBuffer final

@@ -16,7 +16,7 @@ namespace
 	}
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	bool IStdDialog::ShowNativeWindow(wxDialog* window, bool show)
 	{
@@ -88,7 +88,7 @@ namespace KxFramework::UI
 	}
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	StdDialogControl::StdDialogControl(Button* control)
 		:m_Type(Type::Button)
@@ -125,7 +125,7 @@ namespace KxFramework::UI
 	}
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_ABSTRACT_CLASS(StdDialog, wxDialog);
 
@@ -228,7 +228,7 @@ namespace KxFramework::UI
 	}
 	void StdDialog::OnDrawFrameBorder(wxPaintEvent& event)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		wxAutoBufferedPaintDC dc(GetContentWindow());
 		dc.Clear();

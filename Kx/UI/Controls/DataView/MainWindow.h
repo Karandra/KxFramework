@@ -11,7 +11,7 @@
 #include "Kx/UI/Windows/ToolTipEx.h"
 #include <wx/selstore.h>
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class View;
 	class Column;
@@ -26,7 +26,7 @@ namespace KxFramework::UI::DataView
 	class DropTarget;
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API MainWindow: public wxWindow
 	{

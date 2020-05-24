@@ -2,7 +2,7 @@
 #include "ProgressBar.h"
 #include "Kx/General/StringFormater.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(ProgressBar, wxGauge);
 

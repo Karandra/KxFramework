@@ -4,7 +4,7 @@
 #include <wx/scrolwin.h>
 #include <wx/systhemectrl.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API Panel: public wxSystemThemedControl<wxPanel>
 	{

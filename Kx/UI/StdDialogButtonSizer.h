@@ -4,13 +4,13 @@
 #include <wx/sizer.h>
 #include <wx/anybutton.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class Dialog;
 	class Button;
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API StdDialogButtonSizer: public wxBoxSizer
 	{

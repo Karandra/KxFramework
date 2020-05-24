@@ -5,7 +5,7 @@
 #include <wx/private/streamtempinput.h>
 #include "Kx/System/UndefWindows.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API RunningSystemProcessStdIO: public ISystemProcessStdIO
 	{

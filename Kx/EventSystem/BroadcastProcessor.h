@@ -2,13 +2,13 @@
 #include "EvtHandler.h"
 #include "EventHandlerStack.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class BroadcastProcessor;
 	class BroadcastReciever;
 }
 
-namespace KxFramework::EventSystem
+namespace kxf::EventSystem
 {
 	class KX_API BroadcastProcessorHandler: public wxEvtHandler
 	{
@@ -32,7 +32,7 @@ namespace KxFramework::EventSystem
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API BroadcastProcessor
 	{
@@ -139,7 +139,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API BroadcastReciever
 	{

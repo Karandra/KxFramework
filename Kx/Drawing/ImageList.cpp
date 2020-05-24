@@ -9,7 +9,7 @@
 
 namespace
 {
-	using namespace KxFramework;
+	using namespace kxf;
 
 	constexpr bool g_UseMask = false;
 
@@ -28,7 +28,7 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(ImageList, wxImageList);
 

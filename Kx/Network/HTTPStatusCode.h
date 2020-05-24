@@ -3,7 +3,7 @@
 #include "Kx/General/IndexedEnum.h"
 #include "Kx/System/ErrorCodeValue.h"
 
-namespace KxFramework
+namespace kxf
 {
 	enum class HTTPStatus
 	{
@@ -77,7 +77,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	struct HTTPStatusDef final: public IndexedEnumDefinition<HTTPStatusDef, HTTPStatus, StringView, true>
 	{
@@ -152,7 +152,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	// Indirectly implements 'ErrorCodeValue<>' static interface
 	class HTTPStatusCode: public IndexedEnumValue<HTTPStatusDef, HTTPStatus::Unknown>

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SecretValue.h"
 
-namespace KxFramework
+namespace kxf
 {
 	String SecretValue::ToString(const wxMBConv& conv) const
 	{

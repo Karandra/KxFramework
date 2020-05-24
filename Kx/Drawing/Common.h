@@ -5,7 +5,7 @@
 #include <wx/bitmap.h>
 #include "Kx/System/UndefWindows.h"
 
-namespace KxFramework
+namespace kxf
 {
 	enum class GraphicsRendererType
 	{
@@ -17,12 +17,12 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework::Drawing
+namespace kxf::Drawing
 {
 	constexpr int InvalidImageIndex = -1;
 }
 
-namespace KxFramework::Drawing
+namespace kxf::Drawing
 {
 	wxIcon ToIcon(const wxImage& image);
 	wxIcon ToIcon(const wxBitmap& bitmap);

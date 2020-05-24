@@ -7,7 +7,7 @@ namespace
 	constexpr int g_LocalOffset = -1;
 }
 
-namespace KxFramework
+namespace kxf
 {
 	bool TimeZoneOffset::IsLocal() const noexcept
 	{

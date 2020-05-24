@@ -12,7 +12,7 @@ namespace
 	const double g_PI_Half = std::acos(0.0);
 }
 
-namespace KxFramework::Math
+namespace kxf::Math
 {
 	wxUniChar GetDecimalSeparator()
 	{

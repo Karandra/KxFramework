@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "JSONDocument.h"
 
-namespace KxFramework::JSON
+namespace kxf::JSON
 {
 	String GetLibraryName()
 	{

@@ -3,7 +3,7 @@
 #include "../Renderers/TextRenderer.h"
 #include "Kx/UI/Controls/TextBox.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	wxWindow* TextEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value)
 	{

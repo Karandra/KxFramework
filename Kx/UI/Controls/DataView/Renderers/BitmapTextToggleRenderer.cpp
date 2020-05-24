@@ -5,7 +5,7 @@
 #include "ToggleRenderer.h"
 #include "../View.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	bool BitmapTextToggleValue::FromAny(const wxAny& value)
 	{
@@ -13,7 +13,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	wxAny BitmapTextToggleRenderer::OnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent)
 	{

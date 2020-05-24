@@ -2,7 +2,7 @@
 #include "ImageView.h"
 #include "Kx/UI/Windows/DrawablePanel.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(ImageView, wxControl);
 

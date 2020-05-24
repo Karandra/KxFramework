@@ -3,7 +3,7 @@
 #include "Registry.h"
 #include "Kx/General/StringFormater.h"
 
-namespace KxFramework
+namespace kxf
 {
 	ShellFileType ShellFileTypeManager::FileTypeFromExtension(const String& extension) const
 	{

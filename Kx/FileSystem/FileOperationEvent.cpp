@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "FileOperationEvent.h"
 
-namespace KxFramework
+namespace kxf
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(FileOperationEvent, wxNotifyEvent);
 }

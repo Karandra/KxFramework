@@ -12,7 +12,7 @@
 #include <wx/statbmp.h>
 #include <wx/app.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API StdDialogControl final
 	{
@@ -82,7 +82,7 @@ namespace KxFramework::UI
 	};
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API IStdDialog: public RTTI::Interface<IStdDialog>
 	{
@@ -122,7 +122,7 @@ namespace KxFramework::UI
 	};
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	// This is probably the most broken class of them all...
 	class KX_API StdDialog: public Dialog, public IStdDialog

@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API UserName
 	{

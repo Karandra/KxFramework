@@ -7,9 +7,9 @@
 #include "Editor.h"
 #include "Kx/Utility/Common.h"
 
-using namespace KxFramework;
+using namespace kxf;
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	wxString NativeColumn::GetTitle() const
 	{
@@ -91,7 +91,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	int Column::GetAbsMinColumnWidth()
 	{
@@ -103,7 +103,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	void Column::SetSortOrder(bool ascending)
 	{

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ArchiveEvent.h"
 
-namespace KxFramework
+namespace kxf
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(ArchiveEvent, FileOperationEvent);
 }

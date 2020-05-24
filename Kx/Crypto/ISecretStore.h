@@ -3,12 +3,12 @@
 #include "Kx/General/String.h"
 #include "Kx/RTTI/QueryInterface.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class SecretValue;
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API ISecretStore: public RTTI::Interface<ISecretStore>
 	{

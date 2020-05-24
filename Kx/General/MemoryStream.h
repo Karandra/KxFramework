@@ -3,7 +3,7 @@
 #include "StreamWrappers.h"
 #include <wx/mstream.h>
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API MemoryInputStream: public IStreamWrapper, public InputStreamWrapper<wxMemoryInputStream>
 	{
@@ -40,7 +40,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API MemoryOutputStream: public IStreamWrapper, public OutputStreamWrapper<wxMemoryOutputStream>
 	{

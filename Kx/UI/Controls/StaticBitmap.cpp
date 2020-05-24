@@ -2,13 +2,13 @@
 #include "StaticBitmap.h"
 #include "Kx/Drawing/UxTheme.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(StaticBitmap, wxGenericStaticBitmap);
 
 	void StaticBitmap::OnPaint(wxPaintEvent& event)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		wxBufferedPaintDC dc(this);
 		UxTheme::DrawParentBackground(*this, dc, Rect(Point(0, 0), GetSize()));

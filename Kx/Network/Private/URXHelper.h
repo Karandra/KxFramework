@@ -3,13 +3,13 @@
 #include <wx/uri.h>
 #include <wx/url.h>
 
-namespace KxFramework
+namespace kxf
 {
 	class URI;
 	class URL;
 }
 
-namespace KxFramework::Network::Private
+namespace kxf::Network::Private
 {
 	inline String NormalizeInputAddress(const String& address)
 	{
@@ -98,7 +98,7 @@ namespace KxFramework::Network::Private
 	}
 }
 
-namespace KxFramework::Network::Private
+namespace kxf::Network::Private
 {
 	template<class TDerived_, class TBase_>
 	class URXHelper

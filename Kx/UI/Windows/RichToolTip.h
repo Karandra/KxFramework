@@ -3,7 +3,7 @@
 #include "Kx/Utility/Common.h"
 #include <wx/richtooltip.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class RichToolTipKind
 	{
@@ -18,7 +18,7 @@ namespace KxFramework::UI
 		BottomRight = wxTipKind::wxTipKind_BottomRight
 	};
 }
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API RichToolTip: public wxObject
 	{
@@ -125,7 +125,7 @@ namespace KxFramework::UI
 			{
 				m_Icon = wxNullIcon;
 				m_IconID = iconID;
-				m_ToolTip.SetIcon(KxFramework::UI::ToWxStdIcon(iconID));
+				m_ToolTip.SetIcon(kxf::UI::ToWxStdIcon(iconID));
 			}
 
 			// Animation

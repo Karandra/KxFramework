@@ -3,11 +3,11 @@
 #include "Kx/Utility/Common.h"
 #include <wx/colordlg.h>
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	ColorValue::ColorValue(const Color& color):m_Color(color)
 	{
-		using namespace KxFramework::Utility;
+		using namespace kxf::Utility;
 
 		static_assert(wxColourData::NUM_CUSTOM == ArraySize<decltype(m_PaletteColors)>::value);
 	}
@@ -61,7 +61,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	wxWindow* ColorEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value)
 	{

@@ -4,7 +4,7 @@
 #include "Kx/General/Version.h"
 #include "Kx/FileSystem/FSPath.h"
 
-namespace KxFramework
+namespace kxf
 {
 	enum class ExecutableVersionField
 	{
@@ -22,7 +22,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API ExecutableVersionResource final
 	{

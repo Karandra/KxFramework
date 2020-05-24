@@ -17,7 +17,7 @@ struct IAction;
 struct ITaskService;
 struct ITaskFolder;
 
-namespace KxFramework::System
+namespace kxf::System
 {
 	class KX_API ScheduledTask final
 	{
@@ -63,7 +63,7 @@ namespace KxFramework::System
 	};
 }
 
-namespace KxFramework::System
+namespace kxf::System
 {
 	class KX_API TaskScheduler final
 	{

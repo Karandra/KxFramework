@@ -12,7 +12,7 @@ namespace
 		WORD CodePage;
 	};
 
-	KxFramework::Version UnpackNumericVersion(DWORD mostSignificant, DWORD leastSignificant)
+	kxf::Version UnpackNumericVersion(DWORD mostSignificant, DWORD leastSignificant)
 	{
 		return {static_cast<int>(HIWORD(mostSignificant)), static_cast<int>(LOWORD(mostSignificant)), static_cast<int>(HIWORD(leastSignificant)), static_cast<int>(LOWORD(leastSignificant))};
 	}
@@ -28,7 +28,7 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	void ExecutableVersionResource::Load(const FSPath& filePath)
 	{

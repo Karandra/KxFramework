@@ -8,7 +8,7 @@
 #include <Windows.h>
 #include "Kx/System/UndefWindows.h"
 
-namespace KxFramework::System
+namespace kxf::System
 {
 	class KX_API ProcessPipe final
 	{
@@ -51,7 +51,7 @@ namespace KxFramework::System
 	};
 }
 
-namespace KxFramework::System
+namespace kxf::System
 {
 	class KX_API CreateProcessExecutor: public RTTI::ImplementInterface<CreateProcessExecutor, RunningSystemProcess, RunningSystemProcessStdIO>, public wxThread
 	{

@@ -7,9 +7,9 @@
 #include "Kx/UI/Windows/ToolTipEx.h"
 #include <wx/textwrapper.h>
 
-using namespace KxFramework::UI;
+using namespace kxf::UI;
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	const Column& ToolTip::SelectAnchorColumn(const Column& currentColumn) const
 	{

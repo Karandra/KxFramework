@@ -3,7 +3,7 @@
 #include "TimeSpan.h"
 #include "ITimeClock.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class SystemClock final: public ITimeClock
 	{

@@ -9,8 +9,8 @@
 
 namespace
 {
-	using namespace KxFramework;
-	using namespace KxFramework::UI;
+	using namespace kxf;
+	using namespace kxf::UI;
 
 	enum class MouseButton
 	{
@@ -44,7 +44,7 @@ namespace
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	void HeaderCtrl2::OnPaint(wxPaintEvent& event)
 	{

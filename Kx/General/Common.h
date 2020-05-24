@@ -4,7 +4,7 @@
 enum wxSeekMode: int;
 enum wxStreamError: int;
 
-namespace KxFramework
+namespace kxf
 {
 	enum class VersionType
 	{
@@ -101,7 +101,7 @@ namespace KxFramework
 	Kx_DeclareFlagSet(wxDirection);
 }
 
-namespace KxFramework
+namespace kxf
 {
 	std::optional<wxSeekMode> ToWxSeekMode(StreamSeekMode seekMode) noexcept;
 	std::optional<StreamSeekMode> FromWxSeekMode(wxSeekMode seekMode) noexcept;

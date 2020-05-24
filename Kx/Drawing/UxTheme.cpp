@@ -10,9 +10,9 @@
 
 namespace
 {
-	constexpr const wchar_t* MapKxUxThemeClassToName(KxFramework::UxThemeClass themeClass) noexcept
+	constexpr const wchar_t* MapKxUxThemeClassToName(kxf::UxThemeClass themeClass) noexcept
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		switch (themeClass)
 		{
@@ -165,7 +165,7 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	bool UxTheme::ClearDC(wxWindow& window, wxDC& dc) noexcept
 	{
@@ -414,7 +414,7 @@ namespace KxFramework
 
 			if (averageBackgroundColor)
 			{
-				*averageBackgroundColor = KxFramework::Drawing::GetAreaAverageColor(dc, fillRect);
+				*averageBackgroundColor = kxf::Drawing::GetAreaAverageColor(dc, fillRect);
 			}
 		}
 		return result;

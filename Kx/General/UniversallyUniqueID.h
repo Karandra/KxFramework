@@ -3,7 +3,7 @@
 #include "NativeUUID.h"
 #include "String.h"
 
-namespace KxFramework
+namespace kxf
 {
 	enum class UUIDFormat
 	{
@@ -16,7 +16,7 @@ namespace KxFramework
 	Kx_DeclareFlagSet(UUIDFormat);
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API UniversallyUniqueID final
 	{
@@ -117,9 +117,9 @@ namespace KxFramework
 namespace std
 {
 	template<>
-	struct hash<KxFramework::UniversallyUniqueID>
+	struct hash<kxf::UniversallyUniqueID>
 	{
-		constexpr size_t operator()(const KxFramework::UniversallyUniqueID& uuid) const noexcept
+		constexpr size_t operator()(const kxf::UniversallyUniqueID& uuid) const noexcept
 		{
 			return uuid.ToNativeUUID().GetHash();
 		}

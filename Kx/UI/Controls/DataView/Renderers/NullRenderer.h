@@ -1,7 +1,7 @@
 #pragma once
 #include "../Renderer.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API NullRenderer: public Renderer
 	{

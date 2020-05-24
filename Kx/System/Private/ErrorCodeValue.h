@@ -1,7 +1,7 @@
 #pragma once
 #include "../Common.h"
 
-namespace KxFramework::System::Private
+namespace kxf::System::Private
 {
 	template<class TDerived, class T>
 	class ErrorCodeValue

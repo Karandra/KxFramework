@@ -22,7 +22,7 @@ namespace
 		return window->FromDIP(wxSize(wxDefaultCoord, value)).GetHeight();
 	}
 
-	KxFramework::Size CalcBestSize(const KxFramework::UI::Button& button, KxFramework::Size size)
+	kxf::Size CalcBestSize(const kxf::UI::Button& button, kxf::Size size)
 	{
 		if (!size.IsFullySpecified())
 		{
@@ -41,7 +41,7 @@ namespace
 	}
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(Button, wxAnyButton);
 
@@ -52,7 +52,7 @@ namespace KxFramework::UI
 
 	void Button::OnPaint(wxPaintEvent& event)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		wxAutoBufferedPaintDC dc(this);
 		UxTheme::ClearDC(*this, dc);

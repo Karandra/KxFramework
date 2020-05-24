@@ -2,7 +2,7 @@
 #include <wx/defs.h>
 #include "Kx/System/UndefWindows.h"
 
-namespace KxFramework
+namespace kxf
 {
 	enum class StdButton: uint32_t
 	{
@@ -33,7 +33,7 @@ namespace KxFramework
 	Kx_DeclareFlagSet(StdButton);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	constexpr inline StdButton FromWxStdButton(int stdWxButton) noexcept
 	{

@@ -3,12 +3,12 @@
 #include "CellState.h"
 #include "CellAttribute.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class Renderer;
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	enum class MarkupMode
 	{
@@ -40,7 +40,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API RenderEngine
 	{

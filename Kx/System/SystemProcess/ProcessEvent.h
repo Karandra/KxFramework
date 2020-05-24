@@ -2,7 +2,7 @@
 #include "../Common.h"
 #include "Kx/EventSystem/Event.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API ProcessEvent: public wxNotifyEvent
 	{

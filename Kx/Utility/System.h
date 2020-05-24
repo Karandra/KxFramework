@@ -4,7 +4,7 @@
 #include <wx/buffer.h>
 #include "Kx/System/UndefWindows.h"
 
-namespace KxFramework::Utility
+namespace kxf::Utility
 {
 	const wxScopedCharBuffer LoadResource(const String& resourceName, const String& resourceType = wxS("STRING"));
 	const wxScopedCharBuffer LoadResource(int resourceID, const String& resourceType = wxS("STRING"));

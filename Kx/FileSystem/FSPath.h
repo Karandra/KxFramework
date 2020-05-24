@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class LegacyVolume;
 	class StorageVolume;
@@ -14,7 +14,7 @@ namespace KxFramework
 	Kx_DeclareFlagSet(FSPathFormat);
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API FSPath
 	{
@@ -35,7 +35,7 @@ namespace KxFramework
 
 			bool CheckIsLegacyVolume(const String& path) const;
 			bool CheckIsVolumeGUID(const String& path) const;
-			size_t DetectNamespacePrefix(const String& path, KxFramework::FSPathNamespace& ns) const;
+			size_t DetectNamespacePrefix(const String& path, kxf::FSPathNamespace& ns) const;
 
 			bool CheckStringOnInitialAssign(const String& path) const;
 			bool CheckStringOnAssignPath(const String& path) const;
@@ -289,7 +289,7 @@ namespace KxFramework
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API FSPathQuery: public FSPath
 	{

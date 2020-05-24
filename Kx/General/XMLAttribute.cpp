@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "XMLDocument.h"
 
-namespace KxFramework
+namespace kxf
 {
 	XMLNode XMLAttribute::GetNode() const
 	{

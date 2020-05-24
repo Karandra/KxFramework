@@ -20,7 +20,7 @@ namespace
 
 	bool SafeTerminateProcess(HANDLE processHandle, uint32_t exitCode) noexcept
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		bool isSuccess = false;
 		DWORD errorCode = 0;
@@ -86,7 +86,7 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	RunningSystemProcess RunningSystemProcess::GetCurrentProcess()
 	{

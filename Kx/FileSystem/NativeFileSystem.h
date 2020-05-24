@@ -3,7 +3,7 @@
 #include "IFileSystem.h"
 #include "FileItem.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class NativeFileSystem: public IFileSystem
 	{

@@ -9,7 +9,7 @@
 #include <wx/ustring.h>
 #include <wx/stream.h>
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API IStreamWrapper: public RTTI::Interface<IStreamWrapper>
 	{
@@ -27,7 +27,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	template<class TBaseStream>
 	class InputStreamWrapper: public TBaseStream
@@ -299,7 +299,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	template<class TBaseStream>
 	class OutputStreamWrapper: public TBaseStream
@@ -396,7 +396,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	template<class TBaseStream>
 	class IOStreamWrapper

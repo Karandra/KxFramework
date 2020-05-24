@@ -16,7 +16,7 @@ namespace
 	}
 }
 
-namespace KxFramework::HTML::Private
+namespace kxf::HTML::Private
 {
 	std::string gumbo_ex_cleantext(GumboNode* node);
 	std::string gumbo_ex_serialize(GumboNode* node);
@@ -167,7 +167,7 @@ namespace KxFramework::HTML::Private
 	}
 };
 
-namespace KxFramework
+namespace kxf
 {
 	std::optional<String> KxHTMLNode::DoGetValue() const
 	{

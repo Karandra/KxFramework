@@ -8,7 +8,7 @@
 #include "ScriptValue.h"
 #include "Kx/Utility/Drawing.h"
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	template<class TEvent>
 	TEvent MakeEvent(BasicEventDispatcher& evtHandler, EventID eventID = wxEVT_NULL)
@@ -123,7 +123,7 @@ namespace KxFramework::Sciter
 	}
 }
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	BOOL BasicEventDispatcher::CallHandleEvent(void* context, ElementHandle* element, uint32_t eventGroupID, void* parameters)
 	{
@@ -910,7 +910,7 @@ namespace KxFramework::Sciter
 	}
 }
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	wxEvtHandler& WidgetEventDispatcher::GetEvtHandler()
 	{

@@ -2,7 +2,7 @@
 #include "CellState.h"
 #include "MainWindow.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	int CellState::ToItemState(const MainWindow* window) const
 	{

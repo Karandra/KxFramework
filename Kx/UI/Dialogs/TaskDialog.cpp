@@ -10,7 +10,7 @@
 #pragma warning(disable: 4302) // 'reinterpret_cast': truncation from 'void *' to 'int'
 #pragma warning(disable: 4311) // 'reinterpret_cast': pointer truncation from 'void *' to 'int'
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(TaskDialog, StdDialog);
 

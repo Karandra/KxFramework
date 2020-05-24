@@ -2,7 +2,7 @@
 #include "Model.h"
 #include "MainWindow.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	Node& Model::GetRootNode() const
 	{
@@ -43,7 +43,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	size_t ListModel::GetItemCount() const
 	{
@@ -65,7 +65,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	VirtualNode& VirtualListModel::GetVirtualNode() const
 	{

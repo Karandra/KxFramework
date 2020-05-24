@@ -3,7 +3,7 @@
 #include "Kx/General/String.h"
 #include "TinyXML2 HTML5 Printer.h"
 
-namespace KxFramework::XML::Private
+namespace kxf::XML::Private
 {
 	constexpr wxChar DefaultDeclaredEncoding[] = wxS("utf-8");
 
@@ -26,7 +26,7 @@ namespace KxFramework::XML::Private
 	};
 }
 
-namespace KxFramework::XML::Private
+namespace kxf::XML::Private
 {
 	inline String ToString(const char* value, size_t length = wxString::npos)
 	{

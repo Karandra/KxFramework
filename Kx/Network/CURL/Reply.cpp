@@ -2,7 +2,7 @@
 #include "Reply.h"
 #include "../CURL.h"
 
-namespace KxFramework
+namespace kxf
 {
 	String CURLReplyBase::GetErrorMessage() const
 	{

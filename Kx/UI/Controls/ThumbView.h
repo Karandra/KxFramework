@@ -5,7 +5,7 @@
 #include <wx/systhemectrl.h>
 #include <wx/vscroll.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API ThumbViewItem final
 	{
@@ -30,7 +30,7 @@ namespace KxFramework::UI
 	};
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API ThumbView: public wxSystemThemedControl<WindowRefreshScheduler<wxVScrolledWindow>>
 	{

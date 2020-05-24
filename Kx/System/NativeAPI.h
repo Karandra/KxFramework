@@ -4,7 +4,7 @@
 #include "UndefWindows.h"
 #include <array>
 
-namespace KxFramework::NativeAPI
+namespace kxf::NativeAPI
 {
 	enum class NativeLibrary
 	{
@@ -16,7 +16,7 @@ namespace KxFramework::NativeAPI
 	};
 }
 
-namespace KxFramework::NativeAPI::Private
+namespace kxf::NativeAPI::Private
 {
 	class Loader final
 	{
@@ -52,7 +52,7 @@ namespace KxFramework::NativeAPI::Private
 	using T##name = ret_type (call_conv*)(__VA_ARGS__);	\
 	extern T##name name
 
-namespace KxFramework::NativeAPI
+namespace kxf::NativeAPI
 {
 	namespace
 	{

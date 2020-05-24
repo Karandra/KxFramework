@@ -2,12 +2,12 @@
 #include "Kx/UI/Common.h"
 #include <CommCtrl.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class TaskDialog;
 }
 
-namespace KxFramework::UI::Private
+namespace kxf::UI::Private
 {
 	class KX_API TaskDialogNativeInfo final
 	{

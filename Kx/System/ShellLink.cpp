@@ -5,7 +5,7 @@
 #include <ShObjIDL.h>
 #include "UndefWindows.h"
 
-namespace KxFramework
+namespace kxf
 {
 	ShellLink::ShellLink() noexcept
 	{

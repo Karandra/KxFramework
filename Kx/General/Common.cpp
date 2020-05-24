@@ -3,7 +3,7 @@
 #include <wx/stream.h> 
 #include <wx/filefn.h> 
 
-namespace KxFramework
+namespace kxf
 {
 	std::optional<wxSeekMode> ToWxSeekMode(StreamSeekMode seekMode) noexcept
 	{

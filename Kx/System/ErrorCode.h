@@ -3,7 +3,7 @@
 #include "ErrorCodeValue.h"
 #include "Kx/General/String.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API ErrorCode final
 	{

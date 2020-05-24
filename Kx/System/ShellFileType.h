@@ -5,7 +5,7 @@
 #include <wx/mimetype.h>
 #include <wx/iconloc.h>
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API ShellFileType final
 	{

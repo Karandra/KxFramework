@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ComponentSystem.h"
 
-namespace KxFramework::RTTI
+namespace kxf::RTTI
 {
 	void ComponentItem::Destroy() noexcept
 	{

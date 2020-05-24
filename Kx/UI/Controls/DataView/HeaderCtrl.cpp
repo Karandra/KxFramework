@@ -36,13 +36,13 @@ namespace
 		return wxEVT_NULL;
 	}
 
-	KxFramework::Rect MakeWidthRect(int value)
+	kxf::Rect MakeWidthRect(int value)
 	{
 		return {0, 0, value, 0};
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	HWND HeaderCtrl::GetHeaderCtrlHandle() const
 	{
@@ -246,7 +246,7 @@ namespace KxFramework::UI::DataView
 
 			if (!m_ImageList)
 			{
-				m_ImageList = std::make_unique<KxFramework::ImageList>(bitmap.GetWidth(), bitmap.GetHeight());
+				m_ImageList = std::make_unique<kxf::ImageList>(bitmap.GetWidth(), bitmap.GetHeight());
 				Header_SetImageList(GetHeaderCtrlHandle(), m_ImageList->GetHIMAGELIST());
 			}
 			item.iImage = m_ImageList->Add(bitmap);

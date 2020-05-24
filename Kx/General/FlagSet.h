@@ -2,7 +2,7 @@
 #include <utility>
 #include <type_traits>
 
-namespace KxFramework
+namespace kxf
 {
 	template<class T>
 	struct IsFlagSet: std::false_type {};
@@ -13,7 +13,7 @@ namespace KxFramework
 	#define Kx_DeclareFlagSet(T) template<> struct IsFlagSet<T>: std::true_type { static_assert(std::is_enum_v<T>, "enum type required"); }
 }
 
-namespace KxFramework
+namespace kxf
 {
 	template<class TInt, class TEnum>
 	constexpr std::enable_if_t<std::is_enum_v<TEnum>, TInt> ToInt(TEnum value) noexcept
@@ -47,7 +47,7 @@ namespace KxFramework
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	template<class TEnum_>
 	class FlagSet final

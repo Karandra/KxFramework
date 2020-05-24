@@ -1,7 +1,7 @@
 #pragma once
 #include "../Renderer.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API ToggleValue
 	{
@@ -81,7 +81,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API ToggleRendererBase
 	{
@@ -99,7 +99,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API ToggleRenderer: public Renderer, public ToggleRendererBase
 	{

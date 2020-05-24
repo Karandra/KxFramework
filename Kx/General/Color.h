@@ -8,7 +8,7 @@
 #include <wx/pen.h>
 class wxWindow;
 
-namespace KxFramework
+namespace kxf
 {
 	enum class C2SFormat
 	{
@@ -31,7 +31,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API Color final
 	{

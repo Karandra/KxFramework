@@ -12,7 +12,7 @@
 #include <wx/window.h>
 #include "Kx/System/UndefWindows.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class WindowStyle
 	{
@@ -50,14 +50,14 @@ namespace KxFramework::UI
 		Theme = wxBORDER_THEME,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::WindowStyle);
 	Kx_DeclareFlagSet(UI::WindowExtraStyle);
 	Kx_DeclareFlagSet(UI::WindowBorder);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	// Get any valid HWND for functions that requires parent window in all cases.
 	// Return HWND of windows in following chain:

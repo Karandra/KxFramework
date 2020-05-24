@@ -5,7 +5,7 @@
 #include "Kx/UI/StdButton.h"
 #include <wx/dialog.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class DialogStyle
 	{
@@ -24,13 +24,13 @@ namespace KxFramework::UI
 		Metal = wxDIALOG_EX_METAL,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::DialogStyle);
 	Kx_DeclareFlagSet(UI::DialogExStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API Dialog: public TopLevelWindow<wxDialog>
 	{

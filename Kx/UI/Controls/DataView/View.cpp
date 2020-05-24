@@ -19,7 +19,7 @@ namespace
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	wxIMPLEMENT_ABSTRACT_CLASS(View, wxWindow)
 

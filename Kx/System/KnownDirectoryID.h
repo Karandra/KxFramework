@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 
-namespace KxFramework
+namespace kxf
 {
 	enum class KnownDirectoryID
 	{

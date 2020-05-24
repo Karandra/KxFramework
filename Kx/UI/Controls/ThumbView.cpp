@@ -4,7 +4,7 @@
 #include <wx/renderer.h>
 #include <wx/dcgraph.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(ThumbView, wxVScrolledWindow);
 

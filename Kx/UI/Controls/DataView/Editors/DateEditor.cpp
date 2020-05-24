@@ -5,10 +5,10 @@
 
 namespace
 {
-	int ConvertControlStyle(const KxFramework::UI::DataView::DateTimeValue& value)
+	int ConvertControlStyle(const kxf::UI::DataView::DateTimeValue& value)
 	{
-		using namespace KxFramework;
-		using namespace KxFramework::UI::DataView;
+		using namespace kxf;
+		using namespace kxf::UI::DataView;
 
 		int style = 0;
 		Utility::AddFlagRef(style, wxDP_SPIN, value.ContainsOption(DateEditorOption::Spin));
@@ -20,7 +20,7 @@ namespace
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	bool DateTimeValue::FromAny(const wxAny& value)
 	{
@@ -54,7 +54,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	wxWindow* DateEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value)
 	{

@@ -6,7 +6,7 @@
 #include "UndefWindows.h"
 struct IErrorInfo;
 
-namespace KxFramework
+namespace kxf
 {
 	class UniversallyUniqueID;
 
@@ -15,7 +15,7 @@ namespace KxFramework
 	class NtStatus;
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class GenericError final: public System::Private::ErrorCodeValue<GenericError, uint32_t>
 	{

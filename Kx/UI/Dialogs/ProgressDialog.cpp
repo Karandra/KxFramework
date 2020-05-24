@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ProgressDialog.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(ProgressDialog, StdDialog);
 

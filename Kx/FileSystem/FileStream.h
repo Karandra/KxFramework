@@ -5,7 +5,7 @@
 #include <wx/stream.h>
 #include <wx/datetime.h>
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API FileStream:
 		public IStreamWrapper,

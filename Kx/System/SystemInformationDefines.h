@@ -2,7 +2,7 @@
 #include "Common.h"
 #include <wx/settings.h>
 
-namespace KxFramework
+namespace kxf
 {
 	enum class LockWorkstationCommand
 	{

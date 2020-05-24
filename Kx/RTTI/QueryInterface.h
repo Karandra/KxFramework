@@ -4,7 +4,7 @@
 #include <Kx/Utility/Common.h>
 #include <Kx/Utility/TypeTraits.h>
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API IID final
 	{
@@ -61,9 +61,9 @@ namespace KxFramework
 namespace std
 {
 	template<>
-	struct hash<KxFramework::IID>
+	struct hash<kxf::IID>
 	{
-		constexpr size_t operator()(const KxFramework::IID& iid) const noexcept
+		constexpr size_t operator()(const kxf::IID& iid) const noexcept
 		{
 			return iid.ToNativeUUID().GetHash();
 		}
@@ -72,20 +72,20 @@ namespace std
 
 #define KxDecalreIID(T, ...)	\
 \
-friend class KxFramework::IID;	\
-friend constexpr KxFramework::IID KxFramework::IID::FromType<T>() noexcept;	\
+friend class kxf::IID;	\
+friend constexpr kxf::IID kxf::IID::FromType<T>() noexcept;	\
 \
 private:	\
-	static constexpr KxFramework::IID ms_IID = KxFramework::NativeUUID __VA_ARGS__;	\
+	static constexpr kxf::IID ms_IID = kxf::NativeUUID __VA_ARGS__;	\
 \
 public:	\
-	KxFramework::IID GetIID() const noexcept override	\
+	kxf::IID GetIID() const noexcept override	\
 	{	\
 		return T::ms_IID;	\
 	}	\
 
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API IObject
 	{
@@ -179,7 +179,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework::RTTI
+namespace kxf::RTTI
 {
 	template<class T>
 	class Interface: public virtual IObject

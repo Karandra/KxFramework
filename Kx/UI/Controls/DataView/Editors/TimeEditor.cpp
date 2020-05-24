@@ -5,9 +5,9 @@
 
 namespace
 {
-	KxFramework::DateTime ResetDate(KxFramework::DateTime date)
+	kxf::DateTime ResetDate(kxf::DateTime date)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		date.SetDay(0);
 		date.SetMonth(Month::None);
@@ -17,7 +17,7 @@ namespace
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	wxWindow* TimeEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value)
 	{

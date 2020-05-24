@@ -46,7 +46,7 @@ static std::string cleantext(GumboNode* node) {
   }
 }
 
-namespace KxFramework::HTML::Private
+namespace kxf::HTML::Private
 {
 	std::string gumbo_ex_cleantext(GumboNode* node)
 	{

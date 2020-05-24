@@ -5,7 +5,7 @@
 #include "Kx/Utility/Common.h"
 #include "Kx/Utility/CallAtScopeExit.h"
 
-namespace KxFramework
+namespace kxf
 {
 	FileItem NativeFileSystem::GetItem(const FSPath& path) const
 	{

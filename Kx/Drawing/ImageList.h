@@ -5,7 +5,7 @@
 #include <wx/imaglist.h>
 struct IImageList2;
 
-namespace KxFramework
+namespace kxf
 {
 	enum class ImageListDrawItemFlag
 	{
@@ -18,7 +18,7 @@ namespace KxFramework
 	Kx_DeclareFlagSet(ImageListDrawItemFlag);
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API ImageList: public wxImageList
 	{

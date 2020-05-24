@@ -5,7 +5,7 @@
 #include "Kx/Sciter/SciterAPI.h"
 #include "Kx/Sciter/Internal.h"
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	std::optional<SCITER_IMAGE_ENCODING> MapImageEncoding(GraphicsBitmap::Format encoding)
 	{
@@ -46,7 +46,7 @@ namespace KxFramework::Sciter
 	}
 }
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	bool GraphicsBitmap::DoAcquire(GraphicsBitmapHandle* handle)
 	{

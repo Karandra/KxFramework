@@ -3,7 +3,7 @@
 #include <functional>
 class wxEvtHandler;
 
-namespace KxFramework
+namespace kxf
 {
 	class IEventCallWrapper
 	{
@@ -21,7 +21,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework::EventSystem
+namespace kxf::EventSystem
 {
 	// Wrapper for lambda or class which implements 'operator()'
 	template<class aTEvent, class aTFunctor>

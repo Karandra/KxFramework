@@ -1,12 +1,12 @@
 #pragma once
 #include "Common.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class MainWindow;
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class CellState final
 	{

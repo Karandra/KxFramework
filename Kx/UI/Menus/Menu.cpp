@@ -6,8 +6,8 @@
 
 namespace
 {
-	using namespace KxFramework;
-	using namespace KxFramework::UI;
+	using namespace kxf;
+	using namespace kxf::UI;
 
 	Menu* g_CurrentMenu = nullptr;
 
@@ -181,7 +181,7 @@ namespace
 	};
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(Menu, wxMenu);
 

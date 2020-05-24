@@ -4,7 +4,7 @@
 #include "Kx/General/String.h"
 #include "Kx/General/BinarySize.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API FileOperationEvent: public wxNotifyEvent
 	{

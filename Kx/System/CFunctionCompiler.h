@@ -3,7 +3,7 @@
 #include "Private/CFunctionCompiler.h"
 #include <array>
 
-namespace KxFramework::FFI
+namespace kxf::FFI
 {
 	class KX_API CFunctionCompiler
 	{

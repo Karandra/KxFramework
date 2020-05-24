@@ -1,6 +1,6 @@
 #pragma once
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	template<class TObject, class THandle>
 	class HandleWrapper

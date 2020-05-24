@@ -2,7 +2,7 @@
 #include "MenuEvent.h"
 #include "Menu.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(MenuEvent, wxNotifyEvent);
 

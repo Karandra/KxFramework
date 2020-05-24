@@ -1,7 +1,7 @@
 #pragma once
 #include "../Renderer.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API TextValue
 	{
@@ -40,7 +40,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API TextRenderer: public Renderer
 	{

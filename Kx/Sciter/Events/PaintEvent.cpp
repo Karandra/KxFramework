@@ -2,7 +2,7 @@
 #include "PaintEvent.h"
 #include "Kx/Sciter/GraphicsRenderer/GraphicsContext.h"
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	GraphicsContext PaintEvent::GetGraphicsContext() const
 	{

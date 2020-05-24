@@ -1,6 +1,6 @@
 #pragma once
 
-namespace KxFramework::WebSocket
+namespace kxf::WebSocket
 {
 	enum class CloseCode
 	{

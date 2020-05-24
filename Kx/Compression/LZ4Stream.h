@@ -4,7 +4,7 @@
 #include "Kx/General/Version.h"
 #include "Kx/General/String.h"
 
-namespace KxFramework::Compression::LZ4
+namespace kxf::Compression::LZ4
 {
 	String GetLibraryName();
 	Version GetLibraryVersion();
@@ -23,7 +23,7 @@ namespace KxFramework::Compression::LZ4
 	std::vector<uint8_t> Decompress(const void* sourceBuffer, size_t sourceSize);
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API LZ4BaseStream: public IStreamWrapper
 	{
@@ -92,7 +92,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API LZ4InputStream: public LZ4BaseStream, public InputStreamWrapper<wxFilterInputStream>
 	{
@@ -134,7 +134,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API LZ4OutputStream: public LZ4BaseStream, public OutputStreamWrapper<wxFilterOutputStream>
 	{

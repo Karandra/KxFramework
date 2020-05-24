@@ -2,7 +2,7 @@
 #include "Kx/UI/Common.h"
 #include <wx/slider.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class SliderStyle
 	{
@@ -24,12 +24,12 @@ namespace KxFramework::UI
 		Bottom = wxSL_BOTTOM,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::SliderStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API Slider: public wxSlider
 	{

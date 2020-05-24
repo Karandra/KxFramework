@@ -5,7 +5,7 @@
 #include "Kx/Utility/Common.h"
 #include "StdDialog.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	namespace Private
 	{
@@ -29,12 +29,12 @@ namespace KxFramework::UI
 		SizeToContent = 1 << 10
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::TaskDialogStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API TaskDialog: public Dialog, RTTI::ImplementInterface<TaskDialog, IStdDialog, IProgressMeter>
 	{

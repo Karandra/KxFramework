@@ -4,7 +4,7 @@
 #include "Kx/UI/Controls/TextBox.h"
 #include "Kx/UI/Controls/StyledTextBox.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class TextBoxDialogStyle
 	{
@@ -16,12 +16,12 @@ namespace KxFramework::UI
 		Styled = 1 << 3
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::TextBoxDialogStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API TextBoxDialog: public StdDialog
 	{

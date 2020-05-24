@@ -6,7 +6,7 @@
 #include <wx/event.h>
 struct IShellLinkW;
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API ShellLink final
 	{

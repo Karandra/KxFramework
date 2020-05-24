@@ -4,7 +4,7 @@
 #include "Kx/Localization/Locale.h"
 #include "Kx/System/UndefWindows.h"
 
-namespace KxFramework::System::Private
+namespace kxf::System::Private
 {
 	String FormatMessage(const void* source, uint32_t messageID, uint32_t flags = 0, const Locale& locale = {}) noexcept;
 

@@ -5,7 +5,7 @@
 #include <wx/app.h>
 #include <wx/cmdline.h>
 
-namespace KxFramework
+namespace kxf
 {
 	template<class TDerived, class TBase>
 	class BasicApplication: public TBase

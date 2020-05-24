@@ -2,7 +2,7 @@
 #include "URL.h"
 #include "CURL/Session.h"
 
-namespace KxFramework::Network::Private
+namespace kxf::Network::Private
 {
 	class URLStream final: public wxInputStream
 	{
@@ -116,7 +116,7 @@ namespace KxFramework::Network::Private
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	bool URL::IsHTTPS() const
 	{

@@ -6,9 +6,9 @@ namespace
 {
 	using CharTraits = std::char_traits<char>;
 
-	void NormalizeValue(KxFramework::String& value)
+	void NormalizeValue(kxf::String& value)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		value.Trim();
 		value.Trim(StringOpFlag::FromEnd);
@@ -17,7 +17,7 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(CURLEvent, FileOperationEvent);
 

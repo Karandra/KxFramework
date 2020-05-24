@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "CellAttributeOptions.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API CellAttribute final
 	{

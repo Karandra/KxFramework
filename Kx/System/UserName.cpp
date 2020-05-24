@@ -8,7 +8,7 @@ namespace
 	constexpr wxChar g_UPNSeparator = wxS('@');
 }
 
-namespace KxFramework
+namespace kxf
 {
 	void UserName::AssignName(String name)
 	{

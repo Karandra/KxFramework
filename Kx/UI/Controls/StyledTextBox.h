@@ -3,7 +3,7 @@
 #include "Kx/UI/WindowRefreshScheduler.h"
 #include <wx/stc/stc.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API StyledTextBox: public wxStyledTextCtrl
 	{

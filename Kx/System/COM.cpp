@@ -9,7 +9,7 @@
 
 namespace
 {
-	using namespace KxFramework;
+	using namespace kxf;
 
 	constexpr DWORD MapCOMInitFlag(FlagSet<COMInitFlag> flags) noexcept
 	{
@@ -44,7 +44,7 @@ namespace
 	}
 }
 
-namespace KxFramework::COM
+namespace kxf::COM
 {
 	void* AllocateMemory(size_t size) noexcept
 	{
@@ -92,7 +92,7 @@ namespace KxFramework::COM
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	void COMInitGuard::DoInitialize(COMThreadingModel threadingModel, FlagSet<COMInitFlag> flags) noexcept
 	{
@@ -118,7 +118,7 @@ namespace KxFramework
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	void OLEInitGuard::DoInitialize() noexcept
 	{

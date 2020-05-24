@@ -6,7 +6,7 @@
 #include <rpcdce.h>
 #include "Kx/System/UndefWindows.h"
 
-namespace KxFramework
+namespace kxf
 {
 	template<class T, class TUUID>
 	auto CastAs(TUUID&& uuid)
@@ -39,7 +39,7 @@ namespace KxFramework
 		return ::UuidCompare(const_cast<::UUID*>(AsUUID(left)), const_cast<::UUID*>(AsUUID(right)), &status);
 	}
 
-	KxFramework::NativeUUID CreateFromString(const wchar_t* value) noexcept
+	kxf::NativeUUID CreateFromString(const wchar_t* value) noexcept
 	{
 		NativeUUID uuid;
 		if (::UuidFromStringW(reinterpret_cast<RPC_WSTR>(const_cast<wchar_t*>(value)), AsUUID(uuid)) == RPC_S_OK)
@@ -48,7 +48,7 @@ namespace KxFramework
 		}
 		return {};
 	}
-	KxFramework::NativeUUID CreateFromString(const char* value) noexcept
+	kxf::NativeUUID CreateFromString(const char* value) noexcept
 	{
 		NativeUUID uuid;
 		if (::UuidFromStringA(reinterpret_cast<RPC_CSTR>(const_cast<char*>(value)), AsUUID(uuid)) == RPC_S_OK)
@@ -59,7 +59,7 @@ namespace KxFramework
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	UniversallyUniqueID UniversallyUniqueID::Create() noexcept
 	{

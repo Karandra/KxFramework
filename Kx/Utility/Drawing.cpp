@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include "Kx/System/UndefWindows.h"
 
-namespace KxFramework::Utility
+namespace kxf::Utility
 {
 	void FromWindowsRect(const tagRECT& winRect, Rect& rect) noexcept
 	{

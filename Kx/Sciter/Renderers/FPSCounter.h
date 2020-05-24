@@ -2,7 +2,7 @@
 #include "Kx/General/DateTime.h"
 #include <deque>
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	class FPSCounter final
 	{

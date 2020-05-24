@@ -2,7 +2,7 @@
 #include "SciterAPI.h"
 #include "Common.h"
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	ISciterAPI* GetSciterAPI()
 	{

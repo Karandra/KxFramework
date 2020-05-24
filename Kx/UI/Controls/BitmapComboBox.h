@@ -6,7 +6,7 @@
 #include <wx/systhemectrl.h>
 #include <wx/bmpcbox.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API BitmapComboBox: public WindowRefreshScheduler<wxSystemThemedControl<wxBitmapComboBox>>, public WithImageList
 	{

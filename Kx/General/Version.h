@@ -5,11 +5,11 @@
 #include <variant>
 class wxVersionInfo;
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API Version final
 	{
-		friend Private::Version::Cmp Private::Version::Compare(const KxFramework::Version& left, const KxFramework::Version& right);
+		friend Private::Version::Cmp Private::Version::Compare(const kxf::Version& left, const kxf::Version& right);
 
 		public:
 			using TDefaultItem = Private::Version::DefaultFormat::Array;

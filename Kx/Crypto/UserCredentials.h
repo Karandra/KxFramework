@@ -3,7 +3,7 @@
 #include "SecretValue.h"
 #include "Kx/System/UserName.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API UserCredentials: public UserName
 	{

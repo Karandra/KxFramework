@@ -8,7 +8,7 @@
 #include <ws2tcpip.h>
 #include "Kx/System/UndefWindows.h"
 
-namespace KxFramework::Network
+namespace kxf::Network
 {
 	bool IsInternetAvailable() noexcept
 	{

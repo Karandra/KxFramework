@@ -1,13 +1,13 @@
 #pragma once
 #include "Event.h"
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	class GraphicsContext;
 	struct GraphicsContextHandle;
 }
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	class KX_API PaintEvent: public Event
 	{
@@ -47,7 +47,7 @@ namespace KxFramework::Sciter
 	};
 }
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	KxEVENT_DECLARE_ALIAS_TO_MEMBER(PaintEvent, PaintBackground);
 	KxEVENT_DECLARE_ALIAS_TO_MEMBER(PaintEvent, PaintForeground);

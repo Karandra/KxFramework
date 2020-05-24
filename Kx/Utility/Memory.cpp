@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Memory.h"
 
-namespace KxFramework::Utility
+namespace kxf::Utility
 {
 	void SecureZeroMemory(void* ptr, size_t size)
 	{

@@ -6,7 +6,7 @@
 #include "Kx/General/String.h"
 #include "Kx/General/Version.h"
 
-namespace KxFramework::CURL
+namespace kxf::CURL
 {
 	String GetLibraryName();
 	Version GetLibraryVersion();

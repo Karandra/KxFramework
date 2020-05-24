@@ -260,7 +260,7 @@ static std::string serialize(GumboNode* node) {
   return results;
 }
 
-namespace KxFramework::HTML::Private
+namespace kxf::HTML::Private
 {
 	std::string gumbo_ex_serialize(GumboNode* node)
 	{

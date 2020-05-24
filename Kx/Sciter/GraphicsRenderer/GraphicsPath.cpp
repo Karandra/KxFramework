@@ -10,7 +10,7 @@ namespace
 	constexpr bool g_UseRelativeCoordinates = true;
 }
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	bool GraphicsPath::DoAcquire(GraphicsPathHandle* handle)
 	{

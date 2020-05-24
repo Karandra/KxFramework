@@ -3,7 +3,7 @@
 #include "Private/CFunction.h"
 #include "CFunctionCompiler.h"
 
-namespace KxFramework
+namespace kxf
 {
 	template<class TSignature, FFI::ABI t_ABI>
 	class CFunction: public FFI::Private::CompiledCallableWrapper<t_ABI, TSignature>::TCompiledCallable

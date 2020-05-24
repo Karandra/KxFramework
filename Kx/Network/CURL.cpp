@@ -6,7 +6,7 @@
 #include <curl/urlapi.h>
 #include <curl/curlver.h>
 
-namespace KxFramework::CURL
+namespace kxf::CURL
 {
 	String GetLibraryName()
 	{

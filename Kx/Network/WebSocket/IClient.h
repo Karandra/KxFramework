@@ -5,7 +5,7 @@
 #include "CloseCode.h"
 #include "Kx/RTTI/QueryInterface.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API IWebSocketClient: public wxEvtHandler, public RTTI::Interface<IWebSocketClient>
 	{

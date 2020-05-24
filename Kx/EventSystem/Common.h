@@ -3,7 +3,7 @@
 #include <wx/event.h>
 #include <wx/windowid.h>
 
-namespace KxFramework
+namespace kxf
 {
 	using EventID = wxEventType;
 	using EventSourceID = wxWindowID;

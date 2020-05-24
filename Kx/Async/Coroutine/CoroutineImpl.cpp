@@ -2,7 +2,7 @@
 #include "CoroutineImpl.h"
 #include <chrono>
 
-namespace KxFramework::Async
+namespace kxf::Async
 {
 	void CoroutineTimer::Notify()
 	{
@@ -20,7 +20,7 @@ namespace KxFramework::Async
 	}
 }
 
-namespace KxFramework::Async
+namespace kxf::Async
 {
 	CoroutineExecutor::CoroutineExecutor(std::unique_ptr<CoroutineBase> coroutine)
 		:wxAsyncMethodCallEvent(wxApp::GetInstance()), m_Coroutine(std::move(coroutine))
@@ -33,7 +33,7 @@ namespace KxFramework::Async
 	}
 }
 
-namespace KxFramework::Async
+namespace kxf::Async
 {
 	CoroutineBase* CoroutineBase::Run(std::unique_ptr<CoroutineBase> coroutine)
 	{

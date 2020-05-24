@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 
-namespace KxFramework
+namespace kxf
 {
 	template<class T>
 	class Singleton
@@ -30,7 +30,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	template<class T>
 	class SingletonPtr

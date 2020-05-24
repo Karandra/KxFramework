@@ -3,7 +3,7 @@
 #include "StdDialog.h"
 #include "Kx/Crypto/SecretValue.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API CredentialsDialog: public Dialog
 	{

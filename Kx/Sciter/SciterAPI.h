@@ -3,7 +3,7 @@
 #include <sciter/sciter-x-api.h>
 #include <sciter/sciter-x-behavior.h>
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	extern void* g_SciterLibrary;
 

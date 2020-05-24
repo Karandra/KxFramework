@@ -4,7 +4,7 @@
 #include "Kx/Sciter/EventDispatcher.h"
 #include "Kx/EventSystem/EventHandlerStack.h"
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	class WidgetFactory;
 
@@ -16,7 +16,7 @@ namespace KxFramework::Sciter
 	};
 }
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	class KX_API Widget: public wxEvtHandler
 	{

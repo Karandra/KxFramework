@@ -5,7 +5,7 @@
 #include "Kx/System/Private/Shell.h"
 #include "Kx/System/Private/System.h"
 
-namespace KxFramework::System
+namespace kxf::System
 {
 	bool ProcessPipe::Create() noexcept
 	{
@@ -31,7 +31,7 @@ namespace KxFramework::System
 	}
 }
 
-namespace KxFramework::System
+namespace kxf::System
 {
 	void CreateProcessExecutor::PrepareEnvironmentBuffer(const ISystemProcess& info)
 	{

@@ -4,7 +4,7 @@
 #include "Kx/UI/Windows/Panel.h"
 #include "Kx/UI/Controls//DataView/MainWindow.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	wxIMPLEMENT_ABSTRACT_CLASS(ComboCtrl, View);
 
@@ -103,7 +103,7 @@ namespace KxFramework::UI::DataView
 	bool ComboCtrl::Create(wxWindow* window)
 	{
 		m_Sizer = new wxBoxSizer(ContainsOption(ComboCtrlOption::HorizontalLayout) ? wxHORIZONTAL : wxVERTICAL);
-		m_BackgroundWindow = new KxFramework::UI::Panel(window, wxID_NONE, CombineFlags<WindowStyle>(*Panel::DefaultStyle, WindowBorder::Theme));
+		m_BackgroundWindow = new kxf::UI::Panel(window, wxID_NONE, CombineFlags<WindowStyle>(*Panel::DefaultStyle, WindowBorder::Theme));
 		m_BackgroundWindow->SetSizer(m_Sizer);
 		if (ShouldInheritColours())
 		{

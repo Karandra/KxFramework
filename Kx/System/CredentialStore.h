@@ -3,7 +3,7 @@
 #include "Kx/Crypto/SecretValue.h"
 #include "Kx/Crypto/ISecretStore.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API CredentialStore: public ISecretStore
 	{

@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "String.h"
 
-namespace KxFramework
+namespace kxf
 {
 	enum class BinarySizeUnit
 	{
@@ -23,7 +23,7 @@ namespace KxFramework
 	Kx_DeclareFlagSet(BinarySizeFormat);
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API BinarySize final
 	{
@@ -297,7 +297,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	inline double GetSizeRatio(BinarySize smallerSize, BinarySize largerSize) noexcept
 	{

@@ -2,7 +2,7 @@
 #include "Kx/System/UndefWindows.h"
 #include <wx/defs.h>
 
-namespace KxFramework
+namespace kxf
 {
 	enum class StdID: int
 	{
@@ -186,7 +186,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	constexpr inline StdID FromWxStdID(int id) noexcept
 	{

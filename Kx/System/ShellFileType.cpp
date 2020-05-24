@@ -5,7 +5,7 @@
 #include "Kx/General/RegEx.h"
 #include <wx/regex.h>
 
-namespace KxFramework
+namespace kxf
 {
 	FSPath ShellFileType::GetOpenExecutable() const
 	{

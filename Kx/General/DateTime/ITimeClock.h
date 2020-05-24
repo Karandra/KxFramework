@@ -3,7 +3,7 @@
 #include "TimeSpan.h"
 #include "Kx/RTTI/QueryInterface.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API ITimeClock: public RTTI::Interface<ITimeClock>
 	{

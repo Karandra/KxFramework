@@ -3,14 +3,14 @@
 #include "Kx/General/String.h"
 #include <tuple>
 
-namespace KxFramework::System
+namespace kxf::System
 {
 	void* AllocateSharedMemoryRegion(void*& buffer, size_t size, FlagSet<MemoryProtection> protection, const wchar_t* name = nullptr) noexcept;
 	void* OpenSharedMemoryRegion(void*& buffer, const wchar_t* name, size_t size, FlagSet<MemoryProtection> protection) noexcept;
 	void FreeSharedMemoryRegion(void* handle, void* buffer) noexcept;
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API SharedMemoryBuffer final
 	{
@@ -242,7 +242,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	template<class T, MemoryProtection t_Protection = MemoryProtection::RW>
 	class TypedSharedMemory final
@@ -375,7 +375,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	template<class T>
 	class TypedSharedMemoryRef final

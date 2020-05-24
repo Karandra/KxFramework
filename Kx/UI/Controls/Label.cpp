@@ -8,7 +8,7 @@ namespace
 	constexpr int g_MinSingleLineHeight = 23;
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(Label, wxStaticText);
 

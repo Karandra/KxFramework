@@ -1,7 +1,7 @@
 #pragma once
 #include "Event.h"
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	class KX_API MouseEvent: public Event, public wxMouseState
 	{
@@ -63,7 +63,7 @@ namespace KxFramework::Sciter
 	};
 }
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	KxEVENT_DECLARE_ALIAS_TO_MEMBER(MouseEvent, MouseEnter);
 	KxEVENT_DECLARE_ALIAS_TO_MEMBER(MouseEvent, MouseLeave);

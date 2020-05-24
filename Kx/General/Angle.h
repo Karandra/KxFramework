@@ -3,7 +3,7 @@
 #include "Kx/Utility/Numeric.h"
 #include <algorithm>
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API Angle final
 	{
@@ -86,7 +86,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	constexpr Angle operator+(const Angle& left, const Angle& right) noexcept
 	{

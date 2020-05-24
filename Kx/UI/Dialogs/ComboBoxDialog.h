@@ -3,7 +3,7 @@
 #include "StdDialog.h"
 class wxComboBox;
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class ComboBoxDialogStyle
 	{
@@ -13,12 +13,12 @@ namespace KxFramework::UI
 		ReadOnly = 1 << 1
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::ComboBoxDialogStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API ComboBoxDialog: public StdDialog
 	{

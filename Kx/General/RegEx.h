@@ -4,7 +4,7 @@
 #include "Kx/Utility/Common.h"
 #include <wx/regex.h>
 
-namespace KxFramework
+namespace kxf
 {
 	enum class RegExFlag
 	{
@@ -26,7 +26,7 @@ namespace KxFramework
 	Kx_DeclareFlagSet(RegExCompileFlag);
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API RegEx final
 	{

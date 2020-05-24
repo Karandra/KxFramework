@@ -8,7 +8,7 @@
 #include <Kx/Utility/Common.h>
 #include <Kx/Utility/Numeric.h>
 
-namespace KxFramework::Geometry
+namespace kxf::Geometry
 {
 	constexpr wxCoord DefaultCoord = wxDefaultCoord;
 
@@ -21,12 +21,12 @@ namespace KxFramework::Geometry
 		OutBottom = 1 << 3
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(Geometry::OutCode);
 }
 
-namespace KxFramework::Geometry
+namespace kxf::Geometry
 {
 	template<class TDerived_, class TValue_>
 	class BasicPoint
@@ -369,7 +369,7 @@ namespace KxFramework::Geometry
 	}
 }
 
-namespace KxFramework::Geometry
+namespace kxf::Geometry
 {
 	template<class TDerived_, class TValue_, class TPoint_, class TSize_>
 	class BasicRect
@@ -979,7 +979,7 @@ namespace KxFramework::Geometry
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class Point final: public Geometry::BasicPoint<Point, int>
 	{

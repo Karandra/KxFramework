@@ -12,7 +12,7 @@ namespace
 	}
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(AuiToolBar, wxAuiToolBar);
 
@@ -269,7 +269,7 @@ namespace KxFramework::UI
 	}
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	void AuiToolBarArt::DrawPlainBackground(wxDC& dc, wxWindow* window, const wxRect& rect)
 	{

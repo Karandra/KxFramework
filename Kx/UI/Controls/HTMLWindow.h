@@ -5,7 +5,7 @@
 #include <wx/textentry.h>
 #include <wx/graphics.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class Menu;
 
@@ -18,12 +18,12 @@ namespace KxFramework::UI
 		NoSelection = wxHW_NO_SELECTION,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::HTMLWindowStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API HTMLWindow: public WindowRefreshScheduler<wxHtmlWindow>, public wxTextEntry
 	{

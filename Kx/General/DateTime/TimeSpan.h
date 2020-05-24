@@ -1,13 +1,13 @@
 #pragma once
 #include "Common.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class Locale;
 	class ITimeClock;
 }
 
-namespace KxFramework::Private
+namespace kxf::Private
 {
 	constexpr int MillisecondsInSecond = 1000;
 	constexpr int MillisecondsInMinute = MillisecondsInSecond * 60;
@@ -16,7 +16,7 @@ namespace KxFramework::Private
 	constexpr int MillisecondsInWeek = MillisecondsInDay * 7;
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API TimeSpan final
 	{

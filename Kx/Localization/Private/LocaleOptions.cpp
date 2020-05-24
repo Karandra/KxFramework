@@ -2,7 +2,7 @@
 #include "LocaleOptions.h"
 #include <WinNls.h>
 
-namespace KxFramework::Localization::Private
+namespace kxf::Localization::Private
 {
 	std::optional<uint32_t> MapLocaleOption(LocaleStrOption option) noexcept
 	{

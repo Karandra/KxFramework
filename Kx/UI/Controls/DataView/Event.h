@@ -5,7 +5,7 @@
 #include <wx/dnd.h>
 #include <wx/dataobj.h>
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class Node;
 	class View;
@@ -14,7 +14,7 @@ namespace KxFramework::UI::DataView
 	class Model;
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API ItemEvent: public wxNotifyEvent
 	{
@@ -166,7 +166,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API EditorEvent: public ItemEvent
 	{
@@ -216,7 +216,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API DragDropEvent: public ItemEvent
 	{

@@ -3,9 +3,9 @@
 
 namespace
 {
-	KxFramework::String ReadToString(wxPipeInputStream& stream)
+	kxf::String ReadToString(wxPipeInputStream& stream)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		String result;
 		char buffer[std::numeric_limits<int16_t>::max()] = {};
@@ -25,7 +25,7 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	String RunningSystemProcessStdIO::ReadStdOut() const
 	{

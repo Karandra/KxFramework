@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "WebView.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_ABSTRACT_CLASS(WebView, wxWebView);
 

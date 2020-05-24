@@ -8,7 +8,7 @@
 #include "Kx/System/UndefWindows.h"
 #undef DWMAPI
 
-namespace KxFramework::UI::Private
+namespace kxf::UI::Private
 {
 	bool TopLevelWindowBase::DWMIsCompositionEnabled()
 	{

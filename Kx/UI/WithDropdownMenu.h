@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "Kx/UI/Menus/Menu.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API WithDropdownMenu
 	{

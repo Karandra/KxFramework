@@ -5,7 +5,7 @@
 #include "Kx/Utility/Common.h"
 #include <wx/dragimag.h>
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	bool DnDInfo::DoCheckOperation(const wxDataFormat& format, DNDOpType desiredType) const
 	{
@@ -40,7 +40,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	void DropSource::OnScroll(wxMouseEvent& event)
 	{
@@ -114,7 +114,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	wxDataFormat DropTarget::GetReceivedFormat() const
 	{

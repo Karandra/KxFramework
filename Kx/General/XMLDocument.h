@@ -6,14 +6,14 @@
 #include "TinyXML2.h"
 #include <wx/stream.h>
 
-namespace KxFramework
+namespace kxf
 {
 	class XMLNode;
 	class XMLDocument;
 	class XMLAttribute;
 }
 
-namespace KxFramework::XML
+namespace kxf::XML
 {
 	String GetLibraryName();
 	Version GetLibraryVersion();
@@ -42,7 +42,7 @@ namespace KxFramework::XML
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API XMLAttribute final
 	{
@@ -99,7 +99,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API XMLNode: public XDocument::XNode<XMLNode>
 	{
@@ -239,7 +239,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API XMLDocument: public XMLNode
 	{

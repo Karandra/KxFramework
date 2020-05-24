@@ -5,7 +5,7 @@
 #include "Kx/RTTI/QueryInterface.h"
 #include <wx/stream.h>
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API ISystemProcessStdIO: public RTTI::Interface<ISystemProcessStdIO>
 	{

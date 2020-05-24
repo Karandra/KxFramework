@@ -2,7 +2,7 @@
 #include "Common.h"
 #include <wx/graphics.h>
 
-namespace KxFramework
+namespace kxf
 {
 	class GCAChangentialiasMode final
 	{

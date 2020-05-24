@@ -4,7 +4,7 @@
 #include <Windows.h>
 #include "Kx/System/UndefWindows.h"
 
-namespace KxFramework::System::Private
+namespace kxf::System::Private
 {
 	constexpr SystemType MapSystemType(DWORD nativeType) noexcept
 	{

@@ -3,7 +3,7 @@
 #include "CoroutineImpl.h"
 #include "YieldInstruction.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API Coroutine: public Async::CoroutineBase
 	{
@@ -33,7 +33,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework::Async
+namespace kxf::Async
 {
 	template<class TCallable>
 	class CoroutineCallableWrapper: public Coroutine

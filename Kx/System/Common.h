@@ -2,7 +2,7 @@
 #include "Kx/Common.hpp"
 #include "Kx/General/String.h"
 
-namespace KxFramework
+namespace kxf
 {
 	enum class ErrorCodeCategory
 	{

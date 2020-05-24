@@ -13,14 +13,14 @@
 
 namespace
 {
-	constexpr bool CheckKernerlversion(const KxFramework::System::KernelVersion& kernelVersion) noexcept
+	constexpr bool CheckKernerlversion(const kxf::System::KernelVersion& kernelVersion) noexcept
 	{
 		// Major version should always be > 0, others are allowed to be zero.
 		return kernelVersion.Major > 0 && kernelVersion.Minor >= 0 && kernelVersion.Build >= 0 && kernelVersion.ServicePackMajor >= 0 && kernelVersion.ServicePackMinor >= 0;
 	}
-	constexpr bool CheckVersionInfo(const KxFramework::System::VersionInfo& versionInfo) noexcept
+	constexpr bool CheckVersionInfo(const kxf::System::VersionInfo& versionInfo) noexcept
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		return versionInfo.PlatformID != SystemPlatformID::Unknown &&
 			versionInfo.SystemType != SystemType::Unknown &&
@@ -29,7 +29,7 @@ namespace
 	}
 }
 
-namespace KxFramework::System
+namespace kxf::System
 {
 	bool Is64Bit() noexcept
 	{

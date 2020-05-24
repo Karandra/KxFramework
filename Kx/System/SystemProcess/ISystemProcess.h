@@ -4,7 +4,7 @@
 #include "Kx/FileSystem/FSPath.h"
 #include "Kx/RTTI/QueryInterface.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API ISystemProcess: public RTTI::Interface<ISystemProcess>
 	{

@@ -3,12 +3,12 @@
 #include "Kx/General/String.h"
 #include "Kx/General/DateTime.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class Version;
 }
 
-namespace KxFramework::Private::Version
+namespace kxf::Private::Version
 {
 	struct DefaultFormat final
 	{
@@ -92,7 +92,7 @@ namespace KxFramework::Private::Version
 	};
 }
 
-namespace KxFramework::Private::Version
+namespace kxf::Private::Version
 {
 	enum class Cmp
 	{
@@ -117,7 +117,7 @@ namespace KxFramework::Private::Version
 		return Cmp::EQ;
 	}
 
-	Cmp Compare(const KxFramework::Version& left, const KxFramework::Version& right);
+	Cmp Compare(const kxf::Version& left, const kxf::Version& right);
 
 	bool Parse(const String& source, DefaultFormat::Array& items, size_t& componentCount);
 	bool Parse(const String& source, DateTime& dateTime);

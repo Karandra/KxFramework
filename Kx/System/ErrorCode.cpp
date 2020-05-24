@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ErrorCode.h"
 
-namespace KxFramework
+namespace kxf
 {
 	std::optional<Win32Error> ErrorCode::ConvertToWin32() const noexcept
 	{

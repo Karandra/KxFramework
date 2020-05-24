@@ -19,7 +19,7 @@ namespace
 	}
 }
 
-namespace KxFramework::Utility
+namespace kxf::Utility
 {
 	const wxScopedCharBuffer LoadResource(const String& resourceName, const String& resourceType)
 	{

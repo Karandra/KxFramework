@@ -7,7 +7,7 @@
 struct IUnknown;
 struct _GUID;
 
-namespace KxFramework
+namespace kxf
 {
 	enum class COMThreadingModel
 	{
@@ -46,7 +46,7 @@ namespace KxFramework
 	Kx_DeclareFlagSet(ClassContext);
 }
 
-namespace KxFramework::COM
+namespace kxf::COM
 {
 	void* AllocateMemory(size_t size) noexcept;
 	void* ReallocateMemory(void* address, size_t size) noexcept;
@@ -56,7 +56,7 @@ namespace KxFramework::COM
 	NativeUUID FromGUID(const ::_GUID& guid) noexcept;
 }
 
-namespace KxFramework::COM
+namespace kxf::COM
 {
 	template<class T>
 	NativeUUID UUIDOf() noexcept
@@ -78,7 +78,7 @@ namespace KxFramework::COM
 	}
 }
 
-namespace KxFramework::COM
+namespace kxf::COM
 {
 	HResult CreateInstance(const NativeUUID& classID, ClassContext classContext, const NativeUUID& iid, void** result, IUnknown* outer = nullptr) noexcept;
 	inline HResult CreateInstance(const ::_GUID& classID, ClassContext classContext, const ::_GUID& iid, void** result, IUnknown* outer = nullptr) noexcept
@@ -93,7 +93,7 @@ namespace KxFramework::COM
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API COMInitGuard final
 	{
@@ -194,7 +194,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	namespace COM::Private
 	{
@@ -249,7 +249,7 @@ namespace KxFramework
 	using COMMemoryPtr = COM::Private::BasicPtr<T, COM::Private::MemoryPtrTraits<T>>;
 }
 
-namespace KxFramework::COM
+namespace kxf::COM
 {
 	template<class TChar>
 	COMMemoryPtr<TChar> AllocateRawString(std::basic_string_view<TChar> value) noexcept

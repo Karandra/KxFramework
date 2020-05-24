@@ -2,12 +2,12 @@
 #include "Event.h"
 #include <optional>
 
-namespace KxFramework
+namespace kxf
 {
 	class BasicEvtHandler;
 }
 
-namespace KxFramework::EventSystem
+namespace kxf::EventSystem
 {
 	class KX_API EventBuilderBase
 	{
@@ -68,7 +68,7 @@ namespace KxFramework::EventSystem
 	};
 }
 
-namespace KxFramework::EventSystem
+namespace kxf::EventSystem
 {
 	template<class TEvent>
 	class EventBuilder: public EventBuilderBase

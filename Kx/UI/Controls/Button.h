@@ -6,7 +6,7 @@
 #include <wx/anybutton.h>
 #include <wx/systhemectrl.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class ButtonStyle
 	{
@@ -20,12 +20,12 @@ namespace KxFramework::UI
 		NoText = wxBU_NOTEXT
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::ButtonStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API Button: public WindowRefreshScheduler<wxSystemThemedControl<wxAnyButton>>, public WithDropdownMenu
 	{

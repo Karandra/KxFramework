@@ -5,7 +5,7 @@
 #include "Kx/wxWidgets/RTTI.h"
 #include <wx/sysopt.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	KxWxRTTI_ImplementClassDynamic2(MenuItem, MenuItem, wxEvtHandler, wxMenuItem); // wxIMPLEMENT_DYNAMIC_CLASS2(KxMenuItem, wxEvtHandler, wxMenuItem);
 	wxObject* MenuItem::wxCreateObject()

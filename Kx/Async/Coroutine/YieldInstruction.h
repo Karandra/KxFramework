@@ -2,11 +2,11 @@
 #include "Kx/Async/Common.h"
 #include "CoroutineImpl.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class Coroutine;
 }
-namespace KxFramework::Async
+namespace kxf::Async
 {
 	class CoroutineBase;
 
@@ -24,7 +24,7 @@ namespace KxFramework::Async
 	}
 }
 
-namespace KxFramework::Async
+namespace kxf::Async
 {
 	class KX_API YieldInstruction final
 	{

@@ -9,7 +9,7 @@
 #include "Kx/System/UndefWindows.h"
 #include "Kx/RTTI/QueryInterface.h"
 
-namespace KxFramework::Compression
+namespace kxf::Compression
 {
 	class FileIndexView final
 	{
@@ -122,7 +122,7 @@ namespace KxFramework::Compression
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API IArchive: public RTTI::Interface<IArchive>
 	{
@@ -172,7 +172,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API IArchiveExtraction;
 	class KX_API IExtractionCallback: public RTTI::Interface<IExtractionCallback>
@@ -298,7 +298,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API IArchiveCompression: public RTTI::Interface<IArchiveCompression>
 	{
@@ -324,7 +324,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API IArchiveProperties: public RTTI::Interface<IArchiveProperties>
 	{
@@ -416,7 +416,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework::Compression
+namespace kxf::Compression
 {
 	#define Kx_Compression_DeclareUserProperty(section, name)	constexpr wxChar section##_##name[] = wxS("User/") wxS(#section) wxS("/") wxS(#name);
 

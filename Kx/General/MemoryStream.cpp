@@ -7,9 +7,9 @@ namespace
 	{
 		return streamBuffer.FlushBuffer();
 	}
-	bool SetBufferAllocationSize(wxStreamBuffer& streamBuffer, KxFramework::BinarySize offset)
+	bool SetBufferAllocationSize(wxStreamBuffer& streamBuffer, kxf::BinarySize offset)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		BinarySize currentPos = BinarySize::FromBytes(streamBuffer.GetIntPosition());
 		if (currentPos > offset)
@@ -26,7 +26,7 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	bool MemoryInputStream::Flush()
 	{
@@ -38,7 +38,7 @@ namespace KxFramework
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	bool MemoryOutputStream::Flush()
 	{

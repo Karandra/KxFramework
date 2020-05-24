@@ -3,7 +3,7 @@
 #include "Kx/General/String.h"
 #include <vector>
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API SecretValue final
 	{

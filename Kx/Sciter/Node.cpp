@@ -4,7 +4,7 @@
 #include "Internal.h"
 #include "SciterAPI.h"
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	template<class TFunc>
 	Node DoGetNode(NodeHandle* handle, TFunc&& func)
@@ -37,13 +37,13 @@ namespace KxFramework::Sciter
 
 		return static_cast<NODE_TYPE>(nodeType);
 	}
-	bool DoInsertNode(KxFramework::Sciter::Node& thisNode, const Node& node, NODE_INS_TARGET mode)
+	bool DoInsertNode(kxf::Sciter::Node& thisNode, const Node& node, NODE_INS_TARGET mode)
 	{
 		return GetSciterAPI()->SciterNodeInsert(ToSciterNode(thisNode.GetHandle()), mode, ToSciterNode(node.GetHandle())) == SCDOM_OK;
 	}
 }
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	Node Node::CreateTextNode(const String& value)
 	{

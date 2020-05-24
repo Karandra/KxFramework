@@ -7,9 +7,9 @@ namespace
 {
 	constexpr wxChar g_MnemonicSuffix[] = wxS("_MM");
 
-	std::optional<KxFramework::String> DoGetLocalizedString(KxFramework::String id, wxStockLabelQueryFlag flags)
+	std::optional<kxf::String> DoGetLocalizedString(kxf::String id, wxStockLabelQueryFlag flags)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		if (const LocalizationPackage& translator = LocalizationPackage::GetActive())
 		{
@@ -30,7 +30,7 @@ namespace
 	}
 }
 
-namespace KxFramework::Localization::Private
+namespace kxf::Localization::Private
 {
 	String LocalizeLabelString(StdID id, wxStockLabelQueryFlag flags)
 	{

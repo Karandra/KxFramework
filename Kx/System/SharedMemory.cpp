@@ -5,7 +5,7 @@
 
 namespace
 {
-	using namespace KxFramework;
+	using namespace kxf;
 
 	constexpr DWORD ConvertProtection(FlagSet<MemoryProtection> protection) noexcept
 	{
@@ -57,7 +57,7 @@ namespace
 	}
 }
 
-namespace KxFramework::System
+namespace kxf::System
 {
 	void* AllocateSharedMemoryRegion(void*& buffer, size_t size, FlagSet<MemoryProtection> protection, const wchar_t* name) noexcept
 	{
@@ -107,7 +107,7 @@ namespace KxFramework::System
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	void SharedMemoryBuffer::ZeroBuffer() noexcept
 	{

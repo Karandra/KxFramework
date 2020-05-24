@@ -7,12 +7,12 @@
 #include "Kx/System/UndefWindows.h"
 #include <atomic>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API FileBrowseDialog;
 }
 
-namespace KxFramework::UI::Private
+namespace kxf::UI::Private
 {
 	class KX_API FileBrowseDialogEvents: public IFileDialogEvents
 	{

@@ -5,7 +5,7 @@
 class wxInputStream;
 class wxOutputStream;
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API ArchiveEvent: public FileOperationEvent
 	{

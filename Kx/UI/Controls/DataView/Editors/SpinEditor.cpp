@@ -20,7 +20,7 @@ namespace
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	wxWindow* SpinEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value)
 	{
@@ -81,14 +81,14 @@ namespace KxFramework::UI::DataView
 		// See 'KxValidator.cpp' file for details.
 		if (m_Type == Type::Integer)
 		{
-			KxFramework::UI::IntegerValidator<int> validator(nullptr, wxNUM_VAL_NO_TRAILING_ZEROES);
+			kxf::UI::IntegerValidator<int> validator(nullptr, wxNUM_VAL_NO_TRAILING_ZEROES);
 			validator.SetMin(m_IntMin);
 			validator.SetMax(m_IntMax);
 			editor->SetValidator(validator);
 		}
 		else
 		{
-			KxFramework::UI::FloatingPointValidator<double> validator(nullptr, wxNUM_VAL_NO_TRAILING_ZEROES);
+			kxf::UI::FloatingPointValidator<double> validator(nullptr, wxNUM_VAL_NO_TRAILING_ZEROES);
 			validator.SetMin(m_FloatMin);
 			validator.SetMax(m_FloatMax);
 			editor->SetValidator(validator);

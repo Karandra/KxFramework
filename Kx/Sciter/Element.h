@@ -6,7 +6,7 @@
 #include "Kx/General/String.h"
 #include "Kx/General/StringFormater.h"
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	class Node;
 	class Host;
@@ -15,7 +15,7 @@ namespace KxFramework::Sciter
 	struct ElementUID;
 }
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	class KX_API Element final: public HandleWrapper<Element, ElementHandle>
 	{

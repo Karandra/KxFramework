@@ -6,7 +6,7 @@
 #include <wx/renderer.h>
 #include <wx/toplevel.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API StatusBarEx: public StatusBar, public WithImageList, public IProgressMeter
 	{

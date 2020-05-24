@@ -4,7 +4,7 @@
 #include "ThreadEvent.h"
 #include <wx/thread.h>
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API JoinableThread: public EvtHandler, public wxThread
 	{

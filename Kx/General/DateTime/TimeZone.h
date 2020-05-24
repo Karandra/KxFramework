@@ -2,12 +2,12 @@
 #include "Common.h"
 #include "TimeSpan.h"
 
-namespace KxFramework
+namespace kxf
 {
 	using TimeZone = wxDateTime::TZ;
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API TimeZoneOffset final
 	{

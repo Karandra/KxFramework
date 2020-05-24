@@ -3,7 +3,7 @@
 #include "String.h"
 #include <any>
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API Any final
 	{
@@ -377,15 +377,15 @@ namespace KxFramework
 
 namespace std
 {
-	inline void swap(KxFramework::Any& left, KxFramework::Any& right) noexcept
+	inline void swap(kxf::Any& left, kxf::Any& right) noexcept
 	{
 		left.Swap(right);
 	}
-	inline void swap(KxFramework::Any& left, std::any& right) noexcept
+	inline void swap(kxf::Any& left, std::any& right) noexcept
 	{
 		left.Swap(right);
 	}
-	inline void swap(std::any& left, KxFramework::Any& right) noexcept
+	inline void swap(std::any& left, kxf::Any& right) noexcept
 	{
 		right.Swap(left);
 	}

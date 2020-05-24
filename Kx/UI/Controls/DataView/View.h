@@ -9,18 +9,18 @@
 #include <wx/systhemectrl.h>
 #include <wx/scrolwin.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class Menu;
 }
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class HeaderCtrl;
 	class MainWindow;
 	class Model;
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API View: public WindowRefreshScheduler<wxSystemThemedControl<wxScrolled<wxWindow>>>, public WindowWithStyles<View, CtrlStyle>, public WindowWithExtraStyles<View, CtrlExtraStyle>
 	{

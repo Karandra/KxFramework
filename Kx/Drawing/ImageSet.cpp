@@ -6,9 +6,9 @@
 namespace
 {
 	template<class T>
-	const T* GetPtr(const KxFramework::ImageSet& imageSet, const KxFramework::String& id, KxFramework::ImageSetItemType desiredType) noexcept
+	const T* GetPtr(const kxf::ImageSet& imageSet, const kxf::String& id, kxf::ImageSetItemType desiredType) noexcept
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		ImageSetItemType type = ImageSetItemType::None;
 		if (const wxObject* object = imageSet.QueryItem(id, &type); object && type == desiredType)
@@ -19,7 +19,7 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(ImageSet, wxObject);
 

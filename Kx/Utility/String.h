@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-namespace KxFramework::Utility
+namespace kxf::Utility
 {
 	struct StringEqualToNoCase final
 	{
@@ -44,7 +44,7 @@ namespace KxFramework::Utility
 	using UnorderedSetNoCase = std::unordered_set<TValue, StringHashNoCase, StringEqualToNoCase>;
 }
 
-namespace KxFramework::Utility
+namespace kxf::Utility
 {
 	std::optional<bool> ParsePool(const String& value);
 }

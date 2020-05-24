@@ -1,7 +1,7 @@
 #pragma once
 #include "EvtHandler.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API EvtHandlerStack
 	{

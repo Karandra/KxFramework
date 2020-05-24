@@ -6,7 +6,7 @@
 
 namespace
 {
-	using namespace KxFramework;
+	using namespace kxf;
 
 	std::optional<String> GetSizeUnitString(BinarySizeUnit unit)
 	{
@@ -81,7 +81,7 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	String BinarySize::Format(BinarySizeUnit unit, FlagSet<BinarySizeFormat> format, int precision) const
 	{

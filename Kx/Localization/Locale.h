@@ -4,7 +4,7 @@
 #include "Kx/General/DateTime.h"
 #include "Kx/System/UndefWindows.h"
 
-namespace KxFramework::Localization
+namespace kxf::Localization
 {
 	struct LangID final
 	{
@@ -19,7 +19,7 @@ namespace KxFramework::Localization
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API Locale final
 	{

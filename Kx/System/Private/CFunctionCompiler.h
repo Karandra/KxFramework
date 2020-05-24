@@ -2,7 +2,7 @@
 #include "../Common.h"
 #include <limits>
 
-namespace KxFramework::FFI
+namespace kxf::FFI
 {
 	class CFunctionCompiler;
 
@@ -56,7 +56,7 @@ namespace KxFramework::FFI
 	};
 }
 
-namespace KxFramework::FFI::Private
+namespace kxf::FFI::Private
 {
 	// Layout of these types must be the same as their corresponding 'ffi_*' counterparts.
 	enum class CStatus

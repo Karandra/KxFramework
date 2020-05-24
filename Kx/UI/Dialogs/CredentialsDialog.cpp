@@ -9,13 +9,13 @@
 
 namespace
 {
-	const wxChar* GetStringOrNull(const KxFramework::String& text)
+	const wxChar* GetStringOrNull(const kxf::String& text)
 	{
 		return text.IsEmpty() ? nullptr : text.wc_str();
 	}
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(CredentialsDialog, StdDialog);
 

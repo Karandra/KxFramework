@@ -47,7 +47,7 @@ namespace
 	}
 }
 
-namespace KxFramework::UI::Private
+namespace kxf::UI::Private
 {
 	void GetValidatorControlValue(const wxValidator& validator, wxString& value, int& position, wxChar& character)
 	{

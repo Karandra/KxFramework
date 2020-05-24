@@ -3,7 +3,7 @@
 #include "TextRenderer.h"
 #include "BitmapRenderer.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	bool BitmapTextValue::FromAny(const wxAny& value)
 	{
@@ -11,7 +11,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	bool BitmapTextRenderer::SetValue(const wxAny& value)
 	{

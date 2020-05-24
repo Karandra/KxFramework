@@ -7,8 +7,8 @@
 
 namespace
 {
-	using namespace KxFramework;
-	using namespace KxFramework::UI;
+	using namespace kxf;
+	using namespace kxf::UI;
 
 	constexpr SIGDN g_ItemType = SIGDN_FILESYSPATH;
 	constexpr FILEOPENDIALOGOPTIONS g_RequiredOptions = FOS_NOCHANGEDIR|FOS_NOVALIDATE|FOS_NOTESTFILECREATE;
@@ -47,7 +47,7 @@ namespace
 	}
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(FileBrowseDialog, StdDialog);
 

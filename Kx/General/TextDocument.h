@@ -3,7 +3,7 @@
 #include "String.h"
 #include "Kx/FileSystem/FSPath.h"
 
-namespace KxFramework::TextDocument
+namespace kxf::TextDocument
 {
 	enum class LineBreakFormat
 	{
@@ -15,7 +15,7 @@ namespace KxFramework::TextDocument
 	};
 }
 
-namespace KxFramework::TextDocument
+namespace kxf::TextDocument
 {
 	size_t Read(const FSPath& filePath, std::function<bool(String)> func);
 	String Read(const FSPath& filePath, LineBreakFormat lineBreakFormat = LineBreakFormat::Windows);

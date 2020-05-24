@@ -7,7 +7,7 @@
 #include "Kx/RTTI.hpp"
 #include "Kx/Utility/TypeTraits.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class CellAttribute;
 	class MainWindow;
@@ -23,7 +23,7 @@ namespace KxFramework::UI::DataView
 	class NodeOperation_RowToNode;
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API Node: public RTTI::Interface<Node>
 	{
@@ -175,7 +175,7 @@ namespace KxFramework::UI::DataView
 				auto GetRawPointer = [](auto& node)
 				{
 					using TValue = std::decay_t<decltype(node)>;
-					if constexpr(KxFramework::Utility::is_unique_ptr_v<TValue>)
+					if constexpr(kxf::Utility::is_unique_ptr_v<TValue>)
 					{
 						return node.get();
 					}
@@ -266,7 +266,7 @@ namespace KxFramework::UI::DataView
 		};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API RootNode: public RTTI::ExtendInterface<RootNode, Node>
 	{
@@ -302,7 +302,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API VirtualNode: public RTTI::ExtendInterface<VirtualNode, Node>
 	{
@@ -355,7 +355,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API NodeOperation
 	{
@@ -385,7 +385,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API NodeOperation_RowToNode: public NodeOperation
 	{

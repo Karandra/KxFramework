@@ -3,7 +3,7 @@
 #include "QueryInterface.h"
 #include <unordered_map>
 
-namespace KxFramework::RTTI
+namespace kxf::RTTI
 {
 	class IComponent;
 	class IComponentContainer;
@@ -91,7 +91,7 @@ namespace KxFramework::RTTI
 	};
 }
 
-namespace KxFramework::RTTI
+namespace kxf::RTTI
 {
 	class KX_API IComponent: public Interface<IComponent>
 	{
@@ -201,7 +201,7 @@ namespace KxFramework::RTTI
 	};
 }
 
-namespace KxFramework::RTTI
+namespace kxf::RTTI
 {
 	class KX_API Component: public IComponent
 	{

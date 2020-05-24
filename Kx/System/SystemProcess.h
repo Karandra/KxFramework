@@ -5,7 +5,7 @@
 #include "SystemProcess/SystemProcessInfo.h"
 #include "SystemProcess/ProcessEvent.h"
 
-namespace KxFramework::System
+namespace kxf::System
 {
 	size_t EnumRunningProcesses(std::function<bool(uint32_t)> func);
 

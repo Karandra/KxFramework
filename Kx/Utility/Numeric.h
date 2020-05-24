@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <limits>
 
-namespace KxFramework::Utility
+namespace kxf::Utility
 {
 	template<class T>
 	constexpr std::enable_if_t<std::is_floating_point_v<T> || std::is_integral_v<T>, T> Abs(T value) noexcept

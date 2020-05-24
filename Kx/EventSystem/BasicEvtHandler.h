@@ -4,7 +4,7 @@
 #include "Events/IndirectCallEvent.h"
 #include <optional>
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API BasicEvtHandler
 	{
@@ -295,7 +295,7 @@ namespace KxFramework
 			template<class TCallable, class... Args>
 			void CallAfter(TCallable&& callable, Args&&... arg)
 			{
-				using namespace KxFramework;
+				using namespace kxf;
 				using TCallableTraits = typename Utility::CallableTraits<TCallable, Args...>;
 
 				if constexpr(TCallableTraits::IsMemberFunction)

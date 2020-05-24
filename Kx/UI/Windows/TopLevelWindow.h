@@ -4,7 +4,7 @@
 #include "Kx/Utility/System.h"
 #include <wx/toplevel.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class TopLevelWindowStyle
 	{
@@ -19,12 +19,12 @@ namespace KxFramework::UI
 		Resizeable = wxRESIZE_BORDER,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::TopLevelWindowStyle);
 }
 
-namespace KxFramework::UI::Private
+namespace kxf::UI::Private
 {
 	class KX_API TopLevelWindowBase final
 	{
@@ -67,7 +67,7 @@ namespace KxFramework::UI::Private
 	};
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	template<class T = wxTopLevelWindow>
 	class TopLevelWindow: public T

@@ -4,7 +4,7 @@
 #include "AuiToolBarItem.h"
 #include "AuiToolBarEvent.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class AuiToolBarStyle
 	{
@@ -20,12 +20,12 @@ namespace KxFramework::UI
 		Horizontal = wxAUI_TB_HORZ_LAYOUT,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::AuiToolBarStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API AuiToolBar: public WindowRefreshScheduler<wxAuiToolBar>
 	{
@@ -160,7 +160,7 @@ namespace KxFramework::UI
 	};
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API AuiToolBarArt: public wxAuiDefaultToolBarArt
 	{

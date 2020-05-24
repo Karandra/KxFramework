@@ -1,7 +1,7 @@
 #pragma once
 #include "Kx/EventSystem/Event.h"
 
-namespace KxFramework::Threading
+namespace kxf::Threading
 {
 	template<class T>
 	static void AssertThreadExitCode()
@@ -10,7 +10,7 @@ namespace KxFramework::Threading
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class ThreadEvent: public wxThreadEvent
 	{

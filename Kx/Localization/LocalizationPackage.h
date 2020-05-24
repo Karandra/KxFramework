@@ -8,12 +8,12 @@
 #include <unordered_map>
 #include <wx/stream.h>
 
-namespace KxFramework
+namespace kxf
 {
 	class DynamicLibrary;
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API LocalizationPackage
 	{
@@ -88,7 +88,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework::Localization
+namespace kxf::Localization
 {
 	size_t SearchLocalizationPackages(const IFileSystem& fileSystem, const FSPath& directory, std::function<bool(Locale, FileItem)> func);
 	size_t SearchLocalizationPackages(const DynamicLibrary& library, std::function<bool(Locale, FileItem)> func);

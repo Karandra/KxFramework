@@ -1,7 +1,7 @@
 #pragma once
 #include "../Renderer.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API BitmapValueBase
 	{
@@ -52,7 +52,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API BitmapValue: public BitmapValueBase
 	{
@@ -96,7 +96,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API BitmapRenderer: public Renderer
 	{

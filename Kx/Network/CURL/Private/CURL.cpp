@@ -64,9 +64,9 @@ namespace
 	}
 
 	template<class T>
-	int DoDispatchSetOptionInt(KxFramework::CURL::Private::SessionHandleType type, void* handle, int option, T value)
+	int DoDispatchSetOptionInt(kxf::CURL::Private::SessionHandleType type, void* handle, int option, T value)
 	{
-		using namespace KxFramework::CURL::Private;
+		using namespace kxf::CURL::Private;
 
 		switch (type)
 		{
@@ -83,7 +83,7 @@ namespace
 	}
 }
 
-namespace KxFramework::CURL::Private
+namespace kxf::CURL::Private
 {
 	int SessionHandle::SetOption(int option, const String& value, size_t* length)
 	{
@@ -116,7 +116,7 @@ namespace KxFramework::CURL::Private
 	}
 }
 
-namespace KxFramework::CURL::Private
+namespace kxf::CURL::Private
 {
 	class InitializationModule final: public wxModule
 	{

@@ -16,7 +16,7 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	size_t LegacyVolume::EnumVolumes(std::function<bool(LegacyVolume)> func)
 	{

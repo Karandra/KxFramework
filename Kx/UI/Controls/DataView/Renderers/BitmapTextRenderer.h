@@ -4,7 +4,7 @@
 #include "TextRenderer.h"
 #include "BitmapRenderer.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	enum class BitmapTextValueOption
 	{
@@ -45,12 +45,12 @@ namespace KxFramework::UI::DataView
 			}
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::DataView::BitmapTextValueOption);
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API BitmapTextRenderer: public Renderer
 	{

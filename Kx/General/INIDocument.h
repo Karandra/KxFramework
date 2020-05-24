@@ -11,7 +11,7 @@ namespace SimpleINI
 	#include "SimpleIni.h"
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API INIDocument: private XDocument::XNode<INIDocument>
 	{

@@ -3,7 +3,7 @@
 #include "Kx/System/CFunctionCompiler.h"
 #include <limits>
 
-namespace KxFramework::FFI::Private
+namespace kxf::FFI::Private
 {
 	template<ABI t_ABI, class t_Ret, class... t_Types>
 	class CompiledCallable: protected CFunctionCompiler

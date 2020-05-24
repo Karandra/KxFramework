@@ -3,7 +3,7 @@
 #include "Kx/Drawing/WithImageList.h"
 #include <wx/notebook.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class NotebookStyle
 	{
@@ -19,14 +19,14 @@ namespace KxFramework::UI
 		NoPageTheme = wxNB_NOPAGETHEME,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::NotebookStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
-	class KX_API Notebook: public KxFramework::WithImageListWrapper<wxNotebook>
+	class KX_API Notebook: public kxf::WithImageListWrapper<wxNotebook>
 	{
 		public:
 			static constexpr FlagSet<NotebookStyle> DefaultStyle = NotebookStyle::Top;

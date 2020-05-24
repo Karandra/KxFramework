@@ -2,7 +2,7 @@
 #include "AuiToolBarEvent.h"
 #include "AuiToolBarItem.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(AuiToolBarEvent, wxAuiToolBarEvent);
 }

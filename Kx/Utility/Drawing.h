@@ -4,7 +4,7 @@
 #include "Kx/System/UndefWindows.h"
 struct tagRECT;
 
-namespace KxFramework::Utility
+namespace kxf::Utility
 {
 	void FromWindowsRect(const tagRECT& winRect, Rect& rect) noexcept;
 	Rect FromWindowsRect(const tagRECT& winRect) noexcept;

@@ -1,7 +1,7 @@
 #pragma once
 #include "Event.h"
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	class KX_API KeyEvent: public Event, public wxKeyboardState
 	{
@@ -64,7 +64,7 @@ namespace KxFramework::Sciter
 	};
 }
 
-namespace KxFramework::Sciter
+namespace kxf::Sciter
 {
 	KxEVENT_DECLARE_ALIAS_TO_MEMBER(KeyEvent, KeyChar);
 	KxEVENT_DECLARE_ALIAS_TO_MEMBER(KeyEvent, KeyUp);

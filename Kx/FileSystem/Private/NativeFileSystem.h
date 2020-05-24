@@ -8,7 +8,7 @@
 #include <Windows.h>
 #include "Kx/System/UndefWindows.h"
 
-namespace KxFramework::FileSystem::Private
+namespace kxf::FileSystem::Private
 {
 	constexpr inline FlagSet<FileAttribute> MapFileAttributes(uint32_t nativeAttributes) noexcept
 	{

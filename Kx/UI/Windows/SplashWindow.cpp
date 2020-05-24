@@ -3,7 +3,7 @@
 #include "Kx/Utility/System.h"
 #include <wx/rawbmp.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(SplashWindow, wxFrame)
 

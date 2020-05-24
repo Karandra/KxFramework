@@ -5,7 +5,7 @@
 #include <wincred.h>
 #include "UndefWindows.h"
 
-namespace KxFramework
+namespace kxf
 {
 	bool CredentialStore::Save(const String& userName, const SecretValue& secret)
 	{

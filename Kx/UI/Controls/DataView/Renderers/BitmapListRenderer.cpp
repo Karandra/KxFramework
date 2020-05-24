@@ -10,14 +10,14 @@ namespace
 	{
 		return window->FromDIP(wxSize(value, 0)).GetWidth();
 	}
-	KxFramework::Size GetSmallIconSize(const KxFramework::UI::DataView::BitmapValueBase& bitmapValue)
+	kxf::Size GetSmallIconSize(const kxf::UI::DataView::BitmapValueBase& bitmapValue)
 	{
 		const int x = bitmapValue.IsDefaultBitmapWidthSpecified() ? bitmapValue.GetDefaultBitmapWidth() : wxSystemSettings::GetMetric(wxSYS_SMALLICON_X);
 		return {x, wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y)};
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	bool BitmapListValue::FromAny(const wxAny& value)
 	{
@@ -25,7 +25,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	void BitmapListRendererBase::DrawCellContent(const Rect& cellRect, CellState cellState)
 	{
@@ -97,7 +97,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	bool BitmapListRenderer::SetValue(const wxAny& value)
 	{

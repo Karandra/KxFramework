@@ -17,35 +17,35 @@ namespace
 
 namespace
 {
-	_variant_t VariantFromString(const KxFramework::String& value)
+	_variant_t VariantFromString(const kxf::String& value)
 	{
 		return value.wc_str();
 	}
-	_variant_t VariantFromString_Null(const KxFramework::String& value)
+	_variant_t VariantFromString_Null(const kxf::String& value)
 	{
 		return value.IsEmpty() ? _variant_t() : VariantFromString(value);
 	}
 
-	_bstr_t BstrFromString(const KxFramework::String& value)
+	_bstr_t BstrFromString(const kxf::String& value)
 	{
 		return value.wc_str();
 	}
-	_bstr_t BstrFromString_Null(const KxFramework::String& value)
+	_bstr_t BstrFromString_Null(const kxf::String& value)
 	{
 		return value.IsEmpty() ? _bstr_t() : BstrFromString(value);
 	}
 
-	KxFramework::String FormatTimeAsTaskBoundary(const KxFramework::DateTime& date)
+	kxf::String FormatTimeAsTaskBoundary(const kxf::DateTime& date)
 	{
 		return date.FormatISOCombined();
 	}
-	KxFramework::String FormatTimeAsTaskDelay(const KxFramework::TimeSpan& delay)
+	kxf::String FormatTimeAsTaskDelay(const kxf::TimeSpan& delay)
 	{
 		return delay.Format(wxS("PT%HH%MM%SS"));
 	}
 }
 
-namespace KxFramework::System
+namespace kxf::System
 {
 	ScheduledTask::ScheduledTask() noexcept
 	{
@@ -175,7 +175,7 @@ namespace KxFramework::System
 	}
 }
 
-namespace KxFramework::System
+namespace kxf::System
 {
 	TaskScheduler::TaskScheduler(const FSPath& taskFolder,
 								 const String& serverName,

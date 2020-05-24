@@ -2,13 +2,13 @@
 #include "Kx/UI/Common.h"
 #include "Kx/EventSystem/Event.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class Menu;
 	class MenuItem;
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API MenuEvent: public wxNotifyEvent
 	{

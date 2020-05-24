@@ -3,7 +3,7 @@
 #include "Kx/General/RegEx.h"
 #include "OpenSSL/opensslv.h"
 
-namespace KxFramework::Crypto
+namespace kxf::Crypto
 {
 	String GetLibraryName()
 	{

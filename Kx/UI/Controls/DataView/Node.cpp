@@ -3,7 +3,7 @@
 #include "MainWindow.h"
 #include "View.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class Comparator
 	{
@@ -38,7 +38,7 @@ namespace KxFramework::UI::DataView
 	};
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	void Node::PutChildInSortOrder(Node* node)
 	{
@@ -298,7 +298,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	MainWindow* Node::GetMainWindow() const
 	{
@@ -474,7 +474,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	bool Node::IsEditable(const Column& column) const
 	{
@@ -534,7 +534,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	bool NodeOperation::DoWalk(Node& node, NodeOperation& func)
 	{
@@ -568,7 +568,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	void RootNode::ResetAll()
 	{
@@ -586,7 +586,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	NodeOperation::Result NodeOperation_RowToNode::operator()(Node& node)
 	{

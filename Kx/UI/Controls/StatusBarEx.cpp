@@ -4,7 +4,7 @@
 #include "Kx/Drawing/Private/UxThemeDefines.h"
 #include "Kx/Utility/Common.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(StatusBarEx, StatusBar);
 

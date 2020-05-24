@@ -1,7 +1,7 @@
 #pragma once
 #include "../Common.h"
 
-namespace KxFramework::Private
+namespace kxf::Private
 {
 	constexpr wxDateTime::Month MapMonth(Month month) noexcept
 	{

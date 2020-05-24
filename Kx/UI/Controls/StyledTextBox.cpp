@@ -9,7 +9,7 @@ namespace
 	constexpr int g_DefaultStyle = wxSTC_STYLE_DEFAULT;
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(StyledTextBox, wxStyledTextCtrl);
 

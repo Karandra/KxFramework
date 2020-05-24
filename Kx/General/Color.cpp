@@ -5,9 +5,9 @@
 
 namespace
 {
-	KxFramework::String CSS2RGB(const KxFramework::Color& color, KxFramework::C2SAlpha alpha)
+	kxf::String CSS2RGB(const kxf::Color& color, kxf::C2SAlpha alpha)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		switch (alpha)
 		{
@@ -29,9 +29,9 @@ namespace
 		};
 		return {};
 	}
-	KxFramework::String CSS2HSL(const KxFramework::Color& color, KxFramework::C2SAlpha alpha)
+	kxf::String CSS2HSL(const kxf::Color& color, kxf::C2SAlpha alpha)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		switch (alpha)
 		{
@@ -73,9 +73,9 @@ namespace
 		return {};
 	}
 
-	KxFramework::String HTML2RGB(const KxFramework::Color& color, KxFramework::C2SAlpha alpha)
+	kxf::String HTML2RGB(const kxf::Color& color, kxf::C2SAlpha alpha)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		switch (alpha)
 		{
@@ -107,9 +107,9 @@ namespace
 		};
 		return {};
 	}
-	KxFramework::String HTML2HSL(const KxFramework::Color& color, KxFramework::C2SAlpha alpha)
+	kxf::String HTML2HSL(const kxf::Color& color, kxf::C2SAlpha alpha)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		switch (alpha)
 		{
@@ -132,7 +132,7 @@ namespace
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	Color Color::FromColorName(const String& name)
 	{

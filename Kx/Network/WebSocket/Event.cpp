@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Event.h"
 
-namespace KxFramework
+namespace kxf
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(WebSocketEvent, wxNotifyEvent);
 }

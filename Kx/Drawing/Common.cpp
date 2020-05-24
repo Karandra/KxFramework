@@ -7,7 +7,7 @@ namespace
 	constexpr wxBitmapTransparency g_BitmapTransparency = wxBitmapTransparency::wxBitmapTransparency_Always;
 }
 
-namespace KxFramework::Drawing
+namespace kxf::Drawing
 {
 	wxIcon ToIcon(const wxImage& image)
 	{

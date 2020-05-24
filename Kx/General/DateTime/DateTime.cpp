@@ -5,7 +5,7 @@
 #include <Windows.h>
 #include <Kx/System/UndefWindows.h>
 
-namespace KxFramework
+namespace kxf
 {
 	String DateTime::GetMonthName(Month month, const Locale& locale, FlagSet<UnitNameFlag> flags)
 	{

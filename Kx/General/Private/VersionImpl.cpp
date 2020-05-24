@@ -5,18 +5,18 @@
 
 namespace
 {
-	template<KxFramework::VersionType type, class T>
+	template<kxf::VersionType type, class T>
 	auto&& GetItem(T&& items)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		return std::get<ToInt(type)>(items);
 	}
 }
 
-namespace KxFramework::Private::Version
+namespace kxf::Private::Version
 {
-	Cmp Compare(const KxFramework::Version& left, const KxFramework::Version& right)
+	Cmp Compare(const kxf::Version& left, const kxf::Version& right)
 	{
 		if (left.GetType() == right.GetType())
 		{

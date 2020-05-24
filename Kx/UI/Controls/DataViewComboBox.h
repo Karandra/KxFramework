@@ -5,15 +5,15 @@
 #include "Kx/UI/Controls/ComboBox.h"
 #include "Kx/UI/Controls/DataView.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class Panel;
 	class ComboControl;
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
-	using namespace KxFramework::UI::DataView;
+	using namespace kxf::UI::DataView;
 
 	enum class ComboCtrlOption
 	{
@@ -24,12 +24,12 @@ namespace KxFramework::UI::DataView
 		HorizontalLayout = 1 << 3,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::DataView::ComboCtrlOption);
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API ComboCtrl:
 		public View,

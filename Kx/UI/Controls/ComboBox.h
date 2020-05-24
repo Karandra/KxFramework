@@ -4,7 +4,7 @@
 #include <wx/systhemectrl.h>
 #include <wx/combobox.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class ComboBoxStyle
 	{
@@ -17,12 +17,12 @@ namespace KxFramework::UI
 		SortAlphabetical = wxCB_SORT,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::ComboBoxStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API ComboBox: public WindowRefreshScheduler<wxSystemThemedControl<wxComboBox>>
 	{

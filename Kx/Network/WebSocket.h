@@ -6,13 +6,13 @@
 #include "Kx/General/Version.h"
 #include "URI.h"
 
-namespace KxFramework::WebSocket
+namespace kxf::WebSocket
 {
 	String GetLibraryName();
 	Version GetLibraryVersion();
 }
 
-namespace KxFramework::WebSocket
+namespace kxf::WebSocket
 {
 	std::unique_ptr<IWebSocketClient> NewSecureClient(const URI& address = {});
 

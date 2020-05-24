@@ -3,7 +3,7 @@
 #include "BasicEvtHandler.h"
 #include "Kx/Utility/Common.h"
 
-namespace KxFramework::EventSystem
+namespace kxf::EventSystem
 {
 	EventBuilderBase::~EventBuilderBase()
 	{

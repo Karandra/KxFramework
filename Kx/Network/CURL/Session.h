@@ -5,7 +5,7 @@
 #include "Event.h"
 #include "Kx/Network/URI.h"
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API CURLSession: public wxEvtHandler
 	{

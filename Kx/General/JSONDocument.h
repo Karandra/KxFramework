@@ -5,12 +5,12 @@
 #include <nlohmann/json.hpp>
 #include <wx/stream.h>
 
-namespace KxFramework
+namespace kxf
 {
 	using JSONDocument = nlohmann::json;
 }
 
-namespace KxFramework::JSON
+namespace kxf::JSON
 {
 	String GetLibraryName();
 	Version GetLibraryVersion();
@@ -47,13 +47,13 @@ namespace nlohmann
 	};
 
 	template<>
-	struct adl_serializer<KxFramework::String>
+	struct adl_serializer<kxf::String>
 	{
-		static void to_json(json& jsonDocument, const KxFramework::String& value)
+		static void to_json(json& jsonDocument, const kxf::String& value)
 		{
 			adl_serializer<wxString>::to_json(jsonDocument, value.GetWxString());
 		}
-		static void from_json(const json& jsonDocument, KxFramework::String& value)
+		static void from_json(const json& jsonDocument, kxf::String& value)
 		{
 			adl_serializer<wxString>::from_json(jsonDocument, value.GetWxString());
 		}

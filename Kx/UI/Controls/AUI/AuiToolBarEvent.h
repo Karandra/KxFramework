@@ -3,12 +3,12 @@
 #include "Kx/EventSystem/Event.h"
 #include <wx/aui/auibar.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class AuiToolBarItem;
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API AuiToolBarEvent: public wxAuiToolBarEvent
 	{

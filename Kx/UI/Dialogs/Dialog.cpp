@@ -3,7 +3,7 @@
 #include "Kx/UI/Controls/Button.h"
 #include "Kx/Localization/Common.h"
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(Dialog, wxDialog);
 

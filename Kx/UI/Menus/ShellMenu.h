@@ -7,7 +7,7 @@ struct IContextMenu;
 struct IShellFolder;
 struct _ITEMIDLIST;
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API ShellMenu: public Menu
 	{

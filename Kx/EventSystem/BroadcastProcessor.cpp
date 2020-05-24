@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "BroadcastProcessor.h"
 
-namespace KxFramework::EventSystem
+namespace kxf::EventSystem
 {
 	bool BroadcastProcessorHandler::TryBefore(wxEvent& event)
 	{
@@ -24,7 +24,7 @@ namespace KxFramework::EventSystem
 	}
 }
 
-namespace KxFramework::EventSystem
+namespace kxf::EventSystem
 {
 	bool BroadcastRecieverHandler::TryBefore(wxEvent& event)
 	{
@@ -56,7 +56,7 @@ namespace KxFramework::EventSystem
 	}
 }
 
-namespace KxFramework
+namespace kxf
 {
 	bool BroadcastProcessor::AddReciever(BroadcastReciever& reciever)
 	{

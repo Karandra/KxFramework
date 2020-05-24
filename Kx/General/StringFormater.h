@@ -3,7 +3,7 @@
 #include "StringFormaterTraits.h"
 #include "String.h"
 
-namespace KxFramework::StringFormatter
+namespace kxf::StringFormatter
 {
 	class KX_API StringFormatterBase
 	{
@@ -121,7 +121,7 @@ namespace KxFramework::StringFormatter
 	};
 }
 
-namespace KxFramework::StringFormatter
+namespace kxf::StringFormatter
 {
 	template<class FmtTraits = DefaultFormatTraits>
 	class Formatter: public StringFormatterBase

@@ -4,7 +4,7 @@
 #include <wx/statusbr.h>
 #include <wx/systhemectrl.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	enum class StatusBarStyle
 	{
@@ -18,12 +18,12 @@ namespace KxFramework::UI
 		EllipsizeEnd = wxSTB_ELLIPSIZE_END,
 	};
 }
-namespace KxFramework
+namespace kxf
 {
 	Kx_DeclareFlagSet(UI::StatusBarStyle);
 }
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API StatusBar: public wxSystemThemedControl<WindowRefreshScheduler<wxStatusBar>>
 	{

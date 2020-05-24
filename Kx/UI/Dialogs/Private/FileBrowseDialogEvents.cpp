@@ -5,9 +5,9 @@
 
 namespace
 {
-	KxFramework::HResult InitWindowHandle(IFileDialog& fileDialog, HWND& handle) noexcept
+	kxf::HResult InitWindowHandle(IFileDialog& fileDialog, HWND& handle) noexcept
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		HResult hr = HResult::Fail();
 
@@ -18,9 +18,9 @@ namespace
 		}
 		return hr;
 	}
-	KxFramework::String GetDisplayName(IShellItem& shellItem, SIGDN type)
+	kxf::String GetDisplayName(IShellItem& shellItem, SIGDN type)
 	{
-		using namespace KxFramework;
+		using namespace kxf;
 
 		COMMemoryPtr<wchar_t> result;
 		if (HResult(shellItem.GetDisplayName(type, &result)))
@@ -31,7 +31,7 @@ namespace
 	}
 }
 
-namespace KxFramework::UI::Private
+namespace kxf::UI::Private
 {
 	wxNotifyEvent FileBrowseDialogEvents::CreateEvent(EventID eventID)
 	{

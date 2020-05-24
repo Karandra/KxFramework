@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "DCOperations.h"
 
-namespace KxFramework::Drawing
+namespace kxf::Drawing
 {
 	Color GetAreaAverageColor(const wxDC& dc, const Rect& rect)
 	{

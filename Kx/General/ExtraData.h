@@ -3,7 +3,7 @@
 #include "Private\ExtraData.h"
 #include <variant>
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API IExtraData
 	{
@@ -12,7 +12,7 @@ namespace KxFramework
 	};
 }
 
-namespace KxFramework
+namespace kxf
 {
 	class KX_API TrivialExtraDataContainer
 	{

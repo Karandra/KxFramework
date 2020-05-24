@@ -3,7 +3,7 @@
 #include "Utility/TypeTraits.h"
 #include <wx/thread.h>
 
-namespace KxFramework
+namespace kxf
 {
 	template<class TCallable>
 	class KX_API AutoThread: public wxThread

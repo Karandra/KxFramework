@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "String.h"
 
-namespace KxFramework::Math
+namespace kxf::Math
 {
 	wxUniChar GetDecimalSeparator();
 	wxUniChar GetDecimalCSeparator();

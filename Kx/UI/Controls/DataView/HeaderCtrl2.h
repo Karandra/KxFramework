@@ -7,7 +7,7 @@
 #include <wx/headerctrl.h>
 #include <wx/overlay.h>
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class View;
 	class MainWindow;
@@ -15,7 +15,7 @@ namespace KxFramework::UI::DataView
 	class ItemEvent;
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	class KX_API HeaderCtrl2: public WindowRefreshScheduler<wxSystemThemedControl<wxControl>>
 	{

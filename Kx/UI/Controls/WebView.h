@@ -2,7 +2,7 @@
 #include "Kx/UI/Common.h"
 #include <wx/webview.h>
 
-namespace KxFramework::UI
+namespace kxf::UI
 {
 	class KX_API WebView: public wxWebView
 	{

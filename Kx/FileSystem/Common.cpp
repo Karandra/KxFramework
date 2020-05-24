@@ -4,7 +4,7 @@
 #include "Private/NamespacePrefix.h"
 #include <wx/filename.h>
 
-namespace KxFramework::FileSystem
+namespace kxf::FileSystem
 {
 	String GetNamespaceString(FSPathNamespace type)
 	{

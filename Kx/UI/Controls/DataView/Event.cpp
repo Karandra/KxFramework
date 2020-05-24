@@ -3,7 +3,7 @@
 #include "View.h"
 #include "MainWindow.h"
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	View* ItemEvent::GetView() const
 	{
@@ -19,7 +19,7 @@ namespace KxFramework::UI::DataView
 	}
 }
 
-namespace KxFramework::UI::DataView
+namespace kxf::UI::DataView
 {
 	wxDataObjectSimple* DragDropEvent::GetDragObject(const wxDataFormat& format) const
 	{

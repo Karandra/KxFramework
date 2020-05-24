@@ -2,7 +2,7 @@
 #include "WOW64FSRedirection.h"
 #include "NativeAPI.h"
 
-namespace KxFramework
+namespace kxf
 {
 	DisableWOW64FSRedirection::DisableWOW64FSRedirection() noexcept
 	{
