@@ -745,7 +745,7 @@ namespace KxFramework::UI::DataView
 					SelectRow(m_RowSelectSingleOnUp, true);
 					SendSelectionChangedEvent(GetNodeByRow(m_RowSelectSingleOnUp), currentColumn);
 				}
-				else if (m_View->IsStyleEnabled(CtrlStyle::CellFocus))
+				else if (m_View->ContainsWindowStyle(CtrlStyle::CellFocus))
 				{
 					RefreshRow(currentRow);
 				}
@@ -877,7 +877,7 @@ namespace KxFramework::UI::DataView
 			{
 				RefreshRow(oldCurrentRow);
 			}
-			if (oldCurrentCol != currentColumn && m_View->IsStyleEnabled(CtrlStyle::CellFocus))
+			if (oldCurrentCol != currentColumn && m_View->ContainsWindowStyle(CtrlStyle::CellFocus))
 			{
 				RefreshRow(currentRow);
 			}
@@ -1156,7 +1156,7 @@ namespace KxFramework::UI::DataView
 		}
 
 		// Draw background of alternate rows specially if required
-		if (m_View->IsStyleEnabled(CtrlStyle::AlternatingRowColors))
+		if (m_View->ContainsWindowStyle(CtrlStyle::AlternatingRowColors))
 		{
 			Color altRowColor = m_View->m_AlternateRowColor;
 			if (!altRowColor)
@@ -1189,8 +1189,8 @@ namespace KxFramework::UI::DataView
 			}
 		}
 
-		const bool verticalRulesEnabled = m_View->IsStyleEnabled(CtrlStyle::VerticalRules);
-		const bool horizontalRulesEnabled = m_View->IsStyleEnabled(CtrlStyle::HorizontalRules);
+		const bool verticalRulesEnabled = m_View->ContainsWindowStyle(CtrlStyle::VerticalRules);
+		const bool horizontalRulesEnabled = m_View->ContainsWindowStyle(CtrlStyle::HorizontalRules);
 
 		// Redraw all cells for all rows which must be repainted and all columns
 		const Column* const expanderColumn = m_View->GetExpanderColumnOrFirstOne();
@@ -1402,7 +1402,7 @@ namespace KxFramework::UI::DataView
 
 						nativeRenderer.DrawCollapseButton(this, paintDC, rect, flags);
 					}
-					else if (m_View->IsExtraStyleEnabled(CtrlExtraStyle::PlusMinusExpander))
+					else if (m_View->ContainsWindowExStyle(CtrlExtraStyle::PlusMinusExpander))
 					{
 						RenderEngine::DrawPlusMinusExpander(this, dc, expanderRect, flags);
 					}
@@ -1424,7 +1424,7 @@ namespace KxFramework::UI::DataView
 				}
 
 				// Draw cell focus
-				if (m_HasFocus && m_View->IsStyleEnabled(CtrlStyle::CellFocus) && !focusCellRect.IsEmpty() && currentRow == m_CurrentRow && cellState.IsSelected())
+				if (m_HasFocus && m_View->ContainsWindowStyle(CtrlStyle::CellFocus) && !focusCellRect.IsEmpty() && currentRow == m_CurrentRow && cellState.IsSelected())
 				{
 					// Focus rect looks ugly in it's narrower 3px
 					if (focusCellRect.GetWidth() > 3)
@@ -1665,7 +1665,7 @@ namespace KxFramework::UI::DataView
 	}
 	bool MainWindow::FitLastColumn(bool update)
 	{
-		if (!m_View->IsStyleEnabled(CtrlStyle::FitLastColumn))
+		if (!m_View->ContainsWindowStyle(CtrlStyle::FitLastColumn))
 		{
 			return false;
 		}
@@ -1694,7 +1694,7 @@ namespace KxFramework::UI::DataView
 
 				if (lastColumnLeft < clientWidth)
 				{
-					const bool fitToClient = m_View->IsExtraStyleEnabled(CtrlExtraStyle::FitLastColumnToClient);
+					const bool fitToClient = m_View->ContainsWindowExStyle(CtrlExtraStyle::FitLastColumnToClient);
 					const int desiredWidth = std::max(clientWidth - lastColumnLeft, lastVisibleColumn->GetMinWidth());
 
 					if (desiredWidth < lastVisibleColumn->CalcBestSize() && !fitToClient)
@@ -2102,7 +2102,7 @@ namespace KxFramework::UI::DataView
 	}
 	int MainWindow::GetRowStart(Row row) const
 	{
-		if (m_View->IsStyleEnabled(CtrlStyle::VariableRowHeight))
+		if (m_View->ContainsWindowStyle(CtrlStyle::VariableRowHeight))
 		{
 			size_t columnCount = m_View->GetColumnCount();
 			int start = 0;
@@ -2135,7 +2135,7 @@ namespace KxFramework::UI::DataView
 	}
 	int MainWindow::GetRowHeight(Row row) const
 	{
-		if (m_View->IsStyleEnabled(CtrlStyle::VariableRowHeight))
+		if (m_View->ContainsWindowStyle(CtrlStyle::VariableRowHeight))
 		{
 			const Node* node = GetNodeByRow(row);
 			if (node)
@@ -2181,7 +2181,7 @@ namespace KxFramework::UI::DataView
 	}
 	Row MainWindow::GetRowAt(int yCoord) const
 	{
-		if (m_View->IsStyleEnabled(CtrlStyle::VariableRowHeight))
+		if (m_View->ContainsWindowStyle(CtrlStyle::VariableRowHeight))
 		{
 			Row row = 0;
 			int yPos = 0;

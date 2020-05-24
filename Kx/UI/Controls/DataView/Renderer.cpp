@@ -37,7 +37,7 @@ namespace KxFramework::UI::DataView
 		
 		auto ClipRectIfNeeded = [this, &cellState](const Rect& rect)
 		{
-			if (GetView()->IsStyleEnabled(CtrlStyle::VerticalRules))
+			if (GetView()->ContainsWindowStyle(CtrlStyle::VerticalRules))
 			{
 				if (m_Column->IsDisplayedLast() && (cellState.IsHotTracked() || cellState.IsSelected()))
 				{
@@ -139,7 +139,7 @@ namespace KxFramework::UI::DataView
 		Rect adjustedCellRect(cellRect);
 
 		// Restrict height to row height.
-		if (GetView()->IsStyleEnabled(CtrlStyle::VariableRowHeight))
+		if (GetView()->ContainsWindowStyle(CtrlStyle::VariableRowHeight))
 		{
 			adjustedCellRect.SetHeight(GetMainWindow()->GetVariableRowHeight(*m_Node));
 		}

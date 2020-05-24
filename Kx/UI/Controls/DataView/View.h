@@ -5,6 +5,7 @@
 #include "Column.h"
 #include "ColumnID.h"
 #include "Kx/UI/WindowRefreshScheduler.h"
+#include "Kx/UI/WindowWithStyles.h"
 #include <wx/systhemectrl.h>
 #include <wx/scrolwin.h>
 
@@ -21,7 +22,7 @@ namespace KxFramework::UI::DataView
 
 namespace KxFramework::UI::DataView
 {
-	class KX_API View: public WindowRefreshScheduler<wxSystemThemedControl<wxScrolled<wxWindow>>>
+	class KX_API View: public WindowRefreshScheduler<wxSystemThemedControl<wxScrolled<wxWindow>>>, public WindowWithStyles<View, CtrlStyle>, public WindowWithExtraStyles<View, CtrlExtraStyle>
 	{
 		friend class HeaderCtrl;
 		friend class HeaderCtrl2;
@@ -39,7 +40,7 @@ namespace KxFramework::UI::DataView
 			};
 
 		protected:
-			using ViewBase = wxSystemThemedControl<wxScrolled<wxWindow>>;
+			using ViewBase = WindowRefreshScheduler<wxSystemThemedControl<wxScrolled<wxWindow>>>;
 
 		private:
 			FlagSet<CtrlStyle> m_Styles = CtrlStyle::Default;
@@ -168,22 +169,19 @@ namespace KxFramework::UI::DataView
 
 		public:
 			// Styles
-			bool IsStyleEnabled(CtrlStyle style) const
+			long GetWindowStyleFlag() const override
 			{
-				return m_Styles.Contains(style);
+				return m_Styles.ToInt();
 			}
-			void EnableStyle(CtrlStyle style, bool enable = true)
+			void SetWindowStyleFlag(long styles) override
 			{
-				m_Styles.Mod(style, enable);
+				m_Styles.FromInt(styles);
+				ViewBase::SetWindowStyleFlag(styles);
 			}
-			
-			bool IsExtraStyleEnabled(CtrlExtraStyle style) const
+			void SetExtraStyle(long styles) override
 			{
-				return m_ExtraStyles.Contains(style);
-			}
-			void EnableExtraStyle(CtrlExtraStyle style, bool enable = true)
-			{
-				m_ExtraStyles.Mod(style, enable);
+				m_ExtraStyles.FromInt(styles);
+				ViewBase::SetExtraStyle(styles);
 			}
 
 			// Model

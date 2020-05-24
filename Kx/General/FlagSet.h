@@ -75,7 +75,7 @@ namespace KxFramework
 			}
 			constexpr FlagSet& Clear() noexcept
 			{
-				m_Value = static_cast<TEnum>(0);
+				FromInt(0);
 				return *this;
 			}
 			constexpr FlagSet Clone() const noexcept

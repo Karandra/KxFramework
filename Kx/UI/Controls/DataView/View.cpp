@@ -193,9 +193,11 @@ namespace KxFramework::UI::DataView
 
 	bool View::Create(wxWindow* parent, wxWindowID id, const Point& pos, const Size& size, FlagSet<CtrlStyle> style, const String& name)
 	{
-		if (ViewBase::Create(parent, id, pos, size, style.ToInt()|wxScrolledWindowStyle, GetClassInfo()->GetClassName()))
+		m_Styles = CombineFlags<CtrlStyle>(*style, WindowStyle::ScrollHorizontal|WindowStyle::ScrollVertical);
+		SetWindowExStyle(m_ExtraStyles);
+
+		if (ViewBase::Create(parent, id, pos, size, m_Styles.ToInt(), GetClassInfo()->GetClassName()))
 		{
-			m_Styles = style;
 			m_ClientArea = new MainWindow(this, wxID_NONE);
 
 			// We use the cursor keys for moving the selection, not scrolling, so call
@@ -203,7 +205,7 @@ namespace KxFramework::UI::DataView
 			// keyboard events forwarded to us from 'MainWindow'.
 			DisableKeyboardScrolling();
 
-			if (!IsStyleEnabled(CtrlStyle::NoHeader))
+			if (!m_Styles.Contains(CtrlStyle::NoHeader))
 			{
 				m_HeaderArea = new HeaderCtrl(this);
 			}
@@ -486,7 +488,7 @@ namespace KxFramework::UI::DataView
 
 	Node* View::GetCurrentItem() const
 	{
-		if (IsStyleEnabled(CtrlStyle::MultipleSelection))
+		if (m_Styles.Contains(CtrlStyle::MultipleSelection))
 		{
 			return m_ClientArea->GetNodeByRow(m_ClientArea->GetCurrentRow());
 		}
@@ -497,7 +499,7 @@ namespace KxFramework::UI::DataView
 	}
 	void View::SetCurrentItem(Node& item)
 	{
-		if (IsStyleEnabled(CtrlStyle::MultipleSelection))
+		if (m_Styles.Contains(CtrlStyle::MultipleSelection))
 		{
 			const size_t newCurrent = *m_ClientArea->GetRowByNode(item);
 			const size_t oldCurrent = *m_ClientArea->GetCurrentRow();

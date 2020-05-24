@@ -356,7 +356,7 @@ namespace KxFramework::UI::DataView
 			}
 			bool IsMultipleSelection() const
 			{
-				return m_View->IsStyleEnabled(CtrlStyle::MultipleSelection);
+				return m_View->ContainsWindowStyle(CtrlStyle::MultipleSelection);
 			}
 			bool IsEmpty()
 			{
