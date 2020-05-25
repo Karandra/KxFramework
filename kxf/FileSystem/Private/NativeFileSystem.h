@@ -144,25 +144,20 @@ namespace kxf::FileSystem::Private
 	inline FileItem ConvertFileInfo(const WIN32_FIND_DATAW& findInfo, const FSPath& location)
 	{
 		FileItem fileItem;
+		const bool isDirectory = findInfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
 
 		// Construct path
 		FSPath path;
 		if (location.IsAbsolute())
 		{
-			if (findInfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-			{
-				path = location / findInfo.cFileName;
-			}
-			else
-			{
-				path = location.GetParent() / findInfo.cFileName;
-			}
+			path = isDirectory ? location : location.GetParent();
+			path /= findInfo.cFileName;
 			path.EnsureNamespaceSet(location.GetNamespace());
 		}
-		else if (FSPath cwd = NativeFileSystem::Get().GetWorkingDirectory())
+		else
 		{
-			path = cwd / findInfo.cFileName;
-			path.EnsureNamespaceSet(cwd.GetNamespace());
+			// Invalid operation, we need full path to parent directory
+			return {};
 		}
 
 		// Attributes and reparse point
@@ -173,9 +168,9 @@ namespace kxf::FileSystem::Private
 		}
 
 		// File size
-		if (!(findInfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+		if (!isDirectory)
 		{
-			ULARGE_INTEGER size = {0};
+			ULARGE_INTEGER size = {};
 			size.HighPart = findInfo.nFileSizeHigh;
 			size.LowPart = findInfo.nFileSizeLow;
 
