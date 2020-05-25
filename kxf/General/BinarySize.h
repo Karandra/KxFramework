@@ -18,7 +18,7 @@ namespace kxf
 	{
 		None = 0,
 		Fractional = 1 << 0,
-		WithLabel = 1 << 0,
+		WithLabel = 1 << 1,
 	};
 	Kx_DeclareFlagSet(BinarySizeFormat);
 }
@@ -301,7 +301,7 @@ namespace kxf
 {
 	inline double GetSizeRatio(BinarySize smallerSize, BinarySize largerSize) noexcept
 	{
-		if (smallerSize && largerSize)
+		if (smallerSize && largerSize && !largerSize.IsNull())
 		{
 			return smallerSize.GetBytes<double>() / largerSize.GetBytes<double>();
 		}
