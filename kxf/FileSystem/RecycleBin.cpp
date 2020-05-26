@@ -86,7 +86,7 @@ namespace kxf
 	
 	bool RecycleBin::Recycle(const FSPath& path, FlagSet<FSRecycleBinOpFlag> flags)
 	{
-		if (path.ContainsCharacters(wxS("*?")))
+		if (path.ContainsAnyOfCharacters(wxS("*?")))
 		{
 			if (flags & FSRecycleBinOpFlag::Recursive)
 			{

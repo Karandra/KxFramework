@@ -629,4 +629,27 @@ namespace kxf
 		}
 		return replacementCount;
 	}
+
+	bool String::DoContainsAnyOfCharacters(std::string_view pattern, FlagSet<StringOpFlag> flags) const noexcept
+	{
+		for (auto c: pattern)
+		{
+			if (DoFind(c, 0, flags) != npos)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	bool String::DoContainsAnyOfCharacters(std::wstring_view pattern, FlagSet<StringOpFlag> flags) const noexcept
+	{
+		for (auto c: pattern)
+		{
+			if (DoFind(c, 0, flags) != npos)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }

@@ -73,14 +73,14 @@ namespace kxf
 				return m_Namespace == FSPathNamespace::Win32FileUNC || m_Namespace == FSPathNamespace::NetworkUNC;
 			}
 			
-			bool Contains(const FSPath& path) const;
-			bool ContainsCharacters(const String& characters) const
+			bool ContainsPath(const FSPath& path) const;
+			bool ContainsAnyOfCharacters(const String& characters) const
 			{
-				return m_Path.Contains(characters);
+				return m_Path.ContainsAnyOfCharacters(characters);
 			}
 			bool ContainsSearchMask() const
 			{
-				return m_SearchMaksAllowed && (m_Path.Contains(wxS('*')) || m_Path.Contains(wxS('?')));
+				return m_SearchMaksAllowed && m_Path.ContainsAnyOfCharacters(wxS("*?"));
 			}
 
 			size_t GetPathLength() const

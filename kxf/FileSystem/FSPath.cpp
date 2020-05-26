@@ -292,7 +292,7 @@ namespace kxf
 	{
 		return IsValid() && !IsAbsolute();
 	}
-	bool FSPath::Contains(const FSPath& path) const
+	bool FSPath::ContainsPath(const FSPath& path) const
 	{
 		return m_Path.Contains(path.GetFullPath(), StringOpFlag::IgnoreCase);
 	}

@@ -874,6 +874,17 @@ namespace kxf
 				return Find(std::forward<T>(pattern), 0, flags) != npos;
 			}
 
+		private:
+			bool DoContainsAnyOfCharacters(std::string_view pattern, FlagSet<StringOpFlag> flags = {}) const noexcept;
+			bool DoContainsAnyOfCharacters(std::wstring_view pattern, FlagSet<StringOpFlag> flags = {}) const noexcept;
+
+		public:
+			template<class T>
+			bool ContainsAnyOfCharacters(T&& pattern, FlagSet<StringOpFlag> flags = {}) const noexcept
+			{
+				return DoContainsAnyOfCharacters(StringViewOf(std::forward<T>(pattern)), flags);
+			}
+
 			// Conversion to numbers
 			template<class T = double>
 			std::optional<T> ToFloatingPoint() const noexcept
