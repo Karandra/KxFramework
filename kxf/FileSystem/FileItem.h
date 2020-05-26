@@ -27,7 +27,7 @@ namespace kxf
 
 		public:
 			FileItem() = default;
-			FileItem(FileItem&&) = default;
+			FileItem(FileItem&&) noexcept = default;
 			FileItem(const FileItem&) = default;
 
 			FileItem(const FSPath& fullPath)
@@ -55,17 +55,17 @@ namespace kxf
 			// General
 			FileItem& Refresh(const IFileSystem& fileSystem);
 			
-			bool IsValid() const
+			bool IsValid() const noexcept
 			{
 				return m_Path && m_Attributes != FileAttribute::Invalid;
 			}
-			bool IsNormalItem() const
+			bool IsNormalItem() const noexcept
 			{
 				return IsValid() && !IsReparsePoint() && !IsCurrentOrParentDirectoryRef();
 			}
-			bool IsCurrentOrParentDirectoryRef() const
+			bool IsCurrentOrParentDirectoryRef() const noexcept
 			{
-				if (m_Path.GetPathLength() >= 1)
+				if (m_Path.GetPathLength() >= 1 && m_Path.GetPathLength() <= 2)
 				{
 					const String name = m_Path.GetName();
 					return name == wxS("..") || name == wxS('.');
@@ -74,90 +74,90 @@ namespace kxf
 			}
 
 			// Attributes
-			FlagSet<FileAttribute> GetAttributes() const
+			FlagSet<FileAttribute> GetAttributes() const noexcept
 			{
 				return m_Attributes;
 			}
-			FileItem& SetAttributes(FlagSet<FileAttribute> attributes)
+			FileItem& SetAttributes(FlagSet<FileAttribute> attributes) noexcept
 			{
 				m_Attributes = attributes;
 				return *this;
 			}
 			
-			FlagSet<ReparsePointTag> GetReparsePointTags() const
+			FlagSet<ReparsePointTag> GetReparsePointTags() const noexcept
 			{
 				return m_ReparsePointTags;
 			}
-			FileItem& SetReparsePointTags(FlagSet<ReparsePointTag> tags)
+			FileItem& SetReparsePointTags(FlagSet<ReparsePointTag> tags) noexcept
 			{
 				m_ReparsePointTags = tags;
 				return *this;
 			}
 
-			bool IsDirectory() const
+			bool IsDirectory() const noexcept
 			{
 				return m_Attributes & FileAttribute::Directory;
 			}
-			bool IsCompressed() const
+			bool IsCompressed() const noexcept
 			{
 				return m_Attributes & FileAttribute::Compressed;
 			}
-			bool IsReparsePoint() const
+			bool IsReparsePoint() const noexcept
 			{
 				return m_Attributes & FileAttribute::ReparsePoint;
 			}
-			bool IsSymLink() const
+			bool IsSymLink() const noexcept
 			{
 				return IsReparsePoint() && m_ReparsePointTags & ReparsePointTag::SymLink;
 			}
 
 			// Date and time
-			DateTime GetCreationTime() const
+			DateTime GetCreationTime() const noexcept
 			{
 				return m_CreationTime;
 			}
-			FileItem& SetCreationTime(DateTime value)
+			FileItem& SetCreationTime(DateTime value) noexcept
 			{
 				m_CreationTime = value;
 				return *this;
 			}
 			
-			DateTime GetLastAccessTime() const
+			DateTime GetLastAccessTime() const noexcept
 			{
 				return m_LastAccessTime;
 			}
-			FileItem& SetLastAccessTime(DateTime value)
+			FileItem& SetLastAccessTime(DateTime value) noexcept
 			{
 				m_LastAccessTime = value;
 				return *this;
 			}
 			
-			DateTime GetModificationTime() const
+			DateTime GetModificationTime() const noexcept
 			{
 				return m_ModificationTime;
 			}
-			FileItem& SetModificationTime(DateTime value)
+			FileItem& SetModificationTime(DateTime value) noexcept
 			{
 				m_ModificationTime = value;
 				return *this;
 			}
 
 			// Path and name
-			FSPath GetFullPath() const
+			FSPath GetFullPath() const noexcept
 			{
 				return m_Path;
 			}
-			FileItem& SetFullPath(const FSPath& fullPath)
+			FileItem& SetFullPath(const FSPath& fullPath) noexcept
 			{
 				m_Path = fullPath;
 				return *this;
 			}
 
-			FSPath GetSource() const
+			FSPath GetSource() const noexcept
 			{
 				return m_Path.GetParent();
 			}
-			FileItem& SetSource(const FSPath& source)
+			FileItem& SetSource(const FSPath& source) noexcept
 			{
 				String name = m_Path.GetName();
 				m_Path = source;
@@ -187,17 +187,17 @@ namespace kxf
 			}
 
 			// Size
-			BinarySize GetSize() const
+			BinarySize GetSize() const noexcept
 			{
 				return m_Size;
 			}
-			FileItem& SetSize(BinarySize size)
+			FileItem& SetSize(BinarySize size) noexcept
 			{
 				m_Size = size;
 				return *this;
 			}
 
-			double GetCompressionRatio() const
+			double GetCompressionRatio() const noexcept
 			{
 				if (IsCompressed() && m_CompressedSize)
 				{
@@ -205,25 +205,25 @@ namespace kxf
 				}
 				return 1;
 			}
-			BinarySize GetCompressedSize() const
+			BinarySize GetCompressedSize() const noexcept
 			{
 				return m_CompressedSize;
 			}
-			FileItem& SetCompressedSize(BinarySize size)
+			FileItem& SetCompressedSize(BinarySize size) noexcept
 			{
 				m_CompressedSize = size;
 				return *this;
 			}
 
 		public:
-			FileItem& operator=(FileItem&&) = default;
+			FileItem& operator=(FileItem&&) noexcept = default;
 			FileItem& operator=(const FileItem&) = default;
 
-			explicit operator bool() const
+			explicit operator bool() const noexcept
 			{
 				return IsValid();
 			}
-			bool operator!() const
+			bool operator!() const noexcept
 			{
 				return !IsValid();
 			}
