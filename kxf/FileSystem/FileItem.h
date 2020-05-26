@@ -61,9 +61,9 @@ namespace kxf
 			}
 			bool IsNormalItem() const
 			{
-				return IsValid() && !IsReparsePoint() && !IsCurrentOrParent();
+				return IsValid() && !IsReparsePoint() && !IsCurrentOrParentDirectoryRef();
 			}
-			bool IsCurrentOrParent() const
+			bool IsCurrentOrParentDirectoryRef() const
 			{
 				if (m_Path.GetPathLength() >= 1)
 				{
