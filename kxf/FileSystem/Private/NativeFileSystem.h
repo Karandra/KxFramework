@@ -22,21 +22,21 @@ namespace kxf::FileSystem::Private
 		}
 		else
 		{
-			FileAttribute attributes = FileAttribute::None;
-			Utility::AddFlagRef(attributes, FileAttribute::Hidden, nativeAttributes & FILE_ATTRIBUTE_HIDDEN);
-			Utility::AddFlagRef(attributes, FileAttribute::Archive, nativeAttributes & FILE_ATTRIBUTE_ARCHIVE);
-			Utility::AddFlagRef(attributes, FileAttribute::Directory, nativeAttributes & FILE_ATTRIBUTE_DIRECTORY);
-			Utility::AddFlagRef(attributes, FileAttribute::ReadOnly, nativeAttributes & FILE_ATTRIBUTE_READONLY);
-			Utility::AddFlagRef(attributes, FileAttribute::System, nativeAttributes & FILE_ATTRIBUTE_SYSTEM);
-			Utility::AddFlagRef(attributes, FileAttribute::Temporary, nativeAttributes & FILE_ATTRIBUTE_TEMPORARY);
-			Utility::AddFlagRef(attributes, FileAttribute::Compressed, nativeAttributes & FILE_ATTRIBUTE_COMPRESSED);
-			Utility::AddFlagRef(attributes, FileAttribute::Encrypted, nativeAttributes & FILE_ATTRIBUTE_ENCRYPTED);
-			Utility::AddFlagRef(attributes, FileAttribute::ReparsePoint, nativeAttributes & FILE_ATTRIBUTE_REPARSE_POINT);
-			Utility::AddFlagRef(attributes, FileAttribute::SparseFile, nativeAttributes & FILE_ATTRIBUTE_SPARSE_FILE);
-			Utility::AddFlagRef(attributes, FileAttribute::Offline, nativeAttributes & FILE_ATTRIBUTE_OFFLINE);
-			Utility::AddFlagRef(attributes, FileAttribute::ContentIndexed, !(nativeAttributes & FILE_ATTRIBUTE_NOT_CONTENT_INDEXED));
-			Utility::AddFlagRef(attributes, FileAttribute::RecallOnOpen, nativeAttributes & FILE_ATTRIBUTE_RECALL_ON_OPEN);
-			Utility::AddFlagRef(attributes, FileAttribute::RecallOnDataAccess, nativeAttributes & FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS);
+			FlagSet<FileAttribute> attributes;
+			attributes.Add(FileAttribute::Hidden, nativeAttributes & FILE_ATTRIBUTE_HIDDEN);
+			attributes.Add(FileAttribute::Archive, nativeAttributes & FILE_ATTRIBUTE_ARCHIVE);
+			attributes.Add(FileAttribute::Directory, nativeAttributes & FILE_ATTRIBUTE_DIRECTORY);
+			attributes.Add(FileAttribute::ReadOnly, nativeAttributes & FILE_ATTRIBUTE_READONLY);
+			attributes.Add(FileAttribute::System, nativeAttributes & FILE_ATTRIBUTE_SYSTEM);
+			attributes.Add(FileAttribute::Temporary, nativeAttributes & FILE_ATTRIBUTE_TEMPORARY);
+			attributes.Add(FileAttribute::Compressed, nativeAttributes & FILE_ATTRIBUTE_COMPRESSED);
+			attributes.Add(FileAttribute::Encrypted, nativeAttributes & FILE_ATTRIBUTE_ENCRYPTED);
+			attributes.Add(FileAttribute::ReparsePoint, nativeAttributes & FILE_ATTRIBUTE_REPARSE_POINT);
+			attributes.Add(FileAttribute::SparseFile, nativeAttributes & FILE_ATTRIBUTE_SPARSE_FILE);
+			attributes.Add(FileAttribute::Offline, nativeAttributes & FILE_ATTRIBUTE_OFFLINE);
+			attributes.Add(FileAttribute::ContentIndexed, !(nativeAttributes & FILE_ATTRIBUTE_NOT_CONTENT_INDEXED));
+			attributes.Add(FileAttribute::RecallOnOpen, nativeAttributes & FILE_ATTRIBUTE_RECALL_ON_OPEN);
+			attributes.Add(FileAttribute::RecallOnDataAccess, nativeAttributes & FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS);
 
 			return attributes;
 		}
@@ -72,13 +72,13 @@ namespace kxf::FileSystem::Private
 			return nativeAttributes;
 		}
 	}
-	constexpr inline ReparsePointTag MapReparsePointTags(uint32_t nativeTags) noexcept
+	constexpr inline FlagSet<ReparsePointTag> MapReparsePointTags(uint32_t nativeTags) noexcept
 	{
 		// https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-fscc/c8e77b37-3909-4fe6-a4ea-2b9d423b1ee4
 
-		ReparsePointTag tags = ReparsePointTag::None;
-		Utility::AddFlagRef(tags, ReparsePointTag::MountPoint, nativeTags & IO_REPARSE_TAG_MOUNT_POINT);
-		Utility::AddFlagRef(tags, ReparsePointTag::SymLink, nativeTags & IO_REPARSE_TAG_SYMLINK);
+		FlagSet<ReparsePointTag> tags;
+		tags.Add(ReparsePointTag::MountPoint, nativeTags & IO_REPARSE_TAG_MOUNT_POINT);
+		tags.Add(ReparsePointTag::SymLink, nativeTags & IO_REPARSE_TAG_SYMLINK);
 
 		return tags;
 	}

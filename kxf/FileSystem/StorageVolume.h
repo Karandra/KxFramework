@@ -70,7 +70,7 @@ namespace kxf
 			DriveType GetType() const;
 			uint32_t GetSerialNumber() const;
 			String GetFileSystem() const;
-			FileSystemFeature GetFileSystemFeatures() const;
+			FlagSet<FileSystemFeature> GetFileSystemFeatures() const;
 
 			std::optional<SpaceLayoutInfo> GetSpaceLayoutInfo() const;
 			BinarySize GetTotalSpace() const;

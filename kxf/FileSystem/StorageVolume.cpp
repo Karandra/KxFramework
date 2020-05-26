@@ -8,6 +8,8 @@
 
 namespace
 {
+	using namespace kxf;
+
 	constexpr size_t g_GUIDLength = 36;
 	constexpr size_t g_VolumePathPrefixLength = 10;
 	constexpr size_t g_VolumePathTotalLength = g_VolumePathPrefixLength + g_GUIDLength + 3;
@@ -15,13 +17,9 @@ namespace
 	constexpr size_t g_FirstLegacyVolume = 'A';
 	constexpr size_t g_LastLegacyVolume = 'Z';
 	constexpr size_t g_LegacyVolumesCount = g_LastLegacyVolume - g_FirstLegacyVolume + 1;
-}
-namespace
-{
-	kxf::DriveType MapDriveType(UINT type)
-	{
-		using namespace kxf;
 
+	constexpr DriveType MapDriveType(UINT type) noexcept
+	{
 		switch (type)
 		{
 			case DRIVE_UNKNOWN:
@@ -55,30 +53,28 @@ namespace
 		};
 		return DriveType::Unknown;
 	}
-	kxf::FileSystemFeature MapDiskFeatures(DWORD nativeFeatures)
+	constexpr FlagSet<FileSystemFeature> MapDiskFeatures(DWORD nativeFeatures) noexcept
 	{
-		using namespace kxf;
-
-		FileSystemFeature features = FileSystemFeature::None;
-		Utility::AddFlagRef(features, FileSystemFeature::CasePreservedNames, nativeFeatures & FILE_CASE_PRESERVED_NAMES);
-		Utility::AddFlagRef(features, FileSystemFeature::CaseSensitiveSearch, nativeFeatures & FILE_CASE_SENSITIVE_SEARCH);
-		Utility::AddFlagRef(features, FileSystemFeature::FileCompression, nativeFeatures & FILE_FILE_COMPRESSION);
-		Utility::AddFlagRef(features, FileSystemFeature::NamedStreams, nativeFeatures & FILE_NAMED_STREAMS);
-		Utility::AddFlagRef(features, FileSystemFeature::PersistentACLS, nativeFeatures & FILE_PERSISTENT_ACLS);
-		Utility::AddFlagRef(features, FileSystemFeature::ReadOnlyVolume, nativeFeatures & FILE_READ_ONLY_VOLUME);
-		Utility::AddFlagRef(features, FileSystemFeature::SequentialWrite, nativeFeatures & FILE_SEQUENTIAL_WRITE_ONCE);
-		Utility::AddFlagRef(features, FileSystemFeature::Encryption, nativeFeatures & FILE_SUPPORTS_ENCRYPTION);
-		Utility::AddFlagRef(features, FileSystemFeature::ExtendedAttributes, nativeFeatures & FILE_SUPPORTS_EXTENDED_ATTRIBUTES);
-		Utility::AddFlagRef(features, FileSystemFeature::HardLinks, nativeFeatures & FILE_SUPPORTS_HARD_LINKS);
-		Utility::AddFlagRef(features, FileSystemFeature::ObjectIDs, nativeFeatures & FILE_SUPPORTS_OBJECT_IDS);
-		Utility::AddFlagRef(features, FileSystemFeature::OpenFileByID, nativeFeatures & FILE_SUPPORTS_OPEN_BY_FILE_ID);
-		Utility::AddFlagRef(features, FileSystemFeature::ReparsePoints, nativeFeatures & FILE_SUPPORTS_REPARSE_POINTS);
-		Utility::AddFlagRef(features, FileSystemFeature::SparseFiles, nativeFeatures & FILE_SUPPORTS_SPARSE_FILES);
-		Utility::AddFlagRef(features, FileSystemFeature::Transactions, nativeFeatures & FILE_SUPPORTS_TRANSACTIONS);
-		Utility::AddFlagRef(features, FileSystemFeature::USNJournal, nativeFeatures & FILE_SUPPORTS_USN_JOURNAL);
-		Utility::AddFlagRef(features, FileSystemFeature::Unicode, nativeFeatures & FILE_UNICODE_ON_DISK);
-		Utility::AddFlagRef(features, FileSystemFeature::CompressedVolume, nativeFeatures & FILE_VOLUME_IS_COMPRESSED);
-		Utility::AddFlagRef(features, FileSystemFeature::VolumeQuotas, nativeFeatures & FILE_VOLUME_QUOTAS);
+		FlagSet<FileSystemFeature> features;
+		features.Add(FileSystemFeature::CasePreservedNames, nativeFeatures & FILE_CASE_PRESERVED_NAMES);
+		features.Add(FileSystemFeature::CaseSensitiveSearch, nativeFeatures & FILE_CASE_SENSITIVE_SEARCH);
+		features.Add(FileSystemFeature::FileCompression, nativeFeatures & FILE_FILE_COMPRESSION);
+		features.Add(FileSystemFeature::NamedStreams, nativeFeatures & FILE_NAMED_STREAMS);
+		features.Add(FileSystemFeature::PersistentACLS, nativeFeatures & FILE_PERSISTENT_ACLS);
+		features.Add(FileSystemFeature::ReadOnlyVolume, nativeFeatures & FILE_READ_ONLY_VOLUME);
+		features.Add(FileSystemFeature::SequentialWrite, nativeFeatures & FILE_SEQUENTIAL_WRITE_ONCE);
+		features.Add(FileSystemFeature::Encryption, nativeFeatures & FILE_SUPPORTS_ENCRYPTION);
+		features.Add(FileSystemFeature::ExtendedAttributes, nativeFeatures & FILE_SUPPORTS_EXTENDED_ATTRIBUTES);
+		features.Add(FileSystemFeature::HardLinks, nativeFeatures & FILE_SUPPORTS_HARD_LINKS);
+		features.Add(FileSystemFeature::ObjectIDs, nativeFeatures & FILE_SUPPORTS_OBJECT_IDS);
+		features.Add(FileSystemFeature::OpenFileByID, nativeFeatures & FILE_SUPPORTS_OPEN_BY_FILE_ID);
+		features.Add(FileSystemFeature::ReparsePoints, nativeFeatures & FILE_SUPPORTS_REPARSE_POINTS);
+		features.Add(FileSystemFeature::SparseFiles, nativeFeatures & FILE_SUPPORTS_SPARSE_FILES);
+		features.Add(FileSystemFeature::Transactions, nativeFeatures & FILE_SUPPORTS_TRANSACTIONS);
+		features.Add(FileSystemFeature::USNJournal, nativeFeatures & FILE_SUPPORTS_USN_JOURNAL);
+		features.Add(FileSystemFeature::Unicode, nativeFeatures & FILE_UNICODE_ON_DISK);
+		features.Add(FileSystemFeature::CompressedVolume, nativeFeatures & FILE_VOLUME_IS_COMPRESSED);
+		features.Add(FileSystemFeature::VolumeQuotas, nativeFeatures & FILE_VOLUME_QUOTAS);
 
 		return features;
 	}
@@ -246,18 +242,18 @@ namespace kxf
 		::GetVolumeInformationW(m_Path, nullptr, 0, nullptr, nullptr, nullptr, buffer, std::size(buffer));
 		return buffer;
 	}
-	FileSystemFeature StorageVolume::GetFileSystemFeatures() const
+	FlagSet<FileSystemFeature> StorageVolume::GetFileSystemFeatures() const
 	{
 		DWORD nativeFeatures = 0;
 		DWORD maximumComponentLength = 0;
 		if (::GetVolumeInformationW(m_Path, nullptr, 0, nullptr, &maximumComponentLength, &nativeFeatures, nullptr, 0))
 		{
-			FileSystemFeature features = MapDiskFeatures(nativeFeatures);
-			Utility::ModFlagRef(features, FileSystemFeature::LongFileNames, maximumComponentLength == 255);
+			auto features = MapDiskFeatures(nativeFeatures);
+			features.Add(FileSystemFeature::LongFileNames, maximumComponentLength == 255);
 
 			return features;
 		}
-		return FileSystemFeature::None;
+		return {};
 	}
 
 	auto StorageVolume::GetSpaceLayoutInfo() const -> std::optional<SpaceLayoutInfo>

@@ -86,12 +86,12 @@ namespace kxf
 	
 	bool RecycleBin::Recycle(const FSPath& path, FlagSet<FSRecycleBinOpFlag> flags)
 	{
-		if (path.ContainsAnyOfCharacters(wxS("*?")))
+		if (path.ContainsSearchMask())
 		{
 			if (flags & FSRecycleBinOpFlag::Recursive)
 			{
-				SHOperationFlags shellFlags = SHOperationFlags::AllowUndo|SHOperationFlags::Recursive;
-				Utility::AddFlag(shellFlags, SHOperationFlags::LimitToFiles, flags & FSRecycleBinOpFlag::LimitToFiles);
+				FlagSet<SHOperationFlags> shellFlags = SHOperationFlags::AllowUndo|SHOperationFlags::Recursive;
+				shellFlags.Add(SHOperationFlags::LimitToFiles, flags & FSRecycleBinOpFlag::LimitToFiles);
 
 				return Shell::FileOperation(SHOperationType::Delete, path, {}, m_Window, shellFlags);
 			}
@@ -103,8 +103,8 @@ namespace kxf
 			{
 				if (fileItem.IsDirectory())
 				{
-					SHOperationFlags shellFlags = SHOperationFlags::AllowUndo;
-					Utility::AddFlag(shellFlags, SHOperationFlags::Recursive, flags & FSRecycleBinOpFlag::Recursive);
+					FlagSet<SHOperationFlags> shellFlags = SHOperationFlags::AllowUndo;
+					shellFlags.Add(SHOperationFlags::Recursive, flags & FSRecycleBinOpFlag::Recursive);
 
 					return Shell::FileOperation(SHOperationType::Delete, path, {}, m_Window, shellFlags);
 				}

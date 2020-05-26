@@ -27,14 +27,14 @@ namespace kxf
 
 namespace kxf::UI
 {
-	constexpr inline StdIcon FromWxStdIcon(int stdWxIcon) noexcept
+	constexpr inline FlagSet<StdIcon> FromWxStdIcon(int stdWxIcon) noexcept
 	{
-		StdIcon stdIcon = StdIcon::None;
-		Utility::AddFlagRef(stdIcon, StdIcon::Error, stdWxIcon & wxICON_ERROR);
-		Utility::AddFlagRef(stdIcon, StdIcon::Warning, stdWxIcon & wxICON_WARNING);
-		Utility::AddFlagRef(stdIcon, StdIcon::Question, stdWxIcon & wxICON_QUESTION);
-		Utility::AddFlagRef(stdIcon, StdIcon::Information, stdWxIcon & wxICON_INFORMATION);
-		Utility::AddFlagRef(stdIcon, StdIcon::Authentication, stdWxIcon & wxICON_AUTH_NEEDED);
+		FlagSet<StdIcon> stdIcon;
+		stdIcon.Add(StdIcon::Error, stdWxIcon & wxICON_ERROR);
+		stdIcon.Add(StdIcon::Warning, stdWxIcon & wxICON_WARNING);
+		stdIcon.Add(StdIcon::Question, stdWxIcon & wxICON_QUESTION);
+		stdIcon.Add(StdIcon::Information, stdWxIcon & wxICON_INFORMATION);
+		stdIcon.Add(StdIcon::Authentication, stdWxIcon & wxICON_AUTH_NEEDED);
 
 		return stdIcon;
 	}
