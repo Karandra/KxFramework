@@ -44,6 +44,7 @@ namespace kxf
 			bool CopyDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) const;
 			bool MoveDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func = {}, FlagSet<FSCopyItemFlag> flags = {});
 
+			FSPath GetExecutableDirectory() const;
 			FSPath GetWorkingDirectory() const;
 			bool SetWorkingDirectory(const FSPath& directory) const;
 	};

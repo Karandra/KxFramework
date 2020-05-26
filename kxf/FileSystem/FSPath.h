@@ -325,7 +325,7 @@ namespace kxf
 				m_Path = path.m_Path;
 				m_Namespace = path.m_Namespace;
 			}
-	
+			
 		public:
 			FSPathQuery GetAfter(const FSPath& start) const
 			{

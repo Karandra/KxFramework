@@ -2,6 +2,7 @@
 #include "NativeFileSystem.h"
 #include "Private/NativeFileSystem.h"
 #include "FileStream.h"
+#include "kxf/System/DynamicLibrary.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 
@@ -290,6 +291,10 @@ namespace kxf
 		return false;
 	}
 
+	FSPath NativeFileSystem::GetExecutableDirectory() const
+	{
+		return DynamicLibrary::GetExecutingModule().GetFilePath().GetParent();
+	}
 	FSPath NativeFileSystem::GetWorkingDirectory() const
 	{
 		DWORD length = ::GetCurrentDirectoryW(0, nullptr);
