@@ -35,30 +35,34 @@ namespace kxf::FileSystem
 		fsPath.EnsureNamespaceSet(rootDirectory.GetNamespace());
 		return fsPath;
 	}
-	FSPath GetFullPathName(const FSPath& path)
-	{
-		String pathString = path.GetFullPath(FSPathNamespace::Win32File);
-
-		const DWORD length = ::GetFullPathNameW(pathString.wc_str(), 0, nullptr, nullptr);
-		if (length)
-		{
-			String result;
-			LPWSTR oldPathStart = nullptr;
-			::GetFullPathNameW(pathString.wc_str(), length, wxStringBuffer(result, length), &oldPathStart);
-
-			FSPath fsPath = std::move(result);
-			fsPath.EnsureNamespaceSet(path.GetNamespace());
-			return fsPath;
-		}
-		return {};
-	}
-	FSPath GetLongPathName(const FSPath& path)
+	FSPath PathFrom83Name(const FSPath& path)
 	{
 		return CallWinAPIWithLengthPrecalc(path, ::GetLongPathNameW);
 	}
-	FSPath GetShortPathName(const FSPath& path)
+	FSPath PathTo83Name(const FSPath& path)
 	{
 		return CallWinAPIWithLengthPrecalc(path, ::GetShortPathNameW);
+	}
+	FSPath GetAbsolutePath(const FSPath& relativePath)
+	{
+		if (relativePath.IsRelative())
+		{
+			String pathString = relativePath.GetFullPath(FSPathNamespace::Win32File);
+
+			const DWORD length = ::GetFullPathNameW(pathString.wc_str(), 0, nullptr, nullptr);
+			if (length)
+			{
+				String result;
+				LPWSTR oldPathStart = nullptr;
+				::GetFullPathNameW(pathString.wc_str(), length, wxStringBuffer(result, length), &oldPathStart);
+
+				FSPath fsPath = std::move(result);
+				fsPath.EnsureNamespaceSet(relativePath.GetNamespace());
+				return fsPath;
+			}
+			return {};
+		}
+		return relativePath;
 	}
 	FSPath AbbreviatePath(const FSPath& path, int maxCharacters)
 	{

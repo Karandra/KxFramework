@@ -5,8 +5,8 @@
 namespace kxf::FileSystem
 {
 	FSPath CreateTempPathName(const FSPath& rootDirectory);
-	FSPath GetFullPathName(const FSPath& path);
-	FSPath GetLongPathName(const FSPath& path);
-	FSPath GetShortPathName(const FSPath& path);
+	FSPath PathFrom83Name(const FSPath& path);
+	FSPath PathTo83Name(const FSPath& path);
+	FSPath GetAbsolutePath(const FSPath& relativePath);
 	FSPath AbbreviatePath(const FSPath& path, int maxCharacters);
 }
