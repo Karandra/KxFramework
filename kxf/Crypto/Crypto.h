@@ -3,7 +3,6 @@
 #include "HashValue.h"
 #include "kxf/General/String.h"
 #include <wx/stream.h>
-#include <array>
 
 namespace kxf::Crypto
 {
