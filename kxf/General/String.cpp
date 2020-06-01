@@ -302,11 +302,11 @@ namespace kxf
 		}
 	}
 
-	bool String::DoMatches(std::string_view name, std::string_view expression, FlagSet<StringOpFlag> flags) noexcept
+	bool String::DoMatchesWildcards(std::string_view name, std::string_view expression, FlagSet<StringOpFlag> flags) noexcept
 	{
 		return IsNameInExpression(name, expression, flags & StringOpFlag::IgnoreCase);
 	}
-	bool String::DoMatches(std::wstring_view name, std::wstring_view expression, FlagSet<StringOpFlag> flags) noexcept
+	bool String::DoMatchesWildcards(std::wstring_view name, std::wstring_view expression, FlagSet<StringOpFlag> flags) noexcept
 	{
 		return IsNameInExpression(name, expression, flags & StringOpFlag::IgnoreCase);
 	}

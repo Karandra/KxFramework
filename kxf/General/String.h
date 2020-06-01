@@ -133,14 +133,14 @@ namespace kxf
 			}
 
 		private:
-			static bool DoMatches(std::string_view name, std::string_view expression, FlagSet<StringOpFlag> flags = {}) noexcept;
-			static bool DoMatches(std::wstring_view name, std::wstring_view expression, FlagSet<StringOpFlag> flags = {}) noexcept;
+			static bool DoMatchesWildcards(std::string_view name, std::string_view expression, FlagSet<StringOpFlag> flags = {}) noexcept;
+			static bool DoMatchesWildcards(std::wstring_view name, std::wstring_view expression, FlagSet<StringOpFlag> flags = {}) noexcept;
 
 		public:
 			template<class T1, class T2>
-			static int Matches(T1&& name, T2&& expression, FlagSet<StringOpFlag> flags = {}) noexcept
+			static int MatchesWildcards(T1&& name, T2&& expression, FlagSet<StringOpFlag> flags = {}) noexcept
 			{
-				return DoMatches(StringViewOf(std::forward<T1>(name)), StringViewOf(std::forward<T2>(expression)), flags);
+				return DoMatchesWildcards(StringViewOf(std::forward<T1>(name)), StringViewOf(std::forward<T2>(expression)), flags);
 			}
 
 			// Conversions
@@ -712,41 +712,41 @@ namespace kxf
 			}
 
 		private:
-			bool DoMatches(std::string_view expression, FlagSet<StringOpFlag> flags = {}) noexcept
+			bool DoMatchesWildcards(std::string_view expression, FlagSet<StringOpFlag> flags = {}) const noexcept
 			{
 				#if wxUSE_UNICODE_WCHAR
 				String temp = FromView(expression);
-				return DoMatches(GetView(), StringViewOf(temp), flags);
+				return DoMatchesWildcards(GetView(), StringViewOf(temp), flags);
 				#else
-				return DoMatches(GetView(), expression, flags);
+				return DoMatchesWildcards(GetView(), expression, flags);
 				#endif
 			}
-			bool DoMatches(std::wstring_view expression, FlagSet<StringOpFlag> flags = {}) noexcept
+			bool DoMatchesWildcards(std::wstring_view expression, FlagSet<StringOpFlag> flags = {}) const noexcept
 			{
 				#if wxUSE_UNICODE_WCHAR
-				return DoMatches(GetView(), expression, flags);
+				return DoMatchesWildcards(GetView(), expression, flags);
 				#else
 				String temp = FromView(expression);
-				return DoMatches(GetView(), StringViewOf(temp), flags);
+				return DoMatchesWildcards(GetView(), StringViewOf(temp), flags);
 				#endif
 			}
-			bool DoMatches(wxUniChar c, FlagSet<StringOpFlag> flags = {}) const noexcept
+			bool DoMatchesWildcards(wxUniChar c, FlagSet<StringOpFlag> flags = {}) const noexcept
 			{
 				const XChar expression[2] = {c, 0};
-				return DoMatches(GetView(), StringViewOf(expression), flags);
+				return DoMatchesWildcards(GetView(), StringViewOf(expression), flags);
 			}
 
 		public:
 			template<class T>
-			bool Matches(T&& expression, FlagSet<StringOpFlag> flags = {}) const
+			bool MatchesWildcards(T&& expression, FlagSet<StringOpFlag> flags = {}) const
 			{
 				if constexpr(Private::IsAnyCharType<T>())
 				{
-					return DoMatches(UniCharOf(std::forward<T>(expression)), flags);
+					return DoMatchesWildcards(UniCharOf(std::forward<T>(expression)), flags);
 				}
 				else
 				{
-					return DoMatches(StringViewOf(std::forward<T>(expression)), flags);
+					return DoMatchesWildcards(StringViewOf(std::forward<T>(expression)), flags);
 				}
 			}
 
