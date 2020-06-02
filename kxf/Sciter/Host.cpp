@@ -3,6 +3,7 @@
 #include "SciterAPI.h"
 #include "Internal.h"
 #include "kxf/General/StringFormater.h"
+#include "kxf/System/SystemInformation.h"
 #include "kxf/Utility/Common.h"
 #include <WindowsX.h>
 #include "kxf/System/UndefWindows.h"
@@ -226,13 +227,17 @@ namespace kxf::Sciter
 		{
 			// Get original window info
 			auto [style, exStyle] = UpdateWindowStyle();
+			auto [nativeStyle, nativeExStyle] = [&]()
+			{
+				DWORD nativeExStyle = 0;
+				DWORD nativeStyle = m_SciterWindow.MSWGetStyle(style, &nativeExStyle);
 
-			WXDWORD nativeExStyle = 0;
-			WXDWORD nativeStyle = m_SciterWindow.MSWGetStyle(style, &nativeExStyle);
+				return std::make_pair(nativeStyle, nativeExStyle);
+			}();
+			
 			const wxChar* nativeClassName = m_SciterWindow.GetMSWClassName(style);
-
-			const Point pos = m_SciterWindow.GetPosition();
-			const Size size = m_SciterWindow.GetSize();
+			const Point pos = Point(m_SciterWindow.GetPosition()).SetDefaults({CW_USEDEFAULT, CW_USEDEFAULT});
+			const Size size = Size(m_SciterWindow.GetSize()).SetDefaults({CW_USEDEFAULT, CW_USEDEFAULT});
 			const String title = m_SciterWindow.GetLabel();
 
 			// Destroy and detach original window
@@ -241,9 +246,14 @@ namespace kxf::Sciter
 			m_SciterWindow.DissociateHandle();
 			::DestroyWindow(oldHandle);
 
-			// Create new window with 'WS_EX_NOREDIRECTIONBITMAP' extended style instead and attach it to the wxWindow
+			// Create new window with 'WS_EX_NOREDIRECTIONBITMAP' extended style instead (if the style is supported) and attach it to the wxWindow
+			if (System::IsWindows8OrGreater())
+			{
+				nativeExStyle |= WS_EX_NOREDIRECTIONBITMAP;
+			}
+
 			m_AllowSciterHandleMessage = true;
-			m_SciterWindow.MSWCreate(nativeClassName, title.wc_str(), pos, size, nativeStyle, nativeExStyle|WS_EX_NOREDIRECTIONBITMAP);
+			m_SciterWindow.MSWCreate(nativeClassName, title.wc_str(), pos, size, nativeStyle, nativeExStyle);
 			return m_EngineCreated;
 		}
 		return true;
