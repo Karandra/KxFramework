@@ -2,6 +2,8 @@
 #include "DirectX.h"
 #include "kxf/Sciter/SciterAPI.h"
 #include "kxf/Sciter/Host.h"
+#include "kxf/System/ErrorCode.h"
+#include "kxf/System/NativeAPI.h"
 #include <thread>
 #include <chrono>
 
@@ -21,6 +23,7 @@ namespace
 		D3D_FEATURE_LEVEL_12_1,
 		D3D_FEATURE_LEVEL_12_0,
 		D3D_FEATURE_LEVEL_11_1,
+		D3D_FEATURE_LEVEL_11_0
 	};
 	constexpr D3D_DRIVER_TYPE g_DriverTypes[] =
 	{
@@ -48,20 +51,34 @@ namespace kxf::Sciter
 
 	bool DirectX::Create()
 	{
+		// If we don't have 'DCompositionCreateDevice' we can't create the renderer properly
+		if (!NativeAPI::DComp::DCompositionCreateDevice)
+		{
+			return false;
+		}
+
 		const Size windowSize = m_SciterWindow.GetClientSize();
 
 		// D3D10_CREATE_DEVICE_BGRA_SUPPORT is required here
 		constexpr uint32_t createDeviceFlags = D3D10_CREATE_DEVICE_BGRA_SUPPORT;
 
 		// Create DXGI factory
-		HRESULT hr = CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, __uuidof(IDXGIFactory2), reinterpret_cast<void**>(&m_DXGIFactory));
-		if (FAILED(hr))
+		HResult hr = HResult::Fail();
+		if (NativeAPI::DXGI::CreateDXGIFactory2)
+		{
+			hr = NativeAPI::DXGI::CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, __uuidof(IDXGIFactory2), reinterpret_cast<void**>(&m_DXGIFactory));
+		}
+		else
+		{
+			hr = CreateDXGIFactory1(__uuidof(IDXGIFactory2), reinterpret_cast<void**>(&m_DXGIFactory));
+		}
+		if (!hr)
 		{
 			return false;
 		}
 
 		// Create D3D device
-		HRESULT result = E_FAIL;
+		HResult result = HResult::Fail();
 		for (D3D_DRIVER_TYPE driverType: g_DriverTypes)
 		{
 			COMPtr<ID3D11Device> d3dDevice;
@@ -78,7 +95,7 @@ namespace kxf::Sciter
 									   &d3dDevice,
 									   &m_FeatureLevel,
 									   &deviceContext);
-			if (SUCCEEDED(result))
+			if (result)
 			{
 				d3dDevice->QueryInterface(&m_D3DDevice);
 				deviceContext->QueryInterface(&m_DeviceContext);
@@ -86,14 +103,14 @@ namespace kxf::Sciter
 				break;
 			}
 		}
-		if (FAILED(result))
+		if (!result)
 		{
 			return false;
 		}
 
 		// Query DXGI device
 		hr = m_D3DDevice->QueryInterface(&m_DXGIDevice);
-		if (FAILED(hr))
+		if (!hr)
 		{
 			return false;
 		}
@@ -114,50 +131,50 @@ namespace kxf::Sciter
 		description.SampleDesc.Quality = g_SwapChainSampleQuality;
 
 		hr = m_DXGIFactory->CreateSwapChainForComposition(m_DXGIDevice, &description, nullptr, &m_SwapChain);
-		if (FAILED(hr))
+		if (!hr)
 		{
 			return false;
 		}
 		GetSciterAPI()->SciterCreateOnDirectXWindow(m_SciterWindow.GetHandle(), m_SwapChain);
 
 		// Create composition device
-		hr = DCompositionCreateDevice(m_DXGIDevice, __uuidof(IDCompositionDevice), m_CompositionDevice.GetAddress());
-		if (FAILED(hr))
+		hr = NativeAPI::DComp::DCompositionCreateDevice(m_DXGIDevice, __uuidof(IDCompositionDevice), m_CompositionDevice.GetAddress());
+		if (!hr)
 		{
 			return false;
 		}
 
 		// Create render target
 		hr = m_CompositionDevice->CreateTargetForHwnd(m_SciterWindow.GetHandle(), true, &m_CompositionTarget);
-		if (FAILED(hr))
+		if (!hr)
 		{
 			return false;
 		}
 
 		// Create composition visual
 		hr = m_CompositionDevice->CreateVisual(&m_CompositionVisual);
-		if (FAILED(hr))
+		if (!hr)
 		{
 			return false;
 		}
 
 		// Set visual to use swap chain
 		hr = m_CompositionVisual->SetContent(m_SwapChain);
-		if (FAILED(hr))
+		if (!hr)
 		{
 			return false;
 		}
 
 		// Set root of the composition target
 		hr = m_CompositionTarget->SetRoot(m_CompositionVisual);
-		if (FAILED(hr))
+		if (!hr)
 		{
 			return false;
 		}
 
 		// We're done here
 		hr = m_CompositionDevice->Commit();
-		if (FAILED(hr))
+		if (!hr)
 		{
 			return false;
 		}
@@ -179,10 +196,10 @@ namespace kxf::Sciter
 
 			// Retrieve the swap chain's back buffer as surface for Sciter and as texture for render target
 			COMPtr<IDXGISurface2> surface;
-			m_SwapChain->GetBuffer(0, __uuidof(surface), reinterpret_cast<void**>(&surface));
+			m_SwapChain->GetBuffer(0, __uuidof(IDXGISurface2), reinterpret_cast<void**>(&surface));
 			
 			COMPtr<ID3D11Texture2D> texture2D;
-			m_SwapChain->GetBuffer(0, __uuidof(texture2D), reinterpret_cast<void**>(&texture2D));
+			m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&texture2D));
 
 			// Create render target and set it as active
 			COMPtr<ID3D11RenderTargetView> renderTarget;
@@ -207,7 +224,7 @@ namespace kxf::Sciter
 
 			// Get buffer and create a render-target-view
 			COMPtr<ID3D11Texture2D> texture2D;
-			m_SwapChain->GetBuffer(0, __uuidof(texture2D), reinterpret_cast<void**>(&texture2D));
+			m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&texture2D));
 
 			// Make it active
 			COMPtr<ID3D11RenderTargetView> renderTarget;
