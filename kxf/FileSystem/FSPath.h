@@ -49,16 +49,20 @@ namespace kxf
 			{
 				AssignFromPath(std::move(path));
 			}
-			FSPath(wxString path)
-			{
-				AssignFromPath(std::move(path));
-			}
 			FSPath(const char* path)
-				:FSPath(String(path))
 			{
+				AssignFromPath(path);
 			}
 			FSPath(const wchar_t* path)
+			{
+				AssignFromPath(path);
+			}
+			FSPath(const wxString& path)
 				:FSPath(String(path))
+			{
+			}
+			FSPath(wxString&& path)
+				:FSPath(String(std::move(path)))
 			{
 			}
 			virtual ~FSPath() = default;
@@ -131,6 +135,7 @@ namespace kxf
 
 			String GetPath() const;
 			FSPath& SetPath(const String& path);
+			FSPath& SimplifyPath();
 
 			String GetName() const;
 			FSPath& SetName(const String& name);
@@ -144,21 +149,13 @@ namespace kxf
 			FSPath& RemoveLastPart();
 
 			FSPath& Append(const FSPath& other);
-			FSPath& Append(const char* other)
-			{
-				return Append(FSPath(other));
-			}
-			FSPath& Append(const wchar_t* other)
+			FSPath& Append(const XChar* other)
 			{
 				return Append(FSPath(other));
 			}
 
 			FSPath& Concat(const FSPath& other);
-			FSPath& Concat(const char* other)
-			{
-				return Concat(FSPath(other));
-			}
-			FSPath& Concat(const wchar_t* other)
+			FSPath& Concat(const XChar* other)
 			{
 				return Concat(FSPath(other));
 			}
@@ -187,19 +184,11 @@ namespace kxf
 			{
 				return IsSameAs(other, false);
 			}
-			bool operator==(const wxString& other) const
-			{
-				return IsSameAs(other, false);
-			}
 			bool operator==(const String& other) const
 			{
 				return IsSameAs(other, false);
 			}
-			bool operator==(const char* other) const
-			{
-				return IsSameAs(other, false);
-			}
-			bool operator==(const wchar_t* other) const
+			bool operator==(const XChar* other) const
 			{
 				return IsSameAs(other, false);
 			}
@@ -214,11 +203,7 @@ namespace kxf
 			{
 				return !(*this == other);
 			}
-			bool operator!=(const char* other) const
-			{
-				return !(*this == other);
-			}
-			bool operator!=(const wchar_t* other) const
+			bool operator!=(const XChar* other) const
 			{
 				return !(*this == other);
 			}
@@ -231,11 +216,7 @@ namespace kxf
 			{
 				return Concat(other);
 			}
-			FSPath& operator+=(const char* other)
-			{
-				return Concat(FSPath(other));
-			}
-			FSPath& operator+=(const wchar_t* other)
+			FSPath& operator+=(const XChar* other)
 			{
 				return Concat(FSPath(other));
 			}
@@ -248,13 +229,9 @@ namespace kxf
 			{
 				return Append(other);
 			}
-			FSPath& operator/=(const char* other)
+			FSPath& operator/=(const XChar* other)
 			{
-				return Append(FSPath(other));
-			}
-			FSPath& operator/=(const wchar_t* other)
-			{
-				return Append(FSPath(other));
+				return Append(other);
 			}
 
 			FSPath& operator=(FSPath&&) = default;
@@ -264,12 +241,7 @@ namespace kxf
 				AssignFromPath(path);
 				return *this;
 			}
-			FSPath& operator=(const char* path)
-			{
-				AssignFromPath(path);
-				return *this;
-			}
-			FSPath& operator=(const wchar_t* path)
+			FSPath& operator=(const XChar* path)
 			{
 				AssignFromPath(path);
 				return *this;

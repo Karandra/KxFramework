@@ -2,9 +2,15 @@
 #include "FSPath.h"
 #include "LegacyVolume.h"
 #include "StorageVolume.h"
+#include "kxf/System/ErrorCodeValue.h"
+#include "kxf/System/NativeAPI.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 #include "Private/NamespacePrefix.h"
+#include <pathcch.h>
 #include <locale>
+#include "kxf/System/UndefWindows.h"
+#include <shlwapi.h>
+#pragma warning(disable: 4995) // 'PathCanonicalizeW': name was marked as #pragma deprecated
 
 namespace
 {
@@ -495,6 +501,40 @@ namespace kxf
 				m_Path = path;
 			}
 			Normalize();
+		}
+		return *this;
+	}
+	FSPath& FSPath::SimplifyPath()
+	{
+		if (IsValid())
+		{
+			const FSPathNamespace ns = m_Namespace;
+
+			bool isSuccess = false;
+			if (NativeAPI::KernelBase::PathCchCanonicalizeEx)
+			{
+				wchar_t result[std::numeric_limits<int16_t>::max()] = {};
+				if (HResult(NativeAPI::KernelBase::PathCchCanonicalizeEx(result, std::size(result), m_Path.wc_str(), PATHCCH_ALLOW_LONG_PATHS|PATHCCH_FORCE_ENABLE_LONG_NAME_PROCESS)))
+				{
+					AssignFromPath(result);
+					isSuccess = true;
+				}
+			}
+			else if (GetPathLength() < MAX_PATH && NativeAPI::ShlWAPI::PathCanonicalizeW)
+			{
+				wchar_t result[MAX_PATH] = {};
+				if (NativeAPI::ShlWAPI::PathCanonicalizeW(result, m_Path.wc_str()))
+				{
+					AssignFromPath(result);
+					isSuccess = true;
+				}
+			}
+
+			EnsureNamespaceSet(ns);
+			if (!isSuccess)
+			{
+				*this = {};
+			}
 		}
 		return *this;
 	}
