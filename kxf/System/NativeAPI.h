@@ -6,13 +6,19 @@
 
 namespace kxf::NativeAPI
 {
-	enum class NativeLibrary
+	enum class NativeLibrary: size_t
 	{
 		NtDLL,
 		Kernel32,
+		KernelBase,
 		User32,
+		ShlWAPI,
 		DWMAPI,
 		DbgHelp,
+		DXGI,
+		DComp,
+
+		COUNT,
 	};
 }
 
@@ -28,7 +34,7 @@ namespace kxf::NativeAPI::Private
 		};
 
 		private:
-			std::array<LibraryRecord, 5> m_LoadedLibraries = {};
+			std::array<LibraryRecord, static_cast<size_t>(NativeLibrary::COUNT)> m_LoadedLibraries = {};
 
 		private:
 			Loader() noexcept;
@@ -40,9 +46,13 @@ namespace kxf::NativeAPI::Private
 
 			void LoadNtDLL() noexcept;
 			void LoadKernel32() noexcept;
+			void LoadKernelBase() noexcept;
 			void LoadUser32() noexcept;
+			void LoadShlWAPI() noexcept;
 			void LoadDWMAPI() noexcept;
 			void LoadDbgHelp() noexcept;
+			void LoadDXGI() noexcept;
+			void LoadDComp() noexcept;
 	};
 }
 
@@ -51,6 +61,9 @@ namespace kxf::NativeAPI::Private
 #define Kx_NativeAPI_DeclateFunc(ret_type, call_conv, name, ...)	\
 	using T##name = ret_type (call_conv*)(__VA_ARGS__);	\
 	extern T##name name
+
+struct _GUID;
+struct IDXGIDevice;
 
 namespace kxf::NativeAPI
 {
@@ -72,6 +85,8 @@ namespace kxf::NativeAPI
 		using DLL_DIRECTORY_COOKIE = void*;
 		using NTSTATUS = NtStatus::TValueType;
 		using HRESULT = HResult::TValueType;
+		using GUID = ::_GUID;
+		using IID = ::_GUID;
 	}
 
 	namespace NtDLL
@@ -95,12 +110,20 @@ namespace kxf::NativeAPI
 		Kx_NativeAPI_DeclateFunc(BOOL, Kx_NativeAPI, SetDllDirectoryW, const wchar_t*);
 		Kx_NativeAPI_DeclateFunc(DWORD, Kx_NativeAPI, GetDllDirectoryW, DWORD, wchar_t*);
 	}
+	namespace KernelBase
+	{
+		Kx_NativeAPI_DeclateFunc(HRESULT, Kx_NativeAPI, PathCchCanonicalizeEx, wchar_t*, size_t, const wchar_t*, ULONG);
+	}
 	namespace User32
 	{
 		Kx_NativeAPI_DeclateFunc(UINT, Kx_NativeAPI, GetDpiForSystem);
 		Kx_NativeAPI_DeclateFunc(UINT, Kx_NativeAPI, GetDpiForWindow, HWND);
 		Kx_NativeAPI_DeclateFunc(BOOL, Kx_NativeAPI, EnableNonClientDpiScaling, HWND);
 		Kx_NativeAPI_DeclateFunc(DPI_AWARENESS_CONTEXT, Kx_NativeAPI, SetThreadDpiAwarenessContext, DPI_AWARENESS_CONTEXT);
+	}
+	namespace ShlWAPI
+	{
+		Kx_NativeAPI_DeclateFunc(BOOL, Kx_NativeAPI, PathCanonicalizeW, wchar_t*, const wchar_t*);
 	}
 	namespace DWMAPI
 	{
@@ -112,6 +135,14 @@ namespace kxf::NativeAPI
 	namespace DbgHelp
 	{
 		Kx_NativeAPI_DeclateFunc(IMAGE_NT_HEADERS*, Kx_NativeAPI, ImageNtHeader, void*);
+	}
+	namespace DXGI
+	{
+		Kx_NativeAPI_DeclateFunc(HRESULT, Kx_NativeAPI, CreateDXGIFactory2, UINT, const ::IID&, void**);
+	}
+	namespace DComp
+	{
+		Kx_NativeAPI_DeclateFunc(HRESULT, Kx_NativeAPI, DCompositionCreateDevice, IDXGIDevice*, const ::IID&, void**);
 	}
 }
 

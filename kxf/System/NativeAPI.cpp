@@ -20,9 +20,13 @@ namespace kxf::NativeAPI::Private
 	{
 		DECLARE_LIBRARY(NtDLL);
 		DECLARE_LIBRARY(Kernel32);
+		DECLARE_LIBRARY(KernelBase);
 		DECLARE_LIBRARY(User32);
+		DECLARE_LIBRARY(ShlWAPI);
 		DECLARE_LIBRARY(DWMAPI);
 		DECLARE_LIBRARY(DbgHelp);
+		DECLARE_LIBRARY(DXGI);
+		DECLARE_LIBRARY(DComp);
 	}
 
 	size_t Loader::LoadLibraries() noexcept
@@ -89,6 +93,13 @@ namespace kxf::NativeAPI::Private
 			INIT_FUNCTION(Kernel32, GetDllDirectoryW);
 		}
 	}
+	void Loader::LoadKernelBase() noexcept
+	{
+		if (IsLibraryLoaded(NativeLibrary::KernelBase))
+		{
+			INIT_FUNCTION(KernelBase, PathCchCanonicalizeEx);
+		}
+	}
 	void Loader::LoadUser32() noexcept
 	{
 		if (IsLibraryLoaded(NativeLibrary::User32))
@@ -97,6 +108,13 @@ namespace kxf::NativeAPI::Private
 			INIT_FUNCTION(User32, SetThreadDpiAwarenessContext);
 			INIT_FUNCTION(User32, GetDpiForSystem);
 			INIT_FUNCTION(User32, GetDpiForWindow);
+		}
+	}
+	void Loader::LoadShlWAPI() noexcept
+	{
+		if (IsLibraryLoaded(NativeLibrary::ShlWAPI))
+		{
+			INIT_FUNCTION(ShlWAPI, PathCanonicalizeW);
 		}
 	}
 	void Loader::LoadDWMAPI() noexcept
@@ -116,6 +134,20 @@ namespace kxf::NativeAPI::Private
 			INIT_FUNCTION(DbgHelp, ImageNtHeader);
 		}
 	}
+	void Loader::LoadDXGI() noexcept
+	{
+		if (IsLibraryLoaded(NativeLibrary::DXGI))
+		{
+			INIT_FUNCTION(DXGI, CreateDXGIFactory2);
+		}
+	}
+	void Loader::LoadDComp() noexcept
+	{
+		if (IsLibraryLoaded(NativeLibrary::DComp))
+		{
+			INIT_FUNCTION(DComp, DCompositionCreateDevice);
+		}
+	}
 }
 
 namespace kxf::NativeAPI::Private
@@ -132,9 +164,13 @@ namespace kxf::NativeAPI::Private
 				{
 					m_Loader.LoadNtDLL();
 					m_Loader.LoadKernel32();
+					m_Loader.LoadKernelBase();
 					m_Loader.LoadUser32();
+					m_Loader.LoadShlWAPI();
 					m_Loader.LoadDWMAPI();
 					m_Loader.LoadDbgHelp();
+					m_Loader.LoadDXGI();
+					m_Loader.LoadDComp();
 
 					return true;
 				}
@@ -174,12 +210,20 @@ namespace kxf::NativeAPI
 		DEFINE_FUNCTION(SetDllDirectoryW);
 		DEFINE_FUNCTION(GetDllDirectoryW);
 	}
+	namespace KernelBase
+	{
+		DEFINE_FUNCTION(PathCchCanonicalizeEx);
+	}
 	namespace User32
 	{
 		DEFINE_FUNCTION(EnableNonClientDpiScaling);
 		DEFINE_FUNCTION(SetThreadDpiAwarenessContext);
 		DEFINE_FUNCTION(GetDpiForSystem);
 		DEFINE_FUNCTION(GetDpiForWindow);
+	}
+	namespace ShlWAPI
+	{
+		DEFINE_FUNCTION(PathCanonicalizeW);
 	}
 	namespace DWMAPI
 	{
@@ -191,5 +235,13 @@ namespace kxf::NativeAPI
 	namespace DbgHelp
 	{
 		DEFINE_FUNCTION(ImageNtHeader);
+	}
+	namespace DXGI
+	{
+		DEFINE_FUNCTION(CreateDXGIFactory2);
+	}
+	namespace DComp
+	{
+		DEFINE_FUNCTION(DCompositionCreateDevice);
 	}
 }
