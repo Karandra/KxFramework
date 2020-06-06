@@ -70,7 +70,7 @@ namespace std
 	};
 }
 
-#define KxDecalreIID(T, ...)	\
+#define KxDeclareIID(T, ...)	\
 \
 friend class kxf::IID;	\
 friend constexpr kxf::IID kxf::IID::FromType<T>() noexcept;	\
