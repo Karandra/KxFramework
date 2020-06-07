@@ -231,7 +231,7 @@ namespace kxf
 
 	void CURLSession::AddHeader(const String& name, const String& value)
 	{
-		m_SessionHeaders.emplace_back(String::Format(wxS("%s: %s"), name, value).ToStdString());
+		m_SessionHeaders.emplace_back(String::Format(wxS("%1: %2"), name, value).ToStdString());
 	}
 	void CURLSession::AddHeader(const String& value)
 	{
