@@ -99,7 +99,7 @@ namespace kxf
 			template<class T>
 			static void* Cast(T& object, const IID& iid) noexcept
 			{
-				static_assert((std::is_base_of_v<IObject, T>), "T must inherit from 'KxIObject'");
+				static_assert((std::is_base_of_v<IObject, T>), "T must inherit from 'IObject'");
 
 				if (iid.IsOfType<T>())
 				{
@@ -126,7 +126,11 @@ namespace kxf
 			static void* UseAnyOf(const IID& iid, std::add_lvalue_reference_t<Args>&&... arg) noexcept
 			{
 				void* ptr = nullptr;
-				return ((ptr = IObject::Cast<Args>(arg, iid), ptr != nullptr) || ...);
+				if (((ptr = IObject::Cast<Args>(arg, iid), ptr != nullptr) || ...))
+				{
+					return ptr;
+				}
+				return nullptr;
 			}
 
 		public:
