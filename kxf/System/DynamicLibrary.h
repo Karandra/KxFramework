@@ -107,10 +107,10 @@ namespace kxf
 			}
 			void* GetFunctionAddress(size_t ordinal) const;
 
-			template<class T, class TFunc>
+			template<class TFunc, class T>
 			TFunc* GetFunction(T&& name) const
 			{
-				static_assert(std::is_function_v<std::remove_pointer_t<std::remove_reference_t<TFunc>>>);
+				static_assert(std::is_function_v<std::remove_pointer_t<std::remove_reference_t<TFunc>>>, "free function type required");
 
 				return reinterpret_cast<TFunc*>(GetFunctionAddress(std::forward<T>(name)));
 			}
