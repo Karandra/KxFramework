@@ -13,7 +13,7 @@
 
 namespace
 {
-	constexpr bool CheckKernerlversion(const kxf::System::KernelVersion& kernelVersion) noexcept
+	constexpr bool CheckKernerlVersion(const kxf::System::KernelVersion& kernelVersion) noexcept
 	{
 		// Major version should always be > 0, others are allowed to be zero.
 		return kernelVersion.Major > 0 && kernelVersion.Minor >= 0 && kernelVersion.Build >= 0 && kernelVersion.ServicePackMajor >= 0 && kernelVersion.ServicePackMinor >= 0;
@@ -195,7 +195,8 @@ namespace kxf::System
 
 	std::optional<KernelVersion> GetKernelVersion() noexcept
 	{
-		if (NativeAPI::NtDLL::RtlGetVersion)
+		static std::optional<KernelVersion> kernelCached;
+		if (!kernelCached && NativeAPI::NtDLL::RtlGetVersion)
 		{
 			RTL_OSVERSIONINFOEXW infoEx = {};
 			infoEx.dwOSVersionInfoSize = sizeof(infoEx);
@@ -205,16 +206,17 @@ namespace kxf::System
 			kernel.ServicePackMajor = infoEx.wServicePackMajor;
 			kernel.ServicePackMinor = infoEx.wServicePackMinor;
 
-			if (CheckKernerlversion(kernel))
+			if (CheckKernerlVersion(kernel))
 			{
-				return kernel;
+				kernelCached = std::move(kernel);
 			}
 		}
-		return {};
+		return kernelCached;
 	}
 	std::optional<VersionInfo> GetVersionInfo() noexcept
 	{
-		if (NativeAPI::NtDLL::RtlGetVersion)
+		static std::optional<VersionInfo> versionInfoCached;
+		if (!versionInfoCached && NativeAPI::NtDLL::RtlGetVersion)
 		{
 			RTL_OSVERSIONINFOEXW infoEx = {};
 			infoEx.dwOSVersionInfoSize = sizeof(infoEx);
@@ -224,7 +226,7 @@ namespace kxf::System
 			versionInfo.Kernel.ServicePackMajor = infoEx.wServicePackMajor;
 			versionInfo.Kernel.ServicePackMinor = infoEx.wServicePackMinor;
 
-			if (CheckKernerlversion(versionInfo.Kernel))
+			if (CheckKernerlVersion(versionInfo.Kernel))
 			{
 				versionInfo.PlatformID = Private::MapSystemPlatformID(infoEx.dwPlatformId);
 				versionInfo.SystemType = Private::MapSystemType(infoEx.wProductType);
@@ -246,11 +248,11 @@ namespace kxf::System
 
 				if (CheckVersionInfo(versionInfo))
 				{
-					return versionInfo;
+					versionInfoCached = std::move(versionInfo);
 				}
 			}
 		}
-		return {};
+		return versionInfoCached;
 	}
 	std::optional<MemoryStatus> GetGlobalMemoryStatus() noexcept
 	{
@@ -479,8 +481,8 @@ namespace kxf::System
 			DisplayInfo displayInfo;
 			displayInfo.Width = ::GetDeviceCaps(desktopDC, DESKTOPHORZRES);
 			displayInfo.Height = ::GetDeviceCaps(desktopDC, DESKTOPVERTRES);
-			displayInfo.Depth = ::GetDeviceCaps(desktopDC, BITSPIXEL);
-			displayInfo.Frequency = ::GetDeviceCaps(desktopDC, VREFRESH);
+			displayInfo.BitDepth = ::GetDeviceCaps(desktopDC, BITSPIXEL);
+			displayInfo.RefreshRate = ::GetDeviceCaps(desktopDC, VREFRESH);
 			return displayInfo;
 		}
 		return {};
@@ -496,8 +498,8 @@ namespace kxf::System
 			DisplayInfo displayInfo;
 			displayInfo.Width = deviceMode.dmPelsWidth;
 			displayInfo.Height = deviceMode.dmPelsHeight;
-			displayInfo.Depth = deviceMode.dmBitsPerPel;
-			displayInfo.Frequency = deviceMode.dmDisplayFrequency;
+			displayInfo.BitDepth = deviceMode.dmBitsPerPel;
+			displayInfo.RefreshRate = deviceMode.dmDisplayFrequency;
 
 			count++;
 			if (!std::invoke(func, std::move(displayInfo)))

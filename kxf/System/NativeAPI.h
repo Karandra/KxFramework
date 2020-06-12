@@ -87,6 +87,9 @@ namespace kxf::NativeAPI
 		using HRESULT = HResult::TValueType;
 		using GUID = ::_GUID;
 		using IID = ::_GUID;
+
+		using LDR_DLL_NOTIFICATION_DATA = void;
+		using LDR_DLL_NOTIFICATION_FUNCTION = void(Kx_NativeAPI*)(ULONG reason, const LDR_DLL_NOTIFICATION_DATA* data, void* context);
 	}
 
 	namespace NtDLL
@@ -96,6 +99,8 @@ namespace kxf::NativeAPI
 		Kx_NativeAPI_DeclateFunc(ULONG, Kx_NativeAPI, RtlNtStatusToDosError, ULONG);
 		Kx_NativeAPI_DeclateFunc(LONG, Kx_NativeAPI, NtSuspendProcess, HANDLE);
 		Kx_NativeAPI_DeclateFunc(LONG, Kx_NativeAPI, NtResumeProcess, HANDLE);
+		Kx_NativeAPI_DeclateFunc(NTSTATUS, Kx_NativeAPI, LdrRegisterDllNotification, ULONG, LDR_DLL_NOTIFICATION_FUNCTION, void*, void**);
+		Kx_NativeAPI_DeclateFunc(NTSTATUS, Kx_NativeAPI, LdrUnregisterDllNotification, void*);
 	}
 	namespace Kernel32
 	{

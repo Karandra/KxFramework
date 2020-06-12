@@ -75,6 +75,8 @@ namespace kxf::NativeAPI::Private
 			INIT_FUNCTION(NtDLL, RtlNtStatusToDosError);
 			INIT_FUNCTION(NtDLL, NtSuspendProcess);
 			INIT_FUNCTION(NtDLL, NtResumeProcess);
+			INIT_FUNCTION(NtDLL, LdrRegisterDllNotification);
+			INIT_FUNCTION(NtDLL, LdrUnregisterDllNotification);
 		}
 	}
 	void Loader::LoadKernel32() noexcept
@@ -196,6 +198,8 @@ namespace kxf::NativeAPI
 		DEFINE_FUNCTION(RtlNtStatusToDosError);
 		DEFINE_FUNCTION(NtSuspendProcess);
 		DEFINE_FUNCTION(NtResumeProcess);
+		DEFINE_FUNCTION(LdrRegisterDllNotification);
+		DEFINE_FUNCTION(LdrUnregisterDllNotification);
 	}
 	namespace Kernel32
 	{

@@ -78,8 +78,8 @@ namespace kxf::System
 	{
 		int Width = 0;
 		int Height = 0;
-		int Depth = 0;
-		int Frequency = 0;
+		int BitDepth = 0;
+		int RefreshRate = 0;
 	};
 	struct DisplayDeviceInfo final
 	{

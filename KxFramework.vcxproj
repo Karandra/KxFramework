@@ -185,6 +185,8 @@
   <ItemGroup>
     <ClInclude Include="kxf\Crypto\UserCredentials.h" />
     <ClInclude Include="kxf\Drawing\Geometry.h" />
+    <ClInclude Include="kxf\General\ApplicationInitializer.h" />
+    <ClInclude Include="kxf\General\CoreApplication.h" />
     <ClInclude Include="kxf\General\DateTime.h" />
     <ClInclude Include="kxf\General\DateTime\Common.h" />
     <ClInclude Include="kxf\General\DateTime\DateSpan.h" />
@@ -194,10 +196,15 @@
     <ClInclude Include="kxf\General\DateTime\TimeClock.h" />
     <ClInclude Include="kxf\General\DateTime\TimeSpan.h" />
     <ClInclude Include="kxf\General\DateTime\TimeZone.h" />
+    <ClInclude Include="kxf\General\GUIApplication.h" />
+    <ClInclude Include="kxf\General\ICoreApplication.h" />
+    <ClInclude Include="kxf\General\IGUIApplication.h" />
+    <ClInclude Include="kxf\General\Private\AppImpl.h" />
     <ClInclude Include="kxf\General\RegEx.h" />
     <ClInclude Include="kxf\pch.hpp" />
     <ClInclude Include="kxf\RTTI\ComponentSystem.h" />
     <ClInclude Include="kxf\System\DynamicLibrary.h" />
+    <ClInclude Include="kxf\System\DynamicLibraryEvent.h" />
     <ClInclude Include="kxf\System\ExecutableVersionResource.h" />
     <ClInclude Include="kxf\System\Private\BinaryResourceDefines.h" />
     <ClInclude Include="kxf\System\Private\COM.h" />
@@ -374,7 +381,6 @@
     <ClInclude Include="kxf\General.hpp" />
     <ClInclude Include="kxf\General\Angle.h" />
     <ClInclude Include="kxf\General\Any.h" />
-    <ClInclude Include="kxf\General\BasicApplication.h" />
     <ClInclude Include="kxf\General\BinarySize.h" />
     <ClInclude Include="kxf\General\Color.h" />
     <ClInclude Include="kxf\General\ColorDefines.h" />
@@ -528,14 +534,19 @@
     <ClInclude Include="kxf\wxWidgets\Setup.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="kxf\General\ApplicationInitializer.cpp" />
     <ClCompile Include="kxf\General\Common.cpp" />
     <ClCompile Include="kxf\General\DateTime\DateSpan.cpp" />
     <ClCompile Include="kxf\General\DateTime\DateTime.cpp" />
     <ClCompile Include="kxf\General\DateTime\TimeClock.cpp" />
     <ClCompile Include="kxf\General\DateTime\TimeSpan.cpp" />
     <ClCompile Include="kxf\General\DateTime\TimeZone.cpp" />
+    <ClCompile Include="kxf\General\GUIApplication.cpp" />
+    <ClCompile Include="kxf\General\ICoreApplication.cpp" />
+    <ClCompile Include="kxf\General\Private\AppImpl.cpp" />
     <ClCompile Include="kxf\RTTI\ComponentSystem.cpp" />
     <ClCompile Include="kxf\System\DynamicLibrary.cpp" />
+    <ClCompile Include="kxf\System\DynamicLibraryEvent.cpp" />
     <ClCompile Include="kxf\System\ExecutableVersionResource.cpp" />
     <ClCompile Include="kxf\System\Private\System.cpp" />
     <ClCompile Include="kxf\System\SystemAppearance.cpp" />

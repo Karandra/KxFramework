@@ -679,9 +679,6 @@
     <ClInclude Include="kxf\Localization\Private\StandardLocalization.h">
       <Filter>kxf\Localization\Private</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\BasicApplication.h">
-      <Filter>kxf\General</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Localization\Locale.h">
       <Filter>kxf\Localization</Filter>
     </ClInclude>
@@ -1210,6 +1207,27 @@
     </ClInclude>
     <ClInclude Include="kxf\UI\WindowWithStyles.h">
       <Filter>kxf\UI\&lt;UI&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\CoreApplication.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\ICoreApplication.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\DynamicLibraryEvent.h">
+      <Filter>kxf\System</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\GUIApplication.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\IGUIApplication.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\Private\AppImpl.h">
+      <Filter>kxf\General\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\ApplicationInitializer.h">
+      <Filter>kxf\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1846,6 +1864,21 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Common.cpp">
       <Filter>kxf\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\DynamicLibraryEvent.cpp">
+      <Filter>kxf\System</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\ICoreApplication.cpp">
+      <Filter>kxf\General</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\GUIApplication.cpp">
+      <Filter>kxf\General</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\Private\AppImpl.cpp">
+      <Filter>kxf\General\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\ApplicationInitializer.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
