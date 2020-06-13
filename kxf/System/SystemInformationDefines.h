@@ -13,7 +13,7 @@ namespace kxf
 		ScreenWait,
 		ScreenSaver
 	};
-	enum class ExitWorkstationCommand
+	enum class ExitWorkstationCommand: uint32_t
 	{
 		None = 0,
 
@@ -28,15 +28,29 @@ namespace kxf
 		Force = 1 << 8,
 		ForceHung = 1 << 9,
 	};
-	enum class DisplayDeviceFlag
+	enum class DisplayDeviceFlag: uint32_t
 	{
 		None = 0,
 
 		Active = 1 << 0,
 		Primary = 1 << 1,
 		Removable = 1 << 2,
-		VGACompatible = 1 << 3,
+		RDPUnifiedDriver = 1 << 3,
 		MirroringDriver = 1 << 4,
+		MultiDriver = 1 << 5,
+		AccDriver = 1 << 6,
+		VGACompatible = 1 << 7,
+		TSCompatible = 1 << 8,
+		ModesPruned = 1 << 9,
+		UnsafeModesEnabled = 1 << 10,
+		Disconnect = 1 << 11,
+		Remote = 1 << 10
+	};
+	enum class DisplayAdapterFlag: uint32_t
+	{
+		None = 0,
+
+		Software = 1 << 0,
 	};
 
 	enum class SystemType
@@ -319,6 +333,7 @@ namespace kxf
 
 	Kx_DeclareFlagSet(ExitWorkstationCommand);
 	Kx_DeclareFlagSet(DisplayDeviceFlag);
+	Kx_DeclareFlagSet(DisplayAdapterFlag);
 	Kx_DeclareFlagSet(SystemProductSuite);
 	Kx_DeclareFlagSet(SystemFeature);
 }

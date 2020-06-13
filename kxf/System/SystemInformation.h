@@ -87,6 +87,19 @@ namespace kxf::System
 		String DeviceDescription;
 		FlagSet<DisplayDeviceFlag> Flags;
 	};
+	struct DisplayAdapterInfo final
+	{
+		String Name;
+		uint32_t VendorID = 0;
+		uint32_t DeviceID = 0;
+		uint32_t SubSystemID = 0;
+		uint32_t Revision = 0;
+		uint64_t UniqueID = 0;
+		FlagSet<DisplayAdapterFlag> Flags;
+		BinarySize DedicatedVideoMemory;
+		BinarySize DedicatedSystemMemory;
+		BinarySize SharedSystemMemory;
+	};
 }
 
 namespace kxf::System
@@ -117,6 +130,7 @@ namespace kxf::System
 	std::optional<DisplayInfo> GetDisplayInfo() noexcept;
 	size_t EnumDisplayModes(std::function<bool(DisplayInfo)> func, const String& deviceName = {});
 	size_t EnumDisplayDevices(std::function<bool(DisplayDeviceInfo)> func);
+	size_t EnumDisplayAdapters(std::function<bool(DisplayAdapterInfo)> func);
 
 	String ExpandEnvironmentStrings(const String& strings);
 	String GetEnvironmentVariable(const String& name);

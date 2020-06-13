@@ -2,6 +2,7 @@
 #include "SystemInformation.h"
 #include "NativeAPI.h"
 #include "Registry.h"
+#include "COM.h"
 #include "Private/SystemInformationDefinesMapping.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/CallAtScopeExit.h"
@@ -9,6 +10,13 @@
 
 #include <Windows.h>
 #include <SDDL.h>
+
+#include <d3d11.h>
+#include <dxgi1_3.h>
+#include <d3d11_2.h>
+#include <d2d1_2.h>
+#include <d2d1_2helper.h>
+
 #include "UndefWindows.h"
 
 namespace
@@ -517,35 +525,91 @@ namespace kxf::System
 		DISPLAY_DEVICE displayDevice = {};
 		displayDevice.cb = sizeof(displayDevice);
 
-		size_t count = 0;
 		std::unordered_set<String> hash;
+		hash.reserve(4);
+
+		size_t count = 0;
 		do
 		{
 			isSuccess = ::EnumDisplayDevicesW(nullptr, index, &displayDevice, 0);
-			if ((displayDevice.StateFlags & DISPLAY_DEVICE_ATTACHED_TO_DESKTOP) || (displayDevice.StateFlags == 0 && std::wcscmp(displayDevice.DeviceString, L"") != 0))
+			if (!std::wstring_view(displayDevice.DeviceString).empty() && hash.insert(displayDevice.DeviceString).second)
 			{
-				if (hash.insert(displayDevice.DeviceString).second)
-				{
-					DisplayDeviceInfo deviceInfo;
-					deviceInfo.DeviceName = displayDevice.DeviceName;
-					deviceInfo.DeviceDescription = displayDevice.DeviceString;
-					deviceInfo.Flags.Add(DisplayDeviceFlag::Active, displayDevice.StateFlags & DISPLAY_DEVICE_ACTIVE);
-					deviceInfo.Flags.Add(DisplayDeviceFlag::Primary, displayDevice.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE);
-					deviceInfo.Flags.Add(DisplayDeviceFlag::Removable, displayDevice.StateFlags & DISPLAY_DEVICE_REMOVABLE);
-					deviceInfo.Flags.Add(DisplayDeviceFlag::VGACompatible, displayDevice.StateFlags & DISPLAY_DEVICE_VGA_COMPATIBLE);
-					deviceInfo.Flags.Add(DisplayDeviceFlag::MirroringDriver, displayDevice.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER);
+				DisplayDeviceInfo deviceInfo;
+				deviceInfo.DeviceName = displayDevice.DeviceName;
+				deviceInfo.DeviceDescription = displayDevice.DeviceString;
+				deviceInfo.Flags.Add(DisplayDeviceFlag::Active, displayDevice.StateFlags & DISPLAY_DEVICE_ATTACHED_TO_DESKTOP);
+				deviceInfo.Flags.Add(DisplayDeviceFlag::Primary, displayDevice.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE);
+				deviceInfo.Flags.Add(DisplayDeviceFlag::Removable, displayDevice.StateFlags & DISPLAY_DEVICE_REMOVABLE);
+				deviceInfo.Flags.Add(DisplayDeviceFlag::RDPUnifiedDriver, displayDevice.StateFlags & DISPLAY_DEVICE_RDPUDD);
+				deviceInfo.Flags.Add(DisplayDeviceFlag::MirroringDriver, displayDevice.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER);
+				deviceInfo.Flags.Add(DisplayDeviceFlag::MultiDriver, displayDevice.StateFlags & DISPLAY_DEVICE_MULTI_DRIVER);
+				deviceInfo.Flags.Add(DisplayDeviceFlag::AccDriver, displayDevice.StateFlags & DISPLAY_DEVICE_ACC_DRIVER);
+				deviceInfo.Flags.Add(DisplayDeviceFlag::VGACompatible, displayDevice.StateFlags & DISPLAY_DEVICE_VGA_COMPATIBLE);
+				deviceInfo.Flags.Add(DisplayDeviceFlag::TSCompatible, displayDevice.StateFlags & DISPLAY_DEVICE_TS_COMPATIBLE);
+				deviceInfo.Flags.Add(DisplayDeviceFlag::ModesPruned, displayDevice.StateFlags & DISPLAY_DEVICE_MODESPRUNED);
+				deviceInfo.Flags.Add(DisplayDeviceFlag::UnsafeModesEnabled, displayDevice.StateFlags & DISPLAY_DEVICE_UNSAFE_MODES_ON);
+				deviceInfo.Flags.Add(DisplayDeviceFlag::Disconnect, displayDevice.StateFlags & DISPLAY_DEVICE_DISCONNECT);
+				deviceInfo.Flags.Add(DisplayDeviceFlag::Remote, displayDevice.StateFlags & DISPLAY_DEVICE_REMOTE);
 
-					count++;
-					if (!std::invoke(func, std::move(deviceInfo)))
-					{
-						break;
-					}
+				count++;
+				if (!std::invoke(func, std::move(deviceInfo)))
+				{
+					break;
 				}
 			}
 			index++;
 		}
 		while (isSuccess);
 		return count;
+	}
+	size_t EnumDisplayAdapters(std::function<bool(DisplayAdapterInfo)> func)
+	{
+		HResult hr = HResult::Fail();
+
+		// Create DXGI factory
+		COMPtr<IDXGIFactory2> dxgiFactory;
+		if (NativeAPI::DXGI::CreateDXGIFactory2)
+		{
+			hr = NativeAPI::DXGI::CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, __uuidof(IDXGIFactory2), dxgiFactory.GetAddress());
+		}
+		else
+		{
+			hr = ::CreateDXGIFactory1(__uuidof(IDXGIFactory2), dxgiFactory.GetAddress());
+		}
+
+		if (dxgiFactory && hr)
+		{
+			UINT index = 0;
+			COMPtr<IDXGIAdapter1> adapter;
+
+			size_t count = 0;
+			while (dxgiFactory->EnumAdapters1(index, &adapter) != DXGI_ERROR_NOT_FOUND)
+			{
+				DXGI_ADAPTER_DESC1 description = {};
+				if (HResult(adapter->GetDesc1(&description)))
+				{
+					DisplayAdapterInfo info = {};
+					info.Name = description.Description;
+					info.VendorID = description.VendorId;
+					info.DeviceID = description.DeviceId;
+					info.SubSystemID = description.SubSysId;
+					info.Revision = description.Revision;
+					info.UniqueID = Utility::IntFromLowHigh<uint64_t>(description.AdapterLuid.LowPart, description.AdapterLuid.HighPart);
+					info.DedicatedVideoMemory = BinarySize::FromBytes(description.DedicatedVideoMemory);
+					info.DedicatedSystemMemory = BinarySize::FromBytes(description.DedicatedSystemMemory);
+					info.SharedSystemMemory = BinarySize::FromBytes(description.SharedSystemMemory);
+					info.Flags.Add(DisplayAdapterFlag::Software, description.Flags & DXGI_ADAPTER_FLAG_SOFTWARE);
+
+					count++;
+					if (!std::invoke(func, std::move(info)))
+					{
+						break;
+					}
+				}
+				index++;
+			}
+		}
+		return 0;
 	}
 
 	String ExpandEnvironmentStrings(const String& strings)
