@@ -519,20 +519,17 @@ namespace kxf::System
 	}
 	size_t EnumDisplayDevices(std::function<bool(DisplayDeviceInfo)> func)
 	{
-		bool isSuccess = false;
 		DWORD index = 0;
-
-		DISPLAY_DEVICE displayDevice = {};
-		displayDevice.cb = sizeof(displayDevice);
-
-		std::unordered_set<String> hash;
-		hash.reserve(4);
-
 		size_t count = 0;
+		bool isSuccess = false;
+
 		do
 		{
+			DISPLAY_DEVICE displayDevice = {};
+			displayDevice.cb = sizeof(displayDevice);
 			isSuccess = ::EnumDisplayDevicesW(nullptr, index, &displayDevice, 0);
-			if (!std::wstring_view(displayDevice.DeviceString).empty() && hash.insert(displayDevice.DeviceString).second)
+
+			if (!std::wstring_view(displayDevice.DeviceString).empty())
 			{
 				DisplayDeviceInfo deviceInfo;
 				deviceInfo.DeviceName = displayDevice.DeviceName;
@@ -560,6 +557,7 @@ namespace kxf::System
 			index++;
 		}
 		while (isSuccess);
+
 		return count;
 	}
 	size_t EnumDisplayAdapters(std::function<bool(DisplayAdapterInfo)> func)
