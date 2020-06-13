@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "TaskDialog.h"
 #include "Private/TaskDialogNativeInfo.h"
+#include "kxf/General/ICoreApplication.h"
 #include "kxf/Localization/Common.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/Drawing/Common.h"
@@ -154,6 +155,7 @@ namespace kxf::UI
 			m_Parent = wxGetTopLevelParent(parent);
 			m_Caption = std::move(caption);
 			m_Message = std::move(message);
+			m_NativeInfo = std::make_unique<Private::TaskDialogNativeInfo>(*this);
 
 			SetDefaultTitle();
 			SetMainIcon(mainIcon);
@@ -285,7 +287,7 @@ namespace kxf::UI
 		if (!string.IsEmpty())
 		{
 			m_Title = string;
-			Dialog::SetTitle(string);
+			wxTopLevelWindow::SetTitle(string);
 		}
 		else
 		{
@@ -294,15 +296,15 @@ namespace kxf::UI
 	}
 	void TaskDialog::SetDefaultTitle()
 	{
-		if (wxTheApp)
+		if (ICoreApplication* app = ICoreApplication::GetInstance())
 		{
-			m_Title = wxTheApp->GetAppDisplayName();
+			m_Title = app->GetDisplayName();
 		}
 		else
 		{
 			m_Title = DynamicLibrary::GetExecutingModule().GetFilePath().GetName();
 		}
-		Dialog::SetTitle(m_Title);
+		wxTopLevelWindow::SetTitle(m_Title);
 	}
 
 	void TaskDialog::SetCaption(const wxString& string)

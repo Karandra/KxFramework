@@ -176,11 +176,11 @@ namespace kxf::UI
 
 			wxString GetLabel() const override
 			{
-				return GetCaption();
+				return wxTopLevelWindow::GetLabel();
 			}
 			void SetLabel(const wxString& string) override
 			{
-				SetCaption(string);
+				wxTopLevelWindow::SetLabel(string);
 			}
 
 			String GetMessage() const
