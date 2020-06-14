@@ -1903,12 +1903,6 @@
     <None Include="cpp.hint">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="VCPkg\triplets\community\x64-windows-static-md.cmake">
-      <Filter>VCPkg\triplets\community</Filter>
-    </None>
-    <None Include="VCPkg\triplets\community\x86-windows-static-md.cmake">
-      <Filter>VCPkg\triplets\community</Filter>
-    </None>
     <None Include="VCPkg\ports\kxframework\portfile.cmake">
       <Filter>VCPkg\ports\kxframework</Filter>
     </None>
@@ -1917,6 +1911,12 @@
     </None>
     <None Include="VCPkg\ports\kxframework\CONTROL">
       <Filter>VCPkg\ports\kxframework</Filter>
+    </None>
+    <None Include="VCPkg\triplets\community\x64-default.cmake">
+      <Filter>VCPkg\triplets\community</Filter>
+    </None>
+    <None Include="VCPkg\triplets\community\x86-default.cmake">
+      <Filter>VCPkg\triplets\community</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
