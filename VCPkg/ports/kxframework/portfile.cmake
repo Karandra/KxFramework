@@ -66,17 +66,15 @@ else()
 endif()
 
 set(VcpkgTriplet ${TARGET_TRIPLET})
-if (VCPKG_LIBRARY_LINKAGE STREQUAL static)
-	vcpkg_install_msbuild(
-		SOURCE_PATH ${SOURCE_PATH}
-		PROJECT_SUBPATH KxFramework.vcxproj
-		PLATFORM ${BUILD_ARCH}
-		OPTIONS /p:OverrideVcpkgTriplet=true
-		OPTIONS /p:OverrideVcpkgTripletName=${TARGET_TRIPLET}
-		OPTIONS /p:ForceImportBeforeCppTargets=${CURRENT_PORT_DIR}/vcpkg.targets
-		OPTIONS /p:VcpkgApplocalDeps=false
-		)
-endif()
+vcpkg_install_msbuild(
+	SOURCE_PATH ${SOURCE_PATH}
+	PROJECT_SUBPATH KxFramework.vcxproj
+	PLATFORM ${BUILD_ARCH}
+	OPTIONS /p:OverrideVcpkgTriplet=true
+	OPTIONS /p:OverrideVcpkgTripletName=${TARGET_TRIPLET}
+	OPTIONS /p:ForceImportBeforeCppTargets=${CURRENT_PORT_DIR}/vcpkg.targets
+	OPTIONS /p:VcpkgApplocalDeps=false
+)
 
 # Copy headers
 file(COPY ${SOURCE_PATH}/kxf DESTINATION ${CURRENT_PACKAGES_DIR}/include FILES_MATCHING PATTERN *.h)
