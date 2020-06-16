@@ -5,19 +5,6 @@
 #include <Windows.h>
 #include <kxf/System/UndefWindows.h>
 
-namespace
-{
-	std::optional<SYSTEMTIME> LocalSystemTimeToUTC(const SYSTEMTIME& localTime) noexcept
-	{
-		SYSTEMTIME utc = {};
-		if (::TzSpecificLocalTimeToSystemTime(nullptr, &localTime, &utc))
-		{
-			return utc;
-		}
-		return {};
-	}
-}
-
 namespace kxf
 {
 	String DateTime::GetMonthName(Month month, const Locale& locale, FlagSet<UnitNameFlag> flags)
@@ -113,44 +100,23 @@ namespace kxf
 	{
 		if (m_Value.IsValid())
 		{
-			SYSTEMTIME localTime = {};
-			m_Value.GetAsMSWSysTime(&localTime);
+			auto Get = [&](const DateTime& dateTime)
+			{
+				SYSTEMTIME systemTime = {};
+				dateTime.m_Value.GetAsMSWSysTime(&systemTime);
 
-			// Set the day of week because 'wxDatetime::GetAsMSWSysTime' doesn't set it for some reason
-			localTime.wDayOfWeek = static_cast<int>(Private::MapWeekDay(GetWeekDay(tz)));
+				// Set the day of week because 'wxDatetime::GetAsMSWSysTime' doesn't set it for some reason
+				systemTime.wDayOfWeek = static_cast<int>(Private::MapWeekDay(dateTime.GetWeekDay(tz)));
+				return systemTime;
+			};
 
 			if (tz.IsLocal())
 			{
-				return localTime;
+				return Get(*this);
 			}
-			else if (auto utc = LocalSystemTimeToUTC(localTime))
+			else
 			{
-				if (tz == TimeZone::UTC)
-				{
-					return *utc;
-				}
-				else
-				{
-					// We need to subtract the required offset from UTC by negating the timezone offset even if it's already negative:
-					// > The current bias for local time translation on this computer, in minutes. The bias is the difference,
-					// > in minutes, between Coordinated Universal Time (UTC) and local time. All translations between UTC and
-					// > local time are based on the following formula:
-					// > UTC = local time + bias
-					// > https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/ns-timezoneapi-time_zone_information
-
-					// So for local time the formula is:
-					// local time = UTC - bias
-					// The bias already subtracted from UTC so we need to change the sign.
-
-					TIME_ZONE_INFORMATION tzInfo = {};
-					tzInfo.Bias = -tz.GetOffset().GetMinutes();
-
-					SYSTEMTIME newLocalTime = {};
-					if (::SystemTimeToTzSpecificLocalTime(&tzInfo, &*utc, &newLocalTime))
-					{
-						return newLocalTime;
-					}
-				}
+				return Get(ToTimeZone(tz));
 			}
 		}
 		return {};

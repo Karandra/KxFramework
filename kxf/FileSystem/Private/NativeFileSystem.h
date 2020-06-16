@@ -85,24 +85,11 @@ namespace kxf::FileSystem::Private
 
 	inline DateTime ConvertDateTime(const SYSTEMTIME& systemTime) noexcept
 	{
-		SYSTEMTIME localTime = {};
-		if (::SystemTimeToTzSpecificLocalTime(nullptr, &systemTime, &localTime))
-		{
-			return DateTime().SetSystemTime(localTime);
-		}
-		return wxInvalidDateTime;
+		return DateTime().SetSystemTime(systemTime, TimeZone::UTC);
 	}
 	inline DateTime ConvertDateTime(const FILETIME& fileTime) noexcept
 	{
-		if (fileTime.dwHighDateTime != 0 && fileTime.dwLowDateTime != 0)
-		{
-			SYSTEMTIME systemTime = {};
-			if (::FileTimeToSystemTime(&fileTime, &systemTime))
-			{
-				return ConvertDateTime(systemTime);
-			}
-		}
-		return wxInvalidDateTime;
+		return DateTime().SetFileTime(fileTime, TimeZone::UTC);
 	}
 
 	inline std::optional<SYSTEMTIME> ConvertDateTimeToSystemTime(DateTime dateTime) noexcept
