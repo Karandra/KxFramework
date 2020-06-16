@@ -9,33 +9,7 @@ namespace
 
 namespace kxf
 {
-	bool TimeZoneOffset::IsLocal() const noexcept
-	{
-		return m_Offset.GetMilliseconds() == g_LocalOffset;
-	}
-	TimeSpan TimeZoneOffset::GetOffset() const noexcept
-	{
-		return TimeSpan::Seconds(static_cast<wxDateTime::TimeZone>(*this).GetOffset());
-	}
-
-	TimeZoneOffset& TimeZoneOffset::operator=(TimeZone tz) noexcept
-	{
-		*this = wxDateTime::TimeZone(tz);
-		return *this;
-	}
-	TimeZoneOffset& TimeZoneOffset::operator=(const wxDateTime::TimeZone& other) noexcept
-	{
-		if (other.IsLocal())
-		{
-			m_Offset = TimeSpan::Milliseconds(g_LocalOffset);
-		}
-		else
-		{
-			m_Offset = TimeSpan::Milliseconds(other.GetOffset());
-		}
-		return *this;
-	}
-	TimeZoneOffset::operator wxDateTime::TimeZone() const noexcept
+	wxDateTime::TimeZone TimeZoneOffset::ToWxOffset() const noexcept
 	{
 		if (IsLocal())
 		{
@@ -45,5 +19,29 @@ namespace kxf
 		{
 			return m_Offset.GetSeconds();
 		}
+	}
+	void TimeZoneOffset::FromWxOffset(const wxDateTime::TimeZone& other) noexcept
+	{
+		if (other.IsLocal())
+		{
+			m_Offset = TimeSpan::Milliseconds(g_LocalOffset);
+		}
+		else
+		{
+			m_Offset = TimeSpan::Seconds(other.GetOffset());
+		}
+	}
+	void TimeZoneOffset::FromTimeZone(TimeZone tz) noexcept
+	{
+		FromWxOffset(wxDateTime::TimeZone(tz));
+	}
+
+	bool TimeZoneOffset::IsLocal() const noexcept
+	{
+		return m_Offset.GetMilliseconds() == g_LocalOffset;
+	}
+	TimeSpan TimeZoneOffset::GetOffset() const noexcept
+	{
+		return TimeSpan::Seconds(ToWxOffset().GetOffset());
 	}
 }

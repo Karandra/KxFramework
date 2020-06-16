@@ -14,6 +14,11 @@ namespace kxf
 		private:
 			TimeSpan m_Offset;
 
+		private:
+			wxDateTime::TimeZone ToWxOffset() const noexcept;
+			void FromWxOffset(const wxDateTime::TimeZone& other) noexcept;
+			void FromTimeZone(TimeZone tz) noexcept;
+
 		public:
 			TimeZoneOffset(const TimeSpan& offset = {}) noexcept
 				:m_Offset(offset)
@@ -21,11 +26,11 @@ namespace kxf
 			}
 			TimeZoneOffset(const wxDateTime::TimeZone& other) noexcept
 			{
-				*this = other;
+				FromWxOffset(other);
 			}
 			TimeZoneOffset(TimeZone tz) noexcept
 			{
-				*this = tz;
+				FromTimeZone(tz);
 			}
 
 		public:
@@ -33,9 +38,10 @@ namespace kxf
 			TimeSpan GetOffset() const noexcept;
 
 		public:
-			TimeZoneOffset& operator=(TimeZone tz) noexcept;
-			TimeZoneOffset& operator=(const wxDateTime::TimeZone& other) noexcept;
-			operator wxDateTime::TimeZone() const noexcept;
+			operator wxDateTime::TimeZone() const noexcept
+			{
+				return ToWxOffset();
+			}
 
 			bool operator==(const TimeZoneOffset& other) const noexcept
 			{
