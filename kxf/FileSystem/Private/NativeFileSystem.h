@@ -109,24 +109,15 @@ namespace kxf::FileSystem::Private
 	{
 		if (dateTime)
 		{
-			SYSTEMTIME localTime = dateTime.GetSystemTime();
-			SYSTEMTIME systemTime = {};
-			if (::TzSpecificLocalTimeToSystemTime(nullptr, &localTime, &systemTime))
-			{
-				return systemTime;
-			}
+			return dateTime.GetSystemTime(TimeZone::UTC);
 		}
 		return {};
 	}
 	inline std::optional<FILETIME> ConvertDateTimeToFileTime(DateTime dateTime) noexcept
 	{
-		if (auto systemTime = ConvertDateTimeToSystemTime(dateTime))
+		if (dateTime)
 		{
-			FILETIME fileTime = {};
-			if (::SystemTimeToFileTime(&*systemTime, &fileTime))
-			{
-				return fileTime;
-			}
+			return dateTime.GetFileTime(TimeZone::UTC);
 		}
 		return {};
 	}
