@@ -209,18 +209,11 @@ namespace kxf
 				return *this;
 			}
 
-			wxDateTime::Tm GetTm(const TimeZoneOffset& tz = TimeZone::Local) const noexcept
-			{
-				return m_Value.GetTm(tz);
-			}
-			DateTime& SetTm(const wxDateTime::Tm& value) noexcept
-			{
-				m_Value.Set(value);
-				return *this;
-			}
+			wxDateTime::Tm GetTm(const TimeZoneOffset& tz = TimeZone::Local) const noexcept;
+			DateTime& SetTm(const wxDateTime::Tm& value, const TimeZoneOffset& tz = TimeZone::Local) noexcept;
 
 			std::tm GetStdTm(const TimeZoneOffset& tz = TimeZone::Local) const noexcept;
-			DateTime& SetTm(const std::tm& value) noexcept;
+			DateTime& SetStdTm(const std::tm& value, const TimeZoneOffset& tz = TimeZone::Local) noexcept;
 
 			TimeSpan GetTimeSpan(const TimeZoneOffset& tz = TimeZone::Local) const noexcept;
 			DateTime& SetTimeSpan(const TimeSpan& span) noexcept;
@@ -239,10 +232,10 @@ namespace kxf
 			}
 
 			_SYSTEMTIME GetSystemTime(const TimeZoneOffset& tz = TimeZone::Local) const noexcept;
-			DateTime& SetSystemTime(const _SYSTEMTIME& other) noexcept;
+			DateTime& SetSystemTime(const _SYSTEMTIME& other, const TimeZoneOffset& tz = TimeZone::Local) noexcept;
 			
 			_FILETIME GetFileTime(const TimeZoneOffset& tz = TimeZone::Local) const noexcept;
-			DateTime& SetFileTime(const _FILETIME& other) noexcept;
+			DateTime& SetFileTime(const _FILETIME& other, const TimeZoneOffset& tz = TimeZone::Local) noexcept;
 
 			// Comparison
 			bool IsSameDate(const DateTime& other) const noexcept

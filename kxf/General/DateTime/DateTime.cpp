@@ -29,6 +29,20 @@ namespace kxf
 		return locale.GetWeekDayName(weekDay, flags).value_or(NullString);
 	}
 
+	wxDateTime::Tm DateTime::GetTm(const TimeZoneOffset& tz) const noexcept
+	{
+		return m_Value.GetTm(tz);
+	}
+	DateTime& DateTime::SetTm(const wxDateTime::Tm& value, const TimeZoneOffset& tz) noexcept
+	{
+		m_Value.Set(value);
+		if (!tz.IsLocal())
+		{
+			*this = FromTimeZone(tz);
+		}
+		return *this;
+	}
+
 	std::tm DateTime::GetStdTm(const TimeZoneOffset& tz) const noexcept
 	{
 		std::tm tm;
@@ -45,9 +59,13 @@ namespace kxf
 
 		return tm;
 	}
-	DateTime& DateTime::SetTm(const std::tm& value) noexcept
+	DateTime& DateTime::SetStdTm(const std::tm& value, const TimeZoneOffset& tz) noexcept
 	{
 		m_Value.Set(value);
+		if (!tz.IsLocal())
+		{
+			*this = FromTimeZone(tz);
+		}
 		return *this;
 	}
 
@@ -137,9 +155,13 @@ namespace kxf
 		}
 		return {};
 	}
-	DateTime& DateTime::SetSystemTime(const _SYSTEMTIME& other) noexcept
+	DateTime& DateTime::SetSystemTime(const _SYSTEMTIME& other, const TimeZoneOffset& tz) noexcept
 	{
 		m_Value.SetFromMSWSysTime(other);
+		if (!tz.IsLocal())
+		{
+			*this = FromTimeZone(tz);
+		}
 		return *this;
 	}
 
@@ -152,12 +174,12 @@ namespace kxf
 		}
 		return {};
 	}
-	DateTime& DateTime::SetFileTime(const _FILETIME& other) noexcept
+	DateTime& DateTime::SetFileTime(const _FILETIME& other, const TimeZoneOffset& tz) noexcept
 	{
 		SYSTEMTIME systemTime = {};
 		if (::FileTimeToSystemTime(&other, &systemTime))
 		{
-			m_Value.SetFromMSWSysTime(systemTime);
+			SetSystemTime(systemTime, tz);
 		}
 		else
 		{
