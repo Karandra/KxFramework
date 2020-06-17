@@ -716,13 +716,26 @@ namespace kxf::System
 	{
 		if (auto version = GetKernelVersion())
 		{
-			if (version->Major >= majorVersion && version->Minor >= minorVersion)
+			auto CheckServicePack = [&]()
 			{
 				if (servicePackMajor != -1)
 				{
 					return version->ServicePackMajor >= servicePackMajor;
 				}
 				return true;
+			};
+
+			if (version->Major > majorVersion)
+			{
+				// No sense in checking service pack if it's completely different version
+				return true;
+			}
+			else if (version->Major == majorVersion)
+			{
+				if (version->Minor >= minorVersion)
+				{
+					return CheckServicePack();
+				}
 			}
 		}
 		return false;
