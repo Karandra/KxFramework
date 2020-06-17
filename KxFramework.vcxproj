@@ -199,6 +199,7 @@
     <ClInclude Include="kxf\General\GUIApplication.h" />
     <ClInclude Include="kxf\General\ICoreApplication.h" />
     <ClInclude Include="kxf\General\IGUIApplication.h" />
+    <ClInclude Include="kxf\General\LocalPImpl.h" />
     <ClInclude Include="kxf\General\Private\AppImpl.h" />
     <ClInclude Include="kxf\General\RegEx.h" />
     <ClInclude Include="kxf\pch.hpp" />
@@ -220,6 +221,7 @@
     <ClInclude Include="kxf\System\SystemProcess\RunningSystemProcessStdIO.h" />
     <ClInclude Include="kxf\System\SystemProcess\SystemProcessInfo.h" />
     <ClInclude Include="kxf\System\UserName.h" />
+    <ClInclude Include="kxf\System\VariantProperty.h" />
     <ClInclude Include="kxf\Threading\ThreadEvent.h" />
     <ClInclude Include="kxf\UI\Controls\AUI.h" />
     <ClInclude Include="kxf\UI\Controls\AUI\AuiNotebook.h" />
@@ -557,6 +559,7 @@
     <ClCompile Include="kxf\System\SystemProcess\RunningSystemProcessStdIO.cpp" />
     <ClCompile Include="kxf\System\SystemProcess\SystemProcessInfo.cpp" />
     <ClCompile Include="kxf\System\UserName.cpp" />
+    <ClCompile Include="kxf\System\VariantProperty.cpp" />
     <ClCompile Include="kxf\UI\Controls\AUI\AuiNotebook.cpp" />
     <ClCompile Include="kxf\UI\Controls\AUI\AuiToolBar.cpp" />
     <ClCompile Include="kxf\UI\Controls\AUI\AuiToolBarEvent.cpp" />

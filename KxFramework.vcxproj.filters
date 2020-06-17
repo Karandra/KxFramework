@@ -1229,6 +1229,12 @@
     <ClInclude Include="kxf\General\ApplicationInitializer.h">
       <Filter>kxf\System</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\System\VariantProperty.h">
+      <Filter>kxf\System</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\LocalPImpl.h">
+      <Filter>kxf\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\BroadcastProcessor.cpp">
@@ -1878,6 +1884,9 @@
       <Filter>kxf\General\Private</Filter>
     </ClCompile>
     <ClCompile Include="kxf\General\ApplicationInitializer.cpp">
+      <Filter>kxf\System</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\VariantProperty.cpp">
       <Filter>kxf\System</Filter>
     </ClCompile>
   </ItemGroup>
