@@ -589,6 +589,7 @@ namespace kxf::System
 				{
 					DisplayAdapterInfo info = {};
 					info.Name = description.Description;
+					info.Index = index;
 					info.VendorID = description.VendorId;
 					info.DeviceID = description.DeviceId;
 					info.SubSystemID = description.SubSysId;

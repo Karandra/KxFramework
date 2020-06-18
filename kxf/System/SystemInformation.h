@@ -91,6 +91,7 @@ namespace kxf::System
 	struct DisplayAdapterInfo final
 	{
 		String Name;
+		uint32_t Index = 0;
 		uint32_t VendorID = 0;
 		uint32_t DeviceID = 0;
 		uint32_t SubSystemID = 0;
