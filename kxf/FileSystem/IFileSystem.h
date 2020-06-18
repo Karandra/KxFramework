@@ -1,7 +1,10 @@
 #pragma once
 #include "Common.h"
 #include "FSPath.h"
+#include "StorageVolume.h"
 #include "kxf/General/BinarySize.h"
+#include "kxf/General/LocallyUniqueID.h"
+#include "kxf/General/UniversallyUniqueID.h"
 #include "kxf/RTTI/QueryInterface.h"
 #include <wx/datetime.h>
 
@@ -45,6 +48,7 @@ namespace kxf
 
 		public:
 			virtual FileItem GetItem(const FSPath& path) const = 0;
+			virtual FileItem GetItem(const UniversallyUniqueID& id, const UniversallyUniqueID& scope = {}) const = 0;
 			virtual size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query = {}, FlagSet<FSEnumItemsFlag> flags = {}) const = 0;
 			
 			virtual bool CreateDirectory(const FSPath& path) = 0;
