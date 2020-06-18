@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "UniversallyUniqueID.h"
+#include "LocallyUniqueID.h"
 #include "kxf/System/ErrorCodeValue.h"
 
 #include <Windows.h>
@@ -73,30 +74,26 @@ namespace kxf
 	UniversallyUniqueID UniversallyUniqueID::CreateSequential() noexcept
 	{
 		NativeUUID uuid;
-		Win32Error error(::UuidCreateSequential(AsGUID(uuid)));
-		if (error.IsSuccess() || error.GetValue() == RPC_S_UUID_LOCAL_ONLY)
+		Win32Error error = ::UuidCreateSequential(AsGUID(uuid));
+		if (error.IsSuccess() || *error == RPC_S_UUID_LOCAL_ONLY)
 		{
 			return uuid;
 		}
 		return {};
-	}
-	UniversallyUniqueID UniversallyUniqueID::CreateFromInt64(uint64_t value) noexcept
-	{
-		const uint32_t low = Utility::IntLowPart<uint32_t>(value);
-		const uint32_t high = Utility::IntHighPart<uint32_t>(value);
-
-		NativeUUID uuid;
-		uuid.Data1 = low;
-		uuid.Data2 = Utility::IntLowPart<uint16_t>(high);
-		uuid.Data3 = Utility::IntHighPart<uint16_t>(high);
-
-		return uuid;
 	}
 	UniversallyUniqueID UniversallyUniqueID::CreateFromInt128(const uint8_t(&bytes)[16]) noexcept
 	{
 		NativeUUID uuid;
 		std::memcpy(&uuid, bytes, std::size(bytes));
 		return uuid;
+	}
+	UniversallyUniqueID UniversallyUniqueID::CreateFromInt128(uint64_t low, uint64_t high) noexcept
+	{
+		uint8_t bytes[16] = {};
+		std::memcpy(&bytes, &low, sizeof(low));
+		std::memcpy(&bytes + sizeof(low), &high, sizeof(high));
+
+		return CreateFromInt128(bytes);
 	}
 
 	UniversallyUniqueID::UniversallyUniqueID(const char* value) noexcept
@@ -110,6 +107,11 @@ namespace kxf
 	UniversallyUniqueID::UniversallyUniqueID(const String& value) noexcept
 		:m_ID(CreateFromString(value.wx_str()))
 	{
+	}
+	UniversallyUniqueID::UniversallyUniqueID(LocallyUniqueID other) noexcept
+	{
+		uint64_t vlaue = other.ToInt();
+		std::memcpy(&m_ID, &vlaue, sizeof(vlaue));
 	}
 
 	String UniversallyUniqueID::ToString(FlagSet<UUIDFormat> format) const
@@ -149,7 +151,8 @@ namespace kxf
 
 		return uuid;
 	}
-	std::optional<uint64_t> UniversallyUniqueID::ToInt64() const noexcept
+	
+	LocallyUniqueID UniversallyUniqueID::ToLocallyUniqueID() const noexcept
 	{
 		for (uint8_t d4: m_ID.Data4)
 		{
@@ -159,9 +162,9 @@ namespace kxf
 			}
 		}
 
-		const uint32_t low = m_ID.Data1;
-		const uint32_t high = Utility::IntFromLowHigh<uint32_t>(m_ID.Data2, m_ID.Data3);
-		return Utility::IntFromLowHigh<uint64_t>(low, high);
+		uint64_t value = 0;
+		std::memcpy(&value, &m_ID, sizeof(value));
+		return value;
 	}
 	std::array<uint8_t, 16> UniversallyUniqueID::ToInt128() const noexcept
 	{

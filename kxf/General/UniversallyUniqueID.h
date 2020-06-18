@@ -6,6 +6,8 @@
 
 namespace kxf
 {
+	class LocallyUniqueID;
+
 	enum class UUIDFormat
 	{
 		None = 0, // 123e4567-e89b-12d3-a456-426655440000
@@ -24,8 +26,8 @@ namespace kxf
 		public:
 			static UniversallyUniqueID Create() noexcept;
 			static UniversallyUniqueID CreateSequential() noexcept;
-			static UniversallyUniqueID CreateFromInt64(uint64_t value) noexcept;
 			static UniversallyUniqueID CreateFromInt128(const uint8_t (&bytes)[16]) noexcept;
+			static UniversallyUniqueID CreateFromInt128(uint64_t low, uint64_t high) noexcept;
 
 		private:
 			NativeUUID m_ID;
@@ -38,6 +40,7 @@ namespace kxf
 				:m_ID(other)
 			{
 			}
+			UniversallyUniqueID(LocallyUniqueID other) noexcept;
 			UniversallyUniqueID(const char* value) noexcept;
 			UniversallyUniqueID(const wchar_t* value) noexcept;
 			UniversallyUniqueID(const String& value) noexcept;
@@ -53,7 +56,8 @@ namespace kxf
 				return m_ID;
 			}
 			String ToString(FlagSet<UUIDFormat> format = {}) const;
-			std::optional<uint64_t> ToInt64() const noexcept;
+
+			LocallyUniqueID ToLocallyUniqueID() const noexcept;
 			std::array<uint8_t, 16> ToInt128() const noexcept;
 
 		public:
