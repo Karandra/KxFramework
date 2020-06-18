@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "FileStream.h"
 #include "kxf/System/ErrorCodeValue.h"
-#include "kxf/FileSystem/Private/NativeFileSystem.h"
+#include "kxf/FileSystem/Private/NativeFSUtility.h"
 
 namespace
 {
@@ -242,7 +242,7 @@ namespace kxf
 		m_Handle = handle;
 		return DoIsOpened();
 	}
-	bool FileStream::AttachHandle(void* handle, FlagSet<FileStreamAccess> access, FileStreamDisposition disposition, FlagSet<FileStreamShare> share, FlagSet<FileStreamFlags> flags)
+	bool FileStream::ReopenHandle(void* handle, FlagSet<FileStreamAccess> access, FileStreamDisposition disposition, FlagSet<FileStreamShare> share, FlagSet<FileStreamFlags> flags)
 	{
 		DoClose();
 		DoSetLastError(0, false);
