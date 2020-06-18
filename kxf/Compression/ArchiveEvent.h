@@ -48,15 +48,15 @@ namespace kxf
 
 			uint32_t GetFileIndex() const noexcept
 			{
-				if (auto id = m_FileItem.GetUniqueID().ToInt64())
+				if (auto id = m_FileItem.GetUniqueID().ToLocallyUniqueID())
 				{
-					return static_cast<uint32_t>(*id);
+					return static_cast<uint32_t>(id.ToInt());
 				}
 				return Compression::InvalidFileIndex;
 			}
 			void SetFileIndex(Compression::FileIndex value) noexcept
 			{
-				m_FileItem.SetUniqueID(UniversallyUniqueID::CreateFromInt64(value));
+				m_FileItem.SetUniqueID(LocallyUniqueID(value));
 			}
 
 			wxString GetAttributes() const
