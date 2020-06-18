@@ -25,6 +25,7 @@ namespace kxf
 		public:
 			// IFileSystem
 			FileItem GetItem(const FSPath& path) const override;
+			FileItem GetItem(const UniversallyUniqueID& id, const UniversallyUniqueID& scope = {}) const override;
 			size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query = {}, FlagSet<FSEnumItemsFlag> flags = {}) const override;
 			
 			bool CreateDirectory(const FSPath& path) override;

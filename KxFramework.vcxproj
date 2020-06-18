@@ -199,6 +199,7 @@
     <ClInclude Include="kxf\General\GUIApplication.h" />
     <ClInclude Include="kxf\General\ICoreApplication.h" />
     <ClInclude Include="kxf\General\IGUIApplication.h" />
+    <ClInclude Include="kxf\General\LocallyUniqueID.h" />
     <ClInclude Include="kxf\General\LocalPImpl.h" />
     <ClInclude Include="kxf\General\Private\AppImpl.h" />
     <ClInclude Include="kxf\General\RegEx.h" />
@@ -376,7 +377,7 @@
     <ClInclude Include="kxf\FileSystem\IFileSystem.h" />
     <ClInclude Include="kxf\FileSystem\LegacyVolume.h" />
     <ClInclude Include="kxf\FileSystem\Private\NamespacePrefix.h" />
-    <ClInclude Include="kxf\FileSystem\Private\NativeFileSystem.h" />
+    <ClInclude Include="kxf\FileSystem\Private\NativeFSUtility.h" />
     <ClInclude Include="kxf\FileSystem\RecycleBin.h" />
     <ClInclude Include="kxf\FileSystem\StorageVolume.h" />
     <ClInclude Include="kxf\FileSystem\NativeFileSystem.h" />
@@ -536,6 +537,7 @@
     <ClInclude Include="kxf\wxWidgets\Setup.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="kxf\FileSystem\Private\NativeFSUtility.cpp" />
     <ClCompile Include="kxf\General\ApplicationInitializer.cpp" />
     <ClCompile Include="kxf\General\Common.cpp" />
     <ClCompile Include="kxf\General\DateTime\DateSpan.cpp" />
@@ -545,6 +547,7 @@
     <ClCompile Include="kxf\General\DateTime\TimeZone.cpp" />
     <ClCompile Include="kxf\General\GUIApplication.cpp" />
     <ClCompile Include="kxf\General\ICoreApplication.cpp" />
+    <ClCompile Include="kxf\General\LocallyUniqueID.cpp" />
     <ClCompile Include="kxf\General\Private\AppImpl.cpp" />
     <ClCompile Include="kxf\RTTI\ComponentSystem.cpp" />
     <ClCompile Include="kxf\System\DynamicLibrary.cpp" />

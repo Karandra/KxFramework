@@ -91,6 +91,13 @@ namespace kxf::FileSystem::Private
 	{
 		return DateTime().SetFileTime(fileTime, TimeZone::UTC);
 	}
+	inline DateTime ConvertDateTime(const LARGE_INTEGER& fileTimeLI) noexcept
+	{
+		FILETIME fileTime = {};
+		fileTime.dwLowDateTime = fileTimeLI.LowPart;
+		fileTime.dwHighDateTime = fileTimeLI.HighPart;
+		return ConvertDateTime(fileTime);
+	}
 
 	inline std::optional<SYSTEMTIME> ConvertDateTimeToSystemTime(DateTime dateTime) noexcept
 	{
@@ -109,131 +116,25 @@ namespace kxf::FileSystem::Private
 		return {};
 	}
 	
-	inline bool IsValidFindItem(const WIN32_FIND_DATAW& findInfo) noexcept
-	{
-		std::wstring_view name = findInfo.cFileName;
-		return !(findInfo.dwFileAttributes == INVALID_FILE_ATTRIBUTES || name.empty() || name == L".." || name == L".");
-	}
-	inline HANDLE CallFindFirstFile(const String& query, WIN32_FIND_DATAW& findInfo, bool isCaseSensitive = false)
-	{
-		const DWORD searchFlags = FIND_FIRST_EX_LARGE_FETCH|(isCaseSensitive ? FIND_FIRST_EX_CASE_SENSITIVE : 0);
-		return ::FindFirstFileExW(query.wc_str(), FindExInfoBasic, &findInfo, FINDEX_SEARCH_OPS::FindExSearchNameMatch, nullptr, searchFlags);
-	}
-	inline FileItem ConvertFileInfo(const WIN32_FIND_DATAW& findInfo, const FSPath& location)
-	{
-		FileItem fileItem;
-		const bool isDirectory = findInfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+	bool IsValidFindItem(const WIN32_FIND_DATAW& findInfo) noexcept;
+	HANDLE CallFindFirstFile(const String& query, WIN32_FIND_DATAW& findInfo, bool isCaseSensitive = false);
+	FileItem ConvertFileInfo(const WIN32_FIND_DATAW& findInfo, const FSPath& location, UniversallyUniqueID id = {}, bool forceFetchID = false);
+	FileItem ConvertFileInfo(HANDLE fileHandle, UniversallyUniqueID id = {});
 
-		// Construct path
-		FSPath path;
-		if (location.IsAbsolute())
-		{
-			path = isDirectory ? location : location.GetParent();
-			path /= findInfo.cFileName;
-			path.EnsureNamespaceSet(location.GetNamespace());
-		}
-		else
-		{
-			// Invalid operation, we need full path to parent directory
-			return {};
-		}
+	DWORD CALLBACK CopyCallback(LARGE_INTEGER TotalFileSize,
+								LARGE_INTEGER TotalBytesTransferred,
+								LARGE_INTEGER StreamSize,
+								LARGE_INTEGER StreamBytesTransferred,
+								DWORD dwStreamNumber,
+								DWORD dwCallbackReason,
+								HANDLE hSourceFile,
+								HANDLE hDestinationFile,
+								LPVOID lpData);
 
-		// Attributes and reparse point
-		fileItem.SetAttributes(MapFileAttributes(findInfo.dwFileAttributes));
-		if (findInfo.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT)
-		{
-			fileItem.SetReparsePointTags(MapReparsePointTags(findInfo.dwReserved0));
-		}
-
-		// File size
-		if (!isDirectory)
-		{
-			ULARGE_INTEGER size = {};
-			size.HighPart = findInfo.nFileSizeHigh;
-			size.LowPart = findInfo.nFileSizeLow;
-
-			fileItem.SetSize(BinarySize::FromBytes(size.QuadPart));
-		}
-
-		// Compressed file size
-		if (findInfo.dwFileAttributes & FILE_ATTRIBUTE_COMPRESSED)
-		{
-			ULARGE_INTEGER compressedSize = {};
-
-			String pathName = path.GetFullPathWithNS();
-			compressedSize.LowPart = ::GetCompressedFileSizeW(pathName.wc_str(), &compressedSize.HighPart);
-			fileItem.SetCompressedSize(BinarySize::FromBytes(compressedSize.QuadPart));
-		}
-
-		// Date and time
-		fileItem.SetCreationTime(ConvertDateTime(findInfo.ftCreationTime));
-		fileItem.SetModificationTime(ConvertDateTime(findInfo.ftLastWriteTime));
-		fileItem.SetLastAccessTime(ConvertDateTime(findInfo.ftLastAccessTime));
-
-		// Assign path
-		fileItem.SetFullPath(std::move(path));
-
-		return fileItem;
-	}
-
-	inline DWORD CALLBACK CopyCallback(LARGE_INTEGER TotalFileSize,
-									   LARGE_INTEGER TotalBytesTransferred,
-									   LARGE_INTEGER StreamSize,
-									   LARGE_INTEGER StreamBytesTransferred,
-									   DWORD dwStreamNumber,
-									   DWORD dwCallbackReason,
-									   HANDLE hSourceFile,
-									   HANDLE hDestinationFile,
-									   LPVOID lpData)
-	{
-		auto& func = *reinterpret_cast<IFileSystem::TCopyItemFunc*>(lpData);
-		if (func == nullptr || std::invoke(func, BinarySize::FromBytes(TotalBytesTransferred.QuadPart), BinarySize::FromBytes(TotalFileSize.QuadPart)))
-		{
-			return PROGRESS_CONTINUE;
-		}
-		return PROGRESS_CANCEL;
-	}
-
-	inline bool CopyOrMoveDirectoryTree(NativeFileSystem& fileSystem,
-										const FSPath& source,
-										const FSPath& destination,
-										NativeFileSystem::TCopyDirectoryTreeFunc func,
-										FlagSet<FSCopyItemFlag> flags, bool move)
-	{
-		return fileSystem.EnumItems(source, [&](FileItem item)
-		{
-			FSPath target = destination / item.GetFullPath().GetAfter(source);
-			if (item.IsDirectory())
-			{
-				if (!func || std::invoke(func, source, target, 0, 0))
-				{
-					fileSystem.CreateDirectory(target);
-					if (move)
-					{
-						fileSystem.RemoveItem(source);
-					}
-				}
-				else
-				{
-					return false;
-				}
-			}
-			else
-			{
-				if (func)
-				{
-					auto ForwardCallback = [&](BinarySize copied, BinarySize total)
-					{
-						return std::invoke(func, source, std::move(target), copied, total);
-					};
-					return move ? fileSystem.MoveItem(source, target, std::move(ForwardCallback), flags) : fileSystem.CopyItem(source, target, std::move(ForwardCallback), flags);
-				}
-				else
-				{
-					return move ? fileSystem.MoveItem(source, target, {}, flags) : fileSystem.CopyItem(source, target, {}, flags);
-				}
-			}
-			return true;
-		}, {}, FSEnumItemsFlag::Recursive) != 0;
-	}
+	bool CopyOrMoveDirectoryTree(NativeFileSystem& fileSystem,
+								 const FSPath& source,
+								 const FSPath& destination,
+								 NativeFileSystem::TCopyDirectoryTreeFunc func,
+								 FlagSet<FSCopyItemFlag> flags,
+								 bool move);
 }

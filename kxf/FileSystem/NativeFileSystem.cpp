@@ -1,8 +1,10 @@
 #include "stdafx.h"
 #include "NativeFileSystem.h"
-#include "Private/NativeFileSystem.h"
+#include "kxf/General/LocalPImpl.h"
+#include "Private/NativeFSUtility.h"
 #include "FileStream.h"
 #include "kxf/System/DynamicLibrary.h"
+#include "kxf/System/SystemInformation.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 
@@ -12,18 +14,50 @@ namespace kxf
 	{
 		if (path.IsAbsolute())
 		{
-			WIN32_FIND_DATAW findInfo = {};
-			HANDLE handle = FileSystem::Private::CallFindFirstFile(path.GetFullPathWithNS(), findInfo);
-			if (handle && handle != INVALID_HANDLE_VALUE)
+			FileStream file(path, FileStreamAccess::ReadAttributes, FileStreamDisposition::OpenExisting, FileStreamShare::Everything);
+			if (file)
 			{
-				Utility::CallAtScopeExit atExit([&]()
-				{
-					::FindClose(handle);
-				});
+				return FileSystem::Private::ConvertFileInfo(file.GetHandle());
+			}
+		}
+		return {};
+	}
+	FileItem NativeFileSystem::GetItem(const UniversallyUniqueID& id, const UniversallyUniqueID& scope) const
+	{
+		if (id && scope)
+		{
+			FileStream volume(StorageVolume(scope).GetDevicePath(), FileStreamAccess::ReadAttributes, FileStreamDisposition::OpenExisting, FileStreamShare::Everything, FileStreamFlags::BackupSemantics);
+			if (volume)
+			{
+				// Some search on Google says that 'FILE_ID_DESCRIPTOR' isn't always 24. it *is* 24 for me on both x64 and x86
+				// and it seems to work fine with the size of 24. Still I'm going to make it bigger, just in case.
+				LocalPImpl<FILE_ID_DESCRIPTOR, 64, alignof(FILE_ID_DESCRIPTOR)> fileID;
+				fileID->dwSize = fileID.size();
 
-				if (FileSystem::Private::IsValidFindItem(findInfo))
+				if (System::IsWindows8OrGreater())
 				{
-					return FileSystem::Private::ConvertFileInfo(findInfo, path);
+					fileID->Type = FILE_ID_TYPE::ExtendedFileIdType;
+
+					auto uuid = id.ToInt128();
+					std::memcpy(fileID->ExtendedFileId.Identifier, uuid.data(), uuid.size());
+				}
+				else
+				{
+					if (LocallyUniqueID luid = id.ToLocallyUniqueID())
+					{
+						fileID->Type = FILE_ID_TYPE::FileIdType;
+						fileID->FileId.QuadPart = luid.ToInt();
+					}
+					else
+					{
+						return {};
+					}
+				}
+
+				FileStream file;
+				if (file.AttachHandle(::OpenFileById(volume.GetHandle(), &fileID, FILE_READ_ATTRIBUTES, FILE_SHARE_READ|FILE_SHARE_WRITE|FILE_SHARE_DELETE, nullptr, FILE_FLAG_BACKUP_SEMANTICS)))
+				{
+					return FileSystem::Private::ConvertFileInfo(file.GetHandle(), id);
 				}
 			}
 		}
