@@ -72,6 +72,8 @@ namespace kxf::NativeAPI::Private
 		{
 			INIT_FUNCTION(NtDLL, RtlGetVersion);
 			INIT_FUNCTION(NtDLL, NtQueryInformationProcess);
+			INIT_FUNCTION(NtDLL, RtlGetLastNtStatus);
+			INIT_FUNCTION(NtDLL, RtlSetLastWin32ErrorAndNtStatusFromNtStatus);
 			INIT_FUNCTION(NtDLL, RtlNtStatusToDosError);
 			INIT_FUNCTION(NtDLL, NtSuspendProcess);
 			INIT_FUNCTION(NtDLL, NtResumeProcess);
@@ -195,6 +197,8 @@ namespace kxf::NativeAPI
 	{
 		DEFINE_FUNCTION(RtlGetVersion);
 		DEFINE_FUNCTION(NtQueryInformationProcess);
+		DEFINE_FUNCTION(RtlGetLastNtStatus);
+		DEFINE_FUNCTION(RtlSetLastWin32ErrorAndNtStatusFromNtStatus);
 		DEFINE_FUNCTION(RtlNtStatusToDosError);
 		DEFINE_FUNCTION(NtSuspendProcess);
 		DEFINE_FUNCTION(NtResumeProcess);

@@ -96,6 +96,8 @@ namespace kxf::NativeAPI
 	{
 		Kx_NativeAPI_DeclateFunc(NTSTATUS, Kx_NativeAPI, RtlGetVersion, RTL_OSVERSIONINFOEXW*);
 		Kx_NativeAPI_DeclateFunc(NTSTATUS, Kx_NativeAPI, NtQueryInformationProcess, HANDLE, int, void*, ULONG, ULONG*);
+		Kx_NativeAPI_DeclateFunc(NTSTATUS, Kx_NativeAPI, RtlGetLastNtStatus);
+		Kx_NativeAPI_DeclateFunc(void, Kx_NativeAPI, RtlSetLastWin32ErrorAndNtStatusFromNtStatus, NTSTATUS);
 		Kx_NativeAPI_DeclateFunc(ULONG, Kx_NativeAPI, RtlNtStatusToDosError, ULONG);
 		Kx_NativeAPI_DeclateFunc(LONG, Kx_NativeAPI, NtSuspendProcess, HANDLE);
 		Kx_NativeAPI_DeclateFunc(LONG, Kx_NativeAPI, NtResumeProcess, HANDLE);
