@@ -158,6 +158,9 @@ namespace kxf
 			static NtStatus Success() noexcept;
 			static NtStatus Fail() noexcept;
 
+			static NtStatus GetLastError() noexcept;
+			static void SetLastError(NtStatus error) noexcept;
+
 		public:
 			constexpr NtStatus(TValueType value) noexcept
 				:ErrorCodeValue(value)

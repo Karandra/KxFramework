@@ -20,6 +20,8 @@ namespace
 
 namespace
 {
+	using namespace kxf;
+
 	// Inclusion of 'NtDef.h' causes too many compilation errors
 	bool NT_SUCCESS(NTSTATUS status)
 	{
@@ -42,10 +44,10 @@ namespace
 		return status & 0xFFF0000u;
 	}
 
-	std::optional<kxf::Win32Error> Win32FromNtStatus(NTSTATUS ntStatus) noexcept
+	std::optional<Win32Error> Win32FromNtStatus(NTSTATUS ntStatus) noexcept
 	{
 		// https://stackoverflow.com/questions/25566234/how-to-convert-specific-ntstatus-value-to-the-hresult
-		using namespace kxf;
+		// https://stuff.mit.edu/afs/sipb/project/wine/src/wine-0.9.37/dlls/ntdll/error.c
 
 		if (ntStatus == STATUS_SUCCESS)
 		{
@@ -85,10 +87,8 @@ namespace
 		}
 		return {};
 	}
-	std::optional<kxf::Win32Error> Win32FromHRESULT(HRESULT hresult) noexcept
+	std::optional<Win32Error> Win32FromHRESULT(HRESULT hresult) noexcept
 	{
-		using namespace kxf;
-
 		if (MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, 0) == static_cast<HRESULT>(hresult & 0xFFFF0000))
 		{
 			// Could have come from many values, but we choose this one
@@ -104,10 +104,8 @@ namespace
 			return {};
 		}
 	}
-	std::optional<kxf::NtStatus> NtStatusFromWin32(DWORD win32Code) noexcept
+	std::optional<NtStatus> NtStatusFromWin32(DWORD win32Code) noexcept
 	{
-		using namespace kxf;
-
 		auto ntStatus = [win32Code]() -> std::optional<NTSTATUS>
 		{
 			switch (win32Code)
@@ -247,6 +245,22 @@ namespace kxf
 	{
 		// Same as with Win32 codes, there isn't any generic fail code for NtStatus
 		return std::numeric_limits<TValueType>::max();
+	}
+
+	NtStatus NtStatus::GetLastError() noexcept
+	{
+		if (NativeAPI::NtDLL::RtlGetLastNtStatus)
+		{
+			return NativeAPI::NtDLL::RtlGetLastNtStatus();
+		}
+		return STATUS_PROCEDURE_NOT_FOUND;
+	}
+	void NtStatus::SetLastError(NtStatus error) noexcept
+	{
+		if (NativeAPI::NtDLL::RtlSetLastWin32ErrorAndNtStatusFromNtStatus)
+		{
+			return NativeAPI::NtDLL::RtlSetLastWin32ErrorAndNtStatusFromNtStatus(*error);
+		}
 	}
 
 	bool NtStatus::IsError() const noexcept
