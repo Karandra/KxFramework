@@ -525,7 +525,7 @@ namespace kxf::System
 
 		do
 		{
-			DISPLAY_DEVICE displayDevice = {};
+			DISPLAY_DEVICEW displayDevice = {};
 			displayDevice.cb = sizeof(displayDevice);
 			isSuccess = ::EnumDisplayDevicesW(nullptr, index, &displayDevice, 0);
 
@@ -534,6 +534,7 @@ namespace kxf::System
 				DisplayDeviceInfo deviceInfo;
 				deviceInfo.DeviceName = displayDevice.DeviceName;
 				deviceInfo.DeviceDescription = displayDevice.DeviceString;
+
 				deviceInfo.Flags.Add(DisplayDeviceFlag::Active, displayDevice.StateFlags & DISPLAY_DEVICE_ATTACHED_TO_DESKTOP);
 				deviceInfo.Flags.Add(DisplayDeviceFlag::Primary, displayDevice.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE);
 				deviceInfo.Flags.Add(DisplayDeviceFlag::Removable, displayDevice.StateFlags & DISPLAY_DEVICE_REMOVABLE);

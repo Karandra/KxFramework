@@ -8,6 +8,7 @@
 #include "kxf/General/Version.h"
 #include "kxf/General/BinarySize.h"
 #include "kxf/General/DateTime.h"
+#include "kxf/General/LocallyUniqueID.h"
 #include "kxf/Drawing/Geometry.h"
 #include <wx/settings.h>
 #include <wx/gdicmn.h>
@@ -94,7 +95,7 @@ namespace kxf::System
 		uint32_t DeviceID = 0;
 		uint32_t SubSystemID = 0;
 		uint32_t Revision = 0;
-		uint64_t UniqueID = 0;
+		LocallyUniqueID UniqueID;
 		FlagSet<DisplayAdapterFlag> Flags;
 		BinarySize DedicatedVideoMemory;
 		BinarySize DedicatedSystemMemory;
