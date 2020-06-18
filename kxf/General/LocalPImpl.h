@@ -11,16 +11,36 @@ namespace kxf
 
 		private:
 			alignas(t_Alignment) uint8_t m_Buffer[t_Size] = {};
-			T* m_Value = nullptr;
+			TValue* m_Value = nullptr;
 
 		public:
-			constexpr LocalPImpl() noexcept = default;
-			LocalPImpl(const LocalPImpl&) = delete;
-			LocalPImpl(LocalPImpl&&) = delete;
+			LocalPImpl() noexcept(noexcept(Construct()))
+			{
+				Construct();
+			}
+
+			template<class... Args>
+			LocalPImpl(Args&&... arg) noexcept(noexcept(Construct(Args...)))
+			{
+				Construct(std::forward<Args>(arg)...);
+			}
+
+			LocalPImpl(const LocalPImpl& other) noexcept(std::is_nothrow_copy_constructible_v<TValue>)
+			{
+				Construct(*other.m_Value);
+			}
+			LocalPImpl(LocalPImpl&& other) noexcept(std::is_nothrow_move_constructible_v<TValue>)
+			{
+				Construct(std::move(*other.m_Value));
+			}
+			~LocalPImpl() noexcept(noexcept(Destruct()))
+			{
+				Destruct();
+			}
 
 		public:
 			template<class... Args>
-			constexpr T& Construct(Args&&... arg) noexcept(std::is_nothrow_constructible_v<TValue>)
+			T& Construct(Args&&... arg) noexcept(std::is_nothrow_constructible_v<TValue>)
 			{
 				static_assert(t_Size >= sizeof(TValue), "insufficient buffer size");
 				static_assert(t_Alignment == alignof(TValue), "alignment doesn't match");
@@ -53,7 +73,7 @@ namespace kxf
 				return *m_Value;
 			}
 			
-			constexpr void Destruct() noexcept(std::is_nothrow_destructible_v<TValue>)
+			void Destruct() noexcept(std::is_nothrow_destructible_v<TValue>)
 			{
 				if (m_Value)
 				{
@@ -70,73 +90,77 @@ namespace kxf
 				}
 			}
 
-			constexpr bool IsConstructed() const noexcept
+			bool IsConstructed() const noexcept
 			{
 				return m_Value != nullptr;
 			}
 
 		public:
-			constexpr const void* data() const noexcept
+			const void* data() const noexcept
 			{
 				return reinterpret_cast<const void*>(m_Buffer);
 			}
-			constexpr void* data() noexcept
+			void* data() noexcept
 			{
 				return reinterpret_cast<void*>(m_Buffer);
 			}
 			
-			constexpr size_t size() const noexcept
+			size_t size() const noexcept
 			{
 				return t_Size;
 			}
-			constexpr size_t effective_size() const noexcept
-			{
-				return sizeof(*this);
-			}
-			constexpr size_t alignment() const noexcept
+			size_t alignment() const noexcept
 			{
 				return t_Alignment;
 			}
 
-			constexpr const T* get() const noexcept
+			const T* get() const noexcept
 			{
 				return m_Value;
 			}
-			constexpr T* get() noexcept
+			T* get() noexcept
 			{
 				return m_Value;
 			}
 
 		public:
-			constexpr const T* operator&() const noexcept
+			const T* operator&() const noexcept
 			{
 				return get();
 			}
-			constexpr T* operator&() noexcept
+			T* operator&() noexcept
 			{
 				return get();
 			}
 
-			constexpr const T& operator*() const noexcept
+			const T& operator*() const noexcept
 			{
 				return *get();
 			}
-			constexpr T& operator*() noexcept
+			T& operator*() noexcept
 			{
 				return *get();
 			}
 
-			constexpr const T* operator->() const noexcept
+			const T* operator->() const noexcept
 			{
 				return get();
 			}
-			constexpr T* operator->() noexcept
+			T* operator->() noexcept
 			{
 				return get();
 			}
 
-			LocalPImpl& operator=(const LocalPImpl&) = delete;
-			LocalPImpl& operator=(LocalPImpl&&) = delete;
+			LocalPImpl& operator=(const LocalPImpl& other) noexcept(std::is_nothrow_copy_assignable_v<TValue>)
+			{
+				*m_Value = *other.m_Value;
+				return *this;
+			}
+			LocalPImpl& operator=(LocalPImpl&& other) noexcept(std::is_nothrow_move_assignable_v<TValue>)
+			{
+				*m_Value = std::move(*other.m_Value);
+				return *this;
+			}
 	};
 
 	template<class T>

@@ -257,14 +257,12 @@ namespace kxf
 
 	VariantProperty::VariantProperty() noexcept
 	{
-		m_Value.Construct();
 		m_Value->vt = VT_EMPTY;
 		m_Value->wReserved1 = 0;
 	}
 	VariantProperty::~VariantProperty() noexcept
 	{
 		DoClear();
-		m_Value.Destruct();
 	}
 
 	int VariantProperty::GetNativeType() const noexcept
