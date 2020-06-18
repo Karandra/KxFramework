@@ -84,7 +84,7 @@ namespace std
 	{
 		constexpr size_t operator()(const kxf::LocallyUniqueID& luid) const noexcept
 		{
-			return std::hash<uint64_t>()(luid.ToInt());
+			return luid.ToInt();
 		}
 	};
 }
