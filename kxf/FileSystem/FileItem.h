@@ -2,8 +2,8 @@
 #include "Common.h"
 #include "FSPath.h"
 #include "kxf/General/String.h"
-#include "kxf/General/ExtraData.h"
 #include "kxf/General/BinarySize.h"
+#include "kxf/General/UniversallyUniqueID.h"
 #include <wx/datetime.h>
 
 namespace kxf
@@ -13,7 +13,7 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API FileItem final: public TrivialExtraDataContainer
+	class KX_API FileItem final
 	{
 		private:
 			FSPath m_Path;
@@ -22,6 +22,7 @@ namespace kxf
 			DateTime m_CreationTime;
 			DateTime m_LastAccessTime;
 			DateTime m_ModificationTime;
+			UniversallyUniqueID m_UniqueID;
 			FlagSet<FileAttribute> m_Attributes;
 			FlagSet<ReparsePointTag> m_ReparsePointTags;
 
@@ -30,23 +31,23 @@ namespace kxf
 			FileItem(FileItem&&) noexcept = default;
 			FileItem(const FileItem&) = default;
 
-			FileItem(const FSPath& fullPath)
-				:m_Path(fullPath)
+			FileItem(FSPath fullPath)
+				:m_Path(std::move(fullPath))
 			{
 			}
-			FileItem(const FSPath& source, const FSPath& fileName)
-				:m_Path(source)
+			FileItem(FSPath source, const FSPath& fileName)
+				:m_Path(std::move(source))
 			{
 				m_Path.Append(fileName);
 			}
 			
-			FileItem(const IFileSystem& fileSystem, const FSPath& fullPath)
-				:FileItem(fullPath)
+			FileItem(const IFileSystem& fileSystem, FSPath fullPath)
+				:FileItem(std::move(fullPath))
 			{
 				Refresh(fileSystem);
 			}
-			FileItem(const IFileSystem& fileSystem, const FSPath& source, const FSPath& fileName)
-				:FileItem(source, fileName)
+			FileItem(const IFileSystem& fileSystem, FSPath source, const FSPath& fileName)
+				:FileItem(std::move(source), fileName)
 			{
 				Refresh(fileSystem);
 			}
@@ -147,9 +148,9 @@ namespace kxf
 			{
 				return m_Path;
 			}
-			FileItem& SetFullPath(const FSPath& fullPath) noexcept
+			FileItem& SetFullPath(FSPath fullPath) noexcept
 			{
-				m_Path = fullPath;
+				m_Path = std::move(fullPath);
 				return *this;
 			}
 
@@ -157,10 +158,10 @@ namespace kxf
 			{
 				return m_Path.GetParent();
 			}
-			FileItem& SetSource(const FSPath& source) noexcept
+			FileItem& SetSource(FSPath source) noexcept
 			{
 				String name = m_Path.GetName();
-				m_Path = source;
+				m_Path = std::move(source);
 				m_Path.SetName(std::move(name));
 
 				return *this;
@@ -212,6 +213,17 @@ namespace kxf
 			FileItem& SetCompressedSize(BinarySize size) noexcept
 			{
 				m_CompressedSize = size;
+				return *this;
+			}
+
+			// ID
+			UniversallyUniqueID GetUniqueID() const noexcept
+			{
+				return m_UniqueID;
+			}
+			FileItem& SetUniqueID(UniversallyUniqueID id) noexcept
+			{
+				m_UniqueID = std::move(id);
 				return *this;
 			}
 
