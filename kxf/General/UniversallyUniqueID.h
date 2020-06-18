@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "NativeUUID.h"
 #include "String.h"
+#include <array>
 
 namespace kxf
 {
@@ -23,6 +24,8 @@ namespace kxf
 		public:
 			static UniversallyUniqueID Create() noexcept;
 			static UniversallyUniqueID CreateSequential() noexcept;
+			static UniversallyUniqueID CreateFromInt64(uint64_t value) noexcept;
+			static UniversallyUniqueID CreateFromInt128(const uint8_t (&bytes)[16]) noexcept;
 
 		private:
 			NativeUUID m_ID;
@@ -50,6 +53,8 @@ namespace kxf
 				return m_ID;
 			}
 			String ToString(FlagSet<UUIDFormat> format = {}) const;
+			std::optional<uint64_t> ToInt64() const noexcept;
+			std::array<uint8_t, 16> ToInt128() const noexcept;
 
 		public:
 			constexpr UniversallyUniqueID& operator=(UniversallyUniqueID&&) noexcept = default;

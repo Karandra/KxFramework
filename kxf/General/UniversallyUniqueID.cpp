@@ -80,6 +80,24 @@ namespace kxf
 		}
 		return {};
 	}
+	UniversallyUniqueID UniversallyUniqueID::CreateFromInt64(uint64_t value) noexcept
+	{
+		const uint32_t low = Utility::IntLowPart<uint32_t>(value);
+		const uint32_t high = Utility::IntHighPart<uint32_t>(value);
+
+		NativeUUID uuid;
+		uuid.Data1 = low;
+		uuid.Data2 = Utility::IntLowPart<uint16_t>(high);
+		uuid.Data3 = Utility::IntHighPart<uint16_t>(high);
+
+		return uuid;
+	}
+	UniversallyUniqueID UniversallyUniqueID::CreateFromInt128(const uint8_t(&bytes)[16]) noexcept
+	{
+		NativeUUID uuid;
+		std::memcpy(&uuid, bytes, std::size(bytes));
+		return uuid;
+	}
 
 	UniversallyUniqueID::UniversallyUniqueID(const char* value) noexcept
 		:m_ID(CreateFromString(value))
@@ -130,6 +148,26 @@ namespace kxf
 		}
 
 		return uuid;
+	}
+	std::optional<uint64_t> UniversallyUniqueID::ToInt64() const noexcept
+	{
+		for (uint8_t d4: m_ID.Data4)
+		{
+			if (d4 != 0)
+			{
+				return {};
+			}
+		}
+
+		const uint32_t low = m_ID.Data1;
+		const uint32_t high = Utility::IntFromLowHigh<uint32_t>(m_ID.Data2, m_ID.Data3);
+		return Utility::IntFromLowHigh<uint64_t>(low, high);
+	}
+	std::array<uint8_t, 16> UniversallyUniqueID::ToInt128() const noexcept
+	{
+		std::array<uint8_t, 16> i128;
+		std::memcpy(i128.data(), &m_ID, std::size(i128));
+		return i128;
 	}
 
 	bool UniversallyUniqueID::operator<(const NativeUUID& other) const noexcept
