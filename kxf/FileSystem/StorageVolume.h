@@ -63,6 +63,7 @@ namespace kxf
 
 			UniversallyUniqueID GetUniqueID() const;
 			FSPath GetPath() const;
+			FSPath GetDevicePath() const;
 
 			String GetLabel() const;
 			bool SetLabel(const String& label);

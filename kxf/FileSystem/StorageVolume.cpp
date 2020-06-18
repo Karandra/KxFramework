@@ -210,6 +210,10 @@ namespace kxf
 		// FSPath should parse this into 'Volume{guid}' with Win32 namespace
 		return m_Path;
 	}
+	FSPath StorageVolume::GetDevicePath() const
+	{
+		return GetPath().SetNamespace(FSPathNamespace::Win32Device);
+	}
 
 	String StorageVolume::GetLabel() const
 	{
