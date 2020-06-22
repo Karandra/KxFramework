@@ -48,7 +48,6 @@ namespace kxf
 
 		public:
 			virtual FileItem GetItem(const FSPath& path) const = 0;
-			virtual FileItem GetItem(const UniversallyUniqueID& id, const UniversallyUniqueID& scope = {}) const = 0;
 			virtual size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query = {}, FlagSet<FSEnumItemsFlag> flags = {}) const = 0;
 			
 			virtual bool CreateDirectory(const FSPath& path) = 0;
@@ -59,5 +58,28 @@ namespace kxf
 			virtual bool MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) = 0;
 			virtual bool RenameItem(const FSPath& source, const FSPath& destination, FlagSet<FSCopyItemFlag> flags = {}) = 0;
 			virtual bool RemoveItem(const FSPath& path) = 0;
+	};
+
+	class KX_API IFileIDSystem: public RTTI::Interface<IFileSystem>
+	{
+		KxDeclareIID(IFileIDSystem, {0x8a4f7e63, 0x6092, 0x4859, {0xa1, 0x74, 0x25, 0x8, 0x7a, 0x4a, 0x90, 0xcb}});
+
+		public:
+			virtual ~IFileIDSystem() = default;
+
+		public:
+			virtual UniversallyUniqueID GetLookupScope() const = 0;
+			virtual void SetLookupScope(const UniversallyUniqueID& scope) = 0;
+
+		public:
+			virtual FileItem GetItem(const UniversallyUniqueID& id) const = 0;
+			virtual size_t EnumItems(const UniversallyUniqueID& id, IFileSystem::TEnumItemsFunc func, FlagSet<FSEnumItemsFlag> flags = {}) const = 0;
+
+			virtual bool ChangeAttributes(const UniversallyUniqueID& id, FileAttribute attributes) = 0;
+			virtual bool ChangeTimestamp(const UniversallyUniqueID& id, DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime) = 0;
+
+			virtual bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, IFileSystem::TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) = 0;
+			virtual bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, IFileSystem::TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) = 0;
+			virtual bool RemoveItem(const UniversallyUniqueID& id) = 0;
 	};
 }
