@@ -69,9 +69,7 @@ namespace kxf
 
 		public:
 			virtual UniversallyUniqueID GetLookupScope() const = 0;
-			virtual void SetLookupScope(const UniversallyUniqueID& scope) = 0;
 
-		public:
 			virtual FileItem GetItem(const UniversallyUniqueID& id) const = 0;
 			virtual size_t EnumItems(const UniversallyUniqueID& id, IFileSystem::TEnumItemsFunc func, FlagSet<FSEnumItemsFlag> flags = {}) const = 0;
 
