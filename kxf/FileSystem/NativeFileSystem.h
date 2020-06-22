@@ -22,6 +22,7 @@ namespace kxf
 
 		public:
 			// IFileSystem
+			bool DoesItemExist(const FSPath& path) const override;
 			FileItem GetItem(const FSPath& path) const override;
 			size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query = {}, FlagSet<FSEnumItemsFlag> flags = {}) const override;
 			
@@ -40,6 +41,7 @@ namespace kxf
 				return m_LookupScope;
 			}
 
+			bool DoesItemExist(const UniversallyUniqueID& id) const override;
 			FileItem GetItem(const UniversallyUniqueID& id) const override;
 			size_t EnumItems(const UniversallyUniqueID& id, TEnumItemsFunc func, FlagSet<FSEnumItemsFlag> flags = {}) const override
 			{

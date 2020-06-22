@@ -47,6 +47,7 @@ namespace kxf
 			virtual ~IFileSystem() = default;
 
 		public:
+			virtual bool DoesItemExist(const FSPath& path) const = 0;
 			virtual FileItem GetItem(const FSPath& path) const = 0;
 			virtual size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query = {}, FlagSet<FSEnumItemsFlag> flags = {}) const = 0;
 			
@@ -70,6 +71,7 @@ namespace kxf
 		public:
 			virtual UniversallyUniqueID GetLookupScope() const = 0;
 
+			virtual bool DoesItemExist(const UniversallyUniqueID& id) const = 0;
 			virtual FileItem GetItem(const UniversallyUniqueID& id) const = 0;
 			virtual size_t EnumItems(const UniversallyUniqueID& id, IFileSystem::TEnumItemsFunc func, FlagSet<FSEnumItemsFlag> flags = {}) const = 0;
 

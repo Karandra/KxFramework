@@ -29,8 +29,7 @@ namespace kxf::SevenZip::Private
 {
 	COMPtr<IStream> OpenFileToRW(const FSPath& filePath)
 	{
-		bool fileExists = NativeFileSystem().GetItem(filePath).IsValid();
-		return CreateStreamOnFile(filePath, (fileExists ? 0 : STGM_CREATE)|STGM_READWRITE);
+		return CreateStreamOnFile(filePath, (NativeFileSystem().IsItemExist(filePath) ? 0 : STGM_CREATE)|STGM_READWRITE);
 	}
 	COMPtr<IStream> OpenFileToRead(const FSPath& filePath)
 	{

@@ -8,9 +8,61 @@
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 
+namespace
+{
+	using namespace kxf;
+
+	bool OpenFileByID(const UniversallyUniqueID& fileID, const UniversallyUniqueID& volumeID, FileStream& file)
+	{
+		if (fileID && volumeID)
+		{
+			FileStream volume(StorageVolume(volumeID).GetDevicePath(), FileStreamAccess::ReadAttributes, FileStreamDisposition::OpenExisting, FileStreamShare::Everything, FileStreamFlags::BackupSemantics);
+			if (volume)
+			{
+				// Some search on Google says that 'FILE_ID_DESCRIPTOR' isn't always 24. it *is* 24 for me on both x64 and x86
+				// and it seems to work fine with the size of 24. Still I'm going to make it bigger, just in case.
+				LocalPImpl<FILE_ID_DESCRIPTOR, 64, alignof(FILE_ID_DESCRIPTOR)> fileIDDescriptor;
+				fileIDDescriptor->dwSize = fileIDDescriptor.size();
+
+				if (System::IsWindows8OrGreater())
+				{
+					fileIDDescriptor->Type = FILE_ID_TYPE::ExtendedFileIdType;
+
+					auto uuid = fileID.ToInt128();
+					std::memcpy(fileIDDescriptor->ExtendedFileId.Identifier, uuid.data(), uuid.size());
+				}
+				else
+				{
+					if (LocallyUniqueID luid = fileID.ToLocallyUniqueID())
+					{
+						fileIDDescriptor->Type = FILE_ID_TYPE::FileIdType;
+						fileIDDescriptor->FileId.QuadPart = luid.ToInt();
+					}
+					else
+					{
+						return false;
+					}
+				}
+
+				return file.AttachHandle(::OpenFileById(volume.GetHandle(), &fileIDDescriptor, FILE_READ_ATTRIBUTES, FILE_SHARE_READ|FILE_SHARE_WRITE|FILE_SHARE_DELETE, nullptr, FILE_FLAG_BACKUP_SEMANTICS));
+			}
+		}
+		return false;
+	}
+}
+
 namespace kxf
 {
 	// IFileSystem
+	bool NativeFileSystem::DoesItemExist(const FSPath& path) const
+	{
+		if (path.IsAbsolute())
+		{
+			FileStream file(path, FileStreamAccess::ReadAttributes, FileStreamDisposition::OpenExisting, FileStreamShare::Everything);
+			return file.IsOk();
+		}
+		return false;
+	}
 	FileItem NativeFileSystem::GetItem(const FSPath& path) const
 	{
 		if (path.IsAbsolute())
@@ -207,44 +259,17 @@ namespace kxf
 	}
 
 	// IFileIDSystem
+	bool NativeFileSystem::DoesItemExist(const UniversallyUniqueID& id) const
+	{
+		FileStream file;
+		return OpenFileByID(id, m_LookupScope, file);
+	}
 	FileItem NativeFileSystem::GetItem(const UniversallyUniqueID& id) const
 	{
-		if (m_LookupScope && id)
+		FileStream file;
+		if (OpenFileByID(id, m_LookupScope, file))
 		{
-			FileStream volume(StorageVolume(m_LookupScope).GetDevicePath(), FileStreamAccess::ReadAttributes, FileStreamDisposition::OpenExisting, FileStreamShare::Everything, FileStreamFlags::BackupSemantics);
-			if (volume)
-			{
-				// Some search on Google says that 'FILE_ID_DESCRIPTOR' isn't always 24. it *is* 24 for me on both x64 and x86
-				// and it seems to work fine with the size of 24. Still I'm going to make it bigger, just in case.
-				LocalPImpl<FILE_ID_DESCRIPTOR, 64, alignof(FILE_ID_DESCRIPTOR)> fileID;
-				fileID->dwSize = fileID.size();
-
-				if (System::IsWindows8OrGreater())
-				{
-					fileID->Type = FILE_ID_TYPE::ExtendedFileIdType;
-
-					auto uuid = id.ToInt128();
-					std::memcpy(fileID->ExtendedFileId.Identifier, uuid.data(), uuid.size());
-				}
-				else
-				{
-					if (LocallyUniqueID luid = id.ToLocallyUniqueID())
-					{
-						fileID->Type = FILE_ID_TYPE::FileIdType;
-						fileID->FileId.QuadPart = luid.ToInt();
-					}
-					else
-					{
-						return {};
-					}
-				}
-
-				FileStream file;
-				if (file.AttachHandle(::OpenFileById(volume.GetHandle(), &fileID, FILE_READ_ATTRIBUTES, FILE_SHARE_READ|FILE_SHARE_WRITE|FILE_SHARE_DELETE, nullptr, FILE_FLAG_BACKUP_SEMANTICS)))
-				{
-					return FileSystem::Private::ConvertFileInfo(file.GetHandle(), id);
-				}
-			}
+			return FileSystem::Private::ConvertFileInfo(file.GetHandle(), id);
 		}
 		return {};
 	}
