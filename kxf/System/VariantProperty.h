@@ -332,6 +332,24 @@ namespace kxf
 				return Compare(other) <= 0;
 			}
 
+			const tagPROPVARIANT* operator&() const noexcept
+			{
+				return &m_Value;
+			}
+			tagPROPVARIANT* operator&() noexcept
+			{
+				return &m_Value;
+			}
+
+			const tagPROPVARIANT& operator*() const noexcept
+			{
+				return *m_Value;
+			}
+			tagPROPVARIANT& operator*() noexcept
+			{
+				return *m_Value;
+			}
+
 			explicit operator bool() const noexcept
 			{
 				return !IsEmpty();
