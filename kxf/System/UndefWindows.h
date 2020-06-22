@@ -25,6 +25,7 @@
 #undef max
 #undef GetObject
 #undef SetCurrentDirectory
+#undef CreateFile
 #undef CopyFile
 #undef MoveFile
 #undef DeleteFile
