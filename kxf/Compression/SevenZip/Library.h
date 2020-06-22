@@ -5,7 +5,7 @@
 #include "kxf/System/COM.h"
 struct IUnknown;
 
-namespace kxf::Compression::SevenZip
+namespace kxf::SevenZip
 {
 	class KX_API Library final: public Singleton<Library>
 	{
@@ -34,19 +34,19 @@ namespace kxf::Compression::SevenZip
 
 			bool Load();
 			bool Load(const FSPath& libraryPath);
-			void Unload();
+			void Unload() noexcept;
 
-			bool CreateObject(const NativeUUID& classID, const NativeUUID& interfaceID, void** outObject) const noexcept;
+			bool CreateObject(const NativeUUID& classID, const NativeUUID& interfaceID, void** object) const noexcept;
 
 			template<class T>
 			COMPtr<T> CreateObject(const NativeUUID& classID, const NativeUUID& interfaceID) const noexcept
 			{
 				static_assert(std::is_base_of_v<IUnknown, T>, "Must be COM class");
 
-				COMPtr<T> outObject;
-				if (CreateObject(classID, interfaceID, outObject.GetAddress()))
+				COMPtr<T> object;
+				if (CreateObject(classID, interfaceID, object.GetAddress()))
 				{
-					return outObject;
+					return object;
 				}
 				return nullptr;
 			}

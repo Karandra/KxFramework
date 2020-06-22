@@ -185,6 +185,8 @@
   <ItemGroup>
     <ClInclude Include="kxf\Compression\SevenZip\Common.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Library.h" />
+    <ClInclude Include="kxf\Compression\SevenZip\Private\GUIDs.h" />
+    <ClInclude Include="kxf\Compression\SevenZip\Private\Utility.h" />
     <ClInclude Include="kxf\Crypto\UserCredentials.h" />
     <ClInclude Include="kxf\Drawing\Geometry.h" />
     <ClInclude Include="kxf\General\ApplicationInitializer.h" />
@@ -539,7 +541,9 @@
     <ClInclude Include="kxf\wxWidgets\Setup.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="kxf\Compression\SevenZip\Common.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Library.cpp" />
+    <ClCompile Include="kxf\Compression\SevenZip\Private\Utility.cpp" />
     <ClCompile Include="kxf\FileSystem\Private\NativeFSUtility.cpp" />
     <ClCompile Include="kxf\General\ApplicationInitializer.cpp" />
     <ClCompile Include="kxf\General\Common.cpp" />

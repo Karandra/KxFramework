@@ -9,7 +9,7 @@ namespace
 	constexpr wxChar g_DefaultLibraryPath[] = wxS("7z.dll");
 }
 
-namespace kxf::Compression::SevenZip
+namespace kxf::SevenZip
 {
 	bool Library::Load()
 	{
@@ -29,7 +29,7 @@ namespace kxf::Compression::SevenZip
 		}
 		return false;
 	}
-	void Library::Unload()
+	void Library::Unload() noexcept
 	{
 		if (m_Library)
 		{
@@ -38,13 +38,13 @@ namespace kxf::Compression::SevenZip
 		m_CreateObjectFunc = nullptr;
 	}
 
-	bool Library::CreateObject(const NativeUUID& classID, const NativeUUID& interfaceID, void** outObject) const noexcept
+	bool Library::CreateObject(const NativeUUID& classID, const NativeUUID& interfaceID, void** object) const noexcept
 	{
 		if (m_CreateObjectFunc)
 		{
 			::GUID classGUID = COM::ToGUID(classID);
 			::GUID interfaceGUID = COM::ToGUID(interfaceID);
-			return HResult(reinterpret_cast<CreateObjectFunc>(m_CreateObjectFunc)(&classGUID, &interfaceGUID, outObject)).IsSuccess();
+			return HResult(reinterpret_cast<CreateObjectFunc>(m_CreateObjectFunc)(&classGUID, &interfaceGUID, object)).IsSuccess();
 		}
 		return false;
 	}
