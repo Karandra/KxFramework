@@ -193,7 +193,7 @@ namespace kxf
 		// https://stackoverflow.com/questions/14018280/how-to-get-a-process-working-dir-on-windows
 		if (IsCurrent())
 		{
-			return NativeFileSystem::Get().GetWorkingDirectory();
+			return NativeFileSystem().GetWorkingDirectory();
 		}
 		return {};
 	}

@@ -46,12 +46,12 @@ namespace kxf::Compression
 					if (m_FileItem.IsDirectory())
 					{
 						// Creating a directory here supports having empty directories
-						NativeFileSystem::Get().CreateDirectory(targetPath);
+						NativeFileSystem().CreateDirectory(targetPath);
 						return nullptr;
 					}
 					else
 					{
-						NativeFileSystem::Get().CreateDirectory(targetPath.GetParent());
+						NativeFileSystem().CreateDirectory(targetPath.GetParent());
 						m_Stream.Open(targetPath, FileStreamAccess::Write, FileStreamDisposition::CreateAlways, FileStreamShare::Read);
 						return m_Stream;
 					}

@@ -8,6 +8,8 @@
 
 namespace
 {
+	kxf::NativeFileSystem g_NativeFS;
+
 	// https://stackoverflow.com/questions/16160052/win32api-restore-file-from-recyclebin-using-shfilestruct
 	// https://stackoverflow.com/questions/23720519/how-to-safely-delete-folder-into-recycle-bin
 	// https://www.codeproject.com/Articles/2783/How-to-programmatically-use-the-Recycle-Bin
@@ -29,7 +31,7 @@ namespace
 namespace kxf
 {
 	RecycleBin::RecycleBin(LegacyVolume volume)
-		:RecycleBin(volume, NativeFileSystem::Get())
+		:RecycleBin(volume, g_NativeFS)
 	{
 	}
 	RecycleBin::RecycleBin(LegacyVolume volume, IFileSystem& fileSystem)

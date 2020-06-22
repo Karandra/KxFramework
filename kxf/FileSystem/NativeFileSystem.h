@@ -11,19 +11,14 @@ namespace kxf
 			using TCopyDirectoryTreeFunc = std::function<bool(FSPath, FSPath, BinarySize, BinarySize)>;
 			using TEnumStreamsFunc = std::function<bool(String, BinarySize)>;
 
-		public:
-			static NativeFileSystem& Get()
-			{
-				static NativeFileSystem instance;
-				return instance;
-			}
-
 		private:
 			UniversallyUniqueID m_LookupScope;
 
 		public:
-			NativeFileSystem() = default;
-			~NativeFileSystem() = default;
+			NativeFileSystem(const UniversallyUniqueID& scope  = {}) noexcept
+				:m_LookupScope(scope)
+			{
+			}
 
 		public:
 			// IFileSystem
@@ -43,10 +38,6 @@ namespace kxf
 			UniversallyUniqueID GetLookupScope() const override
 			{
 				return m_LookupScope;
-			}
-			void SetLookupScope(const UniversallyUniqueID& scope) override
-			{
-				m_LookupScope = scope;
 			}
 
 			FileItem GetItem(const UniversallyUniqueID& id) const override;

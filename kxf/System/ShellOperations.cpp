@@ -489,7 +489,7 @@ namespace kxf::Shell
 		{
 			if ((isEnvUsed || isCustomMethodUsed) && flags & SHGetKnownDirectoryFlag::CreateIfDoesNotExist)
 			{
-				NativeFileSystem::Get().CreateDirectory(result);
+				NativeFileSystem().CreateDirectory(result);
 			}
 		};
 		if (!isEnvUsed && !isCustomMethodUsed)
