@@ -16,7 +16,7 @@ namespace kxf
 				return instance;
 			}
 
-		private:
+		protected:
 			Singleton() = default;
 			~Singleton() = default;
 
