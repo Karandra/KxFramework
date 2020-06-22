@@ -1,0 +1,51 @@
+#include "stdafx.h"
+#include "Library.h"
+#include "kxf/System/ErrorCodeValue.h"
+
+namespace
+{
+	using CreateObjectFunc = HRESULT(__stdcall*)(const ::GUID* classID, const ::GUID* interfaceID, void** outObject);
+
+	constexpr wxChar g_DefaultLibraryPath[] = wxS("7z.dll");
+}
+
+namespace kxf::Compression::SevenZip
+{
+	bool Library::Load()
+	{
+		return Load(g_DefaultLibraryPath);
+	}
+	bool Library::Load(const FSPath& libraryPath)
+	{
+		if (IsLoaded())
+		{
+			return true;
+		}
+
+		if (m_Library.Load(libraryPath))
+		{
+			m_CreateObjectFunc = m_Library.GetFunctionAddress("CreateObject");
+			return m_CreateObjectFunc != nullptr;
+		}
+		return false;
+	}
+	void Library::Unload()
+	{
+		if (m_Library)
+		{
+			m_Library.Unload();
+		}
+		m_CreateObjectFunc = nullptr;
+	}
+
+	bool Library::CreateObject(const NativeUUID& classID, const NativeUUID& interfaceID, void** outObject) const noexcept
+	{
+		if (m_CreateObjectFunc)
+		{
+			::GUID classGUID = COM::ToGUID(classID);
+			::GUID interfaceGUID = COM::ToGUID(interfaceID);
+			return HResult(reinterpret_cast<CreateObjectFunc>(m_CreateObjectFunc)(&classGUID, &interfaceGUID, outObject)).IsSuccess();
+		}
+		return false;
+	}
+}

@@ -179,6 +179,9 @@
     <Filter Include="kxf\General\DateTime\Private">
       <UniqueIdentifier>{1927ba84-01dd-4b98-90dd-7496ee4a3211}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\Compression\SevenZip">
+      <UniqueIdentifier>{e925ebf1-8615-496c-8539-4d57df6010b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -1238,6 +1241,12 @@
     <ClInclude Include="kxf\General\LocallyUniqueID.h">
       <Filter>kxf\General</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Compression\SevenZip\Library.h">
+      <Filter>kxf\Compression\SevenZip</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Compression\SevenZip\Common.h">
+      <Filter>kxf\Compression\SevenZip</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\BroadcastProcessor.cpp">
@@ -1897,6 +1906,9 @@
     </ClCompile>
     <ClCompile Include="kxf\General\LocallyUniqueID.cpp">
       <Filter>kxf\General</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Compression\SevenZip\Library.cpp">
+      <Filter>kxf\Compression\SevenZip</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
