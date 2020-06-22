@@ -216,7 +216,7 @@ namespace kxf
 		}
 		return false;
 	}
-	void DynamicLibrary::Unload()
+	void DynamicLibrary::Unload() noexcept
 	{
 		if (!IsNull() && m_ShouldUnload)
 		{

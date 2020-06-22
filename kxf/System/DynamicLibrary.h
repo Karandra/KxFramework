@@ -76,7 +76,7 @@ namespace kxf
 			FSPath GetFilePath() const;
 
 			bool Load(const FSPath& path, FlagSet<DynamicLibraryLoadFlag> flags = {});
-			void Unload();
+			void Unload() noexcept;
 
 			void AttachHandle(void* handle, bool takeOwnership = false) noexcept
 			{
