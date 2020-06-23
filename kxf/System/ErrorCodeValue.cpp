@@ -177,6 +177,62 @@ namespace kxf
 	{
 		return E_FAIL;
 	}
+	HResult HResult::Abort() noexcept
+	{
+		return E_ABORT;
+	}
+	HResult HResult::Pending() noexcept
+	{
+		return E_PENDING;
+	}
+	HResult HResult::Unexpected() noexcept
+	{
+		return E_UNEXPECTED;
+	}
+	HResult HResult::OutOfMemory() noexcept
+	{
+		return E_OUTOFMEMORY;
+	}
+	HResult HResult::OutOfRange() noexcept
+	{
+		return E_BOUNDS;
+	}
+	HResult HResult::AccessDenied() noexcept
+	{
+		return E_ACCESSDENIED;
+	}
+	HResult HResult::NoInterface() noexcept
+	{
+		return E_NOINTERFACE;
+	}
+	HResult HResult::NotImplemented() noexcept
+	{
+		return E_NOTIMPL;
+	}
+	HResult HResult::StateChnaged() noexcept
+	{
+		return E_CHANGED_STATE;
+	}
+	HResult HResult::InvalidArgument() noexcept
+	{
+		return E_INVALIDARG;
+	}
+	HResult HResult::InvalidPointer() noexcept
+	{
+		return E_POINTER;
+	}
+	HResult HResult::InvalidHandle() noexcept
+	{
+		return E_HANDLE;
+	}
+	HResult HResult::InvalidStateChnage() noexcept
+	{
+		return E_ILLEGAL_STATE_CHANGE;
+	}
+	HResult HResult::InvalidMethodCall() noexcept
+	{
+		return E_ILLEGAL_METHOD_CALL;
+	}
 
 	bool HResult::IsSuccess() const noexcept
 	{

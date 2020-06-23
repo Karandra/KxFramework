@@ -108,6 +108,20 @@ namespace kxf
 			static HResult Success() noexcept;
 			static HResult False() noexcept;
 			static HResult Fail() noexcept;
+			static HResult Abort() noexcept;
+			static HResult Pending() noexcept;
+			static HResult Unexpected() noexcept;
+			static HResult OutOfMemory() noexcept;
+			static HResult OutOfRange() noexcept;
+			static HResult AccessDenied() noexcept;
+			static HResult NoInterface() noexcept;
+			static HResult NotImplemented() noexcept;
+			static HResult StateChnaged() noexcept;
+			static HResult InvalidArgument() noexcept;
+			static HResult InvalidPointer() noexcept;
+			static HResult InvalidHandle() noexcept;
+			static HResult InvalidStateChnage() noexcept;
+			static HResult InvalidMethodCall() noexcept;
 
 		private:
 			IErrorInfo* m_ErrorInfo = nullptr;
