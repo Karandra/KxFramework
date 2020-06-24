@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "kxf/FileSystem/FileOperationEvent.h"
 #include "kxf/FileSystem/FileItem.h"
+#include "kxf/Crypto/SecretValue.h"
 class wxInputStream;
 class wxOutputStream;
 
@@ -11,17 +12,14 @@ namespace kxf
 	{
 		public:
 			KxEVENT_MEMBER(ArchiveEvent, Process);
-			KxEVENT_MEMBER(ArchiveEvent, Search);
-			KxEVENT_MEMBER(ArchiveEvent, Done);
+			KxEVENT_MEMBER(ArchiveEvent, GetPassword);
 
 			KxEVENT_MEMBER(ArchiveEvent, GetInputStream);
 			KxEVENT_MEMBER(ArchiveEvent, GetOutputStream);
 
 		private:
-			String m_Method;
-			String m_Attributes;
 			FileItem m_FileItem;
-
+			SecretValue m_Password;
 			wxInputStream* m_InputStream = nullptr;
 			wxOutputStream* m_OutputStream = nullptr;
 
@@ -34,54 +32,68 @@ namespace kxf
 		public:
 			ArchiveEvent* Clone() const override
 			{
-				return new ArchiveEvent(*this);
+				auto clone = std::make_unique<ArchiveEvent>(GetEventType());
+				clone->SetEventObject(GetEventObject());
+				clone->m_FileItem = m_FileItem;
+				clone->m_InputStream = m_InputStream;
+				clone->m_OutputStream = m_OutputStream;
+
+				return clone.release();
 			}
 			
-			const FileItem& GetItem() const
+			const FileItem& GetItem() const noexcept
 			{
 				return m_FileItem;
 			}
-			FileItem& GetItem()
+			FileItem& GetItem() noexcept
 			{
 				return m_FileItem;
+			}
+			void SetItem(FileItem item) noexcept
+			{
+				m_FileItem = std::move(item);
 			}
 
-			uint32_t GetFileIndex() const noexcept
+			size_t GetFileIndex() const noexcept
 			{
 				if (auto id = m_FileItem.GetUniqueID().ToLocallyUniqueID())
 				{
-					return static_cast<uint32_t>(id.ToInt());
+					return static_cast<size_t>(id.ToInt());
 				}
 				return Compression::InvalidFileIndex;
 			}
-			void SetFileIndex(Compression::FileIndex value) noexcept
+			void SetFileIndex(size_t value) noexcept
 			{
 				m_FileItem.SetUniqueID(LocallyUniqueID(value));
 			}
 
-			wxString GetAttributes() const
+			const SecretValue& GetPassword() const& noexcept
 			{
-				return m_Attributes;
+				return m_Password;
 			}
-			void SetAttributes(const wxString& string)
+			SecretValue GetPassword() && noexcept
 			{
-				m_Attributes = string;
+				return std::move(m_Password);
 			}
-		
-			wxOutputStream* GetOutputStream() const
+			void SetPassword(SecretValue password) noexcept
+			{
+				m_Password = std::move(password);
+			}
+
+			wxOutputStream* GetOutputStream() const noexcept
 			{
 				return m_OutputStream;
 			}
-			void SetOutputStream(wxOutputStream* stream)
+			void SetOutputStream(wxOutputStream* stream) noexcept
 			{
 				m_OutputStream = stream;
 			}
 
-			wxInputStream* GetInputStream() const
+			wxInputStream* GetInputStream() const noexcept
 			{
 				return m_InputStream;
 			}
-			void SetInputStream(wxInputStream* stream)
+			void SetInputStream(wxInputStream* stream) noexcept
 			{
 				m_InputStream = stream;
 			}
