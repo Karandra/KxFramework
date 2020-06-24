@@ -345,84 +345,16 @@ namespace kxf
 
 			virtual std::optional<String> GetPropertyString(StringView property) const = 0;
 			virtual bool SetPropertyString(StringView property, StringView value) = 0;
-
-		public:
-			template<class T>
-			auto GetProperty(StringView property) const
-			{
-				if constexpr(std::is_same_v<T, bool>)
-				{
-					return GetPropertyBool(property);
-				}
-				else if constexpr(std::is_integral_v<T> || std::is_enum_v<T>)
-				{
-					if (auto value = GetPropertyInt(property))
-					{
-						return std::optional<T>(static_cast<T>(*value));
-					}
-					return std::optional<T>();
-				}
-				else if constexpr(std::is_floating_point_v<T>)
-				{
-					if (auto value = GetPropertyFloat(property))
-					{
-						return std::optional<T>(static_cast<T>(*value));
-					}
-					return std::optional<T>();
-				}
-				else if constexpr(std::is_same_v<T, String>)
-				{
-					return GetPropertyString(property);
-				}
-				else
-				{
-					static_assert(false, "invalid property type");
-				}
-			}
-
-			template<class T>
-			bool SetProperty(const StringView& property, T&& value)
-			{
-				if constexpr (std::is_same_v<T, bool>)
-				{
-					return SetPropertyBool(property, value);
-				}
-				else if constexpr(std::is_integral_v<T> )
-				{
-					return SetPropertyInt(property, value);
-				}
-				else if constexpr(std::is_enum_v<T>)
-				{
-					return SetPropertyInt(property, static_cast<std::underlying_type_t<T>>(value));
-				}
-				else if constexpr(std::is_floating_point_v<T>)
-				{
-					return SetPropertyFloat(property, value);
-				}
-				else
-				{
-					static_assert(false, "invalid property type");
-				}
-			}
-			
-			bool SetProperty(const StringView& property, StringView value)
-			{
-				return SetPropertyString(property, value);
-			}
-			bool SetProperty(const StringView& property, const String& value)
-			{
-				return SetPropertyString(property, StringViewOf(value));
-			}
 	};
 }
 
 namespace kxf::Compression
 {
-	#define Kx_Compression_DeclareUserProperty(section, name)	constexpr wxChar section##_##name[] = wxS("User/") wxS(#section) wxS("/") wxS(#name);
+	#define Kx_Compression_DeclareUserProperty(section, name)	constexpr XChar section##_##name[] = wxS("User/") wxS(#section) wxS("/") wxS(#name);
 
 	namespace Property
 	{
-		#define Kx_Compression_DeclareBaseProperty(section, name) constexpr wxChar section##_##name[] = wxS("Archive/") wxS(#section) wxS("/") wxS(#name);
+		#define Kx_Compression_DeclareBaseProperty(section, name) constexpr XChar section##_##name[] = wxS("Archive/") wxS(#section) wxS("/") wxS(#name);
 
 		Kx_Compression_DeclareBaseProperty(Common, FilePath);
 		Kx_Compression_DeclareBaseProperty(Common, ItemCount);
