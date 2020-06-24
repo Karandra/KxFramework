@@ -21,6 +21,7 @@ namespace kxf::COM::Private
 			{
 				*this = std::move(other);
 			}
+			BasicPtr(const BasicPtr&) = delete;
 			~BasicPtr() noexcept
 			{
 				Reset();
@@ -113,16 +114,11 @@ namespace kxf::COM::Private
 				return !(*this == other);
 			}
 
-			BasicPtr& operator=(const BasicPtr&) = delete;
 			BasicPtr& operator=(BasicPtr&& other) noexcept
 			{
 				Reset(other.Detach());
 				return *this;
 			}
-			BasicPtr& operator=(TValue* ptr) noexcept
-			{
-				Reset(ptr);
-				return *this;
-			}
+			BasicPtr& operator=(const BasicPtr&) = delete;
 	};
 }

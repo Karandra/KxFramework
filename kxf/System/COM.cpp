@@ -100,11 +100,11 @@ namespace kxf
 		{
 			case COMThreadingModel::Apartment:
 			{
-				m_Status = HResult(::CoInitializeEx(nullptr, COINIT::COINIT_APARTMENTTHREADED|MapCOMInitFlag(flags)));
+				m_Status = ::CoInitializeEx(nullptr, COINIT::COINIT_APARTMENTTHREADED|MapCOMInitFlag(flags));
 			}
 			case COMThreadingModel::Concurrent:
 			{
-				m_Status = HResult(::CoInitializeEx(nullptr, COINIT::COINIT_MULTITHREADED|MapCOMInitFlag(flags)));
+				m_Status = ::CoInitializeEx(nullptr, COINIT::COINIT_MULTITHREADED|MapCOMInitFlag(flags));
 			}
 		};
 	}
@@ -113,7 +113,7 @@ namespace kxf
 		if (IsInitialized())
 		{
 			::CoUninitialize();
-			m_Status = {};
+			m_Status = HResult::Pending();
 		}
 	}
 }
@@ -122,14 +122,14 @@ namespace kxf
 {
 	void OLEInitGuard::DoInitialize() noexcept
 	{
-		m_Status = HResult(::OleInitialize(nullptr));
+		m_Status = ::OleInitialize(nullptr);
 	}
 	void OLEInitGuard::DoUninitialize() noexcept
 	{
 		if (IsInitialized())
 		{
 			::OleUninitialize();
-			m_Status = {};
+			m_Status = HResult::Pending();
 		}
 	}
 }

@@ -98,7 +98,7 @@ namespace kxf
 	class KX_API COMInitGuard final
 	{
 		private:
-			ErrorCode m_Status;
+			HResult m_Status = HResult::Pending();
 
 		private:
 			void DoInitialize(COMThreadingModel threadingModel, FlagSet<COMInitFlag> flags) noexcept;
@@ -117,7 +117,7 @@ namespace kxf
 			}
 
 		public:
-			ErrorCode GetStatus() const noexcept
+			HResult GetStatus() const noexcept
 			{
 				return m_Status;
 			}
@@ -147,7 +147,7 @@ namespace kxf
 	class KX_API OLEInitGuard final
 	{
 		private:
-			ErrorCode m_Status;
+			HResult m_Status = HResult::Pending();
 
 		private:
 			void DoInitialize() noexcept;
@@ -166,7 +166,7 @@ namespace kxf
 			}
 
 		public:
-			ErrorCode GetStatus() const noexcept
+			HResult GetStatus() const noexcept
 			{
 				return m_Status;
 			}
@@ -243,7 +243,45 @@ namespace kxf
 	}
 
 	template<class T>
-	using COMPtr = COM::Private::BasicPtr<T, COM::Private::PtrTraits<T>>;
+	class COMPtr: public COM::Private::BasicPtr<T, COM::Private::PtrTraits<T>>
+	{
+		private:
+			using Base = COM::Private::BasicPtr<T, COM::Private::PtrTraits<T>>;
+
+		public:
+			COMPtr(T* ptr = nullptr) noexcept
+				:Base(ptr)
+			{
+			}
+			COMPtr(COMPtr&& other) noexcept
+				:Base(std::move(other))
+			{
+			}
+			COMPtr(const COMPtr& other) noexcept
+				:Base(other.m_Value)
+			{
+				if (this->m_Value)
+				{
+					this->m_Value->AddRef();
+				}
+			}
+
+		public:
+			COMPtr& operator=(COMPtr&& other) noexcept
+			{
+				this->Reset(other.Detach());
+				return *this;
+			}
+			COMPtr& operator=(const COMPtr& other) noexcept
+			{
+				this->Reset(other.m_Value);
+				if (this->m_Value)
+				{
+					this->m_Value->AddRef();
+				}
+				return *this;
+			}
+	};
 
 	template<class T>
 	using COMMemoryPtr = COM::Private::BasicPtr<T, COM::Private::MemoryPtrTraits<T>>;
