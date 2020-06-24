@@ -133,6 +133,11 @@ namespace kxf
 			{
 				AssignString(value ? value : L"");
 			}
+			VariantProperty(const DateTime& value)
+				:VariantProperty()
+			{
+				AssignDateTime(value);
+			}
 			VariantProperty(const NativeUUID& value)
 				:VariantProperty()
 			{
@@ -197,6 +202,7 @@ namespace kxf
 			bool IsEmpty() const noexcept;
 			VariantPropertyType GetType() const noexcept;
 			int Compare(const VariantProperty& other) const noexcept;
+			HResult CopyToNative(tagPROPVARIANT& nativeProperty) const;
 			
 			int GetNativeType() const noexcept;
 			void SetNativeType(int nativeType) noexcept;

@@ -8,7 +8,9 @@
 
 namespace
 {
-	kxf::HResult ClearPropVariant(PROPVARIANT& prop) noexcept
+	using namespace kxf;
+
+	HResult ClearPropVariant(PROPVARIANT& prop) noexcept
 	{
 		if (prop.vt == VT_EMPTY)
 		{
@@ -41,39 +43,12 @@ namespace
 		};
 		return ::VariantClear(reinterpret_cast<VARIANTARG*>(&prop));
 	}
-	
-	template<class T>
-	constexpr int SimpleCompare(T a, T b) noexcept
+	HResult CopyPropVariant(PROPVARIANT& destination, const PROPVARIANT& source)
 	{
-		if (a == b)
-		{
-			return 0;
-		}
-		else
-		{
-			return a < b ? -1 : 1;
-		}
-	}
-}
+		::VariantClear(reinterpret_cast<VARIANTARG*>(&destination));
+		destination.vt = VT_EMPTY;
 
-namespace kxf
-{
-	HResult VariantProperty::DoClear() noexcept
-	{
-		HResult hr = ClearPropVariant(*m_Value);
-		if (!hr)
-		{
-			m_Value->vt = VT_ERROR;
-			m_Value->scode = *hr;
-		}
-		return hr;
-	}
-	HResult VariantProperty::DoCopy(const tagPROPVARIANT& other)
-	{
-		::VariantClear(reinterpret_cast<VARIANTARG*>(&m_Value));
-		m_Value->vt = VT_EMPTY;
-
-		switch (other.vt)
+		switch (source.vt)
 		{
 			case VT_UI1:
 			case VT_I1:
@@ -92,21 +67,54 @@ namespace kxf
 			case VT_CY:
 			case VT_DATE:
 			{
-				std::memmove(reinterpret_cast<PROPVARIANT*>(&m_Value), &other, sizeof(PROPVARIANT));
+				std::memmove(reinterpret_cast<PROPVARIANT*>(&destination), &source, sizeof(PROPVARIANT));
 				return S_OK;
 			}
 		};
 
-		HResult hr = ::VariantCopy(reinterpret_cast<tagVARIANT*>(this), reinterpret_cast<const tagVARIANT*>(&other));
+		HResult hr = ::VariantCopy(reinterpret_cast<VARIANTARG*>(&destination), reinterpret_cast<const VARIANTARG*>(&source));
 		if (!hr)
 		{
 			if (*hr == E_OUTOFMEMORY)
 			{
 				throw std::bad_alloc();
 			}
+			destination.vt = VT_ERROR;
+			destination.scode = *hr;
+		}
+		return hr;
+	}
+	
+	template<class T>
+	constexpr int SimpleCompare(T a, T b) noexcept
+	{
+		if (a == b)
+		{
+			return 0;
+		}
+		else
+		{
+			return a < b ? -1 : 1;
+		}
+	}
+
+}
+
+namespace kxf
+{
+	HResult VariantProperty::DoClear() noexcept
+	{
+		HResult hr = ClearPropVariant(*m_Value);
+		if (!hr)
+		{
 			m_Value->vt = VT_ERROR;
 			m_Value->scode = *hr;
 		}
+		return hr;
+	}
+	HResult VariantProperty::DoCopy(const tagPROPVARIANT& other)
+	{
+		return CopyPropVariant(*m_Value, other);
 	}
 	void VariantProperty::DoMove(tagPROPVARIANT&& other) noexcept
 	{
@@ -447,6 +455,10 @@ namespace kxf
 			}
 		};
 		return CompareDefault();
+	}
+	HResult VariantProperty::CopyToNative(tagPROPVARIANT& nativeProperty) const
+	{
+		return CopyPropVariant(nativeProperty, *m_Value);
 	}
 
 	std::optional<bool> VariantProperty::ToBool() const noexcept
