@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "FSPath.h"
 #include "kxf/EventSystem/Event.h"
 #include "kxf/General/String.h"
 #include "kxf/General/BinarySize.h"
@@ -16,8 +17,8 @@ namespace kxf
 			KxEVENT_MEMBER(FileOperationEvent, Search);
 
 		private:
-			String m_Source;
-			String m_Destination;
+			FSPath m_Source;
+			FSPath m_Destination;
 			BinarySize m_Processed = 0;
 			BinarySize m_Total = 0;
 			BinarySize m_Speed = 0;
@@ -46,34 +47,31 @@ namespace kxf
 			}
 
 			// Paths and status
-			wxString GetString() const = delete;
-			void SetString(const wxString&) = delete;
-
-			String GetCurrent() const
+			String GetString() const
 			{
 				return wxNotifyEvent::GetString();
 			}
-			void SetCurrent(const String& string)
+			void SetString(const String& value)
 			{
-				wxNotifyEvent::SetString(string);
+				wxNotifyEvent::SetString(value);
 			}
-			
-			String GetSource() const
+
+			FSPath GetSource() const
 			{
 				return m_Source;
 			}
-			void SetSource(const String& string)
+			void SetSource(FSPath source)
 			{
-				m_Source = string;
+				m_Source = std::move(source);
 			}
 			
-			String GetDestination() const
+			FSPath GetDestination() const
 			{
 				return m_Destination;
 			}
-			void SetDestination(const String& string)
+			void SetDestination(FSPath destination)
 			{
-				m_Destination = string;
+				m_Destination = std::move(destination);
 			}
 
 			// Size status
