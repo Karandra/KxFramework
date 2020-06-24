@@ -103,8 +103,8 @@ namespace kxf::SevenZip::Private
 			}
 
 		public:
-			OutStreamWrapper_IStream(const COMPtr<IStream>& baseStream, wxEvtHandler* evtHandler = nullptr)
-				:OutStreamWrapper(evtHandler), m_BaseStream(baseStream)
+			OutStreamWrapper_IStream(COMPtr<IStream> baseStream, wxEvtHandler* evtHandler = nullptr)
+				:OutStreamWrapper(evtHandler), m_BaseStream(std::move(baseStream))
 			{
 			}
 	};

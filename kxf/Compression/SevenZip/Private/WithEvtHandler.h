@@ -9,7 +9,29 @@ namespace kxf::SevenZip::Private
 		protected:
 			wxEvtHandler* m_EvtHandler = nullptr;
 
-		protected:
+		public:
+			WithEvtHandler(wxEvtHandler* evtHandler = nullptr) noexcept
+				:m_EvtHandler(evtHandler)
+			{
+			}
+			WithEvtHandler(WithEvtHandler&& other) noexcept
+				:m_EvtHandler(other.m_EvtHandler)
+			{
+				other.SetEvtHandler(nullptr);
+			}
+			WithEvtHandler(const WithEvtHandler&) noexcept = default;
+			~WithEvtHandler() = default;
+
+		public:
+			wxEvtHandler* GetEvtHandler() const noexcept
+			{
+				return m_EvtHandler;
+			}
+			virtual void SetEvtHandler(wxEvtHandler* evtHandler) noexcept
+			{
+				m_EvtHandler = evtHandler;
+			}
+
 			ArchiveEvent CreateEvent(EventID id = ArchiveEvent::EvtProcess)
 			{
 				ArchiveEvent event(id);
@@ -27,21 +49,23 @@ namespace kxf::SevenZip::Private
 				return true;
 			}
 
-		protected:
-			WithEvtHandler(wxEvtHandler* evtHandler = nullptr) noexcept
-				:m_EvtHandler(evtHandler)
-			{
-			}
-			~WithEvtHandler() = default;
-
 		public:
-			wxEvtHandler* GetEvtHandler() const noexcept
+			WithEvtHandler& operator=(WithEvtHandler&& other) noexcept
 			{
-				return m_EvtHandler;
+				m_EvtHandler = other.m_EvtHandler;
+				other.SetEvtHandler(nullptr);
+
+				return *this;
 			}
-			virtual void SetEvtHandler(wxEvtHandler* evtHandler) noexcept
+			WithEvtHandler& operator=(const WithEvtHandler&) noexcept = default;
+
+			explicit operator bool() const noexcept
 			{
-				m_EvtHandler = evtHandler;
+				return m_EvtHandler != nullptr;
+			}
+			bool operator!() const noexcept
+			{
+				return m_EvtHandler == nullptr;
 			}
 	};
 }

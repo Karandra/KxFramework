@@ -33,8 +33,8 @@ namespace kxf::SevenZip::Private
 				:WithEvtHandler(evtHandler), m_RefCount(*this)
 			{
 			}
-			InStreamWrapper(const COMPtr<IStream>& baseStream, wxEvtHandler* evtHandler = nullptr)
-				:WithEvtHandler(evtHandler), m_RefCount(*this), m_BaseStream(baseStream)
+			InStreamWrapper(COMPtr<IStream> baseStream, wxEvtHandler* evtHandler = nullptr)
+				:WithEvtHandler(evtHandler), m_RefCount(*this), m_BaseStream(std::move(baseStream))
 			{
 			}
 			virtual ~InStreamWrapper() = default;

@@ -12,10 +12,10 @@
 
 namespace kxf::SevenZip::Private::Callback
 {
-	class Extractor: public WithEvtHandler, public IArchiveExtractCallback, public ICryptoGetTextPassword, public ICryptoGetTextPassword2
+	class ExtractArchive: public WithEvtHandler, public IArchiveExtractCallback, public ICryptoGetTextPassword, public ICryptoGetTextPassword2
 	{
 		private:
-			COM::RefCount<Extractor> m_RefCount;
+			COM::RefCount<ExtractArchive> m_RefCount;
 			PasswordHandler m_PasswordHandler;
 
 		protected:
@@ -25,17 +25,16 @@ namespace kxf::SevenZip::Private::Callback
 			FileItem GetFileInfo(size_t fileIndex) const;
 
 		public:
-			Extractor(wxEvtHandler* evtHandler = nullptr)
+			ExtractArchive(wxEvtHandler* evtHandler = nullptr)
 				:WithEvtHandler(evtHandler), m_RefCount(*this), m_PasswordHandler(evtHandler)
 			{
 			}
-			virtual ~Extractor() = default;
+			virtual ~ExtractArchive() = default;
 
 		public:
-
-			void SetArchive(const COMPtr<IInArchive>& archive)
+			void SetArchive(COMPtr<IInArchive> archive)
 			{
-				m_Archive = archive;
+				m_Archive = std::move(archive);
 			}
 
 		public:
@@ -77,7 +76,7 @@ namespace kxf::SevenZip::Private::Callback
 
 namespace kxf::SevenZip::Private::Callback
 {
-	class FileExtractor: public Extractor
+	class ExtractArchiveToDisk: public ExtractArchive
 	{
 		protected:
 			FSPath m_Directory;
@@ -88,9 +87,9 @@ namespace kxf::SevenZip::Private::Callback
 			size_t m_ItemCount = 0;
 
 		public:
-			FileExtractor() = default;
-			FileExtractor(FSPath directory, wxEvtHandler* evtHandler = nullptr)
-				:Extractor(evtHandler), m_Directory(std::move(directory))
+			ExtractArchiveToDisk() = default;
+			ExtractArchiveToDisk(FSPath directory, wxEvtHandler* evtHandler = nullptr)
+				:ExtractArchive(evtHandler), m_Directory(std::move(directory))
 			{
 			}
 

@@ -32,7 +32,7 @@ namespace kxf::SevenZip::Private
 {
 	COMPtr<IStream> OpenFileToRW(const FSPath& filePath)
 	{
-		return CreateStreamOnFile(filePath, (NativeFileSystem().DoesItemExist(filePath) ? 0 : STGM_CREATE)|STGM_READWRITE);
+		return CreateStreamOnFile(filePath, (NativeFileSystem().ItemExist(filePath) ? 0 : STGM_CREATE)|STGM_READWRITE);
 	}
 	COMPtr<IStream> OpenFileToRead(const FSPath& filePath)
 	{
@@ -174,6 +174,7 @@ namespace kxf::SevenZip::Private
 			fileItem.SetLastAccessTime(property.ToDateTime().value_or(DateTime()));
 
 			fileItem.SetAttributes(attributes);
+			fileItem.SetUniqueID(LocallyUniqueID(fileIndex));
 			return fileItem;
 		}
 		return {};
@@ -213,5 +214,98 @@ namespace kxf::SevenZip::Private
 			return true;
 		}
 		return false;
+	}
+
+	CompressionFormat IdentifyCompressionFormat(const FSPath& archivePath, wxEvtHandler* evtHandler)
+	{
+		WithEvtHandler eventHandler(evtHandler);
+
+		CompressionFormat availableFormats[] =
+		{
+			GetFormatByExtension(archivePath.GetExtension()),
+			CompressionFormat::SevenZip,
+			CompressionFormat::Zip,
+			CompressionFormat::Rar,
+			CompressionFormat::Rar5,
+			CompressionFormat::Iso,
+			CompressionFormat::Cab,
+			CompressionFormat::Tar,
+			CompressionFormat::GZip,
+			CompressionFormat::BZip2,
+			CompressionFormat::Lzma,
+			CompressionFormat::Lzma86,
+		};
+
+		if (eventHandler)
+		{
+			ArchiveEvent event = eventHandler.CreateEvent(ArchiveEvent::EvtProcess);
+			event.SetTotal(std::size(availableFormats));
+			event.SetString(wxS("Trying to identify archive compression format"));
+
+			if (!eventHandler.SendEvent(event))
+			{
+				return CompressionFormat::Unknown;
+			}
+		}
+
+		// Check each format for one that works
+		size_t counter = 0;
+		for (const CompressionFormat format: availableFormats)
+		{
+			if (format != CompressionFormat::Unknown)
+			{
+				// Skip the same format as the one added by the file extension as we already tested for it
+				if (counter != 0 && format == availableFormats[0])
+				{
+					continue;
+				}
+
+				if (eventHandler)
+				{
+					ArchiveEvent event = eventHandler.CreateEvent(ArchiveEvent::EvtProcess);
+					event.SetTotal(std::size(availableFormats));
+					event.SetProcessed(counter);
+					event.SetString(String::Format(wxS("Trying to open archive as %1"), GetNameByFormat(format)));
+
+					if (!eventHandler.SendEvent(event))
+					{
+						return CompressionFormat::Unknown;
+					}
+				}
+
+				// There is a problem that GZip files will not be detected using the above method. Workaround for now.
+				if (format == CompressionFormat::GZip)
+				{
+					size_t itemCount = 0;
+					if (GetNumberOfItems(archivePath, CompressionFormat::GZip, itemCount, evtHandler) && itemCount != 0)
+					{
+						return CompressionFormat::GZip;
+					}
+					continue;
+				}
+
+				auto fileStream = OpenFileToRead(archivePath);
+				if (!fileStream)
+				{
+					return CompressionFormat::Unknown;
+				}
+
+				auto archive = GetArchiveReader(format);
+				Utility::CallAtScopeExit atExit = ([&]()
+				{
+					archive->Close();
+				});
+				auto inFile = CreateObject<InStreamWrapper>(fileStream, evtHandler);
+				auto openCallback = CreateObject<Callback::OpenArchive>(evtHandler);
+
+				if (archive->Open(inFile, nullptr, openCallback) == S_OK)
+				{
+					// We know the format if we get here, so return
+					return format;
+				}
+			}
+			counter++;
+		}
+		return CompressionFormat::Unknown;
 	}
 }

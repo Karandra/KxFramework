@@ -25,4 +25,6 @@ namespace kxf::SevenZip::Private
 
 	FileItem GetArchiveItem(const COMPtr<IInArchive>& archive, size_t fileIndex);
 	bool GetArchiveItems(const FSPath& archivePath, CompressionFormat format, std::vector<FileItem>& items, wxEvtHandler* evtHandler = nullptr);
+
+	CompressionFormat IdentifyCompressionFormat(const FSPath& archivePath, wxEvtHandler* evtHandler = nullptr);
 }

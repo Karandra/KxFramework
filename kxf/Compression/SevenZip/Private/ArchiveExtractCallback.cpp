@@ -8,12 +8,12 @@
 
 namespace kxf::SevenZip::Private::Callback
 {
-	FileItem Extractor::GetFileInfo(size_t fileIndex) const
+	FileItem ExtractArchive::GetFileInfo(size_t fileIndex) const
 	{
 		return GetArchiveItem(m_Archive, fileIndex);
 	}
 
-	STDMETHODIMP Extractor::QueryInterface(const ::IID& iid, void** ppvObject)
+	STDMETHODIMP ExtractArchive::QueryInterface(const ::IID& iid, void** ppvObject)
 	{
 		if (iid == __uuidof(IUnknown))
 		{
@@ -42,12 +42,12 @@ namespace kxf::SevenZip::Private::Callback
 		return E_NOINTERFACE;
 	}
 
-	STDMETHODIMP Extractor::SetTotal(UInt64 size)
+	STDMETHODIMP ExtractArchive::SetTotal(UInt64 size)
 	{
 		// SetTotal is never called for ZIP and 7z formats
 		return S_OK;
 	}
-	STDMETHODIMP Extractor::SetCompleted(const UInt64* completeValue)
+	STDMETHODIMP ExtractArchive::SetCompleted(const UInt64* completeValue)
 	{
 		// For ZIP format SetCompleted only called once per 1000 files in central directory and once per 100 in local ones.
 		// For 7Z format SetCompleted is never called.
@@ -57,7 +57,7 @@ namespace kxf::SevenZip::Private::Callback
 
 namespace kxf::SevenZip::Private::Callback
 {
-	STDMETHODIMP FileExtractor::GetStream(UInt32 fileIndex, ISequentialOutStream** outStream, Int32 askExtractMode)
+	STDMETHODIMP ExtractArchiveToDisk::GetStream(UInt32 fileIndex, ISequentialOutStream** outStream, Int32 askExtractMode)
 	{
 		m_TargetPath = {};
 		m_FileInfo = GetFileInfo(fileIndex);
@@ -112,12 +112,12 @@ namespace kxf::SevenZip::Private::Callback
 		}
 		return E_FAIL;
 	}
-	STDMETHODIMP FileExtractor::PrepareOperation(Int32 askExtractMode)
+	STDMETHODIMP ExtractArchiveToDisk::PrepareOperation(Int32 askExtractMode)
 	{
 		m_TargetPath = {};
 		return S_OK;
 	}
-	STDMETHODIMP FileExtractor::SetOperationResult(Int32 operationResult)
+	STDMETHODIMP ExtractArchiveToDisk::SetOperationResult(Int32 operationResult)
 	{
 		if (m_FileInfo)
 		{

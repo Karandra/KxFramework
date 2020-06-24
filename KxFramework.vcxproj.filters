@@ -1283,6 +1283,9 @@
     <ClInclude Include="kxf\Compression\SevenZip\Library.h">
       <Filter>kxf\Compression\SevenZip</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Compression\SevenZip\Archive.h">
+      <Filter>kxf\Compression\SevenZip</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\BroadcastProcessor.cpp">
@@ -1968,6 +1971,9 @@
       <Filter>kxf\Compression\SevenZip\Private</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Compression\SevenZip\Library.cpp">
+      <Filter>kxf\Compression\SevenZip</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Compression\SevenZip\Archive.cpp">
       <Filter>kxf\Compression\SevenZip</Filter>
     </ClCompile>
   </ItemGroup>

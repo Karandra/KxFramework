@@ -183,6 +183,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="kxf\Compression\SevenZip\Archive.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Common.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Library.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Private\ArchiveExtractCallback.h" />
@@ -548,6 +549,7 @@
     <ClInclude Include="kxf\wxWidgets\Setup.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="kxf\Compression\SevenZip\Archive.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Common.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Library.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Private\ArchiveExtractCallback.cpp" />
