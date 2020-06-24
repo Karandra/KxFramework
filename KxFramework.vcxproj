@@ -185,8 +185,15 @@
   <ItemGroup>
     <ClInclude Include="kxf\Compression\SevenZip\Common.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Library.h" />
+    <ClInclude Include="kxf\Compression\SevenZip\Private\ArchiveExtractCallback.h" />
+    <ClInclude Include="kxf\Compression\SevenZip\Private\ArchiveOpenCallback.h" />
+    <ClInclude Include="kxf\Compression\SevenZip\Private\ArchiveUpdateCallback.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Private\GUIDs.h" />
+    <ClInclude Include="kxf\Compression\SevenZip\Private\InStreamWrapper.h" />
+    <ClInclude Include="kxf\Compression\SevenZip\Private\OutStreamWrapper.h" />
+    <ClInclude Include="kxf\Compression\SevenZip\Private\PasswordHandler.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Private\Utility.h" />
+    <ClInclude Include="kxf\Compression\SevenZip\Private\WithEvtHandler.h" />
     <ClInclude Include="kxf\Crypto\UserCredentials.h" />
     <ClInclude Include="kxf\Drawing\Geometry.h" />
     <ClInclude Include="kxf\General\ApplicationInitializer.h" />
@@ -543,6 +550,12 @@
   <ItemGroup>
     <ClCompile Include="kxf\Compression\SevenZip\Common.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Library.cpp" />
+    <ClCompile Include="kxf\Compression\SevenZip\Private\ArchiveExtractCallback.cpp" />
+    <ClCompile Include="kxf\Compression\SevenZip\Private\ArchiveOpenCallback.cpp" />
+    <ClCompile Include="kxf\Compression\SevenZip\Private\ArchiveUpdateCallback.cpp" />
+    <ClCompile Include="kxf\Compression\SevenZip\Private\InStreamWrapper.cpp" />
+    <ClCompile Include="kxf\Compression\SevenZip\Private\OutStreamWrapper.cpp" />
+    <ClCompile Include="kxf\Compression\SevenZip\Private\PasswordHandler.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Private\Utility.cpp" />
     <ClCompile Include="kxf\FileSystem\Private\NativeFSUtility.cpp" />
     <ClCompile Include="kxf\General\ApplicationInitializer.cpp" />

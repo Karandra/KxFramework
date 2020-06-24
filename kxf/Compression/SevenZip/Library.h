@@ -3,7 +3,6 @@
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/General/Singleton.h"
 #include "kxf/System/COM.h"
-struct IUnknown;
 
 namespace kxf::SevenZip
 {

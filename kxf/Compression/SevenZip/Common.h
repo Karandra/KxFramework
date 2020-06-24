@@ -4,6 +4,8 @@
 #include "kxf/General/NativeUUID.h"
 #include "kxf/General/UniversallyUniqueID.h"
 #include "kxf/FileSystem/FSPath.h"
+#include "kxf/FileSystem/FileItem.h"
+#include "kxf/Compression/ArchiveEvent.h"
 
 namespace kxf::SevenZip
 {

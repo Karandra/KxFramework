@@ -1,9 +1,12 @@
 #include "stdafx.h"
 #include "Utility.h"
 #include "GUIDs.h"
-#include "kxf/FileSystem/NativeFileSystem.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "InStreamWrapper.h"
+#include "ArchiveOpenCallback.h"
 #include "../Library.h"
+#include "kxf/FileSystem/NativeFileSystem.h"
+#include "kxf/FileSystem/Private/NativeFSUtility.h"
+#include "kxf/Utility/CallAtScopeExit.h"
 #include <ShlObj.h>
 #include <shlwapi.h>
 #include "kxf/System/UndefWindows.h"
@@ -29,7 +32,7 @@ namespace kxf::SevenZip::Private
 {
 	COMPtr<IStream> OpenFileToRW(const FSPath& filePath)
 	{
-		return CreateStreamOnFile(filePath, (NativeFileSystem().IsItemExist(filePath) ? 0 : STGM_CREATE)|STGM_READWRITE);
+		return CreateStreamOnFile(filePath, (NativeFileSystem().DoesItemExist(filePath) ? 0 : STGM_CREATE)|STGM_READWRITE);
 	}
 	COMPtr<IStream> OpenFileToRead(const FSPath& filePath)
 	{
@@ -76,28 +79,18 @@ namespace kxf::SevenZip::Private
 	}
 	bool GetNumberOfItems(const FSPath& archivePath, CompressionFormat format, size_t& itemCount, wxEvtHandler* evtHandler)
 	{
-		/*
 		if (auto fileStream = OpenFileToRead(archivePath))
 		{
 			auto archive = GetArchiveReader(format);
-			auto inFile = Library::GetInstance().CreateObject<InStreamWrapper>(fileStream, notifier);
-			auto openCallback = Library::GetInstance().CreateObject<Callback::OpenArchive>(archivePath, notifier);
+			auto inFile = CreateObject<InStreamWrapper>(fileStream, evtHandler);
+			auto openCallback = CreateObject<Callback::OpenArchive>(evtHandler);
 
 			if (HResult(archive->Open(inFile, nullptr, openCallback)))
 			{
 				Utility::CallAtScopeExit atExit([&]()
 				{
 					archive->Close();
-					if (evtHandler)
-					{
-						evtHandler->OnEnd();
-					}
 				});
-
-				if (evtHandler)
-				{
-					evtHandler->OnStart(_T("Getting number of items"), 0);
-				}
 				if (auto count = GetNumberOfItems(archive))
 				{
 					itemCount = *count;
@@ -105,7 +98,120 @@ namespace kxf::SevenZip::Private
 				}
 			}
 		}
-		*/
+		return false;
+	}
+
+	FileItem GetArchiveItem(const COMPtr<IInArchive>& archive, size_t fileIndex)
+	{
+		FileItem fileItem;
+		VariantProperty property;
+
+		// Get name of file
+		if (HResult(archive->GetProperty(fileIndex, kpidPath, &property)))
+		{
+			fileItem.SetFullPath(property.ToString().value_or(NullString));
+
+			// Attributes
+			if (FAILED(archive->GetProperty(fileIndex, kpidAttrib, &property)))
+			{
+				return {};
+			}
+			auto attributes = FileSystem::Private::MapFileAttributes(property.ToInt<uint32_t>().value_or(0));
+
+			// Is directory
+			if (SUCCEEDED(archive->GetProperty(fileIndex, kpidIsDir, &property)))
+			{
+				attributes.Add(FileAttribute::Directory, property.ToBool().value_or(false));
+			}
+			else
+			{
+				return {};
+			}
+
+			if (!attributes.Contains(FileAttribute::Directory))
+			{
+				// Original size
+				if (SUCCEEDED(archive->GetProperty(fileIndex, kpidSize, &property)))
+				{
+					fileItem.SetSize(property.ToInt<BinarySize::SizeType>().value_or(-1));
+				}
+				else
+				{
+					return {};
+				}
+
+				// Compressed size
+				if (SUCCEEDED(archive->GetProperty(fileIndex, kpidPackSize, &property)))
+				{
+					fileItem.SetCompressedSize(property.ToInt<BinarySize::SizeType>().value_or(-1));
+					attributes.Add(FileAttribute::Compressed, fileItem.GetSize() != fileItem.GetCompressedSize());
+				}
+				else
+				{
+					return {};
+				}
+			}
+
+			// Creation time
+			if (FAILED(archive->GetProperty(fileIndex, kpidCTime, &property)))
+			{
+				return {};
+			}
+			fileItem.SetCreationTime(property.ToDateTime().value_or(DateTime()));
+
+			// Modification time
+			if (FAILED(archive->GetProperty(fileIndex, kpidMTime, &property)))
+			{
+				return {};
+			}
+			fileItem.SetModificationTime(property.ToDateTime().value_or(DateTime()));
+
+			// Last access time
+			if (FAILED(archive->GetProperty(fileIndex, kpidATime, &property)))
+			{
+				return {};
+			}
+			fileItem.SetLastAccessTime(property.ToDateTime().value_or(DateTime()));
+
+			fileItem.SetAttributes(attributes);
+			return fileItem;
+		}
+		return {};
+	}
+	bool GetArchiveItems(const FSPath& archivePath, CompressionFormat format, std::vector<FileItem>& items, wxEvtHandler* evtHandler)
+	{
+		if (auto fileStream = OpenFileToRead(archivePath))
+		{
+			auto archive = GetArchiveReader(format);
+			Utility::CallAtScopeExit atExit([&]()
+			{
+				archive->Close();
+			});
+			auto inFile = CreateObject<InStreamWrapper>(fileStream, evtHandler);
+			auto openCallback = CreateObject<Callback::OpenArchive>(evtHandler);
+
+			if (FAILED(archive->Open(inFile, nullptr, openCallback)))
+			{
+				return false;
+			}
+
+			UInt32 itemCount32 = 0;
+			if (archive->GetNumberOfItems(&itemCount32) != S_OK)
+			{
+				return false;
+			}
+			items.reserve(itemCount32);
+
+			for (size_t i = 0; i < itemCount32; i++)
+			{
+				if (auto fileItem = GetArchiveItem(archive, i))
+				{
+					// Add the item
+					items.emplace_back(std::move(fileItem));
+				}
+			}
+			return true;
+		}
 		return false;
 	}
 }
