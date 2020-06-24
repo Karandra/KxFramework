@@ -1250,9 +1250,6 @@
     <ClInclude Include="kxf\General\LocallyUniqueID.h">
       <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Compression\SevenZip\Library.h">
-      <Filter>kxf\Compression\SevenZip</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Compression\SevenZip\Common.h">
       <Filter>kxf\Compression\SevenZip</Filter>
     </ClInclude>
@@ -1282,6 +1279,9 @@
     </ClInclude>
     <ClInclude Include="kxf\Compression\SevenZip\Private\PasswordHandler.h">
       <Filter>kxf\Compression\SevenZip\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Compression\SevenZip\Library.h">
+      <Filter>kxf\Compression\SevenZip</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1943,9 +1943,6 @@
     <ClCompile Include="kxf\General\LocallyUniqueID.cpp">
       <Filter>kxf\General</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Compression\SevenZip\Library.cpp">
-      <Filter>kxf\Compression\SevenZip</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\Compression\SevenZip\Common.cpp">
       <Filter>kxf\Compression\SevenZip</Filter>
     </ClCompile>
@@ -1969,6 +1966,9 @@
     </ClCompile>
     <ClCompile Include="kxf\Compression\SevenZip\Private\PasswordHandler.cpp">
       <Filter>kxf\Compression\SevenZip\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Compression\SevenZip\Library.cpp">
+      <Filter>kxf\Compression\SevenZip</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

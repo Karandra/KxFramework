@@ -1,6 +1,7 @@
 #pragma once
 #include "../Common.h"
 #include "kxf/General/String.h"
+#include "kxf/General/Version.h"
 #include "kxf/General/NativeUUID.h"
 #include "kxf/General/UniversallyUniqueID.h"
 #include "kxf/FileSystem/FSPath.h"
@@ -48,8 +49,10 @@ namespace kxf::SevenZip
 
 namespace kxf::SevenZip
 {
-	NativeUUID GetAlgorithmID(CompressionFormat format) noexcept;
+	String GetLibraryName();
+	Version GetLibraryVersion();
 
+	NativeUUID GetAlgorithmID(CompressionFormat format) noexcept;
 	String GetNameByFormat(CompressionFormat format);
 	String GetExtensionByFormat(CompressionFormat format);
 	CompressionFormat GetFormatByExtension(const String& extension);

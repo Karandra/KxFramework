@@ -1,9 +1,29 @@
 #include "stdafx.h"
 #include "Common.h"
+#include "Library.h"
+#include "kxf/System/ExecutableVersionResource.h"
 #include "Private/GUIDs.h"
 
 namespace kxf::SevenZip
 {
+	String GetLibraryName()
+	{
+		return wxS("7-Zip");
+	}
+	Version GetLibraryVersion()
+	{
+		Library& library = Library::GetInstance();
+		if (library.IsLoaded())
+		{
+			ExecutableVersionResource versionResource(library.GetLibrary().GetFilePath());
+			if (versionResource)
+			{
+				return versionResource.GetAnyVersion();
+			}
+		}
+		return {};
+	}
+
 	NativeUUID GetAlgorithmID(CompressionFormat format) noexcept
 	{
 		switch (format)
@@ -55,7 +75,6 @@ namespace kxf::SevenZip
 		}
 		return {};
 	}
-
 	String GetNameByFormat(CompressionFormat format)
 	{
 		switch (format)
