@@ -1,4 +1,5 @@
 #pragma once
+#include "kxf/Utility/TypeTraits.h"
 #include <utility>
 #include <type_traits>
 
@@ -54,7 +55,7 @@ namespace kxf
 	{
 		public:
 			using TEnum = TEnum_;
-			using TInt = std::underlying_type_t<TEnum_>;
+			using TInt = Utility::UnderlyingTypeEx_t<TEnum_>;
 
 		private:
 			TEnum m_Value = static_cast<TEnum>(0);
@@ -111,6 +112,10 @@ namespace kxf
 				return *this;
 			}
 
+			constexpr bool Equals(FlagSet other) const noexcept
+			{
+				return m_Value == other.m_Value;
+			}
 			constexpr bool Contains(FlagSet other) const noexcept
 			{
 				return (ToInt() & other.ToInt()) != 0;
@@ -174,11 +179,11 @@ namespace kxf
 
 			constexpr bool operator==(const FlagSet& other) const noexcept
 			{
-				return m_Value == other.m_Value;
+				return Equals(other);
 			}
 			constexpr bool operator!=(const FlagSet& other) const noexcept
 			{
-				return !(*this == other);
+				return !Equals(other);
 			}
 
 			constexpr FlagSet& operator=(const FlagSet&) noexcept = default;
