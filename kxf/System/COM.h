@@ -242,14 +242,25 @@ namespace kxf
 		};
 	}
 
-	template<class T>
-	class COMPtr: public COM::Private::BasicPtr<T, COM::Private::PtrTraits<T>>
+	template<class TValue_>
+	class COMPtr final: public COM::Private::BasicPtr<TValue_, COM::Private::PtrTraits<TValue_>>
 	{
 		private:
-			using Base = COM::Private::BasicPtr<T, COM::Private::PtrTraits<T>>;
+			using Base = COM::Private::BasicPtr<TValue_, COM::Private::PtrTraits<TValue_>>;
+			using TValue = TValue_;
+
+		private:
+			void Copy(TValue* ptr) noexcept
+			{
+				this->Reset(ptr);
+				if (ptr)
+				{
+					ptr->AddRef();
+				}
+			}
 
 		public:
-			COMPtr(T* ptr = nullptr) noexcept
+			COMPtr(TValue* ptr = nullptr) noexcept
 				:Base(ptr)
 			{
 			}
@@ -257,13 +268,16 @@ namespace kxf
 				:Base(std::move(other))
 			{
 			}
+
 			COMPtr(const COMPtr& other) noexcept
-				:Base(other.m_Value)
 			{
-				if (this->m_Value)
-				{
-					this->m_Value->AddRef();
-				}
+				Copy(other.m_Value);
+			}
+
+			template<class T, class = std::enable_if_t<std::is_base_of_v<TValue, T>>>
+			COMPtr(const COMPtr<T>& other) noexcept
+			{
+				Copy(other.Get());
 			}
 
 		public:
@@ -272,13 +286,17 @@ namespace kxf
 				this->Reset(other.Detach());
 				return *this;
 			}
+
 			COMPtr& operator=(const COMPtr& other) noexcept
 			{
-				this->Reset(other.m_Value);
-				if (this->m_Value)
-				{
-					this->m_Value->AddRef();
-				}
+				Copy(other.m_Value);
+				return *this;
+			}
+
+			template<class T, class = std::enable_if_t<std::is_base_of_v<TValue, T>>>
+			COMPtr& operator=(const COMPtr<T>& other) noexcept
+			{
+				Copy(other.Get());
 				return *this;
 			}
 	};
