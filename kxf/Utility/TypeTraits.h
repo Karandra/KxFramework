@@ -61,3 +61,21 @@ namespace kxf::Utility
 	template<class T>
 	inline constexpr bool is_unique_ptr_v = is_unique_ptr<T>::value;
 }
+
+namespace kxf::Utility
+{
+	template<class T, bool isEnum = std::is_enum_v<T>, bool isInteger = std::is_integral_v<T>>
+	struct UnderlyingTypeEx
+	{
+		using type = typename std::underlying_type<T>::type;
+	};
+
+	template<class T>
+	struct UnderlyingTypeEx<T, false, true>
+	{
+		using type = typename T;
+	};
+
+	template<class T>
+	using UnderlyingTypeEx_t = typename UnderlyingTypeEx<T>::type;
+}

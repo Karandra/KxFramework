@@ -1,5 +1,6 @@
 #pragma once
 #include "kxf/Common.hpp"
+#include "TypeTraits.h"
 #include <type_traits>
 #include <utility>
 #include <array>
@@ -87,23 +88,6 @@ namespace kxf::Utility
 {
 	namespace Private
 	{
-		template<class T, bool isEnum = std::is_enum_v<T>, bool isInteger = std::is_integral_v<T>>
-		struct UnderlyingType
-		{
-			using type = typename std::underlying_type<T>::type;
-		};
-
-		template<class T>
-		struct UnderlyingType<T, false, true>
-		{
-			using type = typename T;
-		};
-	}
-	namespace Private
-	{
-		template<class T>
-		using FlagIntType = typename UnderlyingType<T>::type;
-
 		template<class T>
 		constexpr bool TestFlagType() noexcept
 		{
@@ -123,8 +107,8 @@ namespace kxf::Utility
 	{
 		Private::AssertFlags<TFlagLeft, TFlagRight>();
 
-		using T1 = Private::FlagIntType<TFlagLeft>;
-		using T2 = Private::FlagIntType<TFlagRight>;
+		using T1 = UnderlyingTypeEx_t<TFlagLeft>;
+		using T2 = UnderlyingTypeEx_t<TFlagRight>;
 		using Tx = std::conditional_t<sizeof(T1) >= sizeof(T2), T1, T2>;
 
 		return static_cast<Tx>(left) & static_cast<Tx>(right);
@@ -136,8 +120,8 @@ namespace kxf::Utility
 	{
 		Private::AssertFlags<TFlag, TFlagMod>();
 
-		using T1 = Private::FlagIntType<TFlag>;
-		using T2 = Private::FlagIntType<TFlagMod>;
+		using T1 = UnderlyingTypeEx_t<TFlag>;
+		using T2 = UnderlyingTypeEx_t<TFlagMod>;
 		using Tx = std::conditional_t<sizeof(T1) >= sizeof(T2), T1, T2>;
 
 		return static_cast<TFlag>(static_cast<Tx>(flag) | static_cast<Tx>(flagMod));
@@ -171,8 +155,8 @@ namespace kxf::Utility
 	{
 		Private::AssertFlags<TFlag, TFlagMod>();
 
-		using T1 = Private::FlagIntType<TFlag>;
-		using T2 = Private::FlagIntType<TFlagMod>;
+		using T1 = UnderlyingTypeEx_t<TFlag>;
+		using T2 = UnderlyingTypeEx_t<TFlagMod>;
 		using Tx = std::conditional_t<sizeof(T1) >= sizeof(T2), T1, T2>;
 
 		return static_cast<TFlag>(static_cast<Tx>(flag) & ~static_cast<Tx>(flagMod));
