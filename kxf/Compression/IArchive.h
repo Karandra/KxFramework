@@ -22,7 +22,7 @@ namespace kxf::Compression
 			size_t m_Size = 0;
 
 		private:
-			void AssignMultiple(const FileIndex* data, size_t count)
+			void AssignMultiple(const FileIndex* data, size_t count) noexcept
 			{
 				if (data && count != 0)
 				{
@@ -35,45 +35,45 @@ namespace kxf::Compression
 					}
 				}
 			}
-			void AssignSingle(FileIndex fileIndex)
+			void AssignSingle(FileIndex fileIndex) noexcept
 			{
 				m_Data.Index = fileIndex;
 				m_Size = 1;
 			}
-			bool IsSingleIndex() const
+			bool IsSingleIndex() const noexcept
 			{
 				return m_Size == 1;
 			}
 
 		public:
-			FileIndexView() = default;
-			FileIndexView(const FileIndex* data, size_t count)
-			{
-				AssignMultiple(data, count);
-			}
-			FileIndexView(const FileIndexVector& files)
-			{
-				AssignMultiple(files.data(), files.size());
-			}
-			FileIndexView(FileIndex fileIndex)
+			FileIndexView() noexcept = default;
+			FileIndexView(FileIndex fileIndex) noexcept
 			{
 				AssignSingle(fileIndex);
 			}
-
+			FileIndexView(const FileIndex* data, size_t count) noexcept
+			{
+				AssignMultiple(data, count);
+			}
+			FileIndexView(const FileIndexVector& files) noexcept
+			{
+				AssignMultiple(files.data(), files.size());
+			}
+			
 			template<class T, size_t N>
-			FileIndexView(const T(&container)[N])
+			FileIndexView(const T(&container)[N]) noexcept
 			{
 				AssignMultiple(container, N);
 			}
 
 			template<class T, size_t N>
-			FileIndexView(const std::array<T, N>& container)
+			FileIndexView(const std::array<T, N>& container) noexcept
 			{
 				AssignMultiple(container.data(), container.size());
 			}
 
 		public:
-			const FileIndex* data() const
+			const FileIndex* data() const noexcept
 			{
 				if (IsSingleIndex())
 				{
@@ -81,41 +81,57 @@ namespace kxf::Compression
 				}
 				return m_Data.Ptr;
 			}
-			size_t size() const
+			size_t size() const noexcept
 			{
 				return m_Size;
 			}
-			bool empty() const
+			bool empty() const noexcept
 			{
 				return m_Size == 0;
 			}
 
-			FileIndex operator[](size_t index) const
+			FileIndex operator[](size_t index) const noexcept
 			{
 				return data()[index];
 			}
-			FileIndex front() const
+			FileIndex front() const noexcept
 			{
 				return *data();
 			}
-			FileIndex back() const
+			FileIndex back() const noexcept
 			{
 				return data()[size() - 1];
 			}
 
-			FileIndexVector CopyToVector() const
+			template<class T>
+			std::vector<T> ToVector() const
 			{
 				const FileIndex* data = this->data();
 				const size_t size = this->size();
 
-				return FileIndexVector(data, data + size);
+				if constexpr(std::is_same_v<T, FileIndex>)
+				{
+					return {data, data + size};
+				}
+				else
+				{
+					std::vector<T> result;
+					result.reserve(size);
+
+					const FileIndex* end = data + size;
+					for (auto it = data; it != end; ++it)
+					{
+						result.emplace_back(*it);
+					}
+					return result;
+				}
 			}
 
-			explicit operator bool() const
+			explicit operator bool() const noexcept
 			{
 				return !empty();
 			}
-			bool operator!() const
+			bool operator!() const noexcept
 			{
 				return empty();
 			}
