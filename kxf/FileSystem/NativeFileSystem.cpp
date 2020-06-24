@@ -54,15 +54,33 @@ namespace
 namespace kxf
 {
 	// IFileSystem
-	bool NativeFileSystem::DoesItemExist(const FSPath& path) const
+	bool NativeFileSystem::ItemExist(const FSPath& path) const
 	{
 		if (path.IsAbsolute())
 		{
-			FileStream file(path, FileStreamAccess::ReadAttributes, FileStreamDisposition::OpenExisting, FileStreamShare::Everything);
-			return file.IsOk();
+			return FileSystem::Private::GetFileAttributes(path) != INVALID_FILE_ATTRIBUTES;
 		}
 		return false;
 	}
+	bool NativeFileSystem::FileExist(const FSPath& path) const
+	{
+		if (path.IsAbsolute())
+		{
+			const FlagSet<DWORD> attributes = FileSystem::Private::GetFileAttributes(path);
+			return !attributes.Equals(INVALID_FILE_ATTRIBUTES) && !attributes.Contains(FILE_ATTRIBUTE_DIRECTORY);
+		}
+		return false;
+	}
+	bool NativeFileSystem::DirectoryExist(const FSPath& path) const
+	{
+		if (path.IsAbsolute())
+		{
+			const FlagSet<uint32_t> attributes = FileSystem::Private::GetFileAttributes(path);
+			return !attributes.Equals(INVALID_FILE_ATTRIBUTES) && attributes.Contains(FILE_ATTRIBUTE_DIRECTORY);
+		}
+		return false;
+	}
+
 	FileItem NativeFileSystem::GetItem(const FSPath& path) const
 	{
 		if (path.IsAbsolute())
@@ -148,7 +166,14 @@ namespace kxf
 		}
 		return counter;
 	}
-	
+	bool NativeFileSystem::IsDirectoryEmpty(const FSPath& directory) const
+	{
+		return EnumItems(directory, [](const FileItem&)
+		{
+			return false;
+		}, {}) == 0;
+	}
+
 	bool NativeFileSystem::CreateDirectory(const FSPath& path)
 	{
 		if (!GetItem(path))
@@ -259,11 +284,30 @@ namespace kxf
 	}
 
 	// IFileIDSystem
-	bool NativeFileSystem::DoesItemExist(const UniversallyUniqueID& id) const
+	bool NativeFileSystem::ItemExist(const UniversallyUniqueID& id) const
 	{
 		FileStream file;
 		return OpenFileByID(id, m_LookupScope, file);
 	}
+	bool NativeFileSystem::FileExist(const UniversallyUniqueID& id) const
+	{
+		FileStream file;
+		if (OpenFileByID(id, m_LookupScope, file))
+		{
+			return !file.GetAttributes().Contains(FileAttribute::Directory);
+		}
+		return false;
+	}
+	bool NativeFileSystem::DirectoryExist(const UniversallyUniqueID& id) const
+	{
+		FileStream file;
+		if (OpenFileByID(id, m_LookupScope, file))
+		{
+			return !file.GetAttributes().Contains(FileAttribute::Directory);
+		}
+		return false;
+	}
+	
 	FileItem NativeFileSystem::GetItem(const UniversallyUniqueID& id) const
 	{
 		FileStream file;

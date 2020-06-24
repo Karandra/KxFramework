@@ -28,6 +28,12 @@ namespace
 
 namespace kxf::FileSystem::Private
 {
+	uint32_t GetFileAttributes(const FSPath& path)
+	{
+		String pathName = path.GetFullPathWithNS(FSPathNamespace::Win32File);
+		return ::GetFileAttributesW(pathName.wc_str());
+	}
+
 	bool IsValidFindItem(const WIN32_FIND_DATAW& findInfo) noexcept
 	{
 		std::wstring_view name = findInfo.cFileName;
@@ -235,5 +241,4 @@ namespace kxf::FileSystem::Private
 			return true;
 		}, {}, FSEnumItemsFlag::Recursive) != 0;
 	}
-
 }

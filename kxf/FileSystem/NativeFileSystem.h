@@ -22,10 +22,14 @@ namespace kxf
 
 		public:
 			// IFileSystem
-			bool DoesItemExist(const FSPath& path) const override;
+			bool ItemExist(const FSPath& path) const;
+			bool FileExist(const FSPath& path) const;
+			bool DirectoryExist(const FSPath& path) const;
+
 			FileItem GetItem(const FSPath& path) const override;
 			size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query = {}, FlagSet<FSEnumItemsFlag> flags = {}) const override;
-			
+			bool IsDirectoryEmpty(const FSPath& directory) const override;
+
 			bool CreateDirectory(const FSPath& path) override;
 			bool ChangeAttributes(const FSPath& path, FileAttribute attributes) override;
 			bool ChangeTimestamp(const FSPath& path, DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime) override;
@@ -41,11 +45,18 @@ namespace kxf
 				return m_LookupScope;
 			}
 
-			bool DoesItemExist(const UniversallyUniqueID& id) const override;
+			bool ItemExist(const UniversallyUniqueID& id) const override;
+			bool FileExist(const UniversallyUniqueID& id) const override;
+			bool DirectoryExist(const UniversallyUniqueID& id) const override;
+
 			FileItem GetItem(const UniversallyUniqueID& id) const override;
 			size_t EnumItems(const UniversallyUniqueID& id, TEnumItemsFunc func, FlagSet<FSEnumItemsFlag> flags = {}) const override
 			{
 				return 0;
+			}
+			bool IsDirectoryEmpty(const UniversallyUniqueID& id) const override
+			{
+				return false;
 			}
 
 			bool ChangeAttributes(const UniversallyUniqueID& id, FileAttribute attributes) override

@@ -10,6 +10,8 @@
 
 namespace kxf::FileSystem::Private
 {
+	uint32_t GetFileAttributes(const FSPath& path);
+
 	constexpr inline FlagSet<FileAttribute> MapFileAttributes(uint32_t nativeAttributes) noexcept
 	{
 		if (nativeAttributes == INVALID_FILE_ATTRIBUTES)
