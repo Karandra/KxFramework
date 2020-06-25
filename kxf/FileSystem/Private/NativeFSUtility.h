@@ -85,6 +85,70 @@ namespace kxf::FileSystem::Private
 		return tags;
 	}
 
+	constexpr inline DWORD MapFileAccessMode(FlagSet<FileStreamAccess> mode) noexcept
+	{
+		if (mode == FileStreamAccess::None)
+		{
+			return 0;
+		}
+		else
+		{
+			DWORD nativeMode = 0;
+			Utility::AddFlagRef(nativeMode, GENERIC_READ, mode & FileStreamAccess::Read);
+			Utility::AddFlagRef(nativeMode, GENERIC_WRITE, mode & FileStreamAccess::Write);
+			Utility::AddFlagRef(nativeMode, FILE_READ_ATTRIBUTES, mode & FileStreamAccess::ReadAttributes);
+			Utility::AddFlagRef(nativeMode, FILE_WRITE_ATTRIBUTES, mode & FileStreamAccess::WriteAttributes);
+			return nativeMode;
+		}
+		return std::numeric_limits<DWORD>::max();
+	}
+	constexpr inline DWORD MapFileShareMode(FlagSet<FileStreamShare> mode) noexcept
+	{
+		if (mode == FileStreamShare::None)
+		{
+			return 0;
+		}
+		else
+		{
+			DWORD nativeMode = 0;
+			Utility::AddFlagRef(nativeMode, FILE_SHARE_READ, mode & FileStreamShare::Read);
+			Utility::AddFlagRef(nativeMode, FILE_SHARE_WRITE, mode & FileStreamShare::Write);
+			Utility::AddFlagRef(nativeMode, FILE_SHARE_DELETE, mode & FileStreamShare::Delete);
+			return nativeMode;
+		}
+		return std::numeric_limits<DWORD>::max();
+	}
+	constexpr inline DWORD MapFileDisposition(FileStreamDisposition mode) noexcept
+	{
+		switch (mode)
+		{
+			case FileStreamDisposition::OpenExisting:
+			{
+				return OPEN_EXISTING;
+			}
+			case FileStreamDisposition::OpenAlways:
+			{
+				return OPEN_ALWAYS;
+			}
+			case FileStreamDisposition::CreateNew:
+			{
+				return CREATE_NEW;
+			}
+			case FileStreamDisposition::CreateAlways:
+			{
+				return CREATE_ALWAYS;
+			}
+		};
+		return 0;
+	}
+	constexpr inline DWORD MapFileFlags(FlagSet<FileStreamFlags> flags) noexcept
+	{
+		DWORD nativeMode = 0;
+		Utility::AddFlagRef(nativeMode, FILE_ATTRIBUTE_NORMAL, flags & FileStreamFlags::Normal);
+		Utility::AddFlagRef(nativeMode, FILE_FLAG_BACKUP_SEMANTICS, flags & FileStreamFlags::BackupSemantics);
+		return nativeMode;
+	}
+
 	inline DateTime ConvertDateTime(const SYSTEMTIME& systemTime) noexcept
 	{
 		return DateTime().SetSystemTime(systemTime, TimeZone::UTC);

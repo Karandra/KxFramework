@@ -88,69 +88,6 @@ namespace
 			return isWrite ? StreamErrorCode::WriteError : StreamErrorCode::ReadError;
 		}
 	}
-	constexpr DWORD AccessModeToNative(FlagSet<FileStreamAccess> mode) noexcept
-	{
-		if (mode == FileStreamAccess::None)
-		{
-			return 0;
-		}
-		else
-		{
-			DWORD nativeMode = 0;
-			Utility::AddFlagRef(nativeMode, GENERIC_READ, mode & FileStreamAccess::Read);
-			Utility::AddFlagRef(nativeMode, GENERIC_WRITE, mode & FileStreamAccess::Write);
-			Utility::AddFlagRef(nativeMode, FILE_READ_ATTRIBUTES, mode & FileStreamAccess::ReadAttributes);
-			Utility::AddFlagRef(nativeMode, FILE_WRITE_ATTRIBUTES, mode & FileStreamAccess::WriteAttributes);
-			return nativeMode;
-		}
-		return std::numeric_limits<DWORD>::max();
-	}
-	constexpr DWORD ShareModeToNative(FlagSet<FileStreamShare> mode) noexcept
-	{
-		if (mode == FileStreamShare::None)
-		{
-			return 0;
-		}
-		else
-		{
-			DWORD nativeMode = 0;
-			Utility::AddFlagRef(nativeMode, FILE_SHARE_READ, mode & FileStreamShare::Read);
-			Utility::AddFlagRef(nativeMode, FILE_SHARE_WRITE, mode & FileStreamShare::Write);
-			Utility::AddFlagRef(nativeMode, FILE_SHARE_DELETE, mode & FileStreamShare::Delete);
-			return nativeMode;
-		}
-		return std::numeric_limits<DWORD>::max();
-	}
-	constexpr DWORD DispositionToNative(FileStreamDisposition mode) noexcept
-	{
-		switch (mode)
-		{
-			case FileStreamDisposition::OpenExisting:
-			{
-				return OPEN_EXISTING;
-			}
-			case FileStreamDisposition::OpenAlways:
-			{
-				return OPEN_ALWAYS;
-			}
-			case FileStreamDisposition::CreateNew:
-			{
-				return CREATE_NEW;
-			}
-			case FileStreamDisposition::CreateAlways:
-			{
-				return CREATE_ALWAYS;
-			}
-		};
-		return 0;
-	}
-	constexpr DWORD FlagsToNative(FlagSet<FileStreamFlags> flags) noexcept
-	{
-		DWORD nativeMode = 0;
-		Utility::AddFlagRef(nativeMode, FILE_ATTRIBUTE_NORMAL, flags & FileStreamFlags::Normal);
-		Utility::AddFlagRef(nativeMode, FILE_FLAG_BACKUP_SEMANTICS, flags & FileStreamFlags::BackupSemantics);
-		return nativeMode;
-	}
 }
 
 namespace kxf
@@ -230,15 +167,15 @@ namespace kxf
 	{
 		return GetFileNameByHandle(m_Handle);
 	}
-	bool FileStream::AttachHandle(void* handle)
+	bool FileStream::AttachHandle(void* handle, FlagSet<FileStreamAccess> access, FileStreamDisposition disposition, FlagSet<FileStreamShare> share, FlagSet<FileStreamFlags> flags)
 	{
 		DoClose();
 		DoSetLastError(0, false);
 
-		m_AccessMode = FileStreamAccess::None;
-		m_Disposition = FileStreamDisposition::OpenExisting;
-		m_ShareMode = FileStreamShare::None;
-		m_Flags = FileStreamFlags::None;
+		m_AccessMode = access;
+		m_Disposition = disposition;
+		m_ShareMode = share;
+		m_Flags = flags;
 		m_Handle = handle;
 		return DoIsOpened();
 	}
@@ -253,7 +190,10 @@ namespace kxf
 			m_Disposition = disposition;
 			m_ShareMode = share;
 			m_Flags = flags;
-			m_Handle = ::ReOpenFile(handle, AccessModeToNative(m_AccessMode), ShareModeToNative(m_ShareMode), FlagsToNative(flags));
+			m_Handle = ::ReOpenFile(handle,
+									FileSystem::Private::MapFileAccessMode(m_AccessMode),
+									FileSystem::Private::MapFileShareMode(m_ShareMode),
+									FileSystem::Private::MapFileFlags(flags));
 
 			return DoIsOpened();
 		}
@@ -278,7 +218,13 @@ namespace kxf
 			m_Flags = flags;
 
 			String pathString = path.GetFullPathWithNS(FSPathNamespace::Win32File);
-			m_Handle = ::CreateFileW(pathString.wc_str(), AccessModeToNative(m_AccessMode), ShareModeToNative(m_ShareMode), nullptr, DispositionToNative(m_Disposition), FlagsToNative(flags), nullptr);
+			m_Handle = ::CreateFileW(pathString.wc_str(),
+									 FileSystem::Private::MapFileAccessMode(m_AccessMode),
+									 FileSystem::Private::MapFileShareMode(m_ShareMode),
+									 nullptr,
+									 FileSystem::Private::MapFileDisposition(m_Disposition),
+									 FileSystem::Private::MapFileFlags(flags),
+									 nullptr);
 			return DoIsOpened();
 		}
 		return false;

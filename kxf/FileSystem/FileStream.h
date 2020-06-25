@@ -64,7 +64,11 @@ namespace kxf
 			}
 			FSPath GetFileSystemPath() const;
 
-			bool AttachHandle(void* handle);
+			bool AttachHandle(void* handle,
+							  FlagSet<FileStreamAccess> access = FileStreamAccess::None,
+							  FileStreamDisposition disposition = FileStreamDisposition::OpenExisting,
+							  FlagSet<FileStreamShare> share = FileStreamShare::None,
+							  FlagSet<FileStreamFlags> flags = FileStreamFlags::None);
 			bool ReopenHandle(void* handle,
 							  FlagSet<FileStreamAccess> access = FileStreamAccess::Read,
 							  FileStreamDisposition disposition = FileStreamDisposition::OpenExisting,

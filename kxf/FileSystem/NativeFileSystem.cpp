@@ -12,7 +12,13 @@ namespace
 {
 	using namespace kxf;
 
-	bool OpenFileByID(const UniversallyUniqueID& fileID, const UniversallyUniqueID& volumeID, FileStream& file)
+	bool OpenFileByID(const UniversallyUniqueID& fileID,
+					  const UniversallyUniqueID& volumeID,
+					  FileStream& file,
+					  FlagSet<FileStreamAccess> access = FileStreamAccess::ReadAttributes,
+					  FileStreamDisposition disposition = FileStreamDisposition::OpenExisting,
+					  FlagSet<FileStreamShare> share = FileStreamShare::Everything,
+					  FlagSet<FileStreamFlags> flags = FileStreamFlags::BackupSemantics)
 	{
 		if (fileID && volumeID)
 		{
@@ -44,7 +50,16 @@ namespace
 					}
 				}
 
-				return file.AttachHandle(::OpenFileById(volume.GetHandle(), &fileIDDescriptor, FILE_READ_ATTRIBUTES, FILE_SHARE_READ|FILE_SHARE_WRITE|FILE_SHARE_DELETE, nullptr, FILE_FLAG_BACKUP_SEMANTICS));
+				HANDLE handle = ::OpenFileById(volume.GetHandle(),
+											   &fileIDDescriptor,
+											   FileSystem::Private::MapFileAccessMode(access),
+											   FileSystem::Private::MapFileShareMode(share),
+											   nullptr,
+											   FileSystem::Private::MapFileFlags(flags));
+				if (handle && handle != INVALID_HANDLE_VALUE)
+				{
+					return file.AttachHandle(handle, access, disposition, share, flags);
+				}
 			}
 		}
 		return false;
@@ -283,6 +298,31 @@ namespace kxf
 		return false;
 	}
 
+	std::unique_ptr<wxInputStream> NativeFileSystem::OpenToRead(const FSPath& path)
+	{
+		if (path.IsAbsolute())
+		{
+			auto stream = std::make_unique<FileStream>(path, FileStreamAccess::Read, FileStreamDisposition::OpenExisting, FileStreamShare::Read);
+			if (stream->IsOk())
+			{
+				return stream;
+			}
+		}
+		return nullptr;
+	}
+	std::unique_ptr<wxOutputStream> NativeFileSystem::OpenToWrite(const FSPath& path)
+	{
+		if (path.IsAbsolute())
+		{
+			auto stream = std::make_unique<FileStream>(path, FileStreamAccess::Write, FileStreamDisposition::CreateAlways, FileStreamShare::Read|FileStreamShare::Write);
+			if (stream->IsOk())
+			{
+				return stream;
+			}
+		}
+		return nullptr;
+	}
+
 	// IFileIDSystem
 	bool NativeFileSystem::ItemExist(const UniversallyUniqueID& id) const
 	{
@@ -316,6 +356,31 @@ namespace kxf
 			return FileSystem::Private::ConvertFileInfo(file.GetHandle(), id);
 		}
 		return {};
+	}
+
+	std::unique_ptr<wxInputStream> NativeFileSystem::OpenToRead(const UniversallyUniqueID& id)
+	{
+		if (id)
+		{
+			auto steram = std::make_unique<FileStream>();
+			if (OpenFileByID(id, m_LookupScope, *steram, FileStreamAccess::Read, FileStreamDisposition::OpenExisting, FileStreamShare::Read, FileStreamFlags::None))
+			{
+				return steram;
+			}
+		}
+		return nullptr;
+	}
+	std::unique_ptr<wxOutputStream> NativeFileSystem::OpenToWrite(const UniversallyUniqueID& id)
+	{
+		if (id)
+		{
+			auto steram = std::make_unique<FileStream>();
+			if (OpenFileByID(id, m_LookupScope, *steram, FileStreamAccess::Write, FileStreamDisposition::CreateAlways, FileStreamShare::Read|FileStreamShare::Write, FileStreamFlags::None))
+			{
+				return steram;
+			}
+		}
+		return nullptr;
 	}
 
 	bool NativeFileSystem::IsInUse(const FSPath& path) const
