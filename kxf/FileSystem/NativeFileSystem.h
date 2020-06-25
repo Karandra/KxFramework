@@ -31,7 +31,7 @@ namespace kxf
 			bool IsDirectoryEmpty(const FSPath& directory) const override;
 
 			bool CreateDirectory(const FSPath& path) override;
-			bool ChangeAttributes(const FSPath& path, FileAttribute attributes) override;
+			bool ChangeAttributes(const FSPath& path, FlagSet<FileAttribute> attributes) override;
 			bool ChangeTimestamp(const FSPath& path, DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime) override;
 
 			bool CopyItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) override;
@@ -63,7 +63,7 @@ namespace kxf
 				return false;
 			}
 
-			bool ChangeAttributes(const UniversallyUniqueID& id, FileAttribute attributes) override
+			bool ChangeAttributes(const UniversallyUniqueID& id, FlagSet<FileAttribute> attributes) override
 			{
 				return false;
 			}

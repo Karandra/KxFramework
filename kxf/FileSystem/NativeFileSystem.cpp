@@ -191,7 +191,7 @@ namespace kxf
 
 	bool NativeFileSystem::CreateDirectory(const FSPath& path)
 	{
-		if (!GetItem(path))
+		if (!ItemExist(path))
 		{
 			FSPath finalPath;
 			finalPath.SetNamespace(path.GetNamespace());
@@ -209,7 +209,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool NativeFileSystem::ChangeAttributes(const FSPath& path, FileAttribute attributes)
+	bool NativeFileSystem::ChangeAttributes(const FSPath& path, FlagSet<FileAttribute> attributes)
 	{
 		if (attributes != FileAttribute::Invalid && path.IsAbsolute())
 		{

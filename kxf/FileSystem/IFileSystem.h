@@ -56,7 +56,7 @@ namespace kxf
 			virtual bool IsDirectoryEmpty(const FSPath& directory) const = 0;
 			
 			virtual bool CreateDirectory(const FSPath& path) = 0;
-			virtual bool ChangeAttributes(const FSPath& path, FileAttribute attributes) = 0;
+			virtual bool ChangeAttributes(const FSPath& path, FlagSet<FileAttribute> attributes) = 0;
 			virtual bool ChangeTimestamp(const FSPath& path, DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime) = 0;
 
 			virtual bool CopyItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) = 0;
@@ -86,7 +86,7 @@ namespace kxf
 			virtual size_t EnumItems(const UniversallyUniqueID& id, IFileSystem::TEnumItemsFunc func, FlagSet<FSEnumItemsFlag> flags = {}) const = 0;
 			virtual bool IsDirectoryEmpty(const UniversallyUniqueID& id) const = 0;
 
-			virtual bool ChangeAttributes(const UniversallyUniqueID& id, FileAttribute attributes) = 0;
+			virtual bool ChangeAttributes(const UniversallyUniqueID& id, FlagSet<FileAttribute> attributes) = 0;
 			virtual bool ChangeTimestamp(const UniversallyUniqueID& id, DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime) = 0;
 
 			virtual bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, IFileSystem::TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) = 0;
