@@ -1,20 +1,21 @@
 #pragma once
 #include "Common.h"
 #include "IArchive.h"
-#include "kxf/FileSystem/FileStream.h"
+#include "kxf/FileSystem/IFileSystem.h"
 #include "kxf/FileSystem/NativeFileSystem.h"
+#include "kxf/FileSystem/FileStream.h"
 
 namespace kxf::Compression
 {
 	class ExtractorCallbackBase: public RTTI::ImplementInterface<ExtractorCallbackBase, IExtractionCallback>
 	{
 		protected:
-			IArchiveItems& m_ArchiveItems;
 			IArchiveExtraction& m_ArchiveExtraction;
+			IFileIDSystem& m_ArchiveFS;
 
 		public:
 			ExtractorCallbackBase(IArchiveExtraction& archive)
-				:m_ArchiveItems(*archive.QueryInterface<IArchiveItems>()), m_ArchiveExtraction(archive)
+				:m_ArchiveExtraction(archive), m_ArchiveFS(*archive.QueryInterface<IFileIDSystem>())
 			{
 			}
 	};
@@ -36,9 +37,9 @@ namespace kxf::Compression
 			}
 
 		public:
-			OutputStreamDelegate OnGetStream(FileIndex fileIndex) override
+			OutputStreamDelegate OnGetStream(size_t fileIndex) override
 			{
-				m_FileItem = m_ArchiveItems.GetItem(fileIndex);
+				m_FileItem = m_ArchiveFS.GetItem(LocallyUniqueID(fileIndex));
 				if (m_FileItem)
 				{
 					// Get target path
@@ -58,7 +59,7 @@ namespace kxf::Compression
 				}
 				return nullptr;
 			}
-			bool OnOperationCompleted(FileIndex fileIndex, wxOutputStream& stream) override
+			bool OnOperationCompleted(size_t fileIndex, wxOutputStream& stream) override
 			{
 				if (m_FileItem)
 				{
@@ -107,16 +108,16 @@ namespace kxf::Compression
 			}
 
 		public:
-			OutputStreamDelegate OnGetStream(FileIndex fileIndex) override
+			OutputStreamDelegate OnGetStream(size_t fileIndex) override
 			{
-				FileItem fileItem = m_ArchiveItems.GetItem(fileIndex);
+				FileItem fileItem = m_ArchiveFS.GetItem(LocallyUniqueID(fileIndex));
 				if (fileItem && !fileItem.IsDirectory())
 				{
 					return m_Stream;
 				}
 				return nullptr;
 			}
-			bool OnOperationCompleted(FileIndex fileIndex, wxOutputStream& stream) override
+			bool OnOperationCompleted(size_t fileIndex, wxOutputStream& stream) override
 			{
 				return true;
 			}

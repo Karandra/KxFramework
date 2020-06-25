@@ -60,7 +60,7 @@ namespace kxf
 				{
 					return static_cast<size_t>(id.ToInt());
 				}
-				return Compression::InvalidFileIndex;
+				return std::numeric_limits<size_t>::max();
 			}
 			void SetFileIndex(size_t value) noexcept
 			{

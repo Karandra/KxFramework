@@ -4,30 +4,6 @@
 
 namespace kxf
 {
-	FileItem IArchiveItems::FindItem(const FSPathQuery& query) const
-	{
-		FileItem result;
-		EnumItems({}, [&](FileItem item)
-		{
-			result = std::move(item);
-			return false;
-		}, query, FSEnumItemsFlag::Recursive);
-		return result;
-	}
-	FileItem IArchiveItems::FindItem(const FSPath& directory, const FSPathQuery& query) const
-	{
-		FileItem result;
-		EnumItems(directory, [&](FileItem item)
-		{
-			result = std::move(item);
-			return false;
-		}, query, FSEnumItemsFlag::Recursive);
-		return result;
-	}
-}
-
-namespace kxf
-{
 	bool IArchiveExtraction::ExtractToDirectory(const FSPath& directory) const
 	{
 		Compression::FileExtractionCallback callback(const_cast<IArchiveExtraction&>(*this), directory);
@@ -39,12 +15,12 @@ namespace kxf
 		return Extract(callback, files);
 	}
 
-	bool IArchiveExtraction::ExtractToStream(Compression::FileIndex fileIndex, wxOutputStream& stream) const
+	bool IArchiveExtraction::ExtractToStream(size_t fileIndex, wxOutputStream& stream) const
 	{
 		Compression::SingleStreamExtractionCallback callback(const_cast<IArchiveExtraction&>(*this), stream);
 		return Extract(callback, fileIndex);
 	}
-	bool IArchiveExtraction::ExtractToFile(Compression::FileIndex fileIndex, const FSPath& targetPath) const
+	bool IArchiveExtraction::ExtractToFile(size_t fileIndex, const FSPath& targetPath) const
 	{
 		Compression::SingleFileExtractionCallback callback(const_cast<IArchiveExtraction&>(*this), targetPath);
 		return Extract(callback, fileIndex);

@@ -16,28 +16,30 @@ namespace kxf::Compression
 		private:
 			union
 			{
-				const FileIndex* Ptr = nullptr;
-				FileIndex Index;
+				const size_t* Ptr = nullptr;
+				size_t Index;
 			} m_Data;
 			size_t m_Size = 0;
 
 		private:
-			void AssignMultiple(const FileIndex* data, size_t count) noexcept
+			void AssignMultiple(const size_t* data, size_t count) noexcept
 			{
 				if (data && count != 0)
 				{
-					m_Data.Ptr = data;
-					m_Size = count;
-
 					if (count == 1)
 					{
 						AssignSingle(*data);
 					}
+					else
+					{
+						m_Data.Ptr = data;
+						m_Size = count;
+					}
 				}
 			}
-			void AssignSingle(FileIndex fileIndex) noexcept
+			void AssignSingle(size_t size_t) noexcept
 			{
-				m_Data.Index = fileIndex;
+				m_Data.Index = size_t;
 				m_Size = 1;
 			}
 			bool IsSingleIndex() const noexcept
@@ -47,33 +49,33 @@ namespace kxf::Compression
 
 		public:
 			FileIndexView() noexcept = default;
-			FileIndexView(FileIndex fileIndex) noexcept
+			FileIndexView(size_t size_t) noexcept
 			{
-				AssignSingle(fileIndex);
+				AssignSingle(size_t);
 			}
-			FileIndexView(const FileIndex* data, size_t count) noexcept
+			FileIndexView(const size_t* data, size_t count) noexcept
 			{
 				AssignMultiple(data, count);
 			}
-			FileIndexView(const FileIndexVector& files) noexcept
+			explicit FileIndexView(const std::vector<size_t>& files) noexcept
 			{
 				AssignMultiple(files.data(), files.size());
 			}
 			
 			template<class T, size_t N>
-			FileIndexView(const T(&container)[N]) noexcept
+			explicit FileIndexView(const T(&container)[N]) noexcept
 			{
 				AssignMultiple(container, N);
 			}
 
 			template<class T, size_t N>
-			FileIndexView(const std::array<T, N>& container) noexcept
+			explicit FileIndexView(const std::array<T, N>& container) noexcept
 			{
 				AssignMultiple(container.data(), container.size());
 			}
 
 		public:
-			const FileIndex* data() const noexcept
+			const size_t* data() const noexcept
 			{
 				if (IsSingleIndex())
 				{
@@ -90,15 +92,15 @@ namespace kxf::Compression
 				return m_Size == 0;
 			}
 
-			FileIndex operator[](size_t index) const noexcept
+			size_t operator[](size_t index) const noexcept
 			{
 				return data()[index];
 			}
-			FileIndex front() const noexcept
+			size_t front() const noexcept
 			{
 				return *data();
 			}
-			FileIndex back() const noexcept
+			size_t back() const noexcept
 			{
 				return data()[size() - 1];
 			}
@@ -106,20 +108,19 @@ namespace kxf::Compression
 			template<class T>
 			std::vector<T> ToVector() const
 			{
-				const FileIndex* data = this->data();
-				const size_t size = this->size();
+				const size_t* begin = this->data();
+				const size_t* end = begin + this->size();
 
-				if constexpr(std::is_same_v<T, FileIndex>)
+				if constexpr(std::is_same_v<T, size_t>)
 				{
-					return {data, data + size};
+					return {begin, end};
 				}
 				else
 				{
 					std::vector<T> result;
-					result.reserve(size);
+					result.reserve(this->size());
 
-					const FileIndex* end = data + size;
-					for (auto it = data; it != end; ++it)
+					for (auto it = begin; it != end; ++it)
 					{
 						result.emplace_back(*it);
 					}
@@ -148,11 +149,12 @@ namespace kxf
 			virtual ~IArchive() = default;
 
 		public:
-			virtual bool IsOK() const = 0;
-			virtual bool Open(const String& filePath) = 0;
-			virtual void Close() = 0;
 			virtual FSPath GetFilePath() const = 0;
+			virtual bool IsOpened() const = 0;
+			virtual bool Open(const FSPath& filePath) = 0;
+			virtual void Close() = 0;
 
+			virtual size_t GetItemCount() const = 0;
 			virtual BinarySize GetOriginalSize() const = 0;
 			virtual BinarySize GetCompressedSize() const = 0;
 			double GetCompressionRatio() const
@@ -163,28 +165,12 @@ namespace kxf
 		public:
 			explicit operator bool() const
 			{
-				return IsOK();
+				return IsOpened();
 			}
 			bool operator!() const
 			{
-				return !IsOK();
+				return !IsOpened();
 			}
-	};
-
-	class KX_API IArchiveItems: public RTTI::Interface<IArchiveItems>
-	{
-		KxDeclareIID(IArchiveItems, {0x1455f21f, 0x1a17, 0x4ca2, {0xb5, 0x57, 0xaa, 0xa8, 0x68, 0xfb, 0x4b, 0x7e}});
-
-		public:
-			virtual ~IArchiveItems() = default;
-
-		public:
-			virtual size_t GetItemCount() const = 0;
-			virtual FileItem GetItem(Compression::FileIndex fileIndex) const = 0;
-			virtual size_t EnumItems(const FSPath& directory, IFileSystem::TEnumItemsFunc func, const FSPathQuery& query = {}, FSEnumItemsFlag flags = FSEnumItemsFlag::None) const = 0;
-			
-			FileItem FindItem(const FSPathQuery& query) const;
-			FileItem FindItem(const FSPath& directory, const FSPathQuery& query) const;
 	};
 }
 
@@ -204,8 +190,8 @@ namespace kxf
 				return false;
 			}
 
-			virtual OutputStreamDelegate OnGetStream(Compression::FileIndex fileIndex) = 0;
-			virtual bool OnOperationCompleted(Compression::FileIndex fileIndex, wxOutputStream& stream) = 0;
+			virtual OutputStreamDelegate OnGetStream(size_t size_t) = 0;
+			virtual bool OnOperationCompleted(size_t size_t, wxOutputStream& stream) = 0;
 	};
 
 	template<class TOutStream = wxOutputStream>
@@ -215,8 +201,8 @@ namespace kxf
 			const IArchiveExtraction& m_Archive;
 
 			std::function<bool()> m_ShouldCancel;
-			std::function<OutputStreamDelegate(Compression::FileIndex)> m_OnGetStream;
-			std::function<bool(Compression::FileIndex, wxOutputStream&)> m_OnOperationCompleted;
+			std::function<OutputStreamDelegate(size_t)> m_OnGetStream;
+			std::function<bool(size_t, wxOutputStream&)> m_OnOperationCompleted;
 
 		private:
 			bool ShouldCancel() override
@@ -224,13 +210,13 @@ namespace kxf
 				return m_ShouldCancel ? m_ShouldCancel() : false;
 			}
 
-			OutputStreamDelegate OnGetStream(Compression::FileIndex fileIndex) override
+			OutputStreamDelegate OnGetStream(size_t size_t) override
 			{
-				return m_OnGetStream ? m_OnGetStream(fileIndex) : nullptr;
+				return m_OnGetStream ? m_OnGetStream(size_t) : nullptr;
 			}
-			bool OnOperationCompleted(Compression::FileIndex fileIndex, wxOutputStream& stream) override
+			bool OnOperationCompleted(size_t size_t, wxOutputStream& stream) override
 			{
-				return m_OnOperationCompleted ? m_OnOperationCompleted(fileIndex, stream) : true;
+				return m_OnOperationCompleted ? m_OnOperationCompleted(size_t, stream) : true;
 			}
 			
 		public:
@@ -275,9 +261,9 @@ namespace kxf
 				else
 				{
 					// Wrap inside lambda and cast stream type
-					m_OnOperationCompleted = [func = std::forward<TFunc>(func)](Compression::FileIndex fileIndex, wxOutputStream& stream) -> bool
+					m_OnOperationCompleted = [func = std::forward<TFunc>(func)](size_t index, wxOutputStream& stream) -> bool
 					{
-						return std::invoke(func, fileIndex, static_cast<TOutStream&>(stream));
+						return std::invoke(func, index, static_cast<TOutStream&>(stream));
 					};
 				}
 				return *this;
@@ -301,10 +287,10 @@ namespace kxf
 			virtual bool ExtractToDirectory(const FSPath& directory, Compression::FileIndexView files) const;
 			
 			// Extract specified file into a stream
-			virtual bool ExtractToStream(Compression::FileIndex fileIndex, wxOutputStream& stream) const;
+			virtual bool ExtractToStream(size_t size_t, wxOutputStream& stream) const;
 
 			// Extract single file into specified path
-			virtual bool ExtractToFile(Compression::FileIndex fileIndex, const FSPath& targetPath) const;
+			virtual bool ExtractToFile(size_t size_t, const FSPath& targetPath) const;
 
 			template<class TOutStream = wxOutputStream>
 			ExtractWithOptions<TOutStream> ExtractWith() const
@@ -377,10 +363,10 @@ namespace kxf::Compression
 		Kx_Compression_DeclareBaseProperty(Common, OriginalSize);
 		Kx_Compression_DeclareBaseProperty(Common, CompressedSize);
 
-		Kx_Compression_DeclareBaseProperty(Compression, Level);
-		Kx_Compression_DeclareBaseProperty(Compression, Solid);
 		Kx_Compression_DeclareBaseProperty(Compression, Format);
 		Kx_Compression_DeclareBaseProperty(Compression, Method);
+		Kx_Compression_DeclareBaseProperty(Compression, Level);
+		Kx_Compression_DeclareBaseProperty(Compression, Solid);
 		Kx_Compression_DeclareBaseProperty(Compression, MultiThreaded);
 		Kx_Compression_DeclareBaseProperty(Compression, DictionarySize);
 
