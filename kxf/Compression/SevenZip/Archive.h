@@ -20,26 +20,34 @@ namespace kxf::SevenZip::Private
 
 namespace kxf::SevenZip
 {
-	class Archive: public Private::WithEvtHandler
+	class Archive: public Private::WithEvtHandler, public RTTI::ImplementInterface<Archive, IArchive, IArchiveProperties>
 	{
 		protected:
-			FSPath m_ArchivePath;
-			COMPtr<IStream> m_ArchiveStream;
-			COMPtr<IInArchive> m_ArchiveStreamReader;
-			COMPtr<Private::InStreamWrapper> m_ArchiveStreamWrapper;
+			struct Data final
+			{
+				FSPath FilePath;
+				COMPtr<IStream> ArchiveStream;
+				COMPtr<IInArchive> ArchiveStreamReader;
+				COMPtr<Private::InStreamWrapper> ArchiveStreamWrapper;
 
-			// Metadata
-			size_t m_ItemCount = 0;
-			bool m_IsLoaded = false;
-			bool m_OverrideCompressionFormat = false;
+				// Metadata
+				size_t ItemCount = 0;
+				bool IsLoaded = false;
+				bool OverrideCompressionFormat = false;
 
-			// Properties
-			CompressionFormat m_Property_CompressionFormat = CompressionFormat::Unknown;
-			CompressionMethod m_Property_CompressionMethod = CompressionMethod::LZMA;
-			CompressionLevel m_Property_CompressionLevel = CompressionLevel::Normal;
-			int m_Property_DictionarySize = 5;
-			bool m_Property_Solid = false;
-			bool m_Property_MultiThreaded = true;
+				mutable int64_t OriginalSize = -1;
+				mutable int64_t CompressedSize = -1;
+
+				struct
+				{
+					CompressionFormat CompressionFormat = CompressionFormat::Unknown;
+					CompressionMethod CompressionMethod = CompressionMethod::LZMA;
+					CompressionLevel CompressionLevel = CompressionLevel::Normal;
+					int DictionarySize = 5;
+					bool Solid = false;
+					bool MultiThreaded = true;
+				} Properties;
+			} m_Data;
 
 		private:
 			void InvalidateCache();
@@ -58,7 +66,7 @@ namespace kxf::SevenZip
 			Archive(FSPath filePath, wxEvtHandler* evtHandler = nullptr)
 				:Archive(evtHandler)
 			{
-				Load(std::move(filePath));
+				Open(std::move(filePath));
 			}
 			Archive(const Archive&) = delete;
 			Archive(Archive&& other)
@@ -68,88 +76,137 @@ namespace kxf::SevenZip
 			virtual ~Archive();
 
 		public:
-			bool Load(FSPath filePath);
-			bool IsLoaded() const noexcept
+			// IArchive
+			FSPath GetFilePath() const override
 			{
-				return m_IsLoaded;
+				return m_Data.FilePath;
 			}
+			bool IsOpened() const noexcept override
+			{
+				return m_Data.IsLoaded;
+			}
+			bool Open(const FSPath& filePath) override;
+			void Close() override;
 
-			size_t GetItemCount() const
+			size_t GetItemCount() const override
 			{
-				return m_ItemCount;
+				return m_Data.ItemCount;
 			}
+			BinarySize GetOriginalSize() const override;
+			BinarySize GetCompressedSize() const override;
+
 			FileItem GetItem(size_t index) const;
 
-			int64_t GetOriginalSize() const;
-			int64_t GetCompressedSize() const;
+		public:
+			// IArchiveProperties
+			std::optional<bool> GetPropertyBool(StringView property) const override
+			{
+				if (property == Compression::Property::Compression_Solid)
+				{
+					return m_Data.Properties.Solid;
+				}
+				if (property == Compression::Property::Compression_MultiThreaded)
+				{
+					return m_Data.Properties.MultiThreaded;
+				}
+				return {};
+			}
+			bool SetPropertyBool(StringView property, bool value) override
+			{
+				if (property == Compression::Property::Compression_Solid)
+				{
+					m_Data.Properties.Solid = value;
+					return true;
+				}
+				if (property == Compression::Property::Compression_MultiThreaded)
+				{
+					m_Data.Properties.MultiThreaded = true;
+					return true;
+				}
+				return false;
+			}
+
+			std::optional<int64_t> GetPropertyInt(StringView property) const override
+			{
+				if (property == Compression::Property::Common_ItemCount)
+				{
+					return m_Data.ItemCount;
+				}
+				if (property == Compression::Property::Common_OriginalSize)
+				{
+					return GetOriginalSize().GetBytes();
+				}
+				if (property == Compression::Property::Common_CompressedSize)
+				{
+					return GetCompressedSize().GetBytes();
+				}
+				if (property == Compression::Property::Compression_Format)
+				{
+					return static_cast<int>(m_Data.Properties.CompressionFormat);
+				}
+				if (property == Compression::Property::Compression_Method)
+				{
+					return static_cast<int>(m_Data.Properties.CompressionMethod);
+				}
+				if (property == Compression::Property::Compression_Level)
+				{
+					return static_cast<int>(m_Data.Properties.CompressionLevel);
+				}
+				if (property == Compression::Property::Compression_DictionarySize)
+				{
+					return m_Data.Properties.DictionarySize;
+				}
+				return {};
+			}
+			bool SetPropertyInt(StringView property, int64_t value) override
+			{
+				if (property == Compression::Property::Compression_Format)
+				{
+					m_Data.Properties.CompressionFormat = static_cast<CompressionFormat>(value);
+					return true;
+				}
+				if (property == Compression::Property::Compression_Method)
+				{
+					m_Data.Properties.CompressionMethod = static_cast<CompressionMethod>(value);
+					return true;
+				}
+				if (property == Compression::Property::Compression_Level)
+				{
+					m_Data.Properties.CompressionLevel = static_cast<CompressionLevel>(value);
+					return true;
+				}
+				if (property == Compression::Property::Compression_DictionarySize)
+				{
+					m_Data.Properties.DictionarySize = value;
+					return true;
+				}
+				return false;
+			}
+
+			std::optional<double> GetPropertyFloat(StringView property) const override
+			{
+				return {};
+			}
+			bool SetPropertyFloat(StringView property, double value) override
+			{
+				return false;
+			}
+
+			std::optional<String> GetPropertyString(StringView property) const override
+			{
+				if (property == Compression::Property::Common_FilePath)
+				{
+					return m_Data.FilePath;
+				}
+				return {};
+			}
+			bool SetPropertyString(StringView property, StringView value)
+			{
+				return false;
+			}
 
 		public:
-			FSPath GetProperty_FilePath() const
-			{
-				return m_ArchivePath;
-			}
-
-			CompressionFormat GetProperty_CompressionFormat() const
-			{
-				return m_Property_CompressionFormat;
-			}
-			void SetProperty_CompressionFormat(CompressionFormat format)
-			{
-				m_OverrideCompressionFormat = true;
-				InvalidateCache();
-				m_Property_CompressionFormat = format;
-			}
-			
-			int GetProperty_CompressionLevel() const
-			{
-				return static_cast<int>(m_Property_CompressionLevel);
-			}
-			void SetProperty_CompressionLevel(int value)
-			{
-				m_Property_CompressionLevel = static_cast<CompressionLevel>(value);
-			}
-			void SetProperty_CompressionLevel(CompressionLevel value)
-			{
-				m_Property_CompressionLevel = value;
-			}
-			
-			int GetProperty_DictionarySize() const
-			{
-				return m_Property_DictionarySize;
-			}
-			void SetProperty_DictionarySize(int value)
-			{
-				m_Property_DictionarySize = value;
-			}
-
-			CompressionMethod GetProperty_CompressionMethod() const
-			{
-				return m_Property_CompressionMethod;
-			}
-			void SetProperty_CompressionMethod(CompressionMethod nMethod)
-			{
-				m_Property_CompressionMethod = nMethod;
-			}
-			
-			bool GetProperty_Solid() const
-			{
-				return m_Property_Solid;
-			}
-			void SetProperty_Solid(bool isSolid)
-			{
-				m_Property_Solid = isSolid;
-			}
-			
-			bool GetProperty_MultiThreaded() const
-			{
-				return m_Property_MultiThreaded;
-			}
-			void SetProperty_MultiThreaded(bool isMT)
-			{
-				m_Property_MultiThreaded = isMT;
-			}
-
-		public:
+			// IArchiveExtraction
 			// Extract files using provided extractor
 			bool Extract(COMPtr<Private::Callback::ExtractArchive> extractor) const;
 			bool Extract(COMPtr<Private::Callback::ExtractArchive> extractor, Compression::FileIndexView files) const;
@@ -159,6 +216,7 @@ namespace kxf::SevenZip
 			bool ExtractToDirectory(const FSPath& directory, Compression::FileIndexView files) const;
 	
 		public:
+			// IArchiveCompression
 			// Includes the last directory as the root in the archive, e.g. specifying "C:\Temp\MyFolder"
 			// makes "MyFolder" the single root item in archive with the files within it included.
 			bool CompressDirectory(const FSPath& directory, bool isRecursive = true);
@@ -175,16 +233,22 @@ namespace kxf::SevenZip
 			bool CompressFile(const FSPath& filePath, const FSPath& archivePath);
 
 		public:
+			// IFileSystem
+
+		public:
+			// IFileIDSystem
+			
+		public:
 			Archive& operator=(const Archive&) = delete;
 			Archive& operator=(Archive&& other);
 
 			explicit operator bool() const
 			{
-				return IsLoaded();
+				return IsOpened();
 			}
 			bool operator!() const
 			{
-				return !IsLoaded();
+				return !IsOpened();
 			}
 	};
 }

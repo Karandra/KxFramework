@@ -94,7 +94,7 @@ namespace
 	}
 
 	template<class T>
-	std::optional<T> GetIntProperty(const IInArchive& archive, size_t fileIndex, ArchiveProperty type)
+	std::optional<T> DoGetIntProperty(const IInArchive& archive, size_t fileIndex, ArchiveProperty type)
 	{
 		VariantProperty property;
 		if (HResult(const_cast<IInArchive&>(archive).GetProperty(static_cast<uint32_t>(fileIndex), type, &property)))
@@ -109,42 +109,42 @@ namespace kxf::SevenZip
 {
 	void Archive::InvalidateCache()
 	{
-		m_IsLoaded = false;
+		m_Data.IsLoaded = false;
 	}
 	bool Archive::InitCompressionFormat()
 	{
-		m_OverrideCompressionFormat = false;
-		m_Property_CompressionFormat = Private::IdentifyCompressionFormat(m_ArchivePath, m_EvtHandler);
+		m_Data.OverrideCompressionFormat = false;
+		m_Data.Properties.CompressionFormat = Private::IdentifyCompressionFormat(m_Data.FilePath, m_EvtHandler);
 
-		return m_Property_CompressionFormat != CompressionFormat::Unknown;
+		return m_Data.Properties.CompressionFormat != CompressionFormat::Unknown;
 	}
 	bool Archive::InitMetadata()
 	{
-		if (!m_IsLoaded)
+		if (!m_Data.IsLoaded)
 		{
-			return !m_OverrideCompressionFormat ? InitCompressionFormat() : true;
+			return !m_Data.OverrideCompressionFormat ? InitCompressionFormat() : true;
 		}
-		return m_IsLoaded;
+		return m_Data.IsLoaded;
 	}
 	bool Archive::InitArchiveStreams()
 	{
-		m_ArchiveStream = nullptr;
-		m_ArchiveStreamWrapper = nullptr;
-		m_ArchiveStreamReader = nullptr;
-		m_ItemCount = 0;
+		m_Data.ArchiveStream = nullptr;
+		m_Data.ArchiveStreamWrapper = nullptr;
+		m_Data.ArchiveStreamReader = nullptr;
+		m_Data.ItemCount = 0;
 
-		m_ArchiveStream = Private::OpenFileToRead(m_ArchivePath);
-		if (m_ArchiveStream)
+		m_Data.ArchiveStream = Private::OpenFileToRead(m_Data.FilePath);
+		if (m_Data.ArchiveStream)
 		{
-			m_ArchiveStreamWrapper = Private::CreateObject<Private::InStreamWrapper>(m_ArchiveStream, m_EvtHandler);
-			m_ArchiveStreamReader = Private::GetArchiveReader(m_Property_CompressionFormat);
+			m_Data.ArchiveStreamWrapper = Private::CreateObject<Private::InStreamWrapper>(m_Data.ArchiveStream, m_EvtHandler);
+			m_Data.ArchiveStreamReader = Private::GetArchiveReader(m_Data.Properties.CompressionFormat);
 
-			if (m_ArchiveStreamReader)
+			if (m_Data.ArchiveStreamReader)
 			{
 				auto openCallback = Private::CreateObject<Private::Callback::OpenArchive>(m_EvtHandler);
-				if (SUCCEEDED(m_ArchiveStreamReader->Open(m_ArchiveStreamWrapper, nullptr, openCallback)))
+				if (HResult(m_Data.ArchiveStreamReader->Open(m_Data.ArchiveStreamWrapper, nullptr, openCallback)))
 				{
-					m_ItemCount = Private::GetNumberOfItems(m_ArchiveStreamReader).value_or(0);
+					m_Data.ItemCount = Private::GetNumberOfItems(m_Data.ArchiveStreamReader).value_or(0);
 					return true;
 				}
 			}
@@ -165,8 +165,8 @@ namespace kxf::SevenZip
 			return stream.Seek(position, STREAM_SEEK_SET, nullptr);
 		};
 
-		SeekStream(*m_ArchiveStream, 0);
-		SeekStreamWrapper(*m_ArchiveStreamWrapper, 0);
+		SeekStream(*m_Data.ArchiveStream, 0);
+		SeekStreamWrapper(*m_Data.ArchiveStreamWrapper, 0);
 	}
 
 	bool Archive::DoExtract(COMPtr<Private::Callback::ExtractArchive> extractor, Compression::FileIndexView* files) const
@@ -176,9 +176,9 @@ namespace kxf::SevenZip
 			return false;
 		}
 
-		if (auto fileStream = Private::OpenFileToRead(m_ArchivePath))
+		if (auto fileStream = Private::OpenFileToRead(m_Data.FilePath))
 		{
-			auto archive = Private::GetArchiveReader(m_Property_CompressionFormat);
+			auto archive = Private::GetArchiveReader(m_Data.Properties.CompressionFormat);
 			auto inFile = Private::CreateObject<Private::InStreamWrapper>(fileStream, m_EvtHandler);
 			auto openCallback = Private::CreateObject<Private::Callback::OpenArchive>(m_EvtHandler);
 
@@ -196,7 +196,7 @@ namespace kxf::SevenZip
 				{
 					auto IsInvalidIndex = [this](size_t index)
 					{
-						return index >= m_ItemCount;
+						return index >= m_Data.ItemCount;
 					};
 
 					// Process only specified files
@@ -242,21 +242,21 @@ namespace kxf::SevenZip
 	}
 	bool Archive::DoCompress(const FSPath& pathPrefix, const std::vector<FileItem>& filePaths, const std::vector<FSPath>& inArchiveFilePaths)
 	{
-		auto archiveWriter = Private::GetArchiveWriter(m_Property_CompressionFormat);
+		auto archiveWriter = Private::GetArchiveWriter(m_Data.Properties.CompressionFormat);
 		if (archiveWriter)
 		{
 			SetCompressionProperties(*archiveWriter,
-									 m_Property_MultiThreaded,
-									 m_Property_Solid,
-									 static_cast<int>(m_Property_CompressionLevel),
-									 m_Property_DictionarySize,
-									 m_Property_CompressionMethod);
+									 m_Data.Properties.MultiThreaded,
+									 m_Data.Properties.Solid,
+									 static_cast<int>(m_Data.Properties.CompressionLevel),
+									 m_Data.Properties.DictionarySize,
+									 m_Data.Properties.CompressionMethod);
 
-			auto outFile = Private::CreateObject<Private::OutStreamWrapper_IStream>(Private::OpenFileToWrite(m_ArchivePath));
+			auto outFile = Private::CreateObject<Private::OutStreamWrapper_IStream>(Private::OpenFileToWrite(m_Data.FilePath));
 			if (outFile)
 			{
-				auto updateCallback = Private::CreateObject<Private::Callback::UpdateArchive>(pathPrefix, filePaths, inArchiveFilePaths, m_ArchivePath, m_EvtHandler);
-				updateCallback->SetExistingItemsCount(m_ItemCount);
+				auto updateCallback = Private::CreateObject<Private::Callback::UpdateArchive>(pathPrefix, filePaths, inArchiveFilePaths, m_Data.FilePath, m_EvtHandler);
+				updateCallback->SetExistingItemsCount(m_Data.ItemCount);
 
 				return HResult(archiveWriter->UpdateItems(outFile, static_cast<uint32_t>(filePaths.size()), updateCallback)).IsSuccess();
 			}
@@ -287,43 +287,53 @@ namespace kxf::SevenZip
 	}
 	Archive::~Archive() = default;
 
-	bool Archive::Load(FSPath filePath)
+	bool Archive::Open(const FSPath& filePath)
 	{
-		// Clear metadata
-		*this = std::move(Archive(m_EvtHandler));
+		Close();
+		m_Data.FilePath = filePath;
+		m_Data.IsLoaded = InitMetadata() && InitArchiveStreams();
 
-		// Load new archive
-		m_ArchivePath = std::move(filePath);
-		m_IsLoaded = InitMetadata() && InitArchiveStreams();
-
-		return m_IsLoaded;
+		return m_Data.IsLoaded;
 	}
+	void Archive::Close()
+	{
+		m_Data = Data();
+	}
+
+	BinarySize Archive::GetOriginalSize() const
+	{
+		if (m_Data.OriginalSize < 0)
+		{
+			int64_t total = 0;
+			for (size_t i = 0; i < m_Data.ItemCount; i++)
+			{
+				total += DoGetIntProperty<int64_t>(*m_Data.ArchiveStreamReader, i, ArchiveProperty::kpidSize).value_or(0);
+			}
+			m_Data.OriginalSize = total;
+		}
+		return m_Data.OriginalSize;
+	}
+	BinarySize Archive::GetCompressedSize() const
+	{
+		if (m_Data.CompressedSize < 0)
+		{
+			int64_t total = 0;
+			for (size_t i = 0; i < m_Data.ItemCount; i++)
+			{
+				total += DoGetIntProperty<int64_t>(*m_Data.ArchiveStreamReader, i, ArchiveProperty::kpidPackSize).value_or(0);
+			}
+			m_Data.CompressedSize = total;
+		}
+		return m_Data.CompressedSize;
+	}
+
 	FileItem Archive::GetItem(size_t index) const
 	{
-		if (index < m_ItemCount)
+		if (index < m_Data.ItemCount)
 		{
-			return Private::GetArchiveItem(m_ArchiveStreamReader, index);
+			return Private::GetArchiveItem(m_Data.ArchiveStreamReader, index);
 		}
 		return {};
-	}
-
-	int64_t Archive::GetOriginalSize() const
-	{
-		int64_t total = 0;
-		for (size_t i = 0; i < m_ItemCount; i++)
-		{
-			total += GetIntProperty<int64_t>(*m_ArchiveStreamReader, i, ArchiveProperty::kpidSize).value_or(0);
-		}
-		return total;
-	}
-	int64_t Archive::GetCompressedSize() const
-	{
-		int64_t total = 0;
-		for (size_t i = 0; i < m_ItemCount; i++)
-		{
-			total += GetIntProperty<int64_t>(*m_ArchiveStreamReader, i, ArchiveProperty::kpidPackSize).value_or(0);
-		}
-		return total;
 	}
 
 	// Extraction
@@ -382,15 +392,7 @@ namespace kxf::SevenZip
 		SetEvtHandler(other.GetEvtHandler());
 		other.SetEvtHandler(nullptr);
 
-		m_ArchivePath = std::move(other.m_ArchivePath);
-		m_ArchiveStream = std::move(other.m_ArchiveStream);
-		m_ArchiveStreamReader = std::move(other.m_ArchiveStreamReader);
-		m_ArchiveStreamWrapper = std::move(other.m_ArchiveStreamWrapper);
-
-		// Metadata
-		Utility::ExchangeAndReset(m_ItemCount, other.m_ItemCount, 0);
-		Utility::ExchangeAndReset(m_IsLoaded, other.m_IsLoaded, false);
-		Utility::ExchangeAndReset(m_OverrideCompressionFormat, other.m_OverrideCompressionFormat, false);
+		m_Data = std::move(other.m_Data);
 
 		return *this;
 	}
