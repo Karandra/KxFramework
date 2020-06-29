@@ -20,7 +20,14 @@ namespace kxf::SevenZip::Private
 
 namespace kxf::SevenZip
 {
-	class Archive: public Private::WithEvtHandler, public RTTI::ImplementInterface<Archive, IArchive, IArchiveProperties>
+	class Archive:
+		public Private::WithEvtHandler,
+		public RTTI::ImplementInterface<Archive,
+			IArchive,
+			IArchiveProperties,
+			IFileSystem,
+			IFileIDSystem
+		>
 	{
 		protected:
 			struct Data final
@@ -94,8 +101,6 @@ namespace kxf::SevenZip
 			}
 			BinarySize GetOriginalSize() const override;
 			BinarySize GetCompressedSize() const override;
-
-			FileItem GetItem(size_t index) const;
 
 		public:
 			// IArchiveProperties
@@ -214,7 +219,7 @@ namespace kxf::SevenZip
 			// Extract entire archive or only specified files into a directory
 			bool ExtractToDirectory(const FSPath& directory) const;
 			bool ExtractToDirectory(const FSPath& directory, Compression::FileIndexView files) const;
-	
+			
 		public:
 			// IArchiveCompression
 			// Includes the last directory as the root in the archive, e.g. specifying "C:\Temp\MyFolder"
@@ -234,10 +239,99 @@ namespace kxf::SevenZip
 
 		public:
 			// IFileSystem
+			bool ItemExist(const FSPath& path) const override;
+			bool FileExist(const FSPath& path) const override;
+			bool DirectoryExist(const FSPath& path) const override;
+
+			FileItem GetItem(const FSPath& path) const override;
+			size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query = {}, FlagSet<FSEnumItemsFlag> flags = {}) const override;
+			bool IsDirectoryEmpty(const FSPath& directory) const override;
+
+			bool CreateDirectory(const FSPath& path) override
+			{
+				return false;
+			}
+			bool ChangeAttributes(const FSPath& path, FlagSet<FileAttribute> attributes) override
+			{
+				return false;
+			}
+			bool ChangeTimestamp(const FSPath& path, DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime) override
+			{
+				return false;
+			}
+
+			bool CopyItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) override
+			{
+				return false;
+			}
+			bool MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) override
+			{
+				return false;
+			}
+			bool RenameItem(const FSPath& source, const FSPath& destination, FlagSet<FSCopyItemFlag> flags = {}) override
+			{
+				return false;
+			}
+			bool RemoveItem(const FSPath& path) override
+			{
+				return false;
+			}
+
+			std::unique_ptr<wxInputStream> OpenToRead(const FSPath& path) override
+			{
+				return nullptr;
+			}
+			std::unique_ptr<wxOutputStream> OpenToWrite(const FSPath& path) override
+			{
+				return nullptr;
+			}
 
 		public:
 			// IFileIDSystem
-			
+			UniversallyUniqueID GetLookupScope() const override
+			{
+				return {};
+			}
+
+			bool ItemExist(const UniversallyUniqueID& id) const override;
+			bool FileExist(const UniversallyUniqueID& id) const override;
+			bool DirectoryExist(const UniversallyUniqueID& id) const override;
+
+			FileItem GetItem(const UniversallyUniqueID& id) const override;
+			size_t EnumItems(const UniversallyUniqueID& id, TEnumItemsFunc func, FlagSet<FSEnumItemsFlag> flags = {}) const override;
+			bool IsDirectoryEmpty(const UniversallyUniqueID& id) const override;
+
+			bool ChangeAttributes(const UniversallyUniqueID& id, FlagSet<FileAttribute> attributes) override
+			{
+				return false;
+			}
+			bool ChangeTimestamp(const UniversallyUniqueID& id, DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime) override
+			{
+				return false;
+			}
+
+			bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, IFileSystem::TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) override
+			{
+				return false;
+			}
+			bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, IFileSystem::TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) override
+			{
+				return false;
+			}
+			bool RemoveItem(const UniversallyUniqueID& id) override
+			{
+				return false;
+			}
+
+			std::unique_ptr<wxInputStream> OpenToRead(const UniversallyUniqueID& id) override
+			{
+				return nullptr;
+			}
+			std::unique_ptr<wxOutputStream> OpenToWrite(const UniversallyUniqueID& id) override
+			{
+				return nullptr;
+			}
+
 		public:
 			Archive& operator=(const Archive&) = delete;
 			Archive& operator=(Archive&& other);

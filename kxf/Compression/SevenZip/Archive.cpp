@@ -103,6 +103,38 @@ namespace
 		}
 		return {};
 	}
+
+	FlagSet<uint32_t> GetItemAttributes(const IInArchive& stream, size_t itemCount, const UniversallyUniqueID& id) noexcept
+	{
+		auto luid = id.ToLocallyUniqueID();
+		if (luid < itemCount)
+		{
+			VariantProperty property;
+			if (HResult(const_cast<IInArchive&>(stream).GetProperty(static_cast<size_t>(luid.ToInt()), kpidAttrib, &property)))
+			{
+				return property.ToInt<uint32_t>().value_or(INVALID_FILE_ATTRIBUTES);
+			}
+		}
+		return INVALID_FILE_ATTRIBUTES;
+	}
+
+	size_t FindItemByName(const IInArchive& stream, size_t itemCount, const FSPath& path)
+	{
+		for (size_t i = 0; i < itemCount; i++)
+		{
+			VariantProperty property;
+
+			const_cast<IInArchive&>(stream).GetProperty(i, kpidPath, &property);
+			if (auto itemPath = property.ToString())
+			{
+				if (path.IsSameAs(*itemPath))
+				{
+					return i;
+				}
+			}
+		}
+		return std::numeric_limits<size_t>::max();
+	}
 }
 
 namespace kxf::SevenZip
@@ -287,6 +319,7 @@ namespace kxf::SevenZip
 	}
 	Archive::~Archive() = default;
 
+	// IArchive
 	bool Archive::Open(const FSPath& filePath)
 	{
 		Close();
@@ -327,16 +360,7 @@ namespace kxf::SevenZip
 		return m_Data.CompressedSize;
 	}
 
-	FileItem Archive::GetItem(size_t index) const
-	{
-		if (index < m_Data.ItemCount)
-		{
-			return Private::GetArchiveItem(m_Data.ArchiveStreamReader, index);
-		}
-		return {};
-	}
-
-	// Extraction
+	// IArchiveExtraction
 	bool Archive::Extract(COMPtr<Private::Callback::ExtractArchive> extractor) const
 	{
 		return DoExtract(std::move(extractor), nullptr);
@@ -357,7 +381,7 @@ namespace kxf::SevenZip
 		return DoExtract(std::move(extractor), &files);
 	}
 
-	// Compression
+	// IArchiveCompression
 	bool Archive::CompressDirectory(const FSPath& directory, bool isRecursive)
 	{
 		return FindAndCompressFiles(g_NativeFS, directory, {}, directory, isRecursive);
@@ -385,6 +409,155 @@ namespace kxf::SevenZip
 	bool Archive::CompressFile(const FSPath& filePath, const FSPath& archivePath)
 	{
 		return DoCompress(filePath.GetParent(), {filePath}, {archivePath});
+	}
+
+	// IFileSystem
+	bool Archive::ItemExist(const FSPath& path) const
+	{
+		return FindItemByName(*m_Data.ArchiveStreamReader, m_Data.ItemCount, path) != std::numeric_limits<size_t>::max();
+	}
+	bool Archive::FileExist(const FSPath& path) const
+	{
+		size_t index = FindItemByName(*m_Data.ArchiveStreamReader, m_Data.ItemCount, path);
+		if (index != std::numeric_limits<size_t>::max())
+		{
+			return !GetItemAttributes(*m_Data.ArchiveStreamReader, m_Data.ItemCount, LocallyUniqueID(index)).Contains(FILE_ATTRIBUTE_DIRECTORY);
+		}
+		return {};
+	}
+	bool Archive::DirectoryExist(const FSPath& path) const
+	{
+		size_t index = FindItemByName(*m_Data.ArchiveStreamReader, m_Data.ItemCount, path);
+		if (index != std::numeric_limits<size_t>::max())
+		{
+			return GetItemAttributes(*m_Data.ArchiveStreamReader, m_Data.ItemCount, LocallyUniqueID(index)).Contains(FILE_ATTRIBUTE_DIRECTORY);
+		}
+		return {};
+	}
+
+	FileItem Archive::GetItem(const FSPath& path) const
+	{
+		size_t index = FindItemByName(*m_Data.ArchiveStreamReader, m_Data.ItemCount, path);
+		if (index != std::numeric_limits<size_t>::max())
+		{
+			return Private::GetArchiveItem(m_Data.ArchiveStreamReader, index);
+		}
+		return {};
+	}
+	size_t Archive::EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query, FlagSet<FSEnumItemsFlag> flags) const
+	{
+		FlagSet<StringOpFlag> matchFlags;
+		matchFlags.Add(StringOpFlag::IgnoreCase, !flags.Contains(FSEnumItemsFlag::CaseSensitive));
+
+		auto SearchDirectory = [&](const FSPath& directory, std::vector<FSPath>& childDirectories)
+		{
+			size_t count = 0;
+			EnumItems(std::numeric_limits<UniversallyUniqueID>::max(), [&](FileItem item)
+			{
+				FSPath fullPath = item.GetFullPath();
+				FSPath relativePath = fullPath.GetAfter(directory);
+				const bool hasChildItems = relativePath.GetComponentCount() > 1;
+
+				bool result = true;
+				if (relativePath.MatchesWildcards(query, matchFlags))
+				{
+					count++;
+					result = std::invoke(func, std::move(item));
+				}
+				if (hasChildItems && flags & FSEnumItemsFlag::Recursive)
+				{
+					childDirectories.emplace_back(std::move(fullPath));
+				}
+				return result;
+			}, flags);
+			return count;
+		};
+
+		std::vector<FSPath> directories;
+		size_t count = SearchDirectory(directory, directories);
+
+		while (!directories.empty())
+		{
+			std::vector<FSPath> roundDirectories;
+			for (const FSPath& path: directories)
+			{
+				count += SearchDirectory(path, roundDirectories);
+			}
+			directories = std::move(roundDirectories);
+		}
+		return count;
+	}
+	bool Archive::IsDirectoryEmpty(const FSPath& directory) const
+	{
+		return EnumItems(directory, [](const FileItem&)
+		{
+			return false;
+		}, {}) == 0;
+	}
+
+	// IFileIDSystem
+	bool Archive::ItemExist(const UniversallyUniqueID& id) const
+	{
+		auto attributes = GetItemAttributes(*m_Data.ArchiveStreamReader, m_Data.ItemCount, id);
+		return !attributes.Equals(INVALID_FILE_ATTRIBUTES);
+	}
+	bool Archive::FileExist(const UniversallyUniqueID& id) const
+	{
+		auto attributes = GetItemAttributes(*m_Data.ArchiveStreamReader, m_Data.ItemCount, id);
+		return !attributes.Equals(INVALID_FILE_ATTRIBUTES) && !attributes.Contains(FILE_ATTRIBUTE_DIRECTORY);
+	}
+	bool Archive::DirectoryExist(const UniversallyUniqueID& id) const
+	{
+		auto attributes = GetItemAttributes(*m_Data.ArchiveStreamReader, m_Data.ItemCount, id);
+		return !attributes.Equals(INVALID_FILE_ATTRIBUTES) && attributes.Contains(FILE_ATTRIBUTE_DIRECTORY);
+	}
+
+	FileItem Archive::GetItem(const UniversallyUniqueID& id) const
+	{
+		auto luid = id.ToLocallyUniqueID();
+		if (luid < m_Data.ItemCount)
+		{
+			return Private::GetArchiveItem(m_Data.ArchiveStreamReader, static_cast<size_t>(luid.ToInt()));
+		}
+		return {};
+	}
+	size_t Archive::EnumItems(const UniversallyUniqueID& id, TEnumItemsFunc func, FlagSet<FSEnumItemsFlag> flags) const
+	{
+		if (id == std::numeric_limits<UniversallyUniqueID>::max())
+		{
+			size_t count = 0;
+			for (size_t i = 0; i < m_Data.ItemCount; i++)
+			{
+				auto attributes = GetItemAttributes(*m_Data.ArchiveStreamReader, m_Data.ItemCount, LocallyUniqueID(i));
+				if (flags & FSEnumItemsFlag::LimitToFiles && attributes.Contains(FILE_ATTRIBUTE_DIRECTORY))
+				{
+					continue;
+				}
+				if (flags & FSEnumItemsFlag::LimitToDirectories && !attributes.Contains(FILE_ATTRIBUTE_DIRECTORY))
+				{
+					continue;
+				}
+
+				count++;
+				if (!std::invoke(func, Private::GetArchiveItem(m_Data.ArchiveStreamReader, i)))
+				{
+					break;
+				}
+			}
+			return count;
+		}
+		else if (auto luid = id.ToLocallyUniqueID(); luid < m_Data.ItemCount)
+		{
+			// TODO
+		}
+		return 0;
+	}
+	bool Archive::IsDirectoryEmpty(const UniversallyUniqueID& id) const
+	{
+		return EnumItems(id, [](const FileItem&)
+		{
+			return false;
+		}, {}) == 0;
 	}
 
 	Archive& Archive::operator=(Archive&& other)
