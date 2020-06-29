@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include <limits>
 
 namespace kxf
 {
@@ -70,6 +71,33 @@ namespace kxf
 		constexpr bool operator!=(const NativeUUID& other) const noexcept
 		{
 			return !(*this == other);
+		}
+	};
+}
+
+namespace std
+{
+	template<>
+	struct numeric_limits<kxf::NativeUUID>
+	{
+		static constexpr bool is_specialized = true;
+		static constexpr bool is_exact = true;
+		static constexpr bool is_bounded = true;
+		static constexpr bool is_integer = true;
+		static constexpr bool is_signed = false;
+		static constexpr int radix = 2;
+
+		static constexpr kxf::NativeUUID min() noexcept
+		{
+			return {};
+		}
+		static constexpr kxf::NativeUUID lowest() noexcept
+		{
+			return min();
+		}
+		static constexpr kxf::NativeUUID max() noexcept
+		{
+			return {0xffffffff, 0xffff, 0xffff, {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}};
 		}
 	};
 }

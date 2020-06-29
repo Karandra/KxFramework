@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "String.h"
+#include <limits>
 
 namespace kxf
 {
@@ -85,6 +86,25 @@ namespace std
 		constexpr size_t operator()(const kxf::LocallyUniqueID& luid) const noexcept
 		{
 			return luid.ToInt();
+		}
+	};
+
+	template<>
+	struct numeric_limits<kxf::LocallyUniqueID>: public numeric_limits<uint64_t>
+	{
+		using Base = numeric_limits<uint64_t>;
+
+		static constexpr kxf::LocallyUniqueID min() noexcept
+		{
+			return Base::min();
+		}
+		static constexpr kxf::LocallyUniqueID lowest() noexcept
+		{
+			return Base::lowest();
+		}
+		static constexpr kxf::LocallyUniqueID max() noexcept
+		{
+			return Base::max();
 		}
 	};
 }

@@ -133,4 +133,23 @@ namespace std
 			return uuid.ToNativeUUID().GetHash();
 		}
 	};
+
+	template<>
+	struct numeric_limits<kxf::UniversallyUniqueID>: public numeric_limits<kxf::NativeUUID>
+	{
+		using Base = numeric_limits<kxf::NativeUUID>;
+
+		static constexpr kxf::UniversallyUniqueID min() noexcept
+		{
+			return Base::min();
+		}
+		static constexpr kxf::UniversallyUniqueID lowest() noexcept
+		{
+			return Base::lowest();
+		}
+		static constexpr kxf::UniversallyUniqueID max() noexcept
+		{
+			return Base::max();
+		}
+	};
 }
