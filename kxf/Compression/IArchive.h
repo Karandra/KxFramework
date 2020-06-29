@@ -185,7 +185,7 @@ namespace kxf
 			virtual ~IExtractionCallback() = default;
 
 		public:
-			virtual bool ShouldCancel()
+			virtual bool ShouldCancel() const
 			{
 				return false;
 			}
@@ -205,18 +205,18 @@ namespace kxf
 			std::function<bool(size_t, wxOutputStream&)> m_OnOperationCompleted;
 
 		private:
-			bool ShouldCancel() override
+			bool ShouldCancel() const override
 			{
-				return m_ShouldCancel ? m_ShouldCancel() : false;
+				return m_ShouldCancel ? std::invoke(m_ShouldCancel) : false;
 			}
 
 			OutputStreamDelegate OnGetStream(size_t size_t) override
 			{
-				return m_OnGetStream ? m_OnGetStream(size_t) : nullptr;
+				return m_OnGetStream ? std::invoke(m_OnGetStream, size_t) : nullptr;
 			}
 			bool OnOperationCompleted(size_t size_t, wxOutputStream& stream) override
 			{
-				return m_OnOperationCompleted ? m_OnOperationCompleted(size_t, stream) : true;
+				return m_OnOperationCompleted ? std::invoke(m_OnOperationCompleted, size_t, stream) : true;
 			}
 			
 		public:
@@ -283,14 +283,11 @@ namespace kxf
 			virtual bool Extract(IExtractionCallback& callback, Compression::FileIndexView files) const = 0;
 
 			// Extract entire archive or only specified files into a directory
-			virtual bool ExtractToDirectory(const FSPath& directory) const;
-			virtual bool ExtractToDirectory(const FSPath& directory, Compression::FileIndexView files) const;
+			virtual bool ExtractToFS(IFileSystem& fileSystem, const FSPath& directory) const;
+			virtual bool ExtractToFS(IFileSystem& fileSystem, const FSPath& directory, Compression::FileIndexView files) const;
 			
 			// Extract specified file into a stream
-			virtual bool ExtractToStream(size_t size_t, wxOutputStream& stream) const;
-
-			// Extract single file into specified path
-			virtual bool ExtractToFile(size_t size_t, const FSPath& targetPath) const;
+			virtual bool ExtractToStream(size_t index, wxOutputStream& stream) const;
 
 			template<class TOutStream = wxOutputStream>
 			ExtractWithOptions<TOutStream> ExtractWith() const

@@ -25,6 +25,7 @@ namespace kxf::SevenZip
 		public RTTI::ImplementInterface<Archive,
 			IArchive,
 			IArchiveProperties,
+			IArchiveExtraction,
 			IFileSystem,
 			IFileIDSystem
 		>
@@ -64,7 +65,7 @@ namespace kxf::SevenZip
 			void RewindArchiveStreams();
 
 		protected:
-			bool DoExtract(COMPtr<Private::Callback::ExtractArchive> extractor, Compression::FileIndexView* files) const;
+			bool DoExtract(Private::Callback::ExtractArchive& extractor, Compression::FileIndexView* files) const;
 			bool DoCompress(const FSPath& pathPrefix, const std::vector<FileItem>& filePaths, const std::vector<FSPath>& inArchiveFilePaths);
 			bool FindAndCompressFiles(const IFileSystem& fileSystem, const FSPath& directory, const FSPathQuery& searchPattern, const FSPath& pathPrefix, bool recursion);
 
@@ -212,13 +213,17 @@ namespace kxf::SevenZip
 
 		public:
 			// IArchiveExtraction
-			// Extract files using provided extractor
-			bool Extract(COMPtr<Private::Callback::ExtractArchive> extractor) const;
-			bool Extract(COMPtr<Private::Callback::ExtractArchive> extractor, Compression::FileIndexView files) const;
+			
+			// Extracts files using provided callback interface
+			bool Extract(IExtractionCallback& callback) const override;
+			bool Extract(IExtractionCallback& callback, Compression::FileIndexView files) const override;
 
 			// Extract entire archive or only specified files into a directory
-			bool ExtractToDirectory(const FSPath& directory) const;
-			bool ExtractToDirectory(const FSPath& directory, Compression::FileIndexView files) const;
+			bool ExtractToFS(IFileSystem& fileSystem, const FSPath& directory) const override;
+			bool ExtractToFS(IFileSystem& fileSystem, const FSPath& directory, Compression::FileIndexView files) const override;
+			
+			// Extract specified file into a stream
+			bool ExtractToStream(size_t index, wxOutputStream& stream) const override;
 			
 		public:
 			// IArchiveCompression

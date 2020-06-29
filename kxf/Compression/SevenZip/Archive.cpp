@@ -201,7 +201,7 @@ namespace kxf::SevenZip
 		SeekStreamWrapper(*m_Data.ArchiveStreamWrapper, 0);
 	}
 
-	bool Archive::DoExtract(COMPtr<Private::Callback::ExtractArchive> extractor, Compression::FileIndexView* files) const
+	bool Archive::DoExtract(Private::Callback::ExtractArchive& extractor, Compression::FileIndexView* files) const
 	{
 		if (files && files->empty())
 		{
@@ -220,8 +220,8 @@ namespace kxf::SevenZip
 				{
 					archive->Close();
 				});
-				extractor->SetArchive(archive);
-				extractor->SetEvtHandler(m_EvtHandler);
+				extractor.SetArchive(archive);
+				extractor.SetEvtHandler(m_EvtHandler);
 
 				HResult result = HResult::Fail();
 				if (files)
@@ -242,7 +242,7 @@ namespace kxf::SevenZip
 						}
 
 						uint32_t index = files->front();
-						result = archive->Extract(&index, 1, false, extractor);
+						result = archive->Extract(&index, 1, false, &extractor);
 					}
 					else
 					{
@@ -257,14 +257,14 @@ namespace kxf::SevenZip
 						result = HResult::InvalidArgument();
 						if (!temp.empty())
 						{
-							result = archive->Extract(temp.data(), static_cast<uint32_t>(temp.size()), false, extractor);
+							result = archive->Extract(temp.data(), static_cast<uint32_t>(temp.size()), false, &extractor);
 						}
 					}
 				}
 				else
 				{
 					// Process all files, the callback will decide which files are needed
-					result = archive->Extract(nullptr, std::numeric_limits<uint32_t>::max(), false, extractor);
+					result = archive->Extract(nullptr, std::numeric_limits<uint32_t>::max(), false, &extractor);
 				}
 
 				return result.IsSuccess();
@@ -361,24 +361,33 @@ namespace kxf::SevenZip
 	}
 
 	// IArchiveExtraction
-	bool Archive::Extract(COMPtr<Private::Callback::ExtractArchive> extractor) const
+	bool Archive::Extract(IExtractionCallback& callback) const
 	{
-		return DoExtract(std::move(extractor), nullptr);
+		Private::Callback::ExtractArchiveWrapper wrapper(*this, callback);
+		return DoExtract(wrapper, nullptr);
 	}
-	bool Archive::Extract(COMPtr<Private::Callback::ExtractArchive> extractor, Compression::FileIndexView files) const
+	bool Archive::Extract(IExtractionCallback& callback, Compression::FileIndexView files) const
 	{
-		return DoExtract(std::move(extractor), &files);
+		Private::Callback::ExtractArchiveWrapper wrapper(*this, callback);
+		return DoExtract(wrapper, &files);
 	}
 
-	bool Archive::ExtractToDirectory(const FSPath& directory) const
+	bool Archive::ExtractToFS(IFileSystem& fileSystem, const FSPath& directory) const
 	{
-		auto extractor = Private::CreateObject<Private::Callback::ExtractArchiveToDisk>(directory, m_EvtHandler);
-		return DoExtract(std::move(extractor), nullptr);
+		Private::Callback::ExtractArchiveToFS wrapper(*this, fileSystem, directory);
+		return DoExtract(wrapper, nullptr);
 	}
-	bool Archive::ExtractToDirectory(const FSPath& directory, Compression::FileIndexView files) const
+	bool Archive::ExtractToFS(IFileSystem& fileSystem, const FSPath& directory, Compression::FileIndexView files) const
 	{
-		auto extractor = Private::CreateObject<Private::Callback::ExtractArchiveToDisk>(directory, m_EvtHandler);
-		return DoExtract(std::move(extractor), &files);
+		Private::Callback::ExtractArchiveToFS wrapper(*this, fileSystem, directory);
+		return DoExtract(wrapper, &files);
+	}
+
+	bool Archive::ExtractToStream(size_t index, wxOutputStream& stream) const
+	{
+		Private::Callback::ExtractArchiveToStream wrapper(*this, stream);
+		Compression::FileIndexView files = index;
+		return DoExtract(wrapper, &files);
 	}
 
 	// IArchiveCompression

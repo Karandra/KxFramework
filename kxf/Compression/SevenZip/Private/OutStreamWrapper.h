@@ -3,6 +3,8 @@
 #include "WithEvtHandler.h"
 #include "kxf/System/COM.h"
 #include "kxf/System/ErrorCode.h"
+#include "kxf/General/StreamDelegate.h"
+#include "kxf/FileSystem/FileStream.h"
 #include <7zip/CPP/7zip/IStream.h>
 
 namespace kxf::SevenZip::Private
@@ -105,6 +107,69 @@ namespace kxf::SevenZip::Private
 		public:
 			OutStreamWrapper_IStream(COMPtr<IStream> baseStream, wxEvtHandler* evtHandler = nullptr)
 				:OutStreamWrapper(evtHandler), m_BaseStream(std::move(baseStream))
+			{
+			}
+	};
+
+	class OutStreamWrapper_wxOutputStream: public OutStreamWrapper
+	{
+		protected:
+			OutputStreamDelegate m_Stream;
+
+		protected:
+			std::optional<wxSeekMode> MapSeekMode(int seekMode) const noexcept
+			{
+				switch (seekMode)
+				{
+					case SEEK_CUR:
+					{
+						return wxSeekMode::wxFromCurrent;
+					}
+					case SEEK_SET:
+					{
+						return wxSeekMode::wxFromStart;
+					}
+					case SEEK_END:
+					{
+						return wxSeekMode::wxFromEnd;
+					}
+				};
+				return {};
+			};
+
+		public:
+			HResult DoWrite(const void* data, uint32_t size, uint32_t& written) override
+			{
+				m_Stream.Write(data, size);
+				written = m_Stream.LastWrite();
+
+				return written == size ? HResult::Success() : HResult::Fail();
+			}
+			HResult DoSeek(int64_t offset, uint32_t seekMode, int64_t& newPosition) override
+			{
+				if (!m_Stream.IsSeekable())
+				{
+					return HResult::NotImplemented();
+				}
+				if (auto streamSeek = MapSeekMode(seekMode))
+				{
+					newPosition = m_Stream.SeekO(offset, *streamSeek);
+					return m_Stream.IsOk() ? HResult::Success() : HResult::Fail();
+				}
+				return HResult::InvalidArgument();
+			}
+			HResult DoSetSize(int64_t size) override
+			{
+				if (m_Stream && m_Stream->IsKindOf(wxCLASSINFO(FileStream)))
+				{
+					return static_cast<FileStream&>(*m_Stream).SetAllocationSize(size) ? HResult::Success() : HResult::Fail();
+				}
+				return HResult::NotImplemented();
+			}
+
+		public:
+			OutStreamWrapper_wxOutputStream(OutputStreamDelegate stream, wxEvtHandler* evtHandler = nullptr)
+				:OutStreamWrapper(evtHandler), m_Stream(std::move(stream))
 			{
 			}
 	};
