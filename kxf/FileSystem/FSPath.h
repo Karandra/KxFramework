@@ -86,6 +86,10 @@ namespace kxf
 			{
 				return m_SearchMaksAllowed && m_Path.ContainsAnyOfCharacters(wxS("*?"));
 			}
+			bool MatchesWildcards(const String& expression, FlagSet<StringOpFlag> flags = {}) const
+			{
+				return m_Path.MatchesWildcards(expression, flags);
+			}
 
 			size_t GetPathLength() const
 			{
