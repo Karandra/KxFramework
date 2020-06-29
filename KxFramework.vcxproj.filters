@@ -1286,6 +1286,9 @@
     <ClInclude Include="kxf\General\AlignedStorage.h">
       <Filter>kxf\General</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Threading\CriticalSection.h">
+      <Filter>kxf\Threading</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\BroadcastProcessor.cpp">
@@ -1975,6 +1978,9 @@
     </ClCompile>
     <ClCompile Include="kxf\Compression\SevenZip\Archive.cpp">
       <Filter>kxf\Compression\SevenZip</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Threading\CriticalSection.cpp">
+      <Filter>kxf\Threading</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

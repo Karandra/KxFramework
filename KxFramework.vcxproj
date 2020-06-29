@@ -235,6 +235,7 @@
     <ClInclude Include="kxf\System\SystemProcess\SystemProcessInfo.h" />
     <ClInclude Include="kxf\System\UserName.h" />
     <ClInclude Include="kxf\System\VariantProperty.h" />
+    <ClInclude Include="kxf\Threading\CriticalSection.h" />
     <ClInclude Include="kxf\Threading\ThreadEvent.h" />
     <ClInclude Include="kxf\UI\Controls\AUI.h" />
     <ClInclude Include="kxf\UI\Controls\AUI\AuiNotebook.h" />
@@ -585,6 +586,7 @@
     <ClCompile Include="kxf\System\SystemProcess\SystemProcessInfo.cpp" />
     <ClCompile Include="kxf\System\UserName.cpp" />
     <ClCompile Include="kxf\System\VariantProperty.cpp" />
+    <ClCompile Include="kxf\Threading\CriticalSection.cpp" />
     <ClCompile Include="kxf\UI\Controls\AUI\AuiNotebook.cpp" />
     <ClCompile Include="kxf\UI\Controls\AUI\AuiToolBar.cpp" />
     <ClCompile Include="kxf\UI\Controls\AUI\AuiToolBarEvent.cpp" />
