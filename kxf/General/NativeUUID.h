@@ -78,6 +78,15 @@ namespace kxf
 namespace std
 {
 	template<>
+	struct hash<kxf::NativeUUID>
+	{
+		constexpr size_t operator()(const kxf::NativeUUID& uuid) const noexcept
+		{
+			return uuid.GetHash();
+		}
+	};
+
+	template<>
 	struct numeric_limits<kxf::NativeUUID>
 	{
 		static constexpr bool is_specialized = true;
