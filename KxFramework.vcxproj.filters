@@ -1241,9 +1241,6 @@
     <ClInclude Include="kxf\System\VariantProperty.h">
       <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\LocalPImpl.h">
-      <Filter>kxf\System</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\FileSystem\Private\NativeFSUtility.h">
       <Filter>kxf\FileSystem\Private</Filter>
     </ClInclude>
@@ -1285,6 +1282,9 @@
     </ClInclude>
     <ClInclude Include="kxf\Compression\SevenZip\Archive.h">
       <Filter>kxf\Compression\SevenZip</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\AlignedStorage.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

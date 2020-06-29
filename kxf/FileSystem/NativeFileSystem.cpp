@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "NativeFileSystem.h"
-#include "kxf/General/LocalPImpl.h"
+#include "kxf/General/AlignedStorage.h"
 #include "Private/NativeFSUtility.h"
 #include "FileStream.h"
 #include "kxf/System/DynamicLibrary.h"
@@ -27,7 +27,7 @@ namespace
 			{
 				// Some search on Google says that 'FILE_ID_DESCRIPTOR' isn't always 24. it *is* 24 for me on both x64 and x86
 				// and it seems to work fine with the size of 24. Still I'm going to make it bigger, just in case.
-				LocalPImpl<FILE_ID_DESCRIPTOR, 64, alignof(FILE_ID_DESCRIPTOR)> fileIDDescriptor;
+				AlignedStorage<FILE_ID_DESCRIPTOR, 64, alignof(FILE_ID_DESCRIPTOR)> fileIDDescriptor;
 				fileIDDescriptor->dwSize = fileIDDescriptor.size();
 
 				if (System::IsWindows8OrGreater())

@@ -197,6 +197,7 @@
     <ClInclude Include="kxf\Compression\SevenZip\Private\WithEvtHandler.h" />
     <ClInclude Include="kxf\Crypto\UserCredentials.h" />
     <ClInclude Include="kxf\Drawing\Geometry.h" />
+    <ClInclude Include="kxf\General\AlignedStorage.h" />
     <ClInclude Include="kxf\General\ApplicationInitializer.h" />
     <ClInclude Include="kxf\General\CoreApplication.h" />
     <ClInclude Include="kxf\General\DateTime.h" />
@@ -212,7 +213,6 @@
     <ClInclude Include="kxf\General\ICoreApplication.h" />
     <ClInclude Include="kxf\General\IGUIApplication.h" />
     <ClInclude Include="kxf\General\LocallyUniqueID.h" />
-    <ClInclude Include="kxf\General\LocalPImpl.h" />
     <ClInclude Include="kxf\General\Private\AppImpl.h" />
     <ClInclude Include="kxf\General\RegEx.h" />
     <ClInclude Include="kxf\pch.hpp" />

@@ -3,7 +3,7 @@
 #include "kxf/General/String.h"
 #include "kxf/General/NativeUUID.h"
 #include "kxf/General/DateTime.h"
-#include "kxf/General/LocalPImpl.h"
+#include "kxf/General/AlignedStorage.h"
 #include "ErrorCodeValue.h"
 struct tagPROPVARIANT;
 
@@ -38,7 +38,7 @@ namespace kxf
 	class VariantProperty final
 	{
 		private:
-			LocalPImpl<tagPROPVARIANT, 24, alignof(uint64_t)> m_Value;
+			AlignedStorage<tagPROPVARIANT, 24, alignof(uint64_t)> m_Value;
 
 		private:
 			HResult DoClear() noexcept;
