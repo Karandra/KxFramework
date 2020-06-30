@@ -39,7 +39,7 @@ namespace kxf
 			bool RenameItem(const FSPath& source, const FSPath& destination, FlagSet<FSCopyItemFlag> flags = {}) override;
 			bool RemoveItem(const FSPath& path) override;
 
-			std::unique_ptr<wxInputStream> OpenToRead(const FSPath& path) override;
+			std::unique_ptr<wxInputStream> OpenToRead(const FSPath& path) const override;
 			std::unique_ptr<wxOutputStream> OpenToWrite(const FSPath& path) override;
 
 		public:
@@ -85,7 +85,7 @@ namespace kxf
 				return false;
 			}
 
-			std::unique_ptr<wxInputStream> OpenToRead(const UniversallyUniqueID& id) override;
+			std::unique_ptr<wxInputStream> OpenToRead(const UniversallyUniqueID& id) const override;
 			std::unique_ptr<wxOutputStream> OpenToWrite(const UniversallyUniqueID& id) override;
 
 		public:

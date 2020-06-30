@@ -64,7 +64,7 @@ namespace kxf
 			virtual bool RenameItem(const FSPath& source, const FSPath& destination, FlagSet<FSCopyItemFlag> flags = {}) = 0;
 			virtual bool RemoveItem(const FSPath& path) = 0;
 
-			virtual std::unique_ptr<wxInputStream> OpenToRead(const FSPath& path) = 0;
+			virtual std::unique_ptr<wxInputStream> OpenToRead(const FSPath& path) const = 0;
 			virtual std::unique_ptr<wxOutputStream> OpenToWrite(const FSPath& path) = 0;
 	};
 
@@ -93,7 +93,7 @@ namespace kxf
 			virtual bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, IFileSystem::TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) = 0;
 			virtual bool RemoveItem(const UniversallyUniqueID& id) = 0;
 
-			virtual std::unique_ptr<wxInputStream> OpenToRead(const UniversallyUniqueID& id) = 0;
+			virtual std::unique_ptr<wxInputStream> OpenToRead(const UniversallyUniqueID& id) const = 0;
 			virtual std::unique_ptr<wxOutputStream> OpenToWrite(const UniversallyUniqueID& id) = 0;
 	};
 }

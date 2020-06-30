@@ -298,7 +298,7 @@ namespace kxf
 		return false;
 	}
 
-	std::unique_ptr<wxInputStream> NativeFileSystem::OpenToRead(const FSPath& path)
+	std::unique_ptr<wxInputStream> NativeFileSystem::OpenToRead(const FSPath& path) const
 	{
 		if (path.IsAbsolute())
 		{
@@ -358,7 +358,7 @@ namespace kxf
 		return {};
 	}
 
-	std::unique_ptr<wxInputStream> NativeFileSystem::OpenToRead(const UniversallyUniqueID& id)
+	std::unique_ptr<wxInputStream> NativeFileSystem::OpenToRead(const UniversallyUniqueID& id) const
 	{
 		if (id)
 		{
