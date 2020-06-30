@@ -43,7 +43,7 @@ namespace kxf::Private
 				static_assert(std::is_base_of_v<TBaseStream, T>, "must inherit from 'TBaseStream' (wx[Input/Output]Stream)");
 			}
 
-			DelegateStreamBase(DelegateStreamBase&& other)
+			DelegateStreamBase(DelegateStreamBase&& other) noexcept
 			{
 				*this = std::move(other);
 			}
@@ -85,7 +85,7 @@ namespace kxf::Private
 				return m_Stream;
 			}
 
-			DelegateStreamBase& operator=(DelegateStreamBase&& other)
+			DelegateStreamBase& operator=(DelegateStreamBase&& other) noexcept
 			{
 				DeleteTargetStreamIfNeeded();
 				m_Stream = other.m_Stream;
@@ -137,7 +137,7 @@ namespace kxf::Private
 
 namespace kxf
 {
-	class KX_API InputStreamDelegate: public Private::DelegateStreamBase<wxInputStream>
+	class KX_API InputStreamDelegate final: public Private::DelegateStreamBase<wxInputStream>
 	{
 		protected:
 			// wxStreamBase
@@ -159,6 +159,11 @@ namespace kxf
 
 		public:
 			InputStreamDelegate() = default;
+			InputStreamDelegate(const InputStreamDelegate&) = delete;
+			InputStreamDelegate(InputStreamDelegate&& other)
+				:DelegateStreamBase(std::move(other))
+			{
+			}
 
 			template<class... Args>
 			InputStreamDelegate(Args&&... arg)
@@ -199,9 +204,17 @@ namespace kxf
 			{
 				return GetTargetStream()->TellI();
 			}
+
+		public:
+			InputStreamDelegate& operator=(InputStreamDelegate&& other) noexcept
+			{
+				static_cast<DelegateStreamBase&>(*this) = std::move(other);
+				return *this;
+			}
+			InputStreamDelegate& operator=(const InputStreamDelegate&) = delete;
 	};
 
-	class KX_API OutputStreamDelegate: public Private::DelegateStreamBase<wxOutputStream>
+	class KX_API OutputStreamDelegate final: public Private::DelegateStreamBase<wxOutputStream>
 	{
 		protected:
 			// wxStreamBase
@@ -223,6 +236,11 @@ namespace kxf
 
 		public:
 			OutputStreamDelegate() = default;
+			OutputStreamDelegate(const OutputStreamDelegate&) = delete;
+			OutputStreamDelegate(OutputStreamDelegate&& other)
+				:DelegateStreamBase(std::move(other))
+			{
+			}
 
 			template<class... Args>
 			OutputStreamDelegate(Args&&... arg)
@@ -241,7 +259,7 @@ namespace kxf
 			{
 				return GetTargetStream()->LastWrite();
 			}
-		
+			
 			wxFileOffset SeekO(wxFileOffset pos, wxSeekMode mode = wxFromStart) override
 			{
 				return GetTargetStream()->SeekO(pos, mode);
@@ -257,11 +275,15 @@ namespace kxf
 			}
 			bool Close() override
 			{
-				if (IsTargetStreamOwned())
-				{
-					return GetTargetStream()->Close();
-				}
-				return true;
+				return GetTargetStream()->Close();
 			}
+
+		public:
+			OutputStreamDelegate& operator=(OutputStreamDelegate&& other) noexcept
+			{
+				static_cast<DelegateStreamBase&>(*this) = std::move(other);
+				return *this;
+			}
+			OutputStreamDelegate& operator=(const OutputStreamDelegate&) = delete;
 	};
 }
