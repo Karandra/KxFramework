@@ -10,7 +10,7 @@ namespace kxf::SevenZip::Private
 	template<class T, class... Args>
 	COMPtr<T> CreateObject(Args&&... arg) noexcept(std::is_nothrow_constructible_v<T, Args...>)
 	{
-		return new T(std::forward<Args>(arg)...);
+		return std::make_unique<T>(std::forward<Args>(arg)...).release();
 	}
 
 	COMPtr<IStream> OpenFileToRW(const FSPath& filePath);
@@ -27,4 +27,5 @@ namespace kxf::SevenZip::Private
 	bool GetArchiveItems(const FSPath& archivePath, CompressionFormat format, std::vector<FileItem>& items, wxEvtHandler* evtHandler = nullptr);
 
 	CompressionFormat IdentifyCompressionFormat(const FSPath& archivePath, wxEvtHandler* evtHandler = nullptr);
+	std::optional<wxSeekMode> MapSeekMode(int seekMode) noexcept;;
 }

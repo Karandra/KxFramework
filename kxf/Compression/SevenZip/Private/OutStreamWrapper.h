@@ -1,5 +1,6 @@
 #pragma once
 #include "../Common.h"
+#include "Utility.h"
 #include "WithEvtHandler.h"
 #include "kxf/System/COM.h"
 #include "kxf/System/ErrorCode.h"
@@ -75,13 +76,13 @@ namespace kxf::SevenZip::Private
 	class OutStreamWrapper_IStream: public OutStreamWrapper
 	{
 		protected:
-			COMPtr<IStream> m_BaseStream;
+			COMPtr<IStream> m_Stream;
 
 		protected:
 			HResult DoWrite(const void* data, uint32_t size, uint32_t& written) override
 			{
 				ULONG writtenBase = 0;
-				HResult hr = m_BaseStream->Write(data, size, &writtenBase);
+				HResult hr = m_Stream->Write(data, size, &writtenBase);
 				written = writtenBase;
 
 				return hr;
@@ -92,7 +93,7 @@ namespace kxf::SevenZip::Private
 				offsetLI.QuadPart = offset;
 
 				ULARGE_INTEGER newPositionLI = {};
-				HResult hr = m_BaseStream->Seek(offsetLI, seekMode, &newPositionLI);
+				HResult hr = m_Stream->Seek(offsetLI, seekMode, &newPositionLI);
 				newPosition = newPositionLI.QuadPart;
 
 				return hr;
@@ -101,12 +102,12 @@ namespace kxf::SevenZip::Private
 			{
 				ULARGE_INTEGER value = {};
 				value.QuadPart = size;
-				return m_BaseStream->SetSize(value);
+				return m_Stream->SetSize(value);
 			}
 
 		public:
 			OutStreamWrapper_IStream(COMPtr<IStream> baseStream, wxEvtHandler* evtHandler = nullptr)
-				:OutStreamWrapper(evtHandler), m_BaseStream(std::move(baseStream))
+				:OutStreamWrapper(evtHandler), m_Stream(std::move(baseStream))
 			{
 			}
 	};
@@ -116,45 +117,30 @@ namespace kxf::SevenZip::Private
 		protected:
 			OutputStreamDelegate m_Stream;
 
-		protected:
-			std::optional<wxSeekMode> MapSeekMode(int seekMode) const noexcept
+		private:
+			HResult GetLastError() const
 			{
-				switch (seekMode)
-				{
-					case SEEK_CUR:
-					{
-						return wxSeekMode::wxFromCurrent;
-					}
-					case SEEK_SET:
-					{
-						return wxSeekMode::wxFromStart;
-					}
-					case SEEK_END:
-					{
-						return wxSeekMode::wxFromEnd;
-					}
-				};
-				return {};
-			};
+				return m_Stream->GetLastError() == wxSTREAM_NO_ERROR ? HResult::Success() : HResult::Fail();
+			}
 
-		public:
+		protected:
 			HResult DoWrite(const void* data, uint32_t size, uint32_t& written) override
 			{
 				m_Stream.Write(data, size);
 				written = m_Stream.LastWrite();
 
-				return written == size ? HResult::Success() : HResult::Fail();
+				return GetLastError();
 			}
 			HResult DoSeek(int64_t offset, uint32_t seekMode, int64_t& newPosition) override
 			{
-				if (!m_Stream.IsSeekable())
+				if (!m_Stream->IsSeekable())
 				{
 					return HResult::NotImplemented();
 				}
 				if (auto streamSeek = MapSeekMode(seekMode))
 				{
-					newPosition = m_Stream.SeekO(offset, *streamSeek);
-					return m_Stream.IsOk() ? HResult::Success() : HResult::Fail();
+					newPosition = m_Stream->SeekO(offset, *streamSeek);
+					return GetLastError();
 				}
 				return HResult::InvalidArgument();
 			}

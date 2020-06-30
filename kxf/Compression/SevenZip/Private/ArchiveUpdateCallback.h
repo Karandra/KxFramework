@@ -4,9 +4,13 @@
 #include "PasswordHandler.h"
 #include "kxf/System/COM.h"
 #include "kxf/System/ErrorCode.h"
+#include "kxf/Compression/IArchive.h"
 #include <7zip/CPP/7zip/Archive/IArchive.h>
 #include <7zip/CPP/7zip/IPassword.h>
 #include <7zip/CPP/7zip/ICoder.h>
+
+#undef True
+#undef False
 
 namespace kxf::SevenZip::Private::Callback
 {
@@ -17,41 +21,33 @@ namespace kxf::SevenZip::Private::Callback
 			PasswordHandler m_PasswordHandler;
 
 		protected:
-			FSPath m_DirectoryPrefix;
-			FSPath m_OutputPath;
-			const std::vector<FSPath>& m_TargetPaths;
-			const std::vector<FileItem>& m_SourcePaths;
-			
-			size_t m_ExistingItemsCount = 0;
+			COMPtr<IInArchive> m_Archive;
 			int64_t m_BytesCompleted = 0;
 			int64_t m_BytesTotal = 0;
 
 		protected:
+			FileItem GetExistingFileInfo(size_t fileIndex) const;
 			ArchiveEvent CreateEvent(EventID id = ArchiveEvent::EvtProcess)
 			{
 				ArchiveEvent event = WithEvtHandler::CreateEvent(id);
 				event.SetTotal(m_BytesTotal);
 				event.SetProcessed(m_BytesCompleted);
-				event.SetDestination(m_OutputPath);
 
 				return event;
 			}
 
 		public:
-			UpdateArchive(FSPath directoryPrefix,
-						  const std::vector<FileItem>& filePaths,
-						  const std::vector<FSPath>& inArchiveFilePaths,
-						  FSPath outputPath,
-						  wxEvtHandler* evtHandler = nullptr)
-				:WithEvtHandler(evtHandler),
-				m_RefCount(*this),
-				m_DirectoryPrefix(std::move(directoryPrefix)),
-				m_SourcePaths(filePaths),
-				m_TargetPaths(inArchiveFilePaths),
-				m_OutputPath(std::move(outputPath))
+			UpdateArchive(wxEvtHandler* evtHandler = nullptr)
+				:WithEvtHandler(evtHandler), m_RefCount(*this)
 			{
 			}
 			virtual ~UpdateArchive() = default;
+
+		public:
+			void SetArchive(COMPtr<IInArchive> archive)
+			{
+				m_Archive = std::move(archive);
+			}
 
 		public:
 			// WithEvtHandler
@@ -76,11 +72,6 @@ namespace kxf::SevenZip::Private::Callback
 			STDMETHOD(SetTotal)(UInt64 bytes);
 			STDMETHOD(SetCompleted)(const UInt64* bytes);
 
-			// IArchiveUpdateCallback
-			STDMETHOD(GetUpdateItemInfo)(UInt32 index, Int32* newData, Int32* newProperties, UInt32* indexInArchive);
-			STDMETHOD(GetProperty)(UInt32 index, PROPID propID, PROPVARIANT* value);
-			STDMETHOD(GetStream)(UInt32 index, ISequentialInStream** inStream);
-			STDMETHOD(SetOperationResult)(Int32 operationResult);
 
 			// ICompressProgressInfo
 			STDMETHOD(SetRatioInfo)(const UInt64* inSize, const UInt64* outSize)
@@ -99,11 +90,87 @@ namespace kxf::SevenZip::Private::Callback
 			{
 				return *m_PasswordHandler.OnPasswordRequest(password, passwordIsDefined);
 			}
+	};
+}
+
+namespace kxf::SevenZip::Private::Callback
+{
+	class UpdateArchiveWrapper: public UpdateArchive
+	{
+		private:
+			IArchiveUpdating& m_Updating;
+			Compression::IUpdateCallback& m_Callback;
+
+			InputStreamDelegate m_Stream;
 
 		public:
-			void SetExistingItemsCount(size_t existingItemsCount)
+			UpdateArchiveWrapper(IArchiveUpdating& updating, Compression::IUpdateCallback& callback, wxEvtHandler* evtHandler = nullptr)
+				:UpdateArchive(evtHandler), m_Updating(updating), m_Callback(callback)
 			{
-				m_ExistingItemsCount = existingItemsCount;
+			}
+
+		public:
+			// IArchiveUpdateCallback
+			STDMETHOD(GetUpdateItemInfo)(UInt32 index, Int32* newData, Int32* newProperties, UInt32* indexInArchive);
+			STDMETHOD(GetProperty)(UInt32 index, PROPID propID, PROPVARIANT* value);
+			STDMETHOD(GetStream)(UInt32 index, ISequentialInStream** inStream);
+			STDMETHOD(SetOperationResult)(Int32 operationResult);
+	};
+}
+
+namespace kxf::SevenZip::Private::Callback
+{
+	class UpdateArchiveFromFS: public UpdateArchiveWrapper, public Compression::IUpdateCallback
+	{
+		protected:
+			const IFileSystem& m_FileSystem;
+
+			std::vector<FileItem> m_Files;
+			FSPath m_Directory;
+
+		public:
+			UpdateArchiveFromFS(IArchiveUpdating& updating, const IFileSystem& fileSystem, std::vector<FileItem> files, FSPath directory, wxEvtHandler* evtHandler = nullptr)
+				:UpdateArchiveWrapper(updating, *this, evtHandler), m_FileSystem(fileSystem), m_Files(std::vector(files)), m_Directory(std::move(directory))
+			{
+			}
+
+		public:
+			// IUpdateCallback
+			bool ShouldCancel() const override
+			{
+				return false;
+			}
+
+			size_t OnGetUpdateMode(size_t index, bool& updateData, bool& updateProperties) override
+			{
+				// We don't support updating existing files yet
+				updateData = 1;
+				updateProperties = 1;
+				return Compression::InvalidIndex;
+			}
+			FileItem OnGetProperties(size_t index) override
+			{
+				if (index < m_Files.size())
+				{
+					FileItem item = m_Files[index];
+					item.SetFullPath(item.GetFullPath().GetAfter(m_Directory));
+
+					return item;
+				}
+				return {};
+			}
+			
+			InputStreamDelegate OnGetStream(size_t index) override
+			{
+				if (index < m_Files.size())
+				{
+					return m_FileSystem.OpenToRead(m_Files[index].GetFullPath());
+				}
+				return nullptr;
+			}
+			bool OnOperationCompleted(size_t index, wxInputStream& stream) override
+			{
+				return true;
 			}
 	};
 }

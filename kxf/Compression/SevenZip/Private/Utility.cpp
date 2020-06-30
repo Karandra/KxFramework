@@ -82,7 +82,7 @@ namespace kxf::SevenZip::Private
 		if (auto fileStream = OpenFileToRead(archivePath))
 		{
 			auto archive = GetArchiveReader(format);
-			auto inFile = CreateObject<InStreamWrapper>(fileStream, evtHandler);
+			auto inFile = CreateObject<InStreamWrapper_IStream>(fileStream, evtHandler);
 			auto openCallback = CreateObject<Callback::OpenArchive>(evtHandler);
 
 			if (HResult(archive->Open(inFile, nullptr, openCallback)))
@@ -188,7 +188,7 @@ namespace kxf::SevenZip::Private
 			{
 				archive->Close();
 			});
-			auto inFile = CreateObject<InStreamWrapper>(fileStream, evtHandler);
+			auto inFile = CreateObject<InStreamWrapper_IStream>(fileStream, evtHandler);
 			auto openCallback = CreateObject<Callback::OpenArchive>(evtHandler);
 
 			if (FAILED(archive->Open(inFile, nullptr, openCallback)))
@@ -295,7 +295,7 @@ namespace kxf::SevenZip::Private
 				{
 					archive->Close();
 				});
-				auto inFile = CreateObject<InStreamWrapper>(fileStream, evtHandler);
+				auto inFile = CreateObject<InStreamWrapper_IStream>(fileStream, evtHandler);
 				auto openCallback = CreateObject<Callback::OpenArchive>(evtHandler);
 
 				if (archive->Open(inFile, nullptr, openCallback) == S_OK)
@@ -307,5 +307,24 @@ namespace kxf::SevenZip::Private
 			counter++;
 		}
 		return CompressionFormat::Unknown;
+	}
+	std::optional<wxSeekMode> MapSeekMode(int seekMode) noexcept
+	{
+		switch (seekMode)
+		{
+			case SEEK_CUR:
+			{
+				return wxSeekMode::wxFromCurrent;
+			}
+			case SEEK_SET:
+			{
+				return wxSeekMode::wxFromStart;
+			}
+			case SEEK_END:
+			{
+				return wxSeekMode::wxFromEnd;
+			}
+		};
+		return {};
 	}
 }

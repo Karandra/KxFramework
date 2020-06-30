@@ -79,9 +79,9 @@ namespace kxf::SevenZip::Private::Callback
 {
 	class ExtractArchiveWrapper: public ExtractArchive
 	{
-		protected:
+		private:
 			const IArchiveExtraction& m_Extraction;
-			IExtractionCallback& m_Callback;
+			Compression::IExtractionCallback& m_Callback;
 
 			OutputStreamDelegate m_Stream;
 			size_t m_FileIndex = Compression::InvalidIndex;
@@ -93,7 +93,7 @@ namespace kxf::SevenZip::Private::Callback
 			}
 
 		public:
-			ExtractArchiveWrapper(const IArchiveExtraction& extraction, IExtractionCallback& callback, wxEvtHandler* evtHandler = nullptr)
+			ExtractArchiveWrapper(const IArchiveExtraction& extraction, Compression::IExtractionCallback& callback, wxEvtHandler* evtHandler = nullptr)
 				:ExtractArchive(evtHandler), m_Callback(callback), m_Extraction(extraction)
 			{
 			}
@@ -110,7 +110,7 @@ namespace kxf::SevenZip::Private::Callback
 {
 	class ExtractArchiveToFS: public ExtractArchive
 	{
-		protected:
+		private:
 			const IArchiveExtraction& m_Extraction;
 			FSPath m_Directory;
 			IFileSystem& m_FileSystem;
@@ -120,7 +120,6 @@ namespace kxf::SevenZip::Private::Callback
 			OutputStreamDelegate m_Stream;
 
 		public:
-			ExtractArchiveToFS() = default;
 			ExtractArchiveToFS(const IArchiveExtraction& extraction, IFileSystem& fileSystem, FSPath directory, wxEvtHandler* evtHandler = nullptr)
 				:ExtractArchive(evtHandler), m_Extraction(extraction), m_Directory(std::move(directory)), m_FileSystem(fileSystem)
 			{
@@ -149,7 +148,6 @@ namespace kxf::SevenZip::Private::Callback
 			OutputStreamDelegate m_Stream;
 
 		public:
-			ExtractArchiveToStream() = default;
 			ExtractArchiveToStream(const IArchiveExtraction& extraction, OutputStreamDelegate steram, wxEvtHandler* evtHandler = nullptr)
 				:ExtractArchive(evtHandler), m_Extraction(extraction), m_Stream(std::move(steram))
 			{

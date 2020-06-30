@@ -23,63 +23,60 @@ namespace
 
 	NativeFileSystem g_NativeFS;
 
-	const char* GetMethodString(CompressionMethod method) noexcept
+	String GetMethodString(CompressionMethod method) noexcept
 	{
 		switch (method)
 		{
 			case CompressionMethod::LZMA:
 			{
-				return "LZMA";
+				return wxS("LZMA");
 			}
 			case CompressionMethod::BZIP2:
 			{
-				return "BZip2";
+				return wxS("BZip2");
 			}
 			case CompressionMethod::PPMD:
 			{
-				return "PPMd";
+				return wxS("PPMd");
 			}
 		};
 
 		// LZMA2 is the default
-		return "LZMA2";
+		return wxS("LZMA2");
 	}
-	std::string FormatMethodString(int dictionarySize, SevenZip::CompressionMethod method)
+	String FormatMethodString(int dictionarySize, SevenZip::CompressionMethod method)
 	{
 		const int64_t dictSizeMB = 20 + dictionarySize;
 
-		std::string result(256, '\000');
 		switch (method)
 		{
 			case CompressionMethod::LZMA:
 			case CompressionMethod::LZMA2:
 			{
-				sprintf_s(result.data(), result.size(), "%s:d=%lld", GetMethodString(method), dictSizeMB);
-				break;
+				return String::Format(wxS("%1:d=%2"), GetMethodString(method), dictSizeMB);
 			}
 			case CompressionMethod::BZIP2:
 			{
-				result = "BZip2:d=900000b";
-				break;
+				// Makes no sense for BZip2 as its max dictionary size is so tiny
+				return wxS("BZip2:d=900000b");
 			}
 			case CompressionMethod::PPMD:
 			{
-				sprintf_s(result.data(), result.size(), "%s:mem=%lld", GetMethodString(method), dictSizeMB);
-				break;
+				return String::Format(wxS("%1:mem=%2"), GetMethodString(method), dictSizeMB);
 			}
 		};
-		return result;
+		return {};
 	}
 	bool SetCompressionProperties(IUnknown& archive, bool multithreaded, bool solidArchive, int compressionLevel, int dictionarySize, SevenZip::CompressionMethod method)
 	{
-		std::string methodString = FormatMethodString(dictionarySize, method);
+		String methodString = FormatMethodString(dictionarySize, method);
 		constexpr const wchar_t* names[] = {L"x", L"s", L"mt", L"m"};
 		VariantProperty values[] =
 		{
 			static_cast<uint32_t>(compressionLevel),
 			solidArchive,
 			multithreaded,
-			methodString.c_str()
+			methodString
 		};
 
 		COMPtr<ISetProperties> propertiesSet;
@@ -89,7 +86,6 @@ namespace
 			// Archive does not support setting compression properties
 			return false;
 		}
-
 		return HResult(propertiesSet->SetProperties(names, reinterpret_cast<const PROPVARIANT*>(values), std::size(values))).IsSuccess();
 	}
 
@@ -168,7 +164,7 @@ namespace kxf::SevenZip
 		m_Data.ArchiveStream = Private::OpenFileToRead(m_Data.FilePath);
 		if (m_Data.ArchiveStream)
 		{
-			m_Data.ArchiveStreamWrapper = Private::CreateObject<Private::InStreamWrapper>(m_Data.ArchiveStream, m_EvtHandler);
+			m_Data.ArchiveStreamWrapper = Private::CreateObject<Private::InStreamWrapper_IStream>(m_Data.ArchiveStream, m_EvtHandler);
 			m_Data.ArchiveStreamReader = Private::GetArchiveReader(m_Data.Properties.CompressionFormat);
 
 			if (m_Data.ArchiveStreamReader)
@@ -211,7 +207,7 @@ namespace kxf::SevenZip
 		if (auto fileStream = Private::OpenFileToRead(m_Data.FilePath))
 		{
 			auto archive = Private::GetArchiveReader(m_Data.Properties.CompressionFormat);
-			auto inFile = Private::CreateObject<Private::InStreamWrapper>(fileStream, m_EvtHandler);
+			auto inFile = Private::CreateObject<Private::InStreamWrapper_IStream>(fileStream, m_EvtHandler);
 			auto openCallback = Private::CreateObject<Private::Callback::OpenArchive>(m_EvtHandler);
 
 			if (HResult(archive->Open(inFile, nullptr, openCallback)))
@@ -272,7 +268,7 @@ namespace kxf::SevenZip
 		}
 		return false;
 	}
-	bool Archive::DoCompress(const FSPath& pathPrefix, const std::vector<FileItem>& filePaths, const std::vector<FSPath>& inArchiveFilePaths)
+	bool Archive::DoUpdate(Private::Callback::UpdateArchive& updater, size_t itemCount)
 	{
 		auto archiveWriter = Private::GetArchiveWriter(m_Data.Properties.CompressionFormat);
 		if (archiveWriter)
@@ -287,28 +283,11 @@ namespace kxf::SevenZip
 			auto outFile = Private::CreateObject<Private::OutStreamWrapper_IStream>(Private::OpenFileToWrite(m_Data.FilePath));
 			if (outFile)
 			{
-				auto updateCallback = Private::CreateObject<Private::Callback::UpdateArchive>(pathPrefix, filePaths, inArchiveFilePaths, m_Data.FilePath, m_EvtHandler);
-				updateCallback->SetExistingItemsCount(m_Data.ItemCount);
+				updater.SetArchive(m_Data.ArchiveStreamReader);
+				updater.SetEvtHandler(m_EvtHandler);
 
-				return HResult(archiveWriter->UpdateItems(outFile, static_cast<uint32_t>(filePaths.size()), updateCallback)).IsSuccess();
+				return HResult(archiveWriter->UpdateItems(outFile, static_cast<uint32_t>(itemCount), &updater)).IsSuccess();
 			}
-		}
-		return false;
-	}
-	bool Archive::FindAndCompressFiles(const IFileSystem& fileSystem, const FSPath& directory, const FSPathQuery& searchPattern, const FSPath& pathPrefix, bool recursion)
-	{
-		std::vector<FileItem> files;
-		std::vector<FSPath> relativePaths;
-
-		if (fileSystem.EnumItems(directory, [&](FileItem item)
-		{
-			relativePaths.emplace_back(item.GetFullPath().GetAfter(directory));
-			files.emplace_back(std::move(item));
-
-			return true;
-		}, searchPattern, FlagSet<FSEnumItemsFlag>(FSEnumItemsFlag::LimitToFiles).Add(FSEnumItemsFlag::Recursive, recursion)) != 0)
-		{
-			return DoCompress(pathPrefix, files, relativePaths);
 		}
 		return false;
 	}
@@ -331,6 +310,15 @@ namespace kxf::SevenZip
 	void Archive::Close()
 	{
 		m_Data = Data();
+	}
+
+	FileItem Archive::GetItem(size_t index) const
+	{
+		if (index < m_Data.ItemCount)
+		{
+			return Private::GetArchiveItem(m_Data.ArchiveStreamReader, index);
+		}
+		return {};
 	}
 
 	BinarySize Archive::GetOriginalSize() const
@@ -361,12 +349,12 @@ namespace kxf::SevenZip
 	}
 
 	// IArchiveExtraction
-	bool Archive::Extract(IExtractionCallback& callback) const
+	bool Archive::Extract(Compression::IExtractionCallback& callback) const
 	{
 		Private::Callback::ExtractArchiveWrapper wrapper(*this, callback);
 		return DoExtract(wrapper, nullptr);
 	}
-	bool Archive::Extract(IExtractionCallback& callback, Compression::FileIndexView files) const
+	bool Archive::Extract(Compression::IExtractionCallback& callback, Compression::FileIndexView files) const
 	{
 		Private::Callback::ExtractArchiveWrapper wrapper(*this, callback);
 		return DoExtract(wrapper, &files);
@@ -391,33 +379,26 @@ namespace kxf::SevenZip
 	}
 
 	// IArchiveCompression
-	bool Archive::CompressDirectory(const FSPath& directory, bool isRecursive)
+	bool Archive::Update(Compression::IUpdateCallback& callback, size_t itemCount)
 	{
-		return FindAndCompressFiles(g_NativeFS, directory, {}, directory, isRecursive);
+		Private::Callback::UpdateArchiveWrapper wrapper(*this, callback);
+		return DoUpdate(wrapper, itemCount);
 	}
-	bool Archive::CompressFiles(const FSPath& directory, const FSPath& searchFilter, bool recursive)
-	{
-		return FindAndCompressFiles(g_NativeFS, directory, searchFilter, directory, recursive);
-	}
-	bool Archive::CompressSpecifiedFiles(const std::vector<FSPath>& sourceFiles, const std::vector<FSPath>& archivePaths)
+	bool Archive::UpdateFromFS(const IFileSystem& fileSystem, const FSPath& directory, const FSPathQuery& query, FlagSet<FSEnumItemsFlag> flags)
 	{
 		std::vector<FileItem> files;
-		files.reserve(sourceFiles.size());
-
-		for (const FSPath& path: sourceFiles)
+		fileSystem.EnumItems(directory, [&](FileItem item)
 		{
-			files.emplace_back(g_NativeFS.GetItem(path));
-		}
+			files.emplace_back(std::move(item));
+			return true;
+		}, query, flags.Remove(FSEnumItemsFlag::LimitToDirectories));
 
-		return DoCompress({}, files, archivePaths);
-	}
-	bool Archive::CompressFile(const FSPath& filePath)
-	{
-		return DoCompress(filePath.GetParent(), {filePath}, {});
-	}
-	bool Archive::CompressFile(const FSPath& filePath, const FSPath& archivePath)
-	{
-		return DoCompress(filePath.GetParent(), {filePath}, {archivePath});
+		if (!files.empty())
+		{
+			Private::Callback::UpdateArchiveFromFS wrapper(*this, fileSystem, std::move(files), directory);
+			return DoUpdate(wrapper, files.size());
+		}
+		return false;
 	}
 
 	// IFileSystem
@@ -524,9 +505,9 @@ namespace kxf::SevenZip
 	FileItem Archive::GetItem(const UniversallyUniqueID& id) const
 	{
 		auto luid = id.ToLocallyUniqueID();
-		if (luid < m_Data.ItemCount)
+		if (size_t index = static_cast<size_t>(luid.ToInt()); index < m_Data.ItemCount)
 		{
-			return Private::GetArchiveItem(m_Data.ArchiveStreamReader, static_cast<size_t>(luid.ToInt()));
+			return Private::GetArchiveItem(m_Data.ArchiveStreamReader, index);
 		}
 		return {};
 	}

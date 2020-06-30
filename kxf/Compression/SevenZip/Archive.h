@@ -8,7 +8,7 @@ struct IInArchive;
 
 namespace kxf::SevenZip::Private
 {
-	class InStreamWrapper;
+	class InStreamWrapper_IStream;
 
 	namespace Callback
 	{
@@ -26,6 +26,7 @@ namespace kxf::SevenZip
 			IArchive,
 			IArchiveProperties,
 			IArchiveExtraction,
+			IArchiveUpdating,
 			IFileSystem,
 			IFileIDSystem
 		>
@@ -36,7 +37,7 @@ namespace kxf::SevenZip
 				FSPath FilePath;
 				COMPtr<IStream> ArchiveStream;
 				COMPtr<IInArchive> ArchiveStreamReader;
-				COMPtr<Private::InStreamWrapper> ArchiveStreamWrapper;
+				COMPtr<Private::InStreamWrapper_IStream> ArchiveStreamWrapper;
 
 				// Metadata
 				size_t ItemCount = 0;
@@ -66,8 +67,7 @@ namespace kxf::SevenZip
 
 		protected:
 			bool DoExtract(Private::Callback::ExtractArchive& extractor, Compression::FileIndexView* files) const;
-			bool DoCompress(const FSPath& pathPrefix, const std::vector<FileItem>& filePaths, const std::vector<FSPath>& inArchiveFilePaths);
-			bool FindAndCompressFiles(const IFileSystem& fileSystem, const FSPath& directory, const FSPathQuery& searchPattern, const FSPath& pathPrefix, bool recursion);
+			bool DoUpdate(Private::Callback::UpdateArchive& updater, size_t itemCount);
 
 		public:
 			Archive(wxEvtHandler* evtHandler = nullptr);
@@ -100,6 +100,8 @@ namespace kxf::SevenZip
 			{
 				return m_Data.ItemCount;
 			}
+			FileItem GetItem(size_t index) const override;
+			
 			BinarySize GetOriginalSize() const override;
 			BinarySize GetCompressedSize() const override;
 
@@ -215,8 +217,8 @@ namespace kxf::SevenZip
 			// IArchiveExtraction
 			
 			// Extracts files using provided callback interface
-			bool Extract(IExtractionCallback& callback) const override;
-			bool Extract(IExtractionCallback& callback, Compression::FileIndexView files) const override;
+			bool Extract(Compression::IExtractionCallback& callback) const override;
+			bool Extract(Compression::IExtractionCallback& callback, Compression::FileIndexView files) const override;
 
 			// Extract entire archive or only specified files into a directory
 			bool ExtractToFS(IFileSystem& fileSystem, const FSPath& directory) const override;
@@ -226,21 +228,13 @@ namespace kxf::SevenZip
 			bool ExtractToStream(size_t index, wxOutputStream& stream) const override;
 			
 		public:
-			// IArchiveCompression
-			// Includes the last directory as the root in the archive, e.g. specifying "C:\Temp\MyFolder"
-			// makes "MyFolder" the single root item in archive with the files within it included.
-			bool CompressDirectory(const FSPath& directory, bool isRecursive = true);
+			// IArchiveUpdating
 
-			// Excludes the last directory as the root in the archive, its contents are at root instead. E.g.
-			// specifying "C:\Temp\MyFolder" make the files in "MyFolder" the root items in the archive.
-			bool CompressFiles(const FSPath& directory, const FSPath& searchFilter = {}, bool recursive = true);
-			bool CompressSpecifiedFiles(const std::vector<FSPath>& sourceFiles, const std::vector<FSPath>& archivePaths);
+			// Add files using provided callback interface
+			bool Update(Compression::IUpdateCallback& callback, size_t itemCount) override;
 
-			// Compress just this single file as the root item in the archive.
-			bool CompressFile(const FSPath& filePath);
-
-			// Same as above, but places compressed file into 'archivePath' folder inside the archive
-			bool CompressFile(const FSPath& filePath, const FSPath& archivePath);
+			// Add files from the provided file system
+			bool UpdateFromFS(const IFileSystem& fileSystem, const FSPath& directory, const FSPathQuery& query = {}, FlagSet<FSEnumItemsFlag> flags = {}) override;
 
 		public:
 			// IFileSystem
@@ -282,7 +276,7 @@ namespace kxf::SevenZip
 				return false;
 			}
 
-			std::unique_ptr<wxInputStream> OpenToRead(const FSPath& path) override
+			std::unique_ptr<wxInputStream> OpenToRead(const FSPath& path) const override
 			{
 				return nullptr;
 			}
@@ -328,7 +322,7 @@ namespace kxf::SevenZip
 				return false;
 			}
 
-			std::unique_ptr<wxInputStream> OpenToRead(const UniversallyUniqueID& id) override
+			std::unique_ptr<wxInputStream> OpenToRead(const UniversallyUniqueID& id) const override
 			{
 				return nullptr;
 			}

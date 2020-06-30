@@ -7,6 +7,11 @@
 
 namespace kxf::SevenZip::Private::Callback
 {
+	FileItem UpdateArchive::GetExistingFileInfo(size_t fileIndex) const
+	{
+		return GetArchiveItem(m_Archive, fileIndex);
+	}
+
 	STDMETHODIMP UpdateArchive::QueryInterface(const ::IID& iid, void** ppvObject)
 	{
 		if (iid == __uuidof(IUnknown))
@@ -64,139 +69,128 @@ namespace kxf::SevenZip::Private::Callback
 		}
 		return S_OK;
 	}
+}
 
-	STDMETHODIMP UpdateArchive::GetUpdateItemInfo(UInt32 index, Int32* newData, Int32* newProperties, UInt32* indexInArchive)
+namespace kxf::SevenZip::Private::Callback
+{
+	STDMETHODIMP UpdateArchiveWrapper::GetUpdateItemInfo(UInt32 index, Int32* newData, Int32* newProperties, UInt32* indexInArchive)
 	{
-		// Setting info for create (or append) mode
-		// TODO: Support append mode
+		if (m_Callback.ShouldCancel())
+		{
+			return *HResult::Abort();
+		}
 
-		if (newData)
+		if (indexInArchive && newData && newProperties)
 		{
+			bool updateData = false;
+			bool updateProperties = false;
+			size_t newIndex = m_Callback.OnGetUpdateMode(index, updateData, updateProperties);
+
+			if (newIndex != Compression::InvalidIndex)
+			{
+				*indexInArchive = newIndex;
+				*newProperties = updateProperties;
+				*newData = updateData;
+
+				return *HResult::Success();
+			}
+			
+			// Assume new file
 			*newData = 1;
-		}
-		if (newProperties)
-		{
 			*newProperties = 1;
-		}
-		if (indexInArchive)
-		{
 			*indexInArchive = std::numeric_limits<UInt32>::max();
 		}
-
-		if (m_EvtHandler && index < m_SourcePaths.size())
-		{
-			ArchiveEvent event = CreateEvent();
-			event.SetItem(m_SourcePaths[index]);
-			if (!SendEvent(event))
-			{
-				return E_ABORT;
-			}
-		}
-		return S_OK;
+		return *HResult::InvalidPointer();
 	}
-	STDMETHODIMP UpdateArchive::GetProperty(UInt32 index, PROPID propID, PROPVARIANT* value)
+	STDMETHODIMP UpdateArchiveWrapper::GetProperty(UInt32 index, PROPID propID, PROPVARIANT* value)
 	{
-		VariantProperty prop;
-
-		if (propID == kpidIsAnti)
+		if (m_Callback.ShouldCancel())
 		{
-			prop = false;
-			if (value)
-			{
-				return *prop.CopyToNative(*value);
-			}
-			return E_INVALIDARG;
+			return *HResult::Abort();
 		}
-
-		if (index >= m_SourcePaths.size())
-		{
-			return E_INVALIDARG;
-		}
-
-		const FileItem& fileInfo = m_SourcePaths[index];
-		switch (propID)
-		{
-			case kpidPath:
-			{
-				prop = m_TargetPaths[index].GetFullPathWithNS(FSPathNamespace::Win32File).wc_str();
-				break;
-			}
-			case kpidIsDir:
-			{
-				prop = fileInfo.IsDirectory();
-				break;
-			}
-			case kpidSize:
-			{
-				// Apparently 7-Zip requires file size to be of 'uint64_t' type
-				prop = fileInfo.GetSize().GetBytes<uint64_t>();
-				break;
-			}
-			case kpidAttrib:
-			{
-				// 'uint32_t' seems to be correct type here
-				prop = static_cast<uint32_t>(FileSystem::Private::MapFileAttributes(fileInfo.GetAttributes()));
-				break;
-			}
-			case kpidCTime:
-			{
-				prop = fileInfo.GetCreationTime();
-				break;
-			}
-			case kpidMTime:
-			{
-				prop = fileInfo.GetModificationTime();
-				break;
-			}
-			case kpidATime:
-			{
-				prop = fileInfo.GetLastAccessTime();
-				break;
-			}
-		};
 
 		if (value)
 		{
-			return *prop.CopyToNative(*value);
-		}
-		return E_INVALIDARG;
-	}
-	STDMETHODIMP UpdateArchive::GetStream(UInt32 index, ISequentialInStream** inStream)
-	{
-		if (index >= m_SourcePaths.size())
-		{
-			return E_INVALIDARG;
-		}
-
-		const FileItem& fileInfo = m_SourcePaths[index];
-		if (fileInfo.IsDirectory())
-		{
-			return S_OK;
-		}
-
-		auto fileStream = OpenFileToRead(fileInfo.GetFullPath());
-		if (!fileStream)
-		{
-			return *Win32Error::GetLastError().ToHResult().value_or(E_FAIL);
-		}
-
-		auto wrapperStream = CreateObject<InStreamWrapper>(fileStream, m_EvtHandler);
-		wrapperStream->SetSize(fileInfo.GetSize().GetBytes());
-		*inStream = wrapperStream.Detach();
-
-		if (m_EvtHandler)
-		{
-			ArchiveEvent event = CreateEvent();
-			event.SetItem(fileInfo);
-			if (!SendEvent(event))
+			auto DoGetProperty = [](PROPID propID, FileItem fileItem) -> VariantProperty
 			{
-				return E_ABORT;
+				switch (propID)
+				{
+					case kpidIsAnti:
+					{
+						// WTF is this property?
+						return false;
+					}
+					case kpidPath:
+					{
+						return fileItem.GetFullPath().GetFullPath();
+					}
+					case kpidIsDir:
+					{
+						return fileItem.IsDirectory();
+					}
+					case kpidSize:
+					{
+						// Apparently 7-Zip requires file size to be of 'uint64_t' type
+						return fileItem.GetSize().GetBytes<uint64_t>();
+					}
+					case kpidAttrib:
+					{
+						// Attributes should be of 'uint32_t' type
+						return static_cast<uint32_t>(FileSystem::Private::MapFileAttributes(fileItem.GetAttributes()));
+					}
+					case kpidCTime:
+					{
+						return fileItem.GetCreationTime();
+					}
+					case kpidMTime:
+					{
+						return fileItem.GetModificationTime();
+					}
+					case kpidATime:
+					{
+						return fileItem.GetLastAccessTime();
+					}
+				};
+				return {};
+			};
+
+			VariantProperty property = DoGetProperty(propID, m_Callback.OnGetProperties(index));
+			if (property)
+			{
+				return *property.CopyToNative(*value);
 			}
+			return *HResult::InvalidArgument();
 		}
-		return S_OK;
+		return *HResult::InvalidPointer();
 	}
-	STDMETHODIMP UpdateArchive::SetOperationResult(Int32 operationResult)
+	
+	STDMETHODIMP UpdateArchiveWrapper::GetStream(UInt32 index, ISequentialInStream** inStream)
 	{
-		return S_OK;
+		*inStream = nullptr;
+		if (m_Callback.ShouldCancel())
+		{
+			return *HResult::Abort();
+		}
+
+		m_Stream = m_Callback.OnGetStream(index);
+		if (m_Stream)
+		{
+			auto wrapperStream = CreateObject<InStreamWrapper_wxInputStream>(*m_Stream, m_EvtHandler);
+			wrapperStream->SpecifyTotalSize(m_Stream->GetLength());
+			*inStream = wrapperStream.Detach();
+
+			return *HResult::Success();
+		}
+		return *HResult::False();
+	}
+	STDMETHODIMP UpdateArchiveWrapper::SetOperationResult(Int32 operationResult)
+	{
+		m_Stream = nullptr;
+
+		if (m_Callback.ShouldCancel())
+		{
+			return *HResult::Abort();
+		}
+		return *HResult::Success();
 	}
 }

@@ -4,7 +4,7 @@
 
 namespace kxf::SevenZip::Private
 {
-	HRESULT STDMETHODCALLTYPE InStreamWrapper::QueryInterface(const ::IID& iid, void** ppvObject)
+	HRESULT STDMETHODCALLTYPE InStream::QueryInterface(const ::IID& iid, void** ppvObject)
 	{
 		if (iid == __uuidof(IUnknown))
 		{
@@ -32,11 +32,14 @@ namespace kxf::SevenZip::Private
 		}
 		return E_NOINTERFACE;
 	}
+}
 
+namespace kxf::SevenZip::Private
+{
 	STDMETHODIMP InStreamWrapper::Read(void* data, UInt32 size, UInt32* processedSize)
 	{
-		ULONG read = 0;
-		HResult hr = m_BaseStream->Read(data, size, &read);
+		uint32_t read = 0;
+		HResult hr = DoRead(data, size, read);
 		if (processedSize)
 		{
 			*processedSize = read;
@@ -48,33 +51,29 @@ namespace kxf::SevenZip::Private
 			ArchiveEvent event = CreateEvent();
 			if (!SendEvent(event))
 			{
-				return E_ABORT;
+				return *HResult::Abort();
 			}
 		}
-		return hr ? S_OK : *hr;
+		return hr ? *HResult::Success() : *hr;
 	}
 	STDMETHODIMP InStreamWrapper::Seek(Int64 offset, UInt32 seekOrigin, UInt64* newPosition)
 	{
-		LARGE_INTEGER move;
-		ULARGE_INTEGER newPos;
-
-		move.QuadPart = offset;
-		HRESULT hr = m_BaseStream->Seek(move, seekOrigin, &newPos);
+		int64_t newPos = 0;
+		HResult hr = DoSeek(offset, seekOrigin, newPos);
 		if (newPosition)
 		{
-			*newPosition = newPos.QuadPart;
+			*newPosition = newPos;
 			m_BytesRead = *newPosition;
 		}
-		return hr;
+		return *hr;
 	}
 	STDMETHODIMP InStreamWrapper::GetSize(UInt64* size)
 	{
-		STATSTG statInfo = {};
-		HResult hr = m_BaseStream->Stat(&statInfo, STATFLAG_NONAME);
-		if (hr)
+		int64_t streamSize = 0;
+		HResult hr = DoGetSize(streamSize);
+		if (hr && size)
 		{
-			*size = statInfo.cbSize.QuadPart;
-			m_BytesTotal = *size;
+			*size = streamSize;
 		}
 		return *hr;
 	}

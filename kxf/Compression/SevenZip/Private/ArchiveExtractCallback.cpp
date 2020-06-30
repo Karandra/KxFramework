@@ -183,6 +183,10 @@ namespace kxf::SevenZip::Private::Callback
 
 				return *HResult::Success();
 			}
+			if (stream.IsTargetStreamOwned())
+			{
+				stream->Close();
+			}
 
 			m_FileSystem.ChangeAttributes(m_TargetPath, m_FileInfo.GetAttributes());
 			m_FileSystem.ChangeTimestamp(m_TargetPath, m_FileInfo.GetCreationTime(), m_FileInfo.GetModificationTime(), m_FileInfo.GetLastAccessTime());
@@ -218,7 +222,12 @@ namespace kxf::SevenZip::Private::Callback
 	}
 	STDMETHODIMP ExtractArchiveToStream::SetOperationResult(Int32 operationResult)
 	{
+		if (m_Stream.IsTargetStreamOwned())
+		{
+			m_Stream.Close();
+		}
 		m_Stream = nullptr;
+
 		return *HResult::Success();
 	}
 }
