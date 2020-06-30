@@ -8,7 +8,7 @@
 
 namespace kxf::SevenZip::Private::Callback
 {
-	FileItem ExtractArchive::GetFileInfo(size_t fileIndex) const
+	FileItem ExtractArchive::GetExistingFileInfo(size_t fileIndex) const
 	{
 		return GetArchiveItem(m_Archive, fileIndex);
 	}
@@ -78,7 +78,7 @@ namespace kxf::SevenZip::Private::Callback
 
 			if (m_EvtHandler)
 			{
-				if (FileItem fileItem = GetFileInfo(fileIndex))
+				if (FileItem fileItem = GetExistingFileInfo(fileIndex))
 				{
 					ArchiveEvent event = CreateEvent();
 					event.SetItem(fileItem);
@@ -117,7 +117,7 @@ namespace kxf::SevenZip::Private::Callback
 	{
 		m_Stream = nullptr;
 		m_TargetPath = {};
-		m_FileInfo = GetFileInfo(fileIndex);
+		m_FileInfo = GetExistingFileInfo(fileIndex);
 
 		if (m_FileInfo)
 		{
@@ -199,7 +199,7 @@ namespace kxf::SevenZip::Private::Callback
 {
 	STDMETHODIMP ExtractArchiveToStream::GetStream(UInt32 fileIndex, ISequentialOutStream** outStream, Int32 askExtractMode)
 	{
-		FileItem fileItem = GetFileInfo(fileIndex);
+		FileItem fileItem = GetExistingFileInfo(fileIndex);
 		if (fileItem && !fileItem.IsDirectory())
 		{
 			auto wrapperStream = CreateObject<OutStreamWrapper_wxOutputStream>(*m_Stream, m_EvtHandler);

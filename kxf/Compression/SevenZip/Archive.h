@@ -25,8 +25,8 @@ namespace kxf::SevenZip
 		public RTTI::ImplementInterface<Archive,
 			IArchive,
 			IArchiveProperties,
-			IArchiveExtraction,
-			IArchiveUpdating,
+			IArchiveExtract,
+			IArchiveUpdate,
 			IFileSystem,
 			IFileIDSystem
 		>
@@ -214,11 +214,11 @@ namespace kxf::SevenZip
 			}
 
 		public:
-			// IArchiveExtraction
+			// IExtractCallback
 			
 			// Extracts files using provided callback interface
-			bool Extract(Compression::IExtractionCallback& callback) const override;
-			bool Extract(Compression::IExtractionCallback& callback, Compression::FileIndexView files) const override;
+			bool Extract(Compression::IExtractCallback& callback) const override;
+			bool Extract(Compression::IExtractCallback& callback, Compression::FileIndexView files) const override;
 
 			// Extract entire archive or only specified files into a directory
 			bool ExtractToFS(IFileSystem& fileSystem, const FSPath& directory) const override;
@@ -228,7 +228,7 @@ namespace kxf::SevenZip
 			bool ExtractToStream(size_t index, wxOutputStream& stream) const override;
 			
 		public:
-			// IArchiveUpdating
+			// IArchiveUpdate
 
 			// Add files using provided callback interface
 			bool Update(Compression::IUpdateCallback& callback, size_t itemCount) override;

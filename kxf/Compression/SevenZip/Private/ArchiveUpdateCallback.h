@@ -98,14 +98,14 @@ namespace kxf::SevenZip::Private::Callback
 	class UpdateArchiveWrapper: public UpdateArchive
 	{
 		private:
-			IArchiveUpdating& m_Updating;
+			IArchiveUpdate& m_Update;
 			Compression::IUpdateCallback& m_Callback;
 
 			InputStreamDelegate m_Stream;
 
 		public:
-			UpdateArchiveWrapper(IArchiveUpdating& updating, Compression::IUpdateCallback& callback, wxEvtHandler* evtHandler = nullptr)
-				:UpdateArchive(evtHandler), m_Updating(updating), m_Callback(callback)
+			UpdateArchiveWrapper(IArchiveUpdate& update, Compression::IUpdateCallback& callback, wxEvtHandler* evtHandler = nullptr)
+				:UpdateArchive(evtHandler), m_Update(update), m_Callback(callback)
 			{
 			}
 
@@ -129,8 +129,8 @@ namespace kxf::SevenZip::Private::Callback
 			FSPath m_Directory;
 
 		public:
-			UpdateArchiveFromFS(IArchiveUpdating& updating, const IFileSystem& fileSystem, std::vector<FileItem> files, FSPath directory, wxEvtHandler* evtHandler = nullptr)
-				:UpdateArchiveWrapper(updating, *this, evtHandler), m_FileSystem(fileSystem), m_Files(std::vector(files)), m_Directory(std::move(directory))
+			UpdateArchiveFromFS(IArchiveUpdate& update, const IFileSystem& fileSystem, std::vector<FileItem> files, FSPath directory, wxEvtHandler* evtHandler = nullptr)
+				:UpdateArchiveWrapper(update, *this, evtHandler), m_FileSystem(fileSystem), m_Files(std::vector(files)), m_Directory(std::move(directory))
 			{
 			}
 

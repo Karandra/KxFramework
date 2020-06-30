@@ -4,18 +4,18 @@
 
 namespace kxf
 {
-	class IArchiveExtraction;
-	class IArchiveUpdating;
+	class IArchiveExtract;
+	class IArchiveUpdate;
 }
 
 namespace kxf::Compression
 {
-	class KX_API IExtractionCallback: public RTTI::Interface<IExtractionCallback>
+	class KX_API IExtractCallback: public RTTI::Interface<IExtractCallback>
 	{
-		KxDeclareIID(IExtractionCallback, {0x8a6363c5, 0x35be, 0x4884, {0x8a, 0x35, 0x5e, 0x14, 0x5, 0x81, 0xbc, 0x25}});
+		KxDeclareIID(IExtractCallback, {0x8a6363c5, 0x35be, 0x4884, {0x8a, 0x35, 0x5e, 0x14, 0x5, 0x81, 0xbc, 0x25}});
 
 		public:
-			virtual ~IExtractionCallback() = default;
+			virtual ~IExtractCallback() = default;
 
 		public:
 			virtual bool ShouldCancel() const
@@ -28,10 +28,10 @@ namespace kxf::Compression
 	};
 
 	template<class TOutStream = wxOutputStream>
-	class KX_API ExtractWithOptions: public IExtractionCallback
+	class KX_API ExtractWithOptions: public IExtractCallback
 	{
 		private:
-			const IArchiveExtraction& m_Archive;
+			const IArchiveExtract& m_Archive;
 
 			std::function<bool()> m_ShouldCancel;
 			std::function<OutputStreamDelegate(size_t)> m_OnGetStream;
@@ -53,7 +53,7 @@ namespace kxf::Compression
 			}
 			
 		public:
-			ExtractWithOptions(const IArchiveExtraction& archive)
+			ExtractWithOptions(const IArchiveExtract& archive)
 				:m_Archive(archive)
 			{
 				static_assert(std::is_base_of_v<wxOutputStream, TOutStream>, "invalid stream type");

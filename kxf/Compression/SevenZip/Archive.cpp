@@ -349,12 +349,12 @@ namespace kxf::SevenZip
 	}
 
 	// IArchiveExtraction
-	bool Archive::Extract(Compression::IExtractionCallback& callback) const
+	bool Archive::Extract(Compression::IExtractCallback& callback) const
 	{
 		Private::Callback::ExtractArchiveWrapper wrapper(*this, callback);
 		return DoExtract(wrapper, nullptr);
 	}
-	bool Archive::Extract(Compression::IExtractionCallback& callback, Compression::FileIndexView files) const
+	bool Archive::Extract(Compression::IExtractCallback& callback, Compression::FileIndexView files) const
 	{
 		Private::Callback::ExtractArchiveWrapper wrapper(*this, callback);
 		return DoExtract(wrapper, &files);

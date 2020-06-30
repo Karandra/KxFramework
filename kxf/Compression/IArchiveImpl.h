@@ -7,14 +7,14 @@
 
 namespace kxf::Compression
 {
-	class ExtractorCallbackBase: public RTTI::ImplementInterface<ExtractorCallbackBase, IExtractionCallback>
+	class ExtractorCallbackBase: public RTTI::ImplementInterface<ExtractorCallbackBase, IExtractCallback>
 	{
 		protected:
-			IArchiveExtraction& m_ArchiveExtraction;
+			IArchiveExtract& m_ArchiveExtraction;
 			IFileIDSystem& m_ArchiveFS;
 
 		public:
-			ExtractorCallbackBase(IArchiveExtraction& archive)
+			ExtractorCallbackBase(IArchiveExtract& archive)
 				:m_ArchiveExtraction(archive), m_ArchiveFS(*archive.QueryInterface<IFileIDSystem>())
 			{
 			}
@@ -31,7 +31,7 @@ namespace kxf::Compression
 			FileStream m_Stream;
 
 		public:
-			FileExtractionCallback(IArchiveExtraction& archive, const FSPath& directory = {})
+			FileExtractionCallback(IArchiveExtract& archive, const FSPath& directory = {})
 				:ExtractorCallbackBase(archive), m_Directory(directory)
 			{
 			}
@@ -84,7 +84,7 @@ namespace kxf::Compression
 			FSPath m_TargetPath;
 
 		public:
-			SingleFileExtractionCallback(IArchiveExtraction& archive, const FSPath& targetPath)
+			SingleFileExtractionCallback(IArchiveExtract& archive, const FSPath& targetPath)
 				:FileExtractionCallback(archive), m_TargetPath(targetPath)
 			{
 			}
@@ -102,7 +102,7 @@ namespace kxf::Compression
 			wxOutputStream& m_Stream;
 
 		public:
-			SingleStreamExtractionCallback(IArchiveExtraction& archive, wxOutputStream& stream)
+			SingleStreamExtractionCallback(IArchiveExtract& archive, wxOutputStream& stream)
 				:ExtractorCallbackBase(archive), m_Stream(stream)
 			{
 			}

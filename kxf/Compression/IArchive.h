@@ -43,17 +43,17 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API IArchiveExtraction: public RTTI::Interface<IArchiveExtraction>
+	class KX_API IArchiveExtract: public RTTI::Interface<IArchiveExtract>
 	{
-		KxDeclareIID(IArchiveExtraction, {0x105f744b, 0x904d, 0x4822, {0xb4, 0x7a, 0x57, 0x8b, 0x3e, 0xd, 0x95, 0xe6}});
+		KxDeclareIID(IArchiveExtract, {0x105f744b, 0x904d, 0x4822, {0xb4, 0x7a, 0x57, 0x8b, 0x3e, 0xd, 0x95, 0xe6}});
 
 		public:
-			virtual ~IArchiveExtraction() = default;
+			virtual ~IArchiveExtract() = default;
 
 		public:
 			// Extracts files using provided callback interface
-			virtual bool Extract(Compression::IExtractionCallback& callback) const = 0;
-			virtual bool Extract(Compression::IExtractionCallback& callback, Compression::FileIndexView files) const = 0;
+			virtual bool Extract(Compression::IExtractCallback& callback) const = 0;
+			virtual bool Extract(Compression::IExtractCallback& callback, Compression::FileIndexView files) const = 0;
 
 			// Extract entire archive or only specified files into a directory
 			virtual bool ExtractToFS(IFileSystem& fileSystem, const FSPath& directory) const;
@@ -72,12 +72,12 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API IArchiveUpdating: public RTTI::Interface<IArchiveUpdating>
+	class KX_API IArchiveUpdate: public RTTI::Interface<IArchiveUpdate>
 	{
-		KxDeclareIID(IArchiveUpdating, {0xcf9bb9ac, 0x6519, 0x49d4, {0xa3, 0xb4, 0xcd, 0x63, 0x17, 0x52, 0xe1, 0x55}});
+		KxDeclareIID(IArchiveUpdate, {0xcf9bb9ac, 0x6519, 0x49d4, {0xa3, 0xb4, 0xcd, 0x63, 0x17, 0x52, 0xe1, 0x55}});
 
 		public:
-			virtual ~IArchiveUpdating() = default;
+			virtual ~IArchiveUpdate() = default;
 
 		public:
 			// Add files using provided callback interface
