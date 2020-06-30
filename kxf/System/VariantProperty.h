@@ -133,6 +133,11 @@ namespace kxf
 			{
 				AssignString(value ? value : L"");
 			}
+			VariantProperty(const String& value)
+				:VariantProperty()
+			{
+				AssignString(value.wx_str());
+			}
 			VariantProperty(const DateTime& value)
 				:VariantProperty()
 			{
