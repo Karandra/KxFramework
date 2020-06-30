@@ -1289,6 +1289,9 @@
     <ClInclude Include="kxf\Threading\CriticalSection.h">
       <Filter>kxf\Threading</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Compression\IArchiveCallbacks.h">
+      <Filter>kxf\Compression</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\BroadcastProcessor.cpp">
