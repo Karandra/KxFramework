@@ -3,7 +3,7 @@
 
 #pragma warning(disable: 4005) // macro redefinition
 #include "gumbo.h"
-#include "Private/HTML/error.h"
+#include "Private/error.h"
 
 namespace
 {

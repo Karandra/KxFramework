@@ -1,7 +1,6 @@
 #pragma once
-#include "Common.h"
-#include "String.h"
-#include "Version.h"
+#include "../Common.h"
+#include "kxf/General/Version.h"
 #include <nlohmann/json.hpp>
 #include <wx/stream.h>
 

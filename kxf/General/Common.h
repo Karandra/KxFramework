@@ -1,5 +1,5 @@
 #pragma once
-#include <kxf/Common.hpp>
+#include "kxf/Common.hpp"
 #include "kxf/General/FlagSet.h"
 
 namespace kxf

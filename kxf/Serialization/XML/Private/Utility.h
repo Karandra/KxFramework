@@ -1,6 +1,5 @@
 #pragma once
-#include "../Common.h"
-#include "kxf/General/String.h"
+#include "kxf/Serialization/Common.h"
 #include "TinyXML2 HTML5 Printer.h"
 
 namespace kxf::XML::Private

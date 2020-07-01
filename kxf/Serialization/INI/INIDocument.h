@@ -1,10 +1,9 @@
 #pragma once
-#include "Common.h"
-#include "String.h"
-#include "Version.h"
-#include "XDocument.h"
-#include <map>
+#include "../Common.h"
+#include "../XDocument.h"
+#include "kxf/General/Version.h"
 #include <wx/stream.h>
+#include <map>
 
 namespace SimpleINI
 {

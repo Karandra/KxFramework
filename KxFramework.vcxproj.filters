@@ -86,9 +86,6 @@
     <Filter Include="kxf\Network">
       <UniqueIdentifier>{503679ad-0476-4a11-beb0-ba123ce47580}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\General\Private\HTML">
-      <UniqueIdentifier>{aff7ee86-f7ed-4189-957b-55c4c7417581}</UniqueIdentifier>
-    </Filter>
     <Filter Include="kxf\Network\Private">
       <UniqueIdentifier>{297f6ab2-a16f-4533-8457-4978880f4f39}</UniqueIdentifier>
     </Filter>
@@ -167,9 +164,6 @@
     <Filter Include="kxf\UI\&lt;UI&gt;">
       <UniqueIdentifier>{e51dc976-b3e3-4424-aac5-de85a4e6e3c5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\General\&lt;Parsers&gt;">
-      <UniqueIdentifier>{f17608a3-623d-460f-a418-6b51e01ec8d9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="kxf\General\DateTime">
       <UniqueIdentifier>{073e2d6c-cfc9-4471-90ed-fc3f9dc3733b}</UniqueIdentifier>
     </Filter>
@@ -190,6 +184,30 @@
     </Filter>
     <Filter Include="kxf\IO">
       <UniqueIdentifier>{de7b204d-217c-4b3d-ac55-74c08fc3930b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\Serialization">
+      <UniqueIdentifier>{f34bfbbf-c4d4-44d9-aae9-1a5044feca3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\Serialization\HTML">
+      <UniqueIdentifier>{181171dd-f685-4fc8-9aba-d64337ce9a34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\Serialization\XML">
+      <UniqueIdentifier>{9f7a3a06-47af-45d2-aa9c-9ca3dbb2ee68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\Serialization\INI">
+      <UniqueIdentifier>{ea84b5da-f198-4366-b3ea-6f2322d241eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\Serialization\JSON">
+      <UniqueIdentifier>{8a0ddea9-a858-424b-82e0-7cc061bc45e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\Serialization\Private">
+      <UniqueIdentifier>{f74a3b57-ecbc-4712-8534-722a35d34c99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\Serialization\HTML\Private">
+      <UniqueIdentifier>{a45b3a1c-bccb-4efd-92c2-acbf00400b7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\Serialization\XML\Private">
+      <UniqueIdentifier>{47ee576b-53f3-4dcb-9ad0-30fad244c27d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -558,27 +576,6 @@
     </ClInclude>
     <ClInclude Include="kxf\General\IndexedEnum.h">
       <Filter>kxf\General</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\General\Private\XDocument.h">
-      <Filter>kxf\General\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\General\Private\XML.h">
-      <Filter>kxf\General\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\General\Private\TinyXML2 HTML5 Printer.h">
-      <Filter>kxf\General\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\General\Private\HTML\error.h">
-      <Filter>kxf\General\Private\HTML</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\General\Private\HTML\insertion_mode.h">
-      <Filter>kxf\General\Private\HTML</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\General\Private\HTML\string_buffer.h">
-      <Filter>kxf\General\Private\HTML</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\General\Private\HTML\token_type.h">
-      <Filter>kxf\General\Private\HTML</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Utility\Memory.h">
       <Filter>kxf\Utility</Filter>
@@ -1112,24 +1109,6 @@
     <ClInclude Include="kxf\System\Private\SystemInformationDefinesMapping.h">
       <Filter>kxf\System\Private</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\XMLDocument.h">
-      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\General\XDocument.h">
-      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\General\TextDocument.h">
-      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\General\JSONDocument.h">
-      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\General\INIDocument.h">
-      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\General\HTMLDocument.h">
-      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\General\DateTime\TimeClock.h">
       <Filter>kxf\General\DateTime</Filter>
     </ClInclude>
@@ -1294,6 +1273,63 @@
     </ClInclude>
     <ClInclude Include="kxf\IO\FileStream.h">
       <Filter>kxf\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Serialization\TextDocument.h">
+      <Filter>kxf\Serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Serialization\XDocument.h">
+      <Filter>kxf\Serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Serialization\Common.h">
+      <Filter>kxf\Serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Serialization\HTML.h">
+      <Filter>kxf\Serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Serialization\HTML\HTMLDocument.h">
+      <Filter>kxf\Serialization\HTML</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Serialization\XML.h">
+      <Filter>kxf\Serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Serialization\XML\XMLDocument.h">
+      <Filter>kxf\Serialization\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Serialization\JSON.h">
+      <Filter>kxf\Serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Serialization\INI.h">
+      <Filter>kxf\Serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Serialization\INI\INIDocument.h">
+      <Filter>kxf\Serialization\INI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Serialization\JSON\JSONDocument.h">
+      <Filter>kxf\Serialization\JSON</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Serialization\Private\XDocument.h">
+      <Filter>kxf\Serialization\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Serialization\HTML\Private\error.h">
+      <Filter>kxf\Serialization\HTML\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Serialization\HTML\Private\insertion_mode.h">
+      <Filter>kxf\Serialization\HTML\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Serialization\HTML\Private\string_buffer.h">
+      <Filter>kxf\Serialization\HTML\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Serialization\HTML\Private\token_type.h">
+      <Filter>kxf\Serialization\HTML\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Serialization\XML\Private\TinyXML2 HTML5 Printer.h">
+      <Filter>kxf\Serialization\XML\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Serialization\XML\Private\Utility.h">
+      <Filter>kxf\Serialization\XML\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Serialization.hpp">
+      <Filter>kxf\&lt;Modules&gt;</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1480,12 +1516,6 @@
     <ClCompile Include="kxf\Utility\System.cpp">
       <Filter>kxf\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\Private\HTML\serialize.cpp">
-      <Filter>kxf\General\Private\HTML</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\General\Private\HTML\clean_text.cpp">
-      <Filter>kxf\General\Private\HTML</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\Network\URI.cpp">
       <Filter>kxf\Network</Filter>
     </ClCompile>
@@ -1627,9 +1657,6 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Windows\Frame.cpp">
       <Filter>kxf\UI\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\General\Common.cpp">
-      <Filter>kxf\General</Filter>
     </ClCompile>
     <ClCompile Include="kxf\UI\Controls\AUI\AuiNotebook.cpp">
       <Filter>kxf\UI\Controls\AUI</Filter>
@@ -1871,33 +1898,6 @@
     <ClCompile Include="kxf\Localization\LocalizationPackage.cpp">
       <Filter>kxf\Localization</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\XMLNode.cpp">
-      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\General\XMLDocument.cpp">
-      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\General\XMLAttribute.cpp">
-      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\General\XDocument.cpp">
-      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\General\TextDocument.cpp">
-      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\General\JSONDocument.cpp">
-      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\General\INIDocument.cpp">
-      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\General\HTMLNode.cpp">
-      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\General\HTMLDocument.cpp">
-      <Filter>kxf\General\&lt;Parsers&gt;</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\General\DateTime\TimeSpan.cpp">
       <Filter>kxf\General\DateTime</Filter>
     </ClCompile>
@@ -1987,6 +1987,39 @@
     </ClCompile>
     <ClCompile Include="kxf\IO\FileStream.cpp">
       <Filter>kxf\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Serialization\TextDocument.cpp">
+      <Filter>kxf\Serialization</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Serialization\XDocument.cpp">
+      <Filter>kxf\Serialization</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Serialization\HTML\HTMLNode.cpp">
+      <Filter>kxf\Serialization\HTML</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Serialization\HTML\HTMLDocument.cpp">
+      <Filter>kxf\Serialization\HTML</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Serialization\XML\XMLNode.cpp">
+      <Filter>kxf\Serialization\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Serialization\XML\XMLAttribute.cpp">
+      <Filter>kxf\Serialization\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Serialization\XML\XMLDocument.cpp">
+      <Filter>kxf\Serialization\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Serialization\INI\INIDocument.cpp">
+      <Filter>kxf\Serialization\INI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Serialization\JSON\JSONDocument.cpp">
+      <Filter>kxf\Serialization\JSON</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Serialization\HTML\Private\serialize.cpp">
+      <Filter>kxf\Serialization\HTML\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Serialization\HTML\Private\clean_text.cpp">
+      <Filter>kxf\Serialization\HTML\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

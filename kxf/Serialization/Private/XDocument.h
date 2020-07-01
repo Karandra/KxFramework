@@ -1,5 +1,5 @@
 #pragma once
-#include "../Common.h"
+#include "kxf/Serialization/Common.h"
 #include <type_traits>
 
 namespace kxf::XDocument::Private

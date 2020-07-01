@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "LocalizationPackage.h"
-#include "kxf/General/XMLDocument.h"
+#include "kxf/Serialization/XML.h"
 #include "kxf/System/SystemInformation.h"
 #include "kxf/System/DynamicLibrary.h"
 
