@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "TextDocument.h"
-#include "kxf/FileSystem/FileStream.h"
+#include "kxf/IO/FileStream.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 #include <wx/textfile.h>
 

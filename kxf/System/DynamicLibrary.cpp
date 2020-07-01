@@ -3,7 +3,7 @@
 #include "kxf/System/NativeAPI.h"
 #include "kxf/System/Private/System.h"
 #include "kxf/System/Private/BinaryResourceDefines.h"
-#include "kxf/FileSystem/FileStream.h"
+#include "kxf/IO/FileStream.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 

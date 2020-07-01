@@ -167,9 +167,6 @@
     <Filter Include="kxf\UI\&lt;UI&gt;">
       <UniqueIdentifier>{e51dc976-b3e3-4424-aac5-de85a4e6e3c5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\General\&lt;Streams&gt;">
-      <UniqueIdentifier>{e2a71647-d82a-4fcc-a695-e60446c1dcf1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="kxf\General\&lt;Parsers&gt;">
       <UniqueIdentifier>{f17608a3-623d-460f-a418-6b51e01ec8d9}</UniqueIdentifier>
     </Filter>
@@ -190,6 +187,9 @@
     </Filter>
     <Filter Include="kxf\Compression\SevenZip\Private\&lt;Streams&gt;">
       <UniqueIdentifier>{4cd40067-8aaf-42f0-9ad0-fa76e583456c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\IO">
+      <UniqueIdentifier>{de7b204d-217c-4b3d-ac55-74c08fc3930b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -437,9 +437,6 @@
       <Filter>kxf\Compression</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Compression\IArchive.h">
-      <Filter>kxf\Compression</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Compression\IArchiveImpl.h">
       <Filter>kxf\Compression</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Compression\ZLibStream.h">
@@ -699,9 +696,6 @@
     </ClInclude>
     <ClInclude Include="kxf\General\StdID.h">
       <Filter>kxf\General</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\FileSystem\FileStream.h">
-      <Filter>kxf\FileSystem</Filter>
     </ClInclude>
     <ClInclude Include="kxf\System\Private\ErrorCodeValue.h">
       <Filter>kxf\System\Private</Filter>
@@ -1118,15 +1112,6 @@
     <ClInclude Include="kxf\System\Private\SystemInformationDefinesMapping.h">
       <Filter>kxf\System\Private</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\StreamWrappers.h">
-      <Filter>kxf\General\&lt;Streams&gt;</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\General\StreamDelegate.h">
-      <Filter>kxf\General\&lt;Streams&gt;</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\General\MemoryStream.h">
-      <Filter>kxf\General\&lt;Streams&gt;</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\General\XMLDocument.h">
       <Filter>kxf\General\&lt;Parsers&gt;</Filter>
     </ClInclude>
@@ -1292,6 +1277,24 @@
     <ClInclude Include="kxf\Compression\IArchiveCallbacks.h">
       <Filter>kxf\Compression</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\IO\Common.h">
+      <Filter>kxf\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IO.hpp">
+      <Filter>kxf\&lt;Modules&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IO\MemoryStream.h">
+      <Filter>kxf\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IO\StreamDelegate.h">
+      <Filter>kxf\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IO\StreamWrappers.h">
+      <Filter>kxf\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IO\FileStream.h">
+      <Filter>kxf\IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\BroadcastProcessor.cpp">
@@ -1416,9 +1419,6 @@
     </ClCompile>
     <ClCompile Include="kxf\System\ErrorCode.cpp">
       <Filter>kxf\System</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\Compression\IArchive.cpp">
-      <Filter>kxf\Compression</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Compression\ZLibStream.cpp">
       <Filter>kxf\Compression</Filter>
@@ -1557,9 +1557,6 @@
     </ClCompile>
     <ClCompile Include="kxf\Localization\Private\LocaleOptions.cpp">
       <Filter>kxf\Localization\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\FileSystem\FileStream.cpp">
-      <Filter>kxf\FileSystem</Filter>
     </ClCompile>
     <ClCompile Include="kxf\System\ShellLink.cpp">
       <Filter>kxf\System</Filter>
@@ -1874,9 +1871,6 @@
     <ClCompile Include="kxf\Localization\LocalizationPackage.cpp">
       <Filter>kxf\Localization</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\MemoryStream.cpp">
-      <Filter>kxf\General\&lt;Streams&gt;</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\General\XMLNode.cpp">
       <Filter>kxf\General\&lt;Parsers&gt;</Filter>
     </ClCompile>
@@ -1984,6 +1978,15 @@
     </ClCompile>
     <ClCompile Include="kxf\Threading\CriticalSection.cpp">
       <Filter>kxf\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\IO\Common.cpp">
+      <Filter>kxf\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\IO\MemoryStream.cpp">
+      <Filter>kxf\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\IO\FileStream.cpp">
+      <Filter>kxf\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

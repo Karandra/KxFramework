@@ -1,7 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "FSPath.h"
-#include "kxf/General/StreamWrappers.h"
+#include "kxf/IO/StreamWrappers.h"
 #include <wx/stream.h>
 #include <wx/datetime.h>
 

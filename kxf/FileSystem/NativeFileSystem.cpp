@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "NativeFileSystem.h"
-#include "kxf/General/AlignedStorage.h"
 #include "Private/NativeFSUtility.h"
-#include "FileStream.h"
+#include "kxf/General/AlignedStorage.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/System/SystemInformation.h"
+#include "kxf/IO/FileStream.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 

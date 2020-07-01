@@ -56,8 +56,8 @@ namespace kxf
 			virtual bool Extract(Compression::IExtractCallback& callback, Compression::FileIndexView files) const = 0;
 
 			// Extract entire archive or only specified files into a directory
-			virtual bool ExtractToFS(IFileSystem& fileSystem, const FSPath& directory) const;
-			virtual bool ExtractToFS(IFileSystem& fileSystem, const FSPath& directory, Compression::FileIndexView files) const;
+			virtual bool ExtractToFS(IFileSystem& fileSystem, const FSPath& directory) const = 0;
+			virtual bool ExtractToFS(IFileSystem& fileSystem, const FSPath& directory, Compression::FileIndexView files) const = 0;
 			
 			// Extract specified file into a stream
 			virtual bool ExtractToStream(size_t index, wxOutputStream& stream) const;

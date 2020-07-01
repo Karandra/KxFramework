@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "kxf/General/StreamWrappers.h"
+#include "kxf/IO/StreamWrappers.h"
 #include "kxf/General/Version.h"
 #include "kxf/General/String.h"
 

@@ -2,8 +2,7 @@
 #include "StorageVolume.h"
 #include "LegacyVolume.h"
 #include "FSPath.h"
-#include "kxf/FileSystem/FileStream.h"
-#include "kxf/General/StringFormater.h"
+#include "kxf/IO/FileStream.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 
 namespace

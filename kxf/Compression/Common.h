@@ -1,9 +1,9 @@
 #pragma once
 #include "kxf/Common.hpp"
 #include "kxf/General/String.h"
-#include "kxf/General/StreamDelegate.h"
 #include "kxf/General/LocallyUniqueID.h"
 #include "kxf/General/UniversallyUniqueID.h"
+#include "kxf/IO/StreamDelegate.h"
 #include "kxf/FileSystem/FSPath.h"
 #include "kxf/FileSystem/FileItem.h"
 #include "kxf/FileSystem/IFileSystem.h"

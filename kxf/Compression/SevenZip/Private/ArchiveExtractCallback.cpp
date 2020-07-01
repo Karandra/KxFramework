@@ -2,9 +2,9 @@
 #include "ArchiveExtractCallback.h"
 #include "OutStreamWrapper.h"
 #include "Utility.h"
+#include "kxf/IO/FileStream.h"
 #include "kxf/System/VariantProperty.h"
 #include "kxf/FileSystem/NativeFileSystem.h"
-#include "kxf/FileSystem/FileStream.h"
 
 namespace kxf::SevenZip::Private::Callback
 {

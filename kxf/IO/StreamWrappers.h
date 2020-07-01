@@ -1,7 +1,5 @@
 #pragma once
 #include "Common.h"
-#include "BinarySize.h"
-#include "String.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/RTTI/QueryInterface.h"
 #include <vector>

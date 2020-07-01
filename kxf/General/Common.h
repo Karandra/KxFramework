@@ -1,8 +1,6 @@
 #pragma once
 #include <kxf/Common.hpp>
 #include "kxf/General/FlagSet.h"
-enum wxSeekMode: int;
-enum wxStreamError: int;
 
 namespace kxf
 {
@@ -12,19 +10,6 @@ namespace kxf
 
 		Default,
 		DateTime,
-	};
-	enum class StreamSeekMode
-	{
-		FromStart,
-		FromCurrent,
-		FromEnd,
-	};
-	enum class StreamErrorCode
-	{
-		Success,
-		EndOfStream,
-		ReadError,
-		WriteError
 	};
 	enum class UnitNameFlag: uint32_t
 	{
@@ -103,12 +88,6 @@ namespace kxf
 
 namespace kxf
 {
-	std::optional<wxSeekMode> ToWxSeekMode(StreamSeekMode seekMode) noexcept;
-	std::optional<StreamSeekMode> FromWxSeekMode(wxSeekMode seekMode) noexcept;
-
-	std::optional<wxStreamError> ToWxStreamError(StreamErrorCode streamError) noexcept;
-	std::optional<StreamErrorCode> FromWxStreamError(wxStreamError streamError) noexcept;
-
 	constexpr wxOrientation MapOrientation(Orientation value) noexcept
 	{
 		return static_cast<wxOrientation>(value);

@@ -216,6 +216,12 @@
     <ClInclude Include="kxf\General\LocallyUniqueID.h" />
     <ClInclude Include="kxf\General\Private\AppImpl.h" />
     <ClInclude Include="kxf\General\RegEx.h" />
+    <ClInclude Include="kxf\IO.hpp" />
+    <ClInclude Include="kxf\IO\Common.h" />
+    <ClInclude Include="kxf\IO\FileStream.h" />
+    <ClInclude Include="kxf\IO\MemoryStream.h" />
+    <ClInclude Include="kxf\IO\StreamDelegate.h" />
+    <ClInclude Include="kxf\IO\StreamWrappers.h" />
     <ClInclude Include="kxf\pch.hpp" />
     <ClInclude Include="kxf\RTTI\ComponentSystem.h" />
     <ClInclude Include="kxf\System\DynamicLibrary.h" />
@@ -386,7 +392,6 @@
     <ClInclude Include="kxf\FileSystem\FileItem.h" />
     <ClInclude Include="kxf\FileSystem\FileOperationEvent.h" />
     <ClInclude Include="kxf\FileSystem\FileOperations.h" />
-    <ClInclude Include="kxf\FileSystem\FileStream.h" />
     <ClInclude Include="kxf\FileSystem\FSPath.h" />
     <ClInclude Include="kxf\FileSystem\IFileSystem.h" />
     <ClInclude Include="kxf\FileSystem\LegacyVolume.h" />
@@ -418,14 +423,11 @@
     <ClInclude Include="kxf\General\Private\XML.h" />
     <ClInclude Include="kxf\General\StdID.h" />
     <ClInclude Include="kxf\General\MemorySpan.h" />
-    <ClInclude Include="kxf\General\MemoryStream.h" />
     <ClInclude Include="kxf\General\NativeUUID.h" />
     <ClInclude Include="kxf\General\Private\ExtraData.h" />
     <ClInclude Include="kxf\General\Private\String.h" />
     <ClInclude Include="kxf\General\Private\VersionImpl.h" />
     <ClInclude Include="kxf\General\Singleton.h" />
-    <ClInclude Include="kxf\General\StreamDelegate.h" />
-    <ClInclude Include="kxf\General\StreamWrappers.h" />
     <ClInclude Include="kxf\General\String.h" />
     <ClInclude Include="kxf\General\StringFormater.h" />
     <ClInclude Include="kxf\General\StringFormaterTraits.h" />
@@ -573,6 +575,9 @@
     <ClCompile Include="kxf\General\ICoreApplication.cpp" />
     <ClCompile Include="kxf\General\LocallyUniqueID.cpp" />
     <ClCompile Include="kxf\General\Private\AppImpl.cpp" />
+    <ClCompile Include="kxf\IO\Common.cpp" />
+    <ClCompile Include="kxf\IO\FileStream.cpp" />
+    <ClCompile Include="kxf\IO\MemoryStream.cpp" />
     <ClCompile Include="kxf\RTTI\ComponentSystem.cpp" />
     <ClCompile Include="kxf\System\DynamicLibrary.cpp" />
     <ClCompile Include="kxf\System\DynamicLibraryEvent.cpp" />
@@ -681,7 +686,6 @@
     </ClCompile>
     <ClCompile Include="kxf\Async\Coroutine\CoroutineImpl.cpp" />
     <ClCompile Include="kxf\Compression\ArchiveEvent.cpp" />
-    <ClCompile Include="kxf\Compression\IArchive.cpp" />
     <ClCompile Include="kxf\Compression\LZ4Stream.cpp" />
     <ClCompile Include="kxf\Compression\ZLibStream.cpp" />
     <ClCompile Include="kxf\Crypto\Common.cpp" />
@@ -693,7 +697,6 @@
     <ClCompile Include="kxf\Drawing\ImageSet.cpp" />
     <ClCompile Include="kxf\Drawing\UxTheme.cpp" />
     <ClCompile Include="kxf\FileSystem\FileOperationEvent.cpp" />
-    <ClCompile Include="kxf\FileSystem\FileStream.cpp" />
     <ClCompile Include="kxf\General\Any.cpp" />
     <ClCompile Include="kxf\General\Color.cpp" />
     <ClCompile Include="kxf\General\HTMLDocument.cpp" />
@@ -701,7 +704,6 @@
     <ClCompile Include="kxf\General\INIDocument.cpp" />
     <ClCompile Include="kxf\General\JSONDocument.cpp" />
     <ClCompile Include="kxf\General\Math.cpp" />
-    <ClCompile Include="kxf\General\MemoryStream.cpp" />
     <ClCompile Include="kxf\General\Private\HTML\clean_text.cpp" />
     <ClCompile Include="kxf\General\Private\HTML\serialize.cpp" />
     <ClCompile Include="kxf\General\Private\VersionImpl.cpp" />
@@ -746,7 +748,6 @@
     <ClCompile Include="kxf\UI\Validator.cpp" />
     <ClCompile Include="kxf\Utility\String.cpp" />
     <ClCompile Include="kxf\Utility\System.cpp" />
-    <ClInclude Include="kxf\Compression\IArchiveImpl.h" />
     <ClCompile Include="kxf\EventSystem\BroadcastProcessor.cpp" />
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp" />
     <ClCompile Include="kxf\EventSystem\EventHandlerStack.cpp" />

@@ -4,8 +4,8 @@
 #include "WithEvtHandler.h"
 #include "kxf/System/COM.h"
 #include "kxf/System/ErrorCode.h"
-#include "kxf/General/StreamDelegate.h"
-#include "kxf/FileSystem/FileStream.h"
+#include "kxf/IO/StreamDelegate.h"
+#include "kxf/IO/FileStream.h"
 #include <7zip/CPP/7zip/IStream.h>
 
 namespace kxf::SevenZip::Private

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "NativeFSUtility.h"
-#include "kxf/FileSystem/FileStream.h"
+#include "kxf/IO/FileStream.h"
 #include "kxf/System/SystemInformation.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 
