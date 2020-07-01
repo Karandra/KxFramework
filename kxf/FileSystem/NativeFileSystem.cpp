@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "NativeFileSystem.h"
+#include "FileOperationEvent.h"
 #include "Private/NativeFSUtility.h"
+#include "kxf/General/ICoreApplication.h"
 #include "kxf/General/AlignedStorage.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/System/SystemInformation.h"
@@ -126,8 +128,29 @@ namespace kxf
 	}
 	bool NativeFileSystem::SetWorkingDirectory(const FSPath& directory)
 	{
-		String directoryString = directory.GetFullPathWithNS(FSPathNamespace::Win32File);
-		return ::SetCurrentDirectoryW(directoryString.wc_str());
+		if (directory)
+		{
+			auto DoChange = [](const FSPath& directory)
+			{
+				String directoryString = directory.GetFullPathWithNS(FSPathNamespace::Win32File);
+				return ::SetCurrentDirectoryW(directoryString.wc_str());
+			};
+
+			if (ICoreApplication* app = ICoreApplication::GetInstance())
+			{
+				FileOperationEvent event(ICoreApplication::EvtWorkingDirectoryChanged);
+				event.SetSource(GetWorkingDirectory());
+				event.SetDestination(directory);
+				event.Allow();
+
+				if (app->GetEvtHandler().ProcessEvent(event) && !event.GetSkipped())
+				{
+					return event.IsAllowed() && DoChange(event.GetDestination());
+				}
+			}
+			return DoChange(directory);
+		}
+		return false;
 	}
 
 	// IFileSystem

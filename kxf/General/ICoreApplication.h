@@ -10,9 +10,17 @@ class wxCmdLineParser;
 
 namespace kxf
 {
+	class FileOperationEvent;
+}
+
+namespace kxf
+{
 	class KX_API ICoreApplication: public RTTI::Interface<ICoreApplication>
 	{
 		KxDeclareIID(ICoreApplication, {0x2db9e5b5, 0x29cb, 0x4e8a, {0xb4, 0x59, 0x16, 0xee, 0xb, 0xad, 0x92, 0xdf}});
+
+		public:
+			KxEVENT_MEMBER(FileOperationEvent, WorkingDirectoryChanged);
 
 		public:
 			static ICoreApplication* GetInstance() noexcept;
