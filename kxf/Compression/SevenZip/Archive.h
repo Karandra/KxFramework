@@ -78,10 +78,11 @@ namespace kxf::SevenZip
 			}
 			Archive(const Archive&) = delete;
 			Archive(Archive&& other)
+				:Archive()
 			{
 				*this = std::move(other);
 			}
-			virtual ~Archive();
+			~Archive();
 
 		public:
 			// IArchive

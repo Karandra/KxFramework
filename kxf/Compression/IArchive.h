@@ -60,7 +60,7 @@ namespace kxf
 			virtual bool ExtractToFS(IFileSystem& fileSystem, const FSPath& directory, Compression::FileIndexView files) const = 0;
 			
 			// Extract specified file into a stream
-			virtual bool ExtractToStream(size_t index, wxOutputStream& stream) const;
+			virtual bool ExtractToStream(size_t index, wxOutputStream& stream) const = 0;
 
 			template<class TOutStream = wxOutputStream>
 			Compression::ExtractWithOptions<TOutStream> ExtractWith() const
@@ -84,7 +84,7 @@ namespace kxf
 			virtual bool Update(Compression::IUpdateCallback& callback, size_t itemCount) = 0;
 
 			// Add files from the provided file system
-			virtual bool UpdateFromFS(const IFileSystem& fileSystem, const FSPath& directory, const FSPathQuery& query = {}, FlagSet<FSEnumItemsFlag> flags = {});
+			virtual bool UpdateFromFS(const IFileSystem& fileSystem, const FSPath& directory, const FSPathQuery& query = {}, FlagSet<FSEnumItemsFlag> flags = {}) = 0;
 	};
 }
 
