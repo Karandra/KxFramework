@@ -119,7 +119,7 @@ namespace kxf::Compression
 				return false;
 			}
 
-			virtual size_t OnGetUpdateMode(size_t index, bool& updateData, bool& updateProperties);
+			virtual size_t OnGetUpdateMode(size_t index, bool& updateData, bool& updateProperties) = 0;
 			virtual FileItem OnGetProperties(size_t index) = 0;
 
 			virtual InputStreamDelegate OnGetStream(size_t index) = 0;
