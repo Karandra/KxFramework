@@ -47,6 +47,8 @@ namespace kxf
 			virtual ~IFileSystem() = default;
 
 		public:
+			virtual FSPath GetCurrentDirectory() const = 0;
+
 			virtual bool ItemExist(const FSPath& path) const = 0;
 			virtual bool FileExist(const FSPath& path) const = 0;
 			virtual bool DirectoryExist(const FSPath& path) const = 0;
@@ -63,6 +65,7 @@ namespace kxf
 			virtual bool MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) = 0;
 			virtual bool RenameItem(const FSPath& source, const FSPath& destination, FlagSet<FSCopyItemFlag> flags = {}) = 0;
 			virtual bool RemoveItem(const FSPath& path) = 0;
+			virtual bool RemoveDirectory(const FSPath& path, FlagSet<FSEnumItemsFlag> flags = {}) = 0;
 
 			virtual std::unique_ptr<wxInputStream> OpenToRead(const FSPath& path) const = 0;
 			virtual std::unique_ptr<wxOutputStream> OpenToWrite(const FSPath& path) = 0;
@@ -92,6 +95,7 @@ namespace kxf
 			virtual bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, IFileSystem::TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) = 0;
 			virtual bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, IFileSystem::TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) = 0;
 			virtual bool RemoveItem(const UniversallyUniqueID& id) = 0;
+			virtual bool RemoveDirectory(const UniversallyUniqueID& id, FlagSet<FSEnumItemsFlag> flags = {}) = 0;
 
 			virtual std::unique_ptr<wxInputStream> OpenToRead(const UniversallyUniqueID& id) const = 0;
 			virtual std::unique_ptr<wxOutputStream> OpenToWrite(const UniversallyUniqueID& id) = 0;
