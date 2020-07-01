@@ -3,6 +3,15 @@
 #include "CoroutineImpl.h"
 #include "YieldInstruction.h"
 
+namespace kxf::Async
+{
+	template<class TCallable>
+	class CoroutineCallableWrapper;
+
+	template<class TClass>
+	class CoroutineMethodWrapper;
+}
+
 namespace kxf
 {
 	class KX_API Coroutine: public Async::CoroutineBase
