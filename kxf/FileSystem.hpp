@@ -10,4 +10,3 @@
 #include "kxf/FileSystem/LegacyVolume.h"
 #include "kxf/FileSystem/StorageVolume.h"
 #include "kxf/FileSystem/RecycleBin.h"
-#include "kxf/FileSystem/FileStream.h"
