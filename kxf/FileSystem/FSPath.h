@@ -133,7 +133,9 @@ namespace kxf
 			bool HasVolume() const;
 			bool HasLegacyVolume() const;
 			StorageVolume GetVolume() const;
+			StorageVolume GetAsVolume() const;
 			LegacyVolume GetLegacyVolume() const;
+			LegacyVolume GetAsLegacyVolume() const;
 			FSPath& SetVolume(const LegacyVolume& volume);
 			FSPath& SetVolume(const StorageVolume& volume);
 

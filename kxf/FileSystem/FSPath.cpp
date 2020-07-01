@@ -365,6 +365,15 @@ namespace kxf
 		// StorageVolume constructor does the validity check and extracts volume path
 		return *this;
 	}
+	StorageVolume FSPath::GetAsVolume() const
+	{
+		StorageVolume volume = GetVolume();
+		if (!volume)
+		{
+			volume = GetLegacyVolume();
+		}
+		return volume;
+	}
 	LegacyVolume FSPath::GetLegacyVolume() const
 	{
 		if (HasLegacyVolume())
@@ -372,6 +381,15 @@ namespace kxf
 			return LegacyVolume::FromChar(m_Path[0]);
 		}
 		return {};
+	}
+	LegacyVolume FSPath::GetAsLegacyVolume() const
+	{
+		LegacyVolume legacyVolume = GetLegacyVolume();
+		if (!legacyVolume)
+		{
+			legacyVolume = GetVolume().GetLegacyVolume();
+		}
+		return legacyVolume;
 	}
 	FSPath& FSPath::SetVolume(const LegacyVolume& drive)
 	{
