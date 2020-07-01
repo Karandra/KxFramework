@@ -73,9 +73,9 @@ namespace kxf::UI
 			HResult m_ShowStatus = HResult::Fail();
 			FileBrowseDialogMode m_Mode = FileBrowseDialogMode::Open;
 			FlagSet<FileBrowseDialogStyle> m_Style;
-		
-			String m_Caption;
+			
 			String m_Label;
+			String m_Caption;
 			std::vector<Private::FilterItem> m_FilterList;
 			std::vector<Private::FilterSpecItem> m_FilterListSpec;
 
@@ -83,7 +83,7 @@ namespace kxf::UI
 			void ApplyFileFilters();
 
 		public:
-			FileBrowseDialog() = default;
+			FileBrowseDialog();
 			FileBrowseDialog(wxWindow* parent,
 							 wxWindowID id,
 							 FileBrowseDialogMode mode,
@@ -92,9 +92,12 @@ namespace kxf::UI
 							 FlagSet<FileBrowseDialogStyle> style = DefaultStyle
 
 			)
+				:FileBrowseDialog()
 			{
 				Create(parent, id, mode, caption, buttons, style);
 			}
+			FileBrowseDialog(const FileBrowseDialog&) = delete;
+
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						FileBrowseDialogMode mode,
@@ -204,6 +207,7 @@ namespace kxf::UI
 			}
 
 		public:
+			FileBrowseDialog& operator=(const FileBrowseDialog&) = delete;
 			wxDECLARE_DYNAMIC_CLASS(FileBrowseDialog);
 	};
 }

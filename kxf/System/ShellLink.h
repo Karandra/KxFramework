@@ -15,6 +15,7 @@ namespace kxf
 
 		public:
 			ShellLink() noexcept;
+			ShellLink(const ShellLink&) = delete;
 			~ShellLink() noexcept;
 
 		public:
@@ -56,5 +57,7 @@ namespace kxf
 			{
 				return IsNull();
 			}
+
+			ShellLink& operator=(const ShellLink&) = delete;
 	};
 }

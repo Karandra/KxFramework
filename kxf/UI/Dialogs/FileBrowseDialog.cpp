@@ -66,6 +66,7 @@ namespace kxf::UI
 		}
 	}
 
+	FileBrowseDialog::FileBrowseDialog() = default;
 	bool FileBrowseDialog::Create(wxWindow* parent,
 								  wxWindowID id,
 								  FileBrowseDialogMode mode,

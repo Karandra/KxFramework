@@ -38,6 +38,7 @@ namespace kxf::System
 
 		public:
 			ScheduledTask() noexcept;
+			ScheduledTask(const ScheduledTask&) = delete;
 			~ScheduledTask() noexcept;
 
 		public:
@@ -60,6 +61,8 @@ namespace kxf::System
 			{
 				return IsNull();
 			}
+
+			ScheduledTask& operator=(const ScheduledTask&) = delete;
 	};
 }
 
@@ -76,6 +79,7 @@ namespace kxf::System
 						  const String& serverName = {},
 						  const UserCredentials& userCredentials = {}
 			);
+			TaskScheduler(const TaskScheduler&) = delete;
 			~TaskScheduler() noexcept;
 
 		public:
@@ -97,5 +101,7 @@ namespace kxf::System
 			{
 				return IsNull();
 			}
+
+			TaskScheduler& operator=(const TaskScheduler&) = delete;
 	};
 }
