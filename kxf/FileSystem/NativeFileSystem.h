@@ -12,21 +12,38 @@ namespace kxf
 			using TCopyDirectoryTreeFunc = std::function<bool(FSPath, FSPath, BinarySize, BinarySize)>;
 			using TEnumStreamsFunc = std::function<bool(String, BinarySize)>;
 
+		public:
+			static FSPath GetExecutableDirectory();
+			static FSPath GetWorkingDirectory();
+			static bool SetWorkingDirectory(const FSPath& directory);
+
 		private:
 			StorageVolume m_CurrentVolume;
+			FSPath m_CurrentDirectory;
 
 		public:
 			NativeFileSystem(StorageVolume volume = {}) noexcept
 				:m_CurrentVolume(std::move(volume))
 			{
+				m_CurrentDirectory.SetVolume(m_CurrentVolume);
 			}
-			NativeFileSystem(UniversallyUniqueID scope) noexcept
-				:m_CurrentVolume(std::move(scope))
+			NativeFileSystem(const UniversallyUniqueID& scope) noexcept
+				:m_CurrentVolume(scope)
+			{
+				m_CurrentDirectory.SetVolume(m_CurrentVolume);
+			}
+			NativeFileSystem(const FSPath& currentDirectory) noexcept
+				:m_CurrentVolume(currentDirectory.GetAsVolume()), m_CurrentDirectory(currentDirectory)
 			{
 			}
 
 		public:
 			// IFileSystem
+			FSPath GetCurrentDirectory() const override
+			{
+				return m_CurrentDirectory;
+			}
+
 			bool ItemExist(const FSPath& path) const;
 			bool FileExist(const FSPath& path) const;
 			bool DirectoryExist(const FSPath& path) const;
@@ -43,6 +60,7 @@ namespace kxf
 			bool MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) override;
 			bool RenameItem(const FSPath& source, const FSPath& destination, FlagSet<FSCopyItemFlag> flags = {}) override;
 			bool RemoveItem(const FSPath& path) override;
+			bool RemoveDirectory(const FSPath& path, FlagSet<FSEnumItemsFlag> flags = {}) override;
 
 			std::unique_ptr<wxInputStream> OpenToRead(const FSPath& path) const override;
 			std::unique_ptr<wxOutputStream> OpenToWrite(const FSPath& path) override;
@@ -89,6 +107,10 @@ namespace kxf
 			{
 				return false;
 			}
+			bool RemoveDirectory(const UniversallyUniqueID& id, FlagSet<FSEnumItemsFlag> flags = {}) override
+			{
+				return false;
+			}
 
 			std::unique_ptr<wxInputStream> OpenToRead(const UniversallyUniqueID& id) const override;
 			std::unique_ptr<wxOutputStream> OpenToWrite(const UniversallyUniqueID& id) override;
@@ -103,12 +125,7 @@ namespace kxf
 			bool IsInUse(const FSPath& path) const;
 			size_t EnumStreams(const FSPath& path, TEnumStreamsFunc func) const;
 
-			bool RemoveDirectoryTree(const FSPath& path);
 			bool CopyDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) const;
 			bool MoveDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func = {}, FlagSet<FSCopyItemFlag> flags = {});
-
-			FSPath GetExecutableDirectory() const;
-			FSPath GetWorkingDirectory() const;
-			bool SetWorkingDirectory(const FSPath& directory) const;
 	};
 }
