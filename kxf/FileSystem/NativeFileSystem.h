@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "IFileSystem.h"
 #include "FileItem.h"
+#include "StorageVolume.h"
 
 namespace kxf
 {
@@ -12,11 +13,15 @@ namespace kxf
 			using TEnumStreamsFunc = std::function<bool(String, BinarySize)>;
 
 		private:
-			UniversallyUniqueID m_LookupScope;
+			StorageVolume m_CurrentVolume;
 
 		public:
-			NativeFileSystem(const UniversallyUniqueID& scope  = {}) noexcept
-				:m_LookupScope(scope)
+			NativeFileSystem(StorageVolume volume = {}) noexcept
+				:m_CurrentVolume(std::move(volume))
+			{
+			}
+			NativeFileSystem(UniversallyUniqueID scope) noexcept
+				:m_CurrentVolume(std::move(scope))
 			{
 			}
 
@@ -46,7 +51,7 @@ namespace kxf
 			// IFileIDSystem
 			UniversallyUniqueID GetLookupScope() const override
 			{
-				return m_LookupScope;
+				return m_CurrentVolume.GetUniqueID();
 			}
 
 			bool ItemExist(const UniversallyUniqueID& id) const override;
@@ -89,6 +94,12 @@ namespace kxf
 			std::unique_ptr<wxOutputStream> OpenToWrite(const UniversallyUniqueID& id) override;
 
 		public:
+			// NativeFileSystem
+			StorageVolume GetCurrentVolume() const noexcept
+			{
+				return m_CurrentVolume;
+			}
+
 			bool IsInUse(const FSPath& path) const;
 			size_t EnumStreams(const FSPath& path, TEnumStreamsFunc func) const;
 

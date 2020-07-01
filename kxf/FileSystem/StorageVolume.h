@@ -30,7 +30,7 @@ namespace kxf
 			static bool RemoveMountPoint(const LegacyVolume& volume) noexcept;
 
 		private:
-			XChar m_Path[64 - sizeof(size_t)] = {};
+			XChar m_Path[64 - (sizeof(size_t) / sizeof(XChar))] = {};
 			size_t m_Length = 0;
 
 		private:

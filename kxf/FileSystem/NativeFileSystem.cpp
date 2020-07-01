@@ -12,18 +12,18 @@ namespace
 {
 	using namespace kxf;
 
-	bool OpenFileByID(const UniversallyUniqueID& fileID,
-					  const UniversallyUniqueID& volumeID,
+	bool OpenFileByID(const StorageVolume& volume,
+					  const UniversallyUniqueID& fileID,
 					  FileStream& file,
 					  FlagSet<FileStreamAccess> access = FileStreamAccess::ReadAttributes,
 					  FileStreamDisposition disposition = FileStreamDisposition::OpenExisting,
 					  FlagSet<FileStreamShare> share = FileStreamShare::Everything,
 					  FlagSet<FileStreamFlags> flags = FileStreamFlags::BackupSemantics)
 	{
-		if (fileID && volumeID)
+		if (fileID && volume)
 		{
-			FileStream volume(StorageVolume(volumeID).GetDevicePath(), FileStreamAccess::ReadAttributes, FileStreamDisposition::OpenExisting, FileStreamShare::Everything, FileStreamFlags::BackupSemantics);
-			if (volume)
+			FileStream volumeStream(volume.GetDevicePath(), FileStreamAccess::ReadAttributes, FileStreamDisposition::OpenExisting, FileStreamShare::Everything, FileStreamFlags::BackupSemantics);
+			if (volumeStream)
 			{
 				// Some search on Google says that 'FILE_ID_DESCRIPTOR' isn't always 24. it *is* 24 for me on both x64 and x86
 				// and it seems to work fine with the size of 24. Still I'm going to make it bigger, just in case.
@@ -50,7 +50,7 @@ namespace
 					}
 				}
 
-				HANDLE handle = ::OpenFileById(volume.GetHandle(),
+				HANDLE handle = ::OpenFileById(volumeStream.GetHandle(),
 											   &fileIDDescriptor,
 											   FileSystem::Private::MapFileAccessMode(access),
 											   FileSystem::Private::MapFileShareMode(share),
@@ -327,12 +327,12 @@ namespace kxf
 	bool NativeFileSystem::ItemExist(const UniversallyUniqueID& id) const
 	{
 		FileStream file;
-		return OpenFileByID(id, m_LookupScope, file);
+		return OpenFileByID(m_CurrentVolume, id, file);
 	}
 	bool NativeFileSystem::FileExist(const UniversallyUniqueID& id) const
 	{
 		FileStream file;
-		if (OpenFileByID(id, m_LookupScope, file))
+		if (OpenFileByID(m_CurrentVolume, id, file))
 		{
 			return !file.GetAttributes().Contains(FileAttribute::Directory);
 		}
@@ -341,7 +341,7 @@ namespace kxf
 	bool NativeFileSystem::DirectoryExist(const UniversallyUniqueID& id) const
 	{
 		FileStream file;
-		if (OpenFileByID(id, m_LookupScope, file))
+		if (OpenFileByID(m_CurrentVolume, id, file))
 		{
 			return !file.GetAttributes().Contains(FileAttribute::Directory);
 		}
@@ -351,7 +351,7 @@ namespace kxf
 	FileItem NativeFileSystem::GetItem(const UniversallyUniqueID& id) const
 	{
 		FileStream file;
-		if (OpenFileByID(id, m_LookupScope, file))
+		if (OpenFileByID(m_CurrentVolume, id, file))
 		{
 			return FileSystem::Private::ConvertFileInfo(file.GetHandle(), id);
 		}
@@ -363,7 +363,7 @@ namespace kxf
 		if (id)
 		{
 			auto steram = std::make_unique<FileStream>();
-			if (OpenFileByID(id, m_LookupScope, *steram, FileStreamAccess::Read, FileStreamDisposition::OpenExisting, FileStreamShare::Read, FileStreamFlags::None))
+			if (OpenFileByID(m_CurrentVolume, id, *steram, FileStreamAccess::Read, FileStreamDisposition::OpenExisting, FileStreamShare::Read, FileStreamFlags::None))
 			{
 				return steram;
 			}
@@ -375,7 +375,7 @@ namespace kxf
 		if (id)
 		{
 			auto steram = std::make_unique<FileStream>();
-			if (OpenFileByID(id, m_LookupScope, *steram, FileStreamAccess::Write, FileStreamDisposition::CreateAlways, FileStreamShare::Read|FileStreamShare::Write, FileStreamFlags::None))
+			if (OpenFileByID(m_CurrentVolume, id, *steram, FileStreamAccess::Write, FileStreamDisposition::CreateAlways, FileStreamShare::Read|FileStreamShare::Write, FileStreamFlags::None))
 			{
 				return steram;
 			}
@@ -383,6 +383,7 @@ namespace kxf
 		return nullptr;
 	}
 
+	// NativeFileSystem
 	bool NativeFileSystem::IsInUse(const FSPath& path) const
 	{
 		return path.IsAbsolute() && FileStream(path, FileStreamAccess::Read, FileStreamDisposition::OpenExisting, FileStreamShare::None).IsOk();
