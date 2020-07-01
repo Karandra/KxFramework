@@ -24,7 +24,7 @@ namespace kxf
 			name.AfterFirst(g_SAMSeparator, &m_Domain);
 			m_NameFormat = UserNameFormat::UserPrincipal;
 		}
-		else if (UniversallyUniqueID uuid(name); !uuid.IsNull())
+		else if (auto uuid = UniversallyUniqueID::CreateFromString(name); !uuid.IsNull())
 		{
 			m_Name = uuid.ToString(UUIDFormat::CurlyBraces);
 			m_NameFormat = UserNameFormat::UniqueID;

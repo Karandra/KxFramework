@@ -204,7 +204,7 @@ namespace kxf
 
 			XChar buffer[64] = {};
 			std::char_traits<XChar>::copy(buffer, guid.data(), guid.length());
-			return buffer;
+			return UniversallyUniqueID::CreateFromString(buffer);
 		}
 		return {};
 	}

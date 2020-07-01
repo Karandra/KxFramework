@@ -26,8 +26,13 @@ namespace kxf
 		public:
 			static UniversallyUniqueID Create() noexcept;
 			static UniversallyUniqueID CreateSequential() noexcept;
+
 			static UniversallyUniqueID CreateFromInt128(const uint8_t (&bytes)[16]) noexcept;
 			static UniversallyUniqueID CreateFromInt128(uint64_t low, uint64_t high) noexcept;
+
+			static UniversallyUniqueID CreateFromString(const char* value) noexcept;
+			static UniversallyUniqueID CreateFromString(const wchar_t* value) noexcept;
+			static UniversallyUniqueID CreateFromString(const String& value) noexcept;
 
 		private:
 			NativeUUID m_ID;
@@ -36,14 +41,11 @@ namespace kxf
 			constexpr UniversallyUniqueID() noexcept = default;
 			constexpr UniversallyUniqueID(UniversallyUniqueID&&) noexcept = default;
 			constexpr UniversallyUniqueID(const UniversallyUniqueID&) noexcept = default;
-			constexpr UniversallyUniqueID(const NativeUUID& other) noexcept
-				:m_ID(other)
+			constexpr UniversallyUniqueID(NativeUUID other) noexcept
+				:m_ID(std::move(other))
 			{
 			}
 			UniversallyUniqueID(LocallyUniqueID other) noexcept;
-			UniversallyUniqueID(const char* value) noexcept;
-			UniversallyUniqueID(const wchar_t* value) noexcept;
-			UniversallyUniqueID(const String& value) noexcept;
 
 		public:
 			constexpr bool IsNull() const noexcept

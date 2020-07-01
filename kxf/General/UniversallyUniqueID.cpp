@@ -40,7 +40,7 @@ namespace kxf
 		return ::UuidCompare(const_cast<::UUID*>(AsUUID(left)), const_cast<::UUID*>(AsUUID(right)), &status);
 	}
 
-	kxf::NativeUUID CreateFromString(const wchar_t* value) noexcept
+	kxf::NativeUUID DoCreateFromString(const wchar_t* value) noexcept
 	{
 		NativeUUID uuid;
 		if (::UuidFromStringW(reinterpret_cast<RPC_WSTR>(const_cast<wchar_t*>(value)), AsUUID(uuid)) == RPC_S_OK)
@@ -49,7 +49,7 @@ namespace kxf
 		}
 		return {};
 	}
-	kxf::NativeUUID CreateFromString(const char* value) noexcept
+	kxf::NativeUUID DoCreateFromString(const char* value) noexcept
 	{
 		NativeUUID uuid;
 		if (::UuidFromStringA(reinterpret_cast<RPC_CSTR>(const_cast<char*>(value)), AsUUID(uuid)) == RPC_S_OK)
@@ -81,6 +81,7 @@ namespace kxf
 		}
 		return {};
 	}
+	
 	UniversallyUniqueID UniversallyUniqueID::CreateFromInt128(const uint8_t(&bytes)[16]) noexcept
 	{
 		NativeUUID uuid;
@@ -96,18 +97,19 @@ namespace kxf
 		return CreateFromInt128(bytes);
 	}
 
-	UniversallyUniqueID::UniversallyUniqueID(const char* value) noexcept
-		:m_ID(CreateFromString(value))
+	UniversallyUniqueID UniversallyUniqueID::CreateFromString(const char* value) noexcept
 	{
+		return DoCreateFromString(value);
 	}
-	UniversallyUniqueID::UniversallyUniqueID(const wchar_t* value) noexcept
-		:m_ID(CreateFromString(value))
+	UniversallyUniqueID UniversallyUniqueID::CreateFromString(const wchar_t* value) noexcept
 	{
+		return DoCreateFromString(value);
 	}
-	UniversallyUniqueID::UniversallyUniqueID(const String& value) noexcept
-		:m_ID(CreateFromString(value.wx_str()))
+	UniversallyUniqueID UniversallyUniqueID::CreateFromString(const String& value) noexcept
 	{
+		return DoCreateFromString(value.wx_str());
 	}
+
 	UniversallyUniqueID::UniversallyUniqueID(LocallyUniqueID other) noexcept
 	{
 		uint64_t vlaue = other.ToInt();
@@ -151,7 +153,6 @@ namespace kxf
 
 		return uuid;
 	}
-	
 	LocallyUniqueID UniversallyUniqueID::ToLocallyUniqueID() const noexcept
 	{
 		for (uint8_t d4: m_ID.Data4)
