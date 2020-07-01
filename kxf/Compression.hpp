@@ -6,3 +6,4 @@
 
 #include "kxf/Compression/LZ4Stream.h"
 #include "kxf/Compression/ZLibStream.h"
+#include "kxf/Compression/SevenZip.h"

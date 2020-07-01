@@ -1334,6 +1334,9 @@
     <ClInclude Include="kxf\Serialization.hpp">
       <Filter>kxf/Modules</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Compression\SevenZip.h">
+      <Filter>kxf\Compression</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\BroadcastProcessor.cpp">

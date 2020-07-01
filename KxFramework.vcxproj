@@ -184,6 +184,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Compression\IArchiveCallbacks.h" />
+    <ClInclude Include="kxf\Compression\SevenZip.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Archive.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Common.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Library.h" />
