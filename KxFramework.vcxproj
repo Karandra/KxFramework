@@ -583,6 +583,7 @@
     <ClCompile Include="kxf\IO\Common.cpp" />
     <ClCompile Include="kxf\IO\FileStream.cpp" />
     <ClCompile Include="kxf\IO\MemoryStream.cpp" />
+    <ClCompile Include="kxf\Private\CompileModules.cpp" />
     <ClCompile Include="kxf\RTTI\ComponentSystem.cpp" />
     <ClCompile Include="kxf\Serialization\HTML\HTMLDocument.cpp" />
     <ClCompile Include="kxf\Serialization\HTML\HTMLNode.cpp" />

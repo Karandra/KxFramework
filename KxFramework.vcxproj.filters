@@ -110,9 +110,6 @@
     <Filter Include="kxf\Localization\Private">
       <UniqueIdentifier>{11dc96d7-85e1-4fc8-bdc8-d72ddfd34013}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\&lt;Modules&gt;">
-      <UniqueIdentifier>{916829f1-4a51-4891-9918-1b9723789c5a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="kxf\System\SystemProcess">
       <UniqueIdentifier>{a47c3ad0-99a9-47ac-abb2-cebc2abc27b9}</UniqueIdentifier>
     </Filter>
@@ -208,6 +205,12 @@
     </Filter>
     <Filter Include="kxf\Serialization\XML\Private">
       <UniqueIdentifier>{47ee576b-53f3-4dcb-9ad0-30fad244c27d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf/Private">
+      <UniqueIdentifier>{7b27d8ef-179e-479c-a825-b4ebbb837c68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf/Modules">
+      <UniqueIdentifier>{916829f1-4a51-4891-9918-1b9723789c5a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -698,49 +701,49 @@
       <Filter>kxf\System\Private</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Async.hpp">
-      <Filter>kxf\&lt;Modules&gt;</Filter>
+      <Filter>kxf/Modules</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Compression.hpp">
-      <Filter>kxf\&lt;Modules&gt;</Filter>
+      <Filter>kxf/Modules</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Crypto.hpp">
-      <Filter>kxf\&lt;Modules&gt;</Filter>
+      <Filter>kxf/Modules</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Drawing.hpp">
-      <Filter>kxf\&lt;Modules&gt;</Filter>
+      <Filter>kxf/Modules</Filter>
     </ClInclude>
     <ClInclude Include="kxf\EventSystem.hpp">
-      <Filter>kxf\&lt;Modules&gt;</Filter>
+      <Filter>kxf/Modules</Filter>
     </ClInclude>
     <ClInclude Include="kxf\FileSystem.hpp">
-      <Filter>kxf\&lt;Modules&gt;</Filter>
+      <Filter>kxf/Modules</Filter>
     </ClInclude>
     <ClInclude Include="kxf\General.hpp">
-      <Filter>kxf\&lt;Modules&gt;</Filter>
+      <Filter>kxf/Modules</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Localization.hpp">
-      <Filter>kxf\&lt;Modules&gt;</Filter>
+      <Filter>kxf/Modules</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Network.hpp">
-      <Filter>kxf\&lt;Modules&gt;</Filter>
+      <Filter>kxf/Modules</Filter>
     </ClInclude>
     <ClInclude Include="kxf\RTTI.hpp">
-      <Filter>kxf\&lt;Modules&gt;</Filter>
+      <Filter>kxf/Modules</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Sciter.hpp">
-      <Filter>kxf\&lt;Modules&gt;</Filter>
+      <Filter>kxf/Modules</Filter>
     </ClInclude>
     <ClInclude Include="kxf\System.hpp">
-      <Filter>kxf\&lt;Modules&gt;</Filter>
+      <Filter>kxf/Modules</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Threading.hpp">
-      <Filter>kxf\&lt;Modules&gt;</Filter>
+      <Filter>kxf/Modules</Filter>
     </ClInclude>
     <ClInclude Include="kxf\UI.hpp">
-      <Filter>kxf\&lt;Modules&gt;</Filter>
+      <Filter>kxf/Modules</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Utility.hpp">
-      <Filter>kxf\&lt;Modules&gt;</Filter>
+      <Filter>kxf/Modules</Filter>
     </ClInclude>
     <ClInclude Include="kxf\System\ShellLink.h">
       <Filter>kxf\System</Filter>
@@ -1260,7 +1263,7 @@
       <Filter>kxf\IO</Filter>
     </ClInclude>
     <ClInclude Include="kxf\IO.hpp">
-      <Filter>kxf\&lt;Modules&gt;</Filter>
+      <Filter>kxf/Modules</Filter>
     </ClInclude>
     <ClInclude Include="kxf\IO\MemoryStream.h">
       <Filter>kxf\IO</Filter>
@@ -1329,7 +1332,7 @@
       <Filter>kxf\Serialization\XML\Private</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Serialization.hpp">
-      <Filter>kxf\&lt;Modules&gt;</Filter>
+      <Filter>kxf/Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2020,6 +2023,9 @@
     </ClCompile>
     <ClCompile Include="kxf\Serialization\HTML\Private\clean_text.cpp">
       <Filter>kxf\Serialization\HTML\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Private\CompileModules.cpp">
+      <Filter>kxf/Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
