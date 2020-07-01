@@ -139,7 +139,7 @@ namespace kxf
 		return count;
 	}
 	
-	bool StorageVolume::RemoveMountPoint(const FSPath& path)
+	bool StorageVolume::RemoveMountPoint(const FSPath& path) noexcept
 	{
 		if (path)
 		{
@@ -148,7 +148,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool StorageVolume::RemoveMountPoint(const LegacyVolume& volume)
+	bool StorageVolume::RemoveMountPoint(const LegacyVolume& volume) noexcept
 	{
 		if (volume)
 		{
@@ -187,22 +187,26 @@ namespace kxf
 		}
 	}
 
-	bool StorageVolume::IsValid() const
+	bool StorageVolume::IsValid() const noexcept
 	{
 		return m_Path[0] != wxS('\0') && m_Length == g_VolumePathTotalLength;
 	}
-	bool StorageVolume::DoesExist() const
+	bool StorageVolume::DoesExist() const noexcept
 	{
 		return ::GetDriveTypeW(m_Path) != DRIVE_NO_ROOT_DIR;
 	}
 
-	UniversallyUniqueID StorageVolume::GetUniqueID() const
+	UniversallyUniqueID StorageVolume::GetUniqueID() const noexcept
 	{
-		auto guid = StringViewOf(m_Path).substr(g_VolumePathPrefixLength + 1, g_GUIDLength);
+		if (IsValid())
+		{
+			auto guid = StringViewOf(m_Path).substr(g_VolumePathPrefixLength + 1, g_GUIDLength);
 
-		XChar buffer[64] = {};
-		std::char_traits<XChar>::copy(buffer, guid.data(), guid.length());
-		return buffer;
+			XChar buffer[64] = {};
+			std::char_traits<XChar>::copy(buffer, guid.data(), guid.length());
+			return buffer;
+		}
+		return {};
 	}
 	FSPath StorageVolume::GetPath() const
 	{
@@ -225,7 +229,7 @@ namespace kxf
 		return ::SetVolumeLabelW(m_Path, label.IsEmpty() ? nullptr : label.wc_str());
 	}
 
-	DriveType StorageVolume::GetType() const
+	DriveType StorageVolume::GetType() const noexcept
 	{
 		if (IsValid())
 		{
@@ -233,19 +237,19 @@ namespace kxf
 		}
 		return DriveType::Unknown;
 	}
-	uint32_t StorageVolume::GetSerialNumber() const
+	uint32_t StorageVolume::GetSerialNumber() const noexcept
 	{
 		DWORD serialNumber = std::numeric_limits<uint32_t>::max();
 		::GetVolumeInformationW(m_Path, nullptr, 0, &serialNumber, nullptr, nullptr, nullptr, 0);
 		return serialNumber;
 	}
-	String StorageVolume::GetFileSystem() const
+	String StorageVolume::GetFileSystem() const noexcept
 	{
 		wxChar buffer[MAX_PATH + 1] = {};
 		::GetVolumeInformationW(m_Path, nullptr, 0, nullptr, nullptr, nullptr, buffer, std::size(buffer));
 		return buffer;
 	}
-	FlagSet<FileSystemFeature> StorageVolume::GetFileSystemFeatures() const
+	FlagSet<FileSystemFeature> StorageVolume::GetFileSystemFeatures() const noexcept
 	{
 		DWORD nativeFeatures = 0;
 		DWORD maximumComponentLength = 0;
@@ -259,7 +263,7 @@ namespace kxf
 		return {};
 	}
 
-	auto StorageVolume::GetSpaceLayoutInfo() const -> std::optional<SpaceLayoutInfo>
+	auto StorageVolume::GetSpaceLayoutInfo() const noexcept -> std::optional<SpaceLayoutInfo>
 	{
 		DWORD bytesPerSector = 0;
 		DWORD sectorsPerCluster = 0;
@@ -277,7 +281,7 @@ namespace kxf
 		}
 		return std::nullopt;
 	}
-	BinarySize StorageVolume::GetTotalSpace() const
+	BinarySize StorageVolume::GetTotalSpace() const noexcept
 	{
 		ULARGE_INTEGER value = {};
 		if (::GetDiskFreeSpaceExW(m_Path, nullptr, &value, nullptr))
@@ -286,7 +290,7 @@ namespace kxf
 		}
 		return {};
 	}
-	BinarySize StorageVolume::GetUsedSpace() const
+	BinarySize StorageVolume::GetUsedSpace() const noexcept
 	{
 		ULARGE_INTEGER total = {};
 		ULARGE_INTEGER free = {};
@@ -297,7 +301,7 @@ namespace kxf
 		}
 		return {};
 	}
-	BinarySize StorageVolume::GetFreeSpace() const
+	BinarySize StorageVolume::GetFreeSpace() const noexcept
 	{
 		ULARGE_INTEGER value = {};
 		if (::GetDiskFreeSpaceExW(m_Path, nullptr, nullptr, &value))
@@ -355,7 +359,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool StorageVolume::SetMountPoint(const LegacyVolume& volume)
+	bool StorageVolume::SetMountPoint(const LegacyVolume& volume) noexcept
 	{
 		if (volume)
 		{
@@ -367,9 +371,9 @@ namespace kxf
 		return false;
 	}
 
-	bool StorageVolume::EjectMedia()
+	bool StorageVolume::EjectMedia() noexcept
 	{
-		FileStream stream(m_Path, FileStreamAccess::Read, FileStreamDisposition::OpenExisting, FileStreamShare::Everything);
+		FileStream stream(GetDevicePath(), FileStreamAccess::Read, FileStreamDisposition::OpenExisting, FileStreamShare::Everything);
 		if (stream)
 		{
 			DWORD bytes = 0;

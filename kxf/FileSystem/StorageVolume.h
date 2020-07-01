@@ -26,8 +26,8 @@ namespace kxf
 			static size_t EnumVolumes(std::function<bool(StorageVolume)> func);
 			static size_t EnumLegacyVolumes(std::function<bool(StorageVolume, LegacyVolume)> func);
 
-			static bool RemoveMountPoint(const FSPath& path);
-			static bool RemoveMountPoint(const LegacyVolume& volume);
+			static bool RemoveMountPoint(const FSPath& path) noexcept;
+			static bool RemoveMountPoint(const LegacyVolume& volume) noexcept;
 
 		private:
 			XChar m_Path[64 - sizeof(size_t)] = {};
@@ -50,40 +50,40 @@ namespace kxf
 			}
 
 		public:
-			StorageVolume() = default;
-			StorageVolume(StorageVolume&&) = default;
-			StorageVolume(const StorageVolume&) = default;
+			StorageVolume() noexcept = default;
+			StorageVolume(StorageVolume&&) noexcept = default;
+			StorageVolume(const StorageVolume&) noexcept = default;
 			StorageVolume(const UniversallyUniqueID& id);
 			StorageVolume(const LegacyVolume& legacyVolume);
 			StorageVolume(const FSPath& path);
 
 		public:
-			bool IsValid() const;
-			bool DoesExist() const;
+			bool IsValid() const noexcept;
+			bool DoesExist() const noexcept;
 
-			UniversallyUniqueID GetUniqueID() const;
+			UniversallyUniqueID GetUniqueID() const noexcept;
 			FSPath GetPath() const;
 			FSPath GetDevicePath() const;
 
 			String GetLabel() const;
 			bool SetLabel(const String& label);
 
-			DriveType GetType() const;
-			uint32_t GetSerialNumber() const;
-			String GetFileSystem() const;
-			FlagSet<FileSystemFeature> GetFileSystemFeatures() const;
+			DriveType GetType() const noexcept;
+			uint32_t GetSerialNumber() const noexcept;
+			String GetFileSystem() const noexcept;
+			FlagSet<FileSystemFeature> GetFileSystemFeatures() const noexcept;
 
-			std::optional<SpaceLayoutInfo> GetSpaceLayoutInfo() const;
-			BinarySize GetTotalSpace() const;
-			BinarySize GetUsedSpace() const;
-			BinarySize GetFreeSpace() const;
+			std::optional<SpaceLayoutInfo> GetSpaceLayoutInfo() const noexcept;
+			BinarySize GetTotalSpace() const noexcept;
+			BinarySize GetUsedSpace() const noexcept;
+			BinarySize GetFreeSpace() const noexcept;
 
 			LegacyVolume GetLegacyVolume() const;
 			size_t EnumMountPoints(std::function<bool(FSPath)> func) const;
 			bool SetMountPoint(const FSPath& path);
-			bool SetMountPoint(const LegacyVolume& volume);
+			bool SetMountPoint(const LegacyVolume& volume) noexcept;
 
-			bool EjectMedia();
+			bool EjectMedia() noexcept;
 
 		public:
 			explicit operator bool() const noexcept
@@ -108,7 +108,7 @@ namespace kxf
 				return !(*this == other);
 			}
 
-			StorageVolume& operator=(StorageVolume&&) = default;
-			StorageVolume& operator=(const StorageVolume&) = default;
+			StorageVolume& operator=(StorageVolume&&) noexcept = default;
+			StorageVolume& operator=(const StorageVolume&) noexcept = default;
 	};
 }
