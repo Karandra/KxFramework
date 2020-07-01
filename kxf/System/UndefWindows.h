@@ -71,6 +71,9 @@
 #undef WriteConsole
 #undef CreateProcess
 #undef CreateDirectory
+#undef RemoveDirectory
+#undef GetCurrentDirectory
+#undef SetCurrentDirectory
 
 #ifdef ZeroMemory
 #undef ZeroMemory
