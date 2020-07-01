@@ -9,8 +9,8 @@ namespace kxf::UI
 	{
 		None = 0,
 
-		AlignLeft = Alignment::Left,
-		AlignRight = Alignment::Right,
+		AlignLeft = wxALIGN_LEFT,
+		AlignRight = wxALIGN_RIGHT,
 		AlignCenterHorizontal = wxALIGN_CENTRE_HORIZONTAL,
 		NoAutoResize = wxST_NO_AUTORESIZE,
 

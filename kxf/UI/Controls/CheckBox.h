@@ -12,8 +12,8 @@ namespace kxf::UI
 		TriState = wxCHK_3STATE,
 		AllowSelectThirdState = wxCHK_ALLOW_3RD_STATE_FOR_USER,
 
-		AlignLeft = Alignment::Left,
-		AlignRight = Alignment::Right,
+		AlignLeft = wxALIGN_LEFT,
+		AlignRight = wxALIGN_RIGHT,
 		AlignCenterHorizontal = wxALIGN_CENTRE_HORIZONTAL
 	};
 }
