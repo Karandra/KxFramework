@@ -4,6 +4,8 @@
 #include "kxf/General/String.h"
 #include "kxf/General/NativeUUID.h"
 #include "Private/COM.h"
+#include <memory>
+#include <new>
 struct IUnknown;
 struct _GUID;
 
@@ -307,6 +309,14 @@ namespace kxf
 
 namespace kxf::COM
 {
+	template<class T, class... Args>
+	COMPtr<T> CreateObject(Args&&... arg)
+	{
+		auto object = std::make_unique<T>(std::forward<Args>(arg)...);
+		object->AddRef();
+		return object.release();
+	}
+
 	template<class T, class TRefCount = uint32_t>
 	class RefCount final
 	{
@@ -372,15 +382,15 @@ namespace kxf::COM
 	}
 
 	template<class TObject>
-	COMMemoryPtr<TObject> AllocateObject() noexcept
+	COMMemoryPtr<TObject> AllocateObjectBuffer() noexcept
 	{
-		return reinterpret_cast<TObject*>(AllocateMemory(sizeof(TObject)));
+		return std::launder(static_cast<TObject*>(AllocateMemory(sizeof(TObject))));
 	}
 
 	template<class TObject>
-	COMMemoryPtr<TObject> AllocateObject(TObject object) noexcept(std::is_nothrow_move_assignable_v<TObject>)
+	COMMemoryPtr<TObject> AllocateObjectBuffer(TObject object) noexcept(std::is_nothrow_move_assignable_v<TObject>)
 	{
-		auto buffer = AllocateObject<TObject>();
+		auto buffer = AllocateObjectBuffer<TObject>();
 		if (buffer)
 		{
 			*buffer = std::move(object);
