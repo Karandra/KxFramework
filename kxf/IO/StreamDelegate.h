@@ -20,8 +20,8 @@ namespace kxf::Private
 				if (m_StreamOwned)
 				{
 					delete m_Stream;
-					m_Stream = nullptr;
 				}
+				m_Stream = nullptr;
 				m_StreamOwned = false;
 			}
 
