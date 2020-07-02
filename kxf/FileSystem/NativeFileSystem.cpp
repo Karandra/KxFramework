@@ -465,24 +465,26 @@ namespace kxf
 
 	std::unique_ptr<wxInputStream> NativeFileSystem::OpenToRead(const FSPath& path) const
 	{
-		return DoWithCurrentDirectory(m_CurrentDirectory, path, [&](const FSPath& path)
+		return DoWithCurrentDirectory(m_CurrentDirectory, path, [&](const FSPath& path) -> std::unique_ptr<wxInputStream>
 		{
 			auto stream = std::make_unique<FileStream>(path, FileStreamAccess::Read, FileStreamDisposition::OpenExisting, FileStreamShare::Read);
 			if (stream->IsOk())
 			{
 				return stream;
 			}
+			return nullptr;
 		});
 	}
 	std::unique_ptr<wxOutputStream> NativeFileSystem::OpenToWrite(const FSPath& path)
 	{
-		return DoWithCurrentDirectory(m_CurrentDirectory, path, [&](const FSPath& path)
+		return DoWithCurrentDirectory(m_CurrentDirectory, path, [&](const FSPath& path) -> std::unique_ptr<wxOutputStream>
 		{
 			auto stream = std::make_unique<FileStream>(path, FileStreamAccess::Write, FileStreamDisposition::CreateAlways, FileStreamShare::Read|FileStreamShare::Write);
 			if (stream->IsOk())
 			{
 				return stream;
 			}
+			return nullptr;
 		});
 	}
 
