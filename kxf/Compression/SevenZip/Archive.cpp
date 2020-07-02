@@ -194,68 +194,54 @@ namespace kxf::SevenZip
 
 		if (m_Data.Stream)
 		{
-			// Rewind the stream
 			m_Data.Stream->SeekI(0, wxSeekMode::wxFromStart);
+			extractor->SetArchive(m_Data.InArchive);
+			extractor->SetEvtHandler(m_EvtHandler);
 
-			auto archive = Private::GetArchiveReader(m_Data.Properties.CompressionFormat);
-			auto streamWrapper = COM::CreateObject<Private::InStreamWrapper_wxInputStream>(*m_Data.Stream, m_EvtHandler);
-			auto openCallback = COM::CreateObject<Private::Callback::OpenArchive>(m_EvtHandler);
-
-			if (HResult(archive->Open(streamWrapper, nullptr, openCallback)))
+			HResult result = HResult::Fail();
+			if (files)
 			{
-				Utility::CallAtScopeExit atExit = ([&]()
+				auto IsInvalidIndex = [this](size_t index)
 				{
-					archive->Close();
-				});
-				extractor->SetArchive(archive);
-				extractor->SetEvtHandler(m_EvtHandler);
+					return index >= m_Data.ItemCount;
+				};
 
-				HResult result = HResult::Fail();
-				if (files)
+				// Process only specified files
+				if (files->size() == 1)
 				{
-					auto IsInvalidIndex = [this](size_t index)
+					// No need to sort single index
+					if (IsInvalidIndex(files->front()))
 					{
-						return index >= m_Data.ItemCount;
-					};
-
-					// Process only specified files
-					if (files->size() == 1)
-					{
-						// No need to sort single index
-						if (IsInvalidIndex(files->front()))
-						{
-							result = HResult::InvalidArgument();
-							return false;
-						}
-
-						uint32_t index = files->front();
-						result = archive->Extract(&index, 1, false, extractor);
-					}
-					else
-					{
-						auto temp = files->ToVector<uint32_t>();
-
-						// Remove invalid items
-						temp.erase(std::remove_if(temp.begin(), temp.end(), IsInvalidIndex), temp.end());
-
-						// IInArchive::Extract requires sorted array
-						std::sort(temp.begin(), temp.end());
-
 						result = HResult::InvalidArgument();
-						if (!temp.empty())
-						{
-							result = archive->Extract(temp.data(), static_cast<uint32_t>(temp.size()), false, extractor);
-						}
+						return false;
 					}
+
+					uint32_t index = files->front();
+					result = m_Data.InArchive->Extract(&index, 1, false, extractor);
 				}
 				else
 				{
-					// Process all files, the callback will decide which files are needed
-					result = archive->Extract(nullptr, std::numeric_limits<uint32_t>::max(), false, extractor);
-				}
+					auto temp = files->ToVector<uint32_t>();
 
-				return result.IsSuccess();
+					// Remove invalid items
+					temp.erase(std::remove_if(temp.begin(), temp.end(), IsInvalidIndex), temp.end());
+
+					// IInArchive::Extract requires sorted array
+					std::sort(temp.begin(), temp.end());
+
+					result = HResult::InvalidArgument();
+					if (!temp.empty())
+					{
+						result = m_Data.InArchive->Extract(temp.data(), static_cast<uint32_t>(temp.size()), false, extractor);
+					}
+				}
 			}
+			else
+			{
+				// Process all files, the callback will decide which files are needed
+				result = m_Data.InArchive->Extract(nullptr, std::numeric_limits<uint32_t>::max(), false, extractor);
+			}
+			return result.IsSuccess();
 		}
 		return false;
 	}
@@ -298,7 +284,10 @@ namespace kxf::SevenZip
 	}
 	void Archive::Close()
 	{
-		m_Data.InArchive = nullptr;
+		if (m_Data.InArchive)
+		{
+			m_Data.InArchive->Close();
+		}
 		m_Data = Data();
 	}
 
