@@ -35,10 +35,10 @@ namespace kxf::SevenZip
 			bool Load(const FSPath& libraryPath);
 			void Unload() noexcept;
 
-			bool CreateObject(const NativeUUID& classID, const NativeUUID& interfaceID, void** object) const noexcept;
+			bool CreateObject(const NativeUUID& classID, const NativeUUID& interfaceID, void** object) const;
 
 			template<class T>
-			COMPtr<T> CreateObject(const NativeUUID& classID, const NativeUUID& interfaceID) const noexcept
+			COMPtr<T> CreateObject(const NativeUUID& classID, const NativeUUID& interfaceID) const
 			{
 				static_assert(std::is_base_of_v<IUnknown, T>, "Must be COM class");
 

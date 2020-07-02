@@ -38,14 +38,15 @@ namespace kxf::SevenZip
 		m_CreateObjectFunc = nullptr;
 	}
 
-	bool Library::CreateObject(const NativeUUID& classID, const NativeUUID& interfaceID, void** object) const noexcept
+	bool Library::CreateObject(const NativeUUID& classID, const NativeUUID& interfaceID, void** object) const
 	{
-		if (m_CreateObjectFunc)
+		if (!IsLoaded())
 		{
-			::GUID classGUID = COM::ToGUID(classID);
-			::GUID interfaceGUID = COM::ToGUID(interfaceID);
-			return HResult(reinterpret_cast<CreateObjectFunc>(m_CreateObjectFunc)(&classGUID, &interfaceGUID, object)).IsSuccess();
+			throw std::runtime_error("7-Zip library isn't loaded");
 		}
-		return false;
+
+		::GUID classGUID = COM::ToGUID(classID);
+		::GUID interfaceGUID = COM::ToGUID(interfaceID);
+		return HResult(reinterpret_cast<CreateObjectFunc>(m_CreateObjectFunc)(&classGUID, &interfaceGUID, object)).IsSuccess();
 	}
 }
