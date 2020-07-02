@@ -509,7 +509,7 @@ namespace kxf::Shell
 				COMMemoryPtr<wchar_t> knownPath;
 				if (HResult(::SHGetKnownFolderPath(it->second, nativeFlags, nullptr, &knownPath)))
 				{
-					result = knownPath;
+					result = knownPath.Get();
 				}
 			}
 		}

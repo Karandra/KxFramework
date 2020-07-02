@@ -247,11 +247,6 @@ namespace kxf
 				AssignFromPath(path);
 				return *this;
 			}
-			FSPath& operator=(const XChar* path)
-			{
-				AssignFromPath(path);
-				return *this;
-			}
 	};
 
 	template<class T>
