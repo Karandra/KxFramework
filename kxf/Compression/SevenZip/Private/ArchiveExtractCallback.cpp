@@ -115,12 +115,28 @@ namespace kxf::SevenZip::Private::Callback
 {
 	STDMETHODIMP ExtractArchiveToFS::GetStream(UInt32 fileIndex, ISequentialOutStream** outStream, Int32 askExtractMode)
 	{
+		if (!outStream)
+		{
+			return *HResult::InvalidPointer();
+		}
+
+		*outStream = nullptr;
 		m_Stream = nullptr;
 		m_TargetPath = {};
 		m_FileInfo = GetExistingFileInfo(fileIndex);
 
 		if (m_FileInfo)
 		{
+			if (m_EvtHandler)
+			{
+				ArchiveEvent event = CreateEvent();
+				event.SetItem(m_FileInfo);
+				if (!SendEvent(event))
+				{
+					return *HResult::Abort();
+				}
+			}
+
 			HResult hr = GetTargetPath(fileIndex, m_FileInfo, m_TargetPath);
 			if (hr.IsFalse())
 			{
@@ -136,15 +152,16 @@ namespace kxf::SevenZip::Private::Callback
 
 				if (m_FileInfo.IsDirectory())
 				{
-					// Creating the directory here supports having empty directories
-					m_FileSystem.CreateDirectory(m_TargetPath);
-					*outStream = nullptr;
-
+					// Creating the directory here supports having empty directories but do we really need this? Probably not.
+					//m_FileSystem.CreateDirectory(m_TargetPath);
 					return *HResult::Success();
 				}
 
-				m_FileSystem.CreateDirectory(m_TargetPath);
 				m_Stream = m_FileSystem.OpenToWrite(m_TargetPath);
+				if (!m_Stream && m_FileSystem.CreateDirectory(m_TargetPath.GetParent()))
+				{
+					m_Stream = m_FileSystem.OpenToWrite(m_TargetPath);
+				}
 				if (!m_Stream)
 				{
 					return *Win32Error::GetLastError().ToHResult().value_or(HResult::Fail());
@@ -154,12 +171,6 @@ namespace kxf::SevenZip::Private::Callback
 				wrapperStream->SetSize(m_FileInfo.GetSize().GetBytes());
 				*outStream = wrapperStream.Detach();
 
-				if (m_EvtHandler)
-				{
-					ArchiveEvent event = CreateEvent();
-					event.SetItem(m_FileInfo);
-					return SendEvent(event) ? *HResult::Success() : *HResult::Abort();
-				}
 				return *HResult::Success();
 			}
 		}
@@ -167,7 +178,6 @@ namespace kxf::SevenZip::Private::Callback
 	}
 	STDMETHODIMP ExtractArchiveToFS::PrepareOperation(Int32 askExtractMode)
 	{
-		m_TargetPath = {};
 		return *HResult::Success();
 	}
 	STDMETHODIMP ExtractArchiveToFS::SetOperationResult(Int32 operationResult)
@@ -188,8 +198,11 @@ namespace kxf::SevenZip::Private::Callback
 				stream->Close();
 			}
 
-			m_FileSystem.ChangeAttributes(m_TargetPath, m_FileInfo.GetAttributes());
-			m_FileSystem.ChangeTimestamp(m_TargetPath, m_FileInfo.GetCreationTime(), m_FileInfo.GetModificationTime(), m_FileInfo.GetLastAccessTime());
+			if (m_TargetPath)
+			{
+				m_FileSystem.ChangeAttributes(m_TargetPath, m_FileInfo.GetAttributes());
+				m_FileSystem.ChangeTimestamp(m_TargetPath, m_FileInfo.GetCreationTime(), m_FileInfo.GetModificationTime(), m_FileInfo.GetLastAccessTime());
+			}
 		}
 		return *HResult::Success();
 	}
@@ -202,16 +215,21 @@ namespace kxf::SevenZip::Private::Callback
 		FileItem fileItem = GetExistingFileInfo(fileIndex);
 		if (fileItem && !fileItem.IsDirectory())
 		{
-			auto wrapperStream = COM::CreateObject<OutStreamWrapper_wxOutputStream>(*m_Stream, m_EvtHandler);
-			wrapperStream->SetSize(fileItem.GetSize().GetBytes());
-			*outStream = wrapperStream.Detach();
-
+			const int64_t totalSize = fileItem.GetSize().GetBytes();
 			if (m_EvtHandler)
 			{
 				ArchiveEvent event = CreateEvent();
 				event.SetItem(std::move(fileItem));
-				return SendEvent(event) ? *HResult::Success() : *HResult::Abort();
+				if (!SendEvent(event))
+				{
+					return *HResult::Abort();
+				}
 			}
+
+			auto wrapperStream = COM::CreateObject<OutStreamWrapper_wxOutputStream>(*m_Stream, m_EvtHandler);
+			wrapperStream->SetSize(totalSize);
+			*outStream = wrapperStream.Detach();
+
 			return *HResult::Success();
 		}
 		return *HResult::Fail();
