@@ -253,11 +253,13 @@ namespace kxf
 	}
 	wxFileOffset FileStream::SeekI(wxFileOffset offset, wxSeekMode mode)
 	{
-		return SeekByHandle(m_Handle, offset, static_cast<StreamSeekMode>(mode));
+		m_Position = SeekByHandle(m_Handle, offset, static_cast<StreamSeekMode>(mode));
+		return m_Position;
 	}
 	wxFileOffset FileStream::SeekO(wxFileOffset offset, wxSeekMode mode)
 	{
-		return SeekByHandle(m_Handle, offset, static_cast<StreamSeekMode>(mode));
+		m_Position = SeekByHandle(m_Handle, offset, static_cast<StreamSeekMode>(mode));
+		return m_Position;
 	}
 	wxFileOffset FileStream::TellI() const
 	{
