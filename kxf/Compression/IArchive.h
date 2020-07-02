@@ -3,6 +3,7 @@
 #include "IArchiveCallbacks.h"
 #include "kxf/System/UndefWindows.h"
 #include "kxf/RTTI/QueryInterface.h"
+#include "kxf/IO/StreamDelegate.h"
 
 namespace kxf
 {
@@ -14,9 +15,8 @@ namespace kxf
 			virtual ~IArchive() = default;
 
 		public:
-			virtual FSPath GetFilePath() const = 0;
 			virtual bool IsOpened() const = 0;
-			virtual bool Open(const FSPath& filePath) = 0;
+			virtual bool Open(InputStreamDelegate stream) = 0;
 			virtual void Close() = 0;
 
 			virtual size_t GetItemCount() const = 0;
@@ -81,10 +81,10 @@ namespace kxf
 
 		public:
 			// Add files using provided callback interface
-			virtual bool Update(Compression::IUpdateCallback& callback, size_t itemCount) = 0;
+			virtual bool Update(wxOutputStream& stream, Compression::IUpdateCallback& callback, size_t itemCount) = 0;
 
 			// Add files from the provided file system
-			virtual bool UpdateFromFS(const IFileSystem& fileSystem, const FSPath& directory, const FSPathQuery& query = {}, FlagSet<FSEnumItemsFlag> flags = {}) = 0;
+			virtual bool UpdateFromFS(wxOutputStream& stream, const IFileSystem& fileSystem, const FSPath& directory, const FSPathQuery& query = {}, FlagSet<FSEnumItemsFlag> flags = {}) = 0;
 	};
 }
 

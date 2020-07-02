@@ -17,7 +17,7 @@ namespace kxf::SevenZip::Private
 	{
 		if (!password)
 		{
-			return E_POINTER;
+			return HResult::InvalidPointer();
 		}
 		if (m_EvtHandler)
 		{
@@ -25,12 +25,22 @@ namespace kxf::SevenZip::Private
 			if (SendEvent(event))
 			{
 				String value = std::move(event).GetPassword().ToString();
-				*password = _bstr_t(value.wx_str()).Detach();
-				Utility::SetIfNotNull(passwordIsDefined, 1);
+				if (!value.IsEmpty())
+				{
+					*password = _bstr_t(value.wx_str()).Detach();
+					Utility::SetIfNotNull(passwordIsDefined, 1);
 
-				return S_OK;
+					return HResult::Success();
+				}
+				else
+				{
+					*password = nullptr;
+					Utility::SetIfNotNull(passwordIsDefined, 0);
+
+					return HResult::False();
+				}
 			}
 		}
-		return E_ABORT;
+		return HResult::Abort();
 	}
 }

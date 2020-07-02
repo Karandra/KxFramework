@@ -10,7 +10,7 @@ namespace kxf::SevenZip::Private::Callback
 {
 	FileItem ExtractArchive::GetExistingFileInfo(size_t fileIndex) const
 	{
-		return GetArchiveItem(m_Archive, fileIndex);
+		return GetArchiveItem(*m_Archive, fileIndex);
 	}
 
 	STDMETHODIMP ExtractArchive::QueryInterface(const ::IID& iid, void** ppvObject)
@@ -74,7 +74,7 @@ namespace kxf::SevenZip::Private::Callback
 		if (m_Stream = m_Callback.OnGetStream(fileIndex))
 		{
 			m_FileIndex = fileIndex;
-			*outStream = CreateObject<OutStreamWrapper_wxOutputStream>(*m_Stream, m_EvtHandler).Detach();
+			*outStream = COM::CreateObject<OutStreamWrapper_wxOutputStream>(*m_Stream, m_EvtHandler).Detach();
 
 			if (m_EvtHandler)
 			{
@@ -150,7 +150,7 @@ namespace kxf::SevenZip::Private::Callback
 					return *Win32Error::GetLastError().ToHResult().value_or(HResult::Fail());
 				}
 
-				auto wrapperStream = CreateObject<OutStreamWrapper_wxOutputStream>(*m_Stream, m_EvtHandler);
+				auto wrapperStream = COM::CreateObject<OutStreamWrapper_wxOutputStream>(*m_Stream, m_EvtHandler);
 				wrapperStream->SetSize(m_FileInfo.GetSize().GetBytes());
 				*outStream = wrapperStream.Detach();
 
@@ -202,7 +202,7 @@ namespace kxf::SevenZip::Private::Callback
 		FileItem fileItem = GetExistingFileInfo(fileIndex);
 		if (fileItem && !fileItem.IsDirectory())
 		{
-			auto wrapperStream = CreateObject<OutStreamWrapper_wxOutputStream>(*m_Stream, m_EvtHandler);
+			auto wrapperStream = COM::CreateObject<OutStreamWrapper_wxOutputStream>(*m_Stream, m_EvtHandler);
 			wrapperStream->SetSize(fileItem.GetSize().GetBytes());
 			*outStream = wrapperStream.Detach();
 

@@ -30,19 +30,6 @@ namespace
 
 namespace kxf::SevenZip::Private
 {
-	COMPtr<IStream> OpenFileToRW(const FSPath& filePath)
-	{
-		return CreateStreamOnFile(filePath, (NativeFileSystem().ItemExist(filePath) ? 0 : STGM_CREATE)|STGM_READWRITE);
-	}
-	COMPtr<IStream> OpenFileToRead(const FSPath& filePath)
-	{
-		return CreateStreamOnFile(filePath, STGM_READ);
-	}
-	COMPtr<IStream> OpenFileToWrite(const FSPath& filePath)
-	{
-		return CreateStreamOnFile(filePath, STGM_CREATE|STGM_WRITE);
-	}
-
 	COMPtr<IInArchive> GetArchiveReader(CompressionFormat format) noexcept
 	{
 		if (NativeUUID guid = GetAlgorithmID(format))
@@ -60,38 +47,41 @@ namespace kxf::SevenZip::Private
 		return nullptr;
 	}
 
-	std::optional<size_t> GetNumberOfItems(const COMPtr<IInArchive>& archive) noexcept
+	std::optional<size_t> GetNumberOfItems(const IInArchive& archive) noexcept
 	{
-		uint32_t itemCount = 0;
-		if (archive->GetNumberOfItems(&itemCount) == S_OK)
+		return [&](IInArchive& archive) -> std::optional<size_t>
 		{
-			// If there are items try to verify if they're readable
-			if (itemCount != 0)
+			uint32_t itemCount = 0;
+			if (archive.GetNumberOfItems(&itemCount) == S_OK)
 			{
-				VariantProperty property;
-				if (HResult(archive->GetProperty(0, kpidSize, &property)) && !property.IsEmpty())
+				// If there are items try to verify if they're readable
+				if (itemCount != 0)
 				{
-					return itemCount;
+					VariantProperty property;
+					if (HResult(archive.GetProperty(0, kpidSize, &property)) && !property.IsEmpty())
+					{
+						return itemCount;
+					}
 				}
 			}
-		}
-		return {};
+			return {};
+		}(const_cast<IInArchive&>(archive));
 	}
-	bool GetNumberOfItems(const FSPath& archivePath, CompressionFormat format, size_t& itemCount, wxEvtHandler* evtHandler)
+	bool GetNumberOfItems(wxInputStream& stream, CompressionFormat format, size_t& itemCount, wxEvtHandler* evtHandler)
 	{
-		if (auto fileStream = OpenFileToRead(archivePath))
+		if (stream.IsOk())
 		{
 			auto archive = GetArchiveReader(format);
-			auto inFile = CreateObject<InStreamWrapper_IStream>(fileStream, evtHandler);
-			auto openCallback = CreateObject<Callback::OpenArchive>(evtHandler);
+			auto openCallback = COM::CreateObject<Callback::OpenArchive>(evtHandler);
+			auto streamWrapper = COM::CreateObject<InStreamWrapper_wxInputStream>(stream, evtHandler);
 
-			if (HResult(archive->Open(inFile, nullptr, openCallback)))
+			if (HResult(archive->Open(streamWrapper, nullptr, openCallback)))
 			{
 				Utility::CallAtScopeExit atExit([&]()
 				{
 					archive->Close();
 				});
-				if (auto count = GetNumberOfItems(archive))
+				if (auto count = GetNumberOfItems(*archive))
 				{
 					itemCount = *count;
 					return true;
@@ -101,97 +91,100 @@ namespace kxf::SevenZip::Private
 		return false;
 	}
 
-	FileItem GetArchiveItem(const COMPtr<IInArchive>& archive, size_t fileIndex)
+	FileItem GetArchiveItem(const IInArchive& archive, size_t fileIndex)
 	{
-		FileItem fileItem;
-		VariantProperty property;
-
-		// Get name of file
-		if (HResult(archive->GetProperty(fileIndex, kpidPath, &property)))
+		return [&](IInArchive& archive) -> FileItem
 		{
-			fileItem.SetFullPath(property.ToString().value_or(NullString));
+			FileItem fileItem;
+			VariantProperty property;
 
-			// Attributes
-			if (FAILED(archive->GetProperty(fileIndex, kpidAttrib, &property)))
+			// Get name of file
+			if (HResult(archive.GetProperty(fileIndex, kpidPath, &property)))
 			{
-				return {};
-			}
-			auto attributes = FileSystem::Private::MapFileAttributes(property.ToInt<uint32_t>().value_or(0));
+				fileItem.SetFullPath(property.ToString().value_or(NullString));
 
-			// Is directory
-			if (SUCCEEDED(archive->GetProperty(fileIndex, kpidIsDir, &property)))
-			{
-				attributes.Add(FileAttribute::Directory, property.ToBool().value_or(false));
-			}
-			else
-			{
-				return {};
-			}
-
-			if (!attributes.Contains(FileAttribute::Directory))
-			{
-				// Original size
-				if (SUCCEEDED(archive->GetProperty(fileIndex, kpidSize, &property)))
+				// Attributes
+				if (FAILED(archive.GetProperty(fileIndex, kpidAttrib, &property)))
 				{
-					fileItem.SetSize(property.ToInt<BinarySize::SizeType>().value_or(-1));
+					return {};
+				}
+				auto attributes = FileSystem::Private::MapFileAttributes(property.ToInt<uint32_t>().value_or(0));
+
+				// Is directory
+				if (SUCCEEDED(archive.GetProperty(fileIndex, kpidIsDir, &property)))
+				{
+					attributes.Add(FileAttribute::Directory, property.ToBool().value_or(false));
 				}
 				else
 				{
 					return {};
 				}
 
-				// Compressed size
-				if (SUCCEEDED(archive->GetProperty(fileIndex, kpidPackSize, &property)))
+				if (!attributes.Contains(FileAttribute::Directory))
 				{
-					fileItem.SetCompressedSize(property.ToInt<BinarySize::SizeType>().value_or(-1));
-					attributes.Add(FileAttribute::Compressed, fileItem.GetSize() != fileItem.GetCompressedSize());
+					// Original size
+					if (SUCCEEDED(archive.GetProperty(fileIndex, kpidSize, &property)))
+					{
+						fileItem.SetSize(property.ToInt<BinarySize::SizeType>().value_or(-1));
+					}
+					else
+					{
+						return {};
+					}
+
+					// Compressed size
+					if (SUCCEEDED(archive.GetProperty(fileIndex, kpidPackSize, &property)))
+					{
+						fileItem.SetCompressedSize(property.ToInt<BinarySize::SizeType>().value_or(-1));
+						attributes.Add(FileAttribute::Compressed, fileItem.GetSize() != fileItem.GetCompressedSize());
+					}
+					else
+					{
+						return {};
+					}
 				}
-				else
+
+				// Creation time
+				if (FAILED(archive.GetProperty(fileIndex, kpidCTime, &property)))
 				{
 					return {};
 				}
-			}
+				fileItem.SetCreationTime(property.ToDateTime().value_or(DateTime()));
 
-			// Creation time
-			if (FAILED(archive->GetProperty(fileIndex, kpidCTime, &property)))
-			{
-				return {};
-			}
-			fileItem.SetCreationTime(property.ToDateTime().value_or(DateTime()));
+				// Modification time
+				if (FAILED(archive.GetProperty(fileIndex, kpidMTime, &property)))
+				{
+					return {};
+				}
+				fileItem.SetModificationTime(property.ToDateTime().value_or(DateTime()));
 
-			// Modification time
-			if (FAILED(archive->GetProperty(fileIndex, kpidMTime, &property)))
-			{
-				return {};
-			}
-			fileItem.SetModificationTime(property.ToDateTime().value_or(DateTime()));
+				// Last access time
+				if (FAILED(archive.GetProperty(fileIndex, kpidATime, &property)))
+				{
+					return {};
+				}
+				fileItem.SetLastAccessTime(property.ToDateTime().value_or(DateTime()));
 
-			// Last access time
-			if (FAILED(archive->GetProperty(fileIndex, kpidATime, &property)))
-			{
-				return {};
+				fileItem.SetAttributes(attributes);
+				fileItem.SetUniqueID(LocallyUniqueID(fileIndex));
+				return fileItem;
 			}
-			fileItem.SetLastAccessTime(property.ToDateTime().value_or(DateTime()));
-
-			fileItem.SetAttributes(attributes);
-			fileItem.SetUniqueID(LocallyUniqueID(fileIndex));
-			return fileItem;
-		}
-		return {};
+			return {};
+		}(const_cast<IInArchive&>(archive));
 	}
-	bool GetArchiveItems(const FSPath& archivePath, CompressionFormat format, std::vector<FileItem>& items, wxEvtHandler* evtHandler)
+	bool GetArchiveItems(wxInputStream& stream, CompressionFormat format, std::vector<FileItem>& items, wxEvtHandler* evtHandler)
 	{
-		if (auto fileStream = OpenFileToRead(archivePath))
+		if (stream.IsOk())
 		{
 			auto archive = GetArchiveReader(format);
 			Utility::CallAtScopeExit atExit([&]()
 			{
 				archive->Close();
 			});
-			auto inFile = CreateObject<InStreamWrapper_IStream>(fileStream, evtHandler);
-			auto openCallback = CreateObject<Callback::OpenArchive>(evtHandler);
+			auto openCallback = COM::CreateObject<Callback::OpenArchive>(evtHandler);
+			auto streamWrapper = COM::CreateObject<InStreamWrapper_wxInputStream>(stream, evtHandler);
 
-			if (FAILED(archive->Open(inFile, nullptr, openCallback)))
+			if (FAILED(archive->Open(streamWrapper, nullptr, openCallback)))
 			{
 				return false;
 			}
@@ -205,7 +198,7 @@ namespace kxf::SevenZip::Private
 
 			for (size_t i = 0; i < itemCount32; i++)
 			{
-				if (auto fileItem = GetArchiveItem(archive, i))
+				if (auto fileItem = GetArchiveItem(*archive, i))
 				{
 					// Add the item
 					items.emplace_back(std::move(fileItem));
@@ -216,13 +209,16 @@ namespace kxf::SevenZip::Private
 		return false;
 	}
 
-	CompressionFormat IdentifyCompressionFormat(const FSPath& archivePath, wxEvtHandler* evtHandler)
+	CompressionFormat IdentifyCompressionFormat(wxInputStream& stream, const FSPath& path, wxEvtHandler* evtHandler)
 	{
-		WithEvtHandler eventHandler(evtHandler);
+		if (!stream.IsOk())
+		{
+			return CompressionFormat::Unknown;
+		}
 
 		CompressionFormat availableFormats[] =
 		{
-			GetFormatByExtension(archivePath.GetExtension()),
+			GetFormatByExtension(path.GetExtension()),
 			CompressionFormat::SevenZip,
 			CompressionFormat::Zip,
 			CompressionFormat::Rar,
@@ -236,6 +232,7 @@ namespace kxf::SevenZip::Private
 			CompressionFormat::Lzma86,
 		};
 
+		WithEvtHandler eventHandler(evtHandler);
 		if (eventHandler)
 		{
 			ArchiveEvent event = eventHandler.CreateEvent(ArchiveEvent::EvtProcess);
@@ -273,21 +270,18 @@ namespace kxf::SevenZip::Private
 					}
 				}
 
+				// Rewind the stream to avoid reading from the wrong position set by previous attempt
+				stream.SeekI(0, wxSeekMode::wxFromStart);
+
 				// There is a problem that GZip files will not be detected using the above method. Workaround for now.
 				if (format == CompressionFormat::GZip)
 				{
 					size_t itemCount = 0;
-					if (GetNumberOfItems(archivePath, CompressionFormat::GZip, itemCount, evtHandler) && itemCount != 0)
+					if (GetNumberOfItems(stream, CompressionFormat::GZip, itemCount, evtHandler) && itemCount != 0)
 					{
 						return CompressionFormat::GZip;
 					}
 					continue;
-				}
-
-				auto fileStream = OpenFileToRead(archivePath);
-				if (!fileStream)
-				{
-					return CompressionFormat::Unknown;
 				}
 
 				auto archive = GetArchiveReader(format);
@@ -295,10 +289,10 @@ namespace kxf::SevenZip::Private
 				{
 					archive->Close();
 				});
-				auto inFile = CreateObject<InStreamWrapper_IStream>(fileStream, evtHandler);
-				auto openCallback = CreateObject<Callback::OpenArchive>(evtHandler);
+				auto openCallback = COM::CreateObject<Callback::OpenArchive>(evtHandler);
+				auto streamWrapper = COM::CreateObject<InStreamWrapper_wxInputStream>(stream, evtHandler);
 
-				if (archive->Open(inFile, nullptr, openCallback) == S_OK)
+				if (archive->Open(streamWrapper, nullptr, openCallback) == S_OK)
 				{
 					// We know the format if we get here, so return
 					return format;

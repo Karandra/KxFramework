@@ -9,7 +9,7 @@ namespace kxf::SevenZip::Private::Callback
 {
 	FileItem UpdateArchive::GetExistingFileInfo(size_t fileIndex) const
 	{
-		return GetArchiveItem(m_Archive, fileIndex);
+		return GetArchiveItem(*m_Archive, fileIndex);
 	}
 
 	STDMETHODIMP UpdateArchive::QueryInterface(const ::IID& iid, void** ppvObject)
@@ -175,7 +175,7 @@ namespace kxf::SevenZip::Private::Callback
 		m_Stream = m_Callback.OnGetStream(index);
 		if (m_Stream)
 		{
-			auto wrapperStream = CreateObject<InStreamWrapper_wxInputStream>(*m_Stream, m_EvtHandler);
+			auto wrapperStream = COM::CreateObject<InStreamWrapper_wxInputStream>(*m_Stream, m_EvtHandler);
 			wrapperStream->SpecifyTotalSize(m_Stream->GetLength());
 			*inStream = wrapperStream.Detach();
 

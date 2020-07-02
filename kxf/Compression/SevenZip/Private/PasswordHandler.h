@@ -5,6 +5,9 @@
 #include "kxf/Utility/Common.h"
 #include <7zip/CPP/7zip/IPassword.h>
 
+#undef True
+#undef False
+
 namespace kxf::SevenZip::Private
 {
 	class PasswordHandler final

@@ -34,12 +34,9 @@ namespace kxf::SevenZip
 		protected:
 			struct Data final
 			{
-				FSPath FilePath;
-				COMPtr<IStream> ArchiveStream;
-				COMPtr<IInArchive> ArchiveStreamReader;
-				COMPtr<Private::InStreamWrapper_IStream> ArchiveStreamWrapper;
+				InputStreamDelegate Stream;
+				COMPtr<IInArchive> InArchive;
 
-				// Metadata
 				size_t ItemCount = 0;
 				bool IsLoaded = false;
 				bool OverrideCompressionFormat = false;
@@ -66,15 +63,15 @@ namespace kxf::SevenZip
 			void RewindArchiveStreams();
 
 		protected:
-			bool DoExtract(Private::Callback::ExtractArchive& extractor, Compression::FileIndexView* files) const;
-			bool DoUpdate(Private::Callback::UpdateArchive& updater, size_t itemCount);
+			bool DoExtract(COMPtr<Private::Callback::ExtractArchive> extractor, Compression::FileIndexView* files) const;
+			bool DoUpdate(wxOutputStream& stream, COMPtr<Private::Callback::UpdateArchive> updater, size_t itemCount);
 
 		public:
 			Archive(wxEvtHandler* evtHandler = nullptr);
-			Archive(FSPath filePath, wxEvtHandler* evtHandler = nullptr)
+			Archive(InputStreamDelegate stream, wxEvtHandler* evtHandler = nullptr)
 				:Archive(evtHandler)
 			{
-				Open(std::move(filePath));
+				Open(std::move(stream));
 			}
 			Archive(const Archive&) = delete;
 			Archive(Archive&& other)
@@ -86,15 +83,11 @@ namespace kxf::SevenZip
 
 		public:
 			// IArchive
-			FSPath GetFilePath() const override
-			{
-				return m_Data.FilePath;
-			}
 			bool IsOpened() const noexcept override
 			{
 				return m_Data.IsLoaded;
 			}
-			bool Open(const FSPath& filePath) override;
+			bool Open(InputStreamDelegate stream) override;
 			void Close() override;
 
 			size_t GetItemCount() const override
@@ -203,10 +196,6 @@ namespace kxf::SevenZip
 
 			std::optional<String> GetPropertyString(StringView property) const override
 			{
-				if (property == Compression::Property::Common_FilePath)
-				{
-					return m_Data.FilePath;
-				}
 				return {};
 			}
 			bool SetPropertyString(StringView property, StringView value)
@@ -232,13 +221,18 @@ namespace kxf::SevenZip
 			// IArchiveUpdate
 
 			// Add files using provided callback interface
-			bool Update(Compression::IUpdateCallback& callback, size_t itemCount) override;
+			bool Update(wxOutputStream& stream, Compression::IUpdateCallback& callback, size_t itemCount) override;
 
 			// Add files from the provided file system
-			bool UpdateFromFS(const IFileSystem& fileSystem, const FSPath& directory, const FSPathQuery& query = {}, FlagSet<FSEnumItemsFlag> flags = {}) override;
+			bool UpdateFromFS(wxOutputStream& stream, const IFileSystem& fileSystem, const FSPath& directory, const FSPathQuery& query = {}, FlagSet<FSEnumItemsFlag> flags = {}) override;
 
 		public:
 			// IFileSystem
+			FSPath GetCurrentDirectory() const override
+			{
+				return {};
+			}
+
 			bool ItemExist(const FSPath& path) const override;
 			bool FileExist(const FSPath& path) const override;
 			bool DirectoryExist(const FSPath& path) const override;
@@ -273,6 +267,10 @@ namespace kxf::SevenZip
 				return false;
 			}
 			bool RemoveItem(const FSPath& path) override
+			{
+				return false;
+			}
+			bool RemoveDirectory(const FSPath& path, FlagSet<FSEnumItemsFlag> flags = {}) override
 			{
 				return false;
 			}
@@ -319,6 +317,10 @@ namespace kxf::SevenZip
 				return false;
 			}
 			bool RemoveItem(const UniversallyUniqueID& id) override
+			{
+				return false;
+			}
+			bool RemoveDirectory(const UniversallyUniqueID& id, FlagSet<FSEnumItemsFlag> flags = {}) override
 			{
 				return false;
 			}
