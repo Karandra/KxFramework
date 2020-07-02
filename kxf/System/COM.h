@@ -271,6 +271,12 @@ namespace kxf
 			{
 			}
 
+			template<class T, class = std::enable_if_t<std::is_base_of_v<TValue, T>>>
+			COMPtr(COMPtr<T>&& other) noexcept
+				:Base(other.Detach())
+			{
+			}
+
 			COMPtr(const COMPtr& other) noexcept
 			{
 				Copy(other.m_Value);
@@ -284,6 +290,13 @@ namespace kxf
 
 		public:
 			COMPtr& operator=(COMPtr&& other) noexcept
+			{
+				this->Reset(other.Detach());
+				return *this;
+			}
+
+			template<class T, class = std::enable_if_t<std::is_base_of_v<TValue, T>>>
+			COMPtr& operator=(COMPtr<T>&& other) noexcept
 			{
 				this->Reset(other.Detach());
 				return *this;
