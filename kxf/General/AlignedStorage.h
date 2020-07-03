@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "kxf/Utility/Memory.h"
 #include <new>
 
 namespace kxf
@@ -47,37 +48,20 @@ namespace kxf
 			}
 
 			template<class... Args>
-			TValue& Construct(Args&&... arg) noexcept(std::is_nothrow_constructible_v<TValue>)
+			TValue& Construct(Args&&... arg) noexcept(std::is_nothrow_constructible_v<TValue, Args...>)
 			{
 				static_assert(t_Size >= sizeof(TValue), "insufficient buffer size");
 				static_assert(t_Alignment == alignof(TValue), "alignment doesn't match");
 
-				auto DoConstruct = [&]()
+				return *Utility::NewObjectOnMemoryLocation<T>(static_cast<void*>(m_Buffer), [&]()
 				{
-					return std::launder(new(static_cast<void*>(m_Buffer)) TValue(std::forward<Args>(arg)...));
-				};
-
-				if constexpr (std::is_nothrow_constructible_v<TValue>)
-				{
-					return *DoConstruct();
-				}
-				else
-				{
-					try
-					{
-						return *DoConstruct();
-					}
-					catch (...)
-					{
-						Destruct();
-						throw;
-					}
-				}
+					Destruct();
+				}, std::forward<Args>(arg)...);
 			}
 
 			void Destruct() noexcept(std::is_nothrow_destructible_v<TValue>)
 			{
-				static_cast<TValue*>(data())->~TValue();
+				Utility::DestroyObjectOnMemoryLocation<TValue>(data());
 			}
 			void Zero() noexcept
 			{
@@ -156,7 +140,7 @@ namespace kxf
 
 		public:
 			template<class... Args>
-			T& Construct(Args&&... arg) noexcept(std::is_nothrow_constructible_v<TValue>)
+			T& Construct(Args&&... arg) noexcept(std::is_nothrow_constructible_v<T, Args...>)
 			{
 				if (!m_Value)
 				{

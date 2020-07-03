@@ -3,6 +3,7 @@
 #include "ErrorCode.h"
 #include "kxf/General/String.h"
 #include "kxf/General/NativeUUID.h"
+#include "kxf/Utility/Memory.h"
 #include "Private/COM.h"
 #include <memory>
 #include <new>
@@ -394,20 +395,15 @@ namespace kxf::COM
 		return AllocateRawString(StringViewOf<T>(value));
 	}
 
-	template<class TObject>
-	COMMemoryPtr<TObject> AllocateObjectBuffer() noexcept
+	template<class T, class... Args>
+	COMMemoryPtr<T> AllocateObject(Args&&... arg) noexcept(std::is_nothrow_constructible_v<T, Args...>)
 	{
-		return std::launder(static_cast<TObject*>(AllocateMemory(sizeof(TObject))));
-	}
+		static_assert(std::is_trivially_constructible_v<T, Args...>, "must be trivially constructible");
 
-	template<class TObject>
-	COMMemoryPtr<TObject> AllocateObjectBuffer(TObject object) noexcept(std::is_nothrow_move_assignable_v<TObject>)
-	{
-		auto buffer = AllocateObjectBuffer<TObject>();
-		if (buffer)
+		void* buffer = AllocateMemory(sizeof(T));
+		return Utility::NewObjectOnMemoryLocation<T>(buffer, [&]()
 		{
-			*buffer = std::move(object);
-		}
-		return buffer;
+			FreeMemory(buffer);
+		}, std::forward<Args>(arg)...);
 	}
 }
