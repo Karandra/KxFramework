@@ -17,6 +17,8 @@ namespace
 	constexpr size_t g_GUIDLength = 36;
 	constexpr size_t g_VolumePathPrefixLength = 6;
 	constexpr size_t g_VolumePathTotalLength = g_VolumePathPrefixLength + g_GUIDLength + 2;
+
+	constexpr wxChar g_PathSeparator = wxS('\\');
 }
 namespace
 {
@@ -44,7 +46,7 @@ namespace
 		if (pos != String::npos)
 		{
 			String result = path.Left(pos);
-			if (!result.IsEmpty() && result.back() == wxS('\\'))
+			if (!result.IsEmpty() && result.back() == g_PathSeparator)
 			{
 				result.RemoveFromEnd(1);
 			}
@@ -60,7 +62,7 @@ namespace
 		if (pos != String::npos && pos + 1 < path.length())
 		{
 			String result = path.Mid(pos + 1, count);
-			if (!result.IsEmpty() && result[0] == wxS('\\'))
+			if (!result.IsEmpty() && result[0] == g_PathSeparator)
 			{
 				result.Remove(0, 1);
 			}
@@ -150,7 +152,7 @@ namespace kxf
 			// Replace forward slashes with backward slashes
 			if (c == wxS('/'))
 			{
-				c = wxS('\\');
+				c = g_PathSeparator;
 			}
 
 			// Remove any leading space characters
@@ -168,7 +170,7 @@ namespace kxf
 			}
 
 			// Remove any duplicating slashes
-			if (c == wxS('\\'))
+			if (c == g_PathSeparator)
 			{
 				if (removeNextSlash || i + 1 == m_Path.length())
 				{
@@ -212,7 +214,7 @@ namespace kxf
 		using namespace FileSystem::Private;
 
 		// All namespaces starts from at least one'\'
-		if (path.IsEmpty() || path[0] != wxS('\\'))
+		if (path.IsEmpty() || path[0] != g_PathSeparator)
 		{
 			ns = FSPathNamespace::None;
 			return 0;
@@ -308,16 +310,21 @@ namespace kxf
 		size_t count = 0;
 		for (wxChar c: m_Path)
 		{
-			if (c == wxS('\\'))
+			if (c == g_PathSeparator)
 			{
 				count++;
 			}
+		}
+
+		if (HasAnyVolume())
+		{
+			count++;
 		}
 		return count;
 	}
 	size_t FSPath::ForEachComponent(std::function<bool(String)> func) const
 	{
-		return m_Path.SplitBySeparator(wxS('\\'), [&](StringView view)
+		return m_Path.SplitBySeparator(g_PathSeparator, [&](StringView view)
 		{
 			return std::invoke(func, String(view));
 		});
@@ -329,7 +336,7 @@ namespace kxf
 		{
 			if (format & FSPathFormat::TrailingSeparator)
 			{
-				result += wxS('\\');
+				result += g_PathSeparator;
 			}
 		}
 		return result;
@@ -486,14 +493,14 @@ namespace kxf
 			{
 				// Replace after the disk designator
 				m_Path.Remove(2, String::npos);
-				m_Path += wxS('\\');
+				m_Path += g_PathSeparator;
 				m_Path += path;
 			}
 			else if (HasVolume())
 			{
 				// Replace after GUID path
 				m_Path.Truncate(g_VolumePathTotalLength);
-				m_Path += wxS('\\');
+				m_Path += g_PathSeparator;
 				m_Path += path;
 			}
 			else
@@ -543,14 +550,14 @@ namespace kxf
 	String FSPath::GetName() const
 	{
 		// Return everything after last path delimiter or itself
-		String path = ExtractAfter(m_Path, wxS('\\'), String::npos, true);
+		String path = ExtractAfter(m_Path, g_PathSeparator, String::npos, true);
 		return path.IsEmpty() ? m_Path : path;
 	}
 	FSPath& FSPath::SetName(const String& name)
 	{
 		if (CheckStringOnAssignName(name))
 		{
-			const size_t pos = m_Path.Find(wxS('\\'), 0, StringOpFlag::FromEnd);
+			const size_t pos = m_Path.Find(g_PathSeparator, 0, StringOpFlag::FromEnd);
 			if (pos != String::npos)
 			{
 				const size_t dot = m_Path.Find(wxS('.'), pos);
@@ -632,7 +639,7 @@ namespace kxf
 	}
 	FSPath FSPath::GetParent() const
 	{
-		return FSPath(ExtractBefore(m_Path, wxS('\\'), true)).EnsureNamespaceSet(m_Namespace);
+		return FSPath(ExtractBefore(m_Path, g_PathSeparator, true)).EnsureNamespaceSet(m_Namespace);
 	}
 	FSPath& FSPath::RemoveLastPart()
 	{
@@ -644,7 +651,10 @@ namespace kxf
 	{
 		if (!IsValid() || other.IsRelative())
 		{
-			m_Path += wxS('\\');
+			if (!m_Path.IsEmpty())
+			{
+				m_Path += g_PathSeparator;
+			}
 			m_Path += other.m_Path;
 		}
 		return *this;
