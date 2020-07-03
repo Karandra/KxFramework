@@ -18,7 +18,7 @@ namespace kxf
 		FromEnd = 1 << 1,
 		FirstMatchOnly = 1 << 2,
 	};
-	Kx_DeclareFlagSet(StringOpFlag);
+	KxDeclareFlagSet(StringOpFlag);
 
 	namespace StringFormatter
 	{

@@ -16,7 +16,7 @@ namespace kxf
 		Recursive = 1 << 0,
 		LimitToFiles = 1 << 1
 	};
-	Kx_DeclareFlagSet(FSRecycleBinOpFlag);
+	KxDeclareFlagSet(FSRecycleBinOpFlag);
 }
 
 namespace kxf

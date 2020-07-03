@@ -21,7 +21,7 @@ namespace kxf::UI
 }
 namespace kxf
 {
-	Kx_DeclareFlagSet(UI::StaticTextStyle);
+	KxDeclareFlagSet(UI::StaticTextStyle);
 }
 
 namespace kxf::UI

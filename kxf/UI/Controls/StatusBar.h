@@ -20,7 +20,7 @@ namespace kxf::UI
 }
 namespace kxf
 {
-	Kx_DeclareFlagSet(UI::StatusBarStyle);
+	KxDeclareFlagSet(UI::StatusBarStyle);
 }
 
 namespace kxf::UI

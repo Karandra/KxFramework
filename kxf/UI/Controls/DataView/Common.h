@@ -115,8 +115,8 @@ namespace kxf::UI::DataView
 
 namespace kxf
 {
-	Kx_DeclareFlagSet(UI::DataView::CtrlStyle);
-	Kx_DeclareFlagSet(UI::DataView::CtrlExtraStyle);
-	Kx_DeclareFlagSet(UI::DataView::ColumnStyle);
-	Kx_DeclareFlagSet(UI::DataView::DNDOpType);
+	KxDeclareFlagSet(UI::DataView::CtrlStyle);
+	KxDeclareFlagSet(UI::DataView::CtrlExtraStyle);
+	KxDeclareFlagSet(UI::DataView::ColumnStyle);
+	KxDeclareFlagSet(UI::DataView::DNDOpType);
 }

@@ -89,10 +89,10 @@ namespace kxf
 		InheritConsole = 1 << 2,
 	};
 
-	Kx_DeclareFlagSet(SHOperationFlags);
-	Kx_DeclareFlagSet(SHGetKnownDirectoryFlag);
-	Kx_DeclareFlagSet(SHGetFileIconFlag);
-	Kx_DeclareFlagSet(SHExexuteFlag);
+	KxDeclareFlagSet(SHOperationFlags);
+	KxDeclareFlagSet(SHGetKnownDirectoryFlag);
+	KxDeclareFlagSet(SHGetFileIconFlag);
+	KxDeclareFlagSet(SHExexuteFlag);
 }
 
 namespace kxf::Shell

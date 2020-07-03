@@ -23,7 +23,7 @@ namespace kxf
 		LimitToFiles = 1 << 4,
 		LimitToDirectories = 1 << 5
 	};
-	Kx_DeclareFlagSet(FSActionFlag);
+	KxDeclareFlagSet(FSActionFlag);
 }
 
 namespace kxf

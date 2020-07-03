@@ -58,9 +58,9 @@ namespace kxf::UI
 }
 namespace kxf
 {
-	Kx_DeclareFlagSet(UI::WindowStyle);
-	Kx_DeclareFlagSet(UI::WindowExStyle);
-	Kx_DeclareFlagSet(UI::WindowBorder);
+	KxDeclareFlagSet(UI::WindowStyle);
+	KxDeclareFlagSet(UI::WindowExStyle);
+	KxDeclareFlagSet(UI::WindowBorder);
 }
 
 namespace kxf::UI

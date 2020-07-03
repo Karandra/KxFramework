@@ -26,7 +26,7 @@ namespace kxf::UI
 }
 namespace kxf
 {
-	Kx_DeclareFlagSet(UI::SliderStyle);
+	KxDeclareFlagSet(UI::SliderStyle);
 }
 
 namespace kxf::UI

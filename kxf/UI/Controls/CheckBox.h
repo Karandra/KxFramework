@@ -19,7 +19,7 @@ namespace kxf::UI
 }
 namespace kxf
 {
-	Kx_DeclareFlagSet(UI::CheckBoxStyle);
+	KxDeclareFlagSet(UI::CheckBoxStyle);
 }
 
 namespace kxf::UI

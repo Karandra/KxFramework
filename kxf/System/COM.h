@@ -45,8 +45,8 @@ namespace kxf
 		AppContainer = 0 << 16
 	};
 
-	Kx_DeclareFlagSet(COMInitFlag);
-	Kx_DeclareFlagSet(ClassContext);
+	KxDeclareFlagSet(COMInitFlag);
+	KxDeclareFlagSet(ClassContext);
 }
 
 namespace kxf::COM

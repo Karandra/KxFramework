@@ -31,7 +31,7 @@ namespace kxf::UI
 }
 namespace kxf
 {
-	Kx_DeclareFlagSet(UI::TaskDialogStyle);
+	KxDeclareFlagSet(UI::TaskDialogStyle);
 }
 
 namespace kxf::UI

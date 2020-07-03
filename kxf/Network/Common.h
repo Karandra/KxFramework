@@ -23,7 +23,7 @@ namespace kxf
 		None = 0,
 		Strict = 1 << 0
 	};
-	Kx_DeclareFlagSet(URIFlag);
+	KxDeclareFlagSet(URIFlag);
 
 	enum class URLStatus
 	{

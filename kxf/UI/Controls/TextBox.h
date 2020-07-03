@@ -32,7 +32,7 @@ namespace kxf::UI
 }
 namespace kxf
 {
-	Kx_DeclareFlagSet(UI::TextBoxStyle);
+	KxDeclareFlagSet(UI::TextBoxStyle);
 }
 
 namespace kxf::UI

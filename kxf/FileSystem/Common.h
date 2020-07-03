@@ -121,13 +121,13 @@ namespace kxf
 		BackupSemantics = 1 << 1,
 	};
 
-	Kx_DeclareFlagSet(FileSystemFeature);
-	Kx_DeclareFlagSet(FileAttribute);
-	Kx_DeclareFlagSet(ReparsePointTag);
+	KxDeclareFlagSet(FileSystemFeature);
+	KxDeclareFlagSet(FileAttribute);
+	KxDeclareFlagSet(ReparsePointTag);
 
-	Kx_DeclareFlagSet(FileStreamAccess);
-	Kx_DeclareFlagSet(FileStreamShare);
-	Kx_DeclareFlagSet(FileStreamFlags);
+	KxDeclareFlagSet(FileStreamAccess);
+	KxDeclareFlagSet(FileStreamShare);
+	KxDeclareFlagSet(FileStreamFlags);
 }
 
 namespace kxf::FileSystem

@@ -11,7 +11,7 @@ namespace kxf
 		None = 0,
 		TrailingSeparator = 1 << 0,
 	};
-	Kx_DeclareFlagSet(FSPathFormat);
+	KxDeclareFlagSet(FSPathFormat);
 }
 
 namespace kxf

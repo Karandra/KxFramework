@@ -23,7 +23,7 @@ namespace kxf
 		NonClient = 1 << 0,
 		ForceRectSizing = 1 << 1,
 	};
-	Kx_DeclareFlagSet(UxThemeFlag);
+	KxDeclareFlagSet(UxThemeFlag);
 
 	enum class UxThemeClass
 	{

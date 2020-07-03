@@ -23,7 +23,7 @@ namespace kxf::Geometry
 }
 namespace kxf
 {
-	Kx_DeclareFlagSet(Geometry::OutCode);
+	KxDeclareFlagSet(Geometry::OutCode);
 }
 
 namespace kxf::Geometry

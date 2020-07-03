@@ -19,7 +19,7 @@ namespace kxf::UI
 }
 namespace kxf
 {
-	Kx_DeclareFlagSet(UI::ProgressBarStyle);
+	KxDeclareFlagSet(UI::ProgressBarStyle);
 }
 
 namespace kxf::UI

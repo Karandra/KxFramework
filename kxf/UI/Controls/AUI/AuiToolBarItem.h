@@ -21,7 +21,7 @@ namespace kxf::UI
 }
 namespace kxf
 {
-	Kx_DeclareFlagSet(UI::AuiToolBarItemOption);
+	KxDeclareFlagSet(UI::AuiToolBarItemOption);
 }
 
 namespace kxf::UI

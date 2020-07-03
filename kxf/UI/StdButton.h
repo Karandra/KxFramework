@@ -30,7 +30,7 @@ namespace kxf
 		DoNotSave = WX_LAST_STD << 4,
 		ContextHelp = WX_LAST_STD << 5,
 	};
-	Kx_DeclareFlagSet(StdButton);
+	KxDeclareFlagSet(StdButton);
 }
 
 namespace kxf::UI

@@ -22,7 +22,7 @@ namespace kxf
 		Neutral = 1 << 7,
 		Header = 1 << 8,
 	};
-	Kx_DeclareFlagSet(StdIcon);
+	KxDeclareFlagSet(StdIcon);
 }
 
 namespace kxf::UI

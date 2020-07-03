@@ -18,7 +18,7 @@ namespace kxf::UI
 }
 namespace kxf
 {
-	Kx_DeclareFlagSet(UI::SplitterWindowStyle);
+	KxDeclareFlagSet(UI::SplitterWindowStyle);
 }
 
 namespace kxf::UI

@@ -26,7 +26,7 @@ namespace kxf::UI::DataView
 }
 namespace kxf
 {
-	Kx_DeclareFlagSet(UI::DataView::ComboCtrlOption);
+	KxDeclareFlagSet(UI::DataView::ComboCtrlOption);
 }
 
 namespace kxf::UI::DataView

@@ -20,7 +20,7 @@ namespace kxf::UI
 }
 namespace kxf
 {
-	Kx_DeclareFlagSet(UI::DrawablePanelMode);
+	KxDeclareFlagSet(UI::DrawablePanelMode);
 }
 
 namespace kxf::UI

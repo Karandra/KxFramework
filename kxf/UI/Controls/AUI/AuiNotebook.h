@@ -34,7 +34,7 @@ namespace kxf::UI
 }
 namespace kxf
 {
-	Kx_DeclareFlagSet(UI::AuiNotebookStyle);
+	KxDeclareFlagSet(UI::AuiNotebookStyle);
 }
 
 namespace kxf::UI

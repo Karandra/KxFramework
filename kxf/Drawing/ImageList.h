@@ -15,7 +15,7 @@ namespace kxf
 		Selected = 1 << 1,
 		Focused = 1 << 2,
 	};
-	Kx_DeclareFlagSet(ImageListDrawItemFlag);
+	KxDeclareFlagSet(ImageListDrawItemFlag);
 }
 
 namespace kxf

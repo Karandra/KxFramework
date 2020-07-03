@@ -18,7 +18,7 @@ namespace kxf
 		Abbreviated = 1 << 0,
 		GenetiveCase = 1 << 1,
 	};
-	Kx_DeclareFlagSet(UnitNameFlag);
+	KxDeclareFlagSet(UnitNameFlag);
 
 	enum class CornerAlignment
 	{
@@ -53,7 +53,7 @@ namespace kxf
 		Vertical = wxVERTICAL,
 		Both = wxBOTH,
 	};
-	Kx_DeclareFlagSet(Orientation);
+	KxDeclareFlagSet(Orientation);
 
 	enum class Alignment: uint32_t
 	{
@@ -69,7 +69,7 @@ namespace kxf
 		CenterHorizontal = wxALIGN_CENTER_HORIZONTAL,
 		Center = CenterVertical|CenterHorizontal,
 	};
-	Kx_DeclareFlagSet(Alignment);
+	KxDeclareFlagSet(Alignment);
 
 	enum class Direction: uint32_t
 	{
@@ -80,7 +80,7 @@ namespace kxf
 		Up = wxUP,
 		Down = wxDOWN,
 	};
-	Kx_DeclareFlagSet(Direction);
+	KxDeclareFlagSet(Direction);
 }
 
 namespace kxf

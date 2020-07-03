@@ -51,7 +51,7 @@ namespace kxf::UI
 }
 namespace kxf
 {
-	Kx_DeclareFlagSet(UI::FileBrowseDialogStyle);
+	KxDeclareFlagSet(UI::FileBrowseDialogStyle);
 }
 
 namespace kxf::UI

@@ -96,9 +96,9 @@ namespace kxf
 		Async = 1 << 16
 	};
 
-	Kx_DeclareFlagSet(MemoryProtection);
-	Kx_DeclareFlagSet(SHWindowCommand);
+	KxDeclareFlagSet(MemoryProtection);
+	KxDeclareFlagSet(SHWindowCommand);
 
-	Kx_DeclareFlagSet(SystemProcessAccess);
-	Kx_DeclareFlagSet(CreateSystemProcessFlag);
+	KxDeclareFlagSet(SystemProcessAccess);
+	KxDeclareFlagSet(CreateSystemProcessFlag);
 }
