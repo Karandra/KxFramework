@@ -71,7 +71,7 @@ namespace kxf
 		}
 		return 0;
 	}
-	bool RecycleBin::ClearItems(FlagSet<FSRecycleBinOpFlag> flags)
+	bool RecycleBin::ClearItems(FlagSet<FSActionFlag> flags)
 	{
 		DWORD emptyFlags = m_Window ? 0 : SHERB_NOCONFIRMATION|SHERB_NOPROGRESSUI|SHERB_NOSOUND;
 		return ::SHEmptyRecycleBinW(m_Window ? m_Window->GetHandle() : nullptr, m_Path, emptyFlags) == S_OK;
@@ -86,14 +86,14 @@ namespace kxf
 		throw std::logic_error(__FUNCTION__ ": the method or operation is not implemented.");
 	}
 	
-	bool RecycleBin::Recycle(const FSPath& path, FlagSet<FSRecycleBinOpFlag> flags)
+	bool RecycleBin::Recycle(const FSPath& path, FlagSet<FSActionFlag> flags)
 	{
 		if (path.ContainsSearchMask())
 		{
-			if (flags & FSRecycleBinOpFlag::Recursive)
+			if (flags & FSActionFlag::Recursive)
 			{
 				FlagSet<SHOperationFlags> shellFlags = SHOperationFlags::AllowUndo|SHOperationFlags::Recursive;
-				shellFlags.Add(SHOperationFlags::LimitToFiles, flags & FSRecycleBinOpFlag::LimitToFiles);
+				shellFlags.Add(SHOperationFlags::LimitToFiles, flags & FSActionFlag::LimitToFiles);
 
 				return Shell::FileOperation(SHOperationType::Delete, path, {}, m_Window, shellFlags);
 			}
@@ -106,7 +106,7 @@ namespace kxf
 				if (fileItem.IsDirectory())
 				{
 					FlagSet<SHOperationFlags> shellFlags = SHOperationFlags::AllowUndo;
-					shellFlags.Add(SHOperationFlags::Recursive, flags & FSRecycleBinOpFlag::Recursive);
+					shellFlags.Add(SHOperationFlags::Recursive, flags & FSActionFlag::Recursive);
 
 					return Shell::FileOperation(SHOperationType::Delete, path, {}, m_Window, shellFlags);
 				}
@@ -118,7 +118,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool RecycleBin::Restore(const FSPath& path, FlagSet<FSRecycleBinOpFlag> flags)
+	bool RecycleBin::Restore(const FSPath& path, FlagSet<FSActionFlag> flags)
 	{
 		throw std::logic_error(__FUNCTION__ ": the method or operation is not implemented.");
 	}

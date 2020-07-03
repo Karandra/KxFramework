@@ -71,12 +71,12 @@ namespace kxf::SevenZip
 			{
 				DoOpen(std::move(stream));
 			}
-			Archive(const Archive&) = delete;
 			Archive(Archive&& other)
 				:Archive()
 			{
 				*this = std::move(other);
 			}
+			Archive(const Archive&) = delete;
 			~Archive();
 
 		public:
@@ -238,7 +238,7 @@ namespace kxf::SevenZip
 			
 		public:
 			// IArchiveUpdate
-
+			
 			// Add files using provided callback interface
 			bool Update(wxOutputStream& stream, Compression::IUpdateCallback& callback, size_t itemCount) override;
 
@@ -354,8 +354,8 @@ namespace kxf::SevenZip
 			}
 
 		public:
-			Archive& operator=(const Archive&) = delete;
 			Archive& operator=(Archive&& other);
+			Archive& operator=(const Archive&) = delete;
 
 			explicit operator bool() const
 			{

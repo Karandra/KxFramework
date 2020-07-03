@@ -8,15 +8,6 @@
 namespace kxf
 {
 	class IFileSystem;
-
-	enum class FSRecycleBinOpFlag: uint32_t
-	{
-		None = 0,
-
-		Recursive = 1 << 0,
-		LimitToFiles = 1 << 1
-	};
-	KxDeclareFlagSet(FSRecycleBinOpFlag);
 }
 
 namespace kxf
@@ -39,12 +30,12 @@ namespace kxf
 
 			BinarySize GetSize() const;
 			size_t GetItemCount() const;
-			bool ClearItems(FlagSet<FSRecycleBinOpFlag> flags = {});
+			bool ClearItems(FlagSet<FSActionFlag> flags = {});
 
 			FileItem GetItem(const FSPath& path) const;
 			size_t EnumItems(std::function<bool(FileItem)> func) const;
 
-			bool Recycle(const FSPath& path, FlagSet<FSRecycleBinOpFlag> flags = {});
-			bool Restore(const FSPath& path, FlagSet<FSRecycleBinOpFlag> flags = {});
+			bool Recycle(const FSPath& path, FlagSet<FSActionFlag> flags = {});
+			bool Restore(const FSPath& path, FlagSet<FSActionFlag> flags = {});
 	};
 }
