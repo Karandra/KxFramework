@@ -281,6 +281,7 @@ namespace kxf
 			if (FileSystem::Private::GetFileAttributes(path) == INVALID_FILE_ATTRIBUTES)
 			{
 				FSPath finalPath;
+				finalPath.ReserveLength(path.GetLength());
 				finalPath.SetNamespace(path.GetNamespace());
 
 				bool isCreated = false;
@@ -290,6 +291,10 @@ namespace kxf
 
 					String currentPath = finalPath.GetFullPathWithNS(FSPathNamespace::Win32File);
 					isCreated = ::CreateDirectoryW(currentPath.wc_str(), nullptr);
+					if (!isCreated && *Win32Error::GetLastError() != ERROR_ALREADY_EXISTS)
+					{
+						return false;
+					}
 					return true;
 				});
 				return isCreated;
