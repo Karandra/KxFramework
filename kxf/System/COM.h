@@ -324,7 +324,7 @@ namespace kxf
 namespace kxf::COM
 {
 	template<class T, class... Args>
-	COMPtr<T> CreateObject(Args&&... arg)
+	COMPtr<T> CreateLocalInstance(Args&&... arg)
 	{
 		auto object = std::make_unique<T>(std::forward<Args>(arg)...);
 		object->AddRef();

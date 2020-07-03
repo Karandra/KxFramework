@@ -72,8 +72,8 @@ namespace kxf::SevenZip::Private
 		if (stream.IsOk())
 		{
 			auto archive = GetArchiveReader(format);
-			auto openCallback = COM::CreateObject<Callback::OpenArchive>(evtHandler);
-			auto streamWrapper = COM::CreateObject<InStreamWrapper_wxInputStream>(stream, evtHandler);
+			auto openCallback = COM::CreateLocalInstance<Callback::OpenArchive>(evtHandler);
+			auto streamWrapper = COM::CreateLocalInstance<InStreamWrapper_wxInputStream>(stream, evtHandler);
 
 			if (HResult(archive->Open(streamWrapper, nullptr, openCallback)))
 			{
@@ -181,8 +181,8 @@ namespace kxf::SevenZip::Private
 			{
 				archive->Close();
 			});
-			auto openCallback = COM::CreateObject<Callback::OpenArchive>(evtHandler);
-			auto streamWrapper = COM::CreateObject<InStreamWrapper_wxInputStream>(stream, evtHandler);
+			auto openCallback = COM::CreateLocalInstance<Callback::OpenArchive>(evtHandler);
+			auto streamWrapper = COM::CreateLocalInstance<InStreamWrapper_wxInputStream>(stream, evtHandler);
 
 			if (FAILED(archive->Open(streamWrapper, nullptr, openCallback)))
 			{
@@ -288,8 +288,8 @@ namespace kxf::SevenZip::Private
 				{
 					archive->Close();
 				});
-				auto openCallback = COM::CreateObject<Callback::OpenArchive>(evtHandler);
-				auto streamWrapper = COM::CreateObject<InStreamWrapper_wxInputStream>(stream, evtHandler);
+				auto openCallback = COM::CreateLocalInstance<Callback::OpenArchive>(evtHandler);
+				auto streamWrapper = COM::CreateLocalInstance<InStreamWrapper_wxInputStream>(stream, evtHandler);
 
 				if (archive->Open(streamWrapper, nullptr, openCallback) == S_OK)
 				{
