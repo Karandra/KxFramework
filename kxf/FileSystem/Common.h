@@ -6,11 +6,6 @@
 
 namespace kxf
 {
-	class String;
-}
-
-namespace kxf
-{
 	enum class DriveType: uint32_t
 	{
 		Unknown = 0,
@@ -31,6 +26,20 @@ namespace kxf
 		Network,
 		NetworkUNC,
 	};
+
+	enum class FSActionFlag: uint32_t
+	{
+		None = 0,
+
+		Recursive = 1 << 0,
+		NoBuffering = 1 << 1,
+		CaseSensitive = 1 << 2,
+		ReplaceIfExist = 1 << 3,
+		LimitToFiles = 1 << 4,
+		LimitToDirectories = 1 << 5
+	};
+	KxDeclareFlagSet(FSActionFlag);
+
 	enum class FileSystemFeature: uint32_t
 	{
 		None = 0,
@@ -56,6 +65,8 @@ namespace kxf
 		VolumeQuotas = 1 << 19,
 		LongFileNames = 1 << 20
 	};
+	KxDeclareFlagSet(FileSystemFeature);
+
 	enum class FileAttribute: uint32_t
 	{
 		None = 0,
@@ -78,6 +89,8 @@ namespace kxf
 
 		Normal = std::numeric_limits<uint32_t>::max() >> 1,
 	};
+	KxDeclareFlagSet(FileAttribute);
+
 	enum class ReparsePointTag: uint32_t
 	{
 		None = 0,
@@ -85,6 +98,7 @@ namespace kxf
 		MountPoint = 1 << 0,
 		SymLink = 1 << 1
 	};
+	KxDeclareFlagSet(ReparsePointTag);
 
 	enum class FileStreamAccess: uint32_t
 	{
@@ -97,6 +111,8 @@ namespace kxf
 		RW = Read|Write,
 		AllAccess = RW|ReadAttributes|WriteAttributes
 	};
+	KxDeclareFlagSet(FileStreamAccess);
+
 	enum class FileStreamShare: uint32_t
 	{
 		None = 0,
@@ -106,13 +122,8 @@ namespace kxf
 
 		Everything = Read|Write|Delete
 	};
-	enum class FileStreamDisposition: uint32_t
-	{
-		OpenExisting,
-		OpenAlways,
-		CreateNew,
-		CreateAlways,
-	};
+	KxDeclareFlagSet(FileStreamShare);
+
 	enum class FileStreamFlags: uint32_t
 	{
 		None = 0,
@@ -120,14 +131,15 @@ namespace kxf
 		Normal = 1 << 0,
 		BackupSemantics = 1 << 1,
 	};
-
-	KxDeclareFlagSet(FileSystemFeature);
-	KxDeclareFlagSet(FileAttribute);
-	KxDeclareFlagSet(ReparsePointTag);
-
-	KxDeclareFlagSet(FileStreamAccess);
-	KxDeclareFlagSet(FileStreamShare);
 	KxDeclareFlagSet(FileStreamFlags);
+	
+	enum class FileStreamDisposition: uint32_t
+	{
+		OpenExisting,
+		OpenAlways,
+		CreateNew,
+		CreateAlways,
+	};
 }
 
 namespace kxf::FileSystem

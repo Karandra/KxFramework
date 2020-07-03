@@ -11,19 +11,6 @@
 namespace kxf
 {
 	class FileItem;
-
-	enum class FSActionFlag: uint32_t
-	{
-		None = 0,
-
-		Recursive = 1 << 0,
-		NoBuffering = 1 << 1,
-		CaseSensitive = 1 << 2,
-		ReplaceIfExist = 1 << 3,
-		LimitToFiles = 1 << 4,
-		LimitToDirectories = 1 << 5
-	};
-	KxDeclareFlagSet(FSActionFlag);
 }
 
 namespace kxf
