@@ -355,14 +355,14 @@ namespace kxf::SevenZip
 	{
 		return DoUpdate(stream, COM::CreateLocalInstance<Private::Callback::UpdateArchiveWrapper>(*this, callback), itemCount);
 	}
-	bool Archive::UpdateFromFS(wxOutputStream& stream, const IFileSystem& fileSystem, const FSPath& directory, const FSPathQuery& query, FlagSet<FSEnumItemsFlag> flags)
+	bool Archive::UpdateFromFS(wxOutputStream& stream, const IFileSystem& fileSystem, const FSPath& directory, const FSPathQuery& query, FlagSet<FSActionFlag> flags)
 	{
 		std::vector<FileItem> files;
 		fileSystem.EnumItems(directory, [&](FileItem item)
 		{
 			files.emplace_back(std::move(item));
 			return true;
-		}, query, flags.Remove(FSEnumItemsFlag::LimitToDirectories));
+		}, query, flags.Remove(FSActionFlag::LimitToDirectories));
 
 		if (!files.empty())
 		{
@@ -405,10 +405,10 @@ namespace kxf::SevenZip
 		}
 		return {};
 	}
-	size_t Archive::EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query, FlagSet<FSEnumItemsFlag> flags) const
+	size_t Archive::EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query, FlagSet<FSActionFlag> flags) const
 	{
 		FlagSet<StringOpFlag> matchFlags;
-		matchFlags.Add(StringOpFlag::IgnoreCase, !flags.Contains(FSEnumItemsFlag::CaseSensitive));
+		matchFlags.Add(StringOpFlag::IgnoreCase, !flags.Contains(FSActionFlag::CaseSensitive));
 
 		auto SearchDirectory = [&](const FSPath& directory, std::vector<FSPath>& childDirectories)
 		{
@@ -425,7 +425,7 @@ namespace kxf::SevenZip
 					count++;
 					result = std::invoke(func, std::move(item));
 				}
-				if (hasChildItems && flags & FSEnumItemsFlag::Recursive)
+				if (hasChildItems && flags & FSActionFlag::Recursive)
 				{
 					childDirectories.emplace_back(std::move(fullPath));
 				}
@@ -482,7 +482,7 @@ namespace kxf::SevenZip
 		}
 		return {};
 	}
-	size_t Archive::EnumItems(const UniversallyUniqueID& id, TEnumItemsFunc func, FlagSet<FSEnumItemsFlag> flags) const
+	size_t Archive::EnumItems(const UniversallyUniqueID& id, TEnumItemsFunc func, FlagSet<FSActionFlag> flags) const
 	{
 		if (id == std::numeric_limits<UniversallyUniqueID>::max())
 		{
@@ -490,11 +490,11 @@ namespace kxf::SevenZip
 			for (size_t i = 0; i < m_Data.ItemCount; i++)
 			{
 				const auto attributes = GetItemAttributes(*m_Data.InArchive, m_Data.ItemCount, LocallyUniqueID(i));
-				if (flags & FSEnumItemsFlag::LimitToFiles && attributes.Contains(FILE_ATTRIBUTE_DIRECTORY))
+				if (flags & FSActionFlag::LimitToFiles && attributes.Contains(FILE_ATTRIBUTE_DIRECTORY))
 				{
 					continue;
 				}
-				if (flags & FSEnumItemsFlag::LimitToDirectories && !attributes.Contains(FILE_ATTRIBUTE_DIRECTORY))
+				if (flags & FSActionFlag::LimitToDirectories && !attributes.Contains(FILE_ATTRIBUTE_DIRECTORY))
 				{
 					continue;
 				}

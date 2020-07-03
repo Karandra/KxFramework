@@ -49,18 +49,18 @@ namespace kxf
 			bool DirectoryExist(const FSPath& path) const;
 
 			FileItem GetItem(const FSPath& path) const override;
-			size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query = {}, FlagSet<FSEnumItemsFlag> flags = {}) const override;
+			size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query = {}, FlagSet<FSActionFlag> flags = {}) const override;
 			bool IsDirectoryEmpty(const FSPath& directory) const override;
 
-			bool CreateDirectory(const FSPath& path) override;
+			bool CreateDirectory(const FSPath& path, FlagSet<FSActionFlag> flags = {}) override;
 			bool ChangeAttributes(const FSPath& path, FlagSet<FileAttribute> attributes) override;
 			bool ChangeTimestamp(const FSPath& path, DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime) override;
 
-			bool CopyItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) override;
-			bool MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) override;
-			bool RenameItem(const FSPath& source, const FSPath& destination, FlagSet<FSCopyItemFlag> flags = {}) override;
+			bool CopyItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) override;
+			bool MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) override;
+			bool RenameItem(const FSPath& source, const FSPath& destination, FlagSet<FSActionFlag> flags = {}) override;
 			bool RemoveItem(const FSPath& path) override;
-			bool RemoveDirectory(const FSPath& path, FlagSet<FSEnumItemsFlag> flags = {}) override;
+			bool RemoveDirectory(const FSPath& path, FlagSet<FSActionFlag> flags = {}) override;
 
 			std::unique_ptr<wxInputStream> OpenToRead(const FSPath& path) const override;
 			std::unique_ptr<wxOutputStream> OpenToWrite(const FSPath& path) override;
@@ -77,7 +77,7 @@ namespace kxf
 			bool DirectoryExist(const UniversallyUniqueID& id) const override;
 
 			FileItem GetItem(const UniversallyUniqueID& id) const override;
-			size_t EnumItems(const UniversallyUniqueID& id, TEnumItemsFunc func, FlagSet<FSEnumItemsFlag> flags = {}) const override
+			size_t EnumItems(const UniversallyUniqueID& id, TEnumItemsFunc func, FlagSet<FSActionFlag> flags = {}) const override
 			{
 				return 0;
 			}
@@ -95,11 +95,11 @@ namespace kxf
 				return false;
 			}
 
-			bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) override
+			bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
-			bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) override
+			bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
@@ -107,7 +107,7 @@ namespace kxf
 			{
 				return false;
 			}
-			bool RemoveDirectory(const UniversallyUniqueID& id, FlagSet<FSEnumItemsFlag> flags = {}) override
+			bool RemoveDirectory(const UniversallyUniqueID& id, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
@@ -125,7 +125,7 @@ namespace kxf
 			bool IsInUse(const FSPath& path) const;
 			size_t EnumStreams(const FSPath& path, TEnumStreamsFunc func) const;
 
-			bool CopyDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) const;
-			bool MoveDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func = {}, FlagSet<FSCopyItemFlag> flags = {});
+			bool CopyDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func = {}, FlagSet<FSActionFlag> flags = {}) const;
+			bool MoveDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func = {}, FlagSet<FSActionFlag> flags = {});
 	};
 }

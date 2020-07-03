@@ -12,25 +12,18 @@ namespace kxf
 {
 	class FileItem;
 
-	enum class FSEnumItemsFlag
+	enum class FSActionFlag: uint32_t
 	{
 		None = 0,
 
-		CaseSensitive = 1 << 0,
-		Recursive = 1 << 1,
-		LimitToFiles = 1 << 2,
-		LimitToDirectories = 1 << 3,
-	};
-	Kx_DeclareFlagSet(FSEnumItemsFlag);
-
-	enum class FSCopyItemFlag
-	{
-		None = 0,
-
-		ReplaceIfExist = 1 << 0,
+		Recursive = 1 << 0,
 		NoBuffering = 1 << 1,
+		CaseSensitive = 1 << 2,
+		ReplaceIfExist = 1 << 3,
+		LimitToFiles = 1 << 4,
+		LimitToDirectories = 1 << 5
 	};
-	Kx_DeclareFlagSet(FSCopyItemFlag);
+	Kx_DeclareFlagSet(FSActionFlag);
 }
 
 namespace kxf
@@ -54,18 +47,18 @@ namespace kxf
 			virtual bool DirectoryExist(const FSPath& path) const = 0;
 
 			virtual FileItem GetItem(const FSPath& path) const = 0;
-			virtual size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query = {}, FlagSet<FSEnumItemsFlag> flags = {}) const = 0;
+			virtual size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query = {}, FlagSet<FSActionFlag> flags = {}) const = 0;
 			virtual bool IsDirectoryEmpty(const FSPath& directory) const = 0;
 			
-			virtual bool CreateDirectory(const FSPath& path) = 0;
+			virtual bool CreateDirectory(const FSPath& path, FlagSet<FSActionFlag> flags = {}) = 0;
 			virtual bool ChangeAttributes(const FSPath& path, FlagSet<FileAttribute> attributes) = 0;
 			virtual bool ChangeTimestamp(const FSPath& path, DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime) = 0;
 
-			virtual bool CopyItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) = 0;
-			virtual bool MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) = 0;
-			virtual bool RenameItem(const FSPath& source, const FSPath& destination, FlagSet<FSCopyItemFlag> flags = {}) = 0;
+			virtual bool CopyItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) = 0;
+			virtual bool MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) = 0;
+			virtual bool RenameItem(const FSPath& source, const FSPath& destination, FlagSet<FSActionFlag> flags = {}) = 0;
 			virtual bool RemoveItem(const FSPath& path) = 0;
-			virtual bool RemoveDirectory(const FSPath& path, FlagSet<FSEnumItemsFlag> flags = {}) = 0;
+			virtual bool RemoveDirectory(const FSPath& path, FlagSet<FSActionFlag> flags = {}) = 0;
 
 			virtual std::unique_ptr<wxInputStream> OpenToRead(const FSPath& path) const = 0;
 			virtual std::unique_ptr<wxOutputStream> OpenToWrite(const FSPath& path) = 0;
@@ -86,16 +79,16 @@ namespace kxf
 			virtual bool DirectoryExist(const UniversallyUniqueID& id) const = 0;
 
 			virtual FileItem GetItem(const UniversallyUniqueID& id) const = 0;
-			virtual size_t EnumItems(const UniversallyUniqueID& id, IFileSystem::TEnumItemsFunc func, FlagSet<FSEnumItemsFlag> flags = {}) const = 0;
+			virtual size_t EnumItems(const UniversallyUniqueID& id, IFileSystem::TEnumItemsFunc func, FlagSet<FSActionFlag> flags = {}) const = 0;
 			virtual bool IsDirectoryEmpty(const UniversallyUniqueID& id) const = 0;
 
 			virtual bool ChangeAttributes(const UniversallyUniqueID& id, FlagSet<FileAttribute> attributes) = 0;
 			virtual bool ChangeTimestamp(const UniversallyUniqueID& id, DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime) = 0;
 
-			virtual bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, IFileSystem::TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) = 0;
-			virtual bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, IFileSystem::TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) = 0;
+			virtual bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, IFileSystem::TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) = 0;
+			virtual bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, IFileSystem::TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) = 0;
 			virtual bool RemoveItem(const UniversallyUniqueID& id) = 0;
-			virtual bool RemoveDirectory(const UniversallyUniqueID& id, FlagSet<FSEnumItemsFlag> flags = {}) = 0;
+			virtual bool RemoveDirectory(const UniversallyUniqueID& id, FlagSet<FSActionFlag> flags = {}) = 0;
 
 			virtual std::unique_ptr<wxInputStream> OpenToRead(const UniversallyUniqueID& id) const = 0;
 			virtual std::unique_ptr<wxOutputStream> OpenToWrite(const UniversallyUniqueID& id) = 0;

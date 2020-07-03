@@ -202,7 +202,7 @@ namespace kxf::FileSystem::Private
 								 const FSPath& source,
 								 const FSPath& destination,
 								 NativeFileSystem::TCopyDirectoryTreeFunc func,
-								 FlagSet<FSCopyItemFlag> flags,
+								 FlagSet<FSActionFlag> flags,
 								 bool move)
 	{
 		return fileSystem.EnumItems(source, [&](FileItem item)
@@ -239,6 +239,6 @@ namespace kxf::FileSystem::Private
 				}
 			}
 			return true;
-		}, {}, FSEnumItemsFlag::Recursive) != 0;
+		}, {}, FSActionFlag::Recursive) != 0;
 	}
 }

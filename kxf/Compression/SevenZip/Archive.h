@@ -243,7 +243,7 @@ namespace kxf::SevenZip
 			bool Update(wxOutputStream& stream, Compression::IUpdateCallback& callback, size_t itemCount) override;
 
 			// Add files from the provided file system
-			bool UpdateFromFS(wxOutputStream& stream, const IFileSystem& fileSystem, const FSPath& directory, const FSPathQuery& query = {}, FlagSet<FSEnumItemsFlag> flags = {}) override;
+			bool UpdateFromFS(wxOutputStream& stream, const IFileSystem& fileSystem, const FSPath& directory, const FSPathQuery& query = {}, FlagSet<FSActionFlag> flags = {}) override;
 
 		public:
 			// IFileSystem
@@ -257,10 +257,10 @@ namespace kxf::SevenZip
 			bool DirectoryExist(const FSPath& path) const override;
 
 			FileItem GetItem(const FSPath& path) const override;
-			size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query = {}, FlagSet<FSEnumItemsFlag> flags = {}) const override;
+			size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query = {}, FlagSet<FSActionFlag> flags = {}) const override;
 			bool IsDirectoryEmpty(const FSPath& directory) const override;
 
-			bool CreateDirectory(const FSPath& path) override
+			bool CreateDirectory(const FSPath& path, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
@@ -273,15 +273,15 @@ namespace kxf::SevenZip
 				return false;
 			}
 
-			bool CopyItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) override
+			bool CopyItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
-			bool MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) override
+			bool MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
-			bool RenameItem(const FSPath& source, const FSPath& destination, FlagSet<FSCopyItemFlag> flags = {}) override
+			bool RenameItem(const FSPath& source, const FSPath& destination, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
@@ -289,7 +289,7 @@ namespace kxf::SevenZip
 			{
 				return false;
 			}
-			bool RemoveDirectory(const FSPath& path, FlagSet<FSEnumItemsFlag> flags = {}) override
+			bool RemoveDirectory(const FSPath& path, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
@@ -315,7 +315,7 @@ namespace kxf::SevenZip
 			bool DirectoryExist(const UniversallyUniqueID& id) const override;
 
 			FileItem GetItem(const UniversallyUniqueID& id) const override;
-			size_t EnumItems(const UniversallyUniqueID& id, TEnumItemsFunc func, FlagSet<FSEnumItemsFlag> flags = {}) const override;
+			size_t EnumItems(const UniversallyUniqueID& id, TEnumItemsFunc func, FlagSet<FSActionFlag> flags = {}) const override;
 			bool IsDirectoryEmpty(const UniversallyUniqueID& id) const override;
 
 			bool ChangeAttributes(const UniversallyUniqueID& id, FlagSet<FileAttribute> attributes) override
@@ -327,11 +327,11 @@ namespace kxf::SevenZip
 				return false;
 			}
 
-			bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, IFileSystem::TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) override
+			bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, IFileSystem::TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
-			bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, IFileSystem::TCopyItemFunc func = {}, FlagSet<FSCopyItemFlag> flags = {}) override
+			bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, IFileSystem::TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
@@ -339,7 +339,7 @@ namespace kxf::SevenZip
 			{
 				return false;
 			}
-			bool RemoveDirectory(const UniversallyUniqueID& id, FlagSet<FSEnumItemsFlag> flags = {}) override
+			bool RemoveDirectory(const UniversallyUniqueID& id, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}

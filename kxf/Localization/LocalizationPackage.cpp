@@ -112,7 +112,7 @@ namespace kxf::Localization
 		return fileSystem.EnumItems(directory, [&](FileItem item)
 		{
 			return OnSearchTranslation(func, std::move(item));
-		}, wxS("*.xml"), FSEnumItemsFlag::LimitToFiles);
+		}, wxS("*.xml"), FSActionFlag::LimitToFiles);
 	}
 	size_t SearchLocalizationPackages(const DynamicLibrary& library, std::function<bool(Locale, FileItem)> func)
 	{
