@@ -1,11 +1,44 @@
 #pragma once
 #include "kxf/Common.hpp"
 #include <memory>
+#include <new>
 #include "kxf/System/UndefWindows.h"
 
 namespace kxf::Utility
 {
 	void SecureZeroMemory(void* ptr, size_t size);
+
+	template<class T, class TDealloc, class... Args>
+	T* NewObjectOnMemoryLocation(void* buffer, TDealloc&& dealloc, Args&&... arg) noexcept(std::is_nothrow_constructible_v<T, Args...>)
+	{
+		auto DoConstruct = [&]()
+		{
+			return std::launder(new(buffer) T(std::forward<Args>(arg)...));
+		};
+
+		if constexpr(std::is_nothrow_constructible_v<T, Args...>)
+		{
+			return DoConstruct();
+		}
+		else
+		{
+			try
+			{
+				return *DoConstruct();
+			}
+			catch (...)
+			{
+				std::invoke(dealloc);
+				throw;
+			}
+		}
+	}
+
+	template<class T>
+	void DestroyObjectOnMemoryLocation(void* buffer) noexcept(std::is_nothrow_destructible_v<T>)
+	{
+		static_cast<T*>(buffer)->~T();
+	}
 }
 
 namespace kxf::Utility
