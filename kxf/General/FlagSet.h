@@ -11,7 +11,13 @@ namespace kxf
 	template<class T>
 	inline constexpr bool IsFlagSet_v = IsFlagSet<T>::value;
 
-	#define Kx_DeclareFlagSet(T) template<> struct IsFlagSet<T>: std::true_type { static_assert(std::is_enum_v<T>, "enum type required"); }
+	#define Kx_DeclareFlagSet(T)	\
+		template<>	\
+		struct IsFlagSet<T>: std::true_type	\
+		{	\
+			static_assert(std::is_enum_v<T>, "enum type required");	\
+			static_assert(std::is_unsigned_v<std::underlying_type_t<T>>, "underlying type of the enum must be unsigned integer");	\
+		}
 }
 
 namespace kxf
