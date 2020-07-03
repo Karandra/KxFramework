@@ -18,7 +18,7 @@ namespace kxf::Network::Private
 		private:
 			void OnDownload(CURLEvent& event)
 			{
-				m_ContentLength = event.GetProcessed().GetBytes();
+				m_ContentLength = event.GetCompleted().GetBytes();
 			}
 			void DownloadData()
 			{

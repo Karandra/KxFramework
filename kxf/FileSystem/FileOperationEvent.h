@@ -19,7 +19,7 @@ namespace kxf
 		private:
 			FSPath m_Source;
 			FSPath m_Destination;
-			BinarySize m_Processed = 0;
+			BinarySize m_Completed = 0;
 			BinarySize m_Total = 0;
 			BinarySize m_Speed = 0;
 
@@ -34,16 +34,6 @@ namespace kxf
 			FileOperationEvent* Clone() const override
 			{
 				return new FileOperationEvent(*this);
-			}
-
-			// Stop operation
-			bool IsStopped() const
-			{
-				return !wxNotifyEvent::IsAllowed();
-			}
-			void Stop()
-			{
-				wxNotifyEvent::Veto();
 			}
 
 			// Paths and status
@@ -75,39 +65,44 @@ namespace kxf
 			}
 
 			// Size status
-			BinarySize GetProcessed() const
-			{
-				return m_Processed;
-			}
-			void SetProcessed(BinarySize value)
-			{
-				m_Processed = value;
-			}
-			
 			BinarySize GetTotal() const
 			{
 				return m_Total;
 			}
+			BinarySize GetCompleted() const
+			{
+				return m_Completed;
+			}
+			
 			void SetTotal(BinarySize value)
 			{
 				m_Total = value;
 			}
-
-			bool IsOperationComplete() const
+			void SetCompleted(BinarySize value)
 			{
-				return GetProcessed() >= GetTotal();
+				m_Completed = value;
 			}
-			void SetOperationComplete()
+			void SetProgress(BinarySize completed, BinarySize total)
 			{
-				m_Processed = m_Total;
+				m_Completed = completed;
+				m_Total = total;
+			}
+
+			bool IsCompleted() const
+			{
+				return GetCompleted() >= GetTotal();
+			}
+			void MakeCompleted()
+			{
+				m_Completed = m_Total;
 			}
 			bool IsProgressKnown() const
 			{
-				return m_Processed.IsValid() && m_Total.IsValid();
+				return m_Completed.IsValid() && m_Total.IsValid();
 			}
 			double GetProgressRatio() const noexcept
 			{
-				return GetSizeRatio(m_Processed, m_Total);
+				return GetSizeRatio(m_Completed, m_Total);
 			}
 
 			// Speed

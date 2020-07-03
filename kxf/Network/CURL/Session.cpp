@@ -34,7 +34,7 @@ namespace kxf
 			CURLEvent event(CURLEvent::EvtDownload, &session, &reply);
 			event.SetEventObject(&session);
 			event.SetSource(session.m_URI.BuildUnescapedURI());
-			event.SetProcessed(BinarySize::FromBytes(reply.GetProcessed()));
+			event.SetCompleted(BinarySize::FromBytes(reply.GetProcessed()));
 			event.SetResponseData(data, dataLength);
 
 			// Get total size
