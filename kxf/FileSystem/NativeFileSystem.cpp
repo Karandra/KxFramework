@@ -284,20 +284,24 @@ namespace kxf
 				finalPath.ReserveLength(path.GetLength());
 				finalPath.SetNamespace(path.GetNamespace());
 
-				bool isCreated = false;
+				bool result = false;
 				path.ForEachComponent([&](String currentDirectoryName)
 				{
 					finalPath /= std::move(currentDirectoryName);
 
-					String currentPath = finalPath.GetFullPathWithNS(FSPathNamespace::Win32File);
-					isCreated = ::CreateDirectoryW(currentPath.wc_str(), nullptr);
-					if (!isCreated && *Win32Error::GetLastError() != ERROR_ALREADY_EXISTS)
+					const String currentPath = finalPath.GetFullPathWithNS(FSPathNamespace::Win32File);
+					const bool isCreated = ::CreateDirectoryW(currentPath.wc_str(), nullptr);
+					const bool alreadyExist = *Win32Error::GetLastError() == ERROR_ALREADY_EXISTS || finalPath.GetComponentCount() == 1;
+
+					if (!isCreated && !alreadyExist)
 					{
 						return false;
 					}
+
+					result = isCreated || alreadyExist;
 					return true;
 				});
-				return isCreated;
+				return result;
 			}
 			return false;
 		});
