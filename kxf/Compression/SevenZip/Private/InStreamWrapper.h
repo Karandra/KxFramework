@@ -47,13 +47,19 @@ namespace kxf::SevenZip::Private
 			virtual HResult DoSeek(int64_t offset, uint32_t seekMode, int64_t& newPosition) = 0;
 			virtual HResult DoGetSize(int64_t& size) const = 0;
 
-			ArchiveEvent CreateEvent(EventID id = ArchiveEvent::EvtProcess)
+			ArchiveEvent CreateEvent(EventID id)
 			{
 				ArchiveEvent event = WithEvtHandler::CreateEvent(id);
 				event.SetTotal(m_BytesTotal);
-				event.SetProcessed(m_BytesRead);
+				event.SetCompleted(m_BytesRead);
 
 				return event;
+			}
+			bool SentWriteEvent()
+			{
+				ArchiveEvent event = CreateEvent(IArchiveUpdate::EvtReadStream);
+				event.SetProgress(m_BytesRead, m_BytesTotal);
+				return SendEvent(event);
 			}
 
 		public:
@@ -66,6 +72,10 @@ namespace kxf::SevenZip::Private
 			void SpecifyTotalSize(int64_t size) noexcept
 			{
 				m_BytesTotal = size;
+				if (m_EvtHandler)
+				{
+					SentWriteEvent();
+				}
 			}
 
 		public:

@@ -165,7 +165,7 @@ namespace kxf::SevenZip
 			RewindArchiveStreams();
 
 			auto openCallback = COM::CreateObject<Private::Callback::OpenArchive>(m_EvtHandler);
-			auto streamWrapper = COM::CreateObject<Private::InStreamWrapper_wxInputStream>(*m_Data.Stream, m_EvtHandler);
+			auto streamWrapper = COM::CreateObject<Private::InStreamWrapper_wxInputStream>(*m_Data.Stream, nullptr);
 			if (HResult(m_Data.InArchive->Open(streamWrapper, nullptr, openCallback)))
 			{
 				if (auto count = Private::GetNumberOfItems(*m_Data.InArchive))
@@ -185,6 +185,22 @@ namespace kxf::SevenZip
 		}
 	}
 
+	bool Archive::DoOpen(InputStreamDelegate stream)
+	{
+		DoClose();
+		m_Data.Stream = std::move(stream);
+		m_Data.IsLoaded = m_Data.Stream && InitMetadata() && InitArchiveStreams();
+
+		return m_Data.IsLoaded;
+	}
+	void Archive::DoClose()
+	{
+		if (m_Data.InArchive)
+		{
+			m_Data.InArchive->Close();
+		}
+		m_Data = {};
+	}
 	bool Archive::DoExtract(COMPtr<Private::Callback::ExtractArchive> extractor, Compression::FileIndexView* files) const
 	{
 		if (files && files->empty())
@@ -267,30 +283,13 @@ namespace kxf::SevenZip
 		return false;
 	}
 
-	Archive::Archive(wxEvtHandler* evtHandler)
-		:WithEvtHandler(evtHandler)
-	{
-	}
-	Archive::~Archive() = default;
-
-	// IArchive
-	bool Archive::Open(InputStreamDelegate stream)
+	Archive::Archive() = default;
+	Archive::~Archive()
 	{
 		Close();
-		m_Data.Stream = std::move(stream);
-		m_Data.IsLoaded = m_Data.Stream && InitMetadata() && InitArchiveStreams();
-
-		return m_Data.IsLoaded;
-	}
-	void Archive::Close()
-	{
-		if (m_Data.InArchive)
-		{
-			m_Data.InArchive->Close();
-		}
-		m_Data = Data();
 	}
 
+	// IArchive
 	FileItem Archive::GetItem(size_t index) const
 	{
 		if (index < m_Data.ItemCount)
@@ -527,9 +526,7 @@ namespace kxf::SevenZip
 
 	Archive& Archive::operator=(Archive&& other)
 	{
-		SetEvtHandler(other.GetEvtHandler());
-		other.SetEvtHandler(nullptr);
-
+		m_EvtHandler = std::move(other.m_EvtHandler);
 		m_Data = std::move(other.m_Data);
 
 		return *this;

@@ -31,27 +31,4 @@ namespace kxf::SevenZip::Private::Callback
 		}
 		return E_NOINTERFACE;
 	}
-
-	STDMETHODIMP OpenArchive::SetTotal(const UInt64* files, const UInt64* bytes)
-	{
-		m_BytesTotal = bytes ? *bytes : 0;
-
-		if (m_EvtHandler)
-		{
-			ArchiveEvent event = CreateEvent();
-			return SendEvent(event) ? S_OK : E_ABORT;
-		}
-		return S_OK;
-	}
-	STDMETHODIMP OpenArchive::SetCompleted(const UInt64* files, const UInt64* bytes)
-	{
-		m_BytesCompleted = bytes ? *bytes : 0;
-
-		if (m_EvtHandler)
-		{
-			ArchiveEvent event = CreateEvent();
-			return SendEvent(event) ? S_OK : E_ABORT;
-		}
-		return S_OK;
-	}
 }

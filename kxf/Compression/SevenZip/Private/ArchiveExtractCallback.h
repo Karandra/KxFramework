@@ -21,9 +21,29 @@ namespace kxf::SevenZip::Private::Callback
 
 		protected:
 			COMPtr<IInArchive> m_Archive;
+			int64_t m_BytesCompleted = 0;
+			int64_t m_BytesTotal = -1;
 
 		protected:
-			FileItem GetExistingFileInfo(size_t fileIndex) const;
+			FileItem GetExistingItem(size_t fileIndex) const;
+			
+			ArchiveEvent CreateEvent(EventID id)
+			{
+				ArchiveEvent event = WithEvtHandler::CreateEvent(id);
+				event.SetProgress(m_BytesCompleted, m_BytesTotal);
+
+				return event;
+			}
+			bool SendItemEvent(EventID id, FileItem item)
+			{
+				if (item)
+				{
+					ArchiveEvent event = CreateEvent(id);
+					event.SetItem(std::move(item));
+					return WithEvtHandler::SendEvent(event);
+				}
+				return true;
+			}
 
 		public:
 			ExtractArchive(wxEvtHandler* evtHandler = nullptr)
@@ -58,17 +78,30 @@ namespace kxf::SevenZip::Private::Callback
 			}
 
 			// IProgress
-			STDMETHOD(SetTotal)(UInt64 size) override;
-			STDMETHOD(SetCompleted)(const UInt64* completeValue) override;
+			STDMETHOD(SetTotal)(UInt64 bytes) override
+			{
+				// SetTotal is never called for ZIP and 7z formats
+				m_BytesTotal = bytes;
+
+				return *HResult::Success();
+			}
+			STDMETHOD(SetCompleted)(const UInt64* bytes) override
+			{
+				// For ZIP format SetCompleted only called once per 1000 files in central directory and once per 100 in local ones.
+				// For 7Z format SetCompleted is never called.
+				m_BytesTotal = bytes ? *bytes : -1;
+
+				return *HResult::Success();
+			}
 
 			// ICryptoGetTextPassword
-			STDMETHOD(CryptoGetTextPassword)(BSTR* password)
+			STDMETHOD(CryptoGetTextPassword)(BSTR* password) override
 			{
 				return *m_PasswordHandler.OnPasswordRequest(password);
 			}
 
 			// ICryptoGetTextPassword2
-			STDMETHOD(CryptoGetTextPassword2)(Int32* passwordIsDefined, BSTR* password)
+			STDMETHOD(CryptoGetTextPassword2)(Int32* passwordIsDefined, BSTR* password) override
 			{
 				return *m_PasswordHandler.OnPasswordRequest(password, passwordIsDefined);
 			}
@@ -83,10 +116,10 @@ namespace kxf::SevenZip::Private::Callback
 			const IArchiveExtract& m_Extract;
 			Compression::IExtractCallback& m_Callback;
 
+			FileItem m_Item;
 			OutputStreamDelegate m_Stream;
-			size_t m_FileIndex = Compression::InvalidIndex;
 
-		protected:
+		private:
 			bool ShouldCancel() const
 			{
 				return m_Callback.ShouldCancel();
@@ -108,55 +141,58 @@ namespace kxf::SevenZip::Private::Callback
 
 namespace kxf::SevenZip::Private::Callback
 {
-	class ExtractArchiveToFS: public ExtractArchive
+	class ExtractArchiveToFS: public ExtractArchiveWrapper, private Compression::IExtractCallback
 	{
 		private:
-			const IArchiveExtract& m_Extraction;
-			FSPath m_Directory;
 			IFileSystem& m_FileSystem;
-
+			FSPath m_Directory;
 			FSPath m_TargetPath;
-			FileItem m_FileInfo;
-			OutputStreamDelegate m_Stream;
+
+			bool m_ShouldCancel = false;
 
 		public:
 			ExtractArchiveToFS(const IArchiveExtract& extract, IFileSystem& fileSystem, FSPath directory, wxEvtHandler* evtHandler = nullptr)
-				:ExtractArchive(evtHandler), m_Extraction(extract), m_Directory(std::move(directory)), m_FileSystem(fileSystem)
+				:ExtractArchiveWrapper(extract, *this, evtHandler), m_FileSystem(fileSystem), m_Directory(std::move(directory))
 			{
 			}
 
 		public:
-			// IArchiveExtractCallback
-			STDMETHOD(GetStream)(UInt32 fileIndex, ISequentialOutStream** outStream, Int32 askExtractMode) override;
-			STDMETHOD(PrepareOperation)(Int32 askExtractMode) override;
-			STDMETHOD(SetOperationResult)(Int32 resultEOperationResult) override;
+			// IArchiveExtract
+			bool ShouldCancel() const override
+			{
+				return m_ShouldCancel;
+			}
+			OutputStreamDelegate OnGetStream(const FileItem& item) override;
+			bool OnItemDone(const FileItem& item, wxOutputStream& stream) override;
 
 		public:
-			virtual HResult GetTargetPath(uint32_t fileIndex, const FileItem& fileInfo, FSPath& targetPath) const
+			virtual bool GetTargetPath(const FileItem& item, FSPath& targetPath) const
 			{
-				return HResult::False();
+				return false;
 			}
 	};
 }
 
 namespace kxf::SevenZip::Private::Callback
 {
-	class ExtractArchiveToStream: public ExtractArchive
+	class ExtractArchiveToStream: public ExtractArchiveWrapper, private Compression::IExtractCallback
 	{
 		protected:
-			const IArchiveExtract& m_Extraction;
 			OutputStreamDelegate m_Stream;
 
 		public:
 			ExtractArchiveToStream(const IArchiveExtract& extract, OutputStreamDelegate steram, wxEvtHandler* evtHandler = nullptr)
-				:ExtractArchive(evtHandler), m_Extraction(extract), m_Stream(std::move(steram))
+				:ExtractArchiveWrapper(extract, *this, evtHandler), m_Stream(std::move(steram))
 			{
 			}
 
 		public:
-			// IArchiveExtractCallback
-			STDMETHOD(GetStream)(UInt32 fileIndex, ISequentialOutStream** outStream, Int32 askExtractMode) override;
-			STDMETHOD(PrepareOperation)(Int32 askExtractMode) override;
-			STDMETHOD(SetOperationResult)(Int32 resultEOperationResult) override;
+			// IArchiveExtract
+			bool ShouldCancel() const override
+			{
+				return false;;
+			}
+			OutputStreamDelegate OnGetStream(const FileItem& item) override;
+			bool OnItemDone(const FileItem& item, wxOutputStream& stream) override;
 	};
 }

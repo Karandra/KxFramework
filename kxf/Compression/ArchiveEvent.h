@@ -11,17 +11,11 @@ namespace kxf
 	class KX_API ArchiveEvent: public FileOperationEvent
 	{
 		public:
-			KxEVENT_MEMBER(ArchiveEvent, Process);
-			KxEVENT_MEMBER(ArchiveEvent, GetPassword);
-
-			KxEVENT_MEMBER(ArchiveEvent, GetInputStream);
-			KxEVENT_MEMBER(ArchiveEvent, GetOutputStream);
+			KxEVENT_MEMBER(ArchiveEvent, IdentifyFormat);
 
 		private:
 			FileItem m_FileItem;
 			SecretValue m_Password;
-			wxInputStream* m_InputStream = nullptr;
-			wxOutputStream* m_OutputStream = nullptr;
 
 		public:
 			ArchiveEvent(EventID type = Event::EvtNull, int id = 0)
@@ -35,8 +29,6 @@ namespace kxf
 				auto clone = std::make_unique<ArchiveEvent>(GetEventType());
 				clone->SetEventObject(GetEventObject());
 				clone->m_FileItem = m_FileItem;
-				clone->m_InputStream = m_InputStream;
-				clone->m_OutputStream = m_OutputStream;
 
 				return clone.release();
 			}
@@ -78,24 +70,6 @@ namespace kxf
 			void SetPassword(SecretValue password) noexcept
 			{
 				m_Password = std::move(password);
-			}
-
-			wxOutputStream* GetOutputStream() const noexcept
-			{
-				return m_OutputStream;
-			}
-			void SetOutputStream(wxOutputStream* stream) noexcept
-			{
-				m_OutputStream = stream;
-			}
-
-			wxInputStream* GetInputStream() const noexcept
-			{
-				return m_InputStream;
-			}
-			void SetInputStream(wxInputStream* stream) noexcept
-			{
-				m_InputStream = stream;
 			}
 
 		public:

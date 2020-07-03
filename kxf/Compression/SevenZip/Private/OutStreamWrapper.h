@@ -49,13 +49,18 @@ namespace kxf::SevenZip::Private
 			virtual HResult DoSeek(int64_t offset, uint32_t seekMode, int64_t& newPosition) = 0;
 			virtual HResult DoSetSize(int64_t size) = 0;
 
-			ArchiveEvent CreateEvent(EventID id = ArchiveEvent::EvtProcess)
+			ArchiveEvent CreateEvent(EventID id)
 			{
 				ArchiveEvent event = WithEvtHandler::CreateEvent(id);
-				event.SetTotal(m_BytesTotal);
-				event.SetProcessed(m_BytesWritten);
+				event.SetProgress(m_BytesWritten, m_BytesTotal);
 
 				return event;
+			}
+			bool SentWriteEvent()
+			{
+				ArchiveEvent event = CreateEvent(IArchiveExtract::EvtWriteStream);
+				event.SetProgress(m_BytesWritten, m_BytesTotal);
+				return SendEvent(event);
 			}
 
 		public:

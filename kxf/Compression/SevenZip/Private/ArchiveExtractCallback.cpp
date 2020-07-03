@@ -5,14 +5,14 @@
 #include "kxf/IO/FileStream.h"
 #include "kxf/System/VariantProperty.h"
 #include "kxf/FileSystem/NativeFileSystem.h"
+#include "kxf/Utility/CallAtScopeExit.h"
 
 namespace kxf::SevenZip::Private::Callback
 {
-	FileItem ExtractArchive::GetExistingFileInfo(size_t fileIndex) const
+	FileItem ExtractArchive::GetExistingItem(size_t fileIndex) const
 	{
 		return GetArchiveItem(*m_Archive, fileIndex);
 	}
-
 	STDMETHODIMP ExtractArchive::QueryInterface(const ::IID& iid, void** ppvObject)
 	{
 		if (iid == __uuidof(IUnknown))
@@ -41,55 +41,51 @@ namespace kxf::SevenZip::Private::Callback
 		}
 		return E_NOINTERFACE;
 	}
-
-	STDMETHODIMP ExtractArchive::SetTotal(UInt64 size)
-	{
-		// SetTotal is never called for ZIP and 7z formats
-		return S_OK;
-	}
-	STDMETHODIMP ExtractArchive::SetCompleted(const UInt64* completeValue)
-	{
-		// For ZIP format SetCompleted only called once per 1000 files in central directory and once per 100 in local ones.
-		// For 7Z format SetCompleted is never called.
-		return S_OK;
-	}
 }
 
 namespace kxf::SevenZip::Private::Callback
 {
 	STDMETHODIMP ExtractArchiveWrapper::GetStream(UInt32 fileIndex, ISequentialOutStream** outStream, Int32 askExtractMode)
 	{
-		m_Stream = nullptr;
-		m_FileIndex = Compression::InvalidIndex;
-
 		if (ShouldCancel())
 		{
 			return *HResult::Abort();
 		}
+		if (!outStream)
+		{
+			return *HResult::InvalidPointer();
+		}
 		if (askExtractMode != NArchive::NExtract::NAskMode::kExtract)
 		{
-			return *HResult::Success();
+			return *HResult::False();
 		}
 
-		if (m_Stream = m_Callback.OnGetStream(fileIndex))
+		*outStream = nullptr;
+		m_Stream = nullptr;
+		m_Item = GetExistingItem(fileIndex);
+		if (m_Item)
 		{
-			m_FileIndex = fileIndex;
-			*outStream = COM::CreateObject<OutStreamWrapper_wxOutputStream>(*m_Stream, m_EvtHandler).Detach();
-
-			if (m_EvtHandler)
+			if (m_EvtHandler && !SendItemEvent(IArchiveExtract::EvtItem, m_Item))
 			{
-				if (FileItem fileItem = GetExistingFileInfo(fileIndex))
-				{
-					ArchiveEvent event = CreateEvent();
-					event.SetItem(fileItem);
-					if (!SendEvent(event))
-					{
-						return *HResult::Abort();
-					}
-				}
+				return *HResult::Abort();
 			}
+
+			if (m_Stream = m_Callback.OnGetStream(m_Item))
+			{
+				if (ShouldCancel())
+				{
+					return *HResult::Abort();
+				}
+
+				auto wrapperStream = COM::CreateObject<OutStreamWrapper_wxOutputStream>(*m_Stream, m_EvtHandler);
+				wrapperStream->SetSize(m_Item.GetSize().GetBytes());
+				*outStream = wrapperStream.Detach();
+
+				return *HResult::Success();
+			}
+			return *HResult::False();
 		}
-		return ShouldCancel() ? *HResult::Abort() : *HResult::Success();
+		return *HResult::Fail();
 	}
 	STDMETHODIMP ExtractArchiveWrapper::PrepareOperation(Int32 askExtractMode)
 	{
@@ -98,110 +94,27 @@ namespace kxf::SevenZip::Private::Callback
 	STDMETHODIMP ExtractArchiveWrapper::SetOperationResult(Int32 operationResult)
 	{
 		OutputStreamDelegate stream = std::move(m_Stream);
+		Utility::CallAtScopeExit atExit = [&]()
+		{
+			if (stream && stream.IsTargetStreamOwned())
+			{
+				stream->Close();
+			}
+		};
 
 		if (ShouldCancel())
 		{
 			return *HResult::Abort();
 		}
-		if (stream && !m_Callback.OnOperationCompleted(m_FileIndex, *stream))
+		if (operationResult == NArchive::NExtract::NOperationResult::kOK)
 		{
-			return *HResult::Fail();
-		}
-		return *HResult::Success();
-	}
-}
-
-namespace kxf::SevenZip::Private::Callback
-{
-	STDMETHODIMP ExtractArchiveToFS::GetStream(UInt32 fileIndex, ISequentialOutStream** outStream, Int32 askExtractMode)
-	{
-		if (!outStream)
-		{
-			return *HResult::InvalidPointer();
-		}
-
-		*outStream = nullptr;
-		m_Stream = nullptr;
-		m_TargetPath = {};
-		m_FileInfo = GetExistingFileInfo(fileIndex);
-
-		if (m_FileInfo)
-		{
-			if (m_EvtHandler)
+			if (stream && !m_Callback.OnItemDone(m_Item, *stream))
 			{
-				ArchiveEvent event = CreateEvent();
-				event.SetItem(m_FileInfo);
-				if (!SendEvent(event))
-				{
-					return *HResult::Abort();
-				}
+				return *HResult::Fail();
 			}
-
-			HResult hr = GetTargetPath(fileIndex, m_FileInfo, m_TargetPath);
-			if (hr.IsFalse())
+			if (m_EvtHandler && !SendItemEvent(IArchiveExtract::EvtItemDone, std::move(m_Item)))
 			{
-				m_TargetPath = m_Directory / m_FileInfo.GetFullPath();
-			}
-
-			if (hr)
-			{
-				if (!m_TargetPath)
-				{
-					return *HResult::Unexpected();
-				}
-
-				if (m_FileInfo.IsDirectory())
-				{
-					// Creating the directory here supports having empty directories but do we really need this? Probably not.
-					//m_FileSystem.CreateDirectory(m_TargetPath);
-					return *HResult::Success();
-				}
-
-				m_Stream = m_FileSystem.OpenToWrite(m_TargetPath);
-				if (!m_Stream && m_FileSystem.CreateDirectory(m_TargetPath.GetParent()))
-				{
-					m_Stream = m_FileSystem.OpenToWrite(m_TargetPath);
-				}
-				if (!m_Stream)
-				{
-					return *Win32Error::GetLastError().ToHResult().value_or(HResult::Fail());
-				}
-
-				auto wrapperStream = COM::CreateObject<OutStreamWrapper_wxOutputStream>(*m_Stream, m_EvtHandler);
-				wrapperStream->SetSize(m_FileInfo.GetSize().GetBytes());
-				*outStream = wrapperStream.Detach();
-
-				return *HResult::Success();
-			}
-		}
-		return *HResult::Fail();
-	}
-	STDMETHODIMP ExtractArchiveToFS::PrepareOperation(Int32 askExtractMode)
-	{
-		return *HResult::Success();
-	}
-	STDMETHODIMP ExtractArchiveToFS::SetOperationResult(Int32 operationResult)
-	{
-		OutputStreamDelegate stream = std::move(m_Stream);
-		if (stream)
-		{
-			if (stream->IsKindOf(wxCLASSINFO(FileStream)))
-			{
-				FileStream& fileStream = static_cast<FileStream&>(*stream);
-				fileStream.ChangeTimestamp(m_FileInfo.GetCreationTime(), m_FileInfo.GetModificationTime(), m_FileInfo.GetLastAccessTime());
-				fileStream.SetAttributes(m_FileInfo.GetAttributes());
-
-				return *HResult::Success();
-			}
-			if (stream.IsTargetStreamOwned())
-			{
-				stream->Close();
-			}
-
-			if (m_TargetPath)
-			{
-				m_FileSystem.ChangeAttributes(m_TargetPath, m_FileInfo.GetAttributes());
-				m_FileSystem.ChangeTimestamp(m_TargetPath, m_FileInfo.GetCreationTime(), m_FileInfo.GetModificationTime(), m_FileInfo.GetLastAccessTime());
+				return *HResult::Abort();
 			}
 		}
 		return *HResult::Success();
@@ -210,42 +123,74 @@ namespace kxf::SevenZip::Private::Callback
 
 namespace kxf::SevenZip::Private::Callback
 {
-	STDMETHODIMP ExtractArchiveToStream::GetStream(UInt32 fileIndex, ISequentialOutStream** outStream, Int32 askExtractMode)
+	OutputStreamDelegate ExtractArchiveToFS::OnGetStream(const FileItem& item)
 	{
-		FileItem fileItem = GetExistingFileInfo(fileIndex);
-		if (fileItem && !fileItem.IsDirectory())
+		const bool hasTargetPath = GetTargetPath(item, m_TargetPath);
+		if (!hasTargetPath)
 		{
-			const int64_t totalSize = fileItem.GetSize().GetBytes();
-			if (m_EvtHandler)
+			m_TargetPath = m_Directory / item.GetFullPath();
+		}
+		if (!m_TargetPath)
+		{
+			m_ShouldCancel = true;
+			return {};
+		}
+
+		if (m_TargetPath)
+		{
+			if (item.IsDirectory())
 			{
-				ArchiveEvent event = CreateEvent();
-				event.SetItem(std::move(fileItem));
-				if (!SendEvent(event))
-				{
-					return *HResult::Abort();
-				}
+				// Creating the directory here supports having empty directories but do we really need this? Probably not.
+				//m_FileSystem.CreateDirectory(m_TargetPath);
+				return {};
 			}
 
-			auto wrapperStream = COM::CreateObject<OutStreamWrapper_wxOutputStream>(*m_Stream, m_EvtHandler);
-			wrapperStream->SetSize(totalSize);
-			*outStream = wrapperStream.Detach();
-
-			return *HResult::Success();
+			auto stream = m_FileSystem.OpenToWrite(m_TargetPath);
+			if (!stream && m_FileSystem.CreateDirectory(m_TargetPath.GetParent()))
+			{
+				stream = m_FileSystem.OpenToWrite(m_TargetPath);
+			}
+			if (stream)
+			{
+				return stream;
+			}
+			m_ShouldCancel = true;
 		}
-		return *HResult::Fail();
+		return {};
 	}
-	STDMETHODIMP ExtractArchiveToStream::PrepareOperation(Int32 askExtractMode)
+	bool ExtractArchiveToFS::OnItemDone(const FileItem& item, wxOutputStream& stream)
 	{
-		return *HResult::Success();
-	}
-	STDMETHODIMP ExtractArchiveToStream::SetOperationResult(Int32 operationResult)
-	{
-		if (m_Stream.IsTargetStreamOwned())
+		if (stream.IsKindOf(wxCLASSINFO(FileStream)))
 		{
-			m_Stream.Close();
-		}
-		m_Stream = nullptr;
+			FileStream& fileStream = static_cast<FileStream&>(stream);
+			fileStream.ChangeTimestamp(item.GetCreationTime(), item.GetModificationTime(), item.GetLastAccessTime());
+			fileStream.SetAttributes(item.GetAttributes());
 
-		return *HResult::Success();
+			return true;
+		}
+
+		stream.Close();
+		if (m_TargetPath)
+		{
+			m_FileSystem.ChangeAttributes(m_TargetPath, item.GetAttributes());
+			m_FileSystem.ChangeTimestamp(m_TargetPath, item.GetCreationTime(), item.GetModificationTime(), item.GetLastAccessTime());
+		}
+		return true;
+	}
+}
+
+namespace kxf::SevenZip::Private::Callback
+{
+	OutputStreamDelegate ExtractArchiveToStream::OnGetStream(const FileItem& item)
+	{
+		if (!item.IsDirectory())
+		{
+			return *m_Stream;
+		}
+		return {};
+	}
+	bool ExtractArchiveToStream::OnItemDone(const FileItem& item, wxOutputStream& stream)
+	{
+		return true;
 	}
 }

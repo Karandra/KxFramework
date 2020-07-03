@@ -1,32 +1,27 @@
 #pragma once
 #include "Common.h"
+#include "kxf/EventSystem/IWithEvtHandler.h"
 #include "Private/WithEvtHandler.h"
 #include "kxf/System/COM.h"
-#include "kxf/Compression/IArchive.h"
-struct IStream;
+#include "kxf/Utility/WithOptionalOwenership.h"
 struct IInArchive;
 
-namespace kxf::SevenZip::Private
+namespace kxf::SevenZip::Private::Callback
 {
-	class InStreamWrapper_IStream;
-
-	namespace Callback
-	{
-		class OpenArchive;
-		class UpdateArchive;
-		class ExtractArchive;
-	}
+	class UpdateArchive;
+	class ExtractArchive;
 }
 
 namespace kxf::SevenZip
 {
-	class Archive:
-		public Private::WithEvtHandler,
-		public RTTI::ImplementInterface<Archive,
+	class Archive: public RTTI::ImplementInterface
+		<
+			Archive,
 			IArchive,
 			IArchiveProperties,
 			IArchiveExtract,
 			IArchiveUpdate,
+			IWithEvtHandler,
 			IFileSystem,
 			IFileIDSystem
 		>
@@ -54,6 +49,7 @@ namespace kxf::SevenZip
 					bool MultiThreaded = true;
 				} Properties;
 			} m_Data;
+			Utility::WithOptionalOwenership<wxEvtHandler> m_EvtHandler;
 
 		private:
 			void InvalidateCache();
@@ -63,15 +59,17 @@ namespace kxf::SevenZip
 			void RewindArchiveStreams();
 
 		protected:
+			bool DoOpen(InputStreamDelegate stream);
+			void DoClose();
 			bool DoExtract(COMPtr<Private::Callback::ExtractArchive> extractor, Compression::FileIndexView* files) const;
 			bool DoUpdate(wxOutputStream& stream, COMPtr<Private::Callback::UpdateArchive> updater, size_t itemCount);
 
 		public:
-			Archive(wxEvtHandler* evtHandler = nullptr);
-			Archive(InputStreamDelegate stream, wxEvtHandler* evtHandler = nullptr)
-				:Archive(evtHandler)
+			Archive();
+			Archive(InputStreamDelegate stream)
+				:Archive()
 			{
-				Open(std::move(stream));
+				DoOpen(std::move(stream));
 			}
 			Archive(const Archive&) = delete;
 			Archive(Archive&& other)
@@ -82,13 +80,34 @@ namespace kxf::SevenZip
 			~Archive();
 
 		public:
+			// IWithEvtHandler
+			wxEvtHandler* GetEvtHandler() const override
+			{
+				return m_EvtHandler;
+			}
+			void SetEvtHandler(wxEvtHandler& evtHandler) override
+			{
+				m_EvtHandler.Assign(evtHandler);
+			}
+			void SetEvtHandler(std::unique_ptr<wxEvtHandler> evtHandler) override
+			{
+				m_EvtHandler.Assign(std::move(evtHandler));
+			}
+
+		public:
 			// IArchive
 			bool IsOpened() const noexcept override
 			{
 				return m_Data.IsLoaded;
 			}
-			bool Open(InputStreamDelegate stream) override;
-			void Close() override;
+			bool Open(InputStreamDelegate stream) override
+			{
+				return DoOpen(std::move(stream));
+			}
+			void Close() override
+			{
+				DoClose();
+			}
 
 			size_t GetItemCount() const override
 			{

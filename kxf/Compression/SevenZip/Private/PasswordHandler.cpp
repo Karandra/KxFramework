@@ -21,7 +21,7 @@ namespace kxf::SevenZip::Private
 		}
 		if (m_EvtHandler)
 		{
-			ArchiveEvent event = CreateEvent(ArchiveEvent::EvtGetPassword);
+			ArchiveEvent event = CreateEvent(IArchive::EvtPasswordRequired);
 			if (SendEvent(event))
 			{
 				String value = std::move(event).GetPassword().ToString();

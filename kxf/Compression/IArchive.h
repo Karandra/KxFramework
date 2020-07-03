@@ -1,6 +1,8 @@
 #pragma once
 #include "Common.h"
+#include "ArchiveEvent.h"
 #include "IArchiveCallbacks.h"
+#include "kxf/EventSystem/Event.h"
 #include "kxf/System/UndefWindows.h"
 #include "kxf/RTTI/QueryInterface.h"
 #include "kxf/IO/StreamDelegate.h"
@@ -10,6 +12,11 @@ namespace kxf
 	class KX_API IArchive: public RTTI::Interface<IArchive>
 	{
 		KxDeclareIID(IArchive, {0xb4327a42, 0x17a7, 0x44db, {0x84, 0xb, 0xc3, 0x24, 0x5b, 0x29, 0xca, 0xe8}});
+
+		public:
+			KxEVENT_MEMBER(ArchiveEvent, OpenBytes);
+			KxEVENT_MEMBER(ArchiveEvent, OpenItems);
+			KxEVENT_MEMBER(ArchiveEvent, PasswordRequired);
 
 		public:
 			virtual ~IArchive() = default;
@@ -48,6 +55,11 @@ namespace kxf
 		KxDeclareIID(IArchiveExtract, {0x105f744b, 0x904d, 0x4822, {0xb4, 0x7a, 0x57, 0x8b, 0x3e, 0xd, 0x95, 0xe6}});
 
 		public:
+			KxEVENT_MEMBER(ArchiveEvent, Item);
+			KxEVENT_MEMBER(ArchiveEvent, ItemDone);
+			KxEVENT_MEMBER(ArchiveEvent, WriteStream);
+
+		public:
 			virtual ~IArchiveExtract() = default;
 
 		public:
@@ -75,6 +87,11 @@ namespace kxf
 	class KX_API IArchiveUpdate: public RTTI::Interface<IArchiveUpdate>
 	{
 		KxDeclareIID(IArchiveUpdate, {0xcf9bb9ac, 0x6519, 0x49d4, {0xa3, 0xb4, 0xcd, 0x63, 0x17, 0x52, 0xe1, 0x55}});
+
+		public:
+			KxEVENT_MEMBER(ArchiveEvent, Item);
+			KxEVENT_MEMBER(ArchiveEvent, ItemDone);
+			KxEVENT_MEMBER(ArchiveEvent, ReadStream);
 
 		public:
 			virtual ~IArchiveUpdate() = default;

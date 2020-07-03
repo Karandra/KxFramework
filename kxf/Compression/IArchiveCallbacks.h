@@ -23,8 +23,8 @@ namespace kxf::Compression
 				return false;
 			}
 
-			virtual OutputStreamDelegate OnGetStream(size_t size_t) = 0;
-			virtual bool OnOperationCompleted(size_t size_t, wxOutputStream& stream) = 0;
+			virtual OutputStreamDelegate OnGetStream(const FileItem& item) = 0;
+			virtual bool OnItemDone(const FileItem& item, wxOutputStream& stream) = 0;
 	};
 
 	template<class TOutStream = wxOutputStream>
@@ -34,8 +34,8 @@ namespace kxf::Compression
 			const IArchiveExtract& m_Archive;
 
 			std::function<bool()> m_ShouldCancel;
-			std::function<OutputStreamDelegate(size_t)> m_OnGetStream;
-			std::function<bool(size_t, wxOutputStream&)> m_OnOperationCompleted;
+			std::function<OutputStreamDelegate(const FileItem&)> m_OnGetStream;
+			std::function<bool(const FileItem&, wxOutputStream&)> m_OnOperationCompleted;
 
 		private:
 			bool ShouldCancel() const override
@@ -43,13 +43,13 @@ namespace kxf::Compression
 				return m_ShouldCancel ? std::invoke(m_ShouldCancel) : false;
 			}
 
-			OutputStreamDelegate OnGetStream(size_t index) override
+			OutputStreamDelegate OnGetStream(const FileItem& item) override
 			{
-				return m_OnGetStream ? std::invoke(m_OnGetStream, size_t) : nullptr;
+				return m_OnGetStream ? std::invoke(m_OnGetStream, item) : nullptr;
 			}
-			bool OnOperationCompleted(size_t index, wxOutputStream& stream) override
+			bool OnItemDone(const FileItem& item, wxOutputStream& stream) override
 			{
-				return m_OnOperationCompleted ? std::invoke(m_OnOperationCompleted, size_t, stream) : true;
+				return m_OnOperationCompleted ? std::invoke(m_OnOperationCompleted, item, stream) : true;
 			}
 			
 		public:
@@ -84,7 +84,7 @@ namespace kxf::Compression
 			}
 
 			template<class TFunc>
-			ExtractWithOptions& OnOperationCompleted(TFunc&& func)
+			ExtractWithOptions& OnItemDone(TFunc&& func)
 			{
 				if constexpr(std::is_same_v<TOutStream, wxOutputStream>)
 				{
@@ -122,7 +122,7 @@ namespace kxf::Compression
 			virtual size_t OnGetUpdateMode(size_t index, bool& updateData, bool& updateProperties) = 0;
 			virtual FileItem OnGetProperties(size_t index) = 0;
 
-			virtual InputStreamDelegate OnGetStream(size_t index) = 0;
-			virtual bool OnOperationCompleted(size_t index, wxInputStream& stream) = 0;
+			virtual InputStreamDelegate OnGetStream(const FileItem& item) = 0;
+			virtual bool OnItemDone(const FileItem& item, wxInputStream& stream) = 0;
 	};
 }

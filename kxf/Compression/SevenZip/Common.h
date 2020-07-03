@@ -7,6 +7,7 @@
 #include "kxf/FileSystem/IFileSystem.h"
 #include "kxf/FileSystem/FSPath.h"
 #include "kxf/FileSystem/FileItem.h"
+#include "kxf/Compression/IArchive.h"
 #include "kxf/Compression/ArchiveEvent.h"
 
 namespace kxf::SevenZip

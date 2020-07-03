@@ -46,13 +46,9 @@ namespace kxf::SevenZip::Private
 			m_BytesRead += read;
 		}
 
-		if (m_EvtHandler)
+		if (m_EvtHandler && !SentWriteEvent())
 		{
-			ArchiveEvent event = CreateEvent();
-			if (!SendEvent(event))
-			{
-				return *HResult::Abort();
-			}
+			return *HResult::Abort();
 		}
 		return hr ? *HResult::Success() : *hr;
 	}

@@ -45,13 +45,9 @@ namespace kxf::SevenZip::Private
 			m_BytesTotal += writtenBase;
 		}
 
-		if (m_EvtHandler)
+		if (m_EvtHandler && !SentWriteEvent())
 		{
-			ArchiveEvent event = CreateEvent();
-			if (!SendEvent(event))
-			{
-				return E_ABORT;
-			}
+			return *HResult::Abort();
 		}
 		return *hr;
 	}
@@ -70,13 +66,9 @@ namespace kxf::SevenZip::Private
 		m_BytesTotal = newSize;
 		HResult hr = DoSetSize(newSize);
 
-		if (m_EvtHandler)
+		if (m_EvtHandler && !SentWriteEvent())
 		{
-			ArchiveEvent event = CreateEvent();
-			if (!SendEvent(event))
-			{
-				return E_ABORT;
-			}
+			return *HResult::Abort();
 		}
 		return *hr;
 	}

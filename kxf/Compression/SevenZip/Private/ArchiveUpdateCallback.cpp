@@ -2,16 +2,15 @@
 #include "ArchiveUpdateCallback.h"
 #include "InStreamWrapper.h"
 #include "Utility.h"
-#include "kxf/System/VariantProperty.h"
 #include "kxf/FileSystem/Private/NativeFSUtility.h"
+#include "kxf/System/VariantProperty.h"
 
 namespace kxf::SevenZip::Private::Callback
 {
-	FileItem UpdateArchive::GetExistingFileInfo(size_t fileIndex) const
+	FileItem UpdateArchive::GetExistingItem(size_t fileIndex) const
 	{
 		return GetArchiveItem(*m_Archive, fileIndex);
 	}
-
 	STDMETHODIMP UpdateArchive::QueryInterface(const ::IID& iid, void** ppvObject)
 	{
 		if (iid == __uuidof(IUnknown))
@@ -45,29 +44,6 @@ namespace kxf::SevenZip::Private::Callback
 			return S_OK;
 		}
 		return E_NOINTERFACE;
-	}
-
-	STDMETHODIMP UpdateArchive::SetTotal(UInt64 bytes)
-	{
-		m_BytesTotal = bytes;
-
-		if (m_EvtHandler)
-		{
-			ArchiveEvent event = CreateEvent();
-			return SendEvent(event) ? S_OK : E_ABORT;
-		}
-		return S_OK;
-	}
-	STDMETHODIMP UpdateArchive::SetCompleted(const UInt64* bytes)
-	{
-		m_BytesCompleted = bytes ? *bytes : 0;
-
-		if (m_EvtHandler)
-		{
-			ArchiveEvent event = CreateEvent();
-			return SendEvent(event) ? S_OK : E_ABORT;
-		}
-		return S_OK;
 	}
 }
 
@@ -111,7 +87,7 @@ namespace kxf::SevenZip::Private::Callback
 
 		if (value)
 		{
-			auto DoGetProperty = [](PROPID propID, FileItem fileItem) -> VariantProperty
+			auto DoGetProperty = [](PROPID propID, const FileItem& fileItem) -> VariantProperty
 			{
 				switch (propID)
 				{
@@ -154,43 +130,115 @@ namespace kxf::SevenZip::Private::Callback
 				return {};
 			};
 
-			VariantProperty property = DoGetProperty(propID, m_Callback.OnGetProperties(index));
-			if (property)
+			m_Item = m_Callback.OnGetProperties(index);
+			if (m_Item)
 			{
-				return *property.CopyToNative(*value);
+				VariantProperty property = DoGetProperty(propID, m_Item);
+				if (property)
+				{
+					return *property.CopyToNative(*value);
+				}
 			}
 			return *HResult::InvalidArgument();
 		}
 		return *HResult::InvalidPointer();
 	}
-	
 	STDMETHODIMP UpdateArchiveWrapper::GetStream(UInt32 index, ISequentialInStream** inStream)
 	{
-		*inStream = nullptr;
+		if (ShouldCancel())
+		{
+			return *HResult::Abort();
+		}
+		if (!inStream)
+		{
+			return *HResult::InvalidPointer();
+		}
 		if (m_Callback.ShouldCancel())
 		{
 			return *HResult::Abort();
 		}
 
-		m_Stream = m_Callback.OnGetStream(index);
-		if (m_Stream)
+		*inStream = nullptr;
+		m_Stream = nullptr;
+		if (m_Item)
 		{
-			auto wrapperStream = COM::CreateObject<InStreamWrapper_wxInputStream>(*m_Stream, m_EvtHandler);
-			wrapperStream->SpecifyTotalSize(m_Stream->GetLength());
-			*inStream = wrapperStream.Detach();
+			if (m_EvtHandler && !SendItemEvent(IArchiveUpdate::EvtItem, m_Item))
+			{
+				return *HResult::Abort();
+			}
 
-			return *HResult::Success();
+			m_Stream = m_Callback.OnGetStream(m_Item);
+			if (m_Stream)
+			{
+				if (ShouldCancel())
+				{
+					return *HResult::Abort();
+				}
+
+				auto wrapperStream = COM::CreateObject<InStreamWrapper_wxInputStream>(*m_Stream, m_EvtHandler);
+				wrapperStream->SpecifyTotalSize(std::max(m_Stream->GetLength(), m_Item.GetSize().GetBytes()));
+				*inStream = wrapperStream.Detach();
+
+				return *HResult::Success();
+			}
+			return *HResult::False();
 		}
-		return *HResult::False();
+		return *HResult::Fail();
 	}
 	STDMETHODIMP UpdateArchiveWrapper::SetOperationResult(Int32 operationResult)
 	{
-		m_Stream = nullptr;
+		InputStreamDelegate stream = std::move(m_Stream);
 
-		if (m_Callback.ShouldCancel())
+		if (ShouldCancel())
 		{
 			return *HResult::Abort();
 		}
+		if (operationResult == NArchive::NExtract::NOperationResult::kOK)
+		{
+			if (stream && !m_Callback.OnItemDone(m_Item, *stream))
+			{
+				return *HResult::Fail();
+			}
+			if (m_EvtHandler && !SendItemEvent(IArchiveUpdate::EvtItemDone, std::move(m_Item)))
+			{
+				return *HResult::Abort();
+			}
+		}
 		return *HResult::Success();
+	}
+}
+
+namespace kxf::SevenZip::Private::Callback
+{
+	size_t UpdateArchiveFromFS::OnGetUpdateMode(size_t index, bool& updateData, bool& updateProperties)
+	{
+		// We don't support updating existing files yet
+		updateData = true;
+		updateProperties = true;
+		return Compression::InvalidIndex;
+	}
+	FileItem UpdateArchiveFromFS::OnGetProperties(size_t index)
+	{
+		if (index < m_Files.size())
+		{
+			FileItem item = m_Files[index];
+			item.SetFullPath(item.GetFullPath().GetAfter(m_Directory));
+
+			return item;
+		}
+		return {};
+	}
+	InputStreamDelegate UpdateArchiveFromFS::OnGetStream(const FileItem& item)
+	{
+		size_t index = item.GetUniqueID().ToLocallyUniqueID().ToInt();
+		if (index < m_Files.size())
+		{
+			return m_FileSystem.OpenToRead(m_Files[index].GetFullPath());
+		}
+		return nullptr;
+	}
+	bool UpdateArchiveFromFS::OnItemDone(const FileItem& item, wxInputStream& stream)
+	{
+		return true;
 	}
 }

@@ -235,7 +235,7 @@ namespace kxf::SevenZip::Private
 		WithEvtHandler eventHandler(evtHandler);
 		if (eventHandler)
 		{
-			ArchiveEvent event = eventHandler.CreateEvent(ArchiveEvent::EvtProcess);
+			ArchiveEvent event = eventHandler.CreateEvent(ArchiveEvent::EvtIdentifyFormat);
 			event.SetProgress(0, std::size(availableFormats));
 			event.SetString(wxS("Trying to identify archive compression format"));
 
@@ -259,7 +259,7 @@ namespace kxf::SevenZip::Private
 
 				if (eventHandler)
 				{
-					ArchiveEvent event = eventHandler.CreateEvent(ArchiveEvent::EvtProcess);
+					ArchiveEvent event = eventHandler.CreateEvent(ArchiveEvent::EvtIdentifyFormat);
 					event.SetProgress(counter, std::size(availableFormats));
 					event.SetString(String::Format(wxS("Trying to open archive as %1"), GetNameByFormat(format)));
 

@@ -32,7 +32,7 @@ namespace kxf::SevenZip::Private
 				m_EvtHandler = evtHandler;
 			}
 
-			ArchiveEvent CreateEvent(EventID id = ArchiveEvent::EvtProcess)
+			ArchiveEvent CreateEvent(EventID id)
 			{
 				ArchiveEvent event(id);
 				event.SetEventObject(m_EvtHandler);

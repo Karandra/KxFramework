@@ -19,14 +19,34 @@ namespace kxf::SevenZip::Private::Callback
 			int64_t m_BytesCompleted = 0;
 			int64_t m_BytesTotal = 0;
 
+			int64_t m_ItemsCompleted = 0;
+			int64_t m_ItemsTotal = 0;
+
 		protected:
-			ArchiveEvent CreateEvent(EventID id = ArchiveEvent::EvtProcess)
+			ArchiveEvent CreateEvent(EventID id)
 			{
 				ArchiveEvent event = WithEvtHandler::CreateEvent(id);
-				event.SetTotal(m_BytesTotal);
-				event.SetProcessed(m_BytesCompleted);
-
+				if (id == IArchive::EvtOpenBytes)
+				{
+					event.SetProgress(m_BytesCompleted, m_BytesTotal);
+				}
+				else if (id == IArchive::EvtOpenItems)
+				{
+					event.SetProgress(m_ItemsCompleted, m_ItemsTotal);
+				}
+				else
+				{
+					return {};
+				}
 				return event;
+			}
+
+		private:
+			bool SendProgressEvents()
+			{
+				ArchiveEvent bytesEvent = CreateEvent(IArchive::EvtOpenBytes);
+				ArchiveEvent itemsEvent = CreateEvent(IArchive::EvtOpenItems);
+				return SendEvent(bytesEvent) && SendEvent(bytesEvent);
 			}
 
 		public:
@@ -56,8 +76,28 @@ namespace kxf::SevenZip::Private::Callback
 			}
 
 			// IArchiveOpenCallback
-			STDMETHOD(SetTotal)(const UInt64* files, const UInt64* bytes);
-			STDMETHOD(SetCompleted)(const UInt64* files, const UInt64* bytes);
+			STDMETHOD(SetTotal)(const UInt64* files, const UInt64* bytes)
+			{
+				m_BytesTotal = bytes ? *bytes : -1;
+				m_ItemsTotal = files ? *files : -1;
+
+				if (m_EvtHandler && !SendProgressEvents())
+				{
+					return *HResult::Abort();
+				}
+				return *HResult::Success();
+			}
+			STDMETHOD(SetCompleted)(const UInt64* files, const UInt64* bytes)
+			{
+				m_BytesCompleted = bytes ? *bytes : -1;
+				m_ItemsCompleted = files ? *files : -1;
+
+				if (m_EvtHandler && !SendProgressEvents())
+				{
+					return *HResult::Abort();
+				}
+				return S_OK;
+			}
 
 			// ICryptoGetTextPassword
 			STDMETHOD(CryptoGetTextPassword)(BSTR* password)

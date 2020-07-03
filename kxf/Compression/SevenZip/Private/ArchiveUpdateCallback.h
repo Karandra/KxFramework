@@ -20,20 +20,30 @@ namespace kxf::SevenZip::Private::Callback
 			COM::RefCount<UpdateArchive> m_RefCount;
 			PasswordHandler m_PasswordHandler;
 
-		protected:
+		private:
 			COMPtr<IInArchive> m_Archive;
 			int64_t m_BytesCompleted = 0;
-			int64_t m_BytesTotal = 0;
+			int64_t m_BytesTotal = -1;
 
 		protected:
-			FileItem GetExistingFileInfo(size_t fileIndex) const;
-			ArchiveEvent CreateEvent(EventID id = ArchiveEvent::EvtProcess)
+			FileItem GetExistingItem(size_t fileIndex) const;
+			
+			ArchiveEvent CreateEvent(EventID id)
 			{
 				ArchiveEvent event = WithEvtHandler::CreateEvent(id);
-				event.SetTotal(m_BytesTotal);
-				event.SetProcessed(m_BytesCompleted);
+				event.SetProgress(m_BytesCompleted, m_BytesTotal);
 
 				return event;
+			}
+			bool SendItemEvent(EventID id, FileItem item)
+			{
+				if (item)
+				{
+					ArchiveEvent event = CreateEvent(id);
+					event.SetItem(std::move(item));
+					return WithEvtHandler::SendEvent(event);
+				}
+				return true;
 			}
 
 		public:
@@ -58,7 +68,7 @@ namespace kxf::SevenZip::Private::Callback
 			}
 
 			// IUnknown
-			STDMETHOD(QueryInterface)(const ::IID& iid, void** ppvObject);
+			STDMETHOD(QueryInterface)(const ::IID& iid, void** ppvObject) override;
 			STDMETHOD_(ULONG, AddRef)() override
 			{
 				return m_RefCount.AddRef();
@@ -69,24 +79,31 @@ namespace kxf::SevenZip::Private::Callback
 			}
 
 			// IProgress
-			STDMETHOD(SetTotal)(UInt64 bytes);
-			STDMETHOD(SetCompleted)(const UInt64* bytes);
-
+			STDMETHOD(SetTotal)(UInt64 bytes) override
+			{
+				m_BytesTotal = bytes;
+				return *HResult::Success();
+			}
+			STDMETHOD(SetCompleted)(const UInt64* bytes) override
+			{
+				m_BytesCompleted = bytes ? *bytes : 0;
+				return *HResult::Success();
+			}
 
 			// ICompressProgressInfo
-			STDMETHOD(SetRatioInfo)(const UInt64* inSize, const UInt64* outSize)
+			STDMETHOD(SetRatioInfo)(const UInt64* inSize, const UInt64* outSize) override
 			{
-				return S_OK;
+				return *HResult::Success();
 			}
 
 			// ICryptoGetTextPassword
-			STDMETHOD(CryptoGetTextPassword)(BSTR* password)
+			STDMETHOD(CryptoGetTextPassword)(BSTR* password) override
 			{
 				return *m_PasswordHandler.OnPasswordRequest(password);
 			}
 
 			// ICryptoGetTextPassword2
-			STDMETHOD(CryptoGetTextPassword2)(Int32* passwordIsDefined, BSTR* password)
+			STDMETHOD(CryptoGetTextPassword2)(Int32* passwordIsDefined, BSTR* password) override
 			{
 				return *m_PasswordHandler.OnPasswordRequest(password, passwordIsDefined);
 			}
@@ -101,7 +118,14 @@ namespace kxf::SevenZip::Private::Callback
 			IArchiveUpdate& m_Update;
 			Compression::IUpdateCallback& m_Callback;
 
+			FileItem m_Item;
 			InputStreamDelegate m_Stream;
+
+		private:
+			bool ShouldCancel() const
+			{
+				return m_Callback.ShouldCancel();
+			}
 
 		public:
 			UpdateArchiveWrapper(IArchiveUpdate& update, Compression::IUpdateCallback& callback, wxEvtHandler* evtHandler = nullptr)
@@ -120,7 +144,7 @@ namespace kxf::SevenZip::Private::Callback
 
 namespace kxf::SevenZip::Private::Callback
 {
-	class UpdateArchiveFromFS: public UpdateArchiveWrapper, public Compression::IUpdateCallback
+	class UpdateArchiveFromFS: public UpdateArchiveWrapper, private Compression::IUpdateCallback
 	{
 		protected:
 			const IFileSystem& m_FileSystem;
@@ -141,36 +165,10 @@ namespace kxf::SevenZip::Private::Callback
 				return false;
 			}
 
-			size_t OnGetUpdateMode(size_t index, bool& updateData, bool& updateProperties) override
-			{
-				// We don't support updating existing files yet
-				updateData = 1;
-				updateProperties = 1;
-				return Compression::InvalidIndex;
-			}
-			FileItem OnGetProperties(size_t index) override
-			{
-				if (index < m_Files.size())
-				{
-					FileItem item = m_Files[index];
-					item.SetFullPath(item.GetFullPath().GetAfter(m_Directory));
+			size_t OnGetUpdateMode(size_t index, bool& updateData, bool& updateProperties) override;
+			FileItem OnGetProperties(size_t index) override;
 
-					return item;
-				}
-				return {};
-			}
-			
-			InputStreamDelegate OnGetStream(size_t index) override
-			{
-				if (index < m_Files.size())
-				{
-					return m_FileSystem.OpenToRead(m_Files[index].GetFullPath());
-				}
-				return nullptr;
-			}
-			bool OnOperationCompleted(size_t index, wxInputStream& stream) override
-			{
-				return true;
-			}
+			InputStreamDelegate OnGetStream(const FileItem& item) override;
+			bool OnItemDone(const FileItem& item, wxInputStream& stream) override;
 	};
 }

@@ -16,7 +16,7 @@ namespace kxf::SevenZip::Private
 			wxEvtHandler* m_EvtHandler = nullptr;
 
 		protected:
-			ArchiveEvent CreateEvent(EventID id = ArchiveEvent::EvtProcess)
+			ArchiveEvent CreateEvent(EventID id)
 			{
 				ArchiveEvent event(id);
 				event.SetEventObject(m_EvtHandler);
