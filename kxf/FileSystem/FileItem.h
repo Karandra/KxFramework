@@ -66,7 +66,7 @@ namespace kxf
 			}
 			bool IsCurrentOrParentDirectoryRef() const noexcept
 			{
-				if (m_Path.GetPathLength() >= 1 && m_Path.GetPathLength() <= 2)
+				if (m_Path.GetLength() >= 1 && m_Path.GetLength() <= 2)
 				{
 					const String name = m_Path.GetName();
 					return name == wxS("..") || name == wxS('.');

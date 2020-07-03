@@ -68,7 +68,7 @@ namespace kxf::FileSystem
 	{
 		if (maxCharacters > 0)
 		{
-			const size_t sourceLength = path.GetPathLength();
+			const size_t sourceLength = path.GetLength();
 			if (static_cast<size_t>(maxCharacters) < sourceLength && sourceLength < MAX_PATH)
 			{
 				maxCharacters++;

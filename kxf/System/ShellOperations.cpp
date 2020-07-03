@@ -158,7 +158,7 @@ namespace kxf::Shell
 	bool FileOperation(SHOperationType opType, const FSPath& source, const FSPath& destination, wxWindow* window, FlagSet<SHOperationFlags> flags)
 	{
 		// SHFileOperation doesn't work for paths longer than 'MAX_PATH'
-		if (source.GetPathLength() >= MAX_PATH || destination.GetPathLength() >= MAX_PATH)
+		if (source.GetLength() >= MAX_PATH || destination.GetLength() >= MAX_PATH)
 		{
 			return false;
 		}

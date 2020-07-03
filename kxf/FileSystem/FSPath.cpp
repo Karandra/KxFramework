@@ -521,7 +521,7 @@ namespace kxf
 					isSuccess = true;
 				}
 			}
-			else if (GetPathLength() < MAX_PATH && NativeAPI::ShlWAPI::PathCanonicalizeW)
+			else if (GetLength() < MAX_PATH && NativeAPI::ShlWAPI::PathCanonicalizeW)
 			{
 				wchar_t result[MAX_PATH] = {};
 				if (NativeAPI::ShlWAPI::PathCanonicalizeW(result, m_Path.wc_str()))
@@ -611,9 +611,9 @@ namespace kxf
 		// return: Common Files\Microsoft
 
 		String fullPath = GetFullPath();
-		if (fullPath.Left(start.GetPathLength()).IsSameAs(start.m_Path, StringOpFlag::IgnoreCase))
+		if (fullPath.Left(start.GetLength()).IsSameAs(start.m_Path, StringOpFlag::IgnoreCase))
 		{
-			fullPath = fullPath.Remove(0, start.GetPathLength());
+			fullPath = fullPath.Remove(0, start.GetLength());
 		}
 		return FSPath(std::move(fullPath)).EnsureNamespaceSet(m_Namespace);
 	}
@@ -624,9 +624,9 @@ namespace kxf
 		// return: C:\Program Files (x86)
 
 		String fullPath = GetFullPath();
-		if (fullPath.Right(end.GetPathLength()).IsSameAs(end.m_Path, StringOpFlag::IgnoreCase))
+		if (fullPath.Right(end.GetLength()).IsSameAs(end.m_Path, StringOpFlag::IgnoreCase))
 		{
-			fullPath = fullPath.Remove(fullPath.length() - end.GetPathLength(), end.GetPathLength());
+			fullPath = fullPath.Remove(fullPath.length() - end.GetLength(), end.GetLength());
 		}
 		return FSPath(std::move(fullPath)).EnsureNamespaceSet(m_Namespace);
 	}

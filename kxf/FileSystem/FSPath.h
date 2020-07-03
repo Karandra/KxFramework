@@ -91,7 +91,11 @@ namespace kxf
 				return m_Path.MatchesWildcards(expression, flags);
 			}
 
-			size_t GetPathLength() const
+			void ReserveLength(size_t capacity)
+			{
+				m_Path.reserve(std::clamp<size_t>(capacity, 0, std::numeric_limits<int16_t>::max()));
+			}
+			size_t GetLength() const
 			{
 				return m_Path.length();
 			}
