@@ -1337,6 +1337,12 @@
     <ClInclude Include="kxf\Compression\SevenZip.h">
       <Filter>kxf\Compression</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\EventSystem\IWithEvtHandler.h">
+      <Filter>kxf\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Utility\WithOptionalOwenership.h">
+      <Filter>kxf\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\BroadcastProcessor.cpp">
