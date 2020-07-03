@@ -14,7 +14,7 @@ namespace kxf
 		GigaBytes = 3,
 		TeraBytes = 4,
 	};
-	enum class BinarySizeFormat
+	enum class BinarySizeFormat: uint32_t
 	{
 		None = 0,
 		Fractional = 1 << 0,

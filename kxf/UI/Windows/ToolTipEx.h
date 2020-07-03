@@ -7,7 +7,7 @@ struct tagNMHDR;
 
 namespace kxf::UI
 {
-	enum class ToolTipExStyle
+	enum class ToolTipExStyle: uint32_t
 	{
 		None = 0,
 

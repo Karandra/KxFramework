@@ -54,7 +54,7 @@ namespace kxf
 		FullyQualifiedDN
 	};
 
-	enum class SystemProcessAccess
+	enum class SystemProcessAccess: uint32_t
 	{
 		None = 0,
 
@@ -83,7 +83,7 @@ namespace kxf
 		High,
 		Realtime,
 	};
-	enum class CreateSystemProcessFlag
+	enum class CreateSystemProcessFlag: uint32_t
 	{
 		None = 0,
 

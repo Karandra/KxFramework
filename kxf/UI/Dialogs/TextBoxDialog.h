@@ -6,7 +6,7 @@
 
 namespace kxf::UI
 {
-	enum class TextBoxDialogStyle
+	enum class TextBoxDialogStyle: uint32_t
 	{
 		None = 0,
 

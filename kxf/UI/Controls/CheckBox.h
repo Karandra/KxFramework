@@ -4,7 +4,7 @@
 
 namespace kxf::UI
 {
-	enum class CheckBoxStyle
+	enum class CheckBoxStyle: uint32_t
 	{
 		None = 0,
 

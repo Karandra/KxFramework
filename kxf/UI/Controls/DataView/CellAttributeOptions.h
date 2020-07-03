@@ -10,7 +10,7 @@ namespace kxf::UI::DataView
 
 namespace kxf::UI::DataView 
 {
-	enum class CellOption
+	enum class CellOption: uint32_t
 	{
 		None = 0,
 		Enabled = 1 << 0,
@@ -20,7 +20,7 @@ namespace kxf::UI::DataView
 
 		Default = Enabled|Editable
 	};
-	enum class CellBGOption
+	enum class CellBGOption: uint32_t
 	{
 		None = 0,
 		Header = 1 << 0,
@@ -29,7 +29,7 @@ namespace kxf::UI::DataView
 
 		Default = None
 	};
-	enum class CellFontOption
+	enum class CellFontOption: uint32_t
 	{
 		None = 0,
 		Bold = 1 << 0,

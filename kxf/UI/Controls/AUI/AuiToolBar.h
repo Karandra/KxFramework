@@ -6,7 +6,7 @@
 
 namespace kxf::UI
 {
-	enum class AuiToolBarStyle
+	enum class AuiToolBarStyle: uint32_t
 	{
 		None = 0,
 

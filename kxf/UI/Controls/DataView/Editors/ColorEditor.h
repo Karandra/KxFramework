@@ -6,7 +6,7 @@ class wxGenericColourDialog;
 
 namespace kxf::UI::DataView
 {
-	enum class ColorEditorOption
+	enum class ColorEditorOption: uint32_t
 	{
 		None = 0,
 

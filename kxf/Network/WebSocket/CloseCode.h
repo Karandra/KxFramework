@@ -2,7 +2,7 @@
 
 namespace kxf::WebSocket
 {
-	enum class CloseCode
+	enum class CloseCode: uint32_t
 	{
 		Normal = 1000, // Successful operation, regular socket shutdown
 		GoingAway = 1001, // One of the socket endpoints is exiting

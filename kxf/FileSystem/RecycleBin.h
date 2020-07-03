@@ -9,7 +9,7 @@ namespace kxf
 {
 	class IFileSystem;
 
-	enum class FSRecycleBinOpFlag
+	enum class FSRecycleBinOpFlag: uint32_t
 	{
 		None = 0,
 

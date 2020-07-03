@@ -7,7 +7,7 @@
 
 namespace kxf::UI
 {
-	enum class DialogStyle
+	enum class DialogStyle: uint32_t
 	{
 		None = 0,
 
@@ -16,7 +16,7 @@ namespace kxf::UI
 
 		DefaultStyle = wxDEFAULT_DIALOG_STYLE
 	};
-	enum class DialogExStyle
+	enum class DialogExStyle: uint32_t
 	{
 		None = 0,
 

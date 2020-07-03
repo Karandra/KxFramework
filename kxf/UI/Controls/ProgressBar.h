@@ -6,7 +6,7 @@
 
 namespace kxf::UI
 {
-	enum class ProgressBarStyle
+	enum class ProgressBarStyle: uint32_t
 	{
 		None = 0,
 

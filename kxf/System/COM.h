@@ -17,14 +17,14 @@ namespace kxf
 		Apartment,
 		Concurrent
 	};
-	enum class COMInitFlag
+	enum class COMInitFlag: uint32_t
 	{
 		None = 0,
 
 		DisableOLE1DDE = 1 << 0,
 		SppedOverMemory = 1 << 1
 	};
-	enum class ClassContext
+	enum class ClassContext: uint32_t
 	{
 		InprocServer = 0 << 0,
 		InprocHandler = 0 << 1,

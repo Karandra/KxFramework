@@ -6,7 +6,7 @@
 
 namespace kxf::UI
 {
-	enum class ComboBoxStyle
+	enum class ComboBoxStyle: uint32_t
 	{
 		None = 0,
 

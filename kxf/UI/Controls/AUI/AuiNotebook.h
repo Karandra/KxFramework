@@ -10,7 +10,7 @@ namespace kxf::UI
 	using AuiDefaultTabArtBase = wxAuiDefaultTabArt;
 	using AuiDefaultDockArtBase = wxAuiDefaultDockArt;
 
-	enum class AuiNotebookStyle
+	enum class AuiNotebookStyle: uint32_t
 	{
 		None = 0,
 
@@ -42,7 +42,7 @@ namespace kxf::UI
 	class KX_API AuiNotebook: public WithImageListWrapper<wxAuiNotebook>
 	{
 		public:
-			enum class RendererType
+			enum class RendererType: uint32_t
 			{
 				Default,
 				Generic,

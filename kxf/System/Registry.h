@@ -19,7 +19,7 @@ namespace kxf
 		PerformanceTextNLS,
 		DynData,
 	};
-	enum class RegistryAccess
+	enum class RegistryAccess: uint32_t
 	{
 		None = 0,
 
@@ -32,7 +32,7 @@ namespace kxf
 
 		Everything = Create|Notify|Enumerate|Read|Write
 	};
-	enum class RegistryKeyFlag
+	enum class RegistryKeyFlag: uint32_t
 	{
 		None = 0,
 		Volatile = 1 << 0

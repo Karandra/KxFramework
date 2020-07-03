@@ -10,7 +10,7 @@
 
 namespace kxf
 {
-	enum class DynamicLibraryLoadFlag
+	enum class DynamicLibraryLoadFlag: uint32_t
 	{
 		None = 0,
 

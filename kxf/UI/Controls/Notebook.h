@@ -5,7 +5,7 @@
 
 namespace kxf::UI
 {
-	enum class NotebookStyle
+	enum class NotebookStyle: uint32_t
 	{
 		None = 0,
 

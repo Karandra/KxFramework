@@ -31,22 +31,22 @@ namespace kxf::UI
 		Open,
 		OpenDirectory
 	};
-	enum class FileBrowseDialogStyle
+	enum class FileBrowseDialogStyle: uint32_t
 	{
 		None = 0,
 
-		WarnCreate,
-		WarnOverwrite,
-		ForceFileSystem,
-		ForceShowHidden,
-		ForceExistingItem,
-		ForcePreviewPane,
-		SkipReadOnlyItems,
-		AddToRecent,
-		Multiselect,
-		HidePinnedPlaces,
-		NoDereferenceLinks,
-		AllowStreamableItems,
+		WarnCreate = 1 << 0,
+		WarnOverwrite = 1 << 1,
+		ForceFileSystem = 1 << 2,
+		ForceShowHidden = 1 << 3,
+		ForceExistingItem = 1 << 4,
+		ForcePreviewPane = 1 << 5,
+		SkipReadOnlyItems = 1 << 6,
+		AddToRecent = 1 << 7,
+		Multiselect = 1 << 8,
+		HidePinnedPlaces = 1 << 9,
+		NoDereferenceLinks = 1 << 10,
+		AllowStreamableItems = 1 << 11,
 	};
 }
 namespace kxf

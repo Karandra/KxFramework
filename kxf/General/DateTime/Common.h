@@ -5,7 +5,7 @@
 
 namespace kxf
 {
-	enum class DateFormatFlag
+	enum class DateFormatFlag: uint32_t
 	{
 		None = 0,
 
@@ -15,7 +15,7 @@ namespace kxf
 	};
 	Kx_DeclareFlagSet(DateFormatFlag);
 
-	enum class TimeFormatFlag
+	enum class TimeFormatFlag: uint32_t
 	{
 		None = 0,
 
@@ -26,7 +26,7 @@ namespace kxf
 	};
 	Kx_DeclareFlagSet(TimeFormatFlag);
 
-	enum class Month
+	enum class Month: uint32_t
 	{
 		None = -1,
 
@@ -43,7 +43,7 @@ namespace kxf
 		November,
 		December
 	};
-	enum class WeekDay
+	enum class WeekDay: uint32_t
 	{
 		None = -1,
 
@@ -55,7 +55,7 @@ namespace kxf
 		Saturday,
 		Sunday
 	};
-	enum class WeekDayOption
+	enum class WeekDayOption: uint32_t
 	{
 		None = 0,
 
@@ -63,7 +63,7 @@ namespace kxf
 		MondayFirst,
 		SundayFirst
 	};
-	enum class Country
+	enum class Country: uint32_t
 	{
 		None = -1,
 		Default = 0,
@@ -74,7 +74,7 @@ namespace kxf
 		USA,
 		UK
 	};
-	enum class Calendar
+	enum class Calendar: uint32_t
 	{
 		Gregorian,
 		Julian

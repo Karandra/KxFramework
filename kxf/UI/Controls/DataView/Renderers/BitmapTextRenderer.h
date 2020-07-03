@@ -6,7 +6,7 @@
 
 namespace kxf::UI::DataView
 {
-	enum class BitmapTextValueOption
+	enum class BitmapTextValueOption: uint32_t
 	{
 		None = 0,
 		VCenterText = 1 << 0,

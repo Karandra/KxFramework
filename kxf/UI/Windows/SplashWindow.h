@@ -5,7 +5,7 @@
 
 namespace kxf::UI
 {
-	enum class SplashWindowStyle
+	enum class SplashWindowStyle: uint32_t
 	{
 		None = 0,
 

@@ -9,7 +9,7 @@ namespace kxf::UI
 {
 	class Menu;
 
-	enum class HTMLWindowStyle
+	enum class HTMLWindowStyle: uint32_t
 	{
 		None = 0,
 

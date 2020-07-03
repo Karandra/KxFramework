@@ -4,7 +4,7 @@
 
 namespace kxf::UI
 {
-	enum class SliderStyle
+	enum class SliderStyle: uint32_t
 	{
 		None = 0,
 

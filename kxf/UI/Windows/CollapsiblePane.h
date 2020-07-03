@@ -4,7 +4,7 @@
 
 namespace kxf::UI
 {
-	enum class CollapsiblePaneStyle
+	enum class CollapsiblePaneStyle: uint32_t
 	{
 		None = 0,
 

@@ -49,9 +49,9 @@ namespace kxf::UI::DataView
 		public:
 			enum: size_t
 			{
-				INVALID_ROW = (size_t)-1,
-				INVALID_COLUMN = (size_t)-1,
-				INVALID_COUNT = (size_t)-1,
+				INVALID_ROW = std::numeric_limits<size_t>::max(),
+				INVALID_COLUMN = std::numeric_limits<size_t>::max(),
+				INVALID_COUNT = std::numeric_limits<size_t>::max(),
 			};
 			enum class InteractibleCell
 			{

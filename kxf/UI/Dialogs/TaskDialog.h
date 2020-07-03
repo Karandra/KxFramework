@@ -12,7 +12,7 @@ namespace kxf::UI
 		class TaskDialogNativeInfo;
 	}
 
-	enum class TaskDialogStyle
+	enum class TaskDialogStyle: uint32_t
 	{
 		None = 0,
 

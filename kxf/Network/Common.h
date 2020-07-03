@@ -18,7 +18,7 @@ namespace kxf
 		IPv6,
 	};
 
-	enum class URIFlag
+	enum class URIFlag: uint32_t
 	{
 		None = 0,
 		Strict = 1 << 0

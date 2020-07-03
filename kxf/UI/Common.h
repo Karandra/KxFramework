@@ -14,7 +14,7 @@
 
 namespace kxf::UI
 {
-	enum class WindowStyle
+	enum class WindowStyle: uint32_t
 	{
 		None = 0,
 
@@ -24,21 +24,21 @@ namespace kxf::UI
 		ClipChildren = wxCLIP_CHILDREN,
 		FullRepaintOnResize = wxFULL_REPAINT_ON_RESIZE,
 		NoFullRepaintOnResize = wxNO_FULL_REPAINT_ON_RESIZE,
-		ScrollVertical = wxVSCROLL,
-		ScrollHorizontal = wxHSCROLL,
+		ScrollVertical = static_cast<uint32_t>(wxVSCROLL),
+		ScrollHorizontal = static_cast<uint32_t>(wxHSCROLL),
 		ScrollShowAlways = wxALWAYS_SHOW_SB,
 	};
-	enum class WindowExtraStyle
+	enum class WindowExStyle: uint32_t
 	{
 		None = 0,
 
-		BlockEvents = wxWS_EX_BLOCK_EVENTS,
 		Transient = wxWS_EX_TRANSIENT,
+		BlockEvents = wxWS_EX_BLOCK_EVENTS,
 		ContextHelp = wxWS_EX_CONTEXTHELP,
 		ProcessIdle = wxWS_EX_PROCESS_IDLE,
 		ProcessUIUpdates = wxWS_EX_PROCESS_UI_UPDATES,
 	};
-	enum class WindowBorder
+	enum class WindowBorder: uint32_t
 	{
 		None = 0,
 
@@ -59,7 +59,7 @@ namespace kxf::UI
 namespace kxf
 {
 	Kx_DeclareFlagSet(UI::WindowStyle);
-	Kx_DeclareFlagSet(UI::WindowExtraStyle);
+	Kx_DeclareFlagSet(UI::WindowExStyle);
 	Kx_DeclareFlagSet(UI::WindowBorder);
 }
 

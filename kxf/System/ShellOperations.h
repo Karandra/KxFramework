@@ -25,7 +25,7 @@ namespace kxf
 		Rename,
 		Delete
 	};
-	enum class SHOperationFlags
+	enum class SHOperationFlags: uint32_t
 	{
 		None = 0,
 		Recursive = 1 << 1,
@@ -61,14 +61,14 @@ namespace kxf
 		AppPublisher,
 		AppIconReference,
 	};
-	enum class SHGetKnownDirectoryFlag
+	enum class SHGetKnownDirectoryFlag: uint32_t
 	{
 		None = 0,
 
 		UseDefaultLocation = 1 << 0,
 		CreateIfDoesNotExist = 1 << 1,
 	};
-	enum class SHGetFileIconFlag
+	enum class SHGetFileIconFlag: uint32_t
 	{
 		None = 0,
 
@@ -80,7 +80,7 @@ namespace kxf
 		AddOverlays = 1 << 5,
 		LinkOverlay = 1 << 6,
 	};
-	enum class SHExexuteFlag
+	enum class SHExexuteFlag: uint32_t
 	{
 		None = 0,
 

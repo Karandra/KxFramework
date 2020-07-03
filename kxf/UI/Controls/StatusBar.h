@@ -6,7 +6,7 @@
 
 namespace kxf::UI
 {
-	enum class StatusBarStyle
+	enum class StatusBarStyle: uint32_t
 	{
 		None = 0,
 

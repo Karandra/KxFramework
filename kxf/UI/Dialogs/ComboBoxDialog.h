@@ -5,7 +5,7 @@ class wxComboBox;
 
 namespace kxf::UI
 {
-	enum class ComboBoxDialogStyle
+	enum class ComboBoxDialogStyle: uint32_t
 	{
 		None = 0,
 

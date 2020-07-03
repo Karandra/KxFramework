@@ -7,7 +7,7 @@ struct IImageList2;
 
 namespace kxf
 {
-	enum class ImageListDrawItemFlag
+	enum class ImageListDrawItemFlag: uint32_t
 	{
 		None = 0,
 

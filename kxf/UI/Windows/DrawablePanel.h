@@ -7,7 +7,7 @@
 
 namespace kxf::UI
 {
-	enum class DrawablePanelMode
+	enum class DrawablePanelMode: uint32_t
 	{
 		None = 0,
 

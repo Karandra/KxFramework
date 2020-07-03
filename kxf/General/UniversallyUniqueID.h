@@ -8,7 +8,7 @@ namespace kxf
 {
 	class LocallyUniqueID;
 
-	enum class UUIDFormat
+	enum class UUIDFormat: uint32_t
 	{
 		None = 0, // 123e4567-e89b-12d3-a456-426655440000
 		URN = 1 << 1, // RFC 4122 format: urn:uuid:123e4567-e89b-12d3-a456-426655440000

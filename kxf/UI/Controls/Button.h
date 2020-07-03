@@ -8,7 +8,7 @@
 
 namespace kxf::UI
 {
-	enum class ButtonStyle
+	enum class ButtonStyle: uint32_t
 	{
 		None = 0,
 

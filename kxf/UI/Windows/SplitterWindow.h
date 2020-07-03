@@ -4,7 +4,7 @@
 
 namespace kxf::UI
 {
-	enum class SplitterWindowStyle
+	enum class SplitterWindowStyle: uint32_t
 	{
 		None = 0,
 

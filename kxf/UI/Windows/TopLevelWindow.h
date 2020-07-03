@@ -6,7 +6,7 @@
 
 namespace kxf::UI
 {
-	enum class TopLevelWindowStyle
+	enum class TopLevelWindowStyle: uint32_t
 	{
 		None = 0,
 

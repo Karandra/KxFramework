@@ -7,7 +7,7 @@
 
 namespace kxf::UI
 {
-	enum class LabelStyle
+	enum class LabelStyle: uint32_t
 	{
 		None = 0,
 

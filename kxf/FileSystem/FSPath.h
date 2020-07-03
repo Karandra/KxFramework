@@ -6,7 +6,7 @@ namespace kxf
 	class LegacyVolume;
 	class StorageVolume;
 
-	enum class FSPathFormat
+	enum class FSPathFormat: uint32_t
 	{
 		None = 0,
 		TrailingSeparator = 1 << 0,

@@ -11,7 +11,7 @@ namespace kxf
 	using StringView = std::basic_string_view<XChar>;
 	extern const String NullString;
 
-	enum class StringOpFlag
+	enum class StringOpFlag: uint32_t
 	{
 		None = 0,
 		IgnoreCase = 1 << 0,

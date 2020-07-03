@@ -5,7 +5,7 @@
 
 namespace kxf::UI
 {
-	enum class TextBoxStyle
+	enum class TextBoxStyle: uint32_t
 	{
 		None = 0,
 

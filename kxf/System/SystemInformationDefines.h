@@ -335,5 +335,4 @@ namespace kxf
 	Kx_DeclareFlagSet(DisplayDeviceFlag);
 	Kx_DeclareFlagSet(DisplayAdapterFlag);
 	Kx_DeclareFlagSet(SystemProductSuite);
-	Kx_DeclareFlagSet(SystemFeature);
 }

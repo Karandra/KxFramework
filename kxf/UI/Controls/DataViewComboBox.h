@@ -15,7 +15,7 @@ namespace kxf::UI::DataView
 {
 	using namespace kxf::UI::DataView;
 
-	enum class ComboCtrlOption
+	enum class ComboCtrlOption: uint32_t
 	{
 		None = 0,
 		DismissOnSelect = 1 << 0,

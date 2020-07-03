@@ -6,7 +6,7 @@
 
 namespace kxf
 {
-	enum class RegExFlag
+	enum class RegExFlag: uint32_t
 	{
 		None = 0,
 
@@ -16,7 +16,7 @@ namespace kxf
 	};
 	Kx_DeclareFlagSet(RegExFlag);
 
-	enum class RegExCompileFlag
+	enum class RegExCompileFlag: uint32_t
 	{
 		None = 0,
 

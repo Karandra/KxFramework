@@ -4,7 +4,7 @@
 
 namespace kxf::UI::DataView
 {
-	enum class DateEditorOption
+	enum class DateEditorOption: uint32_t
 	{
 		None = 0,
 
