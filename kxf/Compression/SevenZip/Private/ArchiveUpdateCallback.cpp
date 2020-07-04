@@ -4,6 +4,7 @@
 #include "Utility.h"
 #include "kxf/FileSystem/Private/NativeFSUtility.h"
 #include "kxf/System/VariantProperty.h"
+#include "kxf/Utility/CallAtScopeExit.h"
 
 namespace kxf::SevenZip::Private::Callback
 {
@@ -51,7 +52,7 @@ namespace kxf::SevenZip::Private::Callback
 {
 	STDMETHODIMP UpdateArchiveWrapper::GetUpdateItemInfo(UInt32 index, Int32* newData, Int32* newProperties, UInt32* indexInArchive)
 	{
-		if (m_Callback.ShouldCancel())
+		if (ShouldCancel())
 		{
 			return *HResult::Abort();
 		}
@@ -62,25 +63,27 @@ namespace kxf::SevenZip::Private::Callback
 			bool updateProperties = false;
 			size_t newIndex = m_Callback.OnGetUpdateMode(index, updateData, updateProperties);
 
-			if (newIndex != Compression::InvalidIndex)
+			constexpr auto maxNativeIndex = std::numeric_limits<UInt32>::max();
+			if (newIndex != Compression::InvalidIndex && newIndex < static_cast<size_t>(maxNativeIndex))
 			{
 				*indexInArchive = newIndex;
 				*newProperties = updateProperties;
 				*newData = updateData;
-
-				return *HResult::Success();
 			}
-			
-			// Assume new file
-			*newData = 1;
-			*newProperties = 1;
-			*indexInArchive = std::numeric_limits<UInt32>::max();
+			else
+			{
+				// Assume new file
+				*newData = 1;
+				*newProperties = 1;
+				*indexInArchive = maxNativeIndex;
+			}
+			return *HResult::Success();
 		}
 		return *HResult::InvalidPointer();
 	}
 	STDMETHODIMP UpdateArchiveWrapper::GetProperty(UInt32 index, PROPID propID, PROPVARIANT* value)
 	{
-		if (m_Callback.ShouldCancel())
+		if (ShouldCancel())
 		{
 			return *HResult::Abort();
 		}
@@ -130,14 +133,20 @@ namespace kxf::SevenZip::Private::Callback
 				return {};
 			};
 
-			m_Item = m_Callback.OnGetProperties(index);
-			if (m_Item)
+			auto it = m_ItemStore.find(index);
+			if (it == m_ItemStore.end())
 			{
-				VariantProperty property = DoGetProperty(propID, m_Item);
+				it = m_ItemStore.insert_or_assign(index, m_Callback.OnGetProperties(index)).first;
+				it->second.SetUniqueID(LocallyUniqueID(index));
+			}
+			if (it != m_ItemStore.end())
+			{
+				VariantProperty property = DoGetProperty(propID, it->second);
 				if (property)
 				{
-					return *property.CopyToNative(*value);
+					*property.CopyToNative(*value);
 				}
+				return *HResult::Success();
 			}
 			return *HResult::InvalidArgument();
 		}
@@ -153,21 +162,20 @@ namespace kxf::SevenZip::Private::Callback
 		{
 			return *HResult::InvalidPointer();
 		}
-		if (m_Callback.ShouldCancel())
-		{
-			return *HResult::Abort();
-		}
 
 		*inStream = nullptr;
 		m_Stream = nullptr;
-		if (m_Item)
+		if (auto it = m_ItemStore.find(index); it != m_ItemStore.end())
 		{
-			if (m_EvtHandler && !SendItemEvent(IArchiveUpdate::EvtItem, m_Item))
+			m_CurrentItem = std::move(it->second);
+			m_ItemStore.erase(it);
+
+			if (m_EvtHandler && !SendItemEvent(IArchiveUpdate::EvtItem, m_CurrentItem))
 			{
 				return *HResult::Abort();
 			}
 
-			m_Stream = m_Callback.OnGetStream(m_Item);
+			m_Stream = m_Callback.OnGetStream(m_CurrentItem);
 			if (m_Stream)
 			{
 				if (ShouldCancel())
@@ -176,7 +184,7 @@ namespace kxf::SevenZip::Private::Callback
 				}
 
 				auto wrapperStream = COM::CreateLocalInstance<InStreamWrapper_wxInputStream>(*m_Stream, m_EvtHandler);
-				wrapperStream->SpecifyTotalSize(std::max(m_Stream->GetLength(), m_Item.GetSize().GetBytes()));
+				wrapperStream->SpecifyTotalSize(std::max(m_Stream->GetLength(), m_CurrentItem.GetSize().GetBytes()));
 				*inStream = wrapperStream.Detach();
 
 				return *HResult::Success();
@@ -195,11 +203,11 @@ namespace kxf::SevenZip::Private::Callback
 		}
 		if (operationResult == NArchive::NExtract::NOperationResult::kOK)
 		{
-			if (stream && !m_Callback.OnItemDone(m_Item, *stream))
+			if (stream && !m_Callback.OnItemDone(m_CurrentItem, *stream))
 			{
 				return *HResult::Fail();
 			}
-			if (m_EvtHandler && !SendItemEvent(IArchiveUpdate::EvtItemDone, std::move(m_Item)))
+			if (m_EvtHandler && !SendItemEvent(IArchiveUpdate::EvtItemDone, std::move(m_CurrentItem)))
 			{
 				return *HResult::Abort();
 			}
@@ -239,6 +247,11 @@ namespace kxf::SevenZip::Private::Callback
 	}
 	bool UpdateArchiveFromFS::OnItemDone(const FileItem& item, wxInputStream& stream)
 	{
+		size_t index = item.GetUniqueID().ToLocallyUniqueID().ToInt();
+		if (index < m_Files.size())
+		{
+			m_Files[index] = {};
+		}
 		return true;
 	}
 }
