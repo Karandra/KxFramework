@@ -127,7 +127,7 @@ namespace kxf
 				return (ToInt() & other.ToInt()) != 0;
 			}
 			
-			constexpr bool Add(FlagSet other) noexcept
+			constexpr FlagSet& Add(FlagSet other) noexcept
 			{
 				FromInt(ToInt() | other.ToInt());
 				return *this;
