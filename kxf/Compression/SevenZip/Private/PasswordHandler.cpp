@@ -22,25 +22,23 @@ namespace kxf::SevenZip::Private
 		if (m_EvtHandler)
 		{
 			ArchiveEvent event = CreateEvent(IArchive::EvtPasswordRequired);
-			if (SendEvent(event))
+			if (!SendEvent(event))
 			{
-				String value = std::move(event).GetPassword().ToString();
-				if (!value.IsEmpty())
-				{
-					*password = _bstr_t(value.wx_str()).Detach();
-					Utility::SetIfNotNull(passwordIsDefined, 1);
-
-					return HResult::Success();
-				}
-				else
-				{
-					*password = nullptr;
-					Utility::SetIfNotNull(passwordIsDefined, 0);
-
-					return HResult::False();
-				}
+				return HResult::Abort();
+			}
+				
+			String value = std::move(event).GetPassword().ToString();
+			if (!value.IsEmpty())
+			{
+				*password = _bstr_t(value.wx_str()).Detach();
+				Utility::SetIfNotNull(passwordIsDefined, 1);
+			}
+			else
+			{
+				*password = nullptr;
+				Utility::SetIfNotNull(passwordIsDefined, 0);
 			}
 		}
-		return HResult::Abort();
+		return HResult::Success();
 	}
 }
