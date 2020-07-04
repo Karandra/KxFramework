@@ -277,7 +277,7 @@ namespace kxf::SevenZip
 			updater->SetArchive(m_Data.InArchive);
 			updater->SetEvtHandler(m_EvtHandler);
 
-			auto streamWrapper = COM::CreateLocalInstance<Private::OutStreamWrapper_wxOutputStream>(stream);
+			auto streamWrapper = COM::CreateLocalInstance<Private::OutStreamWrapper_wxOutputStream>(stream, nullptr);
 			return HResult(archiveWriter->UpdateItems(streamWrapper, static_cast<uint32_t>(itemCount), updater)).IsSuccess();
 		}
 		return false;
@@ -362,7 +362,7 @@ namespace kxf::SevenZip
 		{
 			files.emplace_back(std::move(item));
 			return true;
-		}, query, flags.Remove(FSActionFlag::LimitToDirectories));
+		}, query, flags.Remove(FSActionFlag::LimitToDirectories).Add(FSActionFlag::LimitToFiles));
 
 		if (!files.empty())
 		{
