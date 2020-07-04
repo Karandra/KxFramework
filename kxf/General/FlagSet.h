@@ -124,7 +124,7 @@ namespace kxf
 			}
 			constexpr bool Contains(FlagSet other) const noexcept
 			{
-				return (ToInt() & other.ToInt()) != 0;
+				return (ToInt() & other.ToInt()) == other.ToInt();
 			}
 			
 			constexpr FlagSet& Add(FlagSet other) noexcept
