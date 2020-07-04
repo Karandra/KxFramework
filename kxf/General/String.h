@@ -377,15 +377,15 @@ namespace kxf
 
 			// Char/wchar_t pointers
 			String(const char* data, size_t length = npos)
-				:m_String(data, length)
+				:m_String(data, Private::CheckStringLength(data, length))
 			{
 			}
 			String(const char* data, const wxMBConv& conv, size_t length = npos)
-				:m_String(data, conv, length)
+				:m_String(data, conv, Private::CheckStringLength(data, length))
 			{
 			}
 			String(const wchar_t* data, size_t length = npos)
-				:m_String(data, length)
+				:m_String(data, Private::CheckStringLength(data, length))
 			{
 			}
 			

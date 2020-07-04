@@ -95,4 +95,18 @@ namespace kxf::Private
 	{
 		return !IsAnyCharType<T>();
 	}
+
+	template<class TChar>
+	size_t CheckStringLength(const TChar* data, size_t length) noexcept
+	{
+		if (data)
+		{
+			if (length == wxString::npos)
+			{
+				return std::char_traits<TChar>::length(data);
+			}
+			return length;
+		}
+		return 0;
+	}
 }
