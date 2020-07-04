@@ -28,6 +28,7 @@ namespace kxf
 
 		public:
 			virtual FSPath GetCurrentDirectory() const = 0;
+			virtual FSPath ResolvePath(const FSPath& relativePath) const = 0;
 
 			virtual bool ItemExist(const FSPath& path) const = 0;
 			virtual bool FileExist(const FSPath& path) const = 0;

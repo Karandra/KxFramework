@@ -43,6 +43,7 @@ namespace kxf
 			{
 				return m_CurrentDirectory;
 			}
+			FSPath ResolvePath(const FSPath& relativePath) const override;
 
 			bool ItemExist(const FSPath& path) const;
 			bool FileExist(const FSPath& path) const;

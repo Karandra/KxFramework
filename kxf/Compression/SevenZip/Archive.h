@@ -251,6 +251,10 @@ namespace kxf::SevenZip
 			{
 				return {};
 			}
+			FSPath ResolvePath(const FSPath& relativePath) const override
+			{
+				return {};
+			}
 
 			bool ItemExist(const FSPath& path) const override;
 			bool FileExist(const FSPath& path) const override;
