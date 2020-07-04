@@ -16,7 +16,7 @@ namespace kxf
 		public:
 			KxEVENT_MEMBER(ArchiveEvent, OpenBytes);
 			KxEVENT_MEMBER(ArchiveEvent, OpenItems);
-			KxEVENT_MEMBER(ArchiveEvent, PasswordRequired);
+			KxEVENT_MEMBER(ArchiveEvent, Password);
 
 		public:
 			virtual ~IArchive() = default;
@@ -58,6 +58,7 @@ namespace kxf
 			KxEVENT_MEMBER(ArchiveEvent, Item);
 			KxEVENT_MEMBER(ArchiveEvent, ItemDone);
 			KxEVENT_MEMBER(ArchiveEvent, WriteStream);
+			KxEVENT_MEMBER(ArchiveEvent, Password);
 
 		public:
 			virtual ~IArchiveExtract() = default;
@@ -92,6 +93,7 @@ namespace kxf
 			KxEVENT_MEMBER(ArchiveEvent, Item);
 			KxEVENT_MEMBER(ArchiveEvent, ItemDone);
 			KxEVENT_MEMBER(ArchiveEvent, ReadStream);
+			KxEVENT_MEMBER(ArchiveEvent, Password);
 
 		public:
 			virtual ~IArchiveUpdate() = default;

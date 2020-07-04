@@ -48,7 +48,7 @@ namespace kxf::SevenZip::Private::Callback
 
 		public:
 			UpdateArchive(wxEvtHandler* evtHandler = nullptr)
-				:WithEvtHandler(evtHandler), m_RefCount(*this)
+				:WithEvtHandler(evtHandler), m_RefCount(*this), m_PasswordHandler(IArchiveUpdate::EvtPassword, evtHandler)
 			{
 			}
 			virtual ~UpdateArchive() = default;

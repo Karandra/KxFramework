@@ -19,9 +19,9 @@ namespace kxf::SevenZip::Private
 		{
 			return HResult::InvalidPointer();
 		}
-		if (m_EvtHandler)
+		if (m_EvtHandler && m_EventID != Event::EvtNull)
 		{
-			ArchiveEvent event = CreateEvent(IArchive::EvtPasswordRequired);
+			ArchiveEvent event = CreateEvent(m_EventID);
 			if (!SendEvent(event))
 			{
 				return HResult::Abort();

@@ -47,7 +47,7 @@ namespace kxf::SevenZip::Private::Callback
 
 		public:
 			ExtractArchive(wxEvtHandler* evtHandler = nullptr)
-				:WithEvtHandler(evtHandler), m_RefCount(*this), m_PasswordHandler(evtHandler)
+				:WithEvtHandler(evtHandler), m_RefCount(*this), m_PasswordHandler(IArchiveExtract::EvtPassword, evtHandler)
 			{
 			}
 			virtual ~ExtractArchive() = default;

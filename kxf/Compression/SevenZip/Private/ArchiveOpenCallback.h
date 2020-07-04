@@ -51,7 +51,7 @@ namespace kxf::SevenZip::Private::Callback
 
 		public:
 			OpenArchive(wxEvtHandler* evtHandler = nullptr)
-				:WithEvtHandler(evtHandler), m_RefCount(*this), m_PasswordHandler(evtHandler)
+				:WithEvtHandler(evtHandler), m_RefCount(*this), m_PasswordHandler(IArchive::EvtPassword, evtHandler)
 			{
 			}
 			virtual ~OpenArchive() = default;

@@ -12,10 +12,11 @@ namespace kxf::SevenZip::Private
 {
 	class PasswordHandler final
 	{
-		protected:
+		private:
 			wxEvtHandler* m_EvtHandler = nullptr;
+			EventID m_EventID = Event::EvtNull;
 
-		protected:
+		private:
 			ArchiveEvent CreateEvent(EventID id)
 			{
 				ArchiveEvent event(id);
@@ -34,8 +35,8 @@ namespace kxf::SevenZip::Private
 			}
 
 		public:
-			PasswordHandler(wxEvtHandler* evtHandler = nullptr) noexcept
-				:m_EvtHandler(evtHandler)
+			PasswordHandler(EventID eventID, wxEvtHandler* evtHandler = nullptr) noexcept
+				:m_EvtHandler(evtHandler), m_EventID(eventID)
 			{
 			}
 
