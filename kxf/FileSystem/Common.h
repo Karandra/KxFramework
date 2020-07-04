@@ -35,8 +35,10 @@ namespace kxf
 		NoBuffering = 1 << 1,
 		CaseSensitive = 1 << 2,
 		ReplaceIfExist = 1 << 3,
-		LimitToFiles = 1 << 4,
-		LimitToDirectories = 1 << 5
+		RelativePath = 1 << 4,
+		LimitToFiles = 1 << 5,
+		LimitToDirectories = 1 << 6,
+		QueryUniqueID = 1 << 7
 	};
 	KxDeclareFlagSet(FSActionFlag);
 

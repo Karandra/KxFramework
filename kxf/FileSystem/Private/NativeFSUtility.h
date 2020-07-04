@@ -184,8 +184,8 @@ namespace kxf::FileSystem::Private
 	
 	bool IsValidFindItem(const WIN32_FIND_DATAW& findInfo) noexcept;
 	HANDLE CallFindFirstFile(const String& query, WIN32_FIND_DATAW& findInfo, bool isCaseSensitive = false);
-	FileItem ConvertFileInfo(const WIN32_FIND_DATAW& findInfo, const FSPath& location, UniversallyUniqueID id = {}, bool forceFetchID = false);
-	FileItem ConvertFileInfo(HANDLE fileHandle, UniversallyUniqueID id = {});
+	FileItem ConvertFileInfo(const WIN32_FIND_DATAW& findInfo, const FSPath& location, UniversallyUniqueID id = {}, FlagSet<FSActionFlag> flags = {});
+	FileItem ConvertFileInfo(HANDLE fileHandle, UniversallyUniqueID id = {}, FlagSet<FSActionFlag> flags = {});
 
 	DWORD CALLBACK CopyCallback(LARGE_INTEGER TotalFileSize,
 								LARGE_INTEGER TotalBytesTransferred,

@@ -45,7 +45,7 @@ namespace kxf::FileSystem::Private
 		return ::FindFirstFileExW(query.wc_str(), FindExInfoBasic, &findInfo, FINDEX_SEARCH_OPS::FindExSearchNameMatch, nullptr, searchFlags);
 	}
 
-	FileItem ConvertFileInfo(const WIN32_FIND_DATAW& findInfo, const FSPath& location, UniversallyUniqueID id, bool forceFetchID)
+	FileItem ConvertFileInfo(const WIN32_FIND_DATAW& findInfo, const FSPath& location, UniversallyUniqueID id, FlagSet<FSActionFlag> flags)
 	{
 		FileItem fileItem;
 		const bool isDirectory = findInfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
@@ -54,7 +54,9 @@ namespace kxf::FileSystem::Private
 		FSPath path;
 		if (location.IsAbsolute())
 		{
-			path = isDirectory ? location : location.GetParent();
+			path.ReserveLength(location.GetLength() + std::char_traits<XChar>::length(findInfo.cFileName) + 1);
+
+			path = location;
 			path /= findInfo.cFileName;
 			path.EnsureNamespaceSet(location.GetNamespace());
 		}
@@ -101,7 +103,7 @@ namespace kxf::FileSystem::Private
 		{
 			fileItem.SetUniqueID(std::move(id));
 		}
-		else if (forceFetchID)
+		else if (flags.Contains(FSActionFlag::QueryUniqueID))
 		{
 			// Switch to a different directory enumeration method to avoid opening the file here to get its ID
 			BY_HANDLE_FILE_INFORMATION fileInfo = {};
@@ -117,7 +119,7 @@ namespace kxf::FileSystem::Private
 
 		return fileItem;
 	}
-	FileItem ConvertFileInfo(HANDLE fileHandle, UniversallyUniqueID id)
+	FileItem ConvertFileInfo(HANDLE fileHandle, UniversallyUniqueID id, FlagSet<FSActionFlag> flags)
 	{
 		FileStream stream;
 		if (stream.AttachHandle(fileHandle))
@@ -171,7 +173,7 @@ namespace kxf::FileSystem::Private
 				{
 					fileItem.SetUniqueID(std::move(id));
 				}
-				else
+				else if (flags.Contains(FSActionFlag::QueryUniqueID))
 				{
 					GetFileID(fileItem, fileHandle, fileInfo);
 				}
