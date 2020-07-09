@@ -60,10 +60,20 @@ namespace kxf::Utility
 				return m_Value == other.m_Value;
 			}
 			
-			TValue* Get() const
+			TValue* Get() const&
 			{
 				return m_Value;
 			}
+			std::unique_ptr<TValue> GetUnique() &&
+			{
+				if (m_Owned)
+				{
+					m_Owned = false;
+					return std::unique_ptr<TValue>(ExchangeResetAndReturn(m_Value, nullptr))
+				}
+				return nullptr;
+			}
+
 			TValue* operator->() const noexcept
 			{
 				return m_Value;
