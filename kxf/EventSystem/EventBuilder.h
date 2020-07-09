@@ -1,10 +1,41 @@
 #pragma once
 #include "Event.h"
-#include <optional>
 
 namespace kxf
 {
-	class BasicEvtHandler;
+	class EvtHandler;
+}
+
+namespace kxf::EventSystem::Private
+{
+	template<class T, class TEvent>
+	class EventBuilderCRTP
+	{
+		private:
+			T& Self()
+			{
+				return static_cast<T&>(*this);
+			}
+
+		public:
+			template<class TFunc>
+			T& Setup(TFunc&& func)
+			{
+				std::invoke(func, static_cast<TEvent&>(*Self().m_Event));
+				return Self();
+			}
+
+			T& SetSourceToSelf()
+			{
+				Self().m_Event->SetEventSource(m_EvtHandler);
+				return Self();
+			}
+			T& SetSource(EvtHandler& source)
+			{
+				Self().m_Event->SetEventSource(&source);
+				return Self();
+			}
+	}
 }
 
 namespace kxf::EventSystem
@@ -12,11 +43,10 @@ namespace kxf::EventSystem
 	class KX_API EventBuilderBase
 	{
 		protected:
-			BasicEvtHandler* m_EvtHandler = nullptr;
-			wxEvent* m_Event = nullptr;
-			std::optional<EventID> m_EventID;
+			EvtHandler* m_EvtHandler = nullptr;
+			Event* m_Event = nullptr;
+			EventID m_EventID;
 
-			bool m_IsNotifyEvent = false;
 			bool m_IsAsync = false;
 			bool m_IsSent = false;
 			bool m_IsSkipped = false;
@@ -24,46 +54,75 @@ namespace kxf::EventSystem
 			bool m_IsProcessed = false;
 
 		private:
+			void Destroy() noexcept;
+			void Move(EventBuilderBase&& other) noexcept;
+
+			void SendEvent(bool locally, bool safely, UniversallyUniqueID uuid);
+
+		protected:
+			void QueueEvent(UniversallyUniqueID id = {})
+			{
+				SendEvent(false, false, std::move(id));
+			}
+			void ProcessEvent()
+			{
+				SendEvent(false, false, {});
+			}
+			void ProcessEventLocally()
+			{
+				SendEvent(true, false, {});
+			}
+			void ProcessEventSafely()
+			{
+				SendEvent(false, true, {});
+			}
+
+		private:
 			EventBuilderBase() = default;
 
-		public:
-			EventBuilderBase(BasicEvtHandler& evtHandler, std::unique_ptr<wxEvent> event, std::optional<EventID> eventID = {})
+		protected:
+			EventBuilderBase(EvtHandler& evtHandler, std::unique_ptr<Event> event, const EventID& eventID = {}) noexcept
 				:m_EvtHandler(&evtHandler), m_Event(event.release()), m_EventID(eventID), m_IsAsync(true)
 			{
 			}
-			EventBuilderBase(BasicEvtHandler& evtHandler, wxEvent& event, std::optional<EventID> eventID = {})
+			EventBuilderBase(EvtHandler& evtHandler, Event& event, const EventID& eventID = {}) noexcept
 				:m_EvtHandler(&evtHandler), m_Event(&event), m_EventID(eventID), m_IsAsync(false)
 			{
 			}
-			EventBuilderBase(EventBuilderBase&& other)
+			EventBuilderBase(EventBuilderBase&& other) noexcept
 			{
-				*this = std::move(other);
+				Move(std::move(other));
 			}
 			EventBuilderBase(const EventBuilderBase&) = delete;
-			virtual ~EventBuilderBase();
+			virtual ~EventBuilderBase()
+			{
+				Destroy();
+			}
 
 		public:
-			EventBuilderBase& Do();
-
-			bool IsAsync() const
+			bool IsAsync() const noexcept
 			{
 				return m_IsAsync;
 			}
-			bool IsSkipped() const
+			bool IsSkipped() const noexcept
 			{
 				return m_IsSkipped;
 			}
-			bool IsAllowed() const
+			bool IsAllowed() const noexcept
 			{
 				return m_IsAllowed;
 			}
-			bool IsProcessed() const
+			bool IsProcessed() const noexcept
 			{
 				return m_IsProcessed;
 			}
 
 		public:
-			EventBuilderBase& operator=(EventBuilderBase&& other);
+			EventBuilderBase& operator=(EventBuilderBase&& other) noexcept
+			{
+				Move(std::move(other));
+				return *this;
+			}
 			EventBuilderBase& operator=(const EventBuilderBase&) = delete;
 	};
 }
@@ -71,49 +130,102 @@ namespace kxf::EventSystem
 namespace kxf::EventSystem
 {
 	template<class TEvent>
-	class EventBuilder: public EventBuilderBase
+	class DirectEventBuilder: public EventBuilderBase, public Private::EventBuilderCRTP<DirectEventBuilder<TEvent>, TEvent>
 	{
+		friend class Private::EventBuilderCRTP<DirectEventBuilder, TEvent>;
+
 		private:
-			void TestEventClass()
-			{
-				m_IsNotifyEvent = std::is_base_of_v<wxNotifyEvent, TEvent>;
-			}
+			TEvent m_EventInstance;
 
 		public:
-			EventBuilder(BasicEvtHandler& evtHandler, std::unique_ptr<TEvent> event, std::optional<EventID> eventID = {})
-				:EventBuilderBase(evtHandler, std::move(event), eventID)
+			DirectEventBuilder(EvtHandler& evtHandler, TEvent event, const EventID& eventID)
+				:EventBuilderBase(evtHandler, m_EventInstance, eventID), m_EventInstance(std::move(event))
 			{
-				TestEventClass();
 			}
-			EventBuilder(BasicEvtHandler& evtHandler, TEvent& event, std::optional<EventID> eventID = {})
-				:EventBuilderBase(evtHandler, event, eventID)
-			{
-				TestEventClass();
-			}
-			EventBuilder(EventBuilder&& other)
+			DirectEventBuilder(DirectEventBuilder&& other)
 				:EventBuilderBase(std::move(other))
 			{
 			}
-
-		public:
-			template<class TFunctor>
-			EventBuilder& On(TFunctor&& func)
+			DirectEventBuilder(const DirectEventBuilder&) = delete;
+			~DirectEventBuilder()
 			{
-				std::invoke(func, static_cast<TEvent&>(*m_Event));
-				return *this;
-			}
-			
-			EventBuilder& Do()
-			{
-				EventBuilderBase::Do();
-				return *this;
+				// If the event wasn't sent using 'Do[Safely|Locally]', send it here.
+				if (!m_IsSent)
+				{
+					Do();
+				}
 			}
 
 		public:
-			EventBuilder& operator=(EventBuilder&& other)
+			DirectEventBuilder& Execute()
+			{
+				EventBuilderBase::ProcessEvent();
+				return *this;
+			}
+			DirectEventBuilder& ExecuteSafely()
+			{
+				EventBuilderBase::ProcessEventSafely();
+				return *this;
+			}
+			DirectEventBuilder& ExecuteLocally()
+			{
+				EventBuilderBase::ProcessEventLocally();
+				return *this;
+			}
+
+			TEvent& GetEvent() noexcept
+			{
+				return m_EventInstance;
+			}
+
+		public:
+			DirectEventBuilder& operator=(DirectEventBuilder&& other) noexcept
 			{
 				static_cast<EventBuilderBase&>(*this) = std::move(other);
 				return *this;
 			}
+			DirectEventBuilder& operator=(const DirectEventBuilder&) = delete;
+	};
+
+	template<class TEvent>
+	class QueuedEventBuilder: public EventBuilderBase, public Private::EventBuilderCRTP<QueuedEventBuilder<TEvent>, TEvent>
+	{
+		friend class Private::EventBuilderCRTP<QueuedEventBuilder, TEvent>;
+
+		public:
+			QueuedEventBuilder(EvtHandler& evtHandler, std::unique_ptr<TEvent> event, const EventID& eventID)
+				:EventBuilderBase(evtHandler, std::move(event), eventID)
+			{
+			}
+			QueuedEventBuilder(QueuedEventBuilder&& other)
+				:EventBuilderBase(std::move(other))
+			{
+			}
+			QueuedEventBuilder(const QueuedEventBuilder&) = delete;
+
+		public:
+			QueuedEventBuilder& Execute()
+			{
+				EventBuilderBase::QueueEvent();
+				return *this;
+			}
+			QueuedEventBuilder& ExecuteUnique(UniversallyUniqueID id)
+			{
+				EventBuilderBase::QueueEvent(std::move(id));
+				return *this;
+			}
+
+			TEvent* GetEvent() noexcept
+			{
+				return m_Event;
+			}
+
+		public:
+			QueuedEventBuilder& operator=(QueuedEventBuilder&& other) noexcept
+			{
+				static_cast<EventBuilderBase&>(*this) = std::move(other);
+				return *this;
+			}
+			QueuedEventBuilder& operator=(const QueuedEventBuilder&) = delete;
 	};
 }

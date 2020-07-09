@@ -296,7 +296,7 @@ namespace kxf::UI
 	}
 	void TaskDialog::SetDefaultTitle()
 	{
-		if (ICoreApplication* app = ICoreApplication::GetInstance())
+		if (auto app = ICoreApplication::GetInstance())
 		{
 			m_Title = app->GetDisplayName();
 		}

@@ -5,9 +5,31 @@
 
 namespace kxf
 {
-	using EventID = wxEventType;
-	using EventSourceID = wxWindowID;
-	
-	template<class T>
-	using EventTag = wxEventTypeTag<T>;
+	enum class EventCategory: uint32_t
+	{
+		None = 0,
+
+		UI = wxEVT_CATEGORY_UI,
+		Timer = wxEVT_CATEGORY_TIMER,
+		Thread = wxEVT_CATEGORY_THREAD,
+		Socket = wxEVT_CATEGORY_SOCKET,
+		Unknown = wxEVT_CATEGORY_UNKNOWN,
+		Clipboard = wxEVT_CATEGORY_CLIPBOARD,
+		UserInput = wxEVT_CATEGORY_USER_INPUT,
+
+		Everything = UI|Timer|Thread|Socket|Unknown|Clipboard|UserInput
+	};
+	KxDeclareFlagSet(EventCategory);
+
+	enum class EventFlag: uint32_t
+	{
+		None = 0,
+
+		Direct = 1,
+		Queued = 2,
+
+		Unique = 1 << 16,
+		Blocking = 1 << 17
+	};
+	KxDeclareFlagSet(EventFlag);
 }

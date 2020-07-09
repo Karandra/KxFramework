@@ -17,9 +17,6 @@
     <Filter Include="kxf\EventSystem">
       <UniqueIdentifier>{92dd9a25-4dd3-43b6-93d2-2e7e3aca0fee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\EventSystem\Events">
-      <UniqueIdentifier>{d9095824-780a-4122-9f03-6015b95cf0ec}</UniqueIdentifier>
-    </Filter>
     <Filter Include="kxf\Utility">
       <UniqueIdentifier>{52fc7bb7-70b1-4c6a-bf5f-529badf3d413}</UniqueIdentifier>
     </Filter>
@@ -212,6 +209,12 @@
     <Filter Include="kxf/Modules">
       <UniqueIdentifier>{916829f1-4a51-4891-9918-1b9723789c5a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\EventSystem\Private">
+      <UniqueIdentifier>{e7c63a0b-034c-4708-8a62-fc4a638ddd39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\EventSystem\CRTP">
+      <UniqueIdentifier>{d019425f-df57-4975-820f-f341593aa5c1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -223,35 +226,14 @@
     <ClInclude Include="kxf\System\Common.h">
       <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\EventSystem\BasicEvtHandler.h">
-      <Filter>kxf\EventSystem</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\EventSystem\BroadcastProcessor.h">
-      <Filter>kxf\EventSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\EventSystem\CallWrapper.h">
       <Filter>kxf\EventSystem</Filter>
     </ClInclude>
     <ClInclude Include="kxf\EventSystem\Common.h">
       <Filter>kxf\EventSystem</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\EventSystem\Event.h">
-      <Filter>kxf\EventSystem</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\EventSystem\EventBuilder.h">
       <Filter>kxf\EventSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\EventSystem\EvtHandler.h">
-      <Filter>kxf\EventSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\EventSystem\Events\IndirectCallEvent.h">
-      <Filter>kxf\EventSystem\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\EventSystem\Events\NotifyEvent.h">
-      <Filter>kxf\EventSystem\Events</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\EventSystem\Events\CommandEvent.h">
-      <Filter>kxf\EventSystem\Events</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Utility\Common.h">
       <Filter>kxf\Utility</Filter>
@@ -1187,9 +1169,6 @@
     <ClInclude Include="kxf\General\CoreApplication.h">
       <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\ICoreApplication.h">
-      <Filter>kxf\General</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\System\DynamicLibraryEvent.h">
       <Filter>kxf\System</Filter>
     </ClInclude>
@@ -1198,9 +1177,6 @@
     </ClInclude>
     <ClInclude Include="kxf\General\IGUIApplication.h">
       <Filter>kxf\General</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\General\Private\AppImpl.h">
-      <Filter>kxf\General\Private</Filter>
     </ClInclude>
     <ClInclude Include="kxf\General\ApplicationInitializer.h">
       <Filter>kxf\System</Filter>
@@ -1337,11 +1313,86 @@
     <ClInclude Include="kxf\Compression\SevenZip.h">
       <Filter>kxf\Compression</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Utility\WithOptionalOwenership.h">
+      <Filter>kxf\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\EventID.h">
+      <Filter>kxf\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\WidgetID.h">
+      <Filter>kxf\UI\&lt;UI&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Threading\ReadWriteLock.h">
+      <Filter>kxf\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Threading\LockGuard.h">
+      <Filter>kxf\Threading</Filter>
+    </ClInclude>
     <ClInclude Include="kxf\EventSystem\IWithEvtHandler.h">
       <Filter>kxf\EventSystem</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Utility\WithOptionalOwenership.h">
-      <Filter>kxf\Utility</Filter>
+    <ClInclude Include="kxf\EventSystem\IEventExecutor.h">
+      <Filter>kxf\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\EvtHandler.h">
+      <Filter>kxf\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\AsyncEvent.h">
+      <Filter>kxf\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\Event.h">
+      <Filter>kxf\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\EventExecutor.h">
+      <Filter>kxf\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\EventItem.h">
+      <Filter>kxf\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\IEventFilter.h">
+      <Filter>kxf\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\ICoreApplication.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\wxWidgets\Application.h">
+      <Filter>kxf\wxWidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\Private\NativeApp.h">
+      <Filter>kxf\General\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Threading\RecursiveRWLock.h">
+      <Filter>kxf\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\CRTP\CallAfter.h">
+      <Filter>kxf\EventSystem\CRTP</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\CRTP\ProcessEvent.h">
+      <Filter>kxf\EventSystem\CRTP</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\CRTP\Bind.h">
+      <Filter>kxf\EventSystem\CRTP</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\CRTP\QueueEvent.h">
+      <Filter>kxf\EventSystem\CRTP</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\EvtHandlerDelegate.h">
+      <Filter>kxf\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\IEventLoop.h">
+      <Filter>kxf\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\IdleEvent.h">
+      <Filter>kxf\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\CommonEventLoop.h">
+      <Filter>kxf\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\Private\Win32EventLoop.h">
+      <Filter>kxf\EventSystem\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Threading\SynchronizedCondition.h">
+      <Filter>kxf\Threading</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1937,14 +1988,8 @@
     <ClCompile Include="kxf\System\DynamicLibraryEvent.cpp">
       <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\ICoreApplication.cpp">
-      <Filter>kxf\General</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\General\GUIApplication.cpp">
       <Filter>kxf\General</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\General\Private\AppImpl.cpp">
-      <Filter>kxf\General\Private</Filter>
     </ClCompile>
     <ClCompile Include="kxf\General\ApplicationInitializer.cpp">
       <Filter>kxf\System</Filter>
@@ -2035,6 +2080,39 @@
     </ClCompile>
     <ClCompile Include="kxf\Private\CompileModules.cpp">
       <Filter>kxf/Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\EventSystem\EventID.cpp">
+      <Filter>kxf\EventSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Threading\ReadWriteLock.cpp">
+      <Filter>kxf\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\EventSystem\EvtHandler.cpp">
+      <Filter>kxf\EventSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\CoreApplication.cpp">
+      <Filter>kxf\General</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\ICoreApplication.cpp">
+      <Filter>kxf\General</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\Private\NativeApp.cpp">
+      <Filter>kxf\General\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Threading\Common.cpp">
+      <Filter>kxf\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\EventSystem\IEventLoop.cpp">
+      <Filter>kxf\EventSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\EventSystem\CommonEventLoop.cpp">
+      <Filter>kxf\EventSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\EventSystem\Private\Win32EventLoop.cpp">
+      <Filter>kxf\EventSystem\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Threading\SynchronizedCondition.cpp">
+      <Filter>kxf\Threading</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

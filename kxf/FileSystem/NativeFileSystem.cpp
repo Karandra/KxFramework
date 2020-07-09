@@ -136,14 +136,14 @@ namespace kxf
 				return ::SetCurrentDirectoryW(directoryString.wc_str());
 			};
 
-			if (ICoreApplication* app = ICoreApplication::GetInstance())
+			if (auto app = ICoreApplication::GetInstance())
 			{
-				FileOperationEvent event(ICoreApplication::EvtWorkingDirectoryChanged);
+				FileOperationEvent event;
 				event.SetSource(GetWorkingDirectory());
 				event.SetDestination(directory);
 				event.Allow();
 
-				if (app->GetEvtHandler().ProcessEvent(event) && !event.GetSkipped())
+				if (app->ProcessEvent(event, ICoreApplication::EvtWorkingDirectoryChanged) && !event.GetSkipped())
 				{
 					return event.IsAllowed() && DoChange(event.GetDestination());
 				}

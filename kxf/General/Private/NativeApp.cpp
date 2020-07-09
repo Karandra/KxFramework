@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AppImpl.h"
+#include "NativeApp.h"
 #include "kxf/System/NativeAPI.h"
 #include "kxf/System/DynamicLibraryEvent.h"
 
@@ -47,11 +47,11 @@ namespace
 
 namespace kxf::Private
 {
-	void AppImpl::OnCreate()
+	void NativeApp::OnCreate()
 	{
 		// Nothing to do here yet
 	}
-	void AppImpl::OnDestroy()
+	void NativeApp::OnDestroy()
 	{
 		if (NativeAPI::NtDLL::LdrUnregisterDllNotification && m_DLLNotificationsCookie)
 		{
@@ -60,7 +60,7 @@ namespace kxf::Private
 		m_DLLNotificationsCookie = nullptr;
 	}
 
-	bool AppImpl::OnBindDLLNotification()
+	bool NativeApp::OnBindDLLNotification()
 	{
 		if (!NativeAPI::NtDLL::LdrRegisterDllNotification)
 		{
@@ -102,14 +102,14 @@ namespace kxf::Private
 
 				if (event.GetEventType() != Event::EvtNull)
 				{
-					reinterpret_cast<AppImpl*>(context)->ProcessEvent(event);
+					reinterpret_cast<NativeApp*>(context)->ProcessEvent(event);
 				}
 			}, this, &m_DLLNotificationsCookie);
 			return status.IsSuccess() && m_DLLNotificationsCookie;
 		}
 		return true;
 	}
-	bool AppImpl::OnDynamicBind(wxDynamicEventTableEntry& entry)
+	bool NativeApp::OnDynamicBind(wxDynamicEventTableEntry& entry)
 	{
 		if (wxApp::OnDynamicBind(entry))
 		{

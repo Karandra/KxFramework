@@ -1,12 +1,12 @@
 #pragma once
 #include "../Common.h"
 #include "../ICoreApplication.h"
-#include <wx/app.h>
+#include "kxf/wxWidgets/Application.h"
 #include <wx/cmdline.h>
 
 namespace kxf::Private
 {
-	class KX_API AppImpl final: public wxApp
+	class KX_API NativeApp final: public wxWidgets::Application
 	{
 		private:
 			ICoreApplication& m_App;
@@ -23,12 +23,12 @@ namespace kxf::Private
 			bool OnDynamicBind(wxDynamicEventTableEntry& entry) override;
 
 		public:
-			AppImpl(ICoreApplication& app)
+			NativeApp(ICoreApplication& app)
 				:m_App(app)
 			{
 				OnCreate();
 			}
-			~AppImpl()
+			~NativeApp()
 			{
 				OnDestroy();
 			}
@@ -92,17 +92,6 @@ namespace kxf::Private
 			void ExitMainLoop() override
 			{
 				m_App.ExitMainLoop();
-			}
-			int FilterEvent(wxEvent& event) override
-			{
-				return m_App.FilterEvent(event);
-			}
-			void HandleEvent(wxEvtHandler* handler, wxEventFunction func, wxEvent& event) const override
-			{
-				if (handler)
-				{
-					m_App.HandleEvent(*handler, func, event);
-				}
 			}
 			void OnEventLoopEnter(wxEventLoopBase* loop) override
 			{

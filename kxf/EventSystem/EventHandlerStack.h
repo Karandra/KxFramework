@@ -1,5 +1,6 @@
 #pragma once
 #include "EvtHandler.h"
+#include "kxf/Utility/Common.h"
 
 namespace kxf
 {
@@ -13,26 +14,31 @@ namespace kxf
 			};
 
 		private:
-			wxEvtHandler* m_Base = nullptr;
-			wxEvtHandler* m_Top = nullptr;
+			EvtHandler* m_Base = nullptr;
+			EvtHandler* m_Top = nullptr;
 
 		public:
-			EvtHandlerStack(wxEvtHandler& first)
+			EvtHandlerStack(EvtHandler& first)
 				:m_Base(&first), m_Top(&first)
 			{
 			}
+			EvtHandlerStack(EvtHandlerStack&& other) noexcept
+			{
+				*this = std::move(other);
+			}
 			EvtHandlerStack(const EvtHandlerStack&) = delete;
+			virtual ~EvtHandlerStack() = default;
 
 		public:
-			bool Push(wxEvtHandler& evtHandler);
-			bool Remove(wxEvtHandler& evtHandler);
-			wxEvtHandler* Pop();
+			bool Push(EvtHandler& evtHandler);
+			bool Remove(EvtHandler& evtHandler);
+			EvtHandler* Pop();
 
-			wxEvtHandler* GetBase() const
+			EvtHandler* GetBase() const
 			{
 				return m_Base;
 			}
-			wxEvtHandler* GetTop() const
+			EvtHandler* GetTop() const
 			{
 				return m_Top;
 			}
@@ -43,7 +49,7 @@ namespace kxf
 			size_t GetCount() const
 			{
 				size_t count = 0;
-				ForEachItem(Order::LastToFirst, [&count](wxEvtHandler& chainItem)
+				ForEachItem(Order::LastToFirst, [&count](EvtHandler& chainItem)
 				{
 					count++;
 					return true;
@@ -52,9 +58,9 @@ namespace kxf
 			}
 
 			template<class TFunc>
-			wxEvtHandler* ForEachItem(Order order, TFunc&& func, bool chainedItemsOnly = false) const
+			EvtHandler* ForEachItem(Order order, TFunc&& func, bool chainedItemsOnly = false) const
 			{
-				auto TestItem = [&](wxEvtHandler* item)
+				auto TestItem = [&](EvtHandler* item)
 				{
 					return item && (!chainedItemsOnly || item != m_Base);
 				};
@@ -63,7 +69,7 @@ namespace kxf
 				{
 					case Order::FirstToLast:
 					{
-						for (wxEvtHandler* item = m_Base; TestItem(item); item = item->GetPreviousHandler())
+						for (EvtHandler* item = m_Base; TestItem(item); item = item->GetPreviousHandler())
 						{
 							if (!func(*item))
 							{
@@ -73,7 +79,7 @@ namespace kxf
 					}
 					case Order::LastToFirst:
 					{
-						for (wxEvtHandler* item = m_Top; TestItem(item); item = item->GetNextHandler())
+						for (EvtHandler* item = m_Top; TestItem(item); item = item->GetNextHandler())
 						{
 							if (!func(*item))
 							{
@@ -86,6 +92,13 @@ namespace kxf
 			}
 
 		public:
+			EvtHandlerStack& operator=(EvtHandlerStack&& other) noexcept
+			{
+				m_Base = Utility::ExchangeResetAndReturn(other.m_Base, nullptr);
+				m_Top = Utility::ExchangeResetAndReturn(other.m_Top, nullptr);
+
+				return *this;
+			}
 			EvtHandlerStack& operator=(const EvtHandlerStack&) = delete;
 	};
 }
