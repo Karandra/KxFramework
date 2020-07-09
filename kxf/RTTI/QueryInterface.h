@@ -201,6 +201,9 @@ namespace kxf::RTTI
 	template<class TDerived, class... TBase>
 	class ExtendInterface: public TBase...
 	{
+		protected:
+			using TBaseInterface = typename ExtendInterface<TDerived, TBase...>;
+
 		public:
 			ExtendInterface() = default;
 			
@@ -225,6 +228,9 @@ namespace kxf::RTTI
 	template<class TDerived, class... TBase>
 	class ImplementInterface: public TBase...
 	{
+		protected:
+			using TBaseClass = typename ImplementInterface<TDerived, TBase...>;
+
 		public:
 			IID GetIID() const noexcept override
 			{
