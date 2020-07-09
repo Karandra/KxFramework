@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "LockGuard.h"
 #include "kxf/General/AlignedStorage.h"
 struct _RTL_CRITICAL_SECTION;
 
@@ -30,9 +31,44 @@ namespace kxf
 			bool TryEnter() noexcept;
 			void Leave() noexcept;
 
+			_RTL_CRITICAL_SECTION& GetHandle() noexcept
+			{
+				return *m_CritSec;
+			}
 			uint32_t SetSpinCount(uint32_t spinCount) noexcept;
 
 		public:
 			CriticalSection& operator=(const CriticalSection&) = delete;
+	};
+}
+
+namespace kxf
+{
+	template<>
+	class LockGuard<CriticalSection> final
+	{
+		private:
+			CriticalSection& m_Lock;
+
+		public:
+			LockGuard(CriticalSection& lock) noexcept
+				:m_Lock(lock)
+			{
+				m_Lock.Enter();
+			}
+			LockGuard(const LockGuard&) = delete;
+			~LockGuard() noexcept
+			{
+				m_Lock.Leave();
+			}
+
+		public:
+			CriticalSection* operator->() const noexcept
+			{
+				return &m_Lock;
+			}
+
+		public:
+			LockGuard& operator=(const LockGuard&) = delete;
 	};
 }
