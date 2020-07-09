@@ -2,6 +2,7 @@
 #include "kxf/Common.hpp"
 #include <vector>
 #include <utility>
+#include <algorithm>
 #include <type_traits>
 
 namespace kxf::Utility
@@ -23,5 +24,11 @@ namespace kxf::Utility
 		ConvertVector(destination, source, std::forward<TFunc>(func));
 
 		return destination;
+	}
+
+	template<class TContainer, class TFunc>
+	auto RemoveIf(TContainer& container, TFunc&& func)
+	{
+		return container.erase(std::remove_if(std::begin(container), std::end(container), std::forward<TFunc>(func)), std::end(container));
 	}
 }
