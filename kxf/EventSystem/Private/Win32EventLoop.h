@@ -1,13 +1,32 @@
 #pragma once
 #include "../Common.h"
 #include "../CommonEventLoop.h"
+#include "kxf/General/DateTime/TimeSpan.h"
+#include "kxf/Drawing/Geometry.h"
 #include "kxf/Threading/SynchronizedCondition.h"
 struct tagMSG;
 
 namespace kxf::EventSystem::Private
 {
+	struct Win32Message final
+	{
+		void* WindowHandle = nullptr;
+		uint32_t Message = 0;
+		uintptr_t wParam = 0;
+		uintptr_t lParam = 0;
+		TimeSpan Time;
+		Point Point;
+	};
+}
+
+namespace kxf::EventSystem::Private
+{
 	class KX_API Win32EventLoop: public CommonEventLoop
 	{
+		public:
+			static Win32Message FromNativeMessage(const tagMSG& msg) noexcept;
+			static tagMSG ToNativeMessage(const Win32Message& message) noexcept;
+
 		private:
 			SynchronizedCondition m_WakeUpCondition;
 
@@ -21,10 +40,10 @@ namespace kxf::EventSystem::Private
 			uint32_t WaitForThread(void* threadHandle);
 
 			// Get the next message from queue and return true or return false if we got 'WM_QUIT' or an error occurred.
-			bool GetNextMessage(tagMSG& message);
+			bool GetNextMessage(Win32Message& message);
 
-			// Same as above but with a timeout and return value can be -1 meaning that time out expired in addition to true/false
-			DispatchTimeout GetNextMessage(tagMSG& message, TimeSpan timeout);
+			// Same as above but with a timeout.
+			DispatchTimeout GetNextMessage(Win32Message& message, TimeSpan timeout);
 
 		public:
 			Win32EventLoop() = default;

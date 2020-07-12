@@ -1394,6 +1394,9 @@
     <ClInclude Include="kxf\Threading\SynchronizedCondition.h">
       <Filter>kxf\Threading</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\EventSystem\Private\Win32GUIEventLoop.h">
+      <Filter>kxf\EventSystem\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\BroadcastProcessor.cpp">
@@ -2113,6 +2116,9 @@
     </ClCompile>
     <ClCompile Include="kxf\Threading\SynchronizedCondition.cpp">
       <Filter>kxf\Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\EventSystem\Private\Win32GUIEventLoop.cpp">
+      <Filter>kxf\EventSystem\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
