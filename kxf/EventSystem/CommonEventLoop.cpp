@@ -219,7 +219,6 @@ namespace kxf
 			WakeUp();
 		}
 	}
-
 	bool CommonEventLoop::DispatchIdle()
 	{
 		if (auto app = ICoreApplication::GetInstance())
@@ -227,19 +226,19 @@ namespace kxf
 			app->DispatchIdle();
 		}
 	}
-	bool CommonEventLoop::Yield(FlagSet<EventYieldFlag> flags, FlagSet<EventCategory> toProcess)
+	
+	bool CommonEventLoop::Yield(FlagSet<EventYieldFlag> flags)
 	{
 		if (flags.Contains(EventYieldFlag::OnlyIfRequired) && IsYielding())
 		{
 			return false;
 		}
-		if (!wxThread::IsMain())
-		{
-			// Don't ever dispatch events from non-main threads.
-			return false;
-		}
-
-		if (flags.Contains(EventYieldFlag::SelectByCategory))
+		return YieldFor(EventCategory::Everything);
+	}
+	bool CommonEventLoop::YieldFor(FlagSet<EventCategory> toProcess)
+	{
+		// Don't ever dispatch events from non-main threads
+		if (wxThread::IsMain())
 		{
 			// Set the value and don't forget to reset it before returning
 			Utility::CallAtScopeExit onExit = [&, yieldLevelOld = m_YieldLevel, oldAllowedToYield = m_AllowedToYield]()

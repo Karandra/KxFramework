@@ -46,10 +46,12 @@ namespace kxf
 			{
 				return m_YieldLevel != 0;
 			}
-			bool IsEventAllowedInsideYield(FlagSet<EventCategory> eventCategory) const
+			bool IsEventAllowedInsideYield(FlagSet<EventCategory> eventCategory) const override
 			{
 				return m_AllowedToYield.Contains(eventCategory);
 			}
-			bool Yield(FlagSet<EventYieldFlag> flags = {}, FlagSet<EventCategory> toProcess = {});
+
+			bool Yield(FlagSet<EventYieldFlag> flags) override;
+			bool YieldFor(FlagSet<EventCategory> toProcess) override;
 	};
 }

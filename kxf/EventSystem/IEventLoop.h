@@ -31,8 +31,7 @@ namespace kxf
 	{
 		None = 0,
 
-		OnlyIfRequired = 1 << 0,
-		SelectByCategory = 1 << 1
+		OnlyIfRequired = 1 << 0
 	};
 	KxDeclareFlagSet(EventYieldFlag);
 }
@@ -83,10 +82,11 @@ namespace kxf
 			virtual DispatchTimeout Dispatch(TimeSpan timeout) = 0;
 			virtual bool DispatchIdle() = 0;
 
-		public:
 			virtual bool IsYielding() const = 0;
 			virtual bool IsEventAllowedInsideYield(FlagSet<EventCategory> eventCategory) const = 0;
-			virtual bool Yield(FlagSet<EventYieldFlag> flags = {}, FlagSet<EventCategory> toProcess = {}) = 0;
+
+			virtual bool Yield(FlagSet<EventYieldFlag> flags) = 0;
+			virtual bool YieldFor(FlagSet<EventCategory> toProcess) = 0;
 	};
 }
 
