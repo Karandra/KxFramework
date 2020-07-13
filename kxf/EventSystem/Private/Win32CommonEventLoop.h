@@ -21,7 +21,7 @@ namespace kxf::EventSystem::Private
 
 namespace kxf::EventSystem::Private
 {
-	class KX_API Win32EventLoop: public CommonEventLoop
+	class KX_API Win32CommonEventLoop: public CommonEventLoop
 	{
 		public:
 			static Win32Message FromNativeMessage(const tagMSG& msg) noexcept;
@@ -53,7 +53,7 @@ namespace kxf::EventSystem::Private
 			virtual bool PreProcessMessage(Win32Message& message) = 0;
 
 		public:
-			Win32EventLoop() = default;
+			Win32CommonEventLoop() = default;
 
 		public:
 			void WakeUp() override;

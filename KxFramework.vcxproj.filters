@@ -1385,9 +1385,6 @@
     <ClInclude Include="kxf\EventSystem\CommonEventLoop.h">
       <Filter>kxf\EventSystem</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\EventSystem\Private\Win32EventLoop.h">
-      <Filter>kxf\EventSystem\Private</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Threading\SynchronizedCondition.h">
       <Filter>kxf\Threading</Filter>
     </ClInclude>
@@ -1402,6 +1399,9 @@
     </ClInclude>
     <ClInclude Include="kxf\Utility\WithOptionalOwnership.h">
       <Filter>kxf\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\Private\Win32CommonEventLoop.h">
+      <Filter>kxf\EventSystem\Private</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2117,9 +2117,6 @@
     <ClCompile Include="kxf\EventSystem\CommonEventLoop.cpp">
       <Filter>kxf\EventSystem</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\EventSystem\Private\Win32EventLoop.cpp">
-      <Filter>kxf\EventSystem\Private</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\Threading\SynchronizedCondition.cpp">
       <Filter>kxf\Threading</Filter>
     </ClCompile>
@@ -2127,6 +2124,9 @@
       <Filter>kxf\EventSystem\Private</Filter>
     </ClCompile>
     <ClCompile Include="kxf\EventSystem\Private\Win32ConsoleEventLoop.cpp">
+      <Filter>kxf\EventSystem\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\EventSystem\Private\Win32CommonEventLoop.cpp">
       <Filter>kxf\EventSystem\Private</Filter>
     </ClCompile>
   </ItemGroup>

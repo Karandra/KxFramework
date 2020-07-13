@@ -215,7 +215,7 @@
     <ClInclude Include="kxf\EventSystem\IEventLoop.h" />
     <ClInclude Include="kxf\EventSystem\IWithEvtHandler.h" />
     <ClInclude Include="kxf\EventSystem\Private\Win32ConsoleEventLoop.h" />
-    <ClInclude Include="kxf\EventSystem\Private\Win32EventLoop.h" />
+    <ClInclude Include="kxf\EventSystem\Private\Win32CommonEventLoop.h" />
     <ClInclude Include="kxf\EventSystem\Private\Win32GUIEventLoop.h" />
     <ClInclude Include="kxf\General\AlignedStorage.h" />
     <ClInclude Include="kxf\General\ApplicationInitializer.h" />
@@ -596,7 +596,7 @@
     <ClCompile Include="kxf\EventSystem\EvtHandler.cpp" />
     <ClCompile Include="kxf\EventSystem\IEventLoop.cpp" />
     <ClCompile Include="kxf\EventSystem\Private\Win32ConsoleEventLoop.cpp" />
-    <ClCompile Include="kxf\EventSystem\Private\Win32EventLoop.cpp" />
+    <ClCompile Include="kxf\EventSystem\Private\Win32CommonEventLoop.cpp" />
     <ClCompile Include="kxf\EventSystem\Private\Win32GUIEventLoop.cpp" />
     <ClCompile Include="kxf\FileSystem\Private\NativeFSUtility.cpp" />
     <ClCompile Include="kxf\General\ApplicationInitializer.cpp" />

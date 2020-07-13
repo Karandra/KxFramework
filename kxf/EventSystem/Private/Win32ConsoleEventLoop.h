@@ -1,15 +1,15 @@
 #pragma once
 #include "../Common.h"
-#include "Win32EventLoop.h"
+#include "Win32CommonEventLoop.h"
 
 namespace kxf::EventSystem::Private
 {
-	class KX_API Win32ConsoleEventLoop: public Win32EventLoop
+	class KX_API Win32ConsoleEventLoop: public Win32CommonEventLoop
 	{
 		protected:
 			void OnYieldFor(FlagSet<EventCategory> toProcess) override
 			{
-				Win32EventLoop::OnYieldFor(toProcess);
+				Win32CommonEventLoop::OnYieldFor(toProcess);
 			}
 			
 			bool PreProcessMessage(Win32Message& message) override
