@@ -1,13 +1,13 @@
 #pragma once
 #include "Common.h"
 #include "ICoreApplication.h"
-#include "kxf/EventSystem/EvtHandler.h"
-#include "kxf/EventSystem/IEventFilter.h"
+#include "kxf/Threading/LockGuard.h"
+#include "kxf/Threading/ReadWriteLock.h"
 #include "Private/NativeApp.h"
 
 namespace kxf
 {
-	class KX_API CoreApplication: public RTTI::ImplementInterface<CoreApplication, ICoreApplication, IEventFilter>
+	class KX_API CoreApplication: public RTTI::ImplementInterface<CoreApplication, ICoreApplication>
 	{
 		public:
 			static bool IsMainLoopRunning() noexcept
@@ -26,7 +26,38 @@ namespace kxf
 
 		private:
 			Private::NativeApp m_NativeApp;
+
+			// ICoreApplication
+			std::optional<int> m_ExitCode;
+
+			// Application::IBasicInfo
+			String m_Name;
+			String m_DisplayName;
+			String m_VendorName;
+			String m_VendorDisplayName;
+			String m_ClassName;
 			Version m_Version;
+
+			// Application::IMainEventLoop
+			std::unique_ptr<IEventLoop> m_MainLoop;
+
+			// Application::IPendingEvents
+			std::atomic<bool> m_PendingEventsProcessingEnabled = true;
+			
+			ReadWriteLock m_ScheduledForDestructionLock;
+			std::vector<std::unique_ptr<wxObject>> m_ScheduledForDestruction;
+			
+			ReadWriteLock m_PendingEvtHandlersLock;
+			std::list<EvtHandler*> m_PendingEvtHandlers;
+			std::list<EvtHandler*> m_DelayedPendingEvtHandlers;
+
+			// Application::IExceptionHandler
+			std::exception_ptr m_StoredException;
+
+			// Application::ICommandLine
+			size_t m_ArgC = 0;
+			const char** m_ArgVA = nullptr;
+			const wchar_t** m_ArgVW = nullptr;
 
 		protected:
 			Private::NativeApp& GetImpl()
@@ -55,62 +86,53 @@ namespace kxf
 				return TBaseClass::QueryInterface(iid);
 			}
 
-			// CoreApplication
-			wxEventLoopBase* GetMainLoop() const
-			{
-				return m_NativeApp.wxApp::GetMainLoop();
-			}
-			bool Yield()
-			{
-				return m_NativeApp.wxApp::Yield(true);
-			}
-			
-		public:
 			// ICoreApplication
-			void Exit(int exitCode) override
-			{
-				m_NativeApp.Exit(exitCode);
-			}
+			bool OnInit() override = 0;
+			void OnExit() override;
+			int OnRun() override;
+			
+			void Exit(int exitCode) override;
 			std::optional<int> GetExitCode() const override
 			{
-				return m_NativeApp.GetExitCode();
+				return m_ExitCode;
 			}
 
-			// Application information
-			String GetName() const override
+			// IEventFilter
+			IEventFilter::Result FilterEvent(Event& event) override
 			{
-				return m_NativeApp.GetAppName();
+				return Result::Skip;
 			}
+
+		public:
+			// Application::IBasicInfo
+			String GetName() const override;
 			void SetName(const String& name) override
 			{
-				m_NativeApp.SetAppName(name);
+				m_Name = name;
 			}
 
-			String GetDisplayName() const override
-			{
-				return m_NativeApp.GetAppDisplayName();
-			}
+			String GetDisplayName() const override;
 			void SetDisplayName(const String& name) override
 			{
-				m_NativeApp.SetAppDisplayName(name);
+				m_DisplayName = name;
 			}
 
 			String GetVendorName() const override
 			{
-				return m_NativeApp.GetVendorName();
+				return m_VendorName;
 			}
 			void SetVendorName(const String& name) override
 			{
-				m_NativeApp.SetVendorName(name);
+				m_VendorName = name;
 			}
 
 			String GetVendorDisplayName() const override
 			{
-				return m_NativeApp.GetVendorDisplayName();
+				return !m_VendorDisplayName.IsEmpty() ? m_VendorDisplayName : m_VendorName;
 			}
 			void SetVendorDisplayName(const String& name) override
 			{
-				m_NativeApp.SetVendorDisplayName(name);
+				m_VendorDisplayName = name;
 			}
 
 			String GetClassName() const override
@@ -131,123 +153,75 @@ namespace kxf
 				m_Version = version;
 			}
 
-			// Callbacks for application-wide events
-			bool OnInit() override = 0;
-			void OnExit() override
-			{
-				static_cast<void>(m_NativeApp.wxApp::OnExit());
-			}
-			int OnRun() override
-			{
-				return m_NativeApp.wxApp::OnRun();
-			}
-
-			// Event handling
-			int MainLoop() override
-			{
-				return m_NativeApp.wxApp::MainLoop();
-			}
-			void ExitMainLoop() override
-			{
-				m_NativeApp.wxApp::ExitMainLoop();
-			}
+			// Application::IMainEventLoop
+			int MainLoop() override;
+			void ExitMainLoop(int exitCode = 0) override;
 			void OnEventLoopEnter(IEventLoop& loop) override
 			{
-				//m_NativeApp.wxApp::OnEventLoopEnter(&loop);
+				// Nothing to do
 			}
 			void OnEventLoopExit(IEventLoop& loop) override
 			{
-				//m_NativeApp.wxApp::OnEventLoopExit(&loop);
+				// Nothing to do
 			}
-			bool DispatchIdle() override;
 			
-			void ExecuteEventHandler(Event& event, IEventExecutor& executor, EvtHandler& evtHandler) override;
+			// Application::IActiveEventLoop
+			void WakeUp() override;
+			bool Pending() override;
+			bool Dispatch() override;
+			bool DispatchIdle() override;
+			bool Yield(FlagSet<EventYieldFlag> flags) override;
 
-			// Pending events
-			bool ProcessPendingEvents() override
+			// Application::IPendingEvents
+			bool IsPendingEventsProcessingEnabled() const override
 			{
-				m_NativeApp.wxApp::ProcessPendingEvents();
-				return false;
+				return m_PendingEventsProcessingEnabled;
 			}
-			size_t DiscardPendingEvents() override
+			void EnablePendingEventsProcessing(bool enable = true) override
 			{
-				m_NativeApp.wxApp::DeletePendingEvents();
-				return 0;
-			}
-
-			void SuspendPendingEventsProcessing() override
-			{
-				m_NativeApp.wxApp::SuspendProcessingOfPendingEvents();
-			}
-			void ResumePendingEventsProcessing() override
-			{
-				m_NativeApp.wxApp::ResumeProcessingOfPendingEvents();
+				m_PendingEventsProcessingEnabled = enable;
 			}
 
-			bool IsScheduledForDestruction(const wxObject& object) const override
+			void AddPendingEventHandler(EvtHandler& evtHandler) override;
+			bool RemovePendingEventHandler(EvtHandler& evtHandler) override;
+			void DelayPendingEventHandler(EvtHandler& evtHandler) override;
+
+			bool ProcessPendingEvents() override;
+			size_t DiscardPendingEvents() override;
+
+			bool IsScheduledForDestruction(const wxObject& object) const override;
+			void ScheduleForDestruction(std::unique_ptr<wxObject> object) override;
+			void FinalizeScheduledForDestruction() override;
+
+			// Application::IExceptionHandler
+			bool OnMainLoopException() override;
+			void OnFatalException() override;
+			void OnUnhandledException() override;
+
+			bool StoreCurrentException() override;
+			void RethrowStoredException() override;
+
+			// Application::IDebugHandler
+			void OnAssertFailure(String file, int line, String function, String condition, String message) override;
+
+			// Application::ICommandLine
+			void InitializeCommandLine(char** argv, size_t argc) override
 			{
-				return m_NativeApp.wxApp::IsScheduledForDestruction(const_cast<wxObject*>(&object));
+				m_ArgVA = argv;
+				m_ArgVW = nullptr;
+				m_ArgC = argc;
 			}
-			void ScheduledForDestruction(wxObject& object) override
+			void InitializeCommandLine(wchar_t** argv, size_t argc) override
 			{
-				return m_NativeApp.wxApp::ScheduleForDestruction(&object);
-			}
-			void FinalizeScheduledForDestruction() override
-			{
-				m_NativeApp.wxApp::DeletePendingEvents();
+				m_ArgVA = nullptr;
+				m_ArgVW = argv;
+				m_ArgC = argc;
 			}
 
-			// Exceptions support
-			bool OnMainLoopException() override
-			{
-				return m_NativeApp.wxApp::OnExceptionInMainLoop();
-			}
-			void OnFatalException() override
-			{
-				m_NativeApp.wxApp::OnFatalException();
-			}
-			void OnUnhandledException() override
-			{
-				m_NativeApp.wxApp::OnUnhandledException();
-			}
-			void OnAssertFailure(String file, int line, String function, String condition, String message) override
-			{
-				m_NativeApp.wxApp::OnAssertFailure(file.wx_str(), line, function.wx_str(), condition.wx_str(), message.wx_str());
-			}
-
-			bool StoreCurrentException() override
-			{
-				return m_NativeApp.wxApp::StoreCurrentException();
-			}
-			void RethrowStoredException() override
-			{
-				return m_NativeApp.wxApp::RethrowStoredException();
-			}
-
-			// Command line
 			size_t EnumCommandLineArgs(std::function<bool(String)> func) const override;
-			void OnCommandLineInit(wxCmdLineParser& parser) override
-			{
-				m_NativeApp.wxApp::OnInitCmdLine(parser);
-			}
-			bool OnCommandLineParsed(wxCmdLineParser& parser) override
-			{
-				return m_NativeApp.wxApp::OnCmdLineParsed(parser);
-			}
-			bool OnCommandLineError(wxCmdLineParser& parser) override
-			{
-				return m_NativeApp.wxApp::OnCmdLineError(parser);
-			}
-			bool OnCommandLineHelp(wxCmdLineParser& parser) override
-			{
-				return m_NativeApp.wxApp::OnCmdLineHelp(parser);
-			}
-
-		public:
-			// IEventFilter
-			IEventFilter::Result FilterEvent(Event& event) override
-			{
-				return IEventFilter::Result::Skip;
-			}
+			void OnCommandLineInit(wxCmdLineParser& parser) override;
+			bool OnCommandLineParsed(wxCmdLineParser& parser) override;
+			bool OnCommandLineError(wxCmdLineParser& parser) override;
+			bool OnCommandLineHelp(wxCmdLineParser& parser) override;
 	};
 }
