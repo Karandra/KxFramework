@@ -3,9 +3,9 @@
 #include "kxf/General/String.h"
 #include "kxf/General/Version.h"
 #include "kxf/EventSystem/EvtHandler.h"
+#include "kxf/EventSystem/IEventLoop.h"
+#include "kxf/EventSystem/IEventFilter.h"
 #include "kxf/RTTI/QueryInterface.h"
-class wxApp;
-class wxEventLoopBase;
 class wxCmdLineParser;
 
 namespace kxf
@@ -18,27 +18,16 @@ namespace kxf
 	class FileOperationEvent;
 }
 
-namespace kxf
+namespace kxf::Application
 {
-	class KX_API ICoreApplication: public RTTI::ExtendInterface<ICoreApplication, EvtHandler>
+	class KX_API IBasicInfo: public RTTI::Interface<IBasicInfo>
 	{
-		KxDeclareIID(ICoreApplication, {0x2db9e5b5, 0x29cb, 0x4e8a, {0xb4, 0x59, 0x16, 0xee, 0xb, 0xad, 0x92, 0xdf}});
+		KxDeclareIID(IBasicInfo, {0x2604f989, 0xb6d1, 0x4eb7, {0x8b, 0x2a, 0xd2, 0x70, 0x6, 0x96, 0x4c, 0x21}});
 
 		public:
-			KxEVENT_MEMBER(FileOperationEvent, WorkingDirectoryChanged);
+			virtual ~IBasicInfo() = default;
 
 		public:
-			static ICoreApplication* GetInstance() noexcept;
-			static void SetInstance(ICoreApplication* instance) noexcept;
-
-		public:
-			virtual ~ICoreApplication() = default;
-
-		public:
-			virtual void Exit(int exitCode) = 0;
-			virtual std::optional<int> GetExitCode() const = 0;
-
-			// Application information
 			virtual String GetName() const = 0;
 			virtual void SetName(const String& name) = 0;
 
@@ -56,8 +45,136 @@ namespace kxf
 
 			virtual Version GetVersion() const = 0;
 			virtual void SetVersion(const Version& version) = 0;
+	};
 
-			// Callbacks for application-wide events
+	class KX_API IMainEventLoop: public RTTI::Interface<IMainEventLoop>
+	{
+		KxDeclareIID(IMainEventLoop, {0x537d4221, 0xb942, 0x4536, {0x91, 0xf0, 0xb, 0xd9, 0x56, 0x38, 0x59, 0x19}});
+
+		public:
+			virtual ~IMainEventLoop() = default;
+
+		public:
+			virtual int MainLoop() = 0;
+			virtual void ExitMainLoop(int exitCode = 0) = 0;
+			virtual void OnEventLoopEnter(IEventLoop& loop) = 0;
+			virtual void OnEventLoopExit(IEventLoop& loop) = 0;
+			virtual IEventLoop* GetMainLoop() = 0;
+	};
+
+	class KX_API IActiveEventLoop: public RTTI::Interface<IActiveEventLoop>
+	{
+		KxDeclareIID(IActiveEventLoop, {0xd27bff03, 0x58d1, 0x471b, {0x83, 0x67, 0x3c, 0xde, 0xfd, 0x4c, 0x77, 0xb0}});
+
+		public:
+			virtual ~IActiveEventLoop() = default;
+
+		public:
+			virtual void WakeUp() = 0;
+			virtual bool Pending() = 0;
+			virtual bool Dispatch() = 0;
+			virtual bool DispatchIdle() = 0;
+			virtual bool Yield(FlagSet<EventYieldFlag> flags) = 0;
+	};
+
+	class KX_API IPendingEvents: public RTTI::Interface<IPendingEvents>
+	{
+		KxDeclareIID(IPendingEvents, {0xf3c249fd, 0xf2ca, 0x41af, {0x85, 0x31, 0x5a, 0x74, 0x3d, 0x78, 0x34, 0xb7}});
+
+		public:
+			virtual ~IPendingEvents() = default;
+
+		public:
+			virtual bool IsPendingEventsProcessingEnabled() const = 0;
+			virtual void EnablePendingEventsProcessing(bool enable = true) = 0;
+
+			virtual void AddPendingEventHandler(EvtHandler& evtHandler) = 0;
+			virtual bool RemovePendingEventHandler(EvtHandler& evtHandler) = 0;
+			virtual void DelayPendingEventHandler(EvtHandler& evtHandler) = 0;
+
+			virtual bool ProcessPendingEvents() = 0;
+			virtual size_t DiscardPendingEvents() = 0;
+
+			virtual bool IsScheduledForDestruction(const wxObject& object) const = 0;
+			virtual void ScheduleForDestruction(std::unique_ptr<wxObject> object) = 0;
+			virtual void FinalizeScheduledForDestruction() = 0;
+	};
+
+	class KX_API IExceptionHandler: public RTTI::Interface<IExceptionHandler>
+	{
+		KxDeclareIID(IExceptionHandler, {0x924de29c, 0xfa90, 0x4ebe, {0xba, 0xbc, 0x33, 0x0, 0x10, 0x5, 0x9d, 0xa5}});
+
+		public:
+			virtual ~IExceptionHandler() = default;
+
+		public:
+			virtual bool OnMainLoopException() = 0;
+			virtual void OnUnhandledException() = 0;
+			virtual void OnFatalException() = 0;
+
+			virtual bool StoreCurrentException() = 0;
+			virtual void RethrowStoredException() = 0;
+	};
+
+	class KX_API IDebugHandler: public RTTI::Interface<IDebugHandler>
+	{
+		KxDeclareIID(IDebugHandler, {0x2165d85c, 0xe7ae, 0x4cc6, {0x88, 0x6f, 0x3f, 0x93, 0x8d, 0x9a, 0x1d, 0x7}});
+
+		public:
+			virtual ~IDebugHandler() = default;
+
+		public:
+			virtual void OnAssertFailure(String file, int line, String function, String condition, String message) = 0;
+	};
+
+	class KX_API ICommandLine: public RTTI::Interface<ICommandLine>
+	{
+		KxDeclareIID(ICommandLine, {0xbf92c139, 0xff8f, 0x4840, {0xa8, 0x9e, 0x9f, 0xd, 0x97, 0x3d, 0x8b, 0xf}});
+
+		public:
+			virtual ~ICommandLine() = default;
+
+		public:
+			virtual void InitializeCommandLine(char** argv, size_t argc) = 0;
+			virtual void InitializeCommandLine(wchar_t** argv, size_t argc) = 0;
+
+			virtual size_t EnumCommandLineArgs(std::function<bool(String)> func) const = 0;
+			virtual void OnCommandLineInit(wxCmdLineParser& parser) = 0;
+			virtual bool OnCommandLineParsed(wxCmdLineParser& parser) = 0;
+			virtual bool OnCommandLineError(wxCmdLineParser& parser) = 0;
+			virtual bool OnCommandLineHelp(wxCmdLineParser& parser) = 0;
+	};
+}
+
+namespace kxf
+{
+	class KX_API ICoreApplication: public RTTI::ExtendInterface
+		<
+			ICoreApplication,
+			EvtHandler,
+			IEventFilter,
+			Application::IBasicInfo,
+			Application::IMainEventLoop,
+			Application::IActiveEventLoop,
+			Application::IPendingEvents,
+			Application::IExceptionHandler,
+			Application::IDebugHandler,
+			Application::ICommandLine
+		>
+	{
+		KxDeclareIID(ICoreApplication, {0x2db9e5b5, 0x29cb, 0x4e8a, {0xb4, 0x59, 0x16, 0xee, 0xb, 0xad, 0x92, 0xdf}});
+
+		public:
+			KxEVENT_MEMBER(FileOperationEvent, WorkingDirectoryChanged);
+
+		public:
+			static ICoreApplication* GetInstance() noexcept;
+			static void SetInstance(ICoreApplication* instance) noexcept;
+
+		public:
+			virtual ~ICoreApplication() = default;
+
+		public:
 			virtual bool OnCreate()
 			{
 				return true;
@@ -70,45 +187,7 @@ namespace kxf
 			virtual void OnExit() = 0;
 			virtual int OnRun() = 0;
 
-			// Event handling
-			virtual int MainLoop() = 0;
-			virtual void ExitMainLoop() = 0;
-			virtual void OnEventLoopEnter(IEventLoop& loop) = 0;
-			virtual void OnEventLoopExit(IEventLoop& loop) = 0;
-			virtual IEventLoop* GetMainLoop() = 0;
-			virtual bool DispatchIdle() = 0;
-
-			virtual void ExecuteEventHandler(Event& event, IEventExecutor& executor, EvtHandler& evtHandler) = 0;
-
-			// Pending events
-			virtual void AddPendingEventHandler(EvtHandler& evthandler) = 0;
-			virtual bool RemovePendingEventHandler(EvtHandler& evthandler) = 0;
-			virtual void DelayPendingEventHandler(EvtHandler& evthandler) = 0;
-
-			virtual bool ProcessPendingEvents() = 0;
-			virtual size_t DiscardPendingEvents() = 0;
-
-			virtual void SuspendPendingEventsProcessing() = 0;
-			virtual void ResumePendingEventsProcessing() = 0;
-
-			virtual bool IsScheduledForDestruction(const wxObject& object) const = 0;
-			virtual void ScheduledForDestruction(wxObject& object) = 0;
-			virtual void FinalizeScheduledForDestruction() = 0;
-
-			// Exceptions support
-			virtual bool OnMainLoopException() = 0;
-			virtual void OnUnhandledException() = 0;
-			virtual void OnFatalException() = 0;
-			virtual void OnAssertFailure(String file, int line, String function, String condition, String message) = 0;
-
-			virtual bool StoreCurrentException() = 0;
-			virtual void RethrowStoredException() = 0;
-
-			// Command line
-			virtual size_t EnumCommandLineArgs(std::function<bool(String)> func) const = 0;
-			virtual void OnCommandLineInit(wxCmdLineParser& parser) = 0;
-			virtual bool OnCommandLineParsed(wxCmdLineParser& parser) = 0;
-			virtual bool OnCommandLineError(wxCmdLineParser& parser) = 0;
-			virtual bool OnCommandLineHelp(wxCmdLineParser& parser) = 0;
+			virtual void Exit(int exitCode) = 0;
+			virtual std::optional<int> GetExitCode() const = 0;
 	};
 }

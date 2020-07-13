@@ -33,10 +33,12 @@ namespace kxf
 	}
 	bool ApplicationInitializer::OnInit(int argc, char** argv)
 	{
+		m_App.InitializeCommandLine(argv, static_cast<size_t>(argc));
 		return wxInitialize(argc, argv);
 	}
 	bool ApplicationInitializer::OnInit(int argc, wchar_t** argv)
 	{
+		m_App.InitializeCommandLine(argv, static_cast<size_t>(argc));
 		return wxInitialize(argc, argv);
 	}
 	void ApplicationInitializer::OnInitDone()
