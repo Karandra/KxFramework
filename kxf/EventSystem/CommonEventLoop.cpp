@@ -5,28 +5,6 @@
 
 namespace kxf
 {
-	void CommonEventLoop::DoYieldFor(FlagSet<EventCategory> toProcess)
-	{
-		// Normally yielding dispatches not only the pending native events, but  also the events pending
-		// in the framework itself and idle events.
-		//
-		// Notice however that we must not do it if we're asked to process only the events of specific
-		// kind, as pending events could be of any kind at all (ideal would be to have a filtering
-		// version of 'ProcessPendingEvents' too) and idle events are typically unexpected when yielding
-		// for the specific event kinds only.
-		if (toProcess == EventCategory::Everything)
-		{
-			if (auto app = ICoreApplication::GetInstance())
-			{
-				app->ProcessPendingEvents();
-			}
-
-			// We call it just once, even if it returns true, because we don't want to get stuck inside
-			// 'Yield' forever if the application does some constant background processing in its idle
-			// handler, we do need to get back to the main loop soon.
-			DispatchIdle();
-		}
-	}
 	bool CommonEventLoop::DispatchEvents()
 	{
 		// Process pending framework events first as they correspond to low-level events
@@ -171,6 +149,28 @@ namespace kxf
 		}
 		return m_ExitCode;
 	}
+	void CommonEventLoop::OnYieldFor(FlagSet<EventCategory> toProcess)
+	{
+		// Normally yielding dispatches not only the pending native events, but  also the events pending
+		// in the framework itself and idle events.
+		//
+		// Notice however that we must not do it if we're asked to process only the events of specific
+		// kind, as pending events could be of any kind at all (ideal would be to have a filtering
+		// version of 'ProcessPendingEvents' too) and idle events are typically unexpected when yielding
+		// for the specific event kinds only.
+		if (toProcess == EventCategory::Everything)
+		{
+			if (auto app = ICoreApplication::GetInstance())
+			{
+				app->ProcessPendingEvents();
+			}
+
+			// We call it just once, even if it returns true, because we don't want to get stuck inside
+			// 'Yield' forever if the application does some constant background processing in its idle
+			// handler, we do need to get back to the main loop soon.
+			DispatchIdle();
+		}
+	}
 
 	int CommonEventLoop::Run()
 	{
@@ -257,9 +257,9 @@ namespace kxf
 				wxLog::Resume();
 			};
 
-			DoYieldFor(toProcess);
+			OnYieldFor(toProcess);
 
-			// If any handlers called from inside 'DoYield' threw exceptions, they may have been stored
+			// If any handlers called from inside 'OnYieldFor' threw exceptions, they may have been stored
 			// for later rethrow as it's unsafe to let them escape from inside 'DoYield' itself, as it
 			// calls native functions through which the exceptions can't propagate. But now that we're
 			// back to our own code, we may rethrow them.

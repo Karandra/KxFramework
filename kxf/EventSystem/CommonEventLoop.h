@@ -15,7 +15,6 @@ namespace kxf
 			bool m_ShouldExit = false;
 
 		private:
-			void DoYieldFor(FlagSet<EventCategory> toProcess);
 			bool DispatchEvents();
 
 		protected:
@@ -32,6 +31,7 @@ namespace kxf
 				return m_ShouldExit;
 			}
 
+			void OnYieldFor(FlagSet<EventCategory> toProcess) override = 0;
 			int OnRun() override;
 
 		public:

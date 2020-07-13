@@ -14,16 +14,17 @@ namespace kxf::EventSystem::Private
 			static void SetCriticalWindow(wxWindow* window);
 
 			// Return true if there is no critical window or if this window is [a child of] the critical one.
-			static bool AllowProcessing(wxWindow* window);
+			static bool AllowProcessing(wxWindow& window);
 
 			// Check if the given window is a child of the current critical window (which must be non NULL)
-			static bool IsChildOfCriticalWindow(wxWindow* window);
+			static bool IsChildOfCriticalWindow(wxWindow& window);
 
 		private:
 			// Array of messages used for temporary storage by 'YieldFor'
 			std::vector<Win32Message> m_Messages;
 
 		protected:
+			void OnYieldFor(FlagSet<EventCategory> toProcess) override;
 			void OnNextIteration() override;
 
 			// Process a single message: calls 'PreProcessMessage' before dispatching it
@@ -38,7 +39,5 @@ namespace kxf::EventSystem::Private
 		public:
 			bool Dispatch() override;
 			DispatchTimeout Dispatch(TimeSpan timeout) override;
-
-			bool YieldFor(FlagSet<EventCategory> toProcess) override;
 	};
 }
