@@ -1,15 +1,10 @@
 #include "stdafx.h"
 #include "EvtHandler.h"
+#include "IdleEvent.h"
 #include "kxf/General/ICoreApplication.h"
 #include "kxf/Utility/Container.h"
 #include <wx/event.h>
 #include <wx/evtloop.h>
-
-namespace
-{
-	// TODO: Idle events
-	constexpr int EvtIdle = 0;
-}
 
 namespace kxf
 {
@@ -89,7 +84,7 @@ namespace kxf
 			// Special case: don't pass 'IIdleEvent::EvtIdle' to app, since it'll always
 			// swallow it. Events of 'IIdleEvent::EvtIdle' are sent explicitly to wxApp so
 			// it will be processed appropriately via 'EvtHandler::SearchEventTable'.
-			if (event.GetEventID() != EvtIdle && app->DoProcessEvent(event))
+			if (event.GetEventID() != IdleEvent::EvtIdle && app->DoProcessEvent(event))
 			{
 				return true;
 			}
@@ -214,7 +209,7 @@ namespace kxf
 		if (nullCount != 0)
 		{
 			WriteLockGuard lock(m_EventTableLock);
-			Utility::RemoveIf(m_EventTable, [](const EventItem& item)
+			Utility::RemoveAllIf(m_EventTable, [](const EventItem& item)
 			{
 				return item.IsNull();
 			});
@@ -233,14 +228,7 @@ namespace kxf
 		event.Skip(false);
 
 		// Call the handler
-		if (auto app = ICoreApplication::GetInstance())
-		{
-			app->ExecuteEventHandler(event, *eventItem.GetExecutor(), evtHandler);
-		}
-		else
-		{
-			ExecuteEventHandler(event, *eventItem.GetExecutor(), evtHandler);
-		}
+		ExecuteEventHandler(event, *eventItem.GetExecutor(), evtHandler);
 
 		// Return true if we processed this event and event handler itself didn't skipped it
 		return !event.IsSkipped();
@@ -249,8 +237,7 @@ namespace kxf
 	{
 		executor.Execute(evtHandler, event);
 
-		// If event wasn't skipped call callback for this event
-		// and restore any possible changes in skip state
+		// If event wasn't skipped call callback for this event and restore any possible changes in skip state
 		if (const bool isSkipped = event.IsSkipped(); !isSkipped)
 		{
 			//event.ExecuteCallback(evtHandler);
