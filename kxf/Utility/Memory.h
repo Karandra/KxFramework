@@ -18,7 +18,7 @@ namespace kxf::Utility
 
 		if constexpr(std::is_nothrow_constructible_v<T, Args...>)
 		{
-			return DoConstruct();
+			return *DoConstruct();
 		}
 		else
 		{
