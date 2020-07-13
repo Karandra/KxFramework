@@ -27,11 +27,8 @@ namespace kxf::EventSystem::Private
 			void OnYieldFor(FlagSet<EventCategory> toProcess) override;
 			void OnNextIteration() override;
 
-			// Process a single message: calls 'PreProcessMessage' before dispatching it
-			virtual void ProcessMessage(Win32Message& message);
-
-			// Pre-process a message, return true if processed (i.e. no further dispatching required).
-			virtual bool PreProcessMessage(Win32Message& message);
+			void ProcessMessage(Win32Message& message) override;
+			bool PreProcessMessage(Win32Message& message) override;
 
 		public:
 			Win32GUIEventLoop() = default;

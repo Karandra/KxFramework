@@ -214,6 +214,7 @@
     <ClInclude Include="kxf\EventSystem\IEventFilter.h" />
     <ClInclude Include="kxf\EventSystem\IEventLoop.h" />
     <ClInclude Include="kxf\EventSystem\IWithEvtHandler.h" />
+    <ClInclude Include="kxf\EventSystem\Private\Win32ConsoleEventLoop.h" />
     <ClInclude Include="kxf\EventSystem\Private\Win32EventLoop.h" />
     <ClInclude Include="kxf\EventSystem\Private\Win32GUIEventLoop.h" />
     <ClInclude Include="kxf\General\AlignedStorage.h" />
@@ -380,9 +381,10 @@
     <ClInclude Include="kxf\UI\Windows\ToolTipEx.h" />
     <ClInclude Include="kxf\UI\Windows\TopLevelWindow.h" />
     <ClInclude Include="kxf\UI\WindowWithStyles.h" />
-    <ClInclude Include="kxf\Utility\WithOptionalOwenership.h" />
+    <ClInclude Include="kxf\Utility\WithOptionalOwnership.h" />
     <ClInclude Include="kxf\wxWidgets\Application.h" />
     <ClInclude Include="kxf\wxWidgets\Common.h" />
+    <ClInclude Include="kxf\wxWidgets\EventLoopWrapper.h" />
     <ClInclude Include="kxf\wxWidgets\RTTI.h" />
     <ClInclude Include="kxf\wxWidgets\SystemOptions.h" />
     <ClInclude Include="stdafx.h" />
@@ -593,6 +595,7 @@
     <ClCompile Include="kxf\EventSystem\EventID.cpp" />
     <ClCompile Include="kxf\EventSystem\EvtHandler.cpp" />
     <ClCompile Include="kxf\EventSystem\IEventLoop.cpp" />
+    <ClCompile Include="kxf\EventSystem\Private\Win32ConsoleEventLoop.cpp" />
     <ClCompile Include="kxf\EventSystem\Private\Win32EventLoop.cpp" />
     <ClCompile Include="kxf\EventSystem\Private\Win32GUIEventLoop.cpp" />
     <ClCompile Include="kxf\FileSystem\Private\NativeFSUtility.cpp" />

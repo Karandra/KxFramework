@@ -45,6 +45,13 @@ namespace kxf::EventSystem::Private
 			// Same as above but with a timeout.
 			DispatchTimeout GetNextMessage(Win32Message& message, TimeSpan timeout);
 
+		protected:
+			// Process a single message: calls 'PreProcessMessage' before dispatching it
+			virtual void ProcessMessage(Win32Message& message) = 0;
+
+			// Pre-process a message, return true if processed (i.e. no further dispatching required).
+			virtual bool PreProcessMessage(Win32Message& message) = 0;
+
 		public:
 			Win32EventLoop() = default;
 
