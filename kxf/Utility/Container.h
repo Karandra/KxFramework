@@ -25,10 +25,36 @@ namespace kxf::Utility
 
 		return destination;
 	}
+}
+
+namespace kxf::Utility
+{
+	template<class TContainer, class TFunc>
+	auto FindIf(TContainer&& container, TFunc&& func) noexcept
+	{
+		return std::find_if(std::begin(std::forward<TContainer>(container)), std::end(std::forward<TContainer>(container)), std::forward<TFunc>(func));
+	}
 
 	template<class TContainer, class TFunc>
-	auto RemoveIf(TContainer& container, TFunc&& func)
+	bool Contains(const TContainer& container, TFunc&& func) noexcept
+	{
+		return FindIf(container, std::forward<TFunc>(func)) != std::end(container);
+	}
+
+	template<class TContainer, class TFunc>
+	auto RemoveAllIf(TContainer& container, TFunc&& func)
 	{
 		return container.erase(std::remove_if(std::begin(container), std::end(container), std::forward<TFunc>(func)), std::end(container));
+	}
+
+	template<class TContainer, class TFunc>
+	auto RemoveSingleIf(TContainer& container, TFunc&& func)
+	{
+		auto it = FindIf(container, std::forward<TFunc>(func));
+		if (it != std::end(container))
+		{
+			return container.erase(it);
+		}
+		return it;
 	}
 }
