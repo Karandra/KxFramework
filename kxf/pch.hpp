@@ -15,6 +15,8 @@
 #include <variant>
 #include <atomic>
 #include <locale>
+#include <exception>
+#include <stdexcept>
 
 // Often used wxWidgets headers
 #include "kxf/wxWidgets/Setup.h"
