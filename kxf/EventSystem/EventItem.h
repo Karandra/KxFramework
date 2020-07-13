@@ -4,7 +4,7 @@
 #include "IEventExecutor.h"
 #include "kxf/General/LocallyUniqueID.h"
 #include "kxf/Utility/Common.h"
-#include "kxf/Utility/WithOptionalOwenership.h"
+#include "kxf/Utility/WithOptionalOwnership.h"
 
 namespace kxf::EventSystem
 {
@@ -72,9 +72,9 @@ namespace kxf::EventSystem
 			{
 				return m_Executor;
 			}
-			Utility::WithOptionalOwenership<IEventExecutor> GetExecutor() &&
+			Utility::WithOptionalOwnership<IEventExecutor> GetExecutor() &&
 			{
-				Utility::WithOptionalOwenership<IEventExecutor> ptr;
+				Utility::WithOptionalOwnership<IEventExecutor> ptr;
 				if (m_Executor)
 				{
 					if (m_ExecutorOwn)

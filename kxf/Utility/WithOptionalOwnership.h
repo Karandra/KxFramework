@@ -4,7 +4,7 @@
 namespace kxf::Utility
 {
 	template<class T>
-	class WithOptionalOwenership final
+	class WithOptionalOwnership final
 	{
 		public:
 			using TValue = T;
@@ -26,13 +26,21 @@ namespace kxf::Utility
 			}
 
 		public:
-			WithOptionalOwenership() noexcept = default;
-			WithOptionalOwenership(const WithOptionalOwenership&) = delete;
-			WithOptionalOwenership(WithOptionalOwenership&& other) noexcept
+			WithOptionalOwnership() noexcept = default;
+			WithOptionalOwnership(TValue& value) noexcept
+			{
+				Assign(value);
+			}
+			WithOptionalOwnership(std::unique_ptr<TValue> value) noexcept
+			{
+				Assign(std::move(value));
+			}
+			WithOptionalOwnership(const WithOptionalOwnership&) = delete;
+			WithOptionalOwnership(WithOptionalOwnership&& other) noexcept
 			{
 				*this = std::move(other);
 			}
-			~WithOptionalOwenership() noexcept
+			~WithOptionalOwnership() noexcept
 			{
 				Destroy();
 			}
@@ -55,7 +63,7 @@ namespace kxf::Utility
 			{
 				return m_Owned;
 			}
-			bool IsSame(const WithOptionalOwenership& other) const noexcept
+			bool IsSame(const WithOptionalOwnership& other) const noexcept
 			{
 				return m_Value == other.m_Value;
 			}
@@ -97,8 +105,8 @@ namespace kxf::Utility
 			}
 
 		public:
-			WithOptionalOwenership& operator=(const WithOptionalOwenership&) = delete;
-			WithOptionalOwenership& operator=(WithOptionalOwenership&& other) noexcept
+			WithOptionalOwnership& operator=(const WithOptionalOwnership&) = delete;
+			WithOptionalOwnership& operator=(WithOptionalOwnership&& other) noexcept
 			{
 				Destroy();
 				m_Value = ExchangeResetAndReturn(other.m_Value, nullptr);

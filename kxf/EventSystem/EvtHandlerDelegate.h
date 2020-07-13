@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "EvtHandler.h"
-#include "kxf/Utility/WithOptionalOwenership.h"
+#include "kxf/Utility/WithOptionalOwnership.h"
 
 namespace kxf
 {
@@ -15,7 +15,7 @@ namespace kxf
 			using EventItem = EventSystem::EventItem;
 
 		private:
-			Utility::WithOptionalOwenership<EvtHandler> m_EvtHandler;
+			Utility::WithOptionalOwnership<EvtHandler> m_EvtHandler;
 
 		protected:
 			void DoQueueEvent(std::unique_ptr<Event> event, const EventID& eventID = {}, UniversallyUniqueID uuid = {})

@@ -3,7 +3,7 @@
 #include "kxf/EventSystem/IWithEvtHandler.h"
 #include "Private/WithEvtHandler.h"
 #include "kxf/System/COM.h"
-#include "kxf/Utility/WithOptionalOwenership.h"
+#include "kxf/Utility/WithOptionalOwnership.h"
 struct IInArchive;
 
 namespace kxf::SevenZip::Private::Callback
@@ -49,7 +49,7 @@ namespace kxf::SevenZip
 					bool MultiThreaded = true;
 				} Properties;
 			} m_Data;
-			Utility::WithOptionalOwenership<wxEvtHandler> m_EvtHandler;
+			Utility::WithOptionalOwnership<wxEvtHandler> m_EvtHandler;
 
 		private:
 			void InvalidateCache();
