@@ -5,7 +5,6 @@
 namespace
 {
 	size_t g_EventLoopCount = 0;
-	kxf::IEventLoop* g_ActiveEventLoop = nullptr;
 }
 
 namespace kxf
@@ -13,15 +12,6 @@ namespace kxf
 	size_t IEventLoop::GetEventLoopCount() noexcept
 	{
 		return g_EventLoopCount;
-	}
-	IEventLoop* IEventLoop::GetActive() noexcept
-	{
-		return g_ActiveEventLoop;
-	}
-	void IEventLoop::SetActive(IEventLoop& eventLoop) noexcept
-	{
-		g_ActiveEventLoop = &eventLoop;
-		eventLoop.OnEnter();
 	}
 
 	void IEventLoop::OnEnter()
@@ -47,7 +37,10 @@ namespace kxf
 	{
 		if (--g_EventLoopCount == 0)
 		{
-			g_ActiveEventLoop = nullptr;
+			if (auto app = ICoreApplication::GetInstance())
+			{
+				app->SetActiveEventLoop(nullptr);
+			}
 		}
 	}
 
@@ -61,6 +54,10 @@ namespace kxf
 	}
 	bool IEventLoop::IsRunning() const
 	{
-		return g_ActiveEventLoop == this;
+		if (auto app = ICoreApplication::GetInstance())
+		{
+			return app->GetActiveEventLoop() == this;
+		}
+		return false;
 	}
 }

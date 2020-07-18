@@ -26,8 +26,11 @@ namespace kxf
 
 		private:
 			Private::NativeApp m_NativeApp;
-
+			
 			// ICoreApplication
+			ReadWriteLock m_EventFiltersLock;
+			std::list<IEventFilter*> m_EventFilters;
+
 			std::optional<int> m_ExitCode;
 
 			// Application::IBasicInfo
@@ -40,6 +43,9 @@ namespace kxf
 
 			// Application::IMainEventLoop
 			std::unique_ptr<IEventLoop> m_MainLoop;
+
+			// Application::IActiveEventLoop
+			IEventLoop* m_ActiveEventLoop = nullptr;
 
 			// Application::IPendingEvents
 			std::atomic<bool> m_PendingEventsProcessingEnabled = true;
@@ -87,6 +93,9 @@ namespace kxf
 			}
 
 			// ICoreApplication
+			bool OnCreate() override;
+			void OnDestroy() override;
+
 			bool OnInit() override = 0;
 			void OnExit() override;
 			int OnRun() override;
@@ -97,11 +106,9 @@ namespace kxf
 				return m_ExitCode;
 			}
 
-			// IEventFilter
-			IEventFilter::Result FilterEvent(Event& event) override
-			{
-				return Result::Skip;
-			}
+			void AddEventFilter(IEventFilter& eventFilter) override;
+			void RemoveEventFilter(IEventFilter& eventFilter) override;
+			IEventFilter::Result FilterEvent(Event& event) override;
 
 		public:
 			// Application::IBasicInfo
@@ -154,8 +161,12 @@ namespace kxf
 			}
 
 			// Application::IMainEventLoop
-			int MainLoop() override;
+			IEventLoop* GetMainLoop() override
+			{
+				return m_MainLoop.get();
+			}
 			void ExitMainLoop(int exitCode = 0) override;
+			
 			void OnEventLoopEnter(IEventLoop& loop) override
 			{
 				// Nothing to do
@@ -164,8 +175,11 @@ namespace kxf
 			{
 				// Nothing to do
 			}
-			
+
 			// Application::IActiveEventLoop
+			IEventLoop* GetActiveEventLoop() override;
+			void SetActiveEventLoop(IEventLoop* eventLoop) override;
+
 			void WakeUp() override;
 			bool Pending() override;
 			bool Dispatch() override;

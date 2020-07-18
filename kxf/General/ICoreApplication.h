@@ -13,6 +13,7 @@ namespace kxf
 	class Event;
 	class EvtHandler;
 	class IEventLoop;
+	class IEventFilter;
 	class IEventExecutor;
 
 	class FileOperationEvent;
@@ -55,21 +56,29 @@ namespace kxf::Application
 			virtual ~IMainEventLoop() = default;
 
 		public:
-			virtual int MainLoop() = 0;
+			virtual std::unique_ptr<IEventLoop> CreateMainLoop() = 0;
+			virtual IEventLoop* GetMainLoop() = 0;
 			virtual void ExitMainLoop(int exitCode = 0) = 0;
+
 			virtual void OnEventLoopEnter(IEventLoop& loop) = 0;
 			virtual void OnEventLoopExit(IEventLoop& loop) = 0;
-			virtual IEventLoop* GetMainLoop() = 0;
 	};
 
 	class KX_API IActiveEventLoop: public RTTI::Interface<IActiveEventLoop>
 	{
 		KxDeclareIID(IActiveEventLoop, {0xd27bff03, 0x58d1, 0x471b, {0x83, 0x67, 0x3c, 0xde, 0xfd, 0x4c, 0x77, 0xb0}});
 
+		protected:
+			static void CallOnEnterEventLoop(IEventLoop& eventLoop);
+			static void CallOnExitEventLoop(IEventLoop& eventLoop);
+
 		public:
 			virtual ~IActiveEventLoop() = default;
 
 		public:
+			virtual IEventLoop* GetActiveEventLoop() = 0;
+			virtual void SetActiveEventLoop(IEventLoop* eventLoop) = 0;
+
 			virtual void WakeUp() = 0;
 			virtual bool Pending() = 0;
 			virtual bool Dispatch() = 0;
@@ -152,7 +161,6 @@ namespace kxf
 		<
 			ICoreApplication,
 			EvtHandler,
-			IEventFilter,
 			Application::IBasicInfo,
 			Application::IMainEventLoop,
 			Application::IActiveEventLoop,
@@ -175,13 +183,11 @@ namespace kxf
 			virtual ~ICoreApplication() = default;
 
 		public:
-			virtual bool OnCreate()
-			{
-				return true;
-			}
-			virtual void OnDestroy()
-			{
-			}
+			using IPendingEvents::ProcessPendingEvents;
+
+		public:
+			virtual bool OnCreate() = 0;
+			virtual void OnDestroy() = 0;
 
 			virtual bool OnInit() = 0;
 			virtual void OnExit() = 0;
@@ -189,5 +195,9 @@ namespace kxf
 
 			virtual void Exit(int exitCode) = 0;
 			virtual std::optional<int> GetExitCode() const = 0;
+
+			virtual void AddEventFilter(IEventFilter& eventFilter) = 0;
+			virtual void RemoveEventFilter(IEventFilter& eventFilter) = 0;
+			virtual IEventFilter::Result FilterEvent(Event& event) = 0;
 	};
 }

@@ -301,16 +301,14 @@ namespace kxf
 		// into event processing in order to globally pre-process all events.
 		//
 		// Note that we should only do it if we're the first event handler called
-		// to avoid calling FilterEvent() multiple times as the event goes through
+		// to avoid calling 'FilterEvent' multiple times as the event goes through
 		// the event handler chain and possibly upwards the window hierarchy.
-		/*
 		if (!event.WasProcessed())
 		{
-			for (QxEventFilter* eventFilter = ms_EventFilters; eventFilter; eventFilter = eventFilter->m_Next)
+			using Result = IEventFilter::Result;
+			if (auto app = ICoreApplication::GetInstance())
 			{
-				using Result = QxEventFilter::Result;
-
-				const Result result = eventFilter->FilterEvent(event);
+				const Result result = app->FilterEvent(event);
 				if (result != Result::Skip)
 				{
 					return result != Result::Ignore;
@@ -318,7 +316,6 @@ namespace kxf
 				// Proceed normally
 			}
 		}
-		*/
 
 		// Short circuit the event processing logic if we're requested to process
 		// this event in this handler only, see 'TryChain' for more details.

@@ -6,9 +6,49 @@
 #include "kxf/Utility/Container.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 
+namespace
+{
+	void DeleteAllTLWs()
+	{
+		// TLWs remove themselves from 'wxTopLevelWindows' when destroyed, so iterate until none are left.
+		while (!wxTopLevelWindows.empty())
+		{
+			// Do not use 'Destroy' here as it only puts the TLW in pending list but we want to delete them now.
+			delete wxTopLevelWindows.GetFirst()->GetData();
+		}
+	}
+}
+
 namespace kxf
 {
 	// CoreApplication
+	bool CoreApplication::OnCreate()
+	{
+		wxInitializeStockLists();
+		wxBitmap::InitStandardHandlers();
+
+		return true;
+	}
+	void CoreApplication::OnDestroy()
+	{
+		m_MainLoop = nullptr;
+
+		// Clean up any still pending objects. Normally there shouldn't any as we
+		// already do this in 'OnExit', but this could happen if the user code has
+		// somehow managed to create more of them since then or just forgot to call
+		// the base class 'OnExit'.
+		FinalizeScheduledForDestruction();
+
+		// And any remaining top level windows
+		DeleteAllTLWs();
+
+		// Undo everything we did in the 'OnCreate' above
+		wxBitmap::CleanUpHandlers();
+		wxStockGDI::DeleteAll();
+		wxDeleteStockLists();
+		wxDELETE(wxTheColourDatabase);
+	}
+
 	void CoreApplication::OnExit()
 	{
 		// Finalize scheduled objects if there are anything left
@@ -16,7 +56,20 @@ namespace kxf
 	}
 	int CoreApplication::OnRun()
 	{
-		// TODO: Create main loop
+		if (auto mainLoop = CreateMainLoop())
+		{
+			// Save the old main loop pointer (if any), create a new loop and run it.
+			// At the end of the loop, restore the original main loop.
+			std::swap(m_MainLoop, mainLoop);
+			Utility::CallAtScopeExit atExit = [&]()
+			{
+				m_MainLoop = std::move(mainLoop);
+			};
+
+			// Here we're running our newly created main loop saved in place of 'm_MainLoop' pointer.
+			return m_MainLoop->Run();
+		}
+		return m_ExitCode.value_or(-1);
 	}
 
 	void CoreApplication::Exit(int exitCode)
@@ -30,6 +83,34 @@ namespace kxf
 			m_ExitCode = exitCode;
 			std::terminate();
 		}
+	}
+
+	void CoreApplication::AddEventFilter(IEventFilter& eventFilter)
+	{
+		WriteLockGuard lock(m_EventFiltersLock);
+		m_EventFilters.push_back(&eventFilter);
+	}
+	void CoreApplication::RemoveEventFilter(IEventFilter& eventFilter)
+	{
+		WriteLockGuard lock(m_EventFiltersLock);
+		m_EventFilters.remove(&eventFilter);
+	}
+	IEventFilter::Result CoreApplication::FilterEvent(Event& event)
+	{
+		using Result = IEventFilter::Result;
+
+		ReadLockGuard lock(m_EventFiltersLock);
+		for (IEventFilter* eventFilter: m_EventFilters)
+		{
+			const Result result = eventFilter->FilterEvent(event);
+			if (result != Result::Skip)
+			{
+				return result;
+			}
+		}
+
+		// Do nothing by default if there are no event filters
+		return Result::Skip;
 	}
 
 	// Application::IBasicInfo
@@ -58,11 +139,7 @@ namespace kxf
 		return m_NativeApp.GetVendorName();
 	}
 
-	// Application::IMainEventLoop
-	int CoreApplication::MainLoop()
-	{
-
-	}
+	// Application::IMainEoventLoop
 	void CoreApplication::ExitMainLoop(int exitCode)
 	{
 		// We should exit from the main event loop, not just any currently active (e.g. modal dialog) event loop
@@ -74,16 +151,29 @@ namespace kxf
 	}
 
 	// Application::IActiveEventLoop
+	IEventLoop* CoreApplication::GetActiveEventLoop()
+	{
+		return m_ActiveEventLoop;
+	}
+	void CoreApplication::SetActiveEventLoop(IEventLoop* eventLoop)
+	{
+		m_ActiveEventLoop = eventLoop;
+		if (eventLoop)
+		{
+			IActiveEventLoop::CallOnEnterEventLoop(*eventLoop);
+		}
+	}
+
 	void CoreApplication::WakeUp()
 	{
-		if (IEventLoop* eventLoop = IEventLoop::GetActive())
+		if (IEventLoop* eventLoop = GetActiveEventLoop())
 		{
 			eventLoop->WakeUp();
 		}
 	}
 	bool CoreApplication::Pending()
 	{
-		if (IEventLoop* eventLoop = IEventLoop::GetActive())
+		if (IEventLoop* eventLoop = GetActiveEventLoop())
 		{
 			return eventLoop->Pending();
 		}
@@ -91,7 +181,7 @@ namespace kxf
 	}
 	bool CoreApplication::Dispatch()
 	{
-		if (IEventLoop* eventLoop = IEventLoop::GetActive())
+		if (IEventLoop* eventLoop = GetActiveEventLoop())
 		{
 			return eventLoop->Dispatch();
 		}
@@ -112,13 +202,13 @@ namespace kxf
 	}
 	bool CoreApplication::Yield(FlagSet<EventYieldFlag> flags)
 	{
-		if (IEventLoop* eventLoop = IEventLoop::GetActive())
+		if (IEventLoop* activeEventLoop = GetActiveEventLoop())
 		{
-			return eventLoop->Yield(flags);
+			return activeEventLoop->Yield(flags);
 		}
-		else
+		else if (auto tempEventLoop = CreateMainLoop())
 		{
-			// TODO: Create temporary event loop
+			return tempEventLoop->Yield(flags);
 		}
 		return false;
 	}
@@ -135,8 +225,10 @@ namespace kxf
 	}
 	void CoreApplication::ScheduleForDestruction(std::unique_ptr<wxObject> object)
 	{
-		// We need an active event loop to schedule deletion
-		if (IEventLoop::GetActive() && object)
+		// We need an active event loop to schedule deletion. If no active loop present
+		// the object is deleted immediately.
+		// TODO: Should we still add it and delete when the application object gets destroyed?
+		if (m_ActiveEventLoop && object)
 		{
 			WriteLockGuard lock(m_ScheduledForDestructionLock);
 
@@ -273,7 +365,7 @@ namespace kxf
 	// Application::IExceptionHandler
 	bool CoreApplication::OnMainLoopException()
 	{
-		return m_NativeApp.wxApp::OnExceptionInMainLoop();
+		throw;
 	}
 	void CoreApplication::OnFatalException()
 	{
@@ -310,7 +402,7 @@ namespace kxf
 	// Application::IDebugHandler
 	void CoreApplication::OnAssertFailure(String file, int line, String function, String condition, String message)
 	{
-		m_NativeApp.wxApp::OnAssertFailure(file.wx_str(), line, function.wx_str(), condition.wx_str(), message.wx_str());
+		// TODO: Show some message or something
 	}
 
 	// Application::ICommandLine
@@ -342,18 +434,20 @@ namespace kxf
 	}
 	void CoreApplication::OnCommandLineInit(wxCmdLineParser& parser)
 	{
-		m_NativeApp.wxApp::OnInitCmdLine(parser);
+		// Nothing to do
 	}
 	bool CoreApplication::OnCommandLineParsed(wxCmdLineParser& parser)
 	{
-		return m_NativeApp.wxApp::OnCmdLineParsed(parser);
+		return true;
 	}
 	bool CoreApplication::OnCommandLineError(wxCmdLineParser& parser)
 	{
-		return m_NativeApp.wxApp::OnCmdLineError(parser);
+		parser.Usage();
+		return false;
 	}
 	bool CoreApplication::OnCommandLineHelp(wxCmdLineParser& parser)
 	{
-		return m_NativeApp.wxApp::OnCmdLineHelp(parser);
+		parser.Usage();
+		return false;
 	}
 }
