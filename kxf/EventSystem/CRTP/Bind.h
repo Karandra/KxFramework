@@ -11,13 +11,13 @@ namespace kxf::EventSystem
 		private:
 			T& Self()
 			{
-				return static_cast<T&(*this);
+				return static_cast<T&>(*this);
 			}
 
 		public:
 			// Bind free or static function
 			template<class TEvent, class TEventArg>
-			LocallyUniqueID Bind(const const EventTag<TEvent>&& eventTag, void(*func)(TEventArg&), FlagSet<EventFlag> flags = EventFlag::Direct)
+			LocallyUniqueID Bind(const EventTag<TEvent>&& eventTag, void(*func)(TEventArg&), FlagSet<EventFlag> flags = EventFlag::Direct)
 			{
 				return Self().DoBind(eventTag, std::make_unique<EventSystem::CallableEventExecutor<TEvent, decltype(func)>>(func), flags);
 			}

@@ -77,7 +77,7 @@ namespace kxf::Utility
 				if (m_Owned)
 				{
 					m_Owned = false;
-					return std::unique_ptr<TValue>(ExchangeResetAndReturn(m_Value, nullptr))
+					return std::unique_ptr<TValue>(ExchangeResetAndReturn(m_Value, nullptr));
 				}
 				return nullptr;
 			}

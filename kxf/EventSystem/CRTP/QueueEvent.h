@@ -12,7 +12,7 @@ namespace kxf::EventSystem
 		private:
 			T& Self()
 			{
-				return static_cast<T&(*this);
+				return static_cast<T&>(*this);
 			}
 
 		public:
