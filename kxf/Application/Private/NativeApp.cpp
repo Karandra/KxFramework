@@ -70,6 +70,7 @@ namespace kxf::Private
 		{
 			NtStatus status = NativeAPI::NtDLL::LdrRegisterDllNotification(0, [](uint32_t reason, const void* data, void* context)
 			{
+				EventID eventID;
 				DynamicLibraryEvent event;
 				auto SetParameters = [&](const auto& parameters)
 				{
@@ -88,21 +89,21 @@ namespace kxf::Private
 				{
 					case LDR_DLL_NOTIFICATION_REASON_LOADED:
 					{
-						event.SetEventType(DynamicLibraryEvent::EvtLoaded);
+						eventID = DynamicLibraryEvent::EvtLoaded;
 						SetParameters(reinterpret_cast<const LDR_DLL_NOTIFICATION_DATA*>(data)->Loaded);
 						break;
 					}
 					case LDR_DLL_NOTIFICATION_REASON_UNLOADED:
 					{
-						event.SetEventType(DynamicLibraryEvent::EvtUnloaded);
+						eventID = DynamicLibraryEvent::EvtUnloaded;
 						SetParameters(reinterpret_cast<const LDR_DLL_NOTIFICATION_DATA*>(data)->Unloaded);
 						break;
 					}
 				};
 
-				if (event.GetEventType() != Event::EvtNull)
+				if (eventID)
 				{
-					reinterpret_cast<NativeApp*>(context)->ProcessEvent(event);
+					ICoreApplication::GetInstance()->ProcessEvent(event, std::move(eventID));
 				}
 			}, this, &m_DLLNotificationsCookie);
 			return status.IsSuccess() && m_DLLNotificationsCookie;
@@ -113,7 +114,7 @@ namespace kxf::Private
 	{
 		if (wxApp::OnDynamicBind(entry))
 		{
-			if (entry.m_eventType == DynamicLibraryEvent::EvtLoaded || entry.m_eventType == DynamicLibraryEvent::EvtUnloaded)
+			if (EventID(entry.m_eventType) == DynamicLibraryEvent::EvtLoaded || EventID(entry.m_eventType) == DynamicLibraryEvent::EvtUnloaded)
 			{
 				return OnBindDLLNotification();
 			}

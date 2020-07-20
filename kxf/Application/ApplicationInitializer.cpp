@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ApplicationInitializer.h"
 #include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/wxWidgets/Application.h"
 #include <wx/init.h>
 #include <wx/except.h>
 
@@ -20,7 +21,14 @@ namespace kxf
 		if (wxAppConsole::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, m_App.GetDisplayName().c_str()))
 		{
 			// This will tell 'wxInitialize' to use already existing application instance instead of attempting to create a new one
-			wxAppConsole::SetInstance(&m_App.GetWxImpl());
+			if (auto app = m_App.QueryInterface<wxWidgets::Application>())
+			{
+				wxAppConsole::SetInstance(app);
+			}
+			else if (auto appConsole = m_App.QueryInterface<wxWidgets::ApplicationConsole>())
+			{
+				wxAppConsole::SetInstance(appConsole);
+			}
 			wxAppConsole::SetInitializerFunction(nullptr);
 
 			return true;

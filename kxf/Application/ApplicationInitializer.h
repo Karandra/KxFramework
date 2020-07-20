@@ -3,24 +3,24 @@
 #include "ICoreApplication.h"
 #include "kxf/System/Common.h"
 
+// This class can be used to perform full initialize-run-shutdown sequence of the application.
+// Use as shown:
+/*
+	int main(int argc, char** argv)
+	{
+		MyAppNamespace::MyApp app;
+		return kxf::ApplicationInitializer(app, argc, argv).Run();
+	}
+*/
+
+// Useful MSVC linker config when using this method:
+/*
+	/SUBSYSTEM:windows
+	/ENTRY:mainCRTStartup
+*/
+
 namespace kxf
 {
-	// This class can be used to perform full initialize-run-shutdown sequence of the application.
-	// Use as shown:
-	/*
-		int main(int argc, char** argv)
-		{
-			MyAppNamespace::MyApp app;
-			return kxf::ApplicationInitializer(app, argc, argv).Run();
-		}
-	*/
-
-	// Useful MSVC linker config when using this method:
-	/*
-		/SUBSYSTEM:windows
-		/ENTRY:mainCRTStartup
-	*/
-
 	class ApplicationInitializer final
 	{
 		private:

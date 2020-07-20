@@ -183,6 +183,14 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="kxf\Application.hpp" />
+    <ClInclude Include="kxf\Application\ApplicationInitializer.h" />
+    <ClInclude Include="kxf\Application\Common.h" />
+    <ClInclude Include="kxf\Application\CoreApplication.h" />
+    <ClInclude Include="kxf\Application\GUIApplication.h" />
+    <ClInclude Include="kxf\Application\ICoreApplication.h" />
+    <ClInclude Include="kxf\Application\IGUIApplication.h" />
+    <ClInclude Include="kxf\Application\Private\NativeApp.h" />
     <ClInclude Include="kxf\Compression\IArchiveCallbacks.h" />
     <ClInclude Include="kxf\Compression\SevenZip.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Archive.h" />
@@ -219,8 +227,6 @@
     <ClInclude Include="kxf\EventSystem\Private\Win32CommonEventLoop.h" />
     <ClInclude Include="kxf\EventSystem\Private\Win32GUIEventLoop.h" />
     <ClInclude Include="kxf\General\AlignedStorage.h" />
-    <ClInclude Include="kxf\General\ApplicationInitializer.h" />
-    <ClInclude Include="kxf\General\CoreApplication.h" />
     <ClInclude Include="kxf\General\DateTime.h" />
     <ClInclude Include="kxf\General\DateTime\Common.h" />
     <ClInclude Include="kxf\General\DateTime\DateSpan.h" />
@@ -230,11 +236,7 @@
     <ClInclude Include="kxf\General\DateTime\TimeClock.h" />
     <ClInclude Include="kxf\General\DateTime\TimeSpan.h" />
     <ClInclude Include="kxf\General\DateTime\TimeZone.h" />
-    <ClInclude Include="kxf\General\GUIApplication.h" />
-    <ClInclude Include="kxf\General\ICoreApplication.h" />
-    <ClInclude Include="kxf\General\IGUIApplication.h" />
     <ClInclude Include="kxf\General\LocallyUniqueID.h" />
-    <ClInclude Include="kxf\General\Private\NativeApp.h" />
     <ClInclude Include="kxf\General\RegEx.h" />
     <ClInclude Include="kxf\IO.hpp" />
     <ClInclude Include="kxf\IO\Common.h" />
@@ -582,6 +584,11 @@
     <ClInclude Include="kxf\wxWidgets\Setup.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="kxf\Application\ApplicationInitializer.cpp" />
+    <ClCompile Include="kxf\Application\CoreApplication.cpp" />
+    <ClCompile Include="kxf\Application\GUIApplication.cpp" />
+    <ClCompile Include="kxf\Application\ICoreApplication.cpp" />
+    <ClCompile Include="kxf\Application\Private\NativeApp.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Archive.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Common.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Library.cpp" />
@@ -600,17 +607,12 @@
     <ClCompile Include="kxf\EventSystem\Private\Win32CommonEventLoop.cpp" />
     <ClCompile Include="kxf\EventSystem\Private\Win32GUIEventLoop.cpp" />
     <ClCompile Include="kxf\FileSystem\Private\NativeFSUtility.cpp" />
-    <ClCompile Include="kxf\General\ApplicationInitializer.cpp" />
     <ClCompile Include="kxf\General\DateTime\DateSpan.cpp" />
     <ClCompile Include="kxf\General\DateTime\DateTime.cpp" />
     <ClCompile Include="kxf\General\DateTime\TimeClock.cpp" />
     <ClCompile Include="kxf\General\DateTime\TimeSpan.cpp" />
     <ClCompile Include="kxf\General\DateTime\TimeZone.cpp" />
-    <ClCompile Include="kxf\General\GUIApplication.cpp" />
-    <ClCompile Include="kxf\General\CoreApplication.cpp" />
-    <ClCompile Include="kxf\General\ICoreApplication.cpp" />
     <ClCompile Include="kxf\General\LocallyUniqueID.cpp" />
-    <ClCompile Include="kxf\General\Private\NativeApp.cpp" />
     <ClCompile Include="kxf\IO\Common.cpp" />
     <ClCompile Include="kxf\IO\FileStream.cpp" />
     <ClCompile Include="kxf\IO\MemoryStream.cpp" />
