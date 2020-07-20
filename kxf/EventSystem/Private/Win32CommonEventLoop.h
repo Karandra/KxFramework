@@ -4,7 +4,11 @@
 #include "kxf/General/DateTime/TimeSpan.h"
 #include "kxf/Drawing/Geometry.h"
 #include "kxf/Threading/SynchronizedCondition.h"
+#include "kxf/System/UndefWindows.h"
 struct tagMSG;
+
+// Required by wxWidgets' 'ClassRegistrar'
+Kx_MakeWinUnicodeCallWrapper(RegisterClass);
 
 namespace kxf::EventSystem::Private
 {

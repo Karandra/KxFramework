@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "EvtHandler.h"
 #include "IdleEvent.h"
-#include "kxf/General/ICoreApplication.h"
+#include "kxf/Application/ICoreApplication.h"
 #include "kxf/Utility/Container.h"
 #include <wx/event.h>
 #include <wx/evtloop.h>
@@ -30,9 +30,9 @@ namespace kxf
 			WriteLockGuard lockOther(other.m_PendingEventsLock);
 			m_PendingEvents = std::move(other.m_PendingEvents);
 		}
-		Utility::ExchangeAndReset(m_PrevHandler, other.m_PrevHandler, nullptr);
-		Utility::ExchangeAndReset(m_NextHandler, other.m_NextHandler, nullptr);
-		Utility::ExchangeAndReset(m_IsEnabled, other.m_IsEnabled, true);
+		m_PrevHandler.exchange(other.m_PrevHandler);
+		m_NextHandler.exchange(other.m_NextHandler);
+		m_IsEnabled.exchange(other.m_IsEnabled);
 	}
 	void EvtHandler::Destroy()
 	{
@@ -46,7 +46,7 @@ namespace kxf
 		DiscardPendingEvents();
 	}
 
-	void EvtHandler::PrepareEvent(Event& event, const EventID& eventID, UniversallyUniqueID uuid = {})
+	void EvtHandler::PrepareEvent(Event& event, const EventID& eventID, UniversallyUniqueID uuid)
 	{
 		if (eventID && !event.m_EventID)
 		{
@@ -259,9 +259,9 @@ namespace kxf
 				{
 					// If this event has a unique ID, search for the last posted event with the same ID and,
 					// if it'll be found, replace it with our new event, otherwise just add it at the end as usual.
-					auto it = std::find_if(m_PendingEvents.rbegin(), m_PendingEvents.rend(), [&](const Event& event)
+					auto it = std::find_if(m_PendingEvents.rbegin(), m_PendingEvents.rend(), [&](const auto& event)
 					{
-						return event.GetUniqueID() == uuid;
+						return event->GetUniqueID() == uuid;
 					});
 					if (it != m_PendingEvents.rend())
 					{

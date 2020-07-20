@@ -20,7 +20,7 @@ namespace kxf::EventSystem
 		EventBuilderBase null;
 		Utility::ExchangeAndReset(m_EvtHandler, other.m_EvtHandler, null.m_EvtHandler);
 		Utility::ExchangeAndReset(m_Event, other.m_Event, null.m_Event);
-		Utility::ExchangeAndReset(m_EventID, other.m_EventID, null.m_EventID);
+		m_EventID = std::move(other.m_EventID);
 		Utility::ExchangeAndReset(m_IsAsync, other.m_IsAsync, null.m_IsAsync);
 		Utility::ExchangeAndReset(m_IsSent, other.m_IsSent, null.m_IsSent);
 		Utility::ExchangeAndReset(m_IsSkipped, other.m_IsSkipped, null.m_IsSkipped);

@@ -69,7 +69,7 @@ namespace kxf
 				{
 					case Order::FirstToLast:
 					{
-						for (EvtHandler* item = m_Base; TestItem(item); item = item->GetPreviousHandler())
+						for (EvtHandler* item = m_Base; TestItem(item); item = item->GetPrevHandler())
 						{
 							if (!func(*item))
 							{

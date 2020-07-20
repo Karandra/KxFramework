@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Win32GUIEventLoop.h"
-#include "kxf/General/ICoreApplication.h"
+#include "kxf/Application/ICoreApplication.h"
 #include "wx/msw/private.h"
 #include "wx/evtloop.h"
 #include <Windows.h>

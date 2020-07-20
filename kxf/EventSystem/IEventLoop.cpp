@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "IEventLoop.h"
-#include "kxf/General/ICoreApplication.h"
+#include "kxf/Application/ICoreApplication.h"
 
 namespace
 {

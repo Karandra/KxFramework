@@ -11,6 +11,11 @@ namespace kxf
 		public EventSystem::QueueEventCRTP<EvtHandlerDelegate>,
 		public EventSystem::ProcessEventCRTP<EvtHandlerDelegate>
 	{
+		friend class EventSystem::BindCRTP<EvtHandlerDelegate>;
+		friend class EventSystem::CallAfterCRTP<EvtHandlerDelegate>;
+		friend class EventSystem::QueueEventCRTP<EvtHandlerDelegate>;
+		friend class EventSystem::ProcessEventCRTP<EvtHandlerDelegate>;
+
 		protected:
 			using EventItem = EventSystem::EventItem;
 

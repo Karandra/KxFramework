@@ -42,7 +42,7 @@ namespace kxf::Application
 
 namespace kxf
 {
-	class KX_API IEventLoop: RTTI::Interface<IEventLoop>
+	class KX_API IEventLoop: public RTTI::Interface<IEventLoop>
 	{
 		KxDeclareIID(IEventLoop, {0x7926acb6, 0x7016, 0x478c, {0x9d, 0xa3, 0x5f, 0x3e, 0xc1, 0xa1, 0xcc, 0xbb}});
 

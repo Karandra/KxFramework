@@ -9,7 +9,7 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API IEventFilter: RTTI::Interface<IEventFilter>
+	class KX_API IEventFilter: public RTTI::Interface<IEventFilter>
 	{
 		KxDeclareIID(IEventFilter, {0xc11e0406, 0xba4c, 0x4ba6, {0xa6, 0x87, 0x54, 0xb0, 0x80, 0x20, 0x91, 0x50}});
 

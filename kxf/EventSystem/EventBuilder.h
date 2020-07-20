@@ -18,6 +18,15 @@ namespace kxf::EventSystem::Private
 			}
 
 		public:
+			~EventBuilderCRTP()
+			{
+				if (!Self().m_IsSent)
+				{
+					Self().Execute();
+				}
+			}
+
+		public:
 			template<class TFunc>
 			T& Setup(TFunc&& func)
 			{
@@ -27,7 +36,7 @@ namespace kxf::EventSystem::Private
 
 			T& SetSourceToSelf()
 			{
-				Self().m_Event->SetEventSource(m_EvtHandler);
+				Self().m_Event->SetEventSource(Self().m_EvtHandler);
 				return Self();
 			}
 			T& SetSource(EvtHandler& source)
@@ -35,7 +44,7 @@ namespace kxf::EventSystem::Private
 				Self().m_Event->SetEventSource(&source);
 				return Self();
 			}
-	}
+	};
 }
 
 namespace kxf::EventSystem
@@ -147,14 +156,6 @@ namespace kxf::EventSystem
 			{
 			}
 			DirectEventBuilder(const DirectEventBuilder&) = delete;
-			~DirectEventBuilder()
-			{
-				// If the event wasn't sent using 'Do[Safely|Locally]', send it here.
-				if (!m_IsSent)
-				{
-					Do();
-				}
-			}
 
 		public:
 			DirectEventBuilder& Execute()
