@@ -61,3 +61,25 @@ namespace kxf
 		return false;
 	}
 }
+
+namespace kxf
+{
+	EventLoopActivator::EventLoopActivator(IEventLoop& eventLoop) noexcept
+	{
+		if (auto app = ICoreApplication::GetInstance())
+		{
+			m_PreviousLoop = app->GetActiveEventLoop();
+			app->SetActiveEventLoop(&eventLoop);
+		}
+	}
+	EventLoopActivator::~EventLoopActivator() noexcept
+	{
+		if (m_PreviousLoop)
+		{
+			if (auto app = ICoreApplication::GetInstance())
+			{
+				app->SetActiveEventLoop(m_PreviousLoop);
+			}
+		}
+	}
+}

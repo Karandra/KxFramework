@@ -103,19 +103,9 @@ namespace kxf
 			IEventLoop* m_PreviousLoop = nullptr;
 
 		public:
-			EventLoopActivator(IEventLoop& eventLoop) noexcept
-				:m_PreviousLoop(IEventLoop::GetActive())
-			{
-				IEventLoop::SetActive(eventLoop);
-			}
+			EventLoopActivator(IEventLoop& eventLoop) noexcept;
 			EventLoopActivator(const EventLoopActivator&) = delete;
-			~EventLoopActivator() noexcept
-			{
-				if (m_PreviousLoop)
-				{
-					IEventLoop::SetActive(*m_PreviousLoop);
-				}
-			}
+			~EventLoopActivator() noexcept;
 
 		public:
 			EventLoopActivator& operator=(const EventLoopActivator&) = delete;
