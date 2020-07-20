@@ -10,7 +10,7 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API DynamicLibraryEvent: public wxNotifyEvent
+	class KX_API DynamicLibraryEvent: public Event
 	{
 		public:
 			KxEVENT_MEMBER(DynamicLibraryEvent, Loaded);
@@ -23,15 +23,11 @@ namespace kxf
 
 		public:
 			DynamicLibraryEvent() = default;
-			DynamicLibraryEvent(EventID eventType)
-				:wxNotifyEvent(eventType)
-			{
-			}
 
 		public:
-			DynamicLibraryEvent* Clone() const override
+			std::unique_ptr<Event> Move() noexcept override
 			{
-				return new DynamicLibraryEvent(*this);
+				return std::make_unique<DynamicLibraryEvent>(std::move(*this));
 			}
 			
 			DynamicLibrary GetLibrary() const;
@@ -57,8 +53,5 @@ namespace kxf
 			{
 				m_FullPath = std::move(fullPath);
 			}
-
-		public:
-			wxDECLARE_DYNAMIC_CLASS(DynamicLibraryEvent);
 	};
 }

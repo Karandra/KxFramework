@@ -63,6 +63,10 @@ namespace kxf
 				}
 				return false;
 			}
+			bool IsExceptionThrown() const
+			{
+				return m_ExceptionThrown;
+			}
 
 		public:
 			Event() = default;
@@ -125,15 +129,6 @@ namespace kxf
 			void Allow(bool allow = true)
 			{
 				m_IsAllowed = allow;
-			}
-
-			bool WasProcessed() const
-			{
-				return m_WasProcessed;
-			}
-			bool ExceptionThrown() const
-			{
-				return m_ExceptionThrown;
 			}
 
 		public:

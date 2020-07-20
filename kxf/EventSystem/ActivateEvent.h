@@ -17,7 +17,7 @@ namespace kxf
 	class KX_API ActivateEvent: public Event
 	{
 		public:
-			static inline const EventTag<IdleEvent> EvtIdle = wxEVT_ACTIVATE;
+			KxEVENT_MEMBER_AS(ActivateEvent, Activate, wxEVT_ACTIVATE);
 
 		private:
 			ActivateEventReason m_Reason = ActivateEventReason::Unknown;

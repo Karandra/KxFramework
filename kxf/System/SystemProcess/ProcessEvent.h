@@ -16,11 +16,11 @@ namespace kxf
 
 		public:
 			ProcessEvent(EventID type = Event::EvtNull, int id = wxID_ANY)
-				:wxNotifyEvent(type, id)
+				:wxNotifyEvent(type.AsInt(), id)
 			{
 			}
 			ProcessEvent(EventID type, uint32_t pid, uint32_t exitCode)
-				:wxNotifyEvent(type, wxID_ANY), m_PID(pid), m_ExitCode(exitCode)
+				:wxNotifyEvent(type.AsInt(), wxID_ANY), m_PID(pid), m_ExitCode(exitCode)
 			{
 			}
 

@@ -25,7 +25,7 @@ namespace kxf
 
 		public:
 			FileOperationEvent(EventID type = Event::EvtNull, int id = 0) noexcept
-				:wxNotifyEvent(type, id)
+				:wxNotifyEvent(type.AsInt(), id)
 			{
 				Allow();
 			}

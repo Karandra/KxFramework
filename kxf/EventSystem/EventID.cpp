@@ -49,6 +49,31 @@ namespace kxf
 		}
 		return 0;
 	}
+
+	int64_t EventID::AsInt() const noexcept
+	{
+		if (auto value = std::get_if<int64_t>(&m_ID))
+		{
+			return *value;
+		}
+		return 0;
+	}
+	UniversallyUniqueID EventID::AsUniqueID() const noexcept
+	{
+		if (auto value = std::get_if<UniversallyUniqueID>(&m_ID))
+		{
+			return *value;
+		}
+		return {};
+	}
+	const String& EventID::AsString() const noexcept
+	{
+		if (auto value = std::get_if<String>(&m_ID))
+		{
+			return *value;
+		}
+		return NullString;
+	}
 }
 
 namespace kxf::EventSystem

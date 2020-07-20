@@ -42,6 +42,10 @@ namespace kxf
 			bool IsNull() const noexcept;
 			size_t GetHash() const noexcept;
 
+			int64_t AsInt() const noexcept;
+			UniversallyUniqueID AsUniqueID() const noexcept;
+			const String& AsString() const noexcept;
+
 		public:
 			explicit operator bool() const noexcept
 			{

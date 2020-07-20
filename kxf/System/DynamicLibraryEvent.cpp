@@ -4,8 +4,6 @@
 
 namespace kxf
 {
-	wxIMPLEMENT_DYNAMIC_CLASS(DynamicLibraryEvent, wxNotifyEvent);
-
 	DynamicLibrary DynamicLibraryEvent::GetLibrary() const
 	{
 		DynamicLibrary library;
