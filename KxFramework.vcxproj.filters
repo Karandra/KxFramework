@@ -215,6 +215,9 @@
     <Filter Include="kxf\EventSystem\CRTP">
       <UniqueIdentifier>{d019425f-df57-4975-820f-f341593aa5c1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\EventSystem\&lt;Events&gt;">
+      <UniqueIdentifier>{2dfd2894-0e32-4b6c-b500-91d335aaf7b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -1331,9 +1334,6 @@
     <ClInclude Include="kxf\EventSystem\EvtHandler.h">
       <Filter>kxf\EventSystem</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\EventSystem\AsyncEvent.h">
-      <Filter>kxf\EventSystem</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\EventSystem\Event.h">
       <Filter>kxf\EventSystem</Filter>
     </ClInclude>
@@ -1376,9 +1376,6 @@
     <ClInclude Include="kxf\EventSystem\IEventLoop.h">
       <Filter>kxf\EventSystem</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\EventSystem\IdleEvent.h">
-      <Filter>kxf\EventSystem</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\EventSystem\CommonEventLoop.h">
       <Filter>kxf\EventSystem</Filter>
     </ClInclude>
@@ -1402,6 +1399,15 @@
     </ClInclude>
     <ClInclude Include="kxf\General\ApplicationInitializer.h">
       <Filter>kxf\General</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\ActivateEvent.h">
+      <Filter>kxf\EventSystem\&lt;Events&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\AsyncEvent.h">
+      <Filter>kxf\EventSystem\&lt;Events&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\IdleEvent.h">
+      <Filter>kxf\EventSystem\&lt;Events&gt;</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

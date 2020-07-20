@@ -199,6 +199,7 @@
     <ClInclude Include="kxf\Compression\SevenZip\Private\WithEvtHandler.h" />
     <ClInclude Include="kxf\Crypto\UserCredentials.h" />
     <ClInclude Include="kxf\Drawing\Geometry.h" />
+    <ClInclude Include="kxf\EventSystem\ActivateEvent.h" />
     <ClInclude Include="kxf\EventSystem\AsyncEvent.h" />
     <ClInclude Include="kxf\EventSystem\CRTP\Bind.h" />
     <ClInclude Include="kxf\EventSystem\CRTP\CallAfter.h" />
