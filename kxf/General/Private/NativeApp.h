@@ -10,7 +10,6 @@ namespace kxf::Private
 	{
 		private:
 			ICoreApplication& m_App;
-			std::optional<int> m_ExitCode;
 			void* m_DLLNotificationsCookie = nullptr;
 
 		private:
@@ -34,16 +33,6 @@ namespace kxf::Private
 			}
 
 		public:
-			void Exit(int exitCode)
-			{
-				m_ExitCode = exitCode;
-				wxExit();
-			}
-			std::optional<int> GetExitCode() const
-			{
-				return m_ExitCode;
-			}
-
 			// Exceptions support
 			bool OnExceptionInMainLoop() override
 			{
@@ -70,24 +59,17 @@ namespace kxf::Private
 			int OnExit() override
 			{
 				m_App.OnExit();
-
-				// Return code from this function is ignored but we can still return something
-				return m_ExitCode.value_or(std::numeric_limits<int>::max());
+				return m_App.GetExitCode().value_or(-1);
 			}
 			int OnRun() override
 			{
-				const int exitCode = m_App.OnRun();
-				if (!m_ExitCode)
-				{
-					m_ExitCode = exitCode;
-				}
-				return *m_ExitCode;
+				return m_App.OnRun();
 			}
 
 			// Event handling
 			int MainLoop() override
 			{
-				return m_App.MainLoop();
+				return -1;
 			}
 			void ExitMainLoop() override
 			{
@@ -95,17 +77,9 @@ namespace kxf::Private
 			}
 			void OnEventLoopEnter(wxEventLoopBase* loop) override
 			{
-				if (loop)
-				{
-					m_App.OnEventLoopEnter(*loop);
-				}
 			}
 			void OnEventLoopExit(wxEventLoopBase* loop) override
 			{
-				if (loop)
-				{
-					m_App.OnEventLoopExit(*loop);
-				}
 			}
 
 			// Pending events
