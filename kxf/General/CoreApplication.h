@@ -3,18 +3,18 @@
 #include "ICoreApplication.h"
 #include "kxf/Threading/LockGuard.h"
 #include "kxf/Threading/ReadWriteLock.h"
-#include "Private/NativeApp.h"
+#include "kxf/wxWidgets/Application.h"
+
+namespace kxf::Private
+{
+	class NativeApp;
+}
 
 namespace kxf
 {
 	class KX_API CoreApplication: public RTTI::ImplementInterface<CoreApplication, ICoreApplication>
 	{
 		public:
-			static bool IsMainLoopRunning() noexcept
-			{
-				return wxApp::IsMainLoopRunning();
-			}
-
 			static CoreApplication* GetInstance() noexcept
 			{
 				return static_cast<CoreApplication*>(ICoreApplication::GetInstance());
@@ -24,11 +24,11 @@ namespace kxf
 				ICoreApplication::SetInstance(instance);
 			}
 
-		private:
-			Private::NativeApp m_NativeApp;
+		protected:
+			std::unique_ptr<Private::NativeApp> m_NativeApp;
 			
 			// ICoreApplication
-			ReadWriteLock m_EventFiltersLock;
+			mutable ReadWriteLock m_EventFiltersLock;
 			std::list<IEventFilter*> m_EventFilters;
 
 			std::optional<int> m_ExitCode;
@@ -50,10 +50,10 @@ namespace kxf
 			// Application::IPendingEvents
 			std::atomic<bool> m_PendingEventsProcessingEnabled = true;
 			
-			ReadWriteLock m_ScheduledForDestructionLock;
+			mutable ReadWriteLock m_ScheduledForDestructionLock;
 			std::vector<std::unique_ptr<wxObject>> m_ScheduledForDestruction;
 			
-			ReadWriteLock m_PendingEvtHandlersLock;
+			mutable ReadWriteLock m_PendingEvtHandlersLock;
 			std::list<EvtHandler*> m_PendingEvtHandlers;
 			std::list<EvtHandler*> m_DelayedPendingEvtHandlers;
 
@@ -68,29 +68,20 @@ namespace kxf
 		protected:
 			Private::NativeApp& GetImpl()
 			{
-				return m_NativeApp;
+				return *m_NativeApp;
 			}
 			const Private::NativeApp& GetImpl() const
 			{
-				return m_NativeApp;
+				return *m_NativeApp;
 			}
 
 		public:
-			CoreApplication()
-				:m_NativeApp(*this)
-			{
-			}
+			CoreApplication();
+			~CoreApplication();
 
 		public:
 			// IObject
-			void* QueryInterface(const IID& iid) noexcept override
-			{
-				if (iid.IsOfType<wxWidgets::Application>())
-				{
-					return static_cast<wxWidgets::Application*>(&m_NativeApp);
-				}
-				return TBaseClass::QueryInterface(iid);
-			}
+			void* QueryInterface(const IID& iid) noexcept override;
 
 			// ICoreApplication
 			bool OnCreate() override;
@@ -142,15 +133,6 @@ namespace kxf
 				m_VendorDisplayName = name;
 			}
 
-			String GetClassName() const override
-			{
-				return m_NativeApp.GetClassName();
-			}
-			void SetClassName(const String& name) override
-			{
-				m_NativeApp.SetClassName(name);
-			}
-
 			Version GetVersion() const override
 			{
 				return m_Version;
@@ -159,6 +141,9 @@ namespace kxf
 			{
 				m_Version = version;
 			}
+
+			String GetClassName() const override;
+			void SetClassName(const String& name) override;
 
 			// Application::IMainEventLoop
 			IEventLoop* GetMainLoop() override
@@ -237,5 +222,69 @@ namespace kxf
 			bool OnCommandLineParsed(wxCmdLineParser& parser) override;
 			bool OnCommandLineError(wxCmdLineParser& parser) override;
 			bool OnCommandLineHelp(wxCmdLineParser& parser) override;
+	};
+}
+
+namespace kxf
+{
+	class KX_API GUIApplication: public RTTI::ImplementInterface<GUIApplication, CoreApplication, IGUIApplication>
+	{
+		private:
+			enum class ExitOnLastFrameDelete
+			{
+				Never,
+				Always,
+				Later
+			};
+
+		private:
+			wxWindow* m_TopWindow = nullptr;
+			UI::LayoutDirection m_LayoutDirection = UI::LayoutDirection::Default;
+			ExitOnLastFrameDelete m_ExitOnLastFrameDelete = ExitOnLastFrameDelete::Later;
+			bool m_IsActive = true;
+
+		protected:
+			void DeleteAllTopLevelWindows();
+
+		public:
+			GUIApplication() = default;
+
+		public:
+			// ICoreApplication
+			bool OnCreate() override;
+			void OnDestroy() override;
+			int OnRun() override;
+
+			// Application::IActiveEventLoop
+			bool DispatchIdle() override;
+
+			// Application::IExceptionHandler
+			bool OnMainLoopException() override;
+
+			// IGUIApplication
+			wxWindow* GetTopWindow() const override;
+			void SetTopWindow(wxWindow* window) override;
+
+			bool ShoudExitOnLastFrameDelete() const override
+			{
+				return m_ExitOnLastFrameDelete == ExitOnLastFrameDelete::Always;
+			}
+			void ExitOnLastFrameDelete(bool enable = true) override
+			{
+				m_ExitOnLastFrameDelete = enable ? ExitOnLastFrameDelete::Always : ExitOnLastFrameDelete::Never;
+			}
+			
+			bool IsActive() const override;
+			void SetActive(bool active = true, wxWindow* window = nullptr) override;
+
+			UI::LayoutDirection GetLayoutDirection() const override;
+			void SetLayoutDirection(UI::LayoutDirection direction) override;
+
+			String GetNativeTheme() const override;
+			bool SetNativeTheme(const String& themeName) override;
+
+			using CoreApplication::Yield;
+			bool Yield(wxWindow& window, FlagSet<EventYieldFlag> flags) override;
+			bool YieldFor(wxWindow& window, FlagSet<EventCategory> toProcess) override;
 	};
 }
