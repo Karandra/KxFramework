@@ -102,18 +102,22 @@ namespace kxf
 		public:
 			VariantProperty() noexcept;
 			VariantProperty(const tagPROPVARIANT& value)
+				:VariantProperty()
 			{
 				DoCopy(value);
 			}
 			VariantProperty(const VariantProperty& other)
+				:VariantProperty()
 			{
 				DoCopy(*other.m_Value);
 			}
 			VariantProperty(tagPROPVARIANT&& other) noexcept
+				:VariantProperty()
 			{
 				DoMove(std::move(other));
 			}
 			VariantProperty(VariantProperty&& other) noexcept
+				:VariantProperty()
 			{
 				DoMove(std::move(*other.m_Value));
 			}
