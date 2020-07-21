@@ -220,6 +220,7 @@
     <ClInclude Include="kxf\EventSystem\EventItem.h" />
     <ClInclude Include="kxf\EventSystem\EvtHandlerDelegate.h" />
     <ClInclude Include="kxf\EventSystem\IdleEvent.h" />
+    <ClInclude Include="kxf\EventSystem\IEvent.h" />
     <ClInclude Include="kxf\EventSystem\IEventFilter.h" />
     <ClInclude Include="kxf\EventSystem\IEventLoop.h" />
     <ClInclude Include="kxf\EventSystem\IWithEvtHandler.h" />
@@ -388,6 +389,7 @@
     <ClInclude Include="kxf\wxWidgets\Application.h" />
     <ClInclude Include="kxf\wxWidgets\Common.h" />
     <ClInclude Include="kxf\wxWidgets\EventLoopWrapper.h" />
+    <ClInclude Include="kxf\wxWidgets\EvtHandlerWrapper.h" />
     <ClInclude Include="kxf\wxWidgets\RTTI.h" />
     <ClInclude Include="kxf\wxWidgets\SystemOptions.h" />
     <ClInclude Include="stdafx.h" />
@@ -641,7 +643,6 @@
     <ClCompile Include="kxf\System\SystemAppearance.cpp" />
     <ClCompile Include="kxf\System\SystemProcess.cpp" />
     <ClCompile Include="kxf\System\SystemProcess\CreateProcessExecutor.cpp" />
-    <ClCompile Include="kxf\System\SystemProcess\ProcessEvent.cpp" />
     <ClCompile Include="kxf\System\SystemProcess\RunningSystemProcess.cpp" />
     <ClCompile Include="kxf\System\SystemProcess\RunningSystemProcessStdIO.cpp" />
     <ClCompile Include="kxf\System\SystemProcess\SystemProcessInfo.cpp" />
@@ -743,7 +744,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="kxf\Async\Coroutine\CoroutineImpl.cpp" />
-    <ClCompile Include="kxf\Compression\ArchiveEvent.cpp" />
     <ClCompile Include="kxf\Compression\LZ4Stream.cpp" />
     <ClCompile Include="kxf\Compression\ZLibStream.cpp" />
     <ClCompile Include="kxf\Crypto\Common.cpp" />
@@ -754,7 +754,6 @@
     <ClCompile Include="kxf\Drawing\ImageList.cpp" />
     <ClCompile Include="kxf\Drawing\ImageSet.cpp" />
     <ClCompile Include="kxf\Drawing\UxTheme.cpp" />
-    <ClCompile Include="kxf\FileSystem\FileOperationEvent.cpp" />
     <ClCompile Include="kxf\General\Any.cpp" />
     <ClCompile Include="kxf\General\Color.cpp" />
     <ClCompile Include="kxf\General\Math.cpp" />

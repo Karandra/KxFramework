@@ -1421,6 +1421,12 @@
     <ClInclude Include="kxf\Application\Private\NativeApp.h">
       <Filter>kxf\Application\Private</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\EventSystem\IEvent.h">
+      <Filter>kxf\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\wxWidgets\EvtHandlerWrapper.h">
+      <Filter>kxf\wxWidgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\BroadcastProcessor.cpp">
@@ -1615,12 +1621,6 @@
     <ClCompile Include="kxf\Network\CURL.cpp">
       <Filter>kxf\Network</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Compression\ArchiveEvent.cpp">
-      <Filter>kxf\Compression</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\FileSystem\FileOperationEvent.cpp">
-      <Filter>kxf\FileSystem</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\Network\WebSocket.cpp">
       <Filter>kxf\Network</Filter>
     </ClCompile>
@@ -1710,9 +1710,6 @@
       <Filter>kxf\System\SystemProcess</Filter>
     </ClCompile>
     <ClCompile Include="kxf\System\SystemProcess\RunningSystemProcessStdIO.cpp">
-      <Filter>kxf\System\SystemProcess</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\System\SystemProcess\ProcessEvent.cpp">
       <Filter>kxf\System\SystemProcess</Filter>
     </ClCompile>
     <ClCompile Include="kxf\System\SystemProcess\CreateProcessExecutor.cpp">
