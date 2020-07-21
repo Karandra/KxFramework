@@ -63,6 +63,10 @@ namespace kxf::EventSystem
 				}
 				return true;
 			}
+			bool IsSameEventID(const EventID& eventID) const noexcept
+			{
+				return m_EventID == eventID;
+			}
 
 			const IEventExecutor* GetExecutor() const& noexcept
 			{
