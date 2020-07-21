@@ -14,7 +14,7 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API ActivateEvent: public CommonEvent
+	class KX_API ActivateEvent: public BasicEvent
 	{
 		public:
 			KxEVENT_MEMBER_AS(ActivateEvent, Activate, wxEVT_ACTIVATE);

@@ -10,7 +10,7 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API DynamicLibraryEvent: public CommonEvent
+	class KX_API DynamicLibraryEvent: public BasicEvent
 	{
 		public:
 			KxEVENT_MEMBER(DynamicLibraryEvent, Loaded);

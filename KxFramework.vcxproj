@@ -214,6 +214,7 @@
     <ClInclude Include="kxf\EventSystem\CRTP\ProcessEvent.h" />
     <ClInclude Include="kxf\EventSystem\CRTP\QueueEvent.h" />
     <ClInclude Include="kxf\EventSystem\CommonEventLoop.h" />
+    <ClInclude Include="kxf\EventSystem\BasicEvent.h" />
     <ClInclude Include="kxf\EventSystem\Event.h" />
     <ClInclude Include="kxf\EventSystem\EventExecutor.h" />
     <ClInclude Include="kxf\EventSystem\EventID.h" />
@@ -227,6 +228,7 @@
     <ClInclude Include="kxf\EventSystem\Private\Win32ConsoleEventLoop.h" />
     <ClInclude Include="kxf\EventSystem\Private\Win32CommonEventLoop.h" />
     <ClInclude Include="kxf\EventSystem\Private\Win32GUIEventLoop.h" />
+    <ClInclude Include="kxf\EventSystem\WidgetEvent.h" />
     <ClInclude Include="kxf\General\AlignedStorage.h" />
     <ClInclude Include="kxf\General\DateTime.h" />
     <ClInclude Include="kxf\General\DateTime\Common.h" />

@@ -7,7 +7,7 @@
 
 namespace kxf
 {
-	class KX_API FileOperationEvent: public CommonEvent
+	class KX_API FileOperationEvent: public BasicEvent
 	{
 		public:
 			KxEVENT_MEMBER(FileOperationEvent, Copy);

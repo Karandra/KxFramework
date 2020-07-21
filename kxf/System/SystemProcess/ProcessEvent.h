@@ -4,7 +4,7 @@
 
 namespace kxf
 {
-	class KX_API ProcessEvent: public CommonEvent
+	class KX_API ProcessEvent: public BasicEvent
 	{
 		public:
 			KxEVENT_MEMBER(ProcessEvent, InputIdle);

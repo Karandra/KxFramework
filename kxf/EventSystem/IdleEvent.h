@@ -13,7 +13,7 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API IdleEvent: public CommonEvent
+	class KX_API IdleEvent: public BasicEvent
 	{
 		public:
 			KxEVENT_MEMBER_AS(IdleEvent, Idle, wxEVT_IDLE);

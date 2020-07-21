@@ -1331,9 +1331,6 @@
     <ClInclude Include="kxf\EventSystem\EvtHandler.h">
       <Filter>kxf\EventSystem</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\EventSystem\Event.h">
-      <Filter>kxf\EventSystem</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\EventSystem\EventExecutor.h">
       <Filter>kxf\EventSystem</Filter>
     </ClInclude>
@@ -1426,6 +1423,15 @@
     </ClInclude>
     <ClInclude Include="kxf\wxWidgets\EvtHandlerWrapper.h">
       <Filter>kxf\wxWidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\WidgetEvent.h">
+      <Filter>kxf\EventSystem\&lt;Events&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\BasicEvent.h">
+      <Filter>kxf\EventSystem\&lt;Events&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\Event.h">
+      <Filter>kxf\EventSystem\&lt;Events&gt;</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

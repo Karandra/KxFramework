@@ -4,15 +4,54 @@
 
 namespace kxf::EventSystem
 {
-	class AsyncEvent: public RTTI::ImplementInterface<AsyncEvent, CommonEvent, IAsyncEvent>
+	class AsyncEvent: public RTTI::ImplementInterface<AsyncEvent, BasicEvent, IAsyncEvent>
 	{
 		public:
 			KxEVENT_MEMBER_AS(AsyncEvent, Async, -2);
 
+		private:
+			EvtHandler* m_EvtHandler = nullptr;
+
 		public:
 			AsyncEvent(EvtHandler& evtHandler)
+				:m_EvtHandler(&evtHandler)
 			{
-				SetEventSource(&evtHandler);
+				BasicEvent::SetEventSource(&evtHandler);
+			}
+
+		public:
+			// IEvent
+			EventID GetEventID() const override
+			{
+				return EvtAsync;
+			}
+			FlagSet<EventCategory> GetEventCategory() const override
+			{
+				return EventCategory::Unknown;
+			}
+
+			EvtHandler* GetEventSource() const override
+			{
+				return m_EvtHandler;
+			}
+			void SetEventSource(EvtHandler* evtHandler) override
+			{
+			}
+
+			bool IsSkipped() const override
+			{
+				return false;
+			}
+			void Skip(bool skip = true) override
+			{
+			}
+
+			bool IsAllowed() const override
+			{
+				return true;
+			}
+			void Allow(bool allow = true) override
+			{
 			}
 	};
 }
@@ -34,7 +73,7 @@ namespace kxf::EventSystem
 			}
 			
 		public:
-			// Event
+			// IEvent
 			std::unique_ptr<IEvent> Move() noexcept override
 			{
 				return std::make_unique<CallableAsyncEvent>(std::move(*this));
@@ -67,7 +106,7 @@ namespace kxf::EventSystem
 			}
 
 		public:
-			// Event
+			// IEvent
 			std::unique_ptr<IEvent> Move() noexcept override
 			{
 				return std::make_unique<MethodAsyncEvent>(std::move(*this));

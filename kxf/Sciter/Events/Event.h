@@ -5,7 +5,7 @@
 
 namespace kxf::Sciter
 {
-	class KX_API Event: public CommonEvent
+	class KX_API Event: public BasicEvent
 	{
 		public:
 			KxEVENT_MEMBER(Event, Attached);

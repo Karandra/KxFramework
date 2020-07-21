@@ -12,7 +12,7 @@ namespace kxf::Threading::Private
 
 namespace kxf
 {
-	class ThreadEvent: public CommonEvent
+	class ThreadEvent: public BasicEvent
 	{
 		public:
 			KxEVENT_MEMBER(ThreadEvent, Execute);
