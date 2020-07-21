@@ -46,6 +46,19 @@ namespace kxf::Utility
 			}
 
 		public:
+			bool IsNull() const noexcept
+			{
+				return m_Value == nullptr;
+			}
+			bool IsOwned() const noexcept
+			{
+				return m_Owned;
+			}
+			bool IsSame(const WithOptionalOwnership& other) const noexcept
+			{
+				return m_Value == other.m_Value;
+			}
+			
 			void Assign(TValue& value) noexcept
 			{
 				Destroy();
@@ -59,15 +72,6 @@ namespace kxf::Utility
 				m_Owned = true;
 			}
 
-			bool IsOwned() const noexcept
-			{
-				return m_Owned;
-			}
-			bool IsSame(const WithOptionalOwnership& other) const noexcept
-			{
-				return m_Value == other.m_Value;
-			}
-			
 			TValue* Get() const&
 			{
 				return m_Value;
@@ -117,11 +121,11 @@ namespace kxf::Utility
 
 			explicit operator bool() const noexcept
 			{
-				return m_Value != nullptr;
+				return !IsNull();
 			}
 			bool operator!() const noexcept
 			{
-				return m_Value == nullptr;
+				return IsNull();
 			}
 
 	};
