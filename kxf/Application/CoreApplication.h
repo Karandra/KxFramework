@@ -57,6 +57,16 @@ namespace kxf
 			char** m_ArgVA = nullptr;
 			wchar_t** m_ArgVW = nullptr;
 
+			// CoreApplication
+			void* m_DLLNotificationsCookie = nullptr;
+
+		private:
+			bool InitDLLNotifications();
+			void UninitDLLNotifications();
+
+		protected:
+			bool OnDynamicBind(EventItem& eventItem) override;
+
 		public:
 			CoreApplication() = default;
 

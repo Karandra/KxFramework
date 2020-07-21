@@ -10,16 +10,10 @@ namespace kxf::Private
 	{
 		private:
 			ICoreApplication& m_App;
-			void* m_DLLNotificationsCookie = nullptr;
 
 		private:
 			void OnCreate();
 			void OnDestroy();
-
-			bool OnBindDLLNotification();
-
-		protected:
-			bool OnDynamicBind(wxDynamicEventTableEntry& entry) override;
 
 		public:
 			NativeApp(ICoreApplication& app)
