@@ -58,11 +58,11 @@ namespace kxf
 
 			bool operator==(const EventID& other) const noexcept
 			{
-				return m_ID == other.m_ID;
+				return this == &other || m_ID == other.m_ID;
 			}
 			bool operator!=(const EventID& other) const noexcept
 			{
-				return m_ID != other.m_ID;
+				return this != &other && m_ID != other.m_ID;
 			}
 
 			EventID& operator=(EventID&& other) noexcept
