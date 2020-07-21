@@ -53,7 +53,7 @@ namespace kxf
 				static_assert(t_Size >= sizeof(TValue), "insufficient buffer size");
 				static_assert(t_Alignment == alignof(TValue), "alignment doesn't match");
 
-				return *Utility::NewObjectOnMemoryLocation<T>(static_cast<void*>(m_Buffer), [&]()
+				return *Utility::NewObjectOnMemoryLocation<TValue>(static_cast<void*>(m_Buffer), [&]()
 				{
 					Destruct();
 				}, std::forward<Args>(arg)...);
@@ -114,13 +114,13 @@ namespace kxf
 			TValue* m_Value = nullptr;
 
 		public:
-			AlignedStorage() noexcept(noexcept(Construct()))
+			AlignedStorage() noexcept(std::is_nothrow_constructible_v<T>)
 			{
 				Construct();
 			}
 
 			template<class... Args>
-			AlignedStorage(Args&&... arg) noexcept(noexcept(Construct(Args...)))
+			AlignedStorage(Args&&... arg) noexcept(std::is_nothrow_constructible_v<T, Args...>)
 			{
 				Construct(std::forward<Args>(arg)...);
 			}
