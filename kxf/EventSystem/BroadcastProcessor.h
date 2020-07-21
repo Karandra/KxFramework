@@ -17,7 +17,7 @@ namespace kxf::EventSystem
 			BroadcastProcessor& m_Processor;
 
 		protected:
-			bool TryBefore(Event& event) override;
+			bool TryBefore(IEvent& event) override;
 
 		public:
 			BroadcastProcessorHandler(BroadcastProcessor& processor)
@@ -31,7 +31,7 @@ namespace kxf::EventSystem
 		friend class BroadcastReciever;
 
 		protected:
-			bool TryBefore(Event& event) override;
+			bool TryBefore(IEvent& event) override;
 	};
 }
 
@@ -50,11 +50,11 @@ namespace kxf::EventSystem
 			Order m_Order = Order::LastToFirst;
 
 		protected:
-			virtual bool PreProcessEvent(Event& event)
+			virtual bool PreProcessEvent(IEvent& event)
 			{
 				return true;
 			}
-			virtual void PostProcessEvent(Event& event)
+			virtual void PostProcessEvent(IEvent& event)
 			{
 			}
 
@@ -112,13 +112,13 @@ namespace kxf::EventSystem
 			BroadcastProcessor& m_Processor;
 
 		private:
-			bool PreProcessEvent(Event& event);
-			void PostProcessEvent(Event& event);
-			void FinalPostProcessEvent(Event& event);
+			bool PreProcessEvent(IEvent& event);
+			void PostProcessEvent(IEvent& event);
+			void FinalPostProcessEvent(IEvent& event);
 
-			void StopPropagation(Event& event)
+			void StopPropagation(IEvent& event)
 			{
-				ICommandEvent* commandEvent = nullptr;
+				IWidgetEvent* commandEvent = nullptr;
 				if (event.QueryInterface(commandEvent))
 				{
 					commandEvent->StopPropagation();

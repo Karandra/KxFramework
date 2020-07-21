@@ -132,7 +132,7 @@ namespace kxf::UI::Private
 			}
 			case WM_DWMCOLORIZATIONCOLORCHANGED:
 			{
-				wxNotifyEvent event(EvtDWMGlassColorChanged);
+				wxNotifyEvent event(EvtDWMGlassColorChanged->AsInt());
 				event.SetEventObject(m_Window);
 				m_Window->HandleWindowEvent(event);
 
@@ -141,7 +141,7 @@ namespace kxf::UI::Private
 			}
 			case WM_DWMCOMPOSITIONCHANGED:
 			{
-				wxNotifyEvent event(EvtDWMCompositionChanged);
+				wxNotifyEvent event(EvtDWMCompositionChanged->AsInt());
 				event.SetEventObject(m_Window);
 				event.SetInt(DWMIsCompositionEnabled());
 				m_Window->HandleWindowEvent(event);

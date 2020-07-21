@@ -3,9 +3,8 @@
 #include "RunningSystemProcessStdIO.h"
 #include <wx/thread.h>
 #include <wx/stream.h>
-#include <wx/event.h>
-#include <atomic>
 #include <Windows.h>
+#include "kxf/EventSystem/EvtHandlerDelegate.h"
 #include "kxf/System/UndefWindows.h"
 
 namespace kxf::System
@@ -56,7 +55,7 @@ namespace kxf::System
 	class KX_API CreateProcessExecutor: public RTTI::ImplementInterface<CreateProcessExecutor, RunningSystemProcess, RunningSystemProcessStdIO>, public wxThread
 	{
 		private:
-			wxEvtHandler* m_EvtHandler = nullptr;
+			EvtHandlerDelegate m_EvtHandler;
 			FlagSet<CreateSystemProcessFlag> m_Flags;
 
 			STARTUPINFOW m_StartupInfo = {};
@@ -90,12 +89,12 @@ namespace kxf::System
 			bool WaitProcessInputIdle();
 			bool WaitProcessTermination();
 
-			void SendEvent(std::unique_ptr<wxEvent> event);
+			void SendEvent(std::unique_ptr<IEvent> event, const EventID& eventID);
 			void SendProcessInputIdleEvent();
 			void SendProcessTerminationEvent();
 
 		public:
-			CreateProcessExecutor(wxEvtHandler* evtHandler, FlagSet<CreateSystemProcessFlag> flags);
+			CreateProcessExecutor(EvtHandlerDelegate evtHandler, FlagSet<CreateSystemProcessFlag> flags);
 			~CreateProcessExecutor();
 
 		public:

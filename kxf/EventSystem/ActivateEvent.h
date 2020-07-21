@@ -14,7 +14,7 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API ActivateEvent: public Event
+	class KX_API ActivateEvent: public CommonEvent
 	{
 		public:
 			KxEVENT_MEMBER_AS(ActivateEvent, Activate, wxEVT_ACTIVATE);
@@ -31,7 +31,7 @@ namespace kxf
 			}
 
 		public:
-			std::unique_ptr<Event> Move() noexcept override
+			std::unique_ptr<IEvent> Move() noexcept override
 			{
 				return std::make_unique<ActivateEvent>(std::move(*this));
 			}

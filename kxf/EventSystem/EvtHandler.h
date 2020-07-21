@@ -48,7 +48,7 @@ namespace kxf
 
 			// Pending events
 			ReadWriteLock m_PendingEventsLock;
-			std::vector<std::unique_ptr<Event>> m_PendingEvents;
+			std::vector<std::unique_ptr<IEvent>> m_PendingEvents;
 
 			// Events chain
 			std::atomic<EvtHandler*> m_PrevHandler = nullptr;
@@ -61,23 +61,23 @@ namespace kxf
 			void Move(EvtHandler&& other, bool destroy);
 			void Destroy();
 
-			void PrepareEvent(Event& event, const EventID& eventID, UniversallyUniqueID uuid = {});
+			void PrepareEvent(IEvent& event, const EventID& eventID, UniversallyUniqueID uuid = {});
 			bool FreeBindSlot(const LocallyUniqueID& bindSlot);
 			void FreeAllBindSlots();
 
-			bool TryApp(Event& event);
-			bool TryChain(Event& event);
-			bool TryLocally(Event& event);
-			bool TryHereOnly(Event& event);
-			bool TryBeforeAndHere(Event& event);
+			bool TryApp(IEvent& event);
+			bool TryChain(IEvent& event);
+			bool TryLocally(IEvent& event);
+			bool TryHereOnly(IEvent& event);
+			bool TryBeforeAndHere(IEvent& event);
 
-			bool SearchEventTable(Event& event);
-			bool ExecuteDirectEvent(Event& event, EventItem& eventItem, EvtHandler& evtHandler);
-			void ExecuteEventHandler(Event& event, IEventExecutor& executor, EvtHandler& evtHandler);
+			bool SearchEventTable(IEvent& event);
+			bool ExecuteDirectEvent(IEvent& event, EventItem& eventItem, EvtHandler& evtHandler);
+			void ExecuteEventHandler(IEvent& event, IEventExecutor& executor, EvtHandler& evtHandler);
 			
-			bool DoProcessEventSafely(Event& event, const EventID& eventID = {});
-			bool DoProcessEventLocally(Event& event, const EventID& eventID = {});
-			void ConsumeException(Event& event);
+			bool DoProcessEventSafely(IEvent& event, const EventID& eventID = {});
+			bool DoProcessEventLocally(IEvent& event, const EventID& eventID = {});
+			void ConsumeException(IEvent& event);
 
 		protected:
 			virtual LocallyUniqueID DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<EventFlag> flags = {});
@@ -93,11 +93,11 @@ namespace kxf
 				return true;
 			}
 
-			virtual void DoQueueEvent(std::unique_ptr<Event> event, const EventID& eventID = {}, UniversallyUniqueID uuid = {});
-			virtual bool DoProcessEvent(Event& event, const EventID& eventID = {}, EvtHandler* onlyIn = nullptr);
+			virtual void DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, UniversallyUniqueID uuid = {});
+			virtual bool DoProcessEvent(IEvent& event, const EventID& eventID = {}, EvtHandler* onlyIn = nullptr);
 
-			virtual bool TryBefore(Event& event);
-			virtual bool TryAfter(Event& event);
+			virtual bool TryBefore(IEvent& event);
+			virtual bool TryAfter(IEvent& event);
 
 		public:
 			EvtHandler() = default;

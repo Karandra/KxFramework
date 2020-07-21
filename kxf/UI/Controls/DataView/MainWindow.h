@@ -9,6 +9,7 @@
 #include "DragAndDrop.h"
 #include "Renderers/NullRenderer.h"
 #include "kxf/UI/Windows/ToolTipEx.h"
+#include "kxf/EventSystem/Event.h"
 #include <wx/selstore.h>
 
 namespace kxf::UI::DataView
@@ -149,7 +150,7 @@ namespace kxf::UI::DataView
 			void OnTooltipEvent(wxTimerEvent& event);
 
 			// Return false only if the event was vetoed by its handler.
-			bool SendExpanderEvent(wxEventType type, Node& item);
+			bool SendExpanderEvent(const EventID& type, Node& item);
 			void SendSelectionChangedEvent(Node* item, Column* column = nullptr);
 
 			// Will return true if event allowed

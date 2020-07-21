@@ -3,6 +3,7 @@
 #include "Node.h"
 #include "Element.h"
 #include "Events.h"
+#include "kxf/wxWidgets/EvtHandlerWrapper.h"
 
 namespace kxf::Sciter
 {
@@ -43,8 +44,8 @@ namespace kxf::Sciter
 
 			WXHWND GetSciterHandle() const;
 			bool IsHostLevelDispatcher() const;
-			bool ProcessEvent(wxEvent& event);
-			void QueueEvent(std::unique_ptr<wxEvent> event);
+			bool ProcessEvent(IEvent& event, const EventID& eventID);
+			void QueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID);
 
 			void AttachHost();
 			void DetachHost();
@@ -67,7 +68,7 @@ namespace kxf::Sciter
 			{
 				return m_Host;
 			}
-			virtual wxEvtHandler& GetEvtHandler() = 0;
+			virtual EvtHandler& GetEvtHandler() = 0;
 	};
 }
 
@@ -76,16 +77,16 @@ namespace kxf::Sciter
 	class KX_API EventDispatcher: public BasicEventDispatcher
 	{
 		private:
-			wxEvtHandler& m_EvtHandler;
+			EvtHandler& m_EvtHandler;
 
 		public:
-			EventDispatcher(Host& host, wxEvtHandler& evtHandler)
+			EventDispatcher(Host& host, EvtHandler& evtHandler)
 				:BasicEventDispatcher(host), m_EvtHandler(evtHandler)
 			{
 			}
 
 		public:
-			wxEvtHandler& GetEvtHandler() override
+			EvtHandler& GetEvtHandler() override
 			{
 				return m_EvtHandler;
 			}
@@ -95,17 +96,18 @@ namespace kxf::Sciter
 	{
 		private:
 			wxWindow& m_Window;
+			wxWidgets::wxEvtHandlerWrapper m_Wrapper;
 
 		public:
 			WindowEventDispatcher(Host& host, wxWindow& window)
-				:BasicEventDispatcher(host), m_Window(window)
+				:BasicEventDispatcher(host), m_Window(window), m_Wrapper(window)
 			{
 			}
 
 		public:
-			wxEvtHandler& GetEvtHandler() override
+			EvtHandler& GetEvtHandler() override
 			{
-				return *m_Window.GetEventHandler();
+				return m_Wrapper;
 			}
 	};
 
@@ -121,6 +123,6 @@ namespace kxf::Sciter
 			}
 
 		public:
-			wxEvtHandler& GetEvtHandler() override;
+			EvtHandler& GetEvtHandler() override;
 	};
 }

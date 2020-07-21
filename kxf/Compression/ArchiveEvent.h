@@ -18,19 +18,12 @@ namespace kxf
 			SecretValue m_Password;
 
 		public:
-			ArchiveEvent(EventID type = Event::EvtNull, int id = 0)
-				:FileOperationEvent(type, id)
-			{
-			}
+			ArchiveEvent() = default;
 
 		public:
-			ArchiveEvent* Clone() const override
+			std::unique_ptr<IEvent> Move() noexcept override
 			{
-				auto clone = std::make_unique<ArchiveEvent>(GetEventType());
-				clone->SetEventObject(GetEventObject());
-				clone->m_FileItem = m_FileItem;
-
-				return clone.release();
+				return std::make_unique<ArchiveEvent>(std::move(*this));
 			}
 			
 			const FileItem& GetItem() const noexcept
@@ -71,8 +64,5 @@ namespace kxf
 			{
 				m_Password = std::move(password);
 			}
-
-		public:
-			wxDECLARE_DYNAMIC_CLASS(ArchiveEvent);
 	};
 }

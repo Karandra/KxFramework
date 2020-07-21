@@ -117,7 +117,7 @@ namespace kxf::UI::DataView
 			m_Sizer->Add(this, 1, wxEXPAND);
 
 			// DataView events
-			m_EvtHandler_DataView.Bind(ItemEvent::EvtItemSelected, &ComboCtrl::OnSelectItem, this);
+			m_EvtHandler_DataView.Bind(ItemEvent::EvtItemSelected.ToWxTag(), &ComboCtrl::OnSelectItem, this);
 			PushEventHandler(&m_EvtHandler_DataView);
 
 			// ComboCtrl Events

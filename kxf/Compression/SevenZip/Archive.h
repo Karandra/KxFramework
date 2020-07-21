@@ -49,7 +49,7 @@ namespace kxf::SevenZip
 					bool MultiThreaded = true;
 				} Properties;
 			} m_Data;
-			Utility::WithOptionalOwnership<wxEvtHandler> m_EvtHandler;
+			EvtHandlerDelegate m_EvtHandler;
 
 		private:
 			void InvalidateCache();
@@ -81,17 +81,17 @@ namespace kxf::SevenZip
 
 		public:
 			// IWithEvtHandler
-			wxEvtHandler* GetEvtHandler() const override
+			EvtHandler* GetEvtHandler() const override
 			{
-				return m_EvtHandler;
+				return m_EvtHandler.Get();
 			}
-			void SetEvtHandler(wxEvtHandler& evtHandler) override
+			void SetEvtHandler(EvtHandler& evtHandler) override
 			{
-				m_EvtHandler.Assign(evtHandler);
+				m_EvtHandler = evtHandler;
 			}
-			void SetEvtHandler(std::unique_ptr<wxEvtHandler> evtHandler) override
+			void SetEvtHandler(std::unique_ptr<EvtHandler> evtHandler) override
 			{
-				m_EvtHandler.Assign(std::move(evtHandler));
+				m_EvtHandler = std::move(evtHandler);
 			}
 
 		public:

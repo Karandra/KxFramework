@@ -98,7 +98,7 @@ namespace kxf
 
 			void AddEventFilter(IEventFilter& eventFilter) override;
 			void RemoveEventFilter(IEventFilter& eventFilter) override;
-			IEventFilter::Result FilterEvent(Event& event) override;
+			IEventFilter::Result FilterEvent(IEvent& event) override;
 
 		public:
 			// Application::IBasicInfo

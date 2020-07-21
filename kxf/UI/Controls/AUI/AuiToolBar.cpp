@@ -23,7 +23,7 @@ namespace kxf::UI
 			if (AuiToolBarItem* item = FindToolByID(event.GetToolId()))
 			{
 				bool canShowMenu = false;
-				wxEventType type = event.GetEventType();
+				EventID type = event.GetEventType();
 				if (type == wxEVT_AUITOOLBAR_RIGHT_CLICK)
 				{
 					type = AuiToolBarEvent::EvtItemRightClick;
@@ -51,7 +51,7 @@ namespace kxf::UI
 				{
 					AuiToolBarEvent newEvent(event);
 					newEvent.SetId(GetId());
-					newEvent.SetEventType(type);
+					newEvent.SetEventType(type.AsInt());
 					newEvent.SetEventObject(item);
 					newEvent.SetInt(item->IsToggled());
 					newEvent.SetItem(item);

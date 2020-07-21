@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "TaskDialog.h"
 #include "Private/TaskDialogNativeInfo.h"
-#include "kxf/General/ICoreApplication.h"
+#include "kxf/Application/ICoreApplication.h"
 #include "kxf/Localization/Common.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/Drawing/Common.h"
@@ -48,7 +48,7 @@ namespace kxf::UI
 					}
 					case TDN_BUTTON_CLICKED:
 					{
-						event.SetEventType(EvtButton);
+						event.SetEventType(EvtButton->AsInt());
 						event.SetId(m_NativeInfo->TranslateButtonIDFromNative(reinterpret_cast<int>(wParam)));
 						break;
 					}

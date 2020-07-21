@@ -19,10 +19,10 @@ namespace kxf::SevenZip::Private
 		{
 			return HResult::InvalidPointer();
 		}
-		if (m_EvtHandler && m_EventID != Event::EvtNull)
+		if (m_EvtHandler && m_EventID != IEvent::EvtNull)
 		{
-			ArchiveEvent event = CreateEvent(m_EventID);
-			if (!SendEvent(event))
+			ArchiveEvent event = CreateEvent();
+			if (!SendEvent(event, m_EventID))
 			{
 				return HResult::Abort();
 			}

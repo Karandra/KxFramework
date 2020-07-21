@@ -20,7 +20,7 @@ namespace kxf::UI::Private
 			std::vector<TASKDIALOG_BUTTON> m_RadioButtonSpecs;
 
 		private:
-			wxNotifyEvent CreateEvent(EventID eventID);
+			wxNotifyEvent CreateEvent(const EventID& eventID);
 			wxWindowID TranslateButtonIDFromNative(int id) const noexcept;
 
 		public:

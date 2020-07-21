@@ -4,10 +4,11 @@
 #include "Reply.h"
 #include "Event.h"
 #include "kxf/Network/URI.h"
+#include "kxf/EventSystem/EvtHandler.h"
 
 namespace kxf
 {
-	class KX_API CURLSession: public wxEvtHandler
+	class KX_API CURLSession: public EvtHandler
 	{
 		friend class CURLEvent;
 

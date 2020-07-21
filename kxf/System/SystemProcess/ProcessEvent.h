@@ -4,7 +4,7 @@
 
 namespace kxf
 {
-	class KX_API ProcessEvent: public wxNotifyEvent
+	class KX_API ProcessEvent: public CommonEvent
 	{
 		public:
 			KxEVENT_MEMBER(ProcessEvent, InputIdle);
@@ -15,19 +15,16 @@ namespace kxf
 			uint32_t m_ExitCode = std::numeric_limits<uint32_t>::max();
 
 		public:
-			ProcessEvent(EventID type = Event::EvtNull, int id = wxID_ANY)
-				:wxNotifyEvent(type.AsInt(), id)
-			{
-			}
-			ProcessEvent(EventID type, uint32_t pid, uint32_t exitCode)
-				:wxNotifyEvent(type.AsInt(), wxID_ANY), m_PID(pid), m_ExitCode(exitCode)
+			ProcessEvent() = default;
+			ProcessEvent(uint32_t pid, uint32_t exitCode)
+				:m_PID(pid), m_ExitCode(exitCode)
 			{
 			}
 
 		public:
-			ProcessEvent* Clone() const override
+			std::unique_ptr<IEvent> Move() noexcept override
 			{
-				return new ProcessEvent(*this);
+				return std::make_unique<ProcessEvent>(std::move(*this));
 			}
 
 			uint32_t GetPID() const
@@ -47,8 +44,5 @@ namespace kxf
 			{
 				m_ExitCode = static_cast<int>(pid);
 			}
-
-		public:
-			wxDECLARE_DYNAMIC_CLASS(ProcessEvent);
 	};
 }

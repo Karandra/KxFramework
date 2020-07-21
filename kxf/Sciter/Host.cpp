@@ -14,12 +14,11 @@
 namespace kxf::Sciter
 {
 	template<class TEvent>
-	TEvent MakeEvent(Host& host, EventID eventID = wxEVT_NULL)
+	TEvent MakeEvent(Host& host)
 	{
 		TEvent event(host);
 		event.Allow();
-		event.SetEventObject(&host.GetWindow());
-		event.SetEventType(eventID);
+		event.SetEventSource(&host.GetEvtHandler());
 
 		return event;
 	}
@@ -70,15 +69,15 @@ namespace kxf::Sciter
 		m_EventDispatcher.AttachHost();
 
 		// Send event
-		Event event = MakeEvent<Event>(*this, EvtEngineCreated);
-		ProcessEvent(event);
+		Event event = MakeEvent<Event>(*this);
+		ProcessEvent(event, EvtEngineCreated);
 	}
 	void Host::OnEngineDestroyed()
 	{
 		::SetWindowLongPtrW(m_SciterWindow.GetHandle(), GWLP_USERDATA, 0);
 
-		Event event = MakeEvent<Event>(*this, EvtEngineDestroyed);
-		ProcessEvent(event);
+		Event event = MakeEvent<Event>(*this);
+		ProcessEvent(event, EvtEngineDestroyed);
 
 		m_EventDispatcher.DetachHost();
 	}
@@ -86,9 +85,10 @@ namespace kxf::Sciter
 	{
 		m_SciterWindow.InvalidateBestSize();
 	}
-	bool Host::ProcessEvent(wxEvent& event)
+	bool Host::ProcessEvent(IEvent& event, const EventID& eventID)
 	{
-		return m_SciterWindow.ProcessWindowEvent(event) && !event.GetSkipped();
+		//return m_SciterWindow.ProcessWindowEvent(event, eventID) && !event.IsSkipped();
+		return m_EvtHandler.ProcessEventSafely(event, eventID) && !event.IsSkipped();
 	}
 
 	void Host::AttachElementHandler(Element& element)
@@ -99,12 +99,12 @@ namespace kxf::Sciter
 	{
 		m_EventDispatcher.DetachElement(element);
 	}
-	void Host::AttachElementHandler(Element& element, wxEvtHandler& evtHandler)
+	void Host::AttachElementHandler(Element& element, EvtHandler& evtHandler)
 	{
 		auto [it, newItem] = m_ElementEventDispatchers.insert_or_assign(&evtHandler, std::make_unique<EventDispatcher>(*this, evtHandler));
 		it->second->AttachElement(element);
 	}
-	void Host::DetachElementHandler(Element& element, wxEvtHandler& evtHandler)
+	void Host::DetachElementHandler(Element& element, EvtHandler& evtHandler)
 	{
 		if (auto it = m_ElementEventDispatchers.find(&evtHandler); it != m_ElementEventDispatchers.end())
 		{
@@ -202,8 +202,8 @@ namespace kxf::Sciter
 		}
 	}
 
-	Host::Host(wxWindow& window)
-		:m_SciterWindow(window), m_EventDispatcher(*this, window)
+	Host::Host(wxWindow& window, EvtHandler& evtHandler)
+		:m_SciterWindow(window), m_EvtHandler(evtHandler), m_EventDispatcher(*this, window)
 	{
 		if (m_SciterWindow.GetHandle())
 		{

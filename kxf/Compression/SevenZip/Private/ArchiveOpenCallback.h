@@ -23,9 +23,9 @@ namespace kxf::SevenZip::Private::Callback
 			int64_t m_ItemsTotal = 0;
 
 		protected:
-			ArchiveEvent CreateEvent(EventID id)
+			ArchiveEvent CreateEvent(const EventID& id = {})
 			{
-				ArchiveEvent event = WithEvtHandler::CreateEvent(id);
+				ArchiveEvent event = WithEvtHandler::CreateEvent();
 				if (id == IArchive::EvtOpenBytes)
 				{
 					event.SetProgress(m_BytesCompleted, m_BytesTotal);
@@ -33,10 +33,6 @@ namespace kxf::SevenZip::Private::Callback
 				else if (id == IArchive::EvtOpenItems)
 				{
 					event.SetProgress(m_ItemsCompleted, m_ItemsTotal);
-				}
-				else
-				{
-					return {};
 				}
 				return event;
 			}
@@ -46,11 +42,11 @@ namespace kxf::SevenZip::Private::Callback
 			{
 				ArchiveEvent bytesEvent = CreateEvent(IArchive::EvtOpenBytes);
 				ArchiveEvent itemsEvent = CreateEvent(IArchive::EvtOpenItems);
-				return SendEvent(bytesEvent) && SendEvent(bytesEvent);
+				return SendEvent(bytesEvent, IArchive::EvtOpenBytes) && SendEvent(bytesEvent, IArchive::EvtOpenItems);
 			}
 
 		public:
-			OpenArchive(wxEvtHandler* evtHandler = nullptr)
+			OpenArchive(EvtHandler* evtHandler = nullptr)
 				:WithEvtHandler(evtHandler), m_RefCount(*this), m_PasswordHandler(IArchive::EvtPassword, evtHandler)
 			{
 			}
@@ -58,7 +54,7 @@ namespace kxf::SevenZip::Private::Callback
 
 		public:
 			// WithEvtHandler
-			void SetEvtHandler(wxEvtHandler* evtHandler) noexcept override
+			void SetEvtHandler(EvtHandler* evtHandler) noexcept override
 			{
 				WithEvtHandler::SetEvtHandler(evtHandler);
 				m_PasswordHandler.SetEvtHandler(evtHandler);

@@ -30,12 +30,14 @@ namespace kxf::System
 		return 0;
 	}
 
-	std::unique_ptr<ISystemProcess> CreateProcess(const ISystemProcess& info, wxEvtHandler* evtHandler, FlagSet<CreateSystemProcessFlag> flags)
+	std::unique_ptr<ISystemProcess> CreateProcess(const ISystemProcess& info, EvtHandlerDelegate evtHandler, FlagSet<CreateSystemProcessFlag> flags)
 	{
-		auto executor = std::make_unique<CreateProcessExecutor>(evtHandler, flags);
+		EvtHandler* evtHandlerRef = evtHandler.Get();
+		auto executor = std::make_unique<CreateProcessExecutor>(std::move(evtHandler), flags);
+
 		if (flags & CreateSystemProcessFlag::Async)
 		{
-			if (evtHandler && executor->CreateProcess(info) && executor->Run() == wxTHREAD_NO_ERROR)
+			if (evtHandlerRef && executor->CreateProcess(info) && executor->Run() == wxTHREAD_NO_ERROR)
 			{
 				return executor;
 			}

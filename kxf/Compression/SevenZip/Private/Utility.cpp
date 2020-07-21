@@ -67,7 +67,7 @@ namespace kxf::SevenZip::Private
 			return {};
 		}(const_cast<IInArchive&>(archive));
 	}
-	bool GetNumberOfItems(wxInputStream& stream, CompressionFormat format, size_t& itemCount, wxEvtHandler* evtHandler)
+	bool GetNumberOfItems(wxInputStream& stream, CompressionFormat format, size_t& itemCount, EvtHandler* evtHandler)
 	{
 		if (stream.IsOk())
 		{
@@ -172,7 +172,7 @@ namespace kxf::SevenZip::Private
 			return {};
 		}(const_cast<IInArchive&>(archive));
 	}
-	bool GetArchiveItems(wxInputStream& stream, CompressionFormat format, std::vector<FileItem>& items, wxEvtHandler* evtHandler)
+	bool GetArchiveItems(wxInputStream& stream, CompressionFormat format, std::vector<FileItem>& items, EvtHandler* evtHandler)
 	{
 		if (stream.IsOk())
 		{
@@ -209,7 +209,7 @@ namespace kxf::SevenZip::Private
 		return false;
 	}
 
-	CompressionFormat IdentifyCompressionFormat(wxInputStream& stream, const FSPath& path, wxEvtHandler* evtHandler)
+	CompressionFormat IdentifyCompressionFormat(wxInputStream& stream, const FSPath& path, EvtHandler* evtHandler)
 	{
 		if (!stream.IsOk())
 		{
@@ -235,11 +235,11 @@ namespace kxf::SevenZip::Private
 		WithEvtHandler eventHandler(evtHandler);
 		if (eventHandler)
 		{
-			ArchiveEvent event = eventHandler.CreateEvent(ArchiveEvent::EvtIdentifyFormat);
+			ArchiveEvent event = eventHandler.CreateEvent();
 			event.SetProgress(0, std::size(availableFormats));
 			event.SetString(wxS("Trying to identify archive compression format"));
 
-			if (!eventHandler.SendEvent(event))
+			if (!eventHandler.SendEvent(event, ArchiveEvent::EvtIdentifyFormat))
 			{
 				return CompressionFormat::Unknown;
 			}
@@ -259,11 +259,11 @@ namespace kxf::SevenZip::Private
 
 				if (eventHandler)
 				{
-					ArchiveEvent event = eventHandler.CreateEvent(ArchiveEvent::EvtIdentifyFormat);
+					ArchiveEvent event = eventHandler.CreateEvent();
 					event.SetProgress(counter, std::size(availableFormats));
 					event.SetString(String::Format(wxS("Trying to open archive as %1"), GetNameByFormat(format)));
 
-					if (!eventHandler.SendEvent(event))
+					if (!eventHandler.SendEvent(event, ArchiveEvent::EvtIdentifyFormat))
 					{
 						return CompressionFormat::Unknown;
 					}

@@ -20,8 +20,8 @@ namespace kxf
 			size_t m_BinarySize = 0;
 
 		public:
-			WebSocketEvent(EventID type = Event::EvtNull, int winid = wxID_NONE)
-				:wxNotifyEvent(type, winid)
+			WebSocketEvent(const EventID& type = {}, int winid = wxID_NONE)
+				:wxNotifyEvent(type.AsInt(), winid)
 			{
 				Allow();
 			}

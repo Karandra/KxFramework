@@ -18,9 +18,13 @@ namespace kxf::Sciter
 			}
 
 		public:
-			TimerEvent* Clone() const override
+			std::unique_ptr<IEvent> Move() noexcept override
 			{
-				return new TimerEvent(*this);
+				return std::make_unique<TimerEvent>(std::move(*this));
+			}
+			FlagSet<EventCategory> GetEventCategory() const override
+			{
+				return EventCategory::Timer;
 			}
 
 			uintptr_t GetTimerID() const

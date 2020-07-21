@@ -26,7 +26,7 @@ namespace kxf::UI
 			String m_HelpString;
 
 		public:
-			MenuEvent(EventID type = Event::EvtNull, Menu* menu = nullptr, MenuItem* menuItem = nullptr);
+			MenuEvent(const EventID& type = {}, Menu* menu = nullptr, MenuItem* menuItem = nullptr);
 
 		public:
 			MenuEvent* Clone() const override

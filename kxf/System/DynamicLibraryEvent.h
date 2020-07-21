@@ -10,7 +10,7 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API DynamicLibraryEvent: public Event
+	class KX_API DynamicLibraryEvent: public CommonEvent
 	{
 		public:
 			KxEVENT_MEMBER(DynamicLibraryEvent, Loaded);
@@ -25,7 +25,7 @@ namespace kxf
 			DynamicLibraryEvent() = default;
 
 		public:
-			std::unique_ptr<Event> Move() noexcept override
+			std::unique_ptr<IEvent> Move() noexcept override
 			{
 				return std::make_unique<DynamicLibraryEvent>(std::move(*this));
 			}

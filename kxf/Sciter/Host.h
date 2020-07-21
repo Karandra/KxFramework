@@ -8,6 +8,7 @@
 #include "IWindowRenderer.h"
 #include "Renderers/FPSCounter.h"
 #include "kxf/Network/URI.h"
+#include "kxf/EventSystem/EvtHandler.h"
 #include <wx/window.h>
 
 namespace kxf::Sciter
@@ -20,9 +21,11 @@ namespace kxf::Sciter
 
 		private:
 			wxWindow& m_SciterWindow;
+			EvtHandler& m_EvtHandler;
+
 			WindowEventDispatcher m_EventDispatcher;
 			std::unique_ptr<IWindowRenderer> m_Renderer;
-			std::unordered_map<wxEvtHandler*, std::unique_ptr<BasicEventDispatcher>> m_ElementEventDispatchers;
+			std::unordered_map<EvtHandler*, std::unique_ptr<BasicEventDispatcher>> m_ElementEventDispatchers;
 			FPSCounter m_FrameCounter;
 
 			bool m_EngineCreated = false;
@@ -44,12 +47,12 @@ namespace kxf::Sciter
 			void OnEngineCreated();
 			void OnEngineDestroyed();
 			void OnDocumentChanged();
-			bool ProcessEvent(wxEvent& event);
+			bool ProcessEvent(IEvent& event, const EventID& eventID);
 
 			void AttachElementHandler(Element& element);
 			void DetachElementHandler(Element& element);
-			void AttachElementHandler(Element& element, wxEvtHandler& evtHandler);
-			void DetachElementHandler(Element& element, wxEvtHandler& evtHandler);
+			void AttachElementHandler(Element& element, EvtHandler& evtHandler);
+			void DetachElementHandler(Element& element, EvtHandler& evtHandler);
 
 		protected:
 			bool SciterPreHandleMessage(WXLRESULT* result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam);
@@ -57,7 +60,7 @@ namespace kxf::Sciter
 			void OnInternalIdle();
 
 		public:
-			Host(wxWindow& window);
+			Host(wxWindow& window, EvtHandler& evtHandler);
 			Host(const Host&) = delete;
 			virtual ~Host();
 
@@ -77,6 +80,10 @@ namespace kxf::Sciter
 			wxWindow& GetWindow()
 			{
 				return m_SciterWindow;
+			}
+			EvtHandler& GetEvtHandler()
+			{
+				return m_EvtHandler;
 			}
 
 			Size GetBestSize() const;

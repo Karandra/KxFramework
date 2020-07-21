@@ -6,6 +6,10 @@
 #include "kxf/General/String.h"
 #include "kxf/General/StringFormater.h"
 
+namespace kxf
+{
+	class EvtHandler;
+}
 namespace kxf::Sciter
 {
 	class Node;
@@ -60,8 +64,8 @@ namespace kxf::Sciter
 			// Event handling
 			void AttachEventHandler();
 			void DetachEventHandler();
-			void AttachEventHandler(wxEvtHandler& evtHandler);
-			void DetachEventHandler(wxEvtHandler& evtHandler);
+			void AttachEventHandler(EvtHandler& evtHandler);
+			void DetachEventHandler(EvtHandler& evtHandler);
 
 			// Refreshing
 			bool Update(bool force = false);

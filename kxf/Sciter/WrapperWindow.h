@@ -4,7 +4,7 @@
 namespace kxf::Sciter
 {
 	template<class TWindow>
-	class WindowWrapper: public TWindow, public Host
+	class WindowWrapper: public TWindow, public Host, public EvtHandler
 	{
 		protected:
 			bool MSWHandleMessage(WXLRESULT* result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam) override
@@ -40,14 +40,14 @@ namespace kxf::Sciter
 
 		public:
 			WindowWrapper()
-				:Host(static_cast<wxWindow&>(*this))
+				:Host(static_cast<wxWindow&>(*this), static_cast<EvtHandler&>(*this))
 			{
 			}
 			WindowWrapper(const WindowWrapper&) = delete;
 
 			template<class... Args>
 			WindowWrapper(Args&&... arg)
-				:TWindow(std::forward<Args>(arg)...), Host(static_cast<wxWindow&>(*this))
+				:TWindow(std::forward<Args>(arg)...), Host(static_cast<wxWindow&>(*this), static_cast<EvtHandler&>(*this))
 			{
 				Host::Create();
 			}

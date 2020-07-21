@@ -17,7 +17,7 @@ namespace kxf::EventSystem
 
 		public:
 			// Queue event for a later processing
-			void QueueEvent(std::unique_ptr<Event> event, const EventID& eventID = {}, UniversallyUniqueID uuid = {})
+			void QueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, UniversallyUniqueID uuid = {})
 			{
 				Self().DoQueueEvent(std::move(event), eventID, std::move(uuid));
 			}

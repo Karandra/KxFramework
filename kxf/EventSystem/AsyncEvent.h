@@ -4,10 +4,10 @@
 
 namespace kxf::EventSystem
 {
-	class AsyncEvent: public RTTI::ImplementInterface<AsyncEvent, Event, IAsyncEvent>
+	class AsyncEvent: public RTTI::ImplementInterface<AsyncEvent, CommonEvent, IAsyncEvent>
 	{
 		public:
-			static inline const EventTag<Event> EvtAsync = -2;
+			KxEVENT_MEMBER_AS(AsyncEvent, Async, -2);
 
 		public:
 			AsyncEvent(EvtHandler& evtHandler)
@@ -35,7 +35,7 @@ namespace kxf::EventSystem
 			
 		public:
 			// Event
-			std::unique_ptr<Event> Move() noexcept override
+			std::unique_ptr<IEvent> Move() noexcept override
 			{
 				return std::make_unique<CallableAsyncEvent>(std::move(*this));
 			}
@@ -68,7 +68,7 @@ namespace kxf::EventSystem
 
 		public:
 			// Event
-			std::unique_ptr<Event> Move() noexcept override
+			std::unique_ptr<IEvent> Move() noexcept override
 			{
 				return std::make_unique<MethodAsyncEvent>(std::move(*this));
 			}

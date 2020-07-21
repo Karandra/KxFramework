@@ -7,7 +7,7 @@
 
 namespace kxf
 {
-	class KX_API FileOperationEvent: public wxNotifyEvent
+	class KX_API FileOperationEvent: public CommonEvent
 	{
 		public:
 			KxEVENT_MEMBER(FileOperationEvent, Copy);
@@ -17,6 +17,7 @@ namespace kxf
 			KxEVENT_MEMBER(FileOperationEvent, Search);
 
 		private:
+			String m_String;
 			FSPath m_Source;
 			FSPath m_Destination;
 			BinarySize m_Completed = 0;
@@ -24,26 +25,22 @@ namespace kxf
 			BinarySize m_Speed = 0;
 
 		public:
-			FileOperationEvent(EventID type = Event::EvtNull, int id = 0) noexcept
-				:wxNotifyEvent(type.AsInt(), id)
-			{
-				Allow();
-			}
+			FileOperationEvent() = default;
 
 		public:
-			FileOperationEvent* Clone() const override
+			std::unique_ptr<IEvent> Move() noexcept override
 			{
-				return new FileOperationEvent(*this);
+				return std::make_unique<FileOperationEvent>(std::move(*this));
 			}
 
 			// Paths and status
 			String GetString() const
 			{
-				return wxNotifyEvent::GetString();
+				return m_String;
 			}
-			void SetString(const String& value)
+			void SetString(String value)
 			{
-				wxNotifyEvent::SetString(value);
+				m_String = std::move(value);
 			}
 
 			FSPath GetSource() const
@@ -118,8 +115,5 @@ namespace kxf
 			{
 				m_Speed = value;
 			}
-
-		public:
-			wxDECLARE_DYNAMIC_CLASS(FileOperationEvent);
 	};
 }

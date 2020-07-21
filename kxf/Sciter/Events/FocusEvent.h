@@ -20,9 +20,9 @@ namespace kxf::Sciter
 			}
 
 		public:
-			FocusEvent* Clone() const override
+			std::unique_ptr<IEvent> Move() noexcept override
 			{
-				return new FocusEvent(*this);
+				return std::make_unique<FocusEvent>(std::move(*this));
 			}
 	};
 }

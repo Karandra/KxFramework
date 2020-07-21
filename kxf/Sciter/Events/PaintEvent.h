@@ -28,9 +28,9 @@ namespace kxf::Sciter
 			}
 
 		public:
-			PaintEvent* Clone() const override
+			std::unique_ptr<IEvent> Move() noexcept override
 			{
-				return new PaintEvent(*this);
+				return std::make_unique<PaintEvent>(std::move(*this));
 			}
 
 			GraphicsContext GetGraphicsContext() const;

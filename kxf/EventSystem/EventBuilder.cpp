@@ -37,7 +37,7 @@ namespace kxf::EventSystem
 				m_IsSkipped = false;
 				m_IsAllowed = true;
 
-				std::unique_ptr<Event> event(Utility::ExchangeResetAndReturn(m_Event, nullptr));
+				std::unique_ptr<IEvent> event(Utility::ExchangeResetAndReturn(m_Event, nullptr));
 				m_EvtHandler->QueueEvent(std::move(event), m_EventID, std::move(uuid));
 			}
 			else

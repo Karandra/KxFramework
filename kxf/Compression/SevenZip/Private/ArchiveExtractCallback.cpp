@@ -77,7 +77,7 @@ namespace kxf::SevenZip::Private::Callback
 					return *HResult::Abort();
 				}
 
-				auto wrapperStream = COM::CreateLocalInstance<OutStreamWrapper_wxOutputStream>(*m_Stream, m_EvtHandler);
+				auto wrapperStream = COM::CreateLocalInstance<OutStreamWrapper_wxOutputStream>(*m_Stream, m_EvtHandler.Get());
 				wrapperStream->SetSize(m_Item.GetSize().GetBytes());
 				*outStream = wrapperStream.Detach();
 

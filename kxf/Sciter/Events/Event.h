@@ -2,11 +2,10 @@
 #include "kxf/Sciter/Common.h"
 #include "kxf/Sciter/Element.h"
 #include "kxf/EventSystem/Event.h"
-#include "kxf/EventSystem/Events/NotifyEvent.h"
 
 namespace kxf::Sciter
 {
-	class KX_API Event: public NotifyEvent
+	class KX_API Event: public CommonEvent
 	{
 		public:
 			KxEVENT_MEMBER(Event, Attached);
@@ -38,9 +37,9 @@ namespace kxf::Sciter
 			}
 
 		public:
-			Event* Clone() const override
+			std::unique_ptr<IEvent> Move() noexcept override
 			{
-				return new Event(*this);
+				return std::make_unique<Event>(std::move(*this));
 			}
 			Host& GetHost() const
 			{

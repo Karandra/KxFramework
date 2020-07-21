@@ -22,7 +22,7 @@ namespace kxf::UI::Private
 			DWORD m_EventsCookie = 0;
 
 		private:
-			wxNotifyEvent CreateEvent(EventID nEventType);
+			wxNotifyEvent CreateEvent(const EventID& nEventType);
 			bool ProcessEvent(wxEvent& event) const;
 
 		public:

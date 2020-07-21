@@ -148,7 +148,7 @@ namespace kxf::UI
 		const Point pos = event.GetPosition();
 		if (m_IsSliptterEnabled && pos.GetX() > (GetClientSize().GetWidth() - g_ArrowButtonWidth))
 		{
-			wxContextMenuEvent menuEvent(EvtMenu, this->GetId());
+			wxContextMenuEvent menuEvent(EvtMenu->AsInt(), this->GetId());
 			menuEvent.SetPosition(pos);
 			menuEvent.SetEventObject(this);
 			if ((!ProcessWindowEvent(menuEvent) || menuEvent.GetSkipped()) && HasDropdownMenu())
@@ -158,7 +158,7 @@ namespace kxf::UI
 		}
 		else
 		{
-			wxCommandEvent clickEvent(EvtClick, this->GetId());
+			wxCommandEvent clickEvent(EvtClick->AsInt(), this->GetId());
 			clickEvent.SetEventObject(this);
 			ProcessWindowEvent(clickEvent);
 		}

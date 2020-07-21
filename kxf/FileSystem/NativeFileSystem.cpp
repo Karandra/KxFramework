@@ -2,7 +2,7 @@
 #include "NativeFileSystem.h"
 #include "FileOperationEvent.h"
 #include "Private/NativeFSUtility.h"
-#include "kxf/General/ICoreApplication.h"
+#include "kxf/Application/ICoreApplication.h"
 #include "kxf/General/AlignedStorage.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/System/SystemInformation.h"
@@ -143,7 +143,7 @@ namespace kxf
 				event.SetDestination(directory);
 				event.Allow();
 
-				if (app->ProcessEvent(event, ICoreApplication::EvtWorkingDirectoryChanged) && !event.GetSkipped())
+				if (app->ProcessEvent(event, ICoreApplication::EvtWorkingDirectoryChanged) && !event.IsSkipped())
 				{
 					return event.IsAllowed() && DoChange(event.GetDestination());
 				}

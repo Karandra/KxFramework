@@ -46,20 +46,9 @@ namespace kxf
 		DiscardPendingEvents();
 	}
 
-	void EvtHandler::PrepareEvent(Event& event, const EventID& eventID, UniversallyUniqueID uuid)
+	void EvtHandler::PrepareEvent(IEvent& event, const EventID& eventID, UniversallyUniqueID uuid)
 	{
-		if (eventID && !event.m_EventID)
-		{
-			event.m_EventID = eventID;
-		}
-		if (!event.m_UniqueID)
-		{
-			event.m_UniqueID = std::move(uuid);
-		}
-		if (!event.m_Timestamp.IsPositive())
-		{
-			event.m_Timestamp = TimeSpan::Now(SteadyClock());
-		}
+		event.OnStartProcess(eventID, uuid);
 	}
 	bool EvtHandler::FreeBindSlot(const LocallyUniqueID& bindSlot)
 	{
@@ -76,7 +65,7 @@ namespace kxf
 		m_EventBindSlot = 0;
 	}
 
-	bool EvtHandler::TryApp(Event& event)
+	bool EvtHandler::TryApp(IEvent& event)
 	{
 		auto app = ICoreApplication::GetInstance();
 		if (app && this != app)
@@ -91,7 +80,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool EvtHandler::TryChain(Event& event)
+	bool EvtHandler::TryChain(IEvent& event)
 	{
 		for (EvtHandler* evtHandler = m_NextHandler; evtHandler; evtHandler = evtHandler->m_NextHandler)
 		{
@@ -121,7 +110,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool EvtHandler::TryLocally(Event& event)
+	bool EvtHandler::TryLocally(IEvent& event)
 	{
 		// Try the hooks which should be called before our own handlers and this
 		// handler itself first. Notice that we should not call 'DoProcessEvent' on
@@ -129,7 +118,7 @@ namespace kxf
 		// here and not in TryChain()
 		return TryBeforeAndHere(event) || TryChain(event);
 	}
-	bool EvtHandler::TryHereOnly(Event& event)
+	bool EvtHandler::TryHereOnly(IEvent& event)
 	{
 		// If the event handler is disabled it doesn't process any events
 		if (m_IsEnabled)
@@ -152,13 +141,13 @@ namespace kxf
 		// We don't have a handler for this event
 		return false;
 	}
-	bool EvtHandler::TryBeforeAndHere(Event& event)
+	bool EvtHandler::TryBeforeAndHere(IEvent& event)
 	{
 		// Another helper which simply calls pre-processing hook and then tries to handle the event at this handler level
 		return TryBefore(event) || TryHereOnly(event);
 	}
 
-	bool EvtHandler::SearchEventTable(Event& event)
+	bool EvtHandler::SearchEventTable(IEvent& event)
 	{
 		size_t initialSize = 0;
 		size_t nullCount = 0;
@@ -222,7 +211,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool EvtHandler::ExecuteDirectEvent(Event& event, EventItem& eventItem, EvtHandler& evtHandler)
+	bool EvtHandler::ExecuteDirectEvent(IEvent& event, EventItem& eventItem, EvtHandler& evtHandler)
 	{
 		// Reset skip instruction
 		event.Skip(false);
@@ -233,7 +222,7 @@ namespace kxf
 		// Return true if we processed this event and event handler itself didn't skipped it
 		return !event.IsSkipped();
 	}
-	void EvtHandler::ExecuteEventHandler(Event& event, IEventExecutor& executor, EvtHandler& evtHandler)
+	void EvtHandler::ExecuteEventHandler(IEvent& event, IEventExecutor& executor, EvtHandler& evtHandler)
 	{
 		executor.Execute(evtHandler, event);
 
@@ -245,7 +234,7 @@ namespace kxf
 		}
 	}
 	
-	void EvtHandler::DoQueueEvent(std::unique_ptr<Event> event, const EventID& eventID, UniversallyUniqueID uuid)
+	void EvtHandler::DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID, UniversallyUniqueID uuid)
 	{
 		auto app = ICoreApplication::GetInstance();
 		if (app && event)
@@ -293,7 +282,7 @@ namespace kxf
 			}
 		}
 	}
-	bool EvtHandler::DoProcessEvent(Event& event, const EventID& eventID, EvtHandler* onlyIn)
+	bool EvtHandler::DoProcessEvent(IEvent& event, const EventID& eventID, EvtHandler* onlyIn)
 	{
 		PrepareEvent(event, eventID);
 
@@ -347,11 +336,11 @@ namespace kxf
 		return false;
 	}
 
-	bool EvtHandler::TryBefore(Event& event)
+	bool EvtHandler::TryBefore(IEvent& event)
 	{
 		return false;
 	}
-	bool EvtHandler::TryAfter(Event& event)
+	bool EvtHandler::TryAfter(IEvent& event)
 	{
 		// We only want to pass the window to the application object once even if
 		// there are several chained handlers. Ensure that this is what happens by
@@ -362,14 +351,13 @@ namespace kxf
 		// the middle of the chain: its overridden TryAfter() will still be called
 		// and propagate the event upwards the window hierarchy even if it's not
 		// the last one in the chain (which, admittedly, shouldn't happen often).
-
 		if (EvtHandler* next = m_NextHandler)
 		{
 			return next->TryAfter(event);
 		}
 
 		// If this event is going to be processed in another handler next, don't pass it
-		// to wxTheApp now, it will be done from TryAfter() of this other handler.
+		// to application instance now, it will be done from 'TryAfter' of this other handler.
 		if (event.WillBeProcessedAgain())
 		{
 			return false;
@@ -377,7 +365,7 @@ namespace kxf
 		return TryApp(event);
 	}
 
-	bool EvtHandler::DoProcessEventSafely(Event& event, const EventID& eventID)
+	bool EvtHandler::DoProcessEventSafely(IEvent& event, const EventID& eventID)
 	{
 		try
 		{
@@ -389,12 +377,12 @@ namespace kxf
 			return false;
 		}
 	}
-	bool EvtHandler::DoProcessEventLocally(Event& event, const EventID& eventID)
+	bool EvtHandler::DoProcessEventLocally(IEvent& event, const EventID& eventID)
 	{
 		PrepareEvent(event, eventID);
 		return TryLocally(event);
 	}
-	void EvtHandler::ConsumeException(Event& event)
+	void EvtHandler::ConsumeException(IEvent& event)
 	{
 		auto app = ICoreApplication::GetInstance();
 		try
@@ -420,8 +408,6 @@ namespace kxf
 		}
 		catch (...)
 		{
-			event.m_ExceptionThrown = true;
-
 			// 'OnMainLoopException' threw, possibly rethrowing the same exception again. 
 			// We have to deal with it here because we can't allow the exception to escape
 			// from the handling code, this will result in a crash at best and in something
@@ -470,7 +456,7 @@ namespace kxf
 
 	LocallyUniqueID EvtHandler::DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<EventFlag> flags)
 	{
-		if (executor && eventID && eventID != Event::EvtAny && eventID != wxEVT_ASYNC_METHOD_CALL)
+		if (executor && eventID && eventID != IEvent::EvtAny && eventID != wxEVT_ASYNC_METHOD_CALL)
 		{
 			EventItem eventItem(eventID, std::move(executor));
 			eventItem.SetFlags(flags);
@@ -505,10 +491,10 @@ namespace kxf
 				size_t unbindCount = 0;
 				for (auto it = m_EventTable.rbegin(); it != m_EventTable.rend(); ++it)
 				{
-					// 1) If 'eventID' is 'Event::EvtAny' unbind *all* events.
+					// 1) If 'eventID' is 'IEvent::EvtAny' unbind *all* events.
 					// 2) If 'eventID' matches our item ID and the supplied executor is a special null executor unbind all events with this ID.
 					// 3) Unbind the event if both event ID and the executor matches (See 'EventItem::IsSameAs' for details).
-					if ((eventID == Event::EvtAny) || (eventID == it->GetEventID() && &executor == &nullExecutor) || (it->IsSameAs(dummyItem)))
+					if ((eventID == IEvent::EvtAny) || (eventID == it->GetEventID() && &executor == &nullExecutor) || (it->IsSameAs(dummyItem)))
 					{
 						// Clear the handler if derived class allows that
 						if (OnDynamicUnbind(*it))
@@ -525,7 +511,7 @@ namespace kxf
 				}
 
 				// If we were asked to unbind all items (or we've deleted them all) we can free all bind slots as well
-				if (eventID == Event::EvtAny || unbindCount == m_EventTable.size())
+				if (eventID == IEvent::EvtAny || unbindCount == m_EventTable.size())
 				{
 					FreeAllBindSlots();
 				}
@@ -573,7 +559,7 @@ namespace kxf
 		{
 			// We need to process only a single pending event in this call because each call to 'DoProcessEvent'
 			// could result in the destruction of this same event handler (see the comment at the end of this function).
-			std::unique_ptr<Event> event;
+			std::unique_ptr<IEvent> event;
 
 			// This method is only called by an application if this handler does have pending events
 			if (WriteLockGuard lock(m_PendingEventsLock); !m_PendingEvents.empty())

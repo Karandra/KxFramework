@@ -62,8 +62,8 @@ namespace kxf::UI::DataView
 			void EndResizing(int xPhysical);
 
 			void FinishEditing();
-			EventResult SendCtrlEvent(ItemEvent& event, wxEventType type, Column* column = nullptr, std::optional<Rect> rect = {});
-			EventResult SendCtrlEvent(wxEventType type, Column* column = nullptr, std::optional<Rect> rect = {})
+			EventResult SendCtrlEvent(ItemEvent& event, const EventID& type, Column* column = nullptr, std::optional<Rect> rect = {});
+			EventResult SendCtrlEvent(const EventID& type, Column* column = nullptr, std::optional<Rect> rect = {})
 			{
 				ItemEvent event;
 				return SendCtrlEvent(event, type, column, std::move(rect));

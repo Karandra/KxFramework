@@ -4,8 +4,8 @@
 
 namespace kxf
 {
-	class KX_API CURLSession;
-	class KX_API ICURLReply;
+	class CURLSession;
+	class ICURLReply;
 }
 
 namespace kxf
@@ -34,15 +34,15 @@ namespace kxf
 
 		public:
 			CURLEvent() = default;
-			CURLEvent(EventID eventType, CURLSession* session, ICURLReply* reply)
-				:FileOperationEvent(eventType), m_Session(session), m_Reply(reply)
+			CURLEvent(CURLSession* session, ICURLReply* reply)
+				:m_Session(session), m_Reply(reply)
 			{
 			}
 
 		public:
-			CURLEvent* Clone() const override
+			std::unique_ptr<IEvent> Move() noexcept override
 			{
-				return new CURLEvent(*this);
+				return std::make_unique<CURLEvent>(std::move(*this));
 			}
 			bool IsNull() const noexcept
 			{
@@ -61,8 +61,5 @@ namespace kxf
 			String GetHeaderName() const;
 			String GetHeaderValue() const;
 			String GetHeaderLine() const;
-
-		public:
-			wxDECLARE_DYNAMIC_CLASS(CURLEvent);
 	};
 }

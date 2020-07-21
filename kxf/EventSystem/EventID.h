@@ -105,6 +105,10 @@ namespace kxf
 			{
 				m_ID.IsNull();
 			}
+			wxEventTypeTag<T> ToWxTag() const noexcept
+			{
+				return m_ID.AsInt();
+			}
 
 			const EventID& operator*() const noexcept
 			{
@@ -120,6 +124,15 @@ namespace kxf
 				return &m_ID;
 			}
 			EventID* operator&() noexcept
+			{
+				return &m_ID;
+			}
+
+			const EventID* operator->() const noexcept
+			{
+				return &m_ID;
+			}
+			EventID* operator->() noexcept
 			{
 				return &m_ID;
 			}

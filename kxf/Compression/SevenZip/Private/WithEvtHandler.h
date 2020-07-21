@@ -7,15 +7,15 @@ namespace kxf::SevenZip::Private
 	class WithEvtHandler
 	{
 		protected:
-			wxEvtHandler* m_EvtHandler = nullptr;
+			EvtHandlerDelegate m_EvtHandler;
 
 		public:
-			WithEvtHandler(wxEvtHandler* evtHandler = nullptr) noexcept
-				:m_EvtHandler(evtHandler)
+			WithEvtHandler(EvtHandler* evtHandler = nullptr) noexcept
 			{
+				WithEvtHandler::SetEvtHandler(evtHandler);
 			}
 			WithEvtHandler(WithEvtHandler&& other) noexcept
-				:m_EvtHandler(other.m_EvtHandler)
+				:m_EvtHandler(std::move(other.m_EvtHandler))
 			{
 				other.SetEvtHandler(nullptr);
 			}
@@ -23,26 +23,32 @@ namespace kxf::SevenZip::Private
 			~WithEvtHandler() = default;
 
 		public:
-			wxEvtHandler* GetEvtHandler() const noexcept
+			EvtHandler* GetEvtHandler() const noexcept
 			{
-				return m_EvtHandler;
+				return m_EvtHandler.Get();
 			}
-			virtual void SetEvtHandler(wxEvtHandler* evtHandler) noexcept
+			virtual void SetEvtHandler(EvtHandler* evtHandler) noexcept
 			{
-				m_EvtHandler = evtHandler;
+				if (evtHandler)
+				{
+					m_EvtHandler = *evtHandler;
+				}
+				else
+				{
+					m_EvtHandler = {};
+				}
 			}
 
-			ArchiveEvent CreateEvent(EventID id)
+			ArchiveEvent CreateEvent()
 			{
-				ArchiveEvent event(id);
-				event.SetEventObject(m_EvtHandler);
+				ArchiveEvent event;
 				event.Allow();
 				
 				return event;
 			}
-			bool SendEvent(ArchiveEvent& event)
+			bool SendEvent(ArchiveEvent& event, const EventID& id)
 			{
-				if (m_EvtHandler->ProcessEvent(event) && !event.GetSkipped())
+				if (m_EvtHandler.ProcessEvent(event) && !event.IsSkipped())
 				{
 					return event.IsAllowed();
 				}
@@ -52,7 +58,7 @@ namespace kxf::SevenZip::Private
 		public:
 			WithEvtHandler& operator=(WithEvtHandler&& other) noexcept
 			{
-				m_EvtHandler = other.m_EvtHandler;
+				m_EvtHandler = std::move(other.m_EvtHandler);
 				other.SetEvtHandler(nullptr);
 
 				return *this;
@@ -61,11 +67,11 @@ namespace kxf::SevenZip::Private
 
 			explicit operator bool() const noexcept
 			{
-				return m_EvtHandler != nullptr;
+				return !m_EvtHandler.IsNull();
 			}
 			bool operator!() const noexcept
 			{
-				return m_EvtHandler == nullptr;
+				return m_EvtHandler.IsNull();
 			}
 	};
 }

@@ -58,7 +58,7 @@ namespace kxf::UI
 		{
 			return event.GetEventType() == wxEVT_LEFT_DOWN || event.GetEventType() == wxEVT_LEFT_DCLICK || event.GetEventType() == wxEVT_RIGHT_UP;
 		};
-		auto TranslateEventType = [](wxMouseEvent& event) -> wxEventType
+		auto TranslateEventType = [](wxMouseEvent& event) -> EventID
 		{
 			if (event.GetEventType() == wxEVT_LEFT_DOWN)
 			{
@@ -76,17 +76,17 @@ namespace kxf::UI
 		};
 		auto SendEvents = [this, &TranslateEventType](wxMouseEvent& event)
 		{
-			wxEventType type = TranslateEventType(event);
+			EventID type = TranslateEventType(event);
 			if (type == EvtContextMenu)
 			{
-				wxContextMenuEvent evt(type, GetId());
+				wxContextMenuEvent evt(type.AsInt(), GetId());
 				evt.SetInt(GetSelectedThumb());
 				evt.SetPosition(event.GetPosition());
 				HandleWindowEvent(evt);
 			}
 			else if (type != wxEVT_NULL)
 			{
-				wxCommandEvent evt(type, GetId());
+				wxCommandEvent evt(type.AsInt(), GetId());
 				evt.SetInt(GetSelectedThumb());
 				HandleWindowEvent(evt);
 			}

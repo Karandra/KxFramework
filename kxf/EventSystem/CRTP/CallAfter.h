@@ -20,7 +20,7 @@ namespace kxf::EventSystem
 			{
 				using Traits = typename Utility::CallableTraits<TCallable, Args...>;
 
-				std::unique_ptr<Event> event;
+				std::unique_ptr<IEvent> event;
 				if constexpr(Traits::IsMemberFunction)
 				{
 					event = std::make_unique<MethodAsyncEvent<TCallable, Args...>>(Self(), callable, std::forward<Args>(arg)...);

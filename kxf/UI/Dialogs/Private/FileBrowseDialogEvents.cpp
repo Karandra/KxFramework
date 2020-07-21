@@ -33,10 +33,10 @@ namespace
 
 namespace kxf::UI::Private
 {
-	wxNotifyEvent FileBrowseDialogEvents::CreateEvent(EventID eventID)
+	wxNotifyEvent FileBrowseDialogEvents::CreateEvent(const EventID& eventID)
 	{
 		wxNotifyEvent event;
-		event.SetEventType(eventID);
+		event.SetEventType(eventID.AsInt());
 		event.SetEventObject(m_Dialog);
 		event.SetId(wxID_NONE);
 		event.Allow();

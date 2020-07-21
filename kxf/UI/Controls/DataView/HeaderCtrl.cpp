@@ -53,9 +53,9 @@ namespace kxf::UI::DataView
 	{
 		m_View->GetMainWindow()->EndEdit();
 	}
-	HeaderCtrl::EventResult HeaderCtrl::SendCtrlEvent(ItemEvent& event, wxEventType type, Column* column, std::optional<Rect> rect)
+	HeaderCtrl::EventResult HeaderCtrl::SendCtrlEvent(ItemEvent& event, const EventID& type, Column* column, std::optional<Rect> rect)
 	{
-		event.SetEventType(type);
+		event.SetEventType(type.AsInt());
 		if (rect)
 		{
 			event.SetRect(*rect);

@@ -1,6 +1,6 @@
 #pragma once
 #include "EventID.h"
-#include "Event.h"
+#include "IEvent.h"
 #include "IEventExecutor.h"
 #include "kxf/General/LocallyUniqueID.h"
 #include "kxf/Utility/Common.h"

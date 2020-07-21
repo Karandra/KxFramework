@@ -4,7 +4,7 @@
 
 namespace kxf
 {
-	class Event;
+	class IEvent;
 }
 
 namespace kxf
@@ -30,6 +30,6 @@ namespace kxf
 			virtual ~IEventFilter() = default;
 
 		public:
-			virtual Result FilterEvent(Event& event) = 0;
+			virtual Result FilterEvent(IEvent& event) = 0;
 	};
 }

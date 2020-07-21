@@ -52,8 +52,8 @@ namespace kxf::UI::DataView
 			std::pair<Row, Row> m_CacheHints;
 
 		public:
-			ItemEvent(EventID eventID = Event::EvtNull, EventSourceID id = wxID_NONE)
-				:wxNotifyEvent(eventID, id)
+			ItemEvent(const EventID& eventID = {}, WidgetID id = wxID_NONE)
+				:wxNotifyEvent(eventID.AsInt(), *id)
 			{
 			}
 
@@ -180,7 +180,7 @@ namespace kxf::UI::DataView
 			bool m_IsEditCancelled = false;
 
 		public:
-			EditorEvent(EventID eventID = Event::EvtNull, EventSourceID id = wxID_NONE)
+			EditorEvent(const EventID& eventID = {}, WidgetID id = wxID_NONE)
 				:ItemEvent(eventID, id)
 			{
 			}
@@ -252,7 +252,7 @@ namespace kxf::UI::DataView
 			}
 
 		public:
-			DragDropEvent(EventID eventID = Event::EvtNull, EventSourceID id = wxID_NONE)
+			DragDropEvent(const EventID& eventID = {}, WidgetID id = wxID_NONE)
 				:ItemEvent(eventID, id)
 			{
 			}

@@ -6,8 +6,8 @@ namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(MenuEvent, wxNotifyEvent);
 
-	MenuEvent::MenuEvent(EventID type, Menu* menu, MenuItem* menuItem)
-		:wxNotifyEvent(type, menuItem ? menuItem->GetId() : wxID_NONE), m_Menu(menu), m_Item(menuItem)
+	MenuEvent::MenuEvent(const EventID& type, Menu* menu, MenuItem* menuItem)
+		:wxNotifyEvent(type.AsInt(), menuItem ? menuItem->GetId() : wxID_NONE), m_Menu(menu), m_Item(menuItem)
 	{
 		Allow();
 	}

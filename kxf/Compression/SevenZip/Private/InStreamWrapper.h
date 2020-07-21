@@ -14,7 +14,7 @@ namespace kxf::SevenZip::Private
 			COM::RefCount<InStream> m_RefCount;
 
 		public:
-			InStream(wxEvtHandler* evtHandler = nullptr)
+			InStream(EvtHandler* evtHandler = nullptr)
 				:WithEvtHandler(evtHandler), m_RefCount(*this)
 			{
 			}
@@ -47,9 +47,9 @@ namespace kxf::SevenZip::Private
 			virtual HResult DoSeek(int64_t offset, uint32_t seekMode, int64_t& newPosition) = 0;
 			virtual HResult DoGetSize(int64_t& size) const = 0;
 
-			ArchiveEvent CreateEvent(EventID id)
+			ArchiveEvent CreateEvent()
 			{
-				ArchiveEvent event = WithEvtHandler::CreateEvent(id);
+				ArchiveEvent event = WithEvtHandler::CreateEvent();
 				event.SetTotal(m_BytesTotal);
 				event.SetCompleted(m_BytesRead);
 
@@ -57,13 +57,13 @@ namespace kxf::SevenZip::Private
 			}
 			bool SentWriteEvent()
 			{
-				ArchiveEvent event = CreateEvent(IArchiveUpdate::EvtReadStream);
+				ArchiveEvent event = CreateEvent();
 				event.SetProgress(m_BytesRead, m_BytesTotal);
-				return SendEvent(event);
+				return SendEvent(event, IArchiveUpdate::EvtReadStream);
 			}
 
 		public:
-			InStreamWrapper(wxEvtHandler* evtHandler = nullptr)
+			InStreamWrapper(EvtHandler* evtHandler = nullptr)
 				:InStream(evtHandler)
 			{
 			}
@@ -133,7 +133,7 @@ namespace kxf::SevenZip::Private
 			}
 
 		public:
-			InStreamWrapper_IStream(COMPtr<IStream> stream, wxEvtHandler* evtHandler = nullptr)
+			InStreamWrapper_IStream(COMPtr<IStream> stream, EvtHandler* evtHandler = nullptr)
 				:InStreamWrapper(evtHandler), m_Stream(std::move(stream))
 			{
 			}
@@ -181,7 +181,7 @@ namespace kxf::SevenZip::Private
 			}
 
 		public:
-			InStreamWrapper_wxInputStream(InputStreamDelegate stream, wxEvtHandler* evtHandler = nullptr)
+			InStreamWrapper_wxInputStream(InputStreamDelegate stream, EvtHandler* evtHandler = nullptr)
 				:InStreamWrapper(evtHandler), m_Stream(std::move(stream))
 			{
 			}

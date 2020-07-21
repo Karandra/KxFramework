@@ -13,10 +13,10 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API IdleEvent: public Event
+	class KX_API IdleEvent: public CommonEvent
 	{
 		public:
-			static inline const EventTag<IdleEvent> EvtIdle = wxEVT_IDLE;
+			KxEVENT_MEMBER_AS(IdleEvent, Idle, wxEVT_IDLE);
 
 		public:
 			static IdleEventMode GetMode() noexcept
@@ -35,7 +35,7 @@ namespace kxf
 			IdleEvent() noexcept = default;
 
 		public:
-			std::unique_ptr<Event> Move() noexcept override
+			std::unique_ptr<IEvent> Move() noexcept override
 			{
 				return std::make_unique<IdleEvent>(std::move(*this));
 			}

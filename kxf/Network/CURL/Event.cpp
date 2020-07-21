@@ -19,8 +19,6 @@ namespace
 
 namespace kxf
 {
-	wxIMPLEMENT_DYNAMIC_CLASS(CURLEvent, FileOperationEvent);
-
 	String CURLEvent::GetHeaderName() const
 	{
 		if (m_ResponseData)

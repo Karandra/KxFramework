@@ -2,6 +2,7 @@
 #include "kxf/Sciter/Common.h"
 #include "kxf/Sciter/Element.h"
 #include "kxf/Sciter/EventDispatcher.h"
+#include "kxf/EventSystem/EvtHandler.h"
 #include "kxf/EventSystem/EventHandlerStack.h"
 
 namespace kxf::Sciter
@@ -18,7 +19,7 @@ namespace kxf::Sciter
 
 namespace kxf::Sciter
 {
-	class KX_API Widget: public wxEvtHandler
+	class KX_API Widget: public EvtHandler
 	{
 		friend class BasicEventDispatcher;
 
@@ -30,21 +31,12 @@ namespace kxf::Sciter
 			Host& m_Host;
 
 		private:
-			void SetPreviousHandler(wxEvtHandler* evtHandler) override
+			void SetPrevHandler(EvtHandler* evtHandler) override
 			{
 			}
-			void SetNextHandler(wxEvtHandler* evtHandler) override
+			void SetNextHandler(EvtHandler* evtHandler) override
 			{
 			}
-
-		protected:
-			using wxEvtHandler::ProcessEvent;
-			using wxEvtHandler::ProcessEventLocally;
-			using wxEvtHandler::ProcessThreadEvent;
-			using wxEvtHandler::SafelyProcessEvent;
-			using wxEvtHandler::ProcessPendingEvents;
-			using wxEvtHandler::AddPendingEvent;
-			using wxEvtHandler::QueueEvent;
 
 		public:
 			Widget(Host& host, WidgetFactory& factory, const Element& element)
@@ -76,36 +68,36 @@ namespace kxf::Sciter
 			}
 
 			// Event handler chain
-			wxEvtHandler& GetEventHandler()
+			EvtHandler& GetEventHandler()
 			{
 				return *m_EventHandlerStack.GetTop();
 			}
 
-			void PushEventHandler(wxEvtHandler& evtHandler)
+			void PushEventHandler(EvtHandler& evtHandler)
 			{
 				m_EventHandlerStack.Push(evtHandler);
 			}
-			wxEvtHandler* PopEventHandler()
+			EvtHandler* PopEventHandler()
 			{
 				return m_EventHandlerStack.Pop();
 			}
-			bool RemoveEventHandler(wxEvtHandler& evtHandler)
+			bool RemoveEventHandler(EvtHandler& evtHandler)
 			{
 				return m_EventHandlerStack.Remove(evtHandler);
 			}
 
-			bool ProcessWidgetEvent(wxEvent& event)
+			bool ProcessWidgetEvent(IEvent& event, const EventID& eventID = {})
 			{
-				return GetEventHandler().ProcessEvent(event);
+				return GetEventHandler().ProcessEvent(event, eventID);
 			}
-			bool ProcessWidgetEventLocally(wxEvent& event)
+			bool ProcessWidgetEventLocally(IEvent& event, const EventID& eventID = {})
 			{
-				return GetEventHandler().ProcessEventLocally(event);
+				return GetEventHandler().ProcessEventLocally(event, eventID);
 			}
-			bool HandleWidgetEvent(wxEvent& event)
+			bool HandleWidgetEvent(IEvent& event, const EventID& eventID = {})
 			{
 				// SafelyProcessEvent() will handle exceptions nicely
-				return GetEventHandler().SafelyProcessEvent(event);
+				return GetEventHandler().ProcessEventSafely(event, eventID);
 			}
 
 			// Layout

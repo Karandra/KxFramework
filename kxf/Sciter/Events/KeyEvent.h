@@ -22,9 +22,9 @@ namespace kxf::Sciter
 			}
 
 		public:
-			KeyEvent* Clone() const override
+			std::unique_ptr<IEvent> Move() noexcept override
 			{
-				return new KeyEvent(*this);
+				return std::make_unique<KeyEvent>(std::move(*this));
 			}
 
 			wxKeyCode GetKeyCode() const

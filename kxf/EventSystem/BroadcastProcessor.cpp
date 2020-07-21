@@ -3,7 +3,7 @@
 
 namespace kxf::EventSystem
 {
-	bool BroadcastProcessorHandler::TryBefore(Event& event)
+	bool BroadcastProcessorHandler::TryBefore(IEvent& event)
 	{
 		m_Processor.EnumRecieveres([this, &event](EvtHandler& evtHandler)
 		{
@@ -16,7 +16,7 @@ namespace kxf::EventSystem
 
 namespace kxf::EventSystem
 {
-	bool BroadcastRecieverHandler::TryBefore(Event& event)
+	bool BroadcastRecieverHandler::TryBefore(IEvent& event)
 	{
 		TryHereOnly(event);
 		return true;
@@ -34,16 +34,16 @@ namespace kxf::EventSystem
 		return m_Stack.Remove(reciever.GetEvtHandler());
 	}
 
-	bool BroadcastReciever::PreProcessEvent(Event& event)
+	bool BroadcastReciever::PreProcessEvent(IEvent& event)
 	{
 		StopPropagation(event);
 		return m_Processor.PreProcessEvent(event);
 	}
-	void BroadcastReciever::PostProcessEvent(Event& event)
+	void BroadcastReciever::PostProcessEvent(IEvent& event)
 	{
 		m_Processor.PostProcessEvent(event);
 	}
-	void BroadcastReciever::FinalPostProcessEvent(Event& event)
+	void BroadcastReciever::FinalPostProcessEvent(IEvent& event)
 	{
 		event.Skip();
 		StopPropagation(event);

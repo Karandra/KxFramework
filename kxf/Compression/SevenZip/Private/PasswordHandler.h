@@ -13,21 +13,20 @@ namespace kxf::SevenZip::Private
 	class PasswordHandler final
 	{
 		private:
-			wxEvtHandler* m_EvtHandler = nullptr;
-			EventID m_EventID = Event::EvtNull;
+			EvtHandler* m_EvtHandler = nullptr;
+			EventID m_EventID = IEvent::EvtNull;
 
 		private:
-			ArchiveEvent CreateEvent(EventID id)
+			ArchiveEvent CreateEvent()
 			{
-				ArchiveEvent event(id);
-				event.SetEventObject(m_EvtHandler);
+				ArchiveEvent event;
 				event.Allow();
 				
 				return event;
 			}
-			bool SendEvent(ArchiveEvent& event)
+			bool SendEvent(ArchiveEvent& event, const EventID& eventID)
 			{
-				if (m_EvtHandler->ProcessEvent(event) && !event.GetSkipped())
+				if (m_EvtHandler->ProcessEvent(event, eventID) && !event.IsSkipped())
 				{
 					return event.IsAllowed();
 				}
@@ -35,13 +34,13 @@ namespace kxf::SevenZip::Private
 			}
 
 		public:
-			PasswordHandler(EventID eventID, wxEvtHandler* evtHandler = nullptr) noexcept
+			PasswordHandler(EventID eventID, EvtHandler* evtHandler = nullptr) noexcept
 				:m_EvtHandler(evtHandler), m_EventID(eventID)
 			{
 			}
 
 		public:
-			void SetEvtHandler(wxEvtHandler* evtHandler) noexcept
+			void SetEvtHandler(EvtHandler* evtHandler) noexcept
 			{
 				m_EvtHandler = evtHandler;
 			}

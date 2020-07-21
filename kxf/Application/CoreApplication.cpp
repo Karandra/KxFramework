@@ -100,7 +100,7 @@ namespace kxf
 		WriteLockGuard lock(m_EventFiltersLock);
 		m_EventFilters.remove(&eventFilter);
 	}
-	IEventFilter::Result CoreApplication::FilterEvent(Event& event)
+	IEventFilter::Result CoreApplication::FilterEvent(IEvent& event)
 	{
 		using Result = IEventFilter::Result;
 

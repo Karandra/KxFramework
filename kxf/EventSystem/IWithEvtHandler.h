@@ -14,8 +14,8 @@ namespace kxf
 			virtual ~IWithEvtHandler() = default;
 
 		public:
-			virtual wxEvtHandler* GetEvtHandler() const = 0;
-			virtual void SetEvtHandler(wxEvtHandler& evtHandler) = 0;
-			virtual void SetEvtHandler(std::unique_ptr<wxEvtHandler> evtHandler) = 0;
+			virtual EvtHandler* GetEvtHandler() const = 0;
+			virtual void SetEvtHandler(EvtHandler& evtHandler) = 0;
+			virtual void SetEvtHandler(std::unique_ptr<EvtHandler> evtHandler) = 0;
 	};
 }

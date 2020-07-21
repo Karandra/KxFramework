@@ -17,7 +17,7 @@ namespace kxf::EventSystem
 
 		public:
 			// ProcessEvent
-			bool ProcessEvent(Event& event, const EventID& eventID = {})
+			bool ProcessEvent(IEvent& event, const EventID& eventID = {})
 			{
 				return Self().DoProcessEvent(event, eventID);
 			}
@@ -37,7 +37,7 @@ namespace kxf::EventSystem
 			}
 
 			// Processes an event by calling 'DoProcessEvent' and handles any exceptions that occur in the process
-			bool ProcessEventSafely(Event& event, const EventID& eventID)
+			bool ProcessEventSafely(IEvent& event, const EventID& eventID)
 			{
 				return Self().DoProcessEventSafely(event, eventID);
 			}
@@ -57,7 +57,7 @@ namespace kxf::EventSystem
 			}
 
 			// Try to process the event in this handler and all those chained to it
-			bool ProcessEventLocally(Event& event, const EventID& eventID)
+			bool ProcessEventLocally(IEvent& event, const EventID& eventID)
 			{
 				return Self().DoProcessEventLocally(event, eventID);
 			}

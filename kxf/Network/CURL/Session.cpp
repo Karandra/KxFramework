@@ -31,8 +31,8 @@ namespace kxf
 			reply.AddProcessedData(data, dataLength);
 
 			// Send event
-			CURLEvent event(CURLEvent::EvtDownload, &session, &reply);
-			event.SetEventObject(&session);
+			CURLEvent event(&session, &reply);
+			event.SetEventSource(&session);
 			event.SetSource(session.m_URI.BuildUnescapedURI());
 			event.SetCompleted(BinarySize::FromBytes(reply.GetProcessed()));
 			event.SetResponseData(data, dataLength);
@@ -47,7 +47,7 @@ namespace kxf
 			curl_easy_getinfo(session.GetHandle().GetNativeHandle(), CURLINFO_SPEED_DOWNLOAD_T, &downloadSpeed);
 			event.SetSpeed(BinarySize::FromBytes(downloadSpeed));
 
-			session.SafelyProcessEvent(event);
+			session.ProcessEventSafely(event, CURLEvent::EvtDownload);
 			return dataLength;
 		}
 	}
@@ -61,12 +61,12 @@ namespace kxf
 		const size_t length = size * count;
 
 		// Send event
-		CURLEvent event(CURLEvent::EvtResponseHeader, &session, &reply);
-		event.SetEventObject(&session);
+		CURLEvent event(&session, &reply);
+		event.SetEventSource(&session);
 		event.SetSource(session.m_URI.BuildUnescapedURI());
 		event.SetResponseData(data, length);
-		session.SafelyProcessEvent(event);
 
+		session.ProcessEventSafely(event, CURLEvent::EvtResponseHeader);
 		return length;
 	}
 

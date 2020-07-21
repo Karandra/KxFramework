@@ -251,7 +251,7 @@ namespace kxf::UI
 			{
 				const wxWindow* button = GetButton(buttonID).GetControl();
 
-				wxNotifyEvent onEscapeEvent(EvtButton, buttonID);
+				wxNotifyEvent onEscapeEvent(EvtButton->AsInt(), buttonID);
 				onEscapeEvent.SetEventObject(this);
 				ProcessEvent(onEscapeEvent);
 				if (onEscapeEvent.IsAllowed() && (button == nullptr || button->IsThisEnabled()))
@@ -286,7 +286,7 @@ namespace kxf::UI
 		wxWindowID id = wxID_NONE;
 		if (event.GetKeyCode() == WXK_ESCAPE && IsEscapeAllowed())
 		{
-			wxNotifyEvent onEscapeEvent(EvtButton, wxID_CANCEL);
+			wxNotifyEvent onEscapeEvent(EvtButton->AsInt(), wxID_CANCEL);
 			onEscapeEvent.SetEventObject(this);
 			ProcessEvent(onEscapeEvent);
 
@@ -297,7 +297,7 @@ namespace kxf::UI
 		{
 			if (id != wxID_NONE)
 			{
-				wxCommandEvent buttonEvent(EvtButton, id);
+				wxCommandEvent buttonEvent(EvtButton->AsInt(), id);
 				OnStdButtonClick(buttonEvent);
 				event.Skip(false);
 			}

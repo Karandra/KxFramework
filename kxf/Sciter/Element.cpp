@@ -149,14 +149,14 @@ namespace kxf::Sciter
 			host->DetachElementHandler(*this);
 		}
 	}
-	void Element::AttachEventHandler(wxEvtHandler& evtHandler)
+	void Element::AttachEventHandler(EvtHandler& evtHandler)
 	{
 		if (Host* host = GetHost())
 		{
 			host->AttachElementHandler(*this, evtHandler);
 		}
 	}
-	void Element::DetachEventHandler(wxEvtHandler& evtHandler)
+	void Element::DetachEventHandler(EvtHandler& evtHandler)
 	{
 		if (Host* host = GetHost())
 		{

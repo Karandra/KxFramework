@@ -11,12 +11,11 @@
 namespace kxf::Sciter
 {
 	template<class TEvent>
-	TEvent MakeEvent(BasicEventDispatcher& evtHandler, EventID eventID = wxEVT_NULL)
+	TEvent MakeEvent(BasicEventDispatcher& evtHandler)
 	{
 		TEvent event(evtHandler.GetHost());
+		event.SetEventSource(&evtHandler.GetEvtHandler());
 		event.Allow();
-		event.SetEventObject(&evtHandler.GetEvtHandler());
-		event.SetEventType(eventID);
 
 		return event;
 	}
@@ -200,15 +199,15 @@ namespace kxf::Sciter
 
 		if (parameters.cmd == BEHAVIOR_ATTACH)
 		{
-			Event event = MakeEvent<Event>(*this, EvtAttached);
+			Event event = MakeEvent<Event>(*this);
 			event.SetElement(element);
-			return ProcessEvent(event);
+			return ProcessEvent(event, EvtAttached);
 		}
 		else if (parameters.cmd == BEHAVIOR_DETACH)
 		{
-			Event event = MakeEvent<Event>(*this, EvtDetached);
+			Event event = MakeEvent<Event>(*this);
 			event.SetElement(element);
-			return ProcessEvent(event);
+			return ProcessEvent(event, EvtDetached);
 		}
 		return true;
 	}
@@ -216,28 +215,29 @@ namespace kxf::Sciter
 	{
 		KEY_PARAMS& parameters = *reinterpret_cast<KEY_PARAMS*>(context);
 
+		EventID eventID;
 		KeyEvent event = MakeEvent<KeyEvent>(*this);
 		switch (parameters.cmd)
 		{
 			case KEY_EVENTS::KEY_CHAR:
 			{
-				event.SetEventType(EvtKeyChar);
+				eventID = EvtKeyChar;
 				event.SetUnicodeKey(parameters.key_code);
 				break;
 			}
 			case KEY_EVENTS::KEY_UP:
 			{
-				event.SetEventType(EvtKeyUp);
+				eventID = EvtKeyUp;
 				break;
 			}
 			case KEY_EVENTS::KEY_DOWN:
 			{
-				event.SetEventType(EvtKeyDown);
+				eventID = EvtKeyDown;
 				break;
 			}
 		};
 
-		if (event.GetEventType() != wxEVT_NULL)
+		if (eventID)
 		{
 			event.SetElement(element);
 			event.SetTargetElement(FromSciterElement(parameters.target));
@@ -245,7 +245,7 @@ namespace kxf::Sciter
 			event.SetPosition(m_Host.GetWindow().ScreenToClient(wxGetMousePosition()));
 			AssignKeyboardState(event, parameters.alt_state);
 
-			return ProcessEvent(event);
+			return ProcessEvent(event, eventID);
 		}
 		return false;
 	}
@@ -253,52 +253,53 @@ namespace kxf::Sciter
 	{
 		MOUSE_PARAMS& parameters = *reinterpret_cast<MOUSE_PARAMS*>(context);
 
+		EventID eventID;
 		MouseEvent event = MakeEvent<MouseEvent>(*this);
 		switch (parameters.cmd)
 		{
 			case MOUSE_EVENTS::MOUSE_ENTER:
 			{
-				event.SetEventType(EvtMouseEnter);
+				eventID = EvtMouseEnter;
 				break;
 			}
 			case MOUSE_EVENTS::MOUSE_LEAVE:
 			{
-				event.SetEventType(EvtMouseLeave);
+				eventID = EvtMouseLeave;
 				break;
 			}
 			case MOUSE_EVENTS::MOUSE_MOVE:
 			{
-				event.SetEventType(EvtMouseMove);
+				eventID = EvtMouseMove;
 				break;
 			}
 			case MOUSE_EVENTS::MOUSE_UP:
 			{
-				event.SetEventType(EvtMouseUp);
+				eventID = EvtMouseUp;
 				break;
 			}
 			case MOUSE_EVENTS::MOUSE_DOWN:
 			{
-				event.SetEventType(EvtMouseDown);
+				eventID = EvtMouseDown;
 				break;
 			}
 			case MOUSE_EVENTS::MOUSE_CLICK:
 			{
-				event.SetEventType(EvtMouseClick);
+				eventID = EvtMouseClick;
 				break;
 			}
 			case MOUSE_EVENTS::MOUSE_DCLICK:
 			{
-				event.SetEventType(EvtMouseDoubleClick);
+				eventID = EvtMouseDoubleClick;
 				break;
 			}
 			case MOUSE_EVENTS::MOUSE_TICK:
 			{
-				event.SetEventType(EvtMouseTick);
+				eventID = EvtMouseTick;
 				break;
 			}
 			case MOUSE_EVENTS::MOUSE_IDLE:
 			{
-				event.SetEventType(EvtMouseIdle);
+				eventID = EvtMouseIdle;
 				break;
 			}
 
@@ -306,7 +307,7 @@ namespace kxf::Sciter
 			// Further investigation required.
 		};
 
-		if (event.GetEventType() != wxEVT_NULL)
+		if (eventID)
 		{
 			event.SetElement(element);
 			event.SetTargetElement(FromSciterElement(parameters.target));
@@ -317,7 +318,7 @@ namespace kxf::Sciter
 			AssignKeyboardState(event, parameters.alt_state);
 			AssignMouseState(event, parameters.button_state);
 
-			return ProcessEvent(event);
+			return ProcessEvent(event, eventID);
 		}
 		return false;
 	}
@@ -325,47 +326,48 @@ namespace kxf::Sciter
 	{
 		FOCUS_PARAMS& parameters = *reinterpret_cast<FOCUS_PARAMS*>(context);
 
+		EventID eventID;
 		FocusEvent event = MakeEvent<FocusEvent>(*this);
 		switch (parameters.cmd)
 		{
 			case FOCUS_EVENTS::FOCUS_GOT:
 			{
-				event.SetEventType(EvtSetFocus);
+				eventID = EvtSetFocus;
 				break;
 			}
 			case FOCUS_EVENTS::FOCUS_LOST:
 			{
-				event.SetEventType(EvtKillFocus);
+				eventID = EvtKillFocus;
 				break;
 			}
 			case FOCUS_EVENTS::FOCUS_IN:
 			{
-				event.SetEventType(EvtContainerSetFocus);
+				eventID = EvtContainerSetFocus;
 				break;
 			}
 			case FOCUS_EVENTS::FOCUS_OUT:
 			{
-				event.SetEventType(EvtContainerKillFocus);
+				eventID = EvtContainerKillFocus;
 				break;
 			}
 			case FOCUS_EVENTS::FOCUS_REQUEST:
 			{
-				event.SetEventType(EvtRequestFocus);
+				eventID = EvtRequestFocus;
 				break;
 			}
 			case FOCUS_EVENTS::FOCUS_ADVANCE_REQUEST:
 			{
-				event.SetEventType(EvtRequestFocusAdvanced);
+				eventID = EvtRequestFocusAdvanced;
 				break;
 			}
 		};
 
-		if (event.GetEventType() != wxEVT_NULL)
+		if (eventID)
 		{
 			event.SetElement(element);
 			event.SetTargetElement(FromSciterElement(parameters.target));
 
-			const bool result = ProcessEvent(event);
+			const bool result = ProcessEvent(event, eventID);
 			parameters.cancel = !event.IsAllowed();
 			return result;
 		}
@@ -373,77 +375,78 @@ namespace kxf::Sciter
 	}
 	bool BasicEventDispatcher::HandleSizeEvent(ElementHandle* element, void* context)
 	{
-		Event event = MakeEvent<SizeEvent>(*this, EvtSize);
-		return ProcessEvent(event);
+		Event event = MakeEvent<SizeEvent>(*this);
+		return ProcessEvent(event, EvtSize);
 	}
 	bool BasicEventDispatcher::HandleTimerEvent(ElementHandle* element, void* context)
 	{
 		TIMER_PARAMS& parameters = *reinterpret_cast<TIMER_PARAMS*>(context);
 
-		TimerEvent event = MakeEvent<TimerEvent>(*this, EvtTimer);
+		TimerEvent event = MakeEvent<TimerEvent>(*this);
 		event.SetTimerID(parameters.timerId);
-		return ProcessEvent(event);
+		return ProcessEvent(event, EvtTimer);
 	}
 	bool BasicEventDispatcher::HandleScrollEvent(ElementHandle* element, void* context)
 	{
 		SCROLL_PARAMS& parameters = *reinterpret_cast<SCROLL_PARAMS*>(context);
 
+		EventID eventID;
 		ScrollEvent event = MakeEvent<ScrollEvent>(*this);
 		switch (parameters.cmd)
 		{
 			case SCROLL_EVENTS::SCROLL_HOME:
 			{
-				event.SetEventType(EvtScrollHome);
+				eventID = EvtScrollHome;
 				break;
 			}
 			case SCROLL_EVENTS::SCROLL_END:
 			{
-				event.SetEventType(EvtScrollEnd);
+				eventID = EvtScrollEnd;
 				break;
 			}
 			case SCROLL_EVENTS::SCROLL_STEP_PLUS:
 			{
-				event.SetEventType(EvtScrollStepPlus);
+				eventID = EvtScrollStepPlus;
 				break;
 			}
 			case SCROLL_EVENTS::SCROLL_STEP_MINUS:
 			{
-				event.SetEventType(EvtScrollStepMinus);
+				eventID = EvtScrollStepMinus;
 				break;
 			}
 			case SCROLL_EVENTS::SCROLL_PAGE_PLUS:
 			{
-				event.SetEventType(EvtScrollPagePlus);
+				eventID = EvtScrollPagePlus;
 				break;
 			}
 			case SCROLL_EVENTS::SCROLL_PAGE_MINUS:
 			{
-				event.SetEventType(EvtScrollPageMinus);
+				eventID = EvtScrollPageMinus;
 				break;
 			}
 			case SCROLL_EVENTS::SCROLL_SLIDER_PRESSED:
 			{
-				event.SetEventType(EvtScrollSliderPressed);
+				eventID = EvtScrollSliderPressed;
 				break;
 			}
 			case SCROLL_EVENTS::SCROLL_SLIDER_RELEASED:
 			{
-				event.SetEventType(EvtScrollSliderReleased);
+				eventID = EvtScrollSliderReleased;
 				break;
 			}
 			case SCROLL_EVENTS::SCROLL_CORNER_PRESSED:
 			{
-				event.SetEventType(EvtScrollCornerPressed);
+				eventID = EvtScrollCornerPressed;
 				break;
 			}
 			case SCROLL_EVENTS::SCROLL_CORNER_RELEASED:
 			{
-				event.SetEventType(EvtScrollCornerReleased);
+				eventID = EvtScrollCornerReleased;
 				break;
 			}
 		};
 
-		if (event.GetEventType() != wxEVT_NULL)
+		if (eventID)
 		{
 			event.SetElement(element);
 			event.SetTargetElement(FromSciterElement(parameters.target));
@@ -451,7 +454,7 @@ namespace kxf::Sciter
 			event.SetPosition(parameters.pos);
 			event.SetSource(MapScrollSource(static_cast<SCROLL_SOURCE>(parameters.source)));
 
-			return ProcessEvent(event);
+			return ProcessEvent(event, eventID);
 		}
 		return false;
 	}
@@ -459,38 +462,39 @@ namespace kxf::Sciter
 	{
 		DRAW_PARAMS& parameters = *reinterpret_cast<DRAW_PARAMS*>(context);
 
+		EventID eventID;
 		PaintEvent event = MakeEvent<PaintEvent>(*this);
 		switch (parameters.cmd)
 		{
 			case DRAW_EVENTS::DRAW_BACKGROUND:
 			{
-				event.SetEventType(EvtPaintBackground);
+				eventID = EvtPaintBackground;
 				break;
 			}
 			case DRAW_EVENTS::DRAW_FOREGROUND:
 			{
-				event.SetEventType(EvtPaintForeground);
+				eventID = EvtPaintForeground;
 				break;
 			}
 			case DRAW_EVENTS::DRAW_OUTLINE:
 			{
-				event.SetEventType(EvtPaintOutline);
+				eventID = EvtPaintOutline;
 				break;
 			}
 			case DRAW_EVENTS::DRAW_CONTENT:
 			{
-				event.SetEventType(EvtPaintContent);
+				eventID = EvtPaintContent;
 				break;
 			}
 		};
 
-		if (event.GetEventType() != wxEVT_NULL)
+		if (eventID)
 		{
 			event.SetElement(element);
 			event.SetGraphicsContext(FromSciterGraphicsContext(parameters.gfx));
 			event.SetRect(Utility::FromWindowsRect(parameters.area));
 
-			return ProcessEvent(event);
+			return ProcessEvent(event, eventID);
 		}
 		return false;
 	}
@@ -498,268 +502,268 @@ namespace kxf::Sciter
 	{
 		BEHAVIOR_EVENT_PARAMS& parameters = *reinterpret_cast<BEHAVIOR_EVENT_PARAMS*>(context);
 
+		EventID eventID;
 		BehaviorEvent event = MakeEvent<BehaviorEvent>(*this);
 		switch (parameters.cmd)
 		{
-			// Button
 			case BEHAVIOR_EVENTS::BUTTON_CLICK:
 			{
-				event.SetEventType(BehaviorEvent::EvtButtonClick);
+				eventID = BehaviorEvent::EvtButtonClick;
 				break;
 			}
 			case BEHAVIOR_EVENTS::BUTTON_PRESS:
 			{
-				event.SetEventType(BehaviorEvent::EvtButtonPress);
+				eventID = BehaviorEvent::EvtButtonPress;
 				break;
 			}
 			case BEHAVIOR_EVENTS::BUTTON_STATE_CHANGED:
 			{
-				event.SetEventType(BehaviorEvent::EvtButtonStateChanged);
+				eventID = BehaviorEvent::EvtButtonStateChanged;
 				break;
 			}
 
 			// Edit
 			case BEHAVIOR_EVENTS::EDIT_VALUE_CHANGING:
 			{
-				event.SetEventType(BehaviorEvent::EvtEditValueChanging);
+				eventID = BehaviorEvent::EvtEditValueChanging;
 				break;
 			}
 			case BEHAVIOR_EVENTS::EDIT_VALUE_CHANGED:
 			{
-				event.SetEventType(BehaviorEvent::EvtEditValueChanged);
+				eventID = BehaviorEvent::EvtEditValueChanged;
 				break;
 			}
 
 			// Select
 			case BEHAVIOR_EVENTS::SELECT_SELECTION_CHANGED:
 			{
-				event.SetEventType(BehaviorEvent::EvtSelectValueChanged);
+				eventID = BehaviorEvent::EvtSelectValueChanged;
 				break;
 			}
 			case BEHAVIOR_EVENTS::SELECT_STATE_CHANGED:
 			{
-				event.SetEventType(BehaviorEvent::EvtSelectStateChanged);
+				eventID = BehaviorEvent::EvtSelectStateChanged;
 				break;
 			}
 
 			// Popup
 			case BEHAVIOR_EVENTS::POPUP_READY:
 			{
-				event.SetEventType(BehaviorEvent::EvtPopupReady);
+				eventID = BehaviorEvent::EvtPopupReady;
 				break;
 			}
 			case BEHAVIOR_EVENTS::POPUP_DISMISSING:
 			{
-				event.SetEventType(BehaviorEvent::EvtPopupDismissing);
+				eventID = BehaviorEvent::EvtPopupDismissing;
 				break;
 			}
 			case BEHAVIOR_EVENTS::POPUP_DISMISSED:
 			{
-				event.SetEventType(BehaviorEvent::EvtPopupDismissed);
+				eventID = BehaviorEvent::EvtPopupDismissed;
 				break;
 			}
 			case BEHAVIOR_EVENTS::POPUP_REQUEST:
 			{
-				event.SetEventType(BehaviorEvent::EvtPopupShowRequest);
+				eventID = BehaviorEvent::EvtPopupShowRequest;
 				break;
 			}
 			case BEHAVIOR_EVENTS::CLOSE_POPUP:
 			{
-				event.SetEventType(BehaviorEvent::EvtPopupCloseRequest);
+				eventID = BehaviorEvent::EvtPopupCloseRequest;
 				break;
 			}
 
 			// Menu
 			case BEHAVIOR_EVENTS::CONTEXT_MENU_REQUEST:
 			{
-				event.SetEventType(BehaviorEvent::EvtContextMenuRequest);
+				eventID = BehaviorEvent::EvtContextMenuRequest;
 				break;
 			}
 			case BEHAVIOR_EVENTS::MENU_ITEM_ACTIVE:
 			{
-				event.SetEventType(BehaviorEvent::EvtMenuItemActive);
+				eventID = BehaviorEvent::EvtMenuItemActive;
 				break;
 			}
 			case BEHAVIOR_EVENTS::MENU_ITEM_CLICK:
 			{
-				event.SetEventType(BehaviorEvent::EvtMenuItemClick);
+				eventID = BehaviorEvent::EvtMenuItemClick;
 				break;
 			}
-			
+
 			// History
 			case BEHAVIOR_EVENTS::HISTORY_PUSH:
 			{
-				event.SetEventType(BehaviorEvent::EvtHistoryPush);
+				eventID = BehaviorEvent::EvtHistoryPush;
 				break;
 			}
 			case BEHAVIOR_EVENTS::HISTORY_DROP:
 			{
-				event.SetEventType(BehaviorEvent::EvtHistoryDrop);
+				eventID = BehaviorEvent::EvtHistoryDrop;
 				break;
 			}
 			case BEHAVIOR_EVENTS::HISTORY_PRIOR:
 			{
-				event.SetEventType(BehaviorEvent::EvtHistoryBackward);
+				eventID = BehaviorEvent::EvtHistoryBackward;
 				break;
 			}
 			case BEHAVIOR_EVENTS::HISTORY_NEXT:
 			{
-				event.SetEventType(BehaviorEvent::EvtHistoryForward);
+				eventID = BehaviorEvent::EvtHistoryForward;
 				break;
 			}
 			case BEHAVIOR_EVENTS::HISTORY_STATE_CHANGED:
 			{
-				event.SetEventType(BehaviorEvent::EvtHistoryStateChanged);
+				eventID = BehaviorEvent::EvtHistoryStateChanged;
 				break;
 			}
 
 			// Document
 			case BEHAVIOR_EVENTS::DOCUMENT_COMPLETE:
 			{
-				event.SetEventType(BehaviorEvent::EvtDocumentComplete);
+				eventID = BehaviorEvent::EvtDocumentComplete;
 				break;
 			}
 			case BEHAVIOR_EVENTS::DOCUMENT_CREATED:
 			{
-				event.SetEventType(BehaviorEvent::EvtDocumentCreated);
+				eventID = BehaviorEvent::EvtDocumentCreated;
 				break;
 			}
 			case BEHAVIOR_EVENTS::DOCUMENT_PARSED:
 			{
-				event.SetEventType(BehaviorEvent::EvtDocumentParsed);
+				eventID = BehaviorEvent::EvtDocumentParsed;
 				break;
 			}
 			case BEHAVIOR_EVENTS::DOCUMENT_READY:
 			{
-				event.SetEventType(BehaviorEvent::EvtDocumentReady);
+				eventID = BehaviorEvent::EvtDocumentReady;
 				break;
 			}
 			case BEHAVIOR_EVENTS::DOCUMENT_CLOSE_REQUEST:
 			{
-				event.SetEventType(BehaviorEvent::EvtDocumentClosing);
+				eventID = BehaviorEvent::EvtDocumentClosing;
 				break;
 			}
 			case BEHAVIOR_EVENTS::DOCUMENT_CLOSE:
 			{
-				event.SetEventType(BehaviorEvent::EvtDocumentClosed);
+				eventID = BehaviorEvent::EvtDocumentClosed;
 				break;
 			}
 
 			// Video
 			case BEHAVIOR_EVENTS::VIDEO_INITIALIZED:
 			{
-				event.SetEventType(BehaviorEvent::EvtVideoInitialized);
+				eventID = BehaviorEvent::EvtVideoInitialized;
 				break;
 			}
 			case BEHAVIOR_EVENTS::VIDEO_STARTED:
 			{
-				event.SetEventType(BehaviorEvent::EvtVideoStarted);
+				eventID = BehaviorEvent::EvtVideoStarted;
 				break;
 			}
 			case BEHAVIOR_EVENTS::VIDEO_STOPPED:
 			{
-				event.SetEventType(BehaviorEvent::EvtVideoStopped);
+				eventID = BehaviorEvent::EvtVideoStopped;
 				break;
 			}
 			case BEHAVIOR_EVENTS::VIDEO_BIND_RQ:
 			{
-				event.SetEventType(BehaviorEvent::EvtVideoBindingRequest);
+				eventID = BehaviorEvent::EvtVideoBindingRequest;
 				break;
 			}
 
 			// Pagination
 			case BEHAVIOR_EVENTS::PAGINATION_STARTS:
 			{
-				event.SetEventType(BehaviorEvent::EvtPaginationStart);
+				eventID = BehaviorEvent::EvtPaginationStart;
 				break;
 			}
 			case BEHAVIOR_EVENTS::PAGINATION_PAGE:
 			{
-				event.SetEventType(BehaviorEvent::EvtPaginationPage);
+				eventID = BehaviorEvent::EvtPaginationPage;
 				break;
 			}
 			case BEHAVIOR_EVENTS::PAGINATION_ENDS:
 			{
-				event.SetEventType(BehaviorEvent::EvtPaginationEnd);
+				eventID = BehaviorEvent::EvtPaginationEnd;
 				break;
 			}
 
 			// Generic
 			case BEHAVIOR_EVENTS::CLICK:
 			{
-				event.SetEventType(BehaviorEvent::EvtGenericClick);
+				eventID = BehaviorEvent::EvtGenericClick;
 				break;
 			}
 			case BEHAVIOR_EVENTS::CHANGE:
 			{
-				event.SetEventType(BehaviorEvent::EvtGenericChange);
+				eventID = BehaviorEvent::EvtGenericChange;
 				break;
 			}
 			case BEHAVIOR_EVENTS::HYPERLINK_CLICK:
 			{
-				event.SetEventType(BehaviorEvent::EvtHyperlinkClick);
+				eventID = BehaviorEvent::EvtHyperlinkClick;
 				break;
 			}
 
 			// Expand/Collapse
 			case BEHAVIOR_EVENTS::ELEMENT_EXPANDED:
 			{
-				event.SetEventType(BehaviorEvent::EvtElementExpanded);
+				eventID = BehaviorEvent::EvtElementExpanded;
 				break;
 			}
 			case BEHAVIOR_EVENTS::ELEMENT_COLLAPSED:
 			{
-				event.SetEventType(BehaviorEvent::EvtElementCollapsed);
+				eventID = BehaviorEvent::EvtElementCollapsed;
 				break;
 			}
 
 			// Forms
 			case BEHAVIOR_EVENTS::FORM_SUBMIT:
 			{
-				event.SetEventType(BehaviorEvent::EvtFormSubmit);
+				eventID = BehaviorEvent::EvtFormSubmit;
 				break;
 			}
 			case BEHAVIOR_EVENTS::FORM_RESET:
 			{
-				event.SetEventType(BehaviorEvent::EvtFormReset);
+				eventID = BehaviorEvent::EvtFormReset;
 				break;
 			}
 
 			// Misc
 			case BEHAVIOR_EVENTS::ANIMATION:
 			{
-				event.SetEventType(BehaviorEvent::EvtAnimation);
+				eventID = BehaviorEvent::EvtAnimation;
 				break;
 			}
 			case BEHAVIOR_EVENTS::ACTIVATE_CHILD:
 			{
-				event.SetEventType(BehaviorEvent::EvtActivateChild);
+				eventID = BehaviorEvent::EvtActivateChild;
 				break;
 			}
 
 			case BEHAVIOR_EVENTS::VISIUAL_STATUS_CHANGED:
 			{
-				event.SetEventType(BehaviorEvent::EvtAnimation);
+				eventID = BehaviorEvent::EvtAnimation;
 				break;
 			}
 			case BEHAVIOR_EVENTS::DISABLED_STATUS_CHANGED:
 			{
-				event.SetEventType(BehaviorEvent::EvtDisabledStatusChanged);
+				eventID = BehaviorEvent::EvtDisabledStatusChanged;
 				break;
 			}
 			case BEHAVIOR_EVENTS::CONTENT_CHANGED:
 			{
-				event.SetEventType(BehaviorEvent::EvtContentChanged);
+				eventID = BehaviorEvent::EvtContentChanged;
 				break;
 			}
 			case BEHAVIOR_EVENTS::UI_STATE_CHANGED:
 			{
-				event.SetEventType(BehaviorEvent::EvtUIStateChanged);
+				eventID = BehaviorEvent::EvtUIStateChanged;
 				break;
 			}
 		};
 
-		if (event.GetEventType() != wxEVT_NULL)
+		if (eventID)
 		{
 			event.SetElement(element);
 			event.SetSourceElement(FromSciterElement(parameters.he));
@@ -772,7 +776,7 @@ namespace kxf::Sciter
 				m_Host.OnDocumentChanged();
 			}
 
-			const bool processed = ProcessEvent(event);
+			const bool processed = ProcessEvent(event, eventID);
 			if (!event.IsAllowed())
 			{
 				// This event can be canceled this way
@@ -796,13 +800,13 @@ namespace kxf::Sciter
 	{
 		return &m_Host.m_EventDispatcher == this;
 	}
-	bool BasicEventDispatcher::ProcessEvent(wxEvent& event)
+	bool BasicEventDispatcher::ProcessEvent(IEvent& event, const EventID& eventID)
 	{
-		return GetEvtHandler().ProcessEvent(event) && !event.GetSkipped();
+		return GetEvtHandler().ProcessEvent(event, eventID) && !event.IsSkipped();
 	}
-	void BasicEventDispatcher::QueueEvent(std::unique_ptr<wxEvent> event)
+	void BasicEventDispatcher::QueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID)
 	{
-		GetEvtHandler().QueueEvent(event.release());
+		GetEvtHandler().QueueEvent(std::move(event), eventID);
 	}
 
 	void BasicEventDispatcher::AttachHost()
@@ -912,7 +916,7 @@ namespace kxf::Sciter
 
 namespace kxf::Sciter
 {
-	wxEvtHandler& WidgetEventDispatcher::GetEvtHandler()
+	EvtHandler& WidgetEventDispatcher::GetEvtHandler()
 	{
 		return m_Widget.GetEventHandler();
 	}

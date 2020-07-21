@@ -142,7 +142,7 @@ namespace kxf::SevenZip
 	bool Archive::InitCompressionFormat()
 	{
 		m_Data.OverrideCompressionFormat = false;
-		m_Data.Properties.CompressionFormat = Private::IdentifyCompressionFormat(*m_Data.Stream, {}, m_EvtHandler);
+		m_Data.Properties.CompressionFormat = Private::IdentifyCompressionFormat(*m_Data.Stream, {}, m_EvtHandler.Get());
 
 		return m_Data.Properties.CompressionFormat != CompressionFormat::Unknown;
 	}
@@ -164,7 +164,7 @@ namespace kxf::SevenZip
 		{
 			RewindArchiveStreams();
 
-			auto openCallback = COM::CreateLocalInstance<Private::Callback::OpenArchive>(m_EvtHandler);
+			auto openCallback = COM::CreateLocalInstance<Private::Callback::OpenArchive>(m_EvtHandler.Get());
 			auto streamWrapper = COM::CreateLocalInstance<Private::InStreamWrapper_wxInputStream>(*m_Data.Stream, nullptr);
 			if (HResult(m_Data.InArchive->Open(streamWrapper, nullptr, openCallback)))
 			{
@@ -212,7 +212,7 @@ namespace kxf::SevenZip
 		{
 			m_Data.Stream->SeekI(0, wxSeekMode::wxFromStart);
 			extractor->SetArchive(m_Data.InArchive);
-			extractor->SetEvtHandler(m_EvtHandler);
+			extractor->SetEvtHandler(m_EvtHandler.Get());
 
 			HResult result = HResult::Fail();
 			if (files)
@@ -275,7 +275,7 @@ namespace kxf::SevenZip
 
 			
 			updater->SetArchive(m_Data.InArchive);
-			updater->SetEvtHandler(m_EvtHandler);
+			updater->SetEvtHandler(m_EvtHandler.Get());
 
 			auto streamWrapper = COM::CreateLocalInstance<Private::OutStreamWrapper_wxOutputStream>(stream, nullptr);
 			return HResult(archiveWriter->UpdateItems(streamWrapper, static_cast<uint32_t>(itemCount), updater)).IsSuccess();

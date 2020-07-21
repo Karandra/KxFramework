@@ -90,9 +90,9 @@ namespace kxf::Sciter
 			}
 
 		public:
-			BehaviorEvent* Clone() const override
+			std::unique_ptr<IEvent> Move() noexcept override
 			{
-				return new BehaviorEvent(*this);
+				return std::make_unique<BehaviorEvent>(std::move(*this));
 			}
 			
 			String GetEventName() const

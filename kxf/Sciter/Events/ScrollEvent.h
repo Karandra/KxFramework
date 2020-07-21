@@ -33,9 +33,9 @@ namespace kxf::Sciter
 			}
 
 		public:
-			ScrollEvent* Clone() const override
+			std::unique_ptr<IEvent> Move() noexcept override
 			{
-				return new ScrollEvent(*this);
+				return std::make_unique<ScrollEvent>(std::move(*this));
 			}
 
 			wxOrientation GetOrientation() const

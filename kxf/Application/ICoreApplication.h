@@ -4,7 +4,7 @@ class wxCmdLineParser;
 
 namespace kxf
 {
-	class Event;
+	class IEvent;
 	class EvtHandler;
 	class IEventLoop;
 	class IEventFilter;
@@ -193,6 +193,6 @@ namespace kxf
 
 			virtual void AddEventFilter(IEventFilter& eventFilter) = 0;
 			virtual void RemoveEventFilter(IEventFilter& eventFilter) = 0;
-			virtual IEventFilter::Result FilterEvent(Event& event) = 0;
+			virtual IEventFilter::Result FilterEvent(IEvent& event) = 0;
 	};
 }

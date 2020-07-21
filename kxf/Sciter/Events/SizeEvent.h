@@ -15,9 +15,9 @@ namespace kxf::Sciter
 			}
 
 		public:
-			SizeEvent* Clone() const override
+			std::unique_ptr<IEvent> Move() noexcept override
 			{
-				return new SizeEvent(*this);
+				return std::make_unique<SizeEvent>(std::move(*this));
 			}
 	};
 }

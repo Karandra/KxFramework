@@ -69,13 +69,13 @@ namespace kxf::EventSystem
 			// Unbind all events
 			bool UnbindAll()
 			{
-				return Self().DoUnbind(Event::EvtAny, NullEventExecutor::Get());
+				return Self().DoUnbind(IEvent::EvtAny, NullEventExecutor::Get());
 			}
 
 			// Unbind all events with this ID
 			bool UnbindAll(const EventID& id)
 			{
-				return id != Event::EvtAny && Self().DoUnbind(id, NullEventExecutor::Get());
+				return id != IEvent::EvtAny && Self().DoUnbind(id, NullEventExecutor::Get());
 			}
 	};
 }

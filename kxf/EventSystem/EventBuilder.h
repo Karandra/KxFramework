@@ -53,7 +53,7 @@ namespace kxf::EventSystem
 	{
 		protected:
 			EvtHandler* m_EvtHandler = nullptr;
-			Event* m_Event = nullptr;
+			IEvent* m_Event = nullptr;
 			EventID m_EventID;
 
 			bool m_IsAsync = false;
@@ -90,11 +90,11 @@ namespace kxf::EventSystem
 			EventBuilderBase() = default;
 
 		protected:
-			EventBuilderBase(EvtHandler& evtHandler, std::unique_ptr<Event> event, const EventID& eventID = {}) noexcept
+			EventBuilderBase(EvtHandler& evtHandler, std::unique_ptr<IEvent> event, const EventID& eventID = {}) noexcept
 				:m_EvtHandler(&evtHandler), m_Event(event.release()), m_EventID(eventID), m_IsAsync(true)
 			{
 			}
-			EventBuilderBase(EvtHandler& evtHandler, Event& event, const EventID& eventID = {}) noexcept
+			EventBuilderBase(EvtHandler& evtHandler, IEvent& event, const EventID& eventID = {}) noexcept
 				:m_EvtHandler(&evtHandler), m_Event(&event), m_EventID(eventID), m_IsAsync(false)
 			{
 			}

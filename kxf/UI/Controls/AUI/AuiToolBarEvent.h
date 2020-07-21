@@ -23,8 +23,8 @@ namespace kxf::UI
 			AuiToolBarItem* m_Item = nullptr;
 
 		public:
-			AuiToolBarEvent(wxEventType type = wxEVT_NULL, wxWindowID id = 0)
-				:wxAuiToolBarEvent(type, id)
+			AuiToolBarEvent(const EventID& type = {}, wxWindowID id = 0)
+				:wxAuiToolBarEvent(type.AsInt(), id)
 			{
 			}
 			AuiToolBarEvent(const wxAuiToolBarEvent& other)

@@ -161,18 +161,17 @@ namespace kxf::System
 		return false;
 	}
 	
-	void CreateProcessExecutor::SendEvent(std::unique_ptr<wxEvent> event)
+	void CreateProcessExecutor::SendEvent(std::unique_ptr<IEvent> event, const EventID& eventID)
 	{
 		if (m_EvtHandler)
 		{
-			event->SetEventObject(m_EvtHandler);
 			if (wxThread::IsMain())
 			{
-				m_EvtHandler->ProcessEvent(*event);
+				m_EvtHandler.ProcessEvent(*event, eventID);
 			}
 			else
 			{
-				m_EvtHandler->QueueEvent(event.release());
+				m_EvtHandler.QueueEvent(std::move(event), eventID);
 			}
 		}
 	}
@@ -180,19 +179,19 @@ namespace kxf::System
 	{
 		if (m_EvtHandler)
 		{
-			SendEvent(std::make_unique<ProcessEvent>(ProcessEvent::EvtInputIdle, m_ProcessInfo.dwProcessId, 0));
+			SendEvent(std::make_unique<ProcessEvent>(m_ProcessInfo.dwProcessId, 0), ProcessEvent::EvtInputIdle);
 		}
 	}
 	void CreateProcessExecutor::SendProcessTerminationEvent()
 	{
 		if (m_EvtHandler)
 		{
-			SendEvent(std::make_unique<ProcessEvent>(ProcessEvent::EvtTermination, m_ProcessInfo.dwProcessId, GetExitCode().value_or(STILL_ACTIVE)));
+			SendEvent(std::make_unique<ProcessEvent>(m_ProcessInfo.dwProcessId, GetExitCode().value_or(STILL_ACTIVE)), ProcessEvent::EvtTermination);
 		}
 	}
 
-	CreateProcessExecutor::CreateProcessExecutor(wxEvtHandler* evtHandler, FlagSet<CreateSystemProcessFlag> flags)
-		:wxThread(wxTHREAD_JOINABLE), m_EvtHandler(evtHandler), m_Flags(flags), m_EnvironmentBuffer(0), m_CommandLineBuffer(0)
+	CreateProcessExecutor::CreateProcessExecutor(EvtHandlerDelegate evtHandler, FlagSet<CreateSystemProcessFlag> flags)
+		:wxThread(wxTHREAD_JOINABLE), m_EvtHandler(std::move(evtHandler)), m_Flags(flags), m_EnvironmentBuffer(0), m_CommandLineBuffer(0)
 	{
 		m_StartupInfo.cb = sizeof(m_StartupInfo);
 	}

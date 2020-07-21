@@ -999,7 +999,7 @@ namespace kxf::UI::DataView
 		}
 	}
 
-	bool MainWindow::SendExpanderEvent(wxEventType type, Node& item)
+	bool MainWindow::SendExpanderEvent(const EventID& type, Node& item)
 	{
 		ItemEvent event(type);
 		CreateEventTemplate(event, &item);

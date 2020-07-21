@@ -28,26 +28,26 @@ namespace kxf::SevenZip::Private::Callback
 		protected:
 			FileItem GetExistingItem(size_t fileIndex) const;
 			
-			ArchiveEvent CreateEvent(EventID id)
+			ArchiveEvent CreateEvent()
 			{
-				ArchiveEvent event = WithEvtHandler::CreateEvent(id);
+				ArchiveEvent event = WithEvtHandler::CreateEvent();
 				event.SetProgress(m_BytesCompleted, m_BytesTotal);
 
 				return event;
 			}
-			bool SendItemEvent(EventID id, FileItem item)
+			bool SendItemEvent(const EventID& id, FileItem item)
 			{
 				if (item)
 				{
-					ArchiveEvent event = CreateEvent(id);
+					ArchiveEvent event = CreateEvent();
 					event.SetItem(std::move(item));
-					return WithEvtHandler::SendEvent(event);
+					return WithEvtHandler::SendEvent(event, id);
 				}
 				return true;
 			}
 
 		public:
-			UpdateArchive(wxEvtHandler* evtHandler = nullptr)
+			UpdateArchive(EvtHandler* evtHandler = nullptr)
 				:WithEvtHandler(evtHandler), m_RefCount(*this), m_PasswordHandler(IArchiveUpdate::EvtPassword, evtHandler)
 			{
 			}
@@ -61,7 +61,7 @@ namespace kxf::SevenZip::Private::Callback
 
 		public:
 			// WithEvtHandler
-			void SetEvtHandler(wxEvtHandler* evtHandler) noexcept override
+			void SetEvtHandler(EvtHandler* evtHandler) noexcept override
 			{
 				WithEvtHandler::SetEvtHandler(evtHandler);
 				m_PasswordHandler.SetEvtHandler(evtHandler);
@@ -129,7 +129,7 @@ namespace kxf::SevenZip::Private::Callback
 			}
 
 		public:
-			UpdateArchiveWrapper(IArchiveUpdate& update, Compression::IUpdateCallback& callback, wxEvtHandler* evtHandler = nullptr, size_t itemCount = 0)
+			UpdateArchiveWrapper(IArchiveUpdate& update, Compression::IUpdateCallback& callback, EvtHandler* evtHandler = nullptr, size_t itemCount = 0)
 				:UpdateArchive(evtHandler), m_Update(update), m_Callback(callback)
 			{
 				m_ItemStore.reserve(std::clamp<size_t>(itemCount, 0, 1024));
@@ -155,7 +155,7 @@ namespace kxf::SevenZip::Private::Callback
 			FSPath m_Directory;
 
 		public:
-			UpdateArchiveFromFS(IArchiveUpdate& update, const IFileSystem& fileSystem, std::vector<FileItem> files, const FSPath& directory, wxEvtHandler* evtHandler = nullptr)
+			UpdateArchiveFromFS(IArchiveUpdate& update, const IFileSystem& fileSystem, std::vector<FileItem> files, const FSPath& directory, EvtHandler* evtHandler = nullptr)
 				:UpdateArchiveWrapper(update, *this, evtHandler, files.size()), m_FileSystem(fileSystem), m_Files(std::vector(files))
 			{
 				m_Directory = m_FileSystem.ResolvePath(directory);
