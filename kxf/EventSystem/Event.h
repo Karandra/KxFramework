@@ -1,38 +1,20 @@
 #pragma once
 #include "Common.h"
-#include "EventID.h"
-#include "kxf/General/UniversallyUniqueID.h"
-#include "kxf/General/DateTime/TimeSpan.h"
-#include "kxf/UI/WidgetID.h"
+#include "IEvent.h"
 #include "kxf/Utility/Common.h"
 
 namespace kxf
 {
-	class EvtHandler;
-}
-
-namespace kxf
-{
-	class KX_API Event: public RTTI::Interface<Event>
+	class KX_API CommonEvent: public RTTI::ImplementInterface<CommonEvent, IEvent>
 	{
-		KxDeclareIID(Event, {0x61df394f, 0x8d5c, 0x43ef, {0xbd, 0x9f, 0xfb, 0xeb, 0xbf, 0x1e, 0x97, 0xa5}});
-
-		friend class EvtHandler;
-
-		public:
-			static inline const EventTag<Event> EvtNull = 0;
-			static inline const EventTag<Event> EvtAny = -1;
-
 		private:
 			EventID m_EventID;
 			EvtHandler* m_EventSource = nullptr;
-			FlagSet<EventCategory> m_Category;
 			UniversallyUniqueID m_UniqueID;
 			TimeSpan m_Timestamp;
 
 			bool m_IsAllowed = true;
 			bool m_IsSkipped = false;
-			bool m_ExceptionThrown = false;
 
 			// Initially false but becomes true as soon as 'WasProcessed' is called for the first time,
 			// as this is done only by 'DoProcessEvent' it explains the variable name: it becomes true
@@ -44,7 +26,7 @@ namespace kxf
 			mutable bool m_WillBeProcessedAgain = false;
 
 		private:
-			bool WasProcessed() const
+			bool WasProcessed() const override
 			{
 				if (m_WasProcessed)
 				{
@@ -54,7 +36,7 @@ namespace kxf
 				m_WasProcessed = true;
 				return false;
 			}
-			bool WillBeProcessedAgain() const
+			bool WillBeProcessedAgain() const override
 			{
 				if (m_WillBeProcessedAgain)
 				{
@@ -63,149 +45,100 @@ namespace kxf
 				}
 				return false;
 			}
-			bool IsExceptionThrown() const
+
+			void OnStartProcess(const EventID& eventID, const UniversallyUniqueID& uuid) override
 			{
-				return m_ExceptionThrown;
+				if (eventID && !m_EventID)
+				{
+					m_EventID = eventID;
+				}
+				if (!m_UniqueID)
+				{
+					m_UniqueID = std::move(uuid);
+				}
+				if (!m_Timestamp.IsPositive())
+				{
+					m_Timestamp = TimeSpan::Now(SteadyClock());
+				}
 			}
 
 		public:
-			Event() = default;
-			Event(const Event&) noexcept = default;
-			Event(Event&& other) noexcept
+			CommonEvent() = default;
+			CommonEvent(const CommonEvent&) noexcept = default;
+			CommonEvent(CommonEvent&& other) noexcept
 			{
 				*this = std::move(other);
 			}
 
 		public:
-			virtual std::unique_ptr<Event> Move() noexcept
+			std::unique_ptr<IEvent> Move() noexcept override
 			{
-				return std::make_unique<Event>(std::move(*this));
+				return std::make_unique<CommonEvent>(std::move(*this));
 			}
 
-			EventID GetEventID() const
+			EventID GetEventID() const override
 			{
 				return m_EventID;
 			}
-			TimeSpan GetTimestamp() const
+			TimeSpan GetTimestamp() const override
 			{
 				return m_Timestamp;
 			}
-			UniversallyUniqueID GetUniqueID() const
+			UniversallyUniqueID GetUniqueID() const override
 			{
 				return m_UniqueID;
 			}
+			FlagSet<EventCategory> GetEventCategory() const override
+			{
+				return EventCategory::None;
+			}
 
-			EvtHandler* GetEventSource() const
+			EvtHandler* GetEventSource() const override
 			{
 				return m_EventSource;
 			}
-			void SetEventSource(EvtHandler* evtHandler)
+			void SetEventSource(EvtHandler* evtHandler) override
 			{
 				m_EventSource = evtHandler;
 			}
 			
-			FlagSet<EventCategory> GetEventCategory() const
-			{
-				return m_Category;
-			}
-			void SetEventCategory(FlagSet<EventCategory> category)
-			{
-				m_Category = category;
-			}
-
-			bool IsSkipped() const
+			bool IsSkipped() const override
 			{
 				return m_IsSkipped;
 			}
-			void Skip(bool skip = true)
+			void Skip(bool skip = true) override
 			{
 				m_IsSkipped = skip;
 			}
 
-			bool IsAllowed() const
+			bool IsAllowed() const override
 			{
 				return m_IsAllowed;
 			}
-			void Allow(bool allow = true)
+			void Allow(bool allow = true) override
 			{
 				m_IsAllowed = allow;
 			}
 
 		public:
-			Event& operator=(const Event&) noexcept = default;
-			Event& operator=(Event&& other) noexcept
+			CommonEvent& operator=(const CommonEvent&) noexcept = default;
+			CommonEvent& operator=(CommonEvent&& other) noexcept
 			{
 				m_EventID = std::move(other.m_EventID);
 				m_EventSource = Utility::ExchangeResetAndReturn(other.m_EventSource, nullptr);
-				m_Category = Utility::ExchangeResetAndReturn(other.m_Category, EventCategory::None);
 				m_IsAllowed = Utility::ExchangeResetAndReturn(other.m_IsAllowed, true);
 				m_IsSkipped = Utility::ExchangeResetAndReturn(other.m_IsSkipped, false);
-				m_ExceptionThrown = Utility::ExchangeResetAndReturn(other.m_ExceptionThrown, false);
 				m_WasProcessed = Utility::ExchangeResetAndReturn(other.m_WasProcessed, false);
 				m_WillBeProcessedAgain = Utility::ExchangeResetAndReturn(other.m_WillBeProcessedAgain, false);
 
 				return *this;
 			}
 	};
-}
 
-namespace kxf
-{
-	class KX_API ICommandEvent: public RTTI::Interface<ICommandEvent>
-	{
-		KxDeclareIID(ICommandEvent, {0x4552fa23, 0xb7da, 0x44c5, {0x86, 0x93, 0x30, 0x40, 0x87, 0x31, 0x33, 0x72}});
-
-		public:
-			struct PropagationLevel final
-			{
-				// Don't propagate it at all
-				static constexpr size_t None = 0;
-
-				// Propagate it until it is processed
-				static constexpr size_t Max = std::numeric_limits<uint32_t>::max();
-
-				PropagationLevel() noexcept = delete;
-			};
-
-		public:
-			virtual ~ICommandEvent() = default;
-
-		public:
-			virtual WidgetID GetCommandID() const = 0;
-			virtual void SetCommandID(WidgetID id) = 0;
-
-			virtual size_t StopPropagation() = 0;
-			virtual void ResumePropagation(size_t level) = 0;
-			virtual bool ShouldPropagate() const = 0;
-
-			virtual String GetString() const = 0;
-			virtual void SetString(const String& value) = 0;
-
-			virtual int64_t GetInt() const = 0;
-			virtual void SetInt(int64_t value) = 0;
-
-			virtual int64_t GetExtraInt() const = 0;
-			virtual void SetExtraInt(int64_t value) = 0;
-	};
-
-	class IAsyncEvent: public RTTI::Interface<IAsyncEvent>
-	{
-		KxDeclareIID(IAsyncEvent, {0xb0046b41, 0xecd9, 0x4b46, {0xb1, 0xb5, 0xd6, 0x7d, 0xa, 0x77, 0x5c, 0xbe}});
-
-		public:
-			virtual ~IAsyncEvent() = default;
-
-		public:
-			virtual void Execute() = 0;
-	};
-}
-
-namespace kxf
-{
-	class KX_API CommandEvent: public RTTI::ImplementInterface<CommandEvent, Event, ICommandEvent>
+	class KX_API WidgetEvent: public RTTI::ImplementInterface<WidgetEvent, CommonEvent, IWidgetEvent>
 	{
 		private:
-			WidgetID m_CommandID;
+			WidgetID m_WidgetID;
 			size_t m_PropagationLevel = PropagationLevel::Max;
 
 			String m_String;
@@ -213,28 +146,34 @@ namespace kxf
 			int64_t m_ExtraInt = 0;
 
 		public:
-			CommandEvent() = default;
-			CommandEvent(const CommandEvent&) = default;
-			CommandEvent(CommandEvent&& other) noexcept
+			WidgetEvent() = default;
+			WidgetEvent(const WidgetEvent&) = default;
+			WidgetEvent(WidgetEvent&& other) noexcept
 			{
 				*this = std::move(other);
 			}
 
 		public:
-			// Event
-			std::unique_ptr<Event> Move() noexcept override
+			// IEvent
+			std::unique_ptr<IEvent> Move() noexcept override
 			{
-				return std::make_unique<CommandEvent>(std::move(*this));
+				return std::make_unique<WidgetEvent>(std::move(*this));
+			}
+			FlagSet<EventCategory> GetEventCategory() const override
+			{
+				// This function is used to selectively process events in 'IEventLoop::YieldFor'
+				// It returns 'EventCategory::UI' because 'WidgetEvent' is an UI event.
+				return EventCategory::UI;
 			}
 
-			// ICommandEvent
-			WidgetID GetCommandID() const override
+			// IWidgetEvent
+			WidgetID GetWidgetID() const override
 			{
-				return m_CommandID;
+				return m_WidgetID;
 			}
-			void SetCommandID(WidgetID id) override
+			void SetWidgetID(WidgetID id) override
 			{
-				m_CommandID = id;
+				m_WidgetID = id;
 			}
 
 			size_t StopPropagation() override
@@ -282,10 +221,10 @@ namespace kxf
 			}
 
 		public:
-			CommandEvent& operator=(const CommandEvent&) = default;
-			CommandEvent& operator=(CommandEvent&& other) noexcept
+			WidgetEvent& operator=(const WidgetEvent&) = default;
+			WidgetEvent& operator=(WidgetEvent&& other) noexcept
 			{
-				m_CommandID = Utility::ExchangeResetAndReturn(other.m_CommandID, wxID_NONE);
+				m_WidgetID = Utility::ExchangeResetAndReturn(other.m_WidgetID, wxID_NONE);
 				m_PropagationLevel = Utility::ExchangeResetAndReturn(other.m_PropagationLevel, PropagationLevel::Max);
 				m_String = std::move(other.m_String);
 
@@ -293,26 +232,3 @@ namespace kxf
 			}
 	};
 }
-
-// Event declaration macros
-
-// For global event IDs
-#define KxEVENT_DECLARE_GLOBAL(type, name)						extern const KX_API kxf::EventTag<type> KxEVT_##name
-#define KxEVENT_DEFINE_GLOBAL(type, name)						const kxf::EventTag<type> KxEVT_##name = kxf::EventSystem::NewSimpleEventID()
-#define KxEVENT_DEFINE_GLOBAL_AS(type, name, other)				const kxf::EventTag<type> KxEVT_##name = static_cast<kxf::EventID>(other)
-
-// For local scope (namespace, function, etc)
-#define KxEVENT_DECLARE_LOCAL(type, name)						extern KX_API const kxf::EventTag<type> Evt##name
-#define KxEVENT_DEFINE_LOCAL(type, name)						const kxf::EventTag<type> Evt##name = kxf::EventSystem::NewSimpleEventID()
-#define KxEVENT_DEFINE_LOCAL_AS(type, name, other)				const kxf::EventTag<type> Evt##name = static_cast<kxf::EventID>(other)
-
-// As static member of an event class
-#define KxEVENT_DECLARE_MEMBER(type, name)						static const kxf::EventTag<type> Evt##name
-#define KxEVENT_DEFINE_MEMBER(type, name)						const kxf::EventTag<type> type::Evt##name = kxf::EventSystem::NewSimpleEventID()
-#define KxEVENT_DEFINE_MEMBER_AS(type, name, other)				const kxf::EventTag<type> type::Evt##name = static_cast<kxf::EventID>(other)
-#define KxEVENT_DECLARE_ALIAS_TO_MEMBER(type, name)				inline const kxf::EventTag<type> Evt##name = type::Evt##name
-#define KxEVENT_DECLARE_ALIAS_TO_MEMBER_AS(type, name, other)	inline const kxf::EventTag<type> Evt##name = type::Evt##other
-
-// As inline static member of an event class
-#define KxEVENT_MEMBER(type, name)								inline static const kxf::EventTag<type> Evt##name = kxf::EventSystem::NewSimpleEventID()
-#define KxEVENT_MEMBER_AS(type, name, other)					inline static const kxf::EventTag<type> Evt##name = static_cast<kxf::EventID>(other)
