@@ -59,7 +59,9 @@ namespace kxf::Private
 			int OnExit() override
 			{
 				m_App.OnExit();
-				return m_App.GetExitCode().value_or(-1);
+
+				// Return value here is ignored
+				return -1;
 			}
 			int OnRun() override
 			{

@@ -1,34 +1,23 @@
 #include "stdafx.h"
 #include "ApplicationInitializer.h"
-#include "kxf/Utility/CallAtScopeExit.h"
 #include "kxf/wxWidgets/Application.h"
+#include "kxf/Utility/CallAtScopeExit.h"
+#include "Private/NativeApp.h"
 #include <wx/init.h>
 #include <wx/except.h>
-
-namespace
-{
-	bool WinEntryStart(void* instance, void* prevInstance, char* commandLine, int showWindow)
-	{
-		return wxEntryStart(reinterpret_cast<HINSTANCE>(instance), reinterpret_cast<HINSTANCE>(prevInstance), commandLine, showWindow != -1 ? showWindow : SW_SHOWNORMAL);
-	}
-}
 
 namespace kxf
 {
 	bool ApplicationInitializer::OnInitCommon()
 	{
 		wxDISABLE_DEBUG_SUPPORT();
-		if (wxAppConsole::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, m_App.GetDisplayName().c_str()))
+		if (wxAppConsole::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, m_Application.GetDisplayName().c_str()))
 		{
 			// This will tell 'wxInitialize' to use already existing application instance instead of attempting to create a new one
-			if (auto app = m_App.QueryInterface<wxWidgets::Application>())
-			{
-				wxAppConsole::SetInstance(app);
-			}
-			else if (auto appConsole = m_App.QueryInterface<wxWidgets::ApplicationConsole>())
-			{
-				wxAppConsole::SetInstance(appConsole);
-			}
+			m_NativeApp = std::make_unique<Private::NativeApp>(m_Application);
+			wxAppConsole::SetInstance(m_NativeApp.get());
+
+			// We're not using the dynamic 'wxApp' initialization
 			wxAppConsole::SetInitializerFunction(nullptr);
 
 			return true;
@@ -41,68 +30,90 @@ namespace kxf
 	}
 	bool ApplicationInitializer::OnInit(int argc, char** argv)
 	{
-		m_App.InitializeCommandLine(argv, static_cast<size_t>(argc));
+		m_Application.InitializeCommandLine(argv, static_cast<size_t>(argc));
 		return wxInitialize(argc, argv);
 	}
 	bool ApplicationInitializer::OnInit(int argc, wchar_t** argv)
 	{
-		m_App.InitializeCommandLine(argv, static_cast<size_t>(argc));
+		m_Application.InitializeCommandLine(argv, static_cast<size_t>(argc));
 		return wxInitialize(argc, argv);
 	}
 	void ApplicationInitializer::OnInitDone()
 	{
-		/// Initialization is done, we can assign ICoreApplication instance now
-		ICoreApplication::SetInstance(&m_App);
+		// Initialization is done successfully, we can assign 'ICoreApplication' instance now.
+		ICoreApplication::SetInstance(&m_Application);
 	}
 	
 	void ApplicationInitializer::OnTerminate()
 	{
 		if (m_IsCreated)
 		{
-			m_App.OnDestroy();
+			m_Application.OnDestroy();
 			m_IsCreated = false;
 		}
 
 		if (m_IsInitializedCommon)
 		{
-			// Reset application object pointer prior to calling 'wxUninitialize' as it'll try to call C++ 'operator delete' on its instance.
+			// Reset application object (and its pointer) prior to calling 'wxUninitialize' as it'll
+			// try to call C++ 'operator delete' on the instance if it's still there assuming it was created
+			// using 'operator new'.
 			wxAppConsole::SetInstance(nullptr);
+			m_NativeApp = nullptr;
 
 			if (m_IsInitialized)
 			{
 				wxUninitialize();
 				m_IsInitialized = false;
 
-				// Reset ICoreApplication instance
+				// Reset 'ICoreApplication' instance
 				ICoreApplication::SetInstance(nullptr);
 			}
 			m_IsInitializedCommon = false;
 		}
 	}
 
+	ApplicationInitializer::ApplicationInitializer(ICoreApplication& app)
+		:m_Application(app)
+	{
+		RunInitSequence();
+	}
+	ApplicationInitializer::ApplicationInitializer(ICoreApplication& app, int argc, char** argv)
+		: m_Application(app)
+	{
+		RunInitSequence(argc, argv);
+	}
+	ApplicationInitializer::ApplicationInitializer(ICoreApplication& app, int argc, wchar_t** argv) : m_Application(app)
+	{
+		RunInitSequence(argc, argv);
+	}
+	ApplicationInitializer::~ApplicationInitializer()
+	{
+		OnTerminate();
+	}
+
 	int ApplicationInitializer::Run() noexcept
 	{
 		try
 		{
-			if (m_App.OnInit())
+			if (m_Application.OnInit())
 			{
-				// Ensure that OnExit() is called if OnInit() had succeeded
+				// Ensure that 'OnExit' is called if 'OnInit' had succeeded
 				Utility::CallAtScopeExit callOnExit = [&]()
 				{
-					m_App.OnExit();
+					m_Application.OnExit();
 				};
 				
 				// Run the main loop
-				return m_App.OnRun();
+				return m_Application.OnRun();
 			}
 
-			// Don't call OnExit() if OnInit() failed
-			return m_App.GetExitCode().value_or(-1);
+			// Don't call 'OnExit' if 'OnInit' failed
+			return m_Application.GetExitCode().value_or(-1);
 		}
 		catch (...)
 		{
-			m_App.OnUnhandledException();
-			return m_App.GetExitCode().value_or(-1);
+			m_Application.OnUnhandledException();
+			return m_Application.GetExitCode().value_or(-1);
 		}
 	}
 }

@@ -4,11 +4,6 @@
 #include "kxf/Threading/LockGuard.h"
 #include "kxf/Threading/ReadWriteLock.h"
 
-namespace kxf::Private
-{
-	class NativeApp;
-}
-
 namespace kxf
 {
 	class KX_API CoreApplication: public RTTI::ImplementInterface<CoreApplication, ICoreApplication>
@@ -24,8 +19,6 @@ namespace kxf
 			}
 
 		protected:
-			std::unique_ptr<Private::NativeApp> m_NativeApp;
-			
 			// ICoreApplication
 			mutable ReadWriteLock m_EventFiltersLock;
 			std::list<IEventFilter*> m_EventFilters;
@@ -64,19 +57,8 @@ namespace kxf
 			char** m_ArgVA = nullptr;
 			wchar_t** m_ArgVW = nullptr;
 
-		protected:
-			Private::NativeApp& GetImpl()
-			{
-				return *m_NativeApp;
-			}
-			const Private::NativeApp& GetImpl() const
-			{
-				return *m_NativeApp;
-			}
-
 		public:
-			CoreApplication();
-			~CoreApplication();
+			CoreApplication() = default;
 
 		public:
 			// IObject

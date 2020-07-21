@@ -3,6 +3,7 @@
 #include "ICoreApplication.h"
 #include "kxf/System/Common.h"
 
+
 // This class can be used to perform full initialize-run-shutdown sequence of the application.
 // Use as shown:
 /*
@@ -19,12 +20,19 @@
 	/ENTRY:mainCRTStartup
 */
 
+namespace kxf::Private
+{
+	class NativeApp;
+}
+
 namespace kxf
 {
 	class ApplicationInitializer final
 	{
 		private:
-			ICoreApplication& m_App;
+			std::unique_ptr<Private::NativeApp> m_NativeApp;
+
+			ICoreApplication& m_Application;
 			bool m_IsInitializedCommon = false;
 			bool m_IsInitialized = false;
 			bool m_IsCreated = false;
@@ -43,7 +51,7 @@ namespace kxf
 				{
 					if (m_IsInitialized = OnInit(std::forward<Args>(arg)...))
 					{
-						if (m_IsCreated = m_App.OnCreate())
+						if (m_IsCreated = m_Application.OnCreate())
 						{
 							OnInitDone();
 						}
@@ -54,25 +62,10 @@ namespace kxf
 			void OnTerminate();
 
 		public:
-			ApplicationInitializer(ICoreApplication& app)
-				:m_App(app)
-			{
-				RunInitSequence();
-			}
-			ApplicationInitializer(ICoreApplication& app, int argc, char** argv)
-				:m_App(app)
-			{
-				RunInitSequence(argc, argv);
-			}
-			ApplicationInitializer(ICoreApplication& app, int argc, wchar_t** argv)
-				:m_App(app)
-			{
-				RunInitSequence(argc, argv);
-			}
-			~ApplicationInitializer()
-			{
-				OnTerminate();
-			}
+			ApplicationInitializer(ICoreApplication& app);
+			ApplicationInitializer(ICoreApplication& app, int argc, char** argv);
+			ApplicationInitializer(ICoreApplication& app, int argc, wchar_t** argv);
+			~ApplicationInitializer();
 
 		public:
 			bool IsInitialized() const noexcept

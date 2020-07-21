@@ -6,7 +6,7 @@
 #include "kxf/Utility/Container.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 #include "kxf/wxWidgets/Application.h"
-#include "Private/NativeApp.h"
+#include <wx/cmdline.h>
 
 namespace
 {
@@ -22,18 +22,16 @@ namespace
 
 namespace kxf
 {
-	CoreApplication::CoreApplication()
-		:m_NativeApp(std::make_unique<Private::NativeApp>(*this))
-	{
-	}
-	CoreApplication::~CoreApplication() = default;
-
 	// IObject
 	void* CoreApplication::QueryInterface(const IID& iid) noexcept
 	{
 		if (iid.IsOfType<wxWidgets::Application>())
 		{
-			return static_cast<wxWidgets::Application*>(m_NativeApp.get());
+			return static_cast<wxWidgets::Application*>(wxApp::GetInstance());
+		}
+		else if (iid.IsOfType<wxWidgets::ApplicationConsole>())
+		{
+			return static_cast<wxWidgets::ApplicationConsole*>(wxAppConsole::GetInstance());
 		}
 		return TBaseClass::QueryInterface(iid);
 	}
@@ -142,11 +140,23 @@ namespace kxf
 
 	String CoreApplication::GetClassName() const
 	{
-		return m_NativeApp->GetClassName();
+		if (!m_ClassName.IsEmpty())
+		{
+			return m_ClassName;
+		}
+		else if (auto app = wxAppConsole::GetInstance())
+		{
+			return app->GetClassName();
+		}
+		return {};
 	}
 	void CoreApplication::SetClassName(const String& name)
 	{
-		m_NativeApp->SetClassName(name);
+		m_ClassName = name;
+		if (auto app = wxAppConsole::GetInstance())
+		{
+			app->SetClassName(name);
+		}
 	}
 
 	// Application::IMainEoventLoop
