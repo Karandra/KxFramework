@@ -19,7 +19,10 @@ namespace kxf::EventSystem::Private
 			void ProcessMessage(Win32Message& message) override;
 
 		public:
-			Win32ConsoleEventLoop() = default;
+			Win32ConsoleEventLoop(FlagSet<EventCategory> allowedToYield = EventCategory::Everything)
+				:Win32CommonEventLoop(allowedToYield)
+			{
+			}
 
 		public:
 			bool Dispatch() override;

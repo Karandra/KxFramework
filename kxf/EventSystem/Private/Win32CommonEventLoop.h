@@ -57,7 +57,10 @@ namespace kxf::EventSystem::Private
 			virtual bool PreProcessMessage(Win32Message& message) = 0;
 
 		public:
-			Win32CommonEventLoop() = default;
+			Win32CommonEventLoop(FlagSet<EventCategory> allowedToYield = EventCategory::Everything)
+				:CommonEventLoop(allowedToYield)
+			{
+			}
 
 		public:
 			void WakeUp() override;

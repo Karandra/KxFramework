@@ -31,7 +31,10 @@ namespace kxf::EventSystem::Private
 			bool PreProcessMessage(Win32Message& message) override;
 
 		public:
-			Win32GUIEventLoop() = default;
+			Win32GUIEventLoop(FlagSet<EventCategory> allowedToYield = EventCategory::Everything)
+				:Win32CommonEventLoop(allowedToYield)
+			{
+			}
 
 		public:
 			bool Dispatch() override;

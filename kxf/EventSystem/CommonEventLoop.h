@@ -35,6 +35,12 @@ namespace kxf
 			int OnRun() override;
 
 		public:
+			CommonEventLoop(FlagSet<EventCategory> allowedToYield = EventCategory::Everything)
+				:m_AllowedToYield(allowedToYield)
+			{
+			}
+
+		public:
 			int Run() override;
 			void Exit(int exitCode = 0) override;
 			void ScheduleExit(int exitCode = 0) override;
