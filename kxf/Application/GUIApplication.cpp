@@ -1,9 +1,11 @@
 #include "stdafx.h"
 #include "GUIApplication.h"
 #include "Private/Utility.h"
+#include "Private/NativeApp.h"
 #include "kxf/EventSystem/Private/Win32GUIEventLoop.h"
 #include "kxf/System/SystemInformation.h"
 #include "kxf/System/SystemAppearance.h"
+#include "kxf/wxWidgets/Application.h"
 #include "kxf/Utility/Container.h"
 #include <uxtheme.h>
 
@@ -47,6 +49,12 @@ namespace kxf
 		if (m_ExitOnLastFrameDelete == ExitOnLastFrameDelete::Later)
 		{
 			m_ExitOnLastFrameDelete = ExitOnLastFrameDelete::Always;
+
+			// Notify the wxWidgets application
+			if (auto app = Application::Private::NativeApp::GetInstance())
+			{
+				app->SetExitOnFrameDelete(true);
+			}
 		}
 
 		// Ru the main loop
@@ -120,6 +128,23 @@ namespace kxf
 	void GUIApplication::SetTopWindow(wxWindow* window)
 	{
 		m_TopWindow = window;
+		if (auto app = Application::Private::NativeApp::GetInstance())
+		{
+			app->SetTopWindow(window);
+		}
+	}
+
+	bool GUIApplication::ShoudExitOnLastFrameDelete() const
+	{
+		return m_ExitOnLastFrameDelete == ExitOnLastFrameDelete::Always;
+	}
+	void GUIApplication::ExitOnLastFrameDelete(bool enable)
+	{
+		m_ExitOnLastFrameDelete = enable ? ExitOnLastFrameDelete::Always : ExitOnLastFrameDelete::Never;
+		if (auto app = Application::Private::NativeApp::GetInstance())
+		{
+			app->SetExitOnFrameDelete(enable);
+		}
 	}
 
 	bool GUIApplication::IsActive() const

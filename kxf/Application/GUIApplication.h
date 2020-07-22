@@ -46,14 +46,8 @@ namespace kxf
 			wxWindow* GetTopWindow() const override;
 			void SetTopWindow(wxWindow* window) override;
 
-			bool ShoudExitOnLastFrameDelete() const override
-			{
-				return m_ExitOnLastFrameDelete == ExitOnLastFrameDelete::Always;
-			}
-			void ExitOnLastFrameDelete(bool enable = true) override
-			{
-				m_ExitOnLastFrameDelete = enable ? ExitOnLastFrameDelete::Always : ExitOnLastFrameDelete::Never;
-			}
+			bool ShoudExitOnLastFrameDelete() const override;
+			void ExitOnLastFrameDelete(bool enable = true) override;
 			
 			bool IsActive() const override;
 			void SetActive(bool active = true, wxWindow* window = nullptr) override;

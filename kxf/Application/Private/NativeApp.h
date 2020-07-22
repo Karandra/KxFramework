@@ -1,6 +1,7 @@
 #pragma once
 #include "../Common.h"
 #include "../ICoreApplication.h"
+#include "../IGUIApplication.h"
 #include "kxf/wxWidgets/Application.h"
 #include <wx/cmdline.h>
 
@@ -16,6 +17,7 @@ namespace kxf::Application::Private
 
 		private:
 			ICoreApplication& m_App;
+			IGUIApplication* m_GUIApp = nullptr;
 
 		private:
 			void OnCreate();
@@ -23,7 +25,7 @@ namespace kxf::Application::Private
 
 		public:
 			NativeApp(ICoreApplication& app)
-				:m_App(app)
+				:m_App(app), m_GUIApp(app.QueryInterface<IGUIApplication>())
 			{
 				OnCreate();
 			}
@@ -134,6 +136,56 @@ namespace kxf::Application::Private
 			bool OnCmdLineHelp(wxCmdLineParser& parser) override
 			{
 				return m_App.OnCommandLineHelp(parser);
+			}
+
+			// GUI
+			bool IsActive() const override
+			{
+				return m_GUIApp ? m_GUIApp->IsActive() : false;
+			}
+			wxWindow* GetTopWindow() const override
+			{
+				return m_GUIApp ? m_GUIApp->GetTopWindow() : nullptr;
+			}
+			
+			wxLayoutDirection GetLayoutDirection() const override
+			{
+				if (m_GUIApp)
+				{
+					switch (m_GUIApp->GetLayoutDirection())
+					{
+						case UI::LayoutDirection::LeftToRight:
+						{
+							return wxLayoutDirection::wxLayout_LeftToRight;
+						}
+						case UI::LayoutDirection::RightToLeft:
+						{
+							return wxLayoutDirection::wxLayout_RightToLeft;
+						}
+					};
+				}
+				return wxLayoutDirection::wxLayout_Default;
+			}
+			bool SetNativeTheme(const wxString& themeName) override
+			{
+				return m_GUIApp ? m_GUIApp->SetNativeTheme(themeName) : false;
+			}
+
+			bool SafeYield(wxWindow* window, bool onlyIfNeeded) override
+			{
+				if (m_GUIApp && window)
+				{
+					return m_GUIApp->Yield(*window, FlagSet<EventYieldFlag>().Add(EventYieldFlag::OnlyIfRequired, onlyIfNeeded));
+				}
+				return false;
+			}
+			bool SafeYieldFor(wxWindow* window, long eventsToProcess) override
+			{
+				if (m_GUIApp && window)
+				{
+					return m_GUIApp->YieldFor(*window, static_cast<EventCategory>(eventsToProcess));
+				}
+				return false;
 			}
 	};
 }
