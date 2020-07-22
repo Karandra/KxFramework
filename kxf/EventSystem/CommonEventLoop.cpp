@@ -223,8 +223,9 @@ namespace kxf
 	{
 		if (auto app = ICoreApplication::GetInstance())
 		{
-			app->DispatchIdle();
+			return app->DispatchIdle();
 		}
+		return false;
 	}
 	
 	bool CommonEventLoop::Yield(FlagSet<EventYieldFlag> flags)
