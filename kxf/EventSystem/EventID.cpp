@@ -84,7 +84,7 @@ namespace kxf
 	bool EventID::IsWxWidgetsID() const noexcept
 	{
 		int64_t id = AsInt();
-		return id > 0 && id < g_LastWxEventID;
+		return id > 0 && id <= g_LastWxEventID;
 	}
 }
 
@@ -92,7 +92,7 @@ namespace kxf::EventSystem
 {
 	EventID NewSimpleEventID() noexcept
 	{
-		return ++g_SimpleEventID;
+		return g_LastWxEventID + (++g_SimpleEventID);
 	}
 	EventID NewUniqueEventID() noexcept
 	{
