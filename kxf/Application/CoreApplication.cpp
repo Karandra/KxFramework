@@ -9,6 +9,7 @@
 #include "kxf/Utility/Container.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 #include "kxf/wxWidgets/Application.h"
+#include "kxf/wxWidgets/EvtHandlerWrapper.h"
 #include <wx/cmdline.h>
 
 namespace
@@ -131,9 +132,16 @@ namespace kxf
 	{
 		if (ICoreApplication::OnDynamicBind(eventItem))
 		{
-			if (eventItem.IsSameEventID(DynamicLibraryEvent::EvtLoaded) || eventItem.IsSameEventID(DynamicLibraryEvent::EvtLoaded))
+			if (!m_DLLNotificationsCookie)
 			{
-				return InitDLLNotifications();
+				if (eventItem.IsSameEventID(DynamicLibraryEvent::EvtLoaded) || eventItem.IsSameEventID(DynamicLibraryEvent::EvtLoaded))
+				{
+					return InitDLLNotifications();
+				}
+			}
+			if (auto app = wxAppConsole::GetInstance())
+			{
+				wxWidgets::EvtHandlerWrapper::ForwardBind(*this, *app, eventItem);
 			}
 		}
 		return false;

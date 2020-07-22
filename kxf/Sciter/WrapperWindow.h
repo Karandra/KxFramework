@@ -1,11 +1,14 @@
 #pragma once
 #include "Host.h"
+#include "kxf/wxWidgets/EvtHandlerWrapper.h"
 
 namespace kxf::Sciter
 {
 	template<class TWindow>
 	class WindowWrapper: public TWindow, public Host, public EvtHandler
 	{
+		static_assert(std::is_base_of_v<wxWindow, TWindow>, "wxWindow descendant required for 'TWindow'");
+
 		protected:
 			bool MSWHandleMessage(WXLRESULT* result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam) override
 			{
@@ -33,6 +36,15 @@ namespace kxf::Sciter
 				Host::OnInternalIdle();
 			}
 
+			bool OnDynamicBind(EventItem& eventItem) override
+			{
+				if (EvtHandler::OnDynamicBind(eventItem))
+				{
+					wxWidgets::EvtHandlerWrapper::ForwardBind(*this, static_cast<wxWindow&>(*this), eventItem);
+					return true;
+				}
+				return false;
+			}
 			wxSize DoGetBestClientSize() const override
 			{
 				return Host::GetBestSize();

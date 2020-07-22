@@ -6,13 +6,25 @@
 
 namespace kxf::wxWidgets
 {
-	class KX_API EventWrapper: public RTTI::ImplementInterface<EventWrapper, IEvent>
+	class KX_API IWithEvent: public RTTI::Interface<IWithEvent>
+	{
+		KxDeclareIID(IWithEvent, {0x8154331b, 0x997b, 0x4a28, {0xa8, 0xaf, 0x95, 0xb0, 0x57, 0x12, 0x1d, 0x6f}});
+
+		public:
+			virtual ~IWithEvent() = default;
+
+		public:
+			virtual wxEvent& GetEvent() = 0;
+	};
+
+	class KX_API EventWrapper: public RTTI::ImplementInterface<EventWrapper, IEvent, IWithEvent>
 	{
 		private:
 			Utility::WithOptionalOwnership<wxEvent> m_Event;
 			UniversallyUniqueID m_UniqueID;
 
 		private:
+			// IEvent
 			bool WasProcessed() const override
 			{
 				return m_Event->WasProcessed();
@@ -51,6 +63,7 @@ namespace kxf::wxWidgets
 			EventWrapper(const EventWrapper&) = delete;
 
 		public:
+			// IEvent
 			std::unique_ptr<IEvent> Move() noexcept override
 			{
 				return std::make_unique<EventWrapper>(std::move(*this));
@@ -113,6 +126,12 @@ namespace kxf::wxWidgets
 						notifyEvent.Veto();
 					}
 				}
+			}
+
+			// IWithEvent
+			wxEvent& GetEvent() override
+			{
+				return *m_Event;
 			}
 
 		public:

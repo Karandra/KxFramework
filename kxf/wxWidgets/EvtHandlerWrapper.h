@@ -12,11 +12,14 @@ namespace kxf::wxWidgets
 		public:
 			static void ForwardBind(EvtHandler& evtHandler, wxEvtHandler& evtHandlerWx, EventItem& eventItem)
 			{
-				return evtHandlerWx.Bind(wxEventTypeTag<wxEvent>(eventItem.GetEventID().AsInt()), [evtHandler = &evtHandler, executor = eventItem.GetExecutor()](wxEvent& event)
+				if (EventID id = eventItem.GetEventID(); id.IsWxWidgetsID())
 				{
-					EventWrapper wrapper(event);
-					executor->Execute(*evtHandler, wrapper);
-				}, wxID_ANY, wxID_ANY, new ClientObject(eventItem.GetBindSlot()));
+					return evtHandlerWx.Bind(wxEventTypeTag<wxEvent>(id.AsInt()), [evtHandler = &evtHandler, executor = eventItem.GetExecutor()](wxEvent& event)
+					{
+						EventWrapper wrapper(event);
+						executor->Execute(*evtHandler, wrapper);
+					}, wxID_ANY, wxID_ANY, new ClientObject(eventItem.GetBindSlot()));
+				}
 			}
 
 		private:
