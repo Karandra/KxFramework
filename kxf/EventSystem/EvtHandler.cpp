@@ -4,8 +4,6 @@
 #include "kxf/Application/ICoreApplication.h"
 #include "kxf/Application/Private/Utility.h"
 #include "kxf/Utility/Container.h"
-#include <wx/event.h>
-#include <wx/evtloop.h>
 
 namespace kxf
 {
@@ -277,10 +275,7 @@ namespace kxf
 			}
 
 			// Inform the system that new pending events are somewhere, and that these should be processed in idle time.
-			if (wxEventLoopBase* eventLoop = wxEventLoopBase::GetActive())
-			{
-				eventLoop->WakeUp();
-			}
+			app->WakeUp();
 		}
 	}
 	bool EvtHandler::DoProcessEvent(IEvent& event, const EventID& eventID, EvtHandler* onlyIn)
@@ -414,8 +409,8 @@ namespace kxf
 			// from the handling code, this will result in a crash at best and in something
 			// even more weird at worst (like exceptions completely disappearing into the void
 			// under some 64-bit versions of Windows).
-			wxEventLoopBase* eventLoop = wxEventLoopBase::GetActive();
-			if (eventLoop && !eventLoop->IsYielding())
+			IEventLoop* eventLoop = app->GetActiveEventLoop();
+			if (eventLoop && eventLoop->IsYielding())
 			{
 				eventLoop->Exit();
 			}
@@ -565,14 +560,14 @@ namespace kxf
 			// This method is only called by an application if this handler does have pending events
 			if (WriteLockGuard lock(m_PendingEventsLock); !m_PendingEvents.empty())
 			{
-				wxEventLoopBase* eventLoop = wxEventLoopBase::GetActive();
+				IEventLoop* eventLoop = app->GetActiveEventLoop();
 				if (eventLoop && eventLoop->IsYielding())
 				{
 					// Find the first event which can be processed now
 					auto eventIt = m_PendingEvents.end();
 					for (auto it = m_PendingEvents.begin(); it != m_PendingEvents.end(); ++it)
 					{
-						if (*it && eventLoop->IsEventAllowedInsideYield(static_cast<wxEventCategory>((*it)->GetEventCategory().ToInt())))
+						if (*it && eventLoop->IsEventAllowedInsideYield((*it)->GetEventCategory()))
 						{
 							eventIt = std::move(it);
 							break;
