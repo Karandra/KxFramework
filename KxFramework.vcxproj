@@ -391,6 +391,7 @@
     <ClInclude Include="kxf\wxWidgets\Application.h" />
     <ClInclude Include="kxf\wxWidgets\Common.h" />
     <ClInclude Include="kxf\wxWidgets\EventLoopWrapper.h" />
+    <ClInclude Include="kxf\wxWidgets\EventWrapper.h" />
     <ClInclude Include="kxf\wxWidgets\EvtHandlerWrapper.h" />
     <ClInclude Include="kxf\wxWidgets\RTTI.h" />
     <ClInclude Include="kxf\wxWidgets\SystemOptions.h" />
