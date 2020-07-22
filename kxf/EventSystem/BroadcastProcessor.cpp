@@ -23,27 +23,27 @@ namespace kxf::EventSystem
 	}
 }
 
-namespace kxf::EventSystem
+namespace kxf
 {
-	bool BroadcastProcessor::AddReciever(BroadcastReciever& reciever)
+	bool EventBroadcastProcessor::AddReciever(EventBroadcastReciever& reciever)
 	{
 		return m_Stack.Push(reciever.GetEvtHandler());
 	}
-	bool BroadcastProcessor::RemoveReciever(BroadcastReciever& reciever)
+	bool EventBroadcastProcessor::RemoveReciever(EventBroadcastReciever& reciever)
 	{
 		return m_Stack.Remove(reciever.GetEvtHandler());
 	}
 
-	bool BroadcastReciever::PreProcessEvent(IEvent& event)
+	bool EventBroadcastReciever::PreProcessEvent(IEvent& event)
 	{
 		StopPropagation(event);
 		return m_Processor.PreProcessEvent(event);
 	}
-	void BroadcastReciever::PostProcessEvent(IEvent& event)
+	void EventBroadcastReciever::PostProcessEvent(IEvent& event)
 	{
 		m_Processor.PostProcessEvent(event);
 	}
-	void BroadcastReciever::FinalPostProcessEvent(IEvent& event)
+	void EventBroadcastReciever::FinalPostProcessEvent(IEvent& event)
 	{
 		event.Skip();
 		StopPropagation(event);

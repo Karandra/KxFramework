@@ -3,10 +3,10 @@
 #include "EventHandlerStack.h"
 #include "EvtHandlerDelegate.h"
 
-namespace kxf::EventSystem
+namespace kxf
 {
-	class BroadcastProcessor;
-	class BroadcastReciever;
+	class EventBroadcastProcessor;
+	class EventBroadcastReciever;
 }
 
 namespace kxf::EventSystem
@@ -14,13 +14,13 @@ namespace kxf::EventSystem
 	class KX_API BroadcastProcessorHandler final: public EvtHandler
 	{
 		private:
-			BroadcastProcessor& m_Processor;
+			EventBroadcastProcessor& m_Processor;
 
 		protected:
 			bool TryBefore(IEvent& event) override;
 
 		public:
-			BroadcastProcessorHandler(BroadcastProcessor& processor)
+			BroadcastProcessorHandler(EventBroadcastProcessor& processor)
 				:m_Processor(processor)
 			{
 			}
@@ -28,18 +28,18 @@ namespace kxf::EventSystem
 
 	class KX_API BroadcastRecieverHandler final: public EvtHandler
 	{
-		friend class BroadcastReciever;
+		friend class EventBroadcastReciever;
 
 		protected:
 			bool TryBefore(IEvent& event) override;
 	};
 }
 
-namespace kxf::EventSystem
+namespace kxf
 {
-	class KX_API BroadcastProcessor: public EvtHandlerDelegate
+	class KX_API EventBroadcastProcessor: public EvtHandlerDelegate
 	{
-		friend class BroadcastReciever;
+		friend class EventBroadcastReciever;
 
 		public:
 			using Order = EvtHandlerStack::Order;
@@ -59,15 +59,15 @@ namespace kxf::EventSystem
 			}
 
 		public:
-			BroadcastProcessor()
+			EventBroadcastProcessor()
 				:EvtHandlerDelegate(m_EvtHandler), m_EvtHandler(*this), m_Stack(m_EvtHandler)
 			{
 			}
-			virtual ~BroadcastProcessor() = default;
+			virtual ~EventBroadcastProcessor() = default;
 
 		public:
-			bool AddReciever(BroadcastReciever& reciever);
-			bool RemoveReciever(BroadcastReciever& reciever);
+			bool AddReciever(EventBroadcastReciever& reciever);
+			bool RemoveReciever(EventBroadcastReciever& reciever);
 
 			bool HasRecieveres() const
 			{
@@ -101,15 +101,15 @@ namespace kxf::EventSystem
 	};
 }
 
-namespace kxf::EventSystem
+namespace kxf
 {
-	class KX_API BroadcastReciever: public EvtHandlerDelegate
+	class KX_API EventBroadcastReciever: public EvtHandlerDelegate
 	{
-		friend class BroadcastProcessor;
+		friend class EventBroadcastProcessor;
 
 		private:
 			EventSystem::BroadcastRecieverHandler m_EvtHandler;
-			BroadcastProcessor& m_Processor;
+			EventBroadcastProcessor& m_Processor;
 
 		private:
 			bool PreProcessEvent(IEvent& event);
@@ -132,22 +132,22 @@ namespace kxf::EventSystem
 			}
 
 		public:
-			BroadcastReciever(BroadcastProcessor& processor)
+			EventBroadcastReciever(EventBroadcastProcessor& processor)
 				:EvtHandlerDelegate(m_EvtHandler), m_Processor(processor)
 			{
 				m_Processor.AddReciever(*this);
 			}
-			virtual ~BroadcastReciever()
+			virtual ~EventBroadcastReciever()
 			{
 				m_Processor.RemoveReciever(*this);
 			}
 
 		public:
-			BroadcastProcessor& GetProcessor()
+			EventBroadcastProcessor& GetProcessor()
 			{
 				return m_Processor;
 			}
-			const BroadcastProcessor& GetProcessor() const
+			const EventBroadcastProcessor& GetProcessor() const
 			{
 				return m_Processor;
 			}
