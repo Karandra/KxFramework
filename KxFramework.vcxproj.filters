@@ -203,9 +203,6 @@
     <Filter Include="kxf\Serialization\XML\Private">
       <UniqueIdentifier>{47ee576b-53f3-4dcb-9ad0-30fad244c27d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf/Private">
-      <UniqueIdentifier>{7b27d8ef-179e-479c-a825-b4ebbb837c68}</UniqueIdentifier>
-    </Filter>
     <Filter Include="kxf/Modules">
       <UniqueIdentifier>{916829f1-4a51-4891-9918-1b9723789c5a}</UniqueIdentifier>
     </Filter>
@@ -2107,9 +2104,6 @@
     </ClCompile>
     <ClCompile Include="kxf\Serialization\HTML\Private\clean_text.cpp">
       <Filter>kxf\Serialization\HTML\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\Private\CompileModules.cpp">
-      <Filter>kxf/Private</Filter>
     </ClCompile>
     <ClCompile Include="kxf\EventSystem\EventID.cpp">
       <Filter>kxf\EventSystem</Filter>
