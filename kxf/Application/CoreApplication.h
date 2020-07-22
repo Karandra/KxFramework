@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "ICoreApplication.h"
 #include "kxf/Threading/LockGuard.h"
-#include "kxf/Threading/ReadWriteLock.h"
+#include "kxf/Threading/RecursiveRWLock.h"
 
 namespace kxf
 {
@@ -20,7 +20,7 @@ namespace kxf
 
 		protected:
 			// ICoreApplication
-			mutable ReadWriteLock m_EventFiltersLock;
+			mutable RecursiveRWLock m_EventFiltersLock;
 			std::list<IEventFilter*> m_EventFilters;
 
 			std::optional<int> m_ExitCode;
@@ -42,10 +42,10 @@ namespace kxf
 			// Application::IPendingEvents
 			std::atomic<bool> m_PendingEventsProcessingEnabled = true;
 			
-			mutable ReadWriteLock m_ScheduledForDestructionLock;
+			mutable RecursiveRWLock m_ScheduledForDestructionLock;
 			std::vector<std::unique_ptr<wxObject>> m_ScheduledForDestruction;
 			
-			mutable ReadWriteLock m_PendingEvtHandlersLock;
+			mutable RecursiveRWLock m_PendingEvtHandlersLock;
 			std::list<EvtHandler*> m_PendingEvtHandlers;
 			std::list<EvtHandler*> m_DelayedPendingEvtHandlers;
 

@@ -144,13 +144,13 @@ namespace kxf
 	// IObject
 	void* CoreApplication::QueryInterface(const IID& iid) noexcept
 	{
-		if (iid.IsOfType<wxWidgets::Application>())
+		if (iid.IsOfType<wxWidgets::Application>() || iid.IsOfType<wxWidgets::ApplicationConsole>())
 		{
-			return static_cast<wxWidgets::Application*>(wxApp::GetInstance());
-		}
-		else if (iid.IsOfType<wxWidgets::ApplicationConsole>())
-		{
-			return static_cast<wxWidgets::ApplicationConsole*>(wxAppConsole::GetInstance());
+			if (auto app = Application::Private::NativeApp::GetInstance())
+			{
+				return app->QueryInterface(iid);
+			}
+			return nullptr;
 		}
 		return TBaseClass::QueryInterface(iid);
 	}
