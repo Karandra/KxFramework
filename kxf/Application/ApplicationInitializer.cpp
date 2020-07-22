@@ -14,7 +14,7 @@ namespace kxf
 		if (wxAppConsole::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, m_Application.GetDisplayName().c_str()))
 		{
 			// This will tell 'wxInitialize' to use already existing application instance instead of attempting to create a new one
-			m_NativeApp = std::make_unique<Private::NativeApp>(m_Application);
+			m_NativeApp = std::make_unique<Application::Private::NativeApp>(m_Application);
 			wxAppConsole::SetInstance(m_NativeApp.get());
 
 			// We're not using the dynamic 'wxApp' initialization

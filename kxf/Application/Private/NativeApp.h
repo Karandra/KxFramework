@@ -4,7 +4,7 @@
 #include "kxf/wxWidgets/Application.h"
 #include <wx/cmdline.h>
 
-namespace kxf::Private
+namespace kxf::Application::Private
 {
 	class KX_API NativeApp final: public wxWidgets::Application
 	{

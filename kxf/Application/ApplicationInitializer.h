@@ -20,7 +20,7 @@
 	/ENTRY:mainCRTStartup
 */
 
-namespace kxf::Private
+namespace kxf::Application::Private
 {
 	class NativeApp;
 }
@@ -30,7 +30,7 @@ namespace kxf
 	class ApplicationInitializer final
 	{
 		private:
-			std::unique_ptr<Private::NativeApp> m_NativeApp;
+			std::unique_ptr<Application::Private::NativeApp> m_NativeApp;
 
 			ICoreApplication& m_Application;
 			bool m_IsInitializedCommon = false;

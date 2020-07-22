@@ -191,6 +191,7 @@
     <ClInclude Include="kxf\Application\ICoreApplication.h" />
     <ClInclude Include="kxf\Application\IGUIApplication.h" />
     <ClInclude Include="kxf\Application\Private\NativeApp.h" />
+    <ClInclude Include="kxf\Application\Private\Utility.h" />
     <ClInclude Include="kxf\Compression\IArchiveCallbacks.h" />
     <ClInclude Include="kxf\Compression\SevenZip.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Archive.h" />
@@ -595,6 +596,7 @@
     <ClCompile Include="kxf\Application\GUIApplication.cpp" />
     <ClCompile Include="kxf\Application\ICoreApplication.cpp" />
     <ClCompile Include="kxf\Application\Private\NativeApp.cpp" />
+    <ClCompile Include="kxf\Application\Private\Utility.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Archive.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Common.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Library.cpp" />

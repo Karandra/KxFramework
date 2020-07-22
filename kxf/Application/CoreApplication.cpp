@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CoreApplication.h"
+#include "Private/Utility.h"
 #include "kxf/EventSystem/IEventExecutor.h"
 #include "kxf/EventSystem/IdleEvent.h"
 #include "kxf/System/NativeAPI.h"
@@ -516,29 +517,15 @@ namespace kxf
 	// Application::IExceptionHandler
 	bool CoreApplication::OnMainLoopException()
 	{
-		throw;
+		return Application::Private::OnMainLoopException();
 	}
 	void CoreApplication::OnFatalException()
 	{
-		// Nothing to do
+		Application::Private::OnFatalException();
 	}
 	void CoreApplication::OnUnhandledException()
 	{
-		// We're called from an exception handler so we can re-throw the exception  to recover its type
-		String what;
-		try
-		{
-			throw;
-		}
-		catch (std::exception& e)
-		{
-			what = String::Format(wxS("standard exception of type \"%s\" with message \"%s\""), typeid(e).name(), e.what());
-		}
-		catch (...)
-		{
-			what = wxS("unknown exception");
-		}
-		wxMessageOutputBest().Printf(wxS("Unhandled %s; terminating %s.\n"), what.wx_str(), wxIsMainThread() ? wxS("the application") : wxS("the thread in which it happened"));
+		Application::Private::OnUnhandledException();
 	}
 
 	bool CoreApplication::StoreCurrentException()

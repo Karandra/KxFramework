@@ -2,6 +2,7 @@
 #include "EvtHandler.h"
 #include "IdleEvent.h"
 #include "kxf/Application/ICoreApplication.h"
+#include "kxf/Application/Private/Utility.h"
 #include "kxf/Utility/Container.h"
 #include <wx/event.h>
 #include <wx/evtloop.h>
@@ -447,7 +448,7 @@ namespace kxf
 				{
 					// And 'OnUnhandledException' absolutely shouldn't throw, but we still must account for the possibility that it
 					// did. At least show some information about the exception in this case.
-					app->ICoreApplication::OnUnhandledException();
+					Application::Private::OnUnhandledException();
 				}
 				std::terminate();
 			}

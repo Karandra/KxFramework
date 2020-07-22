@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GUIApplication.h"
+#include "Private/Utility.h"
 #include "kxf/System/SystemInformation.h"
 #include "kxf/System/SystemAppearance.h"
 #include "kxf/Utility/Container.h"
@@ -36,7 +37,7 @@ namespace kxf
 		wxBitmap::InitStandardHandlers();
 		m_LayoutDirection = GUIApplication::GetLayoutDirection();
 
-		return ICoreApplication::OnCreate();
+		return CoreApplication::OnCreate();
 	}
 	void GUIApplication::OnDestroy()
 	{
@@ -49,7 +50,7 @@ namespace kxf
 		wxDeleteStockLists();
 		wxDELETE(wxTheColourDatabase);
 
-		ICoreApplication::OnDestroy();
+		CoreApplication::OnDestroy();
 	}
 	int GUIApplication::OnRun()
 	{
@@ -59,14 +60,15 @@ namespace kxf
 			m_ExitOnLastFrameDelete = ExitOnLastFrameDelete::Always;
 		}
 
-		return ICoreApplication::OnRun();
+		// Ru the main loop
+		return CoreApplication::OnRun();
 	}
 
 	// Application::IActiveEventLoop
 	bool GUIApplication::DispatchIdle()
 	{
 		// Send an event to the application instance itself first
-		bool needMore = ICoreApplication::DispatchIdle();
+		bool needMore = CoreApplication::DispatchIdle();
 
 		ReadLockGuard lock(m_ScheduledForDestructionLock);
 		auto IsDestructionScheduled = [&](wxWindow& window)
@@ -91,24 +93,7 @@ namespace kxf
 	// Application::IExceptionHandler
 	bool GUIApplication::OnMainLoopException()
 	{
-		// Ask the user about what to do: use the WinAPI function here as it could be dangerous to use any framework code in this state.
-		// TODO: Use 'TaskDialog[Indirect]' instead.
-		const auto result = ::MessageBoxW(nullptr,
-										  wxS("An unhandled exception occurred. Press \"Abort\" to terminate the program,\r\n\"Retry\" to exit the program normally and \"Ignore\" to try to continue."),
-										  wxS("Unhandled exception"),
-										  MB_ABORTRETRYIGNORE|MB_ICONERROR|MB_TASKMODAL);
-		switch (result)
-		{
-			case IDABORT:
-			{
-				throw;
-			}
-			case IDIGNORE:
-			{
-				return true;
-			}
-		};
-		return false;
+		return Application::Private::OnMainLoopExceptionGUI();
 	}
 
 	// IGUIApplication

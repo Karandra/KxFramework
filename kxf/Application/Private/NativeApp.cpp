@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "NativeApp.h"
 
-namespace kxf::Private
+namespace kxf::Application::Private
 {
 	void NativeApp::OnCreate()
 	{

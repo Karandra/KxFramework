@@ -1436,6 +1436,9 @@
     <ClInclude Include="kxf\wxWidgets\ClientObject.h">
       <Filter>kxf\wxWidgets</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Application\Private\Utility.h">
+      <Filter>kxf\Application\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\BroadcastProcessor.cpp">
@@ -2148,6 +2151,9 @@
       <Filter>kxf\Application</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Application\Private\NativeApp.cpp">
+      <Filter>kxf\Application\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Application\Private\Utility.cpp">
       <Filter>kxf\Application\Private</Filter>
     </ClCompile>
   </ItemGroup>
