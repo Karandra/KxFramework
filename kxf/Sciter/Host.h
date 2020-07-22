@@ -23,7 +23,7 @@ namespace kxf::Sciter
 			wxWindow& m_SciterWindow;
 			EvtHandler& m_EvtHandler;
 
-			WindowEventDispatcher m_EventDispatcher;
+			EventDispatcher m_EventDispatcher;
 			std::unique_ptr<IWindowRenderer> m_Renderer;
 			std::unordered_map<EvtHandler*, std::unique_ptr<BasicEventDispatcher>> m_ElementEventDispatchers;
 			FPSCounter m_FrameCounter;

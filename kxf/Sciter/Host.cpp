@@ -203,7 +203,7 @@ namespace kxf::Sciter
 	}
 
 	Host::Host(wxWindow& window, EvtHandler& evtHandler)
-		:m_SciterWindow(window), m_EvtHandler(evtHandler), m_EventDispatcher(*this, window)
+		:m_SciterWindow(window), m_EvtHandler(evtHandler), m_EventDispatcher(*this, evtHandler)
 	{
 		if (m_SciterWindow.GetHandle())
 		{
