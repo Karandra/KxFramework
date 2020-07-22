@@ -198,11 +198,13 @@ namespace kxf
 	}
 	void CommonEventLoop::Exit(int exitCode)
 	{
+		// TODO: Think about merging this function with 'ScheduleExit'.
+		// It doesn't look like it makes any sense to have such separation.
 		ScheduleExit(exitCode);
 	}
 	void CommonEventLoop::ScheduleExit(int exitCode)
 	{
-		if (!m_IsInsideRun)
+		if (m_IsInsideRun)
 		{
 			m_ExitCode = exitCode;
 			m_ShouldExit = true;
@@ -210,7 +212,7 @@ namespace kxf
 			OnExit();
 
 			// All we have to do to exit from the loop is to (maybe) wake it up so that
-			// it can notice that 'Exit' had been called
+			// it can notice that 'Exit' had been called.
 			//
 			// in particular, do *not* use here calls such as 'PostQuitMessage' (under Windows)
 			// which terminate the current event loop here because we're not sure that it is
