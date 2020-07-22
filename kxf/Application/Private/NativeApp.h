@@ -8,6 +8,12 @@ namespace kxf::Application::Private
 {
 	class KX_API NativeApp final: public wxWidgets::Application
 	{
+		public:
+			static NativeApp* GetInstance()
+			{
+				return static_cast<NativeApp*>(wxAppConsole::GetInstance());
+			}
+
 		private:
 			ICoreApplication& m_App;
 
@@ -45,16 +51,22 @@ namespace kxf::Application::Private
 				m_App.OnAssertFailure(file, line, function, condition, message);
 			}
 
+			bool StoreCurrentException() override
+			{
+				return m_App.StoreCurrentException();
+			}
+			void RethrowStoredException() override
+			{
+				m_App.RethrowStoredException();
+			}
+
 			// Callbacks for application-wide events
 			bool OnInit() override
 			{
-				return m_App.OnInit();
+				return false;
 			}
 			int OnExit() override
 			{
-				m_App.OnExit();
-
-				// Return value here is ignored
 				return -1;
 			}
 			int OnRun() override
@@ -78,10 +90,32 @@ namespace kxf::Application::Private
 			{
 			}
 
+			bool Pending() override
+			{
+				return m_App.Pending();
+			}
+			bool Dispatch() override
+			{
+				return m_App.Dispatch();
+			}
+			bool ProcessIdle() override
+			{
+				return m_App.DispatchIdle();
+			}
+			void WakeUpIdle() override
+			{
+				m_App.WakeUp();
+			}
+
 			// Pending events
 			void ProcessPendingEvents() override
 			{
 				m_App.ProcessPendingEvents();
+				Application::ProcessPendingEvents();
+			}
+			void DeletePendingObjects()
+			{
+				Application::DeletePendingObjects();
 			}
 
 			// Command line

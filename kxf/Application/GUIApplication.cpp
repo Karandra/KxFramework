@@ -7,18 +7,6 @@
 #include "kxf/Utility/Container.h"
 #include <uxtheme.h>
 
-namespace
-{
-	template<class TContainer>
-	bool IsWindowInContainer(const TContainer& container, wxWindow& window)
-	{
-		return kxf::Utility::Contains(container, [&](const auto& item)
-		{
-			return item.get() == &window;
-		});
-	};
-}
-
 namespace kxf
 {
 	void GUIApplication::DeleteAllTopLevelWindows()
@@ -80,7 +68,7 @@ namespace kxf
 		ReadLockGuard lock(m_ScheduledForDestructionLock);
 		auto IsDestructionScheduled = [&](wxWindow& window)
 		{
-			return IsWindowInContainer(m_ScheduledForDestruction, window);
+			return Application::Private::IsWindowInContainer(m_ScheduledForDestruction, window);
 		};
 
 		for (wxWindow* window: wxTopLevelWindows)
@@ -108,7 +96,7 @@ namespace kxf
 	{
 		auto IsDestructionScheduled = [&](wxWindow& window)
 		{
-			return IsWindowInContainer(m_ScheduledForDestruction, window);
+			return Application::Private::IsWindowInContainer(m_ScheduledForDestruction, window);
 		};
 		ReadLockGuard lock(m_ScheduledForDestructionLock);
 

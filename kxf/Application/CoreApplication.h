@@ -164,14 +164,8 @@ namespace kxf
 			bool Yield(FlagSet<EventYieldFlag> flags) override;
 
 			// Application::IPendingEvents
-			bool IsPendingEventsProcessingEnabled() const override
-			{
-				return m_PendingEventsProcessingEnabled;
-			}
-			void EnablePendingEventsProcessing(bool enable = true) override
-			{
-				m_PendingEventsProcessingEnabled = enable;
-			}
+			bool IsPendingEventsProcessingEnabled() const override;
+			void EnablePendingEventsProcessing(bool enable = true) override;
 
 			void AddPendingEventHandler(EvtHandler& evtHandler) override;
 			bool RemovePendingEventHandler(EvtHandler& evtHandler) override;

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CoreApplication.h"
+#include "Private/NativeApp.h"
 #include "Private/Utility.h"
 #include "kxf/EventSystem/Private/Win32ConsoleEventLoop.h"
 #include "kxf/EventSystem/IEventExecutor.h"
@@ -16,15 +17,6 @@
 
 namespace
 {
-	template<class TContainer>
-	bool IsWindowInContainer(const TContainer& container, wxWindow& window)
-	{
-		return kxf::Utility::Contains(container, [&](const auto& item)
-		{
-			return item.get() == &window;
-		});
-	};
-
 	enum
 	{
 		LDR_DLL_NOTIFICATION_REASON_LOADED = 1,
@@ -371,6 +363,27 @@ namespace kxf
 	}
 
 	// Application::IPendingEvents
+	bool CoreApplication::IsPendingEventsProcessingEnabled() const
+	{
+		return m_PendingEventsProcessingEnabled;
+	}
+	void CoreApplication::EnablePendingEventsProcessing(bool enable)
+	{
+		m_PendingEventsProcessingEnabled = enable;
+
+		if (auto app = wxAppConsole::GetInstance())
+		{
+			if (enable)
+			{
+				app->ResumeProcessingOfPendingEvents();
+			}
+			else
+			{
+				app->SuspendProcessingOfPendingEvents();
+			}
+		}
+	}
+
 	bool CoreApplication::IsScheduledForDestruction(const wxObject& object) const
 	{
 		ReadLockGuard lock(m_ScheduledForDestructionLock);
@@ -402,6 +415,11 @@ namespace kxf
 	{
 		WriteLockGuard lock(m_ScheduledForDestructionLock);
 		m_ScheduledForDestruction.clear();
+
+		if (auto app = Application::Private::NativeApp::GetInstance())
+		{
+			app->DeletePendingObjects();
+		}
 	}
 
 	void CoreApplication::AddPendingEventHandler(EvtHandler& evtHandler)
@@ -460,6 +478,13 @@ namespace kxf
 	{
 		if (m_PendingEventsProcessingEnabled)
 		{
+			if (auto app = wxAppConsole::GetInstance())
+			{
+				// We're calling the base class version because the version from 'NativeApp'
+				// calls us in the overridden version.
+				app->wxAppConsole::ProcessPendingEvents();
+			}
+
 			WriteLockGuard lock(m_PendingEvtHandlersLock);
 
 			// This helper list should be empty
@@ -504,6 +529,11 @@ namespace kxf
 	}
 	size_t CoreApplication::DiscardPendingEvents()
 	{
+		if (auto app = wxAppConsole::GetInstance())
+		{
+			app->DeletePendingEvents();
+		}
+
 		WriteLockGuard lock(m_PendingEvtHandlersLock);
 
 		size_t count = 0;
@@ -515,7 +545,6 @@ namespace kxf
 			}
 		}
 		m_PendingEvtHandlers.clear();
-
 		return count;
 	}
 

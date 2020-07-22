@@ -1,5 +1,6 @@
 #pragma once
 #include "../Common.h"
+#include "kxf/Utility/Container.h"
 
 namespace kxf::Application::Private
 {
@@ -8,4 +9,16 @@ namespace kxf::Application::Private
 
 	bool OnMainLoopException();
 	bool OnMainLoopExceptionGUI();
+}
+
+namespace kxf::Application::Private
+{
+	template<class TContainer>
+	bool IsWindowInContainer(const TContainer& container, wxWindow& window)
+	{
+		return kxf::Utility::Contains(container, [&](const auto& item)
+		{
+			return item.get() == &window;
+		});
+	};
 }
