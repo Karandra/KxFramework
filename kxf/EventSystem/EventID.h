@@ -46,6 +46,8 @@ namespace kxf
 			UniversallyUniqueID AsUniqueID() const noexcept;
 			const String& AsString() const noexcept;
 
+			bool IsWxWidgetsID() const noexcept;
+
 		public:
 			explicit operator bool() const noexcept
 			{

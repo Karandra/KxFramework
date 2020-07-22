@@ -17,7 +17,7 @@ namespace kxf
 	class KX_API ActivateEvent: public BasicEvent
 	{
 		public:
-			KxEVENT_MEMBER_AS(ActivateEvent, Activate, wxEVT_ACTIVATE);
+			KxEVENT_MEMBER(ActivateEvent, Activate);
 
 		private:
 			ActivateEventReason m_Reason = ActivateEventReason::Unknown;

@@ -16,7 +16,7 @@ namespace kxf
 	class KX_API IdleEvent: public BasicEvent
 	{
 		public:
-			KxEVENT_MEMBER_AS(IdleEvent, Idle, wxEVT_IDLE);
+			KxEVENT_MEMBER(IdleEvent, Idle);
 
 		public:
 			static IdleEventMode GetMode() noexcept

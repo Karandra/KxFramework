@@ -2,6 +2,12 @@
 #include "EventID.h"
 #include <wx/event.h>
 
+namespace
+{
+	const wxEventType g_LastWxEventID = ::wxNewEventType();
+	std::atomic<int64_t> g_SimpleEventID = 0;
+}
+
 namespace kxf
 {
 	bool EventID::IsNull() const noexcept
@@ -74,13 +80,19 @@ namespace kxf
 		}
 		return NullString;
 	}
+
+	bool EventID::IsWxWidgetsID() const noexcept
+	{
+		int64_t id = AsInt();
+		return id > 0 && id < g_LastWxEventID;
+	}
 }
 
 namespace kxf::EventSystem
 {
 	EventID NewSimpleEventID() noexcept
 	{
-		return static_cast<int64_t>(::wxNewEventType());
+		return ++g_SimpleEventID;
 	}
 	EventID NewUniqueEventID() noexcept
 	{
