@@ -26,7 +26,7 @@ namespace kxf
 	}
 	bool CriticalSection::TryEnter() noexcept
 	{
-		::TryEnterCriticalSection(&m_CritSec);
+		return ::TryEnterCriticalSection(&m_CritSec);
 	}
 	void CriticalSection::Leave() noexcept
 	{
