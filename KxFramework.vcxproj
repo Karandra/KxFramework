@@ -389,6 +389,7 @@
     <ClInclude Include="kxf\UI\WindowWithStyles.h" />
     <ClInclude Include="kxf\Utility\WithOptionalOwnership.h" />
     <ClInclude Include="kxf\wxWidgets\Application.h" />
+    <ClInclude Include="kxf\wxWidgets\ClientObject.h" />
     <ClInclude Include="kxf\wxWidgets\Common.h" />
     <ClInclude Include="kxf\wxWidgets\EventLoopWrapper.h" />
     <ClInclude Include="kxf\wxWidgets\EventWrapper.h" />

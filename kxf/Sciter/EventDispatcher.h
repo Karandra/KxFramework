@@ -96,7 +96,7 @@ namespace kxf::Sciter
 	{
 		private:
 			wxWindow& m_Window;
-			wxWidgets::wxEvtHandlerWrapper m_Wrapper;
+			wxWidgets::EvtHandlerWrapper m_Wrapper;
 
 		public:
 			WindowEventDispatcher(Host& host, wxWindow& window)
