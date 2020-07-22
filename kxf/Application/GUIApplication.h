@@ -33,6 +33,9 @@ namespace kxf
 			void OnDestroy() override;
 			int OnRun() override;
 
+			// Application::IMainEventLoop
+			std::unique_ptr<IEventLoop> CreateMainLoop() override;
+
 			// Application::IActiveEventLoop
 			bool DispatchIdle() override;
 

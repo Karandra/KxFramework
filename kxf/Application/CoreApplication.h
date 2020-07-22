@@ -137,6 +137,7 @@ namespace kxf
 			void SetClassName(const String& name) override;
 
 			// Application::IMainEventLoop
+			std::unique_ptr<IEventLoop> CreateMainLoop() override;
 			IEventLoop* GetMainLoop() override
 			{
 				return m_MainLoop.get();

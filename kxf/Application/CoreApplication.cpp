@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CoreApplication.h"
 #include "Private/Utility.h"
+#include "kxf/EventSystem/Private/Win32ConsoleEventLoop.h"
 #include "kxf/EventSystem/IEventExecutor.h"
 #include "kxf/EventSystem/IdleEvent.h"
 #include "kxf/System/NativeAPI.h"
@@ -289,6 +290,10 @@ namespace kxf
 	}
 
 	// Application::IMainEoventLoop
+	std::unique_ptr<IEventLoop> CoreApplication::CreateMainLoop()
+	{
+		return std::make_unique<kxf::EventSystem::Private::Win32ConsoleEventLoop>();
+	}
 	void CoreApplication::ExitMainLoop(int exitCode)
 	{
 		// We should exit from the main event loop, not just any currently active (e.g. modal dialog) event loop

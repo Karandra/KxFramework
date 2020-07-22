@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "GUIApplication.h"
 #include "Private/Utility.h"
+#include "kxf/EventSystem/Private/Win32GUIEventLoop.h"
 #include "kxf/System/SystemInformation.h"
 #include "kxf/System/SystemAppearance.h"
 #include "kxf/Utility/Container.h"
@@ -62,6 +63,12 @@ namespace kxf
 
 		// Ru the main loop
 		return CoreApplication::OnRun();
+	}
+
+	// Application::IMainEventLoop
+	std::unique_ptr<IEventLoop> GUIApplication::CreateMainLoop()
+	{
+		return std::make_unique<kxf::EventSystem::Private::Win32GUIEventLoop>();
 	}
 
 	// Application::IActiveEventLoop
