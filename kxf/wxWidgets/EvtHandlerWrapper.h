@@ -10,16 +10,18 @@ namespace kxf::wxWidgets
 	class EvtHandlerWrapper: public EvtHandler
 	{
 		public:
-			static void ForwardBind(EvtHandler& evtHandler, wxEvtHandler& evtHandlerWx, EventItem& eventItem)
+			static bool ForwardBind(EvtHandler& evtHandler, wxEvtHandler& evtHandlerWx, EventItem& eventItem)
 			{
 				if (EventID id = eventItem.GetEventID(); id.IsWxWidgetsID())
 				{
-					return evtHandlerWx.Bind(wxEventTypeTag<wxEvent>(id.AsInt()), [evtHandler = &evtHandler, executor = eventItem.GetExecutor()](wxEvent& event)
+					evtHandlerWx.Bind(wxEventTypeTag<wxEvent>(id.AsInt()), [evtHandler = &evtHandler, executor = eventItem.GetExecutor()](wxEvent& event)
 					{
 						EventWrapper wrapper(event);
 						executor->Execute(*evtHandler, wrapper);
 					}, wxID_ANY, wxID_ANY, new ClientObject(eventItem.GetBindSlot()));
+					return true;
 				}
+				return false;
 			}
 
 		private:
