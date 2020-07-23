@@ -64,7 +64,6 @@ namespace kxf
 					// else to do, but stop doing this if 'Exit' is called by one of the idle handlers
 					while (!m_ShouldExit && !Pending() && DispatchIdle())
 					{
-
 					}
 
 					// if 'Exit' was called, don't dispatch any more events here.
@@ -81,7 +80,7 @@ namespace kxf
 					}
 				}
 
-				// Process any still pending events.
+				// Process any still pending events
 				while (true)
 				{
 					bool hasMoreEvents = false;
@@ -140,8 +139,7 @@ namespace kxf
 				}
 				catch (...)
 				{
-					// OnMainLoopException() thrown something, possibly the same exception again,
-					// but we still need 'OnExit' to be called.
+					// 'OnMainLoopException' thrown something, possibly the same exception again, but we still need 'OnExit' to be called.
 					OnExit();
 					throw;
 				}

@@ -478,50 +478,51 @@ namespace kxf
 	{
 		if (m_PendingEventsProcessingEnabled)
 		{
+			size_t count = 0;
 			if (auto app = wxAppConsole::GetInstance())
 			{
-				// We're calling the base class version because the version from 'NativeApp'
-				// calls us in the overridden version.
+				// We're calling the base class version because the version from 'NativeApp' calls us in the overridden version.
+				if (app->wxAppConsole::HasPendingEvents())
+				{
+					count++;
+				}
 				app->wxAppConsole::ProcessPendingEvents();
 			}
 
 			WriteLockGuard lock(m_PendingEvtHandlersLock);
 
 			// This helper list should be empty
-			if (!m_DelayedPendingEvtHandlers.empty())
+			if (m_DelayedPendingEvtHandlers.empty())
 			{
-				return false;
-			}
-
-			// Iterate until the list becomes empty: the handlers remove themselves from it when they don't have any more pending events
-			size_t count = 0;
-			while (!m_PendingEvtHandlers.empty())
-			{
-				// In 'EvtHandler::ProcessPendingEvents', new handlers might be added and we are required to unlock the lock here.
-				EvtHandler* evtHandler = m_PendingEvtHandlers.front();
-				
-				// This inner unlock-relock must be consistent with the outer guard.
-				m_PendingEvtHandlersLock.UnlockWrite();
-				Utility::CallAtScopeExit relock = [&]()
+				// Iterate until the list becomes empty: the handlers remove themselves from it when they don't have any more pending events
+				while (!m_PendingEvtHandlers.empty())
 				{
-					m_PendingEvtHandlersLock.LockWrite();
-				};
+					// In 'EvtHandler::ProcessPendingEvents', new handlers might be added and we are required to unlock the lock here.
+					EvtHandler* evtHandler = m_PendingEvtHandlers.front();
 
-				// We always call 'EvtHandler::ProcessPendingEvents' on the first event handler with pending events because handlers
-				// auto-remove themselves from this list (see 'RemovePendingEventHandler') if they have no more pending events.
-				if (evtHandler->ProcessPendingEvents())
-				{
-					count++;
+					// This inner unlock-relock must be consistent with the outer guard.
+					m_PendingEvtHandlersLock.UnlockWrite();
+					Utility::CallAtScopeExit relock = [&]()
+					{
+						m_PendingEvtHandlersLock.LockWrite();
+					};
+
+					// We always call 'EvtHandler::ProcessPendingEvents' on the first event handler with pending events because handlers
+					// auto-remove themselves from this list (see 'RemovePendingEventHandler') if they have no more pending events.
+					if (evtHandler->ProcessPendingEvents())
+					{
+						count++;
+					}
 				}
-			}
 
-			// Now the 'm_PendingEvtHandlers' is surely empty, however some event handlers may have moved themselves into
-			// 'm_DelayedPendingEvtHandlers' because of a selective 'Yield' call in progress. Now we need to move them back
-			// to 'm_PendingEvtHandlersLock' so the next call to this function has the chance of processing them.
-			if (!m_DelayedPendingEvtHandlers.empty())
-			{
-				m_PendingEvtHandlers.insert(m_PendingEvtHandlers.end(), m_DelayedPendingEvtHandlers.begin(), m_DelayedPendingEvtHandlers.end());
-				m_DelayedPendingEvtHandlers.clear();
+				// Now the 'm_PendingEvtHandlers' is surely empty, however some event handlers may have moved themselves into
+				// 'm_DelayedPendingEvtHandlers' because of a selective 'Yield' call in progress. Now we need to move them back
+				// to 'm_PendingEvtHandlersLock' so the next call to this function has the chance of processing them.
+				if (!m_DelayedPendingEvtHandlers.empty())
+				{
+					m_PendingEvtHandlers.insert(m_PendingEvtHandlers.end(), m_DelayedPendingEvtHandlers.begin(), m_DelayedPendingEvtHandlers.end());
+					m_DelayedPendingEvtHandlers.clear();
+				}
 			}
 			return count != 0;
 		}
