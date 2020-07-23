@@ -1,27 +1,20 @@
 #pragma once
+#include "Common.h"
+#include "IWithEvent.h"
 #include "kxf/EventSystem/IEvent.h"
 #include "kxf/EventSystem/EvtHandler.h"
 #include "kxf/Utility/WithOptionalOwnership.h"
+#include <wx/object.h>
 #include <wx/event.h>
 
 namespace kxf::wxWidgets
 {
-	class KX_API IWithEvent: public RTTI::Interface<IWithEvent>
-	{
-		KxDeclareIID(IWithEvent, {0x8154331b, 0x997b, 0x4a28, {0xa8, 0xaf, 0x95, 0xb0, 0x57, 0x12, 0x1d, 0x6f}});
-
-		public:
-			virtual ~IWithEvent() = default;
-
-		public:
-			virtual wxEvent& GetEvent() = 0;
-	};
-
 	class KX_API EventWrapper: public RTTI::ImplementInterface<EventWrapper, IEvent, IWithEvent>
 	{
 		private:
 			Utility::WithOptionalOwnership<wxEvent> m_Event;
 			UniversallyUniqueID m_UniqueID;
+			EvtHandler* m_EvtHandler = nullptr;
 
 		private:
 			// IEvent
@@ -88,10 +81,11 @@ namespace kxf::wxWidgets
 
 			EvtHandler* GetEventSource() const override
 			{
-				return dynamic_cast<EvtHandler*>(m_Event->GetEventObject());
+				return m_EvtHandler ? m_EvtHandler : dynamic_cast<EvtHandler*>(m_Event->GetEventObject());
 			}
 			void SetEventSource(EvtHandler* evtHandler) override
 			{
+				m_EvtHandler = evtHandler;
 				m_Event->SetEventObject(dynamic_cast<wxObject*>(evtHandler));
 			}
 			

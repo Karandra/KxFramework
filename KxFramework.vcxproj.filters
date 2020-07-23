@@ -1439,6 +1439,9 @@
     <ClInclude Include="kxf\Application\Private\Utility.h">
       <Filter>kxf\Application\Private</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\wxWidgets\IWithEvent.h">
+      <Filter>kxf\wxWidgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\BroadcastProcessor.cpp">
