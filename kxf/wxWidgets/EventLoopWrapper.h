@@ -158,3 +158,122 @@ namespace kxf::wxWidgets
 			EventLoopWrapper& operator=(const EventLoopWrapper&) = delete;
 	};
 }
+
+namespace kxf::wxWidgets
+{
+	class EventLoopWrapperWx: public wxEventLoopBase
+	{
+		private:
+			Utility::WithOptionalOwnership<IEventLoop> m_EventLoop;
+
+		private:
+			void Create(FlagSet<EventCategory> allowedToYield)
+			{
+				m_eventsToProcessInsideYield = allowedToYield.ToInt();
+			}
+
+		protected:
+			int DoRun() override
+			{
+				return m_EventLoop->OnRun();
+			}
+			void DoYieldFor(long eventsToProcess) override
+			{
+				return m_EventLoop->OnYieldFor(static_cast<EventCategory>(eventsToProcess));
+			}
+			void OnExit() override
+			{
+				m_EventLoop->OnExit();
+			}
+
+		public:
+			EventLoopWrapperWx(IEventLoop& eventLoop, FlagSet<EventCategory> allowedToYield = EventCategory::Everything)
+				:m_EventLoop(eventLoop)
+			{
+				Create(allowedToYield);
+			}
+			EventLoopWrapperWx(std::unique_ptr<IEventLoop> eventLoop, FlagSet<EventCategory> allowedToYield = EventCategory::Everything)
+				:m_EventLoop(std::move(eventLoop))
+			{
+				Create(allowedToYield);
+			}
+			EventLoopWrapperWx(EventLoopWrapperWx&&) noexcept = default;
+			EventLoopWrapperWx(const EventLoopWrapperWx&) = delete;
+
+		public:
+			void Update(FlagSet<EventCategory> allowedToYield, bool shouldExit, size_t yieldLevel, bool isInsideRun)
+			{
+				m_shouldExit = shouldExit;
+				m_yieldLevel = yieldLevel;
+				m_eventsToProcessInsideYield = allowedToYield.ToInt();
+				//m_isInsideRun = isInsideRun; // It's private unfortunately
+			}
+
+			// wxEventLoopBase
+			int Run() override
+			{
+				return m_EventLoop->Run();
+			}
+			void Exit(int exitCode = 0) override
+			{
+				m_EventLoop->Exit(exitCode);
+			}
+			void ScheduleExit(int exitCode = 0) override
+			{
+				m_EventLoop->ScheduleExit(exitCode);
+			}
+
+			void WakeUp() override
+			{
+				m_EventLoop->WakeUp();
+			}
+			bool Pending() const override
+			{
+				return m_EventLoop->Pending();
+			}
+			bool Dispatch() override
+			{
+				return m_EventLoop->Dispatch();
+			}
+			int DispatchTimeout(unsigned long timeout) override
+			{
+				switch (m_EventLoop->Dispatch(TimeSpan::Milliseconds(timeout)))
+				{
+					case IEventLoop::DispatchTimeout::Success:
+					{
+						return 1;
+					}
+					case IEventLoop::DispatchTimeout::Expired:
+					{
+						return -1;
+					}
+					case IEventLoop::DispatchTimeout::ShouldExit:
+					{
+						return 0;
+					}
+				};
+				return 0;
+			}
+			bool ProcessIdle() override
+			{
+				return m_EventLoop->DispatchIdle();
+			}
+
+			bool YieldFor(long eventsToProcess) override
+			{
+				return m_EventLoop->YieldFor(static_cast<EventCategory>(eventsToProcess));
+			}
+			bool IsYielding() const override
+			{
+				return m_EventLoop->IsYielding();
+			}
+			bool IsEventAllowedInsideYield(wxEventCategory category) const override
+			{
+				return m_EventLoop->IsEventAllowedInsideYield(static_cast<EventCategory>(category));
+			}
+
+		public:
+			EventLoopWrapperWx& operator=(EventLoopWrapperWx&&) noexcept = default;
+			EventLoopWrapperWx& operator=(const EventLoopWrapperWx&) = delete;
+	};
+}
