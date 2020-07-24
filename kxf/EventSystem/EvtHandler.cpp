@@ -560,21 +560,25 @@ namespace kxf
 			// This method is only called by an application if this handler does have pending events
 			if (WriteLockGuard lock(m_PendingEventsLock); !m_PendingEvents.empty())
 			{
+				// Always get the first event
+				auto eventIt = m_PendingEvents.begin();
+
+				// If we're inside 'Yield' call, process events selectively instead
 				IEventLoop* eventLoop = app->GetActiveEventLoop();
 				if (eventLoop && eventLoop->IsYielding())
 				{
 					// Find the first event which can be processed now
-					auto eventIt = m_PendingEvents.end();
-					for (auto it = m_PendingEvents.begin(); it != m_PendingEvents.end(); ++it)
+					auto it = m_PendingEvents.begin();
+					for (; it != m_PendingEvents.end(); ++it)
 					{
-						if (*it && eventLoop->IsEventAllowedInsideYield((*it)->GetEventCategory()))
+						if (eventLoop->IsEventAllowedInsideYield((*it)->GetEventCategory()))
 						{
 							eventIt = std::move(it);
 							break;
 						}
 					}
 
-					if (eventIt == m_PendingEvents.end())
+					if (it == m_PendingEvents.end())
 					{
 						// All our events are *not* processable now, signal this.
 						app->DelayPendingEventHandler(*this);
@@ -582,17 +586,17 @@ namespace kxf
 						// See the comment at the beginning of 'IEventLoop' header for the logic behind YieldFor() and behind DelayPendingEventHandler().
 						return false;
 					}
+				}
 
-					// It's important we remove event from list before processing it, else a nested event loop,
-					// for example from a modal dialog, might process the same event again.
-					event = std::move(*eventIt);
-					m_PendingEvents.erase(eventIt);
+				// It's important we remove event from list before processing it, else a nested event loop,
+				// for example from a modal dialog, might process the same event again.
+				event = std::move(*eventIt);
+				m_PendingEvents.erase(eventIt);
 
-					if (m_PendingEvents.empty())
-					{
-						// If there are no more pending events left, we don't need to stay in this list.
-						app->RemovePendingEventHandler(*this);
-					}
+				if (m_PendingEvents.empty())
+				{
+					// If there are no more pending events left, we don't need to stay in this list.
+					app->RemovePendingEventHandler(*this);
 				}
 			}
 			

@@ -178,7 +178,7 @@ namespace kxf::EventSystem::Private
 			else
 			{
 				// Remove the message and store it
-				::GetMessage(&nativeMessage, nullptr, 0, 0);
+				::GetMessageW(&nativeMessage, nullptr, 0, 0);
 				m_Messages.emplace_back(FromNativeMessage(nativeMessage));
 			}
 		}

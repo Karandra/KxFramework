@@ -72,7 +72,7 @@ namespace kxf
 	// Application::IMainEventLoop
 	std::unique_ptr<IEventLoop> GUIApplication::CreateMainLoop()
 	{
-		return std::make_unique<kxf::EventSystem::Private::Win32GUIEventLoop>();
+		return std::make_unique<EventSystem::Private::Win32GUIEventLoop>();
 	}
 
 	// Application::IActiveEventLoop
