@@ -24,23 +24,31 @@ namespace kxf
 	// ICoreApplication
 	bool GUIApplication::OnCreate()
 	{
-		wxInitializeStockLists();
-		wxBitmap::InitStandardHandlers();
 		m_LayoutDirection = GUIApplication::GetLayoutDirection();
+
+		if (auto app = Application::Private::NativeApp::GetInstance())
+		{
+			int argc = m_ArgC;
+			m_NativeAppInitialized = app->wxApp::Initialize(argc, m_ArgVW);
+
+			if (!m_NativeAppInitialized)
+			{
+				return false;
+			}
+		}
 
 		return CoreApplication::OnCreate();
 	}
 	void GUIApplication::OnDestroy()
 	{
-		// Delete any remaining top level windows
-		DeleteAllTopLevelWindows();
-
-		// Undo everything we did in the 'OnCreate' above
-		wxBitmap::CleanUpHandlers();
-		wxStockGDI::DeleteAll();
-		wxDeleteStockLists();
-		wxDELETE(wxTheColourDatabase);
-
+		if (m_NativeAppInitialized)
+		{
+			if (auto app = Application::Private::NativeApp::GetInstance())
+			{
+				app->wxApp::CleanUp();
+				m_NativeAppCleanedUp = true;
+			}
+		}
 		CoreApplication::OnDestroy();
 	}
 	int GUIApplication::OnRun()
@@ -72,6 +80,13 @@ namespace kxf
 	{
 		// Send an event to the application instance itself first
 		bool needMore = CoreApplication::DispatchIdle();
+		if (auto app = Application::Private::NativeApp::GetInstance())
+		{
+			if (app->wxApp::ProcessIdle())
+			{
+				needMore = true;
+			}
+		}
 
 		ReadLockGuard lock(m_ScheduledForDestructionLock);
 		auto IsDestructionScheduled = [&](wxWindow& window)

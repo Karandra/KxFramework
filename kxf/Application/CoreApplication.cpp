@@ -158,6 +158,18 @@ namespace kxf
 	// ICoreApplication
 	bool CoreApplication::OnCreate()
 	{
+		if (!m_NativeAppInitialized)
+		{
+			if (auto app = wxAppConsole::GetInstance())
+			{
+				int argc = m_ArgC;
+				m_NativeAppInitialized = app->wxAppConsole::Initialize(argc, m_ArgVW);
+				if (!m_NativeAppInitialized)
+				{
+					return false;
+				}
+			}
+		}
 		return true;
 	}
 	void CoreApplication::OnDestroy()
@@ -172,6 +184,15 @@ namespace kxf
 		// somehow managed to create more of them since then or just forgot to call
 		// the base class 'OnExit'.
 		FinalizeScheduledForDestruction();
+
+		if (m_NativeAppInitialized && !m_NativeAppCleanedUp)
+		{
+			if (auto app = wxAppConsole::GetInstance())
+			{
+				app->wxAppConsole::CleanUp();
+				m_NativeAppCleanedUp = true;
+			}
+		}
 	}
 
 	void CoreApplication::OnExit()
@@ -306,6 +327,7 @@ namespace kxf
 		m_ActiveEventLoop = eventLoop;
 		if (eventLoop)
 		{
+			wxEventLoopBase::SetActive(&eventLoop->GetWxLoop());
 			IActiveEventLoop::CallOnEnterEventLoop(*eventLoop);
 		}
 	}
@@ -335,6 +357,12 @@ namespace kxf
 	}
 	bool CoreApplication::DispatchIdle()
 	{
+		bool needMore = false;
+		if (auto app = wxAppConsole::GetInstance())
+		{
+			needMore = app->wxAppConsole::ProcessIdle();
+		}
+
 		// Synthesize an idle event and check if more of them are needed
 		IdleEvent& event = BuildProcessEvent(IdleEvent::EvtIdle)
 			.SetSourceToSelf()
@@ -347,7 +375,7 @@ namespace kxf
 		// Garbage collect all objects previously scheduled for destruction
 		FinalizeScheduledForDestruction();
 
-		return event.IsMoreRequested();
+		return needMore || event.IsMoreRequested();
 	}
 	bool CoreApplication::Yield(FlagSet<EventYieldFlag> flags)
 	{

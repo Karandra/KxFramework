@@ -24,6 +24,8 @@ namespace kxf
 			std::list<IEventFilter*> m_EventFilters;
 
 			std::optional<int> m_ExitCode;
+			bool m_NativeAppInitialized = false;
+			bool m_NativeAppCleanedUp = false;
 
 			// Application::IBasicInfo
 			String m_Name;
@@ -192,15 +194,15 @@ namespace kxf
 			// Application::ICommandLine
 			void InitializeCommandLine(char** argv, size_t argc) override
 			{
+				m_ArgC = argc;
 				m_ArgVA = argv;
 				m_ArgVW = nullptr;
-				m_ArgC = argc;
 			}
 			void InitializeCommandLine(wchar_t** argv, size_t argc) override
 			{
+				m_ArgC = argc;
 				m_ArgVA = nullptr;
 				m_ArgVW = argv;
-				m_ArgC = argc;
 			}
 
 			size_t EnumCommandLineArgs(std::function<bool(String)> func) const override;
