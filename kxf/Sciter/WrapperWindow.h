@@ -30,10 +30,8 @@ namespace kxf::Sciter
 			}
 			void OnInternalIdle() override
 			{
-				// Base class version generates too much strain on message processing system
-				// if there is more than one Sciter shown at the same time so let's just call
-				// Host object idle handler. Base class version doesn't seems to be needed here.
 				Host::OnInternalIdle();
+				TWindow::OnInternalIdle();
 			}
 
 			bool OnDynamicBind(EventItem& eventItem) override
@@ -90,7 +88,12 @@ namespace kxf::Sciter
 			void UpdateWindowUI(long flags = wxUPDATE_UI_NONE) override
 			{
 				TWindow::UpdateWindowUI(flags);
-				Host::Update();
+
+				// Don't do full update from idle
+				if (!(flags & wxUPDATE_UI_FROMIDLE))
+				{
+					Host::Update();
+				}
 			}
 
 			bool IsSystemThemeEnabled() const
@@ -164,6 +167,22 @@ namespace kxf::Sciter
 			{
 				return TWindow::GetBestSize();
 			}
+
+		public:
+			using EvtHandler::Bind;
+			using EvtHandler::Unbind;
+			using EvtHandler::UnbindAll;
+
+			using EvtHandler::QueueEvent;
+			using EvtHandler::ProcessEvent;
+			using EvtHandler::ProcessEventLocally;
+			using EvtHandler::ProcessEventSafely;
+
+			using EvtHandler::ProcessPendingEvents;
+			using EvtHandler::DiscardPendingEvents;
+
+			using EvtHandler::Unlink;
+			using EvtHandler::IsUnlinked;
 
 		public:
 			WindowWrapper& operator=(const WindowWrapper&) = delete;
