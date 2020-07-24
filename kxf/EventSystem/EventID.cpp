@@ -18,7 +18,7 @@ namespace kxf
 		}
 		else if (auto value = std::get_if<int64_t>(&m_ID))
 		{
-			return *value == 0;
+			return *value == 0 || *value == wxEVT_NULL;
 		}
 		else if (auto value = std::get_if<UniversallyUniqueID>(&m_ID))
 		{
@@ -84,7 +84,7 @@ namespace kxf
 	bool EventID::IsWxWidgetsID() const noexcept
 	{
 		int64_t id = AsInt();
-		return id > 0 && id <= g_LastWxEventID;
+		return id >= wxEVT_FIRST && id <= g_LastWxEventID;
 	}
 }
 
