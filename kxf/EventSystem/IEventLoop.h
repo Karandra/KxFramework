@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "kxf/RTTI/QueryInterface.h"
 #include "kxf/General/DateTime/TimeSpan.h"
+class wxEventLoopBase;
 
 /*
 	NOTE ABOUT IEventLoop::YieldFor LOGIC
@@ -39,6 +40,10 @@ namespace kxf::Application
 {
 	class IActiveEventLoop;
 }
+namespace kxf::wxWidgets
+{
+	class EventLoopWrapperWx;
+}
 
 namespace kxf
 {
@@ -47,6 +52,7 @@ namespace kxf
 		KxDeclareIID(IEventLoop, {0x7926acb6, 0x7016, 0x478c, {0x9d, 0xa3, 0x5f, 0x3e, 0xc1, 0xa1, 0xcc, 0xbb}});
 
 		friend class Application::IActiveEventLoop;
+		friend class wxWidgets::EventLoopWrapperWx;
 
 		public:
 			enum class DispatchTimeout
@@ -76,6 +82,8 @@ namespace kxf
 		public:
 			bool IsMain() const;
 			bool IsRunning() const;
+
+			virtual wxEventLoopBase& GetWxLoop() = 0;
 
 			virtual int Run() = 0;
 			virtual void Exit(int exitCode = 0) = 0;

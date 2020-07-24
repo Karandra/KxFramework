@@ -187,7 +187,9 @@ namespace kxf
 			Utility::CallAtScopeExit onExit = [&]()
 			{
 				m_IsInsideRun = false;
+				UpdateWxLoop();
 			};
+			UpdateWxLoop();
 
 			// Finally run the event loop
 			return OnRun();
@@ -206,6 +208,7 @@ namespace kxf
 		{
 			m_ExitCode = exitCode;
 			m_ShouldExit = true;
+			UpdateWxLoop();
 
 			OnExit();
 
@@ -246,9 +249,12 @@ namespace kxf
 			{
 				m_YieldLevel = yieldLevelOld;
 				m_AllowedToYield = oldAllowedToYield;
+
+				UpdateWxLoop();
 			};
 			m_YieldLevel++;
 			m_AllowedToYield = toProcess;
+			UpdateWxLoop();
 
 			// Disable log flushing from here because a call to 'Yield' shouldn't  normally result in message boxes popping up
 			// and ensure the logs will be flashed again when we exit.

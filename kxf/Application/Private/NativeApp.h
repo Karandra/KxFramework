@@ -87,9 +87,11 @@ namespace kxf::Application::Private
 			}
 			void OnEventLoopEnter(wxEventLoopBase* loop) override
 			{
+				Application::OnEventLoopEnter(loop);
 			}
 			void OnEventLoopExit(wxEventLoopBase* loop) override
 			{
+				Application::OnEventLoopExit(loop);
 			}
 
 			bool Pending() override

@@ -1,12 +1,14 @@
 #pragma once
 #include "Common.h"
 #include "IEventLoop.h"
+#include "kxf/wxWidgets/EventLoopWrapper.h"
 
 namespace kxf
 {
 	class KX_API CommonEventLoop: public RTTI::ImplementInterface<CommonEventLoop, IEventLoop>
 	{
 		private:
+			mutable wxWidgets::EventLoopWrapperWx m_WxEventLoop;
 			size_t m_YieldLevel = 0;
 			FlagSet<EventCategory> m_AllowedToYield;
 
@@ -34,20 +36,31 @@ namespace kxf
 			void OnYieldFor(FlagSet<EventCategory> toProcess) override = 0;
 			int OnRun() override;
 
+
 		public:
 			CommonEventLoop(FlagSet<EventCategory> allowedToYield = EventCategory::Everything)
-				:m_AllowedToYield(allowedToYield)
+				:m_WxEventLoop(*this, allowedToYield), m_AllowedToYield(allowedToYield)
 			{
 			}
 
 		public:
+			void UpdateWxLoop()
+			{
+				m_WxEventLoop.Update(m_AllowedToYield, m_ShouldExit, m_YieldLevel, m_IsInsideRun);
+			}
+
+			// IEventLoop
+			wxEventLoopBase& GetWxLoop() override
+			{
+				return m_WxEventLoop;
+			}
+
 			int Run() override;
 			void Exit(int exitCode = 0) override;
 			void ScheduleExit(int exitCode = 0) override;
 
 			bool DispatchIdle() override;
 
-		public:
 			bool IsYielding() const override
 			{
 				return m_YieldLevel != 0;
