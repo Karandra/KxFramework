@@ -248,7 +248,6 @@
     <ClInclude Include="kxf\IO\StreamDelegate.h" />
     <ClInclude Include="kxf\IO\StreamWrappers.h" />
     <ClInclude Include="kxf\pch.hpp" />
-    <ClInclude Include="kxf\RTTI\ComponentSystem.h" />
     <ClInclude Include="kxf\Serialization.hpp" />
     <ClInclude Include="kxf\Serialization\Common.h" />
     <ClInclude Include="kxf\Serialization\HTML.h" />
@@ -624,7 +623,6 @@
     <ClCompile Include="kxf\IO\Common.cpp" />
     <ClCompile Include="kxf\IO\FileStream.cpp" />
     <ClCompile Include="kxf\IO\MemoryStream.cpp" />
-    <ClCompile Include="kxf\RTTI\ComponentSystem.cpp" />
     <ClCompile Include="kxf\Serialization\HTML\HTMLDocument.cpp" />
     <ClCompile Include="kxf\Serialization\HTML\HTMLNode.cpp" />
     <ClCompile Include="kxf\Serialization\HTML\Private\clean_text.cpp" />

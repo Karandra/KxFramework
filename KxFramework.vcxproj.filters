@@ -749,9 +749,6 @@
       <Filter>kxf\System\Private</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="kxf\RTTI\ComponentSystem.h">
-      <Filter>kxf\RTTI</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\wxWidgets\RTTI.h">
       <Filter>kxf\wxWidgets</Filter>
     </ClInclude>
@@ -1697,9 +1694,6 @@
       <Filter>kxf\System</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="kxf\RTTI\ComponentSystem.cpp">
-      <Filter>kxf\RTTI</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\System\DynamicLibrary.cpp">
       <Filter>kxf\System</Filter>
     </ClCompile>
