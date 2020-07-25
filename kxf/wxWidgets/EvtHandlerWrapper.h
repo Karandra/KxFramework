@@ -1,29 +1,31 @@
 #pragma once
-#include "ClientObject.h"
 #include "EventWrapper.h"
+#include "ClientObject.h"
 #include "kxf/EventSystem/EvtHandler.h"
 #include "kxf/Utility/WithOptionalOwnership.h"
 #include <wx/event.h>
 
 namespace kxf::wxWidgets
 {
+	inline bool ForwardBind(IEvtHandler& evtHandler, wxEvtHandler& evtHandlerWx, EventSystem::EventItem& eventItem)
+	{
+		if (EventID id = eventItem.GetEventID(); id.IsWxWidgetsID())
+		{
+			evtHandlerWx.Bind(wxEventTypeTag<wxEvent>(id.AsInt()), [evtHandler = &evtHandler, executor = eventItem.GetExecutor()](wxEvent& event)
+			{
+				EventWrapper wrapper(event);
+				executor->Execute(*evtHandler, wrapper);
+			}, wxID_ANY, wxID_ANY, new ClientObject(eventItem.GetBindSlot()));
+			return true;
+		}
+		return false;
+	}
+}
+
+namespace kxf::wxWidgets
+{
 	class EvtHandlerWrapper: public EvtHandler
 	{
-		public:
-			static bool ForwardBind(IEvtHandler& evtHandler, wxEvtHandler& evtHandlerWx, EventItem& eventItem)
-			{
-				if (EventID id = eventItem.GetEventID(); id.IsWxWidgetsID())
-				{
-					evtHandlerWx.Bind(wxEventTypeTag<wxEvent>(id.AsInt()), [evtHandler = &evtHandler, executor = eventItem.GetExecutor()](wxEvent& event)
-					{
-						EventWrapper wrapper(event);
-						executor->Execute(*evtHandler, wrapper);
-					}, wxID_ANY, wxID_ANY, new ClientObject(eventItem.GetBindSlot()));
-					return true;
-				}
-				return false;
-			}
-
 		private:
 			Utility::WithOptionalOwnership<wxEvtHandler> m_EvtHandler;
 

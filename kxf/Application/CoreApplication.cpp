@@ -135,7 +135,7 @@ namespace kxf
 			}
 			if (auto app = wxAppConsole::GetInstance())
 			{
-				wxWidgets::EvtHandlerWrapper::ForwardBind(*this, *app, eventItem);
+				wxWidgets::ForwardBind(*this, *app, eventItem);
 			}
 		}
 		return false;

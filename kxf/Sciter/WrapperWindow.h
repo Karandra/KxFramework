@@ -38,7 +38,7 @@ namespace kxf::Sciter
 			{
 				if (EvtHandler::OnDynamicBind(eventItem))
 				{
-					wxWidgets::EvtHandlerWrapper::ForwardBind(*this, static_cast<wxWindow&>(*this), eventItem);
+					wxWidgets::ForwardBind(*this, static_cast<wxWindow&>(*this), eventItem);
 					return true;
 				}
 				return false;
