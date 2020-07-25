@@ -55,7 +55,7 @@ namespace kxf::Sciter
 	{
 		// Window options
 		::SetWindowLongPtrW(m_SciterWindow.GetHandle(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
-		m_SciterWindow.SetBackgroundStyle(wxBG_STYLE_TRANSPARENT);
+		m_SciterWindow.SetBackgroundStyle(wxBG_STYLE_PAINT);
 
 		// Create renderer
 		m_Renderer = IWindowRenderer::CreateInstance(m_Option_WindowRenderer, *this);
