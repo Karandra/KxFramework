@@ -76,14 +76,7 @@ friend class kxf::IID;	\
 friend constexpr kxf::IID kxf::IID::FromType<T>() noexcept;	\
 \
 private:	\
-	static constexpr kxf::IID ms_IID = kxf::NativeUUID __VA_ARGS__;	\
-\
-public:	\
-	kxf::IID GetIID() const noexcept override	\
-	{	\
-		return T::ms_IID;	\
-	}	\
-
+	static constexpr kxf::IID ms_IID = kxf::NativeUUID __VA_ARGS__;
 
 namespace kxf
 {
@@ -137,11 +130,6 @@ namespace kxf
 			virtual ~IObject() = default;
 
 		public:
-			virtual IID GetIID() const noexcept = 0
-			{
-				return ms_IID;
-			}
-
 			virtual void* QueryInterface(const IID& iid) noexcept
 			{
 				if (iid.IsOfType<IObject>())
@@ -189,8 +177,6 @@ namespace kxf::RTTI
 	class Interface: public virtual IObject
 	{
 		public:
-			IID GetIID() const noexcept override = 0;
-
 			using IObject::QueryInterface;
 			void* QueryInterface(const IID& iid) noexcept override
 			{
@@ -214,8 +200,6 @@ namespace kxf::RTTI
 			}
 
 		public:
-			IID GetIID() const noexcept override = 0;
-
 			using IObject::QueryInterface;
 			void* QueryInterface(const IID& iid) noexcept override
 			{
@@ -232,11 +216,6 @@ namespace kxf::RTTI
 			using TBaseClass = typename ImplementInterface<TDerived, TBase...>;
 
 		public:
-			IID GetIID() const noexcept override
-			{
-				return {};
-			}
-
 			using IObject::QueryInterface;
 			void* QueryInterface(const IID& iid) noexcept override
 			{
