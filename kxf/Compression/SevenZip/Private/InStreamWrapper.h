@@ -14,7 +14,7 @@ namespace kxf::SevenZip::Private
 			COM::RefCount<InStream> m_RefCount;
 
 		public:
-			InStream(EvtHandler* evtHandler = nullptr)
+			InStream(IEvtHandler* evtHandler = nullptr)
 				:WithEvtHandler(evtHandler), m_RefCount(*this)
 			{
 			}
@@ -63,7 +63,7 @@ namespace kxf::SevenZip::Private
 			}
 
 		public:
-			InStreamWrapper(EvtHandler* evtHandler = nullptr)
+			InStreamWrapper(IEvtHandler* evtHandler = nullptr)
 				:InStream(evtHandler)
 			{
 			}
@@ -133,7 +133,7 @@ namespace kxf::SevenZip::Private
 			}
 
 		public:
-			InStreamWrapper_IStream(COMPtr<IStream> stream, EvtHandler* evtHandler = nullptr)
+			InStreamWrapper_IStream(COMPtr<IStream> stream, IEvtHandler* evtHandler = nullptr)
 				:InStreamWrapper(evtHandler), m_Stream(std::move(stream))
 			{
 			}
@@ -181,7 +181,7 @@ namespace kxf::SevenZip::Private
 			}
 
 		public:
-			InStreamWrapper_wxInputStream(InputStreamDelegate stream, EvtHandler* evtHandler = nullptr)
+			InStreamWrapper_wxInputStream(InputStreamDelegate stream, IEvtHandler* evtHandler = nullptr)
 				:InStreamWrapper(evtHandler), m_Stream(std::move(stream))
 			{
 			}

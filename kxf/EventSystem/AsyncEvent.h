@@ -10,10 +10,10 @@ namespace kxf::EventSystem
 			KxEVENT_MEMBER_AS(AsyncEvent, Async, -2);
 
 		private:
-			EvtHandler* m_EvtHandler = nullptr;
+			IEvtHandler* m_EvtHandler = nullptr;
 
 		public:
-			AsyncEvent(EvtHandler& evtHandler)
+			AsyncEvent(IEvtHandler& evtHandler)
 				:m_EvtHandler(&evtHandler)
 			{
 				BasicEvent::SetEventSource(&evtHandler);
@@ -30,11 +30,11 @@ namespace kxf::EventSystem
 				return EventCategory::Unknown;
 			}
 
-			EvtHandler* GetEventSource() const override
+			IEvtHandler* GetEventSource() const override
 			{
 				return m_EvtHandler;
 			}
-			void SetEventSource(EvtHandler* evtHandler) override
+			void SetEventSource(IEvtHandler* evtHandler) override
 			{
 			}
 
@@ -67,7 +67,7 @@ namespace kxf::EventSystem
 			std::tuple<Args...> m_Parameters;
 
 		public:
-			CallableAsyncEvent(EvtHandler& evtHandler, TCallable&& callable, Args&&... arg)
+			CallableAsyncEvent(IEvtHandler& evtHandler, TCallable&& callable, Args&&... arg)
 				:AsyncEvent(evtHandler), m_Callable(std::forward<TCallable>(callable)), m_Parameters(std::forward<Args>(arg)...)
 			{
 			}
@@ -99,10 +99,10 @@ namespace kxf::EventSystem
 			TClass* m_EvtHandler = nullptr;
 
 		public:
-			MethodAsyncEvent(EvtHandler& evtHandler, TMethod method, Args&&... arg)
+			MethodAsyncEvent(IEvtHandler& evtHandler, TMethod method, Args&&... arg)
 				:AsyncEvent(evtHandler), m_EvtHandler(static_cast<TClass*>(&evtHandler)), m_Method(method), m_Parameters(std::forward<Args>(arg)...)
 			{
-				static_assert(std::is_base_of_v<EvtHandler, TClass>, "EvtHandler descendant required");
+				static_assert(std::is_base_of_v<IEvtHandler, TClass>, "IEvtHandler descendant required");
 			}
 
 		public:

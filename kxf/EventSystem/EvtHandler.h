@@ -1,17 +1,9 @@
 #pragma once
 #include "Common.h"
-#include "Event.h"
-#include "EventID.h"
-#include "EventItem.h"
-#include "CRTP/Bind.h"
-#include "CRTP/CallAfter.h"
-#include "CRTP/QueueEvent.h"
-#include "CRTP/ProcessEvent.h"
-#include "kxf/RTTI/QueryInterface.h"
+#include "IEvtHandler.h"
 #include "kxf/Threading/LockGuard.h"
 #include "kxf/Threading/ReadWriteLock.h"
 #include "kxf/Threading/RecursiveRWLock.h"
-#include <atomic>
 
 namespace kxf
 {
@@ -21,25 +13,8 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API EvtHandler:
-		public RTTI::Interface<EvtHandler>,
-		public EventSystem::BindCRTP<EvtHandler>,
-		public EventSystem::CallAfterCRTP<EvtHandler>,
-		public EventSystem::QueueEventCRTP<EvtHandler>,
-		public EventSystem::ProcessEventCRTP<EvtHandler>
+	class KX_API EvtHandler: public RTTI::ImplementInterface<EvtHandler, IEvtHandler>
 	{
-		KxDeclareIID(EvtHandler, {0x96ae0970, 0x8cc5, 0x4288, {0xb1, 0x1b, 0x7a, 0xe6, 0x42, 0xf8, 0xdf, 0x8c}});
-
-		friend class CoreApplication;
-		friend class EvtHandlerDelegate;
-		friend class EventSystem::BindCRTP<EvtHandler>;
-		friend class EventSystem::CallAfterCRTP<EvtHandler>;
-		friend class EventSystem::QueueEventCRTP<EvtHandler>;
-		friend class EventSystem::ProcessEventCRTP<EvtHandler>;
-
-		protected:
-			using EventItem = EventSystem::EventItem;
-
 		private:
 			// Dynamic events table
 			RecursiveRWLock m_EventTableLock;
@@ -51,8 +26,8 @@ namespace kxf
 			std::vector<std::unique_ptr<IEvent>> m_PendingEvents;
 
 			// Events chain
-			std::atomic<EvtHandler*> m_PrevHandler = nullptr;
-			std::atomic<EvtHandler*> m_NextHandler = nullptr;
+			std::atomic<IEvtHandler*> m_PrevHandler = nullptr;
+			std::atomic<IEvtHandler*> m_NextHandler = nullptr;
 
 			// Enabled/disabled switch
 			std::atomic<bool> m_IsEnabled = true;
@@ -72,32 +47,31 @@ namespace kxf
 			bool TryBeforeAndHere(IEvent& event);
 
 			bool SearchEventTable(IEvent& event);
-			bool ExecuteDirectEvent(IEvent& event, EventItem& eventItem, EvtHandler& evtHandler);
-			void ExecuteEventHandler(IEvent& event, IEventExecutor& executor, EvtHandler& evtHandler);
-			
-			bool DoProcessEventSafely(IEvent& event, const EventID& eventID = {});
-			bool DoProcessEventLocally(IEvent& event, const EventID& eventID = {});
+			bool ExecuteDirectEvent(IEvent& event, EventItem& eventItem, IEvtHandler& evtHandler);
+			void ExecuteEventHandler(IEvent& event, IEventExecutor& executor, IEvtHandler& evtHandler);
 			void ConsumeException(IEvent& event);
 
 		protected:
-			virtual LocallyUniqueID DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<EventFlag> flags = {});
-			virtual bool DoUnbind(const EventID& eventID, IEventExecutor& executor);
-			virtual bool DoUnbind(const LocallyUniqueID& bindSlot);
+			LocallyUniqueID DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<EventFlag> flags = {}) override;
+			bool DoUnbind(const EventID& eventID, IEventExecutor& executor) override;
+			bool DoUnbind(const LocallyUniqueID& bindSlot) override;
 
-			virtual bool OnDynamicBind(EventItem& eventItem)
+			bool OnDynamicBind(EventItem& eventItem) override
 			{
 				return true;
 			}
-			virtual bool OnDynamicUnbind(EventItem& eventItem)
+			bool OnDynamicUnbind(EventItem& eventItem) override
 			{
 				return true;
 			}
 
-			virtual void DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, UniversallyUniqueID uuid = {});
-			virtual bool DoProcessEvent(IEvent& event, const EventID& eventID = {}, EvtHandler* onlyIn = nullptr);
+			void DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, UniversallyUniqueID uuid = {}) override;
+			bool DoProcessEvent(IEvent& event, const EventID& eventID = {}, IEvtHandler* onlyIn = nullptr) override;
+			bool DoProcessEventSafely(IEvent& event, const EventID& eventID = {}) override;
+			bool DoProcessEventLocally(IEvent& event, const EventID& eventID = {}) override;
 
-			virtual bool TryBefore(IEvent& event);
-			virtual bool TryAfter(IEvent& event);
+			bool TryBefore(IEvent& event) override;
+			bool TryAfter(IEvent& event) override;
 
 		public:
 			EvtHandler() = default;
@@ -113,35 +87,35 @@ namespace kxf
 
 		public:
 			// Event queuing and processing
-			bool ProcessPendingEvents();
-			size_t DiscardPendingEvents();
+			bool ProcessPendingEvents() override;
+			size_t DiscardPendingEvents() override;
 
 			// Event handlers chain
-			EvtHandler* GetPrevHandler() const
+			IEvtHandler* GetPrevHandler() const override
 			{
 				return m_PrevHandler;
 			}
-			EvtHandler* GetNextHandler() const
+			IEvtHandler* GetNextHandler() const override
 			{
 				return m_NextHandler;
 			}
-			virtual void SetPrevHandler(EvtHandler* evtHandler)
+			void SetPrevHandler(IEvtHandler* evtHandler) override
 			{
 				m_PrevHandler = evtHandler;
 			}
-			virtual void SetNextHandler(EvtHandler* evtHandler)
+			void SetNextHandler(IEvtHandler* evtHandler) override
 			{
 				m_NextHandler = evtHandler;
 			}
 
-			void Unlink();
-			bool IsUnlinked() const;
+			void Unlink() override;
+			bool IsUnlinked() const override;
 
-			bool IsEventProcessingEnabled() const
+			bool IsEventProcessingEnabled() const override
 			{
 				return m_IsEnabled;
 			}
-			void EnableEventProcessing(bool enable = true)
+			void EnableEventProcessing(bool enable = true) override
 			{
 				m_IsEnabled = enable;
 			}

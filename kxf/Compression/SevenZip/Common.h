@@ -4,7 +4,7 @@
 #include "kxf/General/Version.h"
 #include "kxf/General/NativeUUID.h"
 #include "kxf/General/UniversallyUniqueID.h"
-#include "kxf/EventSystem/EvtHandler.h"
+#include "kxf/EventSystem/IEvtHandler.h"
 #include "kxf/EventSystem/EvtHandlerDelegate.h"
 #include "kxf/FileSystem/IFileSystem.h"
 #include "kxf/FileSystem/FSPath.h"

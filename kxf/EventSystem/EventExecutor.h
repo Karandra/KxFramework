@@ -19,14 +19,14 @@ namespace kxf::EventSystem
 			NullEventExecutor(const NullEventExecutor&) = delete;
 
 		public:
-			void Execute(EvtHandler& evtHandler, IEvent& event) noexcept override
+			void Execute(IEvtHandler& evtHandler, IEvent& event) noexcept override
 			{
 			}
 			bool IsSameAs(const IEventExecutor& other) const noexcept override
 			{
 				return this == &Get();
 			}
-			EvtHandler* GetTargetHandler() noexcept override
+			IEvtHandler* GetTargetHandler() noexcept override
 			{
 				return nullptr;
 			}
@@ -55,7 +55,7 @@ namespace kxf::EventSystem
 			}
 
 		public:
-			void Execute(EvtHandler& evtHandler, IEvent& event) override
+			void Execute(IEvtHandler& evtHandler, IEvent& event) override
 			{
 				std::invoke(m_Callable, static_cast<TEvent&>(event));
 			}
@@ -67,7 +67,7 @@ namespace kxf::EventSystem
 				}
 				return false;
 			}
-			EvtHandler* GetTargetHandler() noexcept override
+			IEvtHandler* GetTargetHandler() noexcept override
 			{
 				return nullptr;
 			}
@@ -96,12 +96,12 @@ namespace kxf::EventSystem
 			}
 
 		public:
-			void Execute(EvtHandler& evtHandler, IEvent& event) override
+			void Execute(IEvtHandler& evtHandler, IEvent& event) override
 			{
 				TClass* handler = m_Handler;
 				if (!handler)
 				{
-					if constexpr(std::is_base_of_v<EvtHandler, TClass>)
+					if constexpr(std::is_base_of_v<IEvtHandler, TClass>)
 					{
 						handler = static_cast<TClass*>(&evtHandler);
 					}
@@ -120,9 +120,9 @@ namespace kxf::EventSystem
 				}
 				return false;
 			}
-			EvtHandler* GetTargetHandler() noexcept override
+			IEvtHandler* GetTargetHandler() noexcept override
 			{
-				if constexpr(std::is_base_of_v<EvtHandler, THandler>)
+				if constexpr(std::is_base_of_v<IEvtHandler, THandler>)
 				{
 					return m_Handler;
 				}

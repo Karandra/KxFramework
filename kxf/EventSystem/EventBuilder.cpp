@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "EventBuilder.h"
-#include "EvtHandler.h"
+#include "IEvtHandler.h"
 #include "kxf/Utility/Common.h"
 
 namespace kxf::EventSystem

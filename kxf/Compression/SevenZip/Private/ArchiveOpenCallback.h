@@ -46,7 +46,7 @@ namespace kxf::SevenZip::Private::Callback
 			}
 
 		public:
-			OpenArchive(EvtHandler* evtHandler = nullptr)
+			OpenArchive(IEvtHandler* evtHandler = nullptr)
 				:WithEvtHandler(evtHandler), m_RefCount(*this), m_PasswordHandler(IArchive::EvtPassword, evtHandler)
 			{
 			}
@@ -54,7 +54,7 @@ namespace kxf::SevenZip::Private::Callback
 
 		public:
 			// WithEvtHandler
-			void SetEvtHandler(EvtHandler* evtHandler) noexcept override
+			void SetEvtHandler(IEvtHandler* evtHandler) noexcept override
 			{
 				WithEvtHandler::SetEvtHandler(evtHandler);
 				m_PasswordHandler.SetEvtHandler(evtHandler);

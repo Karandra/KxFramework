@@ -1,78 +1,91 @@
 #pragma once
 #include "Common.h"
-#include "EvtHandler.h"
+#include "IEvtHandler.h"
+#include "EvtHandlerAccessor.h"
 #include "kxf/Utility/WithOptionalOwnership.h"
 
 namespace kxf
 {
-	class KX_API EvtHandlerDelegate:
-		public EventSystem::BindCRTP<EvtHandlerDelegate>,
-		public EventSystem::CallAfterCRTP<EvtHandlerDelegate>,
-		public EventSystem::QueueEventCRTP<EvtHandlerDelegate>,
-		public EventSystem::ProcessEventCRTP<EvtHandlerDelegate>
+	class KX_API EvtHandlerDelegate: public RTTI::ImplementInterface<IEvtHandler, IEvtHandler>
 	{
-		friend class EventSystem::BindCRTP<EvtHandlerDelegate>;
-		friend class EventSystem::CallAfterCRTP<EvtHandlerDelegate>;
-		friend class EventSystem::QueueEventCRTP<EvtHandlerDelegate>;
-		friend class EventSystem::ProcessEventCRTP<EvtHandlerDelegate>;
-
-		protected:
-			using EventItem = EventSystem::EventItem;
+		private:
+			Utility::WithOptionalOwnership<IEvtHandler> m_EvtHandler;
 
 		private:
-			Utility::WithOptionalOwnership<EvtHandler> m_EvtHandler;
+			auto Access()
+			{
+				return EventSystem::EvtHandlerAccessor(*m_EvtHandler);
+			}
 
 		protected:
-			void DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, UniversallyUniqueID uuid = {})
+			LocallyUniqueID DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<EventFlag> flags = {}) override
 			{
-				m_EvtHandler->DoQueueEvent(std::move(event), eventID, std::move(uuid));
+				return Access().DoBind(eventID, std::move(executor), flags);
 			}
-			bool DoProcessEvent(IEvent& event, const EventID& eventID = {}, EvtHandler* onlyIn = nullptr)
+			bool DoUnbind(const EventID& eventID, IEventExecutor& executor) override
 			{
-				return m_EvtHandler->DoProcessEvent(event, eventID, onlyIn);
+				return Access().DoUnbind(eventID, executor);
 			}
-			bool DoProcessEventSafely(IEvent& event, const EventID& eventID = {})
+			bool DoUnbind(const LocallyUniqueID& bindSlot) override
 			{
-				return m_EvtHandler->DoProcessEventSafely(event, eventID);
-			}
-			bool DoProcessEventLocally(IEvent& event, const EventID& eventID = {})
-			{
-				return m_EvtHandler->DoProcessEventLocally(event, eventID);
+				return Access().DoUnbind(bindSlot);
 			}
 
-			LocallyUniqueID DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<EventFlag> flags = {})
+			bool OnDynamicBind(EventItem& eventItem) override
 			{
-				return m_EvtHandler->DoBind(eventID, std::move(executor), flags);
+				return Access().OnDynamicBind(eventItem);
 			}
-			bool DoUnbind(const EventID& eventID, IEventExecutor& executor)
+			bool OnDynamicUnbind(EventItem& eventItem) override
 			{
-				return m_EvtHandler->DoUnbind(eventID, executor);
+				return Access().OnDynamicUnbind(eventItem);
 			}
-			bool DoUnbind(const LocallyUniqueID& bindSlot)
+
+			void DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, UniversallyUniqueID uuid = {}) override
 			{
-				return m_EvtHandler->DoUnbind(bindSlot);
+				return Access().DoQueueEvent(std::move(event), eventID, std::move(uuid));
+			}
+			bool DoProcessEvent(IEvent& event, const EventID& eventID = {}, IEvtHandler* onlyIn = nullptr) override
+			{
+				return Access().DoProcessEvent(event, eventID, onlyIn);
+			}
+			bool DoProcessEventSafely(IEvent& event, const EventID& eventID = {}) override
+			{
+				return Access().DoProcessEventSafely(event, eventID);
+			}
+			bool DoProcessEventLocally(IEvent& event, const EventID& eventID = {}) override
+			{
+				return Access().DoProcessEventLocally(event, eventID);
+			}
+
+			bool TryBefore(IEvent& event) override
+			{
+				return Access().TryBefore(event);
+			}
+			bool TryAfter(IEvent& event) override
+			{
+				return Access().TryAfter(event);
 			}
 
 		public:
 			EvtHandlerDelegate() noexcept = default;
-			EvtHandlerDelegate(EvtHandler& evtHandler) noexcept
+			EvtHandlerDelegate(IEvtHandler& evtHandler) noexcept
 			{
 				m_EvtHandler.Assign(evtHandler);
 			}
-			EvtHandlerDelegate(std::unique_ptr<EvtHandler> evtHandler) noexcept
+			EvtHandlerDelegate(std::unique_ptr<IEvtHandler> evtHandler) noexcept
 			{
 				m_EvtHandler.Assign(std::move(evtHandler));
 			}
 			EvtHandlerDelegate(EvtHandlerDelegate&&) noexcept = default;
 			EvtHandlerDelegate(const EvtHandlerDelegate&) = delete;
-			virtual ~EvtHandlerDelegate() = default;
+			~EvtHandlerDelegate() = default;
 
 		public:
 			bool IsNull() const noexcept
 			{
 				return m_EvtHandler.IsNull();
 			}
-			EvtHandler* Get() const noexcept
+			IEvtHandler* Get() const noexcept
 			{
 				return m_EvtHandler.Get();
 			}
@@ -86,47 +99,47 @@ namespace kxf
 			}
 
 			// Event queuing and processing
-			bool ProcessPendingEvents()
+			bool ProcessPendingEvents() override
 			{
 				return m_EvtHandler->ProcessPendingEvents();
 			}
-			size_t DiscardPendingEvents()
+			size_t DiscardPendingEvents() override
 			{
 				return m_EvtHandler->DiscardPendingEvents();
 			}
 
 			// Event handlers chain
-			EvtHandler* GetPrevHandler() const
+			IEvtHandler* GetPrevHandler() const override
 			{
 				return m_EvtHandler->GetPrevHandler();
 			}
-			EvtHandler* GetNextHandler() const
+			IEvtHandler* GetNextHandler() const override
 			{
 				return m_EvtHandler->GetNextHandler();
 			}
-			void SetPrevHandler(EvtHandler* evtHandler)
+			void SetPrevHandler(IEvtHandler* evtHandler) override
 			{
 				m_EvtHandler->SetPrevHandler(evtHandler);
 			}
-			void SetNextHandler(EvtHandler* evtHandler)
+			void SetNextHandler(IEvtHandler* evtHandler) override
 			{
 				m_EvtHandler->SetNextHandler(evtHandler);
 			}
 
-			void Unlink()
+			void Unlink() override
 			{
 				m_EvtHandler->Unlink();
 			}
-			bool IsUnlinked() const
+			bool IsUnlinked() const override
 			{
 				return m_EvtHandler->IsUnlinked();
 			}
 
-			bool IsEventProcessingEnabled() const
+			bool IsEventProcessingEnabled() const override
 			{
 				return m_EvtHandler->IsEventProcessingEnabled();
 			}
-			void EnableEventProcessing(bool enable = true)
+			void EnableEventProcessing(bool enable = true) override
 			{
 				m_EvtHandler->EnableEventProcessing(enable);
 			}

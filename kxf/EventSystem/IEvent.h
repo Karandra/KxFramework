@@ -7,7 +7,11 @@
 
 namespace kxf
 {
-	class EvtHandler;
+	class IEvtHandler;
+}
+namespace kxf::EventSystem
+{
+	class EventAccessor;
 }
 
 namespace kxf
@@ -16,7 +20,7 @@ namespace kxf
 	{
 		KxDeclareIID(IEvent, {0x61df394f, 0x8d5c, 0x43ef, {0xbd, 0x9f, 0xfb, 0xeb, 0xbf, 0x1e, 0x97, 0xa5}});
 
-		friend class EvtHandler;
+		friend class EventSystem::EventAccessor;
 
 		public:
 			static inline const EventTag<IEvent> EvtNull = 0;
@@ -39,8 +43,8 @@ namespace kxf
 			virtual UniversallyUniqueID GetUniqueID() const = 0;
 			virtual FlagSet<EventCategory> GetEventCategory() const = 0;
 
-			virtual EvtHandler* GetEventSource() const = 0;
-			virtual void SetEventSource(EvtHandler* evtHandler) = 0;
+			virtual IEvtHandler* GetEventSource() const = 0;
+			virtual void SetEventSource(IEvtHandler* evtHandler) = 0;
 
 			virtual bool IsSkipped() const = 0;
 			virtual void Skip(bool skip = true) = 0;

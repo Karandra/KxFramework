@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "EvtHandler.h"
 #include "IdleEvent.h"
+#include "EventAccessor.h"
+#include "EvtHandlerAccessor.h"
 #include "kxf/Application/ICoreApplication.h"
 #include "kxf/Application/Private/Utility.h"
 #include "kxf/Utility/Container.h"
@@ -47,7 +49,7 @@ namespace kxf
 
 	void EvtHandler::PrepareEvent(IEvent& event, const EventID& eventID, UniversallyUniqueID uuid)
 	{
-		event.OnStartProcess(eventID, uuid);
+		EventSystem::EventAccessor(event).OnStartProcess(eventID, uuid);
 	}
 	bool EvtHandler::FreeBindSlot(const LocallyUniqueID& bindSlot)
 	{
@@ -67,12 +69,12 @@ namespace kxf
 	bool EvtHandler::TryApp(IEvent& event)
 	{
 		auto app = ICoreApplication::GetInstance();
-		if (app && this != app)
+		if (app && static_cast<IEvtHandler*>(this) != app && this != &app->GetEvtHandler())
 		{
 			// Special case: don't pass 'IIdleEvent::EvtIdle' to app, since it'll always
-			// swallow it. Events of 'IIdleEvent::EvtIdle' are sent explicitly to wxApp so
-			// it will be processed appropriately via 'EvtHandler::SearchEventTable'.
-			if (event.GetEventID() != IdleEvent::EvtIdle && app->DoProcessEvent(event))
+			// swallow it. Events of 'IIdleEvent::EvtIdle' are sent explicitly to the app
+			//so it will be processed appropriately via 'EvtHandler::SearchEventTable'.
+			if (event.GetEventID() != IdleEvent::EvtIdle && EventSystem::EvtHandlerAccessor(*app).DoProcessEvent(event))
 			{
 				return true;
 			}
@@ -81,7 +83,7 @@ namespace kxf
 	}
 	bool EvtHandler::TryChain(IEvent& event)
 	{
-		for (EvtHandler* evtHandler = m_NextHandler; evtHandler; evtHandler = evtHandler->m_NextHandler)
+		for (IEvtHandler* evtHandler = GetNextHandler(); evtHandler; evtHandler = evtHandler->GetNextHandler())
 		{
 			// We need to process this event at the level of this handler only
 			// right now, the pre-/post-processing was either already done by
@@ -97,7 +99,7 @@ namespace kxf
 			// does. To resolve this paradox we set up a special parameter for 'DoProcessEvent'
 			// to make it process only in specified handler.
 
-			if (evtHandler->DoProcessEvent(event, {}, evtHandler))
+			if (EventSystem::EvtHandlerAccessor(*evtHandler).DoProcessEvent(event, {}, evtHandler))
 			{
 				// Make sure "skipped" flag is not set as the event was really
 				// processed in this case. Normally it shouldn't be set anyhow but
@@ -120,7 +122,7 @@ namespace kxf
 	bool EvtHandler::TryHereOnly(IEvent& event)
 	{
 		// If the event handler is disabled it doesn't process any events
-		if (m_IsEnabled)
+		if (IsEventProcessingEnabled())
 		{
 			// There is an implicit entry for async method calls processing in every event handler
 			IAsyncEvent* asyncEvent = nullptr;
@@ -168,7 +170,7 @@ namespace kxf
 
 				if (eventItem.GetEventID() == event.GetEventID())
 				{
-					EvtHandler* evtHandler = eventItem.GetExecutor()->GetTargetHandler();
+					IEvtHandler* evtHandler = eventItem.GetExecutor()->GetTargetHandler();
 					if (!evtHandler)
 					{
 						evtHandler = this;
@@ -210,7 +212,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool EvtHandler::ExecuteDirectEvent(IEvent& event, EventItem& eventItem, EvtHandler& evtHandler)
+	bool EvtHandler::ExecuteDirectEvent(IEvent& event, EventItem& eventItem, IEvtHandler& evtHandler)
 	{
 		// Reset skip instruction
 		event.Skip(false);
@@ -221,7 +223,7 @@ namespace kxf
 		// Return true if we processed this event and event handler itself didn't skipped it
 		return !event.IsSkipped();
 	}
-	void EvtHandler::ExecuteEventHandler(IEvent& event, IEventExecutor& executor, EvtHandler& evtHandler)
+	void EvtHandler::ExecuteEventHandler(IEvent& event, IEventExecutor& executor, IEvtHandler& evtHandler)
 	{
 		executor.Execute(evtHandler, event);
 
@@ -231,152 +233,6 @@ namespace kxf
 			//event.ExecuteCallback(evtHandler);
 			//event.Skip(isSkipped);
 		}
-	}
-	
-	void EvtHandler::DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID, UniversallyUniqueID uuid)
-	{
-		auto app = ICoreApplication::GetInstance();
-		if (app && event)
-		{
-			PrepareEvent(*event, eventID, std::move(uuid));
-
-			if (WriteLockGuard lock(m_PendingEventsLock); true)
-			{
-				// Add this event to our list of pending events
-				if (uuid)
-				{
-					// If this event has a unique ID, search for the last posted event with the same ID and,
-					// if it'll be found, replace it with our new event, otherwise just add it at the end as usual.
-					auto it = std::find_if(m_PendingEvents.rbegin(), m_PendingEvents.rend(), [&](const auto& event)
-					{
-						return event->GetUniqueID() == uuid;
-					});
-					if (it != m_PendingEvents.rend())
-					{
-						*it = std::move(event);
-					}
-					else
-					{
-						m_PendingEvents.emplace_back(std::move(event));
-					}
-				}
-				else
-				{
-					m_PendingEvents.emplace_back(std::move(event));
-				}
-
-				// Add this event handler to the list of event handlers that have pending events
-				app->AddPendingEventHandler(*this);
-
-				// Only release 'm_PendingEventsLock' now because otherwise there is a race condition: we could process
-				// the event just added to m_pendingEvents in our 'ProcessPendingEvents' before we had time to append
-				// this pointer to application's list; thus breaking the invariant that a handler should be in the list
-				// if and only if it has any pending events to process.
-			}
-
-			// Inform the system that new pending events are somewhere, and that these should be processed in idle time.
-			app->WakeUp();
-		}
-	}
-	bool EvtHandler::DoProcessEvent(IEvent& event, const EventID& eventID, EvtHandler* onlyIn)
-	{
-		PrepareEvent(event, eventID);
-
-		// The very first thing we do is to allow any registered filters to hook
-		// into event processing in order to globally pre-process all events.
-		//
-		// Note that we should only do it if we're the first event handler called
-		// to avoid calling 'FilterEvent' multiple times as the event goes through
-		// the event handler chain and possibly upwards the window hierarchy.
-		if (!event.WasProcessed())
-		{
-			using Result = IEventFilter::Result;
-			if (auto app = ICoreApplication::GetInstance())
-			{
-				const Result result = app->FilterEvent(event);
-				if (result != Result::Skip)
-				{
-					return result != Result::Ignore;
-				}
-				// Proceed normally
-			}
-		}
-
-		// Short circuit the event processing logic if we're requested to process
-		// this event in this handler only, see 'TryChain' for more details.
-		if (this == onlyIn)
-		{
-			return TryBeforeAndHere(event);
-		}
-
-		// Try to process the event in this handler itself
-		if (TryLocally(event))
-		{
-			// It is possible that 'TryChain' called from 'ProcessEventLocally'
-			// returned true but the event was not really processed: this happens
-			// if a custom handler ignores the request to process the event in this
-			// handler only and in this case we should skip the post processing
-			// done in 'TryAfter' but still return the correct value ourselves to
-			// indicate whether we did or did not find a handler for this event.
-			return !event.IsSkipped();
-		}
-
-		// If we still didn't find a handler, propagate the event upwards the
-		// window chain and/or to the application object.
-		if (TryAfter(event))
-		{
-			return true;
-		}
-
-		// No handler found anywhere, bail out.
-		return false;
-	}
-
-	bool EvtHandler::TryBefore(IEvent& event)
-	{
-		return false;
-	}
-	bool EvtHandler::TryAfter(IEvent& event)
-	{
-		// We only want to pass the window to the application object once even if
-		// there are several chained handlers. Ensure that this is what happens by
-		// only calling DoTryApp() if there is no next handler (which would do it).
-		//
-		// Notice that, unlike simply calling TryAfter() on the last handler in the
-		// chain only from ProcessEvent(), this also works with wxWindow object in
-		// the middle of the chain: its overridden TryAfter() will still be called
-		// and propagate the event upwards the window hierarchy even if it's not
-		// the last one in the chain (which, admittedly, shouldn't happen often).
-		if (EvtHandler* next = m_NextHandler)
-		{
-			return next->TryAfter(event);
-		}
-
-		// If this event is going to be processed in another handler next, don't pass it
-		// to application instance now, it will be done from 'TryAfter' of this other handler.
-		if (event.WillBeProcessedAgain())
-		{
-			return false;
-		}
-		return TryApp(event);
-	}
-
-	bool EvtHandler::DoProcessEventSafely(IEvent& event, const EventID& eventID)
-	{
-		try
-		{
-			return DoProcessEvent(event, eventID);
-		}
-		catch (...)
-		{
-			ConsumeException(event);
-			return false;
-		}
-	}
-	bool EvtHandler::DoProcessEventLocally(IEvent& event, const EventID& eventID)
-	{
-		PrepareEvent(event, eventID);
-		return TryLocally(event);
 	}
 	void EvtHandler::ConsumeException(IEvent& event)
 	{
@@ -448,6 +304,151 @@ namespace kxf
 				std::terminate();
 			}
 		}
+	}
+	
+	void EvtHandler::DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID, UniversallyUniqueID uuid)
+	{
+		auto app = ICoreApplication::GetInstance();
+		if (app && event)
+		{
+			PrepareEvent(*event, eventID, std::move(uuid));
+
+			if (WriteLockGuard lock(m_PendingEventsLock); true)
+			{
+				// Add this event to our list of pending events
+				if (uuid)
+				{
+					// If this event has a unique ID, search for the last posted event with the same ID and,
+					// if it'll be found, replace it with our new event, otherwise just add it at the end as usual.
+					auto it = std::find_if(m_PendingEvents.rbegin(), m_PendingEvents.rend(), [&](const auto& event)
+					{
+						return event->GetUniqueID() == uuid;
+					});
+					if (it != m_PendingEvents.rend())
+					{
+						*it = std::move(event);
+					}
+					else
+					{
+						m_PendingEvents.emplace_back(std::move(event));
+					}
+				}
+				else
+				{
+					m_PendingEvents.emplace_back(std::move(event));
+				}
+
+				// Add this event handler to the list of event handlers that have pending events
+				app->AddPendingEventHandler(*this);
+
+				// Only release 'm_PendingEventsLock' now because otherwise there is a race condition: we could process
+				// the event just added to m_pendingEvents in our 'ProcessPendingEvents' before we had time to append
+				// this pointer to application's list; thus breaking the invariant that a handler should be in the list
+				// if and only if it has any pending events to process.
+			}
+
+			// Inform the system that new pending events are somewhere, and that these should be processed in idle time.
+			app->WakeUp();
+		}
+	}
+	bool EvtHandler::DoProcessEvent(IEvent& event, const EventID& eventID, IEvtHandler* onlyIn)
+	{
+		PrepareEvent(event, eventID);
+
+		// The very first thing we do is to allow any registered filters to hook
+		// into event processing in order to globally pre-process all events.
+		//
+		// Note that we should only do it if we're the first event handler called
+		// to avoid calling 'FilterEvent' multiple times as the event goes through
+		// the event handler chain and possibly upwards the window hierarchy.
+		if (!EventSystem::EventAccessor(event).WasProcessed())
+		{
+			using Result = IEventFilter::Result;
+			if (auto app = ICoreApplication::GetInstance())
+			{
+				const Result result = app->FilterEvent(event);
+				if (result != Result::Skip)
+				{
+					return result != Result::Ignore;
+				}
+				// Proceed normally
+			}
+		}
+
+		// Short circuit the event processing logic if we're requested to process
+		// this event in this handler only, see 'TryChain' for more details.
+		if (this == onlyIn)
+		{
+			return TryBeforeAndHere(event);
+		}
+
+		// Try to process the event in this handler itself
+		if (TryLocally(event))
+		{
+			// It is possible that 'TryChain' called from 'ProcessEventLocally'
+			// returned true but the event was not really processed: this happens
+			// if a custom handler ignores the request to process the event in this
+			// handler only and in this case we should skip the post processing
+			// done in 'TryAfter' but still return the correct value ourselves to
+			// indicate whether we did or did not find a handler for this event.
+			return !event.IsSkipped();
+		}
+
+		// If we still didn't find a handler, propagate the event upwards the
+		// window chain and/or to the application object.
+		if (TryAfter(event))
+		{
+			return true;
+		}
+
+		// No handler found anywhere, bail out.
+		return false;
+	}
+	bool EvtHandler::DoProcessEventSafely(IEvent& event, const EventID& eventID)
+	{
+		try
+		{
+			return DoProcessEvent(event, eventID);
+		}
+		catch (...)
+		{
+			ConsumeException(event);
+			return false;
+		}
+	}
+	bool EvtHandler::DoProcessEventLocally(IEvent& event, const EventID& eventID)
+	{
+		PrepareEvent(event, eventID);
+		return TryLocally(event);
+	}
+
+	bool EvtHandler::TryBefore(IEvent& event)
+	{
+		return false;
+	}
+	bool EvtHandler::TryAfter(IEvent& event)
+	{
+		// We only want to pass the window to the application object once even if
+		// there are several chained handlers. Ensure that this is what happens by
+		// only calling DoTryApp() if there is no next handler (which would do it).
+		//
+		// Notice that, unlike simply calling TryAfter() on the last handler in the
+		// chain only from ProcessEvent(), this also works with wxWindow object in
+		// the middle of the chain: its overridden TryAfter() will still be called
+		// and propagate the event upwards the window hierarchy even if it's not
+		// the last one in the chain (which, admittedly, shouldn't happen often).
+		if (IEvtHandler* next = GetNextHandler())
+		{
+			return EventSystem::EvtHandlerAccessor(*next).TryAfter(event);
+		}
+
+		// If this event is going to be processed in another handler next, don't pass it
+		// to application instance now, it will be done from 'TryAfter' of this other handler.
+		if (EventSystem::EventAccessor(event).WillBeProcessedAgain())
+		{
+			return false;
+		}
+		return TryApp(event);
 	}
 
 	LocallyUniqueID EvtHandler::DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<EventFlag> flags)
@@ -624,8 +625,8 @@ namespace kxf
 	void EvtHandler::Unlink()
 	{
 		// This event handler must take itself out of the chain of handlers
-		EvtHandler* prev = m_PrevHandler;
-		EvtHandler* next = m_NextHandler;
+		IEvtHandler* prev = m_PrevHandler;
+		IEvtHandler* next = m_NextHandler;
 		if (prev)
 		{
 			prev->SetNextHandler(next);

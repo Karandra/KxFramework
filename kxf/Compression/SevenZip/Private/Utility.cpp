@@ -67,7 +67,7 @@ namespace kxf::SevenZip::Private
 			return {};
 		}(const_cast<IInArchive&>(archive));
 	}
-	bool GetNumberOfItems(wxInputStream& stream, CompressionFormat format, size_t& itemCount, EvtHandler* evtHandler)
+	bool GetNumberOfItems(wxInputStream& stream, CompressionFormat format, size_t& itemCount, IEvtHandler* evtHandler)
 	{
 		if (stream.IsOk())
 		{
@@ -172,7 +172,7 @@ namespace kxf::SevenZip::Private
 			return {};
 		}(const_cast<IInArchive&>(archive));
 	}
-	bool GetArchiveItems(wxInputStream& stream, CompressionFormat format, std::vector<FileItem>& items, EvtHandler* evtHandler)
+	bool GetArchiveItems(wxInputStream& stream, CompressionFormat format, std::vector<FileItem>& items, IEvtHandler* evtHandler)
 	{
 		if (stream.IsOk())
 		{
@@ -209,7 +209,7 @@ namespace kxf::SevenZip::Private
 		return false;
 	}
 
-	CompressionFormat IdentifyCompressionFormat(wxInputStream& stream, const FSPath& path, EvtHandler* evtHandler)
+	CompressionFormat IdentifyCompressionFormat(wxInputStream& stream, const FSPath& path, IEvtHandler* evtHandler)
 	{
 		if (!stream.IsOk())
 		{

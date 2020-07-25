@@ -1,4 +1,5 @@
 #pragma once
+#include "IEvtHandler.h"
 #include "EvtHandler.h"
 #include "EventHandlerStack.h"
 #include "EvtHandlerDelegate.h"
@@ -79,13 +80,13 @@ namespace kxf
 			}
 
 			template<class TFunc>
-			EvtHandler* EnumRecieveres(Order order, TFunc&& func) const
+			IEvtHandler* EnumRecieveres(Order order, TFunc&& func) const
 			{
 				return m_Stack.ForEachItem(order, std::forward<TFunc>(func), true);
 			}
 
 			template<class TFunc>
-			EvtHandler* EnumRecieveres(TFunc&& func) const
+			IEvtHandler* EnumRecieveres(TFunc&& func) const
 			{
 				return m_Stack.ForEachItem(m_Order, std::forward<TFunc>(func), true);
 			}
@@ -126,7 +127,7 @@ namespace kxf
 			}
 
 		protected:
-			EvtHandler& GetEvtHandler()
+			IEvtHandler& GetEvtHandler()
 			{
 				return m_EvtHandler;
 			}

@@ -3,7 +3,7 @@
 
 namespace kxf
 {
-	bool EvtHandlerStack::Push(EvtHandler& evtHandler)
+	bool EvtHandlerStack::Push(IEvtHandler& evtHandler)
 	{
 		// New handler can't be part of another chain
 		if (evtHandler.IsUnlinked())
@@ -16,7 +16,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool EvtHandlerStack::Remove(EvtHandler& evtHandler)
+	bool EvtHandlerStack::Remove(IEvtHandler& evtHandler)
 	{
 		// Short circuit for last handler
 		if (&evtHandler == m_Top)
@@ -28,7 +28,7 @@ namespace kxf
 		if (!evtHandler.IsUnlinked())
 		{
 			// Is it part of our chain?
-			EvtHandler* unlinked = ForEachItem(Order::LastToFirst, [&evtHandler](EvtHandler& chainItem)
+			IEvtHandler* unlinked = ForEachItem(Order::LastToFirst, [&evtHandler](IEvtHandler& chainItem)
 			{
 				// Unlink it
 				if (&chainItem == &evtHandler)
@@ -42,16 +42,16 @@ namespace kxf
 		}
 		return false;
 	}
-	EvtHandler* EvtHandlerStack::Pop()
+	IEvtHandler* EvtHandlerStack::Pop()
 	{
 		// We need to pop the stack, i.e. we need to remove the latest added handler
-		EvtHandler* topHandler = m_Top;
+		IEvtHandler* topHandler = m_Top;
 
 		// We can't pop if we have only one item and the top handler should have no previous handlers set
 		if (topHandler != m_Base && !topHandler->GetPrevHandler())
 		{
 			// The second handler should have non-null next handler
-			if (EvtHandler* nextHandler = topHandler->GetNextHandler())
+			if (IEvtHandler* nextHandler = topHandler->GetNextHandler())
 			{
 				topHandler->SetNextHandler(nullptr);
 				nextHandler->SetPrevHandler(nullptr);

@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Event.h"
-#include "EvtHandler.h"
+#include "IEvtHandler.h"
 #include "kxf/RTTI/QueryInterface.h"
 
 namespace kxf
@@ -14,8 +14,8 @@ namespace kxf
 			virtual ~IWithEvtHandler() = default;
 
 		public:
-			virtual EvtHandler* GetEvtHandler() const = 0;
-			virtual void SetEvtHandler(EvtHandler& evtHandler) = 0;
-			virtual void SetEvtHandler(std::unique_ptr<EvtHandler> evtHandler) = 0;
+			virtual IEvtHandler* GetEvtHandler() const = 0;
+			virtual void SetEvtHandler(IEvtHandler& evtHandler) = 0;
+			virtual void SetEvtHandler(std::unique_ptr<IEvtHandler> evtHandler) = 0;
 	};
 }

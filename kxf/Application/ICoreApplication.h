@@ -1,11 +1,11 @@
 #pragma once
 #include "Common.h"
+#include "kxf/EventSystem/IEvtHandler.h"
 class wxCmdLineParser;
 
 namespace kxf
 {
 	class IEvent;
-	class EvtHandler;
 	class IEventLoop;
 	class IEventFilter;
 	class IEventExecutor;
@@ -88,15 +88,15 @@ namespace kxf::Application
 			virtual ~IPendingEvents() = default;
 
 		public:
-			virtual bool IsPendingEventsProcessingEnabled() const = 0;
-			virtual void EnablePendingEventsProcessing(bool enable = true) = 0;
+			virtual bool IsPendingEventHandlerProcessingEnabled() const = 0;
+			virtual void EnablePendingEventHandlerProcessing(bool enable = true) = 0;
 
-			virtual void AddPendingEventHandler(EvtHandler& evtHandler) = 0;
-			virtual bool RemovePendingEventHandler(EvtHandler& evtHandler) = 0;
-			virtual void DelayPendingEventHandler(EvtHandler& evtHandler) = 0;
+			virtual void AddPendingEventHandler(IEvtHandler& evtHandler) = 0;
+			virtual bool RemovePendingEventHandler(IEvtHandler& evtHandler) = 0;
+			virtual void DelayPendingEventHandler(IEvtHandler& evtHandler) = 0;
 
-			virtual bool ProcessPendingEvents() = 0;
-			virtual size_t DiscardPendingEvents() = 0;
+			virtual bool ProcessPendingEventHandlers() = 0;
+			virtual size_t DiscardPendingEventHandlers() = 0;
 
 			virtual bool IsScheduledForDestruction(const wxObject& object) const = 0;
 			virtual void ScheduleForDestruction(std::unique_ptr<wxObject> object) = 0;
@@ -154,7 +154,7 @@ namespace kxf
 	class KX_API ICoreApplication: public RTTI::ExtendInterface
 		<
 			ICoreApplication,
-			EvtHandler,
+			IEvtHandler,
 			Application::IBasicInfo,
 			Application::IMainEventLoop,
 			Application::IActiveEventLoop,
@@ -174,11 +174,12 @@ namespace kxf
 			static ICoreApplication* GetInstance() noexcept;
 			static void SetInstance(ICoreApplication* instance) noexcept;
 
-		public:
-			virtual ~ICoreApplication() = default;
+		private:
+			using IEvtHandler::ProcessPendingEvents;
+			using IEvtHandler::DiscardPendingEvents;
 
 		public:
-			using IPendingEvents::ProcessPendingEvents;
+			virtual ~ICoreApplication() = default;
 
 		public:
 			virtual bool OnCreate() = 0;
@@ -194,5 +195,7 @@ namespace kxf
 			virtual void AddEventFilter(IEventFilter& eventFilter) = 0;
 			virtual void RemoveEventFilter(IEventFilter& eventFilter) = 0;
 			virtual IEventFilter::Result FilterEvent(IEvent& event) = 0;
+
+			virtual IEvtHandler& GetEvtHandler() = 0;
 	};
 }

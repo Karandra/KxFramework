@@ -68,7 +68,7 @@ namespace kxf::Sciter
 			{
 				return m_Host;
 			}
-			virtual EvtHandler& GetEvtHandler() = 0;
+			virtual IEvtHandler& GetEvtHandler() = 0;
 	};
 }
 
@@ -77,16 +77,16 @@ namespace kxf::Sciter
 	class KX_API EventDispatcher: public BasicEventDispatcher
 	{
 		private:
-			EvtHandler& m_EvtHandler;
+			IEvtHandler& m_EvtHandler;
 
 		public:
-			EventDispatcher(Host& host, EvtHandler& evtHandler)
+			EventDispatcher(Host& host, IEvtHandler& evtHandler)
 				:BasicEventDispatcher(host), m_EvtHandler(evtHandler)
 			{
 			}
 
 		public:
-			EvtHandler& GetEvtHandler() override
+			IEvtHandler& GetEvtHandler() override
 			{
 				return m_EvtHandler;
 			}
@@ -105,7 +105,7 @@ namespace kxf::Sciter
 			}
 
 		public:
-			EvtHandler& GetEvtHandler() override
+			IEvtHandler& GetEvtHandler() override
 			{
 				return m_Wrapper;
 			}
@@ -123,6 +123,6 @@ namespace kxf::Sciter
 			}
 
 		public:
-			EvtHandler& GetEvtHandler() override;
+			IEvtHandler& GetEvtHandler() override;
 	};
 }

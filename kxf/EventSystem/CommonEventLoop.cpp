@@ -17,7 +17,7 @@ namespace kxf
 		auto app = ICoreApplication::GetInstance();
 		if (app)
 		{
-			app->ProcessPendingEvents();
+			app->ProcessPendingEventHandlers();
 
 			// One of the pending event handlers could have decided to exit the loop so check
 			// for the flag before trying to dispatch more events (which could block indefinitely
@@ -92,7 +92,7 @@ namespace kxf
 					// endless  stream of events generated from the user-defined event handlers, we consider
 					// that well-behaved programs shouldn't do this, and if they do, it's better to keep running
 					// the loop than crashing after leaving it.
-					if (app && app->ProcessPendingEvents())
+					if (app && app->ProcessPendingEventHandlers())
 					{
 						hasMoreEvents = true;
 					}
@@ -154,13 +154,13 @@ namespace kxf
 		//
 		// Notice however that we must not do it if we're asked to process only the events of specific
 		// kind, as pending events could be of any kind at all (ideal would be to have a filtering
-		// version of 'ProcessPendingEvents' too) and idle events are typically unexpected when yielding
+		// version of 'ProcessPendingEventHandlers' too) and idle events are typically unexpected when yielding
 		// for the specific event kinds only.
 		if (toProcess == EventCategory::Everything)
 		{
 			if (auto app = ICoreApplication::GetInstance())
 			{
-				app->ProcessPendingEvents();
+				app->ProcessPendingEventHandlers();
 			}
 
 			// We call it just once, even if it returns true, because we don't want to get stuck inside

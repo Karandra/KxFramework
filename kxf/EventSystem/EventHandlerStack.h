@@ -1,5 +1,5 @@
 #pragma once
-#include "EvtHandler.h"
+#include "IEvtHandler.h"
 #include "kxf/Utility/Common.h"
 
 namespace kxf
@@ -14,11 +14,11 @@ namespace kxf
 			};
 
 		private:
-			EvtHandler* m_Base = nullptr;
-			EvtHandler* m_Top = nullptr;
+			IEvtHandler* m_Base = nullptr;
+			IEvtHandler* m_Top = nullptr;
 
 		public:
-			EvtHandlerStack(EvtHandler& first)
+			EvtHandlerStack(IEvtHandler& first)
 				:m_Base(&first), m_Top(&first)
 			{
 			}
@@ -30,15 +30,15 @@ namespace kxf
 			virtual ~EvtHandlerStack() = default;
 
 		public:
-			bool Push(EvtHandler& evtHandler);
-			bool Remove(EvtHandler& evtHandler);
-			EvtHandler* Pop();
+			bool Push(IEvtHandler& evtHandler);
+			bool Remove(IEvtHandler& evtHandler);
+			IEvtHandler* Pop();
 
-			EvtHandler* GetBase() const
+			IEvtHandler* GetBase() const
 			{
 				return m_Base;
 			}
-			EvtHandler* GetTop() const
+			IEvtHandler* GetTop() const
 			{
 				return m_Top;
 			}
@@ -49,7 +49,7 @@ namespace kxf
 			size_t GetCount() const
 			{
 				size_t count = 0;
-				ForEachItem(Order::LastToFirst, [&count](EvtHandler& chainItem)
+				ForEachItem(Order::LastToFirst, [&count](IEvtHandler& chainItem)
 				{
 					count++;
 					return true;
@@ -58,9 +58,9 @@ namespace kxf
 			}
 
 			template<class TFunc>
-			EvtHandler* ForEachItem(Order order, TFunc&& func, bool chainedItemsOnly = false) const
+			IEvtHandler* ForEachItem(Order order, TFunc&& func, bool chainedItemsOnly = false) const
 			{
-				auto TestItem = [&](EvtHandler* item)
+				auto TestItem = [&](IEvtHandler* item)
 				{
 					return item && (!chainedItemsOnly || item != m_Base);
 				};
@@ -69,7 +69,7 @@ namespace kxf
 				{
 					case Order::FirstToLast:
 					{
-						for (EvtHandler* item = m_Base; TestItem(item); item = item->GetPrevHandler())
+						for (IEvtHandler* item = m_Base; TestItem(item); item = item->GetPrevHandler())
 						{
 							if (!func(*item))
 							{
@@ -79,7 +79,7 @@ namespace kxf
 					}
 					case Order::LastToFirst:
 					{
-						for (EvtHandler* item = m_Top; TestItem(item); item = item->GetNextHandler())
+						for (IEvtHandler* item = m_Top; TestItem(item); item = item->GetNextHandler())
 						{
 							if (!func(*item))
 							{

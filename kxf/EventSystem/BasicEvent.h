@@ -9,7 +9,7 @@ namespace kxf
 	{
 		private:
 			EventID m_EventID;
-			EvtHandler* m_EventSource = nullptr;
+			IEvtHandler* m_EventSource = nullptr;
 			UniversallyUniqueID m_UniqueID;
 			TimeSpan m_Timestamp;
 
@@ -93,11 +93,11 @@ namespace kxf
 				return EventCategory::None;
 			}
 
-			EvtHandler* GetEventSource() const override
+			IEvtHandler* GetEventSource() const override
 			{
 				return m_EventSource;
 			}
-			void SetEventSource(EvtHandler* evtHandler) override
+			void SetEventSource(IEvtHandler* evtHandler) override
 			{
 				m_EventSource = evtHandler;
 			}

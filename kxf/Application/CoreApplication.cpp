@@ -124,7 +124,7 @@ namespace kxf
 
 	bool CoreApplication::OnDynamicBind(EventItem& eventItem)
 	{
-		if (ICoreApplication::OnDynamicBind(eventItem))
+		if (AccessEvtHandler().OnDynamicBind(eventItem))
 		{
 			if (!m_DLLNotificationsCookie)
 			{
@@ -139,6 +139,10 @@ namespace kxf
 			}
 		}
 		return false;
+	}
+	bool CoreApplication::OnDynamicUnbind(EventItem& eventItem)
+	{
+		return AccessEvtHandler().OnDynamicUnbind(eventItem);
 	}
 
 	// IObject
@@ -391,11 +395,11 @@ namespace kxf
 	}
 
 	// Application::IPendingEvents
-	bool CoreApplication::IsPendingEventsProcessingEnabled() const
+	bool CoreApplication::IsPendingEventHandlerProcessingEnabled() const
 	{
 		return m_PendingEventsProcessingEnabled;
 	}
-	void CoreApplication::EnablePendingEventsProcessing(bool enable)
+	void CoreApplication::EnablePendingEventHandlerProcessing(bool enable)
 	{
 		m_PendingEventsProcessingEnabled = enable;
 
@@ -450,11 +454,11 @@ namespace kxf
 		}
 	}
 
-	void CoreApplication::AddPendingEventHandler(EvtHandler& evtHandler)
+	void CoreApplication::AddPendingEventHandler(IEvtHandler& evtHandler)
 	{
 		WriteLockGuard lock(m_PendingEvtHandlersLock);
 
-		if (!Utility::Contains(m_PendingEvtHandlers, [&](const EvtHandler* item)
+		if (!Utility::Contains(m_PendingEvtHandlers, [&](const IEvtHandler* item)
 		{
 			return item == &evtHandler;
 		}))
@@ -462,10 +466,10 @@ namespace kxf
 			m_PendingEvtHandlers.emplace_back(&evtHandler);
 		}
 	}
-	bool CoreApplication::RemovePendingEventHandler(EvtHandler& evtHandler)
+	bool CoreApplication::RemovePendingEventHandler(IEvtHandler& evtHandler)
 	{
 		size_t count = 0;
-		auto Find = [&](const EvtHandler* item)
+		auto Find = [&](const IEvtHandler* item)
 		{
 			if (item == &evtHandler)
 			{
@@ -483,11 +487,11 @@ namespace kxf
 		}
 		return count != 0;
 	}
-	void CoreApplication::DelayPendingEventHandler(EvtHandler& evtHandler)
+	void CoreApplication::DelayPendingEventHandler(IEvtHandler& evtHandler)
 	{
 		// Move the handler from the list of handlers with processable pending events
 		// to the list of handlers with pending events which needs to be processed later.
-		auto Find = [&](const EvtHandler* item)
+		auto Find = [&](const IEvtHandler* item)
 		{
 			return item == &evtHandler;
 		};
@@ -502,7 +506,7 @@ namespace kxf
 		}
 	}
 
-	bool CoreApplication::ProcessPendingEvents()
+	bool CoreApplication::ProcessPendingEventHandlers()
 	{
 		if (m_PendingEventsProcessingEnabled)
 		{
@@ -525,8 +529,8 @@ namespace kxf
 				// Iterate until the list becomes empty: the handlers remove themselves from it when they don't have any more pending events
 				while (!m_PendingEvtHandlers.empty())
 				{
-					// In 'EvtHandler::ProcessPendingEvents', new handlers might be added and we are required to unlock the lock here.
-					EvtHandler* evtHandler = m_PendingEvtHandlers.front();
+					// In 'IEvtHandler::ProcessPendingEvents', new handlers might be added and we are required to unlock the lock here.
+					IEvtHandler* evtHandler = m_PendingEvtHandlers.front();
 
 					// This inner unlock-relock must be consistent with the outer guard.
 					m_PendingEvtHandlersLock.UnlockWrite();
@@ -535,7 +539,7 @@ namespace kxf
 						m_PendingEvtHandlersLock.LockWrite();
 					};
 
-					// We always call 'EvtHandler::ProcessPendingEvents' on the first event handler with pending events because handlers
+					// We always call 'IEvtHandler::ProcessPendingEvents' on the first event handler with pending events because handlers
 					// auto-remove themselves from this list (see 'RemovePendingEventHandler') if they have no more pending events.
 					if (evtHandler->ProcessPendingEvents())
 					{
@@ -556,7 +560,7 @@ namespace kxf
 		}
 		return false;
 	}
-	size_t CoreApplication::DiscardPendingEvents()
+	size_t CoreApplication::DiscardPendingEventHandlers()
 	{
 		if (auto app = wxAppConsole::GetInstance())
 		{
@@ -566,7 +570,7 @@ namespace kxf
 		WriteLockGuard lock(m_PendingEvtHandlersLock);
 
 		size_t count = 0;
-		for (EvtHandler* evtHandler: m_PendingEvtHandlers)
+		for (IEvtHandler* evtHandler: m_PendingEvtHandlers)
 		{
 			if (evtHandler->DiscardPendingEvents() != 0)
 			{

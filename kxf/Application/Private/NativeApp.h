@@ -114,7 +114,7 @@ namespace kxf::Application::Private
 			// Pending events
 			void ProcessPendingEvents() override
 			{
-				m_App.ProcessPendingEvents();
+				m_App.ProcessPendingEventHandlers();
 				Application::ProcessPendingEvents();
 			}
 			void DeletePendingObjects()

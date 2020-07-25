@@ -13,7 +13,7 @@ namespace kxf::SevenZip::Private
 	class PasswordHandler final
 	{
 		private:
-			EvtHandler* m_EvtHandler = nullptr;
+			IEvtHandler* m_EvtHandler = nullptr;
 			EventID m_EventID = IEvent::EvtNull;
 
 		private:
@@ -34,13 +34,13 @@ namespace kxf::SevenZip::Private
 			}
 
 		public:
-			PasswordHandler(EventID eventID, EvtHandler* evtHandler = nullptr) noexcept
+			PasswordHandler(EventID eventID, IEvtHandler* evtHandler = nullptr) noexcept
 				:m_EvtHandler(evtHandler), m_EventID(eventID)
 			{
 			}
 
 		public:
-			void SetEvtHandler(EvtHandler* evtHandler) noexcept
+			void SetEvtHandler(IEvtHandler* evtHandler) noexcept
 			{
 				m_EvtHandler = evtHandler;
 			}

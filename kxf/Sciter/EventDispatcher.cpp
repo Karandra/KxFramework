@@ -916,7 +916,7 @@ namespace kxf::Sciter
 
 namespace kxf::Sciter
 {
-	EvtHandler& WidgetEventDispatcher::GetEvtHandler()
+	IEvtHandler& WidgetEventDispatcher::GetEvtHandler()
 	{
 		return m_Widget.GetEventHandler();
 	}

@@ -46,7 +46,7 @@ namespace kxf::SevenZip::Private::Callback
 			}
 
 		public:
-			ExtractArchive(EvtHandler* evtHandler = nullptr)
+			ExtractArchive(IEvtHandler* evtHandler = nullptr)
 				:WithEvtHandler(evtHandler), m_RefCount(*this), m_PasswordHandler(IArchiveExtract::EvtPassword, evtHandler)
 			{
 			}
@@ -60,7 +60,7 @@ namespace kxf::SevenZip::Private::Callback
 
 		public:
 			// WithEvtHandler
-			void SetEvtHandler(EvtHandler* evtHandler) noexcept override
+			void SetEvtHandler(IEvtHandler* evtHandler) noexcept override
 			{
 				WithEvtHandler::SetEvtHandler(evtHandler);
 				m_PasswordHandler.SetEvtHandler(evtHandler);
@@ -126,7 +126,7 @@ namespace kxf::SevenZip::Private::Callback
 			}
 
 		public:
-			ExtractArchiveWrapper(const IArchiveExtract& extract, Compression::IExtractCallback& callback, EvtHandler* evtHandler = nullptr)
+			ExtractArchiveWrapper(const IArchiveExtract& extract, Compression::IExtractCallback& callback, IEvtHandler* evtHandler = nullptr)
 				:ExtractArchive(evtHandler), m_Callback(callback), m_Extract(extract)
 			{
 			}
@@ -151,7 +151,7 @@ namespace kxf::SevenZip::Private::Callback
 			bool m_ShouldCancel = false;
 
 		public:
-			ExtractArchiveToFS(const IArchiveExtract& extract, IFileSystem& fileSystem, FSPath directory, EvtHandler* evtHandler = nullptr)
+			ExtractArchiveToFS(const IArchiveExtract& extract, IFileSystem& fileSystem, FSPath directory, IEvtHandler* evtHandler = nullptr)
 				:ExtractArchiveWrapper(extract, *this, evtHandler), m_FileSystem(fileSystem), m_Directory(std::move(directory))
 			{
 			}
@@ -181,7 +181,7 @@ namespace kxf::SevenZip::Private::Callback
 			OutputStreamDelegate m_Stream;
 
 		public:
-			ExtractArchiveToStream(const IArchiveExtract& extract, OutputStreamDelegate steram, EvtHandler* evtHandler = nullptr)
+			ExtractArchiveToStream(const IArchiveExtract& extract, OutputStreamDelegate steram, IEvtHandler* evtHandler = nullptr)
 				:ExtractArchiveWrapper(extract, *this, evtHandler), m_Stream(std::move(steram))
 			{
 			}

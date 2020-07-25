@@ -3,7 +3,7 @@
 
 namespace kxf
 {
-	class EvtHandler;
+	class IEvtHandler;
 }
 
 namespace kxf::EventSystem::Private
@@ -39,7 +39,7 @@ namespace kxf::EventSystem::Private
 				Self().m_Event->SetEventSource(Self().m_EvtHandler);
 				return Self();
 			}
-			T& SetSource(EvtHandler& source)
+			T& SetSource(IEvtHandler& source)
 			{
 				Self().m_Event->SetEventSource(&source);
 				return Self();
@@ -52,7 +52,7 @@ namespace kxf::EventSystem
 	class KX_API EventBuilderBase
 	{
 		protected:
-			EvtHandler* m_EvtHandler = nullptr;
+			IEvtHandler* m_EvtHandler = nullptr;
 			IEvent* m_Event = nullptr;
 			EventID m_EventID;
 
@@ -90,11 +90,11 @@ namespace kxf::EventSystem
 			EventBuilderBase() = default;
 
 		protected:
-			EventBuilderBase(EvtHandler& evtHandler, std::unique_ptr<IEvent> event, const EventID& eventID = {}) noexcept
+			EventBuilderBase(IEvtHandler& evtHandler, std::unique_ptr<IEvent> event, const EventID& eventID = {}) noexcept
 				:m_EvtHandler(&evtHandler), m_Event(event.release()), m_EventID(eventID), m_IsAsync(true)
 			{
 			}
-			EventBuilderBase(EvtHandler& evtHandler, IEvent& event, const EventID& eventID = {}) noexcept
+			EventBuilderBase(IEvtHandler& evtHandler, IEvent& event, const EventID& eventID = {}) noexcept
 				:m_EvtHandler(&evtHandler), m_Event(&event), m_EventID(eventID), m_IsAsync(false)
 			{
 			}
@@ -147,7 +147,7 @@ namespace kxf::EventSystem
 			TEvent m_EventInstance;
 
 		public:
-			DirectEventBuilder(EvtHandler& evtHandler, TEvent event, const EventID& eventID)
+			DirectEventBuilder(IEvtHandler& evtHandler, TEvent event, const EventID& eventID)
 				:EventBuilderBase(evtHandler, m_EventInstance, eventID), m_EventInstance(std::move(event))
 			{
 			}
@@ -194,7 +194,7 @@ namespace kxf::EventSystem
 		friend class Private::EventBuilderCRTP<QueuedEventBuilder, TEvent>;
 
 		public:
-			QueuedEventBuilder(EvtHandler& evtHandler, std::unique_ptr<TEvent> event, const EventID& eventID)
+			QueuedEventBuilder(IEvtHandler& evtHandler, std::unique_ptr<TEvent> event, const EventID& eventID)
 				:EventBuilderBase(evtHandler, std::move(event), eventID)
 			{
 			}

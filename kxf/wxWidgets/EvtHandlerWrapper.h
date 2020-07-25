@@ -10,7 +10,7 @@ namespace kxf::wxWidgets
 	class EvtHandlerWrapper: public EvtHandler
 	{
 		public:
-			static bool ForwardBind(EvtHandler& evtHandler, wxEvtHandler& evtHandlerWx, EventItem& eventItem)
+			static bool ForwardBind(IEvtHandler& evtHandler, wxEvtHandler& evtHandlerWx, EventItem& eventItem)
 			{
 				if (EventID id = eventItem.GetEventID(); id.IsWxWidgetsID())
 				{

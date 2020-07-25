@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "IWithEvent.h"
 #include "kxf/EventSystem/IEvent.h"
-#include "kxf/EventSystem/EvtHandler.h"
+#include "kxf/EventSystem/IEvtHandler.h"
 #include "kxf/Utility/WithOptionalOwnership.h"
 #include <wx/object.h>
 #include <wx/event.h>
@@ -14,7 +14,7 @@ namespace kxf::wxWidgets
 		private:
 			Utility::WithOptionalOwnership<wxEvent> m_Event;
 			UniversallyUniqueID m_UniqueID;
-			EvtHandler* m_EvtHandler = nullptr;
+			IEvtHandler* m_EvtHandler = nullptr;
 
 		private:
 			// IEvent
@@ -79,11 +79,11 @@ namespace kxf::wxWidgets
 				return static_cast<EventCategory>(m_Event->GetEventCategory());
 			}
 
-			EvtHandler* GetEventSource() const override
+			IEvtHandler* GetEventSource() const override
 			{
-				return m_EvtHandler ? m_EvtHandler : dynamic_cast<EvtHandler*>(m_Event->GetEventObject());
+				return m_EvtHandler ? m_EvtHandler : dynamic_cast<IEvtHandler*>(m_Event->GetEventObject());
 			}
-			void SetEventSource(EvtHandler* evtHandler) override
+			void SetEventSource(IEvtHandler* evtHandler) override
 			{
 				m_EvtHandler = evtHandler;
 				m_Event->SetEventObject(dynamic_cast<wxObject*>(evtHandler));

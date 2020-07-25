@@ -4,7 +4,7 @@
 namespace kxf
 {
 	class IEvent;
-	class EvtHandler;
+	class IEvtHandler;
 }
 
 namespace kxf
@@ -15,8 +15,8 @@ namespace kxf
 			virtual ~IEventExecutor() = default;
 
 		public:
-			virtual void Execute(EvtHandler& evtHandler, IEvent& event) = 0;
+			virtual void Execute(IEvtHandler& evtHandler, IEvent& event) = 0;
 			virtual bool IsSameAs(const IEventExecutor& other) const noexcept = 0;
-			virtual EvtHandler* GetTargetHandler() noexcept = 0;
+			virtual IEvtHandler* GetTargetHandler() noexcept = 0;
 	};
 }

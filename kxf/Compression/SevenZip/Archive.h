@@ -81,15 +81,15 @@ namespace kxf::SevenZip
 
 		public:
 			// IWithEvtHandler
-			EvtHandler* GetEvtHandler() const override
+			IEvtHandler* GetEvtHandler() const override
 			{
 				return m_EvtHandler.Get();
 			}
-			void SetEvtHandler(EvtHandler& evtHandler) override
+			void SetEvtHandler(IEvtHandler& evtHandler) override
 			{
 				m_EvtHandler = evtHandler;
 			}
-			void SetEvtHandler(std::unique_ptr<EvtHandler> evtHandler) override
+			void SetEvtHandler(std::unique_ptr<IEvtHandler> evtHandler) override
 			{
 				m_EvtHandler = std::move(evtHandler);
 			}

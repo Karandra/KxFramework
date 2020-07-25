@@ -32,7 +32,7 @@ namespace kxf::System
 
 	std::unique_ptr<ISystemProcess> CreateProcess(const ISystemProcess& info, EvtHandlerDelegate evtHandler, FlagSet<CreateSystemProcessFlag> flags)
 	{
-		EvtHandler* evtHandlerRef = evtHandler.Get();
+		IEvtHandler* evtHandlerRef = evtHandler.Get();
 		auto executor = std::make_unique<CreateProcessExecutor>(std::move(evtHandler), flags);
 
 		if (flags & CreateSystemProcessFlag::Async)

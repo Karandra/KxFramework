@@ -5,7 +5,7 @@ namespace kxf::EventSystem
 {
 	bool BroadcastProcessorHandler::TryBefore(IEvent& event)
 	{
-		m_Processor.EnumRecieveres([this, &event](EvtHandler& evtHandler)
+		m_Processor.EnumRecieveres([this, &event](IEvtHandler& evtHandler)
 		{
 			evtHandler.ProcessEventLocally(event, event.GetEventID());
 			return true;

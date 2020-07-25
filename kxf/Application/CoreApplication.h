@@ -3,6 +3,8 @@
 #include "ICoreApplication.h"
 #include "kxf/Threading/LockGuard.h"
 #include "kxf/Threading/RecursiveRWLock.h"
+#include "kxf/EventSystem/EvtHandler.h"
+#include "kxf/EventSystem/EvtHandlerAccessor.h"
 
 namespace kxf
 {
@@ -19,6 +21,9 @@ namespace kxf
 			}
 
 		protected:
+			// IEvtHandler
+			EvtHandler m_EvtHandler;
+
 			// ICoreApplication
 			mutable RecursiveRWLock m_EventFiltersLock;
 			std::list<IEventFilter*> m_EventFilters;
@@ -48,8 +53,8 @@ namespace kxf
 			std::vector<std::unique_ptr<wxObject>> m_ScheduledForDestruction;
 			
 			mutable RecursiveRWLock m_PendingEvtHandlersLock;
-			std::list<EvtHandler*> m_PendingEvtHandlers;
-			std::list<EvtHandler*> m_DelayedPendingEvtHandlers;
+			std::list<IEvtHandler*> m_PendingEvtHandlers;
+			std::list<IEvtHandler*> m_DelayedPendingEvtHandlers;
 
 			// Application::IExceptionHandler
 			std::exception_ptr m_StoredException;
@@ -67,7 +72,53 @@ namespace kxf
 			void UninitDLLNotifications();
 
 		protected:
+			auto AccessEvtHandler()
+			{
+				return EventSystem::EvtHandlerAccessor(m_EvtHandler);
+			}
+
+			// IEvtHandler
+			LocallyUniqueID DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<EventFlag> flags = {}) override
+			{
+				return AccessEvtHandler().DoBind(eventID, std::move(executor), flags);
+			}
+			bool DoUnbind(const EventID& eventID, IEventExecutor& executor) override
+			{
+				return AccessEvtHandler().DoUnbind(eventID, executor);
+			}
+			bool DoUnbind(const LocallyUniqueID& bindSlot) override
+			{
+				return AccessEvtHandler().DoUnbind(bindSlot);
+			}
+
 			bool OnDynamicBind(EventItem& eventItem) override;
+			bool OnDynamicUnbind(EventItem& eventItem) override;
+
+			void DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, UniversallyUniqueID uuid = {}) override
+			{
+				return AccessEvtHandler().DoQueueEvent(std::move(event), eventID, std::move(uuid));
+			}
+			bool DoProcessEvent(IEvent& event, const EventID& eventID = {}, IEvtHandler* onlyIn = nullptr) override
+			{
+				return AccessEvtHandler().DoProcessEvent(event, eventID, onlyIn);
+			}
+			bool DoProcessEventSafely(IEvent& event, const EventID& eventID = {}) override
+			{
+				return AccessEvtHandler().DoProcessEventSafely(event, eventID);
+			}
+			bool DoProcessEventLocally(IEvent& event, const EventID& eventID = {}) override
+			{
+				return AccessEvtHandler().DoProcessEventLocally(event, eventID);
+			}
+
+			bool TryBefore(IEvent& event) override
+			{
+				return AccessEvtHandler().TryBefore(event);
+			}
+			bool TryAfter(IEvent& event) override
+			{
+				return AccessEvtHandler().TryAfter(event);
+			}
 
 		public:
 			CoreApplication() = default;
@@ -93,6 +144,56 @@ namespace kxf
 			void AddEventFilter(IEventFilter& eventFilter) override;
 			void RemoveEventFilter(IEventFilter& eventFilter) override;
 			IEventFilter::Result FilterEvent(IEvent& event) override;
+
+			IEvtHandler& GetEvtHandler() override
+			{
+				return m_EvtHandler;
+			}
+
+			// IEvtHandler
+			bool ProcessPendingEvents() override
+			{
+				return m_EvtHandler.ProcessPendingEvents();
+			}
+			size_t DiscardPendingEvents() override
+			{
+				return m_EvtHandler.DiscardPendingEvents();
+			}
+
+			IEvtHandler* GetPrevHandler() const override
+			{
+				return m_EvtHandler.GetPrevHandler();
+			}
+			IEvtHandler* GetNextHandler() const override
+			{
+				return m_EvtHandler.GetNextHandler();
+			}
+			void SetPrevHandler(IEvtHandler* evtHandler) override
+			{
+				// Can't chain widgets
+			}
+			void SetNextHandler(IEvtHandler* evtHandler) override
+			{
+				// Can't chain widgets
+			}
+
+			void Unlink() override
+			{
+				m_EvtHandler.Unlink();
+			}
+			bool IsUnlinked() const override
+			{
+				return m_EvtHandler.IsUnlinked();
+			}
+
+			bool IsEventProcessingEnabled() const override
+			{
+				return m_EvtHandler.IsEventProcessingEnabled();
+			}
+			void EnableEventProcessing(bool enable = true) override
+			{
+				m_EvtHandler.EnableEventProcessing(enable);
+			}
 
 		public:
 			// Application::IBasicInfo
@@ -166,15 +267,15 @@ namespace kxf
 			bool Yield(FlagSet<EventYieldFlag> flags) override;
 
 			// Application::IPendingEvents
-			bool IsPendingEventsProcessingEnabled() const override;
-			void EnablePendingEventsProcessing(bool enable = true) override;
+			bool IsPendingEventHandlerProcessingEnabled() const override;
+			void EnablePendingEventHandlerProcessing(bool enable = true) override;
 
-			void AddPendingEventHandler(EvtHandler& evtHandler) override;
-			bool RemovePendingEventHandler(EvtHandler& evtHandler) override;
-			void DelayPendingEventHandler(EvtHandler& evtHandler) override;
+			void AddPendingEventHandler(IEvtHandler& evtHandler) override;
+			bool RemovePendingEventHandler(IEvtHandler& evtHandler) override;
+			void DelayPendingEventHandler(IEvtHandler& evtHandler) override;
 
-			bool ProcessPendingEvents() override;
-			size_t DiscardPendingEvents() override;
+			bool ProcessPendingEventHandlers() override;
+			size_t DiscardPendingEventHandlers() override;
 
 			bool IsScheduledForDestruction(const wxObject& object) const override;
 			void ScheduleForDestruction(std::unique_ptr<wxObject> object) override;

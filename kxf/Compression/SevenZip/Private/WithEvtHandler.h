@@ -10,7 +10,7 @@ namespace kxf::SevenZip::Private
 			EvtHandlerDelegate m_EvtHandler;
 
 		public:
-			WithEvtHandler(EvtHandler* evtHandler = nullptr) noexcept
+			WithEvtHandler(IEvtHandler* evtHandler = nullptr) noexcept
 			{
 				WithEvtHandler::SetEvtHandler(evtHandler);
 			}
@@ -23,11 +23,11 @@ namespace kxf::SevenZip::Private
 			~WithEvtHandler() = default;
 
 		public:
-			EvtHandler* GetEvtHandler() const noexcept
+			IEvtHandler* GetEvtHandler() const noexcept
 			{
 				return m_EvtHandler.Get();
 			}
-			virtual void SetEvtHandler(EvtHandler* evtHandler) noexcept
+			virtual void SetEvtHandler(IEvtHandler* evtHandler) noexcept
 			{
 				if (evtHandler)
 				{
