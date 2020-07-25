@@ -6,9 +6,6 @@ namespace kxf::EventSystem
 {
 	class AsyncEvent: public RTTI::ImplementInterface<AsyncEvent, BasicEvent, IAsyncEvent>
 	{
-		public:
-			KxEVENT_MEMBER_AS(AsyncEvent, Async, -2);
-
 		private:
 			IEvtHandler* m_EvtHandler = nullptr;
 

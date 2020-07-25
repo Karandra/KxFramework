@@ -95,6 +95,9 @@ namespace kxf
 		KxDeclareIID(IAsyncEvent, {0xb0046b41, 0xecd9, 0x4b46, {0xb1, 0xb5, 0xd6, 0x7d, 0xa, 0x77, 0x5c, 0xbe}});
 
 		public:
+			static inline const EventTag<IEvent> EvtAsync = -2;
+
+		public:
 			virtual ~IAsyncEvent() = default;
 
 		public:

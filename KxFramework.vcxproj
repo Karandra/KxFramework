@@ -210,10 +210,6 @@
     <ClInclude Include="kxf\Drawing\Geometry.h" />
     <ClInclude Include="kxf\EventSystem\ActivateEvent.h" />
     <ClInclude Include="kxf\EventSystem\AsyncEvent.h" />
-    <ClInclude Include="kxf\EventSystem\CRTP\Bind.h" />
-    <ClInclude Include="kxf\EventSystem\CRTP\CallAfter.h" />
-    <ClInclude Include="kxf\EventSystem\CRTP\ProcessEvent.h" />
-    <ClInclude Include="kxf\EventSystem\CRTP\QueueEvent.h" />
     <ClInclude Include="kxf\EventSystem\CommonEventLoop.h" />
     <ClInclude Include="kxf\EventSystem\BasicEvent.h" />
     <ClInclude Include="kxf\EventSystem\Event.h" />

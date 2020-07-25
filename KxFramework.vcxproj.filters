@@ -209,9 +209,6 @@
     <Filter Include="kxf\EventSystem\Private">
       <UniqueIdentifier>{e7c63a0b-034c-4708-8a62-fc4a638ddd39}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\EventSystem\CRTP">
-      <UniqueIdentifier>{d019425f-df57-4975-820f-f341593aa5c1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="kxf\EventSystem\&lt;Events&gt;">
       <UniqueIdentifier>{2dfd2894-0e32-4b6c-b500-91d335aaf7b3}</UniqueIdentifier>
     </Filter>
@@ -1340,18 +1337,6 @@
     <ClInclude Include="kxf\Threading\RecursiveRWLock.h">
       <Filter>kxf\Threading</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\EventSystem\CRTP\CallAfter.h">
-      <Filter>kxf\EventSystem\CRTP</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\EventSystem\CRTP\ProcessEvent.h">
-      <Filter>kxf\EventSystem\CRTP</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\EventSystem\CRTP\Bind.h">
-      <Filter>kxf\EventSystem\CRTP</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\EventSystem\CRTP\QueueEvent.h">
-      <Filter>kxf\EventSystem\CRTP</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\EventSystem\EvtHandlerDelegate.h">
       <Filter>kxf\EventSystem</Filter>
     </ClInclude>
@@ -1424,9 +1409,6 @@
     <ClInclude Include="kxf\EventSystem\BasicEvent.h">
       <Filter>kxf\EventSystem\&lt;Events&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\EventSystem\Event.h">
-      <Filter>kxf\EventSystem\&lt;Events&gt;</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\wxWidgets\EventWrapper.h">
       <Filter>kxf\wxWidgets</Filter>
     </ClInclude>
@@ -1449,6 +1431,9 @@
       <Filter>kxf\EventSystem</Filter>
     </ClInclude>
     <ClInclude Include="kxf\EventSystem\EventBroadcastProcessor.h">
+      <Filter>kxf\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\Event.h">
       <Filter>kxf\EventSystem</Filter>
     </ClInclude>
   </ItemGroup>
