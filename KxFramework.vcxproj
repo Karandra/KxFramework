@@ -436,7 +436,7 @@
     <ClInclude Include="kxf\Drawing\UxTheme.h" />
     <ClInclude Include="kxf\Drawing\WithImageList.h" />
     <ClInclude Include="kxf\EventSystem.hpp" />
-    <ClInclude Include="kxf\EventSystem\BroadcastProcessor.h" />
+    <ClInclude Include="kxf\EventSystem\EventBroadcastProcessor.h" />
     <ClInclude Include="kxf\EventSystem\IEventExecutor.h" />
     <ClInclude Include="kxf\EventSystem\Common.h" />
     <ClInclude Include="kxf\EventSystem\EventBuilder.h" />
@@ -798,7 +798,7 @@
     <ClCompile Include="kxf\UI\Validator.cpp" />
     <ClCompile Include="kxf\Utility\String.cpp" />
     <ClCompile Include="kxf\Utility\System.cpp" />
-    <ClCompile Include="kxf\EventSystem\BroadcastProcessor.cpp" />
+    <ClCompile Include="kxf\EventSystem\EventBroadcastProcessor.cpp" />
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp" />
     <ClCompile Include="kxf\EventSystem\EventHandlerStack.cpp" />
     <ClCompile Include="kxf\FileSystem\Common.cpp" />

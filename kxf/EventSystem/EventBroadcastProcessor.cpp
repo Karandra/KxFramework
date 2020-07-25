@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "BroadcastProcessor.h"
+#include "EventBroadcastProcessor.h"
 
 namespace kxf::EventSystem
 {
