@@ -152,6 +152,7 @@ namespace kxf
 	{
 		size_t initialSize = 0;
 		size_t nullCount = 0;
+		LocallyUniqueID eventSlot;
 
 		if (ReadLockGuard lock(m_EventTableLock); !m_EventTable.empty())
 		{
@@ -175,8 +176,16 @@ namespace kxf
 					{
 						evtHandler = this;
 					}
+
+					// Call the handler
 					if (ExecuteDirectEvent(event, eventItem, *evtHandler))
 					{
+						// If this is a one-shot event store it's bind slot to unbound later
+						if (eventItem.GetFlags().Contains(EventFlag::OneShot))
+						{
+							eventSlot = eventItem.GetBindSlot();
+						}
+
 						// It's important to skip clearing of the unbound event entries
 						// below because this object itself could have been deleted by
 						// the event handler making m_EventTable a dangling pointer
@@ -188,26 +197,36 @@ namespace kxf
 						// doesn't the worst possible outcome is slightly increased
 						// memory consumption while not skipping clearing can result in
 						// hard to reproduce crashes (because it requires the disconnection
-						// and deletion happen at the same time which is not always the
-						// case).
+						// and deletion happen at the same time which is not always the case).
 						return true;
 					}
 				}
 			}
 		}
 
-		if (nullCount != 0)
+		if (nullCount != 0 || eventSlot)
 		{
 			WriteLockGuard lock(m_EventTableLock);
-			Utility::RemoveAllIf(m_EventTable, [](const EventItem& item)
+		
+			// Unbind event if needed
+			if (DoUnbind(eventSlot))
 			{
-				return item.IsNull();
-			});
+				nullCount++;
+			}
 
-			// Shrink vector only if we have deleted enough items to justify reallocation
-			if (initialSize / 2 >= nullCount)
+			// Purge the event table
+			if (nullCount != 0)
 			{
-				m_EventTable.shrink_to_fit();
+				Utility::RemoveAllIf(m_EventTable, [](const EventItem& item)
+				{
+					return item.IsNull();
+				});
+
+				// Shrink vector only if we have deleted enough items to justify reallocation
+				if (initialSize / 2 >= nullCount)
+				{
+					m_EventTable.shrink_to_fit();
+				}
 			}
 		}
 		return false;
@@ -215,7 +234,7 @@ namespace kxf
 	bool EvtHandler::ExecuteDirectEvent(IEvent& event, EventItem& eventItem, IEvtHandler& evtHandler)
 	{
 		// Reset skip instruction
-		event.Skip(false);
+		event.Skip(eventItem.GetFlags().Contains(EventFlag::AlwaysSkip));
 
 		// Call the handler
 		ExecuteEventHandler(event, *eventItem.GetExecutor(), evtHandler);
@@ -227,12 +246,15 @@ namespace kxf
 	{
 		executor.Execute(evtHandler, event);
 
-		// If event wasn't skipped call callback for this event and restore any possible changes in skip state
+		// TODO: Add callbacks for events or remove this
+		// If event wasn't skipped invoke the callback for this event and restore any possible changes in skip state
+		/*
 		if (const bool isSkipped = event.IsSkipped(); !isSkipped)
 		{
-			//event.ExecuteCallback(evtHandler);
-			//event.Skip(isSkipped);
+			event.ExecuteCallback(evtHandler);
+			event.Skip(isSkipped);
 		}
+		*/
 	}
 	void EvtHandler::ConsumeException(IEvent& event)
 	{
@@ -453,8 +475,14 @@ namespace kxf
 
 	LocallyUniqueID EvtHandler::DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<EventFlag> flags)
 	{
-		if (executor && eventID && eventID != IEvent::EvtAny && eventID != wxEVT_ASYNC_METHOD_CALL)
+		if (executor && eventID && eventID != IEvent::EvtAny && eventID != IAsyncEvent::EvtAsync)
 		{
+			// This combination makes no sense so discard it
+			if (flags.Contains(EventFlag::OneShot|EventFlag::AlwaysSkip))
+			{
+				return {};
+			}
+
 			EventItem eventItem(eventID, std::move(executor));
 			eventItem.SetFlags(flags);
 
@@ -466,7 +494,7 @@ namespace kxf
 				const size_t nextBindSlot = m_EventBindSlot + 1;
 				if (nextBindSlot == std::numeric_limits<size_t>::max())
 				{
-					throw std::runtime_error("exceeded maximum number of bind slots [std::numeric_limits<size_t>::max()]");
+					throw std::runtime_error("[EvtHandler] exceeded maximum number of bind slots (std::numeric_limits<size_t>::max())");
 				}
 
 				m_EventBindSlot = nextBindSlot;

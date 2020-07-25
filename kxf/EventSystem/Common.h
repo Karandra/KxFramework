@@ -29,7 +29,9 @@ namespace kxf
 		Queued = 2,
 
 		Unique = 1 << 16,
-		Blocking = 1 << 17
+		Blocking = 1 << 17,
+		AlwaysSkip = 1 << 18,
+		OneShot = 1 << 19
 	};
 	KxDeclareFlagSet(EventFlag);
 }
