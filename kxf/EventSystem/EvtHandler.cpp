@@ -234,10 +234,16 @@ namespace kxf
 	bool EvtHandler::ExecuteDirectEvent(IEvent& event, EventItem& eventItem, IEvtHandler& evtHandler)
 	{
 		// Reset skip instruction
-		event.Skip(eventItem.GetFlags().Contains(EventFlag::AlwaysSkip));
+		event.Skip(false);
 
 		// Call the handler
 		ExecuteEventHandler(event, *eventItem.GetExecutor(), evtHandler);
+
+		// Skip the event if we're required to always skip it
+		if (eventItem.GetFlags().Contains(EventFlag::AlwaysSkip))
+		{
+			event.Skip();
+		}
 
 		// Return true if we processed this event and event handler itself didn't skipped it
 		return !event.IsSkipped();
