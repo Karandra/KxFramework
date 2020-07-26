@@ -55,15 +55,38 @@ namespace kxf
 
 				if constexpr(Traits::IsMemberFunction)
 				{
-					DoQueueEvent(std::make_unique<MethodAsyncEvent<TCallable, Args...>>(*this, callable, std::forward<Args>(arg)...), IAsyncEvent::EvtAsync, std::move(id));
+					DoQueueEvent(std::make_unique<MethodIndirectInvocation<TCallable, Args...>>(*this, callable, std::forward<Args>(arg)...), IIndirectInvocationEvent::EvtIndirectInvocation, std::move(id));
 				}
 				else if constexpr(Traits::IsInvokable)
 				{
-					DoQueueEvent(std::make_unique<CallableAsyncEvent<TCallable, Args...>>(*this, std::forward<TCallable>(callable), std::forward<Args>(arg)...), IAsyncEvent::EvtAsync, std::move(id));
+					DoQueueEvent(std::make_unique<CallableIndirectInvocation<TCallable, Args...>>(*this, std::forward<TCallable>(callable), std::forward<Args>(arg)...), IIndirectInvocationEvent::EvtIndirectInvocation, std::move(id));
 				}
 				else
 				{
-					static_assert(false, "Unsupported callable type or the type is not invokable");
+					static_assert(false, "Unsupported callable type or the type is not invocable");
+				}
+			}
+
+			template<class TCallable, class... Args>
+			bool DoCallHere(TCallable&& callable, Args&&... arg)
+			{
+				using namespace EventSystem;
+				using Traits = typename Utility::CallableTraits<TCallable, Args...>;
+
+				if constexpr(Traits::IsMemberFunction)
+				{
+					MethodIndirectInvocation<TCallable, Args...> event(*this, callable, std::forward<Args>(arg)...);
+					return DoProcessEvent(event, IIndirectInvocationEvent::EvtIndirectInvocation);
+				}
+				else if constexpr(Traits::IsInvokable)
+				{
+					CallableIndirectInvocation<TCallable, Args...> event(*this, std::forward<TCallable>(callable), std::forward<Args>(arg)...);
+					return DoProcessEvent(event, IIndirectInvocationEvent::EvtIndirectInvocation);
+				}
+				else
+				{
+					static_assert(false, "Unsupported callable type or the type is not invocable");
+					return false;
 				}
 			}
 
@@ -320,6 +343,13 @@ namespace kxf
 			void UniqueCallAfter(UniversallyUniqueID id, TCallable&& callable, Args&&... arg)
 			{
 				DoCallAfter(std::move(id), std::forward<TCallable>(callable), std::forward<Args>(arg)...);
+			}
+
+			// Executes given callable as an anonymous event
+			template<class TCallable, class... Args>
+			bool CallHere(TCallable&& callable, Args&&... arg)
+			{
+				return DoCallHere(std::forward<TCallable>(callable), std::forward<Args>(arg)...);
 			}
 	};
 }

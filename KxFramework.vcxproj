@@ -209,7 +209,7 @@
     <ClInclude Include="kxf\Crypto\UserCredentials.h" />
     <ClInclude Include="kxf\Drawing\Geometry.h" />
     <ClInclude Include="kxf\EventSystem\ActivateEvent.h" />
-    <ClInclude Include="kxf\EventSystem\AsyncEvent.h" />
+    <ClInclude Include="kxf\EventSystem\IndirectInvocationEvent.h" />
     <ClInclude Include="kxf\EventSystem\CommonEventLoop.h" />
     <ClInclude Include="kxf\EventSystem\BasicEvent.h" />
     <ClInclude Include="kxf\EventSystem\Event.h" />

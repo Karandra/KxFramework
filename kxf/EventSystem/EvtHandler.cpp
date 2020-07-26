@@ -116,23 +116,23 @@ namespace kxf
 		// Try the hooks which should be called before our own handlers and this
 		// handler itself first. Notice that we should not call 'DoProcessEvent' on
 		// this one as we're already called from it, which explains why we do it
-		// here and not in TryChain()
+		// here and not in 'TryChain'.
 		return TryBeforeAndHere(event) || TryChain(event);
 	}
 	bool EvtHandler::TryHereOnly(IEvent& event)
 	{
-		// If the event handler is disabled it doesn't process any events
+		// If the event handler is disabled it doesn't process any events at all
 		if (IsEventProcessingEnabled())
 		{
-			// There is an implicit entry for async method calls processing in every event handler
-			IAsyncEvent* asyncEvent = nullptr;
-			if (event.GetEventSource() == this && event.QueryInterface(asyncEvent))
+			// There is an implicit entry for indirect method invocation in every event handler
+			IIndirectInvocationEvent* indirectInvoke = nullptr;
+			if (event.GetEventSource() == this && event.QueryInterface(indirectInvoke))
 			{
-				asyncEvent->Execute();
+				indirectInvoke->Execute();
 				return true;
 			}
 
-			// Handle dynamic event table
+			// Search for the bound event handler
 			if (SearchEventTable(event))
 			{
 				return true;
@@ -407,7 +407,7 @@ namespace kxf
 		// Try to process the event in this handler itself
 		if (TryLocally(event))
 		{
-			// It is possible that 'TryChain' called from 'ProcessEventLocally'
+			// It is possible that 'TryChain' called from 'TryLocally'
 			// returned true but the event was not really processed: this happens
 			// if a custom handler ignores the request to process the event in this
 			// handler only and in this case we should skip the post processing
@@ -475,7 +475,7 @@ namespace kxf
 
 	LocallyUniqueID EvtHandler::DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<EventFlag> flags)
 	{
-		if (executor && eventID && eventID != IEvent::EvtAny && eventID != IAsyncEvent::EvtAsync)
+		if (executor && eventID && eventID != IEvent::EvtAny && eventID != IIndirectInvocationEvent::EvtIndirectInvocation)
 		{
 			// This combination makes no sense so discard it
 			if (flags.Contains(EventFlag::OneShot|EventFlag::AlwaysSkip))

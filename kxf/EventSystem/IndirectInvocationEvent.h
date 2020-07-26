@@ -4,13 +4,13 @@
 
 namespace kxf::EventSystem
 {
-	class AsyncEvent: public RTTI::ImplementInterface<AsyncEvent, BasicEvent, IAsyncEvent>
+	class IndirectInvocationEvent: public RTTI::ImplementInterface<IndirectInvocationEvent, BasicEvent, IIndirectInvocationEvent>
 	{
 		private:
 			IEvtHandler* m_EvtHandler = nullptr;
 
 		public:
-			AsyncEvent(IEvtHandler& evtHandler)
+			IndirectInvocationEvent(IEvtHandler& evtHandler)
 				:m_EvtHandler(&evtHandler)
 			{
 				BasicEvent::SetEventSource(&evtHandler);
@@ -20,7 +20,7 @@ namespace kxf::EventSystem
 			// IEvent
 			EventID GetEventID() const override
 			{
-				return EvtAsync;
+				return EvtIndirectInvocation;
 			}
 			FlagSet<EventCategory> GetEventCategory() const override
 			{
@@ -57,15 +57,15 @@ namespace kxf::EventSystem
 {
 	// Wrapper for free/static/lambda function or a class that implements 'operator()'
 	template<class TCallable, class... Args>
-	class CallableAsyncEvent: public AsyncEvent
+	class CallableIndirectInvocation: public IndirectInvocationEvent
 	{
 		protected:
 			TCallable m_Callable;
 			std::tuple<Args...> m_Parameters;
 
 		public:
-			CallableAsyncEvent(IEvtHandler& evtHandler, TCallable&& callable, Args&&... arg)
-				:AsyncEvent(evtHandler), m_Callable(std::forward<TCallable>(callable)), m_Parameters(std::forward<Args>(arg)...)
+			CallableIndirectInvocation(IEvtHandler& evtHandler, TCallable&& callable, Args&&... arg)
+				:IndirectInvocationEvent(evtHandler), m_Callable(std::forward<TCallable>(callable)), m_Parameters(std::forward<Args>(arg)...)
 			{
 			}
 			
@@ -73,10 +73,10 @@ namespace kxf::EventSystem
 			// IEvent
 			std::unique_ptr<IEvent> Move() noexcept override
 			{
-				return std::make_unique<CallableAsyncEvent>(std::move(*this));
+				return std::make_unique<CallableIndirectInvocation>(std::move(*this));
 			}
 
-			// IAsyncEvent
+			// IIndirectInvocationEvent
 			void Execute() override
 			{
 				std::apply(m_Callable, std::move(m_Parameters));
@@ -85,7 +85,7 @@ namespace kxf::EventSystem
 
 	// Wrapper for class member function
 	template<class TMethod, class... Args>
-	class MethodAsyncEvent: public AsyncEvent
+	class MethodIndirectInvocation: public IndirectInvocationEvent
 	{
 		protected:
 			using TClass = typename Utility::MethodTraits<TMethod>::TInstance;
@@ -96,8 +96,8 @@ namespace kxf::EventSystem
 			TClass* m_EvtHandler = nullptr;
 
 		public:
-			MethodAsyncEvent(IEvtHandler& evtHandler, TMethod method, Args&&... arg)
-				:AsyncEvent(evtHandler), m_EvtHandler(static_cast<TClass*>(&evtHandler)), m_Method(method), m_Parameters(std::forward<Args>(arg)...)
+			MethodIndirectInvocation(IEvtHandler& evtHandler, TMethod method, Args&&... arg)
+				:IndirectInvocationEvent(evtHandler), m_EvtHandler(static_cast<TClass*>(&evtHandler)), m_Method(method), m_Parameters(std::forward<Args>(arg)...)
 			{
 				static_assert(std::is_base_of_v<IEvtHandler, TClass>, "IEvtHandler descendant required");
 			}
@@ -106,10 +106,10 @@ namespace kxf::EventSystem
 			// IEvent
 			std::unique_ptr<IEvent> Move() noexcept override
 			{
-				return std::make_unique<MethodAsyncEvent>(std::move(*this));
+				return std::make_unique<MethodIndirectInvocation>(std::move(*this));
 			}
 
-			// IAsyncEvent
+			// IIndirectInvocationEvent
 			void Execute() override
 			{
 				std::apply([this](auto&&... arg)

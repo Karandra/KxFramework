@@ -1364,9 +1364,6 @@
     <ClInclude Include="kxf\EventSystem\ActivateEvent.h">
       <Filter>kxf\EventSystem\&lt;Events&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\EventSystem\AsyncEvent.h">
-      <Filter>kxf\EventSystem\&lt;Events&gt;</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\EventSystem\IdleEvent.h">
       <Filter>kxf\EventSystem\&lt;Events&gt;</Filter>
     </ClInclude>
@@ -1432,6 +1429,9 @@
     </ClInclude>
     <ClInclude Include="kxf\EventSystem\Event.h">
       <Filter>kxf\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\EventSystem\IndirectInvocationEvent.h">
+      <Filter>kxf\EventSystem\&lt;Events&gt;</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
