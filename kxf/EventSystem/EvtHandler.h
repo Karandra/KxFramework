@@ -36,7 +36,7 @@ namespace kxf
 			void Move(EvtHandler&& other, bool destroy);
 			void Destroy();
 
-			void PrepareEvent(IEvent& event, const EventID& eventID, UniversallyUniqueID uuid = {});
+			void PrepareEvent(IEvent& event, const EventID& eventID, const UniversallyUniqueID& uuid = {});
 			bool FreeBindSlot(const LocallyUniqueID& bindSlot);
 			void FreeAllBindSlots();
 

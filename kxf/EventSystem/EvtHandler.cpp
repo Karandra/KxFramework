@@ -47,7 +47,7 @@ namespace kxf
 		DiscardPendingEvents();
 	}
 
-	void EvtHandler::PrepareEvent(IEvent& event, const EventID& eventID, UniversallyUniqueID uuid)
+	void EvtHandler::PrepareEvent(IEvent& event, const EventID& eventID, const UniversallyUniqueID& uuid)
 	{
 		EventSystem::EventAccessor(event).OnStartProcess(eventID, uuid);
 	}
@@ -339,7 +339,7 @@ namespace kxf
 		auto app = ICoreApplication::GetInstance();
 		if (app && event)
 		{
-			PrepareEvent(*event, eventID, std::move(uuid));
+			PrepareEvent(*event, eventID, uuid);
 
 			if (WriteLockGuard lock(m_PendingEventsLock); true)
 			{
@@ -370,7 +370,7 @@ namespace kxf
 				app->AddPendingEventHandler(*this);
 
 				// Only release 'm_PendingEventsLock' now because otherwise there is a race condition: we could process
-				// the event just added to m_pendingEvents in our 'ProcessPendingEvents' before we had time to append
+				// the event just added to 'm_PendingEvents' in our 'ProcessPendingEvents' before we had time to append
 				// this pointer to application's list; thus breaking the invariant that a handler should be in the list
 				// if and only if it has any pending events to process.
 			}
