@@ -1,5 +1,6 @@
 #pragma once
 #include "Event.h"
+#include "kxf/Utility/WithOptionalOwnership.h"
 
 namespace kxf
 {
@@ -53,19 +54,16 @@ namespace kxf::EventSystem
 	{
 		protected:
 			IEvtHandler* m_EvtHandler = nullptr;
-			IEvent* m_Event = nullptr;
+			Utility::WithOptionalOwnership<IEvent> m_Event;
 			EventID m_EventID;
 
-			bool m_IsAsync = false;
 			bool m_IsSent = false;
 			bool m_IsSkipped = false;
 			bool m_IsAllowed = true;
 			bool m_IsProcessed = false;
 
 		private:
-			void Destroy() noexcept;
 			void Move(EventBuilderBase&& other) noexcept;
-
 			void SendEvent(bool locally, bool safely, UniversallyUniqueID uuid);
 
 		protected:
@@ -91,11 +89,11 @@ namespace kxf::EventSystem
 
 		protected:
 			EventBuilderBase(IEvtHandler& evtHandler, std::unique_ptr<IEvent> event, const EventID& eventID = {}) noexcept
-				:m_EvtHandler(&evtHandler), m_Event(event.release()), m_EventID(eventID), m_IsAsync(true)
+				:m_EvtHandler(&evtHandler), m_Event(std::move(event)), m_EventID(eventID)
 			{
 			}
 			EventBuilderBase(IEvtHandler& evtHandler, IEvent& event, const EventID& eventID = {}) noexcept
-				:m_EvtHandler(&evtHandler), m_Event(&event), m_EventID(eventID), m_IsAsync(false)
+				:m_EvtHandler(&evtHandler), m_Event(event), m_EventID(eventID)
 			{
 			}
 			EventBuilderBase(EventBuilderBase&& other) noexcept
@@ -103,15 +101,12 @@ namespace kxf::EventSystem
 				Move(std::move(other));
 			}
 			EventBuilderBase(const EventBuilderBase&) = delete;
-			virtual ~EventBuilderBase()
-			{
-				Destroy();
-			}
+			virtual ~EventBuilderBase() = default;
 
 		public:
 			bool IsAsync() const noexcept
 			{
-				return m_IsAsync;
+				return m_Event.IsOwned();
 			}
 			bool IsSkipped() const noexcept
 			{
@@ -218,7 +213,7 @@ namespace kxf::EventSystem
 
 			TEvent* GetEvent() noexcept
 			{
-				return m_Event;
+				return m_Event.Get();
 			}
 
 		public:

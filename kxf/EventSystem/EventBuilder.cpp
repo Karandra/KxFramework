@@ -5,40 +5,27 @@
 
 namespace kxf::EventSystem
 {
-	void EventBuilderBase::Destroy() noexcept
-	{
-		// Async events are allocated on the heap so we need to delete the pointer if it's still here for some reason.
-		if (m_IsAsync)
-		{
-			delete m_Event;
-		}
-	}
 	void EventBuilderBase::Move(EventBuilderBase&& other) noexcept
 	{
-		Destroy();
-
 		EventBuilderBase null;
 		Utility::ExchangeAndReset(m_EvtHandler, other.m_EvtHandler, null.m_EvtHandler);
-		Utility::ExchangeAndReset(m_Event, other.m_Event, null.m_Event);
+		m_Event = std::move(other.m_Event);
 		m_EventID = std::move(other.m_EventID);
-		Utility::ExchangeAndReset(m_IsAsync, other.m_IsAsync, null.m_IsAsync);
 		Utility::ExchangeAndReset(m_IsSent, other.m_IsSent, null.m_IsSent);
 		Utility::ExchangeAndReset(m_IsSkipped, other.m_IsSkipped, null.m_IsSkipped);
 		Utility::ExchangeAndReset(m_IsAllowed, other.m_IsAllowed, null.m_IsAllowed);
 	}
-
 	void EventBuilderBase::SendEvent(bool locally, bool safely, UniversallyUniqueID uuid)
 	{
 		if (!m_IsSent)
 		{
-			if (m_IsAsync)
+			if (m_Event.IsOwned())
 			{
 				m_IsSent = true;
 				m_IsSkipped = false;
 				m_IsAllowed = true;
 
-				std::unique_ptr<IEvent> event(Utility::ExchangeResetAndReturn(m_Event, nullptr));
-				m_EvtHandler->QueueEvent(std::move(event), m_EventID, std::move(uuid));
+				m_EvtHandler->QueueEvent(std::move(m_Event).GetUnique(), m_EventID, std::move(uuid));
 			}
 			else
 			{
