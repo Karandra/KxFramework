@@ -4,23 +4,18 @@
 
 namespace kxf::EventSystem
 {
-	class ParametrizedInvocationEvent: public RTTI::ImplementInterface<ParametrizedInvocationEvent, BasicEvent, IParametrizedInvocationEvent>
+	template<class TMethod_>
+	class ParametrizedInvocationEvent: public RTTI::ImplementInterface<ParametrizedInvocationEvent<TMethod_>, BasicEvent, IParametrizedInvocationEvent>
 	{
-	};
-}
+		protected:
+			using TArgsTuple = typename Utility::MethodTraits<TMethod_>::TArgsTuple;
 
-namespace kxf::EventSystem
-{
-	// Wrapper for free/static/lambda function or a class that implements 'operator()'
-	template<class TArgsTuple>
-	class CallableParametrizedInvocation: public ParametrizedInvocationEvent
-	{
 		protected:
 			TArgsTuple m_Parameters;
 
 		public:
 			template<class... Args>
-			CallableParametrizedInvocation(Args&&... arg)
+			ParametrizedInvocationEvent(Args&&... arg)
 				:m_Parameters(std::forward<Args>(arg)...)
 			{
 			}
@@ -29,7 +24,7 @@ namespace kxf::EventSystem
 			// IEvent
 			std::unique_ptr<IEvent> Move() noexcept override
 			{
-				return std::make_unique<CallableParametrizedInvocation>(std::move(*this));
+				return std::make_unique<ParametrizedInvocationEvent>(std::move(*this));
 			}
 
 			// IParametrizedInvocationEvent

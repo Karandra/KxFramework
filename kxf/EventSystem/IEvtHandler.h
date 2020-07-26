@@ -202,7 +202,7 @@ namespace kxf
 			template<class TMethod, class... Args>
 			std::enable_if_t<std::is_invocable_v<TMethod, typename Utility::MethodTraits<TMethod>::TInstance, Args...>, bool> ProcessParametrizedEvent(TMethod method, Args&&... arg)
 			{
-				EventSystem::CallableParametrizedInvocation<typename Utility::MethodTraits<TMethod>::TArgsTuple> event(std::forward<Args>(arg)...);
+				EventSystem::ParametrizedInvocationEvent<TMethod> event(std::forward<Args>(arg)...);
 				return DoProcessEvent(event, EventID(method));
 			}
 
