@@ -103,6 +103,23 @@ namespace kxf
 		public:
 			virtual void Execute() = 0;
 	};
+
+	class IParametrizedInvocationEvent: public RTTI::Interface<IParametrizedInvocationEvent>
+	{
+		KxDeclareIID(IParametrizedInvocationEvent, {0xb3ad1ef2, 0x96ee, 0x4ebf, {0x93, 0xac, 0x6, 0xf8, 0x5b, 0x2e, 0xe5, 0xc5}});
+
+		public:
+			static inline const EventTag<IEvent> EvtParametrizedInvocation = -3;
+
+		public:
+			virtual ~IParametrizedInvocationEvent() = default;
+
+		public:
+			virtual void GetParameters(void* parameters) = 0;
+	};
+
+	template<class TFunc, class = std::enable_if_t<std::is_member_function_pointer_v<TFunc>>>
+	EventTag(TFunc func) -> EventTag<IParametrizedInvocationEvent>;
 }
 
 // Event declaration macros

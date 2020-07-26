@@ -192,6 +192,21 @@ namespace kxf
 			}
 
 		public:
+			// Bind a generic callable
+			template<class TMethod, class TCallable>
+			LocallyUniqueID BindParametrized(TMethod method, TCallable&& callable, FlagSet<EventFlag> flags = EventFlag::Direct)
+			{
+				return DoBind(EventID(method), std::make_unique<EventSystem::ParametrizedCallableEventExecutor<TMethod, TCallable>>(std::forward<TCallable>(callable)), flags);
+			}
+
+			template<class TMethod, class... Args>
+			std::enable_if_t<std::is_invocable_v<TMethod, typename Utility::MethodTraits<TMethod>::TInstance, Args...>, bool> ProcessParametrizedEvent(TMethod method, Args&&... arg)
+			{
+				EventSystem::CallableParametrizedInvocation<typename Utility::MethodTraits<TMethod>::TArgsTuple> event(std::forward<Args>(arg)...);
+				return DoProcessEvent(event, EventID(method));
+			}
+
+		public:
 			// [WX] Bind free or static function
 			template<class TEvent, class TEventArg, class = std::enable_if_t<std::is_base_of_v<wxEvent, TEvent>>>
 			LocallyUniqueID BindWx(wxEventTypeTag<TEvent> eventTag, void(*func)(TEventArg&), FlagSet<EventFlag> flags = EventFlag::Direct)

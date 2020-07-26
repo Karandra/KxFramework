@@ -1,5 +1,7 @@
 #pragma once
 #include "IEventExecutor.h"
+#include "IEvent.h"
+#include "kxf/Utility/TypeTraits.h"
 
 namespace kxf::EventSystem
 {
@@ -126,6 +128,53 @@ namespace kxf::EventSystem
 				{
 					return m_Handler;
 				}
+				return nullptr;
+			}
+	};
+}
+
+namespace kxf::EventSystem
+{
+	template<class TMethod_, class TCallable_>
+	class ParametrizedCallableEventExecutor: public IEventExecutor
+	{
+		protected:
+			using TEvent = IParametrizedInvocationEvent;
+			using TCallable = TCallable_;
+			using TArgsTuple = typename Utility::MethodTraits<TMethod_>::TArgsTuple;
+
+		protected:
+			TCallable m_Callable;
+			const void* m_OriginalAddress = nullptr;
+
+		public:
+			ParametrizedCallableEventExecutor(TCallable&& func)
+				:m_Callable(std::forward<TCallable>(func)), m_OriginalAddress(std::addressof(func))
+			{
+			}
+
+		public:
+			void Execute(IEvtHandler& evtHandler, IEvent& event) override
+			{
+				IParametrizedInvocationEvent* parametrized = nullptr;
+				if (event.QueryInterface(parametrized))
+				{
+					TArgsTuple parameters;
+					parametrized->GetParameters(&parameters);
+
+					std::apply(m_Callable, std::move(parameters));
+				}
+			}
+			bool IsSameAs(const IEventExecutor& other) const noexcept override
+			{
+				if (typeid(*this) == typeid(other))
+				{
+					return m_OriginalAddress == static_cast<const ParametrizedCallableEventExecutor&>(other).m_OriginalAddress;
+				}
+				return false;
+			}
+			IEvtHandler* GetTargetHandler() noexcept override
+			{
 				return nullptr;
 			}
 	};

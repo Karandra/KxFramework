@@ -34,21 +34,21 @@ namespace kxf
 	{
 		if (auto value = std::get_if<int64_t>(&m_ID))
 		{
-			if (*value == 0)
+			if (*value != 0)
 			{
 				return std::hash<int64_t>()(*value);
 			}
 		}
 		else if (auto value = std::get_if<UniversallyUniqueID>(&m_ID))
 		{
-			if (value->IsNull())
+			if (!value->IsNull())
 			{
 				return std::hash<UniversallyUniqueID>()(*value);
 			}
 		}
 		else if (auto value = std::get_if<String>(&m_ID))
 		{
-			if (value->IsEmpty())
+			if (!value->IsEmpty())
 			{
 				return std::hash<String>()(*value);
 			}

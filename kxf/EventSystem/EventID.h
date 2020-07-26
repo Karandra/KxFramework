@@ -3,6 +3,25 @@
 #include "kxf/General/String.h"
 #include "kxf/General/UniversallyUniqueID.h"
 #include <variant>
+#include <type_traits>
+
+namespace kxf
+{
+	class IEvent;
+}
+
+namespace kxf::EventSystem::Private
+{
+	template<class TFunc, class = std::enable_if_t<std::is_member_function_pointer_v<TFunc>>>
+	UniversallyUniqueID StoreMemberFunction(TFunc func) noexcept
+	{
+		static_assert(sizeof(func) <= sizeof(NativeUUID));
+
+		NativeUUID uuid;
+		std::memcpy(&uuid, &func, sizeof(func));
+		return uuid;
+	}
+}
 
 namespace kxf
 {
@@ -13,19 +32,51 @@ namespace kxf
 
 		public:
 			EventID() noexcept = default;
+
+			// Null pointer
+			EventID(std::nullptr_t) noexcept
+				:m_ID(static_cast<int64_t>(0))
+			{
+			}
+
+			// Member function pointer
+			template<class TFunc, class = std::enable_if_t<std::is_member_function_pointer_v<TFunc>>>
+			EventID(TFunc func) noexcept
+				:m_ID(EventSystem::Private::StoreMemberFunction(func))
+			{
+			}
+			
+			// Simple integer
 			EventID(int64_t id) noexcept
 				:m_ID(id)
 			{
 			}
+			EventID(int id) noexcept
+				:m_ID(static_cast<int64_t>(id))
+			{
+			}
+			
+			// UUID
 			EventID(UniversallyUniqueID id) noexcept
 				:m_ID(std::move(id))
 			{
 			}
+			
+			// String
 			EventID(String id) noexcept
 				:m_ID(std::move(id))
 			{
 			}
+			EventID(const char* id) noexcept
+				:m_ID(String(id))
+			{
+			}
+			EventID(const wchar_t* id) noexcept
+				:m_ID(String(id))
+			{
+			}
 			
+			// Wx event tag (integer)
 			template<class T>
 			EventID(const wxEventTypeTag<T>& eventTag) noexcept
 				:m_ID(static_cast<wxEventType>(eventTag))
