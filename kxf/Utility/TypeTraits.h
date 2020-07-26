@@ -11,6 +11,7 @@ namespace kxf::Utility
 	{
 		using TReturn = Return;
 		using TInstance = Object;
+		using TArgsTuple = typename std::tuple<Args...>;
 
 		inline static constexpr size_t ArgumentCount = sizeof...(Args);
 	};
