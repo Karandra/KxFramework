@@ -113,6 +113,9 @@ namespace kxf
 
 		public:
 			virtual void GetParameters(void* parameters) = 0;
+
+			virtual void GetResult(void* value) = 0;
+			virtual void PutResult(void* value) = 0;
 	};
 
 	template<class TFunc, class = std::enable_if_t<std::is_member_function_pointer_v<TFunc>>>

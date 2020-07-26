@@ -200,10 +200,21 @@ namespace kxf
 			}
 
 			template<class TMethod, class... Args>
-			std::enable_if_t<std::is_invocable_v<TMethod, typename Utility::MethodTraits<TMethod>::TInstance, Args...>, bool> ProcessParametrizedEvent(TMethod method, Args&&... arg)
+			std::enable_if_t<std::is_invocable_v<TMethod, typename Utility::MethodTraits<TMethod>::TInstance, Args...>, typename Utility::MethodTraits<TMethod>::TReturn>
+				ProcessParametrizedEvent(TMethod method, Args&&... arg)
 			{
 				EventSystem::ParametrizedInvocationEvent<TMethod> event(std::forward<Args>(arg)...);
-				return DoProcessEvent(event, EventID(method));
+				if (DoProcessEvent(event, EventID(method)))
+				{
+					using TResult = typename Utility::MethodTraits<TMethod>::TReturn;
+					if constexpr(!std::is_void_v<TResult>)
+					{
+						TResult result;
+						event.GetResult(&result);
+						return result;
+					}
+				}
+				return {};
 			}
 
 		public:

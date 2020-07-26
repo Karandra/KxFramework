@@ -9,9 +9,11 @@ namespace kxf::EventSystem
 	{
 		protected:
 			using TArgsTuple = typename Utility::MethodTraits<TMethod_>::TArgsTuple;
+			using TResult = typename Utility::MethodTraits<TMethod_>::TReturn;
 
 		protected:
 			TArgsTuple m_Parameters;
+			TResult m_Result;
 
 		public:
 			template<class... Args>
@@ -31,6 +33,21 @@ namespace kxf::EventSystem
 			void GetParameters(void* parameters) override
 			{
 				*static_cast<TArgsTuple*>(parameters) = std::move(m_Parameters);
+			}
+
+			void GetResult(void* value) override
+			{
+				if constexpr(!std::is_void_v<TResult>)
+				{
+					*static_cast<TResult*>(value) = std::move(m_Result);
+				}
+			}
+			void PutResult(void* value) override
+			{
+				if constexpr(!std::is_void_v<TResult>)
+				{
+					m_Result = std::move(*static_cast<TResult*>(value));
+				}
 			}
 	};
 }

@@ -141,7 +141,9 @@ namespace kxf::EventSystem
 		protected:
 			using TEvent = IParametrizedInvocationEvent;
 			using TCallable = TCallable_;
+
 			using TArgsTuple = typename Utility::MethodTraits<TMethod_>::TArgsTuple;
+			using TResult = typename Utility::MethodTraits<TMethod_>::TReturn;
 
 		protected:
 			TCallable m_Callable;
@@ -162,7 +164,18 @@ namespace kxf::EventSystem
 					TArgsTuple parameters;
 					parametrized->GetParameters(&parameters);
 
-					std::apply(m_Callable, std::move(parameters));
+					if constexpr(!std::is_void_v<TResult>)
+					{
+						TResult result = std::apply(m_Callable, std::move(parameters));
+						if (!event.IsSkipped())
+						{
+							parametrized->PutResult(&result);
+						}
+					}
+					else
+					{
+						std::apply(m_Callable, std::move(parameters));
+					}
 				}
 			}
 			bool IsSameAs(const IEventExecutor& other) const noexcept override
