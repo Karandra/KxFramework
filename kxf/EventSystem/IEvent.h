@@ -109,9 +109,6 @@ namespace kxf
 		KxDeclareIID(IParametrizedInvocationEvent, {0xb3ad1ef2, 0x96ee, 0x4ebf, {0x93, 0xac, 0x6, 0xf8, 0x5b, 0x2e, 0xe5, 0xc5}});
 
 		public:
-			static inline const EventTag<IEvent> EvtParametrizedInvocation = -3;
-
-		public:
 			virtual ~IParametrizedInvocationEvent() = default;
 
 		public:
