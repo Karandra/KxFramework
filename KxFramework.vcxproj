@@ -225,6 +225,7 @@
     <ClInclude Include="kxf\EventSystem\IEventLoop.h" />
     <ClInclude Include="kxf\EventSystem\IEvtHandler.h" />
     <ClInclude Include="kxf\EventSystem\IWithEvtHandler.h" />
+    <ClInclude Include="kxf\EventSystem\SignalExecutor.h" />
     <ClInclude Include="kxf\EventSystem\SignalInvocationEvent.h" />
     <ClInclude Include="kxf\EventSystem\Private\Win32ConsoleEventLoop.h" />
     <ClInclude Include="kxf\EventSystem\Private\Win32CommonEventLoop.h" />

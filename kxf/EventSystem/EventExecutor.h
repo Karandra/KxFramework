@@ -3,42 +3,9 @@
 #include "IEvent.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 #include "kxf/Utility/TypeTraits.h"
-#include "kxf/Utility/Memory.h"
 
 namespace kxf::EventSystem
 {
-	class NullEventExecutor final: public IEventExecutor
-	{
-		public:
-			static NullEventExecutor& Get() noexcept
-			{
-				static NullEventExecutor executor;
-				return executor;
-			}
-
-		private:
-			NullEventExecutor() noexcept = default;
-
-		public:
-			NullEventExecutor(const NullEventExecutor&) = delete;
-
-		public:
-			void Execute(IEvtHandler& evtHandler, IEvent& event) noexcept override
-			{
-			}
-			bool IsSameAs(const IEventExecutor& other) const noexcept override
-			{
-				return this == &Get();
-			}
-			IEvtHandler* GetTargetHandler() noexcept override
-			{
-				return nullptr;
-			}
-
-		public:
-			NullEventExecutor& operator=(const NullEventExecutor&) = delete;
-	};
-
 	// Wrapper for free/static/lambda or a class which implements 'operator()'
 	template<class TEvent_, class TCallable_>
 	class CallableEventExecutor: public IEventExecutor
@@ -130,73 +97,6 @@ namespace kxf::EventSystem
 				{
 					return m_Handler;
 				}
-				return nullptr;
-			}
-	};
-}
-
-namespace kxf::EventSystem
-{
-	template<class TMethod_, class TCallable_>
-	class CallableSignalExecutor: public IEventExecutor
-	{
-		protected:
-			using TEvent = ISignalInvocationEvent;
-			using TCallable = TCallable_;
-
-			using TArgsTuple = typename Utility::MethodTraits<TMethod_>::TArgsTuple;
-			using TResult = typename Utility::MethodTraits<TMethod_>::TReturn;
-
-		protected:
-			TCallable m_Callable;
-			const void* m_OriginalAddress = nullptr;
-
-		public:
-			CallableSignalExecutor(TCallable&& func)
-				:m_Callable(std::forward<TCallable>(func)), m_OriginalAddress(std::addressof(func))
-			{
-			}
-
-		public:
-			void Execute(IEvtHandler& evtHandler, IEvent& event) override
-			{
-				ISignalInvocationEvent* parameterizedInvocation = nullptr;
-				if (event.QueryInterface(parameterizedInvocation))
-				{
-					alignas(TArgsTuple) uint8_t parametersBuffer[sizeof(TArgsTuple)] = {};
-					if (parameterizedInvocation->GetParameters(parametersBuffer))
-					{
-						TArgsTuple& parameters = *std::launder(reinterpret_cast<TArgsTuple*>(parametersBuffer));
-						Utility::CallAtScopeExit atExit = [&]()
-						{
-							Utility::DestroyObjectOnMemoryLocation<TArgsTuple>(parametersBuffer);
-						};
-
-						if constexpr(!std::is_void_v<TResult>)
-						{
-							TResult result = std::apply(m_Callable, std::move(parameters));
-							if (!event.IsSkipped())
-							{
-								parameterizedInvocation->PutResult(&result);
-							}
-						}
-						else
-						{
-							std::apply(m_Callable, std::move(parameters));
-						}
-					}
-				}
-			}
-			bool IsSameAs(const IEventExecutor& other) const noexcept override
-			{
-				if (typeid(*this) == typeid(other))
-				{
-					return m_OriginalAddress == static_cast<const CallableSignalExecutor&>(other).m_OriginalAddress;
-				}
-				return false;
-			}
-			IEvtHandler* GetTargetHandler() noexcept override
-			{
 				return nullptr;
 			}
 	};

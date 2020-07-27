@@ -5,12 +5,12 @@
 
 namespace kxf::EventSystem
 {
-	template<SignalParametersSemantics signalSemantics, class TMethod_>
-	class SignalInvocationEvent: public RTTI::ImplementInterface<SignalInvocationEvent<signalSemantics, TMethod_>, BasicEvent, ISignalInvocationEvent>
+	template<SignalParametersSemantics signalSemantics, class TSignal_>
+	class SignalInvocationEvent: public RTTI::ImplementInterface<SignalInvocationEvent<signalSemantics, TSignal_>, BasicEvent, ISignalInvocationEvent>
 	{
 		protected:
-			using TArgsTuple = typename Utility::MethodTraits<TMethod_>::TArgsTuple;
-			using TResult = typename Utility::MethodTraits<TMethod_>::TReturn;
+			using TArgsTuple = typename Utility::MethodTraits<TSignal_>::TArgsTuple;
+			using TResult = typename Utility::MethodTraits<TSignal_>::TReturn;
 
 		protected:
 			TArgsTuple m_Parameters;
@@ -33,7 +33,7 @@ namespace kxf::EventSystem
 			// ISignalInvocationEvent
 			bool GetParameters(void* parameters) override
 			{
-				// Nothing to deallocate, so the deallocation function is empty
+				// Nothing to deallocate, so the deallocation functions are empty
 				if constexpr(signalSemantics == SignalParametersSemantics::Copy)
 				{
 					return Utility::NewObjectOnMemoryLocation<TArgsTuple>(parameters, []()

@@ -5,6 +5,7 @@
 #include "EventItem.h"
 #include "EventBuilder.h"
 #include "EventExecutor.h"
+#include "SignalExecutor.h"
 #include "kxf/RTTI/QueryInterface.h"
 #include "kxf/wxWidgets/IWithEvent.h"
 #include "kxf/Utility/TypeTraits.h"
@@ -218,90 +219,107 @@ namespace kxf
 
 		public:
 			// Bind a generic callable
-			template<class TMethod, class TCallable>
-			LocallyUniqueID BindSignal(TMethod method, TCallable&& callable, FlagSet<EventFlag> flags = EventFlag::Direct)
+			template<class TSignal, class TCallable>
+			LocallyUniqueID BindSignal(TSignal signal, TCallable&& callable, FlagSet<EventFlag> flags = EventFlag::Direct)
 			{
-				return DoBind(EventID(method), std::make_unique<EventSystem::CallableSignalExecutor<TMethod, TCallable>>(std::forward<TCallable>(callable)), flags);
+				return DoBind(signal, std::make_unique<EventSystem::CallableSignalExecutor<TSignal, TCallable>>(std::forward<TCallable>(callable)), flags);
+			}
+
+			// Bind a member function
+			template
+			<
+				class TSignal,
+				class THandlerMethod,
+				class THandlerObject,
+				class = std::enable_if_t
+				<
+					std::is_convertible_v<typename Utility::MethodTraits<TSignal>::TArgsTuple, typename Utility::MethodTraits<THandlerMethod>::TArgsTuple> &&
+					std::is_same_v<typename Utility::MethodTraits<THandlerMethod>::TInstance, THandlerObject>
+				>
+			>
+			LocallyUniqueID BindSignal(TSignal signal, THandlerMethod targetMethod, THandlerObject* handler, FlagSet<EventFlag> flags = EventFlag::Direct)
+			{
+				return DoBind(signal, std::make_unique<EventSystem::MethodSignalExecutor<TSignal, THandlerMethod, THandlerObject>>(targetMethod, *handler), flags);
 			}
 
 			// Processes a signal
 			template
 			<
 				SignalParametersSemantics signalSemantics = SignalParametersSemantics::Copy,
-				class TMethod,
+				class TSignal,
 				class... Args,
-				class = std::enable_if_t<std::is_invocable_v<TMethod, typename Utility::MethodTraits<TMethod>::TInstance, Args...>>
+				class = std::enable_if_t<std::is_invocable_v<TSignal, typename Utility::MethodTraits<TSignal>::TInstance, Args...>>
 			>
-			typename Utility::MethodTraits<TMethod>::TReturn ProcessSignal(TMethod method, Args&&... arg)
+			typename Utility::MethodTraits<TSignal>::TReturn ProcessSignal(TSignal signal, Args&&... arg)
 			{
 				return DoProcessSignal<signalSemantics>([&](IEvent& event, const EventID& eventID)
 				{
 					return DoProcessEvent(event, eventID);
-				}, method, std::forward<Args>(arg)...);
+				}, signal, std::forward<Args>(arg)...);
 			}
 
 			// Processes a signal and handles any exceptions that occur in the process
 			template
 			<
 				SignalParametersSemantics signalSemantics = SignalParametersSemantics::Copy,
-				class TMethod,
+				class TSignal,
 				class... Args,
-				class = std::enable_if_t<std::is_invocable_v<TMethod, typename Utility::MethodTraits<TMethod>::TInstance, Args...>>
+				class = std::enable_if_t<std::is_invocable_v<TSignal, typename Utility::MethodTraits<TSignal>::TInstance, Args...>>
 			>
-			typename Utility::MethodTraits<TMethod>::TReturn ProcessSignalSafely(TMethod method, Args&&... arg)
+			typename Utility::MethodTraits<TSignal>::TReturn ProcessSignalSafely(TSignal signal, Args&&... arg)
 			{
 				return DoProcessSignal<signalSemantics>([&](IEvent& event, const EventID& eventID)
 				{
 					return DoProcessEventSafely(event, eventID);
-				}, method, std::forward<Args>(arg)...);
+				}, signal, std::forward<Args>(arg)...);
 			}
 
 			// Try to process the signal in this handler and all those chained to it
 			template
 			<
 				SignalParametersSemantics signalSemantics = SignalParametersSemantics::Copy,
-				class TMethod,
+				class TSignal,
 				class... Args,
-				class = std::enable_if_t<std::is_invocable_v<TMethod, typename Utility::MethodTraits<TMethod>::TInstance, Args...>>
+				class = std::enable_if_t<std::is_invocable_v<TSignal, typename Utility::MethodTraits<TSignal>::TInstance, Args...>>
 			>
-			typename Utility::MethodTraits<TMethod>::TReturn ProcessSignalLocally(TMethod method, Args&&... arg)
+			typename Utility::MethodTraits<TSignal>::TReturn ProcessSignalLocally(TSignal signal, Args&&... arg)
 			{
 				return DoProcessSignal<signalSemantics>([&](IEvent& event, const EventID& eventID)
 				{
 					return DoProcessEventLocally(event, eventID);
-				}, method, std::forward<Args>(arg)...);
+				}, signal, std::forward<Args>(arg)...);
 			}
 
 			// Queue a signal for later processing
 			template
 			<
 				SignalParametersSemantics signalSemantics = SignalParametersSemantics::Copy,
-				class TMethod,
+				class TSignal,
 				class... Args,
-				class = std::enable_if_t<std::is_invocable_v<TMethod, typename Utility::MethodTraits<TMethod>::TInstance, Args...>>
+				class = std::enable_if_t<std::is_invocable_v<TSignal, typename Utility::MethodTraits<TSignal>::TInstance, Args...>>
 			>
-			void QueueSignal(TMethod method, Args&&... arg)
+			void QueueSignal(TSignal signal, Args&&... arg)
 			{
 				DoQueueSignal<signalSemantics>([&](std::unique_ptr<IEvent> event, const EventID& eventID)
 				{
 					DoQueueEvent(std::move(event), eventID);
-				}, method, std::forward<Args>(arg)...);
+				}, signal, std::forward<Args>(arg)...);
 			}
 
 			// Queue a unique signal for later processing
 			template
 			<
 				SignalParametersSemantics signalSemantics = SignalParametersSemantics::Copy,
-				class TMethod,
+				class TSignal,
 				class... Args,
-				class = std::enable_if_t<std::is_invocable_v<TMethod, typename Utility::MethodTraits<TMethod>::TInstance, Args...>>
+				class = std::enable_if_t<std::is_invocable_v<TSignal, typename Utility::MethodTraits<TSignal>::TInstance, Args...>>
 			>
-			void QueueUniqueSignal(UniversallyUniqueID uuid, TMethod method, Args&&... arg)
+			void QueueUniqueSignal(UniversallyUniqueID uuid, TSignal signal, Args&&... arg)
 			{
 				DoQueueSignal<signalSemantics>([&](std::unique_ptr<IEvent> event, const EventID& eventID)
 				{
 					DoQueueEvent(std::move(event), eventID, std::move(uuid));
-				}, method, std::forward<Args>(arg)...);
+				}, signal, std::forward<Args>(arg)...);
 			}
 
 		public:
