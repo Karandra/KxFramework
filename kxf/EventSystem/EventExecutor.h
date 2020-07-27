@@ -1,7 +1,9 @@
 #pragma once
 #include "IEventExecutor.h"
 #include "IEvent.h"
+#include "kxf/Utility/CallAtScopeExit.h"
 #include "kxf/Utility/TypeTraits.h"
+#include "kxf/Utility/Memory.h"
 
 namespace kxf::EventSystem
 {
@@ -136,10 +138,10 @@ namespace kxf::EventSystem
 namespace kxf::EventSystem
 {
 	template<class TMethod_, class TCallable_>
-	class ParameterizedCallableEventExecutor: public IEventExecutor
+	class CallableSignalExecutor: public IEventExecutor
 	{
 		protected:
-			using TEvent = IParameterizedInvocationEvent;
+			using TEvent = ISignalInvocationEvent;
 			using TCallable = TCallable_;
 
 			using TArgsTuple = typename Utility::MethodTraits<TMethod_>::TArgsTuple;
@@ -150,7 +152,7 @@ namespace kxf::EventSystem
 			const void* m_OriginalAddress = nullptr;
 
 		public:
-			ParameterizedCallableEventExecutor(TCallable&& func)
+			CallableSignalExecutor(TCallable&& func)
 				:m_Callable(std::forward<TCallable>(func)), m_OriginalAddress(std::addressof(func))
 			{
 			}
@@ -158,23 +160,30 @@ namespace kxf::EventSystem
 		public:
 			void Execute(IEvtHandler& evtHandler, IEvent& event) override
 			{
-				IParameterizedInvocationEvent* parameterizedInvocation = nullptr;
+				ISignalInvocationEvent* parameterizedInvocation = nullptr;
 				if (event.QueryInterface(parameterizedInvocation))
 				{
-					TArgsTuple parameters;
-					parameterizedInvocation->GetParameters(&parameters);
-
-					if constexpr(!std::is_void_v<TResult>)
+					alignas(TArgsTuple) uint8_t parametersBuffer[sizeof(TArgsTuple)] = {};
+					if (parameterizedInvocation->GetParameters(parametersBuffer))
 					{
-						TResult result = std::apply(m_Callable, std::move(parameters));
-						if (!event.IsSkipped())
+						TArgsTuple& parameters = *std::launder(reinterpret_cast<TArgsTuple*>(parametersBuffer));
+						Utility::CallAtScopeExit atExit = [&]()
 						{
-							parameterizedInvocation->PutResult(&result);
+							Utility::DestroyObjectOnMemoryLocation<TArgsTuple>(parametersBuffer);
+						};
+
+						if constexpr(!std::is_void_v<TResult>)
+						{
+							TResult result = std::apply(m_Callable, std::move(parameters));
+							if (!event.IsSkipped())
+							{
+								parameterizedInvocation->PutResult(&result);
+							}
 						}
-					}
-					else
-					{
-						std::apply(m_Callable, std::move(parameters));
+						else
+						{
+							std::apply(m_Callable, std::move(parameters));
+						}
 					}
 				}
 			}
@@ -182,7 +191,7 @@ namespace kxf::EventSystem
 			{
 				if (typeid(*this) == typeid(other))
 				{
-					return m_OriginalAddress == static_cast<const ParameterizedCallableEventExecutor&>(other).m_OriginalAddress;
+					return m_OriginalAddress == static_cast<const CallableSignalExecutor&>(other).m_OriginalAddress;
 				}
 				return false;
 			}

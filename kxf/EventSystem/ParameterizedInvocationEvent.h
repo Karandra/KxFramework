@@ -1,11 +1,12 @@
 #pragma once
 #include "Event.h"
 #include "kxf/Utility/TypeTraits.h"
+#include "kxf/Utility/Memory.h"
 
 namespace kxf::EventSystem
 {
-	template<EventParametersSemantics parameterSemantics, class TMethod_>
-	class ParameterizedInvocationEvent: public RTTI::ImplementInterface<ParameterizedInvocationEvent<parameterSemantics, TMethod_>, BasicEvent, IParameterizedInvocationEvent>
+	template<SignalParametersSemantics signalSemantics, class TMethod_>
+	class SignalInvocationEvent: public RTTI::ImplementInterface<SignalInvocationEvent<signalSemantics, TMethod_>, BasicEvent, ISignalInvocationEvent>
 	{
 		protected:
 			using TArgsTuple = typename Utility::MethodTraits<TMethod_>::TArgsTuple;
@@ -13,11 +14,11 @@ namespace kxf::EventSystem
 
 		protected:
 			TArgsTuple m_Parameters;
-			TResult m_Result;
+			std::conditional_t<!std::is_void_v<TResult>, TResult, void*> m_Result;
 
 		public:
 			template<class... Args>
-			ParameterizedInvocationEvent(Args&&... arg)
+			SignalInvocationEvent(Args&&... arg)
 				:m_Parameters(std::forward<Args>(arg)...)
 			{
 			}
@@ -26,23 +27,28 @@ namespace kxf::EventSystem
 			// IEvent
 			std::unique_ptr<IEvent> Move() noexcept override
 			{
-				return std::make_unique<ParameterizedInvocationEvent>(std::move(*this));
+				return std::make_unique<SignalInvocationEvent>(std::move(*this));
 			}
 
-			// IParameterizedInvocationEvent
-			void GetParameters(void* parameters) override
+			// ISignalInvocationEvent
+			bool GetParameters(void* parameters) override
 			{
-				if constexpr(parameterSemantics == EventParametersSemantics::Copy)
+				// Nothing to deallocate, so the deallocation function is empty
+				if constexpr(signalSemantics == SignalParametersSemantics::Copy)
 				{
-					*static_cast<TArgsTuple*>(parameters) = m_Parameters;
+					return Utility::NewObjectOnMemoryLocation<TArgsTuple>(parameters, []()
+					{
+					}, m_Parameters) != nullptr;
 				}
-				else if constexpr(parameterSemantics == EventParametersSemantics::Move)
+				else if constexpr(signalSemantics == SignalParametersSemantics::Move)
 				{
-					*static_cast<TArgsTuple*>(parameters) = std::move(m_Parameters);
+					return Utility::NewObjectOnMemoryLocation<TArgsTuple>(parameters, []()
+					{
+					}, std::move(m_Parameters)) != nullptr;
 				}
 				else
 				{
-					static_assert(false, "incorrect 'EventParametersSemantics' option");
+					static_assert(false, "incorrect 'SignalParametersSemantics' option");
 				}
 			}
 

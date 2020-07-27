@@ -35,7 +35,7 @@ namespace kxf
 	};
 	KxDeclareFlagSet(EventFlag);
 
-	enum class EventParametersSemantics
+	enum class SignalParametersSemantics
 	{
 		Move,
 		Copy
