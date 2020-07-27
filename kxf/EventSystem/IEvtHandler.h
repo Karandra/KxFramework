@@ -90,6 +90,31 @@ namespace kxf
 				}
 			}
 
+			template<SignalParametersSemantics signalSemantics, class TFunc, class TMethod, class... Args>
+			typename Utility::MethodTraits<TMethod>::TReturn DoProcessSignal(TFunc&& func, TMethod method, Args&&... arg)
+			{
+				EventSystem::SignalInvocationEvent<signalSemantics, TMethod> event(std::forward<Args>(arg)...);
+				if (std::invoke(func, event, method))
+				{
+					using TResult = typename Utility::MethodTraits<TMethod>::TReturn;
+					if constexpr(!std::is_void_v<TResult>)
+					{
+						TResult result;
+						event.TakeResult(&result);
+						return result;
+					}
+				}
+				return {};
+			}
+
+			template<SignalParametersSemantics signalSemantics, class TFunc, class TMethod, class... Args>
+			void DoQueueSignal(TFunc&& func, TMethod method, Args&&... arg)
+			{
+				static_assert(std::is_void_v<typename Utility::MethodTraits<TMethod>::TReturn>, "Queued signal isn't allowed to return a value");
+
+				std::invoke(func, std::make_unique<EventSystem::SignalInvocationEvent<signalSemantics, TMethod>>(std::forward<Args>(arg)...), method);
+			}
+
 		protected:
 			virtual LocallyUniqueID DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<EventFlag> flags = {}) = 0;
 			virtual bool DoUnbind(const EventID& eventID, IEventExecutor& executor) = 0;
@@ -194,32 +219,89 @@ namespace kxf
 		public:
 			// Bind a generic callable
 			template<class TMethod, class TCallable>
-			LocallyUniqueID BindParameterized(TMethod method, TCallable&& callable, FlagSet<EventFlag> flags = EventFlag::Direct)
+			LocallyUniqueID BindSignal(TMethod method, TCallable&& callable, FlagSet<EventFlag> flags = EventFlag::Direct)
 			{
-				return DoBind(EventID(method), std::make_unique<EventSystem::ParameterizedCallableEventExecutor<TMethod, TCallable>>(std::forward<TCallable>(callable)), flags);
+				return DoBind(EventID(method), std::make_unique<EventSystem::CallableSignalExecutor<TMethod, TCallable>>(std::forward<TCallable>(callable)), flags);
 			}
 
-			template<class TMethod, class... Args, class = std::enable_if_t<std::is_invocable_v<TMethod, typename Utility::MethodTraits<TMethod>::TInstance, Args...>>>
-			typename Utility::MethodTraits<TMethod>::TReturn ProcessParameterizedEvent(TMethod method, Args&&... arg)
+			// Processes a signal
+			template
+			<
+				SignalParametersSemantics signalSemantics = SignalParametersSemantics::Copy,
+				class TMethod,
+				class... Args,
+				class = std::enable_if_t<std::is_invocable_v<TMethod, typename Utility::MethodTraits<TMethod>::TInstance, Args...>>
+			>
+			typename Utility::MethodTraits<TMethod>::TReturn ProcessSignal(TMethod method, Args&&... arg)
 			{
-				return ProcessParameterizedEvent<EventParametersSemantics::Copy>(method, std::forward<Args>(arg)...);
-			}
-
-			template<EventParametersSemantics parameterSemantics, class TMethod, class... Args, class = std::enable_if_t<std::is_invocable_v<TMethod, typename Utility::MethodTraits<TMethod>::TInstance, Args...>>>
-			typename Utility::MethodTraits<TMethod>::TReturn ProcessParameterizedEvent(TMethod method, Args&&... arg)
-			{
-				EventSystem::ParameterizedInvocationEvent<parameterSemantics, TMethod> event(std::forward<Args>(arg)...);
-				if (DoProcessEvent(event, EventID(method)))
+				return DoProcessSignal<signalSemantics>([&](IEvent& event, const EventID& eventID)
 				{
-					using TResult = typename Utility::MethodTraits<TMethod>::TReturn;
-					if constexpr (!std::is_void_v<TResult>)
-					{
-						TResult result;
-						event.TakeResult(&result);
-						return result;
-					}
-				}
-				return {};
+					return DoProcessEvent(event, eventID);
+				}, method, std::forward<Args>(arg)...);
+			}
+
+			// Processes a signal and handles any exceptions that occur in the process
+			template
+			<
+				SignalParametersSemantics signalSemantics = SignalParametersSemantics::Copy,
+				class TMethod,
+				class... Args,
+				class = std::enable_if_t<std::is_invocable_v<TMethod, typename Utility::MethodTraits<TMethod>::TInstance, Args...>>
+			>
+			typename Utility::MethodTraits<TMethod>::TReturn ProcessSignalSafely(TMethod method, Args&&... arg)
+			{
+				return DoProcessSignal<signalSemantics>([&](IEvent& event, const EventID& eventID)
+				{
+					return DoProcessEventSafely(event, eventID);
+				}, method, std::forward<Args>(arg)...);
+			}
+
+			// Try to process the signal in this handler and all those chained to it
+			template
+			<
+				SignalParametersSemantics signalSemantics = SignalParametersSemantics::Copy,
+				class TMethod,
+				class... Args,
+				class = std::enable_if_t<std::is_invocable_v<TMethod, typename Utility::MethodTraits<TMethod>::TInstance, Args...>>
+			>
+			typename Utility::MethodTraits<TMethod>::TReturn ProcessSignalLocally(TMethod method, Args&&... arg)
+			{
+				return DoProcessSignal<signalSemantics>([&](IEvent& event, const EventID& eventID)
+				{
+					return DoProcessEventLocally(event, eventID);
+				}, method, std::forward<Args>(arg)...);
+			}
+
+			// Queue a signal for later processing
+			template
+			<
+				SignalParametersSemantics signalSemantics = SignalParametersSemantics::Copy,
+				class TMethod,
+				class... Args,
+				class = std::enable_if_t<std::is_invocable_v<TMethod, typename Utility::MethodTraits<TMethod>::TInstance, Args...>>
+			>
+			void QueueSignal(TMethod method, Args&&... arg)
+			{
+				DoQueueSignal<signalSemantics>([&](std::unique_ptr<IEvent> event, const EventID& eventID)
+				{
+					DoQueueEvent(std::move(event), eventID);
+				}, method, std::forward<Args>(arg)...);
+			}
+
+			// Queue a unique signal for later processing
+			template
+			<
+				SignalParametersSemantics signalSemantics = SignalParametersSemantics::Copy,
+				class TMethod,
+				class... Args,
+				class = std::enable_if_t<std::is_invocable_v<TMethod, typename Utility::MethodTraits<TMethod>::TInstance, Args...>>
+			>
+			void QueueUniqueSignal(UniversallyUniqueID uuid, TMethod method, Args&&... arg)
+			{
+				DoQueueSignal<signalSemantics>([&](std::unique_ptr<IEvent> event, const EventID& eventID)
+				{
+					DoQueueEvent(std::move(event), eventID, std::move(uuid));
+				}, method, std::forward<Args>(arg)...);
 			}
 
 		public:
@@ -276,7 +358,7 @@ namespace kxf
 				return DoProcessEvent(event, eventTag);
 			}
 
-			// Processes an event by calling 'DoProcessEvent' and handles any exceptions that occur in the process
+			// Processes an event and handles any exceptions that occur in the process
 			bool ProcessEventSafely(IEvent& event, const EventID& eventID)
 			{
 				return DoProcessEventSafely(event, eventID);
@@ -324,7 +406,7 @@ namespace kxf
 			}
 
 		public:
-			// Queue event for a later processing
+			// Queue an event for later processing
 			void QueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, UniversallyUniqueID uuid = {})
 			{
 				DoQueueEvent(std::move(event), eventID, std::move(uuid));
