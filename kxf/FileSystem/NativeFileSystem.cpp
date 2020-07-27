@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "NativeFileSystem.h"
-#include "FileOperationEvent.h"
+#include "FSActionEvent.h"
 #include "Private/NativeFSUtility.h"
 #include "kxf/Application/ICoreApplication.h"
 #include "kxf/General/AlignedStorage.h"
@@ -138,7 +138,7 @@ namespace kxf
 
 			if (auto app = ICoreApplication::GetInstance())
 			{
-				FileOperationEvent event;
+				FSActionEvent event;
 				event.SetSource(GetWorkingDirectory());
 				event.SetDestination(directory);
 				event.Allow();

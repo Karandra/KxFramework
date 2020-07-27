@@ -10,7 +10,7 @@ namespace kxf
 	class IEventFilter;
 	class IEventExecutor;
 
-	class FileOperationEvent;
+	class FSActionEvent;
 }
 
 namespace kxf::Application
@@ -168,7 +168,7 @@ namespace kxf
 
 		public:
 			KxEVENT_MEMBER(ActivateEvent, Activated);
-			KxEVENT_MEMBER(FileOperationEvent, WorkingDirectoryChanged);
+			KxEVENT_MEMBER(FSActionEvent, WorkingDirectoryChanged);
 
 		public:
 			static ICoreApplication* GetInstance() noexcept;

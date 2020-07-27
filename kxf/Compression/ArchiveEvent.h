@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "kxf/FileSystem/FileOperationEvent.h"
+#include "kxf/FileSystem/FSActionEvent.h"
 #include "kxf/FileSystem/FileItem.h"
 #include "kxf/Crypto/SecretValue.h"
 class wxInputStream;
@@ -8,7 +8,7 @@ class wxOutputStream;
 
 namespace kxf
 {
-	class KX_API ArchiveEvent: public FileOperationEvent
+	class KX_API ArchiveEvent: public FSActionEvent
 	{
 		public:
 			KxEVENT_MEMBER(ArchiveEvent, IdentifyFormat);

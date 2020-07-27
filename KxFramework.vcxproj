@@ -442,7 +442,7 @@
     <ClInclude Include="kxf\FileSystem.hpp" />
     <ClInclude Include="kxf\FileSystem\Common.h" />
     <ClInclude Include="kxf\FileSystem\FileItem.h" />
-    <ClInclude Include="kxf\FileSystem\FileOperationEvent.h" />
+    <ClInclude Include="kxf\FileSystem\FSActionEvent.h" />
     <ClInclude Include="kxf\FileSystem\FileOperations.h" />
     <ClInclude Include="kxf\FileSystem\FSPath.h" />
     <ClInclude Include="kxf\FileSystem\IFileSystem.h" />

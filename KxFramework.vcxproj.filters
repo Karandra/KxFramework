@@ -577,9 +577,6 @@
     <ClInclude Include="kxf\Network\HTTPStatusCode.h">
       <Filter>kxf\Network</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\FileSystem\FileOperationEvent.h">
-      <Filter>kxf\FileSystem</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Network\CURL.h">
       <Filter>kxf\Network</Filter>
     </ClInclude>
@@ -1438,6 +1435,9 @@
     </ClInclude>
     <ClInclude Include="kxf\EventSystem\SignalExecutor.h">
       <Filter>kxf\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\FileSystem\FSActionEvent.h">
+      <Filter>kxf\FileSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

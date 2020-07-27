@@ -7,14 +7,14 @@
 
 namespace kxf
 {
-	class KX_API FileOperationEvent: public BasicEvent
+	class KX_API FSActionEvent: public BasicEvent
 	{
 		public:
-			KxEVENT_MEMBER(FileOperationEvent, Copy);
-			KxEVENT_MEMBER(FileOperationEvent, Move);
-			KxEVENT_MEMBER(FileOperationEvent, Rename);
-			KxEVENT_MEMBER(FileOperationEvent, Remove);
-			KxEVENT_MEMBER(FileOperationEvent, Search);
+			KxEVENT_MEMBER(FSActionEvent, Copy);
+			KxEVENT_MEMBER(FSActionEvent, Move);
+			KxEVENT_MEMBER(FSActionEvent, Rename);
+			KxEVENT_MEMBER(FSActionEvent, Remove);
+			KxEVENT_MEMBER(FSActionEvent, Search);
 
 		private:
 			String m_String;
@@ -25,12 +25,12 @@ namespace kxf
 			BinarySize m_Speed = 0;
 
 		public:
-			FileOperationEvent() = default;
+			FSActionEvent() = default;
 
 		public:
 			std::unique_ptr<IEvent> Move() noexcept override
 			{
-				return std::make_unique<FileOperationEvent>(std::move(*this));
+				return std::make_unique<FSActionEvent>(std::move(*this));
 			}
 
 			// Paths and status

@@ -1,6 +1,6 @@
 #pragma once
 #include "../Common.h"
-#include "kxf/FileSystem/FileOperationEvent.h"
+#include "kxf/FileSystem/FSActionEvent.h"
 
 namespace kxf
 {
@@ -10,7 +10,7 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API CURLEvent: public FileOperationEvent
+	class KX_API CURLEvent: public FSActionEvent
 	{
 		friend class CURLSession;
 
