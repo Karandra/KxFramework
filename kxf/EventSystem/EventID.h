@@ -2,13 +2,8 @@
 #include "Common.h"
 #include "kxf/General/String.h"
 #include "kxf/General/UniversallyUniqueID.h"
-#include <variant>
 #include <type_traits>
-
-namespace kxf
-{
-	class IEvent;
-}
+#include <variant>
 
 namespace kxf::EventSystem::Private
 {

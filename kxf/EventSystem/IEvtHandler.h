@@ -194,23 +194,28 @@ namespace kxf
 		public:
 			// Bind a generic callable
 			template<class TMethod, class TCallable>
-			LocallyUniqueID BindParametrized(TMethod method, TCallable&& callable, FlagSet<EventFlag> flags = EventFlag::Direct)
+			LocallyUniqueID BindParameterized(TMethod method, TCallable&& callable, FlagSet<EventFlag> flags = EventFlag::Direct)
 			{
-				return DoBind(EventID(method), std::make_unique<EventSystem::ParametrizedCallableEventExecutor<TMethod, TCallable>>(std::forward<TCallable>(callable)), flags);
+				return DoBind(EventID(method), std::make_unique<EventSystem::ParameterizedCallableEventExecutor<TMethod, TCallable>>(std::forward<TCallable>(callable)), flags);
 			}
 
-			template<class TMethod, class... Args>
-			std::enable_if_t<std::is_invocable_v<TMethod, typename Utility::MethodTraits<TMethod>::TInstance, Args...>, typename Utility::MethodTraits<TMethod>::TReturn>
-				ProcessParametrizedEvent(TMethod method, Args&&... arg)
+			template<class TMethod, class... Args, class = std::enable_if_t<std::is_invocable_v<TMethod, typename Utility::MethodTraits<TMethod>::TInstance, Args...>>>
+			typename Utility::MethodTraits<TMethod>::TReturn ProcessParameterizedEvent(TMethod method, Args&&... arg)
 			{
-				EventSystem::ParametrizedInvocationEvent<TMethod> event(std::forward<Args>(arg)...);
+				return ProcessParameterizedEvent<EventParametersSemantics::Copy>(method, std::forward<Args>(arg)...);
+			}
+
+			template<EventParametersSemantics parameterSemantics, class TMethod, class... Args, class = std::enable_if_t<std::is_invocable_v<TMethod, typename Utility::MethodTraits<TMethod>::TInstance, Args...>>>
+			typename Utility::MethodTraits<TMethod>::TReturn ProcessParameterizedEvent(TMethod method, Args&&... arg)
+			{
+				EventSystem::ParameterizedInvocationEvent<parameterSemantics, TMethod> event(std::forward<Args>(arg)...);
 				if (DoProcessEvent(event, EventID(method)))
 				{
 					using TResult = typename Utility::MethodTraits<TMethod>::TReturn;
-					if constexpr(!std::is_void_v<TResult>)
+					if constexpr (!std::is_void_v<TResult>)
 					{
 						TResult result;
-						event.GetResult(&result);
+						event.TakeResult(&result);
 						return result;
 					}
 				}

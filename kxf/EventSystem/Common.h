@@ -34,4 +34,10 @@ namespace kxf
 		OneShot = 1 << 19
 	};
 	KxDeclareFlagSet(EventFlag);
+
+	enum class EventParametersSemantics
+	{
+		Move,
+		Copy
+	};
 }

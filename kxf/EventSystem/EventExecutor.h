@@ -136,10 +136,10 @@ namespace kxf::EventSystem
 namespace kxf::EventSystem
 {
 	template<class TMethod_, class TCallable_>
-	class ParametrizedCallableEventExecutor: public IEventExecutor
+	class ParameterizedCallableEventExecutor: public IEventExecutor
 	{
 		protected:
-			using TEvent = IParametrizedInvocationEvent;
+			using TEvent = IParameterizedInvocationEvent;
 			using TCallable = TCallable_;
 
 			using TArgsTuple = typename Utility::MethodTraits<TMethod_>::TArgsTuple;
@@ -150,7 +150,7 @@ namespace kxf::EventSystem
 			const void* m_OriginalAddress = nullptr;
 
 		public:
-			ParametrizedCallableEventExecutor(TCallable&& func)
+			ParameterizedCallableEventExecutor(TCallable&& func)
 				:m_Callable(std::forward<TCallable>(func)), m_OriginalAddress(std::addressof(func))
 			{
 			}
@@ -158,18 +158,18 @@ namespace kxf::EventSystem
 		public:
 			void Execute(IEvtHandler& evtHandler, IEvent& event) override
 			{
-				IParametrizedInvocationEvent* parametrized = nullptr;
-				if (event.QueryInterface(parametrized))
+				IParameterizedInvocationEvent* parameterizedInvocation = nullptr;
+				if (event.QueryInterface(parameterizedInvocation))
 				{
 					TArgsTuple parameters;
-					parametrized->GetParameters(&parameters);
+					parameterizedInvocation->GetParameters(&parameters);
 
 					if constexpr(!std::is_void_v<TResult>)
 					{
 						TResult result = std::apply(m_Callable, std::move(parameters));
 						if (!event.IsSkipped())
 						{
-							parametrized->PutResult(&result);
+							parameterizedInvocation->PutResult(&result);
 						}
 					}
 					else
@@ -182,7 +182,7 @@ namespace kxf::EventSystem
 			{
 				if (typeid(*this) == typeid(other))
 				{
-					return m_OriginalAddress == static_cast<const ParametrizedCallableEventExecutor&>(other).m_OriginalAddress;
+					return m_OriginalAddress == static_cast<const ParameterizedCallableEventExecutor&>(other).m_OriginalAddress;
 				}
 				return false;
 			}

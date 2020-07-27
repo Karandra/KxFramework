@@ -104,22 +104,22 @@ namespace kxf
 			virtual void Execute() = 0;
 	};
 
-	class IParametrizedInvocationEvent: public RTTI::Interface<IParametrizedInvocationEvent>
+	class IParameterizedInvocationEvent: public RTTI::Interface<IParameterizedInvocationEvent>
 	{
-		KxDeclareIID(IParametrizedInvocationEvent, {0xb3ad1ef2, 0x96ee, 0x4ebf, {0x93, 0xac, 0x6, 0xf8, 0x5b, 0x2e, 0xe5, 0xc5}});
+		KxDeclareIID(IParameterizedInvocationEvent, {0xb3ad1ef2, 0x96ee, 0x4ebf, {0x93, 0xac, 0x6, 0xf8, 0x5b, 0x2e, 0xe5, 0xc5}});
 
 		public:
-			virtual ~IParametrizedInvocationEvent() = default;
+			virtual ~IParameterizedInvocationEvent() = default;
 
 		public:
 			virtual void GetParameters(void* parameters) = 0;
 
-			virtual void GetResult(void* value) = 0;
+			virtual void TakeResult(void* value) = 0;
 			virtual void PutResult(void* value) = 0;
 	};
 
 	template<class TFunc, class = std::enable_if_t<std::is_member_function_pointer_v<TFunc>>>
-	EventTag(TFunc func) -> EventTag<IParametrizedInvocationEvent>;
+	EventTag(TFunc func) -> EventTag<IParameterizedInvocationEvent>;
 }
 
 // Event declaration macros

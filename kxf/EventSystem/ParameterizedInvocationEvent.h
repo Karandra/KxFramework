@@ -4,8 +4,8 @@
 
 namespace kxf::EventSystem
 {
-	template<class TMethod_>
-	class ParametrizedInvocationEvent: public RTTI::ImplementInterface<ParametrizedInvocationEvent<TMethod_>, BasicEvent, IParametrizedInvocationEvent>
+	template<EventParametersSemantics parameterSemantics, class TMethod_>
+	class ParameterizedInvocationEvent: public RTTI::ImplementInterface<ParameterizedInvocationEvent<parameterSemantics, TMethod_>, BasicEvent, IParameterizedInvocationEvent>
 	{
 		protected:
 			using TArgsTuple = typename Utility::MethodTraits<TMethod_>::TArgsTuple;
@@ -17,7 +17,7 @@ namespace kxf::EventSystem
 
 		public:
 			template<class... Args>
-			ParametrizedInvocationEvent(Args&&... arg)
+			ParameterizedInvocationEvent(Args&&... arg)
 				:m_Parameters(std::forward<Args>(arg)...)
 			{
 			}
@@ -26,16 +26,27 @@ namespace kxf::EventSystem
 			// IEvent
 			std::unique_ptr<IEvent> Move() noexcept override
 			{
-				return std::make_unique<ParametrizedInvocationEvent>(std::move(*this));
+				return std::make_unique<ParameterizedInvocationEvent>(std::move(*this));
 			}
 
-			// IParametrizedInvocationEvent
+			// IParameterizedInvocationEvent
 			void GetParameters(void* parameters) override
 			{
-				*static_cast<TArgsTuple*>(parameters) = std::move(m_Parameters);
+				if constexpr(parameterSemantics == EventParametersSemantics::Copy)
+				{
+					*static_cast<TArgsTuple*>(parameters) = m_Parameters;
+				}
+				else if constexpr(parameterSemantics == EventParametersSemantics::Move)
+				{
+					*static_cast<TArgsTuple*>(parameters) = std::move(m_Parameters);
+				}
+				else
+				{
+					static_assert(false, "incorrect 'EventParametersSemantics' option");
+				}
 			}
 
-			void GetResult(void* value) override
+			void TakeResult(void* value) override
 			{
 				if constexpr(!std::is_void_v<TResult>)
 				{
