@@ -489,6 +489,9 @@ namespace kxf
 				return {};
 			}
 
+			// If none are present, assume direct
+			flags.Add(EventFlag::Direct, !flags.Contains(EventFlag::Direct) && flags.Contains(EventFlag::Queued));
+
 			EventItem eventItem(eventID, std::move(executor));
 			eventItem.SetFlags(flags);
 
