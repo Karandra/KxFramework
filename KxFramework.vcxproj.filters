@@ -1433,7 +1433,7 @@
     <ClInclude Include="kxf\EventSystem\IndirectInvocationEvent.h">
       <Filter>kxf\EventSystem\&lt;Events&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\EventSystem\ParameterizedInvocationEvent.h">
+    <ClInclude Include="kxf\EventSystem\SignalInvocationEvent.h">
       <Filter>kxf\EventSystem\&lt;Events&gt;</Filter>
     </ClInclude>
   </ItemGroup>
