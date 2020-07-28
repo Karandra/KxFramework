@@ -1,8 +1,6 @@
 #pragma once
 #include "Angle.h"
-#include <cstdint>
-#include <algorithm>
-#include <type_traits>
+#include "kxf/Utility/Numeric.h"
 
 namespace kxf
 {
@@ -77,7 +75,15 @@ namespace kxf
 		{
 			if (this != &other)
 			{
-				return Red == other.Red && Green == other.Green && Blue == other.Blue;
+				if constexpr(std::is_floating_point_v<T>)
+				{
+					using namespace Utility;
+					return AlmostEqual(Red, other.Red) && AlmostEqual(Green, other.Green) && AlmostEqual(Blue, other.Blue);
+				}
+				else
+				{
+					return Red == other.Red && Green == other.Green && Blue == other.Blue;
+				}
 			}
 			return true;
 		}
@@ -109,13 +115,29 @@ namespace kxf
 		
 		constexpr bool IsSameAs(const PackedRGB<T>& other) const noexcept
 		{
-			return Red == other.Red && Green == other.Green && Blue == other.Blue;
+			if constexpr(std::is_floating_point_v<T>)
+			{
+				using namespace Utility;
+				return AlmostEqual(Red, other.Red) && AlmostEqual(Green, other.Green) && AlmostEqual(Blue, other.Blue);
+			}
+			else
+			{
+				return Red == other.Red && Green == other.Green && Blue == other.Blue;
+			}
 		}
 		constexpr bool IsSameAs(const PackedRGBA& other) const noexcept
 		{
 			if (this != &other)
 			{
-				return Red == other.Red && Green == other.Green && Blue == other.Blue && Alpha == other.Alpha;
+				if constexpr(std::is_floating_point_v<T>)
+				{
+					using namespace Utility;
+					return AlmostEqual(Red, other.Red) && AlmostEqual(Green, other.Green) && AlmostEqual(Blue, other.Blue);
+				}
+				else
+				{
+					return Red == other.Red && Green == other.Green && Blue == other.Blue;
+				}
 			}
 			return true;
 		}
