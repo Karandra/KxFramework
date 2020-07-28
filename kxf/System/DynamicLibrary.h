@@ -137,7 +137,7 @@ namespace kxf
 		public:
 			DynamicLibrary& operator=(DynamicLibrary&& other) noexcept
 			{
-				m_Handle = std::move(m_Handle);
+				m_Handle = std::move(other.m_Handle);
 				
 				m_LoadFlags = other.m_LoadFlags;
 				other.m_LoadFlags = DynamicLibraryLoadFlag::None;
