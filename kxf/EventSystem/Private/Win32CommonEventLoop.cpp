@@ -79,7 +79,6 @@ namespace kxf::EventSystem::Private
 					// We were woken up by a background thread, which means there is no actual input message available,
 					// but we should still return to the event loop, so pretend there was 'WM_NULL' in the queue.
 					message = {};
-					message.Message = WM_NULL;
 
 					return DispatchTimeout::Success;
 				}
