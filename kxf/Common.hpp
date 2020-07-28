@@ -14,6 +14,7 @@
 #include <memory>
 #include <optional>
 #include <functional>
+#include <algorithm>
 #include <type_traits>
 
 // Essential headers
