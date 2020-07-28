@@ -293,10 +293,13 @@ namespace kxf
 			// from the handling code, this will result in a crash at best and in something
 			// even more weird at worst (like exceptions completely disappearing into the void
 			// under some 64-bit versions of Windows).
-			IEventLoop* eventLoop = app->GetActiveEventLoop();
-			if (eventLoop && eventLoop->IsYielding())
+			if (app)
 			{
-				eventLoop->Exit();
+				IEventLoop* eventLoop = app->GetActiveEventLoop();
+				if (eventLoop && eventLoop->IsYielding())
+				{
+					eventLoop->Exit();
+				}
 			}
 
 			// Give the application one last possibility to store the exception for rethrowing it later, when we get back to our code.
@@ -311,6 +314,7 @@ namespace kxf
 			catch (...)
 			{
 				// 'StoreCurrentException' really shouldn't throw, but if it did, take it as an indication that it didn't store it.
+				exceptionStored = false;
 			}
 
 			// If it didn't take it, just abort, at least like this we behave consistently everywhere.
