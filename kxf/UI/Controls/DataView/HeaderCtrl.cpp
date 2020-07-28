@@ -367,7 +367,7 @@ namespace kxf::UI::DataView
 				m_DraggedColumn = nullptr;
 				if (Column* column = GetColumn())
 				{
-					wxEventType eventType = ::GetClickEventType(notification == HDN_ITEMDBLCLICK, static_cast<MouseButton>(header->iButton));
+					wxEventType eventType = ::GetClickEventType(notification == static_cast<int>(HDN_ITEMDBLCLICK), static_cast<MouseButton>(header->iButton));
 					wxHeaderCtrlEvent event = NewHeaderEvent(eventType, column);
 					SendHeaderEvent(event);
 
