@@ -38,15 +38,15 @@ namespace kxf::Utility
 		// and multiplied by the desired precision in ULPs (units in the last place),
 		// unless the result is subnormal.
 
-		const T diff = Abs(left - right);
 		const T sum = Abs(left + right);
+		const T diff = Abs(left - right);
 		return diff <= (std::numeric_limits<T>::epsilon() * sum * units) || diff < std::numeric_limits<T>::min();
 	}
 
 	template<class T>
 	constexpr std::enable_if_t<std::is_floating_point_v<T>, bool> AlmostZero(T value, size_t units = 2) noexcept
 	{
-		return AlmostEqual(value, 0, units);
+		return AlmostEqual(value, static_cast<T>(0), units);
 	}
 
 	template<class T>

@@ -21,7 +21,7 @@ namespace kxf::UI
 	}
 	wxOrientation TextBoxDialog::GetWindowResizeSide() const
 	{
-		if (m_DialogResizeSide == -1)
+		if (m_DialogResizeSide == static_cast<wxOrientation>(-1))
 		{
 			if (IsMultiLine())
 			{
