@@ -49,7 +49,7 @@ namespace kxf::UI
 			{
 				pointSize = normalFont.GetPointSize();
 				normalFace = normalFont.GetFaceName();
-				fixedFace = normalFont.GetFaceName();
+				fixedFace = normalFace;
 			}
 			return true;
 		}

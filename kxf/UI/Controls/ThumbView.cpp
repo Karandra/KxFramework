@@ -109,7 +109,7 @@ namespace kxf::UI
 				{
 					const size_t index = GetIndexByRowColumn(row, columnIndex, itemsInRow);
 					const size_t focus = index < GetThumbsCount() ? index : InvalidItemIndex;
-					const size_t selection = index < GetThumbsCount() ? index : InvalidItemIndex;
+					const size_t selection = focus;
 
 					if (focus != oldFocus)
 					{
