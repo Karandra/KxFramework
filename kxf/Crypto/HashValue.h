@@ -73,21 +73,31 @@ namespace kxf::Crypto
 			template<class = std::enable_if_t<Private::IsHashConvertibleToInteger<bitLength, uint8_t>()>>
 			auto ToInt() const noexcept
 			{
+				auto Convert = [](auto& value)
+				{
+					std::memcpy(&value, m_Hash.data(), sizeof(value));
+					return value;
+				};
+
 				if constexpr(bitLength == 8)
 				{
-					return *reinterpret_cast<const uint8_t*>(m_Hash.data());
+					uint8_t value = 0;
+					return Convert(value);
 				}
 				else if constexpr(bitLength == 16)
 				{
-					return *reinterpret_cast<const uint16_t*>(m_Hash.data());
+					uint16_t value = 0;
+					return Convert(value);
 				}
 				else if constexpr(bitLength == 32)
 				{
-					return *reinterpret_cast<const uint32_t*>(m_Hash.data());
+					uint32_t value = 0;
+					return Convert(value);
 				}
 				else if constexpr(bitLength == 64)
 				{
-					return *reinterpret_cast<const uint64_t*>(m_Hash.data());
+					uint64_t value = 0;
+					return Convert(value);
 				}
 				else
 				{
