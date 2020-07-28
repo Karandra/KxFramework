@@ -828,11 +828,11 @@ namespace kxf::Geometry
 			}
 			constexpr TDerived& Deflate(TValue dxy) noexcept
 			{
-				return Inflate(dxy, dxy);
+				return Inflate(-dxy, -dxy);
 			}
 			constexpr TDerived& Deflate(const TSize& dxy) noexcept
 			{
-				return Inflate(dxy.GetWidth(), dxy.GetHeight());
+				return Inflate(-dxy.GetWidth(), -dxy.GetHeight());
 			}
 
 		public:
@@ -1006,8 +1006,6 @@ namespace kxf
 			constexpr Point(const wxPoint2DDouble& other) noexcept
 				:BasicPoint(other.m_y, other.m_y)
 			{
-				Point a = Point() + Point();
-				a += Point();
 			}
 
 		public:
