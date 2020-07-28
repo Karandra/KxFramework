@@ -33,7 +33,7 @@ namespace kxf::Sciter
 		SetFontSmoothingMode(FontSmoothing::SystemDefault);
 		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_HTTPS_ERROR, 1);
 		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_CONNECTION_TIMEOUT, 20);
-		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_TRANSPARENT_WINDOW, true);
+		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_TRANSPARENT_WINDOW, static_cast<uintptr_t>(true));
 		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_SET_SCRIPT_RUNTIME_FEATURES, ALLOW_FILE_IO|ALLOW_SOCKET_IO|ALLOW_EVAL|ALLOW_SYSINFO);
 	}
 	std::pair<int, int> Host::UpdateWindowStyle()
@@ -276,8 +276,8 @@ namespace kxf::Sciter
 		const int paddingX = wxSystemSettings::GetMetric(wxSYS_SMALLICON_X, &m_SciterWindow);
 		const int paddingY = wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y, &m_SciterWindow);
 
-		int width = GetSciterAPI()->SciterGetMinWidth(m_SciterWindow.GetHandle()) + paddingX;
-		int height = GetSciterAPI()->SciterGetMinHeight(m_SciterWindow.GetHandle(), width) + paddingY;
+		const int width = GetSciterAPI()->SciterGetMinWidth(m_SciterWindow.GetHandle()) + paddingX;
+		const int height = GetSciterAPI()->SciterGetMinHeight(m_SciterWindow.GetHandle(), width) + paddingY;
 
 		return m_SciterWindow.FromDIP(Size(width, height));
 	}
