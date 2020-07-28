@@ -277,8 +277,9 @@ namespace kxf::Sciter
 		SYSTEMTIME systemTime = value.GetSystemTime();
 		if (FILETIME fileTime = {}; ::SystemTimeToFileTime(&systemTime, &fileTime))
 		{
+			// 'DateTime' is always in local time
 			constexpr bool isUTC = false;
-			GetSciterAPI()->ValueInt64DataSet(ToSciterScriptValue(m_Value), *reinterpret_cast<uint64_t*>(&fileTime), T_DATE, isUTC);
+			GetSciterAPI()->ValueInt64DataSet(ToSciterScriptValue(m_Value), Utility::IntFromLowHigh<uint64_t>(fileTime.dwLowDateTime, fileTime.dwHighDateTime), T_DATE, isUTC);
 		}
 		return *this;
 	}
@@ -286,8 +287,8 @@ namespace kxf::Sciter
 	{
 		Clear();
 
-		// We need precise value in seconds as a floating point number so get seconds and multiply ourselves
-		double seconds = value.GetMilliseconds() * 1000;
+		// We need precise value in seconds as a floating point number so get the milliseconds and multiply ourselves
+		double seconds = static_cast<double>(value.GetMilliseconds()) * 1000.0;
 		GetSciterAPI()->ValueFloatDataSet(ToSciterScriptValue(m_Value), seconds, T_DURATION, 0);
 
 		return *this;
