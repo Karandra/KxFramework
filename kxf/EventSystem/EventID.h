@@ -151,7 +151,7 @@ namespace kxf
 		public:
 			bool IsNull() const noexcept
 			{
-				m_ID.IsNull();
+				return m_ID.IsNull();
 			}
 			wxEventTypeTag<T> ToWxTag() const noexcept
 			{
