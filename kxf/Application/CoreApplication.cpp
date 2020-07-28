@@ -128,7 +128,7 @@ namespace kxf
 		{
 			if (!m_DLLNotificationsCookie)
 			{
-				if (eventItem.IsSameEventID(DynamicLibraryEvent::EvtLoaded) || eventItem.IsSameEventID(DynamicLibraryEvent::EvtLoaded))
+				if (eventItem.IsSameEventID(DynamicLibraryEvent::EvtLoaded) || eventItem.IsSameEventID(DynamicLibraryEvent::EvtUnloaded))
 				{
 					return InitDLLNotifications();
 				}
