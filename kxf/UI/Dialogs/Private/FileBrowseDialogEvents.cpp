@@ -55,18 +55,18 @@ namespace kxf::UI::Private
 	FileBrowseDialogEvents::FileBrowseDialogEvents(FileBrowseDialog& fileBrowseDialog)
 	{
 		m_Dialog = &fileBrowseDialog;
-		if (m_Dialog)
+		if (m_Dialog->m_Instance)
 		{
 			m_Dialog->m_Instance->Advise(this, &m_EventsCookie);
 		}
 	}
 	FileBrowseDialogEvents::~FileBrowseDialogEvents()
 	{
-		if (m_Dialog)
+		if (m_Dialog && m_Dialog->m_Instance)
 		{
 			m_Dialog->m_Instance->Unadvise(m_EventsCookie);
-			m_Dialog = nullptr;
 		}
+		m_Dialog = nullptr;
 		m_EventsCookie = 0;
 	}
 
