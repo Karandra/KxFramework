@@ -5,7 +5,7 @@
 
 namespace
 {
-	constexpr char g_InvalidDrive = '\255';
+	constexpr char g_InvalidDrive = std::numeric_limits<unsigned char>::max();
 	constexpr size_t g_FirstLegacyVolume = 'A';
 	constexpr size_t g_LastLegacyVolume = 'Z';
 	constexpr size_t g_LegacyVolumesCount = g_LastLegacyVolume - g_FirstLegacyVolume + 1;
