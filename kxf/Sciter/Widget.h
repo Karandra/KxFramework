@@ -33,14 +33,24 @@ namespace kxf::Sciter
 			WidgetFactory& m_Factory;
 			Host& m_Host;
 
-		protected:
+		private:
 			auto AccessThisEvtHandler()
 			{
-				return EventSystem::EvtHandlerAccessor(m_EvtHandler);
+				return EventSystem::EvtHandlerAccessor(GetThisEvtHandler());
 			}
 			auto AccessTopEvtHandler()
 			{
-				return EventSystem::EvtHandlerAccessor(GetEventHandler());
+				return EventSystem::EvtHandlerAccessor(GetTopEvtHandler());
+			}
+
+		protected:
+			IEvtHandler& GetThisEvtHandler() noexcept
+			{
+				return m_EvtHandler;
+			}
+			IEvtHandler& GetTopEvtHandler() noexcept
+			{
+				return *m_EventHandlerStack.GetTop();
 			}
 
 			// IEvtHandler
@@ -168,7 +178,7 @@ namespace kxf::Sciter
 		public:
 			IEvtHandler& GetEventHandler()
 			{
-				return *m_EventHandlerStack.GetTop();
+				return GetTopEvtHandler();
 			}
 
 			void PushEventHandler(IEvtHandler& evtHandler)
