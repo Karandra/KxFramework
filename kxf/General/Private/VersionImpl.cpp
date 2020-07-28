@@ -127,14 +127,14 @@ namespace kxf::Private::Version
 				const wxChar* string = items[i].m_String;
 
 				// Don't print '0' for first element if it has non-empty string part
-				if (i == 0 && num == 0 && string)
+				if (i == 0 && num == 0 && *string)
 				{
 					result << string;
 				}
 				else
 				{
 					result << String::Format(wxS("%1"), num);
-					if (string)
+					if (*string)
 					{
 						result << string;
 					}
