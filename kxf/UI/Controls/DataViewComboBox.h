@@ -78,7 +78,7 @@ namespace kxf::UI::DataView
 						 const wxValidator& validator = wxDefaultValidator
 			)
 			{
-				Create(parent, id, style, validator);
+				ComboCtrl::Create(parent, id, style, validator);
 			}
 			bool Create(wxWindow* parent,
 						wxWindowID id,
