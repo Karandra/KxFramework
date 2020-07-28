@@ -80,7 +80,7 @@ namespace kxf::Sciter
 			}
 			case CURSOR_TYPE::CURSOR_NO:
 			{
-				return wxStockCursor::wxCURSOR_WAIT;
+				return wxStockCursor::wxCURSOR_NO_ENTRY;
 			}
 			case CURSOR_TYPE::CURSOR_APPSTARTING:
 			{
@@ -254,7 +254,6 @@ namespace kxf::Sciter
 		MOUSE_PARAMS& parameters = *reinterpret_cast<MOUSE_PARAMS*>(context);
 
 		EventID eventID;
-		MouseEvent event = MakeEvent<MouseEvent>(*this);
 		switch (parameters.cmd)
 		{
 			case MOUSE_EVENTS::MOUSE_ENTER:
@@ -309,6 +308,7 @@ namespace kxf::Sciter
 
 		if (eventID)
 		{
+			MouseEvent event = MakeEvent<MouseEvent>(*this);
 			event.SetElement(element);
 			event.SetTargetElement(FromSciterElement(parameters.target));
 			event.SetPosition({parameters.pos_view.x, parameters.pos_view.y});
@@ -327,7 +327,6 @@ namespace kxf::Sciter
 		FOCUS_PARAMS& parameters = *reinterpret_cast<FOCUS_PARAMS*>(context);
 
 		EventID eventID;
-		FocusEvent event = MakeEvent<FocusEvent>(*this);
 		switch (parameters.cmd)
 		{
 			case FOCUS_EVENTS::FOCUS_GOT:
@@ -364,6 +363,7 @@ namespace kxf::Sciter
 
 		if (eventID)
 		{
+			FocusEvent event = MakeEvent<FocusEvent>(*this);
 			event.SetElement(element);
 			event.SetTargetElement(FromSciterElement(parameters.target));
 
@@ -391,7 +391,6 @@ namespace kxf::Sciter
 		SCROLL_PARAMS& parameters = *reinterpret_cast<SCROLL_PARAMS*>(context);
 
 		EventID eventID;
-		ScrollEvent event = MakeEvent<ScrollEvent>(*this);
 		switch (parameters.cmd)
 		{
 			case SCROLL_EVENTS::SCROLL_HOME:
@@ -448,6 +447,7 @@ namespace kxf::Sciter
 
 		if (eventID)
 		{
+			ScrollEvent event = MakeEvent<ScrollEvent>(*this);
 			event.SetElement(element);
 			event.SetTargetElement(FromSciterElement(parameters.target));
 			event.SetOrientation(parameters.vertical ? wxVERTICAL : wxHORIZONTAL);
@@ -463,7 +463,6 @@ namespace kxf::Sciter
 		DRAW_PARAMS& parameters = *reinterpret_cast<DRAW_PARAMS*>(context);
 
 		EventID eventID;
-		PaintEvent event = MakeEvent<PaintEvent>(*this);
 		switch (parameters.cmd)
 		{
 			case DRAW_EVENTS::DRAW_BACKGROUND:
@@ -490,6 +489,7 @@ namespace kxf::Sciter
 
 		if (eventID)
 		{
+			PaintEvent event = MakeEvent<PaintEvent>(*this);
 			event.SetElement(element);
 			event.SetGraphicsContext(FromSciterGraphicsContext(parameters.gfx));
 			event.SetRect(Utility::FromWindowsRect(parameters.area));
@@ -503,7 +503,6 @@ namespace kxf::Sciter
 		BEHAVIOR_EVENT_PARAMS& parameters = *reinterpret_cast<BEHAVIOR_EVENT_PARAMS*>(context);
 
 		EventID eventID;
-		BehaviorEvent event = MakeEvent<BehaviorEvent>(*this);
 		switch (parameters.cmd)
 		{
 			case BEHAVIOR_EVENTS::BUTTON_CLICK:
@@ -743,7 +742,7 @@ namespace kxf::Sciter
 
 			case BEHAVIOR_EVENTS::VISIUAL_STATUS_CHANGED:
 			{
-				eventID = BehaviorEvent::EvtAnimation;
+				eventID = BehaviorEvent::EvtVisualStatusChanged;
 				break;
 			}
 			case BEHAVIOR_EVENTS::DISABLED_STATUS_CHANGED:
@@ -765,6 +764,7 @@ namespace kxf::Sciter
 
 		if (eventID)
 		{
+			BehaviorEvent event = MakeEvent<BehaviorEvent>(*this);
 			event.SetElement(element);
 			event.SetSourceElement(FromSciterElement(parameters.he));
 			event.SetTargetElement(FromSciterElement(parameters.heTarget));
