@@ -470,17 +470,15 @@ namespace kxf
 					directories.emplace_back(path);
 
 					size_t failCount = 0;
-					while (!shouldExit)
+					while (!shouldExit && !directories.empty())
 					{
-						// Not be the best solution but anyway
-						if (failCount >= 10000)
+						for (size_t i = directories.size() - 1; i != 0; i--)
 						{
-							return false;
-						}
-
-						for (const String& directory: directories)
-						{
-							if (!DoRemoveDirectory(directory))
+							if (DoRemoveDirectory(directories[i]))
+							{
+								directories.erase(directories.begin() + i);
+							}
+							else
 							{
 								failCount++;
 								if (*Win32Error::GetLastError() != ERROR_DIR_NOT_EMPTY)
@@ -490,8 +488,14 @@ namespace kxf
 								}
 							}
 						}
+
+						// Not be the best solution but anyway
+						if (failCount >= 10000)
+						{
+							return false;
+						}
 					}
-					return !shouldExit;
+					return !shouldExit && directories.empty();
 				}
 				else
 				{
@@ -547,7 +551,7 @@ namespace kxf
 		FileStream file;
 		if (OpenFileByID(m_CurrentVolume, id, file))
 		{
-			return !file.GetAttributes().Contains(FileAttribute::Directory);
+			return file.GetAttributes().Contains(FileAttribute::Directory);
 		}
 		return false;
 	}
