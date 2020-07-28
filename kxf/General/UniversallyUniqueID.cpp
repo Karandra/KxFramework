@@ -113,6 +113,7 @@ namespace kxf
 	UniversallyUniqueID::UniversallyUniqueID(LocallyUniqueID other) noexcept
 	{
 		uint64_t vlaue = other.ToInt();
+		std::memset(&m_ID, 0, sizeof(vlaue));
 		std::memcpy(&m_ID, &vlaue, sizeof(vlaue));
 	}
 
