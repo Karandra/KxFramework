@@ -72,11 +72,11 @@ namespace kxf::Sciter
 		return node;
 	}
 
-	bool Element::DoAcquire(ElementHandle* handle)
+	bool Element::DoAcquire(ElementHandle* handle) noexcept
 	{
 		return GetSciterAPI()->Sciter_UseElement(ToSciterElement(handle)) == SCDOM_OK;
 	}
-	void Element::DoRelease()
+	void Element::DoRelease() noexcept
 	{
 		GetSciterAPI()->Sciter_UnuseElement(ToSciterElement(m_Handle));
 	}
@@ -455,7 +455,7 @@ namespace kxf::Sciter
 			Remove();
 
 			// Now new element is this element
-			*this = newElement;
+			*this = std::move(newElement);
 
 			return true;
 		}

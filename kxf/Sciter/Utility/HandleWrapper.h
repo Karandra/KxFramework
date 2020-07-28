@@ -9,17 +9,17 @@ namespace kxf::Sciter
 			THandle* m_Handle = nullptr;
 
 		private:
-			TObject& GetSelf()
+			TObject& GetSelf() noexcept
 			{
 				return static_cast<TObject&>(*this);
 			}
-			const TObject& GetSelf() const
+			const TObject& GetSelf() const noexcept
 			{
 				return static_cast<const TObject&>(*this);
 			}
 
 		protected:
-			void Acquire(THandle* handle)
+			void Acquire(THandle* handle) noexcept
 			{
 				Release();
 				if (GetSelf().DoAcquire(handle))
@@ -27,7 +27,7 @@ namespace kxf::Sciter
 					m_Handle = handle;
 				}
 			}
-			void Release()
+			void Release() noexcept
 			{
 				if (m_Handle)
 				{
@@ -36,17 +36,17 @@ namespace kxf::Sciter
 				m_Handle = nullptr;
 			}
 
-			void CopyFrom(const HandleWrapper& other)
+			void CopyFrom(const HandleWrapper& other) noexcept
 			{
 				Release();
 				Acquire(other.m_Handle);
 			}
-			void CopyFrom(THandle* handle)
+			void CopyFrom(THandle* handle) noexcept
 			{
 				Release();
 				Acquire(handle);
 			}
-			void MoveFrom(HandleWrapper& other)
+			void MoveFrom(HandleWrapper& other) noexcept
 			{
 				Release();
 				m_Handle = other.m_Handle;
@@ -54,39 +54,39 @@ namespace kxf::Sciter
 			}
 			
 		protected:
-			HandleWrapper() = default;
+			HandleWrapper() noexcept = default;
 			HandleWrapper(THandle* handle)
 			{
-				Acquire(handle);
+				CopyFrom(handle);
 			}
-			HandleWrapper(const HandleWrapper& other)
+			HandleWrapper(const HandleWrapper& other) noexcept
 			{
-				Acquire(other.m_Handle);
+				CopyFrom(other);
 			}
-			HandleWrapper(HandleWrapper&& other)
+			HandleWrapper(HandleWrapper&& other) noexcept
 			{
 				MoveFrom(other);
 			}
-			~HandleWrapper()
+			~HandleWrapper() noexcept
 			{
 				Release();
 			}
 
 		public:
-			bool IsNull() const
+			bool IsNull() const noexcept
 			{
 				return m_Handle == nullptr;
 			}
-			void MakeNull()
+			void MakeNull() noexcept
 			{
 				Release();
 			}
-			THandle* GetHandle() const
+			THandle* GetHandle() const noexcept
 			{
 				return m_Handle;
 			}
-		
-			HandleWrapper& AttachHandle(THandle* handle)
+			
+			HandleWrapper& AttachHandle(THandle* handle) noexcept
 			{
 				if (IsNull())
 				{
@@ -94,7 +94,7 @@ namespace kxf::Sciter
 				}
 				return *this;
 			}
-			THandle* DetachHandle()
+			THandle* DetachHandle() noexcept
 			{
 				THandle* handle = m_Handle;
 				m_Handle = nullptr;
@@ -102,22 +102,33 @@ namespace kxf::Sciter
 			}
 
 		public:
-			bool operator==(const HandleWrapper& other) const
+			explicit operator bool() const noexcept
+			{
+				return !IsNull();
+			}
+			bool operator!() const noexcept
+			{
+				return IsNull();
+			}
+
+			bool operator==(const HandleWrapper& other) const noexcept
 			{
 				return m_Handle == other.m_Handle;
 			}
-			bool operator!=(const HandleWrapper& other) const
+			bool operator!=(const HandleWrapper& other) const noexcept
 			{
 				return !(*this == other);
 			}
 
-			explicit operator bool() const
+			HandleWrapper& operator=(const HandleWrapper& other) noexcept
 			{
-				return !IsNull();
+				CopyFrom(other);
+				return *this;
 			}
-			bool operator!() const
+			HandleWrapper& operator=(HandleWrapper&& other) noexcept
 			{
-				return IsNull();
+				MoveFrom(other);
+				return *this;
 			}
 	};
 }

@@ -23,20 +23,20 @@ namespace kxf::Sciter
 			NodeHandle* m_Handle = nullptr;
 
 		private:
-			bool DoAcquire(NodeHandle* handle);
-			void DoRelease();
+			bool DoAcquire(NodeHandle* handle) noexcept;
+			void DoRelease() noexcept;
 
 		public:
-			Node() = default;
-			Node(NodeHandle* handle)
+			Node() noexcept = default;
+			Node(NodeHandle* handle) noexcept
 				:HandleWrapper(handle)
 			{
 			}
-			Node(const Node& other)
+			Node(const Node& other) noexcept
 				:HandleWrapper(other)
 			{
 			}
-			Node(Node&& other)
+			Node(Node&& other) noexcept
 				:HandleWrapper(std::move(other))
 			{
 			}
@@ -74,17 +74,17 @@ namespace kxf::Sciter
 			bool SetValue(StringView value) const;
 
 		public:
-			Node& operator=(const Node& other)
+			Node& operator=(const Node& other) noexcept
 			{
 				CopyFrom(other);
 				return *this;
 			}
-			Node& operator=(Node&& other)
+			Node& operator=(Node&& other) noexcept
 			{
 				MoveFrom(other);
 				return *this;
 			}
-			Node& operator=(NodeHandle* handle)
+			Node& operator=(NodeHandle* handle) noexcept
 			{
 				CopyFrom(handle);
 				return *this;

@@ -54,11 +54,11 @@ namespace kxf::Sciter
 		return DoCreateTextNode(GetSciterAPI()->SciterCreateCommentNode, value);
 	}
 
-	bool Node::DoAcquire(NodeHandle* handle)
+	bool Node::DoAcquire(NodeHandle* handle) noexcept
 	{
 		return GetSciterAPI()->SciterNodeAddRef(ToSciterNode(handle)) == SCDOM_OK;
 	}
-	void Node::DoRelease()
+	void Node::DoRelease() noexcept
 	{
 		GetSciterAPI()->SciterNodeRelease(ToSciterNode(m_Handle));
 	}

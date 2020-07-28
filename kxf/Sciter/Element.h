@@ -32,20 +32,20 @@ namespace kxf::Sciter
 			static Element Create(const String& tagName, const String& value = {});
 
 		private:
-			bool DoAcquire(ElementHandle* handle);
-			void DoRelease();
+			bool DoAcquire(ElementHandle* handle) noexcept;
+			void DoRelease() noexcept;
 
 		public:
-			Element() = default;
-			Element(ElementHandle* handle)
+			Element() noexcept = default;
+			Element(ElementHandle* handle) noexcept
 				:HandleWrapper(handle)
 			{
 			}
-			Element(const Element& other)
+			Element(const Element& other) noexcept
 				:HandleWrapper(other)
 			{
 			}
-			Element(Element&& other)
+			Element(Element&& other) noexcept
 				:HandleWrapper(std::move(other))
 			{
 			}
@@ -230,17 +230,17 @@ namespace kxf::Sciter
 			ScriptValue ExecuteScript(const String& script);
 
 		public:
-			Element& operator=(const Element& other)
+			Element& operator=(const Element& other) noexcept
 			{
 				CopyFrom(other);
 				return *this;
 			}
-			Element& operator=(Element&& other)
+			Element& operator=(Element&& other) noexcept
 			{
 				MoveFrom(other);
 				return *this;
 			}
-			Element& operator=(ElementHandle* handle)
+			Element& operator=(ElementHandle* handle) noexcept
 			{
 				CopyFrom(handle);
 				return *this;
