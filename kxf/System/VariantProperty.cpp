@@ -86,18 +86,17 @@ namespace
 	}
 	
 	template<class T>
-	constexpr int SimpleCompare(T a, T b) noexcept
+	constexpr int SimpleCompare(T left, T right) noexcept
 	{
-		if (a == b)
+		if (left == right)
 		{
 			return 0;
 		}
 		else
 		{
-			return a < b ? -1 : 1;
+			return left < right ? -1 : 1;
 		}
 	}
-
 }
 
 namespace kxf
@@ -149,10 +148,11 @@ namespace kxf
 		}
 		else
 		{
-			for (size_t i = 0; i <= value.size(); i++)
+			for (size_t i = 0; i < value.size(); i++)
 			{
 				m_Value->bstrVal[i] = value[i];
 			}
+			m_Value->bstrVal[value.size()] = 0;
 		}
 	}
 	void VariantProperty::AssignString(std::wstring_view value)
@@ -366,7 +366,7 @@ namespace kxf
 			return ::PropVariantCompareEx(*m_Value, *other.m_Value, PVCU_DEFAULT, PVCF_USESTRCMP);
 		};
 
-		if (m_Value->vt != m_Value->vt)
+		if (m_Value->vt != other.m_Value->vt)
 		{
 			return CompareDefault();
 		}
@@ -409,7 +409,14 @@ namespace kxf
 			}
 			case VT_CLSID:
 			{
-				return ::SimpleCompare(m_Value->date, other.m_Value->date);
+				if (m_Value->puuid && other.m_Value->puuid)
+				{
+					if (COM::FromGUID(*m_Value->puuid) == COM::FromGUID(*other.m_Value->puuid))
+					{
+						return 0;
+					}
+				}
+				return ::SimpleCompare(m_Value->puuid, other.m_Value->puuid);
 			}
 
 			case VT_I1:

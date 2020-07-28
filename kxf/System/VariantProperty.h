@@ -344,7 +344,7 @@ namespace kxf
 			}
 			bool operator>=(const VariantProperty& other) const noexcept
 			{
-				return Compare(other) <= 0;
+				return Compare(other) >= 0;
 			}
 
 			const tagPROPVARIANT* operator&() const noexcept
