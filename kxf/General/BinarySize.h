@@ -221,7 +221,7 @@ namespace kxf
 			}
 			constexpr bool operator>(const BinarySize& other) const noexcept
 			{
-				return m_Value >= other.m_Value;
+				return m_Value > other.m_Value;
 			}
 			constexpr bool operator>=(const BinarySize& other) const noexcept
 			{
