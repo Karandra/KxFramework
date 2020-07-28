@@ -67,7 +67,7 @@ namespace
 			}
 			case C2SAlpha::Auto:
 			{
-				return color.IsOpaque() ? CSS2RGB(color, C2SAlpha::Never) : CSS2RGB(color, C2SAlpha::Never);
+				return color.IsOpaque() ? CSS2RGB(color, C2SAlpha::Never) : CSS2RGB(color, C2SAlpha::Always);
 			}
 		};
 		return {};
