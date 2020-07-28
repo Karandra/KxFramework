@@ -105,7 +105,7 @@ namespace kxf::UI::DataView
 			{
 				if (!m_Rect)
 				{
-					m_Rect = {};
+					m_Rect = Rect();
 				}
 				m_Rect->X() = x;
 				m_Rect->Y() = y;
@@ -116,7 +116,7 @@ namespace kxf::UI::DataView
 			}
 			void ResetPosition()
 			{
-				m_Rect.reset();
+				SetPosition(Point::UnspecifiedPosition());
 			}
 
 			Size GetSize() const
@@ -125,8 +125,17 @@ namespace kxf::UI::DataView
 			}
 			void SetSize(const Size& size)
 			{
-				m_Rect = size;
+				if (!m_Rect)
+				{
+					m_Rect = Rect();
+				}
+				m_Rect->SetSize(size);
 			}
+			void ResetSize(const Size& size)
+			{
+				SetSize(Size::UnspecifiedSize());
+			}
+
 			int GetWidth() const
 			{
 				return GetSize().GetWidth();
