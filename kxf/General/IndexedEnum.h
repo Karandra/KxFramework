@@ -316,11 +316,11 @@ namespace kxf
 			}
 			constexpr bool HasFlag(TEnum value) const noexcept
 			{
-				Utility::HasFlag(m_Value, value);
+				return Utility::HasFlag(m_Value, value);
 			}
 			constexpr bool HasSpecifiedFlagOnly(TEnum value) const noexcept
 			{
-				return static_cast<TInt>(m_Value) & static_cast<TInt>(value) == static_cast<TInt>(value);
+				return (static_cast<TInt>(m_Value) & static_cast<TInt>(value)) == static_cast<TInt>(value);
 			}
 
 			constexpr TEnum GetValue() const noexcept
