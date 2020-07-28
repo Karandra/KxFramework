@@ -39,13 +39,13 @@ namespace
 	{
 		::CharUpperBuffW(wxStringBuffer(string, string.length()), string.length());
 	}
-	wxString StringToLower(const wxScopedCharTypeBuffer<wxChar> string) noexcept
+	wxString StringToLower(const wxScopedCharTypeBuffer<wxChar>& string) noexcept
 	{
 		wxString result = string;
 		StringMakeLower(result);
 		return result;
 	}
-	wxString StringToUpper(const wxScopedCharTypeBuffer<wxChar> string) noexcept
+	wxString StringToUpper(const wxScopedCharTypeBuffer<wxChar>& string) noexcept
 	{
 		wxString result = string;
 		StringMakeUpper(result);
