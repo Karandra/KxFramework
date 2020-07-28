@@ -269,11 +269,11 @@ namespace kxf
 				}
 			}
 
-			void Destroy()
+			void Destroy() noexcept(std::is_nothrow_destructible_v<T>)
 			{
 				static_cast<ObjectType*>(m_Object.GetBuffer())->~ObjectType();
 			}
-			void DestroyIfNeeded()
+			void DestroyIfNeeded() noexcept(std::is_nothrow_destructible_v<T>)
 			{
 				if (!m_IsReference && m_Object)
 				{
@@ -361,7 +361,7 @@ namespace kxf
 			}
 	
 		public:
-			TypedSharedMemory& operator=(TypedSharedMemory&& other) noexcept
+			TypedSharedMemory& operator=(TypedSharedMemory&& other) noexcept(std::is_nothrow_destructible_v<T>)
 			{
 				DestroyIfNeeded();
 
