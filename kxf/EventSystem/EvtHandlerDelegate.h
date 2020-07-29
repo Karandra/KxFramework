@@ -40,21 +40,13 @@ namespace kxf
 				return Access().OnDynamicUnbind(eventItem);
 			}
 
-			void DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, UniversallyUniqueID uuid = {}) override
+			void DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, UniversallyUniqueID uuid = {}, FlagSet<ProcessEventFlag> flags = {}) override
 			{
-				return Access().DoQueueEvent(std::move(event), eventID, std::move(uuid));
+				return Access().DoQueueEvent(std::move(event), eventID, std::move(uuid), flags);
 			}
-			bool DoProcessEvent(IEvent& event, const EventID& eventID = {}, IEvtHandler* onlyIn = nullptr) override
+			bool DoProcessEvent(IEvent& event, const EventID& eventID = {}, UniversallyUniqueID uuid = {}, FlagSet<ProcessEventFlag> flags = {}, IEvtHandler* onlyIn = nullptr) override
 			{
-				return Access().DoProcessEvent(event, eventID, onlyIn);
-			}
-			bool DoProcessEventSafely(IEvent& event, const EventID& eventID = {}) override
-			{
-				return Access().DoProcessEventSafely(event, eventID);
-			}
-			bool DoProcessEventLocally(IEvent& event, const EventID& eventID = {}) override
-			{
-				return Access().DoProcessEventLocally(event, eventID);
+				return Access().DoProcessEvent(event, eventID, std::move(uuid), flags, onlyIn);
 			}
 
 			bool TryBefore(IEvent& event) override

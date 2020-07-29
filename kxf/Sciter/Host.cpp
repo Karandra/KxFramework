@@ -88,7 +88,7 @@ namespace kxf::Sciter
 	bool Host::ProcessEvent(IEvent& event, const EventID& eventID)
 	{
 		//return m_SciterWindow.ProcessWindowEvent(event, eventID) && !event.IsSkipped();
-		return m_EvtHandler.ProcessEventSafely(event, eventID) && !event.IsSkipped();
+		return m_EvtHandler.ProcessEvent(event, eventID, ProcessEventFlag::HandleExceptions) && !event.IsSkipped();
 	}
 
 	void Host::AttachElementHandler(Element& element)

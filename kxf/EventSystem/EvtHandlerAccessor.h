@@ -38,21 +38,13 @@ namespace kxf::EventSystem
 				return m_EvtHandler.OnDynamicUnbind(eventItem);
 			}
 
-			void DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, UniversallyUniqueID uuid = {})
+			void DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, UniversallyUniqueID uuid = {}, FlagSet<ProcessEventFlag> flags = {})
 			{
-				m_EvtHandler.DoQueueEvent(std::move(event), eventID, std::move(uuid));
+				m_EvtHandler.DoQueueEvent(std::move(event), eventID, std::move(uuid), flags);
 			}
-			bool DoProcessEvent(IEvent& event, const EventID& eventID = {}, IEvtHandler* onlyIn = nullptr)
+			bool DoProcessEvent(IEvent& event, const EventID& eventID = {}, UniversallyUniqueID uuid = {}, FlagSet<ProcessEventFlag> flags = {}, IEvtHandler* onlyIn = nullptr)
 			{
-				return m_EvtHandler.DoProcessEvent(event, eventID, onlyIn);
-			}
-			bool DoProcessEventSafely(IEvent& event, const EventID& eventID = {})
-			{
-				return m_EvtHandler.DoProcessEventSafely(event, eventID);
-			}
-			bool DoProcessEventLocally(IEvent& event, const EventID& eventID = {})
-			{
-				return m_EvtHandler.DoProcessEventLocally(event, eventID);
+				return m_EvtHandler.DoProcessEvent(event, eventID, std::move(uuid), flags);
 			}
 
 			bool TryBefore(IEvent& event)

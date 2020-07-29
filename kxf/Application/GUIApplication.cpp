@@ -174,7 +174,7 @@ namespace kxf
 
 			BuildProcessEvent(ICoreApplication::EvtActivated, active, ActivateEventReason::Unknown)
 				.SetSourceToSelf()
-				.Execute();
+				.Process();
 		}
 	}
 

@@ -107,7 +107,7 @@ namespace kxf
 
 				if (eventID)
 				{
-					app->ProcessEventSafely(event, std::move(eventID));
+					app->ProcessEvent(event, std::move(eventID), ProcessEventFlag::HandleExceptions);
 				}
 			}
 		}, this, &m_DLLNotificationsCookie);
@@ -370,7 +370,7 @@ namespace kxf
 		// Synthesize an idle event and check if more of them are needed
 		IdleEvent& event = BuildProcessEvent(IdleEvent::EvtIdle)
 			.SetSourceToSelf()
-			.Execute()
+			.Process()
 			.GetEvent();
 
 		// Flush the logged messages if any (do this after processing the events which could have logged new messages)

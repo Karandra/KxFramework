@@ -7,7 +7,7 @@ namespace kxf::EventSystem
 	{
 		m_Processor.EnumRecieveres([this, &event](IEvtHandler& evtHandler)
 		{
-			evtHandler.ProcessEventLocally(event, event.GetEventID());
+			evtHandler.ProcessEvent(event, event.GetEventID(), ProcessEventFlag::Locally);
 			return true;
 		});
 		return true;

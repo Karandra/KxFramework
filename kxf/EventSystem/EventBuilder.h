@@ -23,7 +23,7 @@ namespace kxf::EventSystem::Private
 			{
 				if (!Self().m_IsSent)
 				{
-					Self().Execute();
+					Self().Process();
 				}
 			}
 
@@ -45,6 +45,18 @@ namespace kxf::EventSystem::Private
 				Self().m_Event->SetEventSource(&source);
 				return Self();
 			}
+
+		public:
+			T& Process(FlagSet<ProcessEventFlag> flags = {})
+			{
+				Self().SendEvent({}, flags);
+				return Self();
+			}
+			T& ProcessUnique(UniversallyUniqueID uuid, FlagSet<ProcessEventFlag> flags = {})
+			{
+				Self().SendEvent(std::move(uuid), flags);
+				return Self();
+			}
 	};
 }
 
@@ -64,25 +76,9 @@ namespace kxf::EventSystem
 
 		private:
 			void Move(EventBuilderBase&& other) noexcept;
-			void SendEvent(bool locally, bool safely, UniversallyUniqueID uuid);
 
 		protected:
-			void QueueEvent(UniversallyUniqueID id = {})
-			{
-				SendEvent(false, false, std::move(id));
-			}
-			void ProcessEvent()
-			{
-				SendEvent(false, false, {});
-			}
-			void ProcessEventLocally()
-			{
-				SendEvent(true, false, {});
-			}
-			void ProcessEventSafely()
-			{
-				SendEvent(false, true, {});
-			}
+			void SendEvent(UniversallyUniqueID uuid, FlagSet<ProcessEventFlag> flags);
 
 		private:
 			EventBuilderBase() = default;
@@ -153,22 +149,6 @@ namespace kxf::EventSystem
 			DirectEventBuilder(const DirectEventBuilder&) = delete;
 
 		public:
-			DirectEventBuilder& Execute()
-			{
-				EventBuilderBase::ProcessEvent();
-				return *this;
-			}
-			DirectEventBuilder& ExecuteSafely()
-			{
-				EventBuilderBase::ProcessEventSafely();
-				return *this;
-			}
-			DirectEventBuilder& ExecuteLocally()
-			{
-				EventBuilderBase::ProcessEventLocally();
-				return *this;
-			}
-
 			TEvent& GetEvent() noexcept
 			{
 				return m_EventInstance;
@@ -200,17 +180,6 @@ namespace kxf::EventSystem
 			QueuedEventBuilder(const QueuedEventBuilder&) = delete;
 
 		public:
-			QueuedEventBuilder& Execute()
-			{
-				EventBuilderBase::QueueEvent();
-				return *this;
-			}
-			QueuedEventBuilder& ExecuteUnique(UniversallyUniqueID id)
-			{
-				EventBuilderBase::QueueEvent(std::move(id));
-				return *this;
-			}
-
 			TEvent* GetEvent() noexcept
 			{
 				return m_Event.Get();

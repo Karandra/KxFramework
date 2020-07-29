@@ -16,6 +16,13 @@ namespace kxf
 	class KX_API EvtHandler: public RTTI::ImplementInterface<EvtHandler, IEvtHandler>
 	{
 		private:
+			struct PendingItem final
+			{
+				std::unique_ptr<IEvent> Event;
+				FlagSet<ProcessEventFlag> ProcessFlags;
+			};
+
+		private:
 			// Dynamic events table
 			RecursiveRWLock m_EventTableLock;
 			std::vector<EventItem> m_EventTable;
@@ -23,7 +30,7 @@ namespace kxf
 
 			// Pending events
 			ReadWriteLock m_PendingEventsLock;
-			std::vector<std::unique_ptr<IEvent>> m_PendingEvents;
+			std::vector<PendingItem> m_PendingEvents;
 
 			// Events chain
 			std::atomic<IEvtHandler*> m_PrevHandler = nullptr;
@@ -32,10 +39,11 @@ namespace kxf
 			// Enabled/disabled switch
 			std::atomic<bool> m_IsEnabled = true;
 
-		protected:
+		private:
 			void Move(EvtHandler&& other, bool destroy);
 			void Destroy();
 
+		protected:
 			void PrepareEvent(IEvent& event, const EventID& eventID, const UniversallyUniqueID& uuid = {});
 			bool FreeBindSlot(const LocallyUniqueID& bindSlot);
 			void FreeAllBindSlots();
@@ -64,10 +72,8 @@ namespace kxf
 				return true;
 			}
 
-			void DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, UniversallyUniqueID uuid = {}) override;
-			bool DoProcessEvent(IEvent& event, const EventID& eventID = {}, IEvtHandler* onlyIn = nullptr) override;
-			bool DoProcessEventSafely(IEvent& event, const EventID& eventID = {}) override;
-			bool DoProcessEventLocally(IEvent& event, const EventID& eventID = {}) override;
+			void DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, UniversallyUniqueID uuid = {}, FlagSet<ProcessEventFlag> flags = {}) override;
+			bool DoProcessEvent(IEvent& event, const EventID& eventID = {}, UniversallyUniqueID uuid = {}, FlagSet<ProcessEventFlag> flags = {}, IEvtHandler* onlyIn = nullptr) override;
 
 			bool TryBefore(IEvent& event) override;
 			bool TryAfter(IEvent& event) override;

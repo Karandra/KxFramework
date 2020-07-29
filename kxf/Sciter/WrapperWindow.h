@@ -171,12 +171,9 @@ namespace kxf::Sciter
 		public:
 			using EvtHandler::Bind;
 			using EvtHandler::Unbind;
-			using EvtHandler::UnbindAll;
 
 			using EvtHandler::QueueEvent;
 			using EvtHandler::ProcessEvent;
-			using EvtHandler::ProcessEventLocally;
-			using EvtHandler::ProcessEventSafely;
 
 			using EvtHandler::ProcessPendingEvents;
 			using EvtHandler::DiscardPendingEvents;

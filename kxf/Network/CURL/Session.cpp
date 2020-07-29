@@ -47,7 +47,7 @@ namespace kxf
 			curl_easy_getinfo(session.GetHandle().GetNativeHandle(), CURLINFO_SPEED_DOWNLOAD_T, &downloadSpeed);
 			event.SetSpeed(BinarySize::FromBytes(downloadSpeed));
 
-			session.ProcessEventSafely(event, CURLEvent::EvtDownload);
+			session.ProcessEvent(event, CURLEvent::EvtDownload, ProcessEventFlag::HandleExceptions);
 			return dataLength;
 		}
 	}
@@ -66,7 +66,7 @@ namespace kxf
 		event.SetSource(session.m_URI.BuildUnescapedURI());
 		event.SetResponseData(data, length);
 
-		session.ProcessEventSafely(event, CURLEvent::EvtResponseHeader);
+		session.ProcessEvent(event, CURLEvent::EvtResponseHeader, ProcessEventFlag::HandleExceptions);
 		return length;
 	}
 

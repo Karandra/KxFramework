@@ -100,20 +100,18 @@ namespace kxf
 				// Ensure that 'OnExit' is called if 'OnInit' had succeeded
 				Utility::CallAtScopeExit callOnExit = [&]()
 				{
+					// Don't call 'OnExit' if 'OnInit' failed
 					m_Application.OnExit();
 				};
 				
 				// Run the main loop
 				return m_Application.OnRun();
 			}
-
-			// Don't call 'OnExit' if 'OnInit' failed
-			return m_Application.GetExitCode().value_or(-1);
 		}
 		catch (...)
 		{
 			m_Application.OnUnhandledException();
-			return m_Application.GetExitCode().value_or(-1);
 		}
+		return m_Application.GetExitCode().value_or(-1);
 	}
 }

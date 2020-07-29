@@ -35,6 +35,18 @@ namespace kxf
 	};
 	KxDeclareFlagSet(EventFlag);
 
+	enum class ProcessEventFlag: uint32_t
+	{
+		None = 0,
+
+		// Try to process the event in this handler and all those chained to it
+		Locally = 1 << 0,
+
+		// Processes an event and handles any exceptions that occur in the process
+		HandleExceptions = 1 << 1
+	};
+	KxDeclareFlagSet(ProcessEventFlag);
+
 	enum class SignalParametersSemantics
 	{
 		Move,

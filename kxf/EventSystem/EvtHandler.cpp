@@ -91,15 +91,14 @@ namespace kxf
 			// we return.
 			//
 			// However we must call 'DoProcessEvent' and not 'TryHereOnly' because the
-			// existing code (including some in wxWidgets itself) expects the
-			// overridden ProcessEvent() in its custom event handlers pushed on a
-			// window to be called. 
+			// existing code expects the overridden 'DoProcessEvent' in its custom event
+			// handlers pushed on a widget to be called.
 			//
 			// So we must call 'DoProcessEvent' but it must not do what it usually
 			// does. To resolve this paradox we set up a special parameter for 'DoProcessEvent'
 			// to make it process only in specified handler.
 
-			if (EventSystem::EvtHandlerAccessor(*evtHandler).DoProcessEvent(event, {}, evtHandler))
+			if (EventSystem::EvtHandlerAccessor(*evtHandler).DoProcessEvent(event, {}, {}, {}, evtHandler))
 			{
 				// Make sure "skipped" flag is not set as the event was really
 				// processed in this case. Normally it shouldn't be set anyhow but
@@ -262,7 +261,7 @@ namespace kxf
 		{
 			if (!app || !app->OnMainLoopException())
 			{
-				// If OnExceptionInMainLoop() returns false, we're supposed to exit
+				// If 'OnMainLoopException' returns false, we're supposed to exit
 				// the program and for this we need to exit the main loop, not the
 				// possibly nested one we're running right now.
 				if (app)
@@ -275,7 +274,6 @@ namespace kxf
 					// so if we can't ensure this in any other way, do it brutally like this.
 					std::terminate();
 				}
-
 			}
 			// Continue running current event loop
 		}
@@ -331,7 +329,7 @@ namespace kxf
 		}
 	}
 	
-	void EvtHandler::DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID, UniversallyUniqueID uuid)
+	void EvtHandler::DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID, UniversallyUniqueID uuid, FlagSet<ProcessEventFlag> flags)
 	{
 		auto app = ICoreApplication::GetInstance();
 		if (app && event)
@@ -345,22 +343,23 @@ namespace kxf
 				{
 					// If this event has a unique ID, search for the last posted event with the same ID and,
 					// if it'll be found, replace it with our new event, otherwise just add it at the end as usual.
-					auto it = std::find_if(m_PendingEvents.rbegin(), m_PendingEvents.rend(), [&](const auto& event)
+					auto it = std::find_if(m_PendingEvents.rbegin(), m_PendingEvents.rend(), [&](const PendingItem& item)
 					{
-						return event->GetUniqueID() == uuid;
+						return item.Event->GetUniqueID() == uuid;
 					});
 					if (it != m_PendingEvents.rend())
 					{
-						*it = std::move(event);
+						it->Event = std::move(event);
+						it->ProcessFlags = flags;
 					}
 					else
 					{
-						m_PendingEvents.emplace_back(std::move(event));
+						m_PendingEvents.emplace_back(PendingItem{std::move(event), flags});
 					}
 				}
 				else
 				{
-					m_PendingEvents.emplace_back(std::move(event));
+					m_PendingEvents.emplace_back(PendingItem{std::move(event), flags});
 				}
 
 				// Add this event handler to the list of event handlers that have pending events
@@ -376,74 +375,103 @@ namespace kxf
 			app->WakeUp();
 		}
 	}
-	bool EvtHandler::DoProcessEvent(IEvent& event, const EventID& eventID, IEvtHandler* onlyIn)
+	bool EvtHandler::DoProcessEvent(IEvent& event, const EventID& eventID, UniversallyUniqueID uuid, FlagSet<ProcessEventFlag> flags, IEvtHandler* onlyIn)
 	{
-		PrepareEvent(event, eventID);
-
-		// The very first thing we do is to allow any registered filters to hook
-		// into event processing in order to globally pre-process all events.
-		//
-		// Note that we should only do it if we're the first event handler called
-		// to avoid calling 'FilterEvent' multiple times as the event goes through
-		// the event handler chain and possibly upwards the window hierarchy.
-		if (!EventSystem::EventAccessor(event).WasProcessed())
+		// Short-circuit for 'ProcessEventFlag::Locally' option
+		if (!onlyIn && flags.Contains(ProcessEventFlag::Locally))
 		{
-			using Result = IEventFilter::Result;
-			if (auto app = ICoreApplication::GetInstance())
+			auto BeginLocally = [&]()
 			{
-				const Result result = app->FilterEvent(event);
-				if (result != Result::Skip)
+				PrepareEvent(event, eventID, std::move(uuid));
+				return TryLocally(event);
+			};
+			if (flags.Contains(ProcessEventFlag::HandleExceptions))
+			{
+				try
 				{
-					return result != Result::Ignore;
+					return BeginLocally();
 				}
-				// Proceed normally
+				catch (...)
+				{
+					ConsumeException(event);
+				}
 			}
-		}
-
-		// Short circuit the event processing logic if we're requested to process
-		// this event in this handler only, see 'TryChain' for more details.
-		if (this == onlyIn)
-		{
-			return TryBeforeAndHere(event);
-		}
-
-		// Try to process the event in this handler itself
-		if (TryLocally(event))
-		{
-			// It is possible that 'TryChain' called from 'TryLocally' returned true but
-			// the event was not really processed: this happens if a custom handler ignores
-			// the request to process the event in this handler only and in this case we should
-			// skip the post processing done in 'TryAfter' but still return the correct value
-			// ourselves to indicate whether we did or did not find a handler for this event.
-			return !event.IsSkipped();
-		}
-
-		// If we still didn't find a handler, propagate the event upwards the window chain and/or
-		// to the application object.
-		if (TryAfter(event))
-		{
-			return true;
-		}
-
-		// No handler found anywhere, bail out.
-		return false;
-	}
-	bool EvtHandler::DoProcessEventSafely(IEvent& event, const EventID& eventID)
-	{
-		try
-		{
-			return DoProcessEvent(event, eventID);
-		}
-		catch (...)
-		{
-			ConsumeException(event);
+			else
+			{
+				return BeginLocally();
+			}
 			return false;
 		}
-	}
-	bool EvtHandler::DoProcessEventLocally(IEvent& event, const EventID& eventID)
-	{
-		PrepareEvent(event, eventID);
-		return TryLocally(event);
+		
+		// Main entry point for event processing
+		auto BeginProcessEvent = [&]()
+		{
+			PrepareEvent(event, eventID, std::move(uuid));
+
+			// The very first thing we do is to allow any registered filters to hook
+			// into event processing in order to globally pre-process all events.
+			//
+			// Note that we should only do it if we're the first event handler called
+			// to avoid calling 'FilterEvent' multiple times as the event goes through
+			// the event handler chain and possibly upwards the window hierarchy.
+			if (!EventSystem::EventAccessor(event).WasProcessed())
+			{
+				using Result = IEventFilter::Result;
+				if (auto app = ICoreApplication::GetInstance())
+				{
+					const Result result = app->FilterEvent(event);
+					if (result != Result::Skip)
+					{
+						return result != Result::Ignore;
+					}
+					// Proceed normally
+				}
+			}
+
+			// Short circuit the event processing logic if we're requested to process
+			// this event in this handler only, see 'TryChain' for more details.
+			if (this == onlyIn)
+			{
+				return TryBeforeAndHere(event);
+			}
+
+			// Try to process the event in this handler itself
+			if (TryLocally(event))
+			{
+				// It is possible that 'TryChain' called from 'TryLocally' returned true but
+				// the event was not really processed: this happens if a custom handler ignores
+				// the request to process the event in this handler only and in this case we should
+				// skip the post processing done in 'TryAfter' but still return the correct value
+				// ourselves to indicate whether we did or did not find a handler for this event.
+				return !event.IsSkipped();
+			}
+
+			// If we still didn't find a handler, propagate the event upwards the window chain and/or
+			// to the application object.
+			if (TryAfter(event))
+			{
+				return true;
+			}
+
+			// No handler found anywhere, bail out.
+			return false;
+		};
+		if (flags.Contains(ProcessEventFlag::HandleExceptions))
+		{
+			try
+			{
+				return BeginProcessEvent();
+			}
+			catch (...)
+			{
+				ConsumeException(event);
+			}
+		}
+		else
+		{
+			return BeginProcessEvent();
+		}
+		return false;
 	}
 
 	bool EvtHandler::TryBefore(IEvent& event)
@@ -589,13 +617,13 @@ namespace kxf
 		{
 			// We need to process only a single pending event in this call because each call to 'DoProcessEvent'
 			// could result in the destruction of this same event handler (see the comment at the end of this function).
-			std::unique_ptr<IEvent> event;
+			PendingItem pendingItem;
 
 			// This method is only called by an application if this handler does have pending events
 			if (WriteLockGuard lock(m_PendingEventsLock); !m_PendingEvents.empty())
 			{
 				// Always get the first event
-				auto eventIt = m_PendingEvents.begin();
+				auto pendingIt = m_PendingEvents.begin();
 
 				// If we're inside 'Yield' call, process events selectively instead
 				IEventLoop* eventLoop = app->GetActiveEventLoop();
@@ -605,9 +633,9 @@ namespace kxf
 					auto it = m_PendingEvents.begin();
 					for (; it != m_PendingEvents.end(); ++it)
 					{
-						if (eventLoop->IsEventAllowedInsideYield((*it)->GetEventCategory()))
+						if (eventLoop->IsEventAllowedInsideYield(it->Event->GetEventCategory()))
 						{
-							eventIt = std::move(it);
+							pendingIt = std::move(it);
 							break;
 						}
 					}
@@ -624,8 +652,8 @@ namespace kxf
 
 				// It's important we remove event from list before processing it, else a nested event loop,
 				// for example from a modal dialog, might process the same event again.
-				event = std::move(*eventIt);
-				m_PendingEvents.erase(eventIt);
+				pendingItem = std::move(*pendingIt);
+				m_PendingEvents.erase(pendingIt);
 
 				if (m_PendingEvents.empty())
 				{
@@ -634,11 +662,11 @@ namespace kxf
 				}
 			}
 			
-			if (event)
+			if (pendingItem.Event)
 			{
 				// Careful: this object could have been deleted by the event handler executed by the 'DoProcessEvent' call below,
 				// so we can't access any fields of this object anymore.
-				DoProcessEvent(*event);
+				DoProcessEvent(*pendingItem.Event, {}, {}, pendingItem.ProcessFlags);
 
 				// Should we return the result of 'DoProcessEvent' here?
 				return true;

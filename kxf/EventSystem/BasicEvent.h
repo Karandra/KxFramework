@@ -59,7 +59,7 @@ namespace kxf
 
 			void OnStartProcess(const EventID& eventID, const UniversallyUniqueID& uuid) override
 			{
-				if (eventID && !m_EventID)
+				if (!m_EventID && eventID)
 				{
 					m_EventID = eventID;
 				}
