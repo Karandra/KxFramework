@@ -49,18 +49,18 @@ namespace kxf
 
 		private:
 			template<class TCallable, class... Args>
-			void DoCallAfter(UniversallyUniqueID uuid, TCallable&& callable, Args&&... arg)
+			void DoCallAfter(const UniversallyUniqueID& uuid, TCallable&& callable, Args&&... arg)
 			{
 				using namespace EventSystem;
 				using Traits = typename Utility::CallableTraits<TCallable, Args...>;
 
 				if constexpr(Traits::IsMemberFunction)
 				{
-					DoQueueEvent(std::make_unique<MethodIndirectInvocation<TCallable, Args...>>(*this, callable, std::forward<Args>(arg)...), IIndirectInvocationEvent::EvtIndirectInvocation, std::move(uuid));
+					DoQueueEvent(std::make_unique<MethodIndirectInvocation<TCallable, Args...>>(*this, callable, std::forward<Args>(arg)...), IIndirectInvocationEvent::EvtIndirectInvocation, uuid);
 				}
 				else if constexpr(Traits::IsInvokable)
 				{
-					DoQueueEvent(std::make_unique<CallableIndirectInvocation<TCallable, Args...>>(*this, std::forward<TCallable>(callable), std::forward<Args>(arg)...), IIndirectInvocationEvent::EvtIndirectInvocation, std::move(uuid));
+					DoQueueEvent(std::make_unique<CallableIndirectInvocation<TCallable, Args...>>(*this, std::forward<TCallable>(callable), std::forward<Args>(arg)...), IIndirectInvocationEvent::EvtIndirectInvocation, uuid);
 				}
 				else
 				{
@@ -101,8 +101,8 @@ namespace kxf
 			virtual bool OnDynamicBind(EventItem& eventItem) = 0;
 			virtual bool OnDynamicUnbind(EventItem& eventItem) = 0;
 
-			virtual void DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, UniversallyUniqueID uuid = {}, FlagSet<ProcessEventFlag> flags = {}) = 0;
-			virtual bool DoProcessEvent(IEvent& event, const EventID& eventID = {}, UniversallyUniqueID uuid = {}, FlagSet<ProcessEventFlag> flags = {}, IEvtHandler* onlyIn = nullptr) = 0;
+			virtual void DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, const UniversallyUniqueID& uuid = {}, FlagSet<ProcessEventFlag> flags = {}) = 0;
+			virtual bool DoProcessEvent(IEvent& event, const EventID& eventID = {}, const UniversallyUniqueID& uuid = {}, FlagSet<ProcessEventFlag> flags = {}, IEvtHandler* onlyIn = nullptr) = 0;
 
 			virtual bool TryBefore(IEvent& event) = 0;
 			virtual bool TryAfter(IEvent& event) = 0;
@@ -255,11 +255,11 @@ namespace kxf
 				class... Args,
 				class = std::enable_if_t<std::is_invocable_v<TSignal, typename Utility::MethodTraits<TSignal>::TInstance, Args...>>
 			>
-			typename Utility::MethodTraits<TSignal>::TReturn ProcessUniqueSignal(UniversallyUniqueID uuid, TSignal signal, Args&&... arg)
+			typename Utility::MethodTraits<TSignal>::TReturn ProcessUniqueSignal(const UniversallyUniqueID& uuid, TSignal signal, Args&&... arg)
 			{
 				return DoProcessSignal<signalSemantics>([&](IEvent& event, const EventID& eventID)
 				{
-					return DoProcessEvent(event, eventID, std::move(uuid));
+					return DoProcessEvent(event, eventID, uuid);
 				}, signal, std::forward<Args>(arg)...);
 			}
 
@@ -270,11 +270,11 @@ namespace kxf
 				class... Args,
 				class = std::enable_if_t<std::is_invocable_v<TSignal, typename Utility::MethodTraits<TSignal>::TInstance, Args...>>
 			>
-			typename Utility::MethodTraits<TSignal>::TReturn ProcessUniqueSignal(UniversallyUniqueID uuid, FlagSet<ProcessEventFlag> flags, TSignal signal, Args&&... arg)
+			typename Utility::MethodTraits<TSignal>::TReturn ProcessUniqueSignal(const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, TSignal signal, Args&&... arg)
 			{
 				return DoProcessSignal<signalSemantics>([&](IEvent& event, const EventID& eventID)
 				{
-					return DoProcessEvent(event, eventID, std::move(uuid), flags);
+					return DoProcessEvent(event, eventID, uuid, flags);
 				}, signal, std::forward<Args>(arg)...);
 			}
 
@@ -316,11 +316,11 @@ namespace kxf
 				class... Args,
 				class = std::enable_if_t<std::is_invocable_v<TSignal, typename Utility::MethodTraits<TSignal>::TInstance, Args...>>
 			>
-			void QueueUniqueSignal(UniversallyUniqueID uuid, TSignal signal, Args&&... arg)
+			void QueueUniqueSignal(const UniversallyUniqueID& uuid, TSignal signal, Args&&... arg)
 			{
 				DoQueueSignal<signalSemantics>([&](std::unique_ptr<IEvent> event, const EventID& eventID)
 				{
-					DoQueueEvent(std::move(event), eventID, std::move(uuid));
+					DoQueueEvent(std::move(event), eventID, uuid);
 				}, signal, std::forward<Args>(arg)...);
 			}
 			
@@ -331,11 +331,11 @@ namespace kxf
 				class... Args,
 				class = std::enable_if_t<std::is_invocable_v<TSignal, typename Utility::MethodTraits<TSignal>::TInstance, Args...>>
 			>
-			void QueueUniqueSignal(UniversallyUniqueID uuid, FlagSet<ProcessEventFlag> flags, TSignal signal, Args&&... arg)
+			void QueueUniqueSignal(const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, TSignal signal, Args&&... arg)
 			{
 				DoQueueSignal<signalSemantics>([&](std::unique_ptr<IEvent> event, const EventID& eventID)
 				{
-					DoQueueEvent(std::move(event), eventID, std::move(uuid), flags);
+					DoQueueEvent(std::move(event), eventID, uuid, flags);
 				}, signal, std::forward<Args>(arg)...);
 			}
 
@@ -393,23 +393,23 @@ namespace kxf
 				return DoProcessEvent(event, eventTag, {}, flags);
 			}
 
-			bool ProcessUniqueEvent(UniversallyUniqueID uuid, IEvent& event, const EventID& eventID = {}, FlagSet<ProcessEventFlag> flags = {})
+			bool ProcessUniqueEvent(const UniversallyUniqueID& uuid, IEvent& event, const EventID& eventID = {}, FlagSet<ProcessEventFlag> flags = {})
 			{
-				return DoProcessEvent(event, eventID, std::move(uuid), flags);
+				return DoProcessEvent(event, eventID, uuid, flags);
 			}
 
 			template<class TEvent, class... Args>
-			bool ProcessUniqueEvent(UniversallyUniqueID uuid, const EventTag<TEvent>& eventTag, Args&&... arg)
+			bool ProcessUniqueEvent(const UniversallyUniqueID& uuid, const EventTag<TEvent>& eventTag, Args&&... arg)
 			{
 				TEvent event(std::forward<Args>(arg)...);
-				return DoProcessEvent(event, eventTag, std::move(uuid));
+				return DoProcessEvent(event, eventTag, uuid);
 			}
 
 			template<class TEvent, class... Args>
-			bool ProcessUniqueEvent(UniversallyUniqueID uuid, FlagSet<ProcessEventFlag> flags, const EventTag<TEvent>& eventTag, Args&&... arg)
+			bool ProcessUniqueEvent(const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, const EventTag<TEvent>& eventTag, Args&&... arg)
 			{
 				TEvent event(std::forward<Args>(arg)...);
-				return DoProcessEvent(event, eventTag, std::move(uuid), flags);
+				return DoProcessEvent(event, eventTag, uuid, flags);
 			}
 
 			// Construct and send the event using the event builder
@@ -438,21 +438,21 @@ namespace kxf
 				DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag, {}, flags);
 			}
 
-			void QueueUniqueEvent(UniversallyUniqueID uuid, std::unique_ptr<IEvent> event, const EventID& eventID = {}, FlagSet<ProcessEventFlag> flags = {})
+			void QueueUniqueEvent(const UniversallyUniqueID& uuid, std::unique_ptr<IEvent> event, const EventID& eventID = {}, FlagSet<ProcessEventFlag> flags = {})
 			{
-				DoQueueEvent(std::move(event), eventID, std::move(uuid), flags);
+				DoQueueEvent(std::move(event), eventID, uuid, flags);
 			}
 
 			template<class TEvent, class... Args>
-			void QueueUniqueEvent(UniversallyUniqueID uuid, const EventTag<TEvent>& eventTag, Args&&... arg)
+			void QueueUniqueEvent(const UniversallyUniqueID& uuid, const EventTag<TEvent>& eventTag, Args&&... arg)
 			{
-				DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag, std::move(uuid));
+				DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag, uuid);
 			}
 
 			template<class TEvent, class... Args>
-			void QueueUniqueEvent(UniversallyUniqueID uuid, FlagSet<ProcessEventFlag> flags, const EventTag<TEvent>& eventTag, Args&&... arg)
+			void QueueUniqueEvent(const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, const EventTag<TEvent>& eventTag, Args&&... arg)
 			{
-				DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag, std::move(uuid), flags);
+				DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag, uuid, flags);
 			}
 
 			// Construct and queue event using the event builder
@@ -472,9 +472,9 @@ namespace kxf
 
 			// Queue execution of a given callable to the next event loop iteration replacing previously sent callable with the same ID
 			template<class TCallable, class... Args>
-			void UniqueCallAfter(UniversallyUniqueID uuid, TCallable&& callable, Args&&... arg)
+			void UniqueCallAfter(const UniversallyUniqueID& uuid, TCallable&& callable, Args&&... arg)
 			{
-				DoCallAfter(std::move(uuid), std::forward<TCallable>(callable), std::forward<Args>(arg)...);
+				DoCallAfter(uuid, std::forward<TCallable>(callable), std::forward<Args>(arg)...);
 			}
 	};
 }

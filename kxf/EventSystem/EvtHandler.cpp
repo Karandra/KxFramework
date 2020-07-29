@@ -329,7 +329,7 @@ namespace kxf
 		}
 	}
 	
-	void EvtHandler::DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID, UniversallyUniqueID uuid, FlagSet<ProcessEventFlag> flags)
+	void EvtHandler::DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID, const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags)
 	{
 		auto app = ICoreApplication::GetInstance();
 		if (app && event)
@@ -375,14 +375,14 @@ namespace kxf
 			app->WakeUp();
 		}
 	}
-	bool EvtHandler::DoProcessEvent(IEvent& event, const EventID& eventID, UniversallyUniqueID uuid, FlagSet<ProcessEventFlag> flags, IEvtHandler* onlyIn)
+	bool EvtHandler::DoProcessEvent(IEvent& event, const EventID& eventID, const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, IEvtHandler* onlyIn)
 	{
 		// Short-circuit for 'ProcessEventFlag::Locally' option
 		if (!onlyIn && flags.Contains(ProcessEventFlag::Locally))
 		{
 			auto BeginLocally = [&]()
 			{
-				PrepareEvent(event, eventID, std::move(uuid));
+				PrepareEvent(event, eventID, uuid);
 				return TryLocally(event);
 			};
 			if (flags.Contains(ProcessEventFlag::HandleExceptions))
@@ -406,7 +406,7 @@ namespace kxf
 		// Main entry point for event processing
 		auto BeginProcessEvent = [&]()
 		{
-			PrepareEvent(event, eventID, std::move(uuid));
+			PrepareEvent(event, eventID, uuid);
 
 			// The very first thing we do is to allow any registered filters to hook
 			// into event processing in order to globally pre-process all events.

@@ -76,13 +76,13 @@ namespace kxf::Sciter
 				return AccessThisEvtHandler().OnDynamicUnbind(eventItem);
 			}
 
-			void DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, UniversallyUniqueID uuid = {}, FlagSet<ProcessEventFlag> flags = {}) override
+			void DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, const UniversallyUniqueID& uuid = {}, FlagSet<ProcessEventFlag> flags = {}) override
 			{
-				return AccessTopEvtHandler().DoQueueEvent(std::move(event), eventID, std::move(uuid), flags);
+				return AccessTopEvtHandler().DoQueueEvent(std::move(event), eventID, uuid, flags);
 			}
-			bool DoProcessEvent(IEvent& event, const EventID& eventID = {}, UniversallyUniqueID uuid = {}, FlagSet<ProcessEventFlag> flags = {}, IEvtHandler* onlyIn = nullptr) override
+			bool DoProcessEvent(IEvent& event, const EventID& eventID = {}, const UniversallyUniqueID& uuid = {}, FlagSet<ProcessEventFlag> flags = {}, IEvtHandler* onlyIn = nullptr) override
 			{
-				return AccessTopEvtHandler().DoProcessEvent(event, eventID, std::move(uuid), flags, onlyIn);
+				return AccessTopEvtHandler().DoProcessEvent(event, eventID, uuid, flags, onlyIn);
 			}
 
 			bool TryBefore(IEvent& event) override
