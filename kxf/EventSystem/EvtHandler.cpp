@@ -178,7 +178,7 @@ namespace kxf
 					}
 
 					// Call the handler
-					if (ExecuteDirectEvent(event, eventItem, *evtHandler))
+					if (ExecuteEventHandler(event, eventItem, *evtHandler))
 					{
 						// If this is a one-shot event store it's bind slot to unbound later
 						if (eventItem.GetFlags().Contains(EventFlag::OneShot))
@@ -231,13 +231,20 @@ namespace kxf
 		}
 		return false;
 	}
-	bool EvtHandler::ExecuteDirectEvent(IEvent& event, EventItem& eventItem, IEvtHandler& evtHandler)
+	bool EvtHandler::ExecuteEventHandler(IEvent& event, EventItem& eventItem, IEvtHandler& evtHandler)
 	{
+		// If the handler wants to be executed on the main thread, queue it and return
+		if (eventItem.GetFlags().Contains(EventFlag::Queued) && !EventSystem::EventAccessor(event).WasQueueed())
+		{
+			DoQueueEvent(event.Move());
+			return true;
+		}
+
 		// Reset skip instruction
 		event.Skip(false);
 
 		// Call the handler
-		ExecuteEventHandler(event, *eventItem.GetExecutor(), evtHandler);
+		eventItem.GetExecutor()->Execute(evtHandler, event);
 
 		// Skip the event if we're required to always skip it
 		if (eventItem.GetFlags().Contains(EventFlag::AlwaysSkip))
@@ -247,20 +254,6 @@ namespace kxf
 
 		// Return true if we processed this event and event handler itself didn't skipped it
 		return !event.IsSkipped();
-	}
-	void EvtHandler::ExecuteEventHandler(IEvent& event, IEventExecutor& executor, IEvtHandler& evtHandler)
-	{
-		executor.Execute(evtHandler, event);
-
-		// TODO: Add callbacks for events or remove this
-		// If event wasn't skipped invoke the callback for this event and restore any possible changes in skip state
-		/*
-		if (const bool isSkipped = event.IsSkipped(); !isSkipped)
-		{
-			event.ExecuteCallback(evtHandler);
-			event.Skip(isSkipped);
-		}
-		*/
 	}
 	void EvtHandler::ConsumeException(IEvent& event)
 	{
@@ -417,17 +410,16 @@ namespace kxf
 		// Try to process the event in this handler itself
 		if (TryLocally(event))
 		{
-			// It is possible that 'TryChain' called from 'TryLocally'
-			// returned true but the event was not really processed: this happens
-			// if a custom handler ignores the request to process the event in this
-			// handler only and in this case we should skip the post processing
-			// done in 'TryAfter' but still return the correct value ourselves to
-			// indicate whether we did or did not find a handler for this event.
+			// It is possible that 'TryChain' called from 'TryLocally' returned true but
+			// the event was not really processed: this happens if a custom handler ignores
+			// the request to process the event in this handler only and in this case we should
+			// skip the post processing done in 'TryAfter' but still return the correct value
+			// ourselves to indicate whether we did or did not find a handler for this event.
 			return !event.IsSkipped();
 		}
 
-		// If we still didn't find a handler, propagate the event upwards the
-		// window chain and/or to the application object.
+		// If we still didn't find a handler, propagate the event upwards the window chain and/or
+		// to the application object.
 		if (TryAfter(event))
 		{
 			return true;
@@ -462,11 +454,11 @@ namespace kxf
 	{
 		// We only want to pass the window to the application object once even if
 		// there are several chained handlers. Ensure that this is what happens by
-		// only calling DoTryApp() if there is no next handler (which would do it).
+		// only calling 'DoTryApp' if there is no next handler (which would do it).
 		//
 		// Notice that, unlike simply calling TryAfter() on the last handler in the
 		// chain only from ProcessEvent(), this also works with wxWindow object in
-		// the middle of the chain: its overridden TryAfter() will still be called
+		// the middle of the chain: its overridden 'TryAfter' will still be called
 		// and propagate the event upwards the window hierarchy even if it's not
 		// the last one in the chain (which, admittedly, shouldn't happen often).
 		if (IEvtHandler* next = GetNextHandler())

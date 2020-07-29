@@ -16,6 +16,9 @@ namespace kxf
 			bool m_IsAllowed = true;
 			bool m_IsSkipped = false;
 
+			// Initially false but becomes true as soon as 'WasQueueed' is called for the first time,
+			mutable bool m_WasQueueed = false;
+
 			// Initially false but becomes true as soon as 'WasProcessed' is called for the first time,
 			// as this is done only by 'DoProcessEvent' it explains the variable name: it becomes true
 			// after 'DoProcessEvent' was called at least once for this event.
@@ -26,24 +29,32 @@ namespace kxf
 			mutable bool m_WillBeProcessedAgain = false;
 
 		private:
+			bool WasQueueed() const override
+			{
+				if (!m_WasQueueed)
+				{
+					m_WasQueueed = true;
+					return false;
+				}
+				return true;
+			}
 			bool WasProcessed() const override
 			{
-				if (m_WasProcessed)
+				if (!m_WasProcessed)
 				{
-					return true;
+					m_WasProcessed = true;
+					return false;
 				}
-
-				m_WasProcessed = true;
-				return false;
+				return true;
 			}
 			bool WillBeProcessedAgain() const override
 			{
-				if (m_WillBeProcessedAgain)
+				if (!m_WillBeProcessedAgain)
 				{
-					m_WillBeProcessedAgain = false;
-					return true;
+					m_WillBeProcessedAgain = true;
+					return false;
 				}
-				return false;
+				return true;
 			}
 
 			void OnStartProcess(const EventID& eventID, const UniversallyUniqueID& uuid) override
@@ -126,8 +137,13 @@ namespace kxf
 			{
 				m_EventID = std::move(other.m_EventID);
 				m_EventSource = Utility::ExchangeResetAndReturn(other.m_EventSource, nullptr);
+				m_UniqueID = std::move(other.m_UniqueID);
+				m_Timestamp = std::move(other.m_Timestamp);
+
 				m_IsAllowed = Utility::ExchangeResetAndReturn(other.m_IsAllowed, true);
 				m_IsSkipped = Utility::ExchangeResetAndReturn(other.m_IsSkipped, false);
+
+				m_WasQueueed = Utility::ExchangeResetAndReturn(other.m_WasQueueed, false);
 				m_WasProcessed = Utility::ExchangeResetAndReturn(other.m_WasProcessed, false);
 				m_WillBeProcessedAgain = Utility::ExchangeResetAndReturn(other.m_WillBeProcessedAgain, false);
 

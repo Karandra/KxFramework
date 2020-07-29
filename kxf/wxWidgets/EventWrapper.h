@@ -13,11 +13,22 @@ namespace kxf::wxWidgets
 	{
 		private:
 			Utility::WithOptionalOwnership<wxEvent> m_Event;
+
 			UniversallyUniqueID m_UniqueID;
 			IEvtHandler* m_EvtHandler = nullptr;
+			mutable bool m_WasQueueed = false;
 
 		private:
 			// IEvent
+			bool WasQueueed() const override
+			{
+				if (!m_WasQueueed)
+				{
+					m_WasQueueed = true;
+					return false;
+				}
+				return true;
+			}
 			bool WasProcessed() const override
 			{
 				return m_Event->WasProcessed();

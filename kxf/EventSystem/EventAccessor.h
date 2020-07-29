@@ -16,6 +16,10 @@ namespace kxf::EventSystem
 			}
 
 		public:
+			bool WasQueueed() const
+			{
+				return m_Event.WasQueueed();
+			}
 			bool WasProcessed() const
 			{
 				return m_Event.WasProcessed();

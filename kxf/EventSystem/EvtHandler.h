@@ -47,8 +47,7 @@ namespace kxf
 			bool TryBeforeAndHere(IEvent& event);
 
 			bool SearchEventTable(IEvent& event);
-			bool ExecuteDirectEvent(IEvent& event, EventItem& eventItem, IEvtHandler& evtHandler);
-			void ExecuteEventHandler(IEvent& event, IEventExecutor& executor, IEvtHandler& evtHandler);
+			bool ExecuteEventHandler(IEvent& event, EventItem& eventItem, IEvtHandler& evtHandler);
 			void ConsumeException(IEvent& event);
 
 		protected:

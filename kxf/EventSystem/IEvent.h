@@ -27,6 +27,7 @@ namespace kxf
 			static inline const EventTag<IEvent> EvtAny = -1;
 
 		private:
+			virtual bool WasQueueed() const = 0;
 			virtual bool WasProcessed() const = 0;
 			virtual bool WillBeProcessedAgain() const = 0;
 
