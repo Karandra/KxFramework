@@ -3,72 +3,87 @@
 #include "IEvent.h"
 #include "kxf/Utility/Common.h"
 
+namespace kxf::EventSystem
+{
+	enum class EventPublicState: uint32_t
+	{
+		None = 0,
+
+		Skipped = 1 << 0,
+		Allowed = 1 << 1
+	};
+	enum class EventPrivateState: uint32_t
+	{
+		None = 0,
+
+		// Set after a call to 'OnStartProcess'.
+		Started = 1 << 0,
+
+		// Set as soon as 'WasQueueed' is called for the first time when event is going to be queued from 'DoProcessEvent'.
+		Queueed = 1 << 1,
+
+		// Set after 'DoProcessEvent' was called at least once for this event.
+		ProcessedOnce = 1 << 2,
+
+		// Can be set to indicate that the event will be passed to another handler if it's not processed in this one.
+		WillBeProcessedAgain = 1 << 3
+	};
+}
+namespace kxf
+{
+	KxDeclareFlagSet(EventSystem::EventPublicState);
+	KxDeclareFlagSet(EventSystem::EventPrivateState);
+}
+
 namespace kxf
 {
 	class KX_API BasicEvent: public RTTI::ImplementInterface<BasicEvent, IEvent>
 	{
+		private:
+			using EventPublicState = EventSystem::EventPublicState;
+			using EventPrivateState = EventSystem::EventPrivateState;
+
 		private:
 			EventID m_EventID;
 			IEvtHandler* m_EventSource = nullptr;
 			UniversallyUniqueID m_UniqueID;
 			TimeSpan m_Timestamp;
 
-			bool m_IsAllowed = true;
-			bool m_IsSkipped = false;
-
-			// Initially false but becomes true as soon as 'WasQueueed' is called for the first time,
-			mutable bool m_WasQueueed = false;
-
-			// Initially false but becomes true as soon as 'WasProcessed' is called for the first time,
-			// as this is done only by 'DoProcessEvent' it explains the variable name: it becomes true
-			// after 'DoProcessEvent' was called at least once for this event.
-			mutable bool m_WasProcessed = false;
-
-			// This one is initially false too, but can be set to true to indicate that
-			// the event will be passed to another handler if it's not processed in this one.
-			mutable bool m_WillBeProcessedAgain = false;
+			FlagSet<EventPublicState> m_PublicState = EventPublicState::Allowed;
+			mutable FlagSet<EventPrivateState> m_PrivateState;
 
 		private:
-			bool WasQueueed() const override
+			bool TestAndSetPrivateState(EventPrivateState flag) const
 			{
-				if (!m_WasQueueed)
+				if (!m_PrivateState.Contains(flag))
 				{
-					m_WasQueueed = true;
+					m_PrivateState.Add(flag);
 					return false;
 				}
 				return true;
+			}
+
+			bool WasQueueed() const override
+			{
+				return TestAndSetPrivateState(EventPrivateState::Queueed);
 			}
 			bool WasProcessed() const override
 			{
-				if (!m_WasProcessed)
-				{
-					m_WasProcessed = true;
-					return false;
-				}
-				return true;
+				return TestAndSetPrivateState(EventPrivateState::ProcessedOnce);
 			}
 			bool WillBeProcessedAgain() const override
 			{
-				if (!m_WillBeProcessedAgain)
-				{
-					m_WillBeProcessedAgain = true;
-					return false;
-				}
-				return true;
+				return TestAndSetPrivateState(EventPrivateState::WillBeProcessedAgain);
 			}
 
 			void OnStartProcess(const EventID& eventID, const UniversallyUniqueID& uuid) override
 			{
-				if (!m_EventID && eventID)
+				if (!m_PrivateState.Contains(EventPrivateState::Started))
 				{
+					m_PrivateState.Add(EventPrivateState::Started);
+
 					m_EventID = eventID;
-				}
-				if (!m_UniqueID)
-				{
 					m_UniqueID = std::move(uuid);
-				}
-				if (!m_Timestamp.IsPositive())
-				{
 					m_Timestamp = TimeSpan::Now(SteadyClock());
 				}
 			}
@@ -115,20 +130,20 @@ namespace kxf
 			
 			bool IsSkipped() const override
 			{
-				return m_IsSkipped;
+				return m_PublicState.Contains(EventPublicState::Skipped);
 			}
 			void Skip(bool skip = true) override
 			{
-				m_IsSkipped = skip;
+				m_PublicState.Mod(EventPublicState::Skipped, skip);
 			}
 
 			bool IsAllowed() const override
 			{
-				return m_IsAllowed;
+				return m_PublicState.Contains(EventPublicState::Allowed);
 			}
 			void Allow(bool allow = true) override
 			{
-				m_IsAllowed = allow;
+				m_PublicState.Mod(EventPublicState::Allowed, allow);
 			}
 
 		public:
@@ -140,12 +155,8 @@ namespace kxf
 				m_UniqueID = std::move(other.m_UniqueID);
 				m_Timestamp = std::move(other.m_Timestamp);
 
-				m_IsAllowed = Utility::ExchangeResetAndReturn(other.m_IsAllowed, true);
-				m_IsSkipped = Utility::ExchangeResetAndReturn(other.m_IsSkipped, false);
-
-				m_WasQueueed = Utility::ExchangeResetAndReturn(other.m_WasQueueed, false);
-				m_WasProcessed = Utility::ExchangeResetAndReturn(other.m_WasProcessed, false);
-				m_WillBeProcessedAgain = Utility::ExchangeResetAndReturn(other.m_WillBeProcessedAgain, false);
+				m_PublicState = Utility::ExchangeResetAndReturn(other.m_PublicState, EventPublicState::Allowed);
+				m_PrivateState = Utility::ExchangeResetAndReturn(other.m_PrivateState, EventPrivateState::None);
 
 				return *this;
 			}
