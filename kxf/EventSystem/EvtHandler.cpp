@@ -216,8 +216,16 @@ namespace kxf
 					}
 
 					// Call the handler
-					if (ExecuteEventHandler(event, eventItem, *evtHandler))
+					bool wasQueued = false;
+					if (ExecuteEventHandler(event, eventItem, *evtHandler, wasQueued))
 					{
+						// If this is a one-shot event and it wasn't queued store it's bind slot to unbound later
+						const auto flags = eventItem.GetFlags();
+						if (flags.Contains(EventFlag::OneShot) && !wasQueued)
+						{
+							eventSlot = eventItem.GetBindSlot();
+						}
+
 						// It's important to skip clearing of the unbound event entries
 						// below because this object itself could have been deleted by
 						// the event handler making 'm_EventTable' a dangling pointer
@@ -235,12 +243,7 @@ namespace kxf
 						// to destroy 'IEvtHandler' objects and now just call 'delete this'.
 						// So assume we can never end up in a situation described above.
 						executed = true;
-
-						// If this is a one-shot event store it's bind slot to unbound later
-						if (eventItem.GetFlags().Contains(EventFlag::OneShot))
-						{
-							eventSlot = eventItem.GetBindSlot();
-						}
+						break;
 					}
 				}
 			}
@@ -273,12 +276,14 @@ namespace kxf
 		}
 		return executed;
 	}
-	bool EvtHandler::ExecuteEventHandler(IEvent& event, EventItem& eventItem, IEvtHandler& evtHandler)
+	bool EvtHandler::ExecuteEventHandler(IEvent& event, EventItem& eventItem, IEvtHandler& evtHandler, bool& wasQueued)
 	{
 		// If the handler wants to be executed on the main thread, queue it and return
 		if (eventItem.GetFlags().Contains(EventFlag::Queued) && !EventSystem::EventAccessor(event).WasQueueed())
 		{
 			DoQueueEvent(event.Move());
+			wasQueued = true;
+
 			return true;
 		}
 
