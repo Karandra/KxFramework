@@ -194,7 +194,7 @@ namespace kxf
 
 		public:
 			// Bind a generic callable
-			template<class TSignal, class TCallable>
+			template<class TSignal, class TCallable, class = std::enable_if_t<std::is_member_function_pointer_v<TSignal>>>
 			LocallyUniqueID BindSignal(TSignal signal, TCallable&& callable, FlagSet<EventFlag> flags = EventFlag::Direct)
 			{
 				return DoBind(signal, std::make_unique<EventSystem::CallableSignalExecutor<TSignal, TCallable>>(std::forward<TCallable>(callable)), flags);
@@ -208,8 +208,9 @@ namespace kxf
 				class THandlerObject,
 				class = std::enable_if_t
 				<
-					std::is_convertible_v<typename Utility::MethodTraits<TSignal>::TArgsTuple, typename Utility::MethodTraits<THandlerMethod>::TArgsTuple> &&
-					std::is_same_v<typename Utility::MethodTraits<THandlerMethod>::TInstance, THandlerObject>
+					std::is_member_function_pointer_v<TSignal> &&
+					std::is_same_v<typename Utility::MethodTraits<THandlerMethod>::TInstance, THandlerObject> &&
+					std::is_convertible_v<typename Utility::MethodTraits<TSignal>::TArgsTuple, typename Utility::MethodTraits<THandlerMethod>::TArgsTuple>
 				>
 			>
 			LocallyUniqueID BindSignal(TSignal signal, THandlerMethod targetMethod, THandlerObject* handler, FlagSet<EventFlag> flags = EventFlag::Direct)
