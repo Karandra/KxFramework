@@ -80,25 +80,20 @@ namespace kxf
 	{
 		// Send an event to the application instance itself first
 		bool needMore = CoreApplication::DispatchIdle();
-		if (auto app = Application::Private::NativeApp::GetInstance())
+		if (auto nativeApp = Application::Private::NativeApp::GetInstance())
 		{
-			if (app->wxApp::ProcessIdle())
+			if (nativeApp->wxApp::ProcessIdle())
 			{
 				needMore = true;
 			}
 		}
 
 		ReadLockGuard lock(m_ScheduledForDestructionLock);
-		auto IsDestructionScheduled = [&](wxWindow& window)
-		{
-			return Application::Private::IsWindowInContainer(m_ScheduledForDestruction, window);
-		};
-
 		for (wxWindow* window: wxTopLevelWindows)
 		{
 			// Don't send idle events to the windows that are about to be destroyed anyhow, this is wasteful and unexpected.
 			wxIdleEvent event;
-			if (window && !IsDestructionScheduled(*window) && window->SendIdleEvents(event))
+			if (window && !IsScheduledForDestruction(*window) && window->SendIdleEvents(event))
 			{
 				needMore = true;
 			}
@@ -117,14 +112,10 @@ namespace kxf
 	// IGUIApplication
 	wxWindow* GUIApplication::GetTopWindow() const
 	{
-		auto IsDestructionScheduled = [&](wxWindow& window)
-		{
-			return Application::Private::IsWindowInContainer(m_ScheduledForDestruction, window);
-		};
 		ReadLockGuard lock(m_ScheduledForDestructionLock);
 
 		// If there is no top window or it is about to be destroyed, we need to search for the first TLW which is not pending delete.
-		if (m_TopWindow && !IsDestructionScheduled(*m_TopWindow))
+		if (m_TopWindow && !IsScheduledForDestruction(*m_TopWindow))
 		{
 			return m_TopWindow;
 		}
@@ -132,7 +123,7 @@ namespace kxf
 		{
 			for (wxWindow* window: wxTopLevelWindows)
 			{
-				if (window && !IsDestructionScheduled(*window))
+				if (window && !IsScheduledForDestruction(*window))
 				{
 					return window;
 				}

@@ -50,7 +50,7 @@ namespace kxf
 			std::atomic<bool> m_PendingEventsProcessingEnabled = true;
 			
 			mutable RecursiveRWLock m_ScheduledForDestructionLock;
-			std::vector<std::unique_ptr<wxObject>> m_ScheduledForDestruction;
+			std::vector<std::unique_ptr<IObject>> m_ScheduledForDestruction;
 			
 			mutable RecursiveRWLock m_PendingEvtHandlersLock;
 			std::list<IEvtHandler*> m_PendingEvtHandlers;
@@ -269,7 +269,9 @@ namespace kxf
 			bool ProcessPendingEventHandlers() override;
 			size_t DiscardPendingEventHandlers() override;
 
+			bool IsScheduledForDestruction(const IObject& object) const override;
 			bool IsScheduledForDestruction(const wxObject& object) const override;
+			void ScheduleForDestruction(std::unique_ptr<IObject> object) override;
 			void ScheduleForDestruction(std::unique_ptr<wxObject> object) override;
 			void FinalizeScheduledForDestruction() override;
 

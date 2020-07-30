@@ -98,7 +98,9 @@ namespace kxf::Application
 			virtual bool ProcessPendingEventHandlers() = 0;
 			virtual size_t DiscardPendingEventHandlers() = 0;
 
+			virtual bool IsScheduledForDestruction(const IObject& object) const = 0;
 			virtual bool IsScheduledForDestruction(const wxObject& object) const = 0;
+			virtual void ScheduleForDestruction(std::unique_ptr<IObject> object) = 0;
 			virtual void ScheduleForDestruction(std::unique_ptr<wxObject> object) = 0;
 			virtual void FinalizeScheduledForDestruction() = 0;
 	};

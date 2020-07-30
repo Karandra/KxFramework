@@ -416,16 +416,7 @@ namespace kxf
 		}
 	}
 
-	bool CoreApplication::IsScheduledForDestruction(const wxObject& object) const
-	{
-		ReadLockGuard lock(m_ScheduledForDestructionLock);
-
-		return Utility::Contains(m_ScheduledForDestruction, [&](const auto& item)
-		{
-			return item.get() == &object;
-		});
-	}
-	void CoreApplication::ScheduleForDestruction(std::unique_ptr<wxObject> object)
+	void CoreApplication::ScheduleForDestruction(std::unique_ptr<IObject> object)
 	{
 		// We need an active event loop to schedule deletion. If no active loop present
 		// the object is deleted immediately.
@@ -443,15 +434,40 @@ namespace kxf
 			}
 		}
 	}
+	void CoreApplication::ScheduleForDestruction(std::unique_ptr<wxObject> object)
+	{
+		auto app = wxAppConsole::GetInstance();
+		if (app && m_ActiveEventLoop && object)
+		{
+			app->ScheduleForDestruction(object.release());
+		}
+	}
+	bool CoreApplication::IsScheduledForDestruction(const IObject& object) const
+	{
+		ReadLockGuard lock(m_ScheduledForDestructionLock);
+
+		return Utility::Contains(m_ScheduledForDestruction, [&](const auto& item)
+		{
+			return item.get() == &object;
+		});
+	}
+	bool CoreApplication::IsScheduledForDestruction(const wxObject& object) const
+	{
+		if (auto app = wxAppConsole::GetInstance())
+		{
+			return app->IsScheduledForDestruction(const_cast<wxObject*>(&object));
+		}
+		return false;
+	}
 	void CoreApplication::FinalizeScheduledForDestruction()
 	{
-		WriteLockGuard lock(m_ScheduledForDestructionLock);
-		m_ScheduledForDestruction.clear();
-
 		if (auto app = Application::Private::NativeApp::GetInstance())
 		{
 			app->DeletePendingObjects();
 		}
+
+		WriteLockGuard lock(m_ScheduledForDestructionLock);
+		m_ScheduledForDestruction.clear();
 	}
 
 	void CoreApplication::AddPendingEventHandler(IEvtHandler& evtHandler)
