@@ -7,6 +7,44 @@
 #include "kxf/Application/Private/Utility.h"
 #include "kxf/Utility/Container.h"
 
+namespace
+{
+	template<class TEventTable, class TFunc>
+	size_t SearchForBoundHandlers(TEventTable&& eventTable, const kxf::EventID& eventID, kxf::IEventExecutor& executor, TFunc&& onFound)
+	{
+		using namespace kxf;
+
+		const EventSystem::EventItem dummyItem(eventID, executor);
+		const IEventExecutor& nullExecutor = EventSystem::NullEventExecutor::Get();
+
+		size_t count = 0;
+		for (auto it = std::rbegin(eventTable); it != std::rend(eventTable); ++it)
+		{
+			// 1) If 'eventID' is 'IEvent::EvtAny' unbind *all* events.
+			// 2) If 'eventID' matches our item ID and the supplied executor is a special null executor unbind all events with this ID.
+			// 3) Unbind the event if both event ID and the executor matches (See 'EventItem::IsSameAs' for details).
+			if ((eventID == IEvent::EvtAny) || (eventID == it->GetEventID() && &executor == &nullExecutor) || (it->IsSameAs(dummyItem)))
+			{
+				count++;
+				if (!std::invoke(onFound, it))
+				{
+					break;
+				}
+			}
+		}
+		return count;
+	}
+
+	template<class TEventTable>
+	size_t CountBoundHandlers(TEventTable&& eventTable, const kxf::EventID& eventID, kxf::IEventExecutor& executor)
+	{
+		return SearchForBoundHandlers(std::forward<TEventTable>(eventTable), eventID, executor, [](auto&&)
+		{
+			return true;
+		});
+	}
+}
+
 namespace kxf
 {
 	void EvtHandler::Move(EvtHandler&& other, bool destroy)
@@ -507,21 +545,30 @@ namespace kxf
 	{
 		if (executor && eventID && eventID != IEvent::EvtAny && eventID != IIndirectInvocationEvent::EvtIndirectInvocation)
 		{
-			// This combination makes no sense so discard it
-			if (flags.Contains(EventFlag::OneShot|EventFlag::AlwaysSkip))
+			// Following combinations makes no sense
+			if (flags.Contains(EventFlag::OneShot|EventFlag::AlwaysSkip) || flags.Contains(EventFlag::Direct|EventFlag::Queued))
 			{
+				wxFAIL_MSG("Invalid combination of 'EventFlag' values");
 				return {};
 			}
 
-			// If none are present, assume direct
-			flags.Add(EventFlag::Direct, !flags.Contains(EventFlag::Direct) && flags.Contains(EventFlag::Queued));
+			// If none are present, assume direct, it's not a hard error to pass 'EventFlag::None' here.
+			flags.Add(EventFlag::Direct, !flags.Contains(EventFlag::Direct) && !flags.Contains(EventFlag::Queued));
 
 			EventItem eventItem(eventID, std::move(executor));
-			eventItem.SetFlags(flags);
+
+			// Save flags but remove 'EventFlag::Unique' as it's only makes sense inside this function
+			eventItem.SetFlags(flags.Clone().Remove(EventFlag::Unique));
 
 			if (OnDynamicBind(eventItem) && eventItem)
 			{
 				WriteLockGuard lock(m_EventTableLock);
+
+				// If 'EventFlag::Unique' is present, refuse to bind this handler if the same handler is already bound.
+				if (flags.Contains(EventFlag::Unique) && CountBoundHandlers(m_EventTable, eventID, *eventItem.GetExecutor()) != 0)
+				{
+					return {};
+				}
 
 				// Test for the bind slots count, we can't allow this to overflow.
 				const size_t nextBindSlot = m_EventBindSlot + 1;
@@ -543,30 +590,22 @@ namespace kxf
 		{
 			if (WriteLockGuard lock(m_EventTableLock); !m_EventTable.empty())
 			{
-				EventItem dummyItem(eventID, executor);
-				IEventExecutor& nullExecutor = EventSystem::NullEventExecutor::Get();
-
 				size_t unbindCount = 0;
-				for (auto it = m_EventTable.rbegin(); it != m_EventTable.rend(); ++it)
+				SearchForBoundHandlers(m_EventTable, eventID, executor, [&](auto&& itemIt)
 				{
-					// 1) If 'eventID' is 'IEvent::EvtAny' unbind *all* events.
-					// 2) If 'eventID' matches our item ID and the supplied executor is a special null executor unbind all events with this ID.
-					// 3) Unbind the event if both event ID and the executor matches (See 'EventItem::IsSameAs' for details).
-					if ((eventID == IEvent::EvtAny) || (eventID == it->GetEventID() && &executor == &nullExecutor) || (it->IsSameAs(dummyItem)))
+					// Clear the handler if derived class allows that
+					if (OnDynamicUnbind(*itemIt))
 					{
-						// Clear the handler if derived class allows that
-						if (OnDynamicUnbind(*it))
-						{
-							// We can't delete the entry from the vector if we're currently iterating over it.
-							// As we don't know whether we're or not, just null it for now and we will really
-							// erase it when we do finish iterating over it the next time.
-							FreeBindSlot(it->GetBindSlot());
-							*it = {};
+						// We can't delete the entry from the vector if we're currently iterating over it.
+						// As we don't know whether we're or not, just null it for now and we will really
+						// erase it when we do finish iterating over it the next time.
+						FreeBindSlot(itemIt->GetBindSlot());
+						*itemIt = {};
 
-							unbindCount++;
-						}
+						unbindCount++;
 					}
-				}
+					return true;
+				});
 
 				// If we were asked to unbind all items (or we've deleted them all) we can free all bind slots as well
 				if (eventID == IEvent::EvtAny || unbindCount == m_EventTable.size())
