@@ -187,6 +187,7 @@ namespace kxf
 
 	bool EvtHandler::SearchEventTable(IEvent& event)
 	{
+		bool executed = false;
 		size_t initialSize = 0;
 		size_t nullCount = 0;
 		LocallyUniqueID eventSlot;
@@ -217,15 +218,9 @@ namespace kxf
 					// Call the handler
 					if (ExecuteEventHandler(event, eventItem, *evtHandler))
 					{
-						// If this is a one-shot event store it's bind slot to unbound later
-						if (eventItem.GetFlags().Contains(EventFlag::OneShot))
-						{
-							eventSlot = eventItem.GetBindSlot();
-						}
-
 						// It's important to skip clearing of the unbound event entries
 						// below because this object itself could have been deleted by
-						// the event handler making m_EventTable a dangling pointer
+						// the event handler making 'm_EventTable' a dangling pointer
 						// which can't be accessed any longer in the code below.
 						//
 						// In practice, it hopefully shouldn't be a problem to wait
@@ -235,7 +230,17 @@ namespace kxf
 						// memory consumption while not skipping clearing can result in
 						// hard to reproduce crashes (because it requires the disconnection
 						// and deletion happen at the same time which is not always the case).
-						return true;
+						//
+						// Actually a user should use 'ICoreApplication::ScheduleForDestruction'
+						// to destroy 'IEvtHandler' objects and now just call 'delete this'.
+						// So assume we can never end up in a situation described above.
+						executed = true;
+
+						// If this is a one-shot event store it's bind slot to unbound later
+						if (eventItem.GetFlags().Contains(EventFlag::OneShot))
+						{
+							eventSlot = eventItem.GetBindSlot();
+						}
 					}
 				}
 			}
@@ -244,7 +249,7 @@ namespace kxf
 		if (nullCount != 0 || eventSlot)
 		{
 			WriteLockGuard lock(m_EventTableLock);
-		
+			
 			// Unbind event if needed
 			if (DoUnbind(eventSlot))
 			{
@@ -266,7 +271,7 @@ namespace kxf
 				}
 			}
 		}
-		return false;
+		return executed;
 	}
 	bool EvtHandler::ExecuteEventHandler(IEvent& event, EventItem& eventItem, IEvtHandler& evtHandler)
 	{
