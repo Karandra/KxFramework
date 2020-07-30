@@ -26,7 +26,8 @@ namespace kxf
 		None = 0,
 
 		Direct = 1,
-		Queued = 2,
+		Queued = 6,
+		Auto = 12,
 
 		Unique = 1 << 16,
 		Blocking = 1 << 17,

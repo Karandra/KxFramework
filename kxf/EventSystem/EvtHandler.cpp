@@ -9,11 +9,11 @@
 
 namespace
 {
-	template<class TEventTable, class TFunc>
-	size_t SearchForBoundHandlers(TEventTable&& eventTable, const kxf::EventID& eventID, kxf::IEventExecutor& executor, TFunc&& onFound)
-	{
-		using namespace kxf;
+	using namespace kxf;
 
+	template<class TEventTable, class TFunc>
+	size_t SearchForBoundHandlers(TEventTable&& eventTable, const EventID& eventID, IEventExecutor& executor, TFunc&& onFound)
+	{
 		const EventSystem::EventItem dummyItem(eventID, executor);
 		const IEventExecutor& nullExecutor = EventSystem::NullEventExecutor::Get();
 
@@ -36,12 +36,22 @@ namespace
 	}
 
 	template<class TEventTable>
-	size_t CountBoundHandlers(TEventTable&& eventTable, const kxf::EventID& eventID, kxf::IEventExecutor& executor)
+	size_t CountBoundHandlers(TEventTable&& eventTable, const EventID& eventID, IEventExecutor& executor)
 	{
 		return SearchForBoundHandlers(std::forward<TEventTable>(eventTable), eventID, executor, [](auto&&)
 		{
 			return true;
 		});
+	}
+
+	constexpr bool IsInvalidFlagCombination(FlagSet<EventFlag> flags) noexcept
+	{
+		return flags.Contains(EventFlag::OneShot|EventFlag::AlwaysSkip) ||
+
+			flags.Contains(EventFlag::Queued|EventFlag::Auto) ||
+			flags.Contains(EventFlag::Direct|EventFlag::Queued) ||
+			flags.Contains(EventFlag::Direct|EventFlag::Auto) ||
+			flags.Contains(EventFlag::Direct|EventFlag::Queued|EventFlag::Auto);
 	}
 }
 
@@ -278,13 +288,17 @@ namespace kxf
 	}
 	bool EvtHandler::ExecuteEventHandler(IEvent& event, EventItem& eventItem, IEvtHandler& evtHandler, bool& wasQueued)
 	{
-		// If the handler wants to be executed on the main thread, queue it and return
-		if (eventItem.GetFlags().Contains(EventFlag::Queued) && !EventSystem::EventAccessor(event).WasQueueed())
+		// If the handler wants to be executed on the main thread, queue it, mark as queued and return
+		const auto flags = eventItem.GetFlags();
+		if (flags.Contains(EventFlag::Queued) || (flags.Contains(EventFlag::Auto) && !wxThread::IsMain()))
 		{
-			DoQueueEvent(event.Move());
-			wasQueued = true;
+			if (!EventSystem::EventAccessor(event).WasQueueed())
+			{
+				DoQueueEvent(event.Move());
+				wasQueued = true;
 
-			return true;
+				return true;
+			}
 		}
 
 		// Reset skip instruction
@@ -556,14 +570,14 @@ namespace kxf
 		if (executor && eventID && eventID != IEvent::EvtAny && eventID != IIndirectInvocationEvent::EvtIndirectInvocation)
 		{
 			// Following combinations makes no sense
-			if (flags.Contains(EventFlag::OneShot|EventFlag::AlwaysSkip) || flags.Contains(EventFlag::Direct|EventFlag::Queued))
+			if (IsInvalidFlagCombination(flags))
 			{
 				wxFAIL_MSG("Invalid combination of 'EventFlag' values");
 				return {};
 			}
 
 			// If none are present, assume direct, it's not a hard error to pass 'EventFlag::None' here.
-			flags.Add(EventFlag::Direct, !flags.Contains(EventFlag::Direct) && !flags.Contains(EventFlag::Queued));
+			flags.Add(EventFlag::Direct, !flags.Contains(EventFlag::Direct) && !flags.Contains(EventFlag::Queued) && !flags.Contains(EventFlag::Auto));
 
 			EventItem eventItem(eventID, std::move(executor));
 
