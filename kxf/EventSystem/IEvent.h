@@ -26,13 +26,6 @@ namespace kxf
 			static inline const EventTag<IEvent> EvtNull = 0;
 			static inline const EventTag<IEvent> EvtAny = -1;
 
-		private:
-			virtual bool WasQueueed() const = 0;
-			virtual bool WasProcessed() const = 0;
-			virtual bool WillBeProcessedAgain() const = 0;
-
-			virtual void OnStartProcess(const EventID& eventID, const UniversallyUniqueID& uuid) = 0;
-
 		public:
 			virtual ~IEvent() = default;
 
@@ -54,6 +47,32 @@ namespace kxf
 			virtual void Allow(bool allow = true) = 0;
 	};
 
+	class KX_API IEventInternal: public RTTI::Interface<IEventInternal>
+	{
+		KxDeclareIID(IEventInternal, {0x117da075, 0xb7e4, 0x45bb, {0xba, 0x33, 0x51, 0xa9, 0x57, 0x4c, 0xcc, 0x6f}});
+
+		public:
+			virtual ~IEventInternal() = default;
+
+		public:
+			virtual bool IsAsync() const = 0;
+			virtual bool WasReQueueed() const = 0;
+			virtual bool WasProcessed() const = 0;
+			virtual bool WillBeProcessedAgain() const = 0;
+
+			virtual void OnStartProcess(const EventID& eventID, const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, bool isAsync) = 0;
+			virtual FlagSet<ProcessEventFlag> GetProcessFlags() const = 0;
+
+			virtual void SignalProcessed(std::unique_ptr<IEvent> event) = 0;
+			virtual std::unique_ptr<IEvent> WaitProcessed() = 0;
+
+			virtual void PutWaitResult(std::unique_ptr<IEvent> event) = 0;
+			virtual std::unique_ptr<IEvent> GetWaitResult() = 0;
+	};
+}
+
+namespace kxf
+{
 	class KX_API IWidgetEvent: public RTTI::Interface<IWidgetEvent>
 	{
 		KxDeclareIID(IWidgetEvent, {0x4552fa23, 0xb7da, 0x44c5, {0x86, 0x93, 0x30, 0x40, 0x87, 0x31, 0x33, 0x72}});

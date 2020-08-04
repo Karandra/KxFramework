@@ -16,13 +16,6 @@ namespace kxf
 	class KX_API EvtHandler: public RTTI::ImplementInterface<EvtHandler, IEvtHandler>
 	{
 		private:
-			struct PendingItem final
-			{
-				std::unique_ptr<IEvent> Event;
-				FlagSet<ProcessEventFlag> ProcessFlags;
-			};
-
-		private:
 			// Dynamic events table
 			RecursiveRWLock m_EventTableLock;
 			std::vector<EventItem> m_EventTable;
@@ -30,7 +23,7 @@ namespace kxf
 
 			// Pending events
 			ReadWriteLock m_PendingEventsLock;
-			std::vector<PendingItem> m_PendingEvents;
+			std::vector<std::unique_ptr<IEvent>> m_PendingEvents;
 
 			// Events chain
 			std::atomic<IEvtHandler*> m_PrevHandler = nullptr;
@@ -44,7 +37,7 @@ namespace kxf
 			void Destroy();
 
 		protected:
-			void PrepareEvent(IEvent& event, const EventID& eventID, const UniversallyUniqueID& uuid = {});
+			void PrepareEvent(IEvent& event, const EventID& eventID, const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, bool isAsync);
 			bool FreeBindSlot(const LocallyUniqueID& bindSlot);
 			void FreeAllBindSlots();
 
@@ -55,7 +48,7 @@ namespace kxf
 			bool TryBeforeAndHere(IEvent& event);
 
 			bool SearchEventTable(IEvent& event);
-			bool ExecuteEventHandler(IEvent& event, EventItem& eventItem, IEvtHandler& evtHandler, bool& wasQueued);
+			bool ExecuteEventHandler(IEvent& event, EventItem& eventItem, IEvtHandler& evtHandler);
 			void ConsumeException(IEvent& event);
 
 		protected:
@@ -72,7 +65,7 @@ namespace kxf
 				return true;
 			}
 
-			void DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, const UniversallyUniqueID& uuid = {}, FlagSet<ProcessEventFlag> flags = {}) override;
+			std::unique_ptr<IEvent> DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, const UniversallyUniqueID& uuid = {}, FlagSet<ProcessEventFlag> flags = {}) override;
 			bool DoProcessEvent(IEvent& event, const EventID& eventID = {}, const UniversallyUniqueID& uuid = {}, FlagSet<ProcessEventFlag> flags = {}, IEvtHandler* onlyIn = nullptr) override;
 
 			bool TryBefore(IEvent& event) override;

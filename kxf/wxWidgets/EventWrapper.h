@@ -9,22 +9,29 @@
 
 namespace kxf::wxWidgets
 {
-	class KX_API EventWrapper: public RTTI::ImplementInterface<EventWrapper, IEvent, IWithEvent>
+	class KX_API EventWrapper: public RTTI::ImplementInterface<EventWrapper, IEvent, IWithEvent>, private IEventInternal
 	{
 		private:
 			Utility::WithOptionalOwnership<wxEvent> m_Event;
-
-			UniversallyUniqueID m_UniqueID;
 			IEvtHandler* m_EvtHandler = nullptr;
-			mutable bool m_WasQueueed = false;
+
+			bool m_ProcessStarted = false;
+			bool m_IsAsync = false;
+			mutable bool m_WasReQueueed = false;
+			UniversallyUniqueID m_UniqueID;
+			FlagSet<ProcessEventFlag> m_ProcessFlags;
 
 		private:
-			// IEvent
-			bool WasQueueed() const override
+			// IEventInternal
+			bool IsAsync() const override
 			{
-				if (!m_WasQueueed)
+				return m_IsAsync;
+			}
+			bool WasReQueueed() const override
+			{
+				if (!m_WasReQueueed)
 				{
-					m_WasQueueed = true;
+					m_WasReQueueed = true;
 					return false;
 				}
 				return true;
@@ -38,20 +45,36 @@ namespace kxf::wxWidgets
 				return m_Event->WillBeProcessedAgain();
 			}
 
-			void OnStartProcess(const EventID& eventID, const UniversallyUniqueID& uuid) override
+			void OnStartProcess(const EventID& eventID, const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, bool isAsync) override
 			{
-				if (eventID && m_Event->GetEventType() == wxEVT_NULL)
+				if (!m_ProcessStarted)
 				{
 					m_Event->SetEventType(eventID.AsInt());
-				}
-				if (!m_UniqueID)
-				{
 					m_UniqueID = std::move(uuid);
-				}
-				if (m_Event->GetTimestamp() < 0)
-				{
 					m_Event->SetTimestamp(TimeSpan::Now(SteadyClock()).GetMilliseconds());
+					m_ProcessFlags = flags;
+					m_IsAsync = isAsync;
 				}
+			}
+			FlagSet<ProcessEventFlag> GetProcessFlags() const override
+			{
+				return m_ProcessFlags;
+			}
+
+			void SignalProcessed(std::unique_ptr<IEvent> event)
+			{
+			}
+			std::unique_ptr<IEvent> WaitProcessed()
+			{
+				return nullptr;
+			}
+
+			void PutWaitResult(std::unique_ptr<IEvent> event) override
+			{
+			}
+			std::unique_ptr<IEvent> GetWaitResult()
+			{
+				return nullptr;
 			}
 
 		public:
@@ -67,6 +90,17 @@ namespace kxf::wxWidgets
 			EventWrapper(const EventWrapper&) = delete;
 
 		public:
+			// IObject
+			using IObject::QueryInterface;
+			void* QueryInterface(const IID& iid) noexcept override
+			{
+				if (iid.IsOfType<IEventInternal>())
+				{
+					return static_cast<IEventInternal*>(this);
+				}
+				return TBaseClass::QueryInterface(iid);
+			}
+
 			// IEvent
 			std::unique_ptr<IEvent> Move() noexcept override
 			{

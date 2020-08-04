@@ -32,7 +32,7 @@ namespace kxf
 			bool m_RequestedMore = false;
 
 		public:
-			IdleEvent() noexcept = default;
+			IdleEvent() = default;
 
 		public:
 			std::unique_ptr<IEvent> Move() noexcept override

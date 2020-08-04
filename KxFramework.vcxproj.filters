@@ -1415,9 +1415,6 @@
     <ClInclude Include="kxf\EventSystem\IEvtHandler.h">
       <Filter>kxf\EventSystem</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\EventSystem\EventAccessor.h">
-      <Filter>kxf\EventSystem</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\EventSystem\EvtHandlerAccessor.h">
       <Filter>kxf\EventSystem</Filter>
     </ClInclude>

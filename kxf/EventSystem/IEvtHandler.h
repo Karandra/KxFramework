@@ -8,6 +8,8 @@
 #include "SignalExecutor.h"
 #include "kxf/RTTI/QueryInterface.h"
 #include "kxf/wxWidgets/IWithEvent.h"
+#include "kxf/Utility/Common.h"
+#include "kxf/Utility/Memory.h"
 #include "kxf/Utility/TypeTraits.h"
 
 namespace kxf
@@ -77,9 +79,25 @@ namespace kxf
 					using TResult = typename Utility::MethodTraits<TMethod>::TReturn;
 					if constexpr(!std::is_void_v<TResult>)
 					{
-						TResult result;
-						event.TakeResult(&result);
-						return result;
+						auto TakeResult = [&](ISignalInvocationEvent& event)
+						{
+							alignas(TResult) uint8_t resultBuffer[sizeof(TResult)] = {};
+							event.TakeResult(resultBuffer);
+
+							Utility::CallAtScopeExit atExit = [&]()
+							{
+								Utility::DestroyObjectOnMemoryLocation<TResult>(resultBuffer);
+							};
+							return *std::launder(reinterpret_cast<TResult*>(resultBuffer));
+						};
+
+						// If we have a wait result then the event was executed as blocked queued, so get result from it.
+						IEventInternal* eventInternal = event.QueryInterface<IEventInternal>();
+						if (auto event = eventInternal->GetWaitResult())
+						{
+							return TakeResult(*event->QueryInterface<ISignalInvocationEvent>());
+						}
+						return TakeResult(event);
 					}
 				}
 				return {};
@@ -101,7 +119,7 @@ namespace kxf
 			virtual bool OnDynamicBind(EventItem& eventItem) = 0;
 			virtual bool OnDynamicUnbind(EventItem& eventItem) = 0;
 
-			virtual void DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, const UniversallyUniqueID& uuid = {}, FlagSet<ProcessEventFlag> flags = {}) = 0;
+			virtual std::unique_ptr<IEvent> DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, const UniversallyUniqueID& uuid = {}, FlagSet<ProcessEventFlag> flags = {}) = 0;
 			virtual bool DoProcessEvent(IEvent& event, const EventID& eventID = {}, const UniversallyUniqueID& uuid = {}, FlagSet<ProcessEventFlag> flags = {}, IEvtHandler* onlyIn = nullptr) = 0;
 
 			virtual bool TryBefore(IEvent& event) = 0;
@@ -422,38 +440,38 @@ namespace kxf
 
 		public:
 			// Queue an event for later processing
-			void QueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, FlagSet<ProcessEventFlag> flags = {})
+			std::unique_ptr<IEvent> QueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, FlagSet<ProcessEventFlag> flags = {})
 			{
-				DoQueueEvent(std::move(event), eventID, {}, flags);
+				return DoQueueEvent(std::move(event), eventID, {}, flags);
 			}
 
 			template<class TEvent, class... Args>
-			void QueueEvent(const EventTag<TEvent>& eventTag, Args&&... arg)
+			std::unique_ptr<TEvent> QueueEvent(const EventTag<TEvent>& eventTag, Args&&... arg)
 			{
-				DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag);
+				return Utility::StaticCastUniquePtr<TEvent>(DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag));
 			}
 
 			template<class TEvent, class... Args>
-			void QueueEvent(FlagSet<ProcessEventFlag> flags, const EventTag<TEvent>& eventTag, Args&&... arg)
+			std::unique_ptr<TEvent> QueueEvent(FlagSet<ProcessEventFlag> flags, const EventTag<TEvent>& eventTag, Args&&... arg)
 			{
-				DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag, {}, flags);
+				Utility::StaticCastUniquePtr<TEvent>(DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag, {}, flags));
 			}
 
-			void QueueUniqueEvent(const UniversallyUniqueID& uuid, std::unique_ptr<IEvent> event, const EventID& eventID = {}, FlagSet<ProcessEventFlag> flags = {})
+			std::unique_ptr<IEvent> QueueUniqueEvent(const UniversallyUniqueID& uuid, std::unique_ptr<IEvent> event, const EventID& eventID = {}, FlagSet<ProcessEventFlag> flags = {})
 			{
-				DoQueueEvent(std::move(event), eventID, uuid, flags);
-			}
-
-			template<class TEvent, class... Args>
-			void QueueUniqueEvent(const UniversallyUniqueID& uuid, const EventTag<TEvent>& eventTag, Args&&... arg)
-			{
-				DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag, uuid);
+				return DoQueueEvent(std::move(event), eventID, uuid, flags);
 			}
 
 			template<class TEvent, class... Args>
-			void QueueUniqueEvent(const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, const EventTag<TEvent>& eventTag, Args&&... arg)
+			std::unique_ptr<TEvent> QueueUniqueEvent(const UniversallyUniqueID& uuid, const EventTag<TEvent>& eventTag, Args&&... arg)
 			{
-				DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag, uuid, flags);
+				Utility::StaticCastUniquePtr<TEvent>(DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag, uuid));
+			}
+
+			template<class TEvent, class... Args>
+			std::unique_ptr<TEvent> QueueUniqueEvent(const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, const EventTag<TEvent>& eventTag, Args&&... arg)
+			{
+				Utility::StaticCastUniquePtr<TEvent>(DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag, uuid, flags));
 			}
 
 			// Construct and queue event using the event builder

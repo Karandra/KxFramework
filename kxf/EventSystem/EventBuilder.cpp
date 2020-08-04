@@ -26,7 +26,7 @@ namespace kxf::EventSystem
 				m_IsSkipped = false;
 				m_IsAllowed = true;
 
-				EvtHandlerAccessor(*m_EvtHandler).DoQueueEvent(std::move(m_Event).GetUnique(), m_EventID, std::move(uuid), flags);
+				m_Event = EvtHandlerAccessor(*m_EvtHandler).DoQueueEvent(std::move(m_Event).GetUnique(), m_EventID, std::move(uuid), flags);
 			}
 			else
 			{

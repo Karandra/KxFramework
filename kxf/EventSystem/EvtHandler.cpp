@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "EvtHandler.h"
 #include "IdleEvent.h"
-#include "EventAccessor.h"
 #include "EvtHandlerAccessor.h"
 #include "kxf/Application/ICoreApplication.h"
 #include "kxf/Application/Private/Utility.h"
@@ -44,7 +43,7 @@ namespace
 		});
 	}
 
-	constexpr bool IsInvalidFlagCombination(FlagSet<EventFlag> flags) noexcept
+	bool IsInvalidFlagCombination(FlagSet<EventFlag> flags) noexcept
 	{
 		return flags.Contains(EventFlag::OneShot|EventFlag::AlwaysSkip) ||
 
@@ -52,6 +51,10 @@ namespace
 			flags.Contains(EventFlag::Direct|EventFlag::Queued) ||
 			flags.Contains(EventFlag::Direct|EventFlag::Auto) ||
 			flags.Contains(EventFlag::Direct|EventFlag::Queued|EventFlag::Auto);
+	}
+	bool ShouldQueueeEvent(FlagSet<EventFlag> flags, bool isMainThread) noexcept
+	{
+		return flags.Contains(EventFlag::Queued) || (flags.Contains(EventFlag::Auto) && !isMainThread);
 	}
 }
 
@@ -93,11 +96,14 @@ namespace kxf
 			app->RemovePendingEventHandler(*this);
 		}
 		DiscardPendingEvents();
+
+		WriteLockGuard lockGuard(m_EventTableLock);
+		m_EventTable.clear();
 	}
 
-	void EvtHandler::PrepareEvent(IEvent& event, const EventID& eventID, const UniversallyUniqueID& uuid)
+	void EvtHandler::PrepareEvent(IEvent& event, const EventID& eventID, const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, bool isAsync)
 	{
-		EventSystem::EventAccessor(event).OnStartProcess(eventID, uuid);
+		event.QueryInterface<IEventInternal>()->OnStartProcess(eventID, uuid, flags, isAsync);
 	}
 	bool EvtHandler::FreeBindSlot(const LocallyUniqueID& bindSlot)
 	{
@@ -202,22 +208,23 @@ namespace kxf
 		size_t nullCount = 0;
 		LocallyUniqueID eventSlot;
 
-		if (ReadLockGuard lock(m_EventTableLock); !m_EventTable.empty())
+		if (ReadLockGuard lockGuard(m_EventTableLock); !m_EventTable.empty())
 		{
 			initialSize = m_EventTable.size();
+
+			const EventID eventID = event.GetEventID();
 			for (auto it = m_EventTable.rbegin(); it != m_EventTable.rend(); ++it)
 			{
 				EventItem& eventItem = *it;
 				if (eventItem.IsNull())
 				{
-					// This entry must have been unbound at some time in the past, so
-					// skip it now and really remove it from the event table, once we
-					// finish iterating.
+					// This item must have been unbound at some time in the past, so skip it now
+					// and really remove it from the event table, once we finish iterating.
 					nullCount++;
 					continue;
 				}
 
-				if (eventItem.GetEventID() == event.GetEventID())
+				if (eventItem.IsSameEventID(eventID))
 				{
 					IEvtHandler* evtHandler = eventItem.GetExecutor()->GetTargetHandler();
 					if (!evtHandler)
@@ -225,13 +232,43 @@ namespace kxf
 						evtHandler = this;
 					}
 
-					// Call the handler
-					bool wasQueued = false;
-					if (ExecuteEventHandler(event, eventItem, *evtHandler, wasQueued))
+					// If the handler wants to be executed on the main thread, queue it, mark as queued (done in 'WasReQueueed') and return.
+					const auto eventFlags = eventItem.GetFlags();
+					const bool isMainThread = wxThread::IsMain();
+					if (ShouldQueueeEvent(eventFlags, isMainThread))
 					{
-						// If this is a one-shot event and it wasn't queued store it's bind slot to unbound later
+						IEventInternal* eventInternal = event.QueryInterface<IEventInternal>();
+						if (!eventInternal->WasReQueueed() && !eventInternal->IsAsync())
+						{
+							if (eventFlags.Contains(EventFlag::Blocking))
+							{
+								wxASSERT_MSG(!isMainThread, "Option 'EventFlag::Blocking' should not ever be used from main thread");
+
+								// TODO: Do we need some kind of lock to ensure that our moved event won't get processed until after we call 'WaitProcessed' on it?
+								auto movedEvent = event.Move();
+								IEventInternal& movedEventRef = *movedEvent->QueryInterface<IEventInternal>();
+								DoQueueEvent(std::move(movedEvent));
+
+								// We need to leave the guard here so the main thread can enter this function. We're going to return right after anyway.
+								lockGuard.Unlock();
+								eventInternal->PutWaitResult(movedEventRef.WaitProcessed());
+							}
+							else
+							{
+								DoQueueEvent(event.Move());
+							}
+
+							// Stop execution of this event here, it'll be restarted from the beginning in 'ProcessPendingEvents'.
+							return true;
+						}
+					}
+
+					// Call the handler
+					if (ExecuteEventHandler(event, eventItem, *evtHandler))
+					{
+						// If this is a one-shot event store its bind slot to unbind later
 						const auto flags = eventItem.GetFlags();
-						if (flags.Contains(EventFlag::OneShot) && !wasQueued)
+						if (flags.Contains(EventFlag::OneShot))
 						{
 							eventSlot = eventItem.GetBindSlot();
 						}
@@ -286,21 +323,8 @@ namespace kxf
 		}
 		return executed;
 	}
-	bool EvtHandler::ExecuteEventHandler(IEvent& event, EventItem& eventItem, IEvtHandler& evtHandler, bool& wasQueued)
+	bool EvtHandler::ExecuteEventHandler(IEvent& event, EventItem& eventItem, IEvtHandler& evtHandler)
 	{
-		// If the handler wants to be executed on the main thread, queue it, mark as queued and return
-		const auto flags = eventItem.GetFlags();
-		if (flags.Contains(EventFlag::Queued) || (flags.Contains(EventFlag::Auto) && !wxThread::IsMain()))
-		{
-			if (!EventSystem::EventAccessor(event).WasQueueed())
-			{
-				DoQueueEvent(event.Move());
-				wasQueued = true;
-
-				return true;
-			}
-		}
-
 		// Reset skip instruction
 		event.Skip(false);
 
@@ -391,12 +415,12 @@ namespace kxf
 		}
 	}
 	
-	void EvtHandler::DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID, const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags)
+	std::unique_ptr<IEvent> EvtHandler::DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID, const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags)
 	{
 		auto app = ICoreApplication::GetInstance();
 		if (app && event)
 		{
-			PrepareEvent(*event, eventID, uuid);
+			PrepareEvent(*event, eventID, uuid, flags, true);
 
 			if (WriteLockGuard lock(m_PendingEventsLock); true)
 			{
@@ -405,23 +429,22 @@ namespace kxf
 				{
 					// If this event has a unique ID, search for the last posted event with the same ID and,
 					// if it'll be found, replace it with our new event, otherwise just add it at the end as usual.
-					auto it = std::find_if(m_PendingEvents.rbegin(), m_PendingEvents.rend(), [&](const PendingItem& item)
+					auto it = std::find_if(m_PendingEvents.rbegin(), m_PendingEvents.rend(), [&](const auto& item)
 					{
-						return item.Event->GetUniqueID() == uuid;
+						return item->GetUniqueID() == uuid;
 					});
 					if (it != m_PendingEvents.rend())
 					{
-						it->Event = std::move(event);
-						it->ProcessFlags = flags;
+						*it = std::move(event);
 					}
 					else
 					{
-						m_PendingEvents.emplace_back(PendingItem{std::move(event), flags});
+						m_PendingEvents.emplace_back(std::move(event));
 					}
 				}
 				else
 				{
-					m_PendingEvents.emplace_back(PendingItem{std::move(event), flags});
+					m_PendingEvents.emplace_back(std::move(event));
 				}
 
 				// Add this event handler to the list of event handlers that have pending events
@@ -436,6 +459,8 @@ namespace kxf
 			// Inform the system that new pending events are somewhere, and that these should be processed in idle time.
 			app->WakeUp();
 		}
+
+		return nullptr;
 	}
 	bool EvtHandler::DoProcessEvent(IEvent& event, const EventID& eventID, const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, IEvtHandler* onlyIn)
 	{
@@ -444,7 +469,7 @@ namespace kxf
 		{
 			auto BeginLocally = [&]()
 			{
-				PrepareEvent(event, eventID, uuid);
+				PrepareEvent(event, eventID, uuid, flags, false);
 				return TryLocally(event);
 			};
 			if (flags.Contains(ProcessEventFlag::HandleExceptions))
@@ -468,7 +493,7 @@ namespace kxf
 		// Main entry point for event processing
 		auto BeginProcessEvent = [&]()
 		{
-			PrepareEvent(event, eventID, uuid);
+			PrepareEvent(event, eventID, uuid, flags, false);
 
 			// The very first thing we do is to allow any registered filters to hook
 			// into event processing in order to globally pre-process all events.
@@ -476,7 +501,7 @@ namespace kxf
 			// Note that we should only do it if we're the first event handler called
 			// to avoid calling 'FilterEvent' multiple times as the event goes through
 			// the event handler chain and possibly upwards the window hierarchy.
-			if (!EventSystem::EventAccessor(event).WasProcessed())
+			if (!event.QueryInterface<IEventInternal>()->WasProcessed())
 			{
 				using Result = IEventFilter::Result;
 				if (auto app = ICoreApplication::GetInstance())
@@ -558,7 +583,7 @@ namespace kxf
 
 		// If this event is going to be processed in another handler next, don't pass it
 		// to application instance now, it will be done from 'TryAfter' of this other handler.
-		if (EventSystem::EventAccessor(event).WillBeProcessedAgain())
+		if (event.QueryInterface<IEventInternal>()->WillBeProcessedAgain())
 		{
 			return false;
 		}
@@ -680,7 +705,7 @@ namespace kxf
 		{
 			// We need to process only a single pending event in this call because each call to 'DoProcessEvent'
 			// could result in the destruction of this same event handler (see the comment at the end of this function).
-			PendingItem pendingItem;
+			std::unique_ptr<IEvent> pendingEvent;
 
 			// This method is only called by an application if this handler does have pending events
 			if (WriteLockGuard lock(m_PendingEventsLock); !m_PendingEvents.empty())
@@ -696,7 +721,7 @@ namespace kxf
 					auto it = m_PendingEvents.begin();
 					for (; it != m_PendingEvents.end(); ++it)
 					{
-						if (eventLoop->IsEventAllowedInsideYield(it->Event->GetEventCategory()))
+						if (eventLoop->IsEventAllowedInsideYield((*it)->GetEventCategory()))
 						{
 							pendingIt = std::move(it);
 							break;
@@ -715,7 +740,7 @@ namespace kxf
 
 				// It's important we remove event from list before processing it, else a nested event loop,
 				// for example from a modal dialog, might process the same event again.
-				pendingItem = std::move(*pendingIt);
+				pendingEvent = std::move(*pendingIt);
 				m_PendingEvents.erase(pendingIt);
 
 				if (m_PendingEvents.empty())
@@ -725,11 +750,15 @@ namespace kxf
 				}
 			}
 			
-			if (pendingItem.Event)
+			if (pendingEvent)
 			{
 				// Careful: this object could have been deleted by the event handler executed by the 'DoProcessEvent' call below,
 				// so we can't access any fields of this object anymore.
-				DoProcessEvent(*pendingItem.Event, {}, {}, pendingItem.ProcessFlags);
+				DoProcessEvent(*pendingEvent);
+
+				// Signal to a waiting thread that we have processed this event and relinquish itself to it.
+				// Doesn't do anything if the event isn't waitable.
+				pendingEvent->QueryInterface<IEventInternal>()->SignalProcessed(std::move(pendingEvent));
 
 				// Should we return the result of 'DoProcessEvent' here?
 				return true;

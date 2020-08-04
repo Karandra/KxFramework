@@ -1,5 +1,6 @@
 #pragma once
 #include "Event.h"
+#include "kxf/General/AlignedStorage.h"
 #include "kxf/Utility/TypeTraits.h"
 #include "kxf/Utility/Memory.h"
 
@@ -12,9 +13,11 @@ namespace kxf::EventSystem
 			using TArgsTuple = typename Utility::MethodTraits<TSignal_>::TArgsTuple;
 			using TResult = typename Utility::MethodTraits<TSignal_>::TReturn;
 
+			using TActualResult = std::conditional_t<!std::is_void_v<TResult>, TResult, void*>;
+
 		protected:
 			TArgsTuple m_Parameters;
-			std::conditional_t<!std::is_void_v<TResult>, TResult, void*> m_Result;
+			std::optional<TActualResult> m_Result;
 
 		public:
 			template<class... Args>
@@ -56,7 +59,8 @@ namespace kxf::EventSystem
 			{
 				if constexpr(!std::is_void_v<TResult>)
 				{
-					*static_cast<TResult*>(value) = std::move(m_Result);
+					*static_cast<TResult*>(value) = std::move(*m_Result);
+					m_Result = std::nullopt;
 				}
 			}
 			void PutResult(void* value) override

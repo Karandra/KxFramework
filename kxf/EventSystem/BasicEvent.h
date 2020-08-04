@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "IEvent.h"
 #include "kxf/Utility/Common.h"
+#include <condition_variable>
 
 namespace kxf::EventSystem
 {
@@ -19,14 +20,20 @@ namespace kxf::EventSystem
 		// Set after a call to 'OnStartProcess'.
 		Started = 1 << 0,
 
+		// Indicated that the event is executed asynchronously. On other words it was send from 'IEvtHandler::Queue[Unique][Event|Signal]'.
+		Async = 1 << 1,
+
 		// Set as soon as 'WasQueueed' is called for the first time when event is going to be queued from 'DoProcessEvent'.
-		Queueed = 1 << 1,
+		ReQueueed = 1 << 2,
+
+		// Set if the event is invoked with thread-blocking semantics.
+		Waitable = 1 << 3,
 
 		// Set after 'DoProcessEvent' was called at least once for this event.
-		ProcessedOnce = 1 << 2,
+		ProcessedOnce = 1 << 4,
 
 		// Can be set to indicate that the event will be passed to another handler if it's not processed in this one.
-		WillBeProcessedAgain = 1 << 3
+		WillBeProcessedAgain = 1 << 5,
 	};
 }
 namespace kxf
@@ -37,7 +44,7 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API BasicEvent: public RTTI::ImplementInterface<BasicEvent, IEvent>
+	class KX_API BasicEvent: public RTTI::ImplementInterface<BasicEvent, IEvent>, private IEventInternal
 	{
 		private:
 			using EventPublicState = EventSystem::EventPublicState;
@@ -51,6 +58,17 @@ namespace kxf
 
 			FlagSet<EventPublicState> m_PublicState = EventPublicState::Allowed;
 			mutable FlagSet<EventPrivateState> m_PrivateState;
+			FlagSet<ProcessEventFlag> m_ProcessFlags;
+
+			struct WaitInfo
+			{
+				std::mutex Mutex;
+				std::condition_variable CV;
+				std::atomic<bool> Flag = false;
+				std::unique_ptr<IEvent> Self;
+			};
+			std::unique_ptr<WaitInfo> m_WaitInfo;
+			std::unique_ptr<IEvent> m_WaitResult;
 
 		private:
 			bool TestAndSetPrivateState(EventPrivateState flag) const
@@ -63,9 +81,14 @@ namespace kxf
 				return true;
 			}
 
-			bool WasQueueed() const override
+			// IEventInternal
+			bool IsAsync() const override
 			{
-				return TestAndSetPrivateState(EventPrivateState::Queueed);
+				return m_PrivateState.Contains(EventPrivateState::Async);
+			}
+			bool WasReQueueed() const override
+			{
+				return TestAndSetPrivateState(EventPrivateState::ReQueueed);
 			}
 			bool WasProcessed() const override
 			{
@@ -76,16 +99,61 @@ namespace kxf
 				return TestAndSetPrivateState(EventPrivateState::WillBeProcessedAgain);
 			}
 
-			void OnStartProcess(const EventID& eventID, const UniversallyUniqueID& uuid) override
+			void OnStartProcess(const EventID& eventID, const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, bool isAsync) override
 			{
 				if (!m_PrivateState.Contains(EventPrivateState::Started))
 				{
 					m_PrivateState.Add(EventPrivateState::Started);
+					m_PrivateState.Mod(EventPrivateState::Async, isAsync);
 
 					m_EventID = eventID;
 					m_UniqueID = std::move(uuid);
 					m_Timestamp = TimeSpan::Now(SteadyClock());
+					m_ProcessFlags = flags;
 				}
+			}
+			FlagSet<ProcessEventFlag> GetProcessFlags() const override
+			{
+				return m_ProcessFlags;
+			}
+
+			void SignalProcessed(std::unique_ptr<IEvent> event) override
+			{
+				if (m_PrivateState.Contains(EventPrivateState::Waitable))
+				{
+					m_WaitInfo->Self = std::move(event);
+					m_WaitInfo->Flag = true;
+
+					m_WaitInfo->CV.notify_one();
+				}
+			}
+			std::unique_ptr<IEvent> WaitProcessed() override
+			{
+				if (!m_WaitInfo)
+				{
+					m_PrivateState.Add(EventPrivateState::Waitable);
+
+					m_WaitInfo = std::make_unique<WaitInfo>();
+					m_WaitInfo->Flag = false;
+
+					std::unique_lock lock(m_WaitInfo->Mutex);
+					m_WaitInfo->CV.wait(lock, [&]()
+					{
+						return m_WaitInfo->Flag == true;
+					});
+
+					return std::move(m_WaitInfo->Self);
+				}
+				return nullptr;
+			}
+
+			void PutWaitResult(std::unique_ptr<IEvent> event) override
+			{
+				m_WaitResult = std::move(event);
+			}
+			std::unique_ptr<IEvent> GetWaitResult()
+			{
+				return std::move(m_WaitResult);
 			}
 
 		public:
@@ -97,6 +165,18 @@ namespace kxf
 			}
 
 		public:
+			// IObject
+			using IObject::QueryInterface;
+			void* QueryInterface(const IID& iid) noexcept override
+			{
+				if (iid.IsOfType<IEventInternal>())
+				{
+					return static_cast<IEventInternal*>(this);
+				}
+				return TBaseClass::QueryInterface(iid);
+			}
+
+			// IEvent
 			std::unique_ptr<IEvent> Move() noexcept override
 			{
 				return std::make_unique<BasicEvent>(std::move(*this));
@@ -157,6 +237,8 @@ namespace kxf
 
 				m_PublicState = Utility::ExchangeResetAndReturn(other.m_PublicState, EventPublicState::Allowed);
 				m_PrivateState = Utility::ExchangeResetAndReturn(other.m_PrivateState, EventPrivateState::None);
+
+				m_WaitInfo = std::move(m_WaitInfo);
 
 				return *this;
 			}
