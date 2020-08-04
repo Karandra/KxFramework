@@ -17,7 +17,7 @@ namespace kxf::wxWidgets
 
 			bool m_ProcessStarted = false;
 			bool m_IsAsync = false;
-			mutable bool m_WasReQueueed = false;
+			mutable bool m_WasReQueued = false;
 			UniversallyUniqueID m_UniqueID;
 			FlagSet<ProcessEventFlag> m_ProcessFlags;
 
@@ -27,11 +27,11 @@ namespace kxf::wxWidgets
 			{
 				return m_IsAsync;
 			}
-			bool WasReQueueed() const override
+			bool WasReQueued() const override
 			{
-				if (!m_WasReQueueed)
+				if (!m_WasReQueued)
 				{
-					m_WasReQueueed = true;
+					m_WasReQueued = true;
 					return false;
 				}
 				return true;

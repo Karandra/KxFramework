@@ -23,8 +23,8 @@ namespace kxf::EventSystem
 		// Indicated that the event is executed asynchronously. On other words it was send from 'IEvtHandler::Queue[Unique][Event|Signal]'.
 		Async = 1 << 1,
 
-		// Set as soon as 'WasQueueed' is called for the first time when event is going to be queued from 'DoProcessEvent'.
-		ReQueueed = 1 << 2,
+		// Set as soon as 'WasQueued' is called for the first time when event is going to be queued from 'DoProcessEvent'.
+		ReQueued = 1 << 2,
 
 		// Set if the event is invoked with thread-blocking semantics.
 		Waitable = 1 << 3,
@@ -86,9 +86,9 @@ namespace kxf
 			{
 				return m_PrivateState.Contains(EventPrivateState::Async);
 			}
-			bool WasReQueueed() const override
+			bool WasReQueued() const override
 			{
-				return TestAndSetPrivateState(EventPrivateState::ReQueueed);
+				return TestAndSetPrivateState(EventPrivateState::ReQueued);
 			}
 			bool WasProcessed() const override
 			{

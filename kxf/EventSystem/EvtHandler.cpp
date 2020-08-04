@@ -232,13 +232,13 @@ namespace kxf
 						evtHandler = this;
 					}
 
-					// If the handler wants to be executed on the main thread, queue it, mark as queued (done in 'WasReQueueed') and return.
+					// If the handler wants to be executed on the main thread, queue it, mark as queued (done in 'WasReQueued') and return.
 					const auto eventFlags = eventItem.GetFlags();
 					const bool isMainThread = wxThread::IsMain();
 					if (ShouldQueueeEvent(eventFlags, isMainThread))
 					{
 						IEventInternal* eventInternal = event.QueryInterface<IEventInternal>();
-						if (!eventInternal->WasReQueueed() && !eventInternal->IsAsync())
+						if (!eventInternal->WasReQueued() && !eventInternal->IsAsync())
 						{
 							if (eventFlags.Contains(EventFlag::Blocking))
 							{

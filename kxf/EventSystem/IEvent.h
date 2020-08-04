@@ -56,7 +56,7 @@ namespace kxf
 
 		public:
 			virtual bool IsAsync() const = 0;
-			virtual bool WasReQueueed() const = 0;
+			virtual bool WasReQueued() const = 0;
 			virtual bool WasProcessed() const = 0;
 			virtual bool WillBeProcessedAgain() const = 0;
 
