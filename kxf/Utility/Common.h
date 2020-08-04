@@ -64,6 +64,18 @@ namespace kxf::Utility
 			*ptr = static_cast<TPointer>(std::forward<TValue>(value));
 		}
 	}
+
+	template<class TTarget, class TSource>
+	std::unique_ptr<TTarget> StaticCastUniquePtr(std::unique_ptr<TSource> source) noexcept
+	{
+		return std::unique_ptr<TTarget>(static_cast<TTarget*>(source.release()));
+	}
+
+	template<class TTarget, class TSource>
+	std::unique_ptr<TTarget> DynamicCastUniquePtr(std::unique_ptr<TSource> source) noexcept
+	{
+		return std::unique_ptr<TTarget>(dynamic_cast<TTarget*>(source.release()));
+	}
 }
 
 namespace kxf::Utility
