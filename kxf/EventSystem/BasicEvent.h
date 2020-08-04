@@ -20,7 +20,7 @@ namespace kxf::EventSystem
 		// Set after a call to 'OnStartProcess'.
 		Started = 1 << 0,
 
-		// Indicated that the event is executed asynchronously. On other words it was send from 'IEvtHandler::Queue[Unique][Event|Signal]'.
+		// Indicates that the event is executed asynchronously. On other words it was sent from 'IEvtHandler::Queue[Unique][Event|Signal]'.
 		Async = 1 << 1,
 
 		// Set as soon as 'WasQueued' is called for the first time when event is going to be queued from 'DoProcessEvent'.
@@ -63,7 +63,7 @@ namespace kxf
 			struct WaitInfo
 			{
 				std::mutex Mutex;
-				std::condition_variable CV;
+				std::condition_variable Condition;
 				std::atomic<bool> Flag = false;
 				std::unique_ptr<IEvent> Self;
 			};
@@ -124,7 +124,7 @@ namespace kxf
 					m_WaitInfo->Self = std::move(event);
 					m_WaitInfo->Flag = true;
 
-					m_WaitInfo->CV.notify_one();
+					m_WaitInfo->Condition.notify_one();
 				}
 			}
 			std::unique_ptr<IEvent> WaitProcessed() override
@@ -137,7 +137,7 @@ namespace kxf
 					m_WaitInfo->Flag = false;
 
 					std::unique_lock lock(m_WaitInfo->Mutex);
-					m_WaitInfo->CV.wait(lock, [&]()
+					m_WaitInfo->Condition.wait(lock, [&]()
 					{
 						return m_WaitInfo->Flag == true;
 					});
@@ -239,6 +239,7 @@ namespace kxf
 				m_PrivateState = Utility::ExchangeResetAndReturn(other.m_PrivateState, EventPrivateState::None);
 
 				m_WaitInfo = std::move(m_WaitInfo);
+				m_WaitResult = std::move(m_WaitResult);
 
 				return *this;
 			}
