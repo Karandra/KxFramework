@@ -7,27 +7,46 @@ namespace kxf
 	class LockGuard final
 	{
 		private:
-			T& m_Lock;
+			T* m_Lock = nullptr;
 
 		public:
-			LockGuard(T& lock)
-				:m_Lock(lock)
+			explicit LockGuard(T& lock)
+				:m_Lock(&lock)
 			{
-				m_Lock.Lock();
+				m_Lock->Lock();
+			}
+			LockGuard(LockGuard&& other) noexcept
+			{
+				*this = std::move(other);
 			}
 			LockGuard(const LockGuard&) = delete;
 			~LockGuard()
 			{
-				m_Lock.Unlock();
+				Unlock();
 			}
 
 		public:
+			void Unlock()
+			{
+				if (T* lock = m_Lock)
+				{
+					m_Lock = nullptr;
+					lock->Unlock();
+				}
+			}
 			T* operator->() const noexcept
 			{
-				return &m_Lock;
+				return m_Lock;
 			}
 
 		public:
+			LockGuard& operator=(LockGuard&& other) noexcept
+			{
+				m_Lock = other.m_Lock;
+				other.m_Lock = nullptr;
+
+				return *this;
+			}
 			LockGuard& operator=(const LockGuard&) = delete;
 	};
 }
@@ -38,55 +57,93 @@ namespace kxf
 	class ReadLockGuard final
 	{
 		private:
-			T& m_Lock;
+			T* m_Lock = nullptr;
 
 		public:
-			ReadLockGuard(T& lock)
-				:m_Lock(lock)
+			explicit ReadLockGuard(T& lock)
+				:m_Lock(&lock)
 			{
-				m_Lock.LockRead();
+				m_Lock->LockRead();
+			}
+			ReadLockGuard(ReadLockGuard&& other) noexcept
+			{
+				*this = std::move(other);
 			}
 			ReadLockGuard(const ReadLockGuard&) = delete;
 			~ReadLockGuard()
 			{
-				m_Lock.UnlockRead();
+				Unlock();
 			}
 
 		public:
+			void Unlock()
+			{
+				if (T* lock = m_Lock)
+				{
+					m_Lock = nullptr;
+					lock->UnlockRead();
+				}
+			}
 			T* operator->() const noexcept
 			{
-				return &m_Lock;
+				return m_Lock;
 			}
 
 		public:
 			ReadLockGuard& operator=(const ReadLockGuard&) = delete;
+			ReadLockGuard& operator=(ReadLockGuard&& other) noexcept
+			{
+				m_Lock = other.m_Lock;
+				other.m_Lock = nullptr;
+
+				return *this;
+			}
 	};
 
 	template<class T>
 	class WriteLockGuard final
 	{
 		private:
-			T& m_Lock;
+			T* m_Lock = nullptr;
 
 		public:
-			WriteLockGuard(T& lock)
-				:m_Lock(lock)
+			explicit WriteLockGuard(T& lock)
+				:m_Lock(&lock)
 			{
-				m_Lock.LockWrite();
+				m_Lock->LockWrite();
+			}
+			WriteLockGuard(WriteLockGuard&& other) noexcept
+			{
+				*this = std::move(other);
 			}
 			WriteLockGuard(const WriteLockGuard&) = delete;
 			~WriteLockGuard()
 			{
-				m_Lock.UnlockWrite();
+				Unlock();
 			}
 
 		public:
+			void Unlock()
+			{
+				if (T* lock = m_Lock)
+				{
+					m_Lock = nullptr;
+					lock->UnlockWrite();
+				}
+			}
 			T* operator->() const noexcept
 			{
-				return &m_Lock;
+				return m_Lock;
 			}
 
 		public:
+			WriteLockGuard& operator=(WriteLockGuard&& other) noexcept
+			{
+				m_Lock = other.m_Lock;
+				other.m_Lock = nullptr;
+
+				return *this;
+			}
 			WriteLockGuard& operator=(const WriteLockGuard&) = delete;
 	};
 }

@@ -48,27 +48,46 @@ namespace kxf
 	class LockGuard<CriticalSection> final
 	{
 		private:
-			CriticalSection& m_Lock;
+			CriticalSection* m_Lock = nullptr;
 
 		public:
-			LockGuard(CriticalSection& lock) noexcept
-				:m_Lock(lock)
+			explicit LockGuard(CriticalSection& lock) noexcept
+				:m_Lock(&lock)
 			{
-				m_Lock.Enter();
+				m_Lock->Enter();
+			}
+			LockGuard(LockGuard&& other) noexcept
+			{
+				*this = std::move(other);
 			}
 			LockGuard(const LockGuard&) = delete;
 			~LockGuard() noexcept
 			{
-				m_Lock.Leave();
+				Unlock();
 			}
 
 		public:
+			void Unlock()
+			{
+				if (CriticalSection* lock = m_Lock)
+				{
+					m_Lock = nullptr;
+					lock->Leave();
+				}
+			}
 			CriticalSection* operator->() const noexcept
 			{
-				return &m_Lock;
+				return m_Lock;
 			}
 
 		public:
 			LockGuard& operator=(const LockGuard&) = delete;
+			LockGuard& operator=(LockGuard&& other) noexcept
+			{
+				m_Lock = other.m_Lock;
+				other.m_Lock = nullptr;
+
+				return *this;
+			}
 	};
 }
