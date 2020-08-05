@@ -27,7 +27,7 @@ namespace kxf::Utility
 	}
 }
 
-namespace kxf::Utility
+namespace kxf::Utility::Container
 {
 	template<class TContainer, class TFunc>
 	auto FindIf(TContainer&& container, TFunc&& func) noexcept
@@ -42,7 +42,7 @@ namespace kxf::Utility
 	}
 
 	template<class TContainer, class TFunc>
-	auto RemoveAllIf(TContainer& container, TFunc&& func)
+	auto RemoveEachIf(TContainer& container, TFunc&& func)
 	{
 		return container.erase(std::remove_if(std::begin(container), std::end(container), std::forward<TFunc>(func)), std::end(container));
 	}

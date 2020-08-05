@@ -425,7 +425,7 @@ namespace kxf
 		{
 			WriteLockGuard lock(m_ScheduledForDestructionLock);
 
-			if (!Utility::Contains(m_ScheduledForDestruction, [&](const auto& item)
+			if (!Utility::Container::Contains(m_ScheduledForDestruction, [&](const auto& item)
 			{
 				return item.get() == object.get();
 			}))
@@ -446,7 +446,7 @@ namespace kxf
 	{
 		ReadLockGuard lock(m_ScheduledForDestructionLock);
 
-		return Utility::Contains(m_ScheduledForDestruction, [&](const auto& item)
+		return Utility::Container::Contains(m_ScheduledForDestruction, [&](const auto& item)
 		{
 			return item.get() == &object;
 		});
@@ -474,7 +474,7 @@ namespace kxf
 	{
 		WriteLockGuard lock(m_PendingEvtHandlersLock);
 
-		if (!Utility::Contains(m_PendingEvtHandlers, [&](const IEvtHandler* item)
+		if (!Utility::Container::Contains(m_PendingEvtHandlers, [&](const IEvtHandler* item)
 		{
 			return item == &evtHandler;
 		}))
@@ -498,8 +498,8 @@ namespace kxf
 		// Try to remove the handler from both lists 
 		if (WriteLockGuard lock(m_PendingEvtHandlersLock); true)
 		{
-			Utility::RemoveSingleIf(m_PendingEvtHandlers, Find);
-			Utility::RemoveSingleIf(m_DelayedPendingEvtHandlers, Find);
+			Utility::Container::RemoveSingleIf(m_PendingEvtHandlers, Find);
+			Utility::Container::RemoveSingleIf(m_DelayedPendingEvtHandlers, Find);
 		}
 		return count != 0;
 	}
@@ -514,8 +514,8 @@ namespace kxf
 
 		if (WriteLockGuard lock(m_PendingEvtHandlersLock); true)
 		{
-			Utility::RemoveSingleIf(m_PendingEvtHandlers, Find);
-			if (!Utility::Contains(m_DelayedPendingEvtHandlers, Find))
+			Utility::Container::RemoveSingleIf(m_PendingEvtHandlers, Find);
+			if (!Utility::Container::Contains(m_DelayedPendingEvtHandlers, Find))
 			{
 				m_DelayedPendingEvtHandlers.emplace_back(&evtHandler);
 			}

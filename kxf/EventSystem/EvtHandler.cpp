@@ -287,7 +287,7 @@ namespace kxf
 						// and deletion happen at the same time which is not always the case).
 						//
 						// Actually a user should use 'ICoreApplication::ScheduleForDestruction'
-						// to destroy 'IEvtHandler' objects and now just call 'delete this'.
+						// to destroy 'IEvtHandler' objects instead of just calling 'delete this'.
 						// So assume we can never end up in a situation described above.
 						executed = true;
 						break;
@@ -298,7 +298,7 @@ namespace kxf
 
 		if (nullCount != 0 || eventSlot)
 		{
-			WriteLockGuard lock(m_EventTableLock);
+			WriteLockGuard lockGuard(m_EventTableLock);
 			
 			// Unbind event if needed
 			if (DoUnbind(eventSlot))
@@ -309,7 +309,7 @@ namespace kxf
 			// Purge the event table
 			if (nullCount != 0)
 			{
-				Utility::RemoveAllIf(m_EventTable, [](const EventItem& item)
+				Utility::Container::RemoveEachIf(m_EventTable, [](const EventItem& item)
 				{
 					return item.IsNull();
 				});
