@@ -90,10 +90,9 @@ namespace kxf
 						};
 
 						// If we have a wait result then the event was executed as blocked queued, so get result from it.
-						IEventInternal* eventInternal = event.QueryInterface<IEventInternal>();
-						if (auto event = eventInternal->GetWaitResult())
+						if (auto eventInternal = event.QueryInterface<IEventInternal>()->GetWaitResult())
 						{
-							return TakeResult(*event->QueryInterface<ISignalInvocationEvent>());
+							return TakeResult(*eventInternal->QueryInterface<ISignalInvocationEvent>());
 						}
 						return TakeResult(event);
 					}
@@ -481,26 +480,26 @@ namespace kxf
 
 		public:
 			// Queue execution of a given callable to the next event loop iteration
-			template<class TCallable, class... Args>
+			template<class TCallable, class... Args, class = std::enable_if_t<std::is_invocable_v<TCallable, Args...>>>
 			std::unique_ptr<IEvent> CallAfter(TCallable&& callable, Args&&... arg)
 			{
 				return DoCallAfter({}, {}, std::forward<TCallable>(callable), std::forward<Args>(arg)...);
 			}
 
-			template<class TCallable, class... Args>
+			template<class TCallable, class... Args, class = std::enable_if_t<std::is_invocable_v<TCallable, Args...>>>
 			std::unique_ptr<IEvent> CallAfter(FlagSet<ProcessEventFlag> flags, TCallable&& callable, Args&&... arg)
 			{
 				return DoCallAfter({}, flags, std::forward<TCallable>(callable), std::forward<Args>(arg)...);
 			}
 
 			// Queue execution of a given callable to the next event loop iteration replacing previously sent callable with the same ID
-			template<class TCallable, class... Args>
+			template<class TCallable, class... Args, class = std::enable_if_t<std::is_invocable_v<TCallable, Args...>>>
 			std::unique_ptr<IEvent> UniqueCallAfter(const UniversallyUniqueID& uuid, TCallable&& callable, Args&&... arg)
 			{
 				return DoCallAfter(uuid, std::forward<TCallable>(callable), std::forward<Args>(arg)...);
 			}
 
-			template<class TCallable, class... Args>
+			template<class TCallable, class... Args, class = std::enable_if_t<std::is_invocable_v<TCallable, Args...>>>
 			std::unique_ptr<IEvent> UniqueCallAfter(const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, TCallable&& callable, Args&&... arg)
 			{
 				return DoCallAfter(uuid, flags, std::forward<TCallable>(callable), std::forward<Args>(arg)...);

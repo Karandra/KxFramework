@@ -738,7 +738,7 @@ namespace kxf
 					}
 				}
 
-				// It's important we remove event from list before processing it, else a nested event loop,
+				// It's important we remove event from the list before processing it, else a nested event loop,
 				// for example from a modal dialog, might process the same event again.
 				pendingEvent = std::move(*pendingIt);
 				m_PendingEvents.erase(pendingIt);
@@ -752,15 +752,17 @@ namespace kxf
 			
 			if (pendingEvent)
 			{
+				IEventInternal& pendingEventInternal = *pendingEvent->QueryInterface<IEventInternal>();
+
 				// Careful: this object could have been deleted by the event handler executed by the 'DoProcessEvent' call below,
 				// so we can't access any fields of this object anymore.
-				DoProcessEvent(*pendingEvent);
+				DoProcessEvent(*pendingEvent, {}, {}, pendingEventInternal.GetProcessFlags());
 
-				// Signal to a waiting thread that we have processed this event and relinquish itself to it.
+				// Signal to the waiting thread that we have processed this event and relinquish the event object to it.
 				// Doesn't do anything if the event isn't waitable.
-				pendingEvent->QueryInterface<IEventInternal>()->SignalProcessed(std::move(pendingEvent));
+				pendingEventInternal.SignalProcessed(std::move(pendingEvent));
 
-				// Should we return the result of 'DoProcessEvent' here?
+				// Should we return the result of 'DoProcessEvent' here? Probably not.
 				return true;
 			}
 		}
