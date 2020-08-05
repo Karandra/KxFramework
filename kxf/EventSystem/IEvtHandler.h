@@ -48,18 +48,19 @@ namespace kxf
 			}
 
 			template<class TCallable, class... Args>
-			void DoCallAfter(const UniversallyUniqueID& uuid, TCallable&& callable, Args&&... arg)
+			std::unique_ptr<IEvent> DoCallAfter(const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, TCallable&& callable, Args&&... arg)
 			{
 				using namespace EventSystem;
 				using Traits = typename Utility::CallableTraits<TCallable, Args...>;
 
+				flags.Add(ProcessEventFlag::Locally);
 				if constexpr(Traits::IsMemberFunction)
 				{
-					DoQueueEvent(std::make_unique<MethodIndirectInvocation<TCallable, Args...>>(*this, callable, std::forward<Args>(arg)...), IIndirectInvocationEvent::EvtIndirectInvocation, uuid);
+					return DoQueueEvent(std::make_unique<MethodIndirectInvocation<TCallable, Args...>>(*this, callable, std::forward<Args>(arg)...), IIndirectInvocationEvent::EvtIndirectInvocation, uuid, flags);
 				}
 				else if constexpr(Traits::IsInvokable)
 				{
-					DoQueueEvent(std::make_unique<CallableIndirectInvocation<TCallable, Args...>>(*this, std::forward<TCallable>(callable), std::forward<Args>(arg)...), IIndirectInvocationEvent::EvtIndirectInvocation, uuid);
+					return DoQueueEvent(std::make_unique<CallableIndirectInvocation<TCallable, Args...>>(*this, std::forward<TCallable>(callable), std::forward<Args>(arg)...), IIndirectInvocationEvent::EvtIndirectInvocation, uuid, flags);
 				}
 				else
 				{
@@ -481,16 +482,28 @@ namespace kxf
 		public:
 			// Queue execution of a given callable to the next event loop iteration
 			template<class TCallable, class... Args>
-			void CallAfter(TCallable&& callable, Args&&... arg)
+			std::unique_ptr<IEvent> CallAfter(TCallable&& callable, Args&&... arg)
 			{
-				DoCallAfter({}, std::forward<TCallable>(callable), std::forward<Args>(arg)...);
+				return DoCallAfter({}, {}, std::forward<TCallable>(callable), std::forward<Args>(arg)...);
+			}
+
+			template<class TCallable, class... Args>
+			std::unique_ptr<IEvent> CallAfter(FlagSet<ProcessEventFlag> flags, TCallable&& callable, Args&&... arg)
+			{
+				return DoCallAfter({}, flags, std::forward<TCallable>(callable), std::forward<Args>(arg)...);
 			}
 
 			// Queue execution of a given callable to the next event loop iteration replacing previously sent callable with the same ID
 			template<class TCallable, class... Args>
-			void UniqueCallAfter(const UniversallyUniqueID& uuid, TCallable&& callable, Args&&... arg)
+			std::unique_ptr<IEvent> UniqueCallAfter(const UniversallyUniqueID& uuid, TCallable&& callable, Args&&... arg)
 			{
-				DoCallAfter(uuid, std::forward<TCallable>(callable), std::forward<Args>(arg)...);
+				return DoCallAfter(uuid, std::forward<TCallable>(callable), std::forward<Args>(arg)...);
+			}
+
+			template<class TCallable, class... Args>
+			std::unique_ptr<IEvent> UniqueCallAfter(const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, TCallable&& callable, Args&&... arg)
+			{
+				return DoCallAfter(uuid, flags, std::forward<TCallable>(callable), std::forward<Args>(arg)...);
 			}
 	};
 }
