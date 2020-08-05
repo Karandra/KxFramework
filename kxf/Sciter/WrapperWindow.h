@@ -34,14 +34,9 @@ namespace kxf::Sciter
 				TWindow::OnInternalIdle();
 			}
 
-			bool OnDynamicBind(EventItem& eventItem) override
+			bool TryBefore(wxEvent& event) override
 			{
-				if (EvtHandler::OnDynamicBind(eventItem))
-				{
-					wxWidgets::ForwardBind(*this, static_cast<wxWindow&>(*this), eventItem);
-					return true;
-				}
-				return false;
+				return wxWidgets::InjectBeforeEvtHandler(*this, event);
 			}
 			wxSize DoGetBestClientSize() const override
 			{

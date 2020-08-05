@@ -20,6 +20,11 @@ namespace kxf::wxWidgets
 		}
 		return false;
 	}
+	inline bool InjectBeforeEvtHandler(IEvtHandler& evtHandler, wxEvent& event)
+	{
+		wxWidgets::EventWrapper wrapper(event);
+		return evtHandler.ProcessEvent(wrapper, event.GetEventType(), ProcessEventFlag::Locally);
+	}
 }
 
 namespace kxf::wxWidgets
