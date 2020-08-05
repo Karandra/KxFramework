@@ -63,8 +63,8 @@ namespace kxf
 			virtual void OnStartProcess(const EventID& eventID, const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, bool isAsync) = 0;
 			virtual FlagSet<ProcessEventFlag> GetProcessFlags() const = 0;
 
-			virtual void SignalProcessed(std::unique_ptr<IEvent> event) = 0;
 			virtual std::unique_ptr<IEvent> WaitProcessed() = 0;
+			virtual void SignalProcessed(std::unique_ptr<IEvent> event) = 0;
 
 			virtual void PutWaitResult(std::unique_ptr<IEvent> event) = 0;
 			virtual std::unique_ptr<IEvent> GetWaitResult() = 0;

@@ -1436,6 +1436,9 @@
     <ClInclude Include="kxf\FileSystem\FSActionEvent.h">
       <Filter>kxf\FileSystem</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\EventSystem\Private\EventWaitInfo.h">
+      <Filter>kxf\EventSystem\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">

@@ -1,8 +1,8 @@
 #pragma once
 #include "Common.h"
 #include "IEvent.h"
+#include "Private/EventWaitInfo.h"
 #include "kxf/Utility/Common.h"
-#include <condition_variable>
 
 namespace kxf::EventSystem
 {
@@ -33,7 +33,7 @@ namespace kxf::EventSystem
 		ProcessedOnce = 1 << 4,
 
 		// Can be set to indicate that the event will be passed to another handler if it's not processed in this one.
-		WillBeProcessedAgain = 1 << 5,
+		WillBeProcessedAgain = 1 << 5
 	};
 }
 namespace kxf
@@ -59,16 +59,7 @@ namespace kxf
 			FlagSet<EventPublicState> m_PublicState = EventPublicState::Allowed;
 			mutable FlagSet<EventPrivateState> m_PrivateState;
 			FlagSet<ProcessEventFlag> m_ProcessFlags;
-
-			struct WaitInfo
-			{
-				std::mutex Mutex;
-				std::condition_variable Condition;
-				std::atomic<bool> Flag = false;
-				std::unique_ptr<IEvent> Self;
-			};
-			std::unique_ptr<WaitInfo> m_WaitInfo;
-			std::unique_ptr<IEvent> m_WaitResult;
+			EventSystem::Private::EventWaitInfo m_WaitInfo;
 
 		private:
 			bool TestAndSetPrivateState(EventPrivateState flag) const
@@ -117,43 +108,30 @@ namespace kxf
 				return m_ProcessFlags;
 			}
 
+			std::unique_ptr<IEvent> WaitProcessed() override
+			{
+				if (!m_WaitInfo.HasWaitInfo())
+				{
+					m_PrivateState.Add(EventPrivateState::Waitable);
+					return m_WaitInfo.WaitProcessed();
+				}
+				return nullptr;
+			}
 			void SignalProcessed(std::unique_ptr<IEvent> event) override
 			{
 				if (m_PrivateState.Contains(EventPrivateState::Waitable))
 				{
-					m_WaitInfo->Self = std::move(event);
-					m_WaitInfo->Flag = true;
-
-					m_WaitInfo->Condition.notify_one();
+					m_WaitInfo.SignalProcessed(std::move(event));
 				}
-			}
-			std::unique_ptr<IEvent> WaitProcessed() override
-			{
-				if (!m_WaitInfo)
-				{
-					m_PrivateState.Add(EventPrivateState::Waitable);
-
-					m_WaitInfo = std::make_unique<WaitInfo>();
-					m_WaitInfo->Flag = false;
-
-					std::unique_lock lock(m_WaitInfo->Mutex);
-					m_WaitInfo->Condition.wait(lock, [&]()
-					{
-						return m_WaitInfo->Flag == true;
-					});
-
-					return std::move(m_WaitInfo->Self);
-				}
-				return nullptr;
 			}
 
 			void PutWaitResult(std::unique_ptr<IEvent> event) override
 			{
-				m_WaitResult = std::move(event);
+				m_WaitInfo.PutWaitResult(std::move(event));
 			}
 			std::unique_ptr<IEvent> GetWaitResult()
 			{
-				return std::move(m_WaitResult);
+				return m_WaitInfo.GetWaitResult();
 			}
 
 		public:
@@ -237,9 +215,7 @@ namespace kxf
 
 				m_PublicState = Utility::ExchangeResetAndReturn(other.m_PublicState, EventPublicState::Allowed);
 				m_PrivateState = Utility::ExchangeResetAndReturn(other.m_PrivateState, EventPrivateState::None);
-
 				m_WaitInfo = std::move(m_WaitInfo);
-				m_WaitResult = std::move(m_WaitResult);
 
 				return *this;
 			}

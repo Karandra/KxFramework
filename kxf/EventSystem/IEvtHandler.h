@@ -22,22 +22,6 @@ namespace kxf::EventSystem
 	class EvtHandlerAccessor;
 }
 
-namespace kxf::EventSystem::Private
-{
-	template<class TEvent, class TFunc>
-	void CallWxEvent(IEvent& event, TFunc&& func) noexcept(std::is_nothrow_invocable_v<TFunc, TEvent&>)
-	{
-		if (auto withEvent = event.QueryInterface<wxWidgets::IWithEvent>())
-		{
-			std::invoke(func, static_cast<TEvent&>(withEvent->GetEvent()));
-		}
-		else
-		{
-			event.Skip();
-		}
-	}
-}
-
 namespace kxf
 {
 	class KX_API IEvtHandler: public RTTI::Interface<IEvtHandler>
@@ -50,6 +34,19 @@ namespace kxf
 			using EventItem = EventSystem::EventItem;
 
 		private:
+			template<class TEvent, class TFunc>
+			static void DoCallWxEvent(IEvent& event, TFunc&& func) noexcept(std::is_nothrow_invocable_v<TFunc, TEvent&>)
+			{
+				if (auto withEvent = event.QueryInterface<wxWidgets::IWithEvent>())
+				{
+					std::invoke(func, static_cast<TEvent&>(withEvent->GetEvent()));
+				}
+				else
+				{
+					event.Skip();
+				}
+			}
+
 			template<class TCallable, class... Args>
 			void DoCallAfter(const UniversallyUniqueID& uuid, TCallable&& callable, Args&&... arg)
 			{
@@ -365,7 +362,7 @@ namespace kxf
 			{
 				return Bind(EventTag<IEvent>(eventTag), [func](IEvent& event)
 				{
-					EventSystem::Private::CallWxEvent<TEventArg>(event, func);
+					DoCallWxEvent<TEventArg>(event, func);
 				}, flags);
 			}
 
@@ -375,7 +372,7 @@ namespace kxf
 			{
 				return Bind(EventTag<IEvent>(eventTag), [callable = std::forward<TCallable>(callable)](IEvent& event)
 				{
-					EventSystem::Private::CallWxEvent<TEvent>(event, callable);
+					DoCallWxEvent<TEvent>(event, callable);
 				}, flags);
 			}
 
@@ -385,7 +382,7 @@ namespace kxf
 			{
 				return Bind(EventTag<IEvent>(eventTag), [method, handler](IEvent& event)
 				{
-					EventSystem::Private::CallWxEvent<TEventArg>(event, [&](TEventArg& event)
+					DoCallWxEvent<TEventArg>(event, [&](TEventArg& event)
 					{
 						std::invoke(method, handler, event);
 					});

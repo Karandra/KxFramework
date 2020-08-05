@@ -3,6 +3,7 @@
 #include "IWithEvent.h"
 #include "kxf/EventSystem/IEvent.h"
 #include "kxf/EventSystem/IEvtHandler.h"
+#include "kxf/EventSystem/Private/EventWaitInfo.h"
 #include "kxf/Utility/WithOptionalOwnership.h"
 #include <wx/object.h>
 #include <wx/event.h>
@@ -20,6 +21,7 @@ namespace kxf::wxWidgets
 			mutable bool m_WasReQueued = false;
 			UniversallyUniqueID m_UniqueID;
 			FlagSet<ProcessEventFlag> m_ProcessFlags;
+			EventSystem::Private::EventWaitInfo m_WaitInfo;
 
 		private:
 			// IEventInternal
@@ -61,20 +63,22 @@ namespace kxf::wxWidgets
 				return m_ProcessFlags;
 			}
 
-			void SignalProcessed(std::unique_ptr<IEvent> event)
-			{
-			}
 			std::unique_ptr<IEvent> WaitProcessed()
 			{
-				return nullptr;
+				return m_WaitInfo.WaitProcessed();
+			}
+			void SignalProcessed(std::unique_ptr<IEvent> event)
+			{
+				m_WaitInfo.SignalProcessed(std::move(event));
 			}
 
 			void PutWaitResult(std::unique_ptr<IEvent> event) override
 			{
+				m_WaitInfo.PutWaitResult(std::move(event));
 			}
 			std::unique_ptr<IEvent> GetWaitResult()
 			{
-				return nullptr;
+				return m_WaitInfo.GetWaitResult();
 			}
 
 		public:
