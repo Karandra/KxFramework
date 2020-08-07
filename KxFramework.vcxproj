@@ -243,12 +243,17 @@
     <ClInclude Include="kxf\General\DateTime\TimeZone.h" />
     <ClInclude Include="kxf\General\LocallyUniqueID.h" />
     <ClInclude Include="kxf\General\RegEx.h" />
+    <ClInclude Include="kxf\General\ResourceID.h" />
     <ClInclude Include="kxf\IO.hpp" />
     <ClInclude Include="kxf\IO\Common.h" />
     <ClInclude Include="kxf\IO\FileStream.h" />
     <ClInclude Include="kxf\IO\MemoryStream.h" />
     <ClInclude Include="kxf\IO\StreamDelegate.h" />
     <ClInclude Include="kxf\IO\StreamWrappers.h" />
+    <ClInclude Include="kxf\Localization\ILocalizationPackage.h" />
+    <ClInclude Include="kxf\Localization\LocalizationItem.h" />
+    <ClInclude Include="kxf\Localization\LocalizationPackageStack.h" />
+    <ClInclude Include="kxf\Localization\Private\LocalizationResources.h" />
     <ClInclude Include="kxf\pch.hpp" />
     <ClInclude Include="kxf\Serialization.hpp" />
     <ClInclude Include="kxf\Serialization\Common.h" />

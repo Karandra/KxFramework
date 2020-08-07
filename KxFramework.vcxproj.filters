@@ -1439,6 +1439,21 @@
     <ClInclude Include="kxf\EventSystem\Private\EventWaitInfo.h">
       <Filter>kxf\EventSystem\Private</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Localization\ILocalizationPackage.h">
+      <Filter>kxf\Localization</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\ResourceID.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Localization\LocalizationItem.h">
+      <Filter>kxf\Localization</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Localization\LocalizationPackageStack.h">
+      <Filter>kxf\Localization</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Localization\Private\LocalizationResources.h">
+      <Filter>kxf\Localization\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">

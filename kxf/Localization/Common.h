@@ -1,9 +1,16 @@
 #pragma once
 #include "kxf/Common.hpp"
 #include "kxf/General/String.h"
+#include "kxf/General/ResourceID.h"
+#include "kxf/FileSystem/FSPath.h"
+#include "kxf/FileSystem/FileItem.h"
+#include "kxf/FileSystem/IFileSystem.h"
 
 namespace kxf
 {
+	class Locale;
+	class DynamicLibrary;
+
 	enum class LocaleStrOption
 	{
 		None = -1,
@@ -89,4 +96,7 @@ namespace kxf::Localization
 {
 	String GetStandardLocalizedString(int id);
 	String GetStandardLocalizedString(StdID id);
+
+	size_t SearchLocalizationPackages(const IFileSystem& fileSystem, const FSPath& directory, std::function<bool(Locale, FileItem)> func);
+	size_t SearchLocalizationPackages(const DynamicLibrary& library, std::function<bool(Locale, FileItem)> func);
 }

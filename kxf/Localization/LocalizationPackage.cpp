@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "LocalizationPackage.h"
+#include "Private/LocalizationResources.h"
 #include "kxf/Serialization/XML.h"
 #include "kxf/System/SystemInformation.h"
 #include "kxf/System/DynamicLibrary.h"
@@ -11,10 +12,6 @@ namespace
 	const kxf::LocalizationPackage g_NullLocalizationPack;
 	const kxf::LocalizationPackage* g_ActiveLocalizationPack = &g_NullLocalizationPack;
 
-	kxf::Locale LocaleFromFileName(const kxf::String& name)
-	{
-		return name.BeforeFirst(wxS('.'));
-	}
 	bool DoLoadLocalizationPack(const kxf::XMLDocument& xml,
 						 std::unordered_map<kxf::String, kxf::String>& stringTable,
 						 kxf::String& author,
@@ -46,22 +43,6 @@ namespace
 		return false;
 	}
 
-	template<class TFunc>
-	bool OnSearchTranslation(TFunc&& func, kxf::FileItem item)
-	{
-		using namespace kxf;
-
-		// Extract locale name from names like 'en-US.Application.xml'
-		if (Locale locale = LocaleFromFileName(item.GetName()))
-		{
-			String name = item.GetName().BeforeLast(wxS('.'));
-			if (!name.IsEmpty())
-			{
-				return std::invoke(func, std::move(locale), std::move(item));
-			}
-		}
-		return true;
-	}
 }
 
 namespace kxf
@@ -91,38 +72,16 @@ namespace kxf
 	{
 		if (library)
 		{
-			if (auto data = library.GetResource(g_EmbeddedResourceType, name.GetName()))
+			if (auto data = library.GetResource(Localization::Private::EmbeddedResourceType, name.GetName()))
 			{
 				Locale usedLcoale = locale;
 				if (!usedLcoale)
 				{
-					usedLcoale = LocaleFromFileName(name);
+					usedLcoale = Localization::Private::LocaleFromFileName(name);
 				}
 				return Load(String::FromUTF8(data), std::move(usedLcoale));
 			}
 		}
 		return false;
-	}
-}
-
-namespace kxf::Localization
-{
-	size_t SearchLocalizationPackages(const IFileSystem& fileSystem, const FSPath& directory, std::function<bool(Locale, FileItem)> func)
-	{
-		return fileSystem.EnumItems(directory, [&](FileItem item)
-		{
-			return OnSearchTranslation(func, std::move(item));
-		}, wxS("*.xml"), FSActionFlag::LimitToFiles);
-	}
-	size_t SearchLocalizationPackages(const DynamicLibrary& library, std::function<bool(Locale, FileItem)> func)
-	{
-		if (library)
-		{
-			return library.EnumResourceNames(g_EmbeddedResourceType, [&](String name)
-			{
-				return OnSearchTranslation(func, FileItem(std::move(name)));
-			});
-		}
-		return 0;
 	}
 }

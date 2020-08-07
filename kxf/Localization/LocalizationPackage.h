@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "kxf/General/String.h"
+#include "kxf/General/ResourceID.h"
 #include "kxf/FileSystem/FSPath.h"
 #include "kxf/FileSystem/FileItem.h"
 #include "kxf/FileSystem/IFileSystem.h"
@@ -86,10 +87,4 @@ namespace kxf
 			LocalizationPackage& operator=(const LocalizationPackage&) = delete;
 			LocalizationPackage& operator=(LocalizationPackage&&) noexcept = default;
 	};
-}
-
-namespace kxf::Localization
-{
-	size_t SearchLocalizationPackages(const IFileSystem& fileSystem, const FSPath& directory, std::function<bool(Locale, FileItem)> func);
-	size_t SearchLocalizationPackages(const DynamicLibrary& library, std::function<bool(Locale, FileItem)> func);
 }
