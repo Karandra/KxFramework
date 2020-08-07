@@ -1457,6 +1457,9 @@
     <ClInclude Include="kxf\Localization\AndroidLocalizationPackage.h">
       <Filter>kxf\Localization</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Localization\Private\LocalizationPackageHelper.h">
+      <Filter>kxf\Localization\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">

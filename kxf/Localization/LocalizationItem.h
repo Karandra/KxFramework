@@ -27,7 +27,8 @@ namespace kxf
 		None = 0,
 
 		Translatable = 1 << 1,
-		LengthRestricted = 1 << 2
+		ConstrainedLength = 1 << 2,
+		WithComment = 1 << 3
 	};
 	KxDeclareFlagSet(LocalizationItemFlag);
 }
@@ -45,6 +46,7 @@ namespace kxf
 			std::variant<void*, TSingleItem, TMultipleItems, TPlurals> m_Value;
 
 			FlagSet<LocalizationItemFlag> m_Flags;
+			String m_Comment;
 			int m_MaxLength = -1;
 
 		public:
@@ -129,16 +131,24 @@ namespace kxf
 				return m_Flags;
 			}
 
+			const String& GetComment() const
+			{
+				return m_Comment;
+			}
+			void SetComment(String comment)
+			{
+				m_Flags.Mod(LocalizationItemFlag::WithComment, !comment.IsEmpty());
+				m_Comment = std::move(comment);
+			}
+
 			int GetMaxLength() const noexcept
 			{
 				return m_MaxLength;
 			}
 			void SetMaxLength(int maxLength) noexcept
 			{
-				maxLength = std::clamp(maxLength, -1, std::numeric_limits<int>::max());
-
-				m_MaxLength = maxLength;
-				m_Flags.Mod(LocalizationItemFlag::LengthRestricted, maxLength != -1);
+				m_Flags.Mod(LocalizationItemFlag::ConstrainedLength, maxLength >= 0);
+				m_MaxLength = std::clamp(maxLength, -1, std::numeric_limits<int>::max());
 			}
 
 		public:

@@ -26,6 +26,10 @@ namespace kxf
 						{
 							item.SetMaxLength(*maxLength);
 						}
+						if (auto comment = itemNode.QueryAttribute(wxS("comment")))
+						{
+							item.SetComment(std::move(*comment));
+						}
 
 						if (loadingScheme.Contains(LoadingScheme::OverwriteExisting))
 						{
