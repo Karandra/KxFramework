@@ -19,7 +19,7 @@ namespace kxf
 					if (item)
 					{
 						count++;
-						if (!std::invoke(*item))
+						if (!std::invoke(func, *item))
 						{
 							break;
 						}
@@ -51,6 +51,8 @@ namespace kxf
 			{
 				Add(std::move(localizationPackage));
 			}
+			LocalizationPackageStack(const LocalizationPackageStack&) = delete;
+			LocalizationPackageStack(LocalizationPackageStack&&) noexcept = default;
 
 		public:
 			// ILocalizationPackage
@@ -68,15 +70,15 @@ namespace kxf
 				});
 				return count;
 			}
-			LocalizationItem GetItem(const ResourceID& id) const override
+			const LocalizationItem& GetItem(const ResourceID& id) const override
 			{
-				LocalizationItem item;
+				const LocalizationItem* item = &NullLocalizationItem;
 				EnumLocalizationPackages([&](const ILocalizationPackage& localizationPackage)
 				{
-					item = localizationPackage.GetItem(id);
-					return item.IsNull();
+					item = &localizationPackage.GetItem(id);
+					return item->IsNull();
 				});
-				return item;
+				return *item;
 			}
 			size_t EnumItems(std::function<bool(const ResourceID&, const LocalizationItem&)> func) const override
 			{
@@ -104,21 +106,13 @@ namespace kxf
 			}
 
 			// LocalizationPackageStack
-			ILocalizationPackage* Add(ILocalizationPackage& localizationPackage)
+			ILocalizationPackage& Add(ILocalizationPackage& localizationPackage)
 			{
-				if (DoGetLocale() == localizationPackage.GetLocale())
-				{
-					return m_Packages.emplace_back(localizationPackage).Get();
-				}
-				return nullptr;
+				return *m_Packages.emplace_back(localizationPackage);
 			}
-			ILocalizationPackage* Add(std::unique_ptr<ILocalizationPackage> localizationPackage)
+			ILocalizationPackage& Add(std::unique_ptr<ILocalizationPackage> localizationPackage)
 			{
-				if (DoGetLocale() == localizationPackage->GetLocale())
-				{
-					return m_Packages.emplace_back(std::move(localizationPackage)).Get();
-				}
-				return nullptr;
+				return *m_Packages.emplace_back(std::move(localizationPackage));
 			}
 			bool Remove(const ILocalizationPackage& localizationPackage)
 			{
@@ -163,5 +157,8 @@ namespace kxf
 			{
 				return m_Packages.empty() || IsEmpty();
 			}
+
+			LocalizationPackageStack& operator=(const LocalizationPackageStack&) = delete;
+			LocalizationPackageStack& operator=(LocalizationPackageStack&&) noexcept = default;
 	};
 }
