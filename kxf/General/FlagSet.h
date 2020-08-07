@@ -173,9 +173,9 @@ namespace kxf
 				return *this;
 			}
 
-			constexpr TEnum ExtractConsecutive(TInt mask) const noexcept
+			constexpr TEnum ExtractConsecutive(FlagSet mask) const noexcept
 			{
-				return static_cast<TEnum>(ToInt() & mask);
+				return static_cast<TEnum>(ToInt() & mask.ToInt());
 			}
 			constexpr TEnum ExtractConsecutiveRange(size_t last) const noexcept
 			{
