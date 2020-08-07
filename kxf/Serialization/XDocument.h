@@ -340,7 +340,7 @@ namespace kxf::XDocument
 				return false;
 			}
 
-			std::optional<String> QueryValue(const String& name) const
+			std::optional<String> QueryAttribute(const String& name) const
 			{
 				return DoGetAttribute(name);
 			}
