@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "Locale.h"
 #include "LocalizationItem.h"
+#include "kxf/RTTI/QueryInterface.h"
 #include <wx/stream.h>
 
 namespace kxf::Localization
