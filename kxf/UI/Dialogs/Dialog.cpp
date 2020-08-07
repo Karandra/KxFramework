@@ -84,7 +84,7 @@ namespace kxf::UI
 		{
 			if (wxWindow* window = sizerItem->GetWindow())
 			{
-				window->SetLabel(Localization::GetStandardLocalizedString(window->GetId()));
+				window->SetLabel(Localization::GetStandardString(window->GetId()));
 
 				Size size = window->GetSize();
 				size.Scale(0.85f, 1.0f);

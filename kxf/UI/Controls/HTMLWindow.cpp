@@ -68,7 +68,7 @@ namespace kxf::UI
 	{
 		auto MakeItem = [&menu](int id)
 		{
-			return menu.AddItem(id, Localization::GetStandardLocalizedString(id));
+			return menu.AddItem(id, Localization::GetStandardString(id));
 		};
 
 		{

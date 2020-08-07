@@ -88,7 +88,7 @@ namespace kxf::UI
 
 			default:
 			{
-				button->SetLabel(Localization::GetStandardLocalizedString(button->GetId()));
+				button->SetLabel(Localization::GetStandardString(button->GetId()));
 				m_NonStandardButtons.push_back(button);
 				isStandard = false;
 			}
@@ -101,7 +101,7 @@ namespace kxf::UI
 	{
 		if (label.IsEmpty())
 		{
-			button->SetLabel(Localization::GetStandardLocalizedString(button->GetId()));
+			button->SetLabel(Localization::GetStandardString(button->GetId()));
 		}
 		else
 		{
@@ -148,7 +148,7 @@ namespace kxf::UI
 		{
 			if (button)
 			{
-				button->SetLabel(Localization::GetStandardLocalizedString(button->GetId()));
+				button->SetLabel(Localization::GetStandardString(button->GetId()));
 			}
 		};
 		SetLabel(m_ButtonAffirmative);

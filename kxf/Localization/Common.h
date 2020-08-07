@@ -94,9 +94,9 @@ namespace kxf
 
 namespace kxf::Localization
 {
-	String GetStandardLocalizedString(int id);
-	String GetStandardLocalizedString(StdID id);
+	String GetStandardString(int id);
+	String GetStandardString(StdID id);
 
-	size_t SearchLocalizationPackages(const IFileSystem& fileSystem, const FSPath& directory, std::function<bool(Locale, FileItem)> func);
-	size_t SearchLocalizationPackages(const DynamicLibrary& library, std::function<bool(Locale, FileItem)> func);
+	size_t SearchPackages(const IFileSystem& fileSystem, const FSPath& directory, std::function<bool(Locale, FileItem)> func);
+	size_t SearchPackages(const DynamicLibrary& library, std::function<bool(Locale, FileItem)> func);
 }

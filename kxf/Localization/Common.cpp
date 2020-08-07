@@ -8,7 +8,7 @@
 namespace
 {
 	template<class TFunc>
-	bool OnSearchLocalizationPackage(TFunc&& func, kxf::FileItem item)
+	bool OnSearchPackage(TFunc&& func, kxf::FileItem item)
 	{
 		using namespace kxf;
 
@@ -27,29 +27,29 @@ namespace
 
 namespace kxf::Localization
 {
-	String GetStandardLocalizedString(int id)
+	String GetStandardString(int id)
 	{
 		return Private::LocalizeLabelString(FromInt<StdID>(id));
 	}
-	String GetStandardLocalizedString(StdID id)
+	String GetStandardString(StdID id)
 	{
 		return Private::LocalizeLabelString(id);
 	}
 
-	size_t SearchLocalizationPackages(const IFileSystem& fileSystem, const FSPath& directory, std::function<bool(Locale, FileItem)> func)
+	size_t SearchPackages(const IFileSystem& fileSystem, const FSPath& directory, std::function<bool(Locale, FileItem)> func)
 	{
 		return fileSystem.EnumItems(directory, [&](FileItem item)
 		{
-			return OnSearchLocalizationPackage(func, std::move(item));
+			return OnSearchPackage(func, std::move(item));
 		}, wxS("*.xml"), FSActionFlag::LimitToFiles);
 	}
-	size_t SearchLocalizationPackages(const DynamicLibrary& library, std::function<bool(Locale, FileItem)> func)
+	size_t SearchPackages(const DynamicLibrary& library, std::function<bool(Locale, FileItem)> func)
 	{
 		if (library)
 		{
 			return library.EnumResourceNames(Private::EmbeddedResourceType, [&](String name)
 			{
-				return OnSearchLocalizationPackage(func, FileItem(std::move(name)));
+				return OnSearchPackage(func, FileItem(std::move(name)));
 			});
 		}
 		return 0;

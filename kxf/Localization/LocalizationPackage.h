@@ -63,11 +63,11 @@ namespace kxf
 			}
 			std::optional<String> GetString(StdID id) const
 			{
-				return Localization::GetStandardLocalizedString(id);
+				return Localization::GetStandardString(id);
 			}
 			std::optional<String> GetString(int id) const
 			{
-				return Localization::GetStandardLocalizedString(id);
+				return Localization::GetStandardString(id);
 			}
 
 			bool Load(const String& xml, const Locale& locale);

@@ -388,11 +388,11 @@ namespace kxf::UI
 		{
 			if (prepend)
 			{
-				m_Buttons.emplace(m_Buttons.begin(), ButtonItem{Localization::GetStandardLocalizedString(id), id});
+				m_Buttons.emplace(m_Buttons.begin(), ButtonItem{Localization::GetStandardString(id), id});
 			}
 			else
 			{
-				m_Buttons.emplace_back(ButtonItem{Localization::GetStandardLocalizedString(id), id});
+				m_Buttons.emplace_back(ButtonItem{Localization::GetStandardString(id), id});
 			}
 		}
 		else
@@ -412,7 +412,7 @@ namespace kxf::UI
 	{
 		if (label.IsEmpty())
 		{
-			m_RadioButtons.emplace_back(ButtonItem{Localization::GetStandardLocalizedString(id), id});
+			m_RadioButtons.emplace_back(ButtonItem{Localization::GetStandardString(id), id});
 		}
 		else
 		{
