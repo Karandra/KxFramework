@@ -61,3 +61,22 @@ namespace kxf::Utility
 		return value == std::clamp(value, min, max);
 	}
 }
+
+namespace kxf::Utility
+{
+	template<class T, class = std::enable_if_t<std::is_integral_v<T>>>
+	constexpr T FirstDecimalDigit(T quantity) noexcept
+	{
+		while (quantity >= static_cast<T>(10))
+		{
+			quantity /= static_cast<T>(10);
+		}
+		return quantity;
+	}
+
+	template<class T, class = std::enable_if_t<std::is_integral_v<T>>>
+	constexpr T LastDecimalDigit(T quantity) noexcept
+	{
+		return quantity % static_cast<T>(10);
+	}
+}
