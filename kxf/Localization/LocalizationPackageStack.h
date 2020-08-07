@@ -31,6 +31,16 @@ namespace kxf
 		private:
 			std::vector<Utility::WithOptionalOwnership<ILocalizationPackage>> m_Packages;
 
+		private:
+			Locale DoGetLocale() const
+			{
+				if (!m_Packages.empty())
+				{
+					return m_Packages.front()->GetLocale();
+				}
+				return {};
+			}
+
 		public:
 			LocalizationPackageStack() = default;
 			LocalizationPackageStack(ILocalizationPackage& localizationPackage)
@@ -44,6 +54,10 @@ namespace kxf
 
 		public:
 			// ILocalizationPackage
+			Locale GetLocale() const override
+			{
+				return DoGetLocale();
+			}
 			size_t GetItemCount() const override
 			{
 				size_t count = 0;
@@ -64,15 +78,15 @@ namespace kxf
 				});
 				return item;
 			}
-			size_t EnumItems(std::function<bool(ResourceID, LocalizationItem)> func) const override
+			size_t EnumItems(std::function<bool(const ResourceID&, const LocalizationItem&)> func) const override
 			{
 				size_t count = 0;
 				EnumLocalizationPackages([&](const ILocalizationPackage& localizationPackage)
 				{
 					bool canContinue = false;
-					count += localizationPackage.EnumItems([&](ResourceID id, LocalizationItem item)
+					count += localizationPackage.EnumItems([&](const ResourceID& id, const LocalizationItem& item)
 					{
-						canContinue = std::invoke(func, std::move(id), std::move(item));
+						canContinue = std::invoke(func, id, item);
 						return canContinue;
 					});
 					return canContinue;
@@ -84,19 +98,27 @@ namespace kxf
 			{
 				return false;
 			}
-			bool Load(const DynamicLibrary& library, const FSPath& name, const Locale& locale = {}, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace) override
+			bool Load(const DynamicLibrary& library, const FSPath& name, const Locale& locale, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace) override
 			{
 				return false;
 			}
 
 			// LocalizationPackageStack
-			ILocalizationPackage& Add(ILocalizationPackage& localizationPackage)
+			ILocalizationPackage* Add(ILocalizationPackage& localizationPackage)
 			{
-				return *m_Packages.emplace_back(localizationPackage);
+				if (DoGetLocale() == localizationPackage.GetLocale())
+				{
+					return m_Packages.emplace_back(localizationPackage).Get();
+				}
+				return nullptr;
 			}
-			ILocalizationPackage& Add(std::unique_ptr<ILocalizationPackage> localizationPackage)
+			ILocalizationPackage* Add(std::unique_ptr<ILocalizationPackage> localizationPackage)
 			{
-				return *m_Packages.emplace_back(std::move(localizationPackage));
+				if (DoGetLocale() == localizationPackage->GetLocale())
+				{
+					return m_Packages.emplace_back(std::move(localizationPackage)).Get();
+				}
+				return nullptr;
 			}
 			bool Remove(const ILocalizationPackage& localizationPackage)
 			{

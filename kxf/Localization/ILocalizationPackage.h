@@ -12,7 +12,9 @@ namespace kxf::Localization
 		Append = 1,
 		Replace = 2,
 
-		OverwriteExisting = 1 << 16
+		OverwriteExisting = 1 << 16,
+
+		CONSECUTIVE_MASK = 0xFFFF
 	};
 }
 namespace kxf
@@ -33,6 +35,7 @@ namespace kxf
 			virtual ~ILocalizationPackage() = default;
 
 		public:
+			virtual Locale GetLocale() const = 0;
 			virtual size_t GetItemCount() const = 0;
 			bool IsEmpty() const
 			{
@@ -40,10 +43,10 @@ namespace kxf
 			}
 
 			virtual LocalizationItem GetItem(const ResourceID& id) const = 0;
-			virtual size_t EnumItems(std::function<bool(ResourceID, LocalizationItem)> func) const = 0;
+			virtual size_t EnumItems(std::function<bool(const ResourceID&, const LocalizationItem&)> func) const = 0;
 
 			virtual bool Load(wxInputStream& stream, const Locale& locale, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace) = 0;
-			virtual bool Load(const DynamicLibrary& library, const FSPath& name, const Locale& locale = {}, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace) = 0;
+			virtual bool Load(const DynamicLibrary& library, const FSPath& name, const Locale& locale, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace) = 0;
 
 		public:
 			explicit operator bool() const
