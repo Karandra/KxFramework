@@ -202,6 +202,15 @@ namespace kxf
 				return IsNull();
 			}
 
+			operator const String&() const noexcept
+			{
+				return GetString();
+			}
+			const String& operator[](size_t index) const noexcept
+			{
+				return GetString(index);
+			}
+
 			bool operator==(const LocalizationItem& other) const noexcept
 			{
 				if (this != &other)
