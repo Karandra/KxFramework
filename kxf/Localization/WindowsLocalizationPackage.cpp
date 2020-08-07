@@ -44,7 +44,7 @@ namespace kxf
 					return false;
 				};
 
-				AddItem(itemNode.GetAttribute(wxS("name")), LocalizationItem(itemNode.GetFirstChildElement(wxS("value")).GetValue(), LocalizationItemFlag::Translatable));
+				AddItem(itemNode.GetAttribute(wxS("name")), LocalizationItem(*this, itemNode.GetFirstChildElement(wxS("value")).GetValue(), LocalizationItemFlag::Translatable));
 				return true;
 			}, wxS("data"));
 			return count != 0;

@@ -54,7 +54,7 @@ namespace kxf
 				const String itemName = itemNode.GetName();
 				if (itemName == wxS("string"))
 				{
-					AddItem(itemNode.GetAttribute(wxS("name")), LocalizationItem(itemNode.GetValue(), flags));
+					AddItem(itemNode.GetAttribute(wxS("name")), LocalizationItem(*this, itemNode.GetValue(), flags));
 				}
 				else if (itemName == wxS("string-array"))
 				{
@@ -69,7 +69,7 @@ namespace kxf
 						}
 						return true;
 					}, wxS("item"));
-					AddItem(itemNode.GetAttribute(wxS("name")), LocalizationItem(items, flags));
+					AddItem(itemNode.GetAttribute(wxS("name")), LocalizationItem(*this, items, flags));
 				}
 				else if (itemName == wxS("plurals"))
 				{
@@ -99,7 +99,7 @@ namespace kxf
 						}
 						return false;
 					}, wxS("item"));
-					AddItem(itemNode.GetAttribute(wxS("name")), LocalizationItem(plurals, flags));
+					AddItem(itemNode.GetAttribute(wxS("name")), LocalizationItem(*this, plurals, flags));
 				}
 				return true;
 			});

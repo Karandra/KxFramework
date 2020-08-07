@@ -28,8 +28,13 @@ namespace kxf
 	{
 		KxDeclareIID(ILocalizationPackage, {0xd52888ce, 0x2c58, 0x438e, {0x95, 0x95, 0x20, 0x2, 0x84, 0xd, 0x6a, 0x51}});
 
+		friend class LocalizationItem;
+
 		public:
 			using LoadingScheme = Localization::LoadingScheme;
+
+		protected:
+			virtual const String& GetPluralStringForNumber(const LocalizationItem& item, int value) const;
 
 		public:
 			virtual ~ILocalizationPackage() = default;
@@ -42,7 +47,7 @@ namespace kxf
 				return GetItemCount() == 0;
 			}
 
-			virtual LocalizationItem GetItem(const ResourceID& id) const = 0;
+			virtual const LocalizationItem& GetItem(const ResourceID& id) const = 0;
 			virtual size_t EnumItems(std::function<bool(const ResourceID&, const LocalizationItem&)> func) const = 0;
 
 			virtual bool Load(wxInputStream& stream, const Locale& locale, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace) = 0;

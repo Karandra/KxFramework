@@ -1,11 +1,12 @@
 #pragma once
 #include "Common.h"
-#include "kxf/General/ResourceID.h"
 #include <variant>
 #include <map>
 
 namespace kxf
 {
+	class ILocalizationPackage;
+
 	enum class LocalizationItemKind
 	{
 		None = 0,
@@ -44,6 +45,7 @@ namespace kxf
 
 		private:
 			std::variant<void*, TSingleItem, TMultipleItems, TPlurals> m_Value;
+			ILocalizationPackage* m_Package = nullptr;
 
 			FlagSet<LocalizationItemFlag> m_Flags;
 			String m_Comment;
@@ -51,16 +53,16 @@ namespace kxf
 
 		public:
 			LocalizationItem() = default;
-			LocalizationItem(TSingleItem value, FlagSet<LocalizationItemFlag> flags = {}) noexcept
-				:m_Flags(flags)
+			LocalizationItem(ILocalizationPackage& package, TSingleItem value, FlagSet<LocalizationItemFlag> flags = {}) noexcept
+				:m_Package(&package), m_Flags(flags)
 			{
 				if (!value.IsEmpty())
 				{
 					m_Value = std::move(value);
 				}
 			}
-			LocalizationItem(TMultipleItems items, FlagSet<LocalizationItemFlag> flags = {}) noexcept
-				:m_Flags(flags)
+			LocalizationItem(ILocalizationPackage& package, TMultipleItems items, FlagSet<LocalizationItemFlag> flags = {}) noexcept
+				:m_Package(&package), m_Flags(flags)
 			{
 				if (!items.empty())
 				{
@@ -74,8 +76,8 @@ namespace kxf
 					m_Value = std::move(items);
 				}
 			}
-			LocalizationItem(TPlurals items, FlagSet<LocalizationItemFlag> flags = {}) noexcept
-				:m_Flags(flags)
+			LocalizationItem(ILocalizationPackage& package, TPlurals items, FlagSet<LocalizationItemFlag> flags = {}) noexcept
+				:m_Package(&package), m_Flags(flags)
 			{
 				if (!items.empty())
 				{
@@ -93,35 +95,18 @@ namespace kxf
 			LocalizationItem(LocalizationItem&&) noexcept = default;
 
 		public:
-			bool IsNull() const noexcept
+			bool IsNull() const noexcept;
+			size_t GetItemCount() const noexcept;
+			ILocalizationPackage& GetPackage() const noexcept
 			{
-				if (m_Value.valueless_by_exception() || m_Value.index() == 0)
-				{
-					return true;
-				}
-				return GetItemCount() == 0;
+				return *m_Package;
 			}
-			size_t GetItemCount() const noexcept
-			{
-				if (auto value = std::get_if<TSingleItem>(&m_Value))
-				{
-					return !value->IsEmpty() ? 1 : 0;
-				}
-				else if (auto value = std::get_if<TMultipleItems>(&m_Value))
-				{
-					return value->size();
-				}
-				else if (auto value = std::get_if<TPlurals>(&m_Value))
-				{
-					return value->size();
-				}
-				return 0;
-			}
-			
+
 			LocalizationItemKind GetKind() const noexcept
 			{
 				if (!m_Value.valueless_by_exception() && m_Value.index() != 0)
 				{
+					static_assert(static_cast<int>(LocalizationItemKind::None) == 0, "Value of 'LocalizationItemKind::None' must be zero");
 					return static_cast<LocalizationItemKind>(m_Value.index());
 				}
 				return LocalizationItemKind::None;
@@ -152,29 +137,9 @@ namespace kxf
 			}
 
 		public:
-			const String& GetString(size_t index = 0) const noexcept
-			{
-				if (auto signleItem = std::get_if<TSingleItem>(&m_Value))
-				{
-					return *signleItem;
-				}
-				else if (auto items = std::get_if<TMultipleItems>(&m_Value); items && index < items->size())
-				{
-					return (*items)[index];
-				}
-				return NullString;
-			}
-			const String& GetPluralString(LocalizationItemQuantity quantity) const noexcept
-			{
-				if (auto items = std::get_if<TPlurals>(&m_Value))
-				{
-					if (auto it = items->find(quantity); it != items->end())
-					{
-						return it->second;
-					}
-				}
-				return NullString;
-			}
+			const String& GetString(size_t index = 0) const noexcept;
+			const String& GetPluralString(LocalizationItemQuantity quantity) const noexcept;
+			const String& GetPluralString(int quantity) const noexcept;
 
 			template<class TFunc>
 			size_t EnumStrings(TFunc&& func) const noexcept(std::is_nothrow_invocable_v<TFunc, const TSingleItem&>)
@@ -225,7 +190,11 @@ namespace kxf
 			{
 				if (this != &other)
 				{
-					return m_Flags == other.m_Flags && m_MaxLength == other.m_MaxLength && m_Value == other.m_Value;
+					return m_Package == other.m_Package &&
+						m_Flags == other.m_Flags &&
+						m_MaxLength == other.m_MaxLength &&
+						m_Comment == other.m_Comment &&
+						m_Value == other.m_Value;
 				}
 				return true;
 			}
@@ -237,4 +206,9 @@ namespace kxf
 			LocalizationItem& operator=(const LocalizationItem&) = default;
 			LocalizationItem& operator=(LocalizationItem&&) noexcept = default;
 	};
+}
+
+namespace kxf
+{
+	extern const LocalizationItem NullLocalizationItem;
 }

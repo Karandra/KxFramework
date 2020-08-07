@@ -2183,6 +2183,12 @@
     <ClCompile Include="kxf\Localization\Private\LocalizationPackageHelper.cpp">
       <Filter>kxf\Localization\Private</Filter>
     </ClCompile>
+    <ClCompile Include="kxf\Localization\LocalizationItem.cpp">
+      <Filter>kxf\Localization</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Localization\ILocalizationPackage.cpp">
+      <Filter>kxf\Localization</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="kxf\System\Private\ErrorCodeNtStatus.i">

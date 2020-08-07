@@ -45,13 +45,13 @@ namespace kxf
 				return m_Items.size();
 			}
 
-			LocalizationItem GetItem(const ResourceID& id) const override
+			const LocalizationItem& GetItem(const ResourceID& id) const override
 			{
 				if (const LocalizationItem* item = m_PackageHelper.GetItem(id))
 				{
 					return *item;
 				}
-				return {};
+				return NullLocalizationItem;
 			}
 			size_t EnumItems(std::function<bool(const ResourceID&, const LocalizationItem&)> func) const override
 			{

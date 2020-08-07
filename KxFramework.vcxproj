@@ -633,6 +633,8 @@
     <ClCompile Include="kxf\IO\Common.cpp" />
     <ClCompile Include="kxf\IO\FileStream.cpp" />
     <ClCompile Include="kxf\IO\MemoryStream.cpp" />
+    <ClCompile Include="kxf\Localization\ILocalizationPackage.cpp" />
+    <ClCompile Include="kxf\Localization\LocalizationItem.cpp" />
     <ClCompile Include="kxf\Localization\Private\LocalizationPackageHelper.cpp" />
     <ClCompile Include="kxf\Localization\WindowsLocalizationPackage.cpp" />
     <ClCompile Include="kxf\Serialization\HTML\HTMLDocument.cpp" />
