@@ -1,10 +1,16 @@
 #pragma once
 #include "../Common.h"
+#include "../ILocalizationPackage.h"
 #include <unordered_map>
+
+namespace kxf
+{
+	class XMLDocument;
+}
 
 namespace kxf::Localization::Private
 {
-	class KX_API PackageHelper final
+	class KX_API ItemsPackageHelper final
 	{
 		public:
 			using TItems = std::unordered_map<ResourceID, LocalizationItem>;
@@ -13,12 +19,12 @@ namespace kxf::Localization::Private
 			TItems* m_Items = nullptr;
 
 		public:
-			PackageHelper(TItems& items)
+			ItemsPackageHelper(TItems& items)
 				:m_Items(&items)
 			{
 			}
-			PackageHelper(const PackageHelper&) = delete;
-			PackageHelper(PackageHelper&&) noexcept = default;
+			ItemsPackageHelper(const ItemsPackageHelper&) = delete;
+			ItemsPackageHelper(ItemsPackageHelper&&) noexcept = default;
 
 		public:
 			const LocalizationItem* GetItem(const ResourceID& id) const
@@ -47,7 +53,18 @@ namespace kxf::Localization::Private
 			}
 
 		public:
-			PackageHelper& operator=(const PackageHelper&) = delete;
-			PackageHelper& operator=(PackageHelper&& other) noexcept = default;
+			ItemsPackageHelper& operator=(const ItemsPackageHelper&) = delete;
+			ItemsPackageHelper& operator=(ItemsPackageHelper&& other) noexcept = default;
+	};
+
+	class KX_API XMLPackageHelper
+	{
+		protected:
+			virtual bool DoLoadXML(const XMLDocument& xml, FlagSet<LoadingScheme> loadingScheme) = 0;
+			virtual void DoSetLocale(const Locale& locale) = 0;
+
+		public:
+			bool Load(wxInputStream& stream, const Locale& locale, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace);
+			bool Load(const DynamicLibrary& library, const FSPath& name, const Locale& locale, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace);
 	};
 }

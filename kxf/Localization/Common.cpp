@@ -40,8 +40,14 @@ namespace kxf::Localization
 	{
 		return fileSystem.EnumItems(directory, [&](FileItem item)
 		{
-			return OnSearchPackage(func, std::move(item));
-		}, wxS("*.xml"), FSActionFlag::LimitToFiles);
+			// TODO: Need a proper solution instead of manually adding supported file extensions here.
+			String name = item.GetName();
+			if (name.MatchesWildcards(wxS("*.xml")) || name.MatchesWildcards(wxS("*.resx")) || name.MatchesWildcards(wxS("*.resw")))
+			{
+				return OnSearchPackage(func, std::move(item));
+			}
+			return true;
+		}, {}, FSActionFlag::LimitToFiles);
 	}
 	size_t SearchPackages(const DynamicLibrary& library, std::function<bool(Locale, FileItem)> func)
 	{

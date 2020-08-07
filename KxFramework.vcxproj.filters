@@ -1460,6 +1460,9 @@
     <ClInclude Include="kxf\Localization\Private\LocalizationPackageHelper.h">
       <Filter>kxf\Localization\Private</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Localization\WindowsLocalizationPackage.h">
+      <Filter>kxf\Localization</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2173,6 +2176,12 @@
     </ClCompile>
     <ClCompile Include="kxf\Localization\AndroidLocalizationPackage.cpp">
       <Filter>kxf\Localization</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Localization\WindowsLocalizationPackage.cpp">
+      <Filter>kxf\Localization</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Localization\Private\LocalizationPackageHelper.cpp">
+      <Filter>kxf\Localization\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

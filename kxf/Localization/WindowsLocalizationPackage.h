@@ -10,29 +10,29 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API AndroidLocalizationPackage:
-		public RTTI::ImplementInterface<AndroidLocalizationPackage, ILocalizationPackage>,
+	class KX_API WindowsLocalizationPackage:
+		public RTTI::ImplementInterface<WindowsLocalizationPackage, ILocalizationPackage>,
 		private Localization::Private::XMLPackageHelper
 	{
 		private:
-			Localization::Private::ItemsPackageHelper m_ItemsHelper;
+			Localization::Private::ItemsPackageHelper m_PackageHelper;
 			std::unordered_map<ResourceID, LocalizationItem> m_Items;
 			Locale m_Locale;
 
 		private:
-			bool DoLoadXML(const XMLDocument& xml, FlagSet<LoadingScheme> loadingScheme) override;
+			bool DoLoadXML(const XMLDocument& xml, FlagSet<LoadingScheme> loadingScheme);
 			void DoSetLocale(const Locale& locale) override
 			{
 				m_Locale = locale;
 			}
 
 		public:
-			AndroidLocalizationPackage()
-				:m_ItemsHelper(m_Items)
+			WindowsLocalizationPackage()
+				:m_PackageHelper(m_Items)
 			{
 			}
-			AndroidLocalizationPackage(const AndroidLocalizationPackage&) = delete;
-			AndroidLocalizationPackage(AndroidLocalizationPackage&&) noexcept = default;
+			WindowsLocalizationPackage(const WindowsLocalizationPackage&) = delete;
+			WindowsLocalizationPackage(WindowsLocalizationPackage&&) noexcept = default;
 
 		public:
 			// ILocalizationPackage
@@ -47,7 +47,7 @@ namespace kxf
 
 			LocalizationItem GetItem(const ResourceID& id) const override
 			{
-				if (const LocalizationItem* item = m_ItemsHelper.GetItem(id))
+				if (const LocalizationItem* item = m_PackageHelper.GetItem(id))
 				{
 					return *item;
 				}
@@ -55,7 +55,7 @@ namespace kxf
 			}
 			size_t EnumItems(std::function<bool(const ResourceID&, const LocalizationItem&)> func) const override
 			{
-				return m_ItemsHelper.EnumItems(func);
+				return m_PackageHelper.EnumItems(func);
 			}
 
 			bool Load(wxInputStream& stream, const Locale& locale, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace) override
@@ -68,7 +68,7 @@ namespace kxf
 			}
 
 		public:
-			AndroidLocalizationPackage& operator=(const AndroidLocalizationPackage&) = delete;
-			AndroidLocalizationPackage& operator=(AndroidLocalizationPackage&&) noexcept = default;
+			WindowsLocalizationPackage& operator=(const WindowsLocalizationPackage&) = delete;
+			WindowsLocalizationPackage& operator=(WindowsLocalizationPackage&&) noexcept = default;
 	};
 }

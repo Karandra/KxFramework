@@ -1,12 +1,10 @@
 #include "stdafx.h"
 #include "AndroidLocalizationPackage.h"
-#include "Private/LocalizationResources.h"
-#include "kxf/System/DynamicLibrary.h"
 #include "kxf/Serialization/XML.h"
 
 namespace kxf
 {
-	bool AndroidLocalizationPackage::DoLoad(const XMLDocument& xml, FlagSet<LoadingScheme> loadingScheme)
+	bool AndroidLocalizationPackage::DoLoadXML(const XMLDocument& xml, FlagSet<LoadingScheme> loadingScheme)
 	{
 		if (loadingScheme.ExtractConsecutive(LoadingScheme::CONSECUTIVE_MASK) == LoadingScheme::Replace)
 		{
@@ -15,6 +13,8 @@ namespace kxf
 
 		if (XMLNode resourcesNode = xml.QueryElement(wxS("resources")))
 		{
+			m_Items.reserve(resourcesNode.GetChildrenCount());
+
 			size_t count = 0;
 			resourcesNode.EnumChildElements([&](XMLNode itemNode)
 			{
@@ -104,33 +104,6 @@ namespace kxf
 				return true;
 			});
 			return count != 0;
-		}
-		return false;
-	}
-
-	bool AndroidLocalizationPackage::Load(wxInputStream& stream, const Locale& locale, FlagSet<LoadingScheme> loadingScheme)
-	{
-		if (stream.IsOk() && DoLoad(XMLDocument(stream), loadingScheme))
-		{
-			m_Locale = locale;
-			return true;
-		}
-		return false;
-	}
-	bool AndroidLocalizationPackage::Load(const DynamicLibrary& library, const FSPath& name, const Locale& locale, FlagSet<LoadingScheme> loadingScheme)
-	{
-		if (auto data = library.GetResource(Localization::Private::EmbeddedResourceType, name.GetName()))
-		{
-			Locale usedLcoale = locale;
-			if (!usedLcoale)
-			{
-				usedLcoale = Localization::Private::LocaleFromFileName(name);
-			}
-			if (DoLoad(String::FromUTF8(data), loadingScheme))
-			{
-				m_Locale = std::move(usedLcoale);
-				return true;
-			}
 		}
 		return false;
 	}

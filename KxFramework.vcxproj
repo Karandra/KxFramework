@@ -256,6 +256,7 @@
     <ClInclude Include="kxf\Localization\LocalizationPackageStack.h" />
     <ClInclude Include="kxf\Localization\Private\LocalizationPackageHelper.h" />
     <ClInclude Include="kxf\Localization\Private\LocalizationResources.h" />
+    <ClInclude Include="kxf\Localization\WindowsLocalizationPackage.h" />
     <ClInclude Include="kxf\pch.hpp" />
     <ClInclude Include="kxf\Serialization.hpp" />
     <ClInclude Include="kxf\Serialization\Common.h" />
@@ -632,6 +633,8 @@
     <ClCompile Include="kxf\IO\Common.cpp" />
     <ClCompile Include="kxf\IO\FileStream.cpp" />
     <ClCompile Include="kxf\IO\MemoryStream.cpp" />
+    <ClCompile Include="kxf\Localization\Private\LocalizationPackageHelper.cpp" />
+    <ClCompile Include="kxf\Localization\WindowsLocalizationPackage.cpp" />
     <ClCompile Include="kxf\Serialization\HTML\HTMLDocument.cpp" />
     <ClCompile Include="kxf\Serialization\HTML\HTMLNode.cpp" />
     <ClCompile Include="kxf\Serialization\HTML\Private\clean_text.cpp" />
