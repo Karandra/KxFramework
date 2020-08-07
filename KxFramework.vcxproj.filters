@@ -1454,6 +1454,9 @@
     <ClInclude Include="kxf\Localization\Private\LocalizationResources.h">
       <Filter>kxf\Localization\Private</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Localization\Constants.h">
+      <Filter>kxf\Localization</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">

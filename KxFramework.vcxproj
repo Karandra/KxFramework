@@ -250,6 +250,7 @@
     <ClInclude Include="kxf\IO\MemoryStream.h" />
     <ClInclude Include="kxf\IO\StreamDelegate.h" />
     <ClInclude Include="kxf\IO\StreamWrappers.h" />
+    <ClInclude Include="kxf\Localization\Constants.h" />
     <ClInclude Include="kxf\Localization\ILocalizationPackage.h" />
     <ClInclude Include="kxf\Localization\LocalizationItem.h" />
     <ClInclude Include="kxf\Localization\LocalizationPackageStack.h" />
