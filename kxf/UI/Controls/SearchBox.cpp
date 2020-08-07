@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "SearchBox.h"
-#include "kxf/Localization/LocalizationPackage.h"
-#include "kxf/General/StdID.h"
+#include "kxf/Application/ICoreApplication.h"
 
 namespace kxf::UI
 {
@@ -54,9 +53,9 @@ namespace kxf::UI
 		{
 			ShowCancelButton(true);
 			ShowSearchButton(true);
-			if (auto value = LocalizationPackage::GetActive().GetString(StdID::Search))
+			if (auto app = ICoreApplication::GetInstance())
 			{
-				SetDescriptiveText(*value);
+				SetDescriptiveText(app->GetLocalizationPackage().GetItem(StdID::Search).GetString());
 			}
 
 			Refresh();

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "StandardLocalization.h"
 #include "kxf/General/StringFormater.h"
-#include "kxf/Localization/LocalizationPackage.h"
+#include "kxf/Application/ICoreApplication.h"
 
 namespace
 {
@@ -11,20 +11,24 @@ namespace
 	{
 		using namespace kxf;
 
-		if (const LocalizationPackage& translator = LocalizationPackage::GetActive())
+		if (auto app = ICoreApplication::GetInstance())
 		{
+			const ILocalizationPackage& localizationPackage = app->GetLocalizationPackage();
 			if (flags & wxStockLabelQueryFlag::wxSTOCK_WITH_MNEMONIC)
 			{
 				id += g_MnemonicSuffix;
 			}
 
-			auto value = translator.GetString(id);
+			auto value = localizationPackage.GetItem(id);
 			if (!value)
 			{
 				id.RemoveFromEnd(std::size(g_MnemonicSuffix) - 1);
-				value = translator.GetString(id);
+				value = localizationPackage.GetItem(id);
 			}
-			return value;
+			if (value)
+			{
+				return value.GetString();
+			}
 		}
 		return {};
 	}

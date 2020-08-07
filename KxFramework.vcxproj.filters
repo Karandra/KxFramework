@@ -1082,9 +1082,6 @@
     <ClInclude Include="kxf\UI\Controls\DataView\CellAttribute.h">
       <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Localization\LocalizationPackage.h">
-      <Filter>kxf\Localization</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\System\Private\SystemInformationDefinesMapping.h">
       <Filter>kxf\System\Private</Filter>
     </ClInclude>
@@ -1455,6 +1452,9 @@
       <Filter>kxf\Localization\Private</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Localization\Constants.h">
+      <Filter>kxf\Localization</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Localization\AndroidLocalizationPackage.h">
       <Filter>kxf\Localization</Filter>
     </ClInclude>
   </ItemGroup>
@@ -2006,9 +2006,6 @@
     <ClCompile Include="kxf\Utility\Drawing.cpp">
       <Filter>kxf\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Localization\LocalizationPackage.cpp">
-      <Filter>kxf\Localization</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\General\DateTime\TimeSpan.cpp">
       <Filter>kxf\General\DateTime</Filter>
     </ClCompile>
@@ -2170,6 +2167,9 @@
     </ClCompile>
     <ClCompile Include="kxf\EventSystem\EventBroadcastProcessor.cpp">
       <Filter>kxf\EventSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Localization\AndroidLocalizationPackage.cpp">
+      <Filter>kxf\Localization</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

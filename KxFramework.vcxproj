@@ -487,7 +487,7 @@
     <ClInclude Include="kxf\Localization\Locale.h" />
     <ClInclude Include="kxf\Localization\Private\LocaleOptions.h" />
     <ClInclude Include="kxf\Localization\Private\StandardLocalization.h" />
-    <ClInclude Include="kxf\Localization\LocalizationPackage.h" />
+    <ClInclude Include="kxf\Localization\AndroidLocalizationPackage.h" />
     <ClInclude Include="kxf\Network.hpp" />
     <ClInclude Include="kxf\Network\Common.h" />
     <ClInclude Include="kxf\Network\CURL\Event.h" />
@@ -771,7 +771,7 @@
     <ClCompile Include="kxf\Localization\Locale.cpp" />
     <ClCompile Include="kxf\Localization\Private\LocaleOptions.cpp" />
     <ClCompile Include="kxf\Localization\Private\StandardLocalization.cpp" />
-    <ClCompile Include="kxf\Localization\LocalizationPackage.cpp" />
+    <ClCompile Include="kxf\Localization\AndroidLocalizationPackage.cpp" />
     <ClCompile Include="kxf\Network\Common.cpp" />
     <ClCompile Include="kxf\Network\CURL.cpp" />
     <ClCompile Include="kxf\Network\CURL\Event.cpp" />

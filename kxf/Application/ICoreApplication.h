@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "kxf/EventSystem/IEvtHandler.h"
+#include "kxf/Localization/ILocalizationPackage.h"
 class wxCmdLineParser;
 
 namespace kxf
@@ -199,5 +200,6 @@ namespace kxf
 			virtual IEventFilter::Result FilterEvent(IEvent& event) = 0;
 
 			virtual IEvtHandler& GetEvtHandler() = 0;
+			virtual const ILocalizationPackage& GetLocalizationPackage() const = 0;
 	};
 }

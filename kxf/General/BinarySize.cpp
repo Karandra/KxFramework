@@ -2,7 +2,7 @@
 #include "BinarySize.h"
 #include "StringFormater.h"
 #include "Math.h"
-#include "kxf/Localization/LocalizationPackage.h"
+#include "kxf/Application/ICoreApplication.h"
 
 namespace
 {
@@ -10,29 +10,33 @@ namespace
 
 	std::optional<String> GetSizeUnitString(BinarySizeUnit unit)
 	{
-		switch (unit)
+		if (auto app = ICoreApplication::GetInstance())
 		{
-			case BinarySizeUnit::Bytes:
+			const ILocalizationPackage& localizationPackage = app->GetLocalizationPackage();
+			switch (unit)
 			{
-				return LocalizationPackage::GetActive().GetString(wxS("BinarySizeUnit.Bytes"));
-			}
-			case BinarySizeUnit::KiloBytes:
-			{
-				return LocalizationPackage::GetActive().GetString(wxS("BinarySizeUnit.KB"));
-			}
-			case BinarySizeUnit::MegaBytes:
-			{
-				return LocalizationPackage::GetActive().GetString(wxS("BinarySizeUnit.MB"));
-			}
-			case BinarySizeUnit::GigaBytes:
-			{
-				return LocalizationPackage::GetActive().GetString(wxS("BinarySizeUnit.GB"));
-			}
-			case BinarySizeUnit::TeraBytes:
-			{
-				return LocalizationPackage::GetActive().GetString(wxS("BinarySizeUnit.TB"));
-			}
-		};
+				case BinarySizeUnit::Bytes:
+				{
+					return localizationPackage.GetItem(wxS("BinarySizeUnit.Bytes"));
+				}
+				case BinarySizeUnit::KiloBytes:
+				{
+					return localizationPackage.GetItem(wxS("BinarySizeUnit.KB"));
+				}
+				case BinarySizeUnit::MegaBytes:
+				{
+					return localizationPackage.GetItem(wxS("BinarySizeUnit.MB"));
+				}
+				case BinarySizeUnit::GigaBytes:
+				{
+					return localizationPackage.GetItem(wxS("BinarySizeUnit.GB"));
+				}
+				case BinarySizeUnit::TeraBytes:
+				{
+					return localizationPackage.GetItem(wxS("BinarySizeUnit.TB"));
+				}
+			};
+		}
 		return {};
 	}
 	bool AddUnitLabelIfNeeded(String& result, FlagSet<BinarySizeFormat> format, BinarySizeUnit unit)

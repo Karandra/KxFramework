@@ -4,7 +4,7 @@
 
 namespace kxf::Localization::Private
 {
-	constexpr XChar EmbeddedResourceType[] = wxS("LocalizationPackage");
+	constexpr XChar EmbeddedResourceType[] = wxS("AndroidLocalizationPackage");
 
 	inline Locale LocaleFromFileName(const String& name)
 	{
