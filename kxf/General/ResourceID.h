@@ -16,6 +16,18 @@ namespace kxf
 				:m_ID(id)
 			{
 			}
+			ResourceID(String id) noexcept
+				:m_ID(id)
+			{
+			}
+			ResourceID(const char* id) noexcept
+				:m_ID(String(id))
+			{
+			}
+			ResourceID(const wchar_t* id) noexcept
+				:m_ID(String(id))
+			{
+			}
 
 			template<class T, class = std::enable_if_t<std::is_enum_v<T>>>
 			ResourceID(T id) noexcept
