@@ -88,6 +88,19 @@ namespace kxf
 				return {};
 			}
 
+			size_t GetHash() const noexcept
+			{
+				if (auto value = std::get_if<int>(&m_ID))
+				{
+					return std::hash<int>()(*value);
+				}
+				else if (auto value = std::get_if<String>(&m_ID))
+				{
+					return std::hash<String>()(*value);
+				}
+				return 0;
+			}
+
 		public:
 			explicit operator bool() const
 			{
@@ -109,5 +122,17 @@ namespace kxf
 
 			ResourceID& operator=(const ResourceID&) = default;
 			ResourceID& operator=(ResourceID&&) noexcept = default;
+	};
+}
+
+namespace std
+{
+	template<>
+	struct hash<kxf::ResourceID> final
+	{
+		size_t operator()(const kxf::ResourceID& id) const noexcept
+		{
+			return id.GetHash();
+		}
 	};
 }
