@@ -173,6 +173,22 @@ namespace kxf
 				return *this;
 			}
 
+			constexpr TEnum ExtractConsecutive(TInt mask) const noexcept
+			{
+				return static_cast<TEnum>(ToInt() & mask);
+			}
+			constexpr TEnum ExtractConsecutiveRange(size_t last) const noexcept
+			{
+				return ExtractConsecutive(static_cast<TInt>(1) << (last + 1) - 1);
+			}
+			constexpr TEnum ExtractConsecutiveRange(size_t first, size_t last) const noexcept
+			{
+				TInt begin = first != 0 ? static_cast<TInt>(1) << (first + 1) - 1 : static_cast<TInt>(0);
+				TInt end = static_cast<TInt>(1) << (last + 1) - 1;
+
+				return ExtractConsecutive(begin ^ end);
+			}
+
 		public:
 			constexpr operator bool() const noexcept
 			{
