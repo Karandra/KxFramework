@@ -289,9 +289,6 @@
     <ClInclude Include="kxf\Sciter\Events.h">
       <Filter>kxf\Sciter</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Sciter\Events\Event.h">
-      <Filter>kxf\Sciter\Events</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Sciter\Events\KeyEvent.h">
       <Filter>kxf\Sciter\Events</Filter>
     </ClInclude>
@@ -1463,6 +1460,9 @@
     <ClInclude Include="kxf\Localization\WindowsLocalizationPackage.h">
       <Filter>kxf\Localization</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Sciter\Events\SciterEvent.h">
+      <Filter>kxf\Sciter\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -1491,9 +1491,6 @@
     </ClCompile>
     <ClCompile Include="kxf\Sciter\Internal.cpp">
       <Filter>kxf\Sciter</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\Sciter\Events\Event.cpp">
-      <Filter>kxf\Sciter\Events</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Sciter\IWindowRenderer.cpp">
       <Filter>kxf\Sciter</Filter>
@@ -2188,6 +2185,9 @@
     </ClCompile>
     <ClCompile Include="kxf\Localization\ILocalizationPackage.cpp">
       <Filter>kxf\Localization</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Sciter\Events\SciterEvent.cpp">
+      <Filter>kxf\Sciter\Events</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

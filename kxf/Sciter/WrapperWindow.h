@@ -146,12 +146,61 @@ namespace kxf::Sciter
 
 			wxLayoutDirection GetLayoutDirection() const override
 			{
-				return Host::GetLayoutDirection();
+				using namespace UI;
+
+				switch (Host::GetLayoutDirection())
+				{
+					case LayoutDirection::LeftToRight:
+					{
+						return wxLayoutDirection::wxLayout_LeftToRight;
+					}
+					case LayoutDirection::RightToLeft:
+					{
+						return wxLayoutDirection::wxLayout_RightToLeft;
+					}
+				};
+				return wxLayoutDirection::wxLayout_Default;
 			}
 			void SetLayoutDirection(wxLayoutDirection value) override
 			{
+				using namespace UI;
+
+				switch (value)
+				{
+					case wxLayoutDirection::wxLayout_LeftToRight:
+					{
+						Host::SetLayoutDirection(LayoutDirection::LeftToRight);
+						break;
+					}
+					case wxLayoutDirection::wxLayout_RightToLeft:
+					{
+						Host::SetLayoutDirection(LayoutDirection::RightToLeft);
+						break;
+					}
+					default:
+					{
+						Host::SetLayoutDirection(LayoutDirection::Default);
+						break;
+					}
+				};
 				TWindow::SetLayoutDirection(value);
-				Host::SetLayoutDirection(value);
+			}
+
+			void SetWindowStyleFlag(long style) override
+			{
+				// Look for comment in 'Host::UpdateWindowStyle' function
+				FlagSet styleSet(style);
+				styleSet.Remove(wxFULL_REPAINT_ON_RESIZE);
+
+				TWindow::SetWindowStyleFlag(styleSet.GetValue());
+			}
+			void SetExtraStyle(long exStyle) override
+			{
+				// Look for comment in 'Host::UpdateWindowStyle' function
+				FlagSet exStyleSet(exStyle);
+				exStyleSet.Add(wxWS_EX_PROCESS_IDLE);
+
+				TWindow::SetExtraStyle(exStyleSet.GetValue());
 			}
 
 			wxSize GetDPI() const override

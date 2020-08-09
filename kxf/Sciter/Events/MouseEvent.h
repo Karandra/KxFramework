@@ -1,9 +1,9 @@
 #pragma once
-#include "Event.h"
+#include "SciterEvent.h"
 
 namespace kxf::Sciter
 {
-	class KX_API MouseEvent: public Event, public wxMouseState
+	class KX_API MouseEvent: public SciterEvent, public wxMouseState
 	{
 		public:
 			KxEVENT_MEMBER(MouseEvent, MouseEnter);
@@ -24,16 +24,18 @@ namespace kxf::Sciter
 
 		public:
 			MouseEvent(Host& host)
-				:Event(host)
+				:SciterEvent(host)
 			{
 			}
 
 		public:
+			// IEvent
 			std::unique_ptr<IEvent> Move() noexcept override
 			{
 				return std::make_unique<MouseEvent>(std::move(*this));
 			}
 
+			// SciterEvent
 			Point GetRelativePosition() const
 			{
 				return m_RelativePosition;

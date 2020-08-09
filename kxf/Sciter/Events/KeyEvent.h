@@ -1,9 +1,9 @@
 #pragma once
-#include "Event.h"
+#include "SciterEvent.h"
 
 namespace kxf::Sciter
 {
-	class KX_API KeyEvent: public Event, public wxKeyboardState
+	class KX_API KeyEvent: public SciterEvent, public wxKeyboardState
 	{
 		public:
 			KxEVENT_MEMBER(KeyEvent, KeyChar);
@@ -13,20 +13,22 @@ namespace kxf::Sciter
 		protected:
 			Point m_Position = Point::UnspecifiedPosition();
 			wxKeyCode m_KeyCode = wxKeyCode::WXK_NONE;
-			wxChar m_UnicodeKey = 0;
+			wxUniChar m_UnicodeKey;
 
 		public:
 			KeyEvent(Host& host)
-				:Event(host)
+				:SciterEvent(host)
 			{
 			}
 
 		public:
+			// IEvent
 			std::unique_ptr<IEvent> Move() noexcept override
 			{
 				return std::make_unique<KeyEvent>(std::move(*this));
 			}
 
+			// SciterEvent
 			wxKeyCode GetKeyCode() const
 			{
 				return m_KeyCode;
@@ -36,11 +38,11 @@ namespace kxf::Sciter
 				m_KeyCode = keyCode;
 			}
 
-			wxChar GetUnicodeKey() const
+			wxUniChar GetUnicodeKey() const
 			{
 				return m_UnicodeKey;
 			}
-			void SetUnicodeKey(wxChar unicodeKey)
+			void SetUnicodeKey(wxUniChar unicodeKey)
 			{
 				m_UnicodeKey = unicodeKey;
 			}

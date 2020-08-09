@@ -199,13 +199,13 @@ namespace kxf::Sciter
 
 		if (parameters.cmd == BEHAVIOR_ATTACH)
 		{
-			Event event = MakeEvent<Event>(*this);
+			SciterEvent event = MakeEvent<SciterEvent>(*this);
 			event.SetElement(element);
 			return ProcessEvent(event, EvtAttached);
 		}
 		else if (parameters.cmd == BEHAVIOR_DETACH)
 		{
-			Event event = MakeEvent<Event>(*this);
+			SciterEvent event = MakeEvent<SciterEvent>(*this);
 			event.SetElement(element);
 			return ProcessEvent(event, EvtDetached);
 		}
@@ -375,7 +375,7 @@ namespace kxf::Sciter
 	}
 	bool BasicEventDispatcher::HandleSizeEvent(ElementHandle* element, void* context)
 	{
-		Event event = MakeEvent<SizeEvent>(*this);
+		SciterEvent event = MakeEvent<SizeEvent>(*this);
 		return ProcessEvent(event, EvtSize);
 	}
 	bool BasicEventDispatcher::HandleTimerEvent(ElementHandle* element, void* context)
@@ -450,7 +450,7 @@ namespace kxf::Sciter
 			ScrollEvent event = MakeEvent<ScrollEvent>(*this);
 			event.SetElement(element);
 			event.SetTargetElement(FromSciterElement(parameters.target));
-			event.SetOrientation(parameters.vertical ? wxVERTICAL : wxHORIZONTAL);
+			event.SetOrientation(parameters.vertical ? Orientation::Vertical : Orientation::Horizontal);
 			event.SetPosition(parameters.pos);
 			event.SetSource(MapScrollSource(static_cast<SCROLL_SOURCE>(parameters.source)));
 

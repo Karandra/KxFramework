@@ -1,9 +1,9 @@
 #pragma once
-#include "Event.h"
+#include "SciterEvent.h"
 
 namespace kxf::Sciter
 {
-	class KX_API FocusEvent: public Event
+	class KX_API FocusEvent: public SciterEvent
 	{
 		public:
 			KxEVENT_MEMBER(FocusEvent, SetFocus);
@@ -15,11 +15,12 @@ namespace kxf::Sciter
 
 		public:
 			FocusEvent(Host& host)
-				:Event(host)
+				:SciterEvent(host)
 			{
 			}
 
 		public:
+			// IEvent
 			std::unique_ptr<IEvent> Move() noexcept override
 			{
 				return std::make_unique<FocusEvent>(std::move(*this));

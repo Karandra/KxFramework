@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "Events\Event.h"
+#include "Events\SciterEvent.h"
 #include "Events\KeyEvent.h"
 #include "Events\MouseEvent.h"
 #include "Events\FocusEvent.h"

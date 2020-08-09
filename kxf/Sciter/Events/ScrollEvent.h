@@ -1,9 +1,9 @@
 #pragma once
-#include "Event.h"
+#include "SciterEvent.h"
 
 namespace kxf::Sciter
 {
-	class KX_API ScrollEvent: public Event
+	class KX_API ScrollEvent: public SciterEvent
 	{
 		public:
 			KxEVENT_MEMBER(ScrollEvent, ScrollHome);
@@ -22,27 +22,29 @@ namespace kxf::Sciter
 			KxEVENT_MEMBER(ScrollEvent, ScrollCornerReleased);
 
 		protected:
-			wxOrientation m_Orientation = wxOrientation::wxVERTICAL;
-			int m_Position = wxDefaultCoord;
+			Orientation m_Orientation = Orientation::Vertical;
 			ScrollSource m_Source = ScrollSource::Unknown;
+			int m_Position = Geometry::DefaultCoord;
 
 		public:
 			ScrollEvent(Host& host)
-				:Event(host)
+				:SciterEvent(host)
 			{
 			}
 
 		public:
+			// IEvent
 			std::unique_ptr<IEvent> Move() noexcept override
 			{
 				return std::make_unique<ScrollEvent>(std::move(*this));
 			}
 
-			wxOrientation GetOrientation() const
+			// IEvent
+			Orientation GetOrientation() const
 			{
 				return m_Orientation;
 			}
-			void SetOrientation(wxOrientation value)
+			void SetOrientation(Orientation value)
 			{
 				m_Orientation = value;
 			}

@@ -1,9 +1,9 @@
 #pragma once
-#include "Event.h"
+#include "SciterEvent.h"
 
 namespace kxf::Sciter
 {
-	class KX_API TimerEvent: public Event
+	class KX_API TimerEvent: public SciterEvent
 	{
 		public:
 			KxEVENT_MEMBER(TimerEvent, Timer);
@@ -13,11 +13,12 @@ namespace kxf::Sciter
 
 		public:
 			TimerEvent(Host& host)
-				:Event(host)
+				:SciterEvent(host)
 			{
 			}
 
 		public:
+			// IEvent
 			std::unique_ptr<IEvent> Move() noexcept override
 			{
 				return std::make_unique<TimerEvent>(std::move(*this));
@@ -27,6 +28,7 @@ namespace kxf::Sciter
 				return EventCategory::Timer;
 			}
 
+			// SciterEvent
 			uintptr_t GetTimerID() const
 			{
 				return m_TimerID;

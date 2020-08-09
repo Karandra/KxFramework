@@ -8,6 +8,7 @@
 #include "IWindowRenderer.h"
 #include "Renderers/FPSCounter.h"
 #include "kxf/Network/URI.h"
+#include "kxf/FileSystem/FSPath.h"
 #include "kxf/EventSystem/EvtHandler.h"
 #include <wx/window.h>
 
@@ -36,13 +37,13 @@ namespace kxf::Sciter
 			FontSmoothing m_Option_FontSmoothing = FontSmoothing::SystemDefault;
 			WindowRenderer m_Option_WindowRenderer = WindowRenderer::Default;
 
-			String m_DocumentPath;
-			String m_DocumentBasePath;
+			FSPath m_DocumentPath;
+			FSPath m_DocumentBasePath;
 			bool m_ReloadScheduled = false;
 
 		private:
 			void SetDefaultOptions();
-			std::pair<int, int> UpdateWindowStyle();
+			std::pair<FlagSet<int>, FlagSet<int>> UpdateWindowStyle();
 
 			void OnEngineCreated();
 			void OnEngineDestroyed();
@@ -110,15 +111,15 @@ namespace kxf::Sciter
 			bool SetBackgroundColor(const Color& color);
 			bool SetForegroundColor(const Color& color);
 
-			wxLayoutDirection GetLayoutDirection() const;
-			void SetLayoutDirection(wxLayoutDirection value);
+			UI::LayoutDirection GetLayoutDirection() const;
+			void SetLayoutDirection(UI::LayoutDirection value);
 
 		public:
-			bool LoadHTML(const String& html, const String& basePath = {});
+			bool LoadHTML(const String& html, const FSPath& basePath = {});
 			bool LoadHTML(const String& html, const URI& baseURI);
 			bool SetCSS(const String& css);
 
-			bool LoadDocument(const String& localPath);
+			bool LoadDocument(const FSPath& localPath);
 			bool LoadDocument(const URI& uri);
 			void ClearDocument();
 

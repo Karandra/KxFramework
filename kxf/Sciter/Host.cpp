@@ -36,16 +36,22 @@ namespace kxf::Sciter
 		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_TRANSPARENT_WINDOW, static_cast<uintptr_t>(true));
 		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_SET_SCRIPT_RUNTIME_FEATURES, ALLOW_FILE_IO|ALLOW_SOCKET_IO|ALLOW_EVAL|ALLOW_SYSINFO);
 	}
-	std::pair<int, int> Host::UpdateWindowStyle()
+	std::pair<FlagSet<int>, FlagSet<int>> Host::UpdateWindowStyle()
 	{
-		const long style = m_SciterWindow.GetWindowStyle();
-		const long exStyle = m_SciterWindow.GetExtraStyle();
+		FlagSet<int> style = m_SciterWindow.GetWindowStyle();
+		FlagSet<int> exStyle = m_SciterWindow.GetExtraStyle();
+
+		// We don't need this as Sciter paints the entire window itself when needed
+		if (style.Contains(wxFULL_REPAINT_ON_RESIZE))
+		{
+			m_SciterWindow.SetWindowStyle(*exStyle.Remove(wxFULL_REPAINT_ON_RESIZE));
+		}
 
 		// Add 'wxWS_EX_PROCESS_IDLE'. We always need to process idle, especially when using non-default renderer
-		// because we're drawing the window content when idle.
-		if (!(exStyle & wxWS_EX_PROCESS_IDLE))
+		// because we're drawing the window content when idle. We don't require 'wxWS_EX_PROCESS_UI_UPDATES' though.
+		if (!exStyle.Contains(wxWS_EX_PROCESS_IDLE))
 		{
-			m_SciterWindow.SetExtraStyle(exStyle|wxWS_EX_PROCESS_IDLE);
+			m_SciterWindow.SetExtraStyle(*exStyle.Add(wxWS_EX_PROCESS_IDLE));
 		}
 
 		return {style, exStyle};
@@ -69,14 +75,14 @@ namespace kxf::Sciter
 		m_EventDispatcher.AttachHost();
 
 		// Send event
-		Event event = MakeEvent<Event>(*this);
+		SciterEvent event = MakeEvent<SciterEvent>(*this);
 		ProcessEvent(event, EvtEngineCreated);
 	}
 	void Host::OnEngineDestroyed()
 	{
 		::SetWindowLongPtrW(m_SciterWindow.GetHandle(), GWLP_USERDATA, 0);
 
-		Event event = MakeEvent<Event>(*this);
+		SciterEvent event = MakeEvent<SciterEvent>(*this);
 		ProcessEvent(event, EvtEngineDestroyed);
 
 		m_EventDispatcher.DetachHost();
@@ -230,12 +236,12 @@ namespace kxf::Sciter
 			auto [nativeStyle, nativeExStyle] = [&]()
 			{
 				DWORD nativeExStyle = 0;
-				DWORD nativeStyle = m_SciterWindow.MSWGetStyle(style, &nativeExStyle);
+				DWORD nativeStyle = m_SciterWindow.MSWGetStyle(*style, &nativeExStyle);
 
-				return std::make_pair(nativeStyle, nativeExStyle);
+				return std::make_pair(FlagSet<DWORD>(nativeStyle), FlagSet<DWORD>(nativeExStyle));
 			}();
-			
-			const wxChar* nativeClassName = m_SciterWindow.GetMSWClassName(style);
+
+			const XChar* nativeClassName = m_SciterWindow.GetMSWClassName(*style);
 			const Point pos = Point(m_SciterWindow.GetPosition()).SetDefaults({CW_USEDEFAULT, CW_USEDEFAULT});
 			const Size size = Size(m_SciterWindow.GetSize()).SetDefaults({CW_USEDEFAULT, CW_USEDEFAULT});
 			const String title = m_SciterWindow.GetLabel();
@@ -247,13 +253,10 @@ namespace kxf::Sciter
 			::DestroyWindow(oldHandle);
 
 			// Create new window with 'WS_EX_NOREDIRECTIONBITMAP' extended style instead (if the style is supported) and attach it to the wxWindow
-			if (System::IsWindows8OrGreater())
-			{
-				nativeExStyle |= WS_EX_NOREDIRECTIONBITMAP;
-			}
+			nativeExStyle.Add(WS_EX_NOREDIRECTIONBITMAP, System::IsWindows8OrGreater());
 
 			m_AllowSciterHandleMessage = true;
-			m_SciterWindow.MSWCreate(nativeClassName, title.wc_str(), pos, size, nativeStyle, nativeExStyle);
+			m_SciterWindow.MSWCreate(nativeClassName, title.wc_str(), pos, size, *nativeStyle, *nativeExStyle);
 			return m_EngineCreated;
 		}
 		return true;
@@ -456,7 +459,7 @@ namespace kxf::Sciter
 		}
 		else
 		{
-			Utility::SetIfNotNull(reason, wxS("Not a top-level window and doesn't use a graphics renderer"));
+			Utility::SetIfNotNull(reason, wxS("Not a top-level window and doesn't use graphics renderer"));
 			return false;
 		}
 	}
@@ -473,31 +476,35 @@ namespace kxf::Sciter
 		return GetRootElement().SetStyleAttribute(wxS("color"), color);
 	}
 
-	wxLayoutDirection Host::GetLayoutDirection() const
+	UI::LayoutDirection Host::GetLayoutDirection() const
 	{
+		using namespace UI;
+
 		String value = GetRootElement().GetStyleAttribute(wxS("direction"));
 		if (value == wxS("ltr"))
 		{
-			return wxLayoutDirection::wxLayout_LeftToRight;
+			return LayoutDirection::LeftToRight;
 		}
 		else if (value == wxS("rtl"))
 		{
-			return wxLayoutDirection::wxLayout_RightToLeft;
+			return LayoutDirection::RightToLeft;
 		}
-		return wxLayoutDirection::wxLayout_Default;
+		return LayoutDirection::Default;
 	}
-	void Host::SetLayoutDirection(wxLayoutDirection value)
+	void Host::SetLayoutDirection(UI::LayoutDirection value)
 	{
+		using namespace UI;
+
 		switch (value)
 		{
-			case wxLayoutDirection::wxLayout_LeftToRight:
+			case LayoutDirection::LeftToRight:
 			{
-				GetRootElement().RemoveStyleAttribute(wxS("ltr"));
+				GetRootElement().SetStyleAttribute(wxS("direction"), wxS("ltr"));
 				break;
 			}
-			case wxLayoutDirection::wxLayout_RightToLeft:
+			case LayoutDirection::RightToLeft:
 			{
-				GetRootElement().RemoveStyleAttribute(wxS("rtl"));
+				GetRootElement().SetStyleAttribute(wxS("direction"), wxS("rtl"));
 				break;
 			}
 			default:
@@ -507,51 +514,50 @@ namespace kxf::Sciter
 		};
 	}
 
-	bool Host::LoadHTML(const String& html, const String& basePath)
+	bool Host::LoadHTML(const String& html, const FSPath& basePath)
 	{
-		m_DocumentPath.clear();
+		m_DocumentPath = {};
 		m_DocumentBasePath = basePath;
-		if (!m_DocumentBasePath.IsEmpty() && !m_DocumentBasePath.StartsWith(wxS("file://")))
-		{
-			m_DocumentBasePath.Prepend(wxS("file://"));
-		}
-		if (!m_DocumentBasePath.IsEmpty() && m_DocumentBasePath.back() != wxS('\\'))
-		{
-			m_DocumentBasePath += wxS('\\');
-		}
 
 		auto utf8 = ToSciterUTF8(html);
-		return GetSciterAPI()->SciterLoadHtml(m_SciterWindow.GetHandle(), utf8.data(), utf8.size(), m_DocumentBasePath.wc_str());
+		auto basePathString = String(wxS("file://")) + basePath.GetFullPath(FSPathNamespace::None, FSPathFormat::TrailingSeparator);
+		return GetSciterAPI()->SciterLoadHtml(m_SciterWindow.GetHandle(), utf8.data(), utf8.size(), basePathString.wc_str());
 	}
 	bool Host::LoadHTML(const String& html, const URI& baseURI)
 	{
-		m_DocumentPath.clear();
+		m_DocumentPath = {};
 		m_DocumentBasePath = baseURI.BuildURI();
 		
 		auto utf8 = ToSciterUTF8(html);
-		return GetSciterAPI()->SciterLoadHtml(m_SciterWindow.GetHandle(), utf8.data(), utf8.size(), m_DocumentBasePath.wc_str());
+		auto basePathString = m_DocumentBasePath.GetFullPath();
+		return GetSciterAPI()->SciterLoadHtml(m_SciterWindow.GetHandle(), utf8.data(), utf8.size(), basePathString.wc_str());
 	}
 	bool Host::SetCSS(const String& css)
 	{
 		auto utf8 = ToSciterUTF8(css);
-		return GetSciterAPI()->SciterSetCSS(m_SciterWindow.GetHandle(), utf8.data(), utf8.size(), m_DocumentBasePath.wc_str(), nullptr);
+		auto basePathString = m_DocumentBasePath.GetFullPath();
+		return GetSciterAPI()->SciterSetCSS(m_SciterWindow.GetHandle(), utf8.data(), utf8.size(), basePathString.wc_str(), nullptr);
 	}
 
-	bool Host::LoadDocument(const String& localPath)
+	bool Host::LoadDocument(const FSPath& localPath)
 	{
 		m_DocumentPath = localPath;
-		m_DocumentBasePath = localPath.BeforeLast(wxS('\\'));
-		return GetSciterAPI()->SciterLoadFile(m_SciterWindow.GetHandle(), m_DocumentPath.wc_str());
+		m_DocumentBasePath = localPath.GetParent();
+
+		auto documentPathString = m_DocumentPath.GetFullPath();
+		return GetSciterAPI()->SciterLoadFile(m_SciterWindow.GetHandle(), documentPathString.wc_str());
 	}
 	bool Host::LoadDocument(const URI& uri)
 	{
 		m_DocumentPath = uri.BuildURI();
 		m_DocumentBasePath = m_DocumentPath;
-		return GetSciterAPI()->SciterLoadFile(m_SciterWindow.GetHandle(), m_DocumentBasePath.wc_str());
+
+		auto documentPathString = m_DocumentPath.GetFullPath();
+		return GetSciterAPI()->SciterLoadFile(m_SciterWindow.GetHandle(), documentPathString.wc_str());
 	}
 	void Host::ClearDocument()
 	{
-		m_DocumentBasePath.clear();
+		m_DocumentBasePath = {};
 		LoadHTML({});
 	}
 

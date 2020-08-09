@@ -1,9 +1,9 @@
 #pragma once
-#include "Event.h"
+#include "SciterEvent.h"
 
 namespace kxf::Sciter
 {
-	class KX_API BehaviorEvent: public Event
+	class KX_API BehaviorEvent: public SciterEvent
 	{
 		public:
 			// Button
@@ -85,16 +85,18 @@ namespace kxf::Sciter
 
 		public:
 			BehaviorEvent(Host& host)
-				:Event(host)
+				:SciterEvent(host)
 			{
 			}
 
 		public:
+			// IEvent
 			std::unique_ptr<IEvent> Move() noexcept override
 			{
 				return std::make_unique<BehaviorEvent>(std::move(*this));
 			}
 			
+			// SciterEvent
 			String GetEventName() const
 			{
 				return m_EventName;

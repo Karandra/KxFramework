@@ -517,7 +517,7 @@
     <ClInclude Include="kxf\Sciter\EventDispatcher.h" />
     <ClInclude Include="kxf\Sciter\Events.h" />
     <ClInclude Include="kxf\Sciter\Events\BehaviorEvent.h" />
-    <ClInclude Include="kxf\Sciter\Events\Event.h" />
+    <ClInclude Include="kxf\Sciter\Events\SciterEvent.h" />
     <ClInclude Include="kxf\Sciter\Events\FocusEvent.h" />
     <ClInclude Include="kxf\Sciter\Events\KeyEvent.h" />
     <ClInclude Include="kxf\Sciter\Events\MouseEvent.h" />
@@ -823,7 +823,7 @@
     <ClCompile Include="kxf\Sciter\Controls\Label.cpp" />
     <ClCompile Include="kxf\Sciter\Element.cpp" />
     <ClCompile Include="kxf\Sciter\EventDispatcher.cpp" />
-    <ClCompile Include="kxf\Sciter\Events\Event.cpp" />
+    <ClCompile Include="kxf\Sciter\Events\SciterEvent.cpp" />
     <ClCompile Include="kxf\Sciter\Events\PaintEvent.cpp" />
     <ClCompile Include="kxf\Sciter\GraphicsRenderer\GraphicsBitmap.cpp" />
     <ClCompile Include="kxf\Sciter\GraphicsRenderer\GraphicsContext.cpp" />

@@ -1,5 +1,5 @@
 #pragma once
-#include "Event.h"
+#include "SciterEvent.h"
 
 namespace kxf::Sciter
 {
@@ -9,7 +9,7 @@ namespace kxf::Sciter
 
 namespace kxf::Sciter
 {
-	class KX_API PaintEvent: public Event
+	class KX_API PaintEvent: public SciterEvent
 	{
 		public:
 			KxEVENT_MEMBER(PaintEvent, PaintBackground);
@@ -23,16 +23,18 @@ namespace kxf::Sciter
 
 		public:
 			PaintEvent(Host& host)
-				:Event(host)
+				:SciterEvent(host)
 			{
 			}
 
 		public:
+			// IEvent
 			std::unique_ptr<IEvent> Move() noexcept override
 			{
 				return std::make_unique<PaintEvent>(std::move(*this));
 			}
 
+			// SciterEvent
 			GraphicsContext GetGraphicsContext() const;
 			void SetGraphicsContext(GraphicsContextHandle* handle);
 

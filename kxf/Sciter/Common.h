@@ -1,5 +1,7 @@
 #pragma once
 #include "kxf/Common.hpp"
+#include "kxf/UI/Common.h"
+#include "kxf/General/Common.h"
 #include "kxf/General/String.h"
 #include "kxf/General/Version.h"
 #include "kxf/Drawing/Geometry.h"
