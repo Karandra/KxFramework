@@ -192,6 +192,8 @@ namespace kxf
 		public:
 			constexpr operator bool() const noexcept
 			{
+				static_assert(!std::is_integral_v<TEnum>, "cannot use 'operator bool' for flag sets instantiated for integers");
+
 				return !IsNull();
 			}
 			constexpr bool operator!() const noexcept
