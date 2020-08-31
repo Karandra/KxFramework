@@ -22,9 +22,9 @@ namespace kxf::UI
 			SetDoubleBuffered(true);
 			SetTabWidth();
 
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	WXLRESULT TextBox::MSWWindowProc(WXUINT msg, WXWPARAM wParam, WXLPARAM lParam)
