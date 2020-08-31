@@ -32,7 +32,9 @@ namespace kxf::Sciter
 		EnableSmoothScrolling();
 		SetFontSmoothingMode(FontSmoothing::SystemDefault);
 		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_HTTPS_ERROR, 1);
+		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_SET_DEBUG_MODE, 1);
 		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_CONNECTION_TIMEOUT, 20);
+		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_SET_GFX_LAYER, GFX_LAYER_AUTO);
 		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_TRANSPARENT_WINDOW, static_cast<uintptr_t>(true));
 		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_SET_SCRIPT_RUNTIME_FEATURES, ALLOW_FILE_IO|ALLOW_SOCKET_IO|ALLOW_EVAL|ALLOW_SYSINFO);
 	}
@@ -397,19 +399,18 @@ namespace kxf::Sciter
 		auto SetAttribute = [&](const String& value)
 		{
 			GetRootElement().SetAttribute(wxS("window-blurbehind"), value);
-
 			if (!value.IsEmpty())
 			{
 				return !ExecuteScript(String::Format(wxS("view.windowBlurbehind = #%1;"), value)).IsNone();
 			}
-			return !ExecuteScript(wxS("view.windowBlurbehind = undefined;")).IsNone();
+			return !ExecuteScript(wxS("view.windowBlurbehind = #none;")).IsNone();
 		};
 
 		switch (blurMode)
 		{
 			case WindowBlurBehind::None:
 			{
-				return SetAttribute(wxS(""));
+				return SetAttribute({});
 			}
 			case WindowBlurBehind::Auto:
 			{

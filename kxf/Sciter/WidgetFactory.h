@@ -21,7 +21,7 @@ namespace kxf::Sciter
 			{
 				for (WidgetFactory* factory = GetFirstFactory(); factory; factory = factory->GetNextFactory())
 				{
-					if (!func(*factory))
+					if (!std::invoke(func, *factory))
 					{
 						return factory;
 					}

@@ -21,10 +21,6 @@ namespace kxf::Sciter
 				if (auto func = reinterpret_cast<SciterAPI_ptr>(::GetProcAddress(reinterpret_cast<HMODULE>(g_SciterLibrary), "SciterAPI")))
 				{
 					g_SciterAPI = func();
-					if (g_SciterAPI)
-					{
-						tiscript::ni(g_SciterAPI->TIScriptAPI());
-					}
 				}
 			}
 		}
@@ -37,9 +33,5 @@ namespace kxf::Sciter
 	SciterRequestAPI* GetRequestAPI()
 	{
 		return GetSciterAPI()->GetSciterRequestAPI();
-	}
-	tiscript_native_interface* GetSciptingAPI()
-	{
-		return GetSciterAPI()->TIScriptAPI();
 	}
 }

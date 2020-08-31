@@ -22,7 +22,6 @@ namespace kxf::Sciter
 		Function,
 		Bytes,
 		Object,
-		DOMObject,
 		Resource,
 		Range,
 		Duration,

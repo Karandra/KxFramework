@@ -44,7 +44,7 @@ namespace kxf::EventSystem::Private
 		// We don't want to process 'WM_QUIT' from here - it should be processed in the main event loop in order to stop it.
 		MSG nativeMessage = {};
 		size_t countOfPaintEvents = 0;
-		while (PeekMessageW(&nativeMessage, nullptr, 0, 0, PM_NOREMOVE) && nativeMessage.message != WM_QUIT)
+		while (::PeekMessageW(&nativeMessage, nullptr, 0, 0, PM_NOREMOVE) && nativeMessage.message != WM_QUIT)
 		{
 			wxMutexGuiLeaveOrEnter();
 

@@ -10,5 +10,4 @@ namespace kxf::Sciter
 	ISciterAPI* GetSciterAPI();
 	SciterGraphicsAPI* GetGrapchicsAPI();
 	SciterRequestAPI* GetRequestAPI();
-	tiscript_native_interface* GetSciptingAPI();
 }

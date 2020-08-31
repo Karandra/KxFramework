@@ -65,10 +65,6 @@ namespace kxf::Sciter
 			{
 				return ScriptValueType::Object;
 			}
-			case VALUE_TYPE::T_DOM_OBJECT:
-			{
-				return ScriptValueType::DOMObject;
-			}
 			case VALUE_TYPE::T_DURATION:
 			{
 				return ScriptValueType::Duration;
