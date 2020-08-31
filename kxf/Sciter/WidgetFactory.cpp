@@ -6,11 +6,6 @@
 
 namespace kxf::Sciter
 {
-	WidgetFactory* m_FirstFactory = nullptr;
-}
-
-namespace kxf::Sciter
-{
 	std::unique_ptr<Widget> WidgetFactory::NewWidget(Host& host, const Element& element, const String& className)
 	{
 		WidgetFactory* factory = EnumFactories([&](WidgetFactory& factory)
@@ -18,17 +13,5 @@ namespace kxf::Sciter
 			return factory.m_ClassName != className;
 		});
 		return factory ? factory->CreateWidget(host, element, className) : nullptr;
-	}
-	WidgetFactory* WidgetFactory::GetFirstFactory()
-	{
-		return m_FirstFactory;
-	}
-
-	WidgetFactory::WidgetFactory(const String& className)
-		:m_ClassName(className)
-	{
-		// Add this factory to the list
-		m_NextFactory = m_FirstFactory;
-		m_FirstFactory = this;
 	}
 }

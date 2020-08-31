@@ -1,8 +1,19 @@
 #include "stdafx.h"
 #include "Widget.h"
+#include "kxf/Application/ICoreApplication.h"
 
 namespace kxf::Sciter
 {
+	// Widget
+	void Widget::OnAttached()
+	{
+	}
+	void Widget::OnDetached()
+	{
+		// In Sciter example we delete the object here
+		ICoreApplication::GetInstance()->ScheduleForDestruction(std::unique_ptr<IObject>(this));
+	}
+
 	// Layout
 	LayoutFlow Widget::GetLayoutFlow() const
 	{

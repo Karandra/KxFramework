@@ -56,6 +56,13 @@ namespace kxf::Sciter
 			bool SciterHandleEvent(ElementHandle* element, uint32_t eventGroupID, void* context);
 			int SciterHandleNotification(void* context);
 
+			virtual void Attached()
+			{
+			}
+			virtual void Detached()
+			{
+			}
+
 		public:
 			BasicEventDispatcher(Host& host)
 				:m_Host(host)
@@ -115,6 +122,10 @@ namespace kxf::Sciter
 	{
 		private:
 			Widget& m_Widget;
+
+		protected:
+			void Attached() override;
+			void Detached() override;
 
 		public:
 			WidgetEventDispatcher(Host& host, Widget& widget)

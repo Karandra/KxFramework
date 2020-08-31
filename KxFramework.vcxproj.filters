@@ -1463,6 +1463,15 @@
     <ClInclude Include="kxf\Sciter\Events\SciterEvent.h">
       <Filter>kxf\Sciter\Events</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Sciter\Widgets\NativeWidget.h">
+      <Filter>kxf\Sciter\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Sciter\Widgets\NativeTextBoxWidget.h">
+      <Filter>kxf\Sciter\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Sciter\Widgets\Factories.h">
+      <Filter>kxf\Sciter\Widgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2188,6 +2197,12 @@
     </ClCompile>
     <ClCompile Include="kxf\Sciter\Events\SciterEvent.cpp">
       <Filter>kxf\Sciter\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Sciter\Widgets\NativeWidget.cpp">
+      <Filter>kxf\Sciter\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Sciter\Widgets\Factories.cpp">
+      <Filter>kxf\Sciter\Widgets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

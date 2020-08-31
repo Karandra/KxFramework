@@ -197,14 +197,18 @@ namespace kxf::Sciter
 	{
 		INITIALIZATION_PARAMS& parameters = *reinterpret_cast<INITIALIZATION_PARAMS*>(context);
 
-		if (parameters.cmd == BEHAVIOR_ATTACH)
+		if (parameters.cmd == INITIALIZATION_EVENTS::BEHAVIOR_ATTACH)
 		{
+			Attached();
+
 			SciterEvent event = MakeEvent<SciterEvent>(*this);
 			event.SetElement(element);
 			return ProcessEvent(event, EvtAttached);
 		}
-		else if (parameters.cmd == BEHAVIOR_DETACH)
+		else if (parameters.cmd == INITIALIZATION_EVENTS::BEHAVIOR_DETACH)
 		{
+			Detached();
+
 			SciterEvent event = MakeEvent<SciterEvent>(*this);
 			event.SetElement(element);
 			return ProcessEvent(event, EvtDetached);
@@ -916,6 +920,15 @@ namespace kxf::Sciter
 
 namespace kxf::Sciter
 {
+	void WidgetEventDispatcher::Attached()
+	{
+		m_Widget.OnAttached();
+	}
+	void WidgetEventDispatcher::Detached()
+	{
+		m_Widget.OnDetached();
+	}
+
 	IEvtHandler& WidgetEventDispatcher::GetEvtHandler()
 	{
 		return m_Widget.GetEventHandler();

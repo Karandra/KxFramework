@@ -564,9 +564,8 @@ namespace kxf::Sciter
 	{
 		if (HWND handle = GetNativeWindow())
 		{
-			for (auto node = wxTopLevelWindows.GetFirst(); node; node = node->GetNext())
+			for (wxWindow* window: wxTopLevelWindows)
 			{
-				wxWindow* window = node->GetData();
 				if (window->GetHandle() == handle)
 				{
 					return window;

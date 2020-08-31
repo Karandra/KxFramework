@@ -20,9 +20,10 @@ namespace kxf::Sciter
 
 namespace kxf::Sciter
 {
-	class KX_API Widget: public IEvtHandler
+	class KX_API Widget: public RTTI::ImplementInterface<Widget, IEvtHandler>
 	{
 		friend class BasicEventDispatcher;
+		friend class WidgetEventDispatcher;
 
 		private:
 			WidgetEventDispatcher m_EventDispatcher;
@@ -93,6 +94,10 @@ namespace kxf::Sciter
 			{
 				return AccessThisEvtHandler().TryAfter(event);
 			}
+
+			// Widget
+			virtual void OnAttached();
+			virtual void OnDetached();
 
 		public:
 			Widget(Host& host, WidgetFactory& factory, const Element& element)
@@ -233,6 +238,20 @@ namespace kxf::Sciter
 			void EnableEventProcessing(bool enable = true) override
 			{
 				m_EvtHandler.EnableEventProcessing(enable);
+			}
+
+			// Queue execution of a given callable to the next event loop iteration
+			template<class... Args>
+			std::unique_ptr<IEvent> CallAfter(Args&&... arg)
+			{
+				return m_EvtHandler.CallAfter(std::forward<Args>(arg)...);
+			}
+
+			// Queue execution of a given callable to the next event loop iteration replacing previously sent callable with the same ID
+			template<class... Args>
+			std::unique_ptr<IEvent> UniqueCallAfter(const UniversallyUniqueID& uuid, Args&&... arg)
+			{
+				return m_EvtHandler.UniqueCallAfter(uuid, std::forward<Args>(arg)...);
 			}
 
 		public:

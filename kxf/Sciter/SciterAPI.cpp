@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SciterAPI.h"
 #include "Common.h"
+#include "Widgets/Factories.h"
 
 namespace kxf::Sciter
 {
@@ -21,6 +22,11 @@ namespace kxf::Sciter
 				if (auto func = reinterpret_cast<SciterAPI_ptr>(::GetProcAddress(reinterpret_cast<HMODULE>(g_SciterLibrary), "SciterAPI")))
 				{
 					g_SciterAPI = func();
+				}
+
+				if (g_SciterAPI)
+				{
+					Private::RegisterFactories();
 				}
 			}
 		}
