@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Color.h"
 #include "StringFormater.h"
+#include "RegEx.h"
 #include "wx/window.h"
 
 namespace
@@ -49,25 +50,6 @@ namespace
 			case C2SAlpha::Auto:
 			{
 				return color.IsOpaque() ? CSS2HSL(color, C2SAlpha::Never) : CSS2HSL(color, C2SAlpha::Always);
-			}
-		};
-
-		switch (alpha)
-		{
-			case C2SAlpha::Never:
-			{
-				const auto fixed = color.GetFixed8();
-				return String::Format(wxS("rgb(%1, %2, %3)"), fixed.Red, fixed.Green, fixed.Blue);
-			}
-			case C2SAlpha::Always:
-			{
-				const auto fixed = color.GetFixed8();
-				const auto normalized = color.GetNormalized();
-				return String::Format(wxS("rgba(%1, %2, %3, %4)"), fixed.Red, fixed.Green, fixed.Blue, normalized.Alpha);
-			}
-			case C2SAlpha::Auto:
-			{
-				return color.IsOpaque() ? CSS2RGB(color, C2SAlpha::Never) : CSS2RGB(color, C2SAlpha::Always);
 			}
 		};
 		return {};
@@ -134,6 +116,56 @@ namespace
 
 namespace kxf
 {
+	Color Color::FromString(const String& value, ColorSpace* colorSpace)
+	{
+		if (!value.IsEmpty())
+		{
+			if (value.front() == wxS('#'))
+			{
+				auto r = value.Mid(1, 2).ToInt<uint8_t>(16);
+				auto g = value.Mid(3, 2).ToInt<uint8_t>(16);
+				auto b = value.Mid(5, 2).ToInt<uint8_t>(16);
+				if (r && g && b)
+				{
+					Utility::SetIfNotNull(colorSpace, ColorSpace::RGB);
+
+					auto a = value.Mid(7, 2).ToInt<uint8_t>(16);
+					return FromFixed8(*r, *g, *b, a.value_or(255));
+				}
+			}
+			else if (RegEx regEx(wxS(R"(rgba?\((\d+),\s+(\d+),\s+(\d+),?\s*([\d\.]*)\))")); regEx.Matches(value))
+			{
+				auto r = regEx.GetMatch(value, 1).ToInt<uint8_t>();
+				auto g = regEx.GetMatch(value, 2).ToInt<uint8_t>();
+				auto b = regEx.GetMatch(value, 3).ToInt<uint8_t>();
+
+				if (r && g && b)
+				{
+					Utility::SetIfNotNull(colorSpace, ColorSpace::RGB);
+
+					auto a = regEx.GetMatch(value, 4).ToFloatingPoint<float>();
+					return FromFixed8(*r, *g, *b, a.value_or(1) * 255);
+				}
+			}
+			else if (RegEx regEx(wxS(R"(hsla?\(([\d\.]+),\s+([\d\.]+),\s+([\d\.]+),?\s*([\d\.]*)\))")); regEx.Matches(value))
+			{
+				auto h = regEx.GetMatch(value, 1).ToFloatingPoint<float>();
+				auto s = regEx.GetMatch(value, 2).ToFloatingPoint<float>();
+				auto l = regEx.GetMatch(value, 3).ToFloatingPoint<float>();
+
+				if (h && s && l)
+				{
+					Utility::SetIfNotNull(colorSpace, ColorSpace::HSL);
+
+					auto a = regEx.GetMatch(value, 4).ToFloatingPoint<float>();
+					return FromHSL(PackedHSL{Angle::FromDegrees(*h), *s, *l, a.value_or(1)});
+				}
+			}
+		}
+
+		Utility::SetIfNotNull(colorSpace, ColorSpace::None);
+		return {};
+	}
 	Color Color::FromColorName(const String& name)
 	{
 		return wxTheColourDatabase->Find(name.GetWxString());

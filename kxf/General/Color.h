@@ -68,6 +68,7 @@ namespace kxf
 			{
 				return FromNormalized(static_cast<float>(r), static_cast<float>(g), static_cast<float>(b), static_cast<float>(a));
 			}
+			static Color FromString(const String& value, ColorSpace* colorSpace = nullptr);
 			static Color FromColorName(const String& name);
 
 			constexpr static float AlphaBlend(float foreground, float background, float alpha) noexcept
@@ -364,7 +365,7 @@ namespace kxf
 				const float a = hsl.Saturation * std::min(hsl.Lightness, 1.0f - hsl.Lightness);
 				auto f = [&](int n)
 				{
-					const float k = static_cast<int>(n + hsl.Hue.ToDegrees() / 30.0f) % 12;
+					const float k = std::fmod(n + hsl.Hue.ToDegrees() / 30.0f, 12.0f);
 					return hsl.Lightness - a * std::max(-1.0f, std::min({k - 3.0f, 9.0f - k, 1.0f}));
 				};
 
