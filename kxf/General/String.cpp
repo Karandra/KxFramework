@@ -3,6 +3,7 @@
 #include "kxf/Utility/Common.h"
 #include <Windows.h>
 #include <kxf/System/UndefWindows.h>
+#include <cctype>
 
 namespace
 {
@@ -318,6 +319,25 @@ namespace kxf
 	wxUniChar String::ToUpper(wxUniChar c) noexcept
 	{
 		return CharToLower(static_cast<wchar_t>(c));
+	}
+
+	bool String::IsEmptyOrWhitespace() const noexcept
+	{
+		if (m_String.IsEmpty())
+		{
+			return true;
+		}
+		else
+		{
+			for (const auto& c: m_String)
+			{
+				if (!std::isspace(c))
+				{
+					return false;
+				}
+			}
+			return true;
+		}
 	}
 
 	// Comparison

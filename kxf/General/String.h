@@ -429,6 +429,7 @@ namespace kxf
 			{
 				return m_String.IsEmpty();
 			}
+			bool IsEmptyOrWhitespace() const noexcept;
 			size_t GetLength() const noexcept
 			{
 				return m_String.length();
