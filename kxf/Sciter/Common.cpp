@@ -205,12 +205,20 @@ namespace kxf::Sciter
 
 	bool SetMasterCSS(const String& css)
 	{
-		auto utf8 = ToSciterUTF8(css);
-		return GetSciterAPI()->SciterSetMasterCSS(utf8.data(), utf8.size());
+		if (!css.IsEmptyOrWhitespace())
+		{
+			auto utf8 = ToSciterUTF8(css);
+			return GetSciterAPI()->SciterSetMasterCSS(utf8.data(), utf8.size());
+		}
+		return false;
 	}
 	bool AppendMasterCSS(const String& css)
 	{
-		auto utf8 = ToSciterUTF8(css);
-		return GetSciterAPI()->SciterAppendMasterCSS(utf8.data(), utf8.size());
+		if (!css.IsEmptyOrWhitespace())
+		{
+			auto utf8 = ToSciterUTF8(css);
+			return GetSciterAPI()->SciterAppendMasterCSS(utf8.data(), utf8.size());
+		}
+		return false;
 	}
 }

@@ -218,6 +218,9 @@
     <Filter Include="kxf\Application\Private">
       <UniqueIdentifier>{3db6fd7c-0ce9-430a-951d-f57a0c9b7fad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\Sciter\Stylesheets">
+      <UniqueIdentifier>{5c5f8f81-ece7-4b8a-96cd-53b99fc483d2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -1469,9 +1472,6 @@
     <ClInclude Include="kxf\Sciter\Widgets\NativeTextBoxWidget.h">
       <Filter>kxf\Sciter\Widgets</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Sciter\Widgets\Factories.h">
-      <Filter>kxf\Sciter\Widgets</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2201,7 +2201,7 @@
     <ClCompile Include="kxf\Sciter\Widgets\NativeWidget.cpp">
       <Filter>kxf\Sciter\Widgets</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Sciter\Widgets\Factories.cpp">
+    <ClCompile Include="kxf\Sciter\Widgets\NativeTextBoxWidget.cpp">
       <Filter>kxf\Sciter\Widgets</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2241,6 +2241,12 @@
     </None>
     <None Include="VCPkg\triplets\community\x86-default.cmake">
       <Filter>VCPkg\triplets\community</Filter>
+    </None>
+    <None Include="kxf\Sciter\Stylesheets\Master.css">
+      <Filter>kxf\Sciter\Stylesheets</Filter>
+    </None>
+    <None Include="kxf\Sciter\Widgets\NativeTextBoxWidget.css">
+      <Filter>kxf\Sciter\Widgets</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

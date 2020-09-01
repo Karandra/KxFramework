@@ -1,7 +1,25 @@
 #include "stdafx.h"
 #include "SciterAPI.h"
 #include "Common.h"
-#include "Widgets/Factories.h"
+
+#include "Widgets/NativeTextBoxWidget.h"
+
+namespace
+{
+	const constexpr std::wstring_view g_MasterStylesheet =
+		#include "Stylesheets/Master.css"
+		;
+}
+
+namespace kxf::Sciter::Private
+{
+	void RegisterAPI()
+	{
+		SetMasterCSS(String::FromView(g_MasterStylesheet));
+
+		NativeTextBoxWidgetFactory::RegisterInstance();
+	}
+}
 
 namespace kxf::Sciter
 {
@@ -26,7 +44,7 @@ namespace kxf::Sciter
 
 				if (g_SciterAPI)
 				{
-					Private::RegisterFactories();
+					Private::RegisterAPI();
 				}
 			}
 		}

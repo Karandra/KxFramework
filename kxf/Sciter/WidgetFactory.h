@@ -63,6 +63,7 @@ namespace kxf::Sciter
 
 		public:
 			virtual std::unique_ptr<Widget> CreateWidget(Host& host, const Element& element, const String& className) = 0;
+			virtual String GetWidgetStylesheet() const = 0;
 	};
 
 	class KX_API StdWidgetFactory: public WidgetFactory
@@ -107,6 +108,8 @@ namespace kxf::Sciter
 				if (!ms_IsRegistered)
 				{
 					WidgetFactory::RegisterFactory(factory);
+					AppendMasterCSS(factory.GetWidgetStylesheet());
+
 					ms_IsRegistered = true;
 				}
 				return factory;

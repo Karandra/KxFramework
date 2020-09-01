@@ -51,5 +51,6 @@ namespace kxf::Sciter
 			{
 				return std::make_unique<NativeTextBoxWidget>(host, *this, element);
 			}
+			String GetWidgetStylesheet() const override;
 	};
 }
