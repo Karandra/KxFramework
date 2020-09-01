@@ -14,15 +14,7 @@ namespace kxf::Sciter
 			}
 
 			// Widget
-			void OnAttached() override
-			{
-				Element node = GetElement();
-				if (TextBox::Create(GetAttachmentParent(), wxID_NONE, node.GetValue()))
-				{
-					NativeWidget::OnAttached();
-					node.SetValue({});
-				}
-			}
+			void OnAttached() override;
 
 		public:
 			NativeTextBoxWidget(Host& host, WidgetFactory& factory, const Element& element)
@@ -30,6 +22,9 @@ namespace kxf::Sciter
 			{
 			}
 			NativeTextBoxWidget(const NativeTextBoxWidget&) = delete;
+
+		public:
+			void ChangeValue(const wxString& value) override;
 
 		public:
 			NativeTextBoxWidget& operator=(const NativeTextBoxWidget&) = delete;
