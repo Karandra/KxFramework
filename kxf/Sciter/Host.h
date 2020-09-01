@@ -14,6 +14,23 @@
 
 namespace kxf::Sciter
 {
+	enum class HostStyle: uint32_t
+	{
+		None = 0,
+
+		DesktopComposition = 1 << 0,
+		SmoothScrolling = 1 << 1,
+		SystemTheme = 1 << 2,
+		AllowDebug = 1 << 3,
+	};
+}
+namespace kxf
+{
+	KxDeclareFlagSet(Sciter::HostStyle);
+}
+
+namespace kxf::Sciter
+{
 	class KX_API Host: public wxObject
 	{
 		friend class Node;
@@ -32,8 +49,7 @@ namespace kxf::Sciter
 			bool m_EngineCreated = false;
 			bool m_AllowSciterHandleMessage = false;
 
-			bool m_Option_ThemeEnabled = true;
-			bool m_Option_SmoothScrolling = true;
+			FlagSet<HostStyle> m_Style;
 			FontSmoothing m_Option_FontSmoothing = FontSmoothing::SystemDefault;
 			WindowRenderer m_Option_WindowRenderer = WindowRenderer::Default;
 
@@ -61,7 +77,7 @@ namespace kxf::Sciter
 			void OnInternalIdle();
 
 		public:
-			Host(wxWindow& window, EvtHandler& evtHandler);
+			Host(wxWindow& window, EvtHandler& evtHandler, FlagSet<HostStyle> style = {});
 			Host(const Host&) = delete;
 			virtual ~Host();
 
@@ -90,6 +106,15 @@ namespace kxf::Sciter
 			Size GetBestSize() const;
 			Size GetDPI() const;
 			double GetFPS() const;
+
+			FlagSet<HostStyle> GetStyle() const
+			{
+				return m_Style;
+			}
+			void SetStyle(FlagSet<HostStyle> style)
+			{
+				m_Style = style;
+			}
 
 			bool IsSystemThemeEnabled() const;
 			bool EnableSystemTheme(bool enable = true);

@@ -28,11 +28,12 @@ namespace kxf::Sciter
 {
 	void Host::SetDefaultOptions()
 	{
-		EnableSystemTheme();
-		EnableSmoothScrolling();
+		EnableSystemTheme(m_Style.Contains(HostStyle::SystemTheme));
+		EnableSmoothScrolling(m_Style.Contains(HostStyle::SmoothScrolling));
 		SetFontSmoothingMode(FontSmoothing::SystemDefault);
+
 		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_HTTPS_ERROR, 1);
-		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_SET_DEBUG_MODE, 1);
+		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_SET_DEBUG_MODE, m_Style.Contains(HostStyle::AllowDebug));
 		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_CONNECTION_TIMEOUT, 20);
 		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_SET_GFX_LAYER, GFX_LAYER_AUTO);
 		GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_TRANSPARENT_WINDOW, static_cast<uintptr_t>(true));
@@ -210,16 +211,17 @@ namespace kxf::Sciter
 		}
 	}
 
-	Host::Host(wxWindow& window, EvtHandler& evtHandler)
-		:m_SciterWindow(window), m_EvtHandler(evtHandler), m_EventDispatcher(*this, evtHandler)
+	Host::Host(wxWindow& window, EvtHandler& evtHandler, FlagSet<HostStyle> style)
+		:m_SciterWindow(window), m_EvtHandler(evtHandler), m_EventDispatcher(*this, evtHandler), m_Style(style)
 	{
 		if (m_SciterWindow.GetHandle())
 		{
 			::SetWindowLongPtrW(m_SciterWindow.GetHandle(), GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 		}
 
-		// Child windows are fine with already created window. They don't need 'WS_EX_NOREDIRECTIONBITMAP' style
-		if (!m_SciterWindow.IsTopLevel())
+		// Child windows are fine with already created window. They don't need 'WS_EX_NOREDIRECTIONBITMAP' style.
+		// Use of desktop composition requires 'WS_EX_NOREDIRECTIONBITMAP' style.
+		if (!m_SciterWindow.IsTopLevel() && !m_Style.Contains(HostStyle::DesktopComposition))
 		{
 			UpdateWindowStyle();
 			m_AllowSciterHandleMessage = true;
@@ -255,7 +257,7 @@ namespace kxf::Sciter
 			::DestroyWindow(oldHandle);
 
 			// Create new window with 'WS_EX_NOREDIRECTIONBITMAP' extended style instead (if the style is supported) and attach it to the wxWindow
-			nativeExStyle.Add(WS_EX_NOREDIRECTIONBITMAP, System::IsWindows8OrGreater());
+			nativeExStyle.Add(WS_EX_NOREDIRECTIONBITMAP, m_Style.Contains(HostStyle::DesktopComposition) && System::IsWindows8OrGreater());
 
 			m_AllowSciterHandleMessage = true;
 			m_SciterWindow.MSWCreate(nativeClassName, title.wc_str(), pos, size, *nativeStyle, *nativeExStyle);
@@ -301,21 +303,21 @@ namespace kxf::Sciter
 
 	bool Host::IsSystemThemeEnabled() const
 	{
-		return m_Option_ThemeEnabled;
+		return m_Style.Contains(HostStyle::SystemTheme);
 	}
 	bool Host::EnableSystemTheme(bool enable)
 	{
-		m_Option_ThemeEnabled = enable;
+		m_Style.Mod(HostStyle::SystemTheme, enable);
 		return GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_SET_UX_THEMING, enable);
 	}
 
 	bool Host::IsSmoothScrollingEnabled() const
 	{
-		return m_Option_SmoothScrolling;
+		return m_Style.Contains(HostStyle::SmoothScrolling);
 	}
 	bool Host::EnableSmoothScrolling(bool enable)
 	{
-		m_Option_SmoothScrolling = enable;
+		m_Style.Mod(HostStyle::SmoothScrolling, enable);
 		return GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_SMOOTH_SCROLL, enable);
 	}
 

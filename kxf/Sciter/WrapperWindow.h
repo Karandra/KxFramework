@@ -58,8 +58,35 @@ namespace kxf::Sciter
 			}
 
 			template<class... Args>
+			WindowWrapper(HostStyle hostStyle, Args&&... arg)
+				:TWindow(std::forward<Args>(arg)...), Host(static_cast<wxWindow&>(*this), static_cast<EvtHandler&>(*this), hostStyle)
+			{
+				Host::Create();
+			}
+
+			template<class... Args>
+			WindowWrapper(FlagSet<HostStyle> hostStyle, Args&&... arg)
+				:TWindow(std::forward<Args>(arg)...), Host(static_cast<wxWindow&>(*this), static_cast<EvtHandler&>(*this), hostStyle)
+			{
+			}
+			
+			template<class... Args>
 			bool Create(Args&&... arg)
 			{
+				return TWindow::Create(std::forward<Args>(arg)...) && Host::Create();
+			}
+
+			template<class... Args>
+			bool Create(HostStyle hostStyle, Args&&... arg)
+			{
+				Host::SetStyle(hostStyle);
+				return TWindow::Create(std::forward<Args>(arg)...) && Host::Create();
+			}
+
+			template<class... Args>
+			bool Create(FlagSet<HostStyle> hostStyle, Args&&... arg)
+			{
+				Host::SetStyle(hostStyle);
 				return TWindow::Create(std::forward<Args>(arg)...) && Host::Create();
 			}
 			
