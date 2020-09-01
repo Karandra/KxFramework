@@ -6,15 +6,42 @@
 #include "ScriptValue.h"
 #include "SciterAPI.h"
 #include "Internal.h"
+#include "kxf/General/RegEx.h"
 #include "kxf/Utility/Drawing.h"
 
 #pragma warning(disable: 4312) // 'reinterpret_cast': conversion from 'UINT' to 'void *' of greater size
 
-namespace kxf::Sciter
+namespace
 {
-	template<class TFunc>
-	Element DoGetElemenet(ElementHandle* handle, TFunc&& func)
+	void ExtractInt(kxf::String& value)
 	{
+		for (size_t i = 0; i < value.length(); i++)
+		{
+			if (!std::isdigit(value[i]))
+			{
+				value.Truncate(i);
+				break;
+			}
+		}
+	}
+	void ExtractFloat(kxf::String& value)
+	{
+		for (size_t i = 0; i < value.length(); i++)
+		{
+			auto c = value[i];
+			if (!std::isdigit(c) && c != wxS('.'))
+			{
+				value.Truncate(i);
+				break;
+			}
+		}
+	}
+
+	template<class TFunc>
+	kxf::Sciter::Element DoGetElemenet(kxf::Sciter::ElementHandle* handle, TFunc&& func)
+	{
+		using namespace kxf::Sciter;
+
 		HELEMENT node = nullptr;
 		if (func(ToSciterElement(handle), &node) == SCDOM_OK)
 		{
@@ -23,8 +50,10 @@ namespace kxf::Sciter
 		return {};
 	}
 
-	bool DoCheckStateFlag(ElementHandle* handle, ELEMENT_STATE_BITS flag)
+	bool DoCheckStateFlag(kxf::Sciter::ElementHandle* handle, ELEMENT_STATE_BITS flag)
 	{
+		using namespace kxf::Sciter;
+
 		UINT state = 0;
 		GetSciterAPI()->SciterGetElementState(ToSciterElement(handle), &state);
 
@@ -32,28 +61,37 @@ namespace kxf::Sciter
 	}
 
 	template<class TName>
-	std::optional<int> DoGetStyleAttributeInt(const Element& element, TName&& name)
+	std::optional<int> DoGetStyleAttributeInt(const kxf::Sciter::Element& element, TName&& name)
 	{
-		return element.GetStyleAttribute(name).ToInt<int>();
+		kxf::String value = element.GetStyleAttribute(name);
+		ExtractInt(value);
+
+		return value.ToInt<int>();
 	}
 
 	template<class TName>
-	std::optional<double> DoGetStyleAttributeFloat(const Element& element, TName&& name)
+	std::optional<double> DoGetStyleAttributeFloat(const kxf::Sciter::Element& element, TName&& name)
 	{
-		return element.GetStyleAttribute(name).ToFloatingPoint<double>();
+		kxf::String value = element.GetStyleAttribute(name);
+		ExtractFloat(value);
+		return value.ToFloatingPoint<double>();
 	}
 
-	void SC_CALLBACK ExtractWxString(const wchar_t* value, UINT length, void* context)
+	void SC_CALLBACK ExtractKxfString(const wchar_t* value, UINT length, void* context)
 	{
+		using namespace kxf;
+
 		*reinterpret_cast<String*>(context) = String(value, length);
 	}
-	void SC_CALLBACK ExtractWxString(const char* value, UINT length, void* context)
+	void SC_CALLBACK ExtractKxfString(const char* value, UINT length, void* context)
 	{
+		using namespace kxf;
+
 		*reinterpret_cast<String*>(context) = String::FromUTF8(value, length);
 	}
-	void SC_CALLBACK ExtractWxString(const BYTE* value, UINT length, void* context)
+	void SC_CALLBACK ExtractKxfString(const BYTE* value, UINT length, void* context)
 	{
-		ExtractWxString(reinterpret_cast<const char*>(value), length, context);
+		ExtractKxfString(reinterpret_cast<const char*>(value), length, context);
 	}
 }
 
@@ -316,7 +354,7 @@ namespace kxf::Sciter
 	String Element::GetInnerHTML() const
 	{
 		String result;
-		if (GetSciterAPI()->SciterGetElementHtmlCB(ToSciterElement(m_Handle), FALSE, ExtractWxString, &result) == SCDOM_OK)
+		if (GetSciterAPI()->SciterGetElementHtmlCB(ToSciterElement(m_Handle), FALSE, ExtractKxfString, &result) == SCDOM_OK)
 		{
 			return result;
 		}
@@ -325,7 +363,7 @@ namespace kxf::Sciter
 	String Element::GetOuterHTML() const
 	{
 		String result;
-		if (GetSciterAPI()->SciterGetElementHtmlCB(ToSciterElement(m_Handle), TRUE, ExtractWxString, &result) == SCDOM_OK)
+		if (GetSciterAPI()->SciterGetElementHtmlCB(ToSciterElement(m_Handle), TRUE, ExtractKxfString, &result) == SCDOM_OK)
 		{
 			return result;
 		}
@@ -393,7 +431,7 @@ namespace kxf::Sciter
 	String Element::GetTagName() const
 	{
 		String result;
-		GetSciterAPI()->SciterGetElementTypeCB(ToSciterElement(m_Handle), ExtractWxString, &result);
+		GetSciterAPI()->SciterGetElementTypeCB(ToSciterElement(m_Handle), ExtractKxfString, &result);
 		return result;
 	}
 	bool Element::SetTagName(const String& tagName)
@@ -617,12 +655,12 @@ namespace kxf::Sciter
 	String Element::GetText() const
 	{
 		String result;
-		GetSciterAPI()->SciterGetElementTextCB(ToSciterElement(m_Handle), ExtractWxString, &result);
+		GetSciterAPI()->SciterGetElementTextCB(ToSciterElement(m_Handle), ExtractKxfString, &result);
 		return result;
 	}
-	bool Element::SetText(const String& text) const
+	bool Element::SetText(StringView text) const
 	{
-		return GetSciterAPI()->SciterSetElementText(ToSciterElement(m_Handle), text.wc_str(), text.length()) == SCDOM_OK;
+		return GetSciterAPI()->SciterSetElementText(ToSciterElement(m_Handle), text.data(), text.length()) == SCDOM_OK;
 	}
 
 	// Value
@@ -651,13 +689,13 @@ namespace kxf::Sciter
 	String Element::GetAttributeNameAt(size_t index) const
 	{
 		String result;
-		GetSciterAPI()->SciterGetNthAttributeNameCB(ToSciterElement(m_Handle), index, ExtractWxString, &result);
+		GetSciterAPI()->SciterGetNthAttributeNameCB(ToSciterElement(m_Handle), index, ExtractKxfString, &result);
 		return result;
 	}
 	String Element::GetAttributeValueAt(size_t index) const
 	{
 		String result;
-		GetSciterAPI()->SciterGetNthAttributeValueCB(ToSciterElement(m_Handle), index, ExtractWxString, &result);
+		GetSciterAPI()->SciterGetNthAttributeValueCB(ToSciterElement(m_Handle), index, ExtractKxfString, &result);
 		return result;
 	}
 	String Element::GetAttribute(const String& name) const
@@ -669,7 +707,7 @@ namespace kxf::Sciter
 	{
 		String result;
 
-		GetSciterAPI()->SciterGetAttributeByNameCB(ToSciterElement(m_Handle), name, ExtractWxString, &result);
+		GetSciterAPI()->SciterGetAttributeByNameCB(ToSciterElement(m_Handle), name, ExtractKxfString, &result);
 		return result;
 	}
 
@@ -697,6 +735,26 @@ namespace kxf::Sciter
 	}
 
 	// Style (CSS) attributes
+	bool Element::HasStyleAttribute(const String& name) const
+	{
+		auto nameUTF8 = name.ToUTF8();
+		return HasStyleAttribute(nameUTF8.data());
+	}
+	bool Element::HasStyleAttribute(const char* name) const
+	{
+		struct CallContext
+		{
+			size_t Length = 0;
+		} context;
+		return GetSciterAPI()->SciterGetStyleAttributeCB(ToSciterElement(m_Handle), name, [](const wchar_t* value, UINT length, void* context)
+		{
+			CallContext& callContext = *reinterpret_cast<CallContext*>(context);
+			callContext.Length = length;
+		}, &context);
+
+		return context.Length != 0;
+	}
+
 	String Element::GetStyleAttribute(const String& name) const
 	{
 		auto nameUTF8 = name.ToUTF8();
@@ -705,7 +763,7 @@ namespace kxf::Sciter
 	String Element::GetStyleAttribute(const char* name) const
 	{
 		String result;
-		GetSciterAPI()->SciterGetStyleAttributeCB(ToSciterElement(m_Handle), name, ExtractWxString, &result);
+		GetSciterAPI()->SciterGetStyleAttributeCB(ToSciterElement(m_Handle), name, ExtractKxfString, &result);
 		return result;
 	}
 
@@ -725,6 +783,15 @@ namespace kxf::Sciter
 	std::optional<double> Element::GetStyleAttributeFloat(const char* name) const
 	{
 		return DoGetStyleAttributeFloat(*this, name);
+	}
+
+	Color Element::GetStyleAttributeColor(const char* name, ColorSpace* colorSpace) const
+	{
+		return Color::FromString(GetStyleAttribute(name), colorSpace);
+	}
+	Color Element::GetStyleAttributeColor(const String& name, ColorSpace* colorSpace) const
+	{
+		return Color::FromString(GetStyleAttribute(name), colorSpace);
 	}
 
 	bool Element::SetStyleAttribute(const String& name, const String& value)
@@ -774,6 +841,81 @@ namespace kxf::Sciter
 		return GetSciterAPI()->SciterSetStyleAttribute(ToSciterElement(m_Handle), name, nullptr) == SCDOM_OK;
 	}
 
+	wxFont Element::GetStyleFont() const
+	{
+		wxFont font;
+
+		// Family
+		if (String fontFamily = GetStyleAttribute("font-family"); !fontFamily.IsEmpty())
+		{
+			if (RegEx regEx(wxS(R"("?([\w\s]+)\"?)")); regEx.Matches(fontFamily))
+			{
+				for (size_t i = 1; i <= regEx.GetMatchCount(); i++)
+				{
+					String value = regEx.GetMatch(fontFamily, i).Trim().Trim(StringOpFlag::FromEnd);
+					if (i == regEx.GetMatchCount())
+					{
+						if (value == wxS("fantasy"))
+						{
+							font.SetFamily(wxFONTFAMILY_DECORATIVE);
+						}
+						else if (value == wxS("serif"))
+						{
+							font.SetFamily(wxFONTFAMILY_ROMAN);
+						}
+						else if (value == wxS("sans-serif"))
+						{
+							font.SetFamily(wxFONTFAMILY_SWISS);
+						}
+						else if (value == wxS("cursive"))
+						{
+							font.SetFamily(wxFONTFAMILY_SCRIPT);
+						}
+						else if (value == wxS("monospace"))
+						{
+							// Or maybe 'wxFONTFAMILY_MODERN'
+							font.SetFamily(wxFONTFAMILY_TELETYPE);
+						}
+					}
+					if (font.SetFaceName(value))
+					{
+						break;
+					}
+				}
+			}
+		}
+
+		// Style
+		if (String fontStyle = GetStyleAttribute("font-style"); !fontStyle.IsEmpty())
+		{
+			if (fontStyle == wxS("normal"))
+			{
+				font.SetStyle(wxFONTSTYLE_NORMAL);
+			}
+			else if (fontStyle == wxS("italic"))
+			{
+				font.SetStyle(wxFONTSTYLE_ITALIC);
+			}
+			else if (fontStyle == wxS("oblique"))
+			{
+				font.SetStyle(wxFONTSTYLE_SLANT);
+			}
+		}
+
+		// Size
+		if (auto fontSize = GetStyleAttributeFloat("font-size"))
+		{
+			font.SetFractionalPointSize(*fontSize);
+		}
+
+		// Weight
+		if (auto fontWeight = GetStyleAttributeFloat("font-weight"))
+		{
+			font.SetNumericWeight(*fontWeight);
+		}
+
+		return font;
+	}
 	bool Element::SetStyleFont(const wxFont& font)
 	{
 		if (!IsNull())

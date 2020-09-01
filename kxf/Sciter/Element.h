@@ -144,11 +144,19 @@ namespace kxf::Sciter
 
 			// Text
 			String GetText() const;
-			bool SetText(const String& text) const;
+			bool SetText(const String& text) const
+			{
+				return SetText(text.GetView());
+			}
+			bool SetText(StringView text) const;
 
 			// Value
 			String GetValue() const;
 			bool SetValue(StringView value) const;
+			bool SetValue(const String& value) const
+			{
+				return SetValue(value.GetView());
+			}
 
 			// Attributes
 			size_t GetAttributeCount() const;
@@ -164,6 +172,9 @@ namespace kxf::Sciter
 			bool ClearAttributes();
 
 			// Style (CSS) attributes
+			bool HasStyleAttribute(const String& name) const;
+			bool HasStyleAttribute(const char* name) const;
+
 			String GetStyleAttribute(const String& name) const;
 			String GetStyleAttribute(const char* name) const;
 
@@ -172,6 +183,9 @@ namespace kxf::Sciter
 
 			std::optional<double> GetStyleAttributeFloat(const String& name) const;
 			std::optional<double> GetStyleAttributeFloat(const char* name) const;
+
+			Color GetStyleAttributeColor(const char* name, ColorSpace* colorSpace = nullptr) const;
+			Color GetStyleAttributeColor(const String& name, ColorSpace* colorSpace = nullptr) const;
 
 			bool SetStyleAttribute(const String& name, const String& value);
 			bool SetStyleAttribute(const char* name, const String& value);
@@ -206,6 +220,7 @@ namespace kxf::Sciter
 			bool RemoveStyleAttribute(const String& name);
 			bool RemoveStyleAttribute(const char* name);
 
+			wxFont GetStyleFont() const;
 			bool SetStyleFont(const wxFont& font);
 
 			// Selectors
