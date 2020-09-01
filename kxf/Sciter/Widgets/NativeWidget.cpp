@@ -25,9 +25,22 @@ namespace kxf::Sciter
 		Element node = GetElement();
 
 		m_NativeWindow->SetName(node.GetAttribute("name"));
-		if (auto id = node.GetAttribute("id").ToInt<wxWindowID>())
+		if (auto id = node.GetAttribute("command-id").ToInt<wxWindowID>())
 		{
 			m_NativeWindow->SetId(*id);
+		}
+
+		if (Color backgroundColor = node.GetStyleAttributeColor("background-color"))
+		{
+			m_NativeWindow->SetBackgroundColour(backgroundColor);
+		}
+		if (Color foregroundColor = node.GetStyleAttributeColor("foreground-color"))
+		{
+			m_NativeWindow->SetForegroundColour(foregroundColor);
+		}
+		if (wxFont font = node.GetStyleFont(); font.IsOk())
+		{
+			m_NativeWindow->SetFont(font);
 		}
 
 		// Attach the window
