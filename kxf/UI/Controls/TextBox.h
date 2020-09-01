@@ -22,12 +22,12 @@ namespace kxf::UI
 		Rich = wxTE_RICH,
 		Rich2 = wxTE_RICH2,
 		AutoURL = wxTE_AUTO_URL,
-		NoNideSelection = wxTE_NOHIDESEL,
+		NoHideSelection = wxTE_NOHIDESEL,
 		NoVScroll = wxTE_NO_VSCROLL,
 		DoNotWrap = wxTE_DONTWRAP,
 		CharWrap = wxTE_CHARWRAP,
 		WordWrap = wxTE_WORDWRAP,
-		BetsWrap = wxTE_BESTWRAP,
+		BestWrap = wxTE_BESTWRAP,
 	};
 }
 namespace kxf
@@ -48,21 +48,21 @@ namespace kxf::UI
 		public:
 			TextBox() = default;
 			TextBox(wxWindow* parent,
-					  wxWindowID id,
-					  const String& value = {},
+					wxWindowID id,
+					const String& value = {},
 					FlagSet<TextBoxStyle> style = DefaultStyle,
-					  const wxValidator& validator = wxDefaultValidator
+					const wxValidator& validator = wxDefaultValidator
 			)
 			{
 				Create(parent, id, value, style, validator);
 			}
 			TextBox(wxWindow* parent,
-					  wxWindowID id,
-					  const String& value,
-					  const Point& pos,
-					  const Size& size,
+					wxWindowID id,
+					const String& value,
+					const Point& pos,
+					const Size& size,
 					FlagSet<TextBoxStyle> style = DefaultStyle,
-					  const wxValidator& validator = wxDefaultValidator
+					const wxValidator& validator = wxDefaultValidator
 			)
 			{
 				Create(parent, id, value, pos, size, style, validator);
@@ -88,7 +88,7 @@ namespace kxf::UI
 		public:
 			bool SetTabWidth(size_t width = 16);
 			void SetLimit(size_t max);
-		
+			
 			bool SetPasswordChar(const wxUniChar& c);
 			bool SetDefaultPasswordChar()
 			{
@@ -96,10 +96,10 @@ namespace kxf::UI
 				return SetPasswordChar(0x25CF);
 			}
 			bool SetHint(const wxString& label) override;
-		
+			
 			void SetValue(const wxString& value) override;
 			void SetValueEvent(const String& value);
-		
+			
 			void Clear() override;
 			void ClearEvent();
 
