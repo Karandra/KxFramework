@@ -134,13 +134,13 @@ namespace kxf::Sciter
 
 			// Native window
 			wxWindow* GetWindow() const;
-			HWND GetNativeWindow() const;
+			void* GetNativeWindow() const;
 
 			bool AttachWindow(wxWindow& window);
-			bool AttachNativeWindow(HWND handle);
+			bool AttachNativeWindow(void* handle);
 
 			wxWindow* DetachWindow();
-			HWND DetachNativeWindow();
+			void* DetachNativeWindow();
 
 			// Text
 			String GetText() const;

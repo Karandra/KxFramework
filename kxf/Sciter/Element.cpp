@@ -600,7 +600,7 @@ namespace kxf::Sciter
 	// Native window
 	wxWindow* Element::GetWindow() const
 	{
-		if (HWND handle = GetNativeWindow())
+		if (void* handle = GetNativeWindow())
 		{
 			for (wxWindow* window: wxTopLevelWindows)
 			{
@@ -608,7 +608,7 @@ namespace kxf::Sciter
 				{
 					return window;
 				}
-				else if (wxWindow* childWindow = window->FindItemByHWND(handle))
+				else if (wxWindow* childWindow = window->FindItemByHWND(static_cast<HWND>(handle)))
 				{
 					return childWindow;
 				}
@@ -616,7 +616,7 @@ namespace kxf::Sciter
 		}
 		return nullptr;
 	}
-	HWND Element::GetNativeWindow() const
+	void* Element::GetNativeWindow() const
 	{
 		HWND windowHandle = nullptr;
 		GetSciterAPI()->SciterGetElementHwnd(ToSciterElement(m_Handle), &windowHandle, FALSE);
@@ -627,11 +627,11 @@ namespace kxf::Sciter
 	{
 		return AttachNativeWindow(window.GetHandle());
 	}
-	bool Element::AttachNativeWindow(HWND handle)
+	bool Element::AttachNativeWindow(void* handle)
 	{
 		if (handle)
 		{
-			return GetSciterAPI()->SciterAttachHwndToElement(ToSciterElement(m_Handle), reinterpret_cast<HWND>(handle)) == SCDOM_OK;
+			return GetSciterAPI()->SciterAttachHwndToElement(ToSciterElement(m_Handle), static_cast<HWND>(handle)) == SCDOM_OK;
 		}
 		return false;
 	}
@@ -643,9 +643,9 @@ namespace kxf::Sciter
 
 		return window;
 	}
-	HWND Element::DetachNativeWindow()
+	void* Element::DetachNativeWindow()
 	{
-		HWND window = GetNativeWindow();
+		void* window = GetNativeWindow();
 		AttachNativeWindow(nullptr);
 
 		return window;
