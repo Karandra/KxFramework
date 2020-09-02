@@ -97,11 +97,6 @@ namespace kxf::Sciter
 				static T factory;
 				return factory;
 			}
-
-			static bool IsInstanceRegistered() noexcept
-			{
-				return ms_IsRegistered;
-			}
 			static T& RegisterInstance()
 			{
 				T& factory = GetInstance();
@@ -113,6 +108,19 @@ namespace kxf::Sciter
 					ms_IsRegistered = true;
 				}
 				return factory;
+			}
+			static bool IsInstanceRegistered() noexcept
+			{
+				return ms_IsRegistered;
+			}
+
+			static std::unique_ptr<Widget> NewWidget(Host& host, const Element& element)
+			{
+				return WidgetFactory::NewWidget(host, element, GetInstance().GetClassName());
+			}
+			static std::unique_ptr<Widget> NewWidget(Host& host, const Element& element, const String& className)
+			{
+				return WidgetFactory::NewWidget(host, element, className);
 			}
 
 		public:
