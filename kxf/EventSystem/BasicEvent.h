@@ -215,7 +215,7 @@ namespace kxf
 
 				m_PublicState = Utility::ExchangeResetAndReturn(other.m_PublicState, EventPublicState::Allowed);
 				m_PrivateState = Utility::ExchangeResetAndReturn(other.m_PrivateState, EventPrivateState::None);
-				m_WaitInfo = std::move(m_WaitInfo);
+				m_WaitInfo = std::move(other.m_WaitInfo);
 
 				return *this;
 			}
