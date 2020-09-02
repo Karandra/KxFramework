@@ -451,7 +451,7 @@ namespace kxf
 			template<class TEvent, class... Args>
 			std::unique_ptr<TEvent> QueueEvent(FlagSet<ProcessEventFlag> flags, const EventTag<TEvent>& eventTag, Args&&... arg)
 			{
-				Utility::StaticCastUniquePtr<TEvent>(DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag, {}, flags));
+				return Utility::StaticCastUniquePtr<TEvent>(DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag, {}, flags));
 			}
 
 			std::unique_ptr<IEvent> QueueUniqueEvent(const UniversallyUniqueID& uuid, std::unique_ptr<IEvent> event, const EventID& eventID = {}, FlagSet<ProcessEventFlag> flags = {})
@@ -462,13 +462,13 @@ namespace kxf
 			template<class TEvent, class... Args>
 			std::unique_ptr<TEvent> QueueUniqueEvent(const UniversallyUniqueID& uuid, const EventTag<TEvent>& eventTag, Args&&... arg)
 			{
-				Utility::StaticCastUniquePtr<TEvent>(DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag, uuid));
+				return Utility::StaticCastUniquePtr<TEvent>(DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag, uuid));
 			}
 
 			template<class TEvent, class... Args>
 			std::unique_ptr<TEvent> QueueUniqueEvent(const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, const EventTag<TEvent>& eventTag, Args&&... arg)
 			{
-				Utility::StaticCastUniquePtr<TEvent>(DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag, uuid, flags));
+				return Utility::StaticCastUniquePtr<TEvent>(DoQueueEvent(std::make_unique<TEvent>(std::forward<Args>(arg)...), eventTag, uuid, flags));
 			}
 
 			// Construct and queue event using the event builder
