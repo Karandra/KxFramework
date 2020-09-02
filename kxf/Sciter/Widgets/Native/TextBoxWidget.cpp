@@ -3,7 +3,7 @@
 
 namespace
 {
-	const constexpr std::wstring_view g_Stylesheet =
+	constexpr std::wstring_view g_Stylesheet =
 		#include "TextBoxWidget.css"
 		;
 }
