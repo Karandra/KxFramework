@@ -7,6 +7,7 @@
 namespace kxf::Crypto
 {
 	size_t Rot13(String& source) noexcept;
+	size_t UwUize(String& source) noexcept;
 
 	std::optional<HashValue<32>> CRC32(wxInputStream& stream) noexcept;
 	std::optional<HashValue<128>> MD5(wxInputStream& stream) noexcept;

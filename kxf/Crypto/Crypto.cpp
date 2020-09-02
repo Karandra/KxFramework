@@ -159,7 +159,25 @@ namespace kxf::Crypto
 		}
 		return count;
 	}
-	
+	size_t UwUize(String& source) noexcept
+	{
+		size_t count = 0;
+		for (wxUniCharRef c: source)
+		{
+			if (c == wxS('l') || c == wxS('r'))
+			{
+				c = wxS('w');
+				count++;
+			}
+			else if (c == wxS('L') || c == wxS('R'))
+			{
+				c = wxS('W');
+				count++;
+			}
+		}
+		return count;
+	}
+
 	std::optional<HashValue<32>> CRC32(wxInputStream& stream) noexcept
 	{
 		constexpr uint32_t initialValue = 0xFFFFFFFFu;
