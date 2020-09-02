@@ -72,6 +72,17 @@ namespace kxf
 				return m_Value == other.m_Value;
 			}
 
+			template<class T>
+			bool is_same_as(const std::unique_ptr<T>& other) const noexcept
+			{
+				return m_Value == other.get();
+			}
+
+			bool is_same_as(const TValue& other) const noexcept
+			{
+				return m_Value == &other;
+			}
+
 			TValue* get() const noexcept
 			{
 				return m_Value;
@@ -79,6 +90,14 @@ namespace kxf
 			std::unique_ptr<TValue> get_unique() noexcept
 			{
 				return m_IsOwned ? std::unique_ptr<TValue>(release()) : nullptr;
+			}
+			optional_ptr<TValue> shallow_clone() const noexcept
+			{
+				if (m_Value)
+				{
+					return *m_Value;
+				}
+				return {};
 			}
 
 			TValue* operator->() const noexcept
