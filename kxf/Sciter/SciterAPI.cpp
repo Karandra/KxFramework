@@ -2,7 +2,7 @@
 #include "SciterAPI.h"
 #include "Common.h"
 
-#include "Widgets/NativeTextBoxWidget.h"
+#include "Widgets/Native/TextBoxWidget.h"
 
 namespace
 {

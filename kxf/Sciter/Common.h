@@ -24,6 +24,6 @@ namespace kxf::Sciter
 	CornerAlignment MapCornerAlignment(FlagSet<Alignment> alignment);
 	FlagSet<Alignment> MapCornerAlignment(CornerAlignment alignment);
 
-	bool SetMasterCSS(const String& css);
-	bool AppendMasterCSS(const String& css);
+	bool SetMasterCSS(const String& stylesheet);
+	bool AppendMasterCSS(const String& stylesheet);
 }

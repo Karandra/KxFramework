@@ -1,10 +1,10 @@
 #include "stdafx.h"
-#include "NativeTextBoxWidget.h"
+#include "TextBoxWidget.h"
 
 namespace
 {
 	const constexpr std::wstring_view g_Stylesheet =
-		#include "NativeTextBoxWidget.css"
+		#include "TextBoxWidget.css"
 		;
 }
 

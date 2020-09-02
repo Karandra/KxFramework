@@ -1,5 +1,5 @@
 #pragma once
-#include "NativeWidget.h"
+#include "Common.h"
 #include "kxf/UI/Controls/TextBox.h"
 
 namespace kxf::Sciter

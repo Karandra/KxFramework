@@ -203,20 +203,20 @@ namespace kxf::Sciter
 		return Alignment::Invalid;
 	}
 
-	bool SetMasterCSS(const String& css)
+	bool SetMasterCSS(const String& stylesheet)
 	{
-		if (!css.IsEmptyOrWhitespace())
+		if (!stylesheet.IsEmptyOrWhitespace())
 		{
-			auto utf8 = ToSciterUTF8(css);
+			auto utf8 = ToSciterUTF8(stylesheet);
 			return GetSciterAPI()->SciterSetMasterCSS(utf8.data(), utf8.size());
 		}
 		return false;
 	}
-	bool AppendMasterCSS(const String& css)
+	bool AppendMasterCSS(const String& stylesheet)
 	{
-		if (!css.IsEmptyOrWhitespace())
+		if (!stylesheet.IsEmptyOrWhitespace())
 		{
-			auto utf8 = ToSciterUTF8(css);
+			auto utf8 = ToSciterUTF8(stylesheet);
 			return GetSciterAPI()->SciterAppendMasterCSS(utf8.data(), utf8.size());
 		}
 		return false;
