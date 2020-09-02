@@ -1,6 +1,6 @@
 #pragma once
 #include "Event.h"
-#include "kxf/Utility/WithOptionalOwnership.h"
+#include "kxf/General/OptionalPtr.h"
 
 namespace kxf
 {
@@ -66,7 +66,7 @@ namespace kxf::EventSystem
 	{
 		protected:
 			IEvtHandler* m_EvtHandler = nullptr;
-			Utility::WithOptionalOwnership<IEvent> m_Event;
+			optional_ptr<IEvent> m_Event;
 			EventID m_EventID;
 
 			bool m_IsSent = false;
@@ -102,7 +102,7 @@ namespace kxf::EventSystem
 		public:
 			bool IsAsync() const noexcept
 			{
-				return m_Event.IsOwned();
+				return m_Event.is_owned();
 			}
 			bool IsSkipped() const noexcept
 			{
@@ -182,7 +182,7 @@ namespace kxf::EventSystem
 		public:
 			TEvent* GetEvent() noexcept
 			{
-				return m_Event.Get();
+				return m_Event.get();
 			}
 
 		public:

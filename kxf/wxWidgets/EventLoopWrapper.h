@@ -2,7 +2,7 @@
 #include "kxf/EventSystem/IEventLoop.h"
 #include "kxf/RTTI/QueryInterface.h"
 #include "kxf/Utility/Common.h"
-#include "kxf/Utility/WithOptionalOwnership.h"
+#include "kxf/General/OptionalPtr.h"
 #include <wx/evtloop.h>
 
 namespace kxf::wxWidgets
@@ -29,13 +29,13 @@ namespace kxf::wxWidgets
 	class EventLoopWrapper: public RTTI::ImplementInterface<EventLoopWrapper, IEventLoop>
 	{
 		private:
-			Utility::WithOptionalOwnership<EventLoopBase> m_EventLoop;
+			optional_ptr<EventLoopBase> m_EventLoop;
 			EventLoopManual* m_ManualLoop = nullptr;
 
 		private:
 			void OnAssign()
 			{
-				m_ManualLoop = dynamic_cast<EventLoopManual*>(m_EventLoop.Get());
+				m_ManualLoop = dynamic_cast<EventLoopManual*>(m_EventLoop.get());
 			}
 
 		protected:
@@ -164,7 +164,7 @@ namespace kxf::wxWidgets
 	class EventLoopWrapperWx: public wxEventLoopBase
 	{
 		private:
-			Utility::WithOptionalOwnership<IEventLoop> m_EventLoop;
+			optional_ptr<IEventLoop> m_EventLoop;
 
 		private:
 			void Create(FlagSet<EventCategory> allowedToYield)

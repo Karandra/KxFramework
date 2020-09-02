@@ -242,6 +242,7 @@
     <ClInclude Include="kxf\General\DateTime\TimeSpan.h" />
     <ClInclude Include="kxf\General\DateTime\TimeZone.h" />
     <ClInclude Include="kxf\General\LocallyUniqueID.h" />
+    <ClInclude Include="kxf\General\OptionalPtr.h" />
     <ClInclude Include="kxf\General\RegEx.h" />
     <ClInclude Include="kxf\General\ResourceID.h" />
     <ClInclude Include="kxf\IO.hpp" />
@@ -398,7 +399,6 @@
     <ClInclude Include="kxf\UI\Windows\ToolTipEx.h" />
     <ClInclude Include="kxf\UI\Windows\TopLevelWindow.h" />
     <ClInclude Include="kxf\UI\WindowWithStyles.h" />
-    <ClInclude Include="kxf\Utility\WithOptionalOwnership.h" />
     <ClInclude Include="kxf\wxWidgets\Application.h" />
     <ClInclude Include="kxf\wxWidgets\ClientObject.h" />
     <ClInclude Include="kxf\wxWidgets\Common.h" />

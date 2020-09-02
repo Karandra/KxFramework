@@ -2,7 +2,7 @@
 #include "EventWrapper.h"
 #include "ClientObject.h"
 #include "kxf/EventSystem/EvtHandler.h"
-#include "kxf/Utility/WithOptionalOwnership.h"
+#include "kxf/General/OptionalPtr.h"
 #include <wx/event.h>
 
 namespace kxf::wxWidgets
@@ -32,7 +32,7 @@ namespace kxf::wxWidgets
 	class EvtHandlerWrapper: public EvtHandler
 	{
 		private:
-			Utility::WithOptionalOwnership<wxEvtHandler> m_EvtHandler;
+			optional_ptr<wxEvtHandler> m_EvtHandler;
 
 		protected:
 			bool OnDynamicBind(EventItem& eventItem) override

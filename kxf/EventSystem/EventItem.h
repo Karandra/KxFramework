@@ -4,14 +4,14 @@
 #include "IEventExecutor.h"
 #include "kxf/General/LocallyUniqueID.h"
 #include "kxf/Utility/Common.h"
-#include "kxf/Utility/WithOptionalOwnership.h"
+#include "kxf/General/OptionalPtr.h"
 
 namespace kxf::EventSystem
 {
 	class EventItem final
 	{
 		private:
-			Utility::WithOptionalOwnership<IEventExecutor> m_Executor;
+			optional_ptr<IEventExecutor> m_Executor;
 			EventID m_EventID;
 			LocallyUniqueID m_BindSlot;
 			FlagSet<EventFlag> m_Flags;
@@ -32,14 +32,14 @@ namespace kxf::EventSystem
 		public:
 			bool IsNull() const noexcept
 			{
-				return m_Executor.IsNull() || m_EventID.IsNull();
+				return m_Executor.is_null() || m_EventID.IsNull();
 			}
 			bool IsSameAs(const EventItem& other) const noexcept
 			{
 				if (this != &other)
 				{
 					const bool sameID = m_EventID == other.m_EventID;
-					return sameID && (m_Executor.IsSame(other.m_Executor) || (m_Executor && other.m_Executor && m_Executor->IsSameAs(*other.m_Executor)));
+					return sameID && (m_Executor.is_same_as(other.m_Executor) || (m_Executor && other.m_Executor && m_Executor->IsSameAs(*other.m_Executor)));
 				}
 				return true;
 			}
@@ -50,13 +50,13 @@ namespace kxf::EventSystem
 
 			const IEventExecutor* GetExecutor() const& noexcept
 			{
-				return m_Executor.Get();
+				return m_Executor.get();
 			}
 			IEventExecutor* GetExecutor() & noexcept
 			{
-				return m_Executor.Get();
+				return m_Executor.get();
 			}
-			Utility::WithOptionalOwnership<IEventExecutor> GetExecutor() &&
+			optional_ptr<IEventExecutor> GetExecutor() &&
 			{
 				return std::move(m_Executor);
 			}

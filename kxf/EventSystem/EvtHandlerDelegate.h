@@ -2,14 +2,14 @@
 #include "Common.h"
 #include "IEvtHandler.h"
 #include "EvtHandlerAccessor.h"
-#include "kxf/Utility/WithOptionalOwnership.h"
+#include "kxf/General/OptionalPtr.h"
 
 namespace kxf
 {
 	class KX_API EvtHandlerDelegate: public RTTI::ImplementInterface<IEvtHandler, IEvtHandler>
 	{
 		private:
-			Utility::WithOptionalOwnership<IEvtHandler> m_EvtHandler;
+			optional_ptr<IEvtHandler> m_EvtHandler;
 
 		private:
 			auto Access()
@@ -61,12 +61,12 @@ namespace kxf
 		public:
 			EvtHandlerDelegate() noexcept = default;
 			EvtHandlerDelegate(IEvtHandler& evtHandler) noexcept
+				:m_EvtHandler(evtHandler)
 			{
-				m_EvtHandler.Assign(evtHandler);
 			}
 			EvtHandlerDelegate(std::unique_ptr<IEvtHandler> evtHandler) noexcept
+				:m_EvtHandler(std::move(evtHandler))
 			{
-				m_EvtHandler.Assign(std::move(evtHandler));
 			}
 			EvtHandlerDelegate(EvtHandlerDelegate&&) noexcept = default;
 			EvtHandlerDelegate(const EvtHandlerDelegate&) = delete;
@@ -75,17 +75,17 @@ namespace kxf
 		public:
 			bool IsNull() const noexcept
 			{
-				return m_EvtHandler.IsNull();
+				return m_EvtHandler.is_null();
 			}
 			IEvtHandler* Get() const noexcept
 			{
-				return m_EvtHandler.Get();
+				return m_EvtHandler.get();
 			}
 			EvtHandlerDelegate ShallowClone() const noexcept
 			{
 				if (m_EvtHandler)
 				{
-					return *m_EvtHandler.Get();
+					return *m_EvtHandler.get();
 				}
 				return {};
 			}

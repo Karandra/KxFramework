@@ -20,13 +20,13 @@ namespace kxf::EventSystem
 	{
 		if (!m_IsSent)
 		{
-			if (m_Event.IsOwned())
+			if (m_Event.is_owned())
 			{
 				m_IsSent = true;
 				m_IsSkipped = false;
 				m_IsAllowed = true;
 
-				m_Event = EvtHandlerAccessor(*m_EvtHandler).DoQueueEvent(std::move(m_Event).GetUnique(), m_EventID, std::move(uuid), flags);
+				m_Event = EvtHandlerAccessor(*m_EvtHandler).DoQueueEvent(m_Event.get_unique(), m_EventID, std::move(uuid), flags);
 			}
 			else
 			{

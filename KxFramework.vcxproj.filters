@@ -1349,9 +1349,6 @@
     <ClInclude Include="kxf\EventSystem\Private\Win32ConsoleEventLoop.h">
       <Filter>kxf\EventSystem\Private</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Utility\WithOptionalOwnership.h">
-      <Filter>kxf\Utility</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\EventSystem\Private\Win32CommonEventLoop.h">
       <Filter>kxf\EventSystem\Private</Filter>
     </ClInclude>
@@ -1471,6 +1468,9 @@
     </ClInclude>
     <ClInclude Include="kxf\Sciter\Widgets\NativeTextBoxWidget.h">
       <Filter>kxf\Sciter\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\OptionalPtr.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

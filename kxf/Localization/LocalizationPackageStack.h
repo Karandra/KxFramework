@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "ILocalizationPackage.h"
 #include "kxf/Utility/Container.h"
-#include "kxf/Utility/WithOptionalOwnership.h"
+#include "kxf/General/OptionalPtr.h"
 
 namespace kxf
 {
@@ -29,7 +29,7 @@ namespace kxf
 			}
 
 		private:
-			std::vector<Utility::WithOptionalOwnership<ILocalizationPackage>> m_Packages;
+			std::vector<optional_ptr<ILocalizationPackage>> m_Packages;
 
 		private:
 			Locale DoGetLocale() const
@@ -118,14 +118,14 @@ namespace kxf
 			{
 				return Utility::Container::RemoveSingleIf(m_Packages, [&](const auto& item)
 				{
-					return item.Get() == &localizationPackage;
+					return item.get() == &localizationPackage;
 				}) == m_Packages.end();
 			}
-			Utility::WithOptionalOwnership<ILocalizationPackage> Detach(const ILocalizationPackage& localizationPackage)
+			optional_ptr<ILocalizationPackage> Detach(const ILocalizationPackage& localizationPackage)
 			{
 				auto it = Utility::Container::FindIf(m_Packages, [&](const auto& item)
 				{
-					return item.Get() == &localizationPackage;
+					return item.get() == &localizationPackage;
 				});
 				if (it != m_Packages.end())
 				{

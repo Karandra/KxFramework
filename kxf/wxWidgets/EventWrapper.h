@@ -4,7 +4,7 @@
 #include "kxf/EventSystem/IEvent.h"
 #include "kxf/EventSystem/IEvtHandler.h"
 #include "kxf/EventSystem/Private/EventWaitInfo.h"
-#include "kxf/Utility/WithOptionalOwnership.h"
+#include "kxf/General/OptionalPtr.h"
 #include <wx/object.h>
 #include <wx/event.h>
 
@@ -13,7 +13,7 @@ namespace kxf::wxWidgets
 	class KX_API EventWrapper: public RTTI::ImplementInterface<EventWrapper, IEvent, IWithEvent>, private IEventInternal
 	{
 		private:
-			Utility::WithOptionalOwnership<wxEvent> m_Event;
+			optional_ptr<wxEvent> m_Event;
 			IEvtHandler* m_EvtHandler = nullptr;
 
 			bool m_ProcessStarted = false;

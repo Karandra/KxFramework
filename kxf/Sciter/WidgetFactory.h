@@ -1,6 +1,6 @@
 #pragma once
 #include "kxf/Sciter/Common.h"
-#include "kxf/Utility/WithOptionalOwnership.h"
+#include "kxf/General/OptionalPtr.h"
 
 namespace kxf::Sciter
 {
@@ -14,7 +14,7 @@ namespace kxf::Sciter
 	class KX_API WidgetFactory
 	{
 		private:
-			inline static std::vector<Utility::WithOptionalOwnership<WidgetFactory>> ms_RegisteredFactories;
+			inline static std::vector<optional_ptr<WidgetFactory>> ms_RegisteredFactories;
 
 		public:
 			static std::unique_ptr<Widget> NewWidget(Host& host, const Element& element, const String& className);
@@ -26,7 +26,7 @@ namespace kxf::Sciter
 				{
 					if (!std::invoke(func, *factory))
 					{
-						return factory;
+						return factory.get();
 					}
 				}
 				return nullptr;
