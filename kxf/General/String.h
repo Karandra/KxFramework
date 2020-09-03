@@ -869,6 +869,38 @@ namespace kxf
 				}
 			}
 
+			String& ReplaceRange(size_t offset, size_t length, const String& replacement)
+			{
+				m_String.replace(offset, length, replacement);
+				return *this;
+			}
+			String& ReplaceRange(size_t offset, size_t length, std::string_view replacement)
+			{
+				m_String.replace(offset, length, replacement.data(), replacement.size());
+				return *this;
+			}
+			String& ReplaceRange(size_t offset, size_t length, std::wstring_view replacement)
+			{
+				m_String.replace(offset, length, replacement.data(), replacement.size());
+				return *this;
+			}
+
+			String& ReplaceRange(iterator first, iterator last, const String& replacement)
+			{
+				m_String.replace(first, last, replacement);
+				return *this;
+			}
+			String& ReplaceRange(iterator first, iterator last, std::string_view replacement)
+			{
+				m_String.replace(first, last, replacement.data(), replacement.size());
+				return *this;
+			}
+			String& ReplaceRange(iterator first, iterator last, std::wstring_view replacement)
+			{
+				m_String.replace(first, last, replacement.data(), replacement.size());
+				return *this;
+			}
+
 			template<class T>
 			bool Contains(T&& pattern, FlagSet<StringOpFlag> flags = {}) const
 			{

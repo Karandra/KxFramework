@@ -92,9 +92,9 @@ namespace kxf
 						String value = std::invoke(onVariable, varNamespace, varName);
 						if (!value.IsEmpty())
 						{
-							result.GetWxString().replace(entryStartPos, varEntryLength, value);
+							result.ReplaceRange(entryStartPos, varEntryLength, value);
 
-							// Set 'i' value to end of replacement
+							// Set loop counter to end of replacement
 							i = entryStartPos + value.length() - 1;
 						}
 					}
