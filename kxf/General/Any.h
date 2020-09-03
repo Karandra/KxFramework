@@ -11,28 +11,43 @@ namespace kxf
 			std::any m_Any;
 
 		private:
-			template<class TFunc>
-			bool ResetOnException(TFunc&& func) noexcept
-			{
-				try
-				{
-					std::invoke(func);
-					return true;
-				}
-				catch (...)
-				{
-					MakeNull();
-					return false;
-				}
-			}
-
 			template<class T>
-			static bool ConvertTo(const Any& any, T& value) noexcept
+			static bool ConvertAnyTo(const Any& any, T& value) noexcept
 			{
 				if constexpr(std::is_same_v<T, String>)
 				{
 					// Convert to a string
-					if (value = any.IntToString(); !value.IsEmpty())
+					if (auto charString = any.AsPtr<const char*>())
+					{
+						value = *charString;
+						return true;
+					}
+					else if (auto wcharString = any.AsPtr<const wchar_t*>())
+					{
+						value = *wcharString;
+						return true;
+					}
+					else if (auto charPtr = any.AsPtr<char>())
+					{
+						value = *charPtr;
+						return true;
+					}
+					else if (auto wcharPtr = any.AsPtr<wchar_t>())
+					{
+						value = *wcharPtr;
+						return true;
+					}
+					else if (auto stringView = any.AsPtr<std::string_view>())
+					{
+						value = String::FromView(*stringView);
+						return true;
+					}
+					else if (auto wstringView = any.AsPtr<std::wstring_view>())
+					{
+						value = String::FromView(*wstringView);
+						return true;
+					}
+					else if (value = any.IntToString(); !value.IsEmpty())
 					{
 						return true;
 					}
@@ -69,7 +84,7 @@ namespace kxf
 					using TIntType = std::conditional_t<std::is_enum_v<T>, std::underlying_type_t<T>, T>;
 
 					// Convert to an integer
-					if constexpr (std::is_signed_v<TIntType>)
+					if constexpr(std::is_signed_v<TIntType>)
 					{
 						// Convert to signed int
 						if (const String* ptr = any.AsPtr<String>())
@@ -130,11 +145,29 @@ namespace kxf
 				return false;
 			}
 
-			template<class T> T* AsPtr() noexcept
+			template<class TFunc>
+			bool ResetOnException(TFunc&& func) noexcept
+			{
+				try
+				{
+					std::invoke(func);
+					return true;
+				}
+				catch (...)
+				{
+					MakeNull();
+					return false;
+				}
+			}
+
+			template<class T>
+			T* AsPtr() noexcept
 			{
 				return std::any_cast<T>(&m_Any);
 			}
-			template<class T> const T* AsPtr() const noexcept
+			
+			template<class T>
+			const T* AsPtr() const noexcept
 			{
 				return std::any_cast<T>(&m_Any);
 			}
@@ -146,8 +179,11 @@ namespace kxf
 
 		public:
 			Any() = default;
-			explicit Any(const Any&) noexcept = default;
-			explicit Any(Any&&) noexcept = default;
+			Any(const Any& other) noexcept
+			{
+				Assign(other);
+			}
+			Any(Any&&) noexcept = default;
 			explicit Any(const std::any& other) noexcept
 			{
 				Assign(other);
@@ -156,7 +192,9 @@ namespace kxf
 				:m_Any(std::move(other))
 			{
 			}
-			template<class T> Any(T&& value) noexcept
+			
+			template<class T>
+			Any(T&& value) noexcept
 			{
 				Assign(std::forward<T>(value));
 			}
@@ -193,7 +231,8 @@ namespace kxf
 				return GetTypeInfo() == other.GetTypeInfo();
 			}
 			
-			template<class T> bool CheckType() const noexcept
+			template<class T>
+			bool CheckType() const noexcept
 			{
 				static_assert(!std::is_void_v<T>, "T must not be void");
 
@@ -217,88 +256,83 @@ namespace kxf
 				return m_Any;
 			}
 
-			template<class T> T As() const
+			// Retrieve the stored value, throws 'std::bad_any_cast' on type mismatch
+			template<class T>
+			T As() const&
 			{
 				return std::any_cast<T>(m_Any);
 			}
-			template<class T> T As()
+			
+			template<class T>
+			T As() &&
 			{
-				if constexpr(std::is_rvalue_reference_v<T>)
-				{
-					return std::any_cast<T>(std::move(*this));
-				}
-				else
-				{
-					return std::any_cast<T>(m_Any);
-				}
+				return std::any_cast<T>(std::move(*this));
 			}
 			
-			template<class T, class TDefault> T AsOr(TDefault&& defaultValue) const
+			// Try to retrieve the stored value, on type mismatch the empty optional object is returned
+			template<class T>
+			std::optional<T> QueryAs() const& noexcept(std::is_nothrow_copy_constructible_v<T>)
 			{
 				if (auto ptr = AsPtr<T>())
 				{
 					return *ptr;
 				}
-				return std::forward<TDefault>(defaultValue);
+				return {};
 			}
-			template<class T, class TDefault> T AsOr(TDefault&& defaultValue)
+			
+			template<class T>
+			std::optional<T> QueryAs() && noexcept(std::is_nothrow_move_constructible_v<T>)
 			{
 				if (auto ptr = AsPtr<T>())
 				{
-					return std::forward<T>(*ptr);
+					return std::move(*ptr);
 				}
-				return std::forward<TDefault>(defaultValue);
+				return {};
 			}
 
-			template<class T> bool As(const T*& value) const noexcept
-			{
-				value = AsPtr<T>();
-				return value != nullptr;
-			}
-			template<class T> bool As(T*& value) noexcept
-			{
-				value = AsPtr<T>();
-				return value != nullptr;
-			}
-
-			template<class T> bool GetAs(T& value) const noexcept
+			// Try to retrieve the stored value or convert it to desired type if possible
+			template<class T>
+			bool GetAs(T& value) const& noexcept(std::is_nothrow_copy_assignable_v<T>)
 			{
 				if (const T* ptr = AsPtr<T>())
 				{
 					value = *ptr;
 					return true;
 				}
-				return ConvertTo(*this, value);
+				return ConvertAnyTo(*this, value);
 			}
-			template<class T> bool GetAs(T&& value) noexcept
+			
+			template<class T>
+			bool GetAs(T value) && noexcept(std::is_nothrow_move_assignable_v<T>)
 			{
-				if (const T* ptr = AsPtr<T>())
+				if (T* ptr = AsPtr<T>())
 				{
-					value = std::forward<T>(*ptr);
+					value = std::move(*ptr);
 					return true;
 				}
-				return ConvertTo(*this, value);
+				return ConvertAnyTo(*this, value);
 			}
 
-			template<class T> T GetAs() const noexcept
+			// Overload of 'GetAs' for default-constructible types
+			template<class T, class = std::enable_if_t<std::is_default_constructible_v<T>>>
+			T GetAs() const noexcept(std::is_nothrow_default_constructible_v<T>)
 			{
-				static_assert(std::is_default_constructible_v<T>, "T must be default constructible");
-
 				T value;
 				GetAs(value);
 				return value;
 			}
-			template<class T> T GetAs() noexcept
-			{
-				static_assert(std::is_default_constructible_v<T>, "T must be default constructible");
 
+			template<class T, class = std::enable_if_t<std::is_default_constructible_v<T>>>
+			T GetAs() noexcept(std::is_nothrow_default_constructible_v<T>)
+			{
 				T value;
 				GetAs(value);
 				return value;
 			}
 
 			// Assignment
-			template<class T> Any& Assign(T&& value) noexcept
+			template<class T>
+			Any& Assign(T&& value) noexcept
 			{
 				ResetOnException([&]()
 				{
@@ -314,6 +348,16 @@ namespace kxf
 				return *this;
 			}
 			
+			Any& Assign(Any&& other) noexcept
+			{
+				m_Any = std::move(other.m_Any);
+				return *this;
+			}
+			Any& Assign(std::any&& other) noexcept
+			{
+				m_Any = std::move(other);
+				return *this;
+			}
 			Any& Assign(const Any& other) noexcept
 			{
 				ResetOnException([&]()
@@ -322,38 +366,11 @@ namespace kxf
 				});
 				return *this;
 			}
-			Any& Assign(Any&& other) noexcept
-			{
-				m_Any = std::move(other.m_Any);
-				return *this;
-			}
 			Any& Assign(const std::any& other) noexcept
 			{
 				ResetOnException([&]()
 				{
 					m_Any = other;
-				});
-				return *this;
-			}
-			Any& Assign(std::any&& other) noexcept
-			{
-				m_Any = std::move(other);
-				return *this;
-			}
-
-			Any& Assign(const char* value) noexcept
-			{
-				ResetOnException([&]()
-				{
-					m_Any = String(value);
-				});
-				return *this;
-			}
-			Any& Assign(const wchar_t* value) noexcept
-			{
-				ResetOnException([&]()
-				{
-					m_Any = String(value);
 				});
 				return *this;
 			}
@@ -368,7 +385,14 @@ namespace kxf
 				return IsNull();
 			}
 
-			template<class T> Any& operator=(T&& value) noexcept
+			Any& operator=(const Any& other) noexcept
+			{
+				return Assign(other);
+			}
+			Any& operator=(Any&&) noexcept = default;
+
+			template<class T>
+			Any& operator=(T&& value) noexcept
 			{
 				return Assign(std::forward<T>(value));
 			}
