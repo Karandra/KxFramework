@@ -1478,6 +1478,9 @@
     <ClInclude Include="kxf\Sciter\Widgets\Native\Common.h">
       <Filter>kxf\Sciter\Widgets\Native</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\General\IVariablesCollection.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2209,6 +2212,9 @@
     </ClCompile>
     <ClCompile Include="kxf\Sciter\Widgets\Native\TextBoxWidget.cpp">
       <Filter>kxf\Sciter\Widgets\Native</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\IVariablesCollection.cpp">
+      <Filter>kxf\General</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -241,6 +241,7 @@
     <ClInclude Include="kxf\General\DateTime\TimeClock.h" />
     <ClInclude Include="kxf\General\DateTime\TimeSpan.h" />
     <ClInclude Include="kxf\General\DateTime\TimeZone.h" />
+    <ClInclude Include="kxf\General\IVariablesCollection.h" />
     <ClInclude Include="kxf\General\LocallyUniqueID.h" />
     <ClInclude Include="kxf\General\OptionalPtr.h" />
     <ClInclude Include="kxf\General\RegEx.h" />
@@ -632,6 +633,7 @@
     <ClCompile Include="kxf\General\DateTime\TimeClock.cpp" />
     <ClCompile Include="kxf\General\DateTime\TimeSpan.cpp" />
     <ClCompile Include="kxf\General\DateTime\TimeZone.cpp" />
+    <ClCompile Include="kxf\General\IVariablesCollection.cpp" />
     <ClCompile Include="kxf\General\LocallyUniqueID.cpp" />
     <ClCompile Include="kxf\IO\Common.cpp" />
     <ClCompile Include="kxf\IO\FileStream.cpp" />
