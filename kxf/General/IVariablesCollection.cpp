@@ -119,11 +119,7 @@ namespace kxf
 				{
 					return {};
 				}
-				size_t EnumItems(std::function<bool(const Any&)> func) const override
-				{
-					return 0;
-				}
-				size_t EnumItems(std::function<bool(Any&)> func) override
+				size_t EnumItems(std::function<bool(Any)> func) const override
 				{
 					return 0;
 				}

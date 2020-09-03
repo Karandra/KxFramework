@@ -22,8 +22,7 @@ namespace kxf
 			}
 
 			virtual String Expand(const String& variables) const = 0;
-			virtual size_t EnumItems(std::function<bool(const Any&)> func) const = 0;
-			virtual size_t EnumItems(std::function<bool(Any&)> func) = 0;
+			virtual size_t EnumItems(std::function<bool(Any)> func) const = 0;
 
 			virtual bool HasItem(const String& id) const = 0;
 			virtual Any GetItem(const String& id) const = 0;
