@@ -5,6 +5,8 @@ namespace kxf
 {
 	enum class KnownDirectoryID
 	{
+		None = -1,
+
 		Music,
 		MusicCommon,
 		MusicLibrary,

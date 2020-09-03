@@ -410,6 +410,11 @@ namespace kxf::Shell
 
 	FSPath GetKnownDirectory(KnownDirectoryID id, FlagSet<SHGetKnownDirectoryFlag> flags)
 	{
+		if (id == KnownDirectoryID::None)
+		{
+			return {};
+		}
+
 		FSPath result;
 		bool isEnvUsed = false;
 		bool isCustomMethodUsed = false;
