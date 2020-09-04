@@ -7,6 +7,7 @@ namespace kxf::Sciter
 	class Host;
 	class Widget;
 	class Element;
+	class StylesheetStorage;
 }
 
 namespace kxf::Sciter
@@ -40,6 +41,7 @@ namespace kxf::Sciter
 			{
 				ms_RegisteredFactories.emplace_back(std::move(factory));
 			}
+			static StylesheetStorage& GetStylesheetStorage();
 
 		private:
 			String m_ClassName;
@@ -102,8 +104,8 @@ namespace kxf::Sciter
 				T& factory = GetInstance();
 				if (!ms_IsRegistered)
 				{
+					WidgetFactory::GetStylesheetStorage().AddItem(factory.GetWidgetStylesheet());
 					WidgetFactory::RegisterFactory(factory);
-					AppendMasterCSS(factory.GetWidgetStylesheet());
 
 					ms_IsRegistered = true;
 				}

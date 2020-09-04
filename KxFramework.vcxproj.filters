@@ -1481,6 +1481,12 @@
     <ClInclude Include="kxf\General\IVariablesCollection.h">
       <Filter>kxf\General</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Sciter\Stylesheets\StylesheetStorage.h">
+      <Filter>kxf\Sciter\Stylesheets</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Sciter\Stylesheets\MasterStylesheetStorage.h">
+      <Filter>kxf\Sciter\Stylesheets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2216,6 +2222,12 @@
     <ClCompile Include="kxf\General\IVariablesCollection.cpp">
       <Filter>kxf\General</Filter>
     </ClCompile>
+    <ClCompile Include="kxf\Sciter\Stylesheets\StylesheetStorage.cpp">
+      <Filter>kxf\Sciter\Stylesheets</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Sciter\Stylesheets\MasterStylesheetStorage.cpp">
+      <Filter>kxf\Sciter\Stylesheets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="kxf\System\Private\ErrorCodeNtStatus.i">
@@ -2254,11 +2266,11 @@
     <None Include="VCPkg\triplets\community\x86-default.cmake">
       <Filter>VCPkg\triplets\community</Filter>
     </None>
-    <None Include="kxf\Sciter\Stylesheets\Master.css">
-      <Filter>kxf\Sciter\Stylesheets</Filter>
-    </None>
     <None Include="kxf\Sciter\Widgets\Native\TextBoxWidget.css">
       <Filter>kxf\Sciter\Widgets\Native</Filter>
+    </None>
+    <None Include="kxf\Sciter\Stylesheets\MasterStylesheet.css">
+      <Filter>kxf\Sciter\Stylesheets</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

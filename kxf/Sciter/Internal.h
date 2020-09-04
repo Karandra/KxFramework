@@ -1,5 +1,5 @@
 #pragma once
-#include "kxf/General/String.h"
+#include "Common.h"
 #include "SciterAPI.h"
 
 namespace kxf::Sciter
@@ -17,6 +17,9 @@ namespace kxf::Sciter
 namespace kxf::Sciter
 {
 	std::vector<BYTE> ToSciterUTF8(const String& text);
+
+	String FSPathToSciterAddress(const FSPath& path);
+	String URIToSciterAddress(const URI& uri);
 
 	SC_COLOR CreateSciterColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) noexcept;
 	SC_COLOR CreateSciterColor(const wxColour& color) noexcept;

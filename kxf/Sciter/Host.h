@@ -7,8 +7,7 @@
 #include "EventDispatcher.h"
 #include "IWindowRenderer.h"
 #include "Renderers/FPSCounter.h"
-#include "kxf/Network/URI.h"
-#include "kxf/FileSystem/FSPath.h"
+#include "Stylesheets/StylesheetStorage.h"
 #include "kxf/EventSystem/EvtHandler.h"
 #include <wx/window.h>
 
@@ -142,7 +141,7 @@ namespace kxf::Sciter
 		public:
 			bool LoadHTML(const String& html, const FSPath& basePath = {});
 			bool LoadHTML(const String& html, const URI& baseURI);
-			bool SetCSS(const String& css);
+			bool ApplyStylesheet(const StylesheetStorage& stylesheet);
 
 			bool LoadDocument(const FSPath& localPath);
 			bool LoadDocument(const URI& uri);

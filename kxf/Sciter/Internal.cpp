@@ -23,6 +23,19 @@ namespace kxf::Sciter
 		return {};
 	}
 
+	String FSPathToSciterAddress(const FSPath& path)
+	{
+		return path ? String(wxS("file://")) + path.GetFullPath(FSPathNamespace::None, FSPathFormat::TrailingSeparator) : wxS("about:blank");
+	}
+	String URIToSciterAddress(const URI& uri)
+	{
+		if (!uri.HasScheme())
+		{
+			return String(wxS("file://")) + uri.BuildURI();
+		}
+		return uri.BuildURI();
+	}
+
 	SC_COLOR CreateSciterColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) noexcept
 	{
 		return GetGrapchicsAPI()->RGBA(r, g, b, a);

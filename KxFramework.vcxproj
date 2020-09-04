@@ -260,6 +260,8 @@
     <ClInclude Include="kxf\Localization\Private\LocalizationResources.h" />
     <ClInclude Include="kxf\Localization\WindowsLocalizationPackage.h" />
     <ClInclude Include="kxf\pch.hpp" />
+    <ClInclude Include="kxf\Sciter\Stylesheets\MasterStylesheetStorage.h" />
+    <ClInclude Include="kxf\Sciter\Stylesheets\StylesheetStorage.h" />
     <ClInclude Include="kxf\Sciter\Widgets\NativeWidget.h" />
     <ClInclude Include="kxf\Sciter\Widgets\Native\Common.h" />
     <ClInclude Include="kxf\Sciter\Widgets\Native\TextBoxWidget.h" />
@@ -642,6 +644,8 @@
     <ClCompile Include="kxf\Localization\LocalizationItem.cpp" />
     <ClCompile Include="kxf\Localization\Private\LocalizationPackageHelper.cpp" />
     <ClCompile Include="kxf\Localization\WindowsLocalizationPackage.cpp" />
+    <ClCompile Include="kxf\Sciter\Stylesheets\MasterStylesheetStorage.cpp" />
+    <ClCompile Include="kxf\Sciter\Stylesheets\StylesheetStorage.cpp" />
     <ClCompile Include="kxf\Sciter\Widgets\NativeWidget.cpp" />
     <ClCompile Include="kxf\Sciter\Widgets\Native\TextBoxWidget.cpp" />
     <ClCompile Include="kxf\Serialization\HTML\HTMLDocument.cpp" />
@@ -860,7 +864,7 @@
     <None Include=".gitignore" />
     <None Include="Copyright header template" />
     <None Include="cpp.hint" />
-    <None Include="kxf\Sciter\Stylesheets\Master.css" />
+    <None Include="kxf\Sciter\Stylesheets\MasterStylesheet.css" />
     <None Include="kxf\Sciter\Widgets\Native\TextBoxWidget.css" />
     <None Include="kxf\System\Private\ErrorCodeNtStatus.i" />
     <None Include="LICENSE" />

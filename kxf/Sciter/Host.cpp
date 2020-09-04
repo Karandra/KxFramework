@@ -2,6 +2,7 @@
 #include "Host.h"
 #include "SciterAPI.h"
 #include "Internal.h"
+#include "Stylesheets/MasterStylesheetStorage.h"
 #include "kxf/General/StringFormater.h"
 #include "kxf/System/SystemInformation.h"
 #include "kxf/Utility/Common.h"
@@ -523,23 +524,25 @@ namespace kxf::Sciter
 		m_DocumentBasePath = basePath;
 
 		auto utf8 = ToSciterUTF8(html);
-		auto basePathString = String(wxS("file://")) + basePath.GetFullPath(FSPathNamespace::None, FSPathFormat::TrailingSeparator);
+		auto basePathString = FSPathToSciterAddress(basePath);
 		return GetSciterAPI()->SciterLoadHtml(m_SciterWindow.GetHandle(), utf8.data(), utf8.size(), basePathString.wc_str());
 	}
 	bool Host::LoadHTML(const String& html, const URI& baseURI)
 	{
 		m_DocumentPath = {};
-		m_DocumentBasePath = baseURI.BuildURI();
+		m_DocumentBasePath = URIToSciterAddress(baseURI);
 		
 		auto utf8 = ToSciterUTF8(html);
 		auto basePathString = m_DocumentBasePath.GetFullPath();
 		return GetSciterAPI()->SciterLoadHtml(m_SciterWindow.GetHandle(), utf8.data(), utf8.size(), basePathString.wc_str());
 	}
-	bool Host::SetCSS(const String& css)
+	bool Host::ApplyStylesheet(const StylesheetStorage& stylesheet)
 	{
-		auto utf8 = ToSciterUTF8(css);
-		auto basePathString = m_DocumentBasePath.GetFullPath();
-		return GetSciterAPI()->SciterSetCSS(m_SciterWindow.GetHandle(), utf8.data(), utf8.size(), basePathString.wc_str(), nullptr);
+		StylesheetStorage combinedStorage;
+		combinedStorage.CopyItems(MasterStylesheetStorage::GetInstance());
+		combinedStorage.CopyItems(stylesheet);
+
+		return combinedStorage.Apply(*this, m_DocumentBasePath);
 	}
 
 	bool Host::LoadDocument(const FSPath& localPath)

@@ -3,6 +3,7 @@
 #include "Widget.h"
 #include "Host.h"
 #include "Element.h"
+#include "Stylesheets/MasterStylesheetStorage.h"
 
 namespace kxf::Sciter
 {
@@ -13,5 +14,9 @@ namespace kxf::Sciter
 			return factory.m_ClassName != className;
 		});
 		return factory ? factory->CreateWidget(host, element, className) : nullptr;
+	}
+	StylesheetStorage& WidgetFactory::GetStylesheetStorage()
+	{
+		return MasterStylesheetStorage::GetInstance();
 	}
 }

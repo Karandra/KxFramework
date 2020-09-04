@@ -2,12 +2,16 @@
 #include "SciterAPI.h"
 #include "Common.h"
 
+// Stylesheets
+#include "Stylesheets/MasterStylesheetStorage.h"
+
+// Widgets
 #include "Widgets/Native/TextBoxWidget.h"
 
 namespace
 {
 	const constexpr std::wstring_view g_MasterStylesheet =
-		#include "Stylesheets/Master.css"
+		#include "Stylesheets/MasterStylesheet.css"
 		;
 }
 
@@ -15,9 +19,15 @@ namespace kxf::Sciter::Private
 {
 	void RegisterAPI()
 	{
-		SetMasterCSS(String::FromView(g_MasterStylesheet));
+		// Register master stylesheets
+		MasterStylesheetStorage& stylesheetStorage = MasterStylesheetStorage::GetInstance();
+		stylesheetStorage.AddItem(String::FromView(g_MasterStylesheet));
 
+		// Register widgets
 		NativeTextBoxWidgetFactory::RegisterInstance();
+
+		// Apply global styles
+		stylesheetStorage.ApplyGlobally();
 	}
 }
 
