@@ -154,43 +154,6 @@ namespace kxf::NativeAPI::Private
 	}
 }
 
-namespace kxf::NativeAPI::Private
-{
-	class InitializationModule final: public wxModule
-	{
-		private:
-			Loader m_Loader;
-
-		public:
-			bool OnInit() noexcept override
-			{
-				if (m_Loader.LoadLibraries() != 0)
-				{
-					m_Loader.LoadNtDLL();
-					m_Loader.LoadKernel32();
-					m_Loader.LoadKernelBase();
-					m_Loader.LoadUser32();
-					m_Loader.LoadShlWAPI();
-					m_Loader.LoadDWMAPI();
-					m_Loader.LoadDbgHelp();
-					m_Loader.LoadDXGI();
-					m_Loader.LoadDComp();
-
-					return true;
-				}
-				return false;
-			}
-			void OnExit() noexcept override
-			{
-				m_Loader.UnloadLibraries();
-			}
-
-		private:
-			wxDECLARE_DYNAMIC_CLASS(InitializationModule);
-	};
-	wxIMPLEMENT_DYNAMIC_CLASS(InitializationModule, wxModule);
-}
-
 namespace kxf::NativeAPI
 {
 	namespace NtDLL
@@ -253,3 +216,41 @@ namespace kxf::NativeAPI
 		DEFINE_FUNCTION(DCompositionCreateDevice);
 	}
 }
+
+namespace kxf::NativeAPI::Private
+{
+	class InitializationModule final: public wxModule
+	{
+		private:
+			Loader m_Loader;
+
+		public:
+			bool OnInit() noexcept override
+			{
+				if (m_Loader.LoadLibraries() != 0)
+				{
+					m_Loader.LoadNtDLL();
+					m_Loader.LoadKernel32();
+					m_Loader.LoadKernelBase();
+					m_Loader.LoadUser32();
+					m_Loader.LoadShlWAPI();
+					m_Loader.LoadDWMAPI();
+					m_Loader.LoadDbgHelp();
+					m_Loader.LoadDXGI();
+					m_Loader.LoadDComp();
+
+					return true;
+				}
+				return false;
+			}
+			void OnExit() noexcept override
+			{
+				m_Loader.UnloadLibraries();
+			}
+
+		private:
+			wxDECLARE_DYNAMIC_CLASS(InitializationModule);
+	};
+}
+
+wxIMPLEMENT_DYNAMIC_CLASS(kxf::NativeAPI::Private::InitializationModule, wxModule);

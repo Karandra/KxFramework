@@ -135,5 +135,6 @@ namespace kxf::CURL::Private
 		private:
 			wxDECLARE_DYNAMIC_CLASS(InitializationModule);
 	};
-	wxIMPLEMENT_DYNAMIC_CLASS(InitializationModule, wxModule);
 }
+
+wxIMPLEMENT_DYNAMIC_CLASS(kxf::CURL::Private::InitializationModule, wxModule);
