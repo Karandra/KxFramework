@@ -43,9 +43,9 @@ namespace kxf::Sciter
 	}
 	void FreeLibrary()
 	{
-		// Sciter API included don't have function to unload its DLL and it causes a crash
-		// if I do unload the DLL. So I'm going to let it loaded. It seems Sciter does something
-		// in its DllMain's 'DLL_PROCESS_DETACH' event.
+		// Sciter API includes don't have function to unload its DLL and it causes a crash
+		// if I do unload the DLL. So I'm going to let it loaded itself when process exists.
+		// It seems Sciter does something in its DllMain's 'DLL_PROCESS_DETACH' event.
 		#if 0
 		if (g_SciterLibrary)
 		{
