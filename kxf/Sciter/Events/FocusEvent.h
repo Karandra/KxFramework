@@ -11,7 +11,7 @@ namespace kxf::Sciter
 			KxEVENT_MEMBER(FocusEvent, ContainerSetFocus);
 			KxEVENT_MEMBER(FocusEvent, ContainerKillFocus);
 			KxEVENT_MEMBER(FocusEvent, RequestFocus);
-			KxEVENT_MEMBER(FocusEvent, RequestFocusAdvanced);
+			KxEVENT_MEMBER(FocusEvent, RequestFocusAdvance);
 
 		public:
 			FocusEvent(Host& host)
@@ -35,5 +35,5 @@ namespace kxf::Sciter
 	KxEVENT_DECLARE_ALIAS_TO_MEMBER(FocusEvent, ContainerSetFocus);
 	KxEVENT_DECLARE_ALIAS_TO_MEMBER(FocusEvent, ContainerKillFocus);
 	KxEVENT_DECLARE_ALIAS_TO_MEMBER(FocusEvent, RequestFocus);
-	KxEVENT_DECLARE_ALIAS_TO_MEMBER(FocusEvent, RequestFocusAdvanced);
+	KxEVENT_DECLARE_ALIAS_TO_MEMBER(FocusEvent, RequestFocusAdvance);
 }

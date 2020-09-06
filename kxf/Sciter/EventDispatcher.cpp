@@ -360,7 +360,7 @@ namespace kxf::Sciter
 			}
 			case FOCUS_EVENTS::FOCUS_ADVANCE_REQUEST:
 			{
-				eventID = EvtRequestFocusAdvanced;
+				eventID = EvtRequestFocusAdvance;
 				break;
 			}
 		};
