@@ -83,7 +83,7 @@ namespace kxf::Sciter
 		Wheel
 	};
 
-	struct TextMetrics
+	struct TextMetrics final
 	{
 		double MinWidth = 0;
 		double MaxWidth = 0;
