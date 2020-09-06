@@ -2,6 +2,7 @@
 #include "Element.h"
 #include "Node.h"
 #include "Host.h"
+#include "Widget.h"
 #include "EventDispatcher.h"
 #include "ScriptValue.h"
 #include "SciterAPI.h"
@@ -200,14 +201,14 @@ namespace kxf::Sciter
 			host->DetachElementHandler(*this);
 		}
 	}
-	void Element::AttachEventHandler(EvtHandler& evtHandler)
+	void Element::AttachEventHandler(IEvtHandler& evtHandler)
 	{
 		if (Host* host = GetHost())
 		{
 			host->AttachElementHandler(*this, evtHandler);
 		}
 	}
-	void Element::DetachEventHandler(EvtHandler& evtHandler)
+	void Element::DetachEventHandler(IEvtHandler& evtHandler)
 	{
 		if (Host* host = GetHost())
 		{
@@ -491,7 +492,7 @@ namespace kxf::Sciter
 			}
 
 			// Add text node if needed
-			if (String value = GetValue(); !value.IsEmpty())
+			if (String value = GetText(); !value.IsEmpty())
 			{
 				newElement.ToNode().AppendChild(Node::CreateTextNode(value));
 			}
@@ -542,7 +543,7 @@ namespace kxf::Sciter
 		const size_t index = GetIndexWithinParent();
 		const Element parent = GetParent();
 
-		if (parent && index + 1 < GetChildrenCount())
+		if (parent && index + 1 < parent.GetChildrenCount())
 		{
 			return parent.GetChildAt(index + 1);
 		}
@@ -665,6 +666,12 @@ namespace kxf::Sciter
 	}
 
 	// Text
+	bool Element::HasText() const
+	{
+		size_t length = 0;
+		GetSciterAPI()->SciterGetElementTextCB(ToSciterElement(m_Handle), ExtractStringLength, &length);
+		return length != 0;
+	}
 	String Element::GetText() const
 	{
 		String result;
@@ -677,19 +684,22 @@ namespace kxf::Sciter
 	}
 
 	// Value
-	String Element::GetValue() const
+	bool Element::HasValue() const
+	{
+		return !GetValue().IsNull();
+	}
+	ScriptValue Element::GetValue() const
 	{
 		ScriptValue scriptValue;
 		if (GetSciterAPI()->SciterGetValue(ToSciterElement(m_Handle), ToSciterScriptValue(scriptValue.GetNativeValue())) == SCDOM_OK)
 		{
-			return scriptValue.GetString();
+			return scriptValue;
 		}
 		return {};
 	}
-	bool Element::SetValue(StringView value) const
+	bool Element::SetValue(const ScriptValue& value) const
 	{
-		ScriptValue scriptValue = value;
-		return GetSciterAPI()->SciterSetValue(ToSciterElement(m_Handle), ToSciterScriptValue(scriptValue.GetNativeValue())) == SCDOM_OK;
+		return GetSciterAPI()->SciterSetValue(ToSciterElement(m_Handle), ToSciterScriptValue(value.GetNativeValue())) == SCDOM_OK;
 	}
 
 	// Attributes
@@ -1021,11 +1031,11 @@ namespace kxf::Sciter
 	}
 
 	// Selectors
-	size_t Element::Select(const String& query, TOnElement onElement) const
+	size_t Element::Select(const String& query, std::function<bool(Element)> onElement) const
 	{
 		struct CallContext
 		{
-			TOnElement& Callback;
+			decltype(onElement)& Callback;
 			size_t Count = 0;
 		};
 
@@ -1042,7 +1052,7 @@ namespace kxf::Sciter
 	Element Element::SelectAny(const String& query) const
 	{
 		Element result;
-		Select(query, [&result](Element element)
+		Select(query, [&](Element element)
 		{
 			result = std::move(element);
 			return false;
@@ -1052,7 +1062,7 @@ namespace kxf::Sciter
 	std::vector<Element> Element::SelectAll(const String& query) const
 	{
 		std::vector<Element> results;
-		Select(query, [&results](Element element)
+		Select(query, [&](Element element)
 		{
 			results.emplace_back(std::move(element));
 			return true;
@@ -1060,6 +1070,46 @@ namespace kxf::Sciter
 		return results;
 	}
 
+	// Widgets
+	size_t Element::SelectWidgets(const String& query, std::function<bool(Widget&)> onWidget) const
+	{
+		size_t count = 0;
+		Select(query, [&](Element element)
+		{
+			if (Widget* widget = Widget::FromElement(element))
+			{
+				count++;
+				if (!std::invoke(onWidget, *widget))
+				{
+					return false;
+				}
+			}
+			return true;
+		});
+		return count;
+	}
+	Widget* Element::SelectAnyWidget(const String& query) const
+	{
+		Widget* result = nullptr;
+		SelectWidgets(query, [&](Widget& widget)
+		{
+			result = &widget;
+			return false;
+		});
+		return result;
+	}
+	std::vector<Widget*> Element::SelectAllWidgets(const String& query) const
+	{
+		std::vector<Widget*> results;
+		SelectWidgets(query, [&](Widget& widget)
+		{
+			results.emplace_back(&widget);
+			return true;
+		});
+		return results;
+	}
+
+	// Scripts
 	ScriptValue Element::ExecuteScript(const String& script)
 	{
 		ScriptValue result;

@@ -8,12 +8,13 @@
 
 namespace kxf
 {
-	class EvtHandler;
+	class IEvtHandler;
 }
 namespace kxf::Sciter
 {
 	class Node;
 	class Host;
+	class Widget;
 
 	struct ElementHandle;
 	struct ElementUID;
@@ -24,9 +25,6 @@ namespace kxf::Sciter
 	class KX_API Element final: public HandleWrapper<Element, ElementHandle>
 	{
 		friend class HandleWrapper<Element, ElementHandle>;
-
-		public:
-			using TOnElement = std::function<bool(Element)>;
 
 		public:
 			static Element Create(const String& tagName, const String& value = {});
@@ -64,8 +62,8 @@ namespace kxf::Sciter
 			// Event handling
 			void AttachEventHandler();
 			void DetachEventHandler();
-			void AttachEventHandler(EvtHandler& evtHandler);
-			void DetachEventHandler(EvtHandler& evtHandler);
+			void AttachEventHandler(IEvtHandler& evtHandler);
+			void DetachEventHandler(IEvtHandler& evtHandler);
 
 			// Refreshing
 			bool Update(bool force = false);
@@ -143,6 +141,7 @@ namespace kxf::Sciter
 			void* DetachNativeWindow();
 
 			// Text
+			bool HasText() const;
 			String GetText() const;
 			bool SetText(const String& text) const
 			{
@@ -151,12 +150,9 @@ namespace kxf::Sciter
 			bool SetText(StringView text) const;
 
 			// Value
-			String GetValue() const;
-			bool SetValue(StringView value) const;
-			bool SetValue(const String& value) const
-			{
-				return SetValue(value.GetView());
-			}
+			bool HasValue() const;
+			ScriptValue GetValue() const;
+			bool SetValue(const ScriptValue& value) const;
 
 			// Attributes
 			bool HasAttribute(const String& name) const;
@@ -228,7 +224,7 @@ namespace kxf::Sciter
 			bool SetStyleFont(const wxFont& font);
 
 			// Selectors
-			size_t Select(const String& query, TOnElement onElement) const;
+			size_t Select(const String& query, std::function<bool(Element)> onElement) const;
 			Element SelectAny(const String& query) const;
 			std::vector<Element> SelectAll(const String& query) const;
 
@@ -243,6 +239,24 @@ namespace kxf::Sciter
 			Element GetElementByClass(const String& name) const
 			{
 				return SelectAny(String::Format(wxS(".%1"), name));
+			}
+
+			// Widgets
+			size_t SelectWidgets(const String& query, std::function<bool(Widget&)> onWidget) const;
+			Widget* SelectAnyWidget(const String& query) const;
+			std::vector<Widget*> SelectAllWidgets(const String& query) const;
+
+			Widget* GetWidgetByAttribute(const String& name, const String& value) const
+			{
+				return SelectAnyWidget(String::Format(wxS("[%1=%2]"), name, value));
+			}
+			Widget* GetWidgetByID(const String& id) const
+			{
+				return SelectAnyWidget(String::Format(wxS("#%1"), id));
+			}
+			Widget* GetWidgetByClass(const String& name) const
+			{
+				return SelectAnyWidget(String::Format(wxS(".%1"), name));
 			}
 
 			// Scripts
