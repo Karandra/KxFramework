@@ -20,7 +20,7 @@ namespace kxf::Sciter
 		Element thisNode = GetElement();
 
 		m_EditArea = Element::Create("EditArea");
-		if (thisNode.Append(m_EditArea))
+		if (thisNode.AppendChild(m_EditArea))
 		{
 			SetLabel(thisNode.GetAttribute(Attribute::Label));
 

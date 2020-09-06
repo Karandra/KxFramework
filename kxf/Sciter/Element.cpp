@@ -469,18 +469,18 @@ namespace kxf::Sciter
 			Element newElement = Create(tagName);
 
 			// Insert new the element into the DOM
-			parent.InsertAt(newElement, GetIndexWithinParent());
+			parent.InsertChildAt(newElement, GetIndexWithinParent());
 
 			// Move children into new element
 			for (Element& element: children)
 			{
-				newElement.Append(element);
+				newElement.AppendChild(element);
 			}
 
 			// Add text node if needed
 			if (String value = GetValue(); !value.IsEmpty())
 			{
-				newElement.ToNode().Append(Node::CreateTextNode(value));
+				newElement.ToNode().AppendChild(Node::CreateTextNode(value));
 			}
 
 			// Add attributes
@@ -573,28 +573,28 @@ namespace kxf::Sciter
 	}
 
 	// Insertion
-	bool Element::Append(const Element& node)
+	bool Element::AppendChild(const Element& childNode)
 	{
-		return InsertAt(node, GetIndexWithinParent() + 1);
+		return InsertChildAt(childNode, GetIndexWithinParent() + 1);
 	}
-	bool Element::Prepend(const Element& node)
+	bool Element::PrependChild(const Element& childNode)
 	{
 		const size_t index = GetIndexWithinParent();
-		return InsertAt(node, index != 0 ? index - 1 : 0);
+		return InsertChildAt(childNode, index != 0 ? index - 1 : 0);
 	}
-	bool Element::InsertAt(const Element& node, size_t index)
+	bool Element::InsertChildAt(const Element& childNode, size_t index)
 	{
-		return GetSciterAPI()->SciterInsertElement(ToSciterElement(node.m_Handle), ToSciterElement(m_Handle), index) == SCDOM_OK;
+		return GetSciterAPI()->SciterInsertElement(ToSciterElement(childNode.m_Handle), ToSciterElement(m_Handle), index) == SCDOM_OK;
 	}
-	bool Element::InsertBefore(const Element& node)
+	bool Element::InsertChildBefore(const Element& childNode)
 	{
-		const size_t index = node.GetIndexWithinParent();
-		return InsertAt(node, index != 0 ? index - 1 : 0);
+		const size_t index = childNode.GetIndexWithinParent();
+		return InsertChildAt(childNode, index != 0 ? index - 1 : 0);
 	}
-	bool Element::InsertAfter(const Element& node)
+	bool Element::InsertChildAfter(const Element& childNode)
 	{
-		const size_t index = node.GetIndexWithinParent();
-		return InsertAt(node, index + 1);
+		const size_t index = childNode.GetIndexWithinParent();
+		return InsertChildAt(childNode, index + 1);
 	}
 
 	// Native window

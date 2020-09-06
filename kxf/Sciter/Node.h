@@ -65,13 +65,17 @@ namespace kxf::Sciter
 				return GetChildAt(index);
 			}
 
-			bool Append(const Node& node);
-			bool Prepend(const Node& node);
-			bool InsertBefore(const Node& node);
-			bool InsertAfter(const Node& node);
+			bool AppendChild(const Node& childNode);
+			bool PrependChild(const Node& childNode);
+			bool InsertChildBefore(const Node& childNode);
+			bool InsertChildAfter(const Node& childNode);
 
 			String GetValue() const;
 			bool SetValue(StringView value) const;
+			bool SetValue(const String& value) const
+			{
+				return SetValue(value.GetView());
+			}
 
 		public:
 			Node& operator=(const Node& other) noexcept

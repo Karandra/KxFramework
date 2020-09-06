@@ -37,9 +37,9 @@ namespace kxf::Sciter
 
 		return static_cast<NODE_TYPE>(nodeType);
 	}
-	bool DoInsertNode(kxf::Sciter::Node& thisNode, const Node& node, NODE_INS_TARGET mode)
+	bool DoInsertNode(kxf::Sciter::Node& thisNode, const Node& childNode, NODE_INS_TARGET mode)
 	{
-		return GetSciterAPI()->SciterNodeInsert(ToSciterNode(thisNode.GetHandle()), mode, ToSciterNode(node.GetHandle())) == SCDOM_OK;
+		return GetSciterAPI()->SciterNodeInsert(ToSciterNode(thisNode.GetHandle()), mode, ToSciterNode(childNode.GetHandle())) == SCDOM_OK;
 	}
 }
 
@@ -152,21 +152,21 @@ namespace kxf::Sciter
 		return {};
 	}
 
-	bool Node::Append(const Node& node)
+	bool Node::AppendChild(const Node& childNode)
 	{
-		return DoInsertNode(*this, node, NODE_INS_TARGET::NIT_APPEND);
+		return DoInsertNode(*this, childNode, NODE_INS_TARGET::NIT_APPEND);
 	}
-	bool Node::Prepend(const Node& node)
+	bool Node::PrependChild(const Node& childNode)
 	{
-		return DoInsertNode(*this, node, NODE_INS_TARGET::NIT_PREPEND);
+		return DoInsertNode(*this, childNode, NODE_INS_TARGET::NIT_PREPEND);
 	}
-	bool Node::InsertBefore(const Node& node)
+	bool Node::InsertChildBefore(const Node& childNode)
 	{
-		return DoInsertNode(*this, node, NODE_INS_TARGET::NIT_BEFORE);
+		return DoInsertNode(*this, childNode, NODE_INS_TARGET::NIT_BEFORE);
 	}
-	bool Node::InsertAfter(const Node& node)
+	bool Node::InsertChildAfter(const Node& childNode)
 	{
-		return DoInsertNode(*this, node, NODE_INS_TARGET::NIT_AFTER);
+		return DoInsertNode(*this, childNode, NODE_INS_TARGET::NIT_AFTER);
 	}
 
 	String Node::GetValue() const

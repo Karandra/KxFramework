@@ -126,11 +126,11 @@ namespace kxf::Sciter
 			}
 			
 			// Insertion
-			bool Append(const Element& node);
-			bool Prepend(const Element& node);
-			bool InsertAt(const Element& node, size_t index);
-			bool InsertBefore(const Element& node);
-			bool InsertAfter(const Element& node);
+			bool AppendChild(const Element& childNode);
+			bool PrependChild(const Element& childNode);
+			bool InsertChildAt(const Element& childNode, size_t index);
+			bool InsertChildBefore(const Element& childNode);
+			bool InsertChildAfter(const Element& childNode);
 
 			// Native window
 			wxWindow* GetWindow() const;
