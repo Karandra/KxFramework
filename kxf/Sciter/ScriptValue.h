@@ -89,7 +89,8 @@ namespace kxf::Sciter
 			}
 
 		public:
-			bool IsNone() const;
+			bool IsNull() const;
+			bool IsUndefined() const;
 			ScriptValueType GetType() const;
 			
 			const ScriptNativeValue& GetNativeValue() const
@@ -169,11 +170,11 @@ namespace kxf::Sciter
 		public:
 			explicit operator bool() const
 			{
-				return !IsNone();
+				return !IsNull();
 			}
 			bool operator!() const
 			{
-				return IsNone();
+				return IsNull();
 			}
 
 			bool operator==(const ScriptValue& other) const

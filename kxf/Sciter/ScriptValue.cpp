@@ -127,7 +127,39 @@ namespace kxf::Sciter
 		GetSciterAPI()->ValueStringDataSet(ToSciterScriptValue(m_Value), data.data(), data.length(), MapStringType(type));
 	}
 
-	bool ScriptValue::IsNone() const
+	bool ScriptValue::IsNull() const
+	{
+		switch (static_cast<uint32_t>(m_Value.Type))
+		{
+			case VALUE_TYPE::T_UNDEFINED:
+			case VALUE_TYPE::T_NULL:
+			{
+				return true;
+			}
+			case VALUE_TYPE::T_STRING:
+			{
+				const wchar_t* data = nullptr;
+				uint32_t length = 0;
+				if (GetSciterAPI()->ValueStringData(ToSciterScriptValue(m_Value), &data, &length) == HV_OK)
+				{
+					return data == nullptr || length == 0;
+				}
+				break;
+			}
+			case VALUE_TYPE::T_BYTES:
+			{
+				const void* data = nullptr;
+				uint32_t size = 0;
+				if (GetSciterAPI()->ValueBinaryData(ToSciterScriptValue(m_Value), reinterpret_cast<const BYTE**>(&data), &size) == HV_OK)
+				{
+					return data == nullptr || size == 0;
+				}
+				break;
+			}
+		};
+		return false;
+	}
+	bool ScriptValue::IsUndefined() const
 	{
 		return static_cast<uint32_t>(m_Value.Type) == VALUE_TYPE::T_UNDEFINED;
 	}
@@ -217,7 +249,6 @@ namespace kxf::Sciter
 		{
 			const void* data = nullptr;
 			uint32_t size32 = 0;
-
 			if (GetSciterAPI()->ValueBinaryData(ToSciterScriptValue(m_Value), reinterpret_cast<const BYTE**>(&data), &size32) == HV_OK)
 			{
 				size = size32;
