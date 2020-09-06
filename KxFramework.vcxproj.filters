@@ -1487,6 +1487,12 @@
     <ClInclude Include="kxf\Sciter\Stylesheets\MasterStylesheetStorage.h">
       <Filter>kxf\Sciter\Stylesheets</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Sciter\Widgets\TextBoxWidget.h">
+      <Filter>kxf\Sciter\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Sciter\Widgets\Common.h">
+      <Filter>kxf\Sciter\Widgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2228,6 +2234,9 @@
     <ClCompile Include="kxf\Sciter\Stylesheets\MasterStylesheetStorage.cpp">
       <Filter>kxf\Sciter\Stylesheets</Filter>
     </ClCompile>
+    <ClCompile Include="kxf\Sciter\Widgets\TextBoxWidget.cpp">
+      <Filter>kxf\Sciter\Widgets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="kxf\System\Private\ErrorCodeNtStatus.i">
@@ -2271,6 +2280,9 @@
     </None>
     <None Include="kxf\Sciter\Stylesheets\MasterStylesheet.css">
       <Filter>kxf\Sciter\Stylesheets</Filter>
+    </None>
+    <None Include="kxf\Sciter\Widgets\TextBoxWidget.css">
+      <Filter>kxf\Sciter\Widgets</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

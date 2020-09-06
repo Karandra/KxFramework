@@ -6,6 +6,9 @@
 #include "Stylesheets/MasterStylesheetStorage.h"
 
 // Widgets
+#include "Widgets/TextBoxWidget.h"
+
+// Native widgets
 #include "Widgets/Native/TextBoxWidget.h"
 
 namespace
@@ -24,6 +27,9 @@ namespace kxf::Sciter::Private
 		stylesheetStorage.AddItem(String::FromView(g_MasterStylesheet));
 
 		// Register widgets
+		TextBoxWidgetFactory::RegisterInstance();
+
+		// Register native widgets
 		NativeTextBoxWidgetFactory::RegisterInstance();
 
 		// Apply global styles

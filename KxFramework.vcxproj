@@ -262,9 +262,11 @@
     <ClInclude Include="kxf\pch.hpp" />
     <ClInclude Include="kxf\Sciter\Stylesheets\MasterStylesheetStorage.h" />
     <ClInclude Include="kxf\Sciter\Stylesheets\StylesheetStorage.h" />
+    <ClInclude Include="kxf\Sciter\Widgets\Common.h" />
     <ClInclude Include="kxf\Sciter\Widgets\NativeWidget.h" />
     <ClInclude Include="kxf\Sciter\Widgets\Native\Common.h" />
     <ClInclude Include="kxf\Sciter\Widgets\Native\TextBoxWidget.h" />
+    <ClInclude Include="kxf\Sciter\Widgets\TextBoxWidget.h" />
     <ClInclude Include="kxf\Serialization.hpp" />
     <ClInclude Include="kxf\Serialization\Common.h" />
     <ClInclude Include="kxf\Serialization\HTML.h" />
@@ -648,6 +650,7 @@
     <ClCompile Include="kxf\Sciter\Stylesheets\StylesheetStorage.cpp" />
     <ClCompile Include="kxf\Sciter\Widgets\NativeWidget.cpp" />
     <ClCompile Include="kxf\Sciter\Widgets\Native\TextBoxWidget.cpp" />
+    <ClCompile Include="kxf\Sciter\Widgets\TextBoxWidget.cpp" />
     <ClCompile Include="kxf\Serialization\HTML\HTMLDocument.cpp" />
     <ClCompile Include="kxf\Serialization\HTML\HTMLNode.cpp" />
     <ClCompile Include="kxf\Serialization\HTML\Private\clean_text.cpp" />
@@ -866,6 +869,7 @@
     <None Include="cpp.hint" />
     <None Include="kxf\Sciter\Stylesheets\MasterStylesheet.css" />
     <None Include="kxf\Sciter\Widgets\Native\TextBoxWidget.css" />
+    <None Include="kxf\Sciter\Widgets\TextBoxWidget.css" />
     <None Include="kxf\System\Private\ErrorCodeNtStatus.i" />
     <None Include="LICENSE" />
     <None Include="README.md" />
