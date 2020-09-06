@@ -26,6 +26,20 @@ namespace kxf::Sciter
 		friend class WidgetEventDispatcher;
 
 		private:
+			static Widget* DoFromElement(const Element& element);
+
+		public:
+			template<class TWidget = Widget, class = std::enable_if_t<std::is_base_of_v<Widget, TWidget>>>
+			static TWidget* FromElement(const Element& element)
+			{
+				if constexpr(std::is_same_v<Widget, TWidget>)
+				{
+					return DoFromElement(element);
+				}
+				return static_cast<TWidget*>(FromElement(element));
+			}
+
+		private:
 			WidgetEventDispatcher m_EventDispatcher;
 			EvtHandlerStack m_EventHandlerStack;
 			EvtHandler m_EvtHandler;

@@ -1,15 +1,36 @@
 #include "stdafx.h"
 #include "Widget.h"
 #include "kxf/Application/ICoreApplication.h"
+#include "Widgets/TextBoxWidget.h"
+
+namespace
+{
+	namespace Attribute
+	{
+		constexpr auto Widget = "Widget";
+	}
+}
 
 namespace kxf::Sciter
 {
+	Widget* Widget::DoFromElement(const Element& element)
+	{
+		if (auto address = element.GetAttribute(Attribute::Widget).ToInt<size_t>())
+		{
+			return reinterpret_cast<Widget*>(*address);
+		}
+		return nullptr;
+	}
+
 	// Widget
 	void Widget::OnAttached()
 	{
+		m_Element.SetAttribute(Attribute::Widget, std::to_wstring(reinterpret_cast<size_t>(this)));
 	}
 	void Widget::OnDetached()
 	{
+		m_Element.RemoveAttribute(Attribute::Widget);
+
 		// In Sciter example we delete the object here
 		ICoreApplication::GetInstance()->ScheduleForDestruction(std::unique_ptr<IObject>(this));
 	}
