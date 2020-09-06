@@ -159,11 +159,15 @@ namespace kxf::Sciter
 			}
 
 			// Attributes
+			bool HasAttribute(const String& name) const;
+			bool HasAttribute(const char* name) const;
+
+			String GetAttribute(const String& name) const;
+			String GetAttribute(const char* name) const;
+
 			size_t GetAttributeCount() const;
 			String GetAttributeNameAt(size_t index) const;
 			String GetAttributeValueAt(size_t index) const;
-			String GetAttribute(const String& name) const;
-			String GetAttribute(const char* name) const;
 
 			bool SetAttribute(const String& name, const String& value);
 			bool SetAttribute(const char* name, const String& value);

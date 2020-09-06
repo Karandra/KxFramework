@@ -77,6 +77,19 @@ namespace
 		return value.ToFloatingPoint<double>();
 	}
 
+	void SC_CALLBACK ExtractStringLength(const wchar_t* value, UINT length, void* context)
+	{
+		*reinterpret_cast<size_t*>(context) = length;
+	}
+	void SC_CALLBACK ExtractStringLength(const char* value, UINT length, void* context)
+	{
+		*reinterpret_cast<size_t*>(context) = length;
+	}
+	void SC_CALLBACK ExtractStringLength(const BYTE* value, UINT length, void* context)
+	{
+		*reinterpret_cast<size_t*>(context) = length;
+	}
+
 	void SC_CALLBACK ExtractKxfString(const wchar_t* value, UINT length, void* context)
 	{
 		using namespace kxf;
@@ -680,6 +693,31 @@ namespace kxf::Sciter
 	}
 
 	// Attributes
+	bool Element::HasAttribute(const String& name) const
+	{
+		auto nameUTF8 = name.ToUTF8();
+		return HasAttribute(nameUTF8.data());
+	}
+	bool Element::HasAttribute(const char* name) const
+	{
+		size_t length = 0;
+		return GetSciterAPI()->SciterGetAttributeByNameCB(ToSciterElement(m_Handle), name, ExtractStringLength, &length);
+		return length != 0;
+	}
+
+	String Element::GetAttribute(const String& name) const
+	{
+		auto nameUTF8 = name.ToUTF8();
+		return GetAttribute(nameUTF8.data());
+	}
+	String Element::GetAttribute(const char* name) const
+	{
+		String result;
+
+		GetSciterAPI()->SciterGetAttributeByNameCB(ToSciterElement(m_Handle), name, ExtractKxfString, &result);
+		return result;
+	}
+
 	size_t Element::GetAttributeCount() const
 	{
 		UINT count = 0;
@@ -696,18 +734,6 @@ namespace kxf::Sciter
 	{
 		String result;
 		GetSciterAPI()->SciterGetNthAttributeValueCB(ToSciterElement(m_Handle), index, ExtractKxfString, &result);
-		return result;
-	}
-	String Element::GetAttribute(const String& name) const
-	{
-		auto nameUTF8 = name.ToUTF8();
-		return GetAttribute(nameUTF8.data());
-	}
-	String Element::GetAttribute(const char* name) const
-	{
-		String result;
-
-		GetSciterAPI()->SciterGetAttributeByNameCB(ToSciterElement(m_Handle), name, ExtractKxfString, &result);
 		return result;
 	}
 
@@ -742,17 +768,9 @@ namespace kxf::Sciter
 	}
 	bool Element::HasStyleAttribute(const char* name) const
 	{
-		struct CallContext
-		{
-			size_t Length = 0;
-		} context;
-		return GetSciterAPI()->SciterGetStyleAttributeCB(ToSciterElement(m_Handle), name, [](const wchar_t* value, UINT length, void* context)
-		{
-			CallContext& callContext = *reinterpret_cast<CallContext*>(context);
-			callContext.Length = length;
-		}, &context);
-
-		return context.Length != 0;
+		size_t length = 0;
+		return GetSciterAPI()->SciterGetStyleAttributeCB(ToSciterElement(m_Handle), name, ExtractStringLength, &length);
+		return length != 0;
 	}
 
 	String Element::GetStyleAttribute(const String& name) const
