@@ -1,12 +1,16 @@
 #pragma once
 #include "Common.h"
+#include "kxf/EventSystem/EvtHandler.h"
 
 namespace kxf::Sciter
 {
 	class KX_API TextBoxWidget: public Widget
 	{
 		private:
+			Element m_LabelArea;
 			Element m_EditArea;
+
+			EvtHandler m_EditAreaEvtHandler;
 
 		protected:
 			// Widget

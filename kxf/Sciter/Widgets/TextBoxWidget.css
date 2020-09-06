@@ -11,7 +11,21 @@ kxf\:TextBox
 	:root
 	{
 		display: block;
+		width: *;
+		padding-top: 0.5em;
+		border-bottom: 1dip solid;
+		border-bottom-color: ThreeDShadow;
 	}
+
+		:root > LabelArea
+		{
+			display: inherit;
+			width: *;
+			transform-origin: 0% 0%;
+			transition: transform quad-out 150ms;
+			color: WindowText;
+			transform: translate(0, 1.5em);
+		}
 
 		:root > EditArea
 		{
@@ -19,37 +33,16 @@ kxf\:TextBox
 			white-space: pre;
 			behavior: edit;
 			display: inherit;
-			background: transparent;
-			padding-top: 0.5em;
-			border-bottom: 1dip solid;
-			border-bottom-color: ThreeDShadow;
 			width: *;
+			background: transparent;
 			foreground: url(stock:block) center bottom no-repeat;
 			foreground-size: 0% 2dip;
 			foreground-clip: border-box;
 			fill: Highlight;
-			transition: foreground-size quad-out 150ms;
+			transition: foreground-size quad-out 200ms;
 			cursor: text;
 			line-height: 1.5em;
 		}
-
-			:root > EditArea::marker
-			{
-				margin-top: 0.5em;
-				line-height: 1.5em;
-				width: *;
-				transform-origin: 0% 0%;
-				color: WindowText;
-				content: attr(Label);
-				transition: transform quad-out 160ms;
-			}
-
-			:root > EditArea:owns-focus::marker,
-			:root > EditArea:not(:empty)::marker
-			{
-				transform: translate(0,-80%) scale(0.9);
-				opacity: 0.75;
-			}
 
 			:root > EditArea:owns-focus
 			{
