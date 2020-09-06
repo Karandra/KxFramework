@@ -42,7 +42,7 @@ namespace kxf::Sciter
 
 			EventDispatcher m_EventDispatcher;
 			std::unique_ptr<IWindowRenderer> m_Renderer;
-			std::unordered_map<EvtHandler*, std::unique_ptr<BasicEventDispatcher>> m_ElementEventDispatchers;
+			std::unordered_map<IEvtHandler*, std::unique_ptr<BasicEventDispatcher>> m_ElementEventDispatchers;
 			FPSCounter m_FrameCounter;
 
 			bool m_EngineCreated = false;
@@ -67,8 +67,8 @@ namespace kxf::Sciter
 
 			void AttachElementHandler(Element& element);
 			void DetachElementHandler(Element& element);
-			void AttachElementHandler(Element& element, EvtHandler& evtHandler);
-			void DetachElementHandler(Element& element, EvtHandler& evtHandler);
+			void AttachElementHandler(Element& element, IEvtHandler& evtHandler);
+			void DetachElementHandler(Element& element, IEvtHandler& evtHandler);
 
 		protected:
 			bool SciterPreHandleMessage(WXLRESULT* result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam);

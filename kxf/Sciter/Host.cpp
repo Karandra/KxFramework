@@ -109,12 +109,12 @@ namespace kxf::Sciter
 	{
 		m_EventDispatcher.DetachElement(element);
 	}
-	void Host::AttachElementHandler(Element& element, EvtHandler& evtHandler)
+	void Host::AttachElementHandler(Element& element, IEvtHandler& evtHandler)
 	{
 		auto [it, newItem] = m_ElementEventDispatchers.insert_or_assign(&evtHandler, std::make_unique<EventDispatcher>(*this, evtHandler));
 		it->second->AttachElement(element);
 	}
-	void Host::DetachElementHandler(Element& element, EvtHandler& evtHandler)
+	void Host::DetachElementHandler(Element& element, IEvtHandler& evtHandler)
 	{
 		if (auto it = m_ElementEventDispatchers.find(&evtHandler); it != m_ElementEventDispatchers.end())
 		{
@@ -404,9 +404,9 @@ namespace kxf::Sciter
 			GetRootElement().SetAttribute(wxS("window-blurbehind"), value);
 			if (!value.IsEmpty())
 			{
-				return !ExecuteScript(String::Format(wxS("view.windowBlurbehind = #%1;"), value)).IsNone();
+				return !ExecuteScript(String::Format(wxS("view.windowBlurbehind = #%1;"), value)).IsUndefined();
 			}
-			return !ExecuteScript(wxS("view.windowBlurbehind = #none;")).IsNone();
+			return !ExecuteScript(wxS("view.windowBlurbehind = #none;")).IsUndefined();
 		};
 
 		switch (blurMode)
