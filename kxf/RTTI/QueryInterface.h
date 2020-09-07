@@ -78,6 +78,15 @@ friend constexpr kxf::IID kxf::IID::FromType<T>() noexcept;	\
 private:	\
 	static constexpr kxf::IID ms_IID = kxf::NativeUUID __VA_ARGS__;
 
+#define KxImplementQueryInterface(T, ...)	\
+\
+public:	\
+using IObject::QueryInterface;	\
+void* QueryInterface(const IID& iid) noexcept override	\
+{	\
+	return IObject::QuerySelf<__VA_ARGS__>(iid, static_cast<T&>(*this));	\
+}
+
 namespace kxf
 {
 	class KX_API IObject

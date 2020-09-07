@@ -47,7 +47,7 @@ namespace kxf::wxWidgets
 				return m_Event->WillBeProcessedAgain();
 			}
 
-			void OnStartProcess(const EventID& eventID, const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, bool isAsync) override
+			bool OnStartProcess(const EventID& eventID, const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, bool isAsync) override
 			{
 				if (!m_ProcessStarted)
 				{
@@ -56,7 +56,10 @@ namespace kxf::wxWidgets
 					m_Event->SetTimestamp(TimeSpan::Now(SteadyClock()).GetMilliseconds());
 					m_ProcessFlags = flags;
 					m_IsAsync = isAsync;
+
+					return true;
 				}
+				return false;
 			}
 			FlagSet<ProcessEventFlag> GetProcessFlags() const override
 			{
