@@ -259,6 +259,32 @@ namespace kxf::Sciter
 				return SelectAnyWidget(String::Format(wxS(".%1"), name));
 			}
 
+			template<class TWidget, class TFunc>
+			size_t SelectWidgetsByType(const String& query, TFunc&& onWidget) const
+			{
+				if constexpr(std::is_same_v<Widget, TWidget>)
+				{
+					return SelectWidgets(query, onWidget);
+				}
+				else
+				{
+					size_t count = 0;
+					SelectWidgets(query, [&](Widget& widget)
+					{
+						if (TWidget* desiredWidget = widget.QueryInterface<TWidget>())
+						{
+							count++;
+							if (!std::invoke(onWidget, *desiredWidget))
+							{
+								return false;
+							}
+						}
+						return true;
+					});
+					return count;
+				}
+			}
+
 			// Scripts
 			ScriptValue ExecuteScript(const String& script);
 

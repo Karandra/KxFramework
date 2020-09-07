@@ -1073,20 +1073,32 @@ namespace kxf::Sciter
 	// Widgets
 	size_t Element::SelectWidgets(const String& query, std::function<bool(Widget&)> onWidget) const
 	{
-		size_t count = 0;
-		Select(query, [&](Element element)
+		auto DoSelectWidgets = [&](const String& query)
 		{
-			if (Widget* widget = Widget::FromElement(element))
+			size_t count = 0;
+			Select(query, [&](Element element)
 			{
-				count++;
-				if (!std::invoke(onWidget, *widget))
+				if (Widget* widget = Widget::FromElement(element))
 				{
-					return false;
+					count++;
+					if (!std::invoke(onWidget, *widget))
+					{
+						return false;
+					}
 				}
-			}
-			return true;
-		});
-		return count;
+				return true;
+			});
+			return count;
+		};
+
+		if (query.IsEmptyOrWhitespace() || query == wxS('*'))
+		{
+			return DoSelectWidgets(wxS("[Widget]"));
+		}
+		else
+		{
+			return DoSelectWidgets(String(wxS("[Widget] ")) + query);
+		}
 	}
 	Widget* Element::SelectAnyWidget(const String& query) const
 	{
