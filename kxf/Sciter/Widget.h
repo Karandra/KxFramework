@@ -192,7 +192,7 @@ namespace kxf::Sciter
 			{
 				return m_Element.HasFocus();
 			}
-			void SetFocus()
+			bool SetFocus()
 			{
 				return m_Element.SetFocus();
 			}

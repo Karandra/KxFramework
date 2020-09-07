@@ -87,10 +87,19 @@ namespace kxf::Sciter
 
 			bool IsFocusable() const;
 			bool HasFocus() const;
-			void SetFocus();
+			bool SetFocus();
 
 			bool IsHighlighted() const;
 			void SetHighlighted();
+
+			FlagSet<ElementState> GetState() const;
+			bool SetState(FlagSet<ElementState> state, bool update = false);
+			bool AddState(FlagSet<ElementState> state, bool update = false);
+			bool RemoveState(FlagSet<ElementState> state, bool update = false);
+
+			bool IsActive() const;
+			bool IsCurrent() const;
+			bool IsAnimating() const;
 
 			// Scrolling
 			void ScrollIntoView(bool toTop = false);

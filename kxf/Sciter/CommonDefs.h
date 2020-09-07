@@ -35,6 +35,41 @@ namespace kxf::Sciter
 		DirectX
 	};
 
+	enum class ElementState: uint32_t
+	{
+		None = 0,
+
+		Link = 1 << 0,
+		Hover = 1 << 1,
+		Active = 1 << 2,
+		Focus = 1 << 3,
+		Visited = 1 << 4,
+		Current = 1 << 5,
+		Checked = 1 << 6,
+		Disabled = 1 << 7,
+		ReadOnly = 1 << 8,
+		Expanded = 1 << 9,
+		Collapsed = 1 << 10,
+		Incomplete = 1 << 11,
+		Animating = 1 << 12,
+		Focusable = 1 << 12,
+		Anchor = 1 << 13,
+		Syntetic = 1 << 14,
+		OwnsPopup = 1 << 15,
+		TabFocus = 1 << 16,
+		Empty = 1 << 17,
+		Busy = 1 << 18,
+		DragOver = 1 << 19,
+		DragSource = 1 << 20,
+		DropTarget = 1 << 21,
+		DropMarker = 1 << 22,
+		Moving = 1 << 23,
+		Copying = 1 << 24,
+		Pressed = 1 << 25,
+		Popup = 1 << 26,
+		LayoutLTR = 1 << 27,
+		LayoutRTL = 1 << 28,
+	};
 	enum class ElementInnerHTML
 	{
 		Replace,
@@ -92,4 +127,9 @@ namespace kxf::Sciter
 		double Descent = 0;
 		int LineCount = 0;
 	};
+}
+
+namespace kxf
+{
+	KxDeclareFlagSet(Sciter::ElementState);
 }

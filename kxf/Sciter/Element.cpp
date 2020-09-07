@@ -38,6 +38,85 @@ namespace
 		}
 	}
 
+	constexpr kxf::FlagSet<kxf::Sciter::ElementState> MapElementState(uint32_t nativeState) noexcept
+	{
+		using namespace kxf;
+		using namespace kxf::Sciter;
+
+		FlagSet<ElementState> state;
+		state.Add(ElementState::Link, nativeState & ELEMENT_STATE_BITS::STATE_LINK);
+		state.Add(ElementState::Hover, nativeState & ELEMENT_STATE_BITS::STATE_HOVER);
+		state.Add(ElementState::Active, nativeState & ELEMENT_STATE_BITS::STATE_ACTIVE);
+		state.Add(ElementState::Focus, nativeState & ELEMENT_STATE_BITS::STATE_FOCUS);
+		state.Add(ElementState::Visited, nativeState & ELEMENT_STATE_BITS::STATE_VISITED);
+		state.Add(ElementState::Current, nativeState & ELEMENT_STATE_BITS::STATE_CURRENT);
+		state.Add(ElementState::Checked, nativeState & ELEMENT_STATE_BITS::STATE_CHECKED);
+		state.Add(ElementState::Disabled, nativeState & ELEMENT_STATE_BITS::STATE_DISABLED);
+		state.Add(ElementState::ReadOnly, nativeState & ELEMENT_STATE_BITS::STATE_READONLY);
+		state.Add(ElementState::Expanded, nativeState & ELEMENT_STATE_BITS::STATE_EXPANDED);
+		state.Add(ElementState::Collapsed, nativeState & ELEMENT_STATE_BITS::STATE_COLLAPSED);
+		state.Add(ElementState::Incomplete, nativeState & ELEMENT_STATE_BITS::STATE_INCOMPLETE);
+		state.Add(ElementState::Animating, nativeState & ELEMENT_STATE_BITS::STATE_ANIMATING);
+		state.Add(ElementState::Focusable, nativeState & ELEMENT_STATE_BITS::STATE_FOCUSABLE);
+		state.Add(ElementState::Anchor, nativeState & ELEMENT_STATE_BITS::STATE_ANCHOR);
+		state.Add(ElementState::Syntetic, nativeState & ELEMENT_STATE_BITS::STATE_SYNTHETIC);
+		state.Add(ElementState::OwnsPopup, nativeState & ELEMENT_STATE_BITS::STATE_OWNS_POPUP);
+		state.Add(ElementState::TabFocus, nativeState & ELEMENT_STATE_BITS::STATE_TABFOCUS);
+		state.Add(ElementState::Empty, nativeState & ELEMENT_STATE_BITS::STATE_EMPTY);
+		state.Add(ElementState::Busy, nativeState & ELEMENT_STATE_BITS::STATE_BUSY);
+		state.Add(ElementState::DragOver, nativeState & ELEMENT_STATE_BITS::STATE_DRAG_OVER);
+		state.Add(ElementState::DragSource, nativeState & ELEMENT_STATE_BITS::STATE_DRAG_SOURCE);
+		state.Add(ElementState::DropTarget, nativeState & ELEMENT_STATE_BITS::STATE_DROP_TARGET);
+		state.Add(ElementState::DropMarker, nativeState & ELEMENT_STATE_BITS::STATE_DROP_MARKER);
+		state.Add(ElementState::Moving, nativeState & ELEMENT_STATE_BITS::STATE_MOVING);
+		state.Add(ElementState::Copying, nativeState & ELEMENT_STATE_BITS::STATE_COPYING);
+		state.Add(ElementState::Pressed, nativeState & ELEMENT_STATE_BITS::STATE_PRESSED);
+		state.Add(ElementState::Popup, nativeState & ELEMENT_STATE_BITS::STATE_POPUP);
+		state.Add(ElementState::LayoutLTR, nativeState & ELEMENT_STATE_BITS::STATE_IS_LTR);
+		state.Add(ElementState::LayoutRTL, nativeState & ELEMENT_STATE_BITS::STATE_IS_RTL);
+
+		return state;
+	}
+	constexpr uint32_t MapElementState(kxf::FlagSet<kxf::Sciter::ElementState> state) noexcept
+	{
+		using namespace kxf;
+		using namespace kxf::Sciter;
+
+		FlagSet<uint32_t> nativeState;
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_LINK, state & ElementState::Link);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_HOVER, state & ElementState::Hover);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_ACTIVE, state & ElementState::Active);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_FOCUS, state & ElementState::Focus);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_VISITED, state & ElementState::Visited);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_CURRENT, state & ElementState::Current);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_CHECKED, state & ElementState::Checked);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_DISABLED, state & ElementState::Disabled);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_READONLY, state & ElementState::ReadOnly);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_EXPANDED, state & ElementState::Expanded);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_COLLAPSED, state & ElementState::Collapsed);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_INCOMPLETE, state & ElementState::Incomplete);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_ANIMATING, state & ElementState::Animating);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_FOCUSABLE, state & ElementState::Focusable);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_ANCHOR, state & ElementState::Anchor);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_SYNTHETIC, state & ElementState::Syntetic);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_OWNS_POPUP, state & ElementState::OwnsPopup);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_TABFOCUS, state & ElementState::TabFocus);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_EMPTY, state & ElementState::Empty);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_BUSY, state & ElementState::Busy);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_DRAG_OVER, state & ElementState::DragOver);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_DRAG_SOURCE, state & ElementState::DragSource);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_DROP_TARGET, state & ElementState::DropTarget);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_DROP_MARKER, state & ElementState::DropMarker);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_MOVING, state & ElementState::Moving);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_COPYING, state & ElementState::Copying);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_PRESSED, state & ElementState::Pressed);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_POPUP, state & ElementState::Popup);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_IS_LTR, state & ElementState::LayoutLTR);
+		nativeState.Add(ELEMENT_STATE_BITS::STATE_IS_RTL, state & ElementState::LayoutRTL);
+
+		return *nativeState;
+	}
+
 	template<class TFunc>
 	kxf::Sciter::Element DoGetElemenet(kxf::Sciter::ElementHandle* handle, TFunc&& func)
 	{
@@ -51,14 +130,13 @@ namespace
 		return {};
 	}
 
-	bool DoCheckStateFlag(kxf::Sciter::ElementHandle* handle, ELEMENT_STATE_BITS flag)
+	kxf::FlagSet<ELEMENT_STATE_BITS> DoGetElementState(kxf::Sciter::ElementHandle* handle) noexcept
 	{
 		using namespace kxf::Sciter;
 
 		UINT state = 0;
 		GetSciterAPI()->SciterGetElementState(ToSciterElement(handle), &state);
-
-		return state & flag;
+		return static_cast<ELEMENT_STATE_BITS>(state);
 	}
 
 	template<class TName>
@@ -298,15 +376,15 @@ namespace kxf::Sciter
 
 	bool Element::IsFocusable() const
 	{
-		return DoCheckStateFlag(m_Handle, ELEMENT_STATE_BITS::STATE_FOCUSABLE);
+		return DoGetElementState(m_Handle).Contains(ELEMENT_STATE_BITS::STATE_FOCUSABLE);
 	}
 	bool Element::HasFocus() const
 	{
-		return DoCheckStateFlag(m_Handle, ELEMENT_STATE_BITS::STATE_FOCUS);
+		return DoGetElementState(m_Handle).Contains(ELEMENT_STATE_BITS::STATE_FOCUS);
 	}
-	void Element::SetFocus()
+	bool Element::SetFocus()
 	{
-		GetSciterAPI()->SciterSetElementState(ToSciterElement(m_Handle), ELEMENT_STATE_BITS::STATE_FOCUS, 0, FALSE);
+		return GetSciterAPI()->SciterSetElementState(ToSciterElement(m_Handle), ELEMENT_STATE_BITS::STATE_FOCUS, 0, FALSE) == SCDOM_OK;
 	}
 
 	bool Element::IsHighlighted() const
@@ -323,6 +401,49 @@ namespace kxf::Sciter
 		{
 			host->SetHighlightedElement(*this);
 		}
+	}
+
+	FlagSet<ElementState> Element::GetState() const
+	{
+		UINT nativeState = 0;
+		if (GetSciterAPI()->SciterGetElementState(ToSciterElement(m_Handle), &nativeState) == SCDOM_OK)
+		{
+			return MapElementState(nativeState);
+		}
+		return {};
+	}
+	bool Element::SetState(FlagSet<ElementState> state, bool update)
+	{
+		UINT existingNativeState = 0;
+		if (GetSciterAPI()->SciterGetElementState(ToSciterElement(m_Handle), &existingNativeState) == SCDOM_OK)
+		{
+			const uint32_t newNativeState = MapElementState(state);
+			return GetSciterAPI()->SciterSetElementState(ToSciterElement(m_Handle), newNativeState, existingNativeState ^ newNativeState, update) == SCDOM_OK;
+		}
+		return false;
+	}
+	bool Element::AddState(FlagSet<ElementState> state, bool update)
+	{
+		const uint32_t nativeState = MapElementState(state);
+		return GetSciterAPI()->SciterSetElementState(ToSciterElement(m_Handle), nativeState, 0, update) == SCDOM_OK;
+	}
+	bool Element::RemoveState(FlagSet<ElementState> state, bool update)
+	{
+		const uint32_t nativeState = MapElementState(state);
+		return GetSciterAPI()->SciterSetElementState(ToSciterElement(m_Handle), 0, nativeState, update) == SCDOM_OK;
+	}
+
+	bool Element::IsActive() const
+	{
+		return DoGetElementState(m_Handle).Contains(ELEMENT_STATE_BITS::STATE_ACTIVE);
+	}
+	bool Element::IsCurrent() const
+	{
+		return DoGetElementState(m_Handle).Contains(ELEMENT_STATE_BITS::STATE_CURRENT);
+	}
+	bool Element::IsAnimating() const
+	{
+		return DoGetElementState(m_Handle).Contains(ELEMENT_STATE_BITS::STATE_ANIMATING);
 	}
 
 	// Scrolling
