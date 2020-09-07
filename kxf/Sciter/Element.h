@@ -18,6 +18,13 @@ namespace kxf::Sciter
 
 	struct ElementHandle;
 	struct ElementUID;
+
+	enum class ElementVisibility
+	{
+		Hidden = 0,
+		Visible = 1,
+		Default = -1
+	};
 }
 
 namespace kxf::Sciter
@@ -79,7 +86,11 @@ namespace kxf::Sciter
 
 			// Visibility
 			bool IsVisible() const;
-			void SetVisible(bool visible = true);
+			bool SetVisible(bool visible = true)
+			{
+				return SetVisible(visible ? ElementVisibility::Default : ElementVisibility::Hidden);
+			}
+			bool SetVisible(ElementVisibility visibility);
 
 			// Misc
 			bool SetCapture();

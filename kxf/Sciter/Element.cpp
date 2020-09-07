@@ -352,16 +352,24 @@ namespace kxf::Sciter
 
 		return result;
 	}
-	void Element::SetVisible(bool visible)
+	bool Element::SetVisible(ElementVisibility visibility)
 	{
-		if (visible)
+		switch (visibility)
 		{
-			SetStyleAttribute("visibility", "hidden");
-		}
-		else
-		{
-			SetStyleAttribute("visibility", "inherit");
-		}
+			case ElementVisibility::Visible:
+			{
+				return SetStyleAttribute("visibility", "visible");
+			}
+			case ElementVisibility::Hidden:
+			{
+				return SetStyleAttribute("visibility", "hidden");
+			}
+			case ElementVisibility::Default:
+			{
+				return RemoveStyleAttribute("visibility");
+			}
+		};
+		return false;
 	}
 
 	// Misc
