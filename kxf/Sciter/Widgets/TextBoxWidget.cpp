@@ -42,24 +42,6 @@ namespace kxf::Sciter
 			Widget::OnAttached();
 		}
 	}
-
-	String TextBoxWidget::GetValue() const
-	{
-		return m_EditArea.GetValue().GetString();
-	}
-	void TextBoxWidget::SetValue(StringView value)
-	{
-		m_EditArea.SetValue(value);
-	}
-
-	String TextBoxWidget::GetLabel() const
-	{
-		return m_LabelArea.GetValue().GetString();
-	}
-	void TextBoxWidget::SetLabel(const String& label)
-	{
-		m_LabelArea.SetValue(label);
-	}
 }
 
 namespace kxf::Sciter

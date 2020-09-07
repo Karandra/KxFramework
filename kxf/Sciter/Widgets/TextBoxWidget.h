@@ -27,15 +27,39 @@ namespace kxf::Sciter
 			TextBoxWidget(const TextBoxWidget&) = delete;
 
 		public:
-			String GetValue() const;
-			void SetValue(StringView value);
+			bool HasValue() const
+			{
+				return m_EditArea.HasValue();
+			}
+			String GetValue() const
+			{
+				return m_EditArea.GetValue().GetString();
+			}
+			void SetValue(StringView value)
+			{
+				m_EditArea.SetValue(value);
+			}
 			void SetValue(const String& value)
 			{
 				SetValue(value.GetView());
 			}
 
-			String GetLabel() const;
-			void SetLabel(const String& label);
+			bool HasLabel() const
+			{
+				return m_LabelArea.HasValue();
+			}
+			String GetLabel() const
+			{
+				return m_LabelArea.GetValue().GetString();
+			}
+			void SetLabel(const String& label)
+			{
+				m_LabelArea.SetValue(label);
+			}
+			void SetLabel(StringView value)
+			{
+				m_EditArea.SetValue(value);
+			}
 
 		public:
 			TextBoxWidget& operator=(const TextBoxWidget&) = delete;
