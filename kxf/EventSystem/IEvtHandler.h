@@ -56,11 +56,11 @@ namespace kxf
 				flags.Add(ProcessEventFlag::Locally);
 				if constexpr(Traits::IsMemberFunction)
 				{
-					return DoQueueEvent(std::make_unique<MethodIndirectInvocation<TCallable, Args...>>(*this, callable, std::forward<Args>(arg)...), IIndirectInvocationEvent::EvtIndirectInvocation, uuid, flags);
+					return DoQueueEvent(std::make_unique<MethodIndirectInvocation<TCallable, Args...>>(callable, std::forward<Args>(arg)...), IIndirectInvocationEvent::EvtIndirectInvocation, uuid, flags);
 				}
 				else if constexpr(Traits::IsInvokable)
 				{
-					return DoQueueEvent(std::make_unique<CallableIndirectInvocation<TCallable, Args...>>(*this, std::forward<TCallable>(callable), std::forward<Args>(arg)...), IIndirectInvocationEvent::EvtIndirectInvocation, uuid, flags);
+					return DoQueueEvent(std::make_unique<CallableIndirectInvocation<TCallable, Args...>>(std::forward<TCallable>(callable), std::forward<Args>(arg)...), IIndirectInvocationEvent::EvtIndirectInvocation, uuid, flags);
 				}
 				else
 				{

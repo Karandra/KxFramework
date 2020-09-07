@@ -6,15 +6,8 @@ namespace kxf::EventSystem
 {
 	class IndirectInvocationEvent: public RTTI::ImplementInterface<IndirectInvocationEvent, BasicEvent, IIndirectInvocationEvent>
 	{
-		private:
-			IEvtHandler* m_EvtHandler = nullptr;
-
 		public:
-			IndirectInvocationEvent(IEvtHandler& evtHandler)
-				:m_EvtHandler(&evtHandler)
-			{
-				BasicEvent::SetEventSource(&evtHandler);
-			}
+			IndirectInvocationEvent() noexcept = default;
 
 		public:
 			// IEvent
@@ -27,12 +20,12 @@ namespace kxf::EventSystem
 				return EventCategory::Unknown;
 			}
 
-			IEvtHandler* GetEventSource() const override
-			{
-				return m_EvtHandler;
-			}
 			void SetEventSource(IEvtHandler* evtHandler) override
 			{
+				if (!BasicEvent::GetEventSource())
+				{
+					BasicEvent::SetEventSource(evtHandler);
+				}
 			}
 
 			bool IsSkipped() const override
@@ -64,8 +57,8 @@ namespace kxf::EventSystem
 			std::tuple<Args...> m_Parameters;
 
 		public:
-			CallableIndirectInvocation(IEvtHandler& evtHandler, TCallable&& callable, Args&&... arg)
-				:IndirectInvocationEvent(evtHandler), m_Callable(std::forward<TCallable>(callable)), m_Parameters(std::forward<Args>(arg)...)
+			CallableIndirectInvocation(TCallable&& callable, Args&&... arg)
+				:m_Callable(std::forward<TCallable>(callable)), m_Parameters(std::forward<Args>(arg)...)
 			{
 			}
 			
@@ -93,11 +86,10 @@ namespace kxf::EventSystem
 		protected:
 			std::tuple<Args...> m_Parameters;
 			TMethod m_Method = nullptr;
-			TClass* m_EvtHandler = nullptr;
 
 		public:
-			MethodIndirectInvocation(IEvtHandler& evtHandler, TMethod method, Args&&... arg)
-				:IndirectInvocationEvent(evtHandler), m_EvtHandler(static_cast<TClass*>(&evtHandler)), m_Method(method), m_Parameters(std::forward<Args>(arg)...)
+			MethodIndirectInvocation(TMethod method, Args&&... arg)
+				:m_Method(method), m_Parameters(std::forward<Args>(arg)...)
 			{
 				static_assert(std::is_base_of_v<IEvtHandler, TClass>, "IEvtHandler descendant required");
 			}
@@ -114,7 +106,8 @@ namespace kxf::EventSystem
 			{
 				std::apply([this](auto&&... arg)
 				{
-					std::invoke(m_Method, m_EvtHandler, std::forward<decltype(arg)>(arg)...);
+					TClass* evtHandler = static_cast<TClass*>(GetEventSource());
+					std::invoke(m_Method, evtHandler, std::forward<decltype(arg)>(arg)...);
 				}, std::move(m_Parameters));
 			}
 	};

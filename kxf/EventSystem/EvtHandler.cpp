@@ -103,7 +103,14 @@ namespace kxf
 
 	void EvtHandler::PrepareEvent(IEvent& event, const EventID& eventID, const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, bool isAsync)
 	{
-		event.QueryInterface<IEventInternal>()->OnStartProcess(eventID, uuid, flags, isAsync);
+		if (event.QueryInterface<IEventInternal>()->OnStartProcess(eventID, uuid, flags, isAsync))
+		{
+			// Set event source for indirect event calls
+			if (isAsync && event.QueryInterface<IIndirectInvocationEvent>())
+			{
+				event.SetEventSource(this);
+			}
+		}
 	}
 	bool EvtHandler::FreeBindSlot(const LocallyUniqueID& bindSlot)
 	{
@@ -177,7 +184,7 @@ namespace kxf
 		// If the event handler is disabled it doesn't process any events at all
 		if (IsEventProcessingEnabled())
 		{
-			// There is an implicit entry for indirect method invocation in every event handler
+			// There is an implicit entry for indirect invocation in every event handler
 			IIndirectInvocationEvent* indirectInvoke = nullptr;
 			if (event.GetEventSource() == this && event.QueryInterface(indirectInvoke))
 			{

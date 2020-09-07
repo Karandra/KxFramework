@@ -90,7 +90,7 @@ namespace kxf
 				return TestAndSetPrivateState(EventPrivateState::WillBeProcessedAgain);
 			}
 
-			void OnStartProcess(const EventID& eventID, const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, bool isAsync) override
+			bool OnStartProcess(const EventID& eventID, const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, bool isAsync) override
 			{
 				if (!m_PrivateState.Contains(EventPrivateState::Started))
 				{
@@ -101,7 +101,10 @@ namespace kxf
 					m_UniqueID = std::move(uuid);
 					m_Timestamp = TimeSpan::Now(SteadyClock());
 					m_ProcessFlags = flags;
+
+					return true;
 				}
+				return false;
 			}
 			FlagSet<ProcessEventFlag> GetProcessFlags() const override
 			{

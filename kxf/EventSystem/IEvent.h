@@ -60,7 +60,7 @@ namespace kxf
 			virtual bool WasProcessed() const = 0;
 			virtual bool WillBeProcessedAgain() const = 0;
 
-			virtual void OnStartProcess(const EventID& eventID, const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, bool isAsync) = 0;
+			virtual bool OnStartProcess(const EventID& eventID, const UniversallyUniqueID& uuid, FlagSet<ProcessEventFlag> flags, bool isAsync) = 0;
 			virtual FlagSet<ProcessEventFlag> GetProcessFlags() const = 0;
 
 			virtual std::unique_ptr<IEvent> WaitProcessed() = 0;
