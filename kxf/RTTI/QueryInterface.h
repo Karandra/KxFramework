@@ -203,7 +203,7 @@ namespace kxf::RTTI
 			using IObject::QueryInterface;
 			void* QueryInterface(const IID& iid) noexcept override
 			{
-				static_assert((std::is_base_of_v<IObject, TBase> && ...), "[...] must inherit from 'KxIObject'");
+				static_assert((std::is_base_of_v<IObject, TBase> && ...), "[...] must inherit from 'IObject'");
 
 				return IObject::QuerySelf<TBase...>(iid, static_cast<TDerived&>(*this));
 			}
@@ -219,7 +219,7 @@ namespace kxf::RTTI
 			using IObject::QueryInterface;
 			void* QueryInterface(const IID& iid) noexcept override
 			{
-				static_assert((std::is_base_of_v<IObject, TBase> && ...), "[...] must inherit from 'KxIObject'");
+				static_assert((std::is_base_of_v<IObject, TBase> && ...), "[...] must inherit from 'IObject'");
 
 				if (void* ptr = nullptr; ((ptr = TBase::QueryInterface(iid), ptr != nullptr) || ...))
 				{
