@@ -6,8 +6,8 @@ namespace kxf::Sciter
 {
 	class KX_API NativeTextBoxWidget: public NativeWidget, public UI::TextBox
 	{
-		KxDeclareIID(NativeTextBoxWidget, {0x7edd9ea0, 0x16ca, 0x427e, {0x81, 0x27, 0xbb, 0x5d, 0x8c, 0x11, 0xdd, 0x55}});
-		KxImplementQueryInterface(NativeTextBoxWidget, NativeWidget);
+		KxRTTI_DeclareIID(NativeTextBoxWidget, {0x7edd9ea0, 0x16ca, 0x427e, {0x81, 0x27, 0xbb, 0x5d, 0x8c, 0x11, 0xdd, 0x55}});
+		KxRTTI_QueryInterface_Extend(NativeTextBoxWidget, NativeWidget);
 
 		protected:
 			// NativeWidget

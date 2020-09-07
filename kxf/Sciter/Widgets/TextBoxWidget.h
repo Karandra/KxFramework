@@ -6,8 +6,8 @@ namespace kxf::Sciter
 {
 	class KX_API TextBoxWidget: public Widget
 	{
-		KxDeclareIID(TextBoxWidget, {0xec599691, 0x8610, 0x4987, {0x99, 0xcb, 0xe3, 0x27, 0x81, 0xf2, 0xc4, 0x2f}});
-		KxImplementQueryInterface(TextBoxWidget, Widget);
+		KxRTTI_DeclareIID(TextBoxWidget, {0xec599691, 0x8610, 0x4987, {0x99, 0xcb, 0xe3, 0x27, 0x81, 0xf2, 0xc4, 0x2f}});
+		KxRTTI_QueryInterface_Extend(TextBoxWidget, Widget);
 
 		private:
 			Element m_LabelArea;

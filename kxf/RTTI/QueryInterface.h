@@ -70,7 +70,7 @@ namespace std
 	};
 }
 
-#define KxDeclareIID(T, ...)	\
+#define KxRTTI_DeclareIID(T, ...)	\
 \
 friend class kxf::IID;	\
 friend constexpr kxf::IID kxf::IID::FromType<T>() noexcept;	\
@@ -78,11 +78,20 @@ friend constexpr kxf::IID kxf::IID::FromType<T>() noexcept;	\
 private:	\
 	static constexpr kxf::IID ms_IID = kxf::NativeUUID __VA_ARGS__;
 
-#define KxImplementQueryInterface(T, ...)	\
+#define KxRTTI_QueryInterface_Base(T)	\
 \
 public:	\
 using IObject::QueryInterface;	\
-void* QueryInterface(const IID& iid) noexcept override	\
+void* QueryInterface(const kxf::IID& iid) noexcept override	\
+{	\
+	return IObject::QuerySelf(iid, static_cast<T&>(*this));	\
+}
+
+#define KxRTTI_QueryInterface_Extend(T, ...)	\
+\
+public:	\
+using IObject::QueryInterface;	\
+void* QueryInterface(const kxf::IID& iid) noexcept override	\
 {	\
 	return IObject::QuerySelf<__VA_ARGS__>(iid, static_cast<T&>(*this));	\
 }
