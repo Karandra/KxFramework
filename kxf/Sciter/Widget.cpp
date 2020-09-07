@@ -47,6 +47,10 @@ namespace kxf::Sciter
 		{
 			return LayoutFlow::Vertical;
 		}
+		else if (flow == wxS("text"))
+		{
+			return LayoutFlow::Text;
+		}
 		return LayoutFlow::None;
 	}
 	void Widget::SetLayoutFlow(LayoutFlow flow)
@@ -61,6 +65,11 @@ namespace kxf::Sciter
 			case LayoutFlow::Vertical:
 			{
 				m_Element.SetStyleAttribute("flow", "vertical");
+				break;
+			}
+			case LayoutFlow::Text:
+			{
+				m_Element.SetStyleAttribute("flow", "text");
 				break;
 			}
 			default:

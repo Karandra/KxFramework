@@ -5,6 +5,7 @@
 #include "kxf/EventSystem/EvtHandler.h"
 #include "kxf/EventSystem/EvtHandlerAccessor.h"
 #include "kxf/EventSystem/EventHandlerStack.h"
+#include "kxf/RTTI/QueryInterface.h"
 
 namespace kxf::Sciter
 {
@@ -14,14 +15,17 @@ namespace kxf::Sciter
 	{
 		None,
 		Horizontal,
-		Vertical
+		Vertical,
+		Text
 	};
 }
 
 namespace kxf::Sciter
 {
-	class KX_API Widget: public RTTI::ImplementInterface<Widget, IEvtHandler>
+	class KX_API Widget: public RTTI::ExtendInterface<Widget, IEvtHandler>
 	{
+		KxDeclareIID(Widget, {0x45e7dd55, 0x5aa6, 0x417a, {0xae, 0xf6, 0xcb, 0x3b, 0x3b, 0xd1, 0xd9, 0x53}});
+
 		friend class BasicEventDispatcher;
 		friend class WidgetEventDispatcher;
 
@@ -32,11 +36,18 @@ namespace kxf::Sciter
 			template<class TWidget = Widget, class = std::enable_if_t<std::is_base_of_v<Widget, TWidget>>>
 			static TWidget* FromElement(const Element& element)
 			{
-				if constexpr(std::is_same_v<Widget, TWidget>)
+				if (Widget* widget = DoFromElement(element))
 				{
-					return DoFromElement(element);
+					if constexpr(std::is_same_v<Widget, TWidget>)
+					{
+						return widget;
+					}
+					else
+					{
+						return widget->QueryInterface<TWidget>();
+					}
 				}
-				return static_cast<TWidget*>(FromElement(element));
+				return nullptr;
 			}
 
 		private:
@@ -252,20 +263,6 @@ namespace kxf::Sciter
 			void EnableEventProcessing(bool enable = true) override
 			{
 				m_EvtHandler.EnableEventProcessing(enable);
-			}
-
-			// Queue execution of a given callable to the next event loop iteration
-			template<class... Args>
-			std::unique_ptr<IEvent> CallAfter(Args&&... arg)
-			{
-				return m_EvtHandler.CallAfter(std::forward<Args>(arg)...);
-			}
-
-			// Queue execution of a given callable to the next event loop iteration replacing previously sent callable with the same ID
-			template<class... Args>
-			std::unique_ptr<IEvent> UniqueCallAfter(const UniversallyUniqueID& uuid, Args&&... arg)
-			{
-				return m_EvtHandler.UniqueCallAfter(uuid, std::forward<Args>(arg)...);
 			}
 
 		public:

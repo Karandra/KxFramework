@@ -6,6 +6,9 @@ namespace kxf::Sciter
 {
 	class KX_API NativeWidget: public Widget
 	{
+		KxDeclareIID(NativeWidget, {0x78304789, 0x595b, 0x4fce, {0xa2, 0x34, 0x90, 0x8e, 0xd1, 0x77, 0x9c, 0xd2}});
+		KxImplementQueryInterface(NativeWidget, Widget);
+
 		private:
 			wxWindow* m_NativeWindow = nullptr;
 
