@@ -279,7 +279,7 @@ namespace kxf
 		LOGFONTW value = {};
 		if (::GetThemeFont(m_Window->GetHandle(), dc.GetHDC(), iPartId, iStateId, iPropId, &value) == S_OK)
 		{
-			return wxNativeFontInfo(value);
+			return wxNativeFontInfo(value, m_Window);
 		}
 		return wxNullFont;
 	}
