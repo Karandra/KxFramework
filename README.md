@@ -27,7 +27,7 @@ You'll need [Visual Studio 2019](https://visualstudio.microsoft.com) and [VCPkg]
 - Open KxFramework solution in Visual Studio and Build **Release** configuration for x86 and x64. You can build **Debug** configuration as well but it's not used most of the time.
 
 ## As a dependency
-KxFramework can be built as a **VCPkg** package. Install VCPkg as usual and copy `VCPkg` folder contents into your VCPkg installation and build `kxframework` port. You need to make a custom triplet using provided `kxf-default-[x86|x64].cmake` template file).
+KxFramework can be built as a VCPkg package. You need to make a custom triplet using provided `kxf-default-[x86|x64].cmake` template file).
 
 If you're using precompiled headers in your project don't forget to include `kxf/pch.hpp` file in your precompiled header file.
 ```cpp
