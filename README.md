@@ -10,10 +10,10 @@ You'll need [Visual Studio 2019](https://visualstudio.microsoft.com) and [VCPkg]
 - Copy `VCPkg` folder contents into your VCPkg installation.
 - Download and build following packages for both x86 (`kxf-default-x86`) and x64 (`kxf-default-x64`) targets.
 	- [wxWidgets](https://www.wxwidgets.org) - `wxwidgets`
-	- [Sciter](https://github.com/c-smile/sciter-sdk) - `sciter` (see notes)
-	- [Boost](https://www.boost.org) - `boost`. The framework doesn't use Boost itself, only as a dependency for other libraries
-	- [LibCurl](https://curl.haxx.se) - `curl`. I'm using the following options: `curl[non-http,http2,openssl]`
-	- [OpenSSL](https://www.openssl.org) - `openssl` and `openssl-windows`. Should be downloaded as a dependency for LibCurl but it's used directly as well
+	- [Sciter](https://github.com/c-smile/sciter-sdk) - `sciter` (see notes).
+	- [Boost](https://www.boost.org) - `boost`. The framework doesn't use Boost itself, only as a dependency for other libraries.
+	- [LibCurl](https://curl.haxx.se) - `curl`. I'm using the following options: `curl[non-http,http2,openssl]`.
+	- [OpenSSL](https://www.openssl.org) - `openssl` and `openssl-windows`. Should be downloaded as a dependency for LibCurl but it's used directly as well.
 	- [WebSocket++](https://github.com/zaphoyd/websocketpp) - `websocketpp`
 	- [Gumbo HTML5 Parser](https://github.com/google/gumbo-parser) - `gumbo`
 	- [LibFFI](https://github.com/libffi/libffi) - `libffi`
@@ -21,13 +21,13 @@ You'll need [Visual Studio 2019](https://visualstudio.microsoft.com) and [VCPkg]
 	- [JSON for Modern C++](https://github.com/nlohmann/json) - `nlohmann-json`
 	- [SimpleINI](https://github.com/brofield/simpleini) - `simpleini`
 	- [TinyXML2](https://github.com/leethomason/tinyxml2) - `tinyxml2`
-	- [Scintilla](https://www.scintilla.org) - `scintilla`. It's built-in into wxWidgets but KxFramework needs its headers
+	- [Scintilla](https://www.scintilla.org) - `scintilla`. It's built-in into wxWidgets but KxFramework needs its headers.
 	
 - Set this instance of VCPkg as the default (`vcpkg integrate install`) or use project-specific linking (a NuGet package generated from a VCPkg installation: `vcpkg integrate project`).
 - Open KxFramework solution in Visual Studio and Build **Release** configuration for x86 and x64. You can build **Debug** configuration as well but it's not used most of the time.
 
 ## As a dependency
-KxFramework can be built as a **VCPkg** package. Install VCPkg as usual and copy `VCPkg` folder contents into your VCPkg installation and build `kxframework` port. You need to make a custom triplet using provided `kxf-default-[x86|x64].cmake` template file).
+KxFramework can be built as a VCPkg package. You need to make a custom triplet using provided `kxf-default-[x86|x64].cmake` template file).
 
 If you're using precompiled headers in your project don't forget to include `kxf/pch.hpp` file in your precompiled header file.
 ```cpp
