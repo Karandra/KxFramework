@@ -2266,12 +2266,6 @@
     <None Include="VCPkg\ports\kxframework\CONTROL">
       <Filter>VCPkg\ports\kxframework</Filter>
     </None>
-    <None Include="VCPkg\triplets\community\x64-default.cmake">
-      <Filter>VCPkg\triplets\community</Filter>
-    </None>
-    <None Include="VCPkg\triplets\community\x86-default.cmake">
-      <Filter>VCPkg\triplets\community</Filter>
-    </None>
     <None Include="kxf\Sciter\Widgets\Native\TextBoxWidget.css">
       <Filter>kxf\Sciter\Widgets\Native</Filter>
     </None>
@@ -2280,6 +2274,12 @@
     </None>
     <None Include="kxf\Sciter\Widgets\TextBoxWidget.css">
       <Filter>kxf\Sciter\Widgets</Filter>
+    </None>
+    <None Include="VCPkg\triplets\community\kxf-default-x64.cmake">
+      <Filter>VCPkg\triplets\community</Filter>
+    </None>
+    <None Include="VCPkg\triplets\community\kxf-default-x86.cmake">
+      <Filter>VCPkg\triplets\community</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

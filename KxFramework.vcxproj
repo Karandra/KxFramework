@@ -875,8 +875,8 @@
     <None Include="VCPkg\ports\kxframework\CONTROL" />
     <None Include="VCPkg\ports\kxframework\portfile.cmake" />
     <None Include="VCPkg\ports\kxframework\vcpkg.targets" />
-    <None Include="VCPkg\triplets\community\x64-default.cmake" />
-    <None Include="VCPkg\triplets\community\x86-default.cmake" />
+    <None Include="VCPkg\triplets\community\kxf-default-x64.cmake" />
+    <None Include="VCPkg\triplets\community\kxf-default-x86.cmake" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="kxf\General\Color.natvis" />
