@@ -86,4 +86,4 @@ vcpkg_copy_pdbs()
 file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/kxframework RENAME copyright)
 
 # Copy resources
-file(COPY ${SOURCE_PATH}/Resources DESTINATION ${CURRENT_PACKAGES_DIR}/share/kxframework/resources FILES_MATCHING PATTERN *)
+file(COPY ${SOURCE_PATH}/Resources DESTINATION ${CURRENT_PACKAGES_DIR}/share/kxframework FILES_MATCHING PATTERN *)
