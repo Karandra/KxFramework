@@ -7,6 +7,8 @@
 #include "kxf/General/UniversallyUniqueID.h"
 #include "kxf/RTTI/QueryInterface.h"
 #include <wx/datetime.h>
+class wxInputStream;
+class wxOutputStream;
 
 namespace kxf
 {
