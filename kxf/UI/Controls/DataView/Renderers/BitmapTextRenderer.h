@@ -47,7 +47,7 @@ namespace kxf::UI::DataView
 }
 namespace kxf
 {
-	KxDeclareFlagSet(UI::DataView::BitmapTextValueOption);
+	KxFlagSet_Declare(UI::DataView::BitmapTextValueOption);
 }
 
 namespace kxf::UI::DataView

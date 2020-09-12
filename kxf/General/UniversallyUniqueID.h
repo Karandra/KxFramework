@@ -16,7 +16,7 @@ namespace kxf
 		Parentheses = 1 << 3, // (123e4567-e89b-12d3-a456-426655440000)
 		UpperCase = 1 << 4 // 123E4567-E89B-12D3-A456-426655440000
 	};
-	KxDeclareFlagSet(UUIDFormat);
+	KxFlagSet_Declare(UUIDFormat);
 }
 
 namespace kxf

@@ -19,7 +19,7 @@ namespace kxf
 
 		Everything = UI|Timer|Thread|Socket|Unknown|Clipboard|UserInput
 	};
-	KxDeclareFlagSet(EventCategory);
+	KxFlagSet_Declare(EventCategory);
 
 	enum class EventFlag: uint32_t
 	{
@@ -34,7 +34,7 @@ namespace kxf
 		AlwaysSkip = 1 << 18,
 		OneShot = 1 << 19
 	};
-	KxDeclareFlagSet(EventFlag);
+	KxFlagSet_Declare(EventFlag);
 
 	enum class ProcessEventFlag: uint32_t
 	{
@@ -46,7 +46,7 @@ namespace kxf
 		// Processes an event and handles any exceptions that occur in the process
 		HandleExceptions = 1 << 1
 	};
-	KxDeclareFlagSet(ProcessEventFlag);
+	KxFlagSet_Declare(ProcessEventFlag);
 
 	enum class SignalParametersSemantics
 	{

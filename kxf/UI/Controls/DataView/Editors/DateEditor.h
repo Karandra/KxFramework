@@ -16,7 +16,7 @@ namespace kxf::UI::DataView
 }
 namespace kxf
 {
-	KxDeclareFlagSet(UI::DataView::DateEditorOption);
+	KxFlagSet_Declare(UI::DataView::DateEditorOption);
 }
 
 namespace kxf::UI::DataView

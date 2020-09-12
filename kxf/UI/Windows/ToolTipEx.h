@@ -19,7 +19,7 @@ namespace kxf::UI
 }
 namespace kxf
 {
-	KxDeclareFlagSet(UI::ToolTipExStyle);
+	KxFlagSet_Declare(UI::ToolTipExStyle);
 }
 
 namespace kxf::UI

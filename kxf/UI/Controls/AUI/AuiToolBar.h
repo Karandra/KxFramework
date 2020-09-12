@@ -22,7 +22,7 @@ namespace kxf::UI
 }
 namespace kxf
 {
-	KxDeclareFlagSet(UI::AuiToolBarStyle);
+	KxFlagSet_Declare(UI::AuiToolBarStyle);
 }
 
 namespace kxf::UI

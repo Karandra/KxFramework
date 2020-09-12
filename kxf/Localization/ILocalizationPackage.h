@@ -19,7 +19,7 @@ namespace kxf::Localization
 }
 namespace kxf
 {
-	KxDeclareFlagSet(Localization::LoadingScheme);
+	KxFlagSet_Declare(Localization::LoadingScheme);
 }
 
 namespace kxf

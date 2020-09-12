@@ -20,7 +20,7 @@ namespace kxf
 		Fractional = 1 << 0,
 		WithLabel = 1 << 1,
 	};
-	KxDeclareFlagSet(BinarySizeFormat);
+	KxFlagSet_Declare(BinarySizeFormat);
 }
 
 namespace kxf

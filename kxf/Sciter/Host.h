@@ -25,7 +25,7 @@ namespace kxf::Sciter
 }
 namespace kxf
 {
-	KxDeclareFlagSet(Sciter::HostStyle);
+	KxFlagSet_Declare(Sciter::HostStyle);
 }
 
 namespace kxf::Sciter

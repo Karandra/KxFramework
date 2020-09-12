@@ -19,7 +19,7 @@ namespace kxf::UI
 }
 namespace kxf
 {
-	KxDeclareFlagSet(UI::FrameStyle);
+	KxFlagSet_Declare(UI::FrameStyle);
 }
 
 namespace kxf::UI

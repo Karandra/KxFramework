@@ -68,8 +68,8 @@ namespace kxf
 		FullResourceDescriptor,
 	};
 
-	KxDeclareFlagSet(RegistryAccess);
-	KxDeclareFlagSet(RegistryKeyFlag);
+	KxFlagSet_Declare(RegistryAccess);
+	KxFlagSet_Declare(RegistryKeyFlag);
 }
 
 namespace kxf

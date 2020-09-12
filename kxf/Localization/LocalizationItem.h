@@ -31,7 +31,7 @@ namespace kxf
 		ConstrainedLength = 1 << 2,
 		WithComment = 1 << 3
 	};
-	KxDeclareFlagSet(LocalizationItemFlag);
+	KxFlagSet_Declare(LocalizationItemFlag);
 }
 
 namespace kxf

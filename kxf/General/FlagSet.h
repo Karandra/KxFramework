@@ -11,7 +11,7 @@ namespace kxf
 	template<class T>
 	inline constexpr bool IsFlagSet_v = IsFlagSet<T>::value;
 
-	#define KxDeclareFlagSet(T)	\
+	#define KxFlagSet_Declare(T)	\
 		template<>	\
 		struct IsFlagSet<T>: std::true_type	\
 		{	\

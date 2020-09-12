@@ -131,5 +131,5 @@ namespace kxf::Sciter
 
 namespace kxf
 {
-	KxDeclareFlagSet(Sciter::ElementState);
+	KxFlagSet_Declare(Sciter::ElementState);
 }

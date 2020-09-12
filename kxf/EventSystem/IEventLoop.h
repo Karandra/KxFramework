@@ -34,7 +34,7 @@ namespace kxf
 
 		OnlyIfRequired = 1 << 0
 	};
-	KxDeclareFlagSet(EventYieldFlag);
+	KxFlagSet_Declare(EventYieldFlag);
 }
 namespace kxf::Application
 {

@@ -18,7 +18,7 @@ namespace kxf::UI
 }
 namespace kxf
 {
-	KxDeclareFlagSet(UI::TextBoxDialogStyle);
+	KxFlagSet_Declare(UI::TextBoxDialogStyle);
 }
 
 namespace kxf::UI

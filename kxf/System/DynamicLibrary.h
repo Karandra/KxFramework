@@ -20,7 +20,7 @@ namespace kxf
 
 		Exclusive = 1 << 16
 	};
-	KxDeclareFlagSet(DynamicLibraryLoadFlag);
+	KxFlagSet_Declare(DynamicLibraryLoadFlag);
 }
 
 namespace kxf

@@ -14,7 +14,7 @@ namespace kxf
 		NoSubstitution = 1 << 1,
 		NewLine = 1 << 2,
 	};
-	KxDeclareFlagSet(RegExFlag);
+	KxFlagSet_Declare(RegExFlag);
 
 	enum class RegExCompileFlag: uint32_t
 	{
@@ -23,7 +23,7 @@ namespace kxf
 		NotBegin = 1 << 0,
 		NodEnd = 1 << 1
 	};
-	KxDeclareFlagSet(RegExCompileFlag);
+	KxFlagSet_Declare(RegExCompileFlag);
 }
 
 namespace kxf

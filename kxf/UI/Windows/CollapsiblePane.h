@@ -13,7 +13,7 @@ namespace kxf::UI
 }
 namespace kxf
 {
-	KxDeclareFlagSet(UI::CollapsiblePaneStyle);
+	KxFlagSet_Declare(UI::CollapsiblePaneStyle);
 }
 
 namespace kxf::UI

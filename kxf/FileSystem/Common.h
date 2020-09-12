@@ -40,7 +40,7 @@ namespace kxf
 		LimitToDirectories = 1 << 6,
 		QueryUniqueID = 1 << 7
 	};
-	KxDeclareFlagSet(FSActionFlag);
+	KxFlagSet_Declare(FSActionFlag);
 
 	enum class FileSystemFeature: uint32_t
 	{
@@ -67,7 +67,7 @@ namespace kxf
 		VolumeQuotas = 1 << 19,
 		LongFileNames = 1 << 20
 	};
-	KxDeclareFlagSet(FileSystemFeature);
+	KxFlagSet_Declare(FileSystemFeature);
 
 	enum class FileAttribute: uint32_t
 	{
@@ -91,7 +91,7 @@ namespace kxf
 
 		Normal = std::numeric_limits<uint32_t>::max() >> 1,
 	};
-	KxDeclareFlagSet(FileAttribute);
+	KxFlagSet_Declare(FileAttribute);
 
 	enum class ReparsePointTag: uint32_t
 	{
@@ -100,7 +100,7 @@ namespace kxf
 		MountPoint = 1 << 0,
 		SymLink = 1 << 1
 	};
-	KxDeclareFlagSet(ReparsePointTag);
+	KxFlagSet_Declare(ReparsePointTag);
 
 	enum class FileStreamAccess: uint32_t
 	{
@@ -113,7 +113,7 @@ namespace kxf
 		RW = Read|Write,
 		AllAccess = RW|ReadAttributes|WriteAttributes
 	};
-	KxDeclareFlagSet(FileStreamAccess);
+	KxFlagSet_Declare(FileStreamAccess);
 
 	enum class FileStreamShare: uint32_t
 	{
@@ -124,7 +124,7 @@ namespace kxf
 
 		Everything = Read|Write|Delete
 	};
-	KxDeclareFlagSet(FileStreamShare);
+	KxFlagSet_Declare(FileStreamShare);
 
 	enum class FileStreamFlags: uint32_t
 	{
@@ -133,7 +133,7 @@ namespace kxf
 		Normal = 1 << 0,
 		BackupSemantics = 1 << 1,
 	};
-	KxDeclareFlagSet(FileStreamFlags);
+	KxFlagSet_Declare(FileStreamFlags);
 	
 	enum class FileStreamDisposition: uint32_t
 	{

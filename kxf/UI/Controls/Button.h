@@ -22,7 +22,7 @@ namespace kxf::UI
 }
 namespace kxf
 {
-	KxDeclareFlagSet(UI::ButtonStyle);
+	KxFlagSet_Declare(UI::ButtonStyle);
 }
 
 namespace kxf::UI

@@ -17,7 +17,7 @@ namespace kxf::UI::DataView
 }
 namespace kxf
 {
-	KxDeclareFlagSet(UI::DataView::ColorEditorOption);
+	KxFlagSet_Declare(UI::DataView::ColorEditorOption);
 }
 
 namespace kxf::UI::DataView

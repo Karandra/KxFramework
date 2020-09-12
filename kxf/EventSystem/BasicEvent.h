@@ -38,8 +38,8 @@ namespace kxf::EventSystem
 }
 namespace kxf
 {
-	KxDeclareFlagSet(EventSystem::EventPublicState);
-	KxDeclareFlagSet(EventSystem::EventPrivateState);
+	KxFlagSet_Declare(EventSystem::EventPublicState);
+	KxFlagSet_Declare(EventSystem::EventPrivateState);
 }
 
 namespace kxf
