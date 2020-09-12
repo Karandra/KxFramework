@@ -18,7 +18,7 @@ namespace kxf::Sciter
 			inline static std::vector<optional_ptr<WidgetFactory>> ms_RegisteredFactories;
 
 		public:
-			static std::unique_ptr<Widget> NewWidget(Host& host, const Element& element, const String& className);
+			static std::unique_ptr<Widget> NewWidget(Host& host, const Element& element, const String& fullyQualifiedClassName);
 
 			template<class TFunc>
 			static WidgetFactory* EnumFactories(TFunc&& func)
@@ -45,9 +45,10 @@ namespace kxf::Sciter
 
 		private:
 			String m_ClassName;
+			String m_Namespace;
 
 		public:
-			WidgetFactory(String className)
+			WidgetFactory(String className, String classNamespace)
 				:m_ClassName(std::move(className))
 			{
 			}
@@ -58,13 +59,32 @@ namespace kxf::Sciter
 			{
 				return m_ClassName;
 			}
+			String GetNamespace() const
+			{
+				return m_Namespace;
+			}
+			String GetFullyQualifiedClassName() const
+			{
+				if (!m_Namespace.IsEmpty())
+				{
+					String fullyQualifiedName;
+					fullyQualifiedName.reserve(m_Namespace.length() + m_ClassName.length() + 1);
+
+					fullyQualifiedName += m_Namespace;
+					fullyQualifiedName += wxS('.');
+					fullyQualifiedName += m_ClassName;
+					return fullyQualifiedName;
+				}
+				return m_ClassName;
+			}
+
 			bool IsStandardClass() const
 			{
-				return m_ClassName.StartsWith(wxS("kxf."), nullptr, StringOpFlag::FirstMatchOnly);
+				return m_Namespace == wxS("kxf");
 			}
 
 		public:
-			virtual std::unique_ptr<Widget> CreateWidget(Host& host, const Element& element, const String& className) = 0;
+			virtual std::unique_ptr<Widget> CreateWidget(Host& host, const Element& element) = 0;
 			virtual String GetWidgetStylesheet() const = 0;
 	};
 
@@ -72,7 +92,7 @@ namespace kxf::Sciter
 	{
 		public:
 			StdWidgetFactory(String className)
-				:WidgetFactory(std::move(className.Prepend(wxS("kxf."))))
+				:WidgetFactory(std::move(className), wxS("kxf"))
 			{
 			}
 	};
@@ -118,11 +138,11 @@ namespace kxf::Sciter
 
 			static std::unique_ptr<Widget> NewWidget(Host& host, const Element& element)
 			{
-				return WidgetFactory::NewWidget(host, element, GetInstance().GetClassName());
+				return WidgetFactory::NewWidget(host, element, GetInstance().GetFullyQualifiedClassName());
 			}
-			static std::unique_ptr<Widget> NewWidget(Host& host, const Element& element, const String& className)
+			static std::unique_ptr<Widget> NewWidget(Host& host, const Element& element, const String& fullyQualifiedClassName)
 			{
-				return WidgetFactory::NewWidget(host, element, className);
+				return WidgetFactory::NewWidget(host, element, fullyQualifiedClassName);
 			}
 
 		public:

@@ -7,13 +7,13 @@
 
 namespace kxf::Sciter
 {
-	std::unique_ptr<Widget> WidgetFactory::NewWidget(Host& host, const Element& element, const String& className)
+	std::unique_ptr<Widget> WidgetFactory::NewWidget(Host& host, const Element& element, const String& fullyQualifiedClassName)
 	{
 		WidgetFactory* factory = EnumFactories([&](WidgetFactory& factory)
 		{
-			return factory.m_ClassName != className;
+			return factory.GetFullyQualifiedClassName() == fullyQualifiedClassName;
 		});
-		return factory ? factory->CreateWidget(host, element, className) : nullptr;
+		return factory ? factory->CreateWidget(host, element) : nullptr;
 	}
 	StylesheetStorage& WidgetFactory::GetStylesheetStorage()
 	{

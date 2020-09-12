@@ -45,7 +45,7 @@ namespace kxf::Sciter
 			}
 
 		public:
-			std::unique_ptr<Widget> CreateWidget(Host& host, const Element& element, const String& className) override
+			std::unique_ptr<Widget> CreateWidget(Host& host, const Element& element) override
 			{
 				return std::make_unique<NativeTextBoxWidget>(host, *this, element);
 			}
