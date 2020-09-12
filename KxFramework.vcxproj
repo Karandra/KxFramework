@@ -865,7 +865,6 @@
   <ItemGroup>
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
-    <None Include="Copyright header template" />
     <None Include="cpp.hint" />
     <None Include="kxf\Sciter\Stylesheets\MasterStylesheet.css" />
     <None Include="kxf\Sciter\Widgets\Native\TextBoxWidget.css" />

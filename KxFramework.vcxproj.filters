@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="kxf">
       <UniqueIdentifier>{b754c7f1-7cfc-4648-b498-fd9750d8b242}</UniqueIdentifier>
     </Filter>
@@ -223,6 +219,10 @@
     </Filter>
     <Filter Include="kxf\Sciter\Widgets\Native">
       <UniqueIdentifier>{a7015761-4f49-4b33-99bd-265506c83557}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -2243,22 +2243,19 @@
       <Filter>kxf\System\Private</Filter>
     </None>
     <None Include=".gitattributes">
-      <Filter>Resource Files</Filter>
+      <Filter>Resources</Filter>
     </None>
     <None Include=".gitignore">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Copyright header template">
-      <Filter>Resource Files</Filter>
+      <Filter>Resources</Filter>
     </None>
     <None Include="LICENSE">
-      <Filter>Resource Files</Filter>
+      <Filter>Resources</Filter>
     </None>
     <None Include="README.md">
-      <Filter>Resource Files</Filter>
+      <Filter>Resources</Filter>
     </None>
     <None Include="cpp.hint">
-      <Filter>Resource Files</Filter>
+      <Filter>Resources</Filter>
     </None>
     <None Include="VCPkg\ports\kxframework\portfile.cmake">
       <Filter>VCPkg\ports\kxframework</Filter>
