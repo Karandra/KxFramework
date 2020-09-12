@@ -1,6 +1,8 @@
 #pragma once
 #include "kxf/Common.hpp"
 #include "kxf/General/FlagSet.h"
+#include <wx/defs.h>
+#include <wx/gdicmn.h>
 
 namespace kxf
 {
