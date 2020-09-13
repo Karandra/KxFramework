@@ -16,6 +16,7 @@
 #include <d3d11_2.h>
 #include <d2d1_2.h>
 #include <d2d1_2helper.h>
+#pragma comment(lib, "dxgi.lib")
 
 #include "UndefWindows.h"
 

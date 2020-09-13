@@ -30,6 +30,9 @@
 // Required by pretty much any UI component
 #pragma comment(lib, "Comctl32.lib")
 
+// Required by various GPU-related functions
+#pragma comment(lib, "dxgi.lib")
+
 // Required by network module
 #pragma comment(lib, "WS2_32.lib")
 #pragma comment(lib, "DNSAPI.lib")
