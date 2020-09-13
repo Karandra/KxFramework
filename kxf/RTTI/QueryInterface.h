@@ -81,19 +81,19 @@ private:	\
 #define KxRTTI_QueryInterface_Base(T)	\
 \
 public:	\
-using IObject::QueryInterface;	\
+using kxf::IObject::QueryInterface;	\
 void* QueryInterface(const kxf::IID& iid) noexcept override	\
 {	\
-	return IObject::QuerySelf(iid, static_cast<T&>(*this));	\
+	return kxf::IObject::QuerySelf(iid, static_cast<T&>(*this));	\
 }
 
 #define KxRTTI_QueryInterface_Extend(T, ...)	\
 \
 public:	\
-using IObject::QueryInterface;	\
+using kxf::IObject::QueryInterface;	\
 void* QueryInterface(const kxf::IID& iid) noexcept override	\
 {	\
-	return IObject::QuerySelf<__VA_ARGS__>(iid, static_cast<T&>(*this));	\
+	return kxf::IObject::QuerySelf<__VA_ARGS__>(iid, static_cast<T&>(*this));	\
 }
 
 namespace kxf
