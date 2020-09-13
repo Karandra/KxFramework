@@ -85,5 +85,8 @@ vcpkg_copy_pdbs()
 # Copy license
 file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/kxframework RENAME copyright)
 
+# Copy debugger visualization files
+file(COPY ${SOURCE_PATH}/kxf DESTINATION ${CURRENT_PACKAGES_DIR}/share FILES_MATCHING PATTERN *.natvis)
+
 # Copy resources
 file(COPY ${SOURCE_PATH}/Resources DESTINATION ${CURRENT_PACKAGES_DIR}/share/kxframework FILES_MATCHING PATTERN *)
