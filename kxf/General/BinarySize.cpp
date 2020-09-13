@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "BinarySize.h"
-#include "StringFormater.h"
 #include "Math.h"
 #include "kxf/Application/ICoreApplication.h"
 

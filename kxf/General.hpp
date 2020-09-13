@@ -18,5 +18,5 @@
 #include "kxf/General/Singleton.h"
 #include "kxf/General/NativeUUID.h"
 #include "kxf/General/UniversallyUniqueID.h"
-#include "kxf/General/StringFormater.h"
+#include "kxf/General/StringFormatter.h"
 #include "kxf/General/WithOptions.h"

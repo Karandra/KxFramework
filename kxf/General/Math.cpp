@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Math.h"
-#include "StringFormater.h"
 #include <locale>
 #include <random>
 #include <cmath>

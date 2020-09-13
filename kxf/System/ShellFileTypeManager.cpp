@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "ShellFileTypeManager.h"
 #include "Registry.h"
-#include "kxf/General/StringFormater.h"
 
 namespace kxf
 {

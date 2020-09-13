@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "StandardLocalization.h"
-#include "kxf/General/StringFormater.h"
 #include "kxf/Application/ICoreApplication.h"
 
 namespace

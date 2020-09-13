@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "CreateProcessExecutor.h"
 #include "ProcessEvent.h"
-#include "kxf/General/StringFormater.h"
 #include "kxf/System/Private/Shell.h"
 #include "kxf/System/Private/System.h"
 

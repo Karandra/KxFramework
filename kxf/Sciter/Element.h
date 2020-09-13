@@ -4,7 +4,7 @@
 #include "Utility/HandleWrapper.h"
 #include "kxf/General/Color.h"
 #include "kxf/General/String.h"
-#include "kxf/General/StringFormater.h"
+#include "kxf/General/StringFormatter.h"
 
 namespace kxf
 {

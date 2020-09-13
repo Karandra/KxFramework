@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
-#include "StringFormaterTraits.h"
 #include "String.h"
+#include "StringFormatterTraits.h"
 
 namespace kxf::StringFormatter
 {

@@ -487,8 +487,8 @@
     <ClInclude Include="kxf\General\Private\VersionImpl.h" />
     <ClInclude Include="kxf\General\Singleton.h" />
     <ClInclude Include="kxf\General\String.h" />
-    <ClInclude Include="kxf\General\StringFormater.h" />
-    <ClInclude Include="kxf\General\StringFormaterTraits.h" />
+    <ClInclude Include="kxf\General\StringFormatter.h" />
+    <ClInclude Include="kxf\General\StringFormatterTraits.h" />
     <ClInclude Include="kxf\General\UniversallyUniqueID.h" />
     <ClInclude Include="kxf\General\Version.h" />
     <ClInclude Include="kxf\General\WithOptions.h" />
@@ -785,7 +785,7 @@
     <ClCompile Include="kxf\General\Math.cpp" />
     <ClCompile Include="kxf\General\Private\VersionImpl.cpp" />
     <ClCompile Include="kxf\General\String.cpp" />
-    <ClCompile Include="kxf\General\StringFormater.cpp" />
+    <ClCompile Include="kxf\General\StringFormatter.cpp" />
     <ClCompile Include="kxf\General\Version.cpp" />
     <ClCompile Include="kxf\Localization\Common.cpp" />
     <ClCompile Include="kxf\Localization\Locale.cpp" />

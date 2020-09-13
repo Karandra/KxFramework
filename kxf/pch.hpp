@@ -45,7 +45,7 @@
 #include "kxf/Common.hpp"
 
 #include "kxf/General/String.h"
-#include "kxf/General/StringFormater.h"
+#include "kxf/General/StringFormatter.h"
 #include "kxf/General/Color.h"
 #include "kxf/General/Angle.h"
 #include "kxf/General/DateTime.h"

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "ProgressBar.h"
-#include "kxf/General/StringFormater.h"
 
 namespace kxf::UI
 {

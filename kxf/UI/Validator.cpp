@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Validator.h"
-#include "kxf/General/StringFormater.h"
 #include <wx/spinctrl.h>
 #include "kxf/System/UndefWindows.h"
 

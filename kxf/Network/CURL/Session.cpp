@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Session.h"
-#include "kxf/General/StringFormater.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 
 #define CURL_STATICLIB 1

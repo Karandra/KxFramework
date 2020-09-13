@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "VersionImpl.h"
 #include "../Version.h"
-#include "kxf/General/StringFormater.h"
 
 namespace
 {

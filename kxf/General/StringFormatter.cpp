@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "StringFormater.h"
+#include "StringFormatter.h"
 #include "String.h"
 
 namespace

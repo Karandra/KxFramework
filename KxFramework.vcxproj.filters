@@ -496,12 +496,6 @@
     <ClInclude Include="kxf\General\Private\String.h">
       <Filter>kxf\General\Private</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\StringFormater.h">
-      <Filter>kxf\General</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\General\StringFormaterTraits.h">
-      <Filter>kxf\General</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Utility\String.h">
       <Filter>kxf\Utility</Filter>
     </ClInclude>
@@ -1493,6 +1487,12 @@
     <ClInclude Include="kxf\Sciter\Widgets\Common.h">
       <Filter>kxf\Sciter\Widgets</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\General\StringFormatter.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\StringFormatterTraits.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -1634,9 +1634,6 @@
       <Filter>kxf\General</Filter>
     </ClCompile>
     <ClCompile Include="kxf\General\String.cpp">
-      <Filter>kxf\General</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\General\StringFormater.cpp">
       <Filter>kxf\General</Filter>
     </ClCompile>
     <ClCompile Include="kxf\System\NativeAPI.cpp">
@@ -2236,6 +2233,9 @@
     </ClCompile>
     <ClCompile Include="kxf\Sciter\Widgets\TextBoxWidget.cpp">
       <Filter>kxf\Sciter\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\StringFormatter.cpp">
+      <Filter>kxf\General</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

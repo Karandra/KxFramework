@@ -3,7 +3,6 @@
 #include "SciterAPI.h"
 #include "Internal.h"
 #include "Stylesheets/MasterStylesheetStorage.h"
-#include "kxf/General/StringFormater.h"
 #include "kxf/System/SystemInformation.h"
 #include "kxf/Utility/Common.h"
 #include <WindowsX.h>

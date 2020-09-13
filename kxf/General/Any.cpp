@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Any.h"
-#include "StringFormater.h"
 
 namespace
 {

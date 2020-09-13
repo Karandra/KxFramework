@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "FileBrowseDialog.h"
-#include "kxf/General/StringFormater.h"
 #include "Private/FileBrowseDialogEvents.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/CallAtScopeExit.h"
