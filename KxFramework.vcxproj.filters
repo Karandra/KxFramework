@@ -1493,6 +1493,12 @@
     <ClInclude Include="kxf\General\StringFormatterTraits.h">
       <Filter>kxf\General</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\RTTI\IID.h">
+      <Filter>kxf\RTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\RTTI\ObjectPtr.h">
+      <Filter>kxf\RTTI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">

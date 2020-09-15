@@ -185,7 +185,7 @@ namespace kxf
 		if (IsEventProcessingEnabled())
 		{
 			// There is an implicit entry for indirect invocation in every event handler
-			IIndirectInvocationEvent* indirectInvoke = nullptr;
+			object_ptr<IIndirectInvocationEvent> indirectInvoke;
 			if (event.GetEventSource() == this && event.QueryInterface(indirectInvoke))
 			{
 				indirectInvoke->Execute();
@@ -244,7 +244,7 @@ namespace kxf
 					const bool isMainThread = wxThread::IsMain();
 					if (ShouldQueueeEvent(eventFlags, isMainThread))
 					{
-						IEventInternal* eventInternal = event.QueryInterface<IEventInternal>();
+						auto eventInternal = event.QueryInterface<IEventInternal>();
 						if (!eventInternal->WasReQueued() && !eventInternal->IsAsync())
 						{
 							if (eventFlags.Contains(EventFlag::Blocking))
@@ -253,12 +253,12 @@ namespace kxf
 
 								// TODO: Do we need some kind of lock to ensure that our moved event won't get processed until after we call 'WaitProcessed' on it?
 								auto movedEvent = event.Move();
-								IEventInternal& movedEventRef = *movedEvent->QueryInterface<IEventInternal>();
+								auto movedEventRef = movedEvent->QueryInterface<IEventInternal>();
 								DoQueueEvent(std::move(movedEvent));
 
 								// We need to leave the guard here so the main thread can enter this function. We're going to return right after anyway.
 								lockGuard.Unlock();
-								eventInternal->PutWaitResult(movedEventRef.WaitProcessed());
+								eventInternal->PutWaitResult(movedEventRef->WaitProcessed());
 							}
 							else
 							{
@@ -759,15 +759,15 @@ namespace kxf
 			
 			if (pendingEvent)
 			{
-				IEventInternal& pendingEventInternal = *pendingEvent->QueryInterface<IEventInternal>();
+				auto pendingEventInternal = pendingEvent->QueryInterface<IEventInternal>();
 
 				// Careful: this object could have been deleted by the event handler executed by the 'DoProcessEvent' call below,
 				// so we can't access any fields of this object anymore.
-				DoProcessEvent(*pendingEvent, {}, {}, pendingEventInternal.GetProcessFlags());
+				DoProcessEvent(*pendingEvent, {}, {}, pendingEventInternal->GetProcessFlags());
 
 				// Signal to the waiting thread that we have processed this event and relinquish the event object to it.
 				// Doesn't do anything if the event isn't waitable.
-				pendingEventInternal.SignalProcessed(std::move(pendingEvent));
+				pendingEventInternal->SignalProcessed(std::move(pendingEvent));
 
 				// Should we return the result of 'DoProcessEvent' here? Probably not.
 				return true;

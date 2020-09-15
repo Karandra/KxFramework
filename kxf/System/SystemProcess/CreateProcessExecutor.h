@@ -82,6 +82,17 @@ namespace kxf::System
 			void CompleteRedirection();
 
 		protected:
+			// IObject
+			void* DoQueryInterface(const IID& iid) noexcept override
+			{
+				// Don't return 'ISystemProcessStdIO' interface if we don't have standard IO redirected
+				if (!m_Flags.Contains(CreateSystemProcessFlag::RedirectStdIO) && iid.IsOfType<ISystemProcessStdIO>())
+				{
+					return nullptr;
+				}
+				return ImplementInterface::QueryInterface(iid);
+			}
+
 			ExitCode Entry() override;
 			void ResumeMainThread();
 			bool IsProcessAlive() const;
@@ -92,22 +103,12 @@ namespace kxf::System
 			void SendEvent(std::unique_ptr<IEvent> event, const EventID& eventID);
 			void SendProcessInputIdleEvent();
 			void SendProcessTerminationEvent();
-
+			
 		public:
 			CreateProcessExecutor(EvtHandlerDelegate evtHandler, FlagSet<CreateSystemProcessFlag> flags);
 			~CreateProcessExecutor();
 
 		public:
-			// IObject
-			void* QueryInterface(const IID& iid) noexcept override
-			{
-				if (iid.IsOfType<ISystemProcessStdIO>() && !(m_Flags & CreateSystemProcessFlag::RedirectStdIO))
-				{
-					return nullptr;
-				}
-				return ImplementInterface::QueryInterface(iid);
-			}
-
 			// ISystemProcess
 			uint32_t GetMainThread() const override;
 			bool ResumeProcess() override;

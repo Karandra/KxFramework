@@ -119,7 +119,7 @@ namespace kxf
 
 			void StopPropagation(IEvent& event)
 			{
-				IWidgetEvent* commandEvent = nullptr;
+				object_ptr<IWidgetEvent> commandEvent;
 				if (event.QueryInterface(commandEvent))
 				{
 					commandEvent->StopPropagation();

@@ -14,13 +14,13 @@ namespace kxf
 			{
 				if (auto app = ICoreApplication::GetInstance())
 				{
-					return app->QueryInterface<IGUIApplication>();
+					return app->QueryInterface<IGUIApplication>().get();
 				}
 				return nullptr;
 			}
 			static void SetInstance(IGUIApplication* instance) noexcept
 			{
-				ICoreApplication::SetInstance(instance ? instance->QueryInterface<ICoreApplication>() : nullptr);
+				ICoreApplication::SetInstance(instance ? instance->QueryInterface<ICoreApplication>().get() : nullptr);
 			}
 
 		public:

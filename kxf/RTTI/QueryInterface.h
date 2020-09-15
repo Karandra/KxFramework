@@ -1,88 +1,33 @@
 #pragma once
 #include "Common.h"
-#include <kxf/General/NativeUUID.h>
+#include "IID.h"
+#include "ObjectPtr.h"
 #include <kxf/Utility/Common.h>
 #include <kxf/Utility/TypeTraits.h>
 
-namespace kxf
-{
-	class KX_API IID final
-	{
-		public:
-			template<class T>
-			constexpr static IID FromType() noexcept
-			{
-				return T::ms_IID;
-			}
-
-		private:
-			NativeUUID m_ID;
-
-		public:
-			constexpr IID() noexcept = default;
-			constexpr IID(const NativeUUID& guid) noexcept
-				:m_ID(guid)
-			{
-			}
-			
-		public:
-			constexpr bool IsNull() const noexcept
-			{
-				return m_ID.IsNull();
-			}
-			constexpr NativeUUID ToNativeUUID() const noexcept
-			{
-				return m_ID;
-			}
-
-			template<class T>
-			constexpr bool IsOfType() const noexcept
-			{
-				return FromType<T>().m_ID == m_ID;
-			}
-
-			constexpr bool operator==(const IID& other) const noexcept
-			{
-				return this == &other || m_ID == other.m_ID;
-			}
-			constexpr bool operator!=(const IID& other) const noexcept
-			{
-				return !(*this == other);
-			}
-			
-			constexpr IID& operator=(const NativeUUID& uuid) noexcept
-			{
-				m_ID = uuid;
-				return *this;
-			}
-	};
-}
-
-namespace std
-{
-	template<>
-	struct hash<kxf::IID>
-	{
-		constexpr size_t operator()(const kxf::IID& iid) const noexcept
-		{
-			return iid.ToNativeUUID().GetHash();
-		}
-	};
-}
-
 #define KxRTTI_DeclareIID(T, ...)	\
+friend class kxf::IObject;	\
 \
-friend class kxf::IID;	\
-friend constexpr kxf::IID kxf::IID::FromType<T>() noexcept;	\
+template<class T>	\
+friend constexpr kxf::IID kxf::RTTI::GetInterfaceID() noexcept;	\
 \
 private:	\
 	static constexpr kxf::IID ms_IID = kxf::NativeUUID __VA_ARGS__;
 
+#define KxRTTI_DeclareIID_External(T, ...)	\
+namespace RTTI	\
+{	\
+	template<>	\
+	constexpr IID GetInterfaceID<T>() noexcept	\
+	{	\
+		return kxf::NativeUUID __VA_ARGS__;	\
+	}	\
+}
+
 #define KxRTTI_QueryInterface_Base(T)	\
 \
 public:	\
-using kxf::IObject::QueryInterface;	\
-void* QueryInterface(const kxf::IID& iid) noexcept override	\
+void* DoQueryInterface(const kxf::IID& iid) noexcept override	\
 {	\
 	return kxf::IObject::QuerySelf(iid, static_cast<T&>(*this));	\
 }
@@ -90,8 +35,7 @@ void* QueryInterface(const kxf::IID& iid) noexcept override	\
 #define KxRTTI_QueryInterface_Extend(T, ...)	\
 \
 public:	\
-using kxf::IObject::QueryInterface;	\
-void* QueryInterface(const kxf::IID& iid) noexcept override	\
+void* DoQueryInterface(const kxf::IID& iid) noexcept override	\
 {	\
 	return kxf::IObject::QuerySelf<__VA_ARGS__>(iid, static_cast<T&>(*this));	\
 }
@@ -100,8 +44,11 @@ namespace kxf
 {
 	class KX_API IObject
 	{
-		friend class IID;
-		friend constexpr IID IID::FromType<IObject>() noexcept;
+		template<class T>
+		friend constexpr IID RTTI::GetInterfaceID() noexcept;
+
+		template<class T>
+		friend class object_ptr;
 
 		private:
 			static constexpr IID ms_IID = NativeUUID{0, 0, 0, {0xC0, 0, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74}};
@@ -126,29 +73,26 @@ namespace kxf
 				{
 					return &self;
 				}
-				else if (void* ptr = nullptr; ((ptr = static_cast<Args&>(self).Args::QueryInterface(iid), ptr != nullptr) || ...))
+				else if (void* ptr = nullptr; ((ptr = static_cast<Args&>(self).Args::DoQueryInterface(iid), ptr != nullptr) || ...))
 				{
 					return ptr;
 				}
-				return self.IObject::QueryInterface(iid);
+				return self.IObject::DoQueryInterface(iid);
 			}
 
 			template<class... Args>
 			static void* UseAnyOf(const IID& iid, std::add_lvalue_reference_t<Args>&&... arg) noexcept
 			{
 				void* ptr = nullptr;
-				if (((ptr = IObject::Cast<Args>(arg, iid), ptr != nullptr) || ...))
+				if (((ptr = Cast<Args>(arg, iid), ptr != nullptr) || ...))
 				{
 					return ptr;
 				}
 				return nullptr;
 			}
-
-		public:
-			virtual ~IObject() = default;
-
-		public:
-			virtual void* QueryInterface(const IID& iid) noexcept
+			
+		protected:
+			virtual void* DoQueryInterface(const IID& iid) noexcept
 			{
 				if (iid.IsOfType<IObject>())
 				{
@@ -156,32 +100,50 @@ namespace kxf
 				}
 				return nullptr;
 			}
+
+			virtual size_t DoAddRef() noexcept
+			{
+				return 1;
+			}
+			virtual size_t DoReleaseRef() noexcept
+			{
+				return 1;
+			}
+
+		public:
+			virtual ~IObject() = default;
+
+		public:
+			void* QueryInterface(const IID& iid) noexcept
+			{
+				return DoQueryInterface(iid);
+			}
 			const void* QueryInterface(const IID& iid) const noexcept
 			{
-				return const_cast<IObject*>(this)->QueryInterface(iid);
+				return const_cast<IObject*>(this)->DoQueryInterface(iid);
 			}
 
 			template<class T>
-			T* QueryInterface() noexcept
+			object_ptr<T> QueryInterface() noexcept
 			{
-				return static_cast<T*>(this->QueryInterface(IID::FromType<T>()));
+				return static_cast<T*>(this->QueryInterface(RTTI::GetInterfaceID<T>()));
 			}
 			
 			template<class T>
-			const T* QueryInterface() const noexcept
+			object_ptr<const T> QueryInterface() const noexcept
 			{
-				return static_cast<const T*>(this->QueryInterface(IID::FromType<T>()));
+				return static_cast<const T*>(this->QueryInterface(RTTI::GetInterfaceID<T>()));
 			}
 
 			template<class T>
-			bool QueryInterface(T*& ptr) noexcept
+			bool QueryInterface(object_ptr<T>& ptr) noexcept
 			{
 				ptr = this->QueryInterface<T>();
 				return ptr != nullptr;
 			}
 			
 			template<class T>
-			bool QueryInterface(const T*& ptr) const noexcept
+			bool QueryInterface(object_ptr<const T>& ptr) const noexcept
 			{
 				ptr = this->QueryInterface<T>();
 				return ptr != nullptr;
@@ -194,9 +156,8 @@ namespace kxf::RTTI
 	template<class T>
 	class Interface: public virtual IObject
 	{
-		public:
-			using IObject::QueryInterface;
-			void* QueryInterface(const IID& iid) noexcept override
+		protected:
+			void* DoQueryInterface(const IID& iid) noexcept override
 			{
 				return IObject::QuerySelf(iid, static_cast<T&>(*this));
 			}
@@ -208,23 +169,16 @@ namespace kxf::RTTI
 		protected:
 			using TBaseInterface = typename ExtendInterface<TDerived, TBase...>;
 
-		public:
-			ExtendInterface() = default;
-			
-			template<class... Args>
-			ExtendInterface(Args&&... arg) noexcept
-				:Utility::NthTypeOf<0, TBase...>(std::forward<Args>(arg)...)
-			{
-			}
-
-		public:
-			using IObject::QueryInterface;
-			void* QueryInterface(const IID& iid) noexcept override
+		protected:
+			void* DoQueryInterface(const IID& iid) noexcept override
 			{
 				static_assert((std::is_base_of_v<IObject, TBase> && ...), "[...] must inherit from 'IObject'");
 
 				return IObject::QuerySelf<TBase...>(iid, static_cast<TDerived&>(*this));
 			}
+
+		public:
+			ExtendInterface() = default;
 	};
 
 	template<class TDerived, class... TBase>
@@ -233,13 +187,12 @@ namespace kxf::RTTI
 		protected:
 			using TBaseClass = typename ImplementInterface<TDerived, TBase...>;
 
-		public:
-			using IObject::QueryInterface;
-			void* QueryInterface(const IID& iid) noexcept override
+		protected:
+			void* DoQueryInterface(const IID& iid) noexcept override
 			{
 				static_assert((std::is_base_of_v<IObject, TBase> && ...), "[...] must inherit from 'IObject'");
 
-				if (void* ptr = nullptr; ((ptr = TBase::QueryInterface(iid), ptr != nullptr) || ...))
+				if (void* ptr = nullptr; ((ptr = TBase::DoQueryInterface(iid), ptr != nullptr) || ...))
 				{
 					return ptr;
 				}

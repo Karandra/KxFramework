@@ -44,7 +44,7 @@ namespace kxf::Sciter
 					}
 					else
 					{
-						return widget->QueryInterface<TWidget>();
+						return widget->QueryInterface<TWidget>().get();
 					}
 				}
 				return nullptr;

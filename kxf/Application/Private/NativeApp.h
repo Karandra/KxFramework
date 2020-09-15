@@ -17,7 +17,7 @@ namespace kxf::Application::Private
 
 		private:
 			ICoreApplication& m_App;
-			IGUIApplication* m_GUIApp = nullptr;
+			object_ptr<IGUIApplication> m_GUIApp;
 
 		private:
 			void OnCreate();

@@ -146,7 +146,7 @@ namespace kxf
 	}
 
 	// IObject
-	void* CoreApplication::QueryInterface(const IID& iid) noexcept
+	void* CoreApplication::DoQueryInterface(const IID& iid) noexcept
 	{
 		if (iid.IsOfType<wxWidgets::Application>() || iid.IsOfType<wxWidgets::ApplicationConsole>())
 		{
@@ -156,7 +156,7 @@ namespace kxf
 			}
 			return nullptr;
 		}
-		return TBaseClass::QueryInterface(iid);
+		return TBaseClass::DoQueryInterface(iid);
 	}
 
 	// ICoreApplication

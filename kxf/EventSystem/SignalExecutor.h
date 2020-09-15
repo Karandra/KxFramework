@@ -10,7 +10,7 @@ namespace kxf::EventSystem::Private
 	template<class TArgsTuple, class TResult, class TFunc>
 	void ExecuteWithParameters(IEvent& event, TFunc&& func)
 	{
-		ISignalInvocationEvent* parameterizedInvocation = nullptr;
+		object_ptr<ISignalInvocationEvent> parameterizedInvocation;
 		if (event.QueryInterface(parameterizedInvocation))
 		{
 			alignas(TArgsTuple) uint8_t parametersBuffer[sizeof(TArgsTuple)] = {};

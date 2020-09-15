@@ -137,6 +137,17 @@ namespace kxf
 				return m_WaitInfo.GetWaitResult();
 			}
 
+		protected:
+			// IObject
+			void* DoQueryInterface(const IID& iid) noexcept override
+			{
+				if (iid.IsOfType<IEventInternal>())
+				{
+					return static_cast<IEventInternal*>(this);
+				}
+				return TBaseClass::DoQueryInterface(iid);
+			}
+
 		public:
 			BasicEvent() = default;
 			BasicEvent(const BasicEvent&) noexcept = default;
@@ -146,17 +157,6 @@ namespace kxf
 			}
 
 		public:
-			// IObject
-			using IObject::QueryInterface;
-			void* QueryInterface(const IID& iid) noexcept override
-			{
-				if (iid.IsOfType<IEventInternal>())
-				{
-					return static_cast<IEventInternal*>(this);
-				}
-				return TBaseClass::QueryInterface(iid);
-			}
-
 			// IEvent
 			std::unique_ptr<IEvent> Move() noexcept override
 			{

@@ -72,6 +72,10 @@ namespace kxf
 			void UninitDLLNotifications();
 
 		protected:
+			// IObject
+			void* DoQueryInterface(const IID& iid) noexcept override;
+
+		protected:
 			auto AccessEvtHandler()
 			{
 				return EventSystem::EvtHandlerAccessor(m_EvtHandler);
@@ -116,9 +120,6 @@ namespace kxf
 			CoreApplication() = default;
 
 		public:
-			// IObject
-			void* QueryInterface(const IID& iid) noexcept override;
-
 			// ICoreApplication
 			bool OnCreate() override;
 			void OnDestroy() override;

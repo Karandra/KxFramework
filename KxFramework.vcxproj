@@ -260,6 +260,8 @@
     <ClInclude Include="kxf\Localization\Private\LocalizationResources.h" />
     <ClInclude Include="kxf\Localization\WindowsLocalizationPackage.h" />
     <ClInclude Include="kxf\pch.hpp" />
+    <ClInclude Include="kxf\RTTI\IID.h" />
+    <ClInclude Include="kxf\RTTI\ObjectPtr.h" />
     <ClInclude Include="kxf\Sciter\Stylesheets\MasterStylesheetStorage.h" />
     <ClInclude Include="kxf\Sciter\Stylesheets\StylesheetStorage.h" />
     <ClInclude Include="kxf\Sciter\Widgets\Common.h" />
