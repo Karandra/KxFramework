@@ -125,7 +125,7 @@ namespace kxf::SevenZip::Private
 					// Original size
 					if (SUCCEEDED(archive.GetProperty(fileIndex, kpidSize, &property)))
 					{
-						fileItem.SetSize(property.ToInt<BinarySize::SizeType>().value_or(-1));
+						fileItem.SetSize(property.ToInt<int64_t>().value_or(-1));
 					}
 					else
 					{
@@ -135,7 +135,7 @@ namespace kxf::SevenZip::Private
 					// Compressed size
 					if (SUCCEEDED(archive.GetProperty(fileIndex, kpidPackSize, &property)))
 					{
-						fileItem.SetCompressedSize(property.ToInt<BinarySize::SizeType>().value_or(-1));
+						fileItem.SetCompressedSize(property.ToInt<int64_t>().value_or(-1));
 						attributes.Add(FileAttribute::Compressed, fileItem.GetSize() != fileItem.GetCompressedSize());
 					}
 					else

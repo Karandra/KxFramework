@@ -28,10 +28,7 @@ namespace kxf
 	class KX_API BinarySize final
 	{
 		public:
-			using SizeType = int64_t;
-
-		public:
-			static constexpr BinarySize FromBytes(SizeType bytes) noexcept
+			static constexpr BinarySize FromBytes(int64_t bytes) noexcept
 			{
 				return bytes;
 			}
@@ -90,11 +87,11 @@ namespace kxf
 			}
 
 		private:
-			SizeType m_Value = -1;
+			int64_t m_Value = -1;
 
 		private:
 			template<class T>
-			constexpr T GetAs(SizeType value) const noexcept
+			constexpr T GetAs(int64_t value) const noexcept
 			{
 				if constexpr(std::is_floating_point_v<T>)
 				{
@@ -112,7 +109,7 @@ namespace kxf
 
 		public:
 			constexpr BinarySize() noexcept = default;
-			constexpr BinarySize(SizeType bytes) noexcept
+			constexpr BinarySize(int64_t bytes) noexcept
 				:m_Value(bytes)
 			{
 			}
@@ -137,7 +134,7 @@ namespace kxf
 			}
 
 			// Conversion
-			template<class T = SizeType>
+			template<class T = int64_t>
 			constexpr T GetBytes() const noexcept
 			{
 				static_assert(std::is_integral_v<T> || std::is_floating_point_v<T>, "invalid numeric type");
@@ -145,31 +142,31 @@ namespace kxf
 				return static_cast<T>(m_Value);
 			}
 			
-			template<class T = SizeType>
+			template<class T = int64_t>
 			constexpr T GetKB() const noexcept
 			{
 				return GetAs<T>(m_Value);
 			}
 			
-			template<class T = SizeType>
+			template<class T = int64_t>
 			constexpr T GetMB() const noexcept
 			{
 				return GetAs<T>(GetKB());
 			}
 			
-			template<class T = SizeType>
+			template<class T = int64_t>
 			constexpr T GetGB() const noexcept
 			{
 				return GetAs<T>(GetMB());
 			}
 			
-			template<class T = SizeType>
+			template<class T = int64_t>
 			constexpr T GetTB() const noexcept
 			{
 				return GetAs<T>(GetGB());
 			}
 			
-			template<class T = SizeType>
+			template<class T = int64_t>
 			constexpr T GetAsUnit(BinarySizeUnit unit) const noexcept
 			{
 				switch (unit)
@@ -237,7 +234,7 @@ namespace kxf
 			{
 				return m_Value - other.m_Value;
 			}
-			constexpr BinarySize operator*(SizeType n) const noexcept
+			constexpr BinarySize operator*(int64_t n) const noexcept
 			{
 				return m_Value * n;
 			}
@@ -245,7 +242,7 @@ namespace kxf
 			{
 				return m_Value * n;
 			}
-			constexpr BinarySize operator/(SizeType n) const noexcept
+			constexpr BinarySize operator/(int64_t n) const noexcept
 			{
 				return m_Value / n;
 			}
@@ -264,7 +261,7 @@ namespace kxf
 				m_Value -= other.m_Value;
 				return *this;
 			}
-			constexpr BinarySize& operator*=(SizeType n) noexcept
+			constexpr BinarySize& operator*=(int64_t n) noexcept
 			{
 				m_Value *= n;
 				return *this;
@@ -274,7 +271,7 @@ namespace kxf
 				m_Value *= n;
 				return *this;
 			}
-			constexpr BinarySize& operator/=(SizeType n) noexcept
+			constexpr BinarySize& operator/=(int64_t n) noexcept
 			{
 				m_Value /= n;
 				return *this;
