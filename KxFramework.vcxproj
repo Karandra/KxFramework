@@ -249,9 +249,12 @@
     <ClInclude Include="kxf\IO.hpp" />
     <ClInclude Include="kxf\IO\Common.h" />
     <ClInclude Include="kxf\IO\FileStream.h" />
+    <ClInclude Include="kxf\IO\IStream.h" />
+    <ClInclude Include="kxf\IO\IStreamOnFileSystem.h" />
     <ClInclude Include="kxf\IO\MemoryStream.h" />
+    <ClInclude Include="kxf\IO\INativeStream.h" />
     <ClInclude Include="kxf\IO\StreamDelegate.h" />
-    <ClInclude Include="kxf\IO\StreamWrappers.h" />
+    <ClInclude Include="kxf\IO\StreamReaderWriter.h" />
     <ClInclude Include="kxf\Localization\Constants.h" />
     <ClInclude Include="kxf\Localization\ILocalizationPackage.h" />
     <ClInclude Include="kxf\Localization\LocalizationItem.h" />
@@ -633,6 +636,7 @@
     <ClCompile Include="kxf\EventSystem\Private\Win32ConsoleEventLoop.cpp" />
     <ClCompile Include="kxf\EventSystem\Private\Win32CommonEventLoop.cpp" />
     <ClCompile Include="kxf\EventSystem\Private\Win32GUIEventLoop.cpp" />
+    <ClCompile Include="kxf\FileSystem\IFileSystem.cpp" />
     <ClCompile Include="kxf\FileSystem\Private\NativeFSUtility.cpp" />
     <ClCompile Include="kxf\General\DateTime\DateSpan.cpp" />
     <ClCompile Include="kxf\General\DateTime\DateTime.cpp" />
@@ -643,6 +647,7 @@
     <ClCompile Include="kxf\General\LocallyUniqueID.cpp" />
     <ClCompile Include="kxf\IO\Common.cpp" />
     <ClCompile Include="kxf\IO\FileStream.cpp" />
+    <ClCompile Include="kxf\IO\IStream.cpp" />
     <ClCompile Include="kxf\IO\MemoryStream.cpp" />
     <ClCompile Include="kxf\Localization\ILocalizationPackage.cpp" />
     <ClCompile Include="kxf\Localization\LocalizationItem.cpp" />

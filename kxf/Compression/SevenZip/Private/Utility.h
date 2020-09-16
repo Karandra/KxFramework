@@ -11,11 +11,11 @@ namespace kxf::SevenZip::Private
 	COMPtr<IOutArchive> GetArchiveWriter(CompressionFormat format) noexcept;
 
 	std::optional<size_t> GetNumberOfItems(const IInArchive& archive) noexcept;
-	bool GetNumberOfItems(wxInputStream& stream, CompressionFormat format, size_t& itemCount, IEvtHandler* evtHandler = nullptr);
+	bool GetNumberOfItems(IInputStream& stream, CompressionFormat format, size_t& itemCount, IEvtHandler* evtHandler = nullptr);
 
 	FileItem GetArchiveItem(const IInArchive& archive, size_t fileIndex);
-	bool GetArchiveItems(wxInputStream& stream, CompressionFormat format, std::vector<FileItem>& items, IEvtHandler* evtHandler = nullptr);
+	bool GetArchiveItems(IInputStream& stream, CompressionFormat format, std::vector<FileItem>& items, IEvtHandler* evtHandler = nullptr);
 
-	CompressionFormat IdentifyCompressionFormat(wxInputStream& stream, const FSPath& path = {}, IEvtHandler* evtHandler = nullptr);
-	std::optional<wxSeekMode> MapSeekMode(int seekMode) noexcept;;
+	CompressionFormat IdentifyCompressionFormat(IInputStream& stream, const FSPath& path = {}, IEvtHandler* evtHandler = nullptr);
+	std::optional<IOStreamSeek> MapSeekMode(int seekMode) noexcept;;
 }

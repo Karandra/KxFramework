@@ -58,7 +58,7 @@ namespace kxf
 				return m_ItemsHelper.EnumItems(func);
 			}
 
-			bool Load(wxInputStream& stream, const Locale& locale, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace) override
+			bool Load(IInputStream& stream, const Locale& locale, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace) override
 			{
 				return XMLPackageHelper::Load(stream, locale, loadingScheme);
 			}

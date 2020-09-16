@@ -1,8 +1,8 @@
 #pragma once
 #include "../Common.h"
 #include "kxf/General/Version.h"
+#include "kxf/IO/IStream.h"
 #include <nlohmann/json.hpp>
-#include <wx/stream.h>
 
 namespace kxf
 {
@@ -15,7 +15,7 @@ namespace kxf::JSON
 	Version GetLibraryVersion();
 
 	JSONDocument Load(const String& json);
-	JSONDocument Load(wxInputStream& stream);
+	JSONDocument Load(IInputStream& stream);
 
 	String Save(const JSONDocument& json);
 	bool Save(const JSONDocument& json, wxOutputStream& stream);

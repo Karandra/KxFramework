@@ -373,7 +373,7 @@ namespace kxf
 
 	bool StorageVolume::EjectMedia() noexcept
 	{
-		FileStream stream(GetDevicePath(), FileStreamAccess::Read, FileStreamDisposition::OpenExisting, FileStreamShare::Everything);
+		FileStream stream(GetDevicePath(), IOStreamAccess::Read, IOStreamDisposition::OpenExisting, IOStreamShare::Everything);
 		if (stream)
 		{
 			DWORD bytes = 0;

@@ -165,7 +165,7 @@ namespace kxf::SevenZip
 			RewindArchiveStreams();
 
 			auto openCallback = COM::CreateLocalInstance<Private::Callback::OpenArchive>(m_EvtHandler.Get());
-			auto streamWrapper = COM::CreateLocalInstance<Private::InStreamWrapper_wxInputStream>(*m_Data.Stream, nullptr);
+			auto streamWrapper = COM::CreateLocalInstance<Private::InStreamWrapper_IInputStream>(*m_Data.Stream, nullptr);
 			if (HResult(m_Data.InArchive->Open(streamWrapper, nullptr, openCallback)))
 			{
 				if (auto count = Private::GetNumberOfItems(*m_Data.InArchive))
@@ -181,7 +181,7 @@ namespace kxf::SevenZip
 	{
 		if (m_Data.Stream)
 		{
-			m_Data.Stream->SeekI(0, wxSeekMode::wxFromStart);
+			m_Data.Stream->SeekI(0, IOStreamSeek::FromStart);
 		}
 	}
 
@@ -210,7 +210,7 @@ namespace kxf::SevenZip
 
 		if (m_Data.Stream)
 		{
-			m_Data.Stream->SeekI(0, wxSeekMode::wxFromStart);
+			m_Data.Stream->SeekI(0, IOStreamSeek::FromStart);
 			extractor->SetArchive(m_Data.InArchive);
 			extractor->SetEvtHandler(m_EvtHandler.Get());
 
@@ -261,7 +261,7 @@ namespace kxf::SevenZip
 		}
 		return false;
 	}
-	bool Archive::DoUpdate(wxOutputStream& stream, COMPtr<Private::Callback::UpdateArchive> updater, size_t itemCount)
+	bool Archive::DoUpdate(IOutputStream& stream, COMPtr<Private::Callback::UpdateArchive> updater, size_t itemCount)
 	{
 		auto archiveWriter = Private::GetArchiveWriter(m_Data.Properties.CompressionFormat);
 		if (archiveWriter)
@@ -273,11 +273,10 @@ namespace kxf::SevenZip
 									 m_Data.Properties.DictionarySize,
 									 m_Data.Properties.CompressionMethod);
 
-			
 			updater->SetArchive(m_Data.InArchive);
 			updater->SetEvtHandler(m_EvtHandler.Get());
 
-			auto streamWrapper = COM::CreateLocalInstance<Private::OutStreamWrapper_wxOutputStream>(stream, nullptr);
+			auto streamWrapper = COM::CreateLocalInstance<Private::OutStreamWrapper_IOutputStream>(stream, nullptr);
 			return HResult(archiveWriter->UpdateItems(streamWrapper, static_cast<uint32_t>(itemCount), updater)).IsSuccess();
 		}
 		return false;
@@ -344,18 +343,18 @@ namespace kxf::SevenZip
 		return DoExtract(COM::CreateLocalInstance<Private::Callback::ExtractArchiveToFS>(*this, fileSystem, directory), &files);
 	}
 
-	bool Archive::ExtractToStream(size_t index, wxOutputStream& stream) const
+	bool Archive::ExtractToStream(size_t index, IOutputStream& stream) const
 	{
 		Compression::FileIndexView files = index;
 		return DoExtract(COM::CreateLocalInstance<Private::Callback::ExtractArchiveToStream>(*this, stream), &files);
 	}
 
 	// IArchiveCompression
-	bool Archive::Update(wxOutputStream& stream, Compression::IUpdateCallback& callback, size_t itemCount)
+	bool Archive::Update(IOutputStream& stream, Compression::IUpdateCallback& callback, size_t itemCount)
 	{
 		return DoUpdate(stream, COM::CreateLocalInstance<Private::Callback::UpdateArchiveWrapper>(*this, callback), itemCount);
 	}
-	bool Archive::UpdateFromFS(wxOutputStream& stream, const IFileSystem& fileSystem, const FSPath& directory, const FSPathQuery& query, FlagSet<FSActionFlag> flags)
+	bool Archive::UpdateFromFS(IOutputStream& stream, const IFileSystem& fileSystem, const FSPath& directory, const FSPathQuery& query, FlagSet<FSActionFlag> flags)
 	{
 		std::vector<FileItem> files;
 		fileSystem.EnumItems(directory, [&](FileItem item)

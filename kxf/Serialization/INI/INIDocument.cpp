@@ -95,23 +95,22 @@ namespace kxf
 		DoLoad(utf8.data(), utf8.length());
 		return !IsNull();
 	}
-	bool INIDocument::Load(wxInputStream& stream)
+	bool INIDocument::Load(IInputStream& stream)
 	{
 		DoUnload();
 
-		wxMemoryBuffer buffer(stream.GetLength());
+		wxMemoryBuffer buffer(stream.GetSize().GetBytes());
 		stream.Read(buffer.GetData(), buffer.GetBufSize());
-		buffer.SetDataLen(stream.LastRead());
+		buffer.SetDataLen(stream.LastRead().GetBytes());
 
 		DoLoad(reinterpret_cast<const char*>(buffer.GetData()), buffer.GetDataLen());
 		return !IsNull();
 	}
-	bool INIDocument::Save(wxOutputStream& stream) const
+	bool INIDocument::Save(IOutputStream& stream) const
 	{
 		std::string buffer;
 		m_Document.Save(buffer, false);
-		stream.Write(buffer.data(), buffer.length());
-		return stream.IsOk();
+		return stream.WriteAll(buffer.data(), buffer.length());
 	}
 	String INIDocument::Save() const
 	{

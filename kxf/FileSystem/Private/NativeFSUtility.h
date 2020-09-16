@@ -7,10 +7,12 @@
 
 #include <Windows.h>
 #include "kxf/System/UndefWindows.h"
+struct _BY_HANDLE_FILE_INFORMATION;
 
 namespace kxf::FileSystem::Private
 {
 	uint32_t GetFileAttributes(const FSPath& path);
+	UniversallyUniqueID GetFileUniqueID(HANDLE fileHandle, const _BY_HANDLE_FILE_INFORMATION& fileInfo);
 
 	constexpr inline FlagSet<FileAttribute> MapFileAttributes(uint32_t nativeAttributes) noexcept
 	{
@@ -85,67 +87,67 @@ namespace kxf::FileSystem::Private
 		return tags;
 	}
 
-	constexpr inline DWORD MapFileAccessMode(FlagSet<FileStreamAccess> mode) noexcept
+	constexpr inline DWORD MapFileAccessMode(FlagSet<IOStreamAccess> mode) noexcept
 	{
-		if (mode == FileStreamAccess::None)
+		if (mode == IOStreamAccess::None)
 		{
 			return 0;
 		}
 		else
 		{
 			DWORD nativeMode = 0;
-			Utility::AddFlagRef(nativeMode, GENERIC_READ, mode & FileStreamAccess::Read);
-			Utility::AddFlagRef(nativeMode, GENERIC_WRITE, mode & FileStreamAccess::Write);
-			Utility::AddFlagRef(nativeMode, FILE_READ_ATTRIBUTES, mode & FileStreamAccess::ReadAttributes);
-			Utility::AddFlagRef(nativeMode, FILE_WRITE_ATTRIBUTES, mode & FileStreamAccess::WriteAttributes);
+			Utility::AddFlagRef(nativeMode, GENERIC_READ, mode & IOStreamAccess::Read);
+			Utility::AddFlagRef(nativeMode, GENERIC_WRITE, mode & IOStreamAccess::Write);
+			Utility::AddFlagRef(nativeMode, FILE_READ_ATTRIBUTES, mode & IOStreamAccess::ReadAttributes);
+			Utility::AddFlagRef(nativeMode, FILE_WRITE_ATTRIBUTES, mode & IOStreamAccess::WriteAttributes);
 			return nativeMode;
 		}
 		return std::numeric_limits<DWORD>::max();
 	}
-	constexpr inline DWORD MapFileShareMode(FlagSet<FileStreamShare> mode) noexcept
+	constexpr inline DWORD MapFileShareMode(FlagSet<IOStreamShare> mode) noexcept
 	{
-		if (mode == FileStreamShare::None)
+		if (mode == IOStreamShare::None)
 		{
 			return 0;
 		}
 		else
 		{
 			DWORD nativeMode = 0;
-			Utility::AddFlagRef(nativeMode, FILE_SHARE_READ, mode & FileStreamShare::Read);
-			Utility::AddFlagRef(nativeMode, FILE_SHARE_WRITE, mode & FileStreamShare::Write);
-			Utility::AddFlagRef(nativeMode, FILE_SHARE_DELETE, mode & FileStreamShare::Delete);
+			Utility::AddFlagRef(nativeMode, FILE_SHARE_READ, mode & IOStreamShare::Read);
+			Utility::AddFlagRef(nativeMode, FILE_SHARE_WRITE, mode & IOStreamShare::Write);
+			Utility::AddFlagRef(nativeMode, FILE_SHARE_DELETE, mode & IOStreamShare::Delete);
 			return nativeMode;
 		}
 		return std::numeric_limits<DWORD>::max();
 	}
-	constexpr inline DWORD MapFileDisposition(FileStreamDisposition mode) noexcept
+	constexpr inline DWORD MapFileDisposition(IOStreamDisposition mode) noexcept
 	{
 		switch (mode)
 		{
-			case FileStreamDisposition::OpenExisting:
+			case IOStreamDisposition::OpenExisting:
 			{
 				return OPEN_EXISTING;
 			}
-			case FileStreamDisposition::OpenAlways:
+			case IOStreamDisposition::OpenAlways:
 			{
 				return OPEN_ALWAYS;
 			}
-			case FileStreamDisposition::CreateNew:
+			case IOStreamDisposition::CreateNew:
 			{
 				return CREATE_NEW;
 			}
-			case FileStreamDisposition::CreateAlways:
+			case IOStreamDisposition::CreateAlways:
 			{
 				return CREATE_ALWAYS;
 			}
 		};
 		return 0;
 	}
-	constexpr inline DWORD MapFileFlags(FlagSet<FileStreamFlags> flags) noexcept
+	constexpr inline DWORD MapFileFlags(FlagSet<IOStreamFlag> flags) noexcept
 	{
 		DWORD nativeMode = 0;
-		Utility::AddFlagRef(nativeMode, FILE_ATTRIBUTE_NORMAL, flags & FileStreamFlags::Normal);
-		Utility::AddFlagRef(nativeMode, FILE_FLAG_BACKUP_SEMANTICS, flags & FileStreamFlags::BackupSemantics);
+		Utility::AddFlagRef(nativeMode, FILE_ATTRIBUTE_NORMAL, flags & IOStreamFlag::Normal);
+		Utility::AddFlagRef(nativeMode, FILE_FLAG_BACKUP_SEMANTICS, flags & IOStreamFlag::AllowDirectories);
 		return nativeMode;
 	}
 

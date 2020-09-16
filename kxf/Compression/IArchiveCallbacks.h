@@ -24,10 +24,10 @@ namespace kxf::Compression
 			}
 
 			virtual OutputStreamDelegate OnGetStream(const FileItem& item) = 0;
-			virtual bool OnItemDone(const FileItem& item, wxOutputStream& stream) = 0;
+			virtual bool OnItemDone(const FileItem& item, IOutputStream& stream) = 0;
 	};
 
-	template<class TOutStream = wxOutputStream>
+	template<class TOutStream = IOutputStream>
 	class KX_API ExtractWithOptions: public IExtractCallback
 	{
 		private:
@@ -35,7 +35,7 @@ namespace kxf::Compression
 
 			std::function<bool()> m_ShouldCancel;
 			std::function<OutputStreamDelegate(const FileItem&)> m_OnGetStream;
-			std::function<bool(const FileItem&, wxOutputStream&)> m_OnOperationCompleted;
+			std::function<bool(const FileItem&, IOutputStream&)> m_OnOperationCompleted;
 
 		private:
 			bool ShouldCancel() const override
@@ -47,7 +47,7 @@ namespace kxf::Compression
 			{
 				return m_OnGetStream ? std::invoke(m_OnGetStream, item) : nullptr;
 			}
-			bool OnItemDone(const FileItem& item, wxOutputStream& stream) override
+			bool OnItemDone(const FileItem& item, IOutputStream& stream) override
 			{
 				return m_OnOperationCompleted ? std::invoke(m_OnOperationCompleted, item, stream) : true;
 			}
@@ -56,7 +56,7 @@ namespace kxf::Compression
 			ExtractWithOptions(const IArchiveExtract& archive)
 				:m_Archive(archive)
 			{
-				static_assert(std::is_base_of_v<wxOutputStream, TOutStream>, "invalid stream type");
+				static_assert(std::is_base_of_v<IOutputStream, TOutStream>, "invalid stream type");
 			}
 
 		public:
@@ -86,7 +86,7 @@ namespace kxf::Compression
 			template<class TFunc>
 			ExtractWithOptions& OnItemDone(TFunc&& func)
 			{
-				if constexpr(std::is_same_v<TOutStream, wxOutputStream>)
+				if constexpr(std::is_same_v<TOutStream, IOutputStream>)
 				{
 					// Assign as is
 					m_OnOperationCompleted = std::forward<TFunc>(func);
@@ -94,7 +94,7 @@ namespace kxf::Compression
 				else
 				{
 					// Wrap inside lambda and cast stream type
-					m_OnOperationCompleted = [func = std::forward<TFunc>(func)](size_t index, wxOutputStream& stream) -> bool
+					m_OnOperationCompleted = [func = std::forward<TFunc>(func)](size_t index, IOutputStream& stream) -> bool
 					{
 						return std::invoke(func, index, static_cast<TOutStream&>(stream));
 					};
@@ -123,6 +123,6 @@ namespace kxf::Compression
 			virtual FileItem OnGetProperties(size_t index) = 0;
 
 			virtual InputStreamDelegate OnGetStream(const FileItem& item) = 0;
-			virtual bool OnItemDone(const FileItem& item, wxInputStream& stream) = 0;
+			virtual bool OnItemDone(const FileItem& item, IInputStream& stream) = 0;
 	};
 }

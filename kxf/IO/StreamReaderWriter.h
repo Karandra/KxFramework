@@ -1,36 +1,20 @@
 #pragma once
 #include "Common.h"
+#include "IStream.h"
 #include "kxf/Utility/Common.h"
-#include "kxf/RTTI/QueryInterface.h"
 #include <vector>
 #include <array>
 #include <wx/ustring.h>
 #include <wx/stream.h>
 
-namespace kxf
+namespace kxf::IO
 {
-	class KX_API IStreamWrapper: public RTTI::Interface<IStreamWrapper>
+	class InputStreamReader final
 	{
-		KxRTTI_DeclareIID(IStreamWrapper, {0xbf4894d7, 0x8ec9, 0x4aed, {0x8d, 0xf, 0x18, 0xed, 0x32, 0xdd, 0x69, 0x8a}});
+		private:
+			IInputStream& m_Stream;
 
-		public:
-			virtual ~IStreamWrapper() = default;
-
-		public:
-			virtual bool Flush() = 0;
-			virtual bool SetAllocationSize(BinarySize offset = {}) = 0;
-
-			virtual bool IsWriteable() const = 0;
-			virtual bool IsReadable() const = 0;
-	};
-}
-
-namespace kxf
-{
-	template<class TBaseStream>
-	class InputStreamWrapper: public TBaseStream
-	{
-		protected:
+		private:
 			template<class C>
 			static void DoRemoveTrailingNulls(C& data)
 			{
@@ -52,28 +36,52 @@ namespace kxf
 			}
 
 		public:
-			InputStreamWrapper(const InputStreamWrapper&) = delete;
-			InputStreamWrapper(InputStreamWrapper&&) = delete;
-
-			template<class... Args>
-			InputStreamWrapper(Args&&... arg)
-				:TBaseStream(std::forward<Args>(arg)...)
+			InputStreamReader(IInputStream& stream)
+				:m_Stream(stream)
 			{
 			}
 
 		public:
-			InputStreamWrapper& operator=(const InputStreamWrapper&) = delete;
-			InputStreamWrapper& operator=(InputStreamWrapper&&) = delete;
+			template<class... T>
+			bool Skip()
+			{
+				static_assert(sizeof...(T) != 0, "IOStreamSeeker::Skip<T...>: Skipping 0 bytes is not allowed");
+
+				return m_Stream.SeekI(Utility::SizeOfParameterPackValues<T...>(), IOStreamSeek::FromCurrent).IsValid();
+			}
+
+			bool Skip(BinarySize count)
+			{
+				return m_Stream.SeekI(count, IOStreamSeek::FromCurrent).IsValid();
+			}
+
+			bool Rewind()
+			{
+				return m_Stream.SeekI(0, IOStreamSeek::FromStart).IsValid();
+			}
+			bool SeekToEnd()
+			{
+				return m_Stream.SeekI(0, IOStreamSeek::FromEnd).IsValid();
+			}
+
+			bool SeekFromStart(BinarySize offset)
+			{
+				return m_Stream.SeekI(offset, IOStreamSeek::FromStart).IsValid();
+			}
+			bool SeekFromEnd(BinarySize offset)
+			{
+				return m_Stream.SeekI(offset, IOStreamSeek::FromEnd).IsValid();
+			}
 
 		public:
 			bool LastReadSuccess() const
 			{
-				return this->LastRead() != 0;
+				return m_Stream.LastRead().IsValid();
 			}
 
 			bool ReadBuffer(void* buffer, size_t size)
 			{
-				return this->OnSysRead(buffer, size) != 0;
+				return m_Stream.ReadAll(buffer, size);
 			}
 			wxMemoryBuffer ReadBuffer(size_t size)
 			{
@@ -297,12 +305,14 @@ namespace kxf
 	};
 }
 
-namespace kxf
+namespace kxf::IO
 {
-	template<class TBaseStream>
-	class OutputStreamWrapper: public TBaseStream
+	class OutputStreamWriter final
 	{
-		protected:
+		private:
+			IOutputStream& m_Stream;
+
+		private:
 			template<class C>
 			bool DoWriteContainter(const C& values)
 			{
@@ -313,28 +323,39 @@ namespace kxf
 			}
 
 		public:
-			OutputStreamWrapper(const OutputStreamWrapper&) = delete;
-			OutputStreamWrapper(OutputStreamWrapper&&) = delete;
-
-			template<class... Args>
-			OutputStreamWrapper(Args&&... arg)
-				:TBaseStream(std::forward<Args>(arg)...)
+			OutputStreamWriter(IOutputStream& stream)
+				:m_Stream(stream)
 			{
 			}
 
 		public:
-			OutputStreamWrapper& operator=(const OutputStreamWrapper&) = delete;
-			OutputStreamWrapper& operator=(OutputStreamWrapper&&) = delete;
+			bool Rewind()
+			{
+				return m_Stream.SeekO(0, IOStreamSeek::FromStart).IsValid();
+			}
+			bool SeekToEnd()
+			{
+				return m_Stream.SeekO(0, IOStreamSeek::FromEnd).IsValid();
+			}
+
+			bool SeekFromStart(BinarySize offset)
+			{
+				return m_Stream.SeekO(offset, IOStreamSeek::FromStart).IsValid();
+			}
+			bool SeekFromEnd(BinarySize offset)
+			{
+				return m_Stream.SeekO(offset, IOStreamSeek::FromEnd).IsValid();
+			}
 
 		public:
 			bool LastWriteSuccess() const
 			{
-				return this->LastWrite() != 0;
+				return m_Stream.LastWrite().IsValid();
 			}
 
 			bool WriteBuffer(const void* buffer, size_t size)
 			{
-				return this->OnSysWrite(buffer, size) != 0;
+				return m_Stream.WriteAll(buffer, size);
 			}
 			bool WriteBuffer(const wxMemoryBuffer& buffer)
 			{
@@ -390,116 +411,6 @@ namespace kxf
 			{
 				wxUString buffer(value);
 				return WriteBuffer(buffer.data(), buffer.length() * sizeof(wxChar32));
-			}
-	};
-}
-
-namespace kxf
-{
-	template<class TBaseStream>
-	class IOStreamWrapper
-	{
-		private:
-			constexpr static bool IsInputStream() noexcept
-			{
-				return std::is_base_of_v<wxInputStream, TBaseStream>;
-			}
-			constexpr static bool IsOutputStream() noexcept
-			{
-				return std::is_base_of_v<wxOutputStream, TBaseStream>;
-			}
-
-		private:
-			TBaseStream& GetThis() noexcept
-			{
-				return static_cast<TBaseStream&>(*this);
-			}
-			const TBaseStream& GetThis() const noexcept
-			{
-				return static_cast<const TBaseStream&>(*this);
-			}
-
-			BinarySize SeekIO(BinarySize offset, wxSeekMode mode)
-			{
-				if (offset)
-				{
-					// If the class is derived from both input classes it should be fine to call any Seek function.
-					if constexpr(IsInputStream())
-					{
-						return BinarySize::FromBytes(GetThis().SeekI(offset.GetBytes(), mode));
-					}
-					else if constexpr(IsOutputStream())
-					{
-						return BinarySize::FromBytes(GetThis().SeekO(offset.GetBytes(), mode));
-					}
-					else
-					{
-						static_assert(false, "Unknown stream type");
-					}
-				}
-				return {};
-			}
-			BinarySize TellIO() const
-			{
-				if constexpr(IsInputStream())
-				{
-					return BinarySize::FromBytes(GetThis().TellI());
-				}
-				else if constexpr(IsOutputStream())
-				{
-					return BinarySize::FromBytes(GetThis().TellO());
-				}
-				else
-				{
-					static_assert(false, "Unknown stream type");
-				}
-			}
-
-		public:
-			virtual ~IOStreamWrapper() = default;
-
-		public:
-			template<class... T>
-			bool Skip()
-			{
-				static_assert(sizeof...(T) != 0, "IOStreamWrapper::Skip<T...>: Skipping 0 bytes is not allowed");
-
-				return SeekIO(Utility::SizeOfParameterPackValues<T...>(), wxSeekMode::wxFromCurrent).IsValid();
-			}
-
-			bool Skip(BinarySize count)
-			{
-				return SeekIO(count, wxSeekMode::wxFromCurrent).IsValid();
-			}
-			bool SkipToEnd()
-			{
-				return SeekIO(0, wxSeekMode::wxFromEnd).IsValid();
-			}
-			bool Rewind()
-			{
-				return SeekIO(BinarySize::FromBytes(0), wxSeekMode::wxFromStart).IsValid();
-			}
-			
-			bool SeekFromStart(BinarySize offset)
-			{
-				return SeekIO(offset, wxSeekMode::wxFromStart).IsValid();
-			}
-			bool SeekFromEnd(BinarySize offset)
-			{
-				return SeekIO(offset, wxSeekMode::wxFromEnd).IsValid();
-			}
-
-			BinarySize Tell() const
-			{
-				return TellIO();
-			}
-			BinarySize Seek(BinarySize offset, StreamSeekMode mode = StreamSeekMode::FromCurrent)
-			{
-				if (auto seek = ToWxSeekMode(mode))
-				{
-					return SeekIO(offset, *seek);
-				}
-				return {};
 			}
 	};
 }

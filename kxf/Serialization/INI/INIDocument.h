@@ -2,7 +2,7 @@
 #include "../Common.h"
 #include "../XDocument.h"
 #include "kxf/General/Version.h"
-#include <wx/stream.h>
+#include "kxf/IO/IStream.h"
 #include <map>
 
 namespace SimpleINI
@@ -63,7 +63,7 @@ namespace kxf
 					Load(ini);
 				}
 			}
-			INIDocument(wxInputStream& stream)
+			INIDocument(IInputStream& stream)
 				:INIDocument()
 			{
 				Load(stream);
@@ -79,8 +79,8 @@ namespace kxf
 			}
 
 			bool Load(const String& ini);
-			bool Load(wxInputStream& stream);
-			bool Save(wxOutputStream& stream) const;
+			bool Load(IInputStream& stream);
+			bool Save(IOutputStream& stream) const;
 			String Save() const;
 			INIDocument Clone() const;
 

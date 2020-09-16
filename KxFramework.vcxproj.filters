@@ -1223,9 +1223,6 @@
     <ClInclude Include="kxf\IO\StreamDelegate.h">
       <Filter>kxf\IO</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\IO\StreamWrappers.h">
-      <Filter>kxf\IO</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\IO\FileStream.h">
       <Filter>kxf\IO</Filter>
     </ClInclude>
@@ -1498,6 +1495,18 @@
     </ClInclude>
     <ClInclude Include="kxf\RTTI\ObjectPtr.h">
       <Filter>kxf\RTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IO\IStream.h">
+      <Filter>kxf\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IO\INativeStream.h">
+      <Filter>kxf\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IO\IStreamOnFileSystem.h">
+      <Filter>kxf\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IO\StreamReaderWriter.h">
+      <Filter>kxf\IO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2242,6 +2251,12 @@
     </ClCompile>
     <ClCompile Include="kxf\General\StringFormatter.cpp">
       <Filter>kxf\General</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\IO\IStream.cpp">
+      <Filter>kxf\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\FileSystem\IFileSystem.cpp">
+      <Filter>kxf\FileSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -172,6 +172,6 @@ namespace kxf::SevenZip::Private::Callback
 			FileItem OnGetProperties(size_t index) override;
 
 			InputStreamDelegate OnGetStream(const FileItem& item) override;
-			bool OnItemDone(const FileItem& item, wxInputStream& stream) override;
+			bool OnItemDone(const FileItem& item, IInputStream& stream) override;
 	};
 }

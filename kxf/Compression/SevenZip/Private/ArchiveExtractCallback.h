@@ -163,7 +163,7 @@ namespace kxf::SevenZip::Private::Callback
 				return m_ShouldCancel;
 			}
 			OutputStreamDelegate OnGetStream(const FileItem& item) override;
-			bool OnItemDone(const FileItem& item, wxOutputStream& stream) override;
+			bool OnItemDone(const FileItem& item, IOutputStream& stream) override;
 
 		public:
 			virtual bool GetTargetPath(const FileItem& item, FSPath& targetPath) const
@@ -193,6 +193,6 @@ namespace kxf::SevenZip::Private::Callback
 				return false;;
 			}
 			OutputStreamDelegate OnGetStream(const FileItem& item) override;
-			bool OnItemDone(const FileItem& item, wxOutputStream& stream) override;
+			bool OnItemDone(const FileItem& item, IOutputStream& stream) override;
 	};
 }

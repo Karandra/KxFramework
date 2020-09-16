@@ -2,7 +2,7 @@
 #include "../Common.h"
 #include "../XDocument.h"
 #include "kxf/General/Version.h"
-#include <wx/stream.h>
+#include "kxf/IO/IStream.h"
 
 namespace kxf::HTML
 {
@@ -146,7 +146,7 @@ namespace kxf
 					Load(html);
 				}
 			}
-			KxHTMLDocument(wxInputStream& stream)
+			KxHTMLDocument(IInputStream& stream)
 				:KxHTMLDocument()
 			{
 				Load(stream);
@@ -166,8 +166,8 @@ namespace kxf
 			bool IsNull() const override;
 
 			bool Load(const String& htmlText);
-			bool Load(wxInputStream& stream);
-			bool Save(wxOutputStream& stream) const;
+			bool Load(IInputStream& stream);
+			bool Save(IOutputStream& stream) const;
 			String Save() const
 			{
 				return GetHTML();

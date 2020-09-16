@@ -6,9 +6,9 @@
 
 namespace kxf::Localization::Private
 {
-	bool XMLPackageHelper::Load(wxInputStream& stream, const Locale& locale, FlagSet<LoadingScheme> loadingScheme)
+	bool XMLPackageHelper::Load(IInputStream& stream, const Locale& locale, FlagSet<LoadingScheme> loadingScheme)
 	{
-		if (stream.IsOk() && DoLoadXML(XMLDocument(stream), loadingScheme))
+		if (stream && DoLoadXML(XMLDocument(stream), loadingScheme))
 		{
 			DoSetLocale(locale);
 			return true;

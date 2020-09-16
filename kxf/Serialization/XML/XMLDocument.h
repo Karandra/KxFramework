@@ -2,6 +2,7 @@
 #include "../Common.h"
 #include "../XDocument.h"
 #include "kxf/General/Version.h"
+#include "kxf/IO/IStream.h"
 #include "TinyXML2.h"
 #include <wx/stream.h>
 
@@ -307,7 +308,7 @@ namespace kxf
 			{
 				Load(std::wstring_view(xml, length));
 			}
-			XMLDocument(wxInputStream& stream)
+			XMLDocument(IInputStream& stream)
 				:XMLDocument()
 			{
 				Load(stream);
@@ -338,8 +339,8 @@ namespace kxf
 			}
 			bool Load(std::string_view xml);
 			bool Load(std::wstring_view xml);
-			bool Load(wxInputStream& stream);
-			bool Save(wxOutputStream& stream) const;
+			bool Load(IInputStream& stream);
+			bool Save(IOutputStream& stream) const;
 			String Save() const
 			{
 				return GetXML();

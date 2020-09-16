@@ -71,17 +71,17 @@ namespace kxf
 		DoLoad();
 		return !IsNull();
 	}
-	bool KxHTMLDocument::Load(wxInputStream& stream)
+	bool KxHTMLDocument::Load(IInputStream& stream)
 	{
 		DoUnload();
-		m_Buffer.resize(stream.GetLength());
+		m_Buffer.resize(stream.GetSize().GetBytes());
 		stream.Read(m_Buffer.data(), m_Buffer.size());
-		m_Buffer.resize(stream.LastRead());
+		m_Buffer.resize(stream.LastRead().GetBytes());
 
 		DoLoad();
 		return !IsNull();
 	}
-	bool KxHTMLDocument::Save(wxOutputStream& stream) const
+	bool KxHTMLDocument::Save(IOutputStream& stream) const
 	{
 		auto utf8 = GetHTML().ToUTF8();
 		return stream.WriteAll(utf8.data(), utf8.length());

@@ -92,10 +92,10 @@ namespace kxf::SevenZip::Private
 
 namespace kxf::SevenZip::Private
 {
-	class InStreamWrapper_IStream: public InStreamWrapper
+	class InStreamWrapper_COM_IStream: public InStreamWrapper
 	{
 		protected:
-			COMPtr<IStream> m_Stream;
+			COMPtr<::IStream> m_Stream;
 
 		protected:
 			HResult DoRead(void* data, uint32_t size, uint32_t& read) override
@@ -133,7 +133,7 @@ namespace kxf::SevenZip::Private
 			}
 
 		public:
-			InStreamWrapper_IStream(COMPtr<IStream> stream, IEvtHandler* evtHandler = nullptr)
+			InStreamWrapper_COM_IStream(COMPtr<::IStream> stream, IEvtHandler* evtHandler = nullptr)
 				:InStreamWrapper(evtHandler), m_Stream(std::move(stream))
 			{
 			}
@@ -142,7 +142,7 @@ namespace kxf::SevenZip::Private
 
 namespace kxf::SevenZip::Private
 {
-	class InStreamWrapper_wxInputStream: public InStreamWrapper
+	class InStreamWrapper_IInputStream: public InStreamWrapper
 	{
 		protected:
 			InputStreamDelegate m_Stream;
@@ -150,14 +150,22 @@ namespace kxf::SevenZip::Private
 		private:
 			HResult GetLastError() const
 			{
-				return m_Stream->GetLastError() == wxSTREAM_NO_ERROR ? HResult::Success() : HResult::Fail();
+				auto lastError = m_Stream->GetLastError();
+				if (auto hr = lastError.ConvertToHResult())
+				{
+					return *hr;
+				}
+				else
+				{
+					return lastError.IsSuccess() ? HResult::Success() : HResult::Fail();
+				}
 			}
 
 		protected:
 			HResult DoRead(void* data, uint32_t size, uint32_t& read) override
 			{
 				m_Stream->Read(data, size);
-				read = m_Stream->LastRead();
+				read = m_Stream->LastRead().GetBytes();
 
 				return GetLastError();
 			}
@@ -169,19 +177,19 @@ namespace kxf::SevenZip::Private
 				}
 				if (auto streamSeek = MapSeekMode(seekMode))
 				{
-					newPosition = m_Stream->SeekI(offset, *streamSeek);
+					newPosition = m_Stream->SeekI(offset, *streamSeek).GetBytes();
 					return GetLastError();
 				}
 				return HResult::InvalidArgument();
 			}
 			HResult DoGetSize(int64_t& size) const override
 			{
-				size = m_Stream->GetLength();
+				size = m_Stream->GetSize().GetBytes();
 				return GetLastError();
 			}
 
 		public:
-			InStreamWrapper_wxInputStream(InputStreamDelegate stream, IEvtHandler* evtHandler = nullptr)
+			InStreamWrapper_IInputStream(InputStreamDelegate stream, IEvtHandler* evtHandler = nullptr)
 				:InStreamWrapper(evtHandler), m_Stream(std::move(stream))
 			{
 			}

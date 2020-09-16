@@ -8,22 +8,7 @@ namespace
 {
 	using namespace kxf;
 
-	void GetFileID(FileItem& fileItem, HANDLE fileHandle, const BY_HANDLE_FILE_INFORMATION& fileInfo)
-	{
-		// "If you want to use GUIDs to identify your files, then nobody's stopping you": https://devblogs.microsoft.com/oldnewthing/20110228-00/?p=11363
-		// Raymond Chen shows us use of NTFS ObjectIDs but I'm not sure it's the best idea to always use them
-		// https://stackoverflow.com/questions/62440438/getfileinformationbyhandleex-fileidinfo-vs-deviceiocontrol-fsctl-create-or-get-o
-
-		fileItem.SetUniqueID(LocallyUniqueID(Utility::IntFromLowHigh<uint64_t>(fileInfo.nFileIndexLow, fileInfo.nFileIndexHigh)));
-		if (System::IsWindows8OrGreater())
-		{
-			FILE_ID_INFO fileIDInfo = {};
-			if (::GetFileInformationByHandleEx(fileHandle, FILE_INFO_BY_HANDLE_CLASS::FileIdInfo, &fileIDInfo, sizeof(fileIDInfo)))
-			{
-				fileItem.SetUniqueID(UniversallyUniqueID::CreateFromInt128(fileIDInfo.FileId.Identifier));
-			}
-		}
-	}
+	
 }
 
 namespace kxf::FileSystem::Private
@@ -32,6 +17,23 @@ namespace kxf::FileSystem::Private
 	{
 		String pathName = path.GetFullPathWithNS(FSPathNamespace::Win32File);
 		return ::GetFileAttributesW(pathName.wc_str());
+	}
+	UniversallyUniqueID GetFileUniqueID(HANDLE fileHandle, const _BY_HANDLE_FILE_INFORMATION& fileInfo)
+	{
+		// "If you want to use GUIDs to identify your files, then nobody's stopping you": https://devblogs.microsoft.com/oldnewthing/20110228-00/?p=11363
+		// Raymond Chen shows us use of NTFS ObjectIDs but I'm not sure it's the best idea to always use them
+		// https://stackoverflow.com/questions/62440438/getfileinformationbyhandleex-fileidinfo-vs-deviceiocontrol-fsctl-create-or-get-o
+
+		UniversallyUniqueID result = LocallyUniqueID(Utility::IntFromLowHigh<uint64_t>(fileInfo.nFileIndexLow, fileInfo.nFileIndexHigh));
+		if (System::IsWindows8OrGreater())
+		{
+			FILE_ID_INFO fileIDInfo = {};
+			if (::GetFileInformationByHandleEx(fileHandle, FILE_INFO_BY_HANDLE_CLASS::FileIdInfo, &fileIDInfo, sizeof(fileIDInfo)))
+			{
+				result = UniversallyUniqueID::CreateFromInt128(fileIDInfo.FileId.Identifier);
+			}
+		}
+		return result;
 	}
 
 	bool IsValidFindItem(const WIN32_FIND_DATAW& findInfo) noexcept
@@ -107,10 +109,10 @@ namespace kxf::FileSystem::Private
 		{
 			// Switch to a different directory enumeration method to avoid opening the file here to get its ID
 			BY_HANDLE_FILE_INFORMATION fileInfo = {};
-			FileStream stream(path, FileStreamAccess::ReadAttributes, FileStreamDisposition::OpenExisting, FileStreamShare::Everything, FileStreamFlags::BackupSemantics);
+			FileStream stream(path, IOStreamAccess::ReadAttributes, IOStreamDisposition::OpenExisting, IOStreamShare::Everything, IOStreamFlag::AllowDirectories);
 			if (stream && ::GetFileInformationByHandle(stream.GetHandle(), &fileInfo))
 			{
-				GetFileID(fileItem, stream.GetHandle(), fileInfo);
+				fileItem.SetUniqueID(GetFileUniqueID(stream.GetHandle(), fileInfo));
 			}
 		}
 
@@ -130,7 +132,7 @@ namespace kxf::FileSystem::Private
 			};
 
 			// File item and path
-			FileItem fileItem(stream.GetFileSystemPath());
+			FileItem fileItem(stream.GetPath());
 
 			BY_HANDLE_FILE_INFORMATION fileInfo = {};
 			if (::GetFileInformationByHandle(fileHandle, &fileInfo))
@@ -175,7 +177,7 @@ namespace kxf::FileSystem::Private
 				}
 				else if (flags.Contains(FSActionFlag::QueryUniqueID))
 				{
-					GetFileID(fileItem, fileHandle, fileInfo);
+					fileItem.SetUniqueID(GetFileUniqueID(fileHandle, fileInfo));
 				}
 			}
 			return fileItem;

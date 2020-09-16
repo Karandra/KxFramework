@@ -78,10 +78,10 @@ namespace kxf::SevenZip::Private
 			STDMETHOD(SetSize)(UInt64 newSize) override;
 	};
 
-	class OutStreamWrapper_IStream: public OutStreamWrapper
+	class OutStreamWrapper_COM_IStream: public OutStreamWrapper
 	{
 		protected:
-			COMPtr<IStream> m_Stream;
+			COMPtr<::IStream> m_Stream;
 
 		protected:
 			HResult DoWrite(const void* data, uint32_t size, uint32_t& written) override
@@ -111,13 +111,13 @@ namespace kxf::SevenZip::Private
 			}
 
 		public:
-			OutStreamWrapper_IStream(COMPtr<IStream> baseStream, IEvtHandler* evtHandler = nullptr)
+			OutStreamWrapper_COM_IStream(COMPtr<::IStream> baseStream, IEvtHandler* evtHandler = nullptr)
 				:OutStreamWrapper(evtHandler), m_Stream(std::move(baseStream))
 			{
 			}
 	};
 
-	class OutStreamWrapper_wxOutputStream: public OutStreamWrapper
+	class OutStreamWrapper_IOutputStream: public OutStreamWrapper
 	{
 		protected:
 			OutputStreamDelegate m_Stream;
@@ -125,14 +125,22 @@ namespace kxf::SevenZip::Private
 		private:
 			HResult GetLastError() const
 			{
-				return m_Stream->GetLastError() == wxSTREAM_NO_ERROR ? HResult::Success() : HResult::Fail();
+				auto lastError = m_Stream->GetLastError();
+				if (auto hr = lastError.ConvertToHResult())
+				{
+					return *hr;
+				}
+				else
+				{
+					return lastError.IsSuccess() ? HResult::Success() : HResult::Fail();
+				}
 			}
 
 		protected:
 			HResult DoWrite(const void* data, uint32_t size, uint32_t& written) override
 			{
 				m_Stream.Write(data, size);
-				written = m_Stream.LastWrite();
+				written = m_Stream.LastWrite().GetBytes();
 
 				return GetLastError();
 			}
@@ -144,22 +152,18 @@ namespace kxf::SevenZip::Private
 				}
 				if (auto streamSeek = MapSeekMode(seekMode))
 				{
-					newPosition = m_Stream->SeekO(offset, *streamSeek);
+					newPosition = m_Stream->SeekO(offset, *streamSeek).GetBytes();
 					return GetLastError();
 				}
 				return HResult::InvalidArgument();
 			}
 			HResult DoSetSize(int64_t size) override
 			{
-				if (m_Stream && m_Stream->IsKindOf(wxCLASSINFO(FileStream)))
-				{
-					return static_cast<FileStream&>(*m_Stream).SetAllocationSize(size) ? HResult::Success() : HResult::Fail();
-				}
-				return HResult::NotImplemented();
+				return m_Stream->SetAllocationSize(size) ? HResult::Success() : HResult::Fail();
 			}
 
 		public:
-			OutStreamWrapper_wxOutputStream(OutputStreamDelegate stream, IEvtHandler* evtHandler = nullptr)
+			OutStreamWrapper_IOutputStream(OutputStreamDelegate stream, IEvtHandler* evtHandler = nullptr)
 				:OutStreamWrapper(evtHandler), m_Stream(std::move(stream))
 			{
 			}

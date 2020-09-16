@@ -62,7 +62,7 @@ namespace kxf::SevenZip
 			bool DoOpen(InputStreamDelegate stream);
 			void DoClose();
 			bool DoExtract(COMPtr<Private::Callback::ExtractArchive> extractor, Compression::FileIndexView* files) const;
-			bool DoUpdate(wxOutputStream& stream, COMPtr<Private::Callback::UpdateArchive> updater, size_t itemCount);
+			bool DoUpdate(IOutputStream& stream, COMPtr<Private::Callback::UpdateArchive> updater, size_t itemCount);
 
 		public:
 			Archive();
@@ -234,16 +234,16 @@ namespace kxf::SevenZip
 			bool ExtractToFS(IFileSystem& fileSystem, const FSPath& directory, Compression::FileIndexView files) const override;
 			
 			// Extract specified file into a stream
-			bool ExtractToStream(size_t index, wxOutputStream& stream) const override;
+			bool ExtractToStream(size_t index, IOutputStream& stream) const override;
 			
 		public:
 			// IArchiveUpdate
 			
 			// Add files using provided callback interface
-			bool Update(wxOutputStream& stream, Compression::IUpdateCallback& callback, size_t itemCount) override;
+			bool Update(IOutputStream& stream, Compression::IUpdateCallback& callback, size_t itemCount) override;
 
 			// Add files from the provided file system
-			bool UpdateFromFS(wxOutputStream& stream, const IFileSystem& fileSystem, const FSPath& directory, const FSPathQuery& query = {}, FlagSet<FSActionFlag> flags = {}) override;
+			bool UpdateFromFS(IOutputStream& stream, const IFileSystem& fileSystem, const FSPath& directory, const FSPathQuery& query = {}, FlagSet<FSActionFlag> flags = {}) override;
 
 		public:
 			// IFileSystem
@@ -298,11 +298,11 @@ namespace kxf::SevenZip
 				return false;
 			}
 
-			std::unique_ptr<wxStreamBase> GetStream(const FSPath& path,
-													FlagSet<FileStreamAccess> access,
-													FileStreamDisposition disposition,
-													FlagSet<FileStreamShare> share = FileStreamShare::Read,
-													FlagSet<FileStreamFlags> flags = FileStreamFlags::None
+			std::unique_ptr<IStream> GetStream(const FSPath& path,
+											   FlagSet<IOStreamAccess> access,
+											   IOStreamDisposition disposition,
+											   FlagSet<IOStreamShare> share = IOStreamShare::Read,
+											   FlagSet<IOStreamFlag> flags = IOStreamFlag::None
 			) override
 			{
 				return nullptr;
@@ -349,11 +349,11 @@ namespace kxf::SevenZip
 				return false;
 			}
 
-			std::unique_ptr<wxStreamBase> GetStream(const UniversallyUniqueID& id,
-													FlagSet<FileStreamAccess> access,
-													FileStreamDisposition disposition,
-													FlagSet<FileStreamShare> share = FileStreamShare::Read,
-													FlagSet<FileStreamFlags> flags = FileStreamFlags::None
+			std::unique_ptr<IStream> GetStream(const UniversallyUniqueID& id,
+											   FlagSet<IOStreamAccess> access,
+											   IOStreamDisposition disposition,
+											   FlagSet<IOStreamShare> share = IOStreamShare::Read,
+											   FlagSet<IOStreamFlag> flags = IOStreamFlag::None
 			) override
 			{
 				return nullptr;

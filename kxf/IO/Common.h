@@ -2,33 +2,63 @@
 #include <kxf/Common.hpp>
 #include "kxf/General/String.h"
 #include "kxf/General/BinarySize.h"
-#include "kxf/FileSystem/FSPath.h"
-#include "kxf/FileSystem/FileItem.h"
 enum wxSeekMode: int;
 enum wxStreamError: int;
 
 namespace kxf
 {
-	enum class StreamSeekMode
+	using StreamOffset = BinarySize;
+
+	enum class IOStreamAccess: uint32_t
+	{
+		None = 0,
+		Read = 1 << 0,
+		Write = 1 << 1,
+		ReadAttributes = 1 << 2,
+		WriteAttributes = 1 << 3,
+
+		RW = Read|Write,
+		AllAccess = RW|ReadAttributes|WriteAttributes
+	};
+	KxFlagSet_Declare(IOStreamAccess);
+
+	enum class IOStreamShare: uint32_t
+	{
+		None = 0,
+		Read = 1 << 0,
+		Write = 1 << 1,
+		Delete = 1 << 2,
+
+		Everything = Read|Write|Delete
+	};
+	KxFlagSet_Declare(IOStreamShare);
+
+	enum class IOStreamFlag: uint32_t
+	{
+		None = 0,
+
+		Normal = 1 << 0,
+		AllowDirectories = 1 << 1
+	};
+	KxFlagSet_Declare(IOStreamFlag);
+
+	enum class IOStreamSeek
 	{
 		FromStart,
 		FromCurrent,
 		FromEnd,
 	};
-	enum class StreamErrorCode
+	enum class IOStreamDisposition
 	{
-		Success,
-		EndOfStream,
-		ReadError,
-		WriteError
+		OpenExisting,
+		OpenAlways,
+		CreateNew,
+		CreateAlways,
 	};
 }
 
-namespace kxf
+namespace kxf::IO
 {
-	std::optional<wxSeekMode> ToWxSeekMode(StreamSeekMode seekMode) noexcept;
-	std::optional<StreamSeekMode> FromWxSeekMode(wxSeekMode seekMode) noexcept;
-
-	std::optional<wxStreamError> ToWxStreamError(StreamErrorCode streamError) noexcept;
-	std::optional<StreamErrorCode> FromWxStreamError(wxStreamError streamError) noexcept;
+	std::optional<wxSeekMode> ToWxSeekMode(IOStreamSeek seekMode) noexcept;
+	std::optional<IOStreamSeek> FromWxSeekMode(wxSeekMode seekMode) noexcept;
 }

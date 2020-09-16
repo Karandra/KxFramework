@@ -3,7 +3,7 @@
 #include "Locale.h"
 #include "LocalizationItem.h"
 #include "kxf/RTTI/QueryInterface.h"
-#include <wx/stream.h>
+#include "kxf/IO/IStream.h"
 
 namespace kxf::Localization
 {
@@ -50,7 +50,7 @@ namespace kxf
 			virtual const LocalizationItem& GetItem(const ResourceID& id) const = 0;
 			virtual size_t EnumItems(std::function<bool(const ResourceID&, const LocalizationItem&)> func) const = 0;
 
-			virtual bool Load(wxInputStream& stream, const Locale& locale, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace) = 0;
+			virtual bool Load(IInputStream& stream, const Locale& locale, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace) = 0;
 			virtual bool Load(const DynamicLibrary& library, const FSPath& name, const Locale& locale, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace) = 0;
 
 		public:

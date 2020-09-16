@@ -17,12 +17,11 @@ namespace kxf::JSON
 		auto utf8 = json.ToUTF8();
 		return JSONDocument::parse(std::string(utf8.data(), utf8.length()), nullptr, false);
 	}
-	JSONDocument Load(wxInputStream& stream)
+	JSONDocument Load(IInputStream& stream)
 	{
-		wxFileOffset size = stream.GetLength();
-		if (size != wxInvalidOffset)
+		if (auto size = stream.GetSize())
 		{
-			std::string buffer(size + 1, '\000');
+			std::string buffer(size.GetBytes() + 1, '\000');
 			if (stream.ReadAll(buffer.data(), buffer.size()))
 			{
 				return JSONDocument::parse(buffer, nullptr, false);

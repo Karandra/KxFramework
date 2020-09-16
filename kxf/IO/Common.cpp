@@ -3,89 +3,42 @@
 #include <wx/stream.h> 
 #include <wx/filefn.h> 
 
-namespace kxf
+namespace kxf::IO
 {
-	std::optional<wxSeekMode> ToWxSeekMode(StreamSeekMode seekMode) noexcept
+	std::optional<wxSeekMode> ToWxSeekMode(IOStreamSeek seekMode) noexcept
 	{
 		switch (seekMode)
 		{
-			case StreamSeekMode::FromStart:
+			case IOStreamSeek::FromStart:
 			{
 				return wxSeekMode::wxFromStart;
 			}
-			case StreamSeekMode::FromCurrent:
+			case IOStreamSeek::FromCurrent:
 			{
 				return wxSeekMode::wxFromCurrent;
 			}
-			case StreamSeekMode::FromEnd:
+			case IOStreamSeek::FromEnd:
 			{
 				return wxSeekMode::wxFromEnd;
 			}
 		};
 		return {};
 	}
-	std::optional<StreamSeekMode> FromWxSeekMode(wxSeekMode seekMode) noexcept
+	std::optional<IOStreamSeek> FromWxSeekMode(wxSeekMode seekMode) noexcept
 	{
 		switch (seekMode)
 		{
 			case wxSeekMode::wxFromStart:
 			{
-				return StreamSeekMode::FromStart;
+				return IOStreamSeek::FromStart;
 			}
 			case wxSeekMode::wxFromCurrent:
 			{
-				return StreamSeekMode::FromCurrent;
+				return IOStreamSeek::FromCurrent;
 			}
 			case wxSeekMode::wxFromEnd:
 			{
-				return StreamSeekMode::FromEnd;
-			}
-		};
-		return {};
-	}
-
-	std::optional<wxStreamError> ToWxStreamError(StreamErrorCode streamError) noexcept
-	{
-		switch (streamError)
-		{
-			case StreamErrorCode::Success:
-			{
-				return wxStreamError::wxSTREAM_NO_ERROR;
-			}
-			case StreamErrorCode::EndOfStream:
-			{
-				return wxStreamError::wxSTREAM_EOF;
-			}
-			case StreamErrorCode::ReadError:
-			{
-				return wxStreamError::wxSTREAM_READ_ERROR;
-			}
-			case StreamErrorCode::WriteError:
-			{
-				return wxStreamError::wxSTREAM_WRITE_ERROR;
-			}
-		};
-		return {};
-	}
-	std::optional<StreamErrorCode> FromWxStreamError(wxStreamError streamError) noexcept
-	{
-		switch (streamError)
-		{
-			case wxStreamError::wxSTREAM_NO_ERROR:
-			{
-				return StreamErrorCode::Success;
-			}
-			case wxStreamError::wxSTREAM_EOF:
-			{
-				return StreamErrorCode::EndOfStream;
-			}
-			case wxStreamError::wxSTREAM_READ_ERROR:
-			{
-				return StreamErrorCode::ReadError;
-			}
-			case wxStreamError::wxSTREAM_WRITE_ERROR:
-			{
-				return StreamErrorCode::WriteError;
+				return IOStreamSeek::FromEnd;
 			}
 		};
 		return {};

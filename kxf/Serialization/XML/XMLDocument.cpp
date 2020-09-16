@@ -101,22 +101,21 @@ namespace kxf
 		Load(String::FromView(xml));
 		return !IsNull();
 	}
-	bool XMLDocument::Load(wxInputStream& stream)
+	bool XMLDocument::Load(IInputStream& stream)
 	{
 		wxMemoryBuffer buffer;
-		buffer.SetBufSize(stream.GetLength());
-		stream.Read(buffer.GetData(), buffer.GetBufSize());
-		buffer.SetDataLen(stream.LastRead());
+		buffer.SetBufSize(stream.GetSize().GetBytes());
+		stream.ReadAll(buffer.GetData(), buffer.GetBufSize());
+		buffer.SetDataLen(stream.LastRead().GetBytes());
 
 		DoLoad(reinterpret_cast<const char*>(buffer.GetData()), buffer.GetDataLen());
 		return !IsNull();
 	}
-	bool XMLDocument::Save(wxOutputStream& stream) const
+	bool XMLDocument::Save(IOutputStream& stream) const
 	{
 		XML::Private::DefaultXMLPrinter buffer;
 		m_Document.Print(&buffer);
-		stream.Write(buffer.CStr(), buffer.CStrSize() - 1);
-		return stream.IsOk();
+		return stream.WriteAll(buffer.CStr(), buffer.CStrSize() - 1);
 	}
 
 	// Deletion

@@ -17,14 +17,14 @@ namespace
 	bool OpenFileByID(const StorageVolume& volume,
 					  const UniversallyUniqueID& fileID,
 					  FileStream& file,
-					  FlagSet<FileStreamAccess> access = FileStreamAccess::ReadAttributes,
-					  FileStreamDisposition disposition = FileStreamDisposition::OpenExisting,
-					  FlagSet<FileStreamShare> share = FileStreamShare::Everything,
-					  FlagSet<FileStreamFlags> flags = FileStreamFlags::BackupSemantics)
+					  FlagSet<IOStreamAccess> access = IOStreamAccess::ReadAttributes,
+					  IOStreamDisposition disposition = IOStreamDisposition::OpenExisting,
+					  FlagSet<IOStreamShare> share = IOStreamShare::Everything,
+					  FlagSet<IOStreamFlag> flags = IOStreamFlag::AllowDirectories)
 	{
 		if (fileID && volume)
 		{
-			FileStream volumeStream(volume.GetDevicePath(), FileStreamAccess::ReadAttributes, FileStreamDisposition::OpenExisting, FileStreamShare::Everything, FileStreamFlags::BackupSemantics);
+			FileStream volumeStream(volume.GetDevicePath(), IOStreamAccess::ReadAttributes, IOStreamDisposition::OpenExisting, IOStreamShare::Everything, IOStreamFlag::AllowDirectories);
 			if (volumeStream)
 			{
 				// Some search on Google says that 'FILE_ID_DESCRIPTOR' isn't always 24. it *is* 24 for me on both x64 and x86
@@ -60,7 +60,7 @@ namespace
 											   FileSystem::Private::MapFileFlags(flags));
 				if (handle && handle != INVALID_HANDLE_VALUE)
 				{
-					return file.AttachHandle(handle, access, disposition, share, flags);
+					return file.AttachHandle(handle);
 				}
 			}
 		}
@@ -190,7 +190,7 @@ namespace kxf
 	{
 		return DoWithResolvedPath1(m_CurrentDirectory, path, [](const FSPath& path) -> FileItem
 		{
-			FileStream file(path, FileStreamAccess::ReadAttributes, FileStreamDisposition::OpenExisting, FileStreamShare::Everything);
+			FileStream file(path, IOStreamAccess::ReadAttributes, IOStreamDisposition::OpenExisting, IOStreamShare::Everything);
 			if (file)
 			{
 				return FileSystem::Private::ConvertFileInfo(file.GetHandle());
@@ -354,8 +354,8 @@ namespace kxf
 		{
 			if ((creationTime.IsValid() || modificationTime.IsValid() || lastAccessTime.IsValid()))
 			{
-				const FileStreamFlags streamFlags = GetItem(path).IsDirectory() ? FileStreamFlags::BackupSemantics : FileStreamFlags::Normal;
-				FileStream stream(path, FileStreamAccess::WriteAttributes, FileStreamDisposition::OpenExisting, FileStreamShare::Everything, streamFlags);
+				const IOStreamFlag streamFlags = GetItem(path).IsDirectory() ? IOStreamFlag::AllowDirectories : IOStreamFlag::Normal;
+				FileStream stream(path, IOStreamAccess::WriteAttributes, IOStreamDisposition::OpenExisting, IOStreamShare::Everything, streamFlags);
 				if (stream)
 				{
 					return stream.ChangeTimestamp(creationTime, modificationTime, lastAccessTime);
@@ -506,18 +506,22 @@ namespace kxf
 		});
 	}
 
-	std::unique_ptr<wxStreamBase> NativeFileSystem::GetStream(const FSPath& path,
-															  FlagSet<FileStreamAccess> access,
-															  FileStreamDisposition disposition,
-															  FlagSet<FileStreamShare> share,
-															  FlagSet<FileStreamFlags> flags)
+	std::unique_ptr<IStream> NativeFileSystem::GetStream(const FSPath& path,
+														 FlagSet<IOStreamAccess> access,
+														 IOStreamDisposition disposition,
+														 FlagSet<IOStreamShare> share,
+														 FlagSet<IOStreamFlag> flags)
 	{
-		return DoWithResolvedPath1(m_CurrentDirectory, path, [&](const FSPath& path) -> std::unique_ptr<wxStreamBase>
+		return DoWithResolvedPath1(m_CurrentDirectory, path, [&](const FSPath& path) -> std::unique_ptr<IStream>
 		{
-			auto stream = std::make_unique<FileStream>(path, access, disposition, share, flags);
-			if (stream->IsOk())
+			auto fileStream = std::make_unique<FileStream>(path, access, disposition, share, flags);
+			if (*fileStream)
 			{
-				return Utility::StaticCastUniquePtr<wxStreamBase>(Utility::StaticCastUniquePtr<wxInputStream>(std::move(stream)));
+				if (auto stream = std::unique_ptr<IStream>(fileStream->QueryInterface<IStream>().get()))
+				{
+					fileStream.release();
+					return stream;
+				}
 			}
 			return nullptr;
 		});
@@ -558,18 +562,22 @@ namespace kxf
 		return {};
 	}
 
-	std::unique_ptr<wxStreamBase> NativeFileSystem::GetStream(const UniversallyUniqueID& id,
-															  FlagSet<FileStreamAccess> access,
-															  FileStreamDisposition disposition,
-															  FlagSet<FileStreamShare> share,
-															  FlagSet<FileStreamFlags> flags)
+	std::unique_ptr<IStream> NativeFileSystem::GetStream(const UniversallyUniqueID& id,
+														 FlagSet<IOStreamAccess> access,
+														 IOStreamDisposition disposition,
+														 FlagSet<IOStreamShare> share,
+														 FlagSet<IOStreamFlag> flags)
 	{
 		if (id)
 		{
-			auto stream = std::make_unique<FileStream>();
-			if (OpenFileByID(m_CurrentVolume, id, *stream, access, disposition, share, flags))
+			auto fileStream = std::make_unique<FileStream>();
+			if (OpenFileByID(m_CurrentVolume, id, *fileStream, access, disposition, share, flags))
 			{
-				return Utility::StaticCastUniquePtr<wxStreamBase>(Utility::StaticCastUniquePtr<wxInputStream>(std::move(stream)));
+				if (auto stream = std::unique_ptr<IStream>(fileStream->QueryInterface<IStream>().get()))
+				{
+					fileStream.release();
+					return stream;
+				}
 			}
 		}
 		return nullptr;
@@ -578,7 +586,7 @@ namespace kxf
 	// NativeFileSystem
 	bool NativeFileSystem::IsInUse(const FSPath& path) const
 	{
-		return path.IsAbsolute() && FileStream(path, FileStreamAccess::Read, FileStreamDisposition::OpenExisting, FileStreamShare::None).IsOk();
+		return path.IsAbsolute() && FileStream(path, IOStreamAccess::Read, IOStreamDisposition::OpenExisting, IOStreamShare::None);
 	}
 	size_t NativeFileSystem::EnumStreams(const FSPath& path, TEnumStreamsFunc func) const
 	{

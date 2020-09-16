@@ -2,7 +2,7 @@
 #include "ArchiveExtractCallback.h"
 #include "OutStreamWrapper.h"
 #include "Utility.h"
-#include "kxf/IO/FileStream.h"
+#include "kxf/IO/INativeStream.h"
 #include "kxf/System/VariantProperty.h"
 #include "kxf/FileSystem/NativeFileSystem.h"
 #include "kxf/Utility/CallAtScopeExit.h"
@@ -77,7 +77,7 @@ namespace kxf::SevenZip::Private::Callback
 					return *HResult::Abort();
 				}
 
-				auto wrapperStream = COM::CreateLocalInstance<OutStreamWrapper_wxOutputStream>(*m_Stream, m_EvtHandler.Get());
+				auto wrapperStream = COM::CreateLocalInstance<OutStreamWrapper_IOutputStream>(*m_Stream, m_EvtHandler.Get());
 				wrapperStream->SetSize(m_Item.GetSize().GetBytes());
 				*outStream = wrapperStream.Detach();
 
@@ -158,13 +158,12 @@ namespace kxf::SevenZip::Private::Callback
 		}
 		return {};
 	}
-	bool ExtractArchiveToFS::OnItemDone(const FileItem& item, wxOutputStream& stream)
+	bool ExtractArchiveToFS::OnItemDone(const FileItem& item, IOutputStream& stream)
 	{
-		if (stream.IsKindOf(wxCLASSINFO(FileStream)))
+		if (auto nativeStream = stream.QueryInterface<INativeStream>())
 		{
-			FileStream& fileStream = static_cast<FileStream&>(stream);
-			fileStream.ChangeTimestamp(item.GetCreationTime(), item.GetModificationTime(), item.GetLastAccessTime());
-			fileStream.SetAttributes(item.GetAttributes());
+			nativeStream->ChangeTimestamp(item.GetCreationTime(), item.GetModificationTime(), item.GetLastAccessTime());
+			nativeStream->SetAttributes(item.GetAttributes());
 
 			return true;
 		}
@@ -189,7 +188,7 @@ namespace kxf::SevenZip::Private::Callback
 		}
 		return {};
 	}
-	bool ExtractArchiveToStream::OnItemDone(const FileItem& item, wxOutputStream& stream)
+	bool ExtractArchiveToStream::OnItemDone(const FileItem& item, IOutputStream& stream)
 	{
 		return true;
 	}

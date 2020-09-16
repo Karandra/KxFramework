@@ -1,5 +1,6 @@
 #pragma once
 #include "kxf/Common.hpp"
+#include "kxf/IO/Common.h"
 #include "kxf/General/String.h"
 #include "kxf/General/DateTime.h"
 #include "kxf/System/UndefWindows.h"
@@ -101,47 +102,6 @@ namespace kxf
 		SymLink = 1 << 1
 	};
 	KxFlagSet_Declare(ReparsePointTag);
-
-	enum class FileStreamAccess: uint32_t
-	{
-		None = 0,
-		Read = 1 << 0,
-		Write = 1 << 1,
-		ReadAttributes = 1 << 2,
-		WriteAttributes = 1 << 3,
-
-		RW = Read|Write,
-		AllAccess = RW|ReadAttributes|WriteAttributes
-	};
-	KxFlagSet_Declare(FileStreamAccess);
-
-	enum class FileStreamShare: uint32_t
-	{
-		None = 0,
-		Read = 1 << 0,
-		Write = 1 << 1,
-		Delete = 1 << 2,
-
-		Everything = Read|Write|Delete
-	};
-	KxFlagSet_Declare(FileStreamShare);
-
-	enum class FileStreamFlags: uint32_t
-	{
-		None = 0,
-
-		Normal = 1 << 0,
-		BackupSemantics = 1 << 1,
-	};
-	KxFlagSet_Declare(FileStreamFlags);
-	
-	enum class FileStreamDisposition: uint32_t
-	{
-		OpenExisting,
-		OpenAlways,
-		CreateNew,
-		CreateAlways,
-	};
 }
 
 namespace kxf::FileSystem

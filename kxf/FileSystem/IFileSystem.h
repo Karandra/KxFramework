@@ -7,13 +7,14 @@
 #include "kxf/General/UniversallyUniqueID.h"
 #include "kxf/RTTI/QueryInterface.h"
 #include "kxf/Utility/Common.h"
-#include <wx/datetime.h>
-class wxInputStream;
-class wxOutputStream;
 
 namespace kxf
 {
 	class FileItem;
+
+	class IStream;
+	class IInputStream;
+	class IOutputStream;
 }
 
 namespace kxf
@@ -51,20 +52,20 @@ namespace kxf
 			virtual bool RemoveItem(const FSPath& path) = 0;
 			virtual bool RemoveDirectory(const FSPath& path, FlagSet<FSActionFlag> flags = {}) = 0;
 
-			virtual std::unique_ptr<wxStreamBase> GetStream(const FSPath& path,
-															FlagSet<FileStreamAccess> access,
-															FileStreamDisposition disposition,
-															FlagSet<FileStreamShare> share = FileStreamShare::Read,
-															FlagSet<FileStreamFlags> flags = FileStreamFlags::None
+			virtual std::unique_ptr<IStream> GetStream(const FSPath& path,
+													   FlagSet<IOStreamAccess> access,
+													   IOStreamDisposition disposition,
+													   FlagSet<IOStreamShare> share = IOStreamShare::Read,
+													   FlagSet<IOStreamFlag> flags = IOStreamFlag::None
 			) = 0;
-			std::unique_ptr<wxInputStream> OpenToRead(const FSPath& path) const
-			{
-				return Utility::StaticCastUniquePtr<wxInputStream>(const_cast<IFileSystem&>(*this).GetStream(path, FileStreamAccess::Read, FileStreamDisposition::OpenExisting, FileStreamShare::Read));
-			}
-			std::unique_ptr<wxOutputStream> OpenToWrite(const FSPath& path)
-			{
-				return Utility::StaticCastUniquePtr<wxOutputStream>(GetStream(path, FileStreamAccess::Write, FileStreamDisposition::CreateAlways, FileStreamShare::Read));
-			}
+			std::unique_ptr<IInputStream> OpenToRead(const FSPath& path,
+													 IOStreamDisposition disposition = IOStreamDisposition::OpenExisting,
+													 FlagSet<IOStreamShare> share = IOStreamShare::Read
+			) const;
+			std::unique_ptr<IOutputStream> OpenToWrite(const FSPath& path,
+													   IOStreamDisposition disposition = IOStreamDisposition::CreateAlways,
+													   FlagSet<IOStreamShare> share = IOStreamShare::Read
+			);
 	};
 
 	class KX_API IFileIDSystem: public RTTI::Interface<IFileSystem>
@@ -93,19 +94,19 @@ namespace kxf
 			virtual bool RemoveItem(const UniversallyUniqueID& id) = 0;
 			virtual bool RemoveDirectory(const UniversallyUniqueID& id, FlagSet<FSActionFlag> flags = {}) = 0;
 
-			virtual std::unique_ptr<wxStreamBase> GetStream(const UniversallyUniqueID& id,
-															FlagSet<FileStreamAccess> access,
-															FileStreamDisposition disposition,
-															FlagSet<FileStreamShare> share = FileStreamShare::Read,
-															FlagSet<FileStreamFlags> flags = FileStreamFlags::None
+			virtual std::unique_ptr<IStream> GetStream(const UniversallyUniqueID& id,
+													   FlagSet<IOStreamAccess> access,
+													   IOStreamDisposition disposition,
+													   FlagSet<IOStreamShare> share = IOStreamShare::Read,
+													   FlagSet<IOStreamFlag> flags = IOStreamFlag::None
 			) = 0;
-			std::unique_ptr<wxInputStream> OpenToRead(const UniversallyUniqueID& id) const
-			{
-				return Utility::StaticCastUniquePtr<wxInputStream>(const_cast<IFileIDSystem&>(*this).GetStream(id, FileStreamAccess::Read, FileStreamDisposition::OpenExisting, FileStreamShare::Read));
-			}
-			std::unique_ptr<wxOutputStream> OpenToWrite(const UniversallyUniqueID& id)
-			{
-				return Utility::StaticCastUniquePtr<wxOutputStream>(GetStream(id, FileStreamAccess::Write, FileStreamDisposition::CreateAlways, FileStreamShare::Read));
-			}
+			std::unique_ptr<IInputStream> OpenToRead(const UniversallyUniqueID& id,
+													 IOStreamDisposition disposition = IOStreamDisposition::OpenExisting,
+													 FlagSet<IOStreamShare> share = IOStreamShare::Read
+			) const;
+			std::unique_ptr<IOutputStream> OpenToWrite(const UniversallyUniqueID& id,
+													   IOStreamDisposition disposition = IOStreamDisposition::CreateAlways,
+													   FlagSet<IOStreamShare> share = IOStreamShare::Read
+			);
 	};
 }

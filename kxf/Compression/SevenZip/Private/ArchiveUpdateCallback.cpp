@@ -183,8 +183,8 @@ namespace kxf::SevenZip::Private::Callback
 					return *HResult::Abort();
 				}
 
-				auto wrapperStream = COM::CreateLocalInstance<InStreamWrapper_wxInputStream>(*m_Stream, m_EvtHandler.Get());
-				wrapperStream->SpecifyTotalSize(std::max(m_Stream->GetLength(), m_CurrentItem.GetSize().GetBytes()));
+				auto wrapperStream = COM::CreateLocalInstance<InStreamWrapper_IInputStream>(*m_Stream, m_EvtHandler.Get());
+				wrapperStream->SpecifyTotalSize(std::max(m_Stream->GetSize(), m_CurrentItem.GetSize()).GetBytes());
 				*inStream = wrapperStream.Detach();
 
 				return *HResult::Success();
@@ -245,7 +245,7 @@ namespace kxf::SevenZip::Private::Callback
 		}
 		return nullptr;
 	}
-	bool UpdateArchiveFromFS::OnItemDone(const FileItem& item, wxInputStream& stream)
+	bool UpdateArchiveFromFS::OnItemDone(const FileItem& item, IInputStream& stream)
 	{
 		size_t index = item.GetUniqueID().ToLocallyUniqueID().ToInt();
 		if (index < m_Files.size())

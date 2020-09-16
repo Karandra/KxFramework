@@ -3,7 +3,9 @@
 #include "kxf/System/NativeAPI.h"
 #include "kxf/System/Private/System.h"
 #include "kxf/System/Private/BinaryResourceDefines.h"
-#include "kxf/IO/FileStream.h"
+#include "kxf/FileSystem/NativeFileSystem.h"
+#include "kxf/IO/IStream.h"
+#include "kxf/IO/INativeStream.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 
@@ -235,50 +237,52 @@ namespace kxf
 		#pragma warning(disable: 4311)
 		#pragma warning(disable: 4312)
 
-		FileStream stream(GetFilePath(), FileStreamAccess::Read, FileStreamDisposition::OpenExisting, FileStreamShare::Read);
-		if (stream)
+		if (auto stream = NativeFileSystem().OpenToRead(GetFilePath()))
 		{
-			if (HANDLE fileMapping = ::CreateFileMappingW(stream.GetHandle(), nullptr, PAGE_READONLY, 0, 0, nullptr))
+			if (auto nativeStream = stream->QueryInterface<INativeStream>())
 			{
-				Utility::CallAtScopeExit closeMapping = [&]()
+				if (HANDLE fileMapping = ::CreateFileMappingW(nativeStream->GetHandle(), nullptr, PAGE_READONLY, 0, 0, nullptr))
 				{
-					::CloseHandle(fileMapping);
-				};
-
-				if (void* fileBase = ::MapViewOfFile(fileMapping, FILE_MAP_READ, 0, 0, 0))
-				{
-					Utility::CallAtScopeExit unmapView = [&]()
+					Utility::CallAtScopeExit closeMapping = [&]()
 					{
-						::UnmapViewOfFile(fileBase);
+						::CloseHandle(fileMapping);
 					};
 
-					auto headerDOS = reinterpret_cast<IMAGE_DOS_HEADER*>(fileBase);
-					auto headerNT = reinterpret_cast<IMAGE_NT_HEADERS*>(reinterpret_cast<size_t>(headerDOS) + static_cast<size_t>(headerDOS->e_lfanew));
-					if (!(::IsBadReadPtr(headerNT, sizeof(IMAGE_NT_HEADERS)) || headerNT->Signature != IMAGE_NT_SIGNATURE))
+					if (void* fileBase = ::MapViewOfFile(fileMapping, FILE_MAP_READ, 0, 0, 0))
 					{
-						if (auto exportDir = reinterpret_cast<IMAGE_EXPORT_DIRECTORY*>(headerNT->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress))
+						Utility::CallAtScopeExit unmapView = [&]()
 						{
-							exportDir = reinterpret_cast<IMAGE_EXPORT_DIRECTORY*>(::ImageRvaToVa(headerNT, headerDOS, (size_t)exportDir, nullptr));
+							::UnmapViewOfFile(fileBase);
+						};
 
-							auto namesArray = reinterpret_cast<DWORD**>(exportDir->AddressOfNames);
-							namesArray = reinterpret_cast<DWORD**>(::ImageRvaToVa(headerNT, headerDOS, reinterpret_cast<size_t>(namesArray), nullptr));
-
-							if (namesArray)
+						auto headerDOS = reinterpret_cast<IMAGE_DOS_HEADER*>(fileBase);
+						auto headerNT = reinterpret_cast<IMAGE_NT_HEADERS*>(reinterpret_cast<size_t>(headerDOS) + static_cast<size_t>(headerDOS->e_lfanew));
+						if (!(::IsBadReadPtr(headerNT, sizeof(IMAGE_NT_HEADERS)) || headerNT->Signature != IMAGE_NT_SIGNATURE))
+						{
+							if (auto exportDir = reinterpret_cast<IMAGE_EXPORT_DIRECTORY*>(headerNT->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress))
 							{
-								size_t count = 0;
-								for (size_t i = 0; i < static_cast<size_t>(exportDir->NumberOfNames); i++)
-								{
-									#pragma warning(suppress: 4302)
-									#pragma warning(suppress: 4311)
-									auto name = reinterpret_cast<const char*>(::ImageRvaToVa(headerNT, headerDOS, reinterpret_cast<DWORD>(namesArray[i]), nullptr));
+								exportDir = reinterpret_cast<IMAGE_EXPORT_DIRECTORY*>(::ImageRvaToVa(headerNT, headerDOS, (size_t)exportDir, nullptr));
 
-									count++;
-									if (!std::invoke(func, name))
+								auto namesArray = reinterpret_cast<DWORD**>(exportDir->AddressOfNames);
+								namesArray = reinterpret_cast<DWORD**>(::ImageRvaToVa(headerNT, headerDOS, reinterpret_cast<size_t>(namesArray), nullptr));
+
+								if (namesArray)
+								{
+									size_t count = 0;
+									for (size_t i = 0; i < static_cast<size_t>(exportDir->NumberOfNames); i++)
 									{
-										break;
+										#pragma warning(suppress: 4302)
+										#pragma warning(suppress: 4311)
+										auto name = reinterpret_cast<const char*>(::ImageRvaToVa(headerNT, headerDOS, reinterpret_cast<DWORD>(namesArray[i]), nullptr));
+
+										count++;
+										if (!std::invoke(func, name))
+										{
+											break;
+										}
 									}
+									return count;
 								}
-								return count;
 							}
 						}
 					}

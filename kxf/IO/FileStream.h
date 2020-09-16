@@ -1,174 +1,155 @@
 #pragma once
 #include "Common.h"
-#include "kxf/IO/StreamWrappers.h"
-#include <wx/stream.h>
-#include <wx/datetime.h>
+#include "kxf/IO/IStream.h"
+#include "kxf/IO/INativeStream.h"
+#include "kxf/IO/IStreamOnFileSystem.h"
+#include "kxf/Utility/Common.h"
 
 namespace kxf
 {
-	class KX_API FileStream:
-		public IStreamWrapper,
-		public InputStreamWrapper<wxInputStream>,
-		public OutputStreamWrapper<wxOutputStream>,
-		public IOStreamWrapper<FileStream>
+	class KX_API FileStream: public RTTI::ImplementInterface<FileStream, IInputStream, IOutputStream, INativeStream, IStreamOnFileSystem>
 	{
 		private:
 			void* m_Handle = nullptr;
-			FlagSet<FileStreamAccess> m_AccessMode;
-			FlagSet<FileStreamShare> m_ShareMode;
-			FlagSet<FileStreamFlags> m_Flags;
-			FileStreamDisposition m_Disposition = FileStreamDisposition::OpenExisting;
+			Win32Error m_LastError = Win32Error::Fail();
+			BinarySize m_LastRead;
+			BinarySize m_LastWrite;
 
-			wxFileOffset m_Position = 0;
-			StreamErrorCode m_LastError = StreamErrorCode::Success;
-			size_t m_LastRead = 0;
-			size_t m_LastWrite = 0;
+			// These variables aren't directly used, they're mostly for debug purposes
+			StreamOffset m_StreamOffset;
+			FlagSet<IOStreamAccess> m_AccessMode;
+			FlagSet<IOStreamShare> m_ShareMode;
+			FlagSet<IOStreamFlag> m_Flags;
+			IOStreamDisposition m_Disposition = IOStreamDisposition::OpenExisting;
 
 		protected:
-			wxFileOffset OnSysTell() const override;
-			wxFileOffset OnSysSeek(wxFileOffset pos, wxSeekMode mode) override;
-			size_t OnSysRead(void* buffer, size_t size) override;
-			size_t OnSysWrite(const void* buffer, size_t size) override;
-			
-			void DoSetLastError(uint32_t error, bool isWrite);
-			bool DoIsOpened() const;
 			bool DoClose();
+			bool DoIsOpened() const;
+			bool DoIsEndOfStream() const;
 
 		public:
-			FileStream()
-			{
-				DoSetLastError(0, false);
-			}
+			FileStream() noexcept = default;
 			FileStream(const FSPath& path,
-					   FlagSet<FileStreamAccess> access = FileStreamAccess::Read,
-					   FileStreamDisposition disposition = FileStreamDisposition::OpenExisting,
-					   FlagSet<FileStreamShare> share = FileStreamShare::Read,
-					   FlagSet<FileStreamFlags> flags = FileStreamFlags::None
+					   FlagSet<IOStreamAccess> access,
+					   IOStreamDisposition disposition,
+					   FlagSet<IOStreamShare> share,
+					   FlagSet<IOStreamFlag> flags = IOStreamFlag::None
 			)
-				:FileStream()
 			{
 				Open(path, access, disposition, share, flags);
 			}
 			FileStream(const FileStream&) = delete;
-			FileStream(FileStream&&) noexcept = delete;
+			FileStream(FileStream&& other) noexcept
+			{
+				*this = std::move(other);
+			}
 			~FileStream()
 			{
 				DoClose();
 			}
 			
 		public:
-			void* GetHandle() const
+			// IStream
+			ErrorCode GetLastError() const override
 			{
-				return m_Handle;
+				return m_LastError;
 			}
-			FSPath GetFileSystemPath() const;
-
-			bool AttachHandle(void* handle,
-							  FlagSet<FileStreamAccess> access = FileStreamAccess::None,
-							  FileStreamDisposition disposition = FileStreamDisposition::OpenExisting,
-							  FlagSet<FileStreamShare> share = FileStreamShare::None,
-							  FlagSet<FileStreamFlags> flags = FileStreamFlags::None);
-			bool ReopenHandle(void* handle,
-							  FlagSet<FileStreamAccess> access = FileStreamAccess::Read,
-							  FileStreamDisposition disposition = FileStreamDisposition::OpenExisting,
-							  FlagSet<FileStreamShare> share = FileStreamShare::Read,
-							  FlagSet<FileStreamFlags> flags = FileStreamFlags::None
-			);
-			void* DetachHandle();
-
-			bool Open(const FSPath& path,
-					  FlagSet<FileStreamAccess> access = FileStreamAccess::Read,
-					  FileStreamDisposition disposition = FileStreamDisposition::OpenExisting,
-					  FlagSet<FileStreamShare> share = FileStreamShare::Read,
-					  FlagSet<FileStreamFlags> flags = FileStreamFlags::None
-			);
-			bool Close() override
+			void Close() override
 			{
-				return DoClose();
+				DoClose();
 			}
-
-			bool IsOk() const override
-			{
-				return DoIsOpened();
-			}
-			bool Eof() const override;
-			bool CanRead() const override;
-			size_t GetSize() const override;
-			wxFileOffset GetLength() const override;
 
 			bool IsSeekable() const override;
-			wxFileOffset SeekI(wxFileOffset offset, wxSeekMode mode = wxFromCurrent) override;
-			wxFileOffset SeekO(wxFileOffset offset, wxSeekMode mode = wxFromCurrent) override;
-			wxFileOffset TellI() const override;
-			wxFileOffset TellO() const override;
+			BinarySize GetSize() const override;
 
-			FileStream& Read(void* buffer, size_t size) override
+			// IInputStream
+			bool CanRead() const override
 			{
-				wxInputStream::Read(buffer, size);
-				return *this;
+				return m_LastError.IsSuccess() && !DoIsEndOfStream();
 			}
-			FileStream& Read(wxOutputStream& stream)
-			{
-				wxInputStream::Read(stream);
-				return *this;
-			}
-
-			FileStream& Write(const void* buffer, size_t size) override
-			{
-				wxOutputStream::Write(buffer, size);
-				return *this;
-			}
-			FileStream& Write(wxInputStream& stream)
-			{
-				wxOutputStream::Write(stream);
-				return *this;
-			}
-
-			size_t LastRead() const override
+			BinarySize LastRead() const override
 			{
 				return m_LastRead;
 			}
-			size_t LastWrite() const override
+			std::optional<uint8_t> Peek() override;
+
+			IInputStream& Read(void* buffer, size_t size) override;
+			IInputStream& Read(IOutputStream& other) override;
+			bool ReadAll(void* buffer, size_t size) override;
+
+			StreamOffset TellI() const override;
+			StreamOffset SeekI(StreamOffset offset, IOStreamSeek seek) override;
+
+			// IOutputStream
+			BinarySize LastWrite() const override
 			{
 				return m_LastWrite;
 			}
-			wxStreamError GetLastError() const
-			{
-				return static_cast<wxStreamError>(m_LastError);
-			}
 
-			bool IsWriteable() const override
-			{
-				return m_AccessMode & FileStreamAccess::Write;
-			}
-			bool IsReadable() const override
-			{
-				return m_AccessMode & FileStreamAccess::Read;
-			}
+			IOutputStream& Write(const void* buffer, size_t size) override;
+			IOutputStream& Write(IInputStream& other) override;
+			bool WriteAll(const void* buffer, size_t size) override;
+
+			StreamOffset TellO() const override;
+			StreamOffset SeekO(StreamOffset offset, IOStreamSeek seek) override;
 
 			bool Flush() override;
-			bool SetAllocationSize(BinarySize offset = {}) override;
+			bool SetAllocationSize(BinarySize allocationSize) override;
 
-			FlagSet<FileAttribute> GetAttributes() const;
-			bool SetAttributes(FlagSet<FileAttribute> attributes);
+			// INativeStream
+			void* GetHandle() const override
+			{
+				return m_Handle;
+			}
+			bool AttachHandle(void* handle) override;
+			bool ReopenHandle(FlagSet<IOStreamAccess> access, FlagSet<IOStreamShare> share, FlagSet<IOStreamFlag> flags = IOStreamFlag::None) override;
+			void* DetachHandle() override;
 
-			bool GetTimestamp(DateTime& creationTime, DateTime& modificationTime, DateTime& lastAccessTime) const;
-			bool ChangeTimestamp(DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime);
+			FlagSet<FileAttribute> GetAttributes() const override;
+			bool SetAttributes(FlagSet<FileAttribute> attributes) override;
+
+			bool GetTimestamp(DateTime& creationTime, DateTime& modificationTime, DateTime& lastAccessTime) const override;
+			bool ChangeTimestamp(DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime) override;
+
+			// IStreamOnFileSystem
+			FSPath GetPath() const override;
+			UniversallyUniqueID GetUniqueID() const override;
+
+			// FileStream
+			bool Open(const FSPath& path,
+					  FlagSet<IOStreamAccess> access,
+					  IOStreamDisposition disposition,
+					  FlagSet<IOStreamShare> share,
+					  FlagSet<IOStreamFlag> flags = IOStreamFlag::None
+			);
 
 		public:
 			explicit operator bool() const
 			{
-				return IsOk();
+				return m_LastError.IsSuccess();
 			}
 			bool operator!() const
 			{
-				return !IsOk();
+				return m_LastError.IsFail();
 			}
 
 			FileStream& operator=(const FileStream&) = delete;
-			FileStream& operator=(FileStream&&) noexcept = delete;
+			FileStream& operator=(FileStream&& other) noexcept
+			{
+				DoClose();
 
-		public:
-			wxDECLARE_ABSTRACT_CLASS(FileStream);
+				m_Handle = Utility::ExchangeResetAndReturn(other.m_Handle, nullptr);
+				m_LastError = std::move(other.m_LastError);
+				m_LastRead = Utility::ExchangeResetAndReturn(other.m_LastRead, BinarySize());
+				m_LastWrite = Utility::ExchangeResetAndReturn(other.m_LastWrite, BinarySize());
+
+				m_StreamOffset = Utility::ExchangeResetAndReturn(other.m_StreamOffset, StreamOffset());
+				m_AccessMode = Utility::ExchangeResetAndReturn(other.m_AccessMode, FlagSet<IOStreamAccess>());
+				m_ShareMode = Utility::ExchangeResetAndReturn(other.m_ShareMode, FlagSet<IOStreamShare>());
+				m_Flags = Utility::ExchangeResetAndReturn(other.m_Flags, FlagSet<IOStreamFlag>());
+				m_Disposition = Utility::ExchangeResetAndReturn(other.m_Disposition, IOStreamDisposition::OpenExisting);
+
+				return *this;
+			}
 	};
 }

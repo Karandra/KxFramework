@@ -64,7 +64,7 @@ namespace kxf::Localization::Private
 			virtual void DoSetLocale(const Locale& locale) = 0;
 
 		public:
-			bool Load(wxInputStream& stream, const Locale& locale, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace);
+			bool Load(IInputStream& stream, const Locale& locale, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace);
 			bool Load(const DynamicLibrary& library, const FSPath& name, const Locale& locale, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace);
 	};
 }

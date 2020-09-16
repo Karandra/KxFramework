@@ -96,7 +96,7 @@ namespace kxf
 				return count;
 			}
 
-			bool Load(wxInputStream& stream, const Locale& locale, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace) override
+			bool Load(IInputStream& stream, const Locale& locale, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace) override
 			{
 				return false;
 			}

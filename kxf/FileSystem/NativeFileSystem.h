@@ -63,11 +63,11 @@ namespace kxf
 			bool RemoveItem(const FSPath& path) override;
 			bool RemoveDirectory(const FSPath& path, FlagSet<FSActionFlag> flags = {}) override;
 
-			std::unique_ptr<wxStreamBase> GetStream(const FSPath& path,
-													FlagSet<FileStreamAccess> access,
-													FileStreamDisposition disposition,
-													FlagSet<FileStreamShare> share = FileStreamShare::Read,
-													FlagSet<FileStreamFlags> flags = FileStreamFlags::None
+			std::unique_ptr<IStream> GetStream(const FSPath& path,
+											   FlagSet<IOStreamAccess> access,
+											   IOStreamDisposition disposition,
+											   FlagSet<IOStreamShare> share = IOStreamShare::Read,
+											   FlagSet<IOStreamFlag> flags = IOStreamFlag::None
 			);
 			using IFileSystem::OpenToRead;
 			using IFileSystem::OpenToWrite;
@@ -119,11 +119,11 @@ namespace kxf
 				return false;
 			}
 
-			std::unique_ptr<wxStreamBase> GetStream(const UniversallyUniqueID& id,
-													FlagSet<FileStreamAccess> access,
-													FileStreamDisposition disposition,
-													FlagSet<FileStreamShare> share = FileStreamShare::Read,
-													FlagSet<FileStreamFlags> flags = FileStreamFlags::None
+			std::unique_ptr<IStream> GetStream(const UniversallyUniqueID& id,
+											   FlagSet<IOStreamAccess> access,
+											   IOStreamDisposition disposition,
+											   FlagSet<IOStreamShare> share = IOStreamShare::Read,
+											   FlagSet<IOStreamFlag> flags = IOStreamFlag::None
 			);
 			using IFileIDSystem::OpenToRead;
 			using IFileIDSystem::OpenToWrite;

@@ -1,6 +1,5 @@
 #pragma once
 #include "Common.h"
-#include "kxf/IO/StreamWrappers.h"
 #include "kxf/General/Version.h"
 #include "kxf/General/String.h"
 
@@ -25,7 +24,7 @@ namespace kxf::Compression::LZ4
 
 namespace kxf
 {
-	class KX_API LZ4BaseStream: public IStreamWrapper
+	class KX_API LZ4BaseStream
 	{
 		protected:
 			constexpr static const size_t ms_BlockSize = 1024 * 8;
@@ -75,15 +74,6 @@ namespace kxf
 			~LZ4BaseStream() = default;
 
 		public:
-			bool Flush() override
-			{
-				return false;
-			}
-			bool SetAllocationSize(BinarySize offset = {}) override
-			{
-				return false;
-			}
-
 			bool SetDictionary(const void* data, size_t size);
 			bool SetDictionary(const wxMemoryBuffer& buffer)
 			{
@@ -94,7 +84,7 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API LZ4InputStream: public LZ4BaseStream, public InputStreamWrapper<wxFilterInputStream>
+	class KX_API LZ4InputStream: public LZ4BaseStream, public wxFilterInputStream
 	{
 		public:
 			using DictionaryBuffer = std::vector<uint8_t>;
@@ -112,57 +102,38 @@ namespace kxf
 
 		public:
 			LZ4InputStream(wxInputStream& stream, const DictionaryBuffer& dictionary = {})
-				:InputStreamWrapper(stream), m_Dictionary(dictionary)
+				:wxFilterInputStream(stream), m_Dictionary(dictionary)
 			{
 				Init();
 			}
 			LZ4InputStream(wxInputStream* stream, const DictionaryBuffer& dictionary = {})
-				:InputStreamWrapper(stream), m_Dictionary(dictionary)
+				:wxFilterInputStream(stream), m_Dictionary(dictionary)
 			{
 				Init();
-			}
-
-		public:
-			bool IsWriteable() const override
-			{
-				return false;
-			}
-			bool IsReadable() const override
-			{
-				return true;
 			}
 	};
 }
 
 namespace kxf
 {
-	class KX_API LZ4OutputStream: public LZ4BaseStream, public OutputStreamWrapper<wxFilterOutputStream>
+	class KX_API LZ4OutputStream: public LZ4BaseStream, public wxFilterOutputStream
 	{
 		private:
 			int m_Acceleration = 0;
 
 		public:
 			LZ4OutputStream(wxOutputStream& stream, int acceleration = 0)
-				:OutputStreamWrapper(stream)
+				:wxFilterOutputStream(stream)
 			{
 				SetAcceleration(acceleration);
 			}
 			LZ4OutputStream(wxOutputStream* stream, int acceleration = 0)
-				:OutputStreamWrapper(stream)
+				:wxFilterOutputStream(stream)
 			{
 				SetAcceleration(acceleration);
 			}
 
 		public:
-			bool IsWriteable() const override
-			{
-				return true;
-			}
-			bool IsReadable() const override
-			{
-				return false;
-			}
-
 			int GetAcceleration() const
 			{
 				return m_Acceleration;

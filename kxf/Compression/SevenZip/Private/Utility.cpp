@@ -15,9 +15,9 @@ namespace
 {
 	using namespace kxf;
 
-	COMPtr<IStream> CreateStreamOnFile(const FSPath& path, uint32_t flags)
+	COMPtr<::IStream> CreateStreamOnFile(const FSPath& path, uint32_t flags)
 	{
-		COMPtr<IStream> fileStream;
+		COMPtr<::IStream> fileStream;
 
 		String pathName = path.GetFullPathWithNS(FSPathNamespace::Win32File);
 		if (HResult(::SHCreateStreamOnFileEx(pathName.wc_str(), flags, FILE_ATTRIBUTE_NORMAL, flags & STGM_CREATE, nullptr, &fileStream)))
@@ -67,13 +67,13 @@ namespace kxf::SevenZip::Private
 			return {};
 		}(const_cast<IInArchive&>(archive));
 	}
-	bool GetNumberOfItems(wxInputStream& stream, CompressionFormat format, size_t& itemCount, IEvtHandler* evtHandler)
+	bool GetNumberOfItems(IInputStream& stream, CompressionFormat format, size_t& itemCount, IEvtHandler* evtHandler)
 	{
-		if (stream.IsOk())
+		if (stream)
 		{
 			auto archive = GetArchiveReader(format);
 			auto openCallback = COM::CreateLocalInstance<Callback::OpenArchive>(evtHandler);
-			auto streamWrapper = COM::CreateLocalInstance<InStreamWrapper_wxInputStream>(stream, evtHandler);
+			auto streamWrapper = COM::CreateLocalInstance<InStreamWrapper_IInputStream>(stream, evtHandler);
 
 			if (HResult(archive->Open(streamWrapper, nullptr, openCallback)))
 			{
@@ -172,9 +172,9 @@ namespace kxf::SevenZip::Private
 			return {};
 		}(const_cast<IInArchive&>(archive));
 	}
-	bool GetArchiveItems(wxInputStream& stream, CompressionFormat format, std::vector<FileItem>& items, IEvtHandler* evtHandler)
+	bool GetArchiveItems(IInputStream& stream, CompressionFormat format, std::vector<FileItem>& items, IEvtHandler* evtHandler)
 	{
-		if (stream.IsOk())
+		if (stream)
 		{
 			auto archive = GetArchiveReader(format);
 			Utility::CallAtScopeExit atExit([&]()
@@ -182,7 +182,7 @@ namespace kxf::SevenZip::Private
 				archive->Close();
 			});
 			auto openCallback = COM::CreateLocalInstance<Callback::OpenArchive>(evtHandler);
-			auto streamWrapper = COM::CreateLocalInstance<InStreamWrapper_wxInputStream>(stream, evtHandler);
+			auto streamWrapper = COM::CreateLocalInstance<InStreamWrapper_IInputStream>(stream, evtHandler);
 
 			if (FAILED(archive->Open(streamWrapper, nullptr, openCallback)))
 			{
@@ -209,9 +209,9 @@ namespace kxf::SevenZip::Private
 		return false;
 	}
 
-	CompressionFormat IdentifyCompressionFormat(wxInputStream& stream, const FSPath& path, IEvtHandler* evtHandler)
+	CompressionFormat IdentifyCompressionFormat(IInputStream& stream, const FSPath& path, IEvtHandler* evtHandler)
 	{
-		if (!stream.IsOk())
+		if (!stream)
 		{
 			return CompressionFormat::Unknown;
 		}
@@ -270,7 +270,7 @@ namespace kxf::SevenZip::Private
 				}
 
 				// Rewind the stream to avoid reading from the wrong position set by previous attempt
-				stream.SeekI(0, wxSeekMode::wxFromStart);
+				stream.SeekI(0, IOStreamSeek::FromStart);
 
 				// There is a problem that GZip files will not be detected using the above method. Workaround for now.
 				if (format == CompressionFormat::GZip)
@@ -289,7 +289,7 @@ namespace kxf::SevenZip::Private
 					archive->Close();
 				});
 				auto openCallback = COM::CreateLocalInstance<Callback::OpenArchive>(evtHandler);
-				auto streamWrapper = COM::CreateLocalInstance<InStreamWrapper_wxInputStream>(stream, evtHandler);
+				auto streamWrapper = COM::CreateLocalInstance<InStreamWrapper_IInputStream>(stream, evtHandler);
 
 				if (archive->Open(streamWrapper, nullptr, openCallback) == S_OK)
 				{
@@ -301,21 +301,21 @@ namespace kxf::SevenZip::Private
 		}
 		return CompressionFormat::Unknown;
 	}
-	std::optional<wxSeekMode> MapSeekMode(int seekMode) noexcept
+	std::optional<IOStreamSeek> MapSeekMode(int seekMode) noexcept
 	{
 		switch (seekMode)
 		{
 			case SEEK_CUR:
 			{
-				return wxSeekMode::wxFromCurrent;
+				return IOStreamSeek::FromCurrent;
 			}
 			case SEEK_SET:
 			{
-				return wxSeekMode::wxFromStart;
+				return IOStreamSeek::FromStart;
 			}
 			case SEEK_END:
 			{
-				return wxSeekMode::wxFromEnd;
+				return IOStreamSeek::FromEnd;
 			}
 		};
 		return {};

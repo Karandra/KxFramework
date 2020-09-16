@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "TextDocument.h"
-#include "kxf/IO/FileStream.h"
+#include "kxf/FileSystem/NativeFileSystem.h"
+#include "kxf/IO/StreamReaderWriter.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 #include <wx/textfile.h>
 
@@ -74,37 +75,36 @@ namespace kxf::TextDocument
 
 	bool Write(const FSPath& filePath, const String& text, bool append, LineBreakFormat lineBreakFormat)
 	{
-		const FileStreamDisposition disposition = append ? FileStreamDisposition::OpenExisting : FileStreamDisposition::CreateAlways;
-		FileStream stream(filePath, FileStreamAccess::Write, disposition, FileStreamShare::Read);
-		if (stream)
+		const IOStreamDisposition disposition = append ? IOStreamDisposition::OpenExisting : IOStreamDisposition::CreateAlways;
+		if (auto stream = NativeFileSystem().OpenToWrite(filePath, disposition))
 		{
 			bool isSuccess = true;
 			const wxTextFileType lineBreakFormatWx = MapLineBreakType(lineBreakFormat);
 
+			IO::OutputStreamWriter writer(*stream);
 			if (append)
 			{
-				stream.SkipToEnd();
-				isSuccess = stream.WriteStringUTF8(wxTextFile::GetEOL(lineBreakFormatWx));
+				writer.SeekToEnd();
+				isSuccess = writer.WriteStringUTF8(wxTextFile::GetEOL(lineBreakFormatWx));
 			}
-
-			return isSuccess && stream.WriteStringUTF8(wxTextFile::Translate(text, lineBreakFormatWx));
+			return isSuccess && writer.WriteStringUTF8(wxTextFile::Translate(text, lineBreakFormatWx));
 		}
 		return false;
 	}
 	bool Write(const FSPath& filePath, std::function<String()> func, bool append, LineBreakFormat lineBreakFormat)
 	{
-		const FileStreamDisposition disposition = append ? FileStreamDisposition::OpenExisting : FileStreamDisposition::CreateAlways;
-		FileStream stream(filePath, FileStreamAccess::Write, disposition, FileStreamShare::Read);
-		if (stream)
+		const IOStreamDisposition disposition = append ? IOStreamDisposition::OpenExisting : IOStreamDisposition::CreateAlways;
+		if (auto stream = NativeFileSystem().OpenToWrite(filePath, disposition))
 		{
 			const wxTextFileType lineBreakFormatWx = MapLineBreakType(lineBreakFormat);
 			const wxChar* lineBreak = wxTextFile::GetEOL(lineBreakFormatWx);
-
 			bool isSuccess = true;
+
+			IO::OutputStreamWriter writer(*stream);
 			if (append)
 			{
-				stream.SkipToEnd();
-				isSuccess = stream.WriteStringUTF8(lineBreak);
+				writer.SeekToEnd();
+				isSuccess = writer.WriteStringUTF8(lineBreak);
 			}
 
 			while (isSuccess)
@@ -112,10 +112,10 @@ namespace kxf::TextDocument
 				String text = std::invoke(func);
 				if (!text.IsEmpty())
 				{
-					isSuccess = stream.WriteStringUTF8(wxTextFile::Translate(text, lineBreakFormatWx));
+					isSuccess = writer.WriteStringUTF8(wxTextFile::Translate(text, lineBreakFormatWx));
 					if (isSuccess)
 					{
-						isSuccess = stream.WriteStringUTF8(lineBreak);
+						isSuccess = writer.WriteStringUTF8(lineBreak);
 					}
 				}
 				else
