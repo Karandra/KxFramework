@@ -506,26 +506,18 @@ namespace kxf
 		});
 	}
 
-	std::unique_ptr<wxInputStream> NativeFileSystem::OpenToRead(const FSPath& path) const
+	std::unique_ptr<wxStreamBase> NativeFileSystem::GetStream(const FSPath& path,
+															  FlagSet<FileStreamAccess> access,
+															  FileStreamDisposition disposition,
+															  FlagSet<FileStreamShare> share,
+															  FlagSet<FileStreamFlags> flags)
 	{
-		return DoWithResolvedPath1(m_CurrentDirectory, path, [&](const FSPath& path) -> std::unique_ptr<wxInputStream>
+		return DoWithResolvedPath1(m_CurrentDirectory, path, [&](const FSPath& path) -> std::unique_ptr<wxStreamBase>
 		{
-			auto stream = std::make_unique<FileStream>(path, FileStreamAccess::Read, FileStreamDisposition::OpenExisting, FileStreamShare::Read);
+			auto stream = std::make_unique<FileStream>(path, access, disposition, share, flags);
 			if (stream->IsOk())
 			{
-				return stream;
-			}
-			return nullptr;
-		});
-	}
-	std::unique_ptr<wxOutputStream> NativeFileSystem::OpenToWrite(const FSPath& path)
-	{
-		return DoWithResolvedPath1(m_CurrentDirectory, path, [&](const FSPath& path) -> std::unique_ptr<wxOutputStream>
-		{
-			auto stream = std::make_unique<FileStream>(path, FileStreamAccess::Write, FileStreamDisposition::CreateAlways, FileStreamShare::Read|FileStreamShare::Write);
-			if (stream->IsOk())
-			{
-				return stream;
+				return Utility::StaticCastUniquePtr<wxStreamBase>(Utility::StaticCastUniquePtr<wxInputStream>(std::move(stream)));
 			}
 			return nullptr;
 		});
@@ -566,26 +558,18 @@ namespace kxf
 		return {};
 	}
 
-	std::unique_ptr<wxInputStream> NativeFileSystem::OpenToRead(const UniversallyUniqueID& id) const
+	std::unique_ptr<wxStreamBase> NativeFileSystem::GetStream(const UniversallyUniqueID& id,
+															  FlagSet<FileStreamAccess> access,
+															  FileStreamDisposition disposition,
+															  FlagSet<FileStreamShare> share,
+															  FlagSet<FileStreamFlags> flags)
 	{
 		if (id)
 		{
-			auto steram = std::make_unique<FileStream>();
-			if (OpenFileByID(m_CurrentVolume, id, *steram, FileStreamAccess::Read, FileStreamDisposition::OpenExisting, FileStreamShare::Read, FileStreamFlags::None))
+			auto stream = std::make_unique<FileStream>();
+			if (OpenFileByID(m_CurrentVolume, id, *stream, access, disposition, share, flags))
 			{
-				return steram;
-			}
-		}
-		return nullptr;
-	}
-	std::unique_ptr<wxOutputStream> NativeFileSystem::OpenToWrite(const UniversallyUniqueID& id)
-	{
-		if (id)
-		{
-			auto steram = std::make_unique<FileStream>();
-			if (OpenFileByID(m_CurrentVolume, id, *steram, FileStreamAccess::Write, FileStreamDisposition::CreateAlways, FileStreamShare::Read|FileStreamShare::Write, FileStreamFlags::None))
-			{
-				return steram;
+				return Utility::StaticCastUniquePtr<wxStreamBase>(Utility::StaticCastUniquePtr<wxInputStream>(std::move(stream)));
 			}
 		}
 		return nullptr;

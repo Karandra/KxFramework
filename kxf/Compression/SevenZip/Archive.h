@@ -298,11 +298,12 @@ namespace kxf::SevenZip
 				return false;
 			}
 
-			std::unique_ptr<wxInputStream> OpenToRead(const FSPath& path) const override
-			{
-				return nullptr;
-			}
-			std::unique_ptr<wxOutputStream> OpenToWrite(const FSPath& path) override
+			std::unique_ptr<wxStreamBase> GetStream(const FSPath& path,
+													FlagSet<FileStreamAccess> access,
+													FileStreamDisposition disposition,
+													FlagSet<FileStreamShare> share = FileStreamShare::Read,
+													FlagSet<FileStreamFlags> flags = FileStreamFlags::None
+			) override
 			{
 				return nullptr;
 			}
@@ -348,11 +349,12 @@ namespace kxf::SevenZip
 				return false;
 			}
 
-			std::unique_ptr<wxInputStream> OpenToRead(const UniversallyUniqueID& id) const override
-			{
-				return nullptr;
-			}
-			std::unique_ptr<wxOutputStream> OpenToWrite(const UniversallyUniqueID& id) override
+			std::unique_ptr<wxStreamBase> GetStream(const UniversallyUniqueID& id,
+													FlagSet<FileStreamAccess> access,
+													FileStreamDisposition disposition,
+													FlagSet<FileStreamShare> share = FileStreamShare::Read,
+													FlagSet<FileStreamFlags> flags = FileStreamFlags::None
+			) override
 			{
 				return nullptr;
 			}
