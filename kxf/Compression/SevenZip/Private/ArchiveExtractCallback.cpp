@@ -96,7 +96,7 @@ namespace kxf::SevenZip::Private::Callback
 		OutputStreamDelegate stream = std::move(m_Stream);
 		Utility::CallAtScopeExit atExit = [&]()
 		{
-			if (stream && stream.IsTargetStreamOwned())
+			if (stream && stream.OwnsTargetStream())
 			{
 				stream->Close();
 			}

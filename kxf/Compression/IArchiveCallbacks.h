@@ -30,6 +30,8 @@ namespace kxf::Compression
 	template<class TOutStream = IOutputStream>
 	class KX_API ExtractWithOptions: public IExtractCallback
 	{
+		static_assert(std::is_base_of_v<IOutputStream, TOutStream>, "Descendant of 'IOutputStream' is required");
+
 		private:
 			const IArchiveExtract& m_Archive;
 

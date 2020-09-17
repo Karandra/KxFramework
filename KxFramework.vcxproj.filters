@@ -1508,6 +1508,9 @@
     <ClInclude Include="kxf\IO\StreamReaderWriter.h">
       <Filter>kxf\IO</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\wxWidgets\StreamWrapper.h">
+      <Filter>kxf\wxWidgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2257,6 +2260,9 @@
     </ClCompile>
     <ClCompile Include="kxf\FileSystem\IFileSystem.cpp">
       <Filter>kxf\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\wxWidgets\StreamWrapper.cpp">
+      <Filter>kxf\wxWidgets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

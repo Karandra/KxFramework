@@ -3,7 +3,12 @@
 #include "kxf/General/String.h"
 #include "kxf/FileSystem/FSPath.h"
 #include "kxf/RTTI/QueryInterface.h"
-#include <wx/stream.h>
+
+namespace kxf
+{
+	class IInputStream;
+	class IOutputStream;
+}
 
 namespace kxf
 {
@@ -15,9 +20,9 @@ namespace kxf
 			virtual ~ISystemProcessStdIO() = default;
 
 		public:
-			virtual wxOutputStream& GetStdIn() = 0;
-			virtual wxInputStream& GetStdOut() = 0;
-			virtual wxInputStream& GetStdErr() = 0;
+			virtual IOutputStream& GetStdIn() = 0;
+			virtual IInputStream& GetStdOut() = 0;
+			virtual IInputStream& GetStdErr() = 0;
 
 			virtual String ReadStdOut() const = 0;
 			virtual String ReadStdErr() const = 0;

@@ -3,32 +3,41 @@
 #include <Windows.h>
 #include <wx/private/pipestream.h>
 #include <wx/private/streamtempinput.h>
+#include "kxf/wxWidgets/StreamWrapper.h"
 #include "kxf/System/UndefWindows.h"
 
 namespace kxf
 {
 	class KX_API RunningSystemProcessStdIO: public ISystemProcessStdIO
 	{
+		private:
+			mutable std::optional<wxWidgets::OutputStreamWrapper> m_InStreamWrapper;
+			mutable std::optional<wxWidgets::InputStreamWrapper> m_OutStreamWrapper;
+			mutable std::optional<wxWidgets::InputStreamWrapper> m_ErrorStreamWrapper;
+
 		protected:
 			std::unique_ptr<wxPipeOutputStream> m_InStream = nullptr;
 			std::unique_ptr<wxPipeInputStream> m_OutStream = nullptr;
 			std::unique_ptr<wxPipeInputStream> m_ErrorStream = nullptr;
 
+		protected:
+			void OnStreamsInitialized();
+
 		public:
 			RunningSystemProcessStdIO() = default;
 
 		public:
-			wxOutputStream& GetStdIn() override
+			IOutputStream& GetStdIn() override
 			{
-				return *m_InStream;
+				return *m_InStreamWrapper;
 			}
-			wxInputStream& GetStdOut() override
+			IInputStream& GetStdOut() override
 			{
-				return *m_OutStream;
+				return *m_OutStreamWrapper;
 			}
-			wxInputStream& GetStdErr() override
+			IInputStream& GetStdErr() override
 			{
-				return *m_ErrorStream;
+				return *m_ErrorStreamWrapper;
 			}
 
 			String ReadStdOut() const override;

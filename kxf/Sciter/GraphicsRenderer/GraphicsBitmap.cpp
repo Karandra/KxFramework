@@ -4,6 +4,7 @@
 #include "kxf/Sciter/ScriptValue.h"
 #include "kxf/Sciter/SciterAPI.h"
 #include "kxf/Sciter/Internal.h"
+#include "kxf/IO/MemoryStream.h"
 
 namespace kxf::Sciter
 {
@@ -67,10 +68,10 @@ namespace kxf::Sciter
 	}
 	GraphicsBitmap::GraphicsBitmap(const wxImage& image)
 	{
-		wxMemoryOutputStream outputStream;
-		if (image.SaveFile(outputStream, wxBITMAP_TYPE_PNG))
+		MemoryOutputStream outputStream;
+		if (image.SaveFile(outputStream.AsWxStream(), wxBITMAP_TYPE_PNG))
 		{
-			wxMemoryInputStream inputStream(outputStream);
+			MemoryInputStream inputStream(outputStream);
 			Load(inputStream);
 		}
 	}
@@ -97,10 +98,10 @@ namespace kxf::Sciter
 		}
 		return false;
 	}
-	bool GraphicsBitmap::Load(wxInputStream& stream)
+	bool GraphicsBitmap::Load(IInputStream& stream)
 	{
 		std::vector<BYTE> buffer;
-		buffer.resize(stream.GetLength());
+		buffer.resize(stream.GetSize().GetBytes());
 		if (stream.ReadAll(buffer.data(), buffer.size()))
 		{
 			HIMG image = nullptr;
@@ -112,14 +113,14 @@ namespace kxf::Sciter
 		}
 		return false;
 	}
-	bool GraphicsBitmap::Save(wxOutputStream& stream, Format format, int quality) const
+	bool GraphicsBitmap::Save(IOutputStream& stream, Format format, int quality) const
 	{
 		auto encoding = MapImageEncoding(format);
 		if (!IsNull() && encoding)
 		{
 			return GetGrapchicsAPI()->imageSave(ToSciterImage(m_Handle), [](void* context, const BYTE* data, UINT size) -> BOOL
 			{
-				wxOutputStream& stream = *reinterpret_cast<wxOutputStream*>(context);
+				IOutputStream& stream = *reinterpret_cast<IOutputStream*>(context);
 				return stream.WriteAll(data, size);
 			}, &stream, *encoding, quality) == GRAPHIN_OK;
 		}
@@ -149,11 +150,11 @@ namespace kxf::Sciter
 
 	wxImage GraphicsBitmap::ConvertToImage() const
 	{
-		wxMemoryOutputStream outputStream;
+		MemoryOutputStream outputStream;
 		if (Save(outputStream, Format::PNG))
 		{
-			wxMemoryInputStream inputStream(outputStream);
-			wxImage image(inputStream, wxBITMAP_TYPE_PNG);
+			MemoryInputStream inputStream(outputStream);
+			wxImage image(inputStream.AsWxStream(), wxBITMAP_TYPE_PNG);
 			return image;
 		}
 		return {};

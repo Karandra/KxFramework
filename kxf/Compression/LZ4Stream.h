@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "kxf/General/Version.h"
 #include "kxf/General/String.h"
+#include "kxf/IO/StreamDelegate.h"
 
 namespace kxf::Compression::LZ4
 {
@@ -84,7 +85,7 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API LZ4InputStream: public LZ4BaseStream, public wxFilterInputStream
+	class KX_API LZ4InputStream: public LZ4BaseStream, public InputStreamDelegate
 	{
 		public:
 			using DictionaryBuffer = std::vector<uint8_t>;
@@ -94,41 +95,55 @@ namespace kxf
 			DictionaryBuffer m_Dictionary;
 			size_t m_RingBufferIndex = 0;
 
+			BinarySize m_LastRead;
+			ErrorCode m_LastError;
+
 		private:
 			void Init();
 
-		protected:
-			size_t OnSysRead(void* buffer, size_t size) override;
+		public:
+			LZ4InputStream(IInputStream& stream, const DictionaryBuffer& dictionary = {})
+				:InputStreamDelegate(stream), m_Dictionary(dictionary)
+			{
+				Init();
+			}
+			LZ4InputStream(std::unique_ptr<IInputStream> stream, const DictionaryBuffer& dictionary = {})
+				:InputStreamDelegate(std::move(stream)), m_Dictionary(dictionary)
+			{
+				Init();
+			}
 
 		public:
-			LZ4InputStream(wxInputStream& stream, const DictionaryBuffer& dictionary = {})
-				:wxFilterInputStream(stream), m_Dictionary(dictionary)
+			// IStream
+			ErrorCode GetLastError() const override
 			{
-				Init();
+				return m_LastError.IsKnown() ? m_LastError : m_Stream->GetLastError();
 			}
-			LZ4InputStream(wxInputStream* stream, const DictionaryBuffer& dictionary = {})
-				:wxFilterInputStream(stream), m_Dictionary(dictionary)
+
+			// IInputStream
+			BinarySize LastRead() const override
 			{
-				Init();
+				return m_LastRead ? m_LastRead : m_Stream->LastRead();
 			}
+			IInputStream& Read(void* buffer, size_t size) override;
 	};
 }
 
 namespace kxf
 {
-	class KX_API LZ4OutputStream: public LZ4BaseStream, public wxFilterOutputStream
+	class KX_API LZ4OutputStream: public LZ4BaseStream, public OutputStreamDelegate
 	{
 		private:
 			int m_Acceleration = 0;
 
 		public:
-			LZ4OutputStream(wxOutputStream& stream, int acceleration = 0)
-				:wxFilterOutputStream(stream)
+			LZ4OutputStream(IOutputStream& stream, int acceleration = 0)
+				:OutputStreamDelegate(stream)
 			{
 				SetAcceleration(acceleration);
 			}
-			LZ4OutputStream(wxOutputStream* stream, int acceleration = 0)
-				:wxFilterOutputStream(stream)
+			LZ4OutputStream(std::unique_ptr<IOutputStream> stream, int acceleration = 0)
+				:OutputStreamDelegate(std::move(stream))
 			{
 				SetAcceleration(acceleration);
 			}

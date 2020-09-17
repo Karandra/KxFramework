@@ -2,6 +2,7 @@
 #include "kxf/UI/Common.h"
 #include "kxf/UI/WindowRefreshScheduler.h"
 #include "kxf/EventSystem/Event.h"
+#include "kxf/IO/IStream.h"
 #include <wx/systhemectrl.h>
 #include <wx/vscroll.h>
 
@@ -111,7 +112,7 @@ namespace kxf::UI
 			size_t GetThumbsCount() const;
 			size_t AddThumb(const wxBitmap& bitmap);
 			size_t AddThumb(const String& filePath, wxBitmapType type = wxBITMAP_TYPE_ANY, int index = -1);
-			size_t AddThumb(wxInputStream& stream, wxBitmapType type = wxBITMAP_TYPE_ANY, int index = -1);
+			size_t AddThumb(IInputStream& stream, wxBitmapType type = wxBITMAP_TYPE_ANY, int index = -1);
 			void RemoveThumb(size_t index);
 			void ClearThumbs();
 

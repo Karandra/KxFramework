@@ -418,6 +418,7 @@
     <ClInclude Include="kxf\wxWidgets\EvtHandlerWrapper.h" />
     <ClInclude Include="kxf\wxWidgets\IWithEvent.h" />
     <ClInclude Include="kxf\wxWidgets\RTTI.h" />
+    <ClInclude Include="kxf\wxWidgets\StreamWrapper.h" />
     <ClInclude Include="kxf\wxWidgets\SystemOptions.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="kxf\Async.hpp" />
@@ -770,6 +771,7 @@
     <ClCompile Include="kxf\UI\Windows\TopLevelWindow.cpp" />
     <ClCompile Include="kxf\Utility\Drawing.cpp" />
     <ClCompile Include="kxf\Utility\Memory.cpp" />
+    <ClCompile Include="kxf\wxWidgets\StreamWrapper.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

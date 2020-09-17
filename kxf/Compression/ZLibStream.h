@@ -30,8 +30,8 @@ namespace kxf
 				:wxZlibInputStream(stream, ToInt(header))
 			{
 			}
-			ZLibInputStream(wxInputStream* stream, ZLibHeaderType header = ZLibHeaderType::Auto)
-				:wxZlibInputStream(stream, ToInt(header))
+			ZLibInputStream(std::unique_ptr<wxInputStream> stream, ZLibHeaderType header = ZLibHeaderType::Auto)
+				:wxZlibInputStream(stream.release(), ToInt(header))
 			{
 			}
 	};
@@ -43,8 +43,8 @@ namespace kxf
 				:wxZlibOutputStream(stream, ToInt(header))
 			{
 			}
-			ZLibOutputStream(wxOutputStream* stream, ZLibHeaderType header = ZLibHeaderType::Auto)
-				:wxZlibOutputStream(stream, ToInt(header))
+			ZLibOutputStream(std::unique_ptr<wxOutputStream> stream, ZLibHeaderType header = ZLibHeaderType::Auto)
+				:wxZlibOutputStream(stream.release(), ToInt(header))
 			{
 			}
 	};

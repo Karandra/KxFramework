@@ -157,10 +157,10 @@ namespace kxf
 	}
 	void CURLSession::Download(CURLStreamReply& reply)
 	{
-		int64_t initialPos = 0;
-		if (reply.ShouldResumeFromPosition(initialPos))
+		StreamOffset offset;
+		if (reply.ShouldResumeFromOffset(offset))
 		{
-			m_Handle.SetOption(CURLOPT_RESUME_FROM_LARGE, initialPos);
+			m_Handle.SetOption(CURLOPT_RESUME_FROM_LARGE, offset.GetBytes());
 		}
 		DoSendRequest(reply);
 	}

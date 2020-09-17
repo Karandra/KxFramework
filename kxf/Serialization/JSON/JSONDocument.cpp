@@ -35,7 +35,7 @@ namespace kxf::JSON
 		std::string string = json.dump(1, '\t');
 		return String::FromUTF8(string.data(), string.length());
 	}
-	bool Save(const JSONDocument& json, wxOutputStream& stream)
+	bool Save(const JSONDocument& json, IOutputStream& stream)
 	{
 		std::string string = json.dump(1, '\t');
 		return stream.WriteAll(string.data(), string.length());

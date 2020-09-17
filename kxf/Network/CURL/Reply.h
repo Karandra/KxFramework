@@ -2,6 +2,7 @@
 #include "../Common.h"
 #include "../HTTPStatusCode.h"
 #include "kxf/RTTI/QueryInterface.h"
+#include "kxf/IO/IStream.h"
 
 namespace kxf
 {
@@ -200,9 +201,9 @@ namespace kxf
 		friend class CURLSession;
 
 		private:
-			wxOutputStream& m_Stream;
+			IOutputStream& m_Stream;
 			size_t m_Downloaded = 0;
-			int64_t m_InitialPosition = 0;
+			StreamOffset m_InitialOffset;
 
 		private:
 			void AddProcessedData(const void* data, size_t size) override
@@ -212,45 +213,45 @@ namespace kxf
 			}
 			size_t GetProcessed() const override
 			{
-				return m_InitialPosition + m_Downloaded;
+				return m_InitialOffset.GetBytes() + m_Downloaded;
 			}
 
 		public:
-			CURLStreamReply(wxOutputStream& stream, int64_t initialPos = 0)
-				:m_Stream(stream), m_InitialPosition(initialPos)
+			CURLStreamReply(IOutputStream& stream, StreamOffset initialPos = {})
+				:m_Stream(stream), m_InitialOffset(initialPos)
 			{
-				if (m_InitialPosition > 0)
+				if (m_InitialOffset)
 				{
-					m_Stream.SeekO(m_InitialPosition);
+					m_Stream.SeekO(m_InitialOffset, IOStreamSeek::FromStart);
 				}
 			}
 
 		public:
 			bool IsSuccess() const override
 			{
-				return m_Stream.IsOk() && CURLReplyBase::IsSuccess();
+				return m_Stream && CURLReplyBase::IsSuccess();
 			}
 
-			int64_t GetResumeFromPosition() const
+			StreamOffset GetResumeOffset() const
 			{
-				return m_InitialPosition;
+				return m_InitialOffset;
 			}
-			bool ShouldResumeFromPosition(int64_t& pos) const
+			bool ShouldResumeFromOffset(StreamOffset& pos) const
 			{
-				pos = m_InitialPosition;
-				return m_InitialPosition > 0;
+				pos = m_InitialOffset;
+				return m_InitialOffset.IsValid();
 			}
-			bool ShouldResumeFromPosition() const
+			bool ShouldResumeFromOffset() const
 			{
-				int64_t pos;
-				return ShouldResumeFromPosition(pos);
+				StreamOffset offset;
+				return ShouldResumeFromOffset(offset);
 			}
 
-			const wxOutputStream& GetStream() const
+			const IOutputStream& GetStream() const
 			{
 				return m_Stream;
 			}
-			wxOutputStream& GetStream()
+			IOutputStream& GetStream()
 			{
 				return m_Stream;
 			}

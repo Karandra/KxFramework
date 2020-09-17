@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ImageView.h"
 #include "kxf/UI/Windows/DrawablePanel.h"
+#include "kxf/wxWidgets/StreamWrapper.h"
 
 namespace kxf::UI
 {
@@ -112,10 +113,12 @@ namespace kxf::UI
 		image.LoadFile(filePath, type, index);
 		SetBitmap(image);
 	}
-	void ImageView::LoadFile(wxInputStream& stream, wxBitmapType type, int index)
+	void ImageView::LoadFile(IInputStream& stream, wxBitmapType type, int index)
 	{
 		wxImage image;
-		image.LoadFile(stream, type, index);
+
+		wxWidgets::InputStreamWrapperWx wrapper(stream);
+		image.LoadFile(wrapper, type, index);
 		SetBitmap(image);
 	}
 }

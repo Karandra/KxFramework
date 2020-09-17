@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "URL.h"
 #include "CURL/Session.h"
+#include "kxf/IO/MemoryStream.h"
 
 namespace kxf::Network::Private
 {
@@ -22,7 +23,7 @@ namespace kxf::Network::Private
 			}
 			void DownloadData()
 			{
-				wxMemoryOutputStream stream;
+				MemoryOutputStream stream;
 				CURLStreamReply reply(stream);
 				m_Session.Download(reply);
 

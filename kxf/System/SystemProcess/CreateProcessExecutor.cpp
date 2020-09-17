@@ -86,6 +86,9 @@ namespace kxf::System
 				// The input buffer outBuffer is connected to stdout, this is why it is called outBuffer and not inBuffer
 				outBuffer.Init(m_OutStream.get());
 				errorBuffer.Init(m_ErrorStream.get());
+
+				// Notify about streams creation
+				OnStreamsInitialized();
 			}
 		}
 		else

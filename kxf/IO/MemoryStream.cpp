@@ -3,37 +3,9 @@
 
 namespace
 {
-	constexpr size_t g_BufferSize = kxf::BinarySize::FromKB(64).GetBytes();
-
-	kxf::Win32Error TranslateErrorCode(const wxStreamBase& stream)
-	{
-		using namespace kxf;
-
-		switch (stream.GetLastError())
-		{
-			case wxStreamError::wxSTREAM_NO_ERROR:
-			{
-				return Win32Error::Success();
-			}
-			case wxStreamError::wxSTREAM_EOF:
-			{
-				return ERROR_HANDLE_EOF;
-			}
-			case wxStreamError::wxSTREAM_READ_ERROR:
-			{
-				return ERROR_READ_FAULT;
-			}
-			case wxStreamError::wxSTREAM_WRITE_ERROR:
-			{
-				return ERROR_WRITE_FAULT;
-			}
-		};
-		return Win32Error::Fail();
-	}
-
 	bool FlushBuffer(wxStreamBuffer& streamBuffer)
 	{
-		return streamBuffer.FlushBuffer();
+		return streamBuffer.IsFlushable() && streamBuffer.FlushBuffer();
 	}
 	bool SetBufferAllocationSize(wxStreamBuffer& streamBuffer, kxf::BinarySize allocationSize)
 	{
@@ -56,30 +28,24 @@ namespace
 
 namespace kxf
 {
-	// IStream
-	ErrorCode MemoryInputStream::GetLastError() const
+	MemoryInputStream::MemoryInputStream(const MemoryOutputStream& stream)
+		:InputStreamWrapper(m_Stream), m_Stream(stream.AsWxStream())
 	{
-		return TranslateErrorCode(m_Stream);
 	}
-
-	// IInputStream
-	IInputStream& MemoryInputStream::Read(IOutputStream& other)
+	MemoryInputStream::MemoryInputStream(IInputStream& stream, BinarySize size)
+		:InputStreamWrapper(m_Stream), m_Stream(nullptr, 0)
 	{
-		uint8_t buffer[g_BufferSize];
-		while (true)
+		size = size ? size : stream.GetSize();
+		if (auto buffer = m_Stream.GetInputStreamBuffer())
 		{
-			BinarySize read = m_Stream.Read(buffer, std::size(buffer)).LastRead();
-			if (!read)
+			buffer->SetBufferIO(size.GetBytes());
+			buffer->SetIntPosition(0);
+			buffer->Fixed(true);
+			if (!stream.ReadAll(buffer->GetBufferStart(), size.GetBytes()))
 			{
-				break;
-			}
-			else if (other.Write(buffer, read.GetBytes()).LastWrite() != read)
-			{
-				break;
+				buffer->ResetBuffer();
 			}
 		}
-
-		return *this;
 	}
 
 	// MemoryInputStream
@@ -95,32 +61,7 @@ namespace kxf
 
 namespace kxf
 {
-	// IStream
-	ErrorCode MemoryOutputStream::GetLastError() const
-	{
-		return TranslateErrorCode(m_Stream);
-	}
-
 	// IOutputStream
-	IOutputStream& MemoryOutputStream::Write(IInputStream& other)
-	{
-		uint8_t buffer[g_BufferSize];
-		while (true)
-		{
-			BinarySize read = other.Read(buffer, std::size(buffer)).LastRead();
-			if (!read)
-			{
-				break;
-			}
-			else if (m_Stream.Write(buffer, read.GetBytes()).LastWrite() != read.GetBytes())
-			{
-				break;
-			}
-		}
-
-		return *this;
-	}
-
 	bool MemoryOutputStream::Flush()
 	{
 		return FlushBuffer(*m_Stream.GetOutputStreamBuffer());
@@ -128,5 +69,14 @@ namespace kxf
 	bool MemoryOutputStream::SetAllocationSize(BinarySize allocationSize)
 	{
 		return SetBufferAllocationSize(*m_Stream.GetOutputStreamBuffer(), allocationSize);
+	}
+
+	// MemoryOutputStream
+	size_t MemoryOutputStream::CopyTo(void* buffer, size_t size) const
+	{
+		const size_t effectiveSize = std::min(size, m_Stream.GetSize());
+		std::memcpy(buffer, m_Stream.GetOutputStreamBuffer()->GetBufferStart(), effectiveSize);
+
+		return effectiveSize;
 	}
 }

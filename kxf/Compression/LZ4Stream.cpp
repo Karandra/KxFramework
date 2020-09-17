@@ -93,35 +93,37 @@ namespace kxf
 			LZ4_setStreamDecode(reinterpret_cast<LZ4_streamDecode_t*>(m_StreamObject), nullptr, 0);
 		}
 	}
-	size_t LZ4InputStream::OnSysRead(void* buffer, size_t size)
+	IInputStream& LZ4InputStream::Read(void* buffer, size_t size)
 	{
-		size_t totalProcessedCounter = 0;
+		m_LastRead = {};
+
+		size_t totalProcessed = 0;
 		for (size_t compressedCounter = 0; compressedCounter <= size; compressedCounter += ms_BlockSize)
 		{
-			uint8_t tempData[Compression::LZ4::CompressBound(ms_BlockSize)] = {0};
-			size_t tempDataLength = std::min(size, ms_BlockSize);
-			m_parent_i_stream->Read(tempData, tempDataLength);
+			uint8_t tempBuffer[Compression::LZ4::CompressBound(ms_BlockSize)] = {0};
+			m_Stream->Read(tempBuffer, std::min(size, ms_BlockSize));
 
 			void* ringBuffer = GetBuffer(m_RingBufferIndex);
 			m_RingBufferIndex = NextBufferIndex(m_RingBufferIndex);
 
 			int processedSize = LZ4_decompress_safe_continue(GetStream<LZ4_streamDecode_t>(),
-															 reinterpret_cast<const char*>(tempData),
+															 reinterpret_cast<const char*>(tempBuffer),
 															 reinterpret_cast<char*>(ringBuffer),
-															 tempDataLength,
+															 m_Stream->LastRead().GetBytes(),
 															 ms_BlockSize);
 
 			if (processedSize > 0)
 			{
-				std::memcpy(reinterpret_cast<uint8_t*>(buffer) + totalProcessedCounter, tempData, processedSize);
-				totalProcessedCounter += (size_t)processedSize;
+				std::memcpy(reinterpret_cast<uint8_t*>(buffer) + totalProcessed, tempBuffer, processedSize);
+				totalProcessed += (size_t)processedSize;
+				m_LastRead = totalProcessed;
 
 				continue;
 			}
 
-			m_lasterror = wxSTREAM_EOF;
+			m_LastError = Win32Error(ERROR_HANDLE_EOF);
 			break;
 		}
-		return size;
+		return *this;
 	}
 }

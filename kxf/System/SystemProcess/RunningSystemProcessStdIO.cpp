@@ -1,9 +1,11 @@
 #include "stdafx.h"
 #include "RunningSystemProcessStdIO.h"
+#include "kxf/IO/IStream.h"
+#include "kxf/Utility/CallAtScopeExit.h"
 
 namespace
 {
-	kxf::String ReadToString(wxPipeInputStream& stream)
+	kxf::String ReadToString(kxf::IInputStream& stream)
 	{
 		using namespace kxf;
 
@@ -14,7 +16,7 @@ namespace
 		{
 			if (stream.Read(buffer, std::size(buffer)).LastRead() != 0)
 			{
-				result += String(buffer, wxConvWhateverWorks, stream.LastRead());
+				result += String(buffer, wxConvWhateverWorks, stream.LastRead().GetBytes());
 			}
 			else
 			{
@@ -27,19 +29,43 @@ namespace
 
 namespace kxf
 {
-	String RunningSystemProcessStdIO::ReadStdOut() const
+	void RunningSystemProcessStdIO::OnStreamsInitialized()
 	{
+		if (m_InStream)
+		{
+			m_InStreamWrapper = *m_InStream;
+		}
 		if (m_OutStream)
 		{
-			return ReadToString(*m_OutStream);
+			m_OutStreamWrapper = *m_OutStream;
+		}
+		if (m_ErrorStream)
+		{
+			m_ErrorStreamWrapper = *m_ErrorStream;
+		}
+	}
+
+	String RunningSystemProcessStdIO::ReadStdOut() const
+	{
+		if (m_OutStreamWrapper)
+		{
+			Utility::CallAtScopeExit atExit = [&, oldOffset = m_OutStreamWrapper->TellI()]()
+			{
+				m_OutStreamWrapper->SeekI(oldOffset, IOStreamSeek::FromStart);
+			};
+			return ReadToString(*m_OutStreamWrapper);
 		}
 		return {};
 	}
 	String RunningSystemProcessStdIO::ReadStdErr() const
 	{
-		if (m_ErrorStream)
+		if (m_ErrorStreamWrapper)
 		{
-			return ReadToString(*m_ErrorStream);
+			Utility::CallAtScopeExit atExit = [&, oldOffset = m_ErrorStreamWrapper->TellI()]()
+			{
+				m_ErrorStreamWrapper->SeekI(oldOffset, IOStreamSeek::FromStart);
+			};
+			return ReadToString(*m_ErrorStreamWrapper);
 		}
 		return {};
 	}

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ThumbView.h"
 #include "kxf/UI/Windows/DrawablePanel.h"
+#include "kxf/wxWidgets/StreamWrapper.h"
 #include <wx/renderer.h>
 #include <wx/dcgraph.h>
 
@@ -310,12 +311,14 @@ namespace kxf::UI
 
 		return AddThumb(wxBitmap(image, 32));
 	}
-	size_t ThumbView::AddThumb(wxInputStream& stream, wxBitmapType type, int index)
+	size_t ThumbView::AddThumb(IInputStream& stream, wxBitmapType type, int index)
 	{
 		wxImage image;
 		image.SetOption(wxIMAGE_OPTION_MAX_WIDTH, m_ThumbSize.GetWidth());
 		image.SetOption(wxIMAGE_OPTION_MAX_HEIGHT, m_ThumbSize.GetHeight());
-		image.LoadFile(stream, type, index);
+
+		wxWidgets::InputStreamWrapperWx wrapper(stream);
+		image.LoadFile(wrapper, type, index);
 
 		return AddThumb(wxBitmap(image, 32));
 	}

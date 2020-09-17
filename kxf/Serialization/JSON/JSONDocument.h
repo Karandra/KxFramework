@@ -18,7 +18,7 @@ namespace kxf::JSON
 	JSONDocument Load(IInputStream& stream);
 
 	String Save(const JSONDocument& json);
-	bool Save(const JSONDocument& json, wxOutputStream& stream);
+	bool Save(const JSONDocument& json, IOutputStream& stream);
 }
 
 namespace nlohmann

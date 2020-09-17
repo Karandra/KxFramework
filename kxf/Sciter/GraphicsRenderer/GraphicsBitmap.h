@@ -2,6 +2,7 @@
 #include "kxf/Sciter/Common.h"
 #include "kxf/Sciter/Utility/HandleWrapper.h"
 #include "kxf/General/Color.h"
+#include "kxf/IO/IStream.h"
 
 namespace kxf::Sciter
 {
@@ -55,7 +56,7 @@ namespace kxf::Sciter
 			}
 			GraphicsBitmap(const wxImage& image);
 			GraphicsBitmap(const wxBitmap& bitmap);
-			GraphicsBitmap(wxInputStream& stream)
+			GraphicsBitmap(IInputStream& stream)
 			{
 				Load(stream);
 			}
@@ -66,8 +67,8 @@ namespace kxf::Sciter
 			// Size of pixmap data is (pixmapWidth * pixmapHeight * 4).
 			bool CreateFromPixmap(const Size& size, const char* pixmapData, bool withAlpha);
 
-			bool Load(wxInputStream& stream);
-			bool Save(wxOutputStream& stream, Format format, int quality = 100) const;
+			bool Load(IInputStream& stream);
+			bool Save(IOutputStream& stream, Format format, int quality = 100) const;
 
 			bool Clear(const Color& color);
 			Size GetSize() const;

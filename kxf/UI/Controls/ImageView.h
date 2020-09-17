@@ -2,6 +2,7 @@
 #include "kxf/UI/Common.h"
 #include "kxf/UI/WindowRefreshScheduler.h"
 #include "kxf/UI/Controls/StaticBitmap.h"
+#include "kxf/IO/IStream.h"
 #include <wx/control.h>
 #include <wx/statbmp.h>
 #include <wx/graphics.h>
@@ -115,7 +116,7 @@ namespace kxf::UI
 			void SetBitmap(const wxGraphicsBitmap& image, const Size& size);
 
 			void LoadFile(const String& filePath, wxBitmapType type = wxBITMAP_TYPE_ANY, int index = -1);
-			void LoadFile(wxInputStream& stream, wxBitmapType type = wxBITMAP_TYPE_ANY, int index = -1);
+			void LoadFile(IInputStream& stream, wxBitmapType type = wxBITMAP_TYPE_ANY, int index = -1);
 
 		public:
 			wxDECLARE_DYNAMIC_CLASS(ImageView);

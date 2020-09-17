@@ -3,8 +3,6 @@
 #include "kxf/FileSystem/FSActionEvent.h"
 #include "kxf/FileSystem/FileItem.h"
 #include "kxf/Crypto/SecretValue.h"
-class wxInputStream;
-class wxOutputStream;
 
 namespace kxf
 {

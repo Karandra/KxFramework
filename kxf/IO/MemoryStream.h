@@ -1,88 +1,49 @@
 #pragma once
 #include "Common.h"
 #include "IStream.h"
+#include "kxf/wxWidgets/StreamWrapper.h"
 #include <wx/mstream.h>
 
 namespace kxf
 {
-	class KX_API MemoryInputStream: public RTTI::ImplementInterface<MemoryInputStream, IInputStream>
+	class MemoryInputStream;
+	class MemoryOutputStream;
+}
+
+namespace kxf
+{
+	class KX_API MemoryInputStream: public wxWidgets::InputStreamWrapper
 	{
 		private:
 			wxMemoryInputStream m_Stream;
 
 		public:
-			MemoryInputStream(const void* data, size_t size)
-				:m_Stream(data, size)
+			MemoryInputStream(const void* buffer, size_t size)
+				:InputStreamWrapper(m_Stream), m_Stream(buffer, size)
+			{
+			}
+			
+			MemoryInputStream(MemoryInputStream& stream)
+				:InputStreamWrapper(m_Stream), m_Stream(stream.AsWxStream())
+			{
+			}
+			MemoryInputStream(const MemoryOutputStream& stream);
+			MemoryInputStream(IInputStream& stream, BinarySize size = {});
+
+			MemoryInputStream(wxMemoryInputStream& stream)
+				:InputStreamWrapper(m_Stream), m_Stream(stream.GetInputStreamBuffer()->GetBufferStart(), stream.GetInputStreamBuffer()->GetBufferSize())
 			{
 			}
 			MemoryInputStream(const wxMemoryOutputStream& stream)
-				:m_Stream(stream)
-			{
-			}
-			MemoryInputStream(wxMemoryInputStream& stream)
-				:m_Stream(stream)
+				:InputStreamWrapper(m_Stream), m_Stream(stream.GetOutputStreamBuffer()->GetBufferStart(), stream.GetOutputStreamBuffer()->GetBufferSize())
 			{
 			}
 			MemoryInputStream(wxInputStream& stream, BinarySize size = {})
-				:m_Stream(stream, size.GetBytes())
+				:InputStreamWrapper(m_Stream), m_Stream(stream, size.GetBytes())
 			{
 			}
 
 		public:
-			// IStream
-			ErrorCode GetLastError() const override;
-			void Close() override
-			{
-				// Can't close 'wxInputStream'
-			}
-
-			bool IsSeekable() const override
-			{
-				return m_Stream.IsSeekable();
-			}
-			BinarySize GetSize() const override
-			{
-				return m_Stream.GetLength();
-			}
-
-			// IInputStream
-			bool CanRead() const override
-			{
-				return m_Stream.CanRead();
-			}
-			BinarySize LastRead() const override
-			{
-				return m_Stream.LastRead();
-			}
-			std::optional<uint8_t> Peek() override
-			{
-				return m_Stream.Peek();
-			}
-
-			IInputStream& Read(void* buffer, size_t size) override
-			{
-				m_Stream.Read(buffer, size);
-				return *this;
-			}
-			IInputStream& Read(IOutputStream& other) override;
-			bool ReadAll(void* buffer, size_t size) override
-			{
-				return m_Stream.ReadAll(buffer, size);
-			}
-
-			StreamOffset TellI() const override
-			{
-				return m_Stream.TellI();
-			}
-			StreamOffset SeekI(StreamOffset offset, IOStreamSeek seek) override
-			{
-				if (auto seekWx = IO::ToWxSeekMode(seek))
-				{
-					return m_Stream.SeekI(offset.GetBytes(), *seekWx);
-				}
-				return {};
-			}
-
 			// MemoryInputStream
 			wxMemoryInputStream& AsWxStream() noexcept
 			{
@@ -100,68 +61,25 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API MemoryOutputStream: public RTTI::ImplementInterface<MemoryOutputStream, IOutputStream>
+	class KX_API MemoryOutputStream: public wxWidgets::OutputStreamWrapper
 	{
 		private:
 			wxMemoryOutputStream m_Stream;
 
 		public:
-			MemoryOutputStream(void* data = nullptr, size_t size = 0)
-				:m_Stream(data, size)
+			MemoryOutputStream(void* buffer = nullptr, size_t size = 0)
+				:OutputStreamWrapper(m_Stream), m_Stream(buffer, size)
 			{
 			}
 
 		public:
-			// IStream
-			ErrorCode GetLastError() const override;
-			void Close() override
-			{
-				static_cast<void>(m_Stream.Close());
-			}
-
-			bool IsSeekable() const override
-			{
-				return m_Stream.IsSeekable();
-			}
-			BinarySize GetSize() const override
-			{
-				return m_Stream.GetLength();
-			}
-
 			// IOutputStream
-			BinarySize LastWrite() const override
-			{
-				return m_Stream.LastWrite();
-			}
-
-			IOutputStream& Write(const void* buffer, size_t size) override
-			{
-				m_Stream.Write(buffer, size);
-				return *this;
-			}
-			IOutputStream& Write(IInputStream& other) override;
-			bool WriteAll(const void* buffer, size_t size) override
-			{
-				return m_Stream.WriteAll(buffer, size);
-			}
-
-			StreamOffset TellO() const override
-			{
-				return m_Stream.TellO();
-			}
-			StreamOffset SeekO(StreamOffset offset, IOStreamSeek seek) override
-			{
-				if (auto seekWx = IO::ToWxSeekMode(seek))
-				{
-					return m_Stream.SeekO(offset.GetBytes(), *seekWx);
-				}
-				return {};
-			}
-
 			bool Flush() override;
 			bool SetAllocationSize(BinarySize allocationSize) override;
 
 			// MemoryOutputStream
+			size_t CopyTo(void* buffer, size_t size) const;
+
 			wxMemoryOutputStream& AsWxStream() noexcept
 			{
 				return m_Stream;
