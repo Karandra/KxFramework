@@ -35,7 +35,7 @@ namespace
 		};
 
 		LARGE_INTEGER moveTo = {};
-		moveTo.QuadPart = offset.GetBytes();
+		moveTo.QuadPart = offset.ToBytes();
 
 		LARGE_INTEGER newOffset = {};
 		if (::SetFilePointerEx(handle, moveTo, &newOffset, seekModeWin))

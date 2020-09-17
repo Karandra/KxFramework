@@ -39,7 +39,7 @@ namespace kxf
 			{
 			}
 			MemoryInputStream(wxInputStream& stream, BinarySize size = {})
-				:InputStreamWrapper(m_Stream), m_Stream(stream, size.GetBytes())
+				:InputStreamWrapper(m_Stream), m_Stream(stream, size.ToBytes())
 			{
 			}
 

@@ -104,9 +104,9 @@ namespace kxf
 	bool XMLDocument::Load(IInputStream& stream)
 	{
 		wxMemoryBuffer buffer;
-		buffer.SetBufSize(stream.GetSize().GetBytes());
+		buffer.SetBufSize(stream.GetSize().ToBytes());
 		stream.ReadAll(buffer.GetData(), buffer.GetBufSize());
-		buffer.SetDataLen(stream.LastRead().GetBytes());
+		buffer.SetDataLen(stream.LastRead().ToBytes());
 
 		DoLoad(reinterpret_cast<const char*>(buffer.GetData()), buffer.GetDataLen());
 		return !IsNull();

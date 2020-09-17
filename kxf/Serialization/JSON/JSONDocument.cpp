@@ -21,7 +21,7 @@ namespace kxf::JSON
 	{
 		if (auto size = stream.GetSize())
 		{
-			std::string buffer(size.GetBytes() + 1, '\000');
+			std::string buffer(size.ToBytes() + 1, '\000');
 			if (stream.ReadAll(buffer.data(), buffer.size()))
 			{
 				return JSONDocument::parse(buffer, nullptr, false);

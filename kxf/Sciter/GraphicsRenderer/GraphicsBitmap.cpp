@@ -101,7 +101,7 @@ namespace kxf::Sciter
 	bool GraphicsBitmap::Load(IInputStream& stream)
 	{
 		std::vector<BYTE> buffer;
-		buffer.resize(stream.GetSize().GetBytes());
+		buffer.resize(stream.GetSize().ToBytes());
 		if (stream.ReadAll(buffer.data(), buffer.size()))
 		{
 			HIMG image = nullptr;

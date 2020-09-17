@@ -165,7 +165,7 @@ namespace kxf::SevenZip::Private
 			HResult DoRead(void* data, uint32_t size, uint32_t& read) override
 			{
 				m_Stream->Read(data, size);
-				read = m_Stream->LastRead().GetBytes();
+				read = m_Stream->LastRead().ToBytes();
 
 				return GetLastError();
 			}
@@ -177,14 +177,14 @@ namespace kxf::SevenZip::Private
 				}
 				if (auto streamSeek = MapSeekMode(seekMode))
 				{
-					newPosition = m_Stream->SeekI(offset, *streamSeek).GetBytes();
+					newPosition = m_Stream->SeekI(offset, *streamSeek).ToBytes();
 					return GetLastError();
 				}
 				return HResult::InvalidArgument();
 			}
 			HResult DoGetSize(int64_t& size) const override
 			{
-				size = m_Stream->GetSize().GetBytes();
+				size = m_Stream->GetSize().ToBytes();
 				return GetLastError();
 			}
 

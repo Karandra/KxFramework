@@ -16,7 +16,7 @@ namespace
 		{
 			if (allocationSize)
 			{
-				streamBuffer.SetIntPosition(allocationSize.GetBytes());
+				streamBuffer.SetIntPosition(allocationSize.ToBytes());
 			}
 			streamBuffer.Truncate();
 
@@ -38,10 +38,10 @@ namespace kxf
 		size = size ? size : stream.GetSize();
 		if (auto buffer = m_Stream.GetInputStreamBuffer())
 		{
-			buffer->SetBufferIO(size.GetBytes());
+			buffer->SetBufferIO(size.ToBytes());
 			buffer->SetIntPosition(0);
 			buffer->Fixed(true);
-			if (!stream.ReadAll(buffer->GetBufferStart(), size.GetBytes()))
+			if (!stream.ReadAll(buffer->GetBufferStart(), size.ToBytes()))
 			{
 				buffer->ResetBuffer();
 			}

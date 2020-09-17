@@ -160,7 +160,7 @@ namespace kxf
 		StreamOffset offset;
 		if (reply.ShouldResumeFromOffset(offset))
 		{
-			m_Handle.SetOption(CURLOPT_RESUME_FROM_LARGE, offset.GetBytes());
+			m_Handle.SetOption(CURLOPT_RESUME_FROM_LARGE, offset.ToBytes());
 		}
 		DoSendRequest(reply);
 	}

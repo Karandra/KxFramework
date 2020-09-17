@@ -17,7 +17,7 @@ namespace
 	using namespace kxf;
 	using namespace kxf::Crypto;
 
-	constexpr size_t g_StreamBlockSize = BinarySize::FromKB(64).GetBytes();
+	constexpr size_t g_StreamBlockSize = BinarySize::FromKB(64).ToBytes();
 
 	template<class THashContext, size_t hashLength, class TInitFunc, class TUpdateFunc, class TFinalFunc>
 	std::optional<HashValue<hashLength * 8>> DoCalcHash1(IInputStream& stream, TInitFunc&& initFunc, TUpdateFunc&& updateFunc, TFinalFunc&& finalFunc) noexcept
@@ -30,7 +30,7 @@ namespace
 			{
 				if (stream.Read(buffer, std::size(buffer)).LastRead() != 0)
 				{
-					std::invoke(updateFunc, &hashContext, &buffer, stream.LastRead().GetBytes());
+					std::invoke(updateFunc, &hashContext, &buffer, stream.LastRead().ToBytes());
 				}
 				else
 				{
@@ -68,7 +68,7 @@ namespace
 				{
 					if (stream.Read(buffer, std::size(buffer)).LastRead() != 0)
 					{
-						if (EVP_DigestUpdate(context, &buffer, stream.LastRead().GetBytes()) != 1)
+						if (EVP_DigestUpdate(context, &buffer, stream.LastRead().ToBytes()) != 1)
 						{
 							return {};
 						}
@@ -116,7 +116,7 @@ namespace
 				{
 					if (stream.Read(buffer, std::size(buffer)).LastRead() != 0)
 					{
-						if (std::invoke(updateFunc, state, buffer, stream.LastRead().GetBytes()) == XXH_ERROR)
+						if (std::invoke(updateFunc, state, buffer, stream.LastRead().ToBytes()) == XXH_ERROR)
 						{
 							break;
 						}
@@ -232,7 +232,7 @@ namespace kxf::Crypto
 		while (stream.CanRead())
 		{
 			uint8_t buffer[g_StreamBlockSize] = {};
-			const size_t readBytes = stream.Read(buffer, std::size(buffer)).LastRead().GetBytes();
+			const size_t readBytes = stream.Read(buffer, std::size(buffer)).LastRead().ToBytes();
 
 			for (size_t i = 0; i < readBytes; i++)
 			{
@@ -317,7 +317,7 @@ namespace kxf::Crypto
 		{
 			if (inputStream.Read(readBuffer, std::size(readBuffer)).LastRead() != 0)
 			{
-				buffer.AppendData(readBuffer, inputStream.LastRead().GetBytes());
+				buffer.AppendData(readBuffer, inputStream.LastRead().ToBytes());
 			}
 			else
 			{
@@ -349,7 +349,7 @@ namespace kxf::Crypto
 		{
 			if (inputStream.Read(readBuffer, std::size(readBuffer)).LastRead() != 0)
 			{
-				buffer.AppendData(readBuffer, inputStream.LastRead().GetBytes());
+				buffer.AppendData(readBuffer, inputStream.LastRead().ToBytes());
 			}
 			else
 			{

@@ -135,7 +135,7 @@ namespace kxf
 
 			// Conversion
 			template<class T = int64_t>
-			constexpr T GetBytes() const noexcept
+			constexpr T ToBytes() const noexcept
 			{
 				static_assert(std::is_integral_v<T> || std::is_floating_point_v<T>, "invalid numeric type");
 
@@ -143,53 +143,53 @@ namespace kxf
 			}
 			
 			template<class T = int64_t>
-			constexpr T GetKB() const noexcept
+			constexpr T ToKB() const noexcept
 			{
 				return GetAs<T>(m_Value);
 			}
 			
 			template<class T = int64_t>
-			constexpr T GetMB() const noexcept
+			constexpr T ToMB() const noexcept
 			{
-				return GetAs<T>(GetKB());
+				return GetAs<T>(ToKB());
 			}
 			
 			template<class T = int64_t>
-			constexpr T GetGB() const noexcept
+			constexpr T ToGB() const noexcept
 			{
-				return GetAs<T>(GetMB());
+				return GetAs<T>(ToMB());
 			}
 			
 			template<class T = int64_t>
-			constexpr T GetTB() const noexcept
+			constexpr T ToTB() const noexcept
 			{
-				return GetAs<T>(GetGB());
+				return GetAs<T>(ToGB());
 			}
 			
 			template<class T = int64_t>
-			constexpr T GetAsUnit(BinarySizeUnit unit) const noexcept
+			constexpr T ToUnit(BinarySizeUnit unit) const noexcept
 			{
 				switch (unit)
 				{
 					case BinarySizeUnit::Bytes:
 					{
-						return static_cast<T>(GetBytes());
+						return static_cast<T>(ToBytes());
 					}
 					case BinarySizeUnit::KiloBytes:
 					{
-						return GetKB<T>();
+						return ToKB<T>();
 					}
 					case BinarySizeUnit::MegaBytes:
 					{
-						return GetMB<T>();
+						return ToMB<T>();
 					}
 					case BinarySizeUnit::GigaBytes:
 					{
-						return GetGB<T>();
+						return ToGB<T>();
 					}
 					case BinarySizeUnit::TeraBytes:
 					{
-						return GetTB<T>();
+						return ToTB<T>();
 					}
 				};
 				return -1;
@@ -282,7 +282,7 @@ namespace kxf
 				return *this;
 			}
 
-			// Validity test (see  'IsValid')
+			// Validity test
 			constexpr explicit operator bool() const noexcept
 			{
 				return IsValid();
@@ -300,7 +300,7 @@ namespace kxf
 	{
 		if (smallerSize && largerSize && !largerSize.IsNull())
 		{
-			return smallerSize.GetBytes<double>() / largerSize.GetBytes<double>();
+			return smallerSize.ToBytes<double>() / largerSize.ToBytes<double>();
 		}
 		return -1;
 	}

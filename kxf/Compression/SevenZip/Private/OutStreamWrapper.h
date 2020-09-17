@@ -139,7 +139,7 @@ namespace kxf::SevenZip::Private
 			HResult DoWrite(const void* data, uint32_t size, uint32_t& written) override
 			{
 				m_Stream.Write(data, size);
-				written = m_Stream.LastWrite().GetBytes();
+				written = m_Stream.LastWrite().ToBytes();
 
 				return GetLastError();
 			}
@@ -151,7 +151,7 @@ namespace kxf::SevenZip::Private
 				}
 				if (auto streamSeek = MapSeekMode(seekMode))
 				{
-					newPosition = m_Stream->SeekO(offset, *streamSeek).GetBytes();
+					newPosition = m_Stream->SeekO(offset, *streamSeek).ToBytes();
 					return GetLastError();
 				}
 				return HResult::InvalidArgument();

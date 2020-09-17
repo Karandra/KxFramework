@@ -94,7 +94,7 @@ namespace kxf::wxWidgets
 
 				if (auto seekWx = IO::ToWxSeekMode(seek))
 				{
-					return m_Stream->SeekI(offset.GetBytes(), *seekWx);
+					return m_Stream->SeekI(offset.ToBytes(), *seekWx);
 				}
 				return {};
 			}
@@ -189,7 +189,7 @@ namespace kxf::wxWidgets
 
 				if (auto seekWx = IO::ToWxSeekMode(seek))
 				{
-					return m_Stream->SeekO(offset.GetBytes(), *seekWx);
+					return m_Stream->SeekO(offset.ToBytes(), *seekWx);
 				}
 				return {};
 			}
@@ -226,13 +226,13 @@ namespace kxf::wxWidgets
 			// wxStreamBase
 			wxFileOffset OnSysTell() const override
 			{
-				return m_Stream->TellI().GetBytes<wxFileOffset>();
+				return m_Stream->TellI().ToBytes<wxFileOffset>();
 			}
 			wxFileOffset OnSysSeek(wxFileOffset offset, wxSeekMode mode) override
 			{
 				if (auto seek = IO::FromWxSeekMode(mode))
 				{
-					return m_Stream->SeekI(offset, *seek).GetBytes<wxFileOffset>();
+					return m_Stream->SeekI(offset, *seek).ToBytes<wxFileOffset>();
 				}
 				return wxInvalidOffset;
 			}
@@ -240,7 +240,7 @@ namespace kxf::wxWidgets
 			// wxInputStream
 			size_t OnSysRead(void* buffer, size_t size) override
 			{
-				return m_Stream->Read(buffer, size).LastRead().GetBytes<size_t>();
+				return m_Stream->Read(buffer, size).LastRead().ToBytes<size_t>();
 			}
 
 		public:
@@ -266,11 +266,11 @@ namespace kxf::wxWidgets
 
 			wxFileOffset GetLength() const override
 			{
-				return m_Stream->GetSize().GetBytes<wxFileOffset>();
+				return m_Stream->GetSize().ToBytes<wxFileOffset>();
 			}
 			size_t GetSize() const override
 			{
-				return m_Stream->GetSize().GetBytes<size_t>();
+				return m_Stream->GetSize().ToBytes<size_t>();
 			}
 
 			// wxInputStream
@@ -285,7 +285,7 @@ namespace kxf::wxWidgets
 
 			size_t LastRead() const override
 			{
-				return m_Stream->LastRead().GetBytes<size_t>();
+				return m_Stream->LastRead().ToBytes<size_t>();
 			}
 			wxInputStream& Read(void* buffer, size_t size) override
 			{
@@ -299,13 +299,13 @@ namespace kxf::wxWidgets
 
 			wxFileOffset TellI() const override
 			{
-				return m_Stream->TellI().GetBytes<wxFileOffset>();
+				return m_Stream->TellI().ToBytes<wxFileOffset>();
 			}
 			wxFileOffset SeekI(wxFileOffset offset, wxSeekMode mode = wxSeekMode::wxFromStart) override
 			{
 				if (auto seek = IO::FromWxSeekMode(mode))
 				{
-					return m_Stream->SeekI(offset, *seek).GetBytes<wxFileOffset>();
+					return m_Stream->SeekI(offset, *seek).ToBytes<wxFileOffset>();
 				}
 				return wxInvalidOffset;
 			}
@@ -330,13 +330,13 @@ namespace kxf::wxWidgets
 			// wxStreamBase
 			wxFileOffset OnSysTell() const override
 			{
-				return m_Stream->TellO().GetBytes<wxFileOffset>();
+				return m_Stream->TellO().ToBytes<wxFileOffset>();
 			}
 			wxFileOffset OnSysSeek(wxFileOffset offset, wxSeekMode mode) override
 			{
 				if (auto seek = IO::FromWxSeekMode(mode))
 				{
-					return m_Stream->SeekO(offset, *seek).GetBytes<wxFileOffset>();
+					return m_Stream->SeekO(offset, *seek).ToBytes<wxFileOffset>();
 				}
 				return wxInvalidOffset;
 			}
@@ -344,7 +344,7 @@ namespace kxf::wxWidgets
 			// wxOutputStream
 			size_t OnSysWrite(const void* buffer, size_t size) override
 			{
-				return m_Stream->Write(buffer, size).LastWrite().GetBytes<size_t>();
+				return m_Stream->Write(buffer, size).LastWrite().ToBytes<size_t>();
 			}
 
 		public:
@@ -370,11 +370,11 @@ namespace kxf::wxWidgets
 
 			wxFileOffset GetLength() const override
 			{
-				return m_Stream->GetSize().GetBytes<wxFileOffset>();
+				return m_Stream->GetSize().ToBytes<wxFileOffset>();
 			}
 			size_t GetSize() const override
 			{
-				return m_Stream->GetSize().GetBytes<size_t>();
+				return m_Stream->GetSize().ToBytes<size_t>();
 			}
 
 			// wxOutputStream
@@ -387,7 +387,7 @@ namespace kxf::wxWidgets
 
 			size_t LastWrite() const override
 			{
-				return m_Stream->LastWrite().GetBytes<size_t>();
+				return m_Stream->LastWrite().ToBytes<size_t>();
 			}
 			wxOutputStream& Write(const void* buffer, size_t size) override
 			{
@@ -397,13 +397,13 @@ namespace kxf::wxWidgets
 
 			wxFileOffset TellO() const override
 			{
-				return m_Stream->TellO().GetBytes<wxFileOffset>();
+				return m_Stream->TellO().ToBytes<wxFileOffset>();
 			}
 			wxFileOffset SeekO(wxFileOffset offset, wxSeekMode mode = wxSeekMode::wxFromStart) override
 			{
 				if (auto seek = IO::FromWxSeekMode(mode))
 				{
-					return m_Stream->SeekO(offset, *seek).GetBytes<wxFileOffset>();
+					return m_Stream->SeekO(offset, *seek).ToBytes<wxFileOffset>();
 				}
 				return wxInvalidOffset;
 			}

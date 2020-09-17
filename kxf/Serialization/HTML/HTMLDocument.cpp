@@ -74,9 +74,9 @@ namespace kxf
 	bool KxHTMLDocument::Load(IInputStream& stream)
 	{
 		DoUnload();
-		m_Buffer.resize(stream.GetSize().GetBytes());
+		m_Buffer.resize(stream.GetSize().ToBytes());
 		stream.Read(m_Buffer.data(), m_Buffer.size());
-		m_Buffer.resize(stream.LastRead().GetBytes());
+		m_Buffer.resize(stream.LastRead().ToBytes());
 
 		DoLoad();
 		return !IsNull();

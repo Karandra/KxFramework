@@ -99,9 +99,9 @@ namespace kxf
 	{
 		DoUnload();
 
-		wxMemoryBuffer buffer(stream.GetSize().GetBytes());
+		wxMemoryBuffer buffer(stream.GetSize().ToBytes());
 		stream.Read(buffer.GetData(), buffer.GetBufSize());
-		buffer.SetDataLen(stream.LastRead().GetBytes());
+		buffer.SetDataLen(stream.LastRead().ToBytes());
 
 		DoLoad(reinterpret_cast<const char*>(buffer.GetData()), buffer.GetDataLen());
 		return !IsNull();

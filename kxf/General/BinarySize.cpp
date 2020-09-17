@@ -75,11 +75,11 @@ namespace
 	{
 		if (format & BinarySizeFormat::Fractional)
 		{
-			return FormatWithUnitBase(value.GetAsUnit<double>(unit), format, unit, precision);
+			return FormatWithUnitBase(value.ToUnit<double>(unit), format, unit, precision);
 		}
 		else
 		{
-			return FormatWithUnitBase(value.GetAsUnit<int64_t>(unit), format, unit, precision);
+			return FormatWithUnitBase(value.ToUnit<int64_t>(unit), format, unit, precision);
 		}
 	}
 }

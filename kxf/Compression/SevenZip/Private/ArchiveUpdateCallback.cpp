@@ -110,7 +110,7 @@ namespace kxf::SevenZip::Private::Callback
 					case kpidSize:
 					{
 						// Apparently 7-Zip requires file size to be of 'uint64_t' type
-						return fileItem.GetSize().GetBytes<uint64_t>();
+						return fileItem.GetSize().ToBytes<uint64_t>();
 					}
 					case kpidAttrib:
 					{
@@ -184,7 +184,7 @@ namespace kxf::SevenZip::Private::Callback
 				}
 
 				auto wrapperStream = COM::CreateLocalInstance<InStreamWrapper_IInputStream>(*m_Stream, m_EvtHandler.Get());
-				wrapperStream->SpecifyTotalSize(std::max(m_Stream->GetSize(), m_CurrentItem.GetSize()).GetBytes());
+				wrapperStream->SpecifyTotalSize(std::max(m_Stream->GetSize(), m_CurrentItem.GetSize()).ToBytes());
 				*inStream = wrapperStream.Detach();
 
 				return *HResult::Success();

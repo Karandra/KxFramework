@@ -3,7 +3,7 @@
 
 namespace
 {
-	constexpr size_t g_BufferSize = kxf::BinarySize::FromKB(64).GetBytes();
+	constexpr size_t g_BufferSize = kxf::BinarySize::FromKB(64).ToBytes();
 }
 
 namespace kxf
@@ -20,7 +20,7 @@ namespace kxf
 			{
 				break;
 			}
-			else if (other.Write(buffer, read.GetBytes()).LastWrite() != read)
+			else if (other.Write(buffer, read.ToBytes()).LastWrite() != read)
 			{
 				break;
 			}
@@ -63,7 +63,7 @@ namespace kxf
 			}
 
 			// Advance the buffer before trying to read the rest of data
-			bufferOffset += lastRead.GetBytes();
+			bufferOffset += lastRead.ToBytes();
 		}
 		SetLastRead(readTotal);
 
@@ -104,7 +104,7 @@ namespace kxf
 				break;
 			}
 
-			bufferOffset += lastWrite.GetBytes();
+			bufferOffset += lastWrite.ToBytes();
 		}
 		SetLastWrite(writtenTotal);
 

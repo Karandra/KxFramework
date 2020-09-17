@@ -213,7 +213,7 @@ namespace kxf
 			}
 			size_t GetProcessed() const override
 			{
-				return m_InitialOffset.GetBytes() + m_Downloaded;
+				return m_InitialOffset.ToBytes() + m_Downloaded;
 			}
 
 		public:

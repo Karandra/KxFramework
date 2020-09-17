@@ -16,7 +16,7 @@ namespace
 		{
 			if (stream.Read(buffer, std::size(buffer)).LastRead() != 0)
 			{
-				result += String(buffer, wxConvWhateverWorks, stream.LastRead().GetBytes());
+				result += String(buffer, wxConvWhateverWorks, stream.LastRead().ToBytes());
 			}
 			else
 			{

@@ -109,7 +109,7 @@ namespace kxf
 			int processedSize = LZ4_decompress_safe_continue(GetStream<LZ4_streamDecode_t>(),
 															 reinterpret_cast<const char*>(tempBuffer),
 															 reinterpret_cast<char*>(ringBuffer),
-															 m_Stream->LastRead().GetBytes(),
+															 m_Stream->LastRead().ToBytes(),
 															 ms_BlockSize);
 
 			if (processedSize > 0)

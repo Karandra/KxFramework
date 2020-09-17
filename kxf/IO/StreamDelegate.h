@@ -162,7 +162,7 @@ namespace kxf
 			}
 			StreamOffset SeekI(StreamOffset offset, IOStreamSeek seek) override
 			{
-				return m_Stream->SeekI(offset.GetBytes(), seek);
+				return m_Stream->SeekI(offset.ToBytes(), seek);
 			}
 
 		public:
@@ -222,7 +222,7 @@ namespace kxf
 			}
 			StreamOffset SeekO(StreamOffset offset, IOStreamSeek seek) override
 			{
-				return m_Stream->SeekO(offset.GetBytes(), seek);
+				return m_Stream->SeekO(offset.ToBytes(), seek);
 			}
 
 			bool Flush() override

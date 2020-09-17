@@ -155,11 +155,11 @@ namespace kxf::SevenZip
 				}
 				if (property == Compression::Property::Common_OriginalSize)
 				{
-					return GetOriginalSize().GetBytes();
+					return GetOriginalSize().ToBytes();
 				}
 				if (property == Compression::Property::Common_CompressedSize)
 				{
-					return GetCompressedSize().GetBytes();
+					return GetCompressedSize().ToBytes();
 				}
 				if (property == Compression::Property::Compression_Format)
 				{
