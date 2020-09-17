@@ -2,8 +2,6 @@
 #include "Common.h"
 #include "IStream.h"
 #include "kxf/Utility/Common.h"
-#include <vector>
-#include <array>
 #include <wx/ustring.h>
 #include <wx/stream.h>
 

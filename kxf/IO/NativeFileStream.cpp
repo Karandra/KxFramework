@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "FileStream.h"
+#include "NativeFileStream.h"
 #include "kxf/System/ErrorCodeValue.h"
 #include "kxf/FileSystem/Private/NativeFSUtility.h"
 #include "kxf/Utility/CallAtScopeExit.h"
@@ -77,7 +77,7 @@ namespace
 
 namespace kxf
 {
-	bool FileStream::DoClose()
+	bool NativeFileStream::DoClose()
 	{
 		if (DoIsOpened())
 		{
@@ -99,27 +99,27 @@ namespace kxf
 		}
 		return false;
 	}
-	bool FileStream::DoIsOpened() const
+	bool NativeFileStream::DoIsOpened() const
 	{
 		return m_Handle && m_Handle != INVALID_HANDLE_VALUE;
 	}
-	bool FileStream::DoIsEndOfStream() const
+	bool NativeFileStream::DoIsEndOfStream() const
 	{
 		return *m_LastError == ERROR_HANDLE_EOF || GetOffsetByHandle(m_Handle) == GetSizeByHandle(m_Handle);
 	}
 
 	// IStream
-	bool FileStream::IsSeekable() const
+	bool NativeFileStream::IsSeekable() const
 	{
 		return ::GetFileType(m_Handle) == FILE_TYPE_DISK;
 	}
-	BinarySize FileStream::GetSize() const
+	BinarySize NativeFileStream::GetSize() const
 	{
 		return GetSizeByHandle(m_Handle);
 	}
 
 	// IInputStream
-	std::optional<uint8_t> FileStream::Peek()
+	std::optional<uint8_t> NativeFileStream::Peek()
 	{
 		Utility::CallAtScopeExit atExit = [&, oldOffset = GetOffsetByHandle(m_Handle)]()
 		{
@@ -134,7 +134,7 @@ namespace kxf
 		}
 		return {};
 	}
-	IInputStream& FileStream::Read(void* buffer, size_t size)
+	IInputStream& NativeFileStream::Read(void* buffer, size_t size)
 	{
 		m_LastRead = {};
 
@@ -160,18 +160,18 @@ namespace kxf
 		return *this;
 	}
 
-	StreamOffset FileStream::TellI() const
+	StreamOffset NativeFileStream::TellI() const
 	{
 		return GetOffsetByHandle(m_Handle);
 	}
-	StreamOffset FileStream::SeekI(StreamOffset offset, IOStreamSeek seek)
+	StreamOffset NativeFileStream::SeekI(StreamOffset offset, IOStreamSeek seek)
 	{
 		m_StreamOffset = SeekByHandle(m_Handle, offset, seek);
 		return m_StreamOffset;
 	}
 
 	// IOutputStream
-	IOutputStream& FileStream::Write(const void* buffer, size_t size)
+	IOutputStream& NativeFileStream::Write(const void* buffer, size_t size)
 	{
 		m_LastWrite = {};
 
@@ -189,21 +189,21 @@ namespace kxf
 
 		return *this;
 	}
-	StreamOffset FileStream::TellO() const
+	StreamOffset NativeFileStream::TellO() const
 	{
 		return GetOffsetByHandle(m_Handle);
 	}
-	StreamOffset FileStream::SeekO(StreamOffset offset, IOStreamSeek seek)
+	StreamOffset NativeFileStream::SeekO(StreamOffset offset, IOStreamSeek seek)
 	{
 		m_StreamOffset = SeekByHandle(m_Handle, offset, seek);
 		return m_StreamOffset;
 	}
 
-	bool FileStream::Flush()
+	bool NativeFileStream::Flush()
 	{
 		return ::FlushFileBuffers(m_Handle);
 	}
-	bool FileStream::SetAllocationSize(BinarySize allocationSize)
+	bool NativeFileStream::SetAllocationSize(BinarySize allocationSize)
 	{
 		if (allocationSize)
 		{
@@ -219,7 +219,7 @@ namespace kxf
 	}
 
 	// INativeStream
-	bool FileStream::AttachHandle(void* handle)
+	bool NativeFileStream::AttachHandle(void* handle)
 	{
 		DoClose();
 
@@ -239,7 +239,7 @@ namespace kxf
 			m_LastError = Win32Error::Fail();
 		}
 	}
-	bool FileStream::ReopenHandle(FlagSet<IOStreamAccess> access, FlagSet<IOStreamShare> share, FlagSet<IOStreamFlag> flags)
+	bool NativeFileStream::ReopenHandle(FlagSet<IOStreamAccess> access, FlagSet<IOStreamShare> share, FlagSet<IOStreamFlag> flags)
 	{
 		if (DoIsOpened())
 		{
@@ -264,14 +264,14 @@ namespace kxf
 		}
 		return false;
 	}
-	void* FileStream::DetachHandle()
+	void* NativeFileStream::DetachHandle()
 	{
 		void* handle = m_Handle;
 		m_Handle = nullptr;
 		return handle;
 	}
 
-	FlagSet<FileAttribute> FileStream::GetAttributes() const
+	FlagSet<FileAttribute> NativeFileStream::GetAttributes() const
 	{
 		if (DoIsOpened())
 		{
@@ -283,7 +283,7 @@ namespace kxf
 		}
 		return {};
 	}
-	bool FileStream::SetAttributes(FlagSet<FileAttribute> attributes)
+	bool NativeFileStream::SetAttributes(FlagSet<FileAttribute> attributes)
 	{
 		if (DoIsOpened())
 		{
@@ -297,7 +297,7 @@ namespace kxf
 		return false;
 	}
 
-	bool FileStream::GetTimestamp(DateTime& creationTime, DateTime& modificationTime, DateTime& lastAccessTime) const
+	bool NativeFileStream::GetTimestamp(DateTime& creationTime, DateTime& modificationTime, DateTime& lastAccessTime) const
 	{
 		FILETIME creationTimeFile = {};
 		FILETIME modificationTimeFile = {};
@@ -312,7 +312,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool FileStream::ChangeTimestamp(DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime)
+	bool NativeFileStream::ChangeTimestamp(DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime)
 	{
 		if (m_Handle)
 		{
@@ -330,11 +330,11 @@ namespace kxf
 	}
 
 	// IStreamOnFileSystem
-	FSPath FileStream::GetPath() const
+	FSPath NativeFileStream::GetPath() const
 	{
 		return GetPathByHandle(m_Handle);
 	}
-	UniversallyUniqueID FileStream::GetUniqueID() const
+	UniversallyUniqueID NativeFileStream::GetUniqueID() const
 	{
 		if (DoIsOpened())
 		{
@@ -347,8 +347,8 @@ namespace kxf
 		return {};
 	}
 
-	// FileStream
-	bool FileStream::Open(const FSPath& path, FlagSet<IOStreamAccess> access, IOStreamDisposition disposition, FlagSet<IOStreamShare> share, FlagSet<IOStreamFlag> flags)
+	// NativeFileStream
+	bool NativeFileStream::Open(const FSPath& path, FlagSet<IOStreamAccess> access, IOStreamDisposition disposition, FlagSet<IOStreamShare> share, FlagSet<IOStreamFlag> flags)
 	{
 		DoClose();
 

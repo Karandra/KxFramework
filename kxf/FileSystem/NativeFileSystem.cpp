@@ -6,7 +6,7 @@
 #include "kxf/General/AlignedStorage.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/System/SystemInformation.h"
-#include "kxf/IO/FileStream.h"
+#include "kxf/IO/NativeFileStream.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 
@@ -16,7 +16,7 @@ namespace
 
 	bool OpenFileByID(const StorageVolume& volume,
 					  const UniversallyUniqueID& fileID,
-					  FileStream& file,
+					  NativeFileStream& file,
 					  FlagSet<IOStreamAccess> access = IOStreamAccess::ReadAttributes,
 					  IOStreamDisposition disposition = IOStreamDisposition::OpenExisting,
 					  FlagSet<IOStreamShare> share = IOStreamShare::Everything,
@@ -24,7 +24,7 @@ namespace
 	{
 		if (fileID && volume)
 		{
-			FileStream volumeStream(volume.GetDevicePath(), IOStreamAccess::ReadAttributes, IOStreamDisposition::OpenExisting, IOStreamShare::Everything, IOStreamFlag::AllowDirectories);
+			NativeFileStream volumeStream(volume.GetDevicePath(), IOStreamAccess::ReadAttributes, IOStreamDisposition::OpenExisting, IOStreamShare::Everything, IOStreamFlag::AllowDirectories);
 			if (volumeStream)
 			{
 				// Some search on Google says that 'FILE_ID_DESCRIPTOR' isn't always 24. it *is* 24 for me on both x64 and x86
@@ -190,7 +190,7 @@ namespace kxf
 	{
 		return DoWithResolvedPath1(m_CurrentDirectory, path, [](const FSPath& path) -> FileItem
 		{
-			FileStream file(path, IOStreamAccess::ReadAttributes, IOStreamDisposition::OpenExisting, IOStreamShare::Everything);
+			NativeFileStream file(path, IOStreamAccess::ReadAttributes, IOStreamDisposition::OpenExisting, IOStreamShare::Everything);
 			if (file)
 			{
 				return FileSystem::Private::ConvertFileInfo(file.GetHandle());
@@ -355,7 +355,7 @@ namespace kxf
 			if ((creationTime.IsValid() || modificationTime.IsValid() || lastAccessTime.IsValid()))
 			{
 				const IOStreamFlag streamFlags = GetItem(path).IsDirectory() ? IOStreamFlag::AllowDirectories : IOStreamFlag::Normal;
-				FileStream stream(path, IOStreamAccess::WriteAttributes, IOStreamDisposition::OpenExisting, IOStreamShare::Everything, streamFlags);
+				NativeFileStream stream(path, IOStreamAccess::WriteAttributes, IOStreamDisposition::OpenExisting, IOStreamShare::Everything, streamFlags);
 				if (stream)
 				{
 					return stream.ChangeTimestamp(creationTime, modificationTime, lastAccessTime);
@@ -514,7 +514,7 @@ namespace kxf
 	{
 		return DoWithResolvedPath1(m_CurrentDirectory, path, [&](const FSPath& path) -> std::unique_ptr<IStream>
 		{
-			auto fileStream = std::make_unique<FileStream>(path, access, disposition, share, flags);
+			auto fileStream = std::make_unique<NativeFileStream>(path, access, disposition, share, flags);
 			if (*fileStream)
 			{
 				if (auto stream = std::unique_ptr<IStream>(fileStream->QueryInterface<IStream>().get()))
@@ -530,12 +530,12 @@ namespace kxf
 	// IFileIDSystem
 	bool NativeFileSystem::ItemExist(const UniversallyUniqueID& id) const
 	{
-		FileStream file;
+		NativeFileStream file;
 		return OpenFileByID(m_CurrentVolume, id, file);
 	}
 	bool NativeFileSystem::FileExist(const UniversallyUniqueID& id) const
 	{
-		FileStream file;
+		NativeFileStream file;
 		if (OpenFileByID(m_CurrentVolume, id, file))
 		{
 			return !file.GetAttributes().Contains(FileAttribute::Directory);
@@ -544,7 +544,7 @@ namespace kxf
 	}
 	bool NativeFileSystem::DirectoryExist(const UniversallyUniqueID& id) const
 	{
-		FileStream file;
+		NativeFileStream file;
 		if (OpenFileByID(m_CurrentVolume, id, file))
 		{
 			return file.GetAttributes().Contains(FileAttribute::Directory);
@@ -554,7 +554,7 @@ namespace kxf
 	
 	FileItem NativeFileSystem::GetItem(const UniversallyUniqueID& id) const
 	{
-		FileStream file;
+		NativeFileStream file;
 		if (OpenFileByID(m_CurrentVolume, id, file))
 		{
 			return FileSystem::Private::ConvertFileInfo(file.GetHandle(), id);
@@ -570,7 +570,7 @@ namespace kxf
 	{
 		if (id)
 		{
-			auto fileStream = std::make_unique<FileStream>();
+			auto fileStream = std::make_unique<NativeFileStream>();
 			if (OpenFileByID(m_CurrentVolume, id, *fileStream, access, disposition, share, flags))
 			{
 				if (auto stream = std::unique_ptr<IStream>(fileStream->QueryInterface<IStream>().get()))
@@ -586,7 +586,7 @@ namespace kxf
 	// NativeFileSystem
 	bool NativeFileSystem::IsInUse(const FSPath& path) const
 	{
-		return path.IsAbsolute() && FileStream(path, IOStreamAccess::Read, IOStreamDisposition::OpenExisting, IOStreamShare::None);
+		return path.IsAbsolute() && NativeFileStream(path, IOStreamAccess::Read, IOStreamDisposition::OpenExisting, IOStreamShare::None);
 	}
 	size_t NativeFileSystem::EnumStreams(const FSPath& path, TEnumStreamsFunc func) const
 	{

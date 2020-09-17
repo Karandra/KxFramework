@@ -1,8 +1,10 @@
 #include "stdafx.h"
 #include "StorageVolume.h"
+#include "NativeFileSystem.h"
 #include "LegacyVolume.h"
 #include "FSPath.h"
-#include "kxf/IO/FileStream.h"
+#include "kxf/IO/IStream.h"
+#include "kxf/IO/INativeStream.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 
 namespace
@@ -373,13 +375,17 @@ namespace kxf
 
 	bool StorageVolume::EjectMedia() noexcept
 	{
-		FileStream stream(GetDevicePath(), IOStreamAccess::Read, IOStreamDisposition::OpenExisting, IOStreamShare::Everything);
-		if (stream)
+		if (auto stream = NativeFileSystem().OpenToRead(GetDevicePath(), IOStreamDisposition::OpenExisting, IOStreamShare::Everything))
 		{
-			DWORD bytes = 0;
-			::DeviceIoControl(stream.GetHandle(), FSCTL_LOCK_VOLUME, nullptr, 0, nullptr, 0, &bytes, nullptr);
-			::DeviceIoControl(stream.GetHandle(), FSCTL_DISMOUNT_VOLUME, nullptr, 0, nullptr, 0, &bytes, nullptr);
-			return ::DeviceIoControl(stream.GetHandle(), IOCTL_STORAGE_EJECT_MEDIA, nullptr, 0, nullptr, 0, &bytes, nullptr);
+			if (auto nativeStream = stream->QueryInterface<INativeStream>())
+			{
+				void* handle = nativeStream->GetHandle();
+
+				DWORD bytes = 0;
+				::DeviceIoControl(handle, FSCTL_LOCK_VOLUME, nullptr, 0, nullptr, 0, &bytes, nullptr);
+				::DeviceIoControl(handle, FSCTL_DISMOUNT_VOLUME, nullptr, 0, nullptr, 0, &bytes, nullptr);
+				return ::DeviceIoControl(handle, IOCTL_STORAGE_EJECT_MEDIA, nullptr, 0, nullptr, 0, &bytes, nullptr);
+			}
 		}
 		return false;
 	}

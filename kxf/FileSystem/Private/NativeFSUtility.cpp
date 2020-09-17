@@ -1,15 +1,8 @@
 #include "stdafx.h"
 #include "NativeFSUtility.h"
-#include "kxf/IO/FileStream.h"
+#include "kxf/IO/NativeFileStream.h"
 #include "kxf/System/SystemInformation.h"
 #include "kxf/Utility/CallAtScopeExit.h"
-
-namespace
-{
-	using namespace kxf;
-
-	
-}
 
 namespace kxf::FileSystem::Private
 {
@@ -109,7 +102,7 @@ namespace kxf::FileSystem::Private
 		{
 			// Switch to a different directory enumeration method to avoid opening the file here to get its ID
 			BY_HANDLE_FILE_INFORMATION fileInfo = {};
-			FileStream stream(path, IOStreamAccess::ReadAttributes, IOStreamDisposition::OpenExisting, IOStreamShare::Everything, IOStreamFlag::AllowDirectories);
+			NativeFileStream stream(path, IOStreamAccess::ReadAttributes, IOStreamDisposition::OpenExisting, IOStreamShare::Everything, IOStreamFlag::AllowDirectories);
 			if (stream && ::GetFileInformationByHandle(stream.GetHandle(), &fileInfo))
 			{
 				fileItem.SetUniqueID(GetFileUniqueID(stream.GetHandle(), fileInfo));
@@ -123,7 +116,7 @@ namespace kxf::FileSystem::Private
 	}
 	FileItem ConvertFileInfo(HANDLE fileHandle, UniversallyUniqueID id, FlagSet<FSActionFlag> flags)
 	{
-		FileStream stream;
+		NativeFileStream stream;
 		if (stream.AttachHandle(fileHandle))
 		{
 			Utility::CallAtScopeExit atExit= [&]()

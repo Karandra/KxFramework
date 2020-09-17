@@ -7,7 +7,7 @@
 
 namespace kxf
 {
-	class KX_API FileStream: public RTTI::ImplementInterface<FileStream, IInputStream, IOutputStream, INativeStream, IStreamOnFileSystem>
+	class KX_API NativeFileStream: public RTTI::ImplementInterface<NativeFileStream, IInputStream, IOutputStream, INativeStream, IStreamOnFileSystem>
 	{
 		private:
 			void* m_Handle = nullptr;
@@ -28,8 +28,8 @@ namespace kxf
 			bool DoIsEndOfStream() const;
 
 		public:
-			FileStream() noexcept = default;
-			FileStream(const FSPath& path,
+			NativeFileStream() noexcept = default;
+			NativeFileStream(const FSPath& path,
 					   FlagSet<IOStreamAccess> access,
 					   IOStreamDisposition disposition,
 					   FlagSet<IOStreamShare> share,
@@ -38,12 +38,12 @@ namespace kxf
 			{
 				Open(path, access, disposition, share, flags);
 			}
-			FileStream(const FileStream&) = delete;
-			FileStream(FileStream&& other) noexcept
+			NativeFileStream(const NativeFileStream&) = delete;
+			NativeFileStream(NativeFileStream&& other) noexcept
 			{
 				*this = std::move(other);
 			}
-			~FileStream()
+			~NativeFileStream()
 			{
 				DoClose();
 			}
@@ -125,7 +125,7 @@ namespace kxf
 			FSPath GetPath() const override;
 			UniversallyUniqueID GetUniqueID() const override;
 
-			// FileStream
+			// NativeFileStream
 			bool Open(const FSPath& path,
 					  FlagSet<IOStreamAccess> access,
 					  IOStreamDisposition disposition,
@@ -143,8 +143,8 @@ namespace kxf
 				return m_LastError.IsFail();
 			}
 
-			FileStream& operator=(const FileStream&) = delete;
-			FileStream& operator=(FileStream&& other) noexcept
+			NativeFileStream& operator=(const NativeFileStream&) = delete;
+			NativeFileStream& operator=(NativeFileStream&& other) noexcept
 			{
 				DoClose();
 

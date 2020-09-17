@@ -248,7 +248,7 @@
     <ClInclude Include="kxf\General\ResourceID.h" />
     <ClInclude Include="kxf\IO.hpp" />
     <ClInclude Include="kxf\IO\Common.h" />
-    <ClInclude Include="kxf\IO\FileStream.h" />
+    <ClInclude Include="kxf\IO\NativeFileStream.h" />
     <ClInclude Include="kxf\IO\IStream.h" />
     <ClInclude Include="kxf\IO\IStreamOnFileSystem.h" />
     <ClInclude Include="kxf\IO\MemoryStream.h" />
@@ -647,7 +647,7 @@
     <ClCompile Include="kxf\General\IVariablesCollection.cpp" />
     <ClCompile Include="kxf\General\LocallyUniqueID.cpp" />
     <ClCompile Include="kxf\IO\Common.cpp" />
-    <ClCompile Include="kxf\IO\FileStream.cpp" />
+    <ClCompile Include="kxf\IO\NativeFileStream.cpp" />
     <ClCompile Include="kxf\IO\IStream.cpp" />
     <ClCompile Include="kxf\IO\MemoryStream.cpp" />
     <ClCompile Include="kxf\Localization\ILocalizationPackage.cpp" />

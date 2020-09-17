@@ -1223,9 +1223,6 @@
     <ClInclude Include="kxf\IO\StreamDelegate.h">
       <Filter>kxf\IO</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\IO\FileStream.h">
-      <Filter>kxf\IO</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Serialization\TextDocument.h">
       <Filter>kxf\Serialization</Filter>
     </ClInclude>
@@ -1510,6 +1507,9 @@
     </ClInclude>
     <ClInclude Include="kxf\wxWidgets\StreamWrapper.h">
       <Filter>kxf\wxWidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IO\NativeFileStream.h">
+      <Filter>kxf\IO</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2129,9 +2129,6 @@
     <ClCompile Include="kxf\IO\MemoryStream.cpp">
       <Filter>kxf\IO</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\IO\FileStream.cpp">
-      <Filter>kxf\IO</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\Serialization\TextDocument.cpp">
       <Filter>kxf\Serialization</Filter>
     </ClCompile>
@@ -2263,6 +2260,9 @@
     </ClCompile>
     <ClCompile Include="kxf\wxWidgets\StreamWrapper.cpp">
       <Filter>kxf\wxWidgets</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\IO\NativeFileStream.cpp">
+      <Filter>kxf\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
