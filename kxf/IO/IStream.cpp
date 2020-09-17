@@ -6,35 +6,39 @@ namespace
 	constexpr size_t g_BufferSize = kxf::BinarySize::FromKB(64).GetBytes();
 }
 
-namespace kxf::IO
+namespace kxf
 {
-	BinarySize ReadCopy(IInputStream& inStream, IOutputStream& outStream)
+	IInputStream& IInputStream::Read(IOutputStream& other)
 	{
-		BinarySize totalBytes = 0;
+		BinarySize readTotal = 0;
 		uint8_t buffer[g_BufferSize];
 
 		while (true)
 		{
-			BinarySize read = inStream.Read(buffer, std::size(buffer)).LastRead();
+			BinarySize read = Read(buffer, std::size(buffer)).LastRead();
 			if (!read)
 			{
 				break;
 			}
-			else if (outStream.Write(buffer, read.GetBytes()).LastWrite() != read)
+			else if (other.Write(buffer, read.GetBytes()).LastWrite() != read)
 			{
 				break;
 			}
 
-			totalBytes += read;
+			readTotal += read;
 		}
-		return totalBytes;
+		SetLastRead(readTotal);
+
+		return *this;
 	}
-	bool ReadAll(IInputStream& stream, void* buffer, size_t size, BinarySize& readTotal)
+	bool IInputStream::ReadAll(void* buffer, size_t size)
 	{
+		BinarySize readTotal = 0;
 		size_t bufferOffset = 0;
+
 		while (true)
 		{
-			const BinarySize lastRead = stream.Read(static_cast<uint8_t*>(buffer) + bufferOffset, size - bufferOffset).LastRead();
+			const BinarySize lastRead = Read(static_cast<uint8_t*>(buffer) + bufferOffset, size - bufferOffset).LastRead();
 
 			// There is no point in continuing looping if we can't read anything at all
 			if (!lastRead)
@@ -44,7 +48,7 @@ namespace kxf::IO
 			readTotal += lastRead;
 
 			// Or if an error occurred on the stream
-			if (stream.GetLastError().IsFail())
+			if (GetLastError().IsFail())
 			{
 				break;
 			}
@@ -61,24 +65,36 @@ namespace kxf::IO
 			// Advance the buffer before trying to read the rest of data
 			bufferOffset += lastRead.GetBytes();
 		}
+		SetLastRead(readTotal);
 
 		return size == bufferOffset;
 	}
-	bool WriteAll(IOutputStream& stream, const void* buffer, size_t size, BinarySize& writtenTotal)
-	{
-		// This function mirrors implementation of 'ReadAll', look there for more comments.
+}
 
+namespace kxf
+{
+	IOutputStream& IOutputStream::Write(IInputStream& other)
+	{
+		other.Read(*this);
+		return *this;
+	}
+	bool IOutputStream::WriteAll(const void* buffer, size_t size)
+	{
+		// This function mirrors implementation of 'IInputStream::ReadAll', look there for more comments.
+
+		BinarySize writtenTotal = 0;
 		size_t bufferOffset = 0;
+
 		while (true)
 		{
-			const BinarySize lastWrite = stream.Write(buffer, size).LastWrite();
+			const BinarySize lastWrite = Write(buffer, size).LastWrite();
 			if (!lastWrite)
 			{
 				break;
 			}
 			writtenTotal += lastWrite;
 
-			if (stream.GetLastError().IsFail())
+			if (GetLastError().IsFail())
 			{
 				break;
 			}
@@ -90,6 +106,7 @@ namespace kxf::IO
 
 			bufferOffset += lastWrite.GetBytes();
 		}
+		SetLastWrite(writtenTotal);
 
 		return size == bufferOffset;
 	}

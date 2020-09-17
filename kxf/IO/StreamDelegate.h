@@ -35,7 +35,7 @@ namespace kxf::Private
 			DelegateStreamBase(const DelegateStreamBase&) = delete;
 
 		public:
-			bool IsTargetStreamOwned() const
+			bool OwnsTargetStream() const
 			{
 				return m_Stream.is_owned();
 			}
@@ -47,7 +47,6 @@ namespace kxf::Private
 			{
 				return m_Stream.get_unique();
 			}
-			
 			TBaseStream* GetTargetStream() const
 			{
 				return m_Stream.get();
@@ -80,13 +79,18 @@ namespace kxf::Private
 
 		public:
 			// IStream
+			void Close() override
+			{
+				m_Stream->Close();
+			}
+			
 			ErrorCode GetLastError() const override
 			{
 				return m_Stream->GetLastError();
 			}
-			void Close() override
+			void SetLastError(ErrorCode lastError) override
 			{
-				m_Stream->Close();
+				m_Stream->SetLastError(std::move(lastError));
 			}
 
 			bool IsSeekable() const override
@@ -102,7 +106,7 @@ namespace kxf::Private
 
 namespace kxf
 {
-	class KX_API InputStreamDelegate final: public Private::DelegateStreamBase<IInputStream>
+	class KX_API InputStreamDelegate: public Private::DelegateStreamBase<IInputStream>
 	{
 		public:
 			InputStreamDelegate() = default;
@@ -128,11 +132,15 @@ namespace kxf
 			{
 				return m_Stream->LastRead();
 			}
+			void SetLastRead(BinarySize lastRead) override
+			{
+				m_Stream->SetLastRead(lastRead);
+			}
+
 			std::optional<uint8_t> Peek() override
 			{
 				return m_Stream->Peek();
 			}
-
 			IInputStream& Read(void* buffer, size_t size) override
 			{
 				m_Stream->Read(buffer, size);
@@ -166,7 +174,7 @@ namespace kxf
 			InputStreamDelegate& operator=(const InputStreamDelegate&) = delete;
 	};
 
-	class KX_API OutputStreamDelegate final: public Private::DelegateStreamBase<IOutputStream>
+	class KX_API OutputStreamDelegate: public Private::DelegateStreamBase<IOutputStream>
 	{
 		public:
 			OutputStreamDelegate() = default;
@@ -187,6 +195,10 @@ namespace kxf
 			BinarySize LastWrite() const override
 			{
 				return m_Stream->LastWrite();
+			}
+			void SetLastWrite(BinarySize lastWrite) override
+			{
+				m_Stream->SetLastWrite(lastWrite);
 			}
 
 			IOutputStream& Write(const void* buffer, size_t size) override

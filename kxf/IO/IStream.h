@@ -20,8 +20,10 @@ namespace kxf
 			virtual ~IStream() = default;
 
 		public:
-			virtual ErrorCode GetLastError() const = 0;
 			virtual void Close() = 0;
+
+			virtual ErrorCode GetLastError() const = 0;
+			virtual void SetLastError(ErrorCode lastError) = 0;
 
 			virtual bool IsSeekable() const = 0;
 			virtual BinarySize GetSize() const = 0;
@@ -49,12 +51,14 @@ namespace kxf
 
 		public:
 			virtual bool CanRead() const = 0;
-			virtual BinarySize LastRead() const = 0;
-			virtual std::optional<uint8_t> Peek() = 0;
 
+			virtual BinarySize LastRead() const = 0;
+			virtual void SetLastRead(BinarySize lastRead) = 0;
+
+			virtual std::optional<uint8_t> Peek() = 0;
 			virtual IInputStream& Read(void* buffer, size_t size) = 0;
-			virtual IInputStream& Read(IOutputStream& other) = 0;
-			virtual bool ReadAll(void* buffer, size_t size) = 0;
+			virtual IInputStream& Read(IOutputStream& other);
+			virtual bool ReadAll(void* buffer, size_t size);
 
 			virtual StreamOffset TellI() const = 0;
 			virtual StreamOffset SeekI(StreamOffset offset, IOStreamSeek seek) = 0;
@@ -72,10 +76,11 @@ namespace kxf
 
 		public:
 			virtual BinarySize LastWrite() const = 0;
+			virtual void SetLastWrite(BinarySize lastWrite) = 0;
 
 			virtual IOutputStream& Write(const void* buffer, size_t size) = 0;
-			virtual IOutputStream& Write(IInputStream& other) = 0;
-			virtual bool WriteAll(const void* buffer, size_t size) = 0;
+			virtual IOutputStream& Write(IInputStream& other);
+			virtual bool WriteAll(const void* buffer, size_t size);
 
 			virtual StreamOffset TellO() const = 0;
 			virtual StreamOffset SeekO(StreamOffset offset, IOStreamSeek seek) = 0;
@@ -83,11 +88,4 @@ namespace kxf
 			virtual bool Flush() = 0;
 			virtual bool SetAllocationSize(BinarySize allocationSize) = 0;
 	};
-}
-
-namespace kxf::IO
-{
-	BinarySize ReadCopy(IInputStream& inStream, IOutputStream& outStream);
-	bool ReadAll(IInputStream& stream, void* buffer, size_t size, BinarySize& readTotal);
-	bool WriteAll(IOutputStream& stream, const void* buffer, size_t size, BinarySize& writtenTotal);
 }

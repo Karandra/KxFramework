@@ -50,13 +50,18 @@ namespace kxf
 			
 		public:
 			// IStream
+			void Close() override
+			{
+				DoClose();
+			}
+
 			ErrorCode GetLastError() const override
 			{
 				return m_LastError;
 			}
-			void Close() override
+			void SetLastError(ErrorCode lastError) override
 			{
-				DoClose();
+				m_LastError = lastError.ConvertToWin32().value_or(Win32Error::Fail());
 			}
 
 			bool IsSeekable() const override;
@@ -67,15 +72,18 @@ namespace kxf
 			{
 				return m_LastError.IsSuccess() && !DoIsEndOfStream();
 			}
+			
 			BinarySize LastRead() const override
 			{
 				return m_LastRead;
 			}
+			void SetLastRead(BinarySize lastRead) override
+			{
+				m_LastRead = lastRead;
+			}
+			
 			std::optional<uint8_t> Peek() override;
-
 			IInputStream& Read(void* buffer, size_t size) override;
-			IInputStream& Read(IOutputStream& other) override;
-			bool ReadAll(void* buffer, size_t size) override;
 
 			StreamOffset TellI() const override;
 			StreamOffset SeekI(StreamOffset offset, IOStreamSeek seek) override;
@@ -85,10 +93,12 @@ namespace kxf
 			{
 				return m_LastWrite;
 			}
-
+			void SetLastWrite(BinarySize lastWrite) override
+			{
+				m_LastWrite = lastWrite;
+			}
+			
 			IOutputStream& Write(const void* buffer, size_t size) override;
-			IOutputStream& Write(IInputStream& other) override;
-			bool WriteAll(const void* buffer, size_t size) override;
 
 			StreamOffset TellO() const override;
 			StreamOffset SeekO(StreamOffset offset, IOStreamSeek seek) override;

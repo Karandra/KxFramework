@@ -159,15 +159,6 @@ namespace kxf
 
 		return *this;
 	}
-	IInputStream& FileStream::Read(IOutputStream& other)
-	{
-		m_LastRead = IO::ReadCopy(*this, other);
-		return *this;
-	}
-	bool FileStream::ReadAll(void* buffer, size_t size)
-	{
-		return IO::ReadAll(*this, buffer, size, m_LastRead);
-	}
 
 	StreamOffset FileStream::TellI() const
 	{
@@ -198,16 +189,6 @@ namespace kxf
 
 		return *this;
 	}
-	IOutputStream& FileStream::Write(IInputStream& other)
-	{
-		m_LastRead = IO::ReadCopy(other, *this);
-		return *this;
-	}
-	bool FileStream::WriteAll(const void* buffer, size_t size)
-	{
-		return IO::WriteAll(*this, buffer, size, m_LastWrite);
-	}
-
 	StreamOffset FileStream::TellO() const
 	{
 		return GetOffsetByHandle(m_Handle);
