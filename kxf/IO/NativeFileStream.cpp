@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "NativeFileStream.h"
-#include "kxf/System/ErrorCodeValue.h"
+#include "kxf/System/Win32Error.h"
 #include "kxf/FileSystem/Private/NativeFSUtility.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 
@@ -106,6 +106,73 @@ namespace kxf
 	bool NativeFileStream::DoIsEndOfStream() const
 	{
 		return *m_LastError == ERROR_HANDLE_EOF || GetOffsetByHandle(m_Handle) == GetSizeByHandle(m_Handle);
+	}
+
+	StreamError NativeFileStream::GetLastError() const
+	{
+		if (m_LastError.IsSuccess())
+		{
+			return StreamError::Success();
+		}
+		else
+		{
+			switch (m_LastError.GetValue())
+			{
+				case ERROR_READ_FAULT:
+				{
+					return StreamErrorCode::ReadError;
+				}
+				case ERROR_WRITE_FAULT:
+				{
+					return StreamErrorCode::WriteError;
+				}
+				case ERROR_WRITE_PROTECT:
+				{
+					return StreamErrorCode::ReadOnly;
+				}
+				case ERROR_HANDLE_EOF:
+				{
+					return StreamErrorCode::EndOfStream;
+				}
+			};
+			return StreamError::Fail();
+		}
+	}
+	void NativeFileStream::SetLastError(StreamError lastError)
+	{
+		switch (lastError.GetCode())
+		{
+			case StreamErrorCode::Success:
+			{
+				m_LastError = Win32Error::Success();
+				break;
+			}
+			case StreamErrorCode::ReadError:
+			{
+				m_LastError = ERROR_READ_FAULT;
+				break;
+			}
+			case StreamErrorCode::WriteError:
+			{
+				m_LastError = ERROR_WRITE_FAULT;
+				break;
+			}
+			case StreamErrorCode::ReadOnly:
+			{
+				m_LastError = ERROR_WRITE_PROTECT;
+				break;
+			}
+			case StreamErrorCode::EndOfStream:
+			{
+				m_LastError = ERROR_HANDLE_EOF;
+				break;
+			}
+			default:
+			{
+				m_LastError = Win32Error::Fail();
+				break;
+			}
+		};
 	}
 
 	// IStream

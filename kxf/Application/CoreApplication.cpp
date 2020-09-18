@@ -6,7 +6,7 @@
 #include "kxf/EventSystem/IEventExecutor.h"
 #include "kxf/EventSystem/IdleEvent.h"
 #include "kxf/System/NativeAPI.h"
-#include "kxf/System/ErrorCode.h"
+#include "kxf/System/NtStatus.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/System/DynamicLibraryEvent.h"
 #include "kxf/Utility/Container.h"

@@ -77,9 +77,6 @@ namespace kxf
 {
 	void LZ4InputStream::Init()
 	{
-		constexpr int a = sizeof(LZ4_streamDecode_t_internal);
-		constexpr int b = alignof(LZ4_streamDecode_t_internal);
-
 		// Set stream pointer
 		SetStream(m_StreamObject);
 
@@ -96,6 +93,7 @@ namespace kxf
 	IInputStream& LZ4InputStream::Read(void* buffer, size_t size)
 	{
 		m_LastRead = {};
+		m_LastError = {};
 
 		size_t totalProcessed = 0;
 		for (size_t compressedCounter = 0; compressedCounter <= size; compressedCounter += ms_BlockSize)
@@ -121,7 +119,7 @@ namespace kxf
 				continue;
 			}
 
-			m_LastError = Win32Error(ERROR_HANDLE_EOF);
+			m_LastError = StreamErrorCode::EndOfStream;
 			break;
 		}
 		return *this;

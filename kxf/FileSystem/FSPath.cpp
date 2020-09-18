@@ -2,7 +2,7 @@
 #include "FSPath.h"
 #include "LegacyVolume.h"
 #include "StorageVolume.h"
-#include "kxf/System/ErrorCodeValue.h"
+#include "kxf/System/HResult.h"
 #include "kxf/System/NativeAPI.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 #include "Private/NamespacePrefix.h"

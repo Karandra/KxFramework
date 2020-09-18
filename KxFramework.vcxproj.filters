@@ -436,9 +436,6 @@
     <ClInclude Include="kxf\System\UndefWindows.h">
       <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\System\ErrorCodeValue.h">
-      <Filter>kxf\System</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Compression\Common.h">
       <Filter>kxf\Compression</Filter>
     </ClInclude>
@@ -571,9 +568,6 @@
     <ClInclude Include="kxf\Network\Private\URXHelper.h">
       <Filter>kxf\Network\Private</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Network\HTTPStatusCode.h">
-      <Filter>kxf\Network</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Network\CURL.h">
       <Filter>kxf\Network</Filter>
     </ClInclude>
@@ -672,9 +666,6 @@
     </ClInclude>
     <ClInclude Include="kxf\General\StdID.h">
       <Filter>kxf\General</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\System\Private\ErrorCodeValue.h">
-      <Filter>kxf\System\Private</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Async.hpp">
       <Filter>kxf/Modules</Filter>
@@ -1511,6 +1502,27 @@
     <ClInclude Include="kxf\IO\NativeFileStream.h">
       <Filter>kxf\IO</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\General\IErrorCode.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\Win32Error.h">
+      <Filter>kxf\System</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\Private\ErrorCode.h">
+      <Filter>kxf\System\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\HResult.h">
+      <Filter>kxf\System</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\System\NtStatus.h">
+      <Filter>kxf\System</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IO\StreamError.h">
+      <Filter>kxf\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Network\HTTPStatus.h">
+      <Filter>kxf\Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -1622,9 +1634,6 @@
       <Filter>kxf\System</Filter>
     </ClCompile>
     <ClCompile Include="kxf\System\COM.cpp">
-      <Filter>kxf\System</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\System\ErrorCodeValue.cpp">
       <Filter>kxf\System</Filter>
     </ClCompile>
     <ClCompile Include="kxf\System\ErrorCode.cpp">
@@ -2263,6 +2272,18 @@
     </ClCompile>
     <ClCompile Include="kxf\IO\NativeFileStream.cpp">
       <Filter>kxf\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\Win32Error.cpp">
+      <Filter>kxf\System</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\Private\ErrorCode.cpp">
+      <Filter>kxf\System\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\HResult.cpp">
+      <Filter>kxf\System</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\NtStatus.cpp">
+      <Filter>kxf\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

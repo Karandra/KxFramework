@@ -3,7 +3,7 @@
 #include "KnownDirectoryID.h"
 #include "kxf/General/String.h"
 #include "kxf/FileSystem/FSPath.h"
-#include "kxf/System/ErrorCodeValue.h"
+#include "kxf/System/HResult.h"
 #include <wx/icon.h>
 class wxWindow;
 

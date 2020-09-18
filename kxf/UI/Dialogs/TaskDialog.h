@@ -1,7 +1,7 @@
 #pragma once
 #include "kxf/UI/Common.h"
 #include "kxf/UI/Controls/IProgressMeter.h"
-#include "kxf/System/ErrorCode.h"
+#include "kxf/System/HResult.h"
 #include "kxf/Utility/Common.h"
 #include "StdDialog.h"
 

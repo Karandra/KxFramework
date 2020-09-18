@@ -1,7 +1,6 @@
 #pragma once
 #include "Common.h"
 #include "SystemInformationDefines.h"
-#include "ErrorCodeValue.h"
 #include "UserName.h"
 #include "kxf/General/String.h"
 #include "kxf/General/Color.h"

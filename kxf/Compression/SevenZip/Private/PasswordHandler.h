@@ -1,7 +1,7 @@
 #pragma once
 #include "../Common.h"
 #include "kxf/Compression/ArchiveEvent.h"
-#include "kxf/System/ErrorCode.h"
+#include "kxf/System/HResult.h"
 #include "kxf/Utility/Common.h"
 #include <7zip/CPP/7zip/IPassword.h>
 

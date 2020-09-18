@@ -124,15 +124,7 @@ namespace kxf::SevenZip::Private
 		private:
 			HResult GetLastError() const
 			{
-				auto lastError = m_Stream->GetLastError();
-				if (auto hr = lastError.ConvertToHResult())
-				{
-					return *hr;
-				}
-				else
-				{
-					return lastError.IsSuccess() ? HResult::Success() : HResult::Fail();
-				}
+				return m_Stream->GetLastError().IsSuccess() ? HResult::Success() : HResult::Fail();
 			}
 
 		protected:

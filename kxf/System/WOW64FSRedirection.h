@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "ErrorCodeValue.h"
+#include "Win32Error.h"
 
 namespace kxf
 {

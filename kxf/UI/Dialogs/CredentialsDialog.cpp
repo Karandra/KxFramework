@@ -3,7 +3,7 @@
 #include "kxf/Utility/Memory.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 #include "kxf/System/COM.h"
-#include "kxf/System/ErrorCode.h"
+#include "kxf/System/Win32Error.h"
 #include <wincred.h>
 #pragma comment(lib, "CredUI.lib")
 

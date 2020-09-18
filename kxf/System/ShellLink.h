@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "COM.h"
-#include "ErrorCodeValue.h"
+#include "HResult.h"
 #include "kxf/FileSystem/FSPath.h"
 #include <wx/event.h>
 struct IShellLinkW;

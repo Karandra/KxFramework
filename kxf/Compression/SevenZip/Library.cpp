@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Library.h"
-#include "kxf/System/ErrorCodeValue.h"
+#include "kxf/System/HResult.h"
 
 namespace
 {

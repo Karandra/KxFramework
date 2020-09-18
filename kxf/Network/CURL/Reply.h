@@ -1,6 +1,6 @@
 #pragma once
 #include "../Common.h"
-#include "../HTTPStatusCode.h"
+#include "../HTTPStatus.h"
 #include "kxf/RTTI/QueryInterface.h"
 #include "kxf/IO/IStream.h"
 
@@ -27,7 +27,7 @@ namespace kxf
 
 			virtual int GetErrorCode() const = 0;
 			virtual String GetErrorMessage() const = 0;
-			virtual HTTPStatusCode GetResponseCode() const = 0;
+			virtual HTTPStatus GetResponseCode() const = 0;
 
 		public:
 			explicit operator bool() const noexcept
@@ -56,7 +56,7 @@ namespace kxf
 
 		private:
 			String m_ErrorMessage;
-			HTTPStatusCode m_ResponseCode;
+			HTTPStatus m_ResponseCode;
 			int m_ErrorCode = static_cast<int>(ErrorCode::Invalid);
 
 		protected:
@@ -84,7 +84,7 @@ namespace kxf
 				return m_ErrorCode;
 			}
 			String GetErrorMessage() const override;
-			HTTPStatusCode GetResponseCode() const override
+			HTTPStatus GetResponseCode() const override
 			{
 				return m_ResponseCode;
 			}

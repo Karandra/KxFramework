@@ -84,11 +84,11 @@ namespace kxf::Private
 				m_Stream->Close();
 			}
 			
-			ErrorCode GetLastError() const override
+			StreamError GetLastError() const override
 			{
 				return m_Stream->GetLastError();
 			}
-			void SetLastError(ErrorCode lastError) override
+			void SetLastError(StreamError lastError) override
 			{
 				m_Stream->SetLastError(std::move(lastError));
 			}

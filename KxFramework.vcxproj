@@ -241,6 +241,7 @@
     <ClInclude Include="kxf\General\DateTime\TimeClock.h" />
     <ClInclude Include="kxf\General\DateTime\TimeSpan.h" />
     <ClInclude Include="kxf\General\DateTime\TimeZone.h" />
+    <ClInclude Include="kxf\General\IErrorCode.h" />
     <ClInclude Include="kxf\General\IVariablesCollection.h" />
     <ClInclude Include="kxf\General\LocallyUniqueID.h" />
     <ClInclude Include="kxf\General\OptionalPtr.h" />
@@ -254,6 +255,7 @@
     <ClInclude Include="kxf\IO\MemoryStream.h" />
     <ClInclude Include="kxf\IO\INativeStream.h" />
     <ClInclude Include="kxf\IO\StreamDelegate.h" />
+    <ClInclude Include="kxf\IO\StreamError.h" />
     <ClInclude Include="kxf\IO\StreamReaderWriter.h" />
     <ClInclude Include="kxf\Localization\Constants.h" />
     <ClInclude Include="kxf\Localization\ILocalizationPackage.h" />
@@ -294,8 +296,11 @@
     <ClInclude Include="kxf\System\DynamicLibrary.h" />
     <ClInclude Include="kxf\System\DynamicLibraryEvent.h" />
     <ClInclude Include="kxf\System\ExecutableVersionResource.h" />
+    <ClInclude Include="kxf\System\HResult.h" />
+    <ClInclude Include="kxf\System\NtStatus.h" />
     <ClInclude Include="kxf\System\Private\BinaryResourceDefines.h" />
     <ClInclude Include="kxf\System\Private\COM.h" />
+    <ClInclude Include="kxf\System\Private\ErrorCode.h" />
     <ClInclude Include="kxf\System\Private\System.h" />
     <ClInclude Include="kxf\System\Private\SystemInformationDefinesMapping.h" />
     <ClInclude Include="kxf\System\SystemAppearance.h" />
@@ -309,6 +314,7 @@
     <ClInclude Include="kxf\System\SystemProcess\SystemProcessInfo.h" />
     <ClInclude Include="kxf\System\UserName.h" />
     <ClInclude Include="kxf\System\VariantProperty.h" />
+    <ClInclude Include="kxf\System\Win32Error.h" />
     <ClInclude Include="kxf\Threading\CriticalSection.h" />
     <ClInclude Include="kxf\Threading\ReadWriteLock.h" />
     <ClInclude Include="kxf\Threading\RecursiveRWLock.h" />
@@ -511,7 +517,7 @@
     <ClInclude Include="kxf\Network\CURL\Session.h" />
     <ClInclude Include="kxf\Network\CURL.h" />
     <ClInclude Include="kxf\Network\CURL\Private\CURL.h" />
-    <ClInclude Include="kxf\Network\HTTPStatusCode.h" />
+    <ClInclude Include="kxf\Network\HTTPStatus.h" />
     <ClInclude Include="kxf\Network\Private\URXHelper.h" />
     <ClInclude Include="kxf\Network\URI.h" />
     <ClInclude Include="kxf\Network\URL.h" />
@@ -562,12 +568,10 @@
     <ClInclude Include="kxf\System\Common.h" />
     <ClInclude Include="kxf\System\DPIAwareness.h" />
     <ClInclude Include="kxf\System\ErrorCode.h" />
-    <ClInclude Include="kxf\System\ErrorCodeValue.h" />
     <ClInclude Include="kxf\System\Private\BeginIncludeCOM.h" />
     <ClInclude Include="kxf\System\Private\CFunction.h" />
     <ClInclude Include="kxf\System\Private\CFunctionCompiler.h" />
     <ClInclude Include="kxf\System\Private\EndIncludeCOM.h" />
-    <ClInclude Include="kxf\System\Private\ErrorCodeValue.h" />
     <ClInclude Include="kxf\System\Private\IncludeNtStatus.h" />
     <ClInclude Include="kxf\System\CredentialStore.h" />
     <ClInclude Include="kxf\System\Private\KnownDirectoryGUID.h" />
@@ -673,6 +677,9 @@
     <ClCompile Include="kxf\System\DynamicLibrary.cpp" />
     <ClCompile Include="kxf\System\DynamicLibraryEvent.cpp" />
     <ClCompile Include="kxf\System\ExecutableVersionResource.cpp" />
+    <ClCompile Include="kxf\System\HResult.cpp" />
+    <ClCompile Include="kxf\System\NtStatus.cpp" />
+    <ClCompile Include="kxf\System\Private\ErrorCode.cpp" />
     <ClCompile Include="kxf\System\Private\System.cpp" />
     <ClCompile Include="kxf\System\SystemAppearance.cpp" />
     <ClCompile Include="kxf\System\SystemProcess.cpp" />
@@ -682,6 +689,7 @@
     <ClCompile Include="kxf\System\SystemProcess\SystemProcessInfo.cpp" />
     <ClCompile Include="kxf\System\UserName.cpp" />
     <ClCompile Include="kxf\System\VariantProperty.cpp" />
+    <ClCompile Include="kxf\System\Win32Error.cpp" />
     <ClCompile Include="kxf\Threading\Common.cpp" />
     <ClCompile Include="kxf\Threading\CriticalSection.cpp" />
     <ClCompile Include="kxf\Threading\ReadWriteLock.cpp" />
@@ -864,7 +872,6 @@
     <ClCompile Include="kxf\Sciter\WidgetFactory.cpp" />
     <ClCompile Include="kxf\System\COM.cpp" />
     <ClCompile Include="kxf\System\ErrorCode.cpp" />
-    <ClCompile Include="kxf\System\ErrorCodeValue.cpp" />
     <ClCompile Include="kxf\System\ShellFileType.cpp" />
     <ClCompile Include="kxf\System\ShellFileTypeInfo.cpp" />
     <ClCompile Include="kxf\System\ShellFileTypeManager.cpp" />

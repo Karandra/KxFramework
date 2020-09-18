@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "UniversallyUniqueID.h"
 #include "LocallyUniqueID.h"
-#include "kxf/System/ErrorCodeValue.h"
+#include "kxf/System/HResult.h"
+#include "kxf/System/Win32Error.h"
 
 #include <Windows.h>
 #include <rpcdce.h>

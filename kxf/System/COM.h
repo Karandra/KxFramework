@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "ErrorCode.h"
+#include "HResult.h"
 #include "kxf/General/String.h"
 #include "kxf/General/NativeUUID.h"
 #include "kxf/Utility/Memory.h"

@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "kxf/General/String.h"
 #include "kxf/FileSystem/FSPath.h"
-#include "kxf/System/ErrorCodeValue.h"
+#include "kxf/System/Win32Error.h"
 
 namespace kxf
 {
@@ -77,7 +77,7 @@ namespace kxf
 	class RegistryKey final
 	{
 		public:
-		static RegistryKey CreateKey(RegistryBaseKey baseKey, const FSPath& subKey, FlagSet<RegistryAccess> access, FlagSet<RegistryKeyFlag> flags = {}, RegistryWOW64 wow64 = RegistryWOW64::Default)
+			static RegistryKey CreateKey(RegistryBaseKey baseKey, const FSPath& subKey, FlagSet<RegistryAccess> access, FlagSet<RegistryKeyFlag> flags = {}, RegistryWOW64 wow64 = RegistryWOW64::Default)
 			{
 				RegistryKey key(baseKey, {}, RegistryAccess::Create, wow64);
 				if (key)
@@ -89,7 +89,7 @@ namespace kxf
 
 		private:
 			void* m_Handle = nullptr;
-			mutable Win32Error m_LastError = 0;
+			mutable Win32Error m_LastError = Win32Error::Success();
 
 		private:
 			void* DoGetBaseKey(RegistryBaseKey baseKey) const noexcept;

@@ -11,7 +11,7 @@ namespace kxf::wxWidgets
 		protected:
 			optional_ptr<wxInputStream> m_Stream;
 			BinarySize m_LastRead;
-			ErrorCode m_LastError;
+			std::optional<StreamError> m_LastError;
 
 		protected:
 			virtual void InvalidateInputCache()
@@ -37,8 +37,8 @@ namespace kxf::wxWidgets
 				// Can't close input stream
 			}
 
-			ErrorCode GetLastError() const override;
-			void SetLastError(ErrorCode lastError) override
+			StreamError GetLastError() const override;
+			void SetLastError(StreamError lastError) override
 			{
 				m_LastError = lastError;
 			}
@@ -115,7 +115,7 @@ namespace kxf::wxWidgets
 		private:
 			optional_ptr<wxOutputStream> m_Stream;
 			BinarySize m_LastWrite;
-			ErrorCode m_LastError;
+			std::optional<StreamError> m_LastError;
 
 		protected:
 			virtual void InvalidateOutputCache()
@@ -141,8 +141,8 @@ namespace kxf::wxWidgets
 				static_cast<void>(m_Stream->Close());
 			}
 
-			ErrorCode GetLastError() const override;
-			void SetLastError(ErrorCode lastError) override
+			StreamError GetLastError() const override;
+			void SetLastError(StreamError lastError) override
 			{
 				m_LastError = lastError;
 			}

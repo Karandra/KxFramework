@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "kxf/System/ErrorCode.h"
+#include "StreamError.h"
 #include "kxf/RTTI/QueryInterface.h"
 
 namespace kxf
@@ -22,8 +22,8 @@ namespace kxf
 		public:
 			virtual void Close() = 0;
 
-			virtual ErrorCode GetLastError() const = 0;
-			virtual void SetLastError(ErrorCode lastError) = 0;
+			virtual StreamError GetLastError() const = 0;
+			virtual void SetLastError(StreamError lastError) = 0;
 
 			virtual bool IsSeekable() const = 0;
 			virtual BinarySize GetSize() const = 0;

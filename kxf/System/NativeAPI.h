@@ -1,6 +1,5 @@
 #pragma once
 #include "Common.h"
-#include "ErrorCodeValue.h"
 #include "UndefWindows.h"
 #include <array>
 
@@ -83,8 +82,8 @@ namespace kxf::NativeAPI
 		using DPI_AWARENESS_CONTEXT = void*;
 		using RTL_OSVERSIONINFOEXW = void;
 		using DLL_DIRECTORY_COOKIE = void*;
-		using NTSTATUS = NtStatus::TValueType;
-		using HRESULT = HResult::TValueType;
+		using NTSTATUS = int32_t;
+		using HRESULT = int32_t;
 		using GUID = ::_GUID;
 		using IID = ::_GUID;
 

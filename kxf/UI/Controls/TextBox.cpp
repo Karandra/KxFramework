@@ -2,19 +2,19 @@
 #include "TextBox.h"
 #include <CommCtrl.h>
 #include "kxf/System/UndefWindows.h"
-#include "kxf/System/ErrorCodeValue.h"
+#include "kxf/System/Win32Error.h"
 
 namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(TextBox, wxTextCtrl);
 
 	bool TextBox::Create(wxWindow* parent,
-						   wxWindowID id,
-						   const String& value,
-						   const Point& pos,
-						   const Size& size,
-						   FlagSet<TextBoxStyle> style,
-						   const wxValidator& validator
+						 wxWindowID id,
+						 const String& value,
+						 const Point& pos,
+						 const Size& size,
+						 FlagSet<TextBoxStyle> style,
+						 const wxValidator& validator
 	)
 	{
 		if (wxTextCtrl::Create(parent, id, value, pos, size, style.ToInt(), validator))

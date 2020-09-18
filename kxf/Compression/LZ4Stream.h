@@ -96,7 +96,7 @@ namespace kxf
 			size_t m_RingBufferIndex = 0;
 
 			BinarySize m_LastRead;
-			ErrorCode m_LastError;
+			std::optional<StreamError> m_LastError;
 
 		private:
 			void Init();
@@ -115,9 +115,9 @@ namespace kxf
 
 		public:
 			// IStream
-			ErrorCode GetLastError() const override
+			StreamError GetLastError() const override
 			{
-				return m_LastError.IsKnown() ? m_LastError : m_Stream->GetLastError();
+				return m_LastError ? *m_LastError : m_Stream->GetLastError();
 			}
 
 			// IInputStream

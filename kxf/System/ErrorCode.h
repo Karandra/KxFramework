@@ -1,212 +1,95 @@
 #pragma once
 #include "Common.h"
-#include "ErrorCodeValue.h"
-#include "kxf/General/String.h"
+#include "kxf/General/IErrorCode.h"
 
 namespace kxf
 {
-	class KX_API ErrorCode final
+	class KX_API ErrorCode final: public RTTI::ImplementInterface<ErrorCode, IErrorCode>
 	{
 		private:
-			int64_t m_Value = -1;
-			ErrorCodeCategory m_Category = ErrorCodeCategory::Unknown;
+			std::unique_ptr<IErrorCode> m_ErrorCode;
+			IID m_InterfaceID;
 
-		private:
-			template<class T>
-			constexpr ErrorCode& AssignCode(T errorCode) noexcept
+		protected:
+			void* DoQueryInterface(const IID& iid) noexcept override
 			{
-				m_Value = static_cast<int64_t>(errorCode.GetValue());
-				m_Category = T::GetCategory();
-
-				return *this;
-			}
-
-			template<class T>
-			constexpr bool IsEqualValue(T errorCode) const noexcept
-			{
-				return m_Category == T::GetCategory() && static_cast<typename T::TValueType>(m_Value) == errorCode.GetValue();
-			}
-
-			template<class T>
-			constexpr std::optional<T> GetAsCode() const noexcept
-			{
-				if (m_Category == T::GetCategory())
+				if (m_ErrorCode && iid == m_InterfaceID)
 				{
-					return T(static_cast<typename T::TValueType>(m_Value));
+					return m_ErrorCode->QueryInterface(iid);
 				}
-				return {};
+				return ImplementInterface::DoQueryInterface(iid);
 			}
+			
+		public:
+			ErrorCode() noexcept = default;
+
+			template<class T, class = std::enable_if_t<std::is_base_of_v<IErrorCode, T>>>
+			ErrorCode(T errorCode) noexcept
+				:m_ErrorCode(std::move(errorCode)), m_InterfaceID(RTTI::GetInterfaceID<T>())
+			{
+			}
+
+			ErrorCode(ErrorCode&&) noexcept = default;
+			ErrorCode(const ErrorCode&) = delete;
 
 		public:
-			constexpr ErrorCode() noexcept = default;
-			constexpr ErrorCode(GenericError errorCode) noexcept
+			// IErrorCode
+			bool IsSuccess() const noexcept override
 			{
-				AssignCode(errorCode);
+				return m_ErrorCode && m_ErrorCode->IsSuccess();
 			}
-			constexpr ErrorCode(Win32Error errorCode) noexcept
+			bool IsFail() const noexcept override
 			{
-				AssignCode(errorCode);
-			}
-			constexpr ErrorCode(NtStatus errorCode) noexcept
-			{
-				AssignCode(errorCode);
-			}
-			constexpr ErrorCode(HResult errorCode) noexcept
-			{
-				AssignCode(errorCode);
-			}
-			constexpr ErrorCode(ErrorCode&& other) noexcept
-			{
-				*this = std::move(other);
-			}
-			constexpr ErrorCode(const ErrorCode&) noexcept = default;
-
-		public:
-			constexpr ErrorCodeCategory GetCategory() const noexcept
-			{
-				return m_Category;
-			}
-			constexpr std::optional<GenericError> GetGeneric() const noexcept
-			{
-				return GetAsCode<GenericError>();
-			}
-			constexpr std::optional<Win32Error> GetWin32() const noexcept
-			{
-				return GetAsCode<Win32Error>();
-			}
-			constexpr std::optional<NtStatus> GetNtStatus() const noexcept
-			{
-				return GetAsCode<NtStatus>();
-			}
-			constexpr std::optional<HResult> GetHResult() const noexcept
-			{
-				return GetAsCode<HResult>();
+				return m_ErrorCode && m_ErrorCode->IsFail();
 			}
 
-			std::optional<Win32Error> ConvertToWin32() const noexcept;
-			std::optional<NtStatus> ConvertToNtStatus() const noexcept;
-			std::optional<HResult> ConvertToHResult() const noexcept;
-
-			constexpr bool IsKnown() const noexcept
+			uint32_t GetValue() const noexcept override
 			{
-				return m_Category != ErrorCodeCategory::Unknown;
+				return m_ErrorCode ? m_ErrorCode->GetValue() : std::numeric_limits<uint32_t>::max();
 			}
-			constexpr bool IsSuccess() const noexcept
+			void SetValue(uint32_t value) noexcept override
 			{
-				switch (m_Category)
+				if (m_ErrorCode)
 				{
-					case ErrorCodeCategory::Generic:
-					{
-						return GenericError(m_Value).IsSuccess();
-					}
-					case ErrorCodeCategory::Win32:
-					{
-						return Win32Error(m_Value).IsSuccess();
-					}
-					case ErrorCodeCategory::NtStatus:
-					{
-						return NtStatus(m_Value).IsSuccess();
-					}
-					case ErrorCodeCategory::HResult:
-					{
-						return HResult(m_Value).IsSuccess();
-					}
-				};
-				return false;
-			}
-			constexpr bool IsFail() const noexcept
-			{
-				return IsKnown() && !IsSuccess();
+					m_ErrorCode->SetValue(value);
+				}
 			}
 
-			String ToString() const
+			String ToString() const override
 			{
-				switch (m_Category)
+				if (m_ErrorCode)
 				{
-					case ErrorCodeCategory::Win32:
-					{
-						return Win32Error(m_Value).ToString();
-					}
-					case ErrorCodeCategory::NtStatus:
-					{
-						return NtStatus(m_Value).ToString();
-					}
-					case ErrorCodeCategory::HResult:
-					{
-						return HResult(m_Value).ToString();
-					}
-				};
+					return m_ErrorCode->ToString();
+				}
 				return {};
 			}
 			String GetMessage(const Locale& locale = {}) const
 			{
-				switch (m_Category)
+				if (m_ErrorCode)
 				{
-					case ErrorCodeCategory::Win32:
-					{
-						return Win32Error(m_Value).GetMessage(locale);
-					}
-					case ErrorCodeCategory::NtStatus:
-					{
-						return NtStatus(m_Value).GetMessage(locale);
-					}
-					case ErrorCodeCategory::HResult:
-					{
-						return HResult(m_Value).GetMessage(locale);
-					}
-				};
+					return m_ErrorCode->GetMessage(locale);
+				}
 				return {};
 			}
 
+			// ErrorCode
+			bool IsNull() const noexcept
+			{
+				return m_ErrorCode == nullptr || m_InterfaceID.IsNull();
+			}
+			bool IsSameAs(const ErrorCode& other) const noexcept;
+
 		public:
-			constexpr explicit operator bool() const noexcept
+			bool operator==(const ErrorCode& other) const noexcept
 			{
-				return IsSuccess();
+				return IsSameAs(other);
 			}
-			constexpr bool operator!() const noexcept
+			bool operator!=(const ErrorCode& other) const noexcept
 			{
-				return !IsSuccess();
-			}
-
-			constexpr bool operator==(const ErrorCode& other) const noexcept
-			{
-				return m_Value == other.m_Value && m_Category == other.m_Category;
-			}
-			constexpr bool operator==(GenericError other) const noexcept
-			{
-				return IsEqualValue(other);
-			}
-			constexpr bool operator==(Win32Error other) const noexcept
-			{
-				return IsEqualValue(other);
-			}
-			constexpr bool operator==(NtStatus other) const noexcept
-			{
-				return IsEqualValue(other);
-			}
-			constexpr bool operator==(HResult other) const noexcept
-			{
-				return IsEqualValue(other);
+				return IsSameAs(other);
 			}
 
-			template<class T>
-			constexpr bool operator!=(T&& other) const noexcept
-			{
-				return !(*this == other);
-			}
-
-			constexpr ErrorCode& operator=(ErrorCode&& other) noexcept
-			{
-				constexpr ErrorCode null;
-
-				m_Value = other.m_Value;
-				m_Category = other.m_Category;
-
-				other.m_Value = null.m_Value;
-				other.m_Category = null.m_Category;
-
-				return *this;
-			}
-			constexpr ErrorCode& operator=(const ErrorCode&) noexcept = default;
+			ErrorCode& operator=(ErrorCode&&) noexcept = default;
+			ErrorCode& operator=(const ErrorCode&) = delete;
 	};
 }

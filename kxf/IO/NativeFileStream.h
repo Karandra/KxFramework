@@ -3,6 +3,7 @@
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/INativeStream.h"
 #include "kxf/IO/IStreamOnFileSystem.h"
+#include "kxf/System/Win32Error.h"
 #include "kxf/Utility/Common.h"
 
 namespace kxf
@@ -30,10 +31,10 @@ namespace kxf
 		public:
 			NativeFileStream() noexcept = default;
 			NativeFileStream(const FSPath& path,
-					   FlagSet<IOStreamAccess> access,
-					   IOStreamDisposition disposition,
-					   FlagSet<IOStreamShare> share,
-					   FlagSet<IOStreamFlag> flags = IOStreamFlag::None
+							 FlagSet<IOStreamAccess> access,
+							 IOStreamDisposition disposition,
+							 FlagSet<IOStreamShare> share,
+							 FlagSet<IOStreamFlag> flags = IOStreamFlag::None
 			)
 			{
 				Open(path, access, disposition, share, flags);
@@ -55,14 +56,8 @@ namespace kxf
 				DoClose();
 			}
 
-			ErrorCode GetLastError() const override
-			{
-				return m_LastError;
-			}
-			void SetLastError(ErrorCode lastError) override
-			{
-				m_LastError = lastError.ConvertToWin32().value_or(Win32Error::Fail());
-			}
+			StreamError GetLastError() const override;
+			void SetLastError(StreamError lastError) override;
 
 			bool IsSeekable() const override;
 			BinarySize GetSize() const override;

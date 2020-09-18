@@ -3,7 +3,7 @@
 
 namespace
 {
-	kxf::Win32Error TranslateErrorCode(const wxStreamBase& stream)
+	kxf::StreamError TranslateErrorCode(const wxStreamBase& stream)
 	{
 		using namespace kxf;
 
@@ -13,38 +13,38 @@ namespace
 			{
 				case wxStreamError::wxSTREAM_NO_ERROR:
 				{
-					return Win32Error::Success();
+					return StreamError::Success();
 				}
 				case wxStreamError::wxSTREAM_EOF:
 				{
-					return ERROR_HANDLE_EOF;
+					return StreamErrorCode::EndOfStream;
 				}
 				case wxStreamError::wxSTREAM_READ_ERROR:
 				{
-					return ERROR_READ_FAULT;
+					return StreamErrorCode::ReadError;
 				}
 				case wxStreamError::wxSTREAM_WRITE_ERROR:
 				{
-					return ERROR_WRITE_FAULT;
+					return StreamErrorCode::WriteError;
 				}
 			};
 		}
-		return Win32Error::Fail();
+		return StreamError::Fail();
 	}
 }
 
 namespace kxf::wxWidgets
 {
-	ErrorCode InputStreamWrapper::GetLastError() const
+	StreamError InputStreamWrapper::GetLastError() const
 	{
-		return m_LastError ? m_LastError : TranslateErrorCode(*m_Stream);
+		return m_LastError ? *m_LastError : TranslateErrorCode(*m_Stream);
 	}
 }
 
 namespace kxf::wxWidgets
 {
-	ErrorCode OutputStreamWrapper::GetLastError() const
+	StreamError OutputStreamWrapper::GetLastError() const
 	{
-		return m_LastError ? m_LastError : TranslateErrorCode(*m_Stream);
+		return m_LastError ? *m_LastError : TranslateErrorCode(*m_Stream);
 	}
 }
