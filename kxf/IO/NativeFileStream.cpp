@@ -304,6 +304,7 @@ namespace kxf
 		else
 		{
 			m_LastError = Win32Error::Fail();
+			return false;
 		}
 	}
 	bool NativeFileStream::ReopenHandle(FlagSet<IOStreamAccess> access, FlagSet<IOStreamShare> share, FlagSet<IOStreamFlag> flags)
