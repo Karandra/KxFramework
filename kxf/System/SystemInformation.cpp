@@ -400,6 +400,10 @@ namespace kxf::System
 
 		switch (index)
 		{
+			case SystemSizeMetric::Screen:
+			{
+				return GetValue(wxSYS_SCREEN_X, wxSYS_SCREEN_Y);
+			}
 			case SystemSizeMetric::Border:
 			{
 				return GetValue(wxSYS_BORDER_X, wxSYS_BORDER_Y);

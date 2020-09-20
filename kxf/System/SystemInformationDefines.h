@@ -308,6 +308,7 @@ namespace kxf
 	};
 	enum class SystemSizeMetric
 	{
+		Screen,
 		Border,
 		Cursor,
 		DragThreshold,
