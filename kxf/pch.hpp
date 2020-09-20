@@ -1,7 +1,6 @@
 #pragma once
-#define _CRT_SECURE_NO_DEPRECATE 1
-#define _CRT_SECURE_NO_WARNINGS 1
 
+// SDK version
 #include <SDKDDKVer.h>
 
 // Standard library
@@ -19,6 +18,15 @@
 #include <stdexcept>
 
 // Often used wxWidgets headers
+
+// Required because wxWidgets uses old CRT functions
+#ifndef _CRT_SECURE_NO_DEPRECATE
+#define _CRT_SECURE_NO_DEPRECATE
+#endif
+
+#ifndef _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
+#endif
 
 // Since v3.1.4 wxWidgets is using this macro to switch class access modifiers
 // depending on whether it's built as a static or dynamic library. We need to
