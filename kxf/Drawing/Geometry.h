@@ -10,7 +10,7 @@
 
 namespace kxf::Geometry
 {
-	constexpr wxCoord DefaultCoord = wxDefaultCoord;
+	constexpr int DefaultCoord = wxDefaultCoord;
 
 	enum class OutCode: uint32_t
 	{
@@ -29,11 +29,11 @@ namespace kxf
 namespace kxf::Geometry
 {
 	template<class TDerived_, class TValue_>
-	class BasicPoint
+	class BasicOrderedPair
 	{
 		public:
-			using TValue = TValue_;
 			using TDerived = TDerived_;
+			using TValue = TValue_;
 
 		protected:
 			TValue m_X = DefaultCoord;
@@ -50,12 +50,12 @@ namespace kxf::Geometry
 			}
 
 		public:
-			constexpr BasicPoint() noexcept = default;
-			constexpr BasicPoint(TValue x, TValue y) noexcept
+			constexpr BasicOrderedPair() noexcept = default;
+			constexpr BasicOrderedPair(TValue x, TValue y) noexcept
 				:m_X(x), m_Y(y)
 			{
 			}
-			constexpr BasicPoint(const BasicPoint&) noexcept = default;
+			constexpr BasicOrderedPair(const BasicOrderedPair&) noexcept = default;
 
 		public:
 			constexpr TDerived Clone() const noexcept
@@ -170,7 +170,7 @@ namespace kxf::Geometry
 				}
 				return Self();
 			}
-			constexpr TDerived& IncToInSpecified(const TDerived& other) noexcept
+			constexpr TDerived& IncToIfSpecified(const TDerived& other) noexcept
 			{
 				if (other.m_X != DefaultCoord && other.m_X > m_X)
 				{
@@ -195,7 +195,7 @@ namespace kxf::Geometry
 				}
 				return Self();
 			}
-			constexpr TDerived& DecToInSpecified(const TDerived& other) noexcept
+			constexpr TDerived& DecToIfSpecified(const TDerived& other) noexcept
 			{
 				if (other.m_X != DefaultCoord && other.m_X < m_X)
 				{
@@ -315,55 +315,55 @@ namespace kxf::Geometry
 	};
 
 	template<class TDerived, class TValue>
-	constexpr TDerived operator-(const BasicPoint<TDerived, TValue>& value) noexcept
+	constexpr TDerived operator-(const BasicOrderedPair<TDerived, TValue>& value) noexcept
 	{
 		return {-value.GetX(), -value.GetY()};
 	}
 
 	template<class TDerived, class TValue>
-	constexpr TDerived operator+(const BasicPoint<TDerived, TValue>& left, const BasicPoint<TDerived, TValue>& right) noexcept
+	constexpr TDerived operator+(const BasicOrderedPair<TDerived, TValue>& left, const BasicOrderedPair<TDerived, TValue>& right) noexcept
 	{
 		return {left.GetX() + right.GetX(), left.GetY() + right.GetY()};
 	}
 
 	template<class TDerived, class TValue>
-	constexpr TDerived operator-(const BasicPoint<TDerived, TValue>& left, const BasicPoint<TDerived, TValue>& right) noexcept
+	constexpr TDerived operator-(const BasicOrderedPair<TDerived, TValue>& left, const BasicOrderedPair<TDerived, TValue>& right) noexcept
 	{
 		return {left.GetX() - right.GetX(), left.GetY() - right.GetY()};
 	}
 
 	template<class TDerived, class TValue>
-	constexpr TDerived operator*(const BasicPoint<TDerived, TValue>& left, const BasicPoint<TDerived, TValue>& right) noexcept
+	constexpr TDerived operator*(const BasicOrderedPair<TDerived, TValue>& left, const BasicOrderedPair<TDerived, TValue>& right) noexcept
 	{
 		return {left.GetX() * right.GetX(), left.GetY() * right.GetY()};
 	}
 
 	template<class TDerived, class TValue>
-	constexpr TDerived operator/(const BasicPoint<TDerived, TValue>& left, const BasicPoint<TDerived, TValue>& right) noexcept
+	constexpr TDerived operator/(const BasicOrderedPair<TDerived, TValue>& left, const BasicOrderedPair<TDerived, TValue>& right) noexcept
 	{
 		return {left.GetX() / right.GetX(), left.GetY() / right.GetY()};
 	}
 
 	template<class TDerived, class TValue>
-	constexpr TDerived operator*(const BasicPoint<TDerived, TValue>& left, TValue right) noexcept
+	constexpr TDerived operator*(const BasicOrderedPair<TDerived, TValue>& left, TValue right) noexcept
 	{
 		return {left.GetX() * right, left.GetY() * right};
 	}
 
 	template<class TDerived, class TValue>
-	constexpr TDerived operator/(const BasicPoint<TDerived, TValue>& left, TValue right) noexcept
+	constexpr TDerived operator/(const BasicOrderedPair<TDerived, TValue>& left, TValue right) noexcept
 	{
 		return {left.GetX() / right, left.GetY() / right};
 	}
 
 	template<class TDerived, class TValue>
-	constexpr TDerived operator*(TValue left, const BasicPoint<TDerived, TValue>& right) noexcept
+	constexpr TDerived operator*(TValue left, const BasicOrderedPair<TDerived, TValue>& right) noexcept
 	{
 		return {left * right.GetX(), left * right.GetY()};
 	}
 
 	template<class TDerived, class TValue>
-	constexpr TDerived operator/(TValue left, const BasicPoint<TDerived, TValue>& right) noexcept
+	constexpr TDerived operator/(TValue left, const BasicOrderedPair<TDerived, TValue>& right) noexcept
 	{
 		return {left / right.GetX(), left / right.GetY()};
 	}
@@ -375,8 +375,8 @@ namespace kxf::Geometry
 	class BasicRect
 	{
 		public:
-			using TValue = TValue_;
 			using TDerived = TDerived_;
+			using TValue = TValue_;
 			using TPoint = TPoint_;
 			using TSize = TSize_;
 
@@ -864,7 +864,7 @@ namespace kxf::Geometry
 			{
 				return {m_X + m_Width / 2, m_Y + m_Height / 2};
 			}
-			constexpr TDerived& MoveCentreTo(const TPoint& center) noexcept
+			constexpr TDerived& MoveCenterTo(const TPoint& center) noexcept
 			{
 				m_X += center.m_X - (m_X + m_Width / 2);
 				m_Y += center.m_Y - (m_Y + m_Height / 2);
@@ -981,7 +981,7 @@ namespace kxf::Geometry
 
 namespace kxf
 {
-	class Point final: public Geometry::BasicPoint<Point, int>
+	class Point final: public Geometry::BasicOrderedPair<Point, int>
 	{
 		public:
 			static constexpr Point UnspecifiedPosition() noexcept
@@ -990,27 +990,27 @@ namespace kxf
 			}
 
 		public:
-			using BasicPoint::BasicPoint;
+			using BasicOrderedPair::BasicOrderedPair;
 			constexpr Point(const wxPoint& other) noexcept
-				:BasicPoint(other.x, other.y)
+				:BasicOrderedPair(other.x, other.y)
 			{
 			}
 			constexpr Point(const wxRealPoint& other) noexcept
-				:BasicPoint(other.x, other.y)
+				:BasicOrderedPair(other.x, other.y)
 			{
 			}
 			constexpr Point(const wxPoint2DInt& other) noexcept
-				:BasicPoint(other.m_y, other.m_y)
+				:BasicOrderedPair(other.m_y, other.m_y)
 			{
 			}
 			constexpr Point(const wxPoint2DDouble& other) noexcept
-				:BasicPoint(other.m_y, other.m_y)
+				:BasicOrderedPair(other.m_y, other.m_y)
 			{
 			}
 
 		public:
-			using BasicPoint::operator==;
-			using BasicPoint::operator!=;
+			using BasicOrderedPair::operator==;
+			using BasicOrderedPair::operator!=;
 			bool operator==(const wxPoint& other) const noexcept
 			{
 				return m_X == other.x && m_Y == other.y;
@@ -1038,7 +1038,7 @@ namespace kxf
 			}
 	};
 
-	class Size final: public Geometry::BasicPoint<Size, int>
+	class Size final: public Geometry::BasicOrderedPair<Size, int>
 	{
 		public:
 			static constexpr Size UnspecifiedSize() noexcept
@@ -1047,9 +1047,9 @@ namespace kxf
 			}
 
 		public:
-			using BasicPoint::BasicPoint;
+			using BasicOrderedPair::BasicOrderedPair;
 			constexpr Size(const wxSize& other) noexcept
-				:BasicPoint(other.GetWidth(), other.GetHeight())
+				:BasicOrderedPair(other.GetWidth(), other.GetHeight())
 			{
 			}
 
@@ -1082,8 +1082,8 @@ namespace kxf
 			}
 
 		public:
-			using BasicPoint::operator==;
-			using BasicPoint::operator!=;
+			using BasicOrderedPair::operator==;
+			using BasicOrderedPair::operator!=;
 			bool operator==(const wxSize& other) const noexcept
 			{
 				return m_X == other.x && m_Y == other.y;
