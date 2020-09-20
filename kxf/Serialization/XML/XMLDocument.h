@@ -175,8 +175,6 @@ namespace kxf
 
 			size_t GetChildrenCount() const override;
 			bool HasChildren() const override;
-			size_t EnumChildren(std::function<bool(XMLNode)> func) const override;
-			size_t EnumChildElements(std::function<bool(XMLNode)> func, const String& name = {}) const;
 			bool ClearChildren() override;
 			bool ClearNode() override;
 
@@ -224,6 +222,21 @@ namespace kxf
 			XMLNode GetFirstChildElement(const String& name = {}) const;
 			XMLNode GetLastChild() const override;
 			XMLNode GetLastChildElement(const String& name = {}) const;
+
+			template<class TFunc>
+			size_t EnumChildElements(TFunc&& func, const String& name = {}) const
+			{
+				size_t count = 0;
+				for (XMLNode node = GetFirstChildElement(name); node; node = node.GetNextSiblingElement(name))
+				{
+					count++;
+					if (!std::invoke(func, std::move(node)))
+					{
+						break;
+					}
+				}
+				return count;
+			}
 
 			// Insertion
 			bool Insert(XMLNode& node, InsertMode insertMode);

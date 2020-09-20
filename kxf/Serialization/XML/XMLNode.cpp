@@ -375,32 +375,6 @@ namespace kxf
 		}
 		return false;
 	}
-	size_t XMLNode::EnumChildren(std::function<bool(XMLNode)> func) const
-	{
-		size_t count = 0;
-		for (XMLNode node = GetFirstChild(); node; node = node.GetNextSibling())
-		{
-			count++;
-			if (!std::invoke(func, node))
-			{
-				break;
-			}
-		}
-		return count;
-	}
-	size_t XMLNode::EnumChildElements(std::function<bool(XMLNode)> func, const String& name) const
-	{
-		size_t count = 0;
-		for (XMLNode node = GetFirstChildElement(name); node; node = node.GetNextSiblingElement(name))
-		{
-			count++;
-			if (!std::invoke(func, node))
-			{
-				break;
-			}
-		}
-		return count;
-	}
 	bool XMLNode::ClearChildren()
 	{
 		if (auto node = GetNode())

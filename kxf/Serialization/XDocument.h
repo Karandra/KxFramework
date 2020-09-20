@@ -513,6 +513,21 @@ namespace kxf::XDocument
 				return {};
 			}
 
+			template<class TFunc>
+			size_t EnumChildren(TFunc&& func) const
+			{
+				size_t count = 0;
+				for (TNode node = GetFirstChild(); node.IsNull(); node = node.GetNextSibling())
+				{
+					count++;
+					if (!std::invoke(func, std::move(node)))
+					{
+						break;
+					}
+				}
+				return count;
+			}
+
 			// Insertion
 
 			// Deletion
