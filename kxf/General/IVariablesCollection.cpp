@@ -7,41 +7,41 @@
 
 namespace
 {
-	kxf::String DoExpandStdVariables(const kxf::IVariablesCollection& collection, const kxf::String& source, bool expandStdOnly)
+	kxf::String DoExpandStdVariables(const kxf::String& source, const kxf::IVariablesCollection* collection = nullptr)
 	{
 		using namespace kxf;
 
-		return ExpandVariables(collection, source, [&](const String& ns, const String& name) -> String
+		return ExpandVariables(source, [&](const String& ns, const String& id) -> String
 		{
-			if (ns == wxS('T'))
+			if (ns == wxS("LCIT"))
 			{
 				if (auto app = ICoreApplication::GetInstance())
 				{
-					return app->GetLocalizationPackage().GetItem(name).GetString();
+					return app->GetLocalizationPackage().GetItem(id).GetString();
 				}
 			}
 			else if (ns == wxS("ENV"))
 			{
-				return System::GetEnvironmentVariable(name);
+				return System::GetEnvironmentVariable(id);
 			}
 			else if (ns == wxS("SHDir"))
 			{
-				KnownDirectoryID directoryID = KnownDirectoryID::None;
-				Shell::EnumKnownDirectories([&](KnownDirectoryID id, String directoryName)
+				KnownDirectoryID desiredDirectoryID = KnownDirectoryID::None;
+				Shell::EnumKnownDirectories([&](KnownDirectoryID directoryID, String directoryName)
 				{
-					if (directoryName == name)
+					if (directoryName == id)
 					{
-						directoryID = id;
+						directoryID = directoryID;
 						return false;
 					}
 					return true;
 				});
 
-				return Shell::GetKnownDirectory(directoryID);
+				return Shell::GetKnownDirectory(desiredDirectoryID);
 			}
-			else if (!expandStdOnly && ns.IsEmpty())
+			else if (collection)
 			{
-				return collection.GetItem(name).As<String>();
+				return collection->GetItem(ns, id).GetAs<String>();
 			}
 			return {};
 		});
@@ -50,7 +50,7 @@ namespace
 
 namespace kxf
 {
-	String ExpandVariables(const IVariablesCollection& collection, const String& source, std::function<String(const String& ns, const String& name)> onVariable)
+	String ExpandVariables(const String& source, std::function<String(const String& ns, const String& id)> onVariable)
 	{
 		if (!source.IsEmpty())
 		{
@@ -104,42 +104,20 @@ namespace kxf
 		}
 		return source;
 	}
+	String ExpandVariables(const String& source, const IVariablesCollection& collection)
+	{
+		return ExpandVariables(source, [&](const String& ns, const String& id) -> String
+		{
+			return collection.GetItem(ns, id).GetAs<String>();
+		});
+	}
 
 	String ExpandStdVariables(const String& source)
 	{
-		class DummyVariablesCollection final: public IVariablesCollection
-		{
-			public:
-				size_t GetItemCount() const override
-				{
-					return 0;
-				}
-
-				String Expand(const String& variables) const override
-				{
-					return {};
-				}
-				size_t EnumItems(std::function<bool(Any)> func) const override
-				{
-					return 0;
-				}
-
-				bool HasItem(const String& id) const override
-				{
-					return false;
-				}
-				Any GetItem(const String& id) const override
-				{
-					return {};
-				}
-				void SetItem(const String& id, Any item) override
-				{
-				}
-		} dummyCollection;
-		return DoExpandStdVariables(dummyCollection, source, true);
+		return DoExpandStdVariables(source);
 	}
-	String ExpandStdVariables(const IVariablesCollection& collection, const String& source)
+	String ExpandStdVariables(const String& source, const IVariablesCollection& collection)
 	{
-		return DoExpandStdVariables(collection, source, false);
+		return DoExpandStdVariables(source, &collection);
 	}
 }
