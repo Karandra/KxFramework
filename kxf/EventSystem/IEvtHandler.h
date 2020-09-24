@@ -97,7 +97,6 @@ namespace kxf
 						return TakeResult(event);
 					}
 				}
-				return {};
 			}
 
 			template<SignalParametersSemantics signalSemantics, class TFunc, class TMethod, class... Args>
