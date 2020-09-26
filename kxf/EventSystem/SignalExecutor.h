@@ -41,7 +41,7 @@ namespace kxf::EventSystem::Private
 
 namespace kxf::EventSystem
 {
-	template<class TSignal_, class TCallable_>
+	template<class TSignal_, class TCallable_, BindSignalFlag signalFlags>
 	class CallableSignalExecutor: public IEventExecutor
 	{
 		protected:
@@ -65,7 +65,17 @@ namespace kxf::EventSystem
 			{
 				Private::ExecuteWithParameters<TArgsTuple, TResult>(event, [&](TArgsTuple&& parameters)
 				{
-					return std::apply(m_Callable, std::move(parameters));
+					if constexpr(FlagSet<BindSignalFlag>(signalFlags).Contains(BindSignalFlag::EventContext))
+					{
+						return std::apply([&](auto&&... arg)
+						{
+							return std::invoke(m_Callable, event, std::forward<decltype(arg)>(arg)...);
+						}, std::move(parameters));
+					}
+					else
+					{
+						return std::apply(m_Callable, std::move(parameters));
+					}
 				});
 			}
 			bool IsSameAs(const IEventExecutor& other) const noexcept override
@@ -82,7 +92,7 @@ namespace kxf::EventSystem
 			}
 	};
 
-	template<class TSignal_, class THandlerMethod_, class THandlerObject_>
+	template<class TSignal_, class THandlerMethod_, class THandlerObject_, BindSignalFlag signalFlags>
 	class MethodSignalExecutor: public IEventExecutor
 	{
 		public:
@@ -118,7 +128,14 @@ namespace kxf::EventSystem
 				{
 					return std::apply([&](auto&&... arg)
 					{
-						return std::invoke(m_HandlerMethod, handlerObject, std::forward<decltype(arg)>(arg)...);
+						if constexpr(FlagSet<BindSignalFlag>(signalFlags).Contains(BindSignalFlag::EventContext))
+						{
+							return std::invoke(m_HandlerMethod, handlerObject, event, std::forward<decltype(arg)>(arg)...);
+						}
+						else
+						{
+							return std::invoke(m_HandlerMethod, handlerObject, std::forward<decltype(arg)>(arg)...);
+						}
 					}, std::move(parameters));
 				});
 			}

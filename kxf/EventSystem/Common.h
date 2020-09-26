@@ -21,7 +21,7 @@ namespace kxf
 	};
 	KxFlagSet_Declare(EventCategory);
 
-	enum class EventFlag: uint32_t
+	enum class BindEventFlag: uint32_t
 	{
 		None = 0,
 
@@ -34,7 +34,15 @@ namespace kxf
 		AlwaysSkip = 1 << 18,
 		OneShot = 1 << 19
 	};
-	KxFlagSet_Declare(EventFlag);
+	KxFlagSet_Declare(BindEventFlag);
+
+	enum class BindSignalFlag: uint32_t
+	{
+		None = 0,
+
+		EventContext = 1 << 0
+	};
+	KxFlagSet_Declare(BindSignalFlag);
 
 	enum class ProcessEventFlag: uint32_t
 	{

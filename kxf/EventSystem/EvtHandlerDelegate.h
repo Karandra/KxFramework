@@ -18,7 +18,7 @@ namespace kxf
 			}
 
 		protected:
-			LocallyUniqueID DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<EventFlag> flags = {}) override
+			LocallyUniqueID DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<BindEventFlag> flags = {}) override
 			{
 				return Access().DoBind(eventID, std::move(executor), flags);
 			}

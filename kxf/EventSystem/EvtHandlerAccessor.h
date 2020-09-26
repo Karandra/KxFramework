@@ -16,7 +16,7 @@ namespace kxf::EventSystem
 			}
 
 		public:
-			LocallyUniqueID DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<EventFlag> flags = {})
+			LocallyUniqueID DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<BindEventFlag> flags = {})
 			{
 				return m_EvtHandler.DoBind(eventID, std::move(executor), flags);
 			}

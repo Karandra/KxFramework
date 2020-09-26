@@ -43,18 +43,18 @@ namespace
 		});
 	}
 
-	bool IsInvalidFlagCombination(FlagSet<EventFlag> flags) noexcept
+	bool IsInvalidFlagCombination(FlagSet<BindEventFlag> flags) noexcept
 	{
-		return flags.Contains(EventFlag::OneShot|EventFlag::AlwaysSkip) ||
+		return flags.Contains(BindEventFlag::OneShot|BindEventFlag::AlwaysSkip) ||
 
-			flags.Contains(EventFlag::Queued|EventFlag::Auto) ||
-			flags.Contains(EventFlag::Direct|EventFlag::Queued) ||
-			flags.Contains(EventFlag::Direct|EventFlag::Auto) ||
-			flags.Contains(EventFlag::Direct|EventFlag::Queued|EventFlag::Auto);
+			flags.Contains(BindEventFlag::Queued|BindEventFlag::Auto) ||
+			flags.Contains(BindEventFlag::Direct|BindEventFlag::Queued) ||
+			flags.Contains(BindEventFlag::Direct|BindEventFlag::Auto) ||
+			flags.Contains(BindEventFlag::Direct|BindEventFlag::Queued|BindEventFlag::Auto);
 	}
-	bool ShouldQueueeEvent(FlagSet<EventFlag> flags, bool isMainThread) noexcept
+	bool ShouldQueueeEvent(FlagSet<BindEventFlag> flags, bool isMainThread) noexcept
 	{
-		return flags.Contains(EventFlag::Queued) || (flags.Contains(EventFlag::Auto) && !isMainThread);
+		return flags.Contains(BindEventFlag::Queued) || (flags.Contains(BindEventFlag::Auto) && !isMainThread);
 	}
 }
 
@@ -247,9 +247,9 @@ namespace kxf
 						auto eventInternal = event.QueryInterface<IEventInternal>();
 						if (!eventInternal->WasReQueued() && !eventInternal->IsAsync())
 						{
-							if (eventFlags.Contains(EventFlag::Blocking))
+							if (eventFlags.Contains(BindEventFlag::Blocking))
 							{
-								wxASSERT_MSG(!isMainThread, "Option 'EventFlag::Blocking' should not ever be used from main thread");
+								wxASSERT_MSG(!isMainThread, "Option 'BindEventFlag::Blocking' should not ever be used from main thread");
 
 								// TODO: Do we need some kind of lock to ensure that our moved event won't get processed until after we call 'WaitProcessed' on it?
 								auto movedEvent = event.Move();
@@ -275,7 +275,7 @@ namespace kxf
 					{
 						// If this is a one-shot event store its bind slot to unbind later
 						const auto flags = eventItem.GetFlags();
-						if (flags.Contains(EventFlag::OneShot))
+						if (flags.Contains(BindEventFlag::OneShot))
 						{
 							eventSlot = eventItem.GetBindSlot();
 						}
@@ -339,7 +339,7 @@ namespace kxf
 		eventItem.GetExecutor()->Execute(evtHandler, event);
 
 		// Skip the event if we're required to always skip it
-		if (eventItem.GetFlags().Contains(EventFlag::AlwaysSkip))
+		if (eventItem.GetFlags().Contains(BindEventFlag::AlwaysSkip))
 		{
 			event.Skip();
 		}
@@ -597,31 +597,31 @@ namespace kxf
 		return TryApp(event);
 	}
 
-	LocallyUniqueID EvtHandler::DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<EventFlag> flags)
+	LocallyUniqueID EvtHandler::DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<BindEventFlag> flags)
 	{
 		if (executor && eventID && eventID != IEvent::EvtAny && eventID != IIndirectInvocationEvent::EvtIndirectInvocation)
 		{
 			// Following combinations makes no sense
 			if (IsInvalidFlagCombination(flags))
 			{
-				wxFAIL_MSG("Invalid combination of 'EventFlag' values");
+				wxFAIL_MSG("Invalid combination of 'BindEventFlag' values");
 				return {};
 			}
 
-			// If none are present, assume direct, it's not a hard error to pass 'EventFlag::None' here.
-			flags.Add(EventFlag::Direct, !flags.Contains(EventFlag::Direct) && !flags.Contains(EventFlag::Queued) && !flags.Contains(EventFlag::Auto));
+			// If none are present, assume direct, it's not a hard error to pass 'BindEventFlag::None' here.
+			flags.Add(BindEventFlag::Direct, !flags.Contains(BindEventFlag::Direct) && !flags.Contains(BindEventFlag::Queued) && !flags.Contains(BindEventFlag::Auto));
 
 			EventItem eventItem(eventID, std::move(executor));
 
-			// Save flags but remove 'EventFlag::Unique' as it's only makes sense inside this function
-			eventItem.SetFlags(flags.Clone().Remove(EventFlag::Unique));
+			// Save flags but remove 'BindEventFlag::Unique' as it's only makes sense inside this function
+			eventItem.SetFlags(flags.Clone().Remove(BindEventFlag::Unique));
 
 			if (OnDynamicBind(eventItem) && eventItem)
 			{
 				WriteLockGuard lock(m_EventTableLock);
 
-				// If 'EventFlag::Unique' is present, refuse to bind this handler if the same handler is already bound.
-				if (flags.Contains(EventFlag::Unique) && CountBoundHandlers(m_EventTable, eventID, *eventItem.GetExecutor()) != 0)
+				// If 'BindEventFlag::Unique' is present, refuse to bind this handler if the same handler is already bound.
+				if (flags.Contains(BindEventFlag::Unique) && CountBoundHandlers(m_EventTable, eventID, *eventItem.GetExecutor()) != 0)
 				{
 					return {};
 				}

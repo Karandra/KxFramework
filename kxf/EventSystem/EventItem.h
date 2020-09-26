@@ -14,7 +14,7 @@ namespace kxf::EventSystem
 			optional_ptr<IEventExecutor> m_Executor;
 			EventID m_EventID;
 			LocallyUniqueID m_BindSlot;
-			FlagSet<EventFlag> m_Flags;
+			FlagSet<BindEventFlag> m_Flags;
 
 		public:
 			EventItem() noexcept = default;
@@ -78,11 +78,11 @@ namespace kxf::EventSystem
 				m_EventID = eventID;
 			}
 
-			FlagSet<EventFlag> GetFlags() const noexcept
+			FlagSet<BindEventFlag> GetFlags() const noexcept
 			{
 				return m_Flags;
 			}
-			void SetFlags(FlagSet<EventFlag> flags) noexcept
+			void SetFlags(FlagSet<BindEventFlag> flags) noexcept
 			{
 				m_Flags = flags;
 			}

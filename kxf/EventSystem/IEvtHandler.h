@@ -108,7 +108,7 @@ namespace kxf
 			}
 
 		protected:
-			virtual LocallyUniqueID DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<EventFlag> flags = {}) = 0;
+			virtual LocallyUniqueID DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<BindEventFlag> flags = {}) = 0;
 			virtual bool DoUnbind(const EventID& eventID, IEventExecutor& executor) = 0;
 			virtual bool DoUnbind(const LocallyUniqueID& bindSlot) = 0;
 
@@ -145,7 +145,7 @@ namespace kxf
 		public:
 			// Bind free or static function
 			template<class TEvent, class TEventArg>
-			LocallyUniqueID Bind(const EventTag<TEvent>& eventTag, void(*func)(TEventArg&), FlagSet<EventFlag> flags = EventFlag::Direct)
+			LocallyUniqueID Bind(const EventTag<TEvent>& eventTag, void(*func)(TEventArg&), FlagSet<BindEventFlag> flags = BindEventFlag::Direct)
 			{
 				return DoBind(eventTag, std::make_unique<EventSystem::CallableEventExecutor<TEvent, decltype(func)>>(func), flags);
 			}
@@ -160,7 +160,7 @@ namespace kxf
 
 			// Bind a generic callable
 			template<class TEvent, class TCallable>
-			LocallyUniqueID Bind(const EventTag<TEvent>& eventTag, TCallable&& callable, FlagSet<EventFlag> flags = EventFlag::Direct)
+			LocallyUniqueID Bind(const EventTag<TEvent>& eventTag, TCallable&& callable, FlagSet<BindEventFlag> flags = BindEventFlag::Direct)
 			{
 				return DoBind(eventTag, std::make_unique<EventSystem::CallableEventExecutor<TEvent, TCallable>>(std::forward<TCallable>(callable)), flags);
 			}
@@ -175,7 +175,7 @@ namespace kxf
 
 			// Bind a member function
 			template<class TEvent, class TClass, class TEventArg, class TEventHandler>
-			LocallyUniqueID Bind(const EventTag<TEvent>& eventTag, void(TClass::* method)(TEventArg&), TEventHandler* handler, FlagSet<EventFlag> flags = EventFlag::Direct)
+			LocallyUniqueID Bind(const EventTag<TEvent>& eventTag, void(TClass::* method)(TEventArg&), TEventHandler* handler, FlagSet<BindEventFlag> flags = BindEventFlag::Direct)
 			{
 				return DoBind(eventTag, std::make_unique<EventSystem::MethodEventExecutor<TEvent, TClass, TEventArg, TEventHandler>>(method, *handler), flags);
 			}
@@ -208,15 +208,16 @@ namespace kxf
 
 		public:
 			// Bind a generic callable
-			template<class TSignal, class TCallable, class = std::enable_if_t<std::is_member_function_pointer_v<TSignal>>>
-			LocallyUniqueID BindSignal(TSignal signal, TCallable&& callable, FlagSet<EventFlag> flags = EventFlag::Direct)
+			template<BindSignalFlag signalFlags = BindSignalFlag::None, class TSignal, class TCallable, class = std::enable_if_t<std::is_member_function_pointer_v<TSignal>>>
+			LocallyUniqueID BindSignal(TSignal signal, TCallable&& callable, FlagSet<BindEventFlag> flags = BindEventFlag::Direct)
 			{
-				return DoBind(signal, std::make_unique<EventSystem::CallableSignalExecutor<TSignal, TCallable>>(std::forward<TCallable>(callable)), flags);
+				return DoBind(signal, std::make_unique<EventSystem::CallableSignalExecutor<TSignal, TCallable, signalFlags>>(std::forward<TCallable>(callable)), flags);
 			}
 
 			// Bind a member function
 			template
 			<
+				BindSignalFlag signalFlags = BindSignalFlag::None,
 				class TSignal,
 				class THandlerMethod,
 				class THandlerObject,
@@ -227,9 +228,9 @@ namespace kxf
 					std::is_convertible_v<typename Utility::MethodTraits<TSignal>::TArgsTuple, typename Utility::MethodTraits<THandlerMethod>::TArgsTuple>
 				>
 			>
-			LocallyUniqueID BindSignal(TSignal signal, THandlerMethod targetMethod, THandlerObject* handler, FlagSet<EventFlag> flags = EventFlag::Direct)
+			LocallyUniqueID BindSignal(TSignal signal, THandlerMethod targetMethod, THandlerObject* handler, FlagSet<BindEventFlag> flags = BindEventFlag::Direct)
 			{
-				return DoBind(signal, std::make_unique<EventSystem::MethodSignalExecutor<TSignal, THandlerMethod, THandlerObject>>(targetMethod, *handler), flags);
+				return DoBind(signal, std::make_unique<EventSystem::MethodSignalExecutor<TSignal, THandlerMethod, THandlerObject, signalFlags>>(targetMethod, *handler), flags);
 			}
 
 			// Process a signal
@@ -357,7 +358,7 @@ namespace kxf
 		public:
 			// [WX] Bind free or static function
 			template<class TEvent, class TEventArg, class = std::enable_if_t<std::is_base_of_v<wxEvent, TEvent>>>
-			LocallyUniqueID BindWx(wxEventTypeTag<TEvent> eventTag, void(*func)(TEventArg&), FlagSet<EventFlag> flags = EventFlag::Direct)
+			LocallyUniqueID BindWx(wxEventTypeTag<TEvent> eventTag, void(*func)(TEventArg&), FlagSet<BindEventFlag> flags = BindEventFlag::Direct)
 			{
 				return Bind(EventTag<IEvent>(eventTag), [func](IEvent& event)
 				{
@@ -367,7 +368,7 @@ namespace kxf
 
 			// [WX] Bind a generic callable
 			template<class TEvent, class TCallable, class = std::enable_if_t<std::is_base_of_v<wxEvent, TEvent>>>
-			LocallyUniqueID BindWx(wxEventTypeTag<TEvent> eventTag, TCallable&& callable, FlagSet<EventFlag> flags = EventFlag::Direct)
+			LocallyUniqueID BindWx(wxEventTypeTag<TEvent> eventTag, TCallable&& callable, FlagSet<BindEventFlag> flags = BindEventFlag::Direct)
 			{
 				return Bind(EventTag<IEvent>(eventTag), [callable = std::forward<TCallable>(callable)](IEvent& event)
 				{
@@ -377,7 +378,7 @@ namespace kxf
 
 			// [WX] Bind a member function
 			template<class TEvent, class TClass, class TEventArg, class TEventHandler, class = std::enable_if_t<std::is_base_of_v<wxEvent, TEvent>>>
-			LocallyUniqueID BindWx(wxEventTypeTag<TEvent> eventTag, void(TClass::* method)(TEventArg&), TEventHandler* handler, FlagSet<EventFlag> flags = EventFlag::Direct)
+			LocallyUniqueID BindWx(wxEventTypeTag<TEvent> eventTag, void(TClass::* method)(TEventArg&), TEventHandler* handler, FlagSet<BindEventFlag> flags = BindEventFlag::Direct)
 			{
 				return Bind(EventTag<IEvent>(eventTag), [method, handler](IEvent& event)
 				{
