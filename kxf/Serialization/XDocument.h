@@ -253,7 +253,7 @@ namespace kxf::XDocument
 			template<class T = int64_t, class TDefault = T>
 			int64_t GetValueInt(TDefault defaultValue = 0) const
 			{
-				return GetValueIntWithBase<T>(10, defaultValue);
+				return QueryValueIntWithBase<T>(10).value_or(defaultValue);
 			}
 
 			template<class T = int64_t>
@@ -385,7 +385,7 @@ namespace kxf::XDocument
 			template<class T = int64_t, class TDefault = T>
 			int64_t GetAttributeInt(const String& name, TDefault defaultValue = 0) const
 			{
-				return GetAttributeIntWithBase<T>(name, 10, defaultValue);
+				return QueryAttributeIntWithBase<T>(name, 10).value_or(defaultValue);
 			}
 
 			template<class T = int64_t>
@@ -403,7 +403,7 @@ namespace kxf::XDocument
 			template<class T = int64_t, class TDefault = T>
 			T GetAttributeIntWithBase(const String& name, int base, TDefault defaultValue = 0) const
 			{
-				return QueryValueIntWithBase<T>(name, base).value_or(defaultValue);
+				return QueryAttributeIntWithBase<T>(name, base).value_or(defaultValue);
 			}
 
 			bool SetAttribute(const String& name, const String& value, WriteEmpty writeEmpty = WriteEmpty::Always)
