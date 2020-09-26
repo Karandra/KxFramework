@@ -3,7 +3,6 @@
 
 #include "kxf/System/COM.h"
 #include "kxf/System/ErrorCode.h"
-#include "kxf/System/ErrorCodeValue.h"
 #include "kxf/System/ShellLink.h"
 #include "kxf/System/ShellFileType.h"
 #include "kxf/System/ShellFileTypeInfo.h"
