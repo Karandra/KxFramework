@@ -71,10 +71,11 @@ namespace kxf
 			template<SignalParametersSemantics signalSemantics, class TFunc, class TMethod, class... Args>
 			typename Utility::MethodTraits<TMethod>::TReturn DoProcessSignal(TFunc&& func, TMethod method, Args&&... arg)
 			{
+				using TResult = typename Utility::MethodTraits<TMethod>::TReturn;
+
 				EventSystem::SignalInvocationEvent<signalSemantics, TMethod> event(std::forward<Args>(arg)...);
 				if (std::invoke(func, event, method))
 				{
-					using TResult = typename Utility::MethodTraits<TMethod>::TReturn;
 					if constexpr(!std::is_void_v<TResult>)
 					{
 						auto TakeResult = [&](ISignalInvocationEvent& event)
@@ -96,6 +97,12 @@ namespace kxf
 						}
 						return TakeResult(event);
 					}
+				}
+
+				// Suppress warning about missing return type
+				if constexpr(!std::is_void_v<TResult>)
+				{
+					return {};
 				}
 			}
 
