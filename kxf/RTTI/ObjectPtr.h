@@ -17,7 +17,15 @@ namespace kxf
 			{
 				if (m_Value)
 				{
-					static_cast<IObject&>(*m_Value).DoReleaseRef();
+					if constexpr (std::is_const_v<TValue>)
+					{
+						using NC = std::remove_const_t<TValue>;
+						static_cast<IObject&>(const_cast<NC&>(*m_Value)).DoReleaseRef();
+					}
+					else
+					{
+						static_cast<IObject&>(*m_Value).DoReleaseRef();
+					}
 					m_Value = nullptr;
 				}
 			}
@@ -26,7 +34,15 @@ namespace kxf
 				m_Value = ptr;
 				if (ptr)
 				{
-					static_cast<IObject&>(*ptr).DoAddRef();
+					if constexpr (std::is_const_v<TValue>)
+					{
+						using NC = std::remove_const_t<TValue>;
+						static_cast<IObject&>(const_cast<NC&>(*m_Value)).DoAddRef();
+					}
+					else
+					{
+						static_cast<IObject&>(*m_Value).DoAddRef();
+					}
 				}
 			}
 
