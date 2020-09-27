@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "StdButton.h"
+#include "WidgetID.h"
 #include <wx/sizer.h>
 #include <wx/anybutton.h>
 
@@ -39,7 +40,7 @@ namespace kxf::UI
 			StdDialogButtonSizer();
 
 		public:
-			Button* CreateButton(Dialog* dialog, FlagSet<StdButton> buttons, StdButton singleButton, wxWindowID id, bool addToList = true);
+			Button* CreateButton(Dialog* dialog, FlagSet<StdButton> buttons, StdButton singleButton, WidgetID id, bool addToList = true);
 		
 			// Checks button ID against system IDs and sets one of the pointers below
 			// to this button. Does not do any sizer-related things here.

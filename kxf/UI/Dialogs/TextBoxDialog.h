@@ -38,7 +38,7 @@ namespace kxf::UI
 		private:
 			wxOrientation GetViewLabelSizerOrientation() const override;
 			wxOrientation GetWindowResizeSide() const override;
-			bool IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut = nullptr) const override;
+			bool IsEnterAllowed(wxKeyEvent& event, WidgetID* idOut = nullptr) const override;
 
 			bool IsStyledTextBox() const
 			{

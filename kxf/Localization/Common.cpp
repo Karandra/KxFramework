@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Common.h"
 #include "Locale.h"
+#include "kxf/UI/WidgetID.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "Private/StandardLocalization.h"
 #include "Private/LocalizationResources.h"
@@ -34,6 +35,10 @@ namespace kxf::Localization
 	String GetStandardString(StdID id)
 	{
 		return Private::LocalizeLabelString(id);
+	}
+	String GetStandardString(const WidgetID& id)
+	{
+		return Private::LocalizeLabelString(FromInt<StdID>(*id));
 	}
 
 	size_t SearchPackages(const IFileSystem& fileSystem, const FSPath& directory, std::function<bool(Locale, FileItem)> func)

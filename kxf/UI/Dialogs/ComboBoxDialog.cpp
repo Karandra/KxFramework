@@ -7,7 +7,7 @@ namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(ComboBoxDialog, StdDialog);
 
-	bool ComboBoxDialog::IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut) const
+	bool ComboBoxDialog::IsEnterAllowed(wxKeyEvent& event, WidgetID* idOut) const
 	{
 		if (GetComboBox()->HasFocus() && event.GetKeyCode() == WXK_RETURN)
 		{

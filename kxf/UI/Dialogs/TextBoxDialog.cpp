@@ -6,7 +6,7 @@ namespace kxf::UI
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(TextBoxDialog, StdDialog);
 
-	bool TextBoxDialog::IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut) const
+	bool TextBoxDialog::IsEnterAllowed(wxKeyEvent& event, WidgetID* idOut) const
 	{
 		if (IsMultiLine() || GetStyledTextBox() != nullptr)
 		{

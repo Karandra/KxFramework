@@ -212,18 +212,18 @@ namespace kxf::UI
 			{
 				m_StandardButtons = buttons;
 			}
-			void SetDefaultButton(wxWindowID id) override
+			void SetDefaultButton(WidgetID id) override
 			{
-				m_DefaultButton = id;
+				m_DefaultButton = *id;
 			}
-			void SetDefaultRadioButton(wxWindowID id)
+			void SetDefaultRadioButton(WidgetID id)
 			{
-				m_DefaultRadioButton = id;
+				m_DefaultRadioButton = *id;
 			}
 
-			StdDialogControl GetButton(wxWindowID id) const override;
-			StdDialogControl AddButton(wxWindowID id, const String& label = {}, bool prepend = false) override;
-			StdDialogControl AddRadioButton(wxWindowID id, const String& label = {});
+			StdDialogControl GetButton(WidgetID id) const override;
+			StdDialogControl AddButton(WidgetID id, const String& label = {}, bool prepend = false) override;
+			StdDialogControl AddRadioButton(WidgetID id, const String& label = {});
 			
 			bool GetCheckBoxValue() const
 			{

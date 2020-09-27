@@ -370,11 +370,11 @@ namespace kxf::UI
 		}
 	}
 
-	StdDialogControl TaskDialog::GetButton(wxWindowID id) const
+	StdDialogControl TaskDialog::GetButton(WidgetID id) const
 	{
 		auto it = std::find_if(m_Buttons.begin(), m_Buttons.end(), [&](const ButtonItem& item)
 		{
-			return item.ID == id;
+			return item.ID == *id;
 		});
 		if (it != m_Buttons.end())
 		{
@@ -382,41 +382,41 @@ namespace kxf::UI
 		}
 		return {};
 	}
-	StdDialogControl TaskDialog::AddButton(wxWindowID id, const String& label, bool prepend)
+	StdDialogControl TaskDialog::AddButton(WidgetID id, const String& label, bool prepend)
 	{
 		if (label.IsEmpty())
 		{
 			if (prepend)
 			{
-				m_Buttons.emplace(m_Buttons.begin(), ButtonItem{Localization::GetStandardString(id), id});
+				m_Buttons.emplace(m_Buttons.begin(), ButtonItem{Localization::GetStandardString(id), *id});
 			}
 			else
 			{
-				m_Buttons.emplace_back(ButtonItem{Localization::GetStandardString(id), id});
+				m_Buttons.emplace_back(ButtonItem{Localization::GetStandardString(id), *id});
 			}
 		}
 		else
 		{
 			if (prepend)
 			{
-				m_Buttons.emplace(m_Buttons.begin(), ButtonItem{label, id});
+				m_Buttons.emplace(m_Buttons.begin(), ButtonItem{label, *id});
 			}
 			else
 			{
-				m_Buttons.emplace_back(ButtonItem{label, id});
+				m_Buttons.emplace_back(ButtonItem{label, *id});
 			}
 		}
 		return id;
 	}
-	StdDialogControl TaskDialog::AddRadioButton(wxWindowID id, const String& label)
+	StdDialogControl TaskDialog::AddRadioButton(WidgetID id, const String& label)
 	{
 		if (label.IsEmpty())
 		{
-			m_RadioButtons.emplace_back(ButtonItem{Localization::GetStandardString(id), id});
+			m_RadioButtons.emplace_back(ButtonItem{Localization::GetStandardString(id), *id});
 		}
 		else
 		{
-			m_RadioButtons.emplace_back(ButtonItem{label, id});
+			m_RadioButtons.emplace_back(ButtonItem{label, *id});
 		}
 		return id;
 	}

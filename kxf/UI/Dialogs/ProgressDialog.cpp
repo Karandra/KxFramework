@@ -28,7 +28,7 @@ namespace kxf::UI
 		return false;
 	}
 
-	bool ProgressDialog::IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut) const
+	bool ProgressDialog::IsEnterAllowed(wxKeyEvent& event, WidgetID* idOut) const
 	{
 		return StdDialog::IsEnterAllowed(event, idOut);
 	}

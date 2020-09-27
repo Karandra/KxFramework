@@ -190,10 +190,10 @@ namespace kxf::UI
 			size_t EnumResults(std::function<bool(FSPath)> func) const;
 
 			// Buttons
-			void SetDefaultButton(wxWindowID id) override
+			void SetDefaultButton(WidgetID id) override
 			{
 			}
-			StdDialogControl GetButton(wxWindowID id) const override
+			StdDialogControl GetButton(WidgetID id) const override
 			{
 				if (m_Handle && (id == wxID_OK || id == wxID_CANCEL))
 				{
@@ -201,7 +201,7 @@ namespace kxf::UI
 				}
 				return wxID_NONE;
 			}
-			StdDialogControl AddButton(wxWindowID id, const String& label, bool prepend) override
+			StdDialogControl AddButton(WidgetID id, const String& label, bool prepend) override
 			{
 				return wxID_NONE;
 			}

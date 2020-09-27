@@ -1,5 +1,4 @@
 #pragma once
-#include "Common.h"
 #include "kxf/General/StdID.h"
 #include "kxf/Utility/Numeric.h"
 

@@ -16,7 +16,7 @@ namespace kxf::UI
 
 		private:
 			wxOrientation GetViewLabelSizerOrientation() const override;
-			bool IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut = nullptr) const override;
+			bool IsEnterAllowed(wxKeyEvent& event, WidgetID* idOut = nullptr) const override;
 
 		public:
 			ProgressDialog() = default;

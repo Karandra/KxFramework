@@ -31,11 +31,11 @@ namespace kxf::UI
 		}
 	}
 
-	Button* StdDialogButtonSizer::CreateButton(Dialog* dialog, FlagSet<StdButton> buttons, StdButton singleButton, wxWindowID id, bool addToList)
+	Button* StdDialogButtonSizer::CreateButton(Dialog* dialog, FlagSet<StdButton> buttons, StdButton singleButton, WidgetID id, bool addToList)
 	{
 		if (buttons & singleButton)
 		{
-			Button* button = new Button(dialog, id);
+			Button* button = new Button(dialog, *id);
 			button->SetAllowDrawFocus(true);
 			if (addToList)
 			{

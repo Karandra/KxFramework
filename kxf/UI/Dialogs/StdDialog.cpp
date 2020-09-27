@@ -245,7 +245,7 @@ namespace kxf::UI
 		const wxWindowID oldReturnCode = GetReturnCode();
 		const wxWindowID buttonID = event.GetId();
 
-		for (wxWindowID closeID : m_CloseIDs)
+		for (WidgetID closeID : m_CloseIDs)
 		{
 			if (closeID == buttonID)
 			{
@@ -283,7 +283,7 @@ namespace kxf::UI
 	void StdDialog::OnEscape(wxKeyEvent& event)
 	{
 		event.Skip();
-		wxWindowID id = wxID_NONE;
+		WidgetID id;
 		if (event.GetKeyCode() == WXK_ESCAPE && IsEscapeAllowed())
 		{
 			wxNotifyEvent onEscapeEvent(EvtButton->AsInt(), wxID_CANCEL);
@@ -297,7 +297,7 @@ namespace kxf::UI
 		{
 			if (id != wxID_NONE)
 			{
-				wxCommandEvent buttonEvent(EvtButton->AsInt(), id);
+				wxCommandEvent buttonEvent(EvtButton->AsInt(), *id);
 				OnStdButtonClick(buttonEvent);
 				event.Skip(false);
 			}
@@ -389,11 +389,11 @@ namespace kxf::UI
 	{
 		return wxVERTICAL;
 	}
-	bool StdDialog::IsEscapeAllowed(wxWindowID* idOut) const
+	bool StdDialog::IsEscapeAllowed(WidgetID* idOut) const
 	{
 		if (m_SelectedButtons & StdButton::OK || m_SelectedButtons & StdButton::Cancel || m_SelectedButtons & StdButton::No || m_SelectedButtons & StdButton::Close)
 		{
-			for (int id : m_CloseIDs)
+			for (WidgetID id: m_CloseIDs)
 			{
 				if (id == wxID_CANCEL || id == wxID_NO || id == wxID_CLOSE)
 				{
@@ -406,16 +406,16 @@ namespace kxf::UI
 		Utility::SetIfNotNull(idOut, wxID_NONE);
 		return false;
 	}
-	bool StdDialog::IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut) const
+	bool StdDialog::IsEnterAllowed(wxKeyEvent& event, WidgetID* idOut) const
 	{
-		auto Check = [this](StdButton btn, int id, int enterId)
+		auto Check = [this](StdButton btn, WidgetID id, WidgetID enterId)
 		{
 			return m_SelectedButtons & btn && enterId == id;
 		};
 
 		if (m_SelectedButtons & StdButton::OK || m_SelectedButtons & StdButton::Yes || m_SelectedButtons & StdButton::Apply)
 		{
-			for (int id : m_EnterIDs)
+			for (WidgetID id: m_EnterIDs)
 			{
 				if (Check(StdButton::OK, wxID_OK, id) || Check(StdButton::Yes, wxID_YES, id) || Check(StdButton::Apply, wxID_APPLY, id))
 				{
@@ -554,7 +554,7 @@ namespace kxf::UI
 		AdjustWindow();
 	}
 
-	void StdDialog::SetDefaultButton(wxWindowID id)
+	void StdDialog::SetDefaultButton(WidgetID id)
 	{
 		auto control = GetButton(id);
 		if (control.IsControl())
@@ -576,15 +576,14 @@ namespace kxf::UI
 			}
 		}
 	}
-	StdDialogControl StdDialog::GetButton(wxWindowID id) const
+	StdDialogControl StdDialog::GetButton(WidgetID id) const
 	{
 		for (wxSizerItem* item: m_ButtonsSizer->GetChildren())
 		{
 			wxWindow* window = item->GetWindow();
-			if (window && window->GetId() == id && window->GetId() != wxID_NONE)
+			if (window && window->GetId() == *id && window->GetId() != wxID_NONE)
 			{
-				Button* button = dynamic_cast<Button*>(window);
-				if (button)
+				if (Button* button = dynamic_cast<Button*>(window))
 				{
 					return button;
 				}
@@ -596,7 +595,7 @@ namespace kxf::UI
 		}
 		return static_cast<wxWindow*>(nullptr);
 	}
-	StdDialogControl StdDialog::AddButton(wxWindowID id, const String& label, bool prepend)
+	StdDialogControl StdDialog::AddButton(WidgetID id, const String& label, bool prepend)
 	{
 		Button* button = m_ButtonsSizer->CreateButton(this, StdButton::WX_LAST_STD, StdButton::WX_LAST_STD, id, false);
 		m_ButtonsSizer->AddCustomButton(button, label, prepend);

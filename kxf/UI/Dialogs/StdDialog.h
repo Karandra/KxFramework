@@ -34,7 +34,12 @@ namespace kxf::UI
 			Type m_Type = Type::ID;
 
 		public:
-			StdDialogControl(wxWindowID id = wxID_NONE)
+			StdDialogControl(WidgetID id = {})
+				:m_Type(Type::ID)
+			{
+				m_Data.ID = *id;
+			}
+			StdDialogControl(wxWindowID id)
 				:m_Type(Type::ID)
 			{
 				m_Data.ID = id;
@@ -116,9 +121,9 @@ namespace kxf::UI
 			virtual void SetMainIcon(const wxBitmap& icon) = 0;
 			virtual void SetMainIcon(StdIcon iconID = DefaultIconID) = 0;
 
-			virtual void SetDefaultButton(wxWindowID id) = 0;
-			virtual StdDialogControl GetButton(wxWindowID id) const = 0;
-			virtual StdDialogControl AddButton(wxWindowID id, const String& label = {}, bool prepend = false) = 0;
+			virtual void SetDefaultButton(WidgetID id) = 0;
+			virtual StdDialogControl GetButton(WidgetID id) const = 0;
+			virtual StdDialogControl AddButton(WidgetID id, const String& label = {}, bool prepend = false) = 0;
 	};
 }
 
@@ -128,7 +133,7 @@ namespace kxf::UI
 	class KX_API StdDialog: public Dialog, public IStdDialog
 	{
 		public:
-			using StdButtonsIDs = std::vector<wxWindowID>;
+			using StdButtonsIDs = std::vector<WidgetID>;
 
 			static constexpr FlagSet<DialogStyle> DefaultStyle = Dialog::DefaultStyle;
 			static const StdButtonsIDs ms_DefaultCloseIDs;
@@ -190,8 +195,8 @@ namespace kxf::UI
 			{
 				return IsEscapeAllowed();
 			}
-			virtual bool IsEscapeAllowed(wxWindowID* idOut = nullptr) const;
-			virtual bool IsEnterAllowed(wxKeyEvent& event, wxWindowID* idOut = nullptr) const;
+			virtual bool IsEscapeAllowed(WidgetID* idOut = nullptr) const;
+			virtual bool IsEnterAllowed(wxKeyEvent& event, WidgetID* idOut = nullptr) const;
 			void SetResizingBehavior();
 			static wxWindowID TranslateButtonConstantsToIDs(int btnValue);
 			virtual Rect GetGlassRect() const
@@ -412,9 +417,9 @@ namespace kxf::UI
 			void SetLabel(const wxString& label) override;
 		
 			// Buttons customization
-			void SetDefaultButton(wxWindowID id) override;
-			StdDialogControl GetButton(wxWindowID id) const override;
-			StdDialogControl AddButton(wxWindowID id, const String& label = {}, bool prepend = false) override;
+			void SetDefaultButton(WidgetID id) override;
+			StdDialogControl GetButton(WidgetID id) const override;
+			StdDialogControl AddButton(WidgetID id, const String& label = {}, bool prepend = false) override;
 
 			// Keyboard control
 			StdButtonsIDs GetCloseIDs() const

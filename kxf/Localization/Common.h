@@ -10,6 +10,7 @@
 namespace kxf
 {
 	class Locale;
+	class WidgetID;
 	class DynamicLibrary;
 }
 
@@ -17,6 +18,7 @@ namespace kxf::Localization
 {
 	String GetStandardString(int id);
 	String GetStandardString(StdID id);
+	String GetStandardString(const WidgetID& id);
 
 	size_t SearchPackages(const IFileSystem& fileSystem, const FSPath& directory, std::function<bool(Locale, FileItem)> func);
 	size_t SearchPackages(const DynamicLibrary& library, std::function<bool(Locale, FileItem)> func);
