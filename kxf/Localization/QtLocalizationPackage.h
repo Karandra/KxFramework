@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "ILocalizationPackage.h"
 #include "Private/LocalizationPackageHelper.h"
+#include "kxf/General/Version.h"
 
 namespace kxf
 {
@@ -10,29 +11,33 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API WindowsLocalizationPackage:
-		public RTTI::ImplementInterface<WindowsLocalizationPackage, ILocalizationPackage>,
+	class KX_API QtLocalizationPackage:
+		public RTTI::ImplementInterface<QtLocalizationPackage, ILocalizationPackage>,
 		private Localization::Private::XMLPackageHelper
 	{
 		private:
 			Localization::Private::ItemsPackageHelper m_ItemsHelper;
 			std::unordered_map<ResourceID, LocalizationItem> m_Items;
 			Locale m_Locale;
+			Version m_Version;
 
 		private:
 			bool DoLoadXML(const XMLDocument& xml, FlagSet<LoadingScheme> loadingScheme);
 			void DoSetLocale(const Locale& locale) override
 			{
-				m_Locale = locale;
+				if (locale)
+				{
+					m_Locale = locale;
+				}
 			}
 
 		public:
-			WindowsLocalizationPackage()
+			QtLocalizationPackage()
 				:m_ItemsHelper(m_Items)
 			{
 			}
-			WindowsLocalizationPackage(const WindowsLocalizationPackage&) = delete;
-			WindowsLocalizationPackage(WindowsLocalizationPackage&&) noexcept = default;
+			QtLocalizationPackage(const QtLocalizationPackage&) = delete;
+			QtLocalizationPackage(QtLocalizationPackage&&) noexcept = default;
 
 		public:
 			// ILocalizationPackage
@@ -67,8 +72,14 @@ namespace kxf
 				return XMLPackageHelper::Load(library, name, locale, loadingScheme);
 			}
 
+			// QtLocalizationPackage
+			Version GetVersion() const
+			{
+				return m_Version;
+			}
+
 		public:
-			WindowsLocalizationPackage& operator=(const WindowsLocalizationPackage&) = delete;
-			WindowsLocalizationPackage& operator=(WindowsLocalizationPackage&&) noexcept = default;
+			QtLocalizationPackage& operator=(const QtLocalizationPackage&) = delete;
+			QtLocalizationPackage& operator=(QtLocalizationPackage&&) noexcept = default;
 	};
 }

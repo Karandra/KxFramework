@@ -42,7 +42,7 @@ namespace kxf::Localization
 		{
 			// TODO: Need a proper solution instead of manually adding supported file extensions here.
 			String name = item.GetName();
-			if (name.MatchesWildcards(wxS("*.xml")) || name.MatchesWildcards(wxS("*.resx")) || name.MatchesWildcards(wxS("*.resw")))
+			if (name.MatchesWildcards(wxS("*.xml")) || name.MatchesWildcards(wxS("*.resx")) || name.MatchesWildcards(wxS("*.resw")) || name.MatchesWildcards(wxS("*.ts")))
 			{
 				return OnSearchPackage(func, std::move(item));
 			}
@@ -53,10 +53,23 @@ namespace kxf::Localization
 	{
 		if (library)
 		{
-			return library.EnumResourceNames(Private::EmbeddedResourceType, [&](String name)
+			using namespace Localization::Private;
+
+			size_t count = 0;
+			count += library.EnumResourceNames(EmbeddedResourceType::Android, [&](String name)
 			{
 				return OnSearchPackage(func, FileItem(std::move(name)));
 			});
+			count += library.EnumResourceNames(EmbeddedResourceType::Windows, [&](String name)
+			{
+				return OnSearchPackage(func, FileItem(std::move(name)));
+			});
+			count += library.EnumResourceNames(EmbeddedResourceType::Qt, [&](String name)
+			{
+				return OnSearchPackage(func, FileItem(std::move(name)));
+			});
+
+			return count;
 		}
 		return 0;
 	}

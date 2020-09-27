@@ -1523,6 +1523,9 @@
     <ClInclude Include="kxf\Network\HTTPStatus.h">
       <Filter>kxf\Network</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Localization\QtLocalizationPackage.h">
+      <Filter>kxf\Localization</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2284,6 +2287,9 @@
     </ClCompile>
     <ClCompile Include="kxf\System\NtStatus.cpp">
       <Filter>kxf\System</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Localization\QtLocalizationPackage.cpp">
+      <Filter>kxf\Localization</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

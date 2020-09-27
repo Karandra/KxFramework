@@ -17,19 +17,25 @@ namespace kxf::Localization::Private
 	}
 	bool XMLPackageHelper::Load(const DynamicLibrary& library, const FSPath& name, const Locale& locale, FlagSet<LoadingScheme> loadingScheme)
 	{
-		if (auto data = library.GetResource(Localization::Private::EmbeddedResourceType, name.GetName()))
+		auto DoLoad = [&](const String& resType)
 		{
-			Locale usedLcoale = locale;
-			if (!usedLcoale)
+			if (auto data = library.GetResource(resType, name.GetName()))
 			{
-				usedLcoale = Localization::Private::LocaleFromFileName(name);
+				Locale usedLcoale = locale;
+				if (!usedLcoale)
+				{
+					usedLcoale = Localization::Private::LocaleFromFileName(name);
+				}
+				if (DoLoadXML(String::FromUTF8(data), loadingScheme))
+				{
+					DoSetLocale(usedLcoale);
+					return true;
+				}
 			}
-			if (DoLoadXML(String::FromUTF8(data), loadingScheme))
-			{
-				DoSetLocale(usedLcoale);
-				return true;
-			}
-		}
-		return false;
+			return false;
+		};
+
+		using namespace Localization::Private::EmbeddedResourceType;
+		return DoLoad(Android) || DoLoad(Windows) || DoLoad(Qt);
 	}
 }
