@@ -58,7 +58,7 @@ namespace kxf
 
 	enum class SignalParametersSemantics
 	{
-		Move,
-		Copy
+		Copy,
+		Move
 	};
 }
