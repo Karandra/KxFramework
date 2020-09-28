@@ -398,7 +398,14 @@ namespace kxf
 		{
 			if (rest)
 			{
-				*rest = SubString(0, pos);
+				if (pos != 0)
+				{
+					*rest = SubString(0, pos - 1);
+				}
+				else
+				{
+					rest->clear();
+				}
 			}
 			return Mid(pos + 1);
 		}
@@ -411,7 +418,14 @@ namespace kxf
 		{
 			if (rest)
 			{
-				*rest = SubString(0, pos);
+				if (pos != 0)
+				{
+					*rest = SubString(0, pos - 1);
+				}
+				else
+				{
+					rest->clear();
+				}
 			}
 			return Mid(pos + 1);
 		}
@@ -427,7 +441,10 @@ namespace kxf
 			{
 				*rest = Mid(pos + 1);
 			}
-			return SubString(0, pos);
+			if (pos != 0)
+			{
+				return SubString(0, pos - 1);
+			}
 		}
 		return {};
 	}
@@ -440,7 +457,10 @@ namespace kxf
 			{
 				*rest = Mid(pos + 1);
 			}
-			return SubString(0, pos);
+			if (pos != 0)
+			{
+				return SubString(0, pos - 1);
+			}
 		}
 		return {};
 	}
