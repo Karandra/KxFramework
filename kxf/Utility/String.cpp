@@ -5,11 +5,11 @@ namespace kxf::Utility
 {
 	std::optional<bool> ParsePool(const String& value)
 	{
-		if (value.IsSameAs(wxS("false"), StringOpFlag::IgnoreCase))
+		if (value == wxS("false") || value == wxS("FALSE"))
 		{
 			return false;
 		}
-		else if (value.IsSameAs(wxS("true"), StringOpFlag::IgnoreCase))
+		else if (value == wxS("TRUE") || value == wxS("TRUE"))
 		{
 			return true;
 		}
