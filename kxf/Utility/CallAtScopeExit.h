@@ -4,7 +4,7 @@
 namespace kxf::Utility
 {
 	template<class TFunc>
-	class KX_API CallAtScopeExit final
+	class CallAtScopeExit final
 	{
 		private:
 			TFunc m_Func;
