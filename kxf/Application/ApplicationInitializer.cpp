@@ -78,11 +78,12 @@ namespace kxf
 		RunInitSequence();
 	}
 	ApplicationInitializer::ApplicationInitializer(ICoreApplication& app, int argc, char** argv)
-		: m_Application(app)
+		:m_Application(app)
 	{
 		RunInitSequence(argc, argv);
 	}
-	ApplicationInitializer::ApplicationInitializer(ICoreApplication& app, int argc, wchar_t** argv) : m_Application(app)
+	ApplicationInitializer::ApplicationInitializer(ICoreApplication& app, int argc, wchar_t** argv)
+		:m_Application(app)
 	{
 		RunInitSequence(argc, argv);
 	}

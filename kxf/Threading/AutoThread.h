@@ -6,7 +6,7 @@
 namespace kxf
 {
 	template<class TCallable>
-	class KX_API AutoThread: public wxThread
+	class AutoThread: public wxThread
 	{
 		private:
 			TCallable m_Callable;
