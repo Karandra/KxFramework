@@ -568,17 +568,6 @@ namespace kxf
 		wxString patternL;
 		if (flags & StringOpFlag::IgnoreCase)
 		{
-			if (flags & StringOpFlag::FromEnd)
-			{
-				pos = m_String.rfind(ScopedCharBufferOf(pattern), offset);
-			}
-			else
-			{
-				pos = m_String.find(ScopedCharBufferOf(pattern), offset);
-			}
-		}
-		else
-		{
 			Private::MoveWxString(patternL, StringToLower(ScopedCharBufferOf(m_String)));
 			Private::MoveWxString(patternL, StringToLower(ScopedCharBufferOf(pattern)));
 
@@ -589,6 +578,17 @@ namespace kxf
 			else
 			{
 				pos = sourceL.find(patternL, offset);
+			}
+		}
+		else
+		{
+			if (flags & StringOpFlag::FromEnd)
+			{
+				pos = m_String.rfind(ScopedCharBufferOf(pattern), offset);
+			}
+			else
+			{
+				pos = m_String.find(ScopedCharBufferOf(pattern), offset);
 			}
 		}
 
@@ -606,22 +606,22 @@ namespace kxf
 			{
 				if (flags & StringOpFlag::FromEnd)
 				{
-					pos = m_String.rfind(ScopedCharBufferOf(pattern), pos + replacementLength);
+					pos = sourceL.rfind(patternL, pos + replacementLength);
 				}
 				else
 				{
-					pos = m_String.find(ScopedCharBufferOf(pattern), pos + replacementLength);
+					pos = sourceL.find(patternL, pos + replacementLength);
 				}
 			}
 			else
 			{
 				if (flags & StringOpFlag::FromEnd)
 				{
-					pos = sourceL.rfind(patternL, pos + replacementLength);
+					pos = m_String.rfind(ScopedCharBufferOf(pattern), pos + replacementLength);
 				}
 				else
 				{
-					pos = sourceL.find(patternL, pos + replacementLength);
+					pos = m_String.find(ScopedCharBufferOf(pattern), pos + replacementLength);
 				}
 			}
 		}
@@ -642,9 +642,9 @@ namespace kxf
 				c = replacement;
 				replacementCount++;
 
-				return !(flags & StringOpFlag::FirstMatchOnly);
+				return !flags.Contains(StringOpFlag::FirstMatchOnly);
 			}
-			return false;
+			return true;
 		};
 
 		if (flags & StringOpFlag::FromEnd)
