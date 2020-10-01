@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "System.h"
 #include "Common.h"
+#include "kxf/System/DynamicLibrary.h"
 
 namespace
 {
@@ -21,17 +22,24 @@ namespace
 
 namespace kxf::Utility
 {
-	const wxScopedCharBuffer LoadResource(const String& resourceName, const String& resourceType)
+	const wxScopedCharBuffer LoadResource(const DynamicLibrary& library, const String& resourceName, const String& resourceType)
 	{
-		HMODULE moduleHandle = ::GetModuleHandleW(nullptr);
-		HRSRC resourceHandle = ::FindResourceW(moduleHandle, resourceName.wc_str(), resourceType.wc_str());
-		return DoLoadResource(resourceHandle, moduleHandle);
+		if (library)
+		{
+			const HMODULE moduleHandle = static_cast<HMODULE>(library.GetHandle());
+			const HRSRC resourceHandle = ::FindResourceW(moduleHandle, resourceName.wc_str(), resourceType.wc_str());
+			return DoLoadResource(resourceHandle, moduleHandle);
+		}
+		return {};
 	}
-	const wxScopedCharBuffer LoadResource(int resourceID, const String& resourceType)
+	const wxScopedCharBuffer LoadResource(const DynamicLibrary& library, int resourceID, const String& resourceType)
 	{
-		HMODULE moduleHandle = ::GetModuleHandleW(nullptr);
-		HRSRC resourceHandle = ::FindResourceW(moduleHandle, MAKEINTRESOURCEW(resourceID), resourceType.wc_str());
-		return DoLoadResource(resourceHandle, moduleHandle);
+		if (library)
+		{
+			const HMODULE moduleHandle = static_cast<HMODULE>(library.GetHandle());
+			const HRSRC resourceHandle = ::FindResourceW(moduleHandle, MAKEINTRESOURCEW(resourceID), resourceType.wc_str());
+			return DoLoadResource(resourceHandle, moduleHandle);
+		}
 	}
 
 	intptr_t ModWindowStyle(void* windowHandle, int index, intptr_t style, bool enable) noexcept
