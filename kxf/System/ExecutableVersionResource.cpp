@@ -15,13 +15,13 @@ namespace
 	{
 		return {static_cast<int>(HIWORD(mostSignificant)), static_cast<int>(LOWORD(mostSignificant)), static_cast<int>(HIWORD(leastSignificant)), static_cast<int>(LOWORD(leastSignificant))};
 	}
-	VS_FIXEDFILEINFO* GetFixedFileVersionInfo(const uint8_t* buffer) noexcept
+	const VS_FIXEDFILEINFO* GetFixedFileVersionInfo(const uint8_t* buffer) noexcept
 	{
 		void* fixedInfo = nullptr;
 		UINT size = 0;
 		if (::VerQueryValueW(buffer, L"\\", &fixedInfo, &size) && fixedInfo)
 		{
-			return reinterpret_cast<VS_FIXEDFILEINFO*>(fixedInfo);
+			return reinterpret_cast<const VS_FIXEDFILEINFO*>(fixedInfo);
 		}
 		return nullptr;
 	}
@@ -100,15 +100,28 @@ namespace kxf
 		if (!IsNull())
 		{
 			String queryTemplate = wxString::Format(wxS("\\StringFileInfo\\%04x%04x"), static_cast<int>(m_LangID), static_cast<int>(m_CodePage));
-			auto GetField = [&](const wchar_t* fieldName) -> String
+			auto GetField = [&](const wchar_t* fieldName, bool isVersion = false) -> String
 			{
 				String query = String::Format(wxS("%1\\%2"), queryTemplate, fieldName);
 
 				UINT size = 0;
 				LPWSTR stringInfo = nullptr;
-				if (::VerQueryValueW(m_Buffer.data(), query.wc_str(), reinterpret_cast<void**>(&stringInfo), &size))
+				if (::VerQueryValueW(m_Buffer.data(), query.wc_str(), reinterpret_cast<void**>(&stringInfo), &size) && size != 0)
 				{
-					return String(stringInfo, size);
+					// Remove the null pointer at the end if any. Not sure if it's always present, MSDN says nothing about it.
+					if (stringInfo[size - 1] == 0)
+					{
+						size -= 1;
+					}
+					String result(stringInfo, size);
+
+					if (isVersion)
+					{
+						// Normalize the version string
+						result.Replace(wxS(','), wxS("."));
+						result.Replace(wxS(" "), wxS(""));
+					}
+					return result;
 				}
 				return {};
 			};
@@ -117,11 +130,11 @@ namespace kxf
 			{
 				case ExecutableVersionField::FileVersion:
 				{
-					return GetField(L"FileVersion");
+					return GetField(L"FileVersion", true);
 				}
 				case ExecutableVersionField::ProductVersion:
 				{
-					return GetField(L"ProductVersion");
+					return GetField(L"ProductVersion", true);
 				}
 				case ExecutableVersionField::FileDescription:
 				{
