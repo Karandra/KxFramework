@@ -282,7 +282,7 @@ namespace kxf
 		return false;
 	}
 
-	// // General
+	// General
 	String XMLNode::GetXPath() const
 	{
 		return ConstructXPath(*this);

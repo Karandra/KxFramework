@@ -84,11 +84,11 @@ namespace kxf::WebSocket
 		{
 			try
 			{
-				m_ConnectionPtr->append_header(key.ToStdStringUTF8(), value.ToStdStringUTF8());
+				m_ConnectionPtr->append_header(key.ToUTF8(), value.ToUTF8());
 			}
 			catch (...)
 			{
-				wxLogDebug(wxS("KxWebSocket::AddRequestHeaders: exception occurred"));
+				wxLogDebug(wxS("SecureClient::AddRequestHeaders: exception occurred"));
 			}
 		}
 	}
@@ -100,13 +100,13 @@ namespace kxf::WebSocket
 	}
 	bool SecureClient::DoSendData(const String& stringData)
 	{
-		TErrorCode errorCode = m_ConnectionPtr->send(stringData.ToStdStringUTF8(), TFrameOpCode::text);
+		TErrorCode errorCode = m_ConnectionPtr->send(stringData.ToUTF8(), TFrameOpCode::text);
 		return !errorCode;
 	}
 
 	void SecureClient::DoClose(CloseCode code, const String& status, int& errorCode)
 	{
-		m_Client.close(m_ConnectionHandle, static_cast<TCloseStatus>(code), status.ToStdStringUTF8());
+		m_Client.close(m_ConnectionHandle, static_cast<TCloseStatus>(code), status.ToUTF8());
 	}
 	bool SecureClient::DoConnect(const URI& address)
 	{
@@ -116,7 +116,7 @@ namespace kxf::WebSocket
 		}
 
 		TErrorCode errorCode;
-		m_ConnectionPtr = m_Client.get_connection(m_Address.BuildURI().ToStdStringUTF8(), errorCode);
+		m_ConnectionPtr = m_Client.get_connection(m_Address.BuildURI().ToUTF8(), errorCode);
 		if (!errorCode)
 		{
 			AddRequestHeaders();
@@ -154,7 +154,7 @@ namespace kxf::WebSocket
 		{
 			try
 			{
-				m_ConnectionPtr->append_header(key.ToStdStringUTF8(), value.ToStdStringUTF8());
+				m_ConnectionPtr->append_header(key.ToUTF8(), value.ToUTF8());
 			}
 			catch (...)
 			{
@@ -172,7 +172,7 @@ namespace kxf::WebSocket
 		{
 			try
 			{
-				m_ConnectionPtr->replace_header(key.ToStdStringUTF8(), value.ToStdStringUTF8());
+				m_ConnectionPtr->replace_header(key.ToUTF8(), value.ToUTF8());
 			}
 			catch (...)
 			{
@@ -190,7 +190,7 @@ namespace kxf::WebSocket
 		{
 			try
 			{
-				m_ConnectionPtr->remove_header(key.ToStdStringUTF8());
+				m_ConnectionPtr->remove_header(key.ToUTF8());
 			}
 			catch (...)
 			{
@@ -209,6 +209,6 @@ namespace kxf::WebSocket
 
 	void SecureClient::SetUserAgent(const String& userAgent)
 	{
-		m_Client.set_user_agent(userAgent.ToStdStringUTF8());
+		m_Client.set_user_agent(userAgent.ToUTF8());
 	}
 }

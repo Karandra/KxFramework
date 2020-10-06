@@ -501,22 +501,21 @@ namespace kxf
 			{
 				return m_String.ToStdWstring();
 			}
-			std::string ToStdStringUTF8() const
+			
+			std::string ToUTF8() const
 			{
-				auto utf8 = m_String.ToUTF8();
-				return std::string(utf8.data(), utf8.length());
+				auto converted = m_String.ToUTF8();
+				return {converted.data(), converted.length()};
 			}
-			const wxScopedCharBuffer ToUTF8() const
+			std::string ToASCII(char replaceWith = '_') const
 			{
-				return m_String.ToUTF8();
+				auto converted = m_String.ToAscii();
+				return {converted.data(), converted.length()};
 			}
-			const wxScopedCharBuffer ToASCII(char replaceWith = '_') const
+			std::string To8BitData() const
 			{
-				return m_String.ToAscii();
-			}
-			const wxScopedCharBuffer To8BitData() const
-			{
-				return m_String.To8BitData();
+				auto converted = m_String.To8BitData();
+				return {converted.data(), converted.length()};
 			}
 
 			// Concatenation
