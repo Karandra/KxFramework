@@ -224,6 +224,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="kxf\Log">
+      <UniqueIdentifier>{3e786109-f51a-4653-8566-c33d43e122c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -1526,6 +1529,15 @@
     <ClInclude Include="kxf\Localization\QtLocalizationPackage.h">
       <Filter>kxf\Localization</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Log.hpp">
+      <Filter>kxf/Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Log\Common.h">
+      <Filter>kxf\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Log\OutputStreamTarget.h">
+      <Filter>kxf\Log</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2290,6 +2302,12 @@
     </ClCompile>
     <ClCompile Include="kxf\Localization\QtLocalizationPackage.cpp">
       <Filter>kxf\Localization</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Log\Common.cpp">
+      <Filter>kxf\Log</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Log\OutputStreamTarget.cpp">
+      <Filter>kxf\Log</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

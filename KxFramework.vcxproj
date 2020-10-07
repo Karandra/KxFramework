@@ -269,6 +269,9 @@
     <ClInclude Include="kxf\Localization\Private\LocalizationResources.h" />
     <ClInclude Include="kxf\Localization\QtLocalizationPackage.h" />
     <ClInclude Include="kxf\Localization\WindowsLocalizationPackage.h" />
+    <ClInclude Include="kxf\Log.hpp" />
+    <ClInclude Include="kxf\Log\Common.h" />
+    <ClInclude Include="kxf\Log\OutputStreamTarget.h" />
     <ClInclude Include="kxf\pch.hpp" />
     <ClInclude Include="kxf\RTTI\IID.h" />
     <ClInclude Include="kxf\RTTI\ObjectPtr.h" />
@@ -664,6 +667,8 @@
     <ClCompile Include="kxf\Localization\Private\LocalizationPackageHelper.cpp" />
     <ClCompile Include="kxf\Localization\QtLocalizationPackage.cpp" />
     <ClCompile Include="kxf\Localization\WindowsLocalizationPackage.cpp" />
+    <ClCompile Include="kxf\Log\Common.cpp" />
+    <ClCompile Include="kxf\Log\OutputStreamTarget.cpp" />
     <ClCompile Include="kxf\Sciter\Stylesheets\MasterStylesheetStorage.cpp" />
     <ClCompile Include="kxf\Sciter\Stylesheets\StylesheetStorage.cpp" />
     <ClCompile Include="kxf\Sciter\Widgets\NativeWidget.cpp" />

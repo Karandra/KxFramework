@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "NativeAPI.h"
+#include "kxf/Log/Common.h"
 #include "kxf/Utility/Common.h"
 #include <Windows.h>
 #include <wx/module.h>
-#include <wx/log.h>
 #include "UndefWindows.h"
 
 #define DECLARE_LIBRARY(name)	\
@@ -41,7 +41,7 @@ namespace kxf::NativeAPI::Private
 			}
 			else
 			{
-				wxLogWarning("Couldn't loaded \"%s\" library", library.Name);
+				Log::Warning(wxS("Couldn't load \"%1\" library"), library.Name);
 			}
 		}
 		return count;
