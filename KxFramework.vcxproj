@@ -245,12 +245,14 @@
     <ClInclude Include="kxf\General\DateTime\TimeClock.h" />
     <ClInclude Include="kxf\General\DateTime\TimeSpan.h" />
     <ClInclude Include="kxf\General\DateTime\TimeZone.h" />
+    <ClInclude Include="kxf\General\DynamicVariablesCollection.h" />
     <ClInclude Include="kxf\General\IErrorCode.h" />
     <ClInclude Include="kxf\General\IVariablesCollection.h" />
     <ClInclude Include="kxf\General\LocallyUniqueID.h" />
     <ClInclude Include="kxf\General\OptionalPtr.h" />
     <ClInclude Include="kxf\General\RegEx.h" />
     <ClInclude Include="kxf\General\ResourceID.h" />
+    <ClInclude Include="kxf\General\StaticVariablesCollection.h" />
     <ClInclude Include="kxf\IO.hpp" />
     <ClInclude Include="kxf\IO\Common.h" />
     <ClInclude Include="kxf\IO\NativeFileStream.h" />
@@ -656,8 +658,10 @@
     <ClCompile Include="kxf\General\DateTime\TimeClock.cpp" />
     <ClCompile Include="kxf\General\DateTime\TimeSpan.cpp" />
     <ClCompile Include="kxf\General\DateTime\TimeZone.cpp" />
+    <ClCompile Include="kxf\General\DynamicVariablesCollection.cpp" />
     <ClCompile Include="kxf\General\IVariablesCollection.cpp" />
     <ClCompile Include="kxf\General\LocallyUniqueID.cpp" />
+    <ClCompile Include="kxf\General\StaticVariablesCollection.cpp" />
     <ClCompile Include="kxf\IO\Common.cpp" />
     <ClCompile Include="kxf\IO\NativeFileStream.cpp" />
     <ClCompile Include="kxf\IO\IStream.cpp" />

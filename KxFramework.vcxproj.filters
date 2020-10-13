@@ -1538,6 +1538,12 @@
     <ClInclude Include="kxf\Log\OutputStreamTarget.h">
       <Filter>kxf\Log</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\General\DynamicVariablesCollection.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\StaticVariablesCollection.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2308,6 +2314,12 @@
     </ClCompile>
     <ClCompile Include="kxf\Log\OutputStreamTarget.cpp">
       <Filter>kxf\Log</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\DynamicVariablesCollection.cpp">
+      <Filter>kxf\General</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\StaticVariablesCollection.cpp">
+      <Filter>kxf\General</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
