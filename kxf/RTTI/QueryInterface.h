@@ -101,15 +101,6 @@ namespace kxf
 				return nullptr;
 			}
 
-			virtual size_t DoAddRef() noexcept
-			{
-				return 1;
-			}
-			virtual size_t DoReleaseRef() noexcept
-			{
-				return 1;
-			}
-
 		public:
 			virtual ~IObject() = default;
 
