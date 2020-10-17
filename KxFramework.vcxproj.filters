@@ -1544,6 +1544,9 @@
     <ClInclude Include="kxf\General\StaticVariablesCollection.h">
       <Filter>kxf\General</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Drawing\SizeRatio.h">
+      <Filter>kxf\Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2320,6 +2323,9 @@
     </ClCompile>
     <ClCompile Include="kxf\General\StaticVariablesCollection.cpp">
       <Filter>kxf\General</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\SizeRatio.cpp">
+      <Filter>kxf\Drawing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

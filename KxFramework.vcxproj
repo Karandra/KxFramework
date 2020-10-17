@@ -212,6 +212,7 @@
     <ClInclude Include="kxf\Compression\SevenZip\Private\WithEvtHandler.h" />
     <ClInclude Include="kxf\Crypto\UserCredentials.h" />
     <ClInclude Include="kxf\Drawing\Geometry.h" />
+    <ClInclude Include="kxf\Drawing\SizeRatio.h" />
     <ClInclude Include="kxf\EventSystem\ActivateEvent.h" />
     <ClInclude Include="kxf\EventSystem\IndirectInvocationEvent.h" />
     <ClInclude Include="kxf\EventSystem\CommonEventLoop.h" />
@@ -644,6 +645,7 @@
     <ClCompile Include="kxf\Compression\SevenZip\Private\OutStreamWrapper.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Private\PasswordHandler.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Private\Utility.cpp" />
+    <ClCompile Include="kxf\Drawing\SizeRatio.cpp" />
     <ClCompile Include="kxf\EventSystem\CommonEventLoop.cpp" />
     <ClCompile Include="kxf\EventSystem\EventID.cpp" />
     <ClCompile Include="kxf\EventSystem\EvtHandler.cpp" />
