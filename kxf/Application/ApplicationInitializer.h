@@ -3,7 +3,6 @@
 #include "ICoreApplication.h"
 #include "kxf/System/Common.h"
 
-
 // This class can be used to perform full initialize-run-shutdown sequence of the application.
 // Use as shown:
 /*
@@ -49,9 +48,9 @@ namespace kxf
 			{
 				if (m_IsInitializedCommon = OnInitCommon())
 				{
-					if (m_IsInitialized = OnInit(std::forward<Args>(arg)...))
+					if (m_IsCreated = m_Application.OnCreate())
 					{
-						if (m_IsCreated = m_Application.OnCreate())
+						if (m_IsInitialized = OnInit(std::forward<Args>(arg)...))
 						{
 							OnInitDone();
 						}
