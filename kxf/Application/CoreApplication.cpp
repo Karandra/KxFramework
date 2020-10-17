@@ -644,35 +644,58 @@ namespace kxf
 	}
 
 	// Application::ICommandLine
+	void CoreApplication::InitializeCommandLine(char** argv, size_t argc)
+	{
+		m_ArgC = argc;
+		m_ArgVA = argv;
+		m_ArgVW = nullptr;
+
+		m_CommandLineParser.SetCmdLine(argc, argv);
+		OnCommandLineInit(m_CommandLineParser);
+	}
+	void CoreApplication::InitializeCommandLine(wchar_t** argv, size_t argc)
+	{
+		m_ArgC = argc;
+		m_ArgVA = nullptr;
+		m_ArgVW = argv;
+		
+		m_CommandLineParser.SetCmdLine(argc, argv);
+		OnCommandLineInit(m_CommandLineParser);
+	}
+
 	size_t CoreApplication::EnumCommandLineArgs(std::function<bool(String)> func) const
 	{
-		auto DoEnum = [&](auto&& argv, size_t argc)
+		size_t count = 0;
+		for (size_t i = 0; i < m_CommandLineParser.GetParamCount(); i++)
 		{
-			size_t count = 0;
-			for (size_t i = 0; i < argc; i++)
+			count++;
+			if (!std::invoke(func, m_CommandLineParser.GetParam(i)))
 			{
-				count++;
-				if (!std::invoke(func, argv[i]))
-				{
-					break;
-				}
+				break;
 			}
-			return count;
-		};
-
-		if (m_ArgVW)
-		{
-			return DoEnum(m_ArgVW, m_ArgC);
 		}
-		else if (m_ArgVA)
-		{
-			return DoEnum(m_ArgVA, m_ArgC);
-		}
-		return 0;
+		return count;
 	}
 	void CoreApplication::OnCommandLineInit(wxCmdLineParser& parser)
 	{
-		// Nothing to do
+		switch (m_CommandLineParser.Parse(false))
+		{
+			case 0:
+			{
+				OnCommandLineParsed(m_CommandLineParser);
+				break;
+			}
+			case -1:
+			{
+				OnCommandLineHelp(m_CommandLineParser);
+				break;
+			}
+			default:
+			{
+				OnCommandLineError(m_CommandLineParser);
+				break;
+			}
+		};
 	}
 	bool CoreApplication::OnCommandLineParsed(wxCmdLineParser& parser)
 	{

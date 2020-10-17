@@ -5,6 +5,7 @@
 #include "kxf/Threading/RecursiveRWLock.h"
 #include "kxf/EventSystem/EvtHandler.h"
 #include "kxf/EventSystem/EvtHandlerAccessor.h"
+#include <wx/cmdline.h>
 
 namespace kxf
 {
@@ -60,6 +61,7 @@ namespace kxf
 			std::exception_ptr m_StoredException;
 
 			// Application::ICommandLine
+			wxCmdLineParser m_CommandLineParser;
 			size_t m_ArgC = 0;
 			char** m_ArgVA = nullptr;
 			wchar_t** m_ArgVW = nullptr;
@@ -288,18 +290,8 @@ namespace kxf
 			void OnAssertFailure(String file, int line, String function, String condition, String message) override;
 
 			// Application::ICommandLine
-			void InitializeCommandLine(char** argv, size_t argc) override
-			{
-				m_ArgC = argc;
-				m_ArgVA = argv;
-				m_ArgVW = nullptr;
-			}
-			void InitializeCommandLine(wchar_t** argv, size_t argc) override
-			{
-				m_ArgC = argc;
-				m_ArgVA = nullptr;
-				m_ArgVW = argv;
-			}
+			void InitializeCommandLine(char** argv, size_t argc) override;
+			void InitializeCommandLine(wchar_t** argv, size_t argc) override;
 
 			size_t EnumCommandLineArgs(std::function<bool(String)> func) const override;
 			void OnCommandLineInit(wxCmdLineParser& parser) override;
