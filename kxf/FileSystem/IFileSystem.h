@@ -68,7 +68,7 @@ namespace kxf
 			);
 	};
 
-	class KX_API IFileIDSystem: public RTTI::Interface<IFileSystem>
+	class KX_API IFileIDSystem: public RTTI::Interface<IFileIDSystem>
 	{
 		KxRTTI_DeclareIID(IFileIDSystem, {0x8a4f7e63, 0x6092, 0x4859, {0xa1, 0x74, 0x25, 0x8, 0x7a, 0x4a, 0x90, 0xcb}});
 
