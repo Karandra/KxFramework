@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include <memory>
 
 namespace kxf
 {
@@ -36,6 +37,8 @@ namespace kxf::RTTI
 				m_Deleter(object);
 			}
 	};
+
+	KX_API ObjectDeleter& GetDefaultDeleter() noexcept;
 }
 
 namespace kxf
@@ -43,13 +46,8 @@ namespace kxf
 	template<class TValue_>
 	class object_ptr final
 	{
-		static_assert(std::is_base_of_v<IObject, TValue_>, "RTTI object required");
-
 		template<class T>
 		friend class object_ptr;
-
-		private:
-			inline static RTTI::StdObjectDeleter<std::default_delete<IObject>> ms_DefaultDeleter;
 
 		public:
 			using TValue = TValue_;
@@ -62,24 +60,26 @@ namespace kxf
 			void AcquireRef(TValue* ptr, std::unique_ptr<RTTI::ObjectDeleter> deleter = {}) noexcept
 			{
 				m_Value = ptr;
-				if (deleter.get() == &ms_DefaultDeleter)
-				{
-					deleter.release();
-					m_Deleter.reset(&ms_DefaultDeleter);
-				}
-				else
-				{
-					m_Deleter = std::move(deleter);
-				}
+				m_Deleter = std::move(deleter);
 			}
 			void ReleaseRef() noexcept
 			{
 				if (m_Deleter)
 				{
-					m_Deleter->Invoke(m_Value);
-					if (m_Deleter.get() == &ms_DefaultDeleter)
+					if constexpr(std::is_const_v<TValue>)
 					{
-						m_Deleter.release();
+						using NC = std::remove_const_t<TValue>;
+						m_Deleter->Invoke(const_cast<NC*>(m_Value));
+					}
+					else
+					{
+						m_Deleter->Invoke(m_Value);
+					}
+					
+					RTTI::ObjectDeleter& defaultDeleter = RTTI::GetDefaultDeleter();
+					if (m_Deleter.get() == &defaultDeleter)
+					{
+						static_cast<void>(m_Deleter.release());
 					}
 					else
 					{
@@ -90,24 +90,31 @@ namespace kxf
 			}
 
 			template<class T>
-			void AssingUniquePtr(std::unique_ptr<T> ptr) noexcept
+			void AcquireUniquePtr(std::unique_ptr<T> ptr) noexcept
 			{
 				AcquireRef(ptr.release());
-				m_Deleter.reset(&ms_DefaultDeleter);
+				m_Deleter.reset(&RTTI::GetDefaultDeleter());
 			}
 
 			template<class T, class TDeleter>
-			void AssingUniquePtrWithDeleter(std::unique_ptr<T, TDeleter> ptr) noexcept
+			void AcquireUniquePtrWithDeleter(std::unique_ptr<T, TDeleter> ptr) noexcept
 			{
 				if constexpr(std::is_same_v<TDeleter, std::default_delete<T>>)
 				{
 					AcquireRef(ptr.release());
-					m_Deleter.reset(&ms_DefaultDeleter);
+					m_Deleter.reset(&RTTI::GetDefaultDeleter());
 				}
 				else
 				{
 					AcquireRef(ptr.release(), std::make_unique<RTTI::StdObjectDeleter<TDeleter>>(ptr.get_deleter()));
 				}
+			}
+
+			TValue* ExchangeValue(TValue* newPtr = nullptr) noexcept
+			{
+				TValue* oldPtr = m_Value;
+				m_Value = newPtr;
+				return oldPtr;
 			}
 
 		public:
@@ -116,11 +123,11 @@ namespace kxf
 			{
 			}
 			
-			object_ptr(TValue* ptr) noexcept
+			explicit object_ptr(TValue* ptr) noexcept
 			{
 				AcquireRef(ptr);
 			}
-			object_ptr(TValue* ptr, std::unique_ptr<RTTI::ObjectDeleter> deleter) noexcept
+			explicit object_ptr(TValue* ptr, std::unique_ptr<RTTI::ObjectDeleter> deleter) noexcept
 			{
 				AcquireRef(ptr, std::move(deleter));
 			}
@@ -128,25 +135,34 @@ namespace kxf
 			template<class T, class = std::enable_if_t<std::is_base_of_v<TValue, T>>>
 			object_ptr(std::unique_ptr<T> ptr) noexcept
 			{
-				AssingUniquePtr(std::move(ptr));
+				AcquireUniquePtr(std::move(ptr));
 			}
 
 			template<class T, class TDeleter, class = std::enable_if_t<std::is_base_of_v<TValue, T>>>
 			object_ptr(std::unique_ptr<TValue, TDeleter> ptr) noexcept
 			{
-				AssingUniquePtrWithDeleter(std::move(ptr));
+				AcquireUniquePtrWithDeleter(std::move(ptr));
+			}
+
+			object_ptr(object_ptr&& other) noexcept
+			{
+				AcquireRef(other.ExchangeValue(), std::move(other.m_Deleter));
+			}
+			object_ptr(const object_ptr& other) noexcept
+			{
+				AcquireRef(other.m_Value);
 			}
 
 			template<class T, class = std::enable_if_t<std::is_base_of_v<TValue, T>>>
 			object_ptr(object_ptr<T>&& other) noexcept
 			{
-				AcquireRef(other.release(), std::move(other.m_Deleter));
+				AcquireRef(other.ExchangeValue(), std::move(other.m_Deleter));
 			}
 
 			template<class T, class = std::enable_if_t<std::is_base_of_v<TValue, T>>>
 			object_ptr(const object_ptr<T>& other) noexcept
 			{
-				AcquireRef(other.get());
+				AcquireRef(other.m_Value);
 			}
 
 			~object_ptr() noexcept
@@ -184,8 +200,7 @@ namespace kxf
 			}
 			TValue* release() noexcept
 			{
-				TValue* ptr = m_Value;
-				m_Value = nullptr;
+				TValue* ptr = ExchangeValue();
 				ReleaseRef();
 
 				return ptr;
@@ -205,7 +220,7 @@ namespace kxf
 
 			bool uses_default_deleter() const noexcept
 			{
-				return m_Deleter.get() == &ms_DefaultDeleter;
+				return m_Deleter.get() == &RTTI::GetDefaultDeleter();
 			}
 
 		public:
@@ -251,14 +266,29 @@ namespace kxf
 			template<class T, class = std::enable_if_t<std::is_base_of_v<TValue, T>>>
 			object_ptr& operator=(std::unique_ptr<T> other) noexcept
 			{
-				AssingUniquePtr(std::move(other));
+				AcquireUniquePtr(std::move(other));
 				return *this;
 			}
 
 			template<class T, class TDeleter, class = std::enable_if_t<std::is_base_of_v<TValue, T>>>
 			object_ptr& operator=(std::unique_ptr<T, TDeleter> other) noexcept
 			{
-				AssingUniquePtrWithDeleter(std::move(other));
+				AcquireUniquePtrWithDeleter(std::move(other));
+				return *this;
+			}
+
+			object_ptr& operator=(object_ptr&& other) noexcept
+			{
+				ReleaseRef();
+				AcquireRef(other.ExchangeValue(), std::move(other.m_Deleter));
+
+				return *this;
+			}
+			object_ptr& operator=(const object_ptr& other) noexcept
+			{
+				ReleaseRef();
+				AcquireRef(other.m_Value);
+
 				return *this;
 			}
 
@@ -266,20 +296,20 @@ namespace kxf
 			object_ptr& operator=(object_ptr<T>&& other) noexcept
 			{
 				ReleaseRef();
-				AcquireRef(other.release(), std::move(other.m_Deleter));
-
-				return *this;
-			}
-
-			template<class T, class = std::enable_if_t<std::is_base_of_v<TValue, T>>>
-			object_ptr& operator=(const object_ptr<T>& other) noexcept
-			{
-				ReleaseRef();
-				AcquireRef(other.get());
+				AcquireRef(other.ExchangeValue(), std::move(other.m_Deleter));
 
 				return *this;
 			}
 			
+			template<class T, class = std::enable_if_t<std::is_base_of_v<TValue, T>>>
+			object_ptr& operator=(const object_ptr<T>& other) noexcept
+			{
+				ReleaseRef();
+				AcquireRef(other.m_Value);
+
+				return *this;
+			}
+
 			// Comparison
 			bool operator==(std::nullptr_t) const noexcept
 			{
@@ -315,4 +345,13 @@ namespace kxf
 				return !contains_same_value(other) || !uses_same_deleter(other);
 			}
 	};
+}
+
+namespace kxf::RTTI
+{
+	template<class T>
+	object_ptr<T> assume_non_owned(T& value) noexcept
+	{
+		return object_ptr<T>(&value);
+	}
 }
