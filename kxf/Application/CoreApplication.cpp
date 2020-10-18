@@ -146,7 +146,7 @@ namespace kxf
 	}
 
 	// IObject
-	void* CoreApplication::DoQueryInterface(const IID& iid) noexcept
+	RTTI::QueryInfo CoreApplication::DoQueryInterface(const IID& iid) noexcept
 	{
 		if (iid.IsOfType<wxWidgets::Application>() || iid.IsOfType<wxWidgets::ApplicationConsole>())
 		{

@@ -83,7 +83,7 @@ namespace kxf::System
 
 		protected:
 			// IObject
-			void* DoQueryInterface(const IID& iid) noexcept override
+			RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept override
 			{
 				// Don't return 'ISystemProcessStdIO' interface if we don't have standard IO redirected
 				if (!m_Flags.Contains(CreateSystemProcessFlag::RedirectStdIO) && iid.IsOfType<ISystemProcessStdIO>())

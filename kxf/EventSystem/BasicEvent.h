@@ -139,7 +139,7 @@ namespace kxf
 
 		protected:
 			// IObject
-			void* DoQueryInterface(const IID& iid) noexcept override
+			RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept override
 			{
 				if (iid.IsOfType<IEventInternal>())
 				{

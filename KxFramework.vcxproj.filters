@@ -2327,6 +2327,9 @@
     <ClCompile Include="kxf\Drawing\SizeRatio.cpp">
       <Filter>kxf\Drawing</Filter>
     </ClCompile>
+    <ClCompile Include="kxf\RTTI\ObjectPtr.cpp">
+      <Filter>kxf\RTTI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="kxf\System\Private\ErrorCodeNtStatus.i">

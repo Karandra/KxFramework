@@ -11,7 +11,7 @@ namespace kxf
 			IID m_InterfaceID;
 
 		protected:
-			void* DoQueryInterface(const IID& iid) noexcept override
+			RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept override
 			{
 				if (m_ErrorCode && iid == m_InterfaceID)
 				{
