@@ -48,11 +48,30 @@ namespace kxf::RTTI
 			void* m_Object = nullptr;
 			std::unique_ptr<RTTI::ObjectDeleter> m_Deleter;
 
+		private:
+			template<class T = void>
+			T* ExchangeObject(T* newObject = nullptr) noexcept
+			{
+				void* oldObject = m_Object;
+				m_Object = newObject;
+
+				return static_cast<T*>(oldObject);
+			}
+
 		public:
 			QueryInfo() noexcept = default;
 			QueryInfo(void* ptr, std::unique_ptr<RTTI::ObjectDeleter> deleter = {}) noexcept
 				:m_Object(ptr), m_Deleter(std::move(deleter))
 			{
+			}
+			QueryInfo(const QueryInfo&) = delete;
+			QueryInfo(QueryInfo&& other) noexcept
+				:m_Object(other.ExchangeObject()), m_Deleter(std::move(other.m_Deleter))
+			{
+			}
+			~QueryInfo()
+			{
+				DestroyObject();
 			}
 
 		public:
@@ -74,10 +93,20 @@ namespace kxf::RTTI
 				return m_Object;
 			}
 
+			void DestroyObject()
+			{
+				if (m_Deleter)
+				{
+					m_Deleter->Invoke(static_cast<IObject*>(m_Object));
+					m_Deleter = nullptr;
+				}
+				m_Object = nullptr;
+			}
+
 			template<class T>
 			object_ptr<T> TakeObject() noexcept
 			{
-				return object_ptr<T>(static_cast<T*>(m_Object), std::move(m_Deleter));
+				return object_ptr<T>(ExchangeObject<T>(), std::move(m_Deleter));
 			}
 
 			template<class T>
@@ -94,6 +123,16 @@ namespace kxf::RTTI
 			bool operator!() const noexcept
 			{
 				return is_null();
+			}
+
+			QueryInfo& operator=(const QueryInfo&) = delete;
+			QueryInfo& operator=(QueryInfo&& other) noexcept
+			{
+				DestroyObject();
+				m_Object = other.ExchangeObject();
+				m_Deleter = std::move(other.m_Deleter);
+
+				return *this;
 			}
 	};
 }
