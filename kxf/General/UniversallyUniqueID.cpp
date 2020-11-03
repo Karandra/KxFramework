@@ -48,12 +48,20 @@ namespace kxf
 		{
 			return uuid;
 		}
+		else if (HResult(::CLSIDFromString(value, AsUUID(uuid))))
+		{
+			return uuid;
+		}
 		return {};
 	}
 	kxf::NativeUUID DoCreateFromString(const char* value) noexcept
 	{
 		NativeUUID uuid;
 		if (::UuidFromStringA(reinterpret_cast<RPC_CSTR>(const_cast<char*>(value)), AsUUID(uuid)) == RPC_S_OK)
+		{
+			return uuid;
+		}
+		else if (kxf::String temp = value; HResult(::CLSIDFromString(temp.wc_str(), AsUUID(uuid))))
 		{
 			return uuid;
 		}
