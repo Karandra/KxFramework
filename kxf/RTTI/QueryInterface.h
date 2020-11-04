@@ -53,7 +53,7 @@ namespace kxf::RTTI
 			T* ExchangeObject(T* newObject = nullptr) noexcept
 			{
 				void* oldObject = m_Object;
-				m_Object = newObject;
+				m_Object = const_cast<std::remove_const_t<T>*>(newObject);
 
 				return static_cast<T*>(oldObject);
 			}
