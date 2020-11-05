@@ -48,8 +48,8 @@ namespace kxf
 		Image image;
 		if (hotSpot.IsFullySpecified())
 		{
-			image.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_X, hotSpot.GetX());
-			image.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_X, hotSpot.GetY());
+			image.SetOption(ImageOption::Cursor::HotSpotX, hotSpot.GetX());
+			image.SetOption(ImageOption::Cursor::HotSpotY, hotSpot.GetY());
 		}
 
 		if (image.Load(stream, format))
@@ -67,8 +67,8 @@ namespace kxf
 			{
 				if (m_HotSpot.IsFullySpecified())
 				{
-					image.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_X, m_HotSpot.GetX());
-					image.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_X, m_HotSpot.GetY());
+					image.SetOption(ImageOption::Cursor::HotSpotX, m_HotSpot.GetX());
+					image.SetOption(ImageOption::Cursor::HotSpotY, m_HotSpot.GetY());
 				}
 				return image.Save(stream, format);
 			}
@@ -88,9 +88,6 @@ namespace kxf
 	{
 		return ToBitmap();
 	}
-
-
-
 }
 
 namespace kxf::Drawing

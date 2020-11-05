@@ -11,6 +11,56 @@ namespace kxf
 	class IOutputStream;
 }
 
+namespace kxf::ImageOption
+{
+	// Common
+	constexpr auto FileName = wxS("FileName");
+	constexpr auto Quality = wxS("quality");
+
+	constexpr auto Resolution = wxS("Resolution");
+	constexpr auto ResolutionX = wxS("ResolutionX");
+	constexpr auto ResolutionY = wxS("ResolutionY");
+	constexpr auto ResolutionUnit = wxS("ResolutionUnit");
+
+	constexpr auto MaxWidth = wxS("MaxWidth");
+	constexpr auto MaxHeight = wxS("MaxHeight");
+
+	constexpr auto OriginalWidth = wxS("OriginalWidth");
+	constexpr auto OriginalHeight = wxS("OriginalHeight");
+
+	namespace PNG
+	{
+		constexpr auto Format = wxIMAGE_OPTION_PNG_FORMAT;
+		constexpr auto BitDepth = wxIMAGE_OPTION_PNG_BITDEPTH;
+		constexpr auto Filter = wxIMAGE_OPTION_PNG_FILTER;
+
+		constexpr auto CompressionLevel = wxIMAGE_OPTION_PNG_COMPRESSION_LEVEL;
+		constexpr auto CompressionMmeoryLevel = wxIMAGE_OPTION_PNG_COMPRESSION_MEM_LEVEL;
+		constexpr auto CompressionStrategy = wxIMAGE_OPTION_PNG_COMPRESSION_STRATEGY;
+		constexpr auto CompressionBufferSize = wxIMAGE_OPTION_PNG_COMPRESSION_BUFFER_SIZE;
+	}
+	namespace TIFF
+	{
+		constexpr auto BitsPerSample = wxT("BitsPerSample");
+		constexpr auto SamplesPerPixel = wxT("SamplesPerPixel");
+		constexpr auto Compression = wxT("Compression");
+		constexpr auto Photometric = wxT("Photometric");
+		constexpr auto ImageDescriptor = wxT("ImageDescriptor");
+	}
+	namespace GIF
+	{
+		constexpr auto Comment = wxIMAGE_OPTION_GIF_COMMENT;
+		constexpr auto Transparency = wxIMAGE_OPTION_GIF_TRANSPARENCY;
+		constexpr auto TransparencyHighlight = wxIMAGE_OPTION_GIF_TRANSPARENCY_HIGHLIGHT;
+		constexpr auto TransparencyUnchanged = wxIMAGE_OPTION_GIF_TRANSPARENCY_UNCHANGED;
+	}
+	namespace Cursor
+	{
+		constexpr auto HotSpotX = wxIMAGE_OPTION_CUR_HOTSPOT_X;
+		constexpr auto HotSpotY = wxIMAGE_OPTION_CUR_HOTSPOT_Y;
+	}
+}
+
 namespace kxf
 {
 	class KX_API Image: public RTTI::Interface<Image>
