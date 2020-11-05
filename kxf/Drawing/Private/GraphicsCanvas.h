@@ -1,28 +1,27 @@
 #pragma once
 #include "../Common.h"
-#include <wx/bitmap.h>
-#include <wx/image.h>
+#include "../Bitmap.h"
+#include "../Image.h"
 
 namespace kxf::Drawing::Private
 {
 	class AlphaBitmapRef final
 	{
 		private:
-			wxBitmap& m_Bitmap;
+			Bitmap& m_Bitmap;
 
 		public:
-			AlphaBitmapRef(wxBitmap& bitmap)
+			AlphaBitmapRef(Bitmap& bitmap)
 				:m_Bitmap(bitmap)
 			{
-				m_Bitmap.UseAlpha(true);
 			}
 
 		public:
-			const wxBitmap& Get() const
+			const Bitmap& Get() const
 			{
 				return m_Bitmap;
 			}
-			wxBitmap& Get()
+			Bitmap& Get()
 			{
 				return m_Bitmap;
 			}
@@ -31,41 +30,24 @@ namespace kxf::Drawing::Private
 	class AlphaImageRef final
 	{
 		private:
-			wxImage& m_Image;
-
-		private:
-			void ClearColor()
-			{
-				const size_t length = (size_t)m_Image.GetWidth() * (size_t)m_Image.GetHeight() * size_t(3);
-				memset(m_Image.GetData(), 0, length);
-			}
-			void ClearAlpha()
-			{
-				const size_t length = (size_t)m_Image.GetWidth() * (size_t)m_Image.GetHeight();
-				memset(m_Image.GetAlpha(), 0, length);
-			}
+			Image& m_Image;
 
 		public:
-			AlphaImageRef(wxImage& image)
+			AlphaImageRef(Image& image)
 				:m_Image(image)
 			{
-				m_Image.SetMask(false);
-				m_Image.SetPalette(wxNullPalette);
-				if (!m_Image.HasAlpha())
-				{
-					m_Image.InitAlpha();
-				}
-
-				ClearColor();
-				ClearAlpha();
+				m_Image.EnableMask(false);
+				m_Image.InitAlpha();
+				m_Image.ClearData();
+				m_Image.ClearAlpha();
 			}
 
 		public:
-			const wxImage& Get() const
+			const Image& Get() const
 			{
 				return m_Image;
 			}
-			wxImage& Get()
+			Image& Get()
 			{
 				return m_Image;
 			}

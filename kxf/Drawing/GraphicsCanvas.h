@@ -1,6 +1,8 @@
 #pragma once
 #include "Common.h"
 #include "Geometry.h"
+#include "Bitmap.h"
+#include "Image.h"
 #include <wx/dc.h>
 #include <wx/dcclient.h>
 #include <wx/dcmemory.h>
@@ -30,9 +32,9 @@ namespace kxf
 				return renderer ? *renderer->CreateContext(arg) : *GetDefaultRenderer().CreateContext(arg);
 			}
 			
-			wxGraphicsContext& CreateContext(wxGraphicsRenderer* renderer, wxImage& image) const
+			wxGraphicsContext& CreateContext(wxGraphicsRenderer* renderer, Image& image) const
 			{
-				return renderer ? *renderer->CreateContextFromImage(image) : *GetDefaultRenderer().CreateContextFromImage(image);
+				return renderer ? *renderer->CreateContextFromImage(image.ToWxImage()) : *GetDefaultRenderer().CreateContextFromImage(image.ToWxImage());
 			}
 		
 			GraphicsRendererType TestRendererType() const
@@ -74,7 +76,7 @@ namespace kxf
 			virtual ~GraphicsCanvas() = default;
 
 		public:
-			virtual wxBitmap GetBitmap()
+			virtual Bitmap GetBitmap()
 			{
 				Flush();
 				return m_GDC.GetAsBitmap();
@@ -123,7 +125,7 @@ namespace kxf
 			template<class TFunc>
 			void DrawIndirect(const Rect& rect, TFunc&& func)
 			{
-				wxBitmap bitmap(rect.GetSize(), 32);
+				Bitmap bitmap(rect.GetSize(), 32);
 				bitmap.UseAlpha(true);
 				{
 					wxMemoryDC memoryDC(bitmap);

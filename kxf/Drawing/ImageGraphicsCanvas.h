@@ -12,18 +12,18 @@ namespace kxf
 			wxGCDC m_GDC;
 
 		public:
-			ImageGraphicsCanvas(wxImage& image, wxGraphicsRenderer* renderer = nullptr)
+			ImageGraphicsCanvas(Image& image, wxGraphicsRenderer* renderer = nullptr)
 				:GraphicsCanvas(m_GDC, m_GDC), m_ImageRef(image), m_GDC(&CreateContext(renderer, image))
 			{
 				InitCanvas();
 			}
-			ImageGraphicsCanvas(wxImage& image, wxDC& dc, wxGraphicsRenderer* renderer = nullptr)
+			ImageGraphicsCanvas(Image& image, wxDC& dc, wxGraphicsRenderer* renderer = nullptr)
 				:ImageGraphicsCanvas(image, renderer)
 			{
 				m_GDC.CopyAttributes(dc);
 				InitCanvas();
 			}
-			ImageGraphicsCanvas(wxImage& image, wxWindow* window, wxGraphicsRenderer* renderer = nullptr)
+			ImageGraphicsCanvas(Image& image, wxWindow* window, wxGraphicsRenderer* renderer = nullptr)
 				:ImageGraphicsCanvas(image, renderer)
 			{
 				wxWindowDC windowDC(window);
@@ -32,15 +32,15 @@ namespace kxf
 			}
 
 		public:
-			wxImage GetImage()
+			Image GetImage()
 			{
 				Flush();
 				return m_ImageRef.Get();
 			}
-			wxBitmap GetBitmap() override
+			Bitmap GetBitmap() override
 			{
 				Flush();
-				return wxBitmap(m_ImageRef.Get(), 32);
+				return m_ImageRef.Get();
 			}
 			Size GetSize() const override
 			{

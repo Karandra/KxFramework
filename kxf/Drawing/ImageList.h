@@ -52,7 +52,7 @@ namespace kxf
 			bool IsNull() const noexcept;
 			bool HasMask() const noexcept;
 			COMPtr<IImageList2> QueryInterface() const noexcept;
-		
+			
 			bool Create(int width, int height, int initialCount = 1) noexcept;
 			bool Create(const Size& size, int initialCount = 1) noexcept;
 
@@ -63,11 +63,11 @@ namespace kxf
 			int Add(const Bitmap& bitmap);
 			int Add(const Icon& icon);
 			int Add(const Image& image);
-		
+			
 			bool Replace(int index, const Bitmap& bitmap);
 			bool Replace(int index, const Icon& icon);
 			bool Replace(int index, const Image& image);
-		
+			
 			Bitmap GetBitmap(int index) const;
 			Image GetImage(int index) const;
 			Icon GetIcon(int index) const;

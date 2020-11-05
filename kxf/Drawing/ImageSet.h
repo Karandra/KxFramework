@@ -9,27 +9,15 @@
 namespace kxf
 {
 	class ImageList;
-
-	enum class ImageSetItemType
-	{
-		None = -1,
-
-		Bitmap,
-		Image,
-		Icon,
-	};
 }
 
 namespace kxf
 {
-	class KX_API ImageSet: public wxObject
+	class KX_API ImageSet final
 	{
-		public:
-			using ItemType = ImageSetItemType;
-
 		private:
 			std::unordered_map<String, std::variant<Bitmap, Image, Icon>> m_Items;
-		
+			
 		public:
 			ImageSet(size_t initialCount = 0)
 			{
@@ -73,7 +61,7 @@ namespace kxf
 			Icon GetIcon(const String& id) const;
 
 			Size GetItemSize(const String& id) const;
-			const IObject* QueryItem(const String& id, ItemType* type = nullptr) const;
+			const IObject* QueryItem(const String& id) const;
 			const Image* QueryImage(const String& id) const;
 			const Bitmap* QueryBitmap(const String& id) const;
 			const Icon* QueryIcon(const String& id) const;
@@ -87,8 +75,5 @@ namespace kxf
 				m_Items = std::move(other.m_Items);
 				return *this;
 			}
-		
-		public:
-			wxDECLARE_DYNAMIC_CLASS(ImageSet);
 	};
 }
