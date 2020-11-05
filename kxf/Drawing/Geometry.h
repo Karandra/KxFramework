@@ -24,6 +24,9 @@ namespace kxf::Geometry
 namespace kxf
 {
 	KxFlagSet_Declare(Geometry::OutCode);
+
+	class Size;
+	class Point;
 }
 
 namespace kxf::Geometry
@@ -992,6 +995,7 @@ namespace kxf
 			{
 				return {Geometry::DefaultCoord, Geometry::DefaultCoord};
 			}
+			static constexpr Point FromSize(const Size& size) noexcept;
 
 		public:
 			using BasicOrderedPair::BasicOrderedPair;
@@ -1049,6 +1053,7 @@ namespace kxf
 			{
 				return {Geometry::DefaultCoord, Geometry::DefaultCoord};
 			}
+			static constexpr Size FromPoint(const Point& point) noexcept;
 
 		public:
 			using BasicOrderedPair::BasicOrderedPair;

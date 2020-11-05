@@ -655,6 +655,7 @@
     <ClCompile Include="kxf\Compression\SevenZip\Private\Utility.cpp" />
     <ClCompile Include="kxf\Drawing\Bitmap.cpp" />
     <ClCompile Include="kxf\Drawing\Cursor.cpp" />
+    <ClCompile Include="kxf\Drawing\Geometry.cpp" />
     <ClCompile Include="kxf\Drawing\Icon.cpp" />
     <ClCompile Include="kxf\Drawing\Image.cpp" />
     <ClCompile Include="kxf\Drawing\SizeRatio.cpp" />
