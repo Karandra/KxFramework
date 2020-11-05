@@ -12,11 +12,18 @@ namespace kxf
 		private:
 			wxBitmap m_Bitmap;
 
+		private:
+			void Initialize();
+
 		public:
-			Bitmap() = default;
+			Bitmap()
+			{
+				Initialize();
+			}
 			Bitmap(const wxBitmap& other)
 				:m_Bitmap(other)
 			{
+				Initialize();
 			}
 
 			Bitmap(const Icon& other);
@@ -26,19 +33,23 @@ namespace kxf
 			Bitmap(const Bitmap& other)
 				:m_Bitmap(other.m_Bitmap)
 			{
+				Initialize();
 			}
 			
 			Bitmap(const char* xbm, const Size& size, ColorDepth depth = ColorDepthDB::BPP1)
 				:m_Bitmap(xbm, size.GetWidth(), size.GetHeight(), depth ? depth.GetValue() : -1)
 			{
+				Initialize();
 			}
 			Bitmap(const Size& size, ColorDepth depth = {})
 				:m_Bitmap(size.GetWidth(), size.GetHeight(), depth ? depth.GetValue() : -1)
 			{
+				Initialize();
 			}
 			Bitmap(const Size& size, const wxDC& dc)
 				:m_Bitmap(size.GetWidth(), size.GetHeight(), dc)
 			{
+				Initialize();
 			}
 			
 			virtual ~Bitmap() = default;
@@ -73,7 +84,7 @@ namespace kxf
 			}
 
 			bool Load(IInputStream& stream, ImageFormat format = ImageFormat::Any) override;
-			bool Save(IOutputStream& stream, ImageFormat format) override;
+			bool Save(IOutputStream& stream, ImageFormat format) const override;
 
 			// Bitmap
 			const wxBitmap& ToWxBitmap() const noexcept
@@ -111,6 +122,7 @@ namespace kxf
 			Bitmap& operator=(const Bitmap& other)
 			{
 				m_Bitmap = other.m_Bitmap;
+				Initialize();
 
 				return *this;
 			}

@@ -68,7 +68,7 @@ namespace kxf
 			{
 				return Load(stream, format, -1);
 			}
-			bool Save(IOutputStream& stream, ImageFormat format) override;
+			bool Save(IOutputStream& stream, ImageFormat format) const override;
 
 			// Icon
 			const wxIcon& ToWxIcon() const noexcept

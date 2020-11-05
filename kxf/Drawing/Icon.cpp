@@ -55,7 +55,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool Icon::Save(IOutputStream& stream, ImageFormat format)
+	bool Icon::Save(IOutputStream& stream, ImageFormat format) const
 	{
 		if (m_Icon.IsOk() && format != ImageFormat::Any && format != ImageFormat::None)
 		{

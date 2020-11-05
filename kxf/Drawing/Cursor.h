@@ -105,7 +105,7 @@ namespace kxf
 			{
 				return Load(stream, Point::UnspecifiedPosition(), format);
 			}
-			bool Save(IOutputStream& stream, ImageFormat format) override;
+			bool Save(IOutputStream& stream, ImageFormat format) const override;
 
 			// Cursor
 			const wxCursor& ToWxCursor() const noexcept

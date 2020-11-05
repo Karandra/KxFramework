@@ -8,21 +8,30 @@
 namespace kxf
 {
 	// Bitmap
+	void Bitmap::Initialize()
+	{
+		m_Bitmap.UseAlpha(true);
+	}
+
 	Bitmap::Bitmap(const Cursor& other)
 		:m_Bitmap(std::move(other.ToBitmap().m_Bitmap))
 	{
+		Initialize();
 	}
 	Bitmap::Bitmap(const Icon& other)
 		:m_Bitmap(std::move(other.ToBitmap().m_Bitmap))
 	{
+		Initialize();
 	}
 	Bitmap::Bitmap(const Image& other)
 		:m_Bitmap(std::move(other.ToBitmap().m_Bitmap))
 	{
+		Initialize();
 	}
 	Bitmap::Bitmap(const Image& other, const wxDC& dc)
 		:m_Bitmap(other.ToWxImage(), dc)
 	{
+		Initialize();
 	}
 
 	// IGDIObject
@@ -37,6 +46,7 @@ namespace kxf
 	void Bitmap::AttachHandle(void* handle)
 	{
 		m_Bitmap = wxBitmap();
+		Initialize();
 
 		if (handle)
 		{
@@ -61,7 +71,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool Bitmap::Save(IOutputStream& stream, ImageFormat format)
+	bool Bitmap::Save(IOutputStream& stream, ImageFormat format) const
 	{
 		if (m_Bitmap.IsOk() && format != ImageFormat::Any && format != ImageFormat::None)
 		{

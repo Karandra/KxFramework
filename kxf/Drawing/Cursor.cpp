@@ -59,7 +59,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool Cursor::Save(IOutputStream& stream, ImageFormat format)
+	bool Cursor::Save(IOutputStream& stream, ImageFormat format) const
 	{
 		if (m_Cursor.IsOk() && format != ImageFormat::Any && format != ImageFormat::None)
 		{

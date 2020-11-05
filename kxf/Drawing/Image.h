@@ -144,7 +144,7 @@ namespace kxf
 			}
 
 			bool Load(IInputStream& stream, ImageFormat format = ImageFormat::Any, int index = -1);
-			bool Save(IOutputStream& stream, ImageFormat format);
+			bool Save(IOutputStream& stream, ImageFormat format) const;
 
 			const wxImage& ToWxImage() const noexcept
 			{
@@ -163,6 +163,14 @@ namespace kxf
 			Size GetSize() const
 			{
 				return m_Image.IsOk() ? Size(m_Image.GetSize()) : Size::UnspecifiedSize();
+			}
+			int GetWidth() const
+			{
+				return m_Image.GetWidth();
+			}
+			int GetHeight() const
+			{
+				return m_Image.GetHeight();
 			}
 			ColorDepth GetDepth() const
 			{

@@ -21,9 +21,17 @@ namespace kxf
 
 		public:
 			virtual Size GetSize() const = 0;
+			int GetWidth() const
+			{
+				return GetSize().GetWidth();
+			}
+			int GetHeight() const
+			{
+				return GetSize().GetHeight();
+			}
 			virtual ColorDepth GetDepth() const = 0;
 
 			virtual bool Load(IInputStream& stream, ImageFormat format = ImageFormat::Any) = 0;
-			virtual bool Save(IOutputStream& stream, ImageFormat format) = 0;
+			virtual bool Save(IOutputStream& stream, ImageFormat format) const = 0;
 	};
 }

@@ -32,7 +32,7 @@ namespace kxf
 		wxWidgets::InputStreamWrapperWx warpper(stream);
 		return m_Image.LoadFile(warpper, static_cast<wxBitmapType>(format), index);
 	}
-	bool Image::Save(IOutputStream& stream, ImageFormat format)
+	bool Image::Save(IOutputStream& stream, ImageFormat format) const
 	{
 		if (m_Image.IsOk() && format != ImageFormat::Any && format != ImageFormat::None)
 		{
