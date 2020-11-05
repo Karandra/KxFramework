@@ -1,6 +1,8 @@
 #pragma once
 #include "kxf/UI/Common.h"
 #include "kxf/General/WithOptions.h"
+#include "kxf/Drawing/Bitmap.h"
+#include "kxf/Drawing/Icon.h"
 #include <wx/nativewin.h>
 #include <variant>
 struct tagNMHDR;
@@ -29,8 +31,8 @@ namespace kxf::UI
 		private:
 			String m_Caption;
 			String m_Message;
-			std::variant<wxIcon, StdIcon> m_Icon = StdIcon::None;
-			wxIcon m_QuestionIcon;
+			std::variant<Icon, StdIcon> m_Icon = StdIcon::None;
+			Icon m_QuestionIcon;
 			int m_MaxWidth = -1;
 			bool m_IsBalloonStyleSupported = false;
 
@@ -81,13 +83,11 @@ namespace kxf::UI
 			}
 
 			StdIcon GetIconID() const;
-			wxIcon GetIcon() const;
-			void SetIcon(const wxIcon& icon);
-			void SetIcon(const wxBitmap& bitmap)
+			Icon GetIcon() const;
+			void SetIcon(const Icon& icon);
+			void SetIcon(const Bitmap& bitmap)
 			{
-				wxIcon icon;
-				icon.CopyFromBitmap(bitmap);
-				SetIcon(icon);
+				SetIcon(bitmap.ToIcon());
 			}
 			void SetIcon(StdIcon iconID);
 

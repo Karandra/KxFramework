@@ -42,7 +42,7 @@ namespace kxf::UI::DataView
 		Size textExtent = wxClientDC(mainWindow).GetMultiLineTextExtent(m_Message);
 		Size offset;
 
-		if (auto icon = GetIconBitmap(); icon.IsOk())
+		if (auto icon = GetIconBitmap())
 		{
 			textExtent += icon.GetSize() * 1.5;
 			offset = smallIcon / 2;
@@ -90,7 +90,7 @@ namespace kxf::UI::DataView
 				tooltip.SetMessage(StripMarkupIfNeeded(node, column, m_Message));
 
 				tooltip.RemoveOption(ToolTipExStyle::LargeIcons);
-				if (auto icon = GetIconBitmap(); icon.IsOk())
+				if (auto icon = GetIconBitmap())
 				{
 					tooltip.SetIcon(icon);
 				}

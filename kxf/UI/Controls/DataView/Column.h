@@ -95,8 +95,8 @@ namespace kxf::UI::DataView
 			size_t m_DisplayIndex = std::numeric_limits<size_t>::max();
 			ColumnID m_ID;
 
-			wxBitmap m_Bitmap;
-			wxString m_Title;
+			Bitmap m_Bitmap;
+			String m_Title;
 			FlagSet<Alignment> m_TitleAlignment = Alignment::Invalid;
 			bool m_IsChecked = false;
 
@@ -234,13 +234,13 @@ namespace kxf::UI::DataView
 			
 			bool HasBitmap() const
 			{
-				return m_Bitmap.IsOk();
+				return !m_Bitmap.IsNull();
 			}
-			wxBitmap GetBitmap() const
+			Bitmap GetBitmap() const
 			{
 				return m_Bitmap;
 			}
-			void SetBitmap(const wxBitmap& bitmap)
+			void SetBitmap(const Bitmap& bitmap)
 			{
 				m_Bitmap = bitmap;
 				UpdateDisplay();
@@ -250,13 +250,13 @@ namespace kxf::UI::DataView
 			{
 				return m_Title.IsEmpty();
 			}
-			wxString GetTitle() const
+			String GetTitle() const
 			{
 				return m_Title;
 			}
-			void SetTitle(const wxString& title)
+			void SetTitle(String title)
 			{
-				m_Title = title;
+				m_Title = std::move(title);
 				UpdateDisplay();
 			}
 

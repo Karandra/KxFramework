@@ -57,10 +57,10 @@ namespace kxf::UI::DataView
 	class KX_API BitmapValue: public BitmapValueBase
 	{
 		protected:
-			wxBitmap m_Bitmap;
+			Bitmap m_Bitmap;
 
 		public:
-			BitmapValue(const wxBitmap& bitmap = wxNullBitmap)
+			BitmapValue(const Bitmap& bitmap = wxNullBitmap)
 				:m_Bitmap(bitmap)
 			{
 			}
@@ -75,17 +75,17 @@ namespace kxf::UI::DataView
 
 			bool HasBitmap() const
 			{
-				return m_Bitmap.IsOk();
+				return !m_Bitmap.IsNull();
 			}
-			wxBitmap& GetBitmap()
+			Bitmap& GetBitmap()
 			{
 				return m_Bitmap;
 			}
-			const wxBitmap& GetBitmap() const
+			const Bitmap& GetBitmap() const
 			{
 				return m_Bitmap;
 			}
-			void SetBitmap(const wxBitmap& bitmap)
+			void SetBitmap(const Bitmap& bitmap)
 			{
 				m_Bitmap = bitmap;
 			}

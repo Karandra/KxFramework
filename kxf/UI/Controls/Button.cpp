@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Button.h"
 #include "kxf/Drawing/UxTheme.h"
+#include "kxf/Drawing/Bitmap.h"
+#include "kxf/Drawing/Image.h"
 #include "kxf/UI/Menus/Menu.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/System/Private/System.h"
@@ -87,7 +89,6 @@ namespace kxf::UI
 		}
 
 		// Draw bitmap and label
-
 		if (wxBitmap bitmap = GetBitmap(); bitmap.IsOk())
 		{
 			if (!isEnabled)
@@ -286,10 +287,9 @@ namespace kxf::UI
 					iconSize = 512;
 				}
 
-				wxIcon icon = library.GetIconResource(wxS("78"), Size(iconSize, iconSize));
-				if (icon.IsOk())
+				if (Icon icon = library.GetIconResource(wxS("78"), Size(iconSize, iconSize)))
 				{
-					SetBitmap(Drawing::ToBitmap(icon));
+					SetBitmap(icon.ToBitmap().ToWxBitmap());
 					return;
 				}
 			}

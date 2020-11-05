@@ -116,7 +116,7 @@ namespace kxf::UI::DataView
 			wxPen m_PenExpander;
 
 			// Background bitmap
-			wxBitmap m_BackgroundBitmap;
+			Bitmap m_BackgroundBitmap;
 			FlagSet<Alignment> m_BackgroundBitmapAlignment = Alignment::Invalid;
 			bool m_FitBackgroundBitmap = false;
 
@@ -268,11 +268,11 @@ namespace kxf::UI::DataView
 			{
 				return m_NullRenderer;
 			}
-			const wxBitmap& GetBackgroundBitmap() const
+			const Bitmap& GetBackgroundBitmap() const
 			{
 				return m_BackgroundBitmap;
 			}
-			void SetBackgroundBitmap(const wxBitmap& bitmap, FlagSet<Alignment> align = Alignment::Invalid, bool fit = false)
+			void SetBackgroundBitmap(const Bitmap& bitmap, FlagSet<Alignment> align = Alignment::Invalid, bool fit = false)
 			{
 				m_BackgroundBitmap = bitmap;
 				m_BackgroundBitmapAlignment = static_cast<FlagSet<Alignment>>(align != Alignment::Invalid ? align : Alignment::None);
@@ -308,7 +308,7 @@ namespace kxf::UI::DataView
 			int GetDefaultRowHeight(UniformHeight type = UniformHeight::Default) const;
 
 			// Drag and Drop
-			wxBitmap CreateItemBitmap(Row row, int& indent);
+			Bitmap CreateItemBitmap(Row row, int& indent);
 			bool EnableDND(std::unique_ptr<wxDataObjectSimple> dataObject, DNDOpType type, bool isPreferredDrop = false);
 			bool DisableDND(const wxDataFormat& format);
 

@@ -35,7 +35,7 @@ namespace kxf::UI
 			static bool SetupFontsUsing(const wxFont& normalFont, String& normalFace, String& fixedFace, int& pointSize);
 
 		private:
-			wxBitmap m_BackgroundBitmap;
+			Bitmap m_BackgroundBitmap;
 			Color m_BackgroundColor;
 			wxGraphicsRenderer* m_Renderer = nullptr;
 
@@ -104,7 +104,7 @@ namespace kxf::UI
 				ScheduleRefresh();
 			}
 
-			wxBitmap GetHTMLBackgroundImage() const
+			Bitmap GetHTMLBackgroundImage() const
 			{
 				return m_BackgroundBitmap;
 			}
@@ -113,6 +113,10 @@ namespace kxf::UI
 				m_BackgroundBitmap = bitmap;
 				wxHtmlWindow::SetHTMLBackgroundImage(bitmap);
 				ScheduleRefresh();
+			}
+			void SetHTMLBackgroundImage(const Bitmap& bitmap)
+			{
+				HTMLWindow::SetHTMLBackgroundImage(bitmap.ToWxBitmap());
 			}
 
 			wxColour GetHTMLBackgroundColour() const override

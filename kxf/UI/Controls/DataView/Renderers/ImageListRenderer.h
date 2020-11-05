@@ -43,7 +43,7 @@ namespace kxf::UI::DataView
 				}
 				return 0;
 			}
-			wxBitmap GetBitmap(size_t index) const
+			Bitmap GetBitmap(size_t index) const
 			{
 				const kxf::ImageList* imageList = WithImageList::GetImageList();
 				if (imageList && index < (size_t)imageList->GetImageCount())
@@ -52,7 +52,7 @@ namespace kxf::UI::DataView
 				}
 				return wxNullBitmap;
 			}
-			void AddBitmap(const wxBitmap& bitmap)
+			void AddBitmap(const Bitmap& bitmap)
 			{
 				if (kxf::ImageList* imageList = WithImageList::GetImageList())
 				{
@@ -80,7 +80,7 @@ namespace kxf::UI::DataView
 			{
 				return m_Value.GetBitmapsCount();
 			}
-			wxBitmap GetBitmap(size_t index) const override
+			Bitmap GetBitmap(size_t index) const override
 			{
 				return m_Value.GetBitmap(index);
 			}

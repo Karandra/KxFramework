@@ -33,7 +33,7 @@ namespace kxf::UI
 			}
 			case ImageViewBackground::Gradient:
 			{
-				dc->GradientFillLinear(GetSize(), GetForegroundColour(), GetBackgroundColour(), m_GradientDirection);
+				dc->GradientFillLinear(GetSize(), GetForegroundColour(), GetBackgroundColour(), static_cast<wxDirection>(m_GradientDirection));
 				break;
 			}
 			case ImageViewBackground::TransparenryPattern:
@@ -94,31 +94,22 @@ namespace kxf::UI
 			ScheduleRefresh();
 		}
 	}
-	void ImageView::SetBitmap(const wxBitmap& bitmap)
+	void ImageView::SetBitmap(const Bitmap& bitmap)
 	{
-		DoSetBitmap(m_Renderer->CreateBitmap(bitmap), bitmap.GetSize());
+		DoSetBitmap(m_Renderer->CreateBitmap(bitmap.ToWxBitmap()), bitmap.GetSize());
 	}
-	void ImageView::SetBitmap(const wxImage& image)
+	void ImageView::SetBitmap(const Image& image)
 	{
-		DoSetBitmap(m_Renderer->CreateBitmapFromImage(image), image.GetSize());
+		DoSetBitmap(m_Renderer->CreateBitmapFromImage(image.ToWxImage()), image.GetSize());
 	}
 	void ImageView::SetBitmap(const wxGraphicsBitmap& bitmap, const Size& size)
 	{
 		DoSetBitmap(bitmap, size);
 	}
-
-	void ImageView::LoadFile(const String& filePath, wxBitmapType type, int index)
+	void ImageView::Load(IInputStream& stream, ImageFormat format, int index)
 	{
-		wxImage image;
-		image.LoadFile(filePath, type, index);
-		SetBitmap(image);
-	}
-	void ImageView::LoadFile(IInputStream& stream, wxBitmapType type, int index)
-	{
-		wxImage image;
-
-		wxWidgets::InputStreamWrapperWx wrapper(stream);
-		image.LoadFile(wrapper, type, index);
+		Image image;
+		image.Load(stream, format, index);
 		SetBitmap(image);
 	}
 }

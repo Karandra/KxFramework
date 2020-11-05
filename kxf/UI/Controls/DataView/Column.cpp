@@ -22,7 +22,7 @@ namespace kxf::UI::DataView
 
 	wxBitmap NativeColumn::GetBitmap() const
 	{
-		return m_Column.GetBitmap();
+		return m_Column.GetBitmap().ToWxBitmap();
 	}
 	void NativeColumn::SetBitmap(const wxBitmap& bitmap)
 	{
@@ -281,11 +281,10 @@ namespace kxf::UI::DataView
 			width += wxRendererNative::Get().GetHeaderButtonMargin(window);
 
 			// If a bitmap is used, add space for it and 2px border
-			if (const wxBitmap& bitmap = m_Bitmap; bitmap.IsOk())
+			if (m_Bitmap)
 			{
-				width += bitmap.GetWidth() + window->FromDIP(wxSize(2, 0)).GetWidth();
+				width += m_Bitmap.GetSize().GetWidth() + window->FromDIP(wxSize(2, 0)).GetWidth();
 			}
-
 			return width;
 		}
 		return -1;

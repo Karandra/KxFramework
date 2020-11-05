@@ -2,6 +2,8 @@
 #include "Common.h"
 #include "CellState.h"
 #include "CellAttribute.h"
+#include "kxf/Drawing/Bitmap.h"
+#include "kxf/Drawing/Icon.h"
 
 namespace kxf::UI::DataView
 {
@@ -86,9 +88,9 @@ namespace kxf::UI::DataView
 				return FromDIP(wxDefaultCoord, y).GetHeight();
 			}
 
-			size_t FindFirstLineBreak(const wxString& string) const;
+			size_t FindFirstLineBreak(const String& string) const;
 			int GetControlFlags(CellState cellState) const;
-			wxString StripMarkup(const wxString& markup) const;
+			String StripMarkup(const String& markup) const;
 			Rect CenterTextInside(const Rect& cellRect, const Size& textExtent) const
 			{
 				Point pos = cellRect.GetPosition();
@@ -97,17 +99,17 @@ namespace kxf::UI::DataView
 				return Rect(pos, cellRect.GetSize());
 			}
 
-			Size GetTextExtent(const wxString& string) const;
-			Size GetTextExtent(wxDC& dc, const wxString& string) const;
+			Size GetTextExtent(const String& string) const;
+			Size GetTextExtent(wxDC& dc, const String& string) const;
 			
-			Size GetMultilineTextExtent(const wxString& string) const;
-			Size GetMultilineTextExtent(wxDC& dc, const wxString& string) const;
+			Size GetMultilineTextExtent(const String& string) const;
+			Size GetMultilineTextExtent(wxDC& dc, const String& string) const;
 
-			bool DrawText(const Rect& cellRect, CellState cellState, const wxString& string, int offsetX = 0);
-			bool DrawText(wxDC& dc, const Rect& cellRect, CellState cellState, const wxString& string, int offsetX = 0);
+			bool DrawText(const Rect& cellRect, CellState cellState, const String& string, int offsetX = 0);
+			bool DrawText(wxDC& dc, const Rect& cellRect, CellState cellState, const String& string, int offsetX = 0);
 
-			bool DrawBitmap(const Rect& cellRect, CellState cellState, const wxBitmap& bitmap, int reservedWidth = -1);
-			int DrawBitmapWithText(const Rect& cellRect, CellState cellState, int offsetX, const wxString& text, const wxBitmap& bitmap, bool centerTextV = false, int reservedWidth = -1);
+			bool DrawBitmap(const Rect& cellRect, CellState cellState, const Bitmap& bitmap, int reservedWidth = -1);
+			int DrawBitmapWithText(const Rect& cellRect, CellState cellState, int offsetX, const String& text, const Bitmap& bitmap, bool centerTextV = false, int reservedWidth = -1);
 			bool DrawProgressBar(const Rect& cellRect, CellState cellState, int value, int range, ProgressState state = ProgressState::Normal, Color* averageBackgroundColor = nullptr);
 			
 			Size GetToggleSize() const;

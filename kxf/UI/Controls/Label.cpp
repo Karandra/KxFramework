@@ -121,7 +121,7 @@ namespace kxf::UI
 			dc.SetFont(GetFont().MakeUnderlined());
 		}
 
-		wxBitmap image = m_Icon;
+		Bitmap image = m_Icon;
 		if (!isEnabled)
 		{
 			image = m_IconDisabled;
@@ -136,12 +136,12 @@ namespace kxf::UI
 			contentSize = CalcBestSize(&dc);
 
 			int offset = 0;
-			if (image.IsOk())
+			if (image)
 			{
 				Rect rect2 = labelRect;
 				rect2.Y() += ConvertDialogToPixels(wxSize(0, 2)).GetHeight();
 
-				dc.DrawLabel({}, image, rect2, m_MultiLineAlignStyle);
+				dc.DrawLabel({}, image.ToWxBitmap(), rect2, m_MultiLineAlignStyle);
 				offset = image.GetWidth() + ConvertDialogToPixels(wxSize(2, 0)).GetWidth();
 			}
 
@@ -153,7 +153,7 @@ namespace kxf::UI
 			dc.DrawText(label, pos);
 
 			// Calculate best size
-			if (image.IsOk())
+			if (image)
 			{
 				contentSize.X() += image.GetWidth();
 			}
@@ -163,14 +163,14 @@ namespace kxf::UI
 		{
 			contentSize = dc.GetTextExtent(label);
 			contentSize.SetHeight(g_MinSingleLineHeight);
-			dc.DrawLabel(label, image, labelRect, m_AlignStyle);
+			dc.DrawLabel(label, image.ToWxBitmap(), labelRect, m_AlignStyle);
 		}
 
 		if (m_Style & LabelStyle::HeaderLine)
 		{
 			Point pos1 = Point(contentSize.GetWidth() + 5, rect.GetHeight() / 2 + 1);
 			Point pos2 = Point(rect.GetWidth() - 4, rect.GetHeight() / 2 + 1);
-			if (image.IsOk())
+			if (image)
 			{
 				pos1.X() += image.GetWidth() + 4;
 			}
@@ -229,11 +229,11 @@ namespace kxf::UI
 		return false;
 	}
 
-	void Label::SetBitmap(const wxBitmap& image)
+	void Label::SetBitmap(const Bitmap& image)
 	{
 		ScheduleRefresh();
 
-		if (image.IsOk())
+		if (image)
 		{
 			m_Icon = image;
 			m_IconDisabled = image.ConvertToDisabled();

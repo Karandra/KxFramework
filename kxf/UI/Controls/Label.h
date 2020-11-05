@@ -34,8 +34,8 @@ namespace kxf::UI
 			wxEvtHandler m_EvtHandler;
 
 			String m_Label;
-			wxBitmap m_Icon;
-			wxBitmap m_IconDisabled;
+			Bitmap m_Icon;
+			Bitmap m_IconDisabled;
 			Color m_ColorNormal;
 			Color m_ColorHighlight;
 			Color m_ColorClick;
@@ -118,7 +118,7 @@ namespace kxf::UI
 		public:
 			long GetWindowStyleFlag() const override
 			{
-				return m_Style.ToInt()|wxStaticText::GetWindowStyleFlag();
+				return m_Style.ToInt() | wxStaticText::GetWindowStyleFlag();
 			}
 			void SetWindowStyleFlag(long style) override
 			{
@@ -160,11 +160,11 @@ namespace kxf::UI
 				return false;
 			}
 
-			wxBitmap GetBitmap()
+			Bitmap GetBitmap()
 			{
 				return m_Icon;
 			}
-			void SetBitmap(const wxBitmap& image);
+			void SetBitmap(const Bitmap& image);
 
 			bool SetForegroundColour(const wxColour& color) override
 			{

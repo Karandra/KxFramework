@@ -211,7 +211,7 @@ namespace kxf::UI
 		dc.SetBackground(m_BackgroundColor);
 		dc.Clear();
 
-		if (m_BackgroundBitmap.IsOk())
+		if (m_BackgroundBitmap)
 		{
 			// Draw the background bitmap tiling it over the entire window area.
 			const Size virtualSize = GetVirtualSize();
@@ -220,7 +220,7 @@ namespace kxf::UI
 			{
 				for (wxCoord y = 0; y < virtualSize.GetWidth(); y += bitmapSize.GetWidth())
 				{
-					dc.DrawBitmap(m_BackgroundBitmap, x, y);
+					dc.DrawBitmap(m_BackgroundBitmap.ToWxBitmap(), x, y);
 				}
 			}
 		}

@@ -1053,25 +1053,25 @@ namespace kxf::UI::DataView
 
 		wxRendererNative& nativeRenderer = wxRendererNative::Get();
 
-		if (m_BackgroundBitmap.IsOk())
+		if (m_BackgroundBitmap)
 		{
 			Point pos;
 			if (m_BackgroundBitmapAlignment & Alignment::Right)
 			{
-				pos.X() = clientSize.GetWidth() - m_BackgroundBitmap.GetWidth();
+				pos.X() = clientSize.GetWidth() - m_BackgroundBitmap.GetSize().GetWidth();
 			}
 			if (m_BackgroundBitmapAlignment & Alignment::Bottom)
 			{
-				pos.Y() = clientSize.GetHeight() - m_BackgroundBitmap.GetHeight();
+				pos.Y() = clientSize.GetHeight() - m_BackgroundBitmap.GetSize().GetHeight();
 			}
 
 			if (m_FitBackgroundBitmap && m_BackgroundBitmap.GetSize() != clientSize)
 			{
-				gc.DrawBitmap(m_BackgroundBitmap, pos.GetX(), pos.GetY(), clientSize.GetWidth(), clientSize.GetHeight());
+				gc.DrawBitmap(m_BackgroundBitmap.ToWxBitmap(), pos.GetX(), pos.GetY(), clientSize.GetWidth(), clientSize.GetHeight());
 			}
 			else
 			{
-				dc.DrawBitmap(m_BackgroundBitmap, pos);
+				dc.DrawBitmap(m_BackgroundBitmap.ToWxBitmap(), pos);
 			}
 		}
 
@@ -1168,7 +1168,7 @@ namespace kxf::UI::DataView
 				int alpha = bgColor.GetRGB() > 0x808080 ? 97 : 150;
 				altRowColor = bgColor.ChangeLightness(alpha);
 				
-				if (m_BackgroundBitmap.IsOk())
+				if (m_BackgroundBitmap)
 				{
 					altRowColor.SetAlpha8(200);
 				}
@@ -2248,7 +2248,7 @@ namespace kxf::UI::DataView
 	}
 
 	// Drag and Drop
-	wxBitmap MainWindow::CreateItemBitmap(Row row, int& indent)
+	Bitmap MainWindow::CreateItemBitmap(Row row, int& indent)
 	{
 		int width = GetRowWidth();
 		int height = GetRowHeight(row);
@@ -2263,9 +2263,9 @@ namespace kxf::UI::DataView
 		width -= indent;
 		Rect itemRect = Rect(0, 0, width, height);
 
-		wxBitmap bitmap(width, height, 24);
+		Bitmap bitmap({width, height}, ColorDepthDB::BPP24);
 		{
-			wxMemoryDC memoryDC(bitmap);
+			wxMemoryDC memoryDC(bitmap.ToWxBitmap());
 			memoryDC.SetFont(GetFont());
 			memoryDC.SetBackground(m_View->GetBackgroundColour());
 			memoryDC.SetTextForeground(m_View->GetForegroundColour());

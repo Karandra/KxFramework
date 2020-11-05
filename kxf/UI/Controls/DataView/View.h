@@ -393,8 +393,8 @@ namespace kxf::UI::DataView
 			}
 			void SetBorderColor(const Color& color, int size = 1);
 
-			wxBitmap GetBackgroundBitmap() const;
-			void SetBackgroundBitmap(const wxBitmap& bitmap, FlagSet<Alignment> align = Alignment::Invalid, bool fit = false);
+			Bitmap GetBackgroundBitmap() const;
+			void SetBackgroundBitmap(const Bitmap& bitmap, FlagSet<Alignment> align = Alignment::Invalid, bool fit = false);
 
 		private:
 			// Called by header window after reorder

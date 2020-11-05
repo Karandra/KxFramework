@@ -348,8 +348,8 @@ namespace kxf::UI
 			m_ContentPanelLine->SetBackgroundColour(ms_LineBackgroundColor);
 			m_ContentPanelLine->SetMaxSize(FromDIP(Size(wxDefaultCoord, 1)));
 
-			m_IconView = new wxStaticBitmap(m_ContentPanel, wxID_NONE, m_MainIcon);
-			if (m_MainIcon.IsOk())
+			m_IconView = new wxStaticBitmap(m_ContentPanel, wxID_NONE, m_MainIcon.ToWxBitmap());
+			if (m_MainIcon)
 			{
 				m_IconView->SetMinSize(m_MainIcon.GetSize());
 			}

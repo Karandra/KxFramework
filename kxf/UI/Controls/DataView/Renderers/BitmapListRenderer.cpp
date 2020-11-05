@@ -39,10 +39,10 @@ namespace kxf::UI::DataView
 
 			for (size_t i = 0; i < bitmapCount; i++)
 			{
-				wxBitmap bitmap = GetBitmap(i);
-				if (bitmap.IsOk() || !m_BitmapValueBase.ShouldDrawInvalidBitmaps())
+				Bitmap bitmap = GetBitmap(i);
+				if (bitmap || !m_BitmapValueBase.ShouldDrawInvalidBitmaps())
 				{
-					const Size bitmapSize = bitmap.IsOk() ? Size(bitmap.GetSize()) : smallIcon;
+					const Size bitmapSize = bitmap ? Size(bitmap.GetSize()) : smallIcon;
 
 					Rect bitmapRect = cellRect;
 					bitmapRect.SetX(cellRect.GetX() + offsetX);
@@ -50,7 +50,7 @@ namespace kxf::UI::DataView
 					bitmapRect.SetHeight(std::clamp(bitmapSize.GetHeight(), 0, cellRect.GetHeight()));
 
 					// Don't draw images with invalid indexes, but count them as drawn to allow spaces.
-					if (bitmap.IsOk())
+					if (bitmap)
 					{
 						renderEngine.DrawBitmap(bitmapRect, cellState, bitmap);
 					}
@@ -83,10 +83,10 @@ namespace kxf::UI::DataView
 
 			for (size_t i = 0; i < bitmapCount; i++)
 			{
-				wxBitmap bitmap = GetBitmap(i);
-				if (bitmap.IsOk() || !m_BitmapValueBase.ShouldDrawInvalidBitmaps())
+				Bitmap bitmap = GetBitmap(i);
+				if (bitmap || !m_BitmapValueBase.ShouldDrawInvalidBitmaps())
 				{
-					const Size bitmapSize = bitmap.IsOk() ? Size(bitmap.GetSize()) : smallIcon;
+					const Size bitmapSize = bitmap ? bitmap.GetSize() : smallIcon;
 
 					totalSize.X() += bitmapSize.GetWidth() + spacing;
 					totalSize.Y() = std::max(totalSize.GetY(), bitmapSize.GetHeight());

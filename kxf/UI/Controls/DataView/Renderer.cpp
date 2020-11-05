@@ -57,8 +57,8 @@ namespace kxf::UI::DataView
 			buttonRect.Width() += offsetSize.GetX();
 			buttonRect.Height() += offsetSize.GetY();
 
-			wxBitmap canvas(cellRect.GetSize(), 32);
-			wxMemoryDC memDC(canvas);
+			Bitmap canvas(cellRect.GetSize(), ColorDepthDB::BPP32);
+			wxMemoryDC memDC(canvas.ToWxBitmap());
 			wxRendererNative::Get().DrawHeaderButton(GetView(), memDC, Rect(-1, 0, buttonRect.GetWidth() + 1, buttonRect.GetHeight()), GetRenderEngine().GetControlFlags(cellState), wxHDR_SORT_ICON_NONE);
 			if (!cellState.IsSelected())
 			{
@@ -69,7 +69,7 @@ namespace kxf::UI::DataView
 				memDC.DrawLine(Point(0, 0), Point(buttonRect.GetWidth() + 1, 0));
 			}
 
-			dc.DrawBitmap(canvas, cellRect.GetPosition());
+			dc.DrawBitmap(canvas.ToWxBitmap(), cellRect.GetPosition());
 		}
 		else if (cellBGOptions.ContainsOption(CellBGOption::Button))
 		{

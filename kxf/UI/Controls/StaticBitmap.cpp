@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "StaticBitmap.h"
 #include "kxf/Drawing/UxTheme.h"
+#include "kxf/Drawing/Bitmap.h"
+#include "kxf/Drawing/Image.h"
 
 namespace kxf::UI
 {
@@ -17,14 +19,14 @@ namespace kxf::UI
 
 	bool StaticBitmap::Create(wxWindow* parent,
 							  wxWindowID id,
-							  const wxBitmap& bitmap,
+							  const Bitmap& bitmap,
 							  FlagSet<WindowStyle> style
 	)
 	{
 		SetBackgroundStyle(wxBG_STYLE_PAINT);
-		if (wxGenericStaticBitmap::Create(parent, id, bitmap, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style.ToInt()))
+		if (wxGenericStaticBitmap::Create(parent, id, bitmap.ToWxBitmap(), Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style.ToInt()))
 		{
-			m_InitialSize = bitmap.IsOk() ? bitmap.GetSize() : this->GetSize();
+			m_InitialSize = bitmap ? bitmap.GetSize() : Size(this->GetSize());
 
 			SetScaleMode(wxGenericStaticBitmap::Scale_None);
 			Bind(wxEVT_PAINT, &StaticBitmap::OnPaint, this);
@@ -34,12 +36,12 @@ namespace kxf::UI
 		return false;
 	}
 
-	wxImage StaticBitmap::GetImage() const
+	Image StaticBitmap::GetImage() const
 	{
-		return Drawing::ToImage(GetBitmap());
+		return GetBitmap().ConvertToImage();
 	}
-	void StaticBitmap::SetImage(const wxImage& image)
+	void StaticBitmap::SetImage(const Image& image)
 	{
-		SetBitmap(Drawing::ToBitmap(image));
+		SetBitmap(Image(image).ToBitmap().ToWxBitmap());
 	}
 }

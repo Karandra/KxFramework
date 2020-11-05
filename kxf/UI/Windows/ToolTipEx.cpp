@@ -102,7 +102,7 @@ namespace kxf::UI
 
 		auto DoUpdateCaption = [this, hwnd]()
 		{
-			if (const wxIcon* icon = std::get_if<wxIcon>(&m_Icon); icon && icon->IsOk())
+			if (const Icon* icon = std::get_if<Icon>(&m_Icon); icon && *icon)
 			{
 				::SendMessageW(hwnd, TTM_SETTITLE, reinterpret_cast<WPARAM>(icon->GetHandle()), reinterpret_cast<LPARAM>(m_Caption.wc_str()));
 				return true;
@@ -123,7 +123,7 @@ namespace kxf::UI
 						m_QuestionIcon = wxArtProvider::GetIcon(wxART_QUESTION, wxART_MESSAGE_BOX, Size(width, height));
 					}
 
-					if (m_QuestionIcon.IsOk())
+					if (m_QuestionIcon)
 					{
 						::SendMessageW(hwnd, TTM_SETTITLE, reinterpret_cast<WPARAM>(m_QuestionIcon.GetHandle()), reinterpret_cast<LPARAM>(m_Caption.wc_str()));
 						return true;
@@ -270,15 +270,15 @@ namespace kxf::UI
 		}
 		return StdIcon::None;
 	}
-	wxIcon ToolTipEx::GetIcon() const
+	Icon ToolTipEx::GetIcon() const
 	{
-		if (const wxIcon* icon = std::get_if<wxIcon>(&m_Icon))
+		if (const Icon* icon = std::get_if<Icon>(&m_Icon))
 		{
 			return *icon;
 		}
-		return wxNullIcon;
+		return {};
 	}
-	void ToolTipEx::SetIcon(const wxIcon& icon)
+	void ToolTipEx::SetIcon(const Icon& icon)
 	{
 		m_Icon = icon;
 	}

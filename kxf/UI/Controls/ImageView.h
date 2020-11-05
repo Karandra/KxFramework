@@ -2,6 +2,8 @@
 #include "kxf/UI/Common.h"
 #include "kxf/UI/WindowRefreshScheduler.h"
 #include "kxf/UI/Controls/StaticBitmap.h"
+#include "kxf/Drawing/Bitmap.h"
+#include "kxf/Drawing/Image.h"
 #include "kxf/IO/IStream.h"
 #include <wx/control.h>
 #include <wx/statbmp.h>
@@ -29,7 +31,7 @@ namespace kxf::UI
 			wxGraphicsRenderer* m_Renderer = nullptr;
 			ImageViewBackground m_BackgroundMode = ImageViewBackground::Solid;
 			BitmapScaleMode m_ScaleMode = BitmapScaleMode::None;
-			wxDirection m_GradientDirection = wxDOWN;
+			Direction m_GradientDirection = Direction::Down;
 			double m_ScaleFactor = 1.0;
 			bool m_IsAnimation = false;
 
@@ -69,11 +71,11 @@ namespace kxf::UI
 				ScheduleRefresh();
 			}
 			
-			wxDirection GetGradientDirection() const
+			Direction GetGradientDirection() const
 			{
 				return m_GradientDirection;
 			}
-			void SetGradientDirection(wxDirection mode)
+			void SetGradientDirection(Direction mode)
 			{
 				m_GradientDirection = mode;
 				ScheduleRefresh();
@@ -103,20 +105,18 @@ namespace kxf::UI
 			{
 				return !m_Bitmap.IsNull();
 			}
-			wxImage GetImage() const
+			Image GetImage() const
 			{
 				return m_Bitmap.ConvertToImage();
 			}
-			wxBitmap GetBitmap() const
+			Bitmap GetBitmap() const
 			{
-				return wxBitmap(m_Bitmap.ConvertToImage(), 32);
+				return Image(m_Bitmap.ConvertToImage()).ToBitmap();
 			}
-			void SetBitmap(const wxBitmap& image);
-			void SetBitmap(const wxImage& image);
+			void SetBitmap(const Bitmap& bitmap);
+			void SetBitmap(const Image& image);
 			void SetBitmap(const wxGraphicsBitmap& image, const Size& size);
-
-			void LoadFile(const String& filePath, wxBitmapType type = wxBITMAP_TYPE_ANY, int index = -1);
-			void LoadFile(IInputStream& stream, wxBitmapType type = wxBITMAP_TYPE_ANY, int index = -1);
+			void Load(IInputStream& stream, ImageFormat format = ImageFormat::Any, int index = -1);
 
 		public:
 			wxDECLARE_DYNAMIC_CLASS(ImageView);

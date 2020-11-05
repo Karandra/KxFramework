@@ -2,7 +2,7 @@
 #include "TopLevelWindow.h"
 #include "kxf/UI/Menus/Menu.h"
 #include "kxf/System/NativeAPI.h"
-#include "kxf/Drawing/Common.h"
+#include "kxf/Drawing/Image.h"
 #include "kxf/Utility/System.h"
 #include <DWMAPI.h>
 #include "kxf/System/UndefWindows.h"
@@ -46,14 +46,8 @@ namespace kxf::UI::Private
 	Color TopLevelWindowBase::DWMGetColorKey() const
 	{
 		wxWindowDC dc(m_Window);
-		wxImage image = Drawing::ToImage(dc.GetAsBitmap());
-
-		PackedRGB<unsigned char> rgb;
-		if (image.FindFirstUnusedColour(&rgb.Red, &rgb.Green, &rgb.Blue))
-		{
-			return Color::FromFixed8(rgb.Red, rgb.Green, rgb.Blue);
-		}
-		return {};
+		Image image = dc.GetAsBitmap().ConvertToImage();
+		return image.FindFirstUnusedColour();
 	}
 	bool TopLevelWindowBase::DWMExtendFrame()
 	{
@@ -205,7 +199,7 @@ namespace kxf::UI::Private
 		return false;
 	}
 
-	wxIcon TopLevelWindowBase::GetTitleIcon() const
+	Icon TopLevelWindowBase::GetTitleIcon() const
 	{
 		HWND handle = m_Window->GetHandle();
 		HICON iconHandle = reinterpret_cast<HICON>(::SendMessageW(handle, WM_GETICON, ICON_BIG, 0));
@@ -214,20 +208,20 @@ namespace kxf::UI::Private
 			iconHandle = reinterpret_cast<HICON>(::SendMessageW(handle, WM_GETICON, ICON_SMALL, 0));
 			if (iconHandle)
 			{
-				wxIcon icon;
-				icon.CreateFromHICON(iconHandle);
+				Icon icon;
+				icon.AttachHandle(iconHandle);
 				return icon;
 			}
 		}
-		return wxNullIcon;
+		return {};
 	}
-	void TopLevelWindowBase::SetTitleIcon(const wxIcon& icon)
+	void TopLevelWindowBase::SetTitleIcon(const Icon& icon)
 	{
 		HWND handle = m_Window->GetHandle();
-		if (icon.IsOk())
+		if (icon)
 		{
-			::SendMessageW(handle, WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(icon.GetHICON()));
-			::SendMessageW(handle, WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(icon.GetHICON()));
+			::SendMessageW(handle, WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(icon.GetHandle()));
+			::SendMessageW(handle, WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(icon.GetHandle()));
 		}
 		else
 		{

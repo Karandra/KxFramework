@@ -150,19 +150,17 @@ namespace kxf::UI
 			void SetLabel(const wxString& label) override;
 
 			// Icons
-			wxBitmap GetMainIcon() const override
+			Bitmap GetMainIcon() const override
 			{
-				return GetIcon();
+				return Icon(GetIcon()).ToBitmap();
 			}
 			StdIcon GetMainIconID() const override
 			{
 				return StdIcon::None;
 			}
-			void SetMainIcon(const wxBitmap& icon) override
+			void SetMainIcon(const Bitmap& icon) override
 			{
-				wxIcon temp;
-				temp.CopyFromBitmap(icon);
-				SetIcon(temp);
+				SetIcon(icon.ToIcon().ToWxIcon());
 			}
 			void SetMainIcon(StdIcon iconID = DefaultIconID) override
 			{

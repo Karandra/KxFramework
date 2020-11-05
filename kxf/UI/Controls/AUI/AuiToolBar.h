@@ -1,6 +1,7 @@
 #pragma once
 #include "kxf/UI/Common.h"
 #include "kxf/UI/WindowRefreshScheduler.h"
+#include "kxf/Drawing/Bitmap.h"
 #include "AuiToolBarItem.h"
 #include "AuiToolBarEvent.h"
 
@@ -97,9 +98,9 @@ namespace kxf::UI
 				return wxAuiToolBar::GetToolBarFits();
 			}
 
-			AuiToolBarItem* AddTool(const String& label, const wxBitmap& bitmap, wxItemKind kind = wxITEM_NORMAL, const String& shortHelp = {});
-			AuiToolBarItem* AddTool(const String& label, const wxBitmap& bitmap, const wxBitmap& disabledBitmap, wxItemKind kind = wxITEM_NORMAL, const String& shortHelp = {});
-			AuiToolBarItem* AddTool(const wxBitmap& bitmap, const wxBitmap& disabledBitmap, bool isToggle = false, const String& shortHelp = {}, const String& longHelp = {});
+			AuiToolBarItem* AddTool(const String& label, const Bitmap& bitmap, wxItemKind kind = wxITEM_NORMAL, const String& shortHelp = {});
+			AuiToolBarItem* AddTool(const String& label, const Bitmap& bitmap, const Bitmap& disabledBitmap, wxItemKind kind = wxITEM_NORMAL, const String& shortHelp = {});
+			AuiToolBarItem* AddTool(const Bitmap& bitmap, const Bitmap& disabledBitmap, bool isToggle = false, const String& shortHelp = {}, const String& longHelp = {});
 
 			AuiToolBarItem* AddLabel(const String& label, const int width = -1);
 			AuiToolBarItem* AddControl(wxControl* control, const String& label = {});
@@ -121,9 +122,9 @@ namespace kxf::UI
 			void UpdateUI();
 
 		private:
-			wxAuiToolBarItem* AddTool(int tool_id, const String &label, const wxBitmap &bitmap, const String &short_help_string = {}, wxItemKind kind = wxITEM_NORMAL) = delete;
-			wxAuiToolBarItem* AddTool(int tool_id, const String &label, const wxBitmap &bitmap, const wxBitmap &disabled_bitmap, wxItemKind kind, const String &short_help_string, const String &long_help_string, wxObject* client_data) = delete;
-			wxAuiToolBarItem* AddTool(int tool_id, const wxBitmap &bitmap, const wxBitmap &disabled_bitmap, bool toggle = false, wxObject* client_data = nullptr, const String &short_help_string = {}, const String &long_help_string = {}) = delete;
+			wxAuiToolBarItem* AddTool(int tool_id, const wxString &label, const wxBitmap &bitmap, const wxString &short_help_string = {}, wxItemKind kind = wxITEM_NORMAL) = delete;
+			wxAuiToolBarItem* AddTool(int tool_id, const wxString &label, const wxBitmap &bitmap, const wxBitmap &disabled_bitmap, wxItemKind kind, const wxString &short_help_string, const wxString &long_help_string, wxObject* client_data) = delete;
+			wxAuiToolBarItem* AddTool(int tool_id, const wxBitmap &bitmap, const wxBitmap &disabled_bitmap, bool toggle = false, wxObject* client_data = nullptr, const wxString &short_help_string = {}, const wxString &long_help_string = {}) = delete;
 			bool GetOverflowVisible() const = delete;
 			bool GetToolBarFits() const = delete;
 			bool GetGripperVisible() const = delete;
@@ -141,14 +142,14 @@ namespace kxf::UI
 			Rect GetToolRect(int tool_id) const = delete;
 			void SetToolSticky(int tool_id, bool sticky) = delete;
 			bool GetToolSticky(int tool_id) const = delete;
-			String GetToolLabel(int tool_id) const = delete;
-			void SetToolLabel(int tool_id, const String &label) = delete;
+			wxString GetToolLabel(int tool_id) const = delete;
+			void SetToolLabel(int tool_id, const wxString &label) = delete;
 			wxBitmap GetToolBitmap(int tool_id) const = delete;
 			void SetToolBitmap(int tool_id, const wxBitmap &bitmap) = delete;
-			String GetToolShortHelp(int tool_id) const = delete;
-			void SetToolShortHelp(int tool_id, const String &help_string) = delete;
-			String GetToolLongHelp(int tool_id) const = delete;
-			void SetToolLongHelp(int tool_id, const String &help_string) = delete;
+			wxString GetToolShortHelp(int tool_id) const = delete;
+			void SetToolShortHelp(int tool_id, const wxString &help_string) = delete;
+			wxString GetToolLongHelp(int tool_id) const = delete;
+			void SetToolLongHelp(int tool_id, const wxString &help_string) = delete;
 			void SetCustomOverflowItems(const wxAuiToolBarItemArray &prepend, const wxAuiToolBarItemArray &append) = delete;
 			bool GetToolFitsByIndex(int tool_id) const = delete;
 			int GetToolPos(int tool_id) const = delete;

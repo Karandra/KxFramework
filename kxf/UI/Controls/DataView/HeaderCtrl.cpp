@@ -235,8 +235,8 @@ namespace kxf::UI::DataView
 		item.cchTextMax = column.m_Title.length();
 
 		// Bitmap
-		const wxBitmap& bitmap = column.m_Bitmap;
-		if (bitmap.IsOk())
+		const Bitmap& bitmap = column.m_Bitmap;
+		if (bitmap)
 		{
 			item.mask |= HDI_IMAGE;
 			if (HasFlag(wxHD_BITMAP_ON_RIGHT))
@@ -246,7 +246,7 @@ namespace kxf::UI::DataView
 
 			if (!m_ImageList)
 			{
-				m_ImageList = std::make_unique<kxf::ImageList>(bitmap.GetWidth(), bitmap.GetHeight());
+				m_ImageList = std::make_unique<kxf::ImageList>(bitmap.GetSize());
 				Header_SetImageList(GetHeaderCtrlHandle(), m_ImageList->GetHIMAGELIST());
 			}
 			item.iImage = m_ImageList->Add(bitmap);

@@ -4,7 +4,8 @@
 #include "kxf/Application/ICoreApplication.h"
 #include "kxf/Localization/Common.h"
 #include "kxf/System/DynamicLibrary.h"
-#include "kxf/Drawing/Common.h"
+#include "kxf/Drawing/Bitmap.h"
+#include "kxf/Drawing/Icon.h"
 #include <CommCtrl.h>
 #include "kxf/System/UndefWindows.h"
 
@@ -200,15 +201,15 @@ namespace kxf::UI
 	{
 		return m_MainIconID;
 	}
-	wxBitmap TaskDialog::GetMainIcon() const
+	Bitmap TaskDialog::GetMainIcon() const
 	{
-		if (m_MainIcon.IsOk())
+		if (m_MainIcon)
 		{
 			return m_MainIcon;
 		}
 		else
 		{
-			return wxArtProvider::GetMessageBoxIcon(TranslateIconIDToWx(GetMainIconID()));
+			return Icon(wxArtProvider::GetMessageBoxIcon(TranslateIconIDToWx(GetMainIconID()))).ToBitmap();
 		}
 	}
 	void TaskDialog::SetMainIcon(StdIcon iconID)
@@ -217,13 +218,13 @@ namespace kxf::UI
 		{
 			// Windows doesn't allow to show a question icon using icon ID for the main icon
 			// but if we really want to use this icon nothing should stop us!
-			SetMainIcon(wxArtProvider::GetMessageBoxIcon(wxICON_QUESTION));
+			SetMainIcon(Icon(wxArtProvider::GetMessageBoxIcon(wxICON_QUESTION)).ToBitmap());
 			m_MainIconID = iconID;
 		}
 		else
 		{
 			m_MainIconID = iconID;
-			m_MainIcon = wxNullIcon;
+			m_MainIcon = {};
 		}
 
 		m_NativeInfo->UpdateIcons();
@@ -232,10 +233,10 @@ namespace kxf::UI
 			::SendMessageW(reinterpret_cast<HWND>(m_Handle), TDM_UPDATE_ICON, TDIE_ICON_MAIN, reinterpret_cast<LPARAM>(m_NativeInfo->m_DialogConfig.pszMainIcon));
 		}
 	}
-	void TaskDialog::SetMainIcon(const wxBitmap& icon)
+	void TaskDialog::SetMainIcon(const Bitmap& icon)
 	{
 		m_MainIconID = StdIcon::None;
-		m_MainIcon = Drawing::ToIcon(icon);
+		m_MainIcon = icon.ToIcon();
 
 		m_NativeInfo->UpdateIcons();
 		if (m_Handle)
@@ -248,15 +249,15 @@ namespace kxf::UI
 	{
 		return m_FooterIconID;
 	}
-	wxBitmap TaskDialog::GetFooterIcon()
+	Bitmap TaskDialog::GetFooterIcon()
 	{
-		if (m_FooterIcon.IsOk())
+		if (m_FooterIcon)
 		{
 			return m_FooterIcon;
 		}
 		else
 		{
-			return wxArtProvider::GetMessageBoxIcon(TranslateIconIDToWx(GetFooterIconID()));
+			return Icon(wxArtProvider::GetMessageBoxIcon(TranslateIconIDToWx(GetFooterIconID()))).ToBitmap();
 		}
 	}
 	void TaskDialog::SetFooterIcon(StdIcon iconID)
@@ -270,10 +271,10 @@ namespace kxf::UI
 			::SendMessageW(reinterpret_cast<HWND>(m_Handle), TDM_UPDATE_ICON, TDIE_ICON_FOOTER, reinterpret_cast<LPARAM>(m_NativeInfo->m_DialogConfig.pszFooterIcon));
 		}
 	}
-	void TaskDialog::SetFooterIcon(const wxBitmap& icon)
+	void TaskDialog::SetFooterIcon(const Bitmap& icon)
 	{
 		m_FooterIconID = StdIcon::None;
-		m_FooterIcon = Drawing::ToIcon(icon);
+		m_FooterIcon = icon.ToIcon();
 
 		m_NativeInfo->UpdateIcons();
 		if (m_Handle)

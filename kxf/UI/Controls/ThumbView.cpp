@@ -33,9 +33,9 @@ namespace kxf::UI
 						wxRendererNative::Get().DrawItemSelectionRect(this, dc, thumbRect, wxCONTROL_SELECTED|wxCONTROL_CURRENT|wxCONTROL_FOCUSED);
 					}
 
-					const wxBitmap& bitmap = m_Items[thumbIndex].GetBitmap();
-					wxPoint newPos = thumbRect.GetTopLeft() + ((wxSize)m_ThumbSize - bitmap.GetSize()) / 2;
-					dc.DrawBitmap(bitmap, newPos);
+					const Bitmap& bitmap = m_Items[thumbIndex].GetBitmap();
+					const Point newPos = thumbRect.GetTopLeft() + Point::FromSize(m_ThumbSize - bitmap.GetSize()) / 2;
+					dc.DrawBitmap(bitmap.ToWxBitmap(), newPos);
 				}
 				else
 				{
@@ -198,16 +198,15 @@ namespace kxf::UI
 	{
 		return m_Items[i];
 	}
-	wxBitmap ThumbView::CreateThumb(const wxBitmap& bitmap, const Size& size) const
+	Bitmap ThumbView::CreateThumb(const Bitmap& bitmap, const Size& size) const
 	{
-		wxBitmap result(size, 32);
-		result.UseAlpha(true);
-		wxMemoryDC dc(result);
+		Bitmap result(size, ColorDepthDB::BPP32);;
+		wxMemoryDC dc(result.ToWxBitmap());
 		wxGCDC gcdc(dc);
 		gcdc.SetBackground(*wxTRANSPARENT_BRUSH);
 		gcdc.Clear();
 
-		DrawablePanel::DrawScaledBitmap(gcdc.GetGraphicsContext(), bitmap, Rect(Point(0, 0), (wxSize)size), BitmapScaleMode::AspectFit);
+		DrawablePanel::DrawScaledBitmap(gcdc.GetGraphicsContext(), bitmap.ToWxBitmap(), Rect(Point(0, 0), size), BitmapScaleMode::AspectFit);
 		return result;
 	}
 
@@ -294,7 +293,7 @@ namespace kxf::UI
 	{
 		return m_Items.size();
 	}
-	size_t ThumbView::AddThumb(const wxBitmap& bitmap)
+	size_t ThumbView::AddThumb(const Bitmap& bitmap)
 	{
 		ScheduleRefresh();
 		UpdateRowCount();
@@ -302,25 +301,16 @@ namespace kxf::UI
 		m_Items.emplace_back(ThumbViewItem(CreateThumb(bitmap, Size(m_ThumbSize).Scale(ThumbPaddingScale, ThumbPaddingScale))));
 		return m_Items.size() - 1;
 	}
-	size_t ThumbView::AddThumb(const String& filePath, wxBitmapType type, int index)
+	size_t ThumbView::AddThumb(IInputStream& stream, ImageFormat format, int index)
 	{
-		wxImage image;
-		image.SetOption(wxIMAGE_OPTION_MAX_WIDTH, m_ThumbSize.GetWidth());
-		image.SetOption(wxIMAGE_OPTION_MAX_HEIGHT, m_ThumbSize.GetHeight());
-		image.LoadFile(filePath, type, index);
-
-		return AddThumb(wxBitmap(image, 32));
-	}
-	size_t ThumbView::AddThumb(IInputStream& stream, wxBitmapType type, int index)
-	{
-		wxImage image;
-		image.SetOption(wxIMAGE_OPTION_MAX_WIDTH, m_ThumbSize.GetWidth());
-		image.SetOption(wxIMAGE_OPTION_MAX_HEIGHT, m_ThumbSize.GetHeight());
-
-		wxWidgets::InputStreamWrapperWx wrapper(stream);
-		image.LoadFile(wrapper, type, index);
-
-		return AddThumb(wxBitmap(image, 32));
+		Image image;
+		image.SetOption(ImageOption::MaxWidth, m_ThumbSize.GetWidth());
+		image.SetOption(ImageOption::MaxHeight, m_ThumbSize.GetHeight());
+		if (image.Load(stream, format, index))
+		{
+			return AddThumb(image.ToBitmap());
+		}
+		return InvalidItemIndex;
 	}
 	void ThumbView::RemoveThumb(size_t index)
 	{

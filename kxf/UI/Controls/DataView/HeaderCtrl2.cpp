@@ -86,7 +86,7 @@ namespace kxf::UI::DataView
 
 			wxHeaderButtonParams headerParameters;
 			headerParameters.m_labelText = column->GetTitle();
-			headerParameters.m_labelBitmap = column->GetBitmap();
+			headerParameters.m_labelBitmap = column->GetBitmap().ToWxBitmap();
 			headerParameters.m_labelAlignment = column->GetTitleAlignment();
 			nativeRenderer.DrawHeaderButton(this, dc, Rect(offsetX, 0, width, clientSize.GetHeight()), state, sortArrow, &headerParameters);
 

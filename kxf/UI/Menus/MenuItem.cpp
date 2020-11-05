@@ -108,22 +108,22 @@ namespace kxf::UI
 		wxMenuItem::SetSubMenu(subMenu);
 	}
 
-	void MenuItem::SetBitmap(const wxBitmap& normal, const wxBitmap& checked)
+	void MenuItem::SetBitmap(const Bitmap& normal, const Bitmap& checked)
 	{
 		if (IsCheckable())
 		{
-			if (checked.IsOk())
+			if (checked)
 			{
-				wxMenuItem::SetBitmaps(normal, checked);
+				wxMenuItem::SetBitmaps(normal.ToWxBitmap(), checked.ToWxBitmap());
 			}
 			else
 			{
-				wxMenuItem::SetBitmap(normal, false);
+				wxMenuItem::SetBitmap(normal.ToWxBitmap(), false);
 			}
 		}
 		else
 		{
-			wxMenuItem::SetBitmaps(normal, checked);
+			wxMenuItem::SetBitmaps(normal.ToWxBitmap(), checked.ToWxBitmap());
 		}
 	}
 	bool MenuItem::SetDefault()

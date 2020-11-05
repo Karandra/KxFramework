@@ -131,11 +131,11 @@ namespace kxf::UI
 			String GetLongHelp() const;
 			void SetLongHelp(const String& helpString);
 
-			const wxBitmap& GetBitmap() const;
-			void SetBitmap(const wxBitmap& bitmap);
+			const Bitmap& GetBitmap() const;
+			void SetBitmap(const Bitmap& bitmap);
 
-			const wxBitmap& GetDisabledBitmap() const;
-			void SetDisabledBitmap(const wxBitmap& bitmap);
+			const Bitmap& GetDisabledBitmap() const;
+			void SetDisabledBitmap(const Bitmap& bitmap);
 
 		public:
 			explicit operator bool() const noexcept

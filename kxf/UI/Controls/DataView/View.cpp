@@ -793,7 +793,7 @@ namespace kxf::UI::DataView
 
 			MenuItem* menuItem = menu.AddItem(title, NullString, wxITEM_CHECK);
 			menuItem->Check(column->IsVisible());
-			menuItem->SetBitmap(column->m_Bitmap);
+			menuItem->SetBitmap(column->m_Bitmap.ToWxBitmap());
 			menuItem->SetClientData(column);
 		}
 		return menu.GetMenuItemCount() != 0;
@@ -870,11 +870,11 @@ namespace kxf::UI::DataView
 		return b1 && b2 && b3;
 	}
 
-	wxBitmap View::GetBackgroundBitmap() const
+	Bitmap View::GetBackgroundBitmap() const
 	{
 		return m_ClientArea->GetBackgroundBitmap();
 	}
-	void View::SetBackgroundBitmap(const wxBitmap& bitmap, FlagSet<Alignment> align, bool fit)
+	void View::SetBackgroundBitmap(const Bitmap& bitmap, FlagSet<Alignment> align, bool fit)
 	{
 		m_ClientArea->SetBackgroundBitmap(bitmap, align, fit);
 	}

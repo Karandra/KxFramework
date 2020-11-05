@@ -17,21 +17,18 @@ namespace kxf::UI
 		event.Skip();
 	}
 
-	void SplashWindow::DoSetSplash(const wxBitmap& bitmap, const Size& size)
+	void SplashWindow::DoSetSplash(const Bitmap& bitmap, const Size& size)
 	{
 		m_Bitmap = bitmap;
 		SetSize(size.IsFullySpecified() ? size : Size(GetSize()));
 	}
 	bool SplashWindow::DoUpdateSplash()
 	{
-		wxImage image = m_Bitmap.ConvertToImage();
-		if (image.IsOk())
+		Image image = m_Bitmap.ToImage();
+		if (image)
 		{
 			// UpdateLayeredWindow expects premultiplied alpha
-			if (!image.HasAlpha())
-			{
-				image.InitAlpha();
-			}
+			image.InitAlpha();
 			const size_t imageSize = image.GetWidth() * image.GetHeight();
 			for (size_t i = 0; i < imageSize; i++)
 			{
@@ -42,12 +39,12 @@ namespace kxf::UI
 			// Scale the image for window size
 			if (Size size = GetSize(); size != image.GetSize())
 			{
-				image.Rescale(size.GetWidth(), size.GetHeight(), wxImageResizeQuality::wxIMAGE_QUALITY_HIGH);
+				image = image.Rescale(size, Image::ResizeQuality::BestAvailable);
 			}
 		}
 
-		wxBitmap bitmap = wxBitmap(image, 32);
-		wxMemoryDC dc(bitmap);
+		Bitmap bitmap = image.ToBitmap();
+		wxMemoryDC dc(bitmap.ToWxBitmap());
 
 		BLENDFUNCTION blendFunction = {0};
 		blendFunction.BlendOp = AC_SRC_OVER;
@@ -72,7 +69,7 @@ namespace kxf::UI
 	}
 
 	bool SplashWindow::Create(wxWindow* parent,
-							  const wxBitmap& bitmap,
+							  const Bitmap& bitmap,
 							  const Size& size,
 							  TimeSpan timeout,
 							  FlagSet<SplashWindowStyle> style
@@ -123,7 +120,7 @@ namespace kxf::UI
 		DoUpdateSplash();
 	}
 
-	void SplashWindow::SetSplashBitmap(const wxBitmap& bitmap, const Size& size)
+	void SplashWindow::SetSplashBitmap(const Bitmap& bitmap, const Size& size)
 	{
 		DoSetSplash(bitmap, size);
 		DoCenterWindow();

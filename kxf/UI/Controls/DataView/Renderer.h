@@ -45,7 +45,7 @@ namespace kxf::UI::DataView
 
 		private:
 			FlagSet<Alignment> m_Alignment = Alignment::Invalid;
-			wxEllipsizeMode m_EllipsizeMode = wxELLIPSIZE_END;
+			EllipsizeMode m_EllipsizeMode = EllipsizeMode::End;
 			MarkupMode m_MarkupMode = MarkupMode::Disabled;
 			CellAttribute m_Attributes;
 			
@@ -123,7 +123,8 @@ namespace kxf::UI::DataView
 			virtual void DrawCellContent(const Rect& cellRect, CellState cellState) = 0;
 			virtual Size GetCellSize() const;
 
-			template<class TValue> TValue FromAnyUsing(const wxAny& value) const
+			template<class TValue>
+			TValue FromAnyUsing(const wxAny& value) const
 			{
 				TValue rendererValue;
 				rendererValue.FromAny(value);
@@ -188,11 +189,11 @@ namespace kxf::UI::DataView
 				m_Alignment = alignment;
 			}
 
-			wxEllipsizeMode GetEllipsizeMode() const
+			EllipsizeMode GetEllipsizeMode() const
 			{
 				return m_EllipsizeMode;
 			}
-			void SetEllipsizeMode(wxEllipsizeMode mode)
+			void SetEllipsizeMode(EllipsizeMode mode)
 			{
 				m_EllipsizeMode = mode;
 			}

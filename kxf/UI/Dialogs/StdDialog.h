@@ -7,6 +7,8 @@
 #include "kxf/UI/Windows/Panel.h"
 #include "kxf/UI/StdIcon.h"
 #include "kxf/UI/StdButton.h"
+#include "kxf/Drawing/Bitmap.h"
+#include "kxf/Drawing/Icon.h"
 #include <wx/nativewin.h>
 #include <wx/artprov.h>
 #include <wx/statbmp.h>
@@ -116,9 +118,9 @@ namespace kxf::UI
 			virtual wxString GetLabel() const = 0;
 			virtual void SetLabel(const wxString& label) = 0;
 
-			virtual wxBitmap GetMainIcon() const = 0;
+			virtual Bitmap GetMainIcon() const = 0;
 			virtual StdIcon GetMainIconID() const = 0;
-			virtual void SetMainIcon(const wxBitmap& icon) = 0;
+			virtual void SetMainIcon(const Bitmap& icon) = 0;
 			virtual void SetMainIcon(StdIcon iconID = DefaultIconID) = 0;
 
 			virtual void SetDefaultButton(WidgetID id) = 0;
@@ -160,7 +162,7 @@ namespace kxf::UI
 			Label* m_ViewLabel = nullptr;
 			Panel* m_ContentPanel = nullptr;
 			wxStaticBitmap* m_IconView = nullptr;
-			wxBitmap m_MainIcon = wxNullBitmap;
+			Bitmap m_MainIcon = wxNullBitmap;
 			StdIcon m_MainIconID = DefaultIconID;
 			std::vector<wxWindow*> m_UserControls;
 			bool m_IsAutoSizeEnabled = true;
@@ -210,7 +212,7 @@ namespace kxf::UI
 			void OnEscape(wxKeyEvent& event);
 			void InitIcon()
 			{
-				if (m_MainIcon.IsOk() != true && m_MainIconID != StdIcon::None)
+				if (!m_MainIcon && m_MainIconID != StdIcon::None)
 				{
 					SetMainIcon();
 					LoadIcon();
@@ -222,11 +224,11 @@ namespace kxf::UI
 			}
 			void LoadIcon()
 			{
-				m_IconView->SetBitmap(m_MainIcon);
+				m_IconView->SetBitmap(m_MainIcon.ToWxBitmap());
 			}
 			void SetIconVisibility()
 			{
-				if (m_MainIconID == StdIcon::None || !m_MainIcon.IsOk())
+				if (m_MainIconID == StdIcon::None || !m_MainIcon)
 				{
 					m_ContentSizerBase->Hide(m_IconSizer);
 				}
@@ -366,7 +368,7 @@ namespace kxf::UI
 			}
 
 			// Icons
-			wxBitmap GetMainIcon() const override
+			Bitmap GetMainIcon() const override
 			{
 				return m_MainIcon;
 			}
@@ -374,9 +376,9 @@ namespace kxf::UI
 			{
 				return m_MainIconID;
 			}
-			void SetMainIcon(const wxBitmap& icon) override
+			void SetMainIcon(const Bitmap& icon) override
 			{
-				if (icon.IsOk())
+				if (icon)
 				{
 					m_MainIcon = icon;
 					m_MainIconID = StdIcon::None;
@@ -393,7 +395,7 @@ namespace kxf::UI
 				m_MainIconID = iconID;
 				if (iconID != StdIcon::None)
 				{
-					m_MainIcon = wxArtProvider::GetMessageBoxIcon(ToWxStdIcon(iconID));
+					m_MainIcon = Icon(wxArtProvider::GetMessageBoxIcon(ToWxStdIcon(iconID))).ToBitmap();
 					LoadIcon();
 				}
 				SetIconVisibility();

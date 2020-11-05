@@ -11,20 +11,20 @@ namespace kxf::UI
 	class KX_API ThumbViewItem final
 	{
 		private:
-			wxBitmap m_Bitmap;
+			Bitmap m_Bitmap;
 
 		public:
-			ThumbViewItem(const wxBitmap& bitmap)
+			ThumbViewItem(const Bitmap& bitmap)
 				:m_Bitmap(bitmap)
 			{
 			}
 
 		public:
-			const wxBitmap& GetBitmap() const
+			const Bitmap& GetBitmap() const
 			{
 				return m_Bitmap;
 			}
-			wxBitmap& GetBitmap()
+			Bitmap& GetBitmap()
 			{
 				return m_Bitmap;
 			}
@@ -73,7 +73,7 @@ namespace kxf::UI
 			size_t CalcRowCount() const;
 			void UpdateRowCount();
 			ThumbViewItem& GetThumb(size_t i);
-			wxBitmap CreateThumb(const wxBitmap& bitmap, const Size& size) const;
+			Bitmap CreateThumb(const Bitmap& bitmap, const Size& size) const;
 
 			void OnInternalIdle() override;
 
@@ -110,9 +110,8 @@ namespace kxf::UI
 			void SetSelectedThumb(int index);
 
 			size_t GetThumbsCount() const;
-			size_t AddThumb(const wxBitmap& bitmap);
-			size_t AddThumb(const String& filePath, wxBitmapType type = wxBITMAP_TYPE_ANY, int index = -1);
-			size_t AddThumb(IInputStream& stream, wxBitmapType type = wxBITMAP_TYPE_ANY, int index = -1);
+			size_t AddThumb(const Bitmap& bitmap);
+			size_t AddThumb(IInputStream& stream, ImageFormat format = ImageFormat::Any, int index = -1);
 			void RemoveThumb(size_t index);
 			void ClearThumbs();
 

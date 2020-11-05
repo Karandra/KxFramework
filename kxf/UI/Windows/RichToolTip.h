@@ -1,6 +1,7 @@
 #pragma once
 #include "kxf/UI/Common.h"
 #include "kxf/Utility/Common.h"
+#include "kxf/Drawing/Icon.h"
 #include <wx/richtooltip.h>
 
 namespace kxf::UI
@@ -32,7 +33,7 @@ namespace kxf::UI
 
 			String m_Title;
 			String m_Message;
-			wxIcon m_Icon;
+			Icon m_Icon;
 			wxFont m_Font;
 			StdIcon m_IconID = DefaultIcon;
 			RichToolTipKind m_Kind = DefaultKind;
@@ -107,19 +108,15 @@ namespace kxf::UI
 			{
 				return m_IconID;
 			}
-			const wxIcon& GetIcon() const
+			Icon GetIcon() const
 			{
-				if (m_Icon.IsOk())
-				{
-					return m_Icon;
-				}
-				return wxNullIcon;
+				return m_Icon;
 			}
-			void SetIcon(const wxIcon& icon)
+			void SetIcon(const Icon& icon)
 			{
 				m_Icon = icon;
 				m_IconID = StdIcon::None;
-				m_ToolTip.SetIcon(icon);
+				m_ToolTip.SetIcon(icon.ToWxIcon());
 			}
 			void SetIcon(StdIcon iconID)
 			{

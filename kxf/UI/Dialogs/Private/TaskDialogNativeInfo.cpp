@@ -247,10 +247,10 @@ namespace kxf::UI::Private
 	}
 	void TaskDialogNativeInfo::UpdateIcons()
 	{
-		if (m_TaskDialog.m_MainIcon.IsOk())
+		if (m_TaskDialog.m_MainIcon)
 		{
 			m_DialogConfig.pszMainIcon = nullptr;
-			m_DialogConfig.hMainIcon = m_TaskDialog.m_MainIcon.GetHICON();
+			m_DialogConfig.hMainIcon = reinterpret_cast<HICON>(m_TaskDialog.m_MainIcon.GetHandle());
 			Utility::AddFlagRef(m_DialogConfig.dwFlags, TDF_USE_HICON_MAIN);
 		}
 		else
@@ -260,10 +260,10 @@ namespace kxf::UI::Private
 			Utility::RemoveFlagRef(m_DialogConfig.dwFlags, TDF_USE_HICON_MAIN);
 		}
 
-		if (m_TaskDialog.m_FooterIcon.IsOk())
+		if (m_TaskDialog.m_FooterIcon)
 		{
 			m_DialogConfig.pszFooterIcon = nullptr;
-			m_DialogConfig.hFooterIcon = m_TaskDialog.m_FooterIcon.GetHICON();
+			m_DialogConfig.hFooterIcon = reinterpret_cast<HICON>(m_TaskDialog.m_FooterIcon.GetHandle());
 			Utility::AddFlagRef(m_DialogConfig.dwFlags, TDF_USE_HICON_FOOTER);
 		}
 		else

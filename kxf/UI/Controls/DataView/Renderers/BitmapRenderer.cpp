@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "BitmapRenderer.h"
+#include "kxf/Drawing/Image.h"
 
 namespace kxf::UI::DataView
 {
@@ -9,14 +10,14 @@ namespace kxf::UI::DataView
 		{
 			return true;
 		}
-		else if (wxIcon icon; value.GetAs(&icon))
+		else if (Icon icon; value.GetAs(&icon))
 		{
-			m_Bitmap.CopyFromIcon(icon, wxBitmapTransparency_Auto);
+			m_Bitmap = icon.ToBitmap();
 			return true;
 		}
-		else if (wxImage image; value.GetAs(&image))
+		else if (Image image; value.GetAs(&image))
 		{
-			m_Bitmap = wxBitmap(image, 32);
+			m_Bitmap = image.ToBitmap();
 			return true;
 		}
 		return false;

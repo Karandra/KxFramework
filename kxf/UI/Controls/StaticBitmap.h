@@ -31,7 +31,7 @@ namespace kxf::UI
 			StaticBitmap() = default;
 			StaticBitmap(wxWindow* parent,
 						 wxWindowID id,
-						 const wxBitmap& bitmap = {},
+						 const Bitmap& bitmap = {},
 						 FlagSet<WindowStyle> style = DefaultStyle
 			)
 			{
@@ -39,13 +39,13 @@ namespace kxf::UI
 			}
 			bool Create(wxWindow* parent,
 						wxWindowID id,
-						const wxBitmap& bitmap = {},
+						const Bitmap& bitmap = {},
 						FlagSet<WindowStyle> style = DefaultStyle
 			);
 
 		public:
-			virtual wxImage GetImage() const;
-			virtual void SetImage(const wxImage& image);
+			virtual Image GetImage() const;
+			virtual void SetImage(const Image& image);
 
 			BitmapScaleMode GetBitmapScaleMode() const
 			{
