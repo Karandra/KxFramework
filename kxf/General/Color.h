@@ -133,6 +133,7 @@ namespace kxf
 			constexpr Color() noexcept = default;
 			constexpr Color(Color&&) noexcept = default;
 			constexpr Color(const Color&) noexcept = default;
+
 			constexpr Color(const PackedRGBA<uint8_t>& other) noexcept
 				:m_Value(ToNormalizedBBP(other))
 			{
@@ -141,6 +142,16 @@ namespace kxf
 				:m_Value(other)
 			{
 			}
+
+			constexpr Color(const PackedRGB<uint8_t>& other) noexcept
+				:Color(other.AddAlpha(255))
+			{
+			}
+			constexpr Color(const PackedRGB<float>& other) noexcept
+				:Color(other.AddAlpha(1.0f))
+			{
+			}
+
 			Color(const wxColour& other) noexcept
 			{
 				if (other.IsOk())
