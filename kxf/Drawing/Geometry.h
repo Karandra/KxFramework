@@ -56,6 +56,7 @@ namespace kxf::Geometry
 			{
 			}
 			constexpr BasicOrderedPair(const BasicOrderedPair&) noexcept = default;
+			constexpr BasicOrderedPair(BasicOrderedPair&&) noexcept = default;
 
 		public:
 			constexpr TDerived Clone() const noexcept
@@ -275,6 +276,9 @@ namespace kxf::Geometry
 			}
 
 		public:
+			constexpr BasicOrderedPair& operator=(const BasicOrderedPair&) noexcept = default;
+			constexpr BasicOrderedPair& operator=(BasicOrderedPair&&) noexcept = default;
+
 			constexpr bool operator==(const TDerived& other) const noexcept
 			{
 				return m_X == other.m_X && m_Y == other.m_Y;
