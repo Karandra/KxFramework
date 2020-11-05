@@ -115,7 +115,7 @@ namespace kxf::UI
 				}
 				else
 				{
-					dc.DrawLabel(label, GetImageList()->GetBitmap(imageIndex), rect, ToInt(Alignment::CenterVertical));
+					dc.DrawLabel(label, GetImageList()->GetBitmap(imageIndex).ToWxBitmap(), rect, ToInt(Alignment::CenterVertical));
 				}
 
 				if (m_IsSeparatorsVisible && m_BorderColor && i != fieldsCount - 1)

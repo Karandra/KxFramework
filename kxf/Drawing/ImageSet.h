@@ -1,5 +1,8 @@
 #pragma once
 #include "Common.h"
+#include "Bitmap.h"
+#include "Image.h"
+#include "Icon.h"
 #include "kxf/General/String.h"
 #include <variant>
 
@@ -25,7 +28,7 @@ namespace kxf
 			using ItemType = ImageSetItemType;
 
 		private:
-			std::unordered_map<String, std::variant<wxBitmap, wxImage, wxIcon>> m_Items;
+			std::unordered_map<String, std::variant<Bitmap, Image, Icon>> m_Items;
 		
 		public:
 			ImageSet(size_t initialCount = 0)
@@ -52,28 +55,28 @@ namespace kxf
 				m_Items.clear();
 			}
 
-			void Set(const String& id, const wxImage& image)
+			void Set(const String& id, const Image& image)
 			{
 				m_Items.insert_or_assign(id, image);
 			}
-			void Set(const String& id, const wxBitmap& bitmap)
+			void Set(const String& id, const Bitmap& bitmap)
 			{
 				m_Items.insert_or_assign(id, bitmap);
 			}
-			void Set(const String& id, const wxIcon& icon)
+			void Set(const String& id, const Icon& icon)
 			{
 				m_Items.insert_or_assign(id, icon);
 			}
 
-			wxImage GetImage(const String& id) const;
-			wxBitmap GetBitmap(const String& id) const;
-			wxIcon GetIcon(const String& id) const;
+			Image GetImage(const String& id) const;
+			Bitmap GetBitmap(const String& id) const;
+			Icon GetIcon(const String& id) const;
 
 			Size GetItemSize(const String& id) const;
-			const wxObject* QueryItem(const String& id, ItemType* type = nullptr) const;
-			const wxImage* QueryImage(const String& id) const;
-			const wxBitmap* QueryBitmap(const String& id) const;
-			const wxIcon* QueryIcon(const String& id) const;
+			const IObject* QueryItem(const String& id, ItemType* type = nullptr) const;
+			const Image* QueryImage(const String& id) const;
+			const Bitmap* QueryBitmap(const String& id) const;
+			const Icon* QueryIcon(const String& id) const;
 
 			std::unique_ptr<ImageList> CreateImageList(const Size& size) const;
 

@@ -48,7 +48,7 @@ namespace kxf::UI::DataView
 				const kxf::ImageList* imageList = WithImageList::GetImageList();
 				if (imageList && index < (size_t)imageList->GetImageCount())
 				{
-					return imageList->GetBitmap(index);
+					return imageList->GetBitmap(index).ToWxBitmap();
 				}
 				return wxNullBitmap;
 			}

@@ -112,41 +112,41 @@ namespace kxf
 		return false;
 	}
 
-	int ImageList::Add(const wxBitmap& bitmap)
+	int ImageList::Add(const Bitmap& bitmap)
 	{
-		return wxImageList::Add(bitmap, wxNullBitmap);
+		return wxImageList::Add(bitmap.ToWxBitmap(), wxNullBitmap);
 	}
-	int ImageList::Add(const wxIcon& icon)
+	int ImageList::Add(const Icon& icon)
 	{
-		return wxImageList::Add(icon);
+		return wxImageList::Add(icon.ToWxIcon());
 	}
-	int ImageList::Add(const wxImage& image)
+	int ImageList::Add(const Image& image)
 	{
-		return Add(Drawing::ToBitmap(image));
-	}
-
-	bool ImageList::Replace(int index, const wxBitmap& bitmap)
-	{
-		return wxImageList::Replace(index, bitmap, wxNullBitmap);
-	}
-	bool ImageList::Replace(int index, const wxIcon& icon)
-	{
-		return wxImageList::Replace(index, icon);
-	}
-	bool ImageList::Replace(int index, const wxImage& image)
-	{
-		return wxImageList::Replace(index, Drawing::ToBitmap(image));
+		return Add(image.ToBitmap());
 	}
 
-	wxBitmap ImageList::GetBitmap(int index) const
+	bool ImageList::Replace(int index, const Bitmap& bitmap)
 	{
-		return Drawing::ToBitmap(wxImageList::GetIcon(index));
+		return wxImageList::Replace(index, bitmap.ToWxBitmap(), wxNullBitmap);
 	}
-	wxImage ImageList::GetImage(int index) const
+	bool ImageList::Replace(int index, const Icon& icon)
 	{
-		return Drawing::ToImage(GetBitmap(index));
+		return wxImageList::Replace(index, icon.ToWxIcon());
 	}
-	wxIcon ImageList::GetIcon(int index) const
+	bool ImageList::Replace(int index, const Image& image)
+	{
+		return wxImageList::Replace(index, image.ToBitmap().ToWxBitmap());
+	}
+
+	Bitmap ImageList::GetBitmap(int index) const
+	{
+		return Icon(wxImageList::GetIcon(index)).ToBitmap();
+	}
+	Image ImageList::GetImage(int index) const
+	{
+		return GetBitmap(index).ToImage();
+	}
+	Icon ImageList::GetIcon(int index) const
 	{
 		return wxImageList::GetIcon(index);
 	}

@@ -1,5 +1,8 @@
 #pragma once
 #include "Common.h"
+#include "Bitmap.h"
+#include "Image.h"
+#include "Icon.h"
 #include "kxf/General/Color.h"
 #include "kxf/System/COM.h"
 #include <wx/imaglist.h>
@@ -57,17 +60,17 @@ namespace kxf
 			bool RemoveAll() noexcept;
 			bool Remove(int index) noexcept;
 
-			int Add(const wxBitmap& bitmap);
-			int Add(const wxIcon& icon);
-			int Add(const wxImage& image);
+			int Add(const Bitmap& bitmap);
+			int Add(const Icon& icon);
+			int Add(const Image& image);
 		
-			bool Replace(int index, const wxBitmap& bitmap);
-			bool Replace(int index, const wxIcon& icon);
-			bool Replace(int index, const wxImage& image);
+			bool Replace(int index, const Bitmap& bitmap);
+			bool Replace(int index, const Icon& icon);
+			bool Replace(int index, const Image& image);
 		
-			wxBitmap GetBitmap(int index) const;
-			wxImage GetImage(int index) const;
-			wxIcon GetIcon(int index) const;
+			Bitmap GetBitmap(int index) const;
+			Image GetImage(int index) const;
+			Icon GetIcon(int index) const;
 
 			Color GetBackgroundColor() const noexcept;
 			void SetBackgroundColor(const Color& color) noexcept;
