@@ -22,6 +22,12 @@ namespace kxf
 	};
 	KxFlagSet_Declare(UnitNameFlag);
 
+	enum class ClockDirection
+	{
+		Clockwise = 1,
+		CounterClockwise = -1
+	};
+
 	enum class CornerAlignment
 	{
 		Unspecified = 0,
