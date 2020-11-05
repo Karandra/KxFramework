@@ -3,12 +3,12 @@
 #include "SystemInformationDefines.h"
 #include "UserName.h"
 #include "kxf/General/String.h"
-#include "kxf/General/Color.h"
 #include "kxf/General/Version.h"
 #include "kxf/General/BinarySize.h"
 #include "kxf/General/DateTime.h"
 #include "kxf/General/LocallyUniqueID.h"
 #include "kxf/Drawing/Geometry.h"
+#include "kxf/Drawing/Color.h"
 #include <wx/settings.h>
 #include <wx/gdicmn.h>
 #include "UndefWindows.h"

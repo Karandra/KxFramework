@@ -125,17 +125,16 @@ namespace kxf
 			template<class TFunc>
 			void DrawIndirect(const Rect& rect, TFunc&& func)
 			{
-				Bitmap bitmap(rect.GetSize(), 32);
-				bitmap.UseAlpha(true);
+				Bitmap bitmap(rect.GetSize(), ColorDepthDB::BPP32);
 				{
-					wxMemoryDC memoryDC(bitmap);
+					wxMemoryDC memoryDC(bitmap.ToWxBitmap());
 					memoryDC.CopyAttributes(m_DC);
 
 					Rect rect2 = rect;
 					rect2.SetPosition({0, 0});
 					std::invoke(func, memoryDC, std::move(rect2));
 				}
-				m_GraphicsContext->DrawBitmap(bitmap, rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
+				m_GraphicsContext->DrawBitmap(bitmap.ToWxBitmap(), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
 			}
 	};
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "kxf/General/Color.h"
+#include "Color.h"
 #include <wx/dc.h>
 #include <wx/gdicmn.h>
 #include <wx/region.h>

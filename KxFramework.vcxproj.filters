@@ -478,12 +478,6 @@
     <ClInclude Include="kxf\General\Any.h">
       <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\Color.h">
-      <Filter>kxf\General</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\General\ColorDefines.h">
-      <Filter>kxf\General</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Utility\Numeric.h">
       <Filter>kxf\Utility</Filter>
     </ClInclude>
@@ -639,9 +633,6 @@
     </ClInclude>
     <ClInclude Include="kxf\Drawing\UxTheme.h">
       <Filter>kxf\Drawing</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\General\Angle.h">
-      <Filter>kxf\General</Filter>
     </ClInclude>
     <ClInclude Include="kxf\General\Math.h">
       <Filter>kxf\General</Filter>
@@ -1571,6 +1562,15 @@
     <ClInclude Include="kxf\Drawing\Image.h">
       <Filter>kxf\Drawing</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Drawing\ColorDefines.h">
+      <Filter>kxf\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\Color.h">
+      <Filter>kxf\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\Angle.h">
+      <Filter>kxf\Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -1700,9 +1700,6 @@
       <Filter>kxf\General\Private</Filter>
     </ClCompile>
     <ClCompile Include="kxf\General\Any.cpp">
-      <Filter>kxf\General</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\General\Color.cpp">
       <Filter>kxf\General</Filter>
     </ClCompile>
     <ClCompile Include="kxf\General\UniversallyUniqueID.cpp">
@@ -2369,6 +2366,9 @@
     <ClCompile Include="kxf\Drawing\Geometry.cpp">
       <Filter>kxf\Drawing</Filter>
     </ClCompile>
+    <ClCompile Include="kxf\Drawing\Color.cpp">
+      <Filter>kxf\Drawing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="kxf\System\Private\ErrorCodeNtStatus.i">
@@ -2415,8 +2415,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Natvis Include="kxf\General\Color.natvis">
-      <Filter>kxf\General</Filter>
+    <Natvis Include="kxf\Drawing\Color.natvis">
+      <Filter>kxf\Drawing</Filter>
     </Natvis>
   </ItemGroup>
 </Project>

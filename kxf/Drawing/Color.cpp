@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Color.h"
-#include "RegEx.h"
+#include "kxf/General/RegEx.h"
 #include "wx/window.h"
 
 namespace

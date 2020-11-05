@@ -3,7 +3,7 @@
 #include "Bitmap.h"
 #include "Image.h"
 #include "Icon.h"
-#include "kxf/General/Color.h"
+#include "Color.h"
 #include "kxf/System/COM.h"
 #include <wx/imaglist.h>
 struct IImageList2;

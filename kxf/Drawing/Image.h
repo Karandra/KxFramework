@@ -1,8 +1,8 @@
 #pragma once
 #include "Common.h"
+#include "Color.h"
 #include "ColorDepth.h"
 #include "kxf/General/Common.h"
-#include "kxf/General/Color.h"
 #include <wx/image.h>
 
 namespace kxf

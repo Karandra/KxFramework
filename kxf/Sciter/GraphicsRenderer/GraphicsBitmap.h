@@ -1,7 +1,6 @@
 #pragma once
 #include "kxf/Sciter/Common.h"
 #include "kxf/Sciter/Utility/HandleWrapper.h"
-#include "kxf/General/Color.h"
 #include "kxf/Drawing/Bitmap.h"
 #include "kxf/Drawing/Image.h"
 #include "kxf/IO/IStream.h"

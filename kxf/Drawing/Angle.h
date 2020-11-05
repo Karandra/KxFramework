@@ -5,7 +5,7 @@
 
 namespace kxf
 {
-	class KX_API Angle final
+	class Angle final
 	{
 		public:
 			constexpr static Angle FromNormalized(float value) noexcept
@@ -88,11 +88,11 @@ namespace kxf
 
 namespace kxf
 {
-	constexpr Angle operator+(const Angle& left, const Angle& right) noexcept
+	inline constexpr Angle operator+(const Angle& left, const Angle& right) noexcept
 	{
 		return Angle::FromNormalized(left.ToNormalized() + right.ToNormalized());
 	}
-	constexpr Angle operator-(const Angle& left, const Angle& right) noexcept
+	inline constexpr Angle operator-(const Angle& left, const Angle& right) noexcept
 	{
 		return Angle::FromNormalized(left.ToNormalized() - right.ToNormalized());
 	}

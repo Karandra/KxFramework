@@ -211,7 +211,10 @@
     <ClInclude Include="kxf\Compression\SevenZip\Private\Utility.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Private\WithEvtHandler.h" />
     <ClInclude Include="kxf\Crypto\UserCredentials.h" />
+    <ClInclude Include="kxf\Drawing\Angle.h" />
     <ClInclude Include="kxf\Drawing\Bitmap.h" />
+    <ClInclude Include="kxf\Drawing\Color.h" />
+    <ClInclude Include="kxf\Drawing\ColorDefines.h" />
     <ClInclude Include="kxf\Drawing\Cursor.h" />
     <ClInclude Include="kxf\Drawing\Geometry.h" />
     <ClInclude Include="kxf\Drawing\Icon.h" />
@@ -500,11 +503,8 @@
     <ClInclude Include="kxf\FileSystem\StorageVolume.h" />
     <ClInclude Include="kxf\FileSystem\NativeFileSystem.h" />
     <ClInclude Include="kxf\General.hpp" />
-    <ClInclude Include="kxf\General\Angle.h" />
     <ClInclude Include="kxf\General\Any.h" />
     <ClInclude Include="kxf\General\BinarySize.h" />
-    <ClInclude Include="kxf\General\Color.h" />
-    <ClInclude Include="kxf\General\ColorDefines.h" />
     <ClInclude Include="kxf\General\Common.h" />
     <ClInclude Include="kxf\General\FlagSet.h" />
     <ClInclude Include="kxf\General\ExtraData.h" />
@@ -654,6 +654,7 @@
     <ClCompile Include="kxf\Compression\SevenZip\Private\PasswordHandler.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Private\Utility.cpp" />
     <ClCompile Include="kxf\Drawing\Bitmap.cpp" />
+    <ClCompile Include="kxf\Drawing\Color.cpp" />
     <ClCompile Include="kxf\Drawing\Cursor.cpp" />
     <ClCompile Include="kxf\Drawing\Geometry.cpp" />
     <ClCompile Include="kxf\Drawing\Icon.cpp" />
@@ -829,7 +830,6 @@
     <ClCompile Include="kxf\Drawing\ImageSet.cpp" />
     <ClCompile Include="kxf\Drawing\UxTheme.cpp" />
     <ClCompile Include="kxf\General\Any.cpp" />
-    <ClCompile Include="kxf\General\Color.cpp" />
     <ClCompile Include="kxf\General\Math.cpp" />
     <ClCompile Include="kxf\General\Private\VersionImpl.cpp" />
     <ClCompile Include="kxf\General\String.cpp" />
@@ -926,7 +926,7 @@
     <None Include="VCPkg\triplets\community\kxf-default-x86.cmake" />
   </ItemGroup>
   <ItemGroup>
-    <Natvis Include="kxf\General\Color.natvis" />
+    <Natvis Include="kxf\Drawing\Color.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

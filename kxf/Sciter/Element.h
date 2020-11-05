@@ -2,7 +2,6 @@
 #include "Common.h"
 #include "ScriptValue.h"
 #include "Utility/HandleWrapper.h"
-#include "kxf/General/Color.h"
 #include "kxf/General/String.h"
 #include "kxf/General/StringFormatter.h"
 

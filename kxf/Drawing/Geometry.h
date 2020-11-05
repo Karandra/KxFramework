@@ -3,8 +3,8 @@
 #include <wx/gdicmn.h>
 #include <wx/geometry.h>
 #include <cmath>
+#include "Angle.h"
 #include "kxf/General/Common.h"
-#include "kxf/General/Angle.h"
 #include <kxf/Utility/Common.h>
 #include <kxf/Utility/Numeric.h>
 
@@ -995,7 +995,7 @@ namespace kxf
 			{
 				return {Geometry::DefaultCoord, Geometry::DefaultCoord};
 			}
-			static constexpr Point FromSize(const Size& size) noexcept;
+			static Point FromSize(const Size& size) noexcept;
 
 		public:
 			using BasicOrderedPair::BasicOrderedPair;
@@ -1053,7 +1053,7 @@ namespace kxf
 			{
 				return {Geometry::DefaultCoord, Geometry::DefaultCoord};
 			}
-			static constexpr Size FromPoint(const Point& point) noexcept;
+			static Size FromPoint(const Point& point) noexcept;
 
 		public:
 			using BasicOrderedPair::BasicOrderedPair;

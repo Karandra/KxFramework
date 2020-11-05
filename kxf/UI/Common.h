@@ -1,10 +1,11 @@
 #pragma once
 #include "kxf/Common.hpp"
-#include "kxf/General/Color.h"
 #include "kxf/General/String.h"
 #include "kxf/General/DateTime.h"
 #include "kxf/General/StdID.h"
 #include "kxf/Drawing/Geometry.h"
+#include "kxf/Drawing/Color.h"
+#include "kxf/Drawing/Angle.h"
 #include "kxf/Drawing/Bitmap.h"
 #include "kxf/Drawing/Icon.h"
 #include "kxf/Drawing/Cursor.h"

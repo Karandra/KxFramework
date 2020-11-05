@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "ColorDefines.h"
 #include "Angle.h"
-#include "String.h"
+#include "kxf/General/String.h"
 #include <wx/colour.h>
 #include <wx/brush.h>
 #include <wx/pen.h>
