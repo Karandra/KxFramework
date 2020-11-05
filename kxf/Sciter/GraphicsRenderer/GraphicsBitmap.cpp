@@ -8,28 +8,30 @@
 
 namespace kxf::Sciter
 {
-	std::optional<SCITER_IMAGE_ENCODING> MapImageEncoding(GraphicsBitmap::Format encoding)
+	std::optional<SCITER_IMAGE_ENCODING> MapImageEncoding(kxf::ImageFormat encoding)
 	{
+		using kxf::ImageFormat;
+
 		switch (encoding)
 		{
-			case GraphicsBitmap::Format::PNG:
+			case ImageFormat::PNG:
 			{
 				return SCITER_IMAGE_ENCODING::SCITER_IMAGE_ENCODING_PNG;
 			}
-			case GraphicsBitmap::Format::JPG:
+			case ImageFormat::JPEG:
 			{
 				return SCITER_IMAGE_ENCODING::SCITER_IMAGE_ENCODING_JPG;
 			}
-			case GraphicsBitmap::Format::WEBP:
+			case ImageFormat::WEBP:
 			{
 				return SCITER_IMAGE_ENCODING::SCITER_IMAGE_ENCODING_WEBP;
 			}
-			case GraphicsBitmap::Format::Raw:
+			case ImageFormat::RAW:
 			{
 				return SCITER_IMAGE_ENCODING::SCITER_IMAGE_ENCODING_RAW;
 			}
 		};
-		return std::nullopt;
+		return {};
 	}
 	bool DoGetImageInfo(HIMG image, Size& size, bool& usesAlpha)
 	{
@@ -66,17 +68,17 @@ namespace kxf::Sciter
 			Acquire(FromSciterImage(image));
 		}
 	}
-	GraphicsBitmap::GraphicsBitmap(const wxImage& image)
+	GraphicsBitmap::GraphicsBitmap(const Image& image)
 	{
 		MemoryOutputStream outputStream;
-		if (image.SaveFile(outputStream.AsWxStream(), wxBITMAP_TYPE_PNG))
+		if (image.Save(outputStream, ImageFormat::PNG))
 		{
 			MemoryInputStream inputStream(outputStream);
 			Load(inputStream);
 		}
 	}
-	GraphicsBitmap::GraphicsBitmap(const wxBitmap& bitmap)
-		:GraphicsBitmap(bitmap.ConvertToImage())
+	GraphicsBitmap::GraphicsBitmap(const Bitmap& bitmap)
+		:GraphicsBitmap(bitmap.ToImage())
 	{
 	}
 	GraphicsBitmap::GraphicsBitmap(const ScriptValue& value)
@@ -113,7 +115,7 @@ namespace kxf::Sciter
 		}
 		return false;
 	}
-	bool GraphicsBitmap::Save(IOutputStream& stream, Format format, int quality) const
+	bool GraphicsBitmap::Save(IOutputStream& stream, ImageFormat format, int quality) const
 	{
 		auto encoding = MapImageEncoding(format);
 		if (!IsNull() && encoding)
@@ -148,21 +150,22 @@ namespace kxf::Sciter
 		return usesAlpha;
 	}
 
-	wxImage GraphicsBitmap::ConvertToImage() const
+	Image GraphicsBitmap::ConvertToImage() const
 	{
 		MemoryOutputStream outputStream;
-		if (Save(outputStream, Format::PNG))
+		if (Save(outputStream, ImageFormat::PNG))
 		{
 			MemoryInputStream inputStream(outputStream);
-			wxImage image(inputStream.AsWxStream(), wxBITMAP_TYPE_PNG);
+			
+			Image image;
+			image.Load(inputStream, ImageFormat::PNG);
 			return image;
 		}
 		return {};
 	}
-	wxBitmap GraphicsBitmap::ConvertToBitmap() const
+	Bitmap GraphicsBitmap::ConvertToBitmap() const
 	{
-		wxImage image = ConvertToImage();
-		return wxBitmap(image, image.HasAlpha() ? 32 : -1);
+		return ConvertToImage().ToBitmap();
 	}
 	ScriptValue GraphicsBitmap::ToScriptValue() const
 	{

@@ -2,6 +2,8 @@
 #include "kxf/Sciter/Common.h"
 #include "kxf/Sciter/Utility/HandleWrapper.h"
 #include "kxf/General/Color.h"
+#include "kxf/Drawing/Bitmap.h"
+#include "kxf/Drawing/Image.h"
 #include "kxf/IO/IStream.h"
 
 namespace kxf::Sciter
@@ -19,14 +21,6 @@ namespace kxf::Sciter
 		
 		public:
 			using TDrawOnFunc = std::function<void(GraphicsContext&, const Size& size)>;
-			enum class Format
-			{
-				None = 0,
-				Raw,
-				PNG,
-				JPG,
-				WEBP
-			};
 
 		private:
 			GraphicsBitmapHandle* m_Handle = nullptr;
@@ -54,8 +48,8 @@ namespace kxf::Sciter
 			{
 				CreateFromPixmap(size, pixmapData, withAlpha);
 			}
-			GraphicsBitmap(const wxImage& image);
-			GraphicsBitmap(const wxBitmap& bitmap);
+			GraphicsBitmap(const Image& image);
+			GraphicsBitmap(const Bitmap& bitmap);
 			GraphicsBitmap(IInputStream& stream)
 			{
 				Load(stream);
@@ -68,14 +62,14 @@ namespace kxf::Sciter
 			bool CreateFromPixmap(const Size& size, const char* pixmapData, bool withAlpha);
 
 			bool Load(IInputStream& stream);
-			bool Save(IOutputStream& stream, Format format, int quality = 100) const;
+			bool Save(IOutputStream& stream, ImageFormat format, int quality = 100) const;
 
 			bool Clear(const Color& color);
 			Size GetSize() const;
 			bool UsesAlpha() const;
 
-			wxImage ConvertToImage() const;
-			wxBitmap ConvertToBitmap() const;
+			Image ConvertToImage() const;
+			Bitmap ConvertToBitmap() const;
 			ScriptValue ToScriptValue() const;
 
 			void DrawOn(TDrawOnFunc func);
