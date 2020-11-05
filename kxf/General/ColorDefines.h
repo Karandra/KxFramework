@@ -57,77 +57,86 @@ namespace kxf
 namespace kxf
 {
 	template<class T>
+	struct PackedRGBA;
+
+	template<class T>
 	struct PackedRGB final
 	{
-		using ValueType = T;
+		public:
+			using ValueType = T;
 
-		T Red = 0;
-		T Green = 0;
-		T Blue = 0;
+		public:
+			T Red = 0;
+			T Green = 0;
+			T Blue = 0;
 
-		constexpr PackedRGB() noexcept = default;
-		constexpr PackedRGB(T r, T g, T b) noexcept
-			:Red(r), Green(g), Blue(b)
-		{
-		}
-		
-		constexpr bool operator==(const PackedRGB& other) const noexcept
-		{
-			if (this != &other)
+		public:
+			constexpr PackedRGB() noexcept = default;
+			constexpr PackedRGB(T r, T g, T b) noexcept
+				:Red(r), Green(g), Blue(b)
 			{
-				if constexpr(std::is_floating_point_v<T>)
-				{
-					using namespace Utility;
-					return AlmostEqual(Red, other.Red) && AlmostEqual(Green, other.Green) && AlmostEqual(Blue, other.Blue);
-				}
-				else
-				{
-					return Red == other.Red && Green == other.Green && Blue == other.Blue;
-				}
 			}
-			return true;
-		}
-		constexpr bool operator!=(const PackedRGB& other) const noexcept
-		{
-			return !(*this == other);
-		}
+		
+		public:
+			constexpr PackedRGBA<T> AddAlpha(T a) const noexcept
+			{
+				return {Red, Green, Blue, a};
+			}
+
+			template<class T>
+			constexpr PackedRGB<T> Cast() const noexcept
+			{
+				return {static_cast<T>(Red), static_cast<T>(Green), static_cast<T>(Blue)};
+			}
+
+		public:
+			constexpr bool operator==(const PackedRGB& other) const noexcept
+			{
+				if (this != &other)
+				{
+					if constexpr(std::is_floating_point_v<T>)
+					{
+						using namespace Utility;
+						return AlmostEqual(Red, other.Red) && AlmostEqual(Green, other.Green) && AlmostEqual(Blue, other.Blue);
+					}
+					else
+					{
+						return Red == other.Red && Green == other.Green && Blue == other.Blue;
+					}
+				}
+				return true;
+			}
+			constexpr bool operator!=(const PackedRGB& other) const noexcept
+			{
+				return !(*this == other);
+			}
 	};
 
 	template<class T>
 	struct PackedRGBA final
 	{
-		using ValueType = T;
+		public:
+			using ValueType = T;
 
-		T Red = 0;
-		T Green = 0;
-		T Blue = 0;
-		T Alpha = 0;
+		public:
+			T Red = 0;
+			T Green = 0;
+			T Blue = 0;
+			T Alpha = 0;
 
-		constexpr PackedRGBA() noexcept = default;
-		constexpr PackedRGBA(T r, T g, T b, T a = ColorTraits<T>::max()) noexcept
-			:Red(r), Green(g), Blue(b), Alpha(a)
-		{
-		}
-		constexpr PackedRGBA(const PackedRGB<T>& other, T a = ColorTraits<T>::max()) noexcept
-			:Red(other.Red), Green(other.Green), Blue(other.Blue), Alpha(a)
-		{
-		}
+		public:
+			constexpr PackedRGBA() noexcept = default;
+			constexpr PackedRGBA(T r, T g, T b, T a = ColorTraits<T>::max()) noexcept
+				:Red(r), Green(g), Blue(b), Alpha(a)
+			{
+			}
+			constexpr PackedRGBA(const PackedRGB<T>& other, T a = ColorTraits<T>::max()) noexcept
+				:Red(other.Red), Green(other.Green), Blue(other.Blue), Alpha(a)
+			{
+			}
 		
-		constexpr bool IsSameAs(const PackedRGB<T>& other) const noexcept
-		{
-			if constexpr(std::is_floating_point_v<T>)
-			{
-				using namespace Utility;
-				return AlmostEqual(Red, other.Red) && AlmostEqual(Green, other.Green) && AlmostEqual(Blue, other.Blue);
-			}
-			else
-			{
-				return Red == other.Red && Green == other.Green && Blue == other.Blue;
-			}
-		}
-		constexpr bool IsSameAs(const PackedRGBA& other) const noexcept
-		{
-			if (this != &other)
+		public:
+			constexpr bool IsSameAs(const PackedRGB<T>& other) const noexcept
 			{
 				if constexpr(std::is_floating_point_v<T>)
 				{
@@ -139,17 +148,43 @@ namespace kxf
 					return Red == other.Red && Green == other.Green && Blue == other.Blue;
 				}
 			}
-			return true;
-		}
+			constexpr bool IsSameAs(const PackedRGBA& other) const noexcept
+			{
+				if (this != &other)
+				{
+					if constexpr(std::is_floating_point_v<T>)
+					{
+						using namespace Utility;
+						return AlmostEqual(Red, other.Red) && AlmostEqual(Green, other.Green) && AlmostEqual(Blue, other.Blue);
+					}
+					else
+					{
+						return Red == other.Red && Green == other.Green && Blue == other.Blue;
+					}
+				}
+				return true;
+			}
 
-		constexpr bool operator==(const PackedRGBA& other) const noexcept
-		{
-			return IsSameAs(other);
-		}
-		constexpr bool operator!=(const PackedRGBA& other) const noexcept
-		{
-			return !(*this == other);
-		}
+			constexpr PackedRGB<T> RemoveAlpha() const noexcept
+			{
+				return {Red, Green, Blue};
+			}
+
+			template<class T>
+			constexpr PackedRGBA<T> Cast() const noexcept
+			{
+				return {static_cast<T>(Red), static_cast<T>(Green), static_cast<T>(Blue), static_cast<T>(Alpha)};
+			}
+
+		public:
+			constexpr bool operator==(const PackedRGBA& other) const noexcept
+			{
+				return IsSameAs(other);
+			}
+			constexpr bool operator!=(const PackedRGBA& other) const noexcept
+			{
+				return !(*this == other);
+			}
 	};
 }
 
