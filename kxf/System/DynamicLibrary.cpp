@@ -101,7 +101,7 @@ namespace
 	{
 		if (HGLOBAL resDataHandle = ::LoadResource(handle, GetResourceHandle(handle, type, name, locale)))
 		{
-			return LoadImageW(handle, GetNameOrID(name), gdiType, size.GetWidth(), size.GetHeight(), LR_DEFAULTCOLOR);
+			return ::LoadImageW(handle, GetNameOrID(name), gdiType, size.GetWidth(), size.GetHeight(), LR_DEFAULTCOLOR);
 		}
 		return nullptr;
 	}
@@ -111,27 +111,15 @@ namespace
 	{
 		if (HANDLE imageHandle = DoLoadGDIImage(handle, name, type, gdiType, size, locale))
 		{
-			T image;
-			image.SetHandle(imageHandle);
+			T image{};
+			image.AttachHandle(imageHandle);
 			if (size.IsFullySpecified())
 			{
-				// These functions were removed in wxWidgets 3.1.2
+				// These functions were removed in wxWidgets v3.1.2
 				//image.SetWidth(size.GetWidth());
 				//image.SetHeight(size.GetHeight());
 			}
 			return image;
-		}
-		return {};
-	}
-	
-	template<>
-	wxIcon LoadGDIImage<wxIcon>(HMODULE handle, const String& name, const String& type, UINT gdiType, Size size, const Locale& locale)
-	{
-		if (HANDLE imageHandle = DoLoadGDIImage(handle, name, type, gdiType, size, locale))
-		{
-			wxIcon icon;
-			icon.CreateFromHICON(static_cast<HICON>(imageHandle));
-			return icon;
 		}
 		return {};
 	}
@@ -402,15 +390,15 @@ namespace kxf
 		return {};
 	}
 
-	wxBitmap DynamicLibrary::GetBitmapResource(const String& name, const Locale& locale) const
+	Bitmap DynamicLibrary::GetBitmapResource(const String& name, const Locale& locale) const
 	{
-		return LoadGDIImage<wxBitmap>(AsHMODULE(*m_Handle), name, System::Private::ResourceTypeToName(RT_BITMAP), IMAGE_BITMAP, g_DefaultIconSize, locale);
+		return LoadGDIImage<Bitmap>(AsHMODULE(*m_Handle), name, System::Private::ResourceTypeToName(RT_BITMAP), IMAGE_BITMAP, g_DefaultIconSize, locale);
 	}
-	wxIcon DynamicLibrary::GetIconResource(const String& name, const Size& size, const Locale& locale) const
+	Icon DynamicLibrary::GetIconResource(const String& name, const Size& size, const Locale& locale) const
 	{
-		return LoadGDIImage<wxIcon>(AsHMODULE(*m_Handle), name, System::Private::ResourceTypeToName(RT_GROUP_ICON), IMAGE_ICON, size, locale);
+		return LoadGDIImage<Icon>(AsHMODULE(*m_Handle), name, System::Private::ResourceTypeToName(RT_GROUP_ICON), IMAGE_ICON, size, locale);
 	}
-	wxIcon DynamicLibrary::GetIconResource(const String& name, size_t index, const Locale& locale) const
+	Icon DynamicLibrary::GetIconResource(const String& name, size_t index, const Locale& locale) const
 	{
 		using System::Private::ResourceTypeToName;
 		using System::Private::IconGroupDirectory;
@@ -436,12 +424,12 @@ namespace kxf
 				int width = 0;
 				int height = 0;
 
-				// I don't remember what '0x00030000' is. WHY DIDN'T I ADD A LINK TO WHERE i FOUND THIS?!
+				// I don't remember what '0x00030000' is. WHY DIDN'T I ADD A LINK TO WHERE I FOUND THIS?!
 				constexpr DWORD dwVer = 0x00030000u;
 				if (HICON iconHandle = ::CreateIconFromResourceEx(reinterpret_cast<BYTE*>(iconBuffer.data()), iconBuffer.length(), TRUE, dwVer, width, height, LR_DEFAULTCOLOR))
 				{
-					wxIcon icon;
-					icon.CreateFromHICON(iconHandle);
+					Icon icon;
+					icon.AttachHandle(iconHandle);
 					return icon;
 				}
 			}
@@ -458,9 +446,9 @@ namespace kxf
 		}
 		return 0;
 	}
-	wxCursor DynamicLibrary::GetCursorResource(const String& name, const Locale& locale) const
+	Cursor DynamicLibrary::GetCursorResource(const String& name, const Locale& locale) const
 	{
-		return LoadGDIImage<wxCursor>(AsHMODULE(*m_Handle), name, System::Private::ResourceTypeToName(RT_CURSOR), IMAGE_CURSOR, g_DefaultIconSize, locale);
+		return LoadGDIImage<Cursor>(AsHMODULE(*m_Handle), name, System::Private::ResourceTypeToName(RT_CURSOR), IMAGE_CURSOR, g_DefaultIconSize, locale);
 	}
 	String DynamicLibrary::GetStringResource(const String& name, const Locale& locale) const
 	{

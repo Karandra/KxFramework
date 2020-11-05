@@ -44,15 +44,6 @@ namespace
 
 		return nativeFlags;
 	}
-	wxIcon MakeIconFromHICON(HICON handle)
-	{
-		wxIcon icon;
-		if (handle && icon.CreateFromHICON(handle))
-		{
-			return icon;
-		}
-		return {};
-	}
 
 	String DoQueryAssociation(const String& value, SHQueryAssociation option, Any* extraData)
 	{
@@ -351,18 +342,20 @@ namespace kxf::Shell
 		return hr;
 	}
 
-	wxIcon GetFileIcon(const FSPath& path, FlagSet<SHGetFileIconFlag> flags)
+	Icon GetFileIcon(const FSPath& path, FlagSet<SHGetFileIconFlag> flags)
 	{
 		SHFILEINFOW shellInfo = {};
 
 		const String pathString = path.GetFullPath();
 		if (::SHGetFileInfoW(pathString.wc_str(), 0, &shellInfo, sizeof(shellInfo), MapSHGetFileIconFlag(flags)) != 0)
 		{
-			return MakeIconFromHICON(shellInfo.hIcon);
+			Icon icon;
+			icon.AttachHandle(shellInfo.hIcon);
+			return icon;
 		}
 		return {};
 	}
-	wxIcon GetFileIcon(const FileItem& item, FlagSet<SHGetFileIconFlag> flags)
+	Icon GetFileIcon(const FileItem& item, FlagSet<SHGetFileIconFlag> flags)
 	{
 		SHFILEINFOW shellInfo = {};
 
@@ -370,7 +363,9 @@ namespace kxf::Shell
 		const uint32_t attributes = FileSystem::Private::MapFileAttributes(item.GetAttributes());
 		if (::SHGetFileInfoW(pathString.wc_str(), attributes, &shellInfo, sizeof(shellInfo), SHGFI_USEFILEATTRIBUTES|MapSHGetFileIconFlag(flags)) != 0)
 		{
-			return MakeIconFromHICON(shellInfo.hIcon);
+			Icon icon;
+			icon.AttachHandle(shellInfo.hIcon);
+			return icon;
 		}
 		return {};
 	}
