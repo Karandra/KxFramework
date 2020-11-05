@@ -25,11 +25,10 @@ namespace kxf
 		None = wxBITMAP_TYPE_INVALID,
 		Any = wxBITMAP_TYPE_ANY,
 
-		Bitmap = wxBITMAP_TYPE_BMP,
-		Icon = wxBITMAP_TYPE_ICO,
-		Cursor = wxBITMAP_TYPE_CUR,
-		AnimatedCursor = wxBITMAP_TYPE_ANI,
-
+		BMP = wxBITMAP_TYPE_BMP,
+		ICO = wxBITMAP_TYPE_ICO,
+		CUR = wxBITMAP_TYPE_CUR,
+		ANI = wxBITMAP_TYPE_ANI,
 		PNG = wxBITMAP_TYPE_PNG,
 		GIF = wxBITMAP_TYPE_GIF,
 		JPEG = wxBITMAP_TYPE_JPEG,
@@ -42,22 +41,14 @@ namespace kxf
 		TIF = wxBITMAP_TYPE_TIF,
 		TIFF = wxBITMAP_TYPE_TIFF,
 		PICT = wxBITMAP_TYPE_PICT,
+
+		// Non-Wx formats
+		RAW = 100,
+		WEBP,
 	};
 }
 
 namespace kxf::Drawing
 {
 	constexpr int InvalidImageIndex = -1;
-}
-
-namespace kxf::Drawing
-{
-	wxIcon ToIcon(const wxImage& image);
-	wxIcon ToIcon(const wxBitmap& bitmap);
-
-	wxImage ToImage(const wxIcon& icon);
-	wxImage ToImage(const wxBitmap& bitmap);
-
-	wxBitmap ToBitmap(const wxIcon& icon);
-	wxBitmap ToBitmap(const wxImage& image);
 }
