@@ -1,40 +1,35 @@
 #include "stdafx.h"
 #include "Common.h"
-
-namespace
-{
-	constexpr int g_BitmapDepth = 32;
-	constexpr wxBitmapTransparency g_BitmapTransparency = wxBitmapTransparency::wxBitmapTransparency_Always;
-}
+#include "Bitmap.h"
+#include "Icon.h"
+#include "Image.h"
 
 namespace kxf::Drawing
 {
 	wxIcon ToIcon(const wxImage& image)
 	{
-		return ToIcon(ToBitmap(image));
+		return Image(image).ToIcon().ToWxIcon();
 	}
 	wxIcon ToIcon(const wxBitmap& bitmap)
 	{
-		wxIcon icon;
-		icon.CopyFromBitmap(bitmap);
-		return icon;
+		return Bitmap(bitmap).ToIcon().ToWxIcon();
 	}
 
 	wxImage ToImage(const wxIcon& icon)
 	{
-		return ToImage(ToBitmap(icon));
+		return Icon(icon).ToImage().ToWxImage();
 	}
 	wxImage ToImage(const wxBitmap& bitmap)
 	{
-		return bitmap.ConvertToImage();
+		return Bitmap(bitmap).ToImage().ToWxImage();
 	}
 
 	wxBitmap ToBitmap(const wxIcon& icon)
 	{
-		return wxBitmap(icon, g_BitmapTransparency);
+		return Icon(icon).ToBitmap().ToWxBitmap();
 	}
 	wxBitmap ToBitmap(const wxImage& image)
 	{
-		return wxBitmap(image, g_BitmapDepth);
+		return Image(image).ToBitmap().ToWxBitmap();
 	}
 }

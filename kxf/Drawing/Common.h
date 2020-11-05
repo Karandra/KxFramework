@@ -7,6 +7,11 @@
 
 namespace kxf
 {
+	class Bitmap;
+	class Cursor;
+	class Image;
+	class Icon;
+
 	enum class GraphicsRendererType
 	{
 		None = -1,
@@ -14,6 +19,29 @@ namespace kxf
 		GDIPlus,
 		Sciter,
 		Cairo
+	};
+	enum class ImageFormat
+	{
+		None = wxBITMAP_TYPE_INVALID,
+		Any = wxBITMAP_TYPE_ANY,
+
+		Bitmap = wxBITMAP_TYPE_BMP,
+		Icon = wxBITMAP_TYPE_ICO,
+		Cursor = wxBITMAP_TYPE_CUR,
+		AnimatedCursor = wxBITMAP_TYPE_ANI,
+
+		PNG = wxBITMAP_TYPE_PNG,
+		GIF = wxBITMAP_TYPE_GIF,
+		JPEG = wxBITMAP_TYPE_JPEG,
+		TGA = wxBITMAP_TYPE_TGA,
+		PNM = wxBITMAP_TYPE_PNM,
+		IFF = wxBITMAP_TYPE_IFF,
+		PCX = wxBITMAP_TYPE_PCX,
+		XBM = wxBITMAP_TYPE_XBM,
+		XPM = wxBITMAP_TYPE_XPM,
+		TIF = wxBITMAP_TYPE_TIF,
+		TIFF = wxBITMAP_TYPE_TIFF,
+		PICT = wxBITMAP_TYPE_PICT,
 	};
 }
 

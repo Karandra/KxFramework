@@ -211,7 +211,15 @@
     <ClInclude Include="kxf\Compression\SevenZip\Private\Utility.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Private\WithEvtHandler.h" />
     <ClInclude Include="kxf\Crypto\UserCredentials.h" />
+    <ClInclude Include="kxf\Drawing\Bitmap.h" />
+    <ClInclude Include="kxf\Drawing\Cursor.h" />
     <ClInclude Include="kxf\Drawing\Geometry.h" />
+    <ClInclude Include="kxf\Drawing\Icon.h" />
+    <ClInclude Include="kxf\Drawing\IGDIImage.h" />
+    <ClInclude Include="kxf\Drawing\IGDIObject.h" />
+    <ClInclude Include="kxf\Drawing\ColorDepth.h" />
+    <ClInclude Include="kxf\Drawing\Image.h" />
+    <ClInclude Include="kxf\Drawing\Private\GDI.h" />
     <ClInclude Include="kxf\Drawing\SizeRatio.h" />
     <ClInclude Include="kxf\EventSystem\ActivateEvent.h" />
     <ClInclude Include="kxf\EventSystem\IndirectInvocationEvent.h" />
@@ -645,6 +653,10 @@
     <ClCompile Include="kxf\Compression\SevenZip\Private\OutStreamWrapper.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Private\PasswordHandler.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Private\Utility.cpp" />
+    <ClCompile Include="kxf\Drawing\Bitmap.cpp" />
+    <ClCompile Include="kxf\Drawing\Cursor.cpp" />
+    <ClCompile Include="kxf\Drawing\Icon.cpp" />
+    <ClCompile Include="kxf\Drawing\Image.cpp" />
     <ClCompile Include="kxf\Drawing\SizeRatio.cpp" />
     <ClCompile Include="kxf\EventSystem\CommonEventLoop.cpp" />
     <ClCompile Include="kxf\EventSystem\EventID.cpp" />
