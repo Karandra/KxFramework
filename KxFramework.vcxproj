@@ -216,6 +216,7 @@
     <ClInclude Include="kxf\Drawing\Color.h" />
     <ClInclude Include="kxf\Drawing\ColorDefines.h" />
     <ClInclude Include="kxf\Drawing\Cursor.h" />
+    <ClInclude Include="kxf\Drawing\Font.h" />
     <ClInclude Include="kxf\Drawing\Geometry.h" />
     <ClInclude Include="kxf\Drawing\Icon.h" />
     <ClInclude Include="kxf\Drawing\IGDIImage.h" />
@@ -656,6 +657,7 @@
     <ClCompile Include="kxf\Drawing\Bitmap.cpp" />
     <ClCompile Include="kxf\Drawing\Color.cpp" />
     <ClCompile Include="kxf\Drawing\Cursor.cpp" />
+    <ClCompile Include="kxf\Drawing\Font.cpp" />
     <ClCompile Include="kxf\Drawing\Geometry.cpp" />
     <ClCompile Include="kxf\Drawing\Icon.cpp" />
     <ClCompile Include="kxf\Drawing\Image.cpp" />

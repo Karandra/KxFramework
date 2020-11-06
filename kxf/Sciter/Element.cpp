@@ -765,7 +765,7 @@ namespace kxf::Sciter
 		GetSciterAPI()->SciterGetElementHwnd(ToSciterElement(m_Handle), &windowHandle, FALSE);
 		return windowHandle;
 	}
-	
+
 	bool Element::AttachWindow(wxWindow& window)
 	{
 		return AttachNativeWindow(window.GetHandle());
@@ -778,7 +778,7 @@ namespace kxf::Sciter
 		}
 		return false;
 	}
-	
+
 	wxWindow* Element::DetachWindow()
 	{
 		wxWindow* window = GetWindow();
