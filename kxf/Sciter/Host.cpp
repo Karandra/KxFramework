@@ -466,7 +466,7 @@ namespace kxf::Sciter
 			return false;
 		}
 	}
-	bool Host::SetFont(const wxFont& font)
+	bool Host::SetFont(const Font& font)
 	{
 		return GetRootElement().SetStyleFont(font);
 	}
@@ -530,7 +530,7 @@ namespace kxf::Sciter
 	{
 		m_DocumentPath = {};
 		m_DocumentBasePath = URIToSciterAddress(baseURI);
-		
+
 		auto utf8 = ToSciterUTF8(html);
 		auto basePathString = m_DocumentBasePath.GetFullPath();
 		return GetSciterAPI()->SciterLoadHtml(m_SciterWindow.GetHandle(), utf8.data(), utf8.size(), basePathString.wc_str());

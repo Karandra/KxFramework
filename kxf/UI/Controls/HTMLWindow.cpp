@@ -25,12 +25,12 @@ namespace kxf::UI
 			return temp;
 		}
 	}
-	bool HTMLWindow::SetupFontsUsing(const wxFont& normalFont, String& normalFace, String& fixedFace, int& pointSize)
+	bool HTMLWindow::SetupFontsUsing(const Font& normalFont, String& normalFace, String& fixedFace, int& pointSize)
 	{
-		if (normalFont.IsOk())
+		if (normalFont)
 		{
-			wxFont fixedFont(normalFont);
-			auto UseFixedFont = [&]()
+			Font fixedFont(normalFont);
+			auto UsingFixedFont = [&]()
 			{
 				pointSize = normalFont.GetPointSize();
 				normalFace = normalFont.GetFaceName();
@@ -39,11 +39,11 @@ namespace kxf::UI
 
 			if (fixedFont.SetFaceName(wxS("Consolas")) || fixedFont.SetFaceName(wxS("Courier New")))
 			{
-				UseFixedFont();
+				UsingFixedFont();
 			}
-			else if (fixedFont.SetFamily(wxFONTFAMILY_TELETYPE); fixedFont.IsOk())
+			else if (fixedFont.SetFamily(FontFamily::FixedWidth); fixedFont)
 			{
-				UseFixedFont();
+				UsingFixedFont();
 			}
 			else
 			{
@@ -181,7 +181,7 @@ namespace kxf::UI
 		return wxHtmlWindow::OnHTMLOpeningURL(type, url, redirect);
 	}
 
-	bool HTMLWindow::DoSetFont(const wxFont& normalFont)
+	bool HTMLWindow::DoSetFont(const Font& normalFont)
 	{
 		int pointSize = normalFont.GetPointSize();
 		String normalFace;

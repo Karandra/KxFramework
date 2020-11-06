@@ -53,7 +53,7 @@ namespace kxf::Sciter
 				:HandleWrapper(std::move(other))
 			{
 			}
-			
+
 		public:
 			ElementUID* GetUID() const;
 			Host* GetHost() const;
@@ -141,7 +141,7 @@ namespace kxf::Sciter
 			{
 				return GetChildAt(index);
 			}
-			
+
 			// Insertion
 			bool AppendChild(const Element& childNode);
 			bool PrependChild(const Element& childNode);
@@ -239,8 +239,8 @@ namespace kxf::Sciter
 			bool RemoveStyleAttribute(const String& name);
 			bool RemoveStyleAttribute(const char* name);
 
-			wxFont GetStyleFont() const;
-			bool SetStyleFont(const wxFont& font);
+			Font GetStyleFont() const;
+			bool SetStyleFont(const Font& font);
 
 			// Selectors
 			size_t Select(const String& query, std::function<bool(Element)> onElement) const;

@@ -32,7 +32,7 @@ namespace kxf::UI
 
 		public:
 			static String ProcessPlainText(const String& text);
-			static bool SetupFontsUsing(const wxFont& normalFont, String& normalFace, String& fixedFace, int& pointSize);
+			static bool SetupFontsUsing(const Font& normalFont, String& normalFace, String& fixedFace, int& pointSize);
 
 		private:
 			Bitmap m_BackgroundBitmap;
@@ -45,7 +45,7 @@ namespace kxf::UI
 			void CopyTextToClipboard(const String& value) const;
 			void CreateContextMenu(Menu& menu, const wxHtmlLinkInfo* link = nullptr);
 			void ExecuteContextMenu(Menu& menu, const wxHtmlLinkInfo* link = nullptr);
-		
+
 			void OnContextMenu(wxContextMenuEvent& event);
 			void OnKey(wxKeyEvent& event);
 
@@ -53,8 +53,8 @@ namespace kxf::UI
 			virtual String OnProcessPlainText(const String& text) const;
 			void OnHTMLLinkClicked(const wxHtmlLinkInfo& link) override;
 			wxHtmlOpeningStatus OnHTMLOpeningURL(wxHtmlURLType type, const wxString& url, wxString* redirect) const override;
-		
-			bool DoSetFont(const wxFont& normalFont);
+
+			bool DoSetFont(const Font& normalFont);
 			bool DoSetValue(const String& value);
 			bool DoAppendValue(const String& value);
 
@@ -66,7 +66,7 @@ namespace kxf::UI
 			{
 				return this;
 			}
-		
+
 			void OnEraseBackground(wxEraseEvent& event);
 			void OnPaint(wxPaintEvent& event);
 
@@ -93,7 +93,7 @@ namespace kxf::UI
 			{
 				return wxBORDER_THEME;
 			}
-		
+
 			wxGraphicsRenderer* GetRenderer() const
 			{
 				return m_Renderer;
@@ -167,7 +167,7 @@ namespace kxf::UI
 			{
 				wxHtmlWindow::SetPage({});
 			}
-		
+
 			void Cut() override
 			{
 			}

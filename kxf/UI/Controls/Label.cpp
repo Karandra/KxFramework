@@ -205,7 +205,7 @@ namespace kxf::UI
 			wxColour color = GetForegroundColour();
 			if (m_Style & LabelStyle::Caption)
 			{
-				wxFont font = GetFont();
+				auto font = GetFont();
 				font.SetPointSize(font.GetPointSize() + 2);
 				SetFont(font);
 			}

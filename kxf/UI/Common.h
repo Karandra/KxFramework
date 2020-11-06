@@ -10,6 +10,7 @@
 #include "kxf/Drawing/Icon.h"
 #include "kxf/Drawing/Cursor.h"
 #include "kxf/Drawing/Image.h"
+#include "kxf/Drawing/Font.h"
 #include "kxf/EventSystem/Common.h"
 #include "kxf/EventSystem/Event.h"
 #include "kxf/UI/StdIcon.h"

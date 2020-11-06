@@ -291,7 +291,7 @@ namespace kxf::System
 		}
 		return {};
 	}
-	
+
 	std::optional<UserInfo> GetUserInfo()
 	{
 		UserInfo userInfo;
@@ -383,7 +383,7 @@ namespace kxf::System
 	{
 		return static_cast<SystemScreenType>(wxSystemSettings::GetScreenType());
 	}
-	wxFont GetFont(SystemFont index)
+	Font GetFont(SystemFont index)
 	{
 		return wxSystemSettings::GetFont(static_cast<wxSystemFont>(index));
 	}

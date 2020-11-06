@@ -7,6 +7,7 @@
 #include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/Private/UxThemeDefines.h"
 #include "kxf/Drawing/GCOperations.h"
+#include "kxf/Drawing/DCOperations.h"
 #include "wx/generic/private/markuptext.h"
 
 namespace kxf::UI::DataView
@@ -106,7 +107,7 @@ namespace kxf::UI::DataView::Markup
 		};
 		return Size(0, 0);
 	}
-	
+
 	template<class T>
 	void DrawText(T& markup, wxWindow* window, wxDC& dc, const Rect& rect, int flags, wxEllipsizeMode ellipsizeMode)
 	{
@@ -226,7 +227,7 @@ namespace kxf::UI::DataView
 
 		if (m_Renderer.IsMarkupEnabled())
 		{
-			wxDCFontChanger fontChnager(dc);
+			DCFontChanger fontChnager(dc);
 			if (attributes.FontOptions().NeedDCAlteration())
 			{
 				fontChnager.Set(attributes.GetEffectiveFont(dc.GetFont()));
@@ -236,18 +237,18 @@ namespace kxf::UI::DataView
 		}
 		else
 		{
-			auto GetEffectiveFontIfNeeded = [&dc, &attributes]()
+			auto GetEffectiveFontIfNeeded = [&dc, &attributes]() -> Font
 			{
 				if (attributes.FontOptions().NeedDCAlteration())
 				{
 					return attributes.GetEffectiveFont(dc.GetFont());
 				}
-				return wxNullFont;
+				return {};
 			};
-			auto MeasureString = [&dc](const String& text, const wxFont& font = wxNullFont)
+			auto MeasureString = [&dc](const String& text, const Font& font = {})
 			{
 				Size extent;
-				dc.GetTextExtent(text, &extent.X(), &extent.Y(), nullptr, nullptr, font.IsOk() ? &font : nullptr);
+				dc.GetTextExtent(text, &extent.X(), &extent.Y(), nullptr, nullptr, font ? &font.ToWxFont() : nullptr);
 				return extent;
 			};
 
@@ -281,8 +282,8 @@ namespace kxf::UI::DataView
 		// Markup doesn't support multiline text so we are ignoring it for now.
 
 		const CellAttribute& attributes = m_Renderer.GetAttributes();
-		
-		wxDCFontChanger fontChnager(dc);
+
+		DCFontChanger fontChnager(dc);
 		if (attributes.FontOptions().NeedDCAlteration())
 		{
 			fontChnager.Set(attributes.GetEffectiveFont(dc.GetFont()));

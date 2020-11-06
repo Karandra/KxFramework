@@ -117,7 +117,7 @@ namespace kxf::Sciter
 
 			bool IsSystemThemeEnabled() const;
 			bool EnableSystemTheme(bool enable = true);
-			
+
 			bool IsSmoothScrollingEnabled() const;
 			bool EnableSmoothScrolling(bool enable = true);
 
@@ -131,7 +131,7 @@ namespace kxf::Sciter
 			bool SetWindowRenderer(WindowRenderer renderer);
 
 			bool IsTransparentBackgroundSupported(wxString* reason = nullptr) const;
-			bool SetFont(const wxFont& font);
+			bool SetFont(const Font& font);
 			bool SetBackgroundColor(const Color& color);
 			bool SetForegroundColor(const Color& color);
 

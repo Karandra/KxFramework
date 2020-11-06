@@ -73,7 +73,7 @@ namespace kxf::UI::DataView
 				return 2;
 			}
 			int CalcCenter(int cellSize, int itemSize) const;
-			
+
 			Size FromDIP(const Size& size) const;
 			Size FromDIP(int x, int y) const
 			{
@@ -101,7 +101,7 @@ namespace kxf::UI::DataView
 
 			Size GetTextExtent(const String& string) const;
 			Size GetTextExtent(wxDC& dc, const String& string) const;
-			
+
 			Size GetMultilineTextExtent(const String& string) const;
 			Size GetMultilineTextExtent(wxDC& dc, const String& string) const;
 
@@ -111,7 +111,7 @@ namespace kxf::UI::DataView
 			bool DrawBitmap(const Rect& cellRect, CellState cellState, const Bitmap& bitmap, int reservedWidth = -1);
 			int DrawBitmapWithText(const Rect& cellRect, CellState cellState, int offsetX, const String& text, const Bitmap& bitmap, bool centerTextV = false, int reservedWidth = -1);
 			bool DrawProgressBar(const Rect& cellRect, CellState cellState, int value, int range, ProgressState state = ProgressState::Normal, Color* averageBackgroundColor = nullptr);
-			
+
 			Size GetToggleSize() const;
 			Size DrawToggle(wxDC& dc, const Rect& cellRect, CellState cellState, ToggleState toggleState, ToggleType toggleType);
 

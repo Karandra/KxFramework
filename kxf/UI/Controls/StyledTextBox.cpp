@@ -23,11 +23,12 @@ namespace kxf::UI
 		{
 			SetValidator(validator);
 
-			wxFont font = parent->GetFont();
+			Font font = parent->GetFont();
+			font.SetFamily(FontFamily::FixedWidth);
 			if (font.SetFaceName(wxS("Consolas")))
 			{
-				StyleSetFont(style, font);
-				StyleSetFont(wxSTC_STYLE_LINENUMBER, font);
+				StyleSetFont(style, font.ToWxFont());
+				StyleSetFont(wxSTC_STYLE_LINENUMBER, font.ToWxFont());
 			}
 
 			SetDoubleBuffered(true);

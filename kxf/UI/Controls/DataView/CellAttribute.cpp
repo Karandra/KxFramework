@@ -3,26 +3,26 @@
 
 namespace kxf::UI::DataView
 {
-	wxFont CellAttribute::GetEffectiveFont(const wxFont& baseFont) const
+	Font CellAttribute::GetEffectiveFont(const Font& baseFont) const
 	{
 		if (!m_FontOptions.IsDefault())
 		{
-			wxFont font(baseFont);
+			Font font = baseFont;
 			if (m_FontOptions.ContainsOption(CellFontOption::Bold))
 			{
-				font.MakeBold();
+				font.SetWeight(FontWeight::Bold);
 			}
 			if (m_FontOptions.ContainsOption(CellFontOption::Italic))
 			{
-				font.MakeItalic();
+				font.AddStyle(FontStyle::Italic);
 			}
 			if (m_FontOptions.ContainsOption(CellFontOption::Underlined))
 			{
-				font.MakeUnderlined();
+				font.AddStyle(FontStyle::Underline);
 			}
 			if (m_FontOptions.ContainsOption(CellFontOption::Strikethrough))
 			{
-				font.MakeStrikethrough();
+				font.AddStyle(FontStyle::Strikethrough);
 			}
 			if (m_FontOptions.HasFontFace())
 			{

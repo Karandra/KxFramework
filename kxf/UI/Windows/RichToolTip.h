@@ -34,7 +34,7 @@ namespace kxf::UI
 			String m_Title;
 			String m_Message;
 			Icon m_Icon;
-			wxFont m_Font;
+			Font m_Font;
 			StdIcon m_IconID = DefaultIcon;
 			RichToolTipKind m_Kind = DefaultKind;
 			Color m_Color1;
@@ -61,7 +61,7 @@ namespace kxf::UI
 					m_ToolTip.ShowFor(window, &temp);
 				}
 			}
-			
+
 			String GetTitle() const
 			{
 				return m_Title;
@@ -70,7 +70,7 @@ namespace kxf::UI
 			{
 				return m_Message;
 			}
-		
+
 			RichToolTipKind GetKind() const
 			{
 				return m_Kind;
@@ -82,14 +82,14 @@ namespace kxf::UI
 			}
 
 			// Appearance
-			wxFont GetTitleFont() const
+			Font GetTitleFont() const
 			{
 				return m_Font;
 			}
-			void SetTitleFont(const wxFont& font)
+			void SetTitleFont(const Font& font)
 			{
 				m_Font = font;
-				m_ToolTip.SetTitleFont(font);
+				m_ToolTip.SetTitleFont(font.ToWxFont());
 			}
 			void SetBackgroundColour(const Color& color1, const Color& color2 = wxNullColour)
 			{
@@ -135,7 +135,7 @@ namespace kxf::UI
 				m_Timeout = timeout;
 				m_ToolTip.SetTimeout(timeout.GetMilliseconds(), GetDelay().GetMilliseconds());
 			}
-		
+
 			TimeSpan GetDelay() const
 			{
 				return m_Delay;

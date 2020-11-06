@@ -17,7 +17,7 @@ namespace kxf::Sciter
 				{
 					return true;
 				}
-				
+
 				// Call native window procedure
 				bool handled = TWindow::MSWHandleMessage(result, msg, wParam, lParam);
 
@@ -69,7 +69,7 @@ namespace kxf::Sciter
 				:TWindow(std::forward<Args>(arg)...), Host(static_cast<wxWindow&>(*this), static_cast<EvtHandler&>(*this), hostStyle)
 			{
 			}
-			
+
 			template<class... Args>
 			bool Create(Args&&... arg)
 			{
@@ -89,7 +89,7 @@ namespace kxf::Sciter
 				Host::SetStyle(hostStyle);
 				return TWindow::Create(std::forward<Args>(arg)...) && Host::Create();
 			}
-			
+
 		public:
 			bool Layout() override
 			{
@@ -135,7 +135,7 @@ namespace kxf::Sciter
 			{
 				TWindow::SetThemeEnabled(true);
 			}
-			
+
 			bool IsTransparentBackgroundSupported(wxString* reason = nullptr) const override
 			{
 				return Host::IsTransparentBackgroundSupported(reason);
@@ -154,7 +154,7 @@ namespace kxf::Sciter
 				color.SetAlpha8(alpha);
 				return SetBackgroundColour(color);
 			}
-			
+
 			bool SetFont(const wxFont& font) override
 			{
 				Host::SetFont(font);

@@ -9,6 +9,7 @@
 #include "kxf/General/LocallyUniqueID.h"
 #include "kxf/Drawing/Geometry.h"
 #include "kxf/Drawing/Color.h"
+#include "kxf/Drawing/Font.h"
 #include <wx/settings.h>
 #include <wx/gdicmn.h>
 #include "UndefWindows.h"
@@ -115,12 +116,12 @@ namespace kxf::System
 	std::optional<VersionInfo> GetVersionInfo() noexcept;
 	std::optional<MemoryStatus> GetGlobalMemoryStatus() noexcept;
 	BinarySize GetPhysicallyInstalledMemory() noexcept;
-	
+
 	std::optional<UserInfo> GetUserInfo();
 	String GetUserSID();
 
 	Color GetColor(SystemColor index) noexcept;
-	wxFont GetFont(SystemFont index);
+	Font GetFont(SystemFont index);
 	SystemScreenType GetScreenType() noexcept;
 	int GetMetric(SystemMetric index, const wxWindow* window = nullptr) noexcept;
 	Size GetMetric(SystemSizeMetric index, const wxWindow* window = nullptr) noexcept;

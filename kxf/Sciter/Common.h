@@ -9,6 +9,7 @@
 #include "kxf/Drawing/Geometry.h"
 #include "kxf/Drawing/Color.h"
 #include "kxf/Drawing/Angle.h"
+#include "kxf/Drawing/Font.h"
 #include "kxf/FileSystem/FSPath.h"
 #include "kxf/Network/URI.h"
 #include "kxf/Network/URL.h"
@@ -27,7 +28,7 @@ namespace kxf::Sciter
 namespace kxf::Sciter
 {
 	String SizeUnitToString(SizeUnit unit);
-	
+
 	CornerAlignment MapCornerAlignment(FlagSet<Alignment> alignment);
 	FlagSet<Alignment> MapCornerAlignment(CornerAlignment alignment);
 }

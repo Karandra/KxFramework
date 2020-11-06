@@ -4,6 +4,7 @@
 #include "Node.h"
 #include "View.h"
 #include "MainWindow.h"
+#include "kxf/Drawing/DCOperations.h"
 
 namespace kxf::UI::DataView
 {
@@ -34,7 +35,7 @@ namespace kxf::UI::DataView
 		wxDC& dc = GetGraphicsDC();
 		const auto& cellOptions = m_Attributes.Options();
 		const auto& cellBGOptions = m_Attributes.BGOptions();
-		
+
 		auto ClipRectIfNeeded = [this, &cellState](const Rect& rect)
 		{
 			if (GetView()->ContainsWindowStyle(CtrlStyle::VerticalRules))
@@ -112,7 +113,7 @@ namespace kxf::UI::DataView
 		wxDC& dc = HasRegularDC() && !m_AlwaysUseGC  ? GetRegularDC() : GetGraphicsDC();
 
 		// Change text color
-		wxDCTextColourChanger changeTextColor(dc);
+		DCTextColorChanger changeTextColor(dc);
 		if (m_Attributes.Options().HasForegroundColor())
 		{
 			Color color = m_Attributes.Options().GetForegroundColor();
@@ -128,7 +129,7 @@ namespace kxf::UI::DataView
 		}
 
 		// Change font
-		wxDCFontChanger changeFont(dc);
+		DCFontChanger changeFont(dc);
 		if (m_Attributes.FontOptions().NeedDCAlteration())
 		{
 			changeFont.Set(m_Attributes.GetEffectiveFont(dc.GetFont()));

@@ -180,7 +180,7 @@ namespace kxf
 		RECT rectWin = Utility::ToWindowsRect(rect);
 		return ::DrawThemeParentBackground(window.GetHandle(), dc.GetHDC(), &rectWin) == S_OK;
 	}
-	
+
 	Color UxTheme::GetDialogMainInstructionColor(const wxWindow& window) noexcept
 	{
 		if (UxTheme theme(const_cast<wxWindow&>(window), L"TEXTSTYLE"); theme)
@@ -274,14 +274,14 @@ namespace kxf
 		}
 		return {};
 	}
-	wxFont UxTheme::GetFont(const wxDC& dc, int iPartId, int iStateId, int iPropId) const noexcept
+	Font UxTheme::GetFont(const wxDC& dc, int iPartId, int iStateId, int iPropId) const noexcept
 	{
 		LOGFONTW value = {};
 		if (::GetThemeFont(m_Window->GetHandle(), dc.GetHDC(), iPartId, iStateId, iPropId, &value) == S_OK)
 		{
 			return wxNativeFontInfo(value, m_Window);
 		}
-		return wxNullFont;
+		return {};
 	}
 	std::optional<bool> UxTheme::GetBool(int iPartId, int iStateId, int iPropId) const noexcept
 	{

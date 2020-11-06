@@ -998,9 +998,9 @@ namespace kxf::Sciter
 		return GetSciterAPI()->SciterSetStyleAttribute(ToSciterElement(m_Handle), name, nullptr) == SCDOM_OK;
 	}
 
-	wxFont Element::GetStyleFont() const
+	Font Element::GetStyleFont() const
 	{
-		wxFont font;
+		Font font;
 
 		// Family
 		if (String fontFamily = GetStyleAttribute("font-family"); !fontFamily.IsEmpty())
@@ -1014,24 +1014,23 @@ namespace kxf::Sciter
 					{
 						if (value == wxS("fantasy"))
 						{
-							font.SetFamily(wxFONTFAMILY_DECORATIVE);
+							font.SetFamily(FontFamily::Fantasy);
 						}
 						else if (value == wxS("serif"))
 						{
-							font.SetFamily(wxFONTFAMILY_ROMAN);
+							font.SetFamily(FontFamily::Serif);
 						}
 						else if (value == wxS("sans-serif"))
 						{
-							font.SetFamily(wxFONTFAMILY_SWISS);
+							font.SetFamily(FontFamily::SansSerif);
 						}
 						else if (value == wxS("cursive"))
 						{
-							font.SetFamily(wxFONTFAMILY_SCRIPT);
+							font.SetFamily(FontFamily::Cursive);
 						}
 						else if (value == wxS("monospace"))
 						{
-							// Or maybe 'wxFONTFAMILY_MODERN'
-							font.SetFamily(wxFONTFAMILY_TELETYPE);
+							font.SetFamily(FontFamily::FixedWidth);
 						}
 					}
 					if (font.SetFaceName(value))
@@ -1047,15 +1046,28 @@ namespace kxf::Sciter
 		{
 			if (fontStyle == wxS("normal"))
 			{
-				font.SetStyle(wxFONTSTYLE_NORMAL);
+				font.SetStyle(FontStyle::Normal);
 			}
 			else if (fontStyle == wxS("italic"))
 			{
-				font.SetStyle(wxFONTSTYLE_ITALIC);
+				font.SetStyle(FontStyle::Italic);
 			}
 			else if (fontStyle == wxS("oblique"))
 			{
-				font.SetStyle(wxFONTSTYLE_SLANT);
+				font.SetStyle(FontStyle::Oblique);
+			}
+		}
+
+		// Text decoration
+		if (String textDecoration = GetStyleAttribute("text-decoration"); !textDecoration.IsEmpty())
+		{
+			if (textDecoration.Contains(wxS("underline")))
+			{
+				font.AddStyle(FontStyle::Underline);
+			}
+			if (textDecoration.Contains(wxS("line-through")))
+			{
+				font.AddStyle(FontStyle::Strikethrough);
 			}
 		}
 
@@ -1073,7 +1085,7 @@ namespace kxf::Sciter
 
 		return font;
 	}
-	bool Element::SetStyleFont(const wxFont& font)
+	bool Element::SetStyleFont(const Font& font)
 	{
 		if (!IsNull())
 		{
@@ -1081,50 +1093,59 @@ namespace kxf::Sciter
 			{
 				switch (font.GetFamily())
 				{
-					case wxFONTFAMILY_DECORATIVE:
+					case FontFamily::Fantasy:
 					{
 						return wxS("fantasy");
 					}
-					case wxFONTFAMILY_ROMAN:
+					case FontFamily::Serif:
 					{
 						return wxS("serif");
 					}
-					case wxFONTFAMILY_SWISS:
+					case FontFamily::SansSerif:
 					{
 						return wxS("sans-serif");
-						break;
 					}
-					case wxFONTFAMILY_SCRIPT:
+					case FontFamily::Cursive:
 					{
 						return wxS("cursive");
-						break;
 					}
-					case wxFONTFAMILY_MODERN:
-					case wxFONTFAMILY_TELETYPE:
+					case FontFamily::FixedWidth:
 					{
 						return wxS("monospace");
-						break;
 					}
 				};
 				return {};
 			};
 			auto MapStyle = [&]() -> String
 			{
-				switch (font.GetStyle())
+				const auto style = font.GetStyle();
+				if (style.Contains(FontStyle::Italic))
 				{
-					case wxFONTSTYLE_NORMAL:
+					return wxS("italic");
+				}
+				else if (style.Contains(FontStyle::Italic))
+				{
+					return wxS("oblique");
+				}
+				return {};
+			};
+			auto MapTextDecoration = [&]() -> String
+			{
+				String textDecoration;
+
+				const auto style = font.GetStyle();
+				if (style.Contains(FontStyle::Underline))
+				{
+					textDecoration += wxS("underline");
+				}
+				if (style.Contains(FontStyle::Strikethrough))
+				{
+					if (!textDecoration.IsEmpty())
 					{
-						return wxS("normal");
+						textDecoration += wxS(' ');
 					}
-					case wxFONTSTYLE_ITALIC:
-					{
-						return wxS("italic");
-					}
-					case wxFONTSTYLE_SLANT:
-					{
-						return wxS("oblique");
-					}
-				};
+					textDecoration += wxS("line-through");
+				}
 				return {};
 			};
 
@@ -1146,6 +1167,16 @@ namespace kxf::Sciter
 			else
 			{
 				RemoveStyleAttribute("font-style");
+			}
+
+			// Text decoration
+			if (String textDecoration = MapTextDecoration(); !textDecoration.IsEmpty())
+			{
+				SetStyleAttribute("text-decoration", textDecoration);
+			}
+			else
+			{
+				RemoveStyleAttribute("text-decoration");
 			}
 
 			// Size

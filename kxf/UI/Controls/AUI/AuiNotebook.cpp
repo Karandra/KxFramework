@@ -13,7 +13,7 @@ namespace kxf::UI
 	{
 		if (wxAuiNotebook::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), style.ToInt()))
 		{
-			wxFont font = parent->GetFont();
+			auto font = parent->GetFont();
 			SetNormalFont(font);
 			SetMeasuringFont(font);
 			SetSelectedFont(font);

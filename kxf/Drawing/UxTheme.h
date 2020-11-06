@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "Font.h"
 #include "Color.h"
 #include "Geometry.h"
 #include "kxf/General/String.h"
@@ -125,7 +126,7 @@ namespace kxf
 			std::optional<Rect> GetBackgroundContentRect(const wxDC& dc, int iPartId, int iStateId, const Rect& rect) const noexcept;
 
 			Color GetColor(int iPartId, int iStateId, int iPropId) const noexcept;
-			wxFont GetFont(const wxDC& dc, int iPartId, int iStateId, int iPropId) const noexcept;
+			Font GetFont(const wxDC& dc, int iPartId, int iStateId, int iPropId) const noexcept;
 			std::optional<bool> GetBool(int iPartId, int iStateId, int iPropId) const noexcept;
 			std::optional<int> GetInt(int iPartId, int iStateId, int iPropId) const noexcept;
 			std::optional<int> GetEnum(int iPartId, int iStateId, int iPropId) const noexcept;

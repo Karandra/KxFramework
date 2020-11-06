@@ -20,7 +20,7 @@ namespace kxf::UI::DataView
 			{
 				*this = CellAttribute();
 			}
-			wxFont GetEffectiveFont(const wxFont& baseFont) const;
+			Font GetEffectiveFont(const Font& baseFont) const;
 
 		public:
 			const CellAttributes::Options& Options() const
@@ -31,7 +31,7 @@ namespace kxf::UI::DataView
 			{
 				return m_Options;
 			}
-			
+
 			const CellAttributes::BGOptions& BGOptions() const
 			{
 				return m_BGOptions;
