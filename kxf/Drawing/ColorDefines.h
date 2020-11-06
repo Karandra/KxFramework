@@ -20,7 +20,7 @@ namespace kxf
 		{
 			return std::numeric_limits<T>::max();
 		}
-	
+
 		static constexpr T clamp(T value) noexcept
 		{
 			return std::clamp(value, min(), max());
@@ -42,7 +42,7 @@ namespace kxf
 		{
 			return 1;
 		}
-		
+
 		static constexpr T clamp(T value) noexcept
 		{
 			return std::clamp(value, min(), max());
@@ -76,7 +76,7 @@ namespace kxf
 				:Red(r), Green(g), Blue(b)
 			{
 			}
-		
+
 		public:
 			constexpr PackedRGBA<T> AddAlpha(T a) const noexcept
 			{
@@ -134,7 +134,7 @@ namespace kxf
 				:Red(other.Red), Green(other.Green), Blue(other.Blue), Alpha(a)
 			{
 			}
-		
+
 		public:
 			constexpr bool IsSameAs(const PackedRGB<T>& other) const noexcept
 			{
@@ -262,7 +262,7 @@ namespace kxf
 
 			return value * ColorTraits<T>::max();
 		}
-	
+
 		template<class T>
 		constexpr float ChannelToNormalizedBBP(T value) noexcept
 		{

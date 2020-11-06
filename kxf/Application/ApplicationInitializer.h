@@ -57,7 +57,7 @@ namespace kxf
 					}
 				}
 			}
-			
+
 			void OnTerminate();
 
 		public:

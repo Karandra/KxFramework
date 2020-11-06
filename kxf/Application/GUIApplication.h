@@ -48,7 +48,7 @@ namespace kxf
 
 			bool ShoudExitOnLastFrameDelete() const override;
 			void ExitOnLastFrameDelete(bool enable = true) override;
-			
+
 			bool IsActive() const override;
 			void SetActive(bool active = true, wxWindow* window = nullptr) override;
 

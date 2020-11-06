@@ -18,7 +18,7 @@ namespace kxf
 				:m_Icon(other)
 			{
 			}
-			
+
 			Icon(const Image& other);
 			Icon(const Bitmap& other);
 			Icon(const Cursor& other);
@@ -31,7 +31,7 @@ namespace kxf
 				:m_Icon(xbm, size.GetWidth(), size.GetHeight())
 			{
 			}
-			
+
 			virtual ~Icon() = default;
 
 		public:

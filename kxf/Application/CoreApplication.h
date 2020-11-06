@@ -49,10 +49,10 @@ namespace kxf
 
 			// Application::IPendingEvents
 			std::atomic<bool> m_PendingEventsProcessingEnabled = true;
-			
+
 			mutable RecursiveRWLock m_ScheduledForDestructionLock;
 			std::vector<std::unique_ptr<IObject>> m_ScheduledForDestruction;
-			
+
 			mutable RecursiveRWLock m_PendingEvtHandlersLock;
 			std::list<IEvtHandler*> m_PendingEvtHandlers;
 			std::list<IEvtHandler*> m_DelayedPendingEvtHandlers;
@@ -129,7 +129,7 @@ namespace kxf
 			bool OnInit() override = 0;
 			void OnExit() override;
 			int OnRun() override;
-			
+
 			void Exit(int exitCode) override;
 			std::optional<int> GetExitCode() const override
 			{
@@ -241,7 +241,7 @@ namespace kxf
 				return m_MainLoop.get();
 			}
 			void ExitMainLoop(int exitCode = 0) override;
-			
+
 			void OnEventLoopEnter(IEventLoop& loop) override
 			{
 				// Nothing to do

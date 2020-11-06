@@ -92,7 +92,7 @@ namespace kxf::Geometry
 				m_X = x;
 				return Self();
 			}
-			
+
 			constexpr TValue GetY() const noexcept
 			{
 				return m_Y;
@@ -907,7 +907,7 @@ namespace kxf::Geometry
 
 				return Self();
 			}
-			
+
 			constexpr TDerived& Scale(double dx, double dy, double dw, double dh) noexcept
 			{
 				m_X *= dx;
@@ -1071,7 +1071,7 @@ namespace kxf
 			{
 				return SetX(width);
 			}
-			
+
 			constexpr TValue GetHeight() const noexcept
 			{
 				return GetY();
@@ -1080,7 +1080,7 @@ namespace kxf
 			{
 				return SetY(height);
 			}
-			
+
 			constexpr TValue& Width() noexcept
 			{
 				return X();
@@ -1136,7 +1136,7 @@ namespace kxf
 			{
 				return *this != Rect(other);
 			}
-			
+
 			operator wxRect() const noexcept
 			{
 				return {static_cast<int>(m_X), static_cast<int>(m_Y), static_cast<int>(m_Width), static_cast<int>(m_Height)};

@@ -43,7 +43,7 @@ namespace kxf
 		// Initialization is done successfully, we can assign 'ICoreApplication' instance now.
 		ICoreApplication::SetInstance(&m_Application);
 	}
-	
+
 	void ApplicationInitializer::OnTerminate()
 	{
 		if (m_IsCreated)
@@ -104,7 +104,7 @@ namespace kxf
 					// Don't call 'OnExit' if 'OnInit' failed
 					m_Application.OnExit();
 				};
-				
+
 				// Run the main loop
 				return m_Application.OnRun();
 			}

@@ -96,7 +96,7 @@ namespace kxf
 				:m_Image(other)
 			{
 			}
-			
+
 			Image(const Icon& other);
 			Image(const Bitmap& other);
 			Image(const Cursor& other);
@@ -383,7 +383,7 @@ namespace kxf
 			{
 				m_Image.SetMask(enable);
 			}
-			
+
 			PackedRGB<uint8_t> GetMask() const
 			{
 				return {m_Image.GetMaskRed(), m_Image.GetMaskGreen(), m_Image.GetMaskBlue()};

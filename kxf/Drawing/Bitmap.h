@@ -35,7 +35,7 @@ namespace kxf
 			{
 				Initialize();
 			}
-			
+
 			Bitmap(const char* xbm, const Size& size, ColorDepth depth = ColorDepthDB::BPP1)
 				:m_Bitmap(xbm, size.GetWidth(), size.GetHeight(), depth ? depth.GetValue() : -1)
 			{
@@ -51,7 +51,7 @@ namespace kxf
 			{
 				Initialize();
 			}
-			
+
 			virtual ~Bitmap() = default;
 
 		public:

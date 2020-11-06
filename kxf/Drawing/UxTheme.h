@@ -157,7 +157,7 @@ namespace kxf
 			{
 				return IsNull();
 			}
-		
+
 			UxTheme& operator=(const UxTheme&) = delete;
 			UxTheme& operator=(UxTheme&& other) noexcept;
 	};

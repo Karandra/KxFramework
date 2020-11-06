@@ -32,7 +32,7 @@ namespace kxf
 
 			virtual bool ShoudExitOnLastFrameDelete() const = 0;
 			virtual void ExitOnLastFrameDelete(bool enable = true) = 0;
-			
+
 			virtual bool IsActive() const = 0;
 			virtual void SetActive(bool active = true, wxWindow* window = nullptr) = 0;
 

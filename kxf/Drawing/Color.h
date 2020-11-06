@@ -295,7 +295,7 @@ namespace kxf
 				}
 				return *this;
 			}
-			
+
 			constexpr uint32_t GetARGB() const noexcept
 			{
 				auto temp = GetFixed8();
@@ -311,7 +311,7 @@ namespace kxf
 				SetFixed8(r, g, b, a);
 				return *this;
 			}
-			
+
 			constexpr uint32_t GetCOLORREF() const noexcept
 			{
 				return GetABGR();
@@ -383,7 +383,7 @@ namespace kxf
 				SetNormalized(f(0), f(8), f(4), hsl.Alpha);
 				return *this;
 			}
-			
+
 			constexpr PackedHSV GetHSV() const noexcept
 			{
 				return ToHSV(GetHSL());
@@ -392,7 +392,7 @@ namespace kxf
 			{
 				return SetHSL(ToHSL(hsv));
 			}
-			
+
 			// Operations
 			constexpr Color MakeMono(bool isWhite = true) const noexcept
 			{
@@ -538,7 +538,7 @@ namespace kxf
 			{
 				return !IsValid();
 			}
-			
+
 			constexpr bool operator==(const Color& other) const noexcept
 			{
 				return this == &other || m_Value == other.m_Value;

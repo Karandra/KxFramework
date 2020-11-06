@@ -97,7 +97,7 @@ namespace kxf
 		return Angle::FromNormalized(left.ToNormalized() - right.ToNormalized());
 	}
 
-	#pragma warning(push, 0)   
+	#pragma warning(push, 0)
 	#pragma warning(disable: 4005)
 
 	#define Kx_AngleCmpOp(op, T1, T2, cmp)				inline constexpr bool operator op(T1 x, T2 y) noexcept { return cmp(x, y, op); }
