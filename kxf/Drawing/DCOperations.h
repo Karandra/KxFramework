@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Color.h"
+#include "Font.h"
 #include <wx/dc.h>
 #include <wx/gdicmn.h>
 #include <wx/region.h>
@@ -75,6 +76,76 @@ namespace kxf
 			~DCChangeLogicalFunction()
 			{
 				m_DC.SetLogicalFunction(m_OriginalMode);
+			}
+	};
+
+	class DCFontChanger final
+	{
+		private:
+			wxDC& m_DC;
+			Font m_OriginalFont;
+
+		public:
+			DCFontChanger(wxDC& dc)
+				:m_DC(dc)
+			{
+			}
+			DCFontChanger(wxDC& dc, const Font& font)
+				:m_DC(dc), m_OriginalFont(dc.GetFont())
+			{
+				m_DC.SetFont(font.ToWxFont());
+			}
+			~DCFontChanger()
+			{
+				if (m_OriginalFont)
+				{
+					m_DC.SetFont(m_OriginalFont.ToWxFont());
+				}
+			}
+
+		public:
+			void Set(const Font& font)
+			{
+				if (!m_OriginalFont)
+				{
+					m_OriginalFont = m_DC.GetFont();
+				}
+				m_DC.SetFont(font.ToWxFont());
+			}
+	};
+
+	class DCTextColorChanger final
+	{
+		private:
+			wxDC& m_DC;
+			Color m_OriginalColor;
+
+		public:
+			DCTextColorChanger(wxDC& dc)
+				:m_DC(dc)
+			{
+			}
+			DCTextColorChanger(wxDC& dc, const Color& color)
+				:m_DC(dc), m_OriginalColor(dc.GetTextForeground())
+			{
+				m_DC.SetTextForeground(color.ToWxColor());
+			}
+			~DCTextColorChanger()
+			{
+				if (m_OriginalColor)
+				{
+					m_DC.SetTextForeground(m_OriginalColor.ToWxColor());
+				}
+			}
+
+		public:
+			void Set(const Color& color)
+			{
+				if (!m_OriginalColor)
+				{
+					m_OriginalColor = m_DC.GetTextForeground();
+				}
+				m_DC.SetTextForeground(color.ToWxColor());
 			}
 	};
 }
