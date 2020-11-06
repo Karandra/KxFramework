@@ -62,6 +62,7 @@ namespace kxf::Drawing::Private
 					return true;
 				}
 			}
+			::DeleteObject(handle);
 		}
 		return false;
 	}
