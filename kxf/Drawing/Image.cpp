@@ -8,7 +8,7 @@
 
 namespace kxf
 {
-	int Image::GetImageCount(IInputStream& stream, ImageFormat format)
+	size_t Image::GetImageCount(IInputStream& stream, ImageFormat format)
 	{
 		wxWidgets::InputStreamWrapperWx warpper(stream);
 		return wxImage::GetImageCount(warpper, static_cast<wxBitmapType>(format));

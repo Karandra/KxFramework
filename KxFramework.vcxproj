@@ -223,6 +223,7 @@
     <ClInclude Include="kxf\Drawing\IGDIObject.h" />
     <ClInclude Include="kxf\Drawing\ColorDepth.h" />
     <ClInclude Include="kxf\Drawing\Image.h" />
+    <ClInclude Include="kxf\Drawing\ImageBundle.h" />
     <ClInclude Include="kxf\Drawing\Private\GDI.h" />
     <ClInclude Include="kxf\Drawing\SizeRatio.h" />
     <ClInclude Include="kxf\EventSystem\ActivateEvent.h" />
@@ -661,6 +662,7 @@
     <ClCompile Include="kxf\Drawing\Geometry.cpp" />
     <ClCompile Include="kxf\Drawing\Icon.cpp" />
     <ClCompile Include="kxf\Drawing\Image.cpp" />
+    <ClCompile Include="kxf\Drawing\ImageBundle.cpp" />
     <ClCompile Include="kxf\Drawing\SizeRatio.cpp" />
     <ClCompile Include="kxf\EventSystem\CommonEventLoop.cpp" />
     <ClCompile Include="kxf\EventSystem\EventID.cpp" />

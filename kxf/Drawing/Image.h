@@ -85,7 +85,7 @@ namespace kxf
 			};
 
 		public:
-			static int GetImageCount(IInputStream& stream, ImageFormat format = ImageFormat::Any);
+			static size_t GetImageCount(IInputStream& stream, ImageFormat format = ImageFormat::Any);
 
 		private:
 			wxImage m_Image;
