@@ -6,6 +6,10 @@
 #include "kxf/FileSystem/NativeFileSystem.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/INativeStream.h"
+#include "kxf/Drawing/ImageBundle.h"
+#include "kxf/Drawing/Bitmap.h"
+#include "kxf/Drawing/Icon.h"
+#include "kxf/Drawing/Cursor.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 
@@ -105,7 +109,7 @@ namespace
 		}
 		return nullptr;
 	}
-	
+
 	template<class T>
 	T LoadGDIImage(HMODULE handle, const String& name, const String& type, UINT gdiType, Size size, const Locale& locale)
 	{
@@ -113,12 +117,6 @@ namespace
 		{
 			T image{};
 			image.AttachHandle(imageHandle);
-			if (size.IsFullySpecified())
-			{
-				// These functions were removed in wxWidgets v3.1.2
-				//image.SetWidth(size.GetWidth());
-				//image.SetHeight(size.GetHeight());
-			}
 			return image;
 		}
 		return {};
@@ -281,7 +279,7 @@ namespace kxf
 
 		#pragma warning(pop)
 	}
-	
+
 	void* DynamicLibrary::GetFunctionAddress(const char* name) const
 	{
 		if (m_Handle)
@@ -390,9 +388,15 @@ namespace kxf
 		return {};
 	}
 
-	Bitmap DynamicLibrary::GetBitmapResource(const String& name, const Locale& locale) const
+	size_t DynamicLibrary::GetIconResourceCount(const String& name, const Locale& locale) const
 	{
-		return LoadGDIImage<Bitmap>(AsHMODULE(*m_Handle), name, System::Private::ResourceTypeToName(RT_BITMAP), IMAGE_BITMAP, g_DefaultIconSize, locale);
+		wxScopedCharBuffer groupBuffer = GetResource(System::Private::ResourceTypeToName(RT_GROUP_ICON), name, locale);
+		if (groupBuffer.length() != 0)
+		{
+			const auto* iconGroup =  reinterpret_cast<System::Private::IconGroupDirectory*>(groupBuffer.data());
+			return iconGroup->idCount;
+		}
+		return 0;
 	}
 	Icon DynamicLibrary::GetIconResource(const String& name, const Size& size, const Locale& locale) const
 	{
@@ -408,7 +412,7 @@ namespace kxf
 		if (groupBuffer.length() != 0)
 		{
 			IconGroupDirectory* iconGroup = reinterpret_cast<IconGroupDirectory*>(groupBuffer.data());
-			
+
 			const size_t iconCount = iconGroup->idCount;
 			if (index >= iconCount)
 			{
@@ -436,15 +440,21 @@ namespace kxf
 		}
 		return {};
 	}
-	size_t DynamicLibrary::GetIconResourceCount(const String& name, const Locale& locale) const
+	ImageBundle DynamicLibrary::GetIconBundleResource(const String& name, const Locale& locale) const
 	{
-		wxScopedCharBuffer groupBuffer = GetResource(System::Private::ResourceTypeToName(RT_GROUP_ICON), name, locale);
-		if (groupBuffer.length() != 0)
+		const size_t count = GetIconResourceCount(name, locale);
+
+		ImageBundle bundle(count);
+		for (size_t i = 0; i < count; i++)
 		{
-			const auto* iconGroup =  reinterpret_cast<System::Private::IconGroupDirectory*>(groupBuffer.data());
-			return iconGroup->idCount;
+			bundle.AddImage(GetIconResource(name, i, locale).ToImage());
 		}
-		return 0;
+		return bundle;
+	}
+
+	Bitmap DynamicLibrary::GetBitmapResource(const String& name, const Locale& locale) const
+	{
+		return LoadGDIImage<Bitmap>(AsHMODULE(*m_Handle), name, System::Private::ResourceTypeToName(RT_BITMAP), IMAGE_BITMAP, g_DefaultIconSize, locale);
 	}
 	Cursor DynamicLibrary::GetCursorResource(const String& name, const Locale& locale) const
 	{

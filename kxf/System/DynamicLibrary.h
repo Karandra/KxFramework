@@ -2,9 +2,6 @@
 #include "Common.h"
 #include "kxf/General/String.h"
 #include "kxf/Drawing/Geometry.h"
-#include "kxf/Drawing/Bitmap.h"
-#include "kxf/Drawing/Icon.h"
-#include "kxf/Drawing/Cursor.h"
 #include "kxf/FileSystem/FSPath.h"
 #include "kxf/Localization/Locale.h"
 #include <wx/bitmap.h>
@@ -13,6 +10,11 @@
 
 namespace kxf
 {
+	class Icon;
+	class Bitmap;
+	class Cursor;
+	class ImageBundle;
+
 	enum class DynamicLibraryLoadFlag: uint32_t
 	{
 		None = 0,
@@ -129,10 +131,12 @@ namespace kxf
 			size_t EnumResourceLanguages(const String& resType, const String& resName, std::function<bool(Locale)> func) const;
 			wxScopedCharBuffer GetResource(const String& resType, const String& resName, const Locale& locale = {}) const;
 
-			Bitmap GetBitmapResource(const String& name, const Locale& locale = {}) const;
+			size_t GetIconResourceCount(const String& name, const Locale& locale = {}) const;
 			Icon GetIconResource(const String& name, const Size& size = Size::UnspecifiedSize(), const Locale& locale = {}) const;
 			Icon GetIconResource(const String& name, size_t index, const Locale& locale = {}) const;
-			size_t GetIconResourceCount(const String& name, const Locale& locale = {}) const;
+			ImageBundle GetIconBundleResource(const String& name, const Locale& locale = {}) const;
+
+			Bitmap GetBitmapResource(const String& name, const Locale& locale = {}) const;
 			Cursor GetCursorResource(const String& name, const Locale& locale = {}) const;
 			String GetStringResource(const String& name, const Locale& locale = {}) const;
 			String GetMessageResource(uint32_t messageID, const Locale& locale = {}) const;
@@ -141,7 +145,7 @@ namespace kxf
 			DynamicLibrary& operator=(DynamicLibrary&& other) noexcept
 			{
 				m_Handle = std::move(other.m_Handle);
-				
+
 				m_LoadFlags = other.m_LoadFlags;
 				other.m_LoadFlags = DynamicLibraryLoadFlag::None;
 

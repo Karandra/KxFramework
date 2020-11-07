@@ -24,6 +24,10 @@ namespace kxf
 
 		public:
 			ImageBundle() noexcept = default;
+			ImageBundle(size_t initialCount)
+			{
+				m_Items.reserve(initialCount);
+			}
 			ImageBundle(const ImageBundle&) = default;
 			ImageBundle(ImageBundle&&) noexcept = default;
 			ImageBundle(const wxIconBundle& other);
