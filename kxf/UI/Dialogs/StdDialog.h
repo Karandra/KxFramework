@@ -260,7 +260,7 @@ namespace kxf::UI
 				}
 				return false;
 			}
-		
+
 			bool MSWTranslateMessage(WXMSG* msg) override;
 			void EnableGlassFrame();
 			void* GetGripperWindow();
@@ -376,31 +376,9 @@ namespace kxf::UI
 			{
 				return m_MainIconID;
 			}
-			void SetMainIcon(const Bitmap& icon) override
-			{
-				if (icon)
-				{
-					m_MainIcon = icon;
-					m_MainIconID = StdIcon::None;
-					LoadIcon();
-				}
-				else
-				{
-					m_MainIconID = StdIcon::None;
-				}
-				SetIconVisibility();
-			}
-			void SetMainIcon(StdIcon iconID = DefaultIconID) override
-			{
-				m_MainIconID = iconID;
-				if (iconID != StdIcon::None)
-				{
-					m_MainIcon = Icon(wxArtProvider::GetMessageBoxIcon(ToWxStdIcon(iconID))).ToBitmap();
-					LoadIcon();
-				}
-				SetIconVisibility();
-			}
-			
+			void SetMainIcon(const Bitmap& icon) override;
+			void SetMainIcon(StdIcon iconID = DefaultIconID) override;
+
 			// Caption
 			wxString GetCaption() const override
 			{
@@ -410,14 +388,14 @@ namespace kxf::UI
 			{
 				m_CaptionLabel->SetLabel(label);
 			}
-			
+
 			// Small label above main control
 			wxString GetLabel() const override
 			{
 				return m_ViewLabel->GetLabel();
 			}
 			void SetLabel(const wxString& label) override;
-		
+
 			// Buttons customization
 			void SetDefaultButton(WidgetID id) override;
 			StdDialogControl GetButton(WidgetID id) const override;

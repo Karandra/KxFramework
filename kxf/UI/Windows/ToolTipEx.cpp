@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "ToolTipEx.h"
 #include "kxf/System/Registry.h"
+#include "kxf/System/SystemInformation.h"
+#include "kxf/Drawing/ArtProvider.h"
 #include <CommCtrl.h>
 #include <wx/artprov.h>
 #include "kxf/System/UndefWindows.h"
@@ -114,13 +116,12 @@ namespace kxf::UI
 				{
 					if (ContainsOption(ToolTipExStyle::LargeIcons))
 					{
-						m_QuestionIcon = wxArtProvider::GetMessageBoxIcon(wxICON_QUESTION);
+						m_QuestionIcon = ArtProvider::GetMessageBoxResource(StdIcon::Question);
 					}
 					else
 					{
-						const int width = wxSystemSettings::GetMetric(wxSYS_SMALLICON_X);
-						const int height = wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y);
-						m_QuestionIcon = wxArtProvider::GetIcon(wxART_QUESTION, wxART_MESSAGE_BOX, Size(width, height));
+						Size size = System::GetMetric(SystemSizeMetric::IconSmall);
+						m_QuestionIcon = ArtProvider::GetResource(ArtProvider::GetMessageBoxResourceIDs(StdIcon::Question), ArtProviderClient::MessageBox, size).ToIcon();
 					}
 
 					if (m_QuestionIcon)

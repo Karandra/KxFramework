@@ -6,6 +6,7 @@
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/Drawing/Bitmap.h"
 #include "kxf/Drawing/Icon.h"
+#include "kxf/Drawing/ArtProvider.h"
 #include <CommCtrl.h>
 #include "kxf/System/UndefWindows.h"
 
@@ -185,7 +186,7 @@ namespace kxf::UI
 	{
 		return DoShowDialog(true);
 	}
-	
+
 	bool TaskDialog::Realize()
 	{
 		m_NativeInfo->Realize();
@@ -209,7 +210,7 @@ namespace kxf::UI
 		}
 		else
 		{
-			return Icon(wxArtProvider::GetMessageBoxIcon(TranslateIconIDToWx(GetMainIconID()))).ToBitmap();
+			return ArtProvider::GetMessageBoxResource(m_MainIconID).ToBitmap();
 		}
 	}
 	void TaskDialog::SetMainIcon(StdIcon iconID)
@@ -218,7 +219,7 @@ namespace kxf::UI
 		{
 			// Windows doesn't allow to show a question icon using icon ID for the main icon
 			// but if we really want to use this icon nothing should stop us!
-			SetMainIcon(Icon(wxArtProvider::GetMessageBoxIcon(wxICON_QUESTION)).ToBitmap());
+			SetMainIcon(ArtProvider::GetMessageBoxResource(StdIcon::Question).ToBitmap());
 			m_MainIconID = iconID;
 		}
 		else
@@ -257,7 +258,7 @@ namespace kxf::UI
 		}
 		else
 		{
-			return Icon(wxArtProvider::GetMessageBoxIcon(TranslateIconIDToWx(GetFooterIconID()))).ToBitmap();
+			return ArtProvider::GetMessageBoxResource(m_FooterIconID).ToBitmap();
 		}
 	}
 	void TaskDialog::SetFooterIcon(StdIcon iconID)

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "StdDialog.h"
 #include "kxf/Drawing/UxTheme.h"
+#include "kxf/Drawing/ArtProvider.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/System.h"
 
@@ -533,6 +534,31 @@ namespace kxf::UI
 		{
 			CenterIfNoPosition(pos);
 		}
+	}
+
+	void StdDialog::SetMainIcon(const Bitmap& icon)
+	{
+		if (icon)
+		{
+			m_MainIcon = icon;
+			m_MainIconID = StdIcon::None;
+			LoadIcon();
+		}
+		else
+		{
+			m_MainIconID = StdIcon::None;
+		}
+		SetIconVisibility();
+	}
+	void StdDialog::SetMainIcon(StdIcon iconID)
+	{
+		m_MainIconID = iconID;
+		if (iconID != StdIcon::None)
+		{
+			m_MainIcon = ArtProvider::GetMessageBoxResource(iconID).ToBitmap();
+			LoadIcon();
+		}
+		SetIconVisibility();
 	}
 
 	int StdDialog::ShowModal()
