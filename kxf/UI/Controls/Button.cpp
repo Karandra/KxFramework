@@ -2,7 +2,7 @@
 #include "Button.h"
 #include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/Bitmap.h"
-#include "kxf/Drawing/Image.h"
+#include "kxf/Drawing/ImageBundle.h"
 #include "kxf/UI/Menus/Menu.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/System/Private/System.h"
@@ -205,7 +205,7 @@ namespace kxf::UI
 						const wxValidator& validator
 	)
 	{
-		
+
 		if (wxAnyButton::Create(parent, id, pos, size, style.ToInt(), validator))
 		{
 			SetLabel(label);
@@ -260,41 +260,43 @@ namespace kxf::UI
 			DynamicLibrary library(wxS("ImageRes.dll"), DynamicLibraryLoadFlag::DataFile);
 			if (library)
 			{
-				int iconSize = 16;
+				int size = 16;
 				const int height = GetSize().GetHeight();
 				if (height > 32)
 				{
-					iconSize = 32;
+					size = 32;
 				}
-				if (height > 48)
+				else if (height > 48)
 				{
-					iconSize = 48;
+					size = 48;
 				}
-				if (height > 64)
+				else if (height > 64)
 				{
-					iconSize = 64;
+					size = 64;
 				}
-				if (height > 128)
+				else if (height > 128)
 				{
-					iconSize = 128;
+					size = 128;
 				}
-				if (height > 256)
+				else if (height > 256)
 				{
-					iconSize = 256;
+					size = 256;
 				}
-				if (height > 512)
+				else if (height > 512)
 				{
-					iconSize = 512;
+					size = 512;
 				}
 
-				if (Icon icon = library.GetIconResource(wxS("78"), Size(iconSize, iconSize)))
+				if (ImageBundle bundle = library.GetIconBundleResource(wxS("78")))
 				{
-					SetBitmap(icon.ToBitmap().ToWxBitmap());
-					return;
+					if (Image image = bundle.GetImage({size, size}, ImageBundleFlag::SystemSize|ImageBundleFlag::NearestLarger))
+					{
+						SetBitmap(image.ToBitmap().ToWxBitmap());
+						return;
+					}
 				}
 			}
 		}
-
 		SetBitmap(wxNullBitmap);
 	}
 }

@@ -103,14 +103,14 @@ namespace kxf
 			m_Items.emplace_back(image);
 		}
 	}
-	Image ImageBundle::GetImage(Size desiredSize, FlagSet<SizeFallback> sizeFallback) const
+	Image ImageBundle::GetImage(Size desiredSize, FlagSet<ImageBundleFlag> sizeFallback) const
 	{
 		if (desiredSize.IsFullySpecified() || desiredSize == Size::UnspecifiedSize())
 		{
 			// We need the standard system icon size when using system icon fallback
 			Size systemIcon;
 			Size systemSmallIcon;
-			if (sizeFallback.Contains(SizeFallback::System) || sizeFallback.Contains(SizeFallback::SystemSmall))
+			if (sizeFallback.Contains(ImageBundleFlag::SystemSize) || sizeFallback.Contains(ImageBundleFlag::SystemSizeSmall))
 			{
 				const wxWindow* window = nullptr;
 				if (auto app = IGUIApplication::GetInstance())
@@ -119,16 +119,16 @@ namespace kxf
 				}
 
 				// Get the system icon size
-				if (sizeFallback.Contains(SizeFallback::System))
+				if (sizeFallback.Contains(ImageBundleFlag::SystemSize))
 				{
 					systemIcon = System::GetMetric(SystemSizeMetric::Icon, window);
-					sizeFallback.Add(SizeFallback::NearestLarger, !systemSmallIcon.IsFullySpecified());
+					sizeFallback.Add(ImageBundleFlag::NearestLarger, !systemSmallIcon.IsFullySpecified());
 					systemIcon.SetDefaults(g_DefaultIconSize);
 				}
-				if (sizeFallback.Contains(SizeFallback::SystemSmall))
+				if (sizeFallback.Contains(ImageBundleFlag::SystemSizeSmall))
 				{
 					systemSmallIcon = System::GetMetric(SystemSizeMetric::IconSmall, window);
-					sizeFallback.Add(SizeFallback::NearestLarger, !systemSmallIcon.IsFullySpecified());
+					sizeFallback.Add(ImageBundleFlag::NearestLarger, !systemSmallIcon.IsFullySpecified());
 					systemIcon.SetDefaults(g_DefaultIconSizeSmall);
 				}
 			}
@@ -162,14 +162,14 @@ namespace kxf
 					return image;
 				}
 
-				if ((sizeFallback.Contains(SizeFallback::System) && size == systemIcon) || (sizeFallback.Contains(SizeFallback::SystemSmall) && size == systemSmallIcon))
+				if ((sizeFallback.Contains(ImageBundleFlag::SystemSize) && size == systemIcon) || (sizeFallback.Contains(ImageBundleFlag::SystemSizeSmall) && size == systemSmallIcon))
 				{
 					imageBest = &image;
 					bestIsSystem = true;
 					continue;
 				}
 
-				if (!bestIsSystem && sizeFallback.Contains(SizeFallback::NearestLarger))
+				if (!bestIsSystem && sizeFallback.Contains(ImageBundleFlag::NearestLarger))
 				{
 					const bool iconLarger = (size.GetWidth() >= desiredSize.GetWidth()) && (size.GetHeight() >= desiredSize.GetHeight());
 					const int iconDiff = std::abs(size.GetWidth() - desiredSize.GetWidth()) + std::abs(size.GetHeight() - desiredSize.GetHeight());

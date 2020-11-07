@@ -5,19 +5,25 @@ class wxIconBundle;
 
 namespace kxf
 {
+	enum class ImageBundleFlag: uint32_t
+	{
+		None = 0,
+
+		SystemSize = 1 << 1,
+		SystemSizeSmall = 1 << 2,
+		NearestLarger = 1 << 3
+	};
+	KxFlagSet_Declare(ImageBundleFlag);
+}
+
+namespace kxf
+{
 	class KX_API ImageBundle: public RTTI::Interface<ImageBundle>
 	{
 		KxRTTI_DeclareIID(ImageBundle, {0x8e7461c, 0x1234, 0x49c0, {0xa0, 0x0, 0xe2, 0x16, 0x4a, 0x75, 0x7d, 0x85}});
 
 		public:
-			enum class SizeFallback: uint32_t
-			{
-				None = 0,
 
-				System = 1 << 1,
-				SystemSmall = 1 << 2,
-				NearestLarger = 1 << 3,
-			};
 
 		private:
 			std::vector<Image> m_Items;
@@ -43,7 +49,7 @@ namespace kxf
 			bool Save(IOutputStream& stream, ImageFormat format) const;
 
 			void AddImage(const Image& image);
-			Image GetImage(Size desiredSize, FlagSet<SizeFallback> sizeFallback = SizeFallback::None) const;
+			Image GetImage(Size desiredSize, FlagSet<ImageBundleFlag> sizeFallback = ImageBundleFlag::None) const;
 
 			size_t GetImageCount() const
 			{
@@ -73,9 +79,4 @@ namespace kxf
 			ImageBundle& operator=(const ImageBundle&) = default;
 			ImageBundle& operator=(ImageBundle&&) noexcept = default;
 	};
-}
-
-namespace kxf
-{
-	KxFlagSet_Declare(ImageBundle::SizeFallback);
 }
