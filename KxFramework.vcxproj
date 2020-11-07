@@ -212,12 +212,14 @@
     <ClInclude Include="kxf\Compression\SevenZip\Private\WithEvtHandler.h" />
     <ClInclude Include="kxf\Crypto\UserCredentials.h" />
     <ClInclude Include="kxf\Drawing\Angle.h" />
+    <ClInclude Include="kxf\Drawing\ArtProvider.h" />
     <ClInclude Include="kxf\Drawing\Bitmap.h" />
     <ClInclude Include="kxf\Drawing\Color.h" />
     <ClInclude Include="kxf\Drawing\ColorDefines.h" />
     <ClInclude Include="kxf\Drawing\Cursor.h" />
     <ClInclude Include="kxf\Drawing\Font.h" />
     <ClInclude Include="kxf\Drawing\Geometry.h" />
+    <ClInclude Include="kxf\Drawing\IArtProvider.h" />
     <ClInclude Include="kxf\Drawing\Icon.h" />
     <ClInclude Include="kxf\Drawing\IGDIImage.h" />
     <ClInclude Include="kxf\Drawing\IGDIObject.h" />
@@ -655,6 +657,7 @@
     <ClCompile Include="kxf\Compression\SevenZip\Private\OutStreamWrapper.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Private\PasswordHandler.cpp" />
     <ClCompile Include="kxf\Compression\SevenZip\Private\Utility.cpp" />
+    <ClCompile Include="kxf\Drawing\ArtProvider.cpp" />
     <ClCompile Include="kxf\Drawing\Bitmap.cpp" />
     <ClCompile Include="kxf\Drawing\Color.cpp" />
     <ClCompile Include="kxf\Drawing\Cursor.cpp" />

@@ -1577,6 +1577,12 @@
     <ClInclude Include="kxf\Drawing\ImageBundle.h">
       <Filter>kxf\Drawing</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Drawing\IArtProvider.h">
+      <Filter>kxf\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\ArtProvider.h">
+      <Filter>kxf\Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2379,6 +2385,9 @@
       <Filter>kxf\Drawing</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Drawing\ImageBundle.cpp">
+      <Filter>kxf\Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\ArtProvider.cpp">
       <Filter>kxf\Drawing</Filter>
     </ClCompile>
   </ItemGroup>
