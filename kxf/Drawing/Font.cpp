@@ -24,8 +24,14 @@ namespace kxf
 	{
 		if (wxFontRefDataHack* refData = static_cast<wxFontRefDataHack*>(m_Font.GetRefData()))
 		{
-			HFONT handle = nullptr;
-			std::swap(refData->m_hFont, handle);
+			// 'GetHFONT' creates the actual font object if it doesn't already exist
+			const HFONT handle = m_Font.GetHFONT();
+
+			// Clear the internal structures
+			refData->m_hFont = nullptr;
+			refData->m_nativeFontInfo.lf = {};
+			refData->m_sizeUsingPixels = false;
+
 			return static_cast<void*>(handle);
 		}
 	}
@@ -49,6 +55,4 @@ namespace kxf
 			::DeleteObject(handle);
 		}
 	}
-
-	// Font
 }
