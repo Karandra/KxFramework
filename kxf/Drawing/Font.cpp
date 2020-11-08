@@ -4,7 +4,7 @@
 
 namespace
 {
-	class wxFontRefDataHack final: public wxObjectRefData
+	class wxFontRefDataHack final: public wxGDIRefData
 	{
 		public:
 			bool m_sizeUsingPixels = false;

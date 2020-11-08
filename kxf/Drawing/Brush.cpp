@@ -4,7 +4,7 @@
 
 namespace
 {
-	class wxBrushRefDataHack final: public wxObjectRefData
+	class wxBrushRefDataHack final: public wxGDIRefData
 	{
 		public:
 			wxBrushStyle m_style = wxBRUSHSTYLE_INVALID;

@@ -33,10 +33,10 @@ namespace kxf::Drawing
 		Red,
 		Green,
 		Yellow,
+		White,
 		Gray,
 		LightGray,
 		MediumGray,
-		White,
 		Transparent
 	};
 }
