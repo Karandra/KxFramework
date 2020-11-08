@@ -30,5 +30,14 @@ namespace kxf
 			{
 				return IsNull();
 			}
+
+			bool operator==(const IGDIObject& other) const
+			{
+				return IsSameAs(other);
+			}
+			bool operator!=(const IGDIObject& other) const
+			{
+				return !IsSameAs(other);
+			}
 	};
 }
