@@ -13,12 +13,12 @@ namespace
 
 	constexpr bool g_UseMask = false;
 
-	constexpr uint32_t MapDrawMode(FlagSet<ImageListDrawItemFlag> drawMode) noexcept
+	constexpr uint32_t MapDrawMode(FlagSet<ImageListFlag> drawMode) noexcept
 	{
 		uint32_t nativeDrawMode = ILD_IMAGE|ILD_NORMAL;
-		Utility::AddFlagRef(nativeDrawMode, ILD_TRANSPARENT, drawMode & ImageListDrawItemFlag::Transparent);
-		Utility::AddFlagRef(nativeDrawMode, ILD_SELECTED, drawMode & ImageListDrawItemFlag::Selected);
-		Utility::AddFlagRef(nativeDrawMode, ILD_FOCUS, drawMode & ImageListDrawItemFlag::Focused);
+		Utility::AddFlagRef(nativeDrawMode, ILD_TRANSPARENT, drawMode & ImageListFlag::Transparent);
+		Utility::AddFlagRef(nativeDrawMode, ILD_SELECTED, drawMode & ImageListFlag::Selected);
+		Utility::AddFlagRef(nativeDrawMode, ILD_FOCUS, drawMode & ImageListFlag::Focused);
 
 		return nativeDrawMode;
 	}
@@ -32,6 +32,7 @@ namespace kxf
 {
 	wxIMPLEMENT_DYNAMIC_CLASS(ImageList, wxImageList);
 
+	// ImageList
 	void ImageList::OnCreate(int width, int height, bool mask, int initialCount) noexcept
 	{
 		// Replicate wxImageList flags algorithm
@@ -43,7 +44,7 @@ namespace kxf
 			m_Flags |= ILC_MASK;
 		}
 	}
-	bool ImageList::DoDraw(wxDC& dc, int index, const Rect& rect, FlagSet<DrawItemFlag> flags, int overlayIndex) noexcept
+	bool ImageList::DoDraw(wxDC& dc, int index, const Rect& rect, FlagSet<ImageListFlag> flags, int overlayIndex) noexcept
 	{
 		Size size = rect.GetSize();
 		size.SetDefaults(Size(0, 0));
@@ -67,15 +68,70 @@ namespace kxf
 		OnCreate(width, height, g_UseMask, initialCount);
 	}
 
-	bool ImageList::IsNull() const noexcept
+	// IGDIObject
+	bool ImageList::IsNull() const
 	{
 		return m_hImageList != nullptr;
 	}
+	bool ImageList::IsSameAs(const IGDIObject& other) const
+	{
+		return m_hImageList == other.GetHandle();
+	}
+	std::unique_ptr<kxf::IGDIObject> ImageList::Clone() const
+	{
+		const size_t count = GetImageCount();
+		auto clone = std::make_unique<ImageList>(GetSize(), count);
+		clone->m_Flags = m_Flags;
+
+		for (size_t i = 0; i < count; i++)
+		{
+			clone->Add(GetIcon(i));
+		}
+		return clone;
+	}
+
+	void* ImageList::GetHandle() const
+	{
+		return m_hImageList;
+	}
+	void* ImageList::DetachHandle()
+	{
+		void* handle = m_hImageList;
+		m_hImageList = nullptr;
+		m_size = wxDefaultSize;
+
+		return handle;
+	}
+	void ImageList::AttachHandle(void* handle)
+	{
+		AllocExclusive();
+
+		if (m_hImageList)
+		{
+			::ImageList_Destroy(ToHImageList(m_hImageList));
+			m_hImageList = nullptr;
+		}
+
+		if (handle)
+		{
+			m_hImageList = static_cast<WXHIMAGELIST>(handle);
+			if (m_hImageList)
+			{
+				::ImageList_GetIconSize(ToHImageList(m_hImageList), &m_size.x, &m_size.y);
+			}
+		}
+		else
+		{
+			m_size = wxDefaultSize;
+		}
+	}
+
+	// ImageList
 	bool ImageList::HasMask() const noexcept
 	{
 		return m_Flags & ILC_MASK;
 	}
-	COMPtr<IImageList2> ImageList::QueryInterface() const noexcept
+	COMPtr<IImageList2> ImageList::QueryNativeInterface() const noexcept
 	{
 		COMPtr<IImageList2> imageList;
 		if (HResult(::HIMAGELIST_QueryInterface(ToHImageList(m_hImageList), __uuidof(IImageList2), imageList.GetAddress())))
