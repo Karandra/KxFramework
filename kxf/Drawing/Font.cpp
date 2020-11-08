@@ -41,10 +41,11 @@ namespace kxf
 
 		if (handle)
 		{
-			LOGFONTW fontInfo = {};
-			if (::GetObjectW(handle, sizeof(fontInfo), &fontInfo) != 0)
+			m_Font.SetFamily(wxFONTFAMILY_UNKNOWN);
+			if (wxFontRefDataHack* refData = static_cast<wxFontRefDataHack*>(m_Font.GetRefData()))
 			{
-				if (wxFontRefDataHack* refData = static_cast<wxFontRefDataHack*>(m_Font.GetRefData()))
+				LOGFONTW fontInfo = {};
+				if (::GetObjectW(handle, sizeof(fontInfo), &fontInfo) != 0)
 				{
 					refData->m_hFont = static_cast<HFONT>(handle);
 					refData->m_nativeFontInfo.lf = fontInfo;
@@ -52,6 +53,8 @@ namespace kxf
 					return;
 				}
 			}
+
+			// Delete the handle if we can't attach it
 			::DeleteObject(handle);
 		}
 	}

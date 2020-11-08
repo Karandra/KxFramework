@@ -33,15 +33,12 @@ namespace kxf
 	void Icon::AttachHandle(void* handle)
 	{
 		m_Icon = wxIcon();
-		if (!Drawing::Private::AttachIconHandle(m_Icon, handle, [&]()
+		Drawing::Private::AttachIconHandle(m_Icon, handle, [&]()
 		{
 			// This calls 'wxObject::AllocExclusive' inside
 			m_Icon.CreateFromHICON(reinterpret_cast<WXHICON>(handle));
 			return true;
-		}))
-		{
-			m_Icon.SetHandle(handle);
-		}
+		});
 	}
 
 	// IGDIImage

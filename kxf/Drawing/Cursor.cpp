@@ -33,14 +33,11 @@ namespace kxf
 	void Cursor::AttachHandle(void* handle)
 	{
 		m_Cursor = wxCursor();
-		if (!Drawing::Private::AttachIconHandle(m_Cursor, handle, [&]()
+		Drawing::Private::AttachIconHandle(m_Cursor, handle, [&]()
 		{
-			// This instance shouldn't be shared with anything at this point
+			m_Cursor = wxStockCursor::wxCURSOR_ARROW;
 			return true;
-		}))
-		{
-			m_Cursor.SetHandle(handle);
-		}
+		});
 	}
 
 	bool Cursor::Load(IInputStream& stream, Point hotSpot, ImageFormat format)

@@ -11,70 +11,16 @@ namespace
 			wxBitmap m_stipple;
 			wxColour m_colour;
 			HBRUSH m_hBrush = nullptr;
-	};
 
-	constexpr std::optional<int> TranslateHatchStyle(wxBrushStyle style) noexcept
-	{
-		switch (style)
-		{
-			case wxBRUSHSTYLE_BDIAGONAL_HATCH:
+		public:
+			void Clear()
 			{
-				return HS_BDIAGONAL;
+				m_hBrush = nullptr;
+				m_stipple = wxNullBitmap;
+				m_colour = wxNullColour;
+				m_style = wxBRUSHSTYLE_INVALID;
 			}
-			case wxBRUSHSTYLE_CROSSDIAG_HATCH:
-			{
-				return HS_DIAGCROSS;
-			}
-			case wxBRUSHSTYLE_FDIAGONAL_HATCH:
-			{
-				return HS_FDIAGONAL;
-			}
-			case wxBRUSHSTYLE_CROSS_HATCH:
-			{
-				return HS_CROSS;
-			}
-			case wxBRUSHSTYLE_HORIZONTAL_HATCH:
-			{
-				return HS_HORIZONTAL;
-			}
-			case wxBRUSHSTYLE_VERTICAL_HATCH:
-			{
-				return HS_VERTICAL;
-			}
-		};
-		return {};
-	}
-	constexpr wxBrushStyle TranslateHatchStyle(int style) noexcept
-	{
-		switch (style)
-		{
-			case HS_BDIAGONAL:
-			{
-				return wxBRUSHSTYLE_BDIAGONAL_HATCH;
-			}
-			case HS_DIAGCROSS:
-			{
-				return wxBRUSHSTYLE_CROSSDIAG_HATCH;
-			}
-			case HS_FDIAGONAL:
-			{
-				return wxBRUSHSTYLE_FDIAGONAL_HATCH;
-			}
-			case HS_CROSS:
-			{
-				return wxBRUSHSTYLE_CROSS_HATCH;
-			}
-			case HS_HORIZONTAL:
-			{
-				return wxBRUSHSTYLE_HORIZONTAL_HATCH;
-			}
-			case HS_VERTICAL:
-			{
-				return wxBRUSHSTYLE_VERTICAL_HATCH;
-			}
-		};
-		return {};
-	}
+	};
 }
 
 namespace kxf
@@ -92,30 +38,26 @@ namespace kxf
 			void* handle = m_Brush.GetResourceHandle();
 
 			// Clear the internal structures
-			refData->m_hBrush = nullptr;
-			refData->m_stipple = wxNullBitmap;
-			refData->m_colour = wxNullColour;
-			refData->m_style = wxBRUSHSTYLE_INVALID;
+			refData->Clear();
 
 			return handle;
 		}
 	}
 	void Brush::AttachHandle(void* handle)
 	{
+		m_Brush = wxBrush();
+
 		if (handle)
 		{
-			m_Brush = *wxTRANSPARENT_BRUSH;
-
-			LOGBRUSH brushInfo = {};
-			if (::GetObjectW(handle, sizeof(brushInfo), &brushInfo) != 0)
+			m_Brush.SetColour({});
+			if (wxBrushRefDataHack* refData = static_cast<wxBrushRefDataHack*>(m_Brush.GetRefData()))
 			{
-				if (wxBrushRefDataHack* refData = static_cast<wxBrushRefDataHack*>(m_Brush.GetRefData()))
-				{
-					refData->m_hBrush = static_cast<HBRUSH>(handle);
-					refData->m_stipple = wxNullBitmap;
-					refData->m_colour = wxNullColour;
-					refData->m_style = wxBRUSHSTYLE_INVALID;
+				refData->Clear();
+				refData->m_hBrush = static_cast<HBRUSH>(handle);
 
+				LOGBRUSH brushInfo = {};
+				if (::GetObjectW(handle, sizeof(brushInfo), &brushInfo) != 0)
+				{
 					if (::GetStockObject(NULL_BRUSH) == handle)
 					{
 						refData->m_style = wxBRUSHSTYLE_TRANSPARENT;
@@ -128,37 +70,22 @@ namespace kxf
 						case BS_DIBPATTERN8X8:
 						case BS_DIBPATTERNPT:
 						{
-							auto ToBitmap = [](const void* data) -> Bitmap
-							{
-								const BITMAPINFO& bitmapInfo = *static_cast<const BITMAPINFO*>(data);
-								const BITMAPINFOHEADER& bitmapHeader = bitmapInfo.bmiHeader;
-
-								// We don't support other color depths here
-								const ColorDepth colorDepth = bitmapHeader.biBitCount;
-								if (colorDepth == ColorDepthDB::BPP24 || colorDepth == ColorDepthDB::BPP32)
-								{
-									// TODO: Check the correctness of this pointer
-									const auto bitmapData = reinterpret_cast<const uint8_t*>(data) + sizeof(BITMAPINFO);
-
-									Bitmap bitmap;
-									bitmap.AttachHandle(::CreateBitmap(bitmapHeader.biWidth, bitmapHeader.biHeight, bitmapHeader.biPlanes, bitmapHeader.biBitCount, bitmapData));
-									return bitmap;
-								}
-								return {};
-							};
-
 							// DIB_PAL_COLORS
 							// DIB_RGB_COLORS
 							const int colorType = LOWORD(brushInfo.lbColor);
 							if (brushInfo.lbStyle == BS_DIBPATTERN || brushInfo.lbStyle == BS_DIBPATTERN8X8)
 							{
-								const void* data = ::GlobalLock(reinterpret_cast<HGLOBAL>(brushInfo.lbHatch));
-								refData->m_stipple = ToBitmap(data).ToWxBitmap();
+								HGLOBAL memoryHandle = reinterpret_cast<HGLOBAL>(brushInfo.lbHatch);
+								if (const void* data = ::GlobalLock(memoryHandle))
+								{
+									refData->m_stipple = Drawing::Private::BitmapFromMemoryLocation(data).ToWxBitmap();
+									::GlobalUnlock(memoryHandle);
+								}
 							}
 							else if (brushInfo.lbStyle == BS_DIBPATTERNPT)
 							{
 								const void* data = reinterpret_cast<const void*>(brushInfo.lbHatch);
-								refData->m_stipple = ToBitmap(data).ToWxBitmap();
+								refData->m_stipple = Drawing::Private::BitmapFromMemoryLocation(data).ToWxBitmap();
 							}
 							break;
 						}
@@ -179,7 +106,7 @@ namespace kxf
 							refData->m_colour = Color::FromCOLORREF(brushInfo.lbColor).ToWxColor();
 							if (brushInfo.lbStyle == BS_HATCHED)
 							{
-								refData->m_style = TranslateHatchStyle(static_cast<int>(brushInfo.lbHatch));
+								refData->m_style = static_cast<wxBrushStyle>(Drawing::Private::MapHatchStyle(static_cast<int>(brushInfo.lbHatch)));
 							}
 							else
 							{
@@ -195,14 +122,10 @@ namespace kxf
 					};
 					return;
 				}
-
-				// Delete the handle if we can't attach it
-				::DeleteObject(handle);
 			}
-		}
-		else
-		{
-			m_Brush = wxBrush();
+
+			// Delete the handle if we can't attach it
+			::DeleteObject(handle);
 		}
 	}
 }

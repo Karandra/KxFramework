@@ -22,9 +22,7 @@ namespace kxf
 		HatchForwardDiagonal = wxBRUSHSTYLE_FDIAGONAL_HATCH,
 		HatchBackwardDiagonal = wxBRUSHSTYLE_BDIAGONAL_HATCH,
 	};
-}
-namespace kxf::Drawing
-{
+
 	enum class StockBrush
 	{
 		Black,

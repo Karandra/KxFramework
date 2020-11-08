@@ -1,5 +1,11 @@
 #pragma once
 #include "wx/msw/gdiimage.h"
+#include "../ColorDepth.h"
+
+namespace kxf
+{
+	class Bitmap;
+}
 
 namespace kxf::Drawing::Private
 {
@@ -68,4 +74,12 @@ namespace kxf::Drawing::Private
 		}
 		return false;
 	}
+
+	Bitmap BitmapFromMemoryLocation(const void* data);
+
+	std::optional<int> MapHatchStyle(wxHatchStyle style) noexcept;
+	wxHatchStyle MapHatchStyle(int style) noexcept;
+
+	wxPenStyle MapPenStyle(int style) noexcept;
+	wxPenJoin MapPenJoin(int join) noexcept;
 }
