@@ -18,21 +18,21 @@ namespace kxf
 	// IGDIObject
 	void* Font::GetHandle() const
 	{
-		return m_Font.GetHFONT();
+		return m_Font.GetResourceHandle();
 	}
 	void* Font::DetachHandle()
 	{
 		if (wxFontRefDataHack* refData = static_cast<wxFontRefDataHack*>(m_Font.GetRefData()))
 		{
-			// 'GetHFONT' creates the actual font object if it doesn't already exist
-			const HFONT handle = m_Font.GetHFONT();
+			// 'GetResourceHandle' creates the actual font object if it doesn't already exist
+			void* handle = m_Font.GetResourceHandle();
 
 			// Clear the internal structures
 			refData->m_hFont = nullptr;
 			refData->m_nativeFontInfo.lf = {};
 			refData->m_sizeUsingPixels = false;
 
-			return static_cast<void*>(handle);
+			return handle;
 		}
 	}
 	void Font::AttachHandle(void* handle)

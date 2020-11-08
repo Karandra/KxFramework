@@ -62,6 +62,8 @@ namespace kxf::Drawing::Private
 					return true;
 				}
 			}
+
+			// Delete the handle if we can't attach it
 			::DeleteObject(handle);
 		}
 		return false;

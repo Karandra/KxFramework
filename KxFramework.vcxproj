@@ -214,6 +214,7 @@
     <ClInclude Include="kxf\Drawing\Angle.h" />
     <ClInclude Include="kxf\Drawing\ArtProvider.h" />
     <ClInclude Include="kxf\Drawing\Bitmap.h" />
+    <ClInclude Include="kxf\Drawing\Brush.h" />
     <ClInclude Include="kxf\Drawing\Color.h" />
     <ClInclude Include="kxf\Drawing\ColorDefines.h" />
     <ClInclude Include="kxf\Drawing\Cursor.h" />
@@ -659,6 +660,7 @@
     <ClCompile Include="kxf\Compression\SevenZip\Private\Utility.cpp" />
     <ClCompile Include="kxf\Drawing\ArtProvider.cpp" />
     <ClCompile Include="kxf\Drawing\Bitmap.cpp" />
+    <ClCompile Include="kxf\Drawing\Brush.cpp" />
     <ClCompile Include="kxf\Drawing\Color.cpp" />
     <ClCompile Include="kxf\Drawing\Cursor.cpp" />
     <ClCompile Include="kxf\Drawing\Font.cpp" />
