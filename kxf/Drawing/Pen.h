@@ -164,6 +164,15 @@ namespace kxf
 				m_Pen.SetJoin(static_cast<wxPenJoin>(join));
 			}
 
+			PenCap GetCap() const
+			{
+				return static_cast<PenCap>(m_Pen.GetCap());
+			}
+			void SetJoin(PenCap cap)
+			{
+				m_Pen.SetCap(static_cast<wxPenCap>(cap));
+			}
+
 			Bitmap GetStipple() const
 			{
 				const wxBitmap* stipple = m_Pen.GetStipple();
@@ -191,9 +200,9 @@ namespace kxf
 			{
 				return m_Pen.GetDashCount();
 			}
-			size_t GetDashes(Dash** dashes) const
+			size_t GetDashes(Dash*& dashes) const
 			{
-				return m_Pen.GetDashes(dashes);
+				return m_Pen.GetDashes(&dashes);
 			}
 			std::vector<Dash> GetDashes() const
 			{
