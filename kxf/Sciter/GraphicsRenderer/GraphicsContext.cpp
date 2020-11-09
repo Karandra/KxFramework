@@ -114,11 +114,11 @@ namespace kxf::Sciter
 		GetGrapchicsAPI()->pathCreate(&path);
 		return FromSciterPath(path);
 	}
-	void GraphicsContext::DrawPath(const GraphicsPath& path, wxPolygonFillMode fillStyle)
+	void GraphicsContext::DrawPath(const GraphicsPath& path, PolygonFillMode fillStyle)
 	{
 		DoDrawPath(*this, path, DRAW_PATH_MODE::DRAW_FILL_AND_STROKE);
 	}
-	void GraphicsContext::FillPath(const GraphicsPath& path, wxPolygonFillMode fillStyle)
+	void GraphicsContext::FillPath(const GraphicsPath& path, PolygonFillMode fillStyle)
 	{
 		DoDrawPath(*this, path, DRAW_PATH_MODE::DRAW_FILL_ONLY);
 	}
@@ -127,64 +127,64 @@ namespace kxf::Sciter
 		DoDrawPath(*this, path, DRAW_PATH_MODE::DRAW_STROKE_ONLY);
 	}
 
-	void GraphicsContext::DrawEllipse(const wxRect2DDouble& rect)
+	void GraphicsContext::DrawEllipse(const RectD& rect)
 	{
 		auto p1 = rect.GetLeftTop();
 		auto p2 = rect.GetRightBottom();
-		GetGrapchicsAPI()->gEllipse(ToSciterGraphicsContext(m_Handle), p1.m_x, p1.m_y, p2.m_x, p2.m_y);
+		GetGrapchicsAPI()->gEllipse(ToSciterGraphicsContext(m_Handle), p1.GetX(), p1.GetY(), p2.GetX(), p2.GetY());
 	}
-	void GraphicsContext::DrawRectangle(const wxRect2DDouble& rect)
+	void GraphicsContext::DrawRectangle(const RectD& rect)
 	{
 		auto p1 = rect.GetLeftTop();
 		auto p2 = rect.GetRightBottom();
-		GetGrapchicsAPI()->gRectangle(ToSciterGraphicsContext(m_Handle), p1.m_x, p1.m_y, p2.m_x, p2.m_y);
+		GetGrapchicsAPI()->gRectangle(ToSciterGraphicsContext(m_Handle), p1.GetX(), p1.GetY(), p2.GetX(), p2.GetY());
 	}
-	void GraphicsContext::DrawRoundedRectangle(const wxRect2DDouble& rect, double radius)
+	void GraphicsContext::DrawRoundedRectangle(const RectD& rect, Angle radius)
 	{
 		auto p1 = rect.GetLeftTop();
 		auto p2 = rect.GetRightBottom();
 
 		std::array<SC_DIM, 8> radii8;
-		radii8.fill(radius);
+		radii8.fill(radius.ToRadians());
 
-		GetGrapchicsAPI()->gRoundedRectangle(ToSciterGraphicsContext(m_Handle), p1.m_x, p1.m_y, p2.m_x, p2.m_y, radii8.data());
+		GetGrapchicsAPI()->gRoundedRectangle(ToSciterGraphicsContext(m_Handle), p1.GetX(), p1.GetY(), p2.GetX(), p2.GetY(), radii8.data());
 	}
-	void GraphicsContext::DrawArc(const wxPoint2DDouble& p, const wxPoint2DDouble& r, double start, double sweep)
+	void GraphicsContext::DrawArc(const RectD& p, const RectD& r, Angle start, Angle sweep)
 	{
-		GetGrapchicsAPI()->gArc(ToSciterGraphicsContext(m_Handle), p.m_x, p.m_y, r.m_x, r.m_y, start, sweep);
+		GetGrapchicsAPI()->gArc(ToSciterGraphicsContext(m_Handle), p.GetX(), p.GetY(), r.GetX(), r.GetY(), start.ToRadians(), sweep.ToRadians());
 	}
-	void GraphicsContext::DrawStar(const wxPoint2DDouble& p, const wxPoint2DDouble& r, double start, int raysCount)
+	void GraphicsContext::DrawStar(const RectD& p, const RectD& r, Angle start, size_t raysCount)
 	{
-		GetGrapchicsAPI()->gStar(ToSciterGraphicsContext(m_Handle), p.m_x, p.m_y, r.m_x, r.m_y, start, raysCount);
+		GetGrapchicsAPI()->gStar(ToSciterGraphicsContext(m_Handle), p.GetX(), p.GetY(), r.GetX(), r.GetY(), start.ToRadians(), static_cast<uint32_t>(raysCount));
 	}
-	
-	void GraphicsContext::StrokeLine(const wxPoint2DDouble& p1, const wxPoint2DDouble& p2)
+
+	void GraphicsContext::StrokeLine(const PointD& p1, const PointD& p2)
 	{
-		GetGrapchicsAPI()->gLine(ToSciterGraphicsContext(m_Handle), p1.m_x, p1.m_y, p2.m_x, p2.m_y);
+		GetGrapchicsAPI()->gLine(ToSciterGraphicsContext(m_Handle), p1.GetX(), p1.GetY(), p2.GetX(), p2.GetY());
 	}
-	void GraphicsContext::StrokeLines(const wxPoint2DDouble* points, size_t count)
+	void GraphicsContext::StrokeLines(const PointD* points, size_t count)
 	{
 		std::vector<SC_POS> pointData;
 		pointData.reserve(count * 2);
 		for (size_t i = 0; i < count; i++)
 		{
-			pointData.push_back(points[i].m_x);
-			pointData.push_back(points[i].m_y);
+			pointData.push_back(points[i].GetX());
+			pointData.push_back(points[i].GetY());
 		}
 
 		GetGrapchicsAPI()->gPolygon(ToSciterGraphicsContext(m_Handle), pointData.data(), count);
 	}
-	void GraphicsContext::StrokeLines(const wxPoint2DDouble* beginPoints, const wxPoint2DDouble* endPoints, size_t count)
+	void GraphicsContext::StrokeLines(const PointD* beginPoints, const PointD* endPoints, size_t count)
 	{
 		std::vector<SC_POS> pointData;
 		pointData.reserve(count * 2);
 
-		auto PackPoints = [&](const wxPoint2DDouble* points)
+		auto PackPoints = [&](const PointD* points)
 		{
 			for (size_t i = 0; i < count; i++)
 			{
-				pointData.push_back(points[i].m_x);
-				pointData.push_back(points[i].m_y);
+				pointData.push_back(points[i].GetX());
+				pointData.push_back(points[i].GetY());
 			}
 		};
 		PackPoints(beginPoints);
@@ -192,14 +192,12 @@ namespace kxf::Sciter
 
 		GetGrapchicsAPI()->gPolygon(ToSciterGraphicsContext(m_Handle), pointData.data(), count);
 	}
-	
-	wxRect2DDouble GraphicsContext::DrawBitmap(const GraphicsBitmap& bitmap, const wxRect2DDouble& rect, double opacity)
+
+	RectD GraphicsContext::DrawBitmap(const GraphicsBitmap& bitmap, const RectD& rect, double opacity)
 	{
-		wxPoint2DDouble pos = rect.GetPosition();
-		wxPoint2DDouble size = {rect.m_width, rect.m_height};
-		SC_DIM drawWidth = size.m_x;
-		SC_DIM drawHeight = size.m_y;
-		float drawOpacity = opacity;
+		const SC_DIM drawWidth = rect.GetWidth();
+		const SC_DIM drawHeight = rect.GetHeight();
+		const float drawOpacity = opacity;
 
 		UINT x = 0;
 		UINT y = 0;
@@ -208,34 +206,34 @@ namespace kxf::Sciter
 
 		GetGrapchicsAPI()->gDrawImage(ToSciterGraphicsContext(m_Handle),
 									  ToSciterImage(bitmap.GetHandle()),
-									  pos.m_x,
-									  pos.m_y,
-									  size.m_x >= 0 ? &drawWidth : nullptr,
-									  size.m_y >= 0 ? &drawHeight : nullptr,
+									  rect.GetX(),
+									  rect.GetY(),
+									  drawWidth ? &drawWidth : nullptr,
+									  drawHeight >= 0 ? &drawHeight : nullptr,
 									  &x, &y, &width, &height,
 									  &drawOpacity);
-		return wxRect2DDouble(x, y, width, height);
+		return RectD(x, y, width, height);
 	}
-	void GraphicsContext::DrawText(const GraphicsText& text, const wxPoint2DDouble& pos, CornerAlignment alignment)
+	void GraphicsContext::DrawText(const GraphicsText& text, const PointD& pos, CornerAlignment alignment)
 	{
-		GetGrapchicsAPI()->gDrawText(ToSciterGraphicsContext(m_Handle), ToSciterText(text.GetHandle()), pos.m_x, pos.m_y, ToInt(alignment));
+		GetGrapchicsAPI()->gDrawText(ToSciterGraphicsContext(m_Handle), ToSciterText(text.GetHandle()), pos.GetX(), pos.GetY(), ToInt(alignment));
 	}
 
 	// Brush and pen functions
-	void GraphicsContext::SetPen(const wxPen& pen)
+	void GraphicsContext::SetPen(const Pen& pen)
 	{
-		if (pen.IsOk())
+		if (pen)
 		{
 			wxGraphicsPenInfo penInfo;
-			penInfo.Colour(pen.GetColour());
+			penInfo.Colour(pen.GetColor());
 			penInfo.Width(pen.GetWidth());
-			penInfo.Join(pen.GetJoin());
-			penInfo.Cap(pen.GetCap());
-			penInfo.Style(pen.GetStyle());
-			penInfo.Stipple(pen.GetStipple() ? *pen.GetStipple() : wxNullBitmap);
+			penInfo.Join(static_cast<wxPenJoin>(pen.GetJoin()));
+			penInfo.Cap(static_cast<wxPenCap>(pen.GetCap()));
+			penInfo.Style(static_cast<wxPenStyle>(pen.GetStyle()));
+			penInfo.Stipple(pen.GetStipple().ToWxBitmap());
 
-			wxDash* dashes = nullptr;
-			int dashCount = pen.GetDashes(&dashes);
+			Pen::Dash* dashes = nullptr;
+			size_t dashCount = pen.GetDashes(dashes);
 			penInfo.Dashes(dashCount, dashes);
 
 			SetPen(penInfo);
@@ -268,12 +266,12 @@ namespace kxf::Sciter
 		GetGrapchicsAPI()->gLineWidth(ToSciterGraphicsContext(m_Handle), 0);
 	}
 
-	void GraphicsContext::SetBrush(const wxBrush& brush)
+	void GraphicsContext::SetBrush(const Brush& brush)
 	{
-		if (brush.IsOk())
+		if (brush)
 		{
 			wxGraphicsPenInfo brushInfo;
-			brushInfo.Colour(brush.GetColour());
+			brushInfo.Colour(brush.GetColor());
 
 			SetBrush(brushInfo);
 		}
@@ -303,21 +301,23 @@ namespace kxf::Sciter
 	}
 
 	// Transformation matrix
-	wxPoint2DDouble GraphicsContext::Rotate(double angle)
+	PointD GraphicsContext::Rotate(double angle)
 	{
 		SC_POS x = 0;
 		SC_POS y = 0;
-		GetGrapchicsAPI()->gRotate(ToSciterGraphicsContext(m_Handle), angle, &x, &y);
-		
-		return wxPoint2DDouble(x, y);
+		if (GetGrapchicsAPI()->gRotate(ToSciterGraphicsContext(m_Handle), angle, &x, &y) == GRAPHIN_OK)
+		{
+			return PointD(x, y);
+		}
+		return PointD::UnspecifiedPosition();
 	}
-	void GraphicsContext::Scale(const wxPoint2DDouble& scale)
+	void GraphicsContext::Scale(const PointD& scale)
 	{
-		GetGrapchicsAPI()->gScale(ToSciterGraphicsContext(m_Handle), scale.m_x, scale.m_y);
+		GetGrapchicsAPI()->gScale(ToSciterGraphicsContext(m_Handle), scale.GetX(), scale.GetY());
 	}
-	void GraphicsContext::Translate(const wxPoint2DDouble& p)
+	void GraphicsContext::Translate(const PointD& p)
 	{
-		GetGrapchicsAPI()->gTranslate(ToSciterGraphicsContext(m_Handle), p.m_x, p.m_y);
+		GetGrapchicsAPI()->gTranslate(ToSciterGraphicsContext(m_Handle), p.GetX(), p.GetY());
 	}
 
 	GraphicsMatrix GraphicsContext::CreateMatrix(double a, double b, double c, double d, double tx, double ty)
@@ -330,29 +330,29 @@ namespace kxf::Sciter
 	}
 
 	// Coordinate space
-	wxPoint2DDouble GraphicsContext::WorldToScreen(const wxPoint2DDouble& p) const
+	PointD GraphicsContext::WorldToScreen(const PointD& p) const
 	{
-		SC_POS x = p.m_x;
-		SC_POS y = p.m_y;
+		SC_POS x = p.GetX();
+		SC_POS y = p.GetY();
 		GetGrapchicsAPI()->gWorldToScreen(ToSciterGraphicsContext(m_Handle), &x, &y);
 
-		return wxPoint2DDouble(x, y);
+		return PointD(x, y);
 	}
-	wxPoint2DDouble GraphicsContext::ScreenToWorld(const wxPoint2DDouble& p) const
+	PointD GraphicsContext::ScreenToWorld(const PointD& p) const
 	{
-		SC_POS x = p.m_x;
-		SC_POS y = p.m_y;
+		SC_POS x = p.GetX();
+		SC_POS y = p.GetY();
 		GetGrapchicsAPI()->gScreenToWorld(ToSciterGraphicsContext(m_Handle), &x, &y);
 
-		return wxPoint2DDouble(x, y);
+		return PointD(x, y);
 	}
 
 	// Clipping region functions
-	void GraphicsContext::PushClip(const wxRect2DDouble& rect, double opacity)
+	void GraphicsContext::PushClip(const RectD& rect, double opacity)
 	{
 		auto p1 = rect.GetLeftTop();
 		auto p2 = rect.GetRightBottom();
-		GetGrapchicsAPI()->gPushClipBox(ToSciterGraphicsContext(m_Handle), p1.m_x, p1.m_y, p2.m_x, p2.m_y, opacity);
+		GetGrapchicsAPI()->gPushClipBox(ToSciterGraphicsContext(m_Handle), p1.GetX(), p1.GetY(), p2.GetX(), p2.GetY(), opacity);
 	}
 	void GraphicsContext::PushClip(const GraphicsPath& path, double opacity)
 	{

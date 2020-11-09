@@ -21,8 +21,7 @@ namespace kxf::Sciter
 	String FSPathToSciterAddress(const FSPath& path);
 	String URIToSciterAddress(const URI& uri);
 
-	SC_COLOR CreateSciterColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) noexcept;
-	SC_COLOR CreateSciterColor(const wxColour& color) noexcept;
+	SC_COLOR CreateSciterColor(kxf::PackedRGBA<uint8_t> color) noexcept;
 	SC_COLOR CreateSciterColor(const Color& color) noexcept;
 }
 
@@ -67,7 +66,7 @@ namespace kxf::Sciter
 	{
 		return reinterpret_cast<GraphicsContextHandle*>(handle);
 	}
-	
+
 	inline HIMG ToSciterImage(GraphicsBitmapHandle* handle) noexcept
 	{
 		return reinterpret_cast<HIMG>(handle);

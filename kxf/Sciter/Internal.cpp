@@ -36,31 +36,19 @@ namespace kxf::Sciter
 		return uri.BuildURI();
 	}
 
-	SC_COLOR CreateSciterColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) noexcept
+	SC_COLOR CreateSciterColor(kxf::PackedRGBA<uint8_t> color) noexcept
 	{
-		return GetGrapchicsAPI()->RGBA(r, g, b, a);
-	}
-	SC_COLOR CreateSciterColor(const wxColour& color) noexcept
-	{
-		if (color.IsOk())
-		{
-			return CreateSciterColor(color.Red(), color.Green(), color.Blue(), color.Alpha());
-		}
-		else
-		{
-			return CreateSciterColor(0, 0, 0, 255);
-		}
+		return GetGrapchicsAPI()->RGBA(color.Red, color.Green, color.Blue, color.Alpha);
 	}
 	SC_COLOR CreateSciterColor(const Color& color) noexcept
 	{
 		if (color)
 		{
-			auto fixed8 = color.GetFixed8();
-			return CreateSciterColor(fixed8.Red, fixed8.Green, fixed8.Blue, fixed8.Alpha);
+			return CreateSciterColor(color.GetFixed8());
 		}
 		else
 		{
-			return CreateSciterColor(0, 0, 0, 255);
+			return CreateSciterColor({0, 0, 0, 255});
 		}
 	}
 }

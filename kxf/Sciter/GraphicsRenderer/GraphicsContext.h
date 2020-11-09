@@ -1,6 +1,8 @@
 #pragma once
 #include "kxf/Sciter/Common.h"
 #include "kxf/Sciter/Utility/HandleWrapper.h"
+#include "kxf/Drawing/Pen.h"
+#include "kxf/Drawing/Brush.h"
 
 namespace kxf::Sciter
 {
@@ -51,7 +53,7 @@ namespace kxf::Sciter
 	class KX_API GraphicsContext final: public HandleWrapper<GraphicsContext, GraphicsContextHandle>
 	{
 		friend class HandleWrapper<GraphicsContext, GraphicsContextHandle>;
-		
+
 		private:
 			GraphicsContextHandle* m_Handle = nullptr;
 
@@ -81,63 +83,63 @@ namespace kxf::Sciter
 
 			// Drawing functions
 			GraphicsPath CreatePath();
-			void DrawPath(const GraphicsPath& path, wxPolygonFillMode fillStyle = wxODDEVEN_RULE);
-			void FillPath(const GraphicsPath& path, wxPolygonFillMode fillStyle = wxODDEVEN_RULE);
+			void DrawPath(const GraphicsPath& path, PolygonFillMode fillStyle = PolygonFillMode::OddEvenRule);
+			void FillPath(const GraphicsPath& path, PolygonFillMode fillStyle = PolygonFillMode::OddEvenRule);
 			void StrokePath(const GraphicsPath& path);
 
-			void DrawEllipse(const wxRect2DDouble& rect);
-			void DrawRectangle(const wxRect2DDouble& rect);
-			void DrawRoundedRectangle(const wxRect2DDouble& rect, double radius);
-			void DrawArc(const wxPoint2DDouble& p, const wxPoint2DDouble& r, double start, double sweep);
-			void DrawStar(const wxPoint2DDouble& p, const wxPoint2DDouble& r, double start, int raysCount);
-			
-			void StrokeLine(const wxPoint2DDouble& p1, const wxPoint2DDouble& p2);
-			void StrokeLines(const wxPoint2DDouble* points, size_t count);
-			void StrokeLines(const wxPoint2DDouble* beginPoints, const wxPoint2DDouble* endPoints, size_t count);
+			void DrawEllipse(const RectD& rect);
+			void DrawRectangle(const RectD& rect);
+			void DrawRoundedRectangle(const RectD& rect, Angle radius);
+			void DrawArc(const RectD& p, const RectD& r, Angle start, Angle sweep);
+			void DrawStar(const RectD& p, const RectD& r, Angle start, size_t raysCount);
 
-			wxRect2DDouble DrawBitmap(const GraphicsBitmap& bitmap, const wxRect2DDouble& rect, double opacity = 1.0);
-			wxRect2DDouble DrawBitmap(const GraphicsBitmap& bitmap, const wxPoint2DDouble& pos, double opacity = 1.0)
+			void StrokeLine(const PointD& p1, const PointD& p2);
+			void StrokeLines(const PointD* points, size_t count);
+			void StrokeLines(const PointD* beginPoints, const PointD* endPoints, size_t count);
+
+			RectD DrawBitmap(const GraphicsBitmap& bitmap, const RectD& rect, double opacity = 1.0);
+			RectD DrawBitmap(const GraphicsBitmap& bitmap, const PointD& pos, double opacity = 1.0)
 			{
-				return DrawBitmap(bitmap, wxRect2DDouble(pos.m_x, pos.m_y, -1, -1), opacity);
+				return DrawBitmap(bitmap, RectD(pos.GetX(), pos.GetY(), -1, -1), opacity);
 			}
 
-			void DrawText(const GraphicsText& text, const wxPoint2DDouble& pos, FlagSet<Alignment> alignment = Alignment::None)
+			void DrawText(const GraphicsText& text, const PointD& pos, FlagSet<Alignment> alignment = Alignment::None)
 			{
 				DrawText(text, pos, MapCornerAlignment(alignment));
 			}
-			void DrawText(const GraphicsText& text, const wxPoint2DDouble& pos, CornerAlignment alignment = CornerAlignment::Unspecified);
+			void DrawText(const GraphicsText& text, const PointD& pos, CornerAlignment alignment = CornerAlignment::None);
 
 			// Brush and pen functions
-			void SetPen(const wxPen& pen);
+			void SetPen(const Pen& pen);
 			void SetPen(const wxGraphicsPenInfo& pen);
 			void ResetPen();
 
-			void SetBrush(const wxBrush& brush);
+			void SetBrush(const Brush& brush);
 			void SetBrush(const wxGraphicsPenInfo& brush);
 			void ResetBrush();
 
 			// Transformation matrix
-			wxPoint2DDouble Rotate(double angle);
-			void Scale(const wxPoint2DDouble& scale);
+			PointD Rotate(double angle);
+			void Scale(const PointD& scale);
 			void Scale(double xScale, double yScale)
 			{
-				Scale(wxPoint2DDouble(xScale, yScale));
+				Scale(PointD(xScale, yScale));
 			}
-			void Translate(const wxPoint2DDouble& p);
+			void Translate(const PointD& p);
 			void Translate(double dx, double dy)
 			{
-				Translate(wxPoint2DDouble(dx, dy));
+				Translate(PointD(dx, dy));
 			}
 
 			GraphicsMatrix CreateMatrix(double a = 1.0, double b = 0.0, double c = 0.0, double d = 1.0, double tx = 0.0, double ty = 0.0);
 			void Transform(const GraphicsMatrix& matrix);
 
 			// Coordinate space
-			wxPoint2DDouble WorldToScreen(const wxPoint2DDouble& p) const;
-			wxPoint2DDouble ScreenToWorld(const wxPoint2DDouble& p) const;
+			PointD WorldToScreen(const PointD& p) const;
+			PointD ScreenToWorld(const PointD& p) const;
 
 			// Clipping region functions
-			void PushClip(const wxRect2DDouble& rect, double opacity = 1.0);
+			void PushClip(const RectD& rect, double opacity = 1.0);
 			void PushClip(const GraphicsPath& path, double opacity = 1.0);
 			void PopClip();
 
