@@ -46,6 +46,12 @@ namespace kxf
 		RAW = 100,
 		WEBP,
 	};
+
+	enum class PolygonFillMode
+	{
+		OddEvenRule = wxODDEVEN_RULE,
+		WindingRule = wxWINDING_RULE
+	};
 }
 
 namespace kxf::Drawing
