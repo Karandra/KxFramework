@@ -24,15 +24,12 @@ namespace kxf::Geometry
 namespace kxf
 {
 	KxFlagSet_Declare(Geometry::OutCode);
-
-	class Size;
-	class Point;
 }
 
 namespace kxf::Geometry
 {
 	template<class TDerived_, class TValue_>
-	class BasicOrderedPair
+	class OrderedPairTemplate
 	{
 		public:
 			using TDerived = TDerived_;
@@ -53,13 +50,13 @@ namespace kxf::Geometry
 			}
 
 		public:
-			constexpr BasicOrderedPair() noexcept = default;
-			constexpr BasicOrderedPair(TValue x, TValue y) noexcept
+			constexpr OrderedPairTemplate() noexcept = default;
+			constexpr OrderedPairTemplate(TValue x, TValue y) noexcept
 				:m_X(x), m_Y(y)
 			{
 			}
-			constexpr BasicOrderedPair(const BasicOrderedPair&) noexcept = default;
-			constexpr BasicOrderedPair(BasicOrderedPair&&) noexcept = default;
+			constexpr OrderedPairTemplate(const OrderedPairTemplate&) noexcept = default;
+			constexpr OrderedPairTemplate(OrderedPairTemplate&&) noexcept = default;
 
 		public:
 			constexpr TDerived Clone() const noexcept
@@ -279,8 +276,8 @@ namespace kxf::Geometry
 			}
 
 		public:
-			constexpr BasicOrderedPair& operator=(const BasicOrderedPair&) noexcept = default;
-			constexpr BasicOrderedPair& operator=(BasicOrderedPair&&) noexcept = default;
+			constexpr OrderedPairTemplate& operator=(const OrderedPairTemplate&) noexcept = default;
+			constexpr OrderedPairTemplate& operator=(OrderedPairTemplate&&) noexcept = default;
 
 			constexpr bool operator==(const TDerived& other) const noexcept
 			{
@@ -322,55 +319,55 @@ namespace kxf::Geometry
 	};
 
 	template<class TDerived, class TValue>
-	constexpr TDerived operator-(const BasicOrderedPair<TDerived, TValue>& value) noexcept
+	constexpr TDerived operator-(const OrderedPairTemplate<TDerived, TValue>& value) noexcept
 	{
 		return {-value.GetX(), -value.GetY()};
 	}
 
 	template<class TDerived, class TValue>
-	constexpr TDerived operator+(const BasicOrderedPair<TDerived, TValue>& left, const BasicOrderedPair<TDerived, TValue>& right) noexcept
+	constexpr TDerived operator+(const OrderedPairTemplate<TDerived, TValue>& left, const OrderedPairTemplate<TDerived, TValue>& right) noexcept
 	{
 		return {left.GetX() + right.GetX(), left.GetY() + right.GetY()};
 	}
 
 	template<class TDerived, class TValue>
-	constexpr TDerived operator-(const BasicOrderedPair<TDerived, TValue>& left, const BasicOrderedPair<TDerived, TValue>& right) noexcept
+	constexpr TDerived operator-(const OrderedPairTemplate<TDerived, TValue>& left, const OrderedPairTemplate<TDerived, TValue>& right) noexcept
 	{
 		return {left.GetX() - right.GetX(), left.GetY() - right.GetY()};
 	}
 
 	template<class TDerived, class TValue>
-	constexpr TDerived operator*(const BasicOrderedPair<TDerived, TValue>& left, const BasicOrderedPair<TDerived, TValue>& right) noexcept
+	constexpr TDerived operator*(const OrderedPairTemplate<TDerived, TValue>& left, const OrderedPairTemplate<TDerived, TValue>& right) noexcept
 	{
 		return {left.GetX() * right.GetX(), left.GetY() * right.GetY()};
 	}
 
 	template<class TDerived, class TValue>
-	constexpr TDerived operator/(const BasicOrderedPair<TDerived, TValue>& left, const BasicOrderedPair<TDerived, TValue>& right) noexcept
+	constexpr TDerived operator/(const OrderedPairTemplate<TDerived, TValue>& left, const OrderedPairTemplate<TDerived, TValue>& right) noexcept
 	{
 		return {left.GetX() / right.GetX(), left.GetY() / right.GetY()};
 	}
 
 	template<class TDerived, class TValue>
-	constexpr TDerived operator*(const BasicOrderedPair<TDerived, TValue>& left, TValue right) noexcept
+	constexpr TDerived operator*(const OrderedPairTemplate<TDerived, TValue>& left, TValue right) noexcept
 	{
 		return {left.GetX() * right, left.GetY() * right};
 	}
 
 	template<class TDerived, class TValue>
-	constexpr TDerived operator/(const BasicOrderedPair<TDerived, TValue>& left, TValue right) noexcept
+	constexpr TDerived operator/(const OrderedPairTemplate<TDerived, TValue>& left, TValue right) noexcept
 	{
 		return {left.GetX() / right, left.GetY() / right};
 	}
 
 	template<class TDerived, class TValue>
-	constexpr TDerived operator*(TValue left, const BasicOrderedPair<TDerived, TValue>& right) noexcept
+	constexpr TDerived operator*(TValue left, const OrderedPairTemplate<TDerived, TValue>& right) noexcept
 	{
 		return {left * right.GetX(), left * right.GetY()};
 	}
 
 	template<class TDerived, class TValue>
-	constexpr TDerived operator/(TValue left, const BasicOrderedPair<TDerived, TValue>& right) noexcept
+	constexpr TDerived operator/(TValue left, const OrderedPairTemplate<TDerived, TValue>& right) noexcept
 	{
 		return {left / right.GetX(), left / right.GetY()};
 	}
@@ -379,7 +376,7 @@ namespace kxf::Geometry
 namespace kxf::Geometry
 {
 	template<class TDerived_, class TValue_, class TPoint_, class TSize_>
-	class BasicRect
+	class RectTemplate
 	{
 		public:
 			using TDerived = TDerived_;
@@ -389,7 +386,7 @@ namespace kxf::Geometry
 
 		private:
 			template<class T>
-			using TSelf = BasicRect<T, TValue_, TPoint_, TSize_>;
+			using TSelf = RectTemplate<T, TValue_, TPoint_, TSize_>;
 
 		protected:
 			TValue m_X = 0;
@@ -408,12 +405,12 @@ namespace kxf::Geometry
 			}
 
 		public:
-			constexpr BasicRect() noexcept = default;
-			constexpr BasicRect(TValue x, TValue y, TValue width, TValue height) noexcept
+			constexpr RectTemplate() noexcept = default;
+			constexpr RectTemplate(TValue x, TValue y, TValue width, TValue height) noexcept
 				:m_X(x), m_Y(y), m_Width(width), m_Height(height)
 			{
 			}
-			constexpr BasicRect(const TPoint& topLeft, const TPoint& bottomRight) noexcept
+			constexpr RectTemplate(const TPoint& topLeft, const TPoint& bottomRight) noexcept
 				:m_X(topLeft.GetX()), m_Y(topLeft.GetY()), m_Width(bottomRight.GetX() - topLeft.GetX()), m_Height(bottomRight.GetY() - topLeft.GetY())
 			{
 				if (m_Width < 0)
@@ -430,15 +427,15 @@ namespace kxf::Geometry
 				}
 				m_Height++;
 			}
-			constexpr BasicRect(const TPoint& position, const TSize& size) noexcept
+			constexpr RectTemplate(const TPoint& position, const TSize& size) noexcept
 				:m_X(position.GetX()), m_Y(position.GetY()), m_Width(size.GetWidth()), m_Height(size.GetHeight())
 			{
 			}
-			constexpr BasicRect(const TSize& size) noexcept
+			constexpr RectTemplate(const TSize& size) noexcept
 				:m_Width(size.GetWidth()), m_Height(size.GetHeight())
 			{
 			}
-			constexpr BasicRect(const BasicRect&) noexcept = default;
+			constexpr RectTemplate(const RectTemplate&) noexcept = default;
 
 		public:
 			constexpr bool IsEmpty() const noexcept
@@ -986,160 +983,272 @@ namespace kxf::Geometry
 	};
 }
 
-namespace kxf
+namespace kxf::Geometry
 {
-	class Point final: public Geometry::BasicOrderedPair<Point, int>
+	template<class TValue_>
+	class BasicPoint final: public OrderedPairTemplate<BasicPoint<TValue_>, TValue_>
 	{
 		public:
-			static constexpr Point UnspecifiedPosition() noexcept
-			{
-				return {Geometry::DefaultCoord, Geometry::DefaultCoord};
-			}
-			static Point FromSize(const Size& size) noexcept;
+			using TValue = TValue_;
+
+		private:
+			using TBase = OrderedPairTemplate<BasicPoint<TValue_>, TValue_>;
 
 		public:
-			using BasicOrderedPair::BasicOrderedPair;
-			constexpr Point(const wxPoint& other) noexcept
-				:BasicOrderedPair(other.x, other.y)
+			static constexpr BasicPoint UnspecifiedPosition() noexcept
 			{
+				return BasicPoint(Geometry::DefaultCoord, Geometry::DefaultCoord);
 			}
-			constexpr Point(const wxRealPoint& other) noexcept
-				:BasicOrderedPair(other.x, other.y)
+
+			template<class T>
+			static constexpr BasicPoint FromSize(const T& size) noexcept
 			{
-			}
-			constexpr Point(const wxPoint2DInt& other) noexcept
-				:BasicOrderedPair(other.m_y, other.m_y)
-			{
-			}
-			constexpr Point(const wxPoint2DDouble& other) noexcept
-				:BasicOrderedPair(other.m_y, other.m_y)
-			{
+				return BasicPoint(size.GetWidth(), size.GetHeight());
 			}
 
 		public:
-			using BasicOrderedPair::operator==;
-			using BasicOrderedPair::operator!=;
+			using TBase::OrderedPairTemplate;
+			constexpr BasicPoint(const wxPoint& other) noexcept
+				:TBase(other.x, other.y)
+			{
+			}
+			constexpr BasicPoint(const wxRealPoint& other) noexcept
+				:TBase(other.x, other.y)
+			{
+			}
+			constexpr BasicPoint(const wxPoint2DInt& other) noexcept
+				:TBase(other.m_y, other.m_y)
+			{
+			}
+			constexpr BasicPoint(const wxPoint2DDouble& other) noexcept
+				:TBase(other.m_y, other.m_y)
+			{
+			}
+
+			template<class T>
+			constexpr BasicPoint(const BasicPoint<T>& other) noexcept
+				:TBase(other.GetX(), other.GetY())
+			{
+			}
+
+		public:
+			using TBase::operator==;
+			using TBase::operator!=;
 			bool operator==(const wxPoint& other) const noexcept
 			{
-				return m_X == other.x && m_Y == other.y;
+				return *this == BasicPoint(other);
+			}
+			bool operator==(const wxRealPoint& other) const noexcept
+			{
+				return *this == BasicPoint(other);
+			}
+			bool operator==(const wxPoint2DInt& other) const noexcept
+			{
+				return *this == BasicPoint(other);
+			}
+			bool operator==(const wxPoint2DDouble& other) const noexcept
+			{
+				return *this == BasicPoint(other);
 			}
 			bool operator!=(const wxPoint& other) const noexcept
 			{
-				return m_X != other.x || m_Y != other.y;
+				return *this != BasicPoint(other);
+			}
+			bool operator!=(const wxRealPoint& other) const noexcept
+			{
+				return *this != BasicPoint(other);
+			}
+			bool operator!=(const wxPoint2DInt& other) const noexcept
+			{
+				return *this != BasicPoint(other);
+			}
+			bool operator!=(const wxPoint2DDouble& other) const noexcept
+			{
+				return *this != BasicPoint(other);
 			}
 
 			operator wxPoint() const noexcept
 			{
-				return {m_X, m_Y};
+				return {static_cast<int>(this->m_X), static_cast<int>(this->m_Y)};
 			}
 			operator wxRealPoint() const noexcept
 			{
-				return {static_cast<double>(m_X), static_cast<double>(m_Y)};
+				return {static_cast<double>(this->m_X), static_cast<double>(this->m_Y)};
 			}
 			operator wxPoint2DInt() const noexcept
 			{
-				return {static_cast<wxInt32>(m_X), static_cast<wxInt32>(m_Y)};
+				return {static_cast<wxInt32>(this->m_X), static_cast<wxInt32>(this->m_Y)};
 			}
 			operator wxPoint2DDouble() const noexcept
 			{
-				return {static_cast<wxDouble>(m_X), static_cast<wxDouble>(m_Y)};
+				return {static_cast<wxDouble>(this->m_X), static_cast<wxDouble>(this->m_Y)};
 			}
 	};
 
-	class Size final: public Geometry::BasicOrderedPair<Size, int>
+	template<class TValue_>
+	class BasicSize final: public OrderedPairTemplate<BasicSize<TValue_>, TValue_>
 	{
 		public:
-			static constexpr Size UnspecifiedSize() noexcept
-			{
-				return {Geometry::DefaultCoord, Geometry::DefaultCoord};
-			}
-			static Size FromPoint(const Point& point) noexcept;
+			using TValue = TValue_;
+
+		private:
+			using TBase = OrderedPairTemplate<BasicSize<TValue_>, TValue_>;
 
 		public:
-			using BasicOrderedPair::BasicOrderedPair;
-			constexpr Size(const wxSize& other) noexcept
-				:BasicOrderedPair(other.GetWidth(), other.GetHeight())
+			static constexpr BasicSize UnspecifiedSize() noexcept
+			{
+				return BasicSize(Geometry::DefaultCoord, Geometry::DefaultCoord);
+			}
+
+			template<class T>
+			static constexpr BasicSize FromPoint(const T& point) noexcept
+			{
+				return BasicSize(point.GetX(), point.GetY());
+			}
+
+		public:
+			using TBase::OrderedPairTemplate;
+			constexpr BasicSize(const wxSize& other) noexcept
+				:TBase(other.GetWidth(), other.GetHeight())
+			{
+			}
+
+			template<class T>
+			constexpr BasicSize(const BasicSize<T>& other) noexcept
+				:TBase(other.GetWidth(), other.GetHeight())
 			{
 			}
 
 		public:
 			constexpr TValue GetWidth() const noexcept
 			{
-				return GetX();
+				return  this->GetX();
 			}
-			constexpr Size& SetWidth(TValue width) noexcept
+			constexpr BasicSize& SetWidth(TValue width) noexcept
 			{
-				return SetX(width);
+				return  this->SetX(width);
 			}
 
 			constexpr TValue GetHeight() const noexcept
 			{
-				return GetY();
+				return this->GetY();
 			}
-			constexpr Size& SetHeight(TValue height) noexcept
+			constexpr BasicSize& SetHeight(TValue height) noexcept
 			{
-				return SetY(height);
+				return  this->SetY(height);
 			}
 
 			constexpr TValue& Width() noexcept
 			{
-				return X();
+				return this->X();
 			}
 			constexpr TValue& Height() noexcept
 			{
-				return Y();
+				return this->Y();
 			}
 
 		public:
-			using BasicOrderedPair::operator==;
-			using BasicOrderedPair::operator!=;
+			using TBase::operator==;
+			using TBase::operator!=;
 			bool operator==(const wxSize& other) const noexcept
 			{
-				return m_X == other.x && m_Y == other.y;
+				return *this == BasicSize(other);
 			}
 			bool operator!=(const wxSize& other) const noexcept
 			{
-				return m_X != other.x || m_Y != other.y;
+				return *this != BasicSize(other);
 			}
 
 			operator wxSize() const noexcept
 			{
-				return {static_cast<int>(m_X), static_cast<int>(m_Y)};
+				return {static_cast<int>(this->m_X), static_cast<int>(this->m_Y)};
 			}
 	};
 
-	class Rect final: public Geometry::BasicRect<Rect, int, Point, Size>
+	template<class TValue_>
+	class BasicRect final: public RectTemplate<BasicRect<TValue_>, TValue_, BasicPoint<TValue_>, BasicSize<TValue_>>
 	{
 		public:
-			using BasicRect::BasicRect;
-			constexpr Rect(const wxRect& other) noexcept
-				:BasicRect(other.GetX(), other.GetY(), other.GetWidth(), other.GetHeight())
+			using TValue = TValue_;
+
+		private:
+			using TBase = RectTemplate<BasicRect<TValue_>, TValue_, BasicPoint<TValue_>, BasicSize<TValue_>>;
+
+		public:
+			using TBase::RectTemplate;
+			constexpr BasicRect(const wxRect& other) noexcept
+				:TBase(other.GetX(), other.GetY(), other.GetWidth(), other.GetHeight())
 			{
 			}
-			constexpr Rect(const wxRect2DInt& other) noexcept
-				:BasicRect(other.m_x, other.m_y, other.m_width, other.m_height)
+			constexpr BasicRect(const wxRect2DInt& other) noexcept
+				:TBase(other.m_x, other.m_y, other.m_width, other.m_height)
 			{
 			}
-			constexpr Rect(const wxRect2DDouble& other) noexcept
-				:BasicRect(other.m_x, other.m_y, other.m_width, other.m_height)
+			constexpr BasicRect(const wxRect2DDouble& other) noexcept
+				:TBase(other.m_x, other.m_y, other.m_width, other.m_height)
+			{
+			}
+
+			template<class T>
+			constexpr BasicRect(const BasicRect<T>& other) noexcept
+				:TBase(other.GetX(), other.GetY(), other.GetWidth(), other.GetHeight())
 			{
 			}
 
 		public:
-			using BasicRect::operator==;
-			using BasicRect::operator!=;
+			using TBase::operator==;
+			using TBase::operator!=;
 			bool operator==(const wxRect& other) const noexcept
 			{
-				return *this == Rect(other);
+				return *this == BasicRect(other);
+			}
+			bool operator==(const wxRect2DInt& other) const noexcept
+			{
+				return *this == BasicRect(other);
+			}
+			bool operator==(const wxRect2DDouble& other) const noexcept
+			{
+				return *this == BasicRect(other);
 			}
 			bool operator!=(const wxRect& other) const noexcept
 			{
-				return *this != Rect(other);
+				return *this != BasicRect(other);
+			}
+			bool operator!=(const wxRect2DInt& other) const noexcept
+			{
+				return *this != BasicRect(other);
+			}
+			bool operator!=(const wxRect2DDouble& other) const noexcept
+			{
+				return *this != BasicRect(other);
 			}
 
 			operator wxRect() const noexcept
 			{
-				return {static_cast<int>(m_X), static_cast<int>(m_Y), static_cast<int>(m_Width), static_cast<int>(m_Height)};
+				return {static_cast<int>(this->m_X), static_cast<int>(this->m_Y), static_cast<int>(this->m_Width), static_cast<int>(this->m_Height)};
+			}
+			operator wxRect2DInt() const noexcept
+			{
+				return {static_cast<wxInt32>(this->m_X), static_cast<wxInt32>(this->m_Y), static_cast<wxInt32>(this->m_Width), static_cast<wxInt32>(this->m_Height)};
+			}
+			operator wxRect2DDouble() const noexcept
+			{
+				return {static_cast<wxDouble>(this->m_X), static_cast<wxDouble>(this->m_Y), static_cast<wxDouble>(this->m_Width), static_cast<wxDouble>(this->m_Height)};
 			}
 	};
+}
+
+namespace kxf
+{
+	using Point = Geometry::BasicPoint<int>;
+	using Size = Geometry::BasicSize<int>;
+	using Rect = Geometry::BasicRect<int>;
+
+	using PointF = Geometry::BasicPoint<float>;
+	using SizeF = Geometry::BasicSize<float>;
+	using RectF = Geometry::BasicRect<float>;
+
+	using PointD = Geometry::BasicPoint<double>;
+	using SizeD = Geometry::BasicSize<double>;
+	using RectD = Geometry::BasicRect<double>;
 }

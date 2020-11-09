@@ -4,7 +4,7 @@
 
 namespace kxf::Geometry
 {
-	class SizeRatio final: public Geometry::BasicOrderedPair<SizeRatio, int>
+	class SizeRatio final: public Geometry::OrderedPairTemplate<SizeRatio, int>
 	{
 		public:
 			static constexpr auto r1_1 = 1.0;
@@ -39,13 +39,9 @@ namespace kxf::Geometry
 			}
 
 		public:
-			using BasicOrderedPair::BasicOrderedPair;
+			using OrderedPairTemplate::OrderedPairTemplate;
 			constexpr SizeRatio(const Size& size) noexcept
-				:BasicOrderedPair(size.GetWidth(), size.GetHeight())
-			{
-			}
-			SizeRatio(const wxSize& size) noexcept
-				:BasicOrderedPair(size.GetWidth(), size.GetHeight())
+				:OrderedPairTemplate(size.GetWidth(), size.GetHeight())
 			{
 			}
 
@@ -58,7 +54,7 @@ namespace kxf::Geometry
 			{
 				return SetX(width);
 			}
-			
+
 			constexpr TValue GetHeight() const noexcept
 			{
 				return GetY();
@@ -67,7 +63,7 @@ namespace kxf::Geometry
 			{
 				return SetY(height);
 			}
-			
+
 			constexpr TValue& Width() noexcept
 			{
 				return X();
