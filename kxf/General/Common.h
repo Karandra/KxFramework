@@ -30,7 +30,7 @@ namespace kxf
 
 	enum class CornerAlignment
 	{
-		Unspecified = 0,
+		None = 0,
 
 		TopLeft = 7,
 		TopCenter = 8,

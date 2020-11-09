@@ -105,7 +105,7 @@ namespace kxf::Sciter
 	{
 		if (alignment == Alignment::Invalid)
 		{
-			return CornerAlignment::Unspecified;
+			return CornerAlignment::None;
 		}
 		else if (alignment & Alignment::Right)
 		{
@@ -155,7 +155,7 @@ namespace kxf::Sciter
 				return CornerAlignment::TopLeft;
 			}
 		}
-		return CornerAlignment::Unspecified;
+		return CornerAlignment::None;
 	}
 	FlagSet<Alignment> MapCornerAlignment(CornerAlignment alignment)
 	{
