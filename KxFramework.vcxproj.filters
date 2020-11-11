@@ -1595,6 +1595,9 @@
     <ClInclude Include="kxf\Drawing\Region.h">
       <Filter>kxf\Drawing</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Drawing\GDICanvasOperations.h">
+      <Filter>kxf\Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2415,6 +2418,9 @@
       <Filter>kxf\Drawing</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Drawing\Region.cpp">
+      <Filter>kxf\Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\GDICanvasOperations.cpp">
       <Filter>kxf\Drawing</Filter>
     </ClCompile>
   </ItemGroup>

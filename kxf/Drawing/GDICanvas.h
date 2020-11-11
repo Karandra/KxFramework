@@ -117,7 +117,7 @@ namespace kxf
 			void* DetachHandle() override;
 			void AttachHandle(void* handle) override;
 
-			// DeviceContext
+			// GDICanvas
 			const wxDC& ToWxDC() const noexcept
 			{
 				return *m_DC;
@@ -267,6 +267,11 @@ namespace kxf
 				return {m_DC->DeviceToLogicalXRel(pair.GetX()), m_DC->DeviceToLogicalYRel(pair.GetY())};
 			}
 
+			Rect DeviceToLogical(const Rect& rect) const
+			{
+				return {DeviceToLogical(rect.GetPosition()), DeviceToLogicalRelative(rect.GetSize())};
+			}
+
 			template<class TDerived, class TPair = TDerived>
 			TPair LogicalToDevice(const TCoordPair<TDerived>& pair) const
 			{
@@ -277,6 +282,11 @@ namespace kxf
 			TPair LogicalToDeviceRelative(const TCoordPair<TDerived>& pair) const
 			{
 				return {m_DC->LogicalToDeviceXRel(pair.GetX()), m_DC->LogicalToDeviceYRel(pair.GetY())};
+			}
+
+			Rect LogicalToDevice(const Rect& rect) const
+			{
+				return {LogicalToDevice(rect.GetPosition()), LogicalToDeviceRelative(rect.GetSize())};
 			}
 
 			// Drawing functions
@@ -461,7 +471,7 @@ namespace kxf
 			{
 				m_DC->SetDeviceClippingRegion(region.ToWxRegion());
 			}
-			void DestroyClippingRegion()
+			void ResetClippingRegion()
 			{
 				m_DC->DestroyClippingRegion();
 			}
