@@ -5,6 +5,11 @@
 
 namespace kxf
 {
+	class GDICanvas;
+}
+
+namespace kxf
+{
 	class KX_API Bitmap: public RTTI::ExtendInterface<Bitmap, IGDIImage>
 	{
 		KxRTTI_DeclareIID(Bitmap, {0xd4c3e7be, 0xf0fd, 0x4c38, {0xa1, 0x94, 0x16, 0xb3, 0x9, 0xa, 0x34, 0xb5}});
@@ -28,7 +33,7 @@ namespace kxf
 
 			Bitmap(const Icon& other);
 			Bitmap(const Image& other);
-			Bitmap(const Image& other, const wxDC& dc);
+			Bitmap(const Image& other, const GDICanvas& canvas);
 			Bitmap(const Cursor& other);
 			Bitmap(const Bitmap& other)
 				:m_Bitmap(other.m_Bitmap)
@@ -46,11 +51,7 @@ namespace kxf
 			{
 				Initialize();
 			}
-			Bitmap(const Size& size, const wxDC& dc)
-				:m_Bitmap(size.GetWidth(), size.GetHeight(), dc)
-			{
-				Initialize();
-			}
+			Bitmap(const Size& size, const GDICanvas& canvas);
 
 			virtual ~Bitmap() = default;
 

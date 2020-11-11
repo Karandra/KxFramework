@@ -3,6 +3,8 @@
 #include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/Bitmap.h"
 #include "kxf/Drawing/ImageBundle.h"
+#include "kxf/Drawing/GDIWindowCanvas.h"
+#include "kxf/Drawing/GDIMemoryCanvas.h"
 #include "kxf/UI/Menus/Menu.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/System/Private/System.h"
@@ -56,7 +58,7 @@ namespace kxf::UI
 	{
 		using namespace kxf;
 
-		wxAutoBufferedPaintDC dc(this);
+		GDIAutoBufferedPaintCanvas dc(*this);
 		UxTheme::ClearDC(*this, dc);
 		wxRendererNative& renderer = wxRendererNative::Get();
 
@@ -80,12 +82,12 @@ namespace kxf::UI
 
 		// Draw first part
 		dc.SetTextForeground(isEnabled ? GetForegroundColour() : GetForegroundColour().MakeDisabled());
-		renderer.DrawPushButton(this, dc, rect, controlState);
+		renderer.DrawPushButton(this, dc.ToWxDC(), rect, controlState);
 
 		// Draw focus rectangle
 		if (m_IsFocusDrawingAllowed && HasFocus())
 		{
-			renderer.DrawFocusRect(this, dc, contentRect, wxCONTROL_SELECTED);
+			renderer.DrawFocusRect(this, dc.ToWxDC(), contentRect, wxCONTROL_SELECTED);
 		}
 
 		// Draw bitmap and label
@@ -95,11 +97,11 @@ namespace kxf::UI
 			{
 				bitmap = bitmap.ConvertToDisabled();
 			}
-			dc.DrawLabel(GetLabelText(), bitmap, contentRect, ToInt(Alignment::Center));
+			dc.DrawLabel(contentRect, GetLabelText(), bitmap, Alignment::Center);
 		}
 		else
 		{
-			dc.DrawLabel(GetLabelText(), contentRect, ToInt(Alignment::Center));
+			dc.DrawLabel(contentRect, GetLabelText(), Alignment::Center);
 		}
 
 		// Draw second part of the button
@@ -111,8 +113,8 @@ namespace kxf::UI
 			splitRect.Width() = FromDIPX(this, g_ArrowButtonWidth);
 			splitRect.Height() = clientSize.GetHeight() + FromDIPX(this, 2);
 
-			renderer.DrawPushButton(this, dc, splitRect, controlState);
-			renderer.DrawDropArrow(this, dc, splitRect, controlState);
+			renderer.DrawPushButton(this, dc.ToWxDC(), splitRect, controlState);
+			renderer.DrawDropArrow(this, dc.ToWxDC(), splitRect, controlState);
 		}
 	}
 	void Button::OnResize(wxSizeEvent& event)

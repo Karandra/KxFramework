@@ -14,5 +14,15 @@ namespace kxf
 				:GDICanvas(m_DC), m_DC(other.ToWxDC(), enableMirroring)
 			{
 			}
+
+		public:
+			const wxMirrorDC& ToWxDC() const noexcept
+			{
+				return m_DC;
+			}
+			wxMirrorDC& ToWxDC() noexcept
+			{
+				return m_DC;
+			}
 	};
 }

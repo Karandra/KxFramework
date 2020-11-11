@@ -21,7 +21,7 @@ namespace kxf::UI::DataView
 			bool SetValue(const wxAny& value) override;
 			ToolTip CreateToolTip() const override;
 
-			void PrepareRenderer(wxHtmlDCRenderer& htmlRenderer, wxDC& dc, const Rect& cellRect = {}) const;
+			void PrepareRenderer(wxHtmlDCRenderer& htmlRenderer, GDICanvas& dc, const Rect& cellRect = {}) const;
 			void DrawCellContent(const Rect& cellRect, CellState cellState) override;
 			Size GetCellSize() const override;
 

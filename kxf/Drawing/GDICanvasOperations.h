@@ -6,7 +6,7 @@
 
 namespace kxf::Drawing
 {
-	Color GetAreaAverageColor(const GDICanvas& canvas, const Rect& rect);
+	Color GetAreaAverageColor(const GDICanvas& dc, const Rect& rect);
 }
 
 namespace kxf::GDICanvasAction
@@ -14,27 +14,27 @@ namespace kxf::GDICanvasAction
 	class KX_API Clip final
 	{
 		private:
-			GDICanvas& m_Canvas;
+			GDICanvas& m_DC;
 			Region m_Region;
 
 		public:
-			Clip(GDICanvas& canvas)
-				:m_Canvas(canvas)
+			Clip(GDICanvas& dc)
+				:m_DC(dc)
 			{
 			}
-			Clip(GDICanvas& canvas, const Rect& rect)
-				:m_Canvas(canvas), m_Region(canvas.LogicalToDevice(rect))
+			Clip(GDICanvas& dc, const Rect& rect)
+				:m_DC(dc), m_Region(dc.LogicalToDevice(rect))
 			{
 			}
-			Clip(GDICanvas& canvas, const Region& region)
-				:m_Canvas(canvas), m_Region(region)
+			Clip(GDICanvas& dc, const Region& region)
+				:m_DC(dc), m_Region(region)
 			{
 			}
 			~Clip()
 			{
 				if (m_Region)
 				{
-					m_Canvas.ResetClippingRegion();
+					m_DC.ResetClippingRegion();
 				}
 			}
 
@@ -45,7 +45,7 @@ namespace kxf::GDICanvasAction
 			}
 			bool Add(const Rect& rect)
 			{
-				return m_Region.Union(m_Canvas.LogicalToDevice(rect));
+				return m_Region.Union(m_DC.LogicalToDevice(rect));
 			}
 
 			bool Remove(const Region& region)
@@ -54,14 +54,14 @@ namespace kxf::GDICanvasAction
 			}
 			bool Remove(const Rect& rect)
 			{
-				return m_Region.Subtract(m_Canvas.LogicalToDevice(rect));
+				return m_Region.Subtract(m_DC.LogicalToDevice(rect));
 			}
 
 			void Apply()
 			{
 				if (m_Region)
 				{
-					m_Canvas.SetDeviceClippingRegion(m_Region);
+					m_DC.SetDeviceClippingRegion(m_Region);
 				}
 			}
 	};
@@ -69,42 +69,42 @@ namespace kxf::GDICanvasAction
 	class ChangeLogicalFunction final
 	{
 		private:
-			GDICanvas& m_Canvas;
+			GDICanvas& m_DC;
 			GDILogicalFunction m_OriginalMode = GDILogicalFunction::Clear;
 
 		public:
-			ChangeLogicalFunction(GDICanvas& canvas, GDILogicalFunction newMode)
-				:m_Canvas(canvas), m_OriginalMode(canvas.GetLogicalFunction())
+			ChangeLogicalFunction(GDICanvas& dc, GDILogicalFunction newMode)
+				:m_DC(dc), m_OriginalMode(dc.GetLogicalFunction())
 			{
-				m_Canvas.SetLogicalFunction(newMode);
+				m_DC.SetLogicalFunction(newMode);
 			}
 			~ChangeLogicalFunction()
 			{
-				m_Canvas.SetLogicalFunction(m_OriginalMode);
+				m_DC.SetLogicalFunction(m_OriginalMode);
 			}
 	};
 
 	class ChangeFont final
 	{
 		private:
-			GDICanvas& m_Canvas;
+			GDICanvas& m_DC;
 			Font m_OriginalFont;
 
 		public:
-			ChangeFont(GDICanvas& canvas)
-				:m_Canvas(canvas)
+			ChangeFont(GDICanvas& dc)
+				:m_DC(dc)
 			{
 			}
-			ChangeFont(GDICanvas& canvas, const Font& font)
-				:m_Canvas(canvas), m_OriginalFont(canvas.GetFont())
+			ChangeFont(GDICanvas& dc, const Font& font)
+				:m_DC(dc), m_OriginalFont(dc.GetFont())
 			{
-				m_Canvas.SetFont(font.ToWxFont());
+				m_DC.SetFont(font.ToWxFont());
 			}
 			~ChangeFont()
 			{
 				if (m_OriginalFont)
 				{
-					m_Canvas.SetFont(std::move(m_OriginalFont));
+					m_DC.SetFont(std::move(m_OriginalFont));
 				}
 			}
 
@@ -113,33 +113,33 @@ namespace kxf::GDICanvasAction
 			{
 				if (!m_OriginalFont)
 				{
-					m_OriginalFont = m_Canvas.GetFont();
+					m_OriginalFont = m_DC.GetFont();
 				}
-				m_Canvas.SetFont(font);
+				m_DC.SetFont(font);
 			}
 	};
 
 	class ChangePen final
 	{
 		private:
-			GDICanvas& m_Canvas;
+			GDICanvas& m_DC;
 			Pen m_Pen;
 
 		public:
-			ChangePen(GDICanvas& canvas)
-				:m_Canvas(canvas)
+			ChangePen(GDICanvas& dc)
+				:m_DC(dc)
 			{
 			}
-			ChangePen(GDICanvas& canvas, const Pen& pen)
-				:m_Canvas(canvas), m_Pen(canvas.GetPen())
+			ChangePen(GDICanvas& dc, const Pen& pen)
+				:m_DC(dc), m_Pen(dc.GetPen())
 			{
-				m_Canvas.SetPen(pen);
+				m_DC.SetPen(pen);
 			}
 			~ChangePen()
 			{
 				if (m_Pen)
 				{
-					m_Canvas.SetPen(std::move(m_Pen));
+					m_DC.SetPen(std::move(m_Pen));
 				}
 			}
 
@@ -148,33 +148,33 @@ namespace kxf::GDICanvasAction
 			{
 				if (!m_Pen)
 				{
-					m_Pen = m_Canvas.GetPen();
+					m_Pen = m_DC.GetPen();
 				}
-				m_Canvas.SetPen(pen);
+				m_DC.SetPen(pen);
 			}
 	};
 
 	class ChangeBrush final
 	{
 		private:
-			GDICanvas& m_Canvas;
+			GDICanvas& m_DC;
 			Brush m_Brush;
 
 		public:
-			ChangeBrush(GDICanvas& canvas)
-				:m_Canvas(canvas)
+			ChangeBrush(GDICanvas& dc)
+				:m_DC(dc)
 			{
 			}
-			ChangeBrush(GDICanvas& canvas, const Brush& brush)
-				:m_Canvas(canvas), m_Brush(canvas.GetBrush())
+			ChangeBrush(GDICanvas& dc, const Brush& brush)
+				:m_DC(dc), m_Brush(dc.GetBrush())
 			{
-				m_Canvas.SetBrush(brush);
+				m_DC.SetBrush(brush);
 			}
 			~ChangeBrush()
 			{
 				if (m_Brush)
 				{
-					m_Canvas.SetBrush(std::move(m_Brush));
+					m_DC.SetBrush(std::move(m_Brush));
 				}
 			}
 
@@ -183,33 +183,33 @@ namespace kxf::GDICanvasAction
 			{
 				if (!m_Brush)
 				{
-					m_Brush = m_Canvas.GetBrush();
+					m_Brush = m_DC.GetBrush();
 				}
-				m_Canvas.SetBrush(brush);
+				m_DC.SetBrush(brush);
 			}
 	};
 
 	class ChangeTextForeground final
 	{
 		private:
-			GDICanvas& m_Canvas;
+			GDICanvas& m_DC;
 			Color m_OriginalColor;
 
 		public:
-			ChangeTextForeground(GDICanvas& canvas)
-				:m_Canvas(canvas)
+			ChangeTextForeground(GDICanvas& dc)
+				:m_DC(dc)
 			{
 			}
-			ChangeTextForeground(GDICanvas& canvas, const Color& color)
-				:m_Canvas(canvas), m_OriginalColor(canvas.GetTextForeground())
+			ChangeTextForeground(GDICanvas& dc, const Color& color)
+				:m_DC(dc), m_OriginalColor(dc.GetTextForeground())
 			{
-				m_Canvas.SetTextForeground(color);
+				m_DC.SetTextForeground(color);
 			}
 			~ChangeTextForeground()
 			{
 				if (m_OriginalColor)
 				{
-					m_Canvas.SetTextForeground(m_OriginalColor);
+					m_DC.SetTextForeground(m_OriginalColor);
 				}
 			}
 
@@ -218,33 +218,33 @@ namespace kxf::GDICanvasAction
 			{
 				if (!m_OriginalColor)
 				{
-					m_OriginalColor = m_Canvas.GetTextForeground();
+					m_OriginalColor = m_DC.GetTextForeground();
 				}
-				m_Canvas.SetTextForeground(color);
+				m_DC.SetTextForeground(color);
 			}
 	};
 
 	class ChangeTextBackground final
 	{
 		private:
-			GDICanvas& m_Canvas;
+			GDICanvas& m_DC;
 			Color m_OriginalColor;
 
 		public:
-			ChangeTextBackground(GDICanvas& canvas)
-				:m_Canvas(canvas)
+			ChangeTextBackground(GDICanvas& dc)
+				:m_DC(dc)
 			{
 			}
-			ChangeTextBackground(GDICanvas& canvas, const Color& color)
-				:m_Canvas(canvas), m_OriginalColor(canvas.GetTextForeground())
+			ChangeTextBackground(GDICanvas& dc, const Color& color)
+				:m_DC(dc), m_OriginalColor(dc.GetTextForeground())
 			{
-				m_Canvas.SetTextBackground(color);
+				m_DC.SetTextBackground(color);
 			}
 			~ChangeTextBackground()
 			{
 				if (m_OriginalColor)
 				{
-					m_Canvas.SetTextBackground(m_OriginalColor);
+					m_DC.SetTextBackground(m_OriginalColor);
 				}
 			}
 
@@ -253,9 +253,9 @@ namespace kxf::GDICanvasAction
 			{
 				if (!m_OriginalColor)
 				{
-					m_OriginalColor = m_Canvas.GetTextBackground();
+					m_OriginalColor = m_DC.GetTextBackground();
 				}
-				m_Canvas.SetTextBackground(color);
+				m_DC.SetTextBackground(color);
 			}
 	};
 }

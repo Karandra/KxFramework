@@ -3,6 +3,7 @@
 #include "Cursor.h"
 #include "Icon.h"
 #include "Image.h"
+#include "GDICanvas.h"
 #include "Private/GDI.h"
 
 namespace kxf
@@ -28,8 +29,13 @@ namespace kxf
 	{
 		Initialize();
 	}
-	Bitmap::Bitmap(const Image& other, const wxDC& dc)
-		:m_Bitmap(other.ToWxImage(), dc)
+	Bitmap::Bitmap(const Image& other, const GDICanvas& canvas)
+		:m_Bitmap(other.ToWxImage(), canvas.ToWxDC())
+	{
+		Initialize();
+	}
+	Bitmap::Bitmap(const Size& size, const GDICanvas& canvas)
+		:m_Bitmap(size.GetWidth(), size.GetHeight(), canvas.ToWxDC())
 	{
 		Initialize();
 	}

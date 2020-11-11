@@ -3,6 +3,7 @@
 #include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/Bitmap.h"
 #include "kxf/Drawing/Image.h"
+#include "kxf/Drawing/GDIWindowCanvas.h"
 
 namespace kxf::UI
 {
@@ -12,7 +13,7 @@ namespace kxf::UI
 	{
 		using namespace kxf;
 
-		wxBufferedPaintDC dc(this);
+		GDIWindowPaintCanvas dc(*this);
 		UxTheme::DrawParentBackground(*this, dc, Rect(Point(0, 0), GetSize()));
 		event.Skip();
 	}

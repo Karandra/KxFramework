@@ -4,7 +4,7 @@
 #include "Node.h"
 #include "View.h"
 #include "MainWindow.h"
-#include "kxf/Drawing/DCOperations.h"
+#include "kxf/Drawing/GDICanvasOperations.h"
 
 namespace kxf::UI::DataView
 {
@@ -32,7 +32,7 @@ namespace kxf::UI::DataView
 
 	void Renderer::CallDrawCellBackground(const Rect& cellRect, CellState cellState, bool noUserBackground)
 	{
-		wxDC& dc = GetGraphicsDC();
+		GDIGraphicsCanvas& dc = GetGraphicsDC();
 		const auto& cellOptions = m_Attributes.Options();
 		const auto& cellBGOptions = m_Attributes.BGOptions();
 
@@ -75,17 +75,17 @@ namespace kxf::UI::DataView
 		else if (cellBGOptions.ContainsOption(CellBGOption::Button))
 		{
 			Rect buttonRect = cellRect.Clone().Inflate(1, 1);
-			wxRendererNative::Get().DrawPushButton(GetView(), dc, buttonRect, GetRenderEngine().GetControlFlags(cellState));
+			wxRendererNative::Get().DrawPushButton(GetView(), dc.ToWxDC(), buttonRect, GetRenderEngine().GetControlFlags(cellState));
 		}
 		else if (cellBGOptions.ContainsOption(CellBGOption::ComboBox))
 		{
 			if (cellOptions.ContainsOption(CellOption::Editable))
 			{
-				wxRendererNative::Get().DrawComboBox(GetView(), dc, cellRect, GetRenderEngine().GetControlFlags(cellState));
+				wxRendererNative::Get().DrawComboBox(GetView(), dc.ToWxDC(), cellRect, GetRenderEngine().GetControlFlags(cellState));
 			}
 			else
 			{
-				wxRendererNative::Get().DrawChoice(GetView(), dc, cellRect, GetRenderEngine().GetControlFlags(cellState));
+				wxRendererNative::Get().DrawChoice(GetView(), dc.ToWxDC(), cellRect, GetRenderEngine().GetControlFlags(cellState));
 			}
 		}
 
@@ -93,8 +93,8 @@ namespace kxf::UI::DataView
 		if (cellOptions.HasBackgroundColor())
 		{
 			Color color = m_Attributes.Options().GetBackgroundColor();
-			wxDCPenChanger changePen(dc, color);
-			wxDCBrushChanger changeBrush(dc, color);
+			GDICanvasAction::ChangePen changePen(dc, color);
+			GDICanvasAction::ChangeBrush changeBrush(dc, color);
 			dc.DrawRectangle(cellRect);
 		}
 
@@ -110,10 +110,10 @@ namespace kxf::UI::DataView
 		m_AlwaysUseGC = alwaysUseGC;
 
 		RenderEngine renderEngine = GetRenderEngine();
-		wxDC& dc = HasRegularDC() && !m_AlwaysUseGC  ? GetRegularDC() : GetGraphicsDC();
+		GDICanvas& dc = HasRegularDC() && !m_AlwaysUseGC  ? GetRegularDC() : GetGraphicsDC();
 
 		// Change text color
-		DCTextColorChanger changeTextColor(dc);
+		GDICanvasAction::ChangeTextForeground changeTextColor(dc);
 		if (m_Attributes.Options().HasForegroundColor())
 		{
 			Color color = m_Attributes.Options().GetForegroundColor();
@@ -129,7 +129,7 @@ namespace kxf::UI::DataView
 		}
 
 		// Change font
-		DCFontChanger changeFont(dc);
+		GDICanvasAction::ChangeFont changeFont(dc);
 		if (m_Attributes.FontOptions().NeedDCAlteration())
 		{
 			changeFont.Set(m_Attributes.GetEffectiveFont(dc.GetFont()));

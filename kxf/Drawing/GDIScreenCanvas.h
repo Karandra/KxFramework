@@ -14,5 +14,15 @@ namespace kxf
 				:GDICanvas(m_DC)
 			{
 			}
+
+		public:
+			const wxScreenDC& ToWxDC() const noexcept
+			{
+				return m_DC;
+			}
+			wxScreenDC& ToWxDC() noexcept
+			{
+				return m_DC;
+			}
 	};
 }

@@ -20,6 +20,8 @@ namespace kxf::UI
 }
 namespace kxf
 {
+	class GDICanvas;
+
 	KxFlagSet_Declare(UI::LabelStyle);
 }
 
@@ -48,7 +50,7 @@ namespace kxf::UI
 			bool m_IsMultilne = false;
 			FlagSet<Alignment> m_MultiLineAlignStyle = Alignment::Left|Alignment::Top;
 			FlagSet<Alignment> m_AlignStyle = Alignment::CenterVertical;
-		
+
 		private:
 			void OnPaint(wxPaintEvent& event);
 			void OnEnter(wxMouseEvent& event);
@@ -70,7 +72,7 @@ namespace kxf::UI
 			{
 				return label.Find('\r') != wxNOT_FOUND || label.Find('\n') != wxNOT_FOUND;
 			}
-			Size CalcBestSize(wxDC* dc = nullptr);
+			Size CalcBestSize(GDICanvas* dc = nullptr);
 
 		protected:
 			void DoEnable(bool enable) override
@@ -130,7 +132,7 @@ namespace kxf::UI
 				ScheduleRefresh();
 				m_WrapLength = width;
 			}
-			
+
 			wxString GetLabel() const override
 			{
 				return m_Label;
@@ -150,7 +152,7 @@ namespace kxf::UI
 				m_AlignStyle = singleLine;
 				m_MultiLineAlignStyle = multiLine;
 			}
-			
+
 			bool AcceptsFocus() const override
 			{
 				return false;
@@ -171,7 +173,7 @@ namespace kxf::UI
 				SetupColors(color);
 				return wxStaticText::SetForegroundColour(color);
 			}
-			
+
 			Color GetNormalColor()
 			{
 				return m_ColorNormal;

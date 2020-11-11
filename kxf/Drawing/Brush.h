@@ -54,11 +54,15 @@ namespace kxf
 				:m_Brush(other)
 			{
 			}
+			Brush(const wxColour& color)
+				:m_Brush(color)
+			{
+			}
 			Brush(const Brush& other)
 				:m_Brush(other.m_Brush)
 			{
 			}
-			Brush(const Color& color, BrushStyle style)
+			Brush(const Color& color, BrushStyle style = BrushStyle::Solid)
 				:m_Brush(color.ToWxColor(), static_cast<wxBrushStyle>(style))
 			{
 			}

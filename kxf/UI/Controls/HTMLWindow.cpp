@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "HTMLWindow.h"
 #include "kxf/Localization/Common.h"
+#include "kxf/Drawing/GDICanvas.h"
 #include "kxf/UI/Menus/Menu.h"
 #include <wx/clipbrd.h>
 #include <wx/dcbuffer.h>
@@ -206,21 +207,21 @@ namespace kxf::UI
 	void HTMLWindow::OnEraseBackground(wxEraseEvent& event)
 	{
 		// Taken from 'wxHtmlWindow::DoEraseBackground'
-		wxDC& dc = *event.GetDC();
+		GDICanvas dc(*event.GetDC());
 
-		dc.SetBackground(m_BackgroundColor);
+		dc.SetBackgroundBrush(m_BackgroundColor);
 		dc.Clear();
 
 		if (m_BackgroundBitmap)
 		{
-			// Draw the background bitmap tiling it over the entire window area.
+			// Draw the background bitmap tiling it over the entire window area
 			const Size virtualSize = GetVirtualSize();
 			const Size bitmapSize = m_BackgroundBitmap.GetSize();
-			for (wxCoord x = 0; x < virtualSize.GetWidth(); x += bitmapSize.GetWidth())
+			for (int x = 0; x < virtualSize.GetWidth(); x += bitmapSize.GetWidth())
 			{
-				for (wxCoord y = 0; y < virtualSize.GetWidth(); y += bitmapSize.GetWidth())
+				for (int y = 0; y < virtualSize.GetWidth(); y += bitmapSize.GetWidth())
 				{
-					dc.DrawBitmap(m_BackgroundBitmap.ToWxBitmap(), x, y);
+					dc.DrawBitmap(m_BackgroundBitmap, {x, y});
 				}
 			}
 		}

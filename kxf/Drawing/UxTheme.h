@@ -17,6 +17,8 @@
 // https://docs.microsoft.com/ru-ru/windows/win32/controls/theme-subclasses
 namespace kxf
 {
+	class GDICanvas;
+
 	enum class UxThemeFlag: uint32_t
 	{
 		None = 0,
@@ -72,9 +74,9 @@ namespace kxf
 	class UxTheme final
 	{
 		public:
-			static bool ClearDC(wxWindow& window, wxDC& dc) noexcept;
-			static bool DrawParentBackground(wxWindow& window, wxDC& dc) noexcept;
-			static bool DrawParentBackground(wxWindow& window, wxDC& dc, const Rect& rect) noexcept;
+			static bool ClearDC(wxWindow& window, GDICanvas& dc) noexcept;
+			static bool DrawParentBackground(wxWindow& window, GDICanvas& dc) noexcept;
+			static bool DrawParentBackground(wxWindow& window, GDICanvas& dc, const Rect& rect) noexcept;
 
 			static Color GetDialogMainInstructionColor(const wxWindow& window) noexcept;
 
@@ -121,12 +123,12 @@ namespace kxf
 				return *m_Window;
 			}
 
-			Size GetPartSize(const wxDC& dc, int iPartId, int iStateId, std::optional<int> sizeVariant = {}) const noexcept;
-			wxRegion GetBackgroundRegion(const wxDC& dc, int iPartId, int iStateId, const Rect& rect) const noexcept;
-			std::optional<Rect> GetBackgroundContentRect(const wxDC& dc, int iPartId, int iStateId, const Rect& rect) const noexcept;
+			Size GetPartSize(const GDICanvas& dc, int iPartId, int iStateId, std::optional<int> sizeVariant = {}) const noexcept;
+			wxRegion GetBackgroundRegion(const GDICanvas& dc, int iPartId, int iStateId, const Rect& rect) const noexcept;
+			std::optional<Rect> GetBackgroundContentRect(const GDICanvas& dc, int iPartId, int iStateId, const Rect& rect) const noexcept;
 
 			Color GetColor(int iPartId, int iStateId, int iPropId) const noexcept;
-			Font GetFont(const wxDC& dc, int iPartId, int iStateId, int iPropId) const noexcept;
+			Font GetFont(const GDICanvas& dc, int iPartId, int iStateId, int iPropId) const noexcept;
 			std::optional<bool> GetBool(int iPartId, int iStateId, int iPropId) const noexcept;
 			std::optional<int> GetInt(int iPartId, int iStateId, int iPropId) const noexcept;
 			std::optional<int> GetEnum(int iPartId, int iStateId, int iPropId) const noexcept;
@@ -134,20 +136,20 @@ namespace kxf
 			Rect GetRect(int iPartId, int iStateId, int iPropId) const noexcept;
 			Point GetPosition(int iPartId, int iStateId, int iPropId) const noexcept;
 
-			bool DrawEdge(wxDC& dc, int iPartId, int iStateId, uint32_t edge, uint32_t flags, const Rect& rect, Rect* boundingRect = nullptr) noexcept;
-			bool DrawIcon(wxDC& dc, int iPartId, int iStateId, const wxImageList& imageList, int index, const Rect& rect, Rect* boundingRect = nullptr) noexcept;
-			bool DrawText(wxDC& dc, int iPartId, int iStateId, std::wstring_view text, uint32_t flags1, uint32_t flags2, const Rect& rect) noexcept;
+			bool DrawEdge(GDICanvas& dc, int iPartId, int iStateId, uint32_t edge, uint32_t flags, const Rect& rect, Rect* boundingRect = nullptr) noexcept;
+			bool DrawIcon(GDICanvas& dc, int iPartId, int iStateId, const wxImageList& imageList, int index, const Rect& rect, Rect* boundingRect = nullptr) noexcept;
+			bool DrawText(GDICanvas& dc, int iPartId, int iStateId, std::wstring_view text, uint32_t flags1, uint32_t flags2, const Rect& rect) noexcept;
 
-			bool DrawBackground(wxDC& dc, int iPartId, int iStateId, const Rect& rect) noexcept;
-			bool DrawParentBackground(wxDC& dc) noexcept
+			bool DrawBackground(GDICanvas& dc, int iPartId, int iStateId, const Rect& rect) noexcept;
+			bool DrawParentBackground(GDICanvas& dc) noexcept
 			{
 				return DrawParentBackground(*m_Window, dc);
 			}
-			bool DrawParentBackground(wxDC& dc, const Rect& rect) noexcept
+			bool DrawParentBackground(GDICanvas& dc, const Rect& rect) noexcept
 			{
 				return DrawParentBackground(*m_Window, dc, rect);
 			}
-			bool DrawProgressBar(wxDC& dc, int iBarPartId, int iFillPartId, int iFillStateId, const Rect& rect, int position, int range, Color* averageBackgroundColor = nullptr) noexcept;
+			bool DrawProgressBar(GDICanvas& dc, int iBarPartId, int iFillPartId, int iFillStateId, const Rect& rect, int position, int range, Color* averageBackgroundColor = nullptr) noexcept;
 
 		public:
 			explicit operator bool() const

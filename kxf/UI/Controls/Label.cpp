@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Label.h"
 #include "kxf/Drawing/UxTheme.h"
+#include "kxf/Drawing/GDICanvas.h"
+#include "kxf/Drawing/GDIWindowCanvas.h"
 
 namespace
 {
@@ -35,7 +37,7 @@ namespace kxf::UI
 		}
 		return m_ColorDisabled;
 	}
-	Size Label::CalcBestSize(wxDC* dc)
+	Size Label::CalcBestSize(GDICanvas* dc)
 	{
 		const Size padding = ConvertDialogToPixels(wxSize(3, 1));
 
@@ -48,14 +50,14 @@ namespace kxf::UI
 			}
 			else
 			{
-				wxClientDC clientDC(this);
+				GDIWindowClientCanvas clientDC(*this);
 				textExtent = clientDC.GetMultiLineTextExtent(m_Label);
 			}
 			return textExtent + padding;
 		}
 		else
 		{
-			return (dc ? dc->GetTextExtent(m_Label) : GetTextExtent(m_Label)) + (wxSize)padding;
+			return (dc ? dc->GetTextExtent(m_Label) : Size(GetTextExtent(m_Label))) + padding;
 		}
 	}
 
@@ -94,7 +96,7 @@ namespace kxf::UI
 	}
 	void Label::OnPaint(wxPaintEvent& event)
 	{
-		wxAutoBufferedPaintDC dc(this);
+		GDIWindowPaintCanvas dc(*this);
 		if (IsFrozen())
 		{
 			return;
@@ -104,16 +106,16 @@ namespace kxf::UI
 		const bool isSelected = m_State == wxCONTROL_FOCUSED || m_State == wxCONTROL_PRESSED;
 		const bool isEnabled = IsThisEnabled();
 		const Color color = GetStateColor();
-		const String label = wxControl::Ellipsize(m_Label, dc, g_EllipsizeMode, rect.GetWidth(), wxELLIPSIZE_FLAGS_NONE);
+		const String label = wxControl::Ellipsize(m_Label, dc.ToWxDC(), g_EllipsizeMode, rect.GetWidth(), wxELLIPSIZE_FLAGS_NONE);
 
-		dc.SetBackgroundMode(wxPENSTYLE_TRANSPARENT);
-		dc.SetBackground(GetParent()->GetBackgroundColour());
+		dc.SetBackgroundTransparent();
+		dc.SetBackgroundBrush(GetParent()->GetBackgroundColour());
 		UxTheme::DrawParentBackground(*this, dc, rect);
 
 		// Draw main part
 		if (m_Style & LabelStyle::InteractiveSelection && isSelected)
 		{
-			wxRendererNative::Get().DrawItemSelectionRect(this, dc, rect, wxCONTROL_FOCUSED|wxCONTROL_SELECTED);
+			wxRendererNative::Get().DrawItemSelectionRect(this, dc.ToWxDC(), rect, wxCONTROL_FOCUSED|wxCONTROL_SELECTED);
 		}
 
 		if (m_Style & LabelStyle::Hyperlink && isSelected)
@@ -141,7 +143,7 @@ namespace kxf::UI
 				Rect rect2 = labelRect;
 				rect2.Y() += ConvertDialogToPixels(wxSize(0, 2)).GetHeight();
 
-				dc.DrawLabel({}, image.ToWxBitmap(), rect2, m_MultiLineAlignStyle);
+				dc.DrawLabel(rect2, {}, image.ToWxBitmap(), m_MultiLineAlignStyle);
 				offset = image.GetWidth() + ConvertDialogToPixels(wxSize(2, 0)).GetWidth();
 			}
 
@@ -150,7 +152,7 @@ namespace kxf::UI
 
 			int spacingV = ConvertDialogToPixels(wxSize(0, 1)).GetHeight();
 			pos.Y() += spacingV + spacingV / 2;
-			dc.DrawText(label, pos);
+			dc.DrawText(pos, label);
 
 			// Calculate best size
 			if (image)
@@ -163,7 +165,7 @@ namespace kxf::UI
 		{
 			contentSize = dc.GetTextExtent(label);
 			contentSize.SetHeight(g_MinSingleLineHeight);
-			dc.DrawLabel(label, image.ToWxBitmap(), labelRect, m_AlignStyle);
+			dc.DrawLabel(labelRect, label, image.ToWxBitmap(), m_AlignStyle);
 		}
 
 		if (m_Style & LabelStyle::HeaderLine)

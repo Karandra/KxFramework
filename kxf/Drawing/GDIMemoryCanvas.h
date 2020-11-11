@@ -91,6 +91,16 @@ namespace kxf::Drawing
 			GDIBufferedCanvasBase(const GDIMemoryCanvasBase&) = delete;
 
 		public:
+			// GDIMemoryCanvasBase
+			const wxBufferedDC& ToWxDC() const noexcept
+			{
+				return GetBufferedDC();
+			}
+			wxBufferedDC& ToWxDC() noexcept
+			{
+				return GetBufferedDC();
+			}
+
 			FlagSet<GDIBufferedCanvasFlag> GetFlags() const
 			{
 				return static_cast<GDIBufferedCanvasFlag>(GetBufferedDC().GetStyle());
@@ -162,6 +172,16 @@ namespace kxf
 				:GDIBufferedCanvasBase(m_DC), m_DC(&window, bitmap.ToWxBitmap(), flags.ToInt<int>())
 			{
 			}
+
+		public:
+			const wxBufferedPaintDC& ToWxDC() const noexcept
+			{
+				return m_DC;
+			}
+			wxBufferedPaintDC& ToWxDC() noexcept
+			{
+				return m_DC;
+			}
 	};
 
 	class KX_API GDIAutoBufferedPaintCanvas final: public Drawing::GDIBufferedCanvasBase
@@ -173,6 +193,16 @@ namespace kxf
 			GDIAutoBufferedPaintCanvas(wxWindow& window)
 				:GDIBufferedCanvasBase(m_DC), m_DC(&window)
 			{
+			}
+
+		public:
+			const wxAutoBufferedPaintDC& ToWxDC() const noexcept
+			{
+				return m_DC;
+			}
+			wxAutoBufferedPaintDC& ToWxDC() noexcept
+			{
+				return m_DC;
 			}
 	};
 }

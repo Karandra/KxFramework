@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "DrawablePanel.h"
 #include "kxf/Drawing/UxTheme.h"
+#include "kxf/Drawing/GDICanvas.h"
+#include "kxf/Drawing/GDIMemoryCanvas.h"
+#include "kxf/Drawing/GDIWindowCanvas.h"
 #include <wx/bookctrl.h>
 
 namespace
@@ -68,32 +71,32 @@ namespace kxf::UI
 	{
 		return DrawScaledBitmap(gc, gc->CreateBitmap(bitmap.ToWxBitmap()), bitmap.GetSize(), rect, scaleMode, globalScale);
 	}
-	Size DrawablePanel::DrawScaledBitmap(wxWindowDC& dc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale)
+	Size DrawablePanel::DrawScaledBitmap(GDIWindowCanvas& dc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale)
 	{
-		wxGCDC gcdc(dc);
+		wxGCDC gcdc(dc.ToWxDC());
 		return DrawScaledBitmap(gcdc.GetGraphicsContext(), bitmap, rect, scaleMode, globalScale);
 	}
-	Size DrawablePanel::DrawScaledBitmap(wxMemoryDC& dc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale)
+	Size DrawablePanel::DrawScaledBitmap(GDIMemoryCanvas& dc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale)
 	{
-		wxGCDC gcdc(dc);
+		wxGCDC gcdc(dc.ToWxDC());
 		return DrawScaledBitmap(gcdc.GetGraphicsContext(), bitmap, rect, scaleMode, globalScale);
 	}
-	void DrawablePanel::DrawTransparencyPattern(wxDC& dc)
+	void DrawablePanel::DrawTransparencyPattern(GDICanvas& dc)
 	{
 		const wxWindow* window = dc.GetWindow();
 
 		const int sideSize = window->FromDIP(8);
-		dc.SetBackground(window->GetBackgroundColour());
+		dc.SetBackgroundBrush(window->GetBackgroundColour());
 		dc.SetBrush(window->GetForegroundColour());
 		dc.SetPen(window->GetForegroundColour());
 		dc.Clear();
 
 		size_t indexY = 0;
-		for (size_t y = 0; y <= (size_t)dc.GetSize().GetHeight(); y += sideSize)
+		for (int y = 0; y <= dc.GetHeight(); y += sideSize)
 		{
-			for (size_t x = indexY % 2 == 0 ? 0 : sideSize; x <= (size_t)dc.GetSize().GetWidth(); x += 2 * sideSize)
+			for (int x = indexY % 2 == 0 ? 0 : sideSize; x <= dc.GetWidth(); x += 2 * sideSize)
 			{
-				dc.DrawRectangle(x, y, sideSize, sideSize);
+				dc.DrawRectangle({x, y, sideSize, sideSize});
 			}
 			indexY++;
 		}
@@ -101,23 +104,23 @@ namespace kxf::UI
 
 	void DrawablePanel::OnDrawBackground(wxEraseEvent& event)
 	{
-		wxDC* dc = event.GetDC();
-		dc->SetBackgroundMode(wxBG_STYLE_TRANSPARENT);
-		dc->SetBackground(*wxTRANSPARENT_BRUSH);
+		GDICanvas dc(*event.GetDC());
+		dc.SetBackgroundTransparent();
+		dc.SetBackgroundBrush(Drawing::GetStockBrush(StockBrush::Transparent));
 
 		auto mode = GetBGMode();
 		if (mode & DrawablePanelMode::Soild)
 		{
-			dc->SetBackground(GetBackgroundColour());
-			dc->Clear();
+			dc.SetBackgroundBrush(GetBackgroundColour());
+			dc.Clear();
 		}
 		else if (mode & DrawablePanelMode::Gradient)
 		{
-			dc->GradientFillLinear(dc->GetSize(), GetForegroundColour(), GetBackgroundColour(), GetGradientDirection());
+			dc.DrawGradientLinear(dc.GetSize(), GetForegroundColour(), GetBackgroundColour(), m_GradientDirection);
 		}
 		else if (mode & DrawablePanelMode::TransparencyPattern)
 		{
-			DrawTransparencyPattern(*dc);
+			DrawTransparencyPattern(dc);
 		}
 		else
 		{
@@ -126,21 +129,22 @@ namespace kxf::UI
 			{
 				window = GetParent();
 			}
-			UxTheme::DrawParentBackground(*window, *dc, Rect(Point(0, 0), GetSize()));
+			UxTheme::DrawParentBackground(*window, dc, Rect({0, 0}, GetSize()));
 		}
 
 		if (mode & DrawablePanelMode::BGImage)
 		{
 			m_ScaledImageSize = m_Bitmap.GetSize();
-			dc->DrawBitmap(m_Bitmap.ToWxBitmap(), Point(0, 0), false);
+			dc.DrawBitmap(m_Bitmap, {0, 0});
 		}
 	}
 	void DrawablePanel::OnDrawForeground(wxPaintEvent& event)
 	{
-		wxPaintDC dc(this);
+		GDIWindowPaintCanvas dc(*this);
 		if (m_BackgroundMode & DrawablePanelMode::FGImage)
 		{
-			m_ScaledImageSize = DrawScaledBitmap(dc, m_Bitmap, Rect(Point(0, 0), GetClientSize()), m_ImageScaleMode, m_ScaleFactor);
+			wxGCDC gcdc(dc.ToWxDC());
+			m_ScaledImageSize = DrawScaledBitmap(gcdc.GetGraphicsContext(), m_Bitmap, Rect({0, 0}, GetClientSize()), m_ImageScaleMode, m_ScaleFactor);
 		}
 		else
 		{

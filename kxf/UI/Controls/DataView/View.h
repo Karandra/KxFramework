@@ -154,7 +154,7 @@ namespace kxf::UI::DataView
 				Create(parent, id, style);
 			}
 			~View();
-			
+
 			bool Create(wxWindow* parent,
 						wxWindowID id,
 						const Point& pos = Point::UnspecifiedPosition(),
@@ -271,7 +271,7 @@ namespace kxf::UI::DataView
 			{
 				return GetSelectedCount() != 0;
 			}
-			
+
 			Node* GetSelection() const;
 			size_t GetSelections(Node::Vector& selection) const;
 			Node::Vector GetSelections() const

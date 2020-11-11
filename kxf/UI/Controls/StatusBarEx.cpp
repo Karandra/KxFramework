@@ -2,6 +2,8 @@
 #include "StatusBarEx.h"
 #include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/Private/UxThemeDefines.h"
+#include "kxf/Drawing/GDIWindowCanvas.h"
+#include "kxf/Drawing/GDIMemoryCanvas.h"
 #include "kxf/Utility/Common.h"
 
 namespace kxf::UI
@@ -10,8 +12,8 @@ namespace kxf::UI
 
 	void StatusBarEx::OnPaint(wxPaintEvent& event)
 	{
-		wxAutoBufferedPaintDC dc(this);
-		dc.SetBackgroundMode(wxBRUSHSTYLE_TRANSPARENT);
+		GDIAutoBufferedPaintCanvas dc(*this);
+		dc.SetBackgroundTransparent();
 		dc.SetTextForeground(GetForegroundColour());
 
 		const Size clientSize = GetClientSize();
@@ -45,7 +47,7 @@ namespace kxf::UI
 		if (m_BorderColor)
 		{
 			dc.SetPen(wxPen(m_BorderColor, 1));
-			dc.DrawLine(0, 0, clientSize.GetWidth()+1, 0);
+			dc.DrawLine({0, 0}, {clientSize.GetWidth() + 1, 0});
 		}
 
 		// Draw size grip
@@ -105,17 +107,17 @@ namespace kxf::UI
 				// Ellipsize label if needed
 				if (!label.IsEmpty())
 				{
-					label = wxControl::Ellipsize(label, dc, GetEllipsizeMode(), maxWidth);
+					label = wxControl::Ellipsize(label, dc.ToWxDC(), GetEllipsizeMode(), maxWidth);
 				}
 
 				// Draw the label and/or icon
 				if (imageIndex == Drawing::InvalidImageIndex || !HasImageList())
 				{
-					dc.DrawLabel(label, rect, ToInt(Alignment::CenterVertical));
+					dc.DrawLabel(rect, label, Alignment::CenterVertical);
 				}
 				else
 				{
-					dc.DrawLabel(label, GetImageList()->GetBitmap(imageIndex).ToWxBitmap(), rect, ToInt(Alignment::CenterVertical));
+					dc.DrawLabel(rect, label, GetImageList()->GetBitmap(imageIndex).ToWxBitmap(), Alignment::CenterVertical);
 				}
 
 				if (m_IsSeparatorsVisible && m_BorderColor && i != fieldsCount - 1)

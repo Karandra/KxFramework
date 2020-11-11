@@ -4,9 +4,7 @@
 #include "CellAttribute.h"
 #include "RenderEngine.h"
 #include "ToolTip.h"
-#include <wx/dc.h>
 #include <wx/graphics.h>
-#include <wx/dcgraph.h>
 
 namespace kxf::UI::DataView
 {
@@ -48,17 +46,17 @@ namespace kxf::UI::DataView
 			EllipsizeMode m_EllipsizeMode = EllipsizeMode::End;
 			MarkupMode m_MarkupMode = MarkupMode::Disabled;
 			CellAttribute m_Attributes;
-			
+
 			Rect m_PaintRect;
 			const Node* m_Node = nullptr;
 			Column* m_Column = nullptr;
 
-			wxGCDC* m_GraphicsDC = nullptr;
-			wxDC* m_RegularDC = nullptr;
+			GDIGraphicsCanvas* m_GraphicsDC = nullptr;
+			GDICanvas* m_RegularDC = nullptr;
 			bool m_AlwaysUseGC = false;
 
 		private:
-			void BeginCellRendering(const Node& node, Column& column, wxGCDC& graphicsDC, wxDC* regularDC = nullptr)
+			void BeginCellRendering(const Node& node, Column& column, GDIGraphicsCanvas& graphicsDC, GDICanvas* regularDC = nullptr)
 			{
 				m_Node = &node;
 				m_Column = &column;
@@ -86,7 +84,7 @@ namespace kxf::UI::DataView
 			}
 			void SetupCellValue();
 			void SetupCellAttributes(CellState cellState);
-			
+
 			void CallDrawCellBackground(const Rect& cellRect, CellState cellState, bool noUserBackground = false);
 			void CallDrawCellContent(const Rect& cellRect, CellState cellState, bool alwaysUseGC = false);
 			void CallOnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent = nullptr);
@@ -136,7 +134,7 @@ namespace kxf::UI::DataView
 			{
 				return m_RegularDC != nullptr;
 			}
-			wxDC& GetRegularDC() const
+			GDICanvas& GetRegularDC() const
 			{
 				return *m_RegularDC;
 			}
@@ -145,7 +143,7 @@ namespace kxf::UI::DataView
 			{
 				return m_GraphicsDC != nullptr;
 			}
-			wxGCDC& GetGraphicsDC() const
+			GDIGraphicsCanvas& GetGraphicsDC() const
 			{
 				return *m_GraphicsDC;
 			}
@@ -215,7 +213,7 @@ namespace kxf::UI::DataView
 			{
 				return m_MarkupMode == MarkupMode::WithMnemonics;
 			}
-			
+
 			void EnableMarkup(bool enable = true)
 			{
 				m_MarkupMode = enable ? MarkupMode::TextOnly : MarkupMode::Disabled;

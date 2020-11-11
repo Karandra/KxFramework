@@ -221,6 +221,7 @@
     <ClInclude Include="kxf\Drawing\GDICanvas.h" />
     <ClInclude Include="kxf\Drawing\Font.h" />
     <ClInclude Include="kxf\Drawing\GDICanvasOperations.h" />
+    <ClInclude Include="kxf\Drawing\GDIGraphicsCanvas.h" />
     <ClInclude Include="kxf\Drawing\GDIMemoryCanvas.h" />
     <ClInclude Include="kxf\Drawing\GDIMirroringCanvas.h" />
     <ClInclude Include="kxf\Drawing\GDIScreenCanvas.h" />
@@ -484,7 +485,6 @@
     <ClInclude Include="kxf\Crypto\SecretValue.h" />
     <ClInclude Include="kxf\Drawing.hpp" />
     <ClInclude Include="kxf\Drawing\BitmapGraphicsCanvas.h" />
-    <ClInclude Include="kxf\Drawing\DCOperations.h" />
     <ClInclude Include="kxf\Drawing\Common.h" />
     <ClInclude Include="kxf\Drawing\GCOperations.h" />
     <ClInclude Include="kxf\Drawing\GraphicsCanvas.h" />
@@ -847,7 +847,6 @@
     <ClCompile Include="kxf\Crypto\Crypto.cpp" />
     <ClCompile Include="kxf\Crypto\SecretValue.cpp" />
     <ClCompile Include="kxf\Drawing\Common.cpp" />
-    <ClCompile Include="kxf\Drawing\DCOperations.cpp" />
     <ClCompile Include="kxf\Drawing\ImageList.cpp" />
     <ClCompile Include="kxf\Drawing\ImageSet.cpp" />
     <ClCompile Include="kxf\Drawing\UxTheme.cpp" />

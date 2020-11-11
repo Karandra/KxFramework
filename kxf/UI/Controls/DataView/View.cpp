@@ -6,6 +6,7 @@
 #include "Column.h"
 #include "Renderer.h"
 #include "kxf/UI/Menus/Menu.h"
+#include "kxf/Drawing/GDIWindowCanvas.h"
 
 namespace
 {
@@ -55,7 +56,7 @@ namespace kxf::UI::DataView
 			{
 				// Note that we have to have an explicit 'dirty' flag here instead of
 				// checking if the width == 0, as is done in CalBestColumnWidth().
-				// 
+				//
 				// Testing width == 0 wouldn't work correctly if some code called
 				// GetWidth() after column width invalidation but before
 				// View::UpdateColumnsWidth() was called at idle time. This
@@ -151,14 +152,14 @@ namespace kxf::UI::DataView
 	}
 	void View::OnPaint(wxPaintEvent& event)
 	{
-		wxPaintDC dc(this);
+		GDIWindowClientCanvas dc(*this);
 		dc.Clear();
 
 		if (m_BorderColor)
 		{
 			dc.SetPen(m_BorderColor);
 			dc.SetBrush(m_BorderColor);
-			dc.DrawRectangle(GetClientSize());
+			dc.DrawRectangle(Rect({0, 0}, GetClientSize()));
 		}
 	}
 
@@ -858,7 +859,7 @@ namespace kxf::UI::DataView
 		const bool b1 = ViewBase::SetForegroundColour(color);
 		const bool b2 = m_ClientArea ? m_ClientArea->SetForegroundColour(color) : true;
 		const bool b3 = m_HeaderArea ? m_HeaderArea->SetForegroundColour(color) : true;
-		
+
 		return b1 && b2 && b3;
 	}
 	bool View::SetBackgroundColour(const wxColour& color)

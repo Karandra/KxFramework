@@ -10,7 +10,9 @@
 #include "kxf/UI/Windows/Frame.h"
 #include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/Private/UxThemeDefines.h"
-#include "kxf/Drawing/DCOperations.h"
+#include "kxf/Drawing/GDIWindowCanvas.h"
+#include "kxf/Drawing/GDIMemoryCanvas.h"
+#include "kxf/Drawing/GDICanvasOperations.h"
 #include "kxf/Drawing/GCOperations.h"
 #include "kxf/System/SystemInformation.h"
 #include <wx/popupwin.h>
@@ -786,7 +788,7 @@ namespace kxf::UI::DataView
 		//{
 		//}
 
-	
+
 		if ((event.LeftDown() || simulateClick) && isHoverOverExpander && !event.LeftDClick())
 		{
 			// hoverOverExpander being true tells us that our node must be
@@ -821,7 +823,7 @@ namespace kxf::UI::DataView
 						SendSelectionChangedEvent(GetNodeByRow(m_CurrentRow), currentColumn);
 					}
 				}
-				else 
+				else
 				{
 					// Multi selection & current is highlighted & no mod keys
 					m_RowSelectSingleOnUp = currentRow;
@@ -1039,14 +1041,15 @@ namespace kxf::UI::DataView
 	// Drawing
 	void MainWindow::OnPaint(wxPaintEvent& event)
 	{
+		GDIAutoBufferedPaintCanvas paintDC(*this);
+
 		const Size clientSize = GetClientSize();
-		wxAutoBufferedPaintDC paintDC(this);
 		paintDC.SetPen(*wxTRANSPARENT_PEN);
 		paintDC.SetBrush(m_View->GetBackgroundColour());
 		paintDC.DrawRectangle(Rect(clientSize));
 
-		m_View->PrepareDC(paintDC);
-		wxGCDC dc(paintDC);
+		m_View->PrepareDC(paintDC.ToWxDC());
+		GDIGraphicsCanvas dc(paintDC);
 		wxGraphicsContext& gc = *dc.GetGraphicsContext();
 		gc.SetAntialiasMode(wxANTIALIAS_NONE);
 		gc.SetInterpolationQuality(wxINTERPOLATION_NONE);
@@ -1084,7 +1087,7 @@ namespace kxf::UI::DataView
 				const Rect rect(0, y, clientSize.GetWidth(), clientSize.GetHeight() - y);
 
 				paintDC.SetTextForeground(m_View->GetForegroundColour().MakeDisabled());
-				paintDC.DrawLabel(m_EmptyControlLabel, rect, ToInt(Alignment::CenterHorizontal|Alignment::Top));
+				paintDC.DrawLabel(rect, m_EmptyControlLabel, Alignment::CenterHorizontal|Alignment::Top);
 			}
 
 			// We assume that we have at least one column below and painting an empty control is unnecessary anyhow
@@ -1126,7 +1129,7 @@ namespace kxf::UI::DataView
 			}
 		}
 
-		
+
 		// Calc end of X coordinate and visible columns count
 		size_t visibleColumnsCount = 0;
 		size_t coulmnIndexEnd = coulumnIndexStart;
@@ -1167,7 +1170,7 @@ namespace kxf::UI::DataView
 				// Depending on the background, alternate row color will be 3% more dark or 50% brighter.
 				int alpha = bgColor.GetRGB() > 0x808080 ? 97 : 150;
 				altRowColor = bgColor.ChangeLightness(alpha);
-				
+
 				if (m_BackgroundBitmap)
 				{
 					altRowColor.SetAlpha8(200);
@@ -1184,7 +1187,7 @@ namespace kxf::UI::DataView
 			{
 				if (currentRow % 2)
 				{
-					dc.DrawRectangle(x, GetRowStart(currentRow), widthRect, GetRowHeight(currentRow));
+					dc.DrawRectangle({x, GetRowStart(currentRow), widthRect, GetRowHeight(currentRow)});
 				}
 			}
 		}
@@ -1253,7 +1256,7 @@ namespace kxf::UI::DataView
 
 						if (isCategoryRow)
 						{
-							ClacExpanderRect(nativeRenderer.GetCollapseButtonSize(this, paintDC), EXPANDER_MARGIN);
+							ClacExpanderRect(nativeRenderer.GetCollapseButtonSize(this, paintDC.ToWxDC()), EXPANDER_MARGIN);
 						}
 						else
 						{
@@ -1318,8 +1321,8 @@ namespace kxf::UI::DataView
 				// Draw vertical rules but don't draw the rule for last column is we have only one column
 				if (verticalRulesEnabled && visibleColumnsCount > 1)
 				{
-					wxDCPenChanger pen(dc, m_PenRuleV);
-					wxDCBrushChanger brush(dc, *wxTRANSPARENT_BRUSH);
+					GDICanvasAction::ChangePen pen(dc, m_PenRuleV);
+					GDICanvasAction::ChangeBrush brush(dc, Drawing::GetStockBrush(StockBrush::Transparent));
 
 					// Draw vertical rules in column's last pixel, so they will align with header control dividers
 					const int x = cellRect.GetX() + cellRect.GetWidth() - 1;
@@ -1328,21 +1331,21 @@ namespace kxf::UI::DataView
 					{
 						yAdd = clientSize.GetHeight();
 					}
-					dc.DrawLine(x, cellRect.GetTop(), x, cellRect.GetBottom() + yAdd);
+					dc.DrawLine({x, cellRect.GetTop()}, {x, cellRect.GetBottom() + yAdd});
 				}
 
 				// Draw horizontal rules
 				if (horizontalRulesEnabled)
 				{
-					wxDCPenChanger pen(dc, m_PenRuleV);
-					wxDCBrushChanger brush(dc, *wxTRANSPARENT_BRUSH);
+					GDICanvasAction::ChangePen pen(dc, m_PenRuleV);
+					GDICanvasAction::ChangeBrush brush(dc, Drawing::GetStockBrush(StockBrush::Transparent));
 
-					dc.DrawLine(xCoordStart, cellInitialRect.GetY(), xCoordEnd + clientSize.GetWidth(), cellInitialRect.GetY());
+					dc.DrawLine({xCoordStart, cellInitialRect.GetY()}, {xCoordEnd + clientSize.GetWidth(), cellInitialRect.GetY()});
 				}
 
 				// Clip DC to current column
 				const Rect columnRect(cellRect.GetX(), 0, cellRect.GetWidth(), m_virtualSize.GetHeight());
-				DCClip clipDC(paintDC, columnRect);
+				GDICanvasAction::Clip clipDC(paintDC, columnRect);
 				GCClip clipGC(gc, columnRect);
 
 				// Draw the cell
@@ -1397,10 +1400,10 @@ namespace kxf::UI::DataView
 
 					if (isCategoryRow)
 					{
-						Rect rect(expanderRect.GetPosition(), nativeRenderer.GetCollapseButtonSize(this, dc));
+						Rect rect(expanderRect.GetPosition(), nativeRenderer.GetCollapseButtonSize(this, dc.ToWxDC()));
 						rect = rect.CenterIn(expanderRect);
 
-						nativeRenderer.DrawCollapseButton(this, paintDC, rect, flags);
+						nativeRenderer.DrawCollapseButton(this, paintDC.ToWxDC(), rect, flags);
 					}
 					else if (m_View->ContainsWindowExStyle(CtrlExtraStyle::PlusMinusExpander))
 					{
@@ -1418,7 +1421,7 @@ namespace kxf::UI::DataView
 						}
 						else
 						{
-							nativeRenderer.DrawTreeItemButton(this, paintDC, expanderRect, flags);
+							nativeRenderer.DrawTreeItemButton(this, paintDC.ToWxDC(), expanderRect, flags);
 						}
 					}
 				}
@@ -1429,7 +1432,7 @@ namespace kxf::UI::DataView
 					// Focus rect looks ugly in it's narrower 3px
 					if (focusCellRect.GetWidth() > 3)
 					{
-						nativeRenderer.DrawFocusRect(this, paintDC, Rect(focusCellRect).Deflate(FromDIP(wxSize(1, 1))), wxCONTROL_SELECTED);
+						nativeRenderer.DrawFocusRect(this, paintDC.ToWxDC(), Rect(focusCellRect).Deflate(FromDIP(wxSize(1, 1))), wxCONTROL_SELECTED);
 					}
 				}
 
@@ -1438,7 +1441,7 @@ namespace kxf::UI::DataView
 				if (cellState.IsDropTarget())
 				{
 					Rect rowRect = GetRowRect();
-					nativeRenderer.DrawFocusRect(this, paintDC, rowRect, wxCONTROL_SELECTED);
+					nativeRenderer.DrawFocusRect(this, paintDC.ToWxDC(), rowRect, wxCONTROL_SELECTED);
 				}
 				#endif
 			}
@@ -1981,7 +1984,7 @@ namespace kxf::UI::DataView
 		Bind(wxEVT_LEAVE_WINDOW, &MainWindow::OnMouse, this);
 		Bind(wxEVT_MOUSEWHEEL, &MainWindow::OnMouse, this);
 		//Bind(wxEVT_CHILD_FOCUS, &MainWindow::OnMouse, this);
-		
+
 		//Bind(wxEVT_AUX1_DOWN, &MainWindow::OnMouse, this);
 		//Bind(wxEVT_AUX1_UP, &MainWindow::OnMouse, this);
 		//Bind(wxEVT_AUX1_DCLICK, &MainWindow::OnMouse, this);
@@ -2265,9 +2268,9 @@ namespace kxf::UI::DataView
 
 		Bitmap bitmap({width, height}, ColorDepthDB::BPP24);
 		{
-			wxMemoryDC memoryDC(bitmap.ToWxBitmap());
+			GDIMemoryCanvas memoryDC(bitmap);
 			memoryDC.SetFont(GetFont());
-			memoryDC.SetBackground(m_View->GetBackgroundColour());
+			memoryDC.SetBackgroundBrush(m_View->GetBackgroundColour());
 			memoryDC.SetTextForeground(m_View->GetForegroundColour());
 			memoryDC.SetTextBackground(m_View->GetBackgroundColour());
 			memoryDC.Clear();
@@ -2276,7 +2279,7 @@ namespace kxf::UI::DataView
 			RenderEngine::DrawSelectionRect(this, memoryDC, itemRect, wxCONTROL_CURRENT|wxCONTROL_SELECTED|wxCONTROL_FOCUSED);
 
 			// Draw cells
-			wxGCDC gcdc(memoryDC);
+			GDIGraphicsCanvas gcdc(memoryDC);
 
 			int x = 0;
 			Column* expander = m_View->GetExpanderColumnOrFirstOne();
@@ -2448,7 +2451,7 @@ namespace kxf::UI::DataView
 		}
 		return true;
 	}
-	
+
 	wxDragResult MainWindow::OnDragDropEnter(const wxDataObjectSimple& dataObject, const Point& pos, wxDragResult dragResult)
 	{
 		return dragResult;
@@ -2627,7 +2630,7 @@ namespace kxf::UI::DataView
 
 		m_IsCurrentColumnSetByKeyboard = true;
 		m_CurrentColumn = m_View->GetColumnDisplayedAt(nextColumn);
-		
+
 		EnsureVisible(m_CurrentRow, m_CurrentColumn->GetIndex());
 		RefreshRow(m_CurrentRow);
 		return true;
@@ -2832,7 +2835,7 @@ namespace kxf::UI::DataView
 		{
 			Node* node = GetNodeByRow(row);
 			indent = m_Indent * node->GetIndentLevel();
-		
+
 			// Use 'm_UniformLineHeight' as the width of the expander
 			indent += m_UniformRowHeight;
 		}
@@ -2841,7 +2844,7 @@ namespace kxf::UI::DataView
 		m_View->CalcScrolledPosition(itemRect.GetX(), itemRect.GetY(), &itemRect.X(), &itemRect.Y());
 		return itemRect;
 	}
-	
+
 	// Rows
 	void MainWindow::Expand(Row row)
 	{

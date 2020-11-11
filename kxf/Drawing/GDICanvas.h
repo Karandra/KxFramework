@@ -140,7 +140,12 @@ namespace kxf
 				}
 				return {};
 			}
-			Bitmap ToBitmap() const
+			wxWindow* GetWindow() const
+			{
+				return m_DC->GetWindow();
+			}
+
+			Bitmap ToBtmap() const
 			{
 				return m_DC->GetAsBitmap();
 			}
@@ -245,13 +250,13 @@ namespace kxf
 			}
 
 			// Graphics Context
-			std::unique_ptr<wxGraphicsContext> GetGraphicsContext() const
+			wxGraphicsContext* GetGraphicsContext() const
 			{
-				return std::unique_ptr<wxGraphicsContext>(m_DC->GetGraphicsContext());
+				return m_DC->GetGraphicsContext();
 			}
-			void SetGraphicsContext(std::unique_ptr<wxGraphicsContext> gc)
+			void SetGraphicsContext(std::unique_ptr<wxGraphicsContext> graphicsContext)
 			{
-				m_DC->SetGraphicsContext(gc.release());
+				m_DC->SetGraphicsContext(graphicsContext.release());
 			}
 
 			// Coordinate conversion functions
@@ -548,7 +553,7 @@ namespace kxf
 			{
 				return m_DC->GetBackgroundMode() == wxBRUSHSTYLE_TRANSPARENT;
 			}
-			void SetBackgroundTransparen(bool isTransparent = true)
+			void SetBackgroundTransparent(bool isTransparent = true)
 			{
 				m_DC->SetBackgroundMode(isTransparent ? wxBRUSHSTYLE_TRANSPARENT : wxBRUSHSTYLE_SOLID);
 			}

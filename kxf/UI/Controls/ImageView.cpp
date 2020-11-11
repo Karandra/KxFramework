@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ImageView.h"
 #include "kxf/UI/Windows/DrawablePanel.h"
+#include "kxf/Drawing/GDICanvas.h"
 #include "kxf/wxWidgets/StreamWrapper.h"
 
 namespace kxf::UI
@@ -16,29 +17,29 @@ namespace kxf::UI
 		m_ScaledImageSize = Size(0, 0);
 		m_IsAnimation = false;
 	}
-	
+
 	void ImageView::OnDrawBackground(wxEraseEvent& event)
 	{
-		wxDC* dc = event.GetDC();
-		dc->SetBackgroundMode(wxBG_STYLE_TRANSPARENT);
-		dc->SetBackground(*wxTRANSPARENT_BRUSH);
+		GDICanvas dc(*event.GetDC());
+		dc.SetBackgroundTransparent();
+		dc.SetBackgroundBrush(Drawing::GetStockBrush(StockBrush::Transparent));
 
 		switch (m_BackgroundMode)
 		{
 			case ImageViewBackground::Solid:
 			{
-				dc->SetBackground(GetBackgroundColour());
-				dc->Clear();
+				dc.SetBackgroundBrush(GetBackgroundColour());
+				dc.Clear();
 				break;
 			}
 			case ImageViewBackground::Gradient:
 			{
-				dc->GradientFillLinear(GetSize(), GetForegroundColour(), GetBackgroundColour(), static_cast<wxDirection>(m_GradientDirection));
+				dc.DrawGradientLinear(Rect({0, 0}, GetSize()), GetForegroundColour(), GetBackgroundColour(), m_GradientDirection);
 				break;
 			}
 			case ImageViewBackground::TransparenryPattern:
 			{
-				DrawablePanel::DrawTransparencyPattern(*dc);
+				DrawablePanel::DrawTransparencyPattern(dc);
 				break;
 			}
 		};

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ClusterMap.h"
 #include "kxf/Drawing/UxTheme.h"
+#include "kxf/Drawing/GDIWindowCanvas.h"
 
 namespace kxf::UI
 {
@@ -10,7 +11,7 @@ namespace kxf::UI
 	{
 		using namespace kxf;
 
-		wxPaintDC dc(this);
+		GDIWindowPaintCanvas dc(*this);
 
 		const DrawInfo drawInfo = GetDrawInfo();
 		UxTheme::DrawParentBackground(*this, dc, Rect({0, 0}, (wxSize)drawInfo.ClientSize));
@@ -42,7 +43,7 @@ namespace kxf::UI
 
 				if (blocksDrawn == drawInfo.ItemsY)
 				{
-					// Rewind to left side and move down 
+					// Rewind to left side and move down
 					pos.X() = 0;
 					pos.X() += drawInfo.Increment;
 

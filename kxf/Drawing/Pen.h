@@ -79,11 +79,15 @@ namespace kxf
 				:m_Pen(other)
 			{
 			}
+			Pen(const wxColour& color)
+				:m_Pen(color)
+			{
+			}
 			Pen(const Pen& other)
 				:m_Pen(other.m_Pen)
 			{
 			}
-			Pen(const Color& color, PenStyle style)
+			Pen(const Color& color, PenStyle style = PenStyle::Solid)
 				:m_Pen(color.ToWxColor(), static_cast<wxBrushStyle>(style))
 			{
 			}

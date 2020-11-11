@@ -4,6 +4,8 @@
 #include "../Node.h"
 #include "../Column.h"
 #include "kxf/UI/Controls/HTMLWindow.h"
+#include "kxf/Drawing/GDICanvas.h"
+#include "kxf/Drawing/GDICanvasOperations.h"
 #include <wx/html/htmprint.h>
 
 namespace
@@ -15,18 +17,18 @@ namespace
 	class DCUserScaleSaver final
 	{
 		private:
-			wxDC& m_DC;
-			wxPoint2DDouble m_UserScale;
+			kxf::GDICanvas& m_DC;
+			kxf::SizeD m_UserScale;
 
 		public:
-			DCUserScaleSaver(wxDC& dc)
+			DCUserScaleSaver(kxf::GDICanvas& dc)
 				:m_DC(dc)
 			{
-				m_DC.GetUserScale(&m_UserScale.m_x, &m_UserScale.m_y);
+				m_UserScale = m_DC.GetUserScale();
 			}
 			~DCUserScaleSaver()
 			{
-				m_DC.SetUserScale(m_UserScale.m_x, m_UserScale.m_y);
+				m_DC.SetUserScale(m_UserScale);
 			}
 	};
 }
@@ -50,9 +52,9 @@ namespace kxf::UI::DataView
 		return ToolTip::CreateDefaultForRenderer(m_Value.GetText());
 	}
 
-	void HTMLRenderer::PrepareRenderer(wxHtmlDCRenderer& htmlRenderer, wxDC& dc, const Rect& cellRect) const
+	void HTMLRenderer::PrepareRenderer(wxHtmlDCRenderer& htmlRenderer, GDICanvas& dc, const Rect& cellRect) const
 	{
-		htmlRenderer.SetDC(&dc, g_UserScale * m_PixelScale, g_UserScale * m_FontScale);
+		htmlRenderer.SetDC(&dc.ToWxDC(), g_UserScale * m_PixelScale, g_UserScale * m_FontScale);
 
 		// Size
 		Size size = cellRect.GetSize();
@@ -78,9 +80,9 @@ namespace kxf::UI::DataView
 		if (m_Value.HasText())
 		{
 			// Prefer regular DC
-			wxDC& dc = HasRegularDC() ? GetRegularDC() : GetGraphicsDC();
+			GDICanvas dc = HasRegularDC() ? GetRegularDC().ToWxDC() : GetGraphicsDC().ToWxDC();
 			DCUserScaleSaver userScaleSaver(dc);
-			wxDCClipper clip(dc, cellRect.Clone().Deflate(0, GetRenderEngine().FromDIPY(2)));
+			GDICanvasAction::Clip clip(dc, cellRect.Clone().Deflate(0, GetRenderEngine().FromDIPY(2)));
 
 			// Render text
 			wxHtmlDCRenderer htmlRenderer;

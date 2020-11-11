@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "AuiNotebook.h"
 #include "kxf/Drawing/UxTheme.h"
+#include "kxf/Drawing/GDICanvas.h"
 
 namespace kxf::UI
 {
@@ -72,13 +73,16 @@ namespace kxf::UI
 	}
 	void AuiNotebookDockArtProvider::DrawBorder(wxDC& dc, wxWindow* window, const wxRect& rect, wxAuiPaneInfo& pane)
 	{
+		GDICanvas canvas(dc);
+
+		// Border
 		AuiDefaultDockArtBase::DrawBorder(dc, window, rect, pane);
 
 		// Top horizontal line
 		Rect topLine(rect.GetLeftTop(), rect.GetRightTop());
 		topLine.Width() += 1;
 		topLine.Height() = 1;
-		UxTheme::DrawParentBackground(*m_Notebook, dc, topLine);
+		UxTheme::DrawParentBackground(*m_Notebook, canvas, topLine);
 
 		// Right vertical line
 		Rect rightLine = wxRect(topLine.GetRightTop(), topLine.GetRightBottom());
@@ -86,7 +90,7 @@ namespace kxf::UI
 		rightLine.Y() -= 2;
 		rightLine.Width() += 5;
 		rightLine.Height() += 2;
-		UxTheme::DrawParentBackground(*m_Notebook, dc, rightLine);
+		UxTheme::DrawParentBackground(*m_Notebook, canvas, rightLine);
 
 		// Left vertical line
 		Rect leftLine;
@@ -94,6 +98,6 @@ namespace kxf::UI
 		leftLine.Y() = 0;
 		leftLine.Width() = m_Notebook->GetTabIndent();
 		leftLine.Height() = m_Notebook->GetTabCtrlHeight() - 1;
-		UxTheme::DrawParentBackground(*m_Notebook, dc, leftLine);
+		UxTheme::DrawParentBackground(*m_Notebook, canvas, leftLine);
 	}
 }

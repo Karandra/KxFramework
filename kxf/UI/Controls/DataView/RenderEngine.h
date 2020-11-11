@@ -2,6 +2,8 @@
 #include "Common.h"
 #include "CellState.h"
 #include "CellAttribute.h"
+#include "kxf/Drawing/GDICanvas.h"
+#include "kxf/Drawing/GDIGraphicsCanvas.h"
 #include "kxf/Drawing/Bitmap.h"
 #include "kxf/Drawing/Icon.h"
 
@@ -57,7 +59,7 @@ namespace kxf::UI::DataView
 			}
 
 		public:
-			wxDC* GetTextRenderingDC() const;
+			GDICanvas GetTextRenderingDC() const;
 
 			bool IsAlwaysUseingGraphicsContext() const
 			{
@@ -100,23 +102,23 @@ namespace kxf::UI::DataView
 			}
 
 			Size GetTextExtent(const String& string) const;
-			Size GetTextExtent(wxDC& dc, const String& string) const;
+			Size GetTextExtent(GDICanvas& dc, const String& string) const;
 
 			Size GetMultilineTextExtent(const String& string) const;
-			Size GetMultilineTextExtent(wxDC& dc, const String& string) const;
+			Size GetMultilineTextExtent(GDICanvas& dc, const String& string) const;
 
 			bool DrawText(const Rect& cellRect, CellState cellState, const String& string, int offsetX = 0);
-			bool DrawText(wxDC& dc, const Rect& cellRect, CellState cellState, const String& string, int offsetX = 0);
+			bool DrawText(GDICanvas& dc, const Rect& cellRect, CellState cellState, const String& string, int offsetX = 0);
 
 			bool DrawBitmap(const Rect& cellRect, CellState cellState, const Bitmap& bitmap, int reservedWidth = -1);
 			int DrawBitmapWithText(const Rect& cellRect, CellState cellState, int offsetX, const String& text, const Bitmap& bitmap, bool centerTextV = false, int reservedWidth = -1);
 			bool DrawProgressBar(const Rect& cellRect, CellState cellState, int value, int range, ProgressState state = ProgressState::Normal, Color* averageBackgroundColor = nullptr);
 
 			Size GetToggleSize() const;
-			Size DrawToggle(wxDC& dc, const Rect& cellRect, CellState cellState, ToggleState toggleState, ToggleType toggleType);
+			Size DrawToggle(GDICanvas& dc, const Rect& cellRect, CellState cellState, ToggleState toggleState, ToggleType toggleType);
 
 		public:
-			static void DrawPlusMinusExpander(wxWindow* window, wxDC& dc, const Rect& canvasRect, int flags);
-			static void DrawSelectionRect(wxWindow* window, wxDC& dc, const Rect& cellRect, int flags);;
+			static void DrawPlusMinusExpander(wxWindow* window, GDICanvas& dc, const Rect& canvasRect, int flags);
+			static void DrawSelectionRect(wxWindow* window, GDICanvas& dc, const Rect& cellRect, int flags);;
 	};
 }

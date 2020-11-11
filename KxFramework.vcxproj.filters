@@ -619,9 +619,6 @@
     <ClInclude Include="kxf\Drawing\Private\GraphicsCanvas.h">
       <Filter>kxf\Drawing\Private</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Drawing\DCOperations.h">
-      <Filter>kxf\Drawing</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Drawing\Private\UxThemeDefines.h">
       <Filter>kxf\Drawing\Private</Filter>
     </ClInclude>
@@ -1619,6 +1616,9 @@
     <ClInclude Include="kxf\Drawing\GCOperations.h">
       <Filter>kxf\Drawing\&lt;GraphicsCanvas&gt;</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Drawing\GDIGraphicsCanvas.h">
+      <Filter>kxf\Drawing\&lt;GDICanvas&gt;</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -1823,9 +1823,6 @@
       <Filter>kxf\Drawing</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Drawing\ImageSet.cpp">
-      <Filter>kxf\Drawing</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\Drawing\DCOperations.cpp">
       <Filter>kxf\Drawing</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Drawing\UxTheme.cpp">

@@ -20,6 +20,10 @@ namespace kxf::UI
 }
 namespace kxf
 {
+	class GDICanvas;
+	class GDIMemoryCanvas;
+	class GDIWindowCanvas;
+
 	KxFlagSet_Declare(UI::DrawablePanelMode);
 }
 
@@ -30,15 +34,15 @@ namespace kxf::UI
 		public:
 			static Size DrawScaledBitmap(wxGraphicsContext* gc, const wxGraphicsBitmap& bitmap, const Size& bitmapSize, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
 			static Size DrawScaledBitmap(wxGraphicsContext* gc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
-			static Size DrawScaledBitmap(wxWindowDC& dc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
-			static Size DrawScaledBitmap(wxMemoryDC& dc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
-			static void DrawTransparencyPattern(wxDC& dc);
+			static Size DrawScaledBitmap(GDIWindowCanvas& dc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
+			static Size DrawScaledBitmap(GDIMemoryCanvas& dc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
+			static void DrawTransparencyPattern(GDICanvas& dc);
 
 		private:
 			Bitmap m_Bitmap;
 			BitmapScaleMode m_ImageScaleMode = BitmapScaleMode::None;
 			FlagSet<DrawablePanelMode> m_BackgroundMode = DrawablePanelMode::Soild;
-			wxDirection m_GradientDirection = wxDOWN;
+			Direction m_GradientDirection = Direction::Down;
 			Size m_ScaledImageSize;
 			double m_ScaleFactor = 1.0;
 
@@ -84,7 +88,7 @@ namespace kxf::UI
 				m_Bitmap = image;
 				ScheduleRefresh();
 			}
-		
+
 			BitmapScaleMode GetScaleMode() const
 			{
 				return m_ImageScaleMode;
@@ -94,7 +98,7 @@ namespace kxf::UI
 				m_ImageScaleMode = mode;
 				ScheduleRefresh();
 			}
-			
+
 			FlagSet<DrawablePanelMode> GetBGMode() const
 			{
 				return m_BackgroundMode;
@@ -104,12 +108,12 @@ namespace kxf::UI
 				m_BackgroundMode = mode;
 				ScheduleRefresh();
 			}
-		
-			wxDirection GetGradientDirection() const
+
+			Direction GetGradientDirection() const
 			{
 				return m_GradientDirection;
 			}
-			void SetGradientDirection(wxDirection mode)
+			void SetGradientDirection(Direction mode)
 			{
 				m_GradientDirection = mode;
 				ScheduleRefresh();
