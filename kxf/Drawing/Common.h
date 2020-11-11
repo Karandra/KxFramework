@@ -52,6 +52,11 @@ namespace kxf
 		OddEvenRule = wxODDEVEN_RULE,
 		WindingRule = wxWINDING_RULE
 	};
+	enum class FloodFillMode
+	{
+		Surface = wxFLOOD_SURFACE,
+		Border = wxFLOOD_BORDER
+	};
 }
 
 namespace kxf::Drawing

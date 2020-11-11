@@ -225,6 +225,12 @@ namespace kxf
 				m_Pen.SetDashes(static_cast<int>(N), dashes);
 			}
 
+			template<size_t N>
+			void SetDashes(const std::array<Dash, N>& dashes)
+			{
+				m_Pen.SetDashes(static_cast<int>(dashes.size()), dashes.data());
+			}
+
 		public:
 			explicit operator bool() const noexcept
 			{

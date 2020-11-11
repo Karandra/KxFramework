@@ -116,6 +116,38 @@ namespace kxf
 		CP1258 = wxFONTENCODING_CP1258,
 		CP1361 = wxFONTENCODING_CP1361,
 	};
+
+	struct FontMetrics final
+	{
+		public:
+			int Height = 0; // Total character height.
+			int Ascent = 0; // Part of the height above the baseline.
+			int Descent = 0; // Part of the height below the baseline.
+			int AverageWidth = 0; // Average font width or "x-width".
+			int InternalLeading = 0; // Intra-line spacing.
+			int ExternalLeading = 0; // Inter-line spacing.
+
+		public:
+			constexpr FontMetrics() noexcept = default;
+			constexpr FontMetrics(const wxFontMetrics& other) noexcept
+				:Height(other.height), Ascent(other.ascent), Descent(other.descent),
+				AverageWidth(other.averageWidth), InternalLeading(other.internalLeading), ExternalLeading(other.externalLeading)
+			{
+			}
+
+		public:
+			operator wxFontMetrics() const noexcept
+			{
+				wxFontMetrics fontMetrics;
+				fontMetrics.height = Height;
+				fontMetrics.ascent = Ascent;
+				fontMetrics.descent = Descent;
+				fontMetrics.averageWidth = AverageWidth;
+				fontMetrics.internalLeading = InternalLeading;
+				fontMetrics.externalLeading = ExternalLeading;
+			}
+
+	};
 }
 
 namespace kxf::Private

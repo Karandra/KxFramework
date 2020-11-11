@@ -218,6 +218,7 @@
     <ClInclude Include="kxf\Drawing\Color.h" />
     <ClInclude Include="kxf\Drawing\ColorDefines.h" />
     <ClInclude Include="kxf\Drawing\Cursor.h" />
+    <ClInclude Include="kxf\Drawing\GDICanvas.h" />
     <ClInclude Include="kxf\Drawing\Font.h" />
     <ClInclude Include="kxf\Drawing\Geometry.h" />
     <ClInclude Include="kxf\Drawing\IArtProvider.h" />
@@ -229,6 +230,7 @@
     <ClInclude Include="kxf\Drawing\ImageBundle.h" />
     <ClInclude Include="kxf\Drawing\Pen.h" />
     <ClInclude Include="kxf\Drawing\Private\GDI.h" />
+    <ClInclude Include="kxf\Drawing\Region.h" />
     <ClInclude Include="kxf\Drawing\SizeRatio.h" />
     <ClInclude Include="kxf\EventSystem\ActivateEvent.h" />
     <ClInclude Include="kxf\EventSystem\IndirectInvocationEvent.h" />
@@ -664,6 +666,7 @@
     <ClCompile Include="kxf\Drawing\Brush.cpp" />
     <ClCompile Include="kxf\Drawing\Color.cpp" />
     <ClCompile Include="kxf\Drawing\Cursor.cpp" />
+    <ClCompile Include="kxf\Drawing\GDICanvas.cpp" />
     <ClCompile Include="kxf\Drawing\Font.cpp" />
     <ClCompile Include="kxf\Drawing\Geometry.cpp" />
     <ClCompile Include="kxf\Drawing\Icon.cpp" />
@@ -671,6 +674,7 @@
     <ClCompile Include="kxf\Drawing\ImageBundle.cpp" />
     <ClCompile Include="kxf\Drawing\Pen.cpp" />
     <ClCompile Include="kxf\Drawing\Private\GDI.cpp" />
+    <ClCompile Include="kxf\Drawing\Region.cpp" />
     <ClCompile Include="kxf\Drawing\SizeRatio.cpp" />
     <ClCompile Include="kxf\EventSystem\CommonEventLoop.cpp" />
     <ClCompile Include="kxf\EventSystem\EventID.cpp" />
