@@ -221,6 +221,10 @@
     <ClInclude Include="kxf\Drawing\GDICanvas.h" />
     <ClInclude Include="kxf\Drawing\Font.h" />
     <ClInclude Include="kxf\Drawing\GDICanvasOperations.h" />
+    <ClInclude Include="kxf\Drawing\GDIMemoryCanvas.h" />
+    <ClInclude Include="kxf\Drawing\GDIMirroringCanvas.h" />
+    <ClInclude Include="kxf\Drawing\GDIScreenCanvas.h" />
+    <ClInclude Include="kxf\Drawing\GDIWindowCanvas.h" />
     <ClInclude Include="kxf\Drawing\Geometry.h" />
     <ClInclude Include="kxf\Drawing\IArtProvider.h" />
     <ClInclude Include="kxf\Drawing\Icon.h" />

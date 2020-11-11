@@ -78,7 +78,7 @@ namespace kxf
 			template<class T>
 			using TCoordPair = typename Geometry::OrderedPairTemplate<T, int>;
 
-		private:
+		protected:
 			wxDC* m_DC = nullptr;
 
 		public:
