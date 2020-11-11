@@ -390,9 +390,14 @@ namespace kxf::COM
 	}
 
 	template<class T>
-	auto AllocateRawString(const T& value) noexcept
+	decltype(auto) AllocateRawString(const T& value) noexcept
 	{
-		return AllocateRawString(StringViewOf<T>(value));
+		return AllocateRawString(StringViewOf(value));
+	}
+
+	inline decltype(auto) AllocateRawString(const String& value) noexcept
+	{
+		return AllocateRawString(StringViewOf(value));
 	}
 
 	template<class T, class... Args>
