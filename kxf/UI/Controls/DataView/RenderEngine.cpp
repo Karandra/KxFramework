@@ -7,8 +7,8 @@
 #include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/Private/UxThemeDefines.h"
 #include "kxf/Drawing/GCOperations.h"
-#include "kxf/Drawing/GDIWindowCanvas.h"
-#include "kxf/Drawing/GDICanvasOperations.h"
+#include "kxf/Drawing/GDIWindowContext.h"
+#include "kxf/Drawing/GDIAction.h"
 #include "wx/generic/private/markuptext.h"
 
 namespace kxf::UI::DataView
@@ -53,7 +53,7 @@ namespace kxf::UI::DataView::Markup
 			}
 
 		public:
-			Size GetTextExtent(GDICanvas& dc) const
+			Size GetTextExtent(GDIContext& dc) const
 			{
 				return Measure(dc.ToWxDC());
 			}
@@ -67,7 +67,7 @@ namespace kxf::UI::DataView::Markup
 			}
 
 		public:
-			Size GetTextExtent(GDICanvas& dc) const
+			Size GetTextExtent(GDIContext& dc) const
 			{
 				return Measure(dc.ToWxDC());
 			}
@@ -89,11 +89,11 @@ namespace kxf::UI::DataView::Markup
 		}
 	}
 
-	Size GetTextExtent(const wxMarkupTextBase& markup, GDICanvas& dc)
+	Size GetTextExtent(const wxMarkupTextBase& markup, GDIContext& dc)
 	{
 		return markup.Measure(dc.ToWxDC());
 	}
-	Size GetTextExtent(MarkupMode mode, GDICanvas& dc, const String& string)
+	Size GetTextExtent(MarkupMode mode, GDIContext& dc, const String& string)
 	{
 		switch (mode)
 		{
@@ -110,7 +110,7 @@ namespace kxf::UI::DataView::Markup
 	}
 
 	template<class T>
-	void DrawText(T& markup, wxWindow* window, GDICanvas& dc, const Rect& rect, int flags, wxEllipsizeMode ellipsizeMode)
+	void DrawText(T& markup, wxWindow* window, GDIContext& dc, const Rect& rect, int flags, wxEllipsizeMode ellipsizeMode)
 	{
 		if constexpr(std::is_same_v<T, WithMnemonics>)
 		{
@@ -122,7 +122,7 @@ namespace kxf::UI::DataView::Markup
 		}
 	}
 
-	void DrawText(MarkupMode mode, const String& string, wxWindow* window, GDICanvas& dc, const Rect& rect, int flags, wxEllipsizeMode ellipsizeMode)
+	void DrawText(MarkupMode mode, const String& string, wxWindow* window, GDIContext& dc, const Rect& rect, int flags, wxEllipsizeMode ellipsizeMode)
 	{
 		switch (mode)
 		{
@@ -142,7 +142,7 @@ namespace kxf::UI::DataView::Markup
 
 namespace kxf::UI::DataView
 {
-	GDICanvas RenderEngine::GetTextRenderingDC() const
+	GDIContext RenderEngine::GetTextRenderingDC() const
 	{
 		if (m_Renderer.HasRegularDC() && !m_AlwaysUseGC)
 		{
@@ -211,24 +211,24 @@ namespace kxf::UI::DataView
 
 	Size RenderEngine::GetTextExtent(const String& string) const
 	{
-		if (GDICanvas dc = GetTextRenderingDC())
+		if (GDIContext dc = GetTextRenderingDC())
 		{
 			return GetTextExtent(dc, string);
 		}
 		else
 		{
 			// No existing window context right now, create one to measure text
-			GDIWindowClientCanvas clientDC(*m_Renderer.GetView());
+			GDIClientContext clientDC(*m_Renderer.GetView());
 			return GetTextExtent(clientDC, string);
 		}
 	}
-	Size RenderEngine::GetTextExtent(GDICanvas& dc, const String& string) const
+	Size RenderEngine::GetTextExtent(GDIContext& dc, const String& string) const
 	{
 		const CellAttribute& attributes = m_Renderer.GetAttributes();
 
 		if (m_Renderer.IsMarkupEnabled())
 		{
-			GDICanvasAction::ChangeFont fontChnager(dc);
+			GDIAction::ChangeFont fontChnager(dc);
 			if (attributes.FontOptions().NeedDCAlteration())
 			{
 				fontChnager.Set(attributes.GetEffectiveFont(dc.GetFont()));
@@ -265,24 +265,24 @@ namespace kxf::UI::DataView
 
 	Size RenderEngine::GetMultilineTextExtent(const String& string) const
 	{
-		if (GDICanvas dc = GetTextRenderingDC())
+		if (GDIContext dc = GetTextRenderingDC())
 		{
 			return GetMultilineTextExtent(dc, string);
 		}
 		else
 		{
 			// No existing window context right now, create one to measure text
-			GDIWindowClientCanvas clientDC(*m_Renderer.GetView());
+			GDIClientContext clientDC(*m_Renderer.GetView());
 			return GetMultilineTextExtent(clientDC, string);
 		}
 	}
-	Size RenderEngine::GetMultilineTextExtent(GDICanvas& dc, const String& string) const
+	Size RenderEngine::GetMultilineTextExtent(GDIContext& dc, const String& string) const
 	{
 		// Markup doesn't support multiline text so we are ignoring it for now.
 
 		const CellAttribute& attributes = m_Renderer.GetAttributes();
 
-		GDICanvasAction::ChangeFont fontChnager(dc);
+		GDIAction::ChangeFont fontChnager(dc);
 		if (attributes.FontOptions().NeedDCAlteration())
 		{
 			fontChnager.Set(attributes.GetEffectiveFont(dc.GetFont()));
@@ -293,13 +293,13 @@ namespace kxf::UI::DataView
 
 	bool RenderEngine::DrawText(const Rect& cellRect, CellState cellState, const String& string, int offsetX)
 	{
-		if (GDICanvas dc = GetTextRenderingDC())
+		if (GDIContext dc = GetTextRenderingDC())
 		{
 			return DrawText(dc, cellRect, cellState, string, offsetX);
 		}
 		return false;
 	}
-	bool RenderEngine::DrawText(GDICanvas& dc, const Rect& cellRect, CellState cellState, const String& string, int offsetX)
+	bool RenderEngine::DrawText(GDIContext& dc, const Rect& cellRect, CellState cellState, const String& string, int offsetX)
 	{
 		if (!string.IsEmpty())
 		{
@@ -443,7 +443,7 @@ namespace kxf::UI::DataView
 	{
 		return wxRendererNative::Get().GetCheckBoxSize(m_Renderer.GetView());
 	}
-	Size RenderEngine::DrawToggle(GDICanvas& dc, const Rect& cellRect, CellState cellState, ToggleState toggleState, ToggleType toggleType)
+	Size RenderEngine::DrawToggle(GDIContext& dc, const Rect& cellRect, CellState cellState, ToggleState toggleState, ToggleType toggleType)
 	{
 		int flags = GetControlFlags(cellState);
 		switch (toggleState)
@@ -483,7 +483,7 @@ namespace kxf::UI::DataView
 
 namespace kxf::UI::DataView
 {
-	void RenderEngine::DrawPlusMinusExpander(wxWindow* window, GDICanvas& dc, const Rect& canvasRect, int flags)
+	void RenderEngine::DrawPlusMinusExpander(wxWindow* window, GDIContext& dc, const Rect& canvasRect, int flags)
 	{
 		const bool isActive = flags & wxCONTROL_CURRENT;
 		const bool isExpanded = flags & wxCONTROL_EXPANDED;
@@ -537,7 +537,7 @@ namespace kxf::UI::DataView
 		pos = GetXY();
 		dc.DrawLine(pos, {pos.GetX(), pos.GetY() + length});
 	}
-	void RenderEngine::DrawSelectionRect(wxWindow* window, GDICanvas& dc, const Rect& cellRect, int flags)
+	void RenderEngine::DrawSelectionRect(wxWindow* window, GDIContext& dc, const Rect& cellRect, int flags)
 	{
 		using namespace kxf;
 

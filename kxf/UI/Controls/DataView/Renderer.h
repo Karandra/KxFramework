@@ -51,12 +51,12 @@ namespace kxf::UI::DataView
 			const Node* m_Node = nullptr;
 			Column* m_Column = nullptr;
 
-			GDIGraphicsCanvas* m_GraphicsDC = nullptr;
-			GDICanvas* m_RegularDC = nullptr;
+			GDIGraphicsContext* m_GraphicsDC = nullptr;
+			GDIContext* m_RegularDC = nullptr;
 			bool m_AlwaysUseGC = false;
 
 		private:
-			void BeginCellRendering(const Node& node, Column& column, GDIGraphicsCanvas& graphicsDC, GDICanvas* regularDC = nullptr)
+			void BeginCellRendering(const Node& node, Column& column, GDIGraphicsContext& graphicsDC, GDIContext* regularDC = nullptr)
 			{
 				m_Node = &node;
 				m_Column = &column;
@@ -134,7 +134,7 @@ namespace kxf::UI::DataView
 			{
 				return m_RegularDC != nullptr;
 			}
-			GDICanvas& GetRegularDC() const
+			GDIContext& GetRegularDC() const
 			{
 				return *m_RegularDC;
 			}
@@ -143,7 +143,7 @@ namespace kxf::UI::DataView
 			{
 				return m_GraphicsDC != nullptr;
 			}
-			GDIGraphicsCanvas& GetGraphicsDC() const
+			GDIGraphicsContext& GetGraphicsDC() const
 			{
 				return *m_GraphicsDC;
 			}

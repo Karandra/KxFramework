@@ -1,15 +1,15 @@
 #include "stdafx.h"
-#include "GDICanvas.h"
+#include "GDIContext.h"
 #include <wx/msw/dc.h>
 
 namespace kxf
 {
 	// IGDIObject
-	void* GDICanvas::GetHandle() const
+	void* GDIContext::GetHandle() const
 	{
 		return m_DC ? m_DC->GetHDC() : nullptr;
 	}
-	void* GDICanvas::DetachHandle()
+	void* GDIContext::DetachHandle()
 	{
 		if (m_DC)
 		{
@@ -23,7 +23,7 @@ namespace kxf
 		}
 		return nullptr;
 	}
-	void GDICanvas::AttachHandle(void* handle)
+	void GDIContext::AttachHandle(void* handle)
 	{
 		if (m_DC)
 		{

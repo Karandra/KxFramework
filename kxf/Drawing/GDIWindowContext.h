@@ -1,10 +1,10 @@
 #pragma once
-#include "GDICanvas.h"
+#include "GDIContext.h"
 #include <wx/dcclient.h>
 
 namespace kxf::Drawing
 {
-	class KX_API GDIWindowCanvasBase: public GDICanvas
+	class KX_API GDIWindowContextBase: public GDIContext
 	{
 		protected:
 			const wxWindowDC& GetWindowDC() const noexcept
@@ -17,15 +17,14 @@ namespace kxf::Drawing
 			}
 
 		public:
-			GDIWindowCanvasBase() = default;
-			GDIWindowCanvasBase(wxWindowDC& other)
-				:GDICanvas(other)
+			GDIWindowContextBase() = default;
+			GDIWindowContextBase(wxWindowDC& other)
+				:GDIContext(other)
 			{
 			}
-			GDIWindowCanvasBase(const GDIWindowCanvasBase&) = delete;
+			GDIWindowContextBase(const GDIWindowContextBase&) = delete;
 
 		public:
-			// GDIWindowCanvasBase
 			const wxWindowDC& ToWxDC() const noexcept
 			{
 				return GetWindowDC();
@@ -36,33 +35,33 @@ namespace kxf::Drawing
 			}
 
 		public:
-			GDICanvas& operator=(const GDICanvas&) = delete;
+			GDIContext& operator=(const GDIContext&) = delete;
 	};
 }
 
 namespace kxf
 {
-	class KX_API GDIWindowCanvas final: public Drawing::GDIWindowCanvasBase
+	class KX_API GDIWindowContext final: public Drawing::GDIWindowContextBase
 	{
 		private:
 			wxWindowDC m_DC;
 
 		public:
-			GDIWindowCanvas(wxWindow& window)
-				:GDIWindowCanvasBase(m_DC), m_DC(&window)
+			GDIWindowContext(wxWindow& window)
+				:GDIWindowContextBase(m_DC), m_DC(&window)
 			{
 			}
 
 	};
 
-	class KX_API GDIWindowClientCanvas final: public Drawing::GDIWindowCanvasBase
+	class KX_API GDIClientContext final: public Drawing::GDIWindowContextBase
 	{
 		private:
 			wxClientDC m_DC;
 
 		public:
-			GDIWindowClientCanvas(wxWindow& window)
-				:GDIWindowCanvasBase(m_DC), m_DC(&window)
+			GDIClientContext(wxWindow& window)
+				:GDIWindowContextBase(m_DC), m_DC(&window)
 			{
 			}
 
@@ -77,14 +76,14 @@ namespace kxf
 			}
 	};
 
-	class KX_API GDIWindowPaintCanvas final: public Drawing::GDIWindowCanvasBase
+	class KX_API GDIPaintContext final: public Drawing::GDIWindowContextBase
 	{
 		private:
 			wxPaintDC m_DC;
 
 		public:
-			GDIWindowPaintCanvas(wxWindow& window)
-				:GDIWindowCanvasBase(m_DC), m_DC(&window)
+			GDIPaintContext(wxWindow& window)
+				:GDIWindowContextBase(m_DC), m_DC(&window)
 			{
 			}
 

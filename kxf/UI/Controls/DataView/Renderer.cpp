@@ -4,7 +4,7 @@
 #include "Node.h"
 #include "View.h"
 #include "MainWindow.h"
-#include "kxf/Drawing/GDICanvasOperations.h"
+#include "kxf/Drawing/GDIAction.h"
 
 namespace kxf::UI::DataView
 {
@@ -32,7 +32,7 @@ namespace kxf::UI::DataView
 
 	void Renderer::CallDrawCellBackground(const Rect& cellRect, CellState cellState, bool noUserBackground)
 	{
-		GDIGraphicsCanvas& dc = GetGraphicsDC();
+		GDIGraphicsContext& dc = GetGraphicsDC();
 		const auto& cellOptions = m_Attributes.Options();
 		const auto& cellBGOptions = m_Attributes.BGOptions();
 
@@ -59,8 +59,8 @@ namespace kxf::UI::DataView
 			buttonRect.Height() += offsetSize.GetY();
 
 			Bitmap canvas(cellRect.GetSize(), ColorDepthDB::BPP32);
-			wxMemoryDC memDC(canvas.ToWxBitmap());
-			wxRendererNative::Get().DrawHeaderButton(GetView(), memDC, Rect(-1, 0, buttonRect.GetWidth() + 1, buttonRect.GetHeight()), GetRenderEngine().GetControlFlags(cellState), wxHDR_SORT_ICON_NONE);
+			GDIMemoryContext memDC(canvas);
+			wxRendererNative::Get().DrawHeaderButton(GetView(), memDC.ToWxDC(), Rect(-1, 0, buttonRect.GetWidth() + 1, buttonRect.GetHeight()), GetRenderEngine().GetControlFlags(cellState), wxHDR_SORT_ICON_NONE);
 			if (!cellState.IsSelected())
 			{
 				Color lineColor = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
@@ -70,7 +70,7 @@ namespace kxf::UI::DataView
 				memDC.DrawLine(Point(0, 0), Point(buttonRect.GetWidth() + 1, 0));
 			}
 
-			dc.DrawBitmap(canvas.ToWxBitmap(), cellRect.GetPosition());
+			dc.DrawBitmap(canvas, cellRect.GetPosition());
 		}
 		else if (cellBGOptions.ContainsOption(CellBGOption::Button))
 		{
@@ -93,8 +93,8 @@ namespace kxf::UI::DataView
 		if (cellOptions.HasBackgroundColor())
 		{
 			Color color = m_Attributes.Options().GetBackgroundColor();
-			GDICanvasAction::ChangePen changePen(dc, color);
-			GDICanvasAction::ChangeBrush changeBrush(dc, color);
+			GDIAction::ChangePen changePen(dc, color);
+			GDIAction::ChangeBrush changeBrush(dc, color);
 			dc.DrawRectangle(cellRect);
 		}
 
@@ -110,10 +110,10 @@ namespace kxf::UI::DataView
 		m_AlwaysUseGC = alwaysUseGC;
 
 		RenderEngine renderEngine = GetRenderEngine();
-		GDICanvas& dc = HasRegularDC() && !m_AlwaysUseGC  ? GetRegularDC() : GetGraphicsDC();
+		GDIContext& dc = HasRegularDC() && !m_AlwaysUseGC  ? GetRegularDC() : GetGraphicsDC();
 
 		// Change text color
-		GDICanvasAction::ChangeTextForeground changeTextColor(dc);
+		GDIAction::ChangeTextForeground changeTextColor(dc);
 		if (m_Attributes.Options().HasForegroundColor())
 		{
 			Color color = m_Attributes.Options().GetForegroundColor();
@@ -129,7 +129,7 @@ namespace kxf::UI::DataView
 		}
 
 		// Change font
-		GDICanvasAction::ChangeFont changeFont(dc);
+		GDIAction::ChangeFont changeFont(dc);
 		if (m_Attributes.FontOptions().NeedDCAlteration())
 		{
 			changeFont.Set(m_Attributes.GetEffectiveFont(dc.GetFont()));

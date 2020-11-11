@@ -5,7 +5,7 @@
 
 namespace kxf
 {
-	class GDICanvas;
+	class GDIContext;
 }
 
 namespace kxf
@@ -33,7 +33,7 @@ namespace kxf
 
 			Bitmap(const Icon& other);
 			Bitmap(const Image& other);
-			Bitmap(const Image& other, const GDICanvas& canvas);
+			Bitmap(const Image& other, const GDIContext& dc);
 			Bitmap(const Cursor& other);
 			Bitmap(const Bitmap& other)
 				:m_Bitmap(other.m_Bitmap)
@@ -51,7 +51,7 @@ namespace kxf
 			{
 				Initialize();
 			}
-			Bitmap(const Size& size, const GDICanvas& canvas);
+			Bitmap(const Size& size, const GDIContext& dc);
 
 			virtual ~Bitmap() = default;
 

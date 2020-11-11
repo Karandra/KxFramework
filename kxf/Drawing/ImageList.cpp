@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ImageList.h"
-#include "GDICanvas.h"
+#include "GDIContext.h"
 #include "kxf/System/COM.h"
 #include "kxf/Utility/Common.h"
 
@@ -45,7 +45,7 @@ namespace kxf
 			m_Flags |= ILC_MASK;
 		}
 	}
-	bool ImageList::DoDraw(GDICanvas& canvas, int index, const Rect& rect, FlagSet<ImageListFlag> flags, int overlayIndex) noexcept
+	bool ImageList::DoDraw(GDIContext& dc, int index, const Rect& rect, FlagSet<ImageListFlag> flags, int overlayIndex) noexcept
 	{
 		Size size = rect.GetSize();
 		size.SetDefaults({0, 0});
@@ -56,7 +56,7 @@ namespace kxf
 			nativeDrawMode |= INDEXTOOVERLAYMASK(overlayIndex);
 		}
 
-		return ::ImageList_DrawEx(ToHImageList(m_hImageList), index, static_cast<HDC>(canvas.GetHandle()), rect.GetX(), rect.GetY(), size.GetWidth(), size.GetHeight(), CLR_NONE, CLR_NONE, nativeDrawMode);
+		return ::ImageList_DrawEx(ToHImageList(m_hImageList), index, static_cast<HDC>(dc.GetHandle()), rect.GetX(), rect.GetY(), size.GetWidth(), size.GetHeight(), CLR_NONE, CLR_NONE, nativeDrawMode);
 	}
 
 	ImageList::ImageList() noexcept

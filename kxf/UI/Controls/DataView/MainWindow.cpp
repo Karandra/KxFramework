@@ -10,9 +10,9 @@
 #include "kxf/UI/Windows/Frame.h"
 #include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/Private/UxThemeDefines.h"
-#include "kxf/Drawing/GDIWindowCanvas.h"
-#include "kxf/Drawing/GDIMemoryCanvas.h"
-#include "kxf/Drawing/GDICanvasOperations.h"
+#include "kxf/Drawing/GDIWindowContext.h"
+#include "kxf/Drawing/GDIMemoryContext.h"
+#include "kxf/Drawing/GDIAction.h"
 #include "kxf/Drawing/GCOperations.h"
 #include "kxf/System/SystemInformation.h"
 #include <wx/popupwin.h>
@@ -1041,7 +1041,7 @@ namespace kxf::UI::DataView
 	// Drawing
 	void MainWindow::OnPaint(wxPaintEvent& event)
 	{
-		GDIAutoBufferedPaintCanvas paintDC(*this);
+		GDIAutoBufferedPaintContext paintDC(*this);
 
 		const Size clientSize = GetClientSize();
 		paintDC.SetPen(*wxTRANSPARENT_PEN);
@@ -1049,7 +1049,7 @@ namespace kxf::UI::DataView
 		paintDC.DrawRectangle(Rect(clientSize));
 
 		m_View->PrepareDC(paintDC.ToWxDC());
-		GDIGraphicsCanvas dc(paintDC);
+		GDIGraphicsContext dc(paintDC);
 		wxGraphicsContext& gc = *dc.GetGraphicsContext();
 		gc.SetAntialiasMode(wxANTIALIAS_NONE);
 		gc.SetInterpolationQuality(wxINTERPOLATION_NONE);
@@ -1321,8 +1321,8 @@ namespace kxf::UI::DataView
 				// Draw vertical rules but don't draw the rule for last column is we have only one column
 				if (verticalRulesEnabled && visibleColumnsCount > 1)
 				{
-					GDICanvasAction::ChangePen pen(dc, m_PenRuleV);
-					GDICanvasAction::ChangeBrush brush(dc, Drawing::GetStockBrush(StockBrush::Transparent));
+					GDIAction::ChangePen pen(dc, m_PenRuleV);
+					GDIAction::ChangeBrush brush(dc, Drawing::GetStockBrush(StockBrush::Transparent));
 
 					// Draw vertical rules in column's last pixel, so they will align with header control dividers
 					const int x = cellRect.GetX() + cellRect.GetWidth() - 1;
@@ -1337,15 +1337,15 @@ namespace kxf::UI::DataView
 				// Draw horizontal rules
 				if (horizontalRulesEnabled)
 				{
-					GDICanvasAction::ChangePen pen(dc, m_PenRuleV);
-					GDICanvasAction::ChangeBrush brush(dc, Drawing::GetStockBrush(StockBrush::Transparent));
+					GDIAction::ChangePen pen(dc, m_PenRuleV);
+					GDIAction::ChangeBrush brush(dc, Drawing::GetStockBrush(StockBrush::Transparent));
 
 					dc.DrawLine({xCoordStart, cellInitialRect.GetY()}, {xCoordEnd + clientSize.GetWidth(), cellInitialRect.GetY()});
 				}
 
 				// Clip DC to current column
 				const Rect columnRect(cellRect.GetX(), 0, cellRect.GetWidth(), m_virtualSize.GetHeight());
-				GDICanvasAction::Clip clipDC(paintDC, columnRect);
+				GDIAction::Clip clipDC(paintDC, columnRect);
 				GCClip clipGC(gc, columnRect);
 
 				// Draw the cell
@@ -2268,7 +2268,7 @@ namespace kxf::UI::DataView
 
 		Bitmap bitmap({width, height}, ColorDepthDB::BPP24);
 		{
-			GDIMemoryCanvas memoryDC(bitmap);
+			GDIMemoryContext memoryDC(bitmap);
 			memoryDC.SetFont(GetFont());
 			memoryDC.SetBackgroundBrush(m_View->GetBackgroundColour());
 			memoryDC.SetTextForeground(m_View->GetForegroundColour());
@@ -2279,7 +2279,7 @@ namespace kxf::UI::DataView
 			RenderEngine::DrawSelectionRect(this, memoryDC, itemRect, wxCONTROL_CURRENT|wxCONTROL_SELECTED|wxCONTROL_FOCUSED);
 
 			// Draw cells
-			GDIGraphicsCanvas gcdc(memoryDC);
+			GDIGraphicsContext gcdc(memoryDC);
 
 			int x = 0;
 			Column* expander = m_View->GetExpanderColumnOrFirstOne();

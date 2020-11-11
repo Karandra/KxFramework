@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ClusterMap.h"
 #include "kxf/Drawing/UxTheme.h"
-#include "kxf/Drawing/GDIWindowCanvas.h"
+#include "kxf/Drawing/GDIWindowContext.h"
 
 namespace kxf::UI
 {
@@ -11,7 +11,7 @@ namespace kxf::UI
 	{
 		using namespace kxf;
 
-		GDIWindowPaintCanvas dc(*this);
+		GDIPaintContext dc(*this);
 
 		const DrawInfo drawInfo = GetDrawInfo();
 		UxTheme::DrawParentBackground(*this, dc, Rect({0, 0}, (wxSize)drawInfo.ClientSize));

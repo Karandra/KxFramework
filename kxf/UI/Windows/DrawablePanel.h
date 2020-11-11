@@ -20,9 +20,9 @@ namespace kxf::UI
 }
 namespace kxf
 {
-	class GDICanvas;
-	class GDIMemoryCanvas;
-	class GDIWindowCanvas;
+	class GDIContext;
+	class GDIMemoryContext;
+	class GDIWindowContext;
 
 	KxFlagSet_Declare(UI::DrawablePanelMode);
 }
@@ -34,9 +34,9 @@ namespace kxf::UI
 		public:
 			static Size DrawScaledBitmap(wxGraphicsContext* gc, const wxGraphicsBitmap& bitmap, const Size& bitmapSize, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
 			static Size DrawScaledBitmap(wxGraphicsContext* gc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
-			static Size DrawScaledBitmap(GDIWindowCanvas& dc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
-			static Size DrawScaledBitmap(GDIMemoryCanvas& dc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
-			static void DrawTransparencyPattern(GDICanvas& dc);
+			static Size DrawScaledBitmap(GDIWindowContext& dc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
+			static Size DrawScaledBitmap(GDIMemoryContext& dc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
+			static void DrawTransparencyPattern(GDIContext& dc);
 
 		private:
 			Bitmap m_Bitmap;

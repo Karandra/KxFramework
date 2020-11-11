@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "Label.h"
 #include "kxf/Drawing/UxTheme.h"
-#include "kxf/Drawing/GDICanvas.h"
-#include "kxf/Drawing/GDIWindowCanvas.h"
+#include "kxf/Drawing/GDIContext.h"
+#include "kxf/Drawing/GDIWindowContext.h"
 
 namespace
 {
@@ -37,7 +37,7 @@ namespace kxf::UI
 		}
 		return m_ColorDisabled;
 	}
-	Size Label::CalcBestSize(GDICanvas* dc)
+	Size Label::CalcBestSize(GDIContext* dc)
 	{
 		const Size padding = ConvertDialogToPixels(wxSize(3, 1));
 
@@ -50,7 +50,7 @@ namespace kxf::UI
 			}
 			else
 			{
-				GDIWindowClientCanvas clientDC(*this);
+				GDIClientContext clientDC(*this);
 				textExtent = clientDC.GetMultiLineTextExtent(m_Label);
 			}
 			return textExtent + padding;
@@ -96,7 +96,7 @@ namespace kxf::UI
 	}
 	void Label::OnPaint(wxPaintEvent& event)
 	{
-		GDIWindowPaintCanvas dc(*this);
+		GDIPaintContext dc(*this);
 		if (IsFrozen())
 		{
 			return;

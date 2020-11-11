@@ -3,8 +3,8 @@
 #include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/Bitmap.h"
 #include "kxf/Drawing/ImageBundle.h"
-#include "kxf/Drawing/GDIWindowCanvas.h"
-#include "kxf/Drawing/GDIMemoryCanvas.h"
+#include "kxf/Drawing/GDIWindowContext.h"
+#include "kxf/Drawing/GDIMemoryContext.h"
 #include "kxf/UI/Menus/Menu.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/System/Private/System.h"
@@ -58,7 +58,7 @@ namespace kxf::UI
 	{
 		using namespace kxf;
 
-		GDIAutoBufferedPaintCanvas dc(*this);
+		GDIAutoBufferedPaintContext dc(*this);
 		UxTheme::ClearDC(*this, dc);
 		wxRendererNative& renderer = wxRendererNative::Get();
 

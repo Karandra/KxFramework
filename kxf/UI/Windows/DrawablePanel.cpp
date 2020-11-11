@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "DrawablePanel.h"
 #include "kxf/Drawing/UxTheme.h"
-#include "kxf/Drawing/GDICanvas.h"
-#include "kxf/Drawing/GDIMemoryCanvas.h"
-#include "kxf/Drawing/GDIWindowCanvas.h"
+#include "kxf/Drawing/GDIContext.h"
+#include "kxf/Drawing/GDIMemoryContext.h"
+#include "kxf/Drawing/GDIWindowContext.h"
 #include <wx/bookctrl.h>
 
 namespace
@@ -71,17 +71,17 @@ namespace kxf::UI
 	{
 		return DrawScaledBitmap(gc, gc->CreateBitmap(bitmap.ToWxBitmap()), bitmap.GetSize(), rect, scaleMode, globalScale);
 	}
-	Size DrawablePanel::DrawScaledBitmap(GDIWindowCanvas& dc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale)
+	Size DrawablePanel::DrawScaledBitmap(GDIWindowContext& dc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale)
 	{
 		wxGCDC gcdc(dc.ToWxDC());
 		return DrawScaledBitmap(gcdc.GetGraphicsContext(), bitmap, rect, scaleMode, globalScale);
 	}
-	Size DrawablePanel::DrawScaledBitmap(GDIMemoryCanvas& dc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale)
+	Size DrawablePanel::DrawScaledBitmap(GDIMemoryContext& dc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale)
 	{
 		wxGCDC gcdc(dc.ToWxDC());
 		return DrawScaledBitmap(gcdc.GetGraphicsContext(), bitmap, rect, scaleMode, globalScale);
 	}
-	void DrawablePanel::DrawTransparencyPattern(GDICanvas& dc)
+	void DrawablePanel::DrawTransparencyPattern(GDIContext& dc)
 	{
 		const wxWindow* window = dc.GetWindow();
 
@@ -104,7 +104,7 @@ namespace kxf::UI
 
 	void DrawablePanel::OnDrawBackground(wxEraseEvent& event)
 	{
-		GDICanvas dc(*event.GetDC());
+		GDIContext dc(*event.GetDC());
 		dc.SetBackgroundTransparent();
 		dc.SetBackgroundBrush(Drawing::GetStockBrush(StockBrush::Transparent));
 
@@ -140,7 +140,7 @@ namespace kxf::UI
 	}
 	void DrawablePanel::OnDrawForeground(wxPaintEvent& event)
 	{
-		GDIWindowPaintCanvas dc(*this);
+		GDIPaintContext dc(*this);
 		if (m_BackgroundMode & DrawablePanelMode::FGImage)
 		{
 			wxGCDC gcdc(dc.ToWxDC());

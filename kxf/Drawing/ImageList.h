@@ -11,7 +11,7 @@ struct IImageList2;
 
 namespace kxf
 {
-	class GDICanvas;
+	class GDIContext;
 
 	enum class ImageListFlag: uint32_t
 	{
@@ -35,7 +35,7 @@ namespace kxf
 
 		private:
 			void OnCreate(int width, int height, bool mask, int initialCount) noexcept;
-			bool DoDraw(GDICanvas& canvas, int index, const Rect& rect, FlagSet<ImageListFlag> flags = {}, int overlayIndex = Drawing::InvalidImageIndex) noexcept;
+			bool DoDraw(GDIContext& canvas, int index, const Rect& rect, FlagSet<ImageListFlag> flags = {}, int overlayIndex = Drawing::InvalidImageIndex) noexcept;
 
 		public:
 			ImageList() noexcept;
@@ -87,20 +87,20 @@ namespace kxf
 			void SetBackgroundColor(const Color& color) noexcept;
 			bool SetOverlayImage(int index, int overlayIndex) noexcept;
 
-			bool Draw(GDICanvas& canvas, int index, const Point& point, FlagSet<ImageListFlag> flags = {}) noexcept
+			bool Draw(GDIContext& dc, int index, const Point& point, FlagSet<ImageListFlag> flags = {}) noexcept
 			{
-				return DoDraw(canvas, index, Rect(point, Size::UnspecifiedSize()), flags);
+				return DoDraw(dc, index, Rect(point, Size::UnspecifiedSize()), flags);
 			}
-			bool Draw(GDICanvas& canvas, int index, const Rect& rect, FlagSet<ImageListFlag> flags = {}) noexcept
+			bool Draw(GDIContext& dc, int index, const Rect& rect, FlagSet<ImageListFlag> flags = {}) noexcept
 			{
-				return DoDraw(canvas, index, rect, flags);
+				return DoDraw(dc, index, rect, flags);
 			}
 
-			bool DrawOverlay(GDICanvas& dc, int index, int overlayIndex, const Point& point, FlagSet<ImageListFlag> flags = {}) noexcept
+			bool DrawOverlay(GDIContext& dc, int index, int overlayIndex, const Point& point, FlagSet<ImageListFlag> flags = {}) noexcept
 			{
 				return DoDraw(dc, index, Rect(point, Size::UnspecifiedSize()), flags, overlayIndex);
 			}
-			bool DrawOverlay(GDICanvas& dc, int index, int overlayIndex, const Rect& rect, FlagSet<ImageListFlag> flags = {}) noexcept
+			bool DrawOverlay(GDIContext& dc, int index, int overlayIndex, const Rect& rect, FlagSet<ImageListFlag> flags = {}) noexcept
 			{
 				return DoDraw(dc, index, rect, flags, overlayIndex);
 			}

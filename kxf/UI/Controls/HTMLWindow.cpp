@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "HTMLWindow.h"
 #include "kxf/Localization/Common.h"
-#include "kxf/Drawing/GDICanvas.h"
+#include "kxf/Drawing/GDIContext.h"
 #include "kxf/UI/Menus/Menu.h"
 #include <wx/clipbrd.h>
 #include <wx/dcbuffer.h>
@@ -207,7 +207,7 @@ namespace kxf::UI
 	void HTMLWindow::OnEraseBackground(wxEraseEvent& event)
 	{
 		// Taken from 'wxHtmlWindow::DoEraseBackground'
-		GDICanvas dc(*event.GetDC());
+		GDIContext dc(*event.GetDC());
 
 		dc.SetBackgroundBrush(m_BackgroundColor);
 		dc.Clear();

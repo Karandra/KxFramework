@@ -4,8 +4,8 @@
 #include "../Node.h"
 #include "../Column.h"
 #include "kxf/UI/Controls/HTMLWindow.h"
-#include "kxf/Drawing/GDICanvas.h"
-#include "kxf/Drawing/GDICanvasOperations.h"
+#include "kxf/Drawing/GDIContext.h"
+#include "kxf/Drawing/GDIAction.h"
 #include <wx/html/htmprint.h>
 
 namespace
@@ -17,11 +17,11 @@ namespace
 	class DCUserScaleSaver final
 	{
 		private:
-			kxf::GDICanvas& m_DC;
+			kxf::GDIContext& m_DC;
 			kxf::SizeD m_UserScale;
 
 		public:
-			DCUserScaleSaver(kxf::GDICanvas& dc)
+			DCUserScaleSaver(kxf::GDIContext& dc)
 				:m_DC(dc)
 			{
 				m_UserScale = m_DC.GetUserScale();
@@ -52,7 +52,7 @@ namespace kxf::UI::DataView
 		return ToolTip::CreateDefaultForRenderer(m_Value.GetText());
 	}
 
-	void HTMLRenderer::PrepareRenderer(wxHtmlDCRenderer& htmlRenderer, GDICanvas& dc, const Rect& cellRect) const
+	void HTMLRenderer::PrepareRenderer(wxHtmlDCRenderer& htmlRenderer, GDIContext& dc, const Rect& cellRect) const
 	{
 		htmlRenderer.SetDC(&dc.ToWxDC(), g_UserScale * m_PixelScale, g_UserScale * m_FontScale);
 
@@ -80,9 +80,9 @@ namespace kxf::UI::DataView
 		if (m_Value.HasText())
 		{
 			// Prefer regular DC
-			GDICanvas dc = HasRegularDC() ? GetRegularDC().ToWxDC() : GetGraphicsDC().ToWxDC();
+			GDIContext dc = HasRegularDC() ? GetRegularDC().ToWxDC() : GetGraphicsDC().ToWxDC();
 			DCUserScaleSaver userScaleSaver(dc);
-			GDICanvasAction::Clip clip(dc, cellRect.Clone().Deflate(0, GetRenderEngine().FromDIPY(2)));
+			GDIAction::Clip clip(dc, cellRect.Clone().Deflate(0, GetRenderEngine().FromDIPY(2)));
 
 			// Render text
 			wxHtmlDCRenderer htmlRenderer;

@@ -2,8 +2,8 @@
 #include "StatusBarEx.h"
 #include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/Private/UxThemeDefines.h"
-#include "kxf/Drawing/GDIWindowCanvas.h"
-#include "kxf/Drawing/GDIMemoryCanvas.h"
+#include "kxf/Drawing/GDIWindowContext.h"
+#include "kxf/Drawing/GDIMemoryContext.h"
 #include "kxf/Utility/Common.h"
 
 namespace kxf::UI
@@ -12,7 +12,7 @@ namespace kxf::UI
 
 	void StatusBarEx::OnPaint(wxPaintEvent& event)
 	{
-		GDIAutoBufferedPaintCanvas dc(*this);
+		GDIAutoBufferedPaintContext dc(*this);
 		dc.SetBackgroundTransparent();
 		dc.SetTextForeground(GetForegroundColour());
 

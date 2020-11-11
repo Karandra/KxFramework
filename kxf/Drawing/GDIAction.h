@@ -2,31 +2,31 @@
 #include "Common.h"
 #include "Color.h"
 #include "Font.h"
-#include "GDICanvas.h"
+#include "GDIContext.h"
 
 namespace kxf::Drawing
 {
-	Color GetAreaAverageColor(const GDICanvas& dc, const Rect& rect);
+	Color GetAreaAverageColor(const GDIContext& dc, const Rect& rect);
 }
 
-namespace kxf::GDICanvasAction
+namespace kxf::GDIAction
 {
 	class KX_API Clip final
 	{
 		private:
-			GDICanvas& m_DC;
+			GDIContext& m_DC;
 			Region m_Region;
 
 		public:
-			Clip(GDICanvas& dc)
+			Clip(GDIContext& dc)
 				:m_DC(dc)
 			{
 			}
-			Clip(GDICanvas& dc, const Rect& rect)
+			Clip(GDIContext& dc, const Rect& rect)
 				:m_DC(dc), m_Region(dc.LogicalToDevice(rect))
 			{
 			}
-			Clip(GDICanvas& dc, const Region& region)
+			Clip(GDIContext& dc, const Region& region)
 				:m_DC(dc), m_Region(region)
 			{
 			}
@@ -69,11 +69,11 @@ namespace kxf::GDICanvasAction
 	class ChangeLogicalFunction final
 	{
 		private:
-			GDICanvas& m_DC;
+			GDIContext& m_DC;
 			GDILogicalFunction m_OriginalMode = GDILogicalFunction::Clear;
 
 		public:
-			ChangeLogicalFunction(GDICanvas& dc, GDILogicalFunction newMode)
+			ChangeLogicalFunction(GDIContext& dc, GDILogicalFunction newMode)
 				:m_DC(dc), m_OriginalMode(dc.GetLogicalFunction())
 			{
 				m_DC.SetLogicalFunction(newMode);
@@ -87,15 +87,15 @@ namespace kxf::GDICanvasAction
 	class ChangeFont final
 	{
 		private:
-			GDICanvas& m_DC;
+			GDIContext& m_DC;
 			Font m_OriginalFont;
 
 		public:
-			ChangeFont(GDICanvas& dc)
+			ChangeFont(GDIContext& dc)
 				:m_DC(dc)
 			{
 			}
-			ChangeFont(GDICanvas& dc, const Font& font)
+			ChangeFont(GDIContext& dc, const Font& font)
 				:m_DC(dc), m_OriginalFont(dc.GetFont())
 			{
 				m_DC.SetFont(font.ToWxFont());
@@ -122,15 +122,15 @@ namespace kxf::GDICanvasAction
 	class ChangePen final
 	{
 		private:
-			GDICanvas& m_DC;
+			GDIContext& m_DC;
 			Pen m_Pen;
 
 		public:
-			ChangePen(GDICanvas& dc)
+			ChangePen(GDIContext& dc)
 				:m_DC(dc)
 			{
 			}
-			ChangePen(GDICanvas& dc, const Pen& pen)
+			ChangePen(GDIContext& dc, const Pen& pen)
 				:m_DC(dc), m_Pen(dc.GetPen())
 			{
 				m_DC.SetPen(pen);
@@ -157,15 +157,15 @@ namespace kxf::GDICanvasAction
 	class ChangeBrush final
 	{
 		private:
-			GDICanvas& m_DC;
+			GDIContext& m_DC;
 			Brush m_Brush;
 
 		public:
-			ChangeBrush(GDICanvas& dc)
+			ChangeBrush(GDIContext& dc)
 				:m_DC(dc)
 			{
 			}
-			ChangeBrush(GDICanvas& dc, const Brush& brush)
+			ChangeBrush(GDIContext& dc, const Brush& brush)
 				:m_DC(dc), m_Brush(dc.GetBrush())
 			{
 				m_DC.SetBrush(brush);
@@ -192,15 +192,15 @@ namespace kxf::GDICanvasAction
 	class ChangeTextForeground final
 	{
 		private:
-			GDICanvas& m_DC;
+			GDIContext& m_DC;
 			Color m_OriginalColor;
 
 		public:
-			ChangeTextForeground(GDICanvas& dc)
+			ChangeTextForeground(GDIContext& dc)
 				:m_DC(dc)
 			{
 			}
-			ChangeTextForeground(GDICanvas& dc, const Color& color)
+			ChangeTextForeground(GDIContext& dc, const Color& color)
 				:m_DC(dc), m_OriginalColor(dc.GetTextForeground())
 			{
 				m_DC.SetTextForeground(color);
@@ -227,15 +227,15 @@ namespace kxf::GDICanvasAction
 	class ChangeTextBackground final
 	{
 		private:
-			GDICanvas& m_DC;
+			GDIContext& m_DC;
 			Color m_OriginalColor;
 
 		public:
-			ChangeTextBackground(GDICanvas& dc)
+			ChangeTextBackground(GDIContext& dc)
 				:m_DC(dc)
 			{
 			}
-			ChangeTextBackground(GDICanvas& dc, const Color& color)
+			ChangeTextBackground(GDIContext& dc, const Color& color)
 				:m_DC(dc), m_OriginalColor(dc.GetTextForeground())
 			{
 				m_DC.SetTextBackground(color);

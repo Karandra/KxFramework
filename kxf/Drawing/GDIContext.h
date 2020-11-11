@@ -70,9 +70,9 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API GDICanvas: public RTTI::ExtendInterface<GDICanvas, IGDIObject>
+	class KX_API GDIContext: public RTTI::ExtendInterface<GDIContext, IGDIObject>
 	{
-		KxRTTI_DeclareIID(GDICanvas, {0x7f0f1843, 0x27b9, 0x40df, {0x8d, 0xdc, 0x27, 0x98, 0x52, 0x44, 0xb7, 0x20}});
+		KxRTTI_DeclareIID(GDIContext, {0x7f0f1843, 0x27b9, 0x40df, {0x8d, 0xdc, 0x27, 0x98, 0x52, 0x44, 0xb7, 0x20}});
 
 		protected:
 			template<class T>
@@ -82,13 +82,13 @@ namespace kxf
 			wxDC* m_DC = nullptr;
 
 		public:
-			GDICanvas() = default;
-			GDICanvas(wxDC& other)
+			GDIContext() = default;
+			GDIContext(wxDC& other)
 				:m_DC(&other)
 			{
 			}
-			GDICanvas(const GDICanvas&) = delete;
-			virtual ~GDICanvas() = default;
+			GDIContext(const GDIContext&) = delete;
+			virtual ~GDIContext() = default;
 
 		public:
 			// IGDIObject
@@ -102,7 +102,7 @@ namespace kxf
 				{
 					return true;
 				}
-				else if (auto object = other.QueryInterface<GDICanvas>())
+				else if (auto object = other.QueryInterface<GDIContext>())
 				{
 					return m_DC == object->m_DC || ((m_DC && object->m_DC) && m_DC->IsSameAs(*object->m_DC));
 				}
@@ -117,7 +117,7 @@ namespace kxf
 			void* DetachHandle() override;
 			void AttachHandle(void* handle) override;
 
-			// GDICanvas
+			// GDIContext
 			const wxDC& ToWxDC() const noexcept
 			{
 				return *m_DC;
@@ -127,7 +127,7 @@ namespace kxf
 				return *m_DC;
 			}
 
-			void CopyAttributes(const GDICanvas& other)
+			void CopyAttributes(const GDIContext& other)
 			{
 				m_DC->CopyAttributes(*other.m_DC);
 			}
@@ -664,19 +664,19 @@ namespace kxf
 			}
 
 			// Bit-Block Transfer operations (blit)
-			bool Blit(const Point& destination, const Size& size, GDICanvas& sourceCanvas, const Point& source, GDILogicalFunction mode = GDILogicalFunction::Copy)
+			bool Blit(const Point& destination, const Size& size, GDIContext& sourceContext, const Point& source, GDILogicalFunction mode = GDILogicalFunction::Copy)
 			{
-				if (sourceCanvas)
+				if (sourceContext)
 				{
-					return m_DC->Blit(destination, size, sourceCanvas.m_DC, source, static_cast<wxRasterOperationMode>(mode), false, wxDefaultPosition);
+					return m_DC->Blit(destination, size, sourceContext.m_DC, source, static_cast<wxRasterOperationMode>(mode), false, wxDefaultPosition);
 				}
 				return false;
 			}
-			bool StretchBlit(const Rect& destination, const Size& size, GDICanvas& sourceCanvas, const Rect& source, GDILogicalFunction mode = GDILogicalFunction::Copy)
+			bool StretchBlit(const Rect& destination, const Size& size, GDIContext& sourceContext, const Rect& source, GDILogicalFunction mode = GDILogicalFunction::Copy)
 			{
-				if (sourceCanvas)
+				if (sourceContext)
 				{
-					return m_DC->StretchBlit(destination.GetPosition(), destination.GetSize(), sourceCanvas.m_DC, source.GetPosition(), source.GetSize(), static_cast<wxRasterOperationMode>(mode), false, wxDefaultPosition);
+					return m_DC->StretchBlit(destination.GetPosition(), destination.GetSize(), sourceContext.m_DC, source.GetPosition(), source.GetSize(), static_cast<wxRasterOperationMode>(mode), false, wxDefaultPosition);
 				}
 				return false;
 			}
@@ -737,6 +737,6 @@ namespace kxf
 				return IsNull();
 			}
 
-			GDICanvas& operator=(const GDICanvas&) = delete;
+			GDIContext& operator=(const GDIContext&) = delete;
 	};
 }

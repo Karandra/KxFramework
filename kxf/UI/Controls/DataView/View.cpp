@@ -6,7 +6,7 @@
 #include "Column.h"
 #include "Renderer.h"
 #include "kxf/UI/Menus/Menu.h"
-#include "kxf/Drawing/GDIWindowCanvas.h"
+#include "kxf/Drawing/GDIWindowContext.h"
 
 namespace
 {
@@ -152,7 +152,7 @@ namespace kxf::UI::DataView
 	}
 	void View::OnPaint(wxPaintEvent& event)
 	{
-		GDIWindowClientCanvas dc(*this);
+		GDIClientContext dc(*this);
 		dc.Clear();
 
 		if (m_BorderColor)

@@ -1,17 +1,17 @@
 #pragma once
-#include "GDICanvas.h"
+#include "GDIContext.h"
 #include <wx/dcscreen.h>
 
 namespace kxf
 {
-	class KX_API GDIScreenCanvas final: public GDICanvas
+	class KX_API GDIScreenContext final: public GDIContext
 	{
 		private:
 			wxScreenDC m_DC;
 
 		public:
-			GDIScreenCanvas()
-				:GDICanvas(m_DC)
+			GDIScreenContext()
+				:GDIContext(m_DC)
 			{
 			}
 

@@ -227,13 +227,13 @@
     <Filter Include="kxf\Log">
       <UniqueIdentifier>{3e786109-f51a-4653-8566-c33d43e122c7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\Drawing\&lt;GDICanvas&gt;">
-      <UniqueIdentifier>{365a82ef-fb02-4d8a-818b-bd19002d1677}</UniqueIdentifier>
-    </Filter>
     <Filter Include="kxf\Drawing\&lt;GDIObjects&gt;">
       <UniqueIdentifier>{e584bdcb-1679-47e9-921e-e8c5eca14b7c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\Drawing\&lt;GraphicsCanvas&gt;">
+    <Filter Include="kxf\Drawing\&lt;GDIContext&gt;">
+      <UniqueIdentifier>{365a82ef-fb02-4d8a-818b-bd19002d1677}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\Drawing\&lt;GraphicsContext&gt;">
       <UniqueIdentifier>{1588b372-00bd-4ee3-b887-e8bac24be415}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -1562,24 +1562,6 @@
     <ClInclude Include="kxf\Drawing\ArtProvider.h">
       <Filter>kxf\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Drawing\GDICanvas.h">
-      <Filter>kxf\Drawing\&lt;GDICanvas&gt;</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Drawing\GDICanvasOperations.h">
-      <Filter>kxf\Drawing\&lt;GDICanvas&gt;</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Drawing\GDIMemoryCanvas.h">
-      <Filter>kxf\Drawing\&lt;GDICanvas&gt;</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Drawing\GDIWindowCanvas.h">
-      <Filter>kxf\Drawing\&lt;GDICanvas&gt;</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Drawing\GDIScreenCanvas.h">
-      <Filter>kxf\Drawing\&lt;GDICanvas&gt;</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Drawing\GDIMirroringCanvas.h">
-      <Filter>kxf\Drawing\&lt;GDICanvas&gt;</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Drawing\Icon.h">
       <Filter>kxf\Drawing\&lt;GDIObjects&gt;</Filter>
     </ClInclude>
@@ -1605,19 +1587,37 @@
       <Filter>kxf\Drawing\&lt;GDIObjects&gt;</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Drawing\BitmapGraphicsCanvas.h">
-      <Filter>kxf\Drawing\&lt;GraphicsCanvas&gt;</Filter>
+      <Filter>kxf\Drawing\&lt;GraphicsContext&gt;</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Drawing\ImageGraphicsCanvas.h">
-      <Filter>kxf\Drawing\&lt;GraphicsCanvas&gt;</Filter>
+      <Filter>kxf\Drawing\&lt;GraphicsContext&gt;</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Drawing\GraphicsCanvas.h">
-      <Filter>kxf\Drawing\&lt;GraphicsCanvas&gt;</Filter>
+      <Filter>kxf\Drawing\&lt;GraphicsContext&gt;</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Drawing\GCOperations.h">
-      <Filter>kxf\Drawing\&lt;GraphicsCanvas&gt;</Filter>
+      <Filter>kxf\Drawing\&lt;GraphicsContext&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Drawing\GDIGraphicsCanvas.h">
-      <Filter>kxf\Drawing\&lt;GDICanvas&gt;</Filter>
+    <ClInclude Include="kxf\Drawing\GDIAction.h">
+      <Filter>kxf\Drawing\&lt;GDIContext&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GDIGraphicsContext.h">
+      <Filter>kxf\Drawing\&lt;GDIContext&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GDIMirroringContext.h">
+      <Filter>kxf\Drawing\&lt;GDIContext&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GDIScreenContext.h">
+      <Filter>kxf\Drawing\&lt;GDIContext&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GDIWindowContext.h">
+      <Filter>kxf\Drawing\&lt;GDIContext&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GDIMemoryContext.h">
+      <Filter>kxf\Drawing\&lt;GDIContext&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GDIContext.h">
+      <Filter>kxf\Drawing\&lt;GDIContext&gt;</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2411,12 +2411,6 @@
     <ClCompile Include="kxf\Drawing\Private\GDI.cpp">
       <Filter>kxf\Drawing\Private</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Drawing\GDICanvas.cpp">
-      <Filter>kxf\Drawing\&lt;GDICanvas&gt;</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\Drawing\GDICanvasOperations.cpp">
-      <Filter>kxf\Drawing\&lt;GDICanvas&gt;</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\Drawing\Icon.cpp">
       <Filter>kxf\Drawing\&lt;GDIObjects&gt;</Filter>
     </ClCompile>
@@ -2440,6 +2434,12 @@
     </ClCompile>
     <ClCompile Include="kxf\Drawing\Region.cpp">
       <Filter>kxf\Drawing\&lt;GDIObjects&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\GDIAction.cpp">
+      <Filter>kxf\Drawing\&lt;GDIContext&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\GDIContext.cpp">
+      <Filter>kxf\Drawing\&lt;GDIContext&gt;</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -20,7 +20,7 @@ namespace kxf::UI
 }
 namespace kxf
 {
-	class GDICanvas;
+	class GDIContext;
 
 	KxFlagSet_Declare(UI::LabelStyle);
 }
@@ -72,7 +72,7 @@ namespace kxf::UI
 			{
 				return label.Find('\r') != wxNOT_FOUND || label.Find('\n') != wxNOT_FOUND;
 			}
-			Size CalcBestSize(GDICanvas* dc = nullptr);
+			Size CalcBestSize(GDIContext* dc = nullptr);
 
 		protected:
 			void DoEnable(bool enable) override

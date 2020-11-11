@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "GDICanvasOperations.h"
+#include "GDIAction.h"
 
 namespace kxf::Drawing
 {
-	Color GetAreaAverageColor(const GDICanvas& canvas, const Rect& rect)
+	Color GetAreaAverageColor(const GDIContext& dc, const Rect& rect)
 	{
 		PackedRGBA<uint32_t> rgba;
 		size_t pixelCount = 0;
@@ -12,7 +12,7 @@ namespace kxf::Drawing
 		{
 			for (int x = 0; x < rect.GetWidth(); x++)
 			{
-				if (Color color = canvas.GetPixel(rect.GetPosition() + Point(x, y)))
+				if (Color color = dc.GetPixel(rect.GetPosition() + Point(x, y)))
 				{
 					const auto pixel = color.GetFixed8();
 					rgba.Red += pixel.Red;

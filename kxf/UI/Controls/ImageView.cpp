@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ImageView.h"
 #include "kxf/UI/Windows/DrawablePanel.h"
-#include "kxf/Drawing/GDICanvas.h"
+#include "kxf/Drawing/GDIContext.h"
 #include "kxf/wxWidgets/StreamWrapper.h"
 
 namespace kxf::UI
@@ -20,7 +20,7 @@ namespace kxf::UI
 
 	void ImageView::OnDrawBackground(wxEraseEvent& event)
 	{
-		GDICanvas dc(*event.GetDC());
+		GDIContext dc(*event.GetDC());
 		dc.SetBackgroundTransparent();
 		dc.SetBackgroundBrush(Drawing::GetStockBrush(StockBrush::Transparent));
 
