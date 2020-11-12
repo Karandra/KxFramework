@@ -577,3 +577,58 @@ namespace kxf
 			}
 	};
 }
+
+namespace kxf::Drawing
+{
+	constexpr Color GetStockColor(StockColor color) noexcept
+	{
+		switch (color)
+		{
+			case StockColor::Transparent:
+			{
+				return Color::FromNormalized(0.0f, 0.0f, 0.0f, 0.0f);
+			}
+			case StockColor::Black:
+			{
+				return Color::FromNormalized(0.0f, 0.0f, 0.0f);
+			}
+			case StockColor::White:
+			{
+				return Color::FromNormalized(1.0f, 1.0f, 1.0f);
+			}
+			case StockColor::Cyan:
+			{
+				return Color::FromNormalized(0.0f, 1.0f, 1.0f);
+			}
+			case StockColor::Blue:
+			{
+				return Color::FromNormalized(0.0f, 0.0f, 1.0f);
+			}
+			case StockColor::Red:
+			{
+				return Color::FromNormalized(1.0f, 0.0f, 0.0f);
+			}
+			case StockColor::Green:
+			{
+				return Color::FromNormalized(0.0f, 1.0f, 0.0f);
+			}
+			case StockColor::Yellow:
+			{
+				return Color::FromNormalized(1.0f, 1.0f, 0.0f);
+			}
+			case StockColor::Gray:
+			{
+				return Color::FromNormalized(0.5f, 0.5f, 0.5f);
+			}
+			case StockColor::LightGray:
+			{
+				return Color::FromNormalized(0.83f, 0.83f, 0.83f);
+			}
+			case StockColor::MediumGray:
+			{
+				return Color::FromNormalized(0.66f, 0.66f, 0.66f);
+			}
+		};
+		return {};
+	}
+}

@@ -4,6 +4,25 @@
 
 namespace kxf
 {
+	enum class StockColor
+	{
+		Transparent,
+
+		Black,
+		White,
+		Cyan,
+		Blue,
+		Red,
+		Green,
+		Yellow,
+		Gray,
+		LightGray,
+		MediumGray
+	};
+}
+
+namespace kxf
+{
 	template<class T, bool isInteger = std::is_integral_v<T> && std::is_unsigned_v<T>, bool isFloatingPoint = std::is_floating_point_v<T>>
 	struct ColorTraits
 	{
