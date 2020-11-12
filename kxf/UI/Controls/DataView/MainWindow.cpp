@@ -10,10 +10,8 @@
 #include "kxf/UI/Windows/Frame.h"
 #include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/Private/UxThemeDefines.h"
-#include "kxf/Drawing/GDIWindowContext.h"
-#include "kxf/Drawing/GDIMemoryContext.h"
-#include "kxf/Drawing/GDIAction.h"
-#include "kxf/Drawing/GCOperations.h"
+#include "kxf/Drawing/GDIRenderer.h"
+#include "kxf/Drawing/GraphicsRenderer/GCOperations.h"
 #include "kxf/System/SystemInformation.h"
 #include <wx/popupwin.h>
 #include <wx/generic/private/widthcalc.h>

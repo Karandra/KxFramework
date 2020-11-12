@@ -4,8 +4,7 @@
 #include "../Node.h"
 #include "../Column.h"
 #include "kxf/UI/Controls/HTMLWindow.h"
-#include "kxf/Drawing/GDIContext.h"
-#include "kxf/Drawing/GDIAction.h"
+#include "kxf/Drawing/GDIRenderer.h"
 #include <wx/html/htmprint.h>
 
 namespace

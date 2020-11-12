@@ -4,7 +4,7 @@
 #include "Node.h"
 #include "View.h"
 #include "MainWindow.h"
-#include "kxf/Drawing/GDIAction.h"
+#include "kxf/Drawing/GDIRenderer.h"
 
 namespace kxf::UI::DataView
 {

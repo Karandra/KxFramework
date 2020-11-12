@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "AuiNotebook.h"
 #include "kxf/Drawing/UxTheme.h"
-#include "kxf/Drawing/GDIContext.h"
+#include "kxf/Drawing/GDIRenderer.h"
 
 namespace kxf::UI
 {

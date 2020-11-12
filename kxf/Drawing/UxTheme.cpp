@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "UxTheme.h"
-#include "GDIContext.h"
-#include "GDIAction.h"
+#include "GDIRenderer.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/Drawing.h"
 #include "kxf/System/SystemInformation.h"

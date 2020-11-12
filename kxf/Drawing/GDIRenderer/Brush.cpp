@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Brush.h"
-#include "Private/Common.h"
-#include "Private/GDI.h"
+#include "../Private/Common.h"
+#include "../Private/GDI.h"
 
 namespace
 {

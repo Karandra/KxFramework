@@ -1,8 +1,8 @@
 #pragma once
 #include "kxf/Sciter/Common.h"
 #include "kxf/Sciter/Utility/HandleWrapper.h"
-#include "kxf/Drawing/Pen.h"
-#include "kxf/Drawing/Brush.h"
+#include "kxf/Drawing/GDIRenderer/Pen.h"
+#include "kxf/Drawing/GDIRenderer/Brush.h"
 
 namespace kxf::Sciter
 {

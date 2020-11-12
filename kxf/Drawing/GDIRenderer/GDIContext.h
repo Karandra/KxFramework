@@ -1,16 +1,8 @@
 #pragma once
 #include "Common.h"
-#include "Color.h"
-#include "Icon.h"
-#include "Bitmap.h"
-#include "Region.h"
-#include "Font.h"
 #include "Brush.h"
 #include "Pen.h"
-#include "TextExtent.h"
-#include "ColorDepth.h"
-#include "IGDIObject.h"
-#include "Private/Common.h"
+#include "../Private/Common.h"
 #include "kxf/UI/Common.h"
 #include <wx/dc.h>
 #include <wx/graphics.h>
@@ -18,38 +10,6 @@
 namespace kxf
 {
 	class IGraphicsContext;
-
-	enum class GDIMappingMode
-	{
-		Text = wxMM_TEXT,
-		Metric = wxMM_METRIC,
-		LoMetric = wxMM_LOMETRIC,
-		Twips = wxMM_TWIPS,
-		Points = wxMM_POINTS,
-	};
-	enum class GDILogicalFunction
-	{
-		Nop = wxNO_OP, // dst
-
-		Set = wxSET, // 1
-		Clear = wxCLEAR, // 0
-		Invert = wxINVERT, // NOT dst
-		Copy = wxCOPY, // src
-		And = wxAND, // src AND dst
-		Or = wxOR, // src OR dst
-		Nor = wxNOR, // (NOT src) AND (NOT dst)
-		Nand = wxNAND, // (NOT src) OR (NOT dst)
-		Equiv = wxEQUIV, // (NOT src) XOR dst
-
-		OrReverse = wxOR_REVERSE, // src OR (NOT dst)
-		AndReverse = wxAND_REVERSE, // src AND (NOT dst)
-		AndInvert = wxAND_INVERT, // (NOT src) AND dst
-		OrInvert = wxOR_INVERT, // (NOT src) OR dst
-		SrcInvert = wxSRC_INVERT, // (NOT src)
-	};
-
-	using GDIFontMetrics = Drawing::BasicFontMetrics<int>;
-	using GDITextExtent = Drawing::BasicTextExtent<int>;
 }
 
 namespace kxf
@@ -57,10 +17,6 @@ namespace kxf
 	class KX_API GDIContext: public RTTI::ExtendInterface<GDIContext, IGDIObject>
 	{
 		KxRTTI_DeclareIID(GDIContext, {0x7f0f1843, 0x27b9, 0x40df, {0x8d, 0xdc, 0x27, 0x98, 0x52, 0x44, 0xb7, 0x20}});
-
-		protected:
-			template<class T>
-			using TCoordPair = typename Geometry::OrderedPairTemplate<T, int>;
 
 		protected:
 			wxDC* m_DC = nullptr;
@@ -245,13 +201,13 @@ namespace kxf
 
 			// Coordinate conversion functions
 			template<class TDerived, class TPair = TDerived>
-			TPair DeviceToLogical(const TCoordPair<TDerived>& pair) const
+			TPair DeviceToLogical(const GDIRenderer::TCoordPair<TDerived>& pair) const
 			{
 				return {m_DC->DeviceToLogicalX(pair.GetX()), m_DC->DeviceToLogicalY(pair.GetY())};
 			}
 
 			template<class TDerived, class TPair = TDerived>
-			TPair DeviceToLogicalRelative(const TCoordPair<TDerived>& pair) const
+			TPair DeviceToLogicalRelative(const GDIRenderer::TCoordPair<TDerived>& pair) const
 			{
 				return {m_DC->DeviceToLogicalXRel(pair.GetX()), m_DC->DeviceToLogicalYRel(pair.GetY())};
 			}
@@ -262,13 +218,13 @@ namespace kxf
 			}
 
 			template<class TDerived, class TPair = TDerived>
-			TPair LogicalToDevice(const TCoordPair<TDerived>& pair) const
+			TPair LogicalToDevice(const GDIRenderer::TCoordPair<TDerived>& pair) const
 			{
 				return {m_DC->LogicalToDeviceX(pair.GetX()), m_DC->LogicalToDeviceY(pair.GetY())};
 			}
 
 			template<class TDerived, class TPair = TDerived>
-			TPair LogicalToDeviceRelative(const TCoordPair<TDerived>& pair) const
+			TPair LogicalToDeviceRelative(const GDIRenderer::TCoordPair<TDerived>& pair) const
 			{
 				return {m_DC->LogicalToDeviceXRel(pair.GetX()), m_DC->LogicalToDeviceYRel(pair.GetY())};
 			}

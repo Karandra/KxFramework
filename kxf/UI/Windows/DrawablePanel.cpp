@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include "DrawablePanel.h"
 #include "kxf/Drawing/UxTheme.h"
-#include "kxf/Drawing/GDIContext.h"
-#include "kxf/Drawing/GDIMemoryContext.h"
-#include "kxf/Drawing/GDIWindowContext.h"
+#include "kxf/Drawing/GDIRenderer.h"
 #include <wx/bookctrl.h>
 
 namespace

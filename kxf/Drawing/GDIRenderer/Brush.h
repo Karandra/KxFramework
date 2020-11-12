@@ -1,9 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "Color.h"
-#include "Bitmap.h"
-#include "IGDIObject.h"
-#include "Private/Common.h"
+#include "../Private/Common.h"
 #include <wx/brush.h>
 
 namespace kxf

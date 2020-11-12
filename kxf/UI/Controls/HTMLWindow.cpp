@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "HTMLWindow.h"
-#include "kxf/Localization/Common.h"
-#include "kxf/Drawing/GDIContext.h"
 #include "kxf/UI/Menus/Menu.h"
+#include "kxf/Drawing/GDIRenderer.h"
+#include "kxf/Localization/Common.h"
 #include <wx/clipbrd.h>
 #include <wx/dcbuffer.h>
 #include <wx/dcgraph.h>

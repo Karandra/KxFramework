@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ImageList.h"
-#include "GDIContext.h"
+#include "GDIRenderer.h"
 #include "kxf/System/COM.h"
 #include "kxf/Utility/Common.h"
 

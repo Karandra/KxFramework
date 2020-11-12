@@ -3,7 +3,7 @@
 #include "Cursor.h"
 #include "Icon.h"
 #include "Image.h"
-#include "GDIContext.h"
+#include "GDIRenderer.h"
 #include "Private/GDI.h"
 
 namespace kxf

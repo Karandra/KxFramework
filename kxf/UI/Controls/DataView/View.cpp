@@ -6,7 +6,7 @@
 #include "Column.h"
 #include "Renderer.h"
 #include "kxf/UI/Menus/Menu.h"
-#include "kxf/Drawing/GDIWindowContext.h"
+#include "kxf/Drawing/GDIRenderer.h"
 
 namespace
 {

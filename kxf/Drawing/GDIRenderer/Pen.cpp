@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Pen.h"
-#include "Private/GDI.h"
+#include "../Private/GDI.h"
 
 namespace
 {

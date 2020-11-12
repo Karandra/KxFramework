@@ -1,7 +1,5 @@
 #pragma once
 #include "Common.h"
-#include "Color.h"
-#include "Font.h"
 #include "GDIContext.h"
 
 namespace kxf::Drawing

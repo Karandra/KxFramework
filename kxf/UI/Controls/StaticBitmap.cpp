@@ -3,7 +3,7 @@
 #include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/Bitmap.h"
 #include "kxf/Drawing/Image.h"
-#include "kxf/Drawing/GDIWindowContext.h"
+#include "kxf/Drawing/GDIRenderer.h"
 
 namespace kxf::UI
 {
