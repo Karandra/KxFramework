@@ -3,39 +3,25 @@
 #include "Color.h"
 #include "Bitmap.h"
 #include "IGDIObject.h"
+#include "Private/Common.h"
 #include <wx/brush.h>
 
 namespace kxf
 {
-	enum class BrushStyle
-	{
-		None = wxBRUSHSTYLE_INVALID,
-
-		Solid = wxBRUSHSTYLE_SOLID,
-		Stipple = wxBRUSHSTYLE_STIPPLE,
-		Transparent = wxBRUSHSTYLE_TRANSPARENT,
-
-		HatchVertical = wxBRUSHSTYLE_VERTICAL_HATCH,
-		HatchHorizontal = wxBRUSHSTYLE_HORIZONTAL_HATCH,
-		HatchCross = wxBRUSHSTYLE_CROSS_HATCH,
-		HatchCrossDiagonal = wxBRUSHSTYLE_CROSSDIAG_HATCH,
-		HatchForwardDiagonal = wxBRUSHSTYLE_FDIAGONAL_HATCH,
-		HatchBackwardDiagonal = wxBRUSHSTYLE_BDIAGONAL_HATCH,
-	};
-
 	enum class StockBrush
 	{
+		Transparent,
+
 		Black,
+		White,
 		Cyan,
 		Blue,
 		Red,
 		Green,
 		Yellow,
-		White,
 		Gray,
 		LightGray,
-		MediumGray,
-		Transparent
+		MediumGray
 	};
 }
 
@@ -55,15 +41,15 @@ namespace kxf
 			{
 			}
 			Brush(const wxColour& color)
-				:m_Brush(color)
+				:m_Brush(color, wxBRUSHSTYLE_SOLID)
 			{
 			}
 			Brush(const Brush& other)
 				:m_Brush(other.m_Brush)
 			{
 			}
-			Brush(const Color& color, BrushStyle style = BrushStyle::Solid)
-				:m_Brush(color.ToWxColor(), static_cast<wxBrushStyle>(style))
+			Brush(const Color& color)
+				:m_Brush(color.ToWxColor(), wxBRUSHSTYLE_SOLID)
 			{
 			}
 			Brush(const Bitmap& stippleBitmap)
@@ -118,13 +104,22 @@ namespace kxf
 				m_Brush.SetColour(color.ToWxColor());
 			}
 
-			BrushStyle GetStyle() const
+			bool IsTransparent() const
 			{
-				return static_cast<BrushStyle>(m_Brush.GetStyle());
+				return m_Brush.IsTransparent();
 			}
-			void SetStyle(BrushStyle style)
+			void SetTransparent()
 			{
-				m_Brush.SetStyle(static_cast<wxBrushStyle>(style));
+				m_Brush.SetStyle(wxBRUSHSTYLE_TRANSPARENT);
+			}
+
+			bool IsSolid() const
+			{
+				return m_Brush.GetStyle() == wxBRUSHSTYLE_SOLID;
+			}
+			void SetSolid()
+			{
+				m_Brush.SetStyle(wxBRUSHSTYLE_SOLID);
 			}
 
 			Bitmap GetStipple() const
@@ -139,15 +134,20 @@ namespace kxf
 			void SetStipple(const Bitmap& stipple)
 			{
 				m_Brush.SetStipple(stipple.ToWxBitmap());
+				m_Brush.SetStyle(wxBRUSHSTYLE_STIPPLE);
 			}
 
-			bool IsHatched() const
+			bool IsHatch() const
 			{
 				return m_Brush.IsHatch();
 			}
-			bool IsTransparent() const
+			HatchStyle GetHatchStyle() const
 			{
-				return m_Brush.IsTransparent();
+				return Drawing::Private::MapHatchStyle(static_cast<wxHatchStyle>(m_Brush.GetStyle()));
+			}
+			void SetHatchStyle(HatchStyle style)
+			{
+				m_Brush.SetStyle(static_cast<wxBrushStyle>(Drawing::Private::MapHatchStyle(style)));
 			}
 
 		public:

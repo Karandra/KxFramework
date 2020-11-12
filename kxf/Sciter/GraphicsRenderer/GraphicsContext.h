@@ -83,8 +83,8 @@ namespace kxf::Sciter
 
 			// Drawing functions
 			GraphicsPath CreatePath();
-			void DrawPath(const GraphicsPath& path, PolygonFillMode fillStyle = PolygonFillMode::OddEvenRule);
-			void FillPath(const GraphicsPath& path, PolygonFillMode fillStyle = PolygonFillMode::OddEvenRule);
+			void DrawPath(const GraphicsPath& path, PolygonFill fillStyle = PolygonFill::OddEvenRule);
+			void FillPath(const GraphicsPath& path, PolygonFill fillStyle = PolygonFill::OddEvenRule);
 			void StrokePath(const GraphicsPath& path);
 
 			void DrawEllipse(const RectD& rect);

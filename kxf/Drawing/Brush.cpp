@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Brush.h"
+#include "Private/Common.h"
 #include "Private/GDI.h"
 
 namespace
@@ -106,7 +107,7 @@ namespace kxf
 							refData->m_colour = Color::FromCOLORREF(brushInfo.lbColor).ToWxColor();
 							if (brushInfo.lbStyle == BS_HATCHED)
 							{
-								refData->m_style = static_cast<wxBrushStyle>(Drawing::Private::MapHatchStyle(static_cast<int>(brushInfo.lbHatch)));
+								refData->m_style = static_cast<wxBrushStyle>(Drawing::Private::MapNativeHatchStyle(static_cast<int>(brushInfo.lbHatch)));
 							}
 							else
 							{

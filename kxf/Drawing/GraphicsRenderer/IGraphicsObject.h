@@ -1,0 +1,46 @@
+#pragma once
+#include "Common.h"
+#include "kxf/RTTI/QueryInterface.h"
+
+namespace kxf
+{
+	class IGraphicsRenderer;
+}
+
+namespace kxf
+{
+	class KX_API IGraphicsObject: public RTTI::Interface<IGraphicsObject>
+	{
+		KxRTTI_DeclareIID(IGraphicsObject, {0x92c11e79, 0x18c8, 0x4b68, {0x83, 0xf6, 0x3b, 0x55, 0x50, 0xb5, 0x3f, 0x6e}});
+
+		public:
+			virtual ~IGraphicsObject() = default;
+
+		public:
+			virtual bool IsNull() const = 0;
+			virtual bool IsSameAs(const IGraphicsObject& other) const = 0;
+			virtual std::unique_ptr<IGraphicsObject> Clone() const = 0;
+
+			virtual IGraphicsRenderer& GetRenderer() const = 0;
+			virtual void* GetNativeHandle() const = 0;
+
+		public:
+			explicit operator bool() const
+			{
+				return !IsNull();
+			}
+			bool operator!() const
+			{
+				return IsNull();
+			}
+
+			bool operator==(const IGraphicsObject& other) const
+			{
+				return IsSameAs(other);
+			}
+			bool operator!=(const IGraphicsObject& other) const
+			{
+				return !IsSameAs(other);
+			}
+	};
+}

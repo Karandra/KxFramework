@@ -3,61 +3,26 @@
 #include "Color.h"
 #include "Bitmap.h"
 #include "IGDIObject.h"
+#include "Private/Common.h"
 #include <wx/brush.h>
 
 namespace kxf
 {
-	enum class PenStyle
-	{
-		None = wxPENSTYLE_INVALID,
-
-		Solid = wxPENSTYLE_SOLID,
-		Stipple = wxPENSTYLE_STIPPLE,
-		Transparent = wxBRUSHSTYLE_TRANSPARENT,
-
-		Dot = wxPENSTYLE_DOT,
-		DotDash = wxPENSTYLE_DOT_DASH,
-		ShortDash = wxPENSTYLE_SHORT_DASH,
-		LongDash = wxPENSTYLE_LONG_DASH,
-		UserDash = wxPENSTYLE_USER_DASH,
-
-		HatchVertical = wxPENSTYLE_VERTICAL_HATCH,
-		HatchHorizontal = wxPENSTYLE_HORIZONTAL_HATCH,
-		HatchCross = wxPENSTYLE_CROSS_HATCH,
-		HatchCrossDiagonal = wxPENSTYLE_CROSSDIAG_HATCH,
-		HatchForwardDiagonal = wxPENSTYLE_FDIAGONAL_HATCH,
-		HatchBackwardDiagonal = wxPENSTYLE_BDIAGONAL_HATCH,
-	};
-	enum class PenCap
-	{
-		None = wxCAP_INVALID,
-		Flat = wxCAP_BUTT,
-		Round = wxCAP_ROUND,
-		Square = wxCAP_PROJECTING,
-	};
-	enum class PenJoin
-	{
-		None = wxJOIN_INVALID,
-
-		Bevel = wxJOIN_BEVEL,
-		Miter = wxJOIN_MITER,
-		Round = wxJOIN_ROUND,
-	};
-
 	enum class StockPen
 	{
+		Transparent,
+
 		Black,
 		BlackDashed,
+		White,
 		Cyan,
 		Blue,
 		Red,
 		Green,
 		Yellow,
-		White,
 		Gray,
 		LightGray,
-		MediumGray,
-		Transparent
+		MediumGray
 	};
 }
 
@@ -80,15 +45,15 @@ namespace kxf
 			{
 			}
 			Pen(const wxColour& color)
-				:m_Pen(color)
+				:m_Pen(color, wxPENSTYLE_SOLID)
 			{
 			}
 			Pen(const Pen& other)
 				:m_Pen(other.m_Pen)
 			{
 			}
-			Pen(const Color& color, PenStyle style = PenStyle::Solid)
-				:m_Pen(color.ToWxColor(), static_cast<wxBrushStyle>(style))
+			Pen(const Color& color)
+				:m_Pen(color.ToWxColor(), wxPENSTYLE_SOLID)
 			{
 			}
 			Pen(const Bitmap& stippleBitmap, int width)
@@ -146,35 +111,54 @@ namespace kxf
 				m_Pen.SetColour(color.ToWxColor());
 			}
 
-			PenStyle GetStyle() const
+			bool IsSolid() const
 			{
-				return static_cast<PenStyle>(m_Pen.GetStyle());
+				return m_Pen.GetStyle() == wxPENSTYLE_SOLID;
 			}
-			void SetStyle(PenStyle style)
+			void SetSolid()
 			{
-				m_Pen.SetStyle(static_cast<wxPenStyle>(style));
+				m_Pen.SetStyle(wxPENSTYLE_SOLID);
 			}
+
 			bool IsTransparent() const
 			{
 				return m_Pen.IsTransparent();
 			}
-
-			PenJoin GetJoin() const
+			void SetTransparent()
 			{
-				return static_cast<PenJoin>(m_Pen.GetJoin());
-			}
-			void SetJoin(PenJoin join)
-			{
-				m_Pen.SetJoin(static_cast<wxPenJoin>(join));
+				m_Pen.SetStyle(wxPENSTYLE_TRANSPARENT);
 			}
 
-			PenCap GetCap() const
+			bool IsHatch() const
 			{
-				return static_cast<PenCap>(m_Pen.GetCap());
+				const auto style = ToInt(m_Pen.GetStyle());
+				return style >= wxPENSTYLE_FIRST_HATCH && style <= wxPENSTYLE_LAST_HATCH;
 			}
-			void SetJoin(PenCap cap)
+			HatchStyle GetHatchStyle() const
 			{
-				m_Pen.SetCap(static_cast<wxPenCap>(cap));
+				return Drawing::Private::MapHatchStyle(static_cast<wxHatchStyle>(m_Pen.GetStyle()));
+			}
+			void SetHatchStyle(HatchStyle style)
+			{
+				m_Pen.SetStyle(static_cast<wxPenStyle>(Drawing::Private::MapHatchStyle(style)));
+			}
+
+			LineJoin GetJoin() const
+			{
+				return Drawing::Private::MapLineJoin(m_Pen.GetJoin());
+			}
+			void SetJoin(LineJoin join)
+			{
+				m_Pen.SetJoin(Drawing::Private::MapLineJoin(join));
+			}
+
+			LineCap GetCap() const
+			{
+				return Drawing::Private::MapLineCap(m_Pen.GetCap());
+			}
+			void SetJoin(LineCap cap)
+			{
+				m_Pen.SetCap(Drawing::Private::MapLineCap(cap));
 			}
 
 			Bitmap GetStipple() const
@@ -198,6 +182,18 @@ namespace kxf
 			void SetWidth(int width)
 			{
 				m_Pen.SetWidth(width);
+			}
+
+			DashStyle GetDashStyle() const
+			{
+				return Drawing::Private::MapDashStyle(static_cast<wxDeprecatedGUIConstants>(m_Pen.GetStyle()));
+			}
+			void SetDashStyle(DashStyle style)
+			{
+				if (auto wxStyle = Drawing::Private::MapDashStyle(style))
+				{
+					m_Pen.SetStyle(static_cast<wxPenStyle>(*wxStyle));
+				}
 			}
 
 			size_t GetDashCount() const

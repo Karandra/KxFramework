@@ -81,11 +81,11 @@ namespace kxf
 					// Convert join type if the pen is geometric
 					if ((penInfoEx.elpPenStyle & PS_TYPE_MASK) == PS_GEOMETRIC)
 					{
-						refData->m_join = Drawing::Private::MapPenJoin(penInfoEx.elpPenStyle & PS_JOIN_MASK);
+						refData->m_join = Drawing::Private::MapNativePenJoin(penInfoEx.elpPenStyle & PS_JOIN_MASK);
 					}
 
 					// Convert pen style
-					refData->m_style = Drawing::Private::MapPenStyle(penInfoEx.elpPenStyle & PS_STYLE_MASK);
+					refData->m_style = Drawing::Private::MapNativePenStyle(penInfoEx.elpPenStyle & PS_STYLE_MASK);
 
 					// Convert brush style
 					switch (penInfoEx.elpBrushStyle)
@@ -127,7 +127,7 @@ namespace kxf
 							refData->m_colour = Color::FromCOLORREF(penInfoEx.elpColor).ToWxColor();
 							if (penInfoEx.elpBrushStyle == BS_HATCHED)
 							{
-								refData->m_style = static_cast<wxPenStyle>(Drawing::Private::MapHatchStyle(static_cast<int>(penInfoEx.elpHatch)));
+								refData->m_style = static_cast<wxPenStyle>(Drawing::Private::MapNativeHatchStyle(static_cast<int>(penInfoEx.elpHatch)));
 							}
 							else
 							{
@@ -150,7 +150,7 @@ namespace kxf
 				// Regular pen config
 				if (LOGPEN penInfo = {}; ::GetObjectW(handle, sizeof(penInfo), &penInfo) != 0)
 				{
-					refData->m_style = Drawing::Private::MapPenStyle(penInfo.lopnStyle);
+					refData->m_style = Drawing::Private::MapNativePenStyle(penInfo.lopnStyle);
 					refData->m_width = penInfo.lopnWidth.x;
 					refData->m_colour = Color::FromCOLORREF(penInfo.lopnColor).ToWxColor();
 				}

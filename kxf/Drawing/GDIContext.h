@@ -7,14 +7,18 @@
 #include "Font.h"
 #include "Brush.h"
 #include "Pen.h"
+#include "TextExtent.h"
 #include "ColorDepth.h"
 #include "IGDIObject.h"
+#include "Private/Common.h"
 #include "kxf/UI/Common.h"
 #include <wx/dc.h>
 #include <wx/graphics.h>
 
 namespace kxf
 {
+	class IGraphicsContext;
+
 	enum class GDIMappingMode
 	{
 		Text = wxMM_TEXT,
@@ -44,28 +48,8 @@ namespace kxf
 		SrcInvert = wxSRC_INVERT, // (NOT src)
 	};
 
-	class TextExtent final
-	{
-		private:
-			Size m_Extent;
-			FontMetrics m_FontMetrics;
-
-		public:
-			constexpr TextExtent(Size extent, FontMetrics metrics = {}) noexcept
-				:m_Extent(std::move(extent)), m_FontMetrics(std::move(metrics))
-			{
-			}
-
-		public:
-			constexpr Size GetExtent() const noexcept
-			{
-				return m_Extent;
-			}
-			constexpr FontMetrics GetFontMetrics() const noexcept
-			{
-				return m_FontMetrics;
-			}
-	};
+	using GDIFontMetrics = Drawing::BasicFontMetrics<int>;
+	using GDITextExtent = Drawing::BasicTextExtent<int>;
 }
 
 namespace kxf
@@ -462,9 +446,12 @@ namespace kxf
 				m_DC->DrawBitmap(bitmap.ToWxBitmap(), pos, false);
 			}
 
-			void FloodFill(const Point& pos, const Color& color, FloodFillMode fillMode)
+			void FloodFill(const Point& pos, const Color& color, FloodFill fillMode)
 			{
-				m_DC->FloodFill(pos, color, static_cast<wxFloodFillStyle>(fillMode));
+				if (auto modeWx = Drawing::Private::MapFloodFill(fillMode))
+				{
+					m_DC->FloodFill(pos, color, *modeWx);
+				}
 			}
 
 			// Clipping region functions
@@ -480,8 +467,7 @@ namespace kxf
 			{
 				m_DC->DestroyClippingRegion();
 			}
-
-			std::optional<Rect> GetClippingBox() const
+			Rect GetClippingBox() const
 			{
 				wxRect rect;
 				if (m_DC->GetClippingBox(rect))
@@ -509,7 +495,7 @@ namespace kxf
 			{
 				return m_DC->GetCharHeight();
 			}
-			FontMetrics GetFontMetrics() const
+			GDIFontMetrics GetFontMetrics() const
 			{
 				return m_DC->GetFontMetrics();
 			}
@@ -518,7 +504,7 @@ namespace kxf
 			{
 				return m_DC->GetTextExtent(text);
 			}
-			TextExtent GetTextExtent(const String& text, const Font& font) const
+			GDITextExtent GetTextExtent(const String& text, const Font& font) const
 			{
 				wxSize size;
 				wxFontMetrics fontMetrics = m_DC->GetFontMetrics();
@@ -530,7 +516,7 @@ namespace kxf
 			{
 				return m_DC->GetMultiLineTextExtent(text);
 			}
-			TextExtent GetMultiLineTextExtent(const String& text, const Font& font) const
+			GDITextExtent GetMultiLineTextExtent(const String& text, const Font& font) const
 			{
 				wxSize size;
 				wxFontMetrics fontMetrics = m_DC->GetFontMetrics();

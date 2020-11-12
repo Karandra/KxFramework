@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "Bitmap.h"
 #include "IGDIObject.h"
+#include "Private/Common.h"
 #include <wx/region.h>
 
 namespace kxf
@@ -41,28 +42,37 @@ namespace kxf
 			{
 			}
 
-			Region(const Point* points, size_t count, PolygonFillMode fillMode = PolygonFillMode::OddEvenRule)
+			Region(const Point* points, size_t count, PolygonFill fillMode = PolygonFill::OddEvenRule)
 			{
-				std::vector<wxPoint> pointsBuffer = {points, points + count};
-				m_Region = wxRegion(pointsBuffer.size(), pointsBuffer.data(), static_cast<wxPolygonFillMode>(fillMode));
+				if (auto modeWx = Drawing::Private::MapPolygonFill(fillMode))
+				{
+					std::vector<wxPoint> pointsBuffer = {points, points + count};
+					m_Region = wxRegion(pointsBuffer.size(), pointsBuffer.data(), *modeWx);
+				}
 			}
 
 			template<size_t N>
-			Region(const Point(&points)[N], PolygonFillMode fillMode = PolygonFillMode::OddEvenRule)
+			Region(const Point(&points)[N], PolygonFill fillMode = PolygonFill::OddEvenRule)
 			{
-				std::array<wxPoint, N> pointsBuffer;
-				std::copy_n(std::begin(points), N, pointsBuffer.begin());
+				if (auto modeWx = Drawing::Private::MapPolygonFill(fillMode))
+				{
+					std::array<wxPoint, N> pointsBuffer;
+					std::copy_n(std::begin(points), N, pointsBuffer.begin());
 
-				m_Region = wxRegion(pointsBuffer.size(), pointsBuffer.data(), static_cast<wxPolygonFillMode>(fillMode));
+					m_Region = wxRegion(pointsBuffer.size(), pointsBuffer.data(), *modeWx);
+				}
 			}
 
 			template<size_t N>
-			Region(const std::array<Point, N>& points, PolygonFillMode fillMode = PolygonFillMode::OddEvenRule)
+			Region(const std::array<Point, N>& points, PolygonFill fillMode = PolygonFill::OddEvenRule)
 			{
-				std::array<wxPoint, N> pointsBuffer;
-				std::copy_n(std::begin(points), N, pointsBuffer.begin());
+				if (auto modeWx = Drawing::Private::MapPolygonFill(fillMode))
+				{
+					std::array<wxPoint, N> pointsBuffer;
+					std::copy_n(std::begin(points), N, pointsBuffer.begin());
 
-				m_Region = wxRegion(pointsBuffer.size(), pointsBuffer.data(), static_cast<wxPolygonFillMode>(fillMode));
+					m_Region = wxRegion(pointsBuffer.size(), pointsBuffer.data(), *modeWx);
+				}
 			}
 
 			virtual ~Region() = default;
