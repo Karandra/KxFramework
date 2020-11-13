@@ -1673,6 +1673,9 @@
     <ClInclude Include="kxf\Drawing\GDIRenderer\Common.h">
       <Filter>kxf\Drawing\GDIRenderer</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\GraphicsAction.h">
+      <Filter>kxf\Drawing\GDIRenderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">

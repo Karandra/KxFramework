@@ -10,3 +10,5 @@
 #include "GraphicsRenderer/IGraphicsFont.h"
 #include "GraphicsRenderer/IGraphicsBrush.h"
 #include "GraphicsRenderer/IGraphicsPen.h"
+
+#include "GraphicsRenderer/GraphicsAction.h"

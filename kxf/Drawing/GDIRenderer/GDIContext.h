@@ -587,9 +587,9 @@ namespace kxf
 			}
 
 			// Page and document start/end functions
-			void StartDocument(const String& message)
+			bool StartDocument(const String& message)
 			{
-				m_DC->StartDoc(message);
+				return m_DC->StartDoc(message);
 			}
 			void EndDocument()
 			{

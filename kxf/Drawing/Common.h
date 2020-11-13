@@ -61,19 +61,22 @@ namespace kxf
 		Default,
 		BestAvailable = -2
 	};
-	enum class CompositingMode
+	enum class CompositionMode
 	{
+		None = -1,
+
 		SourceOver,
 		SourceCopy
 	};
-	enum class InterpolationMode
+	enum class InterpolationQuality
 	{
+		None = -1,
+		BestAvailable = -2,
 		Default = 0,
 
 		NearestNeighbor,
 		Bilinear,
 		Bicubic,
-		BestAvailable = -2
 	};
 
 	// https://docs.microsoft.com/en-us/windows/win32/api/gdiplusenums/ne-gdiplusenums-hatchstyle

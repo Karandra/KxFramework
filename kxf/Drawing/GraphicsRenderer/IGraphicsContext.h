@@ -136,14 +136,14 @@ namespace kxf
 			virtual AntialiasMode GetAntialiasMode() const = 0;
 			virtual void SetAntialiasMode(AntialiasMode mode) = 0;
 
-			virtual CompositingMode GetCompositingMode() const = 0;
-			virtual void SetCompositingMode(CompositingMode mode) = 0;
+			virtual CompositionMode GetCompositionMode() const = 0;
+			virtual void SetCompositionMode(CompositionMode mode) = 0;
 
-			virtual InterpolationMode GetInterpolationMode() const = 0;
-			virtual void SetInterpolationMode(InterpolationMode mode) = 0;
+			virtual InterpolationQuality GetInterpolationQuality() const = 0;
+			virtual void SetInterpolationQuality(InterpolationQuality mode) = 0;
 
 			// Page and document start/end functions
-			virtual void StartDocument(const String& message) = 0;
+			virtual bool StartDocument(const String& message) = 0;
 			virtual void EndDocument() = 0;
 
 			virtual void StartPage() = 0;
@@ -155,6 +155,8 @@ namespace kxf
 
 			virtual void PushState() = 0;
 			virtual void PopState() = 0;
+
+			virtual void Flush() = 0;
 
 			// Offset management
 			virtual bool ShouldOffset() const = 0;

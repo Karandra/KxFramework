@@ -236,6 +236,7 @@
     <ClInclude Include="kxf\Drawing\GraphicsRenderer\BitmapGraphicsCanvas.h" />
     <ClInclude Include="kxf\Drawing\GraphicsRenderer\Common.h" />
     <ClInclude Include="kxf\Drawing\GraphicsRenderer\GCOperations.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\GraphicsAction.h" />
     <ClInclude Include="kxf\Drawing\GraphicsRenderer\GraphicsCanvas.h" />
     <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsBrush.h" />
     <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsContext.h" />
