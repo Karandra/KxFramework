@@ -870,8 +870,8 @@ namespace kxf::Geometry
 			}
 			constexpr TDerived& MoveCenterTo(const TPoint& center) noexcept
 			{
-				m_X += center.m_X - (m_X + m_Width / 2);
-				m_Y += center.m_Y - (m_Y + m_Height / 2);
+				m_X += center.GetX() - (m_X + m_Width / 2);
+				m_Y += center.GetY() - (m_Y + m_Height / 2);
 
 				return Self();
 			}
