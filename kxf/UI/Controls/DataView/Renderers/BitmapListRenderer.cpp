@@ -39,7 +39,7 @@ namespace kxf::UI::DataView
 
 			for (size_t i = 0; i < bitmapCount; i++)
 			{
-				Bitmap bitmap = GetBitmap(i);
+				GDIBitmap bitmap = GetBitmap(i);
 				if (bitmap || !m_BitmapValueBase.ShouldDrawInvalidBitmaps())
 				{
 					const Size bitmapSize = bitmap ? Size(bitmap.GetSize()) : smallIcon;
@@ -83,7 +83,7 @@ namespace kxf::UI::DataView
 
 			for (size_t i = 0; i < bitmapCount; i++)
 			{
-				Bitmap bitmap = GetBitmap(i);
+				GDIBitmap bitmap = GetBitmap(i);
 				if (bitmap || !m_BitmapValueBase.ShouldDrawInvalidBitmaps())
 				{
 					const Size bitmapSize = bitmap ? bitmap.GetSize() : smallIcon;

@@ -36,7 +36,7 @@ namespace kxf::UI
 			const Size size(DefaultComboBoxWidth, wxDefaultCoord);
 			const FlagSet<ComboBoxStyle> comboBoxFlags = ComboBox::DefaultStyle.Clone().Mod(ComboBoxStyle::ReadOnly, style & ComboBoxDialogStyle::ReadOnly);
 
-			if (style & ComboBoxDialogStyle::Bitmap)
+			if (style & ComboBoxDialogStyle::GDIBitmap)
 			{
 				m_View = new BitmapComboBox(m_ContentPanel, wxID_ANY, {}, comboBoxFlags);
 			}

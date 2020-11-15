@@ -26,11 +26,11 @@ namespace kxf::UI
 			return temp;
 		}
 	}
-	bool HTMLWindow::SetupFontsUsing(const Font& normalFont, String& normalFace, String& fixedFace, int& pointSize)
+	bool HTMLWindow::SetupFontsUsing(const GDIFont& normalFont, String& normalFace, String& fixedFace, int& pointSize)
 	{
 		if (normalFont)
 		{
-			Font fixedFont(normalFont);
+			GDIFont fixedFont(normalFont);
 			auto UsingFixedFont = [&]()
 			{
 				pointSize = normalFont.GetPointSize();
@@ -182,7 +182,7 @@ namespace kxf::UI
 		return wxHtmlWindow::OnHTMLOpeningURL(type, url, redirect);
 	}
 
-	bool HTMLWindow::DoSetFont(const Font& normalFont)
+	bool HTMLWindow::DoSetFont(const GDIFont& normalFont)
 	{
 		int pointSize = normalFont.GetPointSize();
 		String normalFace;

@@ -998,9 +998,9 @@ namespace kxf::Sciter
 		return GetSciterAPI()->SciterSetStyleAttribute(ToSciterElement(m_Handle), name, nullptr) == SCDOM_OK;
 	}
 
-	Font Element::GetStyleFont() const
+	GDIFont Element::GetStyleFont() const
 	{
-		Font font;
+		GDIFont font;
 
 		// Family
 		if (String fontFamily = GetStyleAttribute("font-family"); !fontFamily.IsEmpty())
@@ -1085,7 +1085,7 @@ namespace kxf::Sciter
 
 		return font;
 	}
-	bool Element::SetStyleFont(const Font& font)
+	bool Element::SetStyleFont(const GDIFont& font)
 	{
 		if (!IsNull())
 		{

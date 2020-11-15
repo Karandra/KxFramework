@@ -2,8 +2,8 @@
 #include "Common.h"
 #include "GDIPen.h"
 #include "GDIBrush.h"
-#include "../Private/Common.h"
 #include "kxf/UI/Common.h"
+#include "../Private/Common.h"
 #include <wx/dc.h>
 #include <wx/graphics.h>
 
@@ -88,11 +88,11 @@ namespace kxf
 				return m_DC->GetWindow();
 			}
 
-			Bitmap ToBtmap() const
+			GDIBitmap ToBtmap() const
 			{
 				return m_DC->GetAsBitmap();
 			}
-			Bitmap ToBitmap(const Rect& subRect) const
+			GDIBitmap ToBitmap(const Rect& subRect) const
 			{
 				wxRect subRectWx = subRect;
 				return m_DC->GetAsBitmap(&subRectWx);
@@ -383,7 +383,7 @@ namespace kxf
 			{
 				m_DC->DrawRotatedText(text, pos, angle.ToDegrees());
 			}
-			Rect DrawLabel(const String& text, const Rect& rect, const Bitmap& bitmap, FlagSet<Alignment> alignment = Alignment::Left|Alignment::Top, size_t acceleratorIndex = String::npos)
+			Rect DrawLabel(const String& text, const Rect& rect, const GDIBitmap& bitmap, FlagSet<Alignment> alignment = Alignment::Left|Alignment::Top, size_t acceleratorIndex = String::npos)
 			{
 				wxRect boundingBox;
 				m_DC->DrawLabel(text, bitmap.ToWxBitmap(), rect, alignment.ToInt(), acceleratorIndex != String::npos ? static_cast<int>(acceleratorIndex) : -1, &boundingBox);
@@ -400,11 +400,11 @@ namespace kxf
 			{
 				return m_DC->CanDrawBitmap();
 			}
-			void DrawIcon(const Icon& icon, const Point& pos)
+			void DrawIcon(const GDIIcon& icon, const Point& pos)
 			{
 				m_DC->DrawIcon(icon.ToWxIcon(), pos);
 			}
-			void DrawBitmap(const Bitmap& bitmap, const Point& pos)
+			void DrawBitmap(const GDIBitmap& bitmap, const Point& pos)
 			{
 				m_DC->DrawBitmap(bitmap.ToWxBitmap(), pos, false);
 			}
@@ -418,7 +418,7 @@ namespace kxf
 			}
 
 			// Clipping region functions
-			void ClipRegion(const Region& region)
+			void ClipRegion(const GDIRegion& region)
 			{
 				m_DC->SetDeviceClippingRegion(region.ToWxRegion());
 			}
@@ -467,7 +467,7 @@ namespace kxf
 			{
 				return m_DC->GetTextExtent(text);
 			}
-			GDITextExtent GetTextExtent(const String& text, const Font& font) const
+			GDITextExtent GetTextExtent(const String& text, const GDIFont& font) const
 			{
 				wxSize size;
 				wxFontMetrics fontMetrics = m_DC->GetFontMetrics();
@@ -479,7 +479,7 @@ namespace kxf
 			{
 				return m_DC->GetMultiLineTextExtent(text);
 			}
-			GDITextExtent GetMultiLineTextExtent(const String& text, const Font& font) const
+			GDITextExtent GetMultiLineTextExtent(const String& text, const GDIFont& font) const
 			{
 				wxSize size;
 				wxFontMetrics fontMetrics = m_DC->GetFontMetrics();
@@ -548,11 +548,11 @@ namespace kxf
 				};
 			}
 
-			Font GetFont() const
+			GDIFont GetFont() const
 			{
 				return m_DC->GetFont();
 			}
-			void SetFont(const Font& font)
+			void SetFont(const GDIFont& font)
 			{
 				m_DC->SetFont(font.ToWxFont());
 			}

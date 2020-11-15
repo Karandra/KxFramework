@@ -1,55 +1,55 @@
 #include "stdafx.h"
-#include "Bitmap.h"
-#include "Cursor.h"
-#include "Icon.h"
-#include "Image.h"
-#include "GDIRenderer.h"
+#include "GDIBitmap.h"
+#include "GDICursor.h"
+#include "GDIIcon.h"
+#include "../Image.h"
+#include "../GDIRenderer/GDIContext.h"
 #include "Private/GDI.h"
 
 namespace kxf
 {
-	// Bitmap
-	void Bitmap::Initialize()
+	// GDIBitmap
+	void GDIBitmap::Initialize()
 	{
 		m_Bitmap.UseAlpha(true);
 	}
 
-	Bitmap::Bitmap(const Cursor& other)
+	GDIBitmap::GDIBitmap(const GDICursor& other)
 		:m_Bitmap(std::move(other.ToBitmap().m_Bitmap))
 	{
 		Initialize();
 	}
-	Bitmap::Bitmap(const Icon& other)
+	GDIBitmap::GDIBitmap(const GDIIcon& other)
 		:m_Bitmap(std::move(other.ToBitmap().m_Bitmap))
 	{
 		Initialize();
 	}
-	Bitmap::Bitmap(const Image& other)
+	GDIBitmap::GDIBitmap(const Image& other)
 		:m_Bitmap(std::move(other.ToBitmap().m_Bitmap))
 	{
 		Initialize();
 	}
-	Bitmap::Bitmap(const Image& other, const GDIContext& dc)
+	GDIBitmap::GDIBitmap(const Image& other, const GDIContext& dc)
 		:m_Bitmap(other.ToWxImage(), dc.ToWxDC())
 	{
 		Initialize();
 	}
-	Bitmap::Bitmap(const Size& size, const GDIContext& dc)
+	GDIBitmap::GDIBitmap(const Size& size, const GDIContext& dc)
 		:m_Bitmap(size.GetWidth(), size.GetHeight(), dc.ToWxDC())
 	{
 		Initialize();
 	}
 
 	// IGDIObject
-	void* Bitmap::GetHandle() const
+	void* GDIBitmap::GetHandle() const
 	{
 		return m_Bitmap.GetHandle();
 	}
-	void* Bitmap::DetachHandle()
+	void* GDIBitmap::DetachHandle()
 	{
 		return Drawing::Private::DetachGDIImageHandle(m_Bitmap);
 	}
-	void Bitmap::AttachHandle(void* handle)
+	void GDIBitmap::AttachHandle(void* handle)
 	{
 		m_Bitmap = wxBitmap();
 		Initialize();
@@ -67,7 +67,7 @@ namespace kxf
 	}
 
 	// IGDIImage
-	bool Bitmap::Load(IInputStream& stream, ImageFormat format)
+	bool GDIBitmap::Load(IInputStream& stream, ImageFormat format)
 	{
 		Image image;
 		if (image.Load(stream, format))
@@ -77,7 +77,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool Bitmap::Save(IOutputStream& stream, ImageFormat format) const
+	bool GDIBitmap::Save(IOutputStream& stream, ImageFormat format) const
 	{
 		if (m_Bitmap.IsOk() && format != ImageFormat::Any && format != ImageFormat::None)
 		{
@@ -86,19 +86,19 @@ namespace kxf
 		return false;
 	}
 
-	// Bitmap
-	Cursor Bitmap::ToCursor(const Point& hotSpot) const
+	// GDIBitmap
+	GDICursor GDIBitmap::ToCursor(const Point& hotSpot) const
 	{
-		Cursor cursor(wxCursor(m_Bitmap.ConvertToImage()));
+		GDICursor cursor(wxCursor(m_Bitmap.ConvertToImage()));
 		cursor.SetHotSpot(hotSpot);
 
 		return cursor;
 	}
-	Image Bitmap::ToImage() const
+	Image GDIBitmap::ToImage() const
 	{
 		return m_Bitmap.ConvertToImage();
 	}
-	Icon Bitmap::ToIcon() const
+	GDIIcon GDIBitmap::ToIcon() const
 	{
 		wxIcon icon;
 		icon.CopyFromBitmap(m_Bitmap);

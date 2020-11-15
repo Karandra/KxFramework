@@ -10,9 +10,9 @@
 
 namespace kxf
 {
-	class Icon;
-	class Bitmap;
-	class Cursor;
+	class GDIIcon;
+	class GDIBitmap;
+	class GDICursor;
 	class ImageBundle;
 
 	enum class DynamicLibraryLoadFlag: uint32_t
@@ -132,12 +132,12 @@ namespace kxf
 			wxScopedCharBuffer GetResource(const String& resType, const String& resName, const Locale& locale = {}) const;
 
 			size_t GetIconResourceCount(const String& name, const Locale& locale = {}) const;
-			Icon GetIconResource(const String& name, const Size& size = Size::UnspecifiedSize(), const Locale& locale = {}) const;
-			Icon GetIconResource(const String& name, size_t index, const Locale& locale = {}) const;
+			GDIIcon GetIconResource(const String& name, const Size& size = Size::UnspecifiedSize(), const Locale& locale = {}) const;
+			GDIIcon GetIconResource(const String& name, size_t index, const Locale& locale = {}) const;
 			ImageBundle GetIconBundleResource(const String& name, const Locale& locale = {}) const;
 
-			Bitmap GetBitmapResource(const String& name, const Locale& locale = {}) const;
-			Cursor GetCursorResource(const String& name, const Locale& locale = {}) const;
+			GDIBitmap GetBitmapResource(const String& name, const Locale& locale = {}) const;
+			GDICursor GetCursorResource(const String& name, const Locale& locale = {}) const;
 			String GetStringResource(const String& name, const Locale& locale = {}) const;
 			String GetMessageResource(uint32_t messageID, const Locale& locale = {}) const;
 

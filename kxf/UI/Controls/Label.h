@@ -36,8 +36,8 @@ namespace kxf::UI
 			wxEvtHandler m_EvtHandler;
 
 			String m_Label;
-			Bitmap m_Icon;
-			Bitmap m_IconDisabled;
+			GDIBitmap m_Icon;
+			GDIBitmap m_IconDisabled;
 			Color m_ColorNormal;
 			Color m_ColorHighlight;
 			Color m_ColorClick;
@@ -162,11 +162,11 @@ namespace kxf::UI
 				return false;
 			}
 
-			Bitmap GetBitmap()
+			GDIBitmap GetBitmap()
 			{
 				return m_Icon;
 			}
-			void SetBitmap(const Bitmap& image);
+			void SetBitmap(const GDIBitmap& image);
 
 			bool SetForegroundColour(const wxColour& color) override
 			{

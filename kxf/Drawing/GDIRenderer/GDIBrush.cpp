@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GDIBrush.h"
+#include "Private/GDI.h"
 #include "../Private/Common.h"
-#include "../Private/GDI.h"
 
 namespace
 {
@@ -93,7 +93,7 @@ namespace kxf
 						case BS_PATTERN:
 						case BS_PATTERN8X8:
 						{
-							Bitmap bitmap;
+							GDIBitmap bitmap;
 							bitmap.AttachHandle(reinterpret_cast<HBITMAP>(brushInfo.lbHatch));
 
 							refData->m_stipple = bitmap.ToWxBitmap();

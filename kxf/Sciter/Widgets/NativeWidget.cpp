@@ -38,7 +38,7 @@ namespace kxf::Sciter
 		{
 			m_NativeWindow->SetForegroundColour(foregroundColor);
 		}
-		if (Font font = node.GetStyleFont())
+		if (GDIFont font = node.GetStyleFont())
 		{
 			m_NativeWindow->SetFont(font.ToWxFont());
 		}

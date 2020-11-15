@@ -2,13 +2,14 @@
 #include "Common.h"
 #include "IGDIObject.h"
 #include "Private/Common.h"
+#include "../Private/Common.h"
 #include <wx/font.h>
 
 namespace kxf
 {
-	class KX_API Font: public RTTI::ExtendInterface<Font, IGDIObject>
+	class KX_API GDIFont: public RTTI::ExtendInterface<GDIFont, IGDIObject>
 	{
-		KxRTTI_DeclareIID(Font, {0xbeb3a65c, 0xf639, 0x4e44, {0x80, 0x3a, 0x1b, 0x53, 0xf6, 0x9c, 0x61, 0xd8}});
+		KxRTTI_DeclareIID(GDIFont, {0xbeb3a65c, 0xf639, 0x4e44, {0x80, 0x3a, 0x1b, 0x53, 0xf6, 0x9c, 0x61, 0xd8}});
 
 		public:
 			static FontEncoding GetDefaultEncoding() noexcept
@@ -29,24 +30,24 @@ namespace kxf
 			wxFont m_Font;
 
 		public:
-			Font() = default;
-			Font(const wxFont& other)
+			GDIFont() = default;
+			GDIFont(const wxFont& other)
 				:m_Font(other)
 			{
 			}
-			Font(const wxNativeFontInfo& other)
+			GDIFont(const wxNativeFontInfo& other)
 				:m_Font(other)
 			{
 			}
-			Font(int pointSize, FontFamily family, FlagSet<FontStyle> style, FontWeight weight, const String& faceName = {}, FontEncoding encoding = FontEncoding::Default)
+			GDIFont(int pointSize, FontFamily family, FlagSet<FontStyle> style, FontWeight weight, const String& faceName = {}, FontEncoding encoding = FontEncoding::Default)
 				:m_Font(pointSize, Drawing::Private::MapFontFamily(family), Drawing::Private::MapFontStyle(style), Drawing::Private::MapFontWeight(weight), style.Contains(FontStyle::Underline), faceName, Drawing::Private::MapFontEncoding(encoding))
 			{
 			}
-			Font(const Size& pixelSize, FontFamily family, FlagSet<FontStyle> style, FontWeight weight, const String& faceName = {}, FontEncoding encoding = FontEncoding::Default)
+			GDIFont(const Size& pixelSize, FontFamily family, FlagSet<FontStyle> style, FontWeight weight, const String& faceName = {}, FontEncoding encoding = FontEncoding::Default)
 				:m_Font(pixelSize, Drawing::Private::MapFontFamily(family), Drawing::Private::MapFontStyle(style), Drawing::Private::MapFontWeight(weight), style.Contains(FontStyle::Underline), faceName, Drawing::Private::MapFontEncoding(encoding))
 			{
 			}
-			virtual ~Font() = default;
+			virtual ~GDIFont() = default;
 
 		public:
 			// IGDIObject
@@ -60,7 +61,7 @@ namespace kxf
 				{
 					return true;
 				}
-				else if (auto font = other.QueryInterface<Font>())
+				else if (auto font = other.QueryInterface<GDIFont>())
 				{
 					return m_Font == font->m_Font;
 				}
@@ -68,14 +69,14 @@ namespace kxf
 			}
 			std::unique_ptr<IGDIObject> CloneGDIObject() const override
 			{
-				return std::make_unique<Font>(m_Font);
+				return std::make_unique<GDIFont>(m_Font);
 			}
 
 			void* GetHandle() const override;
 			void* DetachHandle() override;
 			void AttachHandle(void* handle) override;
 
-			// Font
+			// GDIFont
 			const wxFont& ToWxFont() const noexcept
 			{
 				return m_Font;
@@ -89,7 +90,7 @@ namespace kxf
 			{
 				return m_Font.GetNativeFontInfoUserDesc();
 			}
-			Font GetBaseFont() const
+			GDIFont GetBaseFont() const
 			{
 				return m_Font.GetBaseFont();
 			}
@@ -220,7 +221,7 @@ namespace kxf
 				return IsNull();
 			}
 
-			Font& operator=(const Font& other)
+			GDIFont& operator=(const GDIFont& other)
 			{
 				m_Font = other.m_Font;
 

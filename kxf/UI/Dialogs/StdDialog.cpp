@@ -536,7 +536,7 @@ namespace kxf::UI
 		}
 	}
 
-	void StdDialog::SetMainIcon(const Bitmap& icon)
+	void StdDialog::SetMainIcon(const GDIBitmap& icon)
 	{
 		if (icon)
 		{

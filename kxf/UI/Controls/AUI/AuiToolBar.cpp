@@ -186,15 +186,15 @@ namespace kxf::UI
 		wxAuiToolBar::ClearTools();
 	}
 
-	AuiToolBarItem* AuiToolBar::AddTool(const String& label, const Bitmap& bitmap, wxItemKind kind, const String& shortHelp)
+	AuiToolBarItem* AuiToolBar::AddTool(const String& label, const GDIBitmap& bitmap, wxItemKind kind, const String& shortHelp)
 	{
 		return DoCreateTool(wxAuiToolBar::AddTool(wxID_ANY, label, bitmap.ToWxBitmap(), shortHelp, kind == wxITEM_DROPDOWN ? wxITEM_NORMAL : kind));
 	}
-	AuiToolBarItem* AuiToolBar::AddTool(const String& label, const Bitmap& bitmap, const Bitmap& disabledBitmap, wxItemKind kind, const String& shortHelp)
+	AuiToolBarItem* AuiToolBar::AddTool(const String& label, const GDIBitmap& bitmap, const GDIBitmap& disabledBitmap, wxItemKind kind, const String& shortHelp)
 	{
 		return DoCreateTool(wxAuiToolBar::AddTool(wxID_ANY, label, bitmap.ToWxBitmap(), disabledBitmap.ToWxBitmap(), kind, shortHelp, {}, nullptr));
 	}
-	AuiToolBarItem* AuiToolBar::AddTool(const Bitmap& bitmap, const Bitmap& disabledBitmap, bool toggle, const String& shortHelp, const String& longHelp)
+	AuiToolBarItem* AuiToolBar::AddTool(const GDIBitmap& bitmap, const GDIBitmap& disabledBitmap, bool toggle, const String& shortHelp, const String& longHelp)
 	{
 		return DoCreateTool(wxAuiToolBar::AddTool(wxID_ANY, bitmap.ToWxBitmap(), disabledBitmap.ToWxBitmap(), toggle, nullptr, shortHelp, longHelp));;
 	}

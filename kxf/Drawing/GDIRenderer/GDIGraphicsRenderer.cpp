@@ -154,7 +154,7 @@ namespace kxf
 		}
 		return {};
 	}
-	std::shared_ptr<IGraphicsTextureBrush> GDIGraphicsRenderer::CreateTextureBrush(const Bitmap& bitmap)
+	std::shared_ptr<IGraphicsTextureBrush> GDIGraphicsRenderer::CreateTextureBrush(const GDIBitmap& bitmap)
 	{
 		if (bitmap)
 		{
@@ -184,7 +184,7 @@ namespace kxf
 		}
 		return nullptr;
 	}
-	std::shared_ptr<IGraphicsTexture> GDIGraphicsRenderer::CreateTexture(const Bitmap& bitmap)
+	std::shared_ptr<IGraphicsTexture> GDIGraphicsRenderer::CreateTexture(const GDIBitmap& bitmap)
 	{
 		if (bitmap)
 		{
@@ -202,7 +202,7 @@ namespace kxf
 	{
 		return std::make_shared<GDIGraphicsFont>(*this);
 	}
-	std::shared_ptr<IGraphicsFont> GDIGraphicsRenderer::CreateFont(const Font& font, const Color& color)
+	std::shared_ptr<IGraphicsFont> GDIGraphicsRenderer::CreateFont(const GDIFont& font, const Color& color)
 	{
 		return std::make_shared<GDIGraphicsFont>(*this, font, color);
 	}

@@ -11,6 +11,7 @@
 #include "kxf/General/UniversallyUniqueID.h"
 #include "kxf/General/Any.h"
 #include "kxf/Network/URI.h"
+#include "kxf/Drawing/GDIRenderer/GDIIcon.h"
 #include "kxf/UI/Common.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/CallAtScopeExit.h"
@@ -342,20 +343,20 @@ namespace kxf::Shell
 		return hr;
 	}
 
-	Icon GetFileIcon(const FSPath& path, FlagSet<SHGetFileIconFlag> flags)
+	Image GetFileIcon(const FSPath& path, FlagSet<SHGetFileIconFlag> flags)
 	{
 		SHFILEINFOW shellInfo = {};
 
 		const String pathString = path.GetFullPath();
 		if (::SHGetFileInfoW(pathString.wc_str(), 0, &shellInfo, sizeof(shellInfo), MapSHGetFileIconFlag(flags)) != 0)
 		{
-			Icon icon;
+			GDIIcon icon;
 			icon.AttachHandle(shellInfo.hIcon);
-			return icon;
+			return icon.ToImage();
 		}
 		return {};
 	}
-	Icon GetFileIcon(const FileItem& item, FlagSet<SHGetFileIconFlag> flags)
+	Image GetFileIcon(const FileItem& item, FlagSet<SHGetFileIconFlag> flags)
 	{
 		SHFILEINFOW shellInfo = {};
 
@@ -363,9 +364,9 @@ namespace kxf::Shell
 		const uint32_t attributes = FileSystem::Private::MapFileAttributes(item.GetAttributes());
 		if (::SHGetFileInfoW(pathString.wc_str(), attributes, &shellInfo, sizeof(shellInfo), SHGFI_USEFILEATTRIBUTES|MapSHGetFileIconFlag(flags)) != 0)
 		{
-			Icon icon;
+			GDIIcon icon;
 			icon.AttachHandle(shellInfo.hIcon);
-			return icon;
+			return icon.ToImage();
 		}
 		return {};
 	}

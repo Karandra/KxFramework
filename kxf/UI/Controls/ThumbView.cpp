@@ -33,7 +33,7 @@ namespace kxf::UI
 						wxRendererNative::Get().DrawItemSelectionRect(this, dc, thumbRect, wxCONTROL_SELECTED|wxCONTROL_CURRENT|wxCONTROL_FOCUSED);
 					}
 
-					const Bitmap& bitmap = m_Items[thumbIndex].GetBitmap();
+					const GDIBitmap& bitmap = m_Items[thumbIndex].GetBitmap();
 					const Point newPos = thumbRect.GetTopLeft() + Point::FromSize(m_ThumbSize - bitmap.GetSize()) / 2;
 					dc.DrawBitmap(bitmap.ToWxBitmap(), newPos);
 				}
@@ -198,9 +198,9 @@ namespace kxf::UI
 	{
 		return m_Items[i];
 	}
-	Bitmap ThumbView::CreateThumb(const Bitmap& bitmap, const Size& size) const
+	GDIBitmap ThumbView::CreateThumb(const GDIBitmap& bitmap, const Size& size) const
 	{
-		Bitmap result(size, ColorDepthDB::BPP32);;
+		GDIBitmap result(size, ColorDepthDB::BPP32);;
 		wxMemoryDC dc(result.ToWxBitmap());
 		wxGCDC gcdc(dc);
 		gcdc.SetBackground(*wxTRANSPARENT_BRUSH);
@@ -293,7 +293,7 @@ namespace kxf::UI
 	{
 		return m_Items.size();
 	}
-	size_t ThumbView::AddThumb(const Bitmap& bitmap)
+	size_t ThumbView::AddThumb(const GDIBitmap& bitmap)
 	{
 		ScheduleRefresh();
 		UpdateRowCount();

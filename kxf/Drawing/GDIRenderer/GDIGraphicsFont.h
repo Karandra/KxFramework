@@ -1,8 +1,8 @@
 #pragma once
 #include "Common.h"
-#include "../Font.h"
+#include "GDIFont.h"
 #include "GDIGraphicsRenderer.h"
-#include "../IGDIObject.h"
+#include "IGDIObject.h"
 #include "../GraphicsRenderer/IGraphicsFont.h"
 
 namespace kxf
@@ -13,7 +13,7 @@ namespace kxf
 
 		protected:
 			GDIGraphicsRenderer* m_Renderer = nullptr;
-			Font m_Font;
+			GDIFont m_Font;
 			Color m_Color;
 
 		private:
@@ -36,7 +36,7 @@ namespace kxf
 				:m_Renderer(&rendrer)
 			{
 			}
-			GDIGraphicsFont(GDIGraphicsRenderer& rendrer, const Font& font, const Color& color)
+			GDIGraphicsFont(GDIGraphicsRenderer& rendrer, const GDIFont& font, const Color& color)
 				:m_Renderer(&rendrer), m_Font(font), m_Color(color)
 			{
 			}
@@ -131,11 +131,11 @@ namespace kxf
 			}
 
 			// GDIGraphicsFont
-			const Font& Get() const
+			const GDIFont& Get() const
 			{
 				return m_Font;
 			}
-			Font& Get()
+			GDIFont& Get()
 			{
 				return m_Font;
 			}

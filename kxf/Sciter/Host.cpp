@@ -466,7 +466,7 @@ namespace kxf::Sciter
 			return false;
 		}
 	}
-	bool Host::SetFont(const Font& font)
+	bool Host::SetFont(const GDIFont& font)
 	{
 		return GetRootElement().SetStyleFont(font);
 	}

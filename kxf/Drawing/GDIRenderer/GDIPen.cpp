@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "GDIPen.h"
-#include "../Private/GDI.h"
+#include "Private/GDI.h"
 
 namespace
 {
@@ -113,7 +113,7 @@ namespace kxf
 						case BS_PATTERN:
 						case BS_PATTERN8X8:
 						{
-							Bitmap bitmap;
+							GDIBitmap bitmap;
 							bitmap.AttachHandle(reinterpret_cast<HBITMAP>(penInfoEx.elpHatch));
 
 							refData->m_stipple = bitmap.ToWxBitmap();

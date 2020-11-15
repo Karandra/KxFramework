@@ -871,11 +871,11 @@ namespace kxf::UI::DataView
 		return b1 && b2 && b3;
 	}
 
-	Bitmap View::GetBackgroundBitmap() const
+	GDIBitmap View::GetBackgroundBitmap() const
 	{
 		return m_ClientArea->GetBackgroundBitmap();
 	}
-	void View::SetBackgroundBitmap(const Bitmap& bitmap, FlagSet<Alignment> align, bool fit)
+	void View::SetBackgroundBitmap(const GDIBitmap& bitmap, FlagSet<Alignment> align, bool fit)
 	{
 		m_ClientArea->SetBackgroundBitmap(bitmap, align, fit);
 	}

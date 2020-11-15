@@ -37,7 +37,7 @@ namespace kxf::UI::DataView
 		}
 		if (m_Value.HasBitmap())
 		{
-			const Bitmap& bitmap = m_Value.GetBitmap();
+			const GDIBitmap& bitmap = m_Value.GetBitmap();
 			size.X() += bitmap.GetWidth() + GetRenderEngine().FromDIPX(renderEngine.GetInterTextSpacing());
 			if (size.GetY() < bitmap.GetHeight())
 			{

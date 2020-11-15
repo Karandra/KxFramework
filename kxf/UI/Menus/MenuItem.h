@@ -79,7 +79,7 @@ namespace kxf::UI
 			void SetMenu(Menu* menu);
 			void SetSubMenu(Menu* subMenu);
 
-			virtual void SetBitmap(const Bitmap& normal, const Bitmap& checked = {});
+			virtual void SetBitmap(const GDIBitmap& normal, const GDIBitmap& checked = {});
 			virtual bool SetDefault();
 
 		public:

@@ -1,13 +1,13 @@
 #pragma once
 #include "Common.h"
-#include "ImageList.h"
+#include "GDIRenderer/GDIImageList.h"
 
 namespace kxf
 {
 	class KX_API WithImageList
 	{
 		private:
-			ImageList* m_ImageList = nullptr;
+			GDIImageList* m_ImageList = nullptr;
 			bool m_IsOwned = false;
 
 		private:
@@ -38,22 +38,22 @@ namespace kxf
 				return m_IsOwned;
 			}
 
-			ImageList* GetImageList() noexcept
+			GDIImageList* GetImageList() noexcept
 			{
 				return m_ImageList;
 			}
-			const ImageList* GetImageList() const noexcept
+			const GDIImageList* GetImageList() const noexcept
 			{
 				return m_ImageList;
 			}
-			
-			virtual void SetImageList(const ImageList* imageList)
+
+			virtual void SetImageList(const GDIImageList* imageList)
 			{
 				DeleteIfNeeded();
 				m_IsOwned = false;
-				m_ImageList = const_cast<ImageList*>(imageList);
+				m_ImageList = const_cast<GDIImageList*>(imageList);
 			}
-			virtual void AssignImageList(ImageList* imageList)
+			virtual void AssignImageList(GDIImageList* imageList)
 			{
 				DeleteIfNeeded();
 				m_IsOwned = true;
@@ -82,19 +82,19 @@ namespace kxf
 				return static_cast<TBase&>(*this);
 			}
 
-			static const ImageList* ToKxList(const wxImageList& imageList) noexcept
+			static const GDIImageList* ToKxList(const wxImageList& imageList) noexcept
 			{
-				if (imageList.IsKindOf(wxCLASSINFO(ImageList)))
+				if (imageList.IsKindOf(wxCLASSINFO(GDIImageList)))
 				{
-					return static_cast<const ImageList*>(&imageList);
+					return static_cast<const GDIImageList*>(&imageList);
 				}
 				return nullptr;
 			}
-			static ImageList* ToKxList(wxImageList& imageList)
+			static GDIImageList* ToKxList(wxImageList& imageList)
 			{
-				if (imageList.IsKindOf(wxCLASSINFO(ImageList)))
+				if (imageList.IsKindOf(wxCLASSINFO(GDIImageList)))
 				{
-					return static_cast<ImageList*>(&imageList);
+					return static_cast<GDIImageList*>(&imageList);
 				}
 				return nullptr;
 			}
@@ -119,22 +119,22 @@ namespace kxf
 				return GetThis().wxWithImages::GetImageList();
 			}
 
-			ImageList* GetImageList() noexcept
+			GDIImageList* GetImageList() noexcept
 			{
 				if (wxImageList* imageList = GetWxImageList())
 				{
-					if (ImageList* kxImageList = ToKxList(*imageList))
+					if (GDIImageList* kxImageList = ToKxList(*imageList))
 					{
 						return kxImageList;
 					}
 				}
 				return nullptr;
 			}
-			const ImageList* GetImageList() const noexcept
+			const GDIImageList* GetImageList() const noexcept
 			{
 				if (const wxImageList* imageList = GetWxImageList())
 				{
-					if (const ImageList* kxImageList = ToKxList(*imageList))
+					if (const GDIImageList* kxImageList = ToKxList(*imageList))
 					{
 						return kxImageList;
 					}
@@ -142,9 +142,9 @@ namespace kxf
 				return nullptr;
 			}
 
-			void SetImageList(const ImageList* imageList)
+			void SetImageList(const GDIImageList* imageList)
 			{
-				GetThis().wxWithImages::SetImageList(const_cast<ImageList*>(imageList));
+				GetThis().wxWithImages::SetImageList(const_cast<GDIImageList*>(imageList));
 				m_IsOwned = false;
 			}
 			void SetImageList(wxImageList* imageList)
@@ -153,7 +153,7 @@ namespace kxf
 				m_IsOwned = false;
 			}
 
-			void AssignImageList(ImageList* imageList)
+			void AssignImageList(GDIImageList* imageList)
 			{
 				GetThis().wxWithImages::AssignImageList(imageList);
 				m_IsOwned = true;

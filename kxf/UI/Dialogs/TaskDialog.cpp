@@ -4,8 +4,7 @@
 #include "kxf/Application/ICoreApplication.h"
 #include "kxf/Localization/Common.h"
 #include "kxf/System/DynamicLibrary.h"
-#include "kxf/Drawing/Bitmap.h"
-#include "kxf/Drawing/Icon.h"
+#include "kxf/Drawing/GDIRenderer.h"
 #include "kxf/Drawing/ArtProvider.h"
 #include <CommCtrl.h>
 #include "kxf/System/UndefWindows.h"
@@ -202,7 +201,7 @@ namespace kxf::UI
 	{
 		return m_MainIconID;
 	}
-	Bitmap TaskDialog::GetMainIcon() const
+	GDIBitmap TaskDialog::GetMainIcon() const
 	{
 		if (m_MainIcon)
 		{
@@ -234,7 +233,7 @@ namespace kxf::UI
 			::SendMessageW(reinterpret_cast<HWND>(m_Handle), TDM_UPDATE_ICON, TDIE_ICON_MAIN, reinterpret_cast<LPARAM>(m_NativeInfo->m_DialogConfig.pszMainIcon));
 		}
 	}
-	void TaskDialog::SetMainIcon(const Bitmap& icon)
+	void TaskDialog::SetMainIcon(const GDIBitmap& icon)
 	{
 		m_MainIconID = StdIcon::None;
 		m_MainIcon = icon.ToIcon();
@@ -250,7 +249,7 @@ namespace kxf::UI
 	{
 		return m_FooterIconID;
 	}
-	Bitmap TaskDialog::GetFooterIcon()
+	GDIBitmap TaskDialog::GetFooterIcon()
 	{
 		if (m_FooterIcon)
 		{
@@ -272,7 +271,7 @@ namespace kxf::UI
 			::SendMessageW(reinterpret_cast<HWND>(m_Handle), TDM_UPDATE_ICON, TDIE_ICON_FOOTER, reinterpret_cast<LPARAM>(m_NativeInfo->m_DialogConfig.pszFooterIcon));
 		}
 	}
-	void TaskDialog::SetFooterIcon(const Bitmap& icon)
+	void TaskDialog::SetFooterIcon(const GDIBitmap& icon)
 	{
 		m_FooterIconID = StdIcon::None;
 		m_FooterIcon = icon.ToIcon();

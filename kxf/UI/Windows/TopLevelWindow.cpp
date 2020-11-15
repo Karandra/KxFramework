@@ -199,7 +199,7 @@ namespace kxf::UI::Private
 		return false;
 	}
 
-	Icon TopLevelWindowBase::GetTitleIcon() const
+	GDIIcon TopLevelWindowBase::GetTitleIcon() const
 	{
 		HWND handle = m_Window->GetHandle();
 		HICON iconHandle = reinterpret_cast<HICON>(::SendMessageW(handle, WM_GETICON, ICON_BIG, 0));
@@ -208,14 +208,14 @@ namespace kxf::UI::Private
 			iconHandle = reinterpret_cast<HICON>(::SendMessageW(handle, WM_GETICON, ICON_SMALL, 0));
 			if (iconHandle)
 			{
-				Icon icon;
+				GDIIcon icon;
 				icon.AttachHandle(iconHandle);
 				return icon;
 			}
 		}
 		return {};
 	}
-	void TopLevelWindowBase::SetTitleIcon(const Icon& icon)
+	void TopLevelWindowBase::SetTitleIcon(const GDIIcon& icon)
 	{
 		HWND handle = m_Window->GetHandle();
 		if (icon)

@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Event.h"
-#include "kxf/Drawing/ImageList.h"
+#include "kxf/Drawing/GDIRenderer/GDIImageList.h"
 #include "kxf/UI/WindowRefreshScheduler.h"
 #include <wx/headerctrl.h>
 struct _HD_ITEMW;
@@ -33,7 +33,7 @@ namespace kxf::UI::DataView
 			View* m_View = nullptr;
 			HWND m_HeaderCtrlHandle = nullptr;
 
-			std::unique_ptr<ImageList> m_ImageList;
+			std::unique_ptr<GDIImageList> m_ImageList;
 			Column* m_DraggedColumn = nullptr;
 			Column* m_ResizedColumn = nullptr;
 			bool m_UpdateColumns = false;
@@ -64,13 +64,13 @@ namespace kxf::UI::DataView
 		protected:
 			const wxHeaderColumn& GetColumn(unsigned int index) const override;
 			bool UpdateColumnWidthToFit(unsigned int index, int = 0) override;
-			
+
 			void DoUpdate(unsigned int = 0) override;
 			void DoSetCount(unsigned int = 0) override;
 			void DoMakeItem(_HD_ITEMW& item, const Column& column);
 			bool MSWOnNotify(int ctrlID, WXLPARAM lParam, WXLPARAM* result) override;
 			void OnInternalIdle() override;
-			
+
 		protected:
 			void UpdateColumn(const Column& column);
 			void UpdateColumnCount();

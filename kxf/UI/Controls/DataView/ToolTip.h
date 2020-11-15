@@ -1,7 +1,6 @@
 #pragma once
 #include "Common.h"
 #include "kxf/UI/StdIcon.h"
-#include "kxf/Drawing/Bitmap.h"
 
 namespace kxf::UI::DataView
 {
@@ -32,7 +31,7 @@ namespace kxf::UI::DataView
 		private:
 			String m_Caption;
 			String m_Message;
-			std::variant<Bitmap, StdIcon> m_Icon;
+			std::variant<GDIBitmap, StdIcon> m_Icon;
 			const Column* m_AnchorColumn = nullptr;
 
 			const Column* m_ClipTestColumn = nullptr;
@@ -58,14 +57,14 @@ namespace kxf::UI::DataView
 				:m_Caption(caption), m_Message(message), m_Icon(icon)
 			{
 			}
-			ToolTip(const String& caption, const String& message, const Bitmap& bitmap)
+			ToolTip(const String& caption, const String& message, const GDIBitmap& bitmap)
 				:m_Caption(caption), m_Message(message), m_Icon(bitmap)
 			{
 			}
 
 		public:
 			bool IsOK() const;
-			
+
 			String GetCaption() const
 			{
 				return m_Caption;
@@ -96,9 +95,9 @@ namespace kxf::UI::DataView
 				}
 				return StdIcon::None;
 			}
-			Bitmap GetIconBitmap() const
+			GDIBitmap GetIconBitmap() const
 			{
-				if (const auto& value = std::get_if<Bitmap>(&m_Icon))
+				if (const auto& value = std::get_if<GDIBitmap>(&m_Icon))
 				{
 					return *value;
 				}
@@ -108,11 +107,11 @@ namespace kxf::UI::DataView
 			{
 				m_Icon = icon;
 			}
-			void SetIcon(const Bitmap& icon)
+			void SetIcon(const GDIBitmap& icon)
 			{
 				m_Icon = icon;
 			}
-			void SetIcon(const Icon& icon)
+			void SetIcon(const GDIIcon& icon)
 			{
 				m_Icon = icon;
 			}

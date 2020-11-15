@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ImageSet.h"
-#include "ImageList.h"
+#include "GDIRenderer/GDIImageList.h"
 #include "kxf/Utility/Common.h"
 
 namespace kxf
@@ -13,18 +13,18 @@ namespace kxf
 			{
 				return *image;
 			}
-			else if (auto bitmap = object->QueryInterface<Bitmap>())
+			else if (auto bitmap = object->QueryInterface<GDIBitmap>())
 			{
 				return bitmap->ToImage();
 			}
-			else if (auto icon = object->QueryInterface<Icon>())
+			else if (auto icon = object->QueryInterface<GDIIcon>())
 			{
 				return icon->ToImage();
 			}
 		}
 		return {};
 	}
-	Bitmap ImageSet::GetBitmap(const String& id) const
+	GDIBitmap ImageSet::GetBitmap(const String& id) const
 	{
 		if (const IObject* object = QueryItem(id))
 		{
@@ -32,18 +32,18 @@ namespace kxf
 			{
 				return image->ToBitmap();
 			}
-			else if (auto bitmap = object->QueryInterface<Bitmap>())
+			else if (auto bitmap = object->QueryInterface<GDIBitmap>())
 			{
 				return *bitmap;
 			}
-			else if (auto icon = object->QueryInterface<Icon>())
+			else if (auto icon = object->QueryInterface<GDIIcon>())
 			{
 				return icon->ToBitmap();
 			}
 		}
 		return {};
 	}
-	Icon ImageSet::GetIcon(const String& id) const
+	GDIIcon ImageSet::GetIcon(const String& id) const
 	{
 		if (const IObject* object = QueryItem(id))
 		{
@@ -51,11 +51,11 @@ namespace kxf
 			{
 				return image->ToIcon();
 			}
-			else if (auto bitmap = object->QueryInterface<Bitmap>())
+			else if (auto bitmap = object->QueryInterface<GDIBitmap>())
 			{
 				return bitmap->ToIcon();
 			}
-			else if (auto icon = object->QueryInterface<Icon>())
+			else if (auto icon = object->QueryInterface<GDIIcon>())
 			{
 				return *icon;
 			}
@@ -83,7 +83,7 @@ namespace kxf
 		if (auto it = m_Items.find(id); it != m_Items.end())
 		{
 			const auto& item = it->second;
-			if (auto bitmap = std::get_if<Bitmap>(&item))
+			if (auto bitmap = std::get_if<GDIBitmap>(&item))
 			{
 				return bitmap;
 			}
@@ -91,7 +91,7 @@ namespace kxf
 			{
 				return image;
 			}
-			else if (auto icon = std::get_if<Icon>(&item))
+			else if (auto icon = std::get_if<GDIIcon>(&item))
 			{
 				return icon;
 			}
@@ -106,26 +106,26 @@ namespace kxf
 		}
 		return nullptr;
 	}
-	const Bitmap* ImageSet::QueryBitmap(const String& id) const
+	const GDIBitmap* ImageSet::QueryBitmap(const String& id) const
 	{
 		if (const IObject* object = QueryItem(id))
 		{
-			return object->QueryInterface<Bitmap>().get();
+			return object->QueryInterface<GDIBitmap>().get();
 		}
 		return nullptr;
 	}
-	const Icon* ImageSet::QueryIcon(const String& id) const
+	const GDIIcon* ImageSet::QueryIcon(const String& id) const
 	{
 		if (const IObject* object = QueryItem(id))
 		{
-			return object->QueryInterface<Icon>().get();
+			return object->QueryInterface<GDIIcon>().get();
 		}
 		return nullptr;
 	}
 
-	std::unique_ptr<ImageList> ImageSet::CreateImageList(const Size& size) const
+	std::unique_ptr<GDIImageList> ImageSet::CreateImageList(const Size& size) const
 	{
-		std::unique_ptr<ImageList> imageList = std::make_unique<ImageList>(size, GetCount());
+		std::unique_ptr<GDIImageList> imageList = std::make_unique<GDIImageList>(size, GetCount());
 
 		for (const auto& [id, item]: m_Items)
 		{
@@ -135,11 +135,11 @@ namespace kxf
 				{
 					imageList->Add(*image);
 				}
-				else if (auto bitmap = object->QueryInterface<Bitmap>())
+				else if (auto bitmap = object->QueryInterface<GDIBitmap>())
 				{
 					imageList->Add(*bitmap);
 				}
-				else if (auto icon = object->QueryInterface<Icon>())
+				else if (auto icon = object->QueryInterface<GDIIcon>())
 				{
 					imageList->Add(*icon);
 				}

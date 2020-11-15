@@ -199,7 +199,7 @@ namespace kxf
 			}
 		}
 	}
-	void GDIGraphicsContext::DrawTexture(const Bitmap& bitmap, const RectF& rect)
+	void GDIGraphicsContext::DrawTexture(const GDIBitmap& bitmap, const RectF& rect)
 	{
 		if (m_DC.CanDrawBitmap())
 		{

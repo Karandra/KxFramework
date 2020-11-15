@@ -31,7 +31,7 @@ namespace kxf
 				:m_Pen(color.ToWxColor(), wxPENSTYLE_SOLID)
 			{
 			}
-			GDIPen(const Bitmap& stippleBitmap, int width)
+			GDIPen(const GDIBitmap& stippleBitmap, int width)
 				:m_Pen(stippleBitmap.ToWxBitmap(), width)
 			{
 			}
@@ -132,7 +132,7 @@ namespace kxf
 				m_Pen.SetCap(Drawing::Private::MapLineCap(cap));
 			}
 
-			Bitmap GetStipple() const
+			GDIBitmap GetStipple() const
 			{
 				if (m_Pen.GetStyle() == wxPENSTYLE_STIPPLE)
 				{
@@ -144,7 +144,7 @@ namespace kxf
 				}
 				return {};
 			}
-			void SetStipple(const Bitmap& stipple)
+			void SetStipple(const GDIBitmap& stipple)
 			{
 				m_Pen.SetStipple(stipple.ToWxBitmap());
 				m_Pen.SetStyle(wxPENSTYLE_STIPPLE);

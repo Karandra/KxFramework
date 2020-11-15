@@ -1,8 +1,8 @@
 #pragma once
 #include "Common.h"
-#include "../IGDIObject.h"
-#include "../GraphicsRenderer/IGraphicsMatrix.h"
 #include "GDIGraphicsRenderer.h"
+#include "IGDIObject.h"
+#include "../GraphicsRenderer/IGraphicsMatrix.h"
 #include "Private/Common.h"
 #include <wx/affinematrix2d.h>
 

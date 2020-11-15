@@ -80,9 +80,9 @@ namespace kxf
 			{
 			}
 
-			Image(const Icon& other);
-			Image(const Bitmap& other);
-			Image(const Cursor& other);
+			Image(const GDIIcon& other);
+			Image(const GDIBitmap& other);
+			Image(const GDICursor& other);
 			Image(const Image& other)
 				:m_Image(other.m_Image)
 			{
@@ -138,9 +138,9 @@ namespace kxf
 				return m_Image;
 			}
 
-			Cursor ToCursor(const Point& hotSpot = Point::UnspecifiedPosition()) const;
-			Bitmap ToBitmap() const;
-			Icon ToIcon() const;
+			GDICursor ToCursor(const Point& hotSpot = Point::UnspecifiedPosition()) const;
+			GDIBitmap ToBitmap() const;
+			GDIIcon ToIcon() const;
 
 			// Properties
 			Size GetSize() const

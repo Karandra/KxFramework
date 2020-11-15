@@ -28,7 +28,7 @@ namespace kxf
 				:m_Brush(color.ToWxColor(), wxBRUSHSTYLE_SOLID)
 			{
 			}
-			GDIBrush(const Bitmap& stippleBitmap)
+			GDIBrush(const GDIBitmap& stippleBitmap)
 				:m_Brush(stippleBitmap.ToWxBitmap())
 			{
 			}
@@ -90,7 +90,7 @@ namespace kxf
 				m_Brush.SetStyle(wxBRUSHSTYLE_SOLID);
 			}
 
-			Bitmap GetStipple() const
+			GDIBitmap GetStipple() const
 			{
 				const wxBitmap* stipple = m_Brush.GetStipple();
 				if (stipple && stipple->IsOk())
@@ -99,7 +99,7 @@ namespace kxf
 				}
 				return {};
 			}
-			void SetStipple(const Bitmap& stipple)
+			void SetStipple(const GDIBitmap& stipple)
 			{
 				m_Brush.SetStipple(stipple.ToWxBitmap());
 				m_Brush.SetStyle(wxBRUSHSTYLE_STIPPLE);

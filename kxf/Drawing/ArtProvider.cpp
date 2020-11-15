@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "ArtProvider.h"
-#include "Icon.h"
+#include "GDIRenderer.h"
 #include "Image.h"
-#include "Bitmap.h"
 #include "ImageBundle.h"
 #include "kxf/Utility/Container.h"
 #include <wx/artprov.h>
@@ -82,7 +81,7 @@ namespace kxf::ArtProvider
 
 namespace kxf::ArtProvider
 {
-	Bitmap GetResource(const ResourceID& id, const String& clientID, const Size& size)
+	GDIBitmap GetResource(const ResourceID& id, const String& clientID, const Size& size)
 	{
 		return wxArtProvider::GetBitmap(id.GetString(), clientID, size);
 	}
@@ -95,7 +94,7 @@ namespace kxf::ArtProvider
 	{
 		return String(wxArtProvider::GetMessageBoxIconId(UI::ToWxStdIcon(iconID)));
 	}
-	Icon GetMessageBoxResource(StdIcon iconID)
+	GDIIcon GetMessageBoxResource(StdIcon iconID)
 	{
 		return wxArtProvider::GetMessageBoxIcon(UI::ToWxStdIcon(iconID));
 	}

@@ -1,8 +1,8 @@
 #pragma once
 #include "kxf/UI/Common.h"
 #include "kxf/EventSystem/Event.h"
+#include "kxf/Drawing/GDIRenderer.h"
 #include "kxf/Utility/System.h"
-#include "kxf/Drawing/Icon.h"
 #include <wx/toplevel.h>
 
 namespace kxf::UI
@@ -56,8 +56,8 @@ namespace kxf::UI::Private
 			void SetDefaultBackgroundColor();
 			bool MSWWindowProc(WXLRESULT& result, WXUINT msg, WXWPARAM wParam, WXLPARAM lParam);
 
-			Icon GetTitleIcon() const;
-			void SetTitleIcon(const Icon& icon);
+			GDIIcon GetTitleIcon() const;
+			void SetTitleIcon(const GDIIcon& icon);
 
 			bool EnableCloseButton(bool enable = true);
 			bool EnableMinimizeButton(bool enable = true);
@@ -144,11 +144,11 @@ namespace kxf::UI
 				return m_TLW.DWMBlurBehind(enable, region);
 			}
 
-			Icon GetTitleIcon() const
+			GDIIcon GetTitleIcon() const
 			{
 				return m_TLW.GetTitleIcon();
 			}
-			void SetTitleIcon(const Icon& icon)
+			void SetTitleIcon(const GDIIcon& icon)
 			{
 				m_TLW.SetTitleIcon(icon);
 			}

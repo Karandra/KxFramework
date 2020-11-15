@@ -12,10 +12,10 @@ namespace kxf::Drawing
 
 namespace kxf
 {
-	class Bitmap;
-	class Cursor;
+	class GDIBitmap;
+	class GDICursor;
 	class Image;
-	class Icon;
+	class GDIIcon;
 
 	enum class ImageFormat
 	{

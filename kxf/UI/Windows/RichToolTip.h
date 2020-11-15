@@ -1,7 +1,7 @@
 #pragma once
 #include "kxf/UI/Common.h"
+#include "kxf/Drawing/GDIRenderer.h"
 #include "kxf/Utility/Common.h"
-#include "kxf/Drawing/Icon.h"
 #include <wx/richtooltip.h>
 
 namespace kxf::UI
@@ -33,8 +33,8 @@ namespace kxf::UI
 
 			String m_Title;
 			String m_Message;
-			Icon m_Icon;
-			Font m_Font;
+			GDIIcon m_Icon;
+			GDIFont m_Font;
 			StdIcon m_IconID = DefaultIcon;
 			RichToolTipKind m_Kind = DefaultKind;
 			Color m_Color1;
@@ -82,11 +82,11 @@ namespace kxf::UI
 			}
 
 			// Appearance
-			Font GetTitleFont() const
+			GDIFont GetTitleFont() const
 			{
 				return m_Font;
 			}
-			void SetTitleFont(const Font& font)
+			void SetTitleFont(const GDIFont& font)
 			{
 				m_Font = font;
 				m_ToolTip.SetTitleFont(font.ToWxFont());
@@ -108,11 +108,11 @@ namespace kxf::UI
 			{
 				return m_IconID;
 			}
-			Icon GetIcon() const
+			GDIIcon GetIcon() const
 			{
 				return m_Icon;
 			}
-			void SetIcon(const Icon& icon)
+			void SetIcon(const GDIIcon& icon)
 			{
 				m_Icon = icon;
 				m_IconID = StdIcon::None;

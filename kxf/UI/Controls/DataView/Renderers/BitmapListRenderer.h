@@ -8,7 +8,7 @@ namespace kxf::UI::DataView
 	class KX_API BitmapListValue: public TextValue, public BitmapValueBase
 	{
 		private:
-			std::vector<Bitmap> m_Bitmaps;
+			std::vector<GDIBitmap> m_Bitmaps;
 
 		public:
 			BitmapListValue() = default;
@@ -16,11 +16,11 @@ namespace kxf::UI::DataView
 				:TextValue(text)
 			{
 			}
-			BitmapListValue(const Bitmap& bitmap)
+			BitmapListValue(const GDIBitmap& bitmap)
 			{
 				AddBitmap(bitmap);
 			}
-			BitmapListValue(const String& text, const Bitmap& bitmap)
+			BitmapListValue(const String& text, const GDIBitmap& bitmap)
 				:TextValue(text)
 			{
 				AddBitmap(bitmap);
@@ -43,11 +43,11 @@ namespace kxf::UI::DataView
 			{
 				return m_Bitmaps.size();
 			}
-			const Bitmap& GetBitmap(size_t index) const
+			const GDIBitmap& GetBitmap(size_t index) const
 			{
 				return index < m_Bitmaps.size() ? m_Bitmaps[index] : wxNullBitmap;
 			}
-			void AddBitmap(const Bitmap& bitmap)
+			void AddBitmap(const GDIBitmap& bitmap)
 			{
 				m_Bitmaps.push_back(bitmap);
 			}
@@ -72,7 +72,7 @@ namespace kxf::UI::DataView
 
 		protected:
 			virtual size_t GetBitmapCount() const = 0;
-			virtual Bitmap GetBitmap(size_t index) const = 0;
+			virtual GDIBitmap GetBitmap(size_t index) const = 0;
 
 		public:
 			BitmapListRendererBase(TextValue& textValue, BitmapValueBase& bitmapValueBase, FlagSet<Alignment> alignment = Alignment::Invalid)
@@ -96,7 +96,7 @@ namespace kxf::UI::DataView
 			{
 				return m_Value.GetBitmapsCount();
 			}
-			Bitmap GetBitmap(size_t index) const override
+			GDIBitmap GetBitmap(size_t index) const override
 			{
 				return m_Value.GetBitmap(index);
 			}

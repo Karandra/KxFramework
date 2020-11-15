@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "IGDIObject.h"
-#include "ColorDepth.h"
+#include "../ColorDepth.h"
 #include "kxf/RTTI/QueryInterface.h"
 
 namespace kxf

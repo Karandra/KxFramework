@@ -2,7 +2,6 @@
 #include "kxf/UI/Common.h"
 #include "kxf/UI/WindowRefreshScheduler.h"
 #include "kxf/UI/Controls/StaticBitmap.h"
-#include "kxf/Drawing/Bitmap.h"
 #include "kxf/Drawing/Image.h"
 #include "kxf/IO/IStream.h"
 #include <wx/control.h>
@@ -46,7 +45,7 @@ namespace kxf::UI
 			void OnSize(wxSizeEvent& event);
 
 		public:
-		
+
 			ImageView() = default;
 			ImageView(wxWindow* parent,
 					  wxWindowID id,
@@ -70,7 +69,7 @@ namespace kxf::UI
 				m_BackgroundMode = mode;
 				ScheduleRefresh();
 			}
-			
+
 			Direction GetGradientDirection() const
 			{
 				return m_GradientDirection;
@@ -109,11 +108,11 @@ namespace kxf::UI
 			{
 				return m_Bitmap.ConvertToImage();
 			}
-			Bitmap GetBitmap() const
+			GDIBitmap GetBitmap() const
 			{
 				return Image(m_Bitmap.ConvertToImage()).ToBitmap();
 			}
-			void SetBitmap(const Bitmap& bitmap);
+			void SetBitmap(const GDIBitmap& bitmap);
 			void SetBitmap(const Image& image);
 			void SetBitmap(const wxGraphicsBitmap& image, const Size& size);
 			void Load(IInputStream& stream, ImageFormat format = ImageFormat::Any, int index = -1);

@@ -2263,7 +2263,7 @@ namespace kxf::UI::DataView
 	}
 
 	// Drag and Drop
-	Bitmap MainWindow::CreateItemBitmap(Row row, int& indent)
+	GDIBitmap MainWindow::CreateItemBitmap(Row row, int& indent)
 	{
 		int width = GetRowWidth();
 		int height = GetRowHeight(row);

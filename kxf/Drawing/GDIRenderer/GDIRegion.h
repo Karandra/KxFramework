@@ -1,48 +1,47 @@
 #pragma once
 #include "Common.h"
-#include "Bitmap.h"
 #include "IGDIObject.h"
 #include "Private/Common.h"
+#include "../Private/Common.h"
 #include <wx/region.h>
 
 namespace kxf
 {
-	class KX_API Region: public RTTI::ExtendInterface<Region, IGDIObject>
+	class GDIBitmap;
+}
+
+namespace kxf
+{
+	class KX_API GDIRegion: public RTTI::ExtendInterface<GDIRegion, IGDIObject>
 	{
-		KxRTTI_DeclareIID(Region, {0xd8f0f933, 0x9126, 0x4ef9, {0xa0, 0xf, 0x69, 0xe4, 0xd9, 0x9c, 0x7a, 0x97}});
+		KxRTTI_DeclareIID(GDIRegion, {0xd8f0f933, 0x9126, 0x4ef9, {0xa0, 0xf, 0x69, 0xe4, 0xd9, 0x9c, 0x7a, 0x97}});
 
 		private:
 			wxRegion m_Region;
 
 		public:
-			Region() = default;
-			Region(const wxRegion& other)
+			GDIRegion() = default;
+			GDIRegion(const wxRegion& other)
 				:m_Region(other)
 			{
 			}
 
-			Region(const Rect& rect)
+			GDIRegion(const Rect& rect)
 				:m_Region(rect)
 			{
 			}
-			Region(const Point& pos, const Size& size)
+			GDIRegion(const Point& pos, const Size& size)
 				:m_Region(Rect(pos, size))
 			{
 			}
-			Region(const Point& topLeft, const Point& bottomRight)
+			GDIRegion(const Point& topLeft, const Point& bottomRight)
 				:m_Region(topLeft, bottomRight)
 			{
 			}
-			Region(const Bitmap& bitmap)
-				:m_Region(bitmap.ToWxBitmap())
-			{
-			}
-			Region(const Bitmap& bitmap, const Color& transparentColor, int tolerance = 0)
-				:m_Region(bitmap.ToWxBitmap(), transparentColor, tolerance)
-			{
-			}
+			GDIRegion(const GDIBitmap& bitmap);
+			GDIRegion(const GDIBitmap& bitmap, const Color& transparentColor, int tolerance = 0);
 
-			Region(const Point* points, size_t count, PolygonFill fillMode = PolygonFill::OddEvenRule)
+			GDIRegion(const Point* points, size_t count, PolygonFill fillMode = PolygonFill::OddEvenRule)
 			{
 				if (auto modeWx = Drawing::Private::MapPolygonFill(fillMode))
 				{
@@ -52,7 +51,7 @@ namespace kxf
 			}
 
 			template<size_t N>
-			Region(const Point(&points)[N], PolygonFill fillMode = PolygonFill::OddEvenRule)
+			GDIRegion(const Point(&points)[N], PolygonFill fillMode = PolygonFill::OddEvenRule)
 			{
 				if (auto modeWx = Drawing::Private::MapPolygonFill(fillMode))
 				{
@@ -64,7 +63,7 @@ namespace kxf
 			}
 
 			template<size_t N>
-			Region(const std::array<Point, N>& points, PolygonFill fillMode = PolygonFill::OddEvenRule)
+			GDIRegion(const std::array<Point, N>& points, PolygonFill fillMode = PolygonFill::OddEvenRule)
 			{
 				if (auto modeWx = Drawing::Private::MapPolygonFill(fillMode))
 				{
@@ -75,7 +74,7 @@ namespace kxf
 				}
 			}
 
-			virtual ~Region() = default;
+			virtual ~GDIRegion() = default;
 
 		public:
 			// IGDIObject
@@ -89,7 +88,7 @@ namespace kxf
 				{
 					return true;
 				}
-				else if (auto object = other.QueryInterface<Region>())
+				else if (auto object = other.QueryInterface<GDIRegion>())
 				{
 					return m_Region == object->m_Region;
 				}
@@ -97,14 +96,14 @@ namespace kxf
 			}
 			std::unique_ptr<IGDIObject> CloneGDIObject() const override
 			{
-				return std::make_unique<Region>(m_Region);
+				return std::make_unique<GDIRegion>(m_Region);
 			}
 
 			void* GetHandle() const override;
 			void* DetachHandle() override;
 			void AttachHandle(void* handle) override;
 
-			// Region
+			// GDIRegion
 			const wxRegion& ToWxRegion() const noexcept
 			{
 				return m_Region;
@@ -126,10 +125,7 @@ namespace kxf
 			{
 				return m_Region.Offset(pos);
 			}
-			Bitmap ToBitmap() const
-			{
-				return m_Region.ConvertToBitmap();
-			}
+			GDIBitmap ToBitmap() const;
 
 			bool Contains(const Point& point) const
 			{
@@ -140,7 +136,7 @@ namespace kxf
 				return m_Region.Contains(rect);
 			}
 
-			bool Intersect(const Region& other)
+			bool Intersect(const GDIRegion& other)
 			{
 				return m_Region.Intersect(other.m_Region);
 			}
@@ -149,7 +145,7 @@ namespace kxf
 				return m_Region.Intersect(rect);
 			}
 
-			bool Subtract(const Region& other)
+			bool Subtract(const GDIRegion& other)
 			{
 				return m_Region.Subtract(other.m_Region);
 			}
@@ -158,7 +154,7 @@ namespace kxf
 				return m_Region.Subtract(rect);
 			}
 
-			bool Union(const Region& other)
+			bool Union(const GDIRegion& other)
 			{
 				return m_Region.Union(other.m_Region);
 			}
@@ -166,16 +162,10 @@ namespace kxf
 			{
 				return m_Region.Union(rect);
 			}
-			bool Union(const Bitmap& bitmap)
-			{
-				return m_Region.Union(bitmap.ToWxBitmap());
-			}
-			bool Union(const Bitmap& bitmap, const Color& transparentColor, int tolerance = 0)
-			{
-				return m_Region.Union(bitmap.ToWxBitmap(), transparentColor, tolerance);
-			}
+			bool Union(const GDIBitmap& bitmap);
+			bool Union(const GDIBitmap& bitmap, const Color& transparentColor, int tolerance = 0);
 
-			bool Xor(const Region& other)
+			bool Xor(const GDIRegion& other)
 			{
 				return m_Region.Xor(other.m_Region);
 			}
@@ -194,18 +184,18 @@ namespace kxf
 				return IsNull();
 			}
 
-			Region& operator=(const Region& other)
+			GDIRegion& operator=(const GDIRegion& other)
 			{
 				m_Region = other.m_Region;
 
 				return *this;
 			}
 
-			bool operator==(const Region& other) const
+			bool operator==(const GDIRegion& other) const
 			{
 				return m_Region == other.m_Region;
 			}
-			bool operator!=(const Region& other) const
+			bool operator!=(const GDIRegion& other) const
 			{
 				return m_Region != other.m_Region;
 			}

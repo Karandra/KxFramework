@@ -23,7 +23,7 @@ namespace kxf::UI
 		{
 			SetValidator(validator);
 
-			Font font = parent->GetFont();
+			GDIFont font = parent->GetFont();
 			font.SetFamily(FontFamily::FixedWidth);
 			if (font.SetFaceName(wxS("Consolas")))
 			{

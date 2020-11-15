@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "GDIPen.h"
 #include "GDIGraphicsRenderer.h"
-#include "../IGDIObject.h"
+#include "IGDIObject.h"
 #include "../GraphicsRenderer/IGraphicsPen.h"
 
 namespace kxf

@@ -5,34 +5,34 @@
 
 namespace kxf
 {
-	class KX_API Icon: public RTTI::ExtendInterface<Icon, IGDIImage>
+	class KX_API GDIIcon: public RTTI::ExtendInterface<GDIIcon, IGDIImage>
 	{
-		KxRTTI_DeclareIID(Icon, {0x5da6784, 0xf20c, 0x4ad6, {0xb1, 0x3b, 0x3a, 0xa1, 0x2d, 0xd9, 0x66, 0x4a}});
+		KxRTTI_DeclareIID(GDIIcon, {0x5da6784, 0xf20c, 0x4ad6, {0xb1, 0x3b, 0x3a, 0xa1, 0x2d, 0xd9, 0x66, 0x4a}});
 
 		private:
 			wxIcon m_Icon;
 
 		public:
-			Icon() = default;
-			Icon(const wxIcon& other)
+			GDIIcon() = default;
+			GDIIcon(const wxIcon& other)
 				:m_Icon(other)
 			{
 			}
 
-			Icon(const Image& other);
-			Icon(const Bitmap& other);
-			Icon(const Cursor& other);
-			Icon(const Icon& other)
+			GDIIcon(const Image& other);
+			GDIIcon(const GDIBitmap& other);
+			GDIIcon(const GDICursor& other);
+			GDIIcon(const GDIIcon& other)
 				:m_Icon(other.m_Icon)
 			{
 			}
 
-			Icon(const char* xbm, const Size& size)
+			GDIIcon(const char* xbm, const Size& size)
 				:m_Icon(xbm, size.GetWidth(), size.GetHeight())
 			{
 			}
 
-			virtual ~Icon() = default;
+			virtual ~GDIIcon() = default;
 
 		public:
 			// IGDIObject
@@ -46,7 +46,7 @@ namespace kxf
 			}
 			std::unique_ptr<IGDIObject> CloneGDIObject() const override
 			{
-				return std::make_unique<Icon>(m_Icon);
+				return std::make_unique<GDIIcon>(m_Icon);
 			}
 
 			void* GetHandle() const override;
@@ -80,11 +80,11 @@ namespace kxf
 				return m_Icon;
 			}
 
-			Cursor ToCursor(const Point& hotSpot = Point::UnspecifiedPosition()) const;
-			Bitmap ToBitmap() const;
+			GDICursor ToCursor(const Point& hotSpot = Point::UnspecifiedPosition()) const;
+			GDIBitmap ToBitmap() const;
 			Image ToImage() const;
 
-			Icon ConvertToDisabled(Angle brightness = Angle::FromNormalized(1)) const;
+			GDIIcon ConvertToDisabled(Angle brightness = Angle::FromNormalized(1)) const;
 
 		public:
 			explicit operator bool() const noexcept
@@ -96,7 +96,7 @@ namespace kxf
 				return IsNull();
 			}
 
-			Icon& operator=(const Icon& other)
+			GDIIcon& operator=(const GDIIcon& other)
 			{
 				m_Icon = other.m_Icon;
 

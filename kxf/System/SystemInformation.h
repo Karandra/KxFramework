@@ -9,11 +9,14 @@
 #include "kxf/General/LocallyUniqueID.h"
 #include "kxf/Drawing/Geometry.h"
 #include "kxf/Drawing/Color.h"
-#include "kxf/Drawing/Font.h"
 #include <wx/settings.h>
 #include <wx/gdicmn.h>
 #include "UndefWindows.h"
 
+namespace kxf
+{
+	class GDIFont;
+}
 namespace kxf::System
 {
 	struct KernelVersion final
@@ -121,7 +124,7 @@ namespace kxf::System
 	String GetUserSID();
 
 	Color GetColor(SystemColor index) noexcept;
-	Font GetFont(SystemFont index);
+	GDIFont GetFont(SystemFont index);
 	SystemScreenType GetScreenType() noexcept;
 	int GetMetric(SystemMetric index, const wxWindow* window = nullptr) noexcept;
 	Size GetMetric(SystemSizeMetric index, const wxWindow* window = nullptr) noexcept;

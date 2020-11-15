@@ -239,8 +239,8 @@ namespace kxf::Sciter
 			bool RemoveStyleAttribute(const String& name);
 			bool RemoveStyleAttribute(const char* name);
 
-			Font GetStyleFont() const;
-			bool SetStyleFont(const Font& font);
+			GDIFont GetStyleFont() const;
+			bool SetStyleFont(const GDIFont& font);
 
 			// Selectors
 			size_t Select(const String& query, std::function<bool(Element)> onElement) const;

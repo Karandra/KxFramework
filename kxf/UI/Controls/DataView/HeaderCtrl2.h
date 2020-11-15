@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Event.h"
-#include "kxf/Drawing/ImageList.h"
+#include "kxf/Drawing/GDIRenderer/GDIImageList.h"
 #include "kxf/UI/WindowRefreshScheduler.h"
 #include <wx/systhemectrl.h>
 #include <wx/headerctrl.h>
@@ -50,7 +50,7 @@ namespace kxf::UI::DataView
 
 			void UpdateReorderingMarker(int xPhysical);
 			void ClearMarkers();
-			
+
 			void EndDragging();
 			void CancelDragging();
 

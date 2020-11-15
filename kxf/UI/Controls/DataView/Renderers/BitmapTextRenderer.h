@@ -22,7 +22,7 @@ namespace kxf::UI::DataView
 
 		public:
 			BitmapTextValue() = default;
-			BitmapTextValue(const Bitmap& bitmap)
+			BitmapTextValue(const GDIBitmap& bitmap)
 				:BitmapValue(bitmap)
 			{
 			}
@@ -30,7 +30,7 @@ namespace kxf::UI::DataView
 				:TextValue(text)
 			{
 			}
-			BitmapTextValue(const String& text, const Bitmap& bitmap)
+			BitmapTextValue(const String& text, const GDIBitmap& bitmap)
 				:TextValue(text), BitmapValue(bitmap)
 			{
 			}

@@ -1,10 +1,10 @@
 #pragma once
+#include "../../ColorDepth.h"
 #include "wx/msw/gdiimage.h"
-#include "../ColorDepth.h"
 
 namespace kxf
 {
-	class Bitmap;
+	class GDIBitmap;
 }
 
 namespace kxf::Drawing::Private
@@ -75,5 +75,5 @@ namespace kxf::Drawing::Private
 		return false;
 	}
 
-	Bitmap BitmapFromMemoryLocation(const void* data);
+	GDIBitmap BitmapFromMemoryLocation(const void* data);
 }

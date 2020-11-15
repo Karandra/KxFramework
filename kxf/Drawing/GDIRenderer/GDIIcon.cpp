@@ -1,36 +1,36 @@
 #include "stdafx.h"
-#include "Icon.h"
-#include "Cursor.h"
-#include "Bitmap.h"
-#include "Image.h"
+#include "GDIIcon.h"
+#include "GDICursor.h"
+#include "GDIBitmap.h"
+#include "../Image.h"
 #include "Private/GDI.h"
 
 namespace kxf
 {
 	// Icon
-	Icon::Icon(const Cursor& other)
+	GDIIcon::GDIIcon(const GDICursor& other)
 		:m_Icon(std::move(other.ToIcon().m_Icon))
 	{
 	}
-	Icon::Icon(const Image& other)
+	GDIIcon::GDIIcon(const Image& other)
 		:m_Icon(std::move(other.ToIcon().m_Icon))
 	{
 	}
-	Icon::Icon(const Bitmap& other)
+	GDIIcon::GDIIcon(const GDIBitmap& other)
 		:m_Icon(std::move(other.ToIcon().m_Icon))
 	{
 	}
 
 	// IGDIObject
-	void* Icon::GetHandle() const
+	void* GDIIcon::GetHandle() const
 	{
 		return m_Icon.GetHandle();
 	}
-	void* Icon::DetachHandle()
+	void* GDIIcon::DetachHandle()
 	{
 		return Drawing::Private::DetachGDIImageHandle(m_Icon);
 	}
-	void Icon::AttachHandle(void* handle)
+	void GDIIcon::AttachHandle(void* handle)
 	{
 		m_Icon = wxIcon();
 		Drawing::Private::AttachIconHandle(m_Icon, handle, [&]()
@@ -42,7 +42,7 @@ namespace kxf
 	}
 
 	// IGDIImage
-	bool Icon::Load(IInputStream& stream, ImageFormat format, int index)
+	bool GDIIcon::Load(IInputStream& stream, ImageFormat format, int index)
 	{
 		Image image;
 		if (image.Load(stream, format, index))
@@ -52,7 +52,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool Icon::Save(IOutputStream& stream, ImageFormat format) const
+	bool GDIIcon::Save(IOutputStream& stream, ImageFormat format) const
 	{
 		if (m_Icon.IsOk() && format != ImageFormat::Any && format != ImageFormat::None)
 		{
@@ -62,23 +62,23 @@ namespace kxf
 	}
 
 	// Icon
-	Cursor Icon::ToCursor(const Point& hotSpot) const
+	GDICursor GDIIcon::ToCursor(const Point& hotSpot) const
 	{
-		Cursor cursor(ToBitmap());
+		GDICursor cursor(ToBitmap());
 		cursor.SetHotSpot(hotSpot);
 
 		return cursor;
 	}
-	Bitmap Icon::ToBitmap() const
+	GDIBitmap GDIIcon::ToBitmap() const
 	{
 		return wxBitmap(m_Icon, wxBitmapTransparency::wxBitmapTransparency_Always);
 	}
-	Image Icon::ToImage() const
+	Image GDIIcon::ToImage() const
 	{
 		return ToBitmap();
 	}
 
-	Icon Icon::ConvertToDisabled(Angle brightness) const
+	GDIIcon GDIIcon::ConvertToDisabled(Angle brightness) const
 	{
 		return ToBitmap().ConvertToDisabled(brightness);
 	}

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Font.h"
+#include "GDIFont.h"
 #include <wx/fontutil.h>
 
 namespace
@@ -16,11 +16,11 @@ namespace
 namespace kxf
 {
 	// IGDIObject
-	void* Font::GetHandle() const
+	void* GDIFont::GetHandle() const
 	{
 		return m_Font.GetResourceHandle();
 	}
-	void* Font::DetachHandle()
+	void* GDIFont::DetachHandle()
 	{
 		if (wxFontRefDataHack* refData = static_cast<wxFontRefDataHack*>(m_Font.GetRefData()))
 		{
@@ -35,7 +35,7 @@ namespace kxf
 			return handle;
 		}
 	}
-	void Font::AttachHandle(void* handle)
+	void GDIFont::AttachHandle(void* handle)
 	{
 		m_Font = wxFont();
 

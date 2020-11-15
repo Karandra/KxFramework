@@ -131,7 +131,7 @@ namespace kxf::Sciter
 			bool SetWindowRenderer(WindowRenderer renderer);
 
 			bool IsTransparentBackgroundSupported(wxString* reason = nullptr) const;
-			bool SetFont(const Font& font);
+			bool SetFont(const GDIFont& font);
 			bool SetBackgroundColor(const Color& color);
 			bool SetForegroundColor(const Color& color);
 

@@ -9,7 +9,7 @@ namespace kxf::UI
 	{
 		None = 0,
 
-		Bitmap = 1 << 0,
+		GDIBitmap = 1 << 0,
 		ReadOnly = 1 << 1
 	};
 }

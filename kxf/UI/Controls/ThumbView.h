@@ -11,20 +11,20 @@ namespace kxf::UI
 	class KX_API ThumbViewItem final
 	{
 		private:
-			Bitmap m_Bitmap;
+			GDIBitmap m_Bitmap;
 
 		public:
-			ThumbViewItem(const Bitmap& bitmap)
+			ThumbViewItem(const GDIBitmap& bitmap)
 				:m_Bitmap(bitmap)
 			{
 			}
 
 		public:
-			const Bitmap& GetBitmap() const
+			const GDIBitmap& GetBitmap() const
 			{
 				return m_Bitmap;
 			}
-			Bitmap& GetBitmap()
+			GDIBitmap& GetBitmap()
 			{
 				return m_Bitmap;
 			}
@@ -73,7 +73,7 @@ namespace kxf::UI
 			size_t CalcRowCount() const;
 			void UpdateRowCount();
 			ThumbViewItem& GetThumb(size_t i);
-			Bitmap CreateThumb(const Bitmap& bitmap, const Size& size) const;
+			GDIBitmap CreateThumb(const GDIBitmap& bitmap, const Size& size) const;
 
 			void OnInternalIdle() override;
 
@@ -110,7 +110,7 @@ namespace kxf::UI
 			void SetSelectedThumb(int index);
 
 			size_t GetThumbsCount() const;
-			size_t AddThumb(const Bitmap& bitmap);
+			size_t AddThumb(const GDIBitmap& bitmap);
 			size_t AddThumb(IInputStream& stream, ImageFormat format = ImageFormat::Any, int index = -1);
 			void RemoveThumb(size_t index);
 			void ClearThumbs();

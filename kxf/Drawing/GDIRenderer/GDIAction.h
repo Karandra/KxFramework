@@ -59,14 +59,14 @@ namespace kxf::GDIAction
 	{
 		private:
 			GDIContext& m_DC;
-			Font m_OriginalFont;
+			GDIFont m_OriginalFont;
 
 		public:
 			ChangeFont(GDIContext& dc)
 				:m_DC(dc)
 			{
 			}
-			ChangeFont(GDIContext& dc, const Font& font)
+			ChangeFont(GDIContext& dc, const GDIFont& font)
 				:m_DC(dc), m_OriginalFont(dc.GetFont())
 			{
 				m_DC.SetFont(font.ToWxFont());
@@ -80,7 +80,7 @@ namespace kxf::GDIAction
 			}
 
 		public:
-			void Set(const Font& font)
+			void Set(const GDIFont& font)
 			{
 				if (!m_OriginalFont)
 				{

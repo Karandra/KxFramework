@@ -2,10 +2,8 @@
 #include "Common.h"
 #include "CellState.h"
 #include "CellAttribute.h"
-#include "kxf/Drawing/Icon.h"
-#include "kxf/Drawing/Bitmap.h"
-#include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/Drawing/GDIRenderer.h"
+#include "kxf/Drawing/GraphicsRenderer.h"
 
 namespace kxf::UI::DataView
 {
@@ -98,8 +96,8 @@ namespace kxf::UI::DataView
 			bool DrawText(const Rect& cellRect, CellState cellState, const String& string, int offsetX = 0);
 			bool DrawText(GDIContext& dc, const Rect& cellRect, CellState cellState, const String& string, int offsetX = 0);
 
-			bool DrawBitmap(const Rect& cellRect, CellState cellState, const Bitmap& bitmap, int reservedWidth = -1);
-			int DrawBitmapWithText(const Rect& cellRect, CellState cellState, int offsetX, const String& text, const Bitmap& bitmap, bool centerTextV = false, int reservedWidth = -1);
+			bool DrawBitmap(const Rect& cellRect, CellState cellState, const GDIBitmap& bitmap, int reservedWidth = -1);
+			int DrawBitmapWithText(const Rect& cellRect, CellState cellState, int offsetX, const String& text, const GDIBitmap& bitmap, bool centerTextV = false, int reservedWidth = -1);
 			bool DrawProgressBar(const Rect& cellRect, CellState cellState, int value, int range, ProgressState state = ProgressState::Normal, Color* averageBackgroundColor = nullptr);
 
 			Size GetToggleSize() const;

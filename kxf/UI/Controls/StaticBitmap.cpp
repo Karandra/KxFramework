@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "StaticBitmap.h"
 #include "kxf/Drawing/UxTheme.h"
-#include "kxf/Drawing/Bitmap.h"
 #include "kxf/Drawing/Image.h"
 #include "kxf/Drawing/GDIRenderer.h"
 
@@ -20,7 +19,7 @@ namespace kxf::UI
 
 	bool StaticBitmap::Create(wxWindow* parent,
 							  wxWindowID id,
-							  const Bitmap& bitmap,
+							  const GDIBitmap& bitmap,
 							  FlagSet<WindowStyle> style
 	)
 	{

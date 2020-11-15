@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Button.h"
 #include "kxf/Drawing/UxTheme.h"
-#include "kxf/Drawing/Bitmap.h"
 #include "kxf/Drawing/ImageBundle.h"
 #include "kxf/Drawing/GDIRenderer.h"
 #include "kxf/UI/Menus/Menu.h"

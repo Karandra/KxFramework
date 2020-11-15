@@ -1,6 +1,5 @@
 #pragma once
 #include "Common.h"
-#include "Font.h"
 #include "Color.h"
 #include "Geometry.h"
 #include "kxf/General/String.h"
@@ -17,6 +16,7 @@
 // https://docs.microsoft.com/ru-ru/windows/win32/controls/theme-subclasses
 namespace kxf
 {
+	class GDIFont;
 	class GDIContext;
 
 	enum class UxThemeFlag: uint32_t
@@ -128,7 +128,7 @@ namespace kxf
 			std::optional<Rect> GetBackgroundContentRect(const GDIContext& dc, int iPartId, int iStateId, const Rect& rect) const noexcept;
 
 			Color GetColor(int iPartId, int iStateId, int iPropId) const noexcept;
-			Font GetFont(const GDIContext& dc, int iPartId, int iStateId, int iPropId) const noexcept;
+			GDIFont GetFont(const GDIContext& dc, int iPartId, int iStateId, int iPropId) const noexcept;
 			std::optional<bool> GetBool(int iPartId, int iStateId, int iPropId) const noexcept;
 			std::optional<int> GetInt(int iPartId, int iStateId, int iPropId) const noexcept;
 			std::optional<int> GetEnum(int iPartId, int iStateId, int iPropId) const noexcept;

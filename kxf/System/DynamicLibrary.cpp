@@ -7,9 +7,7 @@
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/INativeStream.h"
 #include "kxf/Drawing/ImageBundle.h"
-#include "kxf/Drawing/Bitmap.h"
-#include "kxf/Drawing/Icon.h"
-#include "kxf/Drawing/Cursor.h"
+#include "kxf/Drawing/GDIRenderer.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 
@@ -398,11 +396,11 @@ namespace kxf
 		}
 		return 0;
 	}
-	Icon DynamicLibrary::GetIconResource(const String& name, const Size& size, const Locale& locale) const
+	GDIIcon DynamicLibrary::GetIconResource(const String& name, const Size& size, const Locale& locale) const
 	{
-		return LoadGDIImage<Icon>(AsHMODULE(*m_Handle), name, System::Private::ResourceTypeToName(RT_GROUP_ICON), IMAGE_ICON, size, locale);
+		return LoadGDIImage<GDIIcon>(AsHMODULE(*m_Handle), name, System::Private::ResourceTypeToName(RT_GROUP_ICON), IMAGE_ICON, size, locale);
 	}
-	Icon DynamicLibrary::GetIconResource(const String& name, size_t index, const Locale& locale) const
+	GDIIcon DynamicLibrary::GetIconResource(const String& name, size_t index, const Locale& locale) const
 	{
 		using System::Private::ResourceTypeToName;
 		using System::Private::IconGroupDirectory;
@@ -432,7 +430,7 @@ namespace kxf
 				constexpr DWORD dwVer = 0x00030000u;
 				if (HICON iconHandle = ::CreateIconFromResourceEx(reinterpret_cast<BYTE*>(iconBuffer.data()), iconBuffer.length(), TRUE, dwVer, width, height, LR_DEFAULTCOLOR))
 				{
-					Icon icon;
+					GDIIcon icon;
 					icon.AttachHandle(iconHandle);
 					return icon;
 				}
@@ -452,13 +450,13 @@ namespace kxf
 		return bundle;
 	}
 
-	Bitmap DynamicLibrary::GetBitmapResource(const String& name, const Locale& locale) const
+	GDIBitmap DynamicLibrary::GetBitmapResource(const String& name, const Locale& locale) const
 	{
-		return LoadGDIImage<Bitmap>(AsHMODULE(*m_Handle), name, System::Private::ResourceTypeToName(RT_BITMAP), IMAGE_BITMAP, g_DefaultIconSize, locale);
+		return LoadGDIImage<GDIBitmap>(AsHMODULE(*m_Handle), name, System::Private::ResourceTypeToName(RT_BITMAP), IMAGE_BITMAP, g_DefaultIconSize, locale);
 	}
-	Cursor DynamicLibrary::GetCursorResource(const String& name, const Locale& locale) const
+	GDICursor DynamicLibrary::GetCursorResource(const String& name, const Locale& locale) const
 	{
-		return LoadGDIImage<Cursor>(AsHMODULE(*m_Handle), name, System::Private::ResourceTypeToName(RT_CURSOR), IMAGE_CURSOR, g_DefaultIconSize, locale);
+		return LoadGDIImage<GDICursor>(AsHMODULE(*m_Handle), name, System::Private::ResourceTypeToName(RT_CURSOR), IMAGE_CURSOR, g_DefaultIconSize, locale);
 	}
 	String DynamicLibrary::GetStringResource(const String& name, const Locale& locale) const
 	{

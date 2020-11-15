@@ -108,7 +108,7 @@ namespace kxf::UI
 		wxMenuItem::SetSubMenu(subMenu);
 	}
 
-	void MenuItem::SetBitmap(const Bitmap& normal, const Bitmap& checked)
+	void MenuItem::SetBitmap(const GDIBitmap& normal, const GDIBitmap& checked)
 	{
 		if (IsCheckable())
 		{

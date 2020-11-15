@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "Geometry.h"
+#include "../Geometry.h"
 #include "kxf/RTTI/QueryInterface.h"
 
 namespace kxf

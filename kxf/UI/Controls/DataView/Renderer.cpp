@@ -61,7 +61,7 @@ namespace kxf::UI::DataView
 				buttonRect.Width() += offsetSize.GetX();
 				buttonRect.Height() += offsetSize.GetY();
 
-				Bitmap canvas(cellRect.GetSize(), ColorDepthDB::BPP32);
+				GDIBitmap canvas(cellRect.GetSize(), ColorDepthDB::BPP32);
 				GDIMemoryContext memDC(canvas);
 				wxRendererNative::Get().DrawHeaderButton(GetView(), gdi->GetWx(), Rect(-1, 0, buttonRect.GetWidth() + 1, buttonRect.GetHeight()), GetRenderEngine().GetControlFlags(cellState), wxHDR_SORT_ICON_NONE);
 				if (!cellState.IsSelected())

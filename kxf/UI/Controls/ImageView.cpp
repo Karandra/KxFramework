@@ -95,7 +95,7 @@ namespace kxf::UI
 			ScheduleRefresh();
 		}
 	}
-	void ImageView::SetBitmap(const Bitmap& bitmap)
+	void ImageView::SetBitmap(const GDIBitmap& bitmap)
 	{
 		DoSetBitmap(m_Renderer->CreateBitmap(bitmap.ToWxBitmap()), bitmap.GetSize());
 	}

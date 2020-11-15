@@ -46,30 +46,30 @@ namespace kxf::Drawing
 
 namespace kxf
 {
-	class KX_API Cursor: public RTTI::ExtendInterface<Cursor, IGDIImage>
+	class KX_API GDICursor: public RTTI::ExtendInterface<GDICursor, IGDIImage>
 	{
-		KxRTTI_DeclareIID(Cursor, {0xec12b28a, 0x111e, 0x4f00, {0x8c, 0xe0, 0xdd, 0xb, 0x18, 0x9, 0xf7, 0x5e}});
+		KxRTTI_DeclareIID(GDICursor, {0xec12b28a, 0x111e, 0x4f00, {0x8c, 0xe0, 0xdd, 0xb, 0x18, 0x9, 0xf7, 0x5e}});
 
 		private:
 			wxCursor m_Cursor;
 			Point m_HotSpot = Point::UnspecifiedPosition();
 
 		public:
-			Cursor() = default;
-			Cursor(const wxCursor& other)
+			GDICursor() = default;
+			GDICursor(const wxCursor& other)
 				:m_Cursor(other)
 			{
 			}
 
-			Cursor(const Icon& other);
-			Cursor(const Bitmap& other);
-			Cursor(const Image& other);
-			Cursor(const Cursor& other)
+			GDICursor(const GDIIcon& other);
+			GDICursor(const GDIBitmap& other);
+			GDICursor(const Image& other);
+			GDICursor(const GDICursor& other)
 				:m_Cursor(other.m_Cursor), m_HotSpot(other.m_HotSpot)
 			{
 			}
 
-			virtual ~Cursor() = default;
+			virtual ~GDICursor() = default;
 
 		public:
 			// IGDIObject
@@ -83,7 +83,7 @@ namespace kxf
 			}
 			std::unique_ptr<IGDIObject> CloneGDIObject() const override
 			{
-				return std::make_unique<Cursor>(m_Cursor);
+				return std::make_unique<GDICursor>(m_Cursor);
 			}
 
 			void* GetHandle() const override;
@@ -107,7 +107,7 @@ namespace kxf
 			}
 			bool Save(IOutputStream& stream, ImageFormat format) const override;
 
-			// Cursor
+			// GDICursor
 			const wxCursor& ToWxCursor() const noexcept
 			{
 				return m_Cursor;
@@ -117,9 +117,9 @@ namespace kxf
 				return m_Cursor;
 			}
 
-			Bitmap ToBitmap() const;
+			GDIBitmap ToBitmap() const;
 			Image ToImage() const;
-			Icon ToIcon() const;
+			GDIIcon ToIcon() const;
 
 			Point GetHotSpot() const
 			{
@@ -141,7 +141,7 @@ namespace kxf
 				return IsNull();
 			}
 
-			Cursor& operator=(const Cursor& other)
+			GDICursor& operator=(const GDICursor& other)
 			{
 				m_Cursor = other.m_Cursor;
 				m_HotSpot = other.m_HotSpot;
@@ -162,5 +162,5 @@ namespace kxf::Drawing
 		return static_cast<StockCursor>(cursorType);
 	}
 
-	Cursor GetStockCursor(Drawing::StockCursor cursor);
+	GDICursor GetStockCursor(Drawing::StockCursor cursor);
 }

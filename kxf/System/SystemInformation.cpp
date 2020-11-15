@@ -4,6 +4,7 @@
 #include "Registry.h"
 #include "COM.h"
 #include "Private/SystemInformationDefinesMapping.h"
+#include "kxf/Drawing/GDIRenderer/GDIFont.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 #include <wx/settings.h>
@@ -383,7 +384,7 @@ namespace kxf::System
 	{
 		return static_cast<SystemScreenType>(wxSystemSettings::GetScreenType());
 	}
-	Font GetFont(SystemFont index)
+	GDIFont GetFont(SystemFont index)
 	{
 		return wxSystemSettings::GetFont(static_cast<wxSystemFont>(index));
 	}

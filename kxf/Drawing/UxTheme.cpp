@@ -274,7 +274,7 @@ namespace kxf
 		}
 		return {};
 	}
-	Font UxTheme::GetFont(const GDIContext& dc, int iPartId, int iStateId, int iPropId) const noexcept
+	GDIFont UxTheme::GetFont(const GDIContext& dc, int iPartId, int iStateId, int iPropId) const noexcept
 	{
 		LOGFONTW value = {};
 		if (::GetThemeFont(m_Window->GetHandle(), static_cast<HDC>(dc.GetHandle()), iPartId, iStateId, iPropId, &value) == S_OK)

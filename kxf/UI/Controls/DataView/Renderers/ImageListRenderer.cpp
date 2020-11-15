@@ -12,7 +12,7 @@ namespace kxf::UI::DataView
 		{
 			return true;
 		}
-		else if (const kxf::ImageList* imageList = nullptr; value.GetAs(&imageList))
+		else if (const kxf::GDIImageList* imageList = nullptr; value.GetAs(&imageList))
 		{
 			WithImageList::SetImageList(imageList);
 			return true;

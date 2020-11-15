@@ -1,7 +1,6 @@
 #pragma once
 #include "kxf/Sciter/Common.h"
 #include "kxf/Sciter/Utility/HandleWrapper.h"
-#include "kxf/Drawing/Bitmap.h"
 #include "kxf/Drawing/Image.h"
 #include "kxf/IO/IStream.h"
 
@@ -17,7 +16,7 @@ namespace kxf::Sciter
 	class KX_API GraphicsBitmap final: public HandleWrapper<GraphicsBitmap, GraphicsBitmapHandle>
 	{
 		friend class HandleWrapper<GraphicsBitmap, GraphicsBitmapHandle>;
-		
+
 		public:
 			using TDrawOnFunc = std::function<void(GraphicsContext&, const Size& size)>;
 
@@ -48,13 +47,13 @@ namespace kxf::Sciter
 				CreateFromPixmap(size, pixmapData, withAlpha);
 			}
 			GraphicsBitmap(const Image& image);
-			GraphicsBitmap(const Bitmap& bitmap);
+			GraphicsBitmap(const GDIBitmap& bitmap);
 			GraphicsBitmap(IInputStream& stream)
 			{
 				Load(stream);
 			}
 			GraphicsBitmap(const ScriptValue& value);
-			
+
 		public:
 			// Construct image from B[n+0], G[n+1], R[n+2], A[n+3] data.
 			// Size of pixmap data is (pixmapWidth * pixmapHeight * 4).
@@ -68,7 +67,7 @@ namespace kxf::Sciter
 			bool UsesAlpha() const;
 
 			Image ConvertToImage() const;
-			Bitmap ConvertToBitmap() const;
+			GDIBitmap ConvertToBitmap() const;
 			ScriptValue ToScriptValue() const;
 
 			void DrawOn(TDrawOnFunc func);

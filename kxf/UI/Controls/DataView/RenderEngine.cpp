@@ -231,7 +231,7 @@ namespace kxf::UI::DataView
 		}
 		else
 		{
-			auto GetEffectiveFontIfNeeded = [&dc, &attributes]() -> Font
+			auto GetEffectiveFontIfNeeded = [&dc, &attributes]() -> GDIFont
 			{
 				if (attributes.FontOptions().NeedDCAlteration())
 				{
@@ -239,7 +239,7 @@ namespace kxf::UI::DataView
 				}
 				return {};
 			};
-			auto MeasureString = [&dc](const String& text, const Font& font = {})
+			auto MeasureString = [&dc](const String& text, const GDIFont& font = {})
 			{
 				return dc.GetTextExtent(text, font).GetExtent();
 			};
@@ -357,7 +357,7 @@ namespace kxf::UI::DataView
 		return false;
 	}
 
-	bool RenderEngine::DrawBitmap(const Rect& cellRect, CellState cellState, const Bitmap& bitmap, int reservedWidth)
+	bool RenderEngine::DrawBitmap(const Rect& cellRect, CellState cellState, const GDIBitmap& bitmap, int reservedWidth)
 	{
 		if (bitmap)
 		{
@@ -383,7 +383,7 @@ namespace kxf::UI::DataView
 		}
 		return false;
 	}
-	int RenderEngine::DrawBitmapWithText(const Rect& cellRect, CellState cellState, int offsetX, const String& text, const Bitmap& bitmap, bool centerTextV, int reservedWidth)
+	int RenderEngine::DrawBitmapWithText(const Rect& cellRect, CellState cellState, int offsetX, const String& text, const GDIBitmap& bitmap, bool centerTextV, int reservedWidth)
 	{
 		if (bitmap || reservedWidth > 0)
 		{

@@ -1,10 +1,9 @@
 #pragma once
 #include "Common.h"
+#include "../Image.h"
 #include "IGDIObject.h"
-#include "Bitmap.h"
-#include "Image.h"
-#include "Icon.h"
-#include "Color.h"
+#include "GDIBitmap.h"
+#include "GDIIcon.h"
 #include "kxf/System/COM.h"
 #include <wx/imaglist.h>
 struct IImageList2;
@@ -26,9 +25,9 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API ImageList: public wxImageList, public RTTI::ExtendInterface<ImageList, IGDIObject>
+	class KX_API GDIImageList: public wxImageList, public RTTI::ExtendInterface<GDIImageList, IGDIObject>
 	{
-		KxRTTI_DeclareIID(ImageList, {0x50e3b888, 0xefda, 0x4d73, {0x88, 0x58, 0x1, 0xde, 0xf, 0xf8, 0xc8, 0xaf}});
+		KxRTTI_DeclareIID(GDIImageList, {0x50e3b888, 0xefda, 0x4d73, {0x88, 0x58, 0x1, 0xde, 0xf, 0xf8, 0xc8, 0xaf}});
 
 		protected:
 			uint32_t m_Flags = 0;
@@ -38,14 +37,14 @@ namespace kxf
 			bool DoDraw(GDIContext& canvas, int index, const Rect& rect, FlagSet<ImageListFlag> flags = {}, int overlayIndex = Drawing::InvalidImageIndex) noexcept;
 
 		public:
-			ImageList() noexcept;
-			ImageList(int width, int height, int initialCount = 1) noexcept;
-			ImageList(const Size& size, int initialCount = 1) noexcept
-				:ImageList(size.GetWidth(), size.GetWidth(), initialCount)
+			GDIImageList() noexcept;
+			GDIImageList(int width, int height, int initialCount = 1) noexcept;
+			GDIImageList(const Size& size, int initialCount = 1) noexcept
+				:GDIImageList(size.GetWidth(), size.GetWidth(), initialCount)
 			{
 			}
-			ImageList(const ImageList&) = delete;
-			ImageList(ImageList&& other) noexcept
+			GDIImageList(const GDIImageList&) = delete;
+			GDIImageList(GDIImageList&& other) noexcept
 			{
 				*this = std::move(other);
 			}
@@ -60,7 +59,7 @@ namespace kxf
 			void* DetachHandle() override;
 			void AttachHandle(void* handle) override;
 
-			// ImageList
+			// GDIImageList
 			bool HasMask() const noexcept;
 			COMPtr<IImageList2> QueryNativeInterface() const noexcept;
 
@@ -71,17 +70,17 @@ namespace kxf
 			bool RemoveAll() noexcept;
 			bool Remove(int index) noexcept;
 
-			int Add(const Bitmap& bitmap);
-			int Add(const Icon& icon);
+			int Add(const GDIBitmap& bitmap);
+			int Add(const GDIIcon& icon);
 			int Add(const Image& image);
 
-			bool Replace(int index, const Bitmap& bitmap);
-			bool Replace(int index, const Icon& icon);
 			bool Replace(int index, const Image& image);
+			bool Replace(int index, const GDIIcon& icon);
+			bool Replace(int index, const GDIBitmap& bitmap);
 
-			Bitmap GetBitmap(int index) const;
 			Image GetImage(int index) const;
-			Icon GetIcon(int index) const;
+			GDIIcon GetIcon(int index) const;
+			GDIBitmap GetBitmap(int index) const;
 
 			Color GetBackgroundColor() const noexcept;
 			void SetBackgroundColor(const Color& color) noexcept;
@@ -115,10 +114,10 @@ namespace kxf
 				return IsNull();
 			}
 
-			ImageList& operator=(const ImageList&) = delete;
-			ImageList& operator=(ImageList&& other) noexcept;
+			GDIImageList& operator=(const GDIImageList&) = delete;
+			GDIImageList& operator=(GDIImageList&& other) noexcept;
 
 		public:
-			wxDECLARE_DYNAMIC_CLASS(ImageList);
+			wxDECLARE_DYNAMIC_CLASS(GDIImageList);
 	};
 }

@@ -10,7 +10,7 @@ namespace kxf::UI::DataView
 	{
 		public:
 			BitmapTextToggleValue(const String& text = {},
-								  const Bitmap& bitmap = wxNullBitmap,
+								  const GDIBitmap& bitmap = wxNullBitmap,
 								  ToggleState state = ToggleState::None,
 								  ToggleType type = ToggleType::None
 			)
@@ -18,7 +18,7 @@ namespace kxf::UI::DataView
 			{
 			}
 
-			BitmapTextToggleValue(const Bitmap& bitmap)
+			BitmapTextToggleValue(const GDIBitmap& bitmap)
 				:BitmapTextToggleValue({}, bitmap)
 			{
 			}
@@ -31,7 +31,7 @@ namespace kxf::UI::DataView
 			{
 				SetChecked(checked);
 			}
-			BitmapTextToggleValue(bool checked, const String& text, const Bitmap& bitmap = wxNullBitmap, ToggleType type = ToggleType::None)
+			BitmapTextToggleValue(bool checked, const String& text, const GDIBitmap& bitmap = wxNullBitmap, ToggleType type = ToggleType::None)
 				:BitmapTextToggleValue(text, bitmap, ToggleState::None, type)
 			{
 				SetChecked(checked);

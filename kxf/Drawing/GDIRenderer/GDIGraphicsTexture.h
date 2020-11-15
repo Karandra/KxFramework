@@ -1,9 +1,9 @@
 #pragma once
 #include "Common.h"
-#include "../Bitmap.h"
-#include "../Image.h"
+#include "GDIBitmap.h"
 #include "GDIGraphicsRenderer.h"
-#include "../IGDIObject.h"
+#include "IGDIObject.h"
+#include "../Image.h"
 #include "../GraphicsRenderer/IGraphicsTexture.h"
 
 namespace kxf
@@ -14,7 +14,7 @@ namespace kxf
 
 		protected:
 			GDIGraphicsRenderer* m_Renderer = nullptr;
-			Bitmap m_Bitmap;
+			GDIBitmap m_Bitmap;
 
 		private:
 			bool DoIsSameAs(const IObject& other) const
@@ -36,7 +36,7 @@ namespace kxf
 				:m_Renderer(&rendrer)
 			{
 			}
-			GDIGraphicsTexture(GDIGraphicsRenderer& rendrer, const Bitmap& bitmap)
+			GDIGraphicsTexture(GDIGraphicsRenderer& rendrer, const GDIBitmap& bitmap)
 				:m_Renderer(&rendrer), m_Bitmap(bitmap)
 			{
 			}
@@ -154,11 +154,11 @@ namespace kxf
 			}
 
 			// GDIGraphicsTexture
-			const Bitmap& Get() const
+			const GDIBitmap& Get() const
 			{
 				return m_Bitmap;
 			}
-			Bitmap& Get()
+			GDIBitmap& Get()
 			{
 				return m_Bitmap;
 			}

@@ -32,10 +32,10 @@ namespace kxf::UI
 
 		public:
 			static String ProcessPlainText(const String& text);
-			static bool SetupFontsUsing(const Font& normalFont, String& normalFace, String& fixedFace, int& pointSize);
+			static bool SetupFontsUsing(const GDIFont& normalFont, String& normalFace, String& fixedFace, int& pointSize);
 
 		private:
-			Bitmap m_BackgroundBitmap;
+			GDIBitmap m_BackgroundBitmap;
 			Color m_BackgroundColor;
 			wxGraphicsRenderer* m_Renderer = nullptr;
 
@@ -54,7 +54,7 @@ namespace kxf::UI
 			void OnHTMLLinkClicked(const wxHtmlLinkInfo& link) override;
 			wxHtmlOpeningStatus OnHTMLOpeningURL(wxHtmlURLType type, const wxString& url, wxString* redirect) const override;
 
-			bool DoSetFont(const Font& normalFont);
+			bool DoSetFont(const GDIFont& normalFont);
 			bool DoSetValue(const String& value);
 			bool DoAppendValue(const String& value);
 
@@ -104,7 +104,7 @@ namespace kxf::UI
 				ScheduleRefresh();
 			}
 
-			Bitmap GetHTMLBackgroundImage() const
+			GDIBitmap GetHTMLBackgroundImage() const
 			{
 				return m_BackgroundBitmap;
 			}
@@ -114,7 +114,7 @@ namespace kxf::UI
 				wxHtmlWindow::SetHTMLBackgroundImage(bitmap);
 				ScheduleRefresh();
 			}
-			void SetHTMLBackgroundImage(const Bitmap& bitmap)
+			void SetHTMLBackgroundImage(const GDIBitmap& bitmap)
 			{
 				HTMLWindow::SetHTMLBackgroundImage(bitmap.ToWxBitmap());
 			}

@@ -95,7 +95,7 @@ namespace kxf::UI::DataView
 			size_t m_DisplayIndex = std::numeric_limits<size_t>::max();
 			ColumnID m_ID;
 
-			Bitmap m_Bitmap;
+			GDIBitmap m_Bitmap;
 			String m_Title;
 			FlagSet<Alignment> m_TitleAlignment = Alignment::Invalid;
 			bool m_IsChecked = false;
@@ -236,11 +236,11 @@ namespace kxf::UI::DataView
 			{
 				return !m_Bitmap.IsNull();
 			}
-			Bitmap GetBitmap() const
+			GDIBitmap GetBitmap() const
 			{
 				return m_Bitmap;
 			}
-			void SetBitmap(const Bitmap& bitmap)
+			void SetBitmap(const GDIBitmap& bitmap)
 			{
 				m_Bitmap = bitmap;
 				UpdateDisplay();

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ImageBundle.h"
-#include "Icon.h"
+#include "GDIRenderer/GDIIcon.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/System/SystemInformation.h"
 #include "kxf/Application/IGUIApplication.h"
@@ -19,7 +19,7 @@ namespace kxf
 	{
 		for (size_t i = 0; i < other.GetIconCount(); i++)
 		{
-			if (!m_Items.emplace_back(Icon(other.GetIconByIndex(i)).ToImage()))
+			if (!m_Items.emplace_back(GDIIcon(other.GetIconByIndex(i)).ToImage()))
 			{
 				m_Items.pop_back();
 			}

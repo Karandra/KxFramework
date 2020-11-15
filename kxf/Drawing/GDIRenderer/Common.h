@@ -7,11 +7,11 @@
 #include "../TextExtent.h"
 #include "../FontMetrics.h"
 
-#include "../IGDIObject.h"
-#include "../Icon.h"
-#include "../Bitmap.h"
-#include "../Region.h"
-#include "../Font.h"
+#include "IGDIObject.h"
+#include "GDIIcon.h"
+#include "GDIBitmap.h"
+#include "GDIRegion.h"
+#include "GDIFont.h"
 
 #include "kxf/RTTI/QueryInterface.h"
 

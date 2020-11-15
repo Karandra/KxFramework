@@ -6,7 +6,7 @@
 
 namespace
 {
-	const kxf::Bitmap g_EmptyBitmap({8, 8}, kxf::ColorDepthDB::BPP32);
+	const kxf::GDIBitmap g_EmptyBitmap({8, 8}, kxf::ColorDepthDB::BPP32);
 }
 
 namespace kxf::UI
@@ -65,16 +65,16 @@ namespace kxf::UI
 		gc->DrawBitmap(!bitmap.IsNull() ? bitmap : gc->CreateBitmap(g_EmptyBitmap.ToWxBitmap()), rect.GetX() + x, rect.GetY() + y, width, height);
 		return scaledImageSize;
 	}
-	Size DrawablePanel::DrawScaledBitmap(wxGraphicsContext* gc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale)
+	Size DrawablePanel::DrawScaledBitmap(wxGraphicsContext* gc, const GDIBitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale)
 	{
 		return DrawScaledBitmap(gc, gc->CreateBitmap(bitmap.ToWxBitmap()), bitmap.GetSize(), rect, scaleMode, globalScale);
 	}
-	Size DrawablePanel::DrawScaledBitmap(GDIWindowContext& dc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale)
+	Size DrawablePanel::DrawScaledBitmap(GDIWindowContext& dc, const GDIBitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale)
 	{
 		wxGCDC gcdc(dc.ToWxDC());
 		return DrawScaledBitmap(gcdc.GetGraphicsContext(), bitmap, rect, scaleMode, globalScale);
 	}
-	Size DrawablePanel::DrawScaledBitmap(GDIMemoryContext& dc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale)
+	Size DrawablePanel::DrawScaledBitmap(GDIMemoryContext& dc, const GDIBitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale)
 	{
 		wxGCDC gcdc(dc.ToWxDC());
 		return DrawScaledBitmap(gcdc.GetGraphicsContext(), bitmap, rect, scaleMode, globalScale);

@@ -1,36 +1,36 @@
 #include "stdafx.h"
-#include "Cursor.h"
-#include "Bitmap.h"
-#include "Icon.h"
-#include "Image.h"
+#include "GDICursor.h"
+#include "GDIBitmap.h"
+#include "GDIIcon.h"
+#include "../Image.h"
 #include "Private/GDI.h"
 
 namespace kxf
 {
-	// Cursor
-	Cursor::Cursor(const Icon& other)
+	// GDICursor
+	GDICursor::GDICursor(const GDIIcon& other)
 		:m_Cursor(other.ToCursor().m_Cursor)
 	{
 	}
-	Cursor::Cursor(const Bitmap& other)
+	GDICursor::GDICursor(const GDIBitmap& other)
 		:m_Cursor(other.ToCursor().m_Cursor)
 	{
 	}
-	Cursor::Cursor(const Image& other)
+	GDICursor::GDICursor(const Image& other)
 		:m_Cursor(other.ToCursor().m_Cursor)
 	{
 	}
 
 	// IGDIObject
-	void* Cursor::GetHandle() const
+	void* GDICursor::GetHandle() const
 	{
 		return m_Cursor.GetHandle();
 	}
-	void* Cursor::DetachHandle()
+	void* GDICursor::DetachHandle()
 	{
 		return Drawing::Private::DetachGDIImageHandle(m_Cursor);
 	}
-	void Cursor::AttachHandle(void* handle)
+	void GDICursor::AttachHandle(void* handle)
 	{
 		m_Cursor = wxCursor();
 		Drawing::Private::AttachIconHandle(m_Cursor, handle, [&]()
@@ -40,7 +40,7 @@ namespace kxf
 		});
 	}
 
-	bool Cursor::Load(IInputStream& stream, Point hotSpot, ImageFormat format)
+	bool GDICursor::Load(IInputStream& stream, Point hotSpot, ImageFormat format)
 	{
 		Image image;
 		if (hotSpot.IsFullySpecified())
@@ -56,7 +56,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool Cursor::Save(IOutputStream& stream, ImageFormat format) const
+	bool GDICursor::Save(IOutputStream& stream, ImageFormat format) const
 	{
 		if (m_Cursor.IsOk() && format != ImageFormat::Any && format != ImageFormat::None)
 		{
@@ -73,15 +73,15 @@ namespace kxf
 		return false;
 	}
 
-	Bitmap Cursor::ToBitmap() const
+	GDIBitmap GDICursor::ToBitmap() const
 	{
 		return wxBitmap(m_Cursor);
 	}
-	Image Cursor::ToImage() const
+	Image GDICursor::ToImage() const
 	{
 		return ToBitmap();
 	}
-	Icon Cursor::ToIcon() const
+	GDIIcon GDICursor::ToIcon() const
 	{
 		return ToBitmap();
 	}
@@ -89,7 +89,7 @@ namespace kxf
 
 namespace kxf::Drawing
 {
-	Cursor GetStockCursor(StockCursor cursor)
+	GDICursor GetStockCursor(StockCursor cursor)
 	{
 		return wxCursor(ToWxStockCursor(cursor));
 	}

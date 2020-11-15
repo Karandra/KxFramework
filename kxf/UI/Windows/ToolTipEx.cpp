@@ -104,7 +104,7 @@ namespace kxf::UI
 
 		auto DoUpdateCaption = [this, hwnd]()
 		{
-			if (const Icon* icon = std::get_if<Icon>(&m_Icon); icon && *icon)
+			if (const GDIIcon* icon = std::get_if<GDIIcon>(&m_Icon); icon && *icon)
 			{
 				::SendMessageW(hwnd, TTM_SETTITLE, reinterpret_cast<WPARAM>(icon->GetHandle()), reinterpret_cast<LPARAM>(m_Caption.wc_str()));
 				return true;
@@ -271,15 +271,15 @@ namespace kxf::UI
 		}
 		return StdIcon::None;
 	}
-	Icon ToolTipEx::GetIcon() const
+	GDIIcon ToolTipEx::GetIcon() const
 	{
-		if (const Icon* icon = std::get_if<Icon>(&m_Icon))
+		if (const GDIIcon* icon = std::get_if<GDIIcon>(&m_Icon))
 		{
 			return *icon;
 		}
 		return {};
 	}
-	void ToolTipEx::SetIcon(const Icon& icon)
+	void ToolTipEx::SetIcon(const GDIIcon& icon)
 	{
 		m_Icon = icon;
 	}

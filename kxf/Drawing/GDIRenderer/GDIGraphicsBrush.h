@@ -3,8 +3,8 @@
 #include "GDIBrush.h"
 #include "GDIGraphicsRenderer.h"
 #include "GDIGraphicsTexture.h"
-#include "../Bitmap.h"
-#include "../IGDIObject.h"
+#include "GDIBitmap.h"
+#include "IGDIObject.h"
 #include "../GraphicsRenderer/IGraphicsBrush.h"
 
 namespace kxf::Drawing::Private
@@ -221,7 +221,7 @@ namespace kxf
 				:GDIGraphicsBrushBase(rendrer, brush), m_WrapMode(wrapMode)
 			{
 			}
-			GDIGraphicsTextureBrush(GDIGraphicsRenderer& rendrer, const Bitmap& bitmap, WrapMode wrapMode = WrapMode::None)
+			GDIGraphicsTextureBrush(GDIGraphicsRenderer& rendrer, const GDIBitmap& bitmap, WrapMode wrapMode = WrapMode::None)
 				:GDIGraphicsBrushBase(rendrer), m_WrapMode(wrapMode)
 			{
 				m_Brush.SetStipple(bitmap);

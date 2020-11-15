@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "GDI.h"
-#include "../Bitmap.h"
+#include "../GDIBitmap.h"
 #include <Windows.h>
 #include "kxf/System/UndefWindows.h"
 
 namespace kxf::Drawing::Private
 {
-	Bitmap BitmapFromMemoryLocation(const void* data)
+	GDIBitmap BitmapFromMemoryLocation(const void* data)
 	{
 		const BITMAPINFO& bitmapInfo = *static_cast<const BITMAPINFO*>(data);
 		const BITMAPINFOHEADER& bitmapHeader = bitmapInfo.bmiHeader;
@@ -18,7 +18,7 @@ namespace kxf::Drawing::Private
 			// TODO: Check the correctness of this pointer
 			const auto bitmapData = reinterpret_cast<const uint8_t*>(data) + sizeof(BITMAPINFO);
 
-			Bitmap bitmap;
+			GDIBitmap bitmap;
 			bitmap.AttachHandle(::CreateBitmap(bitmapHeader.biWidth, bitmapHeader.biHeight, bitmapHeader.biPlanes, bitmapHeader.biBitCount, bitmapData));
 			return bitmap;
 		}

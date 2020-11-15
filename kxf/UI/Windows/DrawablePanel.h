@@ -33,13 +33,13 @@ namespace kxf::UI
 	{
 		public:
 			static Size DrawScaledBitmap(wxGraphicsContext* gc, const wxGraphicsBitmap& bitmap, const Size& bitmapSize, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
-			static Size DrawScaledBitmap(wxGraphicsContext* gc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
-			static Size DrawScaledBitmap(GDIWindowContext& dc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
-			static Size DrawScaledBitmap(GDIMemoryContext& dc, const Bitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
+			static Size DrawScaledBitmap(wxGraphicsContext* gc, const GDIBitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
+			static Size DrawScaledBitmap(GDIWindowContext& dc, const GDIBitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
+			static Size DrawScaledBitmap(GDIMemoryContext& dc, const GDIBitmap& bitmap, const Rect& rect, BitmapScaleMode scaleMode, double globalScale = 1.0);
 			static void DrawTransparencyPattern(GDIContext& dc);
 
 		private:
-			Bitmap m_Bitmap;
+			GDIBitmap m_Bitmap;
 			BitmapScaleMode m_ImageScaleMode = BitmapScaleMode::None;
 			FlagSet<DrawablePanelMode> m_BackgroundMode = DrawablePanelMode::Soild;
 			Direction m_GradientDirection = Direction::Down;
@@ -79,11 +79,11 @@ namespace kxf::UI
 			{
 				return !m_Bitmap.IsNull();
 			}
-			const Bitmap& GetBitmap() const
+			const GDIBitmap& GetBitmap() const
 			{
 				return m_Bitmap;
 			}
-			void SetBitmap(const Bitmap& image)
+			void SetBitmap(const GDIBitmap& image)
 			{
 				m_Bitmap = image;
 				ScheduleRefresh();

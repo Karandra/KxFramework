@@ -6,10 +6,8 @@ class wxWindow;
 
 namespace kxf
 {
-	class Region;
-	class Bitmap;
 	class Image;
-	class Font;
+	class GDIFont;
 	class String;
 
 	class IGraphicsRenderer;
@@ -59,7 +57,6 @@ namespace kxf
 			virtual FlagSet<GraphicsContextFeature> GetSupportedFeatures() const = 0;
 
 			// Clipping region functions
-			virtual void ClipRegion(const Region& region) = 0;
 			virtual void ClipBoxRegion(const RectF& rect) = 0;
 			virtual void ResetClipRegion() = 0;
 			virtual RectF GetClipBox() const = 0;

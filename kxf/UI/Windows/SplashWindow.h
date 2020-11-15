@@ -25,7 +25,7 @@ namespace kxf::UI
 			static constexpr FlagSet<SplashWindowStyle> DefaultStyle = SplashWindowStyle::None;
 
 		private:
-			Bitmap m_Bitmap;
+			GDIBitmap m_Bitmap;
 			uint8_t m_Alpha = 255;
 		
 			wxTimer m_Timer;
@@ -37,14 +37,14 @@ namespace kxf::UI
 			void OnSize(wxSizeEvent& event);
 
 		protected:
-			virtual void DoSetSplash(const Bitmap& bitmap, const Size& size);
+			virtual void DoSetSplash(const GDIBitmap& bitmap, const Size& size);
 			virtual bool DoUpdateSplash();
 			virtual void DoCenterWindow();
 
 		public:
 			SplashWindow() = default;
 			SplashWindow(wxWindow* parent,
-						 const Bitmap& bitmap,
+						 const GDIBitmap& bitmap,
 						 TimeSpan timeout = {},
 						 FlagSet<SplashWindowStyle> style = DefaultStyle
 			)
@@ -52,7 +52,7 @@ namespace kxf::UI
 				Create(parent, bitmap, timeout, style);
 			}
 			SplashWindow(wxWindow* parent,
-						 const Bitmap& bitmap,
+						 const GDIBitmap& bitmap,
 						 const Size& size,
 						 TimeSpan timeout = {},
 						 FlagSet<SplashWindowStyle> style = DefaultStyle
@@ -61,7 +61,7 @@ namespace kxf::UI
 				Create(parent, bitmap, size, timeout, style);
 			}
 			bool Create(wxWindow* parent,
-						const Bitmap& bitmap,
+						const GDIBitmap& bitmap,
 						TimeSpan timeout = {},
 						FlagSet<SplashWindowStyle> style = DefaultStyle
 			)
@@ -69,7 +69,7 @@ namespace kxf::UI
 				return Create(parent, bitmap, bitmap.GetSize(), timeout, style);
 			}
 			bool Create(wxWindow* parent,
-						const Bitmap& bitmap,
+						const GDIBitmap& bitmap,
 						const Size& size,
 						TimeSpan timeout = {},
 						FlagSet<SplashWindowStyle> style = DefaultStyle
@@ -101,11 +101,11 @@ namespace kxf::UI
 			void Update() override;
 			void Refresh(bool eraseBackground = true, const wxRect* rect = nullptr) override;
 
-			const Bitmap& GetSplashBitmap() const
+			const GDIBitmap& GetSplashBitmap() const
 			{
 				return m_Bitmap;
 			}
-			void SetSplashBitmap(const Bitmap& bitmap, const Size& size = Size::UnspecifiedSize());
+			void SetSplashBitmap(const GDIBitmap& bitmap, const Size& size = Size::UnspecifiedSize());
 		
 			uint8_t GetSplashAlpha() const
 			{

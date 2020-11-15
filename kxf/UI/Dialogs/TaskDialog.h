@@ -57,8 +57,8 @@ namespace kxf::UI
 			wxWindow* m_Parent = nullptr;
 			void* m_Handle = nullptr;
 
-			Icon m_MainIcon;
-			Icon m_FooterIcon;
+			GDIIcon m_MainIcon;
+			GDIIcon m_FooterIcon;
 			StdIcon m_MainIconID = StdIcon::Information;
 			StdIcon m_FooterIconID = StdIcon::None;
 
@@ -151,14 +151,14 @@ namespace kxf::UI
 
 			// Icons
 			StdIcon GetMainIconID() const override;
-			Bitmap GetMainIcon() const override;
+			GDIBitmap GetMainIcon() const override;
 			void SetMainIcon(StdIcon iconID) override;
-			void SetMainIcon(const Bitmap& icon) override;
+			void SetMainIcon(const GDIBitmap& icon) override;
 			
 			StdIcon GetFooterIconID();
-			Bitmap GetFooterIcon();
+			GDIBitmap GetFooterIcon();
 			void SetFooterIcon(StdIcon iconID);
-			void SetFooterIcon(const Bitmap& icon);
+			void SetFooterIcon(const GDIBitmap& icon);
 
 			// Strings
 			wxString GetTitle() const override

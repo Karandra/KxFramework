@@ -117,7 +117,7 @@ namespace kxf::UI::DataView
 		private:
 			MainWindow* m_MainWindow = nullptr;
 			SplashWindow* m_DragImage = nullptr;
-			Bitmap m_HintBitmap;
+			GDIBitmap m_HintBitmap;
 			Point m_HintPosition;
 
 			Point m_Distance = Point::UnspecifiedPosition();

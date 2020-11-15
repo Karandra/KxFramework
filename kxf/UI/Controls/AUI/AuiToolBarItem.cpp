@@ -183,21 +183,21 @@ namespace kxf::UI
 		m_Item->SetLongHelp(helpString);
 	}
 
-	const Bitmap& AuiToolBarItem::GetBitmap() const
+	const GDIBitmap& AuiToolBarItem::GetBitmap() const
 	{
 		return m_Item->GetBitmap();
 	}
-	void AuiToolBarItem::SetBitmap(const Bitmap& bitmap)
+	void AuiToolBarItem::SetBitmap(const GDIBitmap& bitmap)
 	{
 		m_Item->SetBitmap(bitmap.ToWxBitmap());
 		Refresh();
 	}
 
-	const Bitmap& AuiToolBarItem::GetDisabledBitmap() const
+	const GDIBitmap& AuiToolBarItem::GetDisabledBitmap() const
 	{
 		return m_Item->GetDisabledBitmap();
 	}
-	void AuiToolBarItem::SetDisabledBitmap(const Bitmap& bitmap)
+	void AuiToolBarItem::SetDisabledBitmap(const GDIBitmap& bitmap)
 	{
 		m_Item->SetDisabledBitmap(bitmap.ToWxBitmap());
 		Refresh();

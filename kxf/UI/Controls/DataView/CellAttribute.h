@@ -20,7 +20,7 @@ namespace kxf::UI::DataView
 			{
 				*this = CellAttribute();
 			}
-			Font GetEffectiveFont(const Font& baseFont) const;
+			GDIFont GetEffectiveFont(const GDIFont& baseFont) const;
 
 		public:
 			const CellAttributes::Options& Options() const

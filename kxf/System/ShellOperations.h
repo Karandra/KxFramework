@@ -2,9 +2,8 @@
 #include "Common.h"
 #include "KnownDirectoryID.h"
 #include "kxf/General/String.h"
-#include "kxf/FileSystem/FSPath.h"
 #include "kxf/System/HResult.h"
-#include "kxf/Drawing/Icon.h"
+#include "kxf/FileSystem/FSPath.h"
 class wxWindow;
 
 namespace kxf
@@ -14,6 +13,7 @@ namespace kxf
 	class FileItem;
 	class LegacyVolume;
 	class UniversallyUniqueID;
+	class Image;
 }
 
 namespace kxf
@@ -112,8 +112,8 @@ namespace kxf::Shell
 	bool OpenURI(const wxWindow* window, const URI& uri, FlagSet<SHWindowCommand> showWindow = SHWindowCommand::Show, FlagSet<SHExexuteFlag> flags = {});
 	HResult ExploreToItem(const FSPath& path);
 
-	Icon GetFileIcon(const FSPath& path, FlagSet<SHGetFileIconFlag> flags);
-	Icon GetFileIcon(const FileItem& item, FlagSet<SHGetFileIconFlag> flags);
+	Image GetFileIcon(const FSPath& path, FlagSet<SHGetFileIconFlag> flags);
+	Image GetFileIcon(const FileItem& item, FlagSet<SHGetFileIconFlag> flags);
 
 	String QueryAssociation(const FSPath& filePath, SHQueryAssociation option, Any* extraData = nullptr);
 	String QueryAssociation(const UniversallyUniqueID& classID, SHQueryAssociation option, Any* extraData = nullptr);

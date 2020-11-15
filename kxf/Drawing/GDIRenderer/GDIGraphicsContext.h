@@ -2,8 +2,8 @@
 #include "Common.h"
 #include "GDIContext.h"
 #include "GDIGraphicsRenderer.h"
-#include "../IGDIObject.h"
-#include "../Region.h"
+#include "IGDIObject.h"
+#include "GDIRegion.h"
 #include "../GraphicsRenderer/IGraphicsContext.h"
 #include <wx/dc.h>
 #include <wx/dcclient.h>
@@ -99,10 +99,6 @@ namespace kxf
 			FlagSet<GraphicsContextFeature> GetSupportedFeatures() const override;
 
 			// Clipping region functions
-			void ClipRegion(const Region& region) override
-			{
-				m_DC.ClipRegion(region);
-			}
 			void ClipBoxRegion(const RectF& rect) override
 			{
 				m_DC.ClipBoxRegion(rect);
@@ -147,7 +143,7 @@ namespace kxf
 			// Texture functions
 			void DrawTexture(const IGraphicsTexture& texture, const RectF& rect) override;
 			void DrawTexture(const Image& image, const RectF& rect) override;
-			void DrawTexture(const Bitmap& bitmap, const RectF& rect);
+			void DrawTexture(const GDIBitmap& bitmap, const RectF& rect);
 
 			// Text functions
 			std::shared_ptr<IGraphicsFont> GetFont() const override;

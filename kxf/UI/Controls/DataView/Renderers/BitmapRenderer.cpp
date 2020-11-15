@@ -10,7 +10,7 @@ namespace kxf::UI::DataView
 		{
 			return true;
 		}
-		else if (Icon icon; value.GetAs(&icon))
+		else if (GDIIcon icon; value.GetAs(&icon))
 		{
 			m_Bitmap = icon.ToBitmap();
 			return true;

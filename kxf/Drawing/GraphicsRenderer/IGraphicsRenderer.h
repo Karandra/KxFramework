@@ -13,6 +13,7 @@ class wxWindow;
 namespace kxf
 {
 	class Image;
+	class GDIFont;
 }
 
 namespace kxf
@@ -59,7 +60,7 @@ namespace kxf
 
 			// Text functions
 			virtual std::shared_ptr<IGraphicsFont> CreateFont() = 0;
-			virtual std::shared_ptr<IGraphicsFont> CreateFont(const Font& font, const Color& color = Drawing::GetStockColor(StockColor::Black)) = 0;
+			virtual std::shared_ptr<IGraphicsFont> CreateFont(const GDIFont& font, const Color& color = Drawing::GetStockColor(StockColor::Black)) = 0;
 			virtual std::shared_ptr<IGraphicsFont> CreateFont(const SizeF& pixelSize, const String& faceName, const Color& color = Drawing::GetStockColor(StockColor::Black)) = 0;
 
 	};
@@ -155,7 +156,7 @@ namespace kxf::Drawing
 			{
 				return nullptr;
 			}
-			std::shared_ptr<IGraphicsFont> CreateFont(const Font& font, const Color& color = Drawing::GetStockColor(StockColor::Black)) override
+			std::shared_ptr<IGraphicsFont> CreateFont(const GDIFont& font, const Color& color = Drawing::GetStockColor(StockColor::Black)) override
 			{
 				return nullptr;
 			}

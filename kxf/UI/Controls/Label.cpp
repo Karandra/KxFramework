@@ -122,7 +122,7 @@ namespace kxf::UI
 			dc.SetFont(GetFont().MakeUnderlined());
 		}
 
-		Bitmap image = m_Icon;
+		GDIBitmap image = m_Icon;
 		if (!isEnabled)
 		{
 			image = m_IconDisabled;
@@ -230,7 +230,7 @@ namespace kxf::UI
 		return false;
 	}
 
-	void Label::SetBitmap(const Bitmap& image)
+	void Label::SetBitmap(const GDIBitmap& image)
 	{
 		ScheduleRefresh();
 

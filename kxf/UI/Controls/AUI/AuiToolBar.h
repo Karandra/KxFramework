@@ -1,7 +1,6 @@
 #pragma once
 #include "kxf/UI/Common.h"
 #include "kxf/UI/WindowRefreshScheduler.h"
-#include "kxf/Drawing/Bitmap.h"
 #include "AuiToolBarItem.h"
 #include "AuiToolBarEvent.h"
 
@@ -51,7 +50,7 @@ namespace kxf::UI
 			{
 				return DoRemoveTool(*item.m_Item);
 			}
-		
+
 			size_t DoGetToolIndex(const AuiToolBarItem& item) const;
 			bool DoSetToolIndex(AuiToolBarItem& item, size_t newIndex);
 
@@ -98,9 +97,9 @@ namespace kxf::UI
 				return wxAuiToolBar::GetToolBarFits();
 			}
 
-			AuiToolBarItem* AddTool(const String& label, const Bitmap& bitmap, wxItemKind kind = wxITEM_NORMAL, const String& shortHelp = {});
-			AuiToolBarItem* AddTool(const String& label, const Bitmap& bitmap, const Bitmap& disabledBitmap, wxItemKind kind = wxITEM_NORMAL, const String& shortHelp = {});
-			AuiToolBarItem* AddTool(const Bitmap& bitmap, const Bitmap& disabledBitmap, bool isToggle = false, const String& shortHelp = {}, const String& longHelp = {});
+			AuiToolBarItem* AddTool(const String& label, const GDIBitmap& bitmap, wxItemKind kind = wxITEM_NORMAL, const String& shortHelp = {});
+			AuiToolBarItem* AddTool(const String& label, const GDIBitmap& bitmap, const GDIBitmap& disabledBitmap, wxItemKind kind = wxITEM_NORMAL, const String& shortHelp = {});
+			AuiToolBarItem* AddTool(const GDIBitmap& bitmap, const GDIBitmap& disabledBitmap, bool isToggle = false, const String& shortHelp = {}, const String& longHelp = {});
 
 			AuiToolBarItem* AddLabel(const String& label, const int width = -1);
 			AuiToolBarItem* AddControl(wxControl* control, const String& label = {});

@@ -1,6 +1,7 @@
 #include "stdafx.h"
-#include "ImageList.h"
-#include "GDIRenderer.h"
+#include "GDIImageList.h"
+#include "GDIContext.h"
+#include "../Color.h"
 #include "kxf/System/COM.h"
 #include "kxf/Utility/Common.h"
 
@@ -31,10 +32,10 @@ namespace
 
 namespace kxf
 {
-	wxIMPLEMENT_DYNAMIC_CLASS(ImageList, wxImageList);
+	wxIMPLEMENT_DYNAMIC_CLASS(GDIImageList, wxImageList);
 
-	// ImageList
-	void ImageList::OnCreate(int width, int height, bool mask, int initialCount) noexcept
+	// GDIImageList
+	void GDIImageList::OnCreate(int width, int height, bool mask, int initialCount) noexcept
 	{
 		// Replicate wxImageList flags algorithm
 		m_Flags = ILC_COLOR32;
@@ -45,7 +46,7 @@ namespace kxf
 			m_Flags |= ILC_MASK;
 		}
 	}
-	bool ImageList::DoDraw(GDIContext& dc, int index, const Rect& rect, FlagSet<ImageListFlag> flags, int overlayIndex) noexcept
+	bool GDIImageList::DoDraw(GDIContext& dc, int index, const Rect& rect, FlagSet<ImageListFlag> flags, int overlayIndex) noexcept
 	{
 		Size size = rect.GetSize();
 		size.SetDefaults({0, 0});
@@ -59,29 +60,29 @@ namespace kxf
 		return ::ImageList_DrawEx(ToHImageList(m_hImageList), index, static_cast<HDC>(dc.GetHandle()), rect.GetX(), rect.GetY(), size.GetWidth(), size.GetHeight(), CLR_NONE, CLR_NONE, nativeDrawMode);
 	}
 
-	ImageList::ImageList() noexcept
+	GDIImageList::GDIImageList() noexcept
 	{
 		OnCreate(wxDefaultCoord, wxDefaultCoord, g_UseMask, -1);
 	}
-	ImageList::ImageList(int width, int height, int initialCount) noexcept
+	GDIImageList::GDIImageList(int width, int height, int initialCount) noexcept
 		:wxImageList(width, height, g_UseMask, initialCount)
 	{
 		OnCreate(width, height, g_UseMask, initialCount);
 	}
 
 	// IGDIObject
-	bool ImageList::IsNull() const
+	bool GDIImageList::IsNull() const
 	{
 		return m_hImageList != nullptr;
 	}
-	bool ImageList::IsSameAs(const IGDIObject& other) const
+	bool GDIImageList::IsSameAs(const IGDIObject& other) const
 	{
 		return m_hImageList == other.GetHandle();
 	}
-	std::unique_ptr<kxf::IGDIObject> ImageList::CloneGDIObject() const
+	std::unique_ptr<IGDIObject> GDIImageList::CloneGDIObject() const
 	{
 		const size_t count = GetImageCount();
-		auto clone = std::make_unique<ImageList>(GetSize(), count);
+		auto clone = std::make_unique<GDIImageList>(GetSize(), count);
 		clone->m_Flags = m_Flags;
 
 		for (size_t i = 0; i < count; i++)
@@ -91,11 +92,11 @@ namespace kxf
 		return clone;
 	}
 
-	void* ImageList::GetHandle() const
+	void* GDIImageList::GetHandle() const
 	{
 		return m_hImageList;
 	}
-	void* ImageList::DetachHandle()
+	void* GDIImageList::DetachHandle()
 	{
 		void* handle = m_hImageList;
 		m_hImageList = nullptr;
@@ -103,7 +104,7 @@ namespace kxf
 
 		return handle;
 	}
-	void ImageList::AttachHandle(void* handle)
+	void GDIImageList::AttachHandle(void* handle)
 	{
 		AllocExclusive();
 
@@ -127,12 +128,12 @@ namespace kxf
 		}
 	}
 
-	// ImageList
-	bool ImageList::HasMask() const noexcept
+	// GDIImageList
+	bool GDIImageList::HasMask() const noexcept
 	{
 		return m_Flags & ILC_MASK;
 	}
-	COMPtr<IImageList2> ImageList::QueryNativeInterface() const noexcept
+	COMPtr<IImageList2> GDIImageList::QueryNativeInterface() const noexcept
 	{
 		COMPtr<IImageList2> imageList;
 		if (HResult(::HIMAGELIST_QueryInterface(ToHImageList(m_hImageList), __uuidof(IImageList2), imageList.GetAddress())))
@@ -142,25 +143,25 @@ namespace kxf
 		return nullptr;
 	}
 
-	bool ImageList::Create(int width, int height, int initialCount) noexcept
+	bool GDIImageList::Create(int width, int height, int initialCount) noexcept
 	{
 		const bool result = wxImageList::Create(width, height, g_UseMask, initialCount);
 		OnCreate(width, height, g_UseMask, initialCount);
 		return result;
 	}
-	bool ImageList::Create(const Size& size, int initialCount) noexcept
+	bool GDIImageList::Create(const Size& size, int initialCount) noexcept
 	{
 		return Create(size.GetWidth(), size.GetHeight(), initialCount);
 	}
-	bool ImageList::Clear() noexcept
+	bool GDIImageList::Clear() noexcept
 	{
 		return wxImageList::RemoveAll();
 	}
-	bool ImageList::RemoveAll() noexcept
+	bool GDIImageList::RemoveAll() noexcept
 	{
 		return wxImageList::RemoveAll();
 	}
-	bool ImageList::Remove(int index) noexcept
+	bool GDIImageList::Remove(int index) noexcept
 	{
 		if (index > 0)
 		{
@@ -169,59 +170,59 @@ namespace kxf
 		return false;
 	}
 
-	int ImageList::Add(const Bitmap& bitmap)
+	int GDIImageList::Add(const GDIBitmap& bitmap)
 	{
 		return wxImageList::Add(bitmap.ToWxBitmap(), wxNullBitmap);
 	}
-	int ImageList::Add(const Icon& icon)
+	int GDIImageList::Add(const GDIIcon& icon)
 	{
 		return wxImageList::Add(icon.ToWxIcon());
 	}
-	int ImageList::Add(const Image& image)
+	int GDIImageList::Add(const Image& image)
 	{
 		return Add(image.ToBitmap());
 	}
 
-	bool ImageList::Replace(int index, const Bitmap& bitmap)
-	{
-		return wxImageList::Replace(index, bitmap.ToWxBitmap(), wxNullBitmap);
-	}
-	bool ImageList::Replace(int index, const Icon& icon)
-	{
-		return wxImageList::Replace(index, icon.ToWxIcon());
-	}
-	bool ImageList::Replace(int index, const Image& image)
+	bool GDIImageList::Replace(int index, const Image& image)
 	{
 		return wxImageList::Replace(index, image.ToBitmap().ToWxBitmap());
 	}
-
-	Bitmap ImageList::GetBitmap(int index) const
+	bool GDIImageList::Replace(int index, const GDIIcon& icon)
 	{
-		return Icon(wxImageList::GetIcon(index)).ToBitmap();
+		return wxImageList::Replace(index, icon.ToWxIcon());
 	}
-	Image ImageList::GetImage(int index) const
+	bool GDIImageList::Replace(int index, const GDIBitmap& bitmap)
+	{
+		return wxImageList::Replace(index, bitmap.ToWxBitmap(), wxNullBitmap);
+	}
+
+	Image GDIImageList::GetImage(int index) const
 	{
 		return GetBitmap(index).ToImage();
 	}
-	Icon ImageList::GetIcon(int index) const
+	GDIIcon GDIImageList::GetIcon(int index) const
 	{
 		return wxImageList::GetIcon(index);
 	}
+	GDIBitmap GDIImageList::GetBitmap(int index) const
+	{
+		return GDIIcon(wxImageList::GetIcon(index)).ToBitmap();
+	}
 
-	Color ImageList::GetBackgroundColor() const noexcept
+	Color GDIImageList::GetBackgroundColor() const noexcept
 	{
 		return Color::FromCOLORREF(::ImageList_GetBkColor(ToHImageList(m_hImageList)));
 	}
-	void ImageList::SetBackgroundColor(const Color& color) noexcept
+	void GDIImageList::SetBackgroundColor(const Color& color) noexcept
 	{
 		::ImageList_SetBkColor(ToHImageList(m_hImageList), color ? color.GetCOLORREF() : CLR_NONE);
 	}
-	bool ImageList::SetOverlayImage(int index, int overlayIndex) noexcept
+	bool GDIImageList::SetOverlayImage(int index, int overlayIndex) noexcept
 	{
 		return ::ImageList_SetOverlayImage(ToHImageList(m_hImageList), index, overlayIndex);
 	}
 
-	ImageList& ImageList::operator=(ImageList&& other) noexcept
+	GDIImageList& GDIImageList::operator=(GDIImageList&& other) noexcept
 	{
 		if (m_hImageList)
 		{

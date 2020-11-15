@@ -36,15 +36,15 @@ namespace kxf::Drawing
 				return GetMemoryDC();
 			}
 
-			Bitmap GetSelectedBitmap() const
+			GDIBitmap GetSelectedBitmap() const
 			{
 				return GetMemoryDC().GetSelectedBitmap();
 			}
-			void SelectObject(Bitmap& bitmap)
+			void SelectObject(GDIBitmap& bitmap)
 			{
 				GetMemoryDC().SelectObject(bitmap.ToWxBitmap());
 			}
-			void SelectObjectAsSource(const Bitmap& bitmap)
+			void SelectObjectAsSource(const GDIBitmap& bitmap)
 			{
 				GetMemoryDC().SelectObjectAsSource(bitmap.ToWxBitmap());
 			}
@@ -122,7 +122,7 @@ namespace kxf
 				:GDIMemoryContextBase(m_DC), m_DC(const_cast<wxDC*>(&other.ToWxDC()))
 			{
 			}
-			GDIMemoryContext(Bitmap& bitmap)
+			GDIMemoryContext(GDIBitmap& bitmap)
 				:GDIMemoryContextBase(m_DC), m_DC(bitmap.ToWxBitmap())
 			{
 			}
@@ -138,7 +138,7 @@ namespace kxf
 				:GDIBufferedContextBase(m_DC), m_DC(&other.ToWxDC(), size, flags.ToInt<int>())
 			{
 			}
-			GDIBufferedContext(GDIContext& other, Bitmap& bitmap, FlagSet<GDIBufferedContextFlag> flags)
+			GDIBufferedContext(GDIContext& other, GDIBitmap& bitmap, FlagSet<GDIBufferedContextFlag> flags)
 				:GDIBufferedContextBase(m_DC), m_DC(&other.ToWxDC(), bitmap.ToWxBitmap(), flags.ToInt<int>())
 			{
 			}
@@ -154,7 +154,7 @@ namespace kxf
 				:GDIBufferedContextBase(m_DC), m_DC(&window, flags.ToInt<int>())
 			{
 			}
-			GDIBufferedPaintContext(wxWindow& window, Bitmap& bitmap, FlagSet<GDIBufferedContextFlag> flags)
+			GDIBufferedPaintContext(wxWindow& window, GDIBitmap& bitmap, FlagSet<GDIBufferedContextFlag> flags)
 				:GDIBufferedContextBase(m_DC), m_DC(&window, bitmap.ToWxBitmap(), flags.ToInt<int>())
 			{
 			}
