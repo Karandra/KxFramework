@@ -29,7 +29,7 @@ namespace kxf
 			{
 				return GetSize().GetHeight();
 			}
-			virtual ColorDepth GetDepth() const = 0;
+			virtual ColorDepth GetColorDepth() const = 0;
 
 			virtual bool Load(IInputStream& stream, ImageFormat format = ImageFormat::Any) = 0;
 			virtual bool Save(IOutputStream& stream, ImageFormat format) const = 0;

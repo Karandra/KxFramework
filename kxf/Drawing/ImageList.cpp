@@ -78,7 +78,7 @@ namespace kxf
 	{
 		return m_hImageList == other.GetHandle();
 	}
-	std::unique_ptr<kxf::IGDIObject> ImageList::Clone() const
+	std::unique_ptr<kxf::IGDIObject> ImageList::CloneGDIObject() const
 	{
 		const size_t count = GetImageCount();
 		auto clone = std::make_unique<ImageList>(GetSize(), count);

@@ -54,7 +54,7 @@ namespace kxf
 			// IGDIObject
 			bool IsNull() const override;
 			bool IsSameAs(const IGDIObject& other) const override;
-			std::unique_ptr<IGDIObject> Clone() const override;
+			std::unique_ptr<IGDIObject> CloneGDIObject() const override;
 
 			void* GetHandle() const override;
 			void* DetachHandle() override;

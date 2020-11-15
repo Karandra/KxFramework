@@ -44,7 +44,7 @@ namespace kxf
 			{
 				return m_Icon.GetHandle() == other.GetHandle();
 			}
-			std::unique_ptr<IGDIObject> Clone() const override
+			std::unique_ptr<IGDIObject> CloneGDIObject() const override
 			{
 				return std::make_unique<Icon>(m_Icon);
 			}
@@ -58,7 +58,7 @@ namespace kxf
 			{
 				return m_Icon.IsOk() ? Size(m_Icon.GetSize()) : Size::UnspecifiedSize();
 			}
-			ColorDepth GetDepth() const override
+			ColorDepth GetColorDepth() const override
 			{
 				return m_Icon.GetDepth();
 			}

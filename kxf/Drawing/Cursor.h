@@ -81,7 +81,7 @@ namespace kxf
 			{
 				return m_Cursor.GetHandle() == other.GetHandle();
 			}
-			std::unique_ptr<IGDIObject> Clone() const override
+			std::unique_ptr<IGDIObject> CloneGDIObject() const override
 			{
 				return std::make_unique<Cursor>(m_Cursor);
 			}
@@ -95,7 +95,7 @@ namespace kxf
 			{
 				return m_Cursor.IsOk() ? Size(m_Cursor.GetSize()) : Size::UnspecifiedSize();
 			}
-			ColorDepth GetDepth() const override
+			ColorDepth GetColorDepth() const override
 			{
 				return m_Cursor.GetDepth();
 			}

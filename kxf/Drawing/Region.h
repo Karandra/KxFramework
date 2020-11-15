@@ -95,7 +95,7 @@ namespace kxf
 				}
 				return false;
 			}
-			std::unique_ptr<IGDIObject> Clone() const override
+			std::unique_ptr<IGDIObject> CloneGDIObject() const override
 			{
 				return std::make_unique<Region>(m_Region);
 			}
