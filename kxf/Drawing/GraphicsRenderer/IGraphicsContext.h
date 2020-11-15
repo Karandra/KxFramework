@@ -1,11 +1,11 @@
 #pragma once
 #include "Common.h"
 #include "IGraphicsObject.h"
+#include "../GradientStops.h"
+class wxWindow;
 
 namespace kxf
 {
-	class wxWindow;
-
 	class Region;
 	class Bitmap;
 	class Image;
@@ -19,8 +19,30 @@ namespace kxf
 	class IGraphicsFont;
 	class IGraphicsPen;
 	class IGraphicsBrush;
+	class IGraphicsSolidBrush;
+	class IGraphicsTextureBrush;
 	class IGraphicsLinearGradientBrush;
 	class IGraphicsRadialGradientBrush;
+}
+
+namespace kxf
+{
+	enum class GraphicsContextFeature: uint32_t
+	{
+		None = 0,
+
+		ClippingRegion = 1 << 0,
+		TransformationMatrix = 1 << 1,
+		DrawPath = 1 << 2,
+		DrawText = 1 << 3,
+		DrawShape = 1 << 4,
+		DrawTexture = 1 << 5,
+		TextMeasurement = 1 << 6,
+		Antialiasing = 1 << 7,
+		Interpolation = 1 << 8,
+		Layers = 1 << 9,
+		States = 1 << 10
+	};
 }
 
 namespace kxf
@@ -33,52 +55,42 @@ namespace kxf
 			virtual ~IGraphicsContext() = default;
 
 		public:
+			// Feature support
+			virtual FlagSet<GraphicsContextFeature> GetSupportedFeatures() const = 0;
+
 			// Clipping region functions
-			virtual void SetClippingRegion(const Region& region) = 0;
-			virtual void SetClippingRegion(const RectF& rect) = 0;
-			virtual void ResetClippingRegion() = 0;
-			virtual RectF GetClippingBox() const = 0;
+			virtual void ClipRegion(const Region& region) = 0;
+			virtual void ClipBoxRegion(const RectF& rect) = 0;
+			virtual void ResetClipRegion() = 0;
+			virtual RectF GetClipBox() const = 0;
 
 			// Transformation matrix
-			virtual std::shared_ptr<IGraphicsMatrix> CreateMatrix(float m11, float m12, float m21, float m22, float tx, float ty) const = 0;
-			std::shared_ptr<IGraphicsMatrix> CreateIdentityMatrix(float m11, float m12, float m21, float m22, float tx, float ty)
-			{
-				return CreateMatrix(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
-			}
-
 			virtual std::shared_ptr<IGraphicsMatrix> GetTransform() const = 0;
-			virtual void SetTransform(std::shared_ptr<IGraphicsMatrix> matrix) = 0;
+			virtual bool SetTransform(std::shared_ptr<IGraphicsMatrix> transform) = 0;
 
-			virtual void Rotate(Angle angle) = 0;
-			virtual void Scale(float xScale, float yScale) = 0;
-			virtual void Translate(const Size& dxy) = 0;
+			virtual bool TransformInvert() = 0;
+			virtual void TransformRotate(Angle angle) = 0;
+			virtual void TransformScale(float xScale, float yScale) = 0;
+			virtual void TransformTranslate(const Size& dxy) = 0;
+			virtual void TransformConcat(const IGraphicsMatrix& matrix) = 0;
 
 			// Pen and brush functions
-			virtual std::shared_ptr<IGraphicsPen> CreatePen() = 0;
-			virtual std::shared_ptr<IGraphicsBrush> CreateBrush() = 0;
-			virtual std::shared_ptr<IGraphicsLinearGradientBrush> CreateLinearGradientBrush(const RectF& rect, const GradientStops& colors, std::shared_ptr<IGraphicsMatrix> matrix = {}) = 0;
-			virtual std::shared_ptr<IGraphicsRadialGradientBrush> CreateRadialGradientBrush(const RectF& rect, const GradientStops& colors, std::shared_ptr<IGraphicsMatrix> matrix = {}) = 0;
+			virtual std::shared_ptr<IGraphicsPen> GetPen() const = 0;
+			virtual void SetPen(std::shared_ptr<IGraphicsPen> pen) = 0;
 
-			virtual void SetPen(std::shared_ptr<IGraphicsBrush> brush) = 0;
-			virtual void SetBrush(std::shared_ptr<IGraphicsPen> pen) = 0;
+			virtual std::shared_ptr<IGraphicsBrush> GetBrush() const = 0;
+			virtual void SetBrush(std::shared_ptr<IGraphicsBrush> brush) = 0;
 
 			// Path functions
-			virtual std::shared_ptr<IGraphicsPath> CreatePath() = 0;
-
 			virtual void StrokePath(const IGraphicsPath& path) = 0;
 			virtual void FillPath(const IGraphicsPath& path, PolygonFill fill = PolygonFill::OddEvenRule) = 0;
 			virtual void DrawPath(const IGraphicsPath& path, PolygonFill fill = PolygonFill::OddEvenRule) = 0;
 
 			// Texture functions
-			virtual std::shared_ptr<IGraphicsTexture> CreateTexture() = 0;
-			virtual std::shared_ptr<IGraphicsTexture> CreateTexture(const Image& image) = 0;
-			virtual std::shared_ptr<IGraphicsTexture> CreateTexture(const Bitmap& bitmap) = 0;
+			virtual void DrawTexture(const IGraphicsTexture& texture, const RectF& rect) = 0;
+			virtual void DrawTexture(const Image& image, const RectF& rect) = 0;
 
 			// Text functions
-			virtual std::shared_ptr<IGraphicsFont> CreateFont() = 0;
-			virtual std::shared_ptr<IGraphicsFont> CreateFont(const Font& font, const Color& color = Drawing::GetStockColor(StockColor::Black)) = 0;
-			virtual std::shared_ptr<IGraphicsFont> CreateFont(const SizeF& pixelSize, const String& faceName, const Color& color = Drawing::GetStockColor(StockColor::Black)) = 0;
-
 			virtual std::shared_ptr<IGraphicsFont> GetFont() const = 0;
 			virtual void SetFont(std::shared_ptr<IGraphicsFont> font) = 0;
 
@@ -86,20 +98,38 @@ namespace kxf
 			virtual std::vector<float> GetPartialTextExtent(const String& text) const = 0;
 
 			virtual void DrawText(const String& text, const PointF& point) = 0;
-			virtual void DrawText(const String& text, const PointF& point, Angle angle) = 0;
-			virtual void DrawText(const String& text, const PointF& point, const IGraphicsBrush& backgroundBrush) = 0;
-			virtual void DrawText(const String& text, const PointF& point, Angle angle, const IGraphicsBrush& backgroundBrush) = 0;
+			virtual void DrawText(const String& text, const PointF& point, const IGraphicsBrush& brush) = 0;
+
+			virtual void DrawRotatedText(const String& text, const PointF& point, Angle angle) = 0;
+			virtual void DrawRotatedText(const String& text, const PointF& point, Angle angle, const IGraphicsBrush& brush) = 0;
+
+			virtual RectF DrawLabel(const String& text, const RectF& rect, const IGraphicsTexture& icon, FlagSet<Alignment> alignment = Alignment::Left|Alignment::Top, size_t acceleratorIndex = String::npos) = 0;
+			virtual RectF DrawLabel(const String& text, const RectF& rect, FlagSet<Alignment> alignment = Alignment::Left|Alignment::Top, size_t acceleratorIndex = String::npos) = 0;
 
 			// Drawing functions
-			virtual void DrawTexture(const IGraphicsTexture& texture, const RectF& rect) = 0;
-			virtual void DrawTexture(const Bitmap& bitmap, const RectF& rect) = 0;
-			virtual void DrawTexture(const Image& image, const RectF& rect) = 0;
+			virtual void Clear(const IGraphicsBrush& brush) = 0;
+
+			virtual void DrawCircle(const Point& pos, float radius) = 0;
 
 			virtual void DrawEllipse(const RectF& rect) = 0;
-			virtual void DrawRect(const RectF& rect) = 0;
-			virtual void DrawRoundedRect(const RectF& rect, float radius) = 0;
-			virtual void DrawLine(const PointF& point1, const PointF& point2) = 0;
+			void DrawEllipse(const Point& pos, const Size& size)
+			{
+				DrawEllipse({pos, size});
+			}
 
+			virtual void DrawRectangle(const RectF& rect) = 0;
+			void DrawRectangle(const Point& pos, const Size& size)
+			{
+				DrawRectangle({pos, size});
+			}
+
+			virtual void DrawRoundedRectangle(const RectF& rect, float radius) = 0;
+			void DrawRoundedRectangle(const Point& pos, const Size& size, float radius)
+			{
+				DrawRoundedRectangle({pos, size}, radius);
+			}
+
+			virtual void DrawLine(const PointF& point1, const PointF& point2) = 0;
 			virtual void DrawPolyLine(const PointF* points, size_t count) = 0;
 
 			template<size_t N>
@@ -140,7 +170,12 @@ namespace kxf
 			virtual void SetCompositionMode(CompositionMode mode) = 0;
 
 			virtual InterpolationQuality GetInterpolationQuality() const = 0;
-			virtual void SetInterpolationQuality(InterpolationQuality mode) = 0;
+			virtual void SetInterpolationQuality(InterpolationQuality quality) = 0;
+
+			// Bounding box functions
+			virtual RectF GetBoundingBox() const = 0;
+			virtual void CalcBoundingBox(const PointF& point) = 0;
+			virtual void ResetBoundingBox() = 0;
 
 			// Page and document start/end functions
 			virtual bool StartDocument(const String& message) = 0;

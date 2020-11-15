@@ -4,6 +4,8 @@
 
 namespace kxf
 {
+	class Image;
+
 	class IInputStream;
 	class IOutputStream;
 }
@@ -27,6 +29,10 @@ namespace kxf
 			virtual bool Load(IInputStream& stream, ImageFormat format = ImageFormat::Any) = 0;
 			virtual bool Save(IOutputStream& stream, ImageFormat format) const = 0;
 
-			virtual std::shared_ptr<IGraphicsTexture> GetSubTexture() const = 0;
+			virtual std::shared_ptr<IGraphicsTexture> GetSubTexture(const RectF& rect) const = 0;
+			virtual void Rescale(const SizeF& size, InterpolationQuality interpolationQuality) = 0;
+
+			virtual Image ToImage() const = 0;
+			virtual bool FromImage(const Image& image) = 0;
 	};
 }

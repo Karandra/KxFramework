@@ -12,3 +12,4 @@
 #include "GraphicsRenderer/IGraphicsPen.h"
 
 #include "GraphicsRenderer/GraphicsAction.h"
+#include "GraphicsRenderer/GCOperations.h"

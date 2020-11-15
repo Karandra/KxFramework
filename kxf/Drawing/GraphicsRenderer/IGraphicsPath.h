@@ -17,7 +17,7 @@ namespace kxf
 			virtual ~IGraphicsPath() = default;
 
 		public:
-			virtual bool ContainsPoint(const PointF& point, Drawing::PolygonFill fill = Drawing::PolygonFill::OddEvenRule) const = 0;
+			virtual bool ContainsPoint(const PointF& point, PolygonFill fill = PolygonFill::OddEvenRule) const = 0;
 			virtual PointF GetCurrentPoint() const = 0;
 			virtual PointF MoveToPoint(const PointF& point) = 0;
 			virtual RectF GetBoundingBox() const = 0;

@@ -125,17 +125,160 @@ namespace kxf::GraphicsAction
 				:m_GC(gc)
 			{
 				m_GC.PushState();
-				m_GC.SetClippingRegion(rect);
-			}
-			Clip(IGraphicsContext& gc, const Region& region)
-				:m_GC(gc)
-			{
-				m_GC.PushState();
-				m_GC.SetClippingRegion(region);
+				m_GC.ClipBoxRegion(rect);
 			}
 			~Clip()
 			{
 				m_GC.PopState();
+			}
+
+		public:
+			void Add(const Rect& rect)
+			{
+				m_GC.ClipBoxRegion(rect);
+			}
+	};
+
+	class ChangeFont final
+	{
+		private:
+			IGraphicsContext& m_GC;
+			std::shared_ptr<IGraphicsFont> m_Font;
+
+		private:
+			void SaveOldFont()
+			{
+				if (!m_Font)
+				{
+					m_Font = m_GC.GetFont();
+				}
+			}
+
+		public:
+			ChangeFont(IGraphicsContext& gc)
+				:m_GC(gc)
+			{
+			}
+			ChangeFont(IGraphicsContext& gc, std::shared_ptr<IGraphicsFont> font)
+				:m_GC(gc), m_Font(gc.GetFont())
+			{
+				m_GC.SetFont(std::move(font));
+			}
+			~ChangeFont()
+			{
+				if (m_Font)
+				{
+					m_GC.SetFont(std::move(m_Font));
+				}
+			}
+
+		public:
+			void Set(std::shared_ptr<IGraphicsFont> font)
+			{
+				SaveOldFont();
+				m_GC.SetFont(std::move(font));
+			}
+	};
+
+	class ChangeBrush final
+	{
+		private:
+			IGraphicsContext& m_GC;
+			std::shared_ptr<IGraphicsBrush> m_Brush;
+
+		private:
+			void SaveOldBrush()
+			{
+				if (!m_Brush)
+				{
+					m_Brush = m_GC.GetBrush();
+				}
+			}
+
+		public:
+			ChangeBrush(IGraphicsContext& gc)
+				:m_GC(gc)
+			{
+			}
+			ChangeBrush(IGraphicsContext& gc, std::shared_ptr<IGraphicsBrush> brush)
+				:m_GC(gc), m_Brush(gc.GetBrush())
+			{
+				m_GC.SetBrush(std::move(brush));
+			}
+			ChangeBrush(IGraphicsContext& gc, const Color& color)
+				:m_GC(gc), m_Brush(gc.GetBrush())
+			{
+				m_GC.SetBrush(m_GC.GetRenderer().CreateSolidBrush(color));
+			}
+			~ChangeBrush()
+			{
+				if (m_Brush)
+				{
+					m_GC.SetBrush(std::move(m_Brush));
+				}
+			}
+
+		public:
+			void Set(std::shared_ptr<IGraphicsBrush> brush)
+			{
+				SaveOldBrush();
+				m_GC.SetBrush(std::move(brush));
+			}
+			void Set(const Color& color)
+			{
+				SaveOldBrush();
+				m_GC.SetBrush(m_GC.GetRenderer().CreateSolidBrush(color));
+			}
+	};
+
+	class ChangePen final
+	{
+		private:
+			IGraphicsContext& m_GC;
+			std::shared_ptr<IGraphicsPen> m_Pen;
+
+		private:
+			void SaveOldPen()
+			{
+				if (!m_Pen)
+				{
+					m_Pen = m_GC.GetPen();
+				}
+			}
+
+		public:
+			ChangePen(IGraphicsContext& gc)
+				:m_GC(gc)
+			{
+			}
+			ChangePen(IGraphicsContext& gc, std::shared_ptr<IGraphicsPen> pen)
+				:m_GC(gc), m_Pen(gc.GetPen())
+			{
+				m_GC.SetPen(std::move(pen));
+			}
+			ChangePen(IGraphicsContext& gc, const Color& color, float width = 1.0f)
+				:m_GC(gc), m_Pen(gc.GetPen())
+			{
+				m_GC.SetPen(m_GC.GetRenderer().CreatePen(color, width));
+			}
+			~ChangePen()
+			{
+				if (m_Pen)
+				{
+					m_GC.SetPen(std::move(m_Pen));
+				}
+			}
+
+		public:
+			void Set(std::shared_ptr<IGraphicsPen> pen)
+			{
+				SaveOldPen();
+				m_GC.SetPen(std::move(pen));
+			}
+			void Set(const Color& color, float width = 1.0f)
+			{
+				SaveOldPen();
+				m_GC.SetPen(m_GC.GetRenderer().CreatePen(color, width));
 			}
 	};
 }

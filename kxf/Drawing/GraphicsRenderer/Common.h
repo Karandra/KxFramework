@@ -9,11 +9,16 @@
 
 namespace kxf
 {
+	template<class T>
+	using GraphicsCoordPair = Geometry::OrderedPairTemplate<T, float>;
+
 	using GraphicsFontMetrics = Drawing::BasicFontMetrics<float>;
 	using GraphicsTextExtent = Drawing::BasicTextExtent<float>;
+
+	class IGraphicsRenderer;
 }
-namespace kxf::GraphicsRenderer
+
+namespace kxf::Drawing
 {
-	template<class T>
-	using CoordPair = typename Geometry::OrderedPairTemplate<T, float>;
+	std::unique_ptr<IGraphicsRenderer> CreateGDIRenderer();
 }

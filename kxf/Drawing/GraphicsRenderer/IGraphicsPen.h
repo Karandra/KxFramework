@@ -1,7 +1,6 @@
 #pragma once
 #include "Common.h"
 #include "IGraphicsObject.h"
-#include "Color.h"
 
 namespace kxf
 {
@@ -33,7 +32,7 @@ namespace kxf
 			virtual void SetLineJoin(LineJoin join) = 0;
 
 			virtual LineCap GetLineCap() const = 0;
-			virtual void SetLineJoin(LineCap cap) = 0;
+			virtual void SetLineCap(LineCap cap) = 0;
 
 			virtual LineAlignment GetLineAlignment() const = 0;
 			virtual void SetLineAlignment(LineAlignment alignment) = 0;

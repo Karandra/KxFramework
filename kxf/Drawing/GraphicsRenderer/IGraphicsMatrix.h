@@ -18,17 +18,16 @@ namespace kxf
 				SetElements(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
 			}
 
-			virtual void GetElements(float& m11, float& m12, float& m21, float& m22, float& tx, float& ty) = 0;
+			virtual void GetElements(float& m11, float& m12, float& m21, float& m22, float& tx, float& ty) const = 0;
 			virtual void SetElements(float m11, float m12, float m21, float m22, float tx, float ty) = 0;
 
-			virtual void Invert() = 0;
-			virtual void Rotate(Angle angle) = 0;
+			virtual bool Invert() = 0;
+			virtual void RotateTransform(Angle angle) = 0;
 			virtual void Concat(const IGraphicsMatrix& other) = 0;
 
-			virtual void Scale(float xScale, float yScale) = 0;
-			virtual void Translate(const Size& dxy) = 0;
+			virtual void ScaleTransform(float xScale, float yScale) = 0;
+			virtual void ScaleTranslate(const Size& dxy) = 0;
 			virtual SizeF TransformDistance(const SizeF& dxy) = 0;
 			virtual PointF TransformPoint(const PointF& xy) = 0;
-
 	};
 }

@@ -70,21 +70,30 @@ namespace kxf
 			virtual void SetLinearColors(const GradientStops& colors) = 0;
 
 			virtual std::shared_ptr<IGraphicsMatrix> GetTransform() const = 0;
-			virtual void SetTransform(std::shared_ptr<IGraphicsMatrix> matrix) = 0;
+			virtual void SetTransform(std::shared_ptr<IGraphicsMatrix> transform) = 0;
 
 			virtual WrapMode GetWrapMode() const = 0;
 			virtual void SetWrapMode(WrapMode wrapMode) = 0;
 	};
 
-	class KX_API IGraphicsRadialGradientBrush: public RTTI::ExtendInterface<IGraphicsLinearGradientBrush, IGraphicsBrush>
+	class KX_API IGraphicsRadialGradientBrush: public RTTI::ExtendInterface<IGraphicsRadialGradientBrush, IGraphicsBrush>
 	{
 		KxRTTI_DeclareIID(IGraphicsRadialGradientBrush, {0x69d4326b, 0x1948, 0x4751, {0x8a, 0xa5, 0x40, 0xd3, 0x1e, 0xbb, 0x19, 0xef}});
 
 		public:
-			virtual float GetRadius() const = 0;
-			virtual void SetRadius(float radius) = 0;
-
 			virtual PointF GetCenterPoint() const = 0;
 			virtual void SetCenterPoint(const PointF& point) = 0;
+
+			virtual RectF GetRect() const = 0;
+			virtual void SetRect(const RectF& rect) = 0;
+
+			virtual GradientStops GetLinearColors() const = 0;
+			virtual void SetLinearColors(const GradientStops& colors) = 0;
+
+			virtual std::shared_ptr<IGraphicsMatrix> GetTransform() const = 0;
+			virtual void SetTransform(std::shared_ptr<IGraphicsMatrix> transform) = 0;
+
+			virtual WrapMode GetWrapMode() const = 0;
+			virtual void SetWrapMode(WrapMode wrapMode) = 0;
 	};
 }
