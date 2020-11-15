@@ -1,8 +1,8 @@
 #pragma once
 #include "kxf/Sciter/Common.h"
 #include "kxf/Sciter/Utility/HandleWrapper.h"
-#include "kxf/Drawing/GDIRenderer/Pen.h"
-#include "kxf/Drawing/GDIRenderer/Brush.h"
+#include "kxf/Drawing/GDIRenderer/GDIPen.h"
+#include "kxf/Drawing/GDIRenderer/GDIBrush.h"
 
 namespace kxf::Sciter
 {
@@ -110,11 +110,11 @@ namespace kxf::Sciter
 			void DrawText(const GraphicsText& text, const PointD& pos, CornerAlignment alignment = CornerAlignment::None);
 
 			// Brush and pen functions
-			void SetPen(const Pen& pen);
+			void SetPen(const GDIPen& pen);
 			void SetPen(const wxGraphicsPenInfo& pen);
 			void ResetPen();
 
-			void SetBrush(const Brush& brush);
+			void SetBrush(const GDIBrush& brush);
 			void SetBrush(const wxGraphicsPenInfo& brush);
 			void ResetBrush();
 
@@ -125,10 +125,10 @@ namespace kxf::Sciter
 			{
 				Scale(PointD(xScale, yScale));
 			}
-			void Translate(const PointD& p);
-			void Translate(double dx, double dy)
+			void ScaleTranslate(const PointD& p);
+			void ScaleTranslate(double dx, double dy)
 			{
-				Translate(PointD(dx, dy));
+				ScaleTranslate(PointD(dx, dy));
 			}
 
 			GraphicsMatrix CreateMatrix(double a = 1.0, double b = 0.0, double c = 0.0, double d = 1.0, double tx = 0.0, double ty = 0.0);

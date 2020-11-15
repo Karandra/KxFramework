@@ -5,30 +5,8 @@
 
 namespace kxf
 {
-	enum class StockPen
+	class KX_API GDIPen: public IGDIObject
 	{
-		Transparent,
-
-		Black,
-		BlackDashed,
-		White,
-		Cyan,
-		Blue,
-		Red,
-		Green,
-		Yellow,
-		Gray,
-		LightGray,
-		MediumGray
-	};
-}
-
-namespace kxf
-{
-	class KX_API Pen: public RTTI::ExtendInterface<Pen, IGDIObject>
-	{
-		KxRTTI_DeclareIID(Pen, {0xc5cfc8bc, 0x1f1f, 0x4c5e, {0xbb, 0x51, 0x8, 0xb6, 0x9d, 0xc2, 0xa0, 0x7c}});
-
 		public:
 			using Dash = wxDash;
 
@@ -36,28 +14,28 @@ namespace kxf
 			wxPen m_Pen;
 
 		public:
-			Pen() = default;
-			Pen(const wxPen& other)
+			GDIPen() = default;
+			GDIPen(const wxPen& other)
 				:m_Pen(other)
 			{
 			}
-			Pen(const wxColour& color)
+			GDIPen(const wxColour& color)
 				:m_Pen(color, wxPENSTYLE_SOLID)
 			{
 			}
-			Pen(const Pen& other)
+			GDIPen(const GDIPen& other)
 				:m_Pen(other.m_Pen)
 			{
 			}
-			Pen(const Color& color)
+			GDIPen(const Color& color)
 				:m_Pen(color.ToWxColor(), wxPENSTYLE_SOLID)
 			{
 			}
-			Pen(const Bitmap& stippleBitmap, int width)
+			GDIPen(const Bitmap& stippleBitmap, int width)
 				:m_Pen(stippleBitmap.ToWxBitmap(), width)
 			{
 			}
-			virtual ~Pen()
+			virtual ~GDIPen()
 			{
 				m_Pen.SetDashes(0, nullptr);
 			}
@@ -70,26 +48,18 @@ namespace kxf
 			}
 			bool IsSameAs(const IGDIObject& other) const override
 			{
-				if (this == &other)
-				{
-					return true;
-				}
-				else if (auto object = other.QueryInterface<Pen>())
-				{
-					return m_Pen == object->m_Pen;
-				}
-				return false;
+				return this == &other || GetHandle() == other.GetHandle();
 			}
-			std::unique_ptr<IGDIObject> Clone() const override
+			std::unique_ptr<IGDIObject> CloneGDIObject() const override
 			{
-				return std::make_unique<Pen>(m_Pen);
+				return std::make_unique<GDIPen>(m_Pen);
 			}
 
 			void* GetHandle() const override;
 			void* DetachHandle() override;
 			void AttachHandle(void* handle) override;
 
-			// Pen
+			// GDIPen
 			const wxPen& ToWxPen() const noexcept
 			{
 				return m_Pen;
@@ -133,7 +103,11 @@ namespace kxf
 			}
 			HatchStyle GetHatchStyle() const
 			{
-				return Drawing::Private::MapHatchStyle(static_cast<wxHatchStyle>(m_Pen.GetStyle()));
+				if (IsHatch())
+				{
+					return Drawing::Private::MapHatchStyle(static_cast<wxHatchStyle>(m_Pen.GetStyle()));
+				}
+				return HatchStyle::None;
 			}
 			void SetHatchStyle(HatchStyle style)
 			{
@@ -153,23 +127,27 @@ namespace kxf
 			{
 				return Drawing::Private::MapLineCap(m_Pen.GetCap());
 			}
-			void SetJoin(LineCap cap)
+			void SetCap(LineCap cap)
 			{
 				m_Pen.SetCap(Drawing::Private::MapLineCap(cap));
 			}
 
 			Bitmap GetStipple() const
 			{
-				const wxBitmap* stipple = m_Pen.GetStipple();
-				if (stipple && stipple->IsOk())
+				if (m_Pen.GetStyle() == wxPENSTYLE_STIPPLE)
 				{
-					return *stipple;
+					const wxBitmap* stipple = m_Pen.GetStipple();
+					if (stipple && stipple->IsOk())
+					{
+						return *stipple;
+					}
 				}
 				return {};
 			}
 			void SetStipple(const Bitmap& stipple)
 			{
 				m_Pen.SetStipple(stipple.ToWxBitmap());
+				m_Pen.SetStyle(wxPENSTYLE_STIPPLE);
 			}
 
 			int GetWidth() const
@@ -181,9 +159,28 @@ namespace kxf
 				m_Pen.SetWidth(width);
 			}
 
+			bool IsDash() const
+			{
+				switch (m_Pen.GetStyle())
+				{
+					case wxPENSTYLE_DOT:
+					case wxPENSTYLE_LONG_DASH:
+					case wxPENSTYLE_SHORT_DASH:
+					case wxPENSTYLE_DOT_DASH:
+					case wxPENSTYLE_USER_DASH:
+					{
+						return true;
+					}
+				};
+				return false;
+			}
 			DashStyle GetDashStyle() const
 			{
-				return Drawing::Private::MapDashStyle(static_cast<wxDeprecatedGUIConstants>(m_Pen.GetStyle()));
+				if (IsDash())
+				{
+					return Drawing::Private::MapDashStyle(static_cast<wxDeprecatedGUIConstants>(m_Pen.GetStyle()));
+				}
+				return DashStyle::None;
 			}
 			void SetDashStyle(DashStyle style)
 			{
@@ -238,7 +235,7 @@ namespace kxf
 				return IsNull();
 			}
 
-			Pen& operator=(const Pen& other)
+			GDIPen& operator=(const GDIPen& other)
 			{
 				m_Pen = other.m_Pen;
 
@@ -249,5 +246,5 @@ namespace kxf
 
 namespace kxf::Drawing
 {
-	Pen GetStockPen(StockPen pen);
+	GDIPen GetStockGDIPen(StockPen pen);
 }

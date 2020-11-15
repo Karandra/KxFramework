@@ -5,55 +5,34 @@
 
 namespace kxf
 {
-	enum class StockBrush
+	class KX_API GDIBrush: public IGDIObject
 	{
-		Transparent,
-
-		Black,
-		White,
-		Cyan,
-		Blue,
-		Red,
-		Green,
-		Yellow,
-		Gray,
-		LightGray,
-		MediumGray
-	};
-}
-
-namespace kxf
-{
-	class KX_API Brush: public RTTI::ExtendInterface<Brush, IGDIObject>
-	{
-		KxRTTI_DeclareIID(Brush, {0x8bc6b8e3, 0x5ae1, 0x46a9, {0x9f, 0x5a, 0xa7, 0x18, 0xcd, 0x3e, 0x5, 0x17}});
-
 		private:
 			wxBrush m_Brush;
 
 		public:
-			Brush() = default;
-			Brush(const wxBrush& other)
+			GDIBrush() = default;
+			GDIBrush(const wxBrush& other)
 				:m_Brush(other)
 			{
 			}
-			Brush(const wxColour& color)
+			GDIBrush(const wxColour& color)
 				:m_Brush(color, wxBRUSHSTYLE_SOLID)
 			{
 			}
-			Brush(const Brush& other)
+			GDIBrush(const GDIBrush& other)
 				:m_Brush(other.m_Brush)
 			{
 			}
-			Brush(const Color& color)
+			GDIBrush(const Color& color)
 				:m_Brush(color.ToWxColor(), wxBRUSHSTYLE_SOLID)
 			{
 			}
-			Brush(const Bitmap& stippleBitmap)
+			GDIBrush(const Bitmap& stippleBitmap)
 				:m_Brush(stippleBitmap.ToWxBitmap())
 			{
 			}
-			virtual ~Brush() = default;
+			virtual ~GDIBrush() = default;
 
 		public:
 			// IGDIObject
@@ -63,26 +42,18 @@ namespace kxf
 			}
 			bool IsSameAs(const IGDIObject& other) const override
 			{
-				if (this == &other)
-				{
-					return true;
-				}
-				else if (auto object = other.QueryInterface<Brush>())
-				{
-					return m_Brush == object->m_Brush;
-				}
-				return false;
+				return this == &other || GetHandle() == other.GetHandle();
 			}
-			std::unique_ptr<IGDIObject> Clone() const override
+			std::unique_ptr<IGDIObject> CloneGDIObject() const override
 			{
-				return std::make_unique<Brush>(m_Brush);
+				return std::make_unique<GDIBrush>(m_Brush);
 			}
 
 			void* GetHandle() const override;
 			void* DetachHandle() override;
 			void AttachHandle(void* handle) override;
 
-			// Brush
+			// GDIBrush
 			const wxBrush& ToWxBrush() const noexcept
 			{
 				return m_Brush;
@@ -157,7 +128,7 @@ namespace kxf
 				return IsNull();
 			}
 
-			Brush& operator=(const Brush& other)
+			GDIBrush& operator=(const GDIBrush& other)
 			{
 				m_Brush = other.m_Brush;
 
@@ -168,5 +139,5 @@ namespace kxf
 
 namespace kxf::Drawing
 {
-	Brush GetStockBrush(StockBrush brush);
+	GDIBrush GetStockGDIBrush(StockBrush brush);
 }

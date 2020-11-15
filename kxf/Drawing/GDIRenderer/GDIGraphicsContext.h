@@ -1,54 +1,492 @@
 #pragma once
+#include "Common.h"
 #include "GDIContext.h"
-#include "GDIWindowContext.h"
-#include "GDIMemoryContext.h"
-#include <wx/dcgraph.h>
+#include "GDIGraphicsRenderer.h"
+#include "../IGDIObject.h"
+#include "../Region.h"
+#include "../GraphicsRenderer/IGraphicsContext.h"
+#include <wx/dc.h>
+#include <wx/dcclient.h>
+#include <wx/dcscreen.h>
+#include <wx/dcmemory.h>
+#include <wx/dcbuffer.h>
 
 namespace kxf
 {
-	class KX_API GDIGraphicsContext final: public GDIContext
+	class KX_API GDIGraphicsContext: public RTTI::ExtendInterface<GDIGraphicsContext, IGraphicsContext, IGDIObject>
 	{
+		KxRTTI_DeclareIID(GDIGraphicsContext, {0x7f0f1843, 0x27b9, 0x40df, {0x8d, 0xdc, 0x27, 0x98, 0x52, 0x44, 0xb7, 0x20}});
+
+		protected:
+			GDIGraphicsRenderer* m_Renderer = nullptr;
+			GDIContext m_DC;
+			AntialiasMode m_AntialiasMode = AntialiasMode::None;
+			CompositionMode m_CompositionMode = CompositionMode::Source;
+			InterpolationQuality m_InterpolationQuality = InterpolationQuality::Default;
+
+			std::shared_ptr<IGraphicsPen> m_SavedPen;
+			std::shared_ptr<IGraphicsBrush> m_SavedBrush;
+
 		private:
-			wxGCDC m_DC;
-
-		public:
-			GDIGraphicsContext()
-				:GDIContext(m_DC)
+			bool DoIsSameAs(const IObject& other) const
 			{
+				if (this == &other)
+				{
+					return true;
+				}
+				else if (auto object = other.QueryInterface<GDIGraphicsContext>())
+				{
+					return m_DC.IsSameAs(object->m_DC);
+				}
+				return false;
 			}
-			GDIGraphicsContext(GDIMemoryContext& dc)
-				:GDIContext(m_DC), m_DC(dc.ToWxDC())
+			void MakeNull()
 			{
-			}
-			GDIGraphicsContext(GDIWindowContext& dc)
-				:GDIContext(m_DC), m_DC(dc.ToWxDC())
-			{
-			}
-			GDIGraphicsContext(GDIPaintContext& dc)
-				:GDIContext(m_DC), m_DC(dc.ToWxDC())
-			{
-			}
-			GDIGraphicsContext(GDIBufferedPaintContext& dc)
-				:GDIContext(m_DC), m_DC(dc.ToWxDC())
-			{
-			}
-			GDIGraphicsContext(GDIAutoBufferedPaintContext& dc)
-				:GDIContext(m_DC), m_DC(dc.ToWxDC())
-			{
-			}
-			GDIGraphicsContext(std::unique_ptr<wxGraphicsContext> graphicsContext)
-				:GDIContext(m_DC), m_DC(graphicsContext.release())
-			{
+				m_DC = {};
+				m_Renderer = nullptr;
 			}
 
 		public:
-			const wxGCDC& ToWxDC() const noexcept
+			GDIGraphicsContext() noexcept = default;
+			GDIGraphicsContext(GDIGraphicsRenderer& rendrer, wxDC& dc);
+
+		public:
+			// IGDIObject
+			bool IsSameAs(const IGDIObject& other) const override
+			{
+				return DoIsSameAs(other);
+			}
+			std::unique_ptr<IGDIObject> CloneGDIObject() const override
+			{
+				return nullptr;
+			}
+
+			void* GetHandle() const override
+			{
+				return m_DC.GetHandle();
+			}
+			void* DetachHandle() override
+			{
+				return m_DC.DetachHandle();
+			}
+			void AttachHandle(void* handle) override
+			{
+				m_DC.AttachHandle(handle);
+			}
+
+			// IGraphicsObject
+			bool IsNull() const override
+			{
+				return !m_Renderer || m_DC.IsNull();
+			}
+			bool IsSameAs(const IGraphicsObject& other) const override
+			{
+				return DoIsSameAs(other);
+			}
+
+			GDIGraphicsRenderer& GetRenderer() override
+			{
+				return *m_Renderer;
+			}
+			void* GetNativeHandle() const
+			{
+				return m_DC.GetHandle();
+			}
+
+			// IGraphicsContext
+		public:
+			// Feature support
+			FlagSet<GraphicsContextFeature> GetSupportedFeatures() const override;
+
+			// Clipping region functions
+			void ClipRegion(const Region& region) override
+			{
+				m_DC.ClipRegion(region);
+			}
+			void ClipBoxRegion(const RectF& rect) override
+			{
+				m_DC.ClipBoxRegion(rect);
+			}
+			void ResetClipRegion()
+			{
+				m_DC.ResetClipRegion();
+			}
+			RectF GetClipBox() const override
+			{
+				return m_DC.GetClipBox();
+			}
+
+			// Transformation matrix
+			std::shared_ptr<IGraphicsMatrix> GetTransform() const override;
+			bool SetTransform(std::shared_ptr<IGraphicsMatrix> transform) override;
+
+			bool TransformInvert() override;
+			void TransformRotate(Angle angle) override;
+			void TransformScale(float xScale, float yScale) override;
+			void TransformTranslate(const Size& dxy) override;
+			void TransformConcat(const IGraphicsMatrix& matrix) override;
+
+			// Pen and brush functions
+			std::shared_ptr<IGraphicsPen> GetPen() const override;
+			void SetPen(std::shared_ptr<IGraphicsPen> pen) override;
+
+			std::shared_ptr<IGraphicsBrush> GetBrush() const override;
+			void SetBrush(std::shared_ptr<IGraphicsBrush> brush) override;
+
+			// Path functions (not implemented)
+			void StrokePath(const IGraphicsPath& path) override
+			{
+			}
+			void FillPath(const IGraphicsPath& path, PolygonFill fill = PolygonFill::OddEvenRule) override
+			{
+			}
+			void DrawPath(const IGraphicsPath& path, PolygonFill fill = PolygonFill::OddEvenRule) override
+			{
+			}
+
+			// Texture functions
+			void DrawTexture(const IGraphicsTexture& texture, const RectF& rect) override;
+			void DrawTexture(const Image& image, const RectF& rect) override;
+			void DrawTexture(const Bitmap& bitmap, const RectF& rect);
+
+			// Text functions
+			std::shared_ptr<IGraphicsFont> GetFont() const override;
+			void SetFont(std::shared_ptr<IGraphicsFont> font) override;
+
+			GraphicsTextExtent GetTextExtent(const String& text) const override;
+			std::vector<float> GetPartialTextExtent(const String& text) const override;
+
+			void DrawText(const String& text, const PointF& point) override;
+			void DrawText(const String& text, const PointF& point, const IGraphicsBrush& brush) override;
+
+			void DrawRotatedText(const String& text, const PointF& point, Angle angle) override;
+			void DrawRotatedText(const String& text, const PointF& point, Angle angle, const IGraphicsBrush& brush) override;
+
+			RectF DrawLabel(const String& text, const RectF& rect, const IGraphicsTexture& icon, FlagSet<Alignment> alignment = Alignment::Left|Alignment::Top, size_t acceleratorIndex = String::npos) override;
+			RectF DrawLabel(const String& text, const RectF& rect, FlagSet<Alignment> alignment = Alignment::Left|Alignment::Top, size_t acceleratorIndex = String::npos) override;
+
+			// Drawing functions
+			void Clear(const IGraphicsBrush& brush) override;
+			void DrawCircle(const Point& pos, float radius) override;
+			void DrawEllipse(const RectF& rect) override;
+			void DrawRectangle(const RectF& rect) override;
+			void DrawRoundedRectangle(const RectF& rect, float radius) override;
+			void DrawLine(const PointF& point1, const PointF& point2) override;
+			void DrawPolyLine(const PointF* points, size_t count) override;
+			void DrawDisconnectedLines(const PointF* startPoints, const PointF* endPoints, size_t count) override;
+
+			// Getting and setting parameters
+			SizeF GetSize() const override
+			{
+				return m_DC.GetSize();
+			}
+			SizeF GetPPI() const override
+			{
+				return m_DC.GetPPI();
+			}
+			wxWindow* GetWindow() const override
+			{
+				return m_DC.GetWindow();
+			}
+
+			AntialiasMode GetAntialiasMode() const override
+			{
+				return m_AntialiasMode;
+			}
+			void SetAntialiasMode(AntialiasMode mode) override
+			{
+				m_AntialiasMode = mode;
+			}
+
+			CompositionMode GetCompositionMode() const override
+			{
+				return m_CompositionMode;
+			}
+			void SetCompositionMode(CompositionMode mode) override
+			{
+				m_CompositionMode = mode;
+			}
+
+			InterpolationQuality GetInterpolationQuality() const override
+			{
+				return m_InterpolationQuality;
+			}
+			void SetInterpolationQuality(InterpolationQuality quality) override
+			{
+				m_InterpolationQuality = quality;
+			}
+
+			// Bounding box functions
+			RectF GetBoundingBox() const override;
+			void CalcBoundingBox(const PointF& point) override;
+			void ResetBoundingBox() override;
+
+			// Page and document start/end functions
+			bool StartDocument(const String& message) override
+			{
+				return m_DC.StartDocument(message);
+			}
+			void EndDocument() override
+			{
+				m_DC.EndDocument();
+			}
+
+			void StartPage() override
+			{
+				m_DC.StartPage();
+			}
+			void EndPage() override
+			{
+				m_DC.EndPage();
+			}
+
+			// Modifying the state
+			void BeginLayer(float opacity = 1.0f) override
+			{
+			}
+			void EndLayer() override
+			{
+			}
+
+			void PushState() override
+			{
+			}
+			void PopState() override
+			{
+			}
+
+			void Flush() override
+			{
+			}
+
+			// Offset management
+			bool ShouldOffset() const override
+			{
+				return false;
+			}
+			void EnableOffset(bool enable = true) override
+			{
+			}
+
+		public:
+			// GDIGraphicsContext
+			const GDIContext& Get() const
 			{
 				return m_DC;
 			}
-			wxGCDC& ToWxDC() noexcept
+			GDIContext& Get()
 			{
 				return m_DC;
+			}
+
+			const wxDC& GetWx() const
+			{
+				return m_DC.ToWxDC();
+			}
+			wxDC& GetWx()
+			{
+				return m_DC.ToWxDC();
+			}
+
+		public:
+			explicit operator bool() const
+			{
+				return !IsNull();
+			}
+			bool operator!() const
+			{
+				return IsNull();
 			}
 	};
 }
+
+namespace kxf
+{
+	class KX_API GDIGraphicsMemoryContext: public GDIGraphicsContext
+	{
+		protected:
+			wxMemoryDC m_MemoryDC;
+			std::shared_ptr<IGraphicsTexture> m_Texture;
+
+		public:
+			GDIGraphicsMemoryContext() noexcept = default;
+			GDIGraphicsMemoryContext(GDIGraphicsRenderer& rendrer, std::shared_ptr<IGraphicsTexture> texture)
+				:GDIGraphicsContext(rendrer, m_MemoryDC), m_Texture(std::move(texture))
+			{
+				SelectTexture(std::move(texture));
+			}
+			~GDIGraphicsMemoryContext()
+			{
+				static_cast<void>(UnselectTexture());
+			}
+
+		public:
+			// IGraphicsObject
+			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			{
+				if (m_Texture)
+				{
+					auto copy = Utility::StaticCastUniquePtr<IGraphicsTexture>(m_Texture->CloneGraphicsObject());
+					return std::make_unique<GDIGraphicsMemoryContext>(*m_Renderer, std::move(copy));
+				}
+				else
+				{
+					return std::make_unique<GDIGraphicsMemoryContext>(*m_Renderer, nullptr);
+				}
+			}
+
+			// GDIGraphicsMemoryContext
+			std::shared_ptr<IGraphicsTexture> GetSelectedTexture() const;
+			void SelectTexture(std::shared_ptr<IGraphicsTexture> texture);
+			std::shared_ptr<IGraphicsTexture> UnselectTexture();
+	};
+
+	class KX_API GDIGraphicsWindowContext: public GDIGraphicsContext
+	{
+		protected:
+			wxWindowDC m_WindowDC;
+
+		public:
+			GDIGraphicsWindowContext() noexcept = default;
+			GDIGraphicsWindowContext(GDIGraphicsRenderer& rendrer, wxWindow& window)
+				:GDIGraphicsContext(rendrer, m_WindowDC), m_WindowDC(&window)
+			{
+			}
+
+		public:
+			// IGraphicsObject
+			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			{
+				return std::make_unique<GDIGraphicsWindowContext>(*m_Renderer, *m_WindowDC.GetWindow());
+			}
+	};
+
+	class KX_API GDIGraphicsWindowClientContext: public GDIGraphicsContext
+	{
+		protected:
+			wxClientDC m_ClientDC;
+
+		public:
+			GDIGraphicsWindowClientContext() noexcept = default;
+			GDIGraphicsWindowClientContext(GDIGraphicsRenderer& rendrer, wxWindow& window)
+				:GDIGraphicsContext(rendrer, m_ClientDC), m_ClientDC(&window)
+			{
+			}
+
+		public:
+			// IGraphicsObject
+			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			{
+				return std::make_unique<GDIGraphicsWindowClientContext>(*m_Renderer, *m_ClientDC.GetWindow());
+			}
+	};
+
+	class KX_API GDIGraphicsPaintContext: public GDIGraphicsContext
+	{
+		protected:
+			wxPaintDC m_PaintDC;
+
+		public:
+			GDIGraphicsPaintContext() noexcept = default;
+			GDIGraphicsPaintContext(GDIGraphicsRenderer& rendrer, wxWindow& window)
+				:GDIGraphicsContext(rendrer, m_PaintDC), m_PaintDC(&window)
+			{
+			}
+
+		public:
+			// IGraphicsObject
+			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			{
+				return std::make_unique<GDIGraphicsPaintContext>(*m_Renderer, *m_PaintDC.GetWindow());
+			}
+	};
+}
+
+namespace kxf
+{
+	enum GDIBufferedContextFlag: uint32_t
+	{
+		None = 0,
+
+		BufferVirtualArea = wxBUFFER_VIRTUAL_AREA,
+		BufferClientArea = wxBUFFER_CLIENT_AREA,
+		VirtualArea = wxBUFFER_USES_SHARED_BUFFER,
+	};
+	KxFlagSet_Declare(GDIBufferedContextFlag);
+
+	class KX_API GDIGraphicsBufferedContext: public GDIGraphicsContext
+	{
+		protected:
+			wxBufferedDC m_BufferedDC;
+			std::shared_ptr<IGraphicsTexture> m_Texture;
+
+		public:
+			GDIGraphicsBufferedContext() noexcept = default;
+			GDIGraphicsBufferedContext(GDIGraphicsRenderer& rendrer, const SizeF& size, FlagSet<GDIBufferedContextFlag> flags = GDIBufferedContextFlag::BufferClientArea);
+			GDIGraphicsBufferedContext(GDIGraphicsRenderer& rendrer, std::shared_ptr<IGraphicsTexture> texture, FlagSet<GDIBufferedContextFlag> flags = GDIBufferedContextFlag::BufferClientArea);
+
+		public:
+			// IGraphicsObject
+			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			{
+				if (m_Texture)
+				{
+					auto copy = Utility::StaticCastUniquePtr<IGraphicsTexture>(m_Texture->CloneGraphicsObject());
+					return std::make_unique<GDIGraphicsBufferedContext>(*m_Renderer, std::move(copy), GetFlags());
+				}
+				else
+				{
+					return std::make_unique<GDIGraphicsBufferedContext>(*m_Renderer, m_BufferedDC.GetSize(), GetFlags());
+				}
+			}
+
+			// GDIGraphicsBufferedContext
+			void UnMask()
+			{
+				m_BufferedDC.UnMask();
+			}
+			FlagSet<GDIBufferedContextFlag> GetFlags() const
+			{
+				return static_cast<GDIBufferedContextFlag>(m_BufferedDC.GetStyle());
+			}
+			void SetFlags(FlagSet<GDIBufferedContextFlag> flags)
+			{
+				m_BufferedDC.SetStyle(flags.ToInt<int>());
+			}
+	};
+
+	class KX_API GDIGraphicsBufferedPaintContext: public GDIGraphicsContext
+	{
+		protected:
+			wxBufferedPaintDC m_BufferedPaintDC;
+
+		public:
+			GDIGraphicsBufferedPaintContext() noexcept = default;
+			GDIGraphicsBufferedPaintContext(GDIGraphicsRenderer& rendrer, wxWindow& window, FlagSet<GDIBufferedContextFlag> flags = GDIBufferedContextFlag::BufferClientArea)
+				:GDIGraphicsContext(rendrer, m_BufferedPaintDC), m_BufferedPaintDC(&window, flags.ToInt())
+			{
+			}
+
+		public:
+			// IGraphicsObject
+			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			{
+				return std::make_unique<GDIGraphicsBufferedPaintContext>(*m_Renderer, *m_BufferedPaintDC.GetWindow(), GetFlags());
+			}
+
+			// GDIGraphicsBufferedContext
+			void UnMask()
+			{
+				m_BufferedPaintDC.UnMask();
+			}
+			FlagSet<GDIBufferedContextFlag> GetFlags() const
+			{
+				return static_cast<GDIBufferedContextFlag>(m_BufferedPaintDC.GetStyle());
+			}
+			void SetFlags(FlagSet<GDIBufferedContextFlag> flags)
+			{
+				m_BufferedPaintDC.SetStyle(flags.ToInt<int>());
+			}
+	};
+}
+

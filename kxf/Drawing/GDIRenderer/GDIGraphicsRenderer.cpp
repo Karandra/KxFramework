@@ -1,0 +1,213 @@
+#include "stdafx.h"
+#include "GDIGraphicsRenderer.h"
+#include "GDIGraphicsContext.h"
+#include "GDIGraphicsTexture.h"
+#include "GDIGraphicsMatrix.h"
+#include "GDIGraphicsBrush.h"
+#include "GDIGraphicsPen.h"
+#include "GDIGraphicsFont.h"
+
+namespace kxf
+{
+	// GDIGraphicsRenderer
+	GDIPen GDIGraphicsRenderer::ToGDIPen(const IGraphicsPen& pen) const
+	{
+		GDIPen gdiPen;
+		gdiPen.SetCap(pen.GetLineCap());
+		gdiPen.SetJoin(pen.GetLineJoin());
+		gdiPen.SetColor(pen.GetColor());
+		gdiPen.SetWidth(pen.GetWidth());
+
+		switch (pen.GetStyle())
+		{
+			case PenStyle::None:
+			{
+				gdiPen.SetTransparent();
+				break;
+			}
+			case PenStyle::Solid:
+			{
+				gdiPen.SetSolid();
+				break;
+			}
+			case PenStyle::Hatch:
+			{
+				auto brush = pen.GetBrush();
+				if (object_ptr<IGraphicsHatchBrush> hatchBrush; brush && brush->QueryInterface(hatchBrush))
+				{
+					gdiPen.SetHatchStyle(hatchBrush->GetHatchStyle());
+				}
+				break;
+			}
+			case PenStyle::Dash:
+			{
+				auto brush = pen.GetBrush();
+				if (object_ptr<IGraphicsHatchBrush> hatchBrush; brush && brush->QueryInterface(hatchBrush))
+				{
+					gdiPen.SetHatchStyle(hatchBrush->GetHatchStyle());
+				}
+				break;
+			}
+			case PenStyle::Texture:
+			{
+				auto brush = pen.GetBrush();
+				if (object_ptr<IGraphicsTextureBrush> textureBrush; brush && brush->QueryInterface(textureBrush))
+				{
+					if (auto texture = textureBrush->GetTexture())
+					{
+						gdiPen.SetStipple(texture->QueryInterface<GDIGraphicsTexture>()->Get());
+					}
+				}
+				break;
+			}
+		};
+	}
+	GDIBrush GDIGraphicsRenderer::ToGDIBrush(const IGraphicsBrush& brush) const
+	{
+		GDIBrush gdiBrush;
+		if (brush.IsTransparent())
+		{
+			gdiBrush.SetTransparent();
+		}
+		else if (auto solidBrush = brush.QueryInterface<IGraphicsSolidBrush>())
+		{
+			gdiBrush.SetSolid();
+			gdiBrush.SetColor(solidBrush->GetColor());
+		}
+		else if (auto hatchBrush = brush.QueryInterface<IGraphicsHatchBrush>())
+		{
+			gdiBrush.SetHatchStyle(hatchBrush->GetHatchStyle());
+			gdiBrush.SetColor(hatchBrush->GetBackgroundColor());
+		}
+		else if (auto textureBrush = brush.QueryInterface<IGraphicsTextureBrush>())
+		{
+			if (auto texture = textureBrush->GetTexture())
+			{
+				gdiBrush.SetStipple(texture->QueryInterface<GDIGraphicsTexture>()->Get());
+			}
+		}
+		return gdiBrush;
+	}
+
+	// IGraphicsRenderer
+	String GDIGraphicsRenderer::GetName() const
+	{
+		return wxS("GDIGraphicsRenderer");
+	}
+	Version GDIGraphicsRenderer::GetVersion() const
+	{
+		return wxS("1.0");
+	}
+
+	std::unique_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateContext(std::shared_ptr<IGraphicsTexture> texture)
+	{
+		if (texture)
+		{
+			return std::make_unique<GDIGraphicsMemoryContext>(*this, std::move(texture));
+		}
+		return nullptr;
+	}
+	std::unique_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateWindowContext(wxWindow& window)
+	{
+		return std::make_unique<GDIGraphicsWindowContext>(*this, window);
+	}
+	std::unique_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateWindowClientContext(wxWindow& window)
+	{
+		return std::make_unique<GDIGraphicsWindowClientContext>(*this, window);
+	}
+	std::unique_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateWindowPaintContext(wxWindow& window)
+	{
+		if (window.IsDoubleBuffered())
+		{
+			return std::make_unique<GDIGraphicsPaintContext>(*this, window);
+		}
+		else
+		{
+			return std::make_unique<GDIGraphicsBufferedPaintContext>(*this, window);
+		}
+	}
+	std::unique_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateMeasuringContext()
+	{
+		return std::make_unique<GDIGraphicsMemoryContext>(*this, nullptr);
+	}
+
+	// Transformation matrix
+	std::shared_ptr<IGraphicsMatrix> GDIGraphicsRenderer::CreateMatrix(float m11, float m12, float m21, float m22, float tx, float ty)
+	{
+		return std::make_shared<GDIGraphicsMatrix>(*this, Drawing::Private::ToAffineMatrix2D(m11, m12, m21, m22, tx, ty));
+	}
+
+	// Pen and brush functions
+	std::shared_ptr<IGraphicsPen> GDIGraphicsRenderer::CreatePen(const Color& color, float width)
+	{
+		return std::make_shared<GDIGraphicsPen>(*this, color, width);
+	}
+	std::shared_ptr<IGraphicsSolidBrush> GDIGraphicsRenderer::CreateSolidBrush(const Color& color)
+	{
+		return std::make_shared<GDIGraphicsSolidBrush>(*this, color);
+	}
+	std::shared_ptr<IGraphicsTextureBrush> GDIGraphicsRenderer::CreateTextureBrush(const Image& image)
+	{
+		if (image)
+		{
+			return std::make_shared<GDIGraphicsTextureBrush>(*this, image);
+		}
+		return {};
+	}
+	std::shared_ptr<IGraphicsTextureBrush> GDIGraphicsRenderer::CreateTextureBrush(const Bitmap& bitmap)
+	{
+		if (bitmap)
+		{
+			return std::make_shared<GDIGraphicsTextureBrush>(*this, bitmap);
+		}
+		return {};
+	}
+	std::shared_ptr<IGraphicsLinearGradientBrush> GDIGraphicsRenderer::CreateLinearGradientBrush(const RectF& rect, const GradientStops& colors, std::shared_ptr<IGraphicsMatrix> transform)
+	{
+		return std::make_shared<GDIGraphicsLinearGradientBrush>(*this, rect, colors, std::move(transform));
+	}
+	std::shared_ptr<IGraphicsRadialGradientBrush> GDIGraphicsRenderer::CreateRadialGradientBrush(const RectF& rect, const GradientStops& colors, std::shared_ptr<IGraphicsMatrix> transform)
+	{
+		return std::make_shared<GDIGraphicsRadialGradientBrush>(*this, rect, colors, std::move(transform));
+	}
+
+	// Texture functions
+	std::shared_ptr<IGraphicsTexture> GDIGraphicsRenderer::CreateTexture()
+	{
+		return std::make_shared<GDIGraphicsTexture>(*this);
+	}
+	std::shared_ptr<IGraphicsTexture> GDIGraphicsRenderer::CreateTexture(const Image& image)
+	{
+		if (image)
+		{
+			return std::make_shared<GDIGraphicsTexture>(*this, image);
+		}
+		return nullptr;
+	}
+	std::shared_ptr<IGraphicsTexture> GDIGraphicsRenderer::CreateTexture(const Bitmap& bitmap)
+	{
+		if (bitmap)
+		{
+			return std::make_shared<GDIGraphicsTexture>(*this, bitmap);
+		}
+		return nullptr;
+	}
+	std::shared_ptr<IGraphicsTexture> GDIGraphicsRenderer::CreateTexture(const SizeF& size, const Color& color)
+	{
+		return std::make_shared<GDIGraphicsTexture>(*this, size, color);
+	}
+
+	// Text functions
+	std::shared_ptr<IGraphicsFont> GDIGraphicsRenderer::CreateFont()
+	{
+		return std::make_shared<GDIGraphicsFont>(*this);
+	}
+	std::shared_ptr<IGraphicsFont> GDIGraphicsRenderer::CreateFont(const Font& font, const Color& color)
+	{
+		return std::make_shared<GDIGraphicsFont>(*this, font, color);
+	}
+	std::shared_ptr<IGraphicsFont> GDIGraphicsRenderer::CreateFont(const SizeF& pixelSize, const String& faceName, const Color& color)
+	{
+		return std::make_shared<GDIGraphicsFont>(*this, pixelSize, faceName, color);
+	}
+}

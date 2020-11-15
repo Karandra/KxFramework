@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Pen.h"
+#include "GDIPen.h"
 #include "../Private/GDI.h"
 
 namespace
@@ -36,11 +36,11 @@ namespace
 namespace kxf
 {
 	// IGDIObject
-	void* Pen::GetHandle() const
+	void* GDIPen::GetHandle() const
 	{
 		return m_Pen.GetResourceHandle();
 	}
-	void* Pen::DetachHandle()
+	void* GDIPen::DetachHandle()
 	{
 		if (wxPenRefDataHack* refData = static_cast<wxPenRefDataHack*>(m_Pen.GetRefData()))
 		{
@@ -53,7 +53,7 @@ namespace kxf
 			return handle;
 		}
 	}
-	void Pen::AttachHandle(void* handle)
+	void GDIPen::AttachHandle(void* handle)
 	{
 		m_Pen = wxPen();
 
@@ -164,7 +164,7 @@ namespace kxf
 
 namespace kxf::Drawing
 {
-	Pen GetStockPen(StockPen pen)
+	GDIPen GetStockGDIPen(StockPen pen)
 	{
 		switch (pen)
 		{

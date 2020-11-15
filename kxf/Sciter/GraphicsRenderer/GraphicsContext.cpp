@@ -220,7 +220,7 @@ namespace kxf::Sciter
 	}
 
 	// Brush and pen functions
-	void GraphicsContext::SetPen(const Pen& pen)
+	void GraphicsContext::SetPen(const GDIPen& pen)
 	{
 		if (pen)
 		{
@@ -232,7 +232,7 @@ namespace kxf::Sciter
 			penInfo.Style(pen.ToWxPen().GetStyle());
 			penInfo.Stipple(pen.GetStipple().ToWxBitmap());
 
-			Pen::Dash* dashes = nullptr;
+			GDIPen::Dash* dashes = nullptr;
 			size_t dashCount = pen.GetDashes(dashes);
 			penInfo.Dashes(dashCount, dashes);
 
@@ -266,7 +266,7 @@ namespace kxf::Sciter
 		GetGrapchicsAPI()->gLineWidth(ToSciterGraphicsContext(m_Handle), 0);
 	}
 
-	void GraphicsContext::SetBrush(const Brush& brush)
+	void GraphicsContext::SetBrush(const GDIBrush& brush)
 	{
 		if (brush)
 		{
@@ -315,7 +315,7 @@ namespace kxf::Sciter
 	{
 		GetGrapchicsAPI()->gScale(ToSciterGraphicsContext(m_Handle), scale.GetX(), scale.GetY());
 	}
-	void GraphicsContext::Translate(const PointD& p)
+	void GraphicsContext::ScaleTranslate(const PointD& p)
 	{
 		GetGrapchicsAPI()->gTranslate(ToSciterGraphicsContext(m_Handle), p.GetX(), p.GetY());
 	}

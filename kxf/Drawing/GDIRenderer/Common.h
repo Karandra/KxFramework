@@ -46,11 +46,9 @@ namespace kxf
 		SrcInvert = wxSRC_INVERT, // (NOT src)
 	};
 
+	template<class T>
+	using GDICoordPair = Geometry::OrderedPairTemplate<T, int>;
+
 	using GDIFontMetrics = Drawing::BasicFontMetrics<int>;
 	using GDITextExtent = Drawing::BasicTextExtent<int>;
-}
-namespace kxf::GDIRenderer
-{
-	template<class T>
-	using TCoordPair = typename Geometry::OrderedPairTemplate<T, int>;
 }

@@ -13,7 +13,7 @@ namespace kxf::GDIAction
 	{
 		private:
 			GDIContext& m_DC;
-			Region m_Region;
+			Rect m_OldBox;
 
 		public:
 			Clip(GDIContext& dc)
@@ -21,46 +21,19 @@ namespace kxf::GDIAction
 			{
 			}
 			Clip(GDIContext& dc, const Rect& rect)
-				:m_DC(dc), m_Region(dc.LogicalToDevice(rect))
-			{
-			}
-			Clip(GDIContext& dc, const Region& region)
-				:m_DC(dc), m_Region(region)
+				:m_DC(dc), m_OldBox(dc.GetClipBox())
 			{
 			}
 			~Clip()
 			{
-				if (m_Region)
-				{
-					m_DC.ResetClippingRegion();
-				}
+				m_DC.ResetClipRegion();
+				m_DC.ClipBoxRegion(m_OldBox);
 			}
 
 		public:
-			bool Add(const Region& region)
+			void Add(const Rect& rect)
 			{
-				return m_Region.Union(region);
-			}
-			bool Add(const Rect& rect)
-			{
-				return m_Region.Union(m_DC.LogicalToDevice(rect));
-			}
-
-			bool Remove(const Region& region)
-			{
-				return m_Region.Subtract(region);
-			}
-			bool Remove(const Rect& rect)
-			{
-				return m_Region.Subtract(m_DC.LogicalToDevice(rect));
-			}
-
-			void Apply()
-			{
-				if (m_Region)
-				{
-					m_DC.SetDeviceClippingRegion(m_Region);
-				}
+				m_DC.ClipBoxRegion(rect);
 			}
 	};
 
@@ -121,14 +94,14 @@ namespace kxf::GDIAction
 	{
 		private:
 			GDIContext& m_DC;
-			Pen m_Pen;
+			GDIPen m_Pen;
 
 		public:
 			ChangePen(GDIContext& dc)
 				:m_DC(dc)
 			{
 			}
-			ChangePen(GDIContext& dc, const Pen& pen)
+			ChangePen(GDIContext& dc, const GDIPen& pen)
 				:m_DC(dc), m_Pen(dc.GetPen())
 			{
 				m_DC.SetPen(pen);
@@ -142,7 +115,7 @@ namespace kxf::GDIAction
 			}
 
 		public:
-			void Set(const Pen& pen)
+			void Set(const GDIPen& pen)
 			{
 				if (!m_Pen)
 				{
@@ -156,14 +129,14 @@ namespace kxf::GDIAction
 	{
 		private:
 			GDIContext& m_DC;
-			Brush m_Brush;
+			GDIBrush m_Brush;
 
 		public:
 			ChangeBrush(GDIContext& dc)
 				:m_DC(dc)
 			{
 			}
-			ChangeBrush(GDIContext& dc, const Brush& brush)
+			ChangeBrush(GDIContext& dc, const GDIBrush& brush)
 				:m_DC(dc), m_Brush(dc.GetBrush())
 			{
 				m_DC.SetBrush(brush);
@@ -177,13 +150,48 @@ namespace kxf::GDIAction
 			}
 
 		public:
-			void Set(const Brush& brush)
+			void Set(const GDIBrush& brush)
 			{
 				if (!m_Brush)
 				{
 					m_Brush = m_DC.GetBrush();
 				}
 				m_DC.SetBrush(brush);
+			}
+	};
+
+	class ChangeBackground final
+	{
+		private:
+			GDIContext& m_DC;
+			GDIBrush m_Brush;
+
+		public:
+			ChangeBackground(GDIContext& dc)
+				:m_DC(dc)
+			{
+			}
+			ChangeBackground(GDIContext& dc, const GDIBrush& brush)
+				:m_DC(dc), m_Brush(dc.GetBackgroundBrush())
+			{
+				m_DC.SetBackgroundBrush(brush);
+			}
+			~ChangeBackground()
+			{
+				if (m_Brush)
+				{
+					m_DC.SetBackgroundBrush(std::move(m_Brush));
+				}
+			}
+
+		public:
+			void Set(const GDIBrush& brush)
+			{
+				if (!m_Brush)
+				{
+					m_Brush = m_DC.GetBrush();
+				}
+				m_DC.SetBackgroundBrush(brush);
 			}
 	};
 

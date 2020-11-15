@@ -1,20 +1,8 @@
 #pragma once
 #include "GDIContext.h"
+#include "../GDIRenderer/GDIGraphicsContext.h"
 #include <wx/dcmemory.h>
 #include <wx/dcbuffer.h>
-
-namespace kxf
-{
-	enum GDIBufferedContextFlag: uint32_t
-	{
-		None = 0,
-
-		BufferVirtualArea = wxBUFFER_VIRTUAL_AREA,
-		BufferClientArea = wxBUFFER_CLIENT_AREA,
-		VirtualArea = wxBUFFER_USES_SHARED_BUFFER,
-	};
-	KxFlagSet_Declare(GDIBufferedContextFlag);
-}
 
 namespace kxf::Drawing
 {

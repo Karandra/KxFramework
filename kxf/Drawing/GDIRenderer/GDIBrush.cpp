@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Brush.h"
+#include "GDIBrush.h"
 #include "../Private/Common.h"
 #include "../Private/GDI.h"
 
@@ -27,11 +27,11 @@ namespace
 namespace kxf
 {
 	// IGDIObject
-	void* Brush::GetHandle() const
+	void* GDIBrush::GetHandle() const
 	{
 		return m_Brush.GetResourceHandle();
 	}
-	void* Brush::DetachHandle()
+	void* GDIBrush::DetachHandle()
 	{
 		if (wxBrushRefDataHack* refData = static_cast<wxBrushRefDataHack*>(m_Brush.GetRefData()))
 		{
@@ -44,7 +44,7 @@ namespace kxf
 			return handle;
 		}
 	}
-	void Brush::AttachHandle(void* handle)
+	void GDIBrush::AttachHandle(void* handle)
 	{
 		m_Brush = wxBrush();
 
@@ -133,7 +133,7 @@ namespace kxf
 
 namespace kxf::Drawing
 {
-	Brush GetStockBrush(StockBrush brush)
+	GDIBrush GetStockGDIBrush(StockBrush brush)
 	{
 		switch (brush)
 		{

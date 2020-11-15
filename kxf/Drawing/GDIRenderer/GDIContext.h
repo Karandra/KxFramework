@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
-#include "Brush.h"
-#include "Pen.h"
+#include "GDIPen.h"
+#include "GDIBrush.h"
 #include "../Private/Common.h"
 #include "kxf/UI/Common.h"
 #include <wx/dc.h>
@@ -14,10 +14,8 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API GDIContext: public RTTI::ExtendInterface<GDIContext, IGDIObject>
+	class KX_API GDIContext: public IGDIObject
 	{
-		KxRTTI_DeclareIID(GDIContext, {0x7f0f1843, 0x27b9, 0x40df, {0x8d, 0xdc, 0x27, 0x98, 0x52, 0x44, 0xb7, 0x20}});
-
 		protected:
 			wxDC* m_DC = nullptr;
 
@@ -28,6 +26,11 @@ namespace kxf
 			{
 			}
 			GDIContext(const GDIContext&) = delete;
+			GDIContext(GDIContext&& other) noexcept
+				:m_DC(other.m_DC)
+			{
+				other.m_DC = nullptr;
+			}
 			virtual ~GDIContext() = default;
 
 		public:
@@ -44,11 +47,11 @@ namespace kxf
 				}
 				else if (auto object = other.QueryInterface<GDIContext>())
 				{
-					return m_DC == object->m_DC || ((m_DC && object->m_DC) && m_DC->IsSameAs(*object->m_DC));
+					return GDIContext::GetHandle() == other.GetHandle();
 				}
 				return false;
 			}
-			std::unique_ptr<IGDIObject> Clone() const override
+			std::unique_ptr<IGDIObject> CloneGDIObject() const override
 			{
 				return nullptr;
 			}
@@ -95,7 +98,7 @@ namespace kxf
 				return m_DC->GetAsBitmap(&subRectWx);
 			}
 
-			ColorDepth GetDepth() const
+			ColorDepth GetColorDepth() const
 			{
 				return m_DC->GetDepth();
 			}
@@ -201,13 +204,13 @@ namespace kxf
 
 			// Coordinate conversion functions
 			template<class TDerived, class TPair = TDerived>
-			TPair DeviceToLogical(const GDIRenderer::TCoordPair<TDerived>& pair) const
+			TPair DeviceToLogical(const GDICoordPair<TDerived>& pair) const
 			{
 				return {m_DC->DeviceToLogicalX(pair.GetX()), m_DC->DeviceToLogicalY(pair.GetY())};
 			}
 
 			template<class TDerived, class TPair = TDerived>
-			TPair DeviceToLogicalRelative(const GDIRenderer::TCoordPair<TDerived>& pair) const
+			TPair DeviceToLogicalRelative(const GDICoordPair<TDerived>& pair) const
 			{
 				return {m_DC->DeviceToLogicalXRel(pair.GetX()), m_DC->DeviceToLogicalYRel(pair.GetY())};
 			}
@@ -218,13 +221,13 @@ namespace kxf
 			}
 
 			template<class TDerived, class TPair = TDerived>
-			TPair LogicalToDevice(const GDIRenderer::TCoordPair<TDerived>& pair) const
+			TPair LogicalToDevice(const GDICoordPair<TDerived>& pair) const
 			{
 				return {m_DC->LogicalToDeviceX(pair.GetX()), m_DC->LogicalToDeviceY(pair.GetY())};
 			}
 
 			template<class TDerived, class TPair = TDerived>
-			TPair LogicalToDeviceRelative(const GDIRenderer::TCoordPair<TDerived>& pair) const
+			TPair LogicalToDeviceRelative(const GDICoordPair<TDerived>& pair) const
 			{
 				return {m_DC->LogicalToDeviceXRel(pair.GetX()), m_DC->LogicalToDeviceYRel(pair.GetY())};
 			}
@@ -372,17 +375,21 @@ namespace kxf
 				m_DC->DrawCheckMark(rect);
 			}
 
-			void DrawText(const Point& pos, const String& text)
+			void DrawText(const String& text, const Point& pos)
 			{
 				m_DC->DrawText(text, pos);
 			}
-			Rect DrawLabel(const Rect& rect, const String& text, const Bitmap& bitmap, FlagSet<Alignment> alignment = Alignment::Left|Alignment::Top, size_t acceleratorIndex = String::npos)
+			void DrawRotatedText(const String& text, const Point& pos, Angle angle)
+			{
+				m_DC->DrawRotatedText(text, pos, angle.ToDegrees());
+			}
+			Rect DrawLabel(const String& text, const Rect& rect, const Bitmap& bitmap, FlagSet<Alignment> alignment = Alignment::Left|Alignment::Top, size_t acceleratorIndex = String::npos)
 			{
 				wxRect boundingBox;
 				m_DC->DrawLabel(text, bitmap.ToWxBitmap(), rect, alignment.ToInt(), acceleratorIndex != String::npos ? static_cast<int>(acceleratorIndex) : -1, &boundingBox);
 				return boundingBox;
 			}
-			Rect DrawLabel(const Rect& rect, const String& text, FlagSet<Alignment> alignment = Alignment::Left|Alignment::Top, size_t acceleratorIndex = String::npos)
+			Rect DrawLabel(const String& text, const Rect& rect, FlagSet<Alignment> alignment = Alignment::Left|Alignment::Top, size_t acceleratorIndex = String::npos)
 			{
 				wxRect boundingBox;
 				m_DC->DrawLabel(text, wxNullBitmap, rect, alignment.ToInt(), acceleratorIndex != String::npos ? static_cast<int>(acceleratorIndex) : -1, &boundingBox);
@@ -411,19 +418,19 @@ namespace kxf
 			}
 
 			// Clipping region functions
-			void SetClippingRegion(const Rect& rect)
-			{
-				m_DC->SetClippingRegion(rect);
-			}
-			void SetDeviceClippingRegion(const Region& region)
+			void ClipRegion(const Region& region)
 			{
 				m_DC->SetDeviceClippingRegion(region.ToWxRegion());
 			}
-			void ResetClippingRegion()
+			void ClipBoxRegion(const Rect& rect)
+			{
+				m_DC->SetClippingRegion(rect);
+			}
+			void ResetClipRegion()
 			{
 				m_DC->DestroyClippingRegion();
 			}
-			Rect GetClippingBox() const
+			Rect GetClipBox() const
 			{
 				wxRect rect;
 				if (m_DC->GetClippingBox(rect))
@@ -577,11 +584,11 @@ namespace kxf
 
 				return rect;
 			}
-			void AddToBoundingBox(const Point& point)
+			void CalcBoundingBox(const Point& point)
 			{
 				m_DC->CalcBoundingBox(point.GetX(), point.GetY());
 			}
-			void ResetBoundingBox() const
+			void ResetBoundingBox()
 			{
 				m_DC->ResetBoundingBox();
 			}
@@ -624,29 +631,29 @@ namespace kxf
 			}
 
 			// Background/foreground brush and pen
-			Brush GetBackgroundBrush() const
+			GDIBrush GetBackgroundBrush() const
 			{
 				return m_DC->GetBackground();
 			}
-			void SetBackgroundBrush(const Brush& brush)
+			void SetBackgroundBrush(const GDIBrush& brush)
 			{
 				m_DC->SetBackground(brush.ToWxBrush());
 			}
 
-			Brush GetBrush() const
+			GDIBrush GetBrush() const
 			{
 				return m_DC->GetBrush();
 			}
-			void SetBrush(const Brush& brush)
+			void SetBrush(const GDIBrush& brush)
 			{
 				m_DC->SetBrush(brush.ToWxBrush());
 			}
 
-			Pen GetPen() const
+			GDIPen GetPen() const
 			{
 				return m_DC->GetPen();
 			}
-			void SetPen(const Pen& pen)
+			void SetPen(const GDIPen& pen)
 			{
 				m_DC->SetPen(pen.ToWxPen());
 			}
@@ -660,9 +667,9 @@ namespace kxf
 			{
 				return m_DC->GetTransformMatrix();
 			}
-			bool SetTransformMatrix(const wxAffineMatrix2D& matrix)
+			bool SetTransformMatrix(const wxAffineMatrix2D& transform)
 			{
-				return m_DC->SetTransformMatrix(matrix);
+				return m_DC->SetTransformMatrix(transform);
 			}
 			void ResetTransformMatrix()
 			{
@@ -680,5 +687,12 @@ namespace kxf
 			}
 
 			GDIContext& operator=(const GDIContext&) = delete;
+			GDIContext& operator=(GDIContext&& other) noexcept
+			{
+				m_DC = other.m_DC;
+				other.m_DC = nullptr;
+
+				return *this;
+			}
 	};
 }
