@@ -22,7 +22,7 @@ namespace kxf::UI
 	{
 		GDIContext dc(*event.GetDC());
 		dc.SetBackgroundTransparent();
-		dc.SetBackgroundBrush(Drawing::GetStockBrush(StockBrush::Transparent));
+		dc.SetBackgroundBrush(Drawing::GetStockGDIBrush(StockBrush::Transparent));
 
 		switch (m_BackgroundMode)
 		{

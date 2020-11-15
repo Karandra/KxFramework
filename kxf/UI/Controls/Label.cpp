@@ -142,7 +142,7 @@ namespace kxf::UI
 				Rect rect2 = labelRect;
 				rect2.Y() += ConvertDialogToPixels(wxSize(0, 2)).GetHeight();
 
-				dc.DrawLabel(rect2, {}, image.ToWxBitmap(), m_MultiLineAlignStyle);
+				dc.DrawLabel({}, rect2, image.ToWxBitmap(), m_MultiLineAlignStyle);
 				offset = image.GetWidth() + ConvertDialogToPixels(wxSize(2, 0)).GetWidth();
 			}
 
@@ -151,7 +151,7 @@ namespace kxf::UI
 
 			int spacingV = ConvertDialogToPixels(wxSize(0, 1)).GetHeight();
 			pos.Y() += spacingV + spacingV / 2;
-			dc.DrawText(pos, label);
+			dc.DrawText(label, pos);
 
 			// Calculate best size
 			if (image)
@@ -164,7 +164,7 @@ namespace kxf::UI
 		{
 			contentSize = dc.GetTextExtent(label);
 			contentSize.SetHeight(g_MinSingleLineHeight);
-			dc.DrawLabel(labelRect, label, image.ToWxBitmap(), m_AlignStyle);
+			dc.DrawLabel(label, labelRect, image.ToWxBitmap(), m_AlignStyle);
 		}
 
 		if (m_Style & LabelStyle::HeaderLine)

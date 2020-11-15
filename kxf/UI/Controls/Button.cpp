@@ -96,11 +96,11 @@ namespace kxf::UI
 			{
 				bitmap = bitmap.ConvertToDisabled();
 			}
-			dc.DrawLabel(contentRect, GetLabelText(), bitmap, Alignment::Center);
+			dc.DrawLabel(GetLabelText(), contentRect, bitmap, Alignment::Center);
 		}
 		else
 		{
-			dc.DrawLabel(contentRect, GetLabelText(), Alignment::Center);
+			dc.DrawLabel(GetLabelText(), contentRect, Alignment::Center);
 		}
 
 		// Draw second part of the button

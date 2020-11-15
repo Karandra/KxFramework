@@ -233,11 +233,14 @@
     <Filter Include="kxf\Drawing\GDIRenderer">
       <UniqueIdentifier>{365a82ef-fb02-4d8a-818b-bd19002d1677}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\Drawing\GraphicsRenderer\&lt;Old&gt;">
-      <UniqueIdentifier>{4da9a17e-b891-4d1c-b002-54346f681280}</UniqueIdentifier>
-    </Filter>
     <Filter Include="kxf\Drawing\&lt;GDIObjects&gt;">
       <UniqueIdentifier>{e584bdcb-1679-47e9-921e-e8c5eca14b7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\Drawing\GDIRenderer\Private">
+      <UniqueIdentifier>{485c90e8-0161-430c-94a2-66571dc4a8e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\Drawing\GDIRenderer\&lt;GraphicsRenderer&gt;">
+      <UniqueIdentifier>{d050cdbb-fd26-4ffd-b773-b7f7262b1f51}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1628,28 +1631,10 @@
     <ClInclude Include="kxf\Drawing\Private\Common.h">
       <Filter>kxf\Drawing\Private</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Drawing\GraphicsRenderer\BitmapGraphicsCanvas.h">
-      <Filter>kxf\Drawing\GraphicsRenderer\&lt;Old&gt;</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Drawing\GraphicsRenderer\GCOperations.h">
-      <Filter>kxf\Drawing\GraphicsRenderer\&lt;Old&gt;</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Drawing\GraphicsRenderer\ImageGraphicsCanvas.h">
-      <Filter>kxf\Drawing\GraphicsRenderer\&lt;Old&gt;</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Drawing\GraphicsRenderer\GraphicsCanvas.h">
-      <Filter>kxf\Drawing\GraphicsRenderer\&lt;Old&gt;</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Drawing\GDIRenderer\Brush.h">
-      <Filter>kxf\Drawing\GDIRenderer</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIAction.h">
       <Filter>kxf\Drawing\GDIRenderer</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIContext.h">
-      <Filter>kxf\Drawing\GDIRenderer</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsContext.h">
       <Filter>kxf\Drawing\GDIRenderer</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIMemoryContext.h">
@@ -1664,17 +1649,47 @@
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIWindowContext.h">
       <Filter>kxf\Drawing\GDIRenderer</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Drawing\GDIRenderer\Pen.h">
-      <Filter>kxf\Drawing\GDIRenderer</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Drawing\GDIRenderer.h">
       <Filter>kxf\Drawing</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Drawing\GDIRenderer\Common.h">
       <Filter>kxf\Drawing\GDIRenderer</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Drawing\GraphicsRenderer\GraphicsAction.h">
+    <ClInclude Include="kxf\Drawing\GDIRenderer\Private\Common.h">
+      <Filter>kxf\Drawing\GDIRenderer\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIPen.h">
       <Filter>kxf\Drawing\GDIRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsContext.h">
+      <Filter>kxf\Drawing\GDIRenderer\&lt;GraphicsRenderer&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsMatrix.h">
+      <Filter>kxf\Drawing\GDIRenderer\&lt;GraphicsRenderer&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsPen.h">
+      <Filter>kxf\Drawing\GDIRenderer\&lt;GraphicsRenderer&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsRenderer.h">
+      <Filter>kxf\Drawing\GDIRenderer\&lt;GraphicsRenderer&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsBrush.h">
+      <Filter>kxf\Drawing\GDIRenderer\&lt;GraphicsRenderer&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIBrush.h">
+      <Filter>kxf\Drawing\GDIRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsTexture.h">
+      <Filter>kxf\Drawing\GDIRenderer\&lt;GraphicsRenderer&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsFont.h">
+      <Filter>kxf\Drawing\GDIRenderer\&lt;GraphicsRenderer&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\GraphicsAction.h">
+      <Filter>kxf\Drawing\GraphicsRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\GCOperations.h">
+      <Filter>kxf\Drawing\GraphicsRenderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2495,11 +2510,29 @@
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIContext.cpp">
       <Filter>kxf\Drawing\GDIRenderer</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Drawing\GDIRenderer\Pen.cpp">
+    <ClCompile Include="kxf\Drawing\GDIRenderer\Private\Common.cpp">
+      <Filter>kxf\Drawing\GDIRenderer\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDIPen.cpp">
       <Filter>kxf\Drawing\GDIRenderer</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Drawing\GDIRenderer\Brush.cpp">
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDIGraphicsContext.cpp">
+      <Filter>kxf\Drawing\GDIRenderer\&lt;GraphicsRenderer&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDIGraphicsPen.cpp">
+      <Filter>kxf\Drawing\GDIRenderer\&lt;GraphicsRenderer&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDIGraphicsRenderer.cpp">
+      <Filter>kxf\Drawing\GDIRenderer\&lt;GraphicsRenderer&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDIBrush.cpp">
       <Filter>kxf\Drawing\GDIRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDIGraphicsFont.cpp">
+      <Filter>kxf\Drawing\GDIRenderer\&lt;GraphicsRenderer&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\GraphicsRenderer\Common.cpp">
+      <Filter>kxf\Drawing\GraphicsRenderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

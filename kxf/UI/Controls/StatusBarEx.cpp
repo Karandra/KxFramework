@@ -112,11 +112,11 @@ namespace kxf::UI
 				// Draw the label and/or icon
 				if (imageIndex == Drawing::InvalidImageIndex || !HasImageList())
 				{
-					dc.DrawLabel(rect, label, Alignment::CenterVertical);
+					dc.DrawLabel(label, rect, Alignment::CenterVertical);
 				}
 				else
 				{
-					dc.DrawLabel(rect, label, GetImageList()->GetBitmap(imageIndex).ToWxBitmap(), Alignment::CenterVertical);
+					dc.DrawLabel(label, rect, GetImageList()->GetBitmap(imageIndex).ToWxBitmap(), Alignment::CenterVertical);
 				}
 
 				if (m_IsSeparatorsVisible && m_BorderColor && i != fieldsCount - 1)
