@@ -4,27 +4,34 @@
 
 namespace kxf::Drawing
 {
-	template<class T>
+	template<class TValue>
 	struct BasicFontMetrics final
 	{
 		public:
-			T Height = 0; // Total character height
-			T Ascent = 0; // Part of the height above the baseline
-			T Descent = 0; // Part of the height below the baseline
-			T AverageWidth = 0; // Average font width or "x-width"
-			T InternalLeading = 0; // Intra-line spacing
-			T ExternalLeading = 0; // Inter-line spacing
+			TValue Height = 0; // Total character height
+			TValue Ascent = 0; // Part of the height above the baseline
+			TValue Descent = 0; // Part of the height below the baseline
+			TValue AverageWidth = 0; // Average font width or "x-width"
+			TValue InternalLeading = 0; // Intra-line spacing
+			TValue ExternalLeading = 0; // Inter-line spacing
 
 		public:
 			constexpr BasicFontMetrics() noexcept = default;
-			constexpr BasicFontMetrics(T height, T ascent, T descent, T averageWidth, T internalLeading, T externalLeading) noexcept
+			constexpr BasicFontMetrics(const wxFontMetrics& other) noexcept
+				:Height(other.height), Ascent(other.ascent), Descent(other.descent),
+				AverageWidth(other.averageWidth), InternalLeading(other.internalLeading), ExternalLeading(other.externalLeading)
+			{
+			}
+			constexpr BasicFontMetrics(TValue height, TValue ascent, TValue descent, TValue averageWidth, TValue internalLeading, TValue externalLeading) noexcept
 				:Height(height), Ascent(ascent), Descent(descent),
 				AverageWidth(averageWidth), InternalLeading(internalLeading), ExternalLeading(externalLeading)
 			{
 			}
-			constexpr BasicFontMetrics(const wxFontMetrics& other) noexcept
-				:Height(other.height), Ascent(other.ascent), Descent(other.descent),
-				AverageWidth(other.averageWidth), InternalLeading(other.internalLeading), ExternalLeading(other.externalLeading)
+
+			template<class T>
+			constexpr BasicFontMetrics(const BasicFontMetrics<T>& other) noexcept
+				:Height(other.Height), Ascent(other.Ascent), Descent(other.Descent),
+				AverageWidth(other.AverageWidth), InternalLeading(other.InternalLeading), ExternalLeading(other.ExternalLeading)
 			{
 			}
 

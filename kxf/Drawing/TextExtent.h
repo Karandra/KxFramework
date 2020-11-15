@@ -5,20 +5,19 @@
 
 namespace kxf::Drawing
 {
-	template<class T>
+	template<class TValue>
 	class BasicTextExtent final
 	{
 		public:
-			using TSize = typename Geometry::BasicSize<T>;
-			using TFontMetrics = typename BasicFontMetrics<T>;
+			using TSize = Geometry::BasicSize<TValue>;
+			using TFontMetrics = BasicFontMetrics<TValue>;
 
 		private:
 			TSize m_Extent;
 			TFontMetrics m_FontMetrics;
 
-		public:
-			constexpr BasicTextExtent(TSize extent, TFontMetrics metrics = {}) noexcept
-				:m_Extent(std::move(extent)), m_FontMetrics(std::move(metrics))
+		private:
+			void Initialize()
 			{
 				if (m_Extent.GetHeight() <= 0)
 				{
@@ -28,6 +27,20 @@ namespace kxf::Drawing
 				{
 					m_FontMetrics.Height = m_Extent.GetHeight();
 				}
+			}
+
+		public:
+			constexpr BasicTextExtent(TSize extent, TFontMetrics metrics = {}) noexcept
+				:m_Extent(std::move(extent)), m_FontMetrics(std::move(metrics))
+			{
+				Initialize();
+			}
+
+			template<class T>
+			constexpr BasicTextExtent(const BasicTextExtent<T>& other) noexcept
+				:m_Extent(std::move(other.GetExtent())), m_FontMetrics(std::move(other.GetFontMetrics()))
+			{
+				Initialize();
 			}
 
 		public:
