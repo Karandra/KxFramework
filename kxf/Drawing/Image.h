@@ -68,23 +68,6 @@ namespace kxf
 		KxRTTI_DeclareIID(Image, {0x84c3ee9b, 0x62dc, 0x4d8c, {0x8c, 0x94, 0xd1, 0xbc, 0xaf, 0x68, 0xfb, 0xc1}});
 
 		public:
-			enum class BlendMode
-			{
-				BlendOver,
-				BlendCompose,
-			};
-			enum class ResizeQuality
-			{
-				Default = wxIMAGE_QUALITY_NORMAL,
-				BestAvailable = wxIMAGE_QUALITY_HIGH,
-
-				Nearest = wxIMAGE_QUALITY_NEAREST,
-				Bilinear = wxIMAGE_QUALITY_BILINEAR,
-				Bicubic = wxIMAGE_QUALITY_BICUBIC,
-				BoxAverage = wxIMAGE_QUALITY_BOX_AVERAGE,
-			};
-
-		public:
 			static size_t GetImageCount(IInputStream& stream, ImageFormat format = ImageFormat::Any);
 
 		private:
@@ -172,7 +155,7 @@ namespace kxf
 			{
 				return m_Image.GetHeight();
 			}
-			ColorDepth GetDepth() const
+			ColorDepth GetColorDepth() const
 			{
 				return m_Image.HasAlpha() ? ColorDepthDB::BPP32 : ColorDepthDB::BPP24;
 			}
@@ -410,7 +393,7 @@ namespace kxf
 			{
 				return m_Image.GetSubImage(rect);
 			}
-			Image Paste(const Image& image, const Point& pos, BlendMode blendMode = BlendMode::BlendOver)
+			Image Paste(const Image& image, const Point& pos, CompositionMode compositionMode = CompositionMode::Dest)
 			{
 				wxImage copy = m_Image;
 				copy.Paste(image.m_Image, pos.GetX(), pos.GetY());
@@ -476,20 +459,85 @@ namespace kxf
 
 			Image Resize(const Size& size, const Point& pos) const
 			{
-				return m_Image.Size(size, pos);
+				Image temp = Clone();
+				temp.ResizeThis(size, pos);
+
+				return temp;
 			}
-			Image Resize(const Size& size, const Point& pos, const Color& backgroundColor) const
+			Image& ResizeThis(const Size& size, const Point& pos)
 			{
-				return Resize(size, pos, backgroundColor.GetFixed8().RemoveAlpha());
-			}
-			Image Resize(const Size& size, const Point& pos, const PackedRGB<uint8_t>& backgroundColor) const
-			{
-				return m_Image.Size(size, pos, backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue);
+				m_Image.Resize(size, pos);
+				return *this;
 			}
 
-			Image Rescale(const Size& size, ResizeQuality quality) const
+			Image Resize(const Size& size, const Point& pos, const Color& backgroundColor) const
 			{
-				return m_Image.Scale(size.GetWidth(), size.GetHeight(), static_cast<wxImageResizeQuality>(quality));
+				Image temp = Clone();
+				temp.ResizeThis(size, pos, backgroundColor);
+
+				return temp;
+			}
+			Image& ResizeThis(const Size& size, const Point& pos, const Color& backgroundColor)
+			{
+				return ResizeThis(size, pos, backgroundColor.GetFixed8().RemoveAlpha());
+			}
+
+			Image Resize(const Size& size, const Point& pos, const PackedRGB<uint8_t>& backgroundColor) const
+			{
+				Image temp = Clone();
+				temp.ResizeThis(size, pos, backgroundColor);
+
+				return temp;
+			}
+			Image& ResizeThis(const Size& size, const Point& pos, const PackedRGB<uint8_t>& backgroundColor)
+			{
+				m_Image.Resize(size, pos, backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue);
+				return *this;
+			}
+
+			Image Rescale(const Size& size, InterpolationQuality interpolationQuality) const
+			{
+				Image temp = Clone();
+				temp.RescaleThis(size, interpolationQuality);
+
+				return temp;
+			}
+			Image& RescaleThis(const Size& size, InterpolationQuality interpolationQuality)
+			{
+				auto DoScale = [&](wxImageResizeQuality quality)
+				{
+					m_Image.Rescale(size.GetWidth(), size.GetHeight(), static_cast<wxImageResizeQuality>(quality));
+				};
+
+				switch (interpolationQuality)
+				{
+					case InterpolationQuality::Default:
+					{
+						DoScale(wxIMAGE_QUALITY_HIGH);
+						break;
+					}
+					case InterpolationQuality::BestAvailable:
+					{
+						DoScale(wxIMAGE_QUALITY_NORMAL);
+						break;
+					}
+					case InterpolationQuality::NearestNeighbor:
+					{
+						DoScale(wxIMAGE_QUALITY_NEAREST);
+						break;
+					}
+					case InterpolationQuality::Bilinear:
+					{
+						DoScale(wxIMAGE_QUALITY_BILINEAR);
+						break;
+					}
+					case InterpolationQuality::Bicubic:
+					{
+						DoScale(wxIMAGE_QUALITY_BICUBIC);
+						break;
+					}
+				};
+				return *this;
 			}
 
 			// Conversion functions
