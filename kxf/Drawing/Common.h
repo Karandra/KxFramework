@@ -17,14 +17,6 @@ namespace kxf
 	class Image;
 	class Icon;
 
-	enum class GraphicsRendererType
-	{
-		None = -1,
-		Direct2D,
-		GDIPlus,
-		Sciter,
-		Cairo
-	};
 	enum class ImageFormat
 	{
 		None = wxBITMAP_TYPE_INVALID,
@@ -54,19 +46,33 @@ namespace kxf
 }
 namespace kxf
 {
+	// https://keithp.com/~keithp/porterduff/p253-porter.pdf
+	// The description give a short equation on how the values of a resulting pixel are calculated.
+	// R = Result, S = Source, D = Destination, colors premultiplied with alpha Ra, Sa, Da their alpha components
+	enum class CompositionMode
+	{
+		None = -1,
+
+		Clear, // R = 0
+		Source, // R = S
+		Over, // R = S + D*(1 - Sa)
+		In, // R = S*Da
+		Out, // R = S*(1 - Da)
+		Atop, // R = S*Da + D*(1 - Sa)
+		Dest, // R = D (essentially a no-op)
+		DestOver, // R = S*(1 - Da) + D
+		DestIn, // R = D*Sa
+		DestOut, // R = D*(1 - Sa)
+		DestAtop, // R = S*(1 - Da) + D*Sa
+		Xor, // R = S*(1 - Da) + D*(1 - Sa)
+		Add, // R = S + D
+	};
 	enum class AntialiasMode
 	{
 		None = -1,
 
 		Default,
 		BestAvailable = -2
-	};
-	enum class CompositionMode
-	{
-		None = -1,
-
-		SourceOver,
-		SourceCopy
 	};
 	enum class InterpolationQuality
 	{
@@ -77,6 +83,7 @@ namespace kxf
 		NearestNeighbor,
 		Bilinear,
 		Bicubic,
+		BoxAverage
 	};
 
 	// https://docs.microsoft.com/en-us/windows/win32/api/gdiplusenums/ne-gdiplusenums-hatchstyle
@@ -174,6 +181,7 @@ namespace kxf
 
 		Solid,
 		Hatch,
+		Dash,
 		Texture
 	};
 	enum class LineCap
@@ -196,6 +204,38 @@ namespace kxf
 	{
 		Center,
 		Inset
+	};
+
+	enum class StockPen
+	{
+		Transparent,
+
+		Black,
+		BlackDashed,
+		White,
+		Cyan,
+		Blue,
+		Red,
+		Green,
+		Yellow,
+		Gray,
+		LightGray,
+		MediumGray
+	};
+	enum class StockBrush
+	{
+		Transparent,
+
+		Black,
+		White,
+		Cyan,
+		Blue,
+		Red,
+		Green,
+		Yellow,
+		Gray,
+		LightGray,
+		MediumGray
 	};
 }
 namespace kxf
