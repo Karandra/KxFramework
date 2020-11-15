@@ -4,6 +4,7 @@
 #include "CellAttribute.h"
 #include "kxf/Drawing/Icon.h"
 #include "kxf/Drawing/Bitmap.h"
+#include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/Drawing/GDIRenderer.h"
 
 namespace kxf::UI::DataView
@@ -49,26 +50,14 @@ namespace kxf::UI::DataView
 	{
 		private:
 			Renderer& m_Renderer;
-			bool m_AlwaysUseGC = false;
 
 		public:
-			RenderEngine(Renderer& renderer, bool alwaysUseGC = false)
-				:m_Renderer(renderer), m_AlwaysUseGC(alwaysUseGC)
+			RenderEngine(Renderer& renderer)
+				:m_Renderer(renderer)
 			{
 			}
 
 		public:
-			GDIContext GetTextRenderingDC() const;
-
-			bool IsAlwaysUseingGraphicsContext() const
-			{
-				return m_AlwaysUseGC;
-			}
-			void AlwaysUseGraphicsContext(bool alwaysGC)
-			{
-				m_AlwaysUseGC = alwaysGC;
-			}
-
 			int GetInterTextSpacing() const
 			{
 				return 2;
@@ -78,15 +67,15 @@ namespace kxf::UI::DataView
 			Size FromDIP(const Size& size) const;
 			Size FromDIP(int x, int y) const
 			{
-				return FromDIP(Size(x, y));
+				return FromDIP({x, y});
 			}
 			int FromDIPX(int x) const
 			{
-				return FromDIP(x, wxDefaultCoord).GetWidth();
+				return FromDIP(x, Geometry::DefaultCoord).GetWidth();
 			}
 			int FromDIPY(int y) const
 			{
-				return FromDIP(wxDefaultCoord, y).GetHeight();
+				return FromDIP(Geometry::DefaultCoord, y).GetHeight();
 			}
 
 			size_t FindFirstLineBreak(const String& string) const;

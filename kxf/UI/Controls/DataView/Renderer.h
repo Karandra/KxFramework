@@ -51,26 +51,26 @@ namespace kxf::UI::DataView
 			const Node* m_Node = nullptr;
 			Column* m_Column = nullptr;
 
-			GDIGraphicsContext* m_GraphicsDC = nullptr;
-			GDIContext* m_RegularDC = nullptr;
-			bool m_AlwaysUseGC = false;
+			IGraphicsContext* m_GC = nullptr;
 
 		private:
-			void BeginCellRendering(const Node& node, Column& column, GDIGraphicsContext& graphicsDC, GDIContext* regularDC = nullptr)
+			void BeginCellRendering(const Node& node, Column& column, IGraphicsContext& gc)
 			{
 				m_Node = &node;
 				m_Column = &column;
-				m_GraphicsDC = &graphicsDC;
-				m_RegularDC = regularDC;
+				m_GC = &gc;
 			}
 			void EndCellRendering()
 			{
 				m_Node = nullptr;
 				m_Column = nullptr;
-				m_GraphicsDC = nullptr;
-				m_RegularDC = nullptr;
+				m_GC = nullptr;
 			}
 			bool IsNullRenderer() const;
+			bool CanDraw() const
+			{
+				return m_GC != nullptr;
+			}
 
 			void BeginCellSetup(const Node& node, Column& column)
 			{
@@ -86,7 +86,7 @@ namespace kxf::UI::DataView
 			void SetupCellAttributes(CellState cellState);
 
 			void CallDrawCellBackground(const Rect& cellRect, CellState cellState, bool noUserBackground = false);
-			void CallDrawCellContent(const Rect& cellRect, CellState cellState, bool alwaysUseGC = false);
+			void CallDrawCellContent(const Rect& cellRect, CellState cellState);
 			void CallOnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent = nullptr);
 
 		protected:
@@ -130,31 +130,13 @@ namespace kxf::UI::DataView
 			}
 
 		public:
-			bool HasRegularDC() const
+			IGraphicsContext& GetGraphicsContext() const
 			{
-				return m_RegularDC != nullptr;
+				return *m_GC;
 			}
-			GDIContext& GetRegularDC() const
-			{
-				return *m_RegularDC;
-			}
-
-			bool HasGraphicsDC() const
-			{
-				return m_GraphicsDC != nullptr;
-			}
-			GDIGraphicsContext& GetGraphicsDC() const
-			{
-				return *m_GraphicsDC;
-			}
-			wxGraphicsContext& GetGraphicsContext() const
-			{
-				return *m_GraphicsDC->GetGraphicsContext();
-			}
-
 			RenderEngine GetRenderEngine() const
 			{
-				return RenderEngine(const_cast<Renderer&>(*this), m_AlwaysUseGC);
+				return RenderEngine(const_cast<Renderer&>(*this));
 			}
 			virtual String GetTextValue(const wxAny& value) const = 0;
 

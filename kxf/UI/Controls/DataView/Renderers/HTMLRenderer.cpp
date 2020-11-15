@@ -78,15 +78,17 @@ namespace kxf::UI::DataView
 	{
 		if (m_Value.HasText())
 		{
-			// Prefer regular DC
-			GDIContext dc = HasRegularDC() ? GetRegularDC().ToWxDC() : GetGraphicsDC().ToWxDC();
-			DCUserScaleSaver userScaleSaver(dc);
-			GDIAction::Clip clip(dc, cellRect.Clone().Deflate(0, GetRenderEngine().FromDIPY(2)));
+			IGraphicsContext& gc = GetGraphicsContext();
+			if (auto gdi = gc.QueryInterface<GDIGraphicsContext>())
+			{
+				DCUserScaleSaver userScaleSaver(gdi->Get());
+				GDIAction::Clip clip(gdi->Get(), cellRect.Clone().Deflate(0, GetRenderEngine().FromDIPY(2)));
 
-			// Render text
-			wxHtmlDCRenderer htmlRenderer;
-			PrepareRenderer(htmlRenderer, dc, cellRect);
-			htmlRenderer.Render(cellRect.GetX(), cellRect.GetY(), m_VisibleCellFrom, m_VisibleCellTo);
+				// Render text
+				wxHtmlDCRenderer htmlRenderer;
+				PrepareRenderer(htmlRenderer, gdi->Get(), cellRect);
+				htmlRenderer.Render(cellRect.GetX(), cellRect.GetY(), m_VisibleCellFrom, m_VisibleCellTo);
+			}
 		}
 	}
 	Size HTMLRenderer::GetCellSize() const

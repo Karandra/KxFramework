@@ -132,7 +132,11 @@ namespace kxf::UI::DataView
 	{
 		if (m_Value.HasType())
 		{
-			GetRenderEngine().DrawToggle(GetGraphicsDC(), cellRect, cellState, m_Value.GetState(), m_Value.GetType());
+			IGraphicsContext& gc = GetGraphicsContext();
+			if (auto gdi = gc.QueryInterface<GDIGraphicsContext>())
+			{
+				GetRenderEngine().DrawToggle(gdi->Get(), cellRect, cellState, m_Value.GetState(), m_Value.GetType());
+			}
 		}
 	}
 	Size ToggleRenderer::GetCellSize() const

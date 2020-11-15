@@ -7,7 +7,6 @@
 #include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/Private/UxThemeDefines.h"
 #include "kxf/Drawing/GDIRenderer.h"
-#include "kxf/Drawing/GraphicsRenderer/GCOperations.h"
 #include "wx/generic/private/markuptext.h"
 
 namespace kxf::UI::DataView
@@ -141,19 +140,6 @@ namespace kxf::UI::DataView::Markup
 
 namespace kxf::UI::DataView
 {
-	GDIContext RenderEngine::GetTextRenderingDC() const
-	{
-		if (m_Renderer.HasRegularDC() && !m_AlwaysUseGC)
-		{
-			return m_Renderer.GetRegularDC().ToWxDC();
-		}
-		else if (m_Renderer.HasGraphicsDC())
-		{
-			return m_Renderer.GetGraphicsDC().ToWxDC();
-		}
-		return {};
-	}
-
 	int RenderEngine::CalcCenter(int cellSize, int itemSize) const
 	{
 		const int margins = cellSize - itemSize;
@@ -210,9 +196,17 @@ namespace kxf::UI::DataView
 
 	Size RenderEngine::GetTextExtent(const String& string) const
 	{
-		if (GDIContext dc = GetTextRenderingDC())
+		if (m_Renderer.CanDraw())
 		{
-			return GetTextExtent(dc, string);
+			IGraphicsContext& gc = m_Renderer.GetGraphicsContext();
+			if (auto gdi = gc.QueryInterface<GDIGraphicsContext>())
+			{
+				return GetTextExtent(gdi->Get(), string);
+			}
+			else
+			{
+				return gc.GetTextExtent(string).GetExtent();
+			}
 		}
 		else
 		{
@@ -264,9 +258,17 @@ namespace kxf::UI::DataView
 
 	Size RenderEngine::GetMultilineTextExtent(const String& string) const
 	{
-		if (GDIContext dc = GetTextRenderingDC())
+		if (m_Renderer.CanDraw())
 		{
-			return GetMultilineTextExtent(dc, string);
+			IGraphicsContext& gc = m_Renderer.GetGraphicsContext();
+			if (auto gdi = gc.QueryInterface<GDIGraphicsContext>())
+			{
+				return GetMultilineTextExtent(gdi->Get(), string);
+			}
+			else
+			{
+				return gc.GetTextExtent(string).GetExtent();
+			}
 		}
 		else
 		{
@@ -292,9 +294,24 @@ namespace kxf::UI::DataView
 
 	bool RenderEngine::DrawText(const Rect& cellRect, CellState cellState, const String& string, int offsetX)
 	{
-		if (GDIContext dc = GetTextRenderingDC())
+		if (m_Renderer.CanDraw() && !string.IsEmpty())
 		{
-			return DrawText(dc, cellRect, cellState, string, offsetX);
+			IGraphicsContext& gc = m_Renderer.GetGraphicsContext();
+			if (auto gdi = gc.QueryInterface<GDIGraphicsContext>())
+			{
+				return DrawText(gdi->Get(), cellRect, cellState, string, offsetX);
+			}
+			else
+			{
+				Rect textRect = cellRect;
+				textRect.X() += offsetX;
+				textRect.Width() -= offsetX;
+
+				const CellAttribute& attributes = m_Renderer.GetAttributes();
+				gc.DrawLabel(string, textRect, attributes.Options().GetAlignment());
+
+				return true;
+			}
 		}
 		return false;
 	}
@@ -322,7 +339,7 @@ namespace kxf::UI::DataView
 			{
 				auto DrawString = [this, &dc, &textRect](const String& text)
 				{
-					dc.DrawText(textRect.GetPosition(), wxControl::Ellipsize(text, dc.ToWxDC(), static_cast<wxEllipsizeMode>(m_Renderer.GetEllipsizeMode()), textRect.GetWidth()));
+					dc.DrawText(wxControl::Ellipsize(text, dc.ToWxDC(), static_cast<wxEllipsizeMode>(m_Renderer.GetEllipsizeMode()), textRect.GetWidth()), textRect.GetPosition());
 				};
 
 				const size_t lineBreakPos = FindFirstLineBreak(string);
@@ -344,26 +361,19 @@ namespace kxf::UI::DataView
 	{
 		if (bitmap)
 		{
-			wxGraphicsContext& context = m_Renderer.GetGraphicsContext();
 			const CellAttribute& attributes = m_Renderer.GetAttributes();
+			const Rect rect = {cellRect.GetPosition(), bitmap.GetSize()};
+			const bool isEnabled = attributes.Options().ContainsOption(CellOption::Enabled);
 
-			auto DrawBitmap = [&]()
+			IGraphicsContext& gc = m_Renderer.GetGraphicsContext();
+			if (auto gdi = gc.QueryInterface<GDIGraphicsContext>())
 			{
-				const Point pos = cellRect.GetPosition();
-				const Size size = bitmap.GetSize();
-				const bool isEnabled = attributes.Options().ContainsOption(CellOption::Enabled);
-
-				context.DrawBitmap((isEnabled ? bitmap : bitmap.ConvertToDisabled()).ToWxBitmap(), pos.GetX(), pos.GetY(), size.GetWidth(), size.GetHeight());
-			};
-
-			if (bitmap.GetSize() > cellRect.GetSize())
-			{
-				GCClip clip(context, cellRect);
-				DrawBitmap();
+				gdi->DrawTexture((isEnabled ? bitmap : bitmap.ConvertToDisabled()), rect);
 			}
 			else
 			{
-				DrawBitmap();
+				Image image = bitmap.ToImage();
+				gdi->DrawTexture((isEnabled ? image : image.ConvertToDisabled()), rect);
 			}
 			return true;
 		}
@@ -396,46 +406,48 @@ namespace kxf::UI::DataView
 	}
 	bool RenderEngine::DrawProgressBar(const Rect& cellRect, CellState cellState, int value, int range, ProgressState state, Color* averageBackgroundColor)
 	{
-		using namespace kxf;
-
-		// Progress bar looks really ugly when it's smaller than 10x10 pixels,
-		// so don't draw it at all in this case.
-		const Size minSize = FromDIP(10, 10);
-		if (cellRect.GetWidth() < minSize.GetWidth() || cellRect.GetHeight() < minSize.GetHeight())
+		IGraphicsContext& gc = m_Renderer.GetGraphicsContext();
+		if (auto gdi = gc.QueryInterface<GDIGraphicsContext>())
 		{
-			return false;
-		}
-
-		if (UxTheme theme(*m_Renderer.GetView(), UxThemeClass::Progress); theme)
-		{
-			switch (state)
+			// Progress bar looks really ugly when it's smaller than 10x10 pixels, so don't draw it at all in this case.
+			const Size minSize = FromDIP(10, 10);
+			if (cellRect.GetWidth() < minSize.GetWidth() || cellRect.GetHeight() < minSize.GetHeight())
 			{
-				case ProgressState::Paused:
+				return false;
+			}
+
+			if (UxTheme theme(*m_Renderer.GetView(), UxThemeClass::Progress); theme)
+			{
+				switch (state)
 				{
-					theme.DrawProgressBar(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_PAUSED, cellRect, value, range, averageBackgroundColor);
-					break;
-				}
-				case ProgressState::Error:
-				{
-					theme.DrawProgressBar(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_ERROR, cellRect, value, range, averageBackgroundColor);
-					break;
-				}
-				case ProgressState::Partial:
-				{
-					theme.DrawProgressBar(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_PARTIAL, cellRect, value, range, averageBackgroundColor);
-					break;
-				}
-				default:
-				{
-					theme.DrawProgressBar(m_Renderer.GetRegularDC(), PP_BAR, PP_FILL, PBFS_NORMAL, cellRect, value, range, averageBackgroundColor);
-					break;
-				}
-			};
+					case ProgressState::Paused:
+					{
+						theme.DrawProgressBar(gdi->Get(), PP_BAR, PP_FILL, PBFS_PAUSED, cellRect, value, range, averageBackgroundColor);
+						break;
+					}
+					case ProgressState::Error:
+					{
+						theme.DrawProgressBar(gdi->Get(), PP_BAR, PP_FILL, PBFS_ERROR, cellRect, value, range, averageBackgroundColor);
+						break;
+					}
+					case ProgressState::Partial:
+					{
+						theme.DrawProgressBar(gdi->Get(), PP_BAR, PP_FILL, PBFS_PARTIAL, cellRect, value, range, averageBackgroundColor);
+						break;
+					}
+					default:
+					{
+						theme.DrawProgressBar(gdi->Get(), PP_BAR, PP_FILL, PBFS_NORMAL, cellRect, value, range, averageBackgroundColor);
+						break;
+					}
+				};
+				return true;
+			}
+
+			wxRendererNative::Get().DrawGauge(m_Renderer.GetView(), gdi->GetWx(), cellRect, value, range);
 			return true;
 		}
-
-		wxRendererNative::Get().DrawGauge(m_Renderer.GetView(), m_Renderer.GetGraphicsDC().ToWxDC(), cellRect, value, range);
-		return true;
+		return false;
 	}
 
 	Size RenderEngine::GetToggleSize() const

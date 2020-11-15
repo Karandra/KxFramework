@@ -70,6 +70,7 @@ namespace kxf::UI::DataView
 			int m_UniformRowHeight = 0;
 			int m_Indent = 0;
 
+			std::unique_ptr<IGraphicsRenderer> m_GraphicsRenderer;
 			NullRenderer m_NullRenderer;
 			Column* m_CurrentColumn = nullptr;
 			Row m_CurrentRow;
@@ -109,11 +110,11 @@ namespace kxf::UI::DataView
 			Row m_RowSelectSingleOnUp;
 
 			// The pen used to draw horizontal/vertical rules
-			wxPen m_PenRuleH;
-			wxPen m_PenRuleV;
+			std::shared_ptr<IGraphicsPen> m_PenRuleH;
+			std::shared_ptr<IGraphicsPen> m_PenRuleV;
 
 			// the pen used to draw the expander and the lines
-			wxPen m_PenExpander;
+			std::shared_ptr<IGraphicsPen> m_PenExpander;
 
 			// Background bitmap
 			Bitmap m_BackgroundBitmap;
@@ -226,7 +227,7 @@ namespace kxf::UI::DataView
 			{
 				return m_IsVirtualListModel;
 			}
-			
+
 			Model* GetModel() const
 			{
 				return m_Model;
@@ -317,7 +318,7 @@ namespace kxf::UI::DataView
 			wxDragResult OnDragOver(const wxDataObjectSimple& dataObject, const Point& pos, wxDragResult dragResult);
 			wxDragResult OnDropData(wxDataObjectSimple& dataObject, const Point& pos, wxDragResult dragResult);
 			bool TestDropPossible(const wxDataObjectSimple& dataObject, const Point& pos);
-			
+
 			wxDragResult OnDragDropEnter(const wxDataObjectSimple& format, const Point& pos, wxDragResult dragResult);
 			void OnDragDropLeave();
 
@@ -395,13 +396,13 @@ namespace kxf::UI::DataView
 			}
 
 			// View
-			void SetRuleHPen(const wxPen& pen)
+			void SetRuleHPen(const Color& color, float width = 1.0f)
 			{
-				m_PenRuleH = pen;
+				m_PenRuleH = m_GraphicsRenderer->CreatePen(color, width);
 			}
-			void SetRuleVPen(const wxPen& pen)
+			void SetRuleVPen(const Color& color, float width = 1.0f)
 			{
-				m_PenRuleV = pen;
+				m_PenRuleV = m_GraphicsRenderer->CreatePen(color, width);
 			}
 
 			size_t GetRowCount() const;

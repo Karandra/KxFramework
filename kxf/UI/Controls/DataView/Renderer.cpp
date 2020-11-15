@@ -32,7 +32,8 @@ namespace kxf::UI::DataView
 
 	void Renderer::CallDrawCellBackground(const Rect& cellRect, CellState cellState, bool noUserBackground)
 	{
-		GDIGraphicsContext& dc = GetGraphicsDC();
+		auto gdi = m_GC->QueryInterface<GDIGraphicsContext>();
+
 		const auto& cellOptions = m_Attributes.Options();
 		const auto& cellBGOptions = m_Attributes.BGOptions();
 
@@ -52,40 +53,49 @@ namespace kxf::UI::DataView
 		// Special backgrounds
 		if (cellBGOptions.ContainsOption(CellBGOption::Header))
 		{
-			Size offsetSize = GetView()->FromDIP(wxSize(0, 1));
-
-			Rect buttonRect = cellRect;
-			buttonRect.Width() += offsetSize.GetX();
-			buttonRect.Height() += offsetSize.GetY();
-
-			Bitmap canvas(cellRect.GetSize(), ColorDepthDB::BPP32);
-			GDIMemoryContext memDC(canvas);
-			wxRendererNative::Get().DrawHeaderButton(GetView(), memDC.ToWxDC(), Rect(-1, 0, buttonRect.GetWidth() + 1, buttonRect.GetHeight()), GetRenderEngine().GetControlFlags(cellState), wxHDR_SORT_ICON_NONE);
-			if (!cellState.IsSelected())
+			if (gdi)
 			{
-				Color lineColor = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
-				lineColor.SetAlpha8(48);
+				Size offsetSize = GetView()->FromDIP(wxSize(0, 1));
 
-				memDC.SetPen(lineColor);
-				memDC.DrawLine(Point(0, 0), Point(buttonRect.GetWidth() + 1, 0));
+				Rect buttonRect = cellRect;
+				buttonRect.Width() += offsetSize.GetX();
+				buttonRect.Height() += offsetSize.GetY();
+
+				Bitmap canvas(cellRect.GetSize(), ColorDepthDB::BPP32);
+				GDIMemoryContext memDC(canvas);
+				wxRendererNative::Get().DrawHeaderButton(GetView(), gdi->GetWx(), Rect(-1, 0, buttonRect.GetWidth() + 1, buttonRect.GetHeight()), GetRenderEngine().GetControlFlags(cellState), wxHDR_SORT_ICON_NONE);
+				if (!cellState.IsSelected())
+				{
+					Color lineColor = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
+					lineColor.SetAlpha8(48);
+
+					memDC.SetPen(lineColor);
+					memDC.DrawLine(Point(0, 0), Point(buttonRect.GetWidth() + 1, 0));
+				}
+
+				gdi->DrawTexture(canvas, cellRect);
 			}
-
-			dc.DrawBitmap(canvas, cellRect.GetPosition());
 		}
 		else if (cellBGOptions.ContainsOption(CellBGOption::Button))
 		{
-			Rect buttonRect = cellRect.Clone().Inflate(1, 1);
-			wxRendererNative::Get().DrawPushButton(GetView(), dc.ToWxDC(), buttonRect, GetRenderEngine().GetControlFlags(cellState));
+			if (gdi)
+			{
+				Rect buttonRect = cellRect.Clone().Inflate(1, 1);
+				wxRendererNative::Get().DrawPushButton(GetView(), gdi->GetWx(), buttonRect, GetRenderEngine().GetControlFlags(cellState));
+			}
 		}
 		else if (cellBGOptions.ContainsOption(CellBGOption::ComboBox))
 		{
-			if (cellOptions.ContainsOption(CellOption::Editable))
+			if (gdi)
 			{
-				wxRendererNative::Get().DrawComboBox(GetView(), dc.ToWxDC(), cellRect, GetRenderEngine().GetControlFlags(cellState));
-			}
-			else
-			{
-				wxRendererNative::Get().DrawChoice(GetView(), dc.ToWxDC(), cellRect, GetRenderEngine().GetControlFlags(cellState));
+				if (cellOptions.ContainsOption(CellOption::Editable))
+				{
+					wxRendererNative::Get().DrawComboBox(GetView(), gdi->GetWx(), cellRect, GetRenderEngine().GetControlFlags(cellState));
+				}
+				else
+				{
+					wxRendererNative::Get().DrawChoice(GetView(), gdi->GetWx(), cellRect, GetRenderEngine().GetControlFlags(cellState));
+				}
 			}
 		}
 
@@ -93,9 +103,9 @@ namespace kxf::UI::DataView
 		if (cellOptions.HasBackgroundColor())
 		{
 			Color color = m_Attributes.Options().GetBackgroundColor();
-			GDIAction::ChangePen changePen(dc, color);
-			GDIAction::ChangeBrush changeBrush(dc, color);
-			dc.DrawRectangle(cellRect);
+			GraphicsAction::ChangePen changePen(*m_GC, color);
+			GraphicsAction::ChangeBrush changeBrush(*m_GC, color);
+			m_GC->DrawRectangle(cellRect);
 		}
 
 		// Call derived class drawing
@@ -104,35 +114,33 @@ namespace kxf::UI::DataView
 			DrawCellBackground(cellRect, cellState);
 		}
 	}
-	void Renderer::CallDrawCellContent(const Rect& cellRect, CellState cellState, bool alwaysUseGC)
+	void Renderer::CallDrawCellContent(const Rect& cellRect, CellState cellState)
 	{
 		m_PaintRect = cellRect;
-		m_AlwaysUseGC = alwaysUseGC;
 
+		auto gdi = m_GC->QueryInterface<GDIGraphicsContext>();
 		RenderEngine renderEngine = GetRenderEngine();
-		GDIContext& dc = HasRegularDC() && !m_AlwaysUseGC  ? GetRegularDC() : GetGraphicsDC();
 
 		// Change text color
-		GDIAction::ChangeTextForeground changeTextColor(dc);
+		Color textColor;
 		if (m_Attributes.Options().HasForegroundColor())
 		{
-			Color color = m_Attributes.Options().GetForegroundColor();
+			textColor = m_Attributes.Options().GetForegroundColor();
 			if (!m_Attributes.Options().ContainsOption(CellOption::Enabled))
 			{
-				color.MakeDisabled();
+				textColor.MakeDisabled();
 			}
-			changeTextColor.Set(color);
 		}
 		else if (!m_Attributes.Options().ContainsOption(CellOption::Enabled))
 		{
-			changeTextColor.Set(GetView()->GetForegroundColour().MakeDisabled());
+			textColor = GetView()->GetForegroundColour().MakeDisabled();
 		}
 
 		// Change font
-		GDIAction::ChangeFont changeFont(dc);
-		if (m_Attributes.FontOptions().NeedDCAlteration())
+		GraphicsAction::ChangeFont changeFont(*m_GC);
+		if (textColor || m_Attributes.FontOptions().NeedDCAlteration())
 		{
-			changeFont.Set(m_Attributes.GetEffectiveFont(dc.GetFont()));
+			changeFont.Set(m_GC->GetRenderer().CreateFont(m_Attributes.GetEffectiveFont(GetView()->GetFont()), textColor));
 		}
 
 		// Adjust the rectangle ourselves to account for the alignment
@@ -176,10 +184,13 @@ namespace kxf::UI::DataView
 		// Draw highlighting selection
 		if (m_Attributes.Options().ContainsOption(CellOption::HighlightItem) && !adjustedCellRect.IsEmpty())
 		{
-			MainWindow* mainWindow = GetMainWindow();
+			if (gdi)
+			{
+				MainWindow* mainWindow = GetMainWindow();
 
-			Rect highlightRect = Rect(adjustedCellRect).Inflate(2);
-			RenderEngine::DrawSelectionRect(mainWindow, dc, highlightRect, cellState.ToItemState(mainWindow));
+				Rect highlightRect = Rect(adjustedCellRect).Inflate(2);
+				RenderEngine::DrawSelectionRect(mainWindow, gdi->Get(), highlightRect, cellState.ToItemState(mainWindow));
+			}
 		}
 
 		// Call derived class drawing
