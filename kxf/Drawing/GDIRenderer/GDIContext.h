@@ -3,6 +3,7 @@
 #include "GDIPen.h"
 #include "GDIBrush.h"
 #include "kxf/UI/Common.h"
+#include "../AffineMatrix.h"
 #include "../Private/Common.h"
 #include <wx/dc.h>
 #include <wx/graphics.h>
@@ -663,11 +664,11 @@ namespace kxf
 			{
 				return m_DC->CanUseTransformMatrix();
 			}
-			wxAffineMatrix2D GetTransformMatrix() const
+			AffineMatrix GetTransformMatrix() const
 			{
 				return m_DC->GetTransformMatrix();
 			}
-			bool SetTransformMatrix(const wxAffineMatrix2D& transform)
+			bool SetTransformMatrix(const AffineMatrix& transform)
 			{
 				return m_DC->SetTransformMatrix(transform);
 			}

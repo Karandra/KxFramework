@@ -72,7 +72,7 @@ namespace kxf
 		if (m_DC.CanUseTransformMatrix())
 		{
 			auto matrix = m_DC.GetTransformMatrix();
-			matrix.Rotate(angle.ToRadians());
+			matrix.Rotate(angle);
 			m_DC.SetTransformMatrix(matrix);
 		}
 	}
