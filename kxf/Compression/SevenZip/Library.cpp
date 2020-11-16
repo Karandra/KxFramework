@@ -24,7 +24,7 @@ namespace kxf::SevenZip
 
 		if (m_Library.Load(libraryPath))
 		{
-			m_CreateObjectFunc = m_Library.GetFunctionAddress("CreateObject");
+			m_CreateObjectFunc = m_Library.GetExportedFunctionAddress("CreateObject");
 			return m_CreateObjectFunc != nullptr;
 		}
 		return false;
@@ -47,6 +47,6 @@ namespace kxf::SevenZip
 
 		::GUID classGUID = COM::ToGUID(classID);
 		::GUID interfaceGUID = COM::ToGUID(interfaceID);
-		return HResult(reinterpret_cast<CreateObjectFunc>(m_CreateObjectFunc)(&classGUID, &interfaceGUID, object)).IsSuccess();
+		return HResult(std::invoke(reinterpret_cast<CreateObjectFunc>(m_CreateObjectFunc), &classGUID, &interfaceGUID, object)).IsSuccess();
 	}
 }

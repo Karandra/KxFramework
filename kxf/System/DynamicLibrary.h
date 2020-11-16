@@ -15,17 +15,22 @@ namespace kxf
 	class GDICursor;
 	class ImageBundle;
 
-	enum class DynamicLibraryLoadFlag: uint32_t
+	enum class DynamicLibraryFlag: uint32_t
 	{
 		None = 0,
 
-		DataFile = 1 << 0,
+		Resource = 1 << 0,
 		ImageResource = 1 << 1,
-		SearchUserDirectories = 1 << 2,
+
+		SearchUserDirectories = 1 << 8,
+		SearchSystemDirectories = 1 << 9,
+		SearchApplicationDirectory = 1 << 10,
+		SearchLibraryDirectory = 1 << 11,
+		SearchDefaultDirectories = SearchUserDirectories|SearchSystemDirectories|SearchApplicationDirectory,
 
 		Exclusive = 1 << 16
 	};
-	KxFlagSet_Declare(DynamicLibraryLoadFlag);
+	KxFlagSet_Declare(DynamicLibraryFlag);
 }
 
 namespace kxf
@@ -45,12 +50,12 @@ namespace kxf
 
 		private:
 			std::optional<void*> m_Handle;
-			FlagSet<DynamicLibraryLoadFlag> m_LoadFlags;
+			FlagSet<DynamicLibraryFlag> m_LoadFlags;
 			bool m_ShouldUnload = false;
 
 		public:
 			DynamicLibrary() noexcept = default;
-			DynamicLibrary(const FSPath& path, FlagSet<DynamicLibraryLoadFlag> flags = {})
+			DynamicLibrary(const FSPath& path, FlagSet<DynamicLibraryFlag> flags = {})
 			{
 				Load(path, flags);
 			}
@@ -80,7 +85,7 @@ namespace kxf
 			}
 			FSPath GetFilePath() const;
 
-			bool Load(const FSPath& path, FlagSet<DynamicLibraryLoadFlag> flags = {});
+			bool Load(const FSPath& path, FlagSet<DynamicLibraryFlag> flags = {});
 			void Unload() noexcept;
 
 			void AttachHandle(void* handle, bool takeOwnership = false) noexcept
@@ -89,36 +94,39 @@ namespace kxf
 
 				m_Handle = handle;
 				m_ShouldUnload = takeOwnership;
-				m_LoadFlags = DynamicLibraryLoadFlag::None;
+				m_LoadFlags = DynamicLibraryFlag::None;
 			}
 			void* DetachHandle() noexcept
 			{
 				void* handle = m_Handle.value_or(nullptr);
 				m_Handle = {};
 				m_ShouldUnload = false;
-				m_LoadFlags = DynamicLibraryLoadFlag::None;
+				m_LoadFlags = DynamicLibraryFlag::None;
 
 				return handle;
 			}
 
 			// Functions
-			size_t EnumFunctionNames(std::function<bool(String)> func) const;
+			size_t EnumExportedFunctionNames(std::function<bool(String)> func) const;
 
-			void* GetFunctionAddress(const char* name) const;
-			void* GetFunctionAddress(const wchar_t* name) const;
-			void* GetFunctionAddress(const String& name) const
+			void* GetExportedFunctionAddress(const char* name) const;
+			void* GetExportedFunctionAddress(const wchar_t* name) const;
+			void* GetExportedFunctionAddress(const String& name) const
 			{
-				return GetFunctionAddress(name.wx_str());
+				return GetExportedFunctionAddress(name.wx_str());
 			}
-			void* GetFunctionAddress(size_t ordinal) const;
+			void* GetExportedFunctionAddress(size_t ordinal) const;
 
 			template<class TFunc, class T>
-			TFunc* GetFunction(T&& name) const
+			TFunc* GetExportedFunction(T&& name) const
 			{
 				static_assert(std::is_function_v<std::remove_pointer_t<std::remove_reference_t<TFunc>>>, "free function type required");
 
-				return reinterpret_cast<TFunc*>(GetFunctionAddress(std::forward<T>(name)));
+				return reinterpret_cast<TFunc*>(GetExportedFunctionAddress(std::forward<T>(name)));
 			}
+
+			// Dependencies
+			size_t EnumDependencyModuleNames(std::function<bool(String)> func) const;
 
 			// Resources
 			bool IsDataFile() const noexcept;
@@ -147,7 +155,7 @@ namespace kxf
 				m_Handle = std::move(other.m_Handle);
 
 				m_LoadFlags = other.m_LoadFlags;
-				other.m_LoadFlags = DynamicLibraryLoadFlag::None;
+				other.m_LoadFlags = DynamicLibraryFlag::None;
 
 				m_ShouldUnload = other.m_ShouldUnload;
 				other.m_ShouldUnload = false;

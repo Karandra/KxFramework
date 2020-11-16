@@ -53,13 +53,16 @@ namespace
 		return reinterpret_cast<ULONG_PTR>(handle) & static_cast<ULONG_PTR>(2);
 	}
 
-	constexpr DWORD MapDynamicLibraryLoadFlags(FlagSet<DynamicLibraryLoadFlag> flags) noexcept
+	constexpr uint32_t MapDynamicLibraryLoadFlags(FlagSet<DynamicLibraryFlag> flags) noexcept
 	{
-		DWORD nativeFlags = 0;
-		Utility::AddFlagRef(nativeFlags, LOAD_LIBRARY_AS_DATAFILE, flags & DynamicLibraryLoadFlag::DataFile);
-		Utility::AddFlagRef(nativeFlags, LOAD_LIBRARY_AS_DATAFILE_EXCLUSIVE, flags & DynamicLibraryLoadFlag::DataFile && flags & DynamicLibraryLoadFlag::Exclusive);
-		Utility::AddFlagRef(nativeFlags, LOAD_LIBRARY_AS_IMAGE_RESOURCE, flags & DynamicLibraryLoadFlag::ImageResource);
-		Utility::AddFlagRef(nativeFlags, LOAD_LIBRARY_SEARCH_USER_DIRS, flags & DynamicLibraryLoadFlag::SearchUserDirectories);
+		uint32_t nativeFlags = 0;
+		Utility::AddFlagRef(nativeFlags, LOAD_LIBRARY_AS_DATAFILE, flags & DynamicLibraryFlag::Resource);
+		Utility::AddFlagRef(nativeFlags, LOAD_LIBRARY_AS_DATAFILE_EXCLUSIVE, flags & DynamicLibraryFlag::Resource && flags & DynamicLibraryFlag::Exclusive);
+		Utility::AddFlagRef(nativeFlags, LOAD_LIBRARY_AS_IMAGE_RESOURCE, flags & DynamicLibraryFlag::ImageResource);
+		Utility::AddFlagRef(nativeFlags, LOAD_LIBRARY_SEARCH_USER_DIRS, flags & DynamicLibraryFlag::SearchUserDirectories);
+		Utility::AddFlagRef(nativeFlags, LOAD_LIBRARY_SEARCH_SYSTEM32, flags & DynamicLibraryFlag::SearchSystemDirectories);
+		Utility::AddFlagRef(nativeFlags, LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR, flags & DynamicLibraryFlag::SearchLibraryDirectory);
+		Utility::AddFlagRef(nativeFlags, LOAD_LIBRARY_SEARCH_APPLICATION_DIR, flags & DynamicLibraryFlag::SearchApplicationDirectory);
 
 		return nativeFlags;
 	}
@@ -75,6 +78,32 @@ namespace
 		{
 		}
 	};
+
+	template<class TFunc>
+	void MapDLL(void* handle, TFunc&& func)
+	{
+		// The unfortunate interaction between LOAD_LIBRARY_AS_DATAFILE and DialogBox
+		// https://devblogs.microsoft.com/oldnewthing/20051006-09/?p=33883
+		const auto base = reinterpret_cast<const char*>(reinterpret_cast<uintptr_t>(handle) & ~(static_cast<uintptr_t>(0xFFFF)));
+
+		auto dosHeader = reinterpret_cast<const IMAGE_DOS_HEADER*>(base);
+		auto ntHeader = reinterpret_cast<const IMAGE_NT_HEADERS64*>(base +  dosHeader->e_lfanew);
+		auto sections = IMAGE_FIRST_SECTION(ntHeader);
+		auto AdjustRVA = [&](uintptr_t rva) -> uintptr_t
+		{
+			for (size_t i = 0; i < ntHeader->FileHeader.NumberOfSections; i++)
+			{
+				const auto section = sections[i];
+				if (section.VirtualAddress <= rva && rva < section.VirtualAddress + section.Misc.VirtualSize)
+				{
+					return rva - section.VirtualAddress + section.PointerToRawData;
+				}
+			}
+			return 0;
+		};
+
+		func(base, dosHeader, ntHeader, sections, AdjustRVA);
+	}
 
 	constexpr Size g_DefaultIconSize = {0, 0};
 
@@ -187,7 +216,7 @@ namespace kxf
 		return {};
 	}
 
-	bool DynamicLibrary::Load(const FSPath& path, FlagSet<DynamicLibraryLoadFlag> flags)
+	bool DynamicLibrary::Load(const FSPath& path, FlagSet<DynamicLibraryFlag> flags)
 	{
 		Unload();
 
@@ -209,76 +238,41 @@ namespace kxf
 			::FreeLibrary(AsHMODULE(*m_Handle));
 		}
 		m_Handle = {};
-		m_LoadFlags = DynamicLibraryLoadFlag::None;
+		m_LoadFlags = DynamicLibraryFlag::None;
 		m_ShouldUnload = false;
 	}
 
 	// Functions
-	size_t DynamicLibrary::EnumFunctionNames(std::function<bool(String)> func) const
+	size_t DynamicLibrary::EnumExportedFunctionNames(std::function<bool(String)> func) const
 	{
-		#pragma warning(push, 0)
-		#pragma warning(disable: 4302)
-		#pragma warning(disable: 4311)
-		#pragma warning(disable: 4312)
-
-		if (auto stream = NativeFileSystem().OpenToRead(GetFilePath()))
+		size_t count = 0;
+		MapDLL(*m_Handle, [&](const char* base, const IMAGE_DOS_HEADER* dosHeader, const IMAGE_NT_HEADERS64* ntHeader, const IMAGE_SECTION_HEADER* sections, auto& adjustRVA)
 		{
-			if (auto nativeStream = stream->QueryInterface<INativeStream>())
+			const auto exportDirectory = ntHeader->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
+			if (exportDirectory.Size != 0)
 			{
-				if (HANDLE fileMapping = ::CreateFileMappingW(nativeStream->GetHandle(), nullptr, PAGE_READONLY, 0, 0, nullptr))
+				auto exports = reinterpret_cast<const IMAGE_EXPORT_DIRECTORY*>(base + adjustRVA(exportDirectory.VirtualAddress));
+				if (auto namesArray = reinterpret_cast<const uint32_t*>(reinterpret_cast<uintptr_t>(base) + adjustRVA(exports->AddressOfNames)))
 				{
-					Utility::CallAtScopeExit closeMapping = [&]()
+					for (size_t i = 0; i < static_cast<size_t>(exports->NumberOfNames); i++)
 					{
-						::CloseHandle(fileMapping);
-					};
-
-					if (void* fileBase = ::MapViewOfFile(fileMapping, FILE_MAP_READ, 0, 0, 0))
-					{
-						Utility::CallAtScopeExit unmapView = [&]()
+						const auto name = reinterpret_cast<const char*>(base + adjustRVA(namesArray[i]));
+						if (name && *name)
 						{
-							::UnmapViewOfFile(fileBase);
-						};
-
-						auto headerDOS = reinterpret_cast<IMAGE_DOS_HEADER*>(fileBase);
-						auto headerNT = reinterpret_cast<IMAGE_NT_HEADERS*>(reinterpret_cast<size_t>(headerDOS) + static_cast<size_t>(headerDOS->e_lfanew));
-						if (!(::IsBadReadPtr(headerNT, sizeof(IMAGE_NT_HEADERS)) || headerNT->Signature != IMAGE_NT_SIGNATURE))
-						{
-							if (auto exportDir = reinterpret_cast<IMAGE_EXPORT_DIRECTORY*>(headerNT->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress))
+							count++;
+							if (!std::invoke(func, name))
 							{
-								exportDir = reinterpret_cast<IMAGE_EXPORT_DIRECTORY*>(::ImageRvaToVa(headerNT, headerDOS, (size_t)exportDir, nullptr));
-
-								auto namesArray = reinterpret_cast<DWORD**>(exportDir->AddressOfNames);
-								namesArray = reinterpret_cast<DWORD**>(::ImageRvaToVa(headerNT, headerDOS, reinterpret_cast<size_t>(namesArray), nullptr));
-
-								if (namesArray)
-								{
-									size_t count = 0;
-									for (size_t i = 0; i < static_cast<size_t>(exportDir->NumberOfNames); i++)
-									{
-										#pragma warning(suppress: 4302)
-										#pragma warning(suppress: 4311)
-										auto name = reinterpret_cast<const char*>(::ImageRvaToVa(headerNT, headerDOS, reinterpret_cast<DWORD>(namesArray[i]), nullptr));
-
-										count++;
-										if (!std::invoke(func, name))
-										{
-											break;
-										}
-									}
-									return count;
-								}
+								break;
 							}
 						}
 					}
 				}
 			}
-		}
-		return 0;
-
-		#pragma warning(pop)
+		});
+		return count;
 	}
 
-	void* DynamicLibrary::GetFunctionAddress(const char* name) const
+	void* DynamicLibrary::GetExportedFunctionAddress(const char* name) const
 	{
 		if (m_Handle)
 		{
@@ -286,7 +280,7 @@ namespace kxf
 		}
 		return nullptr;
 	}
-	void* DynamicLibrary::GetFunctionAddress(const wchar_t* name) const
+	void* DynamicLibrary::GetExportedFunctionAddress(const wchar_t* name) const
 	{
 		if (m_Handle)
 		{
@@ -295,13 +289,44 @@ namespace kxf
 		}
 		return nullptr;
 	}
-	void* DynamicLibrary::GetFunctionAddress(size_t ordinal) const
+	void* DynamicLibrary::GetExportedFunctionAddress(size_t ordinal) const
 	{
 		if (m_Handle)
 		{
 			return ::GetProcAddress(AsHMODULE(*m_Handle), MAKEINTRESOURCEA(ordinal));
 		}
 		return nullptr;
+	}
+
+	// Dependencies
+	size_t DynamicLibrary::EnumDependencyModuleNames(std::function<bool(String)> func) const
+	{
+		if (m_Handle)
+		{
+			size_t count = 0;
+			MapDLL(*m_Handle, [&](const char* base, const IMAGE_DOS_HEADER* dosHeader, const IMAGE_NT_HEADERS64* ntHeader, const IMAGE_SECTION_HEADER* sections, auto& adjustRVA)
+			{
+				auto importDirectory = ntHeader->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
+				if (importDirectory.Size != 0)
+				{
+					auto imports = reinterpret_cast<const IMAGE_IMPORT_DESCRIPTOR*>(base + adjustRVA(importDirectory.VirtualAddress));
+					for (auto it = imports; it->Characteristics != 0; ++it)
+					{
+						const auto name = reinterpret_cast<const char*>(base + adjustRVA(it->Name));
+						if (name && *name)
+						{
+							count++;
+							if (!std::invoke(func, name))
+							{
+								break;
+							}
+						}
+					}
+				}
+			});
+			return count;
+		}
+		return 0;
 	}
 
 	// Resources

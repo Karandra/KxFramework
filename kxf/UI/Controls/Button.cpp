@@ -257,7 +257,7 @@ namespace kxf::UI
 
 		if (m_IsAuthNeeded)
 		{
-			DynamicLibrary library(wxS("ImageRes.dll"), DynamicLibraryLoadFlag::DataFile);
+			DynamicLibrary library(wxS("ImageRes.dll"), DynamicLibraryFlag::Resource);
 			if (library)
 			{
 				int size = 16;
