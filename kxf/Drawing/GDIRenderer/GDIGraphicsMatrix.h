@@ -100,11 +100,11 @@ namespace kxf
 			{
 				m_Matrix->Scale(xScale, yScale);
 			}
-			void ScaleTranslate(const Size& dxy) override
+			void TranslateTransform(const Size& dxy) override
 			{
 				m_Matrix->Translate(dxy.GetWidth(), dxy.GetHeight());
 			}
-			SizeF TransformDistance(const SizeF& dxy) override
+			SizeF TranslateDistance(const SizeF& dxy) override
 			{
 				double x = dxy.GetWidth();
 				double y = dxy.GetHeight();

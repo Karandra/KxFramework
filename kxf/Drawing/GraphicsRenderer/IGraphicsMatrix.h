@@ -26,8 +26,8 @@ namespace kxf
 			virtual void Concat(const IGraphicsMatrix& other) = 0;
 
 			virtual void ScaleTransform(float xScale, float yScale) = 0;
-			virtual void ScaleTranslate(const Size& dxy) = 0;
-			virtual SizeF TransformDistance(const SizeF& dxy) = 0;
+			virtual void TranslateTransform(const Size& dxy) = 0;
+			virtual SizeF TranslateDistance(const SizeF& dxy) = 0;
 			virtual PointF TransformPoint(const PointF& xy) = 0;
 	};
 }

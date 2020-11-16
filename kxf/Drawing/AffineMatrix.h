@@ -1,0 +1,262 @@
+#pragma once
+#include "Common.h"
+#include "Angle.h"
+#include "Geometry.h"
+#include "kxf/General/Common.h"
+#include "kxf/General/FlagSet.h"
+#include <wx/affinematrix2d.h>
+#include <cmath>
+
+namespace kxf::Geometry
+{
+	template<class TValue_>
+	class BasicAffineMatrix final
+	{
+		public:
+			using TValue = TValue_;
+
+		private:
+			TValue m_11 = 1;
+			TValue m_12 = 0;
+			TValue m_21 = 0;
+			TValue m_22 = 1;
+			TValue m_tx = 0;
+			TValue m_ty = 0;
+
+		public:
+			constexpr BasicAffineMatrix() noexcept = default;
+			constexpr BasicAffineMatrix(TValue m11, TValue m12, TValue m21, TValue m22, TValue tx, TValue ty) noexcept
+				:m_11(m11), m_12(m12), m_21(m21), m_22(m22), m_tx(tx), m_ty(ty)
+			{
+			}
+			BasicAffineMatrix(const wxAffineMatrix2D& other) noexcept
+			{
+				wxMatrix2D matrix;
+				wxPoint2DDouble txy;
+				other.Get(&matrix, &txy);
+
+				m_11 = static_cast<TValue>(matrix.m_11);
+				m_12 = static_cast<TValue>(matrix.m_12);
+				m_21 = static_cast<TValue>(matrix.m_21);
+				m_22 = static_cast<TValue>(matrix.m_21);
+				m_tx = static_cast<TValue>(txy.m_x);
+				m_ty = static_cast<TValue>(txy.m_y);
+			}
+
+		public:
+			constexpr bool IsIdentity() const noexcept
+			{
+				return m_11 == 1 && m_12 == 0 && m_21 == 0 && m_22 == 1 && m_tx == 0 && m_ty == 0;
+			}
+			constexpr TValue GetDeterminant() const noexcept
+			{
+				return m_11 * m_22 - m_12 * m_21;
+			}
+
+			constexpr void GetElements(TValue& m11, TValue& m12, TValue& m21, TValue& m22, TValue& tx, TValue& ty) const noexcept
+			{
+				m11 = m_11;
+				m12 = m_12;
+				m21 = m_21;
+				m22 = m_22;
+				tx = m_tx;
+				ty = m_ty;
+			}
+			constexpr void SetElements(TValue m11, TValue m12, TValue m21, TValue m22, TValue tx, TValue ty) noexcept
+			{
+				m_11 = m11;
+				m_12 = m12;
+				m_21 = m21;
+				m_22 = m22;
+				m_tx = tx;
+				m_ty = ty;
+			}
+
+			constexpr bool IsInvertible() const noexcept
+			{
+				return GetDeterminant() != 0;
+			}
+			constexpr bool Invert() noexcept
+			{
+				// | m_11  m_12   0 |
+				// | m_21  m_22   0 |
+				// | m_tx  m_ty   1 |
+
+				const TValue det = GetDeterminant();
+				if (det != 0)
+				{
+					TValue ex = (m_21 * m_ty - m_22 * m_tx) / det;
+					m_ty = (-m_11 * m_ty + m_12 * m_tx) / det;
+					m_tx = ex;
+
+					TValue e11 = m_22 / det;
+					m_12 = -m_12 / det;
+					m_21 = -m_21 / det;
+					m_22 = m_11 / det;
+					m_11 = e11;
+
+					return true;
+				}
+				return false;
+			}
+			constexpr void Concat(const BasicAffineMatrix& other) noexcept
+			{
+				//                | m_11 m_12  0 |   | m_11  m_12   0 |
+				// matrix' = other| m_21 m_22  0 | x | m_21  m_22   0 |
+				//                | m_tx m_ty  1 |   | m_tx  m_ty   1 |
+
+				TValue m11;
+				TValue m12;
+				TValue m21;
+				TValue m22;
+				TValue tx;
+				TValue ty;
+				other.GetElements(m11, m12, m21, m22, tx, ty);
+
+				m_tx += tx * m_11 + ty * m_21;
+				m_ty += tx * m_12 + ty * m_22;
+				TValue e11 = m11 * m_11 + m12 * m_21;
+				TValue e12 = m11 * m_12 + m12 * m_22;
+				TValue e21 = m21 * m_11 + m22 * m_21;
+
+				m_22 = m21 * m_12 + m22 * m_22;
+				m_11 = e11;
+				m_12 = e12;
+				m_21 = e21;
+			}
+
+			constexpr void Scale(TValue xScale, TValue yScale) noexcept
+			{
+				// | xScale   0      0 |   | m_11  m_12   0 |
+				// |   0    yScale   0 | x | m_21  m_22   0 |
+				// |   0      0      1 |   | m_tx  m_ty   1 |
+
+				m_11 *= xScale;
+				m_12 *= xScale;
+				m_21 *= yScale;
+				m_22 *= yScale;
+			}
+			constexpr void Rotate(Angle angle) noexcept
+			{
+				// | cos    sin   0 |   | m_11  m_12   0 |
+				// | -sin   cos   0 | x | m_21  m_22   0 |
+				// |  0      0    1 |   | m_tx  m_ty   1 |
+
+				auto s = std::sin(angle.ToRadians());
+				auto c = std::cos(angle.ToRadians());
+
+				TValue e11 = c * m_11 + s * m_21;
+				TValue e12 = c * m_12 + s * m_22;
+				m_21 = c * m_21 - s * m_11;
+				m_22 = c * m_22 - s * m_12;
+				m_11 = e11;
+				m_12 = e12;
+			}
+			constexpr void Mirror(FlagSet<Orientation> direction) noexcept
+			{
+				TValue x = direction & Orientation::Horizontal ? -1 : 1;
+				TValue y = direction & Orientation::Vertical ? -1 : 1;
+				Scale(x, y);
+			}
+			constexpr void Translate(TValue dx, TValue dy) noexcept
+			{
+				// |  1   0   0 |   | m_11  m_12   0 |
+				// |  0   1   0 | x | m_21  m_22   0 |
+				// | dx  dy   1 |   | m_tx  m_ty   1 |
+
+				m_tx += m_11 * dx + m_21 * dy;
+				m_ty += m_12 * dx + m_22 * dy;
+			}
+
+			constexpr BasicPoint<TValue> TransformPoint(const BasicPoint<TValue>& point) const noexcept
+			{
+				//                           | m_11  m_12   0 |
+				// | point.x  point.y  1 | x | m_21  m_22   0 |
+				//                           | m_tx  m_ty   1 |
+
+				if (IsIdentity())
+				{
+					return point;
+				}
+				else
+				{
+					return {point.GetX() * m_11 + point.GetY() * m_21 + m_tx, point.GetX() * m_12 + point.GetY() * m_22 + m_ty};
+				}
+			}
+			constexpr BasicSize<TValue> TransformDistance(const BasicSize<TValue>& distance) const noexcept
+			{
+				//                                 | m_11  m_12   0 |
+				// | distance.x  distance.y  0 | x | m_21  m_22   0 |
+				//                                 | m_tx  m_ty   1 |
+
+				if (IsIdentity())
+				{
+					return distance;
+				}
+				else
+				{
+					return {distance.GetX() * m_11 + distance.GetY() * m_21, distance.GetX() * m_12 + distance.GetY() * m_22};
+				}
+			}
+
+		public:
+			operator wxAffineMatrix2D() const noexcept
+			{
+				wxMatrix2D matrix(static_cast<wxDouble>(m_11), static_cast<wxDouble>(m_12), static_cast<wxDouble>(m_21), static_cast<wxDouble>(m_22));
+				wxPoint2DDouble txy(static_cast<wxDouble>(m_tx), static_cast<wxDouble>(m_ty));
+
+				wxAffineMatrix2D affineMatrix;
+				affineMatrix.Set(matrix, txy);
+				return affineMatrix;
+			}
+
+			template<class T>
+			constexpr bool operator==(const BasicAffineMatrix<T>& other) const noexcept
+			{
+				if (this == &other)
+				{
+					return true;
+				}
+				else
+				{
+					T m11;
+					T m12;
+					T m21;
+					T m22;
+					T tx;
+					T ty;
+					other.GetElements(m11, m12, m21, m22, tx, ty);
+
+					return m_11 == m11 && m_12 == m12 && m_21 == m21 && m_22 == m22 && m_tx == tx && m_ty == ty;
+				}
+			}
+
+			template<class T>
+			constexpr bool operator!=(const BasicAffineMatrix<T>& other) const noexcept
+			{
+				if (this != &other)
+				{
+					return true;
+				}
+				else
+				{
+					T m11;
+					T m12;
+					T m21;
+					T m22;
+					T tx;
+					T ty;
+					other.GetElements(m11, m12, m21, m22, tx, ty);
+
+					return m_11 != m11 || m_12 != m12 || m_21 != m21 || m_22 != m22 || m_tx != tx || m_ty != ty;
+				}
+			}
+	};
+}
+
+namespace kxf
+{
+	using AffineMatrix = Geometry::BasicAffineMatrix<int>;
+	using AffineMatrixF = Geometry::BasicAffineMatrix<float>;
+	using AffineMatrixD = Geometry::BasicAffineMatrix<double>;
+}

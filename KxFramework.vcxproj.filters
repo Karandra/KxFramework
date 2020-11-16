@@ -1694,6 +1694,9 @@
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIFont.h">
       <Filter>kxf\Drawing\GDIRenderer\&lt;GDIObjects&gt;</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Drawing\AffineMatrix.h">
+      <Filter>kxf\Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">

@@ -211,6 +211,7 @@
     <ClInclude Include="kxf\Compression\SevenZip\Private\Utility.h" />
     <ClInclude Include="kxf\Compression\SevenZip\Private\WithEvtHandler.h" />
     <ClInclude Include="kxf\Crypto\UserCredentials.h" />
+    <ClInclude Include="kxf\Drawing\AffineMatrix.h" />
     <ClInclude Include="kxf\Drawing\Angle.h" />
     <ClInclude Include="kxf\Drawing\ArtProvider.h" />
     <ClInclude Include="kxf\Drawing\Color.h" />

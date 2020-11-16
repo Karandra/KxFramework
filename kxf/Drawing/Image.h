@@ -9,6 +9,10 @@ namespace kxf
 {
 	class IInputStream;
 	class IOutputStream;
+
+	class GDICursor;
+	class GDIBitmap;
+	class GDIIcon;
 }
 
 namespace kxf::ImageOption
