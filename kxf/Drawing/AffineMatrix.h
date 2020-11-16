@@ -12,6 +12,9 @@ namespace kxf::Geometry
 	template<class TValue_>
 	class BasicAffineMatrix final
 	{
+		template<class T>
+		friend class BasicAffineMatrix;
+
 		public:
 			using TValue = TValue_;
 
@@ -29,6 +32,15 @@ namespace kxf::Geometry
 				:m_11(m11), m_12(m12), m_21(m21), m_22(m22), m_tx(tx), m_ty(ty)
 			{
 			}
+
+			template<class T>
+			constexpr BasicAffineMatrix(const BasicAffineMatrix<T>& other) noexcept
+				:m_11(static_cast<TValue>(other.m_11)), m_12(static_cast<TValue>(other.m_12)),
+				m_21(static_cast<TValue>(other.m_21)), m_22(static_cast<TValue>(other.m_22)),
+				m_tx(static_cast<TValue>(other.m_tx)), m_ty(static_cast<TValue>(other.m_ty))
+			{
+			}
+
 			BasicAffineMatrix(const wxAffineMatrix2D& other) noexcept
 			{
 				wxMatrix2D matrix;
@@ -219,15 +231,7 @@ namespace kxf::Geometry
 				}
 				else
 				{
-					T m11;
-					T m12;
-					T m21;
-					T m22;
-					T tx;
-					T ty;
-					other.GetElements(m11, m12, m21, m22, tx, ty);
-
-					return m_11 == m11 && m_12 == m12 && m_21 == m21 && m_22 == m22 && m_tx == tx && m_ty == ty;
+					return m_11 == other.m_11 && m_12 == other.m_12 && m_21 == other.m_21 && m_22 == other.m_22 && m_tx == other.m_tx && m_ty == other.m_ty;
 				}
 			}
 
@@ -240,15 +244,7 @@ namespace kxf::Geometry
 				}
 				else
 				{
-					T m11;
-					T m12;
-					T m21;
-					T m22;
-					T tx;
-					T ty;
-					other.GetElements(m11, m12, m21, m22, tx, ty);
-
-					return m_11 != m11 || m_12 != m12 || m_21 != m21 || m_22 != m22 || m_tx != tx || m_ty != ty;
+					return m_11 != other.m_11 || m_12 != other.m_12 || m_21 != other.m_21 || m_22 != other.m_22 || m_tx != other.m_tx || m_ty != other.m_ty;
 				}
 			}
 	};
