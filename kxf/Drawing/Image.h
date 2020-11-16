@@ -513,12 +513,12 @@ namespace kxf
 				{
 					case InterpolationQuality::Default:
 					{
-						DoScale(wxIMAGE_QUALITY_HIGH);
+						DoScale(wxIMAGE_QUALITY_NORMAL);
 						break;
 					}
 					case InterpolationQuality::BestAvailable:
 					{
-						DoScale(wxIMAGE_QUALITY_NORMAL);
+						DoScale(wxIMAGE_QUALITY_HIGH);
 						break;
 					}
 					case InterpolationQuality::NearestNeighbor:
