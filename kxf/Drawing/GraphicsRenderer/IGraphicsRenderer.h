@@ -9,6 +9,7 @@
 #include "kxf/General/String.h"
 #include "kxf/General/Version.h"
 class wxWindow;
+class wxDC;
 
 namespace kxf
 {
@@ -30,6 +31,7 @@ namespace kxf
 			virtual Version GetVersion() const = 0;
 
 			virtual std::unique_ptr<IGraphicsContext> CreateContext(std::shared_ptr<IGraphicsTexture> texture) = 0;
+			virtual std::unique_ptr<IGraphicsContext> CreateGDIContext(wxDC& dc) = 0;
 			virtual std::unique_ptr<IGraphicsContext> CreateWindowContext(wxWindow& window) = 0;
 			virtual std::unique_ptr<IGraphicsContext> CreateWindowClientContext(wxWindow& window) = 0;
 			virtual std::unique_ptr<IGraphicsContext> CreateWindowPaintContext(wxWindow& window) = 0;
@@ -82,6 +84,10 @@ namespace kxf::Drawing
 			}
 
 			std::unique_ptr<IGraphicsContext> CreateContext(std::shared_ptr<IGraphicsTexture> texture) override
+			{
+				return nullptr;
+			}
+			std::unique_ptr<IGraphicsContext> CreateGDIContext(wxDC& dc) override
 			{
 				return nullptr;
 			}

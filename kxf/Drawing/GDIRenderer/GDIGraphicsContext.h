@@ -304,6 +304,24 @@ namespace kxf
 
 namespace kxf
 {
+	class KX_API GDIGraphicsAnyContext: public GDIGraphicsContext
+	{
+		public:
+			GDIGraphicsAnyContext() noexcept = default;
+			GDIGraphicsAnyContext(GDIGraphicsRenderer& rendrer, wxDC& dc)
+				:GDIGraphicsContext(rendrer, dc)
+			{
+				SetupDC();
+			}
+
+		public:
+			// IGraphicsObject
+			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			{
+				return nullptr;
+			}
+	};
+
 	class KX_API GDIGraphicsMemoryContext: public GDIGraphicsContext
 	{
 		protected:

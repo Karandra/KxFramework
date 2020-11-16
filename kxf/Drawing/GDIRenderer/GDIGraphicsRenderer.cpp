@@ -108,6 +108,14 @@ namespace kxf
 		}
 		return nullptr;
 	}
+	std::unique_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateGDIContext(wxDC& dc)
+	{
+		if (dc.IsOk())
+		{
+			return std::make_unique<GDIGraphicsAnyContext>(*this, dc);
+		}
+		return nullptr;
+	}
 	std::unique_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateWindowContext(wxWindow& window)
 	{
 		return std::make_unique<GDIGraphicsWindowContext>(*this, window);
