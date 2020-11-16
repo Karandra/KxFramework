@@ -12,10 +12,12 @@
 
 namespace kxf
 {
-	GDIGraphicsContext::GDIGraphicsContext(GDIGraphicsRenderer& rendrer, wxDC& dc)
-		:m_Renderer(&rendrer), m_DC(dc)
+	void GDIGraphicsContext::SetupDC()
 	{
-		m_DC.SetMapMode(GDIMappingMode::Text);
+		if (m_DC)
+		{
+			m_DC.SetMapMode(GDIMappingMode::Text);
+		}
 	}
 
 	// Feature support
@@ -397,9 +399,11 @@ namespace kxf
 	GDIGraphicsBufferedContext::GDIGraphicsBufferedContext(GDIGraphicsRenderer& rendrer, const SizeF& size, FlagSet<GDIBufferedContextFlag> flags)
 		: GDIGraphicsContext(rendrer, m_BufferedDC), m_BufferedDC(nullptr, size, flags.ToInt())
 	{
+		SetupDC();
 	}
 	GDIGraphicsBufferedContext::GDIGraphicsBufferedContext(GDIGraphicsRenderer& rendrer, std::shared_ptr<IGraphicsTexture> texture, FlagSet<GDIBufferedContextFlag> flags)
 		:GDIGraphicsContext(rendrer, m_BufferedDC), m_BufferedDC(nullptr, texture->QueryInterface<GDIGraphicsTexture>()->Get().ToWxBitmap(), flags.ToInt()), m_Texture(std::move(texture))
 	{
+		SetupDC();
 	}
 }

@@ -46,9 +46,15 @@ namespace kxf
 				m_Renderer = nullptr;
 			}
 
+		protected:
+			void SetupDC();
+
 		public:
 			GDIGraphicsContext() noexcept = default;
-			GDIGraphicsContext(GDIGraphicsRenderer& rendrer, wxDC& dc);
+			GDIGraphicsContext(GDIGraphicsRenderer& rendrer, wxDC& dc)
+				:m_Renderer(&rendrer), m_DC(dc)
+			{
+			}
 
 		public:
 			// IGDIObject
@@ -309,6 +315,7 @@ namespace kxf
 			GDIGraphicsMemoryContext(GDIGraphicsRenderer& rendrer, std::shared_ptr<IGraphicsTexture> texture)
 				:GDIGraphicsContext(rendrer, m_MemoryDC), m_Texture(std::move(texture))
 			{
+				SetupDC();
 				SelectTexture(std::move(texture));
 			}
 			~GDIGraphicsMemoryContext()
@@ -347,6 +354,7 @@ namespace kxf
 			GDIGraphicsWindowContext(GDIGraphicsRenderer& rendrer, wxWindow& window)
 				:GDIGraphicsContext(rendrer, m_WindowDC), m_WindowDC(&window)
 			{
+				SetupDC();
 			}
 
 		public:
@@ -367,6 +375,7 @@ namespace kxf
 			GDIGraphicsWindowClientContext(GDIGraphicsRenderer& rendrer, wxWindow& window)
 				:GDIGraphicsContext(rendrer, m_ClientDC), m_ClientDC(&window)
 			{
+				SetupDC();
 			}
 
 		public:
@@ -387,6 +396,7 @@ namespace kxf
 			GDIGraphicsPaintContext(GDIGraphicsRenderer& rendrer, wxWindow& window)
 				:GDIGraphicsContext(rendrer, m_PaintDC), m_PaintDC(&window)
 			{
+				SetupDC();
 			}
 
 		public:
@@ -461,6 +471,7 @@ namespace kxf
 			GDIGraphicsBufferedPaintContext(GDIGraphicsRenderer& rendrer, wxWindow& window, FlagSet<GDIBufferedContextFlag> flags = GDIBufferedContextFlag::BufferClientArea)
 				:GDIGraphicsContext(rendrer, m_BufferedPaintDC), m_BufferedPaintDC(&window, flags.ToInt())
 			{
+				SetupDC();
 			}
 
 		public:
