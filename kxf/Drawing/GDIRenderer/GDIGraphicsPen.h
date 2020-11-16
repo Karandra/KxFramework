@@ -133,7 +133,7 @@ namespace kxf
 
 			LineCap GetLineCap() const override
 			{
-				m_Pen.GetCap();
+				return m_Pen.GetCap();
 			}
 			void SetLineCap(LineCap cap) override
 			{
@@ -175,7 +175,9 @@ namespace kxf
 				GDIPen::Dash* gdiDashes = nullptr;
 				const size_t gdiCount = m_Pen.GetDashes(gdiDashes);
 
-				std::copy_n(gdiDashes, std::min(gdiCount, maxCount), dashes);
+				const size_t count = std::min(gdiCount, maxCount);
+				std::copy_n(gdiDashes, count, dashes);
+				return count;
 			}
 			void SetDashPattern(const float* dashes, size_t count) override
 			{

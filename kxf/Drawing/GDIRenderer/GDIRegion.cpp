@@ -47,6 +47,7 @@ namespace kxf
 
 			return handle;
 		}
+		return nullptr;
 	}
 	void GDIRegion::AttachHandle(void* handle)
 	{

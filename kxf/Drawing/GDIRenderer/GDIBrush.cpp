@@ -43,6 +43,7 @@ namespace kxf
 
 			return handle;
 		}
+		return nullptr;
 	}
 	void GDIBrush::AttachHandle(void* handle)
 	{

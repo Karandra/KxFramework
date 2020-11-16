@@ -52,6 +52,7 @@ namespace kxf
 
 			return handle;
 		}
+		return nullptr;
 	}
 	void GDIPen::AttachHandle(void* handle)
 	{

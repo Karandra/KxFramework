@@ -34,6 +34,7 @@ namespace kxf
 
 			return handle;
 		}
+		return nullptr;
 	}
 	void GDIFont::AttachHandle(void* handle)
 	{

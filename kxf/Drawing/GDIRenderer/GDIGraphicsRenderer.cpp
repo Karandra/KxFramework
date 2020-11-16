@@ -61,6 +61,7 @@ namespace kxf
 				break;
 			}
 		};
+		return gdiPen;
 	}
 	GDIBrush GDIGraphicsRenderer::ToGDIBrush(const IGraphicsBrush& brush) const
 	{
