@@ -1,13 +1,11 @@
 #include "stdafx.h"
 #include "GDIGraphicsContext.h"
 #include "GDIGraphicsTexture.h"
-#include "GDIGraphicsMatrix.h"
 #include "GDIGraphicsBrush.h"
 #include "GDIGraphicsPen.h"
 #include "GDIGraphicsFont.h"
 #include "GDIAction.h"
 #include "../GraphicsRenderer/GraphicsAction.h"
-#include "Private/Common.h"
 #include <wx/msw/dc.h>
 
 namespace kxf
@@ -39,22 +37,19 @@ namespace kxf
 	}
 
 	// Transformation matrix
-	std::shared_ptr<IGraphicsMatrix> GDIGraphicsContext::GetTransform() const
+	AffineMatrixF GDIGraphicsContext::GetTransform() const
 	{
 		if (m_DC.CanUseTransformMatrix())
 		{
-			return std::make_shared<GDIGraphicsMatrix>(*m_Renderer, m_DC.GetTransformMatrix());
+			return m_DC.GetTransformMatrix();
 		}
 		return {};
 	}
-	bool GDIGraphicsContext::SetTransform(std::shared_ptr<IGraphicsMatrix> transform)
+	bool GDIGraphicsContext::SetTransform(const AffineMatrixF& transform)
 	{
-		if (m_DC.CanUseTransformMatrix() && transform)
+		if (m_DC.CanUseTransformMatrix())
 		{
-			if (auto affineMatrix = Drawing::Private::ToAffineMatrix2D(*transform))
-			{
-				return m_DC.SetTransformMatrix(*affineMatrix);
-			}
+			return m_DC.SetTransformMatrix(transform);
 		}
 		return false;
 	}
@@ -99,16 +94,13 @@ namespace kxf
 			m_DC.SetTransformMatrix(matrix);
 		}
 	}
-	void GDIGraphicsContext::TransformConcat(const IGraphicsMatrix& matrix)
+	void GDIGraphicsContext::TransformConcat(const AffineMatrixF& transform)
 	{
 		if (m_DC.CanUseTransformMatrix())
 		{
-			if (auto affineMatrix = Drawing::Private::ToAffineMatrix2D(matrix))
-			{
-				auto matrix = m_DC.GetTransformMatrix();
-				matrix.Concat(*affineMatrix);
-				m_DC.SetTransformMatrix(matrix);
-			}
+			auto matrix = m_DC.GetTransformMatrix();
+			matrix.Concat(transform);
+			m_DC.SetTransformMatrix(matrix);
 		}
 	}
 

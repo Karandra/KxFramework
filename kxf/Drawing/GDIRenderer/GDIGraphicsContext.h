@@ -119,14 +119,14 @@ namespace kxf
 			}
 
 			// Transformation matrix
-			std::shared_ptr<IGraphicsMatrix> GetTransform() const override;
-			bool SetTransform(std::shared_ptr<IGraphicsMatrix> transform) override;
+			AffineMatrixF GetTransform() const override;
+			bool SetTransform(const AffineMatrixF& transform) override;
 
 			bool TransformInvert() override;
 			void TransformRotate(Angle angle) override;
 			void TransformScale(float xScale, float yScale) override;
 			void TransformTranslate(const Size& dxy) override;
-			void TransformConcat(const IGraphicsMatrix& matrix) override;
+			void TransformConcat(const AffineMatrixF& matrix) override;
 
 			// Pen and brush functions
 			std::shared_ptr<IGraphicsPen> GetPen() const override;

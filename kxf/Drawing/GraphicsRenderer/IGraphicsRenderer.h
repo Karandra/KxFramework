@@ -2,7 +2,6 @@
 #include "Common.h"
 #include "IGraphicsContext.h"
 #include "IGraphicsTexture.h"
-#include "IGraphicsMatrix.h"
 #include "IGraphicsPen.h"
 #include "IGraphicsBrush.h"
 #include "IGraphicsPath.h"
@@ -38,19 +37,12 @@ namespace kxf
 			virtual std::unique_ptr<IGraphicsContext> CreateMeasuringContext() = 0;
 
 		public:
-			// Transformation matrix
-			virtual std::shared_ptr<IGraphicsMatrix> CreateMatrix(float m11, float m12, float m21, float m22, float tx, float ty) = 0;
-			std::shared_ptr<IGraphicsMatrix> CreateIdentityMatrix(float m11, float m12, float m21, float m22, float tx, float ty)
-			{
-				return CreateMatrix(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
-			}
-
 			// Pen and brush functions
 			virtual std::shared_ptr<IGraphicsPen> CreatePen(const Color& color, float width = 1.0f) = 0;
 			virtual std::shared_ptr<IGraphicsSolidBrush> CreateSolidBrush(const Color& color) = 0;
 			virtual std::shared_ptr<IGraphicsTextureBrush> CreateTextureBrush(const Image& image) = 0;
-			virtual std::shared_ptr<IGraphicsLinearGradientBrush> CreateLinearGradientBrush(const RectF& rect, const GradientStops& colors, std::shared_ptr<IGraphicsMatrix> transform = {}) = 0;
-			virtual std::shared_ptr<IGraphicsRadialGradientBrush> CreateRadialGradientBrush(const RectF& rect, const GradientStops& colors, std::shared_ptr<IGraphicsMatrix> transform = {}) = 0;
+			virtual std::shared_ptr<IGraphicsLinearGradientBrush> CreateLinearGradientBrush(const RectF& rect, const GradientStops& colors, AffineMatrixF transform = {}) = 0;
+			virtual std::shared_ptr<IGraphicsRadialGradientBrush> CreateRadialGradientBrush(const RectF& rect, const GradientStops& colors, AffineMatrixF transform = {}) = 0;
 
 			// Path functions
 			virtual std::shared_ptr<IGraphicsPath> CreatePath() = 0;
@@ -109,12 +101,6 @@ namespace kxf::Drawing
 			}
 
 		public:
-			// Transformation matrix
-			std::shared_ptr<IGraphicsMatrix> CreateMatrix(float m11, float m12, float m21, float m22, float tx, float ty) override
-			{
-				return nullptr;
-			}
-
 			// Pen and brush functions
 			std::shared_ptr<IGraphicsPen> CreatePen(const Color& color, float width = 1.0f) override
 			{
@@ -128,11 +114,11 @@ namespace kxf::Drawing
 			{
 				return nullptr;
 			}
-			std::shared_ptr<IGraphicsLinearGradientBrush> CreateLinearGradientBrush(const RectF& rect, const GradientStops& colors, std::shared_ptr<IGraphicsMatrix> transform = {}) override
+			std::shared_ptr<IGraphicsLinearGradientBrush> CreateLinearGradientBrush(const RectF& rect, const GradientStops& colors, AffineMatrixF transform = {}) override
 			{
 				return nullptr;
 			}
-			std::shared_ptr<IGraphicsRadialGradientBrush> CreateRadialGradientBrush(const RectF& rect, const GradientStops& colors, std::shared_ptr<IGraphicsMatrix> transform = {}) override
+			std::shared_ptr<IGraphicsRadialGradientBrush> CreateRadialGradientBrush(const RectF& rect, const GradientStops& colors, AffineMatrixF transform = {}) override
 			{
 				return nullptr;
 			}

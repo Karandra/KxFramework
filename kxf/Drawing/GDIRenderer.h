@@ -20,6 +20,5 @@
 #include "GDIRenderer/GDIGraphicsContext.h"
 #include "GDIRenderer/GDIGraphicsPen.h"
 #include "GDIRenderer/GDIGraphicsBrush.h"
-#include "GDIRenderer/GDIGraphicsMatrix.h"
 #include "GDIRenderer/GDIGraphicsTexture.h"
 #include "GDIRenderer/GDIGraphicsFont.h"

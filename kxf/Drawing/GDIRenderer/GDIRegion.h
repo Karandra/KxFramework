@@ -1,7 +1,6 @@
 #pragma once
 #include "Common.h"
 #include "IGDIObject.h"
-#include "Private/Common.h"
 #include "../Private/Common.h"
 #include <wx/region.h>
 

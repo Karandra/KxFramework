@@ -276,7 +276,7 @@ namespace kxf
 		private:
 			RectF m_Rect;
 			GradientStops m_GradentStops;
-			std::shared_ptr<IGraphicsMatrix> m_Transform;
+			AffineMatrixF m_Transform;
 			WrapMode m_WrapMode = WrapMode::None;
 
 		public:
@@ -285,7 +285,7 @@ namespace kxf
 				:GDIGraphicsBrushBase(rendrer, brush)
 			{
 			}
-			GDIGraphicsLinearGradientBrush(GDIGraphicsRenderer& rendrer, const RectF& rect, const GradientStops& colors, std::shared_ptr<IGraphicsMatrix> matrix = {}, WrapMode wrapMode = WrapMode::None)
+			GDIGraphicsLinearGradientBrush(GDIGraphicsRenderer& rendrer, const RectF& rect, const GradientStops& colors, AffineMatrixF matrix = {}, WrapMode wrapMode = WrapMode::None)
 				:GDIGraphicsBrushBase(rendrer), m_Rect(rect), m_GradentStops(colors), m_Transform(std::move(matrix)), m_WrapMode(wrapMode)
 			{
 			}
@@ -322,13 +322,13 @@ namespace kxf
 				m_GradentStops = colors;
 			}
 
-			std::shared_ptr<IGraphicsMatrix> GetTransform() const override
+			AffineMatrixF GetTransform() const override
 			{
 				return m_Transform;
 			}
-			void SetTransform(std::shared_ptr<IGraphicsMatrix> transform) override
+			void SetTransform(const AffineMatrixF& transform) override
 			{
-				m_Transform = std::move(transform);
+				m_Transform = transform;
 			}
 
 			WrapMode GetWrapMode() const override
@@ -346,7 +346,7 @@ namespace kxf
 		private:
 			RectF m_Rect;
 			GradientStops m_GradentStops;
-			std::shared_ptr<IGraphicsMatrix> m_Transform;
+			AffineMatrixF m_Transform;
 			WrapMode m_WrapMode = WrapMode::None;
 
 		public:
@@ -355,7 +355,7 @@ namespace kxf
 				:GDIGraphicsBrushBase(rendrer, brush)
 			{
 			}
-			GDIGraphicsRadialGradientBrush(GDIGraphicsRenderer& rendrer, const RectF& rect, const GradientStops& colors, std::shared_ptr<IGraphicsMatrix> matrix = {}, WrapMode wrapMode = WrapMode::None)
+			GDIGraphicsRadialGradientBrush(GDIGraphicsRenderer& rendrer, const RectF& rect, const GradientStops& colors, AffineMatrixF matrix = {}, WrapMode wrapMode = WrapMode::None)
 				:GDIGraphicsBrushBase(rendrer), m_Rect(rect), m_GradentStops(colors), m_Transform(std::move(matrix)), m_WrapMode(wrapMode)
 			{
 			}
@@ -401,13 +401,13 @@ namespace kxf
 				m_GradentStops = colors;
 			}
 
-			std::shared_ptr<IGraphicsMatrix> GetTransform() const override
+			AffineMatrixF GetTransform() const override
 			{
 				return m_Transform;
 			}
-			void SetTransform(std::shared_ptr<IGraphicsMatrix> transform) override
+			void SetTransform(const AffineMatrixF& transform) override
 			{
-				m_Transform = std::move(transform);
+				m_Transform = transform;
 			}
 
 			WrapMode GetWrapMode() const override

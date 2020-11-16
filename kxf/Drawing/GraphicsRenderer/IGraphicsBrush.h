@@ -69,8 +69,8 @@ namespace kxf
 			virtual GradientStops GetLinearColors() const = 0;
 			virtual void SetLinearColors(const GradientStops& colors) = 0;
 
-			virtual std::shared_ptr<IGraphicsMatrix> GetTransform() const = 0;
-			virtual void SetTransform(std::shared_ptr<IGraphicsMatrix> transform) = 0;
+			virtual AffineMatrixF GetTransform() const = 0;
+			virtual void SetTransform(const AffineMatrixF& transform) = 0;
 
 			virtual WrapMode GetWrapMode() const = 0;
 			virtual void SetWrapMode(WrapMode wrapMode) = 0;
@@ -90,8 +90,8 @@ namespace kxf
 			virtual GradientStops GetLinearColors() const = 0;
 			virtual void SetLinearColors(const GradientStops& colors) = 0;
 
-			virtual std::shared_ptr<IGraphicsMatrix> GetTransform() const = 0;
-			virtual void SetTransform(std::shared_ptr<IGraphicsMatrix> transform) = 0;
+			virtual AffineMatrixF GetTransform() const = 0;
+			virtual void SetTransform(const AffineMatrixF& transform) = 0;
 
 			virtual WrapMode GetWrapMode() const = 0;
 			virtual void SetWrapMode(WrapMode wrapMode) = 0;

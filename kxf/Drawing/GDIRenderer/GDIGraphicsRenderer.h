@@ -32,16 +32,13 @@ namespace kxf
 			std::unique_ptr<IGraphicsContext> CreateMeasuringContext() override;
 
 		public:
-			// Transformation matrix
-			std::shared_ptr<IGraphicsMatrix> CreateMatrix(float m11, float m12, float m21, float m22, float tx, float ty) override;
-
 			// Pen and brush functions
 			std::shared_ptr<IGraphicsPen> CreatePen(const Color& color, float width = 1.0f) override;
 			std::shared_ptr<IGraphicsSolidBrush> CreateSolidBrush(const Color& color) override;
 			std::shared_ptr<IGraphicsTextureBrush> CreateTextureBrush(const Image& image) override;
 			std::shared_ptr<IGraphicsTextureBrush> CreateTextureBrush(const GDIBitmap& bitmap);
-			std::shared_ptr<IGraphicsLinearGradientBrush> CreateLinearGradientBrush(const RectF& rect, const GradientStops& colors, std::shared_ptr<IGraphicsMatrix> transform = {}) override;
-			std::shared_ptr<IGraphicsRadialGradientBrush> CreateRadialGradientBrush(const RectF& rect, const GradientStops& colors, std::shared_ptr<IGraphicsMatrix> transform = {}) override;
+			std::shared_ptr<IGraphicsLinearGradientBrush> CreateLinearGradientBrush(const RectF& rect, const GradientStops& colors, AffineMatrixF transform = {}) override;
+			std::shared_ptr<IGraphicsRadialGradientBrush> CreateRadialGradientBrush(const RectF& rect, const GradientStops& colors, AffineMatrixF transform = {}) override;
 
 			// Path functions (not implemented)
 			std::shared_ptr<IGraphicsPath> CreatePath() override

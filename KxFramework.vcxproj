@@ -228,7 +228,6 @@
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsBrush.h" />
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsContext.h" />
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsFont.h" />
-    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsMatrix.h" />
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsPen.h" />
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsTexture.h" />
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIIcon.h" />
@@ -242,7 +241,6 @@
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIPen.h" />
     <ClInclude Include="kxf\Drawing\GDIRenderer\IGDIImage.h" />
     <ClInclude Include="kxf\Drawing\GDIRenderer\IGDIObject.h" />
-    <ClInclude Include="kxf\Drawing\GDIRenderer\Private\Common.h" />
     <ClInclude Include="kxf\Drawing\GDIRenderer\Private\GDI.h" />
     <ClInclude Include="kxf\Drawing\Geometry.h" />
     <ClInclude Include="kxf\Drawing\GradientStops.h" />
@@ -253,7 +251,6 @@
     <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsBrush.h" />
     <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsContext.h" />
     <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsFont.h" />
-    <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsMatrix.h" />
     <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsObject.h" />
     <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsPath.h" />
     <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsPen.h" />
@@ -704,7 +701,6 @@
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIImageList.cpp" />
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIPen.cpp" />
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIRegion.cpp" />
-    <ClCompile Include="kxf\Drawing\GDIRenderer\Private\Common.cpp" />
     <ClCompile Include="kxf\Drawing\GDIRenderer\Private\GDI.cpp" />
     <ClCompile Include="kxf\Drawing\Geometry.cpp" />
     <ClCompile Include="kxf\Drawing\GraphicsRenderer\Common.cpp" />

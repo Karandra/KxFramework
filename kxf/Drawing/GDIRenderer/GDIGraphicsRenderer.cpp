@@ -2,7 +2,6 @@
 #include "GDIGraphicsRenderer.h"
 #include "GDIGraphicsContext.h"
 #include "GDIGraphicsTexture.h"
-#include "GDIGraphicsMatrix.h"
 #include "GDIGraphicsBrush.h"
 #include "GDIGraphicsPen.h"
 #include "GDIGraphicsFont.h"
@@ -140,12 +139,6 @@ namespace kxf
 		return std::make_unique<GDIGraphicsMemoryContext>(*this, nullptr);
 	}
 
-	// Transformation matrix
-	std::shared_ptr<IGraphicsMatrix> GDIGraphicsRenderer::CreateMatrix(float m11, float m12, float m21, float m22, float tx, float ty)
-	{
-		return std::make_shared<GDIGraphicsMatrix>(*this, Drawing::Private::ToAffineMatrix2D(m11, m12, m21, m22, tx, ty));
-	}
-
 	// Pen and brush functions
 	std::shared_ptr<IGraphicsPen> GDIGraphicsRenderer::CreatePen(const Color& color, float width)
 	{
@@ -171,11 +164,11 @@ namespace kxf
 		}
 		return {};
 	}
-	std::shared_ptr<IGraphicsLinearGradientBrush> GDIGraphicsRenderer::CreateLinearGradientBrush(const RectF& rect, const GradientStops& colors, std::shared_ptr<IGraphicsMatrix> transform)
+	std::shared_ptr<IGraphicsLinearGradientBrush> GDIGraphicsRenderer::CreateLinearGradientBrush(const RectF& rect, const GradientStops& colors, AffineMatrixF transform)
 	{
 		return std::make_shared<GDIGraphicsLinearGradientBrush>(*this, rect, colors, std::move(transform));
 	}
-	std::shared_ptr<IGraphicsRadialGradientBrush> GDIGraphicsRenderer::CreateRadialGradientBrush(const RectF& rect, const GradientStops& colors, std::shared_ptr<IGraphicsMatrix> transform)
+	std::shared_ptr<IGraphicsRadialGradientBrush> GDIGraphicsRenderer::CreateRadialGradientBrush(const RectF& rect, const GradientStops& colors, AffineMatrixF transform)
 	{
 		return std::make_shared<GDIGraphicsRadialGradientBrush>(*this, rect, colors, std::move(transform));
 	}

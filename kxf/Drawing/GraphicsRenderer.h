@@ -5,7 +5,6 @@
 #include "GraphicsRenderer/IGraphicsRenderer.h"
 #include "GraphicsRenderer/IGraphicsContext.h"
 #include "GraphicsRenderer/IGraphicsTexture.h"
-#include "GraphicsRenderer/IGraphicsMatrix.h"
 #include "GraphicsRenderer/IGraphicsPath.h"
 #include "GraphicsRenderer/IGraphicsFont.h"
 #include "GraphicsRenderer/IGraphicsBrush.h"

@@ -35,6 +35,6 @@ namespace kxf
 			virtual void AddPath(std::shared_ptr<IGraphicsPath> path) = 0;
 			virtual void CloseSubPath() = 0;
 
-			virtual void Transform(std::shared_ptr<IGraphicsMatrix> path) = 0;
+			virtual void Transform(AffineMatrixF path) = 0;
 	};
 }

@@ -12,7 +12,6 @@ namespace kxf
 
 	class IGraphicsRenderer;
 	class IGraphicsTexture;
-	class IGraphicsMatrix;
 	class IGraphicsPath;
 	class IGraphicsFont;
 	class IGraphicsPen;
@@ -62,14 +61,14 @@ namespace kxf
 			virtual RectF GetClipBox() const = 0;
 
 			// Transformation matrix
-			virtual std::shared_ptr<IGraphicsMatrix> GetTransform() const = 0;
-			virtual bool SetTransform(std::shared_ptr<IGraphicsMatrix> transform) = 0;
+			virtual AffineMatrixF GetTransform() const = 0;
+			virtual bool SetTransform(const AffineMatrixF& transform) = 0;
 
 			virtual bool TransformInvert() = 0;
 			virtual void TransformRotate(Angle angle) = 0;
 			virtual void TransformScale(float xScale, float yScale) = 0;
 			virtual void TransformTranslate(const Size& dxy) = 0;
-			virtual void TransformConcat(const IGraphicsMatrix& matrix) = 0;
+			virtual void TransformConcat(const AffineMatrixF& matrix) = 0;
 
 			// Pen and brush functions
 			virtual std::shared_ptr<IGraphicsPen> GetPen() const = 0;

@@ -1583,9 +1583,6 @@
     <ClInclude Include="kxf\Drawing\GraphicsRenderer.h">
       <Filter>kxf\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsMatrix.h">
-      <Filter>kxf\Drawing\GraphicsRenderer</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Drawing\GradientStops.h">
       <Filter>kxf\Drawing</Filter>
     </ClInclude>
@@ -1616,13 +1613,7 @@
     <ClInclude Include="kxf\Drawing\GDIRenderer\Common.h">
       <Filter>kxf\Drawing\GDIRenderer</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Drawing\GDIRenderer\Private\Common.h">
-      <Filter>kxf\Drawing\GDIRenderer\Private</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsContext.h">
-      <Filter>kxf\Drawing\GDIRenderer\&lt;GraphicsRenderer&gt;</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsMatrix.h">
       <Filter>kxf\Drawing\GDIRenderer\&lt;GraphicsRenderer&gt;</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsPen.h">
@@ -2491,9 +2482,6 @@
     </ClCompile>
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIAction.cpp">
       <Filter>kxf\Drawing\GDIRenderer</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\Drawing\GDIRenderer\Private\Common.cpp">
-      <Filter>kxf\Drawing\GDIRenderer\Private</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIGraphicsContext.cpp">
       <Filter>kxf\Drawing\GDIRenderer\&lt;GraphicsRenderer&gt;</Filter>
