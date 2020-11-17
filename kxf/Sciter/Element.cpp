@@ -1074,7 +1074,7 @@ namespace kxf::Sciter
 		// Size
 		if (auto fontSize = GetStyleAttributeFloat("font-size"))
 		{
-			font.SetFractionalPointSize(*fontSize);
+			font.SetPointSize(*fontSize);
 		}
 
 		// Weight
@@ -1180,7 +1180,7 @@ namespace kxf::Sciter
 			}
 
 			// Size
-			SetStyleAttribute("font-size", font.GetFractionalPointSize(), SizeUnit::pt);
+			SetStyleAttribute("font-size", font.GetPointSize(), SizeUnit::pt);
 
 			// Weight
 			SetStyleAttribute("font-weight", font.GetNumericWeight());

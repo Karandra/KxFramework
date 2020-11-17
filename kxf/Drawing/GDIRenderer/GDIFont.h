@@ -38,9 +38,10 @@ namespace kxf
 				:m_Font(other)
 			{
 			}
-			GDIFont(int pointSize, FontFamily family, FlagSet<FontStyle> style, FontWeight weight, const String& faceName = {}, FontEncoding encoding = FontEncoding::Default)
+			GDIFont(double pointSize, FontFamily family, FlagSet<FontStyle> style, FontWeight weight, const String& faceName = {}, FontEncoding encoding = FontEncoding::Default)
 				:m_Font(pointSize, Drawing::Private::MapFontFamily(family), Drawing::Private::MapFontStyle(style), Drawing::Private::MapFontWeight(weight), style.Contains(FontStyle::Underline), faceName, Drawing::Private::MapFontEncoding(encoding))
 			{
+				m_Font.SetFractionalPointSize(pointSize);
 			}
 			GDIFont(const Size& pixelSize, FontFamily family, FlagSet<FontStyle> style, FontWeight weight, const String& faceName = {}, FontEncoding encoding = FontEncoding::Default)
 				:m_Font(pixelSize, Drawing::Private::MapFontFamily(family), Drawing::Private::MapFontStyle(style), Drawing::Private::MapFontWeight(weight), style.Contains(FontStyle::Underline), faceName, Drawing::Private::MapFontEncoding(encoding))
@@ -112,20 +113,11 @@ namespace kxf
 				return m_Font.SetFaceName(faceName);
 			}
 
-			int GetPointSize() const
-			{
-				return m_Font.GetPointSize();
-			}
-			void SetPointSize(int pointSize)
-			{
-				m_Font.SetPointSize(pointSize);
-			}
-
-			double GetFractionalPointSize() const
+			double GetPointSize() const
 			{
 				return m_Font.GetFractionalPointSize();
 			}
-			void SetFractionalPointSize(double pointSize)
+			void SetPointSize(double pointSize)
 			{
 				m_Font.SetFractionalPointSize(pointSize);
 			}
