@@ -7,13 +7,27 @@
 #include "IGDIObject.h"
 #include "../GraphicsRenderer/IGraphicsBrush.h"
 
-namespace kxf::Drawing::Private
+namespace kxf
 {
-	template<class TBase>
-	class KX_API GDIGraphicsBrushBase: public RTTI::ExtendInterface<GDIGraphicsBrushBase<TBase>, TBase, IGDIObject>
+	class KX_API GDIGraphicsBrush: public RTTI::Interface<GDIGraphicsBrush>
 	{
 		KxRTTI_DeclareIID(IGraphicsBrush, {0x8bc6b8e3, 0x5ae1, 0x46a9, {0x9f, 0x5a, 0xa7, 0x18, 0xcd, 0x3e, 0x5, 0x17}});
 
+		public:
+			GDIGraphicsBrush() noexcept = default;
+			virtual ~GDIGraphicsBrush() = default;
+
+		public:
+			virtual GDIBrush& Get() = 0;
+			virtual const GDIBrush& Get() const = 0;
+	};
+}
+
+namespace kxf::Drawing::Private
+{
+	template<class TBase>
+	class KX_API GDIGraphicsBrushBase: public RTTI::ImplementInterface<GDIGraphicsBrushBase<TBase>, TBase, IGDIObject, GDIGraphicsBrush>
+	{
 		protected:
 			GDIGraphicsRenderer* m_Renderer = nullptr;
 			GDIBrush m_Brush;
@@ -25,15 +39,15 @@ namespace kxf::Drawing::Private
 				{
 					return true;
 				}
-				else if (auto object = other.QueryInterface<GDIGraphicsBrushBase<TBase>>())
+				else if (auto object = other.QueryInterface<GDIGraphicsBrush>())
 				{
-					return m_Brush.IsSameAs(object->m_Brush);
+					return m_Brush.IsSameAs(object->Get());
 				}
 				return false;
 			}
 
 		public:
-			GDIGraphicsBrushBase() noexcept = default;
+			GDIGraphicsBrushBase() = default;
 			GDIGraphicsBrushBase(GDIGraphicsRenderer& rendrer)
 				:m_Renderer(&rendrer)
 			{
@@ -89,11 +103,11 @@ namespace kxf::Drawing::Private
 			}
 
 			// GDIGraphicsBrush
-			const GDIBrush& Get() const
+			const GDIBrush& Get() const override
 			{
 				return m_Brush;
 			}
-			GDIBrush& Get()
+			GDIBrush& Get() override
 			{
 				return m_Brush;
 			}
@@ -115,7 +129,7 @@ namespace kxf
 	class KX_API GDIGraphicsSolidBrush: public Drawing::Private::GDIGraphicsBrushBase<IGraphicsSolidBrush>
 	{
 		public:
-			GDIGraphicsSolidBrush() noexcept = default;
+			GDIGraphicsSolidBrush() = default;
 			GDIGraphicsSolidBrush(GDIGraphicsRenderer& rendrer, const GDIBrush& brush)
 				:GDIGraphicsBrushBase(rendrer, brush)
 			{
@@ -157,7 +171,7 @@ namespace kxf
 			Color m_ForgroundColor;
 
 		public:
-			GDIGraphicsHatchBrush() noexcept = default;
+			GDIGraphicsHatchBrush() = default;
 			GDIGraphicsHatchBrush(GDIGraphicsRenderer& rendrer, const GDIBrush& brush)
 				:GDIGraphicsBrushBase(rendrer, brush)
 			{
@@ -216,7 +230,7 @@ namespace kxf
 			WrapMode m_WrapMode = WrapMode::None;
 
 		public:
-			GDIGraphicsTextureBrush() noexcept = default;
+			GDIGraphicsTextureBrush() = default;
 			GDIGraphicsTextureBrush(GDIGraphicsRenderer& rendrer, const GDIBrush& brush, WrapMode wrapMode = WrapMode::None)
 				:GDIGraphicsBrushBase(rendrer, brush), m_WrapMode(wrapMode)
 			{
@@ -280,7 +294,7 @@ namespace kxf
 			WrapMode m_WrapMode = WrapMode::None;
 
 		public:
-			GDIGraphicsLinearGradientBrush() noexcept = default;
+			GDIGraphicsLinearGradientBrush() = default;
 			GDIGraphicsLinearGradientBrush(GDIGraphicsRenderer& rendrer, const GDIBrush& brush)
 				:GDIGraphicsBrushBase(rendrer, brush)
 			{
@@ -350,7 +364,7 @@ namespace kxf
 			WrapMode m_WrapMode = WrapMode::None;
 
 		public:
-			GDIGraphicsRadialGradientBrush() noexcept = default;
+			GDIGraphicsRadialGradientBrush() = default;
 			GDIGraphicsRadialGradientBrush(GDIGraphicsRenderer& rendrer, const GDIBrush& brush)
 				:GDIGraphicsBrushBase(rendrer, brush)
 			{

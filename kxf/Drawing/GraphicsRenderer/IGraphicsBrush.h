@@ -1,12 +1,10 @@
 #pragma once
 #include "Common.h"
 #include "IGraphicsObject.h"
-#include "../GradientStops.h"
 
 namespace kxf
 {
 	class IGraphicsTexture;
-	class IGraphicsMatrix;
 }
 
 namespace kxf

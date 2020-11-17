@@ -17,9 +17,6 @@ namespace kxf
 			virtual ~IGraphicsFont() = default;
 
 		public:
-			virtual Color GetColor() const = 0;
-			virtual void SetColor(const Color& color) = 0;
-
 			virtual String GetFaceName() const = 0;
 			virtual void SetFaceName(const String& faceName) = 0;
 

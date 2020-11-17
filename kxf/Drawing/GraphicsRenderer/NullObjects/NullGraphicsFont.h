@@ -1,0 +1,78 @@
+#pragma once
+#include "../Common.h"
+#include "../IGraphicsFont.h"
+#include "NullGraphicsRenderer.h"
+
+namespace kxf::Drawing
+{
+	class KX_API NullGraphicsFont final: public IGraphicsFont
+	{
+		private:
+			NullGraphicsRenderer m_Renderer;
+
+		public:
+			NullGraphicsFont() noexcept = default;
+
+		public:
+			// IGraphicsObject
+			bool IsNull() const override
+			{
+				return true;
+			}
+			bool IsSameAs(const IGraphicsObject& other) const override
+			{
+				return other.IsNull();
+			}
+			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			{
+				return nullptr;
+			}
+
+			IGraphicsRenderer& GetRenderer() override
+			{
+				return m_Renderer;
+			}
+			void* GetNativeHandle() const
+			{
+				return nullptr;
+			}
+
+			// IGraphicsFont
+			String GetFaceName() const override
+			{
+				return {};
+			}
+			void SetFaceName(const String& faceName) override
+			{
+			}
+
+			FontFamily GetFamily() const override
+			{
+				return FontFamily::None;
+			}
+			void SetFamily(FontFamily family) override
+			{
+			}
+
+			GraphicsFontMetrics GetMetrics() const override
+			{
+				return {};
+			}
+			SizeF GetPixelSize() const override
+			{
+				return SizeF::UnspecifiedSize();
+			}
+			void SetPixelSize(const SizeF& pixelSize) override
+			{
+				NullGraphicsFont a;
+				if (a)
+				{
+
+				}
+			}
+	};
+}
+namespace kxf
+{
+	inline const Drawing::NullGraphicsFont NullGraphicsFont;
+}

@@ -8,6 +8,99 @@
 #include "../GraphicsRenderer/GraphicsAction.h"
 #include <wx/msw/dc.h>
 
+namespace
+{
+	class ChangeTextParameters final
+	{
+		private:
+			kxf::GDIAction::ChangeFont m_Font;
+			kxf::GDIAction::ChangeTextForeground m_TextForeground;
+
+		public:
+			ChangeTextParameters(kxf::GDIContext& dc, const kxf::IGraphicsFont& font, const kxf::IGraphicsBrush& brush)
+				:m_Font(dc), m_TextForeground(dc)
+			{
+				using namespace kxf;
+
+				if (font)
+				{
+					m_Font.Set(font.QueryInterface<GDIGraphicsFont>()->Get());
+				}
+				if (auto solidBrush = brush.QueryInterface<IGraphicsSolidBrush>())
+				{
+					m_TextForeground.Set(solidBrush->GetColor());
+				}
+			}
+	};
+	class ChangeDrawParameters final
+	{
+		private:
+			kxf::GDIAction::ChangePen m_Pen;
+			kxf::GDIAction::ChangeBrush m_Brush;
+
+		public:
+			ChangeDrawParameters(kxf::GDIContext& dc, const kxf::IGraphicsBrush& brush, const kxf::IGraphicsPen& pen)
+				:m_Pen(dc), m_Brush(dc)
+			{
+				using namespace kxf;
+
+				if (brush)
+				{
+					dc.SetBrush(brush.QueryInterface<GDIGraphicsBrush>()->Get());
+				}
+				if (pen)
+				{
+					dc.SetPen(pen.QueryInterface<GDIGraphicsPen>()->Get());
+				}
+			}
+	};
+
+	enum class TextKind
+	{
+		Simple,
+		Rotated,
+		Label
+	};
+	kxf::RectF DoDrawText(kxf::GDIContext& dc,
+						  TextKind kind,
+						  const kxf::String& text,
+						  const kxf::RectF& rect,
+						  kxf::Angle angle,
+						  const kxf::IGraphicsTexture& icon,
+						  const kxf::IGraphicsFont& font,
+						  const kxf::IGraphicsBrush& brush,
+						  kxf::FlagSet<kxf::Alignment> alignment,
+						  size_t acceleratorIndex)
+	{
+		using namespace kxf;
+
+		ChangeTextParameters textParametrs(dc, font, brush);
+
+		switch (kind)
+		{
+			case TextKind::Simple:
+			{
+				dc.DrawText(text, rect.GetPosition());
+				break;
+			}
+			case TextKind::Rotated:
+			{
+				dc.DrawRotatedText(text, rect.GetPosition(), angle);
+				break;
+			}
+			case TextKind::Label:
+			{
+				if (icon && dc.CanDrawBitmap())
+				{
+					return dc.DrawLabel(text, rect, icon.QueryInterface<GDIGraphicsTexture>()->Get(), alignment, acceleratorIndex);
+				}
+				return dc.DrawLabel(text, rect, {}, alignment, acceleratorIndex);
+			}
+		};
+		return {};
+	}
+}
+
 namespace kxf
 {
 	void GDIGraphicsContext::SetupDC()
@@ -149,7 +242,8 @@ namespace kxf
 			}
 			else
 			{
-				// We can't reliably save this graphical brush as a GDI brush, so save it as is for later use.
+				// We can't really convert this graphical brush to a GDI brush, so save it as is for later use.
+				// TODO: Make use of that saved brush somehow.
 				m_DC.SetBrush({});
 				m_SavedBrush = std::move(brush);
 			}
@@ -211,38 +305,69 @@ namespace kxf
 	// Text functions
 	std::shared_ptr<IGraphicsFont> GDIGraphicsContext::GetFont() const
 	{
-		return std::make_shared<GDIGraphicsFont>(*m_Renderer, m_DC.GetFont(), m_DC.GetTextForeground());
+		return std::make_shared<GDIGraphicsFont>(*m_Renderer, m_DC.GetFont());
 	}
 	void GDIGraphicsContext::SetFont(std::shared_ptr<IGraphicsFont> font)
 	{
-		if (font)
+		object_ptr<GDIGraphicsFont> gdiFont;
+		if (font && font->QueryInterface(gdiFont))
 		{
-			if (auto gdiFont = font->QueryInterface<GDIGraphicsFont>())
-			{
-				m_DC.SetFont(gdiFont->Get());
-			}
-			m_DC.SetTextForeground(font->GetColor());
+			m_DC.SetFont(gdiFont->Get());
 		}
 		else
 		{
 			m_DC.SetFont({});
-			m_DC.SetTextForeground({});
 		}
 	}
 
-	GraphicsTextExtent GDIGraphicsContext::GetTextExtent(const String& text) const
+	std::shared_ptr<IGraphicsBrush> GDIGraphicsContext::GetFontBrush() const
 	{
-		if (text.ContainsAnyOfCharacters(wxS("\r\n")))
+		return std::make_shared<GDIGraphicsSolidBrush>(*m_Renderer, m_DC.GetTextForeground());
+	}
+	void GDIGraphicsContext::SetFontBrush(std::shared_ptr<IGraphicsBrush> brush)
+	{
+		object_ptr<IGraphicsSolidBrush> solidBrush;
+		if (brush && brush->QueryInterface(solidBrush))
 		{
-			return m_DC.GetMultiLineTextExtent(text, m_DC.GetFont());
+			m_DC.SetTextForeground(solidBrush->GetColor());
 		}
 		else
 		{
-			return m_DC.GetTextExtent(text, m_DC.GetFont());
+			m_DC.SetTextForeground({});
+		}
+		m_DC.SetTextBackground(Drawing::GetStockColor(StockColor::Transparent));
+	}
+
+	GraphicsTextExtent GDIGraphicsContext::GetTextExtent(const String& text, const IGraphicsFont& font) const
+	{
+		auto GetExtent = [&](const GDIFont& font)
+		{
+			if (text.ContainsAnyOfCharacters(wxS("\r\n")))
+			{
+				return m_DC.GetMultiLineTextExtent(text, font);
+			}
+			else
+			{
+				return m_DC.GetTextExtent(text, font);
+			}
+		};
+		if (font)
+		{
+			return GetExtent(font.QueryInterface<GDIGraphicsFont>()->Get());
+		}
+		else
+		{
+			return GetExtent(m_DC.GetFont());
 		}
 	}
-	std::vector<float> GDIGraphicsContext::GetPartialTextExtent(const String& text) const
+	std::vector<float> GDIGraphicsContext::GetPartialTextExtent(const String& text, const IGraphicsFont& font) const
 	{
+		GDIAction::ChangeFont changeFont(const_cast<GDIContext&>(m_DC));
+		if (font)
+		{
+			changeFont.Set(font.QueryInterface<GDIGraphicsFont>()->Get());
+		}
+
 		wxArrayInt gdiWidths;
 		if (m_DC.ToWxDC().GetPartialTextExtents(text, gdiWidths))
 		{
@@ -255,48 +380,17 @@ namespace kxf
 		return {};
 	}
 
-	void GDIGraphicsContext::DrawText(const String& text, const PointF& point)
+	void GDIGraphicsContext::DrawText(const String& text, const PointF& point, const IGraphicsFont& font, const IGraphicsBrush& brush)
 	{
-		m_DC.DrawText(text, point);
+		DoDrawText(m_DC, TextKind::Simple, text, RectF(point, SizeF::UnspecifiedSize()), {}, NullGraphicsTexture, font, brush, {}, String::npos);
 	}
-	void GDIGraphicsContext::DrawText(const String& text, const PointF& point, const IGraphicsBrush& brush)
+	void GDIGraphicsContext::DrawRotatedText(const String& text, const PointF& point, Angle angle, const IGraphicsFont& font, const IGraphicsBrush& brush)
 	{
-		GDIAction::ChangeBackground changeBackground(m_DC);
-		if (brush)
-		{
-			changeBackground.Set(m_Renderer->ToGDIBrush(brush));
-		}
-		m_DC.DrawText(text, point);
+		DoDrawText(m_DC, TextKind::Rotated, text, RectF(point, SizeF::UnspecifiedSize()), angle, NullGraphicsTexture, font, brush, {}, String::npos);
 	}
-
-	void GDIGraphicsContext::DrawRotatedText(const String& text, const PointF& point, Angle angle)
+	RectF GDIGraphicsContext::DrawLabel(const String& text, const RectF& rect, const IGraphicsTexture& icon, const IGraphicsFont& font, const IGraphicsBrush& brush, FlagSet<Alignment> alignment, size_t acceleratorIndex)
 	{
-		m_DC.DrawRotatedText(text, point, angle);
-	}
-	void GDIGraphicsContext::DrawRotatedText(const String& text, const PointF& point, Angle angle, const IGraphicsBrush& brush)
-	{
-		GDIAction::ChangeBackground changeBackground(m_DC);
-		if (brush)
-		{
-			changeBackground.Set(m_Renderer->ToGDIBrush(brush));
-		}
-		m_DC.DrawRotatedText(text, point, angle);
-	}
-
-	RectF GDIGraphicsContext::DrawLabel(const String& text, const RectF& rect, const IGraphicsTexture& icon, FlagSet<Alignment> alignment, size_t acceleratorIndex)
-	{
-		if (m_DC.CanDrawBitmap())
-		{
-			if (auto gdiTexture = icon.QueryInterface<GDIGraphicsTexture>())
-			{
-				return m_DC.DrawLabel(text, rect, gdiTexture->Get(), alignment, acceleratorIndex);
-			}
-		}
-		return m_DC.DrawLabel(text, rect, {}, alignment, acceleratorIndex);
-	}
-	RectF GDIGraphicsContext::DrawLabel(const String& text, const RectF& rect, FlagSet<Alignment> alignment, size_t acceleratorIndex)
-	{
-		return m_DC.DrawLabel(text, rect, alignment, acceleratorIndex);
+		return DoDrawText(m_DC, TextKind::Label, text, rect, {}, icon, font, brush, alignment, acceleratorIndex);
 	}
 
 	// Drawing functions
@@ -310,39 +404,67 @@ namespace kxf
 
 		m_DC.Clear();
 	}
-	void GDIGraphicsContext::DrawCircle(const Point& pos, float radius)
+	void GDIGraphicsContext::DrawCircle(const Point& pos, float radius, const IGraphicsBrush& brush, const IGraphicsPen& pen)
 	{
-		m_DC.DrawCircle(pos, radius);
+		if (radius != 0)
+		{
+			ChangeDrawParameters drawParameters(m_DC, brush, pen);
+			m_DC.DrawCircle(pos, radius);
+		}
 	}
-	void GDIGraphicsContext::DrawEllipse(const RectF& rect)
+	void GDIGraphicsContext::DrawEllipse(const RectF& rect, const IGraphicsBrush& brush, const IGraphicsPen& pen)
 	{
-		m_DC.DrawEllipse(rect);
+		if (!rect.IsEmpty())
+		{
+			ChangeDrawParameters drawParameters(m_DC, brush, pen);
+			m_DC.DrawEllipse(rect);
+		}
 	}
-	void GDIGraphicsContext::DrawRectangle(const RectF& rect)
+	void GDIGraphicsContext::DrawRectangle(const RectF& rect, const IGraphicsBrush& brush, const IGraphicsPen& pen)
 	{
-		m_DC.DrawRectangle(rect);
+		if (!rect.IsEmpty())
+		{
+			ChangeDrawParameters drawParameters(m_DC, brush, pen);
+			m_DC.DrawRectangle(rect);
+		}
 	}
-	void GDIGraphicsContext::DrawRoundedRectangle(const RectF& rect, float radius)
+	void GDIGraphicsContext::DrawRoundedRectangle(const RectF& rect, float radius, const IGraphicsBrush& brush, const IGraphicsPen& pen)
 	{
-		m_DC.DrawRoundedRectangle(rect, radius);
+		if (!rect.IsEmpty())
+		{
+			ChangeDrawParameters drawParameters(m_DC, brush, pen);
+			m_DC.DrawRoundedRectangle(rect, radius);
+		}
 	}
-	void GDIGraphicsContext::DrawLine(const PointF& point1, const PointF& point2)
+	void GDIGraphicsContext::DrawLine(const PointF& point1, const PointF& point2, const IGraphicsBrush& brush, const IGraphicsPen& pen)
 	{
+		ChangeDrawParameters drawParameters(m_DC, brush, pen);
+
 		m_DC.DrawLine(point1, point2);
 	}
-	void GDIGraphicsContext::DrawPolyLine(const PointF* points, size_t count)
+	void GDIGraphicsContext::DrawPolyLine(const PointF* points, size_t count, const IGraphicsBrush& brush, const IGraphicsPen& pen)
 	{
-		std::vector<Point> gdiPoints;
-		gdiPoints.resize(count);
-		std::copy_n(points, count, gdiPoints.begin());
-
-		m_DC.DrawPolyLine(gdiPoints.data(), gdiPoints.size());
-	}
-	void GDIGraphicsContext::DrawDisconnectedLines(const PointF* startPoints, const PointF* endPoints, size_t count)
-	{
-		for (size_t i = 0; i < count; i++)
+		if (count != 0)
 		{
-			m_DC.DrawLine(startPoints[i], endPoints[i]);
+			ChangeDrawParameters drawParameters(m_DC, brush, pen);
+
+			std::vector<Point> gdiPoints;
+			gdiPoints.resize(count);
+			std::copy_n(points, count, gdiPoints.begin());
+
+			m_DC.DrawPolyLine(gdiPoints.data(), gdiPoints.size());
+		}
+	}
+	void GDIGraphicsContext::DrawDisconnectedLines(const PointF* startPoints, const PointF* endPoints, size_t count, const IGraphicsBrush& brush, const IGraphicsPen& pen)
+	{
+		if (count != 0)
+		{
+			ChangeDrawParameters drawParameters(m_DC, brush, pen);
+
+			for (size_t i = 0; i < count; i++)
+			{
+				m_DC.DrawLine(startPoints[i], endPoints[i]);
+			}
 		}
 	}
 

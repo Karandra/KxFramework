@@ -155,27 +155,31 @@ namespace kxf
 			std::shared_ptr<IGraphicsFont> GetFont() const override;
 			void SetFont(std::shared_ptr<IGraphicsFont> font) override;
 
-			GraphicsTextExtent GetTextExtent(const String& text) const override;
-			std::vector<float> GetPartialTextExtent(const String& text) const override;
+			std::shared_ptr<IGraphicsBrush> GetFontBrush() const override;
+			void SetFontBrush(std::shared_ptr<IGraphicsBrush> brush) override;
 
-			void DrawText(const String& text, const PointF& point) override;
-			void DrawText(const String& text, const PointF& point, const IGraphicsBrush& brush) override;
+			GraphicsTextExtent GetTextExtent(const String& text, const IGraphicsFont& font = NullGraphicsFont) const override;
+			std::vector<float> GetPartialTextExtent(const String& text, const IGraphicsFont& font = NullGraphicsFont) const override;
 
-			void DrawRotatedText(const String& text, const PointF& point, Angle angle) override;
-			void DrawRotatedText(const String& text, const PointF& point, Angle angle, const IGraphicsBrush& brush) override;
-
-			RectF DrawLabel(const String& text, const RectF& rect, const IGraphicsTexture& icon, FlagSet<Alignment> alignment = Alignment::Left|Alignment::Top, size_t acceleratorIndex = String::npos) override;
-			RectF DrawLabel(const String& text, const RectF& rect, FlagSet<Alignment> alignment = Alignment::Left|Alignment::Top, size_t acceleratorIndex = String::npos) override;
+			void DrawText(const String& text, const PointF& point, const IGraphicsFont& font = NullGraphicsFont, const IGraphicsBrush& brush = NullGraphicsBrush) override;
+			void DrawRotatedText(const String& text, const PointF& point, Angle angle, const IGraphicsFont& font = NullGraphicsFont, const IGraphicsBrush& brush = NullGraphicsBrush) override;
+			RectF DrawLabel(const String& text,
+							const RectF& rect,
+							const IGraphicsTexture& icon = NullGraphicsTexture,
+							const IGraphicsFont& font = NullGraphicsFont,
+							const IGraphicsBrush& brush = NullGraphicsBrush,
+							FlagSet<Alignment> alignment = {},
+							size_t acceleratorIndex = String::npos) override;
 
 			// Drawing functions
 			void Clear(const IGraphicsBrush& brush) override;
-			void DrawCircle(const Point& pos, float radius) override;
-			void DrawEllipse(const RectF& rect) override;
-			void DrawRectangle(const RectF& rect) override;
-			void DrawRoundedRectangle(const RectF& rect, float radius) override;
-			void DrawLine(const PointF& point1, const PointF& point2) override;
-			void DrawPolyLine(const PointF* points, size_t count) override;
-			void DrawDisconnectedLines(const PointF* startPoints, const PointF* endPoints, size_t count) override;
+			void DrawCircle(const Point& pos, float radius, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) override;
+			void DrawEllipse(const RectF& rect, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) override;
+			void DrawRectangle(const RectF& rect, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) override;
+			void DrawRoundedRectangle(const RectF& rect, float radius, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) override;
+			void DrawLine(const PointF& point1, const PointF& point2, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) override;
+			void DrawPolyLine(const PointF* points, size_t count, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) override;
+			void DrawDisconnectedLines(const PointF* startPoints, const PointF* endPoints, size_t count, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) override;
 
 			// Getting and setting parameters
 			SizeF GetSize() const override

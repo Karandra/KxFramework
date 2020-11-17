@@ -180,6 +180,57 @@ namespace kxf::GraphicsAction
 			}
 	};
 
+	class ChangeFontBrush final
+	{
+		private:
+			IGraphicsContext& m_GC;
+			std::shared_ptr<IGraphicsBrush> m_Brush;
+
+		private:
+			void SaveOldBrush()
+			{
+				if (!m_Brush)
+				{
+					m_Brush = m_GC.GetFontBrush();
+				}
+			}
+
+		public:
+			ChangeFontBrush(IGraphicsContext& gc)
+				:m_GC(gc)
+			{
+			}
+			ChangeFontBrush(IGraphicsContext& gc, std::shared_ptr<IGraphicsBrush> brush)
+				:m_GC(gc), m_Brush(gc.GetFontBrush())
+			{
+				m_GC.SetFontBrush(std::move(brush));
+			}
+			ChangeFontBrush(IGraphicsContext& gc, const Color& color)
+				:m_GC(gc), m_Brush(gc.GetFontBrush())
+			{
+				m_GC.SetFontBrush(m_GC.GetRenderer().CreateSolidBrush(color));
+			}
+			~ChangeFontBrush()
+			{
+				if (m_Brush)
+				{
+					m_GC.SetBrush(std::move(m_Brush));
+				}
+			}
+
+		public:
+			void Set(std::shared_ptr<IGraphicsBrush> brush)
+			{
+				SaveOldBrush();
+				m_GC.SetFontBrush(std::move(brush));
+			}
+			void Set(const Color& color)
+			{
+				SaveOldBrush();
+				m_GC.SetFontBrush(m_GC.GetRenderer().CreateSolidBrush(color));
+			}
+	};
+
 	class ChangeBrush final
 	{
 		private:

@@ -6,6 +6,7 @@
 #include "../ColorDepth.h"
 #include "../TextExtent.h"
 #include "../AffineMatrix.h"
+#include "../GradientStops.h"
 #include "kxf/RTTI/QueryInterface.h"
 
 namespace kxf

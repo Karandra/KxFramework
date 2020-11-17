@@ -11,6 +11,11 @@ namespace kxf
 	// GDIGraphicsRenderer
 	GDIPen GDIGraphicsRenderer::ToGDIPen(const IGraphicsPen& pen) const
 	{
+		if (auto gdiPen = pen.QueryInterface<GDIGraphicsPen>())
+		{
+			return gdiPen->Get();
+		}
+
 		GDIPen gdiPen;
 		gdiPen.SetCap(pen.GetLineCap());
 		gdiPen.SetJoin(pen.GetLineJoin());
@@ -64,6 +69,11 @@ namespace kxf
 	}
 	GDIBrush GDIGraphicsRenderer::ToGDIBrush(const IGraphicsBrush& brush) const
 	{
+		if (auto gdiBrush = brush.QueryInterface<GDIGraphicsBrush>())
+		{
+			return gdiBrush->Get();
+		}
+
 		GDIBrush gdiBrush;
 		if (brush.IsTransparent())
 		{
@@ -164,11 +174,11 @@ namespace kxf
 		}
 		return {};
 	}
-	std::shared_ptr<IGraphicsLinearGradientBrush> GDIGraphicsRenderer::CreateLinearGradientBrush(const RectF& rect, const GradientStops& colors, AffineMatrixF transform)
+	std::shared_ptr<IGraphicsLinearGradientBrush> GDIGraphicsRenderer::CreateLinearGradientBrush(const RectF& rect, const GradientStops& colors, const AffineMatrixF& transform)
 	{
 		return std::make_shared<GDIGraphicsLinearGradientBrush>(*this, rect, colors, std::move(transform));
 	}
-	std::shared_ptr<IGraphicsRadialGradientBrush> GDIGraphicsRenderer::CreateRadialGradientBrush(const RectF& rect, const GradientStops& colors, AffineMatrixF transform)
+	std::shared_ptr<IGraphicsRadialGradientBrush> GDIGraphicsRenderer::CreateRadialGradientBrush(const RectF& rect, const GradientStops& colors, const AffineMatrixF& transform)
 	{
 		return std::make_shared<GDIGraphicsRadialGradientBrush>(*this, rect, colors, std::move(transform));
 	}
@@ -204,12 +214,12 @@ namespace kxf
 	{
 		return std::make_shared<GDIGraphicsFont>(*this);
 	}
-	std::shared_ptr<IGraphicsFont> GDIGraphicsRenderer::CreateFont(const GDIFont& font, const Color& color)
+	std::shared_ptr<IGraphicsFont> GDIGraphicsRenderer::CreateFont(const GDIFont& font)
 	{
-		return std::make_shared<GDIGraphicsFont>(*this, font, color);
+		return std::make_shared<GDIGraphicsFont>(*this, font);
 	}
-	std::shared_ptr<IGraphicsFont> GDIGraphicsRenderer::CreateFont(const SizeF& pixelSize, const String& faceName, const Color& color)
+	std::shared_ptr<IGraphicsFont> GDIGraphicsRenderer::CreateFont(const SizeF& pixelSize, const String& faceName)
 	{
-		return std::make_shared<GDIGraphicsFont>(*this, pixelSize, faceName, color);
+		return std::make_shared<GDIGraphicsFont>(*this, pixelSize, faceName);
 	}
 }

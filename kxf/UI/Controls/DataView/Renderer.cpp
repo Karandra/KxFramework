@@ -122,25 +122,26 @@ namespace kxf::UI::DataView
 		RenderEngine renderEngine = GetRenderEngine();
 
 		// Change text color
-		Color textColor;
+		GraphicsAction::ChangeFontBrush changeFontBrush(*m_GC);
 		if (m_Attributes.Options().HasForegroundColor())
 		{
-			textColor = m_Attributes.Options().GetForegroundColor();
+			Color textColor = m_Attributes.Options().GetForegroundColor();
 			if (!m_Attributes.Options().ContainsOption(CellOption::Enabled))
 			{
 				textColor.MakeDisabled();
 			}
+			changeFontBrush.Set(textColor);
 		}
 		else if (!m_Attributes.Options().ContainsOption(CellOption::Enabled))
 		{
-			textColor = GetView()->GetForegroundColour().MakeDisabled();
+			changeFontBrush.Set(GetView()->GetForegroundColour().MakeDisabled());
 		}
 
 		// Change font
 		GraphicsAction::ChangeFont changeFont(*m_GC);
-		if (textColor || m_Attributes.FontOptions().NeedDCAlteration())
+		if (m_Attributes.FontOptions().NeedDCAlteration())
 		{
-			changeFont.Set(m_GC->GetRenderer().CreateFont(m_Attributes.GetEffectiveFont(GetView()->GetFont()), textColor));
+			changeFont.Set(m_GC->GetRenderer().CreateFont(m_Attributes.GetEffectiveFont(GetView()->GetFont())));
 		}
 
 		// Adjust the rectangle ourselves to account for the alignment

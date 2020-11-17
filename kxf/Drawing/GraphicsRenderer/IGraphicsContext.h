@@ -1,7 +1,11 @@
 #pragma once
 #include "Common.h"
 #include "IGraphicsObject.h"
-#include "../GradientStops.h"
+#include "NullObjects/NullGraphicsRenderer.h"
+#include "NullObjects/NullGraphicsFont.h"
+#include "NullObjects/NullGraphicsPen.h"
+#include "NullObjects/NullGraphicsBrush.h"
+#include "NullObjects/NullGraphicsTexture.h"
 class wxWindow;
 
 namespace kxf
@@ -75,7 +79,6 @@ namespace kxf
 			virtual void SetPen(std::shared_ptr<IGraphicsPen> pen) = 0;
 
 			virtual std::shared_ptr<IGraphicsBrush> GetBrush() const = 0;
-			virtual void SetBrush(std::shared_ptr<IGraphicsBrush> brush) = 0;
 
 			// Path functions
 			virtual void StrokePath(const IGraphicsPath& path) = 0;
@@ -89,69 +92,83 @@ namespace kxf
 			// Text functions
 			virtual std::shared_ptr<IGraphicsFont> GetFont() const = 0;
 			virtual void SetFont(std::shared_ptr<IGraphicsFont> font) = 0;
+			virtual void SetBrush(std::shared_ptr<IGraphicsBrush> brush) = 0;
 
-			virtual GraphicsTextExtent GetTextExtent(const String& text) const = 0;
-			virtual std::vector<float> GetPartialTextExtent(const String& text) const = 0;
+			virtual std::shared_ptr<IGraphicsBrush> GetFontBrush() const = 0;
+			virtual void SetFontBrush(std::shared_ptr<IGraphicsBrush> brush) = 0;
 
-			virtual void DrawText(const String& text, const PointF& point) = 0;
-			virtual void DrawText(const String& text, const PointF& point, const IGraphicsBrush& brush) = 0;
+			virtual GraphicsTextExtent GetTextExtent(const String& text, const IGraphicsFont& font = NullGraphicsFont) const = 0;
+			virtual std::vector<float> GetPartialTextExtent(const String& text, const IGraphicsFont& font = NullGraphicsFont) const = 0;
 
-			virtual void DrawRotatedText(const String& text, const PointF& point, Angle angle) = 0;
-			virtual void DrawRotatedText(const String& text, const PointF& point, Angle angle, const IGraphicsBrush& brush) = 0;
+			virtual void DrawText(const String& text, const PointF& point, const IGraphicsFont& font = NullGraphicsFont, const IGraphicsBrush& brush = NullGraphicsBrush) = 0;
+			virtual void DrawRotatedText(const String& text, const PointF& point, Angle angle, const IGraphicsFont& font = NullGraphicsFont, const IGraphicsBrush& brush = NullGraphicsBrush) = 0;
 
-			virtual RectF DrawLabel(const String& text, const RectF& rect, const IGraphicsTexture& icon, FlagSet<Alignment> alignment = Alignment::Left|Alignment::Top, size_t acceleratorIndex = String::npos) = 0;
-			virtual RectF DrawLabel(const String& text, const RectF& rect, FlagSet<Alignment> alignment = Alignment::Left|Alignment::Top, size_t acceleratorIndex = String::npos) = 0;
+			virtual RectF DrawLabel(const String& text,
+									const RectF& rect,
+									const IGraphicsTexture& icon = NullGraphicsTexture,
+									const IGraphicsFont& font = NullGraphicsFont,
+									const IGraphicsBrush& brush = NullGraphicsBrush,
+									FlagSet<Alignment> alignment = {},
+									size_t acceleratorIndex = String::npos) = 0;
+			RectF DrawLabel(const String& text, const RectF& rect, FlagSet<Alignment> alignment = {}, size_t acceleratorIndex = String::npos)
+			{
+				return DrawLabel(text, rect, NullGraphicsTexture, NullGraphicsFont, NullGraphicsBrush, alignment, acceleratorIndex);
+			}
+			RectF DrawLabel(const String& text, const RectF& rect, const IGraphicsTexture& icon, FlagSet<Alignment> alignment = {}, size_t acceleratorIndex = String::npos)
+			{
+				return DrawLabel(text, rect, icon, NullGraphicsFont, NullGraphicsBrush, alignment, acceleratorIndex);
+			}
 
 			// Drawing functions
 			virtual void Clear(const IGraphicsBrush& brush) = 0;
 
-			virtual void DrawCircle(const Point& pos, float radius) = 0;
+			virtual void DrawCircle(const Point& pos, float radius, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) = 0;
 
-			virtual void DrawEllipse(const RectF& rect) = 0;
-			void DrawEllipse(const Point& pos, const Size& size)
+			virtual void DrawEllipse(const RectF& rect, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) = 0;
+			void DrawEllipse(const Point& pos, const Size& size, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen)
 			{
-				DrawEllipse({pos, size});
+				DrawEllipse({pos, size}, brush, pen);
 			}
 
-			virtual void DrawRectangle(const RectF& rect) = 0;
-			void DrawRectangle(const Point& pos, const Size& size)
+			virtual void DrawRectangle(const RectF& rect, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) = 0;
+			void DrawRectangle(const Point& pos, const Size& size, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen)
 			{
-				DrawRectangle({pos, size});
+				DrawRectangle({pos, size}, brush, pen);
 			}
 
-			virtual void DrawRoundedRectangle(const RectF& rect, float radius) = 0;
-			void DrawRoundedRectangle(const Point& pos, const Size& size, float radius)
+			virtual void DrawRoundedRectangle(const RectF& rect, float radius, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) = 0;
+			void DrawRoundedRectangle(const Point& pos, const Size& size, float radius, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen)
 			{
-				DrawRoundedRectangle({pos, size}, radius);
+				DrawRoundedRectangle({pos, size}, radius, brush, pen);
 			}
 
-			virtual void DrawLine(const PointF& point1, const PointF& point2) = 0;
-			virtual void DrawPolyLine(const PointF* points, size_t count) = 0;
+			virtual void DrawLine(const PointF& point1, const PointF& point2, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) = 0;
+			virtual void DrawPolyLine(const PointF* points, size_t count, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) = 0;
 
 			template<size_t N>
-			void DrawPolyLine(const PointF(&points)[N])
+			void DrawPolyLine(const PointF(&points)[N], const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen)
 			{
-				DrawPolyLine(points, N);
-			}
-
-			template<size_t N>
-			void DrawPolyLine(const std::array<PointF, N>& points)
-			{
-				DrawPolyLine(points.data(), points.size());
-			}
-
-			virtual void DrawDisconnectedLines(const PointF* startPoints, const PointF* endPoints, size_t count) = 0;
-
-			template<size_t N>
-			void DrawDisconnectedLines(const PointF(&startPoints)[N], const PointF(&endPoints)[N])
-			{
-				DrawDisconnectedLines(startPoints, endPoints, N);
+				DrawPolyLine(points, N, brush, pen);
 			}
 
 			template<size_t N>
-			void DrawDisconnectedLines(const std::array<PointF, N>& startPoints, const std::array<PointF, N>& endPoints)
+			void DrawPolyLine(const std::array<PointF, N>& points, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen)
 			{
-				DrawDisconnectedLines(startPoints.data(), endPoints.data(), N);
+				DrawPolyLine(points.data(), points.size(), brush, pen);
+			}
+
+			virtual void DrawDisconnectedLines(const PointF* startPoints, const PointF* endPoints, size_t count, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) = 0;
+
+			template<size_t N>
+			void DrawDisconnectedLines(const PointF(&startPoints)[N], const PointF(&endPoints)[N], const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen)
+			{
+				DrawDisconnectedLines(startPoints, endPoints, N, brush, pen);
+			}
+
+			template<size_t N>
+			void DrawDisconnectedLines(const std::array<PointF, N>& startPoints, const std::array<PointF, N>& endPoints, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen)
+			{
+				DrawDisconnectedLines(startPoints.data(), endPoints.data(), N, brush, pen);
 			}
 
 			// Getting and setting parameters

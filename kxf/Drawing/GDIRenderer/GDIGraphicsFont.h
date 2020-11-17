@@ -14,7 +14,6 @@ namespace kxf
 		protected:
 			GDIGraphicsRenderer* m_Renderer = nullptr;
 			GDIFont m_Font;
-			Color m_Color;
 
 		private:
 			bool DoIsSameAs(const IObject& other) const
@@ -36,12 +35,12 @@ namespace kxf
 				:m_Renderer(&rendrer)
 			{
 			}
-			GDIGraphicsFont(GDIGraphicsRenderer& rendrer, const GDIFont& font, const Color& color)
-				:m_Renderer(&rendrer), m_Font(font), m_Color(color)
+			GDIGraphicsFont(GDIGraphicsRenderer& rendrer, const GDIFont& font)
+				:m_Renderer(&rendrer), m_Font(font)
 			{
 			}
-			GDIGraphicsFont(GDIGraphicsRenderer& rendrer, const SizeF& pixelSize, const String& faceName, const Color& color)
-				:m_Renderer(&rendrer), m_Font(pixelSize, FontFamily::Default, FontStyle::Normal, FontWeight::Normal, faceName), m_Color(color)
+			GDIGraphicsFont(GDIGraphicsRenderer& rendrer, const SizeF& pixelSize, const String& faceName)
+				:m_Renderer(&rendrer), m_Font(pixelSize, FontFamily::Default, FontStyle::Normal, FontWeight::Normal, faceName)
 			{
 			}
 
@@ -93,15 +92,6 @@ namespace kxf
 			}
 
 			// IGraphicsFont
-			Color GetColor() const override
-			{
-				return m_Color;
-			}
-			void SetColor(const Color& color) override
-			{
-				m_Color = color;
-			}
-
 			String GetFaceName() const override
 			{
 				return m_Font.GetFaceName();

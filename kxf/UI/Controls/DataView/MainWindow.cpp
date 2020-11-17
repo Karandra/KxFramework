@@ -1088,7 +1088,8 @@ namespace kxf::UI::DataView
 				const int y = GetCharHeight() * 2;
 				const Rect rect(0, y, clientSize.GetWidth(), clientSize.GetHeight() - y);
 
-				gc->SetFont(m_GraphicsRenderer->CreateFont(GetFont(), m_View->GetForegroundColour().MakeDisabled()));
+				gc->SetFontBrush(m_GraphicsRenderer->CreateSolidBrush(m_View->GetForegroundColour().MakeDisabled()));
+				gc->SetFont(m_GraphicsRenderer->CreateFont(GetFont()));
 				gc->DrawLabel(m_EmptyControlLabel, rect, Alignment::CenterHorizontal|Alignment::Top);
 			}
 
@@ -2282,7 +2283,8 @@ namespace kxf::UI::DataView
 		auto gc = m_GraphicsRenderer->CreateContext(texture);
 		auto gdi = gc->QueryInterface<GDIGraphicsContext>();
 		{
-			gc->SetFont(m_GraphicsRenderer->CreateFont(GetFont(), m_View->GetForegroundColour()));
+			gc->SetFont(m_GraphicsRenderer->CreateFont(GetFont()));
+			gc->SetFontBrush(m_GraphicsRenderer->CreateSolidBrush(m_View->GetForegroundColour()));
 			gc->Clear(*m_GraphicsRenderer->CreateSolidBrush(m_View->GetBackgroundColour()));
 
 			// Draw selection

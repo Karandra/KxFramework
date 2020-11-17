@@ -256,6 +256,12 @@
     <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsPen.h" />
     <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsRenderer.h" />
     <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsTexture.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsBrush.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsFont.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsObject.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsPen.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsRenderer.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsTexture.h" />
     <ClInclude Include="kxf\Drawing\IArtProvider.h" />
     <ClInclude Include="kxf\Drawing\ColorDepth.h" />
     <ClInclude Include="kxf\Drawing\Image.h" />

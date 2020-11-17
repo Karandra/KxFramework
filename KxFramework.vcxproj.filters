@@ -248,6 +248,9 @@
     <Filter Include="kxf\Drawing\GDIRenderer\&lt;GDIObjects&gt;\&lt;GDIImages&gt;">
       <UniqueIdentifier>{045d64d1-8a8f-4c2c-a099-326162ab3461}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\Drawing\GraphicsRenderer\NullObjects">
+      <UniqueIdentifier>{4c87a8c9-0dcc-4920-826c-8c1aa32ec87f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -1687,6 +1690,24 @@
     </ClInclude>
     <ClInclude Include="kxf\Drawing\AffineMatrix.h">
       <Filter>kxf\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsPen.h">
+      <Filter>kxf\Drawing\GraphicsRenderer\NullObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsRenderer.h">
+      <Filter>kxf\Drawing\GraphicsRenderer\NullObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsTexture.h">
+      <Filter>kxf\Drawing\GraphicsRenderer\NullObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsBrush.h">
+      <Filter>kxf\Drawing\GraphicsRenderer\NullObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsFont.h">
+      <Filter>kxf\Drawing\GraphicsRenderer\NullObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsObject.h">
+      <Filter>kxf\Drawing\GraphicsRenderer\NullObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

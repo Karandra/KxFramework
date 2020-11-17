@@ -37,8 +37,8 @@ namespace kxf
 			std::shared_ptr<IGraphicsSolidBrush> CreateSolidBrush(const Color& color) override;
 			std::shared_ptr<IGraphicsTextureBrush> CreateTextureBrush(const Image& image) override;
 			std::shared_ptr<IGraphicsTextureBrush> CreateTextureBrush(const GDIBitmap& bitmap);
-			std::shared_ptr<IGraphicsLinearGradientBrush> CreateLinearGradientBrush(const RectF& rect, const GradientStops& colors, AffineMatrixF transform = {}) override;
-			std::shared_ptr<IGraphicsRadialGradientBrush> CreateRadialGradientBrush(const RectF& rect, const GradientStops& colors, AffineMatrixF transform = {}) override;
+			std::shared_ptr<IGraphicsLinearGradientBrush> CreateLinearGradientBrush(const RectF& rect, const GradientStops& colors, const AffineMatrixF& transform = {}) override;
+			std::shared_ptr<IGraphicsRadialGradientBrush> CreateRadialGradientBrush(const RectF& rect, const GradientStops& colors, const AffineMatrixF& transform = {}) override;
 
 			// Path functions (not implemented)
 			std::shared_ptr<IGraphicsPath> CreatePath() override
@@ -54,7 +54,7 @@ namespace kxf
 
 			// Text functions
 			std::shared_ptr<IGraphicsFont> CreateFont() override;
-			std::shared_ptr<IGraphicsFont> CreateFont(const GDIFont& font, const Color& color = Drawing::GetStockColor(StockColor::Black)) override;
-			std::shared_ptr<IGraphicsFont> CreateFont(const SizeF& pixelSize, const String& faceName, const Color& color = Drawing::GetStockColor(StockColor::Black)) override;
+			std::shared_ptr<IGraphicsFont> CreateFont(const GDIFont& font) override;
+			std::shared_ptr<IGraphicsFont> CreateFont(const SizeF& pixelSize, const String& faceName) override;
 	};
 }

@@ -1,10 +1,5 @@
 #pragma once
 #include "Common.h"
-#include "IGraphicsContext.h"
-#include "IGraphicsTexture.h"
-#include "IGraphicsPen.h"
-#include "IGraphicsBrush.h"
-#include "IGraphicsPath.h"
 #include "kxf/General/String.h"
 #include "kxf/General/Version.h"
 class wxWindow;
@@ -14,6 +9,17 @@ namespace kxf
 {
 	class Image;
 	class GDIFont;
+
+	class IGraphicsContext;
+	class IGraphicsTexture;
+	class IGraphicsPath;
+	class IGraphicsFont;
+	class IGraphicsPen;
+	class IGraphicsBrush;
+	class IGraphicsSolidBrush;
+	class IGraphicsTextureBrush;
+	class IGraphicsLinearGradientBrush;
+	class IGraphicsRadialGradientBrush;
 }
 
 namespace kxf
@@ -41,8 +47,8 @@ namespace kxf
 			virtual std::shared_ptr<IGraphicsPen> CreatePen(const Color& color, float width = 1.0f) = 0;
 			virtual std::shared_ptr<IGraphicsSolidBrush> CreateSolidBrush(const Color& color) = 0;
 			virtual std::shared_ptr<IGraphicsTextureBrush> CreateTextureBrush(const Image& image) = 0;
-			virtual std::shared_ptr<IGraphicsLinearGradientBrush> CreateLinearGradientBrush(const RectF& rect, const GradientStops& colors, AffineMatrixF transform = {}) = 0;
-			virtual std::shared_ptr<IGraphicsRadialGradientBrush> CreateRadialGradientBrush(const RectF& rect, const GradientStops& colors, AffineMatrixF transform = {}) = 0;
+			virtual std::shared_ptr<IGraphicsLinearGradientBrush> CreateLinearGradientBrush(const RectF& rect, const GradientStops& colors, const AffineMatrixF& transform = {}) = 0;
+			virtual std::shared_ptr<IGraphicsRadialGradientBrush> CreateRadialGradientBrush(const RectF& rect, const GradientStops& colors, const AffineMatrixF& transform = {}) = 0;
 
 			// Path functions
 			virtual std::shared_ptr<IGraphicsPath> CreatePath() = 0;
@@ -54,111 +60,7 @@ namespace kxf
 
 			// Text functions
 			virtual std::shared_ptr<IGraphicsFont> CreateFont() = 0;
-			virtual std::shared_ptr<IGraphicsFont> CreateFont(const GDIFont& font, const Color& color = Drawing::GetStockColor(StockColor::Black)) = 0;
-			virtual std::shared_ptr<IGraphicsFont> CreateFont(const SizeF& pixelSize, const String& faceName, const Color& color = Drawing::GetStockColor(StockColor::Black)) = 0;
-
+			virtual std::shared_ptr<IGraphicsFont> CreateFont(const GDIFont& font) = 0;
+			virtual std::shared_ptr<IGraphicsFont> CreateFont(const SizeF& pixelSize, const String& faceName) = 0;
 	};
-}
-
-namespace kxf::Drawing
-{
-	class KX_API NullGraphicsRenderer final: public IGraphicsRenderer
-	{
-		public:
-			// IGraphicsRenderer
-			String GetName() const override
-			{
-				return {};
-			}
-			Version GetVersion() const override
-			{
-				return {};
-			}
-
-			std::unique_ptr<IGraphicsContext> CreateContext(std::shared_ptr<IGraphicsTexture> texture) override
-			{
-				return nullptr;
-			}
-			std::unique_ptr<IGraphicsContext> CreateGDIContext(wxDC& dc) override
-			{
-				return nullptr;
-			}
-			std::unique_ptr<IGraphicsContext> CreateWindowContext(wxWindow& window) override
-			{
-				return nullptr;
-			}
-			std::unique_ptr<IGraphicsContext> CreateWindowClientContext(wxWindow& window) override
-			{
-				return nullptr;
-			}
-			std::unique_ptr<IGraphicsContext> CreateWindowPaintContext(wxWindow& window) override
-			{
-				return nullptr;
-			}
-			std::unique_ptr<IGraphicsContext> CreateMeasuringContext() override
-			{
-				return nullptr;
-			}
-
-		public:
-			// Pen and brush functions
-			std::shared_ptr<IGraphicsPen> CreatePen(const Color& color, float width = 1.0f) override
-			{
-				return nullptr;
-			}
-			std::shared_ptr<IGraphicsSolidBrush> CreateSolidBrush(const Color& color) override
-			{
-				return nullptr;
-			}
-			std::shared_ptr<IGraphicsTextureBrush> CreateTextureBrush(const Image& image) override
-			{
-				return nullptr;
-			}
-			std::shared_ptr<IGraphicsLinearGradientBrush> CreateLinearGradientBrush(const RectF& rect, const GradientStops& colors, AffineMatrixF transform = {}) override
-			{
-				return nullptr;
-			}
-			std::shared_ptr<IGraphicsRadialGradientBrush> CreateRadialGradientBrush(const RectF& rect, const GradientStops& colors, AffineMatrixF transform = {}) override
-			{
-				return nullptr;
-			}
-
-			// Path functions
-			std::shared_ptr<IGraphicsPath> CreatePath() override
-			{
-				return nullptr;
-			}
-
-			// Texture functions
-			std::shared_ptr<IGraphicsTexture> CreateTexture() override
-			{
-				return nullptr;
-			}
-			std::shared_ptr<IGraphicsTexture> CreateTexture(const Image& image) override
-			{
-				return nullptr;
-			}
-			std::shared_ptr<IGraphicsTexture> CreateTexture(const SizeF& size, const Color& color) override
-			{
-				return nullptr;
-			}
-
-			// Text functions
-			std::shared_ptr<IGraphicsFont> CreateFont() override
-			{
-				return nullptr;
-			}
-			std::shared_ptr<IGraphicsFont> CreateFont(const GDIFont& font, const Color& color = Drawing::GetStockColor(StockColor::Black)) override
-			{
-				return nullptr;
-			}
-			std::shared_ptr<IGraphicsFont> CreateFont(const SizeF& pixelSize, const String& faceName, const Color& color = Drawing::GetStockColor(StockColor::Black)) override
-			{
-				return nullptr;
-			}
-	};
-}
-namespace kxf
-{
-	inline const Drawing::NullGraphicsRenderer NullGraphicsRenderer;
 }
