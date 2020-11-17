@@ -55,6 +55,7 @@ namespace kxf
 			// Text functions
 			std::shared_ptr<IGraphicsFont> CreateFont() override;
 			std::shared_ptr<IGraphicsFont> CreateFont(const GDIFont& font) override;
+			std::shared_ptr<IGraphicsFont> CreateFont(float pointSize, const String& faceName) override;
 			std::shared_ptr<IGraphicsFont> CreateFont(const SizeF& pixelSize, const String& faceName) override;
 	};
 }

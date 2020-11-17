@@ -58,6 +58,15 @@ namespace kxf::Drawing
 			{
 				return {};
 			}
+
+			float GetPointSize() const override
+			{
+				return 0;
+			}
+			void SetPointSize(float pointSize) override
+			{
+			}
+
 			SizeF GetPixelSize() const override
 			{
 				return SizeF::UnspecifiedSize();

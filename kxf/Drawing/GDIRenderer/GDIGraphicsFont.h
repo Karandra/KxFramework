@@ -39,6 +39,10 @@ namespace kxf
 				:m_Renderer(&rendrer), m_Font(font)
 			{
 			}
+			GDIGraphicsFont(GDIGraphicsRenderer& rendrer, float pointSize, const String& faceName)
+				:m_Renderer(&rendrer), m_Font(static_cast<double>(pointSize), FontFamily::Default, FontStyle::Normal, FontWeight::Normal, faceName)
+			{
+			}
 			GDIGraphicsFont(GDIGraphicsRenderer& rendrer, const SizeF& pixelSize, const String& faceName)
 				:m_Renderer(&rendrer), m_Font(pixelSize, FontFamily::Default, FontStyle::Normal, FontWeight::Normal, faceName)
 			{
@@ -111,6 +115,16 @@ namespace kxf
 			}
 
 			GraphicsFontMetrics GetMetrics() const override;
+
+			float GetPointSize() const override
+			{
+				return static_cast<float>(m_Font.GetPointSize());
+			}
+			void SetPointSize(float pointSize) override
+			{
+				m_Font.SetPointSize(static_cast<double>(pointSize));
+			}
+
 			SizeF GetPixelSize() const override
 			{
 				return m_Font.GetPixelSize();

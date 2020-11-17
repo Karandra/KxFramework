@@ -100,6 +100,10 @@ namespace kxf::Drawing
 			{
 				return nullptr;
 			}
+			std::shared_ptr<IGraphicsFont> CreateFont(float pointSize, const String& faceName) override
+			{
+				return nullptr;
+			}
 			std::shared_ptr<IGraphicsFont> CreateFont(const SizeF& pixelSize, const String& faceName) override
 			{
 				return nullptr;

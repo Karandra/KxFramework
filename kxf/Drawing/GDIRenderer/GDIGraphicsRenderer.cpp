@@ -218,6 +218,10 @@ namespace kxf
 	{
 		return std::make_shared<GDIGraphicsFont>(*this, font);
 	}
+	std::shared_ptr<IGraphicsFont> GDIGraphicsRenderer::CreateFont(float pointSize, const String& faceName)
+	{
+		return std::make_shared<GDIGraphicsFont>(*this, pointSize, faceName);
+	}
 	std::shared_ptr<IGraphicsFont> GDIGraphicsRenderer::CreateFont(const SizeF& pixelSize, const String& faceName)
 	{
 		return std::make_shared<GDIGraphicsFont>(*this, pixelSize, faceName);

@@ -24,6 +24,10 @@ namespace kxf
 			virtual void SetFamily(FontFamily family) = 0;
 
 			virtual GraphicsFontMetrics GetMetrics() const = 0;
+
+			virtual float GetPointSize() const = 0;
+			virtual void SetPointSize(float pointSize) = 0;
+
 			virtual SizeF GetPixelSize() const = 0;
 			virtual void SetPixelSize(const SizeF& pixelSize) = 0;
 	};
