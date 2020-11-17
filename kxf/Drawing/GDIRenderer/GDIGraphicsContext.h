@@ -165,9 +165,9 @@ namespace kxf
 			void DrawRotatedText(const String& text, const PointF& point, Angle angle, const IGraphicsFont& font = NullGraphicsFont, const IGraphicsBrush& brush = NullGraphicsBrush) override;
 			RectF DrawLabel(const String& text,
 							const RectF& rect,
-							const IGraphicsTexture& icon = NullGraphicsTexture,
-							const IGraphicsFont& font = NullGraphicsFont,
-							const IGraphicsBrush& brush = NullGraphicsBrush,
+							const IGraphicsTexture& icon,
+							const IGraphicsFont& font,
+							const IGraphicsBrush& brush,
 							FlagSet<Alignment> alignment = {},
 							size_t acceleratorIndex = String::npos) override;
 

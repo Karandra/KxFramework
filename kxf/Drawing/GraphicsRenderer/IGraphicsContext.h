@@ -103,21 +103,25 @@ namespace kxf
 			virtual void DrawText(const String& text, const PointF& point, const IGraphicsFont& font = NullGraphicsFont, const IGraphicsBrush& brush = NullGraphicsBrush) = 0;
 			virtual void DrawRotatedText(const String& text, const PointF& point, Angle angle, const IGraphicsFont& font = NullGraphicsFont, const IGraphicsBrush& brush = NullGraphicsBrush) = 0;
 
-			virtual RectF DrawLabel(const String& text,
-									const RectF& rect,
-									const IGraphicsTexture& icon = NullGraphicsTexture,
-									const IGraphicsFont& font = NullGraphicsFont,
-									const IGraphicsBrush& brush = NullGraphicsBrush,
-									FlagSet<Alignment> alignment = {},
-									size_t acceleratorIndex = String::npos) = 0;
 			RectF DrawLabel(const String& text, const RectF& rect, FlagSet<Alignment> alignment = {}, size_t acceleratorIndex = String::npos)
 			{
 				return DrawLabel(text, rect, NullGraphicsTexture, NullGraphicsFont, NullGraphicsBrush, alignment, acceleratorIndex);
+			}
+			RectF DrawLabel(const String& text, const RectF& rect, const IGraphicsFont& font, const IGraphicsBrush& brush, FlagSet<Alignment> alignment = {}, size_t acceleratorIndex = String::npos)
+			{
+				return DrawLabel(text, rect, NullGraphicsTexture, font, brush, alignment, acceleratorIndex);
 			}
 			RectF DrawLabel(const String& text, const RectF& rect, const IGraphicsTexture& icon, FlagSet<Alignment> alignment = {}, size_t acceleratorIndex = String::npos)
 			{
 				return DrawLabel(text, rect, icon, NullGraphicsFont, NullGraphicsBrush, alignment, acceleratorIndex);
 			}
+			virtual RectF DrawLabel(const String& text,
+									const RectF& rect,
+									const IGraphicsTexture& icon,
+									const IGraphicsFont& font,
+									const IGraphicsBrush& brush,
+									FlagSet<Alignment> alignment = {},
+									size_t acceleratorIndex = String::npos) = 0;
 
 			// Drawing functions
 			virtual void Clear(const IGraphicsBrush& brush) = 0;
