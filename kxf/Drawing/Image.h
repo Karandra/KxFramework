@@ -516,6 +516,7 @@ namespace kxf
 				switch (interpolationQuality)
 				{
 					case InterpolationQuality::Default:
+					case InterpolationQuality::FastestAvailable:
 					{
 						DoScale(wxIMAGE_QUALITY_NORMAL);
 						break;
@@ -538,6 +539,11 @@ namespace kxf
 					case InterpolationQuality::Bicubic:
 					{
 						DoScale(wxIMAGE_QUALITY_BICUBIC);
+						break;
+					}
+					case InterpolationQuality::BoxAverage:
+					{
+						DoScale(wxIMAGE_QUALITY_BOX_AVERAGE);
 						break;
 					}
 				};

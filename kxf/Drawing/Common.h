@@ -76,10 +76,11 @@ namespace kxf
 	};
 	enum class InterpolationQuality
 	{
-		None = -1,
+		None = 0,
+		FastestAvailable = -1,
 		BestAvailable = -2,
-		Default = 0,
 
+		Default = 1,
 		NearestNeighbor,
 		Bilinear,
 		Bicubic,
