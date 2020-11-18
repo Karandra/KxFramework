@@ -216,6 +216,7 @@
     <ClInclude Include="kxf\Drawing\ArtProvider.h" />
     <ClInclude Include="kxf\Drawing\Color.h" />
     <ClInclude Include="kxf\Drawing\ColorDefines.h" />
+    <ClInclude Include="kxf\Drawing\Font.h" />
     <ClInclude Include="kxf\Drawing\FontMetrics.h" />
     <ClInclude Include="kxf\Drawing\GDIRenderer.h" />
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIBitmap.h" />
@@ -693,6 +694,7 @@
     <ClCompile Include="kxf\Compression\SevenZip\Private\Utility.cpp" />
     <ClCompile Include="kxf\Drawing\ArtProvider.cpp" />
     <ClCompile Include="kxf\Drawing\Color.cpp" />
+    <ClCompile Include="kxf\Drawing\Font.cpp" />
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIBitmap.cpp" />
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIBrush.cpp" />
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIAction.cpp" />

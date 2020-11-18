@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GDIFont.h"
+#include "../Font.h"
 #include <wx/fontutil.h>
 
 namespace
@@ -15,6 +16,20 @@ namespace
 
 namespace kxf
 {
+	GDIFont::GDIFont(const Font& other)
+		:m_Font(other.GetPointSize(),
+				Drawing::Private::MapFontFamily(other.GetFamily()),
+				Drawing::Private::MapFontStyle(other.GetStyle()),
+				Drawing::Private::MapFontWeight(other.GetWeight()),
+				other.GetStyle().Contains(FontStyle::Underline),
+				other.GetFaceName(),
+				Drawing::Private::MapFontEncoding(other.GetEncoding())
+		)
+	{
+		m_Font.SetFractionalPointSize(other.GetPointSize());
+		m_Font.SetStrikethrough(other.GetStyle().Contains(FontStyle::Strikethrough));
+	}
+
 	// IGDIObject
 	void* GDIFont::GetHandle() const
 	{

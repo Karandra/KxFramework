@@ -1709,6 +1709,9 @@
     <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsObject.h">
       <Filter>kxf\Drawing\GraphicsRenderer\NullObjects</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Drawing\Font.h">
+      <Filter>kxf\Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2548,6 +2551,9 @@
     </ClCompile>
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIFont.cpp">
       <Filter>kxf\Drawing\GDIRenderer\&lt;GDIObjects&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\Font.cpp">
+      <Filter>kxf\Drawing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

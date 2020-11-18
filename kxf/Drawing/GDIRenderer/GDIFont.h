@@ -6,6 +6,11 @@
 
 namespace kxf
 {
+	class Font;
+}
+
+namespace kxf
+{
 	class KX_API GDIFont: public RTTI::ExtendInterface<GDIFont, IGDIObject>
 	{
 		KxRTTI_DeclareIID(GDIFont, {0xbeb3a65c, 0xf639, 0x4e44, {0x80, 0x3a, 0x1b, 0x53, 0xf6, 0x9c, 0x61, 0xd8}});
@@ -30,6 +35,7 @@ namespace kxf
 
 		public:
 			GDIFont() = default;
+			GDIFont(const Font& other);
 			GDIFont(const wxFont& other)
 				:m_Font(other)
 			{
@@ -38,15 +44,19 @@ namespace kxf
 				:m_Font(other)
 			{
 			}
-			GDIFont(double pointSize, FontFamily family, FlagSet<FontStyle> style, FontWeight weight, const String& faceName = {}, FontEncoding encoding = FontEncoding::Default)
-				:m_Font(pointSize, Drawing::Private::MapFontFamily(family), Drawing::Private::MapFontStyle(style), Drawing::Private::MapFontWeight(weight), style.Contains(FontStyle::Underline), faceName, Drawing::Private::MapFontEncoding(encoding))
+
+			GDIFont(float pointSize, FontFamily family, FlagSet<FontStyle> style, FontWeight weight, const String& faceName = {}, FontEncoding encoding = FontEncoding::Default)
+				:m_Font(static_cast<int>(pointSize), Drawing::Private::MapFontFamily(family), Drawing::Private::MapFontStyle(style), Drawing::Private::MapFontWeight(weight), style.Contains(FontStyle::Underline), faceName, Drawing::Private::MapFontEncoding(encoding))
 			{
-				m_Font.SetFractionalPointSize(pointSize);
+				m_Font.SetFractionalPointSize(static_cast<double>(pointSize));
+				m_Font.SetStrikethrough(style.Contains(FontStyle::Strikethrough));
 			}
 			GDIFont(const Size& pixelSize, FontFamily family, FlagSet<FontStyle> style, FontWeight weight, const String& faceName = {}, FontEncoding encoding = FontEncoding::Default)
 				:m_Font(pixelSize, Drawing::Private::MapFontFamily(family), Drawing::Private::MapFontStyle(style), Drawing::Private::MapFontWeight(weight), style.Contains(FontStyle::Underline), faceName, Drawing::Private::MapFontEncoding(encoding))
 			{
+				m_Font.SetStrikethrough(style.Contains(FontStyle::Strikethrough));
 			}
+
 			virtual ~GDIFont() = default;
 
 		public:
@@ -113,13 +123,13 @@ namespace kxf
 				return m_Font.SetFaceName(faceName);
 			}
 
-			double GetPointSize() const
+			float GetPointSize() const
 			{
-				return m_Font.GetFractionalPointSize();
+				return static_cast<float>(m_Font.GetFractionalPointSize());
 			}
-			void SetPointSize(double pointSize)
+			void SetPointSize(float pointSize)
 			{
-				m_Font.SetFractionalPointSize(pointSize);
+				m_Font.SetFractionalPointSize(static_cast<double>(pointSize));
 			}
 
 			Size GetPixelSize() const
