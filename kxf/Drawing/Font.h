@@ -78,7 +78,7 @@ namespace kxf
 		public:
 			bool IsNull() const
 			{
-				return !m_FaceName.IsEmpty() || m_PointSize <= 0 || !m_PixelSize.IsFullySpecified();
+				return m_FaceName.IsEmpty() || m_PointSize <= 0 || !m_PixelSize.IsFullySpecified();
 			}
 			bool IsInstalled() const;
 			Font GetBaseFont() const;
