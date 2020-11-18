@@ -30,5 +30,8 @@ namespace kxf
 
 			virtual SizeF GetPixelSize() const = 0;
 			virtual void SetPixelSize(const SizeF& pixelSize) = 0;
+
+			virtual Font ToFont() const = 0;
+			virtual bool FromFont(const Font& font) = 0;
 	};
 }

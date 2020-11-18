@@ -10,8 +10,8 @@ class wxWindow;
 
 namespace kxf
 {
+	class Font;
 	class Image;
-	class GDIFont;
 	class String;
 
 	class IGraphicsRenderer;

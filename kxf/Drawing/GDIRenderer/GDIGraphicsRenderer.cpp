@@ -214,7 +214,7 @@ namespace kxf
 	{
 		return std::make_shared<GDIGraphicsFont>(*this);
 	}
-	std::shared_ptr<IGraphicsFont> GDIGraphicsRenderer::CreateFont(const GDIFont& font)
+	std::shared_ptr<IGraphicsFont> GDIGraphicsRenderer::CreateFont(const Font& font)
 	{
 		return std::make_shared<GDIGraphicsFont>(*this, font);
 	}

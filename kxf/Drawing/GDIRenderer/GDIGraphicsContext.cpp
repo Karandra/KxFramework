@@ -10,21 +10,28 @@
 
 namespace
 {
+	using namespace kxf;
+
 	class ChangeTextParameters final
 	{
 		private:
-			kxf::GDIAction::ChangeFont m_Font;
-			kxf::GDIAction::ChangeTextForeground m_TextForeground;
+			GDIAction::ChangeFont m_Font;
+			GDIAction::ChangeTextForeground m_TextForeground;
 
 		public:
-			ChangeTextParameters(kxf::GDIContext& dc, const kxf::IGraphicsFont& font, const kxf::IGraphicsBrush& brush)
+			ChangeTextParameters(GDIContext& dc, const IGraphicsFont& font, const IGraphicsBrush& brush)
 				:m_Font(dc), m_TextForeground(dc)
 			{
-				using namespace kxf;
-
 				if (font)
 				{
-					m_Font.Set(font.QueryInterface<GDIGraphicsFont>()->Get());
+					if (auto gdiFont = font.QueryInterface<GDIGraphicsFont>())
+					{
+						m_Font.Set(gdiFont->Get());
+					}
+					else
+					{
+						m_Font.Set(font.ToFont());
+					}
 				}
 				if (auto solidBrush = brush.QueryInterface<IGraphicsSolidBrush>())
 				{
@@ -35,15 +42,13 @@ namespace
 	class ChangeDrawParameters final
 	{
 		private:
-			kxf::GDIAction::ChangePen m_Pen;
-			kxf::GDIAction::ChangeBrush m_Brush;
+			GDIAction::ChangePen m_Pen;
+			GDIAction::ChangeBrush m_Brush;
 
 		public:
-			ChangeDrawParameters(kxf::GDIContext& dc, const kxf::IGraphicsBrush& brush, const kxf::IGraphicsPen& pen)
+			ChangeDrawParameters(GDIContext& dc, const IGraphicsBrush& brush, const IGraphicsPen& pen)
 				:m_Pen(dc), m_Brush(dc)
 			{
-				using namespace kxf;
-
 				if (brush)
 				{
 					dc.SetBrush(brush.QueryInterface<GDIGraphicsBrush>()->Get());
@@ -61,19 +66,17 @@ namespace
 		Rotated,
 		Label
 	};
-	kxf::RectF DoDrawText(kxf::GDIContext& dc,
-						  TextKind kind,
-						  const kxf::String& text,
-						  const kxf::RectF& rect,
-						  kxf::Angle angle,
-						  const kxf::IGraphicsTexture& icon,
-						  const kxf::IGraphicsFont& font,
-						  const kxf::IGraphicsBrush& brush,
-						  kxf::FlagSet<kxf::Alignment> alignment,
-						  size_t acceleratorIndex)
+	RectF DoDrawText(GDIContext& dc,
+					 TextKind kind,
+					 const String& text,
+					 const RectF& rect,
+					 Angle angle,
+					 const IGraphicsTexture& icon,
+					 const IGraphicsFont& font,
+					 const IGraphicsBrush& brush,
+					 FlagSet<Alignment> alignment,
+					 size_t acceleratorIndex)
 	{
-		using namespace kxf;
-
 		ChangeTextParameters textParametrs(dc, font, brush);
 
 		switch (kind)
@@ -309,10 +312,16 @@ namespace kxf
 	}
 	void GDIGraphicsContext::SetFont(std::shared_ptr<IGraphicsFont> font)
 	{
-		object_ptr<GDIGraphicsFont> gdiFont;
-		if (font && font->QueryInterface(gdiFont))
+		if (font)
 		{
-			m_DC.SetFont(gdiFont->Get());
+			if (auto gdiFont = font->QueryInterface<GDIGraphicsFont>())
+			{
+				m_DC.SetFont(gdiFont->Get());
+			}
+			else
+			{
+				m_DC.SetFont(font->ToFont());
+			}
 		}
 		else
 		{

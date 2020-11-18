@@ -384,7 +384,7 @@ namespace kxf::System
 	{
 		return static_cast<SystemScreenType>(wxSystemSettings::GetScreenType());
 	}
-	GDIFont GetFont(SystemFont index)
+	Font GetFont(SystemFont index)
 	{
 		return wxSystemSettings::GetFont(static_cast<wxSystemFont>(index));
 	}

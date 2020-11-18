@@ -998,9 +998,9 @@ namespace kxf::Sciter
 		return GetSciterAPI()->SciterSetStyleAttribute(ToSciterElement(m_Handle), name, nullptr) == SCDOM_OK;
 	}
 
-	GDIFont Element::GetStyleFont() const
+	Font Element::GetStyleFont() const
 	{
-		GDIFont font;
+		Font font;
 
 		// Family
 		if (String fontFamily = GetStyleAttribute("font-family"); !fontFamily.IsEmpty())
@@ -1033,7 +1033,10 @@ namespace kxf::Sciter
 							font.SetFamily(FontFamily::FixedWidth);
 						}
 					}
-					if (font.SetFaceName(value))
+
+					// Set the face name and if such font is installed use it
+					font.SetFaceName(value);
+					if (font.IsInstalled())
 					{
 						break;
 					}
@@ -1074,7 +1077,7 @@ namespace kxf::Sciter
 		// Size
 		if (auto fontSize = GetStyleAttributeFloat("font-size"))
 		{
-			font.SetPointSize(*fontSize);
+			font.SetPointSize(static_cast<float>(*fontSize));
 		}
 
 		// Weight
@@ -1085,7 +1088,7 @@ namespace kxf::Sciter
 
 		return font;
 	}
-	bool Element::SetStyleFont(const GDIFont& font)
+	bool Element::SetStyleFont(const Font& font)
 	{
 		if (!IsNull())
 		{

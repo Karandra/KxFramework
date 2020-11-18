@@ -79,6 +79,15 @@ namespace kxf::Drawing
 
 				}
 			}
+
+			Font ToFont() const override
+			{
+				return {};
+			}
+			bool FromFont(const Font& font) override
+			{
+				return false;
+			}
 	};
 }
 namespace kxf

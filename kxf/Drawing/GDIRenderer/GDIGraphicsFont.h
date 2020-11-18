@@ -35,6 +35,10 @@ namespace kxf
 				:m_Renderer(&rendrer)
 			{
 			}
+			GDIGraphicsFont(GDIGraphicsRenderer& rendrer, const Font& font)
+				:m_Renderer(&rendrer), m_Font(font)
+			{
+			}
 			GDIGraphicsFont(GDIGraphicsRenderer& rendrer, const GDIFont& font)
 				:m_Renderer(&rendrer), m_Font(font)
 			{
@@ -132,6 +136,16 @@ namespace kxf
 			void SetPixelSize(const SizeF& pixelSize) override
 			{
 				m_Font.SetPixelSize(pixelSize);
+			}
+
+			Font ToFont() const override
+			{
+				return m_Font;
+			}
+			bool FromFont(const Font& font) override
+			{
+				m_Font = font;
+				return !m_Font.IsNull();
 			}
 
 			// GDIGraphicsFont

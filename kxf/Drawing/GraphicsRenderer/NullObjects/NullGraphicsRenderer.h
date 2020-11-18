@@ -96,7 +96,7 @@ namespace kxf::Drawing
 			{
 				return nullptr;
 			}
-			std::shared_ptr<IGraphicsFont> CreateFont(const GDIFont& font) override
+			std::shared_ptr<IGraphicsFont> CreateFont(const Font& font) override
 			{
 				return nullptr;
 			}

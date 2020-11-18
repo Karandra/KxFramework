@@ -7,8 +7,8 @@ class wxDC;
 
 namespace kxf
 {
+	class Font;
 	class Image;
-	class GDIFont;
 
 	class IGraphicsContext;
 	class IGraphicsTexture;
@@ -60,7 +60,7 @@ namespace kxf
 
 			// Text functions
 			virtual std::shared_ptr<IGraphicsFont> CreateFont() = 0;
-			virtual std::shared_ptr<IGraphicsFont> CreateFont(const GDIFont& font) = 0;
+			virtual std::shared_ptr<IGraphicsFont> CreateFont(const Font& font) = 0;
 			virtual std::shared_ptr<IGraphicsFont> CreateFont(float pointSize, const String& faceName) = 0;
 			virtual std::shared_ptr<IGraphicsFont> CreateFont(const SizeF& pixelSize, const String& faceName) = 0;
 	};

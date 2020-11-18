@@ -3,11 +3,11 @@
 
 namespace kxf::UI::DataView
 {
-	GDIFont CellAttribute::GetEffectiveFont(const GDIFont& baseFont) const
+	Font CellAttribute::GetEffectiveFont(const Font& baseFont) const
 	{
 		if (!m_FontOptions.IsDefault())
 		{
-			GDIFont font = baseFont;
+			Font font = baseFont;
 			if (m_FontOptions.ContainsOption(CellFontOption::Bold))
 			{
 				font.SetWeight(FontWeight::Bold);

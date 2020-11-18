@@ -137,6 +137,10 @@ namespace kxf
 		return FontWeight::None;
 	}
 
+	void Font::CreateFrom(const GDIFont& other)
+	{
+		CreateFrom(other.ToWxFont());
+	}
 	void Font::CreateFrom(const wxFont& other)
 	{
 		if (other.IsOk())
@@ -167,14 +171,9 @@ namespace kxf
 		m_Style.Add(FontStyle::Strikethrough, other.GetStrikethrough());
 	}
 
-	Font::Font(const GDIFont& other)
-	{
-		CreateFrom(other.ToWxFont());
-	}
-
 	bool Font::IsInstalled() const
 	{
-		return !GDIFont(*this).IsNull();
+		return !ToGDIFont().IsNull();
 	}
 	Font Font::GetBaseFont() const
 	{

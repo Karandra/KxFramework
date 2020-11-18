@@ -231,7 +231,7 @@ namespace kxf::UI::DataView
 		}
 		else
 		{
-			auto GetEffectiveFontIfNeeded = [&dc, &attributes]() -> GDIFont
+			auto GetEffectiveFontIfNeeded = [&dc, &attributes]() -> Font
 			{
 				if (attributes.FontOptions().NeedDCAlteration())
 				{
@@ -239,7 +239,7 @@ namespace kxf::UI::DataView
 				}
 				return {};
 			};
-			auto MeasureString = [&dc](const String& text, const GDIFont& font = {})
+			auto MeasureString = [&dc](const String& text, const Font& font = {})
 			{
 				return dc.GetTextExtent(text, font).GetExtent();
 			};

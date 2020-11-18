@@ -7,6 +7,7 @@
 #include "kxf/Drawing/Color.h"
 #include "kxf/Drawing/Angle.h"
 #include "kxf/Drawing/Image.h"
+#include "kxf/Drawing/Font.h"
 #include "kxf/Drawing/GDIRenderer/GDIFont.h"
 #include "kxf/Drawing/GDIRenderer/GDIBitmap.h"
 #include "kxf/Drawing/GDIRenderer/GDIIcon.h"
