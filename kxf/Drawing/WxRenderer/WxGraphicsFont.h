@@ -67,7 +67,7 @@ namespace kxf
 			// IGraphicsObject
 			bool IsNull() const override
 			{
-				return !m_Renderer || m_Font.IsNull() || m_Graphics.IsNull();
+				return !m_Renderer || m_Font.IsNull();
 			}
 			bool IsSameAs(const IGraphicsObject& other) const override
 			{
@@ -77,7 +77,7 @@ namespace kxf
 				}
 				else if (auto object = other.QueryInterface<WxGraphicsFont>())
 				{
-					return m_Font.IsSameAs(object->m_Font) && m_Graphics.IsSameAs(object->m_Graphics);
+					return m_Font.IsSameAs(object->m_Font);
 				}
 				return false;
 			}

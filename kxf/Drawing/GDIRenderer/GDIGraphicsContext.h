@@ -24,7 +24,7 @@ namespace kxf
 			std::shared_ptr<IGraphicsBrush> m_SavedBrush;
 
 			AntialiasMode m_AntialiasMode = AntialiasMode::None;
-			CompositionMode m_CompositionMode = CompositionMode::Source;
+			CompositionMode m_CompositionMode = CompositionMode::Over;
 			InterpolationQuality m_InterpolationQuality = InterpolationQuality::Default;
 
 		private:

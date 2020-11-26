@@ -76,7 +76,7 @@ namespace kxf::Drawing::Private
 			// IGraphicsObject
 			bool IsNull() const override
 			{
-				return !m_Renderer || m_Brush.IsNull() || m_Graphics.IsNull();
+				return !m_Renderer || m_Brush.IsNull();
 			}
 			bool IsSameAs(const IGraphicsObject& other) const override
 			{
@@ -86,7 +86,7 @@ namespace kxf::Drawing::Private
 				}
 				else if (auto object = other.QueryInterface<WxGraphicsBrush>())
 				{
-					return m_Brush.IsSameAs(object->GetBrush()) && m_Graphics.IsSameAs(object->Get());
+					return m_Brush.IsSameAs(object->GetBrush());
 				}
 				return false;
 			}

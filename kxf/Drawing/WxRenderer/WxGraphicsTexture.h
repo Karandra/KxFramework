@@ -64,7 +64,7 @@ namespace kxf
 			// IGraphicsObject
 			bool IsNull() const override
 			{
-				return !m_Renderer || m_Image.IsNull() || m_Graphics.IsNull();
+				return !m_Renderer || m_Image.IsNull();
 			}
 			bool IsSameAs(const IGraphicsObject& other) const override
 			{
@@ -74,7 +74,7 @@ namespace kxf
 				}
 				else if (auto object = other.QueryInterface<WxGraphicsTexture>())
 				{
-					return m_Graphics.IsSameAs(object->m_Graphics) && m_Image.IsSameAs(object->m_Image);
+					return m_Image.IsSameAs(object->m_Image);
 				}
 				return false;
 			}

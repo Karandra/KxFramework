@@ -111,6 +111,7 @@ namespace kxf
 		if (m_DC)
 		{
 			m_DC.SetMapMode(GDIMappingMode::Text);
+			m_DC.SetTextBackground(Drawing::GetStockColor(StockColor::Transparent));
 		}
 	}
 

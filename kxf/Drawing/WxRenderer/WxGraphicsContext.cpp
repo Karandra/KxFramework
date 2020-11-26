@@ -33,13 +33,19 @@ namespace kxf
 	{
 		if (brush)
 		{
-			m_OldBrush = gc.m_CurrentBrush->QueryInterface<WxGraphicsBrush>()->Get();
+			if (gc.m_CurrentBrush && *gc.m_CurrentBrush)
+			{
+				m_OldBrush = gc.m_CurrentBrush->QueryInterface<WxGraphicsBrush>()->Get();
+			}
 			m_Context.SetBrush(brush.QueryInterface<WxGraphicsBrush>()->Get());
 		}
 		if (pen)
 		{
-			m_OldPen = gc.m_CurrentPen->QueryInterface<WxGraphicsPen>()->Get();
-			m_Context.SetPen(brush.QueryInterface<WxGraphicsPen>()->Get());
+			if (gc.m_CurrentPen && *gc.m_CurrentPen)
+			{
+				m_OldPen = gc.m_CurrentPen->QueryInterface<WxGraphicsPen>()->Get();
+			}
+			m_Context.SetPen(pen.QueryInterface<WxGraphicsPen>()->Get());
 		}
 	}
 	WxGraphicsContext::ChangeDrawParameters::~ChangeDrawParameters()
@@ -62,6 +68,17 @@ namespace kxf
 		if (m_GCDC)
 		{
 			m_GCDC.SetMapMode(GDIMappingMode::Text);
+			m_GCDC.SetTextBackground(Drawing::GetStockColor(StockColor::Transparent));
+		}
+	}
+	void WxGraphicsContext::CopyAttributesFromDC(const GDIContext& dc)
+	{
+		if (dc)
+		{
+			SetFont(std::make_shared<WxGraphicsFont>(*m_Renderer, dc.GetFont()));
+			SetFontBrush(std::make_shared<WxGraphicsSolidBrush>(*m_Renderer, dc.GetTextForeground()));
+			SetBrush(std::make_shared<WxGraphicsSolidBrush>(*m_Renderer, dc.GetBrush()));
+			SetPen(std::make_shared<WxGraphicsPen>(*m_Renderer, dc.GetPen()));
 		}
 	}
 
@@ -672,22 +689,53 @@ namespace kxf
 	// Bounding box functions
 	RectF WxGraphicsContext::GetBoundingBox() const
 	{
-		return m_BoundingBox;
+		if (m_BoundingBox)
+		{
+			return *m_BoundingBox;
+		}
+		return {};
 	}
 	void WxGraphicsContext::CalcBoundingBox(const PointF& point)
 	{
-		if (m_BoundingBox.IsEmpty())
+		if (m_BoundingBox)
 		{
-			m_BoundingBox.SetTopLeft(point);
-			m_BoundingBox.SetBottomRight(point);
+			m_BoundingBox->IncludePoint(point);
 		}
 		else
 		{
-			m_BoundingBox.IncludePoint(point);
+			m_BoundingBox = RectF(point, point);
 		}
 	}
 	void WxGraphicsContext::ResetBoundingBox()
 	{
 		m_BoundingBox = {};
+	}
+}
+
+namespace kxf
+{
+	void WxGraphicsGDIContext::Initialize(WxGraphicsRenderer& rendrer, wxDC& dc)
+	{
+		m_DC = dc;
+		m_Image = Image(m_DC.GetSize());
+		m_Image.SetRGBA(m_Image.GetSize(), Drawing::GetStockColor(StockColor::Transparent));
+
+		WxGraphicsContext::Initialize(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateContextFromImage(m_Image.ToWxImage())));
+	}
+
+	bool WxGraphicsGDIContext::FlushContent()
+	{
+		if (m_Context && m_DC)
+		{
+			m_Context->Flush();
+			m_DC.DrawBitmap(m_Image.ToBitmap(), {0, 0});
+
+			return true;
+		}
+		return false;
+	}
+	void WxGraphicsGDIContext::ResetContext()
+	{
+		m_DC = {};
 	}
 }

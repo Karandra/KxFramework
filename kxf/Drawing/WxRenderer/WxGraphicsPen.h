@@ -75,7 +75,7 @@ namespace kxf
 			// IGraphicsObject
 			bool IsNull() const override
 			{
-				return !m_Renderer || m_Pen.IsNull() || m_Graphics.IsNull();
+				return !m_Renderer || m_Pen.IsNull();
 			}
 			bool IsSameAs(const IGraphicsObject& other) const override
 			{
@@ -85,7 +85,7 @@ namespace kxf
 				}
 				else if (auto object = other.QueryInterface<WxGraphicsPen>())
 				{
-					return m_Pen.IsSameAs(object->m_Pen) && m_Graphics.IsSameAs(object->m_Graphics);
+					return m_Pen.IsSameAs(object->m_Pen);
 				}
 				return false;
 			}

@@ -51,14 +51,15 @@ namespace kxf
 			bool m_CurrentFontValid = false;
 
 			// Bounding box
-			RectF m_BoundingBox;
+			std::optional<RectF> m_BoundingBox;
 
 			// Options
 			InterpolationQuality m_InterpolationQuality = InterpolationQuality::Default;
-			CompositionMode m_CompositionMode = CompositionMode::Dest;
+			CompositionMode m_CompositionMode = CompositionMode::Over;
 
 		protected:
 			void SetupDC();
+			void CopyAttributesFromDC(const GDIContext& dc);
 			void Initialize(WxGraphicsRenderer& rendrer, std::unique_ptr<wxGraphicsContext> gc)
 			{
 				m_Renderer = &rendrer;
@@ -290,28 +291,24 @@ namespace kxf
 	class KX_API WxGraphicsGDIContext: public WxGraphicsContext
 	{
 		private:
-			wxDC* m_DC = nullptr;
+			GDIContext m_DC;
 			Image m_Image;
 
-		private:
-			void FlushToDC()
-			{
-				m_Context->Flush();
+		protected:
+			void Initialize(WxGraphicsRenderer& rendrer, wxDC& dc);
 
-				m_DC->Clear();
-				m_DC->DrawBitmap(m_Image.ToBitmap().ToWxBitmap(), 0, 0, false);
-			}
+			bool FlushContent();
+			void ResetContext();
 
 		public:
 			WxGraphicsGDIContext() noexcept = default;
 			WxGraphicsGDIContext(WxGraphicsRenderer& rendrer, wxDC& dc)
-				:WxGraphicsContext(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateContextFromImage(m_Image.ToWxImage()))), m_DC(&dc)
 			{
-				SetupDC();
+				Initialize(rendrer, dc);
 			}
 			~WxGraphicsGDIContext()
 			{
-				FlushToDC();
+				FlushContent();
 			}
 
 		public:
@@ -324,8 +321,10 @@ namespace kxf
 			// IGraphicsContext
 			void Flush() override
 			{
-				WxGraphicsContext::Flush();
-				FlushToDC();
+				if (!FlushContent())
+				{
+					WxGraphicsContext::Flush();
+				}
 			}
 	};
 
@@ -336,21 +335,29 @@ namespace kxf
 			std::shared_ptr<IGraphicsTexture> m_Texture;
 
 		private:
-			void FlushContent()
+			bool FlushContent()
 			{
-				m_Context->Flush();
-
-				if (m_Texture && m_Image)
+				if (m_Context)
 				{
-					m_Texture->FromImage(m_Image);
+					m_Context->Flush();
+
+					if (m_Texture && m_Image)
+					{
+						m_Texture->FromImage(m_Image);
+					}
+					return true;
 				}
+				return false;
 			}
 
 		public:
 			WxGraphicsMemoryContext() noexcept = default;
 			WxGraphicsMemoryContext(WxGraphicsRenderer& rendrer, std::shared_ptr<IGraphicsTexture> texture)
-				:WxGraphicsContext(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateContextFromImage(m_Image.ToWxImage()))), m_Texture(std::move(texture))
+				:m_Image(texture->GetSize()), m_Texture(std::move(texture))
 			{
+				m_Image.SetRGBA(m_Image.GetSize(), Drawing::GetStockColor(StockColor::Transparent));
+
+				Initialize(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateContextFromImage(m_Image.ToWxImage())));
 				SetupDC();
 			}
 			~WxGraphicsMemoryContext()
@@ -368,8 +375,10 @@ namespace kxf
 			// IGraphicsContext
 			void Flush() override
 			{
-				WxGraphicsContext::Flush();
-				FlushContent();
+				if (!FlushContent())
+				{
+					WxGraphicsContext::Flush();
+				}
 			}
 
 			// WxGraphicsMemoryContext
@@ -385,72 +394,6 @@ namespace kxf
 			{
 				FlushContent();
 				return std::move(m_Texture);
-			}
-	};
-
-	class KX_API WxGraphicsWindowContext: public WxGraphicsContext
-	{
-		private:
-			wxWindowDC m_WindowDC;
-
-		public:
-			WxGraphicsWindowContext() noexcept = default;
-			WxGraphicsWindowContext(WxGraphicsRenderer& rendrer, wxWindow& window)
-				:m_WindowDC(&window)
-			{
-				Initialize(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateContext(m_WindowDC)));
-				SetupDC();
-			}
-
-		public:
-			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
-			{
-				return std::make_unique<WxGraphicsWindowContext>(*m_Renderer, *m_Context->GetWindow());
-			}
-	};
-
-	class KX_API WxGraphicsWindowClientContext: public WxGraphicsContext
-	{
-		protected:
-			wxClientDC m_ClientDC;
-
-		public:
-			WxGraphicsWindowClientContext() noexcept = default;
-			WxGraphicsWindowClientContext(WxGraphicsRenderer& rendrer, wxWindow& window)
-				:m_ClientDC(&window)
-			{
-				Initialize(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateContext(m_ClientDC)));
-				SetupDC();
-			}
-
-		public:
-			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
-			{
-				return std::make_unique<WxGraphicsWindowClientContext>(*m_Renderer, *m_ClientDC.GetWindow());
-			}
-	};
-
-	class KX_API WxGraphicsPaintContext: public WxGraphicsContext
-	{
-		protected:
-			wxPaintDC m_PaintDC;
-
-		public:
-			WxGraphicsPaintContext() noexcept = default;
-			WxGraphicsPaintContext(WxGraphicsRenderer& rendrer, wxWindow& window)
-				:m_PaintDC(&window)
-			{
-				Initialize(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateContext(m_PaintDC)));
-				SetupDC();
-			}
-
-		public:
-			// IGraphicsObject
-			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
-			{
-				return std::make_unique<WxGraphicsPaintContext>(*m_Renderer, *m_PaintDC.GetWindow());
 			}
 	};
 
@@ -471,4 +414,80 @@ namespace kxf
 				return std::make_unique<WxGraphicsMeasuringContext>(*m_Renderer);
 			}
 	};
+
+	namespace Drawing::Private
+	{
+		template<class T>
+		class WxGraphicsBasicGDIContext: public WxGraphicsContext
+		{
+			private:
+				T m_DC;
+
+			private:
+				void FlushContent()
+				{
+					if (m_Context)
+					{
+						m_Context->Flush();
+					}
+				}
+
+			public:
+				WxGraphicsBasicGDIContext() noexcept = default;
+				WxGraphicsBasicGDIContext(WxGraphicsRenderer& rendrer, wxWindow& window)
+					:m_DC(&window)
+				{
+					Initialize(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateContext(m_DC)));
+
+					WxGraphicsContext::CopyAttributesFromDC(m_DC);
+					WxGraphicsContext::SetupDC();
+				}
+				~WxGraphicsBasicGDIContext()
+				{
+					FlushContent();
+				}
+
+			public:
+				// IGraphicsObject
+				std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+				{
+					return std::make_unique<WxGraphicsBasicGDIContext<T>>(*m_Renderer, *m_Context->GetWindow());
+				}
+		};
+
+		template<class T>
+		class KX_API WxGraphicsBasicGDIContext_ImageBuffered: public WxGraphicsGDIContext
+		{
+			private:
+				T m_DC;
+
+			public:
+				WxGraphicsBasicGDIContext_ImageBuffered() noexcept = default;
+				WxGraphicsBasicGDIContext_ImageBuffered(WxGraphicsRenderer& rendrer, wxWindow& window)
+					:m_DC(&window)
+				{
+					Initialize(rendrer, m_DC);
+
+					WxGraphicsContext::CopyAttributesFromDC(m_DC);
+					WxGraphicsContext::SetupDC();
+				}
+				~WxGraphicsBasicGDIContext_ImageBuffered()
+				{
+					FlushContent();
+					ResetContext();
+				}
+
+			public:
+				// IGraphicsObject
+				std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+				{
+					return std::make_unique<WxGraphicsBasicGDIContext_ImageBuffered>(*m_Renderer, *m_DC.GetWindow());
+				}
+		};
+	}
+
+	using WxGraphicsWindowContext = Drawing::Private::WxGraphicsBasicGDIContext<wxWindowDC>;
+	using WxGraphicsWindowClientContext = Drawing::Private::WxGraphicsBasicGDIContext<wxClientDC>;
+	using WxGraphicsPaintContext = Drawing::Private::WxGraphicsBasicGDIContext<wxPaintDC>;
+	using WxGraphicsBufferedPaintContext = Drawing::Private::WxGraphicsBasicGDIContext<wxBufferedPaintDC>;
 }

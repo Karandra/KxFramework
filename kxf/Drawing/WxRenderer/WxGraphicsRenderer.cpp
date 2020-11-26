@@ -31,6 +31,21 @@ namespace kxf
 	// IGraphicsRenderer
 	String WxGraphicsRenderer::GetName() const
 	{
+		switch (m_Type)
+		{
+			case Type::GDIPlus:
+			{
+				return wxS("GDIPlus");
+			}
+			case Type::Direct2D:
+			{
+				return wxS("Direct2D");
+			}
+			case Type::Cairo:
+			{
+				return wxS("Cairo");
+			}
+		};
 		return m_Renderer.GetName();
 	}
 	Version WxGraphicsRenderer::GetVersion() const
@@ -69,7 +84,14 @@ namespace kxf
 	}
 	std::unique_ptr<IGraphicsContext> WxGraphicsRenderer::CreateWindowPaintContext(wxWindow& window)
 	{
-		return std::make_unique<WxGraphicsPaintContext>(*this, window);
+		if (window.IsDoubleBuffered())
+		{
+			return std::make_unique<WxGraphicsPaintContext>(*this, window);
+		}
+		else
+		{
+			return std::make_unique<WxGraphicsBufferedPaintContext>(*this, window);
+		}
 	}
 	std::unique_ptr<IGraphicsContext> WxGraphicsRenderer::CreateMeasuringContext()
 	{
@@ -155,6 +177,7 @@ namespace kxf
 	// WxGraphicsRenderer
 	bool WxGraphicsRenderer::SupportBitmapRescaleOnDraw() const
 	{
-		return m_Type == Type::GDIPlus;
+		return true;
+		//return m_Type == Type::GDIPlus;
 	}
 }
