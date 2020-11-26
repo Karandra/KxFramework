@@ -72,7 +72,7 @@ namespace kxf
 			i++;
 		}
 
-		m_ComponentCount = i - 1;
+		m_ComponentCount = i;
 		if (m_ComponentCount != 0)
 		{
 			m_Type = VersionType::Default;
