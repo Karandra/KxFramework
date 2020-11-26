@@ -102,7 +102,7 @@ namespace kxf
 	// IGraphicsRenderer
 	String GDIGraphicsRenderer::GetName() const
 	{
-		return wxS("GDIGraphicsRenderer");
+		return wxS("GDI");
 	}
 	Version GDIGraphicsRenderer::GetVersion() const
 	{

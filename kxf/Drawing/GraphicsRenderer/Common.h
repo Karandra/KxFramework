@@ -16,11 +16,4 @@ namespace kxf
 
 	using GraphicsFontMetrics = Drawing::BasicFontMetrics<float>;
 	using GraphicsTextExtent = Drawing::BasicTextExtent<float>;
-
-	class IGraphicsRenderer;
-}
-
-namespace kxf::Drawing
-{
-	std::unique_ptr<IGraphicsRenderer> CreateGDIRenderer();
 }

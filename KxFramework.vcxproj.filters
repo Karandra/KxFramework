@@ -251,6 +251,9 @@
     <Filter Include="kxf\Drawing\GraphicsRenderer\NullObjects">
       <UniqueIdentifier>{4c87a8c9-0dcc-4920-826c-8c1aa32ec87f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\Drawing\WxRenderer">
+      <UniqueIdentifier>{a2fbc745-d4d0-4f41-87a4-f00f4ec82b32}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -1712,6 +1715,33 @@
     <ClInclude Include="kxf\Drawing\Font.h">
       <Filter>kxf\Drawing</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsRenderer.h">
+      <Filter>kxf\Drawing\WxRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\WxRenderer\Common.h">
+      <Filter>kxf\Drawing\WxRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsTexture.h">
+      <Filter>kxf\Drawing\WxRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsFont.h">
+      <Filter>kxf\Drawing\WxRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsBrush.h">
+      <Filter>kxf\Drawing\WxRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsPen.h">
+      <Filter>kxf\Drawing\WxRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsContext.h">
+      <Filter>kxf\Drawing\WxRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsPath.h">
+      <Filter>kxf\Drawing\WxRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsPath.h">
+      <Filter>kxf\Drawing\GraphicsRenderer\NullObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2519,9 +2549,6 @@
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIGraphicsFont.cpp">
       <Filter>kxf\Drawing\GDIRenderer\&lt;GraphicsRenderer&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Drawing\GraphicsRenderer\Common.cpp">
-      <Filter>kxf\Drawing\GraphicsRenderer</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIBitmap.cpp">
       <Filter>kxf\Drawing\GDIRenderer\&lt;GDIObjects&gt;\&lt;GDIImages&gt;</Filter>
     </ClCompile>
@@ -2553,6 +2580,21 @@
       <Filter>kxf\Drawing\GDIRenderer\&lt;GDIObjects&gt;</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Drawing\Font.cpp">
+      <Filter>kxf\Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\WxRenderer\WxGraphicsRenderer.cpp">
+      <Filter>kxf\Drawing\WxRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\WxRenderer\WxGraphicsFont.cpp">
+      <Filter>kxf\Drawing\WxRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\WxRenderer\WxGraphicsPen.cpp">
+      <Filter>kxf\Drawing\WxRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\WxRenderer\WxGraphicsContext.cpp">
+      <Filter>kxf\Drawing\WxRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\GraphicsRenderer.cpp">
       <Filter>kxf\Drawing</Filter>
     </ClCompile>
   </ItemGroup>

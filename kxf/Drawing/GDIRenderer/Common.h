@@ -14,8 +14,6 @@
 #include "GDIRegion.h"
 #include "GDIFont.h"
 
-#include "kxf/RTTI/QueryInterface.h"
-
 namespace kxf
 {
 	enum class GDIMappingMode
@@ -36,6 +34,7 @@ namespace kxf
 		Copy = wxCOPY, // src
 		And = wxAND, // src AND dst
 		Or = wxOR, // src OR dst
+		Xor = wxXOR, // src XOR dst
 		Nor = wxNOR, // (NOT src) AND (NOT dst)
 		Nand = wxNAND, // (NOT src) OR (NOT dst)
 		Equiv = wxEQUIV, // (NOT src) XOR dst

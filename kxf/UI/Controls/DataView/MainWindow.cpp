@@ -10,7 +10,7 @@
 #include "kxf/UI/Windows/Frame.h"
 #include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/Private/UxThemeDefines.h"
-#include "kxf/Drawing/GDIRenderer.h"
+#include "kxf/Drawing/GraphicsRenderer.h"
 #include "kxf/System/SystemInformation.h"
 #include <wx/popupwin.h>
 #include <wx/generic/private/widthcalc.h>
@@ -1955,7 +1955,7 @@ namespace kxf::UI::DataView
 		m_TreeRoot(this), m_VirtualNode(m_TreeRoot), m_View(parent)
 	{
 		// Setup drawing
-		m_GraphicsRenderer = Drawing::CreateGDIRenderer();
+		m_GraphicsRenderer = Drawing::GetGDIRenderer();
 		SetBackgroundStyle(wxBG_STYLE_PAINT);
 		SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX));
 

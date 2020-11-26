@@ -51,11 +51,11 @@ namespace
 			{
 				if (brush)
 				{
-					dc.SetBrush(brush.QueryInterface<GDIGraphicsBrush>()->Get());
+					m_Brush.Set(brush.QueryInterface<GDIGraphicsBrush>()->Get());
 				}
 				if (pen)
 				{
-					dc.SetPen(pen.QueryInterface<GDIGraphicsPen>()->Get());
+					m_Pen.Set(pen.QueryInterface<GDIGraphicsPen>()->Get());
 				}
 			}
 	};
@@ -126,6 +126,7 @@ namespace kxf
 			features.Add(GraphicsContextFeature::DrawShape);
 			features.Add(GraphicsContextFeature::DrawTexture, m_DC.CanDrawBitmap());
 			features.Add(GraphicsContextFeature::TextMeasurement, m_DC.CanGetTextExtent());
+			features.Add(GraphicsContextFeature::BoundingBox);
 
 			return features;
 		}
@@ -181,12 +182,12 @@ namespace kxf
 			m_DC.SetTransformMatrix(matrix);
 		}
 	}
-	void GDIGraphicsContext::TransformTranslate(const Size& dxy)
+	void GDIGraphicsContext::TransformTranslate(const SizeF& dxy)
 	{
 		if (m_DC.CanUseTransformMatrix())
 		{
 			auto matrix = m_DC.GetTransformMatrix();
-			matrix.Translate(dxy.GetWidth(), dxy.GetHeight());
+			matrix.Translate(static_cast<int>(dxy.GetWidth()), static_cast<int>(dxy.GetHeight()));
 			m_DC.SetTransformMatrix(matrix);
 		}
 	}
@@ -413,7 +414,7 @@ namespace kxf
 
 		m_DC.Clear();
 	}
-	void GDIGraphicsContext::DrawCircle(const Point& pos, float radius, const IGraphicsBrush& brush, const IGraphicsPen& pen)
+	void GDIGraphicsContext::DrawCircle(const PointF& pos, float radius, const IGraphicsBrush& brush, const IGraphicsPen& pen)
 	{
 		if (radius != 0)
 		{
@@ -445,17 +446,17 @@ namespace kxf
 			m_DC.DrawRoundedRectangle(rect, radius);
 		}
 	}
-	void GDIGraphicsContext::DrawLine(const PointF& point1, const PointF& point2, const IGraphicsBrush& brush, const IGraphicsPen& pen)
+	void GDIGraphicsContext::DrawLine(const PointF& point1, const PointF& point2, const IGraphicsPen& pen)
 	{
-		ChangeDrawParameters drawParameters(m_DC, brush, pen);
+		ChangeDrawParameters drawParameters(m_DC, NullGraphicsBrush, pen);
 
 		m_DC.DrawLine(point1, point2);
 	}
-	void GDIGraphicsContext::DrawPolyLine(const PointF* points, size_t count, const IGraphicsBrush& brush, const IGraphicsPen& pen)
+	void GDIGraphicsContext::DrawPolyLine(const PointF* points, size_t count, const IGraphicsPen& pen)
 	{
 		if (count != 0)
 		{
-			ChangeDrawParameters drawParameters(m_DC, brush, pen);
+			ChangeDrawParameters drawParameters(m_DC, NullGraphicsBrush, pen);
 
 			std::vector<Point> gdiPoints;
 			gdiPoints.resize(count);
@@ -464,17 +465,61 @@ namespace kxf
 			m_DC.DrawPolyLine(gdiPoints.data(), gdiPoints.size());
 		}
 	}
-	void GDIGraphicsContext::DrawDisconnectedLines(const PointF* startPoints, const PointF* endPoints, size_t count, const IGraphicsBrush& brush, const IGraphicsPen& pen)
+	void GDIGraphicsContext::DrawDisconnectedLines(const PointF* startPoints, const PointF* endPoints, size_t count, const IGraphicsPen& pen)
 	{
 		if (count != 0)
 		{
-			ChangeDrawParameters drawParameters(m_DC, brush, pen);
+			ChangeDrawParameters drawParameters(m_DC, NullGraphicsBrush, pen);
 
 			for (size_t i = 0; i < count; i++)
 			{
 				m_DC.DrawLine(startPoints[i], endPoints[i]);
 			}
 		}
+	}
+
+	// Getting and setting parameters
+	CompositionMode GDIGraphicsContext::GetCompositionMode() const
+	{
+		return m_CompositionMode;
+	}
+	void GDIGraphicsContext::SetCompositionMode(CompositionMode mode)
+	{
+		m_CompositionMode = mode;
+		switch (mode)
+		{
+			case CompositionMode::Source:
+			case CompositionMode::Over:
+			{
+				m_DC.SetLogicalFunction(GDILogicalFunction::Copy);
+				break;
+			}
+			case CompositionMode::Add:
+			{
+				m_DC.SetLogicalFunction(GDILogicalFunction::Or);
+				break;
+			}
+			case CompositionMode::Clear:
+			{
+				m_DC.SetLogicalFunction(GDILogicalFunction::Clear);
+				break;
+			}
+			case CompositionMode::Dest:
+			{
+				m_DC.SetLogicalFunction(GDILogicalFunction::Nop);
+				break;
+			}
+			case CompositionMode::Xor:
+			{
+				m_DC.SetLogicalFunction(GDILogicalFunction::Xor);
+				break;
+			}
+			default:
+			{
+				m_CompositionMode = CompositionMode::None;
+				break;
+			}
+		};
 	}
 
 	// Bounding box functions

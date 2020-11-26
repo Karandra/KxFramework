@@ -70,7 +70,7 @@ namespace kxf::UI::DataView
 			int m_UniformRowHeight = 0;
 			int m_Indent = 0;
 
-			std::unique_ptr<IGraphicsRenderer> m_GraphicsRenderer;
+			std::shared_ptr<IGraphicsRenderer> m_GraphicsRenderer;
 			NullRenderer m_NullRenderer;
 			Column* m_CurrentColumn = nullptr;
 			Row m_CurrentRow;

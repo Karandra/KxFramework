@@ -1,0 +1,474 @@
+#pragma once
+#include "Common.h"
+#include "WxGraphicsRenderer.h"
+#include "kxf/General/OptionalPtr.h"
+#include "../GDIRenderer/GDIContext.h"
+#include "../GDIRenderer/GDIFont.h"
+#include "../GraphicsRenderer/IGraphicsContext.h"
+
+namespace kxf
+{
+	class KX_API WxGraphicsContext: public RTTI::ExtendInterface<WxGraphicsContext, IGraphicsContext>
+	{
+		KxRTTI_DeclareIID(WxGraphicsContext, {0x941a0455, 0x2c28, 0x4545, {0xb1, 0xfa, 0xa5, 0xa5, 0xbf, 0x56, 0x45, 0x69}});
+
+		protected:
+			class ChangeTextParameters final
+			{
+				private:
+					wxGraphicsContext& m_Context;
+					wxGraphicsFont m_OldFont;
+
+				public:
+					ChangeTextParameters(WxGraphicsContext& gc, const IGraphicsFont& font, const IGraphicsBrush& brush);
+					~ChangeTextParameters();
+			};
+			class ChangeDrawParameters final
+			{
+				private:
+					wxGraphicsContext& m_Context;
+					wxGraphicsBrush m_OldBrush;
+					wxGraphicsPen m_OldPen;
+
+				public:
+					ChangeDrawParameters(WxGraphicsContext& gc, const IGraphicsBrush& brush, const IGraphicsPen& pen);
+					~ChangeDrawParameters();
+			};
+
+		protected:
+			// Context
+			WxGraphicsRenderer* m_Renderer = nullptr;
+			wxGraphicsContext* m_Context = nullptr;
+			wxGCDC m_WxGCDC;
+			GDIContext m_GCDC;
+
+			// Currently active pen/brush/font
+			std::shared_ptr<IGraphicsPen> m_CurrentPen;
+			std::shared_ptr<IGraphicsBrush> m_CurrentBrush;
+
+			GDIFont m_CurrentFont;
+			Color m_CurrentFontColor;
+			bool m_CurrentFontValid = false;
+
+			// Bounding box
+			RectF m_BoundingBox;
+
+			// Options
+			InterpolationQuality m_InterpolationQuality = InterpolationQuality::Default;
+			CompositionMode m_CompositionMode = CompositionMode::Dest;
+
+		protected:
+			void SetupDC();
+			void Initialize(WxGraphicsRenderer& rendrer, std::unique_ptr<wxGraphicsContext> gc)
+			{
+				m_Renderer = &rendrer;
+				m_Context = gc.get();
+				m_WxGCDC.SetGraphicsContext(gc.release());
+				m_GCDC = GDIContext(m_WxGCDC);
+			}
+
+			wxGraphicsFont MakeGCFont() const;
+			wxGraphicsFont MakeGCFont(const IGraphicsFont& font, const Color& color = {}) const;
+			wxGraphicsFont MakeGCFont(const IGraphicsFont& font, const IGraphicsBrush& brush) const;
+			void UpdateCurrentFont();
+			void InvalidateCurrentFont()
+			{
+				m_CurrentFontValid = false;
+			}
+
+		public:
+			WxGraphicsContext()
+				:m_WxGCDC(static_cast<wxGraphicsContext*>(nullptr))
+			{
+			}
+			WxGraphicsContext(WxGraphicsRenderer& rendrer, std::unique_ptr<wxGraphicsContext> gc)
+				:m_Renderer(&rendrer), m_Context(gc.get()), m_WxGCDC(gc.release()), m_GCDC(m_WxGCDC)
+			{
+			}
+
+		public:
+			// IGraphicsObject
+			bool IsNull() const override
+			{
+				return !m_Renderer || m_Context == nullptr;
+			}
+			bool IsSameAs(const IGraphicsObject& other) const override
+			{
+				if (this == &other)
+				{
+					return true;
+				}
+				else if (auto object = other.QueryInterface<WxGraphicsContext>())
+				{
+					return m_Context == object->m_Context;
+				}
+				return false;
+			}
+
+			WxGraphicsRenderer& GetRenderer() override
+			{
+				return *m_Renderer;
+			}
+			void* GetNativeHandle() const
+			{
+				return m_Context->GetGraphicsData();
+			}
+
+			// IGraphicsContext
+		public:
+			// Feature support
+			FlagSet<GraphicsContextFeature> GetSupportedFeatures() const override;
+
+			// Clipping region functions
+			void ClipBoxRegion(const RectF& rect) override;
+			void ResetClipRegion();
+			RectF GetClipBox() const override;
+
+			// Transformation matrix
+			AffineMatrixF GetTransform() const override;
+			bool SetTransform(const AffineMatrixF& transform) override;
+
+			bool TransformInvert() override;
+			void TransformRotate(Angle angle) override;
+			void TransformScale(float xScale, float yScale) override;
+			void TransformTranslate(const SizeF& dxy) override;
+			void TransformConcat(const AffineMatrixF& matrix) override;
+
+			// Pen and brush functions
+			std::shared_ptr<IGraphicsPen> GetPen() const override;
+			void SetPen(std::shared_ptr<IGraphicsPen> pen) override;
+
+			std::shared_ptr<IGraphicsBrush> GetBrush() const override;
+			void SetBrush(std::shared_ptr<IGraphicsBrush> brush) override;
+
+			// Path functions
+			void StrokePath(const IGraphicsPath& path) override;
+			void FillPath(const IGraphicsPath& path, PolygonFill fill = PolygonFill::OddEvenRule) override;
+			void DrawPath(const IGraphicsPath& path, PolygonFill fill = PolygonFill::OddEvenRule) override;
+
+			// Texture functions
+			void DrawTexture(const IGraphicsTexture& texture, const RectF& rect) override;
+			void DrawTexture(const Image& image, const RectF& rect) override;
+
+			// Text functions
+			std::shared_ptr<IGraphicsFont> GetFont() const override;
+			void SetFont(std::shared_ptr<IGraphicsFont> font) override;
+
+			std::shared_ptr<IGraphicsBrush> GetFontBrush() const override;
+			void SetFontBrush(std::shared_ptr<IGraphicsBrush> brush) override;
+
+			GraphicsTextExtent GetTextExtent(const String& text, const IGraphicsFont& font = NullGraphicsFont) const override;
+			std::vector<float> GetPartialTextExtent(const String& text, const IGraphicsFont& font = NullGraphicsFont) const override;
+
+			void DrawText(const String& text, const PointF& point, const IGraphicsFont& font = NullGraphicsFont, const IGraphicsBrush& brush = NullGraphicsBrush) override;
+			void DrawRotatedText(const String& text, const PointF& point, Angle angle, const IGraphicsFont& font = NullGraphicsFont, const IGraphicsBrush& brush = NullGraphicsBrush) override;
+			RectF DrawLabel(const String& text,
+							const RectF& rect,
+							const IGraphicsTexture& icon,
+							const IGraphicsFont& font,
+							const IGraphicsBrush& brush,
+							FlagSet<Alignment> alignment = {},
+							size_t acceleratorIndex = String::npos) override;
+
+			// Drawing functions
+			void Clear(const IGraphicsBrush& brush) override;
+			void DrawCircle(const PointF& pos, float radius, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) override;
+			void DrawEllipse(const RectF& rect, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) override;
+			void DrawRectangle(const RectF& rect, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) override;
+			void DrawRoundedRectangle(const RectF& rect, float radius, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) override;
+			void DrawLine(const PointF& point1, const PointF& point2, const IGraphicsPen& pen = NullGraphicsPen) override;
+			void DrawPolyLine(const PointF* points, size_t count, const IGraphicsPen& pen = NullGraphicsPen) override;
+			void DrawDisconnectedLines(const PointF* startPoints, const PointF* endPoints, size_t count, const IGraphicsPen& pen = NullGraphicsPen) override;
+
+			// Getting and setting parameters
+			SizeF GetSize() const override;
+			SizeF GetPPI() const override;
+			wxWindow* GetWindow() const override;
+
+			AntialiasMode GetAntialiasMode() const override;
+			void SetAntialiasMode(AntialiasMode mode) override;
+
+			CompositionMode GetCompositionMode() const override;
+			void SetCompositionMode(CompositionMode mode) override;
+
+			InterpolationQuality GetInterpolationQuality() const override;
+			void SetInterpolationQuality(InterpolationQuality quality) override;
+
+			// Bounding box functions
+			RectF GetBoundingBox() const override;
+			using IGraphicsContext::CalcBoundingBox;
+			void CalcBoundingBox(const PointF& point) override;
+			void ResetBoundingBox() override;
+
+			// Page and document start/end functions
+			bool StartDocument(const String& message) override
+			{
+				return m_Context->StartDoc(message);
+			}
+			void EndDocument() override
+			{
+				m_Context->EndDoc();
+			}
+
+			void StartPage() override
+			{
+				m_Context->StartPage();
+			}
+			void EndPage() override
+			{
+				m_Context->EndPage();
+			}
+
+			// Modifying the state
+			void BeginLayer(float opacity = 1.0f) override
+			{
+				m_Context->BeginLayer(opacity);
+			}
+			void EndLayer() override
+			{
+				m_Context->EndLayer();
+			}
+
+			void PushState() override
+			{
+				m_Context->PushState();
+			}
+			void PopState() override
+			{
+				m_Context->PopState();
+			}
+
+			void Flush() override
+			{
+				m_Context->Flush();
+			}
+
+			// Offset management
+			bool ShouldOffset() const override
+			{
+				return m_Context->ShouldOffset();
+			}
+			void EnableOffset(bool enable = true) override
+			{
+				m_Context->EnableOffset(enable);
+			}
+
+		public:
+			// WxGraphicsContext
+			const wxGraphicsContext& Get() const
+			{
+				return *m_Context;
+			}
+			wxGraphicsContext& Get()
+			{
+				return *m_Context;
+			}
+
+			const wxGCDC& GetGCDC() const
+			{
+				return m_WxGCDC;
+			}
+			wxGCDC& GetGCDC()
+			{
+				return m_WxGCDC;
+			}
+
+		public:
+			explicit operator bool() const
+			{
+				return !IsNull();
+			}
+			bool operator!() const
+			{
+				return IsNull();
+			}
+	};
+}
+
+namespace kxf
+{
+	class KX_API WxGraphicsGDIContext: public WxGraphicsContext
+	{
+		private:
+			wxDC* m_DC = nullptr;
+			Image m_Image;
+
+		private:
+			void FlushToDC()
+			{
+				m_Context->Flush();
+
+				m_DC->Clear();
+				m_DC->DrawBitmap(m_Image.ToBitmap().ToWxBitmap(), 0, 0, false);
+			}
+
+		public:
+			WxGraphicsGDIContext() noexcept = default;
+			WxGraphicsGDIContext(WxGraphicsRenderer& rendrer, wxDC& dc)
+				:WxGraphicsContext(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateContextFromImage(m_Image.ToWxImage()))), m_DC(&dc)
+			{
+				SetupDC();
+			}
+			~WxGraphicsGDIContext()
+			{
+				FlushToDC();
+			}
+
+		public:
+			// IGraphicsObject
+			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			{
+				return nullptr;
+			}
+
+			// IGraphicsContext
+			void Flush() override
+			{
+				WxGraphicsContext::Flush();
+				FlushToDC();
+			}
+	};
+
+	class KX_API WxGraphicsMemoryContext: public WxGraphicsContext
+	{
+		protected:
+			Image m_Image;
+			std::shared_ptr<IGraphicsTexture> m_Texture;
+
+		private:
+			void FlushContent()
+			{
+				m_Context->Flush();
+
+				if (m_Texture && m_Image)
+				{
+					m_Texture->FromImage(m_Image);
+				}
+			}
+
+		public:
+			WxGraphicsMemoryContext() noexcept = default;
+			WxGraphicsMemoryContext(WxGraphicsRenderer& rendrer, std::shared_ptr<IGraphicsTexture> texture)
+				:WxGraphicsContext(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateContextFromImage(m_Image.ToWxImage()))), m_Texture(std::move(texture))
+			{
+				SetupDC();
+			}
+			~WxGraphicsMemoryContext()
+			{
+				FlushContent();
+			}
+
+		public:
+			// IGraphicsObject
+			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			{
+				return nullptr;
+			}
+
+			// IGraphicsContext
+			void Flush() override
+			{
+				WxGraphicsContext::Flush();
+				FlushContent();
+			}
+
+			// WxGraphicsMemoryContext
+			std::shared_ptr<IGraphicsTexture> GetSelectedTexture() const
+			{
+				return m_Texture;
+			}
+			void SelectTexture(std::shared_ptr<IGraphicsTexture> texture)
+			{
+				m_Texture = std::move(texture);
+			}
+			std::shared_ptr<IGraphicsTexture> UnselectTexture()
+			{
+				FlushContent();
+				return std::move(m_Texture);
+			}
+	};
+
+	class KX_API WxGraphicsWindowContext: public WxGraphicsContext
+	{
+		private:
+			wxWindowDC m_WindowDC;
+
+		public:
+			WxGraphicsWindowContext() noexcept = default;
+			WxGraphicsWindowContext(WxGraphicsRenderer& rendrer, wxWindow& window)
+				:m_WindowDC(&window)
+			{
+				Initialize(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateContext(m_WindowDC)));
+				SetupDC();
+			}
+
+		public:
+			// IGraphicsObject
+			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			{
+				return std::make_unique<WxGraphicsWindowContext>(*m_Renderer, *m_Context->GetWindow());
+			}
+	};
+
+	class KX_API WxGraphicsWindowClientContext: public WxGraphicsContext
+	{
+		protected:
+			wxClientDC m_ClientDC;
+
+		public:
+			WxGraphicsWindowClientContext() noexcept = default;
+			WxGraphicsWindowClientContext(WxGraphicsRenderer& rendrer, wxWindow& window)
+				:m_ClientDC(&window)
+			{
+				Initialize(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateContext(m_ClientDC)));
+				SetupDC();
+			}
+
+		public:
+			// IGraphicsObject
+			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			{
+				return std::make_unique<WxGraphicsWindowClientContext>(*m_Renderer, *m_ClientDC.GetWindow());
+			}
+	};
+
+	class KX_API WxGraphicsPaintContext: public WxGraphicsContext
+	{
+		protected:
+			wxPaintDC m_PaintDC;
+
+		public:
+			WxGraphicsPaintContext() noexcept = default;
+			WxGraphicsPaintContext(WxGraphicsRenderer& rendrer, wxWindow& window)
+				:m_PaintDC(&window)
+			{
+				Initialize(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateContext(m_PaintDC)));
+				SetupDC();
+			}
+
+		public:
+			// IGraphicsObject
+			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			{
+				return std::make_unique<WxGraphicsPaintContext>(*m_Renderer, *m_PaintDC.GetWindow());
+			}
+	};
+
+	class KX_API WxGraphicsMeasuringContext: public WxGraphicsContext
+	{
+		public:
+			WxGraphicsMeasuringContext() noexcept = default;
+			WxGraphicsMeasuringContext(WxGraphicsRenderer& rendrer)
+				:WxGraphicsContext(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateMeasuringContext()))
+			{
+				SetupDC();
+			}
+
+		public:
+			// IGraphicsObject
+			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			{
+				return std::make_unique<WxGraphicsMeasuringContext>(*m_Renderer);
+			}
+	};
+}

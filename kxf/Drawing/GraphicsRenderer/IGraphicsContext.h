@@ -1,11 +1,13 @@
 #pragma once
 #include "Common.h"
 #include "IGraphicsObject.h"
+#include "NullObjects/NullGraphicsObject.h"
 #include "NullObjects/NullGraphicsRenderer.h"
 #include "NullObjects/NullGraphicsFont.h"
 #include "NullObjects/NullGraphicsPen.h"
 #include "NullObjects/NullGraphicsBrush.h"
 #include "NullObjects/NullGraphicsTexture.h"
+#include "NullObjects/NullGraphicsPath.h"
 class wxWindow;
 
 namespace kxf
@@ -42,7 +44,8 @@ namespace kxf
 		Antialiasing = 1 << 7,
 		Interpolation = 1 << 8,
 		Layers = 1 << 9,
-		States = 1 << 10
+		States = 1 << 10,
+		BoundingBox = 1 << 1
 	};
 }
 
@@ -71,7 +74,7 @@ namespace kxf
 			virtual bool TransformInvert() = 0;
 			virtual void TransformRotate(Angle angle) = 0;
 			virtual void TransformScale(float xScale, float yScale) = 0;
-			virtual void TransformTranslate(const Size& dxy) = 0;
+			virtual void TransformTranslate(const SizeF& dxy) = 0;
 			virtual void TransformConcat(const AffineMatrixF& matrix) = 0;
 
 			// Pen and brush functions
@@ -126,53 +129,53 @@ namespace kxf
 			// Drawing functions
 			virtual void Clear(const IGraphicsBrush& brush) = 0;
 
-			virtual void DrawCircle(const Point& pos, float radius, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) = 0;
+			virtual void DrawCircle(const PointF& pos, float radius, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) = 0;
 
 			virtual void DrawEllipse(const RectF& rect, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) = 0;
-			void DrawEllipse(const Point& pos, const Size& size, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen)
+			void DrawEllipse(const PointF& pos, const Size& size, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen)
 			{
 				DrawEllipse({pos, size}, brush, pen);
 			}
 
 			virtual void DrawRectangle(const RectF& rect, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) = 0;
-			void DrawRectangle(const Point& pos, const Size& size, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen)
+			void DrawRectangle(const PointF& pos, const Size& size, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen)
 			{
 				DrawRectangle({pos, size}, brush, pen);
 			}
 
 			virtual void DrawRoundedRectangle(const RectF& rect, float radius, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) = 0;
-			void DrawRoundedRectangle(const Point& pos, const Size& size, float radius, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen)
+			void DrawRoundedRectangle(const PointF& pos, const Size& size, float radius, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen)
 			{
 				DrawRoundedRectangle({pos, size}, radius, brush, pen);
 			}
 
-			virtual void DrawLine(const PointF& point1, const PointF& point2, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) = 0;
-			virtual void DrawPolyLine(const PointF* points, size_t count, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) = 0;
+			virtual void DrawLine(const PointF& point1, const PointF& point2, const IGraphicsPen& pen = NullGraphicsPen) = 0;
+			virtual void DrawPolyLine(const PointF* points, size_t count, const IGraphicsPen& pen = NullGraphicsPen) = 0;
 
 			template<size_t N>
-			void DrawPolyLine(const PointF(&points)[N], const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen)
+			void DrawPolyLine(const PointF(&points)[N], const IGraphicsPen& pen = NullGraphicsPen)
 			{
-				DrawPolyLine(points, N, brush, pen);
+				DrawPolyLine(points, N, pen);
 			}
 
 			template<size_t N>
-			void DrawPolyLine(const std::array<PointF, N>& points, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen)
+			void DrawPolyLine(const std::array<PointF, N>& points, const IGraphicsPen& pen = NullGraphicsPen)
 			{
-				DrawPolyLine(points.data(), points.size(), brush, pen);
+				DrawPolyLine(points.data(), points.size(), pen);
 			}
 
-			virtual void DrawDisconnectedLines(const PointF* startPoints, const PointF* endPoints, size_t count, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) = 0;
+			virtual void DrawDisconnectedLines(const PointF* startPoints, const PointF* endPoints, size_t count, const IGraphicsPen& pen = NullGraphicsPen) = 0;
 
 			template<size_t N>
-			void DrawDisconnectedLines(const PointF(&startPoints)[N], const PointF(&endPoints)[N], const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen)
+			void DrawDisconnectedLines(const PointF(&startPoints)[N], const PointF(&endPoints)[N], const IGraphicsPen& pen = NullGraphicsPen)
 			{
-				DrawDisconnectedLines(startPoints, endPoints, N, brush, pen);
+				DrawDisconnectedLines(startPoints, endPoints, N, pen);
 			}
 
 			template<size_t N>
-			void DrawDisconnectedLines(const std::array<PointF, N>& startPoints, const std::array<PointF, N>& endPoints, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen)
+			void DrawDisconnectedLines(const std::array<PointF, N>& startPoints, const std::array<PointF, N>& endPoints, const IGraphicsPen& pen = NullGraphicsPen)
 			{
-				DrawDisconnectedLines(startPoints.data(), endPoints.data(), N, brush, pen);
+				DrawDisconnectedLines(startPoints.data(), endPoints.data(), N, pen);
 			}
 
 			// Getting and setting parameters
@@ -192,6 +195,11 @@ namespace kxf
 			// Bounding box functions
 			virtual RectF GetBoundingBox() const = 0;
 			virtual void CalcBoundingBox(const PointF& point) = 0;
+			void CalcBoundingBox(const RectF& rect)
+			{
+				CalcBoundingBox(rect.GetTopLeft());
+				CalcBoundingBox(rect.GetRightBottom());
+			}
 			virtual void ResetBoundingBox() = 0;
 
 			// Page and document start/end functions

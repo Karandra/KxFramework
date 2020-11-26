@@ -3,7 +3,6 @@
 #include "GDIContext.h"
 #include "GDIGraphicsRenderer.h"
 #include "IGDIObject.h"
-#include "GDIRegion.h"
 #include "../GraphicsRenderer/IGraphicsContext.h"
 #include <wx/dc.h>
 #include <wx/dcclient.h>
@@ -20,12 +19,13 @@ namespace kxf
 		protected:
 			GDIGraphicsRenderer* m_Renderer = nullptr;
 			GDIContext m_DC;
-			AntialiasMode m_AntialiasMode = AntialiasMode::None;
-			CompositionMode m_CompositionMode = CompositionMode::Source;
-			InterpolationQuality m_InterpolationQuality = InterpolationQuality::Default;
 
 			std::shared_ptr<IGraphicsPen> m_SavedPen;
 			std::shared_ptr<IGraphicsBrush> m_SavedBrush;
+
+			AntialiasMode m_AntialiasMode = AntialiasMode::None;
+			CompositionMode m_CompositionMode = CompositionMode::Source;
+			InterpolationQuality m_InterpolationQuality = InterpolationQuality::Default;
 
 		private:
 			bool DoIsSameAs(const IObject& other) const
@@ -125,7 +125,7 @@ namespace kxf
 			bool TransformInvert() override;
 			void TransformRotate(Angle angle) override;
 			void TransformScale(float xScale, float yScale) override;
-			void TransformTranslate(const Size& dxy) override;
+			void TransformTranslate(const SizeF& dxy) override;
 			void TransformConcat(const AffineMatrixF& matrix) override;
 
 			// Pen and brush functions
@@ -173,13 +173,13 @@ namespace kxf
 
 			// Drawing functions
 			void Clear(const IGraphicsBrush& brush) override;
-			void DrawCircle(const Point& pos, float radius, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) override;
+			void DrawCircle(const PointF& pos, float radius, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) override;
 			void DrawEllipse(const RectF& rect, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) override;
 			void DrawRectangle(const RectF& rect, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) override;
 			void DrawRoundedRectangle(const RectF& rect, float radius, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) override;
-			void DrawLine(const PointF& point1, const PointF& point2, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) override;
-			void DrawPolyLine(const PointF* points, size_t count, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) override;
-			void DrawDisconnectedLines(const PointF* startPoints, const PointF* endPoints, size_t count, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) override;
+			void DrawLine(const PointF& point1, const PointF& point2, const IGraphicsPen& pen = NullGraphicsPen) override;
+			void DrawPolyLine(const PointF* points, size_t count, const IGraphicsPen& pen = NullGraphicsPen) override;
+			void DrawDisconnectedLines(const PointF* startPoints, const PointF* endPoints, size_t count, const IGraphicsPen& pen = NullGraphicsPen) override;
 
 			// Getting and setting parameters
 			SizeF GetSize() const override
@@ -204,14 +204,8 @@ namespace kxf
 				m_AntialiasMode = mode;
 			}
 
-			CompositionMode GetCompositionMode() const override
-			{
-				return m_CompositionMode;
-			}
-			void SetCompositionMode(CompositionMode mode) override
-			{
-				m_CompositionMode = mode;
-			}
+			CompositionMode GetCompositionMode() const override;
+			void SetCompositionMode(CompositionMode mode) override;
 
 			InterpolationQuality GetInterpolationQuality() const override
 			{

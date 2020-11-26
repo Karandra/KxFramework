@@ -694,6 +694,30 @@ namespace kxf::Geometry
 			{
 				return Contains(other.GetTopLeft()) && Contains(other.GetBottomRight());
 			}
+			constexpr TDerived& IncludePoint(const TPoint& point) noexcept
+			{
+				const auto x = point.GetX();
+				const auto y = point.GetY();
+
+				if (x < m_X)
+				{
+					m_X = x;
+				}
+				if (y < m_Y)
+				{
+					m_Y = y;
+				}
+				if (x > GetRight())
+				{
+					SetRight(x);
+				}
+				if (y > GetBottom())
+				{
+					SetBottom(y);
+				}
+
+				return Self();
+			}
 
 			constexpr TDerived& Intersect(const TDerived& other) noexcept
 			{
@@ -879,9 +903,9 @@ namespace kxf::Geometry
 			{
 				FlagSet<OutCode> outCode;
 				outCode.Add(OutCode::OutLeft, point.GetX() < m_X);
-				outCode.Add(outCode, OutCode::OutRight, point.GetX() > m_X + m_Width);
-				outCode.Add(outCode, OutCode::OutTop, point.GetY() < m_Y);
-				outCode.Add(outCode, OutCode::OutBottom, point.GetY() > m_Y + m_Height);
+				outCode.Add(OutCode::OutRight, point.GetX() > m_X + m_Width);
+				outCode.Add(OutCode::OutTop, point.GetY() < m_Y);
+				outCode.Add(OutCode::OutBottom, point.GetY() > m_Y + m_Height);
 
 				return outCode;
 			}

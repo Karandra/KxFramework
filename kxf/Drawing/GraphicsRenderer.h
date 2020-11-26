@@ -12,3 +12,13 @@
 
 #include "GraphicsRenderer/GraphicsAction.h"
 #include "GraphicsRenderer/GCOperations.h"
+
+namespace kxf::Drawing
+{
+	std::shared_ptr<IGraphicsRenderer> GetGDIRenderer();
+	std::shared_ptr<IGraphicsRenderer> GetGDIPlusRenderer();
+	std::shared_ptr<IGraphicsRenderer> GetDirect2DRenderer();
+	std::shared_ptr<IGraphicsRenderer> GetCairoRenderer();
+
+	std::shared_ptr<IGraphicsRenderer> GetDefaultRenderer();
+}

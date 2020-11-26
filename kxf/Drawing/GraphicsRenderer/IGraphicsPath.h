@@ -14,22 +14,22 @@ namespace kxf
 		public:
 			virtual bool ContainsPoint(const PointF& point, PolygonFill fill = PolygonFill::OddEvenRule) const = 0;
 			virtual PointF GetCurrentPoint() const = 0;
-			virtual PointF MoveToPoint(const PointF& point) = 0;
+			virtual void MoveToPoint(const PointF& point) = 0;
 			virtual RectF GetBoundingBox() const = 0;
 
 			virtual void AddArc(const PointF& point1, const PointF& point2, float radius) = 0;
 			virtual void AddArc(const PointF& point, float radius, Angle start, Angle end, ClockDirection direction) = 0;
-			virtual void AddCurve(const PointF& control1, const PointF& control12, const PointF& end) = 0;
+			virtual void AddCurve(const PointF& control1, const PointF& control2, const PointF& end) = 0;
 			virtual void AddQuadCurve(const PointF& control, const PointF& end) = 0;
 			virtual void AddLine(const PointF& point) = 0;
-			virtual void AddCircle(const PointF& point1, float radius) = 0;
+			virtual void AddCircle(const PointF& point, float radius) = 0;
 			virtual void AddEllipse(const RectF& rect) = 0;
-			virtual void AddRect(const RectF& rect) = 0;
-			virtual void AddRoundedRect(const RectF& rect, float radius) = 0;
+			virtual void AddRectangle(const RectF& rect) = 0;
+			virtual void AddRoundedRectangle(const RectF& rect, float radius) = 0;
 
-			virtual void AddPath(std::shared_ptr<IGraphicsPath> path) = 0;
+			virtual void AddPath(const IGraphicsPath& path) = 0;
 			virtual void CloseSubPath() = 0;
 
-			virtual void Transform(AffineMatrixF path) = 0;
+			virtual void Transform(AffineMatrixF transform) = 0;
 	};
 }

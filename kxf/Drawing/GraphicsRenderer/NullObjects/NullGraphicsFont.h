@@ -1,6 +1,7 @@
 #pragma once
 #include "../Common.h"
 #include "../IGraphicsFont.h"
+#include "../../Font.h"
 #include "NullGraphicsRenderer.h"
 
 namespace kxf::Drawing

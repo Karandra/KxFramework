@@ -268,6 +268,14 @@ namespace kxf
 			{
 				SetRGB(pos, color.GetFixed8().RemoveAlpha());
 			}
+			void SetRGB(const Rect& rect, const PackedRGB<uint8_t>& color)
+			{
+				m_Image.SetRGB(rect, color.Red, color.Green, color.Blue);
+			}
+			void SetRGB(const Rect& rect, const Color& color)
+			{
+				SetRGB(rect, color.GetFixed8().RemoveAlpha());
+			}
 
 			PackedRGBA<uint8_t> GetRGBA(const Point& pos) const
 			{
@@ -282,14 +290,21 @@ namespace kxf
 			{
 				SetRGBA(pos, color.GetFixed8());
 			}
-
-			void SetRGB(const Rect& rect, const PackedRGB<uint8_t>& color)
+			void SetRGBA(const Rect& rect, const PackedRGBA<uint8_t>& color)
 			{
 				m_Image.SetRGB(rect, color.Red, color.Green, color.Blue);
+
+				for (int y = rect.GetY(); y < m_Image.GetHeight(); y++)
+				{
+					for (int x = rect.GetX(); x < m_Image.GetWidth(); x++)
+					{
+						m_Image.SetAlpha(x, y, color.Alpha);
+					}
+				}
 			}
-			void SetRGB(const Rect& rect, const Color& color)
+			void SetRGBA(const Rect& rect, const Color& color)
 			{
-				SetRGB(rect, color.GetFixed8().RemoveAlpha());
+				SetRGBA(rect, color.GetFixed8());
 			}
 
 			void ReplaceRGB(const PackedRGB<uint8_t>& source, const PackedRGB<uint8_t>& target)
