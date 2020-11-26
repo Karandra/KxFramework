@@ -50,7 +50,7 @@ namespace kxf::Private::Version
 		}
 		return Cmp::Invalid;
 	}
-	
+
 	bool Parse(const String& source, DefaultFormat::Array& items, size_t& componentCount)
 	{
 		items.fill({});
@@ -123,7 +123,7 @@ namespace kxf::Private::Version
 			for (size_t i = 0; i < itemCount; i++)
 			{
 				const int num = items[i].m_Numeric;
-				const wxChar* string = items[i].m_String;
+				const XChar* string = items[i].m_String;
 
 				// Don't print '0' for first element if it has non-empty string part
 				if (i == 0 && num == 0 && *string)
@@ -135,15 +135,21 @@ namespace kxf::Private::Version
 					result << String::Format(wxS("%1"), num);
 					if (*string)
 					{
-						result << string;
+						result += string;
 					}
 				}
 
 				// Add dot if this is not the last part
 				if (i + 1 != itemCount)
 				{
-					result << wxS('.');
+					result += wxS('.');
 				}
+			}
+
+			// Print single component versions as 'Nabc.0' instead of just 'Nabc'.
+			if (itemCount == 1)
+			{
+				result += wxS(".0");
 			}
 			return result;
 		}
