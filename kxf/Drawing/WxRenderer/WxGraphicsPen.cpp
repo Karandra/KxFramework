@@ -34,7 +34,7 @@ namespace kxf
 		{
 			if (!m_Pen.GetStipple())
 			{
-				m_Pen.ToWxPen().SetStipple(m_Renderer->GetNullBitmap().ToWxBitmap());
+				m_Pen.ToWxPen().SetStipple(m_Renderer->GetTransparentBitmap().ToWxBitmap());
 			}
 		}
 	}

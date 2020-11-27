@@ -447,7 +447,7 @@ namespace kxf
 	// Drawing functions
 	void WxGraphicsContext::Clear(const IGraphicsBrush& brush)
 	{
-		WxGraphicsContext::DrawRectangle({{0, 0}, GetSize()}, brush, NullGraphicsPen);
+		WxGraphicsContext::DrawRectangle({{0, 0}, GetSize()}, brush, m_Renderer->GetTransparentPen());
 	}
 	void WxGraphicsContext::DrawCircle(const PointF& pos, float radius, const IGraphicsBrush& brush, const IGraphicsPen& pen)
 	{

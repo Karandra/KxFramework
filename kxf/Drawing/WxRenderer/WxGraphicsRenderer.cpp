@@ -12,7 +12,7 @@ namespace kxf
 {
 	// WxGraphicsRenderer
 	WxGraphicsRenderer::WxGraphicsRenderer(wxGraphicsRenderer& renderer)
-		:m_Renderer(renderer), m_NullBitmap({8, 8}, ColorDepthDB::BPP32)
+		:m_Renderer(renderer)
 	{
 		if (&renderer == wxGraphicsRenderer::GetGDIPlusRenderer())
 		{
@@ -198,5 +198,30 @@ namespace kxf
 		// There is a bug where Direct2D renderer crashes when it asked to draw a null bitmap.
 		// It doesn't check anything and faces a nullptr somewhere deep inside its wx-side implementation.
 		return m_Type != Type::Direct2D;
+	}
+
+	const GDIBitmap& WxGraphicsRenderer::GetTransparentBitmap() const
+	{
+		if (!m_TransparenBitmap)
+		{
+			m_TransparenBitmap = GDIBitmap({8, 8}, ColorDepthDB::BPP32);
+		}
+		return m_TransparenBitmap;
+	}
+	const IGraphicsPen& WxGraphicsRenderer::GetTransparentPen() const
+	{
+		if (!m_TransparentPen)
+		{
+			m_TransparentPen = const_cast<WxGraphicsRenderer&>(*this).CreatePen(Drawing::GetStockColor(StockColor::Transparent), 1.0f);
+		}
+		return *m_TransparentPen;
+	}
+	const IGraphicsBrush& WxGraphicsRenderer::GetTransparentBrush() const
+	{
+		if (!m_TransparentBrush)
+		{
+			m_TransparentBrush = const_cast<WxGraphicsRenderer&>(*this).CreateSolidBrush(Drawing::GetStockColor(StockColor::Transparent));
+		}
+		return *m_TransparentBrush;
 	}
 }

@@ -22,7 +22,9 @@ namespace kxf
 			wxGraphicsRenderer& m_Renderer;
 			Type m_Type = Type::None;
 
-			GDIBitmap m_NullBitmap;
+			mutable GDIBitmap m_TransparenBitmap;
+			mutable std::shared_ptr<IGraphicsPen> m_TransparentPen;
+			mutable std::shared_ptr<IGraphicsBrush> m_TransparentBrush;
 
 		public:
 			WxGraphicsRenderer(wxGraphicsRenderer& renderer);
@@ -79,10 +81,9 @@ namespace kxf
 			bool CanRescaleBitmapOnDraw() const;
 			bool CanDrawNullBitmap() const;
 
-			const GDIBitmap& GetNullBitmap() const
-			{
-				return m_NullBitmap;
-			}
+			const GDIBitmap& GetTransparentBitmap() const;
+			const IGraphicsPen& GetTransparentPen() const;
+			const IGraphicsBrush& GetTransparentBrush() const;
 
 			AffineMatrixF ToAffineMatrix(const wxGraphicsMatrix& matrix)
 			{
