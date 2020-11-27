@@ -271,9 +271,10 @@ namespace kxf
 	// Texture functions
 	void WxGraphicsContext::DrawTexture(const IGraphicsTexture& texture, const RectF& rect)
 	{
-		if (auto textureWx = texture.QueryInterface<WxGraphicsTexture>())
+		object_ptr<const WxGraphicsTexture> textureWx;
+		if (!rect.IsEmpty() && texture && texture.QueryInterface(textureWx))
 		{
-			if (m_Renderer->SupportBitmapRescaleOnDraw() || textureWx->GetSize() == rect.GetSize())
+			if (m_Renderer->CanRescaleBitmapOnDraw() || textureWx->GetSize() == rect.GetSize())
 			{
 				m_Context->DrawBitmap(textureWx->Get(), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
 			}
@@ -287,16 +288,19 @@ namespace kxf
 	}
 	void WxGraphicsContext::DrawTexture(const Image& image, const RectF& rect)
 	{
-		if (m_Renderer->SupportBitmapRescaleOnDraw() || SizeF(image.GetSize()) == rect.GetSize())
+		if (image && !rect.IsEmpty())
 		{
-			m_Context->DrawBitmap(image.ToBitmap().ToWxBitmap(), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
+			if (m_Renderer->CanRescaleBitmapOnDraw() || SizeF(image.GetSize()) == rect.GetSize())
+			{
+				m_Context->DrawBitmap(image.ToBitmap().ToWxBitmap(), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
+			}
+			else
+			{
+				Image image = image.Rescale(rect.GetSize(), m_InterpolationQuality);
+				m_Context->DrawBitmap(m_Renderer->Get().CreateBitmapFromImage(image.ToWxImage()), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
+			}
+			CalcBoundingBox(rect);
 		}
-		else
-		{
-			Image image = image.Rescale(rect.GetSize(), m_InterpolationQuality);
-			m_Context->DrawBitmap(m_Renderer->Get().CreateBitmapFromImage(image.ToWxImage()), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
-		}
-		CalcBoundingBox(rect);
 	}
 
 	// Text functions
@@ -400,34 +404,44 @@ namespace kxf
 
 	void WxGraphicsContext::DrawText(const String& text, const PointF& point, const IGraphicsFont& font, const IGraphicsBrush& brush)
 	{
-		ChangeTextParameters textParametrs(*this, font, brush);
+		if (!text.IsEmpty())
+		{
+			ChangeTextParameters textParametrs(*this, font, brush);
 
-		m_Context->DrawText(text, point.GetX(), point.GetY());
-		CalcBoundingBox(point);
+			m_Context->DrawText(text, point.GetX(), point.GetY());
+			CalcBoundingBox(point);
+		}
 	}
 	void WxGraphicsContext::DrawRotatedText(const String& text, const PointF& point, Angle angle, const IGraphicsFont& font, const IGraphicsBrush& brush)
 	{
-		ChangeTextParameters textParametrs(*this, font, brush);
+		if (!text.IsEmpty())
+		{
+			ChangeTextParameters textParametrs(*this, font, brush);
 
-		m_Context->DrawText(text, point.GetX(), point.GetY(), angle.ToRadians());
-		CalcBoundingBox(point);
+			m_Context->DrawText(text, point.GetX(), point.GetY(), angle.ToRadians());
+			CalcBoundingBox(point);
+		}
 	}
 	RectF WxGraphicsContext::DrawLabel(const String& text, const RectF& rect, const IGraphicsTexture& icon, const IGraphicsFont& font, const IGraphicsBrush& brush, FlagSet<Alignment> alignment, size_t acceleratorIndex)
 	{
-		ChangeTextParameters textParametrs(*this, font, brush);
-
-		Rect boundingBox;
-		if (icon)
+		if (!rect.IsEmpty() && (!text.IsEmpty() || icon))
 		{
-			boundingBox = m_GCDC.DrawLabel(text, rect, icon.QueryInterface<WxGraphicsTexture>()->GetImage(), alignment, acceleratorIndex);
-		}
-		else
-		{
-			boundingBox = m_GCDC.DrawLabel(text, rect, alignment, acceleratorIndex);
-		}
+			ChangeTextParameters textParametrs(*this, font, brush);
 
-		CalcBoundingBox(boundingBox);
-		return boundingBox;
+			Rect boundingBox;
+			if (icon)
+			{
+				boundingBox = m_GCDC.DrawLabel(text, rect, icon.QueryInterface<WxGraphicsTexture>()->GetImage(), alignment, acceleratorIndex);
+			}
+			else
+			{
+				boundingBox = m_GCDC.DrawLabel(text, rect, alignment, acceleratorIndex);
+			}
+
+			CalcBoundingBox(boundingBox);
+			return boundingBox;
+		}
+		return {};
 	}
 
 	// Drawing functions

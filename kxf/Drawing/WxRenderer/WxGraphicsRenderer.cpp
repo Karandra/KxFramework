@@ -12,7 +12,7 @@ namespace kxf
 {
 	// WxGraphicsRenderer
 	WxGraphicsRenderer::WxGraphicsRenderer(wxGraphicsRenderer& renderer)
-		:m_Renderer(renderer)
+		:m_Renderer(renderer), m_NullBitmap({8, 8}, ColorDepthDB::BPP32)
 	{
 		if (&renderer == wxGraphicsRenderer::GetGDIPlusRenderer())
 		{
@@ -175,9 +175,17 @@ namespace kxf
 	}
 
 	// WxGraphicsRenderer
-	bool WxGraphicsRenderer::SupportBitmapRescaleOnDraw() const
+	bool WxGraphicsRenderer::CanRescaleBitmapOnDraw() const
 	{
-		return true;
-		//return m_Type == Type::GDIPlus;
+		// GDIPlus can do stretch-scale but it doesn't respect the interpolation quality option
+		// and slow in general so we're going to use `Image::Rescale` for it as well as for other renderers.
+
+		return false;
+	}
+	bool WxGraphicsRenderer::CanDrawNullBitmap() const
+	{
+		// There is a bug where Direct2D renderer crashes when it asked to draw a null bitmap.
+		// It doesn't check anything and faces a nullptr somewhere deep inside its wx-side implementation.
+		return m_Type != Type::Direct2D;
 	}
 }

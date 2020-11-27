@@ -6,18 +6,36 @@
 
 namespace kxf
 {
-	void WxGraphicsPen::AssignStippleFromBrush()
+	void WxGraphicsPen::AssignBrushData()
 	{
-		if (auto textureBrush = m_Brush->QueryInterface<IGraphicsTextureBrush>())
+		if (m_Brush)
 		{
-			if (auto texture = textureBrush->GetTexture())
+			if (auto textureBrush = m_Brush->QueryInterface<IGraphicsTextureBrush>())
 			{
-				m_Pen.SetStipple(texture->ToImage().ToBitmap());
+				if (auto texture = textureBrush->GetTexture())
+				{
+					m_Pen.SetStipple(texture->ToImage().ToBitmap());
+				}
+			}
+			else if (auto hatchBrush = m_Brush->QueryInterface<IGraphicsHatchBrush>())
+			{
+				m_Pen.SetHatchStyle(hatchBrush->GetHatchStyle());
 			}
 		}
-		else if (auto hatchBrush = m_Brush->QueryInterface<IGraphicsHatchBrush>())
+		else
 		{
-			m_Pen.SetHatchStyle(hatchBrush->GetHatchStyle());
+			m_Pen.SetStipple({});
+		}
+		ValidatePen();
+	}
+	void WxGraphicsPen::ValidatePen()
+	{
+		if (!m_Renderer->CanDrawNullBitmap())
+		{
+			if (!m_Pen.GetStipple())
+			{
+				m_Pen.ToWxPen().SetStipple(m_Renderer->GetNullBitmap().ToWxBitmap());
+			}
 		}
 	}
 

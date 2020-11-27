@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "../GraphicsRenderer/IGraphicsRenderer.h"
+#include "../GDIRenderer/GDIBitmap.h"
 class wxGraphicsRenderer;
 
 namespace kxf
@@ -20,6 +21,8 @@ namespace kxf
 		private:
 			wxGraphicsRenderer& m_Renderer;
 			Type m_Type = Type::None;
+
+			GDIBitmap m_NullBitmap;
 
 		public:
 			WxGraphicsRenderer(wxGraphicsRenderer& renderer);
@@ -73,7 +76,13 @@ namespace kxf
 			{
 				return m_Type;
 			}
-			bool SupportBitmapRescaleOnDraw() const;
+			bool CanRescaleBitmapOnDraw() const;
+			bool CanDrawNullBitmap() const;
+
+			const GDIBitmap& GetNullBitmap() const
+			{
+				return m_NullBitmap;
+			}
 
 			AffineMatrixF ToAffineMatrix(const wxGraphicsMatrix& matrix)
 			{

@@ -57,18 +57,21 @@ namespace kxf
 				m_Initialized = false;
 			}
 
-			void AssignStippleFromBrush();
+			void AssignBrushData();
+			void ValidatePen();
 
 		public:
 			WxGraphicsPen() noexcept = default;
 			WxGraphicsPen(WxGraphicsRenderer& rendrer, const GDIPen& pen)
 				:m_Renderer(&rendrer), m_Pen(pen)
 			{
+				ValidatePen();
 			}
 			WxGraphicsPen(WxGraphicsRenderer& rendrer, const Color& color, float width)
 				:m_Renderer(&rendrer), m_Pen(color)
 			{
 				WxGraphicsPen::SetWidth(width);
+				ValidatePen();
 			}
 
 		public:
@@ -177,11 +180,8 @@ namespace kxf
 			void SetBrush(std::shared_ptr<IGraphicsBrush> brush) override
 			{
 				m_Brush = std::move(brush);
-				if (m_Brush)
-				{
-					AssignStippleFromBrush();
-					Invalidate();
-				}
+				AssignBrushData();
+				Invalidate();
 			}
 
 			size_t GetDashPattern(float* dashes, size_t maxCount) const override
