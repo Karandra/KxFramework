@@ -628,6 +628,14 @@ namespace kxf::Drawing
 			{
 				return Color::FromNormalized(0.66f, 0.66f, 0.66f);
 			}
+			case StockColor::Purple:
+			{
+				return Color::FromFixed8(196, 0, 171);
+			}
+			case StockColor::Magenta:
+			{
+				return Color::FromNormalized(1.0f, 0.0f, 1.0f);
+			}
 		};
 		return {};
 	}

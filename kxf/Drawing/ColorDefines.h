@@ -17,7 +17,9 @@ namespace kxf
 		Yellow,
 		Gray,
 		LightGray,
-		MediumGray
+		MediumGray,
+		Purple,
+		Magenta
 	};
 }
 
