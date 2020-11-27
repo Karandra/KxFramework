@@ -77,27 +77,39 @@ namespace
 					 FlagSet<Alignment> alignment,
 					 size_t acceleratorIndex)
 	{
-		ChangeTextParameters textParametrs(dc, font, brush);
-
 		switch (kind)
 		{
 			case TextKind::Simple:
 			{
-				dc.DrawText(text, rect.GetPosition());
+				if (!text.IsEmpty())
+				{
+					ChangeTextParameters textParametrs(dc, font, brush);
+					dc.DrawText(text, rect.GetPosition());
+				}
 				break;
 			}
 			case TextKind::Rotated:
 			{
-				dc.DrawRotatedText(text, rect.GetPosition(), angle);
+				if (!text.IsEmpty())
+				{
+					ChangeTextParameters textParametrs(dc, font, brush);
+					dc.DrawRotatedText(text, rect.GetPosition(), angle);
+				}
 				break;
 			}
 			case TextKind::Label:
 			{
-				if (icon && dc.CanDrawBitmap())
+				if (!rect.IsEmpty() && (!text.IsEmpty() || icon))
 				{
-					return dc.DrawLabel(text, rect, icon.QueryInterface<GDIGraphicsTexture>()->Get(), alignment, acceleratorIndex);
+					ChangeTextParameters textParametrs(dc, font, brush);
+
+					if (icon && dc.CanDrawBitmap())
+					{
+						return dc.DrawLabel(text, rect, icon.QueryInterface<GDIGraphicsTexture>()->Get(), alignment, acceleratorIndex);
+					}
+					return dc.DrawLabel(text, rect, {}, alignment, acceleratorIndex);
 				}
-				return dc.DrawLabel(text, rect, {}, alignment, acceleratorIndex);
+				break;
 			}
 		};
 		return {};
