@@ -329,7 +329,7 @@ namespace kxf
 		public:
 			GDIGraphicsMemoryContext() noexcept = default;
 			GDIGraphicsMemoryContext(GDIGraphicsRenderer& rendrer, std::shared_ptr<IGraphicsTexture> texture)
-				:GDIGraphicsContext(rendrer, m_MemoryDC), m_Texture(std::move(texture))
+				:GDIGraphicsContext(rendrer, m_MemoryDC)
 			{
 				SetupDC();
 				SelectTexture(std::move(texture));
