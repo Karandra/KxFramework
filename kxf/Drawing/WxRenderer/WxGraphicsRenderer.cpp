@@ -84,7 +84,11 @@ namespace kxf
 	}
 	std::unique_ptr<IGraphicsContext> WxGraphicsRenderer::CreateWindowPaintContext(wxWindow& window)
 	{
-		if (window.IsDoubleBuffered())
+		// Context created for 'wxBufferedPaintDC' doesn't work correctly with Direct2D and
+		// leaves black surface after flushing, so we're going to use regular 'wxPaintDC' here.
+		// It's still buffered by the Direct2D anyway.
+
+		if (m_Type == Type::Direct2D || window.IsDoubleBuffered())
 		{
 			return std::make_unique<WxGraphicsPaintContext>(*this, window);
 		}
@@ -178,9 +182,16 @@ namespace kxf
 	bool WxGraphicsRenderer::CanRescaleBitmapOnDraw() const
 	{
 		// GDIPlus can do stretch-scale but it doesn't respect the interpolation quality option
-		// and slow in general so we're going to use `Image::Rescale` for it as well as for other renderers.
+		// or interprets it incorrectly. It works fast when it's set to best quality and slow if
+		// set to fast. Guess now it's best to let it do the rescaling.
 
-		return false;
+		// Some versions of Direct2D can only crop the image if it's larger than the provided rectangle,
+		// other versions can actually rescale texture and rescale it fast. Cropping was observed on Windows 7,
+		// but on Windows 10 (v20H2 at least) it does proper fast rescaling.
+
+		// No information for Cairo, assuming it can't rescale. Testing required.
+
+		return m_Type == Type::GDIPlus || m_Type == Type::Direct2D;
 	}
 	bool WxGraphicsRenderer::CanDrawNullBitmap() const
 	{
