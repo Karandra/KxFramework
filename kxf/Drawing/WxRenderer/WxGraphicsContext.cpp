@@ -82,6 +82,15 @@ namespace kxf
 		}
 	}
 
+	Image& WxGraphicsContext::InitTextureBuffer(std::shared_ptr<IGraphicsTexture> texture)
+	{
+		Image& image = texture->QueryInterface<WxGraphicsTexture>()->GetImage();
+		image.SetRGBA(image.GetSize(), Drawing::GetStockColor(StockColor::Transparent));
+
+		m_BufferTexture = std::move(texture);
+		return image;
+	}
+
 	wxGraphicsFont WxGraphicsContext::MakeGCFont() const
 	{
 		return m_Renderer->Get().CreateFont(m_CurrentFont.ToWxFont(), m_CurrentFontColor);
@@ -731,10 +740,9 @@ namespace kxf
 	void WxGraphicsGDIContext::Initialize(WxGraphicsRenderer& rendrer, wxDC& dc)
 	{
 		m_DC = dc;
-		m_Image = Image(m_DC.GetSize());
-		m_Image.SetRGBA(m_Image.GetSize(), Drawing::GetStockColor(StockColor::Transparent));
 
-		WxGraphicsContext::Initialize(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateContextFromImage(m_Image.ToWxImage())));
+		m_Image = &InitTextureBuffer(m_Renderer->CreateTexture(dc.GetSize(), Drawing::GetStockColor(StockColor::Transparent)));
+		WxGraphicsContext::Initialize(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateContextFromImage(m_Image->ToWxImage())));
 	}
 
 	bool WxGraphicsGDIContext::FlushContent()
@@ -742,7 +750,7 @@ namespace kxf
 		if (m_Context && m_DC)
 		{
 			m_Context->Flush();
-			m_DC.DrawBitmap(m_Image.ToBitmap(), {0, 0});
+			m_DC.DrawBitmap(m_Image->ToBitmap(), {0, 0});
 
 			return true;
 		}

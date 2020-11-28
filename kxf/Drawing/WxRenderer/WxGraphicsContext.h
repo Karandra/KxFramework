@@ -42,6 +42,9 @@ namespace kxf
 			wxGCDC m_WxGCDC;
 			GDIContext m_GCDC;
 
+			// Buffer to draw of (for derived classes)
+			std::shared_ptr<IGraphicsTexture> m_BufferTexture;
+
 			// Currently active pen/brush/font
 			std::shared_ptr<IGraphicsPen> m_CurrentPen;
 			std::shared_ptr<IGraphicsBrush> m_CurrentBrush;
@@ -67,6 +70,8 @@ namespace kxf
 				m_WxGCDC.SetGraphicsContext(gc.release());
 				m_GCDC = GDIContext(m_WxGCDC);
 			}
+
+			Image& InitTextureBuffer(std::shared_ptr<IGraphicsTexture> texture);
 
 			wxGraphicsFont MakeGCFont() const;
 			wxGraphicsFont MakeGCFont(const IGraphicsFont& font, const Color& color = {}) const;
@@ -292,7 +297,7 @@ namespace kxf
 	{
 		private:
 			GDIContext m_DC;
-			Image m_Image;
+			Image* m_Image = nullptr;
 
 		protected:
 			void Initialize(WxGraphicsRenderer& rendrer, wxDC& dc);
@@ -330,9 +335,8 @@ namespace kxf
 
 	class KX_API WxGraphicsMemoryContext: public WxGraphicsContext
 	{
-		protected:
-			Image m_Image;
-			std::shared_ptr<IGraphicsTexture> m_Texture;
+		private:
+			Image* m_Image = nullptr;
 
 		private:
 			bool FlushContent()
@@ -340,11 +344,6 @@ namespace kxf
 				if (m_Context)
 				{
 					m_Context->Flush();
-
-					if (m_Texture && m_Image)
-					{
-						m_Texture->FromImage(m_Image);
-					}
 					return true;
 				}
 				return false;
@@ -353,11 +352,9 @@ namespace kxf
 		public:
 			WxGraphicsMemoryContext() noexcept = default;
 			WxGraphicsMemoryContext(WxGraphicsRenderer& rendrer, std::shared_ptr<IGraphicsTexture> texture)
-				:m_Image(texture->GetSize()), m_Texture(std::move(texture))
 			{
-				m_Image.SetRGBA(m_Image.GetSize(), Drawing::GetStockColor(StockColor::Transparent));
-
-				Initialize(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateContextFromImage(m_Image.ToWxImage())));
+				m_Image = &InitTextureBuffer(std::move(texture));
+				Initialize(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateContextFromImage(m_Image->ToWxImage())));
 				SetupDC();
 			}
 			~WxGraphicsMemoryContext()
@@ -384,16 +381,16 @@ namespace kxf
 			// WxGraphicsMemoryContext
 			std::shared_ptr<IGraphicsTexture> GetSelectedTexture() const
 			{
-				return m_Texture;
+				return m_BufferTexture;
 			}
 			void SelectTexture(std::shared_ptr<IGraphicsTexture> texture)
 			{
-				m_Texture = std::move(texture);
+				InitTextureBuffer(std::move(texture));
 			}
 			std::shared_ptr<IGraphicsTexture> UnselectTexture()
 			{
 				FlushContent();
-				return std::move(m_Texture);
+				return std::move(m_BufferTexture);
 			}
 	};
 

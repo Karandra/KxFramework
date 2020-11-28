@@ -55,7 +55,6 @@ namespace kxf
 			{
 				if (color)
 				{
-					m_Image.InitAlpha();
 					m_Image.SetRGBA(m_Image.GetSize(), color);
 				}
 			}
