@@ -283,6 +283,8 @@ namespace kxf
 			}
 			void SetRGBA(const Point& pos, const PackedRGBA<uint8_t>& color)
 			{
+				InitAlpha();
+
 				m_Image.SetRGB(pos.GetX(), pos.GetY(), color.Red, color.Green, color.Blue);
 				m_Image.SetAlpha(pos.GetX(), pos.GetY(), color.Alpha);
 			}
@@ -294,6 +296,7 @@ namespace kxf
 			{
 				m_Image.SetRGB(rect, color.Red, color.Green, color.Blue);
 
+				InitAlpha();
 				for (int y = rect.GetY(); y < m_Image.GetHeight(); y++)
 				{
 					for (int x = rect.GetX(); x < m_Image.GetWidth(); x++)
