@@ -25,53 +25,22 @@ namespace kxf
 			bool m_Initialized = false;
 
 		private:
-			void Initialize()
-			{
-				if (!m_Initialized)
-				{
-					if (m_Pen)
-					{
-						wxGraphicsPenInfo penInfo;
-						penInfo.Colour(m_Pen.GetColor());
-						penInfo.Width(m_Pen.GetWidth());
-						penInfo.Join(m_Pen.ToWxPen().GetJoin());
-						penInfo.Cap(m_Pen.ToWxPen().GetCap());
-						penInfo.Style(m_Pen.ToWxPen().GetStyle());
-						penInfo.Stipple(m_Pen.GetStipple().ToWxBitmap());
-
-						GDIPen::Dash* dashes = nullptr;
-						size_t dashCount = m_Pen.GetDashes(dashes);
-						penInfo.Dashes(dashCount, dashes);
-
-						m_Graphics = m_Renderer->Get().CreatePen(penInfo);
-					}
-					else
-					{
-						m_Graphics = {};
-					}
-					m_Initialized = true;
-				}
-			}
+			void Initialize();
 			void Invalidate()
 			{
 				m_Initialized = false;
 			}
-
 			void AssignBrushData();
-			void ValidatePen();
 
 		public:
 			WxGraphicsPen() noexcept = default;
 			WxGraphicsPen(WxGraphicsRenderer& rendrer, const GDIPen& pen)
 				:m_Renderer(&rendrer), m_Pen(pen)
 			{
-				ValidatePen();
 			}
 			WxGraphicsPen(WxGraphicsRenderer& rendrer, const Color& color, float width)
-				:m_Renderer(&rendrer), m_Pen(color)
+				:m_Renderer(&rendrer), m_Pen(color, static_cast<int>(width))
 			{
-				WxGraphicsPen::SetWidth(width);
-				ValidatePen();
 			}
 
 		public:

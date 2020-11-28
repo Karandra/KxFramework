@@ -6,6 +6,36 @@
 
 namespace kxf
 {
+	void WxGraphicsPen::Initialize()
+	{
+		if (!m_Initialized)
+		{
+			if (m_Pen)
+			{
+				wxGraphicsPenInfo penInfo;
+				penInfo.Colour(m_Pen.GetColor());
+				penInfo.Width(m_Pen.GetWidth());
+				penInfo.Join(m_Pen.ToWxPen().GetJoin());
+				penInfo.Cap(m_Pen.ToWxPen().GetCap());
+				penInfo.Style(m_Pen.ToWxPen().GetStyle());
+				if (m_Pen.IsStipple())
+				{
+					penInfo.Stipple(m_Pen.GetStipple().ToWxBitmap());
+				}
+
+				GDIPen::Dash* dashes = nullptr;
+				size_t dashCount = m_Pen.GetDashes(dashes);
+				penInfo.Dashes(dashCount, dashes);
+
+				m_Graphics = m_Renderer->Get().CreatePen(penInfo);
+			}
+			else
+			{
+				m_Graphics = {};
+			}
+			m_Initialized = true;
+		}
+	}
 	void WxGraphicsPen::AssignBrushData()
 	{
 		if (m_Brush)
@@ -25,17 +55,7 @@ namespace kxf
 		else
 		{
 			m_Pen.SetStipple({});
-		}
-		ValidatePen();
-	}
-	void WxGraphicsPen::ValidatePen()
-	{
-		if (!m_Renderer->CanDrawNullBitmap())
-		{
-			if (!m_Pen.GetStipple())
-			{
-				m_Pen.ToWxPen().SetStipple(m_Renderer->GetTransparentBitmap().ToWxBitmap());
-			}
+			m_Pen.SetTransparent();
 		}
 	}
 
