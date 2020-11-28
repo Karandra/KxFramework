@@ -13,14 +13,16 @@ namespace kxf
 		private:
 			wxPen m_Pen;
 
+		private:
+			void Initialize();
+
 		public:
-			GDIPen() = default;
+			GDIPen()
+			{
+				Initialize();
+			}
 			GDIPen(const wxPen& other)
 				:m_Pen(other)
-			{
-			}
-			GDIPen(const wxColour& color)
-				:m_Pen(color, wxPENSTYLE_SOLID)
 			{
 			}
 			GDIPen(const GDIPen& other)
@@ -30,10 +32,17 @@ namespace kxf
 			GDIPen(const Color& color)
 				:m_Pen(color.ToWxColor(), wxPENSTYLE_SOLID)
 			{
+				Initialize();
+			}
+			GDIPen(const wxColour& color)
+				:m_Pen(color, wxPENSTYLE_SOLID)
+			{
+				Initialize();
 			}
 			GDIPen(const GDIBitmap& stippleBitmap, int width)
 				:m_Pen(stippleBitmap.ToWxBitmap(), width)
 			{
+				Initialize();
 			}
 			virtual ~GDIPen()
 			{

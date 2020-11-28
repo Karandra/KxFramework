@@ -35,6 +35,13 @@ namespace
 
 namespace kxf
 {
+	// GDIPen
+	void GDIPen::Initialize()
+	{
+		m_Pen.SetCap(wxCAP_BUTT);
+		m_Pen.SetJoin(wxJOIN_MITER);
+	}
+
 	// IGDIObject
 	void* GDIPen::GetHandle() const
 	{
