@@ -6,6 +6,7 @@
 #include "kxf/System/SystemInformation.h"
 #include "kxf/Utility/Common.h"
 #include <WindowsX.h>
+#include <Uxtheme.h>
 #include "kxf/System/UndefWindows.h"
 
 #pragma warning(disable: 4302) // 'reinterpret_cast': truncation from 'void *' to 'UINT'
@@ -307,6 +308,8 @@ namespace kxf::Sciter
 	}
 	bool Host::EnableSystemTheme(bool enable)
 	{
+		::SetWindowTheme(m_SciterWindow.GetHandle(), enable ? wxS("Explorer") : nullptr, nullptr);
+
 		m_Style.Mod(HostStyle::SystemTheme, enable);
 		return GetSciterAPI()->SciterSetOption(m_SciterWindow.GetHandle(), SCITER_SET_UX_THEMING, enable);
 	}
