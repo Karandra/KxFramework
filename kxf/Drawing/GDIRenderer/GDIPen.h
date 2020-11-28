@@ -29,17 +29,17 @@ namespace kxf
 				:m_Pen(other.m_Pen)
 			{
 			}
-			GDIPen(const Color& color)
-				:m_Pen(color.ToWxColor(), wxPENSTYLE_SOLID)
+			GDIPen(const Color& color, int width = 1)
+				:m_Pen(color.ToWxColor(), width, wxPENSTYLE_SOLID)
 			{
 				Initialize();
 			}
-			GDIPen(const wxColour& color)
-				:m_Pen(color, wxPENSTYLE_SOLID)
+			GDIPen(const wxColour& color, int width = 1)
+				:m_Pen(color, width, wxPENSTYLE_SOLID)
 			{
 				Initialize();
 			}
-			GDIPen(const GDIBitmap& stippleBitmap, int width)
+			GDIPen(const GDIBitmap& stippleBitmap, int width = 1)
 				:m_Pen(stippleBitmap.ToWxBitmap(), width)
 			{
 				Initialize();
@@ -141,6 +141,10 @@ namespace kxf
 				m_Pen.SetCap(Drawing::Private::MapLineCap(cap));
 			}
 
+			bool IsStipple() const
+			{
+				return m_Pen.GetStyle() == wxPENSTYLE_STIPPLE;
+			}
 			GDIBitmap GetStipple() const
 			{
 				if (m_Pen.GetStyle() == wxPENSTYLE_STIPPLE)
