@@ -20,6 +20,7 @@ namespace kxf
 			WxGraphicsRenderer* m_Renderer = nullptr;
 			wxGraphicsPen m_Graphics;
 			GDIPen m_Pen;
+			float m_PenWidth = -1.0f;
 			std::shared_ptr<IGraphicsBrush> m_Brush;
 
 			bool m_Initialized = false;
@@ -35,11 +36,11 @@ namespace kxf
 		public:
 			WxGraphicsPen() noexcept = default;
 			WxGraphicsPen(WxGraphicsRenderer& rendrer, const GDIPen& pen)
-				:m_Renderer(&rendrer), m_Pen(pen)
+				:m_Renderer(&rendrer), m_Pen(pen), m_PenWidth(pen.GetWidth())
 			{
 			}
 			WxGraphicsPen(WxGraphicsRenderer& rendrer, const Color& color, float width)
-				:m_Renderer(&rendrer), m_Pen(color, static_cast<int>(width))
+				:m_Renderer(&rendrer), m_Pen(color, static_cast<int>(width)), m_PenWidth(width)
 			{
 			}
 
@@ -134,10 +135,11 @@ namespace kxf
 
 			float GetWidth() const override
 			{
-				return m_Pen.GetWidth();
+				return m_PenWidth;
 			}
 			void SetWidth(float width) override
 			{
+				m_PenWidth = width;
 				m_Pen.SetWidth(static_cast<int>(width));
 				Invalidate();
 			}

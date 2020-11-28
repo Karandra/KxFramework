@@ -14,7 +14,7 @@ namespace kxf
 			{
 				wxGraphicsPenInfo penInfo;
 				penInfo.Colour(m_Pen.GetColor());
-				penInfo.Width(m_Pen.GetWidth());
+				penInfo.Width(m_PenWidth);
 				penInfo.Join(m_Pen.ToWxPen().GetJoin());
 				penInfo.Cap(m_Pen.ToWxPen().GetCap());
 				penInfo.Style(m_Pen.ToWxPen().GetStyle());
