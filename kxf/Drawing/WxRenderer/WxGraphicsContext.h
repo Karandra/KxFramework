@@ -42,7 +42,7 @@ namespace kxf
 			wxGCDC m_WxGCDC;
 			GDIContext m_GCDC;
 
-			// Buffer to draw of (for derived classes)
+			// Buffer to draw on (for derived classes)
 			std::shared_ptr<IGraphicsTexture> m_BufferTexture;
 
 			// Currently active pen/brush/font

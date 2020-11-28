@@ -11,7 +11,9 @@ namespace kxf
 	// GDIBitmap
 	void GDIBitmap::Initialize()
 	{
-		m_Bitmap.UseAlpha(true);
+		// This shouldn't be necessary, at least for 'ToImage' function
+		// since it can detect whether the alpha is actually used or not.
+		//m_Bitmap.UseAlpha(true);
 	}
 
 	GDIBitmap::GDIBitmap(const GDICursor& other)
