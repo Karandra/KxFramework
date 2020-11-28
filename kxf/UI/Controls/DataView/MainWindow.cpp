@@ -1955,7 +1955,7 @@ namespace kxf::UI::DataView
 		m_TreeRoot(this), m_VirtualNode(m_TreeRoot), m_View(parent)
 	{
 		// Setup drawing
-		m_GraphicsRenderer = Drawing::GetGDIRenderer();
+		m_GraphicsRenderer = Drawing::GetDefaultRenderer();
 		SetBackgroundStyle(wxBG_STYLE_PAINT);
 		SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX));
 
