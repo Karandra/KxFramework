@@ -40,12 +40,19 @@ namespace kxf::Drawing
 
 	std::shared_ptr<IGraphicsRenderer> GetDefaultRenderer()
 	{
-		static auto renderer = GetWxRenderer(wxGraphicsRenderer::GetDefaultRenderer());
-
-		if (renderer)
+		auto renderer = GetDirect2DRenderer();
+		if (!renderer)
 		{
-			return renderer;
+			renderer = GetGDIPlusRenderer();
 		}
-		return GetGDIRenderer();
+		if (!renderer)
+		{
+			renderer = GetCairoRenderer();
+		}
+		if (!renderer)
+		{
+			renderer = GetGDIRenderer();
+		}
+		return renderer;
 	}
 }
