@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "Geometry.h"
 #include <wx/dc.h>
 
 namespace kxf::Drawing
@@ -17,6 +18,10 @@ namespace kxf::Drawing
 
 		public:
 			constexpr BasicFontMetrics() noexcept = default;
+			constexpr BasicFontMetrics(const Geometry::BasicSize<TValue>& size) noexcept
+				:Height(size.GetHeight()), AverageWidth(size.GetWidth())
+			{
+			}
 			constexpr BasicFontMetrics(const wxFontMetrics& other) noexcept
 				:Height(other.height), Ascent(other.ascent), Descent(other.descent),
 				AverageWidth(other.averageWidth), InternalLeading(other.internalLeading), ExternalLeading(other.externalLeading)
@@ -48,4 +53,11 @@ namespace kxf::Drawing
 			}
 
 	};
+}
+
+namespace kxf
+{
+	using FontMetrics = Drawing::BasicFontMetrics<int>;
+	using FontMetricsF = Drawing::BasicFontMetrics<float>;
+	using FontMetricsD = Drawing::BasicFontMetrics<double>;
 }

@@ -5,7 +5,6 @@
 #include "../Angle.h"
 #include "../Color.h"
 #include "../ColorDepth.h"
-#include "../TextExtent.h"
 #include "../FontMetrics.h"
 
 #include "IGDIObject.h"
@@ -45,10 +44,4 @@ namespace kxf
 		OrInvert = wxOR_INVERT, // (NOT src) OR dst
 		SrcInvert = wxSRC_INVERT, // (NOT src)
 	};
-
-	template<class T>
-	using GDICoordPair = Geometry::OrderedPairTemplate<T, int>;
-
-	using GDIFontMetrics = Drawing::BasicFontMetrics<int>;
-	using GDITextExtent = Drawing::BasicTextExtent<int>;
 }

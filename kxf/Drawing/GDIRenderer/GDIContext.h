@@ -17,6 +17,10 @@ namespace kxf
 {
 	class KX_API GDIContext: public IGDIObject
 	{
+		public:
+			template<class T>
+			using GDICoordPair = Geometry::OrderedPairTemplate<T, int>;
+
 		protected:
 			wxDC* m_DC = nullptr;
 
@@ -459,7 +463,7 @@ namespace kxf
 			{
 				return m_DC->GetCharHeight();
 			}
-			GDIFontMetrics GetFontMetrics() const
+			FontMetrics GetFontMetrics() const
 			{
 				return m_DC->GetFontMetrics();
 			}
@@ -468,24 +472,22 @@ namespace kxf
 			{
 				return m_DC->GetTextExtent(text);
 			}
-			GDITextExtent GetTextExtent(const String& text, const GDIFont& font) const
+			Size GetTextExtent(const String& text, const GDIFont& font) const
 			{
 				wxSize size;
-				wxFontMetrics fontMetrics = m_DC->GetFontMetrics();
-				m_DC->GetTextExtent(text, &size.x, &size.y, &fontMetrics.descent, &fontMetrics.externalLeading, &font.ToWxFont());
-				return {size, fontMetrics};
-			}
+				m_DC->GetTextExtent(text, &size.x, &size.y, nullptr, nullptr, &font.ToWxFont());
 
+				return size;
+			}
 			Size GetMultiLineTextExtent(const String& text) const
 			{
 				return m_DC->GetMultiLineTextExtent(text);
 			}
-			GDITextExtent GetMultiLineTextExtent(const String& text, const GDIFont& font) const
+			Size GetMultiLineTextExtent(const String& text, const GDIFont& font) const
 			{
 				wxSize size;
-				wxFontMetrics fontMetrics = m_DC->GetFontMetrics();
-				m_DC->GetMultiLineTextExtent(text, &size.x, &size.y, &fontMetrics.height, &font.ToWxFont());
-				return {size, fontMetrics};
+				m_DC->GetMultiLineTextExtent(text, &size.x, &size.y, nullptr, &font.ToWxFont());
+				return size;
 			}
 
 			std::vector<int> GetPartialTextExtent(const String& text) const

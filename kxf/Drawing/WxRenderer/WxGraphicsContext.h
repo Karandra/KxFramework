@@ -163,7 +163,8 @@ namespace kxf
 			std::shared_ptr<IGraphicsBrush> GetFontBrush() const override;
 			void SetFontBrush(std::shared_ptr<IGraphicsBrush> brush) override;
 
-			GraphicsTextExtent GetTextExtent(const String& text, const IGraphicsFont& font = NullGraphicsFont) const override;
+			SizeF GetTextExtent(const String& text, const IGraphicsFont& font = NullGraphicsFont) const override;
+			FontMetricsF GetFontMetrics(const IGraphicsFont& font = NullGraphicsFont) const override;
 			std::vector<float> GetPartialTextExtent(const String& text, const IGraphicsFont& font = NullGraphicsFont) const override;
 
 			void DrawText(const String& text, const PointF& point, const IGraphicsFont& font = NullGraphicsFont, const IGraphicsBrush& brush = NullGraphicsBrush) override;

@@ -5,5 +5,4 @@
 #include "../Angle.h"
 #include "../Color.h"
 #include "../ColorDepth.h"
-#include "../TextExtent.h"
 #include "../FontMetrics.h"

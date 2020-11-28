@@ -205,7 +205,7 @@ namespace kxf::UI::DataView
 			}
 			else
 			{
-				return gc.GetTextExtent(string).GetExtent();
+				return gc.GetTextExtent(string);
 			}
 		}
 		else
@@ -241,7 +241,7 @@ namespace kxf::UI::DataView
 			};
 			auto MeasureString = [&dc](const String& text, const Font& font = {})
 			{
-				return dc.GetTextExtent(text, font).GetExtent();
+				return dc.GetTextExtent(text, font);
 			};
 
 			const size_t lineBreakPos = FindFirstLineBreak(string);
@@ -267,7 +267,7 @@ namespace kxf::UI::DataView
 			}
 			else
 			{
-				return gc.GetTextExtent(string).GetExtent();
+				return gc.GetTextExtent(string);
 			}
 		}
 		else

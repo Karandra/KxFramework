@@ -275,7 +275,7 @@ namespace kxf
 	// Texture functions
 	void GDIGraphicsContext::DrawTexture(const IGraphicsTexture& texture, const RectF& rect)
 	{
-		if (m_DC.CanDrawBitmap())
+		if (m_DC.CanDrawBitmap() && !rect.IsEmpty())
 		{
 			if (auto gdiTexture = texture.QueryInterface<GDIGraphicsTexture>())
 			{
@@ -288,11 +288,15 @@ namespace kxf
 					m_DC.DrawBitmap(gdiTexture->Get().ToImage().RescaleThis(rect.GetSize(), m_InterpolationQuality).ToBitmap(), rect.GetPosition());
 				}
 			}
+			else
+			{
+				GDIGraphicsContext::DrawTexture(texture.ToImage(), rect);
+			}
 		}
 	}
 	void GDIGraphicsContext::DrawTexture(const Image& image, const RectF& rect)
 	{
-		if (m_DC.CanDrawBitmap())
+		if (m_DC.CanDrawBitmap() && !rect.IsEmpty())
 		{
 			if (SizeF(image.GetSize()) != rect.GetSize())
 			{
@@ -306,7 +310,7 @@ namespace kxf
 	}
 	void GDIGraphicsContext::DrawTexture(const GDIBitmap& bitmap, const RectF& rect)
 	{
-		if (m_DC.CanDrawBitmap())
+		if (m_DC.CanDrawBitmap() && !rect.IsEmpty())
 		{
 			if (SizeF(bitmap.GetSize()) != rect.GetSize())
 			{
@@ -361,44 +365,63 @@ namespace kxf
 		m_DC.SetTextBackground(Drawing::GetStockColor(StockColor::Transparent));
 	}
 
-	GraphicsTextExtent GDIGraphicsContext::GetTextExtent(const String& text, const IGraphicsFont& font) const
+	SizeF GDIGraphicsContext::GetTextExtent(const String& text, const IGraphicsFont& font) const
 	{
-		auto GetExtent = [&](const GDIFont& font)
+		if (!text.IsEmpty())
 		{
-			if (text.ContainsAnyOfCharacters(wxS("\r\n")))
+			auto GetExtent = [&](const GDIFont& font)
 			{
-				return m_DC.GetMultiLineTextExtent(text, font);
+				if (text.ContainsAnyOfCharacters(wxS("\r\n")))
+				{
+					return m_DC.GetMultiLineTextExtent(text, font);
+				}
+				else
+				{
+					return m_DC.GetTextExtent(text, font);
+				}
+			};
+			if (font)
+			{
+				return GetExtent(font.QueryInterface<GDIGraphicsFont>()->Get());
 			}
 			else
 			{
-				return m_DC.GetTextExtent(text, font);
+				return GetExtent(m_DC.GetFont());
 			}
-		};
+		}
+		return {};
+	}
+	FontMetricsF GDIGraphicsContext::GetFontMetrics(const IGraphicsFont& font) const
+	{
 		if (font)
 		{
-			return GetExtent(font.QueryInterface<GDIGraphicsFont>()->Get());
+			ChangeTextParameters textParametrs(const_cast<GDIContext&>(m_DC), font, NullGraphicsBrush);
+			return m_DC.GetFontMetrics();
 		}
 		else
 		{
-			return GetExtent(m_DC.GetFont());
+			return m_DC.GetFontMetrics();
 		}
 	}
 	std::vector<float> GDIGraphicsContext::GetPartialTextExtent(const String& text, const IGraphicsFont& font) const
 	{
-		GDIAction::ChangeFont changeFont(const_cast<GDIContext&>(m_DC));
-		if (font)
+		if (!text.IsEmpty())
 		{
-			changeFont.Set(font.QueryInterface<GDIGraphicsFont>()->Get());
-		}
+			GDIAction::ChangeFont changeFont(const_cast<GDIContext&>(m_DC));
+			if (font)
+			{
+				changeFont.Set(font.QueryInterface<GDIGraphicsFont>()->Get());
+			}
 
-		wxArrayInt gdiWidths;
-		if (m_DC.ToWxDC().GetPartialTextExtents(text, gdiWidths))
-		{
-			std::vector<float> widths;
-			widths.resize(gdiWidths.size());
-			std::copy(gdiWidths.begin(), gdiWidths.end(), widths.begin());
+			wxArrayInt gdiWidths;
+			if (m_DC.ToWxDC().GetPartialTextExtents(text, gdiWidths))
+			{
+				std::vector<float> widths;
+				widths.resize(gdiWidths.size());
+				std::copy(gdiWidths.begin(), gdiWidths.end(), widths.begin());
 
-			return widths;
+				return widths;
+			}
 		}
 		return {};
 	}

@@ -55,7 +55,7 @@ namespace kxf::Drawing
 			{
 			}
 
-			GraphicsFontMetrics GetMetrics() const override
+			FontMetricsF GetMetrics() const override
 			{
 				return {};
 			}

@@ -118,7 +118,7 @@ namespace kxf
 				m_Font.SetFamily(family);
 			}
 
-			GraphicsFontMetrics GetMetrics() const override;
+			FontMetricsF GetMetrics() const override;
 
 			float GetPointSize() const override
 			{

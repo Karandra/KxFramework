@@ -116,7 +116,7 @@ namespace kxf
 				Invalidate();
 			}
 
-			GraphicsFontMetrics GetMetrics() const override;
+			FontMetricsF GetMetrics() const override;
 
 			float GetPointSize() const override
 			{

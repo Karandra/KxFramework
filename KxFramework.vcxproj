@@ -270,7 +270,6 @@
     <ClInclude Include="kxf\Drawing\ImageBundle.h" />
     <ClInclude Include="kxf\Drawing\Private\Common.h" />
     <ClInclude Include="kxf\Drawing\SizeRatio.h" />
-    <ClInclude Include="kxf\Drawing\TextExtent.h" />
     <ClInclude Include="kxf\Drawing\WxRenderer\Common.h" />
     <ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsBrush.h" />
     <ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsContext.h" />

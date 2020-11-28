@@ -100,7 +100,8 @@ namespace kxf
 			virtual std::shared_ptr<IGraphicsBrush> GetFontBrush() const = 0;
 			virtual void SetFontBrush(std::shared_ptr<IGraphicsBrush> brush) = 0;
 
-			virtual GraphicsTextExtent GetTextExtent(const String& text, const IGraphicsFont& font = NullGraphicsFont) const = 0;
+			virtual SizeF GetTextExtent(const String& text, const IGraphicsFont& font = NullGraphicsFont) const = 0;
+			virtual FontMetricsF GetFontMetrics(const IGraphicsFont& font = NullGraphicsFont) const = 0;
 			virtual std::vector<float> GetPartialTextExtent(const String& text, const IGraphicsFont& font = NullGraphicsFont) const = 0;
 
 			virtual void DrawText(const String& text, const PointF& point, const IGraphicsFont& font = NullGraphicsFont, const IGraphicsBrush& brush = NullGraphicsBrush) = 0;

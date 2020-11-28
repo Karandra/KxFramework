@@ -4,19 +4,15 @@
 
 namespace kxf
 {
-	GraphicsFontMetrics GDIGraphicsFont::GetMetrics() const
+	FontMetricsF GDIGraphicsFont::GetMetrics() const
 	{
-		GraphicsFontMetrics metrics;
 		if (auto context = m_Renderer->CreateMeasuringContext())
 		{
-			return context->GetTextExtent(wxS('W')).GetFontMetrics();
+			return context->GetFontMetrics(*this);
 		}
 		else
 		{
-			auto size = m_Font.GetPixelSize();
-			metrics.AverageWidth = size.GetWidth();
-			metrics.Height = size.GetHeight();
+			return SizeF(m_Font.GetPixelSize());
 		}
-		return metrics;
 	}
 }

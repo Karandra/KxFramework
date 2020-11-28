@@ -280,19 +280,25 @@ namespace kxf
 	// Texture functions
 	void WxGraphicsContext::DrawTexture(const IGraphicsTexture& texture, const RectF& rect)
 	{
-		object_ptr<const WxGraphicsTexture> textureWx;
-		if (!rect.IsEmpty() && texture && texture.QueryInterface(textureWx))
+		if (!rect.IsEmpty() && texture)
 		{
-			if (m_Renderer->CanRescaleBitmapOnDraw() || textureWx->GetSize() == rect.GetSize())
+			if (auto textureWx = texture.QueryInterface<WxGraphicsTexture>())
 			{
-				m_Context->DrawBitmap(textureWx->Get(), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
+				if (m_Renderer->CanRescaleBitmapOnDraw() || textureWx->GetSize() == rect.GetSize())
+				{
+					m_Context->DrawBitmap(textureWx->Get(), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
+				}
+				else
+				{
+					Image image = textureWx->GetImage().Rescale(rect.GetSize(), m_InterpolationQuality);
+					m_Context->DrawBitmap(m_Renderer->Get().CreateBitmapFromImage(image.ToWxImage()), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
+				}
+				CalcBoundingBox(rect);
 			}
 			else
 			{
-				Image image = textureWx->GetImage().Rescale(rect.GetSize(), m_InterpolationQuality);
-				m_Context->DrawBitmap(m_Renderer->Get().CreateBitmapFromImage(image.ToWxImage()), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
+				WxGraphicsContext::DrawTexture(texture.ToImage(), rect);
 			}
-			CalcBoundingBox(rect);
 		}
 	}
 	void WxGraphicsContext::DrawTexture(const Image& image, const RectF& rect)
@@ -359,8 +365,37 @@ namespace kxf
 		InvalidateCurrentFont();
 	}
 
-	GraphicsTextExtent WxGraphicsContext::GetTextExtent(const String& text, const IGraphicsFont& font) const
+	SizeF WxGraphicsContext::GetTextExtent(const String& text, const IGraphicsFont& font) const
 	{
+		if (!text.IsEmpty())
+		{
+			wxGraphicsFont oldFont;
+			if (font)
+			{
+				oldFont = MakeGCFont();
+				m_Context->SetFont(MakeGCFont(font));
+			}
+			else
+			{
+				const_cast<WxGraphicsContext&>(*this).UpdateCurrentFont();
+			}
+
+			wxDouble width = 0;
+			wxDouble height = 0;
+			m_Context->GetTextExtent(text, &width, &height, nullptr, nullptr);
+
+			if (!oldFont.IsNull())
+			{
+				m_Context->SetFont(oldFont);
+			}
+			return {static_cast<float>(width), static_cast<float>(height)};
+		}
+		return {};
+	}
+	FontMetricsF WxGraphicsContext::GetFontMetrics(const IGraphicsFont& font) const
+	{
+		FontMetricsF metrics;
+
 		wxGraphicsFont oldFont;
 		if (font)
 		{
@@ -376,39 +411,43 @@ namespace kxf
 		wxDouble height = 0;
 		wxDouble descent = 0;
 		wxDouble externalLeading = 0;
-		m_Context->GetTextExtent(text, &width, &height, &descent, &externalLeading);
+		m_Context->GetTextExtent(wxS("W"), &width, &height, &descent, &externalLeading);
 
 		if (!oldFont.IsNull())
 		{
 			m_Context->SetFont(oldFont);
 		}
-		return {SizeF(width, height), GraphicsFontMetrics(0, 0, descent, 0, 0, externalLeading)};
+		return FontMetricsF(height, 0, descent, width, 0, externalLeading);
 	}
 	std::vector<float> WxGraphicsContext::GetPartialTextExtent(const String& text, const IGraphicsFont& font) const
 	{
-		wxGraphicsFont oldFont;
-		if (font)
+		if (!text.IsEmpty())
 		{
-			oldFont = MakeGCFont();
-			m_Context->SetFont(MakeGCFont(font));
-		}
-		else
-		{
-			const_cast<WxGraphicsContext&>(*this).UpdateCurrentFont();
-		}
+			wxGraphicsFont oldFont;
+			if (font)
+			{
+				oldFont = MakeGCFont();
+				m_Context->SetFont(MakeGCFont(font));
+			}
+			else
+			{
+				const_cast<WxGraphicsContext&>(*this).UpdateCurrentFont();
+			}
 
-		wxArrayDouble gcWidths;
-		m_Context->GetPartialTextExtents(text, gcWidths);
+			wxArrayDouble gcWidths;
+			m_Context->GetPartialTextExtents(text, gcWidths);
 
-		std::vector<float> widths;
-		widths.resize(gcWidths.size());
-		std::copy(gcWidths.begin(), gcWidths.end(), widths.begin());
+			std::vector<float> widths;
+			widths.resize(gcWidths.size());
+			std::copy(gcWidths.begin(), gcWidths.end(), widths.begin());
 
-		if (!oldFont.IsNull())
-		{
-			m_Context->SetFont(oldFont);
+			if (!oldFont.IsNull())
+			{
+				m_Context->SetFont(oldFont);
+			}
+			return widths;
 		}
-		return widths;
+		return {};
 	}
 
 	void WxGraphicsContext::DrawText(const String& text, const PointF& point, const IGraphicsFont& font, const IGraphicsBrush& brush)
