@@ -139,6 +139,8 @@ namespace kxf
 			features.Add(GraphicsContextFeature::DrawShape);
 			features.Add(GraphicsContextFeature::DrawTexture, m_DC.CanDrawBitmap());
 			features.Add(GraphicsContextFeature::TextMeasurement, m_DC.CanGetTextExtent());
+			features.Add(GraphicsContextFeature::Interpolation);
+			features.Add(GraphicsContextFeature::Composition);
 			features.Add(GraphicsContextFeature::BoundingBox);
 
 			return features;
@@ -537,43 +539,51 @@ namespace kxf
 	{
 		return m_CompositionMode;
 	}
-	void GDIGraphicsContext::SetCompositionMode(CompositionMode mode)
+	bool GDIGraphicsContext::SetCompositionMode(CompositionMode mode)
 	{
-		m_CompositionMode = mode;
-		switch (mode)
+		auto DoSetMode = [this](CompositionMode mode)
 		{
-			case CompositionMode::Source:
-			case CompositionMode::Over:
+			switch (mode)
 			{
-				m_DC.SetLogicalFunction(GDILogicalFunction::Copy);
-				break;
-			}
-			case CompositionMode::Add:
-			{
-				m_DC.SetLogicalFunction(GDILogicalFunction::Or);
-				break;
-			}
-			case CompositionMode::Clear:
-			{
-				m_DC.SetLogicalFunction(GDILogicalFunction::Clear);
-				break;
-			}
-			case CompositionMode::Dest:
-			{
-				m_DC.SetLogicalFunction(GDILogicalFunction::Nop);
-				break;
-			}
-			case CompositionMode::Xor:
-			{
-				m_DC.SetLogicalFunction(GDILogicalFunction::Xor);
-				break;
-			}
-			default:
-			{
-				m_CompositionMode = CompositionMode::None;
-				break;
-			}
+				case CompositionMode::Source:
+				case CompositionMode::Over:
+				{
+					m_DC.SetLogicalFunction(GDILogicalFunction::Copy);
+					break;
+				}
+				case CompositionMode::Add:
+				{
+					m_DC.SetLogicalFunction(GDILogicalFunction::Or);
+					break;
+				}
+				case CompositionMode::Clear:
+				{
+					m_DC.SetLogicalFunction(GDILogicalFunction::Clear);
+					break;
+				}
+				case CompositionMode::Dest:
+				{
+					m_DC.SetLogicalFunction(GDILogicalFunction::Nop);
+					break;
+				}
+				case CompositionMode::Xor:
+				{
+					m_DC.SetLogicalFunction(GDILogicalFunction::Xor);
+					break;
+				}
+				default:
+				{
+					return false;
+				}
+			};
+			return true;
 		};
+		if (DoSetMode(mode))
+		{
+			m_CompositionMode = mode;
+			return true;
+		}
+		return false;
 	}
 
 	// Bounding box functions

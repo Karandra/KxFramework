@@ -144,6 +144,7 @@ namespace kxf
 			features.Add(GraphicsContextFeature::TextMeasurement);
 			features.Add(GraphicsContextFeature::Antialiasing);
 			features.Add(GraphicsContextFeature::Interpolation);
+			features.Add(GraphicsContextFeature::Composition);
 			features.Add(GraphicsContextFeature::Layers);
 			features.Add(GraphicsContextFeature::States);
 
@@ -625,15 +626,17 @@ namespace kxf
 			}
 		};
 	}
-	void WxGraphicsContext::SetAntialiasMode(AntialiasMode mode)
+	bool WxGraphicsContext::SetAntialiasMode(AntialiasMode mode)
 	{
 		if (mode == AntialiasMode::None)
 		{
-			m_Context->SetAntialiasMode(wxANTIALIAS_NONE);
+			m_AntialiasMode = AntialiasMode::None;
+			return m_Context->SetAntialiasMode(wxANTIALIAS_NONE);
 		}
 		else
 		{
-			m_Context->SetAntialiasMode(wxANTIALIAS_DEFAULT);
+			m_AntialiasMode = AntialiasMode::Default;
+			return m_Context->SetAntialiasMode(wxANTIALIAS_DEFAULT);
 		}
 	}
 
@@ -641,121 +644,120 @@ namespace kxf
 	{
 		return m_CompositionMode;
 	}
-	void WxGraphicsContext::SetCompositionMode(CompositionMode mode)
+	bool WxGraphicsContext::SetCompositionMode(CompositionMode mode)
 	{
-		m_CompositionMode = mode;
-		switch (mode)
+		auto DoSetMode = [this](CompositionMode mode)
 		{
-			case CompositionMode::None:
+			switch (mode)
 			{
-				m_Context->SetCompositionMode(wxCOMPOSITION_INVALID);
-				break;
-			}
-			case CompositionMode::Clear:
-			{
-				m_Context->SetCompositionMode(wxCOMPOSITION_CLEAR);
-				break;
-			}
-			case CompositionMode::Add:
-			{
-				m_Context->SetCompositionMode(wxCOMPOSITION_ADD);
-				break;
-			}
-			case CompositionMode::Xor:
-			{
-				m_Context->SetCompositionMode(wxCOMPOSITION_XOR);
-				break;
-			}
-			case CompositionMode::Source:
-			{
-				m_Context->SetCompositionMode(wxCOMPOSITION_SOURCE);
-				break;
-			}
-			case CompositionMode::Over:
-			{
-				m_Context->SetCompositionMode(wxCOMPOSITION_OVER);
-				break;
-			}
-			case CompositionMode::In:
-			{
-				m_Context->SetCompositionMode(wxCOMPOSITION_IN);
-				break;
-			}
-			case CompositionMode::Out:
-			{
-				m_Context->SetCompositionMode(wxCOMPOSITION_OUT);
-				break;
-			}
-			case CompositionMode::Atop:
-			{
-				m_Context->SetCompositionMode(wxCOMPOSITION_ATOP);
-				break;
-			}
-			case CompositionMode::Dest:
-			{
-				m_Context->SetCompositionMode(wxCOMPOSITION_DEST);
-				break;
-			}
-			case CompositionMode::DestOver:
-			{
-				m_Context->SetCompositionMode(wxCOMPOSITION_DEST_OVER);
-				break;
-			}
-			case CompositionMode::DestIn:
-			{
-				m_Context->SetCompositionMode(wxCOMPOSITION_DEST_IN);
-				break;
-			}
-			case CompositionMode::DestOut:
-			{
-				m_Context->SetCompositionMode(wxCOMPOSITION_DEST_OUT);
-				break;
-			}
-			case CompositionMode::DestAtop:
-			{
-				m_Context->SetCompositionMode(wxCOMPOSITION_DEST_ATOP);
-				break;
-			}
+				case CompositionMode::None:
+				{
+					return m_Context->SetCompositionMode(wxCOMPOSITION_INVALID);
+				}
+				case CompositionMode::Clear:
+				{
+					return m_Context->SetCompositionMode(wxCOMPOSITION_CLEAR);
+				}
+				case CompositionMode::Add:
+				{
+					return m_Context->SetCompositionMode(wxCOMPOSITION_ADD);
+				}
+				case CompositionMode::Xor:
+				{
+					return m_Context->SetCompositionMode(wxCOMPOSITION_XOR);
+				}
+				case CompositionMode::Source:
+				{
+					return m_Context->SetCompositionMode(wxCOMPOSITION_SOURCE);
+				}
+				case CompositionMode::Over:
+				{
+					return m_Context->SetCompositionMode(wxCOMPOSITION_OVER);
+				}
+				case CompositionMode::In:
+				{
+					return m_Context->SetCompositionMode(wxCOMPOSITION_IN);
+				}
+				case CompositionMode::Out:
+				{
+					return m_Context->SetCompositionMode(wxCOMPOSITION_OUT);
+				}
+				case CompositionMode::Atop:
+				{
+					return m_Context->SetCompositionMode(wxCOMPOSITION_ATOP);
+				}
+				case CompositionMode::Dest:
+				{
+					return m_Context->SetCompositionMode(wxCOMPOSITION_DEST);
+				}
+				case CompositionMode::DestOver:
+				{
+					return m_Context->SetCompositionMode(wxCOMPOSITION_DEST_OVER);
+				}
+				case CompositionMode::DestIn:
+				{
+					return m_Context->SetCompositionMode(wxCOMPOSITION_DEST_IN);
+				}
+				case CompositionMode::DestOut:
+				{
+					return m_Context->SetCompositionMode(wxCOMPOSITION_DEST_OUT);
+				}
+				case CompositionMode::DestAtop:
+				{
+					return m_Context->SetCompositionMode(wxCOMPOSITION_DEST_ATOP);
+				}
+			};
+			return false;
 		};
+		if (DoSetMode(mode))
+		{
+			m_CompositionMode = mode;
+			return true;
+		}
+		return false;
 	}
 
 	InterpolationQuality WxGraphicsContext::GetInterpolationQuality() const
 	{
 		return m_InterpolationQuality;
 	}
-	void WxGraphicsContext::SetInterpolationQuality(InterpolationQuality quality)
+	bool WxGraphicsContext::SetInterpolationQuality(InterpolationQuality quality)
 	{
-		m_InterpolationQuality = quality;
-		switch (quality)
+		auto DoSetQuality = [this](InterpolationQuality quality)
 		{
-			case InterpolationQuality::None:
+			switch (quality)
 			{
-				m_Context->SetInterpolationQuality(wxINTERPOLATION_NONE);
-				break;
-			}
-			case InterpolationQuality::Default:
-			{
-				m_Context->SetInterpolationQuality(wxINTERPOLATION_DEFAULT);
-				break;
-			}
-			case InterpolationQuality::FastestAvailable:
-			case InterpolationQuality::NearestNeighbor:
-			{
-				m_Context->SetInterpolationQuality(wxINTERPOLATION_FAST);
-				break;
-			}
-			case InterpolationQuality::Bilinear:
-			case InterpolationQuality::Bicubic:
-			{
-				m_Context->SetInterpolationQuality(wxINTERPOLATION_GOOD);
-				break;
-			}
-			case InterpolationQuality::BestAvailable:
-			{
-				m_Context->SetInterpolationQuality(wxINTERPOLATION_BEST);
-				break;
-			}
+				case InterpolationQuality::None:
+				{
+					return m_Context->SetInterpolationQuality(wxINTERPOLATION_NONE);
+				}
+				case InterpolationQuality::Default:
+				{
+					return m_Context->SetInterpolationQuality(wxINTERPOLATION_DEFAULT);
+				}
+				case InterpolationQuality::FastestAvailable:
+				case InterpolationQuality::NearestNeighbor:
+				{
+					return m_Context->SetInterpolationQuality(wxINTERPOLATION_FAST);
+				}
+				case InterpolationQuality::Bilinear:
+				case InterpolationQuality::Bicubic:
+				{
+					return m_Context->SetInterpolationQuality(wxINTERPOLATION_GOOD);
+				}
+				case InterpolationQuality::BestAvailable:
+				{
+					return m_Context->SetInterpolationQuality(wxINTERPOLATION_BEST);
+				}
+			};
+			return false;
 		};
+		if (DoSetQuality(quality))
+		{
+			m_InterpolationQuality = quality;
+			return true;
+		}
+		return false;
 	}
 
 	// Bounding box functions

@@ -202,21 +202,23 @@ namespace kxf
 			{
 				return m_AntialiasMode;
 			}
-			void SetAntialiasMode(AntialiasMode mode) override
+			bool SetAntialiasMode(AntialiasMode mode) override
 			{
 				m_AntialiasMode = mode;
+				return false;
 			}
 
 			CompositionMode GetCompositionMode() const override;
-			void SetCompositionMode(CompositionMode mode) override;
+			bool SetCompositionMode(CompositionMode mode) override;
 
 			InterpolationQuality GetInterpolationQuality() const override
 			{
 				return m_InterpolationQuality;
 			}
-			void SetInterpolationQuality(InterpolationQuality quality) override
+			bool SetInterpolationQuality(InterpolationQuality quality) override
 			{
 				m_InterpolationQuality = quality;
+				return true;
 			}
 
 			// Bounding box functions

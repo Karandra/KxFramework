@@ -45,9 +45,10 @@ namespace kxf
 		TextMeasurement = 1 << 6,
 		Antialiasing = 1 << 7,
 		Interpolation = 1 << 8,
-		Layers = 1 << 9,
-		States = 1 << 10,
-		BoundingBox = 1 << 1
+		Composition = 1 << 9,
+		Layers = 1 << 10,
+		States = 1 << 11,
+		BoundingBox = 1 << 12
 	};
 }
 
@@ -192,13 +193,13 @@ namespace kxf
 			virtual wxWindow* GetWindow() const = 0;
 
 			virtual AntialiasMode GetAntialiasMode() const = 0;
-			virtual void SetAntialiasMode(AntialiasMode mode) = 0;
+			virtual bool SetAntialiasMode(AntialiasMode mode) = 0;
 
 			virtual CompositionMode GetCompositionMode() const = 0;
-			virtual void SetCompositionMode(CompositionMode mode) = 0;
+			virtual bool SetCompositionMode(CompositionMode mode) = 0;
 
 			virtual InterpolationQuality GetInterpolationQuality() const = 0;
-			virtual void SetInterpolationQuality(InterpolationQuality quality) = 0;
+			virtual bool SetInterpolationQuality(InterpolationQuality quality) = 0;
 
 			// Bounding box functions
 			virtual RectF GetBoundingBox() const = 0;

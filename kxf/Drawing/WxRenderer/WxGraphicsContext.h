@@ -59,6 +59,7 @@ namespace kxf
 			// Options
 			InterpolationQuality m_InterpolationQuality = InterpolationQuality::Default;
 			CompositionMode m_CompositionMode = CompositionMode::Over;
+			AntialiasMode m_AntialiasMode = AntialiasMode::Default;
 
 		protected:
 			void SetupDC();
@@ -195,13 +196,13 @@ namespace kxf
 			wxWindow* GetWindow() const override;
 
 			AntialiasMode GetAntialiasMode() const override;
-			void SetAntialiasMode(AntialiasMode mode) override;
+			bool SetAntialiasMode(AntialiasMode mode) override;
 
 			CompositionMode GetCompositionMode() const override;
-			void SetCompositionMode(CompositionMode mode) override;
+			bool SetCompositionMode(CompositionMode mode) override;
 
 			InterpolationQuality GetInterpolationQuality() const override;
-			void SetInterpolationQuality(InterpolationQuality quality) override;
+			bool SetInterpolationQuality(InterpolationQuality quality) override;
 
 			// Bounding box functions
 			RectF GetBoundingBox() const override;
@@ -412,6 +413,12 @@ namespace kxf
 			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
 			{
 				return std::make_unique<WxGraphicsMeasuringContext>(*m_Renderer);
+			}
+
+			// IGraphicsContext
+			FlagSet<GraphicsContextFeature> GetSupportedFeatures() const override
+			{
+				return GraphicsContextFeature::TextMeasurement;
 			}
 	};
 
