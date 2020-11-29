@@ -37,4 +37,26 @@ namespace kxf
 		// Delete the handle if we can't attach it
 		::DeleteDC(static_cast<HDC>(handle));
 	}
+
+	// Bounding box functions
+	Rect GDIContext::GetBoundingBox() const
+	{
+		const int left = m_DC->MinX();
+		const int top = m_DC->MinY();
+		const int right = m_DC->MaxX();
+		const int bottom = m_DC->MaxY();
+
+		if (left == 0 && top == 0 && right == 0 && bottom == 0)
+		{
+			return {};
+		}
+		else
+		{
+			Rect rect;
+			rect.SetLeftTop({left, top});
+			rect.SetRightBottom({right, bottom});
+
+			return rect;
+		}
+	}
 }

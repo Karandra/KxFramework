@@ -579,14 +579,7 @@ namespace kxf
 			}
 
 			// Bounding box functions
-			Rect GetBoundingBox() const
-			{
-				Rect rect;
-				rect.SetTopLeft({m_DC->MinX(), m_DC->MinY()});
-				rect.SetRightBottom({m_DC->MaxX(), m_DC->MaxY()});
-
-				return rect;
-			}
+			Rect GetBoundingBox() const;
 			void CalcBoundingBox(const Point& point)
 			{
 				m_DC->CalcBoundingBox(point.GetX(), point.GetY());
