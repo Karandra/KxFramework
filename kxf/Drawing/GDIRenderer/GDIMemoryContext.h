@@ -9,6 +9,9 @@ namespace kxf::Drawing
 	class KX_API GDIMemoryContextBase: public GDIContext
 	{
 		protected:
+			GDIBitmap* m_SelectedBitmap = nullptr;
+
+		protected:
 			const wxMemoryDC& GetMemoryDC() const noexcept
 			{
 				return static_cast<wxMemoryDC&>(*m_DC);
@@ -42,6 +45,7 @@ namespace kxf::Drawing
 			}
 			void SelectObject(GDIBitmap& bitmap)
 			{
+				m_SelectedBitmap = bitmap ? &bitmap : nullptr;
 				GetMemoryDC().SelectObject(bitmap.ToWxBitmap());
 			}
 			void SelectObjectAsSource(const GDIBitmap& bitmap)
@@ -51,6 +55,11 @@ namespace kxf::Drawing
 			void UnselectObject()
 			{
 				GetMemoryDC().SelectObject(wxNullBitmap);
+				if (m_SelectedBitmap)
+				{
+					m_SelectedBitmap->UpdateAlpha();
+					m_SelectedBitmap = nullptr;
+				}
 			}
 
 		public:
@@ -125,6 +134,11 @@ namespace kxf
 			GDIMemoryContext(GDIBitmap& bitmap)
 				:GDIMemoryContextBase(m_DC), m_DC(bitmap.ToWxBitmap())
 			{
+				m_SelectedBitmap = &bitmap;
+			}
+			~GDIMemoryContext()
+			{
+				UnselectObject();
 			}
 	};
 
