@@ -236,6 +236,7 @@
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIMirroringContext.h" />
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsRenderer.h" />
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIRegion.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIRendererNative.h" />
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIScreenContext.h" />
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIWindowContext.h" />
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIPen.h" />
@@ -717,6 +718,7 @@
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIImageList.cpp" />
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIPen.cpp" />
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIRegion.cpp" />
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDIRendererNative.cpp" />
     <ClCompile Include="kxf\Drawing\GDIRenderer\Private\GDI.cpp" />
     <ClCompile Include="kxf\Drawing\GraphicsRenderer.cpp" />
     <ClCompile Include="kxf\Drawing\GraphicsRenderer\IGraphicsContext.cpp" />

@@ -406,7 +406,15 @@ namespace kxf
 		{
 			if (position != range)
 			{
-				fillRect.SetWidth(fillRect.GetWidth() * ((double)position / (double)range));
+				float value = std::round(fillRect.GetWidth() * (static_cast<float>(position) / static_cast<float>(range)));
+				if (isVertical)
+				{
+					fillRect.SetHeight(value);
+				}
+				else
+				{
+					fillRect.SetWidth(value);
+				}
 			}
 
 			if (iBarPartId > 0)

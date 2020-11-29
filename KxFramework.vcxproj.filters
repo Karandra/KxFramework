@@ -1739,6 +1739,9 @@
     <ClInclude Include="kxf\Drawing\IRendererNative.h">
       <Filter>kxf\Drawing</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIRendererNative.h">
+      <Filter>kxf\Drawing\GDIRenderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2596,6 +2599,9 @@
     </ClCompile>
     <ClCompile Include="kxf\Drawing\IRendererNative.cpp">
       <Filter>kxf\Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDIRendererNative.cpp">
+      <Filter>kxf\Drawing\GDIRenderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
