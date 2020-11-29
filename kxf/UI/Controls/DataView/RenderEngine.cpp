@@ -6,7 +6,8 @@
 #include "MainWindow.h"
 #include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/Private/UxThemeDefines.h"
-#include "kxf/Drawing/GDIRenderer.h"
+#include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
+#include "kxf/Drawing/GDIRenderer/GDIGraphicsContext.h"
 #include "wx/generic/private/markuptext.h"
 
 namespace kxf::UI::DataView

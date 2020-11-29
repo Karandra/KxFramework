@@ -7,11 +7,12 @@
 #include "Column.h"
 #include "Node.h"
 #include "View.h"
+#include "kxf/System/SystemInformation.h"
 #include "kxf/UI/Windows/Frame.h"
 #include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/Private/UxThemeDefines.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
-#include "kxf/System/SystemInformation.h"
+#include "kxf/Drawing/GDIRenderer/GDIGraphicsContext.h"
 #include <wx/popupwin.h>
 #include <wx/generic/private/widthcalc.h>
 #include <wx/minifram.h>

@@ -1,6 +1,7 @@
 #pragma once
 #include "kxf/UI/Common.h"
-#include "kxf/Drawing/GDIRenderer.h"
+#include "kxf/Drawing/GDIRenderer/GDIFont.h"
+#include "kxf/Drawing/GDIRenderer/GDIIcon.h"
 #include "kxf/Utility/Common.h"
 #include <wx/richtooltip.h>
 

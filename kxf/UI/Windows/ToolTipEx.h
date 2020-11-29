@@ -1,7 +1,6 @@
 #pragma once
 #include "kxf/UI/Common.h"
 #include "kxf/General/WithOptions.h"
-#include "kxf/Drawing/GDIRenderer.h"
 #include <wx/nativewin.h>
 #include <variant>
 struct tagNMHDR;

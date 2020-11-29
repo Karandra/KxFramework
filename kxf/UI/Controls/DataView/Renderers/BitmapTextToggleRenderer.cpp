@@ -4,6 +4,7 @@
 #include "TextRenderer.h"
 #include "ToggleRenderer.h"
 #include "../View.h"
+#include "kxf/Drawing/GDIRenderer/GDIGraphicsContext.h"
 
 namespace kxf::UI::DataView
 {

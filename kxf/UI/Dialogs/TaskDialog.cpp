@@ -4,7 +4,6 @@
 #include "kxf/Application/ICoreApplication.h"
 #include "kxf/Localization/Common.h"
 #include "kxf/System/DynamicLibrary.h"
-#include "kxf/Drawing/GDIRenderer.h"
 #include "kxf/Drawing/ArtProvider.h"
 #include <CommCtrl.h>
 #include "kxf/System/UndefWindows.h"

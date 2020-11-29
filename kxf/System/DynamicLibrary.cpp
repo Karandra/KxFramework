@@ -7,7 +7,9 @@
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/INativeStream.h"
 #include "kxf/Drawing/ImageBundle.h"
-#include "kxf/Drawing/GDIRenderer.h"
+#include "kxf/Drawing/GDIRenderer/GDIBitmap.h"
+#include "kxf/Drawing/GDIRenderer/GDICursor.h"
+#include "kxf/Drawing/GDIRenderer/GDIIcon.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/CallAtScopeExit.h"
 

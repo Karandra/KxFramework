@@ -1610,9 +1610,6 @@
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIAction.h">
       <Filter>kxf\Drawing\GDIRenderer</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Drawing\GDIRenderer.h">
-      <Filter>kxf\Drawing</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Drawing\GDIRenderer\Common.h">
       <Filter>kxf\Drawing\GDIRenderer</Filter>
     </ClInclude>

@@ -1,6 +1,8 @@
 #pragma once
 #include "Common.h"
-#include "kxf/Drawing/GDIRenderer.h"
+#include "Image.h"
+#include "kxf/Drawing/GDIRenderer/GDIBitmap.h"
+#include "kxf/Drawing/GDIRenderer/GDIIcon.h"
 #include "kxf/General/String.h"
 #include "Image.h"
 #include <variant>
@@ -15,7 +17,7 @@ namespace kxf
 	class KX_API ImageSet final
 	{
 		private:
-			std::unordered_map<String, std::variant<GDIBitmap, Image, GDIIcon>> m_Items;
+			std::unordered_map<String, std::variant<Image, GDIBitmap, GDIIcon>> m_Items;
 
 		public:
 			ImageSet(size_t initialCount = 0)

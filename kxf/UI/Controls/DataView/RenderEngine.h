@@ -2,7 +2,10 @@
 #include "Common.h"
 #include "CellState.h"
 #include "CellAttribute.h"
-#include "kxf/Drawing/GDIRenderer.h"
+#include "kxf/Drawing/GDIRenderer/GDIContext.h"
+#include "kxf/Drawing/GDIRenderer/GDIBitmap.h"
+#include "kxf/Drawing/GDIRenderer/GDIIcon.h"
+#include "kxf/Drawing/GDIRenderer/GDIAction.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
 
 namespace kxf::UI::DataView

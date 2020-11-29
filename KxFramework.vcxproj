@@ -218,7 +218,6 @@
     <ClInclude Include="kxf\Drawing\ColorDefines.h" />
     <ClInclude Include="kxf\Drawing\Font.h" />
     <ClInclude Include="kxf\Drawing\FontMetrics.h" />
-    <ClInclude Include="kxf\Drawing\GDIRenderer.h" />
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIBitmap.h" />
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIBrush.h" />
     <ClInclude Include="kxf\Drawing\GDIRenderer\Common.h" />
