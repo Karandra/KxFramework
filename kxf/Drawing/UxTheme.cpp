@@ -382,6 +382,10 @@ namespace kxf
 		return ::DrawThemeText(m_Handle, static_cast<HDC>(dc.GetHandle()), iPartId, iStateId, text.data(), text.length(), flags1, flags2, &rectWin) == S_OK;
 	}
 
+	bool UxTheme::IsBackgroundPartiallyTransparent(int iPartId, int iStateId) noexcept
+	{
+		return ::IsThemeBackgroundPartiallyTransparent(m_Handle, iPartId, iStateId);
+	}
 	bool UxTheme::DrawBackground(GDIContext& dc, int iPartId, int iStateId, const Rect& rect) noexcept
 	{
 		RECT rectWin = Utility::ToWindowsRect(rect);

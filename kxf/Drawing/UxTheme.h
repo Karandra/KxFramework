@@ -140,6 +140,7 @@ namespace kxf
 			bool DrawIcon(GDIContext& dc, int iPartId, int iStateId, const wxImageList& imageList, int index, const Rect& rect, Rect* boundingRect = nullptr) noexcept;
 			bool DrawText(GDIContext& dc, int iPartId, int iStateId, std::wstring_view text, uint32_t flags1, uint32_t flags2, const Rect& rect) noexcept;
 
+			bool IsBackgroundPartiallyTransparent(int iPartId, int iStateId) noexcept;
 			bool DrawBackground(GDIContext& dc, int iPartId, int iStateId, const Rect& rect) noexcept;
 			bool DrawParentBackground(GDIContext& dc) noexcept
 			{
