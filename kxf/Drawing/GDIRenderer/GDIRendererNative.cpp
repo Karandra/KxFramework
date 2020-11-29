@@ -72,6 +72,12 @@ namespace
 			{
 				m_DC.CalcBoundingBox(m_Rect);
 			}
+
+		public:
+			void Dismiss()
+			{
+				m_Rect = {};
+			}
 	};
 }
 
@@ -209,7 +215,19 @@ namespace kxf
 			CalcBoundingBox calcBoudingBox(dc, rect);
 			if (UxTheme theme(*window, UxThemeClass::ListView); theme)
 			{
-				theme.DrawBackground(dc, LVP_LISTITEM, GetListItemState(widgetFlags), rect);
+				const int part = LVP_LISTITEM;
+				const int state = GetListItemState(widgetFlags);
+
+				// Item selection rect is usually drawn *over* item's content and when it's not transparent we'll get
+				// a solid rectangle that obscures the content.
+				if (theme.IsBackgroundPartiallyTransparent(part, state))
+				{
+					theme.DrawBackground(dc, part, state, rect);
+				}
+				else
+				{
+					calcBoudingBox.Dismiss();
+				}
 			}
 			else
 			{
