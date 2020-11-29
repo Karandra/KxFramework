@@ -6,6 +6,7 @@
 #include "GDIRenderer/GDIIcon.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/Drawing.h"
+#include "kxf/System/HResult.h"
 #include "kxf/System/SystemInformation.h"
 #include <wx/fontutil.h>
 #include <Uxtheme.h>
@@ -186,7 +187,7 @@ namespace kxf
 
 	Color UxTheme::GetDialogMainInstructionColor(const wxWindow& window) noexcept
 	{
-		if (UxTheme theme(const_cast<wxWindow&>(window), L"TEXTSTYLE"); theme)
+		if (UxTheme theme(const_cast<wxWindow&>(window), UxThemeClass::TextStyle); theme)
 		{
 			Color color = theme.GetColor(TEXT_MAININSTRUCTION, 0, TMT_TEXTCOLOR);
 
@@ -251,7 +252,7 @@ namespace kxf
 	{
 		HRGN region = nullptr;
 		RECT rectWin = Utility::ToWindowsRect(rect);
-		if (::GetThemeBackgroundRegion(m_Window->GetHandle(), static_cast<HDC>(dc.GetHandle()), iPartId, iStateId, &rectWin, &region) == S_OK)
+		if (::GetThemeBackgroundRegion(m_Handle, static_cast<HDC>(dc.GetHandle()), iPartId, iStateId, &rectWin, &region) == S_OK)
 		{
 			return region;
 		}
@@ -261,7 +262,7 @@ namespace kxf
 	{
 		RECT rectWin = Utility::ToWindowsRect(rect);
 		RECT value = {};
-		if (::GetThemeBackgroundContentRect(m_Window->GetHandle(), static_cast<HDC>(dc.GetHandle()), iPartId, iStateId, &rectWin, &value) == S_OK)
+		if (::GetThemeBackgroundContentRect(m_Handle, static_cast<HDC>(dc.GetHandle()), iPartId, iStateId, &rectWin, &value) == S_OK)
 		{
 			return Utility::FromWindowsRect(value);
 		}
@@ -271,7 +272,7 @@ namespace kxf
 	Color UxTheme::GetColor(int iPartId, int iStateId, int iPropId) const noexcept
 	{
 		COLORREF value = 0;
-		if (::GetThemeColor(m_Window->GetHandle(), iPartId, iStateId, iPropId, &value) == S_OK)
+		if (::GetThemeColor(m_Handle, iPartId, iStateId, iPropId, &value) == S_OK)
 		{
 			return Color::FromCOLORREF(value);
 		}
@@ -280,7 +281,7 @@ namespace kxf
 	GDIFont UxTheme::GetFont(const GDIContext& dc, int iPartId, int iStateId, int iPropId) const noexcept
 	{
 		LOGFONTW value = {};
-		if (::GetThemeFont(m_Window->GetHandle(), static_cast<HDC>(dc.GetHandle()), iPartId, iStateId, iPropId, &value) == S_OK)
+		if (::GetThemeFont(m_Handle, static_cast<HDC>(dc.GetHandle()), iPartId, iStateId, iPropId, &value) == S_OK)
 		{
 			return wxNativeFontInfo(value, m_Window);
 		}
@@ -289,7 +290,7 @@ namespace kxf
 	std::optional<bool> UxTheme::GetBool(int iPartId, int iStateId, int iPropId) const noexcept
 	{
 		BOOL value = FALSE;
-		if (::GetThemeBool(m_Window->GetHandle(), iPartId, iStateId, iPropId, &value) == S_OK)
+		if (::GetThemeBool(m_Handle, iPartId, iStateId, iPropId, &value) == S_OK)
 		{
 			return value;
 		}
@@ -298,7 +299,7 @@ namespace kxf
 	std::optional<int> UxTheme::GetInt(int iPartId, int iStateId, int iPropId) const noexcept
 	{
 		int value = -1;
-		if (::GetThemeInt(m_Window->GetHandle(), iPartId, iStateId, iPropId, &value) == S_OK)
+		if (::GetThemeInt(m_Handle, iPartId, iStateId, iPropId, &value) == S_OK)
 		{
 			return value;
 		}
@@ -307,7 +308,7 @@ namespace kxf
 	std::optional<int> UxTheme::GetEnum(int iPartId, int iStateId, int iPropId) const noexcept
 	{
 		int value = -1;
-		if (::GetThemeEnumValue(m_Window->GetHandle(), iPartId, iStateId, iPropId, &value) == S_OK)
+		if (::GetThemeEnumValue(m_Handle, iPartId, iStateId, iPropId, &value) == S_OK)
 		{
 			return value;
 		}
@@ -316,7 +317,7 @@ namespace kxf
 	size_t UxTheme::GetIntList(int iPartId, int iStateId, int iPropId, std::function<bool(int)> func) const
 	{
 		INTLIST items = {};
-		if (::GetThemeIntList(m_Window->GetHandle(), iPartId, iStateId, iPropId, &items) == S_OK)
+		if (::GetThemeIntList(m_Handle, iPartId, iStateId, iPropId, &items) == S_OK)
 		{
 			size_t count = 0;
 			for (size_t i = 0; i < static_cast<size_t>(items.iValueCount); i++)
@@ -334,7 +335,7 @@ namespace kxf
 	Rect UxTheme::GetRect(int iPartId, int iStateId, int iPropId) const noexcept
 	{
 		RECT value = {};
-		if (::GetThemeRect(m_Window->GetHandle(), iPartId, iStateId, iPropId, &value) == S_OK)
+		if (::GetThemeRect(m_Handle, iPartId, iStateId, iPropId, &value) == S_OK)
 		{
 			return Utility::FromWindowsRect(value);
 		}
@@ -343,7 +344,7 @@ namespace kxf
 	Point UxTheme::GetPosition(int iPartId, int iStateId, int iPropId) const noexcept
 	{
 		POINT value = {};
-		if (::GetThemePosition(m_Window->GetHandle(), iPartId, iStateId, iPropId, &value) == S_OK)
+		if (::GetThemePosition(m_Handle, iPartId, iStateId, iPropId, &value) == S_OK)
 		{
 			return Point(value.x, value.y);
 		}
