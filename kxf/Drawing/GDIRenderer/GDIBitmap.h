@@ -109,6 +109,10 @@ namespace kxf
 			{
 				return m_Bitmap.ConvertToDisabled(static_cast<uint8_t>(brightness.ToNormalized() * 255));
 			}
+			void UpdateAlpha()
+			{
+				m_Bitmap.MSWUpdateAlpha();
+			}
 
 		public:
 			explicit operator bool() const noexcept
