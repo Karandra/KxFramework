@@ -112,23 +112,6 @@ namespace kxf
 		private:
 			PackedRGBA<float> m_Value = {-1.0f, -1.0f, -1.0f, -1.0f};
 
-		private:
-			constexpr uint32_t GetABGR() const noexcept
-			{
-				auto temp = GetFixed8();
-				return (static_cast<uint32_t>(temp.Alpha) << 24) | (temp.Red | (static_cast<uint16_t>(temp.Green) << 8)) | (static_cast<uint32_t>(temp.Blue) << 16);
-			}
-			constexpr Color& SetABGR(uint32_t color) noexcept
-			{
-				uint8_t a = ((color >> 24) & 0xff);
-				uint8_t b = ((color >> 16) & 0xff);
-				uint8_t g = ((color >> 8) & 0xff);
-				uint8_t r = (color & 0xff);
-
-				SetFixed8(r, g, b, a);
-				return *this;
-			}
-
 		public:
 			constexpr Color() noexcept = default;
 			constexpr Color(Color&&) noexcept = default;
@@ -314,11 +297,17 @@ namespace kxf
 
 			constexpr uint32_t GetCOLORREF() const noexcept
 			{
-				return GetABGR();
+				auto temp = GetFixed8();
+				return (temp.Red | (static_cast<uint16_t>(temp.Green) << 8)) | (static_cast<uint32_t>(temp.Blue) << 16);
 			}
 			constexpr Color& SetCOLORREF(uint32_t color) noexcept
 			{
-				return SetABGR(color);
+				uint8_t r = (color & 0xff);
+				uint8_t g = ((color >> 8) & 0xff);
+				uint8_t b = ((color >> 16) & 0xff);
+
+				SetFixed8(r, g, b);
+				return *this;
 			}
 
 			constexpr PackedHSL GetHSL() const noexcept
