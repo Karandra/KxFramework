@@ -1736,6 +1736,9 @@
     <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsPath.h">
       <Filter>kxf\Drawing\GraphicsRenderer\NullObjects</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Drawing\IRendererNative.h">
+      <Filter>kxf\Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2590,6 +2593,9 @@
     </ClCompile>
     <ClCompile Include="kxf\Drawing\GraphicsRenderer\IGraphicsContext.cpp">
       <Filter>kxf\Drawing\GraphicsRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\IRendererNative.cpp">
+      <Filter>kxf\Drawing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
