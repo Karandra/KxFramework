@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ArtProvider.h"
-#include "GDIRenderer.h"
+#include "GDIRenderer/GDIBitmap.h"
+#include "GDIRenderer/GDIIcon.h"
 #include "Image.h"
 #include "ImageBundle.h"
 #include "kxf/Utility/Container.h"

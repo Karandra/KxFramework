@@ -2,7 +2,8 @@
 #include "StatusBarEx.h"
 #include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/Private/UxThemeDefines.h"
-#include "kxf/Drawing/GDIRenderer.h"
+#include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
+#include "kxf/Drawing/GDIRenderer/GDIMemoryContext.h"
 #include "kxf/Utility/Common.h"
 
 namespace kxf::UI

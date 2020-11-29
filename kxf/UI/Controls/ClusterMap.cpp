@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ClusterMap.h"
 #include "kxf/Drawing/UxTheme.h"
-#include "kxf/Drawing/GDIRenderer.h"
+#include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
 
 namespace kxf::UI
 {

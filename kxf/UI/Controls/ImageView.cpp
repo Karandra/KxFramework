@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ImageView.h"
-#include "kxf/Drawing/GDIRenderer.h"
+#include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
 #include "kxf/UI/Windows/DrawablePanel.h"
 #include "kxf/wxWidgets/StreamWrapper.h"
 

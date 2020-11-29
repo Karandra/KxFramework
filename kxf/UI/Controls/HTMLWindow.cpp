@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "HTMLWindow.h"
 #include "kxf/UI/Menus/Menu.h"
-#include "kxf/Drawing/GDIRenderer.h"
+#include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
 #include "kxf/Localization/Common.h"
 #include <wx/clipbrd.h>
 #include <wx/dcbuffer.h>

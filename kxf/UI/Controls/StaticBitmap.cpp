@@ -2,7 +2,7 @@
 #include "StaticBitmap.h"
 #include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/Image.h"
-#include "kxf/Drawing/GDIRenderer.h"
+#include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
 
 namespace kxf::UI
 {
