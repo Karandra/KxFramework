@@ -717,7 +717,6 @@
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIPen.cpp" />
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIRegion.cpp" />
     <ClCompile Include="kxf\Drawing\GDIRenderer\Private\GDI.cpp" />
-    <ClCompile Include="kxf\Drawing\Geometry.cpp" />
     <ClCompile Include="kxf\Drawing\GraphicsRenderer.cpp" />
     <ClCompile Include="kxf\Drawing\GraphicsRenderer\IGraphicsContext.cpp" />
     <ClCompile Include="kxf\Drawing\Image.cpp" />
