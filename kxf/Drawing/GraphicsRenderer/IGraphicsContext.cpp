@@ -14,6 +14,12 @@ namespace kxf
 			{
 				GDIMemoryContext dc(bitmap);
 				std::invoke(func, dc);
+
+				// Avoid drawing this bitmap on the context entirely if nothing has been drawn on the DC
+				if (dc.GetBoundingBox().IsEmpty())
+				{
+					return {};
+				}
 			}
 
 			// The context implementation can use this bitmap to draw it any way it need

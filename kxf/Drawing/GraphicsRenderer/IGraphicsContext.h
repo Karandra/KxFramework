@@ -206,8 +206,11 @@ namespace kxf
 			virtual void CalcBoundingBox(const PointF& point) = 0;
 			void CalcBoundingBox(const RectF& rect)
 			{
-				CalcBoundingBox(rect.GetTopLeft());
-				CalcBoundingBox(rect.GetRightBottom());
+				if (!rect.IsEmpty())
+				{
+					CalcBoundingBox(rect.GetTopLeft());
+					CalcBoundingBox(rect.GetRightBottom());
+				}
 			}
 			virtual void ResetBoundingBox() = 0;
 

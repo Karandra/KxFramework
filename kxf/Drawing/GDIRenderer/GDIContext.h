@@ -584,6 +584,14 @@ namespace kxf
 			{
 				m_DC->CalcBoundingBox(point.GetX(), point.GetY());
 			}
+			void CalcBoundingBox(const RectF& rect)
+			{
+				if (!rect.IsEmpty())
+				{
+					CalcBoundingBox(rect.GetTopLeft());
+					CalcBoundingBox(rect.GetRightBottom());
+				}
+			}
 			void ResetBoundingBox()
 			{
 				m_DC->ResetBoundingBox();

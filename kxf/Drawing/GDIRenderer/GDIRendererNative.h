@@ -28,16 +28,10 @@ namespace kxf
 			{
 				return GetRenderer().GetCheckBoxSize(const_cast<wxWindow*>(window), *MapWidgetFlags(widgetFlags));
 			}
-			void DrawCheckBox(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}) override
-			{
-				return GetRenderer().DrawCheckBox(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
-			}
+			void DrawCheckBox(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}) override;
 
 			// Drop arrow for ComboBox
-			void DrawComboBoxDropButton(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}) override
-			{
-				return GetRenderer().DrawComboBoxDropButton(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
-			}
+			void DrawComboBoxDropButton(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}) override;
 
 			// Drop arrow (the same as in ComboBox but can be used without its background)
 			void DrawDropArrow(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}) override
@@ -51,16 +45,10 @@ namespace kxf
 				wxClientDC dc(const_cast<wxWindow*>(window));
 				return GetRenderer().GetCollapseButtonSize(const_cast<wxWindow*>(window), dc);
 			}
-			void DrawCollapseButton(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}) override
-			{
-				return GetRenderer().DrawCollapseButton(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
-			}
+			void DrawCollapseButton(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}) override;
 
 			// Push button
-			void DrawPushButton(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}) override
-			{
-				return GetRenderer().DrawPushButton(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
-			}
+			void DrawPushButton(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}) override;
 
 			// TreeView expander button
 			Size GetExpanderButtonSize(const wxWindow* window, FlagSet<NativeWidgetFlag> widgetFlags = {}) const override;
@@ -74,33 +62,16 @@ namespace kxf
 			void DrawItemFocusRect(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}) override;
 
 			// Item text
-			void DrawItemText(wxWindow* window, GDIContext& dc, const String& text, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}, FlagSet<Alignment> alignment = {}, EllipsizeMode ellipsizeMode = EllipsizeMode::End) override
-			{
-				GetRenderer().DrawItemText(window, dc.ToWxDC(), text, rect, alignment.ToInt(), *MapWidgetFlags(widgetFlags), static_cast<wxEllipsizeMode>(ellipsizeMode));
-			}
+			void DrawItemText(wxWindow* window, GDIContext& dc, const String& text, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}, FlagSet<Alignment> alignment = {}, EllipsizeMode ellipsizeMode = EllipsizeMode::End) override;
 
 			// Title bar button
 			void DrawTitleBarButton(wxWindow* window, GDIContext& dc, const Rect& rect, NativeTitleBarButton button, FlagSet<NativeWidgetFlag> widgetFlags = {}) override;
 
 			// ComboBox
-			void DrawComboBox(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}) override
-			{
-				// Not sure if wxWidgets renderer makes any difference but if case it does let's respect the flag
-				if (widgetFlags.Contains(NativeWidgetFlag::Editable))
-				{
-					GetRenderer().DrawComboBox(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
-				}
-				else
-				{
-					GetRenderer().DrawChoice(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
-				}
-			}
+			void DrawComboBox(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}) override;
 
 			// TextBox
-			void DrawTextBox(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}) override
-			{
-				GetRenderer().DrawTextCtrl(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
-			}
+			void DrawTextBox(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}) override;
 
 			// Splitter widget
 			NativeSplitterInfo GetSplitterInfo(const wxWindow* window, FlagSet<NativeWidgetFlag> widgetFlags = {}) const override;

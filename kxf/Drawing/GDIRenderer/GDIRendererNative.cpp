@@ -41,6 +41,38 @@ namespace
 		};
 		return wxHDR_SORT_ICON_NONE;
 	}
+
+	wxHeaderButtonParams ConvertHeaderButtonInfo(const NativeHeaderButtonInfo& buttonInfo)
+	{
+		wxHeaderButtonParams parameters;
+		parameters.m_arrowColour = buttonInfo.ArrowColor;
+		parameters.m_labelColour = buttonInfo.LabelColor;
+		parameters.m_selectionColour = buttonInfo.SelectionColor;
+
+		parameters.m_labelText = buttonInfo.LabelText;
+		parameters.m_labelFont = buttonInfo.LabelFont.ToWxFont();
+		parameters.m_labelBitmap = buttonInfo.LabelBitmap.ToWxBitmap();
+		parameters.m_labelAlignment = buttonInfo.LabelAlignment.ToInt();
+
+		return parameters;
+	}
+
+	class CalcBoundingBox final
+	{
+		private:
+			GDIContext& m_DC;
+			Rect m_Rect;
+
+		public:
+			CalcBoundingBox(GDIContext& dc, const Rect& rect)
+				:m_DC(dc), m_Rect(rect)
+			{
+			}
+			~CalcBoundingBox()
+			{
+				m_DC.CalcBoundingBox(m_Rect);
+			}
+	};
 }
 
 namespace kxf
@@ -57,6 +89,34 @@ namespace kxf
 	Version GDIRendererNative::GetVersion() const
 	{
 		return {1, 0};
+	}
+
+	// CheckBox and checkmark
+	void GDIRendererNative::DrawCheckBox(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags)
+	{
+		CalcBoundingBox calcBoudingBox(dc, rect);
+		return GetRenderer().DrawCheckBox(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
+	}
+
+	// Drop arrow for ComboBox
+	void GDIRendererNative::DrawComboBoxDropButton(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags)
+	{
+		CalcBoundingBox calcBoudingBox(dc, rect);
+		return GetRenderer().DrawComboBoxDropButton(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
+	}
+
+	// Collapse button (TaskDialog)
+	void GDIRendererNative::DrawCollapseButton(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags)
+	{
+		CalcBoundingBox calcBoudingBox(dc, rect);
+		return GetRenderer().DrawCollapseButton(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
+	}
+
+	// Push button
+	void GDIRendererNative::DrawPushButton(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags)
+	{
+		CalcBoundingBox calcBoudingBox(dc, rect);
+		return GetRenderer().DrawPushButton(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
 	}
 
 	// TreeView expander button
@@ -84,6 +144,7 @@ namespace kxf
 	{
 		if (window)
 		{
+			CalcBoundingBox calcBoudingBox(dc, rect);
 			if (UxTheme theme(const_cast<wxWindow&>(*window), UxThemeClass::TreeView); theme)
 			{
 				const int partID = widgetFlags.Contains(NativeWidgetFlag::Current) ? TVP_HOTGLYPH : TVP_GLYPH;
@@ -110,6 +171,7 @@ namespace kxf
 				return;
 			}
 
+			CalcBoundingBox calcBoudingBox(dc, rect);
 			if (UxTheme theme(*window, UxThemeClass::Progress); theme)
 			{
 				const int bar = widgetFlags.Contains(NativeWidgetFlag::Vertical) ? PP_BARVERT : PP_BAR;
@@ -143,6 +205,8 @@ namespace kxf
 			// We'd better draw selection rect ourselves using UxTheme because wxWidgets draws windows background first
 			// and this causes solid black background being drawn when a graphics renderer is used. The 'DrawItemSelectionRect'
 			// function is the only function that does this.
+
+			CalcBoundingBox calcBoudingBox(dc, rect);
 			if (UxTheme theme(*window, UxThemeClass::ListView); theme)
 			{
 				theme.DrawBackground(dc, LVP_LISTITEM, GetListItemState(widgetFlags), rect);
@@ -155,7 +219,15 @@ namespace kxf
 	}
 	void GDIRendererNative::DrawItemFocusRect(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags)
 	{
+		CalcBoundingBox calcBoudingBox(dc, rect);
 		GetRenderer().DrawFocusRect(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
+	}
+
+	// Item text
+	void GDIRendererNative::DrawItemText(wxWindow* window, GDIContext& dc, const String& text, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags, FlagSet<Alignment> alignment, EllipsizeMode ellipsizeMode)
+	{
+		CalcBoundingBox calcBoudingBox(dc, rect);
+		GetRenderer().DrawItemText(window, dc.ToWxDC(), text, rect, alignment.ToInt(), *MapWidgetFlags(widgetFlags), static_cast<wxEllipsizeMode>(ellipsizeMode));
 	}
 
 	// Title bar button
@@ -163,6 +235,7 @@ namespace kxf
 	{
 		auto DoDraw = [&](wxTitleBarButton button)
 		{
+			CalcBoundingBox calcBoudingBox(dc, rect);
 			GetRenderer().DrawTitleBarBitmap(window, dc.ToWxDC(), rect, button, *MapWidgetFlags(widgetFlags));
 		};
 
@@ -196,6 +269,29 @@ namespace kxf
 		};
 	}
 
+	// ComboBox
+	void GDIRendererNative::DrawComboBox(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags)
+	{
+		// Not sure if wxWidgets renderer makes any difference but if case it does let's respect the flag
+
+		CalcBoundingBox calcBoudingBox(dc, rect);
+		if (widgetFlags.Contains(NativeWidgetFlag::Editable))
+		{
+			GetRenderer().DrawComboBox(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
+		}
+		else
+		{
+			GetRenderer().DrawChoice(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
+		}
+	}
+
+	// TextBox
+	void GDIRendererNative::DrawTextBox(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags)
+	{
+		CalcBoundingBox calcBoudingBox(dc, rect);
+		GetRenderer().DrawTextCtrl(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
+	}
+
 	// Splitter widget
 	NativeSplitterInfo GDIRendererNative::GetSplitterInfo(const wxWindow* window, FlagSet<NativeWidgetFlag> widgetFlags) const
 	{
@@ -205,11 +301,14 @@ namespace kxf
 
 	void GDIRendererNative::DrawSplitterBorder(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags)
 	{
+		CalcBoundingBox calcBoudingBox(dc, rect);
 		GetRenderer().DrawSplitterBorder(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
 	}
 	void GDIRendererNative::DrawSplitterSash(wxWindow* window, GDIContext& dc, const Rect& rect, int position, FlagSet<NativeWidgetFlag> widgetFlags)
 	{
 		GDIAction::Clip clip(dc, rect);
+
+		CalcBoundingBox calcBoudingBox(dc, rect);
 		GetRenderer().DrawSplitterSash(window, dc.ToWxDC(), rect.GetSize(), position, widgetFlags.Contains(NativeWidgetFlag::Vertical) ? wxVERTICAL : wxHORIZONTAL);
 	}
 
@@ -231,18 +330,10 @@ namespace kxf
 											const NativeHeaderButtonInfo* buttonInfo
 	)
 	{
+		CalcBoundingBox calcBoudingBox(dc, rect);
 		if (buttonInfo)
 		{
-			wxHeaderButtonParams parameters;
-			parameters.m_arrowColour = buttonInfo->ArrowColor;
-			parameters.m_labelColour = buttonInfo->LabelColor;
-			parameters.m_selectionColour = buttonInfo->SelectionColor;
-
-			parameters.m_labelText = buttonInfo->LabelText;
-			parameters.m_labelFont = buttonInfo->LabelFont.ToWxFont();
-			parameters.m_labelBitmap = buttonInfo->LabelBitmap.ToWxBitmap();
-			parameters.m_labelAlignment = buttonInfo->LabelAlignment.ToInt();
-
+			wxHeaderButtonParams parameters = ConvertHeaderButtonInfo(*buttonInfo);
 			return GetRenderer().DrawHeaderButton(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags), MapSortArrow(sortArrow), &parameters);
 		}
 		else
@@ -258,6 +349,15 @@ namespace kxf
 												   const NativeHeaderButtonInfo* buttonInfo
 	)
 	{
-		return 0;
+		CalcBoundingBox calcBoudingBox(dc, rect);
+		if (buttonInfo)
+		{
+			wxHeaderButtonParams parameters = ConvertHeaderButtonInfo(*buttonInfo);
+			return GetRenderer().DrawHeaderButtonContents(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags), MapSortArrow(sortArrow), &parameters);
+		}
+		else
+		{
+			return GetRenderer().DrawHeaderButtonContents(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags), MapSortArrow(sortArrow));
+		}
 	}
 }
