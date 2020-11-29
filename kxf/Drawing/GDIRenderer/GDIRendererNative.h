@@ -60,6 +60,7 @@ namespace kxf
 			// Item selection rectangle
 			void DrawItemSelectionRect(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}) override;
 			void DrawItemFocusRect(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}) override;
+			void DrawItemFocusRect(wxWindow* window, IGraphicsContext& gc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}) override;
 
 			// Item text
 			void DrawItemText(wxWindow* window, GDIContext& dc, const String& text, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags = {}, FlagSet<Alignment> alignment = {}, EllipsizeMode ellipsizeMode = EllipsizeMode::End) override;

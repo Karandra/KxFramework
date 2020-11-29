@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "GDIRendererNative.h"
 #include "GDIAction.h"
+#include "../GraphicsRenderer.h"
 #include "../UxTheme.h"
 #include "../Private/UxThemeDefines.h"
 
@@ -74,6 +75,10 @@ namespace
 			}
 
 		public:
+			void UpdateRect(const Rect& rect)
+			{
+				m_Rect = rect;
+			}
 			void Dismiss()
 			{
 				m_Rect = {};
@@ -237,8 +242,58 @@ namespace kxf
 	}
 	void GDIRendererNative::DrawItemFocusRect(wxWindow* window, GDIContext& dc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags)
 	{
-		CalcBoundingBox calcBoudingBox(dc, rect);
-		GetRenderer().DrawFocusRect(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
+		if (window)
+		{
+			CalcBoundingBox calcBoudingBox(dc, rect);
+			if (UxTheme theme(*window, UxThemeClass::ListView); theme)
+			{
+				float borderWidth = theme.GetInt(LVP_LISTITEM, 0, TMT_BORDERSIZE).value_or(1);
+				GDIAction::ChangePen pen(dc, GDIPen(theme.GetColor(LVP_GROUPHEADER, 0, TMT_ACCENTCOLORHINT), borderWidth));
+				GDIAction::ChangeBrush brush(dc, *wxTRANSPARENT_BRUSH);
+
+				if (borderWidth > 1)
+				{
+					Rect newRect = rect.Clone().Deflate(std::round(borderWidth / 2.0f));
+					dc.DrawRectangle(newRect);
+
+					calcBoudingBox.UpdateRect(newRect);
+				}
+				else
+				{
+					dc.DrawRectangle(rect);
+				}
+			}
+			else
+			{
+				GetRenderer().DrawFocusRect(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
+			}
+		}
+	}
+	void GDIRendererNative::DrawItemFocusRect(wxWindow* window, IGraphicsContext& gc, const Rect& rect, FlagSet<NativeWidgetFlag> widgetFlags)
+	{
+		if (!window)
+		{
+			return;
+		}
+
+		if (UxTheme theme(*window, UxThemeClass::ListView); theme)
+		{
+			IGraphicsRenderer& renderer = gc.GetRenderer();
+
+			float borderWidth = theme.GetInt(LVP_LISTITEM, 0, TMT_BORDERSIZE).value_or(1);
+			auto brush = renderer.CreateSolidBrush(Drawing::GetStockColor(StockColor::Transparent));
+			auto pen = renderer.CreatePen(theme.GetColor(LVP_GROUPHEADER, 0, TMT_ACCENTCOLORHINT).SetAlpha8(127), borderWidth);
+
+			if (borderWidth > 1.0f)
+			{
+				Rect newRect = rect.Clone().Deflate(std::round(borderWidth / 2.0f));
+				gc.DrawRectangle(newRect, *brush, *pen);
+			}
+			else
+			{
+				gc.DrawRectangle(rect, *brush, *pen);
+			}
+		}
 	}
 
 	// Item text
