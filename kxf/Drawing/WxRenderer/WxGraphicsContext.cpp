@@ -5,6 +5,7 @@
 #include "WxGraphicsPen.h"
 #include "WxGraphicsFont.h"
 #include "WxGraphicsPath.h"
+#include "../GDIRenderer/GDIBitmap.h"
 #include <wx/msw/dc.h>
 
 namespace kxf
@@ -576,6 +577,15 @@ namespace kxf
 				CalcBoundingBox(startPoints[i]);
 				CalcBoundingBox(endPoints[i]);
 			}
+		}
+	}
+
+	void WxGraphicsContext::DrawGDI(const RectF& rect, std::function<void(GDIContext& dc)> func)
+	{
+		if (GDIBitmap bitmap = DrawGDIOnBitmap(rect, std::move(func)))
+		{
+			m_Context->DrawBitmap(bitmap.ToWxBitmap(), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
+			CalcBoundingBox(rect);
 		}
 	}
 

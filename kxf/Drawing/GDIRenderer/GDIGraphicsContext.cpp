@@ -5,7 +5,7 @@
 #include "GDIGraphicsPen.h"
 #include "GDIGraphicsFont.h"
 #include "GDIAction.h"
-#include "../GraphicsRenderer/GraphicsAction.h"
+#include "GDIMemoryContext.h"
 #include <wx/msw/dc.h>
 
 namespace
@@ -514,6 +514,24 @@ namespace kxf
 		}
 	}
 
+	void GDIGraphicsContext::DrawGDI(const RectF& rect, std::function<void(GDIContext& dc)> func)
+	{
+		if (m_DC.CanDrawBitmap())
+		{
+			// The interface requires us to provide a DC with size of the given rect so we can't just
+			// use our own DC for this purpose. We either have to create a memory DC and blit it to this
+			// (which doesn't always works correctly with alpha), alpha-blend it (via ::AlphaBlend function)
+			// or use a generic function that draws the content on a bitmap. In either case we'll need a bitmap
+			// to draw on so there is much difference.
+			// Another solution would be to set origin to the rect's position and clip the DC but then the DC
+			// would still be of its original size which isn't good either.
+			if (GDIBitmap bitmap = DrawGDIOnBitmap(rect, std::move(func)))
+			{
+				m_DC.DrawBitmap(bitmap, rect.GetPosition());
+			}
+		}
+	}
+
 	// Getting and setting parameters
 	CompositionMode GDIGraphicsContext::GetCompositionMode() const
 	{
@@ -594,6 +612,8 @@ namespace kxf
 	std::shared_ptr<IGraphicsTexture> GDIGraphicsMemoryContext::UnselectTexture()
 	{
 		m_MemoryDC.SelectObject(wxNullBitmap);
+		m_Texture->QueryInterface<GDIGraphicsTexture>()->Get().UpdateAlpha();
+
 		return std::move(m_Texture);
 	}
 }

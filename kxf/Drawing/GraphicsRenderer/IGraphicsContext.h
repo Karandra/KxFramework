@@ -15,6 +15,8 @@ namespace kxf
 	class Font;
 	class Image;
 	class String;
+	class GDIBitmap;
+	class GDIContext;
 
 	class IGraphicsRenderer;
 	class IGraphicsTexture;
@@ -54,6 +56,9 @@ namespace kxf
 	class KX_API IGraphicsContext: public RTTI::ExtendInterface<IGraphicsContext, IGraphicsObject>
 	{
 		KxRTTI_DeclareIID(IGraphicsContext, {0x7a91357c, 0x87f9, 0x4230, {0x92, 0xf, 0x54, 0xbf, 0xde, 0x42, 0x35, 0xf5}});
+
+		protected:
+			GDIBitmap DrawGDIOnBitmap(const RectF& rect, std::function<void(GDIContext& dc)> func);
 
 		public:
 			virtual ~IGraphicsContext() = default;
@@ -178,6 +183,8 @@ namespace kxf
 			{
 				DrawDisconnectedLines(startPoints.data(), endPoints.data(), N, pen);
 			}
+
+			virtual void DrawGDI(const RectF& rect, std::function<void(GDIContext& dc)> func) = 0;
 
 			// Getting and setting parameters
 			virtual SizeF GetSize() const = 0;

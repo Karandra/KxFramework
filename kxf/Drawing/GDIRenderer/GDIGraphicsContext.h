@@ -182,6 +182,8 @@ namespace kxf
 			void DrawPolyLine(const PointF* points, size_t count, const IGraphicsPen& pen = NullGraphicsPen) override;
 			void DrawDisconnectedLines(const PointF* startPoints, const PointF* endPoints, size_t count, const IGraphicsPen& pen = NullGraphicsPen) override;
 
+			void DrawGDI(const RectF& rect, std::function<void(GDIContext& dc)> func) override;
+
 			// Getting and setting parameters
 			SizeF GetSize() const override
 			{

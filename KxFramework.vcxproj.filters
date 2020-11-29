@@ -2594,6 +2594,9 @@
     <ClCompile Include="kxf\Drawing\GraphicsRenderer.cpp">
       <Filter>kxf\Drawing</Filter>
     </ClCompile>
+    <ClCompile Include="kxf\Drawing\GraphicsRenderer\IGraphicsContext.cpp">
+      <Filter>kxf\Drawing\GraphicsRenderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="kxf\System\Private\ErrorCodeNtStatus.i">
