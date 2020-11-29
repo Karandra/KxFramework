@@ -1,0 +1,13 @@
+diff --git a/src/msw/graphicsd2d.cpp b/src/msw/graphicsd2d.cpp
+index 66e75ced35a377868f4ddfaeb090d55e3f0abc3d..ba27fdb48e873e1da9f36dd81cd5834a3b0334b5 100644
+--- a/src/msw/graphicsd2d.cpp
++++ b/src/msw/graphicsd2d.cpp
+@@ -12,7 +12,7 @@
+ #if wxUSE_GRAPHICS_DIRECT2D
+ 
+ // Minimum supported client: Windows 8 and Platform Update for Windows 7
+-#define wxD2D_DEVICE_CONTEXT_SUPPORTED 0
++#define wxD2D_DEVICE_CONTEXT_SUPPORTED 1
+ 
+ // We load these functions at runtime from the d2d1.dll.
+ // However, since they are also used inside the d2d1.h header we must provide
