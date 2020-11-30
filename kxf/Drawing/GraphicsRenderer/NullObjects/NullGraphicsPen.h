@@ -1,15 +1,11 @@
 #pragma once
 #include "../Common.h"
 #include "../IGraphicsPen.h"
-#include "NullGraphicsRenderer.h"
 
 namespace kxf::Drawing
 {
 	class KX_API NullGraphicsPen final: public IGraphicsPen
 	{
-		public:
-			NullGraphicsRenderer m_Renderer;
-
 		public:
 			NullGraphicsPen() noexcept = default;
 
@@ -30,7 +26,7 @@ namespace kxf::Drawing
 
 			IGraphicsRenderer& GetRenderer() override
 			{
-				return m_Renderer;
+				return Drawing::Private::GetNullGraphicsRenderer();
 			}
 			void* GetNativeHandle() const
 			{

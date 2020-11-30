@@ -43,6 +43,9 @@ namespace kxf
 
 		public:
 			// Pen and brush functions
+			const IGraphicsPen& GetTransparentPen() const override;
+			const IGraphicsBrush& GetTransparentBrush() const override;
+
 			std::shared_ptr<IGraphicsPen> CreatePen(const Color& color, float width = 1.0f) override;
 			std::shared_ptr<IGraphicsSolidBrush> CreateSolidBrush(const Color& color) override;
 			std::shared_ptr<IGraphicsTextureBrush> CreateTextureBrush(const Image& image) override;
@@ -82,8 +85,6 @@ namespace kxf
 			bool CanDrawNullBitmap() const;
 
 			const GDIBitmap& GetTransparentBitmap() const;
-			const IGraphicsPen& GetTransparentPen() const;
-			const IGraphicsBrush& GetTransparentBrush() const;
 
 			AffineMatrixF ToAffineMatrix(const wxGraphicsMatrix& matrix)
 			{

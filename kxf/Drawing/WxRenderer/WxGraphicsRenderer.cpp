@@ -103,6 +103,29 @@ namespace kxf
 	}
 
 	// Pen and brush functions
+	const IGraphicsPen& WxGraphicsRenderer::GetTransparentPen() const
+	{
+		if (!m_TransparentPen)
+		{
+			auto pen = std::make_unique<WxGraphicsPen>(const_cast<WxGraphicsRenderer&>(*this), Drawing::GetStockColor(StockColor::Transparent), 0.0f);
+			pen->GetPen().SetTransparent();
+
+			m_TransparentPen = std::move(pen);
+		}
+		return *m_TransparentPen;
+	}
+	const IGraphicsBrush& WxGraphicsRenderer::GetTransparentBrush() const
+	{
+		if (!m_TransparentBrush)
+		{
+			auto brush = std::make_unique<WxGraphicsSolidBrush>(const_cast<WxGraphicsRenderer&>(*this), Drawing::GetStockColor(StockColor::Transparent));
+			brush->GetBrush().SetTransparent();
+
+			m_TransparentBrush = std::move(brush);
+		}
+		return *m_TransparentBrush;
+	}
+
 	std::shared_ptr<IGraphicsPen> WxGraphicsRenderer::CreatePen(const Color& color, float width)
 	{
 		return std::make_shared<WxGraphicsPen>(*this, color, width);
@@ -207,21 +230,5 @@ namespace kxf
 			m_TransparenBitmap = GDIBitmap({8, 8}, ColorDepthDB::BPP32);
 		}
 		return m_TransparenBitmap;
-	}
-	const IGraphicsPen& WxGraphicsRenderer::GetTransparentPen() const
-	{
-		if (!m_TransparentPen)
-		{
-			m_TransparentPen = const_cast<WxGraphicsRenderer&>(*this).CreatePen(Drawing::GetStockColor(StockColor::Transparent), 1.0f);
-		}
-		return *m_TransparentPen;
-	}
-	const IGraphicsBrush& WxGraphicsRenderer::GetTransparentBrush() const
-	{
-		if (!m_TransparentBrush)
-		{
-			m_TransparentBrush = const_cast<WxGraphicsRenderer&>(*this).CreateSolidBrush(Drawing::GetStockColor(StockColor::Transparent));
-		}
-		return *m_TransparentBrush;
 	}
 }

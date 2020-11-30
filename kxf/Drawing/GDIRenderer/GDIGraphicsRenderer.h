@@ -12,6 +12,10 @@ namespace kxf
 
 		friend class GDIGraphicsContext;
 
+		private:
+			mutable std::unique_ptr<IGraphicsPen> m_TransparentPen;
+			mutable std::unique_ptr<IGraphicsBrush> m_TransparentBrush;
+
 		protected:
 			GDIPen ToGDIPen(const IGraphicsPen& pen) const;
 			GDIBrush ToGDIBrush(const IGraphicsBrush& brush) const;
@@ -33,6 +37,9 @@ namespace kxf
 
 		public:
 			// Pen and brush functions
+			const IGraphicsPen& GetTransparentPen() const override;
+			const IGraphicsBrush& GetTransparentBrush() const override;
+
 			std::shared_ptr<IGraphicsPen> CreatePen(const Color& color, float width = 1.0f) override;
 			std::shared_ptr<IGraphicsSolidBrush> CreateSolidBrush(const Color& color) override;
 			std::shared_ptr<IGraphicsTextureBrush> CreateTextureBrush(const Image& image) override;

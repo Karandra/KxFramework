@@ -8,3 +8,13 @@
 #include "../AffineMatrix.h"
 #include "../GradientStops.h"
 #include "kxf/RTTI/QueryInterface.h"
+
+namespace kxf
+{
+	class IGraphicsRenderer;
+}
+
+namespace kxf::Drawing::Private
+{
+	IGraphicsRenderer& GetNullGraphicsRenderer();
+}

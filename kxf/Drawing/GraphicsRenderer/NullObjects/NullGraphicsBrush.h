@@ -1,15 +1,11 @@
 #pragma once
 #include "../Common.h"
 #include "../IGraphicsBrush.h"
-#include "NullGraphicsRenderer.h"
 
 namespace kxf::Drawing
 {
 	class KX_API NullGraphicsBrush final: public IGraphicsBrush
 	{
-		private:
-			NullGraphicsRenderer m_Renderer;
-
 		public:
 			NullGraphicsBrush() noexcept = default;
 
@@ -30,7 +26,7 @@ namespace kxf::Drawing
 
 			IGraphicsRenderer& GetRenderer() override
 			{
-				return m_Renderer;
+				return Drawing::Private::GetNullGraphicsRenderer();
 			}
 			void* GetNativeHandle() const
 			{

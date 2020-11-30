@@ -150,6 +150,29 @@ namespace kxf
 	}
 
 	// Pen and brush functions
+	const kxf::IGraphicsPen& GDIGraphicsRenderer::GetTransparentPen() const
+	{
+		if (m_TransparentPen)
+		{
+			auto pen = std::make_unique<GDIGraphicsPen>(const_cast<GDIGraphicsRenderer&>(*this), Drawing::GetStockColor(StockColor::Transparent), 0.0f);
+			pen->Get().SetTransparent();
+
+			m_TransparentPen = std::move(pen);
+		}
+		return *m_TransparentPen;
+	}
+	const kxf::IGraphicsBrush& GDIGraphicsRenderer::GetTransparentBrush() const
+	{
+		if (m_TransparentBrush)
+		{
+			auto brush = std::make_unique<GDIGraphicsSolidBrush>(const_cast<GDIGraphicsRenderer&>(*this), Drawing::GetStockColor(StockColor::Transparent));
+			brush->Get().SetTransparent();
+
+			m_TransparentBrush = std::move(brush);
+		}
+		return *m_TransparentBrush;
+	}
+
 	std::shared_ptr<IGraphicsPen> GDIGraphicsRenderer::CreatePen(const Color& color, float width)
 	{
 		return std::make_shared<GDIGraphicsPen>(*this, color, width);

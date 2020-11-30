@@ -2,15 +2,11 @@
 #include "../Common.h"
 #include "../IGraphicsTexture.h"
 #include "../../Image.h"
-#include "NullGraphicsRenderer.h"
 
 namespace kxf::Drawing
 {
 	class KX_API NullGraphicsTexture final: public IGraphicsTexture
 	{
-		private:
-			NullGraphicsRenderer m_Renderer;
-
 		public:
 			~NullGraphicsTexture() = default;
 
@@ -31,7 +27,7 @@ namespace kxf::Drawing
 
 			IGraphicsRenderer& GetRenderer() override
 			{
-				return m_Renderer;
+				return Drawing::Private::GetNullGraphicsRenderer();
 			}
 			void* GetNativeHandle() const
 			{

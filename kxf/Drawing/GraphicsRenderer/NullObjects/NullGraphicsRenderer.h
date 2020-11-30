@@ -50,6 +50,9 @@ namespace kxf::Drawing
 
 		public:
 			// Pen and brush functions
+			const IGraphicsPen& GetTransparentPen() const override;
+			const IGraphicsBrush& GetTransparentBrush() const override;
+
 			std::shared_ptr<IGraphicsPen> CreatePen(const Color& color, float width = 1.0f) override
 			{
 				return nullptr;
@@ -112,5 +115,5 @@ namespace kxf::Drawing
 }
 namespace kxf
 {
-	inline const Drawing::NullGraphicsRenderer NullGraphicsRenderer;
+	inline const IGraphicsRenderer& NullGraphicsRenderer = Drawing::Private::GetNullGraphicsRenderer();
 }

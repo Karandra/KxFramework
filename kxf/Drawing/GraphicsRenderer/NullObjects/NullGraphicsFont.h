@@ -2,15 +2,11 @@
 #include "../Common.h"
 #include "../IGraphicsFont.h"
 #include "../../Font.h"
-#include "NullGraphicsRenderer.h"
 
 namespace kxf::Drawing
 {
 	class KX_API NullGraphicsFont final: public IGraphicsFont
 	{
-		private:
-			NullGraphicsRenderer m_Renderer;
-
 		public:
 			NullGraphicsFont() noexcept = default;
 
@@ -31,7 +27,7 @@ namespace kxf::Drawing
 
 			IGraphicsRenderer& GetRenderer() override
 			{
-				return m_Renderer;
+				return Drawing::Private::GetNullGraphicsRenderer();
 			}
 			void* GetNativeHandle() const
 			{

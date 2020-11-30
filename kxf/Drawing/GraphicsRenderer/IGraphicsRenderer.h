@@ -44,6 +44,9 @@ namespace kxf
 
 		public:
 			// Pen and brush functions
+			virtual const IGraphicsPen& GetTransparentPen() const = 0;
+			virtual const IGraphicsBrush& GetTransparentBrush() const = 0;
+
 			virtual std::shared_ptr<IGraphicsPen> CreatePen(const Color& color, float width = 1.0f) = 0;
 			virtual std::shared_ptr<IGraphicsSolidBrush> CreateSolidBrush(const Color& color) = 0;
 			virtual std::shared_ptr<IGraphicsTextureBrush> CreateTextureBrush(const Image& image) = 0;

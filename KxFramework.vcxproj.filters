@@ -2603,6 +2603,12 @@
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIRendererNative.cpp">
       <Filter>kxf\Drawing\GDIRenderer</Filter>
     </ClCompile>
+    <ClCompile Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsRenderer.cpp">
+      <Filter>kxf\Drawing\GraphicsRenderer\NullObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\GraphicsRenderer\Common.cpp">
+      <Filter>kxf\Drawing\GraphicsRenderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="kxf\System\Private\ErrorCodeNtStatus.i">

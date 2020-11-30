@@ -721,7 +721,9 @@
     <ClCompile Include="kxf\Drawing\GDIRenderer\GDIRendererNative.cpp" />
     <ClCompile Include="kxf\Drawing\GDIRenderer\Private\GDI.cpp" />
     <ClCompile Include="kxf\Drawing\GraphicsRenderer.cpp" />
+    <ClCompile Include="kxf\Drawing\GraphicsRenderer\Common.cpp" />
     <ClCompile Include="kxf\Drawing\GraphicsRenderer\IGraphicsContext.cpp" />
+    <ClCompile Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsRenderer.cpp" />
     <ClCompile Include="kxf\Drawing\Image.cpp" />
     <ClCompile Include="kxf\Drawing\ImageBundle.cpp" />
     <ClCompile Include="kxf\Drawing\Private\Common.cpp" />
