@@ -5,9 +5,15 @@
 #include "GDIRenderer/GDIIcon.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/wxWidgets/StreamWrapper.h"
+#include "Private/SVGImageHandler.h"
 
 namespace kxf
 {
+	void Image::InitalizeHandlers()
+	{
+		wxInitAllImageHandlers();
+		wxImage::AddHandler(std::make_unique<Drawing::Private::SVGImageHandler>().release());
+	}
 	size_t Image::GetImageCount(IInputStream& stream, ImageFormat format)
 	{
 		wxWidgets::InputStreamWrapperWx warpper(stream);

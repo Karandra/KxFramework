@@ -41,6 +41,7 @@ namespace kxf
 
 		// Non-Wx formats
 		RAW = 100,
+		SVG,
 		WEBP,
 	};
 }

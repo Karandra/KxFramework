@@ -1742,6 +1742,9 @@
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIRendererNative.h">
       <Filter>kxf\Drawing\GDIRenderer</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Drawing\Private\SVGImageHandler.h">
+      <Filter>kxf\Drawing\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2608,6 +2611,9 @@
     </ClCompile>
     <ClCompile Include="kxf\Drawing\GraphicsRenderer\Common.cpp">
       <Filter>kxf\Drawing\GraphicsRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\Private\SVGImageHandler.cpp">
+      <Filter>kxf\Drawing\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

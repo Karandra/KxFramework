@@ -270,6 +270,7 @@
     <ClInclude Include="kxf\Drawing\ImageBundle.h" />
     <ClInclude Include="kxf\Drawing\Private\Common.h" />
     <ClInclude Include="kxf\Drawing\IRendererNative.h" />
+    <ClInclude Include="kxf\Drawing\Private\SVGImageHandler.h" />
     <ClInclude Include="kxf\Drawing\SizeRatio.h" />
     <ClInclude Include="kxf\Drawing\WxRenderer\Common.h" />
     <ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsBrush.h" />
@@ -728,6 +729,7 @@
     <ClCompile Include="kxf\Drawing\ImageBundle.cpp" />
     <ClCompile Include="kxf\Drawing\Private\Common.cpp" />
     <ClCompile Include="kxf\Drawing\IRendererNative.cpp" />
+    <ClCompile Include="kxf\Drawing\Private\SVGImageHandler.cpp" />
     <ClCompile Include="kxf\Drawing\SizeRatio.cpp" />
     <ClCompile Include="kxf\Drawing\WxRenderer\WxGraphicsContext.cpp" />
     <ClCompile Include="kxf\Drawing\WxRenderer\WxGraphicsFont.cpp" />
