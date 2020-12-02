@@ -9,6 +9,7 @@ namespace
 {
 	constexpr size_t g_RGBChannels = 3;
 	constexpr size_t g_ChannelCount = g_RGBChannels + 1;
+	constexpr double g_DefaultDPI = 96.0;
 
 	bool DoLoad(lunasvg::SVGDocument& document, wxInputStream& stream)
 	{
@@ -51,7 +52,7 @@ namespace kxf::Drawing::Private
 			const int width = image->GetOptionInt(wxIMAGE_OPTION_MAX_WIDTH);
 			const int height = image->GetOptionInt(wxIMAGE_OPTION_MAX_HEIGHT);
 
-			lunasvg::Bitmap bitmap = document.renderToBitmap(width, height, dpi > 0 ? dpi : 96);
+			lunasvg::Bitmap bitmap = document.renderToBitmap(width, height, dpi > 0 ? static_cast<double>(dpi) : g_DefaultDPI);
 			if (const auto sourceData = bitmap.data())
 			{
 				// If we have no size specified set it to the SVG's default size
