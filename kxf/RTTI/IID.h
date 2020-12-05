@@ -24,7 +24,7 @@ namespace kxf
 				:m_ID(uuid)
 			{
 			}
-			
+
 		public:
 			constexpr bool IsNull() const noexcept
 			{
@@ -49,7 +49,7 @@ namespace kxf
 			{
 				return !(*this == other);
 			}
-			
+
 			constexpr IID& operator=(const NativeUUID& uuid) noexcept
 			{
 				m_ID = uuid;

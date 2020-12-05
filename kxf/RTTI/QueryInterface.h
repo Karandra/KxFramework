@@ -14,6 +14,15 @@ friend constexpr kxf::IID kxf::RTTI::GetInterfaceID() noexcept;	\
 private:	\
 	static constexpr kxf::IID ms_IID = kxf::NativeUUID __VA_ARGS__;
 
+#define KxRTTI_DeclareIID_Using(T, iid)	\
+friend class kxf::IObject;	\
+\
+template<class T>	\
+friend constexpr kxf::IID kxf::RTTI::GetInterfaceID() noexcept;	\
+\
+private:	\
+	static constexpr kxf::IID ms_IID = (iid);
+
 #define KxRTTI_DeclareIID_External(T, ...)	\
 namespace RTTI	\
 {	\
@@ -83,7 +92,7 @@ namespace kxf::RTTI
 			{
 				return m_Deleter == nullptr;
 			}
-			
+
 			const void* get() const noexcept
 			{
 				return m_Object;
@@ -187,7 +196,7 @@ namespace kxf
 				}
 				return nullptr;
 			}
-			
+
 		protected:
 			virtual RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept
 			{
@@ -216,7 +225,7 @@ namespace kxf
 			{
 				return this->QueryInterface(RTTI::GetInterfaceID<T>()).TakeObject<T>();
 			}
-			
+
 			template<class T>
 			object_ptr<const T> QueryInterface() const noexcept
 			{
@@ -229,7 +238,7 @@ namespace kxf
 				ptr = this->QueryInterface<T>();
 				return ptr != nullptr;
 			}
-			
+
 			template<class T>
 			bool QueryInterface(object_ptr<const T>& ptr) const noexcept
 			{
