@@ -23,7 +23,7 @@ namespace kxf::Drawing::Private
 		m_name = wxS("Scalable Vector Graphics");
 		m_mime = wxS("image/svg+xml");
 		m_extension = wxS("svg");
-		m_type = Drawing::Private::NewWxBitmapType();
+		m_type = Drawing::Private::RegisterWxBitmapType(ImageFormat::SVG);
 	}
 
 	bool SVGImageHandler::LoadFile(wxImage* image, wxInputStream& stream, bool verbose, int index)

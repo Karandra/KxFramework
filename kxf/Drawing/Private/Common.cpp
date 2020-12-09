@@ -6,7 +6,69 @@
 
 namespace
 {
-	std::atomic<int> g_WxBitmapType = static_cast<int>(wxBITMAP_TYPE_MAX) + 1000;
+	class BitmapTypeRegistry final
+	{
+		private:
+			std::unordered_map<kxf::UniversallyUniqueID, wxBitmapType> m_Registry;
+			std::atomic<int> m_Counter = static_cast<int>(wxBITMAP_TYPE_MAX) + 1000;
+
+		public:
+			BitmapTypeRegistry()
+			{
+				using namespace kxf;
+
+				m_Registry.reserve(wxBITMAP_TYPE_MAX);
+				m_Registry.insert_or_assign(ImageFormat::Any, wxBITMAP_TYPE_ANY);
+				m_Registry.insert_or_assign(ImageFormat::ANI, wxBITMAP_TYPE_ANI);
+				m_Registry.insert_or_assign(ImageFormat::BMP, wxBITMAP_TYPE_BMP);
+				m_Registry.insert_or_assign(ImageFormat::CUR, wxBITMAP_TYPE_CUR);
+				m_Registry.insert_or_assign(ImageFormat::GIF, wxBITMAP_TYPE_GIF);
+				m_Registry.insert_or_assign(ImageFormat::ICO, wxBITMAP_TYPE_ICO);
+				m_Registry.insert_or_assign(ImageFormat::PCX, wxBITMAP_TYPE_PCX);
+				m_Registry.insert_or_assign(ImageFormat::IFF, wxBITMAP_TYPE_IFF);
+				m_Registry.insert_or_assign(ImageFormat::PNG, wxBITMAP_TYPE_PNG);
+				m_Registry.insert_or_assign(ImageFormat::PNM, wxBITMAP_TYPE_PNM);
+				m_Registry.insert_or_assign(ImageFormat::TGA, wxBITMAP_TYPE_TGA);
+				m_Registry.insert_or_assign(ImageFormat::XBM, wxBITMAP_TYPE_XBM);
+				m_Registry.insert_or_assign(ImageFormat::XPM, wxBITMAP_TYPE_XPM);
+				m_Registry.insert_or_assign(ImageFormat::PICT, wxBITMAP_TYPE_PICT);
+				m_Registry.insert_or_assign(ImageFormat::TIFF, wxBITMAP_TYPE_TIFF);
+				m_Registry.insert_or_assign(ImageFormat::JPEG, wxBITMAP_TYPE_JPEG);
+			}
+
+		public:
+			std::optional<wxBitmapType> Find(const kxf::UniversallyUniqueID& format) const
+			{
+				if (auto it = m_Registry.find(format); it != m_Registry.end())
+				{
+					return it->second;
+				}
+				return {};
+			}
+			kxf::UniversallyUniqueID Find(wxBitmapType type) const
+			{
+				for (auto&& [uuid, typeWx]: m_Registry)
+				{
+					if (typeWx == type)
+					{
+						return uuid;
+					}
+				}
+				return kxf::ImageFormat::None;
+			}
+
+			wxBitmapType Regsiter(const kxf::UniversallyUniqueID& format)
+			{
+				if (auto type = Find(format))
+				{
+					return *type;
+				}
+				else
+				{
+					return m_Registry.insert_or_assign(format, static_cast<wxBitmapType>(++m_Counter)).first->second;
+				}
+			}
+	} g_BitmapTypeRegistry;
 }
 
 namespace kxf::Drawing::Private
@@ -635,150 +697,17 @@ namespace kxf::Drawing::Private
 
 namespace kxf::Drawing::Private
 {
-	wxBitmapType NewWxBitmapType() noexcept
+	wxBitmapType RegisterWxBitmapType(const UniversallyUniqueID& format)
 	{
-		return static_cast<wxBitmapType>(++g_WxBitmapType);
+		return g_BitmapTypeRegistry.Regsiter(format);
 	}
 
 	UniversallyUniqueID MapImageFormat(wxBitmapType bitmapType) noexcept
 	{
-		switch (bitmapType)
-		{
-			case wxBITMAP_TYPE_ANY:
-			{
-				return ImageFormat::Any;
-			}
-
-			case wxBITMAP_TYPE_ANI:
-			{
-				return ImageFormat::ANI;
-			}
-			case wxBITMAP_TYPE_BMP:
-			{
-				return ImageFormat::BMP;
-			}
-			case wxBITMAP_TYPE_CUR:
-			{
-				return ImageFormat::CUR;
-			}
-			case wxBITMAP_TYPE_GIF:
-			{
-				return ImageFormat::GIF;
-			}
-			case wxBITMAP_TYPE_ICO:
-			{
-				return ImageFormat::ICO;
-			}
-			case wxBITMAP_TYPE_IFF:
-			{
-				return ImageFormat::IFF;
-			}
-			case wxBITMAP_TYPE_TIFF:
-			{
-				return ImageFormat::TIFF;
-			}
-			case wxBITMAP_TYPE_JPEG:
-			{
-				return ImageFormat::JPEG;
-			}
-			case wxBITMAP_TYPE_PCX:
-			{
-				return ImageFormat::PCX;
-			}
-			case wxBITMAP_TYPE_PICT:
-			{
-				return ImageFormat::PICT;
-			}
-			case wxBITMAP_TYPE_PNG:
-			{
-				return ImageFormat::PNG;
-			}
-			case wxBITMAP_TYPE_PNM:
-			{
-				return ImageFormat::PNM;
-			}
-			case wxBITMAP_TYPE_TGA:
-			{
-				return ImageFormat::TGA;
-			}
-			case wxBITMAP_TYPE_XBM:
-			{
-				return ImageFormat::XBM;
-			}
-			case wxBITMAP_TYPE_XPM:
-			{
-				return ImageFormat::XPM;
-			}
-		};
-		return ImageFormat::None;
+		return g_BitmapTypeRegistry.Find(bitmapType);
 	}
 	wxBitmapType MapImageFormat(const UniversallyUniqueID& format) noexcept
 	{
-		if (format == ImageFormat::Any)
-		{
-			return wxBITMAP_TYPE_ANY;
-		}
-		else if (format == ImageFormat::ANI)
-		{
-			return wxBITMAP_TYPE_ANI;
-		}
-		else if (format == ImageFormat::BMP)
-		{
-			return wxBITMAP_TYPE_BMP;
-		}
-		else if (format == ImageFormat::CUR)
-		{
-			return wxBITMAP_TYPE_CUR;
-		}
-		else if (format == ImageFormat::GIF)
-		{
-			return wxBITMAP_TYPE_GIF;
-		}
-		else if (format == ImageFormat::ICO)
-		{
-			return wxBITMAP_TYPE_ICO;
-		}
-		else if (format == ImageFormat::IFF)
-		{
-			return wxBITMAP_TYPE_IFF;
-		}
-		else if (format == ImageFormat::TIFF)
-		{
-			return wxBITMAP_TYPE_TIFF;
-		}
-		else if (format == ImageFormat::JPEG)
-		{
-			return wxBITMAP_TYPE_JPEG;
-		}
-		else if (format == ImageFormat::PCX)
-		{
-			return wxBITMAP_TYPE_PCX;
-		}
-		else if (format == ImageFormat::PICT)
-		{
-			return wxBITMAP_TYPE_PICT;
-		}
-		else if (format == ImageFormat::PNG)
-		{
-			return wxBITMAP_TYPE_PNG;
-		}
-		else if (format == ImageFormat::PNM)
-		{
-			return wxBITMAP_TYPE_PNM;
-		}
-		else if (format == ImageFormat::TGA)
-		{
-			return wxBITMAP_TYPE_TGA;
-		}
-		else if (format == ImageFormat::XBM)
-		{
-			return wxBITMAP_TYPE_XBM;
-		}
-		else if (format == ImageFormat::XPM)
-		{
-			return wxBITMAP_TYPE_XPM;
-		}
-
-		return wxBITMAP_TYPE_INVALID;
+		return g_BitmapTypeRegistry.Find(format).value_or(wxBITMAP_TYPE_INVALID);
 	}
 }

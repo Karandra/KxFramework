@@ -49,7 +49,7 @@ namespace kxf::Drawing::Private
 
 namespace kxf::Drawing::Private
 {
-	wxBitmapType NewWxBitmapType() noexcept;
+	wxBitmapType RegisterWxBitmapType(const UniversallyUniqueID& format);
 
 	UniversallyUniqueID MapImageFormat(wxBitmapType bitmapType) noexcept;
 	wxBitmapType MapImageFormat(const UniversallyUniqueID& format) noexcept;
