@@ -83,10 +83,10 @@ namespace kxf
 		}
 	}
 
-	Image& WxGraphicsContext::InitTextureBuffer(std::shared_ptr<IGraphicsTexture> texture)
+	BitmapImage& WxGraphicsContext::InitTextureBuffer(std::shared_ptr<IGraphicsTexture> texture)
 	{
-		Image& image = texture->QueryInterface<WxGraphicsTexture>()->GetImage();
-		image.SetRGBA(image.GetSize(), Drawing::GetStockColor(StockColor::Transparent));
+		BitmapImage& image = texture->QueryInterface<WxGraphicsTexture>()->GetImage();
+		image.SetAreaRGBA(image.GetSize(), Drawing::GetStockColor(StockColor::Transparent).GetFixed8());
 
 		m_BufferTexture = std::move(texture);
 		return image;
@@ -292,7 +292,9 @@ namespace kxf
 				}
 				else
 				{
-					Image image = textureWx->GetImage().Rescale(rect.GetSize(), m_InterpolationQuality);
+					BitmapImage image = textureWx->GetImage();
+					image.Rescale(rect.GetSize(), m_InterpolationQuality);
+
 					m_Context->DrawBitmap(m_Renderer->Get().CreateBitmapFromImage(image.ToWxImage()), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
 				}
 				CalcBoundingBox(rect);
@@ -303,7 +305,7 @@ namespace kxf
 			}
 		}
 	}
-	void WxGraphicsContext::DrawTexture(const Image& image, const RectF& rect)
+	void WxGraphicsContext::DrawTexture(const BitmapImage& image, const RectF& rect)
 	{
 		if (image && !rect.IsEmpty())
 		{
@@ -313,7 +315,7 @@ namespace kxf
 			}
 			else
 			{
-				Image image = image.Rescale(rect.GetSize(), m_InterpolationQuality);
+				BitmapImage image = image.Rescale(rect.GetSize(), m_InterpolationQuality);
 				m_Context->DrawBitmap(m_Renderer->Get().CreateBitmapFromImage(image.ToWxImage()), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
 			}
 			CalcBoundingBox(rect);
@@ -599,7 +601,7 @@ namespace kxf
 
 		return {static_cast<float>(width), static_cast<float>(height)};
 	}
-	SizeF WxGraphicsContext::GetPPI() const
+	SizeF WxGraphicsContext::GetDPI() const
 	{
 		wxDouble width = 0;
 		wxDouble height = 0;

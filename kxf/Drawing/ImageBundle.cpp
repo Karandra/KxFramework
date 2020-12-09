@@ -25,7 +25,7 @@ namespace kxf
 			}
 		}
 	}
-	ImageBundle::ImageBundle(const Image& other)
+	ImageBundle::ImageBundle(const BitmapImage& other)
 	{
 		if (other)
 		{
@@ -57,12 +57,13 @@ namespace kxf
 		return false;
 	}
 
-	bool ImageBundle::Load(IInputStream& stream, ImageFormat format)
+	bool ImageBundle::Load(IInputStream& stream, const UniversallyUniqueID& format, size_t index)
 	{
 		const auto initialPos = stream.TellI();
-		const size_t imageCount = Image::GetImageCount(stream, format);
+		const size_t imageCount = BitmapImage::GetImageCount(stream, format);
 
 		size_t loadedCount = 0;
+		UniversallyUniqueID actualFormat = format;
 		for (size_t i = 0; i < imageCount; i++)
 		{
 			// The call to 'Load' for the first sub-image updated the stream position
@@ -72,15 +73,15 @@ namespace kxf
 				stream.SeekI(initialPos, IOStreamSeek::FromStart);
 			}
 
-			Image& image = m_Items.emplace_back();
-			if (image.Load(stream, format, static_cast<int>(i)))
+			BitmapImage& image = m_Items.emplace_back();
+			if (image.Load(stream, actualFormat, static_cast<int>(i)))
 			{
 				loadedCount++;
-				if (format == ImageFormat::Any || format == ImageFormat::None)
+				if (actualFormat == ImageFormat::Any || actualFormat == ImageFormat::None)
 				{
 					// Store the type so that we don't need to try all handlers again
 					// for the subsequent images, they should all be of the same type.
-					format = image.GetFormat();
+					actualFormat = image.GetFormat();
 				}
 			}
 			else
@@ -90,20 +91,20 @@ namespace kxf
 		}
 		return loadedCount != 0;
 	}
-	bool ImageBundle::Save(IOutputStream& stream, ImageFormat format) const
+	bool ImageBundle::Save(IOutputStream& stream, const UniversallyUniqueID& format) const
 	{
 		// TODO: Implement ImageBundle saving
 		return false;
 	}
 
-	void ImageBundle::AddImage(const Image& image)
+	void ImageBundle::AddImage(const BitmapImage& image)
 	{
 		if (image)
 		{
 			m_Items.emplace_back(image);
 		}
 	}
-	Image ImageBundle::GetImage(Size desiredSize, FlagSet<ImageBundleFlag> sizeFallback) const
+	BitmapImage ImageBundle::GetImage(Size desiredSize, FlagSet<ImageBundleFlag> sizeFallback) const
 	{
 		if (desiredSize.IsFullySpecified() || desiredSize == Size::UnspecifiedSize())
 		{
@@ -147,12 +148,12 @@ namespace kxf
 			}
 
 			// Iterate over all icons searching for the exact match or the closest icon for 'SizeFallback::NearestLarger'
-			const Image* imageBest = nullptr;
+			const BitmapImage* imageBest = nullptr;
 			int bestDiff = 0;
 			bool bestIsLarger = false;
 			bool bestIsSystem = false;
 
-			for (const Image& image: m_Items)
+			for (const BitmapImage& image: m_Items)
 			{
 				const Size size = image.GetSize();
 
@@ -200,7 +201,7 @@ namespace kxf
 	wxIconBundle ImageBundle::ToWxIconBundle() const
 	{
 		wxIconBundle iconBundle;
-		for (const Image& image: m_Items)
+		for (const BitmapImage& image: m_Items)
 		{
 			iconBundle.AddIcon(image.ToIcon().ToWxIcon());
 		}

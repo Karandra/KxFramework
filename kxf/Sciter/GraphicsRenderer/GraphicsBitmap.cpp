@@ -8,29 +8,26 @@
 
 namespace kxf::Sciter
 {
-	std::optional<SCITER_IMAGE_ENCODING> MapImageEncoding(kxf::ImageFormat encoding)
+	std::optional<SCITER_IMAGE_ENCODING> MapImageEncoding(kxf::UniversallyUniqueID encoding)
 	{
-		using kxf::ImageFormat;
+		using namespace kxf;
 
-		switch (encoding)
+		if (encoding == ImageFormat::PNG)
 		{
-			case ImageFormat::PNG:
-			{
-				return SCITER_IMAGE_ENCODING::SCITER_IMAGE_ENCODING_PNG;
-			}
-			case ImageFormat::JPEG:
-			{
-				return SCITER_IMAGE_ENCODING::SCITER_IMAGE_ENCODING_JPG;
-			}
-			case ImageFormat::WEBP:
-			{
-				return SCITER_IMAGE_ENCODING::SCITER_IMAGE_ENCODING_WEBP;
-			}
-			case ImageFormat::RAW:
-			{
-				return SCITER_IMAGE_ENCODING::SCITER_IMAGE_ENCODING_RAW;
-			}
-		};
+			return SCITER_IMAGE_ENCODING::SCITER_IMAGE_ENCODING_PNG;
+		}
+		else if (encoding == ImageFormat::JPEG)
+		{
+			return SCITER_IMAGE_ENCODING::SCITER_IMAGE_ENCODING_JPG;
+		}
+		else if (encoding == ImageFormat::WEBP)
+		{
+			return SCITER_IMAGE_ENCODING::SCITER_IMAGE_ENCODING_WEBP;
+		}
+		else if (encoding == ImageFormat::RAW)
+		{
+			return SCITER_IMAGE_ENCODING::SCITER_IMAGE_ENCODING_RAW;
+		}
 		return {};
 	}
 	bool DoGetImageInfo(HIMG image, Size& size, bool& usesAlpha)
@@ -68,7 +65,7 @@ namespace kxf::Sciter
 			Acquire(FromSciterImage(image));
 		}
 	}
-	GraphicsBitmap::GraphicsBitmap(const Image& image)
+	GraphicsBitmap::GraphicsBitmap(const BitmapImage& image)
 	{
 		MemoryOutputStream outputStream;
 		if (image.Save(outputStream, ImageFormat::PNG))
@@ -115,7 +112,7 @@ namespace kxf::Sciter
 		}
 		return false;
 	}
-	bool GraphicsBitmap::Save(IOutputStream& stream, ImageFormat format, int quality) const
+	bool GraphicsBitmap::Save(IOutputStream& stream, const UniversallyUniqueID& format, int quality) const
 	{
 		auto encoding = MapImageEncoding(format);
 		if (!IsNull() && encoding)
@@ -150,14 +147,14 @@ namespace kxf::Sciter
 		return usesAlpha;
 	}
 
-	Image GraphicsBitmap::ConvertToImage() const
+	BitmapImage GraphicsBitmap::ConvertToImage() const
 	{
 		MemoryOutputStream outputStream;
 		if (Save(outputStream, ImageFormat::PNG))
 		{
 			MemoryInputStream inputStream(outputStream);
-			
-			Image image;
+
+			BitmapImage image;
 			image.Load(inputStream, ImageFormat::PNG);
 			return image;
 		}

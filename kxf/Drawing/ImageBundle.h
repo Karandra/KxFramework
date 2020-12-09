@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "Image.h"
+#include "BitmapImage.h"
 class wxIconBundle;
 
 namespace kxf
@@ -23,7 +23,7 @@ namespace kxf
 		KxRTTI_DeclareIID(ImageBundle, {0x8e7461c, 0x1234, 0x49c0, {0xa0, 0x0, 0xe2, 0x16, 0x4a, 0x75, 0x7d, 0x85}});
 
 		private:
-			std::vector<Image> m_Items;
+			std::vector<BitmapImage> m_Items;
 
 		public:
 			ImageBundle() noexcept = default;
@@ -34,7 +34,7 @@ namespace kxf
 			ImageBundle(const ImageBundle&) = default;
 			ImageBundle(ImageBundle&&) noexcept = default;
 			ImageBundle(const wxIconBundle& other);
-			ImageBundle(const Image& other);
+			ImageBundle(const BitmapImage& other);
 			virtual ~ImageBundle() = default;
 
 		public:
@@ -42,17 +42,17 @@ namespace kxf
 			bool IsNull() const;
 			bool IsSameAs(const ImageBundle& other) const;
 
-			bool Load(IInputStream& stream, ImageFormat format = ImageFormat::Any);
-			bool Save(IOutputStream& stream, ImageFormat format) const;
+			bool Load(IInputStream& stream, const UniversallyUniqueID& format = ImageFormat::Any, size_t index = BitmapImage::npos);
+			bool Save(IOutputStream& stream, const UniversallyUniqueID& format) const;
 
-			void AddImage(const Image& image);
-			Image GetImage(Size desiredSize, FlagSet<ImageBundleFlag> sizeFallback = ImageBundleFlag::None) const;
+			void AddImage(const BitmapImage& image);
+			BitmapImage GetImage(Size desiredSize, FlagSet<ImageBundleFlag> sizeFallback = ImageBundleFlag::None) const;
 
 			size_t GetImageCount() const
 			{
 				return m_Items.size();
 			}
-			Image GetImageAt(size_t index) const
+			BitmapImage GetImageAt(size_t index) const
 			{
 				if (index < m_Items.size())
 				{

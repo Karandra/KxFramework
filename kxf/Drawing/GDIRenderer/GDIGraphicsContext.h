@@ -148,7 +148,7 @@ namespace kxf
 
 			// Texture functions
 			void DrawTexture(const IGraphicsTexture& texture, const RectF& rect) override;
-			void DrawTexture(const Image& image, const RectF& rect) override;
+			void DrawTexture(const BitmapImage& image, const RectF& rect) override;
 			void DrawTexture(const GDIBitmap& bitmap, const RectF& rect);
 
 			// Text functions
@@ -189,9 +189,9 @@ namespace kxf
 			{
 				return m_DC.GetSize();
 			}
-			SizeF GetPPI() const override
+			SizeF GetDPI() const override
 			{
-				return m_DC.GetPPI();
+				return m_DC.GetDPI();
 			}
 			wxWindow* GetWindow() const override
 			{

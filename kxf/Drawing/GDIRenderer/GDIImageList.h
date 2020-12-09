@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "../Image.h"
+#include "../BitmapImage.h"
 #include "IGDIObject.h"
 #include "GDIBitmap.h"
 #include "GDIIcon.h"
@@ -72,13 +72,13 @@ namespace kxf
 
 			int Add(const GDIBitmap& bitmap);
 			int Add(const GDIIcon& icon);
-			int Add(const Image& image);
+			int Add(const BitmapImage& image);
 
-			bool Replace(int index, const Image& image);
+			bool Replace(int index, const BitmapImage& image);
 			bool Replace(int index, const GDIIcon& icon);
 			bool Replace(int index, const GDIBitmap& bitmap);
 
-			Image GetImage(int index) const;
+			BitmapImage GetImage(int index) const;
 			GDIIcon GetIcon(int index) const;
 			GDIBitmap GetBitmap(int index) const;
 

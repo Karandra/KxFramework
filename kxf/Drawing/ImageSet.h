@@ -1,10 +1,10 @@
 #pragma once
 #include "Common.h"
-#include "Image.h"
+#include "BitmapImage.h"
 #include "kxf/Drawing/GDIRenderer/GDIBitmap.h"
 #include "kxf/Drawing/GDIRenderer/GDIIcon.h"
 #include "kxf/General/String.h"
-#include "Image.h"
+#include "BitmapImage.h"
 #include <variant>
 
 namespace kxf
@@ -17,7 +17,7 @@ namespace kxf
 	class KX_API ImageSet final
 	{
 		private:
-			std::unordered_map<String, std::variant<Image, GDIBitmap, GDIIcon>> m_Items;
+			std::unordered_map<String, std::variant<BitmapImage, GDIBitmap, GDIIcon>> m_Items;
 
 		public:
 			ImageSet(size_t initialCount = 0)
@@ -44,7 +44,7 @@ namespace kxf
 				m_Items.clear();
 			}
 
-			void Set(const String& id, const Image& image)
+			void Set(const String& id, const BitmapImage& image)
 			{
 				m_Items.insert_or_assign(id, image);
 			}
@@ -57,13 +57,13 @@ namespace kxf
 				m_Items.insert_or_assign(id, icon);
 			}
 
-			Image GetImage(const String& id) const;
+			BitmapImage GetImage(const String& id) const;
 			GDIBitmap GetBitmap(const String& id) const;
 			GDIIcon GetIcon(const String& id) const;
 
 			Size GetItemSize(const String& id) const;
 			const IObject* QueryItem(const String& id) const;
-			const Image* QueryImage(const String& id) const;
+			const BitmapImage* QueryImage(const String& id) const;
 			const GDIBitmap* QueryBitmap(const String& id) const;
 			const GDIIcon* QueryIcon(const String& id) const;
 

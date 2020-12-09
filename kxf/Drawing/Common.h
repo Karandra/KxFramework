@@ -14,36 +14,8 @@ namespace kxf
 {
 	class GDIBitmap;
 	class GDICursor;
-	class Image;
+	class BitmapImage;
 	class GDIIcon;
-
-	enum class ImageFormat
-	{
-		None = wxBITMAP_TYPE_INVALID,
-		Any = wxBITMAP_TYPE_ANY,
-
-		BMP = wxBITMAP_TYPE_BMP,
-		ICO = wxBITMAP_TYPE_ICO,
-		CUR = wxBITMAP_TYPE_CUR,
-		ANI = wxBITMAP_TYPE_ANI,
-		PNG = wxBITMAP_TYPE_PNG,
-		GIF = wxBITMAP_TYPE_GIF,
-		JPEG = wxBITMAP_TYPE_JPEG,
-		TGA = wxBITMAP_TYPE_TGA,
-		PNM = wxBITMAP_TYPE_PNM,
-		IFF = wxBITMAP_TYPE_IFF,
-		PCX = wxBITMAP_TYPE_PCX,
-		XBM = wxBITMAP_TYPE_XBM,
-		XPM = wxBITMAP_TYPE_XPM,
-		TIF = wxBITMAP_TYPE_TIF,
-		TIFF = wxBITMAP_TYPE_TIFF,
-		PICT = wxBITMAP_TYPE_PICT,
-
-		// Non-Wx formats
-		RAW = 100,
-		SVG,
-		WEBP,
-	};
 }
 namespace kxf
 {
@@ -68,13 +40,6 @@ namespace kxf
 		Xor, // R = S*(1 - Da) + D*(1 - Sa)
 		Add, // R = S + D
 	};
-	enum class AntialiasMode
-	{
-		None = -1,
-
-		Default,
-		BestAvailable = -2
-	};
 	enum class InterpolationQuality
 	{
 		None = 0,
@@ -86,6 +51,13 @@ namespace kxf
 		Bilinear,
 		Bicubic,
 		BoxAverage
+	};
+	enum class AntialiasMode
+	{
+		None = -1,
+
+		Default,
+		BestAvailable = -2
 	};
 
 	// https://docs.microsoft.com/en-us/windows/win32/api/gdiplusenums/ne-gdiplusenums-hatchstyle

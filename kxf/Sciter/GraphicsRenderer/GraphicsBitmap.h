@@ -1,7 +1,7 @@
 #pragma once
 #include "kxf/Sciter/Common.h"
 #include "kxf/Sciter/Utility/HandleWrapper.h"
-#include "kxf/Drawing/Image.h"
+#include "kxf/Drawing/BitmapImage.h"
 #include "kxf/IO/IStream.h"
 
 namespace kxf::Sciter
@@ -46,7 +46,7 @@ namespace kxf::Sciter
 			{
 				CreateFromPixmap(size, pixmapData, withAlpha);
 			}
-			GraphicsBitmap(const Image& image);
+			GraphicsBitmap(const BitmapImage& image);
 			GraphicsBitmap(const GDIBitmap& bitmap);
 			GraphicsBitmap(IInputStream& stream)
 			{
@@ -60,13 +60,13 @@ namespace kxf::Sciter
 			bool CreateFromPixmap(const Size& size, const char* pixmapData, bool withAlpha);
 
 			bool Load(IInputStream& stream);
-			bool Save(IOutputStream& stream, ImageFormat format, int quality = 100) const;
+			bool Save(IOutputStream& stream, const UniversallyUniqueID& format, int quality = 100) const;
 
 			bool Clear(const Color& color);
 			Size GetSize() const;
 			bool UsesAlpha() const;
 
-			Image ConvertToImage() const;
+			BitmapImage ConvertToImage() const;
 			GDIBitmap ConvertToBitmap() const;
 			ScriptValue ToScriptValue() const;
 

@@ -5,7 +5,7 @@
 
 namespace kxf
 {
-	class Image;
+	class BitmapImage;
 	class ImageBundle;
 }
 
@@ -19,7 +19,7 @@ namespace kxf
 			virtual ~IArtProvider() = default;
 
 		public:
-			virtual Image GetImage(const ResourceID& id, const String& clientID = {}, const Size& size = Size::UnspecifiedSize()) = 0;
+			virtual BitmapImage GetImage(const ResourceID& id, const String& clientID = {}, const Size& size = Size::UnspecifiedSize()) = 0;
 			virtual ImageBundle GetImageBundle(const ResourceID& id, const String& clientID = {}) = 0;
 	};
 }

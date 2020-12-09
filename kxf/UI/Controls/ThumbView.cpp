@@ -301,11 +301,11 @@ namespace kxf::UI
 		m_Items.emplace_back(ThumbViewItem(CreateThumb(bitmap, Size(m_ThumbSize).Scale(ThumbPaddingScale, ThumbPaddingScale))));
 		return m_Items.size() - 1;
 	}
-	size_t ThumbView::AddThumb(IInputStream& stream, ImageFormat format, int index)
+	size_t ThumbView::AddThumb(IInputStream& stream, const UniversallyUniqueID& format, size_t index)
 	{
-		Image image;
-		image.SetOption(ImageOption::MaxWidth, m_ThumbSize.GetWidth());
-		image.SetOption(ImageOption::MaxHeight, m_ThumbSize.GetHeight());
+		BitmapImage image;
+		image.SetOption(ImageOption::DesiredWidth, m_ThumbSize.GetWidth());
+		image.SetOption(ImageOption::DesiredHeight, m_ThumbSize.GetHeight());
 		if (image.Load(stream, format, index))
 		{
 			return AddThumb(image.ToBitmap());

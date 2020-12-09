@@ -181,7 +181,7 @@ namespace kxf
 	{
 		return std::make_shared<GDIGraphicsSolidBrush>(*this, color);
 	}
-	std::shared_ptr<IGraphicsTextureBrush> GDIGraphicsRenderer::CreateTextureBrush(const Image& image)
+	std::shared_ptr<IGraphicsTextureBrush> GDIGraphicsRenderer::CreateTextureBrush(const BitmapImage& image)
 	{
 		if (image)
 		{
@@ -211,7 +211,7 @@ namespace kxf
 	{
 		return std::make_shared<GDIGraphicsTexture>(*this);
 	}
-	std::shared_ptr<IGraphicsTexture> GDIGraphicsRenderer::CreateTexture(const Image& image)
+	std::shared_ptr<IGraphicsTexture> GDIGraphicsRenderer::CreateTexture(const BitmapImage& image)
 	{
 		if (image)
 		{

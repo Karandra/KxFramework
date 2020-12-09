@@ -2,7 +2,7 @@
 #include "GDIIcon.h"
 #include "GDICursor.h"
 #include "GDIBitmap.h"
-#include "../Image.h"
+#include "../BitmapImage.h"
 #include "Private/GDI.h"
 
 namespace kxf
@@ -12,7 +12,7 @@ namespace kxf
 		:m_Icon(std::move(other.ToIcon().m_Icon))
 	{
 	}
-	GDIIcon::GDIIcon(const Image& other)
+	GDIIcon::GDIIcon(const BitmapImage& other)
 		:m_Icon(std::move(other.ToIcon().m_Icon))
 	{
 	}
@@ -41,18 +41,24 @@ namespace kxf
 		});
 	}
 
-	// IGDIImage
-	bool GDIIcon::Load(IInputStream& stream, ImageFormat format, int index)
+	void GDIIcon::Create(const Size& size)
 	{
-		Image image;
-		if (image.Load(stream, format, index))
+		BitmapImage image(size);
+		m_Icon = std::move(image.ToIcon().m_Icon);
+	}
+
+	// IImage2D
+	bool GDIIcon::Load(IInputStream& stream, const UniversallyUniqueID& format, size_t index)
+	{
+		BitmapImage image;
+		if (image.Load(stream, format, index == IImage2D::npos ? -1 : static_cast<int>(index)))
 		{
 			m_Icon = std::move(image.ToIcon().m_Icon);
 			return m_Icon.IsOk();
 		}
 		return false;
 	}
-	bool GDIIcon::Save(IOutputStream& stream, ImageFormat format) const
+	bool GDIIcon::Save(IOutputStream& stream, const UniversallyUniqueID& format) const
 	{
 		if (m_Icon.IsOk() && format != ImageFormat::Any && format != ImageFormat::None)
 		{
@@ -73,7 +79,7 @@ namespace kxf
 	{
 		return wxBitmap(m_Icon, wxBitmapTransparency::wxBitmapTransparency_Always);
 	}
-	Image GDIIcon::ToImage() const
+	BitmapImage GDIIcon::ToImage() const
 	{
 		return ToBitmap();
 	}

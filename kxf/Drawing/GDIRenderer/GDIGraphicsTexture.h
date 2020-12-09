@@ -3,7 +3,7 @@
 #include "GDIBitmap.h"
 #include "GDIGraphicsRenderer.h"
 #include "IGDIObject.h"
-#include "../Image.h"
+#include "../BitmapImage.h"
 #include "../GraphicsRenderer/IGraphicsTexture.h"
 
 namespace kxf
@@ -25,7 +25,7 @@ namespace kxf
 				}
 				else if (auto object = other.QueryInterface<GDIGraphicsTexture>())
 				{
-					return m_Bitmap.IsSameAs(object->m_Bitmap);
+					return m_Bitmap.IsSameAs(static_cast<const IGDIObject&>(object->m_Bitmap));
 				}
 				return false;
 			}
@@ -40,7 +40,7 @@ namespace kxf
 				:m_Renderer(&rendrer), m_Bitmap(bitmap)
 			{
 			}
-			GDIGraphicsTexture(GDIGraphicsRenderer& rendrer, const Image& image)
+			GDIGraphicsTexture(GDIGraphicsRenderer& rendrer, const BitmapImage& image)
 				:m_Renderer(&rendrer), m_Bitmap(image.ToBitmap())
 			{
 			}
@@ -100,7 +100,7 @@ namespace kxf
 			}
 
 			// IGraphicsTexture
-			SizeF GetPPI() const override
+			SizeF GetDPI() const override
 			{
 				return SizeF::UnspecifiedSize();
 			}
@@ -121,11 +121,11 @@ namespace kxf
 				return m_Bitmap.GetColorDepth();
 			}
 
-			bool Load(IInputStream& stream, ImageFormat format = ImageFormat::Any) override
+			bool Load(IInputStream& stream, const UniversallyUniqueID& format = ImageFormat::Any, size_t index = npos) override
 			{
 				return m_Bitmap.Load(stream, format);
 			}
-			bool Save(IOutputStream& stream, ImageFormat format) const override
+			bool Save(IOutputStream& stream, const UniversallyUniqueID& format) const override
 			{
 				return m_Bitmap.Save(stream, format);
 			}
@@ -136,14 +136,14 @@ namespace kxf
 			}
 			void Rescale(const SizeF& size, InterpolationQuality interpolationQuality) override
 			{
-				m_Bitmap = m_Bitmap.ToImage().RescaleThis(size, interpolationQuality).ToBitmap();
+				m_Bitmap = m_Bitmap.ToImage().Rescale(size, interpolationQuality).ToBitmap();
 			}
 
-			Image ToImage() const override
+			BitmapImage ToImage() const override
 			{
 				return m_Bitmap.ToImage();
 			}
-			bool FromImage(const Image& image)
+			bool FromImage(const BitmapImage& image)
 			{
 				if (image)
 				{

@@ -178,12 +178,12 @@ namespace kxf
 	{
 		return wxImageList::Add(icon.ToWxIcon());
 	}
-	int GDIImageList::Add(const Image& image)
+	int GDIImageList::Add(const BitmapImage& image)
 	{
 		return Add(image.ToBitmap());
 	}
 
-	bool GDIImageList::Replace(int index, const Image& image)
+	bool GDIImageList::Replace(int index, const BitmapImage& image)
 	{
 		return wxImageList::Replace(index, image.ToBitmap().ToWxBitmap());
 	}
@@ -196,7 +196,7 @@ namespace kxf
 		return wxImageList::Replace(index, bitmap.ToWxBitmap(), wxNullBitmap);
 	}
 
-	Image GDIImageList::GetImage(int index) const
+	BitmapImage GDIImageList::GetImage(int index) const
 	{
 		return GetBitmap(index).ToImage();
 	}

@@ -1,33 +1,17 @@
 #include "stdafx.h"
 #include "SVGImageHandler.h"
-#include "kxf/IO/StreamReaderWriter.h"
+#include "../SVGImage.h"
+#include "../BitmapImage.h"
 #include "kxf/wxWidgets/StreamWrapper.h"
-#include "kxf/wxWidgets/ClientObject.h"
-#include <lunasvg/svgdocument.h>
-
-namespace
-{
-	constexpr size_t g_RGBChannels = 3;
-	constexpr size_t g_ChannelCount = g_RGBChannels + 1;
-	constexpr double g_DefaultDPI = 96.0;
-
-	bool DoLoad(lunasvg::SVGDocument& document, wxInputStream& stream)
-	{
-		using namespace kxf;
-
-		wxWidgets::InputStreamWrapper wrapper(stream);
-		IO::InputStreamReader reader(wrapper);
-
-		return document.loadFromData(reader.ReadStdString(wrapper.GetSize().ToBytes()));
-	}
-}
 
 namespace kxf::Drawing::Private
 {
 	bool SVGImageHandler::DoCanRead(wxInputStream& stream)
 	{
-		lunasvg::SVGDocument document;
-		return DoLoad(document, stream);
+		wxWidgets::InputStreamWrapper wrapper(stream);
+
+		SVGImage image;
+		return image.Load(wrapper, ImageFormat::SVG);
 	}
 	int SVGImageHandler::DoGetImageCount(wxInputStream& stream)
 	{
@@ -39,50 +23,25 @@ namespace kxf::Drawing::Private
 		m_name = wxS("Scalable Vector Graphics");
 		m_mime = wxS("image/svg+xml");
 		m_extension = wxS("svg");
-		m_altExtensions.emplace_back(wxS("svgz"));
-		m_type = static_cast<wxBitmapType>(ImageFormat::SVG);
+		m_type = Drawing::Private::NewWxBitmapType();
 	}
 
 	bool SVGImageHandler::LoadFile(wxImage* image, wxInputStream& stream, bool verbose, int index)
 	{
-		lunasvg::SVGDocument document;
-		if (image && index <= 0 && DoLoad(document, stream))
+		if (image && index <= 0)
 		{
-			const int dpi = image->GetOptionInt(wxIMAGE_OPTION_RESOLUTION);
-			const int width = image->GetOptionInt(wxIMAGE_OPTION_MAX_WIDTH);
-			const int height = image->GetOptionInt(wxIMAGE_OPTION_MAX_HEIGHT);
+			wxWidgets::InputStreamWrapper wrapper(stream);
 
-			lunasvg::Bitmap bitmap = document.renderToBitmap(width, height, dpi > 0 ? static_cast<double>(dpi) : g_DefaultDPI);
-			if (const auto sourceData = bitmap.data())
+			SVGImage svgImage;
+			if (svgImage.Load(wrapper, ImageFormat::SVG))
 			{
-				// If we have no size specified set it to the SVG's default size
-				const Geometry::BasicSize<size_t> actualSize = {width <= 0 ? bitmap.width() : width, height <= 0 ? bitmap.height() : height};
+				const int dpi = image->GetOptionInt(wxIMAGE_OPTION_RESOLUTION);
+				const int width = image->GetOptionInt(wxIMAGE_OPTION_MAX_WIDTH);
+				const int height = image->GetOptionInt(wxIMAGE_OPTION_MAX_HEIGHT);
 
-				if (image->Create(actualSize, false))
-				{
-					if (!image->HasAlpha())
-					{
-						image->InitAlpha();
-					}
-
-					auto targetRGB = image->GetData();
-					auto targetAlpha = image->GetAlpha();
-
-					size_t alphaCounter = 0;
-					const size_t totalSize = actualSize.GetWidth() * actualSize.GetHeight() * g_ChannelCount;
-					for (size_t i = 0; i < totalSize; i += g_ChannelCount)
-					{
-						const auto sourcePixel = sourceData + i;
-
-						// Copy first 3 components for RGB data
-						std::memcpy(targetRGB + i - alphaCounter, sourcePixel, g_RGBChannels);
-
-						// Copy single component for alpha data
-						*(targetAlpha + alphaCounter) = *(sourcePixel + g_RGBChannels);
-						alphaCounter++;
-					}
-				}
-				return true;
+				svgImage.SetOption(ImageOption::DPI, dpi);
+				*image = svgImage.Rasterize({width, height}).ToWxImage();
+				return image->IsOk();
 			}
 		}
 		return false;

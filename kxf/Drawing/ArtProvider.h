@@ -7,7 +7,7 @@ namespace kxf
 {
 	class GDIBitmap;
 	class GDIIcon;
-	class Image;
+	class BitmapImage;
 	class ImageBundle;
 }
 

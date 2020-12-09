@@ -1,7 +1,7 @@
 #pragma once
 #include "../Common.h"
 #include "../IGraphicsTexture.h"
-#include "../../Image.h"
+#include "../../BitmapImage.h"
 
 namespace kxf::Drawing
 {
@@ -35,7 +35,7 @@ namespace kxf::Drawing
 			}
 
 			// IGraphicsTexture
-			SizeF GetPPI() const override
+			SizeF GetDPI() const override
 			{
 				return SizeF::UnspecifiedSize();
 			}
@@ -56,11 +56,11 @@ namespace kxf::Drawing
 				return {};
 			}
 
-			bool Load(IInputStream& stream, ImageFormat format = ImageFormat::Any) override
+			bool Load(IInputStream& stream, const UniversallyUniqueID& format = ImageFormat::Any, size_t index = npos) override
 			{
 				return false;
 			}
-			bool Save(IOutputStream& stream, ImageFormat format) const override
+			bool Save(IOutputStream& stream, const UniversallyUniqueID& format) const override
 			{
 				return false;
 			}
@@ -73,11 +73,11 @@ namespace kxf::Drawing
 			{
 			}
 
-			Image ToImage() const override
+			BitmapImage ToImage() const override
 			{
 				return {};
 			}
-			bool FromImage(const Image& image) override
+			bool FromImage(const BitmapImage& image) override
 			{
 				return false;
 			}

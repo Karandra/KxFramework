@@ -1276,3 +1276,95 @@ namespace kxf
 	using SizeD = Geometry::BasicSize<double>;
 	using RectD = Geometry::BasicRect<double>;
 }
+
+namespace std
+{
+	// Point
+	template<class TValue>
+	struct tuple_size<kxf::Geometry::BasicPoint<TValue>> final: integral_constant<size_t, 2> {};
+
+	template<size_t Index, class TValue>
+	struct tuple_element<Index, kxf::Geometry::BasicPoint<TValue>> final
+	{
+		using type = TValue;
+	};
+
+	template<std::size_t Index, class TValue>
+	constexpr std::tuple_element_t<Index, kxf::Geometry::BasicPoint<TValue>> get(const kxf::Geometry::BasicPoint<TValue>& obj) noexcept
+	{
+		if constexpr(Index == 0)
+		{
+			return obj.GetX();
+		}
+		else if constexpr(Index == 1)
+		{
+			return obj.GetY();
+		}
+		else
+		{
+			static_assert(false, "Index out of bounds for kxf::Geometry::BasicPoint<TValue>");
+		}
+	}
+
+	// Size
+	template<class TValue>
+	struct tuple_size<kxf::Geometry::BasicSize<TValue>> final: integral_constant<size_t, 2> {};
+
+	template<size_t Index, class TValue>
+	struct tuple_element<Index, kxf::Geometry::BasicSize<TValue>> final
+	{
+		using type = TValue;
+	};
+
+	template<std::size_t Index, class TValue>
+	constexpr std::tuple_element_t<Index, kxf::Geometry::BasicSize<TValue>> get(const kxf::Geometry::BasicSize<TValue>& obj) noexcept
+	{
+		if constexpr(Index == 0)
+		{
+			return obj.GetWidth();
+		}
+		else if constexpr(Index == 1)
+		{
+			return obj.GetHeight();
+		}
+		else
+		{
+			static_assert(false, "Index out of bounds for kxf::Geometry::BasicSize<TValue>");
+		}
+	}
+
+	// Rect
+	template<class TValue>
+	struct tuple_size<kxf::Geometry::BasicRect<TValue>> final: integral_constant<size_t, 4> {};
+
+	template<size_t Index, class TValue>
+	struct tuple_element<Index, kxf::Geometry::BasicRect<TValue>> final
+	{
+		using type = TValue;
+	};
+
+	template<std::size_t Index, class TValue>
+	constexpr std::tuple_element_t<Index, kxf::Geometry::BasicRect<TValue>> get(const kxf::Geometry::BasicRect<TValue>& obj) noexcept
+	{
+		if constexpr(Index == 0)
+		{
+			return obj.GetX();
+		}
+		else if constexpr(Index == 1)
+		{
+			return obj.GetY();
+		}
+		if constexpr(Index == 2)
+		{
+			return obj.GetWidth();
+		}
+		else if constexpr(Index == 3)
+		{
+			return obj.GetHeight();
+		}
+		else
+		{
+			static_assert(false, "Index out of bounds for kxf::Geometry::BasicRect<TValue>");
+		}
+	}
+}

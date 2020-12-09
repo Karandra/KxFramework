@@ -1,5 +1,6 @@
 #pragma once
 #include "../Common.h"
+#include "kxf/General/UniversallyUniqueID.h"
 #include <wx/defs.h>
 #include <wx/font.h>
 #include <wx/peninfobase.h>
@@ -44,4 +45,12 @@ namespace kxf::Drawing::Private
 
 	wxFontEncoding MapFontEncoding(FontEncoding encoding) noexcept;
 	FontEncoding MapFontEncoding(wxFontEncoding encoding) noexcept;
+}
+
+namespace kxf::Drawing::Private
+{
+	wxBitmapType NewWxBitmapType() noexcept;
+
+	UniversallyUniqueID MapImageFormat(wxBitmapType bitmapType) noexcept;
+	wxBitmapType MapImageFormat(const UniversallyUniqueID& format) noexcept;
 }

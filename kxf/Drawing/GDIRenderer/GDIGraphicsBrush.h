@@ -240,7 +240,7 @@ namespace kxf
 			{
 				m_Brush.SetStipple(bitmap);
 			}
-			GDIGraphicsTextureBrush(GDIGraphicsRenderer& rendrer, const Image& image, WrapMode wrapMode = WrapMode::None)
+			GDIGraphicsTextureBrush(GDIGraphicsRenderer& rendrer, const BitmapImage& image, WrapMode wrapMode = WrapMode::None)
 				:GDIGraphicsTextureBrush(rendrer, image.ToBitmap(), wrapMode)
 			{
 			}

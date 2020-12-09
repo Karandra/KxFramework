@@ -111,7 +111,7 @@ namespace kxf::UI
 
 			size_t GetThumbsCount() const;
 			size_t AddThumb(const GDIBitmap& bitmap);
-			size_t AddThumb(IInputStream& stream, ImageFormat format = ImageFormat::Any, int index = -1);
+			size_t AddThumb(IInputStream& stream, const UniversallyUniqueID& format = ImageFormat::Any, size_t index = IImage2D::npos);
 			void RemoveThumb(size_t index);
 			void ClearThumbs();
 

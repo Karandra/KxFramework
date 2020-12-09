@@ -369,12 +369,11 @@ namespace kxf::UI::DataView
 			IGraphicsContext& gc = m_Renderer.GetGraphicsContext();
 			if (auto gdi = gc.QueryInterface<GDIGraphicsContext>())
 			{
-				gdi->DrawTexture((isEnabled ? bitmap : bitmap.ConvertToDisabled()), rect);
+				gdi->DrawTexture(isEnabled ? bitmap : bitmap.ConvertToDisabled(), rect);
 			}
 			else
 			{
-				Image image = bitmap.ToImage();
-				gdi->DrawTexture((isEnabled ? image : image.ConvertToDisabled()), rect);
+				gc.DrawTexture((isEnabled ? bitmap : bitmap.ConvertToDisabled()).ToImage(), rect);
 			}
 			return true;
 		}

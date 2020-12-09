@@ -17,7 +17,7 @@ namespace
 
 		if (dpi == Geometry::DefaultCoord)
 		{
-			dpi = GDIScreenContext().GetPPI().GetHeight();
+			dpi = GDIScreenContext().GetDPI().GetHeight();
 		}
 		return (pixelSize.GetHeight() * g_FontPPI) / dpi;
 	}
@@ -25,7 +25,7 @@ namespace
 	{
 		if (dpi == Geometry::DefaultCoord)
 		{
-			dpi = GDIScreenContext().GetPPI().GetHeight();
+			dpi = GDIScreenContext().GetDPI().GetHeight();
 		}
 		return (pointSize * dpi) / g_FontPPI;
 	}

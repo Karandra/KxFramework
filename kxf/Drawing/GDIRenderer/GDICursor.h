@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
-#include "IGDIImage.h"
+#include "IGDIObject.h"
+#include "../IImage2D.h"
 #include <wx/cursor.h>
 
 namespace kxf::Drawing
@@ -46,13 +47,22 @@ namespace kxf::Drawing
 
 namespace kxf
 {
-	class KX_API GDICursor: public RTTI::ExtendInterface<GDICursor, IGDIImage>
+	class KX_API GDICursor: public RTTI::ExtendInterface<GDICursor, IGDIObject, IImage2D>
 	{
 		KxRTTI_DeclareIID(GDICursor, {0xec12b28a, 0x111e, 0x4f00, {0x8c, 0xe0, 0xdd, 0xb, 0x18, 0x9, 0xf7, 0x5e}});
 
 		private:
 			wxCursor m_Cursor;
 			Point m_HotSpot = Point::UnspecifiedPosition();
+
+		private:
+			std::optional<String> GetOption(const String& name) const override
+			{
+				return {};
+			}
+			void SetOption(const String& name, const String& value) override
+			{
+			}
 
 		public:
 			GDICursor() = default;
@@ -63,7 +73,7 @@ namespace kxf
 
 			GDICursor(const GDIIcon& other);
 			GDICursor(const GDIBitmap& other);
-			GDICursor(const Image& other);
+			GDICursor(const BitmapImage& other);
 			GDICursor(const GDICursor& other)
 				:m_Cursor(other.m_Cursor), m_HotSpot(other.m_HotSpot)
 			{
@@ -90,7 +100,24 @@ namespace kxf
 			void* DetachHandle() override;
 			void AttachHandle(void* handle) override;
 
-			// IGDIImage
+			// IImage2D
+			bool IsSameAs(const IImage2D& other) const override
+			{
+				if (this == &other)
+				{
+					return true;
+				}
+				else if (auto cursor = other.QueryInterface<GDICursor>())
+				{
+					return m_Cursor.IsSameAs(cursor->m_Cursor);
+				}
+				return false;
+			}
+			std::unique_ptr<IImage2D> CloneImage2D() const override
+			{
+				return std::make_unique<GDICursor>(m_Cursor);
+			}
+
 			Size GetSize() const override
 			{
 				return m_Cursor.IsOk() ? Size(m_Cursor.GetSize()) : Size::UnspecifiedSize();
@@ -99,13 +126,17 @@ namespace kxf
 			{
 				return m_Cursor.GetDepth();
 			}
-
-			bool Load(IInputStream& stream, Point hotSpot, ImageFormat format = ImageFormat::Any);
-			bool Load(IInputStream& stream, ImageFormat format = ImageFormat::Any) override
+			UniversallyUniqueID GetFormat() const override
 			{
-				return Load(stream, Point::UnspecifiedPosition(), format);
+				return ImageFormat::CUR;
 			}
-			bool Save(IOutputStream& stream, ImageFormat format) const override;
+
+			void Create(const Size& size) override;
+			bool Load(IInputStream& stream, const UniversallyUniqueID& format = ImageFormat::Any, size_t index = npos);
+			bool Save(IOutputStream& stream, const UniversallyUniqueID& format) const;
+
+			std::optional<int> GetOptionInt(const String& name) const override;
+			void SetOption(const String& name, int value) override;
 
 			// GDICursor
 			const wxCursor& ToWxCursor() const noexcept
@@ -118,7 +149,7 @@ namespace kxf
 			}
 
 			GDIBitmap ToBitmap() const;
-			Image ToImage() const;
+			BitmapImage ToImage() const;
 			GDIIcon ToIcon() const;
 
 			Point GetHotSpot() const

@@ -124,7 +124,7 @@ namespace kxf
 			{
 				return m_DC->GetSizeMM();
 			}
-			Size GetPPI() const
+			Size GetDPI() const
 			{
 				return m_DC->GetPPI();
 			}

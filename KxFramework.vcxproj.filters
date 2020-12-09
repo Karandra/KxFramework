@@ -1547,9 +1547,6 @@
     <ClInclude Include="kxf\Drawing\ColorDepth.h">
       <Filter>kxf\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Drawing\Image.h">
-      <Filter>kxf\Drawing</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Drawing\ColorDefines.h">
       <Filter>kxf\Drawing</Filter>
     </ClInclude>
@@ -1641,9 +1638,6 @@
       <Filter>kxf\Drawing\GDIRenderer\&lt;GDIObjects&gt;\&lt;GDIImages&gt;</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIIcon.h">
-      <Filter>kxf\Drawing\GDIRenderer\&lt;GDIObjects&gt;\&lt;GDIImages&gt;</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Drawing\GDIRenderer\IGDIImage.h">
       <Filter>kxf\Drawing\GDIRenderer\&lt;GDIObjects&gt;\&lt;GDIImages&gt;</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIContext.h">
@@ -1744,6 +1738,24 @@
     </ClInclude>
     <ClInclude Include="kxf\Drawing\Private\SVGImageHandler.h">
       <Filter>kxf\Drawing\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\IImage2D.h">
+      <Filter>kxf\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\ImageDefines.h">
+      <Filter>kxf\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\IVectorImage.h">
+      <Filter>kxf\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\IBitmapImage.h">
+      <Filter>kxf\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\BitmapImage.h">
+      <Filter>kxf\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\SVGImage.h">
+      <Filter>kxf\Drawing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2519,9 +2531,6 @@
     <ClCompile Include="kxf\RTTI\ObjectPtr.cpp">
       <Filter>kxf\RTTI</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Drawing\Image.cpp">
-      <Filter>kxf\Drawing</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\Drawing\Color.cpp">
       <Filter>kxf\Drawing</Filter>
     </ClCompile>
@@ -2614,6 +2623,12 @@
     </ClCompile>
     <ClCompile Include="kxf\Drawing\Private\SVGImageHandler.cpp">
       <Filter>kxf\Drawing\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\BitmapImage.cpp">
+      <Filter>kxf\Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Drawing\SVGImage.cpp">
+      <Filter>kxf\Drawing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

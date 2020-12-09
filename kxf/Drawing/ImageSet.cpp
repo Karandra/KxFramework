@@ -5,11 +5,11 @@
 
 namespace kxf
 {
-	Image ImageSet::GetImage(const String& id) const
+	BitmapImage ImageSet::GetImage(const String& id) const
 	{
 		if (const IObject* object = QueryItem(id))
 		{
-			if (auto image = object->QueryInterface<Image>())
+			if (auto image = object->QueryInterface<BitmapImage>())
 			{
 				return *image;
 			}
@@ -28,7 +28,7 @@ namespace kxf
 	{
 		if (const IObject* object = QueryItem(id))
 		{
-			if (auto image = object->QueryInterface<Image>())
+			if (auto image = object->QueryInterface<BitmapImage>())
 			{
 				return image->ToBitmap();
 			}
@@ -47,7 +47,7 @@ namespace kxf
 	{
 		if (const IObject* object = QueryItem(id))
 		{
-			if (auto image = object->QueryInterface<Image>())
+			if (auto image = object->QueryInterface<BitmapImage>())
 			{
 				return image->ToIcon();
 			}
@@ -67,13 +67,9 @@ namespace kxf
 	{
 		if (const IObject* object = QueryItem(id))
 		{
-			if (auto image = object->QueryInterface<Image>())
+			if (auto image = object->QueryInterface<IImage2D>())
 			{
 				return image->GetSize();
-			}
-			else if (auto gdiImage = object->QueryInterface<IGDIImage>())
-			{
-				return gdiImage->GetSize();
 			}
 		}
 		return Size::UnspecifiedSize();
@@ -87,7 +83,7 @@ namespace kxf
 			{
 				return bitmap;
 			}
-			else if (auto image = std::get_if<Image>(&item))
+			else if (auto image = std::get_if<BitmapImage>(&item))
 			{
 				return image;
 			}
@@ -98,11 +94,11 @@ namespace kxf
 		}
 		return nullptr;
 	}
-	const Image* ImageSet::QueryImage(const String& id) const
+	const BitmapImage* ImageSet::QueryImage(const String& id) const
 	{
 		if (const IObject* object = QueryItem(id))
 		{
-			return object->QueryInterface<Image>().get();
+			return object->QueryInterface<BitmapImage>().get();
 		}
 		return nullptr;
 	}
@@ -131,7 +127,7 @@ namespace kxf
 		{
 			if (const IObject* object = QueryItem(id))
 			{
-				if (auto image = object->QueryInterface<Image>())
+				if (auto image = object->QueryInterface<BitmapImage>())
 				{
 					imageList->Add(*image);
 				}

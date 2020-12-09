@@ -2,7 +2,7 @@
 #include "kxf/UI/Common.h"
 #include "kxf/UI/WindowRefreshScheduler.h"
 #include "kxf/UI/Controls/StaticBitmap.h"
-#include "kxf/Drawing/Image.h"
+#include "kxf/Drawing/BitmapImage.h"
 #include "kxf/IO/IStream.h"
 #include <wx/control.h>
 #include <wx/statbmp.h>
@@ -104,18 +104,18 @@ namespace kxf::UI
 			{
 				return !m_Bitmap.IsNull();
 			}
-			Image GetImage() const
+			BitmapImage GetImage() const
 			{
 				return m_Bitmap.ConvertToImage();
 			}
 			GDIBitmap GetBitmap() const
 			{
-				return Image(m_Bitmap.ConvertToImage()).ToBitmap();
+				return BitmapImage(m_Bitmap.ConvertToImage()).ToBitmap();
 			}
 			void SetBitmap(const GDIBitmap& bitmap);
-			void SetBitmap(const Image& image);
+			void SetBitmap(const BitmapImage& image);
 			void SetBitmap(const wxGraphicsBitmap& image, const Size& size);
-			void Load(IInputStream& stream, ImageFormat format = ImageFormat::Any, int index = -1);
+			void Load(IInputStream& stream, const UniversallyUniqueID& format = ImageFormat::Any, size_t index = IImage2D::npos);
 
 		public:
 			wxDECLARE_DYNAMIC_CLASS(ImageView);

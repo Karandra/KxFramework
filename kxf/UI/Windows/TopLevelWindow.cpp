@@ -2,7 +2,7 @@
 #include "TopLevelWindow.h"
 #include "kxf/UI/Menus/Menu.h"
 #include "kxf/System/NativeAPI.h"
-#include "kxf/Drawing/Image.h"
+#include "kxf/Drawing/BitmapImage.h"
 #include "kxf/Utility/System.h"
 #include <DWMAPI.h>
 #include "kxf/System/UndefWindows.h"
@@ -46,8 +46,12 @@ namespace kxf::UI::Private
 	Color TopLevelWindowBase::DWMGetColorKey() const
 	{
 		wxWindowDC dc(m_Window);
-		Image image = dc.GetAsBitmap().ConvertToImage();
-		return image.FindFirstUnusedColour();
+		BitmapImage image = dc.GetAsBitmap().ConvertToImage();
+		if (auto color = image.FindFirstUnusedColour())
+		{
+			return *color;
+		}
+		return {};
 	}
 	bool TopLevelWindowBase::DWMExtendFrame()
 	{

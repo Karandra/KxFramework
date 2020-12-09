@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "WxGraphicsPen.h"
-#include "../Image.h"
+#include "../BitmapImage.h"
 #include "../GraphicsRenderer/IGraphicsBrush.h"
 #include "../GraphicsRenderer/IGraphicsTexture.h"
 

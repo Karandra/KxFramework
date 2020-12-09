@@ -13,7 +13,7 @@ class wxWindow;
 namespace kxf
 {
 	class Font;
-	class Image;
+	class BitmapImage;
 	class String;
 	class GDIBitmap;
 	class GDIContext;
@@ -96,7 +96,7 @@ namespace kxf
 
 			// Texture functions
 			virtual void DrawTexture(const IGraphicsTexture& texture, const RectF& rect) = 0;
-			virtual void DrawTexture(const Image& image, const RectF& rect) = 0;
+			virtual void DrawTexture(const BitmapImage& image, const RectF& rect) = 0;
 
 			// Text functions
 			virtual std::shared_ptr<IGraphicsFont> GetFont() const = 0;
@@ -189,7 +189,7 @@ namespace kxf
 
 			// Getting and setting parameters
 			virtual SizeF GetSize() const = 0;
-			virtual SizeF GetPPI() const = 0;
+			virtual SizeF GetDPI() const = 0;
 			virtual wxWindow* GetWindow() const = 0;
 
 			virtual AntialiasMode GetAntialiasMode() const = 0;

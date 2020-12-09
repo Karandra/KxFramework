@@ -1,7 +1,13 @@
 #include "stdafx.h"
 #include "Common.h"
+#include "../ImageDefines.h"
 #include <wx/pen.h>
 #include <wx/brush.h>
+
+namespace
+{
+	std::atomic<int> g_WxBitmapType = static_cast<int>(wxBITMAP_TYPE_MAX) + 1000;
+}
 
 namespace kxf::Drawing::Private
 {
@@ -624,5 +630,155 @@ namespace kxf::Drawing::Private
 	FontEncoding MapFontEncoding(wxFontEncoding encoding) noexcept
 	{
 		return static_cast<FontEncoding>(encoding);
+	}
+}
+
+namespace kxf::Drawing::Private
+{
+	wxBitmapType NewWxBitmapType() noexcept
+	{
+		return static_cast<wxBitmapType>(++g_WxBitmapType);
+	}
+
+	UniversallyUniqueID MapImageFormat(wxBitmapType bitmapType) noexcept
+	{
+		switch (bitmapType)
+		{
+			case wxBITMAP_TYPE_ANY:
+			{
+				return ImageFormat::Any;
+			}
+
+			case wxBITMAP_TYPE_ANI:
+			{
+				return ImageFormat::ANI;
+			}
+			case wxBITMAP_TYPE_BMP:
+			{
+				return ImageFormat::BMP;
+			}
+			case wxBITMAP_TYPE_CUR:
+			{
+				return ImageFormat::CUR;
+			}
+			case wxBITMAP_TYPE_GIF:
+			{
+				return ImageFormat::GIF;
+			}
+			case wxBITMAP_TYPE_ICO:
+			{
+				return ImageFormat::ICO;
+			}
+			case wxBITMAP_TYPE_IFF:
+			{
+				return ImageFormat::IFF;
+			}
+			case wxBITMAP_TYPE_TIFF:
+			{
+				return ImageFormat::TIFF;
+			}
+			case wxBITMAP_TYPE_JPEG:
+			{
+				return ImageFormat::JPEG;
+			}
+			case wxBITMAP_TYPE_PCX:
+			{
+				return ImageFormat::PCX;
+			}
+			case wxBITMAP_TYPE_PICT:
+			{
+				return ImageFormat::PICT;
+			}
+			case wxBITMAP_TYPE_PNG:
+			{
+				return ImageFormat::PNG;
+			}
+			case wxBITMAP_TYPE_PNM:
+			{
+				return ImageFormat::PNM;
+			}
+			case wxBITMAP_TYPE_TGA:
+			{
+				return ImageFormat::TGA;
+			}
+			case wxBITMAP_TYPE_XBM:
+			{
+				return ImageFormat::XBM;
+			}
+			case wxBITMAP_TYPE_XPM:
+			{
+				return ImageFormat::XPM;
+			}
+		};
+		return ImageFormat::None;
+	}
+	wxBitmapType MapImageFormat(const UniversallyUniqueID& format) noexcept
+	{
+		if (format == ImageFormat::Any)
+		{
+			return wxBITMAP_TYPE_ANY;
+		}
+		else if (format == ImageFormat::ANI)
+		{
+			return wxBITMAP_TYPE_ANI;
+		}
+		else if (format == ImageFormat::BMP)
+		{
+			return wxBITMAP_TYPE_BMP;
+		}
+		else if (format == ImageFormat::CUR)
+		{
+			return wxBITMAP_TYPE_CUR;
+		}
+		else if (format == ImageFormat::GIF)
+		{
+			return wxBITMAP_TYPE_GIF;
+		}
+		else if (format == ImageFormat::ICO)
+		{
+			return wxBITMAP_TYPE_ICO;
+		}
+		else if (format == ImageFormat::IFF)
+		{
+			return wxBITMAP_TYPE_IFF;
+		}
+		else if (format == ImageFormat::TIFF)
+		{
+			return wxBITMAP_TYPE_TIFF;
+		}
+		else if (format == ImageFormat::JPEG)
+		{
+			return wxBITMAP_TYPE_JPEG;
+		}
+		else if (format == ImageFormat::PCX)
+		{
+			return wxBITMAP_TYPE_PCX;
+		}
+		else if (format == ImageFormat::PICT)
+		{
+			return wxBITMAP_TYPE_PICT;
+		}
+		else if (format == ImageFormat::PNG)
+		{
+			return wxBITMAP_TYPE_PNG;
+		}
+		else if (format == ImageFormat::PNM)
+		{
+			return wxBITMAP_TYPE_PNM;
+		}
+		else if (format == ImageFormat::TGA)
+		{
+			return wxBITMAP_TYPE_TGA;
+		}
+		else if (format == ImageFormat::XBM)
+		{
+			return wxBITMAP_TYPE_XBM;
+		}
+		else if (format == ImageFormat::XPM)
+		{
+			return wxBITMAP_TYPE_XPM;
+		}
+
+		return wxBITMAP_TYPE_INVALID;
 	}
 }

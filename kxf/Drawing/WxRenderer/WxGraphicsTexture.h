@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "WxGraphicsRenderer.h"
-#include "../Image.h"
+#include "../BitmapImage.h"
 #include "../GraphicsRenderer/IGraphicsTexture.h"
 #include <wx/graphics.h>
 
@@ -14,7 +14,7 @@ namespace kxf
 		protected:
 			WxGraphicsRenderer* m_Renderer = nullptr;
 			wxGraphicsBitmap m_Graphics;
-			Image m_Image;
+			BitmapImage m_Image;
 
 			bool m_Initialized = false;
 
@@ -46,7 +46,7 @@ namespace kxf
 				:m_Renderer(&rendrer)
 			{
 			}
-			WxGraphicsTexture(WxGraphicsRenderer& rendrer, const Image& image)
+			WxGraphicsTexture(WxGraphicsRenderer& rendrer, const BitmapImage& image)
 				:m_Renderer(&rendrer), m_Image(image.ToBitmap())
 			{
 			}
@@ -55,7 +55,7 @@ namespace kxf
 			{
 				if (color)
 				{
-					m_Image.SetRGBA(m_Image.GetSize(), color);
+					m_Image.SetAreaRGBA(m_Image.GetSize(), color.GetFixed8());
 				}
 			}
 
@@ -92,7 +92,7 @@ namespace kxf
 			}
 
 			// IGraphicsTexture
-			SizeF GetPPI() const override
+			SizeF GetDPI() const override
 			{
 				return SizeF::UnspecifiedSize();
 			}
@@ -113,7 +113,7 @@ namespace kxf
 				return m_Image.GetColorDepth();
 			}
 
-			bool Load(IInputStream& stream, ImageFormat format = ImageFormat::Any) override
+			bool Load(IInputStream& stream, const UniversallyUniqueID& format = ImageFormat::Any, size_t index = npos) override
 			{
 				if (m_Image.Load(stream, format))
 				{
@@ -122,26 +122,30 @@ namespace kxf
 				}
 				return false;
 			}
-			bool Save(IOutputStream& stream, ImageFormat format) const override
+			bool Save(IOutputStream& stream, const UniversallyUniqueID& format) const override
 			{
 				return m_Image.Save(stream, format);
 			}
 
 			std::shared_ptr<IGraphicsTexture> GetSubTexture(const RectF& rect) const override
 			{
-				return std::make_shared<WxGraphicsTexture>(*m_Renderer, m_Image.GetSubImage(rect));
+				if (m_Image)
+				{
+					return std::make_shared<WxGraphicsTexture>(*m_Renderer, m_Image.GetSubImage(rect));
+				}
+				return nullptr;
 			}
 			void Rescale(const SizeF& size, InterpolationQuality interpolationQuality) override
 			{
-				m_Image.RescaleThis(size, interpolationQuality).ToBitmap();
+				m_Image.Rescale(size, interpolationQuality);
 				Invalidate();
 			}
 
-			Image ToImage() const override
+			BitmapImage ToImage() const override
 			{
 				return ToImage();
 			}
-			bool FromImage(const Image& image)
+			bool FromImage(const BitmapImage& image)
 			{
 				m_Image = image;
 				Invalidate();
@@ -161,11 +165,11 @@ namespace kxf
 				return m_Graphics;
 			}
 
-			const Image& GetImage() const
+			const BitmapImage& GetImage() const
 			{
 				return m_Image;
 			}
-			Image& GetImage()
+			BitmapImage& GetImage()
 			{
 				return m_Image;
 			}

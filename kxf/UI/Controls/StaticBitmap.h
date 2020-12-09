@@ -44,8 +44,8 @@ namespace kxf::UI
 			);
 
 		public:
-			virtual Image GetImage() const;
-			virtual void SetImage(const Image& image);
+			virtual BitmapImage GetImage() const;
+			virtual void SetImage(const BitmapImage& image);
 
 			BitmapScaleMode GetBitmapScaleMode() const
 			{

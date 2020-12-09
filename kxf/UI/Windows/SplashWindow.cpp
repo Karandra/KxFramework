@@ -24,7 +24,7 @@ namespace kxf::UI
 	}
 	bool SplashWindow::DoUpdateSplash()
 	{
-		Image image = m_Bitmap.ToImage();
+		BitmapImage image = m_Bitmap.ToImage();
 		if (image)
 		{
 			// UpdateLayeredWindow expects premultiplied alpha
@@ -32,14 +32,14 @@ namespace kxf::UI
 			const size_t imageSize = image.GetWidth() * image.GetHeight();
 			for (size_t i = 0; i < imageSize; i++)
 			{
-				uint8_t* value = image.GetAlpha() + i;
+				uint8_t* value = image.GetRawAlpha() + i;
 				*value = *value * m_Alpha / 255.0;
 			}
 
 			// Scale the image for window size
 			if (Size size = GetSize(); size != image.GetSize())
 			{
-				image.RescaleThis(size, InterpolationQuality::BestAvailable);
+				image.Rescale(size, InterpolationQuality::BestAvailable);
 			}
 		}
 

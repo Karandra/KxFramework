@@ -1,16 +1,34 @@
 #pragma once
 #include "Common.h"
-#include "IGDIImage.h"
+#include "IGDIObject.h"
+#include "../IImage2D.h"
 #include <wx/icon.h>
 
 namespace kxf
 {
-	class KX_API GDIIcon: public RTTI::ExtendInterface<GDIIcon, IGDIImage>
+	class KX_API GDIIcon: public RTTI::ExtendInterface<GDIIcon, IGDIObject, IImage2D>
 	{
 		KxRTTI_DeclareIID(GDIIcon, {0x5da6784, 0xf20c, 0x4ad6, {0xb1, 0x3b, 0x3a, 0xa1, 0x2d, 0xd9, 0x66, 0x4a}});
 
 		private:
 			wxIcon m_Icon;
+
+		private:
+			std::optional<String> GetOption(const String& name) const override
+			{
+				return {};
+			}
+			std::optional<int> GetOptionInt(const String& name) const override
+			{
+				return {};
+			}
+
+			void SetOption(const String& name, int value) override
+			{
+			}
+			void SetOption(const String& name, const String& value) override
+			{
+			}
 
 		public:
 			GDIIcon() = default;
@@ -19,7 +37,7 @@ namespace kxf
 			{
 			}
 
-			GDIIcon(const Image& other);
+			GDIIcon(const BitmapImage& other);
 			GDIIcon(const GDIBitmap& other);
 			GDIIcon(const GDICursor& other);
 			GDIIcon(const GDIIcon& other)
@@ -53,7 +71,24 @@ namespace kxf
 			void* DetachHandle() override;
 			void AttachHandle(void* handle) override;
 
-			// IGDIImage
+			// IImage2D
+			bool IsSameAs(const IImage2D& other) const override
+			{
+				if (this == &other)
+				{
+					return true;
+				}
+				else if (auto icon = other.QueryInterface<GDIIcon>())
+				{
+					return m_Icon.IsSameAs(icon->m_Icon);
+				}
+				return false;
+			}
+			std::unique_ptr<IImage2D> CloneImage2D() const override
+			{
+				return std::make_unique<GDIIcon>(m_Icon);
+			}
+
 			Size GetSize() const override
 			{
 				return m_Icon.IsOk() ? Size(m_Icon.GetSize()) : Size::UnspecifiedSize();
@@ -62,13 +97,14 @@ namespace kxf
 			{
 				return m_Icon.GetDepth();
 			}
-
-			bool Load(IInputStream& stream, ImageFormat format, int index);
-			bool Load(IInputStream& stream, ImageFormat format = ImageFormat::Any) override
+			UniversallyUniqueID GetFormat() const override
 			{
-				return Load(stream, format, -1);
+				return ImageFormat::ICO;
 			}
-			bool Save(IOutputStream& stream, ImageFormat format) const override;
+
+			void Create(const Size& size) override;
+			bool Load(IInputStream& stream, const UniversallyUniqueID& format = ImageFormat::Any, size_t index = npos);
+			bool Save(IOutputStream& stream, const UniversallyUniqueID& format) const;
 
 			// Icon
 			const wxIcon& ToWxIcon() const noexcept
@@ -82,7 +118,7 @@ namespace kxf
 
 			GDICursor ToCursor(const Point& hotSpot = Point::UnspecifiedPosition()) const;
 			GDIBitmap ToBitmap() const;
-			Image ToImage() const;
+			BitmapImage ToImage() const;
 
 			GDIIcon ConvertToDisabled(Angle brightness = Angle::FromNormalized(1)) const;
 

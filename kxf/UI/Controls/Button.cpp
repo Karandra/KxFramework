@@ -290,7 +290,7 @@ namespace kxf::UI
 
 				if (ImageBundle bundle = library.GetIconBundleResource(wxS("78")))
 				{
-					if (Image image = bundle.GetImage({size, size}, ImageBundleFlag::SystemSize|ImageBundleFlag::NearestLarger))
+					if (BitmapImage image = bundle.GetImage({size, size}, ImageBundleFlag::SystemSize|ImageBundleFlag::NearestLarger))
 					{
 						SetBitmap(image.ToBitmap().ToWxBitmap());
 						return;

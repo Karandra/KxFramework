@@ -2,7 +2,7 @@
 #include "GDIBitmap.h"
 #include "GDICursor.h"
 #include "GDIIcon.h"
-#include "../Image.h"
+#include "../BitmapImage.h"
 #include "../GDIRenderer/GDIContext.h"
 #include "Private/GDI.h"
 
@@ -26,12 +26,12 @@ namespace kxf
 	{
 		Initialize();
 	}
-	GDIBitmap::GDIBitmap(const Image& other)
+	GDIBitmap::GDIBitmap(const BitmapImage& other)
 		:m_Bitmap(std::move(other.ToBitmap().m_Bitmap))
 	{
 		Initialize();
 	}
-	GDIBitmap::GDIBitmap(const Image& other, const GDIContext& dc)
+	GDIBitmap::GDIBitmap(const BitmapImage& other, const GDIContext& dc)
 		:m_Bitmap(other.ToWxImage(), dc.ToWxDC())
 	{
 		Initialize();
@@ -68,10 +68,10 @@ namespace kxf
 		m_Bitmap.SetHandle(handle);
 	}
 
-	// IGDIImage
-	bool GDIBitmap::Load(IInputStream& stream, ImageFormat format)
+	// IImage2D
+	bool GDIBitmap::Load(IInputStream& stream, const UniversallyUniqueID& format, size_t index)
 	{
-		Image image;
+		BitmapImage image;
 		if (image.Load(stream, format))
 		{
 			m_Bitmap = std::move(image.ToBitmap().m_Bitmap);
@@ -79,7 +79,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool GDIBitmap::Save(IOutputStream& stream, ImageFormat format) const
+	bool GDIBitmap::Save(IOutputStream& stream, const UniversallyUniqueID& format) const
 	{
 		if (m_Bitmap.IsOk() && format != ImageFormat::Any && format != ImageFormat::None)
 		{
@@ -96,7 +96,7 @@ namespace kxf
 
 		return cursor;
 	}
-	Image GDIBitmap::ToImage() const
+	BitmapImage GDIBitmap::ToImage() const
 	{
 		return m_Bitmap.ConvertToImage();
 	}

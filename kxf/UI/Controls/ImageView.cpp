@@ -99,7 +99,7 @@ namespace kxf::UI
 	{
 		DoSetBitmap(m_Renderer->CreateBitmap(bitmap.ToWxBitmap()), bitmap.GetSize());
 	}
-	void ImageView::SetBitmap(const Image& image)
+	void ImageView::SetBitmap(const BitmapImage& image)
 	{
 		DoSetBitmap(m_Renderer->CreateBitmapFromImage(image.ToWxImage()), image.GetSize());
 	}
@@ -107,9 +107,9 @@ namespace kxf::UI
 	{
 		DoSetBitmap(bitmap, size);
 	}
-	void ImageView::Load(IInputStream& stream, ImageFormat format, int index)
+	void ImageView::Load(IInputStream& stream, const UniversallyUniqueID& format, size_t index)
 	{
-		Image image;
+		BitmapImage image;
 		image.Load(stream, format, index);
 		SetBitmap(image);
 	}

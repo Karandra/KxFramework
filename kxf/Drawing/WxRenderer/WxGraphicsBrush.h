@@ -246,7 +246,7 @@ namespace kxf
 			{
 				m_Brush.SetStipple(bitmap);
 			}
-			WxGraphicsTextureBrush(WxGraphicsRenderer& rendrer, const Image& image, WrapMode wrapMode = WrapMode::None)
+			WxGraphicsTextureBrush(WxGraphicsRenderer& rendrer, const BitmapImage& image, WrapMode wrapMode = WrapMode::None)
 				:WxGraphicsTextureBrush(rendrer, image.ToBitmap(), wrapMode)
 			{
 			}

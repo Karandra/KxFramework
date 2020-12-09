@@ -287,7 +287,7 @@ namespace kxf
 				}
 				else
 				{
-					m_DC.DrawBitmap(gdiTexture->Get().ToImage().RescaleThis(rect.GetSize(), m_InterpolationQuality).ToBitmap(), rect.GetPosition());
+					m_DC.DrawBitmap(gdiTexture->Get().ToImage().Rescale(rect.GetSize(), m_InterpolationQuality).ToBitmap(), rect.GetPosition());
 				}
 			}
 			else
@@ -296,13 +296,13 @@ namespace kxf
 			}
 		}
 	}
-	void GDIGraphicsContext::DrawTexture(const Image& image, const RectF& rect)
+	void GDIGraphicsContext::DrawTexture(const BitmapImage& image, const RectF& rect)
 	{
 		if (m_DC.CanDrawBitmap() && !rect.IsEmpty())
 		{
 			if (SizeF(image.GetSize()) != rect.GetSize())
 			{
-				m_DC.DrawBitmap(image.Rescale(rect.GetSize(), m_InterpolationQuality).ToBitmap(), rect.GetPosition());
+				m_DC.DrawBitmap(image.Clone().Rescale(rect.GetSize(), m_InterpolationQuality).ToBitmap(), rect.GetPosition());
 			}
 			else
 			{
@@ -316,7 +316,7 @@ namespace kxf
 		{
 			if (SizeF(bitmap.GetSize()) != rect.GetSize())
 			{
-				m_DC.DrawBitmap(bitmap.ToImage().RescaleThis(rect.GetSize(), m_InterpolationQuality).ToBitmap(), rect.GetPosition());
+				m_DC.DrawBitmap(bitmap.ToImage().Rescale(rect.GetSize(), m_InterpolationQuality).ToBitmap(), rect.GetPosition());
 			}
 			else
 			{

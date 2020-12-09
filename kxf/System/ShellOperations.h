@@ -13,7 +13,7 @@ namespace kxf
 	class FileItem;
 	class LegacyVolume;
 	class UniversallyUniqueID;
-	class Image;
+	class BitmapImage;
 }
 
 namespace kxf
@@ -112,8 +112,8 @@ namespace kxf::Shell
 	bool OpenURI(const wxWindow* window, const URI& uri, FlagSet<SHWindowCommand> showWindow = SHWindowCommand::Show, FlagSet<SHExexuteFlag> flags = {});
 	HResult ExploreToItem(const FSPath& path);
 
-	Image GetFileIcon(const FSPath& path, FlagSet<SHGetFileIconFlag> flags);
-	Image GetFileIcon(const FileItem& item, FlagSet<SHGetFileIconFlag> flags);
+	BitmapImage GetFileIcon(const FSPath& path, FlagSet<SHGetFileIconFlag> flags);
+	BitmapImage GetFileIcon(const FileItem& item, FlagSet<SHGetFileIconFlag> flags);
 
 	String QueryAssociation(const FSPath& filePath, SHQueryAssociation option, Any* extraData = nullptr);
 	String QueryAssociation(const UniversallyUniqueID& classID, SHQueryAssociation option, Any* extraData = nullptr);

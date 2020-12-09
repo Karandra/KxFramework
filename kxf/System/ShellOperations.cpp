@@ -343,7 +343,7 @@ namespace kxf::Shell
 		return hr;
 	}
 
-	Image GetFileIcon(const FSPath& path, FlagSet<SHGetFileIconFlag> flags)
+	BitmapImage GetFileIcon(const FSPath& path, FlagSet<SHGetFileIconFlag> flags)
 	{
 		SHFILEINFOW shellInfo = {};
 
@@ -356,7 +356,7 @@ namespace kxf::Shell
 		}
 		return {};
 	}
-	Image GetFileIcon(const FileItem& item, FlagSet<SHGetFileIconFlag> flags)
+	BitmapImage GetFileIcon(const FileItem& item, FlagSet<SHGetFileIconFlag> flags)
 	{
 		SHFILEINFOW shellInfo = {};
 

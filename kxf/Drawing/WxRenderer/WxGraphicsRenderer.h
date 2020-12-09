@@ -48,7 +48,7 @@ namespace kxf
 
 			std::shared_ptr<IGraphicsPen> CreatePen(const Color& color, float width = 1.0f) override;
 			std::shared_ptr<IGraphicsSolidBrush> CreateSolidBrush(const Color& color) override;
-			std::shared_ptr<IGraphicsTextureBrush> CreateTextureBrush(const Image& image) override;
+			std::shared_ptr<IGraphicsTextureBrush> CreateTextureBrush(const BitmapImage& image) override;
 			std::shared_ptr<IGraphicsTextureBrush> CreateTextureBrush(const GDIBitmap& bitmap);
 			std::shared_ptr<IGraphicsLinearGradientBrush> CreateLinearGradientBrush(const RectF& rect, const GradientStops& colors, const AffineMatrixF& transform = {}) override;
 			std::shared_ptr<IGraphicsRadialGradientBrush> CreateRadialGradientBrush(const RectF& rect, const GradientStops& colors, const AffineMatrixF& transform = {}) override;
@@ -58,7 +58,7 @@ namespace kxf
 
 			// Texture functions
 			std::shared_ptr<IGraphicsTexture> CreateTexture() override;
-			std::shared_ptr<IGraphicsTexture> CreateTexture(const Image& image) override;
+			std::shared_ptr<IGraphicsTexture> CreateTexture(const BitmapImage& image) override;
 			std::shared_ptr<IGraphicsTexture> CreateTexture(const SizeF& size, const Color& color) override;
 
 			// Text functions

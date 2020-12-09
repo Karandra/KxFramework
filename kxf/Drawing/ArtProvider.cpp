@@ -2,7 +2,7 @@
 #include "ArtProvider.h"
 #include "GDIRenderer/GDIBitmap.h"
 #include "GDIRenderer/GDIIcon.h"
-#include "Image.h"
+#include "BitmapImage.h"
 #include "ImageBundle.h"
 #include "kxf/Utility/Container.h"
 #include <wx/artprov.h>

@@ -72,7 +72,7 @@ namespace kxf
 				m_GCDC = GDIContext(m_WxGCDC);
 			}
 
-			Image& InitTextureBuffer(std::shared_ptr<IGraphicsTexture> texture);
+			BitmapImage& InitTextureBuffer(std::shared_ptr<IGraphicsTexture> texture);
 
 			wxGraphicsFont MakeGCFont() const;
 			wxGraphicsFont MakeGCFont(const IGraphicsFont& font, const Color& color = {}) const;
@@ -155,7 +155,7 @@ namespace kxf
 
 			// Texture functions
 			void DrawTexture(const IGraphicsTexture& texture, const RectF& rect) override;
-			void DrawTexture(const Image& image, const RectF& rect) override;
+			void DrawTexture(const BitmapImage& image, const RectF& rect) override;
 
 			// Text functions
 			std::shared_ptr<IGraphicsFont> GetFont() const override;
@@ -192,7 +192,7 @@ namespace kxf
 
 			// Getting and setting parameters
 			SizeF GetSize() const override;
-			SizeF GetPPI() const override;
+			SizeF GetDPI() const override;
 			wxWindow* GetWindow() const override;
 
 			AntialiasMode GetAntialiasMode() const override;
@@ -301,7 +301,7 @@ namespace kxf
 	{
 		private:
 			GDIContext m_DC;
-			Image* m_Image = nullptr;
+			BitmapImage* m_Image = nullptr;
 
 		protected:
 			void Initialize(WxGraphicsRenderer& rendrer, wxDC& dc);
@@ -340,7 +340,7 @@ namespace kxf
 	class KX_API WxGraphicsMemoryContext: public WxGraphicsContext
 	{
 		private:
-			Image* m_Image = nullptr;
+			BitmapImage* m_Image = nullptr;
 
 		private:
 			bool FlushContent()

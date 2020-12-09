@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "StaticBitmap.h"
 #include "kxf/Drawing/UxTheme.h"
-#include "kxf/Drawing/Image.h"
+#include "kxf/Drawing/BitmapImage.h"
 #include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
 
 namespace kxf::UI
@@ -36,12 +36,12 @@ namespace kxf::UI
 		return false;
 	}
 
-	Image StaticBitmap::GetImage() const
+	BitmapImage StaticBitmap::GetImage() const
 	{
 		return GetBitmap().ConvertToImage();
 	}
-	void StaticBitmap::SetImage(const Image& image)
+	void StaticBitmap::SetImage(const BitmapImage& image)
 	{
-		SetBitmap(Image(image).ToBitmap().ToWxBitmap());
+		SetBitmap(BitmapImage(image).ToBitmap().ToWxBitmap());
 	}
 }

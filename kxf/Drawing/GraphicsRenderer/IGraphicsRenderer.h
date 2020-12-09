@@ -8,7 +8,7 @@ class wxDC;
 namespace kxf
 {
 	class Font;
-	class Image;
+	class BitmapImage;
 
 	class IGraphicsContext;
 	class IGraphicsTexture;
@@ -49,7 +49,7 @@ namespace kxf
 
 			virtual std::shared_ptr<IGraphicsPen> CreatePen(const Color& color, float width = 1.0f) = 0;
 			virtual std::shared_ptr<IGraphicsSolidBrush> CreateSolidBrush(const Color& color) = 0;
-			virtual std::shared_ptr<IGraphicsTextureBrush> CreateTextureBrush(const Image& image) = 0;
+			virtual std::shared_ptr<IGraphicsTextureBrush> CreateTextureBrush(const BitmapImage& image) = 0;
 			virtual std::shared_ptr<IGraphicsLinearGradientBrush> CreateLinearGradientBrush(const RectF& rect, const GradientStops& colors, const AffineMatrixF& transform = {}) = 0;
 			virtual std::shared_ptr<IGraphicsRadialGradientBrush> CreateRadialGradientBrush(const RectF& rect, const GradientStops& colors, const AffineMatrixF& transform = {}) = 0;
 
@@ -58,7 +58,7 @@ namespace kxf
 
 			// Texture functions
 			virtual std::shared_ptr<IGraphicsTexture> CreateTexture() = 0;
-			virtual std::shared_ptr<IGraphicsTexture> CreateTexture(const Image& image) = 0;
+			virtual std::shared_ptr<IGraphicsTexture> CreateTexture(const BitmapImage& image) = 0;
 			virtual std::shared_ptr<IGraphicsTexture> CreateTexture(const SizeF& size, const Color& color) = 0;
 
 			// Text functions

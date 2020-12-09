@@ -2,7 +2,7 @@
 #include "GDICursor.h"
 #include "GDIBitmap.h"
 #include "GDIIcon.h"
-#include "../Image.h"
+#include "../BitmapImage.h"
 #include "Private/GDI.h"
 
 namespace kxf
@@ -16,7 +16,7 @@ namespace kxf
 		:m_Cursor(other.ToCursor().m_Cursor)
 	{
 	}
-	GDICursor::GDICursor(const Image& other)
+	GDICursor::GDICursor(const BitmapImage& other)
 		:m_Cursor(other.ToCursor().m_Cursor)
 	{
 	}
@@ -40,13 +40,25 @@ namespace kxf
 		});
 	}
 
-	bool GDICursor::Load(IInputStream& stream, Point hotSpot, ImageFormat format)
+	void GDICursor::Create(const Size& size)
 	{
-		Image image;
-		if (hotSpot.IsFullySpecified())
+		BitmapImage image(size);
+		if (m_HotSpot.IsFullySpecified())
 		{
-			image.SetOption(ImageOption::Cursor::HotSpotX, hotSpot.GetX());
-			image.SetOption(ImageOption::Cursor::HotSpotY, hotSpot.GetY());
+			image.SetOption(ImageOption::Cursor::HotSpotX, m_HotSpot.GetX());
+			image.SetOption(ImageOption::Cursor::HotSpotY, m_HotSpot.GetY());
+		}
+		m_Cursor = std::move(image.ToCursor().m_Cursor);
+	}
+
+	// IImage2D
+	bool GDICursor::Load(IInputStream& stream, const UniversallyUniqueID& format, size_t index)
+	{
+		BitmapImage image;
+		if (m_HotSpot.IsFullySpecified())
+		{
+			image.SetOption(ImageOption::Cursor::HotSpotX, m_HotSpot.GetX());
+			image.SetOption(ImageOption::Cursor::HotSpotY, m_HotSpot.GetY());
 		}
 
 		if (image.Load(stream, format))
@@ -56,7 +68,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool GDICursor::Save(IOutputStream& stream, ImageFormat format) const
+	bool GDICursor::Save(IOutputStream& stream, const UniversallyUniqueID& format) const
 	{
 		if (m_Cursor.IsOk() && format != ImageFormat::Any && format != ImageFormat::None)
 		{
@@ -73,11 +85,36 @@ namespace kxf
 		return false;
 	}
 
+	std::optional<int> GDICursor::GetOptionInt(const String& name) const
+	{
+		if (name == ImageOption::Cursor::HotSpotX)
+		{
+			return m_HotSpot.GetX();
+		}
+		else if (name == ImageOption::Cursor::HotSpotX)
+		{
+			return m_HotSpot.GetY();
+		}
+		return {};
+	}
+	void GDICursor::SetOption(const String& name, int value)
+	{
+		if (name == ImageOption::Cursor::HotSpotX)
+		{
+			m_HotSpot.SetX(value);
+		}
+		else if (name == ImageOption::Cursor::HotSpotX)
+		{
+			m_HotSpot.SetY(value);
+		}
+	}
+
+	// GDICursor
 	GDIBitmap GDICursor::ToBitmap() const
 	{
 		return wxBitmap(m_Cursor);
 	}
-	Image GDICursor::ToImage() const
+	BitmapImage GDICursor::ToImage() const
 	{
 		return ToBitmap();
 	}

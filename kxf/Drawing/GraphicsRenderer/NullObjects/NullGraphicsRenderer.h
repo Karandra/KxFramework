@@ -61,7 +61,7 @@ namespace kxf::Drawing
 			{
 				return nullptr;
 			}
-			std::shared_ptr<IGraphicsTextureBrush> CreateTextureBrush(const Image& image) override
+			std::shared_ptr<IGraphicsTextureBrush> CreateTextureBrush(const BitmapImage& image) override
 			{
 				return nullptr;
 			}
@@ -85,7 +85,7 @@ namespace kxf::Drawing
 			{
 				return nullptr;
 			}
-			std::shared_ptr<IGraphicsTexture> CreateTexture(const Image& image) override
+			std::shared_ptr<IGraphicsTexture> CreateTexture(const BitmapImage& image) override
 			{
 				return nullptr;
 			}

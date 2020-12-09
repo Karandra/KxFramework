@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
-#include "IGDIImage.h"
+#include "IGDIObject.h"
+#include "../IImage2D.h"
 #include <wx/bitmap.h>
 
 namespace kxf
@@ -10,12 +11,29 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API GDIBitmap: public RTTI::ExtendInterface<GDIBitmap, IGDIImage>
+	class KX_API GDIBitmap: public RTTI::ExtendInterface<GDIBitmap, IGDIObject, IImage2D>
 	{
 		KxRTTI_DeclareIID(GDIBitmap, {0xd4c3e7be, 0xf0fd, 0x4c38, {0xa1, 0x94, 0x16, 0xb3, 0x9, 0xa, 0x34, 0xb5}});
 
 		private:
 			wxBitmap m_Bitmap;
+
+		private:
+			std::optional<String> GetOption(const String& name) const override
+			{
+				return {};
+			}
+			std::optional<int> GetOptionInt(const String& name) const override
+			{
+				return {};
+			}
+
+			void SetOption(const String& name, int value) override
+			{
+			}
+			void SetOption(const String& name, const String& value) override
+			{
+			}
 
 		private:
 			void Initialize();
@@ -32,8 +50,8 @@ namespace kxf
 			}
 
 			GDIBitmap(const GDIIcon& other);
-			GDIBitmap(const Image& other);
-			GDIBitmap(const Image& other, const GDIContext& dc);
+			GDIBitmap(const BitmapImage& other);
+			GDIBitmap(const BitmapImage& other, const GDIContext& dc);
 			GDIBitmap(const GDICursor& other);
 			GDIBitmap(const GDIBitmap& other)
 				:m_Bitmap(other.m_Bitmap)
@@ -74,7 +92,24 @@ namespace kxf
 			void* DetachHandle() override;
 			void AttachHandle(void* handle) override;
 
-			// IGDIImage
+			// IImage2D
+			bool IsSameAs(const IImage2D& other) const override
+			{
+				if (this == &other)
+				{
+					return true;
+				}
+				else if (auto bitmap = other.QueryInterface<GDIBitmap>())
+				{
+					return m_Bitmap.IsSameAs(bitmap->m_Bitmap);
+				}
+				return false;
+			}
+			std::unique_ptr<IImage2D> CloneImage2D() const override
+			{
+				return std::make_unique<GDIBitmap>(m_Bitmap);
+			}
+
 			Size GetSize() const override
 			{
 				return m_Bitmap.IsOk() ? Size(m_Bitmap.GetSize()) : Size::UnspecifiedSize();
@@ -83,9 +118,17 @@ namespace kxf
 			{
 				return m_Bitmap.GetDepth();
 			}
+			UniversallyUniqueID GetFormat() const override
+			{
+				return ImageFormat::BMP;
+			}
 
-			bool Load(IInputStream& stream, ImageFormat format = ImageFormat::Any) override;
-			bool Save(IOutputStream& stream, ImageFormat format) const override;
+			void Create(const Size& size) override
+			{
+				m_Bitmap.Create(size, *ColorDepthDB::BPP32);
+			}
+			bool Load(IInputStream& stream, const UniversallyUniqueID& format = ImageFormat::Any, size_t index = npos);
+			bool Save(IOutputStream& stream, const UniversallyUniqueID& format) const;
 
 			// GDIBitmap
 			const wxBitmap& ToWxBitmap() const noexcept
@@ -98,7 +141,7 @@ namespace kxf
 			}
 
 			GDICursor ToCursor(const Point& hotSpot = Point::UnspecifiedPosition()) const;
-			Image ToImage() const;
+			BitmapImage ToImage() const;
 			GDIIcon ToIcon() const;
 
 			GDIBitmap GetSubBitmap(const Rect& rect) const

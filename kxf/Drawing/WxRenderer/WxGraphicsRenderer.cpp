@@ -134,7 +134,7 @@ namespace kxf
 	{
 		return std::make_shared<WxGraphicsSolidBrush>(*this, color);
 	}
-	std::shared_ptr<IGraphicsTextureBrush> WxGraphicsRenderer::CreateTextureBrush(const Image& image)
+	std::shared_ptr<IGraphicsTextureBrush> WxGraphicsRenderer::CreateTextureBrush(const BitmapImage& image)
 	{
 		if (image)
 		{
@@ -170,7 +170,7 @@ namespace kxf
 	{
 		return std::make_shared<WxGraphicsTexture>(*this);
 	}
-	std::shared_ptr<IGraphicsTexture> WxGraphicsRenderer::CreateTexture(const Image& image)
+	std::shared_ptr<IGraphicsTexture> WxGraphicsRenderer::CreateTexture(const BitmapImage& image)
 	{
 		if (image)
 		{
