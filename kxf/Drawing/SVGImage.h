@@ -83,7 +83,7 @@ namespace kxf
 		public:
 			// IVectorImage
 			Rect GetBoundingBox() const override;
-			BitmapImage Rasterize(const Size& size) const override;
+			BitmapImage Rasterize(const Size& size = Size::UnspecifiedSize()) const override;
 
 		public:
 			SVGImage& operator=(const SVGImage& other);

@@ -18,6 +18,6 @@ namespace kxf
 
 		public:
 			virtual Rect GetBoundingBox() const = 0;
-			virtual BitmapImage Rasterize(const Size& size) const = 0;
+			virtual BitmapImage Rasterize(const Size& size = Size::UnspecifiedSize()) const = 0;
 	};
 }

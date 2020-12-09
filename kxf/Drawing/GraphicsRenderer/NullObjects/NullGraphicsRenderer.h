@@ -89,6 +89,10 @@ namespace kxf::Drawing
 			{
 				return nullptr;
 			}
+			std::shared_ptr<IGraphicsTexture> CreateTexture(const SVGImage& vectorImage) override
+			{
+				return nullptr;
+			}
 			std::shared_ptr<IGraphicsTexture> CreateTexture(const SizeF& size, const Color& color) override
 			{
 				return nullptr;

@@ -155,6 +155,7 @@ namespace kxf
 
 			// Texture functions
 			void DrawTexture(const IGraphicsTexture& texture, const RectF& rect) override;
+			void DrawTexture(const SVGImage& vectorImage, const RectF& rect) override;
 			void DrawTexture(const BitmapImage& image, const RectF& rect) override;
 
 			// Text functions

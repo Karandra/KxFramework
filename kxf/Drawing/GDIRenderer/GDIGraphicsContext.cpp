@@ -105,7 +105,14 @@ namespace
 
 					if (icon && dc.CanDrawBitmap())
 					{
-						return dc.DrawLabel(text, rect, icon.QueryInterface<GDIGraphicsTexture>()->Get(), alignment, acceleratorIndex);
+						if (auto gdiIcon = icon.QueryInterface<GDIGraphicsTexture>())
+						{
+							return dc.DrawLabel(text, rect, gdiIcon->Get(), alignment, acceleratorIndex);
+						}
+						else
+						{
+							return dc.DrawLabel(text, rect, icon.ToImage().ToBitmap(), alignment, acceleratorIndex);
+						}
 					}
 					return dc.DrawLabel(text, rect, {}, alignment, acceleratorIndex);
 				}
@@ -290,10 +297,21 @@ namespace kxf
 					m_DC.DrawBitmap(gdiTexture->Get().ToImage().Rescale(rect.GetSize(), m_InterpolationQuality).ToBitmap(), rect.GetPosition());
 				}
 			}
+			else if (auto gdiVectorTexture = texture.QueryInterface<GDIGraphicsVectorTexture>())
+			{
+				m_DC.DrawBitmap(gdiVectorTexture->Get(rect.GetSize()), rect.GetPosition());
+			}
 			else
 			{
 				GDIGraphicsContext::DrawTexture(texture.ToImage(), rect);
 			}
+		}
+	}
+	void GDIGraphicsContext::DrawTexture(const SVGImage& vectorImage, const RectF& rect)
+	{
+		if (m_DC.CanDrawBitmap() && !rect.IsEmpty())
+		{
+			m_DC.DrawBitmap(vectorImage.Rasterize(rect.GetSize()).ToBitmap(), rect.GetPosition());
 		}
 	}
 	void GDIGraphicsContext::DrawTexture(const BitmapImage& image, const RectF& rect)

@@ -59,6 +59,7 @@ namespace kxf
 			// Texture functions
 			std::shared_ptr<IGraphicsTexture> CreateTexture() override;
 			std::shared_ptr<IGraphicsTexture> CreateTexture(const BitmapImage& image) override;
+			std::shared_ptr<IGraphicsTexture> CreateTexture(const SVGImage& vectorImage) override;
 			std::shared_ptr<IGraphicsTexture> CreateTexture(const SizeF& size, const Color& color) override;
 
 			// Text functions

@@ -219,6 +219,14 @@ namespace kxf
 		}
 		return nullptr;
 	}
+	std::shared_ptr<IGraphicsTexture> GDIGraphicsRenderer::CreateTexture(const SVGImage& vectorImage)
+	{
+		if (vectorImage)
+		{
+			return std::make_shared<GDIGraphicsVectorTexture>(*this, vectorImage);
+		}
+		return nullptr;
+	}
 	std::shared_ptr<IGraphicsTexture> GDIGraphicsRenderer::CreateTexture(const GDIBitmap& bitmap)
 	{
 		if (bitmap)

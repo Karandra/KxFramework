@@ -3,6 +3,7 @@
 #include "GDIBitmap.h"
 #include "GDIGraphicsRenderer.h"
 #include "IGDIObject.h"
+#include "../SVGImage.h"
 #include "../BitmapImage.h"
 #include "../GraphicsRenderer/IGraphicsTexture.h"
 
@@ -132,7 +133,11 @@ namespace kxf
 
 			std::shared_ptr<IGraphicsTexture> GetSubTexture(const RectF& rect) const override
 			{
-				return std::make_shared<GDIGraphicsTexture>(*m_Renderer, m_Bitmap.GetSubBitmap(rect));
+				if (m_Bitmap)
+				{
+					return std::make_shared<GDIGraphicsTexture>(*m_Renderer, m_Bitmap.GetSubBitmap(rect));
+				}
+				return nullptr;
 			}
 			void Rescale(const SizeF& size, InterpolationQuality interpolationQuality) override
 			{
@@ -162,15 +167,150 @@ namespace kxf
 			{
 				return m_Bitmap;
 			}
+	};
+
+	class KX_API GDIGraphicsVectorTexture: public RTTI::ExtendInterface<GDIGraphicsVectorTexture, IGraphicsTexture>
+	{
+		KxRTTI_DeclareIID(GDIGraphicsVectorTexture, {0xdffe01f1, 0xcc55, 0x4a8f, {0x84, 0x7d, 0xd0, 0xdd, 0xc5, 0x66, 0x4a, 0xed}});
+
+		protected:
+			GDIGraphicsRenderer* m_Renderer = nullptr;
+
+			GDIBitmap m_Bitmap;
+			SVGImage m_VectorImage;
+
+		private:
+			bool DoIsSameAs(const IObject& other) const
+			{
+				if (this == &other)
+				{
+					return true;
+				}
+				else if (auto object = other.QueryInterface<GDIGraphicsVectorTexture>())
+				{
+					return m_VectorImage.IsSameAs(object->m_VectorImage);
+				}
+				return false;
+			}
+
+			void Initialize(const SizeF& size)
+			{
+				if (!m_Bitmap || SizeF(m_Bitmap.GetSize()) != size)
+				{
+					m_Bitmap = m_VectorImage.Rasterize(size);
+				}
+			}
+			void Invalidate()
+			{
+				m_Bitmap = {};
+			}
 
 		public:
-			explicit operator bool() const
+			GDIGraphicsVectorTexture() noexcept = default;
+			GDIGraphicsVectorTexture(GDIGraphicsRenderer& rendrer)
+				:m_Renderer(&rendrer)
 			{
-				return !IsNull();
 			}
-			bool operator!() const
+			GDIGraphicsVectorTexture(GDIGraphicsRenderer& rendrer, SVGImage vectorImage)
+				:m_Renderer(&rendrer), m_VectorImage(std::move(vectorImage))
 			{
-				return IsNull();
+			}
+
+		public:
+			// IGraphicsObject
+			bool IsNull() const override
+			{
+				return !m_Renderer || m_VectorImage.IsNull();
+			}
+			bool IsSameAs(const IGraphicsObject& other) const override
+			{
+				if (this == &other)
+				{
+					return true;
+				}
+				else if (auto object = other.QueryInterface<GDIGraphicsVectorTexture>())
+				{
+					return m_VectorImage.IsSameAs(object->m_VectorImage);
+				}
+				return false;
+			}
+			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			{
+				return std::make_unique<GDIGraphicsVectorTexture>(*this);
+			}
+
+			GDIGraphicsRenderer& GetRenderer() override
+			{
+				return *m_Renderer;
+			}
+			void* GetNativeHandle() const
+			{
+				return nullptr;
+			}
+
+			// IGraphicsTexture
+			SizeF GetDPI() const override
+			{
+				auto dpi = m_VectorImage.GetOptionInt(ImageOption::DPI);
+				return dpi ? SizeF(*dpi, *dpi) : SizeF::UnspecifiedSize();
+			}
+			SizeF GetSize() const override
+			{
+				return m_VectorImage.GetSize();
+			}
+			float GetWidth() const override
+			{
+				return m_VectorImage.GetWidth();
+			}
+			float GetHeight() const override
+			{
+				return m_VectorImage.GetHeight();
+			}
+			ColorDepth GetColorDepth() const override
+			{
+				return m_VectorImage.GetColorDepth();
+			}
+
+			bool Load(IInputStream& stream, const UniversallyUniqueID& format = ImageFormat::Any, size_t index = npos) override
+			{
+				Invalidate();
+				return m_VectorImage.Load(stream, format);
+			}
+			bool Save(IOutputStream& stream, const UniversallyUniqueID& format) const override
+			{
+				return m_VectorImage.Save(stream, format);
+			}
+
+			std::shared_ptr<IGraphicsTexture> GetSubTexture(const RectF& rect) const override
+			{
+				return nullptr;
+			}
+			void Rescale(const SizeF& size, InterpolationQuality interpolationQuality) override
+			{
+			}
+
+			BitmapImage ToImage() const override
+			{
+				return m_VectorImage.Rasterize();
+			}
+			bool FromImage(const BitmapImage& image)
+			{
+				m_VectorImage = {};
+				Invalidate();
+
+				return false;
+			}
+
+			// GDIGraphicsTexture
+			const GDIBitmap& Get(const SizeF& size) const
+			{
+				const_cast<GDIGraphicsVectorTexture&>(*this).Initialize(size);
+				return m_Bitmap;
+			}
+			GDIBitmap& Get(const SizeF& size)
+			{
+				Initialize(size);
+				return m_Bitmap;
 			}
 	};
 }

@@ -5,6 +5,8 @@
 #include "WxGraphicsPen.h"
 #include "WxGraphicsFont.h"
 #include "WxGraphicsPath.h"
+#include "../SVGImage.h"
+#include "../BitmapImage.h"
 #include "../GDIRenderer/GDIBitmap.h"
 #include <wx/msw/dc.h>
 
@@ -299,10 +301,24 @@ namespace kxf
 				}
 				CalcBoundingBox(rect);
 			}
+			if (auto textureVectorWx = texture.QueryInterface<WxGraphicsVectorTexture>())
+			{
+				m_Context->DrawBitmap(textureVectorWx->Get(rect.GetSize()), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
+				CalcBoundingBox(rect);
+			}
 			else
 			{
 				WxGraphicsContext::DrawTexture(texture.ToImage(), rect);
 			}
+		}
+	}
+	void WxGraphicsContext::DrawTexture(const SVGImage& vectorImage, const RectF& rect)
+	{
+		if (vectorImage && !rect.IsEmpty())
+		{
+			BitmapImage image = vectorImage.Rasterize(rect.GetSize());
+			m_Context->DrawBitmap(m_Renderer->Get().CreateBitmapFromImage(image.ToWxImage()), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
+			CalcBoundingBox(rect);
 		}
 	}
 	void WxGraphicsContext::DrawTexture(const BitmapImage& image, const RectF& rect)
@@ -483,7 +499,14 @@ namespace kxf
 			Rect boundingBox;
 			if (icon)
 			{
-				boundingBox = m_GCDC.DrawLabel(text, rect, icon.QueryInterface<WxGraphicsTexture>()->GetImage(), alignment, acceleratorIndex);
+				if (auto iconWx = icon.QueryInterface<WxGraphicsTexture>())
+				{
+					boundingBox = m_GCDC.DrawLabel(text, rect, iconWx->GetImage().ToBitmap(), alignment, acceleratorIndex);
+				}
+				else
+				{
+					boundingBox = m_GCDC.DrawLabel(text, rect, icon.ToImage().ToBitmap(), alignment, acceleratorIndex);
+				}
 			}
 			else
 			{

@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "WxGraphicsRenderer.h"
 #include "../BitmapImage.h"
+#include "../SVGImage.h"
 #include "../GraphicsRenderer/IGraphicsTexture.h"
 #include <wx/graphics.h>
 
@@ -94,7 +95,8 @@ namespace kxf
 			// IGraphicsTexture
 			SizeF GetDPI() const override
 			{
-				return SizeF::UnspecifiedSize();
+				auto dpi = m_Image.GetOptionInt(ImageOption::DPI);
+				return dpi ? SizeF(*dpi, *dpi) : SizeF::UnspecifiedSize();
 			}
 			SizeF GetSize() const override
 			{
@@ -143,9 +145,9 @@ namespace kxf
 
 			BitmapImage ToImage() const override
 			{
-				return ToImage();
+				return m_Image;
 			}
-			bool FromImage(const BitmapImage& image)
+			bool FromImage(const BitmapImage& image) override
 			{
 				m_Image = image;
 				Invalidate();
@@ -173,15 +175,160 @@ namespace kxf
 			{
 				return m_Image;
 			}
+	};
+
+	class KX_API WxGraphicsVectorTexture: public RTTI::ExtendInterface<WxGraphicsVectorTexture, IGraphicsTexture>
+	{
+		KxRTTI_DeclareIID(WxGraphicsVectorTexture, {0xe067b8fd, 0x2be6, 0x48b4, {0x8d, 0x7c, 0xd1, 0x27, 0x85, 0xa8, 0x99, 0x25}});
+
+		protected:
+			WxGraphicsRenderer* m_Renderer = nullptr;
+			wxGraphicsBitmap m_Graphics;
+
+			SVGImage m_VectorImage;
+			BitmapImage m_BitmapImage;
+			bool m_Initialized = false;
+
+		private:
+			void Initialize(const SizeF& size)
+			{
+				if (m_VectorImage)
+				{
+					if (!m_Initialized || !m_BitmapImage || SizeF(m_BitmapImage.GetSize()) != size)
+					{
+						m_BitmapImage = m_VectorImage.Rasterize(size);
+						m_Graphics = m_Renderer->Get().CreateBitmapFromImage(m_BitmapImage.ToWxImage());
+
+						m_Initialized = true;
+					}
+				}
+				else
+				{
+					m_Graphics = {};
+				}
+			}
+			void Invalidate()
+			{
+				m_Initialized = false;
+				m_BitmapImage = {};
+			}
 
 		public:
-			explicit operator bool() const
+			WxGraphicsVectorTexture() noexcept = default;
+			WxGraphicsVectorTexture(WxGraphicsRenderer& rendrer)
+				:m_Renderer(&rendrer)
 			{
-				return !IsNull();
 			}
-			bool operator!() const
+			WxGraphicsVectorTexture(WxGraphicsRenderer& rendrer, SVGImage vectorImage)
+				:m_Renderer(&rendrer), m_VectorImage(std::move(vectorImage))
 			{
-				return IsNull();
+			}
+
+		public:
+			// IGraphicsObject
+			bool IsNull() const override
+			{
+				return !m_Renderer || m_VectorImage.IsNull();
+			}
+			bool IsSameAs(const IGraphicsObject& other) const override
+			{
+				if (this == &other)
+				{
+					return true;
+				}
+				else if (auto object = other.QueryInterface<WxGraphicsVectorTexture>())
+				{
+					return m_VectorImage.IsSameAs(object->m_VectorImage);
+				}
+				return false;
+			}
+			std::unique_ptr<IGraphicsObject> CloneGraphicsObject() const override
+			{
+				return std::make_unique<WxGraphicsVectorTexture>(*this);
+			}
+
+			WxGraphicsRenderer& GetRenderer() override
+			{
+				return *m_Renderer;
+			}
+			void* GetNativeHandle() const
+			{
+				return m_Graphics.GetGraphicsData();
+			}
+
+			// IGraphicsTexture
+			SizeF GetDPI() const override
+			{
+				auto dpi = m_VectorImage.GetOptionInt(ImageOption::DPI);
+				return dpi ? SizeF(*dpi, *dpi) : SizeF::UnspecifiedSize();
+			}
+			SizeF GetSize() const override
+			{
+				return m_VectorImage.GetSize();
+			}
+			float GetWidth() const override
+			{
+				return m_VectorImage.GetWidth();
+			}
+			float GetHeight() const override
+			{
+				return m_VectorImage.GetHeight();
+			}
+			ColorDepth GetColorDepth() const override
+			{
+				return m_VectorImage.GetColorDepth();
+			}
+
+			bool Load(IInputStream& stream, const UniversallyUniqueID& format = ImageFormat::Any, size_t index = npos) override
+			{
+				Invalidate();
+				return m_VectorImage.Load(stream, format);
+			}
+			bool Save(IOutputStream& stream, const UniversallyUniqueID& format) const override
+			{
+				return m_VectorImage.Save(stream, format);
+			}
+
+			std::shared_ptr<IGraphicsTexture> GetSubTexture(const RectF& rect) const override
+			{
+				return nullptr;
+			}
+			void Rescale(const SizeF& size, InterpolationQuality interpolationQuality) override
+			{
+			}
+
+			BitmapImage ToImage() const override
+			{
+				const_cast<WxGraphicsVectorTexture&>(*this).Initialize(Size::UnspecifiedSize());
+				return m_VectorImage.Rasterize();
+			}
+			bool FromImage(const BitmapImage& image) override
+			{
+				m_VectorImage = {};
+				Invalidate();
+
+				return false;
+			}
+
+			// WxGraphicsTexture
+			const wxGraphicsBitmap& Get(const SizeF& size) const
+			{
+				const_cast<WxGraphicsVectorTexture&>(*this).Initialize(size);
+				return m_Graphics;
+			}
+			wxGraphicsBitmap& Get(const SizeF& size)
+			{
+				Initialize(size);
+				return m_Graphics;
+			}
+
+			const SVGImage& GetImage() const
+			{
+				return m_VectorImage;
+			}
+			SVGImage& GetImage()
+			{
+				return m_VectorImage;
 			}
 	};
 }

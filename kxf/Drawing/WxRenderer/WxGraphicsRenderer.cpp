@@ -178,6 +178,10 @@ namespace kxf
 		}
 		return nullptr;
 	}
+	std::shared_ptr<IGraphicsTexture> WxGraphicsRenderer::CreateTexture(const SVGImage& vectorImage)
+	{
+		return std::make_shared<WxGraphicsVectorTexture>(*this, vectorImage);
+	}
 	std::shared_ptr<IGraphicsTexture> WxGraphicsRenderer::CreateTexture(const SizeF& size, const Color& color)
 	{
 		return std::make_shared<WxGraphicsTexture>(*this, size, color);

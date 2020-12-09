@@ -8,6 +8,7 @@ class wxDC;
 namespace kxf
 {
 	class Font;
+	class SVGImage;
 	class BitmapImage;
 
 	class IGraphicsContext;
@@ -59,6 +60,7 @@ namespace kxf
 			// Texture functions
 			virtual std::shared_ptr<IGraphicsTexture> CreateTexture() = 0;
 			virtual std::shared_ptr<IGraphicsTexture> CreateTexture(const BitmapImage& image) = 0;
+			virtual std::shared_ptr<IGraphicsTexture> CreateTexture(const SVGImage& vectorImage) = 0;
 			virtual std::shared_ptr<IGraphicsTexture> CreateTexture(const SizeF& size, const Color& color) = 0;
 
 			// Text functions

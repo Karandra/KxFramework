@@ -13,8 +13,10 @@ class wxWindow;
 namespace kxf
 {
 	class Font;
-	class BitmapImage;
 	class String;
+	class SVGImage;
+	class BitmapImage;
+
 	class GDIBitmap;
 	class GDIContext;
 
@@ -96,6 +98,7 @@ namespace kxf
 
 			// Texture functions
 			virtual void DrawTexture(const IGraphicsTexture& texture, const RectF& rect) = 0;
+			virtual void DrawTexture(const SVGImage& vectorImage, const RectF& rect) = 0;
 			virtual void DrawTexture(const BitmapImage& image, const RectF& rect) = 0;
 
 			// Text functions
