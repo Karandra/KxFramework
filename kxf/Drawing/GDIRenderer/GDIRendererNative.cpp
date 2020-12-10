@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "GDIRendererNative.h"
 #include "GDIAction.h"
+#include "kxf/System/SystemInformation.h"
 #include "../GraphicsRenderer.h"
 #include "../UxTheme.h"
 #include "../Private/UxThemeDefines.h"
@@ -156,7 +157,77 @@ namespace kxf
 		if (window)
 		{
 			CalcBoundingBox calcBoudingBox(dc, rect);
-			if (UxTheme theme(const_cast<wxWindow&>(*window), UxThemeClass::TreeView); theme)
+
+			if (widgetFlags.Contains(NativeWidgetFlag::Flat))
+			{
+				auto DoDrawExpander = [](wxWindow& window, GDIContext& dc, Rect rect, FlagSet<NativeWidgetFlag> widgetFlags)
+				{
+					const bool isActive = widgetFlags.Contains(NativeWidgetFlag::Current);
+					const bool isDisabled = widgetFlags.Contains(NativeWidgetFlag::Disabled);
+					const bool isExpanded = widgetFlags.Contains(NativeWidgetFlag::Expanded);
+					const bool isPressed = widgetFlags.Contains(NativeWidgetFlag::Pressed);
+
+					// Setup colors
+					Color borderColor;
+					Color glyphColor;
+					if (isDisabled)
+					{
+						borderColor = System::GetColor(SystemColor::InactiveBroder);
+						glyphColor = System::GetColor(SystemColor::InactiveCaptionText);
+					}
+					else if (isActive)
+					{
+						borderColor = System::GetColor(SystemColor::MenuHighlight);
+						glyphColor = System::GetColor(SystemColor::ButtonText);
+					}
+					else if (isPressed)
+					{
+						borderColor = System::GetColor(SystemColor::LightHot);
+						glyphColor = System::GetColor(SystemColor::ButtonText);
+					}
+					else
+					{
+						borderColor = System::GetColor(SystemColor::ButtonShadow);
+						glyphColor = System::GetColor(SystemColor::ButtonText);
+					}
+
+					// Draw background
+					dc.SetBrush(System::GetColor(SystemColor::ButtonFace));
+					dc.SetPen(borderColor);
+					dc.DrawRectangle(rect);
+
+					// Draw plus/minus
+					dc.SetPen(GDIPen(glyphColor, window.FromDIP(1)));
+
+					const int length = std::min(rect.GetWidth(), rect.GetHeight()) - window.FromDIP(4) * 2;
+					auto DrawLine = [&dc, lengthHalf = length / 2, base = rect.GetCenter()](Orientation orientation)
+					{
+						Point pos1 = base;
+						Point pos2 = base;
+
+						if (orientation == Orientation::Horizontal)
+						{
+							pos1.X() -= lengthHalf;
+							pos2.X() += lengthHalf;
+						}
+						else if (orientation == Orientation::Vertical)
+						{
+							pos1.Y() -= lengthHalf;
+							pos2.Y() += lengthHalf;
+						}
+						dc.DrawLine(pos1, pos2);
+					};
+
+					// Draw lines
+					DrawLine(Orientation::Horizontal);
+					if (!isExpanded)
+					{
+						DrawLine(Orientation::Vertical);
+					}
+				};
+				DoDrawExpander(*window, dc, rect, widgetFlags);
+			}
+			else if (UxTheme theme(const_cast<wxWindow&>(*window), UxThemeClass::TreeView); theme)
 			{
 				const int partID = widgetFlags.Contains(NativeWidgetFlag::Current) ? TVP_HOTGLYPH : TVP_GLYPH;
 				const int stateID = widgetFlags.Contains(NativeWidgetFlag::Expanded) ? GLPS_OPENED : GLPS_CLOSED;
@@ -165,7 +236,7 @@ namespace kxf
 			}
 			else
 			{
-				return GetRenderer().DrawTreeItemButton(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
+				GetRenderer().DrawTreeItemButton(window, dc.ToWxDC(), rect, *MapWidgetFlags(widgetFlags));
 			}
 		}
 	}
