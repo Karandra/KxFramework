@@ -5,7 +5,7 @@
 
 namespace kxf
 {
-	GDIBitmap IGraphicsContext::DrawGDIOnBitmap(const RectF& rect, std::function<void(GDIContext& dc)> func)
+	GDIBitmap IGraphicsContext::DrawGDIOnBitmap(const RectF& rect, std::function<void(GDIContext& dc)> func, bool forceAlpha)
 	{
 		if (!rect.IsEmpty())
 		{
@@ -23,6 +23,10 @@ namespace kxf
 			}
 
 			// The context implementation can use this bitmap to draw it any way it need
+			if (forceAlpha)
+			{
+				bitmap.ForceAlpha();
+			}
 			return bitmap;
 		}
 		return {};
