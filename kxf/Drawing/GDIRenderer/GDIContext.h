@@ -138,7 +138,7 @@ namespace kxf
 			}
 			void SetUserScale(const SizeD& userScale)
 			{
-				m_DC->SetUserScale(userScale.GetX(), userScale.GetY());
+				m_DC->SetUserScale(userScale.GetWidth(), userScale.GetHeight());
 			}
 
 			SizeD GetLogicalScale() const
@@ -150,7 +150,7 @@ namespace kxf
 			}
 			void SetLogicalScale(const SizeD& userScale)
 			{
-				m_DC->SetLogicalScale(userScale.GetX(), userScale.GetY());
+				m_DC->SetLogicalScale(userScale.GetWidth(), userScale.GetHeight());
 			}
 
 			Point GetLogicalOrigin() const

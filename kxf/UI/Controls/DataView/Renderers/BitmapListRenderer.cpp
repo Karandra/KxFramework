@@ -74,7 +74,7 @@ namespace kxf::UI::DataView
 			RenderEngine renderEngine = GetRenderEngine();
 
 			totalSize = renderEngine.GetTextExtent(m_TextValue.GetText());
-			totalSize.X() += renderEngine.GetInterTextSpacing();
+			totalSize.Width() += renderEngine.GetInterTextSpacing();
 		}
 		if (size_t bitmapCount = GetBitmapCount(); bitmapCount != 0)
 		{
@@ -88,8 +88,8 @@ namespace kxf::UI::DataView
 				{
 					const Size bitmapSize = bitmap ? bitmap.GetSize() : smallIcon;
 
-					totalSize.X() += bitmapSize.GetWidth() + spacing;
-					totalSize.Y() = std::max(totalSize.GetY(), bitmapSize.GetHeight());
+					totalSize.Width() += bitmapSize.GetWidth() + spacing;
+					totalSize.Height() = std::max(totalSize.GetHeight(), bitmapSize.GetHeight());
 				}
 			}
 		}

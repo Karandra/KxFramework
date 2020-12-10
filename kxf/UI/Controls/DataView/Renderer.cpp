@@ -59,8 +59,8 @@ namespace kxf::UI::DataView
 				Size offsetSize = GetView()->FromDIP(wxSize(0, 1));
 
 				Rect buttonRect = cellRect;
-				buttonRect.Width() += offsetSize.GetX();
-				buttonRect.Height() += offsetSize.GetY();
+				buttonRect.Width() += offsetSize.GetWidth();
+				buttonRect.Height() += offsetSize.GetHeight();
 
 				GDIBitmap canvas(cellRect.GetSize(), ColorDepthDB::BPP32);
 				GDIMemoryContext memDC(canvas);
@@ -180,7 +180,7 @@ namespace kxf::UI::DataView
 			{
 				adjustedCellRect.Y() += cellRect.GetHeight() - cellSize.GetHeight();
 			}
-			adjustedCellRect.SetHeight(cellSize.GetY());
+			adjustedCellRect.SetHeight(cellSize.GetHeight());
 		}
 
 		// Draw highlighting selection

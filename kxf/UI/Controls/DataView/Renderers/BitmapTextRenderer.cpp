@@ -38,15 +38,15 @@ namespace kxf::UI::DataView
 		if (m_Value.HasBitmap())
 		{
 			const GDIBitmap& bitmap = m_Value.GetBitmap();
-			size.X() += bitmap.GetWidth() + GetRenderEngine().FromDIPX(renderEngine.GetInterTextSpacing());
-			if (size.GetY() < bitmap.GetHeight())
+			size.Width() += bitmap.GetWidth() + GetRenderEngine().FromDIPX(renderEngine.GetInterTextSpacing());
+			if (size.Height() < bitmap.GetHeight())
 			{
-				size.Y() = bitmap.GetHeight();
+				size.Height() = bitmap.GetHeight();
 			}
 		}
 		else if (m_Value.IsDefaultBitmapWidthSpecified())
 		{
-			size.X() += m_Value.GetDefaultBitmapWidth() + renderEngine.FromDIPX(renderEngine.GetInterTextSpacing());
+			size.Width() += m_Value.GetDefaultBitmapWidth() + renderEngine.FromDIPX(renderEngine.GetInterTextSpacing());
 		}
 		return size;
 	}

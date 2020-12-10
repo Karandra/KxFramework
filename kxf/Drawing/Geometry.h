@@ -79,6 +79,11 @@ namespace kxf::Geometry
 				}
 				return Self();
 			}
+			constexpr TDerived& SwapComponents() noexcept
+			{
+				std::swap(m_X, m_Y);
+				return Self();
+			}
 
 			constexpr TValue GetX() const noexcept
 			{
@@ -1130,6 +1135,14 @@ namespace kxf::Geometry
 				return BasicSize(point.GetX(), point.GetY());
 			}
 
+		private:
+			using TBase::X;
+			using TBase::Y;
+			using TBase::SetX;
+			using TBase::SetY;
+			using TBase::GetX;
+			using TBase::GetY;
+
 		public:
 			using TBase::OrderedPairTemplate;
 			constexpr BasicSize(const wxSize& other) noexcept
@@ -1150,7 +1163,7 @@ namespace kxf::Geometry
 			}
 			constexpr BasicSize& SetWidth(TValue width) noexcept
 			{
-				return  this->SetX(width);
+				return this->SetX(width);
 			}
 
 			constexpr TValue GetHeight() const noexcept

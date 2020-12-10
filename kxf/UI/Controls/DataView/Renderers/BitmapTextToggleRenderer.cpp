@@ -67,33 +67,33 @@ namespace kxf::UI::DataView
 		if (m_Value.HasType())
 		{
 			Size toggleSize = renderEngine.GetToggleSize();
-			size.X() += toggleSize.GetX() + renderEngine.FromDIPX(renderEngine.GetInterTextSpacing());
-			if (size.GetY() < toggleSize.GetY())
+			size.Width() += toggleSize.GetWidth() + renderEngine.FromDIPX(renderEngine.GetInterTextSpacing());
+			if (size.GetHeight() < toggleSize.GetHeight())
 			{
-				size.Y() = toggleSize.GetY();
+				size.Height() = toggleSize.GetHeight();
 			}
 		}
 		if (m_Value.HasText())
 		{
 			Size textExtent = renderEngine.GetTextExtent(m_Value.GetText());
-			size.X() += textExtent.GetX();
-			if (size.GetY() < textExtent.GetY())
+			size.Width() += textExtent.GetWidth();
+			if (size.GetHeight() < textExtent.GetHeight())
 			{
-				size.Y() = textExtent.GetY();
+				size.Height() = textExtent.GetHeight();
 			}
 		}
 		if (m_Value.HasBitmap())
 		{
 			const GDIBitmap& bitmap = m_Value.GetBitmap();
-			size.X() += bitmap.GetWidth() + renderEngine.FromDIPX(renderEngine.GetInterTextSpacing());
-			if (size.GetY() < bitmap.GetHeight())
+			size.Width() += bitmap.GetWidth() + renderEngine.FromDIPX(renderEngine.GetInterTextSpacing());
+			if (size.GetHeight() < bitmap.GetHeight())
 			{
-				size.Y() = bitmap.GetHeight();
+				size.Height() = bitmap.GetHeight();
 			}
 		}
 		else if (m_Value.IsDefaultBitmapWidthSpecified())
 		{
-			size.X() += m_Value.GetDefaultBitmapWidth() + renderEngine.FromDIPX(renderEngine.GetInterTextSpacing());
+			size.Width() += m_Value.GetDefaultBitmapWidth() + renderEngine.FromDIPX(renderEngine.GetInterTextSpacing());
 		}
 		return size;
 	}

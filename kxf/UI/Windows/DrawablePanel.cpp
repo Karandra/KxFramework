@@ -61,8 +61,8 @@ namespace kxf::UI
 		x = (rect.GetWidth() - width) / 2;
 		y = (rect.GetHeight() - height) / 2;
 
-		scaledImageSize.X() = width;
-		scaledImageSize.Y() = height;
+		scaledImageSize.Width() = width;
+		scaledImageSize.Height() = height;
 		gc->DrawBitmap(!bitmap.IsNull() ? bitmap : gc->CreateBitmap(g_EmptyBitmap.ToWxBitmap()), rect.GetX() + x, rect.GetY() + y, width, height);
 		return scaledImageSize;
 	}

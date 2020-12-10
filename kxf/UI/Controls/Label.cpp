@@ -156,7 +156,7 @@ namespace kxf::UI
 			// Calculate best size
 			if (image)
 			{
-				contentSize.X() += image.GetWidth();
+				contentSize.Width() += image.GetWidth();
 			}
 			m_BestSize = contentSize;
 		}
