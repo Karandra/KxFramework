@@ -204,12 +204,12 @@ namespace kxf
 			m_DC.SetTransformMatrix(matrix);
 		}
 	}
-	void GDIGraphicsContext::TransformTranslate(const SizeF& dxy)
+	void GDIGraphicsContext::TransformTranslate(float dx, float dy)
 	{
 		if (m_DC.CanUseTransformMatrix())
 		{
 			auto matrix = m_DC.GetTransformMatrix();
-			matrix.Translate(static_cast<int>(dxy.GetWidth()), static_cast<int>(dxy.GetHeight()));
+			matrix.Translate(static_cast<int>(dx), static_cast<int>(dy));
 			m_DC.SetTransformMatrix(matrix);
 		}
 	}

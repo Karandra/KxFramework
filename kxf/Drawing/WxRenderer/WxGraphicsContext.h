@@ -138,7 +138,7 @@ namespace kxf
 			bool TransformInvert() override;
 			void TransformRotate(Angle angle) override;
 			void TransformScale(float xScale, float yScale) override;
-			void TransformTranslate(const SizeF& dxy) override;
+			void TransformTranslate(float dx, float dy) override;
 			void TransformConcat(const AffineMatrixF& matrix) override;
 
 			// Pen and brush functions

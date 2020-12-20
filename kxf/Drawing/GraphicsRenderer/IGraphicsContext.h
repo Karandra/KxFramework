@@ -82,7 +82,7 @@ namespace kxf
 			virtual bool TransformInvert() = 0;
 			virtual void TransformRotate(Angle angle) = 0;
 			virtual void TransformScale(float xScale, float yScale) = 0;
-			virtual void TransformTranslate(const SizeF& dxy) = 0;
+			virtual void TransformTranslate(float dx, float dy) = 0;
 			virtual void TransformConcat(const AffineMatrixF& matrix) = 0;
 
 			// Pen and brush functions

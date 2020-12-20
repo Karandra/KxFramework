@@ -209,9 +209,9 @@ namespace kxf
 	{
 		m_Context->Scale(xScale, yScale);
 	}
-	void WxGraphicsContext::TransformTranslate(const SizeF& dxy)
+	void WxGraphicsContext::TransformTranslate(float dx, float dy)
 	{
-		m_Context->Translate(dxy.GetWidth(), dxy.GetHeight());
+		m_Context->Translate(dx, dy);
 	}
 	void WxGraphicsContext::TransformConcat(const AffineMatrixF& transform)
 	{
