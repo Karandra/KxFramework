@@ -162,7 +162,16 @@ namespace kxf::UI::DataView
 			dc.DrawRectangle(Rect({0, 0}, GetClientSize()));
 		}
 	}
+	void View::AdjustForScrollTarget(IGraphicsContext& gc)
+	{
+		const PointF origin(0.0f, 0.0f);
+		const PointF scale(ViewBase::m_scaleX, ViewBase::m_scaleY);
+		const PointF scrollPos(ViewBase::m_xScrollPosition, ViewBase::m_yScrollPosition);
+		const PointF scrollInc(ViewBase::m_xScrollPixelsPerLine, ViewBase::m_yScrollPixelsPerLine);
 
+		gc.TransformTranslate(origin.GetX() - scrollPos.GetX() * scrollInc.GetX(), origin.GetY() - scrollPos.GetY() * scrollInc.GetY());
+		gc.TransformScale(scale.GetX(), scale.GetY());
+	}
 	wxSize View::GetSizeAvailableForScrollTarget(const wxSize& size)
 	{
 		Size newSize = size;

@@ -52,6 +52,7 @@ namespace kxf::UI::DataView
 			Column* m_Column = nullptr;
 
 			IGraphicsContext* m_GC = nullptr;
+			IGraphicsRenderer* m_GR = nullptr;
 
 		private:
 			void BeginCellRendering(const Node& node, Column& column, IGraphicsContext& gc)
@@ -59,6 +60,7 @@ namespace kxf::UI::DataView
 				m_Node = &node;
 				m_Column = &column;
 				m_GC = &gc;
+				m_GR = &gc.GetRenderer();
 			}
 			void EndCellRendering()
 			{
@@ -134,6 +136,8 @@ namespace kxf::UI::DataView
 			{
 				return *m_GC;
 			}
+			IGraphicsRenderer& GetGraphicsRenderer() const;
+
 			RenderEngine GetRenderEngine() const
 			{
 				return RenderEngine(const_cast<Renderer&>(*this));

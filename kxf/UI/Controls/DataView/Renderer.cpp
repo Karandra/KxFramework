@@ -4,8 +4,7 @@
 #include "Node.h"
 #include "View.h"
 #include "MainWindow.h"
-#include "kxf/Drawing/GDIRenderer/GDIMemoryContext.h"
-#include "kxf/Drawing/GDIRenderer/GDIGraphicsContext.h"
+#include "kxf/System/SystemInformation.h"
 
 namespace kxf::UI::DataView
 {
@@ -33,8 +32,7 @@ namespace kxf::UI::DataView
 
 	void Renderer::CallDrawCellBackground(const Rect& cellRect, CellState cellState, bool noUserBackground)
 	{
-		auto gdi = m_GC->QueryInterface<GDIGraphicsContext>();
-
+		auto renderEngine = GetRenderEngine();
 		const auto& cellOptions = m_Attributes.Options();
 		const auto& cellBGOptions = m_Attributes.BGOptions();
 
@@ -54,59 +52,37 @@ namespace kxf::UI::DataView
 		// Special backgrounds
 		if (cellBGOptions.ContainsOption(CellBGOption::Header))
 		{
-			if (gdi)
+			Size offsetSize = GetView()->FromDIP(wxSize(0, 1));
+
+			Rect buttonRect = cellRect;
+			buttonRect.Width() += offsetSize.GetWidth();
+			buttonRect.Height() += offsetSize.GetHeight();
+
+			IRendererNative::Get().DrawHeaderButton(GetView(), *m_GC, buttonRect, renderEngine.GetControlFlags(cellState));
+			if (!cellState.IsSelected())
 			{
-				Size offsetSize = GetView()->FromDIP(wxSize(0, 1));
+				Color lineColor = System::GetColor(SystemColor::Light3D);
+				lineColor.SetAlpha8(48);
 
-				Rect buttonRect = cellRect;
-				buttonRect.Width() += offsetSize.GetWidth();
-				buttonRect.Height() += offsetSize.GetHeight();
-
-				GDIBitmap canvas(cellRect.GetSize(), ColorDepthDB::BPP32);
-				GDIMemoryContext memDC(canvas);
-				wxRendererNative::Get().DrawHeaderButton(GetView(), gdi->GetWx(), Rect(-1, 0, buttonRect.GetWidth() + 1, buttonRect.GetHeight()), GetRenderEngine().GetControlFlags(cellState), wxHDR_SORT_ICON_NONE);
-				if (!cellState.IsSelected())
-				{
-					Color lineColor = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
-					lineColor.SetAlpha8(48);
-
-					memDC.SetPen(lineColor);
-					memDC.DrawLine(Point(0, 0), Point(buttonRect.GetWidth() + 1, 0));
-				}
-
-				gdi->DrawTexture(canvas, cellRect);
+				auto pen = m_GR->CreatePen(lineColor);
+				m_GC->DrawLine(buttonRect.GetLeftBottom(), buttonRect.GetRightBottom(), *pen);
 			}
 		}
 		else if (cellBGOptions.ContainsOption(CellBGOption::Button))
 		{
-			if (gdi)
-			{
-				Rect buttonRect = cellRect.Clone().Inflate(1, 1);
-				wxRendererNative::Get().DrawPushButton(GetView(), gdi->GetWx(), buttonRect, GetRenderEngine().GetControlFlags(cellState));
-			}
+			Rect buttonRect = cellRect.Clone().Inflate(1, 1);
+			IRendererNative::Get().DrawPushButton(GetView(), *m_GC, buttonRect, renderEngine.GetControlFlags(cellState));
 		}
 		else if (cellBGOptions.ContainsOption(CellBGOption::ComboBox))
 		{
-			if (gdi)
-			{
-				if (cellOptions.ContainsOption(CellOption::Editable))
-				{
-					wxRendererNative::Get().DrawComboBox(GetView(), gdi->GetWx(), cellRect, GetRenderEngine().GetControlFlags(cellState));
-				}
-				else
-				{
-					wxRendererNative::Get().DrawChoice(GetView(), gdi->GetWx(), cellRect, GetRenderEngine().GetControlFlags(cellState));
-				}
-			}
+			IRendererNative::Get().DrawComboBox(GetView(), *m_GC, cellRect, renderEngine.GetControlFlags(cellState));
 		}
 
 		// Solid background color
 		if (cellOptions.HasBackgroundColor())
 		{
-			Color color = m_Attributes.Options().GetBackgroundColor();
-			GraphicsAction::ChangePen changePen(*m_GC, color);
-			GraphicsAction::ChangeBrush changeBrush(*m_GC, color);
-			m_GC->DrawRectangle(cellRect);
+			auto brush = m_GR->CreateSolidBrush(m_Attributes.Options().GetBackgroundColor());
+			m_GC->DrawRectangle(cellRect, *brush);
 		}
 
 		// Call derived class drawing
@@ -118,9 +94,7 @@ namespace kxf::UI::DataView
 	void Renderer::CallDrawCellContent(const Rect& cellRect, CellState cellState)
 	{
 		m_PaintRect = cellRect;
-
-		auto gdi = m_GC->QueryInterface<GDIGraphicsContext>();
-		RenderEngine renderEngine = GetRenderEngine();
+		auto renderEngine = GetRenderEngine();
 
 		// Change text color
 		GraphicsAction::ChangeFontBrush changeFontBrush(*m_GC);
@@ -186,13 +160,10 @@ namespace kxf::UI::DataView
 		// Draw highlighting selection
 		if (m_Attributes.Options().ContainsOption(CellOption::HighlightItem) && !adjustedCellRect.IsEmpty())
 		{
-			if (gdi)
-			{
-				MainWindow* mainWindow = GetMainWindow();
+			MainWindow* mainWindow = GetMainWindow();
 
-				Rect highlightRect = Rect(adjustedCellRect).Inflate(2);
-				RenderEngine::DrawSelectionRect(mainWindow, gdi->Get(), highlightRect, cellState.ToItemState(mainWindow));
-			}
+			Rect highlightRect = Rect(adjustedCellRect).Inflate(2);
+			IRendererNative::Get().DrawItemSelectionRect(mainWindow, *m_GC, highlightRect, cellState.ToItemState(mainWindow));
 		}
 
 		// Call derived class drawing
@@ -206,6 +177,15 @@ namespace kxf::UI::DataView
 		{
 			GetMainWindow()->OnCellChanged(node, m_Column);
 		}
+	}
+
+	IGraphicsRenderer& Renderer::GetGraphicsRenderer() const
+	{
+		if (m_GR)
+		{
+			return *m_GR;
+		}
+		return m_Column->GetMainWindow()->GetGraphicsRenderer();
 	}
 
 	bool Renderer::HasSolidBackground() const

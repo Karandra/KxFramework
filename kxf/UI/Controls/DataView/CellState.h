@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "kxf/Drawing/IRendererNative.h"
 
 namespace kxf::UI::DataView
 {
@@ -51,8 +52,8 @@ namespace kxf::UI::DataView
 				m_Value.Add(Value::DropTarget);
 				return *this;
 			}
-	
+
 		public:
-			int ToItemState(const MainWindow* window) const;
+			FlagSet<NativeWidgetFlag> ToItemState(const MainWindow* window) const;
 	};
 }

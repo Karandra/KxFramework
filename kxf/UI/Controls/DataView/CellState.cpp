@@ -4,21 +4,12 @@
 
 namespace kxf::UI::DataView
 {
-	int CellState::ToItemState(const MainWindow* window) const
+	FlagSet<NativeWidgetFlag> CellState::ToItemState(const MainWindow* window) const
 	{
-		int itemState = 0;
-		if (window->HasFocus())
-		{
-			itemState |= wxCONTROL_FOCUSED;
-		}
-		if (IsSelected())
-		{
-			itemState |= wxCONTROL_SELECTED;
-		}
-		if (IsHotTracked())
-		{
-			itemState |= wxCONTROL_CURRENT|wxCONTROL_FOCUSED;
-		}
+		FlagSet<NativeWidgetFlag> itemState;
+		itemState.Add(NativeWidgetFlag::Focused, window->HasFocus());
+		itemState.Add(NativeWidgetFlag::Selected, IsSelected());
+		itemState.Add(NativeWidgetFlag::Current|NativeWidgetFlag::Focused, IsHotTracked());
 
 		return itemState;
 	}

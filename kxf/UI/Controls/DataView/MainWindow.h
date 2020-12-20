@@ -117,7 +117,7 @@ namespace kxf::UI::DataView
 			std::shared_ptr<IGraphicsPen> m_PenExpander;
 
 			// Background bitmap
-			GDIBitmap m_BackgroundBitmap;
+			BitmapImage m_BackgroundBitmap;
 			FlagSet<Alignment> m_BackgroundBitmapAlignment = Alignment::Invalid;
 			bool m_FitBackgroundBitmap = false;
 
@@ -396,6 +396,10 @@ namespace kxf::UI::DataView
 			}
 
 			// View
+			IGraphicsRenderer& GetGraphicsRenderer()
+			{
+				return *m_GraphicsRenderer;
+			}
 			void SetRuleHPen(const Color& color, float width = 1.0f)
 			{
 				m_PenRuleH = m_GraphicsRenderer->CreatePen(color, width);

@@ -71,6 +71,7 @@ namespace kxf::UI::DataView
 
 			void OnSize(wxSizeEvent& event);
 			void OnPaint(wxPaintEvent& event);
+			void AdjustForScrollTarget(IGraphicsContext& gc);
 			wxSize GetSizeAvailableForScrollTarget(const wxSize& size) override;
 
 			Column::RefVector DoGetColumnsInDisplayOrder(bool physicalOrder) const;

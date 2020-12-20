@@ -9,10 +9,7 @@
 #include "View.h"
 #include "kxf/System/SystemInformation.h"
 #include "kxf/UI/Windows/Frame.h"
-#include "kxf/Drawing/UxTheme.h"
-#include "kxf/Drawing/Private/UxThemeDefines.h"
 #include "kxf/Drawing/GraphicsRenderer.h"
-#include "kxf/Drawing/GDIRenderer/GDIGraphicsContext.h"
 #include <wx/popupwin.h>
 #include <wx/generic/private/widthcalc.h>
 #include <wx/minifram.h>
@@ -1040,8 +1037,7 @@ namespace kxf::UI::DataView
 	void MainWindow::OnPaint(wxPaintEvent& event)
 	{
 		auto gc = m_GraphicsRenderer->CreateWindowPaintContext(*this);
-		auto gdi = gc->QueryInterface<GDIGraphicsContext>();
-		wxRendererNative& nativeRenderer = wxRendererNative::Get();
+		IRendererNative& nativeRenderer = IRendererNative::Get();
 
 		const Size clientSize = GetClientSize();
 		const auto transparentPen = m_GraphicsRenderer->CreatePen(Drawing::GetStockColor(StockColor::Transparent));
@@ -1052,13 +1048,10 @@ namespace kxf::UI::DataView
 		gc->SetBrush(backgroundBrush);
 		gc->DrawRectangle({0, 0}, clientSize);
 
-		if (gdi)
-		{
-			m_View->PrepareDC(gdi->GetWx());
-		}
 		gc->SetAntialiasMode(AntialiasMode::None);
-		gc->SetInterpolationQuality(InterpolationQuality::NearestNeighbor);
+		gc->SetInterpolationQuality(InterpolationQuality::FastestAvailable);
 
+		m_View->AdjustForScrollTarget(*gc);
 		if (m_BackgroundBitmap)
 		{
 			Point pos;
@@ -1071,14 +1064,7 @@ namespace kxf::UI::DataView
 				pos.Y() = clientSize.GetHeight() - m_BackgroundBitmap.GetSize().GetHeight();
 			}
 
-			if (gdi)
-			{
-				gdi->DrawTexture(m_BackgroundBitmap, {pos, clientSize});
-			}
-			else
-			{
-				gc->DrawTexture(m_BackgroundBitmap, {pos, clientSize});
-			}
+			gc->DrawTexture(m_BackgroundBitmap, {pos, clientSize});
 		}
 
 		const size_t columnCount = m_View->GetColumnCount();
@@ -1256,9 +1242,9 @@ namespace kxf::UI::DataView
 							expanderRect.SetHeight(size.GetHeight());
 						};
 
-						if (isCategoryRow && gdi)
+						if (isCategoryRow)
 						{
-							ClacExpanderRect(nativeRenderer.GetCollapseButtonSize(this, gdi->GetWx()), EXPANDER_MARGIN);
+							ClacExpanderRect(nativeRenderer.GetCollapseButtonSize(this), EXPANDER_MARGIN);
 						}
 						else
 						{
@@ -1365,10 +1351,7 @@ namespace kxf::UI::DataView
 					// Draw selection and hot-track indicator after background and cell content
 					if (cellState.IsSelected() || cellState.IsHotTracked())
 					{
-						if (gdi)
-						{
-							RenderEngine::DrawSelectionRect(this, gdi->Get(), GetRowRect(), cellState.ToItemState(this));
-						}
+						nativeRenderer.DrawItemSelectionRect(this, *gc, GetRowRect(), cellState.ToItemState(this));
 					}
 
 					#if 0
@@ -1392,50 +1375,21 @@ namespace kxf::UI::DataView
 				// Draw expander
 				if (column == expanderColumn && !expanderRect.IsEmpty())
 				{
-					int flags = 0;
-					if (m_TreeNodeUnderMouse == node)
-					{
-						flags |= wxCONTROL_CURRENT;
-					}
-					if (node->IsNodeExpanded())
-					{
-						flags |= wxCONTROL_EXPANDED;
-					}
+					FlagSet<NativeWidgetFlag> flags;
+					flags.Add(NativeWidgetFlag::Current, m_TreeNodeUnderMouse == node);
+					flags.Add(NativeWidgetFlag::Expanded, node->IsNodeExpanded());
+					flags.Add(NativeWidgetFlag::Flat, m_View->ContainsWindowExStyle(CtrlExtraStyle::PlusMinusExpander));
 
 					if (isCategoryRow)
 					{
-						if (gdi)
-						{
-							Rect rect(expanderRect.GetPosition(), nativeRenderer.GetCollapseButtonSize(this, gdi->GetWx()));
-							rect = rect.CenterIn(expanderRect);
+						Rect rect(expanderRect.GetPosition(), nativeRenderer.GetCollapseButtonSize(this));
+						rect = rect.CenterIn(expanderRect);
 
-							nativeRenderer.DrawCollapseButton(this, gdi->GetWx(), rect, flags);
-						}
-					}
-					else if (m_View->ContainsWindowExStyle(CtrlExtraStyle::PlusMinusExpander))
-					{
-						if (gdi)
-						{
-							RenderEngine::DrawPlusMinusExpander(this, gdi->Get(), expanderRect, flags);
-						}
+						nativeRenderer.DrawCollapseButton(this, *gc, rect, flags);
 					}
 					else
 					{
-						if (gdi)
-						{
-							if (UxTheme theme(*this, UxThemeClass::TreeView); theme)
-							{
-								const int partID = flags & wxCONTROL_CURRENT ? TVP_HOTGLYPH : TVP_GLYPH;
-								const int stateID = flags & wxCONTROL_EXPANDED ? GLPS_OPENED : GLPS_CLOSED;
-
-								Rect rect(expanderRect.GetPosition(), (wxSize)theme.GetPartSize(gdi->Get(), partID, stateID));
-								theme.DrawBackground(gdi->Get(), partID, stateID, rect.CenterIn(expanderRect));
-							}
-							else
-							{
-								nativeRenderer.DrawTreeItemButton(this, gdi->GetWx(), expanderRect, flags);
-							}
-						}
+						nativeRenderer.DrawExpanderButton(this, *gc, expanderRect, flags);
 					}
 				}
 
@@ -1445,7 +1399,7 @@ namespace kxf::UI::DataView
 					// Focus rect looks ugly in it's narrower 3px
 					if (focusCellRect.GetWidth() > 3)
 					{
-						nativeRenderer.DrawFocusRect(this, gdi->GetWx(), Rect(focusCellRect).Deflate(FromDIP(wxSize(1, 1))), wxCONTROL_SELECTED);
+						nativeRenderer.DrawItemFocusRect(this, *gc, Rect(focusCellRect).Deflate(FromDIP(wxSize(1, 1))), NativeWidgetFlag::Selected);
 					}
 				}
 
@@ -1454,7 +1408,7 @@ namespace kxf::UI::DataView
 				if (cellState.IsDropTarget())
 				{
 					Rect rowRect = GetRowRect();
-					nativeRenderer.DrawFocusRect(this, gdi->GetWx(), rowRect, wxCONTROL_SELECTED);
+					nativeRenderer.DrawItemFocusRect(this, *gc, rowRect, NativeWidgetFlag::Selected);
 				}
 				#endif
 			}
@@ -2282,17 +2236,13 @@ namespace kxf::UI::DataView
 
 		auto texture = m_GraphicsRenderer->CreateTexture(SizeF(width, height), Drawing::GetStockColor(StockColor::Transparent));
 		auto gc = m_GraphicsRenderer->CreateContext(texture);
-		auto gdi = gc->QueryInterface<GDIGraphicsContext>();
 		{
 			gc->SetFont(m_GraphicsRenderer->CreateFont(GetFont()));
 			gc->SetFontBrush(m_GraphicsRenderer->CreateSolidBrush(m_View->GetForegroundColour()));
 			gc->Clear(*m_GraphicsRenderer->CreateSolidBrush(m_View->GetBackgroundColour()));
 
 			// Draw selection
-			if (gdi)
-			{
-				RenderEngine::DrawSelectionRect(this, gdi->Get(), itemRect, wxCONTROL_CURRENT|wxCONTROL_SELECTED|wxCONTROL_FOCUSED);
-			}
+			IRendererNative::Get().DrawItemSelectionRect(this, *gc, itemRect, NativeWidgetFlag::Current|NativeWidgetFlag::Selected|NativeWidgetFlag::Focused);
 
 			// Draw cells
 			int x = 0;
