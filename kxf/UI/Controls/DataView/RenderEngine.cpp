@@ -7,7 +7,6 @@
 #include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/Private/UxThemeDefines.h"
 #include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
-#include "kxf/Drawing/GDIRenderer/GDIGraphicsContext.h"
 #include "wx/generic/private/markuptext.h"
 
 namespace kxf::UI::DataView
@@ -169,23 +168,17 @@ namespace kxf::UI::DataView
 		}
 		return String::npos;
 	}
-	int RenderEngine::GetControlFlags(CellState cellState) const
+	FlagSet<NativeWidgetFlag> RenderEngine::GetControlFlags(CellState cellState) const
 	{
 		const Column* column = m_Renderer.GetColumn();
 
-		int flags = wxCONTROL_NONE;
-		if (!m_Renderer.GetAttributes().Options().ContainsOption(CellOption::Enabled))
-		{
-			flags |= wxCONTROL_DISABLED;
-		}
-		if (cellState.IsSelected())
-		{
-			flags |= wxCONTROL_PRESSED|wxCONTROL_SELECTED;
-		}
-		if (column && (cellState.IsHotTracked() && column->IsHotTracked()))
-		{
-			flags |= wxCONTROL_CURRENT|wxCONTROL_FOCUSED;
-		}
+		const auto& cellAttributes = m_Renderer.GetAttributes().Options();
+
+		FlagSet<NativeWidgetFlag> flags;
+		flags.Add(NativeWidgetFlag::Disabled, !cellAttributes.ContainsOption(CellOption::Enabled));
+		flags.Add(NativeWidgetFlag::Editable, cellAttributes.ContainsOption(CellOption::Editable));
+		flags.Add(NativeWidgetFlag::Selected|NativeWidgetFlag::Pressed, cellState.IsSelected());
+		flags.Add(NativeWidgetFlag::Current|NativeWidgetFlag::Focused, column && (cellState.IsHotTracked() && column->IsHotTracked()));
 
 		return flags;
 	}
@@ -200,49 +193,63 @@ namespace kxf::UI::DataView
 		if (m_Renderer.CanDraw())
 		{
 			IGraphicsContext& gc = m_Renderer.GetGraphicsContext();
-			if (auto gdi = gc.QueryInterface<GDIGraphicsContext>())
-			{
-				return GetTextExtent(gdi->Get(), string);
-			}
-			else
-			{
-				return gc.GetTextExtent(string);
-			}
+			return gc.GetTextExtent(string);
 		}
 		else
 		{
 			// No existing window context right now, create one to measure text
-			GDIClientContext clientDC(*m_Renderer.GetView());
-			return GetTextExtent(clientDC, string);
+			IGraphicsRenderer& renderer = m_Renderer.GetGraphicsRenderer();
+			auto gc = renderer.CreateMeasuringContext();
+
+			gc->SetFont(renderer.CreateFont(m_Renderer.GetView()->GetFont()));
+			return gc->GetTextExtent(string);
 		}
 	}
-	Size RenderEngine::GetTextExtent(GDIContext& dc, const String& string) const
+	Size RenderEngine::GetTextExtent(IGraphicsContext& gc, const String& string) const
 	{
 		const CellAttribute& attributes = m_Renderer.GetAttributes();
 
 		if (m_Renderer.IsMarkupEnabled())
 		{
-			GDIAction::ChangeFont fontChnager(dc);
-			if (attributes.FontOptions().NeedDCAlteration())
-			{
-				fontChnager.Set(attributes.GetEffectiveFont(dc.GetFont()));
-			}
-
-			return Markup::GetTextExtent(m_Renderer.m_MarkupMode, dc, string);
-		}
-		else
-		{
-			auto GetEffectiveFontIfNeeded = [&dc, &attributes]() -> Font
+			SizeF extent;
+			gc.DrawGDI({0, 0, 1, 1}, [&](GDIContext& dc)
 			{
 				if (attributes.FontOptions().NeedDCAlteration())
 				{
-					return attributes.GetEffectiveFont(dc.GetFont());
+					dc.SetFont(attributes.GetEffectiveFont(dc.GetFont()));
+				}
+				extent = Markup::GetTextExtent(m_Renderer.m_MarkupMode, dc, string);
+			});
+			return extent;
+		}
+		else
+		{
+			auto GetEffectiveFontIfNeeded = [&]() -> Font
+			{
+				if (attributes.FontOptions().NeedDCAlteration())
+				{
+					if (auto font = gc.GetFont())
+					{
+						return attributes.GetEffectiveFont(font->ToFont());
+					}
+					else
+					{
+						return attributes.GetEffectiveFont(m_Renderer.GetView()->GetFont());
+					}
 				}
 				return {};
 			};
-			auto MeasureString = [&dc](const String& text, const Font& font = {})
+			auto MeasureString = [&](const String& text, const Font& font = {})
 			{
-				return dc.GetTextExtent(text, font);
+				if (font)
+				{
+					auto gcFont = m_Renderer.GetGraphicsRenderer().CreateFont(font);
+					return gc.GetTextExtent(text, *gcFont);
+				}
+				else
+				{
+					return gc.GetTextExtent(text);
+				}
 			};
 
 			const size_t lineBreakPos = FindFirstLineBreak(string);
@@ -257,66 +264,16 @@ namespace kxf::UI::DataView
 		}
 	}
 
-	Size RenderEngine::GetMultilineTextExtent(const String& string) const
-	{
-		if (m_Renderer.CanDraw())
-		{
-			IGraphicsContext& gc = m_Renderer.GetGraphicsContext();
-			if (auto gdi = gc.QueryInterface<GDIGraphicsContext>())
-			{
-				return GetMultilineTextExtent(gdi->Get(), string);
-			}
-			else
-			{
-				return gc.GetTextExtent(string);
-			}
-		}
-		else
-		{
-			// No existing window context right now, create one to measure text
-			GDIClientContext clientDC(*m_Renderer.GetView());
-			return GetMultilineTextExtent(clientDC, string);
-		}
-	}
-	Size RenderEngine::GetMultilineTextExtent(GDIContext& dc, const String& string) const
-	{
-		// Markup doesn't support multiline text so we are ignoring it for now.
-
-		const CellAttribute& attributes = m_Renderer.GetAttributes();
-
-		GDIAction::ChangeFont fontChnager(dc);
-		if (attributes.FontOptions().NeedDCAlteration())
-		{
-			fontChnager.Set(attributes.GetEffectiveFont(dc.GetFont()));
-		}
-
-		return dc.GetMultiLineTextExtent(string);
-	}
-
 	bool RenderEngine::DrawText(const Rect& cellRect, CellState cellState, const String& string, int offsetX)
 	{
 		if (m_Renderer.CanDraw() && !string.IsEmpty())
 		{
 			IGraphicsContext& gc = m_Renderer.GetGraphicsContext();
-			if (auto gdi = gc.QueryInterface<GDIGraphicsContext>())
-			{
-				return DrawText(gdi->Get(), cellRect, cellState, string, offsetX);
-			}
-			else
-			{
-				Rect textRect = cellRect;
-				textRect.X() += offsetX;
-				textRect.Width() -= offsetX;
-
-				const CellAttribute& attributes = m_Renderer.GetAttributes();
-				gc.DrawLabel(string, textRect, attributes.Options().GetAlignment());
-
-				return true;
-			}
+			return DrawText(gc, cellRect, cellState, string, offsetX);
 		}
 		return false;
 	}
-	bool RenderEngine::DrawText(GDIContext& dc, const Rect& cellRect, CellState cellState, const String& string, int offsetX)
+	bool RenderEngine::DrawText(IGraphicsContext& gc, const Rect& cellRect, CellState cellState, const String& string, int offsetX)
 	{
 		if (!string.IsEmpty())
 		{
@@ -334,23 +291,31 @@ namespace kxf::UI::DataView
 
 			if (m_Renderer.IsMarkupEnabled())
 			{
-				Markup::DrawText(m_Renderer.m_MarkupMode, string, m_Renderer.GetView(), dc, textRect, flags, static_cast<wxEllipsizeMode>(m_Renderer.GetEllipsizeMode()));
+				gc.DrawGDI({0, 0, 1, 1}, [&](GDIContext& dc)
+				{
+					Markup::DrawText(m_Renderer.m_MarkupMode, string, m_Renderer.GetView(), dc, textRect, flags, static_cast<wxEllipsizeMode>(m_Renderer.GetEllipsizeMode()));
+				});
 			}
 			else
 			{
-				auto DrawString = [this, &dc, &textRect](const String& text)
+				auto Ellipsize = [&]()
 				{
-					dc.DrawText(wxControl::Ellipsize(text, dc.ToWxDC(), static_cast<wxEllipsizeMode>(m_Renderer.GetEllipsizeMode()), textRect.GetWidth()), textRect.GetPosition());
+					String ellipsizedText;
+					gc.DrawGDI({0, 0, 1, 1}, [&](GDIContext& dc)
+					{
+						ellipsizedText = wxControl::Ellipsize(string, dc.ToWxDC(), static_cast<wxEllipsizeMode>(m_Renderer.GetEllipsizeMode()), textRect.GetWidth());
+					});
+					return ellipsizedText;
 				};
 
 				const size_t lineBreakPos = FindFirstLineBreak(string);
 				if (lineBreakPos != String::npos)
 				{
-					DrawString(string.Left(lineBreakPos));
+					gc.DrawText(Ellipsize().Left(lineBreakPos), textRect.GetPosition());
 				}
 				else
 				{
-					DrawString(string);
+					gc.DrawText(Ellipsize(), textRect.GetPosition());
 				}
 			}
 			return true;
@@ -358,7 +323,7 @@ namespace kxf::UI::DataView
 		return false;
 	}
 
-	bool RenderEngine::DrawBitmap(const Rect& cellRect, CellState cellState, const GDIBitmap& bitmap, int reservedWidth)
+	bool RenderEngine::DrawBitmap(const Rect& cellRect, CellState cellState, const BitmapImage& bitmap, int reservedWidth)
 	{
 		if (bitmap)
 		{
@@ -367,14 +332,7 @@ namespace kxf::UI::DataView
 			const bool isEnabled = attributes.Options().ContainsOption(CellOption::Enabled);
 
 			IGraphicsContext& gc = m_Renderer.GetGraphicsContext();
-			if (auto gdi = gc.QueryInterface<GDIGraphicsContext>())
-			{
-				gdi->DrawTexture(isEnabled ? bitmap : bitmap.ConvertToDisabled(), rect);
-			}
-			else
-			{
-				gc.DrawTexture((isEnabled ? bitmap : bitmap.ConvertToDisabled()).ToImage(), rect);
-			}
+			gc.DrawTexture(isEnabled ? bitmap : bitmap.ConvertToDisabled(), rect);
 			return true;
 		}
 		else if (reservedWidth > 0)
@@ -383,7 +341,7 @@ namespace kxf::UI::DataView
 		}
 		return false;
 	}
-	int RenderEngine::DrawBitmapWithText(const Rect& cellRect, CellState cellState, int offsetX, const String& text, const GDIBitmap& bitmap, bool centerTextV, int reservedWidth)
+	int RenderEngine::DrawBitmapWithText(const Rect& cellRect, CellState cellState, int offsetX, const String& text, const BitmapImage& bitmap, bool centerTextV, int reservedWidth)
 	{
 		if (bitmap || reservedWidth > 0)
 		{
@@ -404,72 +362,28 @@ namespace kxf::UI::DataView
 		}
 		return offsetX;
 	}
-	bool RenderEngine::DrawProgressBar(const Rect& cellRect, CellState cellState, int value, int range, ProgressState state, Color* averageBackgroundColor)
+	void RenderEngine::DrawProgressBar(const Rect& cellRect, CellState cellState, int value, int range, ProgressState state, Color* averageBackgroundColor)
 	{
 		IGraphicsContext& gc = m_Renderer.GetGraphicsContext();
-		if (auto gdi = gc.QueryInterface<GDIGraphicsContext>())
-		{
-			// Progress bar looks really ugly when it's smaller than 10x10 pixels, so don't draw it at all in this case.
-			const Size minSize = FromDIP(10, 10);
-			if (cellRect.GetWidth() < minSize.GetWidth() || cellRect.GetHeight() < minSize.GetHeight())
-			{
-				return false;
-			}
 
-			if (UxTheme theme(*m_Renderer.GetView(), UxThemeClass::Progress); theme)
-			{
-				switch (state)
-				{
-					case ProgressState::Paused:
-					{
-						theme.DrawProgressBar(gdi->Get(), PP_BAR, PP_FILL, PBFS_PAUSED, cellRect, value, range, averageBackgroundColor);
-						break;
-					}
-					case ProgressState::Error:
-					{
-						theme.DrawProgressBar(gdi->Get(), PP_BAR, PP_FILL, PBFS_ERROR, cellRect, value, range, averageBackgroundColor);
-						break;
-					}
-					case ProgressState::Partial:
-					{
-						theme.DrawProgressBar(gdi->Get(), PP_BAR, PP_FILL, PBFS_PARTIAL, cellRect, value, range, averageBackgroundColor);
-						break;
-					}
-					default:
-					{
-						theme.DrawProgressBar(gdi->Get(), PP_BAR, PP_FILL, PBFS_NORMAL, cellRect, value, range, averageBackgroundColor);
-						break;
-					}
-				};
-				return true;
-			}
+		auto flags = GetControlFlags(cellState);
+		flags.Add(NativeWidgetFlag::Paused, state == ProgressState::Paused);
+		flags.Add(NativeWidgetFlag::Error, state == ProgressState::Error);
 
-			wxRendererNative::Get().DrawGauge(m_Renderer.GetView(), gdi->GetWx(), cellRect, value, range);
-			return true;
-		}
-		return false;
+		IRendererNative::Get().DrawProgressMeter(m_Renderer.GetMainWindow(), gc, cellRect, value, range, flags);
 	}
 
 	Size RenderEngine::GetToggleSize() const
 	{
 		return wxRendererNative::Get().GetCheckBoxSize(m_Renderer.GetView());
 	}
-	Size RenderEngine::DrawToggle(GDIContext& dc, const Rect& cellRect, CellState cellState, ToggleState toggleState, ToggleType toggleType)
+	Size RenderEngine::DrawToggle(IGraphicsContext& gc, const Rect& cellRect, CellState cellState, ToggleState toggleState, ToggleType toggleType)
 	{
-		int flags = GetControlFlags(cellState);
-		switch (toggleState)
-		{
-			case ToggleState::Checked:
-			{
-				flags |= wxCONTROL_CHECKED;
-				break;
-			}
-			case ToggleState::Indeterminate:
-			{
-				flags |= wxCONTROL_UNDETERMINED;
-				break;
-			}
-		};
+		auto flags = GetControlFlags(cellState);
+		flags.Add(NativeWidgetFlag::Checkable);
+		flags.Add(NativeWidgetFlag::Checked, toggleState == ToggleState::Checked);
+		flags.Add(NativeWidgetFlag::Indeterminate, toggleState == ToggleState::Indeterminate);
+		flags.Add(NativeWidgetFlag::Radio, toggleType != ToggleType::CheckBox && toggleState != ToggleState::Indeterminate);
 
 		// Ensure that the check boxes always have at least the minimal required size,
 		// otherwise DrawCheckBox() doesn't really work well. If this size is greater than
@@ -480,86 +394,7 @@ namespace kxf::UI::DataView
 		size.IncTo(GetToggleSize());
 		toggleRect.SetSize(size);
 
-		if (toggleType == ToggleType::CheckBox || flags & wxCONTROL_UNDETERMINED)
-		{
-			wxRendererNative::Get().DrawCheckBox(view, dc.ToWxDC(), toggleRect, flags);
-		}
-		else
-		{
-			wxRendererNative::Get().DrawRadioBitmap(view, dc.ToWxDC(), toggleRect, flags);
-		}
+		IRendererNative::Get().DrawCheckBox(m_Renderer.GetView(), gc, toggleRect, flags);
 		return toggleRect.GetSize();
-	}
-}
-
-namespace kxf::UI::DataView
-{
-	void RenderEngine::DrawPlusMinusExpander(wxWindow* window, GDIContext& dc, const Rect& canvasRect, int flags)
-	{
-		const bool isActive = flags & wxCONTROL_CURRENT;
-		const bool isExpanded = flags & wxCONTROL_EXPANDED;
-
-		Rect rect(canvasRect.GetPosition(), canvasRect.GetSize() / 2);
-		if (rect.GetWidth() % 2 == 0)
-		{
-			rect.X()++;
-			rect.Width()--;
-		}
-		if (rect.GetHeight() % 2 == 0)
-		{
-			rect.Y()++;
-			rect.Height()--;
-		}
-		rect.X() += rect.GetWidth() / 2;
-		rect.Y() += rect.GetHeight() / 2;
-
-		// Draw inner rectangle
-		dc.SetBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
-		dc.DrawRectangle(rect);
-
-		// Draw border
-		dc.SetBrush(*wxTRANSPARENT_BRUSH);
-		dc.SetPen(wxSystemSettings::GetColour(isActive ? wxSYS_COLOUR_HOTLIGHT : wxSYS_COLOUR_MENUHILIGHT));
-		dc.DrawRectangle(rect);
-
-		// Draw plus/minus
-		dc.SetPen(wxPen(wxSystemSettings::GetColour(wxSYS_COLOUR_HOTLIGHT), window->FromDIP(1), wxPENSTYLE_SOLID));
-
-		const int width = std::min(rect.GetWidth(), rect.GetHeight());
-		const int length = width * 0.5;
-
-		int baseX = width * 0.2 + 1;
-		int baseY = width / 2;
-		auto GetXY = [&]()
-		{
-			return Point(rect.GetX() + baseX, rect.GetY() + baseY);
-		};
-
-		// Draw horizontal line
-		Point pos = GetXY();
-		dc.DrawLine(pos, {pos.GetX() + length, pos.GetY()});
-		if (isExpanded)
-		{
-			return;
-		}
-
-		// Draw vertical line
-		std::swap(baseX, baseY);
-		pos = GetXY();
-		dc.DrawLine(pos, {pos.GetX(), pos.GetY() + length});
-	}
-	void RenderEngine::DrawSelectionRect(wxWindow* window, GDIContext& dc, const Rect& cellRect, int flags)
-	{
-		using namespace kxf;
-
-		if (UxTheme theme(*window, UxThemeClass::TreeView); theme)
-		{
-			const int itemState = GetTreeItemState(flags);
-			theme.DrawBackground(dc, TVP_TREEITEM, GetTreeItemState(flags), cellRect);
-		}
-		else
-		{
-			wxRendererNative::Get().DrawItemSelectionRect(window, dc.ToWxDC(), cellRect, flags);
-		}
 	}
 }

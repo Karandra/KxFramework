@@ -39,14 +39,11 @@ namespace kxf::UI::DataView
 		if (m_Value.HasType())
 		{
 			IGraphicsContext& gc = GetGraphicsContext();
-			if (auto gdi = gc.QueryInterface<GDIGraphicsContext>())
-			{
-				Rect toggleRect(cellRect.GetPosition(), GetRenderEngine().GetToggleSize());
-				toggleRect.SetHeight(cellRect.GetHeight());
+			Rect toggleRect(cellRect.GetPosition(), GetRenderEngine().GetToggleSize());
+			toggleRect.SetHeight(cellRect.GetHeight());
 
-				offsetX += GetRenderEngine().DrawToggle(gdi->Get(), toggleRect, cellState, m_Value.GetState(), m_Value.GetType()).GetWidth();
-				offsetFromToggle = GetRenderEngine().FromDIPX(2);
-			}
+			offsetX += GetRenderEngine().DrawToggle(gc, toggleRect, cellState, m_Value.GetState(), m_Value.GetType()).GetWidth();
+			offsetFromToggle = GetRenderEngine().FromDIPX(2);
 		}
 		if (m_Value.HasBitmap() || m_Value.HasText() || m_Value.IsDefaultBitmapWidthSpecified())
 		{

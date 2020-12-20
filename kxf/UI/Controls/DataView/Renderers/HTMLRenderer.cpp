@@ -4,7 +4,8 @@
 #include "../Node.h"
 #include "../Column.h"
 #include "kxf/UI/Controls/HTMLWindow.h"
-#include "kxf/Drawing/GDIRenderer/GDIGraphicsContext.h"
+#include "kxf/Drawing/GDIRenderer/GDIContext.h"
+#include "kxf/Drawing/GDIRenderer/GDIAction.h"
 #include <wx/html/htmprint.h>
 
 namespace
@@ -21,9 +22,8 @@ namespace
 
 		public:
 			DCUserScaleSaver(kxf::GDIContext& dc)
-				:m_DC(dc)
+				:m_DC(dc), m_UserScale(dc.GetUserScale())
 			{
-				m_UserScale = m_DC.GetUserScale();
 			}
 			~DCUserScaleSaver()
 			{
@@ -66,9 +66,9 @@ namespace kxf::UI::DataView
 		// Setup fonts. This needs to be done after a call to 'wxHtmlDCRenderer::SetHtmlText',
 		// otherwise text scales really weirdly.
 		int pointSize = 0;
-		kxf::String normalFace;
-		kxf::String fixedFace;
-		if (kxf::UI::HTMLWindow::SetupFontsUsing(dc.GetFont(), normalFace, fixedFace, pointSize))
+		String normalFace;
+		String fixedFace;
+		if (UI::HTMLWindow::SetupFontsUsing(dc.GetFont(), normalFace, fixedFace, pointSize))
 		{
 			htmlRenderer.SetFonts(normalFace, fixedFace);
 			htmlRenderer.SetStandardFonts(pointSize, normalFace, fixedFace);
@@ -79,24 +79,24 @@ namespace kxf::UI::DataView
 		if (m_Value.HasText())
 		{
 			IGraphicsContext& gc = GetGraphicsContext();
-			if (auto gdi = gc.QueryInterface<GDIGraphicsContext>())
+			gc.DrawGDI(cellRect, [&](GDIContext& dc)
 			{
-				DCUserScaleSaver userScaleSaver(gdi->Get());
-				GDIAction::Clip clip(gdi->Get(), cellRect.Clone().Deflate(0, GetRenderEngine().FromDIPY(2)));
+				DCUserScaleSaver userScaleSaver(dc);
+				GDIAction::Clip clip(dc, cellRect.Clone().Deflate(0, GetRenderEngine().FromDIPY(2)));
 
 				// Render text
 				wxHtmlDCRenderer htmlRenderer;
-				PrepareRenderer(htmlRenderer, gdi->Get(), cellRect);
+				PrepareRenderer(htmlRenderer, dc, cellRect);
 				htmlRenderer.Render(cellRect.GetX(), cellRect.GetY(), m_VisibleCellFrom, m_VisibleCellTo);
-			}
+			});
 		}
 	}
 	Size HTMLRenderer::GetCellSize() const
 	{
 		if (m_Value.HasText())
 		{
-			return GetRenderEngine().GetMultilineTextExtent(m_Value.GetText());
+			return GetRenderEngine().GetTextExtent(m_Value.GetText());
 		}
-		return Size(0, 0);
+		return {};
 	}
 }
