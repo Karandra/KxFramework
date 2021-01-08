@@ -472,7 +472,7 @@ namespace kxf
 		ImageBundle bundle(count);
 		for (size_t i = 0; i < count; i++)
 		{
-			bundle.AddImage(GetIconResource(name, i, locale).ToImage());
+			bundle.AddImage(GetIconResource(name, i, locale).ToBitmapImage());
 		}
 		return bundle;
 	}

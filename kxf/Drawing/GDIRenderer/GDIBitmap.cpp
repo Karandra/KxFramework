@@ -11,23 +11,23 @@ namespace kxf
 	// GDIBitmap
 	void GDIBitmap::Initialize()
 	{
-		// This shouldn't be necessary, at least for 'ToImage' function
+		// This shouldn't be necessary, at least for 'ToBitmapImage' function
 		// since it can detect whether the alpha is actually used or not.
 		//m_Bitmap.UseAlpha(true);
 	}
 
 	GDIBitmap::GDIBitmap(const GDICursor& other)
-		:m_Bitmap(std::move(other.ToBitmap().m_Bitmap))
+		:m_Bitmap(std::move(other.ToGDIBitmap().m_Bitmap))
 	{
 		Initialize();
 	}
 	GDIBitmap::GDIBitmap(const GDIIcon& other)
-		:m_Bitmap(std::move(other.ToBitmap().m_Bitmap))
+		:m_Bitmap(std::move(other.ToGDIBitmap().m_Bitmap))
 	{
 		Initialize();
 	}
 	GDIBitmap::GDIBitmap(const BitmapImage& other)
-		:m_Bitmap(std::move(other.ToBitmap().m_Bitmap))
+		:m_Bitmap(std::move(other.ToGDIBitmap().m_Bitmap))
 	{
 		Initialize();
 	}
@@ -74,7 +74,7 @@ namespace kxf
 		BitmapImage image;
 		if (image.Load(stream, format))
 		{
-			m_Bitmap = std::move(image.ToBitmap().m_Bitmap);
+			m_Bitmap = std::move(image.ToGDIBitmap().m_Bitmap);
 			return m_Bitmap.IsOk();
 		}
 		return false;
@@ -83,24 +83,55 @@ namespace kxf
 	{
 		if (m_Bitmap.IsOk() && format != ImageFormat::Any && format != ImageFormat::None)
 		{
-			return ToImage().Save(stream, format);
+			return ToBitmapImage().Save(stream, format);
 		}
 		return false;
 	}
 
+	BitmapImage GDIBitmap::ToBitmapImage(const Size& size, InterpolationQuality interpolationQuality) const
+	{
+		if (m_Bitmap.IsOk())
+		{
+			if (!size.IsFullySpecified() || m_Bitmap.GetSize() == size)
+			{
+				return m_Bitmap.ConvertToImage();
+			}
+			else
+			{
+				BitmapImage image = m_Bitmap.ConvertToImage();
+				image.Rescale(size, interpolationQuality);
+				return image.ToGDIBitmap();
+			}
+		}
+		return {};
+	}
+	GDIBitmap GDIBitmap::ToGDIBitmap(const Size& size, InterpolationQuality interpolationQuality) const
+	{
+		if (m_Bitmap.IsOk())
+		{
+			if (!size.IsFullySpecified() || m_Bitmap.GetSize() == size)
+			{
+				return m_Bitmap;
+			}
+			else
+			{
+				BitmapImage image = m_Bitmap.ConvertToImage();
+				image.Rescale(size, interpolationQuality);
+				return image.ToGDIBitmap();
+			}
+		}
+		return {};
+	}
+
 	// GDIBitmap
-	GDICursor GDIBitmap::ToCursor(const Point& hotSpot) const
+	GDICursor GDIBitmap::ToGDICursor(const Point& hotSpot) const
 	{
 		GDICursor cursor(wxCursor(m_Bitmap.ConvertToImage()));
 		cursor.SetHotSpot(hotSpot);
 
 		return cursor;
 	}
-	BitmapImage GDIBitmap::ToImage() const
-	{
-		return m_Bitmap.ConvertToImage();
-	}
-	GDIIcon GDIBitmap::ToIcon() const
+	GDIIcon GDIBitmap::ToGDIIcon() const
 	{
 		wxIcon icon;
 		icon.CopyFromBitmap(m_Bitmap);

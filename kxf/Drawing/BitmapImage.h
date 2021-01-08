@@ -94,6 +94,14 @@ namespace kxf
 			{
 				return m_Image.IsOk() ? Size(m_Image.GetSize()) : Size::UnspecifiedSize();
 			}
+			int GetWidth() const override
+			{
+				return m_Image.IsOk() ? m_Image.GetWidth() : Size::UnspecifiedSize().GetWidth();
+			}
+			int GetHeight() const override
+			{
+				return m_Image.IsOk() ? m_Image.GetWidth() : Size::UnspecifiedSize().GetHeight();
+			}
 			ColorDepth GetColorDepth() const override
 			{
 				return m_Image.HasAlpha() ? ColorDepthDB::BPP32 : ColorDepthDB::BPP24;
@@ -106,6 +114,10 @@ namespace kxf
 
 			void SetOption(const String& name, int value) override;
 			void SetOption(const String& name, const String& value) override;
+
+			// IImage2D: Conversion
+			BitmapImage ToBitmapImage(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::None) const override;
+			GDIBitmap ToGDIBitmap(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::None) const override;
 
 		public:
 			// IBitmapImage: Pixel data
@@ -188,9 +200,8 @@ namespace kxf
 				return m_Image;
 			}
 
-			GDICursor ToCursor(const Point& hotSpot = Point::UnspecifiedPosition()) const;
-			GDIBitmap ToBitmap() const;
-			GDIIcon ToIcon() const;
+			GDICursor ToGDICursor(const Point& hotSpot = Point::UnspecifiedPosition()) const;
+			GDIIcon ToGDIIcon() const;
 
 			// BitmapImage: Pixel data
 			const uint8_t* GetRawData() const

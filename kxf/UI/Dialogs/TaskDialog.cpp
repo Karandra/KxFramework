@@ -208,7 +208,7 @@ namespace kxf::UI
 		}
 		else
 		{
-			return ArtProvider::GetMessageBoxResource(m_MainIconID).ToBitmap();
+			return ArtProvider::GetMessageBoxResource(m_MainIconID).ToGDIBitmap();
 		}
 	}
 	void TaskDialog::SetMainIcon(StdIcon iconID)
@@ -217,7 +217,7 @@ namespace kxf::UI
 		{
 			// Windows doesn't allow to show a question icon using icon ID for the main icon
 			// but if we really want to use this icon nothing should stop us!
-			SetMainIcon(ArtProvider::GetMessageBoxResource(StdIcon::Question).ToBitmap());
+			SetMainIcon(ArtProvider::GetMessageBoxResource(StdIcon::Question).ToGDIBitmap());
 			m_MainIconID = iconID;
 		}
 		else
@@ -235,7 +235,7 @@ namespace kxf::UI
 	void TaskDialog::SetMainIcon(const GDIBitmap& icon)
 	{
 		m_MainIconID = StdIcon::None;
-		m_MainIcon = icon.ToIcon();
+		m_MainIcon = icon.ToGDIIcon();
 
 		m_NativeInfo->UpdateIcons();
 		if (m_Handle)
@@ -256,7 +256,7 @@ namespace kxf::UI
 		}
 		else
 		{
-			return ArtProvider::GetMessageBoxResource(m_FooterIconID).ToBitmap();
+			return ArtProvider::GetMessageBoxResource(m_FooterIconID).ToGDIBitmap();
 		}
 	}
 	void TaskDialog::SetFooterIcon(StdIcon iconID)
@@ -273,7 +273,7 @@ namespace kxf::UI
 	void TaskDialog::SetFooterIcon(const GDIBitmap& icon)
 	{
 		m_FooterIconID = StdIcon::None;
-		m_FooterIcon = icon.ToIcon();
+		m_FooterIcon = icon.ToGDIIcon();
 
 		m_NativeInfo->UpdateIcons();
 		if (m_Handle)

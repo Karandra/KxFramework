@@ -292,7 +292,7 @@ namespace kxf::UI
 				{
 					if (BitmapImage image = bundle.GetImage({size, size}, ImageBundleFlag::SystemSize|ImageBundleFlag::NearestLarger))
 					{
-						SetBitmap(image.ToBitmap().ToWxBitmap());
+						SetBitmap(image.ToGDIBitmap().ToWxBitmap());
 						return;
 					}
 				}

@@ -19,7 +19,7 @@ namespace kxf
 	{
 		for (size_t i = 0; i < other.GetIconCount(); i++)
 		{
-			if (!m_Items.emplace_back(GDIIcon(other.GetIconByIndex(i)).ToImage()))
+			if (!m_Items.emplace_back(GDIIcon(other.GetIconByIndex(i)).ToBitmapImage()))
 			{
 				m_Items.pop_back();
 			}
@@ -203,7 +203,7 @@ namespace kxf
 		wxIconBundle iconBundle;
 		for (const BitmapImage& image: m_Items)
 		{
-			iconBundle.AddIcon(image.ToIcon().ToWxIcon());
+			iconBundle.AddIcon(image.ToGDIIcon().ToWxIcon());
 		}
 		return iconBundle;
 	}

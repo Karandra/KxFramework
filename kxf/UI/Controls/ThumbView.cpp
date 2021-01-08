@@ -308,7 +308,7 @@ namespace kxf::UI
 		image.SetOption(ImageOption::DesiredHeight, m_ThumbSize.GetHeight());
 		if (image.Load(stream, format, index))
 		{
-			return AddThumb(image.ToBitmap());
+			return AddThumb(image.ToGDIBitmap());
 		}
 		return InvalidItemIndex;
 	}

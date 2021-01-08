@@ -15,11 +15,11 @@ namespace kxf
 			}
 			else if (auto bitmap = object->QueryInterface<GDIBitmap>())
 			{
-				return bitmap->ToImage();
+				return bitmap->ToBitmapImage();
 			}
 			else if (auto icon = object->QueryInterface<GDIIcon>())
 			{
-				return icon->ToImage();
+				return icon->ToBitmapImage();
 			}
 		}
 		return {};
@@ -30,7 +30,7 @@ namespace kxf
 		{
 			if (auto image = object->QueryInterface<BitmapImage>())
 			{
-				return image->ToBitmap();
+				return image->ToGDIBitmap();
 			}
 			else if (auto bitmap = object->QueryInterface<GDIBitmap>())
 			{
@@ -38,7 +38,7 @@ namespace kxf
 			}
 			else if (auto icon = object->QueryInterface<GDIIcon>())
 			{
-				return icon->ToBitmap();
+				return icon->ToGDIBitmap();
 			}
 		}
 		return {};
@@ -49,11 +49,11 @@ namespace kxf
 		{
 			if (auto image = object->QueryInterface<BitmapImage>())
 			{
-				return image->ToIcon();
+				return image->ToGDIIcon();
 			}
 			else if (auto bitmap = object->QueryInterface<GDIBitmap>())
 			{
-				return bitmap->ToIcon();
+				return bitmap->ToGDIIcon();
 			}
 			else if (auto icon = object->QueryInterface<GDIIcon>())
 			{

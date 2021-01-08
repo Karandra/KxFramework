@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SplashWindow.h"
+#include "kxf/Drawing/GDIRenderer/GDIMemoryContext.h"
 #include "kxf/Utility/System.h"
 #include <wx/rawbmp.h>
 
@@ -24,7 +25,7 @@ namespace kxf::UI
 	}
 	bool SplashWindow::DoUpdateSplash()
 	{
-		BitmapImage image = m_Bitmap.ToImage();
+		BitmapImage image = m_Bitmap.ToBitmapImage();
 		if (image)
 		{
 			// UpdateLayeredWindow expects premultiplied alpha
@@ -43,8 +44,8 @@ namespace kxf::UI
 			}
 		}
 
-		GDIBitmap bitmap = image.ToBitmap();
-		wxMemoryDC dc(bitmap.ToWxBitmap());
+		GDIBitmap bitmap = image.ToGDIBitmap();
+		GDIMemoryContext dc(bitmap);
 
 		BLENDFUNCTION blendFunction = {0};
 		blendFunction.BlendOp = AC_SRC_OVER;
@@ -54,7 +55,7 @@ namespace kxf::UI
 
 		POINT pos = {0, 0};
 		SIZE size = {bitmap.GetWidth(), bitmap.GetHeight()};
-		return ::UpdateLayeredWindow(GetHandle(), nullptr, nullptr, &size, dc.GetHDC(), &pos, 0, &blendFunction, ULW_ALPHA);
+		return ::UpdateLayeredWindow(GetHandle(), nullptr, nullptr, &size, static_cast<HDC>(dc.GetHandle()), &pos, 0, &blendFunction, ULW_ALPHA);
 	}
 	void SplashWindow::DoCenterWindow()
 	{

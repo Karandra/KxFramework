@@ -85,7 +85,7 @@ namespace kxf::UI
 			void SetIcon(const GDIIcon& icon);
 			void SetIcon(const GDIBitmap& bitmap)
 			{
-				SetIcon(bitmap.ToIcon());
+				SetIcon(bitmap.ToGDIIcon());
 			}
 			void SetIcon(StdIcon iconID);
 

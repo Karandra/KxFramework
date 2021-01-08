@@ -40,7 +40,7 @@ namespace kxf::Drawing::Private
 				const int height = image->GetOptionInt(wxIMAGE_OPTION_MAX_HEIGHT);
 
 				svgImage.SetOption(ImageOption::DPI, dpi);
-				*image = svgImage.Rasterize({width, height}).ToWxImage();
+				*image = svgImage.ToBitmapImage({width, height}).ToWxImage();
 				return image->IsOk();
 			}
 		}

@@ -75,7 +75,7 @@ namespace kxf::Sciter
 		}
 	}
 	GraphicsBitmap::GraphicsBitmap(const GDIBitmap& bitmap)
-		:GraphicsBitmap(bitmap.ToImage())
+		:GraphicsBitmap(bitmap.ToBitmapImage())
 	{
 	}
 	GraphicsBitmap::GraphicsBitmap(const ScriptValue& value)
@@ -162,7 +162,7 @@ namespace kxf::Sciter
 	}
 	GDIBitmap GraphicsBitmap::ConvertToBitmap() const
 	{
-		return ConvertToImage().ToBitmap();
+		return ConvertToImage().ToGDIBitmap();
 	}
 	ScriptValue GraphicsBitmap::ToScriptValue() const
 	{

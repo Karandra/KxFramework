@@ -10,6 +10,9 @@ namespace kxf
 {
 	class IInputStream;
 	class IOutputStream;
+
+	class GDIBitmap;
+	class BitmapImage;
 }
 
 namespace kxf
@@ -36,11 +39,11 @@ namespace kxf
 
 			// Properties
 			virtual Size GetSize() const = 0;
-			int GetWidth() const
+			virtual int GetWidth() const
 			{
 				return GetSize().GetWidth();
 			}
-			int GetHeight() const
+			virtual int GetHeight() const
 			{
 				return GetSize().GetHeight();
 			}
@@ -52,6 +55,10 @@ namespace kxf
 			virtual std::optional<int> GetOptionInt(const String& name) const = 0;
 			virtual void SetOption(const String& name, const String& value) = 0;
 			virtual void SetOption(const String& name, int value) = 0;
+
+			// Conversion
+			virtual BitmapImage ToBitmapImage(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::None) const = 0;
+			virtual GDIBitmap ToGDIBitmap(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::None) const = 0;
 
 		public:
 			explicit operator bool() const noexcept

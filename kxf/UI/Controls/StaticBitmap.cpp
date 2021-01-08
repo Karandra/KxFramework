@@ -42,6 +42,6 @@ namespace kxf::UI
 	}
 	void StaticBitmap::SetImage(const BitmapImage& image)
 	{
-		SetBitmap(BitmapImage(image).ToBitmap().ToWxBitmap());
+		SetBitmap(image.ToGDIBitmap().ToWxBitmap());
 	}
 }

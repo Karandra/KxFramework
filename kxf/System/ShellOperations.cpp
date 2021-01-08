@@ -352,7 +352,7 @@ namespace kxf::Shell
 		{
 			GDIIcon icon;
 			icon.AttachHandle(shellInfo.hIcon);
-			return icon.ToImage();
+			return icon.ToBitmapImage();
 		}
 		return {};
 	}
@@ -366,7 +366,7 @@ namespace kxf::Shell
 		{
 			GDIIcon icon;
 			icon.AttachHandle(shellInfo.hIcon);
-			return icon.ToImage();
+			return icon.ToBitmapImage();
 		}
 		return {};
 	}

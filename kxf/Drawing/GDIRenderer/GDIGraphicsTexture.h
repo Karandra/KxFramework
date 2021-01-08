@@ -42,7 +42,7 @@ namespace kxf
 			{
 			}
 			GDIGraphicsTexture(GDIGraphicsRenderer& rendrer, const BitmapImage& image)
-				:m_Renderer(&rendrer), m_Bitmap(image.ToBitmap())
+				:m_Renderer(&rendrer), m_Bitmap(image.ToGDIBitmap())
 			{
 			}
 			GDIGraphicsTexture(GDIGraphicsRenderer& rendrer, const SizeF& size, const Color& color)
@@ -141,18 +141,18 @@ namespace kxf
 			}
 			void Rescale(const SizeF& size, InterpolationQuality interpolationQuality) override
 			{
-				m_Bitmap = m_Bitmap.ToImage().Rescale(size, interpolationQuality).ToBitmap();
+				m_Bitmap = m_Bitmap.ToGDIBitmap(size, interpolationQuality);
 			}
 
-			BitmapImage ToImage() const override
+			BitmapImage ToBitmapImage(const SizeF& size = SizeF::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::None) const override
 			{
-				return m_Bitmap.ToImage();
+				return m_Bitmap.ToBitmapImage(size, interpolationQuality);
 			}
-			bool FromImage(const BitmapImage& image)
+			bool FromBitmapImage(const BitmapImage& image)
 			{
 				if (image)
 				{
-					m_Bitmap = image.ToBitmap();
+					m_Bitmap = image.ToGDIBitmap();
 					return !m_Bitmap.IsNull();
 				}
 				return false;
@@ -197,7 +197,7 @@ namespace kxf
 			{
 				if (!m_Bitmap || SizeF(m_Bitmap.GetSize()) != size)
 				{
-					m_Bitmap = m_VectorImage.Rasterize(size);
+					m_Bitmap = m_VectorImage.ToGDIBitmap(size);
 				}
 			}
 			void Invalidate()
@@ -289,11 +289,11 @@ namespace kxf
 			{
 			}
 
-			BitmapImage ToImage() const override
+			BitmapImage ToBitmapImage(const SizeF& size = SizeF::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::None) const override
 			{
-				return m_VectorImage.Rasterize();
+				return m_VectorImage.ToBitmapImage(size, interpolationQuality);
 			}
-			bool FromImage(const BitmapImage& image)
+			bool FromBitmapImage(const BitmapImage& image)
 			{
 				m_VectorImage = {};
 				Invalidate();

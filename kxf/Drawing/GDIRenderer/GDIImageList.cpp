@@ -180,12 +180,12 @@ namespace kxf
 	}
 	int GDIImageList::Add(const BitmapImage& image)
 	{
-		return Add(image.ToBitmap());
+		return Add(image.ToGDIBitmap());
 	}
 
 	bool GDIImageList::Replace(int index, const BitmapImage& image)
 	{
-		return wxImageList::Replace(index, image.ToBitmap().ToWxBitmap());
+		return wxImageList::Replace(index, image.ToGDIBitmap().ToWxBitmap());
 	}
 	bool GDIImageList::Replace(int index, const GDIIcon& icon)
 	{
@@ -198,7 +198,7 @@ namespace kxf
 
 	BitmapImage GDIImageList::GetImage(int index) const
 	{
-		return GetBitmap(index).ToImage();
+		return GetBitmap(index).ToBitmapImage();
 	}
 	GDIIcon GDIImageList::GetIcon(int index) const
 	{
@@ -206,7 +206,7 @@ namespace kxf
 	}
 	GDIBitmap GDIImageList::GetBitmap(int index) const
 	{
-		return GDIIcon(wxImageList::GetIcon(index)).ToBitmap();
+		return GDIIcon(wxImageList::GetIcon(index)).ToGDIBitmap();
 	}
 
 	Color GDIImageList::GetBackgroundColor() const noexcept

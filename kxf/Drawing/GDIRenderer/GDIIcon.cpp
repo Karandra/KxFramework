@@ -9,15 +9,15 @@ namespace kxf
 {
 	// Icon
 	GDIIcon::GDIIcon(const GDICursor& other)
-		:m_Icon(std::move(other.ToIcon().m_Icon))
+		:m_Icon(std::move(other.ToGDIIcon().m_Icon))
 	{
 	}
 	GDIIcon::GDIIcon(const BitmapImage& other)
-		:m_Icon(std::move(other.ToIcon().m_Icon))
+		:m_Icon(std::move(other.ToGDIIcon().m_Icon))
 	{
 	}
 	GDIIcon::GDIIcon(const GDIBitmap& other)
-		:m_Icon(std::move(other.ToIcon().m_Icon))
+		:m_Icon(std::move(other.ToGDIIcon().m_Icon))
 	{
 	}
 
@@ -44,7 +44,7 @@ namespace kxf
 	void GDIIcon::Create(const Size& size)
 	{
 		BitmapImage image(size);
-		m_Icon = std::move(image.ToIcon().m_Icon);
+		m_Icon = std::move(image.ToGDIIcon().m_Icon);
 	}
 
 	// IImage2D
@@ -53,7 +53,7 @@ namespace kxf
 		BitmapImage image;
 		if (image.Load(stream, format, index == IImage2D::npos ? -1 : static_cast<int>(index)))
 		{
-			m_Icon = std::move(image.ToIcon().m_Icon);
+			m_Icon = std::move(image.ToGDIIcon().m_Icon);
 			return m_Icon.IsOk();
 		}
 		return false;
@@ -62,30 +62,43 @@ namespace kxf
 	{
 		if (m_Icon.IsOk() && format != ImageFormat::Any && format != ImageFormat::None)
 		{
-			return ToImage().Save(stream, format);
+			return ToBitmapImage().Save(stream, format);
 		}
 		return false;
 	}
 
-	// Icon
-	GDICursor GDIIcon::ToCursor(const Point& hotSpot) const
+	BitmapImage GDIIcon::ToBitmapImage(const Size& size, InterpolationQuality interpolationQuality) const
 	{
-		GDICursor cursor(ToBitmap());
+		return GDIIcon::ToGDIBitmap(size, interpolationQuality).ToBitmapImage(Size::UnspecifiedSize(), InterpolationQuality::None);
+	}
+	GDIBitmap GDIIcon::ToGDIBitmap(const Size& size, InterpolationQuality interpolationQuality) const
+	{
+		if (m_Icon.IsOk())
+		{
+			wxBitmap bitmap(m_Icon, wxBitmapTransparency::wxBitmapTransparency_Always);
+			if (!size.IsFullySpecified() || m_Icon.GetSize() == size)
+			{
+				return bitmap;
+			}
+
+			BitmapImage image = GDIBitmap(bitmap);
+			image.Rescale(size, interpolationQuality);
+			return image.ToGDIBitmap();
+		}
+		return {};
+	}
+
+	// Icon
+	GDICursor GDIIcon::ToGDICursor(const Point& hotSpot) const
+	{
+		GDICursor cursor(ToGDIBitmap());
 		cursor.SetHotSpot(hotSpot);
 
 		return cursor;
 	}
-	GDIBitmap GDIIcon::ToBitmap() const
-	{
-		return wxBitmap(m_Icon, wxBitmapTransparency::wxBitmapTransparency_Always);
-	}
-	BitmapImage GDIIcon::ToImage() const
-	{
-		return ToBitmap();
-	}
 
 	GDIIcon GDIIcon::ConvertToDisabled(Angle brightness) const
 	{
-		return ToBitmap().ConvertToDisabled(brightness);
+		return ToGDIBitmap().ConvertToDisabled(brightness);
 	}
 }

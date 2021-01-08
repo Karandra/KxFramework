@@ -73,7 +73,7 @@ namespace kxf::UI
 			HResult m_ShowStatus = HResult::Fail();
 			FileBrowseDialogMode m_Mode = FileBrowseDialogMode::Open;
 			FlagSet<FileBrowseDialogStyle> m_Style;
-			
+
 			String m_Label;
 			String m_Caption;
 			std::vector<Private::FilterItem> m_FilterList;
@@ -136,13 +136,13 @@ namespace kxf::UI
 			{
 				SetCaption(title);
 			}
-			
+
 			wxString GetCaption() const override
 			{
 				return GetTitle();
 			}
 			void SetCaption(const wxString& caption) override;
-			
+
 			wxString GetLabel() const override
 			{
 				return m_Label;
@@ -152,7 +152,7 @@ namespace kxf::UI
 			// Icons
 			GDIBitmap GetMainIcon() const override
 			{
-				return GDIIcon(GetIcon()).ToBitmap();
+				return GDIIcon(GetIcon()).ToGDIBitmap();
 			}
 			StdIcon GetMainIconID() const override
 			{
@@ -160,7 +160,7 @@ namespace kxf::UI
 			}
 			void SetMainIcon(const GDIBitmap& icon) override
 			{
-				SetIcon(icon.ToIcon().ToWxIcon());
+				SetIcon(icon.ToGDIIcon().ToWxIcon());
 			}
 			void SetMainIcon(StdIcon iconID = DefaultIconID) override
 			{
@@ -170,11 +170,11 @@ namespace kxf::UI
 			bool SetDirectory(const FSPath& path);
 			bool SetNavigationRoot(const FSPath& path);
 			bool SetButtonLabel(StdID buttonID, const String& text);
-			
+
 			String GetItemName() const;
 			void SetItemName(const String& name);
 			void SetDefaultExtension(const String& extension);
-			
+
 			size_t GetSelectedFilter() const;
 			void SetSelectedFilter(size_t filterIndex);
 

@@ -555,7 +555,7 @@ namespace kxf::UI
 		m_MainIconID = iconID;
 		if (iconID != StdIcon::None)
 		{
-			m_MainIcon = ArtProvider::GetMessageBoxResource(iconID).ToBitmap();
+			m_MainIcon = ArtProvider::GetMessageBoxResource(iconID).ToGDIBitmap();
 			LoadIcon();
 		}
 		SetIconVisibility();

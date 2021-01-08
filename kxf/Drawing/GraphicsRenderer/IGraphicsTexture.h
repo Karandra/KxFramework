@@ -37,7 +37,7 @@ namespace kxf
 			virtual std::shared_ptr<IGraphicsTexture> GetSubTexture(const RectF& rect) const = 0;
 			virtual void Rescale(const SizeF& size, InterpolationQuality interpolationQuality) = 0;
 
-			virtual BitmapImage ToImage() const = 0;
-			virtual bool FromImage(const BitmapImage& image) = 0;
+			virtual BitmapImage ToBitmapImage(const SizeF& size = SizeF::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::None) const = 0;
+			virtual bool FromBitmapImage(const BitmapImage& image) = 0;
 	};
 }

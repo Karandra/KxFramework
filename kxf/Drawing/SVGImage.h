@@ -80,10 +80,13 @@ namespace kxf
 			{
 			}
 
+			// IImage2D: Conversion
+			BitmapImage ToBitmapImage(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::None) const override;
+			GDIBitmap ToGDIBitmap(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::None) const override;
+
 		public:
 			// IVectorImage
 			Rect GetBoundingBox() const override;
-			BitmapImage Rasterize(const Size& size = Size::UnspecifiedSize()) const override;
 
 		public:
 			SVGImage& operator=(const SVGImage& other);

@@ -2277,7 +2277,7 @@ namespace kxf::UI::DataView
 			}
 		}
 
-		return texture->ToImage().ToBitmap();
+		return texture->ToBitmapImage().ToGDIBitmap();
 	}
 
 	bool MainWindow::EnableDND(std::unique_ptr<wxDataObjectSimple> dataObject, DNDOpType type, bool isPreferredDrop)

@@ -308,7 +308,7 @@ namespace kxf
 			}
 			else
 			{
-				WxGraphicsContext::DrawTexture(texture.ToImage(), rect);
+				WxGraphicsContext::DrawTexture(texture.ToBitmapImage(), rect);
 			}
 		}
 	}
@@ -316,7 +316,7 @@ namespace kxf
 	{
 		if (vectorImage && !rect.IsEmpty())
 		{
-			BitmapImage image = vectorImage.Rasterize(rect.GetSize());
+			BitmapImage image = vectorImage.ToBitmapImage(rect.GetSize());
 			m_Context->DrawBitmap(m_Renderer->Get().CreateBitmapFromImage(image.ToWxImage()), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
 			CalcBoundingBox(rect);
 		}
@@ -327,7 +327,7 @@ namespace kxf
 		{
 			if (m_Renderer->CanRescaleBitmapOnDraw() || SizeF(image.GetSize()) == rect.GetSize())
 			{
-				m_Context->DrawBitmap(image.ToBitmap().ToWxBitmap(), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
+				m_Context->DrawBitmap(image.ToGDIBitmap().ToWxBitmap(), rect.GetX(), rect.GetY(), rect.GetWidth(), rect.GetHeight());
 			}
 			else
 			{
@@ -501,11 +501,11 @@ namespace kxf
 			{
 				if (auto iconWx = icon.QueryInterface<WxGraphicsTexture>())
 				{
-					boundingBox = m_GCDC.DrawLabel(text, rect, iconWx->GetImage().ToBitmap(), alignment, acceleratorIndex);
+					boundingBox = m_GCDC.DrawLabel(text, rect, iconWx->GetImage().ToGDIBitmap(), alignment, acceleratorIndex);
 				}
 				else
 				{
-					boundingBox = m_GCDC.DrawLabel(text, rect, icon.ToImage().ToBitmap(), alignment, acceleratorIndex);
+					boundingBox = m_GCDC.DrawLabel(text, rect, icon.ToBitmapImage().ToGDIBitmap(), alignment, acceleratorIndex);
 				}
 			}
 			else
@@ -826,7 +826,7 @@ namespace kxf
 		if (m_Context && m_DC)
 		{
 			m_Context->Flush();
-			m_DC.DrawBitmap(m_Image->ToBitmap(), {0, 0});
+			m_DC.DrawBitmap(m_Image->ToGDIBitmap(), {0, 0});
 
 			return true;
 		}

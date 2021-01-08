@@ -121,7 +121,7 @@ namespace kxf::UI
 					else
 					{
 						Size size = System::GetMetric(SystemSizeMetric::IconSmall);
-						m_QuestionIcon = ArtProvider::GetResource(ArtProvider::GetMessageBoxResourceIDs(StdIcon::Question), ArtProviderClient::MessageBox, size).ToIcon();
+						m_QuestionIcon = ArtProvider::GetResource(ArtProvider::GetMessageBoxResourceIDs(StdIcon::Question), ArtProviderClient::MessageBox, size).ToGDIIcon();
 					}
 
 					if (m_QuestionIcon)

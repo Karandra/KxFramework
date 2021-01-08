@@ -12,12 +12,12 @@ namespace kxf::UI::DataView
 		}
 		else if (GDIIcon icon; value.GetAs(&icon))
 		{
-			m_Bitmap = icon.ToBitmap();
+			m_Bitmap = icon.ToGDIBitmap();
 			return true;
 		}
 		else if (BitmapImage image; value.GetAs(&image))
 		{
-			m_Bitmap = image.ToBitmap();
+			m_Bitmap = image.ToGDIBitmap();
 			return true;
 		}
 		return false;

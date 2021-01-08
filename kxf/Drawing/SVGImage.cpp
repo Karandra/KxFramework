@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SVGImage.h"
 #include "BitmapImage.h"
+#include "GDIRenderer/GDIBitmap.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/StreamReaderWriter.h"
 #include "kxf/General/DateTime.h"
@@ -51,7 +52,7 @@ namespace kxf
 		return nullptr;
 	}
 
-	// IImage2D
+	// IImage2D: Create, save and load
 	void SVGImage::Create(const Size& size)
 	{
 		m_Document = std::make_shared<lunasvg::SVGDocument>();
@@ -82,7 +83,7 @@ namespace kxf
 				IO::OutputStreamWriter writer(stream);
 				writer.WriteStringUTF8(String::FromUTF8(m_Document->toString()));
 			}
-			else if (BitmapImage bitmap = SVGImage::Rasterize(SVGImage::GetSize()))
+			else if (BitmapImage bitmap = SVGImage::ToBitmapImage(SVGImage::GetSize()))
 			{
 				return bitmap.Save(stream, format);
 			}
@@ -90,11 +91,13 @@ namespace kxf
 		return false;
 	}
 
+	// IImage2D: Properties
 	Size SVGImage::GetSize() const
 	{
 		return m_Document ? Size(m_Document->documentWidth(ToSVGDPI(m_DPI)), m_Document->documentHeight(ToSVGDPI(m_DPI))) : Size::UnspecifiedSize();
 	}
 
+	// IImage2D: Options
 	std::optional<int> SVGImage::GetOptionInt(const String& name) const
 	{
 		if (m_Document)
@@ -133,17 +136,8 @@ namespace kxf
 		}
 	}
 
-	// IVectorImage
-	Rect SVGImage::GetBoundingBox() const
-	{
-		if (m_Document)
-		{
-			auto box = m_Document->getBBox(ToSVGDPI(m_DPI));
-			return Rect(box.x, box.y, box.width, box.height);
-		}
-		return {};
-	}
-	BitmapImage SVGImage::Rasterize(const Size& size) const
+	// IImage2D: Conversion
+	BitmapImage SVGImage::ToBitmapImage(const Size& size, InterpolationQuality interpolationQuality) const
 	{
 		if (m_Document)
 		{
@@ -173,6 +167,21 @@ namespace kxf
 				image.SetPixelDataRGBA(reinterpret_cast<const PackedRGBA<uint8_t>*>(sourceData));
 				return image;
 			}
+		}
+		return {};
+	}
+	GDIBitmap SVGImage::ToGDIBitmap(const Size& size, InterpolationQuality interpolationQuality) const
+	{
+		return SVGImage::ToBitmapImage(size, interpolationQuality).ToGDIBitmap();
+	}
+
+	// IVectorImage
+	Rect SVGImage::GetBoundingBox() const
+	{
+		if (m_Document)
+		{
+			auto box = m_Document->getBBox(ToSVGDPI(m_DPI));
+			return Rect(box.x, box.y, box.width, box.height);
 		}
 		return {};
 	}

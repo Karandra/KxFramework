@@ -247,7 +247,7 @@ namespace kxf
 				m_Brush.SetStipple(bitmap);
 			}
 			WxGraphicsTextureBrush(WxGraphicsRenderer& rendrer, const BitmapImage& image, WrapMode wrapMode = WrapMode::None)
-				:WxGraphicsTextureBrush(rendrer, image.ToBitmap(), wrapMode)
+				:WxGraphicsTextureBrush(rendrer, image.ToGDIBitmap(), wrapMode)
 			{
 			}
 
@@ -267,7 +267,7 @@ namespace kxf
 			{
 				if (texture && *texture)
 				{
-					m_Brush.SetStipple(texture->QueryInterface<WxGraphicsTexture>()->GetImage().ToBitmap());
+					m_Brush.SetStipple(texture->QueryInterface<WxGraphicsTexture>()->GetImage().ToGDIBitmap());
 				}
 				else
 				{

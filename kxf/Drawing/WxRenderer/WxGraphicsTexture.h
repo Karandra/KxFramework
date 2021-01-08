@@ -48,7 +48,7 @@ namespace kxf
 			{
 			}
 			WxGraphicsTexture(WxGraphicsRenderer& rendrer, const BitmapImage& image)
-				:m_Renderer(&rendrer), m_Image(image.ToBitmap())
+				:m_Renderer(&rendrer), m_Image(image.ToGDIBitmap())
 			{
 			}
 			WxGraphicsTexture(WxGraphicsRenderer& rendrer, const SizeF& size, const Color& color)
@@ -143,11 +143,11 @@ namespace kxf
 				Invalidate();
 			}
 
-			BitmapImage ToImage() const override
+			BitmapImage ToBitmapImage(const SizeF& size = SizeF::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::None) const override
 			{
-				return m_Image;
+				return m_Image.ToBitmapImage(size, interpolationQuality);
 			}
-			bool FromImage(const BitmapImage& image) override
+			bool FromBitmapImage(const BitmapImage& image) override
 			{
 				m_Image = image;
 				Invalidate();
@@ -196,7 +196,7 @@ namespace kxf
 				{
 					if (!m_Initialized || !m_BitmapImage || SizeF(m_BitmapImage.GetSize()) != size)
 					{
-						m_BitmapImage = m_VectorImage.Rasterize(size);
+						m_BitmapImage = m_VectorImage.ToBitmapImage(size);
 						m_Graphics = m_Renderer->Get().CreateBitmapFromImage(m_BitmapImage.ToWxImage());
 
 						m_Initialized = true;
@@ -297,12 +297,11 @@ namespace kxf
 			{
 			}
 
-			BitmapImage ToImage() const override
+			BitmapImage ToBitmapImage(const SizeF& size = SizeF::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::None) const override
 			{
-				const_cast<WxGraphicsVectorTexture&>(*this).Initialize(Size::UnspecifiedSize());
-				return m_VectorImage.Rasterize();
+				return m_VectorImage.ToBitmapImage(size, interpolationQuality);
 			}
-			bool FromImage(const BitmapImage& image) override
+			bool FromBitmapImage(const BitmapImage& image) override
 			{
 				m_VectorImage = {};
 				Invalidate();

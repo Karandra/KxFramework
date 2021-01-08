@@ -46,15 +46,15 @@ namespace kxf
 	}
 
 	BitmapImage::BitmapImage(const GDIIcon& other)
-		:m_Image(std::move(other.ToImage().m_Image))
+		:m_Image(std::move(other.ToBitmapImage().m_Image))
 	{
 	}
 	BitmapImage::BitmapImage(const GDIBitmap& other)
-		:m_Image(std::move(other.ToImage().m_Image))
+		:m_Image(std::move(other.ToBitmapImage().m_Image))
 	{
 	}
 	BitmapImage::BitmapImage(const GDICursor& other)
-		:m_Image(std::move(other.ToImage().m_Image))
+		:m_Image(std::move(other.ToBitmapImage().m_Image))
 	{
 	}
 
@@ -132,6 +132,42 @@ namespace kxf
 	void BitmapImage::SetOption(const String& name, const String& value)
 	{
 		m_Image.SetOption(name, value);
+	}
+
+	// IImage2D: Conversion
+	BitmapImage BitmapImage::ToBitmapImage(const Size& size, InterpolationQuality interpolationQuality) const
+	{
+		if (m_Image.IsOk())
+		{
+			if (!size.IsFullySpecified() || m_Image.GetSize() == size)
+			{
+				return m_Image;
+			}
+			else
+			{
+				BitmapImage clone = m_Image;
+				clone.Rescale(size, interpolationQuality);
+				return clone;
+			}
+		}
+		return {};
+	}
+	GDIBitmap BitmapImage::ToGDIBitmap(const Size& size, InterpolationQuality interpolationQuality) const
+	{
+		if (m_Image.IsOk())
+		{
+			if (!size.IsFullySpecified() || m_Image.GetSize() == size)
+			{
+				return wxBitmap(m_Image, *ColorDepthDB::BPP32);
+			}
+			else
+			{
+				BitmapImage clone = m_Image;
+				clone.Rescale(size, interpolationQuality);
+				return wxBitmap(clone.ToWxImage(), *ColorDepthDB::BPP32);
+			}
+		}
+		return {};
 	}
 
 	// IBitmapImage: Pixel data
@@ -305,7 +341,7 @@ namespace kxf
 		m_Image.SetType(Drawing::Private::MapImageFormat(format));
 	}
 
-	GDICursor BitmapImage::ToCursor(const Point& hotSpot) const
+	GDICursor BitmapImage::ToGDICursor(const Point& hotSpot) const
 	{
 		wxCursor cursorWx(m_Image);
 		GDICursor cursor(std::move(cursorWx));
@@ -313,13 +349,9 @@ namespace kxf
 
 		return cursor;
 	}
-	GDIBitmap BitmapImage::ToBitmap() const
+	GDIIcon BitmapImage::ToGDIIcon() const
 	{
-		return wxBitmap(m_Image, *ColorDepthDB::BPP32);
-	}
-	GDIIcon BitmapImage::ToIcon() const
-	{
-		return ToBitmap();
+		return ToBitmapImage();
 	}
 
 	// BitmapImage: Pixel data

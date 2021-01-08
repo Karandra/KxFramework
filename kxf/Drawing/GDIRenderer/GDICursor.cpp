@@ -9,15 +9,15 @@ namespace kxf
 {
 	// GDICursor
 	GDICursor::GDICursor(const GDIIcon& other)
-		:m_Cursor(other.ToCursor().m_Cursor)
+		:m_Cursor(other.ToGDICursor().m_Cursor)
 	{
 	}
 	GDICursor::GDICursor(const GDIBitmap& other)
-		:m_Cursor(other.ToCursor().m_Cursor)
+		:m_Cursor(other.ToGDICursor().m_Cursor)
 	{
 	}
 	GDICursor::GDICursor(const BitmapImage& other)
-		:m_Cursor(other.ToCursor().m_Cursor)
+		:m_Cursor(other.ToGDICursor().m_Cursor)
 	{
 	}
 
@@ -48,7 +48,7 @@ namespace kxf
 			image.SetOption(ImageOption::Cursor::HotSpotX, m_HotSpot.GetX());
 			image.SetOption(ImageOption::Cursor::HotSpotY, m_HotSpot.GetY());
 		}
-		m_Cursor = std::move(image.ToCursor().m_Cursor);
+		m_Cursor = std::move(image.ToGDICursor().m_Cursor);
 	}
 
 	// IImage2D
@@ -63,7 +63,7 @@ namespace kxf
 
 		if (image.Load(stream, format))
 		{
-			m_Cursor = std::move(image.ToCursor().m_Cursor);
+			m_Cursor = std::move(image.ToGDICursor().m_Cursor);
 			return m_Cursor.IsOk();
 		}
 		return false;
@@ -72,7 +72,7 @@ namespace kxf
 	{
 		if (m_Cursor.IsOk() && format != ImageFormat::Any && format != ImageFormat::None)
 		{
-			if (auto image = ToImage())
+			if (auto image = ToBitmapImage())
 			{
 				if (m_HotSpot.IsFullySpecified())
 				{
@@ -109,18 +109,43 @@ namespace kxf
 		}
 	}
 
+	BitmapImage GDICursor::ToBitmapImage(const Size& size, InterpolationQuality interpolationQuality) const
+	{
+		if (m_Cursor.IsOk())
+		{
+			BitmapImage image = GDIBitmap(wxBitmap(m_Cursor));
+			if (!size.IsFullySpecified() || m_Cursor.GetSize() == size)
+			{
+				return image;
+			}
+
+			image.Rescale(size, interpolationQuality);
+			return image;
+		}
+		return {};
+	}
+	GDIBitmap GDICursor::ToGDIBitmap(const Size& size, InterpolationQuality interpolationQuality) const
+	{
+		if (m_Cursor.IsOk())
+		{
+			if (!size.IsFullySpecified() || m_Cursor.GetSize() == size)
+			{
+				return wxBitmap(m_Cursor);
+			}
+			else
+			{
+				BitmapImage image = GDIBitmap(wxBitmap(m_Cursor));
+				image.Rescale(size, interpolationQuality);
+				return image.ToGDIBitmap();
+			}
+		}
+		return {};
+	}
+
 	// GDICursor
-	GDIBitmap GDICursor::ToBitmap() const
+	GDIIcon GDICursor::ToGDIIcon() const
 	{
-		return wxBitmap(m_Cursor);
-	}
-	BitmapImage GDICursor::ToImage() const
-	{
-		return ToBitmap();
-	}
-	GDIIcon GDICursor::ToIcon() const
-	{
-		return ToBitmap();
+		return GDICursor::ToGDIBitmap();
 	}
 }
 

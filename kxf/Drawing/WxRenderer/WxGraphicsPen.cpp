@@ -44,7 +44,7 @@ namespace kxf
 			{
 				if (auto texture = textureBrush->GetTexture())
 				{
-					m_Pen.SetStipple(texture->ToImage().ToBitmap());
+					m_Pen.SetStipple(texture->ToBitmapImage().ToGDIBitmap());
 				}
 			}
 			else if (auto hatchBrush = m_Brush->QueryInterface<IGraphicsHatchBrush>())
