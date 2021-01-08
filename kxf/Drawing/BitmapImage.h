@@ -116,8 +116,8 @@ namespace kxf
 			void SetOption(const String& name, const String& value) override;
 
 			// IImage2D: Conversion
-			BitmapImage ToBitmapImage(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::None) const override;
-			GDIBitmap ToGDIBitmap(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::None) const override;
+			BitmapImage ToBitmapImage(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const override;
+			GDIBitmap ToGDIBitmap(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const override;
 
 		public:
 			// IBitmapImage: Pixel data
@@ -274,12 +274,6 @@ namespace kxf
 			// BitmapImage: Transformation
 			BitmapImage GetSubImage(const Rect& rect) const;
 
-			BitmapImage Paste(const BitmapImage& image, const Point& pos, CompositionMode compositionMode = CompositionMode::Dest)
-			{
-				wxImage copy = m_Image;
-				copy.Paste(image.m_Image, pos.GetX(), pos.GetY());
-				return copy;
-			}
 			BitmapImage Blur(int radius, Orientation orientation = Orientation::Both) const
 			{
 				switch (orientation)
@@ -298,6 +292,12 @@ namespace kxf
 					}
 				};
 				return {};
+			}
+			BitmapImage Paste(const BitmapImage& image, const Point& pos, CompositionMode compositionMode = CompositionMode::Dest)
+			{
+				wxImage copy = m_Image;
+				copy.Paste(image.m_Image, pos.GetX(), pos.GetY());
+				return copy;
 			}
 			BitmapImage Mirror(Orientation orientation) const;
 			BitmapImage Rotate(Angle angle, const Point& rotationCenter, InterpolationQuality interpolationQuality) const;

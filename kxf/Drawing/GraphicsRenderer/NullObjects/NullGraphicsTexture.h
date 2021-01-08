@@ -73,7 +73,7 @@ namespace kxf::Drawing
 			{
 			}
 
-			BitmapImage ToBitmapImage(const SizeF& size = SizeF::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::None) const override
+			BitmapImage ToBitmapImage(const SizeF& size = SizeF::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const override
 			{
 				return {};
 			}

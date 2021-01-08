@@ -144,7 +144,7 @@ namespace kxf
 				m_Bitmap = m_Bitmap.ToGDIBitmap(size, interpolationQuality);
 			}
 
-			BitmapImage ToBitmapImage(const SizeF& size = SizeF::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::None) const override
+			BitmapImage ToBitmapImage(const SizeF& size = SizeF::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const override
 			{
 				return m_Bitmap.ToBitmapImage(size, interpolationQuality);
 			}
@@ -289,7 +289,7 @@ namespace kxf
 			{
 			}
 
-			BitmapImage ToBitmapImage(const SizeF& size = SizeF::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::None) const override
+			BitmapImage ToBitmapImage(const SizeF& size = SizeF::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const override
 			{
 				return m_VectorImage.ToBitmapImage(size, interpolationQuality);
 			}

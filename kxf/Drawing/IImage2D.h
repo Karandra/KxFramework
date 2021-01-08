@@ -57,8 +57,8 @@ namespace kxf
 			virtual void SetOption(const String& name, int value) = 0;
 
 			// Conversion
-			virtual BitmapImage ToBitmapImage(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::None) const = 0;
-			virtual GDIBitmap ToGDIBitmap(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::None) const = 0;
+			virtual BitmapImage ToBitmapImage(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const = 0;
+			virtual GDIBitmap ToGDIBitmap(const Size& size = Size::UnspecifiedSize(), InterpolationQuality interpolationQuality = InterpolationQuality::Default) const = 0;
 
 		public:
 			explicit operator bool() const noexcept
