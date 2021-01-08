@@ -90,7 +90,7 @@ namespace kxf
 		}
 		return {};
 	}
-	
+
 	UniversallyUniqueID UniversallyUniqueID::CreateFromInt128(const uint8_t(&bytes)[16]) noexcept
 	{
 		NativeUUID uuid;
@@ -101,7 +101,7 @@ namespace kxf
 	{
 		uint8_t bytes[16] = {};
 		std::memcpy(&bytes, &low, sizeof(low));
-		std::memcpy(&bytes + sizeof(low), &high, sizeof(high));
+		std::memcpy(&bytes[sizeof(low)], &high, sizeof(high));
 
 		return CreateFromInt128(bytes);
 	}
