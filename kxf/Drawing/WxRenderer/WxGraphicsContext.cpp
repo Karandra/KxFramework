@@ -650,6 +650,7 @@ namespace kxf
 				return AntialiasMode::Default;
 			}
 		};
+		return AntialiasMode::None;
 	}
 	bool WxGraphicsContext::SetAntialiasMode(AntialiasMode mode)
 	{
