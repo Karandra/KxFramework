@@ -423,50 +423,56 @@ namespace kxf
 
 	BitmapImage& BitmapImage::Resize(const Size& size, const Point& pos, const PackedRGB<uint8_t>& backgroundColor)
 	{
-		m_Image.Resize(size, pos, backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue);
+		if (size != m_Image.GetSize())
+		{
+			m_Image.Resize(size, pos, backgroundColor.Red, backgroundColor.Green, backgroundColor.Blue);
+		}
 		return *this;
 	}
 	BitmapImage& BitmapImage::Rescale(const Size& size, InterpolationQuality interpolationQuality)
 	{
-		auto DoScale = [&](wxImageResizeQuality quality)
+		if (size != m_Image.GetSize())
 		{
-			m_Image.Rescale(size.GetWidth(), size.GetHeight(), quality);
-		};
+			auto DoScale = [&](wxImageResizeQuality quality)
+			{
+				m_Image.Rescale(size.GetWidth(), size.GetHeight(), quality);
+			};
 
-		switch (interpolationQuality)
-		{
-			case InterpolationQuality::Default:
-			case InterpolationQuality::FastestAvailable:
+			switch (interpolationQuality)
 			{
-				DoScale(wxIMAGE_QUALITY_NORMAL);
-				break;
-			}
-			case InterpolationQuality::BestAvailable:
-			{
-				DoScale(wxIMAGE_QUALITY_HIGH);
-				break;
-			}
-			case InterpolationQuality::NearestNeighbor:
-			{
-				DoScale(wxIMAGE_QUALITY_NEAREST);
-				break;
-			}
-			case InterpolationQuality::Bilinear:
-			{
-				DoScale(wxIMAGE_QUALITY_BILINEAR);
-				break;
-			}
-			case InterpolationQuality::Bicubic:
-			{
-				DoScale(wxIMAGE_QUALITY_BICUBIC);
-				break;
-			}
-			case InterpolationQuality::BoxAverage:
-			{
-				DoScale(wxIMAGE_QUALITY_BOX_AVERAGE);
-				break;
-			}
-		};
+				case InterpolationQuality::Default:
+				case InterpolationQuality::FastestAvailable:
+				{
+					DoScale(wxIMAGE_QUALITY_NORMAL);
+					break;
+				}
+				case InterpolationQuality::BestAvailable:
+				{
+					DoScale(wxIMAGE_QUALITY_HIGH);
+					break;
+				}
+				case InterpolationQuality::NearestNeighbor:
+				{
+					DoScale(wxIMAGE_QUALITY_NEAREST);
+					break;
+				}
+				case InterpolationQuality::Bilinear:
+				{
+					DoScale(wxIMAGE_QUALITY_BILINEAR);
+					break;
+				}
+				case InterpolationQuality::Bicubic:
+				{
+					DoScale(wxIMAGE_QUALITY_BICUBIC);
+					break;
+				}
+				case InterpolationQuality::BoxAverage:
+				{
+					DoScale(wxIMAGE_QUALITY_BOX_AVERAGE);
+					break;
+				}
+			};
+		}
 		return *this;
 	}
 
