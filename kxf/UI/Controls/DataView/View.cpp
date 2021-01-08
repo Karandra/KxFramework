@@ -77,7 +77,7 @@ namespace kxf::UI::DataView
 		ViewBase::DoEnable(value);
 		Refresh();
 	}
-	void View::DoInsertColumn(Column* column, size_t index)
+	void View::DoInsertColumn(std::unique_ptr<Column> column, size_t index)
 	{
 		// Correct insertion position
 		if (m_Columns.empty())
@@ -95,7 +95,7 @@ namespace kxf::UI::DataView
 		column->SetView(this);
 
 		// Insert
-		m_Columns.emplace(m_Columns.begin() + index, column);
+		m_Columns.emplace(m_Columns.begin() + index, std::move(column));
 		OnColumnCountChanged();
 	}
 	void View::ResetAllSortColumns()
@@ -246,13 +246,13 @@ namespace kxf::UI::DataView
 	{
 		return m_ClientArea->GetModel();
 	}
-	void View::SetModel(Model* model)
+	void View::SetModel(Model& model)
 	{
 		m_ClientArea->SetModel(model);
 	}
-	void View::AssignModel(Model* model)
+	void View::AssignModel(std::unique_ptr<Model> model)
 	{
-		m_ClientArea->AssignModel(model);
+		m_ClientArea->AssignModel(std::move(model));
 	}
 
 	Node& View::GetRootNode() const
@@ -264,20 +264,26 @@ namespace kxf::UI::DataView
 		m_ClientArea->ItemsChanged();
 	}
 
-	Renderer& View::AppendColumn(Column* column)
+	Renderer& View::AppendColumn(std::unique_ptr<Column> column)
 	{
-		DoInsertColumn(column, GetColumnCount());
-		return column->GetRenderer();
+		Renderer& renderer = column->GetRenderer();
+		DoInsertColumn(std::move(column), GetColumnCount());
+
+		return renderer;
 	}
-	Renderer& View::PrependColumn(Column* column)
+	Renderer& View::PrependColumn(std::unique_ptr<Column> column)
 	{
-		DoInsertColumn(column, 0);
-		return column->GetRenderer();
+		Renderer& renderer = column->GetRenderer();
+		DoInsertColumn(std::move(column), 0);
+
+		return renderer;
 	}
-	Renderer& View::InsertColumn(size_t index, Column* column)
+	Renderer& View::InsertColumn(size_t index, std::unique_ptr<Column> column)
 	{
-		DoInsertColumn(column, index);
-		return column->GetRenderer();
+		Renderer& renderer = column->GetRenderer();
+		DoInsertColumn(std::move(column), index);
+
+		return renderer;
 	}
 
 	size_t View::GetVisibleColumnCount() const
@@ -880,11 +886,11 @@ namespace kxf::UI::DataView
 		return b1 && b2 && b3;
 	}
 
-	GDIBitmap View::GetBackgroundBitmap() const
+	BitmapImage View::GetBackgroundBitmap() const
 	{
 		return m_ClientArea->GetBackgroundBitmap();
 	}
-	void View::SetBackgroundBitmap(const GDIBitmap& bitmap, FlagSet<Alignment> align, bool fit)
+	void View::SetBackgroundBitmap(const BitmapImage& bitmap, FlagSet<Alignment> align, bool fit)
 	{
 		m_ClientArea->SetBackgroundBitmap(bitmap, align, fit);
 	}

@@ -78,7 +78,7 @@ namespace kxf::UI::DataView
 
 		protected:
 			void DoEnable(bool value) override;
-			void DoInsertColumn(Column* column, size_t position);
+			void DoInsertColumn(std::unique_ptr<Column> column, size_t position);
 			void ResetAllSortColumns();
 
 			enum class ICEAction
@@ -90,34 +90,37 @@ namespace kxf::UI::DataView
 			template<ICEAction action, class TValue, class TRenderer = void, class TEditor = void>
 			auto InsertColumnEx(const TValue& value, ColumnID id = {}, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::Default, size_t index = 0)
 			{
-				Column* column = new Column(value, id, width, style);
+				auto column = std::make_unique<Column>(value, id, width, style);
+				Column* columnPtr = column.get();
 
 				// Assign renderer and editor if needed
-				TEditor* editor = nullptr;
-				TRenderer* renderer = nullptr;
+				TEditor* editorPtr = nullptr;
+				TRenderer* rendererPtr = nullptr;
 				if constexpr(!std::is_void_v<TEditor>)
 				{
-					editor = new TEditor();
-					column->AssignEditor(editor);
+					auto editor = std::make_unique<TEditor>();
+					editorPtr = editor.get();
+					column->AssignEditor(std::move(editor));
 				}
 				if constexpr(!std::is_void_v<TRenderer>)
 				{
-					renderer = new TRenderer();
-					column->AssignRenderer(renderer);
+					auto renderer = std::make_unique<TRenderer>();
+					rendererPtr = renderer.get();
+					column->AssignRenderer(std::move(renderer));
 				}
 
 				// Add column
 				if constexpr(action == ICEAction::Append)
 				{
-					AppendColumn(column);
+					AppendColumn(std::move(column));
 				}
 				else if constexpr(action == ICEAction::Prepend)
 				{
-					PrependColumn(column);
+					PrependColumn(std::move(column));
 				}
-				else if constexpr (action == ICEAction::Insert)
+				else if constexpr(action == ICEAction::Insert)
 				{
-					InsertColumn(index, column);
+					InsertColumn(index, std::move(column));
 				}
 				else
 				{
@@ -127,19 +130,19 @@ namespace kxf::UI::DataView
 				// Return tuple
 				if constexpr(!std::is_void_v<TRenderer> && !std::is_void_v<TEditor>)
 				{
-					return std::make_tuple(std::ref(*column), std::ref(*renderer), std::ref(*editor));
+					return std::make_tuple(std::ref(*columnPtr), std::ref(*rendererPtr), std::ref(*editorPtr));
 				}
-				else if constexpr (std::is_void_v<TRenderer> && !std::is_void_v<TEditor>)
+				else if constexpr(std::is_void_v<TRenderer> && !std::is_void_v<TEditor>)
 				{
-					return std::make_tuple(std::ref(*column), std::ref(*editor));
+					return std::make_tuple(std::ref(*columnPtr), std::ref(*editorPtr));
 				}
 				else if constexpr(!std::is_void_v<TRenderer> && std::is_void_v<TEditor>)
 				{
-					return std::make_tuple(std::ref(*column), std::ref(*renderer));
+					return std::make_tuple(std::ref(*columnPtr), std::ref(*rendererPtr));
 				}
 				else
 				{
-					return std::make_tuple(std::ref(*column));
+					return std::make_tuple(std::ref(*columnPtr));
 				}
 			}
 
@@ -187,16 +190,16 @@ namespace kxf::UI::DataView
 
 			// Model
 			Model* GetModel() const;
-			void SetModel(Model* model);
-			void AssignModel(Model* model);
+			void SetModel(Model& model);
+			void AssignModel(std::unique_ptr<Model> model);
 
 			Node& GetRootNode() const;
 			void ItemsChanged();
 
 			// Columns
-			Renderer& AppendColumn(Column* column);
-			Renderer& PrependColumn(Column* column);
-			Renderer& InsertColumn(size_t index, Column* column);
+			Renderer& AppendColumn(std::unique_ptr<Column> column);
+			Renderer& PrependColumn(std::unique_ptr<Column> column);
+			Renderer& InsertColumn(size_t index, std::unique_ptr<Column> column);
 
 			template<class TRenderer = void, class TEditor = void>
 			auto AppendColumn(const String& title, ColumnID id, ColumnWidth width = {}, ColumnStyle style = ColumnStyle::Default)
@@ -394,8 +397,8 @@ namespace kxf::UI::DataView
 			}
 			void SetBorderColor(const Color& color, int size = 1);
 
-			GDIBitmap GetBackgroundBitmap() const;
-			void SetBackgroundBitmap(const GDIBitmap& bitmap, FlagSet<Alignment> align = Alignment::Invalid, bool fit = false);
+			BitmapImage GetBackgroundBitmap() const;
+			void SetBackgroundBitmap(const BitmapImage& bitmap, FlagSet<Alignment> align = Alignment::Invalid, bool fit = false);
 
 		private:
 			// Called by header window after reorder

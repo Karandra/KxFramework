@@ -19,7 +19,7 @@ namespace kxf::UI::DataView
 {
 	class KX_API Column;
 
-	class KX_API NativeColumn: public wxSettableHeaderColumn
+	class KX_API NativeColumn final: public wxSettableHeaderColumn
 	{
 		private:
 			Column& m_Column;
@@ -29,7 +29,7 @@ namespace kxf::UI::DataView
 				:m_Column(column)
 			{
 			}
-	
+
 		public:
 			const Column& GetColumn() const
 			{
@@ -46,13 +46,13 @@ namespace kxf::UI::DataView
 
 			wxBitmap GetBitmap() const override;
 			void SetBitmap(const wxBitmap& bitmap) override;
-			
+
 			int GetWidth() const override;
 			void SetWidth(int width) override;
-			
+
 			int GetMinWidth() const override;
 			void SetMinWidth(int minWidth) override;
-			
+
 			wxAlignment GetAlignment() const override;
 			void SetAlignment(wxAlignment alignment) override;
 
@@ -125,7 +125,7 @@ namespace kxf::UI::DataView
 				return m_IsDirty;
 			}
 			void MarkDirty(bool value = true);
-			
+
 			void AssignIndex(size_t value)
 			{
 				m_Index = value;
@@ -168,19 +168,19 @@ namespace kxf::UI::DataView
 				:m_NativeColumn(*this)
 			{
 			}
-			Column(const wxString& title, ColumnID id, Renderer* renderer = nullptr)
-				:m_NativeColumn(*this), m_Title(title), m_Renderer(renderer), m_ID(id)
+			Column(const wxString& title, ColumnID id, std::unique_ptr<Renderer> renderer = nullptr)
+				:m_NativeColumn(*this), m_Title(title), m_Renderer(std::move(renderer)), m_ID(id)
 			{
 			}
-			Column(const wxBitmap& bitmap, ColumnID id, Renderer* renderer = nullptr)
-				:m_NativeColumn(*this), m_Bitmap(bitmap), m_Renderer(renderer), m_ID(id)
+			Column(const wxBitmap& bitmap, ColumnID id, std::unique_ptr<Renderer> renderer = nullptr)
+				:m_NativeColumn(*this), m_Bitmap(bitmap), m_Renderer(std::move(renderer)), m_ID(id)
 			{
 			}
-			Column(const wxBitmap& bitmap, const wxString& title, ColumnID id, Renderer* renderer = nullptr)
-				:m_NativeColumn(*this), m_Bitmap(bitmap), m_Title(title), m_Renderer(renderer), m_ID(id)
+			Column(const wxBitmap& bitmap, const wxString& title, ColumnID id, std::unique_ptr<Renderer> renderer = nullptr)
+				:m_NativeColumn(*this), m_Bitmap(bitmap), m_Title(title), m_Renderer(std::move(renderer)), m_ID(id)
 			{
 			}
-			
+
 			Column(const wxString& title, ColumnID id, ColumnWidth width, ColumnStyle style)
 				:m_NativeColumn(*this), m_Title(title), m_ID(id), m_Width(width), m_Style(style)
 			{
@@ -200,10 +200,10 @@ namespace kxf::UI::DataView
 			MainWindow* GetMainWindow() const;
 
 			Renderer& GetRenderer() const;
-			void AssignRenderer(Renderer* renderer);
+			void AssignRenderer(std::unique_ptr<Renderer> renderer);
 
 			Editor* GetEditor() const;
-			void AssignEditor(Editor* editor);
+			void AssignEditor(std::unique_ptr<Editor> editor);
 
 		public:
 			size_t GetIndex() const
@@ -231,7 +231,7 @@ namespace kxf::UI::DataView
 			{
 				m_ID = id;
 			}
-			
+
 			bool HasBitmap() const
 			{
 				return !m_Bitmap.IsNull();
@@ -349,7 +349,7 @@ namespace kxf::UI::DataView
 			{
 				m_Style.Mod(ColumnStyle::Sort, value);
 			}
-			
+
 			bool IsMoveable() const
 			{
 				return m_Style.Contains(ColumnStyle::Move);
@@ -358,7 +358,7 @@ namespace kxf::UI::DataView
 			{
 				m_Style.Mod(ColumnStyle::Move, value);
 			}
-			
+
 			bool IsSizeable() const
 			{
 				return m_Style.Contains(ColumnStyle::Size);

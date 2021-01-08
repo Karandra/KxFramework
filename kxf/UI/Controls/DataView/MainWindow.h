@@ -232,13 +232,13 @@ namespace kxf::UI::DataView
 			{
 				return m_Model;
 			}
-			void SetModel(Model* model)
+			void SetModel(Model& model)
 			{
-				DoAssignModel(model, false);
+				DoAssignModel(&model, false);
 			}
-			void AssignModel(Model* model)
+			void AssignModel(std::unique_ptr<Model> model)
 			{
-				DoAssignModel(model, true);
+				DoAssignModel(model.release(), true);
 			}
 
 			const Node& GetRootNode() const
@@ -269,15 +269,16 @@ namespace kxf::UI::DataView
 			{
 				return m_NullRenderer;
 			}
-			const GDIBitmap& GetBackgroundBitmap() const
+			const BitmapImage& GetBackgroundBitmap() const
 			{
 				return m_BackgroundBitmap;
 			}
-			void SetBackgroundBitmap(const GDIBitmap& bitmap, FlagSet<Alignment> align = Alignment::Invalid, bool fit = false)
+			void SetBackgroundBitmap(const BitmapImage& bitmap, FlagSet<Alignment> align = Alignment::Invalid, bool fit = false)
 			{
 				m_BackgroundBitmap = bitmap;
-				m_BackgroundBitmapAlignment = static_cast<FlagSet<Alignment>>(align != Alignment::Invalid ? align : Alignment::None);
+				m_BackgroundBitmapAlignment = align != Alignment::Invalid ? align : Alignment::None;
 				m_FitBackgroundBitmap = fit;
+
 				Refresh();
 			}
 

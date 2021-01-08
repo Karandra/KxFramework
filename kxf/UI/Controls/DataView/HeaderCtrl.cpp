@@ -153,7 +153,7 @@ namespace kxf::UI::DataView
 			column->FitContent();
 		}
 	}
-	
+
 	void HeaderCtrl::OnResize(wxHeaderCtrlEvent& event)
 	{
 		FinishEditing();
@@ -392,8 +392,8 @@ namespace kxf::UI::DataView
 				}
 				return false;
 			}
-			case NM_RCLICK:
-			case NM_RDBLCLK:
+			case (int)NM_RCLICK:
+			case (int)NM_RDBLCLK:
 			{
 				// These two messages aren't from Header control and they contain no item index
 				// so we have to use hit-testing to get the column.
@@ -539,7 +539,7 @@ namespace kxf::UI::DataView
 				}
 				break;
 			}
-			case NM_RELEASEDCAPTURE:
+			case (int)NM_RELEASEDCAPTURE:
 			{
 				if (m_DraggedColumn)
 				{
@@ -551,7 +551,7 @@ namespace kxf::UI::DataView
 				}
 				return false;
 			}
-			
+
 			// Checkbox
 			case (int)HDN_ITEMSTATEICONCLICK:
 			{
@@ -687,7 +687,7 @@ namespace kxf::UI::DataView
 			SendCtrlEvent(ItemEvent::EvtColumnSorted, &column);
 		}
 	}
-	
+
 	bool HeaderCtrl::SetBackgroundColour(const wxColour& color)
 	{
 		// Skip setting the background color altogether to prevent 'wxHeaderCtrl' from trying to

@@ -62,7 +62,7 @@ namespace kxf::UI::DataView
 		Utility::ModFlagRef(flags, wxCOL_RESIZABLE, m_Column.IsSizeable());
 		Utility::ModFlagRef(flags, wxCOL_SORTABLE, m_Column.IsSortable());
 		Utility::ModFlagRef(flags, wxCOL_REORDERABLE, m_Column.IsMoveable());
-		
+
 		// Use raw visibility flag. Native control does some weird things
 		// if the flag value is calculated using column width.
 		Utility::ModFlagRef(flags, wxCOL_HIDDEN, !m_Column.IsVisible());
@@ -158,18 +158,18 @@ namespace kxf::UI::DataView
 		}
 		return GetView()->GetMainWindow()->GetNullRenderer();
 	}
-	void Column::AssignRenderer(Renderer* renderer)
+	void Column::AssignRenderer(std::unique_ptr<Renderer> renderer)
 	{
-		m_Renderer.reset(renderer);
+		m_Renderer = std::move(renderer);
 	}
 
 	Editor* Column::GetEditor() const
 	{
 		return m_Editor.get();
 	}
-	void Column::AssignEditor(Editor* editor)
+	void Column::AssignEditor(std::unique_ptr<Editor> editor)
 	{
-		m_Editor.reset(editor);
+		m_Editor = std::move(editor);
 	}
 
 	size_t Column::GetPhysicalDisplayIndex() const
@@ -266,7 +266,7 @@ namespace kxf::UI::DataView
 		}
 		return m_BestWidth;
 	}
-	
+
 	int Column::GetTitleWidth() const
 	{
 		if (m_View)
@@ -425,7 +425,7 @@ namespace kxf::UI::DataView
 	{
 		return m_View->GetMainWindow()->GetCurrentColumn() == this;
 	}
-	
+
 	bool Column::IsFirst() const
 	{
 		return m_Index == 0;
@@ -434,7 +434,7 @@ namespace kxf::UI::DataView
 	{
 		return m_DisplayIndex == 0;
 	}
-	
+
 	bool Column::IsLast() const
 	{
 		return m_Index + 1 == m_View->GetColumnCount();
