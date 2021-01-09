@@ -90,7 +90,7 @@ namespace kxf::UI::DataView
 		if (m_HeaderCtrlHandle)
 		{
 			// Enable all required styles
-			Utility::ModWindowStyle(m_HeaderCtrlHandle, GWL_STYLE, HDS_HORZ|HDS_CHECKBOXES|HDS_BUTTONS|HDS_HOTTRACK, true);
+			Utility::ModWindowStyle(m_HeaderCtrlHandle, GWL_STYLE, HDS_HORZ|HDS_CHECKBOXES|HDS_BUTTONS|HDS_HOTTRACK|HDS_FULLDRAG, true);
 		}
 
 		event.Skip();
