@@ -11,7 +11,6 @@
 #include "GraphicsRenderer/IGraphicsPen.h"
 
 #include "GraphicsRenderer/GraphicsAction.h"
-#include "GraphicsRenderer/GCOperations.h"
 
 namespace kxf::Drawing
 {
@@ -21,4 +20,5 @@ namespace kxf::Drawing
 	std::shared_ptr<IGraphicsRenderer> GetCairoRenderer();
 
 	std::shared_ptr<IGraphicsRenderer> GetDefaultRenderer();
+	void SetDefaultRenderer(std::shared_ptr<IGraphicsRenderer> renderer);
 }

@@ -246,7 +246,6 @@
     <ClInclude Include="kxf\Drawing\GradientStops.h" />
     <ClInclude Include="kxf\Drawing\GraphicsRenderer.h" />
     <ClInclude Include="kxf\Drawing\GraphicsRenderer\Common.h" />
-    <ClInclude Include="kxf\Drawing\GraphicsRenderer\GCOperations.h" />
     <ClInclude Include="kxf\Drawing\GraphicsRenderer\GraphicsAction.h" />
     <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsBrush.h" />
     <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsContext.h" />

@@ -5,6 +5,8 @@
 
 namespace
 {
+	std::shared_ptr<kxf::IGraphicsRenderer> g_DefaultRenderer;
+
 	std::shared_ptr<kxf::IGraphicsRenderer> GetWxRenderer(wxGraphicsRenderer* renderer)
 	{
 		if (renderer)
@@ -40,7 +42,11 @@ namespace kxf::Drawing
 
 	std::shared_ptr<IGraphicsRenderer> GetDefaultRenderer()
 	{
-		auto renderer = GetDirect2DRenderer();
+		auto renderer = g_DefaultRenderer;
+		if (!renderer)
+		{
+			renderer = GetDirect2DRenderer();
+		}
 		if (!renderer)
 		{
 			renderer = GetGDIPlusRenderer();
@@ -54,5 +60,9 @@ namespace kxf::Drawing
 			renderer = GetGDIRenderer();
 		}
 		return renderer;
+	}
+	void SetDefaultRenderer(std::shared_ptr<IGraphicsRenderer> renderer)
+	{
+		g_DefaultRenderer = std::move(renderer);
 	}
 }
