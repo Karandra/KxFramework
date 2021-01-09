@@ -34,6 +34,8 @@ namespace kxf
 
 	WxGraphicsContext::ChangeDrawParameters::ChangeDrawParameters(WxGraphicsContext& gc, const IGraphicsBrush& brush, const IGraphicsPen& pen):m_Context(*gc.m_Context)
 	{
+		const bool canUseNullPen = gc.GetRenderer().CanUseNullPen();
+
 		if (brush)
 		{
 			if (gc.m_CurrentBrush)
@@ -42,13 +44,22 @@ namespace kxf
 			}
 			m_Context.SetBrush(brush.QueryInterface<WxGraphicsBrush>()->Get());
 		}
-		if (pen)
+		if (pen || (!canUseNullPen && brush))
 		{
 			if (gc.m_CurrentPen)
 			{
 				m_OldPen = gc.m_CurrentPen->QueryInterface<WxGraphicsPen>()->Get();
 			}
-			m_Context.SetPen(pen.QueryInterface<WxGraphicsPen>()->Get());
+
+			if (!pen && !canUseNullPen)
+			{
+				const GDIBrush& brushGDI = gc.m_CurrentBrush->QueryInterface<WxGraphicsBrush>()->GetBrush();
+				m_Context.SetPen(m_Context.CreatePen(brushGDI.GetColor()));
+			}
+			else
+			{
+				m_Context.SetPen(pen.QueryInterface<WxGraphicsPen>()->Get());
+			}
 		}
 	}
 	WxGraphicsContext::ChangeDrawParameters::~ChangeDrawParameters()

@@ -226,6 +226,12 @@ namespace kxf
 		// It doesn't check anything and faces a nullptr somewhere deep inside its wx-side implementation.
 		return m_Type != Type::Direct2D;
 	}
+	bool WxGraphicsRenderer::CanUseNullPen() const
+	{
+		// It seems that for renderers other than Direct2D we need to always set active pen or some default
+		// black one will be used the caller expects none to be used.
+		return m_Type == Type::Direct2D;
+	}
 
 	const GDIBitmap& WxGraphicsRenderer::GetTransparentBitmap() const
 	{

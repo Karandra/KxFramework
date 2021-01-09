@@ -84,6 +84,7 @@ namespace kxf
 			}
 			bool CanRescaleBitmapOnDraw() const;
 			bool CanDrawNullBitmap() const;
+			bool CanUseNullPen() const;
 
 			const GDIBitmap& GetTransparentBitmap() const;
 
