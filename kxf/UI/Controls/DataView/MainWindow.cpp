@@ -471,8 +471,10 @@ namespace kxf::UI::DataView
 				// and not the one, that should be tracked.
 				if (event.GetWheelAxis() == wxMOUSE_WHEEL_VERTICAL)
 				{
+					const bool shouldScrollHorizontal = event.ShiftDown();
 					const int scrollPos = m_View->GetScrollPos(wxVERTICAL);
-					if (scrollPos > 0 && scrollPos + m_View->GetScrollPageSize(wxVERTICAL) < m_View->GetScrollLines(wxVERTICAL))
+
+					if (shouldScrollHorizontal || (scrollPos > 0 && scrollPos + m_View->GetScrollPageSize(wxVERTICAL) < m_View->GetScrollLines(wxVERTICAL)))
 					{
 						int rateX = 0;
 						int rateY = 0;
@@ -485,7 +487,16 @@ namespace kxf::UI::DataView
 							rateY = -rateY;
 						}
 
-						event.SetY(event.GetY() + event.GetLinesPerAction() * rateY);
+						if (shouldScrollHorizontal)
+						{
+							// TODO: Implement horizontal scrolling for 'Shift + Wheel' combo
+							//Point pos = {m_View->GetScrollPos(wxVERTICAL), m_View->GetScrollPos(wxHORIZONTAL)};
+							//m_View->Scroll(pos.GetX() + rateX, pos.GetY());
+						}
+						else
+						{
+							event.SetY(event.GetY() + event.GetLinesPerAction() * rateY);
+						}
 					}
 				}
 			}
@@ -1464,8 +1475,14 @@ namespace kxf::UI::DataView
 		if (m_Model)
 		{
 			SetVirtualSize(GetRowWidth(), GetRowStart(GetRowCount()));
-			m_View->SetScrollRate(std::min(GetCharWidth() * 2, m_UniformRowHeight), m_UniformRowHeight);
 		}
+		else
+		{
+			// When we have no model set, use just total columns widths for virtual size
+			SetVirtualSize(GetRowWidth(), m_virtualSize.GetY());
+		}
+
+		m_View->SetScrollRate(std::min(GetCharWidth() * 2, m_UniformRowHeight), m_UniformRowHeight);
 		Refresh();
 	}
 	void MainWindow::DoSetVirtualSize(int x, int y)
@@ -1619,7 +1636,7 @@ namespace kxf::UI::DataView
 
 		if (m_View->HasHeaderCtrl())
 		{
-			calculator.UpdateWithWidth(m_View->GetHeaderCtrl()->GetColumnTitleWidth(column.GetNativeColumn()));
+			calculator.UpdateWithWidth(column.GetTitleWidth());
 		}
 
 		const Point origin = m_View->CalcUnscrolledPosition(Point(0, 0));
@@ -2426,21 +2443,12 @@ namespace kxf::UI::DataView
 	}
 
 	// Scrolling
-	void MainWindow::ScrollWindow(int dx, int dy, const Rect* rect)
+	void MainWindow::ScrollWindow(int dx, int dy, const wxRect* rect)
 	{
-		if (rect)
+		wxWindow::ScrollWindow(dx, dy, rect);
+		if (auto header = m_View->GetHeaderCtrl())
 		{
-			wxRect temp = *rect;
-			wxWindow::ScrollWindow(dx, dy, &temp);
-		}
-		else
-		{
-			wxWindow::ScrollWindow(dx, dy, nullptr);
-		}
-
-		if (wxHeaderCtrl* header = m_View->GetHeaderCtrl())
-		{
-			header->ScrollWindow(dx, 0);
+			header->ScrollWidget(dx);
 		}
 	}
 	void MainWindow::ScrollTo(Row row, size_t column)

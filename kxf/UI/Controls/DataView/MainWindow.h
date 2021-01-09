@@ -113,7 +113,7 @@ namespace kxf::UI::DataView
 			std::shared_ptr<IGraphicsPen> m_PenRuleH;
 			std::shared_ptr<IGraphicsPen> m_PenRuleV;
 
-			// the pen used to draw the expander and the lines
+			// The pen used to draw the expander and the lines
 			std::shared_ptr<IGraphicsPen> m_PenExpander;
 
 			// Background bitmap
@@ -324,7 +324,7 @@ namespace kxf::UI::DataView
 			void OnDragDropLeave();
 
 			// Scrolling
-			void ScrollWindow(int dx, int dy, const Rect* rect = nullptr);
+			void ScrollWindow(int dx, int dy, const wxRect* rect = nullptr) override;
 			void ScrollTo(Row row, size_t column = INVALID_COLUMN);
 			void EnsureVisible(Row row, size_t column = INVALID_COLUMN);
 

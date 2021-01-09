@@ -13,7 +13,7 @@ namespace kxf::UI::DataView
 		int height = 0;
 		if (m_MaxVisibleItems != -1)
 		{
-			if (const wxHeaderCtrl* header = GetHeaderCtrl())
+			if (const auto header = GetHeaderCtrl())
 			{
 				height += header->GetSize().GetHeight() + FromDIP(4);
 			}

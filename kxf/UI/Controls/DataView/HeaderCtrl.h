@@ -3,8 +3,8 @@
 #include "Event.h"
 #include "kxf/Drawing/GDIRenderer/GDIImageList.h"
 #include "kxf/UI/WindowRefreshScheduler.h"
-#include <wx/headerctrl.h>
 struct _HD_ITEMW;
+class wxHeaderCtrlEvent;
 
 namespace kxf::UI::DataView
 {
@@ -16,7 +16,7 @@ namespace kxf::UI::DataView
 
 namespace kxf::UI::DataView
 {
-	class KX_API HeaderCtrl: public WindowRefreshScheduler<wxHeaderCtrl>
+	class KX_API HeaderCtrl: public WindowRefreshScheduler<wxControl>
 	{
 		friend class View;
 		friend class MainWindow;
@@ -32,6 +32,7 @@ namespace kxf::UI::DataView
 		private:
 			View* m_View = nullptr;
 			HWND m_HeaderCtrlHandle = nullptr;
+			int m_ScrollOffset = 0;
 
 			std::unique_ptr<GDIImageList> m_ImageList;
 			Column* m_DraggedColumn = nullptr;
@@ -40,6 +41,8 @@ namespace kxf::UI::DataView
 
 		private:
 			HWND GetHeaderCtrlHandle() const;
+			void DoSetSize(int x, int y, int width, int height, int sizeFlags) override;
+			void ScrollWidget(int dx);
 
 			void FinishEditing();
 			EventResult SendCtrlEvent(ItemEvent& event, const EventID& type, Column* column = nullptr, std::optional<Rect> rect = {});
@@ -62,16 +65,18 @@ namespace kxf::UI::DataView
 			void OnReorderEnd(wxHeaderCtrlEvent& event);
 
 		protected:
-			const wxHeaderColumn& GetColumn(unsigned int index) const override;
-			bool UpdateColumnWidthToFit(unsigned int index, int = 0) override;
-
-			void DoUpdate(unsigned int = 0) override;
-			void DoSetCount(unsigned int = 0) override;
+			bool UpdateColumnWidthToFit(size_t index);
 			void DoMakeItem(_HD_ITEMW& item, const Column& column);
 			bool MSWOnNotify(int ctrlID, WXLPARAM lParam, WXLPARAM* result) override;
 			void OnInternalIdle() override;
 
+			wxBorder GetDefaultBorder() const override
+			{
+				return wxBORDER_NONE;
+			}
+
 		protected:
+			void DoUpdate();
 			void UpdateColumn(const Column& column);
 			void UpdateColumnCount();
 

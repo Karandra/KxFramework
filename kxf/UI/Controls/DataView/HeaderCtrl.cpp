@@ -3,9 +3,12 @@
 #include "View.h"
 #include "MainWindow.h"
 #include "Column.h"
+#include "kxf/System/SystemInformation.h"
+#include "kxf/Drawing/IRendererNative.h"
 #include "kxf/UI/Menus/Menu.h"
 #include "kxf/Utility/System.h"
 #include "kxf/Utility/Drawing.h"
+#include <wx/headerctrl.h>
 #include <CommCtrl.h>
 
 namespace
@@ -48,6 +51,22 @@ namespace kxf::UI::DataView
 	{
 		return m_HeaderCtrlHandle;
 	}
+	void HeaderCtrl::DoSetSize(int x, int y, int width, int height, int sizeFlags)
+	{
+		wxControl::DoSetSize(x + m_ScrollOffset, y, width - m_ScrollOffset, height, sizeFlags & wxSIZE_FORCE);
+	}
+	void HeaderCtrl::ScrollWidget(int dx)
+	{
+		// As the native control doesn't support offsetting its contents, we use a
+		// hack here to make it appear correctly when the parent is scrolled.
+		// Instead of scrolling or repainting we simply move the control window
+		// itself. To be precise, offset it by the scroll increment to the left and
+		// increment its width to still extend to the right boundary to compensate
+		// for it (notice that dx is negative when scrolling to the right)
+
+		m_ScrollOffset += dx;
+		wxControl::DoSetSize(GetPosition().x + dx, -1, GetSize().x - dx, -1, wxSIZE_USE_EXISTING);
+	}
 
 	void HeaderCtrl::FinishEditing()
 	{
@@ -70,8 +89,8 @@ namespace kxf::UI::DataView
 		m_HeaderCtrlHandle = event.GetWindow()->GetHandle();
 		if (m_HeaderCtrlHandle)
 		{
-			// Needed to display checkboxes
-			Utility::ModWindowStyle(m_HeaderCtrlHandle, GWL_STYLE, HDS_CHECKBOXES, true);
+			// Enable all required styles
+			Utility::ModWindowStyle(m_HeaderCtrlHandle, GWL_STYLE, HDS_HORZ|HDS_CHECKBOXES|HDS_BUTTONS|HDS_HOTTRACK, true);
 		}
 
 		event.Skip();
@@ -179,51 +198,13 @@ namespace kxf::UI::DataView
 		}
 	}
 
-	const wxHeaderColumn& HeaderCtrl::GetColumn(unsigned int index) const
-	{
-		return GetColumnAt(index)->GetNativeColumn();
-	}
-	bool HeaderCtrl::UpdateColumnWidthToFit(unsigned int index, int)
+	bool HeaderCtrl::UpdateColumnWidthToFit(size_t index)
 	{
 		if (Column* column = m_View->GetColumn(index))
 		{
 			return column->FitContent();
 		}
 		return false;
-	}
-
-	void HeaderCtrl::DoUpdate(unsigned int)
-	{
-		DoSetCount();
-	}
-	void HeaderCtrl::DoSetCount(unsigned int)
-	{
-		// First delete all old columns
-		const size_t oldItemsCount = Header_GetItemCount(GetHeaderCtrlHandle());
-		for (size_t i = 0; i < oldItemsCount; i++)
-		{
-			Header_DeleteItem(GetHeaderCtrlHandle(), 0);
-		}
-
-		// Clear image list
-		if (m_ImageList)
-		{
-			m_ImageList->Clear();
-		}
-
-		// And add the new ones
-		bool hasResizableColumns = false;
-		size_t index = 0;
-
-		for (const Column* column: m_View->GetColumnsInPhysicalDisplayOrder())
-		{
-			HDITEMW item = {};
-			DoMakeItem(item, *column);
-			Header_InsertItem(GetHeaderCtrlHandle(), index, &item);
-			index++;
-
-			hasResizableColumns = column->IsSizeable();
-		}
 	}
 	void HeaderCtrl::DoMakeItem(_HD_ITEMW& item, const Column& column)
 	{
@@ -239,14 +220,14 @@ namespace kxf::UI::DataView
 		if (bitmap)
 		{
 			item.mask |= HDI_IMAGE;
-			if (HasFlag(wxHD_BITMAP_ON_RIGHT))
+			if (column.GetStyle().Contains(ColumnStyle::IconOnRight))
 			{
 				item.fmt |= HDF_BITMAP_ON_RIGHT;
 			}
 
 			if (!m_ImageList)
 			{
-				m_ImageList = std::make_unique<kxf::GDIImageList>(bitmap.GetSize());
+				m_ImageList = std::make_unique<GDIImageList>(bitmap.GetSize());
 				Header_SetImageList(GetHeaderCtrlHandle(), m_ImageList->GetHIMAGELIST());
 			}
 			item.iImage = m_ImageList->Add(bitmap);
@@ -300,7 +281,7 @@ namespace kxf::UI::DataView
 		item.mask |= HDI_WIDTH;
 		item.cxy = column.GetWidth();
 
-		// Display order
+		// Display order (doesn't work properly, we're using custom ordering)
 		//item.mask |= HDI_ORDER;
 		//item.iOrder = column.GetPhysicalDisplayIndex();
 
@@ -587,20 +568,67 @@ namespace kxf::UI::DataView
 	{
 		if (m_UpdateColumns)
 		{
-			UpdateColumnCount();
+			DoUpdate();
 			m_UpdateColumns = false;
 		}
-		wxHeaderCtrl::OnInternalIdle();
+
+		wxControl::OnInternalIdle();
 		WindowRefreshScheduler::OnInternalIdle();
 	}
 
+	void HeaderCtrl::DoUpdate()
+	{
+		if (m_HeaderCtrlHandle)
+		{
+			// First delete all old columns
+			const size_t oldItemsCount = Header_GetItemCount(m_HeaderCtrlHandle);
+			for (size_t i = 0; i < oldItemsCount; i++)
+			{
+				Header_DeleteItem(m_HeaderCtrlHandle, 0);
+			}
+
+			// Clear image list
+			if (m_ImageList)
+			{
+				m_ImageList->Clear();
+			}
+
+			// And add the new ones
+			size_t index = 0;
+			bool hasResizableColumns = false;
+			bool hasMoveableColumns = false;
+
+			for (const Column* column: m_View->GetColumnsInPhysicalDisplayOrder())
+			{
+				HDITEMW item = {};
+				DoMakeItem(item, *column);
+				Header_InsertItem(m_HeaderCtrlHandle, index, &item);
+				index++;
+
+				if (!hasResizableColumns)
+				{
+					hasResizableColumns = column->IsSizeable();
+				}
+				if (!hasMoveableColumns)
+				{
+					hasMoveableColumns = column->IsMoveable();
+				}
+			}
+
+			// Update styles based on column properties
+			auto style = Utility::GetWindowStyle(m_HeaderCtrlHandle, GWL_STYLE);
+			style.Mod(HDS_NOSIZING, !hasResizableColumns);
+			style.Mod(HDS_DRAGDROP, hasMoveableColumns);
+			Utility::SetWindowStyle(m_HeaderCtrlHandle, GWL_STYLE, style);
+		}
+	}
 	void HeaderCtrl::UpdateColumn(const Column& column)
 	{
 		DoUpdate();
 	}
 	void HeaderCtrl::UpdateColumnCount()
 	{
-		DoSetCount();
+		DoUpdate();
 	}
 
 	Rect HeaderCtrl::GetDropdownRect(size_t index) const
@@ -620,7 +648,25 @@ namespace kxf::UI::DataView
 		Bind(wxEVT_CREATE, &HeaderCtrl::OnCreate, this);
 		Bind(wxEVT_DESTROY, &HeaderCtrl::OnDestroy, this);
 
-		if (wxHeaderCtrl::Create(parent, wxID_NONE))
+		if ([this, parent]()
+		{
+			if (!CreateControl(parent, wxID_NONE, wxDefaultPosition, wxDefaultSize, wxBORDER_THEME|wxCLIP_CHILDREN|wxTAB_TRAVERSAL, wxDefaultValidator, wxS("HeaderCtrl")))
+			{
+				return false;
+			}
+			if (!MSWCreateControl(WC_HEADER, wxS(""), wxDefaultPosition, wxDefaultSize))
+			{
+				return false;
+			}
+
+			// Special hack for margins when using comctl32.dll v6 or later: the
+			// default margin is too big and results in label truncation when the
+			// column width is just about right to show it together with the sort
+			// indicator, so reduce it to a smaller value (in principle we could even
+			// use 0 here but this starts to look ugly)
+			Header_SetBitmapMargin(GetHandle(), System::GetMetric(SystemSizeMetric::Edge, parent).GetWidth());
+			return true;
+		}())
 		{
 			// See comment in 'HeaderCtrl::SetBackgroundColour' for details
 			// about why double-buffering needs to be disabled.

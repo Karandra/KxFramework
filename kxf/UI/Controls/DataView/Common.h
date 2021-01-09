@@ -33,6 +33,7 @@ namespace kxf::UI::DataView
 		Size = 1 << 2,
 		Dropdown = 1 << 3,
 		CheckBox = 1 << 4,
+		IconOnRight = 1 << 5,
 
 		Default = Move|Size,
 	};
@@ -42,7 +43,7 @@ namespace kxf::UI::DataView
 		Drag = 1 << 0,
 		Drop = 1 << 1,
 	};
-	
+
 	class ColumnWidth final
 	{
 		public:
@@ -87,7 +88,7 @@ namespace kxf::UI::DataView
 			{
 				return m_Value;
 			}
-			
+
 			ColumnWidth& operator=(int value) noexcept
 			{
 				AssignValue(value);

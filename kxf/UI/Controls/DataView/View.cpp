@@ -145,9 +145,12 @@ namespace kxf::UI::DataView
 		// shouldn't happen as the control shouldn't let itself be resized beneath
 		// its minimal height but avoid the display artifacts that appear if it
 		// does happen, e.g. because there is really not enough vertical space.
-		if (m_HeaderArea && m_HeaderArea->GetSize().GetY() <= m_HeaderArea->GetBestSize().GetY())
+		if (m_HeaderArea)
 		{
-			m_HeaderArea->ScheduleRefresh();
+			if (m_HeaderArea->GetSize().GetY() <= m_HeaderArea->GetBestSize().GetY())
+			{
+				m_HeaderArea->ScheduleRefresh();
+			}
 		}
 	}
 	void View::OnPaint(wxPaintEvent& event)
