@@ -36,7 +36,7 @@ namespace kxf
 	{
 		if (brush)
 		{
-			if (gc.m_CurrentBrush && *gc.m_CurrentBrush)
+			if (gc.m_CurrentBrush)
 			{
 				m_OldBrush = gc.m_CurrentBrush->QueryInterface<WxGraphicsBrush>()->Get();
 			}
@@ -44,7 +44,7 @@ namespace kxf
 		}
 		if (pen)
 		{
-			if (gc.m_CurrentPen && *gc.m_CurrentPen)
+			if (gc.m_CurrentPen)
 			{
 				m_OldPen = gc.m_CurrentPen->QueryInterface<WxGraphicsPen>()->Get();
 			}
@@ -522,7 +522,7 @@ namespace kxf
 	// Drawing functions
 	void WxGraphicsContext::Clear(const IGraphicsBrush& brush)
 	{
-		WxGraphicsContext::DrawRectangle({{0, 0}, GetSize()}, brush, m_Renderer->GetTransparentPen());
+		WxGraphicsContext::DrawRectangle({{0, 0}, GetSize()}, brush);
 	}
 	void WxGraphicsContext::DrawCircle(const PointF& pos, float radius, const IGraphicsBrush& brush, const IGraphicsPen& pen)
 	{
