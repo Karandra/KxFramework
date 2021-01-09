@@ -62,6 +62,7 @@ namespace kxf
 
 		protected:
 			GDIBitmap DrawGDIOnBitmap(const RectF& rect, std::function<void(GDIContext& dc)> func, bool forceAlpha = false);
+			String EllipsizeTextGeneric(const String& text, float maxWidth, EllipsizeMode mode, FlagSet<EllipsizeFlag> flags = {}, const IGraphicsFont& font = NullGraphicsFont) const;
 
 		public:
 			virtual ~IGraphicsContext() = default;
@@ -135,6 +136,8 @@ namespace kxf
 									const IGraphicsBrush& brush,
 									FlagSet<Alignment> alignment = {},
 									size_t acceleratorIndex = String::npos) = 0;
+
+			virtual String EllipsizeText(const String& text, float maxWidth, EllipsizeMode mode, FlagSet<EllipsizeFlag> flags = {}, const IGraphicsFont& font = NullGraphicsFont) const = 0;
 
 			// Drawing functions
 			virtual void Clear(const IGraphicsBrush& brush) = 0;

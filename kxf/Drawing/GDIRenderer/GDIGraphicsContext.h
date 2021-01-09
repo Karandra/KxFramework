@@ -173,6 +173,8 @@ namespace kxf
 							FlagSet<Alignment> alignment = {},
 							size_t acceleratorIndex = String::npos) override;
 
+			String EllipsizeText(const String& text, float maxWidth, EllipsizeMode mode, FlagSet<EllipsizeFlag> flags = {}, const IGraphicsFont& font = NullGraphicsFont) const override;
+
 			// Drawing functions
 			void Clear(const IGraphicsBrush& brush) override;
 			void DrawCircle(const PointF& pos, float radius, const IGraphicsBrush& brush = NullGraphicsBrush, const IGraphicsPen& pen = NullGraphicsPen) override;

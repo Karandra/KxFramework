@@ -452,6 +452,23 @@ namespace kxf
 		return DoDrawText(m_DC, TextKind::Label, text, rect, {}, icon, font, brush, alignment, acceleratorIndex);
 	}
 
+	String GDIGraphicsContext::EllipsizeText(const String& text, float maxWidth, EllipsizeMode mode, FlagSet<EllipsizeFlag> flags, const IGraphicsFont& font) const
+	{
+		if (!text.IsEmpty() && maxWidth > 0)
+		{
+			if (GetTextExtent(text, font).GetWidth() <= maxWidth)
+			{
+				return text;
+			}
+			else
+			{
+				ChangeTextParameters textParametrs(const_cast<GDIContext&>(m_DC), font, NullGraphicsBrush);
+				return wxControl::Ellipsize(text, m_DC.ToWxDC(), static_cast<wxEllipsizeMode>(mode), static_cast<int>(maxWidth), flags.ToInt());
+			}
+		}
+		return {};
+	}
+
 	// Drawing functions
 	void GDIGraphicsContext::Clear(const IGraphicsBrush& brush)
 	{

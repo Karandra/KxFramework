@@ -530,6 +530,11 @@ namespace kxf
 		return {};
 	}
 
+	String WxGraphicsContext::EllipsizeText(const String& text, float maxWidth, EllipsizeMode mode, FlagSet<EllipsizeFlag> flags, const IGraphicsFont& font) const
+	{
+		return EllipsizeTextGeneric(text, maxWidth, mode, flags);
+	}
+
 	// Drawing functions
 	void WxGraphicsContext::Clear(const IGraphicsBrush& brush)
 	{
