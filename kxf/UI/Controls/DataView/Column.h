@@ -4,7 +4,6 @@
 #include "Renderer.h"
 #include "ColumnID.h"
 #include <kxf/RTTI.hpp>
-#include <wx/headercol.h>
 
 namespace kxf::UI::DataView
 {
@@ -17,65 +16,14 @@ namespace kxf::UI::DataView
 
 namespace kxf::UI::DataView
 {
-	class KX_API Column;
-
-	class KX_API NativeColumn final: public wxSettableHeaderColumn
-	{
-		private:
-			Column& m_Column;
-
-		public:
-			NativeColumn(Column& column)
-				:m_Column(column)
-			{
-			}
-
-		public:
-			const Column& GetColumn() const
-			{
-				return m_Column;
-			}
-			Column& GetColumn()
-			{
-				return m_Column;
-			}
-
-		public:
-			wxString GetTitle() const override;
-			void SetTitle(const wxString& title) override;
-
-			wxBitmap GetBitmap() const override;
-			void SetBitmap(const wxBitmap& bitmap) override;
-
-			int GetWidth() const override;
-			void SetWidth(int width) override;
-
-			int GetMinWidth() const override;
-			void SetMinWidth(int minWidth) override;
-
-			wxAlignment GetAlignment() const override;
-			void SetAlignment(wxAlignment alignment) override;
-
-			int GetFlags() const override;
-			void SetFlags(int flags) override;
-
-			bool IsSortKey() const override;
-			bool IsSortOrderAscending() const override;
-			void SetSortOrder(bool isAscending) override;
-	};
-}
-
-namespace kxf::UI::DataView
-{
 	class KX_API Column: public RTTI::Interface<Column>, public wxClientDataContainer
 	{
 		KxRTTI_DeclareIID(Column, {0x95e43f36, 0x4b4a, 0x4d43, {0xa9, 0x8, 0xab, 0x1e, 0x25, 0x42, 0x9, 0xfa}});
 
-		friend class KX_API View;
-		friend class KX_API MainWindow;
-		friend class KX_API HeaderCtrl;
-		friend class KX_API HeaderCtrl2;
-		friend class KX_API NativeColumn;
+		friend class View;
+		friend class MainWindow;
+		friend class HeaderCtrl;
+		friend class HeaderCtrl2;
 
 		public:
 			using Vector = std::vector<std::unique_ptr<Column>>;
@@ -86,7 +34,6 @@ namespace kxf::UI::DataView
 			static int GetAbsMaxColumnWidth();
 
 		private:
-			NativeColumn m_NativeColumn;
 			View* m_View = nullptr;
 			std::unique_ptr<Renderer> m_Renderer;
 			std::unique_ptr<Editor> m_Editor;
@@ -154,39 +101,27 @@ namespace kxf::UI::DataView
 				m_Style.SetValue(style);
 			}
 
-			const NativeColumn& GetNativeColumn() const
-			{
-				return m_NativeColumn;
-			}
-			NativeColumn& GetNativeColumn()
-			{
-				return m_NativeColumn;
-			}
-
 		public:
-			Column()
-				:m_NativeColumn(*this)
-			{
-			}
+			Column() = default;
 			Column(const wxString& title, ColumnID id, std::unique_ptr<Renderer> renderer = nullptr)
-				:m_NativeColumn(*this), m_Title(title), m_Renderer(std::move(renderer)), m_ID(id)
+				:m_Title(title), m_Renderer(std::move(renderer)), m_ID(id)
 			{
 			}
 			Column(const wxBitmap& bitmap, ColumnID id, std::unique_ptr<Renderer> renderer = nullptr)
-				:m_NativeColumn(*this), m_Bitmap(bitmap), m_Renderer(std::move(renderer)), m_ID(id)
+				:m_Bitmap(bitmap), m_Renderer(std::move(renderer)), m_ID(id)
 			{
 			}
 			Column(const wxBitmap& bitmap, const wxString& title, ColumnID id, std::unique_ptr<Renderer> renderer = nullptr)
-				:m_NativeColumn(*this), m_Bitmap(bitmap), m_Title(title), m_Renderer(std::move(renderer)), m_ID(id)
+				:m_Bitmap(bitmap), m_Title(title), m_Renderer(std::move(renderer)), m_ID(id)
 			{
 			}
 
 			Column(const wxString& title, ColumnID id, ColumnWidth width, ColumnStyle style)
-				:m_NativeColumn(*this), m_Title(title), m_ID(id), m_Width(width), m_Style(style)
+				:m_Title(title), m_ID(id), m_Width(width), m_Style(style)
 			{
 			}
 			Column(const wxBitmap& bitmap, ColumnID id, ColumnWidth width, ColumnStyle style)
-				:m_NativeColumn(*this), m_Bitmap(bitmap), m_ID(id), m_Width(width), m_Style(style)
+				:m_Bitmap(bitmap), m_ID(id), m_Width(width), m_Style(style)
 			{
 			}
 
