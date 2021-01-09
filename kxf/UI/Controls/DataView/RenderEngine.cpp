@@ -300,12 +300,7 @@ namespace kxf::UI::DataView
 			{
 				auto Ellipsize = [&]()
 				{
-					String ellipsizedText;
-					gc.DrawGDI({0, 0, 1, 1}, [&](GDIContext& dc)
-					{
-						ellipsizedText = wxControl::Ellipsize(string, dc.ToWxDC(), static_cast<wxEllipsizeMode>(m_Renderer.GetEllipsizeMode()), textRect.GetWidth());
-					});
-					return ellipsizedText;
+					return gc.EllipsizeText(string, textRect.GetWidth(), m_Renderer.GetEllipsizeMode());
 				};
 
 				const size_t lineBreakPos = FindFirstLineBreak(string);
