@@ -42,9 +42,16 @@ namespace kxf::Utility
 		}
 	}
 
-	intptr_t ModWindowStyle(void* windowHandle, int index, intptr_t style, bool enable) noexcept
+	FlagSet<intptr_t> GetWindowStyle(void* windowHandle, int index) noexcept
 	{
-		const HWND handle = reinterpret_cast<HWND>(windowHandle);
-		return ::SetWindowLongPtrW(handle, index, ModFlag(::GetWindowLongPtrW(handle, index), style, enable));
+		return ::GetWindowLongPtrW(reinterpret_cast<HWND>(windowHandle), index);
+	}
+	FlagSet<intptr_t> SetWindowStyle(void* windowHandle, int index, FlagSet<intptr_t> style) noexcept
+	{
+		return ::SetWindowLongPtrW(reinterpret_cast<HWND>(windowHandle), index, style.GetValue());
+	}
+	FlagSet<intptr_t> ModWindowStyle(void* windowHandle, int index, FlagSet<intptr_t> style, bool enable) noexcept
+	{
+		return SetWindowStyle(windowHandle, index, GetWindowStyle(windowHandle, index).Mod(style, enable));
 	}
 }
