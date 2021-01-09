@@ -4,3 +4,6 @@
 #define KX_API __declspec(dllexport)
 #define KX_API __declspec(dllimport)
 #define KX_API
+#define wxS(x) wxCONCAT_HELPER(L, x)
+#define wxS(x) wxPREPEND_L(x)
+#define wxS(x)
