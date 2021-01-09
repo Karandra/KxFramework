@@ -119,17 +119,28 @@ namespace kxf::GraphicsAction
 	{
 		private:
 			IGraphicsContext& m_GC;
+			bool m_SupportStates = false;
 
 		public:
 			Clip(IGraphicsContext& gc, const Rect& rect)
-				:m_GC(gc)
+				:m_GC(gc), m_SupportStates(m_GC.GetSupportedFeatures().Contains(GraphicsContextFeature::States))
 			{
-				m_GC.PushState();
+				if (m_SupportStates)
+				{
+					m_GC.PushState();
+				}
 				m_GC.ClipBoxRegion(rect);
 			}
 			~Clip()
 			{
-				m_GC.PopState();
+				if (m_SupportStates)
+				{
+					m_GC.PopState();
+				}
+				else
+				{
+					m_GC.ResetClipRegion();
+				}
 			}
 
 		public:
