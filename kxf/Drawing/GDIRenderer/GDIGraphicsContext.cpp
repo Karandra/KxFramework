@@ -632,17 +632,23 @@ namespace kxf
 	}
 	std::shared_ptr<IGraphicsTexture> GDIGraphicsMemoryContext::UnselectTexture()
 	{
-		m_MemoryDC.SelectObject(wxNullBitmap);
-		m_Texture->QueryInterface<GDIGraphicsTexture>()->Get().UpdateAlpha();
-
-		return std::move(m_Texture);
+		if (m_MemoryDC.IsOk())
+		{
+			m_MemoryDC.SelectObject(wxNullBitmap);
+		}
+		if (m_Texture)
+		{
+			m_Texture->QueryInterface<GDIGraphicsTexture>()->Get().UpdateAlpha();
+			return std::move(m_Texture);
+		}
+		return nullptr;
 	}
 }
 
 namespace kxf
 {
 	GDIGraphicsBufferedContext::GDIGraphicsBufferedContext(GDIGraphicsRenderer& rendrer, const SizeF& size, FlagSet<GDIBufferedContextFlag> flags)
-		: GDIGraphicsContext(rendrer, m_BufferedDC), m_BufferedDC(nullptr, size, flags.ToInt())
+		:GDIGraphicsContext(rendrer, m_BufferedDC), m_BufferedDC(nullptr, size, flags.ToInt())
 	{
 		SetupDC();
 	}
