@@ -56,7 +56,7 @@ namespace kxf::UI::DataView
 			{
 				node.Refresh(column);
 			}
-			
+
 			bool IsEditable(Node& node, const Column& column) const;
 			bool IsActivatable(Node& node, const Column& column) const;
 
@@ -166,7 +166,7 @@ namespace kxf::UI::DataView
 				m_ItemCount++;
 				OnRowInserted(m_ItemCount);
 			}
-			void RowRemoved(Row row) 
+			void RowRemoved(Row row)
 			{
 				m_ItemCount--;
 				OnRowRemoved(row);

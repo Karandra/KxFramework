@@ -650,7 +650,7 @@ namespace kxf::UI::DataView
 
 		if ([this, parent]()
 		{
-			if (!CreateControl(parent, wxID_NONE, wxDefaultPosition, wxDefaultSize, wxBORDER_THEME|wxCLIP_CHILDREN|wxTAB_TRAVERSAL, wxDefaultValidator, wxS("HeaderCtrl")))
+			if (!CreateControl(parent, wxID_NONE, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxCLIP_CHILDREN|wxTAB_TRAVERSAL, wxDefaultValidator, wxS("HeaderCtrl")))
 			{
 				return false;
 			}
