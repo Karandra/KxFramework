@@ -53,6 +53,15 @@ namespace kxf
 		End = wxELLIPSIZE_END,
 	};
 
+	enum class EllipsizeFlag: uint32_t
+	{
+		None = 0,
+
+		ExpandTabs = wxELLIPSIZE_FLAGS_EXPAND_TABS,
+		ProcessMnemonics = wxELLIPSIZE_FLAGS_PROCESS_MNEMONICS
+	};
+	KxFlagSet_Declare(EllipsizeFlag);
+
 	enum class Orientation: uint32_t
 	{
 		None = 0,
