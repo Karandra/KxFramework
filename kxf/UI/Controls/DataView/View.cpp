@@ -155,14 +155,22 @@ namespace kxf::UI::DataView
 	}
 	void View::OnPaint(wxPaintEvent& event)
 	{
-		GDIPaintContext dc(*this);
-		dc.Clear();
+		IGraphicsRenderer& renderer = *m_ClientArea->m_GraphicsRenderer;
 
-		if (m_BorderColor)
+		auto gc = renderer.CreateWindowPaintContext(*this);
+		gc->SetAntialiasMode(AntialiasMode::None);
+		gc->SetInterpolationQuality(InterpolationQuality::NearestNeighbor);
+
+		auto brush = renderer.CreateSolidBrush(m_BorderColor ? m_BorderColor : Color(GetBackgroundColour()));
+		gc->Clear(*brush);
+
+		if (m_HeaderAreaSpacerSI && m_HeaderAreaSpacerSI->IsShown())
 		{
-			dc.SetPen(m_BorderColor);
-			dc.SetBrush(m_BorderColor);
-			dc.DrawRectangle(Rect({0, 0}, GetClientSize()));
+			brush = renderer.CreateSolidBrush(m_ClientArea->m_PenRuleV->GetColor());
+
+			RectF rect = m_HeaderAreaSpacerSI->GetRect();
+			rect.SetWidth(GetClientSize().GetWidth());
+			gc->DrawRectangle(rect, *brush);
 		}
 	}
 	void View::AdjustForScrollTarget(IGraphicsContext& gc)
@@ -229,6 +237,8 @@ namespace kxf::UI::DataView
 			{
 				m_HeaderAreaSI = m_Sizer->Add(m_HeaderArea, 0, wxEXPAND);
 				m_HeaderAreaSI->SetMinSize(m_HeaderArea->FromDIP(wxSize(wxDefaultCoord, 25)));
+
+				m_HeaderAreaSpacerSI = m_Sizer->AddSpacer(1);
 			}
 			m_ClientAreaSI = m_Sizer->Add(m_ClientArea, 1, wxEXPAND|wxLEFT);
 			SetSizer(m_Sizer);

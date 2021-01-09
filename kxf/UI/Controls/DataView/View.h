@@ -52,6 +52,7 @@ namespace kxf::UI::DataView
 
 			wxBoxSizer* m_Sizer = nullptr;
 			wxSizerItem* m_HeaderAreaSI = nullptr;
+			wxSizerItem* m_HeaderAreaSpacerSI = nullptr;
 			wxSizerItem* m_ClientAreaSI = nullptr;
 
 			bool m_UsingSystemTheme = false;

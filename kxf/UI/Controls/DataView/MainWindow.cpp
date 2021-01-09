@@ -1048,7 +1048,8 @@ namespace kxf::UI::DataView
 	void MainWindow::OnPaint(wxPaintEvent& event)
 	{
 		auto gc = m_GraphicsRenderer->CreateWindowPaintContext(*this);
-		IRendererNative& nativeRenderer = IRendererNative::Get();
+		gc->SetAntialiasMode(AntialiasMode::None);
+		gc->SetInterpolationQuality(InterpolationQuality::NearestNeighbor);
 
 		const Size clientSize = GetClientSize();
 		const auto transparentPen = m_GraphicsRenderer->CreatePen(Drawing::GetStockColor(StockColor::Transparent));
@@ -1057,10 +1058,7 @@ namespace kxf::UI::DataView
 
 		gc->SetPen(transparentPen);
 		gc->SetBrush(backgroundBrush);
-		gc->DrawRectangle({0, 0}, clientSize);
-
-		gc->SetAntialiasMode(AntialiasMode::None);
-		gc->SetInterpolationQuality(InterpolationQuality::FastestAvailable);
+		gc->Clear(*backgroundBrush);
 
 		m_View->AdjustForScrollTarget(*gc);
 		if (m_BackgroundBitmap)
@@ -1195,6 +1193,8 @@ namespace kxf::UI::DataView
 		const bool horizontalRulesEnabled = m_View->ContainsWindowStyle(CtrlStyle::HorizontalRules);
 
 		// Redraw all cells for all rows which must be repainted and all columns
+		IRendererNative& nativeRenderer = IRendererNative::Get();
+
 		const Column* const expanderColumn = m_View->GetExpanderColumnOrFirstOne();
 		for (Row currentRow = rowStart; currentRow < rowEnd; ++currentRow)
 		{
@@ -1325,10 +1325,10 @@ namespace kxf::UI::DataView
 
 					// Draw vertical rules in column's last pixel, so they will align with header control dividers
 					const int x = cellRect.GetX() + cellRect.GetWidth() - 1;
-					int yAdd = 0;
+					int yAdd = 1;
 					if (currentRow + 1 == rowEnd)
 					{
-						yAdd = clientSize.GetHeight();
+						yAdd += clientSize.GetHeight();
 					}
 					gc->DrawLine(PointF(x, cellRect.GetTop()), PointF(x, cellRect.GetBottom() + yAdd));
 				}
@@ -1342,7 +1342,7 @@ namespace kxf::UI::DataView
 					gc->DrawLine(PointF(xCoordStart, cellInitialRect.GetY()), PointF(xCoordEnd + clientSize.GetWidth(), cellInitialRect.GetY()));
 				}
 
-				// Clip DC to current column
+				// Clip to current column
 				const Rect columnRect(cellRect.GetX(), 0, cellRect.GetWidth(), m_virtualSize.GetHeight());
 				GraphicsAction::Clip clipDC(*gc, columnRect);
 
@@ -1415,13 +1415,11 @@ namespace kxf::UI::DataView
 				}
 
 				// Draw drop hint
-				#if wxUSE_DRAG_AND_DROP
 				if (cellState.IsDropTarget())
 				{
 					Rect rowRect = GetRowRect();
 					nativeRenderer.DrawItemFocusRect(this, *gc, rowRect, NativeWidgetFlag::Selected);
 				}
-				#endif
 			}
 
 			// This needs more work
@@ -1932,7 +1930,6 @@ namespace kxf::UI::DataView
 		SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX));
 
 		Color rulesColor = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
-		rulesColor.SetAlpha8(85);
 
 		m_PenRuleH = m_GraphicsRenderer->CreatePen(rulesColor);
 		m_PenRuleV = m_PenRuleH;
