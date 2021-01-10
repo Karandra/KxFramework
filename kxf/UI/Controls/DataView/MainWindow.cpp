@@ -1060,7 +1060,7 @@ namespace kxf::UI::DataView
 		gc->SetBrush(backgroundBrush);
 		gc->Clear(*backgroundBrush);
 
-		m_View->AdjustForScrollTarget(*gc);
+		gc->OffsetForScrollableArea(*m_View);
 		if (m_BackgroundBitmap)
 		{
 			Point pos;
