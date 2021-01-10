@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "String.h"
+#include "kxf/Utility/TypeTraits.h"
 #include <any>
 
 namespace kxf
@@ -81,7 +82,7 @@ namespace kxf
 				}
 				else if constexpr(std::is_integral_v<T> || std::is_enum_v<T>)
 				{
-					using TIntType = std::conditional_t<std::is_enum_v<T>, std::underlying_type_t<T>, T>;
+					using TIntType = Utility::UnderlyingTypeEx_t<T>;
 
 					// Convert to an integer
 					if constexpr(std::is_signed_v<TIntType>)
@@ -165,7 +166,7 @@ namespace kxf
 			{
 				return std::any_cast<T>(&m_Any);
 			}
-			
+
 			template<class T>
 			const T* AsPtr() const noexcept
 			{
@@ -192,7 +193,7 @@ namespace kxf
 				:m_Any(std::move(other))
 			{
 			}
-			
+
 			template<class T>
 			Any(T&& value) noexcept
 			{
@@ -212,7 +213,7 @@ namespace kxf
 			{
 				m_Any.reset();
 			}
-			
+
 			void Swap(Any& other) noexcept
 			{
 				m_Any.swap(other.m_Any);
@@ -230,7 +231,7 @@ namespace kxf
 			{
 				return GetTypeInfo() == other.GetTypeInfo();
 			}
-			
+
 			template<class T>
 			bool CheckType() const noexcept
 			{
@@ -262,13 +263,13 @@ namespace kxf
 			{
 				return std::any_cast<T>(m_Any);
 			}
-			
+
 			template<class T>
 			T As() &&
 			{
 				return std::any_cast<T>(std::move(*this));
 			}
-			
+
 			// Try to retrieve the stored value, on type mismatch the empty optional object is returned
 			template<class T>
 			std::optional<T> QueryAs() const& noexcept(std::is_nothrow_copy_constructible_v<T>)
@@ -279,7 +280,7 @@ namespace kxf
 				}
 				return {};
 			}
-			
+
 			template<class T>
 			std::optional<T> QueryAs() && noexcept(std::is_nothrow_move_constructible_v<T>)
 			{
@@ -301,7 +302,7 @@ namespace kxf
 				}
 				return ConvertAnyTo(*this, value);
 			}
-			
+
 			template<class T>
 			bool GetAs(T value) && noexcept(std::is_nothrow_move_assignable_v<T>)
 			{
@@ -347,7 +348,7 @@ namespace kxf
 				});
 				return *this;
 			}
-			
+
 			Any& Assign(Any&& other) noexcept
 			{
 				m_Any = std::move(other.m_Any);
