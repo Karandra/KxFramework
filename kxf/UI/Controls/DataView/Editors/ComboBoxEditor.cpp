@@ -26,7 +26,7 @@ namespace kxf::UI::DataView
 		return new ComboBoxEditorControlHandler(this, GetControl());
 	}
 
-	wxWindow* ComboBoxEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value)
+	wxWindow* ComboBoxEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const Any& value)
 	{
 		const ComboBoxStyle comboBoxStyles = ComboBoxStyle::Dropdown|ComboBoxStyle::ProcessEnter|(IsEditable() ? ComboBoxStyle::None : ComboBoxStyle::ReadOnly);
 		wxComboBox* editor = nullptr;
@@ -72,7 +72,7 @@ namespace kxf::UI::DataView
 		}
 
 		// Select an item
-		if (int index = -1; value.CheckType<int>() && value.GetAs(&index))
+		if (int index = -1; value.CheckType<int>() && value.GetAs(index))
 		{
 			editor->SetSelection(index);
 		}
@@ -111,7 +111,7 @@ namespace kxf::UI::DataView
 		}
 		return editor;
 	}
-	wxAny ComboBoxEditor::GetValue(wxWindow* control) const
+	Any ComboBoxEditor::GetValue(wxWindow* control) const
 	{
 		const ComboBox* editor = static_cast<const ComboBox*>(control);
 

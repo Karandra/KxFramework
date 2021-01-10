@@ -70,8 +70,8 @@ namespace kxf::UI::DataView
 		protected:
 			EditorControlHandler* CreateControlHandler() override;
 
-			wxWindow* CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value) override;
-			wxAny GetValue(wxWindow* control) const override;
+			wxWindow* CreateControl(wxWindow* parent, const Rect& cellRect, const Any& value) override;
+			Any GetValue(wxWindow* control) const override;
 
 		public:
 			const std::vector<wxString>& GetItems() const

@@ -19,7 +19,7 @@ namespace
 
 namespace kxf::UI::DataView
 {
-	wxWindow* TimeEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value)
+	wxWindow* TimeEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const Any& value)
 	{
 		const DateTimeValue dateValue = FromAnyUsing<DateTimeValue>(value);
 
@@ -32,7 +32,7 @@ namespace kxf::UI::DataView
 									GetValidator()
 		);
 	}
-	wxAny TimeEditor::GetValue(wxWindow* control) const
+	Any TimeEditor::GetValue(wxWindow* control) const
 	{
 		wxTimePickerCtrl* editor = static_cast<wxTimePickerCtrl*>(control);
 		return ResetDate(editor->GetValue());

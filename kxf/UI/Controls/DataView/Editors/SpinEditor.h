@@ -35,8 +35,8 @@ namespace kxf::UI::DataView
 			}
 
 		protected:
-			wxWindow* CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value) override;
-			wxAny GetValue(wxWindow* control) const override;
+			wxWindow* CreateControl(wxWindow* parent, const Rect& cellRect, const Any& value) override;
+			Any GetValue(wxWindow* control) const override;
 
 		public:
 			// General

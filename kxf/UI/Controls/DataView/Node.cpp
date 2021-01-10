@@ -498,11 +498,11 @@ namespace kxf::UI::DataView
 		return GetModel()->IsEnabled(*this, column);
 	}
 
-	wxAny Node::GetValue(const Column& column) const
+	Any Node::GetValue(const Column& column) const
 	{
 		return GetModel()->GetValue(*this, column);
 	}
-	wxAny Node::GetEditorValue(const Column& column) const
+	Any Node::GetEditorValue(const Column& column) const
 	{
 		return GetModel()->GetEditorValue(*this, column);
 	}
@@ -510,7 +510,7 @@ namespace kxf::UI::DataView
 	{
 		return GetModel()->GetToolTip(*this, column);
 	}
-	bool Node::SetValue(Column& column, const wxAny& value)
+	bool Node::SetValue(Column& column, const Any& value)
 	{
 		return GetModel()->SetValue(*this, column, value);
 	}

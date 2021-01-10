@@ -156,7 +156,7 @@ namespace kxf::UI::DataView
 
 			// Will return true if event allowed
 			bool SendEditingStartedEvent(Node& item, Editor* editor);
-			bool SendEditingDoneEvent(Node& item, Editor* editor, bool canceled, const wxAny& value);
+			bool SendEditingDoneEvent(Node& item, Editor* editor, bool canceled, const Any& value);
 
 			// Drawing
 			void OnPaint(wxPaintEvent& event);

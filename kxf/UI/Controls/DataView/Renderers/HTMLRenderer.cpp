@@ -34,7 +34,7 @@ namespace
 
 namespace kxf::UI::DataView
 {
-	bool HTMLRenderer::SetValue(const wxAny& value)
+	bool HTMLRenderer::SetValue(const Any& value)
 	{
 		m_Value.Clear();
 		m_ContentHTML.clear();

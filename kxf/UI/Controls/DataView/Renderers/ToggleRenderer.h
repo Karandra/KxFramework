@@ -22,7 +22,7 @@ namespace kxf::UI::DataView
 			}
 
 		public:
-			bool FromAny(const wxAny& value);
+			bool FromAny(const Any& value);
 			void Clear()
 			{
 				*this = {};
@@ -111,9 +111,9 @@ namespace kxf::UI::DataView
 			{
 				return true;
 			}
-			wxAny OnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent = nullptr) override;
+			Any OnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent = nullptr) override;
 			
-			bool SetValue(const wxAny& value) override;
+			bool SetValue(const Any& value) override;
 			void DrawCellContent(const Rect& cellRect, CellState cellState) override;
 			Size GetCellSize() const override;
 
@@ -124,7 +124,7 @@ namespace kxf::UI::DataView
 			}
 			
 		public:
-			String GetTextValue(const wxAny& value) const override
+			String GetTextValue(const Any& value) const override
 			{
 				return {};
 			}

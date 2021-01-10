@@ -8,15 +8,15 @@
 
 namespace kxf::UI::DataView
 {
-	bool BitmapTextToggleValue::FromAny(const wxAny& value)
+	bool BitmapTextToggleValue::FromAny(const Any& value)
 	{
-		return BitmapTextValue::FromAny(value) || ToggleValue::FromAny(value) || value.GetAs(this);
+		return BitmapTextValue::FromAny(value) || ToggleValue::FromAny(value) || value.GetAs(*this);
 	}
 }
 
 namespace kxf::UI::DataView
 {
-	wxAny BitmapTextToggleRenderer::OnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent)
+	Any BitmapTextToggleRenderer::OnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent)
 	{
 		ToggleState state = m_Value.GetState();
 		if (DoOnActivateCell(GetRenderEngine().GetToggleSize(), state, mouseEvent))
@@ -26,7 +26,7 @@ namespace kxf::UI::DataView
 		return {};
 	}
 
-	bool BitmapTextToggleRenderer::SetValue(const wxAny& value)
+	bool BitmapTextToggleRenderer::SetValue(const Any& value)
 	{
 		m_Value.Clear();
 		return m_Value.FromAny(value);

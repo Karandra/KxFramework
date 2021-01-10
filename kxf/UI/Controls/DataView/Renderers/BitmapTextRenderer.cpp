@@ -5,15 +5,15 @@
 
 namespace kxf::UI::DataView
 {
-	bool BitmapTextValue::FromAny(const wxAny& value)
+	bool BitmapTextValue::FromAny(const Any& value)
 	{
-		return TextValue::FromAny(value) || BitmapValue::FromAny(value) || value.GetAs(this);
+		return TextValue::FromAny(value) || BitmapValue::FromAny(value) || value.GetAs(*this);
 	}
 }
 
 namespace kxf::UI::DataView
 {
-	bool BitmapTextRenderer::SetValue(const wxAny& value)
+	bool BitmapTextRenderer::SetValue(const Any& value)
 	{
 		m_Value.Clear();
 		return m_Value.FromAny(value);

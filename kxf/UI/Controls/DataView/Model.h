@@ -3,7 +3,8 @@
 #include "ToolTip.h"
 #include "Node.h"
 #include "Row.h"
-#include <kxf/RTTI.hpp>
+#include "kxf/General/Any.h"
+#include "kxf/RTTI/QueryInterface.h"
 
 namespace kxf::UI::DataView
 {
@@ -67,16 +68,16 @@ namespace kxf::UI::DataView
 				return true;
 			}
 
-			virtual wxAny GetValue(const Node& node, const Column& column) const
+			virtual Any GetValue(const Node& node, const Column& column) const
 			{
 				return {};
 			}
-			virtual wxAny GetEditorValue(const Node& node, const Column& column) const
+			virtual Any GetEditorValue(const Node& node, const Column& column) const
 			{
 				return {};
 			}
 			virtual ToolTip GetToolTip(const Node& node, const Column& column) const;
-			virtual bool SetValue(Node& node, Column& column, const wxAny& value)
+			virtual bool SetValue(Node& node, Column& column, const Any& value)
 			{
 				return false;
 			}

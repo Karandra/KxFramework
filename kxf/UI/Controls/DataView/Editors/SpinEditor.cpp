@@ -22,7 +22,7 @@ namespace
 
 namespace kxf::UI::DataView
 {
-	wxWindow* SpinEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value)
+	wxWindow* SpinEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const Any& value)
 	{
 		int style = wxSP_ARROW_KEYS|wxTE_PROCESS_ENTER|m_Alignment;
 		if (m_IsWrapping)
@@ -41,7 +41,7 @@ namespace kxf::UI::DataView
 		if (m_Type == Type::Integer)
 		{
 			int initialValue = 0;
-			value.GetAs(&initialValue);
+			value.GetAs(initialValue);
 
 			if (ShouldMimicIntegerUsingFloat())
 			{
@@ -66,7 +66,7 @@ namespace kxf::UI::DataView
 		else
 		{
 			double initialValue = 0.0;
-			value.GetAs(&initialValue);
+			value.GetAs(initialValue);
 
 			wxSpinCtrlDouble* spin = new wxSpinCtrlDouble(parent, wxID_NONE, {}, pos, size, style, m_FloatMin, m_FloatMax, initialValue, m_FloatIncrement);
 			spin->SetDigits(m_FloatPrecision);
@@ -95,7 +95,7 @@ namespace kxf::UI::DataView
 		}
 		return editor;
 	}
-	wxAny SpinEditor::GetValue(wxWindow* control) const
+	Any SpinEditor::GetValue(wxWindow* control) const
 	{
 		if (m_EffectiveType == Type::Integer)
 		{

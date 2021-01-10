@@ -44,9 +44,9 @@ namespace kxf::UI::DataView
 			virtual void CancelEdit();
 
 		protected:
-			virtual wxWindow* CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value) = 0;
-			virtual wxAny GetValue(wxWindow* control) const = 0;
-			template<class TValue> TValue FromAnyUsing(const wxAny& value) const
+			virtual wxWindow* CreateControl(wxWindow* parent, const Rect& cellRect, const Any& value) = 0;
+			virtual Any GetValue(wxWindow* control) const = 0;
+			template<class TValue> TValue FromAnyUsing(const Any& value) const
 			{
 				TValue rendererValue;
 				rendererValue.FromAny(value);

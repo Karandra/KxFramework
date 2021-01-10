@@ -4,18 +4,18 @@
 
 namespace kxf::UI::DataView
 {
-	bool BitmapValue::FromAny(const wxAny& value)
+	bool BitmapValue::FromAny(const Any& value)
 	{
-		if (value.GetAs(&m_Bitmap) || value.GetAs(this))
+		if (value.GetAs(m_Bitmap) || value.GetAs(*this))
 		{
 			return true;
 		}
-		else if (GDIIcon icon; value.GetAs(&icon))
+		else if (GDIIcon icon; value.GetAs(icon))
 		{
 			m_Bitmap = icon.ToGDIBitmap();
 			return true;
 		}
-		else if (BitmapImage image; value.GetAs(&image))
+		else if (BitmapImage image; value.GetAs(image))
 		{
 			m_Bitmap = image.ToGDIBitmap();
 			return true;
@@ -26,7 +26,7 @@ namespace kxf::UI::DataView
 
 namespace kxf::UI::DataView
 {
-	bool BitmapRenderer::SetValue(const wxAny& value)
+	bool BitmapRenderer::SetValue(const Any& value)
 	{
 		m_Value.Clear();
 		return m_Value.FromAny(value);

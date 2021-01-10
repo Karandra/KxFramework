@@ -22,18 +22,18 @@ namespace
 
 namespace kxf::UI::DataView
 {
-	bool DateTimeValue::FromAny(const wxAny& value)
+	bool DateTimeValue::FromAny(const Any& value)
 	{
-		if (value.GetAs(&m_Value) || value.GetAs(this))
+		if (value.GetAs(m_Value) || value.GetAs(*this))
 		{
 			return true;
 		}
-		else if (SYSTEMTIME systemTime; value.CheckType<SYSTEMTIME>() && value.GetAs(&systemTime))
+		else if (SYSTEMTIME systemTime; value.CheckType<SYSTEMTIME>() && value.GetAs(systemTime))
 		{
 			m_Value.SetSystemTime(systemTime);
 			return true;
 		}
-		else if (FILETIME fileTime; value.CheckType<FILETIME>() && value.GetAs(&fileTime))
+		else if (FILETIME fileTime; value.CheckType<FILETIME>() && value.GetAs(fileTime))
 		{
 			if (::FileTimeToSystemTime(&fileTime, &systemTime))
 			{
@@ -41,12 +41,12 @@ namespace kxf::UI::DataView
 				return true;
 			}
 		}
-		else if (time_t unixTime = 0; value.CheckType<time_t>() && value.GetAs(&unixTime))
+		else if (time_t unixTime = 0; value.CheckType<time_t>() && value.GetAs(unixTime))
 		{
 			m_Value.SetUnixTime(unixTime);
 			return true;
 		}
-		else if (wxString string; value.GetAs(&string))
+		else if (wxString string; value.GetAs(string))
 		{
 			return m_Value.ParseISOCombined(string) || m_Value.ParseISOCombined(string, wxS(' ')) || m_Value.ParseTime(string);
 		}
@@ -56,7 +56,7 @@ namespace kxf::UI::DataView
 
 namespace kxf::UI::DataView
 {
-	wxWindow* DateEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value)
+	wxWindow* DateEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const Any& value)
 	{
 		const DateTimeValue dateTimeValue = FromAnyUsing<DateTimeValue>(value);
 		const int style = ConvertControlStyle(dateTimeValue);
@@ -77,7 +77,7 @@ namespace kxf::UI::DataView
 		}
 		return editor;
 	}
-	wxAny DateEditor::GetValue(wxWindow* control) const
+	Any DateEditor::GetValue(wxWindow* control) const
 	{
 		wxDatePickerCtrl* editor = static_cast<wxDatePickerCtrl*>(control);
 		return editor->GetValue().ResetTime();

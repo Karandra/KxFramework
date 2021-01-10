@@ -7,12 +7,12 @@
 
 namespace kxf::UI::DataView
 {
-	bool ToggleValue::FromAny(const wxAny& value)
+	bool ToggleValue::FromAny(const Any& value)
 	{
-		if (!value.GetAs(this))
+		if (!value.GetAs(*this))
 		{
 			// Check for 'ToggleState'
-			if (ToggleState state = ToggleState::None; value.CheckType<ToggleState>() && value.GetAs(&state))
+			if (ToggleState state = ToggleState::None; value.CheckType<ToggleState>() && value.GetAs(state))
 			{
 				switch (state)
 				{
@@ -27,7 +27,7 @@ namespace kxf::UI::DataView
 			}
 
 			// Check for 'wxCheckBoxState'
-			if (wxCheckBoxState state = static_cast<wxCheckBoxState>(-1); value.CheckType<wxCheckBoxState>() && value.GetAs(&state))
+			if (wxCheckBoxState state = static_cast<wxCheckBoxState>(-1); value.CheckType<wxCheckBoxState>() && value.GetAs(state))
 			{
 				switch (state)
 				{
@@ -50,14 +50,14 @@ namespace kxf::UI::DataView
 			}
 
 			// Check for bool
-			if (bool isChecked = false; value.CheckType<bool>() && value.GetAs(&isChecked))
+			if (bool isChecked = false; value.CheckType<bool>() && value.GetAs(isChecked))
 			{
 				m_State = isChecked ? ToggleState::Checked : ToggleState::Unchecked;
 				return true;
 			}
 
 			// Check for 'ToggleType'
-			if (ToggleType type = ToggleType::None; value.CheckType<ToggleType>() && value.GetAs(&type))
+			if (ToggleType type = ToggleType::None; value.CheckType<ToggleType>() && value.GetAs(type))
 			{
 				switch (type)
 				{
@@ -114,7 +114,7 @@ namespace kxf::UI::DataView
 
 namespace kxf::UI::DataView
 {
-	wxAny ToggleRenderer::OnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent)
+	Any ToggleRenderer::OnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent)
 	{
 		ToggleState state = m_Value.GetState();
 		if (DoOnActivateCell(GetRenderEngine().GetToggleSize(), state, mouseEvent))
@@ -123,7 +123,7 @@ namespace kxf::UI::DataView
 		}
 		return {};
 	}
-	bool ToggleRenderer::SetValue(const wxAny& value)
+	bool ToggleRenderer::SetValue(const Any& value)
 	{
 		m_Value.Clear();
 		return m_Value.FromAny(value);

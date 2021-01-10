@@ -12,21 +12,21 @@ namespace kxf::UI::DataView
 		static_assert(wxColourData::NUM_CUSTOM == ArraySize<decltype(m_PaletteColors)>::value);
 	}
 
-	bool ColorValue::FromAny(const wxAny& value)
+	bool ColorValue::FromAny(const Any& value)
 	{
-		if (value.GetAs(this))
+		if (value.GetAs(*this))
 		{
 			return true;
 		}
-		else if (Color color; value.GetAs(&color))
+		else if (Color color; value.GetAs(color))
 		{
 			return true;
 		}
-		else if (wxColour color; value.GetAs(&color))
+		else if (wxColour color; value.GetAs(color))
 		{
 			return true;
 		}
-		else if (wxColourData colorData; value.GetAs(&colorData))
+		else if (wxColourData colorData; value.GetAs(colorData))
 		{
 			FromColorData(colorData);
 			return true;
@@ -63,7 +63,7 @@ namespace kxf::UI::DataView
 
 namespace kxf::UI::DataView
 {
-	wxWindow* ColorEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value)
+	wxWindow* ColorEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const Any& value)
 	{
 		m_Value = FromAnyUsing<ColorValue>(value);
 		wxColourData colorData = m_Value.ToColorData();
@@ -105,7 +105,7 @@ namespace kxf::UI::DataView
 		});
 		return m_Dialog;
 	}
-	wxAny ColorEditor::GetValue(wxWindow* control) const
+	Any ColorEditor::GetValue(wxWindow* control) const
 	{
 		control->Destroy();
 

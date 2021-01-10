@@ -1033,7 +1033,7 @@ namespace kxf::UI::DataView
 		m_View->ProcessWindowEvent(event);
 		return event.IsAllowed();
 	}
-	bool MainWindow::SendEditingDoneEvent(Node& item, Editor* editor, bool canceled, const wxAny& value)
+	bool MainWindow::SendEditingDoneEvent(Node& item, Editor* editor, bool canceled, const Any& value)
 	{
 		EditorEvent event(EditorEvent::EvtItemEditDone);
 		CreateEventTemplate(event, &item, editor->GetColumn());

@@ -32,7 +32,7 @@ namespace kxf::UI::DataView
 			ColorValue(const Color& color = wxNullColour);
 
 		public:
-			bool FromAny(const wxAny& value);
+			bool FromAny(const Any& value);
 			void Clear()
 			{
 				*this = {};
@@ -95,7 +95,7 @@ namespace kxf::UI::DataView
 			wxDialog* m_Dialog = nullptr;
 
 		protected:
-			wxWindow* CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value) override;
-			wxAny GetValue(wxWindow* control) const override;
+			wxWindow* CreateControl(wxWindow* parent, const Rect& cellRect, const Any& value) override;
+			Any GetValue(wxWindow* control) const override;
 	};
 }

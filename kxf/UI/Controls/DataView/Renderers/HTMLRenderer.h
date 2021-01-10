@@ -18,7 +18,7 @@ namespace kxf::UI::DataView
 			int m_VisibleCellTo = std::numeric_limits<int>::max();
 
 		protected:
-			bool SetValue(const wxAny& value) override;
+			bool SetValue(const Any& value) override;
 			ToolTip CreateToolTip() const override;
 
 			void PrepareRenderer(wxHtmlDCRenderer& htmlRenderer, GDIContext& dc, const Rect& cellRect = {}) const;
@@ -32,7 +32,7 @@ namespace kxf::UI::DataView
 			}
 
 		public:
-			String GetTextValue(const wxAny& value) const override
+			String GetTextValue(const Any& value) const override
 			{
 				return FromAnyUsing<decltype(m_Value)>(value).GetText();
 			}

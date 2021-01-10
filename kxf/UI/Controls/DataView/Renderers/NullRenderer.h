@@ -6,7 +6,7 @@ namespace kxf::UI::DataView
 	class KX_API NullRenderer: public Renderer
 	{
 		protected:
-			bool SetValue(const wxAny& value)
+			bool SetValue(const Any& value)
 			{
 				return false;
 			}
@@ -32,7 +32,7 @@ namespace kxf::UI::DataView
 			}
 			
 		public:
-			String GetTextValue(const wxAny& value) const override
+			String GetTextValue(const Any& value) const override
 			{
 				return {};
 			}

@@ -3,15 +3,15 @@
 
 namespace kxf::UI::DataView
 {
-	bool TextValue::FromAny(const wxAny& value)
+	bool TextValue::FromAny(const Any& value)
 	{
-		return value.GetAs(&m_Text) || value.GetAs(this);
+		return value.GetAs(m_Text) || value.GetAs(*this);
 	}
 }
 
 namespace kxf::UI::DataView
 {
-	bool TextRenderer::SetValue(const wxAny& value)
+	bool TextRenderer::SetValue(const Any& value)
 	{
 		m_Value.Clear();
 		return m_Value.FromAny(value);

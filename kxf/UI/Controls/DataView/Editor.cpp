@@ -83,7 +83,7 @@ namespace kxf::UI::DataView
 			{
 				// Try to get the value, normally we should succeed but if we fail, don't
 				// return immediately, we still need to destroy the edit control.
-				wxAny value = GetValue(m_Control);
+				Any value = GetValue(m_Control);
 				DestroyControl();
 				GetView()->SetFocus();
 

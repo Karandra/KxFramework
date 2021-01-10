@@ -4,7 +4,8 @@
 #include "Column.h"
 #include "SortOrder.h"
 #include "ToolTip.h"
-#include "kxf/RTTI.hpp"
+#include "kxf/General/Any.h"
+#include "kxf/RTTI/QueryInterface.h"
 #include "kxf/Utility/TypeTraits.h"
 
 namespace kxf::UI::DataView
@@ -117,7 +118,7 @@ namespace kxf::UI::DataView
 			{
 				return m_ParentNode;
 			}
-			
+
 			const Vector& GetChildren() const
 			{
 				return m_Children;
@@ -194,7 +195,7 @@ namespace kxf::UI::DataView
 					AttachChild(*GetRawPointer(node), GetChildrenCount());
 				}
 			}
-			
+
 			bool MoveTo(Node& node, size_t index)
 			{
 				if (Node* thisNode = DetachThis())
@@ -253,10 +254,10 @@ namespace kxf::UI::DataView
 			virtual Editor* GetEditor(const Column& column) const;
 			virtual bool IsEnabled(const Column& column) const;
 
-			virtual wxAny GetValue(const Column& column) const;
-			virtual wxAny GetEditorValue(const Column& column) const;
+			virtual Any GetValue(const Column& column) const;
+			virtual Any GetEditorValue(const Column& column) const;
 			virtual ToolTip GetToolTip(const Column& column) const;
-			virtual bool SetValue(Column& column, const wxAny& value);
+			virtual bool SetValue(Column& column, const Any& value);
 
 			virtual bool GetAttributes(const Column& column, const CellState& cellState, CellAttribute& attributes) const;
 			virtual bool IsCategoryNode() const;
@@ -328,7 +329,7 @@ namespace kxf::UI::DataView
 					{
 						m_Node.SetVirtualRow(m_OriginalRow);
 					}
-			
+
 				public:
 					VirtualNode& GetNode()
 					{

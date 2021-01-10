@@ -6,19 +6,19 @@
 
 namespace kxf::UI::DataView
 {
-	bool ProgressValueBase::FromAny(const wxAny& value)
+	bool ProgressValueBase::FromAny(const Any& value)
 	{
-		return value.GetAs(&m_Position) || value.GetAs(this);
+		return value.GetAs(m_Position) || value.GetAs(*this);
 	}
-	bool ProgressValue::FromAny(const wxAny& value)
+	bool ProgressValue::FromAny(const Any& value)
 	{
-		return TextValue::FromAny(value) || ProgressValueBase::FromAny(value) || value.GetAs(this);
+		return TextValue::FromAny(value) || ProgressValueBase::FromAny(value) || value.GetAs(*this);
 	}
 }
 
 namespace kxf::UI::DataView
 {
-	bool ProgressRenderer::SetValue(const wxAny& value)
+	bool ProgressRenderer::SetValue(const Any& value)
 	{
 		m_Value.Clear();
 		return m_Value.FromAny(value);

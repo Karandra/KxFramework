@@ -2,6 +2,7 @@
 #include "kxf/EventSystem/Event.h"
 #include "Common.h"
 #include "Row.h"
+#include "kxf/General/Any.h"
 #include <wx/dnd.h>
 #include <wx/dataobj.h>
 
@@ -97,7 +98,7 @@ namespace kxf::UI::DataView
 				m_Rect.reset();
 			}
 
-			Point GetPosition() const 
+			Point GetPosition() const
 			{
 				return m_Rect ? m_Rect->GetPosition() : Point::UnspecifiedPosition();
 			}
@@ -166,7 +167,7 @@ namespace kxf::UI::DataView
 			{
 				return m_CacheHints.second;
 			}
-			
+
 			// These are physical rows as user sees them, not logical
 			void SetCacheHints(Row from, Row to)
 			{
@@ -185,7 +186,7 @@ namespace kxf::UI::DataView
 			KxEVENT_MEMBER(EditorEvent, ItemEditDone);
 
 		private:
-			wxAny m_Value;
+			Any m_Value;
 			bool m_IsEditCancelled = false;
 
 		public:
@@ -199,7 +200,7 @@ namespace kxf::UI::DataView
 			{
 				return new EditorEvent(*this);
 			}
-			
+
 			bool IsEditCancelled() const
 			{
 				return m_IsEditCancelled;
@@ -209,16 +210,16 @@ namespace kxf::UI::DataView
 				m_IsEditCancelled = editCancelled;
 			}
 
-			const wxAny& GetValue() const
+			const Any& GetValue() const
 			{
 				return m_Value;
 			}
-			void SetValue(wxAny&& value)
+			void SetValue(Any&& value)
 			{
 				m_Value = std::move(value);
 				value.MakeNull();
 			}
-			void SetValue(const wxAny& value)
+			void SetValue(const Any& value)
 			{
 				m_Value = value;
 			}
@@ -250,7 +251,7 @@ namespace kxf::UI::DataView
 			{
 				m_DataObject = object;
 			}
-			
+
 			void SetDragFlags(int flags)
 			{
 				m_DragFlags = flags;
@@ -271,10 +272,10 @@ namespace kxf::UI::DataView
 			{
 				return new DragDropEvent(*this);
 			}
-			
+
 			// Drag
 			wxDataObjectSimple* GetDragObject(const wxDataFormat& format) const;
-			
+
 			template<class T>
 			T* GetDragObject(const wxDataFormat& format) const
 			{
@@ -291,14 +292,14 @@ namespace kxf::UI::DataView
 
 			// Drop
 			wxDataObjectSimple* GetRecievedDataObject() const;
-			
+
 			template<class T>
 			T* GetRecievedDataObject() const
 			{
 				static_assert(std::is_base_of_v<wxDataObjectSimple, T>);
 				return dynamic_cast<T*>(GetRecievedDataObject());
 			}
-			
+
 			wxDragResult GetDropResult() const
 			{
 				return m_DropResult;

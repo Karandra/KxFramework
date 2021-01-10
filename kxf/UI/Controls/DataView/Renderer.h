@@ -4,7 +4,7 @@
 #include "CellAttribute.h"
 #include "RenderEngine.h"
 #include "ToolTip.h"
-#include <wx/graphics.h>
+#include "kxf/General/Any.h"
 
 namespace kxf::UI::DataView
 {
@@ -105,11 +105,11 @@ namespace kxf::UI::DataView
 			{
 				return false;
 			}
-			virtual wxAny OnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent = nullptr)
+			virtual Any OnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent = nullptr)
 			{
 				return {};
 			}
-			virtual bool SetValue(const wxAny& value) = 0;
+			virtual bool SetValue(const Any& value) = 0;
 			virtual ToolTip CreateToolTip() const
 			{
 				return {};
@@ -124,7 +124,7 @@ namespace kxf::UI::DataView
 			virtual Size GetCellSize() const;
 
 			template<class TValue>
-			TValue FromAnyUsing(const wxAny& value) const
+			TValue FromAnyUsing(const Any& value) const
 			{
 				TValue rendererValue;
 				rendererValue.FromAny(value);
@@ -142,7 +142,7 @@ namespace kxf::UI::DataView
 			{
 				return RenderEngine(const_cast<Renderer&>(*this));
 			}
-			virtual String GetTextValue(const wxAny& value) const = 0;
+			virtual String GetTextValue(const Any& value) const = 0;
 
 		public:
 			Renderer(FlagSet<Alignment> alignment = Alignment::Invalid)

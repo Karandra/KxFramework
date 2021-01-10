@@ -5,7 +5,7 @@
 
 namespace kxf::UI::DataView
 {
-	wxWindow* TextEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const wxAny& value)
+	wxWindow* TextEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const Any& value)
 	{
 		const FlagSet<TextBoxStyle> style = TextBox::DefaultStyle|TextBoxStyle::ProcessEnter|(IsEditable() ? TextBoxStyle::None : TextBoxStyle::ReadOnly);
 		const TextValue textValue = FromAnyUsing<TextValue>(value);
@@ -38,7 +38,7 @@ namespace kxf::UI::DataView
 		editor->SelectAll();
 		return editor;
 	}
-	wxAny TextEditor::GetValue(wxWindow* control) const
+	Any TextEditor::GetValue(wxWindow* control) const
 	{
 		return static_cast<TextBox*>(control)->GetValue();
 	}
