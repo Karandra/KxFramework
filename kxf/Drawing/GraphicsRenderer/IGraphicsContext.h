@@ -9,6 +9,7 @@
 #include "NullObjects/NullGraphicsTexture.h"
 #include "NullObjects/NullGraphicsPath.h"
 class wxWindow;
+class wxScrollHelper;
 
 namespace kxf
 {
@@ -239,5 +240,8 @@ namespace kxf
 			// Offset management
 			virtual bool ShouldOffset() const = 0;
 			virtual void EnableOffset(bool enable = true) = 0;
+
+			virtual void OffsetForScrollableArea(const PointF& scrollPos, const PointF& scrollInc, const PointF& scale = {});
+			void OffsetForScrollableArea(const wxScrollHelper& scrollableWidget);
 	};
 }

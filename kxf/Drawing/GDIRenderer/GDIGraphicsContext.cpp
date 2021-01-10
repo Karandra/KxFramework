@@ -631,6 +631,15 @@ namespace kxf
 	{
 		m_DC.ResetBoundingBox();
 	}
+
+	// Offset management
+	void GDIGraphicsContext::OffsetForScrollableArea(const PointF& scrollPos, const PointF& scrollInc, const PointF& scale)
+	{
+		const PointF origin = m_DC.GetDeviceOrigin();
+
+		m_DC.SetDeviceOrigin(Point(origin.GetX() - scrollPos.GetX() * scrollInc.GetX(), origin.GetY() - scrollPos.GetY() * scrollInc.GetY()));
+		m_DC.SetUserScale(SizeD(scale.GetX(), scale.GetY()));
+	}
 }
 
 namespace kxf

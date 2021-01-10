@@ -2,6 +2,7 @@
 #include "IGraphicsContext.h"
 #include "../GDIRenderer/GDIBitmap.h"
 #include "../GDIRenderer/GDIMemoryContext.h"
+#include <wx/scrolwin.h>
 
 namespace
 {
@@ -428,5 +429,24 @@ namespace kxf
 			return result;
 		}
 		return {};
+	}
+
+	// Offset management
+	void IGraphicsContext::OffsetForScrollableArea(const PointF& scrollPos, const PointF& scrollInc, const PointF& scale)
+	{
+		constexpr PointF origin = {0.0f, 0.0f};
+
+		TransformTranslate(origin.GetX() - scrollPos.GetX() * scrollInc.GetX(), origin.GetY() - scrollPos.GetY() * scrollInc.GetY());
+		TransformScale(scale.GetX(), scale.GetY());
+	}
+	void IGraphicsContext::OffsetForScrollableArea(const wxScrollHelper& scrollableWidget)
+	{
+		const PointF scale(scrollableWidget.GetScaleX(), scrollableWidget.GetScaleY());
+		const PointF scrollPos = scrollableWidget.GetViewStart();
+
+		Point scrollInc;
+		scrollableWidget.GetScrollPixelsPerUnit(&scrollInc.X(), &scrollInc.Y());
+
+		OffsetForScrollableArea(scrollPos, scrollInc, scale);
 	}
 }

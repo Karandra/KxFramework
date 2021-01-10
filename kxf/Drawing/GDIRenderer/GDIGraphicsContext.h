@@ -276,6 +276,9 @@ namespace kxf
 			{
 			}
 
+			void OffsetForScrollableArea(const PointF& scrollPos, const PointF& scrollInc, const PointF& scale = {}) override;
+			using IGraphicsContext::OffsetForScrollableArea;
+
 		public:
 			// GDIGraphicsContext
 			const GDIContext& Get() const
