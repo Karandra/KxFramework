@@ -57,6 +57,10 @@ namespace
 				{
 					m_Pen.Set(pen.QueryInterface<GDIGraphicsPen>()->Get());
 				}
+				else if (brush)
+				{
+					m_Pen.Set(brush.QueryInterface<GDIGraphicsBrush>()->Get().GetColor());
+				}
 			}
 	};
 
