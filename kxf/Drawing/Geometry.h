@@ -114,6 +114,13 @@ namespace kxf::Geometry
 				return m_Y;
 			}
 
+			template<class TOrderedPair, class = std::enable_if_t<std::is_floating_point_v<TValue> && std::is_integral_v<typename TOrderedPair::TValue>>>
+			constexpr TOrderedPair ConvertRound() const
+			{
+				using T = typename TOrderedPair::TValue;
+				return {static_cast<T>(std::round(m_X)), static_cast<T>(std::round(m_Y))};
+			}
+
 		public:
 			constexpr TDerived& Scale(double x, double y) noexcept
 			{
