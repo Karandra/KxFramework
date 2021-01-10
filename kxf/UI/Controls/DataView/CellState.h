@@ -15,15 +15,20 @@ namespace kxf::UI::DataView
 			enum class Value: uint32_t
 			{
 				None = 0,
-				Selected = 1 << 0,
-				HotTracked = 1 << 1,
-				DropTarget = 1 << 2,
+				Current = 1 << 0,
+				Selected = 1 << 1,
+				HotTracked = 1 << 2,
+				DropTarget = 1 << 3,
 			};
 
 		private:
 			FlagSet<Value> m_Value;
 
 		public:
+			bool IsCurrent() const
+			{
+				return m_Value.Contains(Value::Current);
+			}
 			bool IsSelected() const
 			{
 				return m_Value.Contains(Value::Selected);
@@ -37,7 +42,12 @@ namespace kxf::UI::DataView
 				return m_Value.Contains(Value::DropTarget);
 			}
 
-			CellState& SetSelected()
+			CellState& SetCurrent()
+			{
+				m_Value.Add(Value::Current);
+				return *this;
+			}
+			CellState& SetItemSelected()
 			{
 				m_Value.Add(Value::Selected);
 				return *this;
@@ -54,6 +64,6 @@ namespace kxf::UI::DataView
 			}
 
 		public:
-			FlagSet<NativeWidgetFlag> ToItemState(const MainWindow* window) const;
+			FlagSet<NativeWidgetFlag> ToNativeWidgetFlags(const MainWindow& window) const;
 	};
 }

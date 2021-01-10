@@ -189,11 +189,12 @@ namespace kxf::UI::DataView
 			}
 
 			// Model
-			Model* GetModel() const;
+			Model* GetModel();
 			void SetModel(Model& model);
 			void AssignModel(std::unique_ptr<Model> model);
 
-			Node& GetRootNode() const;
+			RootNode& GetRootNode();
+			const RootNode& GetRootNode() const;
 			void ItemsChanged();
 
 			// Columns
@@ -268,7 +269,8 @@ namespace kxf::UI::DataView
 			// Current item is the one used by the keyboard navigation, it is the same as the (unique) selected item
 			// in single selection mode so these functions are mostly useful for controls with 'CtrlStyle::MultipleSelection' style.
 			Node* GetCurrentItem() const;
-			void SetCurrentItem(Node& node);
+			Node* GetHotTrackedItem() const;
+			Column* GetHotTrackedColumn() const;
 
 			size_t GetSelectedCount() const;
 			bool HasSelection() const
@@ -277,58 +279,19 @@ namespace kxf::UI::DataView
 			}
 
 			Node* GetSelection() const;
-			size_t GetSelections(Node::Vector& selection) const;
-			Node::Vector GetSelections() const
-			{
-				Node::Vector nodes;
-				GetSelections(nodes);
-				return nodes;
-			}
-
-			void SetSelections(const Node::Vector& selection);
-			void Select(Node& node);
-			void Unselect(Node& node);
-			bool IsSelected(const Node& node) const;
-
-			Node* GetHotTrackedItem() const;
-			Column* GetHotTrackedColumn() const;
+			size_t GetSelections(std::function<bool(Node&)> func) const;
+			void SetSelections(const std::vector<Node*>& selection);
 
 			void GenerateSelectionEvent(Node& node, const Column* column = nullptr);
 
 			void SelectAll();
 			void UnselectAll();
 
-			void Expand(Node& item);
-			void ExpandAncestors(Node& item);
-			void Collapse(Node& item);
-			bool IsExpanded(Node& item) const;
-			void SetItemExpanded(Node& item, bool expanded)
-			{
-				if (expanded)
-				{
-					Expand(item);
-				}
-				else
-				{
-					Collapse(item);
-				}
-			}
-			void ToggleItemExpanded(Node& item)
-			{
-				SetItemExpanded(item, !IsExpanded(item));
-			}
-
-			void EnsureVisible(Node& item, const Column* column = nullptr);
-			void HitTest(const Point& point, Node*& item, Column*& column) const;
-			Rect GetItemRect(const Node& item, const Column* column = nullptr) const;
-			Rect GetAdjustedItemRect(const Node& item, const Column* column = nullptr) const;
-			Point GetDropdownMenuPosition(const Node& item, const Column* column = nullptr) const;
-
 			int GetUniformRowHeight() const;
 			void SetUniformRowHeight(int rowHeight);
 			int GetDefaultRowHeight(UniformHeight type = UniformHeight::Default) const;
 
-			bool EditItem(Node& item, Column& column);
+			void HitTest(const Point& point, Node*& item, Column*& column) const;
 
 			// Drag and drop
 			bool EnableDND(std::unique_ptr<wxDataObjectSimple> dataObject, DNDOpType type, bool isPreferredDrop = false);

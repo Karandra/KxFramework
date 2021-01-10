@@ -18,341 +18,235 @@ namespace kxf::UI::DataView
 	class View;
 	class Node;
 	class CellState;
-
-	class RootNode;
-	class VirtualNode;
-	class NodeOperation_RowToNode;
 }
 
 namespace kxf::UI::DataView
 {
+	class RootNode;
+
 	class KX_API Node: public RTTI::Interface<Node>
 	{
 		KxRTTI_DeclareIID(Node, {0x84870de7, 0x1623, 0x4b27, {0x9a, 0x8b, 0x79, 0x26, 0x81, 0x9d, 0xbf, 0x28}});
 
-		friend class RootNode;
-		friend class VirtualNode;
 		friend class MainWindow;
-		friend class NodeOperation_RowToNode;
-
-		public:
-			using Vector = std::vector<Node*>;
+		friend class View;
+		friend class Model;
 
 		private:
-			Vector m_Children;
-			Node* m_ParentNode = nullptr;
 			RootNode* m_RootNode = nullptr;
+			Node* m_ParentNode = nullptr;
 
-			// Total count of expanded (i.e. visible with the help of some scrolling) items
-			// in the subtree, but excluding this node. I.e. it is 0 for leaves and is the
-			// number of rows the subtree occupies for branch nodes.
-			intptr_t m_SubTreeCount = 0;
-
-			Row m_IndexWithinParent;
-			SortOrder m_SortOrder = SortOrder::UseNone();
 			bool m_IsExpanded = false;
 
 		private:
-			// Called by the child after it has been updated to put it in the right place among its siblings, depending on the sort order.
-			void PutChildInSortOrder(Node* childNode);
-			void Resort(bool force = false);
-
-			// Should be called after changing the item value to update its position in the control if necessary.
-			void PutInSortOrder()
+			size_t ToggleNodeExpanded()
 			{
-				if (m_ParentNode)
+				m_IsExpanded = !m_IsExpanded;
+				return GetSubTreeCount();
+			}
+
+			void DoExpandNodeAncestors();
+			void DoEnsureCellVisible(const Column* column);
+			Rect DoGetCellRect(const Column* column) const;
+			Rect DoGetCellClientRect(const Column* column) const;
+			Point DoGetCellDropdownPoint(const Column* column) const;
+
+		protected:
+			virtual void OnSortChildren()
+			{
+			}
+			virtual size_t OnEnumChildren(std::function<bool(Node&)> func) = 0;
+
+			virtual bool OnExpandNode()
+			{
+				return true;
+			}
+			virtual bool OnCollapseNode()
+			{
+				return true;
+			}
+
+			virtual void OnNodeAttached(View& view)
+			{
+			}
+			virtual void OnNodeDetached()
+			{
+			}
+
+			virtual bool DoIsSameAs(const Node& other) const = 0;
+
+		public:
+			Node() = default;
+			Node(RootNode& rootNode)
+				:m_RootNode(&rootNode)
+			{
+			}
+			Node(Node& parentNode)
+				:m_RootNode(parentNode.m_RootNode), m_ParentNode(&parentNode)
+			{
+			}
+			virtual ~Node() = default;
+
+		public:
+			bool IsRootNode() const;
+			bool IsNodeAttached() const;
+
+			RootNode& GetRootNode() const
+			{
+				return *m_RootNode;
+			}
+			Node* GetParentNode() const
+			{
+				return m_ParentNode;
+			}
+			bool HasParentNode() const
+			{
+				return m_ParentNode != nullptr;
+			}
+
+			size_t EnumChildren(std::function<bool(Node&)> func)
+			{
+				return OnEnumChildren(std::move(func));
+			}
+			size_t EnumChildren(std::function<bool(const Node&)> func) const
+			{
+				if (func)
 				{
-					m_ParentNode->PutChildInSortOrder(this);
+					return const_cast<Node&>(*this).OnEnumChildren([&](Node& node)
+					{
+						return std::invoke(func, node);
+					});
+				}
+				else
+				{
+					return const_cast<Node&>(*this).OnEnumChildren({});
 				}
 			}
-			const SortOrder& GetSortOrder() const
-			{
-				return m_SortOrder;
-			}
-			void SetSortOrder(const SortOrder& sortOrder)
-			{
-				m_SortOrder = sortOrder;
-			}
-			void ResetSortOrder()
-			{
-				m_SortOrder = SortOrder::UseNone();
-			}
 
-			intptr_t GetSubTreeCount() const
+			bool HasChildren() const
 			{
-				return m_SubTreeCount;
+				return GetChildrenCount() == 0;
 			}
-			void ChangeSubTreeCount(intptr_t num);
-			void RecalcIndexes(size_t startAt = 0);
-			void InitNodeUsing(const Node& node);
+			size_t GetChildrenCount() const
+			{
+				return EnumChildren({});
+			}
+			size_t GetSubTreeCount() const;
 
 			bool IsNodeExpanded() const
 			{
 				return m_IsExpanded;
 			}
-			void SetNodeExpanded(bool expanded)
-			{
-				m_IsExpanded = expanded;
-			}
-			intptr_t ToggleNodeExpanded();
+			void ExpandNode();
+			void CollapseNode();
 
-			void ResetAll()
+		public:
+			View& GetView() const;
+			Model& GetModel() const;
+			MainWindow& GetMainWindow() const;
+
+			void RefreshCell();
+			void RefreshCell(Column& column);
+			bool EditCell(Column& column);
+
+			Row GetItemRow() const;
+			int GetItemIndent() const;
+			size_t GetItemIndexWithinParent() const;
+
+			CellState GetCellState() const;
+			void SelectItem();
+			void UnselectItem();
+			void MakeItemCurrent();
+
+			void EnsureCellVisible()
 			{
-				*this = Node();
+				DoEnsureCellVisible(nullptr);
+			}
+			void EnsureCellVisible(const Column& column)
+			{
+				DoEnsureCellVisible(&column);
+			}
+
+			Rect GetCellRect() const
+			{
+				return DoGetCellRect(nullptr);
+			}
+			Rect GetCellRect(const Column& column) const
+			{
+				return DoGetCellRect(&column);
+			}
+
+			Rect GetCellClientRect() const
+			{
+				return DoGetCellClientRect(nullptr);
+			}
+			Rect GetCellClientRect(const Column& column) const
+			{
+				return DoGetCellClientRect(nullptr);
+			}
+
+			Point GetCellDropdownPoint() const
+			{
+				return DoGetCellDropdownPoint(nullptr);
+			}
+			Point GetCellDropdownPoint(const Column& column) const
+			{
+				return DoGetCellDropdownPoint(&column);
 			}
 
 		public:
-			Node() = default;
-			~Node();
+			bool IsCellEditable(const Column& column) const;
+			bool IsCellRenderable(const Column& column) const;
+			bool IsCellActivatable(const Column& column) const;
+
+			virtual Renderer& GetCellRenderer(const Column& column) const;
+			virtual Editor* GetCellEditor(const Column& column) const;
+			virtual bool IsCellEnabled(const Column& column) const;
+
+			virtual Any GetCellValue(const Column& column) const;
+			virtual Any GetCellEditorValue(const Column& column) const;
+			virtual ToolTip GetCellToolTip(const Column& column) const;
+			virtual bool SetCellValue(Column& column, const Any& value);
+
+			virtual CellAttribute GetCellAttributes(const Column& column, const CellState& cellState) const;
+			virtual int GetItemHeight() const;
 
 		public:
-			bool IsRootNode() const
+			explicit operator bool() const
 			{
-				return m_ParentNode == nullptr;
+				return IsNodeAttached();
 			}
-			bool HasParent() const
+			bool operator!() const
 			{
-				return m_ParentNode != nullptr;
-			}
-			Node* GetParent() const
-			{
-				return m_ParentNode;
+				return !IsNodeAttached();
 			}
 
-			const Vector& GetChildren() const
+			bool operator==(const Node& other) const
 			{
-				return m_Children;
+				return this == &other || DoIsSameAs(other);
 			}
-			Vector& GetChildren()
+			bool operator!=(const Node& other) const
 			{
-				return m_Children;
+				return this != &other || !DoIsSameAs(other);
 			}
-			bool HasChildren() const
-			{
-				return !m_Children.empty();
-			}
-			size_t GetChildrenCount() const
-			{
-				return m_Children.size();
-			}
-			void SortChildren()
-			{
-				Resort(true);
-			}
+	};
 
-			Row FindChild(const Node& node) const;
-			Row GetIndexWithinParent() const
-			{
-				return m_IndexWithinParent;
-			}
-			int GetIndentLevel() const;
-
-			void DetachAllChildren();
-			Node* DetachChild(size_t index);
-			Node* DetachChild(Node& node);
-			Node* DetachThis()
-			{
-				if (m_ParentNode)
-				{
-					return m_ParentNode->DetachChild(*this);
-				}
-				return nullptr;
-			}
-
-			void AttachChild(Node& node, size_t index);
-			void AttachChild(Node& node)
-			{
-				AttachChild(node, GetChildrenCount());
-			}
-			void AttachChildren(std::initializer_list<std::reference_wrapper<Node>> list)
-			{
-				for (Node& node: list)
-				{
-					AttachChild(node, GetChildrenCount());
-				}
-			}
-			template<class TContainer> void AttachChildren(TContainer& items)
-			{
-				auto GetRawPointer = [](auto& node)
-				{
-					using TValue = std::decay_t<decltype(node)>;
-					if constexpr(kxf::Utility::is_unique_ptr_v<TValue>)
-					{
-						return node.get();
-					}
-					else if constexpr(std::is_pointer_v<TValue>)
-					{
-						return node;
-					}
-					else
-					{
-						return &node;
-					}
-				};
-
-				for (auto& node: items)
-				{
-					AttachChild(*GetRawPointer(node), GetChildrenCount());
-				}
-			}
-
-			bool MoveTo(Node& node, size_t index)
-			{
-				if (Node* thisNode = DetachThis())
-				{
-					node.AttachChild(*thisNode, index);
-					return true;
-				}
-				return false;
-			}
-			bool MoveTo(Node& node)
-			{
-				return MoveTo(node, node.GetChildrenCount());
-			}
-			bool Swap(Node& otherNode);
-
-		public:
-			MainWindow* GetMainWindow() const;
-			View* GetView() const;
-			Model* GetModel() const;
-			bool IsRenderable(const Column& column) const;
-
-			bool IsExpanded() const;
-			void SetExpanded(bool expand);
-			void Expand();
-			void Collapse();
-			void ToggleExpanded();
-
-			void Refresh();
-			void Refresh(Column& column);
-			void Edit(Column& column);
-
-			Row GetRow() const;
-			bool IsSelected() const;
-			bool IsCurrent() const;
-			bool IsHotTracked() const;
-			void SetSelected(bool value);
-			void Select()
-			{
-				SetSelected(true);
-			}
-			void Unselect()
-			{
-				SetSelected(false);
-			}
-			void EnsureVisible(const Column* column = nullptr);
-
-			Rect GetCellRect(const Column* column = nullptr) const;
-			Rect GetClientCellRect(const Column* column = nullptr) const;
-			Point GetDropdownMenuPosition(const Column* column = nullptr) const;
-
-		public:
-			bool IsEditable(const Column& column) const;
-			bool IsActivatable(const Column& column) const;
-
-			virtual Renderer& GetRenderer(const Column& column) const;
-			virtual Editor* GetEditor(const Column& column) const;
-			virtual bool IsEnabled(const Column& column) const;
-
-			virtual Any GetValue(const Column& column) const;
-			virtual Any GetEditorValue(const Column& column) const;
-			virtual ToolTip GetToolTip(const Column& column) const;
-			virtual bool SetValue(Column& column, const Any& value);
-
-			virtual bool GetAttributes(const Column& column, const CellState& cellState, CellAttribute& attributes) const;
-			virtual bool IsCategoryNode() const;
-			virtual int GetRowHeight() const;
-
-			virtual bool Compare(const Node& other, const Column& column) const;
-		};
-}
-
-namespace kxf::UI::DataView
-{
-	class KX_API RootNode: public RTTI::ExtendInterface<RootNode, Node>
+	class KX_API RootNode: public Node
 	{
 		KxRTTI_DeclareIID(RootNode, {0xe57d0d6b, 0xdea1, 0x43d9, {0xb3, 0xf2, 0x75, 0xd1, 0xce, 0xc2, 0x32, 0x59}});
 
-		friend class KX_API MainWindow;
-
-		private:
-			MainWindow* const m_MainWindow = nullptr;
-
-		private:
-			void Init()
-			{
-				m_RootNode = this;
-				SetNodeExpanded(true);
-			}
-			void ResetAll();
-
 		public:
-			RootNode(MainWindow* mainWindow)
-				:m_MainWindow(mainWindow)
+			RootNode()
+				:Node(*this)
 			{
-				Init();
 			}
 
 		public:
-			MainWindow* GetMainWindow() const
-			{
-				return m_MainWindow;
-			}
-			View* GetView() const;
-			Model* GetModel() const;
-	};
-}
-
-namespace kxf::UI::DataView
-{
-	class KX_API VirtualNode: public RTTI::ExtendInterface<VirtualNode, Node>
-	{
-		KxRTTI_DeclareIID(VirtualNode, {0x33a223b, 0xb6b6, 0x4a1c, {0xb2, 0xfe, 0xf0, 0x3d, 0xdf, 0x2a, 0x38, 0x16}});
-
-		friend class KX_API MainWindow;
-		friend class KX_API VirtualListModel;
-
-		protected:
-			class VirtualRowChanger
-			{
-				private:
-					VirtualNode& m_Node;
-					const Row m_OriginalRow;
-
-				public:
-					VirtualRowChanger(VirtualNode& node, Row row)
-						:m_Node(node), m_OriginalRow(node.GetVirtualRow())
-					{
-						m_Node.SetVirtualRow(row);
-					}
-					~VirtualRowChanger()
-					{
-						m_Node.SetVirtualRow(m_OriginalRow);
-					}
-
-				public:
-					VirtualNode& GetNode()
-					{
-						return m_Node;
-					}
-			};
-
-		protected:
-			Row GetVirtualRow() const
-			{
-				return m_IndexWithinParent;
-			}
-			void SetVirtualRow(Row row)
-			{
-				m_IndexWithinParent = row;
-			}
+			virtual bool IsNodeAttached() const = 0;
+			virtual View& GetView() const = 0;
 
 		public:
-			VirtualNode(RootNode& rootNode, Row row = {})
-			{
-				InitNodeUsing(rootNode);
-				SetVirtualRow(row);
-			}
+			void NotifyItemsChanged();
 	};
 }
 
@@ -388,7 +282,7 @@ namespace kxf::UI::DataView
 
 namespace kxf::UI::DataView
 {
-	class KX_API NodeOperation_RowToNode: public NodeOperation
+	class KX_API NodeOperation_RowToNode final: public NodeOperation
 	{
 		private:
 			const intptr_t m_Row = -1;

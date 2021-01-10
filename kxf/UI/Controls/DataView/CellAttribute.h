@@ -16,10 +16,6 @@ namespace kxf::UI::DataView
 			{
 				return m_Options.IsDefault() && m_BGOptions.IsDefault() && m_FontOptions.IsDefault();
 			}
-			void Reset()
-			{
-				*this = CellAttribute();
-			}
 			Font GetEffectiveFont(const Font& baseFont) const;
 
 		public:

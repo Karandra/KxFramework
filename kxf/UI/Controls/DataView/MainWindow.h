@@ -62,10 +62,6 @@ namespace kxf::UI::DataView
 
 		private:
 			View* m_View = nullptr;
-			Model* m_Model = nullptr;
-			bool m_OwnModel = false;
-			bool m_IsRepresentingList = false;
-			bool m_IsVirtualListModel = false;
 
 			int m_UniformRowHeight = 0;
 			int m_Indent = 0;
@@ -100,8 +96,8 @@ namespace kxf::UI::DataView
 			DropSource* m_DragSource = nullptr;
 			size_t m_DragCount = 0;
 
-			Point m_DragStart = Point(0, 0);
-			Row m_DropHintLine;
+			Point m_DragStart;
+			Row m_DropHintRow;
 			bool m_DropHint = false;
 
 			// Double click logic
@@ -121,11 +117,10 @@ namespace kxf::UI::DataView
 			FlagSet<Alignment> m_BackgroundBitmapAlignment = Alignment::Invalid;
 			bool m_FitBackgroundBitmap = false;
 
-			// This is the tree structure of the model.
 			// Make 'm_ItemsCount' = -1 will cause the class recalculate the real displaying number of rows.
-			RootNode m_TreeRoot;
-			VirtualNode m_VirtualNode;
 			size_t m_ItemsCount = INVALID_COUNT;
+			object_ptr<Model> m_Model;
+			RootNode* m_TreeRoot = nullptr;
 
 			// String to display when the control is empty
 			String m_EmptyControlLabel;
@@ -205,8 +200,8 @@ namespace kxf::UI::DataView
 
 			void BuildTree();
 			void DestroyTree();
-			void DoAssignModel(Model* model, bool own);
-			bool IsRepresentingList() const;
+			void DoAssignModel(object_ptr<Model> model);
+			bool IsListLike() const;
 
 			// Misc
 			void OnInternalIdle() override;
@@ -219,35 +214,26 @@ namespace kxf::UI::DataView
 			void CreateEventTemplate(ItemEvent& event, Node* node = nullptr, Column* column = nullptr);
 
 			// Model and nodes
-			bool IsList() const
+			Model* GetModel()
 			{
-				return m_IsVirtualListModel || m_IsRepresentingList;
-			}
-			bool IsVirtualList() const
-			{
-				return m_IsVirtualListModel;
-			}
-
-			Model* GetModel() const
-			{
-				return m_Model;
+				return m_Model.get();
 			}
 			void SetModel(Model& model)
 			{
-				DoAssignModel(&model, false);
+				DoAssignModel(RTTI::assume_non_owned(model));
 			}
 			void AssignModel(std::unique_ptr<Model> model)
 			{
-				DoAssignModel(model.release(), true);
+				DoAssignModel(std::move(model));
 			}
 
-			const Node& GetRootNode() const
+			const RootNode& GetRootNode() const
 			{
-				return m_TreeRoot;
+				return *m_TreeRoot;
 			}
-			Node& GetRootNode()
+			RootNode& GetRootNode()
 			{
-				return m_TreeRoot;
+				return *m_TreeRoot;
 			}
 			void ItemsChanged();
 
@@ -383,7 +369,7 @@ namespace kxf::UI::DataView
 			{
 				m_SelectionStore.SelectRange(0, GetRowCount() - 1, false);
 			}
-			void SelectRow(Row row, bool select);
+			void SelectRow(Row row, bool select = true);
 			void SelectRows(Row from, Row to);
 			void SelectRows(const Row::Vector& selection);
 			void SelectAllRows()

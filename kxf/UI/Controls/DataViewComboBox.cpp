@@ -88,7 +88,7 @@ namespace kxf::UI::DataView
 	{
 		if (m_Selection)
 		{
-			Select(*m_Selection);
+			m_Selection->SelectItem();
 		}
 
 		if (ContainsOption(ComboCtrlOption::ForceGetStringOnDismiss))
@@ -186,7 +186,7 @@ namespace kxf::UI::DataView
 		HandleWindowEvent(event);
 		if (Node* node = event.GetNode())
 		{
-			Select(*node);
+			node->SelectItem();
 		}
 	}
 

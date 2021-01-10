@@ -16,18 +16,14 @@ namespace kxf::UI::DataView
 
 	void Renderer::SetupCellAttributes(CellState cellState)
 	{
-		// Set up the attributes for this item if it's not empty. Reset attributes if they are not needed.
-		m_Attributes.Reset();
-		if (!m_Node->GetAttributes(*m_Column, cellState, m_Attributes))
-		{
-			m_Attributes.Reset();
-		}
+		// Set up the attributes for this item if it's not empty
+		m_Attributes = m_Node->GetCellAttributes(*m_Column, cellState);
 	}
 	void Renderer::SetupCellValue()
 	{
 		// Now check if we have a value and remember it for rendering it later.
 		// Notice that we do it even if it's null, as the cell should be empty then and not show the last used value.
-		SetValue(m_Node->GetValue(*m_Column));
+		SetValue(m_Node->GetCellValue(*m_Column));
 	}
 
 	void Renderer::CallDrawCellBackground(const Rect& cellRect, CellState cellState, bool noUserBackground)
@@ -163,7 +159,7 @@ namespace kxf::UI::DataView
 			MainWindow* mainWindow = GetMainWindow();
 
 			Rect highlightRect = Rect(adjustedCellRect).Inflate(2);
-			IRendererNative::Get().DrawItemSelectionRect(mainWindow, *m_GC, highlightRect, cellState.ToItemState(mainWindow));
+			IRendererNative::Get().DrawItemSelectionRect(mainWindow, *m_GC, highlightRect, cellState.ToNativeWidgetFlags(*mainWindow));
 		}
 
 		// Call derived class drawing
@@ -173,7 +169,7 @@ namespace kxf::UI::DataView
 	void Renderer::CallOnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent)
 	{
 		Any value = OnActivateCell(node, cellRect, mouseEvent);
-		if (!value.IsNull() && node.SetValue(*m_Column, value))
+		if (!value.IsNull() && node.SetCellValue(*m_Column, value))
 		{
 			GetMainWindow()->OnCellChanged(node, m_Column);
 		}

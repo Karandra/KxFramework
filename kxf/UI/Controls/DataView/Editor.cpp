@@ -54,7 +54,7 @@ namespace kxf::UI::DataView
 		// Before doing anything we send an event asking if editing of this item is really wanted.
 		if (GetMainWindow()->SendEditingStartedEvent(node, this))
 		{
-			m_Control = CreateControl(GetMainWindow(), cellRect, m_Node->GetEditorValue(column));
+			m_Control = CreateControl(GetMainWindow(), cellRect, m_Node->GetCellEditorValue(column));
 
 			// There might be no editor control for the given item
 			if (m_Control)
@@ -90,7 +90,7 @@ namespace kxf::UI::DataView
 				MainWindow* mainWindow = GetMainWindow();
 				if (!value.IsNull() && mainWindow->SendEditingDoneEvent(*m_Node, this, false, value))
 				{
-					if (m_Node->SetValue(*m_Column, value))
+					if (m_Node->SetCellValue(*m_Column, value))
 					{
 						mainWindow->OnCellChanged(*m_Node, m_Column);
 					}

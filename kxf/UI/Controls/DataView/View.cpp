@@ -245,7 +245,7 @@ namespace kxf::UI::DataView
 	{
 	}
 
-	Model* View::GetModel() const
+	Model* View::GetModel()
 	{
 		return m_ClientArea->GetModel();
 	}
@@ -258,7 +258,11 @@ namespace kxf::UI::DataView
 		m_ClientArea->AssignModel(std::move(model));
 	}
 
-	Node& View::GetRootNode() const
+	RootNode& View::GetRootNode()
+	{
+		return m_ClientArea->GetRootNode();
+	}
+	const RootNode& View::GetRootNode() const
 	{
 		return m_ClientArea->GetRootNode();
 	}
@@ -516,24 +520,13 @@ namespace kxf::UI::DataView
 			return GetSelection();
 		}
 	}
-	void View::SetCurrentItem(Node& item)
+	Node* View::GetHotTrackedItem() const
 	{
-		if (m_Styles.Contains(CtrlStyle::MultipleSelection))
-		{
-			const size_t newCurrent = *m_ClientArea->GetRowByNode(item);
-			const size_t oldCurrent = *m_ClientArea->GetCurrentRow();
-
-			if (newCurrent != oldCurrent)
-			{
-				m_ClientArea->ChangeCurrentRow(newCurrent);
-				m_ClientArea->RefreshRow(oldCurrent);
-				m_ClientArea->RefreshRow(newCurrent);
-			}
-		}
-		else
-		{
-			Select(item);
-		}
+		return m_ClientArea->GetHotTrackItem();
+	}
+	Column* View::GetHotTrackedColumn() const
+	{
+		return m_ClientArea->GetHotTrackColumn();
 	}
 
 	size_t View::GetSelectedCount() const
@@ -550,89 +543,47 @@ namespace kxf::UI::DataView
 		}
 		return nullptr;
 	}
-	size_t View::GetSelections(Node::Vector& selection) const
+	size_t View::GetSelections(std::function<bool(Node&)> func) const
 	{
 		const wxSelectionStore& selectionStore = m_ClientArea->GetSelections();
-		selection.reserve(selectionStore.GetSelectedCount());
 
+		size_t count = 0;
 		wxSelectionStore::IterationState cookie;
 		for (auto row = selectionStore.GetFirstSelectedItem(cookie); row != wxSelectionStore::NO_SELECTION; row = selectionStore.GetNextSelectedItem(cookie))
 		{
 			if (Node* item = m_ClientArea->GetNodeByRow(row))
 			{
-				selection.push_back(item);
+				count++;
+				if (!std::invoke(func, *item))
+				{
+					break;
+				}
 			}
 		}
-		return selection.size();
+		return count;
 	}
-	void View::SetSelections(const Node::Vector& selection)
+	void View::SetSelections(const std::vector<Node*>& selection)
 	{
 		m_ClientArea->ClearSelection();
 		Node* lastParent = nullptr;
 
-		for (size_t i = 0; i < selection.size(); i++)
+		for (Node* item: selection)
 		{
-			Node* item = selection[i];
-			Node* parent = item->GetParent();
+			Node* parent = item->GetParentNode();
 			if (parent)
 			{
 				if (parent != lastParent)
 				{
-					ExpandAncestors(*item);
+					item->DoExpandNodeAncestors();
 				}
 			}
 
 			lastParent = parent;
-			Row row = m_ClientArea->GetRowByNode(*item);
-			if (row)
+			if (Row row = m_ClientArea->GetRowByNode(*item))
 			{
-				m_ClientArea->SelectRow(row, true);
+				m_ClientArea->SelectRow(row);
 			}
 		}
-	}
-	void View::Select(Node& node)
-	{
-		ExpandAncestors(node);
-
-		Row row = m_ClientArea->GetRowByNode(node);
-		if (row)
-		{
-			// Unselect all rows before select another in the single select mode
-			if (m_ClientArea->IsSingleSelection())
-			{
-				m_ClientArea->UnselectAllRows();
-			}
-			m_ClientArea->SelectRow(row, true);
-
-			// Also set focus to the selected item
-			m_ClientArea->ChangeCurrentRow(row);
-		}
-	}
-	void View::Unselect(Node& node)
-	{
-		Row row = m_ClientArea->GetRowByNode(node);
-		if (row)
-		{
-			m_ClientArea->SelectRow(row, false);
-		}
-	}
-	bool View::IsSelected(const Node& node) const
-	{
-		Row row = m_ClientArea->GetRowByNode(node);
-		if (row)
-		{
-			return m_ClientArea->IsRowSelected(row);
-		}
-		return false;
-	}
-
-	Node* View::GetHotTrackedItem() const
-	{
-		return m_ClientArea->GetHotTrackItem();
-	}
-	Column* View::GetHotTrackedColumn() const
-	{
-		return m_ClientArea->GetHotTrackColumn();
 	}
 
 	void View::GenerateSelectionEvent(Node& item, const Column* column)
@@ -649,84 +600,9 @@ namespace kxf::UI::DataView
 		m_ClientArea->UnselectAllRows();
 	}
 
-	void View::Expand(Node& item)
-	{
-		ExpandAncestors(item);
-
-		Row row = m_ClientArea->GetRowByNode(item);
-		if (row)
-		{
-			m_ClientArea->Expand(row);
-		}
-	}
-	void View::ExpandAncestors(Node& item)
-	{
-		if (GetModel())
-		{
-			Node* parent = item.GetParent();
-			while (parent)
-			{
-				Expand(*parent);
-				parent = parent->GetParent();
-			}
-		}
-	}
-	void View::Collapse(Node& item)
-	{
-		Row row = m_ClientArea->GetRowByNode(item);
-		if (row)
-		{
-			m_ClientArea->Collapse(row);
-		}
-	}
-	bool View::IsExpanded(Node& item) const
-	{
-		Row row = m_ClientArea->GetRowByNode(item);
-		if (row)
-		{
-			return m_ClientArea->IsExpanded(row);
-		}
-		return false;
-	}
-
-	void View::EnsureVisible(Node& item, const Column* column)
-	{
-		ExpandAncestors(item);
-		m_ClientArea->RecalculateDisplay();
-
-		Row row = m_ClientArea->GetRowByNode(item);
-		if (row)
-		{
-			if (column)
-			{
-				m_ClientArea->EnsureVisible(row, column->GetIndex());
-			}
-			else
-			{
-				m_ClientArea->EnsureVisible(row);
-			}
-		}
-	}
 	void View::HitTest(const Point& point, Node*& item, Column*& column) const
 	{
 		m_ClientArea->HitTest(point, item, column);
-	}
-	Rect View::GetItemRect(const Node& item, const Column* column) const
-	{
-		return m_ClientArea->GetItemRect(item, column);
-	}
-	Rect View::GetAdjustedItemRect(const Node& item, const Column* column) const
-	{
-		Rect rect = GetItemRect(item, column);
-		if (HasHeaderCtrl())
-		{
-			rect.SetTop(rect.GetTop() + GetHeaderCtrl()->GetSize().GetHeight());
-		}
-		return rect;
-	}
-	Point View::GetDropdownMenuPosition(const Node& item, const Column* column) const
-	{
-		return GetAdjustedItemRect(item, column).GetLeftBottom() + FromDIP(Point(0, 1));
 	}
 
 	int View::GetUniformRowHeight() const
@@ -740,11 +616,6 @@ namespace kxf::UI::DataView
 	int View::GetDefaultRowHeight(UniformHeight type) const
 	{
 		return m_ClientArea->GetDefaultRowHeight(type);
-	}
-
-	bool View::EditItem(Node& item, Column& column)
-	{
-		return m_ClientArea->BeginEdit(item, column);
 	}
 
 	// Drag and drop

@@ -8,15 +8,16 @@ namespace kxf::UI::DataView
 	class RenderEngine;
 }
 
-namespace kxf::UI::DataView 
+namespace kxf::UI::DataView
 {
 	enum class CellOption: uint32_t
 	{
 		None = 0,
 		Enabled = 1 << 0,
 		Editable = 1 << 1,
-		HighlightItem = 1 << 2,
-		ShowAccelerators = 1 << 3,
+		Category = 1 << 2,
+		HighlightItem = 1 << 3,
+		ShowAccelerators = 1 << 4,
 
 		Default = Enabled|Editable
 	};
@@ -116,7 +117,7 @@ namespace kxf::UI::DataView::CellAttributes
 				m_ForegroundColor = color;
 				ChangeAlpha(m_ForegroundColor, alpha);
 			}
-			
+
 			// Alignment
 			bool HasAlignment() const
 			{

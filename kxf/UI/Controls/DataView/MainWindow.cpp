@@ -49,10 +49,10 @@ namespace kxf::UI::DataView
 					int indent = 0;
 					if (m_IsExpanderColumn)
 					{
-						indent = m_MainWindow->m_Indent * node->GetIndentLevel() + m_ExpanderSize;
+						indent = m_MainWindow->m_Indent * node->GetItemIndent() + m_ExpanderSize;
 					}
 
-					Renderer& renderer = node->GetRenderer(m_Column);
+					Renderer& renderer = node->GetCellRenderer(m_Column);
 					renderer.BeginCellSetup(*node, m_Column);
 					renderer.SetupCellValue();
 					renderer.SetupCellAttributes(m_MainWindow->GetCellStateForRow(row));
@@ -65,7 +65,7 @@ namespace kxf::UI::DataView
 			MaxWidthCalculator(MainWindow* mainWindow, Column& column, int expanderSize)
 				:wxMaxWidthCalculatorBase(column.GetDisplayIndex()), m_MainWindow(mainWindow), m_Column(column), m_ExpanderSize(expanderSize)
 			{
-				m_IsExpanderColumn = !m_MainWindow->IsList() && m_MainWindow->m_View->GetExpanderColumnOrFirstOne() == &m_Column;
+				m_IsExpanderColumn = m_MainWindow->IsListLike() && m_MainWindow->m_View->GetExpanderColumnOrFirstOne() == &m_Column;
 			}
 	};
 }
@@ -138,9 +138,9 @@ namespace kxf::UI::DataView
 					Column* activatableColumn = FindInteractibleColumn(*node, InteractibleCell::Activator);
 					if (activatableColumn)
 					{
-						const Rect cellRect = m_View->GetItemRect(*node, activatableColumn);
+						const Rect cellRect = node->GetCellRect(*activatableColumn);
 
-						Renderer& renderer = node->GetRenderer(*activatableColumn);
+						Renderer& renderer = node->GetCellRenderer(*activatableColumn);
 						renderer.BeginCellSetup(*node, *activatableColumn);
 						renderer.SetupCellAttributes(GetCellStateForRow(m_CurrentRow));
 						renderer.CallOnActivateCell(*node, cellRect, nullptr);
@@ -181,7 +181,7 @@ namespace kxf::UI::DataView
 						// try to find the first editable column.
 						if (Column* editableColumn = FindInteractibleColumn(*node, InteractibleCell::Editor))
 						{
-							m_View->EditItem(*node, *editableColumn);
+							node->EditCell(*editableColumn);
 						}
 					}
 				}
@@ -350,7 +350,7 @@ namespace kxf::UI::DataView
 	}
 	void MainWindow::OnLeftKey(wxKeyEvent& event)
 	{
-		if (IsList())
+		if (IsListLike())
 		{
 			TryAdvanceCurrentColumn(nullptr, event, false);
 		}
@@ -386,7 +386,7 @@ namespace kxf::UI::DataView
 			else
 			{
 				// If the node is already closed, we move the selection to its parent
-				Node* parentNode = node->GetParent();
+				Node* parentNode = node->GetParentNode();
 				if (parentNode)
 				{
 					Row parent = GetRowByNode(*parentNode);
@@ -404,7 +404,7 @@ namespace kxf::UI::DataView
 	}
 	void MainWindow::OnRightKey(wxKeyEvent& event)
 	{
-		if (IsList())
+		if (IsListLike())
 		{
 			TryAdvanceCurrentColumn(nullptr, event, true);
 		}
@@ -668,7 +668,7 @@ namespace kxf::UI::DataView
 		{
 			if (itemOffset < 0)
 			{
-				itemOffset = m_Indent * node->GetIndentLevel();
+				itemOffset = m_Indent * node->GetItemIndent();
 			}
 
 			Rect rect(xpos + itemOffset, GetRowStart(row) + (GetRowHeight(row) - m_UniformRowHeight) / 2, m_UniformRowHeight, m_UniformRowHeight);
@@ -681,9 +681,9 @@ namespace kxf::UI::DataView
 		Column* expander = m_View->GetExpanderColumnOrFirstOne();
 		bool isHoverOverExpander = false;
 		int itemOffset = 0;
-		if (!IsList() && expander == currentColumn)
+		if (!IsListLike() && expander == currentColumn)
 		{
-			itemOffset = m_Indent * currentNode->GetIndentLevel();
+			itemOffset = m_Indent * currentNode->GetItemIndent();
 
 			// We make the rectangle we are looking in a bit bigger than the actual
 			// visual expander so the user can hit that little thing reliably.
@@ -911,7 +911,7 @@ namespace kxf::UI::DataView
 				// Note that SetupCellAttributes() should be called after GetRowStart()
 				// call in 'cellRect' initialization above as GetRowStart() calls
 				// SetupCellAttributes() for other items from inside it.
-				Renderer& renderer = currentNode->GetRenderer(*currentColumn);
+				Renderer& renderer = currentNode->GetCellRenderer(*currentColumn);
 				renderer.BeginCellSetup(*currentNode, *currentColumn);
 				renderer.SetupCellAttributes(GetCellStateForRow(oldCurrentRow));
 				renderer.SetupCellValue();
@@ -1208,7 +1208,7 @@ namespace kxf::UI::DataView
 			Rect cellRect = cellInitialRect;
 			const CellState cellState = GetCellStateForRow(currentRow);
 
-			const bool isCategoryRow = node->IsCategoryNode();
+			constexpr bool isCategoryRow = false;
 			int categoryRowOffset = -1;
 
 			int expanderIndent = 0;
@@ -1236,10 +1236,10 @@ namespace kxf::UI::DataView
 				}
 
 				// Calculate expander button rect and its indent
-				if (!IsList() && column == expanderColumn)
+				if (column == expanderColumn && !IsListLike())
 				{
 					// Calculate the indent first
-					const int indentOffset = m_Indent * node->GetIndentLevel();
+					const int indentOffset = m_Indent * node->GetItemIndent();
 					expanderIndent = std::min(indentOffset + m_UniformRowHeight, expanderColumn->GetWidth());
 
 					if (node->HasChildren())
@@ -1349,7 +1349,7 @@ namespace kxf::UI::DataView
 				// Draw the cell
 				if (!isCategoryRow || currentColumnIndex == 0)
 				{
-					Renderer& renderer = node->GetRenderer(*column);
+					Renderer& renderer = node->GetCellRenderer(*column);
 					renderer.BeginCellRendering(*node, *column, *gc);
 
 					renderer.SetupCellValue();
@@ -1362,7 +1362,7 @@ namespace kxf::UI::DataView
 					// Draw selection and hot-track indicator after background and cell content
 					if (cellState.IsSelected() || cellState.IsHotTracked())
 					{
-						nativeRenderer.DrawItemSelectionRect(this, *gc, GetRowRect(), cellState.ToItemState(this));
+						nativeRenderer.DrawItemSelectionRect(this, *gc, GetRowRect(), cellState.ToNativeWidgetFlags(*this));
 					}
 
 					#if 0
@@ -1443,15 +1443,19 @@ namespace kxf::UI::DataView
 		CellState state;
 		if (row)
 		{
+			if (m_CurrentRow == row)
+			{
+				state.SetCurrent();
+			}
 			if (IsRowSelected(row))
 			{
-				state.SetSelected();
+				state.SetItemSelected();
 			}
 			if (m_HotTrackRowEnabled && row == m_HotTrackRow && m_HotTrackColumn)
 			{
 				state.SetHotTracked();
 			}
-			if (m_DropHint && row == m_DropHintLine)
+			if (m_DropHint && row == m_DropHintRow)
 			{
 				state.SetDropTarget();
 			}
@@ -1476,7 +1480,7 @@ namespace kxf::UI::DataView
 		}
 		else
 		{
-			// When we have no model set, use just total columns widths for virtual size
+			// When we have no model set, use just total column widths for the virtual size
 			SetVirtualSize(GetRowWidth(), m_virtualSize.GetY());
 		}
 
@@ -1495,10 +1499,10 @@ namespace kxf::UI::DataView
 	bool MainWindow::ShowToolTip(const Node& node, Column& column)
 	{
 		// Get tooltip
-		Renderer& renderer = node.GetRenderer(column);
+		Renderer& renderer = node.GetCellRenderer(column);
 		renderer.BeginCellSetup(node, column);
 		renderer.SetupCellValue();
-		ToolTip tooltip = node.GetToolTip(column);
+		ToolTip tooltip = node.GetCellToolTip(column);
 		renderer.EndCellSetup();
 
 		if (tooltip.IsOK())
@@ -1510,7 +1514,7 @@ namespace kxf::UI::DataView
 				// Setup renderer to get cell size
 				const Column& clipTestColumn = tooltip.SelectClipTestColumn(column);
 
-				Renderer& clipTestRenderer = node.GetRenderer(clipTestColumn);
+				Renderer& clipTestRenderer = node.GetCellRenderer(clipTestColumn);
 				clipTestRenderer.BeginCellSetup(node, const_cast<Column&>(clipTestColumn));
 				clipTestRenderer.SetupCellValue();
 				const Size cellSize = clipTestRenderer.GetCellSize();
@@ -1569,11 +1573,11 @@ namespace kxf::UI::DataView
 		{
 			case InteractibleCell::Activator:
 			{
-				return node.IsActivatable(column);
+				return node.IsCellActivatable(column);
 			}
 			case InteractibleCell::Editor:
 			{
-				return node.IsEditable(column);
+				return node.IsCellEditable(column);
 			}
 		};
 		return false;
@@ -1715,14 +1719,11 @@ namespace kxf::UI::DataView
 	// Items
 	size_t MainWindow::RecalculateItemCount()
 	{
-		if (m_IsVirtualListModel)
+		if (m_TreeRoot)
 		{
-			return static_cast<VirtualListModel*>(m_Model)->GetItemCount();
+			return m_TreeRoot->GetSubTreeCount();
 		}
-		else
-		{
-			return m_TreeRoot.GetSubTreeCount();
-		}
+		return 0;
 	}
 	void MainWindow::InvalidateItemCount()
 	{
@@ -1734,22 +1735,22 @@ namespace kxf::UI::DataView
 	void MainWindow::OnCellChanged(Node& node, Column* column)
 	{
 		// Move this node to its new correct place after it was updated.
-		//
-		// In principle, we could skip the call to PutInSortOrder() if the modified
+
+		// In principle, we could skip the call to 'OnSortChildren' if the modified
 		// column is not the sort column, but in real-world applications it's fully
 		// possible and likely that custom compare uses not only the selected model
 		// column but also falls back to other values for comparison. To ensure consistency
 		// it is better to treat a value change as if it was an item change.
 
-		node.PutInSortOrder();
+		node.OnSortChildren();
 
-		if (column == nullptr)
+		if (column)
 		{
-			m_View->InvalidateColumnsBestWidth();
+			column->InvalidateBestWidth();
 		}
 		else
 		{
-			column->InvalidateBestWidth();
+			m_View->InvalidateColumnsBestWidth();
 		}
 
 		// Update the displayed value(s).
@@ -1763,12 +1764,6 @@ namespace kxf::UI::DataView
 	void MainWindow::OnNodeAdded(Node& node)
 	{
 		InvalidateItemCount();
-		m_IsRepresentingList = IsRepresentingList();
-
-		if (IsVirtualList())
-		{
-			m_SelectionStore.OnItemsInserted(*node.GetRow(), 1);
-		}
 
 		m_View->InvalidateColumnsBestWidth();
 		UpdateDisplay();
@@ -1776,19 +1771,12 @@ namespace kxf::UI::DataView
 	void MainWindow::OnNodeRemoved(Node& item, intptr_t removedCount)
 	{
 		InvalidateItemCount();
-		m_IsRepresentingList = IsRepresentingList();
+		m_View->InvalidateColumnsBestWidth();
 
-		if (IsVirtualList())
+		// Update selection by removing this node and its entire children tree from the selection.
+		if (!m_SelectionStore.IsEmpty())
 		{
-			m_SelectionStore.OnItemDelete(*item.GetRow());
-		}
-		else
-		{
-			// Update selection by removing this node and its entire children tree from the selection.
-			if (!m_SelectionStore.IsEmpty())
-			{
-				m_SelectionStore.OnItemsDeleted(*item.GetRow(), removedCount);
-			}
+			m_SelectionStore.OnItemsDeleted(*item.GetItemRow(), removedCount);
 		}
 
 		// Change the current row to the last row if the current exceed the max row number
@@ -1796,8 +1784,6 @@ namespace kxf::UI::DataView
 		{
 			ChangeCurrentRow(m_ItemsCount - 1);
 		}
-
-		m_View->InvalidateColumnsBestWidth();
 
 		m_TreeNodeUnderMouse = nullptr;
 		UpdateDisplay();
@@ -1812,7 +1798,6 @@ namespace kxf::UI::DataView
 		m_CurrentColumn = nullptr;
 		m_HotTrackColumn = nullptr;
 		m_TreeNodeUnderMouse = nullptr;
-		m_IsRepresentingList = false;
 		BuildTree();
 
 		m_View->InvalidateColumnsBestWidth();
@@ -1820,9 +1805,9 @@ namespace kxf::UI::DataView
 	}
 	void MainWindow::OnShouldResort()
 	{
-		if (!IsVirtualList())
+		if (m_TreeRoot)
 		{
-			m_TreeRoot.Resort(true);
+			m_TreeRoot->OnSortChildren();
 		}
 		UpdateDisplay();
 	}
@@ -1834,53 +1819,35 @@ namespace kxf::UI::DataView
 	}
 	void MainWindow::DestroyTree()
 	{
-		m_TreeRoot.ResetAll();
-		if (!IsVirtualList())
-		{
-			m_ItemsCount = 0;
-		}
+		m_TreeRoot = nullptr;
 	}
-	void MainWindow::DoAssignModel(Model* model, bool own)
+	void MainWindow::DoAssignModel(object_ptr<Model> model)
 	{
-		// Forget and (optionally) delete old model
 		if (m_Model)
 		{
-			m_Model->OnDetachModel();
-			m_Model->SetMainWindow(nullptr);
+			m_Model->DoOnModelDetached();
 		}
-		if (m_OwnModel)
-		{
-			delete m_Model;
-		}
+		m_Model = std::move(model);
+		m_Model->DoOnModelAttached(*this);
 
-		// Assign new model and set main window
-		m_Model = model;
-		m_Model->SetMainWindow(this);
-
-		m_OwnModel = own;
-		m_IsVirtualListModel = model && model->QueryInterface<VirtualListModel>() != nullptr;
-
-		// Call model event
-		m_Model->OnAttachModel();
 		ItemsChanged();
 	}
-	bool MainWindow::IsRepresentingList() const
+	bool MainWindow::IsListLike() const
 	{
-		if (m_IsVirtualListModel)
+		if (m_TreeRoot)
 		{
-			return true;
-		}
-		else
-		{
-			for (const Node* node: m_TreeRoot.GetChildren())
+			bool isList = true;
+			m_TreeRoot->EnumChildren([&](const Node& node)
 			{
-				if (node->HasChildren())
+				if (node.HasChildren())
 				{
-					return false;
+					isList = false;
 				}
-			}
-			return true;
+				return isList;
+			});
+			return isList;
 		}
+		return false;
 	}
 
 	// Misc
@@ -1921,8 +1888,7 @@ namespace kxf::UI::DataView
 	}
 
 	MainWindow::MainWindow(View* parent, wxWindowID id)
-		:wxWindow(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), wxWANTS_CHARS|wxBORDER_NONE, GetClassInfo()->GetClassName()),
-		m_TreeRoot(this), m_VirtualNode(m_TreeRoot), m_View(parent)
+		:wxWindow(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), wxWANTS_CHARS|wxBORDER_NONE, GetClassInfo()->GetClassName()), m_View(parent)
 	{
 		// Setup drawing
 		m_GraphicsRenderer = Drawing::GetDefaultRenderer();
@@ -1980,17 +1946,8 @@ namespace kxf::UI::DataView
 	}
 	MainWindow::~MainWindow()
 	{
-		m_TreeRoot.ResetAll();
 		RemoveTooltip();
-
-		if (m_OwnModel)
-		{
-			delete m_Model;
-		}
-		else if (m_Model)
-		{
-			m_Model->SetMainWindow(nullptr);
-		}
+		DoAssignModel(nullptr);
 	}
 
 	void MainWindow::CreateEventTemplate(ItemEvent& event, Node* node, Column* column)
@@ -2143,7 +2100,7 @@ namespace kxf::UI::DataView
 	}
 	int MainWindow::GetVariableRowHeight(const Node& node) const
 	{
-		int height = node.GetRowHeight();
+		int height = node.GetItemHeight();
 		return height > 0 ? height : m_UniformRowHeight;
 	}
 	int MainWindow::GetVariableRowHeight(Row row) const
@@ -2239,10 +2196,10 @@ namespace kxf::UI::DataView
 		int height = GetRowHeight(row);
 
 		indent = 0;
-		if (!IsList())
+		if (!IsListLike())
 		{
 			Node* node = GetNodeByRow(row);
-			indent = m_Indent * node->GetIndentLevel();
+			indent = m_Indent * node->GetItemIndent();
 			indent = indent + m_UniformRowHeight;
 		}
 		width -= indent;
@@ -2273,7 +2230,7 @@ namespace kxf::UI::DataView
 
 					CellState cellState = GetCellStateForRow(row);
 					Node* node = GetNodeByRow(row);
-					Renderer& renderer = node->GetRenderer(*column);
+					Renderer& renderer = node->GetCellRenderer(*column);
 					renderer.BeginCellRendering(*node, *column, *gc);
 
 					Rect cellRect(x, 0, width, height);
@@ -2348,8 +2305,8 @@ namespace kxf::UI::DataView
 		if (m_DropHint)
 		{
 			m_DropHint = false;
-			RefreshRow(m_DropHintLine);
-			m_DropHintLine.MakeNull();
+			RefreshRow(m_DropHintRow);
+			m_DropHintRow = {};
 		}
 	}
 	wxDragResult MainWindow::OnDragOver(const wxDataObjectSimple& dataObject, const Point& pos, wxDragResult dragResult)
@@ -2383,12 +2340,12 @@ namespace kxf::UI::DataView
 
 		if (node)
 		{
-			if (m_DropHint && (row != m_DropHintLine))
+			if (m_DropHint && (row != m_DropHintRow))
 			{
-				RefreshRow(m_DropHintLine);
+				RefreshRow(m_DropHintRow);
 			}
 			m_DropHint = true;
-			m_DropHintLine = row;
+			m_DropHintRow = row;
 			RefreshRow(row);
 		}
 		else
@@ -2530,21 +2487,18 @@ namespace kxf::UI::DataView
 		{
 			if (moveForward)
 			{
-				if (node->HasChildren() && !node->IsExpanded())
+				if (node->HasChildren() && !node->IsNodeExpanded())
 				{
 					return false;
 				}
 			}
-			else
+			else if (node->HasParentNode())
 			{
-				if (node->HasParent())
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 
-		if (m_CurrentColumn == nullptr || !m_IsCurrentColumnSetByKeyboard)
+		if (!m_CurrentColumn || !m_IsCurrentColumnSetByKeyboard)
 		{
 			if (moveForward)
 			{
@@ -2554,7 +2508,7 @@ namespace kxf::UI::DataView
 				return true;
 			}
 		}
-		if (m_CurrentColumn == nullptr)
+		if (!m_CurrentColumn)
 		{
 			return false;
 		}
@@ -2800,10 +2754,10 @@ namespace kxf::UI::DataView
 		// We have to take an expander column into account and compute its indentation
 		// to get the correct x position where the actual text is.
 		int indent = 0;
-		if (!IsList() && (!column || m_View->GetExpanderColumnOrFirstOne() == column))
+		if (!IsListLike() && (!column || m_View->GetExpanderColumnOrFirstOne() == column))
 		{
 			Node* node = GetNodeByRow(row);
-			indent = m_Indent * node->GetIndentLevel();
+			indent = m_Indent * node->GetItemIndent();
 
 			// Use 'm_UniformLineHeight' as the width of the expander
 			indent += m_UniformRowHeight;
@@ -2817,25 +2771,22 @@ namespace kxf::UI::DataView
 	// Rows
 	void MainWindow::Expand(Row row)
 	{
-		if (!IsList())
+		if (Node* node = GetNodeByRow(row))
 		{
-			if (Node* node = GetNodeByRow(row))
-			{
-				Expand(*node, row);
-			}
+			Expand(*node, row);
 		}
 	}
 	void MainWindow::Expand(Node& node, Row row)
 	{
-		if (node.HasChildren() && !node.IsNodeExpanded())
+		if (!node.IsNodeExpanded())
 		{
-			if (!SendExpanderEvent(ItemEvent::EvtItemExpanding, node))
+			if (!node.OnExpandNode() || !SendExpanderEvent(ItemEvent::EvtItemExpanding, node))
 			{
-				// Vetoed by the event handler.
+				// Vetoed by the event handler
 				return;
 			}
 
-			const intptr_t rowsAdded = node.ToggleNodeExpanded();
+			const size_t rowsAdded = node.ToggleNodeExpanded();
 			if (!row)
 			{
 				row = GetRowByNode(node);
@@ -2865,7 +2816,7 @@ namespace kxf::UI::DataView
 
 	void MainWindow::Collapse(Row row)
 	{
-		if (!IsList())
+		if (!IsListLike())
 		{
 			if (Node* node = GetNodeByRow(row))
 			{
@@ -2875,11 +2826,11 @@ namespace kxf::UI::DataView
 	}
 	void MainWindow::Collapse(Node& node, Row row)
 	{
-		if (node.HasChildren() && node.IsNodeExpanded())
+		if (node.IsNodeExpanded())
 		{
-			if (!SendExpanderEvent(ItemEvent::EvtItemCollapsing, node))
+			if (!node.OnCollapseNode() || !SendExpanderEvent(ItemEvent::EvtItemCollapsing, node))
 			{
-				// Vetoed by the event handler.
+				// Vetoed by the event handler
 				return;
 			}
 
@@ -2888,7 +2839,7 @@ namespace kxf::UI::DataView
 				row = GetRowByNode(node);
 			}
 
-			const intptr_t rowsRemoved = node.GetSubTreeCount();
+			const size_t rowsRemoved = node.GetSubTreeCount();
 			if (m_SelectionStore.OnItemsDeleted(*row + 1, rowsRemoved))
 			{
 				RefreshRow(row);
@@ -2931,14 +2882,26 @@ namespace kxf::UI::DataView
 
 	void MainWindow::ToggleExpand(Row row)
 	{
-		IsExpanded(row) ? Collapse(row) : Expand(row);
+		if (!IsListLike())
+		{
+			if (Node* node = GetNodeByRow(row))
+			{
+				if (node->IsNodeExpanded())
+				{
+					node->CollapseNode();
+				}
+				else
+				{
+					node->ExpandNode();
+				}
+			}
+		}
 	}
 	bool MainWindow::IsExpanded(Row row) const
 	{
-		if (!IsList())
+		if (!IsListLike())
 		{
-			Node* node = GetNodeByRow(row);
-			if (node && node->HasChildren())
+			if (Node* node = GetNodeByRow(row))
 			{
 				return node->IsNodeExpanded();
 			}
@@ -2947,7 +2910,7 @@ namespace kxf::UI::DataView
 	}
 	bool MainWindow::HasChildren(Row row) const
 	{
-		if (!m_IsRepresentingList)
+		if (!IsListLike())
 		{
 			Node* node = GetNodeByRow(row);
 			return node && node->HasChildren();
@@ -2957,52 +2920,38 @@ namespace kxf::UI::DataView
 
 	Node* MainWindow::GetNodeByRow(Row row) const
 	{
-		if (m_IsVirtualListModel)
-		{
-			if (row < GetRowCount())
-			{
-				VirtualNode& node = const_cast<VirtualNode&>(m_VirtualNode);
-				node.SetVirtualRow(row);
-				return &node;
-			}
-		}
-		else if (row)
+		if (m_TreeRoot && row)
 		{
 			NodeOperation_RowToNode operation(*row, -2);
-			operation.Walk(const_cast<RootNode&>(m_TreeRoot));
+			operation.Walk(*m_TreeRoot);
+
 			return operation.GetResult();
 		}
 		return nullptr;
 	}
 	Row MainWindow::GetRowByNode(const Node& node) const
 	{
-		if (m_IsVirtualListModel)
-		{
-			return m_VirtualNode.GetVirtualRow();
-		}
-		else if (m_Model)
+		if (m_Model)
 		{
 			Row row = 0;
 			const Node* currentNode = &node;
 			while (currentNode && !currentNode->IsRootNode())
 			{
 				// Add current node sub row index
-				row += currentNode->GetIndexWithinParent() + 1;
+				row += currentNode->GetItemIndexWithinParent() + 1;
 
 				// If this node has parent, add subtree count from all previous siblings
-				if (const Node* parentNode = currentNode->GetParent())
+				if (const Node* parentNode = currentNode->GetParentNode())
 				{
-					for (const Node* childNode: parentNode->GetChildren())
+					parentNode->EnumChildren([&](const Node& childNode)
 					{
-						if (childNode != currentNode)
+						if (childNode != *currentNode)
 						{
-							row += childNode->GetSubTreeCount();
+							row += childNode.GetSubTreeCount();
+							return true;
 						}
-						else
-						{
-							break;
-						}
-					}
+						return false;
+					});
 					currentNode = parentNode;
 				}
 			}
@@ -3022,16 +2971,15 @@ namespace kxf::UI::DataView
 		// Cancel any previous editing
 		CancelEdit();
 
-		Editor* editor = node.GetEditor(column);
-		if (editor)
+		if (Editor* editor = node.GetCellEditor(column))
 		{
-			m_View->EnsureVisible(node, &column);
 			m_View->SetFocus();
+			node.EnsureCellVisible(column);
 
-			const Rect itemRect = GetItemRect(node, &column);
+			const Rect itemRect = node.GetCellRect(column);
 			if (editor->BeginEdit(node, column, itemRect))
 			{
-				// Save the renderer to be able to finish/cancel editing it later.
+				// Save the renderer to be able to finish/cancel editing it later
 				m_CurrentEditor = editor;
 				return true;
 			}

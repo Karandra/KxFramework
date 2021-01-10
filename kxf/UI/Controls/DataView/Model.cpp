@@ -4,29 +4,29 @@
 
 namespace kxf::UI::DataView
 {
-	Node& Model::GetRootNode() const
+	void Model::DoOnModelAttached(MainWindow& mainWindow)
 	{
-		return m_MainWindow->GetRootNode();
+		m_MainWindow = &mainWindow;
+		m_View = mainWindow.GetView();
+
+		OnModelAttached();
+		GetRootNode().OnNodeAttached(*mainWindow.GetView());
 	}
-	View* Model::GetView() const
+	void Model::DoOnModelDetached()
 	{
-		return m_MainWindow ? m_MainWindow->GetView() : nullptr;
+		m_View = nullptr;
+		m_MainWindow = nullptr;
+
+		OnModelDetached();
+		GetRootNode().OnNodeDetached();
 	}
-	void Model::ItemsChanged()
+
+	void Model::NotifyItemsChanged()
 	{
 		if (m_MainWindow)
 		{
 			m_MainWindow->ItemsChanged();
 		}
-	}
-
-	bool Model::IsEditable(Node& node, const Column& column) const
-	{
-		return IsEnabled(node, column) && GetEditor(node, column) != nullptr;
-	}
-	bool Model::IsActivatable(Node& node, const Column& column) const
-	{
-		return IsEnabled(node, column) && GetRenderer(node, column).IsActivatable();
 	}
 
 	Renderer& Model::GetRenderer(const Node& node, const Column& column) const
@@ -40,46 +40,5 @@ namespace kxf::UI::DataView
 	ToolTip Model::GetToolTip(const Node& node, const Column& column) const
 	{
 		return GetRenderer(node, column).CreateToolTip();
-	}
-}
-
-namespace kxf::UI::DataView
-{
-	size_t ListModel::GetItemCount() const
-	{
-		return GetMainWindow()->GetRootNode().GetChildrenCount();
-	}
-
-	Row ListModel::GetRow(const Node& node) const
-	{
-		return GetMainWindow()->GetRootNode().FindChild(node);
-	}
-	Node* ListModel::GetNode(Row row) const
-	{
-		auto& children = GetMainWindow()->GetRootNode().GetChildren();
-		if (row < children.size())
-		{
-			return children[*row];
-		}
-		return nullptr;
-	}
-}
-
-namespace kxf::UI::DataView
-{
-	VirtualNode& VirtualListModel::GetVirtualNode() const
-	{
-		return GetMainWindow()->m_VirtualNode;
-	}
-
-	void VirtualListModel::OnRowInserted(Row row)
-	{
-		VirtualNode::VirtualRowChanger changeRow(GetVirtualNode(), row);
-		GetMainWindow()->OnNodeAdded(changeRow.GetNode());
-	}
-	void VirtualListModel::OnRowRemoved(Row row)
-	{
-		VirtualNode::VirtualRowChanger changeRow(GetVirtualNode(), row);
-		GetMainWindow()->OnNodeRemoved(changeRow.GetNode(), 1);
 	}
 }

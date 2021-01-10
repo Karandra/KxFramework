@@ -1,536 +1,282 @@
 #include "stdafx.h"
 #include "Node.h"
 #include "MainWindow.h"
+#include "HeaderCtrl.h"
 #include "View.h"
 
 namespace kxf::UI::DataView
 {
-	class Comparator
+	void Node::DoExpandNodeAncestors()
 	{
-		private:
-			const View* m_View = nullptr;
-			const SortOrder m_SortOrder;
-
-		public:
-			Comparator(const MainWindow* mainWindow, const SortOrder& sortOrder)
-				:m_SortOrder(sortOrder), m_View(mainWindow->GetView())
-			{
-			}
-
-		public:
-			bool operator()(const Node* node1, const Node* node2) const
-			{
-				const Column* sortingColumn = m_View->GetSortingColumn();
-				if (sortingColumn)
-				{
-					const bool multiColumnSort = m_View->IsMultiColumnSortUsed();
-					const bool sortAscending = m_SortOrder.IsAscending();
-
-					const bool isLess = node1->Compare(*node2, *sortingColumn);
-					if (!multiColumnSort)
-					{
-						return sortAscending ? isLess : !isLess;
-					}
-					return isLess;
-				}
-				return false;
-			}
-	};
-}
-
-namespace kxf::UI::DataView
-{
-	void Node::PutChildInSortOrder(Node* node)
-	{
-		// The childNode has changed, and may need to be moved to another location in the sorted child list.
-		MainWindow* mainWindow = GetMainWindow();
-		if (mainWindow && IsNodeExpanded() && !m_SortOrder.IsNone() && m_Children.size() > 1)
+		while (Node* parent = m_ParentNode)
 		{
-			// We should already be sorted in the right order.
-			wxASSERT(m_SortOrder == mainWindow->GetSortOrder());
-
-			// Remove and reinsert the node in the child list
-			const Row nodeIndex = FindChild(*node);
-			if (nodeIndex)
-			{
-				m_Children.erase(m_Children.begin() + nodeIndex.GetValue());
-
-				// Use binary search to find the correct position to insert at.
-				auto it = std::lower_bound(m_Children.begin(), m_Children.end(), node, Comparator(mainWindow, m_SortOrder));
-				m_Children.insert(it, node);
-				RecalcIndexes(std::distance(m_Children.begin(), it));
-
-				// Make sure the change is actually shown right away
-				mainWindow->UpdateDisplay();
-			}
+			parent->ExpandNode();
+			parent = parent->m_ParentNode;
 		}
 	}
-	void Node::Resort(bool force)
+	void Node::DoEnsureCellVisible(const Column* column)
 	{
-		MainWindow* mainWindow = GetMainWindow();
-		if (mainWindow && IsNodeExpanded())
-		{
-			const SortOrder sortOrder = mainWindow->GetSortOrder();
-			if (!sortOrder.IsNone())
-			{
-				// Only sort the children if they aren't already sorted by the wanted criteria.
-				if (force || m_SortOrder != sortOrder)
-				{
-					std::sort(m_Children.begin(), m_Children.end(), Comparator(mainWindow, sortOrder));
-					m_SortOrder = sortOrder;
-					RecalcIndexes();
-				}
+		DoExpandNodeAncestors();
 
-				// There may be open child nodes that also need a resort.
-				for (Node* childNode: m_Children)
-				{
-					if (childNode->HasChildren())
-					{
-						childNode->Resort(force);
-					}
-				}
-			}
-		}
-	}
-	void Node::ChangeSubTreeCount(intptr_t num)
-	{
-		if (m_IsExpanded)
+		if (Row row = GetItemRow())
 		{
-			m_SubTreeCount += num;
-			if (m_ParentNode)
-			{
-				m_ParentNode->ChangeSubTreeCount(num);
-			}
-		}
-	}
-	intptr_t Node::ToggleNodeExpanded()
-	{
-		// We do not allow the (invisible) root node to be collapsed because there is no way to expand it again.
-		if (!IsRootNode())
-		{
-			intptr_t count = 0;
-			for (const Node* node: m_Children)
-			{
-				count += node->GetSubTreeCount() + 1;
-			}
+			MainWindow& mainWindow = GetMainWindow();
+			mainWindow.RecalculateDisplay();
 
-			if (m_IsExpanded)
+			if (column)
 			{
-				ChangeSubTreeCount(-count);
-				m_IsExpanded = false;
+				mainWindow.EnsureVisible(row, column->GetIndex());
 			}
 			else
 			{
-				m_IsExpanded = true;
-				ChangeSubTreeCount(+count);
-
-				// Sort the children if needed
-				Resort();
+				mainWindow.EnsureVisible(row);
 			}
 		}
-		return m_SubTreeCount;
 	}
 
-	void Node::InitNodeUsing(const Node& node)
+	Rect Node::DoGetCellRect(const Column* column) const
 	{
-		m_ParentNode = node.m_ParentNode;
-		m_RootNode = node.m_RootNode;
-		m_SortOrder = node.m_SortOrder;
-	}
-	void Node::RecalcIndexes(size_t startAt)
-	{
-		for (size_t i = startAt; i < m_Children.size(); ++i)
+		Rect rect = DoGetCellClientRect(column);
+		if (auto header = GetView().GetHeaderCtrl())
 		{
-			m_Children[i]->m_IndexWithinParent = i;
+			rect.SetTop(rect.GetTop() + header->GetSize().GetHeight());
 		}
+		return rect;
+	}
+	Rect Node::DoGetCellClientRect(const Column* column) const
+	{
+		return GetMainWindow().GetItemRect(*this, column);
+	}
+	Point Node::DoGetCellDropdownPoint(const Column* column) const
+	{
+		return DoGetCellRect(column).GetLeftBottom() + GetMainWindow().FromDIP(Point(0, 1));
 	}
 
-	Node::~Node()
+	bool Node::IsRootNode() const
 	{
-		DetachAllChildren();
+		return this == m_RootNode && m_ParentNode == nullptr;
 	}
-
-	Row Node::FindChild(const Node& node) const
+	bool Node::IsNodeAttached() const
 	{
-		if (Row index = node.GetIndexWithinParent(); index && index < m_Children.size())
+		if (m_RootNode)
 		{
-			return index;
+			return m_RootNode->IsNodeAttached();
 		}
-		return {};
+		return false;
 	}
-	int Node::GetIndentLevel() const
+
+	size_t Node::GetSubTreeCount() const
 	{
-		if (!IsRootNode())
+		// Total count of expanded (i.e. visible with the help of some scrolling) items
+		// in the subtree, but excluding this node. I.e. it is 0 for leaves and is the
+		// number of rows the subtree occupies for branch nodes.
+
+		size_t count = 0;
+		if (m_IsExpanded)
+		{
+			count += EnumChildren([&](const Node& node)
+			{
+				count += node.GetSubTreeCount();
+				return true;
+			});
+		}
+		return count;
+	}
+
+	void Node::ExpandNode()
+	{
+		DoExpandNodeAncestors();
+		GetMainWindow().Expand(*this);
+	}
+	void Node::CollapseNode()
+	{
+		GetMainWindow().Collapse(*this);
+	}
+
+	View& Node::GetView() const
+	{
+		return m_RootNode->GetView();
+	}
+	Model& Node::GetModel() const
+	{
+		return *m_RootNode->GetView().GetModel();
+	}
+	MainWindow& Node::GetMainWindow() const
+	{
+		return *m_RootNode->GetView().GetMainWindow();
+	}
+
+	void Node::RefreshCell()
+	{
+		GetMainWindow().OnCellChanged(*this, nullptr);
+	}
+	void Node::RefreshCell(Column& column)
+	{
+		GetMainWindow().OnCellChanged(*this, &column);
+	}
+	bool Node::EditCell(Column& column)
+	{
+		return GetMainWindow().BeginEdit(*this, column);
+	}
+
+	Row Node::GetItemRow() const
+	{
+		return GetMainWindow().GetRowByNode(*this);
+	}
+	int Node::GetItemIndent() const
+	{
+		if (IsRootNode())
+		{
+			return -1;
+		}
+		else
 		{
 			int level = 0;
 
 			const Node* node = this;
-			while (node->GetParent()->GetParent())
+			while (node->m_ParentNode->m_ParentNode)
 			{
-				node = node->GetParent();
+				node = node->m_ParentNode;
 				level++;
 			}
 			return level;
 		}
-		return -1;
+	}
+	size_t Node::GetItemIndexWithinParent() const
+	{
+		if (m_ParentNode)
+		{
+			size_t index = 0;
+			m_ParentNode->EnumChildren([&](const Node& node)
+			{
+				if (node == *this)
+				{
+					return false;
+				}
+				else
+				{
+					index++;
+					return true;
+				}
+			});
+			return index;
+		}
+		return std::numeric_limits<size_t>::max();
 	}
 
-	void Node::AttachChild(Node& node, size_t index)
+	CellState Node::GetCellState() const
 	{
-		// Flag indicating whether we should retain existing sorted list when inserting the child node.
-		bool shouldInsertSorted = false;
-		SortOrder controlSortOrder = m_RootNode->GetMainWindow()->GetSortOrder();
+		return GetMainWindow().GetCellStateForRow(GetItemRow());
+	}
+	void Node::SelectItem()
+	{
+		DoExpandNodeAncestors();
+		if (Row row = GetItemRow())
+		{
+			MainWindow& mainWindow = GetMainWindow();
 
-		if (controlSortOrder.IsNone())
-		{
-			// We should insert assuming an unsorted list. This will cause the child list to lose the current sort order, if any.
-			ResetSortOrder();
-		}
-		else if (!HasChildren())
-		{
-			if (IsNodeExpanded())
+			// Unselect all rows before select another in the single select mode
+			if (mainWindow.IsSingleSelection())
 			{
-				// We don't need to search for the right place to insert the first item (there is only one),
-				// but we do need to remember the sort order to use for the subsequent ones.
-				m_SortOrder = controlSortOrder;
+				mainWindow.UnselectAllRows();
 			}
-			else
-			{
-				// We're inserting the first child of a closed node. We can choose whether to consider this empty
-				// child list sorted or unsorted. By choosing unsorted, we postpone comparisons until the parent
-				// node is opened in the view, which may be never.
-				ResetSortOrder();
-			}
-		}
-		else if (IsNodeExpanded())
-		{
-			// For open branches, children should be already sorted.
-			wxASSERT_MSG(m_SortOrder == controlSortOrder, wxS("Logic error in DataView2 sorting code"));
 
-			// We can use fast insertion.
-			shouldInsertSorted = true;
+			// Select the row and set focus to the selected item
+			mainWindow.SelectRow(row);
+			mainWindow.ChangeCurrentRow(row);
 		}
-		else if (m_SortOrder == controlSortOrder)
+	}
+	void Node::UnselectItem()
+	{
+		GetMainWindow().SelectRow(GetItemRow(), false);
+	}
+	void Node::MakeItemCurrent()
+	{
+		MainWindow& mainWindow = GetMainWindow();
+		if (mainWindow.IsMultipleSelection())
 		{
-			// The children are already sorted by the correct criteria (because the node must have been opened
-			// in the same time in the past). Even though it is closed now, we still insert in sort order to
-			// avoid a later resort.
-			shouldInsertSorted = true;
+			const size_t newCurrent = *GetItemRow();
+			const size_t oldCurrent = *mainWindow.GetCurrentRow();
+
+			if (newCurrent != oldCurrent)
+			{
+				mainWindow.ChangeCurrentRow(newCurrent);
+				mainWindow.RefreshRow(oldCurrent);
+				mainWindow.RefreshRow(newCurrent);
+			}
 		}
 		else
 		{
-			// The children of this closed node aren't sorted by the correct criteria, so we just insert unsorted.
-			ResetSortOrder();
+			SelectItem();
 		}
-
-		// Copy attributes and set this node as parent for child node
-		node.InitNodeUsing(*this);
-		node.m_ParentNode = this;
-
-		const intptr_t addedCount = node.GetSubTreeCount() + 1;
-		if (shouldInsertSorted)
-		{
-			// Use binary search to find the correct position to insert at.
-			auto it = std::lower_bound(m_Children.begin(), m_Children.end(), &node, Comparator(m_RootNode->GetMainWindow(), controlSortOrder));
-			m_Children.insert(it, &node);
-			RecalcIndexes(std::distance(m_Children.begin(), it));
-		}
-		else
-		{
-			index = std::min(index, m_Children.size());
-			m_Children.insert(m_Children.begin() + index, &node);
-			RecalcIndexes(index);
-		}
-
-		m_RootNode->GetMainWindow()->OnNodeAdded(*this);
-		ChangeSubTreeCount(+addedCount);
-	}
-	Node* Node::DetachChild(size_t index)
-	{
-		if (index < m_Children.size())
-		{
-			auto it = m_Children.begin() + index;
-			Node* node = *it;
-			node->m_ParentNode = nullptr;
-			m_Children.erase(it);
-			RecalcIndexes(index);
-
-			const intptr_t removedCount = node->GetSubTreeCount() + 1;
-			if (MainWindow* mainWindow = GetMainWindow())
-			{
-				mainWindow->OnNodeRemoved(*node, removedCount);
-			}
-			ChangeSubTreeCount(-removedCount);
-			return node;
-		}
-		return nullptr;
-	}
-	Node* Node::DetachChild(Node& node)
-	{
-		if (Row index = FindChild(node))
-		{
-			return DetachChild(index.GetValue());
-		}
-		return nullptr;
-	}
-	void Node::DetachAllChildren()
-	{
-		const intptr_t removedCount = GetSubTreeCount();
-		ChangeSubTreeCount(-removedCount);
-
-		for (Node* node: m_Children)
-		{
-			node->m_ParentNode = nullptr;
-		}
-		m_Children.clear();
-	}
-	
-	bool Node::Swap(Node& otherNode)
-	{
-		if (this != &otherNode && m_ParentNode == otherNode.GetParent())
-		{
-			auto it = m_Children.begin() + m_IndexWithinParent.GetValue();
-			auto otherIt = otherNode.m_Children.begin() + otherNode.m_IndexWithinParent.GetValue();
-			std::iter_swap(it, otherIt);
-			return true;
-		}
-		return false;
 	}
 }
 
 namespace kxf::UI::DataView
 {
-	MainWindow* Node::GetMainWindow() const
+	bool Node::IsCellEditable(const Column& column) const
 	{
-		return m_RootNode ? m_RootNode->GetMainWindow() : nullptr;
+		Model& model = GetModel();
+		return model.IsEnabled(*this, column) && model.GetEditor(*this, column) != nullptr;
 	}
-	View* Node::GetView() const
+	bool Node::IsCellRenderable(const Column& column) const
 	{
-		return m_RootNode ? m_RootNode->GetView() : nullptr;
+		Model& model = GetModel();
+		MainWindow& mainWindow = GetMainWindow();
+
+		return &model.GetRenderer(*this, column) != &mainWindow.GetNullRenderer();
 	}
-	Model* Node::GetModel() const
+	bool Node::IsCellActivatable(const Column& column) const
 	{
-		return m_RootNode ? m_RootNode->GetModel() : nullptr;
-	}
-	bool Node::IsRenderable(const Column& column) const
-	{
-		if (MainWindow* mainWindow = GetMainWindow())
-		{
-			return &GetRenderer(column) != &mainWindow->GetNullRenderer();
-		}
-		return false;
+		Model& model = GetModel();
+		return model.IsEnabled(*this, column) && model.GetRenderer(*this, column).IsActivatable();
 	}
 
-	bool Node::IsExpanded() const
+	Renderer& Node::GetCellRenderer(const Column& column) const
 	{
-		return IsNodeExpanded() && HasChildren();
+		return GetModel().GetRenderer(*this, column);
 	}
-	void Node::SetExpanded(bool expand)
+	Editor* Node::GetCellEditor(const Column& column) const
 	{
-		if (View* view = GetView())
-		{
-			if (expand)
-			{
-				view->Expand(*this);
-			}
-			else
-			{
-				view->Collapse(*this);
-			}
-		}
+		return GetModel().GetEditor(*this, column);
 	}
-	void Node::Expand()
+	bool Node::IsCellEnabled(const Column& column) const
 	{
-		if (View* view = GetView())
-		{
-			view->Expand(*this);
-		}
-	}
-	void Node::Collapse()
-	{
-		if (View* view = GetView())
-		{
-			view->Collapse(*this);
-		}
-	}
-	void Node::ToggleExpanded()
-	{
-		SetExpanded(!IsExpanded());
+		return GetModel().IsEnabled(*this, column);
 	}
 
-	void Node::Refresh()
+	Any Node::GetCellValue(const Column& column) const
 	{
-		if (MainWindow* mainWindow = GetMainWindow())
-		{
-			mainWindow->OnCellChanged(*this, nullptr);
-		}
+		return GetModel().GetValue(*this, column);
 	}
-	void Node::Refresh(Column& column)
+	Any Node::GetCellEditorValue(const Column& column) const
 	{
-		if (MainWindow* mainWindow = GetMainWindow())
-		{
-			mainWindow->OnCellChanged(*this, &column);
-		}
+		return GetModel().GetEditorValue(*this, column);
 	}
-	void Node::Edit(Column& column)
+	ToolTip Node::GetCellToolTip(const Column& column) const
 	{
-		if (MainWindow* mainWindow = GetMainWindow())
-		{
-			mainWindow->BeginEdit(*this, column);
-		}
+		return GetModel().GetToolTip(*this, column);
+	}
+	bool Node::SetCellValue(Column& column, const Any& value)
+	{
+		return GetModel().SetValue(*this, column, value);
 	}
 
-	Row Node::GetRow() const
+	CellAttribute Node::GetCellAttributes(const Column& column, const CellState& cellState) const
 	{
-		if (MainWindow* mainWindow = GetMainWindow())
-		{
-			return mainWindow->GetRowByNode(*this);
-		}
-		return {};
+		return GetModel().GetAttributes(*this, column, cellState);
 	}
-	bool Node::IsSelected() const
+	int Node::GetItemHeight() const
 	{
-		if (View* view = GetView())
-		{
-			return view->IsSelected(*this);
-		}
-		return false;
-	}
-	bool Node::IsCurrent() const
-	{
-		if (MainWindow* mainWindow = GetMainWindow())
-		{
-			if (mainWindow->IsVirtualList())
-			{
-				return GetRow() == mainWindow->m_CurrentRow;
-			}
-			else
-			{
-				return mainWindow->GetView()->GetCurrentItem() == this;
-			}
-		}
-		return false;
-	}
-	bool Node::IsHotTracked() const
-	{
-		if (MainWindow* mainWindow = GetMainWindow())
-		{
-			if (mainWindow->IsVirtualList())
-			{
-				return GetRow() == mainWindow->m_HotTrackRow;
-			}
-			else
-			{
-				return mainWindow->GetView()->GetHotTrackedItem() == this;
-			}
-		}
-		return false;
-	}
-	void Node::SetSelected(bool value)
-	{
-		if (View* view = GetView())
-		{
-			if (value)
-			{
-				view->Select(*this);
-			}
-			else
-			{
-				view->Unselect(*this);
-			}
-		}
-	}
-	void Node::EnsureVisible(const Column* column)
-	{
-		if (View* view = GetView())
-		{
-			view->EnsureVisible(*this, column);
-		}
-	}
-
-	Rect Node::GetCellRect(const Column* column) const
-	{
-		if (View* view = GetView())
-		{
-			return view->GetAdjustedItemRect(*this, column);
-		}
-		return {};
-	}
-	Rect Node::GetClientCellRect(const Column* column) const
-	{
-		if (View* view = GetView())
-		{
-			return view->GetItemRect(*this, column);
-		}
-		return {};
-	}
-	Point Node::GetDropdownMenuPosition(const Column* column) const
-	{
-		if (View* view = GetView())
-		{
-			return view->GetDropdownMenuPosition(*this, column);
-		}
-		return {};
+		return GetModel().GetRowHeight(*this);
 	}
 }
 
 namespace kxf::UI::DataView
 {
-	bool Node::IsEditable(const Column& column) const
+	void RootNode::NotifyItemsChanged()
 	{
-		return IsEnabled(column) && GetEditor(column) != nullptr;
-	}
-	bool Node::IsActivatable(const Column& column) const
-	{
-		return IsEnabled(column) && GetRenderer(column).IsActivatable();
-	}
-
-	Renderer& Node::GetRenderer(const Column& column) const
-	{
-		return GetModel()->GetRenderer(*this, column);
-	}
-	Editor* Node::GetEditor(const Column& column) const
-	{
-		return GetModel()->GetEditor(*this, column);
-	}
-	bool Node::IsEnabled(const Column& column) const
-	{
-		return GetModel()->IsEnabled(*this, column);
-	}
-
-	Any Node::GetValue(const Column& column) const
-	{
-		return GetModel()->GetValue(*this, column);
-	}
-	Any Node::GetEditorValue(const Column& column) const
-	{
-		return GetModel()->GetEditorValue(*this, column);
-	}
-	ToolTip Node::GetToolTip(const Column& column) const
-	{
-		return GetModel()->GetToolTip(*this, column);
-	}
-	bool Node::SetValue(Column& column, const Any& value)
-	{
-		return GetModel()->SetValue(*this, column, value);
-	}
-
-	bool Node::GetAttributes(const Column& column, const CellState& cellState, CellAttribute& attributes) const
-	{
-		return GetModel()->GetAttributes(*this, column, cellState, attributes);
-	}
-	bool Node::IsCategoryNode() const
-	{
-		return GetModel()->IsCategoryNode(*this);
-	}
-	int Node::GetRowHeight() const
-	{
-		return GetModel()->GetRowHeight(*this);
-	}
-
-	bool Node::Compare(const Node& other, const Column& column) const
-	{
-		return GetModel()->Compare(*this, other, column);
+		GetModel().NotifyItemsChanged();
 	}
 }
 
@@ -554,35 +300,16 @@ namespace kxf::UI::DataView
 			}
 		};
 
-		if (node.HasChildren())
+		bool result = false;
+		node.EnumChildren([&](Node& childNode)
 		{
-			for (Node* childNode: node.GetChildren())
+			if (DoWalk(childNode, func))
 			{
-				if (DoWalk(*childNode, func))
-				{
-					return true;
-				}
+				result = true;
 			}
-		}
-		return false;
-	}
-}
-
-namespace kxf::UI::DataView
-{
-	void RootNode::ResetAll()
-	{
-		Node::ResetAll();
-		Init();
-	}
-
-	View* RootNode::GetView() const
-	{
-		return m_MainWindow ? m_MainWindow->GetView() : nullptr;
-	}
-	Model* RootNode::GetModel() const
-	{
-		return m_MainWindow ? m_MainWindow->GetModel() : nullptr;
+			return !result;
+		});
+		return result;
 	}
 }
 
@@ -602,20 +329,6 @@ namespace kxf::UI::DataView
 			m_CurrentRow += node.GetSubTreeCount();
 			return Result::SkipSubTree;
 		}
-		else
-		{
-			// If the current node has only leaf children, we can find the desired node directly.
-			// This can speed up finding the node in some cases, and will have a very good effect for list views.
-			if (node.HasChildren() && node.GetChildren().size() == (size_t)node.GetSubTreeCount())
-			{
-				const size_t index = m_Row - m_CurrentRow - 1;
-				if (index < node.GetChildrenCount())
-				{
-					m_ResultNode = node.GetChildren()[index];
-					return Result::Done;
-				}
-			}
-			return Result::Continue;
-		}
+		return Result::Continue;
 	}
 }
