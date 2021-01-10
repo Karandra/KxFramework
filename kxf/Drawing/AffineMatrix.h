@@ -54,7 +54,7 @@ namespace kxf::Geometry
 				m_11 = static_cast<TValue>(matrix.m_11);
 				m_12 = static_cast<TValue>(matrix.m_12);
 				m_21 = static_cast<TValue>(matrix.m_21);
-				m_22 = static_cast<TValue>(matrix.m_21);
+				m_22 = static_cast<TValue>(matrix.m_22);
 				m_tx = static_cast<TValue>(txy.m_x);
 				m_ty = static_cast<TValue>(txy.m_y);
 			}
