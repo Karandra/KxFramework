@@ -166,7 +166,7 @@ namespace kxf::UI::DataView
 
 		if (m_HeaderAreaSpacerSI && m_HeaderAreaSpacerSI->IsShown())
 		{
-			brush = renderer.CreateSolidBrush(m_ClientArea->m_PenRuleV->GetColor());
+			brush = renderer.CreateSolidBrush(m_ClientArea->m_PenRuleH->GetColor());
 
 			RectF rect = m_HeaderAreaSpacerSI->GetRect();
 			rect.SetWidth(GetClientSize().GetWidth());

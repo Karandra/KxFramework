@@ -193,7 +193,7 @@ namespace kxf::UI::DataView
 		if (m_Renderer.CanDraw())
 		{
 			IGraphicsContext& gc = m_Renderer.GetGraphicsContext();
-			return gc.GetTextExtent(string);
+			return gc.GetTextExtent(string).ConvertRound<Size>();
 		}
 		else
 		{
@@ -202,7 +202,7 @@ namespace kxf::UI::DataView
 			auto gc = renderer.CreateMeasuringContext();
 
 			gc->SetFont(renderer.CreateFont(m_Renderer.GetView()->GetFont()));
-			return gc->GetTextExtent(string);
+			return gc->GetTextExtent(string).ConvertRound<Size>();
 		}
 	}
 	Size RenderEngine::GetTextExtent(IGraphicsContext& gc, const String& string) const
@@ -244,11 +244,11 @@ namespace kxf::UI::DataView
 				if (font)
 				{
 					auto gcFont = m_Renderer.GetGraphicsRenderer().CreateFont(font);
-					return gc.GetTextExtent(text, *gcFont);
+					return gc.GetTextExtent(text, *gcFont).ConvertRound<Size>();
 				}
 				else
 				{
-					return gc.GetTextExtent(text);
+					return gc.GetTextExtent(text).ConvertRound<Size>();
 				}
 			};
 
