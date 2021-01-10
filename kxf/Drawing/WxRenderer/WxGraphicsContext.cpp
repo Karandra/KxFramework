@@ -77,6 +77,11 @@ namespace kxf
 
 namespace kxf
 {
+	void WxGraphicsContext::CommonInit()
+	{
+		// Nothing to do
+	}
+
 	void WxGraphicsContext::SetupDC()
 	{
 		if (m_GCDC)
@@ -94,6 +99,15 @@ namespace kxf
 			SetBrush(std::make_shared<WxGraphicsSolidBrush>(*m_Renderer, dc.GetBrush()));
 			SetPen(std::make_shared<WxGraphicsPen>(*m_Renderer, dc.GetPen()));
 		}
+	}
+	void WxGraphicsContext::Initialize(WxGraphicsRenderer& rendrer, std::unique_ptr<wxGraphicsContext> gc)
+	{
+		m_Renderer = &rendrer;
+		m_Context = gc.get();
+		m_WxGCDC.SetGraphicsContext(gc.release());
+		m_GCDC = GDIContext(m_WxGCDC);
+
+		CommonInit();
 	}
 
 	BitmapImage& WxGraphicsContext::InitTextureBuffer(std::shared_ptr<IGraphicsTexture> texture)

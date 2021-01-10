@@ -170,7 +170,7 @@ namespace kxf::UI::DataView
 
 			RectF rect = m_HeaderAreaSpacerSI->GetRect();
 			rect.SetWidth(GetClientSize().GetWidth());
-			gc->DrawRectangle(rect, *brush);
+			gc->DrawRectangle(rect, *brush, *m_ClientArea->m_PenRuleH);
 		}
 	}
 	wxSize View::GetSizeAvailableForScrollTarget(const wxSize& size)

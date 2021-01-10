@@ -61,16 +61,13 @@ namespace kxf
 			CompositionMode m_CompositionMode = CompositionMode::Over;
 			AntialiasMode m_AntialiasMode = AntialiasMode::Default;
 
+		private:
+			void CommonInit();
+
 		protected:
 			void SetupDC();
 			void CopyAttributesFromDC(const GDIContext& dc);
-			void Initialize(WxGraphicsRenderer& rendrer, std::unique_ptr<wxGraphicsContext> gc)
-			{
-				m_Renderer = &rendrer;
-				m_Context = gc.get();
-				m_WxGCDC.SetGraphicsContext(gc.release());
-				m_GCDC = GDIContext(m_WxGCDC);
-			}
+			void Initialize(WxGraphicsRenderer& rendrer, std::unique_ptr<wxGraphicsContext> gc);
 
 			BitmapImage& InitTextureBuffer(std::shared_ptr<IGraphicsTexture> texture);
 
@@ -91,6 +88,7 @@ namespace kxf
 			WxGraphicsContext(WxGraphicsRenderer& rendrer, std::unique_ptr<wxGraphicsContext> gc)
 				:m_Renderer(&rendrer), m_Context(gc.get()), m_WxGCDC(gc.release()), m_GCDC(m_WxGCDC)
 			{
+				CommonInit();
 			}
 
 		public:
