@@ -225,7 +225,7 @@ namespace kxf::GraphicsAction
 			{
 				if (m_Brush)
 				{
-					m_GC.SetBrush(std::move(m_Brush));
+					m_GC.SetFontBrush(std::move(m_Brush));
 				}
 			}
 
