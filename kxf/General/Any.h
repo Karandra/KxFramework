@@ -267,7 +267,7 @@ namespace kxf
 			template<class T>
 			T As() &&
 			{
-				return std::any_cast<T>(std::move(*this));
+				return std::any_cast<T>(std::move(m_Any));
 			}
 
 			// Try to retrieve the stored value, on type mismatch the empty optional object is returned
