@@ -31,6 +31,7 @@ namespace kxf::UI::DataView
 		friend class MainWindow;
 		friend class View;
 		friend class Model;
+		friend class RootNode;
 
 		private:
 			RootNode* m_RootNode = nullptr;
@@ -55,7 +56,10 @@ namespace kxf::UI::DataView
 			virtual void OnSortChildren()
 			{
 			}
-			virtual size_t OnEnumChildren(std::function<bool(Node&)> func) = 0;
+			virtual size_t OnEnumChildren(std::function<bool(Node&)> func)
+			{
+				return 0;
+			}
 
 			virtual bool OnExpandNode()
 			{
@@ -66,24 +70,14 @@ namespace kxf::UI::DataView
 				return true;
 			}
 
-			virtual void OnNodeAttached(View& view)
-			{
-			}
-			virtual void OnNodeDetached()
-			{
-			}
-
-			virtual bool DoIsSameAs(const Node& other) const = 0;
+			void CreateNode(Node& parent);
 
 		public:
 			Node() = default;
-			Node(RootNode& rootNode)
-				:m_RootNode(&rootNode)
+			Node(const Node&) = default;
+			Node(Node* parent)
 			{
-			}
-			Node(Node& parentNode)
-				:m_RootNode(parentNode.m_RootNode), m_ParentNode(&parentNode)
-			{
+				CreateNode(*parent);
 			}
 			virtual ~Node() = default;
 
@@ -125,13 +119,14 @@ namespace kxf::UI::DataView
 
 			bool HasChildren() const
 			{
-				return GetChildrenCount() == 0;
+				return GetChildrenCount() != 0;
 			}
 			size_t GetChildrenCount() const
 			{
 				return EnumChildren({});
 			}
 			size_t GetSubTreeCount() const;
+			size_t GetSubTreeIndex() const;
 
 			bool IsNodeExpanded() const
 			{
@@ -151,7 +146,6 @@ namespace kxf::UI::DataView
 
 			Row GetItemRow() const;
 			int GetItemIndent() const;
-			size_t GetItemIndexWithinParent() const;
 
 			CellState GetCellState() const;
 			void SelectItem();
@@ -212,23 +206,7 @@ namespace kxf::UI::DataView
 			virtual int GetItemHeight() const;
 
 		public:
-			explicit operator bool() const
-			{
-				return IsNodeAttached();
-			}
-			bool operator!() const
-			{
-				return !IsNodeAttached();
-			}
-
-			bool operator==(const Node& other) const
-			{
-				return this == &other || DoIsSameAs(other);
-			}
-			bool operator!=(const Node& other) const
-			{
-				return this != &other || !DoIsSameAs(other);
-			}
+			Node& operator=(const Node&) = default;
 	};
 
 	class KX_API RootNode: public Node
@@ -237,13 +215,21 @@ namespace kxf::UI::DataView
 
 		public:
 			RootNode()
-				:Node(*this)
 			{
+				m_RootNode = this;
+				m_ParentNode = nullptr;
+				m_IsExpanded = true;
 			}
 
 		public:
-			virtual bool IsNodeAttached() const = 0;
 			virtual View& GetView() const = 0;
+
+			virtual void OnNodeAttached(View& view)
+			{
+			}
+			virtual void OnNodeDetached()
+			{
+			}
 
 		public:
 			void NotifyItemsChanged();

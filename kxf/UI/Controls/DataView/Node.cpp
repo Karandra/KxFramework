@@ -52,6 +52,12 @@ namespace kxf::UI::DataView
 		return DoGetCellRect(column).GetLeftBottom() + GetMainWindow().FromDIP(Point(0, 1));
 	}
 
+	void Node::CreateNode(Node& parent)
+	{
+		m_ParentNode = &parent;
+		m_RootNode = &parent.GetRootNode();
+	}
+
 	bool Node::IsRootNode() const
 	{
 		return this == m_RootNode && m_ParentNode == nullptr;
@@ -72,7 +78,7 @@ namespace kxf::UI::DataView
 		// number of rows the subtree occupies for branch nodes.
 
 		size_t count = 0;
-		if (m_IsExpanded)
+		if (m_IsExpanded || IsRootNode())
 		{
 			count += EnumChildren([&](const Node& node)
 			{
@@ -81,6 +87,31 @@ namespace kxf::UI::DataView
 			});
 		}
 		return count;
+	}
+	size_t Node::GetSubTreeIndex() const
+	{
+		if (m_ParentNode)
+		{
+			size_t index = 0;
+			size_t count = m_ParentNode->EnumChildren([&](const Node& node)
+			{
+				if (&node == this)
+				{
+					return false;
+				}
+				else
+				{
+					index++;
+					return true;
+				}
+			});
+
+			if (index < count)
+			{
+				return index;
+			}
+		}
+		return std::numeric_limits<size_t>::max();
 	}
 
 	void Node::ExpandNode()
@@ -134,34 +165,13 @@ namespace kxf::UI::DataView
 			int level = 0;
 
 			const Node* node = this;
-			while (node->m_ParentNode->m_ParentNode)
+			while (node->m_ParentNode && node->m_ParentNode->m_ParentNode)
 			{
 				node = node->m_ParentNode;
 				level++;
 			}
 			return level;
 		}
-	}
-	size_t Node::GetItemIndexWithinParent() const
-	{
-		if (m_ParentNode)
-		{
-			size_t index = 0;
-			m_ParentNode->EnumChildren([&](const Node& node)
-			{
-				if (node == *this)
-				{
-					return false;
-				}
-				else
-				{
-					index++;
-					return true;
-				}
-			});
-			return index;
-		}
-		return std::numeric_limits<size_t>::max();
 	}
 
 	CellState Node::GetCellState() const
@@ -324,7 +334,7 @@ namespace kxf::UI::DataView
 			return Result::Done;
 		}
 
-		if (node.GetSubTreeCount() + m_CurrentRow < m_Row)
+		if (node.GetSubTreeCount() + m_CurrentRow < static_cast<size_t>(m_Row))
 		{
 			m_CurrentRow += node.GetSubTreeCount();
 			return Result::SkipSubTree;
