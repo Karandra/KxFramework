@@ -82,12 +82,22 @@ namespace kxf
 		// Nothing to do
 	}
 
-	void WxGraphicsContext::SetupDC()
+	void WxGraphicsContext::SetupGC(wxWindow* window)
 	{
 		if (m_GCDC)
 		{
 			m_GCDC.SetMapMode(GDIMappingMode::Text);
 			m_GCDC.SetTextBackground(Drawing::GetStockColor(StockColor::Transparent));
+
+			if (window)
+			{
+				m_GCDC.SetBackgroundBrush(window->GetBackgroundColour());
+			}
+		}
+		if (m_Context && window)
+		{
+			SetFont(m_Renderer->CreateFont(window->GetFont()));
+			SetFontBrush(m_Renderer->CreateSolidBrush(window->GetForegroundColour()));
 		}
 	}
 	void WxGraphicsContext::CopyAttributesFromDC(const GDIContext& dc)

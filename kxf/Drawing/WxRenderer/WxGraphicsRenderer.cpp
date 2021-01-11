@@ -58,11 +58,11 @@ namespace kxf
 		return {major, minor, micro};
 	}
 
-	std::unique_ptr<IGraphicsContext> WxGraphicsRenderer::CreateContext(std::shared_ptr<IGraphicsTexture> texture)
+	std::unique_ptr<IGraphicsContext> WxGraphicsRenderer::CreateContext(std::shared_ptr<IGraphicsTexture> texture, wxWindow* window)
 	{
 		if (texture)
 		{
-			return std::make_unique<WxGraphicsMemoryContext>(*this, std::move(texture));
+			return std::make_unique<WxGraphicsMemoryContext>(*this, std::move(texture), window);
 		}
 		return nullptr;
 	}
@@ -97,9 +97,9 @@ namespace kxf
 			return std::make_unique<WxGraphicsBufferedPaintContext>(*this, window);
 		}
 	}
-	std::unique_ptr<IGraphicsContext> WxGraphicsRenderer::CreateMeasuringContext()
+	std::unique_ptr<IGraphicsContext> WxGraphicsRenderer::CreateMeasuringContext(wxWindow* window)
 	{
-		return std::make_unique<WxGraphicsMeasuringContext>(*this);
+		return std::make_unique<WxGraphicsMeasuringContext>(*this, window);
 	}
 
 	// Pen and brush functions

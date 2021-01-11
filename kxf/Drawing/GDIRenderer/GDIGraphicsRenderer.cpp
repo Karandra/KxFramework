@@ -109,11 +109,11 @@ namespace kxf
 		return wxS("1.0");
 	}
 
-	std::unique_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateContext(std::shared_ptr<IGraphicsTexture> texture)
+	std::unique_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateContext(std::shared_ptr<IGraphicsTexture> texture, wxWindow* window)
 	{
 		if (texture)
 		{
-			return std::make_unique<GDIGraphicsMemoryContext>(*this, std::move(texture));
+			return std::make_unique<GDIGraphicsMemoryContext>(*this, std::move(texture), window);
 		}
 		return nullptr;
 	}
@@ -144,9 +144,9 @@ namespace kxf
 			return std::make_unique<GDIGraphicsBufferedPaintContext>(*this, window);
 		}
 	}
-	std::unique_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateMeasuringContext()
+	std::unique_ptr<IGraphicsContext> GDIGraphicsRenderer::CreateMeasuringContext(wxWindow* window)
 	{
-		return std::make_unique<GDIGraphicsMemoryContext>(*this, nullptr);
+		return std::make_unique<GDIGraphicsMemoryContext>(*this, nullptr, window);
 	}
 
 	// Pen and brush functions

@@ -47,7 +47,7 @@ namespace kxf
 			}
 
 		protected:
-			void SetupDC();
+			void SetupDC(wxWindow* window = nullptr);
 
 		public:
 			GDIGraphicsContext() noexcept = default;
@@ -339,10 +339,10 @@ namespace kxf
 
 		public:
 			GDIGraphicsMemoryContext() noexcept = default;
-			GDIGraphicsMemoryContext(GDIGraphicsRenderer& rendrer, std::shared_ptr<IGraphicsTexture> texture)
+			GDIGraphicsMemoryContext(GDIGraphicsRenderer& rendrer, std::shared_ptr<IGraphicsTexture> texture, wxWindow* window = nullptr)
 				:GDIGraphicsContext(rendrer, m_MemoryDC)
 			{
-				SetupDC();
+				SetupDC(window);
 				SelectTexture(std::move(texture));
 			}
 			~GDIGraphicsMemoryContext()

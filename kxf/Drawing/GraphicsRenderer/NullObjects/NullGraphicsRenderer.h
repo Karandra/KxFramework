@@ -23,7 +23,7 @@ namespace kxf::Drawing
 				return {};
 			}
 
-			std::unique_ptr<IGraphicsContext> CreateContext(std::shared_ptr<IGraphicsTexture> texture) override
+			std::unique_ptr<IGraphicsContext> CreateContext(std::shared_ptr<IGraphicsTexture> texture, wxWindow* window = nullptr) override
 			{
 				return nullptr;
 			}
@@ -43,7 +43,7 @@ namespace kxf::Drawing
 			{
 				return nullptr;
 			}
-			std::unique_ptr<IGraphicsContext> CreateMeasuringContext() override
+			std::unique_ptr<IGraphicsContext> CreateMeasuringContext(wxWindow* window = nullptr) override
 			{
 				return nullptr;
 			}

@@ -65,7 +65,7 @@ namespace kxf
 			void CommonInit();
 
 		protected:
-			void SetupDC();
+			void SetupGC(wxWindow* window = nullptr);
 			void CopyAttributesFromDC(const GDIContext& dc);
 			void Initialize(WxGraphicsRenderer& rendrer, std::unique_ptr<wxGraphicsContext> gc);
 
@@ -356,11 +356,11 @@ namespace kxf
 
 		public:
 			WxGraphicsMemoryContext() noexcept = default;
-			WxGraphicsMemoryContext(WxGraphicsRenderer& rendrer, std::shared_ptr<IGraphicsTexture> texture)
+			WxGraphicsMemoryContext(WxGraphicsRenderer& rendrer, std::shared_ptr<IGraphicsTexture> texture, wxWindow* window = nullptr)
 			{
 				m_Image = &InitTextureBuffer(std::move(texture));
 				Initialize(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateContextFromImage(m_Image->ToWxImage())));
-				SetupDC();
+				SetupGC(window);
 			}
 			~WxGraphicsMemoryContext()
 			{
@@ -403,10 +403,10 @@ namespace kxf
 	{
 		public:
 			WxGraphicsMeasuringContext() noexcept = default;
-			WxGraphicsMeasuringContext(WxGraphicsRenderer& rendrer)
+			WxGraphicsMeasuringContext(WxGraphicsRenderer& rendrer, wxWindow* window = nullptr)
 				:WxGraphicsContext(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateMeasuringContext()))
 			{
-				SetupDC();
+				SetupGC(window);
 			}
 
 		public:
@@ -448,7 +448,7 @@ namespace kxf
 					Initialize(rendrer, std::unique_ptr<wxGraphicsContext>(rendrer.Get().CreateContext(m_DC)));
 
 					WxGraphicsContext::CopyAttributesFromDC(m_DC);
-					WxGraphicsContext::SetupDC();
+					WxGraphicsContext::SetupGC();
 				}
 				~WxGraphicsBasicGDIContext()
 				{
@@ -477,7 +477,7 @@ namespace kxf
 					Initialize(rendrer, m_DC);
 
 					WxGraphicsContext::CopyAttributesFromDC(m_DC);
-					WxGraphicsContext::SetupDC();
+					WxGraphicsContext::SetupGC();
 				}
 				~WxGraphicsBasicGDIContext_ImageBuffered()
 				{

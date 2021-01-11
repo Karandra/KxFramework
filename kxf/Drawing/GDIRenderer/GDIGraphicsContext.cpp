@@ -129,12 +129,20 @@ namespace
 
 namespace kxf
 {
-	void GDIGraphicsContext::SetupDC()
+	void GDIGraphicsContext::SetupDC(wxWindow* window)
 	{
 		if (m_DC)
 		{
 			m_DC.SetMapMode(GDIMappingMode::Text);
 			m_DC.SetTextBackground(Drawing::GetStockColor(StockColor::Transparent));
+
+			if (window)
+			{
+				m_DC.SetFont(window->GetFont());
+
+				m_DC.SetBackgroundBrush(window->GetBackgroundColour());
+				m_DC.SetTextForeground(window->GetForegroundColour());
+			}
 		}
 	}
 
