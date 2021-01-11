@@ -54,7 +54,7 @@ namespace kxf::UI::DataView
 				return m_View;
 			}
 
-			virtual RootNode& GetRootNode() const = 0;
+			virtual RootNode& GetRootNode() = 0;
 
 			virtual Renderer& GetRenderer(const Node& node, const Column& column) const;
 			virtual Editor* GetEditor(const Node& node, const Column& column) const;
