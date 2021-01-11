@@ -87,16 +87,15 @@ namespace kxf::UI::DataView
 			DrawCellBackground(cellRect, cellState);
 		}
 	}
-	void Renderer::CallDrawCellContent(const Rect& cellRect, CellState cellState)
+	std::pair<Size, Rect> Renderer::CallDrawCellContent(const Rect& cellRect, CellState cellState)
 	{
 		m_PaintRect = cellRect;
 		auto renderEngine = GetRenderEngine();
 
 		// Change text color
 		GraphicsAction::ChangeFontBrush changeFontBrush(*m_GC);
-		if (m_Attributes.Options().HasForegroundColor())
+		if (Color textColor = m_Attributes.Options().GetForegroundColor())
 		{
-			Color textColor = m_Attributes.Options().GetForegroundColor();
 			if (!m_Attributes.Options().ContainsOption(CellOption::Enabled))
 			{
 				textColor.MakeDisabled();
@@ -110,7 +109,7 @@ namespace kxf::UI::DataView
 
 		// Change font
 		GraphicsAction::ChangeFont changeFont(*m_GC);
-		if (m_Attributes.FontOptions().NeedDCAlteration())
+		if (m_Attributes.FontOptions().RequiresNeedAlteration())
 		{
 			changeFont.Set(m_GC->GetRenderer().CreateFont(m_Attributes.GetEffectiveFont(GetView()->GetFont())));
 		}
@@ -165,6 +164,8 @@ namespace kxf::UI::DataView
 		// Call derived class drawing
 		DrawCellContent(adjustedCellRect, cellState);
 		m_PaintRect = {};
+
+		return {cellSize, adjustedCellRect};
 	}
 	void Renderer::CallOnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent)
 	{

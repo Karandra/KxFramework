@@ -61,7 +61,7 @@ namespace kxf::UI::DataView::CellAttributes
 			FlagSet<Alignment> m_Alignment = Alignment::Invalid;
 
 		private:
-			bool NeedDCAlteration() const
+			bool RequiresNeedAlteration() const
 			{
 				return HasColors();
 			}
@@ -146,7 +146,7 @@ namespace kxf::UI::DataView::CellAttributes
 			int32_t m_FontSize = 0;
 
 		private:
-			bool NeedDCAlteration() const
+			bool RequiresNeedAlteration() const
 			{
 				return HasFontFace() || HasFontSize() || GetOptionFlags() != CellFontOption::Default;
 			}
@@ -154,7 +154,7 @@ namespace kxf::UI::DataView::CellAttributes
 		public:
 			bool IsDefault() const
 			{
-				return !NeedDCAlteration();
+				return !RequiresNeedAlteration();
 			}
 
 			bool HasFontFace() const
@@ -193,7 +193,7 @@ namespace kxf::UI::DataView::CellAttributes
 		friend class RenderEngine;
 
 		private:
-			bool NeedDCAlteration() const
+			bool RequiresNeedAlteration() const
 			{
 				return GetOptionFlags() != CellBGOption::Default;
 			}
@@ -201,7 +201,7 @@ namespace kxf::UI::DataView::CellAttributes
 		public:
 			bool IsDefault() const
 			{
-				return !NeedDCAlteration();
+				return !RequiresNeedAlteration();
 			}
 	};
 }

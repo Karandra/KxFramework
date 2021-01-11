@@ -214,7 +214,7 @@ namespace kxf::UI::DataView
 			SizeF extent;
 			gc.DrawGDI({0, 0, 1, 1}, [&](GDIContext& dc)
 			{
-				if (attributes.FontOptions().NeedDCAlteration())
+				if (attributes.FontOptions().RequiresNeedAlteration())
 				{
 					dc.SetFont(attributes.GetEffectiveFont(dc.GetFont()));
 				}
@@ -226,7 +226,7 @@ namespace kxf::UI::DataView
 		{
 			auto GetEffectiveFontIfNeeded = [&]() -> Font
 			{
-				if (attributes.FontOptions().NeedDCAlteration())
+				if (attributes.FontOptions().RequiresNeedAlteration())
 				{
 					if (auto font = gc.GetFont())
 					{

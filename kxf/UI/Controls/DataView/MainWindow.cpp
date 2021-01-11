@@ -34,7 +34,7 @@ namespace kxf::UI::DataView
 	class MaxWidthCalculator final: public wxMaxWidthCalculatorBase
 	{
 		private:
-			MainWindow* m_MainWindow = nullptr;
+			MainWindow& m_MainWindow;
 			Column& m_Column;
 
 			bool m_IsExpanderColumn = false;
@@ -43,29 +43,34 @@ namespace kxf::UI::DataView
 		protected:
 			void UpdateWithRow(int row) override
 			{
-				Node* node = m_MainWindow->GetNodeByRow(row);
-				if (node)
+				if (Node* node = m_MainWindow.GetNodeByRow(row))
 				{
 					int indent = 0;
 					if (m_IsExpanderColumn)
 					{
-						indent = m_MainWindow->m_Indent * node->GetItemIndent() + m_ExpanderSize;
+						indent = m_MainWindow.m_Indent * node->GetItemIndent() + m_ExpanderSize;
 					}
 
+					auto gc = m_MainWindow.m_GraphicsRenderer->CreateMeasuringContext(&m_MainWindow);
+
 					Renderer& renderer = node->GetCellRenderer(m_Column);
-					renderer.BeginCellSetup(*node, m_Column);
+					renderer.BeginCellRendering(*node, m_Column, *gc);
 					renderer.SetupCellValue();
-					renderer.SetupCellAttributes(m_MainWindow->GetCellStateForRow(row));
-					UpdateWithWidth(renderer.GetCellSize().GetWidth() + indent);
-					renderer.EndCellSetup();
+					renderer.SetupCellAttributes(m_MainWindow.GetCellStateForRow(row));
+
+					Rect cellRect = m_MainWindow.GetItemRect(*node, &m_Column);
+					auto&& [desiredSize, contentRect] = renderer.CallDrawCellContent(cellRect.GetSize(), m_MainWindow.GetCellStateForRow(row));
+					UpdateWithWidth(desiredSize.GetWidth() + indent);
+
+					renderer.EndCellRendering();
 				}
 			}
 
 		public:
-			MaxWidthCalculator(MainWindow* mainWindow, Column& column, int expanderSize)
+			MaxWidthCalculator(MainWindow& mainWindow, Column& column, int expanderSize)
 				:wxMaxWidthCalculatorBase(column.GetDisplayIndex()), m_MainWindow(mainWindow), m_Column(column), m_ExpanderSize(expanderSize)
 			{
-				m_IsExpanderColumn = m_MainWindow->IsListLike() && m_MainWindow->m_View->GetExpanderColumnOrFirstOne() == &m_Column;
+				m_IsExpanderColumn = m_MainWindow.m_View->GetExpanderColumnOrFirstOne() == &m_Column && !m_MainWindow.IsListLike();
 			}
 	};
 }
@@ -926,7 +931,7 @@ namespace kxf::UI::DataView
 				// do it like this for compatibility with the native GTK+ version,
 				// see #12270.
 
-				// adjust the rectangle ourselves to account for the alignment
+				// Adjust the rectangle ourselves to account for the alignment
 				const FlagSet<Alignment> align = renderer.GetEffectiveAlignment();
 
 				Rect rectItem = cellRect;
@@ -1633,7 +1638,7 @@ namespace kxf::UI::DataView
 		}
 
 		const size_t rowCount = GetRowCount();
-		MaxWidthCalculator calculator(const_cast<MainWindow*>(this), column, m_UniformRowHeight);
+		MaxWidthCalculator calculator(const_cast<MainWindow&>(*this), column, m_UniformRowHeight);
 		calculator.UpdateWithWidth(column.GetMinWidth());
 
 		if (m_View->HasHeaderCtrl())
@@ -1828,7 +1833,16 @@ namespace kxf::UI::DataView
 			m_Model->DoOnModelDetached();
 		}
 		m_Model = std::move(model);
-		m_Model->DoOnModelAttached(*this);
+
+		if (m_Model)
+		{
+			m_Model->DoOnModelAttached(*this);
+			m_TreeRoot = &m_Model->GetRootNode();
+		}
+		else
+		{
+			m_TreeRoot = nullptr;
+		}
 
 		ItemsChanged();
 	}
@@ -2938,14 +2952,14 @@ namespace kxf::UI::DataView
 			while (currentNode && !currentNode->IsRootNode())
 			{
 				// Add current node sub row index
-				row += currentNode->GetItemIndexWithinParent() + 1;
+				row += currentNode->GetSubTreeIndex() + 1;
 
 				// If this node has parent, add subtree count from all previous siblings
 				if (const Node* parentNode = currentNode->GetParentNode())
 				{
 					parentNode->EnumChildren([&](const Node& childNode)
 					{
-						if (childNode != *currentNode)
+						if (&childNode != currentNode)
 						{
 							row += childNode.GetSubTreeCount();
 							return true;

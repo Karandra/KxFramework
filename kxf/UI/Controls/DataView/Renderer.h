@@ -74,21 +74,25 @@ namespace kxf::UI::DataView
 				return m_GC != nullptr;
 			}
 
-			void BeginCellSetup(const Node& node, Column& column)
+			void BeginCellSetup(const Node& node, Column& column, IGraphicsContext* gc = nullptr)
 			{
 				m_Node = &node;
 				m_Column = &column;
+
+				m_GC = gc;
+				m_GR = gc ? &gc->GetRenderer() : nullptr;
 			}
 			void EndCellSetup()
 			{
 				m_Node = nullptr;
 				m_Column = nullptr;
+				m_GC = nullptr;
 			}
 			void SetupCellValue();
 			void SetupCellAttributes(CellState cellState);
 
 			void CallDrawCellBackground(const Rect& cellRect, CellState cellState, bool noUserBackground = false);
-			void CallDrawCellContent(const Rect& cellRect, CellState cellState);
+			std::pair<Size, Rect> CallDrawCellContent(const Rect& cellRect, CellState cellState);
 			void CallOnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent = nullptr);
 
 		protected:
