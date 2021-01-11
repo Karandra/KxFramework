@@ -9,35 +9,16 @@
 #include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"
 #include "wx/generic/private/markuptext.h"
 
-namespace kxf::UI::DataView
+namespace
 {
-	static bool operator<(const Size& left, const Size& right)
+	constexpr bool operator<(const kxf::Size& left, const kxf::Size& right) noexcept
 	{
 		return left.GetWidth() < right.GetWidth() || left.GetHeight() < right.GetHeight();
 	}
-	static bool operator>(const Size& left, const Size& right)
+	constexpr bool operator>(const kxf::Size& left, const kxf::Size& right) noexcept
 	{
 		return left.GetWidth() > right.GetWidth() || left.GetHeight() > right.GetHeight();
 	}
-
-	static int GetTreeItemState(int flags)
-	{
-		int itemState = (flags & wxCONTROL_CURRENT) ? TREIS_HOT : TREIS_NORMAL;
-		if (flags & wxCONTROL_SELECTED)
-		{
-			itemState = (flags & wxCONTROL_CURRENT) ? TREIS_HOTSELECTED : TREIS_SELECTED;
-			if (!(flags & wxCONTROL_FOCUSED))
-			{
-				itemState = TREIS_SELECTEDNOTFOCUS;
-			}
-		}
-
-		if (flags & wxCONTROL_DISABLED && !(flags & wxCONTROL_CURRENT))
-		{
-			itemState = TREIS_DISABLED;
-		}
-		return itemState;
-	};
 }
 
 namespace kxf::UI::DataView::Markup
@@ -193,7 +174,7 @@ namespace kxf::UI::DataView
 		if (m_Renderer.CanDraw())
 		{
 			IGraphicsContext& gc = m_Renderer.GetGraphicsContext();
-			return gc.GetTextExtent(string).ConvertRound<Size>();
+			return gc.GetTextExtent(string).ConvertCeil<Size>();
 		}
 		else
 		{
@@ -202,7 +183,7 @@ namespace kxf::UI::DataView
 			auto gc = renderer.CreateMeasuringContext();
 
 			gc->SetFont(renderer.CreateFont(m_Renderer.GetView()->GetFont()));
-			return gc->GetTextExtent(string).ConvertRound<Size>();
+			return gc->GetTextExtent(string).ConvertCeil<Size>();
 		}
 	}
 	Size RenderEngine::GetTextExtent(IGraphicsContext& gc, const String& string) const
@@ -244,11 +225,11 @@ namespace kxf::UI::DataView
 				if (font)
 				{
 					auto gcFont = m_Renderer.GetGraphicsRenderer().CreateFont(font);
-					return gc.GetTextExtent(text, *gcFont).ConvertRound<Size>();
+					return gc.GetTextExtent(text, *gcFont).ConvertCeil<Size>();
 				}
 				else
 				{
-					return gc.GetTextExtent(text).ConvertRound<Size>();
+					return gc.GetTextExtent(text).ConvertCeil<Size>();
 				}
 			};
 
