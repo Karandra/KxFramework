@@ -121,6 +121,20 @@ namespace kxf::Geometry
 				return {static_cast<T>(std::round(m_X)), static_cast<T>(std::round(m_Y))};
 			}
 
+			template<class TOrderedPair, class = std::enable_if_t<std::is_floating_point_v<TValue>&& std::is_integral_v<typename TOrderedPair::TValue>>>
+			constexpr TOrderedPair ConvertCeil() const
+			{
+				using T = typename TOrderedPair::TValue;
+				return {static_cast<T>(std::ceil(m_X)), static_cast<T>(std::ceil(m_Y))};
+			}
+
+			template<class TOrderedPair, class = std::enable_if_t<std::is_floating_point_v<TValue>&& std::is_integral_v<typename TOrderedPair::TValue>>>
+			constexpr TOrderedPair ConvertFloor() const
+			{
+				using T = typename TOrderedPair::TValue;
+				return {static_cast<T>(std::floor(m_X)), static_cast<T>(std::floor(m_Y))};
+			}
+
 		public:
 			constexpr TDerived& Scale(double x, double y) noexcept
 			{
