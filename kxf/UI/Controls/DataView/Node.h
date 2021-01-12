@@ -176,7 +176,7 @@ namespace kxf::UI::DataView
 			}
 			Rect GetCellClientRect(const Column& column) const
 			{
-				return DoGetCellClientRect(nullptr);
+				return DoGetCellClientRect(&column);
 			}
 
 			Point GetCellDropdownPoint() const
