@@ -174,16 +174,15 @@ namespace kxf::UI::DataView
 		if (m_Renderer.CanDraw())
 		{
 			IGraphicsContext& gc = m_Renderer.GetGraphicsContext();
-			return gc.GetTextExtent(string).ConvertCeil<Size>();
+			return GetTextExtent(gc, string);
 		}
 		else
 		{
 			// No existing window context right now, create one to measure text
 			IGraphicsRenderer& renderer = m_Renderer.GetGraphicsRenderer();
-			auto gc = renderer.CreateMeasuringContext();
+			auto gc = renderer.CreateMeasuringContext(m_Renderer.GetView());
 
-			gc->SetFont(renderer.CreateFont(m_Renderer.GetView()->GetFont()));
-			return gc->GetTextExtent(string).ConvertCeil<Size>();
+			return GetTextExtent(*gc, string);
 		}
 	}
 	Size RenderEngine::GetTextExtent(IGraphicsContext& gc, const String& string) const
