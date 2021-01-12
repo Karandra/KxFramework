@@ -304,7 +304,7 @@ namespace kxf
 			}
 
 			template<class T>
-			bool GetAs(T value) && noexcept(std::is_nothrow_move_assignable_v<T>)
+			bool GetAs(T& value) && noexcept(std::is_nothrow_move_assignable_v<T>)
 			{
 				if (T* ptr = AsPtr<T>())
 				{
