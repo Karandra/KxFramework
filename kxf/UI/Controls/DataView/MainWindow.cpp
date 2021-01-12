@@ -51,7 +51,7 @@ namespace kxf::UI::DataView
 						indent = m_MainWindow.m_Indent * node->GetItemIndent() + m_ExpanderSize;
 					}
 
-					auto gc = m_MainWindow.m_GraphicsRenderer->CreateMeasuringContext(&m_MainWindow);
+					auto gc = m_MainWindow.m_GraphicsRenderer->CreateMeasuringContext(m_MainWindow.GetView());
 
 					Renderer& renderer = node->GetCellRenderer(m_Column);
 					renderer.BeginCellRendering(*node, m_Column, *gc);
@@ -2990,7 +2990,7 @@ namespace kxf::UI::DataView
 			m_View->SetFocus();
 			node.EnsureCellVisible(column);
 
-			const Rect itemRect = node.GetCellRect(column);
+			const Rect itemRect = node.GetCellClientRect(column);
 			if (editor->BeginEdit(node, column, itemRect))
 			{
 				// Save the renderer to be able to finish/cancel editing it later
