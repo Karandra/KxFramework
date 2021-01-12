@@ -36,7 +36,7 @@ namespace kxf::UI::DataView
 			}
 
 		public:
-			bool FromAny(const Any& value);
+			bool FromAny(Any value);
 			void Clear()
 			{
 				TextValue::Clear();
@@ -58,7 +58,7 @@ namespace kxf::UI::DataView
 			BitmapTextValue m_Value;
 
 		protected:
-			bool SetValue(const Any& value) override;
+			bool SetDisplayValue(Any value) override;
 			ToolTip CreateToolTip() const override
 			{
 				return ToolTip::CreateDefaultForRenderer(m_Value.GetText());
@@ -71,11 +71,11 @@ namespace kxf::UI::DataView
 				:Renderer(alignment)
 			{
 			}
-			
+
 		public:
-			String GetTextValue(const Any& value) const override
+			String GetDisplayText(Any value) const override
 			{
-				return FromAnyUsing<decltype(m_Value)>(value).GetText();
+				return FromAnyUsing<decltype(m_Value)>(std::move(value)).GetText();
 			}
 	};
 }

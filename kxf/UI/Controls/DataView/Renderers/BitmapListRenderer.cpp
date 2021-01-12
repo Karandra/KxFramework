@@ -19,9 +19,9 @@ namespace
 
 namespace kxf::UI::DataView
 {
-	bool BitmapListValue::FromAny(const Any& value)
+	bool BitmapListValue::FromAny(Any value)
 	{
-		return TextValue::FromAny(value) || value.GetAs(m_Bitmaps) || value.GetAs(*this);
+		return TextValue::FromAny(std::move(value)) || std::move(value).GetAs(m_Bitmaps) || std::move(value).GetAs(*this);
 	}
 }
 
@@ -99,9 +99,9 @@ namespace kxf::UI::DataView
 
 namespace kxf::UI::DataView
 {
-	bool BitmapListRenderer::SetValue(const Any& value)
+	bool BitmapListRenderer::SetDisplayValue(Any value)
 	{
 		m_Value.Clear();
-		return m_Value.FromAny(value);
+		return m_Value.FromAny(std::move(value));
 	}
 }

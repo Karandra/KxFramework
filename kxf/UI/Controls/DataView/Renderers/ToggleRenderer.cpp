@@ -7,7 +7,7 @@
 
 namespace kxf::UI::DataView
 {
-	bool ToggleValue::FromAny(const Any& value)
+	bool ToggleValue::FromAny(Any value)
 	{
 		if (!value.GetAs(*this))
 		{
@@ -123,10 +123,10 @@ namespace kxf::UI::DataView
 		}
 		return {};
 	}
-	bool ToggleRenderer::SetValue(const Any& value)
+	bool ToggleRenderer::SetDisplayValue(Any value)
 	{
 		m_Value.Clear();
-		return m_Value.FromAny(value);
+		return m_Value.FromAny(std::move(value));
 	}
 
 	void ToggleRenderer::DrawCellContent(const Rect& cellRect, CellState cellState)

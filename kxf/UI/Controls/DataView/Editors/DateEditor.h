@@ -21,7 +21,7 @@ namespace kxf
 
 namespace kxf::UI::DataView
 {
-	class KX_API DateTimeValue: public kxf::WithOptions<DateEditorOption, DateEditorOption::None>
+	class KX_API DateTimeValue: public WithOptions<DateEditorOption, DateEditorOption::None>
 	{
 		protected:
 			DateTime m_Value;
@@ -40,7 +40,7 @@ namespace kxf::UI::DataView
 			}
 
 		public:
-			bool FromAny(const Any& value);
+			bool FromAny(Any value);
 			void Clear()
 			{
 				*this = {};
@@ -62,7 +62,7 @@ namespace kxf::UI::DataView
 			{
 				m_Value.MakeNull();
 			}
-			
+
 			bool HasDateRange() const
 			{
 				return m_RangeLower.IsValid() && m_RangeUpper.IsValid();
@@ -94,7 +94,7 @@ namespace kxf::UI::DataView
 	class KX_API DateEditor: public Editor
 	{
 		protected:
-			wxWindow* CreateControl(wxWindow* parent, const Rect& cellRect, const Any& value) override;
-			Any GetValue(wxWindow* control) const override;
+			wxWindow* CreateControl(wxWindow& parent, const Rect& cellRect, Any value) override;
+			Any GetValue(wxWindow& control) const override;
 	};
 }

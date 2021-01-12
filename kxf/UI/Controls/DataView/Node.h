@@ -197,10 +197,10 @@ namespace kxf::UI::DataView
 			virtual Editor* GetCellEditor(const Column& column) const;
 			virtual bool IsCellEnabled(const Column& column) const;
 
-			virtual Any GetCellValue(const Column& column) const;
-			virtual Any GetCellEditorValue(const Column& column) const;
 			virtual ToolTip GetCellToolTip(const Column& column) const;
-			virtual bool SetCellValue(Column& column, const Any& value);
+			virtual Any GetCellDisplayValue(const Column& column) const;
+			virtual Any GetCellValue(const Column& column) const;
+			virtual bool SetCellValue(Column& column, Any value);
 
 			virtual CellAttribute GetCellAttributes(const Column& column, const CellState& cellState) const;
 			virtual int GetItemHeight() const;

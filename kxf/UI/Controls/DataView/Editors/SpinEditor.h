@@ -35,8 +35,8 @@ namespace kxf::UI::DataView
 			}
 
 		protected:
-			wxWindow* CreateControl(wxWindow* parent, const Rect& cellRect, const Any& value) override;
-			Any GetValue(wxWindow* control) const override;
+			wxWindow* CreateControl(wxWindow& parent, const Rect& cellRect, Any value) override;
+			Any GetValue(wxWindow& control) const override;
 
 		public:
 			// General
@@ -94,7 +94,7 @@ namespace kxf::UI::DataView
 			{
 				return m_IntMax;
 			}
-		
+
 			int GetIncrementInt() const
 			{
 				return m_IntIncrement;

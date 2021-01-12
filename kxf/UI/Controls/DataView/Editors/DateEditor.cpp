@@ -22,7 +22,7 @@ namespace
 
 namespace kxf::UI::DataView
 {
-	bool DateTimeValue::FromAny(const Any& value)
+	bool DateTimeValue::FromAny(Any value)
 	{
 		if (value.GetAs(m_Value) || value.GetAs(*this))
 		{
@@ -46,7 +46,7 @@ namespace kxf::UI::DataView
 			m_Value.SetUnixTime(unixTime);
 			return true;
 		}
-		else if (wxString string; value.GetAs(string))
+		else if (String string; std::move(value).GetAs(string))
 		{
 			return m_Value.ParseISOCombined(string) || m_Value.ParseISOCombined(string, wxS(' ')) || m_Value.ParseTime(string);
 		}
@@ -56,12 +56,12 @@ namespace kxf::UI::DataView
 
 namespace kxf::UI::DataView
 {
-	wxWindow* DateEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const Any& value)
+	wxWindow* DateEditor::CreateControl(wxWindow& parent, const Rect& cellRect, Any value)
 	{
-		const DateTimeValue dateTimeValue = FromAnyUsing<DateTimeValue>(value);
+		const DateTimeValue dateTimeValue = FromAnyUsing<DateTimeValue>(std::move(value));
 		const int style = ConvertControlStyle(dateTimeValue);
 
-		wxDatePickerCtrl* editor = new wxDatePickerCtrl(parent,
+		wxDatePickerCtrl* editor = new wxDatePickerCtrl(&parent,
 														wxID_NONE,
 														dateTimeValue.GetDateTime(),
 														cellRect.GetPosition(),
@@ -77,9 +77,9 @@ namespace kxf::UI::DataView
 		}
 		return editor;
 	}
-	Any DateEditor::GetValue(wxWindow* control) const
+	Any DateEditor::GetValue(wxWindow& control) const
 	{
-		wxDatePickerCtrl* editor = static_cast<wxDatePickerCtrl*>(control);
-		return DateTime(editor->GetValue().ResetTime());
+		wxDatePickerCtrl& editor = static_cast<wxDatePickerCtrl&>(control);
+		return DateTime(editor.GetValue().ResetTime());
 	}
 }

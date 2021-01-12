@@ -63,16 +63,16 @@ namespace kxf::UI::DataView
 				return true;
 			}
 
+			virtual ToolTip GetToolTip(const Node& node, const Column& column) const;
+			virtual Any GetDisplayValue(const Node& node, const Column& column) const
+			{
+				return {};
+			}
 			virtual Any GetValue(const Node& node, const Column& column) const
 			{
 				return {};
 			}
-			virtual Any GetEditorValue(const Node& node, const Column& column) const
-			{
-				return {};
-			}
-			virtual ToolTip GetToolTip(const Node& node, const Column& column) const;
-			virtual bool SetValue(Node& node, Column& column, const Any& value)
+			virtual bool SetValue(Node& node, Column& column, Any value)
 			{
 				return false;
 			}

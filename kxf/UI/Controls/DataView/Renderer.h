@@ -113,7 +113,7 @@ namespace kxf::UI::DataView
 			{
 				return {};
 			}
-			virtual bool SetValue(const Any& value) = 0;
+			virtual bool SetDisplayValue(Any value) = 0;
 			virtual ToolTip CreateToolTip() const
 			{
 				return {};
@@ -127,11 +127,11 @@ namespace kxf::UI::DataView
 			virtual void DrawCellContent(const Rect& cellRect, CellState cellState) = 0;
 			virtual Size GetCellSize() const;
 
-			template<class TValue>
-			TValue FromAnyUsing(const Any& value) const
+			template<class TValue, class TAny, class = std::enable_if_t<std::is_same_v<std::remove_reference_t<TAny>, Any>>>
+			static TValue FromAnyUsing(TAny&& value)
 			{
 				TValue rendererValue;
-				rendererValue.FromAny(value);
+				rendererValue.FromAny(std::forward<TAny>(value));
 				return rendererValue;
 			}
 
@@ -146,7 +146,7 @@ namespace kxf::UI::DataView
 			{
 				return RenderEngine(const_cast<Renderer&>(*this));
 			}
-			virtual String GetTextValue(const Any& value) const = 0;
+			virtual String GetDisplayText(Any value) const = 0;
 
 		public:
 			Renderer(FlagSet<Alignment> alignment = Alignment::Invalid)

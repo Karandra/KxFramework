@@ -7,22 +7,22 @@
 namespace
 {
 	template<class T>
-	T CastAndGetValue(wxWindow* control)
+	T CastAndGetValue(wxWindow& control)
 	{
 		if constexpr(std::is_floating_point<T>::value)
 		{
-			return static_cast<wxSpinCtrlDouble*>(control)->GetValue();
+			return static_cast<wxSpinCtrlDouble&>(control).GetValue();
 		}
 		else
 		{
-			return static_cast<wxSpinCtrl*>(control)->GetValue();
+			return static_cast<wxSpinCtrl&>(control).GetValue();
 		}
 	}
 }
 
 namespace kxf::UI::DataView
 {
-	wxWindow* SpinEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const Any& value)
+	wxWindow* SpinEditor::CreateControl(wxWindow& parent, const Rect& cellRect, Any value)
 	{
 		int style = wxSP_ARROW_KEYS|wxTE_PROCESS_ENTER|m_Alignment;
 		if (m_IsWrapping)
@@ -45,7 +45,7 @@ namespace kxf::UI::DataView
 
 			if (ShouldMimicIntegerUsingFloat())
 			{
-				wxSpinCtrlDouble* spin = new wxSpinCtrlDouble(parent, wxID_NONE, {}, pos, size, style, m_IntMin, m_IntMax, initialValue, m_IntIncrement);
+				wxSpinCtrlDouble* spin = new wxSpinCtrlDouble(&parent, wxID_NONE, {}, pos, size, style, m_IntMin, m_IntMax, initialValue, m_IntIncrement);
 				spin->SetDigits(0);
 
 				m_EffectiveType = Type::Float;
@@ -53,10 +53,10 @@ namespace kxf::UI::DataView
 			}
 			else
 			{
-				// For some reason 'wxSpinCtrl' created 2 px left relative to given position
+				// For some reason 'wxSpinCtrl' created 2px left relative to given position
 				pos.X() += 2;
 
-				wxSpinCtrl* spin = new wxSpinCtrl(parent, wxID_NONE, {}, pos, size, style, m_IntMin, m_IntMax, initialValue);
+				wxSpinCtrl* spin = new wxSpinCtrl(&parent, wxID_NONE, {}, pos, size, style, m_IntMin, m_IntMax, initialValue);
 				spin->SetBase(m_IntBase);
 
 				m_EffectiveType = Type::Integer;
@@ -68,7 +68,7 @@ namespace kxf::UI::DataView
 			double initialValue = 0.0;
 			value.GetAs(initialValue);
 
-			wxSpinCtrlDouble* spin = new wxSpinCtrlDouble(parent, wxID_NONE, {}, pos, size, style, m_FloatMin, m_FloatMax, initialValue, m_FloatIncrement);
+			wxSpinCtrlDouble* spin = new wxSpinCtrlDouble(&parent, wxID_NONE, {}, pos, size, style, m_FloatMin, m_FloatMax, initialValue, m_FloatIncrement);
 			spin->SetDigits(m_FloatPrecision);
 
 			m_EffectiveType = Type::Float;
@@ -95,7 +95,7 @@ namespace kxf::UI::DataView
 		}
 		return editor;
 	}
-	Any SpinEditor::GetValue(wxWindow* control) const
+	Any SpinEditor::GetValue(wxWindow& control) const
 	{
 		if (m_EffectiveType == Type::Integer)
 		{

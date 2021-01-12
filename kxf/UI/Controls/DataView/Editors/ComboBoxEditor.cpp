@@ -26,7 +26,7 @@ namespace kxf::UI::DataView
 		return new ComboBoxEditorControlHandler(this, GetControl());
 	}
 
-	wxWindow* ComboBoxEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const Any& value)
+	wxWindow* ComboBoxEditor::CreateControl(wxWindow& parent, const Rect& cellRect, Any value)
 	{
 		const ComboBoxStyle comboBoxStyles = ComboBoxStyle::Dropdown|ComboBoxStyle::ProcessEnter|(IsEditable() ? ComboBoxStyle::None : ComboBoxStyle::ReadOnly);
 		wxComboBox* editor = nullptr;
@@ -34,14 +34,14 @@ namespace kxf::UI::DataView
 		// Create the control
 		if (m_UseBitmap)
 		{
-			BitmapComboBox* bitmapEditor = new BitmapComboBox(parent, wxID_NONE, {}, cellRect.GetPosition(), cellRect.GetSize(), comboBoxStyles, GetValidator());
+			BitmapComboBox* bitmapEditor = new BitmapComboBox(&parent, wxID_NONE, {}, cellRect.GetPosition(), cellRect.GetSize(), comboBoxStyles, GetValidator());
 			bitmapEditor->SetImageList(GetImageList());
 
 			editor = bitmapEditor;
 		}
 		else
 		{
-			editor = new ComboBox(parent, wxID_NONE, {}, cellRect.GetPosition(), cellRect.GetSize(), comboBoxStyles, GetValidator());
+			editor = new ComboBox(&parent, wxID_NONE, {}, cellRect.GetPosition(), cellRect.GetSize(), comboBoxStyles, GetValidator());
 		}
 		editor->SetMaxSize(cellRect.GetSize());
 
@@ -76,7 +76,7 @@ namespace kxf::UI::DataView
 		{
 			editor->SetSelection(index);
 		}
-		else if (TextValue textValue = FromAnyUsing<TextValue>(value); textValue.HasText())
+		else if (TextValue textValue = FromAnyUsing<TextValue>(std::move(value)); textValue.HasText())
 		{
 			if (IsEditable())
 			{
@@ -111,22 +111,22 @@ namespace kxf::UI::DataView
 		}
 		return editor;
 	}
-	Any ComboBoxEditor::GetValue(wxWindow* control) const
+	Any ComboBoxEditor::GetValue(wxWindow& control) const
 	{
-		const ComboBox* editor = static_cast<const ComboBox*>(control);
+		const ComboBox& editor = static_cast<const ComboBox&>(control);
 
 		if (ShouldAlwaysUseStringSelection())
 		{
 			if (IsEditable())
 			{
-				return String(editor->GetValue());
+				return String(editor.GetValue());
 			}
-			else if (int index = editor->GetSelection(); index != wxNOT_FOUND)
+			else if (int index = editor.GetSelection(); index != wxNOT_FOUND)
 			{
-				return String(editor->GetString(index));
+				return String(editor.GetString(index));
 			}
 		}
-		else if (int index = editor->GetSelection(); index != wxNOT_FOUND)
+		else if (int index = editor.GetSelection(); index != wxNOT_FOUND)
 		{
 			return index;
 		}

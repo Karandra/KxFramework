@@ -29,10 +29,10 @@ namespace kxf::UI::DataView
 			std::array<Color, wxColourData::NUM_CUSTOM> m_PaletteColors;
 
 		public:
-			ColorValue(const Color& color = wxNullColour);
+			ColorValue(const Color& color = {});
 
 		public:
-			bool FromAny(const Any& value);
+			bool FromAny(Any value);
 			void Clear()
 			{
 				*this = {};
@@ -54,7 +54,7 @@ namespace kxf::UI::DataView
 			{
 				m_Color = wxNullColour;
 			}
-			
+
 			size_t GetPaletteColorsLimit() const
 			{
 				return m_PaletteColors.size();
@@ -95,7 +95,7 @@ namespace kxf::UI::DataView
 			wxDialog* m_Dialog = nullptr;
 
 		protected:
-			wxWindow* CreateControl(wxWindow* parent, const Rect& cellRect, const Any& value) override;
-			Any GetValue(wxWindow* control) const override;
+			wxWindow* CreateControl(wxWindow& parent, const Rect& cellRect, Any value) override;
+			Any GetValue(wxWindow& control) const override;
 	};
 }

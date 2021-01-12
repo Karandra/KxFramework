@@ -23,7 +23,7 @@ namespace kxf::UI::DataView
 	{
 		// Now check if we have a value and remember it for rendering it later.
 		// Notice that we do it even if it's null, as the cell should be empty then and not show the last used value.
-		SetValue(m_Node->GetCellValue(*m_Column));
+		SetDisplayValue(m_Node->GetCellDisplayValue(*m_Column));
 	}
 
 	void Renderer::CallDrawCellBackground(const Rect& cellRect, CellState cellState, bool noUserBackground)

@@ -6,13 +6,13 @@
 
 namespace kxf::UI::DataView
 {
-	bool ImageListValue::FromAny(const Any& value)
+	bool ImageListValue::FromAny(Any value)
 	{
-		if (TextValue::FromAny(value) || value.GetAs(*this))
+		if (TextValue::FromAny(std::move(value)) || std::move(value).GetAs(*this))
 		{
 			return true;
 		}
-		else if (const kxf::GDIImageList* imageList = nullptr; value.GetAs(imageList))
+		else if (const GDIImageList* imageList = nullptr; value.GetAs(imageList))
 		{
 			WithImageList::SetImageList(imageList);
 			return true;
@@ -23,9 +23,9 @@ namespace kxf::UI::DataView
 
 namespace kxf::UI::DataView
 {
-	bool ImageListRenderer::SetValue(const Any& value)
+	bool ImageListRenderer::SetDisplayValue(Any value)
 	{
 		m_Value.Clear();
-		return m_Value.FromAny(value);
+		return m_Value.FromAny(std::move(value));
 	}
 }

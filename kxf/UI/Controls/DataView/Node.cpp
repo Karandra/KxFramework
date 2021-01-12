@@ -256,21 +256,21 @@ namespace kxf::UI::DataView
 		return GetModel().IsEnabled(*this, column);
 	}
 
+	Any Node::GetCellDisplayValue(const Column& column) const
+	{
+		return GetModel().GetDisplayValue(*this, column);
+	}
 	Any Node::GetCellValue(const Column& column) const
 	{
 		return GetModel().GetValue(*this, column);
-	}
-	Any Node::GetCellEditorValue(const Column& column) const
-	{
-		return GetModel().GetEditorValue(*this, column);
 	}
 	ToolTip Node::GetCellToolTip(const Column& column) const
 	{
 		return GetModel().GetToolTip(*this, column);
 	}
-	bool Node::SetCellValue(Column& column, const Any& value)
+	bool Node::SetCellValue(Column& column, Any value)
 	{
-		return GetModel().SetValue(*this, column, value);
+		return GetModel().SetValue(*this, column, std::move(value));
 	}
 
 	CellAttribute Node::GetCellAttributes(const Column& column, const CellState& cellState) const

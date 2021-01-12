@@ -6,22 +6,23 @@
 
 namespace kxf::UI::DataView
 {
-	bool ProgressValueBase::FromAny(const Any& value)
+	bool ProgressValueBase::FromAny(Any value)
 	{
 		return value.GetAs(m_Position) || value.GetAs(*this);
 	}
-	bool ProgressValue::FromAny(const Any& value)
+
+	bool ProgressValue::FromAny(Any value)
 	{
-		return TextValue::FromAny(value) || ProgressValueBase::FromAny(value) || value.GetAs(*this);
+		return TextValue::FromAny(std::move(value)) || ProgressValueBase::FromAny(std::move(value)) || std::move(value).GetAs(*this);
 	}
 }
 
 namespace kxf::UI::DataView
 {
-	bool ProgressRenderer::SetValue(const Any& value)
+	bool ProgressRenderer::SetDisplayValue(Any value)
 	{
 		m_Value.Clear();
-		return m_Value.FromAny(value);
+		return m_Value.FromAny(std::move(value));
 	}
 
 	void ProgressRenderer::DrawCellContent(const Rect& cellRect, CellState cellState)

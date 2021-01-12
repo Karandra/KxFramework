@@ -34,14 +34,14 @@ namespace
 
 namespace kxf::UI::DataView
 {
-	bool HTMLRenderer::SetValue(const Any& value)
+	bool HTMLRenderer::SetDisplayValue(Any value)
 	{
 		m_Value.Clear();
 		m_ContentHTML.clear();
 
-		if (m_Value.FromAny(value))
+		if (m_Value.FromAny(std::move(value)))
 		{
-			m_ContentHTML = kxf::UI::HTMLWindow::ProcessPlainText(m_Value.GetText());
+			m_ContentHTML = UI::HTMLWindow::ProcessPlainText(m_Value.GetText());
 			return true;
 		}
 		return false;

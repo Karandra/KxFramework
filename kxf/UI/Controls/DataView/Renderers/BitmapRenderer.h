@@ -60,13 +60,13 @@ namespace kxf::UI::DataView
 			GDIBitmap m_Bitmap;
 
 		public:
-			BitmapValue(const GDIBitmap& bitmap = wxNullBitmap)
+			BitmapValue(const GDIBitmap& bitmap = {})
 				:m_Bitmap(bitmap)
 			{
 			}
-			
+
 		public:
-			bool FromAny(const Any& value);
+			bool FromAny(Any value);
 			void Clear()
 			{
 				BitmapValueBase::Clear();
@@ -104,7 +104,7 @@ namespace kxf::UI::DataView
 			BitmapValue m_Value;
 
 		protected:
-			bool SetValue(const Any& value) override;
+			bool SetDisplayValue(Any value) override;
 			void DrawCellContent(const Rect& cellRect, CellState cellState) override;
 			Size GetCellSize() const override;
 
@@ -113,9 +113,9 @@ namespace kxf::UI::DataView
 				:Renderer(alignment)
 			{
 			}
-			
+
 		public:
-			String GetTextValue(const Any& value) const override
+			String GetDisplayText(Any value) const override
 			{
 				return {};
 			}

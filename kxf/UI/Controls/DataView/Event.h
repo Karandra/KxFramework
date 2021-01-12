@@ -186,7 +186,7 @@ namespace kxf::UI::DataView
 			KxEVENT_MEMBER(EditorEvent, ItemEditDone);
 
 		private:
-			Any m_Value;
+			std::variant<Any, const Any*> m_Value;
 			bool m_IsEditCancelled = false;
 
 		public:
@@ -210,18 +210,36 @@ namespace kxf::UI::DataView
 				m_IsEditCancelled = editCancelled;
 			}
 
-			const Any& GetValue() const
+			const Any& GetValue() const&
 			{
-				return m_Value;
+				if (auto value = std::get_if<const Any*>(&m_Value))
+				{
+					return *value;
+				}
+				else
+				{
+					return std::get<Any>(m_Value);
+				}
 			}
+			Any GetValue() &&
+			{
+				if (auto value = std::get_if<const Any*>(&m_Value))
+				{
+					return *value;
+				}
+				else
+				{
+					return std::get<Any>(std::move(m_Value));
+				}
+			}
+
 			void SetValue(Any&& value)
 			{
 				m_Value = std::move(value);
-				value.MakeNull();
 			}
 			void SetValue(const Any& value)
 			{
-				m_Value = value;
+				m_Value = &value;
 			}
 	};
 }

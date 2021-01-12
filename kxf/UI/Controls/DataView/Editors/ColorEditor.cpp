@@ -12,7 +12,7 @@ namespace kxf::UI::DataView
 		static_assert(wxColourData::NUM_CUSTOM == ArraySize<decltype(m_PaletteColors)>::value);
 	}
 
-	bool ColorValue::FromAny(const Any& value)
+	bool ColorValue::FromAny(Any value)
 	{
 		if (value.GetAs(*this))
 		{
@@ -63,9 +63,9 @@ namespace kxf::UI::DataView
 
 namespace kxf::UI::DataView
 {
-	wxWindow* ColorEditor::CreateControl(wxWindow* parent, const Rect& cellRect, const Any& value)
+	wxWindow* ColorEditor::CreateControl(wxWindow& parent, const Rect& cellRect, Any value)
 	{
-		m_Value = FromAnyUsing<ColorValue>(value);
+		m_Value = FromAnyUsing<ColorValue>(std::move(value));
 		wxColourData colorData = m_Value.ToColorData();
 
 		wxColourDialog* nativeDialog = nullptr;
@@ -77,12 +77,12 @@ namespace kxf::UI::DataView
 			//genericDialog = new wxGenericColourDialog(parent, &colorData);
 			//m_Dialog = genericDialog;
 
-			nativeDialog = new wxColourDialog(parent, &colorData);
+			nativeDialog = new wxColourDialog(&parent, &colorData);
 			m_Dialog = nativeDialog;
 		}
 		else
 		{
-			nativeDialog = new wxColourDialog(parent, &colorData);
+			nativeDialog = new wxColourDialog(&parent, &colorData);
 			m_Dialog = nativeDialog;
 		}
 
@@ -105,9 +105,9 @@ namespace kxf::UI::DataView
 		});
 		return m_Dialog;
 	}
-	Any ColorEditor::GetValue(wxWindow* control) const
+	Any ColorEditor::GetValue(wxWindow& control) const
 	{
-		control->Destroy();
+		control.Destroy();
 
 		if (m_Value.HasColor())
 		{

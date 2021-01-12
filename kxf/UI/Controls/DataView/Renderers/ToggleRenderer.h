@@ -22,7 +22,7 @@ namespace kxf::UI::DataView
 			}
 
 		public:
-			bool FromAny(const Any& value);
+			bool FromAny(Any value);
 			void Clear()
 			{
 				*this = {};
@@ -69,7 +69,7 @@ namespace kxf::UI::DataView
 			{
 				m_Type = ToggleType::None;
 			}
-	
+
 			bool Is3StateAllowed() const
 			{
 				return m_Allow3State;
@@ -112,8 +112,8 @@ namespace kxf::UI::DataView
 				return true;
 			}
 			Any OnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent = nullptr) override;
-			
-			bool SetValue(const Any& value) override;
+
+			bool SetDisplayValue(Any value) override;
 			void DrawCellContent(const Rect& cellRect, CellState cellState) override;
 			Size GetCellSize() const override;
 
@@ -122,9 +122,9 @@ namespace kxf::UI::DataView
 				:Renderer(alignment), ToggleRendererBase(m_Value)
 			{
 			}
-			
+
 		public:
-			String GetTextValue(const Any& value) const override
+			String GetDisplayText(Any value) const override
 			{
 				return {};
 			}

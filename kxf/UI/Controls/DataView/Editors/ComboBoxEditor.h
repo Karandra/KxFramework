@@ -21,7 +21,7 @@ namespace kxf::UI::DataView
 			{
 				m_MaxVisibleItems = max;
 			}
-		
+
 			bool ShouldEndEditOnCloseup() const
 			{
 				return m_EndEditOnCloseup;
@@ -30,7 +30,7 @@ namespace kxf::UI::DataView
 			{
 				m_EndEditOnCloseup = value;
 			}
-	
+
 			bool ShouldEndEditOnSelect() const
 			{
 				return m_EndEditOnSelect;
@@ -53,7 +53,7 @@ namespace kxf::UI::DataView
 
 namespace kxf::UI::DataView
 {
-	class KX_API ComboBoxEditor: public Editor, public ComboBoxEditorBase, public kxf::WithImageList
+	class KX_API ComboBoxEditor: public Editor, public ComboBoxEditorBase, public WithImageList
 	{
 		private:
 			std::vector<wxString> m_Items;
@@ -70,8 +70,8 @@ namespace kxf::UI::DataView
 		protected:
 			EditorControlHandler* CreateControlHandler() override;
 
-			wxWindow* CreateControl(wxWindow* parent, const Rect& cellRect, const Any& value) override;
-			Any GetValue(wxWindow* control) const override;
+			wxWindow* CreateControl(wxWindow& parent, const Rect& cellRect, Any value) override;
+			Any GetValue(wxWindow& control) const override;
 
 		public:
 			const std::vector<wxString>& GetItems() const

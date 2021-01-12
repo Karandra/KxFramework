@@ -36,7 +36,7 @@ namespace kxf::UI::DataView
 			}
 
 		public:
-			bool FromAny(const Any& value);
+			bool FromAny(Any value);
 			void Clear()
 			{
 				*this = {};
@@ -107,7 +107,7 @@ namespace kxf::UI::DataView
 			{
 				m_State = State::Normal;
 			}
-			
+
 			template<class T = Height> T GetHeight() const
 			{
 				return static_cast<T>(m_Height);
@@ -143,7 +143,7 @@ namespace kxf::UI::DataView
 			}
 
 		public:
-			bool FromAny(const Any& value);
+			bool FromAny(Any value);
 			void Clear()
 			{
 				TextValue::Clear();
@@ -160,12 +160,12 @@ namespace kxf::UI::DataView
 			ProgressValue m_Value;
 
 		protected:
-			bool SetValue(const Any& value) override;
+			bool SetDisplayValue(Any value) override;
 			ToolTip CreateToolTip() const override
 			{
 				return ToolTip::CreateDefaultForRenderer(m_Value.GetText());
 			}
-			
+
 			void DrawCellContent(const Rect& cellRect, CellState cellState) override;
 			Size GetCellSize() const override;
 			Rect GetBarRect() const;
@@ -175,11 +175,11 @@ namespace kxf::UI::DataView
 				:Renderer(alignment)
 			{
 			}
-			
+
 		public:
-			String GetTextValue(const Any& value) const override
+			String GetDisplayText(Any value) const override
 			{
-				return FromAnyUsing<decltype(m_Value)>(value).GetText();
+				return FromAnyUsing<decltype(m_Value)>(std::move(value)).GetText();
 			}
 	};
 }

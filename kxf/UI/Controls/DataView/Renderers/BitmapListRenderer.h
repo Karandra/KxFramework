@@ -27,7 +27,7 @@ namespace kxf::UI::DataView
 			}
 
 		public:
-			bool FromAny(const Any& value);
+			bool FromAny(Any value);
 			void Clear()
 			{
 				TextValue::Clear();
@@ -90,7 +90,7 @@ namespace kxf::UI::DataView
 			BitmapListValue m_Value;
 
 		protected:
-			bool SetValue(const Any& value) override;
+			bool SetDisplayValue(Any value) override;
 
 			size_t GetBitmapCount() const override
 			{
@@ -106,11 +106,11 @@ namespace kxf::UI::DataView
 				:BitmapListRendererBase(m_Value, m_Value, alignment)
 			{
 			}
-	
+
 		public:
-			String GetTextValue(const Any& value) const override
+			String GetDisplayText(Any value) const override
 			{
-				return FromAnyUsing<decltype(m_Value)>(value).GetText();
+				return FromAnyUsing<decltype(m_Value)>(std::move(value)).GetText();
 			}
 	};
 }

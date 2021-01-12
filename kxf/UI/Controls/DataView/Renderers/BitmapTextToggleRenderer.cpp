@@ -8,9 +8,9 @@
 
 namespace kxf::UI::DataView
 {
-	bool BitmapTextToggleValue::FromAny(const Any& value)
+	bool BitmapTextToggleValue::FromAny(Any value)
 	{
-		return BitmapTextValue::FromAny(value) || ToggleValue::FromAny(value) || value.GetAs(*this);
+		return BitmapTextValue::FromAny(std::move(value)) || ToggleValue::FromAny(std::move(value)) || std::move(value).GetAs(*this);
 	}
 }
 
@@ -26,10 +26,10 @@ namespace kxf::UI::DataView
 		return {};
 	}
 
-	bool BitmapTextToggleRenderer::SetValue(const Any& value)
+	bool BitmapTextToggleRenderer::SetDisplayValue(Any value)
 	{
 		m_Value.Clear();
-		return m_Value.FromAny(value);
+		return m_Value.FromAny(std::move(value));
 	}
 	void BitmapTextToggleRenderer::DrawCellContent(const Rect& cellRect, CellState cellState)
 	{

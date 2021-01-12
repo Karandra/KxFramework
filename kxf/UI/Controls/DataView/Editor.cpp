@@ -52,9 +52,10 @@ namespace kxf::UI::DataView
 		OnBeginEdit(node, column);
 
 		// Before doing anything we send an event asking if editing of this item is really wanted.
-		if (GetMainWindow()->SendEditingStartedEvent(node, this))
+		MainWindow& mainWindow = *GetMainWindow();
+		if (mainWindow.SendEditingStartedEvent(node, this))
 		{
-			m_Control = CreateControl(GetMainWindow(), cellRect, m_Node->GetCellEditorValue(column));
+			m_Control = CreateControl(mainWindow, cellRect, m_Node->GetCellValue(column));
 
 			// There might be no editor control for the given item
 			if (m_Control)
@@ -83,14 +84,14 @@ namespace kxf::UI::DataView
 			{
 				// Try to get the value, normally we should succeed but if we fail, don't
 				// return immediately, we still need to destroy the edit control.
-				Any value = GetValue(m_Control);
+				Any value = GetValue(*m_Control);
 				DestroyControl();
 				GetView()->SetFocus();
 
 				MainWindow* mainWindow = GetMainWindow();
 				if (!value.IsNull() && mainWindow->SendEditingDoneEvent(*m_Node, this, false, value))
 				{
-					if (m_Node->SetCellValue(*m_Column, value))
+					if (m_Node->SetCellValue(*m_Column, std::move(value)))
 					{
 						mainWindow->OnCellChanged(*m_Node, m_Column);
 					}

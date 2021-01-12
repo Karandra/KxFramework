@@ -36,9 +36,9 @@ namespace kxf::UI::DataView
 			{
 				SetChecked(checked);
 			}
-	
+
 		public:
-			bool FromAny(const Any& value);
+			bool FromAny(Any value);
 			void Clear()
 			{
 				BitmapTextValue::Clear();
@@ -61,7 +61,7 @@ namespace kxf::UI::DataView
 			}
 			Any OnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent = nullptr) override;
 
-			bool SetValue(const Any& value);
+			bool SetDisplayValue(Any value) override;
 			ToolTip CreateToolTip() const override
 			{
 				return ToolTip::CreateDefaultForRenderer(m_Value.GetText());
@@ -74,11 +74,11 @@ namespace kxf::UI::DataView
 				:Renderer(alignment), ToggleRendererBase(m_Value)
 			{
 			}
-			
+
 		public:
-			String GetTextValue(const Any& value) const override
+			String GetDisplayText(Any value) const override
 			{
-				return FromAnyUsing<decltype(m_Value)>(value).GetText();
+				return FromAnyUsing<decltype(m_Value)>(std::move(value)).GetText();
 			}
 	};
 }

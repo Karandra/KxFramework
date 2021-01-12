@@ -6,7 +6,7 @@ namespace kxf::UI::DataView
 	class KX_API NullRenderer: public Renderer
 	{
 		protected:
-			bool SetValue(const Any& value)
+			bool SetDisplayValue(Any value)
 			{
 				return false;
 			}
@@ -24,15 +24,15 @@ namespace kxf::UI::DataView
 				:Renderer(Alignment::Invalid)
 			{
 			}
-			
+
 		public:
 			FlagSet<Alignment> GetEffectiveAlignment() const override
 			{
 				return Alignment::Invalid;
 			}
-			
+
 		public:
-			String GetTextValue(const Any& value) const override
+			String GetDisplayText(Any value) const override
 			{
 				return {};
 			}

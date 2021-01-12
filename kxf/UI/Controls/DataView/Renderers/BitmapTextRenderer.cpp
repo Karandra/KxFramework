@@ -5,18 +5,18 @@
 
 namespace kxf::UI::DataView
 {
-	bool BitmapTextValue::FromAny(const Any& value)
+	bool BitmapTextValue::FromAny(Any value)
 	{
-		return TextValue::FromAny(value) || BitmapValue::FromAny(value) || value.GetAs(*this);
+		return TextValue::FromAny(std::move(value)) || BitmapValue::FromAny(std::move(value)) || std::move(value).GetAs(*this);
 	}
 }
 
 namespace kxf::UI::DataView
 {
-	bool BitmapTextRenderer::SetValue(const Any& value)
+	bool BitmapTextRenderer::SetDisplayValue(Any value)
 	{
 		m_Value.Clear();
-		return m_Value.FromAny(value);
+		return m_Value.FromAny(std::move(value));
 	}
 
 	void BitmapTextRenderer::DrawCellContent(const Rect& cellRect, CellState cellState)
