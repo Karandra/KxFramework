@@ -40,6 +40,6 @@ namespace kxf::UI::DataView
 	}
 	Any TextEditor::GetValue(wxWindow* control) const
 	{
-		return static_cast<TextBox*>(control)->GetValue();
+		return String(static_cast<TextBox*>(control)->GetValue());
 	}
 }

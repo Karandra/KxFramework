@@ -106,7 +106,7 @@ namespace kxf::UI::DataView
 			// Using float to mimic int
 			if (m_Type == Type::Integer)
 			{
-				return (int)CastAndGetValue<double>(control);
+				return static_cast<int>(CastAndGetValue<double>(control));
 			}
 			else
 			{

@@ -119,11 +119,11 @@ namespace kxf::UI::DataView
 		{
 			if (IsEditable())
 			{
-				return editor->GetValue();
+				return String(editor->GetValue());
 			}
 			else if (int index = editor->GetSelection(); index != wxNOT_FOUND)
 			{
-				return editor->GetString(index);
+				return String(editor->GetString(index));
 			}
 		}
 		else if (int index = editor->GetSelection(); index != wxNOT_FOUND)

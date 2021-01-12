@@ -74,7 +74,7 @@ namespace kxf::UI::DataView
 		if (m_Node && m_Column)
 		{
 			m_IsEditFinished = true;
-			kxf::Utility::CallAtScopeExit atExit = [this]()
+			Utility::CallAtScopeExit atExit = [this]()
 			{
 				OnEndEdit();
 			};

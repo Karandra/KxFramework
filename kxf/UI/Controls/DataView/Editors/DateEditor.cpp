@@ -80,6 +80,6 @@ namespace kxf::UI::DataView
 	Any DateEditor::GetValue(wxWindow* control) const
 	{
 		wxDatePickerCtrl* editor = static_cast<wxDatePickerCtrl*>(control);
-		return editor->GetValue().ResetTime();
+		return DateTime(editor->GetValue().ResetTime());
 	}
 }
