@@ -8,10 +8,11 @@ namespace kxf::UI::DataView
 {
 	void Node::DoExpandNodeAncestors()
 	{
-		while (Node* parent = m_ParentNode)
+		Node* node = m_ParentNode;
+		while (node)
 		{
-			parent->ExpandNode();
-			parent = parent->m_ParentNode;
+			node->ExpandNode();
+			node = node->m_ParentNode;
 		}
 	}
 	void Node::DoEnsureCellVisible(const Column* column)
