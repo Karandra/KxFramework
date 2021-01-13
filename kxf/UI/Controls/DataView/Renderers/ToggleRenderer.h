@@ -22,7 +22,7 @@ namespace kxf::UI::DataView
 			}
 
 		public:
-			bool FromAny(Any value);
+			bool FromAny(Any& value);
 
 			bool HasToggleState() const
 			{

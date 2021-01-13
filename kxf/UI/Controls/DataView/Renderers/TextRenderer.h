@@ -15,7 +15,7 @@ namespace kxf::UI::DataView
 			}
 
 		public:
-			bool FromAny(Any value);
+			bool FromAny(Any& value);
 
 			bool HasText() const
 			{
@@ -66,7 +66,7 @@ namespace kxf::UI::DataView
 		public:
 			String GetDisplayText(Any value) const override
 			{
-				return FromAnyUsing<decltype(m_Value)>(std::move(value)).GetText();
+				return FromAnyUsing<decltype(m_Value)>(value).GetText();
 			}
 	};
 }

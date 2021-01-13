@@ -41,6 +41,15 @@ namespace kxf::UI::DataView
 				WithMnemonics
 			};
 
+		public:
+			template<class TValue>
+			static TValue FromAnyUsing(Any& value)
+			{
+				TValue rendererValue;
+				rendererValue.FromAny(value);
+				return rendererValue;
+			}
+
 		private:
 			FlagSet<Alignment> m_Alignment = Alignment::Invalid;
 			EllipsizeMode m_EllipsizeMode = EllipsizeMode::End;
@@ -126,14 +135,6 @@ namespace kxf::UI::DataView
 			}
 			virtual void DrawCellContent(const Rect& cellRect, CellState cellState) = 0;
 			virtual Size GetCellSize() const;
-
-			template<class TValue, class TAny, class = std::enable_if_t<std::is_same_v<std::remove_reference_t<TAny>, Any>>>
-			static TValue FromAnyUsing(TAny&& value)
-			{
-				TValue rendererValue;
-				rendererValue.FromAny(std::forward<TAny>(value));
-				return rendererValue;
-			}
 
 		public:
 			IGraphicsContext& GetGraphicsContext() const

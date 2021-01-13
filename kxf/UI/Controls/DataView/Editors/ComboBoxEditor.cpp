@@ -76,7 +76,7 @@ namespace kxf::UI::DataView
 		{
 			editor->SetSelection(index);
 		}
-		else if (TextValue textValue = FromAnyUsing<TextValue>(std::move(value)); textValue.HasText())
+		else if (TextValue textValue = Renderer::FromAnyUsing<TextValue>(value); textValue.HasText())
 		{
 			if (IsEditable())
 			{

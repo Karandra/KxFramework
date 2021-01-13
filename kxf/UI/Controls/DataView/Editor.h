@@ -47,14 +47,6 @@ namespace kxf::UI::DataView
 			virtual wxWindow* CreateControl(wxWindow& parent, const Rect& cellRect, Any value) = 0;
 			virtual Any GetValue(wxWindow& control) const = 0;
 
-			template<class TValue, class TAny, class = std::enable_if_t<std::is_same_v<std::remove_reference_t<TAny>, Any>>>
-			static TValue FromAnyUsing(TAny&& value)
-			{
-				TValue rendererValue;
-				rendererValue.FromAny(std::forward<TAny>(value));
-				return rendererValue;
-			}
-
 			bool IsEditCanceled() const
 			{
 				return m_IsEditCanceled;

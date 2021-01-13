@@ -39,7 +39,7 @@ namespace kxf::UI::DataView
 		m_Value = {};
 		m_ContentHTML.Clear();
 
-		if (m_Value.FromAny(std::move(value)))
+		if (m_Value.FromAny(value))
 		{
 			m_ContentHTML = UI::HTMLWindow::ProcessPlainText(m_Value.GetText());
 			return true;

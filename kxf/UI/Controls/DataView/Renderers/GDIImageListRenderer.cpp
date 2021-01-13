@@ -6,9 +6,9 @@
 
 namespace kxf::UI::DataView
 {
-	bool GDIImageListValue::FromAny(Any value)
+	bool GDIImageListValue::FromAny(Any& value)
 	{
-		if (TextValue::FromAny(std::move(value)) || std::move(value).GetAs(*this))
+		if (TextValue::FromAny(value) || std::move(value).GetAs(*this))
 		{
 			return true;
 		}
@@ -26,6 +26,6 @@ namespace kxf::UI::DataView
 	bool GDIImageListRenderer::SetDisplayValue(Any value)
 	{
 		m_Value = {};
-		return m_Value.FromAny(std::move(value));
+		return m_Value.FromAny(value);
 	}
 }

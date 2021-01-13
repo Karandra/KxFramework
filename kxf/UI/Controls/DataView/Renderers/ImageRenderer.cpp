@@ -4,9 +4,9 @@
 
 namespace kxf::UI::DataView
 {
-	bool ImageValue::FromAny(Any value)
+	bool ImageValue::FromAny(Any& value)
 	{
-		if (std::move(value).GetAs(m_Image) || std::move(value).GetAs(*this))
+		if (value.GetAs(m_Image) || value.GetAs(*this))
 		{
 			return true;
 		}
@@ -24,7 +24,7 @@ namespace kxf::UI::DataView
 	bool ImageRenderer::SetDisplayValue(Any value)
 	{
 		m_Value = {};
-		return m_Value.FromAny(std::move(value));
+		return m_Value.FromAny(value);
 	}
 	void ImageRenderer::DrawCellContent(const Rect& cellRect, CellState cellState)
 	{

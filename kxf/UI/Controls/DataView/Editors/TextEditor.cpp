@@ -8,7 +8,7 @@ namespace kxf::UI::DataView
 	wxWindow* TextEditor::CreateControl(wxWindow& parent, const Rect& cellRect, Any value)
 	{
 		const FlagSet<TextBoxStyle> style = TextBox::DefaultStyle|TextBoxStyle::ProcessEnter|(IsEditable() ? TextBoxStyle::None : TextBoxStyle::ReadOnly);
-		const TextValue textValue = FromAnyUsing<TextValue>(std::move(value));
+		const TextValue textValue = Renderer::FromAnyUsing<TextValue>(value);
 
 		TextBox* editor = new TextBox(&parent,
 									  wxID_NONE,

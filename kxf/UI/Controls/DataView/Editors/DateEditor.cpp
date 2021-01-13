@@ -58,7 +58,7 @@ namespace kxf::UI::DataView
 {
 	wxWindow* DateEditor::CreateControl(wxWindow& parent, const Rect& cellRect, Any value)
 	{
-		const DateTimeValue dateTimeValue = FromAnyUsing<DateTimeValue>(std::move(value));
+		const DateTimeValue dateTimeValue = Renderer::FromAnyUsing<DateTimeValue>(value);
 		const int style = ConvertControlStyle(dateTimeValue);
 
 		wxDatePickerCtrl* editor = new wxDatePickerCtrl(&parent,

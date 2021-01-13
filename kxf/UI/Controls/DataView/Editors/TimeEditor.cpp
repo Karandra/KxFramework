@@ -21,7 +21,7 @@ namespace kxf::UI::DataView
 {
 	wxWindow* TimeEditor::CreateControl(wxWindow& parent, const Rect& cellRect, Any value)
 	{
-		const DateTimeValue dateValue = FromAnyUsing<DateTimeValue>(std::move(value));
+		const DateTimeValue dateValue = Renderer::FromAnyUsing<DateTimeValue>(value);
 
 		return new wxTimePickerCtrl(&parent,
 									wxID_NONE,

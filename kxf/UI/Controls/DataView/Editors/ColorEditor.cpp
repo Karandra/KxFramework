@@ -65,7 +65,7 @@ namespace kxf::UI::DataView
 {
 	wxWindow* ColorEditor::CreateControl(wxWindow& parent, const Rect& cellRect, Any value)
 	{
-		m_Value = FromAnyUsing<ColorValue>(std::move(value));
+		m_Value = Renderer::FromAnyUsing<ColorValue>(value);
 		wxColourData colorData = m_Value.ToColorData();
 
 		wxColourDialog* nativeDialog = nullptr;

@@ -3,7 +3,7 @@
 
 namespace kxf::UI::DataView
 {
-	bool TextValue::FromAny(Any value)
+	bool TextValue::FromAny(Any& value)
 	{
 		return std::move(value).GetAs(m_Text) || std::move(value).GetAs(*this);
 	}
@@ -14,7 +14,7 @@ namespace kxf::UI::DataView
 	bool TextRenderer::SetDisplayValue(Any value)
 	{
 		m_Value = {};
-		return m_Value.FromAny(std::move(value));
+		return m_Value.FromAny(value);
 	}
 
 	void TextRenderer::DrawCellContent(const Rect& cellRect, CellState cellState)

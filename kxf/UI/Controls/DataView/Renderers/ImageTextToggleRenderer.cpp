@@ -7,9 +7,9 @@
 
 namespace kxf::UI::DataView
 {
-	bool ImageTextToggleValue::FromAny(Any value)
+	bool ImageTextToggleValue::FromAny(Any& value)
 	{
-		return ImageTextValue::FromAny(std::move(value)) || ToggleValue::FromAny(std::move(value)) || std::move(value).GetAs(*this);
+		return ImageTextValue::FromAny(value) || ToggleValue::FromAny(value) || std::move(value).GetAs(*this);
 	}
 }
 
@@ -28,7 +28,7 @@ namespace kxf::UI::DataView
 	bool ImageTextToggleRenderer::SetDisplayValue(Any value)
 	{
 		m_Value = {};
-		return m_Value.FromAny(std::move(value));
+		return m_Value.FromAny(value);
 	}
 	void ImageTextToggleRenderer::DrawCellContent(const Rect& cellRect, CellState cellState)
 	{
