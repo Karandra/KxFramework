@@ -307,6 +307,8 @@ namespace kxf::UI::DataView
 			const bool isEnabled = attributes.Options().ContainsOption(CellOption::Enabled);
 
 			IGraphicsContext& gc = m_Renderer.GetGraphicsContext();
+			GraphicsAction::Clip clip(gc, cellRect);
+
 			gc.DrawTexture(isEnabled ? bitmap : bitmap.ConvertToDisabled(), rect);
 			return true;
 		}
