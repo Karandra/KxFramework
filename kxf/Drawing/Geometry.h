@@ -36,8 +36,8 @@ namespace kxf::Geometry
 			using TValue = TValue_;
 
 		protected:
-			TValue m_X = DefaultCoord;
-			TValue m_Y = DefaultCoord;
+			TValue m_X = 0;
+			TValue m_Y = 0;
 
 		protected:
 			constexpr TDerived& Self() noexcept
