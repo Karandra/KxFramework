@@ -119,6 +119,7 @@ namespace kxf::GraphicsAction
 	{
 		private:
 			IGraphicsContext& m_GC;
+			RectF m_OldClip;
 			bool m_SupportStates = false;
 
 		public:
@@ -128,6 +129,10 @@ namespace kxf::GraphicsAction
 				if (m_SupportStates)
 				{
 					m_GC.PushState();
+				}
+				else
+				{
+					m_OldClip = m_GC.GetClipBox();
 				}
 				m_GC.ClipBoxRegion(rect);
 			}
@@ -139,7 +144,14 @@ namespace kxf::GraphicsAction
 				}
 				else
 				{
-					m_GC.ResetClipRegion();
+					if (m_OldClip.IsEmpty())
+					{
+						m_GC.ResetClipRegion();
+					}
+					else
+					{
+						m_GC.ClipBoxRegion(m_OldClip);
+					}
 				}
 			}
 
