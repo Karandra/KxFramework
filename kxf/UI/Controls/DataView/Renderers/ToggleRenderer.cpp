@@ -91,7 +91,7 @@ namespace kxf::UI::DataView
 		{
 			case ToggleState::Checked:
 			{
-				nextState = m_Value.Is3StateAllowed() ? ToggleState::Indeterminate : ToggleState::Unchecked;
+				nextState = m_Value.IsToggle3StateAllowed() ? ToggleState::Indeterminate : ToggleState::Unchecked;
 				break;
 			}
 			case ToggleState::Unchecked:
@@ -116,7 +116,7 @@ namespace kxf::UI::DataView
 {
 	Any ToggleRenderer::OnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent)
 	{
-		ToggleState state = m_Value.GetState();
+		ToggleState state = m_Value.GetToggleState();
 		if (DoOnActivateCell(GetRenderEngine().GetToggleSize(), state, mouseEvent))
 		{
 			return state;
@@ -125,21 +125,21 @@ namespace kxf::UI::DataView
 	}
 	bool ToggleRenderer::SetDisplayValue(Any value)
 	{
-		m_Value.Clear();
+		m_Value = {};
 		return m_Value.FromAny(std::move(value));
 	}
 
 	void ToggleRenderer::DrawCellContent(const Rect& cellRect, CellState cellState)
 	{
-		if (m_Value.HasType())
+		if (m_Value.HasToggleType())
 		{
 			IGraphicsContext& gc = GetGraphicsContext();
-			GetRenderEngine().DrawToggle(gc, cellRect, cellState, m_Value.GetState(), m_Value.GetType());
+			GetRenderEngine().DrawToggle(gc, cellRect, cellState, m_Value.GetToggleState(), m_Value.GetToggleType());
 		}
 	}
 	Size ToggleRenderer::GetCellSize() const
 	{
-		if (m_Value.HasType())
+		if (m_Value.HasToggleType())
 		{
 			return GetRenderEngine().GetToggleSize();
 		}

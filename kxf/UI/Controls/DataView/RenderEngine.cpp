@@ -337,13 +337,13 @@ namespace kxf::UI::DataView
 		}
 		return offsetX;
 	}
-	void RenderEngine::DrawProgressBar(const Rect& cellRect, CellState cellState, int value, int range, ProgressState state, Color* averageBackgroundColor)
+	void RenderEngine::DrawProgressBar(const Rect& cellRect, CellState cellState, int value, int range, ProgressMeterState state, Color* averageBackgroundColor)
 	{
 		IGraphicsContext& gc = m_Renderer.GetGraphicsContext();
 
 		auto flags = GetControlFlags(cellState);
-		flags.Add(NativeWidgetFlag::Paused, state == ProgressState::Paused);
-		flags.Add(NativeWidgetFlag::Error, state == ProgressState::Error);
+		flags.Add(NativeWidgetFlag::Paused, state == ProgressMeterState::Paused);
+		flags.Add(NativeWidgetFlag::Error, state == ProgressMeterState::Error);
 
 		IRendererNative::Get().DrawProgressMeter(m_Renderer.GetMainWindow(), gc, cellRect, value, range, flags);
 	}

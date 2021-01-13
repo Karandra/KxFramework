@@ -18,12 +18,11 @@ namespace kxf::UI::DataView
 		TextOnly,
 		WithMnemonics
 	};
-	enum class ProgressState
+	enum class ProgressMeterState
 	{
 		Normal,
 		Paused,
-		Error,
-		Partial,
+		Error
 	};
 	enum class ToggleState
 	{
@@ -95,7 +94,7 @@ namespace kxf::UI::DataView
 
 			bool DrawBitmap(const Rect& cellRect, CellState cellState, const BitmapImage& bitmap, int reservedWidth = -1);
 			int DrawBitmapWithText(const Rect& cellRect, CellState cellState, int offsetX, const String& text, const BitmapImage& bitmap, bool centerTextV = false, int reservedWidth = -1);
-			void DrawProgressBar(const Rect& cellRect, CellState cellState, int value, int range, ProgressState state = ProgressState::Normal, Color* averageBackgroundColor = nullptr);
+			void DrawProgressBar(const Rect& cellRect, CellState cellState, int value, int range, ProgressMeterState state = ProgressMeterState::Normal, Color* averageBackgroundColor = nullptr);
 
 			Size GetToggleSize() const;
 			Size DrawToggle(IGraphicsContext& gc, const Rect& cellRect, CellState cellState, ToggleState toggleState, ToggleType toggleType);

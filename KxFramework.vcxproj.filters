@@ -935,21 +935,6 @@
     <ClInclude Include="kxf\UI\Controls\DataView\Editors\TimeEditor.h">
       <Filter>kxf\UI\Controls\DataView\Editors</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\BitmapRenderer.h">
-      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\BitmapTextRenderer.h">
-      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\BitmapTextToggleRenderer.h">
-      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\HTMLRenderer.h">
-      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\ImageListRenderer.h">
-      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\UI\Controls\DataView\Renderers\NullRenderer.h">
       <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClInclude>
@@ -960,9 +945,6 @@
       <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClInclude>
     <ClInclude Include="kxf\UI\Controls\DataView\Renderers\ToggleRenderer.h">
-      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\BitmapListRenderer.h">
       <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClInclude>
     <ClInclude Include="kxf\UI\Controls\BitmapComboBox.h">
@@ -1754,6 +1736,24 @@
     <ClInclude Include="kxf\Drawing\SVGImage.h">
       <Filter>kxf\Drawing</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\GDIImageListRenderer.h">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\ImageListRenderer.h">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\ImageRenderer.h">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\ImageTextRenderer.h">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\ImageTextToggleRenderer.h">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\HTMLTextRenderer.h">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2171,21 +2171,6 @@
     <ClCompile Include="kxf\UI\Controls\DataView\Editors\TimeEditor.cpp">
       <Filter>kxf\UI\Controls\DataView\Editors</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\BitmapRenderer.cpp">
-      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\BitmapTextRenderer.cpp">
-      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\BitmapTextToggleRenderer.cpp">
-      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\HTMLRenderer.cpp">
-      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\ImageListRenderer.cpp">
-      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\UI\Controls\DataView\Renderers\ProgressRenderer.cpp">
       <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClCompile>
@@ -2193,9 +2178,6 @@
       <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClCompile>
     <ClCompile Include="kxf\UI\Controls\DataView\Renderers\ToggleRenderer.cpp">
-      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\BitmapListRenderer.cpp">
       <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClCompile>
     <ClCompile Include="kxf\UI\Controls\BitmapComboBox.cpp">
@@ -2626,6 +2608,24 @@
     </ClCompile>
     <ClCompile Include="kxf\Drawing\SVGImage.cpp">
       <Filter>kxf\Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\GDIImageListRenderer.cpp">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\ImageListRenderer.cpp">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\ImageRenderer.cpp">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\ImageTextRenderer.cpp">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\ImageTextToggleRenderer.cpp">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\HTMLTextRenderer.cpp">
+      <Filter>kxf\UI\Controls\DataView\Renderers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -6,26 +6,26 @@
 
 namespace kxf::UI::DataView
 {
-	bool ProgressValueBase::FromAny(Any value)
+	bool ProgressMeterValueBase::FromAny(Any value)
 	{
 		return value.GetAs(m_Position) || value.GetAs(*this);
 	}
 
-	bool ProgressValue::FromAny(Any value)
+	bool ProgressMeterValue::FromAny(Any value)
 	{
-		return TextValue::FromAny(std::move(value)) || ProgressValueBase::FromAny(std::move(value)) || std::move(value).GetAs(*this);
+		return TextValue::FromAny(std::move(value)) || ProgressMeterValueBase::FromAny(std::move(value)) || std::move(value).GetAs(*this);
 	}
 }
 
 namespace kxf::UI::DataView
 {
-	bool ProgressRenderer::SetDisplayValue(Any value)
+	bool ProgressMeterRenderer::SetDisplayValue(Any value)
 	{
-		m_Value.Clear();
+		m_Value = {};
 		return m_Value.FromAny(std::move(value));
 	}
 
-	void ProgressRenderer::DrawCellContent(const Rect& cellRect, CellState cellState)
+	void ProgressMeterRenderer::DrawCellContent(const Rect& cellRect, CellState cellState)
 	{
 		RenderEngine renderEngine = GetRenderEngine();
 
@@ -38,7 +38,7 @@ namespace kxf::UI::DataView
 			renderEngine.DrawText(cellRect, cellState, m_Value.GetText());
 		}
 	}
-	Size ProgressRenderer::GetCellSize() const
+	Size ProgressMeterRenderer::GetCellSize() const
 	{
 		if (m_Value.HasText())
 		{
@@ -57,7 +57,7 @@ namespace kxf::UI::DataView
 			return Size(wxDefaultCoord, GetBarRect().GetHeight());
 		}
 	}
-	Rect ProgressRenderer::GetBarRect() const
+	Rect ProgressMeterRenderer::GetBarRect() const
 	{
 		RenderEngine renderEngine = GetRenderEngine();
 		const Rect paintRect = GetPaintRect();
@@ -75,12 +75,12 @@ namespace kxf::UI::DataView
 		const int margin = renderEngine.FromDIPY(4);
 		switch (m_Value.GetHeight())
 		{
-			case ProgressValue::Height::Auto:
+			case ProgressMeterValue::Height::Auto:
 			{
 				SetHeight(GetView()->GetCharHeight() + renderEngine.FromDIPY(2), margin);
 				break;
 			}
-			case ProgressValue::Height::Fit:
+			case ProgressMeterValue::Height::Fit:
 			{
 				barRect.Deflate(0, margin);
 				break;

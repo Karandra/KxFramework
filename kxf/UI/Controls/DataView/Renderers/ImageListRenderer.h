@@ -1,74 +1,95 @@
 #pragma once
 #include "../Renderer.h"
-#include "kxf/Drawing/WithImageList.h"
-#include "BitmapListRenderer.h"
+#include "TextRenderer.h"
+#include "ImageRenderer.h"
 
 namespace kxf::UI::DataView
 {
-	class KX_API ImageListValue: public TextValue, public BitmapValueBase, public kxf::WithImageList
+	class KX_API ImageListValue: public TextValue, public ImageValueBase
 	{
+		private:
+			std::vector<std::unique_ptr<IImage2D>> m_Images;
+
 		public:
 			ImageListValue() = default;
-			ImageListValue(const String& text)
-				:TextValue(text)
+			ImageListValue(const ImageListValue&) = delete;
+			ImageListValue(ImageListValue&&) = default;
+
+			ImageListValue(String text)
+				:TextValue(std::move(text))
 			{
 			}
-			ImageListValue(const GDIImageList& imageList)
+			ImageListValue(std::unique_ptr<IImage2D> image)
 			{
-				WithImageList::SetImageList(&imageList);
+				AddImage(std::move(image));
 			}
-			ImageListValue(GDIImageList* imageList)
+			ImageListValue(String text, std::unique_ptr<IImage2D> image)
+				:TextValue(std::move(text))
 			{
-				WithImageList::AssignImageList(imageList);
+				AddImage(std::move(image));
 			}
 
 		public:
 			bool FromAny(Any value);
-			void Clear()
+
+			bool HasImages() const
 			{
-				TextValue::Clear();
-				BitmapValueBase::Clear();
-				ClearBitmaps();
+				return !m_Images.empty();
+			}
+			size_t GetImageCount() const
+			{
+				return m_Images.size();
+			}
+			const IImage2D* GetBitmap(size_t index) const
+			{
+				if (index < m_Images.size())
+				{
+					return m_Images[index].get();
+				}
+				return nullptr;
+			}
+			void AddImage(std::unique_ptr<IImage2D> image)
+			{
+				m_Images.emplace_back(std::move(image));
+			}
+			void ClearImages()
+			{
+				m_Images.clear();
 			}
 
-			bool HasBitmaps() const
+		public:
+			ImageListValue& operator=(const ImageListValue&) = delete;
+			ImageListValue& operator=(ImageListValue&&) = default;
+	};
+}
+
+namespace kxf::UI::DataView
+{
+	class KX_API ImageListRendererBase: public Renderer
+	{
+		private:
+			TextValue& m_TextValue;
+			ImageValueBase& m_BitmapValueBase;
+
+		protected:
+			void DrawCellContent(const Rect& cellRect, CellState cellState) override;
+			Size GetCellSize() const override;
+
+		protected:
+			virtual size_t GetImageCount() const = 0;
+			virtual BitmapImage GetImage(size_t index) const = 0;
+
+		public:
+			ImageListRendererBase(TextValue& textValue, ImageValueBase& bitmapValueBase, FlagSet<Alignment> alignment = Alignment::Invalid)
+				:Renderer(alignment), m_TextValue(textValue), m_BitmapValueBase(bitmapValueBase)
 			{
-				return GetBitmapsCount() != 0;
-			}
-			size_t GetBitmapsCount() const
-			{
-				if (const kxf::GDIImageList* imageList = WithImageList::GetImageList())
-				{
-					return imageList->GetImageCount();
-				}
-				return 0;
-			}
-			GDIBitmap GetBitmap(size_t index) const
-			{
-				const kxf::GDIImageList* imageList = WithImageList::GetImageList();
-				if (imageList && index < (size_t)imageList->GetImageCount())
-				{
-					return imageList->GetBitmap(index).ToWxBitmap();
-				}
-				return wxNullBitmap;
-			}
-			void AddBitmap(const GDIBitmap& bitmap)
-			{
-				if (kxf::GDIImageList* imageList = WithImageList::GetImageList())
-				{
-					imageList->Add(bitmap);
-				}
-			}
-			void ClearBitmaps()
-			{
-				WithImageList::SetImageList(nullptr);
 			}
 	};
 }
 
 namespace kxf::UI::DataView
 {
-	class KX_API ImageListRenderer: public BitmapListRendererBase
+	class KX_API ImageListRenderer: public ImageListRendererBase
 	{
 		private:
 			ImageListValue m_Value;
@@ -76,18 +97,22 @@ namespace kxf::UI::DataView
 		protected:
 			bool SetDisplayValue(Any value) override;
 
-			size_t GetBitmapCount() const override
+			size_t GetImageCount() const override
 			{
-				return m_Value.GetBitmapsCount();
+				return m_Value.GetImageCount();
 			}
-			GDIBitmap GetBitmap(size_t index) const override
+			BitmapImage GetImage(size_t index) const override
 			{
-				return m_Value.GetBitmap(index);
+				if (auto image = m_Value.GetBitmap(index))
+				{
+					return image->ToBitmapImage();
+				}
+				return {};
 			}
 
 		public:
 			ImageListRenderer(FlagSet<Alignment> alignment = Alignment::Invalid)
-				:BitmapListRendererBase(m_Value, m_Value, alignment)
+				:ImageListRendererBase(m_Value, m_Value, alignment)
 			{
 			}
 

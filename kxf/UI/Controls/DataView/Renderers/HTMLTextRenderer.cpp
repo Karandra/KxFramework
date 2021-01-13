@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "HTMLRenderer.h"
+#include "HTMLTextRenderer.h"
 #include "../View.h"
 #include "../Node.h"
 #include "../Column.h"
@@ -11,7 +11,7 @@
 namespace
 {
 	// For some unknown reason scale of '1.0' renders text too large.
-	// Scaling it to '0.8' solves this.
+	// Scaling it to '0.8' fixes this.
 	constexpr double g_UserScale = 0.8;
 
 	class DCUserScaleSaver final
@@ -34,10 +34,10 @@ namespace
 
 namespace kxf::UI::DataView
 {
-	bool HTMLRenderer::SetDisplayValue(Any value)
+	bool HTMLTextRenderer::SetDisplayValue(Any value)
 	{
-		m_Value.Clear();
-		m_ContentHTML.clear();
+		m_Value = {};
+		m_ContentHTML.Clear();
 
 		if (m_Value.FromAny(std::move(value)))
 		{
@@ -46,12 +46,12 @@ namespace kxf::UI::DataView
 		}
 		return false;
 	}
-	ToolTip HTMLRenderer::CreateToolTip() const
+	ToolTip HTMLTextRenderer::CreateToolTip() const
 	{
 		return ToolTip::CreateDefaultForRenderer(m_Value.GetText());
 	}
 
-	void HTMLRenderer::PrepareRenderer(wxHtmlDCRenderer& htmlRenderer, GDIContext& dc, const Rect& cellRect) const
+	void HTMLTextRenderer::PrepareRenderer(wxHtmlDCRenderer& htmlRenderer, GDIContext& dc, const Rect& cellRect) const
 	{
 		htmlRenderer.SetDC(&dc.ToWxDC(), g_UserScale * m_PixelScale, g_UserScale * m_FontScale);
 
@@ -74,7 +74,7 @@ namespace kxf::UI::DataView
 			htmlRenderer.SetStandardFonts(pointSize, normalFace, fixedFace);
 		}
 	}
-	void HTMLRenderer::DrawCellContent(const Rect& cellRect, CellState cellState)
+	void HTMLTextRenderer::DrawCellContent(const Rect& cellRect, CellState cellState)
 	{
 		if (m_Value.HasText())
 		{
@@ -91,7 +91,7 @@ namespace kxf::UI::DataView
 			});
 		}
 	}
-	Size HTMLRenderer::GetCellSize() const
+	Size HTMLTextRenderer::GetCellSize() const
 	{
 		if (m_Value.HasText())
 		{

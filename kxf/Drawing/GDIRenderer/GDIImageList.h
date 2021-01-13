@@ -63,6 +63,11 @@ namespace kxf
 			bool HasMask() const noexcept;
 			COMPtr<IImageList2> QueryNativeInterface() const noexcept;
 
+			size_t GetImageCount() const noexcept
+			{
+				return static_cast<size_t>(wxImageList::GetImageCount());
+			}
+
 			bool Create(int width, int height, int initialCount = 1) noexcept;
 			bool Create(const Size& size, int initialCount = 1) noexcept;
 

@@ -9,17 +9,13 @@ namespace kxf::UI::DataView
 			String m_Text;
 
 		public:
-			TextValue(const String& text = {})
-				:m_Text(text)
+			TextValue(String text = {})
+				:m_Text(std::move(text))
 			{
 			}
 
 		public:
 			bool FromAny(Any value);
-			void Clear()
-			{
-				ClearText();
-			}
 
 			bool HasText() const
 			{
@@ -33,9 +29,9 @@ namespace kxf::UI::DataView
 			{
 				return std::move(m_Text);
 			}
-			void SetText(const String& text)
+			void SetText(String text)
 			{
-				m_Text = text;
+				m_Text = std::move(text);
 			}
 			void ClearText()
 			{

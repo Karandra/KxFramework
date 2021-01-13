@@ -18,63 +18,59 @@ namespace kxf::UI::DataView
 			ToggleValue(bool checked, ToggleType type = ToggleType::None)
 				:m_Type(type)
 			{
-				SetChecked(checked);
+				SetToggleChecked(checked);
 			}
 
 		public:
 			bool FromAny(Any value);
-			void Clear()
-			{
-				*this = {};
-			}
 
-			bool HasState() const
+			bool HasToggleState() const
 			{
 				return m_State != ToggleState::None;
 			}
-			ToggleState& GetState()
+			ToggleState& GetToggleState()
 			{
 				return m_State;
 			}
-			ToggleState GetState() const
+			ToggleState GetToggleState() const
 			{
 				return m_State;
 			}
-			void SetState(ToggleState state)
+			void SetToggleState(ToggleState state)
 			{
 				m_State = state;
 			}
-			void SetChecked(bool checked)
+			void SetToggleChecked(bool checked)
 			{
 				m_State = checked ? ToggleState::Checked : ToggleState::Unchecked;
 			}
-			void ClearState()
+			void ClearToggleState()
 			{
 				m_State = ToggleState::None;
 			}
 
-			bool HasType() const
+			bool HasToggleType() const
 			{
 				return m_Type != ToggleType::None;
 			}
-			ToggleType GetType() const
+			ToggleType GetToggleType() const
 			{
 				return m_Type;
 			}
-			void SetType(ToggleType type)
+			void SetToggleType(ToggleType type)
 			{
 				m_Type = type;
 			}
-			void ClearType()
+			void ClearToggleType()
 			{
 				m_Type = ToggleType::None;
 			}
 
-			bool Is3StateAllowed() const
+			bool IsToggle3StateAllowed() const
 			{
 				return m_Allow3State;
 			}
-			void Allow3State(bool allow = true)
+			void ToggleAllow3State(bool allow = true)
 			{
 				m_Allow3State = allow;
 			}
@@ -109,7 +105,7 @@ namespace kxf::UI::DataView
 		protected:
 			bool HasActivator() const override
 			{
-				return true;
+				return m_Value.HasToggleType();
 			}
 			Any OnActivateCell(Node& node, const Rect& cellRect, const wxMouseEvent* mouseEvent = nullptr) override;
 

@@ -5,7 +5,7 @@ class wxHtmlDCRenderer;
 
 namespace kxf::UI::DataView
 {
-	class KX_API HTMLRenderer: public Renderer
+	class KX_API HTMLTextRenderer: public Renderer
 	{
 		private:
 			TextValue m_Value;
@@ -26,7 +26,7 @@ namespace kxf::UI::DataView
 			Size GetCellSize() const override;
 
 		public:
-			HTMLRenderer(FlagSet<Alignment> alignment = Alignment::Invalid)
+			HTMLTextRenderer(FlagSet<Alignment> alignment = Alignment::Invalid)
 				:Renderer(alignment)
 			{
 			}

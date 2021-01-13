@@ -3,10 +3,10 @@
 
 namespace kxf::UI::DataView
 {
-	class KX_API NullRenderer: public Renderer
+	class KX_API NullRenderer final: public Renderer
 	{
 		protected:
-			bool SetDisplayValue(Any value)
+			bool SetDisplayValue(Any value) override
 			{
 				return false;
 			}
@@ -16,7 +16,7 @@ namespace kxf::UI::DataView
 			}
 			Size GetCellSize() const override
 			{
-				return Size(0, 0);
+				return {};
 			}
 
 		public:

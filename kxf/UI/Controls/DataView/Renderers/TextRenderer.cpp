@@ -13,7 +13,7 @@ namespace kxf::UI::DataView
 {
 	bool TextRenderer::SetDisplayValue(Any value)
 	{
-		m_Value.Clear();
+		m_Value = {};
 		return m_Value.FromAny(std::move(value));
 	}
 

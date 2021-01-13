@@ -4,17 +4,17 @@
 
 namespace kxf::UI::DataView
 {
-	enum class ProgressHeight: int
+	enum class ProgressMeterHeight: int
 	{
 		Auto = -1,
 		Fit = -2,
 	};
 
-	class KX_API ProgressValueBase
+	class KX_API ProgressMeterValueBase
 	{
 		public:
-			using State = ProgressState;
-			using Height = ProgressHeight;
+			using State = ProgressMeterState;
+			using Height = ProgressMeterHeight;
 
 		private:
 			int m_Range = 100;
@@ -23,12 +23,12 @@ namespace kxf::UI::DataView
 			Height m_Height = Height::Auto;
 
 		public:
-			ProgressValueBase(int position = -1, State state = State::Normal)
+			ProgressMeterValueBase(int position = -1, State state = State::Normal)
 				:m_State(state)
 			{
 				SetPosition(position);
 			}
-			ProgressValueBase(int position, int range, State state = State::Normal)
+			ProgressMeterValueBase(int position, int range, State state = State::Normal)
 				:m_State(state)
 			{
 				SetRange(range);
@@ -37,10 +37,6 @@ namespace kxf::UI::DataView
 
 		public:
 			bool FromAny(Any value);
-			void Clear()
-			{
-				*this = {};
-			}
 
 			int GetRange() const
 			{
@@ -108,10 +104,12 @@ namespace kxf::UI::DataView
 				m_State = State::Normal;
 			}
 
-			template<class T = Height> T GetHeight() const
+			template<class T = Height>
+			T GetHeight() const
 			{
 				return static_cast<T>(m_Height);
 			}
+
 			void SetHeight(Height height)
 			{
 				m_Height = height;
@@ -125,39 +123,34 @@ namespace kxf::UI::DataView
 
 namespace kxf::UI::DataView
 {
-	class KX_API ProgressValue: public TextValue, public ProgressValueBase
+	class KX_API ProgressMeterValue: public TextValue, public ProgressMeterValueBase
 	{
 		public:
-			ProgressValue() = default;
-			ProgressValue(int position, int range, ProgressState state = ProgressState::Normal)
-				:ProgressValueBase(position, range, state)
+			ProgressMeterValue() = default;
+			ProgressMeterValue(int position, int range, ProgressMeterState state = ProgressMeterState::Normal)
+				:ProgressMeterValueBase(position, range, state)
 			{
 			}
-			ProgressValue(int position, int range, const String& text = {}, ProgressState state = ProgressState::Normal)
-				:ProgressValueBase(position, range, state), TextValue(text)
+			ProgressMeterValue(int position, int range, String text = {}, ProgressMeterState state = ProgressMeterState::Normal)
+				:ProgressMeterValueBase(position, range, state), TextValue(std::move(text))
 			{
 			}
-			ProgressValue(int position, const String& text = {}, ProgressState state = ProgressState::Normal)
-				:TextValue(text), ProgressValueBase(position, state)
+			ProgressMeterValue(int position, String text = {}, ProgressMeterState state = ProgressMeterState::Normal)
+				:TextValue(std::move(text)), ProgressMeterValueBase(position, state)
 			{
 			}
 
 		public:
 			bool FromAny(Any value);
-			void Clear()
-			{
-				TextValue::Clear();
-				ProgressValueBase::Clear();
-			}
 	};
 }
 
 namespace kxf::UI::DataView
 {
-	class KX_API ProgressRenderer: public Renderer
+	class KX_API ProgressMeterRenderer: public Renderer
 	{
 		private:
-			ProgressValue m_Value;
+			ProgressMeterValue m_Value;
 
 		protected:
 			bool SetDisplayValue(Any value) override;
@@ -171,7 +164,7 @@ namespace kxf::UI::DataView
 			Rect GetBarRect() const;
 
 		public:
-			ProgressRenderer(FlagSet<Alignment> alignment = Alignment::CenterVertical|Alignment::CenterHorizontal)
+			ProgressMeterRenderer(FlagSet<Alignment> alignment = Alignment::CenterVertical|Alignment::CenterHorizontal)
 				:Renderer(alignment)
 			{
 			}

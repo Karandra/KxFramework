@@ -19,12 +19,12 @@
 #include "DataView/Renderers/NullRenderer.h"
 #include "DataView/Renderers/TextRenderer.h"
 #include "DataView/Renderers/ToggleRenderer.h"
-#include "DataView/Renderers/HTMLRenderer.h"
+#include "DataView/Renderers/HTMLTextRenderer.h"
 #include "DataView/Renderers/ProgressRenderer.h"
-#include "DataView/Renderers/BitmapRenderer.h"
-#include "DataView/Renderers/BitmapListRenderer.h"
-#include "DataView/Renderers/BitmapTextRenderer.h"
-#include "DataView/Renderers/BitmapTextToggleRenderer.h"
+#include "DataView/Renderers/ImageRenderer.h"
+#include "DataView/Renderers/ImageListRenderer.h"
+#include "DataView/Renderers/ImageTextRenderer.h"
+#include "DataView/Renderers/ImageTextToggleRenderer.h"
 
 // Editors
 #include "DataView/Editor.h"
