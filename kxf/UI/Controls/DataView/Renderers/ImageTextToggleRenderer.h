@@ -10,29 +10,29 @@ namespace kxf::UI::DataView
 	{
 		public:
 			ImageTextToggleValue(String text = {},
-								  std::unique_ptr<IImage2D> image = nullptr,
-								  ToggleState state = ToggleState::None,
-								  ToggleType type = ToggleType::None
+								 const BitmapImage& image = {},
+								 ToggleState state = ToggleState::None,
+								 ToggleType type = ToggleType::None
 			)
-				:ImageTextValue(std::move(text), std::move(image)), ToggleValue(state, type)
+				:ImageTextValue(std::move(text), image), ToggleValue(state, type)
 			{
 			}
 
-			ImageTextToggleValue(std::unique_ptr<IImage2D> image)
-				:ImageTextToggleValue({}, std::move(image))
+			ImageTextToggleValue(const BitmapImage& image)
+				:ImageTextToggleValue({}, image)
 			{
 			}
 			ImageTextToggleValue(ToggleState state, ToggleType type = ToggleType::None)
-				:ImageTextToggleValue({}, nullptr, state, type)
+				:ImageTextToggleValue({}, {}, state, type)
 			{
 			}
 			ImageTextToggleValue(bool checked, ToggleType type = ToggleType::None)
-				:ImageTextToggleValue({}, nullptr, ToggleState::None, type)
+				:ImageTextToggleValue({}, {}, ToggleState::None, type)
 			{
 				SetToggleChecked(checked);
 			}
-			ImageTextToggleValue(bool checked, String text, std::unique_ptr<IImage2D> image = nullptr, ToggleType type = ToggleType::None)
-				:ImageTextToggleValue(std::move(text), std::move(image), ToggleState::None, type)
+			ImageTextToggleValue(bool checked, String text, const BitmapImage& image = {}, ToggleType type = ToggleType::None)
+				:ImageTextToggleValue(std::move(text), image, ToggleState::None, type)
 			{
 				SetToggleChecked(checked);
 			}

@@ -48,16 +48,12 @@ namespace kxf::UI::DataView
 	class KX_API ImageValue: public ImageValueBase
 	{
 		protected:
-			std::unique_ptr<IImage2D> m_Image;
+			BitmapImage m_Image;
 
 		public:
-			ImageValue() = default;
-			ImageValue(const ImageValue&) = delete;
-			ImageValue(ImageValue&&) = default;
-
-			ImageValue(std::unique_ptr<IImage2D> image)
+			ImageValue(const BitmapImage& image = {})
+				:m_Image(image)
 			{
-				SetImage(std::move(image));
 			}
 
 		public:
@@ -65,32 +61,24 @@ namespace kxf::UI::DataView
 
 			bool HasImage() const
 			{
-				return m_Image != nullptr;
+				return !m_Image.IsNull();
 			}
-			IImage2D* GetImage()
+			BitmapImage& GetImage()
 			{
-				return m_Image.get();
+				return m_Image;
 			}
-			const IImage2D* GetImage() const
+			const BitmapImage& GetImage() const
 			{
-				return m_Image.get();
+				return m_Image;
 			}
-			void SetImage(std::unique_ptr<IImage2D> image)
+			void SetImage(const BitmapImage& image)
 			{
-				m_Image = std::move(image);
-				if (m_Image && m_Image->IsNull())
-				{
-					m_Image = nullptr;
-				}
+				m_Image = image;
 			}
 			void ClearImage()
 			{
-				m_Image = nullptr;
+				m_Image = {};
 			}
-
-		public:
-			ImageValue& operator=(const ImageValue&) = delete;
-			ImageValue& operator=(ImageValue&&) = default;
 	};
 }
 

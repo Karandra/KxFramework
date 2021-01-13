@@ -12,7 +12,7 @@ namespace kxf::UI::DataView
 		}
 		else if (BitmapImage image; std::move(value).GetAs(image))
 		{
-			m_Image = std::make_unique<BitmapImage>(image);
+			m_Image = std::move(image);
 			return true;
 		}
 		return false;
@@ -28,16 +28,13 @@ namespace kxf::UI::DataView
 	}
 	void ImageRenderer::DrawCellContent(const Rect& cellRect, CellState cellState)
 	{
-		if (auto image = m_Value.GetImage())
-		{
-			GetRenderEngine().DrawBitmap(cellRect, cellState, image->ToBitmapImage());
-		}
+		GetRenderEngine().DrawBitmap(cellRect, cellState, m_Value.GetImage());
 	}
 	Size ImageRenderer::GetCellSize() const
 	{
-		if (auto image = m_Value.GetImage())
+		if (const BitmapImage& image = m_Value.GetImage())
 		{
-			return image->GetSize();
+			return image.GetSize();
 		}
 		return {};
 	}

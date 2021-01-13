@@ -24,7 +24,7 @@ namespace kxf::UI::DataView
 		const bool centerTextV = m_Value.ContainsOption(ImageTextValueOption::VCenterText);
 		const int reservedWidth = m_Value.GetDefaultImagesSize().GetWidth();
 
-		GetRenderEngine().DrawBitmapWithText(cellRect, cellState, 0, m_Value.GetText(), m_Value.HasImage() ? m_Value.GetImage()->ToBitmapImage() : BitmapImage(), centerTextV, reservedWidth);
+		GetRenderEngine().DrawBitmapWithText(cellRect, cellState, 0, m_Value.GetText(), m_Value.GetImage(), centerTextV, reservedWidth);
 	}
 	Size ImageTextRenderer::GetCellSize() const
 	{
@@ -35,17 +35,14 @@ namespace kxf::UI::DataView
 		{
 			size += renderEngine.GetTextExtent(m_Value.GetText());
 		}
-		if (auto image = m_Value.GetImage())
+
+		if (const BitmapImage& image = m_Value.GetImage())
 		{
-			size.Width() += image->GetWidth() + GetRenderEngine().FromDIPX(renderEngine.GetInterTextSpacing());
-			if (size.GetHeight() < image->GetHeight())
+			size.Width() += image.GetWidth() + GetRenderEngine().FromDIPX(renderEngine.GetInterTextSpacing());
+			if (size.GetHeight() < image.GetHeight())
 			{
-				size.Height() = image->GetHeight();
+				size.Height() = image.GetHeight();
 			}
-		}
-		else if (int width = m_Value.GetDefaultImagesSize().GetWidth(); width != Geometry::DefaultCoord)
-		{
-			size.Width() += width + renderEngine.FromDIPX(renderEngine.GetInterTextSpacing());
 		}
 		return size;
 	}

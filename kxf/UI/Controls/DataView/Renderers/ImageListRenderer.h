@@ -8,25 +8,23 @@ namespace kxf::UI::DataView
 	class KX_API ImageListValue: public TextValue, public ImageValueBase
 	{
 		private:
-			std::vector<std::unique_ptr<IImage2D>> m_Images;
+			std::vector<BitmapImage> m_Images;
 
 		public:
 			ImageListValue() = default;
-			ImageListValue(const ImageListValue&) = delete;
-			ImageListValue(ImageListValue&&) = default;
 
 			ImageListValue(String text)
 				:TextValue(std::move(text))
 			{
 			}
-			ImageListValue(std::unique_ptr<IImage2D> image)
+			ImageListValue(const BitmapImage& image)
 			{
-				AddImage(std::move(image));
+				AddImage(image);
 			}
-			ImageListValue(String text, std::unique_ptr<IImage2D> image)
+			ImageListValue(String text, const BitmapImage& image)
 				:TextValue(std::move(text))
 			{
-				AddImage(std::move(image));
+				AddImage(image);
 			}
 
 		public:
@@ -40,26 +38,22 @@ namespace kxf::UI::DataView
 			{
 				return m_Images.size();
 			}
-			const IImage2D* GetBitmap(size_t index) const
+			BitmapImage GetBitmap(size_t index) const
 			{
 				if (index < m_Images.size())
 				{
-					return m_Images[index].get();
+					return m_Images[index];
 				}
-				return nullptr;
+				return {};
 			}
-			void AddImage(std::unique_ptr<IImage2D> image)
+			void AddImage(const BitmapImage& image)
 			{
-				m_Images.emplace_back(std::move(image));
+				m_Images.emplace_back(image);
 			}
 			void ClearImages()
 			{
 				m_Images.clear();
 			}
-
-		public:
-			ImageListValue& operator=(const ImageListValue&) = delete;
-			ImageListValue& operator=(ImageListValue&&) = default;
 	};
 }
 
@@ -103,11 +97,7 @@ namespace kxf::UI::DataView
 			}
 			BitmapImage GetImage(size_t index) const override
 			{
-				if (auto image = m_Value.GetBitmap(index))
-				{
-					return image->ToBitmapImage();
-				}
-				return {};
+				return m_Value.GetBitmap(index);
 			}
 
 		public:

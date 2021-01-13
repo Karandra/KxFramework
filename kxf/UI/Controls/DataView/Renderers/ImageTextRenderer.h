@@ -9,7 +9,7 @@ namespace kxf::UI::DataView
 	enum class ImageTextValueOption: uint32_t
 	{
 		None = 0,
-		VCenterText = 1 << 0,
+		VCenterText = 1 << 0
 	};
 
 	class KX_API ImageTextValue: public TextValue, public ImageValue, public WithOptions<ImageTextValueOption, ImageTextValueOption::None>
@@ -19,16 +19,16 @@ namespace kxf::UI::DataView
 
 		public:
 			ImageTextValue() = default;
-			ImageTextValue(std::unique_ptr<IImage2D> image)
-				:ImageValue(std::move(image))
+			ImageTextValue(const BitmapImage& image)
+				:ImageValue(image)
 			{
 			}
 			ImageTextValue(String text)
 				:TextValue(std::move(text))
 			{
 			}
-			ImageTextValue(String text, std::unique_ptr<IImage2D> image)
-				:TextValue(std::move(text)), ImageValue(std::move(image))
+			ImageTextValue(String text, const BitmapImage& image)
+				:TextValue(std::move(text)), ImageValue(image)
 			{
 			}
 
