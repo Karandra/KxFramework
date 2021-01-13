@@ -335,6 +335,8 @@ namespace kxf
 			template<class T>
 			Any& Assign(T&& value) noexcept
 			{
+				static_assert(std::is_copy_constructible_v<std::decay_t<T>>, "copy constructible type is required");
+
 				ResetOnException([&]()
 				{
 					if constexpr(std::is_enum_v<T>)
