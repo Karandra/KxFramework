@@ -8,6 +8,7 @@ namespace kxf::UI::DataView
 		None = 0,
 		SingleSelection = 0,
 		MultipleSelection = 1 << 0,
+		FullRowSelection = 1 << 1,
 		VerticalRules = 1 << 2,
 		HorizontalRules = 1 << 3,
 		AlternatingRowColors = 1 << 4,

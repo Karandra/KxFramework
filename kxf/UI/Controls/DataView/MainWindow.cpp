@@ -1160,45 +1160,17 @@ namespace kxf::UI::DataView
 			}
 		}
 
-		// Draw background of alternate rows specially if required
-		if (m_View->ContainsWindowStyle(CtrlStyle::AlternatingRowColors))
-		{
-			Color altRowColor = m_View->m_AlternateRowColor;
-			if (!altRowColor)
-			{
-				// Determine the alternate rows color automatically from the background color.
-				const wxColour bgColor = m_View->GetBackgroundColour();
-
-				// Depending on the background, alternate row color will be 3% more dark or 50% brighter.
-				int alpha = bgColor.GetRGB() > 0x808080 ? 97 : 150;
-				altRowColor = bgColor.ChangeLightness(alpha);
-
-				if (m_BackgroundBitmap)
-				{
-					altRowColor.SetAlpha8(200);
-				}
-			}
-
-			gc->SetPen(transparentPen);
-			gc->SetBrush(m_GraphicsRenderer->CreateSolidBrush(altRowColor));
-
-			// We only need to draw the visible part, so limit the rectangle to it.
-			const int x = m_View->CalcUnscrolledPosition(Point(0, 0)).x;
-			const int widthRect = clientSize.GetWidth();
-			for (size_t currentRow = *rowStart; currentRow < *rowEnd; currentRow++)
-			{
-				if (currentRow % 2)
-				{
-					gc->DrawRectangle(RectF(x, GetRowStart(currentRow), widthRect, GetRowHeight(currentRow)));
-				}
-			}
-		}
-
+		const bool fullRowSelectionEnabled = m_View->ContainsWindowStyle(CtrlStyle::FullRowSelection);
+		const bool alternatingRowColorsEnabled = m_View->ContainsWindowStyle(CtrlStyle::AlternatingRowColors);
 		const bool verticalRulesEnabled = m_View->ContainsWindowStyle(CtrlStyle::VerticalRules);
 		const bool horizontalRulesEnabled = m_View->ContainsWindowStyle(CtrlStyle::HorizontalRules);
 
 		// Redraw all cells for all rows which must be repainted and all columns
 		IRendererNative& nativeRenderer = IRendererNative::Get();
+
+		Color altRowColor = m_View->m_AlternateRowColor;
+		std::shared_ptr<IGraphicsPen> altRowPen;
+		std::shared_ptr<IGraphicsSolidBrush> altRowBrush;
 
 		const Column* const expanderColumn = m_View->GetExpanderColumnOrFirstOne();
 		for (Row currentRow = rowStart; currentRow < rowEnd; ++currentRow)
@@ -1209,6 +1181,7 @@ namespace kxf::UI::DataView
 				continue;
 			}
 
+			// Setup some values first
 			const Rect cellInitialRect(xCoordStart, GetRowStart(currentRow), 0, GetRowHeight(currentRow));
 			Rect cellRect = cellInitialRect;
 			const CellState cellState = GetCellStateForRow(currentRow);
@@ -1220,17 +1193,49 @@ namespace kxf::UI::DataView
 			Rect expanderRect;
 			Rect focusCellRect;
 
-			auto GetRowRect = [&cellInitialRect, &expanderIndent, xCoordEnd, xCoordStart, expanderColumn]()
+			auto GetRowRect = [&cellInitialRect, &expanderIndent, xCoordEnd, xCoordStart, expanderColumn](bool offsetByExpander)
 			{
 				Rect rowRect = cellInitialRect;
 				rowRect.SetWidth(xCoordEnd - xCoordStart);
-				if (expanderColumn->IsDisplayedFirst())
+				if (offsetByExpander && expanderColumn->IsDisplayedFirst())
 				{
 					rowRect.X() += expanderIndent;
 					rowRect.Width() -= expanderIndent;
 				}
 				return rowRect;
 			};
+
+			// Draw background of alternate rows specially if required
+			if (alternatingRowColorsEnabled)
+			{
+				if (!altRowColor)
+				{
+					// Determine the alternate rows color automatically from the background color.
+					const Color bgColor = m_View->GetBackgroundColour();
+
+					// Depending on the background, alternate row color will be 3% more dark or 50% brighter.
+					constexpr auto middlePoint = Drawing::GetStockColor(StockColor::Gray).GetRGBA();
+					Angle alpha = bgColor.GetRGBA() > middlePoint ? Angle::FromNormalized(-0.03f) : Angle::FromNormalized(+0.5f);
+					altRowColor = bgColor.ChangeLightness(alpha);
+
+					if (m_BackgroundBitmap)
+					{
+						altRowColor.SetAlpha8(200);
+					}
+				}
+				if (!altRowPen || !altRowBrush)
+				{
+					altRowPen = m_GraphicsRenderer->CreatePen(altRowColor);
+					altRowBrush = m_GraphicsRenderer->CreateSolidBrush(altRowColor);
+				}
+
+				// We only need to draw the visible part, so limit the rectangle to it.
+				//const int x = m_View->CalcUnscrolledPosition(Point(0, 0)).x;
+				if (*currentRow % 2)
+				{
+					gc->DrawRectangle(GetRowRect(false), *altRowBrush, *altRowPen);
+				}
+			}
 
 			for (size_t currentColumnIndex = coulumnIndexStart; currentColumnIndex < coulmnIndexEnd; currentColumnIndex++)
 			{
@@ -1367,7 +1372,7 @@ namespace kxf::UI::DataView
 					// Draw selection and hot-track indicator after background and cell content
 					if (cellState.IsSelected() || cellState.IsHotTracked())
 					{
-						nativeRenderer.DrawItemSelectionRect(this, *gc, GetRowRect(), cellState.ToNativeWidgetFlags(*this));
+						nativeRenderer.DrawItemSelectionRect(this, *gc, GetRowRect(!fullRowSelectionEnabled), cellState.ToNativeWidgetFlags(*this));
 					}
 
 					#if 0
@@ -1422,7 +1427,7 @@ namespace kxf::UI::DataView
 				// Draw drop hint
 				if (cellState.IsDropTarget())
 				{
-					Rect rowRect = GetRowRect();
+					Rect rowRect = GetRowRect(!fullRowSelectionEnabled);
 					nativeRenderer.DrawItemFocusRect(this, *gc, rowRect, NativeWidgetFlag::Selected);
 				}
 			}
