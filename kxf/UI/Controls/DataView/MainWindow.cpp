@@ -2800,7 +2800,7 @@ namespace kxf::UI::DataView
 				return;
 			}
 
-			const size_t rowsAdded = node.ToggleNodeExpanded();
+			const size_t rowsAdded = node.ToggleNodeExpandState();
 			if (!row)
 			{
 				row = GetRowByNode(node);
@@ -2864,7 +2864,7 @@ namespace kxf::UI::DataView
 				}
 				SendSelectionChangedEvent(GetNodeByRow(row), m_CurrentColumn);
 			}
-			node.ToggleNodeExpanded();
+			node.ToggleNodeExpandState();
 
 			// Adjust the current row if necessary.
 			if (m_CurrentRow > row)

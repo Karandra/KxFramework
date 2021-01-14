@@ -37,14 +37,13 @@ namespace kxf::UI::DataView
 			RootNode* m_RootNode = nullptr;
 			Node* m_ParentNode = nullptr;
 
+			mutable size_t m_SubTreeCount = std::numeric_limits<size_t>::max();
 			bool m_IsExpanded = false;
 
 		private:
-			size_t ToggleNodeExpanded()
-			{
-				m_IsExpanded = !m_IsExpanded;
-				return GetSubTreeCount();
-			}
+			size_t ToggleNodeExpandState();
+			void RecalcSubTreeCount();
+			void ChangeSubTreeCount(intptr_t num);
 
 			void DoExpandNodeAncestors();
 			void DoEnsureCellVisible(const Column* column);

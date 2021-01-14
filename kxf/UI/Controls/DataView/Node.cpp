@@ -6,6 +6,68 @@
 
 namespace kxf::UI::DataView
 {
+	size_t Node::ToggleNodeExpandState()
+	{
+		// We do not allow the (invisible) root node to be collapsed because there is no way to expand it again.
+		if (!IsRootNode())
+		{
+			intptr_t count = 0;
+			EnumChildren([&](const Node& node)
+			{
+				count += static_cast<intptr_t>(node.GetSubTreeCount()) + 1;
+				return true;
+			});
+
+			if (m_IsExpanded)
+			{
+				ChangeSubTreeCount(-count);
+				m_IsExpanded = false;
+			}
+			else
+			{
+				m_IsExpanded = true;
+				ChangeSubTreeCount(+count);
+
+				// Sort the children if needed
+				OnSortChildren();
+			}
+		}
+		return m_SubTreeCount;
+
+		#if 0
+		m_IsExpanded = !m_IsExpanded;
+		OnSortChildren();
+
+		return GetSubTreeCount();
+		#endif
+	}
+	void Node::RecalcSubTreeCount()
+	{
+		m_SubTreeCount = GetSubTreeCount();
+	}
+	void Node::ChangeSubTreeCount(intptr_t num)
+	{
+		if (m_IsExpanded)
+		{
+			if (m_SubTreeCount != std::numeric_limits<size_t>::max())
+			{
+				m_SubTreeCount += num;
+				if (m_ParentNode)
+				{
+					m_ParentNode->ChangeSubTreeCount(num);
+				}
+			}
+			else
+			{
+				RecalcSubTreeCount();
+				if (m_ParentNode)
+				{
+					m_ParentNode->RecalcSubTreeCount();
+				}
+			}
+		}
+	}
+
 	void Node::DoExpandNodeAncestors()
 	{
 		Node* node = m_ParentNode;
@@ -78,16 +140,20 @@ namespace kxf::UI::DataView
 		// in the subtree, but excluding this node. I.e. it is 0 for leaves and is the
 		// number of rows the subtree occupies for branch nodes.
 
-		size_t count = 0;
-		if (m_IsExpanded || IsRootNode())
+		if (m_SubTreeCount == std::numeric_limits<size_t>::max())
 		{
-			count += EnumChildren([&](const Node& node)
+			size_t count = 0;
+			if (m_IsExpanded || IsRootNode())
 			{
-				count += node.GetSubTreeCount();
-				return true;
-			});
+				count += EnumChildren([&](const Node& node)
+				{
+					count += node.GetSubTreeCount();
+					return true;
+				});
+			}
+			m_SubTreeCount = count;
 		}
-		return count;
+		return m_SubTreeCount;
 	}
 	size_t Node::GetSubTreeIndex() const
 	{
