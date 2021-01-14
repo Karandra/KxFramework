@@ -55,6 +55,8 @@ namespace kxf::UI::DataView
 			EllipsizeMode m_EllipsizeMode = EllipsizeMode::End;
 			MarkupMode m_MarkupMode = MarkupMode::Disabled;
 			CellAttribute m_Attributes;
+			bool m_IsViewEnabled = false;
+			bool m_IsViewFocused = false;
 
 			Rect m_PaintRect;
 			const Node* m_Node = nullptr;
@@ -81,6 +83,14 @@ namespace kxf::UI::DataView
 			bool CanDraw() const
 			{
 				return m_GC != nullptr;
+			}
+			bool IsViewEnabled() const
+			{
+				return m_IsViewEnabled;
+			}
+			bool IsViewFocused() const
+			{
+				return m_IsViewFocused;
 			}
 
 			void BeginCellSetup(const Node& node, Column& column, IGraphicsContext* gc = nullptr)

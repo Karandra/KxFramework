@@ -2748,7 +2748,7 @@ namespace kxf::UI::DataView
 
 		if (column)
 		{
-			// If we have a column, we need can get its width directly.
+			// If we have a column, we can get its width directly.
 			width = 0;
 			column->IsExposed(width);
 		}
@@ -2762,7 +2762,7 @@ namespace kxf::UI::DataView
 		if (!row)
 		{
 			// This means the row is currently not visible at all.
-			return Rect();
+			return {};
 		}
 
 		// We have to take an expander column into account and compute its indentation

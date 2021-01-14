@@ -134,7 +134,7 @@ namespace kxf::UI::DataView
 	}
 	Size RenderEngine::FromDIP(const Size& size) const
 	{
-		return m_Renderer.GetView()->FromDIP((wxSize)size);
+		return m_Renderer.GetView()->FromDIP(size);
 	}
 
 	size_t RenderEngine::FindFirstLineBreak(const String& string) const
@@ -152,14 +152,13 @@ namespace kxf::UI::DataView
 	FlagSet<NativeWidgetFlag> RenderEngine::GetControlFlags(CellState cellState) const
 	{
 		const Column* column = m_Renderer.GetColumn();
-
 		const auto& cellAttributes = m_Renderer.GetAttributes().Options();
 
 		FlagSet<NativeWidgetFlag> flags;
-		flags.Add(NativeWidgetFlag::Disabled, !cellAttributes.ContainsOption(CellOption::Enabled));
+		flags.Add(NativeWidgetFlag::Disabled, !cellAttributes.ContainsOption(CellOption::Enabled) || !m_Renderer.IsViewEnabled());
 		flags.Add(NativeWidgetFlag::Editable, cellAttributes.ContainsOption(CellOption::Editable));
 		flags.Add(NativeWidgetFlag::Selected|NativeWidgetFlag::Pressed, cellState.IsSelected());
-		flags.Add(NativeWidgetFlag::Current|NativeWidgetFlag::Focused, column && (cellState.IsHotTracked() && column->IsHotTracked()));
+		flags.Add(NativeWidgetFlag::Current|NativeWidgetFlag::Focused, column && m_Renderer.IsViewFocused() && (cellState.IsHotTracked() && column->IsHotTracked()));
 
 		return flags;
 	}
@@ -300,11 +299,11 @@ namespace kxf::UI::DataView
 
 	bool RenderEngine::DrawBitmap(const Rect& cellRect, CellState cellState, const BitmapImage& bitmap, int reservedWidth)
 	{
-		if (bitmap)
+		if (m_Renderer.CanDraw() && bitmap)
 		{
 			const CellAttribute& attributes = m_Renderer.GetAttributes();
 			const Rect rect = {cellRect.GetPosition(), bitmap.GetSize()};
-			const bool isEnabled = attributes.Options().ContainsOption(CellOption::Enabled);
+			const bool isEnabled = attributes.Options().ContainsOption(CellOption::Enabled) && m_Renderer.IsViewEnabled();
 
 			IGraphicsContext& gc = m_Renderer.GetGraphicsContext();
 			GraphicsAction::Clip clip(gc, cellRect);
@@ -320,21 +319,24 @@ namespace kxf::UI::DataView
 	}
 	int RenderEngine::DrawBitmapWithText(const Rect& cellRect, CellState cellState, int offsetX, const String& text, const BitmapImage& bitmap, bool centerTextV, int reservedWidth)
 	{
-		if (bitmap || reservedWidth > 0)
+		if (m_Renderer.CanDraw())
 		{
-			DrawBitmap(Rect(cellRect.GetX() + offsetX, cellRect.GetY(), cellRect.GetWidth() - offsetX, cellRect.GetHeight()), cellState, bitmap, reservedWidth);
-			offsetX += (reservedWidth > 0 ? reservedWidth : bitmap.GetSize().GetWidth()) + FromDIPX(GetInterTextSpacing());
-		}
-		if (!text.IsEmpty())
-		{
-			if (bitmap && centerTextV)
+			if (bitmap || reservedWidth > 0)
 			{
-				const Rect textRect = CenterTextInside(cellRect, GetTextExtent(text));
-				DrawText(textRect, cellState, text, offsetX);
+				DrawBitmap(Rect(cellRect.GetX() + offsetX, cellRect.GetY(), cellRect.GetWidth() - offsetX, cellRect.GetHeight()), cellState, bitmap, reservedWidth);
+				offsetX += (reservedWidth > 0 ? reservedWidth : bitmap.GetSize().GetWidth()) + FromDIPX(GetInterTextSpacing());
 			}
-			else
+			if (!text.IsEmpty())
 			{
-				DrawText(cellRect, cellState, text, offsetX);
+				if (bitmap && centerTextV)
+				{
+					const Rect textRect = CenterTextInside(cellRect, GetTextExtent(text));
+					DrawText(textRect, cellState, text, offsetX);
+				}
+				else
+				{
+					DrawText(cellRect, cellState, text, offsetX);
+				}
 			}
 		}
 		return offsetX;

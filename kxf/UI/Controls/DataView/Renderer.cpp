@@ -18,6 +18,10 @@ namespace kxf::UI::DataView
 	{
 		// Set up the attributes for this item if it's not empty
 		m_Attributes = m_Node->GetCellAttributes(*m_Column, cellState);
+
+		View* view = GetView();
+		m_IsViewEnabled = view->IsEnabled();
+		m_IsViewFocused = view->HasFocus();
 	}
 	void Renderer::SetupCellValue()
 	{
@@ -91,35 +95,37 @@ namespace kxf::UI::DataView
 	{
 		m_PaintRect = cellRect;
 		auto renderEngine = GetRenderEngine();
+		const bool isEnabled = m_Attributes.Options().ContainsOption(CellOption::Enabled) && m_IsViewEnabled;
+		View* view = GetView();
 
 		// Change text color
 		GraphicsAction::ChangeFontBrush changeFontBrush(*m_GC);
-		if (Color textColor = m_Attributes.Options().GetForegroundColor())
+		if (Color textColor = m_Attributes.Options().GetForegroundColor(); textColor || !isEnabled)
 		{
-			if (!m_Attributes.Options().ContainsOption(CellOption::Enabled))
+			if (!textColor)
 			{
-				textColor.MakeDisabled();
+				textColor = view->GetForegroundColour();
+			}
+			if (!isEnabled)
+			{
+				textColor = textColor.MakeDisabled();
 			}
 			changeFontBrush.Set(textColor);
-		}
-		else if (!m_Attributes.Options().ContainsOption(CellOption::Enabled))
-		{
-			changeFontBrush.Set(GetView()->GetForegroundColour().MakeDisabled());
 		}
 
 		// Change font
 		GraphicsAction::ChangeFont changeFont(*m_GC);
 		if (m_Attributes.FontOptions().RequiresNeedAlteration())
 		{
-			changeFont.Set(m_GC->GetRenderer().CreateFont(m_Attributes.GetEffectiveFont(GetView()->GetFont())));
+			changeFont.Set(m_GC->GetRenderer().CreateFont(m_Attributes.GetEffectiveFont(view->GetFont())));
 		}
 
 		// Adjust the rectangle ourselves to account for the alignment
 		const Size cellSize = GetCellSize();
 		Rect adjustedCellRect(cellRect);
 
-		// Restrict height to row height.
-		if (GetView()->ContainsWindowStyle(CtrlStyle::VariableRowHeight))
+		// Restrict height to row height
+		if (view->ContainsWindowStyle(CtrlStyle::VariableRowHeight))
 		{
 			adjustedCellRect.SetHeight(GetMainWindow()->GetVariableRowHeight(*m_Node));
 		}
