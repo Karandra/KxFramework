@@ -99,7 +99,15 @@ namespace kxf
 	}
 	std::unique_ptr<IGraphicsContext> WxGraphicsRenderer::CreateMeasuringContext(wxWindow* window)
 	{
-		return std::make_unique<WxGraphicsMeasuringContext>(*this, window);
+		if (m_Type == Type::GDIPlus)
+		{
+			// Measuring context works fine in GDI+ expect that for some unknown reason it draws its content on top of the entire screen.
+			return std::make_unique<WxGraphicsMemoryContext>(*this, CreateTexture({1.0f, 1.0f}, Drawing::GetStockColor(StockColor::Transparent)), window);
+		}
+		else
+		{
+			return std::make_unique<WxGraphicsMeasuringContext>(*this, window);
+		}
 	}
 
 	// Pen and brush functions
