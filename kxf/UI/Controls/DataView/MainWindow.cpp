@@ -984,7 +984,7 @@ namespace kxf::UI::DataView
 		}
 		if (HasCurrentRow())
 		{
-			Refresh();
+			ScheduleRefresh();
 		}
 		event.Skip();
 	}
@@ -994,7 +994,7 @@ namespace kxf::UI::DataView
 
 		if (HasCurrentRow())
 		{
-			Refresh();
+			ScheduleRefresh();
 		}
 		event.Skip();
 	}
@@ -1495,7 +1495,7 @@ namespace kxf::UI::DataView
 		}
 
 		m_View->SetScrollRate(std::min(GetCharWidth() * 2, m_UniformRowHeight), m_UniformRowHeight);
-		Refresh();
+		ScheduleRefresh();
 	}
 	void MainWindow::DoSetVirtualSize(int x, int y)
 	{
@@ -1801,14 +1801,12 @@ namespace kxf::UI::DataView
 	void MainWindow::OnItemsCleared()
 	{
 		InvalidateItemCount();
-
 		m_SelectionStore.Clear();
 		m_CurrentRow.MakeNull();
 		m_HotTrackRow.MakeNull();
 		m_CurrentColumn = nullptr;
 		m_HotTrackColumn = nullptr;
 		m_TreeNodeUnderMouse = nullptr;
-		BuildTree();
 
 		m_View->InvalidateColumnsBestWidth();
 		UpdateDisplay();
@@ -1822,15 +1820,6 @@ namespace kxf::UI::DataView
 		UpdateDisplay();
 	}
 
-	void MainWindow::BuildTree()
-	{
-		DestroyTree();
-		InvalidateItemCount();
-	}
-	void MainWindow::DestroyTree()
-	{
-		m_TreeRoot = nullptr;
-	}
 	void MainWindow::DoAssignModel(object_ptr<Model> model)
 	{
 		if (m_Model)
@@ -1872,8 +1861,6 @@ namespace kxf::UI::DataView
 	// Misc
 	void MainWindow::OnInternalIdle()
 	{
-		wxWindow::OnInternalIdle();
-
 		if (m_HotTrackRow && !IsMouseInWindow())
 		{
 			m_HotTrackRowEnabled = false;
@@ -1904,64 +1891,68 @@ namespace kxf::UI::DataView
 
 			m_RedrawNeeded = false;
 		}
+
+		wxWindow::OnInternalIdle();
+		WindowRefreshScheduler::OnInternalIdle();
 	}
 
 	MainWindow::MainWindow(View* parent, wxWindowID id)
-		:wxWindow(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), wxWANTS_CHARS|wxBORDER_NONE, GetClassInfo()->GetClassName()), m_View(parent)
+		:m_View(parent)
 	{
-		// Setup drawing
-		m_GraphicsRenderer = Drawing::GetDefaultRenderer();
-		SetBackgroundStyle(wxBG_STYLE_PAINT);
-		SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_LISTBOX));
+		if (wxWindow::Create(parent, id, Point::UnspecifiedPosition(), Size::UnspecifiedSize(), wxWANTS_CHARS|wxBORDER_NONE, GetClassInfo()->GetClassName()))
+		{
+			// Setup drawing
+			m_GraphicsRenderer = Drawing::GetDefaultRenderer();
+			SetBackgroundStyle(wxBG_STYLE_PAINT);
+			SetBackgroundColour(System::GetColor(SystemColor::ListBoxBackground));
 
-		Color rulesColor = wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT);
+			m_PenRuleH = m_GraphicsRenderer->CreatePen(System::GetColor(SystemColor::Light3D));
+			m_PenRuleV = m_PenRuleH;
+			m_PenExpander = m_GraphicsRenderer->CreatePen(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
+			m_UniformRowHeight = GetDefaultRowHeight();
+			m_Indent = System::GetMetric(SystemSizeMetric::Icon).GetWidth();
 
-		m_PenRuleH = m_GraphicsRenderer->CreatePen(rulesColor);
-		m_PenRuleV = m_PenRuleH;
-		m_PenExpander = m_GraphicsRenderer->CreatePen(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
-		m_UniformRowHeight = GetDefaultRowHeight();
-		m_Indent = wxSystemSettings::GetMetric(wxSYS_SMALLICON_Y);
+			// Tooltip
+			m_ToolTip.Create(this);
+			m_ToolTipTimer.SetOwner(this, wxID_ANY);
+			Bind(wxEVT_TIMER, &MainWindow::OnTooltipEvent, this);
 
-		// Tooltip
-		m_ToolTip.Create(this);
-		m_ToolTipTimer.SetOwner(this, wxID_ANY);
-		Bind(wxEVT_TIMER, &MainWindow::OnTooltipEvent, this);
+			// Bind events
+			Bind(wxEVT_PAINT, &MainWindow::OnPaint, this);
+			Bind(wxEVT_SET_FOCUS, &MainWindow::OnSetFocus, this);
+			Bind(wxEVT_KILL_FOCUS, &MainWindow::OnKillFocus, this);
+			Bind(wxEVT_CHAR_HOOK, &MainWindow::OnCharHook, this);
+			Bind(wxEVT_CHAR, &MainWindow::OnChar, this);
 
-		// Bind events
-		Bind(wxEVT_PAINT, &MainWindow::OnPaint, this);
-		Bind(wxEVT_SET_FOCUS, &MainWindow::OnSetFocus, this);
-		Bind(wxEVT_KILL_FOCUS, &MainWindow::OnKillFocus, this);
-		Bind(wxEVT_CHAR_HOOK, &MainWindow::OnCharHook, this);
-		Bind(wxEVT_CHAR, &MainWindow::OnChar, this);
+			Bind(wxEVT_LEFT_DOWN, &MainWindow::OnMouse, this);
+			Bind(wxEVT_LEFT_UP, &MainWindow::OnMouse, this);
+			Bind(wxEVT_LEFT_DCLICK, &MainWindow::OnMouse, this);
 
-		Bind(wxEVT_LEFT_DOWN, &MainWindow::OnMouse, this);
-		Bind(wxEVT_LEFT_UP, &MainWindow::OnMouse, this);
-		Bind(wxEVT_LEFT_DCLICK, &MainWindow::OnMouse, this);
+			//Bind(wxEVT_MIDDLE_DOWN, &KxDataViewMainWindow::OnMouse, this);
+			//Bind(wxEVT_MIDDLE_UP, &KxDataViewMainWindow::OnMouse, this);
+			//Bind(wxEVT_MIDDLE_DCLICK, &KxDataViewMainWindow::OnMouse, this);
 
-		//Bind(wxEVT_MIDDLE_DOWN, &KxDataViewMainWindow::OnMouse, this);
-		//Bind(wxEVT_MIDDLE_UP, &KxDataViewMainWindow::OnMouse, this);
-		//Bind(wxEVT_MIDDLE_DCLICK, &KxDataViewMainWindow::OnMouse, this);
+			Bind(wxEVT_RIGHT_DOWN, &MainWindow::OnMouse, this);
+			Bind(wxEVT_RIGHT_UP, &MainWindow::OnMouse, this);
+			Bind(wxEVT_RIGHT_DCLICK, &MainWindow::OnMouse, this);
 
-		Bind(wxEVT_RIGHT_DOWN, &MainWindow::OnMouse, this);
-		Bind(wxEVT_RIGHT_UP, &MainWindow::OnMouse, this);
-		Bind(wxEVT_RIGHT_DCLICK, &MainWindow::OnMouse, this);
+			Bind(wxEVT_MOTION, &MainWindow::OnMouse, this);
+			Bind(wxEVT_ENTER_WINDOW, &MainWindow::OnMouse, this);
+			Bind(wxEVT_LEAVE_WINDOW, &MainWindow::OnMouse, this);
+			Bind(wxEVT_MOUSEWHEEL, &MainWindow::OnMouse, this);
+			//Bind(wxEVT_CHILD_FOCUS, &MainWindow::OnMouse, this);
 
-		Bind(wxEVT_MOTION, &MainWindow::OnMouse, this);
-		Bind(wxEVT_ENTER_WINDOW, &MainWindow::OnMouse, this);
-		Bind(wxEVT_LEAVE_WINDOW, &MainWindow::OnMouse, this);
-		Bind(wxEVT_MOUSEWHEEL, &MainWindow::OnMouse, this);
-		//Bind(wxEVT_CHILD_FOCUS, &MainWindow::OnMouse, this);
+			//Bind(wxEVT_AUX1_DOWN, &MainWindow::OnMouse, this);
+			//Bind(wxEVT_AUX1_UP, &MainWindow::OnMouse, this);
+			//Bind(wxEVT_AUX1_DCLICK, &MainWindow::OnMouse, this);
+			//Bind(wxEVT_AUX2_DOWN, &MainWindow::OnMouse, this);
+			//Bind(wxEVT_AUX2_UP, &MainWindow::OnMouse, this);
+			//Bind(wxEVT_AUX2_DCLICK, &MainWindow::OnMouse, this);
+			//Bind(wxEVT_MAGNIFY, &MainWindow::OnMouse, this);
 
-		//Bind(wxEVT_AUX1_DOWN, &MainWindow::OnMouse, this);
-		//Bind(wxEVT_AUX1_UP, &MainWindow::OnMouse, this);
-		//Bind(wxEVT_AUX1_DCLICK, &MainWindow::OnMouse, this);
-		//Bind(wxEVT_AUX2_DOWN, &MainWindow::OnMouse, this);
-		//Bind(wxEVT_AUX2_UP, &MainWindow::OnMouse, this);
-		//Bind(wxEVT_AUX2_DCLICK, &MainWindow::OnMouse, this);
-		//Bind(wxEVT_MAGNIFY, &MainWindow::OnMouse, this);
-
-		// Do update
-		UpdateDisplay();
+			// Do update
+			UpdateDisplay();
+		}
 	}
 	MainWindow::~MainWindow()
 	{
@@ -1980,7 +1971,7 @@ namespace kxf::UI::DataView
 	{
 		m_ItemsCount = RecalculateItemCount();
 		m_View->InvalidateColumnsBestWidth();
-		Refresh();
+		ScheduleRefresh();
 	}
 
 	// Refreshing

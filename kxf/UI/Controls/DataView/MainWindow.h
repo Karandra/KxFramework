@@ -9,6 +9,7 @@
 #include "DragAndDrop.h"
 #include "Renderers/NullRenderer.h"
 #include "kxf/UI/Windows/ToolTipEx.h"
+#include "kxf/UI/WindowRefreshScheduler.h"
 #include "kxf/EventSystem/Event.h"
 #include <wx/selstore.h>
 
@@ -29,7 +30,7 @@ namespace kxf::UI::DataView
 
 namespace kxf::UI::DataView
 {
-	class KX_API MainWindow: public wxWindow
+	class KX_API MainWindow: public WindowRefreshScheduler<wxWindow>
 	{
 		friend class Renderer;
 		friend class Editor;
@@ -198,8 +199,6 @@ namespace kxf::UI::DataView
 			void OnItemsCleared();
 			void OnShouldResort();
 
-			void BuildTree();
-			void DestroyTree();
 			void DoAssignModel(object_ptr<Model> model);
 			bool IsListLike() const;
 

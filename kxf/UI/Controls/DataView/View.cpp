@@ -721,7 +721,7 @@ namespace kxf::UI::DataView
 		m_ClientArea->m_EmptyControlLabel = value;
 		if (m_ClientArea->IsEmpty())
 		{
-			m_ClientArea->Refresh();
+			m_ClientArea->ScheduleRefresh();
 		}
 	}
 
