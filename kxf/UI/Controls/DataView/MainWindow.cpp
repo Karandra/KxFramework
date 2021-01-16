@@ -1192,7 +1192,6 @@ namespace kxf::UI::DataView
 
 			int expanderIndent = 0;
 			Rect expanderRect;
-			Rect focusCellRect;
 
 			auto GetRowRect = [&cellInitialRect, &expanderIndent, xCoordEnd, xCoordStart, expanderColumn](bool offsetByExpander)
 			{
@@ -1317,37 +1316,39 @@ namespace kxf::UI::DataView
 				}
 
 				// Calc focus rect
-				if (column == m_CurrentColumn && focusCellRect.IsEmpty())
+				Rect focusCellRect = [&]()
 				{
-					focusCellRect = cellRect;
-					focusCellRect.Width() -= 1;
-					focusCellRect.Height() -= 1;
+					Rect result;
+					result = cellRect;
+					result.Width() -= 1;
+					result.Height() -= 1;
 
 					const bool first = column->IsDisplayedFirst();
 					if (column == expanderColumn && first)
 					{
-						focusCellRect.X() += expanderIndent;
-						focusCellRect.Width() -= expanderIndent;
+						result.X() += expanderIndent;
+						result.Width() -= expanderIndent;
 
 						if (!verticalRulesEnabled)
 						{
-							focusCellRect.Width() += 1;
+							result.Width() += 1;
 						}
 					}
 					if (!first)
 					{
-						focusCellRect.X() -= 1;
+						result.X() -= 1;
 						if (column->IsDisplayedLast())
 						{
-							focusCellRect.Width() += 1;
+							result.Width() += 1;
 						}
 						else
 						{
-							focusCellRect.Width() += verticalRulesEnabled ? 1 : 2;
+							result.Width() += verticalRulesEnabled ? 1 : 2;
 						}
 					}
-					focusCellRect.Deflate(FromDIP(wxSize(1, 1)));
-				}
+
+					return result.Deflate(FromDIP(wxSize(1, 1)));
+				}();
 
 				// Adjust cell rectangle
 				Rect adjustedCellRect = cellRect;
@@ -1384,16 +1385,15 @@ namespace kxf::UI::DataView
 					gc->DrawLine(PointF(xCoordStart, cellInitialRect.GetY()), PointF(xCoordEnd + clientSize.GetWidth(), cellInitialRect.GetY()));
 				}
 
-				// Clip to current column
-				const Rect columnRect(cellRect.GetX(), 0, cellRect.GetWidth(), m_virtualSize.GetHeight());
-				GraphicsAction::Clip clipDC(*gc, columnRect);
-
 				// Draw the cell
 				if (!isCategoryRow || currentColumnIndex == 0)
 				{
 					rendererScope->SetupCellDisplayValue();
 					rendererScope->CallDrawCellBackground(cellRect, cellState);
-					rendererScope->CallDrawCellContent(adjustedCellRect, GetCellStateForRow(currentRow));
+
+					// Clip to current cell but a few pixels smaller
+					GraphicsAction::Clip cellClip(*gc, focusCellRect);
+					rendererScope->CallDrawCellContent(adjustedCellRect, cellState);
 
 					#if 0
 					// Measure category line offset
@@ -1410,9 +1410,6 @@ namespace kxf::UI::DataView
 					rendererScope.EndRendering();
 				}
 
-				// Move coordinates to next column
-				cellRect.X() += cellRect.GetWidth();
-
 				// Draw expander
 				if (column == expanderColumn && !expanderRect.IsEmpty())
 				{
@@ -1420,6 +1417,10 @@ namespace kxf::UI::DataView
 					flags.Add(NativeWidgetFlag::Current, m_TreeNodeUnderMouse == node);
 					flags.Add(NativeWidgetFlag::Expanded, node->IsNodeExpanded());
 					flags.Add(NativeWidgetFlag::Flat, m_View->ContainsWindowExStyle(CtrlExtraStyle::PlusMinusExpander));
+
+					Rect clipRect = cellRect;
+					clipRect.Width() -= FromDIP(EXPANDER_MARGIN);
+					GraphicsAction::Clip cellClip(*gc, clipRect);
 
 					if (isCategoryRow)
 					{
@@ -1435,7 +1436,7 @@ namespace kxf::UI::DataView
 				}
 
 				// Draw cell focus
-				if (m_HasFocus && isCellFocusEnabled && cellState.IsCurrent() && cellState.IsSelected() && !focusCellRect.IsEmpty())
+				if (m_HasFocus && isCellFocusEnabled && cellState.IsCurrent() && cellState.IsSelected() && column == m_CurrentColumn)
 				{
 					// Focus rect looks ugly in it's narrower 3px
 					if (focusCellRect.GetWidth() > 3 && focusCellRect.GetHeight() > 3)
@@ -1450,6 +1451,9 @@ namespace kxf::UI::DataView
 					Rect rowRect = GetRowRect(!fullRowSelectionEnabled);
 					nativeRenderer.DrawItemFocusRect(this, *gc, rowRect.Deflate(FromDIP(wxSize(1, 1))), NativeWidgetFlag::Selected);
 				}
+
+				// Move coordinates to next column
+				cellRect.X() += cellRect.GetWidth();
 			}
 
 			// Draw selection and hot-track indicator after background and cell content
@@ -1942,7 +1946,7 @@ namespace kxf::UI::DataView
 			m_PenRuleV = m_PenRuleH;
 			m_PenExpander = m_GraphicsRenderer->CreatePen(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 			m_UniformRowHeight = GetDefaultRowHeight();
-			m_Indent = System::GetMetric(SystemSizeMetric::Icon).GetWidth();
+			m_Indent = System::GetMetric(SystemSizeMetric::IconSmall).GetWidth();
 
 			// Tooltip
 			m_ToolTip.Create(this);
