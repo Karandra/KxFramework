@@ -107,8 +107,8 @@ namespace kxf::UI::DataView
 				m_Column = nullptr;
 				m_GC = nullptr;
 			}
-			void SetupCellValue();
-			void SetupCellAttributes(CellState cellState);
+			void SetupCellDisplayValue();
+			const CellAttribute& SetupCellAttributes(CellState cellState);
 
 			void CallDrawCellBackground(const Rect& cellRect, CellState cellState, bool noUserBackground = false);
 			std::pair<Size, Rect> CallDrawCellContent(const Rect& cellRect, CellState cellState);

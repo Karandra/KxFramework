@@ -14,7 +14,7 @@ namespace kxf::UI::DataView
 		return mainWindow ? this == &mainWindow->GetNullRenderer() : false;
 	}
 
-	void Renderer::SetupCellAttributes(CellState cellState)
+	const CellAttribute& Renderer::SetupCellAttributes(CellState cellState)
 	{
 		// Set up the attributes for this item if it's not empty
 		m_Attributes = m_Node->GetCellAttributes(*m_Column, cellState);
@@ -22,8 +22,10 @@ namespace kxf::UI::DataView
 		View* view = GetView();
 		m_IsViewEnabled = view->IsEnabled();
 		m_IsViewFocused = view->HasFocus();
+
+		return m_Attributes;
 	}
-	void Renderer::SetupCellValue()
+	void Renderer::SetupCellDisplayValue()
 	{
 		// Now check if we have a value and remember it for rendering it later.
 		// Notice that we do it even if it's null, as the cell should be empty then and not show the last used value.

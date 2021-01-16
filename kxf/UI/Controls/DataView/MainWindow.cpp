@@ -56,7 +56,7 @@ namespace kxf::UI::DataView
 
 					Renderer& renderer = node->GetCellRenderer(m_Column);
 					renderer.BeginCellRendering(*node, m_Column, *gc);
-					renderer.SetupCellValue();
+					renderer.SetupCellDisplayValue();
 					renderer.SetupCellAttributes(m_MainWindow.GetCellStateForRow(row));
 
 					Rect cellRect = m_MainWindow.GetItemRect(*node, &m_Column);
@@ -918,7 +918,7 @@ namespace kxf::UI::DataView
 				Renderer& renderer = currentNode->GetCellRenderer(*currentColumn);
 				renderer.BeginCellSetup(*currentNode, *currentColumn);
 				renderer.SetupCellAttributes(GetCellStateForRow(oldCurrentRow));
-				renderer.SetupCellValue();
+				renderer.SetupCellDisplayValue();
 
 				// Report position relative to the cell's custom area, i.e.
 				// not the entire space as given by the control but the one
@@ -1159,6 +1159,8 @@ namespace kxf::UI::DataView
 			}
 		}
 
+		const bool isListLike = IsListLike();
+		const bool isCellFocusEnabled = m_View->ContainsWindowStyle(CtrlStyle::CellFocus);
 		const bool fullRowSelectionEnabled = m_View->ContainsWindowStyle(CtrlStyle::FullRowSelection);
 		const bool alternatingRowColorsEnabled = m_View->ContainsWindowStyle(CtrlStyle::AlternatingRowColors);
 		const bool verticalRulesEnabled = m_View->ContainsWindowStyle(CtrlStyle::VerticalRules);
@@ -1185,7 +1187,7 @@ namespace kxf::UI::DataView
 			Rect cellRect = cellInitialRect;
 			const CellState cellState = GetCellStateForRow(currentRow);
 
-			constexpr bool isCategoryRow = false;
+			bool isCategoryRow = false;
 			int categoryRowOffset = -1;
 
 			int expanderIndent = 0;
@@ -1236,6 +1238,43 @@ namespace kxf::UI::DataView
 				}
 			}
 
+			class RendererScope final
+			{
+				private:
+					const Node& m_Node;
+					Column& m_Column;
+					Renderer& m_Renderer;
+
+					bool m_RenderingCompleted = false;
+
+				public:
+					RendererScope(const Node& node, Column& column, IGraphicsContext& gc)
+						:m_Node(node), m_Column(column), m_Renderer(node.GetCellRenderer(column))
+					{
+						m_Renderer.BeginCellRendering(m_Node, m_Column, gc);
+					}
+					~RendererScope()
+					{
+						EndRendering();
+					}
+
+				public:
+					void EndRendering()
+					{
+						if (!m_RenderingCompleted)
+						{
+							m_Renderer.EndCellRendering();
+							m_RenderingCompleted = true;
+						}
+					}
+
+				public:
+					Renderer* operator->() noexcept
+					{
+						return &m_Renderer;
+					}
+			};
+
 			for (size_t currentColumnIndex = coulumnIndexStart; currentColumnIndex < coulmnIndexEnd; currentColumnIndex++)
 			{
 				Column* column = m_View->GetColumnDisplayedAt(currentColumnIndex);
@@ -1244,27 +1283,31 @@ namespace kxf::UI::DataView
 					continue;
 				}
 
+				RendererScope rendererScope(*node, *column, *gc);
+				const CellAttribute& cellAttributes = rendererScope->SetupCellAttributes(cellState);
+
 				// Calculate expander button rect and its indent
-				if (column == expanderColumn && !IsListLike())
+				const bool isCategoryRow = cellAttributes.Options().ContainsOption(CellOption::Category);
+				if (column == expanderColumn && !isListLike)
 				{
 					// Calculate the indent first
 					const int indentOffset = m_Indent * node->GetItemIndent();
-					expanderIndent = std::min(indentOffset + m_UniformRowHeight, expanderColumn->GetWidth());
+					expanderIndent = std::min(indentOffset + m_UniformRowHeight, expanderColumn->GetWidth()) + EXPANDER_MARGIN;
 
 					if (node->HasChildren())
 					{
-						auto ClacExpanderRect = [&expanderRect, &cellRect, indentOffset](const Size& size, int margin = 0, int offset = 0)
+						auto ClacExpanderRect = [&expanderRect, &cellRect, indentOffset](const Size& size, int marginLeft = 0, int offsetTop = 0)
 						{
 							// We reserve 'm_UniformRowHeight' of horizontal space for the expander but leave EXPANDER_MARGIN around the expander itself
-							expanderRect.SetX(cellRect.GetX() + indentOffset + margin);
-							expanderRect.SetY(cellRect.GetY() + (cellRect.GetHeight() - size.GetHeight()) / 2 + margin - offset);
+							expanderRect.SetX(cellRect.GetX() + indentOffset + marginLeft);
+							expanderRect.SetY(cellRect.GetY() + (cellRect.GetHeight() - size.GetHeight()) / 2 + marginLeft - offsetTop);
 							expanderRect.SetWidth(size.GetWidth());
 							expanderRect.SetHeight(size.GetHeight());
 						};
 
 						if (isCategoryRow)
 						{
-							ClacExpanderRect(nativeRenderer.GetCollapseButtonSize(this), EXPANDER_MARGIN);
+							ClacExpanderRect(nativeRenderer.GetCollapseButtonSize(this) - Size(EXPANDER_MARGIN, EXPANDER_MARGIN).Scale(2), EXPANDER_MARGIN);
 						}
 						else
 						{
@@ -1277,6 +1320,8 @@ namespace kxf::UI::DataView
 				if (column == m_CurrentColumn && focusCellRect.IsEmpty())
 				{
 					focusCellRect = cellRect;
+					focusCellRect.Width() -= 1;
+					focusCellRect.Height() -= 1;
 
 					const bool first = column->IsDisplayedFirst();
 					if (column == expanderColumn && first)
@@ -1301,19 +1346,7 @@ namespace kxf::UI::DataView
 							focusCellRect.Width() += verticalRulesEnabled ? 1 : 2;
 						}
 					}
-				}
-
-				// Move coordinates to next column
-				cellRect.X() += cellRect.GetWidth();
-			}
-
-			cellRect = cellInitialRect;
-			for (size_t currentColumnIndex = coulumnIndexStart; currentColumnIndex < coulmnIndexEnd; currentColumnIndex++)
-			{
-				Column* column = m_View->GetColumnDisplayedAt(currentColumnIndex);
-				if (!column->IsExposed(cellRect.Width()))
-				{
-					continue;
+					focusCellRect.Deflate(FromDIP(wxSize(1, 1)));
 				}
 
 				// Adjust cell rectangle
@@ -1358,27 +1391,15 @@ namespace kxf::UI::DataView
 				// Draw the cell
 				if (!isCategoryRow || currentColumnIndex == 0)
 				{
-					Renderer& renderer = node->GetCellRenderer(*column);
-					renderer.BeginCellRendering(*node, *column, *gc);
-
-					renderer.SetupCellValue();
-					renderer.SetupCellAttributes(cellState);
-					renderer.CallDrawCellBackground(cellRect, cellState);
-
-					// Draw cell content
-					renderer.CallDrawCellContent(adjustedCellRect, GetCellStateForRow(currentRow));
-
-					// Draw selection and hot-track indicator after background and cell content
-					if (cellState.IsSelected() || cellState.IsHotTracked())
-					{
-						nativeRenderer.DrawItemSelectionRect(this, *gc, GetRowRect(!fullRowSelectionEnabled), cellState.ToNativeWidgetFlags(*this));
-					}
+					rendererScope->SetupCellDisplayValue();
+					rendererScope->CallDrawCellBackground(cellRect, cellState);
+					rendererScope->CallDrawCellContent(adjustedCellRect, GetCellStateForRow(currentRow));
 
 					#if 0
 					// Measure category line offset
 					if (isCategoryRow && categoryRowOffset < 0)
 					{
-						categoryRowOffset = renderer.GetCellSize().GetWidth() + GetCharWidth();
+						categoryRowOffset = rendererScope->GetCellSize().GetWidth() + GetCharWidth();
 						if (column == expanderColumn)
 						{
 							categoryRowOffset += expanderIndent;
@@ -1386,7 +1407,7 @@ namespace kxf::UI::DataView
 					}
 					#endif
 
-					renderer.EndCellRendering();
+					rendererScope.EndRendering();
 				}
 
 				// Move coordinates to next column
@@ -1414,12 +1435,12 @@ namespace kxf::UI::DataView
 				}
 
 				// Draw cell focus
-				if (m_HasFocus && m_View->ContainsWindowStyle(CtrlStyle::CellFocus) && !focusCellRect.IsEmpty() && currentRow == m_CurrentRow && cellState.IsSelected())
+				if (m_HasFocus && isCellFocusEnabled && cellState.IsCurrent() && cellState.IsSelected() && !focusCellRect.IsEmpty())
 				{
 					// Focus rect looks ugly in it's narrower 3px
-					if (focusCellRect.GetWidth() > 3)
+					if (focusCellRect.GetWidth() > 3 && focusCellRect.GetHeight() > 3)
 					{
-						nativeRenderer.DrawItemFocusRect(this, *gc, Rect(focusCellRect).Deflate(FromDIP(wxSize(1, 1))), NativeWidgetFlag::Selected);
+						nativeRenderer.DrawItemFocusRect(this, *gc, focusCellRect, NativeWidgetFlag::Selected);
 					}
 				}
 
@@ -1427,8 +1448,14 @@ namespace kxf::UI::DataView
 				if (cellState.IsDropTarget())
 				{
 					Rect rowRect = GetRowRect(!fullRowSelectionEnabled);
-					nativeRenderer.DrawItemFocusRect(this, *gc, rowRect, NativeWidgetFlag::Selected);
+					nativeRenderer.DrawItemFocusRect(this, *gc, rowRect.Deflate(FromDIP(wxSize(1, 1))), NativeWidgetFlag::Selected);
 				}
+			}
+
+			// Draw selection and hot-track indicator after background and cell content
+			if (cellState.IsSelected() || cellState.IsHotTracked())
+			{
+				nativeRenderer.DrawItemSelectionRect(this, *gc, GetRowRect(!fullRowSelectionEnabled), cellState.ToNativeWidgetFlags(*this));
 			}
 
 			// This needs more work
@@ -1510,7 +1537,7 @@ namespace kxf::UI::DataView
 		// Get tooltip
 		Renderer& renderer = node.GetCellRenderer(column);
 		renderer.BeginCellSetup(node, column);
-		renderer.SetupCellValue();
+		renderer.SetupCellDisplayValue();
 		ToolTip tooltip = node.GetCellToolTip(column);
 		renderer.EndCellSetup();
 
@@ -1525,7 +1552,7 @@ namespace kxf::UI::DataView
 
 				Renderer& clipTestRenderer = node.GetCellRenderer(clipTestColumn);
 				clipTestRenderer.BeginCellSetup(node, const_cast<Column&>(clipTestColumn));
-				clipTestRenderer.SetupCellValue();
+				clipTestRenderer.SetupCellDisplayValue();
 				const Size cellSize = clipTestRenderer.GetCellSize();
 				clipTestRenderer.EndCellSetup();
 
@@ -2249,7 +2276,7 @@ namespace kxf::UI::DataView
 
 					Rect cellRect(x, 0, width, height);
 
-					renderer.SetupCellValue();
+					renderer.SetupCellDisplayValue();
 					renderer.SetupCellAttributes(cellState);
 					renderer.CallDrawCellBackground(cellRect, cellState);
 
