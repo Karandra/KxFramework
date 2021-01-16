@@ -79,6 +79,10 @@ namespace kxf::UI::DataView
 			void DoUpdate();
 			void UpdateColumn(const Column& column);
 			void UpdateColumnCount();
+			bool CanUpdateSingleColumn() const
+			{
+				return false;
+			}
 
 			Rect GetDropdownRect(const Column& column) const;
 			Rect GetDropdownRect(size_t index) const;

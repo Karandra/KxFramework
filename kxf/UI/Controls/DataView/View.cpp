@@ -52,22 +52,29 @@ namespace kxf::UI::DataView
 
 		if (m_HeaderArea)
 		{
-			for (auto& column: m_Columns)
+			if (m_HeaderArea->CanUpdateSingleColumn())
 			{
-				// Note that we have to have an explicit 'dirty' flag here instead of
-				// checking if the width == 0, as is done in CalBestColumnWidth().
-				//
-				// Testing width == 0 wouldn't work correctly if some code called
-				// GetWidth() after column width invalidation but before
-				// View::UpdateColumnsWidth() was called at idle time. This
-				// would result in the header's column width getting out of sync with
-				// the control itself.
-
-				if (column->IsDirty())
+				for (auto& column: m_Columns)
 				{
-					m_HeaderArea->UpdateColumn(*column);
-					column->MarkDirty(false);
+					// Note that we have to have an explicit 'dirty' flag here instead of
+					// checking if the width == 0, as is done in 'MainWindow::CalcBestColumnWidth'.
+
+					// Testing width == 0 wouldn't work correctly if some code called
+					// 'GetWidth' after column width invalidation but before
+					// 'View::UpdateColumnsWidth' was called at idle time. This
+					// would result in the header's column width getting out of sync with
+					// the control itself.
+
+					if (column->IsDirty())
+					{
+						m_HeaderArea->UpdateColumn(*column);
+						column->MarkDirty(false);
+					}
 				}
+			}
+			else
+			{
+				m_HeaderArea->DoUpdate();
 			}
 		}
 	}

@@ -68,7 +68,7 @@ namespace kxf::UI::DataView
 			Column::Vector m_Columns;
 
 			// This indicates that at least one entry in 'm_Columns' has 'm_Dirty'
-			// flag set. It's cheaper to check one flag in OnInternalIdle() than to
+			// flag set. It's cheaper to check one flag in 'OnInternalIdle' than to
 			// iterate over 'm_Columns' to check if anything needs to be done.
 			bool m_ColumnsDirty = false;
 
