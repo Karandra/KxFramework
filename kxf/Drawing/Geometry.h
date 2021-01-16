@@ -31,6 +31,8 @@ namespace kxf::Geometry
 	template<class TDerived_, class TValue_>
 	class OrderedPairTemplate
 	{
+		static_assert(std::is_arithmetic_v<TValue_>, "arithmetic type required");
+
 		public:
 			using TDerived = TDerived_;
 			using TValue = TValue_;
@@ -62,6 +64,22 @@ namespace kxf::Geometry
 			constexpr TDerived Clone() const noexcept
 			{
 				return Self();
+			}
+			constexpr bool IsNegative() const noexcept
+			{
+				return m_X < 0 && m_Y < 0;
+			}
+			constexpr bool IsPositive() const noexcept
+			{
+				return m_X > 0 && m_Y > 0;
+			}
+			constexpr bool IsAnyComponentNegative() const noexcept
+			{
+				return m_X < 0 || m_Y < 0;
+			}
+			constexpr bool IsAnyComponentPositive() const noexcept
+			{
+				return m_X > 0 || m_Y > 0;
 			}
 			constexpr bool IsFullySpecified() const noexcept
 			{
@@ -121,14 +139,14 @@ namespace kxf::Geometry
 				return {static_cast<T>(std::round(m_X)), static_cast<T>(std::round(m_Y))};
 			}
 
-			template<class TOrderedPair, class = std::enable_if_t<std::is_floating_point_v<TValue>&& std::is_integral_v<typename TOrderedPair::TValue>>>
+			template<class TOrderedPair, class = std::enable_if_t<std::is_floating_point_v<TValue> && std::is_integral_v<typename TOrderedPair::TValue>>>
 			constexpr TOrderedPair ConvertCeil() const
 			{
 				using T = typename TOrderedPair::TValue;
 				return {static_cast<T>(std::ceil(m_X)), static_cast<T>(std::ceil(m_Y))};
 			}
 
-			template<class TOrderedPair, class = std::enable_if_t<std::is_floating_point_v<TValue>&& std::is_integral_v<typename TOrderedPair::TValue>>>
+			template<class TOrderedPair, class = std::enable_if_t<std::is_floating_point_v<TValue> && std::is_integral_v<typename TOrderedPair::TValue>>>
 			constexpr TOrderedPair ConvertFloor() const
 			{
 				using T = typename TOrderedPair::TValue;
@@ -528,6 +546,27 @@ namespace kxf::Geometry
 			constexpr TValue& Height() noexcept
 			{
 				return m_Height;
+			}
+
+			template<class TRect, class = std::enable_if_t<std::is_floating_point_v<TValue> && std::is_integral_v<typename TRect::TValue>>>
+			constexpr TRect ConvertRound() const
+			{
+				using T = typename TRect::TValue;
+				return {static_cast<T>(std::round(m_X)), static_cast<T>(std::round(m_Y)), static_cast<T>(std::round(m_Width)), static_cast<T>(std::round(m_Height))};
+			}
+
+			template<class TRect, class = std::enable_if_t<std::is_floating_point_v<TValue> && std::is_integral_v<typename TRect::TValue>>>
+			constexpr TRect ConvertCeil() const
+			{
+				using T = typename TRect::TValue;
+				return {static_cast<T>(std::ceil(m_X)), static_cast<T>(std::ceil(m_Y)), static_cast<T>(std::ceil(m_Width)), static_cast<T>(std::ceil(m_Height))};
+			}
+
+			template<class TRect, class = std::enable_if_t<std::is_floating_point_v<TValue> && std::is_integral_v<typename TRect::TValue>>>
+			constexpr TRect ConvertFloor() const
+			{
+				using T = typename TRect::TValue;
+				return {static_cast<T>(std::floor(m_X)), static_cast<T>(std::floor(m_Y)), static_cast<T>(std::floor(m_Width)), static_cast<T>(std::floor(m_Height))};
 			}
 
 		public:
