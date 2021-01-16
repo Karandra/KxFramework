@@ -2115,8 +2115,7 @@ namespace kxf::UI::DataView
 	}
 	int MainWindow::GetVariableRowHeight(const Node& node) const
 	{
-		int height = node.GetItemHeight();
-		return height > 0 ? height : m_UniformRowHeight;
+		return std::max(node.GetItemHeight(), m_UniformRowHeight);
 	}
 	int MainWindow::GetVariableRowHeight(Row row) const
 	{
