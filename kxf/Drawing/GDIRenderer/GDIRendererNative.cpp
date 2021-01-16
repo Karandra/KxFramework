@@ -353,7 +353,9 @@ namespace kxf
 
 			float borderWidth = theme.GetInt(LVP_LISTITEM, 0, TMT_BORDERSIZE).value_or(1);
 			auto brush = renderer.CreateSolidBrush(Drawing::GetStockColor(StockColor::Transparent));
-			auto pen = renderer.CreatePen(theme.GetColor(LVP_GROUPHEADER, 0, TMT_ACCENTCOLORHINT).SetAlpha8(127), borderWidth);
+			auto pen = renderer.CreatePen(theme.GetColor(LVP_GROUPHEADERLINE, 0, TMT_EDGEDKSHADOWCOLOR), borderWidth);
+			pen->SetStyle(PenStyle::Dash);
+			pen->SetDashStyle(DashStyle::Dot);
 
 			if (borderWidth > 1.0f)
 			{

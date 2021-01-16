@@ -1469,7 +1469,7 @@ namespace kxf::UI::DataView
 
 				Point pos1(cellInitialRect.GetX() + categoryRowOffset, cellRect.GetY() + cellRect.GetHeight() / 2);
 				Point pos2(cellInitialRect.GetX() + xCoordEnd - xCoordStart - categoryRowOffset, pos1.GetY());
-				dc.DrawLine(pos1, pos2);
+				gc->DrawLine(pos1, pos2);
 			}
 			#endif
 		}
