@@ -141,6 +141,11 @@ namespace kxf
 	{
 		if (m_Document)
 		{
+			if (size.IsAnyComponentNegative())
+			{
+				return {};
+			}
+
 			lunasvg::Bitmap svgBitmap;
 			if (size.IsFullySpecified())
 			{
@@ -181,7 +186,7 @@ namespace kxf
 		if (m_Document)
 		{
 			auto box = m_Document->getBBox(ToSVGDPI(m_DPI));
-			return Rect(box.x, box.y, box.width, box.height);
+			return RectD(box.x, box.y, box.width, box.height).ConvertCeil<Rect>();
 		}
 		return {};
 	}
