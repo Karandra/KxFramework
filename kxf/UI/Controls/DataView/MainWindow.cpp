@@ -2,6 +2,7 @@
 #include "MainWindow.h"
 #include "HeaderCtrl.h"
 #include "Renderer.h"
+#include "SortMode.h"
 #include "ToolTip.h"
 #include "Editor.h"
 #include "Column.h"
@@ -1752,7 +1753,7 @@ namespace kxf::UI::DataView
 		// column but also falls back to other values for comparison. To ensure consistency
 		// it is better to treat a value change as if it was an item change.
 
-		node.OnSortChildren();
+		node.OnSortChildren(m_View->GetSortMode());
 
 		if (column)
 		{
@@ -1815,7 +1816,7 @@ namespace kxf::UI::DataView
 	{
 		if (m_TreeRoot)
 		{
-			m_TreeRoot->OnSortChildren();
+			m_TreeRoot->OnSortChildren(m_View->GetSortMode());
 		}
 		UpdateDisplay();
 	}

@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "Node.h"
+#include "View.h"
 #include "MainWindow.h"
 #include "HeaderCtrl.h"
-#include "View.h"
+#include "SortMode.h"
 
 namespace kxf::UI::DataView
 {
@@ -29,7 +30,7 @@ namespace kxf::UI::DataView
 				ChangeSubTreeCount(+count);
 
 				// Sort the children if needed
-				OnSortChildren();
+				OnSortChildren(GetView().GetSortMode());
 			}
 		}
 		return m_SubTreeCount;

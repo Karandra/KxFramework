@@ -450,7 +450,7 @@
     <ClInclude Include="kxf\UI\Controls\DataView\Renderers\TextRenderer.h" />
     <ClInclude Include="kxf\UI\Controls\DataView\Renderers\ToggleRenderer.h" />
     <ClInclude Include="kxf\UI\Controls\DataView\Row.h" />
-    <ClInclude Include="kxf\UI\Controls\DataView\SortOrder.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\SortMode.h" />
     <ClInclude Include="kxf\UI\Controls\DataView\ToolTip.h" />
     <ClInclude Include="kxf\UI\Controls\DataView\View.h" />
     <ClInclude Include="kxf\UI\Controls\HTMLWindow.h" />
@@ -845,6 +845,7 @@
     <ClCompile Include="kxf\UI\Controls\DataView\Renderers\ProgressRenderer.cpp" />
     <ClCompile Include="kxf\UI\Controls\DataView\Renderers\TextRenderer.cpp" />
     <ClCompile Include="kxf\UI\Controls\DataView\Renderers\ToggleRenderer.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\SortMode.cpp" />
     <ClCompile Include="kxf\UI\Controls\DataView\ToolTip.cpp" />
     <ClCompile Include="kxf\UI\Controls\DataView\View.cpp" />
     <ClCompile Include="kxf\UI\Controls\HTMLWindow.cpp" />

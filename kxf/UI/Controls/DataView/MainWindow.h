@@ -5,7 +5,6 @@
 #include "Row.h"
 #include "Model.h"
 #include "CellState.h"
-#include "SortOrder.h"
 #include "DragAndDrop.h"
 #include "Renderers/NullRenderer.h"
 #include "kxf/UI/Windows/ToolTipEx.h"
@@ -158,15 +157,6 @@ namespace kxf::UI::DataView
 			void OnPaint(wxPaintEvent& event);
 			CellState GetCellStateForRow(Row row) const;
 
-			SortOrder GetSortOrder() const
-			{
-				Column* column = m_View->GetSortingColumn();
-				if (column)
-				{
-					return SortOrder::UseColumn(*column, column->IsSortedAscending());
-				}
-				return SortOrder::UseNone();
-			}
 			void UpdateDisplay();
 			void RefreshDisplay();
 			void RecalculateDisplay();

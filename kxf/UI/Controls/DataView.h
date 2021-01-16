@@ -11,6 +11,7 @@
 #include "DataView/Row.h"
 #include "DataView/ColumnID.h"
 #include "DataView/CellState.h"
+#include "DataView/SortMode.h"
 #include "DataView/CellAttribute.h"
 #include "DataView/Event.h"
 

@@ -472,7 +472,7 @@ namespace kxf::UI::DataView
 		{
 			if (column->IsSorted())
 			{
-				sortingColumns.push_back(column.get());
+				sortingColumns.emplace_back(column.get());
 			}
 		}
 		return sortingColumns;
@@ -494,9 +494,9 @@ namespace kxf::UI::DataView
 		}
 		return true;
 	}
-	void View::ToggleSortByColumn(size_t position)
+	void View::ToggleSortByColumn(size_t index)
 	{
-		m_HeaderArea->ToggleSortByColumn(position);
+		m_HeaderArea->ToggleSortByColumn(index);
 	}
 
 	int View::GetIndent() const

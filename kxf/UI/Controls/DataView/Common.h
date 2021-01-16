@@ -113,6 +113,12 @@ namespace kxf::UI::DataView
 		ListView,
 		Explorer
 	};
+	enum class SortOrder
+	{
+		None = -1,
+		Ascending,
+		Descending
+	};
 }
 
 namespace kxf

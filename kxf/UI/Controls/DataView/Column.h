@@ -55,15 +55,14 @@ namespace kxf::UI::DataView
 
 			bool m_IsDirty = true;
 			bool m_IsVisible = true;
-			bool m_IsSorted = false;
-			bool m_IsSortedAscending = true;
+			SortOrder m_SortOrder = SortOrder::None;
 
 		private:
 			void SetView(View* view)
 			{
 				m_View = view;
 			}
-			void SetSortOrder(bool ascending);
+			void SetSortOrder(SortOrder order);
 
 		protected:
 			void UpdateDisplay();
@@ -251,15 +250,19 @@ namespace kxf::UI::DataView
 
 			bool IsSorted() const
 			{
-				return m_IsSorted;
+				return m_SortOrder != SortOrder::None;
 			}
 			bool IsSortedAscending() const
 			{
-				return m_IsSortedAscending;
+				return m_SortOrder == SortOrder::Ascending;
 			}
 			bool IsSortedDescending() const
 			{
-				return !IsSortedAscending();
+				return m_SortOrder == SortOrder::Descending;
+			}
+			SortOrder GetSortOrder() const
+			{
+				return m_SortOrder;
 			}
 
 			void SortAscending();

@@ -4,6 +4,7 @@
 #include "Node.h"
 #include "Column.h"
 #include "ColumnID.h"
+#include "SortMode.h"
 #include "kxf/UI/WindowRefreshScheduler.h"
 #include "kxf/UI/WindowWithStyles.h"
 #include <wx/systhemectrl.h>
@@ -252,6 +253,10 @@ namespace kxf::UI::DataView
 			void SetExpanderColumn(Column *column);
 
 			bool IsMultiColumnSortUsed() const;
+			SortMode GetSortMode() const
+			{
+				return *this;
+			}
 			Column* GetSortingColumn() const;
 			Column::RefVector GetSortingColumns() const;
 
@@ -260,7 +265,7 @@ namespace kxf::UI::DataView
 				return m_AllowMultiColumnSort;
 			}
 			bool AllowMultiColumnSort(bool allow = true);
-			void ToggleSortByColumn(size_t position);
+			void ToggleSortByColumn(size_t index);
 
 			// Items
 			int GetIndent() const;

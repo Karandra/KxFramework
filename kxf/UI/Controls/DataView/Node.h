@@ -2,7 +2,6 @@
 #include "Common.h"
 #include "Row.h"
 #include "Column.h"
-#include "SortOrder.h"
 #include "ToolTip.h"
 #include "kxf/General/Any.h"
 #include "kxf/RTTI/QueryInterface.h"
@@ -17,6 +16,7 @@ namespace kxf::UI::DataView
 	class Model;
 	class View;
 	class Node;
+	class SortMode;
 	class CellState;
 }
 
@@ -52,7 +52,7 @@ namespace kxf::UI::DataView
 			Point DoGetCellDropdownPoint(const Column* column) const;
 
 		protected:
-			virtual void OnSortChildren()
+			virtual void OnSortChildren(const SortMode& sortMode)
 			{
 			}
 			virtual size_t OnEnumChildren(std::function<bool(Node&)> func)

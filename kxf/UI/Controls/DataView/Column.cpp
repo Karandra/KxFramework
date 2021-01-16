@@ -21,13 +21,14 @@ namespace kxf::UI::DataView
 
 namespace kxf::UI::DataView
 {
-	void Column::SetSortOrder(bool ascending)
+	void Column::SetSortOrder(SortOrder order)
 	{
 		// If this column isn't sorted already, mark it as sorted
-		m_IsSorted = true;
-		m_IsSortedAscending = ascending;
-
-		UpdateDisplay();
+		if (m_SortOrder != order)
+		{
+			m_SortOrder = order;
+			UpdateDisplay();
+		}
 	}
 	void Column::UpdateDisplay()
 	{
@@ -231,33 +232,31 @@ namespace kxf::UI::DataView
 
 	void Column::SortAscending()
 	{
-		SetSortOrder(true);
+		SetSortOrder(SortOrder::Ascending);
 	}
 	void Column::SortDescending()
 	{
-		SetSortOrder(false);
+		SetSortOrder(SortOrder::Descending);
 	}
 	void Column::ToggleSortOrder()
 	{
-		if (m_IsSorted)
+		switch (m_SortOrder)
 		{
-			if (m_IsSortedAscending)
+			case SortOrder::Ascending:
 			{
 				SortDescending();
+				break;
 			}
-			else
+			case SortOrder::Descending:
 			{
 				SortAscending();
+				break;
 			}
-		}
+		};
 	}
 	void Column::ResetSorting()
 	{
-		if (m_IsSorted)
-		{
-			m_IsSorted = false;
-			UpdateDisplay();
-		}
+		SetSortOrder(SortOrder::None);
 	}
 
 	bool Column::IsExposed(int& width) const
