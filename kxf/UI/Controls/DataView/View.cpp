@@ -849,6 +849,13 @@ namespace kxf::UI::DataView
 	}
 	void View::SetActiveGraphicsRenderer(std::shared_ptr<IGraphicsRenderer> renderer)
 	{
-		m_PendingGraphicsRenderer = std::move(renderer);
+		if (!renderer)
+		{
+			renderer = Drawing::GetDefaultRenderer();
+		}
+		if (m_ClientArea->m_GraphicsRenderer != renderer)
+		{
+			m_PendingGraphicsRenderer = std::move(renderer);
+		}
 	}
 }
