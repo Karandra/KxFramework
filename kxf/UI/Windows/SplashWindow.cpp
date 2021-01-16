@@ -47,7 +47,7 @@ namespace kxf::UI
 		GDIBitmap bitmap = image.ToGDIBitmap();
 		GDIMemoryContext dc(bitmap);
 
-		BLENDFUNCTION blendFunction = {0};
+		BLENDFUNCTION blendFunction = {};
 		blendFunction.BlendOp = AC_SRC_OVER;
 		blendFunction.BlendFlags = 0;
 		blendFunction.SourceConstantAlpha = m_Alpha;

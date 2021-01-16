@@ -206,7 +206,7 @@ namespace kxf::Drawing
 			}
 			case StockPen::Gray:
 			{
-				return *wxGREY_PEN;
+				return *wxGREEN_PEN;
 			}
 			case StockPen::LightGray:
 			{

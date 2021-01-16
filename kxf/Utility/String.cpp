@@ -9,7 +9,7 @@ namespace kxf::Utility
 		{
 			return false;
 		}
-		else if (value == wxS("TRUE") || value == wxS("TRUE"))
+		else if (value == wxS("true") || value == wxS("TRUE"))
 		{
 			return true;
 		}

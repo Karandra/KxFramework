@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <type_traits>
 
-namespace kxf::Utility
+namespace kxf::Utility::Container
 {
 	template<class TOut, class TSource, class TFunc>
 	void ConvertVector(std::vector<TOut>& destination, const std::vector<TSource>& source, TFunc&& func)

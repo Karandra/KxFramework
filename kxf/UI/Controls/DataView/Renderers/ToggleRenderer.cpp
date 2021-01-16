@@ -26,29 +26,6 @@ namespace kxf::UI::DataView
 				};
 			}
 
-			// Check for 'wxCheckBoxState'
-			if (wxCheckBoxState state = static_cast<wxCheckBoxState>(-1); value.CheckType<wxCheckBoxState>() && value.GetAs(state))
-			{
-				switch (state)
-				{
-					case wxCHK_CHECKED:
-					{
-						m_State = ToggleState::Checked;
-						return true;
-					}
-					case wxCHK_UNCHECKED:
-					{
-						m_State = ToggleState::Unchecked;
-						return true;
-					}
-					case wxCHK_UNDETERMINED:
-					{
-						m_State = ToggleState::Indeterminate;
-						return true;
-					}
-				};
-			}
-
 			// Check for bool
 			if (bool isChecked = false; value.CheckType<bool>() && value.GetAs(isChecked))
 			{

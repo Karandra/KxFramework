@@ -50,6 +50,8 @@ namespace kxf::Drawing
 				fontMetrics.averageWidth = AverageWidth;
 				fontMetrics.internalLeading = InternalLeading;
 				fontMetrics.externalLeading = ExternalLeading;
+
+				return fontMetrics;
 			}
 
 	};

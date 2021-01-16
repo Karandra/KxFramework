@@ -238,6 +238,11 @@ namespace kxf
 				m_Pen.SetDashes(static_cast<int>(dashes.size()), dashes.data());
 			}
 
+			void SetDashes(const std::vector<Dash>& dashes)
+			{
+				SetDashes(dashes.data(), dashes.size());
+			}
+
 		public:
 			explicit operator bool() const noexcept
 			{

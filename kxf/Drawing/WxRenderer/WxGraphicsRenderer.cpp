@@ -35,7 +35,7 @@ namespace kxf
 		{
 			case Type::GDIPlus:
 			{
-				return wxS("GDIPlus");
+				return wxS("GDI+");
 			}
 			case Type::Direct2D:
 			{

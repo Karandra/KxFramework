@@ -86,7 +86,7 @@ namespace kxf
 			}
 			bool operator!=(const ErrorCode& other) const noexcept
 			{
-				return IsSameAs(other);
+				return !IsSameAs(other);
 			}
 
 			ErrorCode& operator=(ErrorCode&&) noexcept = default;

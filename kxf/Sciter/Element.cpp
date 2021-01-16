@@ -1126,7 +1126,7 @@ namespace kxf::Sciter
 				{
 					return wxS("italic");
 				}
-				else if (style.Contains(FontStyle::Italic))
+				else if (style.Contains(FontStyle::Oblique))
 				{
 					return wxS("oblique");
 				}

@@ -5,7 +5,7 @@ namespace kxf
 {
 	bool ErrorCode::IsSameAs(const ErrorCode& other) const noexcept
 	{
-		if (this == &other || IsNull() && other.IsNull())
+		if ((this == &other) || (IsNull() && other.IsNull()))
 		{
 			return true;
 		}

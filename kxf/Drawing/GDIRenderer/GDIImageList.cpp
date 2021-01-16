@@ -117,10 +117,7 @@ namespace kxf
 		if (handle)
 		{
 			m_hImageList = static_cast<WXHIMAGELIST>(handle);
-			if (m_hImageList)
-			{
-				::ImageList_GetIconSize(ToHImageList(m_hImageList), &m_size.x, &m_size.y);
-			}
+			ImageList_GetIconSize(ToHImageList(m_hImageList), &m_size.x, &m_size.y);
 		}
 		else
 		{

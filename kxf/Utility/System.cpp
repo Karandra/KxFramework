@@ -40,6 +40,7 @@ namespace kxf::Utility
 			const HRSRC resourceHandle = ::FindResourceW(moduleHandle, MAKEINTRESOURCEW(resourceID), resourceType.wc_str());
 			return DoLoadResource(resourceHandle, moduleHandle);
 		}
+		return {};
 	}
 
 	FlagSet<intptr_t> GetWindowStyle(void* windowHandle, int index) noexcept

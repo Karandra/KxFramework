@@ -261,36 +261,10 @@ namespace kxf::UI
 			DynamicLibrary library(wxS("ImageRes.dll"), DynamicLibraryFlag::Resource);
 			if (library)
 			{
-				int size = 16;
-				const int height = GetSize().GetHeight();
-				if (height > 32)
-				{
-					size = 32;
-				}
-				else if (height > 48)
-				{
-					size = 48;
-				}
-				else if (height > 64)
-				{
-					size = 64;
-				}
-				else if (height > 128)
-				{
-					size = 128;
-				}
-				else if (height > 256)
-				{
-					size = 256;
-				}
-				else if (height > 512)
-				{
-					size = 512;
-				}
-
+				// 78 is the index of UAC shield icon
 				if (ImageBundle bundle = library.GetIconBundleResource(wxS("78")))
 				{
-					if (BitmapImage image = bundle.GetImage({size, size}, ImageBundleFlag::SystemSize|ImageBundleFlag::NearestLarger))
+					if (BitmapImage image = bundle.GetImage(GetSize(), ImageBundleFlag::SystemSize|ImageBundleFlag::NearestLarger))
 					{
 						SetBitmap(image.ToGDIBitmap().ToWxBitmap());
 						return;

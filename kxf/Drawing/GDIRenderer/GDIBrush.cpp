@@ -156,7 +156,7 @@ namespace kxf::Drawing
 			}
 			case StockBrush::Green:
 			{
-				return *wxGREY_BRUSH;
+				return *wxGREEN_BRUSH;
 			}
 			case StockBrush::Yellow:
 			{

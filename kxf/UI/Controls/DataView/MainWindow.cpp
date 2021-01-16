@@ -594,7 +594,6 @@ namespace kxf::UI::DataView
 			return;
 		}
 
-		#if wxUSE_DRAG_AND_DROP
 		if (event.Dragging() || ((m_DragCount > 0) && event.Leaving()))
 		{
 			if (m_DragCount == 0)
@@ -651,7 +650,6 @@ namespace kxf::UI::DataView
 		{
 			m_DragCount = 0;
 		}
-		#endif
 
 		// Check if we clicked outside the item area.
 		if (currentRow >= GetRowCount() || !currentNode || !currentColumn)

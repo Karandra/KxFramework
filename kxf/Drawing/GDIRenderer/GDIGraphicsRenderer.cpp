@@ -5,6 +5,7 @@
 #include "GDIGraphicsBrush.h"
 #include "GDIGraphicsPen.h"
 #include "GDIGraphicsFont.h"
+#include "kxf/Utility/Container.h"
 
 namespace kxf
 {
@@ -45,11 +46,11 @@ namespace kxf
 			}
 			case PenStyle::Dash:
 			{
-				auto brush = pen.GetBrush();
-				if (object_ptr<IGraphicsHatchBrush> hatchBrush; brush && brush->QueryInterface(hatchBrush))
+				gdiPen.SetDashStyle(pen.GetDashStyle());
+				gdiPen.SetDashes(Utility::Container::ConvertVector<GDIPen::Dash>(pen.GetDashPattern(), [](const auto& dash)
 				{
-					gdiPen.SetHatchStyle(hatchBrush->GetHatchStyle());
-				}
+					return static_cast<GDIPen::Dash>(dash);
+				}));
 				break;
 			}
 			case PenStyle::Texture:

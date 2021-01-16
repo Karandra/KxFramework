@@ -91,7 +91,7 @@ namespace kxf
 		{
 			return m_HotSpot.GetX();
 		}
-		else if (name == ImageOption::Cursor::HotSpotX)
+		else if (name == ImageOption::Cursor::HotSpotY)
 		{
 			return m_HotSpot.GetY();
 		}
@@ -103,7 +103,7 @@ namespace kxf
 		{
 			m_HotSpot.SetX(value);
 		}
-		else if (name == ImageOption::Cursor::HotSpotX)
+		else if (name == ImageOption::Cursor::HotSpotY)
 		{
 			m_HotSpot.SetY(value);
 		}

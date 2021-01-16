@@ -13,7 +13,7 @@ namespace
 		{
 			return item.GetPluralString(LocalizationItemQuantity::One);
 		}
-		else if (value <= 4 || (value >= 21 && lastDigit <= 4))
+		else if ((value > 0 && value <= 4) || (value >= 21 && lastDigit <= 4))
 		{
 			return item.GetPluralString(LocalizationItemQuantity::Few);
 		}
