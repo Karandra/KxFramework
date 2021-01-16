@@ -1893,6 +1893,12 @@ namespace kxf::UI::DataView
 			m_RedrawNeeded = false;
 		}
 
+		// Change the graphics renderer
+		if (m_View->m_PendingGraphicsRenderer)
+		{
+			m_GraphicsRenderer = std::move(m_View->m_PendingGraphicsRenderer);
+		}
+
 		wxWindow::OnInternalIdle();
 		WindowRefreshScheduler::OnInternalIdle();
 	}

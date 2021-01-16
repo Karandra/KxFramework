@@ -5,8 +5,9 @@
 #include "Column.h"
 #include "ColumnID.h"
 #include "SortMode.h"
-#include "kxf/UI/WindowRefreshScheduler.h"
 #include "kxf/UI/WindowWithStyles.h"
+#include "kxf/UI/WindowRefreshScheduler.h"
+#include "kxf/UI/IGraphicsRendererAwareWidget.h"
 #include <wx/systhemectrl.h>
 #include <wx/scrolwin.h>
 
@@ -23,7 +24,11 @@ namespace kxf::UI::DataView
 
 namespace kxf::UI::DataView
 {
-	class KX_API View: public WindowRefreshScheduler<wxSystemThemedControl<wxScrolled<wxWindow>>>, public WindowWithStyles<View, CtrlStyle>, public WindowWithExtraStyles<View, CtrlExtraStyle>
+	class KX_API View:
+		public WindowRefreshScheduler<wxSystemThemedControl<wxScrolled<wxWindow>>>,
+		public WindowWithStyles<View, CtrlStyle>,
+		public WindowWithExtraStyles<View, CtrlExtraStyle>,
+		public IGraphicsRendererAwareWidget
 	{
 		friend class HeaderCtrl;
 		friend class HeaderCtrl2;
@@ -67,6 +72,8 @@ namespace kxf::UI::DataView
 			// iterate over 'm_Columns' to check if anything needs to be done.
 			bool m_ColumnsDirty = false;
 
+			std::shared_ptr<IGraphicsRenderer> m_PendingGraphicsRenderer;
+
 		private:
 			void InvalidateColumnsBestWidth();
 			void UpdateColumnsWidth();
@@ -76,6 +83,16 @@ namespace kxf::UI::DataView
 			wxSize GetSizeAvailableForScrollTarget(const wxSize& size) override;
 
 			Column::RefVector DoGetColumnsInDisplayOrder(bool physicalOrder) const;
+
+			// Called by header window after reorder
+			void MoveColumn(Column& column, size_t newIndex);
+			void MoveColumnToPhysicalIndex(Column& movedColumn, size_t newIndex);
+
+			// Update the display after a change to an individual column
+			void OnColumnChange(Column& column);
+
+			// Update after a change to the number of columns
+			void OnColumnCountChanged();
 
 		protected:
 			void DoEnable(bool value) override;
@@ -368,16 +385,9 @@ namespace kxf::UI::DataView
 			BitmapImage GetBackgroundBitmap() const;
 			void SetBackgroundBitmap(const BitmapImage& bitmap, FlagSet<Alignment> align = Alignment::Invalid, bool fit = false);
 
-		private:
-			// Called by header window after reorder
-			void MoveColumn(Column& column, size_t newIndex);
-			void MoveColumnToPhysicalIndex(Column& movedColumn, size_t newIndex);
-
-			// Update the display after a change to an individual column
-			void OnColumnChange(Column& column);
-
-			// Update after a change to the number of columns
-			void OnColumnCountChanged();
+			// IGraphicsRendererAwareWidget
+			std::shared_ptr<IGraphicsRenderer> GetActiveGraphicsRenderer() const override;
+			void SetActiveGraphicsRenderer(std::shared_ptr<IGraphicsRenderer> renderer) override;
 
 		public:
 			wxDECLARE_DYNAMIC_CLASS_NO_COPY(View);

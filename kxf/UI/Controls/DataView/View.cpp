@@ -202,6 +202,72 @@ namespace kxf::UI::DataView
 		return displayOrder;
 	}
 
+	void View::MoveColumn(Column& movedColumn, size_t newIndex)
+	{
+		// Do *not* reorder 'm_Columns' elements here, they should always be in the order in which columns
+		// were added, we only display the columns in different order.
+		if (movedColumn.GetDisplayIndex() != newIndex)
+		{
+			const size_t oldDisplayIndex = movedColumn.GetDisplayIndex();
+			Column& otherColumn = *GetColumnDisplayedAt(newIndex);
+
+			if (oldDisplayIndex < newIndex)
+			{
+				// Column moved to the left
+				for (auto& column: m_Columns)
+				{
+					size_t displayIndex = column->GetDisplayIndex();
+					if (displayIndex <= newIndex && displayIndex > oldDisplayIndex)
+					{
+						column->AssignDisplayIndex(displayIndex - 1);
+					}
+				}
+			}
+			else
+			{
+				// Column moved to the right
+				for (auto& column: m_Columns)
+				{
+					size_t displayIndex = column->GetDisplayIndex();
+					if (displayIndex >= newIndex && displayIndex < oldDisplayIndex)
+					{
+						column->AssignDisplayIndex(displayIndex + 1);
+					}
+				}
+			}
+
+			// Set the new display position
+			movedColumn.AssignDisplayIndex(newIndex);
+
+			// Notify the header control
+			OnColumnCountChanged();
+		}
+	}
+	void View::MoveColumnToPhysicalIndex(Column& movedColumn, size_t newIndex)
+	{
+		if (Column* column = GetColumnPhysicallyDisplayedAt(newIndex))
+		{
+			MoveColumn(movedColumn, column->GetDisplayIndex());
+		}
+	}
+
+	void View::OnColumnChange(Column& column)
+	{
+		if (m_HeaderArea)
+		{
+			m_HeaderArea->UpdateColumn(column);
+		}
+		m_ClientArea->UpdateDisplay();
+	}
+	void View::OnColumnCountChanged()
+	{
+		if (m_HeaderArea)
+		{
+			m_HeaderArea->UpdateColumnCount();
+		}
+		m_ClientArea->OnColumnCountChanged();
+	}
+
 	bool View::Create(wxWindow* parent, wxWindowID id, const Point& pos, const Size& size, FlagSet<CtrlStyle> style, const String& name)
 	{
 		m_Styles = CombineFlags<CtrlStyle>(*style, WindowStyle::ScrollHorizontal|WindowStyle::ScrollVertical);
@@ -769,70 +835,13 @@ namespace kxf::UI::DataView
 		m_ClientArea->SetBackgroundBitmap(bitmap, align, fit);
 	}
 
-	// Utility functions, not part of the API
-	void View::MoveColumn(Column& movedColumn, size_t newIndex)
+	// IGraphicsRendererAwareWidget
+	std::shared_ptr<IGraphicsRenderer> View::GetActiveGraphicsRenderer() const
 	{
-		// Do *not* reorder 'm_Columns' elements here, they should always be in the order in which columns
-		// were added, we only display the columns in different order.
-		if (movedColumn.GetDisplayIndex() != newIndex)
-		{
-			const size_t oldDisplayIndex = movedColumn.GetDisplayIndex();
-			Column& otherColumn = *GetColumnDisplayedAt(newIndex);
-
-			if (oldDisplayIndex < newIndex)
-			{
-				// Column moved to the left
-				for (auto& column: m_Columns)
-				{
-					size_t displayIndex = column->GetDisplayIndex();
-					if (displayIndex <= newIndex && displayIndex > oldDisplayIndex)
-					{
-						column->AssignDisplayIndex(displayIndex - 1);
-					}
-				}
-			}
-			else
-			{
-				// Column moved to the right
-				for (auto& column: m_Columns)
-				{
-					size_t displayIndex = column->GetDisplayIndex();
-					if (displayIndex >= newIndex && displayIndex < oldDisplayIndex)
-					{
-						column->AssignDisplayIndex(displayIndex + 1);
-					}
-				}
-			}
-
-			// Set the new display position
-			movedColumn.AssignDisplayIndex(newIndex);
-
-			// Notify the header control
-			OnColumnCountChanged();
-		}
+		return m_ClientArea->m_GraphicsRenderer;
 	}
-	void View::MoveColumnToPhysicalIndex(Column& movedColumn, size_t newIndex)
+	void View::SetActiveGraphicsRenderer(std::shared_ptr<IGraphicsRenderer> renderer)
 	{
-		if (Column* column = GetColumnPhysicallyDisplayedAt(newIndex))
-		{
-			MoveColumn(movedColumn, column->GetDisplayIndex());
-		}
-	}
-
-	void View::OnColumnChange(Column& column)
-	{
-		if (m_HeaderArea)
-		{
-			m_HeaderArea->UpdateColumn(column);
-		}
-		m_ClientArea->UpdateDisplay();
-	}
-	void View::OnColumnCountChanged()
-	{
-		if (m_HeaderArea)
-		{
-			m_HeaderArea->UpdateColumnCount();
-		}
-		m_ClientArea->OnColumnCountChanged();
+		m_PendingGraphicsRenderer = std::move(renderer);
 	}
 }
