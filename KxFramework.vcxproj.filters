@@ -1754,6 +1754,9 @@
     <ClInclude Include="kxf\UI\Controls\DataView\SortMode.h">
       <Filter>kxf\UI\Controls\DataView</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\UI\IGraphicsRendererAwareWidget.h">
+      <Filter>kxf\UI\&lt;UI&gt;</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">

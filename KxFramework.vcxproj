@@ -486,6 +486,7 @@
     <ClInclude Include="kxf\UI\Menus\MenuEvent.h" />
     <ClInclude Include="kxf\UI\Menus\MenuItem.h" />
     <ClInclude Include="kxf\UI\Menus\ShellMenu.h" />
+    <ClInclude Include="kxf\UI\IGraphicsRendererAwareWidget.h" />
     <ClInclude Include="kxf\UI\WidgetID.h" />
     <ClInclude Include="kxf\UI\Windows\CollapsiblePane.h" />
     <ClInclude Include="kxf\UI\Windows\DrawablePanel.h" />
