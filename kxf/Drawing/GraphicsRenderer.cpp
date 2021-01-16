@@ -65,4 +65,39 @@ namespace kxf::Drawing
 	{
 		g_DefaultRenderer = std::move(renderer);
 	}
+
+	size_t EnumAvailableRenderers(std::function<bool(std::shared_ptr<IGraphicsRenderer>)> func)
+	{
+		size_t count = 0;
+		auto Try = [&](std::shared_ptr<IGraphicsRenderer> renderer)
+		{
+			if (renderer)
+			{
+				count++;
+				if (func)
+				{
+					return std::invoke(func, std::move(renderer));
+				}
+			}
+			return true;
+		};
+
+		Try(GetGDIRenderer()) && Try(GetGDIPlusRenderer()) && Try(GetDirect2DRenderer()) && Try(GetCairoRenderer());
+		return count;
+	}
+	std::shared_ptr<IGraphicsRenderer> GetRendererByName(const String& name)
+	{
+		std::shared_ptr<IGraphicsRenderer> result;
+		EnumAvailableRenderers([&](std::shared_ptr<IGraphicsRenderer> renderer)
+		{
+			if (renderer->GetName() == name)
+			{
+				result = std::move(renderer);
+				return false;
+			}
+			return true;
+		});
+
+		return result;
+	}
 }

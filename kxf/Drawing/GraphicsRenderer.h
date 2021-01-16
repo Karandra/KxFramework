@@ -21,4 +21,7 @@ namespace kxf::Drawing
 
 	std::shared_ptr<IGraphicsRenderer> GetDefaultRenderer();
 	void SetDefaultRenderer(std::shared_ptr<IGraphicsRenderer> renderer);
+
+	size_t EnumAvailableRenderers(std::function<bool(std::shared_ptr<IGraphicsRenderer>)> func);
+	std::shared_ptr<IGraphicsRenderer> GetRendererByName(const String& name);
 }
