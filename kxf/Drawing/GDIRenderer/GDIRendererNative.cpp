@@ -319,8 +319,11 @@ namespace kxf
 			if (UxTheme theme(*window, UxThemeClass::ListView); theme)
 			{
 				float borderWidth = theme.GetInt(LVP_LISTITEM, 0, TMT_BORDERSIZE).value_or(1);
-				GDIAction::ChangePen pen(dc, GDIPen(theme.GetColor(LVP_GROUPHEADER, 0, TMT_ACCENTCOLORHINT), borderWidth));
-				GDIAction::ChangeBrush brush(dc, *wxTRANSPARENT_BRUSH);
+				GDIAction::ChangeBrush brushChange(dc, *wxTRANSPARENT_BRUSH);
+
+				GDIPen pen(theme.GetColor(LVP_GROUPHEADERLINE, 0, TMT_EDGEDKSHADOWCOLOR), borderWidth);
+				pen.SetDashStyle(DashStyle::Dot);
+				GDIAction::ChangePen penChange(dc, pen);
 
 				if (borderWidth > 1)
 				{
@@ -352,7 +355,6 @@ namespace kxf
 			IGraphicsRenderer& renderer = gc.GetRenderer();
 
 			float borderWidth = theme.GetInt(LVP_LISTITEM, 0, TMT_BORDERSIZE).value_or(1);
-			auto brush = renderer.CreateSolidBrush(Drawing::GetStockColor(StockColor::Transparent));
 			auto pen = renderer.CreatePen(theme.GetColor(LVP_GROUPHEADERLINE, 0, TMT_EDGEDKSHADOWCOLOR), borderWidth);
 			pen->SetStyle(PenStyle::Dash);
 			pen->SetDashStyle(DashStyle::Dot);
@@ -360,11 +362,11 @@ namespace kxf
 			if (borderWidth > 1.0f)
 			{
 				Rect newRect = rect.Clone().Deflate(std::round(borderWidth / 2.0f));
-				gc.DrawRectangle(newRect, *brush, *pen);
+				gc.DrawRectangle(newRect, renderer.GetTransparentBrush(), *pen);
 			}
 			else
 			{
-				gc.DrawRectangle(rect, *brush, *pen);
+				gc.DrawRectangle(rect, renderer.GetTransparentBrush(), *pen);
 			}
 		}
 	}
