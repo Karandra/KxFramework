@@ -564,7 +564,7 @@ namespace kxf
 			// use our own DC for this purpose. We either have to create a memory DC and blit it to this
 			// (which doesn't always works correctly with alpha), alpha-blend it (via ::AlphaBlend function)
 			// or use a generic function that draws the content on a bitmap. In either case we'll need a bitmap
-			// to draw on so there is much difference.
+			// to draw on so there isn't much difference.
 			// Another solution would be to set origin to the rect's position and clip the DC but then the DC
 			// would still be of its original size which isn't good either.
 			if (GDIBitmap bitmap = DrawGDIOnBitmap(rect, std::move(func)))
