@@ -110,3 +110,9 @@ namespace kxf
 			);
 	};
 }
+
+namespace kxf::FileSystem
+{
+	IFileSystem& GetNullFileSystem() noexcept;
+	IFileIDSystem& GetNullFileIDSystem() noexcept;
+}

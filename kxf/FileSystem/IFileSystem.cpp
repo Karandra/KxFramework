@@ -1,10 +1,13 @@
 #include "stdafx.h"
 #include "IFileSystem.h"
+#include "NullFileSystem.h"
 #include "kxf/IO/IStream.h"
 
 namespace
 {
 	using namespace kxf;
+
+	kxf::FileSystem::NullFileSystem g_NullFileSystem;
 
 	template<class TStream, class TFileSystem, class TID>
 	std::unique_ptr<TStream> QueryStream(TFileSystem& fs, const TID& id, FlagSet<IOStreamAccess> access, IOStreamDisposition disposition, FlagSet<IOStreamShare> share)
@@ -42,5 +45,18 @@ namespace kxf
 	std::unique_ptr<IOutputStream> IFileIDSystem::OpenToWrite(const UniversallyUniqueID& id, IOStreamDisposition disposition, FlagSet<IOStreamShare> share)
 	{
 		return QueryStream<IOutputStream>(*this, id, IOStreamAccess::Write, disposition, share);
+	}
+}
+
+
+namespace kxf::FileSystem
+{
+	IFileSystem& GetNullFileSystem() noexcept
+	{
+		return g_NullFileSystem;
+	}
+	IFileIDSystem& GetNullFileIDSystem() noexcept
+	{
+		return g_NullFileSystem;
 	}
 }
