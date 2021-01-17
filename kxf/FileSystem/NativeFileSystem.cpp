@@ -8,7 +8,7 @@
 #include "kxf/System/SystemInformation.h"
 #include "kxf/IO/NativeFileStream.h"
 #include "kxf/Utility/Common.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 
 namespace
 {
@@ -222,7 +222,7 @@ namespace kxf
 				HANDLE handle = FileSystem::Private::CallFindFirstFile(fullQuery, findInfo, flags & FSActionFlag::CaseSensitive);
 				if (handle && handle != INVALID_HANDLE_VALUE)
 				{
-					Utility::CallAtScopeExit atExit([&]()
+					Utility::ScopeGuard atExit([&]()
 					{
 						::FindClose(handle);
 					});
@@ -599,7 +599,7 @@ namespace kxf
 			HANDLE handle = ::FindFirstStreamW(pathString.wc_str(), STREAM_INFO_LEVELS::FindStreamInfoStandard, &streamInfo, 0);
 			if (handle && handle != INVALID_HANDLE_VALUE)
 			{
-				Utility::CallAtScopeExit atExit([&]()
+				Utility::ScopeGuard atExit([&]()
 				{
 					::FindClose(handle);
 				});

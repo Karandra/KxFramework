@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Win32CommonEventLoop.h"
 #include "kxf/Application/ICoreApplication.h"
-#include "kxf/Utility/CallAtScopeExit.h"
 #include <Windows.h>
 
 namespace kxf::EventSystem::Private

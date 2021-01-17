@@ -3,7 +3,7 @@
 #include "../HResult.h"
 #include "../NtStatus.h"
 #include "../Win32Error.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 
 namespace kxf::System::Private
 {
@@ -34,7 +34,7 @@ namespace kxf::System::Private
 		overlapped.hEvent = nullptr;
 
 		// Remember current error and reset it
-		Utility::CallAtScopeExit atExit = ([previousError = ::GetLastError()]()
+		Utility::ScopeGuard atExit = ([previousError = ::GetLastError()]()
 		{
 			::SetLastError(previousError);
 		});

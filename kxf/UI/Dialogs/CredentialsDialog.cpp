@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CredentialsDialog.h"
 #include "kxf/Utility/Memory.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 #include "kxf/System/COM.h"
 #include "kxf/System/Win32Error.h"
 #include <wincred.h>
@@ -54,7 +54,7 @@ namespace kxf::UI
 		COMMemoryPtr<uint8_t> authBlob;
 		ULONG authBlobSize = 0;
 		BOOL saveCredentials = m_SaveCredentials;
-		Utility::CallAtScopeExit zeroAuthBlob = ([&]()
+		Utility::ScopeGuard zeroAuthBlob = ([&]()
 		{
 			if (authBlob)
 			{
@@ -91,7 +91,7 @@ namespace kxf::UI
 			wchar_t name[nameLengthMax] = {};
 			wchar_t password[passwordLengthMax] = {};
 			wchar_t domain[domainLengthMax] = {};
-			Utility::CallAtScopeExit zeroCredentials = ([&]()
+			Utility::ScopeGuard zeroCredentials = ([&]()
 			{
 				Utility::SecureZeroMemory(name, sizeof(name));
 				Utility::SecureZeroMemory(password, sizeof(password));

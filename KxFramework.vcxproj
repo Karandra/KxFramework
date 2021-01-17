@@ -680,7 +680,7 @@
     <ClInclude Include="kxf\UI\WindowUpdateLocker.h" />
     <ClInclude Include="kxf\UI\WithDropdownMenu.h" />
     <ClInclude Include="kxf\Utility.hpp" />
-    <ClInclude Include="kxf\Utility\CallAtScopeExit.h" />
+    <ClInclude Include="kxf\Utility\ScopeGuard.h" />
     <ClInclude Include="kxf\Utility\Common.h" />
     <ClInclude Include="kxf\Utility\Container.h" />
     <ClInclude Include="kxf\Utility\Drawing.h" />

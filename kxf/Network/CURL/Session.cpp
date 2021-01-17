@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Session.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 
 #define CURL_STATICLIB 1
 #include <curl/curl.h>
@@ -168,7 +168,7 @@ namespace kxf
 	size_t CURLSession::EnumReplyCookies(std::function<bool(String)> func) const
 	{
 		curl_slist* cookesList = nullptr;
-		Utility::CallAtScopeExit atExit = [&]()
+		Utility::ScopeGuard atExit = [&]()
 		{
 			if (cookesList)
 			{

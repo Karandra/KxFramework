@@ -4,7 +4,7 @@
 #include "kxf/System/Private/System.h"
 #include "kxf/FileSystem/NativeFileSystem.h"
 #include "kxf/Utility/Common.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 #include <Windows.h>
 #include <PsAPI.h>
 #include <WInternl.h>
@@ -26,7 +26,7 @@ namespace
 
 		HANDLE processHandleDuplicate = nullptr;
 		HANDLE remoteThreadHandle = nullptr;
-		Utility::CallAtScopeExit atExit = [&]()
+		Utility::ScopeGuard atExit = [&]()
 		{
 			if (processHandleDuplicate)
 			{
@@ -258,7 +258,7 @@ namespace kxf
 		HANDLE snapshotHandle = ::CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
 		if (snapshotHandle && snapshotHandle != INVALID_HANDLE_VALUE)
 		{
-			Utility::CallAtScopeExit atExit = [&]()
+			Utility::ScopeGuard atExit = [&]()
 			{
 				::CloseHandle(snapshotHandle);
 			};
@@ -321,7 +321,7 @@ namespace kxf
 		{
 			if (HANDLE threadHandle = ::OpenThread(THREAD_QUERY_LIMITED_INFORMATION, FALSE, threadID))
 			{
-				Utility::CallAtScopeExit atExit = [&]()
+				Utility::ScopeGuard atExit = [&]()
 				{
 					::CloseHandle(threadHandle);
 				};

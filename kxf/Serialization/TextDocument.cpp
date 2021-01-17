@@ -2,7 +2,7 @@
 #include "TextDocument.h"
 #include "kxf/FileSystem/NativeFileSystem.h"
 #include "kxf/IO/StreamReaderWriter.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 #include <wx/textfile.h>
 
 namespace
@@ -37,7 +37,7 @@ namespace kxf::TextDocument
 		wxTextFile textFile(filePath.GetFullPath());
 		if (textFile.Open())
 		{
-			Utility::CallAtScopeExit atExit([&]()
+			Utility::ScopeGuard atExit([&]()
 			{
 				textFile.Close();
 			});

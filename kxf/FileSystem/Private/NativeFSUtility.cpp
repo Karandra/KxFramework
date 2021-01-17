@@ -2,7 +2,7 @@
 #include "NativeFSUtility.h"
 #include "kxf/IO/NativeFileStream.h"
 #include "kxf/System/SystemInformation.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 
 namespace kxf::FileSystem::Private
 {
@@ -119,7 +119,7 @@ namespace kxf::FileSystem::Private
 		NativeFileStream stream;
 		if (stream.AttachHandle(fileHandle))
 		{
-			Utility::CallAtScopeExit atExit= [&]()
+			Utility::ScopeGuard atExit= [&]()
 			{
 				stream.DetachHandle();
 			};

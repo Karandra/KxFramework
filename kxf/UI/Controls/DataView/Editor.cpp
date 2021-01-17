@@ -4,7 +4,7 @@
 #include "Column.h"
 #include "View.h"
 #include "MainWindow.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 
 namespace kxf::UI::DataView
 {
@@ -75,7 +75,7 @@ namespace kxf::UI::DataView
 		if (m_Node && m_Column)
 		{
 			m_IsEditFinished = true;
-			Utility::CallAtScopeExit atExit = [this]()
+			Utility::ScopeGuard atExit = [this]()
 			{
 				OnEndEdit();
 			};

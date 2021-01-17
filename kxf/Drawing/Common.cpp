@@ -3,7 +3,7 @@
 #include "IImageHandler.h"
 #include "BitmapImage.h"
 #include "kxf/wxWidgets/StreamWrapper.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 #include <wx/image.h>
 
 namespace kxf::Drawing
@@ -17,7 +17,7 @@ namespace kxf::Drawing
 
 			for (wxObject* objectWx: wxImage::GetHandlers())
 			{
-				Utility::CallAtScopeExit atExit = [&]()
+				Utility::ScopeGuard atExit = [&]()
 				{
 					stream.SeekI(initialOffset, IOStreamSeek::FromStart);
 				};

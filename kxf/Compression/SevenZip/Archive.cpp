@@ -12,7 +12,7 @@
 #include "kxf/System/ErrorCode.h"
 #include "kxf/System/VariantProperty.h"
 #include "kxf/FileSystem/NativeFileSystem.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 #include "kxf/Utility/TypeTraits.h"
 
 namespace

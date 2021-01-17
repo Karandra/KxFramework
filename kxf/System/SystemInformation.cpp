@@ -6,7 +6,7 @@
 #include "Private/SystemInformationDefinesMapping.h"
 #include "kxf/Drawing/GDIRenderer/GDIFont.h"
 #include "kxf/Utility/Common.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 #include <wx/settings.h>
 
 #include <Windows.h>
@@ -319,7 +319,7 @@ namespace kxf::System
 
 		// Is administrator
 		HANDLE tokenHandle = nullptr;
-		Utility::CallAtScopeExit atExit([&]()
+		Utility::ScopeGuard atExit([&]()
 		{
 			if (tokenHandle)
 			{
@@ -349,7 +349,7 @@ namespace kxf::System
 	{
 		HANDLE tokenHandle = nullptr;
 		wchar_t* userSID = nullptr;
-		Utility::CallAtScopeExit atExit([&]()
+		Utility::ScopeGuard atExit([&]()
 		{
 			if (tokenHandle)
 			{
@@ -487,7 +487,7 @@ namespace kxf::System
 		HDC desktopDC = ::GetDC(nullptr);
 		if (desktopDC)
 		{
-			Utility::CallAtScopeExit atExit([&]()
+			Utility::ScopeGuard atExit([&]()
 			{
 				::ReleaseDC(nullptr, desktopDC);
 			});

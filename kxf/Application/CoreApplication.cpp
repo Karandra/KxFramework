@@ -10,7 +10,7 @@
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/System/DynamicLibraryEvent.h"
 #include "kxf/Utility/Container.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 #include "kxf/wxWidgets/Application.h"
 #include "kxf/wxWidgets/EvtHandlerWrapper.h"
 #include <wx/cmdline.h>
@@ -211,7 +211,7 @@ namespace kxf
 			// Save the old main loop pointer (if any), create a new loop and run it.
 			// At the end of the loop, restore the original main loop.
 			std::swap(m_MainLoop, mainLoop);
-			Utility::CallAtScopeExit atExit = [&]()
+			Utility::ScopeGuard atExit = [&]()
 			{
 				m_MainLoop = std::move(mainLoop);
 			};
@@ -550,7 +550,7 @@ namespace kxf
 
 					// This inner unlock-relock must be consistent with the outer guard.
 					m_PendingEvtHandlersLock.UnlockWrite();
-					Utility::CallAtScopeExit relock = [&]()
+					Utility::ScopeGuard relock = [&]()
 					{
 						m_PendingEvtHandlersLock.LockWrite();
 					};

@@ -6,7 +6,7 @@
 #include "../Library.h"
 #include "kxf/FileSystem/NativeFileSystem.h"
 #include "kxf/FileSystem/Private/NativeFSUtility.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 #include <ShlObj.h>
 #include <shlwapi.h>
 #include "kxf/System/UndefWindows.h"
@@ -77,7 +77,7 @@ namespace kxf::SevenZip::Private
 
 			if (HResult(archive->Open(streamWrapper, nullptr, openCallback)))
 			{
-				Utility::CallAtScopeExit atExit([&]()
+				Utility::ScopeGuard atExit([&]()
 				{
 					archive->Close();
 				});
@@ -177,7 +177,7 @@ namespace kxf::SevenZip::Private
 		if (stream)
 		{
 			auto archive = GetArchiveReader(format);
-			Utility::CallAtScopeExit atExit([&]()
+			Utility::ScopeGuard atExit([&]()
 			{
 				archive->Close();
 			});
@@ -284,7 +284,7 @@ namespace kxf::SevenZip::Private
 				}
 
 				auto archive = GetArchiveReader(format);
-				Utility::CallAtScopeExit atExit = ([&]()
+				Utility::ScopeGuard atExit = ([&]()
 				{
 					archive->Close();
 				});

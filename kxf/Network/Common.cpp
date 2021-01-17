@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Common.h"
 #include "URI.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 
 #include <WinINet.h>
 #include <WinDNS.h>
@@ -20,7 +20,7 @@ namespace kxf::Network
 		if (ip == NetworkHostType::IPv4 || ip == NetworkHostType::IPv6)
 		{
 			DNS_RECORD* infoDNS = nullptr;
-			Utility::CallAtScopeExit atExit([&]()
+			Utility::ScopeGuard atExit([&]()
 			{
 				if (infoDNS)
 				{

@@ -2,7 +2,7 @@
 #include "NativeFileStream.h"
 #include "kxf/System/Win32Error.h"
 #include "kxf/FileSystem/Private/NativeFSUtility.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 
 namespace
 {
@@ -188,7 +188,7 @@ namespace kxf
 	// IInputStream
 	std::optional<uint8_t> NativeFileStream::Peek()
 	{
-		Utility::CallAtScopeExit atExit = [&, oldOffset = GetOffsetByHandle(m_Handle)]()
+		Utility::ScopeGuard atExit = [&, oldOffset = GetOffsetByHandle(m_Handle)]()
 		{
 			SeekByHandle(m_Handle, oldOffset, IOStreamSeek::FromStart);
 		};
@@ -274,7 +274,7 @@ namespace kxf
 	{
 		if (allocationSize)
 		{
-			Utility::CallAtScopeExit atExit = [&, oldOffset = GetOffsetByHandle(m_Handle)]()
+			Utility::ScopeGuard atExit = [&, oldOffset = GetOffsetByHandle(m_Handle)]()
 			{
 				SeekByHandle(m_Handle, oldOffset, IOStreamSeek::FromStart);
 			};

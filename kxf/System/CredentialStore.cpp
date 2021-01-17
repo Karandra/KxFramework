@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CredentialStore.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 #include <Windows.h>
 #include <wincred.h>
 #include "UndefWindows.h"
@@ -26,7 +26,7 @@ namespace kxf
 	bool CredentialStore::Load(String& userName, SecretValue& secret) const
 	{
 		PCREDENTIALW credentialInfo = nullptr;
-		Utility::CallAtScopeExit atExit([&]()
+		Utility::ScopeGuard atExit([&]()
 		{
 			::CredFree(credentialInfo);
 		});

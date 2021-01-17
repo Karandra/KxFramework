@@ -5,7 +5,7 @@
 #include "kxf/IO/INativeStream.h"
 #include "kxf/System/VariantProperty.h"
 #include "kxf/FileSystem/NativeFileSystem.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 
 namespace kxf::SevenZip::Private::Callback
 {
@@ -94,7 +94,7 @@ namespace kxf::SevenZip::Private::Callback
 	STDMETHODIMP ExtractArchiveWrapper::SetOperationResult(Int32 operationResult)
 	{
 		OutputStreamDelegate stream = std::move(m_Stream);
-		Utility::CallAtScopeExit atExit = [&]()
+		Utility::ScopeGuard atExit = [&]()
 		{
 			if (stream && stream.OwnsTargetStream())
 			{

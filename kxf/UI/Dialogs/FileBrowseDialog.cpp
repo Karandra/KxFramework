@@ -2,7 +2,7 @@
 #include "FileBrowseDialog.h"
 #include "Private/FileBrowseDialogEvents.h"
 #include "kxf/Utility/Common.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 
 namespace
 {

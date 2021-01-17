@@ -5,7 +5,7 @@
 #include "FSPath.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/INativeStream.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 
 namespace
 {
@@ -91,7 +91,7 @@ namespace kxf
 		HANDLE handle = ::FindFirstVolumeW(volumeGuidPath, std::size(volumeGuidPath));
 		if (handle && handle != INVALID_HANDLE_VALUE)
 		{
-			Utility::CallAtScopeExit atExit([&]()
+			Utility::ScopeGuard atExit([&]()
 			{
 				::FindVolumeClose(handle);
 			});
@@ -335,7 +335,7 @@ namespace kxf
 		HANDLE handle = ::FindFirstVolumeMountPointW(m_Path, buffer, std::size(buffer));
 		if (handle && handle != INVALID_HANDLE_VALUE)
 		{
-			Utility::CallAtScopeExit atExit([&]()
+			Utility::ScopeGuard atExit([&]()
 			{
 				::FindVolumeMountPointClose(handle);
 			});

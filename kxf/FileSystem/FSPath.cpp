@@ -4,7 +4,7 @@
 #include "StorageVolume.h"
 #include "kxf/System/HResult.h"
 #include "kxf/System/NativeAPI.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 #include "Private/NamespacePrefix.h"
 #include <pathcch.h>
 #include <locale>
@@ -110,7 +110,7 @@ namespace kxf
 
 	void FSPath::AssignFromPath(String path)
 	{
-		Utility::CallAtScopeExit atExit([&]()
+		Utility::ScopeGuard atExit([&]()
 		{
 			if (!CheckStringOnInitialAssign(m_Path))
 			{

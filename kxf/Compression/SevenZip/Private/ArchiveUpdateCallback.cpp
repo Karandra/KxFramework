@@ -4,7 +4,7 @@
 #include "Utility.h"
 #include "kxf/FileSystem/Private/NativeFSUtility.h"
 #include "kxf/System/VariantProperty.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 
 namespace kxf::SevenZip::Private::Callback
 {

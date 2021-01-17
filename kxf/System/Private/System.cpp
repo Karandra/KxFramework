@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "System.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 #include <Windows.h>
 #include "kxf/System/UndefWindows.h"
 
@@ -21,7 +21,7 @@ namespace kxf::System::Private
 		);
 		if (length != 0 && formattedMessage)
 		{
-			Utility::CallAtScopeExit atExit([&]()
+			Utility::ScopeGuard atExit([&]()
 			{
 				::LocalFree(formattedMessage);
 			});

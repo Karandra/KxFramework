@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ApplicationInitializer.h"
 #include "kxf/wxWidgets/Application.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 #include "Private/NativeApp.h"
 #include <wx/init.h>
 #include <wx/except.h>
@@ -99,7 +99,7 @@ namespace kxf
 			if (m_Application.OnInit())
 			{
 				// Ensure that 'OnExit' is called if 'OnInit' had succeeded
-				Utility::CallAtScopeExit callOnExit = [&]()
+				Utility::ScopeGuard callOnExit = [&]()
 				{
 					// Don't call 'OnExit' if 'OnInit' failed
 					m_Application.OnExit();

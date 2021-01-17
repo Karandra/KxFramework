@@ -14,7 +14,7 @@
 #include "kxf/Drawing/GDIRenderer/GDIIcon.h"
 #include "kxf/UI/Common.h"
 #include "kxf/Utility/Common.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 
 #include <Windows.h>
 #include <winnls.h>
@@ -225,7 +225,7 @@ namespace kxf::Shell
 			window->Disable();
 			disabled = true;
 		}
-		Utility::CallAtScopeExit atExit([&]()
+		Utility::ScopeGuard atExit([&]()
 		{
 			// Re-enable parent window
 			if (disabled)
@@ -486,7 +486,7 @@ namespace kxf::Shell
 			};
 		}
 
-		Utility::CallAtScopeExit atExit = [&]()
+		Utility::ScopeGuard atExit = [&]()
 		{
 			if ((isEnvUsed || isCustomMethodUsed) && flags & SHGetKnownDirectoryFlag::CreateIfDoesNotExist)
 			{

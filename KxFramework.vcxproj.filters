@@ -439,9 +439,6 @@
     <ClInclude Include="kxf\FileSystem\NativeFileSystem.h">
       <Filter>kxf\FileSystem</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Utility\CallAtScopeExit.h">
-      <Filter>kxf\Utility</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\General\Singleton.h">
       <Filter>kxf\General</Filter>
     </ClInclude>
@@ -1762,6 +1759,9 @@
     </ClInclude>
     <ClInclude Include="kxf\Drawing\Private\Defines.h">
       <Filter>kxf\Drawing\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Utility\ScopeGuard.h">
+      <Filter>kxf\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

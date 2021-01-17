@@ -1,7 +1,7 @@
 #pragma once
 #include "kxf/Utility/Common.h"
 
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 #include "kxf/Utility/Container.h"
 #include "kxf/Utility/Drawing.h"
 #include "kxf/Utility/Memory.h"

@@ -3,7 +3,7 @@
 #include "kxf/Application/ICoreApplication.h"
 #include "kxf/System/ShellOperations.h"
 #include "kxf/System/SystemInformation.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 
 namespace
 {
@@ -75,7 +75,7 @@ namespace kxf
 				// We've found the end of the variable, extract namespace and call the provided callback
 				if (entryStartPos != String::npos && varNameStartPos != String::npos && result[i] == wxS(')'))
 				{
-					Utility::CallAtScopeExit atExit = [&]()
+					Utility::ScopeGuard atExit = [&]()
 					{
 						// Reset parser state
 						entryStartPos = String::npos;

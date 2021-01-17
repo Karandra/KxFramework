@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "VariantProperty.h"
 #include "COM.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 #include <propvarutil.h>
 #include <propidlbase.h>
 #pragma comment(lib, "Propsys.lib")

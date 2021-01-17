@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CommonEventLoop.h"
 #include "kxf/Application/ICoreApplication.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 
 namespace kxf
 {
@@ -29,7 +29,7 @@ namespace kxf
 		}
 
 		// Rethrow any exceptions which could have been produced by the handlers ran by 'Dispatch'.
-		Utility::CallAtScopeExit atExit = [&]()
+		Utility::ScopeGuard atExit = [&]()
 		{
 			if (app)
 			{
@@ -184,7 +184,7 @@ namespace kxf
 
 			// Set this variable to true for the duration of this function
 			m_IsInsideRun = true;
-			Utility::CallAtScopeExit onExit = [&]()
+			Utility::ScopeGuard onExit = [&]()
 			{
 				m_IsInsideRun = false;
 				UpdateWxLoop();
@@ -245,7 +245,7 @@ namespace kxf
 		if (wxThread::IsMain())
 		{
 			// Set the value and don't forget to reset it before returning
-			Utility::CallAtScopeExit onExit = [&, yieldLevelOld = m_YieldLevel, oldAllowedToYield = m_AllowedToYield]()
+			Utility::ScopeGuard onExit = [&, yieldLevelOld = m_YieldLevel, oldAllowedToYield = m_AllowedToYield]()
 			{
 				m_YieldLevel = yieldLevelOld;
 				m_AllowedToYield = oldAllowedToYield;
@@ -259,7 +259,7 @@ namespace kxf
 			// Disable log flushing from here because a call to 'Yield' shouldn't  normally result in message boxes popping up
 			// and ensure the logs will be flashed again when we exit.
 			wxLog::Suspend();
-			Utility::CallAtScopeExit resumeLog = [&]()
+			Utility::ScopeGuard resumeLog = [&]()
 			{
 				wxLog::Resume();
 			};

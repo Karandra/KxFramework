@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Crypto.h"
 #include "kxf/General/BinarySize.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 #include <wx/base64.h> 
 #include <wx/regex.h> 
 #include "OpenSSL/opensslv.h"
@@ -53,7 +53,7 @@ namespace
 		if (const EVP_MD* algorithm = std::invoke(algorithFunc))
 		{
 			EVP_MD_CTX* context = EVP_MD_CTX_create();
-			Utility::CallAtScopeExit atExit([&]()
+			Utility::ScopeGuard atExit([&]()
 			{
 				if (context)
 				{
@@ -101,7 +101,7 @@ namespace
 	{
 		if (auto* state = std::invoke(initFunc))
 		{
-			Utility::CallAtScopeExit atExit = [&]()
+			Utility::ScopeGuard atExit = [&]()
 			{
 				// State can be re-used, here it's simply freed
 				std::invoke(freeFunc, state);

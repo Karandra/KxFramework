@@ -11,7 +11,7 @@
 #include "kxf/Drawing/GDIRenderer/GDICursor.h"
 #include "kxf/Drawing/GDIRenderer/GDIIcon.h"
 #include "kxf/Utility/Common.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 
 #include <Windows.h>
 #include <DbgHelp.h>

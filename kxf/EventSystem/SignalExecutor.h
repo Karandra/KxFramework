@@ -1,7 +1,7 @@
 #pragma once
 #include "IEventExecutor.h"
 #include "IEvent.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 #include "kxf/Utility/TypeTraits.h"
 #include "kxf/Utility/Memory.h"
 
@@ -17,7 +17,7 @@ namespace kxf::EventSystem::Private
 			if (parameterizedInvocation->GetParameters(parametersBuffer))
 			{
 				TArgsTuple& parameters = *std::launder(reinterpret_cast<TArgsTuple*>(parametersBuffer));
-				Utility::CallAtScopeExit atExit = [&]()
+				Utility::ScopeGuard atExit = [&]()
 				{
 					Utility::DestroyObjectOnMemoryLocation<TArgsTuple>(parametersBuffer);
 				};

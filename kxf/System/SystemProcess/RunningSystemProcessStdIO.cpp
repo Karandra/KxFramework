@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "RunningSystemProcessStdIO.h"
 #include "kxf/IO/IStream.h"
-#include "kxf/Utility/CallAtScopeExit.h"
+#include "kxf/Utility/ScopeGuard.h"
 
 namespace
 {
@@ -49,7 +49,7 @@ namespace kxf
 	{
 		if (m_OutStreamWrapper)
 		{
-			Utility::CallAtScopeExit atExit = [&, oldOffset = m_OutStreamWrapper->TellI()]()
+			Utility::ScopeGuard atExit = [&, oldOffset = m_OutStreamWrapper->TellI()]()
 			{
 				m_OutStreamWrapper->SeekI(oldOffset, IOStreamSeek::FromStart);
 			};
@@ -61,7 +61,7 @@ namespace kxf
 	{
 		if (m_ErrorStreamWrapper)
 		{
-			Utility::CallAtScopeExit atExit = [&, oldOffset = m_ErrorStreamWrapper->TellI()]()
+			Utility::ScopeGuard atExit = [&, oldOffset = m_ErrorStreamWrapper->TellI()]()
 			{
 				m_ErrorStreamWrapper->SeekI(oldOffset, IOStreamSeek::FromStart);
 			};

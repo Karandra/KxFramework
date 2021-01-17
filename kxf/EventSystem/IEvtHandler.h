@@ -83,7 +83,7 @@ namespace kxf
 							alignas(TResult) uint8_t resultBuffer[sizeof(TResult)] = {};
 							event.TakeResult(resultBuffer);
 
-							Utility::CallAtScopeExit atExit = [&]()
+							Utility::ScopeGuard atExit = [&]()
 							{
 								Utility::DestroyObjectOnMemoryLocation<TResult>(resultBuffer);
 							};
