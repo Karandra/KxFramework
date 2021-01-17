@@ -1763,6 +1763,9 @@
     <ClInclude Include="kxf\Utility\ScopeGuard.h">
       <Filter>kxf\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Utility\ExceptionScopeGuard.h">
+      <Filter>kxf\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">

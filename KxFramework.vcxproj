@@ -500,6 +500,7 @@
     <ClInclude Include="kxf\UI\Windows\ToolTipEx.h" />
     <ClInclude Include="kxf\UI\Windows\TopLevelWindow.h" />
     <ClInclude Include="kxf\UI\WindowWithStyles.h" />
+    <ClInclude Include="kxf\Utility\ExceptionScopeGuard.h" />
     <ClInclude Include="kxf\wxWidgets\Application.h" />
     <ClInclude Include="kxf\wxWidgets\ClientObject.h" />
     <ClInclude Include="kxf\wxWidgets\Common.h" />

@@ -4,9 +4,12 @@
 
 namespace kxf::Utility
 {
-	template<class TFunc>
+	template<class TFunc_>
 	class ScopeGuard final
 	{
+		public:
+			using TFunc = TFunc_;
+
 		private:
 			std::optional<TFunc> m_Func;
 
