@@ -120,11 +120,12 @@ namespace kxf::GraphicsAction
 		private:
 			IGraphicsContext& m_GC;
 			RectF m_OldClip;
+
+			bool m_Clipped = false;
 			bool m_SupportStates = false;
 
-		public:
-			Clip(IGraphicsContext& gc, const Rect& rect)
-				:m_GC(gc), m_SupportStates(m_GC.GetSupportedFeatures().Contains(GraphicsContextFeature::States))
+		private:
+			void DoInitialClip(const Rect& rect)
 			{
 				if (m_SupportStates)
 				{
@@ -135,30 +136,65 @@ namespace kxf::GraphicsAction
 					m_OldClip = m_GC.GetClipBox();
 				}
 				m_GC.ClipBoxRegion(rect);
+				m_Clipped = true;
 			}
-			~Clip()
+			void DoAddClip(const Rect& rect)
 			{
-				if (m_SupportStates)
+				m_GC.ClipBoxRegion(rect);
+			}
+			void DoResetClip()
+			{
+				if (m_Clipped)
 				{
-					m_GC.PopState();
-				}
-				else
-				{
-					if (m_OldClip.IsEmpty())
+					if (m_SupportStates)
 					{
-						m_GC.ResetClipRegion();
+						m_GC.PopState();
 					}
 					else
 					{
-						m_GC.ClipBoxRegion(m_OldClip);
+						if (m_OldClip.IsEmpty())
+						{
+							m_GC.ResetClipRegion();
+						}
+						else
+						{
+							m_GC.ClipBoxRegion(m_OldClip);
+						}
 					}
+					m_Clipped = false;
 				}
+			}
+
+		public:
+			Clip(IGraphicsContext& gc)
+				:m_GC(gc), m_SupportStates(m_GC.GetSupportedFeatures().Contains(GraphicsContextFeature::States))
+			{
+			}
+			Clip(IGraphicsContext& gc, const Rect& rect)
+				:Clip(gc)
+			{
+				DoInitialClip(rect);
+			}
+			~Clip()
+			{
+				DoResetClip();
 			}
 
 		public:
 			void Add(const Rect& rect)
 			{
-				m_GC.ClipBoxRegion(rect);
+				if (m_Clipped)
+				{
+					DoAddClip(rect);
+				}
+				else
+				{
+					DoInitialClip(rect);
+				}
+			}
+			void Reset()
+			{
+				DoResetClip();
 			}
 	};
 
