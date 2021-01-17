@@ -266,11 +266,13 @@
     <ClInclude Include="kxf\Drawing\ColorDepth.h" />
     <ClInclude Include="kxf\Drawing\IImage2D.h" />
     <ClInclude Include="kxf\Drawing\BitmapImage.h" />
+    <ClInclude Include="kxf\Drawing\IImageHandler.h" />
     <ClInclude Include="kxf\Drawing\ImageBundle.h" />
     <ClInclude Include="kxf\Drawing\ImageDefines.h" />
     <ClInclude Include="kxf\Drawing\IBitmapImage.h" />
     <ClInclude Include="kxf\Drawing\Private\Common.h" />
     <ClInclude Include="kxf\Drawing\IRendererNative.h" />
+    <ClInclude Include="kxf\Drawing\Private\Defines.h" />
     <ClInclude Include="kxf\Drawing\Private\SVGImageHandler.h" />
     <ClInclude Include="kxf\Drawing\SizeRatio.h" />
     <ClInclude Include="kxf\Drawing\IVectorImage.h" />

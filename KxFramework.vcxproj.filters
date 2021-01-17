@@ -1757,6 +1757,12 @@
     <ClInclude Include="kxf\UI\IGraphicsRendererAwareWidget.h">
       <Filter>kxf\UI\&lt;UI&gt;</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Drawing\IImageHandler.h">
+      <Filter>kxf\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Drawing\Private\Defines.h">
+      <Filter>kxf\Drawing\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
