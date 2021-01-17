@@ -198,7 +198,7 @@ namespace kxf::Drawing
 			}
 			case StockPen::Green:
 			{
-				return *wxGREY_PEN;
+				return *wxGREEN_PEN;
 			}
 			case StockPen::Yellow:
 			{
@@ -206,7 +206,7 @@ namespace kxf::Drawing
 			}
 			case StockPen::Gray:
 			{
-				return *wxGREEN_PEN;
+				return *wxGREY_PEN;
 			}
 			case StockPen::LightGray:
 			{
