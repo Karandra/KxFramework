@@ -45,9 +45,9 @@ namespace kxf
 			}
 			FSPath ResolvePath(const FSPath& relativePath) const override;
 
-			bool ItemExist(const FSPath& path) const;
-			bool FileExist(const FSPath& path) const;
-			bool DirectoryExist(const FSPath& path) const;
+			bool ItemExist(const FSPath& path) const override;
+			bool FileExist(const FSPath& path) const override;
+			bool DirectoryExist(const FSPath& path) const override;
 
 			FileItem GetItem(const FSPath& path) const override;
 			size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query = {}, FlagSet<FSActionFlag> flags = {}) const override;
@@ -68,7 +68,7 @@ namespace kxf
 											   IOStreamDisposition disposition,
 											   FlagSet<IOStreamShare> share = IOStreamShare::Read,
 											   FlagSet<IOStreamFlag> flags = IOStreamFlag::None
-			);
+			) override;
 			using IFileSystem::OpenToRead;
 			using IFileSystem::OpenToWrite;
 
@@ -124,7 +124,7 @@ namespace kxf
 											   IOStreamDisposition disposition,
 											   FlagSet<IOStreamShare> share = IOStreamShare::Read,
 											   FlagSet<IOStreamFlag> flags = IOStreamFlag::None
-			);
+			) override;
 			using IFileIDSystem::OpenToRead;
 			using IFileIDSystem::OpenToWrite;
 
