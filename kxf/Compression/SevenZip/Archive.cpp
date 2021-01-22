@@ -9,7 +9,7 @@
 #include "Private/ArchiveUpdateCallback.h"
 #include "Private/InStreamWrapper.h"
 #include "Private/OutStreamWrapper.h"
-#include "kxf/System/ErrorCode.h"
+#include "kxf/General/ErrorCode.h"
 #include "kxf/System/VariantProperty.h"
 #include "kxf/FileSystem/NativeFileSystem.h"
 #include "kxf/Utility/ScopeGuard.h"

@@ -2,7 +2,7 @@
 #include "kxf/UI/Common.h"
 #include "StdDialog.h"
 #include "kxf/System/COM.h"
-#include "kxf/System/ErrorCode.h"
+#include "kxf/General/ErrorCode.h"
 #include "kxf/FileSystem/FSPath.h"
 struct IFileDialog;
 struct IFileDialog2;

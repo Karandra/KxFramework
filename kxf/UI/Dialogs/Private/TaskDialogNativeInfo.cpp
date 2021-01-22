@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "TaskDialogNativeInfo.h"
 #include "../TaskDialog.h"
-#include "kxf/System/ErrorCode.h"
+#include "kxf/General/ErrorCode.h"
 #include "kxf/Utility/Common.h"
 #include <CommCtrl.h>
 #include "kxf/System/UndefWindows.h"

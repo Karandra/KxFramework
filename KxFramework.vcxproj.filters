@@ -457,9 +457,6 @@
     <ClInclude Include="kxf\System\COM.h">
       <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\System\ErrorCode.h">
-      <Filter>kxf\System</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\System\UndefWindows.h">
       <Filter>kxf\System</Filter>
     </ClInclude>
@@ -1769,6 +1766,9 @@
     <ClInclude Include="kxf\FileSystem\NullFileSystem.h">
       <Filter>kxf\FileSystem</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\General\ErrorCode.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -1880,9 +1880,6 @@
       <Filter>kxf\System</Filter>
     </ClCompile>
     <ClCompile Include="kxf\System\COM.cpp">
-      <Filter>kxf\System</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\System\ErrorCode.cpp">
       <Filter>kxf\System</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Compression\ZLibStream.cpp">
@@ -2644,6 +2641,9 @@
     </ClCompile>
     <ClCompile Include="kxf\UI\Controls\DataView\SortMode.cpp">
       <Filter>kxf\UI\Controls\DataView</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\ErrorCode.cpp">
+      <Filter>kxf\General</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
