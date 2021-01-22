@@ -213,7 +213,7 @@ namespace kxf
 	{
 		using namespace FileSystem::Private;
 
-		// All namespaces starts from at least one'\'
+		// All namespaces starts from at least one '\'
 		if (path.IsEmpty() || path[0] != g_PathSeparator)
 		{
 			ns = FSPathNamespace::None;
@@ -264,7 +264,7 @@ namespace kxf
 
 	bool FSPath::CheckStringOnInitialAssign(const String& path) const
 	{
-		if (path.Contains(FileSystem::GetForbiddenChars(m_SearchMaksAllowed ? wxS("\\/*?") : wxS("\\/"))))
+		if (path.ContainsAnyOfCharacters(wxS("\\/")))
 		{
 			return CheckIsLegacyVolume(path);
 		}
@@ -273,19 +273,16 @@ namespace kxf
 	bool FSPath::CheckStringOnAssignPath(const String& path) const
 	{
 		FSPathNamespace ns = FSPathNamespace::None;
-		return !path.Contains(FileSystem::GetForbiddenChars(m_SearchMaksAllowed ? wxS("*?") : wxS(""))) &&
-			!CheckIsLegacyVolume(path) &&
-			!CheckIsVolumeGUID(path) &&
-			DetectNamespacePrefix(path, ns) == 0;
+		return !CheckIsLegacyVolume(path) && !CheckIsVolumeGUID(path) && DetectNamespacePrefix(path, ns) == 0;
 	}
 	bool FSPath::CheckStringOnAssignName(const String& name) const
 	{
 		return CheckStringOnAssignPath(name);
 	}
 
-	bool FSPath::IsValid() const
+	bool FSPath::IsNull() const
 	{
-		return !m_Path.IsEmpty();
+		return m_Path.IsEmpty();
 	}
 	bool FSPath::IsSameAs(const FSPath& other, bool caseSensitive) const
 	{
@@ -294,15 +291,15 @@ namespace kxf
 	bool FSPath::IsAbsolute() const
 	{
 		// Path is absolute if it has a namespace or starts with a volume (a disk designator)
-		return IsValid() && (m_Namespace != FSPathNamespace::None || HasAnyVolume());
+		return !IsNull() && (m_Namespace != FSPathNamespace::None || HasAnyVolume());
 	}
 	bool FSPath::IsRelative() const
 	{
-		return IsValid() && !IsAbsolute();
+		return !IsNull() && !IsAbsolute();
 	}
-	bool FSPath::ContainsPath(const FSPath& path) const
+	bool FSPath::ContainsPath(const FSPath& path, bool caseSensitive) const
 	{
-		return m_Path.Contains(path.GetFullPath(), StringOpFlag::IgnoreCase);
+		return m_Path.Contains(path.GetFullPath(), caseSensitive ? StringOpFlag::None : StringOpFlag::IgnoreCase);
 	}
 
 	size_t FSPath::GetComponentCount() const
@@ -514,7 +511,7 @@ namespace kxf
 	}
 	FSPath& FSPath::SimplifyPath()
 	{
-		if (IsValid())
+		if (!IsNull())
 		{
 			const FSPathNamespace ns = m_Namespace;
 
@@ -582,32 +579,30 @@ namespace kxf
 	}
 	FSPath& FSPath::SetExtension(const String& ext)
 	{
-		if (!ext.Contains(FileSystem::GetForbiddenChars()))
+		auto Replace = [this](const String& ext)
 		{
-			auto Replace = [this](const String& ext)
+			const size_t pos = m_Path.Find(wxS('.'), 0, StringOpFlag::FromEnd);
+			if (pos != String::npos)
 			{
-				const size_t pos = m_Path.Find(wxS('.'), 0, StringOpFlag::FromEnd);
-				if (pos != String::npos)
-				{
-					m_Path.GetWxString().replace(pos + 1, m_Path.length() - pos, ext);
-				}
-				else
-				{
-					m_Path += wxS('.');
-					m_Path += ext;
-				}
-			};
-
-			if (String extWithoutDot; ext.StartsWith(wxS('.'), &extWithoutDot))
-			{
-				Replace(extWithoutDot);
+				m_Path.GetWxString().replace(pos + 1, m_Path.length() - pos, ext);
 			}
 			else
 			{
-				Replace(ext);
+				m_Path += wxS('.');
+				m_Path += ext;
 			}
-			Normalize();
+		};
+
+		if (String extWithoutDot; ext.StartsWith(wxS('.'), &extWithoutDot))
+		{
+			Replace(extWithoutDot);
 		}
+		else
+		{
+			Replace(ext);
+		}
+		Normalize();
+
 		return *this;
 	}
 
@@ -649,7 +644,7 @@ namespace kxf
 	
 	FSPath& FSPath::Append(const FSPath& other)
 	{
-		if (!IsValid() || other.IsRelative())
+		if (IsNull() || other.IsRelative())
 		{
 			if (!m_Path.IsEmpty())
 			{
@@ -661,7 +656,7 @@ namespace kxf
 	}
 	FSPath& FSPath::Concat(const FSPath& other)
 	{
-		if (!IsValid() || other.IsRelative())
+		if (IsNull() || other.IsRelative())
 		{
 			m_Path += other.m_Path;
 		}

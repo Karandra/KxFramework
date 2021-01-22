@@ -9,6 +9,7 @@
 #include "kxf/IO/NativeFileStream.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/ScopeGuard.h"
+#include <wx/filename.h>
 
 namespace
 {
@@ -110,11 +111,11 @@ namespace
 
 namespace kxf
 {
-	FSPath NativeFileSystem::GetExecutableDirectory()
+	FSPath NativeFileSystem::GetExecutingModuleRootDirectory()
 	{
 		return DynamicLibrary::GetExecutingModule().GetFilePath().GetParent();
 	}
-	FSPath NativeFileSystem::GetWorkingDirectory()
+	FSPath NativeFileSystem::GetExecutingModuleWorkingDirectory()
 	{
 		DWORD length = ::GetCurrentDirectoryW(0, nullptr);
 		if (length != 0)
@@ -126,7 +127,7 @@ namespace kxf
 		}
 		return {};
 	}
-	bool NativeFileSystem::SetWorkingDirectory(const FSPath& directory)
+	bool NativeFileSystem::SetExecutingModuleWorkingDirectory(const FSPath& directory)
 	{
 		if (directory)
 		{
@@ -139,11 +140,11 @@ namespace kxf
 			if (auto app = ICoreApplication::GetInstance())
 			{
 				FSActionEvent event;
-				event.SetSource(GetWorkingDirectory());
+				event.SetSource(GetExecutingModuleWorkingDirectory());
 				event.SetDestination(directory);
 				event.Allow();
 
-				if (app->ProcessEvent(event, ICoreApplication::EvtWorkingDirectoryChanged) && !event.IsSkipped())
+				if (app->ProcessEvent(event, ICoreApplication::EvtExecutingModuleWorkingDirectoryChanged) && !event.IsSkipped())
 				{
 					return event.IsAllowed() && DoChange(event.GetDestination());
 				}
@@ -154,6 +155,21 @@ namespace kxf
 	}
 
 	// IFileSystem
+	bool NativeFileSystem::IsValidPathName(const FSPath& path) const
+	{
+		// All forbidden characters don't have case variants so we can use case-sensitive comparison
+		return path && !path.ContainsAnyOfCharacters(wxFileName::GetForbiddenChars(), true);
+	}
+	String NativeFileSystem::GetForbiddenPathNameCharacters(const String& except) const
+	{
+		String forbiddenChars = wxFileName::GetForbiddenChars();
+		for (XChar c: except)
+		{
+			forbiddenChars.Replace(c, NullString);
+		}
+		return forbiddenChars;
+	}
+
 	FSPath NativeFileSystem::ResolvePath(const FSPath& relativePath) const
 	{
 		return DoWithResolvedPath1(m_CurrentDirectory, relativePath, [](const FSPath& path)
@@ -198,7 +214,7 @@ namespace kxf
 			return {};
 		});
 	}
-	size_t NativeFileSystem::EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query, FlagSet<FSActionFlag> flags) const
+	size_t NativeFileSystem::EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPath& query, FlagSet<FSActionFlag> flags) const
 	{
 		return DoWithResolvedPath1(m_CurrentDirectory, directory, [&](const FSPath& path) -> size_t
 		{

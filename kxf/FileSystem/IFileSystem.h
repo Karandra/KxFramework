@@ -31,6 +31,11 @@ namespace kxf
 			virtual ~IFileSystem() = default;
 
 		public:
+			virtual bool IsNull() const = 0;
+
+			virtual bool IsValidPathName(const FSPath& path) const = 0;
+			virtual String GetForbiddenPathNameCharacters(const String& except = {}) const = 0;
+
 			virtual FSPath GetCurrentDirectory() const = 0;
 			virtual FSPath ResolvePath(const FSPath& relativePath) const = 0;
 
@@ -39,7 +44,7 @@ namespace kxf
 			virtual bool DirectoryExist(const FSPath& path) const = 0;
 
 			virtual FileItem GetItem(const FSPath& path) const = 0;
-			virtual size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query = {}, FlagSet<FSActionFlag> flags = {}) const = 0;
+			virtual size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPath& query = {}, FlagSet<FSActionFlag> flags = {}) const = 0;
 			virtual bool IsDirectoryEmpty(const FSPath& directory) const = 0;
 			
 			virtual bool CreateDirectory(const FSPath& path, FlagSet<FSActionFlag> flags = {}) = 0;
@@ -69,6 +74,16 @@ namespace kxf
 													   FlagSet<IOStreamShare> share = IOStreamShare::Read,
 													   FlagSet<FSActionFlag> flags = {}
 			);
+
+		public:
+			explicit operator bool() const noexcept
+			{
+				return !IsNull();
+			}
+			bool operator!() const noexcept
+			{
+				return IsNull();
+			}
 	};
 
 	class KX_API IFileIDSystem: public RTTI::Interface<IFileIDSystem>
@@ -79,6 +94,7 @@ namespace kxf
 			virtual ~IFileIDSystem() = default;
 
 		public:
+			virtual bool IsNull() const = 0;
 			virtual UniversallyUniqueID GetLookupScope() const = 0;
 
 			virtual bool ItemExist(const UniversallyUniqueID& id) const = 0;
@@ -114,6 +130,16 @@ namespace kxf
 													   FlagSet<IOStreamShare> share = IOStreamShare::Read,
 													   FlagSet<FSActionFlag> flags = {}
 			);
+
+		public:
+			explicit operator bool() const noexcept
+			{
+				return !IsNull();
+			}
+			bool operator!() const noexcept
+			{
+				return IsNull();
+			}
 	};
 }
 

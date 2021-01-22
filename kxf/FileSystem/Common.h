@@ -108,5 +108,4 @@ namespace kxf
 namespace kxf::FileSystem
 {
 	String GetNamespaceString(FSPathNamespace type);
-	String GetForbiddenChars(const String& except = {});
 }

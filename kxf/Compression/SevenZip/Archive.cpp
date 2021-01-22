@@ -354,7 +354,7 @@ namespace kxf::SevenZip
 	{
 		return DoUpdate(stream, COM::CreateLocalInstance<Private::Callback::UpdateArchiveWrapper>(*this, callback), itemCount);
 	}
-	bool Archive::UpdateFromFS(IOutputStream& stream, const IFileSystem& fileSystem, const FSPath& directory, const FSPathQuery& query, FlagSet<FSActionFlag> flags)
+	bool Archive::UpdateFromFS(IOutputStream& stream, const IFileSystem& fileSystem, const FSPath& directory, const FSPath& query, FlagSet<FSActionFlag> flags)
 	{
 		std::vector<FileItem> files;
 		fileSystem.EnumItems(directory, [&](FileItem item)
@@ -372,6 +372,15 @@ namespace kxf::SevenZip
 	}
 
 	// IFileSystem
+	bool Archive::IsValidPathName(const FSPath& path) const
+	{
+		return NativeFileSystem().IsValidPathName(path);
+	}
+	String Archive::GetForbiddenPathNameCharacters(const String& except) const
+	{
+		return NativeFileSystem().GetForbiddenPathNameCharacters(except);
+	}
+
 	bool Archive::ItemExist(const FSPath& path) const
 	{
 		return FindItemByName(*m_Data.InArchive, m_Data.ItemCount, path) != std::numeric_limits<size_t>::max();
@@ -404,7 +413,7 @@ namespace kxf::SevenZip
 		}
 		return {};
 	}
-	size_t Archive::EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query, FlagSet<FSActionFlag> flags) const
+	size_t Archive::EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPath& query, FlagSet<FSActionFlag> flags) const
 	{
 		FlagSet<StringOpFlag> matchFlags;
 		matchFlags.Add(StringOpFlag::IgnoreCase, !flags.Contains(FSActionFlag::CaseSensitive));

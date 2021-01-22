@@ -3,6 +3,7 @@
 
 namespace kxf
 {
+	class IFileSystem;
 	class LegacyVolume;
 	class StorageVolume;
 
@@ -16,19 +17,18 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API FSPath
+	class KX_API FSPath final
 	{
-		friend class FSPathQuery;
+		friend class FSPath;
 
 		public:
 			static FSPath FromStringUnchecked(String string, FSPathNamespace ns = FSPathNamespace::None);
 
-		protected:
+		private:
 			String m_Path;
 			FSPathNamespace m_Namespace = FSPathNamespace::None;
-			bool m_SearchMaksAllowed = false;
 
-		protected:
+		private:
 			void AssignFromPath(String path);
 			void ProcessNamespace();
 			void Normalize();
@@ -65,10 +65,10 @@ namespace kxf
 				:FSPath(String(std::move(path)))
 			{
 			}
-			virtual ~FSPath() = default;
+			~FSPath() = default;
 
 		public:
-			bool IsValid() const;
+			bool IsNull() const;
 			bool IsSameAs(const FSPath& other, bool caseSensitive = false) const;
 			bool IsAbsolute() const;
 			bool IsRelative() const;
@@ -77,14 +77,14 @@ namespace kxf
 				return m_Namespace == FSPathNamespace::Win32FileUNC || m_Namespace == FSPathNamespace::NetworkUNC;
 			}
 			
-			bool ContainsPath(const FSPath& path) const;
-			bool ContainsAnyOfCharacters(const String& characters) const
+			bool ContainsPath(const FSPath& path, bool caseSensitive = false) const;
+			bool ContainsAnyOfCharacters(const String& characters, bool caseSensitive = false) const
 			{
-				return m_Path.ContainsAnyOfCharacters(characters);
+				return m_Path.ContainsAnyOfCharacters(characters, caseSensitive ? StringOpFlag::None : StringOpFlag::IgnoreCase);
 			}
 			bool ContainsSearchMask() const
 			{
-				return m_SearchMaksAllowed && m_Path.ContainsAnyOfCharacters(wxS("*?"));
+				return m_Path.ContainsAnyOfCharacters(wxS("*?"));
 			}
 			bool MatchesWildcards(const String& expression, FlagSet<StringOpFlag> flags = {}) const
 			{
@@ -173,11 +173,11 @@ namespace kxf
 		public:
 			explicit operator bool() const noexcept
 			{
-				return IsValid();
+				return !IsNull();
 			}
 			bool operator!() const noexcept
 			{
-				return !IsValid();
+				return IsNull();
 			}
 
 			operator const String&() const&
@@ -261,75 +261,6 @@ namespace kxf
 
 	template<class T>
 	FSPath operator/(FSPath left, T&& right)
-	{
-		return left.Append(std::forward<T>(right));
-	}
-}
-
-namespace kxf
-{
-	class KX_API FSPathQuery: public FSPath
-	{
-		private:
-			void Init()
-			{
-				m_SearchMaksAllowed = true;
-			}
-
-		public:
-			FSPathQuery()
-			{
-				Init();
-			}
-			FSPathQuery(FSPathQuery&&) = default;
-			FSPathQuery(const FSPathQuery&) = default;
-			FSPathQuery(String path)
-				:FSPathQuery()
-			{
-				AssignFromPath(std::move(path));
-			}
-			FSPathQuery(const char* path)
-				:FSPathQuery(String(path))
-			{
-			}
-			FSPathQuery(const wchar_t* path)
-				:FSPathQuery(String(path))
-			{
-			}
-			FSPathQuery(const FSPath& path)
-				:FSPathQuery()
-			{
-				m_Path = path.m_Path;
-				m_Namespace = path.m_Namespace;
-			}
-			
-		public:
-			FSPathQuery GetAfter(const FSPath& start) const
-			{
-				return FSPath::GetAfter(start);
-			}
-			FSPathQuery GetBefore(const FSPath& end) const
-			{
-				return FSPath::GetBefore(end);
-			}
-			FSPathQuery GetParent() const
-			{
-				return FSPath::GetParent();
-			}
-
-		public:
-			FSPathQuery& operator=(FSPathQuery&&) = default;
-			FSPathQuery& operator=(const FSPathQuery&) = default;
-	};
-
-	template<class T>
-	FSPathQuery operator+(FSPathQuery left, T&& right)
-	{
-		return left.Concat(std::forward<T>(right));
-	}
-
-	template<class T>
-	FSPathQuery operator/(FSPathQuery left, T&& right)
 	{
 		return left.Append(std::forward<T>(right));
 	}

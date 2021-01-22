@@ -171,7 +171,7 @@ namespace kxf
 
 		public:
 			KxEVENT_MEMBER(ActivateEvent, Activated);
-			KxEVENT_MEMBER(FSActionEvent, WorkingDirectoryChanged);
+			KxEVENT_MEMBER(FSActionEvent, ExecutingModuleWorkingDirectoryChanged);
 
 		public:
 			static ICoreApplication* GetInstance() noexcept;

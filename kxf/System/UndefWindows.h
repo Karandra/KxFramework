@@ -101,9 +101,9 @@ inline void* MoveMemory(void* dst, const void* src, size_t size) noexcept
 
 #ifdef FillMemory
 #undef FillMemory
-inline void* FillMemory(void* dst, size_t length, int fill) noexcept
+inline void* FillMemory(void* dst, size_t size, int fill) noexcept
 {
-	return std::memset(dst, fill, length);
+	return std::memset(dst, fill, size);
 }
 #endif
 

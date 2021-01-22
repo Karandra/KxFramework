@@ -12,6 +12,20 @@ namespace kxf::FileSystem
 
 		public:
 			// IFileSystem
+			bool IsNull() const override
+			{
+				return true;
+			}
+
+			bool IsValidPathName(const FSPath& path) const override
+			{
+				return false;
+			}
+			String GetForbiddenPathNameCharacters(const String& except = {}) const override
+			{
+				return {};
+			}
+
 			FSPath GetCurrentDirectory() const override
 			{
 				return {};
@@ -38,7 +52,7 @@ namespace kxf::FileSystem
 			{
 				return {};
 			}
-			size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query = {}, FlagSet<FSActionFlag> flags = {}) const override
+			size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPath& query = {}, FlagSet<FSActionFlag> flags = {}) const override
 			{
 				return 0;
 			}
@@ -165,5 +179,15 @@ namespace kxf::FileSystem
 			}
 			using IFileIDSystem::OpenToRead;
 			using IFileIDSystem::OpenToWrite;
+
+		public:
+			explicit operator bool() const noexcept
+			{
+				return !IsNull();
+			}
+			bool operator!() const noexcept
+			{
+				return IsNull();
+			}
 	};
 }

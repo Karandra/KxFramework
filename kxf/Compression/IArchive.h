@@ -102,7 +102,7 @@ namespace kxf
 			virtual bool Update(IOutputStream& stream, Compression::IUpdateCallback& callback, size_t itemCount) = 0;
 
 			// Add files from the provided file system
-			virtual bool UpdateFromFS(IOutputStream& stream, const IFileSystem& fileSystem, const FSPath& directory, const FSPathQuery& query = {}, FlagSet<FSActionFlag> flags = {}) = 0;
+			virtual bool UpdateFromFS(IOutputStream& stream, const IFileSystem& fileSystem, const FSPath& directory, const FSPath& query = {}, FlagSet<FSActionFlag> flags = {}) = 0;
 	};
 }
 

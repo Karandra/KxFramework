@@ -2,7 +2,6 @@
 #include "Common.h"
 #include "kxf/General/String.h"
 #include "Private/NamespacePrefix.h"
-#include <wx/filename.h>
 
 namespace kxf::FileSystem
 {
@@ -38,14 +37,5 @@ namespace kxf::FileSystem
 			}
 		};
 		return {};
-	}
-	String GetForbiddenChars(const String& except)
-	{
-		String forbiddenChars = wxFileName::GetForbiddenChars();
-		for (XChar c: except)
-		{
-			forbiddenChars.Replace(c, NullString);
-		}
-		return forbiddenChars;
 	}
 }

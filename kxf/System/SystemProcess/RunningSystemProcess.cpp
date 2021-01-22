@@ -189,10 +189,10 @@ namespace kxf
 	}
 	FSPath RunningSystemProcess::GetWorkingDirectory() const
 	{
-		// https://stackoverflow.com/questions/14018280/how-to-get-a-process-working-dir-on-windows
+		// TODO: https://stackoverflow.com/questions/14018280/how-to-get-a-process-working-dir-on-windows
 		if (IsCurrent())
 		{
-			return NativeFileSystem().GetWorkingDirectory();
+			return NativeFileSystem().GetExecutingModuleWorkingDirectory();
 		}
 		return {};
 	}

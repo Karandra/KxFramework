@@ -13,32 +13,55 @@ namespace kxf
 			using TEnumStreamsFunc = std::function<bool(String, BinarySize)>;
 
 		public:
-			static FSPath GetExecutableDirectory();
-			static FSPath GetWorkingDirectory();
-			static bool SetWorkingDirectory(const FSPath& directory);
+			static FSPath GetExecutingModuleRootDirectory();
+			static FSPath GetExecutingModuleWorkingDirectory();
+			static bool SetExecutingModuleWorkingDirectory(const FSPath& directory);
 
 		private:
 			StorageVolume m_CurrentVolume;
 			FSPath m_CurrentDirectory;
 
+		private:
+			void DoAssingCurrentVolume(StorageVolume volume) noexcept
+			{
+				m_CurrentVolume = std::move(volume);
+				m_CurrentDirectory.SetVolume(m_CurrentVolume);
+			}
+			void DoAssingCurrentVolumeUUID(const UniversallyUniqueID& scope) noexcept
+			{
+				m_CurrentVolume = scope;
+				m_CurrentDirectory.SetVolume(m_CurrentVolume);
+			}
+			void DoAssingCurrentDirectory(FSPath directory) noexcept
+			{
+				m_CurrentVolume = directory.GetAsVolume();
+				m_CurrentDirectory = std::move(directory);
+			}
+
 		public:
 			NativeFileSystem(StorageVolume volume = {}) noexcept
-				:m_CurrentVolume(std::move(volume))
 			{
-				m_CurrentDirectory.SetVolume(m_CurrentVolume);
+				DoAssingCurrentVolume(std::move(volume));
+			}
+			NativeFileSystem(FSPath directory) noexcept
+			{
+				DoAssingCurrentDirectory(std::move(directory));
 			}
 			NativeFileSystem(const UniversallyUniqueID& scope) noexcept
-				:m_CurrentVolume(scope)
 			{
-				m_CurrentDirectory.SetVolume(m_CurrentVolume);
-			}
-			NativeFileSystem(const FSPath& currentDirectory) noexcept
-				:m_CurrentVolume(currentDirectory.GetAsVolume()), m_CurrentDirectory(currentDirectory)
-			{
+				DoAssingCurrentVolumeUUID(scope);
 			}
 
 		public:
 			// IFileSystem
+			bool IsNull() const override
+			{
+				return false;
+			}
+
+			bool IsValidPathName(const FSPath& path) const override;
+			String GetForbiddenPathNameCharacters(const String& except = {}) const override;
+
 			FSPath GetCurrentDirectory() const override
 			{
 				return m_CurrentDirectory;
@@ -50,7 +73,7 @@ namespace kxf
 			bool DirectoryExist(const FSPath& path) const override;
 
 			FileItem GetItem(const FSPath& path) const override;
-			size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query = {}, FlagSet<FSActionFlag> flags = {}) const override;
+			size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPath& query = {}, FlagSet<FSActionFlag> flags = {}) const override;
 			bool IsDirectoryEmpty(const FSPath& directory) const override;
 
 			bool CreateDirectory(const FSPath& path, FlagSet<FSActionFlag> flags = {}) override;
@@ -136,11 +159,33 @@ namespace kxf
 			{
 				return m_CurrentVolume;
 			}
+			void SetCurrentVolume(StorageVolume volume) noexcept
+			{
+				DoAssingCurrentVolume(std::move(volume));
+			}
+			void SetCurrentVolume(const UniversallyUniqueID& scope) noexcept
+			{
+				DoAssingCurrentVolumeUUID(scope);
+			}
+			void SetCurrentDirectory(FSPath directory) noexcept
+			{
+				DoAssingCurrentDirectory(std::move(directory));
+			}
 
 			bool IsInUse(const FSPath& path) const;
 			size_t EnumStreams(const FSPath& path, TEnumStreamsFunc func) const;
 
 			bool CopyDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func = {}, FlagSet<FSActionFlag> flags = {}) const;
 			bool MoveDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func = {}, FlagSet<FSActionFlag> flags = {});
+
+		public:
+			explicit operator bool() const noexcept
+			{
+				return !IsNull();
+			}
+			bool operator!() const noexcept
+			{
+				return IsNull();
+			}
 	};
 }

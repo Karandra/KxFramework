@@ -243,10 +243,18 @@ namespace kxf::SevenZip
 			bool Update(IOutputStream& stream, Compression::IUpdateCallback& callback, size_t itemCount) override;
 
 			// Add files from the provided file system
-			bool UpdateFromFS(IOutputStream& stream, const IFileSystem& fileSystem, const FSPath& directory, const FSPathQuery& query = {}, FlagSet<FSActionFlag> flags = {}) override;
+			bool UpdateFromFS(IOutputStream& stream, const IFileSystem& fileSystem, const FSPath& directory, const FSPath& query = {}, FlagSet<FSActionFlag> flags = {}) override;
 
 		public:
 			// IFileSystem
+			bool IsNull() const override
+			{
+				return !IsOpened();
+			}
+
+			bool IsValidPathName(const FSPath& path) const override;
+			String GetForbiddenPathNameCharacters(const String& except = {}) const override;
+
 			FSPath GetCurrentDirectory() const override
 			{
 				return {};
@@ -261,7 +269,7 @@ namespace kxf::SevenZip
 			bool DirectoryExist(const FSPath& path) const override;
 
 			FileItem GetItem(const FSPath& path) const override;
-			size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPathQuery& query = {}, FlagSet<FSActionFlag> flags = {}) const override;
+			size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPath& query = {}, FlagSet<FSActionFlag> flags = {}) const override;
 			bool IsDirectoryEmpty(const FSPath& directory) const override;
 
 			bool CreateDirectory(const FSPath& path, FlagSet<FSActionFlag> flags = {}) override
