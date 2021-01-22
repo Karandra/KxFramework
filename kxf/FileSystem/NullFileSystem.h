@@ -85,7 +85,8 @@ namespace kxf::FileSystem
 											   FlagSet<IOStreamAccess> access,
 											   IOStreamDisposition disposition,
 											   FlagSet<IOStreamShare> share = IOStreamShare::Read,
-											   FlagSet<IOStreamFlag> flags = IOStreamFlag::None
+											   FlagSet<IOStreamFlag> streamFlags = IOStreamFlag::None,
+											   FlagSet<FSActionFlag> flags = {}
 			) override
 			{
 				return nullptr;
@@ -156,7 +157,8 @@ namespace kxf::FileSystem
 											   FlagSet<IOStreamAccess> access,
 											   IOStreamDisposition disposition,
 											   FlagSet<IOStreamShare> share = IOStreamShare::Read,
-											   FlagSet<IOStreamFlag> flags = IOStreamFlag::None
+											   FlagSet<IOStreamFlag> streamFlags = IOStreamFlag::None,
+											   FlagSet<FSActionFlag> flags = {}
 			) override
 			{
 				return nullptr;

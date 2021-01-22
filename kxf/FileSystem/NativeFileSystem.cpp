@@ -510,11 +510,12 @@ namespace kxf
 														 FlagSet<IOStreamAccess> access,
 														 IOStreamDisposition disposition,
 														 FlagSet<IOStreamShare> share,
-														 FlagSet<IOStreamFlag> flags)
+														 FlagSet<IOStreamFlag> streamFlags,
+														 FlagSet<FSActionFlag> flags)
 	{
 		return DoWithResolvedPath1(m_CurrentDirectory, path, [&](const FSPath& path) -> std::unique_ptr<IStream>
 		{
-			auto fileStream = std::make_unique<NativeFileStream>(path, access, disposition, share, flags);
+			auto fileStream = std::make_unique<NativeFileStream>(path, access, disposition, share, streamFlags);
 			if (*fileStream)
 			{
 				if (auto stream = std::unique_ptr<IStream>(fileStream->QueryInterface<IStream>().get()))
@@ -566,12 +567,13 @@ namespace kxf
 														 FlagSet<IOStreamAccess> access,
 														 IOStreamDisposition disposition,
 														 FlagSet<IOStreamShare> share,
-														 FlagSet<IOStreamFlag> flags)
+														 FlagSet<IOStreamFlag> streamFlags,
+														 FlagSet<FSActionFlag> flags)
 	{
 		if (id)
 		{
 			auto fileStream = std::make_unique<NativeFileStream>();
-			if (OpenFileByID(m_CurrentVolume, id, *fileStream, access, disposition, share, flags))
+			if (OpenFileByID(m_CurrentVolume, id, *fileStream, access, disposition, share, streamFlags))
 			{
 				if (auto stream = std::unique_ptr<IStream>(fileStream->QueryInterface<IStream>().get()))
 				{

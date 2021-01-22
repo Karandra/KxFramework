@@ -67,7 +67,8 @@ namespace kxf
 											   FlagSet<IOStreamAccess> access,
 											   IOStreamDisposition disposition,
 											   FlagSet<IOStreamShare> share = IOStreamShare::Read,
-											   FlagSet<IOStreamFlag> flags = IOStreamFlag::None
+											   FlagSet<IOStreamFlag> streamFlags = IOStreamFlag::None,
+											   FlagSet<FSActionFlag> flags = {}
 			) override;
 			using IFileSystem::OpenToRead;
 			using IFileSystem::OpenToWrite;
@@ -123,7 +124,8 @@ namespace kxf
 											   FlagSet<IOStreamAccess> access,
 											   IOStreamDisposition disposition,
 											   FlagSet<IOStreamShare> share = IOStreamShare::Read,
-											   FlagSet<IOStreamFlag> flags = IOStreamFlag::None
+											   FlagSet<IOStreamFlag> streamFlags = IOStreamFlag::None,
+											   FlagSet<FSActionFlag> flags = {}
 			) override;
 			using IFileIDSystem::OpenToRead;
 			using IFileIDSystem::OpenToWrite;

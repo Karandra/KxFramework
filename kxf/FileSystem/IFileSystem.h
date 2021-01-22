@@ -56,15 +56,18 @@ namespace kxf
 													   FlagSet<IOStreamAccess> access,
 													   IOStreamDisposition disposition,
 													   FlagSet<IOStreamShare> share = IOStreamShare::Read,
-													   FlagSet<IOStreamFlag> flags = IOStreamFlag::None
+													   FlagSet<IOStreamFlag> streamFlags = IOStreamFlag::None,
+													   FlagSet<FSActionFlag> flags = {}
 			) = 0;
 			std::unique_ptr<IInputStream> OpenToRead(const FSPath& path,
 													 IOStreamDisposition disposition = IOStreamDisposition::OpenExisting,
-													 FlagSet<IOStreamShare> share = IOStreamShare::Read
+													 FlagSet<IOStreamShare> share = IOStreamShare::Read,
+													 FlagSet<FSActionFlag> flags = {}
 			) const;
 			std::unique_ptr<IOutputStream> OpenToWrite(const FSPath& path,
 													   IOStreamDisposition disposition = IOStreamDisposition::CreateAlways,
-													   FlagSet<IOStreamShare> share = IOStreamShare::Read
+													   FlagSet<IOStreamShare> share = IOStreamShare::Read,
+													   FlagSet<FSActionFlag> flags = {}
 			);
 	};
 
@@ -98,15 +101,18 @@ namespace kxf
 													   FlagSet<IOStreamAccess> access,
 													   IOStreamDisposition disposition,
 													   FlagSet<IOStreamShare> share = IOStreamShare::Read,
-													   FlagSet<IOStreamFlag> flags = IOStreamFlag::None
+													   FlagSet<IOStreamFlag> streamFlags = IOStreamFlag::None,
+													   FlagSet<FSActionFlag> flags = {}
 			) = 0;
 			std::unique_ptr<IInputStream> OpenToRead(const UniversallyUniqueID& id,
 													 IOStreamDisposition disposition = IOStreamDisposition::OpenExisting,
-													 FlagSet<IOStreamShare> share = IOStreamShare::Read
+													 FlagSet<IOStreamShare> share = IOStreamShare::Read,
+													 FlagSet<FSActionFlag> flags = {}
 			) const;
 			std::unique_ptr<IOutputStream> OpenToWrite(const UniversallyUniqueID& id,
 													   IOStreamDisposition disposition = IOStreamDisposition::CreateAlways,
-													   FlagSet<IOStreamShare> share = IOStreamShare::Read
+													   FlagSet<IOStreamShare> share = IOStreamShare::Read,
+													   FlagSet<FSActionFlag> flags = {}
 			);
 	};
 }

@@ -39,7 +39,8 @@ namespace kxf
 		RelativePath = 1 << 4,
 		LimitToFiles = 1 << 5,
 		LimitToDirectories = 1 << 6,
-		QueryUniqueID = 1 << 7
+		QueryUniqueID = 1 << 7,
+		CreateDirectoryTree = 1 << 8
 	};
 	KxFlagSet_Declare(FSActionFlag);
 
