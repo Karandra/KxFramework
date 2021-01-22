@@ -516,6 +516,19 @@ namespace kxf
 		return DoWithResolvedPath1(m_CurrentDirectory, path, [&](const FSPath& path) -> std::unique_ptr<IStream>
 		{
 			auto fileStream = std::make_unique<NativeFileStream>(path, access, disposition, share, streamFlags);
+			if (!*fileStream && flags.Contains(FSActionFlag::CreateDirectoryTree) && fileStream->GetLastNativeError().IsSameAs<Win32Error>(ERROR_PATH_NOT_FOUND))
+			{
+				if (streamFlags.Contains(IOStreamFlag::AllowDirectories))
+				{
+					CreateDirectory(path);
+				}
+				else
+				{
+					CreateDirectory(path.GetParent());
+				}
+				fileStream = std::make_unique<NativeFileStream>(path, access, disposition, share, streamFlags);
+			}
+
 			if (*fileStream)
 			{
 				if (auto stream = std::unique_ptr<IStream>(fileStream->QueryInterface<IStream>().get()))
