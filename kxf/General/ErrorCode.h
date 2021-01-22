@@ -25,7 +25,7 @@ namespace kxf
 
 			template<class T, class = std::enable_if_t<std::is_base_of_v<IErrorCode, T>>>
 			ErrorCode(T errorCode) noexcept
-				:m_ErrorCode(std::move(errorCode)), m_InterfaceID(RTTI::GetInterfaceID<T>())
+				:m_ErrorCode(std::make_unique<T>(std::move(errorCode))), m_InterfaceID(RTTI::GetInterfaceID<T>())
 			{
 			}
 
@@ -78,6 +78,13 @@ namespace kxf
 				return m_ErrorCode == nullptr || m_InterfaceID.IsNull();
 			}
 			bool IsSameAs(const ErrorCode& other) const noexcept;
+
+			template<class TErrorCode, class... Args, class = std::enable_if_t<std::is_base_of_v<IErrorCode, TErrorCode> && std::is_constructible_v<TErrorCode, Args...>>>
+			bool IsSameAs(Args&&... arg) const noexcept
+			{
+				TErrorCode errorCode(std::forward<Args>(arg)...);
+				return IsSameAs(errorCode);
+			}
 
 		public:
 			bool operator==(const ErrorCode& other) const noexcept
