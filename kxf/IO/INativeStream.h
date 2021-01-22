@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "kxf/General/DateTime.h"
+#include "kxf/General/ErrorCode.h"
 #include "kxf/RTTI/QueryInterface.h"
 
 namespace kxf
@@ -26,6 +27,8 @@ namespace kxf
 									  FlagSet<IOStreamFlag> flags = IOStreamFlag::None
 			) = 0;
 			virtual void* DetachHandle() = 0;
+
+			virtual ErrorCode GetLastNativeError() const = 0;
 
 			virtual FlagSet<FileAttribute> GetAttributes() const = 0;
 			virtual bool SetAttributes(FlagSet<FileAttribute> attributes) = 0;

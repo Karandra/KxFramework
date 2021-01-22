@@ -110,6 +110,11 @@ namespace kxf
 			bool ReopenHandle(FlagSet<IOStreamAccess> access, FlagSet<IOStreamShare> share, FlagSet<IOStreamFlag> flags = IOStreamFlag::None) override;
 			void* DetachHandle() override;
 
+			ErrorCode GetLastNativeError() const override
+			{
+				return m_LastError;
+			}
+
 			FlagSet<FileAttribute> GetAttributes() const override;
 			bool SetAttributes(FlagSet<FileAttribute> attributes) override;
 
