@@ -17,7 +17,7 @@ namespace kxf
 			static FSPath GetExecutingModuleWorkingDirectory();
 			static bool SetExecutingModuleWorkingDirectory(const FSPath& directory);
 
-		private:
+		protected:
 			StorageVolume m_CurrentVolume;
 			FSPath m_CurrentDirectory;
 
@@ -39,15 +39,16 @@ namespace kxf
 			}
 
 		public:
-			NativeFileSystem(StorageVolume volume = {}) noexcept
+			NativeFileSystem() = default;
+			NativeFileSystem(StorageVolume volume)
 			{
 				DoAssingCurrentVolume(std::move(volume));
 			}
-			NativeFileSystem(FSPath directory) noexcept
+			NativeFileSystem(FSPath directory)
 			{
 				DoAssingCurrentDirectory(std::move(directory));
 			}
-			NativeFileSystem(const UniversallyUniqueID& scope) noexcept
+			NativeFileSystem(const UniversallyUniqueID& scope)
 			{
 				DoAssingCurrentVolumeUUID(scope);
 			}
@@ -187,5 +188,30 @@ namespace kxf
 			{
 				return IsNull();
 			}
+	};
+}
+
+namespace kxf
+{
+	class ScopedNativeFileSystem: public NativeFileSystem
+	{
+		public:
+			ScopedNativeFileSystem() = default;
+			ScopedNativeFileSystem(StorageVolume volume)
+				:NativeFileSystem(std::move(volume))
+			{
+			}
+			ScopedNativeFileSystem(FSPath directory)
+				:NativeFileSystem(std::move(directory))
+			{
+			}
+			ScopedNativeFileSystem(const UniversallyUniqueID& scope)
+				:NativeFileSystem(std::move(scope))
+			{
+			}
+
+		public:
+			// IFileSystem
+			bool IsNull() const override;
 	};
 }
