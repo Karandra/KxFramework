@@ -10,10 +10,11 @@ namespace kxf
 			using TValue = std::function<Any(const String& ns, const String& id)>;
 
 		private:
-			std::map<std::pair<String, String>, TValue> m_DynamicItems;
+			std::map<StaticVariablesCollection::Item, TValue> m_DynamicItems;
 
 		protected:
 			// IVariablesCollection
+			size_t DoClearItems(const String& ns) override;
 			size_t DoGetItemCount(const String& ns) const override;
 			size_t DoEnumItems(std::function<bool(const String& ns, const String& id, Any value)> func) const override;
 

@@ -3,6 +3,27 @@
 
 namespace kxf
 {
+	size_t DynamicVariablesCollection::DoClearItems(const String& ns)
+	{
+		size_t count = 0;
+		if (ns.IsEmpty())
+		{
+			count = m_DynamicItems.size();
+			m_DynamicItems.clear();
+		}
+		else
+		{
+			for (auto it = m_DynamicItems.begin(); it != m_DynamicItems.end(); ++it)
+			{
+				if (it->first.Namespace == ns)
+				{
+					count++;
+					m_DynamicItems.erase(it);
+				}
+			}
+		}
+		return count + StaticVariablesCollection::DoClearItems(ns);
+	}
 	size_t DynamicVariablesCollection::DoGetItemCount(const String& ns) const
 	{
 		if (ns.IsEmpty())
@@ -14,7 +35,7 @@ namespace kxf
 			size_t count = 0;
 			for (auto&& [descriptor, value]: m_DynamicItems)
 			{
-				if (descriptor.first == ns)
+				if (descriptor.Namespace == ns)
 				{
 					count++;
 				}
@@ -30,7 +51,7 @@ namespace kxf
 		for (auto&& [descriptor, value]: m_DynamicItems)
 		{
 			count++;
-			if (!std::invoke(func, descriptor.first, descriptor.second, std::invoke(value, descriptor.first, descriptor.second)))
+			if (!std::invoke(func, descriptor.Namespace, descriptor.Value, std::invoke(value, descriptor.Namespace, descriptor.Value)))
 			{
 				canceled = true;
 				break;

@@ -26,6 +26,7 @@ namespace kxf
 		KxRTTI_DeclareIID(IVariablesCollection, {0xc7cbd77f, 0x4982, 0x4a5f, {0xa6, 0xac, 0x57, 0xbb, 0x3, 0xb6, 0xb3, 0x3b}});
 
 		protected:
+			virtual size_t DoClearItems(const String& ns) = 0;
 			virtual size_t DoGetItemCount(const String& ns) const = 0;
 			virtual size_t DoEnumItems(std::function<bool(const String& ns, const String& id, Any value)> func) const = 0;
 			virtual String DoExpand(const String& variables) const
@@ -48,6 +49,15 @@ namespace kxf
 			size_t GetItemCount(const String& ns) const
 			{
 				return DoGetItemCount(ns);
+			}
+
+			size_t ClearItems()
+			{
+				return DoClearItems({});
+			}
+			size_t ClearItems(const String& ns)
+			{
+				return DoClearItems(ns);
 			}
 			bool IsEmpty() const
 			{
