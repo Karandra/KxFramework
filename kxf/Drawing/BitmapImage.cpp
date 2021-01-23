@@ -5,7 +5,7 @@
 #include "GDIRenderer/GDIIcon.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/wxWidgets/StreamWrapper.h"
-#include "Private/SVGImageHandler.h"
+
 
 namespace
 {
@@ -34,11 +34,6 @@ namespace
 namespace kxf
 {
 	// BitmapImage
-	void BitmapImage::InitalizeHandlers()
-	{
-		wxInitAllImageHandlers();
-		wxImage::AddHandler(std::make_unique<Drawing::Private::SVGImageHandler>().release());
-	}
 	size_t BitmapImage::GetImageCount(IInputStream& stream, const UniversallyUniqueID& format)
 	{
 		wxWidgets::InputStreamWrapperWx warpper(stream);
@@ -70,10 +65,17 @@ namespace kxf
 	}
 	bool BitmapImage::Save(IOutputStream& stream, const UniversallyUniqueID& format) const
 	{
-		if (m_Image.IsOk() && format != ImageFormat::Any && format != ImageFormat::None)
+		if (m_Image.IsOk() && format != ImageFormat::None)
 		{
 			wxWidgets::OutputStreamWrapperWx warpper(stream);
-			return m_Image.SaveFile(warpper, Drawing::Private::MapImageFormat(format));
+			if (format == ImageFormat::Any)
+			{
+				return m_Image.SaveFile(warpper, wxBitmapType::wxBITMAP_TYPE_PNG);
+			}
+			else
+			{
+				return m_Image.SaveFile(warpper, Drawing::Private::MapImageFormat(format));
+			}
 		}
 		return false;
 	}

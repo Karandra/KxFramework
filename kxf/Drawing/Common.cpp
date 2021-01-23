@@ -2,12 +2,19 @@
 #include "Common.h"
 #include "IImageHandler.h"
 #include "BitmapImage.h"
+#include "Private/SVGImageHandler.h"
 #include "kxf/wxWidgets/StreamWrapper.h"
 #include "kxf/Utility/ScopeGuard.h"
 #include <wx/image.h>
 
 namespace kxf::Drawing
 {
+	void InitalizeImageHandlers()
+	{
+		wxInitAllImageHandlers();
+		wxImage::AddHandler(std::make_unique<Drawing::Private::SVGImageHandler>().release());
+	}
+
 	std::unique_ptr<IImage2D> LoadImage(IInputStream& stream, size_t index)
 	{
 		if (stream.IsSeekable())
@@ -26,7 +33,7 @@ namespace kxf::Drawing
 				if (object_ptr<IImageHandler> handlerKxf; objectKxf && objectKxf->QueryInterface(handlerKxf))
 				{
 					auto image = handlerKxf->CreateImage();
-					if (handlerKxf->LoadImage(*image, stream, index))
+					if (handlerKxf->LoadImage(*image, stream, index) && *image)
 					{
 						return image;
 					}
@@ -37,7 +44,7 @@ namespace kxf::Drawing
 
 					wxImage image;
 					wxWidgets::InputStreamWrapperWx wrapper(stream);
-					if (handlerWx.LoadFile(&image, wrapper, false, index != std::numeric_limits<size_t>::max() ? static_cast<int>(index) : -1))
+					if (handlerWx.LoadFile(&image, wrapper, false, index != std::numeric_limits<size_t>::max() ? static_cast<int>(index) : -1) && image.IsOk())
 					{
 						return std::make_unique<BitmapImage>(std::move(image));
 					}

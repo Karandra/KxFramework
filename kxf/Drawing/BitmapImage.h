@@ -17,7 +17,6 @@ namespace kxf
 		KxRTTI_DeclareIID(BitmapImage, {0x84c3ee9b, 0x62dc, 0x4d8c, {0x8c, 0x94, 0xd1, 0xbc, 0xaf, 0x68, 0xfb, 0xc1}});
 
 		public:
-			static void InitalizeHandlers();
 			static size_t GetImageCount(IInputStream& stream, const UniversallyUniqueID& format = ImageFormat::Any);
 
 		private:

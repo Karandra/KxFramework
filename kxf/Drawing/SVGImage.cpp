@@ -76,9 +76,9 @@ namespace kxf
 	}
 	bool SVGImage::Save(IOutputStream& stream, const UniversallyUniqueID& format) const
 	{
-		if (m_Document && format != ImageFormat::None && format != ImageFormat::Any)
+		if (m_Document && format != ImageFormat::None)
 		{
-			if (format == ImageFormat::SVG)
+			if (format == ImageFormat::SVG || format == ImageFormat::Any)
 			{
 				IO::OutputStreamWriter writer(stream);
 				writer.WriteStringUTF8(String::FromUTF8(m_Document->toString()));
