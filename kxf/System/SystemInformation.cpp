@@ -308,7 +308,7 @@ namespace kxf::System
 		userInfo.Name = std::move(userName);
 
 		// Organization
-		RegistryKey key(RegistryBaseKey::LocalMachine, wxS("Software\\Microsoft\\Windows NT\\CurrentVersion"), RegistryAccess::Read);
+		RegistryKey key(RegistryRootKey::LocalMachine, wxS("Software\\Microsoft\\Windows NT\\CurrentVersion"), RegistryAccess::Read);
 		if (key)
 		{
 			if (auto value = key.GetStringValue(wxS("RegisteredOrganization")))
@@ -474,7 +474,7 @@ namespace kxf::System
 	}
 	size_t EnumStandardSounds(std::function<bool(String)> func)
 	{
-		RegistryKey key(RegistryBaseKey::CurrentUser, wxS("AppEvents\\EventLabels"), RegistryAccess::Read|RegistryAccess::Enumerate);
+		RegistryKey key(RegistryRootKey::CurrentUser, wxS("AppEvents\\EventLabels"), RegistryAccess::Read|RegistryAccess::Enumerate);
 		if (key)
 		{
 			return key.EnumKeyNames(std::move(func));

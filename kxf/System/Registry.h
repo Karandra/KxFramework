@@ -6,7 +6,7 @@
 
 namespace kxf
 {
-	enum class RegistryBaseKey
+	enum class RegistryRootKey
 	{
 		LocalMachine,
 		Users,
@@ -77,7 +77,7 @@ namespace kxf
 	class RegistryKey final
 	{
 		public:
-			static RegistryKey CreateKey(RegistryBaseKey baseKey, const FSPath& subKey, FlagSet<RegistryAccess> access, FlagSet<RegistryKeyFlag> flags = {}, RegistryWOW64 wow64 = RegistryWOW64::Default)
+			static RegistryKey CreateKey(RegistryRootKey baseKey, const FSPath& subKey, FlagSet<RegistryAccess> access, FlagSet<RegistryKeyFlag> flags = {}, RegistryWOW64 wow64 = RegistryWOW64::Default)
 			{
 				RegistryKey key(baseKey, {}, RegistryAccess::Create, wow64);
 				if (key)
@@ -92,18 +92,18 @@ namespace kxf
 			mutable Win32Error m_LastError = Win32Error::Success();
 
 		private:
-			void* DoGetBaseKey(RegistryBaseKey baseKey) const noexcept;
+			void* DoGetBaseKey(RegistryRootKey baseKey) const noexcept;
 			bool DoOpenKey(void* rootKey, const FSPath& subKey, FlagSet<RegistryAccess> access, RegistryWOW64 wow64);
 			bool DoCreateKey(void* rootKey, const FSPath& subKey, FlagSet<RegistryAccess> access, FlagSet<RegistryKeyFlag> flags, RegistryWOW64 wow64);
 			void DoCloseKey(void* handle) noexcept;
 
 		public:
 			RegistryKey() noexcept = default;
-			RegistryKey(RegistryBaseKey baseKey) noexcept
+			RegistryKey(RegistryRootKey baseKey) noexcept
 				:m_Handle(DoGetBaseKey(baseKey))
 			{
 			}
-			RegistryKey(RegistryBaseKey baseKey, const FSPath& subKey, FlagSet<RegistryAccess> access, RegistryWOW64 wow64 = RegistryWOW64::Default)
+			RegistryKey(RegistryRootKey baseKey, const FSPath& subKey, FlagSet<RegistryAccess> access, RegistryWOW64 wow64 = RegistryWOW64::Default)
 			{
 				DoOpenKey(DoGetBaseKey(baseKey), subKey, access, wow64);
 			}

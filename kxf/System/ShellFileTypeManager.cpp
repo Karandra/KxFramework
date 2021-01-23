@@ -21,7 +21,7 @@ namespace kxf
 			{
 				if (fileTypeInfo.IsURLProtocol(extension))
 				{
-					RegistryKey classesRoot(RegistryBaseKey::ClassesRoot, {}, RegistryAccess::Create);
+					RegistryKey classesRoot(RegistryRootKey::ClassesRoot, {}, RegistryAccess::Create);
 					if (classesRoot)
 					{
 						String ext = FSPath(std::move(extension)).GetExtension();

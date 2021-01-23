@@ -16,7 +16,7 @@ namespace
 	{
 		using namespace kxf;
 
-		RegistryKey key(RegistryBaseKey::CurrentUser, wxS("Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced"), RegistryAccess::Read);
+		RegistryKey key(RegistryRootKey::CurrentUser, wxS("Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced"), RegistryAccess::Read);
 		if (key)
 		{
 			return key.GetUInt32Value(wxS("EnableBalloonTips")) != 0;

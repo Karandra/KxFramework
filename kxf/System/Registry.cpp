@@ -16,47 +16,47 @@ namespace
 		return reinterpret_cast<HKEY>(handle);
 	}
 
-	HKEY MapBaseKey(RegistryBaseKey baseKey) noexcept
+	HKEY MapBaseKey(RegistryRootKey baseKey) noexcept
 	{
 		switch (baseKey)
 		{
-			case RegistryBaseKey::LocalMachine:
+			case RegistryRootKey::LocalMachine:
 			{
 				return HKEY_LOCAL_MACHINE;
 			}
-			case RegistryBaseKey::Users:
+			case RegistryRootKey::Users:
 			{
 				return HKEY_USERS;
 			}
-			case RegistryBaseKey::ClassesRoot:
+			case RegistryRootKey::ClassesRoot:
 			{
 				return HKEY_CLASSES_ROOT;
 			}
-			case RegistryBaseKey::CurrentUser:
+			case RegistryRootKey::CurrentUser:
 			{
 				return HKEY_CURRENT_USER;
 			}
-			case RegistryBaseKey::CurrentUserLocalSettings:
+			case RegistryRootKey::CurrentUserLocalSettings:
 			{
 				return HKEY_CURRENT_USER_LOCAL_SETTINGS;
 			}
-			case RegistryBaseKey::CurrentConfig:
+			case RegistryRootKey::CurrentConfig:
 			{
 				return HKEY_CURRENT_CONFIG;
 			}
-			case RegistryBaseKey::PerformanceData:
+			case RegistryRootKey::PerformanceData:
 			{
 				return HKEY_PERFORMANCE_DATA;
 			}
-			case RegistryBaseKey::PerformanceText:
+			case RegistryRootKey::PerformanceText:
 			{
 				return HKEY_PERFORMANCE_TEXT;
 			}
-			case RegistryBaseKey::PerformanceTextNLS:
+			case RegistryRootKey::PerformanceTextNLS:
 			{
 				return HKEY_PERFORMANCE_NLSTEXT;
 			}
-			case RegistryBaseKey::DynData:
+			case RegistryRootKey::DynData:
 			{
 				return HKEY_DYN_DATA;
 			}
@@ -263,7 +263,7 @@ namespace
 
 namespace kxf
 {
-	void* RegistryKey::DoGetBaseKey(RegistryBaseKey baseKey) const noexcept
+	void* RegistryKey::DoGetBaseKey(RegistryRootKey baseKey) const noexcept
 	{
 		return MapBaseKey(baseKey);
 	}

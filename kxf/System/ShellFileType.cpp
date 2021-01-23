@@ -25,7 +25,7 @@ namespace kxf
 			{
 				if (ext == extension)
 				{
-					RegistryKey key(RegistryBaseKey::ClassesRoot, extension.GetExtension(), RegistryAccess::Read);
+					RegistryKey key(RegistryRootKey::ClassesRoot, extension.GetExtension(), RegistryAccess::Read);
 					return key.DoesValueExist(wxS("URL Protocol"));
 				}
 			}
