@@ -37,7 +37,6 @@ namespace kxf
 			bool CheckIsVolumeGUID(const String& path) const;
 			size_t DetectNamespacePrefix(const String& path, kxf::FSPathNamespace& ns) const;
 
-			bool CheckStringOnInitialAssign(const String& path) const;
 			bool CheckStringOnAssignPath(const String& path) const;
 			bool CheckStringOnAssignName(const String& name) const;
 

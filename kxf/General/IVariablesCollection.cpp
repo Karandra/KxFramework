@@ -54,7 +54,7 @@ namespace kxf
 	{
 		if (!source.IsEmpty())
 		{
-			String result = source.Clone();
+			String result = source;
 			size_t entryStartPos = String::npos;
 			size_t varNameStartPos = String::npos;
 

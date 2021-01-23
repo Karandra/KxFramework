@@ -110,14 +110,6 @@ namespace kxf
 
 	void FSPath::AssignFromPath(String path)
 	{
-		Utility::ScopeGuard atExit([&]()
-		{
-			if (!CheckStringOnInitialAssign(m_Path))
-			{
-				m_Path.Clear();
-			}
-		});
-
 		m_Path = std::move(path);
 		if (!m_Path.IsEmpty())
 		{
@@ -262,14 +254,6 @@ namespace kxf
 		return 0;
 	}
 
-	bool FSPath::CheckStringOnInitialAssign(const String& path) const
-	{
-		if (path.ContainsAnyOfCharacters(wxS("\\/")))
-		{
-			return CheckIsLegacyVolume(path);
-		}
-		return true;
-	}
 	bool FSPath::CheckStringOnAssignPath(const String& path) const
 	{
 		FSPathNamespace ns = FSPathNamespace::None;
