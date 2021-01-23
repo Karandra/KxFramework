@@ -58,7 +58,7 @@ namespace kxf
 			StorageVolume(const FSPath& path);
 
 		public:
-			bool IsValid() const noexcept;
+			bool IsNull() const noexcept;
 			bool DoesExist() const noexcept;
 
 			UniversallyUniqueID GetUniqueID() const noexcept;
@@ -88,11 +88,11 @@ namespace kxf
 		public:
 			explicit operator bool() const noexcept
 			{
-				return IsValid();
+				return !IsNull();
 			}
 			bool operator!() const noexcept
 			{
-				return !IsValid();
+				return IsNull();
 			}
 			
 			bool operator==(const StorageVolume& other) const

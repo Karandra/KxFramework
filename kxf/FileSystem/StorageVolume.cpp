@@ -189,9 +189,9 @@ namespace kxf
 		}
 	}
 
-	bool StorageVolume::IsValid() const noexcept
+	bool StorageVolume::IsNull() const noexcept
 	{
-		return m_Path[0] != wxS('\0') && m_Length == g_VolumePathTotalLength;
+		return m_Path[0] == wxS('\0') || m_Length != g_VolumePathTotalLength;
 	}
 	bool StorageVolume::DoesExist() const noexcept
 	{
@@ -200,7 +200,7 @@ namespace kxf
 
 	UniversallyUniqueID StorageVolume::GetUniqueID() const noexcept
 	{
-		if (IsValid())
+		if (!IsNull())
 		{
 			auto guid = StringViewOf(m_Path).substr(g_VolumePathPrefixLength + 1, g_GUIDLength);
 
@@ -233,7 +233,7 @@ namespace kxf
 
 	DriveType StorageVolume::GetType() const noexcept
 	{
-		if (IsValid())
+		if (!IsNull())
 		{
 			return MapDriveType(::GetDriveTypeW(m_Path));
 		}
