@@ -61,7 +61,7 @@ namespace kxf
 			}
 			bool IsEmpty() const
 			{
-				return DoGetItemCount(wxS('*')) == 0;
+				return DoGetItemCount({}) == 0;
 			}
 
 			String Expand(const String& variables) const

@@ -254,6 +254,9 @@
     <Filter Include="kxf\Drawing\WxRenderer">
       <UniqueIdentifier>{a2fbc745-d4d0-4f41-87a4-f00f4ec82b32}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\General\&lt;VariablesCollection&gt;">
+      <UniqueIdentifier>{296a9365-2720-436b-a4ca-76511e4a0ea6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -1430,9 +1433,6 @@
     <ClInclude Include="kxf\Sciter\Widgets\Native\Common.h">
       <Filter>kxf\Sciter\Widgets\Native</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\IVariablesCollection.h">
-      <Filter>kxf\General</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Sciter\Stylesheets\StylesheetStorage.h">
       <Filter>kxf\Sciter\Stylesheets</Filter>
     </ClInclude>
@@ -1507,12 +1507,6 @@
     </ClInclude>
     <ClInclude Include="kxf\Log\OutputStreamTarget.h">
       <Filter>kxf\Log</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\General\DynamicVariablesCollection.h">
-      <Filter>kxf\General</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\General\StaticVariablesCollection.h">
-      <Filter>kxf\General</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Drawing\SizeRatio.h">
       <Filter>kxf\Drawing</Filter>
@@ -1768,6 +1762,18 @@
     </ClInclude>
     <ClInclude Include="kxf\General\ErrorCode.h">
       <Filter>kxf\General</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\CombinedVariablesCollection.h">
+      <Filter>kxf\General\&lt;VariablesCollection&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\DynamicVariablesCollection.h">
+      <Filter>kxf\General\&lt;VariablesCollection&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\StaticVariablesCollection.h">
+      <Filter>kxf\General\&lt;VariablesCollection&gt;</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\IVariablesCollection.h">
+      <Filter>kxf\General\&lt;VariablesCollection&gt;</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2462,9 +2468,6 @@
     <ClCompile Include="kxf\Sciter\Widgets\Native\TextBoxWidget.cpp">
       <Filter>kxf\Sciter\Widgets\Native</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\IVariablesCollection.cpp">
-      <Filter>kxf\General</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\Sciter\Stylesheets\StylesheetStorage.cpp">
       <Filter>kxf\Sciter\Stylesheets</Filter>
     </ClCompile>
@@ -2509,12 +2512,6 @@
     </ClCompile>
     <ClCompile Include="kxf\Log\OutputStreamTarget.cpp">
       <Filter>kxf\Log</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\General\DynamicVariablesCollection.cpp">
-      <Filter>kxf\General</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\General\StaticVariablesCollection.cpp">
-      <Filter>kxf\General</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Drawing\SizeRatio.cpp">
       <Filter>kxf\Drawing</Filter>
@@ -2644,6 +2641,18 @@
     </ClCompile>
     <ClCompile Include="kxf\General\ErrorCode.cpp">
       <Filter>kxf\General</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\CombinedVariablesCollection.cpp">
+      <Filter>kxf\General\&lt;VariablesCollection&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\DynamicVariablesCollection.cpp">
+      <Filter>kxf\General\&lt;VariablesCollection&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\StaticVariablesCollection.cpp">
+      <Filter>kxf\General\&lt;VariablesCollection&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\IVariablesCollection.cpp">
+      <Filter>kxf\General\&lt;VariablesCollection&gt;</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

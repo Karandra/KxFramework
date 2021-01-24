@@ -310,6 +310,7 @@
     <ClInclude Include="kxf\EventSystem\WidgetEvent.h" />
     <ClInclude Include="kxf\FileSystem\NullFileSystem.h" />
     <ClInclude Include="kxf\General\AlignedStorage.h" />
+    <ClInclude Include="kxf\General\CombinedVariablesCollection.h" />
     <ClInclude Include="kxf\General\DateTime.h" />
     <ClInclude Include="kxf\General\DateTime\Common.h" />
     <ClInclude Include="kxf\General\DateTime\DateSpan.h" />
@@ -753,6 +754,7 @@
     <ClCompile Include="kxf\EventSystem\Private\Win32GUIEventLoop.cpp" />
     <ClCompile Include="kxf\FileSystem\IFileSystem.cpp" />
     <ClCompile Include="kxf\FileSystem\Private\NativeFSUtility.cpp" />
+    <ClCompile Include="kxf\General\CombinedVariablesCollection.cpp" />
     <ClCompile Include="kxf\General\DateTime\DateSpan.cpp" />
     <ClCompile Include="kxf\General\DateTime\DateTime.cpp" />
     <ClCompile Include="kxf\General\DateTime\TimeClock.cpp" />
