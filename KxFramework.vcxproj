@@ -325,6 +325,7 @@
     <ClInclude Include="kxf\General\IErrorCode.h" />
     <ClInclude Include="kxf\General\IVariablesCollection.h" />
     <ClInclude Include="kxf\General\LocallyUniqueID.h" />
+    <ClInclude Include="kxf\General\NullVariablesCollection.h" />
     <ClInclude Include="kxf\General\OptionalPtr.h" />
     <ClInclude Include="kxf\General\RegEx.h" />
     <ClInclude Include="kxf\General\ResourceID.h" />

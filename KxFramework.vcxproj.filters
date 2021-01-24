@@ -1775,6 +1775,9 @@
     <ClInclude Include="kxf\General\IVariablesCollection.h">
       <Filter>kxf\General\&lt;VariablesCollection&gt;</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\General\NullVariablesCollection.h">
+      <Filter>kxf\General\&lt;VariablesCollection&gt;</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
