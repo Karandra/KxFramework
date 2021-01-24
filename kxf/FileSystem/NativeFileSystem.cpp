@@ -187,7 +187,7 @@ namespace kxf
 			return {};
 		}
 
-		return DoWithResolvedPath1(m_CurrentDirectory, relativePath, [](const FSPath& path)
+		return DoWithResolvedPath1(m_LookupDirectory, relativePath, [](const FSPath& path)
 		{
 			return path;
 		});
@@ -200,7 +200,7 @@ namespace kxf
 			return false;
 		}
 
-		return DoWithResolvedPath1(m_CurrentDirectory, path, [](const FSPath& path)
+		return DoWithResolvedPath1(m_LookupDirectory, path, [](const FSPath& path)
 		{
 			return FileSystem::Private::GetFileAttributes(path) != INVALID_FILE_ATTRIBUTES;
 		});
@@ -212,7 +212,7 @@ namespace kxf
 			return false;
 		}
 
-		return DoWithResolvedPath1(m_CurrentDirectory, path, [](const FSPath& path)
+		return DoWithResolvedPath1(m_LookupDirectory, path, [](const FSPath& path)
 		{
 			const FlagSet<DWORD> attributes = FileSystem::Private::GetFileAttributes(path);
 			return !attributes.Equals(INVALID_FILE_ATTRIBUTES) && !attributes.Contains(FILE_ATTRIBUTE_DIRECTORY);
@@ -225,7 +225,7 @@ namespace kxf
 			return false;
 		}
 
-		return DoWithResolvedPath1(m_CurrentDirectory, path, [](const FSPath& path)
+		return DoWithResolvedPath1(m_LookupDirectory, path, [](const FSPath& path)
 		{
 			const FlagSet<uint32_t> attributes = FileSystem::Private::GetFileAttributes(path);
 			return !attributes.Equals(INVALID_FILE_ATTRIBUTES) && attributes.Contains(FILE_ATTRIBUTE_DIRECTORY);
@@ -239,7 +239,7 @@ namespace kxf
 			return {};
 		}
 
-		return DoWithResolvedPath1(m_CurrentDirectory, path, [](const FSPath& path) -> FileItem
+		return DoWithResolvedPath1(m_LookupDirectory, path, [](const FSPath& path) -> FileItem
 		{
 			NativeFileStream file(path, IOStreamAccess::ReadAttributes, IOStreamDisposition::OpenExisting, IOStreamShare::Everything);
 			if (file)
@@ -249,14 +249,14 @@ namespace kxf
 			return {};
 		});
 	}
-	size_t NativeFileSystem::EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPath& query, FlagSet<FSActionFlag> flags) const
+	size_t NativeFileSystem::EnumItems(const FSPath& directory, std::function<bool(FileItem)> func, const FSPath& query, FlagSet<FSActionFlag> flags) const
 	{
 		if (IsNull())
 		{
 			return 0;
 		}
 
-		return DoWithResolvedPath1(m_CurrentDirectory, directory, [&](const FSPath& path) -> size_t
+		return DoWithResolvedPath1(m_LookupDirectory, directory, [&](const FSPath& path) -> size_t
 		{
 			if (flags.Contains(FSActionFlag::LimitToFiles|FSActionFlag::LimitToDirectories))
 			{
@@ -364,7 +364,7 @@ namespace kxf
 			return false;
 		}
 
-		return DoWithResolvedPath1(m_CurrentDirectory, path, [&](const FSPath& path) -> bool
+		return DoWithResolvedPath1(m_LookupDirectory, path, [&](const FSPath& path) -> bool
 		{
 			if (flags.Contains(FSActionFlag::Recursive))
 			{
@@ -409,7 +409,7 @@ namespace kxf
 			return false;
 		}
 
-		return DoWithResolvedPath1(m_CurrentDirectory, path, [&](const FSPath& path) -> bool
+		return DoWithResolvedPath1(m_LookupDirectory, path, [&](const FSPath& path) -> bool
 		{
 			if (attributes != FileAttribute::Invalid && path.IsAbsolute())
 			{
@@ -426,7 +426,7 @@ namespace kxf
 			return false;
 		}
 
-		return DoWithResolvedPath1(m_CurrentDirectory, path, [&](const FSPath& path) -> bool
+		return DoWithResolvedPath1(m_LookupDirectory, path, [&](const FSPath& path) -> bool
 		{
 			if ((creationTime.IsValid() || modificationTime.IsValid() || lastAccessTime.IsValid()))
 			{
@@ -441,14 +441,14 @@ namespace kxf
 		});
 	}
 
-	bool NativeFileSystem::CopyItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func, FlagSet<FSActionFlag> flags)
+	bool NativeFileSystem::CopyItem(const FSPath& source, const FSPath& destination, std::function<bool(BinarySize, BinarySize)> func, FlagSet<FSActionFlag> flags)
 	{
 		if (IsNull())
 		{
 			return false;
 		}
 
-		return DoWithResolvedPath2(m_CurrentDirectory, source, destination, [&](const FSPath& source, const FSPath& destination)
+		return DoWithResolvedPath2(m_LookupDirectory, source, destination, [&](const FSPath& source, const FSPath& destination)
 		{
 			BOOL cancel = FALSE;
 			DWORD copyFlags = COPY_FILE_ALLOW_DECRYPTED_DESTINATION|COPY_FILE_COPY_SYMLINK;
@@ -457,17 +457,44 @@ namespace kxf
 
 			const String sourcePath = source.GetFullPathWithNS(FSPathNamespace::Win32File);
 			const String destinationPath = destination.GetFullPathWithNS(FSPathNamespace::Win32File);
-			return ::CopyFileExW(sourcePath.wc_str(), destinationPath.wc_str(), FileSystem::Private::CopyCallback, func ? &func : nullptr, &cancel, copyFlags);
+
+			if (func)
+			{
+				return ::CopyFileExW(sourcePath.wc_str(), destinationPath.wc_str(),
+									 [](LARGE_INTEGER TotalFileSize,
+									 LARGE_INTEGER TotalBytesTransferred,
+									 LARGE_INTEGER StreamSize,
+									 LARGE_INTEGER StreamBytesTransferred,
+									 DWORD dwStreamNumber,
+									 DWORD dwCallbackReason,
+									 HANDLE hSourceFile,
+									 HANDLE hDestinationFile,
+									 LPVOID lpData) -> DWORD
+				{
+					using T = std::remove_reference_t<decltype(func)>;
+					decltype(auto) callback = *reinterpret_cast<T*>(lpData);
+
+					if (std::invoke(callback, BinarySize::FromBytes(TotalBytesTransferred.QuadPart), BinarySize::FromBytes(TotalFileSize.QuadPart)))
+					{
+						return PROGRESS_CONTINUE;
+					}
+					return PROGRESS_CANCEL;
+				}, &func, &cancel, copyFlags);
+			}
+			else
+			{
+				return ::CopyFileExW(sourcePath.wc_str(), destinationPath.wc_str(), nullptr, nullptr, &cancel, copyFlags);
+			}
 		});
 	}
-	bool NativeFileSystem::MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func, FlagSet<FSActionFlag> flags)
+	bool NativeFileSystem::MoveItem(const FSPath& source, const FSPath& destination, std::function<bool(BinarySize, BinarySize)> func, FlagSet<FSActionFlag> flags)
 	{
 		if (IsNull())
 		{
 			return false;
 		}
 
-		return DoWithResolvedPath2(m_CurrentDirectory, source, destination, [&](const FSPath& source, const FSPath& destination)
+		return DoWithResolvedPath2(m_LookupDirectory, source, destination, [&](const FSPath& source, const FSPath& destination)
 		{
 			DWORD moveFlags = MOVEFILE_COPY_ALLOWED;
 			Utility::AddFlagRef(moveFlags, MOVEFILE_REPLACE_EXISTING, flags & FSActionFlag::ReplaceIfExist);
@@ -475,7 +502,33 @@ namespace kxf
 
 			const String sourcePath = source.GetFullPathWithNS(FSPathNamespace::Win32File);
 			const String destinationPath = destination.GetFullPathWithNS(FSPathNamespace::Win32File);
-			return ::MoveFileWithProgressW(sourcePath.wc_str(), destinationPath.wc_str(), FileSystem::Private::CopyCallback, func ? &func : nullptr, moveFlags);
+
+			if (func)
+			{
+				return ::MoveFileWithProgressW(sourcePath.wc_str(), destinationPath.wc_str(), [](LARGE_INTEGER TotalFileSize,
+											   LARGE_INTEGER TotalBytesTransferred,
+											   LARGE_INTEGER StreamSize,
+											   LARGE_INTEGER StreamBytesTransferred,
+											   DWORD dwStreamNumber,
+											   DWORD dwCallbackReason,
+											   HANDLE hSourceFile,
+											   HANDLE hDestinationFile,
+											   LPVOID lpData) -> DWORD
+				{
+					using T = std::remove_reference_t<decltype(func)>;
+					decltype(auto) callback = *reinterpret_cast<T*>(lpData);
+
+					if (std::invoke(callback, BinarySize::FromBytes(TotalBytesTransferred.QuadPart), BinarySize::FromBytes(TotalFileSize.QuadPart)))
+					{
+						return PROGRESS_CONTINUE;
+					}
+					return PROGRESS_CANCEL;
+				}, &func, moveFlags);
+			}
+			else
+			{
+				return ::MoveFileExW(sourcePath.wc_str(), destinationPath.wc_str(), moveFlags);
+			}
 		});
 	}
 	bool NativeFileSystem::RenameItem(const FSPath& source, const FSPath& destination, FlagSet<FSActionFlag> flags)
@@ -485,7 +538,7 @@ namespace kxf
 			return false;
 		}
 
-		return DoWithResolvedPath2(m_CurrentDirectory, source, destination, [&](const FSPath& source, const FSPath& destination)
+		return DoWithResolvedPath2(m_LookupDirectory, source, destination, [&](const FSPath& source, const FSPath& destination)
 		{
 			const String sourcePath = source.GetFullPathWithNS(FSPathNamespace::Win32File);
 			const String destinationPath = destination.GetFullPathWithNS(FSPathNamespace::Win32File);
@@ -501,7 +554,7 @@ namespace kxf
 			return false;
 		}
 
-		return DoWithResolvedPath1(m_CurrentDirectory, path, [&](const FSPath& path) -> bool
+		return DoWithResolvedPath1(m_LookupDirectory, path, [&](const FSPath& path) -> bool
 		{
 			const String sourcePath = path.GetFullPathWithNS(FSPathNamespace::Win32File);
 
@@ -530,7 +583,7 @@ namespace kxf
 			return false;
 		}
 
-		return DoWithResolvedPath1(m_CurrentDirectory, path, [&](const FSPath& path) -> bool
+		return DoWithResolvedPath1(m_LookupDirectory, path, [&](const FSPath& path) -> bool
 		{
 			const String sourcePath = path.GetFullPathWithNS(FSPathNamespace::Win32File);
 
@@ -619,7 +672,7 @@ namespace kxf
 			return nullptr;
 		}
 
-		return DoWithResolvedPath1(m_CurrentDirectory, path, [&](const FSPath& path) -> std::unique_ptr<IStream>
+		return DoWithResolvedPath1(m_LookupDirectory, path, [&](const FSPath& path) -> std::unique_ptr<IStream>
 		{
 			auto fileStream = std::make_unique<NativeFileStream>(path, access, disposition, share, streamFlags);
 			if (!*fileStream && flags.Contains(FSActionFlag::CreateDirectoryTree) && fileStream->GetLastNativeError().IsSameAs<Win32Error>(ERROR_PATH_NOT_FOUND))
@@ -656,7 +709,7 @@ namespace kxf
 		}
 
 		NativeFileStream file;
-		return OpenFileByID(m_CurrentVolume, id, file);
+		return OpenFileByID(m_LookupVolume, id, file);
 	}
 	bool NativeFileSystem::FileExist(const UniversallyUniqueID& id) const
 	{
@@ -666,7 +719,7 @@ namespace kxf
 		}
 
 		NativeFileStream file;
-		if (OpenFileByID(m_CurrentVolume, id, file))
+		if (OpenFileByID(m_LookupVolume, id, file))
 		{
 			return !file.GetAttributes().Contains(FileAttribute::Directory);
 		}
@@ -680,7 +733,7 @@ namespace kxf
 		}
 
 		NativeFileStream file;
-		if (OpenFileByID(m_CurrentVolume, id, file))
+		if (OpenFileByID(m_LookupVolume, id, file))
 		{
 			return file.GetAttributes().Contains(FileAttribute::Directory);
 		}
@@ -695,7 +748,7 @@ namespace kxf
 		}
 
 		NativeFileStream file;
-		if (OpenFileByID(m_CurrentVolume, id, file))
+		if (OpenFileByID(m_LookupVolume, id, file))
 		{
 			return FileSystem::Private::ConvertFileInfo(file.GetHandle(), id);
 		}
@@ -717,7 +770,7 @@ namespace kxf
 		if (id)
 		{
 			auto fileStream = std::make_unique<NativeFileStream>();
-			if (OpenFileByID(m_CurrentVolume, id, *fileStream, access, disposition, share, streamFlags))
+			if (OpenFileByID(m_LookupVolume, id, *fileStream, access, disposition, share, streamFlags))
 			{
 				if (auto stream = std::unique_ptr<IStream>(fileStream->QueryInterface<IStream>().get()))
 				{
@@ -739,7 +792,7 @@ namespace kxf
 
 		return path.IsAbsolute() && NativeFileStream(path, IOStreamAccess::Read, IOStreamDisposition::OpenExisting, IOStreamShare::None);
 	}
-	size_t NativeFileSystem::EnumStreams(const FSPath& path, TEnumStreamsFunc func) const
+	size_t NativeFileSystem::EnumStreams(const FSPath& path, std::function<bool(String, BinarySize)> func) const
 	{
 		if (IsNull())
 		{
@@ -776,7 +829,7 @@ namespace kxf
 		return 0;
 	}
 
-	bool NativeFileSystem::CopyDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func, FlagSet<FSActionFlag> flags) const
+	bool NativeFileSystem::CopyDirectoryTree(const FSPath& source, const FSPath& destination, std::function<bool(FSPath, FSPath, BinarySize, BinarySize)> func, FlagSet<FSActionFlag> flags) const
 	{
 		if (IsNull())
 		{
@@ -789,7 +842,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool NativeFileSystem::MoveDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func, FlagSet<FSActionFlag> flags)
+	bool NativeFileSystem::MoveDirectoryTree(const FSPath& source, const FSPath& destination, std::function<bool(FSPath, FSPath, BinarySize, BinarySize)> func, FlagSet<FSActionFlag> flags)
 	{
 		if (IsNull())
 		{
@@ -808,6 +861,6 @@ namespace kxf
 {
 	bool ScopedNativeFileSystem::IsNull() const
 	{
-		return m_CurrentDirectory.IsNull() || m_CurrentVolume.IsNull();
+		return m_LookupDirectory.IsNull() || m_LookupVolume.IsNull();
 	}
 }

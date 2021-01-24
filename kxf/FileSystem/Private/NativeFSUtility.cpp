@@ -29,18 +29,18 @@ namespace kxf::FileSystem::Private
 		return result;
 	}
 
-	bool IsValidFindItem(const WIN32_FIND_DATAW& findInfo) noexcept
+	bool IsValidFindItem(const _WIN32_FIND_DATAW& findInfo) noexcept
 	{
 		std::wstring_view name = findInfo.cFileName;
 		return !(findInfo.dwFileAttributes == INVALID_FILE_ATTRIBUTES || name.empty() || name == L".." || name == L".");
 	}
-	HANDLE CallFindFirstFile(const String& query, WIN32_FIND_DATAW& findInfo, bool isCaseSensitive)
+	void* CallFindFirstFile(const String& query, _WIN32_FIND_DATAW& findInfo, bool isCaseSensitive)
 	{
 		const DWORD searchFlags = FIND_FIRST_EX_LARGE_FETCH|(isCaseSensitive ? FIND_FIRST_EX_CASE_SENSITIVE : 0);
 		return ::FindFirstFileExW(query.wc_str(), FindExInfoBasic, &findInfo, FINDEX_SEARCH_OPS::FindExSearchNameMatch, nullptr, searchFlags);
 	}
 
-	FileItem ConvertFileInfo(const WIN32_FIND_DATAW& findInfo, const FSPath& location, UniversallyUniqueID id, FlagSet<FSActionFlag> flags)
+	FileItem ConvertFileInfo(const _WIN32_FIND_DATAW& findInfo, const FSPath& location, UniversallyUniqueID id, FlagSet<FSActionFlag> flags)
 	{
 		FileItem fileItem;
 		const bool isDirectory = findInfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
@@ -114,7 +114,7 @@ namespace kxf::FileSystem::Private
 
 		return fileItem;
 	}
-	FileItem ConvertFileInfo(HANDLE fileHandle, UniversallyUniqueID id, FlagSet<FSActionFlag> flags)
+	FileItem ConvertFileInfo(void* fileHandle, UniversallyUniqueID id, FlagSet<FSActionFlag> flags)
 	{
 		NativeFileStream stream;
 		if (stream.AttachHandle(fileHandle))
@@ -178,27 +178,10 @@ namespace kxf::FileSystem::Private
 		return {};
 	}
 
-	DWORD CALLBACK CopyCallback(LARGE_INTEGER TotalFileSize,
-								LARGE_INTEGER TotalBytesTransferred,
-								LARGE_INTEGER StreamSize,
-								LARGE_INTEGER StreamBytesTransferred,
-								DWORD dwStreamNumber,
-								DWORD dwCallbackReason,
-								HANDLE hSourceFile,
-								HANDLE hDestinationFile,
-								LPVOID lpData)
-	{
-		auto& func = *reinterpret_cast<IFileSystem::TCopyItemFunc*>(lpData);
-		if (func == nullptr || std::invoke(func, BinarySize::FromBytes(TotalBytesTransferred.QuadPart), BinarySize::FromBytes(TotalFileSize.QuadPart)))
-		{
-			return PROGRESS_CONTINUE;
-		}
-		return PROGRESS_CANCEL;
-	}
 	bool CopyOrMoveDirectoryTree(NativeFileSystem& fileSystem,
 								 const FSPath& source,
 								 const FSPath& destination,
-								 NativeFileSystem::TCopyDirectoryTreeFunc func,
+								 std::function<bool(FSPath, FSPath, BinarySize, BinarySize)> func,
 								 FlagSet<FSActionFlag> flags,
 								 bool move)
 	{

@@ -9,48 +9,44 @@ namespace kxf
 	class NativeFileSystem: public RTTI::ImplementInterface<NativeFileSystem, IFileSystem, IFileIDSystem>
 	{
 		public:
-			using TCopyDirectoryTreeFunc = std::function<bool(FSPath, FSPath, BinarySize, BinarySize)>;
-			using TEnumStreamsFunc = std::function<bool(String, BinarySize)>;
-
-		public:
 			static FSPath GetExecutingModuleRootDirectory();
 			static FSPath GetExecutingModuleWorkingDirectory();
 			static bool SetExecutingModuleWorkingDirectory(const FSPath& directory);
 
 		protected:
-			StorageVolume m_CurrentVolume;
-			FSPath m_CurrentDirectory;
+			StorageVolume m_LookupVolume;
+			FSPath m_LookupDirectory;
 
 		private:
-			void DoAssingCurrentVolume(StorageVolume volume) noexcept
+			void DoAssingLookupVolume(StorageVolume volume) noexcept
 			{
-				m_CurrentVolume = std::move(volume);
-				m_CurrentDirectory.SetVolume(m_CurrentVolume);
+				m_LookupVolume = std::move(volume);
+				m_LookupDirectory.SetVolume(m_LookupVolume);
 			}
-			void DoAssingCurrentVolumeUUID(const UniversallyUniqueID& scope) noexcept
+			void DoAssingLookupVolumeUUID(const UniversallyUniqueID& scope) noexcept
 			{
-				m_CurrentVolume = scope;
-				m_CurrentDirectory.SetVolume(m_CurrentVolume);
+				m_LookupVolume = scope;
+				m_LookupDirectory.SetVolume(m_LookupVolume);
 			}
-			void DoAssingCurrentDirectory(FSPath directory) noexcept
+			void DoAssingLookupDirectory(FSPath directory) noexcept
 			{
-				m_CurrentVolume = directory.GetAsVolume();
-				m_CurrentDirectory = std::move(directory);
+				m_LookupVolume = directory.GetAsVolume();
+				m_LookupDirectory = std::move(directory);
 			}
 
 		public:
 			NativeFileSystem() = default;
 			NativeFileSystem(StorageVolume volume)
 			{
-				DoAssingCurrentVolume(std::move(volume));
+				DoAssingLookupVolume(std::move(volume));
 			}
 			NativeFileSystem(FSPath directory)
 			{
-				DoAssingCurrentDirectory(std::move(directory));
+				DoAssingLookupDirectory(std::move(directory));
 			}
 			NativeFileSystem(const UniversallyUniqueID& scope)
 			{
-				DoAssingCurrentVolumeUUID(scope);
+				DoAssingLookupVolumeUUID(scope);
 			}
 
 		public:
@@ -63,26 +59,30 @@ namespace kxf
 			bool IsValidPathName(const FSPath& path) const override;
 			String GetForbiddenPathNameCharacters(const String& except = {}) const override;
 
-			FSPath GetCurrentDirectory() const override
+			bool IsLookupScoped() const override
 			{
-				return m_CurrentDirectory;
+				return m_LookupDirectory || m_LookupVolume;
 			}
 			FSPath ResolvePath(const FSPath& relativePath) const override;
+			FSPath GetLookupDirectory() const override
+			{
+				return m_LookupDirectory;
+			}
 
 			bool ItemExist(const FSPath& path) const override;
 			bool FileExist(const FSPath& path) const override;
 			bool DirectoryExist(const FSPath& path) const override;
 
 			FileItem GetItem(const FSPath& path) const override;
-			size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPath& query = {}, FlagSet<FSActionFlag> flags = {}) const override;
+			size_t EnumItems(const FSPath& directory, std::function<bool(FileItem)> func, const FSPath& query = {}, FlagSet<FSActionFlag> flags = {}) const override;
 			bool IsDirectoryEmpty(const FSPath& directory) const override;
 
 			bool CreateDirectory(const FSPath& path, FlagSet<FSActionFlag> flags = {}) override;
 			bool ChangeAttributes(const FSPath& path, FlagSet<FileAttribute> attributes) override;
 			bool ChangeTimestamp(const FSPath& path, DateTime creationTime, DateTime modificationTime, DateTime lastAccessTime) override;
 
-			bool CopyItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) override;
-			bool MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) override;
+			bool CopyItem(const FSPath& source, const FSPath& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override;
+			bool MoveItem(const FSPath& source, const FSPath& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override;
 			bool RenameItem(const FSPath& source, const FSPath& destination, FlagSet<FSActionFlag> flags = {}) override;
 			bool RemoveItem(const FSPath& path) override;
 			bool RemoveDirectory(const FSPath& path, FlagSet<FSActionFlag> flags = {}) override;
@@ -101,7 +101,7 @@ namespace kxf
 			// IFileIDSystem
 			UniversallyUniqueID GetLookupScope() const override
 			{
-				return m_CurrentVolume.GetUniqueID();
+				return m_LookupVolume.GetUniqueID();
 			}
 
 			bool ItemExist(const UniversallyUniqueID& id) const override;
@@ -109,7 +109,7 @@ namespace kxf
 			bool DirectoryExist(const UniversallyUniqueID& id) const override;
 
 			FileItem GetItem(const UniversallyUniqueID& id) const override;
-			size_t EnumItems(const UniversallyUniqueID& id, TEnumItemsFunc func, FlagSet<FSActionFlag> flags = {}) const override
+			size_t EnumItems(const UniversallyUniqueID& id, std::function<bool(FileItem)> func, FlagSet<FSActionFlag> flags = {}) const override
 			{
 				return 0;
 			}
@@ -127,11 +127,11 @@ namespace kxf
 				return false;
 			}
 
-			bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) override
+			bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
-			bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) override
+			bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
@@ -156,28 +156,28 @@ namespace kxf
 
 		public:
 			// NativeFileSystem
-			StorageVolume GetCurrentVolume() const noexcept
+			StorageVolume GetLookupVolume() const noexcept
 			{
-				return m_CurrentVolume;
+				return m_LookupVolume;
 			}
-			void SetCurrentVolume(StorageVolume volume) noexcept
+			void SetLookupVolume(StorageVolume volume) noexcept
 			{
-				DoAssingCurrentVolume(std::move(volume));
+				DoAssingLookupVolume(std::move(volume));
 			}
-			void SetCurrentVolume(const UniversallyUniqueID& scope) noexcept
+			void SetLookupVolume(const UniversallyUniqueID& scope) noexcept
 			{
-				DoAssingCurrentVolumeUUID(scope);
+				DoAssingLookupVolumeUUID(scope);
 			}
-			void SetCurrentDirectory(FSPath directory) noexcept
+			void SetLookupDirectory(FSPath directory) noexcept
 			{
-				DoAssingCurrentDirectory(std::move(directory));
+				DoAssingLookupDirectory(std::move(directory));
 			}
 
 			bool IsInUse(const FSPath& path) const;
-			size_t EnumStreams(const FSPath& path, TEnumStreamsFunc func) const;
+			size_t EnumStreams(const FSPath& path, std::function<bool(String, BinarySize)> func) const;
 
-			bool CopyDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func = {}, FlagSet<FSActionFlag> flags = {}) const;
-			bool MoveDirectoryTree(const FSPath& source, const FSPath& destination, TCopyDirectoryTreeFunc func = {}, FlagSet<FSActionFlag> flags = {});
+			bool CopyDirectoryTree(const FSPath& source, const FSPath& destination, std::function<bool(FSPath, FSPath, BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) const;
+			bool MoveDirectoryTree(const FSPath& source, const FSPath& destination, std::function<bool(FSPath, FSPath, BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {});
 
 		public:
 			explicit operator bool() const noexcept

@@ -255,11 +255,15 @@ namespace kxf::SevenZip
 			bool IsValidPathName(const FSPath& path) const override;
 			String GetForbiddenPathNameCharacters(const String& except = {}) const override;
 
-			FSPath GetCurrentDirectory() const override
+			bool IsLookupScoped() const override
 			{
-				return {};
+				return true;
 			}
 			FSPath ResolvePath(const FSPath& relativePath) const override
+			{
+				return relativePath;
+			}
+			FSPath GetLookupDirectory() const override
 			{
 				return {};
 			}
@@ -269,7 +273,7 @@ namespace kxf::SevenZip
 			bool DirectoryExist(const FSPath& path) const override;
 
 			FileItem GetItem(const FSPath& path) const override;
-			size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPath& query = {}, FlagSet<FSActionFlag> flags = {}) const override;
+			size_t EnumItems(const FSPath& directory, std::function<bool(FileItem)> func, const FSPath& query = {}, FlagSet<FSActionFlag> flags = {}) const override;
 			bool IsDirectoryEmpty(const FSPath& directory) const override;
 
 			bool CreateDirectory(const FSPath& path, FlagSet<FSActionFlag> flags = {}) override
@@ -285,11 +289,11 @@ namespace kxf::SevenZip
 				return false;
 			}
 
-			bool CopyItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) override
+			bool CopyItem(const FSPath& source, const FSPath& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
-			bool MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) override
+			bool MoveItem(const FSPath& source, const FSPath& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
@@ -329,7 +333,7 @@ namespace kxf::SevenZip
 			bool DirectoryExist(const UniversallyUniqueID& id) const override;
 
 			FileItem GetItem(const UniversallyUniqueID& id) const override;
-			size_t EnumItems(const UniversallyUniqueID& id, TEnumItemsFunc func, FlagSet<FSActionFlag> flags = {}) const override;
+			size_t EnumItems(const UniversallyUniqueID& id, std::function<bool(FileItem)> func, FlagSet<FSActionFlag> flags = {}) const override;
 			bool IsDirectoryEmpty(const UniversallyUniqueID& id) const override;
 
 			bool ChangeAttributes(const UniversallyUniqueID& id, FlagSet<FileAttribute> attributes) override
@@ -341,11 +345,11 @@ namespace kxf::SevenZip
 				return false;
 			}
 
-			bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, IFileSystem::TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) override
+			bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
-			bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, IFileSystem::TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) override
+			bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}

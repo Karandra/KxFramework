@@ -26,7 +26,11 @@ namespace kxf::FileSystem
 				return {};
 			}
 
-			FSPath GetCurrentDirectory() const override
+			bool IsLookupScoped() const override
+			{
+				return false;
+			}
+			FSPath GetLookupDirectory() const override
 			{
 				return {};
 			}
@@ -52,7 +56,7 @@ namespace kxf::FileSystem
 			{
 				return {};
 			}
-			size_t EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPath& query = {}, FlagSet<FSActionFlag> flags = {}) const override
+			size_t EnumItems(const FSPath& directory, std::function<bool(FileItem)> func, const FSPath& query = {}, FlagSet<FSActionFlag> flags = {}) const override
 			{
 				return 0;
 			}
@@ -74,11 +78,11 @@ namespace kxf::FileSystem
 				return false;
 			}
 
-			bool CopyItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) override
+			bool CopyItem(const FSPath& source, const FSPath& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
-			bool MoveItem(const FSPath& source, const FSPath& destination, TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) override
+			bool MoveItem(const FSPath& source, const FSPath& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
@@ -132,7 +136,7 @@ namespace kxf::FileSystem
 			{
 				return {};
 			}
-			size_t EnumItems(const UniversallyUniqueID& id, TEnumItemsFunc func, FlagSet<FSActionFlag> flags = {}) const override
+			size_t EnumItems(const UniversallyUniqueID& id, std::function<bool(FileItem)> func, FlagSet<FSActionFlag> flags = {}) const override
 			{
 				return 0;
 			}
@@ -150,11 +154,11 @@ namespace kxf::FileSystem
 				return false;
 			}
 
-			bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) override
+			bool CopyItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}
-			bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, TCopyItemFunc func = {}, FlagSet<FSActionFlag> flags = {}) override
+			bool MoveItem(const UniversallyUniqueID& source, const UniversallyUniqueID& destination, std::function<bool(BinarySize, BinarySize)> func = {}, FlagSet<FSActionFlag> flags = {}) override
 			{
 				return false;
 			}

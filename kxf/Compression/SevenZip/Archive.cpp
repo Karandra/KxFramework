@@ -413,7 +413,7 @@ namespace kxf::SevenZip
 		}
 		return {};
 	}
-	size_t Archive::EnumItems(const FSPath& directory, TEnumItemsFunc func, const FSPath& query, FlagSet<FSActionFlag> flags) const
+	size_t Archive::EnumItems(const FSPath& directory, std::function<bool(FileItem)> func, const FSPath& query, FlagSet<FSActionFlag> flags) const
 	{
 		FlagSet<StringOpFlag> matchFlags;
 		matchFlags.Add(StringOpFlag::IgnoreCase, !flags.Contains(FSActionFlag::CaseSensitive));
@@ -490,7 +490,7 @@ namespace kxf::SevenZip
 		}
 		return {};
 	}
-	size_t Archive::EnumItems(const UniversallyUniqueID& id, TEnumItemsFunc func, FlagSet<FSActionFlag> flags) const
+	size_t Archive::EnumItems(const UniversallyUniqueID& id, std::function<bool(FileItem)> func, FlagSet<FSActionFlag> flags) const
 	{
 		if (id == std::numeric_limits<UniversallyUniqueID>::max())
 		{

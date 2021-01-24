@@ -7,6 +7,7 @@
 
 #include <Windows.h>
 #include "kxf/System/UndefWindows.h"
+struct _WIN32_FIND_DATAW;
 struct _BY_HANDLE_FILE_INFORMATION;
 
 namespace kxf::FileSystem::Private
@@ -87,7 +88,7 @@ namespace kxf::FileSystem::Private
 		return tags;
 	}
 
-	constexpr inline DWORD MapFileAccessMode(FlagSet<IOStreamAccess> mode) noexcept
+	constexpr inline uint32_t MapFileAccessMode(FlagSet<IOStreamAccess> mode) noexcept
 	{
 		if (mode == IOStreamAccess::None)
 		{
@@ -95,7 +96,7 @@ namespace kxf::FileSystem::Private
 		}
 		else
 		{
-			DWORD nativeMode = 0;
+			uint32_t nativeMode = 0;
 			Utility::AddFlagRef(nativeMode, GENERIC_READ, mode & IOStreamAccess::Read);
 			Utility::AddFlagRef(nativeMode, GENERIC_WRITE, mode & IOStreamAccess::Write);
 			Utility::AddFlagRef(nativeMode, FILE_READ_ATTRIBUTES, mode & IOStreamAccess::ReadAttributes);
@@ -104,7 +105,7 @@ namespace kxf::FileSystem::Private
 		}
 		return std::numeric_limits<DWORD>::max();
 	}
-	constexpr inline DWORD MapFileShareMode(FlagSet<IOStreamShare> mode) noexcept
+	constexpr inline uint32_t MapFileShareMode(FlagSet<IOStreamShare> mode) noexcept
 	{
 		if (mode == IOStreamShare::None)
 		{
@@ -112,7 +113,7 @@ namespace kxf::FileSystem::Private
 		}
 		else
 		{
-			DWORD nativeMode = 0;
+			uint32_t nativeMode = 0;
 			Utility::AddFlagRef(nativeMode, FILE_SHARE_READ, mode & IOStreamShare::Read);
 			Utility::AddFlagRef(nativeMode, FILE_SHARE_WRITE, mode & IOStreamShare::Write);
 			Utility::AddFlagRef(nativeMode, FILE_SHARE_DELETE, mode & IOStreamShare::Delete);
@@ -120,7 +121,7 @@ namespace kxf::FileSystem::Private
 		}
 		return std::numeric_limits<DWORD>::max();
 	}
-	constexpr inline DWORD MapFileDisposition(IOStreamDisposition mode) noexcept
+	constexpr inline uint32_t MapFileDisposition(IOStreamDisposition mode) noexcept
 	{
 		switch (mode)
 		{
@@ -143,21 +144,21 @@ namespace kxf::FileSystem::Private
 		};
 		return 0;
 	}
-	constexpr inline DWORD MapFileFlags(FlagSet<IOStreamFlag> flags) noexcept
+	constexpr inline uint32_t MapFileFlags(FlagSet<IOStreamFlag> flags) noexcept
 	{
-		DWORD nativeMode = 0;
+		uint32_t nativeMode = 0;
 		Utility::AddFlagRef(nativeMode, FILE_ATTRIBUTE_NORMAL, flags & IOStreamFlag::Normal);
 		Utility::AddFlagRef(nativeMode, FILE_FLAG_BACKUP_SEMANTICS, flags & IOStreamFlag::AllowDirectories);
 		return nativeMode;
 	}
 
-	inline DateTime ConvertDateTime(const SYSTEMTIME& systemTime) noexcept
-	{
-		return DateTime().SetSystemTime(systemTime, TimeZone::UTC);
-	}
 	inline DateTime ConvertDateTime(const FILETIME& fileTime) noexcept
 	{
 		return DateTime().SetFileTime(fileTime, TimeZone::UTC);
+	}
+	inline DateTime ConvertDateTime(const SYSTEMTIME& systemTime) noexcept
+	{
+		return DateTime().SetSystemTime(systemTime, TimeZone::UTC);
 	}
 	inline DateTime ConvertDateTime(const LARGE_INTEGER& fileTimeLI) noexcept
 	{
@@ -184,25 +185,15 @@ namespace kxf::FileSystem::Private
 		return {};
 	}
 	
-	bool IsValidFindItem(const WIN32_FIND_DATAW& findInfo) noexcept;
-	HANDLE CallFindFirstFile(const String& query, WIN32_FIND_DATAW& findInfo, bool isCaseSensitive = false);
-	FileItem ConvertFileInfo(const WIN32_FIND_DATAW& findInfo, const FSPath& location, UniversallyUniqueID id = {}, FlagSet<FSActionFlag> flags = {});
-	FileItem ConvertFileInfo(HANDLE fileHandle, UniversallyUniqueID id = {}, FlagSet<FSActionFlag> flags = {});
-
-	DWORD CALLBACK CopyCallback(LARGE_INTEGER TotalFileSize,
-								LARGE_INTEGER TotalBytesTransferred,
-								LARGE_INTEGER StreamSize,
-								LARGE_INTEGER StreamBytesTransferred,
-								DWORD dwStreamNumber,
-								DWORD dwCallbackReason,
-								HANDLE hSourceFile,
-								HANDLE hDestinationFile,
-								LPVOID lpData);
+	bool IsValidFindItem(const _WIN32_FIND_DATAW& findInfo) noexcept;
+	void* CallFindFirstFile(const String& query, _WIN32_FIND_DATAW& findInfo, bool isCaseSensitive = false);
+	FileItem ConvertFileInfo(const _WIN32_FIND_DATAW& findInfo, const FSPath& location, UniversallyUniqueID id = {}, FlagSet<FSActionFlag> flags = {});
+	FileItem ConvertFileInfo(void* fileHandle, UniversallyUniqueID id = {}, FlagSet<FSActionFlag> flags = {});
 
 	bool CopyOrMoveDirectoryTree(NativeFileSystem& fileSystem,
 								 const FSPath& source,
 								 const FSPath& destination,
-								 NativeFileSystem::TCopyDirectoryTreeFunc func,
+								 std::function<bool(FSPath, FSPath, BinarySize, BinarySize)> func,
 								 FlagSet<FSActionFlag> flags,
 								 bool move);
 }
