@@ -32,8 +32,8 @@ namespace kxf::UI
 		public:
 			static constexpr FlagSet<ButtonStyle> DefaultStyle = ButtonStyle::None;
 
-			KxEVENT_MEMBER(wxCommandEvent, Click);
-			KxEVENT_MEMBER(wxContextMenuEvent, Menu);
+			KxEVENT_MEMBER_AS(wxCommandEvent, Click, wxEVT_BUTTON);
+			KxEVENT_MEMBER_AS(wxContextMenuEvent, Menu, wxEVT_CONTEXT_MENU);
 
 		public:
 			static Size GetDefaultSize();
