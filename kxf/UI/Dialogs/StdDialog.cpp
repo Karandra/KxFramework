@@ -480,6 +480,9 @@ namespace kxf::UI
 			m_ContentSizer->AddSpacer(FromDIPY(this, 4));
 			m_ContentSizer->Add(m_CaptionLabel, 0, wxLEFT|wxRIGHT|wxEXPAND, FromDIPX(this, 2));
 
+			wxWindow* mainCtrl = GetDialogMainCtrl();
+			mainCtrl->Reparent(m_ContentPanel);
+
 			if (GetViewLabelSizerOrientation() == wxHORIZONTAL)
 			{
 				m_ContentSizer->AddSpacer(FromDIPY(this, 6));
@@ -489,7 +492,7 @@ namespace kxf::UI
 				m_ViewLabelSI = sizer->Add(m_ViewLabel, 0, wxLEFT|wxEXPAND, FromDIPX(this, 3));
 				wxBoxSizer* viewSizer = new wxBoxSizer(GetViewSizerOrientation());
 				sizer->Add(viewSizer, 1, wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND, FromDIPX(this, 5));
-				viewSizer->Add(GetDialogMainCtrl(), GetViewSizerProportion(), wxEXPAND);
+				viewSizer->Add(mainCtrl, GetViewSizerProportion(), wxEXPAND);
 			}
 			else
 			{
@@ -498,7 +501,7 @@ namespace kxf::UI
 
 				wxBoxSizer* viewSizer = new wxBoxSizer(GetViewSizerOrientation());
 				m_ContentSizer->Add(viewSizer, 1, wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND, FromDIPX(this, 5));
-				viewSizer->Add(GetDialogMainCtrl(), GetViewSizerProportion(), wxEXPAND);
+				viewSizer->Add(mainCtrl, GetViewSizerProportion(), wxEXPAND);
 			}
 			m_ViewLabelSI->Show(false);
 		}
