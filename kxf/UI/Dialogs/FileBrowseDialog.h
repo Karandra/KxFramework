@@ -204,6 +204,11 @@ namespace kxf::UI
 				return wxID_NONE;
 			}
 
+			WidgetID ShowModalDialog() override
+			{
+				return ShowModal();
+			}
+
 		public:
 			FileBrowseDialog& operator=(const FileBrowseDialog&) = delete;
 			wxDECLARE_DYNAMIC_CLASS(FileBrowseDialog);

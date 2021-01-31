@@ -124,6 +124,8 @@ namespace kxf::UI
 			virtual void SetDefaultButton(WidgetID id) = 0;
 			virtual StdDialogControl GetButton(WidgetID id) const = 0;
 			virtual StdDialogControl AddButton(WidgetID id, const String& label = {}, bool prepend = false) = 0;
+
+			virtual WidgetID ShowModalDialog() = 0;
 	};
 }
 
@@ -398,6 +400,11 @@ namespace kxf::UI
 			void SetDefaultButton(WidgetID id) override;
 			StdDialogControl GetButton(WidgetID id) const override;
 			StdDialogControl AddButton(WidgetID id, const String& label = {}, bool prepend = false) override;
+
+			WidgetID ShowModalDialog() override
+			{
+				return ShowModal();
+			}
 
 			// Keyboard control
 			StdButtonsIDs GetCloseIDs() const

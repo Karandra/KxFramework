@@ -224,7 +224,12 @@ namespace kxf::UI
 			StdDialogControl GetButton(WidgetID id) const override;
 			StdDialogControl AddButton(WidgetID id, const String& label = {}, bool prepend = false) override;
 			StdDialogControl AddRadioButton(WidgetID id, const String& label = {});
-			
+
+			WidgetID ShowModalDialog() override
+			{
+				return ShowModal();
+			}
+
 			bool GetCheckBoxValue() const
 			{
 				return m_CheckBoxValue;
