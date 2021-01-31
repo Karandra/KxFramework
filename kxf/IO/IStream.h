@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "StreamError.h"
-#include "kxf/RTTI/QueryInterface.h"
+#include "kxf/RTTI/RTTI.h"
 
 namespace kxf
 {

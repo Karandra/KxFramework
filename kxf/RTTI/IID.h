@@ -2,15 +2,6 @@
 #include "Common.h"
 #include <kxf/General/NativeUUID.h>
 
-namespace kxf::RTTI
-{
-	template<class T>
-	constexpr IID GetInterfaceID() noexcept
-	{
-		return T::ms_IID;
-	}
-}
-
 namespace kxf
 {
 	class KX_API IID final

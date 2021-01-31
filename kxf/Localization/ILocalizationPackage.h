@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "Locale.h"
 #include "LocalizationItem.h"
-#include "kxf/RTTI/QueryInterface.h"
+#include "kxf/RTTI/RTTI.h"
 #include "kxf/IO/IStream.h"
 
 namespace kxf::Localization

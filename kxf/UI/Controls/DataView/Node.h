@@ -4,7 +4,7 @@
 #include "Column.h"
 #include "ToolTip.h"
 #include "kxf/General/Any.h"
-#include "kxf/RTTI/QueryInterface.h"
+#include "kxf/RTTI/RTTI.h"
 #include "kxf/Utility/TypeTraits.h"
 
 namespace kxf::UI::DataView

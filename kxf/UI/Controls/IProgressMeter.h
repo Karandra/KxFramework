@@ -1,6 +1,6 @@
 #pragma once
 #include "kxf/UI/Common.h"
-#include "kxf/RTTI/QueryInterface.h"
+#include "kxf/RTTI/RTTI.h"
 
 namespace kxf::UI
 {

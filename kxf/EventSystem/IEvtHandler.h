@@ -6,7 +6,7 @@
 #include "EventBuilder.h"
 #include "EventExecutor.h"
 #include "SignalExecutor.h"
-#include "kxf/RTTI/QueryInterface.h"
+#include "kxf/RTTI/RTTI.h"
 #include "kxf/wxWidgets/IWithEvent.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/Memory.h"

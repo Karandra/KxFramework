@@ -352,8 +352,11 @@
     <ClInclude Include="kxf\Log\Common.h" />
     <ClInclude Include="kxf\Log\OutputStreamTarget.h" />
     <ClInclude Include="kxf\pch.hpp" />
+    <ClInclude Include="kxf\RTTI\ClassInfo.h" />
     <ClInclude Include="kxf\RTTI\IID.h" />
+    <ClInclude Include="kxf\RTTI\Interface.h" />
     <ClInclude Include="kxf\RTTI\ObjectPtr.h" />
+    <ClInclude Include="kxf\RTTI\RTTI.h" />
     <ClInclude Include="kxf\Sciter\Stylesheets\MasterStylesheetStorage.h" />
     <ClInclude Include="kxf\Sciter\Stylesheets\StylesheetStorage.h" />
     <ClInclude Include="kxf\Sciter\Widgets\Common.h" />
@@ -607,7 +610,7 @@
     <ClInclude Include="kxf\Network\WebSocket\Event.h" />
     <ClInclude Include="kxf\RTTI.hpp" />
     <ClInclude Include="kxf\RTTI\Common.h" />
-    <ClInclude Include="kxf\RTTI\QueryInterface.h" />
+    <ClInclude Include="kxf\RTTI\IObject.h" />
     <ClInclude Include="kxf\Sciter.hpp" />
     <ClInclude Include="kxf\Sciter\Common.h" />
     <ClInclude Include="kxf\Sciter\CommonDefs.h" />
@@ -777,6 +780,9 @@
     <ClCompile Include="kxf\Localization\WindowsLocalizationPackage.cpp" />
     <ClCompile Include="kxf\Log\Common.cpp" />
     <ClCompile Include="kxf\Log\OutputStreamTarget.cpp" />
+    <ClCompile Include="kxf\RTTI\Common.cpp" />
+    <ClCompile Include="kxf\RTTI\ClassInfo.cpp" />
+    <ClCompile Include="kxf\RTTI\IObject.cpp" />
     <ClCompile Include="kxf\RTTI\ObjectPtr.cpp" />
     <ClCompile Include="kxf\Sciter\Stylesheets\MasterStylesheetStorage.cpp" />
     <ClCompile Include="kxf\Sciter\Stylesheets\StylesheetStorage.cpp" />

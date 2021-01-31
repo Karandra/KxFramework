@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "kxf/General/DateTime.h"
 #include "kxf/General/ErrorCode.h"
-#include "kxf/RTTI/QueryInterface.h"
+#include "kxf/RTTI/RTTI.h"
 
 namespace kxf
 {

@@ -1,7 +1,7 @@
 #pragma once
 #include "../Common.h"
 #include "../HTTPStatus.h"
-#include "kxf/RTTI/QueryInterface.h"
+#include "kxf/RTTI/RTTI.h"
 #include "kxf/IO/IStream.h"
 
 namespace kxf

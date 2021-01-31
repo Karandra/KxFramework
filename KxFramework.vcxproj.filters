@@ -295,9 +295,6 @@
     <ClInclude Include="kxf\Async\DelayedCall.h">
       <Filter>kxf\Async</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\RTTI\QueryInterface.h">
-      <Filter>kxf\RTTI</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\RTTI\Common.h">
       <Filter>kxf\RTTI</Filter>
     </ClInclude>
@@ -1778,6 +1775,18 @@
     <ClInclude Include="kxf\General\NullVariablesCollection.h">
       <Filter>kxf\General\&lt;VariablesCollection&gt;</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\RTTI\ClassInfo.h">
+      <Filter>kxf\RTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\RTTI\RTTI.h">
+      <Filter>kxf\RTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\RTTI\IObject.h">
+      <Filter>kxf\RTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\RTTI\Interface.h">
+      <Filter>kxf\RTTI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2656,6 +2665,15 @@
     </ClCompile>
     <ClCompile Include="kxf\General\IVariablesCollection.cpp">
       <Filter>kxf\General\&lt;VariablesCollection&gt;</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\RTTI\Common.cpp">
+      <Filter>kxf\RTTI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\RTTI\ClassInfo.cpp">
+      <Filter>kxf\RTTI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\RTTI\IObject.cpp">
+      <Filter>kxf\RTTI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

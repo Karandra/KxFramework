@@ -1,7 +1,7 @@
 #pragma once
 #include "kxf/UI/Common.h"
 #include "Dialog.h"
-#include "kxf/RTTI/QueryInterface.h"
+#include "kxf/RTTI/RTTI.h"
 #include "kxf/UI/Controls/Label.h"
 #include "kxf/UI/Controls/Button.h"
 #include "kxf/UI/Windows/Panel.h"

@@ -212,6 +212,7 @@ namespace kxf
 				return m_Value == other.get();
 			}
 
+		public:
 			template<class T, class = std::enable_if_t<std::is_base_of_v<TValue, T>>>
 			bool uses_same_deleter(const object_ptr<T>& other) const noexcept
 			{
@@ -221,6 +222,11 @@ namespace kxf
 			bool uses_default_deleter() const noexcept
 			{
 				return m_Deleter.get() == &RTTI::GetDefaultDeleter();
+			}
+
+			std::unique_ptr<RTTI::ObjectDeleter> get_deleter() &&
+			{
+				return std::move(m_Deleter);
 			}
 
 		public:
@@ -353,5 +359,13 @@ namespace kxf::RTTI
 	object_ptr<T> assume_non_owned(T& value) noexcept
 	{
 		return object_ptr<T>(&value);
+	}
+
+	template<class T1, class T2>
+	object_ptr<T2> cast_object_ptr(object_ptr<T1> ptr) noexcept
+	{
+		auto deleter = std::move(ptr).get_deleter();
+		T2* object = static_cast<T2*>(ptr.release());
+		return object_ptr<T2>(object, std::move(deleter));
 	}
 }

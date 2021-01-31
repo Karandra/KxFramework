@@ -2,55 +2,14 @@
 #include "Common.h"
 #include "IID.h"
 #include "ObjectPtr.h"
+#include "kxf/General/FlagSet.h"
 #include <kxf/Utility/Common.h>
 #include <kxf/Utility/TypeTraits.h>
 
-#define KxRTTI_DeclareIID(T, ...)	\
-friend class kxf::IObject;	\
-\
-template<class T>	\
-friend constexpr kxf::IID kxf::RTTI::GetInterfaceID() noexcept;	\
-\
-private:	\
-	static constexpr kxf::IID ms_IID = kxf::NativeUUID __VA_ARGS__;
-
-#define KxRTTI_DeclareIID_Using(T, iid)	\
-friend class kxf::IObject;	\
-\
-template<class T>	\
-friend constexpr kxf::IID kxf::RTTI::GetInterfaceID() noexcept;	\
-\
-private:	\
-	static constexpr kxf::IID ms_IID = (iid);
-
-#define KxRTTI_DeclareIID_External(T, ...)	\
-namespace RTTI	\
-{	\
-	template<>	\
-	constexpr IID GetInterfaceID<T>() noexcept	\
-	{	\
-		return kxf::NativeUUID __VA_ARGS__;	\
-	}	\
-}
-
-#define KxRTTI_QueryInterface_Base(T)	\
-\
-public:	\
-kxf::RTTI::QueryInfo DoQueryInterface(const kxf::IID& iid) noexcept override	\
-{	\
-	return kxf::IObject::QuerySelf(iid, static_cast<T&>(*this));	\
-}
-
-#define KxRTTI_QueryInterface_Extend(T, ...)	\
-\
-public:	\
-kxf::RTTI::QueryInfo DoQueryInterface(const kxf::IID& iid) noexcept override	\
-{	\
-	return kxf::IObject::QuerySelf<__VA_ARGS__>(iid, static_cast<T&>(*this));	\
-}
-
 namespace kxf::RTTI
 {
+	class ClassInfo;
+
 	class QueryInfo final
 	{
 		private:
@@ -73,6 +32,21 @@ namespace kxf::RTTI
 				:m_Object(ptr), m_Deleter(std::move(deleter))
 			{
 			}
+
+			template<class T>
+			QueryInfo(std::unique_ptr<T> ptr) noexcept
+				:m_Object(ptr.release())
+			{
+				m_Deleter.reset(&RTTI::GetDefaultDeleter());
+			}
+
+			template<class T>
+			QueryInfo(object_ptr<T> ptr) noexcept
+				:m_Deleter(ptr.get_deleter())
+			{
+				m_Object = ptr.release();
+			}
+
 			QueryInfo(const QueryInfo&) = delete;
 			QueryInfo(QueryInfo&& other) noexcept
 				:m_Object(other.ExchangeObject()), m_Deleter(std::move(other.m_Deleter))
@@ -154,10 +128,14 @@ namespace kxf
 		friend constexpr IID RTTI::GetInterfaceID() noexcept;
 
 		template<class T>
+		friend const RTTI::ClassInfo& RTTI::GetClassInfo() noexcept;
+
+		template<class T>
 		friend class object_ptr;
 
 		private:
 			static constexpr IID ms_IID = NativeUUID{0, 0, 0, {0xC0, 0, 0x4f, 0x62, 0x6a, 0x65, 0x63, 0x74}};
+			static const RTTI::ClassInfo& ms_ClassInfo;
 
 		protected:
 			template<class T>
@@ -198,24 +176,18 @@ namespace kxf
 			}
 
 		protected:
-			virtual RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept
-			{
-				if (iid.IsOfType<IObject>())
-				{
-					return this;
-				}
-				return nullptr;
-			}
+			virtual RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept = 0;
 
 		public:
+			IObject() noexcept = default;
 			virtual ~IObject() = default;
 
 		public:
 			RTTI::QueryInfo QueryInterface(const IID& iid) noexcept
 			{
-				return DoQueryInterface(iid);
+				return this->DoQueryInterface(iid);
 			}
-			const RTTI::QueryInfo QueryInterface(const IID& iid) const noexcept
+			RTTI::QueryInfo QueryInterface(const IID& iid) const noexcept
 			{
 				return const_cast<IObject*>(this)->DoQueryInterface(iid);
 			}
@@ -223,13 +195,13 @@ namespace kxf
 			template<class T>
 			object_ptr<T> QueryInterface() noexcept
 			{
-				return this->QueryInterface(RTTI::GetInterfaceID<T>()).TakeObject<T>();
+				return this->DoQueryInterface(RTTI::GetInterfaceID<T>()).TakeObject<T>();
 			}
 
 			template<class T>
 			object_ptr<const T> QueryInterface() const noexcept
 			{
-				return const_cast<IObject*>(this)->QueryInterface(RTTI::GetInterfaceID<T>()).TakeObject<const T>();
+				return const_cast<IObject*>(this)->DoQueryInterface(RTTI::GetInterfaceID<T>()).TakeObject<const T>();
 			}
 
 			template<class T>
@@ -250,50 +222,44 @@ namespace kxf
 
 namespace kxf::RTTI
 {
-	template<class T>
-	class Interface: public virtual IObject
+	template<class T, class... Args>
+	std::unique_ptr<IObject> new_object(Args&&... arg)
 	{
-		protected:
-			RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept override
-			{
-				return IObject::QuerySelf(iid, static_cast<T&>(*this));
-			}
-	};
+		static_assert(std::is_base_of_v<IObject, T>, "RTTI object required");
 
-	template<class TDerived, class... TBase>
-	class ExtendInterface: public TBase...
-	{
-		protected:
-			using TBaseInterface = typename ExtendInterface<TDerived, TBase...>;
+		auto instance = std::make_unique<T>(std::forward<Args>(arg)...);
+		auto object = instance->IObject::QueryInterface<IObject>();
+		wxASSERT_MSG(object.is_reference(), "IObject must not be dynamic");
 
-		protected:
-			RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept override
-			{
-				static_assert((std::is_base_of_v<IObject, TBase> && ...), "[...] must inherit from 'IObject'");
+		instance.release();
+		return std::unique_ptr<IObject>(object.release());
+	}
+}
 
-				return IObject::QuerySelf<TBase...>(iid, static_cast<TDerived&>(*this));
-			}
+#define KxRTTI_DeclareIID(T, ...)	\
+friend class kxf::IObject;	\
+\
+template<class T>	\
+friend constexpr kxf::IID kxf::RTTI::GetInterfaceID() noexcept;	\
+\
+private:	\
+	static constexpr kxf::IID ms_IID = kxf::NativeUUID __VA_ARGS__;
 
-		public:
-			ExtendInterface() = default;
-	};
+#define KxRTTI_DeclareIID_Using(T, iid)	\
+friend class kxf::IObject;	\
+\
+template<class T>	\
+friend constexpr kxf::IID kxf::RTTI::GetInterfaceID() noexcept;	\
+\
+private:	\
+	static constexpr kxf::IID ms_IID = (iid);
 
-	template<class TDerived, class... TBase>
-	class ImplementInterface: public TBase...
-	{
-		protected:
-			using TBaseClass = typename ImplementInterface<TDerived, TBase...>;
-
-		protected:
-			RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept override
-			{
-				static_assert((std::is_base_of_v<IObject, TBase> && ...), "[...] must inherit from 'IObject'");
-
-				if (RTTI::QueryInfo ptr; ((ptr = TBase::DoQueryInterface(iid), !ptr.is_null()) || ...))
-				{
-					return ptr;
-				}
-				return nullptr;
-			}
-	};
+#define KxRTTI_DeclareIID_External(T, ...)	\
+namespace RTTI	\
+{	\
+	template<>	\
+	constexpr kxf::IID GetInterfaceID<T>() noexcept	\
+	{	\
+		return kxf::NativeUUID __VA_ARGS__;	\
+	}	\
 }

@@ -3,7 +3,7 @@
 #include "Any.h"
 #include "String.h"
 #include "OptionalPtr.h"
-#include "kxf/RTTI/QueryInterface.h"
+#include "kxf/RTTI/RTTI.h"
 
 namespace kxf
 {

@@ -3,7 +3,7 @@
 #include "../URI.h"
 #include "Event.h"
 #include "CloseCode.h"
-#include "kxf/RTTI/QueryInterface.h"
+#include "kxf/RTTI/RTTI.h"
 
 namespace kxf
 {

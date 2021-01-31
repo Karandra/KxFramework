@@ -36,7 +36,7 @@ namespace kxf
 
 namespace kxf::UI
 {
-	class KX_API TaskDialog: public Dialog, RTTI::ImplementInterface<TaskDialog, IStdDialog, IProgressMeter>
+	class KX_API TaskDialog: public Dialog, public RTTI::ImplementInterface<TaskDialog, IStdDialog, IProgressMeter>
 	{
 		friend class Private::TaskDialogNativeInfo;
 

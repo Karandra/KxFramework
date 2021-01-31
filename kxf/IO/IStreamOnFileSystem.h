@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "kxf/FileSystem/FSPath.h"
 #include "kxf/General/UniversallyUniqueID.h"
-#include "kxf/RTTI/QueryInterface.h"
+#include "kxf/RTTI/RTTI.h"
 
 namespace kxf
 {

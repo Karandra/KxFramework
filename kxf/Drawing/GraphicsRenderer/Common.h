@@ -7,7 +7,7 @@
 #include "../FontMetrics.h"
 #include "../AffineMatrix.h"
 #include "../GradientStops.h"
-#include "kxf/RTTI/QueryInterface.h"
+#include "kxf/RTTI/RTTI.h"
 
 namespace kxf
 {

@@ -1,6 +1,6 @@
 #pragma once
 #include "kxf/EventSystem/IEventLoop.h"
-#include "kxf/RTTI/QueryInterface.h"
+#include "kxf/RTTI/RTTI.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/General/OptionalPtr.h"
 #include <wx/evtloop.h>

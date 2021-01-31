@@ -5,7 +5,7 @@
 #include "kxf/General/BinarySize.h"
 #include "kxf/General/LocallyUniqueID.h"
 #include "kxf/General/UniversallyUniqueID.h"
-#include "kxf/RTTI/QueryInterface.h"
+#include "kxf/RTTI/RTTI.h"
 #include "kxf/Utility/Common.h"
 
 namespace kxf

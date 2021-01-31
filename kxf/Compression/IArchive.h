@@ -4,7 +4,7 @@
 #include "IArchiveCallbacks.h"
 #include "kxf/EventSystem/Event.h"
 #include "kxf/System/UndefWindows.h"
-#include "kxf/RTTI/QueryInterface.h"
+#include "kxf/RTTI/RTTI.h"
 
 namespace kxf
 {

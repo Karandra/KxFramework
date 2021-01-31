@@ -4,7 +4,7 @@
 #include "Node.h"
 #include "Row.h"
 #include "kxf/General/Any.h"
-#include "kxf/RTTI/QueryInterface.h"
+#include "kxf/RTTI/RTTI.h"
 
 namespace kxf::UI::DataView
 {
