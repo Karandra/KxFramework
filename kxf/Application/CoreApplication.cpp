@@ -57,6 +57,20 @@ namespace
 	}
 }
 
+namespace
+{
+	template<class TFunc>
+	bool TryNativeAppValue(kxf::String& name, TFunc&& func)
+	{
+		if (auto app = wxAppConsole::GetInstance())
+		{
+			name = std::invoke(func, app);
+			return !name.IsEmpty();
+		}
+		return false;
+	}
+}
+
 namespace kxf
 {
 	bool CoreApplication::InitDLLNotifications()
@@ -270,8 +284,21 @@ namespace kxf
 		{
 			return m_Name;
 		}
+		else if (String name; TryNativeAppValue(name, &wxAppConsole::GetAppName))
+		{
+			return name;
+		}
 		return DynamicLibrary::GetCurrentModule().GetFilePath().GetName();
 	}
+	void CoreApplication::SetName(const String& name)
+	{
+		m_Name = name;
+		if (auto app = wxAppConsole::GetInstance())
+		{
+			app->SetAppName(name);
+		}
+	}
+
 	String CoreApplication::GetDisplayName() const
 	{
 		if (!m_DisplayName.IsEmpty())
@@ -284,6 +311,57 @@ namespace kxf
 		}
 		return GetName().MakeCapitalized();
 	}
+	void CoreApplication::SetDisplayName(const String& name)
+	{
+		m_DisplayName = name;
+		if (auto app = wxAppConsole::GetInstance())
+		{
+			app->SetAppDisplayName(name);
+		}
+	}
+
+	String CoreApplication::GetVendorName() const
+	{
+		if (String name; TryNativeAppValue(name, &wxAppConsole::GetVendorName))
+		{
+			return name;
+		}
+		return m_VendorName;
+	}
+	void CoreApplication::SetVendorName(const String& name)
+	{
+		m_VendorName = name;
+		if (auto app = wxAppConsole::GetInstance())
+		{
+			app->SetVendorName(name);
+		}
+	}
+
+	String CoreApplication::GetVendorDisplayName() const
+	{
+		if (String name; TryNativeAppValue(name, &wxAppConsole::GetVendorDisplayName))
+		{
+			return name;
+		}
+		return !m_VendorDisplayName.IsEmpty() ? m_VendorDisplayName : m_VendorName;
+	}
+	void CoreApplication::SetVendorDisplayName(const String& name)
+	{
+		m_VendorDisplayName = name;
+		if (auto app = wxAppConsole::GetInstance())
+		{
+			app->SetVendorDisplayName(name);
+		}
+	}
+
+	Version CoreApplication::GetVersion() const
+	{
+		return m_Version;
+	}
+	void CoreApplication::SetVersion(const Version& version)
+	{
+		m_Version = version;
+	}
 
 	String CoreApplication::GetClassName() const
 	{
@@ -291,9 +369,9 @@ namespace kxf
 		{
 			return m_ClassName;
 		}
-		else if (auto app = wxAppConsole::GetInstance())
+		if (String name; TryNativeAppValue(name, &wxAppConsole::GetClassName))
 		{
-			return app->GetClassName();
+			return name;
 		}
 		return {};
 	}

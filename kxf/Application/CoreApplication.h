@@ -193,43 +193,19 @@ namespace kxf
 		public:
 			// Application::IBasicInfo
 			String GetName() const override;
-			void SetName(const String& name) override
-			{
-				m_Name = name;
-			}
+			void SetName(const String& name) override;
 
 			String GetDisplayName() const override;
-			void SetDisplayName(const String& name) override
-			{
-				m_DisplayName = name;
-			}
+			void SetDisplayName(const String& name) override;
 
-			String GetVendorName() const override
-			{
-				return m_VendorName;
-			}
-			void SetVendorName(const String& name) override
-			{
-				m_VendorName = name;
-			}
+			String GetVendorName() const override;
+			void SetVendorName(const String& name) override;
 
-			String GetVendorDisplayName() const override
-			{
-				return !m_VendorDisplayName.IsEmpty() ? m_VendorDisplayName : m_VendorName;
-			}
-			void SetVendorDisplayName(const String& name) override
-			{
-				m_VendorDisplayName = name;
-			}
+			String GetVendorDisplayName() const override;
+			void SetVendorDisplayName(const String& name) override;
 
-			Version GetVersion() const override
-			{
-				return m_Version;
-			}
-			void SetVersion(const Version& version) override
-			{
-				m_Version = version;
-			}
+			Version GetVersion() const override;
+			void SetVersion(const Version& version) override;
 
 			String GetClassName() const override;
 			void SetClassName(const String& name) override;
