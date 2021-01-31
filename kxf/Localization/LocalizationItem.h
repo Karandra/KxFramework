@@ -116,9 +116,13 @@ namespace kxf
 				return m_Flags;
 			}
 
-			const String& GetComment() const
+			const String& GetComment() const&
 			{
 				return m_Comment;
+			}
+			String GetComment() &&
+			{
+				return std::move(m_Comment);
 			}
 			void SetComment(String comment)
 			{
@@ -137,7 +141,9 @@ namespace kxf
 			}
 
 		public:
-			const String& GetString(size_t index = 0) const noexcept;
+			const String& GetString(size_t index = 0) const& noexcept;
+			String GetString(size_t index = 0) && noexcept;
+
 			const String& GetPluralString(LocalizationItemQuantity quantity) const noexcept;
 			const String& GetPluralString(int quantity) const noexcept;
 

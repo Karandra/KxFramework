@@ -56,7 +56,7 @@ namespace kxf
 		return 0;
 	}
 
-	const String& LocalizationItem::GetString(size_t index) const noexcept
+	const String& LocalizationItem::GetString(size_t index) const& noexcept
 	{
 		if (auto signleItem = std::get_if<TSingleItem>(&m_Value))
 		{
@@ -68,6 +68,19 @@ namespace kxf
 		}
 		return NullString;
 	}
+	String LocalizationItem::GetString(size_t index) && noexcept
+	{
+		if (auto signleItem = std::get_if<TSingleItem>(&m_Value))
+		{
+			return std::move(*signleItem);
+		}
+		else if (auto items = std::get_if<TMultipleItems>(&m_Value); items && index < items->size())
+		{
+			return std::move((*items)[index]);
+		}
+		return {};
+	}
+
 	const String& LocalizationItem::GetPluralString(LocalizationItemQuantity quantity) const noexcept
 	{
 		if (auto items = std::get_if<TPlurals>(&m_Value))
