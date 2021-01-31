@@ -141,14 +141,13 @@ namespace kxf
 	{
 		if (m_Document)
 		{
-			if (size.IsAnyComponentNegative())
-			{
-				return {};
-			}
-
 			lunasvg::Bitmap svgBitmap;
 			if (size.IsFullySpecified())
 			{
+				if (size.IsAnyComponentNegative())
+				{
+					return {};
+				}
 				svgBitmap = m_Document->renderToBitmap(size.GetWidth(), size.GetHeight(), ToSVGDPI(m_DPI));
 			}
 			else
