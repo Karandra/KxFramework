@@ -191,20 +191,9 @@ namespace kxf::UI::DataView
 
 		public:
 			// Styles
-			long GetWindowStyleFlag() const override
-			{
-				return m_Styles.ToInt();
-			}
-			void SetWindowStyleFlag(long styles) override
-			{
-				m_Styles.FromInt(styles);
-				ViewBase::SetWindowStyleFlag(styles);
-			}
-			void SetExtraStyle(long styles) override
-			{
-				m_ExtraStyles.FromInt(styles);
-				ViewBase::SetExtraStyle(styles);
-			}
+			long GetWindowStyleFlag() const override;
+			void SetWindowStyleFlag(long styles) override;
+			void SetExtraStyle(long styles) override;
 
 			// Model
 			Model* GetModel();

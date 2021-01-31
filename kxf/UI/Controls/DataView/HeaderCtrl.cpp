@@ -578,6 +578,11 @@ namespace kxf::UI::DataView
 
 	void HeaderCtrl::DoUpdate()
 	{
+		if (!IsShown())
+		{
+			return;
+		}
+
 		if (m_HeaderCtrlHandle)
 		{
 			// First delete all old columns

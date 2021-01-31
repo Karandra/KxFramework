@@ -152,7 +152,7 @@ namespace kxf::UI::DataView
 		// shouldn't happen as the control shouldn't let itself be resized beneath
 		// its minimal height but avoid the display artifacts that appear if it
 		// does happen, e.g. because there is really not enough vertical space.
-		if (m_HeaderArea)
+		if (m_HeaderArea && m_HeaderAreaSI->IsShown())
 		{
 			if (m_HeaderArea->GetSize().GetY() <= m_HeaderArea->GetBestSize().GetY())
 			{
@@ -318,6 +318,34 @@ namespace kxf::UI::DataView
 	{
 	}
 
+	// Styles
+	long View::GetWindowStyleFlag() const
+	{
+		return m_Styles.ToInt();
+	}
+	void View::SetWindowStyleFlag(long styles)
+	{
+		m_Styles.FromInt(styles);
+		if (m_HeaderAreaSI)
+		{
+			bool shouldShow = !m_Styles.Contains(CtrlStyle::NoHeader);
+			if (shouldShow && !m_HeaderAreaSI->IsShown())
+			{
+				m_HeaderArea->DoUpdate();
+			}
+			m_HeaderAreaSI->Show(shouldShow);
+			m_HeaderAreaSpacerSI->Show(shouldShow);
+		}
+
+		ViewBase::SetWindowStyleFlag(styles);
+	}
+	void View::SetExtraStyle(long styles)
+	{
+		m_ExtraStyles.FromInt(styles);
+		ViewBase::SetExtraStyle(styles);
+	}
+
+	// Model
 	Model* View::GetModel()
 	{
 		return m_ClientArea->GetModel();
@@ -344,6 +372,7 @@ namespace kxf::UI::DataView
 		m_ClientArea->ItemsChanged();
 	}
 
+	// Columns
 	Renderer& View::AppendColumn(std::unique_ptr<Column> column)
 	{
 		Renderer& renderer = column->GetRenderer();
