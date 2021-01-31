@@ -12,7 +12,7 @@ namespace kxf::UI::DataView
 		VCenterText = 1 << 0
 	};
 
-	class KX_API ImageTextValue: public TextValue, public ImageValue, public WithOptions<ImageTextValueOption, ImageTextValueOption::None>
+	class KX_API ImageTextValue: public TextValue, public ImageValue, public WithOptions<ImageTextValueOption, ImageTextValueOption::VCenterText>
 	{
 		public:
 			using Options = ImageTextValueOption;
