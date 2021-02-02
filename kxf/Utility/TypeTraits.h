@@ -80,3 +80,12 @@ namespace kxf::Utility
 	template<class T>
 	using UnderlyingTypeEx_t = typename UnderlyingTypeEx<T>::type;
 }
+
+namespace kxf::Utility
+{
+	template<class, class = void>
+	constexpr bool is_type_complete_v = false;
+
+	template<class T>
+	constexpr bool is_type_complete_v<T, std::void_t<decltype(sizeof(T))>> = true;
+}
