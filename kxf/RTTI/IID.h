@@ -32,13 +32,23 @@ namespace kxf
 				return *this == RTTI::GetInterfaceID<T>();
 			}
 
+		public:
+			explicit constexpr operator bool() const noexcept
+			{
+				return !m_ID.IsNull();
+			}
+			constexpr bool operator!() const noexcept
+			{
+				return m_ID.IsNull();
+			}
+
 			constexpr bool operator==(const IID& other) const noexcept
 			{
-				return this == &other || m_ID == other.m_ID;
+				return m_ID == other.m_ID;
 			}
 			constexpr bool operator!=(const IID& other) const noexcept
 			{
-				return !(*this == other);
+				return m_ID != other.m_ID;
 			}
 
 			constexpr IID& operator=(const NativeUUID& uuid) noexcept

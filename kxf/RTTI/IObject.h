@@ -222,17 +222,34 @@ namespace kxf
 
 namespace kxf::RTTI
 {
+	template<class TResult, class T>
+	std::unique_ptr<TResult> dynamic_cast_unique_ptr(std::unique_ptr<T> ptr) noexcept
+	{
+		static_assert(std::is_base_of_v<IObject, T> && std::is_base_of_v<IObject, TResult>, "RTTI object required");
+
+		if constexpr(std::is_same_v<T, TResult>)
+		{
+			return ptr;
+		}
+		else if (ptr)
+		{
+			auto ptr2 = ptr->IObject::QueryInterface<TResult>();
+			wxASSERT_MSG(ptr2.is_reference(), "IObject must not be dynamic");
+
+			// Release the source pointer and create a 'unique_ptr' from the pointer retrieved from the 'QueryInterface' call.
+			// This is effectively a move from the source 'unique_ptr<T>' to target 'unique_ptr<TResult>'.
+			ptr.release();
+			return std::unique_ptr<TResult>(ptr2.release());
+		}
+		return nullptr;
+	}
+
 	template<class T, class... Args>
 	std::unique_ptr<IObject> new_object(Args&&... arg)
 	{
 		static_assert(std::is_base_of_v<IObject, T>, "RTTI object required");
 
-		auto instance = std::make_unique<T>(std::forward<Args>(arg)...);
-		auto object = instance->IObject::QueryInterface<IObject>();
-		wxASSERT_MSG(object.is_reference(), "IObject must not be dynamic");
-
-		instance.release();
-		return std::unique_ptr<IObject>(object.release());
+		return dynamic_cast_unique_ptr<IObject>(std::make_unique<T>(std::forward<Args>(arg)...));
 	}
 }
 

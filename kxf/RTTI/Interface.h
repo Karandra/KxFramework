@@ -60,6 +60,9 @@ namespace kxf::RTTI
 	template<class TDerived, class... TBase>
 	class ImplementInterface: public TBase...
 	{
+		template<class T>
+		friend const ClassInfo& GetClassInfo() noexcept;
+
 		protected:
 			using TBaseClass = typename ImplementInterface<TDerived, TBase...>;
 

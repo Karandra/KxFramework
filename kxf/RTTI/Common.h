@@ -32,6 +32,7 @@ namespace kxf::RTTI
 
 	size_t EnumClassInfo(std::function<bool(const ClassInfo&)> func) noexcept;
 
+	const ClassInfo* GetClassInfoByInterfaceID(const IID& iid) noexcept;
 	const ClassInfo* GetClassInfoByName(const char* fullyQualifiedName) noexcept;
 	const ClassInfo* GetClassInfoByName(std::string_view fullyQualifiedName) noexcept;
 	const ClassInfo* GetClassInfoByName(const kxf::String& fullyQualifiedName) noexcept;

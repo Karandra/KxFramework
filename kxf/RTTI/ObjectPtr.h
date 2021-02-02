@@ -362,10 +362,19 @@ namespace kxf::RTTI
 	}
 
 	template<class T1, class T2>
-	object_ptr<T2> cast_object_ptr(object_ptr<T1> ptr) noexcept
+	object_ptr<T2> static_cast_object_ptr(object_ptr<T1> ptr) noexcept
 	{
-		auto deleter = std::move(ptr).get_deleter();
-		T2* object = static_cast<T2*>(ptr.release());
-		return object_ptr<T2>(object, std::move(deleter));
+		static_assert(std::is_base_of_v<IObject, T1> && std::is_base_of_v<IObject, T2>, "RTTI object required");
+
+		if constexpr(std::is_same_v<T1, T2>)
+		{
+			return ptr;
+		}
+		else
+		{
+			auto deleter = std::move(ptr).get_deleter();
+			T2* object = static_cast<T2*>(ptr.release());
+			return object_ptr<T2>(object, std::move(deleter));
+		}
 	}
 }

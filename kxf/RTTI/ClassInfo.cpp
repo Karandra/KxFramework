@@ -80,19 +80,19 @@ namespace
 
 namespace kxf::RTTI
 {
-	const ClassInfo* ClassInfo::GetFirst() noexcept
+	const ClassInfo* ClassInfo::GetFirstClassInfo() noexcept
 	{
 		return m_FirstClassInfo;
 	}
 
 	void ClassInfo::OnCreate() noexcept
 	{
-		m_Next = m_FirstClassInfo;
+		m_NextClassInfo = m_FirstClassInfo;
 		m_FirstClassInfo = this;
 	}
 	void ClassInfo::OnDestroy() noexcept
 	{
-		m_FirstClassInfo = m_Next;
+		m_FirstClassInfo = m_NextClassInfo;
 	}
 
 	void ClassInfo::Initialize(std::string_view name, size_t size, size_t alignment, FlagSet<ClassTrait> traits, const std::type_info& typeInfo)

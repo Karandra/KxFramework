@@ -3,12 +3,33 @@
 #include "ClassInfo.h"
 #include "kxf/General/String.h"
 
+namespace
+{
+	template<class TFunc>
+	const kxf::RTTI::ClassInfo* DoGetClassInfo(TFunc&& func) noexcept
+	{
+		using namespace kxf::RTTI;
+
+		const ClassInfo* result = nullptr;
+		EnumClassInfo([&](const ClassInfo& classInfo)
+		{
+			if (std::invoke(func, classInfo))
+			{
+				result = &classInfo;
+			}
+			return result == nullptr;
+		});
+
+		return result;
+	}
+}
+
 namespace kxf::RTTI
 {
 	size_t EnumClassInfo(std::function<bool(const ClassInfo&)> func) noexcept
 	{
 		size_t count = 0;
-		for (const ClassInfo* classInfo = ClassInfo::GetFirst(); classInfo; classInfo = classInfo->GetNext())
+		for (const ClassInfo* classInfo = ClassInfo::GetFirstClassInfo(); classInfo; classInfo = classInfo->GetNextClassInfo())
 		{
 			count++;
 			if (func && !std::invoke(func, *classInfo))
@@ -19,36 +40,29 @@ namespace kxf::RTTI
 		return count;
 	}
 
+	const kxf::RTTI::ClassInfo* GetClassInfoByInterfaceID(const IID& iid) noexcept
+	{
+		return DoGetClassInfo([&](const ClassInfo& classInfo)
+		{
+			return classInfo.GetInterfaceID() == iid;
+		});
+	}
 	const ClassInfo* GetClassInfoByName(const char* fullyQualifiedName) noexcept
 	{
 		return GetClassInfoByName(std::string_view(fullyQualifiedName));
 	}
 	const ClassInfo* GetClassInfoByName(std::string_view fullyQualifiedName) noexcept
 	{
-		const ClassInfo* result = nullptr;
-		EnumClassInfo([&](const ClassInfo& classInfo)
+		return DoGetClassInfo([&](const ClassInfo& classInfo)
 		{
-			if (classInfo.m_FullyQualifiedName == fullyQualifiedName)
-			{
-				result = &classInfo;
-			}
-			return result == nullptr;
+			return classInfo.m_FullyQualifiedName == fullyQualifiedName;
 		});
-
-		return result;
 	}
 	const ClassInfo* GetClassInfoByName(const kxf::String& fullyQualifiedName) noexcept
 	{
-		const ClassInfo* result = nullptr;
-		EnumClassInfo([&](const ClassInfo& classInfo)
+		return DoGetClassInfo([&](const ClassInfo& classInfo)
 		{
-			if (fullyQualifiedName.IsSameAs(classInfo.m_FullyQualifiedName))
-			{
-				result = &classInfo;
-			}
-			return result == nullptr;
+			return fullyQualifiedName.IsSameAs(classInfo.m_FullyQualifiedName);
 		});
-
-		return result;
 	}
 }

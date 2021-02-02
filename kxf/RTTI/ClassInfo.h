@@ -3,6 +3,7 @@
 #include "IObject.h"
 #include "kxf/General/FlagSet.h"
 #include <variant>
+#include <wx/msgdlg.h>
 
 namespace kxf
 {
@@ -37,10 +38,10 @@ namespace kxf::RTTI
 		friend const ClassInfo* GetClassInfoByName(const kxf::String&) noexcept;
 
 		public:
-			static const ClassInfo* GetFirst() noexcept;
+			static const ClassInfo* GetFirstClassInfo() noexcept;
 
 		protected:
-			ClassInfo* m_Next = nullptr;
+			ClassInfo* m_NextClassInfo = nullptr;
 
 			std::string_view m_FullyQualifiedName;
 			size_t m_Size = 0;
@@ -60,8 +61,13 @@ namespace kxf::RTTI
 			// IObject
 			RTTI::QueryInfo DoQueryInterface(const kxf::IID& iid) noexcept override;
 
+		protected:
 			// ClassInfo
 			std::string_view ParseToFullyQualifiedName(std::string_view name, size_t index) const;
+
+			virtual IID DoGetInterfaceID() const = 0;
+			virtual size_t DoEnumBaseClassInfo(std::function<bool(const ClassInfo&)> func) const = 0;
+			virtual std::unique_ptr<IObject> DoCreateObjectInstance() const = 0;
 
 		protected:
 			ClassInfo() noexcept
@@ -91,18 +97,30 @@ namespace kxf::RTTI
 			{
 				return m_Traits;
 			}
-			const std::type_info& GetTypeInfo() const noexcept
+			const std::type_info& GetStdTypeInfo() const noexcept
 			{
 				return *m_TypeInfo;
 			}
 
-			virtual IID GetInterfaceID() const = 0;
-			virtual size_t EnumBaseClassInfo(std::function<bool(const ClassInfo&)> func) const = 0;
+			IID GetInterfaceID() const
+			{
+				return DoGetInterfaceID();
+			}
+			size_t EnumBaseClassInfo(std::function<bool(const ClassInfo&)> func) const
+			{
+				return DoEnumBaseClassInfo(std::move(func));
+			}
+
+			template<class T = IObject>
+			std::unique_ptr<T> CreateObjectInstance() const
+			{
+				return RTTI::dynamic_cast_unique_ptr<T>(DoCreateObjectInstance());
+			}
 
 		public:
-			const ClassInfo* GetNext() const noexcept
+			const ClassInfo* GetNextClassInfo() const noexcept
 			{
-				return m_Next;
+				return m_NextClassInfo;
 			}
 	};
 }
@@ -132,27 +150,9 @@ namespace kxf::RTTI::Private
 				return traits;
 			}
 
-		public:
-			ClassInfoOfCommon() noexcept
-			{
-				ClassInfo::Initialize(__FUNCTION__, sizeof(T), alignof(T), CollectTraits(), typeid(T));
-
-				for (size_t i = 0; i < m_BaseClassInfo.size(); i++)
-				{
-					auto name = ParseToFullyQualifiedName(__FUNCTION__, i + 1);
-					if (auto classInfo = RTTI::GetClassInfoByName(name))
-					{
-						m_BaseClassInfo[i] = classInfo;
-					}
-					else
-					{
-						m_BaseClassInfo[i] = std::move(name);
-					}
-				}
-			}
-
-		public:
-			size_t EnumBaseClassInfo(std::function<bool(const ClassInfo&)> func) const override
+		protected:
+			// ClassInfo
+			size_t DoEnumBaseClassInfo(std::function<bool(const ClassInfo&)> func) const override
 			{
 				size_t count = 0;
 				for (auto& item: m_BaseClassInfo)
@@ -181,6 +181,25 @@ namespace kxf::RTTI::Private
 				}
 				return count;
 			}
+
+		public:
+			ClassInfoOfCommon() noexcept
+			{
+				ClassInfo::Initialize(__FUNCTION__, sizeof(T), alignof(T), CollectTraits(), typeid(T));
+
+				for (size_t i = 0; i < m_BaseClassInfo.size(); i++)
+				{
+					auto name = ParseToFullyQualifiedName(__FUNCTION__, i + 1);
+					if (auto classInfo = RTTI::GetClassInfoByName(name))
+					{
+						m_BaseClassInfo[i] = classInfo;
+					}
+					else
+					{
+						m_BaseClassInfo[i] = std::move(name);
+					}
+				}
+			}
 	};
 }
 
@@ -189,20 +208,34 @@ namespace kxf::RTTI
 	template<class T, class... TBase>
 	class ClassInfoOf: public Private::ClassInfoOfCommon<T, TBase...>
 	{
-		public:
-			IID GetInterfaceID() const override
+		protected:
+			// ClassInfo
+			IID DoGetInterfaceID() const override
 			{
 				return RTTI::GetInterfaceID<T>();
+			}
+			std::unique_ptr<IObject> DoCreateObjectInstance() const override
+			{
+				return nullptr;
 			}
 	};
 
 	template<class T, class... TBase>
 	class ClassInfoOfImplementation: public Private::ClassInfoOfCommon<T, TBase...>
 	{
-		public:
-			IID GetInterfaceID() const override
+		protected:
+			// ClassInfo
+			IID DoGetInterfaceID() const override
 			{
 				return {};
+			}
+			std::unique_ptr<IObject> DoCreateObjectInstance() const override
+			{
+				if constexpr(std::is_default_constructible_v<T>)
+				{
+					return RTTI::new_object<T>();
+				}
+				return nullptr;
 			}
 	};
 }
