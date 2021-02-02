@@ -9,6 +9,9 @@ namespace kxf::RTTI
 	template<class T>
 	class Interface: public virtual IObject
 	{
+		template<class T>
+		friend const ClassInfo& GetClassInfo() noexcept;
+
 		private:
 			static inline RTTI::ClassInfoOf<T, IObject> ms_ClassInfo;
 
@@ -29,6 +32,9 @@ namespace kxf::RTTI
 	template<class TDerived, class... TBase>
 	class ExtendInterface: public TBase...
 	{
+		template<class T>
+		friend const ClassInfo& GetClassInfo() noexcept;
+
 		protected:
 			using TBaseInterface = typename ExtendInterface<TDerived, TBase...>;
 
@@ -54,9 +60,6 @@ namespace kxf::RTTI
 	template<class TDerived, class... TBase>
 	class ImplementInterface: public TBase...
 	{
-		template<class T>
-		friend constexpr IID kxf::RTTI::GetInterfaceID() noexcept;
-
 		protected:
 			using TBaseClass = typename ImplementInterface<TDerived, TBase...>;
 
