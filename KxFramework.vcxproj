@@ -782,6 +782,7 @@
     <ClCompile Include="kxf\Log\OutputStreamTarget.cpp" />
     <ClCompile Include="kxf\RTTI\Common.cpp" />
     <ClCompile Include="kxf\RTTI\ClassInfo.cpp" />
+    <ClCompile Include="kxf\RTTI\IID.cpp" />
     <ClCompile Include="kxf\RTTI\IObject.cpp" />
     <ClCompile Include="kxf\RTTI\ObjectPtr.cpp" />
     <ClCompile Include="kxf\Sciter\Stylesheets\MasterStylesheetStorage.cpp" />

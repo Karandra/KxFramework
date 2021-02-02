@@ -4,6 +4,11 @@
 
 namespace kxf
 {
+	class UniversallyUniqueID;
+}
+
+namespace kxf
+{
 	class KX_API IID final
 	{
 		private:
@@ -25,6 +30,7 @@ namespace kxf
 			{
 				return m_ID;
 			}
+			UniversallyUniqueID ToUniversallyUniqueID() const noexcept;
 
 			template<class T>
 			constexpr bool IsOfType() const noexcept

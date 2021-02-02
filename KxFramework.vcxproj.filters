@@ -2675,6 +2675,9 @@
     <ClCompile Include="kxf\RTTI\IObject.cpp">
       <Filter>kxf\RTTI</Filter>
     </ClCompile>
+    <ClCompile Include="kxf\RTTI\IID.cpp">
+      <Filter>kxf\RTTI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="kxf\System\Private\ErrorCodeNtStatus.i">
