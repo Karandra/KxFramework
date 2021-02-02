@@ -26,7 +26,7 @@ namespace kxf
 namespace kxf::Drawing::Private
 {
 	template<class TBase>
-	class KX_API GDIGraphicsBrushBase: public RTTI::ImplementInterface<GDIGraphicsBrushBase<TBase>, TBase, IGDIObject, GDIGraphicsBrush>
+	class KX_API GDIGraphicsBrushBase: public RTTI::Implementation<GDIGraphicsBrushBase<TBase>, TBase, IGDIObject, GDIGraphicsBrush>
 	{
 		protected:
 			GDIGraphicsRenderer* m_Renderer = nullptr;

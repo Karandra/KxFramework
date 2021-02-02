@@ -6,7 +6,7 @@
 
 namespace kxf
 {
-	class KX_API LocalizationPackageStack: public RTTI::ImplementInterface<LocalizationPackageStack, ILocalizationPackage>
+	class KX_API LocalizationPackageStack: public RTTI::Implementation<LocalizationPackageStack, ILocalizationPackage>
 	{
 		private:
 			template<class TItems, class TFunc>

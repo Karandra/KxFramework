@@ -8,7 +8,7 @@
 
 namespace kxf
 {
-	class KX_API NativeFileStream: public RTTI::ImplementInterface<NativeFileStream, IInputStream, IOutputStream, INativeStream, IStreamOnFileSystem>
+	class KX_API NativeFileStream: public RTTI::Implementation<NativeFileStream, IInputStream, IOutputStream, INativeStream, IStreamOnFileSystem>
 	{
 		private:
 			void* m_Handle = nullptr;

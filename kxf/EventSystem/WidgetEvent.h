@@ -5,7 +5,7 @@
 
 namespace kxf
 {
-	class KX_API WidgetEvent: public RTTI::ImplementInterface<WidgetEvent, BasicEvent, IWidgetEvent>
+	class KX_API WidgetEvent: public RTTI::Implementation<WidgetEvent, BasicEvent, IWidgetEvent>
 	{
 		private:
 			WidgetID m_WidgetID;

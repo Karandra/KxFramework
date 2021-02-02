@@ -13,7 +13,7 @@ namespace kxf::RTTI
 		friend const ClassInfo& GetClassInfo() noexcept;
 
 		private:
-			static inline RTTI::ClassInfoOf<T, IObject> ms_ClassInfo;
+			static inline RTTI::InterfaceClassInfo<T, IObject> ms_ClassInfo;
 
 		protected:
 			RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept override
@@ -39,7 +39,7 @@ namespace kxf::RTTI
 			using TBaseInterface = typename ExtendInterface<TDerived, TBase...>;
 
 		private:
-			static inline RTTI::ClassInfoOf<TDerived, TBase...> ms_ClassInfo;
+			static inline RTTI::InterfaceClassInfo<TDerived, TBase...> ms_ClassInfo;
 
 		protected:
 			RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept override
@@ -58,16 +58,16 @@ namespace kxf::RTTI
 	};
 
 	template<class TDerived, class... TBase>
-	class ImplementInterface: public TBase...
+	class Implementation: public TBase...
 	{
 		template<class T>
 		friend const ClassInfo& GetClassInfo() noexcept;
 
 		protected:
-			using TBaseClass = typename ImplementInterface<TDerived, TBase...>;
+			using TBaseClass = typename Implementation<TDerived, TBase...>;
 
 		private:
-			static inline RTTI::ClassInfoOfImplementation<TDerived, TBase...> ms_ClassInfo;
+			static inline RTTI::ImplementationClassInfo<TDerived, TBase...> ms_ClassInfo;
 
 		protected:
 			RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept override
@@ -86,14 +86,46 @@ namespace kxf::RTTI
 			}
 
 		public:
-			ImplementInterface() = default;
+			Implementation() = default;
+	};
+
+	template<class TDerived, class... TBase>
+	class DynamicImplementation: public TBase...
+	{
+		template<class T>
+		friend const ClassInfo& GetClassInfo() noexcept;
+
+		protected:
+			using TBaseClass = typename DynamicImplementation<TDerived, TBase...>;
+
+		private:
+			static inline RTTI::DynamicImplementationClassInfo<TDerived, TBase...> ms_ClassInfo;
+
+		protected:
+			RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept override
+			{
+				static_assert((std::is_base_of_v<IObject, TBase> && ...), "[...] must inherit from 'IObject'");
+
+				if (iid.IsOfType<RTTI::ClassInfo>())
+				{
+					return static_cast<ClassInfo*>(&ms_ClassInfo);
+				}
+				else if (RTTI::QueryInfo ptr; ((ptr = TBase::DoQueryInterface(iid), !ptr.is_null()) || ...))
+				{
+					return ptr;
+				}
+				return nullptr;
+			}
+
+		public:
+			DynamicImplementation() = default;
 	};
 }
 
 #define KxRTTI_QueryInterface_Extend(T, ...)	\
 \
 private:	\
-	static inline kxf::RTTI::ClassInfoOf<T, __VA_ARGS__> ms_ClassInfo; \
+	static inline kxf::RTTI::InterfaceClassInfo<T, __VA_ARGS__> ms_ClassInfo; \
 	\
 public:	\
 	kxf::RTTI::QueryInfo DoQueryInterface(const kxf::IID& iid) noexcept override	\

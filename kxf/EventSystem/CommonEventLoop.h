@@ -5,7 +5,7 @@
 
 namespace kxf
 {
-	class KX_API CommonEventLoop: public RTTI::ImplementInterface<CommonEventLoop, IEventLoop>
+	class KX_API CommonEventLoop: public RTTI::Implementation<CommonEventLoop, IEventLoop>
 	{
 		private:
 			mutable wxWidgets::EventLoopWrapperWx m_WxEventLoop;

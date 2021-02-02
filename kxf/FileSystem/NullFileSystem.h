@@ -5,7 +5,7 @@
 
 namespace kxf::FileSystem
 {
-	class NullFileSystem final: public RTTI::ImplementInterface<NullFileSystem, IFileSystem, IFileIDSystem>
+	class NullFileSystem final: public RTTI::Implementation<NullFileSystem, IFileSystem, IFileIDSystem>
 	{
 		public:
 			NullFileSystem() noexcept = default;

@@ -5,7 +5,7 @@
 
 namespace kxf
 {
-	kxf::RTTI::ClassInfoOf<kxf::IObject> g_ClassInfo;
+	kxf::RTTI::InterfaceClassInfo<kxf::IObject> g_ClassInfo;
 }
 
 namespace kxf
@@ -20,7 +20,6 @@ namespace kxf
 		}
 		else if (iid.IsOfType<RTTI::ClassInfo>())
 		{
-			
 			return static_cast<RTTI::ClassInfo*>(&g_ClassInfo);
 		}
 		return nullptr;

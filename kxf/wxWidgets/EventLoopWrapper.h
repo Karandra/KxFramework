@@ -26,7 +26,7 @@ namespace kxf::wxWidgets
 
 namespace kxf::wxWidgets
 {
-	class EventLoopWrapper: public RTTI::ImplementInterface<EventLoopWrapper, IEventLoop>
+	class EventLoopWrapper: public RTTI::Implementation<EventLoopWrapper, IEventLoop>
 	{
 		private:
 			optional_ptr<EventLoopBase> m_EventLoop;

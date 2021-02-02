@@ -4,7 +4,7 @@
 
 namespace kxf::EventSystem
 {
-	class IndirectInvocationEvent: public RTTI::ImplementInterface<IndirectInvocationEvent, BasicEvent, IIndirectInvocationEvent>
+	class IndirectInvocationEvent: public RTTI::Implementation<IndirectInvocationEvent, BasicEvent, IIndirectInvocationEvent>
 	{
 		public:
 			IndirectInvocationEvent() noexcept = default;

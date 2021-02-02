@@ -24,8 +24,16 @@ namespace kxf::RTTI
 		MoveAssignable = 1 << 4,
 
 		Final = 1 << 8,
-		Abstract = 1 << 9
+		Abstract = 1 << 10,
+
+		Interface = 1 << 16,
+		Implementation = 1 << 17,
+		Dynamic = 1 << 18
 	};
+}
+namespace kxf
+{
+	KxFlagSet_Declare(RTTI::ClassTrait);
 }
 
 namespace kxf::RTTI
@@ -40,7 +48,7 @@ namespace kxf::RTTI
 		public:
 			static const ClassInfo* GetFirstClassInfo() noexcept;
 
-		protected:
+		private:
 			ClassInfo* m_NextClassInfo = nullptr;
 
 			std::string_view m_FullyQualifiedName;
@@ -54,23 +62,19 @@ namespace kxf::RTTI
 			void OnDestroy() noexcept;
 
 		protected:
-			void Initialize(std::string_view name, size_t size, size_t alignment, FlagSet<ClassTrait> traits, const std::type_info& typeInfo);
-			bool IsInitialized() const;
-
-		protected:
 			// IObject
 			RTTI::QueryInfo DoQueryInterface(const kxf::IID& iid) noexcept override;
 
-		protected:
 			// ClassInfo
-			std::string_view ParseToFullyQualifiedName(std::string_view name, size_t index) const;
+			std::string_view ParseToFullyQualifiedName(std::string_view name, size_t index) const noexcept;
 
-			virtual IID DoGetInterfaceID() const = 0;
-			virtual size_t DoEnumBaseClassInfo(std::function<bool(const ClassInfo&)> func) const = 0;
+			virtual IID DoGetInterfaceID() const noexcept = 0;
+			virtual size_t DoEnumBaseClasses(std::function<bool(const ClassInfo&)> func) const noexcept = 0;
 			virtual std::unique_ptr<IObject> DoCreateObjectInstance() const = 0;
 
 		protected:
-			ClassInfo() noexcept
+			ClassInfo(std::string_view name, size_t size, size_t alignment, FlagSet<ClassTrait> traits, const std::type_info& typeInfo) noexcept
+				:m_FullyQualifiedName(ParseToFullyQualifiedName(name, 0)), m_Size(size), m_Alignment(alignment), m_Traits(traits), m_TypeInfo(&typeInfo)
 			{
 				OnCreate();
 			}
@@ -93,6 +97,10 @@ namespace kxf::RTTI
 				return m_Alignment;
 			}
 
+			IID GetInterfaceID() const noexcept
+			{
+				return DoGetInterfaceID();
+			}
 			FlagSet<ClassTrait> GetTraits() const noexcept
 			{
 				return m_Traits;
@@ -102,14 +110,14 @@ namespace kxf::RTTI
 				return *m_TypeInfo;
 			}
 
-			IID GetInterfaceID() const
+			size_t EnumBaseClasses(std::function<bool(const ClassInfo&)> func) const noexcept
 			{
-				return DoGetInterfaceID();
+				return DoEnumBaseClasses(std::move(func));
 			}
-			size_t EnumBaseClassInfo(std::function<bool(const ClassInfo&)> func) const
-			{
-				return DoEnumBaseClassInfo(std::move(func));
-			}
+			size_t EnumDerivedClasses(std::function<bool(const ClassInfo&)> func) const noexcept;
+			bool IsBaseOf(const ClassInfo& other) const noexcept;
+			bool IsSameAs(const ClassInfo& other) const noexcept;
+			bool IsNull() const noexcept;
 
 			template<class T = IObject>
 			std::unique_ptr<T> CreateObjectInstance() const
@@ -122,6 +130,26 @@ namespace kxf::RTTI
 			{
 				return m_NextClassInfo;
 			}
+
+		public:
+			explicit operator bool() const noexcept
+			{
+				return !IsNull();
+			}
+			bool operator!() const noexcept
+			{
+				return IsNull();
+			}
+
+			bool operator==(const ClassInfo& other) const noexcept
+			{
+				return IsSameAs(other);
+			}
+			bool operator!=(const ClassInfo& other) const noexcept
+			{
+				return !IsSameAs(other);
+			}
+
 	};
 }
 
@@ -134,10 +162,8 @@ namespace kxf::RTTI::Private
 			mutable std::array<std::variant<const ClassInfo*, std::string_view>, Utility::CountOfParameterPack<TBase...>()> m_BaseClassInfo;
 
 		private:
-			FlagSet<ClassTrait> CollectTraits() const noexcept
+			FlagSet<ClassTrait> CollectTraits(FlagSet<ClassTrait> traits) const noexcept
 			{
-				FlagSet<ClassTrait> traits;
-
 				traits.Add(ClassTrait::DefaultConstructible, std::is_default_constructible_v<T>);
 				traits.Add(ClassTrait::CopyConstructible, std::is_copy_constructible_v<T>);
 				traits.Add(ClassTrait::CopyAssignable, std::is_copy_assignable_v<T>);
@@ -152,7 +178,7 @@ namespace kxf::RTTI::Private
 
 		protected:
 			// ClassInfo
-			size_t DoEnumBaseClassInfo(std::function<bool(const ClassInfo&)> func) const override
+			size_t DoEnumBaseClasses(std::function<bool(const ClassInfo&)> func) const noexcept override
 			{
 				size_t count = 0;
 				for (auto& item: m_BaseClassInfo)
@@ -183,10 +209,9 @@ namespace kxf::RTTI::Private
 			}
 
 		public:
-			ClassInfoOfCommon() noexcept
+			ClassInfoOfCommon(FlagSet<ClassTrait> classTraits = {}) noexcept
+				:ClassInfo(__FUNCTION__, sizeof(T), alignof(T), CollectTraits(classTraits), typeid(T))
 			{
-				ClassInfo::Initialize(__FUNCTION__, sizeof(T), alignof(T), CollectTraits(), typeid(T));
-
 				for (size_t i = 0; i < m_BaseClassInfo.size(); i++)
 				{
 					auto name = ParseToFullyQualifiedName(__FUNCTION__, i + 1);
@@ -206,11 +231,11 @@ namespace kxf::RTTI::Private
 namespace kxf::RTTI
 {
 	template<class T, class... TBase>
-	class ClassInfoOf: public Private::ClassInfoOfCommon<T, TBase...>
+	class InterfaceClassInfo: public Private::ClassInfoOfCommon<T, TBase...>
 	{
 		protected:
 			// ClassInfo
-			IID DoGetInterfaceID() const override
+			IID DoGetInterfaceID() const noexcept override
 			{
 				return RTTI::GetInterfaceID<T>();
 			}
@@ -218,29 +243,53 @@ namespace kxf::RTTI
 			{
 				return nullptr;
 			}
+
+		public:
+			InterfaceClassInfo()
+				:Private::ClassInfoOfCommon<T, TBase...>(ClassTrait::Interface)
+			{
+			}
 	};
 
 	template<class T, class... TBase>
-	class ClassInfoOfImplementation: public Private::ClassInfoOfCommon<T, TBase...>
+	class ImplementationClassInfo: public Private::ClassInfoOfCommon<T, TBase...>
 	{
 		protected:
 			// ClassInfo
-			IID DoGetInterfaceID() const override
+			IID DoGetInterfaceID() const noexcept override
 			{
 				return {};
 			}
 			std::unique_ptr<IObject> DoCreateObjectInstance() const override
 			{
-				if constexpr(std::is_default_constructible_v<T>)
-				{
-					return RTTI::new_object<T>();
-				}
 				return nullptr;
 			}
-	};
-}
 
-namespace kxf
-{
-	KxFlagSet_Declare(RTTI::ClassTrait);
+		public:
+			ImplementationClassInfo()
+				:Private::ClassInfoOfCommon<T, TBase...>(ClassTrait::Implementation)
+			{
+			}
+	};
+
+	template<class T, class... TBase>
+	class DynamicImplementationClassInfo: public Private::ClassInfoOfCommon<T, TBase...>
+	{
+		protected:
+			// ClassInfo
+			IID DoGetInterfaceID() const noexcept override
+			{
+				return RTTI::GetInterfaceID<T>();
+			}
+			std::unique_ptr<IObject> DoCreateObjectInstance() const override
+			{
+				return RTTI::new_object<T>();
+			}
+
+		public:
+			DynamicImplementationClassInfo()
+				:Private::ClassInfoOfCommon<T, TBase...>(ClassTrait::Implementation|ClassTrait::Dynamic)
+			{
+			}
+	};
 }

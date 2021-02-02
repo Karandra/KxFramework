@@ -11,7 +11,7 @@ namespace kxf
 namespace kxf
 {
 	class KX_API AndroidLocalizationPackage:
-		public RTTI::ImplementInterface<AndroidLocalizationPackage, ILocalizationPackage>,
+		public RTTI::Implementation<AndroidLocalizationPackage, ILocalizationPackage>,
 		private Localization::Private::XMLPackageHelper
 	{
 		private:

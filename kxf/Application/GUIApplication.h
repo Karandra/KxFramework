@@ -5,7 +5,7 @@
 
 namespace kxf
 {
-	class KX_API GUIApplication: public RTTI::ImplementInterface<GUIApplication, CoreApplication, IGUIApplication>
+	class KX_API GUIApplication: public RTTI::Implementation<GUIApplication, CoreApplication, IGUIApplication>
 	{
 		private:
 			enum class ExitOnLastFrameDelete

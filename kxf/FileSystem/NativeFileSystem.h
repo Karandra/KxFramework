@@ -6,7 +6,7 @@
 
 namespace kxf
 {
-	class NativeFileSystem: public RTTI::ImplementInterface<NativeFileSystem, IFileSystem, IFileIDSystem>
+	class NativeFileSystem: public RTTI::Implementation<NativeFileSystem, IFileSystem, IFileIDSystem>
 	{
 		public:
 			static FSPath GetExecutingModuleRootDirectory();

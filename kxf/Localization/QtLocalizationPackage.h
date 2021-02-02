@@ -12,7 +12,7 @@ namespace kxf
 namespace kxf
 {
 	class KX_API QtLocalizationPackage:
-		public RTTI::ImplementInterface<QtLocalizationPackage, ILocalizationPackage>,
+		public RTTI::Implementation<QtLocalizationPackage, ILocalizationPackage>,
 		private Localization::Private::XMLPackageHelper
 	{
 		private:

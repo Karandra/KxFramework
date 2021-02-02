@@ -6,7 +6,7 @@ namespace
 {
 	kxf::RTTI::ClassInfo* m_FirstClassInfo = nullptr;
 
-	std::string_view DoGetFullyQualifiedName(std::string_view sourceName, size_t index)
+	std::string_view DoGetFullyQualifiedName(std::string_view sourceName, size_t index) noexcept
 	{
 		constexpr auto npos = std::string_view::npos;
 
@@ -53,7 +53,7 @@ namespace
 		ClassName,
 		Namespace,
 	};
-	std::string_view DoGetNamePart(std::string_view fullyQualifiedName, NamePart desiredName)
+	std::string_view DoGetNamePart(std::string_view fullyQualifiedName, NamePart desiredName) noexcept
 	{
 		constexpr auto npos = std::string_view::npos;
 		if (size_t namespaceIndex = fullyQualifiedName.rfind("::"); namespaceIndex != npos)
@@ -95,26 +95,13 @@ namespace kxf::RTTI
 		m_FirstClassInfo = m_NextClassInfo;
 	}
 
-	void ClassInfo::Initialize(std::string_view name, size_t size, size_t alignment, FlagSet<ClassTrait> traits, const std::type_info& typeInfo)
-	{
-		m_FullyQualifiedName = DoGetFullyQualifiedName(name, 0);
-		m_Size = size;
-		m_Alignment = alignment;
-		m_Traits = traits;
-		m_TypeInfo = &typeInfo;
-	}
-	bool ClassInfo::IsInitialized() const
-	{
-		return m_TypeInfo != nullptr;
-	}
-
 	// IObject
 	RTTI::QueryInfo ClassInfo::DoQueryInterface(const kxf::IID& iid) noexcept
 	{
 		return nullptr;
 	}
 
-	std::string_view ClassInfo::ParseToFullyQualifiedName(std::string_view name, size_t index) const
+	std::string_view ClassInfo::ParseToFullyQualifiedName(std::string_view name, size_t index) const noexcept
 	{
 		return DoGetFullyQualifiedName(name, index);
 	}
@@ -130,5 +117,51 @@ namespace kxf::RTTI
 	String ClassInfo::GetFullyQualifiedName() const
 	{
 		return String::FromView(m_FullyQualifiedName);
+	}
+
+	size_t ClassInfo::EnumDerivedClasses(std::function<bool(const ClassInfo&)> func) const noexcept
+	{
+		size_t count = 0;
+		for (const ClassInfo* classInfo = m_FirstClassInfo; classInfo; classInfo = classInfo->m_NextClassInfo)
+		{
+			if (IsBaseOf(*classInfo))
+			{
+				count++;
+				if (func && !std::invoke(func, *classInfo))
+				{
+					break;
+				}
+			}
+		}
+		return count;
+	}
+	bool ClassInfo::IsBaseOf(const ClassInfo& other) const noexcept
+	{
+		bool result = false;
+		other.EnumBaseClasses([&](const ClassInfo& classInfo)
+		{
+			if (classInfo == *this)
+			{
+				result = true;
+				return false;
+			}
+			return true;
+		});
+		return result;
+	}
+	bool ClassInfo::IsSameAs(const ClassInfo& other) const noexcept
+	{
+		if (this == &other)
+		{
+			return true;
+		}
+		else
+		{
+			return m_Size == other.m_Size && m_Alignment == other.m_Alignment && m_Traits == other.m_Traits && m_FullyQualifiedName == other.m_FullyQualifiedName;
+		}
+	}
+	bool ClassInfo::IsNull() const noexcept
+	{
+		return m_TypeInfo == nullptr;
 	}
 }

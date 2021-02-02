@@ -29,7 +29,7 @@ namespace kxf
 namespace kxf::Drawing::Private
 {
 	template<class TBase>
-	class KX_API WxGraphicsBrushBase: public RTTI::ImplementInterface<WxGraphicsBrushBase<TBase>, TBase, WxGraphicsBrush>
+	class KX_API WxGraphicsBrushBase: public RTTI::Implementation<WxGraphicsBrushBase<TBase>, TBase, WxGraphicsBrush>
 	{
 		protected:
 			WxGraphicsRenderer* m_Renderer = nullptr;

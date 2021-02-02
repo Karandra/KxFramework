@@ -6,7 +6,7 @@
 
 namespace kxf::wxWidgets
 {
-	class KX_API InputStreamWrapper: public RTTI::ImplementInterface<InputStreamWrapper, IInputStream>
+	class KX_API InputStreamWrapper: public RTTI::Implementation<InputStreamWrapper, IInputStream>
 	{
 		protected:
 			optional_ptr<wxInputStream> m_Stream;
@@ -110,7 +110,7 @@ namespace kxf::wxWidgets
 			}
 	};
 
-	class KX_API OutputStreamWrapper: public RTTI::ImplementInterface<OutputStreamWrapper, IOutputStream>
+	class KX_API OutputStreamWrapper: public RTTI::Implementation<OutputStreamWrapper, IOutputStream>
 	{
 		private:
 			optional_ptr<wxOutputStream> m_Stream;

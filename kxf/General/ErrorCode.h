@@ -4,7 +4,7 @@
 
 namespace kxf
 {
-	class KX_API ErrorCode final: public RTTI::ImplementInterface<ErrorCode, IErrorCode>
+	class KX_API ErrorCode final: public RTTI::Implementation<ErrorCode, IErrorCode>
 	{
 		private:
 			std::unique_ptr<IErrorCode> m_ErrorCode;
@@ -17,7 +17,7 @@ namespace kxf
 				{
 					return m_ErrorCode->QueryInterface(iid);
 				}
-				return ImplementInterface::DoQueryInterface(iid);
+				return Implementation::DoQueryInterface(iid);
 			}
 			
 		public:

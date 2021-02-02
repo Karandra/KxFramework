@@ -10,7 +10,7 @@
 
 namespace kxf::wxWidgets
 {
-	class KX_API EventWrapper: public RTTI::ImplementInterface<EventWrapper, IEvent, IWithEvent>, private IEventInternal
+	class KX_API EventWrapper: public RTTI::Implementation<EventWrapper, IEvent, IWithEvent>, private IEventInternal
 	{
 		private:
 			optional_ptr<wxEvent> m_Event;

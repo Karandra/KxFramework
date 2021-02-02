@@ -9,7 +9,7 @@
 
 namespace kxf
 {
-	class KX_API CoreApplication: public RTTI::ImplementInterface<CoreApplication, ICoreApplication>
+	class KX_API CoreApplication: public RTTI::Implementation<CoreApplication, ICoreApplication>
 	{
 		public:
 			static CoreApplication* GetInstance() noexcept

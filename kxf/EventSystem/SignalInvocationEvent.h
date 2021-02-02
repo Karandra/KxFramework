@@ -7,7 +7,7 @@
 namespace kxf::EventSystem
 {
 	template<SignalParametersSemantics signalSemantics, class TSignal_>
-	class SignalInvocationEvent: public RTTI::ImplementInterface<SignalInvocationEvent<signalSemantics, TSignal_>, BasicEvent, ISignalInvocationEvent>
+	class SignalInvocationEvent: public RTTI::Implementation<SignalInvocationEvent<signalSemantics, TSignal_>, BasicEvent, ISignalInvocationEvent>
 	{
 		protected:
 			using TArgsTuple = typename Utility::MethodTraits<TSignal_>::TArgsTuple;

@@ -52,7 +52,7 @@ namespace kxf::System
 
 namespace kxf::System
 {
-	class KX_API CreateProcessExecutor: public RTTI::ImplementInterface<CreateProcessExecutor, RunningSystemProcess, RunningSystemProcessStdIO>, public wxThread
+	class KX_API CreateProcessExecutor: public RTTI::Implementation<CreateProcessExecutor, RunningSystemProcess, RunningSystemProcessStdIO>, public wxThread
 	{
 		private:
 			EvtHandlerDelegate m_EvtHandler;
@@ -90,7 +90,7 @@ namespace kxf::System
 				{
 					return nullptr;
 				}
-				return ImplementInterface::QueryInterface(iid);
+				return Implementation::QueryInterface(iid);
 			}
 
 			ExitCode Entry() override;
