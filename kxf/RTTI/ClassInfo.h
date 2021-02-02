@@ -3,7 +3,6 @@
 #include "IObject.h"
 #include "kxf/General/FlagSet.h"
 #include <variant>
-#include <wx/msgdlg.h>
 
 namespace kxf
 {
