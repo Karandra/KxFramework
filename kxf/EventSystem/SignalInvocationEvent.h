@@ -20,7 +20,7 @@ namespace kxf::EventSystem
 			std::optional<TActualResult> m_Result;
 
 		public:
-			template<class... Args>
+			template<class... Args, std::enable_if_t<std::is_constructible_v<TArgsTuple, Args...>, int> = 0>
 			SignalInvocationEvent(Args&&... arg)
 				:m_Parameters(std::forward<Args>(arg)...)
 			{
