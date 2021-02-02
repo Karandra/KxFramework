@@ -42,10 +42,14 @@ namespace kxf::RTTI
 
 	const kxf::RTTI::ClassInfo* GetClassInfoByInterfaceID(const IID& iid) noexcept
 	{
-		return DoGetClassInfo([&](const ClassInfo& classInfo)
+		if (iid)
 		{
-			return classInfo.GetInterfaceID() == iid;
-		});
+			return DoGetClassInfo([&](const ClassInfo& classInfo)
+			{
+				return classInfo.GetInterfaceID() == iid;
+			});
+		}
+		return nullptr;
 	}
 	const ClassInfo* GetClassInfoByName(const char* fullyQualifiedName) noexcept
 	{
@@ -53,16 +57,24 @@ namespace kxf::RTTI
 	}
 	const ClassInfo* GetClassInfoByName(std::string_view fullyQualifiedName) noexcept
 	{
-		return DoGetClassInfo([&](const ClassInfo& classInfo)
+		if (!fullyQualifiedName.empty())
 		{
-			return classInfo.m_FullyQualifiedName == fullyQualifiedName;
-		});
+			return DoGetClassInfo([&](const ClassInfo& classInfo)
+			{
+				return classInfo.m_FullyQualifiedName == fullyQualifiedName;
+			});
+		}
+		return nullptr;
 	}
 	const ClassInfo* GetClassInfoByName(const kxf::String& fullyQualifiedName) noexcept
 	{
-		return DoGetClassInfo([&](const ClassInfo& classInfo)
+		if (!fullyQualifiedName.IsEmpty())
 		{
-			return fullyQualifiedName.IsSameAs(classInfo.m_FullyQualifiedName);
-		});
+			return DoGetClassInfo([&](const ClassInfo& classInfo)
+			{
+				return fullyQualifiedName.IsSameAs(classInfo.m_FullyQualifiedName);
+			});
+		}
+		return nullptr;
 	}
 }
