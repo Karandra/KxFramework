@@ -95,10 +95,14 @@ namespace kxf::RTTI
 		template<class T>
 		friend const ClassInfo& GetClassInfo() noexcept;
 
+		template<class T>
+		friend constexpr IID RTTI::GetInterfaceID() noexcept;
+
 		protected:
 			using TBaseClass = typename DynamicImplementation<TDerived, TBase...>;
 
 		private:
+			static constexpr IID ms_IID;
 			static inline RTTI::DynamicImplementationClassInfo<TDerived, TBase...> ms_ClassInfo;
 
 		protected:
@@ -109,6 +113,10 @@ namespace kxf::RTTI
 				if (iid.IsOfType<RTTI::ClassInfo>())
 				{
 					return static_cast<ClassInfo*>(&ms_ClassInfo);
+				}
+				else if (iid.IsOfType<TDerived>())
+				{
+					return static_cast<TDerived*>(this);
 				}
 				else if (RTTI::QueryInfo ptr; ((ptr = TBase::DoQueryInterface(iid), !ptr.is_null()) || ...))
 				{
