@@ -13,8 +13,12 @@ namespace kxf
 		None = 0, // 123e4567-e89b-12d3-a456-426655440000
 		URN = 1 << 1, // RFC 4122 format: urn:uuid:123e4567-e89b-12d3-a456-426655440000
 		CurlyBraces = 1 << 2, // {123e4567-e89b-12d3-a456-426655440000}
-		Parentheses = 1 << 3, // (123e4567-e89b-12d3-a456-426655440000)
-		UpperCase = 1 << 4 // 123E4567-E89B-12D3-A456-426655440000
+		SquareBraces = 1 << 4, // [123e4567-e89b-12d3-a456-426655440000]
+		AngleBraces = 1 << 5, // <123e4567-e89b-12d3-a456-426655440000>
+		Parentheses = 1 << 6, // (123e4567-e89b-12d3-a456-426655440000)
+		UpperCase = 1 << 7, // 123E4567-E89B-12D3-A456-426655440000
+		HexPrefix = 1 << 8, // 0x123e4567-0xe89b-0x12d3-0xa456-0x426655440000
+		Grouped = 1 << 9 // {0x123e4567, 0xe89b, 0x12d3, {0xa4, 0x56, 0x42, 0x66, 0x55, 0x44, 0x00, 0x00}}
 	};
 	KxFlagSet_Declare(UUIDFormat);
 }
@@ -57,7 +61,7 @@ namespace kxf
 			{
 				return m_ID;
 			}
-			String ToString(FlagSet<UUIDFormat> format = {}) const;
+			String ToString(FlagSet<UUIDFormat> format = {}, const String& separator = {}) const;
 
 			LocallyUniqueID ToLocallyUniqueID() const noexcept;
 			std::array<uint8_t, 16> ToInt128() const noexcept;

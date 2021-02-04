@@ -3,13 +3,16 @@
 #include "LocallyUniqueID.h"
 #include "kxf/System/HResult.h"
 #include "kxf/System/Win32Error.h"
+#include "kxf/Utility/Common.h"
 
 #include <Windows.h>
 #include <rpcdce.h>
 #include "kxf/System/UndefWindows.h"
 
-namespace kxf
+namespace
 {
+	constexpr kxf::XChar g_DefaultSeparator[] = wxS("-");
+
 	template<class T, class TUUID>
 	auto CastAs(TUUID&& uuid)
 	{
@@ -35,7 +38,7 @@ namespace kxf
 		return CastAs<::UUID>(std::forward<T>(uuid));
 	}
 
-	int Compare(const NativeUUID& left, const NativeUUID& right) noexcept
+	int Compare(const kxf::NativeUUID& left, const kxf::NativeUUID& right) noexcept
 	{
 		RPC_STATUS status = RPC_S_OK;
 		return ::UuidCompare(const_cast<::UUID*>(AsUUID(left)), const_cast<::UUID*>(AsUUID(right)), &status);
@@ -43,6 +46,8 @@ namespace kxf
 
 	kxf::NativeUUID DoCreateFromString(const wchar_t* value) noexcept
 	{
+		using namespace kxf;
+
 		NativeUUID uuid;
 		if (::UuidFromStringW(reinterpret_cast<RPC_WSTR>(const_cast<wchar_t*>(value)), AsUUID(uuid)) == RPC_S_OK)
 		{
@@ -56,6 +61,8 @@ namespace kxf
 	}
 	kxf::NativeUUID DoCreateFromString(const char* value) noexcept
 	{
+		using namespace kxf;
+
 		NativeUUID uuid;
 		if (::UuidFromStringA(reinterpret_cast<RPC_CSTR>(const_cast<char*>(value)), AsUUID(uuid)) == RPC_S_OK)
 		{
@@ -126,39 +133,124 @@ namespace kxf
 		std::memcpy(&m_ID, &vlaue, sizeof(vlaue));
 	}
 
-	String UniversallyUniqueID::ToString(FlagSet<UUIDFormat> format) const
+	String UniversallyUniqueID::ToString(FlagSet<UUIDFormat> format, const String& separator) const
 	{
-		String uuid = [&]() -> String
-		{
-			wchar_t* stringUUID = nullptr;
-			if (::UuidToStringW(AsUUID(m_ID), reinterpret_cast<RPC_WSTR*>(&stringUUID)) == RPC_S_OK && stringUUID)
-			{
-				String temp = stringUUID;
-				::RpcStringFreeW(reinterpret_cast<RPC_WSTR*>(&stringUUID));
-				return temp;
-			}
-			return {};
-		}();
+		String uuid;
+		bool shouldReplaceDefaultSeparator = false;
 
+		// Decide on brace character
+		std::pair<XChar, XChar> braces = {0, 0};
+		if (format & UUIDFormat::CurlyBraces)
+		{
+			braces = {wxS('{'), wxS('}')};
+		}
+		else if (format & UUIDFormat::SquareBraces)
+		{
+			braces = {wxS('['), wxS(']')};
+		}
+		else if (format & UUIDFormat::AngleBraces)
+		{
+			braces = {wxS('<'), wxS('>')};
+		}
+		else if (format & UUIDFormat::Parentheses)
+		{
+			braces = {wxS('('), wxS(')')};
+		}
+
+		if (format & UUIDFormat::HexPrefix || format & UUIDFormat::Grouped)
+		{
+			auto DoPart = [&](auto value, size_t width, bool suppressSeparator = false)
+			{
+				String part = std::move(StringFormatter::Formatter(wxS("%1"))(value, width, 16, wxS('0'))).ToString();
+				part.Truncate(width);
+
+				if (format & UUIDFormat::HexPrefix)
+				{
+					uuid += wxS("0x");
+				}
+				uuid += std::move(part);
+
+				if (!suppressSeparator)
+				{
+					uuid += separator.IsEmpty() ? g_DefaultSeparator : separator;
+				}
+			};
+
+			if (format & UUIDFormat::Grouped)
+			{
+				DoPart(m_ID.Data1, 8);
+				DoPart(m_ID.Data2, 4);
+				DoPart(m_ID.Data3, 4);
+
+				if (braces.first != 0)
+				{
+					uuid += braces.first;
+				}
+				for (size_t i = 0; i < std::size(m_ID.Data4); i++)
+				{
+					DoPart(m_ID.Data4[i], 2, braces.first != 0 && i + 1 == std::size(m_ID.Data4));
+				}
+				if (braces.second != 0)
+				{
+					uuid += braces.second;
+				}
+			}
+			else
+			{
+				DoPart(m_ID.Data1, 8);
+				DoPart(m_ID.Data2, 4);
+				DoPart(m_ID.Data3, 4);
+				DoPart(Utility::IntFromLowHigh<uint16_t>(m_ID.Data4[0], m_ID.Data4[1]), 4);
+
+				// Combine the last 6 bytes into an 'uint64_t' and print it
+				auto d4_23 = Utility::IntFromLowHigh<uint16_t>(m_ID.Data4[2], m_ID.Data4[3]);
+				auto d4_45 = Utility::IntFromLowHigh<uint16_t>(m_ID.Data4[4], m_ID.Data4[5]);
+				auto d4_67 = Utility::IntFromLowHigh<uint16_t>(m_ID.Data4[6], m_ID.Data4[7]);
+				auto d4_x0 = Utility::IntFromLowHigh<uint32_t>(d4_23, d4_45);
+				auto d4_x1 = Utility::IntFromLowHigh<uint32_t>(d4_67, static_cast<uint16_t>(0));
+				DoPart(Utility::IntFromLowHigh<uint64_t>(d4_x0, d4_x1), 12, true);
+			}
+		}
+		else
+		{
+			// Use standard to string conversion
+			uuid = [&]() -> String
+			{
+				wchar_t* stringUUID = nullptr;
+				if (::UuidToStringW(AsUUID(m_ID), reinterpret_cast<RPC_WSTR*>(&stringUUID)) == RPC_S_OK && stringUUID)
+				{
+					String temp = stringUUID;
+					::RpcStringFreeW(reinterpret_cast<RPC_WSTR*>(&stringUUID));
+					return temp;
+				}
+				return {};
+			}();
+			shouldReplaceDefaultSeparator = true;
+		}
+
+		// Make uppercase
 		if (format & UUIDFormat::UpperCase)
 		{
 			uuid.MakeUpper();
 		}
 
+		// Add braces or parentheses if required
+		if (braces.first != 0 && braces.second != 0)
+		{
+			uuid.Prepend(braces.first);
+			uuid.Append(braces.second);
+		}
+
+		// Append URN format prefix
 		if (format & UUIDFormat::URN)
 		{
 			uuid.Prepend(wxS("urn:uuid:"));
 		}
 
-		if (format & UUIDFormat::CurlyBraces)
+		// Replace default separator with a user supplied one if required
+		if (shouldReplaceDefaultSeparator && !separator.IsEmpty() && separator != g_DefaultSeparator)
 		{
-			uuid.Prepend(wxS('{'));
-			uuid.Append(wxS('}'));
-		}
-		else if (format & UUIDFormat::Parentheses)
-		{
-			uuid.Prepend(wxS('('));
-			uuid.Append(wxS(')'));
+			uuid.Replace(g_DefaultSeparator, separator);
 		}
 
 		return uuid;
