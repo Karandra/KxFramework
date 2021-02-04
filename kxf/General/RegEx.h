@@ -21,7 +21,7 @@ namespace kxf
 		None = 0,
 
 		NotBegin = 1 << 0,
-		NodEnd = 1 << 1
+		NotEnd = 1 << 1
 	};
 	KxFlagSet_Declare(RegExCompileFlag);
 }
@@ -73,7 +73,7 @@ namespace kxf
 				{
 					int nativeFlags = 0;
 					Utility::AddFlagRef(nativeFlags, wxRE_NOTBOL, flags & RegExCompileFlag::NotBegin);
-					Utility::AddFlagRef(nativeFlags, wxRE_NOTEOL, flags & RegExCompileFlag::NodEnd);
+					Utility::AddFlagRef(nativeFlags, wxRE_NOTEOL, flags & RegExCompileFlag::NotEnd);
 
 					return nativeFlags;
 				};
