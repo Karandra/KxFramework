@@ -82,21 +82,21 @@ namespace kxf::StringFormatter
 			~StringFormatterBase() noexcept = default;
 
 		public:
-			String ToString() const&
+			const String& ToString() const&
 			{
 				return m_String;
 			}
-			String ToString() const&&
+			String ToString() && noexcept
 			{
 				return std::move(m_String);
 			}
-			operator String() const&
+			operator const String&() const& noexcept
 			{
-				return ToString();
+				return m_String;
 			}
-			operator String() const&&
+			operator String() && noexcept
 			{
-				return ToString();
+				return std::move(m_String);
 			}
 
 			size_t GetCurrentAnchor() const noexcept
