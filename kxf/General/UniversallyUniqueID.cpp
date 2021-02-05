@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UniversallyUniqueID.h"
 #include "LocallyUniqueID.h"
+#include "RegEx.h"
 #include "kxf/System/HResult.h"
 #include "kxf/System/Win32Error.h"
 #include "kxf/Utility/Common.h"
@@ -12,6 +13,7 @@
 namespace
 {
 	constexpr kxf::XChar g_DefaultSeparator[] = wxS("-");
+	constexpr kxf::XChar g_RFC_URN[] = wxS("urn:uuid:");
 
 	template<class T, class TUUID>
 	auto CastAs(TUUID&& uuid)
@@ -44,33 +46,89 @@ namespace
 		return ::UuidCompare(const_cast<::UUID*>(AsUUID(left)), const_cast<::UUID*>(AsUUID(right)), &status);
 	}
 
-	kxf::NativeUUID DoCreateFromString(const wchar_t* value) noexcept
+	kxf::NativeUUID DoCreateFromString(const kxf::String& value) noexcept
 	{
 		using namespace kxf;
 
+		// Try system native parsing functions first. Thay can be fatser and more correct
 		NativeUUID uuid;
-		if (::UuidFromStringW(reinterpret_cast<RPC_WSTR>(const_cast<wchar_t*>(value)), AsUUID(uuid)) == RPC_S_OK)
+		if (::UuidFromStringW(reinterpret_cast<RPC_WSTR>(const_cast<wchar_t*>(value.wc_str())), AsUUID(uuid)) == RPC_S_OK)
 		{
 			return uuid;
 		}
-		else if (HResult(::CLSIDFromString(value, AsUUID(uuid))))
+		else if (HResult(::CLSIDFromString(value.wc_str(), AsUUID(uuid))))
 		{
 			return uuid;
 		}
-		return {};
-	}
-	kxf::NativeUUID DoCreateFromString(const char* value) noexcept
-	{
-		using namespace kxf;
+		else
+		{
+			// Try to parse on our own with RegEx
+			constexpr size_t shortVariant = 5;
+			constexpr size_t longVariant = 11;
 
-		NativeUUID uuid;
-		if (::UuidFromStringA(reinterpret_cast<RPC_CSTR>(const_cast<char*>(value)), AsUUID(uuid)) == RPC_S_OK)
-		{
-			return uuid;
-		}
-		else if (kxf::String temp = value; HResult(::CLSIDFromString(temp.wc_str(), AsUUID(uuid))))
-		{
-			return uuid;
+			String current = value;
+			if (current.StartsWith(g_RFC_URN))
+			{
+				current.Remove(0, std::size(g_RFC_URN) - 1);
+			}
+
+			// Construct a regex that can match a single group and apply it as many times as we need to
+			// find all required groups but no more than the maximum we can have.
+			RegEx regEx(wxS("(?:0?x?)([\\dabcdef]+)"), RegExFlag::IgnoreCase);
+
+			std::vector<String> items;
+			for (size_t i = 0; i < std::max(shortVariant, longVariant); i++)
+			{
+				if (regEx.Matches(current))
+				{
+					const String& item = items.emplace_back(regEx.GetMatch(current, 1));
+					if (!item.IsEmptyOrWhitespace())
+					{
+						// Remove the full match from the current string
+						size_t start = 0;
+						size_t length = 0;
+						regEx.GetMatch(start, length, 0);
+
+						current.Remove(0, start + length);
+					}
+					else
+					{
+						items.pop_back();
+					}
+				}
+			}
+
+			if (items.size() == shortVariant || items.size() == longVariant)
+			{
+				uuid.Data1 = items[0].ToInt<uint32_t>(16).value_or(0);
+				uuid.Data2 = items[1].ToInt<uint16_t>(16).value_or(0);
+				uuid.Data3 = items[2].ToInt<uint16_t>(16).value_or(0);
+
+				if (items.size() == shortVariant)
+				{
+					const String& data4_01 = items[3];
+					uuid.Data4[0] = data4_01.Left(2).ToInt<uint8_t>(16).value_or(0);
+					uuid.Data4[1] = data4_01.Right(2).ToInt<uint8_t>(16).value_or(0);
+
+					const String& data4_27 = items[4];
+					for (size_t i = 2; i < std::size(uuid.Data4); i++)
+					{
+						uuid.Data4[i] = data4_27.Mid((i - 2) * 2, 2).ToInt<uint8_t>(16).value_or(0);
+					}
+				}
+				else if (items.size() == longVariant)
+				{
+					for (size_t i = 0; i < std::size(uuid.Data4); i++)
+					{
+						uuid.Data4[i] = items[3 + i].ToInt<uint8_t>(16).value_or(0);
+					}
+				}
+				return uuid;
+			}
+			else if (items.size() == 11)
+			{
+				return uuid;
+			}
 		}
 		return {};
 	}
@@ -123,7 +181,7 @@ namespace kxf
 	}
 	UniversallyUniqueID UniversallyUniqueID::CreateFromString(const String& value) noexcept
 	{
-		return DoCreateFromString(value.wx_str());
+		return DoCreateFromString(value);
 	}
 
 	UniversallyUniqueID::UniversallyUniqueID(LocallyUniqueID other) noexcept
@@ -135,6 +193,12 @@ namespace kxf
 
 	String UniversallyUniqueID::ToString(FlagSet<UUIDFormat> format, const String& separator) const
 	{
+		// We don't allow characters that can occur in the UUID itself to be used as a separator
+		if (!separator.IsEmptyOrWhitespace() && separator != g_DefaultSeparator && separator.ContainsAnyOfCharacters(wxS("0x123456789abcdef"), StringOpFlag::IgnoreCase))
+		{
+			return {};
+		}
+
 		String uuid;
 		bool shouldReplaceDefaultSeparator = false;
 
@@ -188,7 +252,7 @@ namespace kxf
 				}
 				for (size_t i = 0; i < std::size(m_ID.Data4); i++)
 				{
-					DoPart(m_ID.Data4[i], 2, braces.first != 0 && i + 1 == std::size(m_ID.Data4));
+					DoPart(m_ID.Data4[i], 2, i + 1 == std::size(m_ID.Data4));
 				}
 				if (braces.second != 0)
 				{
@@ -200,6 +264,8 @@ namespace kxf
 				DoPart(m_ID.Data1, 8);
 				DoPart(m_ID.Data2, 4);
 				DoPart(m_ID.Data3, 4);
+
+				// Combine the first 2 bytes of the 8 byte array into an 'uint16_t' to print it
 				DoPart(Utility::IntFromLowHigh<uint16_t>(m_ID.Data4[0], m_ID.Data4[1]), 4);
 
 				// Combine the last 6 bytes into an 'uint64_t' and print it
@@ -213,7 +279,7 @@ namespace kxf
 		}
 		else
 		{
-			// Use standard to string conversion
+			// Use system native to string conversion
 			uuid = [&]() -> String
 			{
 				wchar_t* stringUUID = nullptr;
@@ -234,6 +300,13 @@ namespace kxf
 			uuid.MakeUpper();
 		}
 
+		// Replace the default separator with a user supplied one if we were using system native function to convert UUID to string
+		// because it doesn't allow to customize the separator.
+		if (shouldReplaceDefaultSeparator && !separator.IsEmpty() && separator != g_DefaultSeparator)
+		{
+			uuid.Replace(g_DefaultSeparator, separator);
+		}
+
 		// Add braces or parentheses if required
 		if (braces.first != 0 && braces.second != 0)
 		{
@@ -244,13 +317,7 @@ namespace kxf
 		// Append URN format prefix
 		if (format & UUIDFormat::URN)
 		{
-			uuid.Prepend(wxS("urn:uuid:"));
-		}
-
-		// Replace default separator with a user supplied one if required
-		if (shouldReplaceDefaultSeparator && !separator.IsEmpty() && separator != g_DefaultSeparator)
-		{
-			uuid.Replace(g_DefaultSeparator, separator);
+			uuid.Prepend(g_RFC_URN);
 		}
 
 		return uuid;
