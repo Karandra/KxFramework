@@ -60,9 +60,13 @@ namespace kxf::RTTI
 			void OnCreate() noexcept;
 			void OnDestroy() noexcept;
 
+			std::unique_ptr<IObject> DoCreateImplementation(const IID& iid) const;
+			std::unique_ptr<IObject> DoCreateImplementation(const String& fullyQualifiedName) const;
+			std::unique_ptr<IObject> DoCreateAnyImplementation() const;
+
 		protected:
 			// IObject
-			RTTI::QueryInfo DoQueryInterface(const kxf::IID& iid) noexcept override;
+			RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept override;
 
 			// ClassInfo
 			std::string_view ParseToFullyQualifiedName(std::string_view name, size_t index) const noexcept;
@@ -114,6 +118,8 @@ namespace kxf::RTTI
 				return DoEnumBaseClasses(std::move(func));
 			}
 			size_t EnumDerivedClasses(std::function<bool(const ClassInfo&)> func) const noexcept;
+			size_t EnumImplementations(std::function<bool(const ClassInfo&)> func) const noexcept;
+			size_t EnumDerivedInterfaces(std::function<bool(const ClassInfo&)> func) const noexcept;
 			bool IsBaseOf(const ClassInfo& other) const noexcept;
 			bool IsSameAs(const ClassInfo& other) const noexcept;
 			bool IsNull() const noexcept;
@@ -122,6 +128,24 @@ namespace kxf::RTTI
 			std::unique_ptr<T> CreateObjectInstance() const
 			{
 				return RTTI::dynamic_cast_unique_ptr<T>(DoCreateObjectInstance());
+			}
+
+			template<class T = IObject>
+			std::unique_ptr<T> CreateImplementation(const IID& iid) const
+			{
+				return RTTI::dynamic_cast_unique_ptr<T>(DoCreateImplementation(iid));
+			}
+
+			template<class T = IObject>
+			std::unique_ptr<T> CreateImplementation(const String& fullyQualifiedName) const
+			{
+				return RTTI::dynamic_cast_unique_ptr<T>(DoCreateImplementation(fullyQualifiedName));
+			}
+
+			template<class T = IObject>
+			std::unique_ptr<T> CreateAnyImplementation() const
+			{
+				return RTTI::dynamic_cast_unique_ptr<T>(DoCreateAnyImplementation());
 			}
 
 		public:

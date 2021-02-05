@@ -50,7 +50,7 @@ namespace
 	{
 		using namespace kxf;
 
-		// Try system native parsing functions first. Thay can be fatser and more correct
+		// Try system native parsing functions first. They're probably faster and more correct.
 		NativeUUID uuid;
 		if (::UuidFromStringW(reinterpret_cast<RPC_WSTR>(const_cast<wchar_t*>(value.wc_str())), AsUUID(uuid)) == RPC_S_OK)
 		{

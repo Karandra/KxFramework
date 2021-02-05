@@ -95,8 +95,63 @@ namespace kxf::RTTI
 		m_FirstClassInfo = m_NextClassInfo;
 	}
 
+	std::unique_ptr<IObject> ClassInfo::DoCreateImplementation(const IID& iid) const
+	{
+		if (m_Traits.Contains(ClassTrait::Interface) && iid)
+		{
+			std::unique_ptr<IObject> result;
+			EnumImplementations([&](const ClassInfo& classInfo)
+			{
+				if (classInfo.GetTraits().Contains(ClassTrait::Implementation) && classInfo.GetInterfaceID() == iid)
+				{
+					result = classInfo.CreateObjectInstance();
+				}
+				return result == nullptr;
+			});
+
+			return result;
+		}
+		return nullptr;
+	}
+	std::unique_ptr<IObject> ClassInfo::DoCreateImplementation(const String& fullyQualifiedName) const
+	{
+		if (m_Traits.Contains(ClassTrait::Interface) && !fullyQualifiedName.IsEmpty())
+		{
+			std::unique_ptr<IObject> result;
+			EnumImplementations([&](const ClassInfo& classInfo)
+			{
+				if (classInfo.GetTraits().Contains(ClassTrait::Implementation) && fullyQualifiedName.IsSameAs(classInfo.m_FullyQualifiedName))
+				{
+					result = classInfo.CreateObjectInstance();
+				}
+				return result == nullptr;
+			});
+
+			return result;
+		}
+		return nullptr;
+	}
+	std::unique_ptr<IObject> ClassInfo::DoCreateAnyImplementation() const
+	{
+		if (m_Traits.Contains(ClassTrait::Interface))
+		{
+			std::unique_ptr<IObject> result;
+			EnumImplementations([&](const ClassInfo& classInfo)
+			{
+				if (classInfo.GetTraits().Contains(ClassTrait::Implementation))
+				{
+					result = classInfo.CreateObjectInstance();
+				}
+				return result == nullptr;
+			});
+
+			return result;
+		}
+		return nullptr;
+	}
+
 	// IObject
-	RTTI::QueryInfo ClassInfo::DoQueryInterface(const kxf::IID& iid) noexcept
+	RTTI::QueryInfo ClassInfo::DoQueryInterface(const IID& iid) noexcept
 	{
 		return nullptr;
 	}
@@ -135,6 +190,35 @@ namespace kxf::RTTI
 		}
 		return count;
 	}
+	size_t ClassInfo::EnumImplementations(std::function<bool(const ClassInfo&)> func) const noexcept
+	{
+		size_t count = 0;
+		EnumDerivedClasses([&](const ClassInfo& classInfo)
+		{
+			if (classInfo.GetTraits().Contains(ClassTrait::Implementation))
+			{
+				count++;
+				return !func || std::invoke(func, classInfo);
+			}
+			return true;
+		});
+		return count;
+	}
+	size_t ClassInfo::EnumDerivedInterfaces(std::function<bool(const ClassInfo&)> func) const noexcept
+	{
+		size_t count = 0;
+		EnumDerivedClasses([&](const ClassInfo& classInfo)
+		{
+			if (classInfo.GetTraits().Contains(ClassTrait::Interface))
+			{
+				count++;
+				return !func || std::invoke(func, classInfo);
+			}
+			return true;
+		});
+		return count;
+	}
+
 	bool ClassInfo::IsBaseOf(const ClassInfo& other) const noexcept
 	{
 		bool result = false;
