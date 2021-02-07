@@ -1,9 +1,11 @@
 #pragma once
 #include "Common.h"
+#include "IEnumerator.h"
+#include "kxf/Utility/TypeTraits.h"
 
-namespace kxf::Private
+namespace kxf
 {
-	class GeneratorCommon
+	class AbstractGenerator: public RTTI::Implementation<AbstractGenerator, IEnumerator>
 	{
 		protected:
 			static inline constexpr size_t npos = std::numeric_limits<size_t>::max();
@@ -14,50 +16,52 @@ namespace kxf::Private
 			bool m_IsReset = true;
 
 		private:
-			bool DoMoveNext(bool dryRun = false) noexcept;
-			size_t DoDryRun() noexcept;
+			bool DoMoveNext() noexcept;
 
 		protected:
-			virtual bool InvokeGenerator(size_t index) = 0;
+			virtual bool InvokeGenerator() = 0;
 
 		public:
-			GeneratorCommon(size_t count = npos) noexcept
+			AbstractGenerator(size_t count = npos) noexcept
 				:m_TotalCount(count)
 			{
 			}
-			GeneratorCommon(const GeneratorCommon&) = default;
-			GeneratorCommon(GeneratorCommon&&) noexcept = default;
-			virtual ~GeneratorCommon() = default;
+			AbstractGenerator(const AbstractGenerator&) = default;
+			AbstractGenerator(AbstractGenerator&&) noexcept = default;
+			virtual ~AbstractGenerator() = default;
 
 		public:
-			bool IsReset() const noexcept
-			{
-				return m_IsReset || m_Index == npos;
-			}
-			bool IsTotalCountKnown() const noexcept
-			{
-				return m_TotalCount != npos;
-			}
-			size_t GetMoveCount() noexcept
-			{
-				return m_Index;
-			}
-			size_t DryRun() noexcept
-			{
-				return DoDryRun();
-			}
-
-			bool MoveNext() noexcept
+			// IEnumerator
+			bool MoveNext() noexcept override
 			{
 				bool result = DoMoveNext();
 				m_IsReset = !result;
 
 				return result;
 			}
-			void Reset() noexcept
+			size_t GetCurrentStep() const noexcept override
+			{
+				return m_Index;
+			}
+
+			bool IsReset() const noexcept override
+			{
+				return m_IsReset || m_Index == npos;
+			}
+			void Reset() noexcept override
 			{
 				m_Index = 0;
 				m_IsReset = true;
+			}
+
+			// GeneratorCommon
+			std::optional<size_t> GetTotalCount() noexcept
+			{
+				if (m_TotalCount != npos)
+				{
+					return m_TotalCount;
+				}
+				return {};
 			}
 
 		public:
@@ -70,17 +74,17 @@ namespace kxf::Private
 				return IsReset();
 			}
 
-			bool operator==(const GeneratorCommon& other) const noexcept
+			bool operator==(const AbstractGenerator& other) const noexcept
 			{
 				return (this == &other && m_Index == other.m_Index) || m_IsReset && other.m_IsReset;
 			}
-			bool operator!=(const GeneratorCommon& other) const noexcept
+			bool operator!=(const AbstractGenerator& other) const noexcept
 			{
 				return !(*this == other);
 			}
 
-			GeneratorCommon& operator=(const GeneratorCommon&) = default;
-			GeneratorCommon& operator=(GeneratorCommon&&) noexcept = default;
+			AbstractGenerator& operator=(const AbstractGenerator&) = default;
+			AbstractGenerator& operator=(AbstractGenerator&&) noexcept = default;
 	};
 }
 
@@ -156,36 +160,85 @@ namespace kxf::Private
 namespace kxf
 {
 	template<class TValue_>
-	class GeneratorOf final: public Private::GeneratorCommon
+	class GeneratorOf final: public AbstractGenerator
 	{
 		public:
 			using TValue = TValue_;
 			using iterator = Private::GeneratorOfIterator<GeneratorOf>;
 
 		private:
-			std::function<std::optional<TValue>(size_t)> m_Generator;
+			std::function<std::optional<TValue>(IEnumerator&)> m_MoveNext;
 			std::optional<TValue> m_Value;
+			bool m_TerminationRequested = false;
 
 		protected:
-			bool InvokeGenerator(size_t index) override
+			bool InvokeGenerator() override
 			{
-				m_Value = std::invoke(m_Generator, index);
-				return m_Value.has_value();
+				m_Value = std::invoke(m_MoveNext, static_cast<IEnumerator&>(*this));
+				return !m_TerminationRequested && m_Value.has_value();
 			}
 
 		public:
 			GeneratorOf() noexcept = default;
 
-			template<class TFunc, std::enable_if_t<std::is_invocable_r_v<std::optional<TValue>, TFunc, size_t>, int> = 0>
-			GeneratorOf(TFunc&& generator, size_t count = npos) noexcept
-				:m_Generator(std::forward<TFunc>(generator)), GeneratorCommon(count)
+			// std::optional<TValue> func(IEnumerator&);
+			template<class TFunc, std::enable_if_t<std::is_same_v<std::invoke_result_t<TFunc, IEnumerator&>, std::optional<TValue>>, int> = 0>
+			GeneratorOf(TFunc&& func, size_t count = npos) noexcept
+				:AbstractGenerator(count), m_MoveNext(std::forward<TFunc>(func))
 			{
+			}
+
+			// std::optional<TValue> func(void);
+			template<class TFunc, std::enable_if_t<std::is_same_v<std::invoke_result_t<TFunc>, std::optional<TValue>>, int> = 0>
+			GeneratorOf(TFunc&& func, size_t count = npos) noexcept
+				:AbstractGenerator(count)
+			{
+				m_MoveNext = [func = std::forward<TFunc>(func)](IEnumerator& enumerator) mutable -> std::optional<TValue>
+				{
+					return std::invoke(func);
+				};
+			}
+
+			// TValue func(IEnumerator&);
+			template<class TFunc, std::enable_if_t<std::is_same_v<std::invoke_result_t<TFunc, IEnumerator&>, TValue>, int> = 0>
+			GeneratorOf(TFunc&& func, size_t count = npos) noexcept
+				:AbstractGenerator(count)
+			{
+				m_MoveNext = [func = std::forward<TFunc>(func)](IEnumerator& enumerator) mutable -> std::optional<TValue>
+				{
+					return std::invoke(func, enumerator);
+				};
+			}
+
+			// TValue func(void);
+			template<class TFunc, std::enable_if_t<std::is_same_v<std::invoke_result_t<TFunc>, TValue>, int> = 0>
+			GeneratorOf(TFunc&& func, size_t count = npos) noexcept
+				:AbstractGenerator(count)
+			{
+				wxASSERT_MSG(count != npos, "Producer function with no way to signal termination must only be used with known total limit");
+
+				m_MoveNext = [func = std::forward<TFunc>(func)](IEnumerator& enumerator) mutable -> std::optional<TValue>
+				{
+					return std::invoke(func);
+				};
 			}
 
 			GeneratorOf(const GeneratorOf&) = default;
 			GeneratorOf(GeneratorOf&&) noexcept = default;
 
 		public:
+			// IEnumerator
+			void Terminate() noexcept override
+			{
+				m_TerminationRequested = true;
+			}
+			void Reset() noexcept override
+			{
+				AbstractGenerator::Reset();
+				m_TerminationRequested = false;
+			}
+
+			// GeneratorOf<TValue>
 			const TValue& GetValue() const& noexcept
 			{
 				return *m_Value;
@@ -211,4 +264,51 @@ namespace kxf
 				return {};
 			}
 	};
+}
+
+namespace kxf
+{
+	template
+		<
+		class TFunc,
+		class TValue = std::invoke_result_t<TFunc, IEnumerator&>,
+		std::enable_if_t<!Utility::is_optional_v<TValue> && std::is_invocable_v<TFunc, IEnumerator&>, int> = 0
+	>
+	GeneratorOf<TValue> MakeGenerator(TFunc&& func, size_t count = std::numeric_limits<size_t>::max())
+	{
+		return {std::forward<TFunc>(func), count};
+	}
+
+	template
+	<
+		class TFunc,
+		class TValue = std::invoke_result_t<TFunc, IEnumerator&>,
+		std::enable_if_t<Utility::is_optional_v<TValue> && std::is_invocable_v<TFunc, IEnumerator&>, int> = 0
+	>
+	GeneratorOf<typename TValue::value_type> MakeGenerator(TFunc&& func, size_t count = std::numeric_limits<size_t>::max())
+	{
+		return {std::forward<TFunc>(func), count};
+	}
+
+	template
+	<
+		class TFunc,
+		class TValue = std::invoke_result_t<TFunc>,
+		std::enable_if_t<!Utility::is_optional_v<TValue>, int> = 0
+	>
+	GeneratorOf<TValue> MakeGenerator(TFunc&& func, size_t count = std::numeric_limits<size_t>::max())
+	{
+		return {std::forward<TFunc>(func), count};
+	}
+
+	template
+	<
+		class TFunc,
+		class TValue = std::invoke_result_t<TFunc>,
+		std::enable_if_t<Utility::is_optional_v<TValue>, int> = 0
+	>
+	GeneratorOf<typename TValue::value_type> MakeGenerator(TFunc&& func, size_t count = std::numeric_limits<size_t>::max())
+	{
+		return {std::forward<TFunc>(func), count};
+	}
 }
