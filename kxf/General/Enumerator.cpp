@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "Generator.h"
+#include "Enumerator.h"
 
 namespace kxf
 {
-	bool AbstractGenerator::DoMoveNext() noexcept
+	bool AbstractEnumerator::DoMoveNext() noexcept
 	{
 		if (m_Index == npos || m_Index >= m_TotalCount)
 		{

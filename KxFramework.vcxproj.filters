@@ -1787,13 +1787,16 @@
     <ClInclude Include="kxf\RTTI\Interface.h">
       <Filter>kxf\RTTI</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\Generator.h">
-      <Filter>kxf\General</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\General\IEnumerator.h">
       <Filter>kxf\General</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Utility\Literals.h">
+      <Filter>kxf\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\Enumerator.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Utility\Enumerator.h">
       <Filter>kxf\Utility</Filter>
     </ClInclude>
   </ItemGroup>
@@ -2687,7 +2690,7 @@
     <ClCompile Include="kxf\RTTI\IID.cpp">
       <Filter>kxf\RTTI</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\Generator.cpp">
+    <ClCompile Include="kxf\General\Enumerator.cpp">
       <Filter>kxf\General</Filter>
     </ClCompile>
   </ItemGroup>

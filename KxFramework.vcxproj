@@ -322,7 +322,7 @@
     <ClInclude Include="kxf\General\DateTime\TimeZone.h" />
     <ClInclude Include="kxf\General\DynamicVariablesCollection.h" />
     <ClInclude Include="kxf\General\ErrorCode.h" />
-    <ClInclude Include="kxf\General\Generator.h" />
+    <ClInclude Include="kxf\General\Enumerator.h" />
     <ClInclude Include="kxf\General\IEnumerator.h" />
     <ClInclude Include="kxf\General\IErrorCode.h" />
     <ClInclude Include="kxf\General\IVariablesCollection.h" />
@@ -509,6 +509,7 @@
     <ClInclude Include="kxf\UI\Windows\ToolTipEx.h" />
     <ClInclude Include="kxf\UI\Windows\TopLevelWindow.h" />
     <ClInclude Include="kxf\UI\WindowWithStyles.h" />
+    <ClInclude Include="kxf\Utility\Enumerator.h" />
     <ClInclude Include="kxf\Utility\ExceptionScopeGuard.h" />
     <ClInclude Include="kxf\Utility\Literals.h" />
     <ClInclude Include="kxf\wxWidgets\Application.h" />
@@ -769,7 +770,7 @@
     <ClCompile Include="kxf\General\DateTime\TimeZone.cpp" />
     <ClCompile Include="kxf\General\DynamicVariablesCollection.cpp" />
     <ClCompile Include="kxf\General\ErrorCode.cpp" />
-    <ClCompile Include="kxf\General\Generator.cpp" />
+    <ClCompile Include="kxf\General\Enumerator.cpp" />
     <ClCompile Include="kxf\General\IVariablesCollection.cpp" />
     <ClCompile Include="kxf\General\LocallyUniqueID.cpp" />
     <ClCompile Include="kxf\General\StaticVariablesCollection.cpp" />

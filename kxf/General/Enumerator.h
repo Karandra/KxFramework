@@ -1,11 +1,10 @@
 #pragma once
 #include "Common.h"
 #include "IEnumerator.h"
-#include "kxf/Utility/TypeTraits.h"
 
 namespace kxf
 {
-	class AbstractGenerator: public RTTI::Implementation<AbstractGenerator, IEnumerator>
+	class AbstractEnumerator: public RTTI::Implementation<AbstractEnumerator, IEnumerator>
 	{
 		protected:
 			static inline constexpr size_t npos = std::numeric_limits<size_t>::max();
@@ -22,13 +21,13 @@ namespace kxf
 			virtual bool InvokeGenerator() = 0;
 
 		public:
-			AbstractGenerator(size_t count = npos) noexcept
+			AbstractEnumerator(size_t count = npos) noexcept
 				:m_TotalCount(count)
 			{
 			}
-			AbstractGenerator(const AbstractGenerator&) = default;
-			AbstractGenerator(AbstractGenerator&&) noexcept = default;
-			virtual ~AbstractGenerator() = default;
+			AbstractEnumerator(const AbstractEnumerator&) = default;
+			AbstractEnumerator(AbstractEnumerator&&) noexcept = default;
+			virtual ~AbstractEnumerator() = default;
 
 		public:
 			// IEnumerator
@@ -74,24 +73,24 @@ namespace kxf
 				return IsReset();
 			}
 
-			bool operator==(const AbstractGenerator& other) const noexcept
+			bool operator==(const AbstractEnumerator& other) const noexcept
 			{
 				return (this == &other && m_Index == other.m_Index) || m_IsReset && other.m_IsReset;
 			}
-			bool operator!=(const AbstractGenerator& other) const noexcept
+			bool operator!=(const AbstractEnumerator& other) const noexcept
 			{
 				return !(*this == other);
 			}
 
-			AbstractGenerator& operator=(const AbstractGenerator&) = default;
-			AbstractGenerator& operator=(AbstractGenerator&&) noexcept = default;
+			AbstractEnumerator& operator=(const AbstractEnumerator&) = default;
+			AbstractEnumerator& operator=(AbstractEnumerator&&) noexcept = default;
 	};
 }
 
 namespace kxf::Private
 {
 	template<class TGenerator>
-	class GeneratorOfIterator
+	class EnumIterator
     {
 		public:
 			using value_type = typename TGenerator::TValue;
@@ -100,14 +99,14 @@ namespace kxf::Private
 			TGenerator* m_Generator = nullptr;
 
         public:
-			GeneratorOfIterator() noexcept = default;
-            GeneratorOfIterator(TGenerator& generator) noexcept
+			EnumIterator() noexcept = default;
+            EnumIterator(TGenerator& generator) noexcept
 				:m_Generator(&generator)
 			{
 			}
 
 		public:
-			GeneratorOfIterator& operator++() noexcept
+			EnumIterator& operator++() noexcept
 			{
 				if (!m_Generator->MoveNext())
 				{
@@ -115,9 +114,9 @@ namespace kxf::Private
 				}
 				return *this;
 			}
-			GeneratorOfIterator operator++(int) const noexcept
+			EnumIterator operator++(int) const noexcept
 			{
-				GeneratorOfIterator clone = *this;
+				EnumIterator clone = *this;
 				++clone;
 
 				return clone;
@@ -146,11 +145,11 @@ namespace kxf::Private
 			}
 
 		public:
-			bool operator==(const GeneratorOfIterator& other) const noexcept
+			bool operator==(const EnumIterator& other) const noexcept
 			{
 				return this == &other || m_Generator == other.m_Generator;
 			}
-			bool operator!=(const GeneratorOfIterator& other) const noexcept
+			bool operator!=(const EnumIterator& other) const noexcept
 			{
 				return !(*this == other);
 			}
@@ -160,11 +159,11 @@ namespace kxf::Private
 namespace kxf
 {
 	template<class TValue_>
-	class GeneratorOf final: public AbstractGenerator
+	class Enumerator final: public AbstractEnumerator
 	{
 		public:
 			using TValue = TValue_;
-			using iterator = Private::GeneratorOfIterator<GeneratorOf>;
+			using iterator = Private::EnumIterator<Enumerator>;
 
 		private:
 			std::function<std::optional<TValue>(IEnumerator&)> m_MoveNext;
@@ -179,19 +178,19 @@ namespace kxf
 			}
 
 		public:
-			GeneratorOf() noexcept = default;
+			Enumerator() noexcept = default;
 
 			// std::optional<TValue> func(IEnumerator&);
 			template<class TFunc, std::enable_if_t<std::is_same_v<std::invoke_result_t<TFunc, IEnumerator&>, std::optional<TValue>>, int> = 0>
-			GeneratorOf(TFunc&& func, size_t count = npos) noexcept
-				:AbstractGenerator(count), m_MoveNext(std::forward<TFunc>(func))
+			Enumerator(TFunc&& func, size_t count = npos) noexcept
+				:AbstractEnumerator(count), m_MoveNext(std::forward<TFunc>(func))
 			{
 			}
 
 			// std::optional<TValue> func(void);
 			template<class TFunc, std::enable_if_t<std::is_same_v<std::invoke_result_t<TFunc>, std::optional<TValue>>, int> = 0>
-			GeneratorOf(TFunc&& func, size_t count = npos) noexcept
-				:AbstractGenerator(count)
+			Enumerator(TFunc&& func, size_t count = npos) noexcept
+				:AbstractEnumerator(count)
 			{
 				m_MoveNext = [func = std::forward<TFunc>(func)](IEnumerator& enumerator) mutable -> std::optional<TValue>
 				{
@@ -201,8 +200,8 @@ namespace kxf
 
 			// TValue func(IEnumerator&);
 			template<class TFunc, std::enable_if_t<std::is_same_v<std::invoke_result_t<TFunc, IEnumerator&>, TValue>, int> = 0>
-			GeneratorOf(TFunc&& func, size_t count = npos) noexcept
-				:AbstractGenerator(count)
+			Enumerator(TFunc&& func, size_t count = npos) noexcept
+				:AbstractEnumerator(count)
 			{
 				m_MoveNext = [func = std::forward<TFunc>(func)](IEnumerator& enumerator) mutable -> std::optional<TValue>
 				{
@@ -212,8 +211,8 @@ namespace kxf
 
 			// TValue func(void);
 			template<class TFunc, std::enable_if_t<std::is_same_v<std::invoke_result_t<TFunc>, TValue>, int> = 0>
-			GeneratorOf(TFunc&& func, size_t count = npos) noexcept
-				:AbstractGenerator(count)
+			Enumerator(TFunc&& func, size_t count = npos) noexcept
+				:AbstractEnumerator(count)
 			{
 				wxASSERT_MSG(count != npos, "Producer function with no way to signal termination must only be used with known total limit");
 
@@ -223,8 +222,8 @@ namespace kxf
 				};
 			}
 
-			GeneratorOf(const GeneratorOf&) = default;
-			GeneratorOf(GeneratorOf&&) noexcept = default;
+			Enumerator(const Enumerator&) = default;
+			Enumerator(Enumerator&&) noexcept = default;
 
 		public:
 			// IEnumerator
@@ -234,7 +233,7 @@ namespace kxf
 			}
 			void Reset() noexcept override
 			{
-				AbstractGenerator::Reset();
+				AbstractEnumerator::Reset();
 				m_TerminationRequested = false;
 			}
 
@@ -264,51 +263,4 @@ namespace kxf
 				return {};
 			}
 	};
-}
-
-namespace kxf
-{
-	template
-		<
-		class TFunc,
-		class TValue = std::invoke_result_t<TFunc, IEnumerator&>,
-		std::enable_if_t<!Utility::is_optional_v<TValue> && std::is_invocable_v<TFunc, IEnumerator&>, int> = 0
-	>
-	GeneratorOf<TValue> MakeGenerator(TFunc&& func, size_t count = std::numeric_limits<size_t>::max())
-	{
-		return {std::forward<TFunc>(func), count};
-	}
-
-	template
-	<
-		class TFunc,
-		class TValue = std::invoke_result_t<TFunc, IEnumerator&>,
-		std::enable_if_t<Utility::is_optional_v<TValue> && std::is_invocable_v<TFunc, IEnumerator&>, int> = 0
-	>
-	GeneratorOf<typename TValue::value_type> MakeGenerator(TFunc&& func, size_t count = std::numeric_limits<size_t>::max())
-	{
-		return {std::forward<TFunc>(func), count};
-	}
-
-	template
-	<
-		class TFunc,
-		class TValue = std::invoke_result_t<TFunc>,
-		std::enable_if_t<!Utility::is_optional_v<TValue>, int> = 0
-	>
-	GeneratorOf<TValue> MakeGenerator(TFunc&& func, size_t count = std::numeric_limits<size_t>::max())
-	{
-		return {std::forward<TFunc>(func), count};
-	}
-
-	template
-	<
-		class TFunc,
-		class TValue = std::invoke_result_t<TFunc>,
-		std::enable_if_t<Utility::is_optional_v<TValue>, int> = 0
-	>
-	GeneratorOf<typename TValue::value_type> MakeGenerator(TFunc&& func, size_t count = std::numeric_limits<size_t>::max())
-	{
-		return {std::forward<TFunc>(func), count};
-	}
 }
