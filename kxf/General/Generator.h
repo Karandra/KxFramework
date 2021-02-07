@@ -123,6 +123,10 @@ namespace kxf::Private
 			{
 				return m_Generator->GetValue();
 			}
+			value_type& operator*() & noexcept
+			{
+				return m_Generator->GetValue();
+			}
 			value_type operator*() && noexcept
 			{
 				return m_Generator->GetValue();
@@ -183,6 +187,10 @@ namespace kxf
 
 		public:
 			const TValue& GetValue() const& noexcept
+			{
+				return *m_Value;
+			}
+			TValue& GetValue() & noexcept
 			{
 				return *m_Value;
 			}
