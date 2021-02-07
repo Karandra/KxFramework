@@ -7,6 +7,8 @@
 #include "kxf/Drawing/GDIRenderer/GDIFont.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/ScopeGuard.h"
+#include "kxf/Utility/Enumerator.h"
+#include "kxf/Utility/Literals.h"
 #include <wx/settings.h>
 
 #include <Windows.h>
@@ -472,14 +474,25 @@ namespace kxf::System
 	{
 		return wxSystemSettings::HasFeature(static_cast<wxSystemFeature>(feature));
 	}
-	size_t EnumStandardSounds(std::function<bool(String)> func)
+	Enumerator<String> EnumStandardSounds()
 	{
 		RegistryKey key(RegistryRootKey::CurrentUser, wxS("AppEvents\\EventLabels"), RegistryAccess::Read|RegistryAccess::Enumerate);
 		if (key)
 		{
-			return key.EnumKeyNames(std::move(func));
+			std::vector<String> items;
+			key.EnumKeyNames([&](String item)
+			{
+				items.emplace_back(std::move(item));
+				return true;
+			});
+
+			size_t count = items.size();
+			return Utility::MakeEnumerator([items = std::move(items), index = 0_zu](IEnumerator& enumerator) mutable
+			{
+				return std::move(items[index++]);
+			}, count);
 		}
-		return 0;
+		return {};
 	}
 
 	std::optional<DisplayInfo> GetDisplayInfo() noexcept
@@ -501,41 +514,32 @@ namespace kxf::System
 		}
 		return {};
 	}
-	size_t EnumDisplayModes(std::function<bool(DisplayInfo)> func, const String& deviceName)
+	Enumerator<DisplayInfo> EnumDisplayModes(const String& deviceName)
 	{
-		size_t count = 0;
-
-		DEVMODEW deviceMode = {};
-		deviceMode.dmSize = sizeof(deviceMode);
-		while (::EnumDisplaySettingsW(deviceName.IsEmpty() ? nullptr : deviceName.wc_str(), count, &deviceMode))
+		return [deviceName, index = 0ui32]() mutable -> std::optional<DisplayInfo>
 		{
-			DisplayInfo displayInfo;
-			displayInfo.Width = deviceMode.dmPelsWidth;
-			displayInfo.Height = deviceMode.dmPelsHeight;
-			displayInfo.BitDepth = deviceMode.dmBitsPerPel;
-			displayInfo.RefreshRate = deviceMode.dmDisplayFrequency;
-
-			count++;
-			if (!std::invoke(func, std::move(displayInfo)))
+			DEVMODEW deviceMode = {};
+			deviceMode.dmSize = sizeof(deviceMode);
+			while (::EnumDisplaySettingsW(deviceName.IsEmpty() ? nullptr : deviceName.wc_str(), index++, &deviceMode))
 			{
-				break;
-			}
-		}
-		return count;
-	}
-	size_t EnumDisplayDevices(std::function<bool(DisplayDeviceInfo)> func)
-	{
-		DWORD index = 0;
-		size_t count = 0;
-		bool isSuccess = false;
+				DisplayInfo displayInfo;
+				displayInfo.Width = deviceMode.dmPelsWidth;
+				displayInfo.Height = deviceMode.dmPelsHeight;
+				displayInfo.BitDepth = deviceMode.dmBitsPerPel;
+				displayInfo.RefreshRate = deviceMode.dmDisplayFrequency;
 
-		do
+				return displayInfo;
+			}
+			return {};
+		};
+	}
+	Enumerator<DisplayDeviceInfo> EnumDisplayDevices(const String& deviceName)
+	{
+		return [deviceName, index = 0ui32]() mutable -> std::optional<DisplayDeviceInfo>
 		{
 			DISPLAY_DEVICEW displayDevice = {};
 			displayDevice.cb = sizeof(displayDevice);
-			isSuccess = ::EnumDisplayDevicesW(nullptr, index, &displayDevice, 0);
-
-			if (!std::wstring_view(displayDevice.DeviceString).empty())
+			if (::EnumDisplayDevicesW(deviceName.IsEmpty() ? nullptr : deviceName.wc_str(), index++, &displayDevice, 0) && !std::wstring_view(displayDevice.DeviceString).empty())
 			{
 				DisplayDeviceInfo deviceInfo;
 				deviceInfo.DeviceName = displayDevice.DeviceName;
@@ -555,19 +559,12 @@ namespace kxf::System
 				deviceInfo.Flags.Add(DisplayDeviceFlag::Disconnect, displayDevice.StateFlags & DISPLAY_DEVICE_DISCONNECT);
 				deviceInfo.Flags.Add(DisplayDeviceFlag::Remote, displayDevice.StateFlags & DISPLAY_DEVICE_REMOTE);
 
-				count++;
-				if (!std::invoke(func, std::move(deviceInfo)))
-				{
-					break;
-				}
+				return deviceInfo;
 			}
-			index++;
-		}
-		while (isSuccess);
-
-		return count;
+			return {};
+		};
 	}
-	size_t EnumDisplayAdapters(std::function<bool(DisplayAdapterInfo)> func)
+	Enumerator<DisplayAdapterInfo> EnumDisplayAdapters()
 	{
 		HResult hr = HResult::Fail();
 
@@ -584,38 +581,36 @@ namespace kxf::System
 
 		if (dxgiFactory && hr)
 		{
-			UINT index = 0;
-			COMPtr<IDXGIAdapter1> adapter;
-
-			size_t count = 0;
-			while (dxgiFactory->EnumAdapters1(index, &adapter) != DXGI_ERROR_NOT_FOUND)
+			return [dxgiFactory = std::move(dxgiFactory), index = 0u]() mutable -> std::optional<DisplayAdapterInfo>
 			{
-				DXGI_ADAPTER_DESC1 description = {};
-				if (HResult(adapter->GetDesc1(&description)))
+				COMPtr<IDXGIAdapter1> adapter;
+				if (dxgiFactory->EnumAdapters1(index, &adapter) != DXGI_ERROR_NOT_FOUND)
 				{
 					DisplayAdapterInfo info = {};
-					info.Name = description.Description;
 					info.Index = index;
-					info.VendorID = description.VendorId;
-					info.DeviceID = description.DeviceId;
-					info.SubSystemID = description.SubSysId;
-					info.Revision = description.Revision;
-					info.UniqueID = Utility::IntFromLowHigh<uint64_t>(description.AdapterLuid.LowPart, description.AdapterLuid.HighPart);
-					info.DedicatedVideoMemory = BinarySize::FromBytes(description.DedicatedVideoMemory);
-					info.DedicatedSystemMemory = BinarySize::FromBytes(description.DedicatedSystemMemory);
-					info.SharedSystemMemory = BinarySize::FromBytes(description.SharedSystemMemory);
-					info.Flags.Add(DisplayAdapterFlag::Software, description.Flags & DXGI_ADAPTER_FLAG_SOFTWARE);
 
-					count++;
-					if (!std::invoke(func, std::move(info)))
+					DXGI_ADAPTER_DESC1 description = {};
+					if (HResult(adapter->GetDesc1(&description)))
 					{
-						break;
+						info.Name = description.Description;
+						info.VendorID = description.VendorId;
+						info.DeviceID = description.DeviceId;
+						info.SubSystemID = description.SubSysId;
+						info.Revision = description.Revision;
+						info.UniqueID = Utility::IntFromLowHigh<uint64_t>(description.AdapterLuid.LowPart, description.AdapterLuid.HighPart);
+						info.DedicatedVideoMemory = BinarySize::FromBytes(description.DedicatedVideoMemory);
+						info.DedicatedSystemMemory = BinarySize::FromBytes(description.DedicatedSystemMemory);
+						info.SharedSystemMemory = BinarySize::FromBytes(description.SharedSystemMemory);
+						info.Flags.Add(DisplayAdapterFlag::Software, description.Flags & DXGI_ADAPTER_FLAG_SOFTWARE);
 					}
+
+					index++;
+					return info;
 				}
-				index++;
-			}
+				return {};
+			};
 		}
-		return 0;
+		return {};
 	}
 
 	String ExpandEnvironmentStrings(const String& strings)

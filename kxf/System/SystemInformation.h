@@ -7,17 +7,12 @@
 #include "kxf/General/BinarySize.h"
 #include "kxf/General/DateTime.h"
 #include "kxf/General/LocallyUniqueID.h"
+#include "kxf/General/Enumerator.h"
 #include "kxf/Drawing/Geometry.h"
 #include "kxf/Drawing/Color.h"
 #include "kxf/Drawing/Font.h"
-#include <wx/settings.h>
-#include <wx/gdicmn.h>
 #include "UndefWindows.h"
 
-namespace kxf
-{
-	class GDIFont;
-}
 namespace kxf::System
 {
 	struct KernelVersion final
@@ -131,12 +126,12 @@ namespace kxf::System
 	Size GetMetric(SystemSizeMetric index, const wxWindow* window = nullptr) noexcept;
 	TimeSpan GetMetric(SystemTimeMetric index, const wxWindow* window = nullptr) noexcept;
 	bool HasFeature(SystemFeature feature) noexcept;
-	size_t EnumStandardSounds(std::function<bool(String)> func);
+	Enumerator<String> EnumStandardSounds();
 
 	std::optional<DisplayInfo> GetDisplayInfo() noexcept;
-	size_t EnumDisplayModes(std::function<bool(DisplayInfo)> func, const String& deviceName = {});
-	size_t EnumDisplayDevices(std::function<bool(DisplayDeviceInfo)> func);
-	size_t EnumDisplayAdapters(std::function<bool(DisplayAdapterInfo)> func);
+	Enumerator<DisplayInfo> EnumDisplayModes(const String& deviceName = {});
+	Enumerator<DisplayDeviceInfo> EnumDisplayDevices(const String& deviceName = {});
+	Enumerator<DisplayAdapterInfo> EnumDisplayAdapters();
 
 	String ExpandEnvironmentStrings(const String& strings);
 	String GetEnvironmentVariable(const String& name);
