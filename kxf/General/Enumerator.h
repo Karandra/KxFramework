@@ -20,9 +20,9 @@ namespace kxf
 		protected:
 			virtual bool InvokeGenerator() = 0;
 
-		public:
-			AbstractEnumerator(size_t count = npos) noexcept
-				:m_TotalCount(count)
+		protected:
+			AbstractEnumerator(std::optional<size_t> count = {}) noexcept
+				:m_TotalCount(count.value_or(npos))
 			{
 			}
 			AbstractEnumerator(const AbstractEnumerator&) = default;
@@ -89,28 +89,28 @@ namespace kxf
 
 namespace kxf::Private
 {
-	template<class TGenerator>
+	template<class TEnumerator>
 	class EnumIterator
     {
 		public:
-			using value_type = typename TGenerator::TValue;
+			using value_type = typename TEnumerator::TValue;
 
 		private:
-			TGenerator* m_Generator = nullptr;
+			TEnumerator* m_Enumerator = nullptr;
 
         public:
 			EnumIterator() noexcept = default;
-            EnumIterator(TGenerator& generator) noexcept
-				:m_Generator(&generator)
+            EnumIterator(TEnumerator& enumerator) noexcept
+				:m_Enumerator(&enumerator)
 			{
 			}
 
 		public:
 			EnumIterator& operator++() noexcept
 			{
-				if (!m_Generator->MoveNext())
+				if (!m_Enumerator->MoveNext())
 				{
-					m_Generator = nullptr;
+					m_Enumerator = nullptr;
 				}
 				return *this;
 			}
@@ -124,30 +124,30 @@ namespace kxf::Private
 
 			const value_type& operator*() const& noexcept
 			{
-				return m_Generator->GetValue();
+				return m_Enumerator->GetValue();
 			}
 			value_type& operator*() & noexcept
 			{
-				return m_Generator->GetValue();
+				return m_Enumerator->GetValue();
 			}
 			value_type operator*() && noexcept
 			{
-				return m_Generator->GetValue();
+				return m_Enumerator->GetValue();
 			}
 
-			const TGenerator* operator->() const noexcept
+			const TEnumerator* operator->() const noexcept
 			{
-				return m_Generator;
+				return m_Enumerator;
 			}
-			TGenerator* operator->() noexcept
+			TEnumerator* operator->() noexcept
 			{
-				return m_Generator;
+				return m_Enumerator;
 			}
 
 		public:
 			bool operator==(const EnumIterator& other) const noexcept
 			{
-				return this == &other || m_Generator == other.m_Generator;
+				return this == &other || m_Enumerator == other.m_Enumerator;
 			}
 			bool operator!=(const EnumIterator& other) const noexcept
 			{
@@ -182,15 +182,15 @@ namespace kxf
 
 			// std::optional<TValue> func(IEnumerator&);
 			template<class TFunc, std::enable_if_t<std::is_same_v<std::invoke_result_t<TFunc, IEnumerator&>, std::optional<TValue>>, int> = 0>
-			Enumerator(TFunc&& func, size_t count = npos) noexcept
-				:AbstractEnumerator(count), m_MoveNext(std::forward<TFunc>(func))
+			Enumerator(TFunc&& func, std::optional<size_t> count = {}) noexcept
+				:AbstractEnumerator(std::move(count)), m_MoveNext(std::forward<TFunc>(func))
 			{
 			}
 
 			// std::optional<TValue> func(void);
 			template<class TFunc, std::enable_if_t<std::is_same_v<std::invoke_result_t<TFunc>, std::optional<TValue>>, int> = 0>
-			Enumerator(TFunc&& func, size_t count = npos) noexcept
-				:AbstractEnumerator(count)
+			Enumerator(TFunc&& func, std::optional<size_t> count = {}) noexcept
+				:AbstractEnumerator(std::move(count))
 			{
 				m_MoveNext = [func = std::forward<TFunc>(func)](IEnumerator& enumerator) mutable -> std::optional<TValue>
 				{
@@ -200,8 +200,8 @@ namespace kxf
 
 			// TValue func(IEnumerator&);
 			template<class TFunc, std::enable_if_t<std::is_same_v<std::invoke_result_t<TFunc, IEnumerator&>, TValue>, int> = 0>
-			Enumerator(TFunc&& func, size_t count = npos) noexcept
-				:AbstractEnumerator(count)
+			Enumerator(TFunc&& func, std::optional<size_t> count = {}) noexcept
+				:AbstractEnumerator(std::move(count))
 			{
 				m_MoveNext = [func = std::forward<TFunc>(func)](IEnumerator& enumerator) mutable -> std::optional<TValue>
 				{
@@ -211,10 +211,10 @@ namespace kxf
 
 			// TValue func(void);
 			template<class TFunc, std::enable_if_t<std::is_same_v<std::invoke_result_t<TFunc>, TValue>, int> = 0>
-			Enumerator(TFunc&& func, size_t count = npos) noexcept
-				:AbstractEnumerator(count)
+			Enumerator(TFunc&& func, std::optional<size_t> count = {}) noexcept
+				:AbstractEnumerator(std::move(count))
 			{
-				wxASSERT_MSG(count != npos, "Producer function with no way to signal termination must only be used with known total limit");
+				wxASSERT_MSG(count.has_value() && *count != npos, "Producer function with no way to signal termination must only be used with known total limit");
 
 				m_MoveNext = [func = std::forward<TFunc>(func)](IEnumerator& enumerator) mutable -> std::optional<TValue>
 				{
