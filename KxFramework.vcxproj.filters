@@ -2690,9 +2690,6 @@
     <ClCompile Include="kxf\RTTI\IID.cpp">
       <Filter>kxf\RTTI</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\General\Enumerator.cpp">
-      <Filter>kxf\General</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="kxf\System\Private\ErrorCodeNtStatus.i">

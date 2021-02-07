@@ -770,7 +770,6 @@
     <ClCompile Include="kxf\General\DateTime\TimeZone.cpp" />
     <ClCompile Include="kxf\General\DynamicVariablesCollection.cpp" />
     <ClCompile Include="kxf\General\ErrorCode.cpp" />
-    <ClCompile Include="kxf\General\Enumerator.cpp" />
     <ClCompile Include="kxf\General\IVariablesCollection.cpp" />
     <ClCompile Include="kxf\General\LocallyUniqueID.cpp" />
     <ClCompile Include="kxf\General\StaticVariablesCollection.cpp" />
