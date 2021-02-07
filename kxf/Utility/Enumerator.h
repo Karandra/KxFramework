@@ -80,7 +80,7 @@ namespace kxf::Utility
 					return m_Range;
 				}
 
-				bool MoveNext()
+				IEnumerator::Result MoveNext()
 				{
 					return m_Range.MoveNext();
 				}
@@ -92,19 +92,33 @@ namespace kxf::Utility
 		auto context = std::make_shared<Context>(std::move(owner), enumFunc, std::forward<Args>(arg)...);
 		auto totalCount = context->GetEnumerator().GetTotalCount();
 
-		return Utility::MakeEnumerator([converter = std::forward<TConverterFunc>(converter), context = std::move(context)]() mutable -> std::optional<TValue>
+		return Utility::MakeEnumerator([converter = std::forward<TConverterFunc>(converter), context = std::move(context)](IEnumerator& enumerator) mutable -> std::optional<TValue>
 		{
-			if (context->MoveNext())
+			using Result = IEnumerator::Result;
+			switch (context->MoveNext())
 			{
-				if constexpr(std::is_invocable_v<TConverterFunc, TEnumerator&, TOwner&>)
+				case Result::Continue:
 				{
-					return std::invoke(converter, context->GetEnumerator(), context->GetOwner());
+					if constexpr (std::is_invocable_v<TConverterFunc, TEnumerator&, TOwner&>)
+					{
+						return std::invoke(converter, context->GetEnumerator(), context->GetOwner());
+					}
+					else
+					{
+						return std::invoke(converter, context->GetEnumerator());
+					}
 				}
-				else
+				case Result::SkipCurrent:
 				{
-					return std::invoke(converter, context->GetEnumerator());
+					enumerator.SkipCurrent();
+					break;
 				}
-			}
+				case Result::Terminate:
+				{
+					enumerator.Terminate();
+					break;
+				}
+			};
 			return {};
 		}, std::move(totalCount));
 	}
@@ -134,7 +148,8 @@ namespace kxf::Utility
 				{
 					return m_Range;
 				}
-				bool MoveNext()
+
+				IEnumerator::Result MoveNext()
 				{
 					return m_Range.MoveNext();
 				}
@@ -144,12 +159,26 @@ namespace kxf::Utility
 		auto context = std::make_shared<Context>(enumFunc, std::forward<Args>(arg)...);
 		auto totalCount = context->GetEnumerator().GetTotalCount();
 
-		return Utility::MakeEnumerator([converter = std::forward<TConverterFunc>(converter), context = std::move(context)]() mutable -> std::optional<TValue>
+		return Utility::MakeEnumerator([converter = std::forward<TConverterFunc>(converter), context = std::move(context)](IEnumerator& enumerator) mutable -> std::optional<TValue>
 		{
-			if (context->MoveNext())
+			using Result = IEnumerator::Result;
+			switch (context->MoveNext())
 			{
-				return std::invoke(converter, context->GetEnumerator());
-			}
+				case Result::Continue:
+				{
+					return std::invoke(converter, context->GetEnumerator());
+				}
+				case Result::SkipCurrent:
+				{
+					enumerator.SkipCurrent();
+					break;
+				}
+				case Result::Terminate:
+				{
+					enumerator.Terminate();
+					break;
+				}
+			};
 			return {};
 		}, std::move(totalCount));
 	}

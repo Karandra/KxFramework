@@ -13,6 +13,29 @@ namespace kxf::Private
 		private:
 			TEnumerator* m_Enumerator = nullptr;
 
+		private:
+			void DoMove()
+			{
+				using Result = IEnumerator::Result;
+				switch (m_Enumerator->MoveNext())
+				{
+					case Result::Terminate:
+					{
+						// Stop immediately
+						m_Enumerator = nullptr;
+
+						break;
+					}
+					case Result::SkipCurrent:
+					{
+						// Advance to next step
+						DoMove();
+
+						break;
+					}
+				};
+			}
+
         public:
 			EnumIterator() noexcept = default;
             EnumIterator(TEnumerator& enumerator) noexcept
@@ -23,10 +46,7 @@ namespace kxf::Private
 		public:
 			EnumIterator& operator++() noexcept
 			{
-				if (!m_Enumerator->MoveNext())
-				{
-					m_Enumerator = nullptr;
-				}
+				DoMove();
 				return *this;
 			}
 			EnumIterator operator++(int) const noexcept
@@ -90,31 +110,47 @@ namespace kxf
 			size_t m_Index = 0;
 			size_t m_TotalCount = npos;
 			bool m_IsReset = true;
-			bool m_TerminationRequested = false;
+			bool m_SkipCurrent = false;
+			bool m_Terminate = false;
 
 		private:
-			bool DoMoveNext()
+			Result DoMoveNext()
 			{
 				if (m_Index == npos || m_Index >= m_TotalCount)
 				{
-					return false;
+					return Result::Terminate;
 				}
 
-				if (InvokeProducer())
+				Result result = InvokeProducer();
+				if (result != Result::Terminate)
 				{
 					m_Index++;
-					return true;
 				}
 				else
 				{
 					m_Index = npos;
-					return false;
 				}
+				return result;
 			}
-			bool InvokeProducer()
+			Result InvokeProducer()
 			{
 				m_Value = std::invoke(m_MoveNext, static_cast<IEnumerator&>(*this));
-				return !m_TerminationRequested && m_Value.has_value();
+
+				if (m_Terminate)
+				{
+					m_Terminate = false;
+					return Result::Terminate;
+				}
+				else if (m_SkipCurrent)
+				{
+					m_SkipCurrent = false;
+					return Result::SkipCurrent;
+				}
+				else if (m_Value.has_value())
+				{
+					return Result::Continue;
+				}
+				return Result::Terminate;
 			}
 
 		public:
@@ -167,17 +203,24 @@ namespace kxf
 
 		public:
 			// IEnumerator
-			bool MoveNext() override
+			Result MoveNext() override
 			{
-				bool result = DoMoveNext();
-				m_IsReset = !result;
+				Result result = DoMoveNext();
+				m_IsReset = result == Result::Terminate;
 
 				return result;
 			}
+			void SkipCurrent() noexcept override
+			{
+				m_SkipCurrent = true;
+				m_Terminate = false;
+			}
 			void Terminate() noexcept override
 			{
-				m_TerminationRequested = true;
+				m_SkipCurrent = false;
+				m_Terminate = true;
 			}
+
 			size_t GetCurrentStep() const noexcept override
 			{
 				return m_Index;
@@ -199,7 +242,9 @@ namespace kxf
 			{
 				m_Index = 0;
 				m_IsReset = true;
-				m_TerminationRequested = false;
+
+				m_SkipCurrent = false;
+				m_Terminate = false;
 			}
 
 			// Enumerator
