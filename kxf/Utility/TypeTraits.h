@@ -65,6 +65,22 @@ namespace kxf::Utility
 
 namespace kxf::Utility
 {
+	template<class T>
+	struct is_optional: std::false_type
+	{
+	};
+
+	template<class T>
+	struct is_optional<std::optional<T>>: std::true_type
+	{
+	};
+
+	template<class T>
+	inline constexpr bool is_optional_v = is_optional<T>::value;
+}
+
+namespace kxf::Utility
+{
 	template<class T, bool isEnum = std::is_enum_v<T>, bool isInteger = std::is_integral_v<T>>
 	struct UnderlyingTypeEx
 	{
