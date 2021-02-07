@@ -1790,6 +1790,12 @@
     <ClInclude Include="kxf\General\Generator.h">
       <Filter>kxf\General</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\General\IEnumerator.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Utility\Literals.h">
+      <Filter>kxf\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">

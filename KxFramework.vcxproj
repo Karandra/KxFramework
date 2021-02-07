@@ -323,6 +323,7 @@
     <ClInclude Include="kxf\General\DynamicVariablesCollection.h" />
     <ClInclude Include="kxf\General\ErrorCode.h" />
     <ClInclude Include="kxf\General\Generator.h" />
+    <ClInclude Include="kxf\General\IEnumerator.h" />
     <ClInclude Include="kxf\General\IErrorCode.h" />
     <ClInclude Include="kxf\General\IVariablesCollection.h" />
     <ClInclude Include="kxf\General\LocallyUniqueID.h" />
@@ -509,6 +510,7 @@
     <ClInclude Include="kxf\UI\Windows\TopLevelWindow.h" />
     <ClInclude Include="kxf\UI\WindowWithStyles.h" />
     <ClInclude Include="kxf\Utility\ExceptionScopeGuard.h" />
+    <ClInclude Include="kxf\Utility\Literals.h" />
     <ClInclude Include="kxf\wxWidgets\Application.h" />
     <ClInclude Include="kxf\wxWidgets\ClientObject.h" />
     <ClInclude Include="kxf\wxWidgets\Common.h" />
