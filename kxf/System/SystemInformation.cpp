@@ -479,18 +479,10 @@ namespace kxf::System
 		RegistryKey key(RegistryRootKey::CurrentUser, wxS("AppEvents\\EventLabels"), RegistryAccess::Read|RegistryAccess::Enumerate);
 		if (key)
 		{
-			std::vector<String> items;
-			key.EnumKeyNames([&](String item)
+			return Utility::MakeForwardingEnumerator([](Enumerator<String>& enumerator, RegistryKey& owner)
 			{
-				items.emplace_back(std::move(item));
-				return true;
-			});
-
-			size_t count = items.size();
-			return Utility::MakeEnumerator([items = std::move(items), index = 0_zu](IEnumerator& enumerator) mutable
-			{
-				return std::move(items[index++]);
-			}, count);
+				return std::move(enumerator.GetValue());
+			}, std::move(key), &RegistryKey::EnumKeyNames);
 		}
 		return {};
 	}
@@ -520,7 +512,7 @@ namespace kxf::System
 		{
 			DEVMODEW deviceMode = {};
 			deviceMode.dmSize = sizeof(deviceMode);
-			while (::EnumDisplaySettingsW(deviceName.IsEmpty() ? nullptr : deviceName.wc_str(), index++, &deviceMode))
+			if (::EnumDisplaySettingsW(deviceName.IsEmpty() ? nullptr : deviceName.wc_str(), index++, &deviceMode))
 			{
 				DisplayInfo displayInfo;
 				displayInfo.Width = deviceMode.dmPelsWidth;
@@ -539,7 +531,19 @@ namespace kxf::System
 		{
 			DISPLAY_DEVICEW displayDevice = {};
 			displayDevice.cb = sizeof(displayDevice);
-			if (::EnumDisplayDevicesW(deviceName.IsEmpty() ? nullptr : deviceName.wc_str(), index++, &displayDevice, 0) && !std::wstring_view(displayDevice.DeviceString).empty())
+
+			auto GetCurrent = [&]()
+			{
+				auto name = deviceName.IsEmpty() ? nullptr : deviceName.wc_str();
+				if (::EnumDisplayDevicesW(name, index++, &displayDevice, 0))
+				{
+					using T = std::remove_extent_t<decltype(displayDevice.DeviceString)>;
+					return !std::basic_string_view<T>(displayDevice.DeviceString).empty();
+				}
+				return false;
+			};
+
+			if (GetCurrent())
 			{
 				DisplayDeviceInfo deviceInfo;
 				deviceInfo.DeviceName = displayDevice.DeviceName;
