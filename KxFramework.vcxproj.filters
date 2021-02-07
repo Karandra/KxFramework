@@ -1787,6 +1787,9 @@
     <ClInclude Include="kxf\RTTI\Interface.h">
       <Filter>kxf\RTTI</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\General\Generator.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2677,6 +2680,9 @@
     </ClCompile>
     <ClCompile Include="kxf\RTTI\IID.cpp">
       <Filter>kxf\RTTI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\Generator.cpp">
+      <Filter>kxf\General</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
