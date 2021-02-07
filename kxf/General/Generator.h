@@ -1,10 +1,87 @@
 #pragma once
 #include "Common.h"
 
-namespace kxf
+namespace kxf::Private
 {
-	template<class TValue>
-	class GeneratorOf;
+	class GeneratorCommon
+	{
+		protected:
+			static inline constexpr size_t npos = std::numeric_limits<size_t>::max();
+
+		protected:
+			size_t m_Index = 0;
+			size_t m_TotalCount = npos;
+			bool m_IsReset = true;
+
+		private:
+			bool DoMoveNext(bool dryRun = false) noexcept;
+			size_t DoDryRun() noexcept;
+
+		protected:
+			virtual bool InvokeGenerator(size_t index) = 0;
+
+		public:
+			GeneratorCommon(size_t count = npos) noexcept
+				:m_TotalCount(count)
+			{
+			}
+			GeneratorCommon(const GeneratorCommon&) = default;
+			GeneratorCommon(GeneratorCommon&&) noexcept = default;
+			virtual ~GeneratorCommon() = default;
+
+		public:
+			bool IsReset() const noexcept
+			{
+				return m_IsReset || m_Index == npos;
+			}
+			bool IsTotalCountKnown() const noexcept
+			{
+				return m_TotalCount != npos;
+			}
+			size_t GetMoveCount() noexcept
+			{
+				return m_Index;
+			}
+			size_t DryRun() noexcept
+			{
+				return DoDryRun();
+			}
+
+			bool MoveNext() noexcept
+			{
+				bool result = DoMoveNext();
+				m_IsReset = !result;
+
+				return result;
+			}
+			void Reset() noexcept
+			{
+				m_Index = 0;
+				m_IsReset = true;
+			}
+
+		public:
+			explicit operator bool() const noexcept
+			{
+				return !IsReset();
+			}
+			bool operator!() const noexcept
+			{
+				return IsReset();
+			}
+
+			bool operator==(const GeneratorCommon& other) const noexcept
+			{
+				return (this == &other && m_Index == other.m_Index) || m_IsReset && other.m_IsReset;
+			}
+			bool operator!=(const GeneratorCommon& other) const noexcept
+			{
+				return !(*this == other);
+			}
+
+			GeneratorCommon& operator=(const GeneratorCommon&) = default;
+			GeneratorCommon& operator=(GeneratorCommon&&) noexcept = default;
+	};
 }
 
 namespace kxf::Private
@@ -12,16 +89,13 @@ namespace kxf::Private
 	template<class TGenerator>
 	class GeneratorOfIterator
     {
-		template<class TValue>
-		friend class GeneratorOf;
-
 		public:
 			using value_type = typename TGenerator::TValue;
 
 		private:
 			TGenerator* m_Generator = nullptr;
 
-        private:
+        public:
 			GeneratorOfIterator() noexcept = default;
             GeneratorOfIterator(TGenerator& generator) noexcept
 				:m_Generator(&generator)
@@ -78,42 +152,21 @@ namespace kxf::Private
 namespace kxf
 {
 	template<class TValue_>
-	class GeneratorOf final
+	class GeneratorOf final: public Private::GeneratorCommon
 	{
 		public:
 			using TValue = TValue_;
 			using iterator = Private::GeneratorOfIterator<GeneratorOf>;
 
 		private:
-			static inline constexpr size_t npos = std::numeric_limits<size_t>::max();
-
-		private:
 			std::function<std::optional<TValue>(size_t)> m_Generator;
-
 			std::optional<TValue> m_Value;
-			size_t m_Index = 0;
-			size_t m_TotalCount = npos;
-			bool m_IsReset = true;
 
-		private:
-			bool DoMoveNext(bool dryRun = false) noexcept
+		protected:
+			bool InvokeGenerator(size_t index) override
 			{
-				if (m_Index == npos || m_Index >= m_TotalCount)
-				{
-					return false;
-				}
-
-				m_Value = std::invoke(m_Generator, m_Index);
-				if (m_Value || (dryRun && m_TotalCount != npos))
-				{
-					m_Index++;
-					return true;
-				}
-				else
-				{
-					m_Index = npos;
-					return false;
-				}
+				m_Value = std::invoke(m_Generator, index);
+				return m_Value.has_value();
 			}
 
 		public:
@@ -121,7 +174,7 @@ namespace kxf
 
 			template<class TFunc, std::enable_if_t<std::is_invocable_r_v<std::optional<TValue>, TFunc, size_t>, int> = 0>
 			GeneratorOf(TFunc&& generator, size_t count = npos) noexcept
-				:m_Generator(std::forward<TFunc>(generator)), m_TotalCount(count)
+				:m_Generator(std::forward<TFunc>(generator)), GeneratorCommon(count)
 			{
 			}
 
@@ -129,51 +182,6 @@ namespace kxf
 			GeneratorOf(GeneratorOf&&) noexcept = default;
 
 		public:
-			bool IsNull() const noexcept
-			{
-				return m_IsReset || m_Index == npos;
-			}
-			bool IsTotalCountKnown() const noexcept
-			{
-				return m_TotalCount != npos;
-			}
-			size_t GetMoveCount() noexcept
-			{
-				return m_Index;
-			}
-			size_t DryRun() noexcept
-			{
-				size_t count = 0;
-				if (IsTotalCountKnown())
-				{
-					count = m_TotalCount;
-				}
-				else
-				{
-					while (DoMoveNext(true))
-					{
-						count++;
-					};
-				}
-
-				m_IsReset = true;
-				return count;
-			}
-
-			bool MoveNext() noexcept
-			{
-				bool result = DoMoveNext();
-				m_IsReset = !result;
-
-				return result;
-			}
-			void Reset() noexcept
-			{
-				m_Value.reset();
-				m_Index = 0;
-				m_IsReset = true;
-			}
-
 			const TValue& GetValue() const& noexcept
 			{
 				return *m_Value;
@@ -194,27 +202,5 @@ namespace kxf
 			{
 				return {};
 			}
-
-		public:
-			explicit operator bool() const noexcept
-			{
-				return !IsNull();
-			}
-			bool operator!() const noexcept
-			{
-				return IsNull();
-			}
-
-			bool operator==(const GeneratorOf& other) const noexcept
-			{
-				return (this == &other && m_Index == other.m_Index) || m_IsReset && other.m_IsReset;
-			}
-			bool operator!=(const GeneratorOf& other) const noexcept
-			{
-				return !(*this == other);
-			}
-
-			GeneratorOf& operator=(const GeneratorOf&) = default;
-			GeneratorOf& operator=(GeneratorOf&&) noexcept = default;
 	};
 }
