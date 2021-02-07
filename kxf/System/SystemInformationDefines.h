@@ -51,6 +51,7 @@ namespace kxf
 		None = 0,
 
 		Software = 1 << 0,
+		Remote = 1 << 0
 	};
 
 	enum class SystemType

@@ -585,13 +585,13 @@ namespace kxf::System
 
 		if (dxgiFactory && hr)
 		{
-			return [dxgiFactory = std::move(dxgiFactory), index = 0u]() mutable -> std::optional<DisplayAdapterInfo>
+			return [dxgiFactory = std::move(dxgiFactory), index = 0u](IEnumerator& enumerator) mutable -> std::optional<DisplayAdapterInfo>
 			{
 				COMPtr<IDXGIAdapter1> adapter;
 				if (dxgiFactory->EnumAdapters1(index, &adapter) != DXGI_ERROR_NOT_FOUND)
 				{
 					DisplayAdapterInfo info = {};
-					info.Index = index;
+					info.Index = index++;
 
 					DXGI_ADAPTER_DESC1 description = {};
 					if (HResult(adapter->GetDesc1(&description)))
@@ -605,11 +605,13 @@ namespace kxf::System
 						info.DedicatedVideoMemory = BinarySize::FromBytes(description.DedicatedVideoMemory);
 						info.DedicatedSystemMemory = BinarySize::FromBytes(description.DedicatedSystemMemory);
 						info.SharedSystemMemory = BinarySize::FromBytes(description.SharedSystemMemory);
-						info.Flags.Add(DisplayAdapterFlag::Software, description.Flags & DXGI_ADAPTER_FLAG_SOFTWARE);
-					}
 
-					index++;
-					return info;
+						info.Flags.Add(DisplayAdapterFlag::Software, description.Flags & DXGI_ADAPTER_FLAG_SOFTWARE);
+						info.Flags.Add(DisplayAdapterFlag::Remote, description.Flags & DXGI_ADAPTER_FLAG_REMOTE);
+
+						return info;
+					}
+					enumerator.SkipCurrent();
 				}
 				return {};
 			};
@@ -645,25 +647,31 @@ namespace kxf::System
 	{
 		return ::SetEnvironmentVariableW(name.wc_str(), value.wc_str());
 	}
-	size_t EnumEnvironmentVariables(std::function<bool(String, String)> func)
+	Enumerator<EnvironmentVariable> EnumEnvironmentVariables()
 	{
-		size_t count = 0;
-		for (const wchar_t* item = ::GetEnvironmentStringsW(); *item; item += std::wcslen(item) + 1)
+		return [item = ::GetEnvironmentStringsW()](IEnumerator& enumerator) mutable -> std::optional<EnvironmentVariable>
 		{
-			const wchar_t* separator = std::wcschr(item, L'=');
-			if (separator && separator != item)
+			if (*item)
 			{
-				StringView name(item, separator - item);
-				StringView value(separator + 1);
+				auto current = item;
+				item += std::wcslen(current) + 1;
 
-				count++;
-				if (!std::invoke(func, String::FromView(name), String::FromView(value)))
+				const wchar_t* separator = std::wcschr(current, L'=');
+				if (separator && separator != current)
 				{
-					break;
+					StringView name(current, separator - current);
+					StringView value(separator + 1);
+
+					return EnvironmentVariable{String::FromView(name), String::FromView(value)};
 				}
+				enumerator.SkipCurrent();
 			}
-		}
-		return count;
+			else
+			{
+				enumerator.Terminate();
+			}
+			return {};
+		};
 	}
 
 	bool LockWorkstation(LockWorkstationCommand command) noexcept

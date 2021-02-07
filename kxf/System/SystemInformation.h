@@ -74,6 +74,12 @@ namespace kxf::System
 		bool AdminRights = false;
 		bool LimitedAdminRights = false;
 	};
+	struct EnvironmentVariable final
+	{
+		String Name;
+		String Value;
+	};
+
 	struct DisplayInfo final
 	{
 		int Width = 0;
@@ -136,7 +142,7 @@ namespace kxf::System
 	String ExpandEnvironmentStrings(const String& strings);
 	String GetEnvironmentVariable(const String& name);
 	bool SetEnvironmentVariable(const String& name, const String& value);
-	size_t EnumEnvironmentVariables(std::function<bool(String, String)> func);
+	Enumerator<EnvironmentVariable> EnumEnvironmentVariables();
 
 	bool LockWorkstation(LockWorkstationCommand command) noexcept;
 	bool ExitWorkstation(FlagSet<ExitWorkstationCommand> command) noexcept;
