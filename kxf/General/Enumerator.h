@@ -257,6 +257,16 @@ namespace kxf
 			}
 
 			// Enumerator
+			size_t CalcTotalCount()
+			{
+				size_t count = 0;
+				while (MoveNext() == Result::Continue)
+				{
+					count++;
+				}
+				return count;
+			}
+
 			const TValue& GetValue() const& noexcept
 			{
 				return *m_Value;
