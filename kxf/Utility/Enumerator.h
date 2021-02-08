@@ -53,7 +53,7 @@ namespace kxf::Utility
 
 namespace kxf::Utility
 {
-	template<class TConvFunc, class TOwner, class TEnumFunc, class... Args, std::enable_if_t<std::is_member_function_pointer_v<TEnumFunc>, int> = 0>
+	template<bool forwardTotalCount = false, class TConvFunc, class TOwner, class TEnumFunc, class... Args, std::enable_if_t<std::is_member_function_pointer_v<TEnumFunc>, int> = 0>
 	decltype(auto) MakeForwardingEnumerator(TConvFunc&& conv, TOwner&& owner, TEnumFunc enumFunc, Args&&... arg)
 	{
 		using TEnumerator = typename std::invoke_result_t<TEnumFunc, std::remove_reference_t<TOwner>*, Args...>;
@@ -73,15 +73,23 @@ namespace kxf::Utility
 				}
 
 			public:
-				TOwner& GetOwner()
+				TOwner& GetOwner() noexcept
 				{
 					return m_Owner;
 				}
-				TEnumerator& GetEnumerator()
+				TEnumerator& GetEnumerator() noexcept
 				{
 					return m_Range;
 				}
 
+				std::optional<size_t> GetTotalCount() const noexcept
+				{
+					if (forwardTotalCount)
+					{
+						return m_Range.GetTotalCount();
+					}
+					return {};
+				}
 				IEnumerator::Result MoveNext()
 				{
 					return m_Range.MoveNext();
@@ -92,7 +100,7 @@ namespace kxf::Utility
 		// as it requires its target to be copyable. Though it's a shame that we have to use a heap-allocated object at all just to forward
 		// an enumerator.
 		auto context = std::make_shared<Context>(std::forward<TOwner>(owner), enumFunc, std::forward<Args>(arg)...);
-		auto totalCount = context->GetEnumerator().GetTotalCount();
+		auto totalCount = context->GetTotalCount();
 
 		return TEnumerator([conv = std::forward<TConvFunc>(conv), context = std::move(context)](IEnumerator& enumerator) mutable -> TValueContainer
 		{
@@ -125,7 +133,7 @@ namespace kxf::Utility
 		}, std::move(totalCount));
 	}
 
-	template<class TConvFunc, class TEnumFunc, class... Args>
+	template<bool forwardTotalCount = false, class TConvFunc, class TEnumFunc, class... Args>
 	decltype(auto) MakeForwardingEnumerator(TConvFunc&& conv, TEnumFunc enumFunc, Args&&... arg)
 	{
 		using TEnumerator = typename std::invoke_result_t<TEnumFunc, Args...>;
@@ -147,11 +155,19 @@ namespace kxf::Utility
 				}
 
 			public:
-				TEnumerator& GetEnumerator()
+				TEnumerator& GetEnumerator() noexcept
 				{
 					return m_Range;
 				}
 
+				std::optional<size_t> GetTotalCount() const noexcept
+				{
+					if (forwardTotalCount)
+					{
+						return m_Range.GetTotalCount();
+					}
+					return {};
+				}
 				IEnumerator::Result MoveNext()
 				{
 					return m_Range.MoveNext();
@@ -160,7 +176,7 @@ namespace kxf::Utility
 
 		// Look overload above for details about using a shared pointer
 		auto context = std::make_shared<Context>(enumFunc, std::forward<Args>(arg)...);
-		auto totalCount = context->GetEnumerator().GetTotalCount();
+		auto totalCount = context->GetTotalCount();
 
 		return TEnumerator([conv = std::forward<TConvFunc>(conv), context = std::move(context)](IEnumerator& enumerator) mutable -> TValueContainer
 		{
