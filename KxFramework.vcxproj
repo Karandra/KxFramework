@@ -511,6 +511,7 @@
     <ClInclude Include="kxf\UI\WindowWithStyles.h" />
     <ClInclude Include="kxf\Utility\Enumerator.h" />
     <ClInclude Include="kxf\Utility\ExceptionScopeGuard.h" />
+    <ClInclude Include="kxf\Utility\Functional.h" />
     <ClInclude Include="kxf\Utility\Literals.h" />
     <ClInclude Include="kxf\wxWidgets\Application.h" />
     <ClInclude Include="kxf\wxWidgets\ClientObject.h" />

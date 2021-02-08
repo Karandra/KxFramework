@@ -1799,6 +1799,9 @@
     <ClInclude Include="kxf\Utility\Enumerator.h">
       <Filter>kxf\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Utility\Functional.h">
+      <Filter>kxf\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
