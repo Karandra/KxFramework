@@ -17,6 +17,8 @@ namespace kxf
 			};
 
 		public:
+			virtual bool IsNull() const noexcept = 0;
+
 			virtual Result MoveNext() = 0;
 			virtual void SkipCurrent() noexcept = 0;
 			virtual void Terminate() noexcept = 0;
@@ -30,11 +32,11 @@ namespace kxf
 		public:
 			explicit operator bool() const noexcept
 			{
-				return !IsReset();
+				return !IsNull();
 			}
 			bool operator!() const noexcept
 			{
-				return IsReset();
+				return IsNull();
 			}
 	};
 }

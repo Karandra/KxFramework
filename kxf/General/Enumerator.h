@@ -209,6 +209,11 @@ namespace kxf
 
 		public:
 			// IEnumerator
+			bool IsNull() const noexcept override
+			{
+				return !static_cast<bool>(m_MoveNext);
+			}
+
 			Result MoveNext() override
 			{
 				Result result = DoMoveNext();
