@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "TypeTraits.h"
+#include "Functional.h"
 #include "kxf/General/Enumerator.h"
 
 namespace kxf::Utility
@@ -52,21 +53,22 @@ namespace kxf::Utility
 
 namespace kxf::Utility
 {
-	template<class TConverterFunc, class TOwner, class TEnumFunc, class... Args, std::enable_if_t<std::is_member_function_pointer_v<TEnumFunc>, int> = 0>
-	decltype(auto) MakeForwardingEnumerator(TConverterFunc&& converter, TOwner owner, TEnumFunc enumFunc, Args&&... arg)
+	template<class TConvFunc, class TOwner, class TEnumFunc, class... Args, std::enable_if_t<std::is_member_function_pointer_v<TEnumFunc>, int> = 0>
+	decltype(auto) MakeForwardingEnumerator(TConvFunc&& conv, TOwner&& owner, TEnumFunc enumFunc, Args&&... arg)
 	{
-		using TEnumerator = typename std::invoke_result_t<TEnumFunc, TOwner*, Args...>;
+		using TEnumerator = typename std::invoke_result_t<TEnumFunc, std::remove_reference_t<TOwner>*, Args...>;
 		using TValue = typename TEnumerator::TValue;
+		using TValueContainer = typename TEnumerator::TValueContainer;
 
 		class Context final
 		{
 			private:
-				TOwner m_Owner;
+				TOwner&& m_Owner;
 				TEnumerator m_Range;
 
 			public:
-				Context(TOwner owner, TEnumFunc enumFunc, Args&&... arg)
-					:m_Owner(std::move(owner)), m_Range(std::invoke(enumFunc, &m_Owner, std::forward<Args>(arg)...))
+				Context(TOwner&& owner, TEnumFunc enumFunc, Args&&... arg)
+					:m_Owner(std::forward<TOwner>(owner)), m_Range(std::invoke(enumFunc, &m_Owner, std::forward<Args>(arg)...))
 				{
 				}
 
@@ -89,23 +91,23 @@ namespace kxf::Utility
 		// Unfortunately we have to use 'std::shared_ptr<T>' because lambda that contains move-only type cannot be stored inside 'std::function'
 		// as it requires its target to be copyable. Though it's a shame that we have to use a heap-allocated object at all just to forward
 		// an enumerator.
-		auto context = std::make_shared<Context>(std::move(owner), enumFunc, std::forward<Args>(arg)...);
+		auto context = std::make_shared<Context>(std::forward<TOwner>(owner), enumFunc, std::forward<Args>(arg)...);
 		auto totalCount = context->GetEnumerator().GetTotalCount();
 
-		return Utility::MakeEnumerator([converter = std::forward<TConverterFunc>(converter), context = std::move(context)](IEnumerator& enumerator) mutable -> std::optional<TValue>
+		return TEnumerator([conv = std::forward<TConvFunc>(conv), context = std::move(context)](IEnumerator& enumerator) mutable -> TValueContainer
 		{
 			using Result = IEnumerator::Result;
 			switch (context->MoveNext())
 			{
 				case Result::Continue:
 				{
-					if constexpr(std::is_invocable_v<TConverterFunc, TEnumerator&, TOwner&>)
+					if constexpr(std::is_invocable_v<TConvFunc, TEnumerator&, TOwner&>)
 					{
-						return std::invoke(converter, context->GetEnumerator(), context->GetOwner());
+						return std::invoke(conv, context->GetEnumerator(), context->GetOwner());
 					}
 					else
 					{
-						return std::invoke(converter, context->GetEnumerator());
+						return std::invoke(conv, context->GetEnumerator());
 					}
 				}
 				case Result::SkipCurrent:
@@ -123,14 +125,15 @@ namespace kxf::Utility
 		}, std::move(totalCount));
 	}
 
-	template<class TConverterFunc, class TEnumFunc, class... Args>
-	decltype(auto) MakeForwardingEnumerator(TConverterFunc&& converter, TEnumFunc enumFunc, Args&&... arg)
+	template<class TConvFunc, class TEnumFunc, class... Args>
+	decltype(auto) MakeForwardingEnumerator(TConvFunc&& conv, TEnumFunc enumFunc, Args&&... arg)
 	{
 		using TEnumerator = typename std::invoke_result_t<TEnumFunc, Args...>;
 		using TValue = typename TEnumerator::TValue;
+		using TValueContainer = typename TEnumerator::TValueContainer;
 
 		static_assert(!std::is_member_function_pointer_v<TEnumFunc>, "free/static function pointer required");
-		static_assert(std::is_invocable_r_v<std::optional<TValue>, TConverterFunc, TEnumerator&>, "invalid converter function signature");
+		static_assert(std::is_invocable_r_v<std::optional<TValue>, TConvFunc, TEnumerator&>, "invalid converter function signature");
 
 		class Context final
 		{
@@ -159,14 +162,14 @@ namespace kxf::Utility
 		auto context = std::make_shared<Context>(enumFunc, std::forward<Args>(arg)...);
 		auto totalCount = context->GetEnumerator().GetTotalCount();
 
-		return Utility::MakeEnumerator([converter = std::forward<TConverterFunc>(converter), context = std::move(context)](IEnumerator& enumerator) mutable -> std::optional<TValue>
+		return TEnumerator([conv = std::forward<TConvFunc>(conv), context = std::move(context)](IEnumerator& enumerator) mutable -> TValueContainer
 		{
 			using Result = IEnumerator::Result;
 			switch (context->MoveNext())
 			{
 				case Result::Continue:
 				{
-					return std::invoke(converter, context->GetEnumerator());
+					return std::invoke(conv, context->GetEnumerator());
 				}
 				case Result::SkipCurrent:
 				{
@@ -181,5 +184,42 @@ namespace kxf::Utility
 			};
 			return {};
 		}, std::move(totalCount));
+	}
+}
+
+namespace kxf::Utility
+{
+	template<class TValue, class TContainer, class TConvFunc = identity>
+	Enumerator<TValue> EnumerateDirectlyIndexable(TContainer&& container, TConvFunc&& conv = {})
+	{
+		size_t count = std::size(container);
+		return MakeEnumerator([container = std::forward_as_tuple(container), conv = std::forward<TConvFunc>(conv), index = 0_zu]() mutable -> TValue
+		{
+			return std::forward<TValue>(std::invoke(conv, std::get<0>(container)[index++]));
+		}, count);
+	}
+
+	template<class TValue, class TContainer, class TConvFunc = identity>
+	Enumerator<TValue> EnumerateStandardMap(TContainer&& container, TConvFunc&& conv = {})
+	{
+		using Tx = std::remove_reference_t<TContainer>;
+		using TIterator = std::conditional_t<std::is_const_v<Tx>, typename Tx::const_iterator, typename Tx::iterator>;
+
+		size_t count = container.size();
+		return MakeEnumerator([container = std::forward_as_tuple(container), it = std::optional<TIterator>(), conv = std::forward<TConvFunc>(conv)]() mutable -> TValue
+		{
+			// Initialize the iterator
+			if (!it)
+			{
+				it = std::get<0>(container).begin();
+			}
+
+			// Get and convert the object
+			decltype(auto) result = std::invoke(conv, (*it)->second);
+			++(*it);
+
+			// Return the object
+			return std::forward<TValue>(result);
+		}, count);
 	}
 }
