@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "IEnumerator.h"
+#include "OptionalRef.h"
 
 namespace kxf::Private
 {
@@ -98,7 +99,7 @@ namespace kxf
 	{
 		public:
 			using TValue = TValue_;
-			using TValueContainer = typename std::conditional_t<std::is_reference_v<TValue>, std::optional<std::reference_wrapper<std::remove_reference_t<TValue>>>, std::optional<TValue>>;
+			using TValueContainer = typename std::conditional_t<std::is_reference_v<TValue>, kxf::optional_ref<std::remove_reference_t<TValue>>, std::optional<TValue>>;
 
 			using iterator = Private::EnumIterator<Enumerator>;
 
@@ -158,19 +159,15 @@ namespace kxf
 		public:
 			Enumerator() noexcept = default;
 
-			// std::optional<TValue> func(IEnumerator&);
-			template<class TFunc, std::enable_if_t<std::is_same_v<std::invoke_result_t<TFunc, IEnumerator&>, std::optional<TValue>>, int> = 0>
+			// TValueContainer func(IEnumerator&);
+			template<class TFunc, std::enable_if_t<std::is_same_v<std::invoke_result_t<TFunc, IEnumerator&>, TValueContainer>, int> = 0>
 			Enumerator(TFunc&& func, std::optional<size_t> count = {}) noexcept
-				:m_TotalCount(count.value_or(npos))
+				:m_TotalCount(count.value_or(npos)), m_MoveNext(std::forward<TFunc>(func))
 			{
-				m_MoveNext = [func = std::forward<TFunc>(func)](IEnumerator& enumerator) mutable -> TValueContainer
-				{
-					return std::invoke(func, enumerator);
-				};
 			}
 
-			// std::optional<TValue> func(void);
-			template<class TFunc, std::enable_if_t<std::is_same_v<std::invoke_result_t<TFunc>, std::optional<TValue>>, int> = 0>
+			// TValueContainer func(void);
+			template<class TFunc, std::enable_if_t<std::is_same_v<std::invoke_result_t<TFunc>, TValueContainer>, int> = 0>
 			Enumerator(TFunc&& func, std::optional<size_t> count = {}) noexcept
 				:m_TotalCount(count.value_or(npos))
 			{
