@@ -10,12 +10,13 @@
 
 // Standard library
 #include <cstdint>
-#include <utility>
 #include <memory>
 #include <optional>
 #include <functional>
 #include <algorithm>
 #include <type_traits>
+#include <utility>
+#include <tuple>
 
 // Essential headers
 #include "kxf/wxWidgets/Setup.h"

@@ -16,6 +16,8 @@
 #include <locale>
 #include <exception>
 #include <stdexcept>
+#include <utility>
+#include <tuple>
 
 // Often used wxWidgets headers
 
