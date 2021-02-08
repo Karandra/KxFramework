@@ -285,6 +285,28 @@ namespace kxf
 				return {};
 			}
 
+			const TValue& operator*() const& noexcept
+			{
+				return *m_Value;
+			}
+			TValue& operator*() & noexcept
+			{
+				return *m_Value;
+			}
+			TValue operator*() && noexcept
+			{
+				return *std::move(m_Value);
+			}
+
+			const TValue* operator->() const& noexcept
+			{
+				return &*m_Value;
+			}
+			TValue* operator->() & noexcept
+			{
+				return &*m_Value;
+			}
+
 		public:
 			bool operator==(const Enumerator& other) const noexcept
 			{
