@@ -270,9 +270,13 @@ namespace kxf
 		public:
 			iterator begin() noexcept
 			{
-				iterator it = *this;
-				++it;
-				return it;
+				if (m_MoveNext)
+				{
+					iterator it = *this;
+					++it;
+					return it;
+				}
+				return {};
 			}
 			iterator end() noexcept
 			{
