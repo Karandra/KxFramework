@@ -99,6 +99,7 @@ namespace kxf
 	{
 		public:
 			using TValue = TValue_;
+			using TStoredValue = typename std::conditional_t<std::is_reference_v<TValue>, std::remove_reference_t<TValue>*, TValue>;
 			using TValueContainer = typename std::conditional_t<std::is_reference_v<TValue>, kxf::optional_ref<std::remove_reference_t<TValue>>, std::optional<TValue>>;
 
 			using iterator = Private::EnumIterator<Enumerator>;
@@ -298,11 +299,11 @@ namespace kxf
 				return *std::move(m_Value);
 			}
 
-			const TValue* operator->() const& noexcept
+			const TStoredValue* operator->() const& noexcept
 			{
 				return &*m_Value;
 			}
-			TValue* operator->() & noexcept
+			TStoredValue* operator->() & noexcept
 			{
 				return &*m_Value;
 			}
