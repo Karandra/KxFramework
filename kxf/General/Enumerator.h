@@ -98,14 +98,16 @@ namespace kxf
 	{
 		public:
 			using TValue = TValue_;
+			using TValueContainer = typename std::conditional_t<std::is_reference_v<TValue>, std::optional<std::reference_wrapper<std::remove_reference_t<TValue>>>, std::optional<TValue>>;
+
 			using iterator = Private::EnumIterator<Enumerator>;
 
 		private:
 			static inline constexpr size_t npos = std::numeric_limits<size_t>::max();
 
 		private:
-			std::function<std::optional<TValue>(IEnumerator&)> m_MoveNext;
-			std::optional<TValue> m_Value;
+			std::function<TValueContainer(IEnumerator&)> m_MoveNext;
+			TValueContainer m_Value;
 
 			size_t m_Index = 0;
 			size_t m_TotalCount = npos;
@@ -159,8 +161,12 @@ namespace kxf
 			// std::optional<TValue> func(IEnumerator&);
 			template<class TFunc, std::enable_if_t<std::is_same_v<std::invoke_result_t<TFunc, IEnumerator&>, std::optional<TValue>>, int> = 0>
 			Enumerator(TFunc&& func, std::optional<size_t> count = {}) noexcept
-				:m_TotalCount(count.value_or(npos)), m_MoveNext(std::forward<TFunc>(func))
+				:m_TotalCount(count.value_or(npos))
 			{
+				m_MoveNext = [func = std::forward<TFunc>(func)](IEnumerator& enumerator) mutable -> TValueContainer
+				{
+					return std::invoke(func, enumerator);
+				};
 			}
 
 			// std::optional<TValue> func(void);
@@ -168,7 +174,7 @@ namespace kxf
 			Enumerator(TFunc&& func, std::optional<size_t> count = {}) noexcept
 				:m_TotalCount(count.value_or(npos))
 			{
-				m_MoveNext = [func = std::forward<TFunc>(func)](IEnumerator& enumerator) mutable -> std::optional<TValue>
+				m_MoveNext = [func = std::forward<TFunc>(func)](IEnumerator& enumerator) mutable -> TValueContainer
 				{
 					return std::invoke(func);
 				};
@@ -179,7 +185,7 @@ namespace kxf
 			Enumerator(TFunc&& func, std::optional<size_t> count = {}) noexcept
 				:m_TotalCount(count.value_or(npos))
 			{
-				m_MoveNext = [func = std::forward<TFunc>(func)](IEnumerator& enumerator) mutable -> std::optional<TValue>
+				m_MoveNext = [func = std::forward<TFunc>(func)](IEnumerator& enumerator) mutable -> TValueContainer
 				{
 					return std::invoke(func, enumerator);
 				};
@@ -192,7 +198,7 @@ namespace kxf
 			{
 				wxASSERT_MSG(count.has_value() && *count != npos, "Producer function with no way to signal termination must only be used with known total limit");
 
-				m_MoveNext = [func = std::forward<TFunc>(func)](IEnumerator& enumerator) mutable -> std::optional<TValue>
+				m_MoveNext = [func = std::forward<TFunc>(func)](IEnumerator& enumerator) mutable -> TValueContainer
 				{
 					return std::invoke(func);
 				};

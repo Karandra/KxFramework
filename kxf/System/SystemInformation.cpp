@@ -654,7 +654,7 @@ namespace kxf::System
 			if (*item)
 			{
 				auto current = item;
-				item += std::wcslen(current) + 1;
+				item += std::wcslen(item) + 1;
 
 				const wchar_t* separator = std::wcschr(current, L'=');
 				if (separator && separator != current)
@@ -665,10 +665,6 @@ namespace kxf::System
 					return EnvironmentVariable{String::FromView(name), String::FromView(value)};
 				}
 				enumerator.SkipCurrent();
-			}
-			else
-			{
-				enumerator.Terminate();
 			}
 			return {};
 		};

@@ -99,7 +99,7 @@ namespace kxf::Utility
 			{
 				case Result::Continue:
 				{
-					if constexpr (std::is_invocable_v<TConverterFunc, TEnumerator&, TOwner&>)
+					if constexpr(std::is_invocable_v<TConverterFunc, TEnumerator&, TOwner&>)
 					{
 						return std::invoke(converter, context->GetEnumerator(), context->GetOwner());
 					}
