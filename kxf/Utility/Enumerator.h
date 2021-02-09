@@ -206,7 +206,7 @@ namespace kxf::Utility
 namespace kxf::Utility
 {
 	template<class TValue, class TConvFunc = identity, class TContainer>
-	Enumerator<TValue> EnumerateDirectlyIndexable(TContainer&& container, TConvFunc&& conv = {})
+	Enumerator<TValue> EnumerateIndexableContainer(TContainer&& container, TConvFunc&& conv = {})
 	{
 		size_t count = std::size(container);
 		return MakeEnumerator([container = std::forward_as_tuple(container), conv = std::forward<TConvFunc>(conv), index = 0_zu]() mutable -> TValue
@@ -215,14 +215,18 @@ namespace kxf::Utility
 		}, count);
 	}
 
-	template<class TValue, class TConvFunc = identity, class TContainer>
-	Enumerator<TValue> EnumerateStandardMap(TContainer&& container, TConvFunc&& conv = {})
+	template<class TValue, class TConvFunc = identity, class TExtractFunc = identity, class TContainer>
+	Enumerator<TValue> EnumerateIterableContainer(TContainer&& container, TConvFunc&& conv = {}, TExtractFunc&& extract = {})
 	{
 		using Tx = std::remove_reference_t<TContainer>;
 		using TIterator = std::conditional_t<std::is_const_v<Tx>, typename Tx::const_iterator, typename Tx::iterator>;
 
-		size_t count = container.size();
-		return MakeEnumerator([container = std::forward_as_tuple(container), it = std::optional<TIterator>(), conv = std::forward<TConvFunc>(conv)]() mutable -> TValue
+		const size_t count = container.size();
+		return MakeEnumerator([container = std::forward_as_tuple(container),
+							  it = std::optional<TIterator>(),
+							  conv = std::forward<TConvFunc>(conv),
+							  extract = std::forward<TExtractFunc>(extract)
+		]() mutable -> TValue
 		{
 			// Initialize the iterator
 			if (!it)
@@ -230,12 +234,18 @@ namespace kxf::Utility
 				it = std::get<0>(container).begin();
 			}
 
-			// Get and convert the object
-			decltype(auto) result = std::invoke(conv, (*it)->second);
+			// Extract and convert the value and advance the iterator
+			decltype(auto) result = std::invoke(conv, std::invoke(extract, *(*it)));
 			++(*it);
 
-			// Return the object
+			// Return it
 			return std::forward<TValue>(result);
 		}, count);
+	}
+
+	template<class TValue, class TConvFunc = identity, class TContainer>
+	Enumerator<TValue> EnumerateStandardMap(TContainer&& container, TConvFunc&& conv = {})
+	{
+		return EnumerateIterableContainer<TValue>(std::forward<TContainer>(container), std::forward<TConvFunc>(conv), identity_tuple<1>());
 	}
 }
