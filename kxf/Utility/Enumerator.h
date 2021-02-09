@@ -205,7 +205,7 @@ namespace kxf::Utility
 
 namespace kxf::Utility
 {
-	template<class TValue, class TContainer, class TConvFunc = identity>
+	template<class TValue, class TConvFunc = identity, class TContainer>
 	Enumerator<TValue> EnumerateDirectlyIndexable(TContainer&& container, TConvFunc&& conv = {})
 	{
 		size_t count = std::size(container);
@@ -215,7 +215,7 @@ namespace kxf::Utility
 		}, count);
 	}
 
-	template<class TValue, class TContainer, class TConvFunc = identity>
+	template<class TValue, class TConvFunc = identity, class TContainer>
 	Enumerator<TValue> EnumerateStandardMap(TContainer&& container, TConvFunc&& conv = {})
 	{
 		using Tx = std::remove_reference_t<TContainer>;
