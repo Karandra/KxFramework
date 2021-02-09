@@ -15,6 +15,16 @@ namespace kxf::Utility
 			return std::forward<T>(v);
 		}
 	};
+
+	template<size_t index>
+	struct identity_tuple
+	{
+		template<class T>
+		constexpr decltype(auto) operator()(T&& tuple) const noexcept
+		{
+			return std::get<index>(std::forward<T>(tuple));
+		}
+	};
 }
 
 namespace kxf::Utility
