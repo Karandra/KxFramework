@@ -29,30 +29,85 @@ namespace kxf::Utility
 
 namespace kxf::Utility
 {
-	struct Unfancy
+	struct AddressOf
 	{
-		template<class T>
-		T& operator()(std::unique_ptr<T>& ptr) const noexcept
-		{
-			return *ptr;
-		}
+		public:
+			template<class T>
+			constexpr T* operator()(T& v) const noexcept
+			{
+				return &v;
+			}
 
-		template<class T>
-		const T& operator()(const std::unique_ptr<T>& ptr) const noexcept
-		{
-			return *ptr;
-		}
+			template<class T>
+			constexpr const T* operator()(const T& v) const noexcept
+			{
+				return &v;
+			}
 
-		template<class T>
-		T& operator()(std::shared_ptr<T>& ptr) const noexcept
-		{
-			return *ptr;
-		}
+		public:
+			template<class T>
+			T* operator()(std::unique_ptr<T>& ptr) const noexcept
+			{
+				return ptr.get();
+			}
 
-		template<class T>
-		const T& operator()(const std::shared_ptr<T>& ptr) const noexcept
-		{
-			return *ptr;
-		}
+			template<class T>
+			const T* operator()(const std::unique_ptr<T>& ptr) const noexcept
+			{
+				return ptr.get();
+			}
+
+			template<class T>
+			T* operator()(std::shared_ptr<T>& ptr) const noexcept
+			{
+				return ptr.get();
+			}
+
+			template<class T>
+			const T* operator()(const std::shared_ptr<T>& ptr) const noexcept
+			{
+				return ptr.get();
+			}
+	};
+
+	struct ReferenceOf
+	{
+		public:
+			template<class T>
+			constexpr T& operator()(T* v) const noexcept
+			{
+				return *v;
+			}
+
+			template<class T>
+			constexpr const T& operator()(const T* v) const noexcept
+			{
+				return *v;
+			}
+
+		public:
+			template<class T>
+			T& operator()(std::unique_ptr<T>& ptr) const noexcept
+			{
+				return *ptr;
+			}
+
+			template<class T>
+			const T& operator()(const std::unique_ptr<T>& ptr) const noexcept
+			{
+				return *ptr;
+			}
+
+			template<class T>
+			T& operator()(std::shared_ptr<T>& ptr) const noexcept
+			{
+				return *ptr;
+			}
+
+			template<class T>
+			const T& operator()(const std::shared_ptr<T>& ptr) const noexcept
+			{
+				return *ptr;
+			}
 	};
 }
