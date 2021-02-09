@@ -102,7 +102,7 @@ namespace kxf::RTTI
 			std::unique_ptr<IObject> result;
 			EnumImplementations([&](const ClassInfo& classInfo)
 			{
-				if (classInfo.GetTraits().Contains(ClassTrait::Implementation) && classInfo.GetInterfaceID() == iid)
+				if (classInfo.GetTraits().Contains(ClassTrait::Implementation) && classInfo.GetIID() == iid)
 				{
 					result = classInfo.CreateObjectInstance();
 				}

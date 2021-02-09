@@ -71,7 +71,7 @@ namespace kxf::RTTI
 			// ClassInfo
 			std::string_view ParseToFullyQualifiedName(std::string_view name, size_t index) const noexcept;
 
-			virtual IID DoGetInterfaceID() const noexcept = 0;
+			virtual IID DoGetIID() const noexcept = 0;
 			virtual size_t DoEnumBaseClasses(std::function<bool(const ClassInfo&)> func) const noexcept = 0;
 			virtual std::unique_ptr<IObject> DoCreateObjectInstance() const = 0;
 
@@ -100,9 +100,9 @@ namespace kxf::RTTI
 				return m_Alignment;
 			}
 
-			IID GetInterfaceID() const noexcept
+			IID GetIID() const noexcept
 			{
-				return DoGetInterfaceID();
+				return DoGetIID();
 			}
 			FlagSet<ClassTrait> GetTraits() const noexcept
 			{
@@ -201,6 +201,14 @@ namespace kxf::RTTI::Private
 
 		protected:
 			// ClassInfo
+			IID DoGetIID() const noexcept override
+			{
+				return {};
+			}
+			std::unique_ptr<IObject> DoCreateObjectInstance() const override
+			{
+				return nullptr;
+			}
 			size_t DoEnumBaseClasses(std::function<bool(const ClassInfo&)> func) const noexcept override
 			{
 				size_t count = 0;
@@ -258,13 +266,9 @@ namespace kxf::RTTI
 	{
 		protected:
 			// ClassInfo
-			IID DoGetInterfaceID() const noexcept override
+			IID DoGetIID() const noexcept override
 			{
 				return RTTI::GetInterfaceID<T>();
-			}
-			std::unique_ptr<IObject> DoCreateObjectInstance() const override
-			{
-				return nullptr;
 			}
 
 		public:
@@ -277,17 +281,6 @@ namespace kxf::RTTI
 	template<class T, class... TBase>
 	class ImplementationClassInfo: public Private::ClassInfoOfCommon<T, TBase...>
 	{
-		protected:
-			// ClassInfo
-			IID DoGetInterfaceID() const noexcept override
-			{
-				return {};
-			}
-			std::unique_ptr<IObject> DoCreateObjectInstance() const override
-			{
-				return nullptr;
-			}
-
 		public:
 			ImplementationClassInfo()
 				:Private::ClassInfoOfCommon<T, TBase...>(ClassTrait::Implementation)
@@ -300,7 +293,7 @@ namespace kxf::RTTI
 	{
 		protected:
 			// ClassInfo
-			IID DoGetInterfaceID() const noexcept override
+			IID DoGetIID() const noexcept override
 			{
 				return RTTI::GetInterfaceID<T>();
 			}

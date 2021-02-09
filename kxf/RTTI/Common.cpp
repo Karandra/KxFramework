@@ -46,7 +46,7 @@ namespace kxf::RTTI
 		{
 			return DoGetClassInfo([&](const ClassInfo& classInfo)
 			{
-				return classInfo.GetInterfaceID() == iid;
+				return classInfo.GetIID() == iid;
 			});
 		}
 		return nullptr;
