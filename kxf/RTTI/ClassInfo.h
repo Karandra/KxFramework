@@ -4,12 +4,6 @@
 #include "kxf/General/FlagSet.h"
 #include <variant>
 
-namespace kxf
-{
-	class IObject;
-	class String;
-}
-
 namespace kxf::RTTI
 {
 	enum class ClassTrait: uint64_t
@@ -72,7 +66,7 @@ namespace kxf::RTTI
 			std::string_view ParseToFullyQualifiedName(std::string_view name, size_t index) const noexcept;
 
 			virtual IID DoGetIID() const noexcept = 0;
-			virtual size_t DoEnumBaseClasses(std::function<bool(const ClassInfo&)> func) const noexcept = 0;
+			virtual size_t DoGetBaseClass(const ClassInfo** classInfo, size_t index = std::numeric_limits<size_t>::max()) const noexcept = 0;
 			virtual std::unique_ptr<IObject> DoCreateObjectInstance() const = 0;
 
 		protected:
@@ -113,13 +107,10 @@ namespace kxf::RTTI
 				return *m_TypeInfo;
 			}
 
-			size_t EnumBaseClasses(std::function<bool(const ClassInfo&)> func) const noexcept
-			{
-				return DoEnumBaseClasses(std::move(func));
-			}
-			size_t EnumDerivedClasses(std::function<bool(const ClassInfo&)> func) const noexcept;
-			size_t EnumImplementations(std::function<bool(const ClassInfo&)> func) const noexcept;
-			size_t EnumDerivedInterfaces(std::function<bool(const ClassInfo&)> func) const noexcept;
+			Enumerator<const ClassInfo&> EnumBaseClasses() const noexcept;
+			Enumerator<const ClassInfo&> EnumDerivedClasses() const noexcept;
+			Enumerator<const ClassInfo&> EnumImplementations() const noexcept;
+			Enumerator<const ClassInfo&> EnumDerivedInterfaces() const noexcept;
 			bool IsBaseOf(const ClassInfo& other) const noexcept;
 			bool IsSameAs(const ClassInfo& other) const noexcept;
 			bool IsNull() const noexcept;
@@ -209,34 +200,30 @@ namespace kxf::RTTI::Private
 			{
 				return nullptr;
 			}
-			size_t DoEnumBaseClasses(std::function<bool(const ClassInfo&)> func) const noexcept override
+			size_t DoGetBaseClass(const ClassInfo** classInfo, size_t index = std::numeric_limits<size_t>::max()) const noexcept override
 			{
-				size_t count = 0;
-				for (auto& item: m_BaseClassInfo)
+				if (classInfo && index < m_BaseClassInfo.size())
 				{
-					if (auto classInfo = std::get_if<const ClassInfo*>(&item))
+					auto DoGetItem = [](auto& item) -> const ClassInfo*
 					{
-						count++;
-						if (func && !std::invoke(func, **classInfo))
+						if (auto classInfo = std::get_if<const ClassInfo*>(&item))
 						{
-							break;
+							return *classInfo;
 						}
-					}
-					else if (auto name = std::get_if<std::string_view>(&item))
-					{
-						if (auto classInfo = RTTI::GetClassInfoByName(*name))
+						else if (auto name = std::get_if<std::string_view>(&item))
 						{
-							item = classInfo;
-
-							count++;
-							if (func && !std::invoke(func, *classInfo))
+							if (auto classInfo = RTTI::GetClassInfoByName(*name))
 							{
-								break;
+								item = classInfo;
+								return classInfo;
 							}
 						}
-					}
+						return nullptr;
+					};
+
+					*classInfo = DoGetItem(m_BaseClassInfo[index]);
 				}
-				return count;
+				return m_BaseClassInfo.size();
 			}
 
 		public:

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "ClassInfo.h"
 #include "kxf/General/String.h"
+#include "kxf/General/Enumerator.h"
+#include "kxf/Utility/Enumerator.h"
 
 namespace
 {
@@ -99,17 +101,13 @@ namespace kxf::RTTI
 	{
 		if (m_Traits.Contains(ClassTrait::Interface) && iid)
 		{
-			std::unique_ptr<IObject> result;
-			EnumImplementations([&](const ClassInfo& classInfo)
+			for (const ClassInfo& classInfo: EnumImplementations())
 			{
 				if (classInfo.GetTraits().Contains(ClassTrait::Implementation) && classInfo.GetIID() == iid)
 				{
-					result = classInfo.CreateObjectInstance();
+					return classInfo.CreateObjectInstance();
 				}
-				return result == nullptr;
-			});
-
-			return result;
+			};
 		}
 		return nullptr;
 	}
@@ -117,17 +115,13 @@ namespace kxf::RTTI
 	{
 		if (m_Traits.Contains(ClassTrait::Interface) && !fullyQualifiedName.IsEmpty())
 		{
-			std::unique_ptr<IObject> result;
-			EnumImplementations([&](const ClassInfo& classInfo)
+			for (const ClassInfo& classInfo: EnumImplementations())
 			{
 				if (classInfo.GetTraits().Contains(ClassTrait::Implementation) && fullyQualifiedName.IsSameAs(classInfo.m_FullyQualifiedName))
 				{
-					result = classInfo.CreateObjectInstance();
+					return classInfo.CreateObjectInstance();
 				}
-				return result == nullptr;
-			});
-
-			return result;
+			};
 		}
 		return nullptr;
 	}
@@ -135,17 +129,13 @@ namespace kxf::RTTI
 	{
 		if (m_Traits.Contains(ClassTrait::Interface))
 		{
-			std::unique_ptr<IObject> result;
-			EnumImplementations([&](const ClassInfo& classInfo)
+			for (const ClassInfo& classInfo: EnumImplementations())
 			{
 				if (classInfo.GetTraits().Contains(ClassTrait::Implementation))
 				{
-					result = classInfo.CreateObjectInstance();
+					return classInfo.CreateObjectInstance();
 				}
-				return result == nullptr;
-			});
-
-			return result;
+			};
 		}
 		return nullptr;
 	}
@@ -174,64 +164,87 @@ namespace kxf::RTTI
 		return String::FromView(m_FullyQualifiedName);
 	}
 
-	size_t ClassInfo::EnumDerivedClasses(std::function<bool(const ClassInfo&)> func) const noexcept
+	Enumerator<const ClassInfo&> ClassInfo::EnumBaseClasses() const noexcept
 	{
-		size_t count = 0;
-		for (const ClassInfo* classInfo = m_FirstClassInfo; classInfo; classInfo = classInfo->m_NextClassInfo)
+		const size_t count = DoGetBaseClass(nullptr);
+		return {[this, index = 0_zu](IEnumerator& en) mutable -> optional_ref<const ClassInfo>
 		{
-			if (IsBaseOf(*classInfo))
+			const ClassInfo* classInfo = nullptr;
+			DoGetBaseClass(&classInfo, index++);
+
+			if (classInfo)
 			{
-				count++;
-				if (func && !std::invoke(func, *classInfo))
-				{
-					break;
-				}
+				return *classInfo;
 			}
-		}
-		return count;
+			else
+			{
+				// TODO: Investigate missing RTTI class infos.
+				// Returned class info shouldn't be nullptr as they must always be there but sometimes
+				// we still can't find them for some reason. This shouldn't really happen but it happens
+				// anyway.
+
+				en.SkipCurrent();
+				return {};
+			}
+		}, count};
 	}
-	size_t ClassInfo::EnumImplementations(std::function<bool(const ClassInfo&)> func) const noexcept
+	Enumerator<const ClassInfo&> ClassInfo::EnumDerivedClasses() const noexcept
 	{
-		size_t count = 0;
-		EnumDerivedClasses([&](const ClassInfo& classInfo)
+		return [this, classInfo = m_FirstClassInfo](IEnumerator& en) mutable -> optional_ref<const ClassInfo>
 		{
+			if (classInfo)
+			{
+				const ClassInfo& other = *classInfo;
+				classInfo = classInfo->m_NextClassInfo;
+
+				if (this->IsBaseOf(other))
+				{
+					return other;
+				}
+				en.SkipCurrent();
+			}
+			return {};
+		};
+	}
+	Enumerator<const ClassInfo&> ClassInfo::EnumImplementations() const noexcept
+	{
+		return Utility::MakeForwardingEnumerator([](auto& en) -> optional_ref<const ClassInfo>
+		{
+			const ClassInfo& classInfo = *en;
 			if (classInfo.GetTraits().Contains(ClassTrait::Implementation))
 			{
-				count++;
-				return !func || std::invoke(func, classInfo);
+				return classInfo;
 			}
-			return true;
-		});
-		return count;
+
+			en.SkipCurrent();
+			return {};
+		}, *this, &ClassInfo::EnumDerivedClasses);
 	}
-	size_t ClassInfo::EnumDerivedInterfaces(std::function<bool(const ClassInfo&)> func) const noexcept
+	Enumerator<const ClassInfo&> ClassInfo::EnumDerivedInterfaces() const noexcept
 	{
-		size_t count = 0;
-		EnumDerivedClasses([&](const ClassInfo& classInfo)
+		return Utility::MakeForwardingEnumerator([](auto& en) -> optional_ref<const ClassInfo>
 		{
+			const ClassInfo& classInfo = *en;
 			if (classInfo.GetTraits().Contains(ClassTrait::Interface))
 			{
-				count++;
-				return !func || std::invoke(func, classInfo);
+				return classInfo;
 			}
-			return true;
-		});
-		return count;
+
+			en.SkipCurrent();
+			return {};
+		}, *this, &ClassInfo::EnumDerivedClasses);
 	}
 
 	bool ClassInfo::IsBaseOf(const ClassInfo& other) const noexcept
 	{
-		bool result = false;
-		other.EnumBaseClasses([&](const ClassInfo& classInfo)
+		for (const ClassInfo& classInfo: other.EnumBaseClasses())
 		{
 			if (classInfo == *this)
 			{
-				result = true;
-				return false;
+				return true;
 			}
-			return true;
-		});
-		return result;
+		};
+		return false;
 	}
 	bool ClassInfo::IsSameAs(const ClassInfo& other) const noexcept
 	{

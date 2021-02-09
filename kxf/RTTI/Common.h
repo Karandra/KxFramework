@@ -10,6 +10,9 @@ namespace kxf
 	class IObject;
 
 	class String;
+
+	template<class T>
+	class Enumerator;
 }
 namespace kxf::RTTI
 {
@@ -30,7 +33,7 @@ namespace kxf::RTTI
 		return T::ms_ClassInfo;
 	}
 
-	size_t EnumClassInfo(std::function<bool(const ClassInfo&)> func) noexcept;
+	Enumerator<const ClassInfo&> EnumClassInfo() noexcept;
 
 	const ClassInfo* GetClassInfoByInterfaceID(const IID& iid) noexcept;
 	const ClassInfo* GetClassInfoByName(const char* fullyQualifiedName) noexcept;

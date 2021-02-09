@@ -2684,9 +2684,6 @@
     <ClCompile Include="kxf\General\IVariablesCollection.cpp">
       <Filter>kxf\General\&lt;VariablesCollection&gt;</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\RTTI\Common.cpp">
-      <Filter>kxf\RTTI</Filter>
-    </ClCompile>
     <ClCompile Include="kxf\RTTI\ClassInfo.cpp">
       <Filter>kxf\RTTI</Filter>
     </ClCompile>
@@ -2694,6 +2691,9 @@
       <Filter>kxf\RTTI</Filter>
     </ClCompile>
     <ClCompile Include="kxf\RTTI\IID.cpp">
+      <Filter>kxf\RTTI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\RTTI\Common.cpp">
       <Filter>kxf\RTTI</Filter>
     </ClCompile>
   </ItemGroup>

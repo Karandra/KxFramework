@@ -2,6 +2,8 @@
 #include "Common.h"
 #include "ClassInfo.h"
 #include "kxf/General/String.h"
+#include "kxf/General/Enumerator.h"
+#include "kxf/Utility/Enumerator.h"
 
 namespace
 {
@@ -10,34 +12,32 @@ namespace
 	{
 		using namespace kxf::RTTI;
 
-		const ClassInfo* result = nullptr;
-		EnumClassInfo([&](const ClassInfo& classInfo)
+		for (const ClassInfo& classInfo: EnumClassInfo())
 		{
 			if (std::invoke(func, classInfo))
 			{
-				result = &classInfo;
+				return &classInfo;
 			}
-			return result == nullptr;
-		});
-
-		return result;
+		};
+		return nullptr;
 	}
 }
 
 namespace kxf::RTTI
 {
-	size_t EnumClassInfo(std::function<bool(const ClassInfo&)> func) noexcept
+	Enumerator<const ClassInfo&> EnumClassInfo() noexcept
 	{
-		size_t count = 0;
-		for (const ClassInfo* classInfo = ClassInfo::GetFirstClassInfo(); classInfo; classInfo = classInfo->GetNextClassInfo())
+		return [classInfo = ClassInfo::GetFirstClassInfo()]() mutable -> optional_ref<const ClassInfo>
 		{
-			count++;
-			if (func && !std::invoke(func, *classInfo))
+			if (classInfo)
 			{
-				break;
+				decltype(auto) ref = *classInfo;
+				classInfo = classInfo->GetNextClassInfo();
+
+				return ref;
 			}
-		}
-		return count;
+			return {};
+		};
 	}
 
 	const kxf::RTTI::ClassInfo* GetClassInfoByInterfaceID(const IID& iid) noexcept
