@@ -622,9 +622,6 @@
     <ClInclude Include="kxf\Drawing\Common.h">
       <Filter>kxf\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Drawing\ImageSet.h">
-      <Filter>kxf\Drawing</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\Drawing\WithImageList.h">
       <Filter>kxf\Drawing</Filter>
     </ClInclude>
@@ -2003,9 +2000,6 @@
       <Filter>kxf\Network\CURL</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Drawing\Common.cpp">
-      <Filter>kxf\Drawing</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\Drawing\ImageSet.cpp">
       <Filter>kxf\Drawing</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Drawing\UxTheme.cpp">
