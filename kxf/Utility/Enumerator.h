@@ -97,26 +97,23 @@ namespace kxf::Utility
 				}
 		};
 
-		// Unfortunately we have to use 'std::shared_ptr<T>' because lambda that contains move-only type cannot be stored inside 'std::function'
-		// as it requires its target to be copyable. Though it's a shame that we have to use a heap-allocated object at all just to forward
-		// an enumerator.
-		auto context = std::make_shared<Context>(std::forward<TOwner>(owner), enumFunc, std::forward<Args>(arg)...);
-		auto totalCount = context->GetTotalCount();
-
-		return TEnumerator([conv = std::forward<TConvFunc>(conv), context = std::move(context)](IEnumerator& enumerator) mutable -> TValueContainer
+		return TEnumerator([conv = std::forward<TConvFunc>(conv),
+						   context = Context(std::forward<TOwner>(owner),
+						   enumFunc, std::forward<Args>(arg)...)]
+						   (IEnumerator& enumerator) mutable -> TValueContainer
 		{
 			using Result = IEnumerator::Result;
-			switch (context->MoveNext())
+			switch (context.MoveNext())
 			{
 				case Result::Continue:
 				{
 					if constexpr(std::is_invocable_v<TConvFunc, TEnumerator&, TOwner&>)
 					{
-						return std::invoke(conv, context->GetEnumerator(), context->GetOwner());
+						return std::invoke(conv, context.GetEnumerator(), context.GetOwner());
 					}
 					else
 					{
-						return std::invoke(conv, context->GetEnumerator());
+						return std::invoke(conv, context.GetEnumerator());
 					}
 				}
 				case Result::SkipCurrent:
@@ -131,7 +128,7 @@ namespace kxf::Utility
 				}
 			};
 			return {};
-		}, std::move(totalCount));
+		});
 	}
 
 	template<bool forwardTotalCount = false, class TConvFunc, class TEnumFunc, class... Args>
@@ -175,18 +172,16 @@ namespace kxf::Utility
 				}
 		};
 
-		// Look overload above for details about using a shared pointer
-		auto context = std::make_shared<Context>(enumFunc, std::forward<Args>(arg)...);
-		auto totalCount = context->GetTotalCount();
-
-		return TEnumerator([conv = std::forward<TConvFunc>(conv), context = std::move(context)](IEnumerator& enumerator) mutable -> TValueContainer
+		return TEnumerator([conv = std::forward<TConvFunc>(conv),
+						   context = Context(enumFunc, std::forward<Args>(arg)...)]
+						   (IEnumerator& enumerator) mutable -> TValueContainer
 		{
 			using Result = IEnumerator::Result;
-			switch (context->MoveNext())
+			switch (context.MoveNext())
 			{
 				case Result::Continue:
 				{
-					return std::invoke(conv, context->GetEnumerator());
+					return std::invoke(conv, context.GetEnumerator());
 				}
 				case Result::SkipCurrent:
 				{
@@ -200,7 +195,7 @@ namespace kxf::Utility
 				}
 			};
 			return {};
-		}, std::move(totalCount));
+		});
 	}
 }
 
