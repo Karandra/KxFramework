@@ -9,7 +9,7 @@ namespace kxf
 		{
 			return true;
 		}
-		else if (m_ErrorCode && other.m_ErrorCode && m_InterfaceID == other.m_InterfaceID)
+		else if (m_ErrorCode && other.m_ErrorCode && m_IID == other.m_IID)
 		{
 			return m_ErrorCode->GetValue() == other.m_ErrorCode->GetValue();
 		}

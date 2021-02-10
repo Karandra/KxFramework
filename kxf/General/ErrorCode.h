@@ -8,12 +8,12 @@ namespace kxf
 	{
 		private:
 			std::unique_ptr<IErrorCode> m_ErrorCode;
-			IID m_InterfaceID;
+			IID m_IID;
 
 		protected:
 			RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept override
 			{
-				if (m_ErrorCode && iid == m_InterfaceID)
+				if (m_ErrorCode && iid == m_IID)
 				{
 					return m_ErrorCode->QueryInterface(iid);
 				}
@@ -25,8 +25,17 @@ namespace kxf
 
 			template<class T, class = std::enable_if_t<std::is_base_of_v<IErrorCode, T>>>
 			ErrorCode(T errorCode) noexcept
-				:m_ErrorCode(std::make_unique<T>(std::move(errorCode))), m_InterfaceID(RTTI::GetInterfaceID<T>())
+				:m_ErrorCode(std::make_unique<T>(std::move(errorCode))), m_IID(RTTI::GetInterfaceID<T>())
 			{
+			}
+
+			ErrorCode(std::unique_ptr<IErrorCode> errorCode) noexcept
+				:m_ErrorCode(std::move(errorCode))
+			{
+				if (m_ErrorCode)
+				{
+					m_IID = m_ErrorCode->QueryInterface<RTTI::ClassInfo>()->GetIID();
+				}
 			}
 
 			ErrorCode(ErrorCode&&) noexcept = default;
@@ -75,7 +84,7 @@ namespace kxf
 			// ErrorCode
 			bool IsNull() const noexcept
 			{
-				return m_ErrorCode == nullptr || m_InterfaceID.IsNull();
+				return m_ErrorCode == nullptr || m_IID.IsNull();
 			}
 			bool IsSameAs(const ErrorCode& other) const noexcept;
 
