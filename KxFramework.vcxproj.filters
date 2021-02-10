@@ -1802,6 +1802,12 @@
     <ClInclude Include="kxf\General\OptionalRef.h">
       <Filter>kxf\General</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\System\HandlePtr.h">
+      <Filter>kxf\System</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\UniqueFunction.h">
+      <Filter>kxf\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">

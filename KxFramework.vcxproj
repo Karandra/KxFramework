@@ -333,6 +333,7 @@
     <ClInclude Include="kxf\General\RegEx.h" />
     <ClInclude Include="kxf\General\ResourceID.h" />
     <ClInclude Include="kxf\General\StaticVariablesCollection.h" />
+    <ClInclude Include="kxf\General\UniqueFunction.h" />
     <ClInclude Include="kxf\IO.hpp" />
     <ClInclude Include="kxf\IO\Common.h" />
     <ClInclude Include="kxf\IO\NativeFileStream.h" />
@@ -390,6 +391,7 @@
     <ClInclude Include="kxf\System\DynamicLibraryEvent.h" />
     <ClInclude Include="kxf\System\ExecutableVersionResource.h" />
     <ClInclude Include="kxf\System\HResult.h" />
+    <ClInclude Include="kxf\System\HandlePtr.h" />
     <ClInclude Include="kxf\System\NtStatus.h" />
     <ClInclude Include="kxf\System\Private\BinaryResourceDefines.h" />
     <ClInclude Include="kxf\System\Private\COM.h" />
