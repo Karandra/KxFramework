@@ -333,3 +333,12 @@ namespace kxf
 			Enumerator& operator=(Enumerator&&) noexcept = default;
 	};
 }
+
+namespace kxf
+{
+	template<class T1, class T2>
+	using EnumeratorPair = Enumerator<std::pair<T1, T2>>;
+
+	template<class... Args>
+	using EnumeratorTuple = Enumerator<std::tuple<Args...>>;
+}
