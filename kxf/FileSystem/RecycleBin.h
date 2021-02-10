@@ -4,6 +4,7 @@
 #include "FileItem.h"
 #include "LegacyVolume.h"
 #include "kxf/General/BinarySize.h"
+#include "kxf/General/Enumerator.h"
 
 namespace kxf
 {
@@ -33,7 +34,7 @@ namespace kxf
 			bool ClearItems(FlagSet<FSActionFlag> flags = {});
 
 			FileItem GetItem(const FSPath& path) const;
-			size_t EnumItems(std::function<bool(FileItem)> func) const;
+			Enumerator<FileItem> EnumItems() const;
 
 			bool Recycle(const FSPath& path, FlagSet<FSActionFlag> flags = {});
 			bool Restore(const FSPath& path, FlagSet<FSActionFlag> flags = {});

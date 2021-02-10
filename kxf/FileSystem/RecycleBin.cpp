@@ -81,7 +81,7 @@ namespace kxf
 	{
 		throw std::logic_error(__FUNCTION__ ": the method or operation is not implemented.");
 	}
-	size_t RecycleBin::EnumItems(std::function<bool(FileItem)> func) const
+	Enumerator<FileItem> RecycleBin::EnumItems() const
 	{
 		throw std::logic_error(__FUNCTION__ ": the method or operation is not implemented.");
 	}

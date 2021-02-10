@@ -5,6 +5,7 @@
 #include "FSPath.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/INativeStream.h"
+#include "kxf/System/HandlePtr.h"
 #include "kxf/Utility/ScopeGuard.h"
 
 namespace
@@ -83,62 +84,59 @@ namespace
 
 namespace kxf
 {
-	size_t StorageVolume::EnumVolumes(std::function<bool(StorageVolume)> func)
+	Enumerator<StorageVolume> StorageVolume::EnumVolumes()
 	{
-		size_t count = 0;
-
-		wxChar volumeGuidPath[64] = {};
-		HANDLE handle = ::FindFirstVolumeW(volumeGuidPath, std::size(volumeGuidPath));
-		if (handle && handle != INVALID_HANDLE_VALUE)
+		return [handle = make_handle_ptr<HANDLE, INVALID_HANDLE_VALUE>(nullptr, ::FindVolumeClose)](IEnumerator& en) mutable -> std::optional<StorageVolume>
 		{
-			Utility::ScopeGuard atExit([&]()
-			{
-				::FindVolumeClose(handle);
-			});
-
-			do
-			{
-				StorageVolume volume;
-				volume.AssignPath(volumeGuidPath);
-				if (volume)
-				{
-					count++;
-					if (!std::invoke(func, std::move(volume)))
-					{
-						break;
-						
-					}
-				}
-			}
-			while (::FindNextVolumeW(handle, volumeGuidPath, std::size(volumeGuidPath)));
-		}
-		return count;
-	}
-	size_t StorageVolume::EnumLegacyVolumes(std::function<bool(StorageVolume, LegacyVolume)> func)
-	{
-		size_t count = 0;
-
-		for (size_t driveLetter = g_FirstLegacyVolume; driveLetter <= g_LastLegacyVolume; driveLetter++)
-		{
-			wxChar disk[] = wxS("\0:\\");
-			disk[0] = driveLetter;
-
 			wxChar volumeGuidPath[64] = {};
-			if (::GetVolumeNameForVolumeMountPointW(disk, volumeGuidPath, std::size(volumeGuidPath)))
+			if (!handle)
 			{
-				StorageVolume volume;
-				volume.AssignPath(volumeGuidPath);
-				if (volume)
+				handle = ::FindFirstVolumeW(volumeGuidPath, std::size(volumeGuidPath));
+				if (!handle)
 				{
-					count++;
-					if (!std::invoke(func, std::move(volume), LegacyVolume::FromChar(wxUniChar(driveLetter))))
-					{
-						break;
-					}
+					return {};
 				}
 			}
-		}
-		return count;
+			else if (!::FindNextVolumeW(*handle, volumeGuidPath, std::size(volumeGuidPath)))
+			{
+				return {};
+			}
+
+			StorageVolume volume;
+			volume.AssignPath(volumeGuidPath);
+
+			if (!volume)
+			{
+				en.SkipCurrent();
+				return {};
+			}
+			return volume;
+		};
+	}
+	EnumeratorPair<StorageVolume, LegacyVolume> StorageVolume::EnumLegacyVolumes()
+	{
+		return [driveLetter = g_FirstLegacyVolume](IEnumerator& en) mutable -> std::optional<std::pair<StorageVolume, LegacyVolume>>
+		{
+			if (driveLetter <= g_LastLegacyVolume)
+			{
+				XChar disk[] = wxS("\0:\\");
+				disk[0] = driveLetter++;
+
+				XChar volumeGuidPath[64] = {};
+				if (::GetVolumeNameForVolumeMountPointW(disk, volumeGuidPath, std::size(volumeGuidPath)))
+				{
+					StorageVolume volume;
+					volume.AssignPath(volumeGuidPath);
+
+					if (volume)
+					{
+						return std::make_pair(std::move(volume), LegacyVolume::FromChar(wxUniChar(disk[0])));
+					}
+				}
+				en.SkipCurrent();
+			}
+			return {};
+		};
 	}
 	
 	bool StorageVolume::RemoveMountPoint(const FSPath& path) noexcept
@@ -281,7 +279,7 @@ namespace kxf
 
 			return layoutInfo;
 		}
-		return std::nullopt;
+		return {};
 	}
 	BinarySize StorageVolume::GetTotalSpace() const noexcept
 	{
@@ -315,42 +313,34 @@ namespace kxf
 
 	LegacyVolume StorageVolume::GetLegacyVolume() const
 	{
-		LegacyVolume result;
-		EnumLegacyVolumes([&](StorageVolume volume, LegacyVolume legacyVolume)
+		for (auto&& [volume, legacyVolume]: EnumLegacyVolumes())
 		{
 			if (volume == *this)
 			{
-				result = legacyVolume;
-				return false;
+				return legacyVolume;
 			}
-			return true;
-		});
-		return result;
+		}
+		return {};
 	}
-	size_t StorageVolume::EnumMountPoints(std::function<bool(FSPath)> func) const
+	Enumerator<FSPath> StorageVolume::EnumMountPoints() const
 	{
-		size_t count = 0;
-
-		wxChar buffer[std::numeric_limits<int16_t>::max()] = {};
-		HANDLE handle = ::FindFirstVolumeMountPointW(m_Path, buffer, std::size(buffer));
-		if (handle && handle != INVALID_HANDLE_VALUE)
+		return [this, handle = make_handle_ptr<HANDLE, INVALID_HANDLE_VALUE>(nullptr, ::FindVolumeMountPointClose)]() mutable -> std::optional<FSPath>
 		{
-			Utility::ScopeGuard atExit([&]()
+			XChar buffer[std::numeric_limits<int16_t>::max()] = {};
+			if (handle)
 			{
-				::FindVolumeMountPointClose(handle);
-			});
-
-			do
-			{
-				count++;
-				if (!std::invoke(func, buffer))
+				if (::FindNextVolumeMountPointW(*handle, buffer, std::size(buffer)))
 				{
-					break;
+					return FSPath(buffer);
 				}
 			}
-			while (::FindNextVolumeMountPointW(handle, buffer, std::size(buffer)));
-		}
-		return count;
+			else if (handle.reset(::FindFirstVolumeMountPointW(m_Path, buffer, std::size(buffer))); handle)
+			{
+				return FSPath(buffer);
+			}
+			return {};
+		};
+		return {};
 	}
 	bool StorageVolume::SetMountPoint(const FSPath& path)
 	{

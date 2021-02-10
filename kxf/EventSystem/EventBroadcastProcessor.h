@@ -79,16 +79,13 @@ namespace kxf
 				return m_Stack.GetCount();
 			}
 
-			template<class TFunc>
-			IEvtHandler* EnumRecieveres(Order order, TFunc&& func) const
+			Enumerator<IEvtHandler&> EnumRecieveres(Order order) const
 			{
-				return m_Stack.ForEachItem(order, std::forward<TFunc>(func), true);
+				return m_Stack.EnumItems(order, true);
 			}
-
-			template<class TFunc>
-			IEvtHandler* EnumRecieveres(TFunc&& func) const
+			Enumerator<IEvtHandler&> EnumRecieveres() const
 			{
-				return m_Stack.ForEachItem(m_Order, std::forward<TFunc>(func), true);
+				return m_Stack.EnumItems(m_Order, true);
 			}
 
 			Order GetRecieversOrder() const

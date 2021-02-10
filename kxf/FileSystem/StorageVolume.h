@@ -3,6 +3,7 @@
 #include "FSPath.h"
 #include "kxf/General/UniversallyUniqueID.h"
 #include "kxf/General/BinarySize.h"
+#include "kxf/General/Enumerator.h"
 
 namespace kxf
 {
@@ -23,8 +24,8 @@ namespace kxf
 			};
 
 		public:
-			static size_t EnumVolumes(std::function<bool(StorageVolume)> func);
-			static size_t EnumLegacyVolumes(std::function<bool(StorageVolume, LegacyVolume)> func);
+			static Enumerator<StorageVolume> EnumVolumes();
+			static EnumeratorPair<StorageVolume, LegacyVolume> EnumLegacyVolumes();
 
 			static bool RemoveMountPoint(const FSPath& path) noexcept;
 			static bool RemoveMountPoint(const LegacyVolume& volume) noexcept;
@@ -79,7 +80,7 @@ namespace kxf
 			BinarySize GetFreeSpace() const noexcept;
 
 			LegacyVolume GetLegacyVolume() const;
-			size_t EnumMountPoints(std::function<bool(FSPath)> func) const;
+			Enumerator<FSPath> EnumMountPoints() const;
 			bool SetMountPoint(const FSPath& path);
 			bool SetMountPoint(const LegacyVolume& volume) noexcept;
 

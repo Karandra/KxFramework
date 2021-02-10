@@ -5,6 +5,7 @@
 #include "kxf/System/HResult.h"
 #include "kxf/System/NativeAPI.h"
 #include "kxf/Utility/ScopeGuard.h"
+#include "kxf/Utility/Enumerator.h"
 #include "Private/NamespacePrefix.h"
 #include <pathcch.h>
 #include <locale>
@@ -303,11 +304,18 @@ namespace kxf
 		}
 		return count;
 	}
-	size_t FSPath::ForEachComponent(std::function<bool(String)> func) const
+	Enumerator<String> FSPath::EnumComponents() const
 	{
-		return m_Path.SplitBySeparator(g_PathSeparator, [&](StringView view)
+		std::vector<StringView> parts;
+		m_Path.SplitBySeparator(g_PathSeparator, [&](StringView view)
 		{
-			return std::invoke(func, String(view));
+			parts.emplace_back(view);
+			return true;;
+		});
+
+		return Utility::EnumerateIndexableContainer<String>(std::move(parts), [](StringView view)
+		{
+			return String::FromView(view);
 		});
 	}
 	String FSPath::GetFullPath(FSPathNamespace withNamespace, FlagSet<FSPathFormat> format) const

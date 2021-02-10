@@ -375,7 +375,7 @@ namespace kxf
 					finalPath.SetNamespace(path.GetNamespace());
 
 					bool result = false;
-					path.ForEachComponent([&](String currentDirectoryName)
+					for (String currentDirectoryName: path.EnumComponents())
 					{
 						finalPath /= std::move(currentDirectoryName);
 
@@ -383,14 +383,12 @@ namespace kxf
 						const bool isCreated = ::CreateDirectoryW(currentPath.wc_str(), nullptr);
 						const bool alreadyExist = !isCreated && (*Win32Error::GetLastError() == ERROR_ALREADY_EXISTS || finalPath.GetComponentCount() == 1);
 
+						result = isCreated || alreadyExist;
 						if (!isCreated && !alreadyExist)
 						{
 							return false;
 						}
-
-						result = isCreated || alreadyExist;
-						return true;
-					});
+					}
 					return result;
 				}
 			}

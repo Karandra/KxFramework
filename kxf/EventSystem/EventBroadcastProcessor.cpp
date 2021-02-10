@@ -5,11 +5,11 @@ namespace kxf::EventSystem
 {
 	bool BroadcastProcessorHandler::TryBefore(IEvent& event)
 	{
-		m_Processor.EnumRecieveres([this, &event](IEvtHandler& evtHandler)
+		for (IEvtHandler& evtHandler: m_Processor.EnumRecieveres())
 		{
 			evtHandler.ProcessEvent(event, event.GetEventID(), ProcessEventFlag::Locally);
 			return true;
-		});
+		};
 		return true;
 	}
 }

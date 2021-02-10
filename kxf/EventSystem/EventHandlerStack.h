@@ -1,5 +1,6 @@
 #pragma once
 #include "IEvtHandler.h"
+#include "kxf/General/Enumerator.h"
 #include "kxf/Utility/Common.h"
 
 namespace kxf
@@ -46,49 +47,31 @@ namespace kxf
 			{
 				return m_Base != m_Top;
 			}
+
 			size_t GetCount() const
 			{
-				size_t count = 0;
-				ForEachItem(Order::LastToFirst, [&count](IEvtHandler& chainItem)
-				{
-					count++;
-					return true;
-				});
-				return count;
+				return EnumItems(Order::LastToFirst).CalcTotalCount();
 			}
-
-			template<class TFunc>
-			IEvtHandler* ForEachItem(Order order, TFunc&& func, bool chainedItemsOnly = false) const
+			Enumerator<IEvtHandler&> EnumItems(Order order, bool chainedItemsOnly = false) const
 			{
-				auto TestItem = [&](IEvtHandler* item)
+				return [item = order == Order::FirstToLast ? m_Base : m_Top, this, order, chainedItemsOnly]() mutable -> optional_ref<IEvtHandler>
 				{
-					return item && (!chainedItemsOnly || item != m_Base);
-				};
+					if (item && (!chainedItemsOnly || item != m_Base))
+					{
+						auto result = item;
+						if (order == Order::FirstToLast)
+						{
+							item = item->GetPrevHandler();
+						}
+						else
+						{
+							item = item->GetNextHandler();
+						}
 
-				switch (order)
-				{
-					case Order::FirstToLast:
-					{
-						for (IEvtHandler* item = m_Base; TestItem(item); item = item->GetPrevHandler())
-						{
-							if (!func(*item))
-							{
-								return item;
-							}
-						}
+						return *result;
 					}
-					case Order::LastToFirst:
-					{
-						for (IEvtHandler* item = m_Top; TestItem(item); item = item->GetNextHandler())
-						{
-							if (!func(*item))
-							{
-								return item;
-							}
-						}
-					}
+					return {};
 				};
-				return nullptr;
 			}
 
 		public:

@@ -18,7 +18,7 @@ namespace kxf
 	}
 	bool EvtHandlerStack::Remove(IEvtHandler& evtHandler)
 	{
-		// Short circuit for last handler
+		// Short circuit for the last handler
 		if (&evtHandler == m_Top)
 		{
 			return Pop() != nullptr;
@@ -28,17 +28,15 @@ namespace kxf
 		if (!evtHandler.IsUnlinked())
 		{
 			// Is it part of our chain?
-			IEvtHandler* unlinked = ForEachItem(Order::LastToFirst, [&evtHandler](IEvtHandler& chainItem)
+			for (IEvtHandler& chainItem: EnumItems(Order::LastToFirst))
 			{
 				// Unlink it
 				if (&chainItem == &evtHandler)
 				{
 					chainItem.Unlink();
-					return false;
+					return true;
 				}
-				return true;
-			});
-			return unlinked != nullptr;
+			};
 		}
 		return false;
 	}
