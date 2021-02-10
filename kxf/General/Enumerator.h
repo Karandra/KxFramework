@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "IEnumerator.h"
 #include "OptionalRef.h"
+#include "UniqueFunction.h"
 
 namespace kxf::Private
 {
@@ -108,7 +109,7 @@ namespace kxf
 			static inline constexpr size_t npos = std::numeric_limits<size_t>::max();
 
 		private:
-			std::function<TValueContainer(IEnumerator&)> m_MoveNext;
+			kxf::unique_function<TValueContainer(IEnumerator&)> m_MoveNext;
 			TValueContainer m_Value;
 
 			size_t m_Index = 0;
@@ -209,7 +210,7 @@ namespace kxf
 			// IEnumerator
 			bool IsNull() const noexcept override
 			{
-				return !static_cast<bool>(m_MoveNext);
+				return m_MoveNext.is_null();
 			}
 
 			Result MoveNext() override
