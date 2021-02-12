@@ -25,6 +25,13 @@
 #include "kxf/System/UndefWindows.h"
 #include "kxf/wxWidgets/Setup.h"
 
+// Forward declarations
+namespace kxf
+{
+	template<class T>
+	class Enumerator;
+}
+
 // wxWidgets
 // Link some libraries that aren't linked by wxWidgets itself for some reason
 

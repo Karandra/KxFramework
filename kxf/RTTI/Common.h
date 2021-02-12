@@ -10,9 +10,6 @@ namespace kxf
 	class IObject;
 
 	class String;
-
-	template<class T>
-	class Enumerator;
 }
 namespace kxf::RTTI
 {
