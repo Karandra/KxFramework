@@ -91,7 +91,7 @@ namespace kxf::Utility
 					}
 					return {};
 				}
-				IEnumerator::Result MoveNext()
+				EnumeratorInstruction MoveNext()
 				{
 					return m_Range.MoveNext();
 				}
@@ -102,10 +102,9 @@ namespace kxf::Utility
 						   enumFunc, std::forward<Args>(arg)...)]
 						   (IEnumerator& enumerator) mutable -> TValueContainer
 		{
-			using Result = IEnumerator::Result;
 			switch (context.MoveNext())
 			{
-				case Result::Continue:
+				case EnumeratorInstruction::Continue:
 				{
 					if constexpr(std::is_invocable_v<TConvFunc, TEnumerator&, TOwner&>)
 					{
@@ -116,12 +115,12 @@ namespace kxf::Utility
 						return std::invoke(conv, context.GetEnumerator());
 					}
 				}
-				case Result::SkipCurrent:
+				case EnumeratorInstruction::SkipCurrent:
 				{
 					enumerator.SkipCurrent();
 					break;
 				}
-				case Result::Terminate:
+				case EnumeratorInstruction::Terminate:
 				{
 					enumerator.Terminate();
 					break;
@@ -166,7 +165,7 @@ namespace kxf::Utility
 					}
 					return {};
 				}
-				IEnumerator::Result MoveNext()
+				EnumeratorInstruction MoveNext()
 				{
 					return m_Range.MoveNext();
 				}
@@ -176,19 +175,18 @@ namespace kxf::Utility
 						   context = Context(enumFunc, std::forward<Args>(arg)...)]
 						   (IEnumerator& enumerator) mutable -> TValueContainer
 		{
-			using Result = IEnumerator::Result;
 			switch (context.MoveNext())
 			{
-				case Result::Continue:
+				case EnumeratorInstruction::Continue:
 				{
 					return std::invoke(conv, context.GetEnumerator());
 				}
-				case Result::SkipCurrent:
+				case EnumeratorInstruction::SkipCurrent:
 				{
 					enumerator.SkipCurrent();
 					break;
 				}
-				case Result::Terminate:
+				case EnumeratorInstruction::Terminate:
 				{
 					enumerator.Terminate();
 					break;
@@ -217,7 +215,7 @@ namespace kxf::Utility
 		using Tx = std::remove_reference_t<TContainer>;
 		using TIterator = std::conditional_t<std::is_const_v<Tx>, typename Tx::const_iterator, typename Tx::iterator>;
 
-		const size_t count = container.size();
+		const size_t count = std::size(container);
 		return MakeEnumerator([container = std::forward_as_tuple(container),
 							  it = std::optional<TIterator>(),
 							  conv = std::forward<TConvFunc>(conv),

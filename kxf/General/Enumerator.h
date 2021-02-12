@@ -18,17 +18,16 @@ namespace kxf::Private
 		private:
 			void DoMove()
 			{
-				using Result = IEnumerator::Result;
 				switch (m_Enumerator->MoveNext())
 				{
-					case Result::Terminate:
+					case EnumeratorInstruction::Terminate:
 					{
 						// Stop immediately
 						m_Enumerator = nullptr;
 
 						break;
 					}
-					case Result::SkipCurrent:
+					case EnumeratorInstruction::SkipCurrent:
 					{
 						// Advance to next step
 						DoMove();
@@ -110,24 +109,24 @@ namespace kxf
 
 		private:
 			kxf::unique_function<TValueContainer(IEnumerator&)> m_MoveNext;
-			TValueContainer m_Value;
+			TValueContainer m_CurrentValue;
+			EnumeratorInstruction m_CurrentInstruction = EnumeratorInstruction::Terminate;
 
 			size_t m_Index = 0;
 			size_t m_TotalCount = npos;
-			bool m_IsReset = true;
 			bool m_SkipCurrent = false;
 			bool m_Terminate = false;
 
 		private:
-			Result DoMoveNext()
+			EnumeratorInstruction DoMoveNext()
 			{
 				if (m_Index == npos || m_Index >= m_TotalCount)
 				{
-					return Result::Terminate;
+					return EnumeratorInstruction::Terminate;
 				}
 
-				Result result = InvokeProducer();
-				if (result != Result::Terminate)
+				EnumeratorInstruction result = InvokeProducer();
+				if (result != EnumeratorInstruction::Terminate)
 				{
 					m_Index++;
 				}
@@ -137,25 +136,25 @@ namespace kxf
 				}
 				return result;
 			}
-			Result InvokeProducer()
+			EnumeratorInstruction InvokeProducer()
 			{
-				m_Value = std::invoke(m_MoveNext, static_cast<IEnumerator&>(*this));
+				m_CurrentValue = std::invoke(m_MoveNext, static_cast<IEnumerator&>(*this));
 
 				if (m_Terminate)
 				{
 					m_Terminate = false;
-					return Result::Terminate;
+					return EnumeratorInstruction::Terminate;
 				}
 				else if (m_SkipCurrent)
 				{
 					m_SkipCurrent = false;
-					return Result::SkipCurrent;
+					return EnumeratorInstruction::SkipCurrent;
 				}
-				else if (m_Value.has_value())
+				else if (m_CurrentValue.has_value())
 				{
-					return Result::Continue;
+					return EnumeratorInstruction::Continue;
 				}
-				return Result::Terminate;
+				return EnumeratorInstruction::Terminate;
 			}
 
 		public:
@@ -203,7 +202,7 @@ namespace kxf
 				};
 			}
 
-			Enumerator(const Enumerator&) = default;
+			Enumerator(const Enumerator&) = delete;
 			Enumerator(Enumerator&&) noexcept = default;
 
 		public:
@@ -213,12 +212,14 @@ namespace kxf
 				return m_MoveNext.is_null();
 			}
 
-			Result MoveNext() override
+			EnumeratorInstruction MoveNext() override
 			{
-				Result result = DoMoveNext();
-				m_IsReset = result == Result::Terminate;
-
-				return result;
+				m_CurrentInstruction = DoMoveNext();
+				return m_CurrentInstruction;
+			}
+			EnumeratorInstruction GetCurrentInstruction() const noexcept override
+			{
+				return m_CurrentInstruction;
 			}
 			void SkipCurrent() noexcept override
 			{
@@ -246,12 +247,12 @@ namespace kxf
 
 			bool IsReset() const noexcept override
 			{
-				return m_IsReset || m_Index == npos;
+				return m_CurrentInstruction == EnumeratorInstruction::Terminate || m_Index == npos;
 			}
 			void Reset() noexcept override
 			{
 				m_Index = 0;
-				m_IsReset = true;
+				m_CurrentInstruction = EnumeratorInstruction::Terminate;
 
 				m_SkipCurrent = false;
 				m_Terminate = false;
@@ -261,7 +262,7 @@ namespace kxf
 			size_t CalcTotalCount()
 			{
 				size_t count = 0;
-				while (MoveNext() == Result::Continue)
+				while (MoveNext() == EnumeratorInstruction::Continue)
 				{
 					count++;
 				}
@@ -270,15 +271,15 @@ namespace kxf
 
 			const TValue& GetValue() const& noexcept
 			{
-				return *m_Value;
+				return *m_CurrentValue;
 			}
 			TValue& GetValue() & noexcept
 			{
-				return *m_Value;
+				return *m_CurrentValue;
 			}
 			TValue GetValue() && noexcept
 			{
-				return *std::move(m_Value);
+				return *std::move(m_CurrentValue);
 			}
 
 		public:
@@ -299,37 +300,37 @@ namespace kxf
 
 			const TValue& operator*() const& noexcept
 			{
-				return *m_Value;
+				return *m_CurrentValue;
 			}
 			TValue& operator*() & noexcept
 			{
-				return *m_Value;
+				return *m_CurrentValue;
 			}
 			TValue operator*() && noexcept
 			{
-				return *std::move(m_Value);
+				return *std::move(m_CurrentValue);
 			}
 
 			const TStoredValue* operator->() const& noexcept
 			{
-				return &*m_Value;
+				return &*m_CurrentValue;
 			}
 			TStoredValue* operator->() & noexcept
 			{
-				return &*m_Value;
+				return &*m_CurrentValue;
 			}
 
 		public:
 			bool operator==(const Enumerator& other) const noexcept
 			{
-				return (this == &other && m_Index == other.m_Index) || m_IsReset && other.m_IsReset;
+				return (this == &other && m_Index == other.m_Index) || IsReset() && other.IsReset();
 			}
 			bool operator!=(const Enumerator& other) const noexcept
 			{
 				return !(*this == other);
 			}
 
-			Enumerator& operator=(const Enumerator&) = default;
+			Enumerator& operator=(const Enumerator&) = delete;
 			Enumerator& operator=(Enumerator&&) noexcept = default;
 	};
 }
