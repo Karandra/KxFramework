@@ -45,6 +45,13 @@ namespace kxf::Utility
 			}
 
 		public:
+			template<class T, std::enable_if_t<!std::is_rvalue_reference_v<T> && std::is_class_v<T>, int> = 0>
+			constexpr decltype(auto) operator()(T&& ptr) const noexcept
+			{
+				return ptr.get();
+			}
+
+		public:
 			template<class T>
 			T* operator()(std::unique_ptr<T>& ptr) const noexcept
 			{
@@ -83,6 +90,13 @@ namespace kxf::Utility
 			constexpr const T& operator()(const T* v) const noexcept
 			{
 				return *v;
+			}
+
+		public:
+			template<class T, std::enable_if_t<!std::is_rvalue_reference_v<T>, int> = 0>
+			constexpr decltype(auto) operator()(T&& ptr) const noexcept
+			{
+				return *ptr;
 			}
 
 		public:
