@@ -10,10 +10,12 @@
 #include "Private/InStreamWrapper.h"
 #include "Private/OutStreamWrapper.h"
 #include "kxf/General/ErrorCode.h"
+#include "kxf/General/Enumerator.h"
 #include "kxf/System/VariantProperty.h"
 #include "kxf/FileSystem/NativeFileSystem.h"
 #include "kxf/Utility/ScopeGuard.h"
 #include "kxf/Utility/TypeTraits.h"
+#include "kxf/Utility/Literals.h"
 
 namespace
 {
@@ -357,11 +359,10 @@ namespace kxf::SevenZip
 	bool Archive::UpdateFromFS(IOutputStream& stream, const IFileSystem& fileSystem, const FSPath& directory, const FSPath& query, FlagSet<FSActionFlag> flags)
 	{
 		std::vector<FileItem> files;
-		fileSystem.EnumItems(directory, [&](FileItem item)
+		for (FileItem& item: fileSystem.EnumItems(directory, query, flags.Remove(FSActionFlag::LimitToDirectories).Add(FSActionFlag::LimitToFiles)))
 		{
 			files.emplace_back(std::move(item));
-			return true;
-		}, query, flags.Remove(FSActionFlag::LimitToDirectories).Add(FSActionFlag::LimitToFiles));
+		}
 
 		if (!files.empty())
 		{
@@ -413,8 +414,9 @@ namespace kxf::SevenZip
 		}
 		return {};
 	}
-	size_t Archive::EnumItems(const FSPath& directory, std::function<bool(FileItem)> func, const FSPath& query, FlagSet<FSActionFlag> flags) const
+	Enumerator<FileItem> Archive::EnumItems(const FSPath& directory, const FSPath& query, FlagSet<FSActionFlag> flags) const
 	{
+		#if 0
 		FlagSet<StringOpFlag> matchFlags;
 		matchFlags.Add(StringOpFlag::IgnoreCase, !flags.Contains(FSActionFlag::CaseSensitive));
 
@@ -455,13 +457,16 @@ namespace kxf::SevenZip
 			directories = std::move(roundDirectories);
 		}
 		return count;
+		#endif
+		return {};
 	}
 	bool Archive::IsDirectoryEmpty(const FSPath& directory) const
 	{
-		return EnumItems(directory, [](const FileItem&)
+		for (const FileItem& item: EnumItems(directory))
 		{
 			return false;
-		}, {}) == 0;
+		}
+		return true;
 	}
 
 	// IFileIDSystem
@@ -490,46 +495,43 @@ namespace kxf::SevenZip
 		}
 		return {};
 	}
-	size_t Archive::EnumItems(const UniversallyUniqueID& id, std::function<bool(FileItem)> func, FlagSet<FSActionFlag> flags) const
+	Enumerator<FileItem> Archive::EnumItems(const UniversallyUniqueID& id, FlagSet<FSActionFlag> flags) const
 	{
 		if (id == std::numeric_limits<UniversallyUniqueID>::max())
 		{
-			size_t count = 0;
-			for (size_t i = 0; i < m_Data.ItemCount; i++)
+			return {[this, flags, index = 0_zu](IEnumerator& enumerator) mutable -> std::optional<FileItem>
 			{
-				const auto attributes = GetItemAttributes(*m_Data.InArchive, m_Data.ItemCount, LocallyUniqueID(i));
-				if (flags & FSActionFlag::LimitToFiles && attributes.Contains(FILE_ATTRIBUTE_DIRECTORY))
-				{
-					continue;
-				}
-				if (flags & FSActionFlag::LimitToDirectories && !attributes.Contains(FILE_ATTRIBUTE_DIRECTORY))
-				{
-					continue;
-				}
+				const size_t fileIndex = index++;
+				const auto attributes = GetItemAttributes(*m_Data.InArchive, m_Data.ItemCount, LocallyUniqueID(fileIndex));
+				const bool isDirectory = attributes.Contains(FILE_ATTRIBUTE_DIRECTORY);
 
-				count++;
-				if (!std::invoke(func, Private::GetArchiveItem(*m_Data.InArchive, i)))
+				if ((flags & FSActionFlag::LimitToFiles && isDirectory) || (flags & FSActionFlag::LimitToDirectories && !isDirectory))
 				{
-					break;
+					enumerator.SkipCurrent();
+					return {};
 				}
-			}
-			return count;
+				else
+				{
+					return Private::GetArchiveItem(*m_Data.InArchive, fileIndex);
+				}
+			}, m_Data.ItemCount};
 		}
 		else if (auto luid = id.ToLocallyUniqueID(); luid < m_Data.ItemCount)
 		{
 			if (FileItem item = Private::GetArchiveItem(*m_Data.InArchive, luid.ToInt()))
 			{
-				return EnumItems(item.GetFullPath(), std::move(func), {}, flags);
+				return EnumItems(item.GetFullPath(), {}, flags);
 			}
 		}
-		return 0;
+		return {};
 	}
 	bool Archive::IsDirectoryEmpty(const UniversallyUniqueID& id) const
 	{
-		return EnumItems(id, [](const FileItem&)
+		for (const FileItem& item: EnumItems(id, {}))
 		{
 			return false;
-		}, {}) == 0;
+		}
+		return true;
 	}
 
 	Archive& Archive::operator=(Archive&& other)

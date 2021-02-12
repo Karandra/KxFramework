@@ -74,7 +74,7 @@ namespace kxf
 			bool DirectoryExist(const FSPath& path) const override;
 
 			FileItem GetItem(const FSPath& path) const override;
-			size_t EnumItems(const FSPath& directory, std::function<bool(FileItem)> func, const FSPath& query = {}, FlagSet<FSActionFlag> flags = {}) const override;
+			Enumerator<FileItem> EnumItems(const FSPath& directory, const FSPath& query = {}, FlagSet<FSActionFlag> flags = {}) const override;
 			bool IsDirectoryEmpty(const FSPath& directory) const override;
 
 			bool CreateDirectory(const FSPath& path, FlagSet<FSActionFlag> flags = {}) override;
@@ -109,10 +109,7 @@ namespace kxf
 			bool DirectoryExist(const UniversallyUniqueID& id) const override;
 
 			FileItem GetItem(const UniversallyUniqueID& id) const override;
-			size_t EnumItems(const UniversallyUniqueID& id, std::function<bool(FileItem)> func, FlagSet<FSActionFlag> flags = {}) const override
-			{
-				return 0;
-			}
+			Enumerator<FileItem> EnumItems(const UniversallyUniqueID& id, FlagSet<FSActionFlag> flags = {}) const override;
 			bool IsDirectoryEmpty(const UniversallyUniqueID& id) const override
 			{
 				return false;

@@ -6,6 +6,7 @@
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/INativeStream.h"
 #include "kxf/System/HandlePtr.h"
+#include "kxf/General/Enumerator.h"
 #include "kxf/Utility/ScopeGuard.h"
 
 namespace
@@ -113,7 +114,7 @@ namespace kxf
 			return volume;
 		};
 	}
-	EnumeratorPair<StorageVolume, LegacyVolume> StorageVolume::EnumLegacyVolumes()
+	Enumerator<std::pair<StorageVolume, LegacyVolume>> StorageVolume::EnumLegacyVolumes()
 	{
 		return [driveLetter = g_FirstLegacyVolume](IEnumerator& en) mutable -> std::optional<std::pair<StorageVolume, LegacyVolume>>
 		{

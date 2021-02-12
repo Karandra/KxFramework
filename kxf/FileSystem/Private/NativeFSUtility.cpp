@@ -185,7 +185,7 @@ namespace kxf::FileSystem::Private
 								 FlagSet<FSActionFlag> flags,
 								 bool move)
 	{
-		return fileSystem.EnumItems(source, [&](FileItem item)
+		for (const FileItem& item: fileSystem.EnumItems(source, {}, FSActionFlag::Recursive))
 		{
 			FSPath target = destination / item.GetFullPath().GetAfter(source);
 			if (item.IsDirectory())
@@ -205,20 +205,26 @@ namespace kxf::FileSystem::Private
 			}
 			else
 			{
+				bool result = false;
 				if (func)
 				{
 					auto ForwardCallback = [&](BinarySize copied, BinarySize total)
 					{
 						return std::invoke(func, source, std::move(target), copied, total);
 					};
-					return move ? fileSystem.MoveItem(source, target, std::move(ForwardCallback), flags) : fileSystem.CopyItem(source, target, std::move(ForwardCallback), flags);
+					result = move ? fileSystem.MoveItem(source, target, std::move(ForwardCallback), flags) : fileSystem.CopyItem(source, target, std::move(ForwardCallback), flags);
 				}
 				else
 				{
-					return move ? fileSystem.MoveItem(source, target, {}, flags) : fileSystem.CopyItem(source, target, {}, flags);
+					result = move ? fileSystem.MoveItem(source, target, {}, flags) : fileSystem.CopyItem(source, target, {}, flags);
+				}
+
+				if (!result)
+				{
+					return false;
 				}
 			}
-			return true;
-		}, {}, FSActionFlag::Recursive) != 0;
+		}
+		return true;
 	}
 }

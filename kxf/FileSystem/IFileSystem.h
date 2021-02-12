@@ -41,7 +41,7 @@ namespace kxf
 			virtual bool DirectoryExist(const FSPath& path) const = 0;
 
 			virtual FileItem GetItem(const FSPath& path) const = 0;
-			virtual size_t EnumItems(const FSPath& directory, std::function<bool(FileItem)> func, const FSPath& query = {}, FlagSet<FSActionFlag> flags = {}) const = 0;
+			virtual Enumerator<FileItem> EnumItems(const FSPath& directory, const FSPath& query = {}, FlagSet<FSActionFlag> flags = {}) const = 0;
 			virtual bool IsDirectoryEmpty(const FSPath& directory) const = 0;
 			
 			virtual bool CreateDirectory(const FSPath& path, FlagSet<FSActionFlag> flags = {}) = 0;
@@ -101,7 +101,7 @@ namespace kxf
 			virtual bool DirectoryExist(const UniversallyUniqueID& id) const = 0;
 
 			virtual FileItem GetItem(const UniversallyUniqueID& id) const = 0;
-			virtual size_t EnumItems(const UniversallyUniqueID& id, std::function<bool(FileItem)> func, FlagSet<FSActionFlag> flags = {}) const = 0;
+			virtual Enumerator<FileItem> EnumItems(const UniversallyUniqueID& id, FlagSet<FSActionFlag> flags = {}) const = 0;
 			virtual bool IsDirectoryEmpty(const UniversallyUniqueID& id) const = 0;
 
 			virtual bool ChangeAttributes(const UniversallyUniqueID& id, FlagSet<FileAttribute> attributes) = 0;

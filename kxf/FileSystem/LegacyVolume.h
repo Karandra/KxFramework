@@ -7,7 +7,7 @@ namespace kxf
 	class KX_API LegacyVolume final
 	{
 		public:
-			static size_t EnumVolumes(std::function<bool(LegacyVolume)> func);
+			static Enumerator<LegacyVolume> EnumVolumes();
 
 			static LegacyVolume FromChar(const wxUniChar& value)
 			{

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "LegacyVolume.h"
 #include "FSPath.h"
+#include "kxf/General/Enumerator.h"
 #include "kxf/Utility/Common.h"
 
 namespace
@@ -18,23 +19,21 @@ namespace
 
 namespace kxf
 {
-	size_t LegacyVolume::EnumVolumes(std::function<bool(LegacyVolume)> func)
+	Enumerator<LegacyVolume> LegacyVolume::EnumVolumes()
 	{
-		size_t count = 0;
-
-		const DWORD driveMask = ::GetLogicalDrives();
-		for (size_t i = 0; i < g_LegacyVolumesCount; i++)
+		return [driveMask = ::GetLogicalDrives()](IEnumerator& en) mutable -> std::optional<LegacyVolume>
 		{
-			if (driveMask & 1 << i)
+			const size_t index = en.GetCurrentStep();
+			if (index < g_LegacyVolumesCount)
 			{
-				count++;
-				if (!std::invoke(func, FromIndex(i)))
+				if (driveMask & 1 << index)
 				{
-					break;
+					return FromIndex(index);
 				}
+				en.SkipCurrent();
 			}
-		}
-		return count;
+			return {};
+		};
 	}
 
 	void LegacyVolume::AssignFromChar(const wxUniChar& value)

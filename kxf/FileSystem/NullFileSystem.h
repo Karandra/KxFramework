@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "IFileSystem.h"
 #include "FileItem.h"
+#include "kxf/General/Enumerator.h"
 
 namespace kxf::FileSystem
 {
@@ -56,9 +57,9 @@ namespace kxf::FileSystem
 			{
 				return {};
 			}
-			size_t EnumItems(const FSPath& directory, std::function<bool(FileItem)> func, const FSPath& query = {}, FlagSet<FSActionFlag> flags = {}) const override
+			Enumerator<FileItem> EnumItems(const FSPath& directory, const FSPath& query = {}, FlagSet<FSActionFlag> flags = {}) const override
 			{
-				return 0;
+				return {};
 			}
 			bool IsDirectoryEmpty(const FSPath& directory) const override
 			{
@@ -136,9 +137,9 @@ namespace kxf::FileSystem
 			{
 				return {};
 			}
-			size_t EnumItems(const UniversallyUniqueID& id, std::function<bool(FileItem)> func, FlagSet<FSActionFlag> flags = {}) const override
+			Enumerator<FileItem> EnumItems(const UniversallyUniqueID& id, FlagSet<FSActionFlag> flags = {}) const override
 			{
-				return 0;
+				return {};
 			}
 			bool IsDirectoryEmpty(const UniversallyUniqueID& id) const override
 			{

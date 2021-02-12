@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "Locale.h"
 #include "kxf/UI/WidgetID.h"
+#include "kxf/General/Enumerator.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "Private/StandardLocalization.h"
 #include "Private/LocalizationResources.h"
@@ -43,16 +44,21 @@ namespace kxf::Localization
 
 	size_t SearchPackages(const IFileSystem& fileSystem, const FSPath& directory, std::function<bool(Locale, FileItem)> func)
 	{
-		return fileSystem.EnumItems(directory, [&](FileItem item)
+		size_t count = 0;
+		for (const FileItem& item: fileSystem.EnumItems(directory, {}, FSActionFlag::LimitToFiles))
 		{
-			// TODO: Need a proper solution instead of manually adding supported file extensions here.
+			// TODO: Need a proper solution (RTTI?) instead of manually adding supported file extensions here.
 			String name = item.GetName();
 			if (name.MatchesWildcards(wxS("*.xml")) || name.MatchesWildcards(wxS("*.resx")) || name.MatchesWildcards(wxS("*.resw")) || name.MatchesWildcards(wxS("*.ts")))
 			{
-				return OnSearchPackage(func, std::move(item));
+				count++;
+				if (!OnSearchPackage(func, std::move(item)))
+				{
+					break;
+				}
 			}
-			return true;
-		}, {}, FSActionFlag::LimitToFiles);
+		}
+		return count;
 	}
 	size_t SearchPackages(const DynamicLibrary& library, std::function<bool(Locale, FileItem)> func)
 	{

@@ -4,8 +4,10 @@
 #include "Private/NativeFSUtility.h"
 #include "kxf/Application/ICoreApplication.h"
 #include "kxf/General/AlignedStorage.h"
+#include "kxf/General/Enumerator.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/System/SystemInformation.h"
+#include "kxf/System/HandlePtr.h"
 #include "kxf/IO/NativeFileStream.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/ScopeGuard.h"
@@ -107,6 +109,164 @@ namespace
 		}
 		return std::forward<TNoneResult>(noneResult);
 	}
+}
+namespace
+{
+	class DirectoryEnumerator final
+	{
+		private:
+			FSPath m_Path;
+			FSPath m_Query;
+			FlagSet<FSActionFlag> m_Flags;
+			bound_handle_ptr<HANDLE, ::FindClose, INVALID_HANDLE_VALUE> m_SearchHandle;
+
+			FSPath m_CurrentPath;
+			std::vector<FSPath> m_SubDirectories;
+			bool m_SubTreeDone = false;
+
+			std::vector<FSPath> m_NextSubDirectories;
+			size_t m_NextSubDirectory = 0;
+			bool m_NextSubTreeDone = false;
+
+		private:
+			String ConstructFullQuery(const FSPath& directory) const
+			{
+				if (m_Query)
+				{
+					return (directory / m_Query).GetFullPathWithNS(FSPathNamespace::Win32File);
+				}
+				else
+				{
+					return (directory / wxS("*")).GetFullPathWithNS(FSPathNamespace::Win32File);
+				}
+			}
+
+			std::optional<FileItem> DoItem(IEnumerator& enumerator, WIN32_FIND_DATAW& findInfo, const FSPath& directory, std::vector<FSPath>& childDirectories)
+			{
+				// Skip invalid items and current and parent directory links
+				if (!FileSystem::Private::IsValidFindItem(findInfo))
+				{
+					enumerator.SkipCurrent();
+					return {};
+				}
+
+				// Add directory to the stack if we need to scan child directories
+				const bool isDirectory = findInfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
+				if (isDirectory && m_Flags.Contains(FSActionFlag::Recursive))
+				{
+					FSPath& childDirectory = childDirectories.emplace_back(directory / findInfo.cFileName);
+					childDirectory.EnsureNamespaceSet(directory.GetNamespace());
+				}
+
+				// Filter files and/or directories
+				if ((m_Flags.Contains(FSActionFlag::LimitToFiles) && isDirectory) || (m_Flags.Contains(FSActionFlag::LimitToDirectories) && !isDirectory))
+				{
+					enumerator.SkipCurrent();
+					return {};
+				}
+
+				// Fetch the file info
+				FileItem fileItem = FileSystem::Private::ConvertFileInfo(findInfo, directory, {}, m_Flags);
+
+				// Make final path relative if needed
+				if (m_Flags.Contains(FSActionFlag::RelativePath))
+				{
+					fileItem.SetFullPath(fileItem.GetFullPath().GetAfter(m_Path));
+				}
+				return fileItem;
+			};
+			std::optional<FileItem> SearchDirectory(IEnumerator& enumerator, const FSPath& directory, std::vector<FSPath>& childDirectories, bool& isSubTreeDone)
+			{
+				WIN32_FIND_DATAW findInfo = {};
+				if (!m_SearchHandle)
+				{
+					if (m_SearchHandle = FileSystem::Private::CallFindFirstFile(ConstructFullQuery(directory), findInfo, m_Flags & FSActionFlag::CaseSensitive))
+					{
+						return DoItem(enumerator, findInfo, directory, childDirectories);
+					}
+				}
+				else if (::FindNextFileW(*m_SearchHandle, &findInfo))
+				{
+					return DoItem(enumerator, findInfo, directory, childDirectories);
+				}
+				else
+				{
+					m_SearchHandle = nullptr;
+					isSubTreeDone = true;
+
+					// Skip this step if we need to scan subdirectories because otherwise we'd terminate the process
+					if (m_Flags.Contains(FSActionFlag::Recursive))
+					{
+						enumerator.SkipCurrent();
+					}
+				}
+				return {};
+			};
+
+		public:
+			DirectoryEnumerator() = default;
+			DirectoryEnumerator(FSPath path, FSPath query, FlagSet<FSActionFlag> flags)
+				:m_Path(std::move(path)), m_Query(std::move(query)), m_Flags(flags)
+			{
+			}
+
+		public:
+			std::optional<FileItem> operator()(IEnumerator& enumerator)
+			{
+				if (m_Path)
+				{
+					if (!m_SubTreeDone)
+					{
+						// Do the current level
+						return SearchDirectory(enumerator, m_Path, m_SubDirectories, m_SubTreeDone);
+					}
+					else if (!m_SubDirectories.empty())
+					{
+						// Once we have subdirectories to scan get the one pointed by 'm_NextSubDirectory' and scan it
+						// placing any subsequent subdirectories inside the container. Do that until we have scanned
+						// all subdirectories for the previous level or an end was signaled (via 'm_NextSubTreeDone' flag).
+						if (m_NextSubDirectory < m_SubDirectories.size() && !m_NextSubTreeDone)
+						{
+							auto item = SearchDirectory(enumerator, std::move(m_SubDirectories[m_NextSubDirectory]), m_NextSubDirectories, m_NextSubTreeDone);
+
+							// Advance to the next directory in the list or break out and go level down
+							if (m_NextSubTreeDone)
+							{
+								if (++m_NextSubDirectory < m_SubDirectories.size())
+								{
+									// Reset the flag to scan the next directory on the current level
+									m_NextSubTreeDone = false;
+								}
+								else
+								{
+									// Set the flag (or leave it unchanged rather) to break out and process deeper levels
+									m_NextSubTreeDone = true;
+								}
+							}
+							return item;
+						}
+						else
+						{
+							// When we're done with the second level move its subdirectories to the base level container and
+							// reset its done flag.
+							m_SubDirectories = std::move(m_NextSubDirectories);
+							m_SubTreeDone = true;
+
+							// Also reset the second level state
+							m_NextSubDirectory = 0;
+							m_NextSubTreeDone = false;
+
+							if (!m_SubDirectories.empty())
+							{
+								// Skip this iteration if we need to get back to base level with subdirectories from the second level
+								enumerator.SkipCurrent();
+							}
+						}
+					}
+				}
+				return {};
+			}
+	};
 }
 
 namespace kxf
@@ -249,101 +409,19 @@ namespace kxf
 			return {};
 		});
 	}
-	size_t NativeFileSystem::EnumItems(const FSPath& directory, std::function<bool(FileItem)> func, const FSPath& query, FlagSet<FSActionFlag> flags) const
+	Enumerator<FileItem> NativeFileSystem::EnumItems(const FSPath& directory, const FSPath& query, FlagSet<FSActionFlag> flags) const
 	{
-		if (IsNull())
+		if (IsNull() || flags.Contains(FSActionFlag::LimitToFiles|FSActionFlag::LimitToDirectories))
 		{
-			return 0;
+			return {};
 		}
 
-		return DoWithResolvedPath1(m_LookupDirectory, directory, [&](const FSPath& path) -> size_t
+		return DoWithResolvedPath1(m_LookupDirectory, directory, [&](FSPath path)
 		{
-			if (flags.Contains(FSActionFlag::LimitToFiles|FSActionFlag::LimitToDirectories))
-			{
-				return 0;
-			}
-
-			FSPath resolvedRootDirectory;
-			if (flags.Contains(FSActionFlag::RelativePath))
-			{
-				resolvedRootDirectory = path;
-			}
-
-			size_t counter = 0;
-			auto SearchDirectory = [&](const FSPath& directory, std::vector<FSPath>& childDirectories)
-			{
-				WIN32_FIND_DATAW findInfo = {};
-
-				const String fullQuery = (directory / (!query ? wxS("*") : query)).GetFullPathWithNS(FSPathNamespace::Win32File);
-				HANDLE handle = FileSystem::Private::CallFindFirstFile(fullQuery, findInfo, flags & FSActionFlag::CaseSensitive);
-				if (handle && handle != INVALID_HANDLE_VALUE)
-				{
-					Utility::ScopeGuard atExit([&]()
-					{
-						::FindClose(handle);
-					});
-
-					do
-					{
-						// Skip invalid items and current and parent directory links
-						if (FileSystem::Private::IsValidFindItem(findInfo))
-						{
-							const bool isDirectory = findInfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
-
-							// Add directory to the stack if we need to scan child directories
-							if (isDirectory && flags & FSActionFlag::Recursive)
-							{
-								FSPath childDirectory = directory / findInfo.cFileName;
-								childDirectory.EnsureNamespaceSet(directory.GetNamespace());
-								childDirectories.emplace_back(std::move(childDirectory));
-							}
-
-							// Filter files and/or directories
-							if (flags & FSActionFlag::LimitToFiles && isDirectory)
-							{
-								continue;
-							}
-							if (flags & FSActionFlag::LimitToDirectories && !isDirectory)
-							{
-								continue;
-							}
-
-							// Fetch the file info
-							FileItem fileItem = FileSystem::Private::ConvertFileInfo(findInfo, directory, {}, flags);
-
-							// Make final path relative if needed
-							if (flags.Contains(FSActionFlag::RelativePath))
-							{
-								fileItem.SetFullPath(fileItem.GetFullPath().GetAfter(resolvedRootDirectory));
-							}
-
-							// Invoke the callback
-							counter++;
-							if (!std::invoke(func, std::move(fileItem)))
-							{
-								break;
-							}
-						}
-					}
-					while (::FindNextFileW(handle, &findInfo));
-				}
-			};
-
-			std::vector<FSPath> directories;
-			SearchDirectory(path, directories);
-
-			while (!directories.empty())
-			{
-				std::vector<FSPath> roundDirectories;
-				for (const FSPath& path: directories)
-				{
-					SearchDirectory(path, roundDirectories);
-				}
-				directories = std::move(roundDirectories);
-			}
-			return counter;
+			return DirectoryEnumerator(std::move(path), query, flags);
 		});
 	}
+
 	bool NativeFileSystem::IsDirectoryEmpty(const FSPath& directory) const
 	{
 		if (IsNull())
@@ -351,10 +429,11 @@ namespace kxf
 			return false;
 		}
 
-		return EnumItems(directory, [](const FileItem&)
+		for (const FileItem& item: EnumItems(directory))
 		{
 			return false;
-		}, {}) == 0;
+		}
+		return true;
 	}
 
 	bool NativeFileSystem::CreateDirectory(const FSPath& path, FlagSet<FSActionFlag> flags)
@@ -590,38 +669,32 @@ namespace kxf
 			{
 				if (flags.Contains(FSActionFlag::Recursive))
 				{
-					bool shouldExit = false;
 					std::vector<String> directories;
-
-					EnumItems(path, [&](FileItem item)
+					for (const FileItem& item: EnumItems(path, {}, FSActionFlag::Recursive))
 					{
 						String filePath = item.GetFullPath().GetFullPathWithNS(FSPathNamespace::Win32File);
 						if (item.IsDirectory())
 						{
-							if (DoRemoveDirectory(filePath))
-							{
-								return true;
-							}
-							else
+							if (!DoRemoveDirectory(filePath))
 							{
 								if (*Win32Error::GetLastError() == ERROR_DIR_NOT_EMPTY)
 								{
 									// Defer deletion for later
 									directories.emplace_back(std::move(filePath));
-									return true;
 								}
-								shouldExit = true;
+								return false;
 							}
 						}
-						else
+						else if (!DoRemoveFile(filePath))
 						{
-							shouldExit = !DoRemoveFile(filePath);
+							return false;
 						}
-						return !shouldExit;
-					}, {}, FSActionFlag::Recursive);
+					}
 					directories.emplace_back(path);
 
 					size_t failCount = 0;
+					size_t failCountTreshold = directories.size() * 2;
+					bool shouldExit = false;
 					while (!shouldExit && !directories.empty())
 					{
 						for (size_t i = directories.size() - 1; i != 0; i--)
@@ -642,7 +715,7 @@ namespace kxf
 						}
 
 						// Not be the best solution but anyway
-						if (failCount >= 10000)
+						if (failCount >= failCountTreshold)
 						{
 							return false;
 						}
@@ -750,6 +823,10 @@ namespace kxf
 		{
 			return FileSystem::Private::ConvertFileInfo(file.GetHandle(), id);
 		}
+		return {};
+	}
+	Enumerator<FileItem> NativeFileSystem::EnumItems(const UniversallyUniqueID& id, FlagSet<FSActionFlag> flags) const
+	{
 		return {};
 	}
 

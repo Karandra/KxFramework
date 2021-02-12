@@ -3,7 +3,6 @@
 #include "FSPath.h"
 #include "kxf/General/UniversallyUniqueID.h"
 #include "kxf/General/BinarySize.h"
-#include "kxf/General/Enumerator.h"
 
 namespace kxf
 {
@@ -25,7 +24,7 @@ namespace kxf
 
 		public:
 			static Enumerator<StorageVolume> EnumVolumes();
-			static EnumeratorPair<StorageVolume, LegacyVolume> EnumLegacyVolumes();
+			static Enumerator<std::pair<StorageVolume, LegacyVolume>> EnumLegacyVolumes();
 
 			static bool RemoveMountPoint(const FSPath& path) noexcept;
 			static bool RemoveMountPoint(const LegacyVolume& volume) noexcept;
