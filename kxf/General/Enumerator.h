@@ -60,15 +60,15 @@ namespace kxf::Private
 
 			const value_type& operator*() const& noexcept
 			{
-				return m_Enumerator->GetValue();
+				return const_cast<const TEnumerator&>(*m_Enumerator).GetValue();
 			}
 			value_type& operator*() & noexcept
 			{
-				return m_Enumerator->GetValue();
+				return const_cast<TEnumerator&>(*m_Enumerator).GetValue();
 			}
 			value_type operator*() && noexcept
 			{
-				return m_Enumerator->GetValue();
+				return std::move(*m_Enumerator).GetValue();
 			}
 
 			const TEnumerator* operator->() const noexcept
@@ -99,7 +99,6 @@ namespace kxf
 	{
 		public:
 			using TValue = TValue_;
-			using TStoredValue = typename std::conditional_t<std::is_reference_v<TValue>, std::remove_reference_t<TValue>*, TValue>;
 			using TValueContainer = typename std::conditional_t<std::is_reference_v<TValue>, kxf::optional_ref<std::remove_reference_t<TValue>>, std::optional<TValue>>;
 
 			using iterator = Private::EnumIterator<Enumerator>;
@@ -154,6 +153,12 @@ namespace kxf
 				return EnumeratorInstruction::Terminate;
 			}
 
+			template<class T>
+			static decltype(auto) DoGetValue(T&& items) noexcept
+			{
+				return *items;
+			}
+
 		public:
 			Enumerator() noexcept = default;
 
@@ -200,7 +205,10 @@ namespace kxf
 			}
 
 			Enumerator(const Enumerator&) = delete;
-			Enumerator(Enumerator&&) noexcept = default;
+			Enumerator(Enumerator&& other) noexcept
+			{
+				*this = std::move(other);
+			}
 
 		public:
 			// IEnumerator
@@ -264,17 +272,17 @@ namespace kxf
 				return count;
 			}
 
-			const TValue& GetValue() const& noexcept
+			decltype(auto) GetValue() const& noexcept
 			{
-				return *m_CurrentValue;
+				return DoGetValue(m_CurrentValue);
 			}
-			TValue& GetValue() & noexcept
+			decltype(auto) GetValue() & noexcept
 			{
-				return *m_CurrentValue;
+				return DoGetValue(m_CurrentValue);
 			}
-			TValue GetValue() && noexcept
+			decltype(auto) GetValue() && noexcept
 			{
-				return *std::move(m_CurrentValue);
+				return DoGetValue(std::move(m_CurrentValue));
 			}
 
 		public:
@@ -293,26 +301,26 @@ namespace kxf
 				return {};
 			}
 
-			const TValue& operator*() const& noexcept
+			decltype(auto) operator*() const& noexcept
 			{
-				return *m_CurrentValue;
+				return DoGetValue(m_CurrentValue);
 			}
-			TValue& operator*() & noexcept
+			decltype(auto) operator*() & noexcept
 			{
-				return *m_CurrentValue;
+				return DoGetValue(m_CurrentValue);
 			}
-			TValue operator*() && noexcept
+			decltype(auto) operator*() && noexcept
 			{
-				return *std::move(m_CurrentValue);
+				return DoGetValue(std::move(m_CurrentValue));
 			}
 
-			const TStoredValue* operator->() const& noexcept
+			decltype(auto) operator->() const& noexcept
 			{
-				return &*m_CurrentValue;
+				return &DoGetValue(m_CurrentValue);
 			}
-			TStoredValue* operator->() & noexcept
+			decltype(auto) operator->() & noexcept
 			{
-				return &*m_CurrentValue;
+				return &DoGetValue(m_CurrentValue);
 			}
 
 		public:
@@ -326,15 +334,18 @@ namespace kxf
 			}
 
 			Enumerator& operator=(const Enumerator&) = delete;
-			Enumerator& operator=(Enumerator&&) noexcept = default;
+			Enumerator& operator=(Enumerator&& other) noexcept
+			{
+				m_MoveNext = std::move(other.m_MoveNext);
+				m_CurrentValue = std::move(other.m_CurrentValue);
+
+				m_CurrentInstruction = Utility::ExchangeResetAndReturn(other.m_CurrentInstruction, EnumeratorInstruction::Terminate);
+				m_NextInstruction = Utility::ExchangeResetAndReturn(other.m_NextInstruction, EnumeratorInstruction::Continue);
+
+				m_Index = Utility::ExchangeResetAndReturn(other.m_Index, 0);
+				m_TotalCount = Utility::ExchangeResetAndReturn(other.m_TotalCount, npos);
+
+				return *this;
+			}
 	};
-}
-
-namespace kxf
-{
-	template<class T1, class T2>
-	using EnumeratorPair = Enumerator<std::pair<T1, T2>>;
-
-	template<class... Args>
-	using EnumeratorTuple = Enumerator<std::tuple<Args...>>;
 }

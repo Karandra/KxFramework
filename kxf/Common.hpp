@@ -28,7 +28,7 @@
 // Forward declarations
 namespace kxf
 {
-	template<class T>
+	template<class TValue>
 	class Enumerator;
 }
 
