@@ -111,11 +111,10 @@ namespace kxf
 			kxf::unique_function<TValueContainer(IEnumerator&)> m_MoveNext;
 			TValueContainer m_CurrentValue;
 			EnumeratorInstruction m_CurrentInstruction = EnumeratorInstruction::Terminate;
+			EnumeratorInstruction m_NextInstruction = EnumeratorInstruction::Continue;
 
 			size_t m_Index = 0;
 			size_t m_TotalCount = npos;
-			bool m_SkipCurrent = false;
-			bool m_Terminate = false;
 
 		private:
 			EnumeratorInstruction DoMoveNext()
@@ -140,14 +139,12 @@ namespace kxf
 			{
 				m_CurrentValue = std::invoke(m_MoveNext, static_cast<IEnumerator&>(*this));
 
-				if (m_Terminate)
+				if (m_NextInstruction == EnumeratorInstruction::Terminate)
 				{
-					m_Terminate = false;
 					return EnumeratorInstruction::Terminate;
 				}
-				else if (m_SkipCurrent)
+				else if (m_NextInstruction == EnumeratorInstruction::SkipCurrent)
 				{
-					m_SkipCurrent = false;
 					return EnumeratorInstruction::SkipCurrent;
 				}
 				else if (m_CurrentValue.has_value())
@@ -215,6 +212,8 @@ namespace kxf
 			EnumeratorInstruction MoveNext() override
 			{
 				m_CurrentInstruction = DoMoveNext();
+				m_NextInstruction = EnumeratorInstruction::Continue;
+
 				return m_CurrentInstruction;
 			}
 			EnumeratorInstruction GetCurrentInstruction() const noexcept override
@@ -223,13 +222,11 @@ namespace kxf
 			}
 			void SkipCurrent() noexcept override
 			{
-				m_SkipCurrent = true;
-				m_Terminate = false;
+				m_NextInstruction = EnumeratorInstruction::SkipCurrent;
 			}
 			void Terminate() noexcept override
 			{
-				m_SkipCurrent = false;
-				m_Terminate = true;
+				m_NextInstruction = EnumeratorInstruction::Terminate;
 			}
 
 			size_t GetCurrentStep() const noexcept override
@@ -253,9 +250,7 @@ namespace kxf
 			{
 				m_Index = 0;
 				m_CurrentInstruction = EnumeratorInstruction::Terminate;
-
-				m_SkipCurrent = false;
-				m_Terminate = false;
+				m_NextInstruction = EnumeratorInstruction::Continue;
 			}
 
 			// Enumerator
