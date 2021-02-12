@@ -32,6 +32,7 @@ namespace kxf
 
 		public:
 			using LoadingScheme = Localization::LoadingScheme;
+			using ItemRef = std::pair<const ResourceID*, const LocalizationItem*>;
 
 		protected:
 			virtual const String& GetPluralStringForNumber(const LocalizationItem& item, int value) const;
@@ -48,7 +49,7 @@ namespace kxf
 			}
 
 			virtual const LocalizationItem& GetItem(const ResourceID& id) const = 0;
-			virtual size_t EnumItems(std::function<bool(const ResourceID&, const LocalizationItem&)> func) const = 0;
+			virtual Enumerator<ItemRef> EnumItems() const = 0;
 
 			virtual bool Load(IInputStream& stream, const Locale& locale, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace) = 0;
 			virtual bool Load(const DynamicLibrary& library, const FSPath& name, const Locale& locale, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace) = 0;

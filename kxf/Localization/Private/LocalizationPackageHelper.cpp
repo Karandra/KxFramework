@@ -3,6 +3,7 @@
 #include "LocalizationResources.h"
 #include "kxf/System/DynamicLibrary.h"
 #include "kxf/Serialization/XML.h"
+#include "kxf/Utility/Enumerator.h"
 
 namespace kxf::Localization::Private
 {
@@ -37,5 +38,17 @@ namespace kxf::Localization::Private
 
 		using namespace Localization::Private::EmbeddedResourceType;
 		return DoLoad(Android) || DoLoad(Windows) || DoLoad(Qt);
+	}
+
+	Enumerator<ILocalizationPackage::ItemRef> ItemsPackageHelper::EnumItems() const
+	{
+		if (m_Items && !m_Items->empty())
+		{
+			return Utility::EnumerateIterableContainer<ILocalizationPackage::ItemRef>(*m_Items, [](const auto& it)
+			{
+				return std::make_pair(&it.first, &it.second);
+			});
+		}
+		return {};
 	}
 }

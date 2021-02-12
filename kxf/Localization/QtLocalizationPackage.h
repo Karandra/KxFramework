@@ -58,9 +58,9 @@ namespace kxf
 				}
 				return NullLocalizationItem;
 			}
-			size_t EnumItems(std::function<bool(const ResourceID&, const LocalizationItem&)> func) const override
+			Enumerator<ItemRef> EnumItems() const override
 			{
-				return m_ItemsHelper.EnumItems(func);
+				return m_ItemsHelper.EnumItems();
 			}
 
 			bool Load(IInputStream& stream, const Locale& locale, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace) override

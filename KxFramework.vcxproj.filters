@@ -2702,6 +2702,9 @@
     <ClCompile Include="kxf\FileSystem\AbstractDirectoryEnumerator.cpp">
       <Filter>kxf\FileSystem</Filter>
     </ClCompile>
+    <ClCompile Include="kxf\Localization\LocalizationPackageStack.cpp">
+      <Filter>kxf\Localization</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="kxf\System\Private\ErrorCodeNtStatus.i">

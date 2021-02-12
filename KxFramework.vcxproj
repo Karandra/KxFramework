@@ -784,6 +784,7 @@
     <ClCompile Include="kxf\IO\MemoryStream.cpp" />
     <ClCompile Include="kxf\Localization\ILocalizationPackage.cpp" />
     <ClCompile Include="kxf\Localization\LocalizationItem.cpp" />
+    <ClCompile Include="kxf\Localization\LocalizationPackageStack.cpp" />
     <ClCompile Include="kxf\Localization\Private\LocalizationPackageHelper.cpp" />
     <ClCompile Include="kxf\Localization\QtLocalizationPackage.cpp" />
     <ClCompile Include="kxf\Localization\WindowsLocalizationPackage.cpp" />

@@ -1,7 +1,7 @@
 #pragma once
 #include "../Common.h"
 #include "../ILocalizationPackage.h"
-#include <unordered_map>
+#include "kxf/General/Enumerator.h"
 
 namespace kxf
 {
@@ -36,21 +36,7 @@ namespace kxf::Localization::Private
 				}
 				return nullptr;
 			}
-
-			template<class TFunc>
-			size_t EnumItems(TFunc&& func) const
-			{
-				size_t count = 0;
-				for (const auto& [id, item]: *m_Items)
-				{
-					count++;
-					if (!std::invoke(func, id, item))
-					{
-						break;
-					}
-				}
-				return count;
-			}
+			Enumerator<ILocalizationPackage::ItemRef> EnumItems() const;
 
 		public:
 			ItemsPackageHelper& operator=(const ItemsPackageHelper&) = delete;
