@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "NativeFileSystem.h"
 #include "FSActionEvent.h"
+#include "AbstractDirectoryEnumerator.h"
 #include "Private/NativeFSUtility.h"
 #include "kxf/Application/ICoreApplication.h"
 #include "kxf/General/AlignedStorage.h"
@@ -112,21 +113,12 @@ namespace
 }
 namespace
 {
-	class DirectoryEnumerator final
+	class NativeDirectoryEnumerator final: public AbstractDirectoryEnumerator
 	{
 		private:
-			FSPath m_Path;
 			FSPath m_Query;
 			FlagSet<FSActionFlag> m_Flags;
 			bound_handle_ptr<HANDLE, ::FindClose, INVALID_HANDLE_VALUE> m_SearchHandle;
-
-			FSPath m_CurrentPath;
-			std::vector<FSPath> m_SubDirectories;
-			bool m_SubTreeDone = false;
-
-			std::vector<FSPath> m_NextSubDirectories;
-			size_t m_NextSubDirectory = 0;
-			bool m_NextSubTreeDone = false;
 
 		private:
 			String ConstructFullQuery(const FSPath& directory) const
@@ -140,7 +132,6 @@ namespace
 					return (directory / wxS("*")).GetFullPathWithNS(FSPathNamespace::Win32File);
 				}
 			}
-
 			std::optional<FileItem> DoItem(IEnumerator& enumerator, WIN32_FIND_DATAW& findInfo, const FSPath& directory, std::vector<FSPath>& childDirectories)
 			{
 				// Skip invalid items and current and parent directory links
@@ -171,11 +162,13 @@ namespace
 				// Make final path relative if needed
 				if (m_Flags.Contains(FSActionFlag::RelativePath))
 				{
-					fileItem.SetFullPath(fileItem.GetFullPath().GetAfter(m_Path));
+					fileItem.SetFullPath(fileItem.GetFullPath().GetAfter(GetRootPath()));
 				}
 				return fileItem;
 			};
-			std::optional<FileItem> SearchDirectory(IEnumerator& enumerator, const FSPath& directory, std::vector<FSPath>& childDirectories, bool& isSubTreeDone)
+
+		protected:
+			std::optional<FileItem> SearchDirectory(IEnumerator& enumerator, const FSPath& directory, std::vector<FSPath>& childDirectories, bool& isSubTreeDone) override
 			{
 				WIN32_FIND_DATAW findInfo = {};
 				if (!m_SearchHandle)
@@ -204,67 +197,10 @@ namespace
 			};
 
 		public:
-			DirectoryEnumerator() = default;
-			DirectoryEnumerator(FSPath path, FSPath query, FlagSet<FSActionFlag> flags)
-				:m_Path(std::move(path)), m_Query(std::move(query)), m_Flags(flags)
+			NativeDirectoryEnumerator() = default;
+			NativeDirectoryEnumerator(FSPath rootPath, FSPath query, FlagSet<FSActionFlag> flags)
+				:AbstractDirectoryEnumerator(std::move(rootPath)), m_Query(std::move(query)), m_Flags(flags)
 			{
-			}
-
-		public:
-			std::optional<FileItem> operator()(IEnumerator& enumerator)
-			{
-				if (m_Path)
-				{
-					if (!m_SubTreeDone)
-					{
-						// Do the current level
-						return SearchDirectory(enumerator, m_Path, m_SubDirectories, m_SubTreeDone);
-					}
-					else if (!m_SubDirectories.empty())
-					{
-						// Once we have subdirectories to scan get the one pointed by 'm_NextSubDirectory' and scan it
-						// placing any subsequent subdirectories inside the container. Do that until we have scanned
-						// all subdirectories for the previous level or an end was signaled (via 'm_NextSubTreeDone' flag).
-						if (m_NextSubDirectory < m_SubDirectories.size() && !m_NextSubTreeDone)
-						{
-							auto item = SearchDirectory(enumerator, std::move(m_SubDirectories[m_NextSubDirectory]), m_NextSubDirectories, m_NextSubTreeDone);
-
-							// Advance to the next directory in the list or break out and go level down
-							if (m_NextSubTreeDone)
-							{
-								if (++m_NextSubDirectory < m_SubDirectories.size())
-								{
-									// Reset the flag to scan the next directory on the current level
-									m_NextSubTreeDone = false;
-								}
-								else
-								{
-									// Set the flag (or leave it unchanged rather) to break out and process deeper levels
-									m_NextSubTreeDone = true;
-								}
-							}
-							return item;
-						}
-						else
-						{
-							// When we're done with the second level move its subdirectories to the base level container and
-							// reset its done flag.
-							m_SubDirectories = std::move(m_NextSubDirectories);
-							m_SubTreeDone = true;
-
-							// Also reset the second level state
-							m_NextSubDirectory = 0;
-							m_NextSubTreeDone = false;
-
-							if (!m_SubDirectories.empty())
-							{
-								// Skip this iteration if we need to get back to base level with subdirectories from the second level
-								enumerator.SkipCurrent();
-							}
-						}
-					}
-				}
-				return {};
 			}
 	};
 }
@@ -418,7 +354,7 @@ namespace kxf
 
 		return DoWithResolvedPath1(m_LookupDirectory, directory, [&](FSPath path)
 		{
-			return DirectoryEnumerator(std::move(path), query, flags);
+			return NativeDirectoryEnumerator(std::move(path), query, flags);
 		});
 	}
 

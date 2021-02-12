@@ -1808,6 +1808,9 @@
     <ClInclude Include="kxf\General\UniqueFunction.h">
       <Filter>kxf\System</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\FileSystem\AbstractDirectoryEnumerator.h">
+      <Filter>kxf\FileSystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2695,6 +2698,9 @@
     </ClCompile>
     <ClCompile Include="kxf\RTTI\Common.cpp">
       <Filter>kxf\RTTI</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\FileSystem\AbstractDirectoryEnumerator.cpp">
+      <Filter>kxf\FileSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

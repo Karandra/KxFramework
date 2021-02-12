@@ -308,6 +308,7 @@
     <ClInclude Include="kxf\EventSystem\Private\Win32CommonEventLoop.h" />
     <ClInclude Include="kxf\EventSystem\Private\Win32GUIEventLoop.h" />
     <ClInclude Include="kxf\EventSystem\WidgetEvent.h" />
+    <ClInclude Include="kxf\FileSystem\AbstractDirectoryEnumerator.h" />
     <ClInclude Include="kxf\FileSystem\NullFileSystem.h" />
     <ClInclude Include="kxf\General\AlignedStorage.h" />
     <ClInclude Include="kxf\General\CombinedVariablesCollection.h" />
@@ -763,6 +764,7 @@
     <ClCompile Include="kxf\EventSystem\Private\Win32ConsoleEventLoop.cpp" />
     <ClCompile Include="kxf\EventSystem\Private\Win32CommonEventLoop.cpp" />
     <ClCompile Include="kxf\EventSystem\Private\Win32GUIEventLoop.cpp" />
+    <ClCompile Include="kxf\FileSystem\AbstractDirectoryEnumerator.cpp" />
     <ClCompile Include="kxf\FileSystem\IFileSystem.cpp" />
     <ClCompile Include="kxf\FileSystem\Private\NativeFSUtility.cpp" />
     <ClCompile Include="kxf\General\CombinedVariablesCollection.cpp" />
