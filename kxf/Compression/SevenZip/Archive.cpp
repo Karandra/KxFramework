@@ -13,6 +13,7 @@
 #include "kxf/General/Enumerator.h"
 #include "kxf/System/VariantProperty.h"
 #include "kxf/FileSystem/NativeFileSystem.h"
+#include "kxf/FileSystem/AbstractDirectoryEnumerator.h"
 #include "kxf/Utility/ScopeGuard.h"
 #include "kxf/Utility/TypeTraits.h"
 #include "kxf/Utility/Literals.h"
@@ -133,6 +134,84 @@ namespace
 		}
 		return std::numeric_limits<size_t>::max();
 	}
+}
+namespace
+{
+	class ArchiveDirectoryEnumerator final: public AbstractDirectoryEnumerator
+	{
+		private:
+			const Archive& m_Archive;
+			Enumerator<FileItem> m_Items;
+			Enumerator<FileItem>::iterator m_ItemsIterator;
+
+			FSPath m_Query;
+			FlagSet<FSActionFlag> m_Flags;
+			FlagSet<StringOpFlag> m_MatchFlags;
+
+		private:
+			std::optional<FileItem> DoItem(IEnumerator& enumerator, FileItem item, const FSPath& directory, std::vector<FSPath>& childDirectories)
+			{
+				FSPath fullPath = item.GetFullPath();
+				FSPath containingDirectory = fullPath.GetBefore(directory);
+				if (containingDirectory == directory)
+				{
+					FSPath relativePath = fullPath.GetAfter(directory);
+					bool hasChildItems = relativePath.GetComponentCount() > 1;
+
+					if (hasChildItems && m_Flags.Contains(FSActionFlag::Recursive))
+					{
+						childDirectories.emplace_back(std::move(fullPath));
+					}
+					if (relativePath.MatchesWildcards(m_Query, m_MatchFlags))
+					{
+						return item;
+					}
+				}
+
+				enumerator.SkipCurrent();
+				return {};
+			};
+
+		protected:
+			std::optional<FileItem> SearchDirectory(IEnumerator& enumerator, const FSPath& directory, std::vector<FSPath>& childDirectories, bool& isSubTreeDone) override
+			{
+				if (!m_Items)
+				{
+					m_Items = m_Archive.EnumItems(std::numeric_limits<UniversallyUniqueID>::max(), m_Flags);
+					m_ItemsIterator = m_Items.begin();
+
+					if (m_Items && m_ItemsIterator != m_Items.end())
+					{
+						return DoItem(enumerator, std::move(*m_ItemsIterator), directory, childDirectories);
+					}
+				}
+				else if (++m_ItemsIterator; m_ItemsIterator != m_Items.end())
+				{
+					return DoItem(enumerator, std::move(*m_ItemsIterator), directory, childDirectories);
+				}
+				else
+				{
+					m_Items = {};
+					m_ItemsIterator = {};
+					isSubTreeDone = true;
+
+					// Skip this step if we need to scan subdirectories because otherwise we'd terminate the process
+					if (m_Flags.Contains(FSActionFlag::Recursive))
+					{
+						enumerator.SkipCurrent();
+					}
+				}
+				return {};
+			};
+
+		public:
+			ArchiveDirectoryEnumerator() = default;
+			ArchiveDirectoryEnumerator(const Archive& archive, FSPath rootPath, FSPath query, FlagSet<FSActionFlag> flags)
+				:AbstractDirectoryEnumerator(std::move(rootPath)), m_Archive(archive), m_Query(std::move(query)), m_Flags(flags)
+			{
+				m_MatchFlags.Add(StringOpFlag::IgnoreCase, !flags.Contains(FSActionFlag::CaseSensitive));
+			}
+	};
 }
 
 namespace kxf::SevenZip
@@ -416,48 +495,10 @@ namespace kxf::SevenZip
 	}
 	Enumerator<FileItem> Archive::EnumItems(const FSPath& directory, const FSPath& query, FlagSet<FSActionFlag> flags) const
 	{
-		#if 0
-		FlagSet<StringOpFlag> matchFlags;
-		matchFlags.Add(StringOpFlag::IgnoreCase, !flags.Contains(FSActionFlag::CaseSensitive));
-
-		auto SearchDirectory = [&](const FSPath& directory, std::vector<FSPath>& childDirectories)
+		if (IsOpened())
 		{
-			size_t count = 0;
-			EnumItems(std::numeric_limits<UniversallyUniqueID>::max(), [&](FileItem item)
-			{
-				FSPath fullPath = item.GetFullPath();
-				FSPath relativePath = fullPath.GetAfter(directory);
-				const bool hasChildItems = relativePath.GetComponentCount() > 1;
-
-				bool result = true;
-				if (relativePath.MatchesWildcards(query, matchFlags))
-				{
-					count++;
-					result = std::invoke(func, std::move(item));
-				}
-				if (hasChildItems && flags & FSActionFlag::Recursive)
-				{
-					childDirectories.emplace_back(std::move(fullPath));
-				}
-				return result;
-			}, flags);
-			return count;
-		};
-
-		std::vector<FSPath> directories;
-		size_t count = SearchDirectory(directory, directories);
-
-		while (!directories.empty())
-		{
-			std::vector<FSPath> roundDirectories;
-			for (const FSPath& path: directories)
-			{
-				count += SearchDirectory(path, roundDirectories);
-			}
-			directories = std::move(roundDirectories);
+			return ArchiveDirectoryEnumerator(*this, directory, query, flags);
 		}
-		return count;
-		#endif
 		return {};
 	}
 	bool Archive::IsDirectoryEmpty(const FSPath& directory) const
@@ -497,30 +538,33 @@ namespace kxf::SevenZip
 	}
 	Enumerator<FileItem> Archive::EnumItems(const UniversallyUniqueID& id, FlagSet<FSActionFlag> flags) const
 	{
-		if (id == std::numeric_limits<UniversallyUniqueID>::max())
+		if (IsOpened())
 		{
-			return {[this, flags, index = 0_zu](IEnumerator& enumerator) mutable -> std::optional<FileItem>
+			if (id == std::numeric_limits<UniversallyUniqueID>::max())
 			{
-				const size_t fileIndex = index++;
-				const auto attributes = GetItemAttributes(*m_Data.InArchive, m_Data.ItemCount, LocallyUniqueID(fileIndex));
-				const bool isDirectory = attributes.Contains(FILE_ATTRIBUTE_DIRECTORY);
+				return {[this, flags, index = 0_zu] (IEnumerator& enumerator) mutable -> std::optional<FileItem>
+				{
+					const size_t fileIndex = index++;
+					const auto attributes = GetItemAttributes(*m_Data.InArchive, m_Data.ItemCount, LocallyUniqueID(fileIndex));
+					const bool isDirectory = attributes.Contains(FILE_ATTRIBUTE_DIRECTORY);
 
-				if ((flags & FSActionFlag::LimitToFiles && isDirectory) || (flags & FSActionFlag::LimitToDirectories && !isDirectory))
-				{
-					enumerator.SkipCurrent();
-					return {};
-				}
-				else
-				{
-					return Private::GetArchiveItem(*m_Data.InArchive, fileIndex);
-				}
-			}, m_Data.ItemCount};
-		}
-		else if (auto luid = id.ToLocallyUniqueID(); luid < m_Data.ItemCount)
-		{
-			if (FileItem item = Private::GetArchiveItem(*m_Data.InArchive, luid.ToInt()))
+					if ((flags & FSActionFlag::LimitToFiles && isDirectory) || (flags & FSActionFlag::LimitToDirectories && !isDirectory))
+					{
+						enumerator.SkipCurrent();
+						return {};
+					}
+					else
+					{
+						return Private::GetArchiveItem(*m_Data.InArchive, fileIndex);
+					}
+				}, m_Data.ItemCount};
+			}
+			else if (auto luid = id.ToLocallyUniqueID(); luid < m_Data.ItemCount)
 			{
-				return EnumItems(item.GetFullPath(), {}, flags);
+				if (FileItem item = Private::GetArchiveItem(*m_Data.InArchive, luid.ToInt()))
+				{
+					return EnumItems(item.GetFullPath(), {}, flags);
+				}
 			}
 		}
 		return {};
