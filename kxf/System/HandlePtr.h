@@ -1,22 +1,27 @@
 #pragma once
 #include "kxf/Common.hpp"
 
-namespace kxf
+namespace kxf::Private
 {
-	template<class T, class TFinalizer, T null2 = static_cast<T>(0)>
-	class handle_ptr final
+	template<class TValue_, class TFinalizer_, TFinalizer_ finalizer_ = nullptr, TValue_ null2_ = static_cast<TValue_>(0)>
+	class basic_handle_ptr final
 	{
-		static_assert(std::is_integral_v<T> || std::is_pointer_v<T>);
+		static_assert(std::is_integral_v<TValue_> || std::is_pointer_v<TValue_>);
+
+		public:
+			using TValue = TValue_;
+			using TFinalizer = TFinalizer_;
+
+		public:
+			static inline constexpr TValue null = static_cast<TValue>(0);
+			static inline constexpr TValue null2 = null2_;
 
 		private:
-			static inline constexpr T null = static_cast<T>(0);
+			TValue m_Handle = null;
+			TFinalizer m_Finalizer = finalizer_;
 
 		private:
-			T m_Handle = null;
-			TFinalizer m_Finalizer = nullptr;
-
-		private:
-			void Finalize(T handle = null) noexcept
+			void Finalize(TValue handle = null) noexcept
 			{
 				if (m_Finalizer && !is_null())
 				{
@@ -24,7 +29,7 @@ namespace kxf
 				}
 				m_Handle = handle;
 			}
-			T Detach() noexcept
+			TValue Detach() noexcept
 			{
 				auto handle = m_Handle;
 				m_Handle = null;
@@ -33,18 +38,18 @@ namespace kxf
 			}
 
 		public:
-			handle_ptr() noexcept = default;
-			handle_ptr(T handle, TFinalizer finalizer = nullptr) noexcept
-				:m_Handle(handle), m_Finalizer(finalizer)
+			basic_handle_ptr() noexcept = default;
+			basic_handle_ptr(TValue handle, TFinalizer finalizer = finalizer_) noexcept
+				:m_Handle(handle), m_Finalizer(finalizer_ ? finalizer_ : finalizer)
 			{
 			}
 
-			handle_ptr(const handle_ptr&) = delete;
-			handle_ptr(handle_ptr&& other) noexcept
-				:m_Handle(other.Detach()), m_Finalizer(other.m_Finalizer)
+			basic_handle_ptr(const basic_handle_ptr&) = delete;
+			basic_handle_ptr(basic_handle_ptr&& other) noexcept
+				:m_Handle(other.Detach()), m_Finalizer(finalizer_ ? finalizer_ : other.m_Finalizer)
 			{
 			}
-			~handle_ptr()
+			~basic_handle_ptr()
 			{
 				Finalize();
 			}
@@ -55,20 +60,20 @@ namespace kxf
 				return m_Handle == null || m_Handle == null2;
 			}
 
-			T get() const noexcept
+			TValue get() const noexcept
 			{
 				return m_Handle;
 			}
 			TFinalizer get_deleter() const noexcept
 			{
-				return {};
+				return m_Finalizer;
 			}
 
-			void reset(T handle = null) noexcept
+			void reset(TValue handle = null) noexcept
 			{
 				Finalize(handle);
 			}
-			T release() noexcept
+			TValue release() noexcept
 			{
 				return Detach();
 			}
@@ -83,16 +88,16 @@ namespace kxf
 				return is_null();
 			}
 
-			T operator*() const noexcept
+			TValue operator*() const noexcept
 			{
 				return m_Handle;
 			}
 
-			handle_ptr& operator=(const handle_ptr&) = delete;
-			handle_ptr& operator=(handle_ptr&& other) noexcept
+			basic_handle_ptr& operator=(const basic_handle_ptr&) = delete;
+			basic_handle_ptr& operator=(basic_handle_ptr&& other) noexcept
 			{
 				m_Handle = other.Detach();
-				m_Finalizer = other.m_Finalizer;
+				m_Finalizer = finalizer_ ? finalizer_ : other.m_Finalizer;
 
 				return *this;
 			}
@@ -101,14 +106,23 @@ namespace kxf
 
 namespace kxf
 {
-	template<class T, T null2, class TFinalizer>
-	handle_ptr<T, TFinalizer, null2> make_handle_ptr(T handle, TFinalizer finalizer) noexcept
+	template<class TValue, class TFinalizer, TValue null2_ = static_cast<TValue>(0)>
+	using handle_ptr = Private::basic_handle_ptr<TValue, TFinalizer, nullptr, null2_>;
+
+	template<class TValue, auto finalizer = nullptr, TValue null2_ = static_cast<TValue>(0)>
+	using bound_handle_ptr = Private::basic_handle_ptr<TValue, decltype(finalizer), finalizer, null2_>;
+}
+
+namespace kxf
+{
+	template<class TValue, TValue null2, class TFinalizer>
+	handle_ptr<TValue, TFinalizer, null2> make_handle_ptr(TValue handle, TFinalizer finalizer) noexcept
 	{
 		return {handle, finalizer};
 	}
 
-	template<class T, class TFinalizer>
-	handle_ptr<T, TFinalizer> make_handle_ptr(T handle, TFinalizer finalizer) noexcept
+	template<class TValue, class TFinalizer>
+	handle_ptr<TValue, TFinalizer> make_handle_ptr(TValue handle, TFinalizer finalizer) noexcept
 	{
 		return {handle, finalizer};
 	}
