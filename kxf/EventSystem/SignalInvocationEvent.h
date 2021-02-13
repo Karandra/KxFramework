@@ -36,18 +36,13 @@ namespace kxf::EventSystem
 			// ISignalInvocationEvent
 			bool GetParameters(void* parameters) override
 			{
-				// Nothing to deallocate, so the deallocation functions are empty
 				if constexpr(signalSemantics == SignalParametersSemantics::Copy)
 				{
-					return Utility::NewObjectOnMemoryLocation<TArgsTuple>(parameters, []()
-					{
-					}, m_Parameters) != nullptr;
+					return Utility::ConstructAt<TArgsTuple>(parameters, m_Parameters) != nullptr;
 				}
 				else if constexpr(signalSemantics == SignalParametersSemantics::Move)
 				{
-					return Utility::NewObjectOnMemoryLocation<TArgsTuple>(parameters, []()
-					{
-					}, std::move(m_Parameters)) != nullptr;
+					return Utility::ConstructAt<TArgsTuple>(parameters, std::move(m_Parameters)) != nullptr;
 				}
 				else
 				{

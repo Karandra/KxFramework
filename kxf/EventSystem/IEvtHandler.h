@@ -85,7 +85,7 @@ namespace kxf
 
 							Utility::ScopeGuard atExit = [&]()
 							{
-								Utility::DestroyObjectOnMemoryLocation<TResult>(resultBuffer);
+								Utility::DestroyAt<TResult>(resultBuffer);
 							};
 							return *std::launder(reinterpret_cast<TResult*>(resultBuffer));
 						};

@@ -19,7 +19,7 @@ namespace kxf::EventSystem::Private
 				TArgsTuple& parameters = *std::launder(reinterpret_cast<TArgsTuple*>(parametersBuffer));
 				Utility::ScopeGuard atExit = [&]()
 				{
-					Utility::DestroyObjectOnMemoryLocation<TArgsTuple>(parametersBuffer);
+					Utility::DestroyAt<TArgsTuple>(parametersBuffer);
 				};
 
 				if constexpr(!std::is_void_v<TResult>)

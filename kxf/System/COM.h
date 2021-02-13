@@ -4,6 +4,7 @@
 #include "kxf/General/String.h"
 #include "kxf/General/NativeUUID.h"
 #include "kxf/Utility/Memory.h"
+#include "kxf/Utility/ExceptionScopeGuard.h"
 #include "Private/COM.h"
 #include <memory>
 #include <new>
@@ -406,9 +407,11 @@ namespace kxf::COM
 		static_assert(std::is_trivially_constructible_v<T, Args...>, "must be trivially constructible");
 
 		void* buffer = AllocateMemory(sizeof(T));
-		return Utility::NewObjectOnMemoryLocation<T>(buffer, [&]()
+		Utility::ExceptionScopeGuard onException = [&]()
 		{
 			FreeMemory(buffer);
-		}, std::forward<Args>(arg)...);
+		};
+
+		return Utility::ConstructAt<T>(buffer, std::forward<Args>(arg)...);
 	}
 }
