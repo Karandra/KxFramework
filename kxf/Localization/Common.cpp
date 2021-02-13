@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Common.h"
 #include "Locale.h"
+#include "ILocalizationPackage.h"
 #include "kxf/UI/WidgetID.h"
 #include "kxf/General/Enumerator.h"
 #include "kxf/System/DynamicLibrary.h"
@@ -44,12 +45,22 @@ namespace kxf::Localization
 
 	size_t SearchPackages(const IFileSystem& fileSystem, const FSPath& directory, std::function<bool(Locale, FileItem)> func)
 	{
+		std::unordered_set<String> extensions;
+		for (auto&& classInfo: RTTI::GetClassInfo<ILocalizationPackage>().EnumDerivedClasses())
+		{
+			if (auto instance = classInfo.CreateObjectInstance<ILocalizationPackage>())
+			{
+				for (auto&& ext: instance->EnumFileExtensions())
+				{
+					extensions.insert(ext.ToLower());
+				}
+			}
+		}
+
 		size_t count = 0;
 		for (const FileItem& item: fileSystem.EnumItems(directory, {}, FSActionFlag::LimitToFiles))
 		{
-			// TODO: Need a proper solution (RTTI?) instead of manually adding supported file extensions here.
-			String name = item.GetName();
-			if (name.MatchesWildcards(wxS("*.xml")) || name.MatchesWildcards(wxS("*.resx")) || name.MatchesWildcards(wxS("*.resw")) || name.MatchesWildcards(wxS("*.ts")))
+			if (extensions.find(item.GetFileExtension().MakeLower()) != extensions.end())
 			{
 				count++;
 				if (!OnSearchPackage(func, std::move(item)))

@@ -53,6 +53,7 @@ namespace kxf
 
 			virtual bool Load(IInputStream& stream, const Locale& locale, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace) = 0;
 			virtual bool Load(const DynamicLibrary& library, const FSPath& name, const Locale& locale, FlagSet<LoadingScheme> loadingScheme = LoadingScheme::Replace) = 0;
+			virtual Enumerator<String> EnumFileExtensions() const = 0;
 
 		public:
 			explicit operator bool() const

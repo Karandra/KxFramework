@@ -50,4 +50,25 @@ namespace kxf
 		}
 		return false;
 	}
+
+	Enumerator<String> WindowsLocalizationPackage::EnumFileExtensions() const
+	{
+		return [count = 0]() mutable -> std::optional<String>
+		{
+			switch (count)
+			{
+				case 0:
+				{
+					count++;
+					return wxS("resx");
+				}
+				case 1:
+				{
+					count++;
+					return wxS("resw");
+				}
+			};
+			return {};
+		};
+	}
 }

@@ -11,7 +11,7 @@ namespace kxf
 namespace kxf
 {
 	class KX_API AndroidLocalizationPackage:
-		public RTTI::Implementation<AndroidLocalizationPackage, ILocalizationPackage>,
+		public RTTI::DynamicImplementation<AndroidLocalizationPackage, ILocalizationPackage>,
 		private Localization::Private::XMLPackageHelper
 	{
 		private:
@@ -66,6 +66,7 @@ namespace kxf
 			{
 				return XMLPackageHelper::Load(library, name, locale, loadingScheme);
 			}
+			Enumerator<String> EnumFileExtensions() const override;
 
 		public:
 			AndroidLocalizationPackage& operator=(const AndroidLocalizationPackage&) = delete;

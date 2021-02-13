@@ -71,4 +71,8 @@ namespace kxf
 	{
 		return Utility::EnumerateIterableContainerReverse<ILocalizationPackage&, Utility::ReferenceOf>(m_Packages);
 	}
+	Enumerator<String> LocalizationPackageStack::EnumFileExtensions() const
+	{
+		return {};
+	}
 }

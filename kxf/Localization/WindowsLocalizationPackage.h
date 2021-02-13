@@ -11,7 +11,7 @@ namespace kxf
 namespace kxf
 {
 	class KX_API WindowsLocalizationPackage:
-		public RTTI::Implementation<WindowsLocalizationPackage, ILocalizationPackage>,
+		public RTTI::DynamicImplementation<WindowsLocalizationPackage, ILocalizationPackage>,
 		private Localization::Private::XMLPackageHelper
 	{
 		private:
@@ -66,6 +66,7 @@ namespace kxf
 			{
 				return XMLPackageHelper::Load(library, name, locale, loadingScheme);
 			}
+			Enumerator<String> EnumFileExtensions() const override;
 
 		public:
 			WindowsLocalizationPackage& operator=(const WindowsLocalizationPackage&) = delete;

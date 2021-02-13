@@ -86,6 +86,7 @@ namespace kxf
 
 			Enumerator<const ILocalizationPackage&> EnumLocalizationPackages() const noexcept;
 			Enumerator<ILocalizationPackage&> EnumLocalizationPackages() noexcept;
+			Enumerator<String> EnumFileExtensions() const override;
 
 		public:
 			explicit operator bool() const

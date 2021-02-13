@@ -54,4 +54,17 @@ namespace kxf
 		}
 		return false;
 	}
+
+	Enumerator<String> QtLocalizationPackage::EnumFileExtensions() const
+	{
+		return [done = false]() mutable -> std::optional<String>
+		{
+			if (!done)
+			{
+				done = true;
+				return wxS("ts");
+			}
+			return {};
+		};
+	}
 }

@@ -106,4 +106,17 @@ namespace kxf
 		}
 		return false;
 	}
+
+	Enumerator<String> AndroidLocalizationPackage::EnumFileExtensions() const
+	{
+		return [done = false]() mutable -> std::optional<String>
+		{
+			if (!done)
+			{
+				done = true;
+				return wxS("xml");
+			}
+			return {};
+		};
+	}
 }

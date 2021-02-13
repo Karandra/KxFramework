@@ -12,7 +12,7 @@ namespace kxf
 namespace kxf
 {
 	class KX_API QtLocalizationPackage:
-		public RTTI::Implementation<QtLocalizationPackage, ILocalizationPackage>,
+		public RTTI::DynamicImplementation<QtLocalizationPackage, ILocalizationPackage>,
 		private Localization::Private::XMLPackageHelper
 	{
 		private:
@@ -71,6 +71,7 @@ namespace kxf
 			{
 				return XMLPackageHelper::Load(library, name, locale, loadingScheme);
 			}
+			Enumerator<String> EnumFileExtensions() const override;
 
 			// QtLocalizationPackage
 			Version GetVersion() const
