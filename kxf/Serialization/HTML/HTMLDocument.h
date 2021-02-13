@@ -12,14 +12,14 @@ namespace kxf::HTML
 
 namespace kxf
 {
-	class KxHTMLDocument;
+	class HTMLDocument;
 }
 
 namespace kxf
 {
-	class KX_API KxHTMLNode: public XDocument::XNode<KxHTMLNode>
+	class KX_API HTMLNode: public XDocument::XNode<HTMLNode>
 	{
-		friend class KxHTMLDocument;
+		friend class HTMLDocument;
 
 		public:
 			using NodeType = HTML::NodeType;
@@ -37,7 +37,7 @@ namespace kxf
 
 		private:
 			const void* m_Node = nullptr;
-			const KxHTMLDocument* m_Document = nullptr;
+			const HTMLDocument* m_Document = nullptr;
 
 		protected:
 			std::optional<String> DoGetValue() const override;
@@ -47,14 +47,14 @@ namespace kxf
 			bool DoSetAttribute(const String& name, const String& value, WriteEmpty writeEmpty) override;
 
 		public:
-			KxHTMLNode()
+			HTMLNode()
 				:m_Document(nullptr), m_Node(nullptr)
 			{
 			}
-			KxHTMLNode(const KxHTMLNode&) = default;
+			HTMLNode(const HTMLNode&) = default;
 
 		protected:
-			KxHTMLNode(const void* node, const KxHTMLDocument* document)
+			HTMLNode(const void* node, const HTMLDocument* document)
 				:m_Node(node), m_Document(document)
 			{
 			}
@@ -65,21 +65,21 @@ namespace kxf
 			{
 				return !m_Node || !m_Document;
 			}
-			KxHTMLNode QueryElement(const String& XPath) const override;
-			KxHTMLNode ConstructElement(const String& XPath) override;
+			HTMLNode QueryElement(const String& XPath) const override;
+			HTMLNode ConstructElement(const String& XPath) override;
 
 			// Node
 			size_t GetIndexWithinParent() const override;
 			String GetName() const override;
 
 			size_t GetChildrenCount() const override;
-			size_t EnumChildren(std::function<bool(KxHTMLNode)> func) const override;
+			size_t EnumChildren(std::function<bool(HTMLNode)> func) const override;
 
 			virtual String GetHTML() const;
 			NodeType GetType() const;
 			TagType GetTagType() const;
 
-			const KxHTMLDocument& GetDocumentNode() const
+			const HTMLDocument& GetDocumentNode() const
 			{
 				return *m_Document;
 			}
@@ -94,29 +94,29 @@ namespace kxf
 			bool HasAttribute(const String& name) const override;
 		
 			// Navigation
-			KxHTMLNode GetElementByAttribute(const String& name, const String& value) const override;
-			KxHTMLNode GetElementByID(const String& id) const
+			HTMLNode GetElementByAttribute(const String& name, const String& value) const override;
+			HTMLNode GetElementByID(const String& id) const
 			{
 				return GetElementByAttribute("id", id);
 			}
-			KxHTMLNode GetElementByClass(const String & className) const
+			HTMLNode GetElementByClass(const String & className) const
 			{
 				return GetElementByAttribute("class", className);
 			}
-			KxHTMLNode GetElementByTag(TagType tagType) const;
-			KxHTMLNode GetElementByTag(const String& tagName) const override;
+			HTMLNode GetElementByTag(TagType tagType) const;
+			HTMLNode GetElementByTag(const String& tagName) const override;
 		
-			KxHTMLNode GetParent() const override;
-			KxHTMLNode GetPreviousSibling() const override;
-			KxHTMLNode GetNextSibling() const override;
-			KxHTMLNode GetFirstChild() const override;
-			KxHTMLNode GetLastChild() const override;
+			HTMLNode GetParent() const override;
+			HTMLNode GetPreviousSibling() const override;
+			HTMLNode GetNextSibling() const override;
+			HTMLNode GetFirstChild() const override;
+			HTMLNode GetLastChild() const override;
 	};
 }
 
 namespace kxf
 {
-	class KX_API KxHTMLDocument: public KxHTMLNode
+	class KX_API HTMLDocument: public HTMLNode
 	{
 		private:
 			std::vector<uint8_t> m_Buffer;
@@ -133,31 +133,31 @@ namespace kxf
 			void SetNode(void* node) override;
 
 		public:
-			KxHTMLDocument()
-				:KxHTMLNode(nullptr, this)
+			HTMLDocument()
+				:HTMLNode(nullptr, this)
 			{
 				Init();
 			}
-			KxHTMLDocument(const String& html)
-				:KxHTMLDocument()
+			HTMLDocument(const String& html)
+				:HTMLDocument()
 			{
 				if (!html.IsEmpty())
 				{
 					Load(html);
 				}
 			}
-			KxHTMLDocument(IInputStream& stream)
-				:KxHTMLDocument()
+			HTMLDocument(IInputStream& stream)
+				:HTMLDocument()
 			{
 				Load(stream);
 			}
-			KxHTMLDocument(const KxHTMLDocument&) = delete;
-			KxHTMLDocument(KxHTMLDocument&& other) noexcept
-				:KxHTMLDocument()
+			HTMLDocument(const HTMLDocument&) = delete;
+			HTMLDocument(HTMLDocument&& other) noexcept
+				:HTMLDocument()
 			{
 				*this = std::move(other);
 			}
-			~KxHTMLDocument()
+			~HTMLDocument()
 			{
 				Destroy();
 			}
@@ -172,14 +172,14 @@ namespace kxf
 			{
 				return GetHTML();
 			}
-			KxHTMLDocument Clone() const
+			HTMLDocument Clone() const
 			{
-				return KxHTMLDocument(GetHTML());
+				return HTMLDocument(GetHTML());
 			}
 
 		public:
-			KxHTMLDocument& operator=(const KxHTMLDocument&) = delete;
-			KxHTMLDocument& operator=(KxHTMLDocument&& other) noexcept
+			HTMLDocument& operator=(const HTMLDocument&) = delete;
+			HTMLDocument& operator=(HTMLDocument&& other) noexcept
 			{
 				m_Buffer = std::move(other.m_Buffer);
 

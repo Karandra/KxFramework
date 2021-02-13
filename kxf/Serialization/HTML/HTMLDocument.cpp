@@ -19,19 +19,19 @@ namespace
 
 namespace kxf
 {
-	void KxHTMLDocument::Init()
+	void HTMLDocument::Init()
 	{
 		auto options = std::make_unique<GumboOptions>(kGumboDefaultOptions);
 		options->userdata = this;
 
 		m_ParserOptions = options.release();
 	}
-	void KxHTMLDocument::DoLoad()
+	void HTMLDocument::DoLoad()
 	{
 		m_ParserOutput = gumbo_parse_with_options(GetOptions(m_ParserOptions), reinterpret_cast<const char*>(m_Buffer.data()), m_Buffer.size());
 		SetNode(GetOutput(m_ParserOutput)->document);
 	}
-	void KxHTMLDocument::DoUnload()
+	void HTMLDocument::DoUnload()
 	{
 		if (m_ParserOutput)
 		{
@@ -42,7 +42,7 @@ namespace kxf
 		m_Buffer.clear();
 		m_ParserOutput = nullptr;
 	}
-	void KxHTMLDocument::Destroy()
+	void HTMLDocument::Destroy()
 	{
 		DoUnload();
 
@@ -50,17 +50,17 @@ namespace kxf
 		m_ParserOptions = nullptr;
 	}
 
-	const void* KxHTMLDocument::GetNode() const
+	const void* HTMLDocument::GetNode() const
 	{
 		return GetOutput(m_ParserOutput)->document;
 	}
-	void KxHTMLDocument::SetNode(void* node)
+	void HTMLDocument::SetNode(void* node)
 	{
 		// Nothing to do
 		//GetOutput(m_ParserOutput)->document = reinterpret_cast<GumboNode*>(node);
 	}
 
-	bool KxHTMLDocument::Load(const String& htmlText)
+	bool HTMLDocument::Load(const String& htmlText)
 	{
 		DoUnload();
 
@@ -71,7 +71,7 @@ namespace kxf
 		DoLoad();
 		return !IsNull();
 	}
-	bool KxHTMLDocument::Load(IInputStream& stream)
+	bool HTMLDocument::Load(IInputStream& stream)
 	{
 		DoUnload();
 		m_Buffer.resize(stream.GetSize().ToBytes());
@@ -81,13 +81,13 @@ namespace kxf
 		DoLoad();
 		return !IsNull();
 	}
-	bool KxHTMLDocument::Save(IOutputStream& stream) const
+	bool HTMLDocument::Save(IOutputStream& stream) const
 	{
 		auto utf8 = GetHTML().ToUTF8();
 		return stream.WriteAll(utf8.data(), utf8.length());
 	}
 
-	bool KxHTMLDocument::IsNull() const
+	bool HTMLDocument::IsNull() const
 	{
 		if (!m_Buffer.empty() && m_ParserOutput)
 		{
