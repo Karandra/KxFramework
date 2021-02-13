@@ -3,6 +3,7 @@
 #include "IEnumerator.h"
 #include "OptionalRef.h"
 #include "UniqueFunction.h"
+#include "AlignedStorage.h"
 
 namespace kxf::Private
 {
@@ -99,16 +100,19 @@ namespace kxf
 	{
 		public:
 			using TValue = TValue_;
+			using TStoredValue = typename std::conditional_t<std::is_reference_v<TValue>, std::remove_reference_t<TValue>*, TValue>;
 			using TValueContainer = typename std::conditional_t<std::is_reference_v<TValue>, kxf::optional_ref<std::remove_reference_t<TValue>>, std::optional<TValue>>;
 
 			using iterator = Private::EnumIterator<Enumerator>;
 
 		private:
+			using TBufferValue = typename std::conditional_t<std::is_reference_v<TValue>, std::reference_wrapper<std::remove_reference_t<TValue>>, TValue>;
 			static inline constexpr size_t npos = std::numeric_limits<size_t>::max();
 
 		private:
 			kxf::unique_function<TValueContainer(IEnumerator&)> m_MoveNext;
-			TValueContainer m_CurrentValue;
+			AlignedStorage<TBufferValue> m_CurrentValue;
+
 			EnumeratorInstruction m_CurrentInstruction = EnumeratorInstruction::Terminate;
 			EnumeratorInstruction m_NextInstruction = EnumeratorInstruction::Continue;
 
@@ -136,7 +140,11 @@ namespace kxf
 			}
 			EnumeratorInstruction InvokeProducer()
 			{
-				m_CurrentValue = std::invoke(m_MoveNext, static_cast<IEnumerator&>(*this));
+				m_CurrentValue.Destroy();
+				if (decltype(auto) value = std::invoke(m_MoveNext, static_cast<IEnumerator&>(*this)))
+				{
+					m_CurrentValue.Construct(*std::move(value));
+				}
 
 				if (m_NextInstruction == EnumeratorInstruction::Terminate)
 				{
@@ -146,7 +154,7 @@ namespace kxf
 				{
 					return EnumeratorInstruction::SkipCurrent;
 				}
-				else if (m_CurrentValue.has_value())
+				else if (m_CurrentValue.IsConstructed())
 				{
 					return EnumeratorInstruction::Continue;
 				}
@@ -156,7 +164,7 @@ namespace kxf
 			template<class T>
 			static decltype(auto) DoGetValue(T&& items) noexcept
 			{
-				return *items;
+				return *std::forward<T>(items);
 			}
 
 		public:
@@ -208,6 +216,10 @@ namespace kxf
 			Enumerator(Enumerator&& other) noexcept
 			{
 				*this = std::move(other);
+			}
+			~Enumerator()
+			{
+				m_CurrentValue.Destroy();
 			}
 
 		public:
@@ -272,15 +284,15 @@ namespace kxf
 				return count;
 			}
 
-			decltype(auto) GetValue() const& noexcept
+			const TValue& GetValue() const& noexcept
 			{
 				return DoGetValue(m_CurrentValue);
 			}
-			decltype(auto) GetValue() & noexcept
+			TValue& GetValue() & noexcept
 			{
 				return DoGetValue(m_CurrentValue);
 			}
-			decltype(auto) GetValue() && noexcept
+			TValue GetValue() && noexcept
 			{
 				return DoGetValue(std::move(m_CurrentValue));
 			}
@@ -301,24 +313,24 @@ namespace kxf
 				return {};
 			}
 
-			decltype(auto) operator*() const& noexcept
+			const TValue& operator*() const& noexcept
 			{
 				return DoGetValue(m_CurrentValue);
 			}
-			decltype(auto) operator*() & noexcept
+			TValue& operator*() & noexcept
 			{
 				return DoGetValue(m_CurrentValue);
 			}
-			decltype(auto) operator*() && noexcept
+			TValue operator*() && noexcept
 			{
 				return DoGetValue(std::move(m_CurrentValue));
 			}
 
-			decltype(auto) operator->() const& noexcept
+			const TStoredValue* operator->() const& noexcept
 			{
 				return &DoGetValue(m_CurrentValue);
 			}
-			decltype(auto) operator->() & noexcept
+			TStoredValue* operator->() & noexcept
 			{
 				return &DoGetValue(m_CurrentValue);
 			}
@@ -337,7 +349,7 @@ namespace kxf
 			Enumerator& operator=(Enumerator&& other) noexcept
 			{
 				m_MoveNext = std::move(other.m_MoveNext);
-				m_CurrentValue = std::move(other.m_CurrentValue);
+				m_CurrentValue.MoveFrom(std::move(other.m_CurrentValue));
 
 				m_CurrentInstruction = Utility::ExchangeResetAndReturn(other.m_CurrentInstruction, EnumeratorInstruction::Terminate);
 				m_NextInstruction = Utility::ExchangeResetAndReturn(other.m_NextInstruction, EnumeratorInstruction::Continue);
