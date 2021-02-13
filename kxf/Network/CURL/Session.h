@@ -64,7 +64,7 @@ namespace kxf
 				return reply;
 			}
 			void Download(CURLStreamReply& reply);
-			size_t EnumReplyCookies(std::function<bool(String)> func) const;
+			Enumerator<String> EnumReplyCookies() const;
 
 			bool IsPaused() const noexcept
 			{

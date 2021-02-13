@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "Session.h"
+#include "kxf/System/HandlePtr.h"
+#include "kxf/General/Enumerator.h"
 #include "kxf/Utility/ScopeGuard.h"
 
 #define CURL_STATICLIB 1
@@ -165,35 +167,25 @@ namespace kxf
 		DoSendRequest(reply);
 	}
 
-	size_t CURLSession::EnumReplyCookies(std::function<bool(String)> func) const
+	Enumerator<String> CURLSession::EnumReplyCookies() const
 	{
 		curl_slist* cookesList = nullptr;
-		Utility::ScopeGuard atExit = [&]()
-		{
-			if (cookesList)
-			{
-				curl_slist_free_all(cookesList);
-			}
-		};
-
 		const CURLcode result = curl_easy_getinfo(m_Handle.GetNativeHandle(), CURLINFO_COOKIELIST, &cookesList);
 		if (result == CURLE_OK && cookesList)
 		{
-			const curl_slist* item = cookesList;
-
-			size_t count = 0;
-			while (item)
+			return [handle = make_handle_ptr<curl_slist_free_all>(cookesList), item = cookesList]() mutable -> std::optional<String>
 			{
-				count++;
-				if (!std::invoke(func, String::FromUTF8(item->data)))
-				{
-					break;
-				}
+				auto curentItem = item;
 				item = item->next;
-			}
-			return count;
+
+				if (curentItem)
+				{
+					return String::FromUTF8(curentItem->data);
+				}
+				return {};
+			};
 		}
-		return 0;
+		return {};
 	}
 
 	bool CURLSession::Pause() noexcept
