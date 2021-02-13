@@ -32,7 +32,7 @@ namespace kxf
 
 		public:
 			using LoadingScheme = Localization::LoadingScheme;
-			using ItemRef = std::pair<const ResourceID*, const LocalizationItem*>;
+			using ItemRef = std::pair<const ResourceID&, const LocalizationItem&>;
 
 		protected:
 			virtual const String& GetPluralStringForNumber(const LocalizationItem& item, int value) const;

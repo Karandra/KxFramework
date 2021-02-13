@@ -46,7 +46,7 @@ namespace kxf::Localization::Private
 		{
 			return Utility::EnumerateIterableContainer<ILocalizationPackage::ItemRef>(*m_Items, [](const auto& it)
 			{
-				return std::make_pair(&it.first, &it.second);
+				return ILocalizationPackage::ItemRef(it.first, it.second);
 			});
 		}
 		return {};
