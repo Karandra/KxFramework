@@ -87,7 +87,7 @@ namespace kxf
 {
 	Enumerator<StorageVolume> StorageVolume::EnumVolumes()
 	{
-		return [handle = make_handle_ptr<HANDLE, INVALID_HANDLE_VALUE>(nullptr, ::FindVolumeClose)](IEnumerator& en) mutable -> std::optional<StorageVolume>
+		return [handle = make_handle_ptr<::FindVolumeClose, HANDLE, INVALID_HANDLE_VALUE>(nullptr)](IEnumerator& en) mutable -> std::optional<StorageVolume>
 		{
 			wxChar volumeGuidPath[64] = {};
 			if (!handle)
@@ -325,7 +325,7 @@ namespace kxf
 	}
 	Enumerator<FSPath> StorageVolume::EnumMountPoints() const
 	{
-		return [this, handle = make_handle_ptr<HANDLE, INVALID_HANDLE_VALUE>(nullptr, ::FindVolumeMountPointClose)]() mutable -> std::optional<FSPath>
+		return [this, handle = make_handle_ptr<::FindVolumeMountPointClose, HANDLE, INVALID_HANDLE_VALUE>(nullptr)]() mutable -> std::optional<FSPath>
 		{
 			XChar buffer[std::numeric_limits<int16_t>::max()] = {};
 			if (handle)

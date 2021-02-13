@@ -109,21 +109,21 @@ namespace kxf
 	template<class TValue, class TFinalizer, TValue null2_ = static_cast<TValue>(0)>
 	using handle_ptr = Private::basic_handle_ptr<TValue, TFinalizer, nullptr, null2_>;
 
-	template<class TValue, auto finalizer = nullptr, TValue null2_ = static_cast<TValue>(0)>
+	template<class TValue, auto finalizer, TValue null2_ = static_cast<TValue>(0)>
 	using bound_handle_ptr = Private::basic_handle_ptr<TValue, decltype(finalizer), finalizer, null2_>;
 }
 
 namespace kxf
 {
-	template<class TValue, TValue null2, class TFinalizer>
+	template<class TValue, class TFinalizer, TValue null2 = static_cast<TValue>(0)>
 	handle_ptr<TValue, TFinalizer, null2> make_handle_ptr(TValue handle, TFinalizer finalizer) noexcept
 	{
 		return {handle, finalizer};
 	}
 
-	template<class TValue, class TFinalizer>
-	handle_ptr<TValue, TFinalizer> make_handle_ptr(TValue handle, TFinalizer finalizer) noexcept
+	template<auto finalizer, class TValue, TValue null2 = static_cast<TValue>(0)>
+	bound_handle_ptr<TValue, finalizer, null2> make_handle_ptr(TValue handle) noexcept
 	{
-		return {handle, finalizer};
+		return handle;
 	}
 }
