@@ -109,14 +109,14 @@ namespace kxf
 
 		public:
 			template<std::enable_if_t<std::is_copy_assignable_v<TValue>, int> = 0>
-			AlignedStorageObject& operator=(const AlignedStorageObject& other) noexcept(std::is_nothrow_copy_assignable_v<TValue>)
+			AlignedStorageObject& operator=(const AlignedStorageObject& other) noexcept(std::is_nothrow_constructible_v<TValue, const TValue&>)
 			{
 				m_Storage.CopyFrom(other.m_Storage);
 				return *this;
 			}
 
 			template<std::enable_if_t<std::is_move_assignable_v<TValue>, int> = 0>
-			AlignedStorageObject& operator=(AlignedStorageObject&& other) noexcept(std::is_nothrow_move_assignable_v<TValue>)
+			AlignedStorageObject& operator=(AlignedStorageObject&& other) noexcept(std::is_nothrow_constructible_v<TValue, TValue&&>)
 			{
 				m_Storage.MoveFrom(std::move(other.m_Storage));
 				return *this;

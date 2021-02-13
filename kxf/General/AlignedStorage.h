@@ -32,39 +32,24 @@ namespace kxf
 				return *m_Value;
 			}
 
-			template<class T, std::enable_if_t<std::is_same_v<T, AlignedStorage> && std::is_copy_assignable_v<TValue>, int> = 0>
-			void CopyFrom(const T& other) noexcept(std::is_nothrow_copy_assignable_v<TValue>)
+			void CopyFrom(const AlignedStorage& other) noexcept(std::is_nothrow_constructible_v<TValue, const TValue&>)
 			{
 				if (other.IsConstructed())
 				{
-					if (IsConstructed())
-					{
-						*m_Value = *other.m_Value;
-					}
-					else
-					{
-						Construct(*other.m_Value);
-					}
+					Destroy();
+					Construct(*other.m_Value);
 				}
 				else if (IsConstructed())
 				{
 					Destroy();
 				}
 			}
-
-			template<class T, std::enable_if_t<std::is_same_v<T, AlignedStorage> && std::is_move_assignable_v<TValue>, int> = 0>
-			void MoveFrom(T&& other) noexcept(std::is_nothrow_move_assignable_v<TValue>)
+			void MoveFrom(AlignedStorage&& other) noexcept(std::is_nothrow_constructible_v<TValue, TValue&&>)
 			{
 				if (other.IsConstructed())
 				{
-					if (IsConstructed())
-					{
-						*m_Value = std::move(*other.m_Value);
-					}
-					else
-					{
-						Construct(std::move(*other.m_Value));
-					}
+					Destroy();
+					Construct(std::move(*other.m_Value));
 				}
 				else if (IsConstructed())
 				{
