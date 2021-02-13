@@ -9,6 +9,7 @@
 #include "Internal.h"
 #include "kxf/General/RegEx.h"
 #include "kxf/Utility/Drawing.h"
+#include "kxf/Utility/Enumerator.h"
 
 #pragma warning(disable: 4312) // 'reinterpret_cast': conversion from 'UINT' to 'void *' of greater size
 
@@ -1222,7 +1223,7 @@ namespace kxf::Sciter
 		});
 		return result;
 	}
-	std::vector<Element> Element::SelectAll(const String& query) const
+	Enumerator<Element> Element::SelectAll(const String& query) const
 	{
 		std::vector<Element> results;
 		Select(query, [&](Element element)
@@ -1230,7 +1231,7 @@ namespace kxf::Sciter
 			results.emplace_back(std::move(element));
 			return true;
 		});
-		return results;
+		return Utility::EnumerateIndexableContainer<Element>(std::move(results));
 	}
 
 	// Widgets
@@ -1273,7 +1274,7 @@ namespace kxf::Sciter
 		});
 		return result;
 	}
-	std::vector<Widget*> Element::SelectAllWidgets(const String& query) const
+	Enumerator<Widget&> Element::SelectAllWidgets(const String& query) const
 	{
 		std::vector<Widget*> results;
 		SelectWidgets(query, [&](Widget& widget)
@@ -1281,7 +1282,7 @@ namespace kxf::Sciter
 			results.emplace_back(&widget);
 			return true;
 		});
-		return results;
+		return Utility::EnumerateIndexableContainer<Widget&, Utility::ReferenceOf>(std::move(results));
 	}
 
 	// Scripts

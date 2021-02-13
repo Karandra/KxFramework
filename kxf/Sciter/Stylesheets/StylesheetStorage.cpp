@@ -4,6 +4,7 @@
 #include "../SciterAPI.h"
 #include "../Internal.h"
 #include "kxf/Utility/Container.h"
+#include "kxf/Utility/Enumerator.h"
 
 namespace
 {
@@ -58,15 +59,35 @@ namespace kxf::Sciter
 	size_t StylesheetStorage::CopyItems(const StylesheetStorage& other)
 	{
 		size_t count = 0;
-		other.EnumItems([&](const String& item)
+		for (const String& item: other.EnumItems())
 		{
 			if (AddItem(item))
 			{
 				count++;
 			}
-			return true;
-		});
+		};
 		return count;
+	}
+	size_t StylesheetStorage::TakeItems(StylesheetStorage&& other)
+	{
+		size_t count = 0;
+		for (String& item: std::move(other).EnumItems())
+		{
+			if (AddItem(std::move(item)))
+			{
+				count++;
+			}
+		};
+		return count;
+	}
+
+	Enumerator<const String&> StylesheetStorage::EnumItems() const&
+	{
+		return Utility::EnumerateIndexableContainer<const String&>(m_Items);
+	}
+	Enumerator<kxf::String> StylesheetStorage::EnumItems() &&
+	{
+		return Utility::EnumerateIndexableContainer<String>(std::move(m_Items));
 	}
 
 	bool StylesheetStorage::Apply(Host& host, const FSPath& basePath) const

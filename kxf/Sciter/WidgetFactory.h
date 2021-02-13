@@ -14,33 +14,13 @@ namespace kxf::Sciter
 {
 	class KX_API WidgetFactory
 	{
-		private:
-			inline static std::vector<optional_ptr<WidgetFactory>> ms_RegisteredFactories;
-
 		public:
 			static std::unique_ptr<Widget> NewWidget(Host& host, const Element& element, const String& fullyQualifiedClassName);
 
-			template<class TFunc>
-			static WidgetFactory* EnumFactories(TFunc&& func)
-			{
-				for (auto& factory: ms_RegisteredFactories)
-				{
-					if (!std::invoke(func, *factory))
-					{
-						return factory.get();
-					}
-				}
-				return nullptr;
-			}
+			static Enumerator<WidgetFactory&> EnumFactories();
+			static void RegisterFactory(WidgetFactory& factory);
+			static void RegisterFactory(std::unique_ptr<WidgetFactory> factory);
 
-			static void RegisterFactory(WidgetFactory& factory)
-			{
-				ms_RegisteredFactories.emplace_back(factory);
-			}
-			static void RegisterFactory(std::unique_ptr<WidgetFactory> factory)
-			{
-				ms_RegisteredFactories.emplace_back(std::move(factory));
-			}
 			static StylesheetStorage& GetStylesheetStorage();
 
 		private:

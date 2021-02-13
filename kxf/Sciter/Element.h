@@ -245,7 +245,7 @@ namespace kxf::Sciter
 			// Selectors
 			size_t Select(const String& query, std::function<bool(Element)> onElement) const;
 			Element SelectAny(const String& query) const;
-			std::vector<Element> SelectAll(const String& query) const;
+			Enumerator<Element> SelectAll(const String& query) const;
 
 			Element GetElementByAttribute(const String& name, const String& value) const
 			{
@@ -263,7 +263,7 @@ namespace kxf::Sciter
 			// Widgets
 			size_t SelectWidgets(const String& query, std::function<bool(Widget&)> onWidget) const;
 			Widget* SelectAnyWidget(const String& query) const;
-			std::vector<Widget*> SelectAllWidgets(const String& query) const;
+			Enumerator<Widget&> SelectAllWidgets(const String& query) const;
 
 			Widget* GetWidgetByAttribute(const String& name, const String& value) const
 			{

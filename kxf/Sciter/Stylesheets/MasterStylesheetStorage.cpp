@@ -2,6 +2,7 @@
 #include "MasterStylesheetStorage.h"
 #include "../SciterAPI.h"
 #include "../Internal.h"
+#include "kxf/General/Enumerator.h"
 
 namespace kxf::Sciter
 {
@@ -12,17 +13,14 @@ namespace kxf::Sciter
 		GetSciterAPI()->SciterSetMasterCSS(null, 0);
 		
 		// Apply new master styles
-		bool isSuccess = true;
-		EnumItems([&](const String& css)
+		for (const String& css: EnumItems())
 		{
 			auto utf8 = ToSciterUTF8(css);
 			if (!GetSciterAPI()->SciterAppendMasterCSS(utf8.data(), utf8.size()))
 			{
-				isSuccess = false;
 				return false;
 			}
-			return true;
-		});
-		return isSuccess;
+		}
+		return true;
 	}
 }
