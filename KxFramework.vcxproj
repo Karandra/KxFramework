@@ -310,7 +310,9 @@
     <ClInclude Include="kxf\EventSystem\WidgetEvent.h" />
     <ClInclude Include="kxf\FileSystem\AbstractDirectoryEnumerator.h" />
     <ClInclude Include="kxf\FileSystem\NullFileSystem.h" />
+    <ClInclude Include="kxf\General\AlignedBuffer.h" />
     <ClInclude Include="kxf\General\AlignedStorage.h" />
+    <ClInclude Include="kxf\General\AlignedStorageObject.h" />
     <ClInclude Include="kxf\General\CombinedVariablesCollection.h" />
     <ClInclude Include="kxf\General\DateTime.h" />
     <ClInclude Include="kxf\General\DateTime\Common.h" />

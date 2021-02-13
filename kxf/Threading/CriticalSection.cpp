@@ -17,7 +17,7 @@ namespace kxf
 	CriticalSection::~CriticalSection() noexcept
 	{
 		::DeleteCriticalSection(&m_CritSec);
-		m_CritSec.Destruct();
+		m_CritSec.Destroy();
 	}
 
 	void CriticalSection::Enter() noexcept

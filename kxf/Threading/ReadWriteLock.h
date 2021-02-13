@@ -29,7 +29,7 @@ namespace kxf
 	class KX_API ReadWriteLock final
 	{
 		private:
-			AlignedBuffer<_RTL_SRWLOCK, sizeof(void*), alignof(void*)> m_Lock;
+			AlignedStorage<_RTL_SRWLOCK, sizeof(void*), alignof(void*)> m_Lock;
 
 		public:
 			ReadWriteLock() noexcept;

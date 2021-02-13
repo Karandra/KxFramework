@@ -18,7 +18,7 @@ namespace kxf
 				void* LockSemaphore;
 				size_t SpinCount;
 			};
-			AlignedBuffer<_RTL_CRITICAL_SECTION, sizeof(CritSec), alignof(CritSec)> m_CritSec;
+			AlignedStorage<_RTL_CRITICAL_SECTION, sizeof(CritSec), alignof(CritSec)> m_CritSec;
 
 		public:
 			CriticalSection() noexcept;

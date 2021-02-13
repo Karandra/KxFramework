@@ -11,7 +11,7 @@ namespace kxf
 	}
 	ReadWriteLock::~ReadWriteLock() noexcept
 	{
-		m_Lock.Destruct();
+		m_Lock.Destroy();
 	}
 
 	void ReadWriteLock::LockRead() noexcept

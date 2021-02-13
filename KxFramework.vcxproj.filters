@@ -1811,6 +1811,12 @@
     <ClInclude Include="kxf\FileSystem\AbstractDirectoryEnumerator.h">
       <Filter>kxf\FileSystem</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\General\AlignedBuffer.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\AlignedStorageObject.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
