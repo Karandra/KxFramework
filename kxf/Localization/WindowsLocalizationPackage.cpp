@@ -16,7 +16,7 @@ namespace kxf
 			m_Items.reserve(rootNode.GetChildrenCount());
 
 			size_t count = 0;
-			rootNode.EnumChildElements([&](XMLNode itemNode)
+			for (XMLNode itemNode: rootNode.EnumChildElements(wxS("data")))
 			{
 				auto AddItem = [&](ResourceID id, LocalizationItem item)
 				{
@@ -45,8 +45,7 @@ namespace kxf
 				};
 
 				AddItem(itemNode.GetAttribute(wxS("name")), LocalizationItem(*this, itemNode.GetFirstChildElement(wxS("value")).GetValue(), LocalizationItemFlag::Translatable));
-				return true;
-			}, wxS("data"));
+			}
 			return count != 0;
 		}
 		return false;

@@ -1,6 +1,8 @@
 #pragma once
 #include "Common.h"
 #include "String.h"
+#include "kxf/General/Enumerator.h"
+#include "kxf/Utility/ScopeGuard.h"
 #include "Private/XDocument.h"
 
 namespace kxf::XDocument
@@ -513,19 +515,21 @@ namespace kxf::XDocument
 				return {};
 			}
 
-			template<class TFunc>
-			size_t EnumChildren(TFunc&& func) const
+			template<class = void>
+			Enumerator<TNode> EnumChildren() const
 			{
-				size_t count = 0;
-				for (TNode node = GetFirstChild(); node.IsNull(); node = node.GetNextSibling())
+				return [node = GetFirstChild()]() mutable -> std::optional<TNode>
 				{
-					count++;
-					if (!std::invoke(func, std::move(node)))
+					if (!node.IsNull())
 					{
-						break;
+						Utility::ScopeGuard atExit = [&]()
+						{
+							node = node.GetNextSibling();
+						};
+						return std::move(node);
 					}
-				}
-				return count;
+					return {};
+				};
 			}
 
 			// Insertion

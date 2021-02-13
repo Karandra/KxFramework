@@ -17,10 +17,10 @@ namespace kxf
 			m_Version = tsNode.GetAttribute("version");
 
 			size_t count = 0;
-			tsNode.EnumChildElements([&](XMLNode contextNode)
+			for (const XMLNode& contextNode: tsNode.EnumChildElements(wxS("context")))
 			{
 				String name = contextNode.GetFirstChildElement(wxS("name")).GetValue();
-				contextNode.EnumChildElements([&](XMLNode messageNode)
+				for (const XMLNode& messageNode: contextNode.EnumChildElements(wxS("message")))
 				{
 					auto AddItem = [&](ResourceID id, LocalizationItem item)
 					{
@@ -47,11 +47,9 @@ namespace kxf
 
 					AddItem(messageNode.GetFirstChildElement(wxS("source")).GetValue(), LocalizationItem(*this, messageNode.GetFirstChildElement(wxS("translation")).GetValue(), LocalizationItemFlag::Translatable));
 					return true;
-				}, wxS("message"));
-
+				}
 				return true;
-			}, wxS("context"));
-
+			}
 			return count != 0;
 		}
 		return false;

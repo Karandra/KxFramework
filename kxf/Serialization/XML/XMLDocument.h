@@ -223,19 +223,20 @@ namespace kxf
 			XMLNode GetLastChild() const override;
 			XMLNode GetLastChildElement(const String& name = {}) const;
 
-			template<class TFunc>
-			size_t EnumChildElements(TFunc&& func, const String& name = {}) const
+			Enumerator<XMLNode> EnumChildElements(const String& name = {}) const
 			{
-				size_t count = 0;
-				for (XMLNode node = GetFirstChildElement(name); node; node = node.GetNextSiblingElement(name))
+				return [node = GetFirstChildElement(name), name]() mutable -> std::optional<XMLNode>
 				{
-					count++;
-					if (!std::invoke(func, std::move(node)))
+					if (node)
 					{
-						break;
+						Utility::ScopeGuard atExit = [&]()
+						{
+							node = node.GetNextSiblingElement(name);
+						};
+						return std::move(node);
 					}
-				}
-				return count;
+					return {};
+				};
 			}
 
 			// Insertion

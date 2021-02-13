@@ -16,7 +16,7 @@ namespace kxf
 			m_Items.reserve(resourcesNode.GetChildrenCount());
 
 			size_t count = 0;
-			resourcesNode.EnumChildElements([&](XMLNode itemNode)
+			for (XMLNode itemNode: resourcesNode.EnumChildElements())
 			{
 				auto AddItem = [&](ResourceID id, LocalizationItem item)
 				{
@@ -61,20 +61,19 @@ namespace kxf
 					LocalizationItem::TMultipleItems items;
 					items.reserve(itemNode.GetChildrenCount());
 
-					itemNode.EnumChildElements([&](XMLNode node)
+					for (XMLNode node: itemNode.EnumChildElements(wxS("item")))
 					{
 						if (items.emplace_back(node.GetValue()).IsEmpty())
 						{
 							items.pop_back();
 						}
-						return true;
-					}, wxS("item"));
+					}
 					AddItem(itemNode.GetAttribute(wxS("name")), LocalizationItem(*this, items, flags));
 				}
 				else if (itemName == wxS("plurals"))
 				{
 					LocalizationItem::TPlurals plurals;
-					itemNode.EnumChildElements([&](XMLNode node)
+					for (XMLNode node : itemNode.EnumChildElements(wxS("item")))
 					{
 						const String name = node.GetAttribute(wxS("quantity"));
 						if (name == wxS("one"))
@@ -98,11 +97,11 @@ namespace kxf
 							return true;
 						}
 						return false;
-					}, wxS("item"));
+					}
 					AddItem(itemNode.GetAttribute(wxS("name")), LocalizationItem(*this, plurals, flags));
 				}
 				return true;
-			});
+			}
 			return count != 0;
 		}
 		return false;

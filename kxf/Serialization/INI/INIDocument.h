@@ -14,6 +14,8 @@ namespace kxf
 {
 	class KX_API INIDocument: private XDocument::XNode<INIDocument>
 	{
+		friend class XDocument::XNode<INIDocument>;
+
 		public:
 			static String GetLibraryName();
 			static Version GetLibraryVersion();
