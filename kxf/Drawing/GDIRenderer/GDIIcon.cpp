@@ -32,13 +32,18 @@ namespace kxf
 	}
 	void GDIIcon::AttachHandle(void* handle)
 	{
-		m_Icon = wxIcon();
-		Drawing::Private::AttachIconHandle(m_Icon, handle, [&]()
+		if (handle)
 		{
-			// This calls 'wxObject::AllocExclusive' inside
 			m_Icon.CreateFromHICON(reinterpret_cast<WXHICON>(handle));
-			return true;
-		});
+			Drawing::Private::AttachIconHandle(m_Icon, handle, []()
+			{
+				return true;
+			});
+		}
+		else
+		{
+			m_Icon = wxIcon();
+		}
 	}
 
 	void GDIIcon::Create(const Size& size)
