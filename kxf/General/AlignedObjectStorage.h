@@ -5,7 +5,7 @@
 namespace kxf
 {
 	template<class TValue_, size_t t_Size = sizeof(TValue_), size_t t_Alignment = alignof(TValue_)>
-	class AlignedStorageObject final
+	class AlignedObjectStorage final
 	{
 		public:
 			using TStorage = AlignedStorage<TValue_, t_Size, t_Alignment>;
@@ -17,24 +17,24 @@ namespace kxf
 
 		public:
 			template<class... Args, std::enable_if_t<std::is_constructible_v<TValue, Args...>, int> = 0>
-			AlignedStorageObject(Args&&... arg) noexcept(std::is_nothrow_constructible_v<TValue, Args...>)
+			AlignedObjectStorage(Args&&... arg) noexcept(std::is_nothrow_constructible_v<TValue, Args...>)
 			{
 				m_Storage.Construct(std::forward<Args>(arg)...);
 			}
 
 			template<std::enable_if_t<std::is_copy_assignable_v<TValue>, int> = 0>
-			AlignedStorageObject(const AlignedStorageObject& other) noexcept(std::is_nothrow_copy_constructible_v<TValue>)
+			AlignedObjectStorage(const AlignedObjectStorage& other) noexcept(std::is_nothrow_copy_constructible_v<TValue>)
 			{
 				m_Storage.CopyFrom(other.m_Storage);
 			}
 
 			template<std::enable_if_t<std::is_move_assignable_v<TValue>, int> = 0>
-			AlignedStorageObject(AlignedStorageObject&& other) noexcept(std::is_nothrow_move_constructible_v<TValue>)
+			AlignedObjectStorage(AlignedObjectStorage&& other) noexcept(std::is_nothrow_move_constructible_v<TValue>)
 			{
 				m_Storage.MoveFrom(std::move(other.m_Storage));
 			}
 
-			~AlignedStorageObject() noexcept(std::is_nothrow_destructible_v<TValue>)
+			~AlignedObjectStorage() noexcept(std::is_nothrow_destructible_v<TValue>)
 			{
 				m_Storage.Destroy();
 			}
@@ -109,14 +109,14 @@ namespace kxf
 
 		public:
 			template<std::enable_if_t<std::is_copy_assignable_v<TValue>, int> = 0>
-			AlignedStorageObject& operator=(const AlignedStorageObject& other) noexcept(std::is_nothrow_constructible_v<TValue, const TValue&>)
+			AlignedObjectStorage& operator=(const AlignedObjectStorage& other) noexcept(std::is_nothrow_constructible_v<TValue, const TValue&>)
 			{
 				m_Storage.CopyFrom(other.m_Storage);
 				return *this;
 			}
 
 			template<std::enable_if_t<std::is_move_assignable_v<TValue>, int> = 0>
-			AlignedStorageObject& operator=(AlignedStorageObject&& other) noexcept(std::is_nothrow_constructible_v<TValue, TValue&&>)
+			AlignedObjectStorage& operator=(AlignedObjectStorage&& other) noexcept(std::is_nothrow_constructible_v<TValue, TValue&&>)
 			{
 				m_Storage.MoveFrom(std::move(other.m_Storage));
 				return *this;

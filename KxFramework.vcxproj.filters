@@ -1814,7 +1814,7 @@
     <ClInclude Include="kxf\General\AlignedBuffer.h">
       <Filter>kxf\General</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\AlignedStorageObject.h">
+    <ClInclude Include="kxf\General\AlignedObjectStorage.h">
       <Filter>kxf\General</Filter>
     </ClInclude>
   </ItemGroup>
