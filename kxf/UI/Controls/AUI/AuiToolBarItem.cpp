@@ -183,7 +183,7 @@ namespace kxf::UI
 		m_Item->SetLongHelp(helpString);
 	}
 
-	const GDIBitmap& AuiToolBarItem::GetBitmap() const
+	GDIBitmap AuiToolBarItem::GetBitmap() const
 	{
 		return m_Item->GetBitmap();
 	}
@@ -193,7 +193,7 @@ namespace kxf::UI
 		Refresh();
 	}
 
-	const GDIBitmap& AuiToolBarItem::GetDisabledBitmap() const
+	GDIBitmap AuiToolBarItem::GetDisabledBitmap() const
 	{
 		return m_Item->GetDisabledBitmap();
 	}

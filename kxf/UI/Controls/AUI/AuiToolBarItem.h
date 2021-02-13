@@ -131,10 +131,10 @@ namespace kxf::UI
 			String GetLongHelp() const;
 			void SetLongHelp(const String& helpString);
 
-			const GDIBitmap& GetBitmap() const;
+			GDIBitmap GetBitmap() const;
 			void SetBitmap(const GDIBitmap& bitmap);
 
-			const GDIBitmap& GetDisabledBitmap() const;
+			GDIBitmap GetDisabledBitmap() const;
 			void SetDisabledBitmap(const GDIBitmap& bitmap);
 
 		public:
