@@ -35,8 +35,8 @@ namespace kxf::RTTI
 	{
 		KxRTTI_DeclareIID(ClassInfo, {0xccefbb7f, 0xe63e, 0x4a32, {0x95, 0xfa, 0xce, 0x15, 0x13, 0xe3, 0x5c, 0xfc}});
 
-		friend const ClassInfo* GetClassInfoByName(std::string_view) noexcept;
-		friend const ClassInfo* GetClassInfoByName(const kxf::String&) noexcept;
+		friend KX_API const ClassInfo* GetClassInfoByName(std::string_view) noexcept;
+		friend KX_API const ClassInfo* GetClassInfoByName(const kxf::String&) noexcept;
 
 		public:
 			static const ClassInfo* GetFirstClassInfo() noexcept;
