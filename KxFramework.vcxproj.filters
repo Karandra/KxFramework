@@ -1814,6 +1814,7 @@
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIIcon.h">
       <Filter>kxf\Drawing\GDIRenderer\&lt;GDIObjects&gt;</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2757,5 +2758,10 @@
     <Natvis Include="kxf\Drawing\Color.natvis">
       <Filter>kxf\Drawing</Filter>
     </Natvis>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="kxf.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

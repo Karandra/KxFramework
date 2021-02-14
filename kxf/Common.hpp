@@ -1,20 +1,16 @@
 #pragma once
 
-#ifdef _DLL
-	#ifdef KXFRAMEWORK_LIBRARY
+#ifdef KXF_DYNAMIC_LIBRARY
+	#ifdef KXF_LIBRARY
 		#define KX_API __declspec(dllexport)
-		#define WXMAKINGDLL 1
 	#else
 		#define KX_API __declspec(dllimport)
-		#undef WXUSINGDLL
 	#endif
-#else
-	#ifdef KXFRAMEWORK_LIBRARY
+#elif defined KXF_STATIC_LIBRARY
+	#ifdef KXF_LIBRARY
 		#define KX_API __declspec(dllexport)
-		#define WXMAKINGDLL 1
 	#else
 		#define KX_API
-		#define WXUSINGDLL 0
 	#endif
 #endif
 
