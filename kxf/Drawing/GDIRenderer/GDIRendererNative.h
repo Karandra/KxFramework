@@ -6,7 +6,7 @@
 
 namespace kxf
 {
-	class GDIRendererNative: public IRendererNative
+	class KX_API GDIRendererNative: public IRendererNative
 	{
 		private:
 			wxRendererNative& GetRenderer() const;

@@ -139,5 +139,5 @@ namespace kxf
 
 namespace kxf::Drawing
 {
-	GDIBrush GetStockGDIBrush(StockBrush brush);
+	KX_API GDIBrush GetStockGDIBrush(StockBrush brush);
 }

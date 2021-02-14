@@ -71,7 +71,7 @@ namespace kxf
 
 namespace kxf
 {
-	class UxTheme final
+	class KX_API UxTheme final
 	{
 		public:
 			static bool ClearDC(wxWindow& window, GDIContext& dc) noexcept;

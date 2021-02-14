@@ -4,7 +4,7 @@
 
 namespace kxf::SystemAppearance
 {
-	String GetName();
-	bool IsDark();
-	bool IsUsingDarkBackground();
+	KX_API String GetName();
+	KX_API bool IsDark();
+	KX_API bool IsUsingDarkBackground();
 };

@@ -2,8 +2,10 @@
 
 #if defined KXFRAMEWORK_LIBRARY
 #define KX_API __declspec(dllexport)
+#define WXMAKINGDLL 1
 #elif defined KXFRAMEWORK_PLUGIN
 #define KX_API __declspec(dllimport)
+//#define WXUSINGDLL 1
 #else
 #define KX_API
 #endif

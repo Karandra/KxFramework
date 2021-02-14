@@ -26,7 +26,7 @@ namespace kxf::Application::Private
 
 namespace kxf
 {
-	class ApplicationInitializer final
+	class KX_API ApplicationInitializer final
 	{
 		private:
 			std::unique_ptr<Application::Private::NativeApp> m_NativeApp;

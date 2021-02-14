@@ -12,7 +12,7 @@ namespace kxf
 
 namespace kxf
 {
-	class HResult final: public RTTI::ExtendInterface<HResult, IErrorCode>
+	class KX_API HResult final: public RTTI::ExtendInterface<HResult, IErrorCode>
 	{
 		KxRTTI_DeclareIID(HResult, {0xfcb86dbc, 0xa3f9, 0x4385, {0x83, 0x72, 0x9, 0x15, 0x36, 0x5c, 0xb, 0x29}});
 

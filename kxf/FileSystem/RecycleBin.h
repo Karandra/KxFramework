@@ -13,7 +13,7 @@ namespace kxf
 
 namespace kxf
 {
-	class RecycleBin final
+	class KX_API RecycleBin final
 	{
 		private:
 			XChar m_Path[4] = {};

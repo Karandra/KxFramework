@@ -15,7 +15,7 @@ namespace kxf::UI::DataView
 
 namespace kxf::UI::DataView
 {
-	class DNDOperationInfo final
+	class KX_API DNDOperationInfo final
 	{
 		private:
 			wxDataObjectSimple* m_DropDataObject = nullptr;

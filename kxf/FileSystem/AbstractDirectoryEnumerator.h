@@ -10,7 +10,7 @@ namespace kxf
 
 namespace kxf
 {
-	class AbstractDirectoryEnumerator
+	class KX_API AbstractDirectoryEnumerator
 	{
 		private:
 			FSPath m_RootPath;

@@ -45,7 +45,7 @@ namespace kxf::UI::DataView
 		Drop = 1 << 1,
 	};
 
-	class ColumnWidth final
+	class KX_API ColumnWidth final
 	{
 		public:
 			enum Value: int

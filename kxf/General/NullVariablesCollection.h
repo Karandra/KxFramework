@@ -5,7 +5,7 @@
 
 namespace kxf
 {
-	class KX_API NullVariablesCollection final: public IVariablesCollection
+	class NullVariablesCollection final: public IVariablesCollection
 	{
 		protected:
 			// IVariablesCollection

@@ -21,21 +21,21 @@ namespace kxf::Log
 
 namespace kxf::Log
 {
-	bool IsEnabled() noexcept;
-	bool IsLevelEnabled(Level level) noexcept;
-	void Enable(bool enable = true) noexcept;
+	KX_API bool IsEnabled() noexcept;
+	KX_API bool IsLevelEnabled(Level level) noexcept;
+	KX_API void Enable(bool enable = true) noexcept;
 
-	bool IsVerboseEnabled() noexcept;
-	void EnableVerbose(bool enable = true) noexcept;
+	KX_API bool IsVerboseEnabled() noexcept;
+	KX_API void EnableVerbose(bool enable = true) noexcept;
 
-	bool IsAssertsEnabled() noexcept;
-	void EnableAsserts(bool enable = true) noexcept;
+	KX_API bool IsAssertsEnabled() noexcept;
+	KX_API void EnableAsserts(bool enable = true) noexcept;
 
-	wxLog* GetActiveTarget() noexcept;
-	std::unique_ptr<wxLog> SetActiveTarget(std::unique_ptr<wxLog> logTarget) noexcept;
-	std::unique_ptr<wxLog> SetThreadActiveTarget(std::unique_ptr<wxLog> logTarget) noexcept;
+	KX_API wxLog* GetActiveTarget() noexcept;
+	KX_API std::unique_ptr<wxLog> SetActiveTarget(std::unique_ptr<wxLog> logTarget) noexcept;
+	KX_API std::unique_ptr<wxLog> SetThreadActiveTarget(std::unique_ptr<wxLog> logTarget) noexcept;
 
-	void LogString(Level level, const String& value);
+	KX_API void LogString(Level level, const String& value);
 }
 
 namespace kxf::Log

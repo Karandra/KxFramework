@@ -4,7 +4,7 @@
 
 namespace kxf::Drawing
 {
-	Color GetAreaAverageColor(const GDIContext& dc, const Rect& rect);
+	KX_API Color GetAreaAverageColor(const GDIContext& dc, const Rect& rect);
 }
 
 namespace kxf::GDIAction

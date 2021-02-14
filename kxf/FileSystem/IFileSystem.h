@@ -144,6 +144,6 @@ namespace kxf
 
 namespace kxf::FileSystem
 {
-	IFileSystem& GetNullFileSystem() noexcept;
-	IFileIDSystem& GetNullFileIDSystem() noexcept;
+	KX_API IFileSystem& GetNullFileSystem() noexcept;
+	KX_API IFileIDSystem& GetNullFileIDSystem() noexcept;
 }

@@ -107,5 +107,5 @@ namespace kxf
 
 namespace kxf::FileSystem
 {
-	String GetNamespaceString(FSPathNamespace type);
+	KX_API String GetNamespaceString(FSPathNamespace type);
 }

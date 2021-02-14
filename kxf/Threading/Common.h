@@ -3,5 +3,5 @@
 
 namespace kxf::Threading
 {
-	uint32_t GetCurrentThreadID() noexcept;
+	KX_API uint32_t GetCurrentThreadID() noexcept;
 }

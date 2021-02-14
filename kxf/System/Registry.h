@@ -75,7 +75,7 @@ namespace kxf
 
 namespace kxf
 {
-	class RegistryKey final
+	class KX_API RegistryKey final
 	{
 		public:
 			static RegistryKey CreateKey(RegistryRootKey baseKey, const FSPath& subKey, FlagSet<RegistryAccess> access, FlagSet<RegistryKeyFlag> flags = {}, RegistryWOW64 wow64 = RegistryWOW64::Default)

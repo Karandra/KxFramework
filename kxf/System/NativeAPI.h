@@ -23,7 +23,7 @@ namespace kxf::NativeAPI
 
 namespace kxf::NativeAPI::Private
 {
-	class Loader final
+	class KX_API Loader final
 	{
 		friend class InitializationModule;
 		struct LibraryRecord final

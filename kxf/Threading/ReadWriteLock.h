@@ -5,7 +5,7 @@ struct _RTL_SRWLOCK;
 
 namespace kxf
 {
-	class KX_API ReadWriteLockNull final
+	class ReadWriteLockNull final
 	{
 		public:
 			ReadWriteLockNull() noexcept = default;

@@ -59,6 +59,6 @@ namespace kxf
 
 namespace kxf::IO
 {
-	std::optional<wxSeekMode> ToWxSeekMode(IOStreamSeek seekMode) noexcept;
-	std::optional<IOStreamSeek> FromWxSeekMode(wxSeekMode seekMode) noexcept;
+	KX_API std::optional<wxSeekMode> ToWxSeekMode(IOStreamSeek seekMode) noexcept;
+	KX_API std::optional<IOStreamSeek> FromWxSeekMode(wxSeekMode seekMode) noexcept;
 }

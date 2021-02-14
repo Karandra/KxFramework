@@ -8,8 +8,8 @@
 
 namespace kxf::CURL
 {
-	String GetLibraryName();
-	Version GetLibraryVersion();
+	KX_API String GetLibraryName();
+	KX_API Version GetLibraryVersion();
 
-	String ErrorCodeToString(int code);
+	KX_API String ErrorCodeToString(int code);
 }

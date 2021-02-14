@@ -6,21 +6,21 @@
 
 namespace kxf::Compression::LZ4
 {
-	String GetLibraryName();
-	Version GetLibraryVersion();
+	KX_API String GetLibraryName();
+	KX_API Version GetLibraryVersion();
 
-	inline constexpr size_t CompressBound(size_t sourceSize)
+	inline constexpr size_t CompressBound(size_t sourceSize) noexcept
 	{
 		// Copied directly from 'LZ4_COMPRESSBOUND' macro
 		constexpr const size_t LZ4_MAX_INPUT_SIZE = 0x7E000000u; // 2 113 929 216 bytes
 		return sourceSize > LZ4_MAX_INPUT_SIZE ? 0 : sourceSize + (sourceSize / 255) + 16;
 	}
 
-	size_t Compress(const void* sourceBuffer, size_t sourceSize, void* destinationBuffer, size_t destinationSize);
-	std::vector<uint8_t> Compress(const void* sourceBuffer, size_t sourceSize);
+	KX_API size_t Compress(const void* sourceBuffer, size_t sourceSize, void* destinationBuffer, size_t destinationSize);
+	KX_API std::vector<uint8_t> Compress(const void* sourceBuffer, size_t sourceSize);
 
-	size_t Decompress(const void* sourceBuffer, size_t sourceSize, void* destinationBuffer, size_t destinationSize);
-	std::vector<uint8_t> Decompress(const void* sourceBuffer, size_t sourceSize);
+	KX_API size_t Decompress(const void* sourceBuffer, size_t sourceSize, void* destinationBuffer, size_t destinationSize);
+	KX_API std::vector<uint8_t> Decompress(const void* sourceBuffer, size_t sourceSize);
 }
 
 namespace kxf

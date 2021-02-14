@@ -18,7 +18,7 @@ namespace kxf
 
 namespace kxf::Drawing
 {
-	void InitalizeImageHandlers();
+	KX_API void InitalizeImageHandlers();
 
-	std::unique_ptr<IImage2D> LoadImage(IInputStream& stream, size_t index = std::numeric_limits<size_t>::max());
+	KX_API std::unique_ptr<IImage2D> LoadImage(IInputStream& stream, size_t index = std::numeric_limits<size_t>::max());
 }

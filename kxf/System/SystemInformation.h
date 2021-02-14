@@ -111,44 +111,44 @@ namespace kxf::System
 
 namespace kxf::System
 {
-	bool Is64Bit() noexcept;
-	void GetRegistryQuota(BinarySize& used, BinarySize& allowed) noexcept;
+	KX_API bool Is64Bit() noexcept;
+	KX_API void GetRegistryQuota(BinarySize& used, BinarySize& allowed) noexcept;
 
-	String GetProductName();
-	String GetProductName(const VersionInfo& versionInfo, bool is64Bit);
+	KX_API String GetProductName();
+	KX_API String GetProductName(const VersionInfo& versionInfo, bool is64Bit);
 
-	std::optional<KernelVersion> GetKernelVersion() noexcept;
-	std::optional<VersionInfo> GetVersionInfo() noexcept;
-	std::optional<MemoryStatus> GetGlobalMemoryStatus() noexcept;
-	BinarySize GetPhysicallyInstalledMemory() noexcept;
+	KX_API std::optional<KernelVersion> GetKernelVersion() noexcept;
+	KX_API std::optional<VersionInfo> GetVersionInfo() noexcept;
+	KX_API std::optional<MemoryStatus> GetGlobalMemoryStatus() noexcept;
+	KX_API BinarySize GetPhysicallyInstalledMemory() noexcept;
 
-	std::optional<UserInfo> GetUserInfo();
-	String GetUserSID();
+	KX_API std::optional<UserInfo> GetUserInfo();
+	KX_API String GetUserSID();
 
-	Color GetColor(SystemColor index) noexcept;
-	Font GetFont(SystemFont index);
-	SystemScreenType GetScreenType() noexcept;
-	int GetMetric(SystemMetric index, const wxWindow* window = nullptr) noexcept;
-	Size GetMetric(SystemSizeMetric index, const wxWindow* window = nullptr) noexcept;
-	TimeSpan GetMetric(SystemTimeMetric index, const wxWindow* window = nullptr) noexcept;
-	bool HasFeature(SystemFeature feature) noexcept;
-	Enumerator<String> EnumStandardSounds();
+	KX_API Color GetColor(SystemColor index) noexcept;
+	KX_API Font GetFont(SystemFont index);
+	KX_API SystemScreenType GetScreenType() noexcept;
+	KX_API int GetMetric(SystemMetric index, const wxWindow* window = nullptr) noexcept;
+	KX_API Size GetMetric(SystemSizeMetric index, const wxWindow* window = nullptr) noexcept;
+	KX_API TimeSpan GetMetric(SystemTimeMetric index, const wxWindow* window = nullptr) noexcept;
+	KX_API bool HasFeature(SystemFeature feature) noexcept;
+	KX_API Enumerator<String> EnumStandardSounds();
 
-	std::optional<DisplayInfo> GetDisplayInfo() noexcept;
-	Enumerator<DisplayInfo> EnumDisplayModes(const String& deviceName = {});
-	Enumerator<DisplayDeviceInfo> EnumDisplayDevices(const String& deviceName = {});
-	Enumerator<DisplayAdapterInfo> EnumDisplayAdapters();
+	KX_API std::optional<DisplayInfo> GetDisplayInfo() noexcept;
+	KX_API Enumerator<DisplayInfo> EnumDisplayModes(const String& deviceName = {});
+	KX_API Enumerator<DisplayDeviceInfo> EnumDisplayDevices(const String& deviceName = {});
+	KX_API Enumerator<DisplayAdapterInfo> EnumDisplayAdapters();
 
-	String ExpandEnvironmentStrings(const String& strings);
-	String GetEnvironmentVariable(const String& name);
-	bool SetEnvironmentVariable(const String& name, const String& value);
-	Enumerator<EnvironmentVariable> EnumEnvironmentVariables();
+	KX_API String ExpandEnvironmentStrings(const String& strings);
+	KX_API String GetEnvironmentVariable(const String& name);
+	KX_API bool SetEnvironmentVariable(const String& name, const String& value);
+	KX_API Enumerator<EnvironmentVariable> EnumEnvironmentVariables();
 
-	bool LockWorkstation(LockWorkstationCommand command) noexcept;
-	bool ExitWorkstation(FlagSet<ExitWorkstationCommand> command) noexcept;
+	KX_API bool LockWorkstation(LockWorkstationCommand command) noexcept;
+	KX_API bool ExitWorkstation(FlagSet<ExitWorkstationCommand> command) noexcept;
 
-	bool IsWindowsServer() noexcept;
-	bool IsWindowsVersionOrGreater(int majorVersion, int minorVersion, int servicePackMajor = -1) noexcept;
+	KX_API bool IsWindowsServer() noexcept;
+	KX_API bool IsWindowsVersionOrGreater(int majorVersion, int minorVersion, int servicePackMajor = -1) noexcept;
 	inline bool IsWindows10OrGreater() noexcept
 	{
 		return IsWindowsVersionOrGreater(10, 0);

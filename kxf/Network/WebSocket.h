@@ -8,13 +8,13 @@
 
 namespace kxf::WebSocket
 {
-	String GetLibraryName();
-	Version GetLibraryVersion();
+	KX_API String GetLibraryName();
+	KX_API Version GetLibraryVersion();
 }
 
 namespace kxf::WebSocket
 {
-	std::unique_ptr<IWebSocketClient> NewSecureClient(const URI& address = {});
+	KX_API std::unique_ptr<IWebSocketClient> NewSecureClient(const URI& address = {});
 
-	bool IsAddressWSS(const URI& address);
+	KX_API bool IsAddressWSS(const URI& address);
 }

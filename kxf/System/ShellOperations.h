@@ -97,30 +97,30 @@ namespace kxf
 
 namespace kxf::Shell
 {
-	bool FileOperation(SHOperationType opType, const FSPath& source, const FSPath& destination, wxWindow* window = nullptr, FlagSet<SHOperationFlags> flags = {});
-	bool FormatVolume(const wxWindow* window, const LegacyVolume& volume, bool quickFormat = false) noexcept;
-	bool PinShortcut(const FSPath& filePath, SHPinShortcutCommand command);
+	KX_API bool FileOperation(SHOperationType opType, const FSPath& source, const FSPath& destination, wxWindow* window = nullptr, FlagSet<SHOperationFlags> flags = {});
+	KX_API bool FormatVolume(const wxWindow* window, const LegacyVolume& volume, bool quickFormat = false) noexcept;
+	KX_API bool PinShortcut(const FSPath& filePath, SHPinShortcutCommand command);
 
-	bool Execute(const wxWindow* window,
-				 const FSPath& path,
-				 const String& command = {},
-				 const String& parameters = {},
-				 const FSPath& workingDirectory = {},
-				 FlagSet<SHWindowCommand> showWindow = SHWindowCommand::Show,
-				 FlagSet<SHExexuteFlag> flags = {}
+	KX_API bool Execute(const wxWindow* window,
+						const FSPath& path,
+						const String& command = {},
+						const String& parameters = {},
+						const FSPath& workingDirectory = {},
+						FlagSet<SHWindowCommand> showWindow = SHWindowCommand::Show,
+						FlagSet<SHExexuteFlag> flags = {}
 	);
-	bool OpenURI(const wxWindow* window, const URI& uri, FlagSet<SHWindowCommand> showWindow = SHWindowCommand::Show, FlagSet<SHExexuteFlag> flags = {});
-	HResult ExploreToItem(const FSPath& path);
+	KX_API bool OpenURI(const wxWindow* window, const URI& uri, FlagSet<SHWindowCommand> showWindow = SHWindowCommand::Show, FlagSet<SHExexuteFlag> flags = {});
+	KX_API HResult ExploreToItem(const FSPath& path);
 
-	BitmapImage GetFileIcon(const FSPath& path, FlagSet<SHGetFileIconFlag> flags);
-	BitmapImage GetFileIcon(const FileItem& item, FlagSet<SHGetFileIconFlag> flags);
+	KX_API BitmapImage GetFileIcon(const FSPath& path, FlagSet<SHGetFileIconFlag> flags);
+	KX_API BitmapImage GetFileIcon(const FileItem& item, FlagSet<SHGetFileIconFlag> flags);
 
-	String QueryAssociation(const FSPath& filePath, SHQueryAssociation option, Any* extraData = nullptr);
-	String QueryAssociation(const UniversallyUniqueID& classID, SHQueryAssociation option, Any* extraData = nullptr);
+	KX_API String QueryAssociation(const FSPath& filePath, SHQueryAssociation option, Any* extraData = nullptr);
+	KX_API String QueryAssociation(const UniversallyUniqueID& classID, SHQueryAssociation option, Any* extraData = nullptr);
 
-	String GetLocalizedName(const FSPath& path, int* resourceID = nullptr);
-	HResult SetLocalizedName(const FSPath& path, const String& resourse, int resourceID);
+	KX_API String GetLocalizedName(const FSPath& path, int* resourceID = nullptr);
+	KX_API HResult SetLocalizedName(const FSPath& path, const String& resourse, int resourceID);
 
-	FSPath GetKnownDirectory(KnownDirectoryID id, FlagSet<SHGetKnownDirectoryFlag> flags = {});
-	size_t EnumKnownDirectories(std::function<bool(KnownDirectoryID, String)> func);
+	KX_API FSPath GetKnownDirectory(KnownDirectoryID id, FlagSet<SHGetKnownDirectoryFlag> flags = {});
+	KX_API size_t EnumKnownDirectories(std::function<bool(KnownDirectoryID, String)> func);
 }

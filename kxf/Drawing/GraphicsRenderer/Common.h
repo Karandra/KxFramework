@@ -16,5 +16,5 @@ namespace kxf
 
 namespace kxf::Drawing::Private
 {
-	IGraphicsRenderer& GetNullGraphicsRenderer();
+	KX_API IGraphicsRenderer& GetNullGraphicsRenderer();
 }

@@ -52,12 +52,12 @@ namespace kxf
 
 namespace kxf::COM
 {
-	void* AllocateMemory(size_t size) noexcept;
-	void* ReallocateMemory(void* address, size_t size) noexcept;
-	void FreeMemory(void* address) noexcept;
+	KX_API void* AllocateMemory(size_t size) noexcept;
+	KX_API void* ReallocateMemory(void* address, size_t size) noexcept;
+	KX_API void FreeMemory(void* address) noexcept;
 
-	::_GUID ToGUID(const NativeUUID& uuid) noexcept;
-	NativeUUID FromGUID(const ::_GUID& guid) noexcept;
+	KX_API::_GUID ToGUID(const NativeUUID& uuid) noexcept;
+	KX_API NativeUUID FromGUID(const ::_GUID& guid) noexcept;
 }
 
 namespace kxf::COM
@@ -84,7 +84,7 @@ namespace kxf::COM
 
 namespace kxf::COM
 {
-	HResult CreateInstance(const NativeUUID& classID, ClassContext classContext, const NativeUUID& iid, void** result, IUnknown* outer = nullptr) noexcept;
+	KX_API HResult CreateInstance(const NativeUUID& classID, ClassContext classContext, const NativeUUID& iid, void** result, IUnknown* outer = nullptr) noexcept;
 	inline HResult CreateInstance(const ::_GUID& classID, ClassContext classContext, const ::_GUID& iid, void** result, IUnknown* outer = nullptr) noexcept
 	{
 		return CreateInstance(FromGUID(classID), classContext, FromGUID(iid), result, outer);

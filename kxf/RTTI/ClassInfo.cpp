@@ -166,8 +166,7 @@ namespace kxf::RTTI
 
 	Enumerator<const ClassInfo&> ClassInfo::EnumBaseClasses() const noexcept
 	{
-		const size_t count = DoGetBaseClass(nullptr);
-		return {[this, index = 0_zu](IEnumerator& en) mutable -> optional_ref<const ClassInfo>
+		return [this, index = 0_zu](IEnumerator& en) mutable -> optional_ref<const ClassInfo>
 		{
 			const ClassInfo* classInfo = nullptr;
 			DoGetBaseClass(&classInfo, index++);
@@ -178,15 +177,17 @@ namespace kxf::RTTI
 			}
 			else
 			{
-				// TODO: Investigate missing RTTI class infos.
+				// TODO: Investigate missing RTTI class infos. Most likely it's because kxf is compiled
+				// as a static library instead of a DLL.
+
 				// Returned class info shouldn't be nullptr as they must always be there but sometimes
 				// we still can't find them for some reason. This shouldn't really happen but it happens
-				// anyway.
+				// anyway. Skip such items.
 
 				en.SkipCurrent();
 				return {};
 			}
-		}, count};
+		};
 	}
 	Enumerator<const ClassInfo&> ClassInfo::EnumDerivedClasses() const noexcept
 	{

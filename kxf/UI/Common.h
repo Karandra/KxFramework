@@ -74,5 +74,5 @@ namespace kxf::UI
 	// Get any valid HWND for functions that requires parent window in all cases.
 	// Return HWND of windows in following chain:
 	// window -> wxTheApp->GetTopWindow() -> wxGetTopLevelParent(wxGetActiveWindow()) -> ::GetShellWindow()
-	void* GetOwnerWindowHandle(const wxWindow* window) noexcept;
+	KX_API void* GetOwnerWindowHandle(const wxWindow* window) noexcept;
 }

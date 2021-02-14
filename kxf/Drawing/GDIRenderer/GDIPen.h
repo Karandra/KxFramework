@@ -264,5 +264,5 @@ namespace kxf
 
 namespace kxf::Drawing
 {
-	GDIPen GetStockGDIPen(StockPen pen);
+	KX_API GDIPen GetStockGDIPen(StockPen pen);
 }

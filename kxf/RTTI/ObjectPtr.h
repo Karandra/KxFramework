@@ -9,7 +9,7 @@ namespace kxf
 
 namespace kxf::RTTI
 {
-	class ObjectDeleter
+	class KX_API ObjectDeleter
 	{
 		public:
 			virtual ~ObjectDeleter() = default;

@@ -4,7 +4,7 @@
 
 namespace kxf::UI::Private
 {
-	class HiDPIEnabledWindowBase
+	class KX_API HiDPIEnabledWindowBase
 	{
 		protected:
 			bool DoEnableNonClientDPIScaling(wxWindow& window, bool enable);

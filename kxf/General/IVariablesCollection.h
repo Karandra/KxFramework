@@ -12,11 +12,11 @@ namespace kxf
 
 namespace kxf
 {
-	String ExpandVariables(const String& source, std::function<String(const String& ns, const String& id)> onVariable);
-	String ExpandVariables(const String& source, const IVariablesCollection& collection);
+	KX_API String ExpandVariables(const String& source, std::function<String(const String& ns, const String& id)> onVariable);
+	KX_API String ExpandVariables(const String& source, const IVariablesCollection& collection);
 
-	String ExpandStdVariables(const String& source);
-	String ExpandStdVariables(const String& source, const IVariablesCollection& collection);
+	KX_API String ExpandStdVariables(const String& source);
+	KX_API String ExpandStdVariables(const String& source, const IVariablesCollection& collection);
 }
 
 namespace kxf

@@ -5,6 +5,6 @@
 
 namespace kxf::Crypto
 {
-	String GetLibraryName();
-	Version GetLibraryVersion();
+	KX_API String GetLibraryName();
+	KX_API Version GetLibraryVersion();
 }

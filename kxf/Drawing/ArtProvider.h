@@ -25,15 +25,15 @@ namespace kxf::ArtProviderClient
 
 namespace kxf::ArtProvider
 {
-	void PushProvider(optional_ptr<IArtProvider> artProvider);
-	void RemoveProvider(const IArtProvider& artProvider);
+	KX_API void PushProvider(optional_ptr<IArtProvider> artProvider);
+	KX_API void RemoveProvider(const IArtProvider& artProvider);
 }
 
 namespace kxf::ArtProvider
 {
-	GDIBitmap GetResource(const ResourceID& id, const String& clientID = {}, const Size& size = Size::UnspecifiedSize());
-	ImageBundle GetResourceBundle(const ResourceID& id, const String& clientID = {});
+	KX_API GDIBitmap GetResource(const ResourceID& id, const String& clientID = {}, const Size& size = Size::UnspecifiedSize());
+	KX_API ImageBundle GetResourceBundle(const ResourceID& id, const String& clientID = {});
 
-	ResourceID GetMessageBoxResourceIDs(StdIcon iconID);
-	GDIIcon GetMessageBoxResource(StdIcon iconID);
+	KX_API ResourceID GetMessageBoxResourceIDs(StdIcon iconID);
+	KX_API GDIIcon GetMessageBoxResource(StdIcon iconID);
 }

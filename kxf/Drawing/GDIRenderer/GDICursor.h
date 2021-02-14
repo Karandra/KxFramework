@@ -193,5 +193,5 @@ namespace kxf::Drawing
 		return static_cast<StockCursor>(cursorType);
 	}
 
-	GDICursor GetStockCursor(Drawing::StockCursor cursor);
+	KX_API GDICursor GetStockCursor(Drawing::StockCursor cursor);
 }

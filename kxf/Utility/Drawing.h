@@ -6,9 +6,9 @@ struct tagRECT;
 
 namespace kxf::Utility
 {
-	void FromWindowsRect(const tagRECT& winRect, Rect& rect) noexcept;
-	Rect FromWindowsRect(const tagRECT& winRect) noexcept;
+	KX_API void FromWindowsRect(const tagRECT& winRect, Rect& rect) noexcept;
+	KX_API Rect FromWindowsRect(const tagRECT& winRect) noexcept;
 
-	void ToWindowsRect(const Rect& rect, tagRECT& winRect) noexcept;
-	tagRECT ToWindowsRect(const Rect& rect) noexcept;
+	KX_API void ToWindowsRect(const Rect& rect, tagRECT& winRect) noexcept;
+	KX_API tagRECT ToWindowsRect(const Rect& rect) noexcept;
 }

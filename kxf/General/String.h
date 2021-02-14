@@ -9,7 +9,7 @@ namespace kxf
 {
 	using XChar = wxChar;
 	using StringView = std::basic_string_view<XChar>;
-	extern const String NullString;
+	KX_API extern const String NullString;
 
 	enum class StringOpFlag: uint32_t
 	{

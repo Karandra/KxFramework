@@ -30,10 +30,10 @@ namespace kxf::RTTI
 		return T::ms_ClassInfo;
 	}
 
-	Enumerator<const ClassInfo&> EnumClassInfo() noexcept;
+	KX_API Enumerator<const ClassInfo&> EnumClassInfo() noexcept;
 
-	const ClassInfo* GetClassInfoByInterfaceID(const IID& iid) noexcept;
-	const ClassInfo* GetClassInfoByName(const char* fullyQualifiedName) noexcept;
-	const ClassInfo* GetClassInfoByName(std::string_view fullyQualifiedName) noexcept;
-	const ClassInfo* GetClassInfoByName(const kxf::String& fullyQualifiedName) noexcept;
+	KX_API const ClassInfo* GetClassInfoByInterfaceID(const IID& iid) noexcept;
+	KX_API const ClassInfo* GetClassInfoByName(const char* fullyQualifiedName) noexcept;
+	KX_API const ClassInfo* GetClassInfoByName(std::string_view fullyQualifiedName) noexcept;
+	KX_API const ClassInfo* GetClassInfoByName(const kxf::String& fullyQualifiedName) noexcept;
 }

@@ -6,7 +6,7 @@
 
 namespace kxf::Utility
 {
-	void SecureZeroMemory(void* ptr, size_t size);
+	KX_API void SecureZeroMemory(void* ptr, size_t size);
 
 	template<class T, class... Args>
 	T* ConstructAt(void* buffer, Args&&... arg) noexcept(std::is_nothrow_constructible_v<T, Args...>)

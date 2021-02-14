@@ -17,13 +17,13 @@ namespace kxf
 
 namespace kxf::Compression::ZLib
 {
-	String GetLibraryName();
-	Version GetLibraryVersion();
+	KX_API String GetLibraryName();
+	KX_API Version GetLibraryVersion();
 }
 
 namespace kxf
 {
-	class ZLibInputStream: public wxZlibInputStream
+	class KX_API ZLibInputStream: public wxZlibInputStream
 	{
 		public:
 			ZLibInputStream(wxInputStream& stream, ZLibHeaderType header = ZLibHeaderType::Auto)
@@ -36,7 +36,7 @@ namespace kxf
 			}
 	};
 
-	class ZLibOutputStream: public wxZlibOutputStream
+	class KX_API ZLibOutputStream: public wxZlibOutputStream
 	{
 		public:
 			ZLibOutputStream(wxOutputStream& stream, ZLibHeaderType header = ZLibHeaderType::Auto)
