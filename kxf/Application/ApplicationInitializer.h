@@ -32,6 +32,9 @@ namespace kxf
 			std::unique_ptr<Application::Private::NativeApp> m_NativeApp;
 
 			ICoreApplication& m_Application;
+			XChar** m_CommandLine = nullptr;
+			int m_CommandLineCount = 0;
+
 			bool m_IsInitializedCommon = false;
 			bool m_IsInitialized = false;
 			bool m_IsCreated = false;

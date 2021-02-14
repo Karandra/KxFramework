@@ -26,6 +26,14 @@ namespace kxf
 	}
 	bool ApplicationInitializer::OnInit()
 	{
+		if (auto commandLine = ::GetCommandLineW())
+		{
+			if (m_CommandLine = ::CommandLineToArgvW(commandLine, &m_CommandLineCount))
+			{
+				m_Application.InitializeCommandLine(m_CommandLine, static_cast<size_t>(m_CommandLineCount));
+				return wxInitialize(m_CommandLineCount, m_CommandLine);
+			}
+		}
 		return wxInitialize();
 	}
 	bool ApplicationInitializer::OnInit(int argc, char** argv)
@@ -69,6 +77,12 @@ namespace kxf
 				ICoreApplication::SetInstance(nullptr);
 			}
 			m_IsInitializedCommon = false;
+		}
+		if (m_CommandLine)
+		{
+			::LocalFree(m_CommandLine);
+			m_CommandLine = nullptr;
+			m_CommandLineCount = 0;
 		}
 	}
 
