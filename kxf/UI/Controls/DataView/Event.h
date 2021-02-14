@@ -212,9 +212,9 @@ namespace kxf::UI::DataView
 
 			const Any& GetValue() const&
 			{
-				if (auto value = std::get_if<const Any*>(&m_Value))
+				if (decltype(auto) value = std::get_if<const Any*>(&m_Value))
 				{
-					return *value;
+					return **value;
 				}
 				else
 				{
@@ -223,9 +223,9 @@ namespace kxf::UI::DataView
 			}
 			Any GetValue() &&
 			{
-				if (auto value = std::get_if<const Any*>(&m_Value))
+				if (decltype(auto) value = std::get_if<const Any*>(&m_Value))
 				{
-					return *value;
+					return **value;
 				}
 				else
 				{

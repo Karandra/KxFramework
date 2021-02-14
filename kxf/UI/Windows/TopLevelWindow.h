@@ -74,8 +74,8 @@ namespace kxf::UI
 	class TopLevelWindow: public T
 	{
 		public:
-			KxEVENT_MEMBER_AS(wxNotifyEvent, DWMGlassColorChanged, Private::TopLevelWindowBase::EvtDWMGlassColorChanged);
-			KxEVENT_MEMBER_AS(wxNotifyEvent, DWMCompositionChanged, Private::TopLevelWindowBase::EvtDWMCompositionChanged);
+			inline static const auto& EvtDWMGlassColorChanged = Private::TopLevelWindowBase::EvtDWMGlassColorChanged;
+			inline static const auto& EvtDWMCompositionChanged = Private::TopLevelWindowBase::EvtDWMCompositionChanged;
 
 		public:
 			static bool DWMIsCompositionEnabled()

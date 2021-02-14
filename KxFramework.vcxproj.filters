@@ -1815,6 +1815,9 @@
       <Filter>kxf\Drawing\GDIRenderer\&lt;GDIObjects&gt;</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="kxf\wxWidgets\EventTagRef.h">
+      <Filter>kxf\wxWidgets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">

@@ -1,965 +1,957 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<ItemGroup Label="ProjectConfigurations">
-		<ProjectConfiguration Include="Debug|Win32">
-			<Configuration>Debug</Configuration>
-			<Platform>Win32</Platform>
-		</ProjectConfiguration>
-		<ProjectConfiguration Include="Release|Win32">
-			<Configuration>Release</Configuration>
-			<Platform>Win32</Platform>
-		</ProjectConfiguration>
-		<ProjectConfiguration Include="Debug|x64">
-			<Configuration>Debug</Configuration>
-			<Platform>x64</Platform>
-		</ProjectConfiguration>
-		<ProjectConfiguration Include="Release|x64">
-			<Configuration>Release</Configuration>
-			<Platform>x64</Platform>
-		</ProjectConfiguration>
-	</ItemGroup>
-	
-	<PropertyGroup Label="Globals">
-		<VCProjectVersion>15.0</VCProjectVersion>
-		<ProjectGuid>{157DA1E6-2B05-4203-8284-9A9EDD0F1235}</ProjectGuid>
-		<RootNamespace>KxFramework</RootNamespace>
-		<WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-		<OverrideVcpkgTriplet>false</OverrideVcpkgTriplet>
-		<OverrideVcpkgTripletName>none</OverrideVcpkgTripletName>
-		<ProjectName>kxf</ProjectName>
-	</PropertyGroup>
-	<PropertyGroup Label="UserMacros"/>
-	
-	<PropertyGroup Label="Configuration">
-		<ConfigurationType>StaticLibrary</ConfigurationType>
-		<PlatformToolset>v142</PlatformToolset>
-		<CharacterSet>Unicode</CharacterSet>
-		<PreferredToolArchitecture>x64</PreferredToolArchitecture>
-	</PropertyGroup>
-	<PropertyGroup Label="Configuration" Condition="'$(Configuration)'=='Debug'">
-		<UseDebugLibraries>true</UseDebugLibraries>
-	</PropertyGroup>
-	<PropertyGroup Label="Configuration" Condition="'$(Configuration)'=='Release'">
-		<UseDebugLibraries>false</UseDebugLibraries>
-	</PropertyGroup>
-	<PropertyGroup>
-		<IntDir>$(ProjectDir)Junk\$(Configuration) $(Platform)\</IntDir>
-		<OutDir>$(ProjectDir)$(Configuration)\$(Platform)\</OutDir>
-	</PropertyGroup>
-	
-	<ImportGroup Label="Shared"/>
-	<ImportGroup Label="ExtensionSettings"/>
-	<ImportGroup Label="PropertySheets">
-		<Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform"/>
-	</ImportGroup>
-	
-	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props"/>
-	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
-	
-	<ItemDefinitionGroup Condition="'$(ConfigurationType)'=='DynamicLibrary'">
-		<ClCompile>
-			<PreprocessorDefinitions>KXF_DYNAMIC_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-		</ClCompile>
-	</ItemDefinitionGroup>
-	<ItemDefinitionGroup Condition="'$(ConfigurationType)'=='StaticLibrary'">
-		<ClCompile>
-			<PreprocessorDefinitions>KXF_STATIC_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-		</ClCompile>
-	</ItemDefinitionGroup>
-	
-	<ItemDefinitionGroup>
-		<ClCompile>
-			<WarningLevel>Level3</WarningLevel>
-			<SDLCheck>true</SDLCheck>
-			<ConformanceMode>true</ConformanceMode>
-			<PrecompiledHeader>Use</PrecompiledHeader>
-			<PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-			<AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-			<LanguageStandard>stdcpp17</LanguageStandard>
-			<ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-			<AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
-			<MultiProcessorCompilation>true</MultiProcessorCompilation>
-			<PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;KXF_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-		</ClCompile>
-		<Link>
-			<EnableCOMDATFolding>true</EnableCOMDATFolding>
-			<OptimizeReferences>true</OptimizeReferences>
-			<IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-			<LinkTimeCodeGeneration>UseFastLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-			<SetChecksum>true</SetChecksum>
-			<ShowProgress>NotSet</ShowProgress>
-		</Link>
-	</ItemDefinitionGroup>
-	
-	<ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
-		<ClCompile>
-			<Optimization>MaxSpeed</Optimization>
-			<RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-			<PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-		</ClCompile>
-		<Link>
-			<AdditionalOptions>/WHOLEARCHIVE:wxbase31u.lib /WHOLEARCHIVE:wxbase31u_net.lib /WHOLEARCHIVE:wxmsw31u_adv.lib /WHOLEARCHIVE:wxmsw31u_aui.lib /WHOLEARCHIVE:wxmsw31u_core.lib /WHOLEARCHIVE:wxmsw31u_gl.lib /WHOLEARCHIVE:wxmsw31u_html.lib /WHOLEARCHIVE:wxmsw31u_media.lib /WHOLEARCHIVE:wxmsw31u_propgrid.lib /WHOLEARCHIVE:wxmsw31u_qa.lib /WHOLEARCHIVE:wxmsw31u_ribbon.lib /WHOLEARCHIVE:wxmsw31u_richtext.lib /WHOLEARCHIVE:wxmsw31u_stc.lib /WHOLEARCHIVE:wxmsw31u_webview.lib /WHOLEARCHIVE:wxmsw31u_xrc.lib /WHOLEARCHIVE:wxregexu.lib /WHOLEARCHIVE:wxscintilla.lib %(AdditionalOptions)</AdditionalOptions>
-		</Link>
-	</ItemDefinitionGroup>
-	
-	<ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
-		<ClCompile>
-			<Optimization>Disabled</Optimization>
-			<RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-			<PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
-		</ClCompile>
-		<Link>
-			<AdditionalOptions>/WHOLEARCHIVE:wxbase31ud.lib /WHOLEARCHIVE:wxbase31ud_net.lib /WHOLEARCHIVE:wxmsw31ud_adv.lib /WHOLEARCHIVE:wxmsw31ud_aui.lib /WHOLEARCHIVE:wxmsw31ud_core.lib /WHOLEARCHIVE:wxmsw31ud_gl.lib /WHOLEARCHIVE:wxmsw31ud_html.lib /WHOLEARCHIVE:wxmsw31ud_media.lib /WHOLEARCHIVE:wxmsw31ud_propgrid.lib /WHOLEARCHIVE:wxmsw31ud_qa.lib /WHOLEARCHIVE:wxmsw31ud_ribbon.lib /WHOLEARCHIVE:wxmsw31ud_richtext.lib /WHOLEARCHIVE:wxmsw31ud_stc.lib /WHOLEARCHIVE:wxmsw31ud_webview.lib /WHOLEARCHIVE:wxmsw31ud_xrc.lib /WHOLEARCHIVE:wxregexud.lib /WHOLEARCHIVE:wxscintillad.lib %(AdditionalOptions)</AdditionalOptions>
-		</Link>
-	</ItemDefinitionGroup>
-	
-	<ItemGroup>
-		<ClInclude Include="kxf\Application.hpp"/>
-		<ClInclude Include="kxf\Application\ApplicationInitializer.h"/>
-		<ClInclude Include="kxf\Application\Common.h"/>
-		<ClInclude Include="kxf\Application\CoreApplication.h"/>
-		<ClInclude Include="kxf\Application\GUIApplication.h"/>
-		<ClInclude Include="kxf\Application\ICoreApplication.h"/>
-		<ClInclude Include="kxf\Application\IGUIApplication.h"/>
-		<ClInclude Include="kxf\Application\Private\NativeApp.h"/>
-		<ClInclude Include="kxf\Application\Private\Utility.h"/>
-		<ClInclude Include="kxf\Compression\IArchiveCallbacks.h"/>
-		<ClInclude Include="kxf\Compression\SevenZip.h"/>
-		<ClInclude Include="kxf\Compression\SevenZip\Archive.h"/>
-		<ClInclude Include="kxf\Compression\SevenZip\Common.h"/>
-		<ClInclude Include="kxf\Compression\SevenZip\Library.h"/>
-		<ClInclude Include="kxf\Compression\SevenZip\Private\ArchiveExtractCallback.h"/>
-		<ClInclude Include="kxf\Compression\SevenZip\Private\ArchiveOpenCallback.h"/>
-		<ClInclude Include="kxf\Compression\SevenZip\Private\ArchiveUpdateCallback.h"/>
-		<ClInclude Include="kxf\Compression\SevenZip\Private\GUIDs.h"/>
-		<ClInclude Include="kxf\Compression\SevenZip\Private\InStreamWrapper.h"/>
-		<ClInclude Include="kxf\Compression\SevenZip\Private\OutStreamWrapper.h"/>
-		<ClInclude Include="kxf\Compression\SevenZip\Private\PasswordHandler.h"/>
-		<ClInclude Include="kxf\Compression\SevenZip\Private\Utility.h"/>
-		<ClInclude Include="kxf\Compression\SevenZip\Private\WithEvtHandler.h"/>
-		<ClInclude Include="kxf\Crypto\UserCredentials.h"/>
-		<ClInclude Include="kxf\Drawing\AffineMatrix.h"/>
-		<ClInclude Include="kxf\Drawing\Angle.h"/>
-		<ClInclude Include="kxf\Drawing\ArtProvider.h"/>
-		<ClInclude Include="kxf\Drawing\Color.h"/>
-		<ClInclude Include="kxf\Drawing\ColorDefines.h"/>
-		<ClInclude Include="kxf\Drawing\Font.h"/>
-		<ClInclude Include="kxf\Drawing\FontMetrics.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\GDIBitmap.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\GDIBrush.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\Common.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\GDIAction.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\GDIContext.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\GDICursor.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\GDIFont.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsBrush.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsContext.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsFont.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsPen.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsTexture.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\GDIIcon.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\GDIImageList.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\GDIMemoryContext.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\GDIMirroringContext.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsRenderer.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\GDIRegion.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\GDIRendererNative.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\GDIScreenContext.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\GDIWindowContext.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\GDIPen.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\IGDIObject.h"/>
-		<ClInclude Include="kxf\Drawing\GDIRenderer\Private\GDI.h"/>
-		<ClInclude Include="kxf\Drawing\Geometry.h"/>
-		<ClInclude Include="kxf\Drawing\GradientStops.h"/>
-		<ClInclude Include="kxf\Drawing\GraphicsRenderer.h"/>
-		<ClInclude Include="kxf\Drawing\GraphicsRenderer\Common.h"/>
-		<ClInclude Include="kxf\Drawing\GraphicsRenderer\GraphicsAction.h"/>
-		<ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsBrush.h"/>
-		<ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsContext.h"/>
-		<ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsFont.h"/>
-		<ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsObject.h"/>
-		<ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsPath.h"/>
-		<ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsPen.h"/>
-		<ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsRenderer.h"/>
-		<ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsTexture.h"/>
-		<ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsBrush.h"/>
-		<ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsFont.h"/>
-		<ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsObject.h"/>
-		<ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsPath.h"/>
-		<ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsPen.h"/>
-		<ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsRenderer.h"/>
-		<ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsTexture.h"/>
-		<ClInclude Include="kxf\Drawing\IArtProvider.h"/>
-		<ClInclude Include="kxf\Drawing\ColorDepth.h"/>
-		<ClInclude Include="kxf\Drawing\IImage2D.h"/>
-		<ClInclude Include="kxf\Drawing\BitmapImage.h"/>
-		<ClInclude Include="kxf\Drawing\IImageHandler.h"/>
-		<ClInclude Include="kxf\Drawing\ImageBundle.h"/>
-		<ClInclude Include="kxf\Drawing\ImageDefines.h"/>
-		<ClInclude Include="kxf\Drawing\IBitmapImage.h"/>
-		<ClInclude Include="kxf\Drawing\Private\Common.h"/>
-		<ClInclude Include="kxf\Drawing\IRendererNative.h"/>
-		<ClInclude Include="kxf\Drawing\Private\Defines.h"/>
-		<ClInclude Include="kxf\Drawing\Private\SVGImageHandler.h"/>
-		<ClInclude Include="kxf\Drawing\SizeRatio.h"/>
-		<ClInclude Include="kxf\Drawing\IVectorImage.h"/>
-		<ClInclude Include="kxf\Drawing\SVGImage.h"/>
-		<ClInclude Include="kxf\Drawing\WxRenderer\Common.h"/>
-		<ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsBrush.h"/>
-		<ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsContext.h"/>
-		<ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsFont.h"/>
-		<ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsPath.h"/>
-		<ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsPen.h"/>
-		<ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsRenderer.h"/>
-		<ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsTexture.h"/>
-		<ClInclude Include="kxf\EventSystem\ActivateEvent.h"/>
-		<ClInclude Include="kxf\EventSystem\IndirectInvocationEvent.h"/>
-		<ClInclude Include="kxf\EventSystem\CommonEventLoop.h"/>
-		<ClInclude Include="kxf\EventSystem\BasicEvent.h"/>
-		<ClInclude Include="kxf\EventSystem\Event.h"/>
-		<ClInclude Include="kxf\EventSystem\EventExecutor.h"/>
-		<ClInclude Include="kxf\EventSystem\EventID.h"/>
-		<ClInclude Include="kxf\EventSystem\EventItem.h"/>
-		<ClInclude Include="kxf\EventSystem\EvtHandlerAccessor.h"/>
-		<ClInclude Include="kxf\EventSystem\EvtHandlerDelegate.h"/>
-		<ClInclude Include="kxf\EventSystem\IdleEvent.h"/>
-		<ClInclude Include="kxf\EventSystem\IEvent.h"/>
-		<ClInclude Include="kxf\EventSystem\IEventFilter.h"/>
-		<ClInclude Include="kxf\EventSystem\IEventLoop.h"/>
-		<ClInclude Include="kxf\EventSystem\IEvtHandler.h"/>
-		<ClInclude Include="kxf\EventSystem\IWithEvtHandler.h"/>
-		<ClInclude Include="kxf\EventSystem\Private\EventWaitInfo.h"/>
-		<ClInclude Include="kxf\EventSystem\SignalExecutor.h"/>
-		<ClInclude Include="kxf\EventSystem\SignalInvocationEvent.h"/>
-		<ClInclude Include="kxf\EventSystem\Private\Win32ConsoleEventLoop.h"/>
-		<ClInclude Include="kxf\EventSystem\Private\Win32CommonEventLoop.h"/>
-		<ClInclude Include="kxf\EventSystem\Private\Win32GUIEventLoop.h"/>
-		<ClInclude Include="kxf\EventSystem\WidgetEvent.h"/>
-		<ClInclude Include="kxf\FileSystem\AbstractDirectoryEnumerator.h"/>
-		<ClInclude Include="kxf\FileSystem\NullFileSystem.h"/>
-		<ClInclude Include="kxf\General\AlignedBuffer.h"/>
-		<ClInclude Include="kxf\General\AlignedStorage.h"/>
-		<ClInclude Include="kxf\General\AlignedObjectStorage.h"/>
-		<ClInclude Include="kxf\General\CombinedVariablesCollection.h"/>
-		<ClInclude Include="kxf\General\DateTime.h"/>
-		<ClInclude Include="kxf\General\DateTime\Common.h"/>
-		<ClInclude Include="kxf\General\DateTime\DateSpan.h"/>
-		<ClInclude Include="kxf\General\DateTime\DateTime.h"/>
-		<ClInclude Include="kxf\General\DateTime\ITimeClock.h"/>
-		<ClInclude Include="kxf\General\DateTime\Private\Mapping.h"/>
-		<ClInclude Include="kxf\General\DateTime\TimeClock.h"/>
-		<ClInclude Include="kxf\General\DateTime\TimeSpan.h"/>
-		<ClInclude Include="kxf\General\DateTime\TimeZone.h"/>
-		<ClInclude Include="kxf\General\DynamicVariablesCollection.h"/>
-		<ClInclude Include="kxf\General\ErrorCode.h"/>
-		<ClInclude Include="kxf\General\Enumerator.h"/>
-		<ClInclude Include="kxf\General\IEnumerator.h"/>
-		<ClInclude Include="kxf\General\IErrorCode.h"/>
-		<ClInclude Include="kxf\General\IVariablesCollection.h"/>
-		<ClInclude Include="kxf\General\LocallyUniqueID.h"/>
-		<ClInclude Include="kxf\General\NullVariablesCollection.h"/>
-		<ClInclude Include="kxf\General\OptionalPtr.h"/>
-		<ClInclude Include="kxf\General\OptionalRef.h"/>
-		<ClInclude Include="kxf\General\RegEx.h"/>
-		<ClInclude Include="kxf\General\ResourceID.h"/>
-		<ClInclude Include="kxf\General\StaticVariablesCollection.h"/>
-		<ClInclude Include="kxf\General\UniqueFunction.h"/>
-		<ClInclude Include="kxf\IO.hpp"/>
-		<ClInclude Include="kxf\IO\Common.h"/>
-		<ClInclude Include="kxf\IO\NativeFileStream.h"/>
-		<ClInclude Include="kxf\IO\IStream.h"/>
-		<ClInclude Include="kxf\IO\IStreamOnFileSystem.h"/>
-		<ClInclude Include="kxf\IO\MemoryStream.h"/>
-		<ClInclude Include="kxf\IO\INativeStream.h"/>
-		<ClInclude Include="kxf\IO\StreamDelegate.h"/>
-		<ClInclude Include="kxf\IO\StreamError.h"/>
-		<ClInclude Include="kxf\IO\StreamReaderWriter.h"/>
-		<ClInclude Include="kxf\Localization\Constants.h"/>
-		<ClInclude Include="kxf\Localization\ILocalizationPackage.h"/>
-		<ClInclude Include="kxf\Localization\LocalizationItem.h"/>
-		<ClInclude Include="kxf\Localization\LocalizationPackageStack.h"/>
-		<ClInclude Include="kxf\Localization\Private\LocalizationPackageHelper.h"/>
-		<ClInclude Include="kxf\Localization\Private\LocalizationResources.h"/>
-		<ClInclude Include="kxf\Localization\QtLocalizationPackage.h"/>
-		<ClInclude Include="kxf\Localization\WindowsLocalizationPackage.h"/>
-		<ClInclude Include="kxf\Log.hpp"/>
-		<ClInclude Include="kxf\Log\Common.h"/>
-		<ClInclude Include="kxf\Log\OutputStreamTarget.h"/>
-		<ClInclude Include="kxf\pch.hpp"/>
-		<ClInclude Include="kxf\RTTI\ClassInfo.h"/>
-		<ClInclude Include="kxf\RTTI\IID.h"/>
-		<ClInclude Include="kxf\RTTI\Interface.h"/>
-		<ClInclude Include="kxf\RTTI\ObjectPtr.h"/>
-		<ClInclude Include="kxf\RTTI\RTTI.h"/>
-		<ClInclude Include="kxf\Sciter\Stylesheets\MasterStylesheetStorage.h"/>
-		<ClInclude Include="kxf\Sciter\Stylesheets\StylesheetStorage.h"/>
-		<ClInclude Include="kxf\Sciter\Widgets\Common.h"/>
-		<ClInclude Include="kxf\Sciter\Widgets\NativeWidget.h"/>
-		<ClInclude Include="kxf\Sciter\Widgets\Native\Common.h"/>
-		<ClInclude Include="kxf\Sciter\Widgets\Native\TextBoxWidget.h"/>
-		<ClInclude Include="kxf\Sciter\Widgets\TextBoxWidget.h"/>
-		<ClInclude Include="kxf\Serialization.hpp"/>
-		<ClInclude Include="kxf\Serialization\Common.h"/>
-		<ClInclude Include="kxf\Serialization\HTML.h"/>
-		<ClInclude Include="kxf\Serialization\HTML\HTMLDocument.h"/>
-		<ClInclude Include="kxf\Serialization\HTML\Private\error.h"/>
-		<ClInclude Include="kxf\Serialization\HTML\Private\insertion_mode.h"/>
-		<ClInclude Include="kxf\Serialization\HTML\Private\string_buffer.h"/>
-		<ClInclude Include="kxf\Serialization\HTML\Private\token_type.h"/>
-		<ClInclude Include="kxf\Serialization\INI.h"/>
-		<ClInclude Include="kxf\Serialization\INI\INIDocument.h"/>
-		<ClInclude Include="kxf\Serialization\JSON.h"/>
-		<ClInclude Include="kxf\Serialization\JSON\JSONDocument.h"/>
-		<ClInclude Include="kxf\Serialization\Private\XDocument.h"/>
-		<ClInclude Include="kxf\Serialization\TextDocument.h"/>
-		<ClInclude Include="kxf\Serialization\XDocument.h"/>
-		<ClInclude Include="kxf\Serialization\XML.h"/>
-		<ClInclude Include="kxf\Serialization\XML\Private\TinyXML2 HTML5 Printer.h"/>
-		<ClInclude Include="kxf\Serialization\XML\Private\Utility.h"/>
-		<ClInclude Include="kxf\Serialization\XML\XMLDocument.h"/>
-		<ClInclude Include="kxf\System\DynamicLibrary.h"/>
-		<ClInclude Include="kxf\System\DynamicLibraryEvent.h"/>
-		<ClInclude Include="kxf\System\ExecutableVersionResource.h"/>
-		<ClInclude Include="kxf\System\HResult.h"/>
-		<ClInclude Include="kxf\System\HandlePtr.h"/>
-		<ClInclude Include="kxf\System\NtStatus.h"/>
-		<ClInclude Include="kxf\System\Private\BinaryResourceDefines.h"/>
-		<ClInclude Include="kxf\System\Private\COM.h"/>
-		<ClInclude Include="kxf\System\Private\ErrorCode.h"/>
-		<ClInclude Include="kxf\System\Private\System.h"/>
-		<ClInclude Include="kxf\System\Private\SystemInformationDefinesMapping.h"/>
-		<ClInclude Include="kxf\System\SystemAppearance.h"/>
-		<ClInclude Include="kxf\System\SystemProcess.h"/>
-		<ClInclude Include="kxf\System\SystemProcess\CreateProcessExecutor.h"/>
-		<ClInclude Include="kxf\System\SystemProcess\ISystemProcess.h"/>
-		<ClInclude Include="kxf\System\SystemProcess\ISystemProcessStdIO.h"/>
-		<ClInclude Include="kxf\System\SystemProcess\ProcessEvent.h"/>
-		<ClInclude Include="kxf\System\SystemProcess\RunningSystemProcess.h"/>
-		<ClInclude Include="kxf\System\SystemProcess\RunningSystemProcessStdIO.h"/>
-		<ClInclude Include="kxf\System\SystemProcess\SystemProcessInfo.h"/>
-		<ClInclude Include="kxf\System\UserName.h"/>
-		<ClInclude Include="kxf\System\VariantProperty.h"/>
-		<ClInclude Include="kxf\System\Win32Error.h"/>
-		<ClInclude Include="kxf\Threading\CriticalSection.h"/>
-		<ClInclude Include="kxf\Threading\ReadWriteLock.h"/>
-		<ClInclude Include="kxf\Threading\RecursiveRWLock.h"/>
-		<ClInclude Include="kxf\Threading\SynchronizedCondition.h"/>
-		<ClInclude Include="kxf\Threading\ThreadEvent.h"/>
-		<ClInclude Include="kxf\Threading\LockGuard.h"/>
-		<ClInclude Include="kxf\UI\Controls\AUI.h"/>
-		<ClInclude Include="kxf\UI\Controls\AUI\AuiNotebook.h"/>
-		<ClInclude Include="kxf\UI\Controls\AUI\AuiToolBar.h"/>
-		<ClInclude Include="kxf\UI\Controls\AUI\AuiToolBarEvent.h"/>
-		<ClInclude Include="kxf\UI\Controls\AUI\AuiToolBarItem.h"/>
-		<ClInclude Include="kxf\UI\Controls\BitmapComboBox.h"/>
-		<ClInclude Include="kxf\UI\Controls\Button.h"/>
-		<ClInclude Include="kxf\UI\Controls\CheckBox.h"/>
-		<ClInclude Include="kxf\UI\Controls\ClusterMap.h"/>
-		<ClInclude Include="kxf\UI\Controls\ComboBox.h"/>
-		<ClInclude Include="kxf\UI\Controls\ComboControl.h"/>
-		<ClInclude Include="kxf\UI\Controls\ComboPopup.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataViewComboBox.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\CellAttributeOptions.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\CellAttribute.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\CellState.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Column.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\ColumnID.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Common.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\DataView.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\DragAndDrop.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Editor.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Editors\ColorEditor.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Editors\ComboBoxEditor.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Editors\DateEditor.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Editors\SpinEditor.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Editors\TextEditor.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Editors\TimeEditor.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Event.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\HeaderCtrl.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\HeaderCtrl2.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\MainWindow.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Model.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Node.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\RenderEngine.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Renderer.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Renderers\ImageListRenderer.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Renderers\ImageRenderer.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Renderers\ImageTextRenderer.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Renderers\ImageTextToggleRenderer.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Renderers\HTMLTextRenderer.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Renderers\GDIImageListRenderer.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Renderers\NullRenderer.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Renderers\ProgressRenderer.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Renderers\TextRenderer.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Renderers\ToggleRenderer.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\Row.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\SortMode.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\ToolTip.h"/>
-		<ClInclude Include="kxf\UI\Controls\DataView\View.h"/>
-		<ClInclude Include="kxf\UI\Controls\HTMLWindow.h"/>
-		<ClInclude Include="kxf\UI\Controls\ImageView.h"/>
-		<ClInclude Include="kxf\UI\Controls\IProgressMeter.h"/>
-		<ClInclude Include="kxf\UI\Controls\Label.h"/>
-		<ClInclude Include="kxf\UI\Controls\Notebook.h"/>
-		<ClInclude Include="kxf\UI\Controls\ProgressBar.h"/>
-		<ClInclude Include="kxf\UI\Controls\RadioButton.h"/>
-		<ClInclude Include="kxf\UI\Controls\SearchBox.h"/>
-		<ClInclude Include="kxf\UI\Controls\Simplebook.h"/>
-		<ClInclude Include="kxf\UI\Controls\Slider.h"/>
-		<ClInclude Include="kxf\UI\Controls\StaticBitmap.h"/>
-		<ClInclude Include="kxf\UI\Controls\StaticText.h"/>
-		<ClInclude Include="kxf\UI\Controls\StatusBar.h"/>
-		<ClInclude Include="kxf\UI\Controls\StatusBarEx.h"/>
-		<ClInclude Include="kxf\UI\Controls\StyledTextBox.h"/>
-		<ClInclude Include="kxf\UI\Controls\TextBox.h"/>
-		<ClInclude Include="kxf\UI\Controls\ThumbView.h"/>
-		<ClInclude Include="kxf\UI\Controls\WebView.h"/>
-		<ClInclude Include="kxf\UI\Dialogs\Dialog.h"/>
-		<ClInclude Include="kxf\UI\Dialogs\ComboBoxDialog.h"/>
-		<ClInclude Include="kxf\UI\Dialogs\CredentialsDialog.h"/>
-		<ClInclude Include="kxf\UI\Dialogs\FileBrowseDialog.h"/>
-		<ClInclude Include="kxf\UI\Dialogs\Private\FileBrowseDialogEvents.h"/>
-		<ClInclude Include="kxf\UI\Dialogs\Private\TaskDialogNativeInfo.h"/>
-		<ClInclude Include="kxf\UI\Dialogs\ProgressDialog.h"/>
-		<ClInclude Include="kxf\UI\Dialogs\TaskDialog.h"/>
-		<ClInclude Include="kxf\UI\Dialogs\TextBoxDialog.h"/>
-		<ClInclude Include="kxf\UI\Dialogs\StdDialog.h"/>
-		<ClInclude Include="kxf\UI\Dialogs\SimpleStdDialog.h"/>
-		<ClInclude Include="kxf\UI\Menus\Menu.h"/>
-		<ClInclude Include="kxf\UI\Menus\MenuEvent.h"/>
-		<ClInclude Include="kxf\UI\Menus\MenuItem.h"/>
-		<ClInclude Include="kxf\UI\Menus\ShellMenu.h"/>
-		<ClInclude Include="kxf\UI\IGraphicsRendererAwareWidget.h"/>
-		<ClInclude Include="kxf\UI\WidgetID.h"/>
-		<ClInclude Include="kxf\UI\Windows\CollapsiblePane.h"/>
-		<ClInclude Include="kxf\UI\Windows\DrawablePanel.h"/>
-		<ClInclude Include="kxf\UI\Windows\Frame.h"/>
-		<ClInclude Include="kxf\UI\Windows\Panel.h"/>
-		<ClInclude Include="kxf\UI\Windows\RichToolTip.h"/>
-		<ClInclude Include="kxf\UI\Windows\SplashWindow.h"/>
-		<ClInclude Include="kxf\UI\Windows\SplitterWindow.h"/>
-		<ClInclude Include="kxf\UI\Windows\ToolTipEx.h"/>
-		<ClInclude Include="kxf\UI\Windows\TopLevelWindow.h"/>
-		<ClInclude Include="kxf\UI\WindowWithStyles.h"/>
-		<ClInclude Include="kxf\Utility\Enumerator.h"/>
-		<ClInclude Include="kxf\Utility\ExceptionScopeGuard.h"/>
-		<ClInclude Include="kxf\Utility\Functional.h"/>
-		<ClInclude Include="kxf\Utility\Literals.h"/>
-		<ClInclude Include="kxf\wxWidgets\Application.h"/>
-		<ClInclude Include="kxf\wxWidgets\ClientObject.h"/>
-		<ClInclude Include="kxf\wxWidgets\Common.h"/>
-		<ClInclude Include="kxf\wxWidgets\EventLoopWrapper.h"/>
-		<ClInclude Include="kxf\wxWidgets\EventWrapper.h"/>
-		<ClInclude Include="kxf\wxWidgets\EvtHandlerWrapper.h"/>
-		<ClInclude Include="kxf\wxWidgets\IWithEvent.h"/>
-		<ClInclude Include="kxf\wxWidgets\RTTI.h"/>
-		<ClInclude Include="kxf\wxWidgets\StreamWrapper.h"/>
-		<ClInclude Include="kxf\wxWidgets\SystemOptions.h"/>
-		<ClInclude Include="resource.h"/>
-		<ClInclude Include="stdafx.h"/>
-		<ClInclude Include="kxf\Async.hpp"/>
-		<ClInclude Include="kxf\Async\Common.h"/>
-		<ClInclude Include="kxf\Async\Coroutine.h"/>
-		<ClInclude Include="kxf\Async\Coroutine\Coroutine.h"/>
-		<ClInclude Include="kxf\Async\Coroutine\CoroutineImpl.h"/>
-		<ClInclude Include="kxf\Async\Coroutine\YieldInstruction.h"/>
-		<ClInclude Include="kxf\Async\DelayedCall.h"/>
-		<ClInclude Include="kxf\Common.hpp"/>
-		<ClInclude Include="kxf\Compression.hpp"/>
-		<ClInclude Include="kxf\Compression\ArchiveEvent.h"/>
-		<ClInclude Include="kxf\Compression\Common.h"/>
-		<ClInclude Include="kxf\Compression\IArchive.h"/>
-		<ClInclude Include="kxf\Compression\LZ4Stream.h"/>
-		<ClInclude Include="kxf\Compression\ZLibStream.h"/>
-		<ClInclude Include="kxf\Crypto.hpp"/>
-		<ClInclude Include="kxf\Crypto\Common.h"/>
-		<ClInclude Include="kxf\Crypto\Crypto.h"/>
-		<ClInclude Include="kxf\Crypto\HashValue.h"/>
-		<ClInclude Include="kxf\Crypto\ISecretStore.h"/>
-		<ClInclude Include="kxf\Crypto\SecretValue.h"/>
-		<ClInclude Include="kxf\Drawing.hpp"/>
-		<ClInclude Include="kxf\Drawing\Common.h"/>
-		<ClInclude Include="kxf\Drawing\Private\UxThemeDefines.h"/>
-		<ClInclude Include="kxf\Drawing\UxTheme.h"/>
-		<ClInclude Include="kxf\Drawing\WithImageList.h"/>
-		<ClInclude Include="kxf\EventSystem.hpp"/>
-		<ClInclude Include="kxf\EventSystem\EventBroadcastProcessor.h"/>
-		<ClInclude Include="kxf\EventSystem\IEventExecutor.h"/>
-		<ClInclude Include="kxf\EventSystem\Common.h"/>
-		<ClInclude Include="kxf\EventSystem\EventBuilder.h"/>
-		<ClInclude Include="kxf\EventSystem\EventHandlerStack.h"/>
-		<ClInclude Include="kxf\EventSystem\EvtHandler.h"/>
-		<ClInclude Include="kxf\FileSystem.hpp"/>
-		<ClInclude Include="kxf\FileSystem\Common.h"/>
-		<ClInclude Include="kxf\FileSystem\FileItem.h"/>
-		<ClInclude Include="kxf\FileSystem\FSActionEvent.h"/>
-		<ClInclude Include="kxf\FileSystem\FileOperations.h"/>
-		<ClInclude Include="kxf\FileSystem\FSPath.h"/>
-		<ClInclude Include="kxf\FileSystem\IFileSystem.h"/>
-		<ClInclude Include="kxf\FileSystem\LegacyVolume.h"/>
-		<ClInclude Include="kxf\FileSystem\Private\NamespacePrefix.h"/>
-		<ClInclude Include="kxf\FileSystem\Private\NativeFSUtility.h"/>
-		<ClInclude Include="kxf\FileSystem\RecycleBin.h"/>
-		<ClInclude Include="kxf\FileSystem\StorageVolume.h"/>
-		<ClInclude Include="kxf\FileSystem\NativeFileSystem.h"/>
-		<ClInclude Include="kxf\General.hpp"/>
-		<ClInclude Include="kxf\General\Any.h"/>
-		<ClInclude Include="kxf\General\BinarySize.h"/>
-		<ClInclude Include="kxf\General\Common.h"/>
-		<ClInclude Include="kxf\General\FlagSet.h"/>
-		<ClInclude Include="kxf\General\ExtraData.h"/>
-		<ClInclude Include="kxf\General\IndexedEnum.h"/>
-		<ClInclude Include="kxf\General\Math.h"/>
-		<ClInclude Include="kxf\General\StdID.h"/>
-		<ClInclude Include="kxf\General\MemorySpan.h"/>
-		<ClInclude Include="kxf\General\NativeUUID.h"/>
-		<ClInclude Include="kxf\General\Private\ExtraData.h"/>
-		<ClInclude Include="kxf\General\Private\String.h"/>
-		<ClInclude Include="kxf\General\Private\VersionImpl.h"/>
-		<ClInclude Include="kxf\General\Singleton.h"/>
-		<ClInclude Include="kxf\General\String.h"/>
-		<ClInclude Include="kxf\General\StringFormatter.h"/>
-		<ClInclude Include="kxf\General\StringFormatterTraits.h"/>
-		<ClInclude Include="kxf\General\UniversallyUniqueID.h"/>
-		<ClInclude Include="kxf\General\Version.h"/>
-		<ClInclude Include="kxf\General\WithOptions.h"/>
-		<ClInclude Include="kxf\Localization.hpp"/>
-		<ClInclude Include="kxf\Localization\Common.h"/>
-		<ClInclude Include="kxf\Localization\Locale.h"/>
-		<ClInclude Include="kxf\Localization\Private\LocaleOptions.h"/>
-		<ClInclude Include="kxf\Localization\Private\StandardLocalization.h"/>
-		<ClInclude Include="kxf\Localization\AndroidLocalizationPackage.h"/>
-		<ClInclude Include="kxf\Network.hpp"/>
-		<ClInclude Include="kxf\Network\Common.h"/>
-		<ClInclude Include="kxf\Network\CURL\Event.h"/>
-		<ClInclude Include="kxf\Network\CURL\Reply.h"/>
-		<ClInclude Include="kxf\Network\CURL\Session.h"/>
-		<ClInclude Include="kxf\Network\CURL.h"/>
-		<ClInclude Include="kxf\Network\CURL\Private\CURL.h"/>
-		<ClInclude Include="kxf\Network\HTTPStatus.h"/>
-		<ClInclude Include="kxf\Network\Private\URXHelper.h"/>
-		<ClInclude Include="kxf\Network\URI.h"/>
-		<ClInclude Include="kxf\Network\URL.h"/>
-		<ClInclude Include="kxf\Network\WebSocket.h"/>
-		<ClInclude Include="kxf\Network\WebSocket\IClient.h"/>
-		<ClInclude Include="kxf\Network\WebSocket\SecureClient.h"/>
-		<ClInclude Include="kxf\Network\WebSocket\CloseCode.h"/>
-		<ClInclude Include="kxf\Network\WebSocket\Event.h"/>
-		<ClInclude Include="kxf\RTTI.hpp"/>
-		<ClInclude Include="kxf\RTTI\Common.h"/>
-		<ClInclude Include="kxf\RTTI\IObject.h"/>
-		<ClInclude Include="kxf\Sciter.hpp"/>
-		<ClInclude Include="kxf\Sciter\Common.h"/>
-		<ClInclude Include="kxf\Sciter\CommonDefs.h"/>
-		<ClInclude Include="kxf\Sciter\Controls\Label.h"/>
-		<ClInclude Include="kxf\Sciter\Element.h"/>
-		<ClInclude Include="kxf\Sciter\EventDispatcher.h"/>
-		<ClInclude Include="kxf\Sciter\Events.h"/>
-		<ClInclude Include="kxf\Sciter\Events\BehaviorEvent.h"/>
-		<ClInclude Include="kxf\Sciter\Events\SciterEvent.h"/>
-		<ClInclude Include="kxf\Sciter\Events\FocusEvent.h"/>
-		<ClInclude Include="kxf\Sciter\Events\KeyEvent.h"/>
-		<ClInclude Include="kxf\Sciter\Events\MouseEvent.h"/>
-		<ClInclude Include="kxf\Sciter\Events\PaintEvent.h"/>
-		<ClInclude Include="kxf\Sciter\Events\ScrollEvent.h"/>
-		<ClInclude Include="kxf\Sciter\Events\SizeEvent.h"/>
-		<ClInclude Include="kxf\Sciter\Events\TimerEvent.h"/>
-		<ClInclude Include="kxf\Sciter\GraphicsRenderer\GraphicsBitmap.h"/>
-		<ClInclude Include="kxf\Sciter\GraphicsRenderer\GraphicsContext.h"/>
-		<ClInclude Include="kxf\Sciter\GraphicsRenderer\GraphicsPath.h"/>
-		<ClInclude Include="kxf\Sciter\GraphicsRenderer\GraphicsText.h"/>
-		<ClInclude Include="kxf\Sciter\Internal.h"/>
-		<ClInclude Include="kxf\Sciter\IWindowRenderer.h"/>
-		<ClInclude Include="kxf\Sciter\Renderers\DirectX.h"/>
-		<ClInclude Include="kxf\Sciter\Renderers\FPSCounter.h"/>
-		<ClInclude Include="kxf\Sciter\SciterAPI.h"/>
-		<ClInclude Include="kxf\Sciter\Host.h"/>
-		<ClInclude Include="kxf\Sciter\Node.h"/>
-		<ClInclude Include="kxf\Sciter\ScriptValue.h"/>
-		<ClInclude Include="kxf\Sciter\Utility\HandleWrapper.h"/>
-		<ClInclude Include="kxf\Sciter\Widget.h"/>
-		<ClInclude Include="kxf\Sciter\WidgetFactory.h"/>
-		<ClInclude Include="kxf\Sciter\WrapperWindow.h"/>
-		<ClInclude Include="kxf\System.hpp"/>
-		<ClInclude Include="kxf\System\CFunction.h"/>
-		<ClInclude Include="kxf\System\CFunctionCompiler.h"/>
-		<ClInclude Include="kxf\System\COM.h"/>
-		<ClInclude Include="kxf\System\Common.h"/>
-		<ClInclude Include="kxf\System\DPIAwareness.h"/>
-		<ClInclude Include="kxf\System\Private\BeginIncludeCOM.h"/>
-		<ClInclude Include="kxf\System\Private\CFunction.h"/>
-		<ClInclude Include="kxf\System\Private\CFunctionCompiler.h"/>
-		<ClInclude Include="kxf\System\Private\EndIncludeCOM.h"/>
-		<ClInclude Include="kxf\System\Private\IncludeNtStatus.h"/>
-		<ClInclude Include="kxf\System\CredentialStore.h"/>
-		<ClInclude Include="kxf\System\Private\KnownDirectoryGUID.h"/>
-		<ClInclude Include="kxf\System\Private\Shell.h"/>
-		<ClInclude Include="kxf\System\Private\KnownDirectoryDefinition.h"/>
-		<ClInclude Include="kxf\System\Registry.h"/>
-		<ClInclude Include="kxf\System\SharedMemory.h"/>
-		<ClInclude Include="kxf\System\KnownDirectoryID.h"/>
-		<ClInclude Include="kxf\System\ShellFileType.h"/>
-		<ClInclude Include="kxf\System\ShellFileTypeInfo.h"/>
-		<ClInclude Include="kxf\System\ShellFileTypeManager.h"/>
-		<ClInclude Include="kxf\System\ShellLink.h"/>
-		<ClInclude Include="kxf\System\ShellOperations.h"/>
-		<ClInclude Include="kxf\System\NativeAPI.h"/>
-		<ClInclude Include="kxf\System\SystemInformation.h"/>
-		<ClInclude Include="kxf\System\SystemInformationDefines.h"/>
-		<ClInclude Include="kxf\System\TaskScheduler.h"/>
-		<ClInclude Include="kxf\System\UndefWindows.h"/>
-		<ClInclude Include="kxf\System\WOW64FSRedirection.h"/>
-		<ClInclude Include="kxf\Threading.hpp"/>
-		<ClInclude Include="kxf\Threading\AutoThread.h"/>
-		<ClInclude Include="kxf\Threading\Common.h"/>
-		<ClInclude Include="kxf\Threading\JoinableThread.h"/>
-		<ClInclude Include="kxf\UI.hpp"/>
-		<ClInclude Include="kxf\UI\Common.h"/>
-		<ClInclude Include="kxf\UI\HiDPIEnabledWindow.h"/>
-		<ClInclude Include="kxf\UI\StdButton.h"/>
-		<ClInclude Include="kxf\UI\StdDialogButtonSizer.h"/>
-		<ClInclude Include="kxf\UI\StdIcon.h"/>
-		<ClInclude Include="kxf\UI\Validator.h"/>
-		<ClInclude Include="kxf\UI\WindowRefreshScheduler.h"/>
-		<ClInclude Include="kxf\UI\WindowUpdateLocker.h"/>
-		<ClInclude Include="kxf\UI\WithDropdownMenu.h"/>
-		<ClInclude Include="kxf\Utility.hpp"/>
-		<ClInclude Include="kxf\Utility\ScopeGuard.h"/>
-		<ClInclude Include="kxf\Utility\Common.h"/>
-		<ClInclude Include="kxf\Utility\Container.h"/>
-		<ClInclude Include="kxf\Utility\Drawing.h"/>
-		<ClInclude Include="kxf\Utility\Memory.h"/>
-		<ClInclude Include="kxf\Utility\Numeric.h"/>
-		<ClInclude Include="kxf\Utility\String.h"/>
-		<ClInclude Include="kxf\Utility\System.h"/>
-		<ClInclude Include="kxf\Utility\TypeTraits.h"/>
-		<ClInclude Include="kxf\wxWidgets\Setup.h"/>
-	</ItemGroup>
-	<ItemGroup>
-		<ClCompile Include="kxf\Application\ApplicationInitializer.cpp"/>
-		<ClCompile Include="kxf\Application\CoreApplication.cpp"/>
-		<ClCompile Include="kxf\Application\GUIApplication.cpp"/>
-		<ClCompile Include="kxf\Application\ICoreApplication.cpp"/>
-		<ClCompile Include="kxf\Application\Private\NativeApp.cpp"/>
-		<ClCompile Include="kxf\Application\Private\Utility.cpp"/>
-		<ClCompile Include="kxf\Compression\SevenZip\Archive.cpp"/>
-		<ClCompile Include="kxf\Compression\SevenZip\Common.cpp"/>
-		<ClCompile Include="kxf\Compression\SevenZip\Library.cpp"/>
-		<ClCompile Include="kxf\Compression\SevenZip\Private\ArchiveExtractCallback.cpp"/>
-		<ClCompile Include="kxf\Compression\SevenZip\Private\ArchiveOpenCallback.cpp"/>
-		<ClCompile Include="kxf\Compression\SevenZip\Private\ArchiveUpdateCallback.cpp"/>
-		<ClCompile Include="kxf\Compression\SevenZip\Private\InStreamWrapper.cpp"/>
-		<ClCompile Include="kxf\Compression\SevenZip\Private\OutStreamWrapper.cpp"/>
-		<ClCompile Include="kxf\Compression\SevenZip\Private\PasswordHandler.cpp"/>
-		<ClCompile Include="kxf\Compression\SevenZip\Private\Utility.cpp"/>
-		<ClCompile Include="kxf\Drawing\ArtProvider.cpp"/>
-		<ClCompile Include="kxf\Drawing\Color.cpp"/>
-		<ClCompile Include="kxf\Drawing\Font.cpp"/>
-		<ClCompile Include="kxf\Drawing\GDIRenderer\GDIBitmap.cpp"/>
-		<ClCompile Include="kxf\Drawing\GDIRenderer\GDIBrush.cpp"/>
-		<ClCompile Include="kxf\Drawing\GDIRenderer\GDIAction.cpp"/>
-		<ClCompile Include="kxf\Drawing\GDIRenderer\GDIContext.cpp"/>
-		<ClCompile Include="kxf\Drawing\GDIRenderer\GDICursor.cpp"/>
-		<ClCompile Include="kxf\Drawing\GDIRenderer\GDIFont.cpp"/>
-		<ClCompile Include="kxf\Drawing\GDIRenderer\GDIGraphicsContext.cpp"/>
-		<ClCompile Include="kxf\Drawing\GDIRenderer\GDIGraphicsFont.cpp"/>
-		<ClCompile Include="kxf\Drawing\GDIRenderer\GDIGraphicsPen.cpp"/>
-		<ClCompile Include="kxf\Drawing\GDIRenderer\GDIGraphicsRenderer.cpp"/>
-		<ClCompile Include="kxf\Drawing\GDIRenderer\GDIIcon.cpp"/>
-		<ClCompile Include="kxf\Drawing\GDIRenderer\GDIImageList.cpp"/>
-		<ClCompile Include="kxf\Drawing\GDIRenderer\GDIPen.cpp"/>
-		<ClCompile Include="kxf\Drawing\GDIRenderer\GDIRegion.cpp"/>
-		<ClCompile Include="kxf\Drawing\GDIRenderer\GDIRendererNative.cpp"/>
-		<ClCompile Include="kxf\Drawing\GDIRenderer\Private\GDI.cpp"/>
-		<ClCompile Include="kxf\Drawing\GraphicsRenderer.cpp"/>
-		<ClCompile Include="kxf\Drawing\GraphicsRenderer\Common.cpp"/>
-		<ClCompile Include="kxf\Drawing\GraphicsRenderer\IGraphicsContext.cpp"/>
-		<ClCompile Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsRenderer.cpp"/>
-		<ClCompile Include="kxf\Drawing\BitmapImage.cpp"/>
-		<ClCompile Include="kxf\Drawing\ImageBundle.cpp"/>
-		<ClCompile Include="kxf\Drawing\Private\Common.cpp"/>
-		<ClCompile Include="kxf\Drawing\IRendererNative.cpp"/>
-		<ClCompile Include="kxf\Drawing\Private\SVGImageHandler.cpp"/>
-		<ClCompile Include="kxf\Drawing\SizeRatio.cpp"/>
-		<ClCompile Include="kxf\Drawing\SVGImage.cpp"/>
-		<ClCompile Include="kxf\Drawing\WxRenderer\WxGraphicsContext.cpp"/>
-		<ClCompile Include="kxf\Drawing\WxRenderer\WxGraphicsFont.cpp"/>
-		<ClCompile Include="kxf\Drawing\WxRenderer\WxGraphicsPen.cpp"/>
-		<ClCompile Include="kxf\Drawing\WxRenderer\WxGraphicsRenderer.cpp"/>
-		<ClCompile Include="kxf\EventSystem\CommonEventLoop.cpp"/>
-		<ClCompile Include="kxf\EventSystem\EventID.cpp"/>
-		<ClCompile Include="kxf\EventSystem\EvtHandler.cpp"/>
-		<ClCompile Include="kxf\EventSystem\IEventLoop.cpp"/>
-		<ClCompile Include="kxf\EventSystem\Private\Win32ConsoleEventLoop.cpp"/>
-		<ClCompile Include="kxf\EventSystem\Private\Win32CommonEventLoop.cpp"/>
-		<ClCompile Include="kxf\EventSystem\Private\Win32GUIEventLoop.cpp"/>
-		<ClCompile Include="kxf\FileSystem\AbstractDirectoryEnumerator.cpp"/>
-		<ClCompile Include="kxf\FileSystem\IFileSystem.cpp"/>
-		<ClCompile Include="kxf\FileSystem\Private\NativeFSUtility.cpp"/>
-		<ClCompile Include="kxf\General\CombinedVariablesCollection.cpp"/>
-		<ClCompile Include="kxf\General\DateTime\DateSpan.cpp"/>
-		<ClCompile Include="kxf\General\DateTime\DateTime.cpp"/>
-		<ClCompile Include="kxf\General\DateTime\TimeClock.cpp"/>
-		<ClCompile Include="kxf\General\DateTime\TimeSpan.cpp"/>
-		<ClCompile Include="kxf\General\DateTime\TimeZone.cpp"/>
-		<ClCompile Include="kxf\General\DynamicVariablesCollection.cpp"/>
-		<ClCompile Include="kxf\General\ErrorCode.cpp"/>
-		<ClCompile Include="kxf\General\IVariablesCollection.cpp"/>
-		<ClCompile Include="kxf\General\LocallyUniqueID.cpp"/>
-		<ClCompile Include="kxf\General\StaticVariablesCollection.cpp"/>
-		<ClCompile Include="kxf\IO\Common.cpp"/>
-		<ClCompile Include="kxf\IO\NativeFileStream.cpp"/>
-		<ClCompile Include="kxf\IO\IStream.cpp"/>
-		<ClCompile Include="kxf\IO\MemoryStream.cpp"/>
-		<ClCompile Include="kxf\Localization\ILocalizationPackage.cpp"/>
-		<ClCompile Include="kxf\Localization\LocalizationItem.cpp"/>
-		<ClCompile Include="kxf\Localization\LocalizationPackageStack.cpp"/>
-		<ClCompile Include="kxf\Localization\Private\LocalizationPackageHelper.cpp"/>
-		<ClCompile Include="kxf\Localization\QtLocalizationPackage.cpp"/>
-		<ClCompile Include="kxf\Localization\WindowsLocalizationPackage.cpp"/>
-		<ClCompile Include="kxf\Log\Common.cpp"/>
-		<ClCompile Include="kxf\Log\OutputStreamTarget.cpp"/>
-		<ClCompile Include="kxf\RTTI\ClassInfo.cpp"/>
-		<ClCompile Include="kxf\RTTI\Common.cpp"/>
-		<ClCompile Include="kxf\RTTI\IID.cpp"/>
-		<ClCompile Include="kxf\RTTI\IObject.cpp"/>
-		<ClCompile Include="kxf\RTTI\ObjectPtr.cpp"/>
-		<ClCompile Include="kxf\Sciter\Stylesheets\MasterStylesheetStorage.cpp"/>
-		<ClCompile Include="kxf\Sciter\Stylesheets\StylesheetStorage.cpp"/>
-		<ClCompile Include="kxf\Sciter\Widgets\NativeWidget.cpp"/>
-		<ClCompile Include="kxf\Sciter\Widgets\Native\TextBoxWidget.cpp"/>
-		<ClCompile Include="kxf\Sciter\Widgets\TextBoxWidget.cpp"/>
-		<ClCompile Include="kxf\Serialization\HTML\HTMLDocument.cpp"/>
-		<ClCompile Include="kxf\Serialization\HTML\HTMLNode.cpp"/>
-		<ClCompile Include="kxf\Serialization\HTML\Private\clean_text.cpp"/>
-		<ClCompile Include="kxf\Serialization\HTML\Private\serialize.cpp"/>
-		<ClCompile Include="kxf\Serialization\INI\INIDocument.cpp"/>
-		<ClCompile Include="kxf\Serialization\JSON\JSONDocument.cpp"/>
-		<ClCompile Include="kxf\Serialization\TextDocument.cpp"/>
-		<ClCompile Include="kxf\Serialization\XDocument.cpp"/>
-		<ClCompile Include="kxf\Serialization\XML\XMLAttribute.cpp"/>
-		<ClCompile Include="kxf\Serialization\XML\XMLDocument.cpp"/>
-		<ClCompile Include="kxf\Serialization\XML\XMLNode.cpp"/>
-		<ClCompile Include="kxf\System\DynamicLibrary.cpp"/>
-		<ClCompile Include="kxf\System\DynamicLibraryEvent.cpp"/>
-		<ClCompile Include="kxf\System\ExecutableVersionResource.cpp"/>
-		<ClCompile Include="kxf\System\HResult.cpp"/>
-		<ClCompile Include="kxf\System\NtStatus.cpp"/>
-		<ClCompile Include="kxf\System\Private\ErrorCode.cpp"/>
-		<ClCompile Include="kxf\System\Private\System.cpp"/>
-		<ClCompile Include="kxf\System\SystemAppearance.cpp"/>
-		<ClCompile Include="kxf\System\SystemProcess.cpp"/>
-		<ClCompile Include="kxf\System\SystemProcess\CreateProcessExecutor.cpp"/>
-		<ClCompile Include="kxf\System\SystemProcess\RunningSystemProcess.cpp"/>
-		<ClCompile Include="kxf\System\SystemProcess\RunningSystemProcessStdIO.cpp"/>
-		<ClCompile Include="kxf\System\SystemProcess\SystemProcessInfo.cpp"/>
-		<ClCompile Include="kxf\System\UserName.cpp"/>
-		<ClCompile Include="kxf\System\VariantProperty.cpp"/>
-		<ClCompile Include="kxf\System\Win32Error.cpp"/>
-		<ClCompile Include="kxf\Threading\Common.cpp"/>
-		<ClCompile Include="kxf\Threading\CriticalSection.cpp"/>
-		<ClCompile Include="kxf\Threading\ReadWriteLock.cpp"/>
-		<ClCompile Include="kxf\Threading\SynchronizedCondition.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\AUI\AuiNotebook.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\AUI\AuiToolBar.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\AUI\AuiToolBarEvent.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\AUI\AuiToolBarItem.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\BitmapComboBox.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\Button.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\CheckBox.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\ClusterMap.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\ComboBox.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\ComboControl.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataViewComboBox.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\CellAttribute.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\CellState.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\Column.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\Common.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\DragAndDrop.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\Editor.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\Editors\ColorEditor.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\Editors\ComboBoxEditor.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\Editors\DateEditor.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\Editors\SpinEditor.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\Editors\TextEditor.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\Editors\TimeEditor.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\Event.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\HeaderCtrl.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\HeaderCtrl2.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\MainWindow.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\Model.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\Node.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\RenderEngine.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\Renderer.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\Renderers\ImageListRenderer.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\Renderers\ImageRenderer.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\Renderers\ImageTextRenderer.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\Renderers\ImageTextToggleRenderer.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\Renderers\HTMLTextRenderer.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\Renderers\GDIImageListRenderer.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\Renderers\ProgressRenderer.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\Renderers\TextRenderer.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\Renderers\ToggleRenderer.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\SortMode.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\ToolTip.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\DataView\View.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\HTMLWindow.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\ImageView.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\Label.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\Notebook.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\ProgressBar.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\RadioButton.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\SearchBox.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\Simplebook.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\Slider.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\StaticBitmap.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\StaticText.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\StatusBar.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\StatusBarEx.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\StyledTextBox.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\TextBox.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\ThumbView.cpp"/>
-		<ClCompile Include="kxf\UI\Controls\WebView.cpp"/>
-		<ClCompile Include="kxf\UI\Dialogs\Dialog.cpp"/>
-		<ClCompile Include="kxf\UI\Dialogs\ComboBoxDialog.cpp"/>
-		<ClCompile Include="kxf\UI\Dialogs\CredentialsDialog.cpp"/>
-		<ClCompile Include="kxf\UI\Dialogs\FileBrowseDialog.cpp"/>
-		<ClCompile Include="kxf\UI\Dialogs\Private\FileBrowseDialogEvents.cpp"/>
-		<ClCompile Include="kxf\UI\Dialogs\Private\TaskDialogNativeInfo.cpp"/>
-		<ClCompile Include="kxf\UI\Dialogs\ProgressDialog.cpp"/>
-		<ClCompile Include="kxf\UI\Dialogs\TaskDialog.cpp"/>
-		<ClCompile Include="kxf\UI\Dialogs\TextBoxDialog.cpp"/>
-		<ClCompile Include="kxf\UI\Dialogs\StdDialog.cpp"/>
-		<ClCompile Include="kxf\UI\Dialogs\SimpleStdDialog.cpp"/>
-		<ClCompile Include="kxf\UI\Menus\Menu.cpp"/>
-		<ClCompile Include="kxf\UI\Menus\MenuEvent.cpp"/>
-		<ClCompile Include="kxf\UI\Menus\MenuItem.cpp"/>
-		<ClCompile Include="kxf\UI\Menus\ShellMenu.cpp"/>
-		<ClCompile Include="kxf\UI\Windows\CollapsiblePane.cpp"/>
-		<ClCompile Include="kxf\UI\Windows\DrawablePanel.cpp"/>
-		<ClCompile Include="kxf\UI\Windows\Frame.cpp"/>
-		<ClCompile Include="kxf\UI\Windows\Panel.cpp"/>
-		<ClCompile Include="kxf\UI\Windows\RichToolTip.cpp"/>
-		<ClCompile Include="kxf\UI\Windows\SplashWindow.cpp"/>
-		<ClCompile Include="kxf\UI\Windows\SplitterWindow.cpp"/>
-		<ClCompile Include="kxf\UI\Windows\ToolTipEx.cpp"/>
-		<ClCompile Include="kxf\UI\Windows\TopLevelWindow.cpp"/>
-		<ClCompile Include="kxf\Utility\Drawing.cpp"/>
-		<ClCompile Include="kxf\Utility\Memory.cpp"/>
-		<ClCompile Include="kxf\wxWidgets\StreamWrapper.cpp"/>
-		<ClCompile Include="stdafx.cpp">
-			<PrecompiledHeader>Create</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="kxf\Async\Coroutine\CoroutineImpl.cpp"/>
-		<ClCompile Include="kxf\Compression\LZ4Stream.cpp"/>
-		<ClCompile Include="kxf\Compression\ZLibStream.cpp"/>
-		<ClCompile Include="kxf\Crypto\Common.cpp"/>
-		<ClCompile Include="kxf\Crypto\Crypto.cpp"/>
-		<ClCompile Include="kxf\Crypto\SecretValue.cpp"/>
-		<ClCompile Include="kxf\Drawing\Common.cpp"/>
-		<ClCompile Include="kxf\Drawing\UxTheme.cpp"/>
-		<ClCompile Include="kxf\General\Any.cpp"/>
-		<ClCompile Include="kxf\General\Math.cpp"/>
-		<ClCompile Include="kxf\General\Private\VersionImpl.cpp"/>
-		<ClCompile Include="kxf\General\String.cpp"/>
-		<ClCompile Include="kxf\General\StringFormatter.cpp"/>
-		<ClCompile Include="kxf\General\Version.cpp"/>
-		<ClCompile Include="kxf\Localization\Common.cpp"/>
-		<ClCompile Include="kxf\Localization\Locale.cpp"/>
-		<ClCompile Include="kxf\Localization\Private\LocaleOptions.cpp"/>
-		<ClCompile Include="kxf\Localization\Private\StandardLocalization.cpp"/>
-		<ClCompile Include="kxf\Localization\AndroidLocalizationPackage.cpp"/>
-		<ClCompile Include="kxf\Network\Common.cpp"/>
-		<ClCompile Include="kxf\Network\CURL.cpp"/>
-		<ClCompile Include="kxf\Network\CURL\Event.cpp"/>
-		<ClCompile Include="kxf\Network\CURL\Reply.cpp"/>
-		<ClCompile Include="kxf\Network\CURL\Session.cpp"/>
-		<ClCompile Include="kxf\Network\CURL\Private\CURL.cpp"/>
-		<ClCompile Include="kxf\Network\URI.cpp"/>
-		<ClCompile Include="kxf\Network\URL.cpp"/>
-		<ClCompile Include="kxf\Network\WebSocket.cpp"/>
-		<ClCompile Include="kxf\Network\WebSocket\SecureClient.cpp"/>
-		<ClCompile Include="kxf\Network\WebSocket\Event.cpp"/>
-		<ClCompile Include="kxf\System\CFunctionCompiler.cpp"/>
-		<ClCompile Include="kxf\System\DPIAwareness.cpp"/>
-		<ClCompile Include="kxf\System\NativeAPI.cpp"/>
-		<ClCompile Include="kxf\System\CredentialStore.cpp"/>
-		<ClCompile Include="kxf\System\Private\Shell.cpp"/>
-		<ClCompile Include="kxf\System\Registry.cpp"/>
-		<ClCompile Include="kxf\System\SharedMemory.cpp"/>
-		<ClCompile Include="kxf\System\ShellLink.cpp"/>
-		<ClCompile Include="kxf\System\SystemInformation.cpp"/>
-		<ClCompile Include="kxf\System\TaskScheduler.cpp"/>
-		<ClCompile Include="kxf\System\WOW64FSRedirection.cpp"/>
-		<ClCompile Include="kxf\UI\Common.cpp"/>
-		<ClCompile Include="kxf\UI\HiDPIEnabledWindow.cpp"/>
-		<ClCompile Include="kxf\UI\StdDialogButtonSizer.cpp"/>
-		<ClCompile Include="kxf\UI\Validator.cpp"/>
-		<ClCompile Include="kxf\Utility\String.cpp"/>
-		<ClCompile Include="kxf\Utility\System.cpp"/>
-		<ClCompile Include="kxf\EventSystem\EventBroadcastProcessor.cpp"/>
-		<ClCompile Include="kxf\EventSystem\EventBuilder.cpp"/>
-		<ClCompile Include="kxf\EventSystem\EventHandlerStack.cpp"/>
-		<ClCompile Include="kxf\FileSystem\Common.cpp"/>
-		<ClCompile Include="kxf\FileSystem\FileItem.cpp"/>
-		<ClCompile Include="kxf\FileSystem\FileOperations.cpp"/>
-		<ClCompile Include="kxf\FileSystem\FSPath.cpp"/>
-		<ClCompile Include="kxf\FileSystem\LegacyVolume.cpp"/>
-		<ClCompile Include="kxf\FileSystem\RecycleBin.cpp"/>
-		<ClCompile Include="kxf\FileSystem\StorageVolume.cpp"/>
-		<ClCompile Include="kxf\FileSystem\NativeFileSystem.cpp"/>
-		<ClCompile Include="kxf\General\BinarySize.cpp"/>
-		<ClCompile Include="kxf\General\UniversallyUniqueID.cpp"/>
-		<ClCompile Include="kxf\Sciter\Common.cpp"/>
-		<ClCompile Include="kxf\Sciter\Controls\Label.cpp"/>
-		<ClCompile Include="kxf\Sciter\Element.cpp"/>
-		<ClCompile Include="kxf\Sciter\EventDispatcher.cpp"/>
-		<ClCompile Include="kxf\Sciter\Events\SciterEvent.cpp"/>
-		<ClCompile Include="kxf\Sciter\Events\PaintEvent.cpp"/>
-		<ClCompile Include="kxf\Sciter\GraphicsRenderer\GraphicsBitmap.cpp"/>
-		<ClCompile Include="kxf\Sciter\GraphicsRenderer\GraphicsContext.cpp"/>
-		<ClCompile Include="kxf\Sciter\GraphicsRenderer\GraphicsPath.cpp"/>
-		<ClCompile Include="kxf\Sciter\GraphicsRenderer\GraphicsText.cpp"/>
-		<ClCompile Include="kxf\Sciter\Host.cpp"/>
-		<ClCompile Include="kxf\Sciter\Internal.cpp"/>
-		<ClCompile Include="kxf\Sciter\IWindowRenderer.cpp"/>
-		<ClCompile Include="kxf\Sciter\Node.cpp"/>
-		<ClCompile Include="kxf\Sciter\Renderers\DirectX.cpp"/>
-		<ClCompile Include="kxf\Sciter\Renderers\FPSCounter.cpp"/>
-		<ClCompile Include="kxf\Sciter\SciterAPI.cpp"/>
-		<ClCompile Include="kxf\Sciter\ScriptValue.cpp"/>
-		<ClCompile Include="kxf\Sciter\Widget.cpp"/>
-		<ClCompile Include="kxf\Sciter\WidgetFactory.cpp"/>
-		<ClCompile Include="kxf\System\COM.cpp"/>
-		<ClCompile Include="kxf\System\ShellFileType.cpp"/>
-		<ClCompile Include="kxf\System\ShellFileTypeInfo.cpp"/>
-		<ClCompile Include="kxf\System\ShellFileTypeManager.cpp"/>
-		<ClCompile Include="kxf\System\ShellOperations.cpp"/>
-		<ClCompile Include="kxf\Threading\JoinableThread.cpp"/>
-	</ItemGroup>
-	<ItemGroup>
-		<None Include=".gitattributes"/>
-		<None Include=".gitignore"/>
-		<None Include="cpp.hint"/>
-		<None Include="kxf\Sciter\Stylesheets\MasterStylesheet.css"/>
-		<None Include="kxf\Sciter\Widgets\Native\TextBoxWidget.css"/>
-		<None Include="kxf\Sciter\Widgets\TextBoxWidget.css"/>
-		<None Include="kxf\System\Private\ErrorCodeNtStatus.i"/>
-		<None Include="LICENSE"/>
-		<None Include="README.md"/>
-		<None Include="VCPkg\ports\kxframework\CONTROL"/>
-		<None Include="VCPkg\ports\kxframework\portfile.cmake"/>
-		<None Include="VCPkg\ports\kxframework\vcpkg.targets"/>
-		<None Include="VCPkg\triplets\community\kxf-default-x64.cmake"/>
-		<None Include="VCPkg\triplets\community\kxf-default-x86.cmake"/>
-	</ItemGroup>
-	<ItemGroup>
-		<Natvis Include="kxf\Drawing\Color.natvis"/>
-	</ItemGroup>
-	<ItemGroup>
-		<ResourceCompile Include="kxf.rc"/>
-	</ItemGroup>
-	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
-	<ImportGroup Label="ExtensionTargets"/>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{157DA1E6-2B05-4203-8284-9A9EDD0F1235}</ProjectGuid>
+    <RootNamespace>KxFramework</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <OverrideVcpkgTriplet>false</OverrideVcpkgTriplet>
+    <OverrideVcpkgTripletName>none</OverrideVcpkgTripletName>
+    <ProjectName>kxf</ProjectName>
+  </PropertyGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)'=='Debug'">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)'=='Release'">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup>
+    <IntDir>$(ProjectDir)Junk\$(Configuration) $(Platform)\</IntDir>
+    <OutDir>$(ProjectDir)$(Configuration)\$(Platform)\</OutDir>
+  </PropertyGroup>
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ItemDefinitionGroup Condition="'$(ConfigurationType)'=='DynamicLibrary'">
+    <ClCompile>
+      <PreprocessorDefinitions>KXF_DYNAMIC_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(ConfigurationType)'=='StaticLibrary'">
+    <ClCompile>
+      <PreprocessorDefinitions>KXF_STATIC_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;KXF_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <LinkTimeCodeGeneration>UseFastLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <SetChecksum>true</SetChecksum>
+      <ShowProgress>NotSet</ShowProgress>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/WHOLEARCHIVE:wxbase31u.lib /WHOLEARCHIVE:wxbase31u_net.lib /WHOLEARCHIVE:wxmsw31u_adv.lib /WHOLEARCHIVE:wxmsw31u_aui.lib /WHOLEARCHIVE:wxmsw31u_core.lib /WHOLEARCHIVE:wxmsw31u_gl.lib /WHOLEARCHIVE:wxmsw31u_html.lib /WHOLEARCHIVE:wxmsw31u_media.lib /WHOLEARCHIVE:wxmsw31u_propgrid.lib /WHOLEARCHIVE:wxmsw31u_qa.lib /WHOLEARCHIVE:wxmsw31u_ribbon.lib /WHOLEARCHIVE:wxmsw31u_richtext.lib /WHOLEARCHIVE:wxmsw31u_stc.lib /WHOLEARCHIVE:wxmsw31u_webview.lib /WHOLEARCHIVE:wxmsw31u_xrc.lib /WHOLEARCHIVE:wxregexu.lib /WHOLEARCHIVE:wxscintilla.lib %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/WHOLEARCHIVE:wxbase31ud.lib /WHOLEARCHIVE:wxbase31ud_net.lib /WHOLEARCHIVE:wxmsw31ud_adv.lib /WHOLEARCHIVE:wxmsw31ud_aui.lib /WHOLEARCHIVE:wxmsw31ud_core.lib /WHOLEARCHIVE:wxmsw31ud_gl.lib /WHOLEARCHIVE:wxmsw31ud_html.lib /WHOLEARCHIVE:wxmsw31ud_media.lib /WHOLEARCHIVE:wxmsw31ud_propgrid.lib /WHOLEARCHIVE:wxmsw31ud_qa.lib /WHOLEARCHIVE:wxmsw31ud_ribbon.lib /WHOLEARCHIVE:wxmsw31ud_richtext.lib /WHOLEARCHIVE:wxmsw31ud_stc.lib /WHOLEARCHIVE:wxmsw31ud_webview.lib /WHOLEARCHIVE:wxmsw31ud_xrc.lib /WHOLEARCHIVE:wxregexud.lib /WHOLEARCHIVE:wxscintillad.lib %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="kxf\Application.hpp" />
+    <ClInclude Include="kxf\Application\ApplicationInitializer.h" />
+    <ClInclude Include="kxf\Application\Common.h" />
+    <ClInclude Include="kxf\Application\CoreApplication.h" />
+    <ClInclude Include="kxf\Application\GUIApplication.h" />
+    <ClInclude Include="kxf\Application\ICoreApplication.h" />
+    <ClInclude Include="kxf\Application\IGUIApplication.h" />
+    <ClInclude Include="kxf\Application\Private\NativeApp.h" />
+    <ClInclude Include="kxf\Application\Private\Utility.h" />
+    <ClInclude Include="kxf\Compression\IArchiveCallbacks.h" />
+    <ClInclude Include="kxf\Compression\SevenZip.h" />
+    <ClInclude Include="kxf\Compression\SevenZip\Archive.h" />
+    <ClInclude Include="kxf\Compression\SevenZip\Common.h" />
+    <ClInclude Include="kxf\Compression\SevenZip\Library.h" />
+    <ClInclude Include="kxf\Compression\SevenZip\Private\ArchiveExtractCallback.h" />
+    <ClInclude Include="kxf\Compression\SevenZip\Private\ArchiveOpenCallback.h" />
+    <ClInclude Include="kxf\Compression\SevenZip\Private\ArchiveUpdateCallback.h" />
+    <ClInclude Include="kxf\Compression\SevenZip\Private\GUIDs.h" />
+    <ClInclude Include="kxf\Compression\SevenZip\Private\InStreamWrapper.h" />
+    <ClInclude Include="kxf\Compression\SevenZip\Private\OutStreamWrapper.h" />
+    <ClInclude Include="kxf\Compression\SevenZip\Private\PasswordHandler.h" />
+    <ClInclude Include="kxf\Compression\SevenZip\Private\Utility.h" />
+    <ClInclude Include="kxf\Compression\SevenZip\Private\WithEvtHandler.h" />
+    <ClInclude Include="kxf\Crypto\UserCredentials.h" />
+    <ClInclude Include="kxf\Drawing\AffineMatrix.h" />
+    <ClInclude Include="kxf\Drawing\Angle.h" />
+    <ClInclude Include="kxf\Drawing\ArtProvider.h" />
+    <ClInclude Include="kxf\Drawing\Color.h" />
+    <ClInclude Include="kxf\Drawing\ColorDefines.h" />
+    <ClInclude Include="kxf\Drawing\Font.h" />
+    <ClInclude Include="kxf\Drawing\FontMetrics.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIBitmap.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIBrush.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\Common.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIAction.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIContext.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDICursor.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIFont.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsBrush.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsContext.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsFont.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsPen.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsTexture.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIIcon.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIImageList.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIMemoryContext.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIMirroringContext.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIGraphicsRenderer.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIRegion.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIRendererNative.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIScreenContext.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIWindowContext.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\GDIPen.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\IGDIObject.h" />
+    <ClInclude Include="kxf\Drawing\GDIRenderer\Private\GDI.h" />
+    <ClInclude Include="kxf\Drawing\Geometry.h" />
+    <ClInclude Include="kxf\Drawing\GradientStops.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\Common.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\GraphicsAction.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsBrush.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsContext.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsFont.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsObject.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsPath.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsPen.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsRenderer.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\IGraphicsTexture.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsBrush.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsFont.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsObject.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsPath.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsPen.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsRenderer.h" />
+    <ClInclude Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsTexture.h" />
+    <ClInclude Include="kxf\Drawing\IArtProvider.h" />
+    <ClInclude Include="kxf\Drawing\ColorDepth.h" />
+    <ClInclude Include="kxf\Drawing\IImage2D.h" />
+    <ClInclude Include="kxf\Drawing\BitmapImage.h" />
+    <ClInclude Include="kxf\Drawing\IImageHandler.h" />
+    <ClInclude Include="kxf\Drawing\ImageBundle.h" />
+    <ClInclude Include="kxf\Drawing\ImageDefines.h" />
+    <ClInclude Include="kxf\Drawing\IBitmapImage.h" />
+    <ClInclude Include="kxf\Drawing\Private\Common.h" />
+    <ClInclude Include="kxf\Drawing\IRendererNative.h" />
+    <ClInclude Include="kxf\Drawing\Private\Defines.h" />
+    <ClInclude Include="kxf\Drawing\Private\SVGImageHandler.h" />
+    <ClInclude Include="kxf\Drawing\SizeRatio.h" />
+    <ClInclude Include="kxf\Drawing\IVectorImage.h" />
+    <ClInclude Include="kxf\Drawing\SVGImage.h" />
+    <ClInclude Include="kxf\Drawing\WxRenderer\Common.h" />
+    <ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsBrush.h" />
+    <ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsContext.h" />
+    <ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsFont.h" />
+    <ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsPath.h" />
+    <ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsPen.h" />
+    <ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsRenderer.h" />
+    <ClInclude Include="kxf\Drawing\WxRenderer\WxGraphicsTexture.h" />
+    <ClInclude Include="kxf\EventSystem\ActivateEvent.h" />
+    <ClInclude Include="kxf\EventSystem\IndirectInvocationEvent.h" />
+    <ClInclude Include="kxf\EventSystem\CommonEventLoop.h" />
+    <ClInclude Include="kxf\EventSystem\BasicEvent.h" />
+    <ClInclude Include="kxf\EventSystem\Event.h" />
+    <ClInclude Include="kxf\EventSystem\EventExecutor.h" />
+    <ClInclude Include="kxf\EventSystem\EventID.h" />
+    <ClInclude Include="kxf\EventSystem\EventItem.h" />
+    <ClInclude Include="kxf\EventSystem\EvtHandlerAccessor.h" />
+    <ClInclude Include="kxf\EventSystem\EvtHandlerDelegate.h" />
+    <ClInclude Include="kxf\EventSystem\IdleEvent.h" />
+    <ClInclude Include="kxf\EventSystem\IEvent.h" />
+    <ClInclude Include="kxf\EventSystem\IEventFilter.h" />
+    <ClInclude Include="kxf\EventSystem\IEventLoop.h" />
+    <ClInclude Include="kxf\EventSystem\IEvtHandler.h" />
+    <ClInclude Include="kxf\EventSystem\IWithEvtHandler.h" />
+    <ClInclude Include="kxf\EventSystem\Private\EventWaitInfo.h" />
+    <ClInclude Include="kxf\EventSystem\SignalExecutor.h" />
+    <ClInclude Include="kxf\EventSystem\SignalInvocationEvent.h" />
+    <ClInclude Include="kxf\EventSystem\Private\Win32ConsoleEventLoop.h" />
+    <ClInclude Include="kxf\EventSystem\Private\Win32CommonEventLoop.h" />
+    <ClInclude Include="kxf\EventSystem\Private\Win32GUIEventLoop.h" />
+    <ClInclude Include="kxf\EventSystem\WidgetEvent.h" />
+    <ClInclude Include="kxf\FileSystem\AbstractDirectoryEnumerator.h" />
+    <ClInclude Include="kxf\FileSystem\NullFileSystem.h" />
+    <ClInclude Include="kxf\General\AlignedBuffer.h" />
+    <ClInclude Include="kxf\General\AlignedStorage.h" />
+    <ClInclude Include="kxf\General\AlignedObjectStorage.h" />
+    <ClInclude Include="kxf\General\CombinedVariablesCollection.h" />
+    <ClInclude Include="kxf\General\DateTime.h" />
+    <ClInclude Include="kxf\General\DateTime\Common.h" />
+    <ClInclude Include="kxf\General\DateTime\DateSpan.h" />
+    <ClInclude Include="kxf\General\DateTime\DateTime.h" />
+    <ClInclude Include="kxf\General\DateTime\ITimeClock.h" />
+    <ClInclude Include="kxf\General\DateTime\Private\Mapping.h" />
+    <ClInclude Include="kxf\General\DateTime\TimeClock.h" />
+    <ClInclude Include="kxf\General\DateTime\TimeSpan.h" />
+    <ClInclude Include="kxf\General\DateTime\TimeZone.h" />
+    <ClInclude Include="kxf\General\DynamicVariablesCollection.h" />
+    <ClInclude Include="kxf\General\ErrorCode.h" />
+    <ClInclude Include="kxf\General\Enumerator.h" />
+    <ClInclude Include="kxf\General\IEnumerator.h" />
+    <ClInclude Include="kxf\General\IErrorCode.h" />
+    <ClInclude Include="kxf\General\IVariablesCollection.h" />
+    <ClInclude Include="kxf\General\LocallyUniqueID.h" />
+    <ClInclude Include="kxf\General\NullVariablesCollection.h" />
+    <ClInclude Include="kxf\General\OptionalPtr.h" />
+    <ClInclude Include="kxf\General\OptionalRef.h" />
+    <ClInclude Include="kxf\General\RegEx.h" />
+    <ClInclude Include="kxf\General\ResourceID.h" />
+    <ClInclude Include="kxf\General\StaticVariablesCollection.h" />
+    <ClInclude Include="kxf\General\UniqueFunction.h" />
+    <ClInclude Include="kxf\IO.hpp" />
+    <ClInclude Include="kxf\IO\Common.h" />
+    <ClInclude Include="kxf\IO\NativeFileStream.h" />
+    <ClInclude Include="kxf\IO\IStream.h" />
+    <ClInclude Include="kxf\IO\IStreamOnFileSystem.h" />
+    <ClInclude Include="kxf\IO\MemoryStream.h" />
+    <ClInclude Include="kxf\IO\INativeStream.h" />
+    <ClInclude Include="kxf\IO\StreamDelegate.h" />
+    <ClInclude Include="kxf\IO\StreamError.h" />
+    <ClInclude Include="kxf\IO\StreamReaderWriter.h" />
+    <ClInclude Include="kxf\Localization\Constants.h" />
+    <ClInclude Include="kxf\Localization\ILocalizationPackage.h" />
+    <ClInclude Include="kxf\Localization\LocalizationItem.h" />
+    <ClInclude Include="kxf\Localization\LocalizationPackageStack.h" />
+    <ClInclude Include="kxf\Localization\Private\LocalizationPackageHelper.h" />
+    <ClInclude Include="kxf\Localization\Private\LocalizationResources.h" />
+    <ClInclude Include="kxf\Localization\QtLocalizationPackage.h" />
+    <ClInclude Include="kxf\Localization\WindowsLocalizationPackage.h" />
+    <ClInclude Include="kxf\Log.hpp" />
+    <ClInclude Include="kxf\Log\Common.h" />
+    <ClInclude Include="kxf\Log\OutputStreamTarget.h" />
+    <ClInclude Include="kxf\pch.hpp" />
+    <ClInclude Include="kxf\RTTI\ClassInfo.h" />
+    <ClInclude Include="kxf\RTTI\IID.h" />
+    <ClInclude Include="kxf\RTTI\Interface.h" />
+    <ClInclude Include="kxf\RTTI\ObjectPtr.h" />
+    <ClInclude Include="kxf\RTTI\RTTI.h" />
+    <ClInclude Include="kxf\Sciter\Stylesheets\MasterStylesheetStorage.h" />
+    <ClInclude Include="kxf\Sciter\Stylesheets\StylesheetStorage.h" />
+    <ClInclude Include="kxf\Sciter\Widgets\Common.h" />
+    <ClInclude Include="kxf\Sciter\Widgets\NativeWidget.h" />
+    <ClInclude Include="kxf\Sciter\Widgets\Native\Common.h" />
+    <ClInclude Include="kxf\Sciter\Widgets\Native\TextBoxWidget.h" />
+    <ClInclude Include="kxf\Sciter\Widgets\TextBoxWidget.h" />
+    <ClInclude Include="kxf\Serialization.hpp" />
+    <ClInclude Include="kxf\Serialization\Common.h" />
+    <ClInclude Include="kxf\Serialization\HTML.h" />
+    <ClInclude Include="kxf\Serialization\HTML\HTMLDocument.h" />
+    <ClInclude Include="kxf\Serialization\HTML\Private\error.h" />
+    <ClInclude Include="kxf\Serialization\HTML\Private\insertion_mode.h" />
+    <ClInclude Include="kxf\Serialization\HTML\Private\string_buffer.h" />
+    <ClInclude Include="kxf\Serialization\HTML\Private\token_type.h" />
+    <ClInclude Include="kxf\Serialization\INI.h" />
+    <ClInclude Include="kxf\Serialization\INI\INIDocument.h" />
+    <ClInclude Include="kxf\Serialization\JSON.h" />
+    <ClInclude Include="kxf\Serialization\JSON\JSONDocument.h" />
+    <ClInclude Include="kxf\Serialization\Private\XDocument.h" />
+    <ClInclude Include="kxf\Serialization\TextDocument.h" />
+    <ClInclude Include="kxf\Serialization\XDocument.h" />
+    <ClInclude Include="kxf\Serialization\XML.h" />
+    <ClInclude Include="kxf\Serialization\XML\Private\TinyXML2 HTML5 Printer.h" />
+    <ClInclude Include="kxf\Serialization\XML\Private\Utility.h" />
+    <ClInclude Include="kxf\Serialization\XML\XMLDocument.h" />
+    <ClInclude Include="kxf\System\DynamicLibrary.h" />
+    <ClInclude Include="kxf\System\DynamicLibraryEvent.h" />
+    <ClInclude Include="kxf\System\ExecutableVersionResource.h" />
+    <ClInclude Include="kxf\System\HResult.h" />
+    <ClInclude Include="kxf\System\HandlePtr.h" />
+    <ClInclude Include="kxf\System\NtStatus.h" />
+    <ClInclude Include="kxf\System\Private\BinaryResourceDefines.h" />
+    <ClInclude Include="kxf\System\Private\COM.h" />
+    <ClInclude Include="kxf\System\Private\ErrorCode.h" />
+    <ClInclude Include="kxf\System\Private\System.h" />
+    <ClInclude Include="kxf\System\Private\SystemInformationDefinesMapping.h" />
+    <ClInclude Include="kxf\System\SystemAppearance.h" />
+    <ClInclude Include="kxf\System\SystemProcess.h" />
+    <ClInclude Include="kxf\System\SystemProcess\CreateProcessExecutor.h" />
+    <ClInclude Include="kxf\System\SystemProcess\ISystemProcess.h" />
+    <ClInclude Include="kxf\System\SystemProcess\ISystemProcessStdIO.h" />
+    <ClInclude Include="kxf\System\SystemProcess\ProcessEvent.h" />
+    <ClInclude Include="kxf\System\SystemProcess\RunningSystemProcess.h" />
+    <ClInclude Include="kxf\System\SystemProcess\RunningSystemProcessStdIO.h" />
+    <ClInclude Include="kxf\System\SystemProcess\SystemProcessInfo.h" />
+    <ClInclude Include="kxf\System\UserName.h" />
+    <ClInclude Include="kxf\System\VariantProperty.h" />
+    <ClInclude Include="kxf\System\Win32Error.h" />
+    <ClInclude Include="kxf\Threading\CriticalSection.h" />
+    <ClInclude Include="kxf\Threading\ReadWriteLock.h" />
+    <ClInclude Include="kxf\Threading\RecursiveRWLock.h" />
+    <ClInclude Include="kxf\Threading\SynchronizedCondition.h" />
+    <ClInclude Include="kxf\Threading\ThreadEvent.h" />
+    <ClInclude Include="kxf\Threading\LockGuard.h" />
+    <ClInclude Include="kxf\UI\Controls\AUI.h" />
+    <ClInclude Include="kxf\UI\Controls\AUI\AuiNotebook.h" />
+    <ClInclude Include="kxf\UI\Controls\AUI\AuiToolBar.h" />
+    <ClInclude Include="kxf\UI\Controls\AUI\AuiToolBarEvent.h" />
+    <ClInclude Include="kxf\UI\Controls\AUI\AuiToolBarItem.h" />
+    <ClInclude Include="kxf\UI\Controls\BitmapComboBox.h" />
+    <ClInclude Include="kxf\UI\Controls\Button.h" />
+    <ClInclude Include="kxf\UI\Controls\CheckBox.h" />
+    <ClInclude Include="kxf\UI\Controls\ClusterMap.h" />
+    <ClInclude Include="kxf\UI\Controls\ComboBox.h" />
+    <ClInclude Include="kxf\UI\Controls\ComboControl.h" />
+    <ClInclude Include="kxf\UI\Controls\ComboPopup.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView.h" />
+    <ClInclude Include="kxf\UI\Controls\DataViewComboBox.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\CellAttributeOptions.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\CellAttribute.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\CellState.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Column.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\ColumnID.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Common.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\DataView.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\DragAndDrop.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Editor.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Editors\ColorEditor.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Editors\ComboBoxEditor.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Editors\DateEditor.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Editors\SpinEditor.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Editors\TextEditor.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Editors\TimeEditor.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Event.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\HeaderCtrl.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\HeaderCtrl2.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\MainWindow.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Model.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Node.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\RenderEngine.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderer.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\ImageListRenderer.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\ImageRenderer.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\ImageTextRenderer.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\ImageTextToggleRenderer.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\HTMLTextRenderer.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\GDIImageListRenderer.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\NullRenderer.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\ProgressRenderer.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\TextRenderer.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Renderers\ToggleRenderer.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\Row.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\SortMode.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\ToolTip.h" />
+    <ClInclude Include="kxf\UI\Controls\DataView\View.h" />
+    <ClInclude Include="kxf\UI\Controls\HTMLWindow.h" />
+    <ClInclude Include="kxf\UI\Controls\ImageView.h" />
+    <ClInclude Include="kxf\UI\Controls\IProgressMeter.h" />
+    <ClInclude Include="kxf\UI\Controls\Label.h" />
+    <ClInclude Include="kxf\UI\Controls\Notebook.h" />
+    <ClInclude Include="kxf\UI\Controls\ProgressBar.h" />
+    <ClInclude Include="kxf\UI\Controls\RadioButton.h" />
+    <ClInclude Include="kxf\UI\Controls\SearchBox.h" />
+    <ClInclude Include="kxf\UI\Controls\Simplebook.h" />
+    <ClInclude Include="kxf\UI\Controls\Slider.h" />
+    <ClInclude Include="kxf\UI\Controls\StaticBitmap.h" />
+    <ClInclude Include="kxf\UI\Controls\StaticText.h" />
+    <ClInclude Include="kxf\UI\Controls\StatusBar.h" />
+    <ClInclude Include="kxf\UI\Controls\StatusBarEx.h" />
+    <ClInclude Include="kxf\UI\Controls\StyledTextBox.h" />
+    <ClInclude Include="kxf\UI\Controls\TextBox.h" />
+    <ClInclude Include="kxf\UI\Controls\ThumbView.h" />
+    <ClInclude Include="kxf\UI\Controls\WebView.h" />
+    <ClInclude Include="kxf\UI\Dialogs\Dialog.h" />
+    <ClInclude Include="kxf\UI\Dialogs\ComboBoxDialog.h" />
+    <ClInclude Include="kxf\UI\Dialogs\CredentialsDialog.h" />
+    <ClInclude Include="kxf\UI\Dialogs\FileBrowseDialog.h" />
+    <ClInclude Include="kxf\UI\Dialogs\Private\FileBrowseDialogEvents.h" />
+    <ClInclude Include="kxf\UI\Dialogs\Private\TaskDialogNativeInfo.h" />
+    <ClInclude Include="kxf\UI\Dialogs\ProgressDialog.h" />
+    <ClInclude Include="kxf\UI\Dialogs\TaskDialog.h" />
+    <ClInclude Include="kxf\UI\Dialogs\TextBoxDialog.h" />
+    <ClInclude Include="kxf\UI\Dialogs\StdDialog.h" />
+    <ClInclude Include="kxf\UI\Dialogs\SimpleStdDialog.h" />
+    <ClInclude Include="kxf\UI\Menus\Menu.h" />
+    <ClInclude Include="kxf\UI\Menus\MenuEvent.h" />
+    <ClInclude Include="kxf\UI\Menus\MenuItem.h" />
+    <ClInclude Include="kxf\UI\Menus\ShellMenu.h" />
+    <ClInclude Include="kxf\UI\IGraphicsRendererAwareWidget.h" />
+    <ClInclude Include="kxf\UI\WidgetID.h" />
+    <ClInclude Include="kxf\UI\Windows\CollapsiblePane.h" />
+    <ClInclude Include="kxf\UI\Windows\DrawablePanel.h" />
+    <ClInclude Include="kxf\UI\Windows\Frame.h" />
+    <ClInclude Include="kxf\UI\Windows\Panel.h" />
+    <ClInclude Include="kxf\UI\Windows\RichToolTip.h" />
+    <ClInclude Include="kxf\UI\Windows\SplashWindow.h" />
+    <ClInclude Include="kxf\UI\Windows\SplitterWindow.h" />
+    <ClInclude Include="kxf\UI\Windows\ToolTipEx.h" />
+    <ClInclude Include="kxf\UI\Windows\TopLevelWindow.h" />
+    <ClInclude Include="kxf\UI\WindowWithStyles.h" />
+    <ClInclude Include="kxf\Utility\Enumerator.h" />
+    <ClInclude Include="kxf\Utility\ExceptionScopeGuard.h" />
+    <ClInclude Include="kxf\Utility\Functional.h" />
+    <ClInclude Include="kxf\Utility\Literals.h" />
+    <ClInclude Include="kxf\wxWidgets\Application.h" />
+    <ClInclude Include="kxf\wxWidgets\ClientObject.h" />
+    <ClInclude Include="kxf\wxWidgets\Common.h" />
+    <ClInclude Include="kxf\wxWidgets\EventLoopWrapper.h" />
+    <ClInclude Include="kxf\wxWidgets\EventTagRef.h" />
+    <ClInclude Include="kxf\wxWidgets\EventWrapper.h" />
+    <ClInclude Include="kxf\wxWidgets\EvtHandlerWrapper.h" />
+    <ClInclude Include="kxf\wxWidgets\IWithEvent.h" />
+    <ClInclude Include="kxf\wxWidgets\RTTI.h" />
+    <ClInclude Include="kxf\wxWidgets\StreamWrapper.h" />
+    <ClInclude Include="kxf\wxWidgets\SystemOptions.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="kxf\Async.hpp" />
+    <ClInclude Include="kxf\Async\Common.h" />
+    <ClInclude Include="kxf\Async\Coroutine.h" />
+    <ClInclude Include="kxf\Async\Coroutine\Coroutine.h" />
+    <ClInclude Include="kxf\Async\Coroutine\CoroutineImpl.h" />
+    <ClInclude Include="kxf\Async\Coroutine\YieldInstruction.h" />
+    <ClInclude Include="kxf\Async\DelayedCall.h" />
+    <ClInclude Include="kxf\Common.hpp" />
+    <ClInclude Include="kxf\Compression.hpp" />
+    <ClInclude Include="kxf\Compression\ArchiveEvent.h" />
+    <ClInclude Include="kxf\Compression\Common.h" />
+    <ClInclude Include="kxf\Compression\IArchive.h" />
+    <ClInclude Include="kxf\Compression\LZ4Stream.h" />
+    <ClInclude Include="kxf\Compression\ZLibStream.h" />
+    <ClInclude Include="kxf\Crypto.hpp" />
+    <ClInclude Include="kxf\Crypto\Common.h" />
+    <ClInclude Include="kxf\Crypto\Crypto.h" />
+    <ClInclude Include="kxf\Crypto\HashValue.h" />
+    <ClInclude Include="kxf\Crypto\ISecretStore.h" />
+    <ClInclude Include="kxf\Crypto\SecretValue.h" />
+    <ClInclude Include="kxf\Drawing.hpp" />
+    <ClInclude Include="kxf\Drawing\Common.h" />
+    <ClInclude Include="kxf\Drawing\Private\UxThemeDefines.h" />
+    <ClInclude Include="kxf\Drawing\UxTheme.h" />
+    <ClInclude Include="kxf\Drawing\WithImageList.h" />
+    <ClInclude Include="kxf\EventSystem.hpp" />
+    <ClInclude Include="kxf\EventSystem\EventBroadcastProcessor.h" />
+    <ClInclude Include="kxf\EventSystem\IEventExecutor.h" />
+    <ClInclude Include="kxf\EventSystem\Common.h" />
+    <ClInclude Include="kxf\EventSystem\EventBuilder.h" />
+    <ClInclude Include="kxf\EventSystem\EventHandlerStack.h" />
+    <ClInclude Include="kxf\EventSystem\EvtHandler.h" />
+    <ClInclude Include="kxf\FileSystem.hpp" />
+    <ClInclude Include="kxf\FileSystem\Common.h" />
+    <ClInclude Include="kxf\FileSystem\FileItem.h" />
+    <ClInclude Include="kxf\FileSystem\FSActionEvent.h" />
+    <ClInclude Include="kxf\FileSystem\FileOperations.h" />
+    <ClInclude Include="kxf\FileSystem\FSPath.h" />
+    <ClInclude Include="kxf\FileSystem\IFileSystem.h" />
+    <ClInclude Include="kxf\FileSystem\LegacyVolume.h" />
+    <ClInclude Include="kxf\FileSystem\Private\NamespacePrefix.h" />
+    <ClInclude Include="kxf\FileSystem\Private\NativeFSUtility.h" />
+    <ClInclude Include="kxf\FileSystem\RecycleBin.h" />
+    <ClInclude Include="kxf\FileSystem\StorageVolume.h" />
+    <ClInclude Include="kxf\FileSystem\NativeFileSystem.h" />
+    <ClInclude Include="kxf\General.hpp" />
+    <ClInclude Include="kxf\General\Any.h" />
+    <ClInclude Include="kxf\General\BinarySize.h" />
+    <ClInclude Include="kxf\General\Common.h" />
+    <ClInclude Include="kxf\General\FlagSet.h" />
+    <ClInclude Include="kxf\General\ExtraData.h" />
+    <ClInclude Include="kxf\General\IndexedEnum.h" />
+    <ClInclude Include="kxf\General\Math.h" />
+    <ClInclude Include="kxf\General\StdID.h" />
+    <ClInclude Include="kxf\General\MemorySpan.h" />
+    <ClInclude Include="kxf\General\NativeUUID.h" />
+    <ClInclude Include="kxf\General\Private\ExtraData.h" />
+    <ClInclude Include="kxf\General\Private\String.h" />
+    <ClInclude Include="kxf\General\Private\VersionImpl.h" />
+    <ClInclude Include="kxf\General\Singleton.h" />
+    <ClInclude Include="kxf\General\String.h" />
+    <ClInclude Include="kxf\General\StringFormatter.h" />
+    <ClInclude Include="kxf\General\StringFormatterTraits.h" />
+    <ClInclude Include="kxf\General\UniversallyUniqueID.h" />
+    <ClInclude Include="kxf\General\Version.h" />
+    <ClInclude Include="kxf\General\WithOptions.h" />
+    <ClInclude Include="kxf\Localization.hpp" />
+    <ClInclude Include="kxf\Localization\Common.h" />
+    <ClInclude Include="kxf\Localization\Locale.h" />
+    <ClInclude Include="kxf\Localization\Private\LocaleOptions.h" />
+    <ClInclude Include="kxf\Localization\Private\StandardLocalization.h" />
+    <ClInclude Include="kxf\Localization\AndroidLocalizationPackage.h" />
+    <ClInclude Include="kxf\Network.hpp" />
+    <ClInclude Include="kxf\Network\Common.h" />
+    <ClInclude Include="kxf\Network\CURL\Event.h" />
+    <ClInclude Include="kxf\Network\CURL\Reply.h" />
+    <ClInclude Include="kxf\Network\CURL\Session.h" />
+    <ClInclude Include="kxf\Network\CURL.h" />
+    <ClInclude Include="kxf\Network\CURL\Private\CURL.h" />
+    <ClInclude Include="kxf\Network\HTTPStatus.h" />
+    <ClInclude Include="kxf\Network\Private\URXHelper.h" />
+    <ClInclude Include="kxf\Network\URI.h" />
+    <ClInclude Include="kxf\Network\URL.h" />
+    <ClInclude Include="kxf\Network\WebSocket.h" />
+    <ClInclude Include="kxf\Network\WebSocket\IClient.h" />
+    <ClInclude Include="kxf\Network\WebSocket\SecureClient.h" />
+    <ClInclude Include="kxf\Network\WebSocket\CloseCode.h" />
+    <ClInclude Include="kxf\Network\WebSocket\Event.h" />
+    <ClInclude Include="kxf\RTTI.hpp" />
+    <ClInclude Include="kxf\RTTI\Common.h" />
+    <ClInclude Include="kxf\RTTI\IObject.h" />
+    <ClInclude Include="kxf\Sciter.hpp" />
+    <ClInclude Include="kxf\Sciter\Common.h" />
+    <ClInclude Include="kxf\Sciter\CommonDefs.h" />
+    <ClInclude Include="kxf\Sciter\Controls\Label.h" />
+    <ClInclude Include="kxf\Sciter\Element.h" />
+    <ClInclude Include="kxf\Sciter\EventDispatcher.h" />
+    <ClInclude Include="kxf\Sciter\Events.h" />
+    <ClInclude Include="kxf\Sciter\Events\BehaviorEvent.h" />
+    <ClInclude Include="kxf\Sciter\Events\SciterEvent.h" />
+    <ClInclude Include="kxf\Sciter\Events\FocusEvent.h" />
+    <ClInclude Include="kxf\Sciter\Events\KeyEvent.h" />
+    <ClInclude Include="kxf\Sciter\Events\MouseEvent.h" />
+    <ClInclude Include="kxf\Sciter\Events\PaintEvent.h" />
+    <ClInclude Include="kxf\Sciter\Events\ScrollEvent.h" />
+    <ClInclude Include="kxf\Sciter\Events\SizeEvent.h" />
+    <ClInclude Include="kxf\Sciter\Events\TimerEvent.h" />
+    <ClInclude Include="kxf\Sciter\GraphicsRenderer\GraphicsBitmap.h" />
+    <ClInclude Include="kxf\Sciter\GraphicsRenderer\GraphicsContext.h" />
+    <ClInclude Include="kxf\Sciter\GraphicsRenderer\GraphicsPath.h" />
+    <ClInclude Include="kxf\Sciter\GraphicsRenderer\GraphicsText.h" />
+    <ClInclude Include="kxf\Sciter\Internal.h" />
+    <ClInclude Include="kxf\Sciter\IWindowRenderer.h" />
+    <ClInclude Include="kxf\Sciter\Renderers\DirectX.h" />
+    <ClInclude Include="kxf\Sciter\Renderers\FPSCounter.h" />
+    <ClInclude Include="kxf\Sciter\SciterAPI.h" />
+    <ClInclude Include="kxf\Sciter\Host.h" />
+    <ClInclude Include="kxf\Sciter\Node.h" />
+    <ClInclude Include="kxf\Sciter\ScriptValue.h" />
+    <ClInclude Include="kxf\Sciter\Utility\HandleWrapper.h" />
+    <ClInclude Include="kxf\Sciter\Widget.h" />
+    <ClInclude Include="kxf\Sciter\WidgetFactory.h" />
+    <ClInclude Include="kxf\Sciter\WrapperWindow.h" />
+    <ClInclude Include="kxf\System.hpp" />
+    <ClInclude Include="kxf\System\CFunction.h" />
+    <ClInclude Include="kxf\System\CFunctionCompiler.h" />
+    <ClInclude Include="kxf\System\COM.h" />
+    <ClInclude Include="kxf\System\Common.h" />
+    <ClInclude Include="kxf\System\DPIAwareness.h" />
+    <ClInclude Include="kxf\System\Private\BeginIncludeCOM.h" />
+    <ClInclude Include="kxf\System\Private\CFunction.h" />
+    <ClInclude Include="kxf\System\Private\CFunctionCompiler.h" />
+    <ClInclude Include="kxf\System\Private\EndIncludeCOM.h" />
+    <ClInclude Include="kxf\System\Private\IncludeNtStatus.h" />
+    <ClInclude Include="kxf\System\CredentialStore.h" />
+    <ClInclude Include="kxf\System\Private\KnownDirectoryGUID.h" />
+    <ClInclude Include="kxf\System\Private\Shell.h" />
+    <ClInclude Include="kxf\System\Private\KnownDirectoryDefinition.h" />
+    <ClInclude Include="kxf\System\Registry.h" />
+    <ClInclude Include="kxf\System\SharedMemory.h" />
+    <ClInclude Include="kxf\System\KnownDirectoryID.h" />
+    <ClInclude Include="kxf\System\ShellFileType.h" />
+    <ClInclude Include="kxf\System\ShellFileTypeInfo.h" />
+    <ClInclude Include="kxf\System\ShellFileTypeManager.h" />
+    <ClInclude Include="kxf\System\ShellLink.h" />
+    <ClInclude Include="kxf\System\ShellOperations.h" />
+    <ClInclude Include="kxf\System\NativeAPI.h" />
+    <ClInclude Include="kxf\System\SystemInformation.h" />
+    <ClInclude Include="kxf\System\SystemInformationDefines.h" />
+    <ClInclude Include="kxf\System\TaskScheduler.h" />
+    <ClInclude Include="kxf\System\UndefWindows.h" />
+    <ClInclude Include="kxf\System\WOW64FSRedirection.h" />
+    <ClInclude Include="kxf\Threading.hpp" />
+    <ClInclude Include="kxf\Threading\AutoThread.h" />
+    <ClInclude Include="kxf\Threading\Common.h" />
+    <ClInclude Include="kxf\Threading\JoinableThread.h" />
+    <ClInclude Include="kxf\UI.hpp" />
+    <ClInclude Include="kxf\UI\Common.h" />
+    <ClInclude Include="kxf\UI\HiDPIEnabledWindow.h" />
+    <ClInclude Include="kxf\UI\StdButton.h" />
+    <ClInclude Include="kxf\UI\StdDialogButtonSizer.h" />
+    <ClInclude Include="kxf\UI\StdIcon.h" />
+    <ClInclude Include="kxf\UI\Validator.h" />
+    <ClInclude Include="kxf\UI\WindowRefreshScheduler.h" />
+    <ClInclude Include="kxf\UI\WindowUpdateLocker.h" />
+    <ClInclude Include="kxf\UI\WithDropdownMenu.h" />
+    <ClInclude Include="kxf\Utility.hpp" />
+    <ClInclude Include="kxf\Utility\ScopeGuard.h" />
+    <ClInclude Include="kxf\Utility\Common.h" />
+    <ClInclude Include="kxf\Utility\Container.h" />
+    <ClInclude Include="kxf\Utility\Drawing.h" />
+    <ClInclude Include="kxf\Utility\Memory.h" />
+    <ClInclude Include="kxf\Utility\Numeric.h" />
+    <ClInclude Include="kxf\Utility\String.h" />
+    <ClInclude Include="kxf\Utility\System.h" />
+    <ClInclude Include="kxf\Utility\TypeTraits.h" />
+    <ClInclude Include="kxf\wxWidgets\Setup.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="kxf\Application\ApplicationInitializer.cpp" />
+    <ClCompile Include="kxf\Application\CoreApplication.cpp" />
+    <ClCompile Include="kxf\Application\GUIApplication.cpp" />
+    <ClCompile Include="kxf\Application\ICoreApplication.cpp" />
+    <ClCompile Include="kxf\Application\Private\NativeApp.cpp" />
+    <ClCompile Include="kxf\Application\Private\Utility.cpp" />
+    <ClCompile Include="kxf\Compression\SevenZip\Archive.cpp" />
+    <ClCompile Include="kxf\Compression\SevenZip\Common.cpp" />
+    <ClCompile Include="kxf\Compression\SevenZip\Library.cpp" />
+    <ClCompile Include="kxf\Compression\SevenZip\Private\ArchiveExtractCallback.cpp" />
+    <ClCompile Include="kxf\Compression\SevenZip\Private\ArchiveOpenCallback.cpp" />
+    <ClCompile Include="kxf\Compression\SevenZip\Private\ArchiveUpdateCallback.cpp" />
+    <ClCompile Include="kxf\Compression\SevenZip\Private\InStreamWrapper.cpp" />
+    <ClCompile Include="kxf\Compression\SevenZip\Private\OutStreamWrapper.cpp" />
+    <ClCompile Include="kxf\Compression\SevenZip\Private\PasswordHandler.cpp" />
+    <ClCompile Include="kxf\Compression\SevenZip\Private\Utility.cpp" />
+    <ClCompile Include="kxf\Drawing\ArtProvider.cpp" />
+    <ClCompile Include="kxf\Drawing\Color.cpp" />
+    <ClCompile Include="kxf\Drawing\Font.cpp" />
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDIBitmap.cpp" />
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDIBrush.cpp" />
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDIAction.cpp" />
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDIContext.cpp" />
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDICursor.cpp" />
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDIFont.cpp" />
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDIGraphicsContext.cpp" />
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDIGraphicsFont.cpp" />
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDIGraphicsPen.cpp" />
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDIGraphicsRenderer.cpp" />
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDIIcon.cpp" />
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDIImageList.cpp" />
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDIPen.cpp" />
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDIRegion.cpp" />
+    <ClCompile Include="kxf\Drawing\GDIRenderer\GDIRendererNative.cpp" />
+    <ClCompile Include="kxf\Drawing\GDIRenderer\Private\GDI.cpp" />
+    <ClCompile Include="kxf\Drawing\GraphicsRenderer.cpp" />
+    <ClCompile Include="kxf\Drawing\GraphicsRenderer\Common.cpp" />
+    <ClCompile Include="kxf\Drawing\GraphicsRenderer\IGraphicsContext.cpp" />
+    <ClCompile Include="kxf\Drawing\GraphicsRenderer\NullObjects\NullGraphicsRenderer.cpp" />
+    <ClCompile Include="kxf\Drawing\BitmapImage.cpp" />
+    <ClCompile Include="kxf\Drawing\ImageBundle.cpp" />
+    <ClCompile Include="kxf\Drawing\Private\Common.cpp" />
+    <ClCompile Include="kxf\Drawing\IRendererNative.cpp" />
+    <ClCompile Include="kxf\Drawing\Private\SVGImageHandler.cpp" />
+    <ClCompile Include="kxf\Drawing\SizeRatio.cpp" />
+    <ClCompile Include="kxf\Drawing\SVGImage.cpp" />
+    <ClCompile Include="kxf\Drawing\WxRenderer\WxGraphicsContext.cpp" />
+    <ClCompile Include="kxf\Drawing\WxRenderer\WxGraphicsFont.cpp" />
+    <ClCompile Include="kxf\Drawing\WxRenderer\WxGraphicsPen.cpp" />
+    <ClCompile Include="kxf\Drawing\WxRenderer\WxGraphicsRenderer.cpp" />
+    <ClCompile Include="kxf\EventSystem\CommonEventLoop.cpp" />
+    <ClCompile Include="kxf\EventSystem\EventID.cpp" />
+    <ClCompile Include="kxf\EventSystem\EvtHandler.cpp" />
+    <ClCompile Include="kxf\EventSystem\IEventLoop.cpp" />
+    <ClCompile Include="kxf\EventSystem\Private\Win32ConsoleEventLoop.cpp" />
+    <ClCompile Include="kxf\EventSystem\Private\Win32CommonEventLoop.cpp" />
+    <ClCompile Include="kxf\EventSystem\Private\Win32GUIEventLoop.cpp" />
+    <ClCompile Include="kxf\FileSystem\AbstractDirectoryEnumerator.cpp" />
+    <ClCompile Include="kxf\FileSystem\IFileSystem.cpp" />
+    <ClCompile Include="kxf\FileSystem\Private\NativeFSUtility.cpp" />
+    <ClCompile Include="kxf\General\CombinedVariablesCollection.cpp" />
+    <ClCompile Include="kxf\General\DateTime\DateSpan.cpp" />
+    <ClCompile Include="kxf\General\DateTime\DateTime.cpp" />
+    <ClCompile Include="kxf\General\DateTime\TimeClock.cpp" />
+    <ClCompile Include="kxf\General\DateTime\TimeSpan.cpp" />
+    <ClCompile Include="kxf\General\DateTime\TimeZone.cpp" />
+    <ClCompile Include="kxf\General\DynamicVariablesCollection.cpp" />
+    <ClCompile Include="kxf\General\ErrorCode.cpp" />
+    <ClCompile Include="kxf\General\IVariablesCollection.cpp" />
+    <ClCompile Include="kxf\General\LocallyUniqueID.cpp" />
+    <ClCompile Include="kxf\General\StaticVariablesCollection.cpp" />
+    <ClCompile Include="kxf\IO\Common.cpp" />
+    <ClCompile Include="kxf\IO\NativeFileStream.cpp" />
+    <ClCompile Include="kxf\IO\IStream.cpp" />
+    <ClCompile Include="kxf\IO\MemoryStream.cpp" />
+    <ClCompile Include="kxf\Localization\ILocalizationPackage.cpp" />
+    <ClCompile Include="kxf\Localization\LocalizationItem.cpp" />
+    <ClCompile Include="kxf\Localization\LocalizationPackageStack.cpp" />
+    <ClCompile Include="kxf\Localization\Private\LocalizationPackageHelper.cpp" />
+    <ClCompile Include="kxf\Localization\QtLocalizationPackage.cpp" />
+    <ClCompile Include="kxf\Localization\WindowsLocalizationPackage.cpp" />
+    <ClCompile Include="kxf\Log\Common.cpp" />
+    <ClCompile Include="kxf\Log\OutputStreamTarget.cpp" />
+    <ClCompile Include="kxf\RTTI\ClassInfo.cpp" />
+    <ClCompile Include="kxf\RTTI\Common.cpp" />
+    <ClCompile Include="kxf\RTTI\IID.cpp" />
+    <ClCompile Include="kxf\RTTI\IObject.cpp" />
+    <ClCompile Include="kxf\RTTI\ObjectPtr.cpp" />
+    <ClCompile Include="kxf\Sciter\Stylesheets\MasterStylesheetStorage.cpp" />
+    <ClCompile Include="kxf\Sciter\Stylesheets\StylesheetStorage.cpp" />
+    <ClCompile Include="kxf\Sciter\Widgets\NativeWidget.cpp" />
+    <ClCompile Include="kxf\Sciter\Widgets\Native\TextBoxWidget.cpp" />
+    <ClCompile Include="kxf\Sciter\Widgets\TextBoxWidget.cpp" />
+    <ClCompile Include="kxf\Serialization\HTML\HTMLDocument.cpp" />
+    <ClCompile Include="kxf\Serialization\HTML\HTMLNode.cpp" />
+    <ClCompile Include="kxf\Serialization\HTML\Private\clean_text.cpp" />
+    <ClCompile Include="kxf\Serialization\HTML\Private\serialize.cpp" />
+    <ClCompile Include="kxf\Serialization\INI\INIDocument.cpp" />
+    <ClCompile Include="kxf\Serialization\JSON\JSONDocument.cpp" />
+    <ClCompile Include="kxf\Serialization\TextDocument.cpp" />
+    <ClCompile Include="kxf\Serialization\XDocument.cpp" />
+    <ClCompile Include="kxf\Serialization\XML\XMLAttribute.cpp" />
+    <ClCompile Include="kxf\Serialization\XML\XMLDocument.cpp" />
+    <ClCompile Include="kxf\Serialization\XML\XMLNode.cpp" />
+    <ClCompile Include="kxf\System\DynamicLibrary.cpp" />
+    <ClCompile Include="kxf\System\DynamicLibraryEvent.cpp" />
+    <ClCompile Include="kxf\System\ExecutableVersionResource.cpp" />
+    <ClCompile Include="kxf\System\HResult.cpp" />
+    <ClCompile Include="kxf\System\NtStatus.cpp" />
+    <ClCompile Include="kxf\System\Private\ErrorCode.cpp" />
+    <ClCompile Include="kxf\System\Private\System.cpp" />
+    <ClCompile Include="kxf\System\SystemAppearance.cpp" />
+    <ClCompile Include="kxf\System\SystemProcess.cpp" />
+    <ClCompile Include="kxf\System\SystemProcess\CreateProcessExecutor.cpp" />
+    <ClCompile Include="kxf\System\SystemProcess\RunningSystemProcess.cpp" />
+    <ClCompile Include="kxf\System\SystemProcess\RunningSystemProcessStdIO.cpp" />
+    <ClCompile Include="kxf\System\SystemProcess\SystemProcessInfo.cpp" />
+    <ClCompile Include="kxf\System\UserName.cpp" />
+    <ClCompile Include="kxf\System\VariantProperty.cpp" />
+    <ClCompile Include="kxf\System\Win32Error.cpp" />
+    <ClCompile Include="kxf\Threading\Common.cpp" />
+    <ClCompile Include="kxf\Threading\CriticalSection.cpp" />
+    <ClCompile Include="kxf\Threading\ReadWriteLock.cpp" />
+    <ClCompile Include="kxf\Threading\SynchronizedCondition.cpp" />
+    <ClCompile Include="kxf\UI\Controls\AUI\AuiNotebook.cpp" />
+    <ClCompile Include="kxf\UI\Controls\AUI\AuiToolBar.cpp" />
+    <ClCompile Include="kxf\UI\Controls\AUI\AuiToolBarEvent.cpp" />
+    <ClCompile Include="kxf\UI\Controls\AUI\AuiToolBarItem.cpp" />
+    <ClCompile Include="kxf\UI\Controls\BitmapComboBox.cpp" />
+    <ClCompile Include="kxf\UI\Controls\Button.cpp" />
+    <ClCompile Include="kxf\UI\Controls\CheckBox.cpp" />
+    <ClCompile Include="kxf\UI\Controls\ClusterMap.cpp" />
+    <ClCompile Include="kxf\UI\Controls\ComboBox.cpp" />
+    <ClCompile Include="kxf\UI\Controls\ComboControl.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataViewComboBox.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\CellAttribute.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\CellState.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\Column.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\Common.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\DragAndDrop.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\Editor.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\Editors\ColorEditor.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\Editors\ComboBoxEditor.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\Editors\DateEditor.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\Editors\SpinEditor.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\Editors\TextEditor.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\Editors\TimeEditor.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\Event.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\HeaderCtrl.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\HeaderCtrl2.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\MainWindow.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\Model.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\Node.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\RenderEngine.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderer.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\ImageListRenderer.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\ImageRenderer.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\ImageTextRenderer.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\ImageTextToggleRenderer.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\HTMLTextRenderer.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\GDIImageListRenderer.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\ProgressRenderer.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\TextRenderer.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\Renderers\ToggleRenderer.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\SortMode.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\ToolTip.cpp" />
+    <ClCompile Include="kxf\UI\Controls\DataView\View.cpp" />
+    <ClCompile Include="kxf\UI\Controls\HTMLWindow.cpp" />
+    <ClCompile Include="kxf\UI\Controls\ImageView.cpp" />
+    <ClCompile Include="kxf\UI\Controls\Label.cpp" />
+    <ClCompile Include="kxf\UI\Controls\Notebook.cpp" />
+    <ClCompile Include="kxf\UI\Controls\ProgressBar.cpp" />
+    <ClCompile Include="kxf\UI\Controls\RadioButton.cpp" />
+    <ClCompile Include="kxf\UI\Controls\SearchBox.cpp" />
+    <ClCompile Include="kxf\UI\Controls\Simplebook.cpp" />
+    <ClCompile Include="kxf\UI\Controls\Slider.cpp" />
+    <ClCompile Include="kxf\UI\Controls\StaticBitmap.cpp" />
+    <ClCompile Include="kxf\UI\Controls\StaticText.cpp" />
+    <ClCompile Include="kxf\UI\Controls\StatusBar.cpp" />
+    <ClCompile Include="kxf\UI\Controls\StatusBarEx.cpp" />
+    <ClCompile Include="kxf\UI\Controls\StyledTextBox.cpp" />
+    <ClCompile Include="kxf\UI\Controls\TextBox.cpp" />
+    <ClCompile Include="kxf\UI\Controls\ThumbView.cpp" />
+    <ClCompile Include="kxf\UI\Controls\WebView.cpp" />
+    <ClCompile Include="kxf\UI\Dialogs\Dialog.cpp" />
+    <ClCompile Include="kxf\UI\Dialogs\ComboBoxDialog.cpp" />
+    <ClCompile Include="kxf\UI\Dialogs\CredentialsDialog.cpp" />
+    <ClCompile Include="kxf\UI\Dialogs\FileBrowseDialog.cpp" />
+    <ClCompile Include="kxf\UI\Dialogs\Private\FileBrowseDialogEvents.cpp" />
+    <ClCompile Include="kxf\UI\Dialogs\Private\TaskDialogNativeInfo.cpp" />
+    <ClCompile Include="kxf\UI\Dialogs\ProgressDialog.cpp" />
+    <ClCompile Include="kxf\UI\Dialogs\TaskDialog.cpp" />
+    <ClCompile Include="kxf\UI\Dialogs\TextBoxDialog.cpp" />
+    <ClCompile Include="kxf\UI\Dialogs\StdDialog.cpp" />
+    <ClCompile Include="kxf\UI\Dialogs\SimpleStdDialog.cpp" />
+    <ClCompile Include="kxf\UI\Menus\Menu.cpp" />
+    <ClCompile Include="kxf\UI\Menus\MenuEvent.cpp" />
+    <ClCompile Include="kxf\UI\Menus\MenuItem.cpp" />
+    <ClCompile Include="kxf\UI\Menus\ShellMenu.cpp" />
+    <ClCompile Include="kxf\UI\Windows\CollapsiblePane.cpp" />
+    <ClCompile Include="kxf\UI\Windows\DrawablePanel.cpp" />
+    <ClCompile Include="kxf\UI\Windows\Frame.cpp" />
+    <ClCompile Include="kxf\UI\Windows\Panel.cpp" />
+    <ClCompile Include="kxf\UI\Windows\RichToolTip.cpp" />
+    <ClCompile Include="kxf\UI\Windows\SplashWindow.cpp" />
+    <ClCompile Include="kxf\UI\Windows\SplitterWindow.cpp" />
+    <ClCompile Include="kxf\UI\Windows\ToolTipEx.cpp" />
+    <ClCompile Include="kxf\UI\Windows\TopLevelWindow.cpp" />
+    <ClCompile Include="kxf\Utility\Drawing.cpp" />
+    <ClCompile Include="kxf\Utility\Memory.cpp" />
+    <ClCompile Include="kxf\wxWidgets\StreamWrapper.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="kxf\Async\Coroutine\CoroutineImpl.cpp" />
+    <ClCompile Include="kxf\Compression\LZ4Stream.cpp" />
+    <ClCompile Include="kxf\Compression\ZLibStream.cpp" />
+    <ClCompile Include="kxf\Crypto\Common.cpp" />
+    <ClCompile Include="kxf\Crypto\Crypto.cpp" />
+    <ClCompile Include="kxf\Crypto\SecretValue.cpp" />
+    <ClCompile Include="kxf\Drawing\Common.cpp" />
+    <ClCompile Include="kxf\Drawing\UxTheme.cpp" />
+    <ClCompile Include="kxf\General\Any.cpp" />
+    <ClCompile Include="kxf\General\Math.cpp" />
+    <ClCompile Include="kxf\General\Private\VersionImpl.cpp" />
+    <ClCompile Include="kxf\General\String.cpp" />
+    <ClCompile Include="kxf\General\StringFormatter.cpp" />
+    <ClCompile Include="kxf\General\Version.cpp" />
+    <ClCompile Include="kxf\Localization\Common.cpp" />
+    <ClCompile Include="kxf\Localization\Locale.cpp" />
+    <ClCompile Include="kxf\Localization\Private\LocaleOptions.cpp" />
+    <ClCompile Include="kxf\Localization\Private\StandardLocalization.cpp" />
+    <ClCompile Include="kxf\Localization\AndroidLocalizationPackage.cpp" />
+    <ClCompile Include="kxf\Network\Common.cpp" />
+    <ClCompile Include="kxf\Network\CURL.cpp" />
+    <ClCompile Include="kxf\Network\CURL\Event.cpp" />
+    <ClCompile Include="kxf\Network\CURL\Reply.cpp" />
+    <ClCompile Include="kxf\Network\CURL\Session.cpp" />
+    <ClCompile Include="kxf\Network\CURL\Private\CURL.cpp" />
+    <ClCompile Include="kxf\Network\URI.cpp" />
+    <ClCompile Include="kxf\Network\URL.cpp" />
+    <ClCompile Include="kxf\Network\WebSocket.cpp" />
+    <ClCompile Include="kxf\Network\WebSocket\SecureClient.cpp" />
+    <ClCompile Include="kxf\Network\WebSocket\Event.cpp" />
+    <ClCompile Include="kxf\System\CFunctionCompiler.cpp" />
+    <ClCompile Include="kxf\System\DPIAwareness.cpp" />
+    <ClCompile Include="kxf\System\NativeAPI.cpp" />
+    <ClCompile Include="kxf\System\CredentialStore.cpp" />
+    <ClCompile Include="kxf\System\Private\Shell.cpp" />
+    <ClCompile Include="kxf\System\Registry.cpp" />
+    <ClCompile Include="kxf\System\SharedMemory.cpp" />
+    <ClCompile Include="kxf\System\ShellLink.cpp" />
+    <ClCompile Include="kxf\System\SystemInformation.cpp" />
+    <ClCompile Include="kxf\System\TaskScheduler.cpp" />
+    <ClCompile Include="kxf\System\WOW64FSRedirection.cpp" />
+    <ClCompile Include="kxf\UI\Common.cpp" />
+    <ClCompile Include="kxf\UI\HiDPIEnabledWindow.cpp" />
+    <ClCompile Include="kxf\UI\StdDialogButtonSizer.cpp" />
+    <ClCompile Include="kxf\UI\Validator.cpp" />
+    <ClCompile Include="kxf\Utility\String.cpp" />
+    <ClCompile Include="kxf\Utility\System.cpp" />
+    <ClCompile Include="kxf\EventSystem\EventBroadcastProcessor.cpp" />
+    <ClCompile Include="kxf\EventSystem\EventBuilder.cpp" />
+    <ClCompile Include="kxf\EventSystem\EventHandlerStack.cpp" />
+    <ClCompile Include="kxf\FileSystem\Common.cpp" />
+    <ClCompile Include="kxf\FileSystem\FileItem.cpp" />
+    <ClCompile Include="kxf\FileSystem\FileOperations.cpp" />
+    <ClCompile Include="kxf\FileSystem\FSPath.cpp" />
+    <ClCompile Include="kxf\FileSystem\LegacyVolume.cpp" />
+    <ClCompile Include="kxf\FileSystem\RecycleBin.cpp" />
+    <ClCompile Include="kxf\FileSystem\StorageVolume.cpp" />
+    <ClCompile Include="kxf\FileSystem\NativeFileSystem.cpp" />
+    <ClCompile Include="kxf\General\BinarySize.cpp" />
+    <ClCompile Include="kxf\General\UniversallyUniqueID.cpp" />
+    <ClCompile Include="kxf\Sciter\Common.cpp" />
+    <ClCompile Include="kxf\Sciter\Controls\Label.cpp" />
+    <ClCompile Include="kxf\Sciter\Element.cpp" />
+    <ClCompile Include="kxf\Sciter\EventDispatcher.cpp" />
+    <ClCompile Include="kxf\Sciter\Events\SciterEvent.cpp" />
+    <ClCompile Include="kxf\Sciter\Events\PaintEvent.cpp" />
+    <ClCompile Include="kxf\Sciter\GraphicsRenderer\GraphicsBitmap.cpp" />
+    <ClCompile Include="kxf\Sciter\GraphicsRenderer\GraphicsContext.cpp" />
+    <ClCompile Include="kxf\Sciter\GraphicsRenderer\GraphicsPath.cpp" />
+    <ClCompile Include="kxf\Sciter\GraphicsRenderer\GraphicsText.cpp" />
+    <ClCompile Include="kxf\Sciter\Host.cpp" />
+    <ClCompile Include="kxf\Sciter\Internal.cpp" />
+    <ClCompile Include="kxf\Sciter\IWindowRenderer.cpp" />
+    <ClCompile Include="kxf\Sciter\Node.cpp" />
+    <ClCompile Include="kxf\Sciter\Renderers\DirectX.cpp" />
+    <ClCompile Include="kxf\Sciter\Renderers\FPSCounter.cpp" />
+    <ClCompile Include="kxf\Sciter\SciterAPI.cpp" />
+    <ClCompile Include="kxf\Sciter\ScriptValue.cpp" />
+    <ClCompile Include="kxf\Sciter\Widget.cpp" />
+    <ClCompile Include="kxf\Sciter\WidgetFactory.cpp" />
+    <ClCompile Include="kxf\System\COM.cpp" />
+    <ClCompile Include="kxf\System\ShellFileType.cpp" />
+    <ClCompile Include="kxf\System\ShellFileTypeInfo.cpp" />
+    <ClCompile Include="kxf\System\ShellFileTypeManager.cpp" />
+    <ClCompile Include="kxf\System\ShellOperations.cpp" />
+    <ClCompile Include="kxf\Threading\JoinableThread.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitattributes" />
+    <None Include=".gitignore" />
+    <None Include="cpp.hint" />
+    <None Include="kxf\Sciter\Stylesheets\MasterStylesheet.css" />
+    <None Include="kxf\Sciter\Widgets\Native\TextBoxWidget.css" />
+    <None Include="kxf\Sciter\Widgets\TextBoxWidget.css" />
+    <None Include="kxf\System\Private\ErrorCodeNtStatus.i" />
+    <None Include="LICENSE" />
+    <None Include="README.md" />
+    <None Include="VCPkg\ports\kxframework\CONTROL" />
+    <None Include="VCPkg\ports\kxframework\portfile.cmake" />
+    <None Include="VCPkg\ports\kxframework\vcpkg.targets" />
+    <None Include="VCPkg\triplets\community\kxf-default-x64.cmake" />
+    <None Include="VCPkg\triplets\community\kxf-default-x86.cmake" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="kxf\Drawing\Color.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="kxf.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

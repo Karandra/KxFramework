@@ -2,6 +2,7 @@
 #include "kxf/UI/Common.h"
 #include "kxf/UI/WindowRefreshScheduler.h"
 #include "kxf/UI/WithDropdownMenu.h"
+#include "kxf/wxWidgets/EventTagRef.h"
 #include <wx/renderer.h>
 #include <wx/anybutton.h>
 #include <wx/systhemectrl.h>
@@ -32,8 +33,8 @@ namespace kxf::UI
 		public:
 			static constexpr FlagSet<ButtonStyle> DefaultStyle = ButtonStyle::None;
 
-			KxEVENT_MEMBER_AS(wxCommandEvent, Click, wxEVT_BUTTON);
-			KxEVENT_MEMBER_AS(wxContextMenuEvent, Menu, wxEVT_CONTEXT_MENU);
+			inline static const kxf::wxWidgets::EventTagRef<wxCommandEvent> EvtClick = wxEVT_BUTTON;
+			inline static const kxf::wxWidgets::EventTagRef<wxContextMenuEvent> EvtMenu = wxEVT_CONTEXT_MENU;
 
 		public:
 			static Size GetDefaultSize();
