@@ -224,8 +224,8 @@ namespace kxf
 
 namespace kxf::EventSystem
 {
-	EventID NewSimpleEventID() noexcept;
-	EventID NewUniqueEventID() noexcept;
+	KX_API EventID NewSimpleEventID() noexcept;
+	KX_API EventID NewUniqueEventID() noexcept;
 }
 
 namespace std

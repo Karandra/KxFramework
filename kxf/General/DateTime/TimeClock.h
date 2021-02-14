@@ -5,44 +5,44 @@
 
 namespace kxf
 {
-	class SystemClock final: public ITimeClock
+	class KX_API SystemClock final: public ITimeClock
 	{
 		public:
 			TimeSpan Now() const noexcept override;
 	};
 
-	class SteadyClock final: public ITimeClock
+	class KX_API SteadyClock final: public ITimeClock
 	{
 		public:
 			TimeSpan Now() const noexcept override;
 	};
 
-	class HighResolutionClock final: public ITimeClock
+	class KX_API HighResolutionClock final: public ITimeClock
 	{
 		public:
 			TimeSpan Now() const noexcept override;
 	};
 
 	#if __cplusplus > 201703L
-	class FileClock final: public ITimeClock
+	class KX_API FileClock final: public ITimeClock
 	{
 		public:
 			TimeSpan Now() const noexcept override;
 	};
 
-	class UTCClock final: public ITimeClock
+	class KX_API UTCClock final: public ITimeClock
 	{
 		public:
 			TimeSpan Now() const noexcept override;
 	};
 
-	class GPSClock final: public ITimeClock
+	class KX_API GPSClock final: public ITimeClock
 	{
 		public:
 			TimeSpan Now() const noexcept override;
 	};
 
-	class AtomicTimeClock final: public ITimeClock
+	class KX_API AtomicTimeClock final: public ITimeClock
 	{
 		public:
 			TimeSpan Now() const noexcept override;

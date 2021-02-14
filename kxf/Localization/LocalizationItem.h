@@ -216,5 +216,5 @@ namespace kxf
 
 namespace kxf
 {
-	extern const LocalizationItem NullLocalizationItem;
+	KX_API extern const LocalizationItem NullLocalizationItem;
 }
