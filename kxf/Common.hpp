@@ -1,13 +1,21 @@
 #pragma once
 
-#if defined KXFRAMEWORK_LIBRARY
-#define KX_API __declspec(dllexport)
-#define WXMAKINGDLL 1
-#elif defined KXFRAMEWORK_PLUGIN
-#define KX_API __declspec(dllimport)
-//#define WXUSINGDLL 1
+#ifdef _DLL
+	#ifdef KXFRAMEWORK_LIBRARY
+		#define KX_API __declspec(dllexport)
+		#define WXMAKINGDLL 1
+	#else
+		#define KX_API __declspec(dllimport)
+		#undef WXUSINGDLL
+	#endif
 #else
-#define KX_API
+	#ifdef KXFRAMEWORK_LIBRARY
+		#define KX_API __declspec(dllexport)
+		#define WXMAKINGDLL 1
+	#else
+		#define KX_API
+		#define WXUSINGDLL 0
+	#endif
 #endif
 
 // Standard library
@@ -48,6 +56,9 @@ namespace kxf
 #pragma comment(lib, "DNSAPI.lib")
 #pragma comment(lib, "WinINet.lib")
 #pragma comment(lib, "Wldap32.lib")
+
+// Multimedia
+#pragma comment(lib, "Winmm.lib")
 
 // Required by UUID/GUID functions
 #pragma comment(lib, "Rpcrt4.lib")
