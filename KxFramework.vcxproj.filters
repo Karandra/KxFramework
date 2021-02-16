@@ -1793,9 +1793,6 @@
     <ClInclude Include="kxf\System\HandlePtr.h">
       <Filter>kxf\System</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\General\UniqueFunction.h">
-      <Filter>kxf\System</Filter>
-    </ClInclude>
     <ClInclude Include="kxf\FileSystem\AbstractDirectoryEnumerator.h">
       <Filter>kxf\FileSystem</Filter>
     </ClInclude>
@@ -1817,6 +1814,9 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="kxf\wxWidgets\EventTagRef.h">
       <Filter>kxf\wxWidgets</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\General\UniqueFunction.h">
+      <Filter>kxf\General</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
