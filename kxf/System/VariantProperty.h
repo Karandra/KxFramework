@@ -31,6 +31,8 @@ namespace kxf
 		Float32,
 		Float64,
 	};
+
+	class Any;
 }
 
 namespace kxf
@@ -299,6 +301,8 @@ namespace kxf
 				};
 				return {};
 			}
+
+			Any ToAny() const;
 
 		public:
 			VariantProperty& operator=(const tagPROPVARIANT& value)

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "VariantProperty.h"
 #include "COM.h"
+#include "kxf/General/Any.h"
 #include "kxf/Utility/ScopeGuard.h"
 #include <propvarutil.h>
 #include <propidlbase.h>
@@ -514,6 +515,73 @@ namespace kxf
 		{
 			return DateTime().SetFileTime(fileTime);
 		}
+		return {};
+	}
+
+	Any VariantProperty::ToAny() const
+	{
+		switch (GetType())
+		{
+			case VariantPropertyType::Bool:
+			{
+				return *ToBool();
+			}
+			case VariantPropertyType::String:
+			{
+				return *ToString();
+			}
+			case VariantPropertyType::DateTime:
+			{
+				return *ToDateTime();
+			}
+			case VariantPropertyType::UUID:
+			{
+				return *ToUUID();
+			}
+
+			case VariantPropertyType::Int8:
+			{
+				return *RetrieveInt8();
+			}
+			case VariantPropertyType::Int16:
+			{
+				return *RetrieveInt16();
+			}
+			case VariantPropertyType::Int32:
+			{
+				return *RetrieveInt32();
+			}
+			case VariantPropertyType::Int64:
+			{
+				return *RetrieveInt64();
+			}
+
+			case VariantPropertyType::UInt8:
+			{
+				return *RetrieveUInt8();
+			}
+			case VariantPropertyType::UInt16:
+			{
+				return *RetrieveUInt16();
+			}
+			case VariantPropertyType::UInt32:
+			{
+				return *RetrieveUInt32();
+			}
+			case VariantPropertyType::UInt64:
+			{
+				return *RetrieveUInt64();
+			}
+
+			case VariantPropertyType::Float32:
+			{
+				return *RetrieveFloat32();
+			}
+			case VariantPropertyType::Float64:
+			{
+				return *RetrieveFloat64();
+			}
+		};
 		return {};
 	}
 }
