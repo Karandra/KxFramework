@@ -212,29 +212,27 @@ namespace kxf::RTTI
 	}
 	Enumerator<const ClassInfo&> ClassInfo::EnumImplementations() const noexcept
 	{
-		return Utility::MakeForwardingEnumerator([](auto& en) -> optional_ref<const ClassInfo>
+		return Utility::MakeForwardingEnumerator([](const ClassInfo& classInfo, IEnumerator& enumerator) -> optional_ref<const ClassInfo>
 		{
-			const ClassInfo& classInfo = *en;
 			if (classInfo.GetTraits().Contains(ClassTrait::Implementation))
 			{
 				return classInfo;
 			}
 
-			en.SkipCurrent();
+			enumerator.SkipCurrent();
 			return {};
 		}, *this, &ClassInfo::EnumDerivedClasses);
 	}
 	Enumerator<const ClassInfo&> ClassInfo::EnumDerivedInterfaces() const noexcept
 	{
-		return Utility::MakeForwardingEnumerator([](auto& en) -> optional_ref<const ClassInfo>
+		return Utility::MakeForwardingEnumerator([](const ClassInfo& classInfo, IEnumerator& enumerator) -> optional_ref<const ClassInfo>
 		{
-			const ClassInfo& classInfo = *en;
 			if (classInfo.GetTraits().Contains(ClassTrait::Interface))
 			{
 				return classInfo;
 			}
 
-			en.SkipCurrent();
+			enumerator.SkipCurrent();
 			return {};
 		}, *this, &ClassInfo::EnumDerivedClasses);
 	}

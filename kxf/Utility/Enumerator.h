@@ -54,18 +54,20 @@ namespace kxf::Utility
 
 namespace kxf::Utility
 {
-	template<class TConvFunc, class TOwner, class TEnumFunc, class... Args, std::enable_if_t<std::is_member_function_pointer_v<TEnumFunc>, int> = 0>
-	decltype(auto) MakeForwardingEnumerator(TConvFunc&& conv, TOwner&& owner, TEnumFunc enumFunc, Args&&... arg)
+	template<class TValue, class TConvFunc, class TOwner, class TEnumFunc, class... Args, std::enable_if_t<std::is_member_function_pointer_v<TEnumFunc>, int> = 0>
+	decltype(auto) MakeConvertingEnumerator(TConvFunc&& conv, TOwner&& owner, TEnumFunc enumFunc, Args&&... arg)
 	{
-		using TEnumerator = typename std::invoke_result_t<TEnumFunc, std::remove_reference_t<TOwner>*, Args...>;
-		using TValue = typename TEnumerator::TValue;
+		using TEnumerator = Enumerator<TValue>;
 		using TValueContainer = typename TEnumerator::TValueContainer;
 
 		class Context final
 		{
 			private:
+				using TSourceEnumerator = typename std::invoke_result_t<TEnumFunc, std::remove_reference_t<TOwner>*, Args...>;
+
+			private:
 				TOwner&& m_Owner;
-				TEnumerator m_Range;
+				TSourceEnumerator m_Range;
 
 			public:
 				Context(TOwner&& owner, TEnumFunc enumFunc, Args&&... arg)
@@ -78,7 +80,7 @@ namespace kxf::Utility
 				{
 					return m_Owner;
 				}
-				TEnumerator& GetEnumerator() noexcept
+				TSourceEnumerator& GetEnumerator() noexcept
 				{
 					return m_Range;
 				}
@@ -90,22 +92,14 @@ namespace kxf::Utility
 		};
 
 		return TEnumerator([conv = std::forward<TConvFunc>(conv),
-						   context = Context(std::forward<TOwner>(owner),
-						   enumFunc, std::forward<Args>(arg)...)]
+						   context = Context(std::forward<TOwner>(owner), enumFunc, std::forward<Args>(arg)...)]
 						   (IEnumerator& enumerator) mutable -> TValueContainer
 		{
 			switch (context.MoveNext())
 			{
 				case EnumeratorInstruction::Continue:
 				{
-					if constexpr(std::is_invocable_v<TConvFunc, TEnumerator&, TOwner&>)
-					{
-						return std::invoke(conv, context.GetEnumerator(), context.GetOwner());
-					}
-					else
-					{
-						return std::invoke(conv, context.GetEnumerator());
-					}
+					return std::invoke(conv, std::move(context.GetEnumerator()).GetValue(), enumerator);
 				}
 				case EnumeratorInstruction::SkipCurrent:
 				{
@@ -122,11 +116,10 @@ namespace kxf::Utility
 		});
 	}
 
-	template<class TConvFunc, class TEnumFunc, class... Args>
-	decltype(auto) MakeForwardingEnumerator(TConvFunc&& conv, TEnumFunc enumFunc, Args&&... arg)
+	template<class TValue, class TConvFunc, class TEnumFunc, class... Args>
+	decltype(auto) MakeConvertingEnumerator(TConvFunc&& conv, TEnumFunc enumFunc, Args&&... arg)
 	{
-		using TEnumerator = typename std::invoke_result_t<TEnumFunc, Args...>;
-		using TValue = typename TEnumerator::TValue;
+		using TEnumerator = Enumerator<TValue>;
 		using TValueContainer = typename TEnumerator::TValueContainer;
 
 		static_assert(!std::is_member_function_pointer_v<TEnumFunc>, "free/static function pointer required");
@@ -135,7 +128,10 @@ namespace kxf::Utility
 		class Context final
 		{
 			private:
-				TEnumerator m_Range;
+				using TSourceEnumerator = typename std::invoke_result_t<TEnumFunc, Args...>;
+
+			private:
+				TSourceEnumerator m_Range;
 
 			public:
 				Context(TEnumFunc enumFunc, Args&&... arg)
@@ -144,7 +140,7 @@ namespace kxf::Utility
 				}
 
 			public:
-				TEnumerator& GetEnumerator() noexcept
+				TSourceEnumerator& GetEnumerator() noexcept
 				{
 					return m_Range;
 				}
@@ -163,7 +159,7 @@ namespace kxf::Utility
 			{
 				case EnumeratorInstruction::Continue:
 				{
-					return std::invoke(conv, context.GetEnumerator());
+					return std::invoke(conv, std::move(context.GetEnumerator()).GetValue(), enumerator);
 				}
 				case EnumeratorInstruction::SkipCurrent:
 				{
@@ -178,6 +174,24 @@ namespace kxf::Utility
 			};
 			return {};
 		});
+	}
+
+	template<class TConvFunc, class TOwner, class TEnumFunc, class... Args, std::enable_if_t<std::is_member_function_pointer_v<TEnumFunc>, int> = 0>
+	decltype(auto) MakeForwardingEnumerator(TConvFunc&& conv, TOwner&& owner, TEnumFunc enumFunc, Args&&... arg)
+	{
+		using TEnumerator = typename std::invoke_result_t<TEnumFunc, std::remove_reference_t<TOwner>*, Args...>;
+		using TValue = typename TEnumerator::TValue;
+
+		return MakeConvertingEnumerator<TValue>(std::forward<TConvFunc>(conv), std::forward<TOwner>(owner), enumFunc, std::forward<Args>(arg)...);
+	}
+
+	template<class TConvFunc, class TEnumFunc, class... Args>
+	decltype(auto) MakeForwardingEnumerator(TConvFunc&& conv, TEnumFunc enumFunc, Args&&... arg)
+	{
+		using TEnumerator = typename std::invoke_result_t<TEnumFunc, Args...>;
+		using TValue = typename TEnumerator::TValue;
+
+		return MakeConvertingEnumerator<TValue>(std::forward<TConvFunc>(conv), enumFunc, std::forward<Args>(arg)...);
 	}
 }
 

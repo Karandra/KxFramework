@@ -479,9 +479,9 @@ namespace kxf::System
 		RegistryKey key(RegistryRootKey::CurrentUser, wxS("AppEvents\\EventLabels"), RegistryAccess::Read|RegistryAccess::Enumerate);
 		if (key)
 		{
-			return Utility::MakeForwardingEnumerator([](Enumerator<String>& enumerator, RegistryKey& owner)
+			return Utility::MakeForwardingEnumerator([](String&& value, IEnumerator& enumerator)
 			{
-				return std::move(enumerator.GetValue());
+				return value;
 			}, std::move(key), &RegistryKey::EnumKeyNames);
 		}
 		return {};
