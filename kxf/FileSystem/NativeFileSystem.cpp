@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "NativeFileSystem.h"
 #include "FSActionEvent.h"
-#include "AbstractDirectoryEnumerator.h"
 #include "Private/NativeFSUtility.h"
 #include "kxf/Application/ICoreApplication.h"
 #include "kxf/General/AlignedObjectStorage.h"
@@ -12,6 +11,7 @@
 #include "kxf/IO/NativeFileStream.h"
 #include "kxf/Utility/Common.h"
 #include "kxf/Utility/ScopeGuard.h"
+#include "kxf/Utility/RecursiveCollectionEnumerator.h"
 #include <wx/filename.h>
 
 namespace
@@ -113,7 +113,7 @@ namespace
 }
 namespace
 {
-	class NativeDirectoryEnumerator final: public AbstractDirectoryEnumerator
+	class NativeDirectoryEnumerator final: public RecursiveCollectionEnumerator<FileItem, FSPath>
 	{
 		private:
 			FSPath m_Query;
@@ -199,7 +199,7 @@ namespace
 		public:
 			NativeDirectoryEnumerator() = default;
 			NativeDirectoryEnumerator(FSPath rootPath, FSPath query, FlagSet<FSActionFlag> flags)
-				:AbstractDirectoryEnumerator(std::move(rootPath)), m_Query(std::move(query)), m_Flags(flags)
+				:RecursiveCollectionEnumerator(std::move(rootPath)), m_Query(std::move(query)), m_Flags(flags)
 			{
 			}
 	};

@@ -13,10 +13,10 @@
 #include "kxf/General/Enumerator.h"
 #include "kxf/System/VariantProperty.h"
 #include "kxf/FileSystem/NativeFileSystem.h"
-#include "kxf/FileSystem/AbstractDirectoryEnumerator.h"
 #include "kxf/Utility/ScopeGuard.h"
 #include "kxf/Utility/TypeTraits.h"
 #include "kxf/Utility/Literals.h"
+#include "kxf/Utility/RecursiveCollectionEnumerator.h"
 
 namespace
 {
@@ -137,7 +137,7 @@ namespace
 }
 namespace
 {
-	class ArchiveDirectoryEnumerator final: public AbstractDirectoryEnumerator
+	class ArchiveDirectoryEnumerator final: public RecursiveCollectionEnumerator<FileItem, FSPath>
 	{
 		private:
 			const Archive& m_Archive;
@@ -207,7 +207,7 @@ namespace
 		public:
 			ArchiveDirectoryEnumerator() = default;
 			ArchiveDirectoryEnumerator(const Archive& archive, FSPath rootPath, FSPath query, FlagSet<FSActionFlag> flags)
-				:AbstractDirectoryEnumerator(std::move(rootPath)), m_Archive(archive), m_Query(std::move(query)), m_Flags(flags)
+				:RecursiveCollectionEnumerator(std::move(rootPath)), m_Archive(archive), m_Query(std::move(query)), m_Flags(flags)
 			{
 				m_MatchFlags.Add(StringOpFlag::IgnoreCase, !flags.Contains(FSActionFlag::CaseSensitive));
 			}
