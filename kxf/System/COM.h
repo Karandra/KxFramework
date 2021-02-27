@@ -10,6 +10,7 @@
 #include <new>
 struct IUnknown;
 struct _GUID;
+struct tagSAFEARRAY;
 
 namespace kxf
 {
@@ -55,6 +56,11 @@ namespace kxf::COM
 	KX_API void* AllocateMemory(size_t size) noexcept;
 	KX_API void* ReallocateMemory(void* address, size_t size) noexcept;
 	KX_API void FreeMemory(void* address) noexcept;
+
+	KX_API wchar_t* AllocateBSTR(const wchar_t* data) noexcept;
+	KX_API void FreeBSTR(wchar_t* data) noexcept;
+
+	KX_API void FreeSafeArray(tagSAFEARRAY* safeArray) noexcept;
 
 	KX_API::_GUID ToGUID(const NativeUUID& uuid) noexcept;
 	KX_API NativeUUID FromGUID(const ::_GUID& guid) noexcept;
@@ -206,7 +212,7 @@ namespace kxf
 		class PtrTraits final
 		{
 			private:
-				TValue*& m_Value = nullptr;
+				TValue*& m_Value;
 
 			public:
 				PtrTraits(TValue*& ptr)
@@ -229,7 +235,7 @@ namespace kxf
 		class MemoryPtrTraits final
 		{
 			private:
-				TValue*& m_Value = nullptr;
+				TValue*& m_Value;
 
 			public:
 				MemoryPtrTraits(TValue*& ptr)
@@ -241,6 +247,44 @@ namespace kxf
 				void Reset(TValue* ptr = nullptr) noexcept
 				{
 					COM::FreeMemory(reinterpret_cast<void*>(const_cast<std::remove_cv_t<TValue>*>(m_Value)));
+					m_Value = ptr;
+				}
+		};
+
+		class BSTRPtrTraits final
+		{
+			private:
+				wchar_t*& m_Value;
+
+			public:
+				BSTRPtrTraits(wchar_t*& ptr)
+					:m_Value(ptr)
+				{
+				}
+
+			public:
+				void Reset(wchar_t* ptr = nullptr) noexcept
+				{
+					COM::FreeBSTR(m_Value);
+					m_Value = ptr;
+				}
+		};
+
+		class SafeArrayPtrTraits final
+		{
+			private:
+				tagSAFEARRAY*& m_Value;
+
+			public:
+				SafeArrayPtrTraits(tagSAFEARRAY*& ptr)
+					:m_Value(ptr)
+				{
+				}
+
+			public:
+				void Reset(tagSAFEARRAY* ptr = nullptr) noexcept
+				{
+					COM::FreeSafeArray(m_Value);
 					m_Value = ptr;
 				}
 		};
@@ -320,6 +364,9 @@ namespace kxf
 
 	template<class T>
 	using COMMemoryPtr = COM::Private::BasicPtr<T, COM::Private::MemoryPtrTraits<T>>;
+
+	using BSTRPtr = COM::Private::BasicPtr<wchar_t, COM::Private::BSTRPtrTraits>;
+	using SafeArrayPtr = COM::Private::BasicPtr<tagSAFEARRAY, COM::Private::SafeArrayPtrTraits>;
 }
 
 namespace kxf::COM

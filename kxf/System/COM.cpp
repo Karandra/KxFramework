@@ -59,6 +59,20 @@ namespace kxf::COM
 		::CoTaskMemFree(address);
 	}
 
+	wchar_t* AllocateBSTR(const wchar_t* data) noexcept
+	{
+		return ::SysAllocString(data);
+	}
+	void FreeBSTR(wchar_t* data) noexcept
+	{
+		::SysFreeString(data);
+	}
+
+	void FreeSafeArray(tagSAFEARRAY* safeArray) noexcept
+	{
+		::SafeArrayDestroy(safeArray);
+	}
+
 	::_GUID ToGUID(const NativeUUID& uuid) noexcept
 	{
 		::GUID guid = {};
