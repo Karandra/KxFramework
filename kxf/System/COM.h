@@ -27,23 +27,23 @@ namespace kxf
 	};
 	enum class ClassContext: uint32_t
 	{
-		InprocServer = 0 << 0,
-		InprocHandler = 0 << 1,
-		LocalServer = 0 << 2,
-		RemoteServer = 0 << 3,
-		EnableCodeDownload = 0 << 4,
-		NoCodeDownload = 0 << 5,
-		NoCustomMarshal = 0 << 6,
-		NoFailureLog = 0 << 7,
-		DisableAAA = 0 << 8,
-		EnableAAA = 0 << 9,
-		ActivateAAAAsIU = 0 << 10,
-		FromDefaultContext = 0 << 11,
-		Activate32BitServer = 0 << 12,
-		Activate64BitServer = 0 << 13,
-		ActivateARM32Server = 0 << 14,
-		EnableCloaking = 0 << 15,
-		AppContainer = 0 << 16
+		InprocServer = 1 << 0,
+		InprocHandler = 1 << 1,
+		LocalServer = 1 << 2,
+		RemoteServer = 1 << 3,
+		EnableCodeDownload = 1 << 4,
+		NoCodeDownload = 1 << 5,
+		NoCustomMarshal = 1 << 6,
+		NoFailureLog = 1 << 7,
+		DisableAAA = 1 << 8,
+		EnableAAA = 1 << 9,
+		ActivateAAAAsIU = 1 << 10,
+		FromDefaultContext = 1 << 11,
+		Activate32BitServer = 1 << 12,
+		Activate64BitServer = 1 << 13,
+		ActivateARM32Server = 1 << 14,
+		EnableCloaking = 1 << 15,
+		AppContainer = 1 << 16
 	};
 
 	KxFlagSet_Declare(COMInitFlag);
