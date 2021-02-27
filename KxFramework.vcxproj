@@ -226,7 +226,6 @@
     <ClInclude Include="kxf\EventSystem\Private\Win32CommonEventLoop.h" />
     <ClInclude Include="kxf\EventSystem\Private\Win32GUIEventLoop.h" />
     <ClInclude Include="kxf\EventSystem\WidgetEvent.h" />
-    <ClInclude Include="kxf\FileSystem\AbstractDirectoryEnumerator.h" />
     <ClInclude Include="kxf\FileSystem\NullFileSystem.h" />
     <ClInclude Include="kxf\General\AlignedBuffer.h" />
     <ClInclude Include="kxf\General\AlignedStorage.h" />
@@ -331,6 +330,7 @@
     <ClInclude Include="kxf\System\UserName.h" />
     <ClInclude Include="kxf\System\VariantProperty.h" />
     <ClInclude Include="kxf\System\Win32Error.h" />
+    <ClInclude Include="kxf\System\WMI.h" />
     <ClInclude Include="kxf\Threading\CriticalSection.h" />
     <ClInclude Include="kxf\Threading\ReadWriteLock.h" />
     <ClInclude Include="kxf\Threading\RecursiveRWLock.h" />
@@ -437,6 +437,7 @@
     <ClInclude Include="kxf\Utility\ExceptionScopeGuard.h" />
     <ClInclude Include="kxf\Utility\Functional.h" />
     <ClInclude Include="kxf\Utility\Literals.h" />
+    <ClInclude Include="kxf\Utility\RecursiveCollectionEnumerator.h" />
     <ClInclude Include="kxf\wxWidgets\Application.h" />
     <ClInclude Include="kxf\wxWidgets\ClientObject.h" />
     <ClInclude Include="kxf\wxWidgets\Common.h" />
@@ -686,7 +687,6 @@
     <ClCompile Include="kxf\EventSystem\Private\Win32ConsoleEventLoop.cpp" />
     <ClCompile Include="kxf\EventSystem\Private\Win32CommonEventLoop.cpp" />
     <ClCompile Include="kxf\EventSystem\Private\Win32GUIEventLoop.cpp" />
-    <ClCompile Include="kxf\FileSystem\AbstractDirectoryEnumerator.cpp" />
     <ClCompile Include="kxf\FileSystem\IFileSystem.cpp" />
     <ClCompile Include="kxf\FileSystem\Private\NativeFSUtility.cpp" />
     <ClCompile Include="kxf\General\CombinedVariablesCollection.cpp" />
@@ -749,6 +749,7 @@
     <ClCompile Include="kxf\System\UserName.cpp" />
     <ClCompile Include="kxf\System\VariantProperty.cpp" />
     <ClCompile Include="kxf\System\Win32Error.cpp" />
+    <ClCompile Include="kxf\System\WMI.cpp" />
     <ClCompile Include="kxf\Threading\Common.cpp" />
     <ClCompile Include="kxf\Threading\CriticalSection.cpp" />
     <ClCompile Include="kxf\Threading\ReadWriteLock.cpp" />
