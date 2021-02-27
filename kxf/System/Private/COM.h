@@ -28,6 +28,10 @@ namespace kxf::COM::Private
 			}
 
 		public:
+			bool IsNull() const noexcept
+			{
+				return m_Value == nullptr;
+			}
 			void Reset(TValue* ptr = nullptr) noexcept
 			{
 				Traits(m_Value).Reset(ptr);
@@ -82,11 +86,11 @@ namespace kxf::COM::Private
 		public:
 			explicit operator bool() const noexcept
 			{
-				return m_Value != nullptr;
+				return !IsNull();
 			}
 			bool operator!() const noexcept
 			{
-				return m_Value == nullptr;
+				return IsNull();
 			}
 
 			bool operator==(const BasicPtr& other) const noexcept
