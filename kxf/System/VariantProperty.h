@@ -5,6 +5,7 @@
 #include "kxf/General/DateTime.h"
 #include "kxf/General/AlignedObjectStorage.h"
 #include "HResult.h"
+struct tagVARIANT;
 struct tagPROPVARIANT;
 
 namespace kxf
@@ -40,12 +41,13 @@ namespace kxf
 	class VariantProperty final
 	{
 		private:
-			AlignedObjectStorage<tagPROPVARIANT, 24, alignof(uint64_t)> m_Value;
+			AlignedObjectStorage<tagPROPVARIANT, 24, alignof(uint64_t)> m_PropVariant;
 
 		private:
 			HResult DoClear() noexcept;
 			HResult DoCopy(const tagPROPVARIANT& other);
-			void DoMove(tagPROPVARIANT&& other) noexcept;
+			HResult DoMove(tagPROPVARIANT&& other) noexcept;
+			HResult DoConvertToVariant(tagVARIANT& variant) const noexcept;
 
 			void AssignBool(bool value) noexcept;
 			void AssignUUID(const NativeUUID& value);
@@ -111,7 +113,7 @@ namespace kxf
 			VariantProperty(const VariantProperty& other)
 				:VariantProperty()
 			{
-				DoCopy(*other.m_Value);
+				DoCopy(*other.m_PropVariant);
 			}
 			VariantProperty(tagPROPVARIANT&& other) noexcept
 				:VariantProperty()
@@ -121,7 +123,7 @@ namespace kxf
 			VariantProperty(VariantProperty&& other) noexcept
 				:VariantProperty()
 			{
-				DoMove(std::move(*other.m_Value));
+				DoMove(std::move(*other.m_PropVariant));
 			}
 			
 			VariantProperty(bool value) noexcept
@@ -303,6 +305,10 @@ namespace kxf
 			}
 
 			Any ToAny() const;
+			HResult ToVariant(tagVARIANT& variant) const noexcept
+			{
+				return DoConvertToVariant(variant);
+			}
 
 		public:
 			VariantProperty& operator=(const tagPROPVARIANT& value)
@@ -312,7 +318,7 @@ namespace kxf
 			}
 			VariantProperty& operator=(const VariantProperty& other)
 			{
-				DoCopy(*other.m_Value);
+				DoCopy(*other.m_PropVariant);
 				return *this;
 			}
 			VariantProperty& operator=(tagPROPVARIANT&& other) noexcept
@@ -322,7 +328,7 @@ namespace kxf
 			}
 			VariantProperty& operator=(VariantProperty&& other) noexcept
 			{
-				DoMove(std::move(*other.m_Value));
+				DoMove(std::move(*other.m_PropVariant));
 				return *this;
 			}
 
@@ -353,20 +359,20 @@ namespace kxf
 
 			const tagPROPVARIANT* operator&() const noexcept
 			{
-				return &m_Value;
+				return &m_PropVariant;
 			}
 			tagPROPVARIANT* operator&() noexcept
 			{
-				return &m_Value;
+				return &m_PropVariant;
 			}
 
 			const tagPROPVARIANT& operator*() const noexcept
 			{
-				return *m_Value;
+				return *m_PropVariant;
 			}
 			tagPROPVARIANT& operator*() noexcept
 			{
-				return *m_Value;
+				return *m_PropVariant;
 			}
 
 			explicit operator bool() const noexcept

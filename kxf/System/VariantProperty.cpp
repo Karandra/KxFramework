@@ -87,7 +87,7 @@ namespace
 	}
 	
 	template<class T>
-	constexpr int SimpleCompare(T left, T right) noexcept
+	constexpr int SimpleTriWayCompare(T left, T right) noexcept
 	{
 		if (left == right)
 		{
@@ -104,46 +104,51 @@ namespace kxf
 {
 	HResult VariantProperty::DoClear() noexcept
 	{
-		HResult hr = ClearPropVariant(*m_Value);
+		HResult hr = ::ClearPropVariant(*m_PropVariant);
 		if (!hr)
 		{
-			m_Value->vt = VT_ERROR;
-			m_Value->scode = *hr;
+			m_PropVariant->vt = VT_ERROR;
+			m_PropVariant->scode = *hr;
 		}
 		return hr;
 	}
 	HResult VariantProperty::DoCopy(const tagPROPVARIANT& other)
 	{
-		return CopyPropVariant(*m_Value, other);
+		return CopyPropVariant(*m_PropVariant, other);
 	}
-	void VariantProperty::DoMove(tagPROPVARIANT&& other) noexcept
+	HResult VariantProperty::DoMove(tagPROPVARIANT&& other) noexcept
 	{
-		if (&other != &m_Value)
+		if (&other != &m_PropVariant)
 		{
-			std::memcpy(reinterpret_cast<PROPVARIANT*>(&m_Value), &other, sizeof(PROPVARIANT));
+			std::memcpy(reinterpret_cast<PROPVARIANT*>(&m_PropVariant), &other, sizeof(PROPVARIANT));
 
 			std::memset(&other, 0, sizeof(PROPVARIANT));
 			other.vt = VT_EMPTY;
 			other.wReserved1 = 0;
 		}
+		return HResult::Success();
+	}
+	HResult VariantProperty::DoConvertToVariant(tagVARIANT& variant) const noexcept
+	{
+		return ::PropVariantToVariant(&m_PropVariant, &variant);
 	}
 
 	void VariantProperty::AssignBool(bool value) noexcept
 	{
-		AssignSimpleValue<VT_BOOL>(m_Value->boolVal, value ? VARIANT_TRUE : VARIANT_FALSE);
+		AssignSimpleValue<VT_BOOL>(m_PropVariant->boolVal, value ? VARIANT_TRUE : VARIANT_FALSE);
 	}
 	void VariantProperty::AssignUUID(const NativeUUID& value)
 	{
-		::InitVariantFromBuffer(&value, sizeof(value), reinterpret_cast<VARIANT*>(&m_Value));
+		::InitVariantFromBuffer(&value, sizeof(value), reinterpret_cast<VARIANT*>(&m_PropVariant));
 	}
 	void VariantProperty::AssignString(std::string_view value)
 	{
 		DoClear();
 
-		m_Value->vt = VT_BSTR;
-		m_Value->wReserved1 = 0;
-		m_Value->bstrVal = ::SysAllocStringByteLen(nullptr, static_cast<UINT>(value.size() * sizeof(OLECHAR)));
-		if (!m_Value->bstrVal)
+		m_PropVariant->vt = VT_BSTR;
+		m_PropVariant->wReserved1 = 0;
+		m_PropVariant->bstrVal = ::SysAllocStringByteLen(nullptr, static_cast<UINT>(value.size() * sizeof(OLECHAR)));
+		if (!m_PropVariant->bstrVal)
 		{
 			throw std::bad_alloc();
 		}
@@ -151,19 +156,19 @@ namespace kxf
 		{
 			for (size_t i = 0; i < value.size(); i++)
 			{
-				m_Value->bstrVal[i] = value[i];
+				m_PropVariant->bstrVal[i] = value[i];
 			}
-			m_Value->bstrVal[value.size()] = 0;
+			m_PropVariant->bstrVal[value.size()] = 0;
 		}
 	}
 	void VariantProperty::AssignString(std::wstring_view value)
 	{
 		DoClear();
 
-		m_Value->vt = VT_BSTR;
-		m_Value->wReserved1 = 0;
-		m_Value->bstrVal = ::SysAllocString(value.data());
-		if (!m_Value->bstrVal)
+		m_PropVariant->vt = VT_BSTR;
+		m_PropVariant->wReserved1 = 0;
+		m_PropVariant->bstrVal = ::SysAllocString(value.data());
+		if (!m_PropVariant->bstrVal)
 		{
 			throw std::bad_alloc();
 		}
@@ -172,7 +177,7 @@ namespace kxf
 	{
 		if (value)
 		{
-			AssignSimpleValue<VT_FILETIME>(m_Value->filetime, value.GetFileTime(TimeZone::UTC));
+			AssignSimpleValue<VT_FILETIME>(m_PropVariant->filetime, value.GetFileTime(TimeZone::UTC));
 		}
 		else
 		{
@@ -182,92 +187,92 @@ namespace kxf
 
 	void VariantProperty::AssignInt(int8_t value) noexcept
 	{
-		AssignSimpleValue<VT_I1>(m_Value->cVal, value);
+		AssignSimpleValue<VT_I1>(m_PropVariant->cVal, value);
 	}
 	void VariantProperty::AssignInt(int16_t value) noexcept
 	{
-		AssignSimpleValue<VT_I2>(m_Value->iVal, value);
+		AssignSimpleValue<VT_I2>(m_PropVariant->iVal, value);
 	}
 	void VariantProperty::AssignInt(int32_t value) noexcept
 	{
-		AssignSimpleValue<VT_I4>(m_Value->lVal, value);
+		AssignSimpleValue<VT_I4>(m_PropVariant->lVal, value);
 	}
 	void VariantProperty::AssignInt(int64_t value) noexcept
 	{
-		AssignSimpleValue<VT_I8>(m_Value->hVal.QuadPart, value);
+		AssignSimpleValue<VT_I8>(m_PropVariant->hVal.QuadPart, value);
 	}
 	void VariantProperty::AssignInt(uint8_t value) noexcept
 	{
-		AssignSimpleValue<VT_UI1>(m_Value->bVal, value);
+		AssignSimpleValue<VT_UI1>(m_PropVariant->bVal, value);
 	}
 	void VariantProperty::AssignInt(uint16_t value) noexcept
 	{
-		AssignSimpleValue<VT_UI2>(m_Value->uiVal, value);
+		AssignSimpleValue<VT_UI2>(m_PropVariant->uiVal, value);
 	}
 	void VariantProperty::AssignInt(uint32_t value) noexcept
 	{
-		AssignSimpleValue<VT_UI4>(m_Value->ulVal, value);
+		AssignSimpleValue<VT_UI4>(m_PropVariant->ulVal, value);
 	}
 	void VariantProperty::AssignInt(uint64_t value) noexcept
 	{
-		AssignSimpleValue<VT_UI8>(m_Value->uhVal.QuadPart, value);
+		AssignSimpleValue<VT_UI8>(m_PropVariant->uhVal.QuadPart, value);
 	}
 
 	void VariantProperty::AssignFloat(float value) noexcept
 	{
-		AssignSimpleValue<VT_R4>(m_Value->fltVal, value);
+		AssignSimpleValue<VT_R4>(m_PropVariant->fltVal, value);
 	}
 	void VariantProperty::AssignFloat(double value) noexcept
 	{
-		AssignSimpleValue<VT_R8>(m_Value->dblVal, value);
+		AssignSimpleValue<VT_R8>(m_PropVariant->dblVal, value);
 	}
 
 	std::optional<int8_t> VariantProperty::RetrieveInt8() const noexcept
 	{
-		return RetrieveSimpleValue<VT_I1>(m_Value->cVal);
+		return RetrieveSimpleValue<VT_I1>(m_PropVariant->cVal);
 	}
 	std::optional<int16_t> VariantProperty::RetrieveInt16() const noexcept
 	{
-		return RetrieveSimpleValue<VT_I2>(m_Value->iVal);
+		return RetrieveSimpleValue<VT_I2>(m_PropVariant->iVal);
 	}
 	std::optional<int32_t> VariantProperty::RetrieveInt32() const noexcept
 	{
-		return RetrieveSimpleValue<VT_I4>(m_Value->lVal);
+		return RetrieveSimpleValue<VT_I4>(m_PropVariant->lVal);
 	}
 	std::optional<int64_t> VariantProperty::RetrieveInt64() const noexcept
 	{
-		return RetrieveSimpleValue<VT_I8>(m_Value->hVal.QuadPart);
+		return RetrieveSimpleValue<VT_I8>(m_PropVariant->hVal.QuadPart);
 	}
 	std::optional<uint8_t> VariantProperty::RetrieveUInt8() const noexcept
 	{
-		return RetrieveSimpleValue<VT_UI1>(m_Value->bVal);
+		return RetrieveSimpleValue<VT_UI1>(m_PropVariant->bVal);
 	}
 	std::optional<uint16_t> VariantProperty::RetrieveUInt16() const noexcept
 	{
-		return RetrieveSimpleValue<VT_UI2>(m_Value->uiVal);
+		return RetrieveSimpleValue<VT_UI2>(m_PropVariant->uiVal);
 	}
 	std::optional<uint32_t> VariantProperty::RetrieveUInt32() const noexcept
 	{
-		return RetrieveSimpleValue<VT_UI4>(m_Value->ulVal);
+		return RetrieveSimpleValue<VT_UI4>(m_PropVariant->ulVal);
 	}
 	std::optional<uint64_t> VariantProperty::RetrieveUInt64() const noexcept
 	{
-		return RetrieveSimpleValue<VT_UI8>(m_Value->uhVal.QuadPart);
+		return RetrieveSimpleValue<VT_UI8>(m_PropVariant->uhVal.QuadPart);
 	}
 
 	std::optional<float> VariantProperty::RetrieveFloat32() const noexcept
 	{
-		return RetrieveSimpleValue<VT_R4>(m_Value->fltVal);
+		return RetrieveSimpleValue<VT_R4>(m_PropVariant->fltVal);
 	}
 	std::optional<double> VariantProperty::RetrieveFloat64() const noexcept
 	{
-		return RetrieveSimpleValue<VT_R8>(m_Value->fltVal);
+		return RetrieveSimpleValue<VT_R8>(m_PropVariant->fltVal);
 	}
 
 	VariantProperty::VariantProperty() noexcept
 	{
-		m_Value->vt = VT_EMPTY;
-		m_Value->wReserved1 = 0;
+		m_PropVariant->vt = VT_EMPTY;
+		m_PropVariant->wReserved1 = 0;
 	}
 	VariantProperty::~VariantProperty() noexcept
 	{
@@ -276,20 +281,20 @@ namespace kxf
 
 	int VariantProperty::GetNativeType() const noexcept
 	{
-		return m_Value->vt;
+		return m_PropVariant->vt;
 	}
 	void VariantProperty::SetNativeType(int nativeType) noexcept
 	{
-		m_Value->vt = nativeType;
+		m_PropVariant->vt = nativeType;
 	}
 	
 	bool VariantProperty::IsEmpty() const noexcept
 	{
-		return m_Value->vt == VARENUM::VT_EMPTY;
+		return m_PropVariant->vt == VARENUM::VT_EMPTY;
 	}
 	VariantPropertyType VariantProperty::GetType() const noexcept
 	{
-		switch (m_Value->vt)
+		switch (m_PropVariant->vt)
 		{
 			case VARENUM::VT_EMPTY:
 			{
@@ -364,15 +369,15 @@ namespace kxf
 	{
 		auto CompareDefault = [&]()
 		{
-			return ::PropVariantCompareEx(*m_Value, *other.m_Value, PVCU_DEFAULT, PVCF_USESTRCMP);
+			return ::PropVariantCompareEx(*m_PropVariant, *other.m_PropVariant, PVCU_DEFAULT, PVCF_USESTRCMP);
 		};
 
-		if (m_Value->vt != other.m_Value->vt)
+		if (m_PropVariant->vt != other.m_PropVariant->vt)
 		{
 			return CompareDefault();
 		}
 
-		switch (m_Value->vt)
+		switch (m_PropVariant->vt)
 		{
 			case VT_EMPTY:
 			{
@@ -381,108 +386,108 @@ namespace kxf
 
 			case VT_BOOL:
 			{
-				return -SimpleCompare(m_Value->boolVal, other.m_Value->boolVal);
+				return -SimpleTriWayCompare(m_PropVariant->boolVal, other.m_PropVariant->boolVal);
 			}
 			case VT_BSTR:
 			{
-				if (m_Value->bstrVal && other.m_Value->bstrVal)
+				if (m_PropVariant->bstrVal && other.m_PropVariant->bstrVal)
 				{
 					using Traits = std::char_traits<OLECHAR>;
-					return Traits::compare(m_Value->bstrVal, other.m_Value->bstrVal, std::min(Traits::length(m_Value->bstrVal), Traits::length(other.m_Value->bstrVal)));
+					return Traits::compare(m_PropVariant->bstrVal, other.m_PropVariant->bstrVal, std::min(Traits::length(m_PropVariant->bstrVal), Traits::length(other.m_PropVariant->bstrVal)));
 				}
-				return SimpleCompare(m_Value->bstrVal, other.m_Value->bstrVal);
+				return SimpleTriWayCompare(m_PropVariant->bstrVal, other.m_PropVariant->bstrVal);
 			}
 			case VT_LPSTR:
 			{
-				return ::PropVariantCompareEx(*m_Value, *other.m_Value, PVCU_DEFAULT, PVCF_USESTRCMPC);
+				return ::PropVariantCompareEx(*m_PropVariant, *other.m_PropVariant, PVCU_DEFAULT, PVCF_USESTRCMPC);
 			}
 			case VT_LPWSTR:
 			{
-				return ::PropVariantCompareEx(*m_Value, *other.m_Value, PVCU_DEFAULT, PVCF_USESTRCMP);
+				return ::PropVariantCompareEx(*m_PropVariant, *other.m_PropVariant, PVCU_DEFAULT, PVCF_USESTRCMP);
 			}
 			case VT_FILETIME:
 			{
-				return ::CompareFileTime(&m_Value->filetime, &other.m_Value->filetime);
+				return ::CompareFileTime(&m_PropVariant->filetime, &other.m_PropVariant->filetime);
 			}
 			case VT_DATE:
 			{
-				return ::SimpleCompare(m_Value->date, other.m_Value->date);
+				return ::SimpleTriWayCompare(m_PropVariant->date, other.m_PropVariant->date);
 			}
 			case VT_CLSID:
 			{
-				if (m_Value->puuid && other.m_Value->puuid)
+				if (m_PropVariant->puuid && other.m_PropVariant->puuid)
 				{
-					if (COM::FromGUID(*m_Value->puuid) == COM::FromGUID(*other.m_Value->puuid))
+					if (COM::FromGUID(*m_PropVariant->puuid) == COM::FromGUID(*other.m_PropVariant->puuid))
 					{
 						return 0;
 					}
 				}
-				return ::SimpleCompare(m_Value->puuid, other.m_Value->puuid);
+				return ::SimpleTriWayCompare(m_PropVariant->puuid, other.m_PropVariant->puuid);
 			}
 
 			case VT_I1:
 			{
-				return SimpleCompare(m_Value->cVal, other.m_Value->cVal);
+				return SimpleTriWayCompare(m_PropVariant->cVal, other.m_PropVariant->cVal);
 			}
 			case VT_UI1:
 			{
-				return SimpleCompare(m_Value->bVal, other.m_Value->bVal);
+				return SimpleTriWayCompare(m_PropVariant->bVal, other.m_PropVariant->bVal);
 			}
 			case VT_I2:
 			{
-				return SimpleCompare(m_Value->iVal, other.m_Value->iVal);
+				return SimpleTriWayCompare(m_PropVariant->iVal, other.m_PropVariant->iVal);
 			}
 			case VT_UI2:
 			{
-				return SimpleCompare(m_Value->uiVal, other.m_Value->uiVal);
+				return SimpleTriWayCompare(m_PropVariant->uiVal, other.m_PropVariant->uiVal);
 			}
 			case VT_I4:
 			{
-				return SimpleCompare(m_Value->lVal, other.m_Value->lVal);
+				return SimpleTriWayCompare(m_PropVariant->lVal, other.m_PropVariant->lVal);
 			}
 			case VT_UI4:
 			{
-				return SimpleCompare(m_Value->ulVal, other.m_Value->ulVal);
+				return SimpleTriWayCompare(m_PropVariant->ulVal, other.m_PropVariant->ulVal);
 			}
 			case VT_I8:
 			{
-				return SimpleCompare(m_Value->hVal.QuadPart, other.m_Value->hVal.QuadPart);
+				return SimpleTriWayCompare(m_PropVariant->hVal.QuadPart, other.m_PropVariant->hVal.QuadPart);
 			}
 			case VT_UI8:
 			{
-				return SimpleCompare(m_Value->uhVal.QuadPart, other.m_Value->uhVal.QuadPart);
+				return SimpleTriWayCompare(m_PropVariant->uhVal.QuadPart, other.m_PropVariant->uhVal.QuadPart);
 			}
 
 			case VT_R4:
 			{
-				return SimpleCompare(m_Value->fltVal, other.m_Value->fltVal);
+				return SimpleTriWayCompare(m_PropVariant->fltVal, other.m_PropVariant->fltVal);
 			}
 			case VT_R8:
 			{
-				return SimpleCompare(m_Value->dblVal, other.m_Value->dblVal);
+				return SimpleTriWayCompare(m_PropVariant->dblVal, other.m_PropVariant->dblVal);
 			}
 		};
 		return CompareDefault();
 	}
 	HResult VariantProperty::CopyToNative(tagPROPVARIANT& nativeProperty) const
 	{
-		return CopyPropVariant(nativeProperty, *m_Value);
+		return CopyPropVariant(nativeProperty, *m_PropVariant);
 	}
 
 	std::optional<bool> VariantProperty::ToBool() const noexcept
 	{
-		if (m_Value->vt == VT_BOOL)
+		if (m_PropVariant->vt == VT_BOOL)
 		{
-			return m_Value->boolVal != VARIANT_FALSE;
+			return m_PropVariant->boolVal != VARIANT_FALSE;
 		}
 		return {};
 	}
 	std::optional<NativeUUID> VariantProperty::ToUUID() const noexcept
 	{
-		if (m_Value->vt == (VT_ARRAY|VT_I1))
+		if (m_PropVariant->vt == (VT_ARRAY|VT_I1))
 		{
 			NativeUUID uuid;
-			if (HResult(::PropVariantToBuffer(*m_Value, &uuid, sizeof(uuid))))
+			if (HResult(::PropVariantToBuffer(*m_PropVariant, &uuid, sizeof(uuid))))
 			{
 				return uuid;
 			}
@@ -491,19 +496,19 @@ namespace kxf
 	}
 	std::optional<String> VariantProperty::ToString() const
 	{
-		switch (m_Value->vt)
+		switch (m_PropVariant->vt)
 		{
 			case VT_BSTR:
 			{
-				return m_Value->bstrVal;
+				return m_PropVariant->bstrVal;
 			}
 			case VT_LPSTR:
 			{
-				return m_Value->pszVal;
+				return m_PropVariant->pszVal;
 			}
 			case VT_LPWSTR:
 			{
-				return m_Value->pwszVal;
+				return m_PropVariant->pwszVal;
 			}
 		};
 		return {};
@@ -511,7 +516,7 @@ namespace kxf
 	std::optional<DateTime> VariantProperty::ToDateTime() const noexcept
 	{
 		FILETIME fileTime = {};
-		if (HResult(::PropVariantToFileTime(*m_Value, PSTF_LOCAL, &fileTime)))
+		if (HResult(::PropVariantToFileTime(*m_PropVariant, PSTF_LOCAL, &fileTime)))
 		{
 			return DateTime().SetFileTime(fileTime);
 		}
