@@ -132,6 +132,10 @@ namespace kxf
 	{
 		return ::PropVariantToVariant(&m_PropVariant, &variant);
 	}
+	HResult VariantProperty::DoConvertFromVariant(const tagVARIANT& variant) noexcept
+	{
+		return ::VariantToPropVariant(&variant, &m_PropVariant);
+	}
 
 	void VariantProperty::AssignBool(bool value) noexcept
 	{

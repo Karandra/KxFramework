@@ -47,6 +47,7 @@ namespace kxf
 			HResult DoClear() noexcept;
 			HResult DoCopy(const tagPROPVARIANT& other);
 			HResult DoMove(tagPROPVARIANT&& other) noexcept;
+			HResult DoConvertFromVariant(const tagVARIANT& variant) noexcept;
 			HResult DoConvertToVariant(tagVARIANT& variant) const noexcept;
 
 			void AssignBool(bool value) noexcept;
@@ -124,6 +125,11 @@ namespace kxf
 				:VariantProperty()
 			{
 				DoMove(std::move(*other.m_PropVariant));
+			}
+			VariantProperty(const tagVARIANT& value)
+				:VariantProperty()
+			{
+				DoConvertFromVariant(value);
 			}
 			
 			VariantProperty(bool value) noexcept
@@ -328,7 +334,14 @@ namespace kxf
 			}
 			VariantProperty& operator=(VariantProperty&& other) noexcept
 			{
+				DoClear();
 				DoMove(std::move(*other.m_PropVariant));
+				return *this;
+			}
+			VariantProperty& operator=(const tagVARIANT& value)
+			{
+				DoClear();
+				DoConvertFromVariant(value);
 				return *this;
 			}
 
