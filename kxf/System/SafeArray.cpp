@@ -6,7 +6,7 @@ namespace kxf
 {
 	HResult SafeArray::DoClear() noexcept
 	{
-		::SafeArrayDestroy(&m_SafeArray);
+		return ::SafeArrayDestroy(&m_SafeArray);
 	}
 	HResult SafeArray::DoCopy(const tagSAFEARRAY& other) noexcept
 	{

@@ -10,10 +10,36 @@
 struct IWbemLocator;
 struct IWbemServices;
 struct IWbemClassObject;
+struct IWbemQualifierSet;
 
 namespace kxf
 {
 	class WMIClassObject;
+	class WMIQualifierSet;
+
+	enum class WMIClassObjectFlag: uint32_t
+	{
+		None = 0,
+
+		LocalOnly = 1 << 0,
+		PropagatedOnly = 1 << 1,
+		SystemOnly = 1 << 2,
+		NonSystemOnly = 1 << 3
+	};
+	KxFlagSet_Declare(WMIClassObjectFlag);
+
+	enum class WMIClassObjectComparisonFlag: uint32_t
+	{
+		None = 0,
+
+		IgnoreObjectSource = 1 << 0,
+		IgnoreDefaultValues = 1 << 1,
+		IgnoreQualifiers = 1 << 2,
+		IgnoreFlavor = 1 << 3,
+		IgnoreClass = 1 << 4,
+		IgnoreCase = 1 << 5
+	};
+	KxFlagSet_Declare(WMIClassObjectComparisonFlag);
 }
 
 namespace kxf
@@ -58,34 +84,11 @@ namespace kxf
 			WMINamespace& operator=(const WMINamespace&) noexcept;
 	};
 }
+
 namespace kxf
 {
-	enum class WMIClassObjectFlag: uint32_t
-	{
-		None = 0,
-
-		LocalOnly = 1 << 0,
-		PropagatedOnly = 1 << 1
-	};
-	KxFlagSet_Declare(WMIClassObjectFlag);
-
-	enum class WMIClassObjectComparisonFlag: uint32_t
-	{
-		None = 0,
-
-		IgnoreObjectSource = 1 << 0,
-		IgnoreDefaultValues = 1 << 1,
-		IgnoreQualifiers = 1 << 2,
-		IgnoreFlavor = 1 << 3,
-		IgnoreClass = 1 << 4,
-		IgnoreCase = 1 << 5
-	};
-	KxFlagSet_Declare(WMIClassObjectComparisonFlag);
-
 	class KX_API WMIClassObject final
 	{
-		friend class WMINamespace;
-
 		private:
 			COMPtr<IWbemClassObject> m_ClassObject;
 
@@ -100,15 +103,15 @@ namespace kxf
 			bool IsNull() const noexcept;
 			bool IsSameAs(const WMIClassObject& other, FlagSet<WMIClassObjectComparisonFlag> flags = {}) const noexcept;
 
-			COMPtr<IWbemClassObject> Get() const noexcept;
-
 			String GetName() const;
 			String GetClassName() const;
+
+			Enumerator<String> EnumPropertyNames(FlagSet<WMIClassObjectFlag> flags = {}) const;
 			Any GetProperty(const kxf::String& name) const;
 
-			Enumerator<std::pair<String, Any>> EnumQualifiers() const;
-			Enumerator<String> EnumQualifierNames(FlagSet<WMIClassObjectFlag> flags = {}) const;
-			Any GetQualifier(const kxf::String& name) const;
+			WMIQualifierSet GetQualifierSet() const;
+			WMIQualifierSet GetMethodQualifierSet(const kxf::String& name) const;
+			WMIQualifierSet GetPropertyQualifierSet(const kxf::String& name) const;
 
 		public:
 			explicit operator bool() const noexcept
@@ -131,5 +134,40 @@ namespace kxf
 
 			WMIClassObject& operator=(WMIClassObject&& other) noexcept;
 			WMIClassObject& operator=(const WMIClassObject&) noexcept;
+	};
+}
+namespace kxf
+{
+	class KX_API WMIQualifierSet final
+	{
+		private:
+			COMPtr<IWbemQualifierSet> m_QualifierSet;
+
+		public:
+			WMIQualifierSet() noexcept;
+			WMIQualifierSet(COMPtr<IWbemQualifierSet> qualifierSet) noexcept;
+			WMIQualifierSet(const WMIQualifierSet&) noexcept;
+			WMIQualifierSet(WMIQualifierSet&&) noexcept;
+			~WMIQualifierSet();
+
+		public:
+			bool IsNull() const noexcept;
+
+			Enumerator<std::pair<String, Any>> EnumQualifiers() const;
+			Enumerator<String> EnumNames(FlagSet<WMIClassObjectFlag> flags = {}) const;
+			Any GetValue(const kxf::String& name) const;
+
+		public:
+			explicit operator bool() const noexcept
+			{
+				return !IsNull();
+			}
+			bool operator!() const noexcept
+			{
+				return IsNull();
+			}
+
+			WMIQualifierSet& operator=(WMIQualifierSet&& other) noexcept;
+			WMIQualifierSet& operator=(const WMIQualifierSet&) noexcept;
 	};
 }

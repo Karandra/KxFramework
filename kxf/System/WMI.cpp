@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "WMI.h"
+#include "SafeArray.h"
 #include "VariantProperty.h"
 #include "kxf/Utility/Enumerator.h"
-#include "kxf/Utility/ScopeGuard.h"
 #include <Windows.h>
 #include <wbemcli.h>
 #include "UndefWindows.h"
@@ -26,6 +26,15 @@ namespace
 	{
 		return value.wc_str();
 	}
+	String FromBSTR(const _bstr_t& bstr)
+	{
+		return String(static_cast<const XChar*>(bstr), static_cast<size_t>(bstr.length()));
+	}
+	String FromBSTR(const BSTR bstr)
+	{
+		return String(static_cast<const XChar*>(bstr));
+	}
+
 	const BSTR StringOrNull(const _bstr_t& value) noexcept
 	{
 		if (value.length() != 0)
@@ -105,12 +114,15 @@ namespace kxf
 		return Utility::MakeConvertingEnumerator<String>([](WMIClassObject classObject, IEnumerator& enumerator) -> std::optional<String>
 		{
 			// Only return the class object if it has its 'dynamic' qualifier set ti 'true'
-			if (classObject.GetQualifier(wxS("Dynamic")).QueryAs<bool>() == true)
+			if (auto qualifierSet = classObject.GetQualifierSet())
 			{
-				String name = classObject.GetClassName();
-				if (!name.IsEmpty())
+				if (qualifierSet.GetValue(wxS("Dynamic")).QueryAs<bool>() == true)
 				{
-					return name;
+					String name = classObject.GetClassName();
+					if (!name.IsEmpty())
+					{
+						return name;
+					}
 				}
 			}
 			enumerator.SkipCurrent();
@@ -162,6 +174,7 @@ namespace kxf
 	WMINamespace& WMINamespace::operator=(const WMINamespace&) noexcept = default;
 	WMINamespace& WMINamespace::operator=(WMINamespace&& other) noexcept = default;
 }
+
 namespace kxf
 {
 	WMIClassObject::WMIClassObject() noexcept = default;
@@ -169,6 +182,9 @@ namespace kxf
 		:m_ClassObject(std::move(classObject))
 	{
 	}
+	WMIClassObject::WMIClassObject(const WMIClassObject&) noexcept = default;
+	WMIClassObject::WMIClassObject(WMIClassObject&&) noexcept = default;
+	WMIClassObject::~WMIClassObject() = default;
 
 	bool WMIClassObject::IsNull() const noexcept
 	{
@@ -198,11 +214,6 @@ namespace kxf
 		}
 	}
 
-	COMPtr<IWbemClassObject> WMIClassObject::Get() const noexcept
-	{
-		return m_ClassObject;
-	}
-
 	String WMIClassObject::GetName() const
 	{
 		return GetProperty(wxS("Name")).GetAs<String>();
@@ -211,94 +222,142 @@ namespace kxf
 	{
 		return GetProperty(wxS("__Class")).GetAs<String>();
 	}
-	Any WMIClassObject::GetProperty(const kxf::String& name) const
-	{
-		VariantProperty property;
-		if (HResult(m_ClassObject->Get(name.wc_str(), WBEM_FLAG_ALWAYS, reinterpret_cast<VARIANT*>(&property), nullptr, nullptr)))
-		{
-			return property.ToAny();
-		}
-		return {};
-	}
 
-	Enumerator<std::pair<String, kxf::Any>> WMIClassObject::EnumQualifiers() const
+	Enumerator<String> WMIClassObject::EnumPropertyNames(FlagSet<WMIClassObjectFlag> flags) const
 	{
-		COMPtr<IWbemQualifierSet> qualifierSet;
-		if (HResult result = m_ClassObject->GetQualifierSet(&qualifierSet))
+		auto MapFlags = [](FlagSet<WMIClassObjectFlag> flags) constexpr noexcept
 		{
-			return [qualifierSet = std::move(qualifierSet)]() -> std::optional<std::pair<String, kxf::Any>>
+			FlagSet<long> nativeFlags;
+			nativeFlags.Add(WBEM_FLAG_LOCAL_ONLY, flags & WMIClassObjectFlag::LocalOnly);
+			nativeFlags.Add(WBEM_FLAG_PROPAGATED_ONLY, flags & WMIClassObjectFlag::PropagatedOnly);
+			nativeFlags.Add(WBEM_FLAG_SYSTEM_ONLY, flags & WMIClassObjectFlag::SystemOnly);
+			nativeFlags.Add(WBEM_FLAG_NONSYSTEM_ONLY, flags & WMIClassObjectFlag::NonSystemOnly);
+
+			return *nativeFlags;
+		};
+
+		SafeArrayPtr nameArrayPtr;
+		if (HResult result = m_ClassObject->GetNames(nullptr, MapFlags(flags), nullptr, &nameArrayPtr))
+		{
+			SafeArray nameArray = std::move(nameArrayPtr);
+			size_t size = nameArray.GetSize();
+			return Utility::MakeEnumerator([this, nameArray = std::move(nameArray), index = 0_zu]() mutable -> std::optional<String>
 			{
-				BSTRPtr qualifierName;
-				VariantProperty qualifierValue;
-				if (HResult result = qualifierSet->Next(0, &qualifierName, reinterpret_cast<VARIANT*>(&qualifierValue), nullptr))
+				if (auto items = nameArray.GetItems<BSTR>())
 				{
-					return std::make_pair(qualifierName.Get(), qualifierValue.ToAny());
+					return FromBSTR(items[index++]);
 				}
 				return {};
-			};
+			}, size);
 		}
 		return {};
 	}
-	Enumerator<String> WMIClassObject::EnumQualifierNames(FlagSet<WMIClassObjectFlag> flags) const
+	Any WMIClassObject::GetProperty(const kxf::String& name) const
+	{
+		VARIANT value;
+		if (HResult(m_ClassObject->Get(name.wc_str(), WBEM_FLAG_ALWAYS, &value, nullptr, nullptr)))
+		{
+			return VariantProperty(value).ToAny();
+		}
+		return {};
+	}
+
+	WMIQualifierSet WMIClassObject::GetQualifierSet() const
 	{
 		COMPtr<IWbemQualifierSet> qualifierSet;
 		if (HResult result = m_ClassObject->GetQualifierSet(&qualifierSet))
 		{
-			auto MapFlags = [](FlagSet<WMIClassObjectFlag> flags) constexpr noexcept
-			{
-				FlagSet<long> nativeFlags;
-				nativeFlags.Add(WBEM_FLAG_LOCAL_ONLY, flags & WMIClassObjectFlag::LocalOnly);
-				nativeFlags.Add(WBEM_FLAG_PROPAGATED_ONLY, flags & WMIClassObjectFlag::PropagatedOnly);
-
-				return *nativeFlags;
-			};
-
-			SafeArrayPtr items;
-			if (result = qualifierSet->GetNames(MapFlags(flags), &items))
-			{
-				LONG lower = 0;
-				LONG upper = 0;
-				result = ::SafeArrayGetLBound(items.Get(), 1, &lower);
-				result = ::SafeArrayGetUBound(items.Get(), 1, &upper);
-
-				if (result)
-				{
-					return Utility::MakeEnumerator([qualifierSet = std::move(qualifierSet), items = std::move(items), index = 0_zu]() mutable -> std::optional<String>
-					{
-						void* data = nullptr;
-						if (HResult(::SafeArrayAccessData(items.Get(), &data)))
-						{
-							Utility::ScopeGuard atExit = [&]()
-							{
-								::SafeArrayUnaccessData(items.Get());
-							};
-							return reinterpret_cast<BSTR>(data)[index++];
-						}
-						return {};
-					}, upper - lower);
-				}
-			}
+			return qualifierSet;
 		}
 		return {};
 	}
-	Any WMIClassObject::GetQualifier(const kxf::String& name) const
+	WMIQualifierSet WMIClassObject::GetMethodQualifierSet(const kxf::String& name) const
 	{
 		COMPtr<IWbemQualifierSet> qualifierSet;
-		if (HResult result = m_ClassObject->GetQualifierSet(&qualifierSet))
+		if (HResult result = m_ClassObject->GetMethodQualifierSet(name.wc_str(), &qualifierSet))
 		{
-			VariantProperty qualifierValue;
-			if (result = qualifierSet->Get(name.wc_str(), 0, reinterpret_cast<VARIANT*>(&qualifierValue), nullptr))
-			{
-				return qualifierValue.ToAny();
-			}
+			return qualifierSet;
 		}
 		return {};
 	}
-
-	WMIClassObject::WMIClassObject(const WMIClassObject&) noexcept = default;
-	WMIClassObject::WMIClassObject(WMIClassObject&&) noexcept = default;
-	WMIClassObject::~WMIClassObject() = default;
+	WMIQualifierSet WMIClassObject::GetPropertyQualifierSet(const kxf::String& name) const
+	{
+		COMPtr<IWbemQualifierSet> qualifierSet;
+		if (HResult result = m_ClassObject->GetPropertyQualifierSet(name.wc_str(), &qualifierSet))
+		{
+			return qualifierSet;
+		}
+		return {};
+	}
 
 	WMIClassObject& WMIClassObject::operator=(const WMIClassObject&) noexcept = default;
 	WMIClassObject& WMIClassObject::operator=(WMIClassObject&& other) noexcept = default;
+}
+namespace kxf
+{
+	WMIQualifierSet::WMIQualifierSet() noexcept = default;
+	WMIQualifierSet::WMIQualifierSet(COMPtr<IWbemQualifierSet> qualifierSet) noexcept
+		:m_QualifierSet(std::move(qualifierSet))
+	{
+	}
+	WMIQualifierSet::WMIQualifierSet(const WMIQualifierSet&) noexcept = default;
+	WMIQualifierSet::WMIQualifierSet(WMIQualifierSet&&) noexcept = default;
+	WMIQualifierSet::~WMIQualifierSet() = default;
+
+	bool WMIQualifierSet::IsNull() const noexcept
+	{
+		return m_QualifierSet.IsNull();
+	}
+
+	Enumerator<std::pair<String, kxf::Any>> WMIQualifierSet::EnumQualifiers() const
+	{
+		return [this]() -> std::optional<std::pair<String, kxf::Any>>
+		{
+			BSTRPtr name;
+			VARIANT value;
+			if (HResult result = m_QualifierSet->Next(0, &name, &value, nullptr))
+			{
+				return std::make_pair(name.Get(), VariantProperty(value).ToAny());
+			}
+			return {};
+		};
+	}
+	Enumerator<String> WMIQualifierSet::EnumNames(FlagSet<WMIClassObjectFlag> flags) const
+	{
+		auto MapFlags = [](FlagSet<WMIClassObjectFlag> flags) constexpr noexcept
+		{
+			FlagSet<long> nativeFlags;
+			nativeFlags.Add(WBEM_FLAG_LOCAL_ONLY, flags & WMIClassObjectFlag::LocalOnly);
+			nativeFlags.Add(WBEM_FLAG_PROPAGATED_ONLY, flags & WMIClassObjectFlag::PropagatedOnly);
+
+			return *nativeFlags;
+		};
+		SafeArrayPtr nameArrayPtr;
+		if (HResult result = m_QualifierSet->GetNames(MapFlags(flags), &nameArrayPtr))
+		{
+			SafeArray nameArray = std::move(nameArrayPtr);
+			size_t size = nameArray.GetSize();
+			return Utility::MakeEnumerator([this, nameArray = std::move(nameArray), index = 0_zu]() mutable -> std::optional<String>
+			{
+				if (auto items = nameArray.GetItems<BSTR>())
+				{
+					return FromBSTR(items[index++]);
+				}
+				return {};
+			}, size);
+		}
+		return {};
+	}
+	Any WMIQualifierSet::GetValue(const kxf::String& name) const
+	{
+		VARIANT value;
+		if (HResult result = m_QualifierSet->Get(name.wc_str(), 0, &value, nullptr))
+		{
+			return VariantProperty(value).ToAny();
+		}
+		return {};
+	}
+
+	WMIQualifierSet& WMIQualifierSet::operator=(const WMIQualifierSet&) noexcept = default;
+	WMIQualifierSet& WMIQualifierSet::operator=(WMIQualifierSet&& other) noexcept = default;
 }
