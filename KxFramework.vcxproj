@@ -318,6 +318,7 @@
     <ClInclude Include="kxf\System\Private\ErrorCode.h" />
     <ClInclude Include="kxf\System\Private\System.h" />
     <ClInclude Include="kxf\System\Private\SystemInformationDefinesMapping.h" />
+    <ClInclude Include="kxf\System\SafeArray.h" />
     <ClInclude Include="kxf\System\SystemAppearance.h" />
     <ClInclude Include="kxf\System\SystemProcess.h" />
     <ClInclude Include="kxf\System\SystemProcess\CreateProcessExecutor.h" />
@@ -740,6 +741,7 @@
     <ClCompile Include="kxf\System\NtStatus.cpp" />
     <ClCompile Include="kxf\System\Private\ErrorCode.cpp" />
     <ClCompile Include="kxf\System\Private\System.cpp" />
+    <ClCompile Include="kxf\System\SafeArray.cpp" />
     <ClCompile Include="kxf\System\SystemAppearance.cpp" />
     <ClCompile Include="kxf\System\SystemProcess.cpp" />
     <ClCompile Include="kxf\System\SystemProcess\CreateProcessExecutor.cpp" />

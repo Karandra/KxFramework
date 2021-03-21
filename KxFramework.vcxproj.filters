@@ -1821,6 +1821,9 @@
     <ClInclude Include="kxf\Utility\RecursiveCollectionEnumerator.h">
       <Filter>kxf\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\System\SafeArray.h">
+      <Filter>kxf\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2713,6 +2716,9 @@
       <Filter>kxf\Drawing\GDIRenderer\&lt;GDIObjects&gt;</Filter>
     </ClCompile>
     <ClCompile Include="kxf\System\WMI.cpp">
+      <Filter>kxf\System</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\System\SafeArray.cpp">
       <Filter>kxf\System</Filter>
     </ClCompile>
   </ItemGroup>
