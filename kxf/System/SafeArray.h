@@ -1,7 +1,5 @@
 #pragma once
 #include "Common.h"
-#include "COM.h"
-#include "kxf/General/AlignedObjectStorage.h"
 #include "HResult.h"
 struct tagSAFEARRAY;
 
@@ -42,29 +40,11 @@ namespace kxf
 		friend class SafeArrayItems;
 
 		private:
-			struct Representation
-			{
-				struct Bound
-				{
-					uint32_t cElements;
-					int32_t lLbound;
-				};
-
-				uint16_t cDims;
-				uint16_t fFeatures;
-				uint32_t cbElements;
-				uint32_t cLocks;
-				void* pvData;
-				Bound rgsabound[1];
-			};
-
-		private:
-			AlignedObjectStorage<tagSAFEARRAY, sizeof(Representation), alignof(Representation)> m_SafeArray;
+			tagSAFEARRAY* m_SafeArray = nullptr;
 
 		private:
 			HResult DoClear() noexcept;
 			HResult DoCopy(const tagSAFEARRAY& other) noexcept;
-			HResult DoMove(tagSAFEARRAY&& other) noexcept;
 
 			HResult AccessData(void**& data) noexcept;
 			void UnaccessData() noexcept;
@@ -74,11 +54,12 @@ namespace kxf
 			SafeArray(const tagSAFEARRAY& other) noexcept;
 			SafeArray(const SafeArray& other) noexcept;
 			SafeArray(SafeArray&& other) noexcept;
-			SafeArray(SafeArrayPtr&& other) noexcept;
 			~SafeArray() noexcept;
 
 		public:
 			bool IsNull() const noexcept;
+			void Attach(tagSAFEARRAY* ptr) noexcept;
+			tagSAFEARRAY* Detach() noexcept;
 
 			bool IsEmpty() const noexcept;
 			size_t GetSize(size_t dimension = 1) const noexcept;
@@ -97,14 +78,19 @@ namespace kxf
 				return const_cast<SafeArray&>(*this);
 			}
 
-		public:
-			const tagSAFEARRAY* operator&() const noexcept
+			tagSAFEARRAY** GetAddress() noexcept
 			{
 				return &m_SafeArray;
 			}
+
+		public:
+			const tagSAFEARRAY* operator&() const noexcept
+			{
+				return m_SafeArray;
+			}
 			tagSAFEARRAY* operator&() noexcept
 			{
-				return &m_SafeArray;
+				return m_SafeArray;
 			}
 
 			const tagSAFEARRAY& operator*() const noexcept
@@ -118,7 +104,6 @@ namespace kxf
 
 			SafeArray& operator=(const SafeArray& other) noexcept;
 			SafeArray& operator=(SafeArray&& other) noexcept;
-			SafeArray& operator=(SafeArrayPtr&& other) noexcept;
 
 			explicit operator bool() const noexcept
 			{
@@ -141,19 +126,27 @@ namespace kxf
 
 		private:
 			SafeArray& m_SafeArray;
-			TValue** m_Items = nullptr;
+			TValue* m_Items = nullptr;
 			HResult m_Result = HResult::Fail();
 
 		public:
 			SafeArrayItems(SafeArray& safeArray) noexcept
 				:m_SafeArray(safeArray)
 			{
-				void** items = reinterpret_cast<void**>(m_Items);
+				void** items = reinterpret_cast<void**>(&m_Items);
 				m_Result = safeArray.AccessData(items);
+
+				if (!m_Result)
+				{
+					m_Items = nullptr;
+				}
 			}
 			~SafeArrayItems()
 			{
-				m_SafeArray.UnaccessData();
+				if (m_Items)
+				{
+					m_SafeArray.UnaccessData();
+				}
 			}
 
 		public:
@@ -165,11 +158,11 @@ namespace kxf
 		public:
 			TValue& operator[](size_t index) noexcept
 			{
-				return *m_Items[index];
+				return m_Items[index];
 			}
 			const TValue& operator[](size_t index) const noexcept
 			{
-				return *m_Items[index];
+				return m_Items[index];
 			}
 
 			explicit operator bool() const noexcept

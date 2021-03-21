@@ -236,10 +236,9 @@ namespace kxf
 			return *nativeFlags;
 		};
 
-		SafeArrayPtr nameArrayPtr;
-		if (HResult result = m_ClassObject->GetNames(nullptr, MapFlags(flags), nullptr, &nameArrayPtr))
+		SafeArray nameArray;
+		if (HResult result = m_ClassObject->GetNames(nullptr, MapFlags(flags), nullptr, nameArray.GetAddress()))
 		{
-			SafeArray nameArray = std::move(nameArrayPtr);
 			size_t size = nameArray.GetSize();
 			return Utility::MakeEnumerator([this, nameArray = std::move(nameArray), index = 0_zu]() mutable -> std::optional<String>
 			{
@@ -332,10 +331,9 @@ namespace kxf
 
 			return *nativeFlags;
 		};
-		SafeArrayPtr nameArrayPtr;
-		if (HResult result = m_QualifierSet->GetNames(MapFlags(flags), &nameArrayPtr))
+		SafeArray nameArray;
+		if (HResult result = m_QualifierSet->GetNames(MapFlags(flags), nameArray.GetAddress()))
 		{
-			SafeArray nameArray = std::move(nameArrayPtr);
 			size_t size = nameArray.GetSize();
 			return Utility::MakeEnumerator([this, nameArray = std::move(nameArray), index = 0_zu]() mutable -> std::optional<String>
 			{

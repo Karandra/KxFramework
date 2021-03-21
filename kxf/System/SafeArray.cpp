@@ -6,40 +6,29 @@ namespace kxf
 {
 	HResult SafeArray::DoClear() noexcept
 	{
-		return ::SafeArrayDestroy(&m_SafeArray);
+		if (auto ptr = Detach())
+		{
+			return ::SafeArrayDestroy(ptr);
+		}
+		return HResult::False();
 	}
 	HResult SafeArray::DoCopy(const tagSAFEARRAY& other) noexcept
 	{
-		if (&other != &m_SafeArray)
+		if (m_SafeArray != &other)
 		{
 			HResult hr = HResult::Fail();
-
-			SafeArrayPtr ptr;
-			if (hr = ::SafeArrayCopy(const_cast<SAFEARRAY*>(&other), &ptr))
-			{
-				DoMove(std::move(*ptr.Detach()));
-			}
-			return hr;
+			return ::SafeArrayCopy(const_cast<SAFEARRAY*>(&other), &m_SafeArray);
 		}
-		return HResult::Success();
-	}
-	HResult SafeArray::DoMove(tagSAFEARRAY&& other) noexcept
-	{
-		if (&other != &m_SafeArray)
-		{
-			std::memcpy(&m_SafeArray, &other, sizeof(other));
-			std::memset(&other, 0, sizeof(other));
-		}
-		return HResult::Success();
+		return HResult::False();
 	}
 
 	HResult SafeArray::AccessData(void**& data) noexcept
 	{
-		return ::SafeArrayAccessData(&m_SafeArray, data);
+		return ::SafeArrayAccessData(m_SafeArray, data);
 	}
 	void SafeArray::UnaccessData() noexcept
 	{
-		::SafeArrayUnaccessData(&m_SafeArray);
+		::SafeArrayUnaccessData(m_SafeArray);
 	}
 
 	SafeArray::SafeArray() noexcept = default;
@@ -53,14 +42,7 @@ namespace kxf
 	}
 	SafeArray::SafeArray(SafeArray&& other) noexcept
 	{
-		DoMove(std::move(*other.m_SafeArray));
-	}
-	SafeArray::SafeArray(SafeArrayPtr&& other) noexcept
-	{
-		if (DoMove(std::move(*other)))
-		{
-			other.Detach();
-		}
+		m_SafeArray = other.Detach();
 	}
 	SafeArray::~SafeArray() noexcept
 	{
@@ -69,46 +51,73 @@ namespace kxf
 
 	bool SafeArray::IsNull() const noexcept
 	{
-		VARTYPE type = VT_NULL;
-		if (HResult result = ::SafeArrayGetVartype(const_cast<SAFEARRAY*>(&m_SafeArray), &type))
+		if (m_SafeArray)
 		{
-			return type == VT_NULL;
+			VARTYPE type = VT_NULL;
+			if (HResult result = ::SafeArrayGetVartype(m_SafeArray, &type))
+			{
+				return type == VT_NULL;
+			}
+			return false;
 		}
-		return false;
+		return true;
+	}
+	void SafeArray::Attach(tagSAFEARRAY* ptr) noexcept
+	{
+		DoClear();
+		m_SafeArray = ptr;
+	}
+	tagSAFEARRAY* SafeArray::Detach() noexcept
+	{
+		auto ptr = m_SafeArray;
+		m_SafeArray = nullptr;
+		return ptr;
 	}
 
 	bool SafeArray::IsEmpty() const noexcept
 	{
-		VARTYPE type = VT_NULL;
-		if (HResult result = ::SafeArrayGetVartype(const_cast<SAFEARRAY*>(&m_SafeArray), &type))
+		if (m_SafeArray)
 		{
-			return type == VT_NULL || type == VT_EMPTY;
+			VARTYPE type = VT_NULL;
+			if (HResult result = ::SafeArrayGetVartype(m_SafeArray, &type))
+			{
+				return type == VT_NULL || type == VT_EMPTY;
+			}
+			return true;
 		}
 		return true;
 	}
 	size_t SafeArray::GetSize(size_t dimension) const noexcept
 	{
-		decltype(auto) items = const_cast<SAFEARRAY*>(&m_SafeArray);
-		LONG lower = 0;
-		LONG upper = 0;
-
-		if (HResult(::SafeArrayGetLBound(items, static_cast<UINT>(dimension), &lower)) && (HResult(::SafeArrayGetUBound(items, static_cast<UINT>(dimension), &upper))))
+		if (m_SafeArray)
 		{
-			return upper - lower + 1;
+			LONG lower = 0;
+			LONG upper = 0;
+
+			if (HResult(::SafeArrayGetLBound(m_SafeArray, static_cast<UINT>(dimension), &lower)) && (HResult(::SafeArrayGetUBound(m_SafeArray, static_cast<UINT>(dimension), &upper))))
+			{
+				return upper - lower + 1;
+			}
 		}
 		return 0;
 	}
 	size_t SafeArray::GetDimensions() const noexcept
 	{
-		return ::SafeArrayGetDim(const_cast<SAFEARRAY*>(&m_SafeArray));
+		return m_SafeArray ? ::SafeArrayGetDim(m_SafeArray) : 0;
 	}
 	SafeArrayType SafeArray::GetType() const noexcept
 	{
+		if (!m_SafeArray)
+		{
+			return SafeArrayType::None;
+		}
+
 		VARTYPE type = VT_NULL;
-		if (HResult result = ::SafeArrayGetVartype(const_cast<SAFEARRAY*>(&m_SafeArray), &type))
+		if (HResult result = ::SafeArrayGetVartype(m_SafeArray, &type))
 		{
 			switch (type)
 			{
+				case VARENUM::VT_NULL:
 				case VARENUM::VT_EMPTY:
 				{
 					return SafeArrayType::None;
@@ -184,21 +193,12 @@ namespace kxf
 	{
 		DoClear();
 		DoCopy(*other.m_SafeArray);
+
 		return *this;
 	}
 	SafeArray& SafeArray::operator=(SafeArray&& other) noexcept
 	{
-		DoClear();
-		DoMove(std::move(*other.m_SafeArray));
-		return *this;
-	}
-	SafeArray& SafeArray::operator=(SafeArrayPtr&& other) noexcept
-	{
-		DoClear();
-		if (DoMove(std::move(*other)))
-		{
-			other.Detach();
-		}
+		Attach(other.Detach());
 		return *this;
 	}
 }

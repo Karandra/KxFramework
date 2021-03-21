@@ -68,11 +68,6 @@ namespace kxf::COM
 		::SysFreeString(data);
 	}
 
-	void FreeSafeArray(tagSAFEARRAY* safeArray) noexcept
-	{
-		::SafeArrayDestroy(safeArray);
-	}
-
 	::_GUID ToGUID(const NativeUUID& uuid) noexcept
 	{
 		::GUID guid = {};

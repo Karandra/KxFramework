@@ -10,7 +10,6 @@
 #include <new>
 struct IUnknown;
 struct _GUID;
-struct tagSAFEARRAY;
 
 namespace kxf
 {
@@ -59,8 +58,6 @@ namespace kxf::COM
 
 	KX_API wchar_t* AllocateBSTR(const wchar_t* data) noexcept;
 	KX_API void FreeBSTR(wchar_t* data) noexcept;
-
-	KX_API void FreeSafeArray(tagSAFEARRAY* safeArray) noexcept;
 
 	KX_API::_GUID ToGUID(const NativeUUID& uuid) noexcept;
 	KX_API NativeUUID FromGUID(const ::_GUID& guid) noexcept;
@@ -269,25 +266,6 @@ namespace kxf
 					m_Value = ptr;
 				}
 		};
-
-		class SafeArrayPtrTraits final
-		{
-			private:
-				tagSAFEARRAY*& m_Value;
-
-			public:
-				SafeArrayPtrTraits(tagSAFEARRAY*& ptr)
-					:m_Value(ptr)
-				{
-				}
-
-			public:
-				void Reset(tagSAFEARRAY* ptr = nullptr) noexcept
-				{
-					COM::FreeSafeArray(m_Value);
-					m_Value = ptr;
-				}
-		};
 	}
 
 	template<class TValue_>
@@ -366,7 +344,6 @@ namespace kxf
 	using COMMemoryPtr = COM::Private::BasicPtr<T, COM::Private::MemoryPtrTraits<T>>;
 
 	using BSTRPtr = COM::Private::BasicPtr<wchar_t, COM::Private::BSTRPtrTraits>;
-	using SafeArrayPtr = COM::Private::BasicPtr<tagSAFEARRAY, COM::Private::SafeArrayPtrTraits>;
 }
 
 namespace kxf::COM
