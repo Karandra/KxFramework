@@ -74,13 +74,19 @@ namespace
 	{
 		String methodString = FormatMethodString(dictionarySize, method);
 		constexpr const wchar_t* names[] = {L"x", L"s", L"mt", L"m"};
-		VariantProperty values[] =
+		const VariantProperty values[] =
 		{
 			static_cast<uint32_t>(compressionLevel),
 			solidArchive,
 			multithreaded,
 			methodString
 		};
+
+		PROPVARIANT variantValues[std::size(values)] = {};
+		for (size_t i = 0; i < std::size(values); i++)
+		{
+			values[i].CopyToNative(variantValues[i]);
+		}
 
 		COMPtr<ISetProperties> propertiesSet;
 		archive.QueryInterface(COM::ToGUID(SevenZip::GUID::IID_ISetProperties), reinterpret_cast<void**>(&propertiesSet));
@@ -89,7 +95,7 @@ namespace
 			// Archive does not support setting compression properties
 			return false;
 		}
-		return HResult(propertiesSet->SetProperties(names, reinterpret_cast<const PROPVARIANT*>(values), std::size(values))).IsSuccess();
+		return HResult(propertiesSet->SetProperties(names, variantValues, std::size(variantValues))).IsSuccess();
 	}
 
 	template<class T>
