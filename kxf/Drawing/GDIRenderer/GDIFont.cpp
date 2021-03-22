@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "GDIFont.h"
 #include "../Font.h"
 #include <wx/fontutil.h>

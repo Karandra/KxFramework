@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "UniversallyUniqueID.h"
 #include "LocallyUniqueID.h"
 #include "RegEx.h"

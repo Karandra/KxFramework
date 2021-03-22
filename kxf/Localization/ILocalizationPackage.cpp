@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "ILocalizationPackage.h"
 #include "kxf/Utility/Numeric.h"
 

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "ArchiveExtractCallback.h"
 #include "OutStreamWrapper.h"
 #include "Utility.h"

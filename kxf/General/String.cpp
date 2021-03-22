@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "String.h"
 #include "kxf/Utility/Common.h"
 #include <Windows.h>

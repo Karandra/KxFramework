@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "OutputStreamTarget.h"
 
 namespace kxf::Log

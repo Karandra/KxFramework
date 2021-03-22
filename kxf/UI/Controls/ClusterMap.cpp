@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "ClusterMap.h"
 #include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"

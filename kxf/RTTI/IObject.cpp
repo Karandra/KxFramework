@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "IObject.h"
 #include "ClassInfo.h"
 #include "kxf/General/String.h"

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "ArchiveOpenCallback.h"
 
 namespace kxf::SevenZip::Private::Callback

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "Dialog.h"
 #include "kxf/UI/Controls/Button.h"
 #include "kxf/Localization/Common.h"

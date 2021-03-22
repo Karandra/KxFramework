@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "RichToolTip.h"
 
 namespace kxf::UI

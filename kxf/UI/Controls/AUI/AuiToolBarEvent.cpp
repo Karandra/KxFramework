@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "AuiToolBarEvent.h"
 #include "AuiToolBarItem.h"
 

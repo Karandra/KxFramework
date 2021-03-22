@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "SearchBox.h"
 #include "kxf/Application/ICoreApplication.h"
 

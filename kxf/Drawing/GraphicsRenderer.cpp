@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "GraphicsRenderer.h"
 #include "GDIRenderer/GDIGraphicsRenderer.h"
 #include "WxRenderer/WxGraphicsRenderer.h"

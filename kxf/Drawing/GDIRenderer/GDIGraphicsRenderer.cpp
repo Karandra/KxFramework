@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "GDIGraphicsRenderer.h"
 #include "GDIGraphicsContext.h"
 #include "GDIGraphicsTexture.h"

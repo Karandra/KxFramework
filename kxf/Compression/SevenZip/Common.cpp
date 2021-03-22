@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "Common.h"
 #include "Library.h"
 #include "kxf/System/ExecutableVersionResource.h"

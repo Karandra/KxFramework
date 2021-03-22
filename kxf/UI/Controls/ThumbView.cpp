@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "ThumbView.h"
 #include "kxf/UI/Windows/DrawablePanel.h"
 #include "kxf/wxWidgets/StreamWrapper.h"

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "NativeFSUtility.h"
 #include "kxf/IO/NativeFileStream.h"
 #include "kxf/System/SystemInformation.h"

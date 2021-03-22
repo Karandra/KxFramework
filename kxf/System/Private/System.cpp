@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "System.h"
 #include "kxf/Utility/ScopeGuard.h"
 #include <Windows.h>

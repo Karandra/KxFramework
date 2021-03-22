@@ -17,7 +17,7 @@
 //
 // Serialize back to html / xhtml making as few changes as possible (even in whitespace)
 
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include <fstream>
 #include <iostream>
 #include <stdlib.h>

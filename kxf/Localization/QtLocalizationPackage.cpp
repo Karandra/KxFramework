@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "QtLocalizationPackage.h"
 #include "kxf/Serialization/XML.h"
 

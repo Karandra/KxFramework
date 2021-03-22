@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "SVGImageHandler.h"
 #include "../SVGImage.h"
 #include "../BitmapImage.h"

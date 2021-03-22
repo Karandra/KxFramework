@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "ZLibStream.h"
 
 namespace kxf::Compression::ZLib

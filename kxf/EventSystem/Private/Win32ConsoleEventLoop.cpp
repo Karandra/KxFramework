@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "Win32ConsoleEventLoop.h"
 #include <Windows.h>
 

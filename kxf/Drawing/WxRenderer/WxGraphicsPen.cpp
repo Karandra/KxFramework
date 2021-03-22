@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "WxGraphicsPen.h"
 #include "../BitmapImage.h"
 #include "../GraphicsRenderer/IGraphicsBrush.h"

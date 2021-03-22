@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "RunningSystemProcessStdIO.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/Utility/ScopeGuard.h"

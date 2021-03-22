@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "StandardLocalization.h"
 #include "kxf/Application/ICoreApplication.h"
 

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "SciterAPI.h"
 #include "Common.h"
 

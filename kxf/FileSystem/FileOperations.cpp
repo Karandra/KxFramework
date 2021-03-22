@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "FileOperations.h"
 #include "kxf/General/RegEx.h"
 #include <shlwapi.h>

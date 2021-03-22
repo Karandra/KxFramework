@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "Menu.h"
 #include "MenuItem.h"
 #include "MenuEvent.h"

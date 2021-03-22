@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "SystemProcessInfo.h"
 #include <Windows.h>
 #include <PsAPI.h>

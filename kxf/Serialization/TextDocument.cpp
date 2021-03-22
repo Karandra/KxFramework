@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "TextDocument.h"
 #include "kxf/FileSystem/NativeFileSystem.h"
 #include "kxf/IO/StreamReaderWriter.h"

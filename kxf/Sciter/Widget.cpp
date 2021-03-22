@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "Widget.h"
 #include "kxf/Application/ICoreApplication.h"
 #include "Widgets/TextBoxWidget.h"

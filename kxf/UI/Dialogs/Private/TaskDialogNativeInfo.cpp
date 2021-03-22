@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "TaskDialogNativeInfo.h"
 #include "../TaskDialog.h"
 #include "kxf/General/ErrorCode.h"

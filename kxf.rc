@@ -71,7 +71,7 @@ BEGIN
             VALUE "FileDescription", "KxFramework"
             VALUE "FileVersion", "2.0.0.0"
             VALUE "InternalName", "kxf.dll"
-            VALUE "LegalCopyright", "Copyright© 2016-2020 Kerber"
+            VALUE "LegalCopyright", "Copyright© 2016-2021 Kerber"
             VALUE "OriginalFilename", "kxf.dll"
             VALUE "ProductName", "KxFramework"
             VALUE "ProductVersion", "2.0.0.0"

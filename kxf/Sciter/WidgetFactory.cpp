@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "WidgetFactory.h"
 #include "Widget.h"
 #include "Host.h"

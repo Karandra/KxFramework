@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "NtStatus.h"
 #include "Win32Error.h"
 #include "HResult.h"

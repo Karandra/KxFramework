@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "NativeFileStream.h"
 #include "kxf/System/Win32Error.h"
 #include "kxf/FileSystem/Private/NativeFSUtility.h"

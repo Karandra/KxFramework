@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "ComboBoxEditor.h"
 #include "kxf/UI/Controls/ComboBox.h"
 #include "kxf/UI/Controls/BitmapComboBox.h"

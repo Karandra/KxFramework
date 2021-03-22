@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "ImageRenderer.h"
 #include "kxf/Drawing/BitmapImage.h"
 

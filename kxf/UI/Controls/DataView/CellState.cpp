@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "CellState.h"
 #include "MainWindow.h"
 

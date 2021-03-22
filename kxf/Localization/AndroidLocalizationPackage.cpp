@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "AndroidLocalizationPackage.h"
 #include "kxf/Serialization/XML.h"
 

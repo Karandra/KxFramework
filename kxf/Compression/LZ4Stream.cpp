@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "LZ4Stream.h"
 #include <lz4.h>
 

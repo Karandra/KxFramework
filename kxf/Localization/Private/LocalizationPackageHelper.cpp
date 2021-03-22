@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "LocalizationPackageHelper.h"
 #include "LocalizationResources.h"
 #include "kxf/System/DynamicLibrary.h"

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "Win32GUIEventLoop.h"
 #include "kxf/Application/ICoreApplication.h"
 #include "wx/msw/private.h"

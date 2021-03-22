@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "NullGraphicsRenderer.h"
 #include "NullGraphicsPen.h"
 #include "NullGraphicsBrush.h"

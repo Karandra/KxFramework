@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "SystemInformation.h"
 #include "NativeAPI.h"
 #include "Registry.h"

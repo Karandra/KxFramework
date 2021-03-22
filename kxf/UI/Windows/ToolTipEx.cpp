@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "ToolTipEx.h"
 #include "kxf/System/Registry.h"
 #include "kxf/System/SystemInformation.h"

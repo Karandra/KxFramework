@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "DynamicLibrary.h"
 #include "kxf/System/NativeAPI.h"
 #include "kxf/System/Private/System.h"

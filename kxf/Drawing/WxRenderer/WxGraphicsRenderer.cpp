@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "WxGraphicsRenderer.h"
 #include "WxGraphicsContext.h"
 #include "WxGraphicsTexture.h"

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "InStreamWrapper.h"
 #include "Utility.h"
 

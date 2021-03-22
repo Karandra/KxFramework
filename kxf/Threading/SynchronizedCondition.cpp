@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "SynchronizedCondition.h"
 #include <Windows.h>
 

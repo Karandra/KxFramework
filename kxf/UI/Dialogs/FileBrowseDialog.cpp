@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "FileBrowseDialog.h"
 #include "Private/FileBrowseDialogEvents.h"
 #include "kxf/Utility/Common.h"

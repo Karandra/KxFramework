@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "StdDialogButtonSizer.h"
 #include "kxf/Localization/Common.h"
 #include "kxf/UI/Controls/Button.h"

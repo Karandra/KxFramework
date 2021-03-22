@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "CredentialsDialog.h"
 #include "kxf/Utility/Memory.h"
 #include "kxf/Utility/ScopeGuard.h"

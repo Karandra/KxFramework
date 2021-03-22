@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "ExecutableVersionResource.h"
 #include <Windows.h>
 #include "UndefWindows.h"

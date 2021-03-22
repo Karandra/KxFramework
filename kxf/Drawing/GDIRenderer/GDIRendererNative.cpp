@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "GDIRendererNative.h"
 #include "GDIAction.h"
 #include "kxf/System/SystemInformation.h"

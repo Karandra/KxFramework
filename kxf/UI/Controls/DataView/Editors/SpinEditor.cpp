@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "SpinEditor.h"
 #include "../Node.h"
 #include "kxf/UI/Validator.h"

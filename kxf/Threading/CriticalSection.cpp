@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "CriticalSection.h"
 #include <Windows.h>
 

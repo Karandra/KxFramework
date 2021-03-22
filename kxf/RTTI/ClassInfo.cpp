@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "ClassInfo.h"
 #include "kxf/General/String.h"
 #include "kxf/General/Enumerator.h"

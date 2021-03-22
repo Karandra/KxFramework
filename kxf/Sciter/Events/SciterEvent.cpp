@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "SciterEvent.h"
 #include "kxf/Sciter/Host.h"
 

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "FileBrowseDialogEvents.h"
 #include "../FileBrowseDialog.h"
 #include "kxf/Utility/ScopeGuard.h"

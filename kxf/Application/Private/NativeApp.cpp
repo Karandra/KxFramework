@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "NativeApp.h"
 
 namespace kxf::Application::Private

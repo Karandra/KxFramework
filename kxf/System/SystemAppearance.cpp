@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "SystemAppearance.h"
 #include <wx/settings.h>
 

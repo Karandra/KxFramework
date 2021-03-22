@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "Common.h"
 #include "kxf/General/RegEx.h"
 #include "OpenSSL/opensslv.h"

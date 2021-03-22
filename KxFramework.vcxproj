@@ -67,7 +67,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>KxfPCH.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
@@ -451,7 +451,7 @@
     <ClInclude Include="kxf\wxWidgets\RTTI.h" />
     <ClInclude Include="kxf\wxWidgets\StreamWrapper.h" />
     <ClInclude Include="kxf\wxWidgets\SystemOptions.h" />
-    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="KxfPCH.h" />
     <ClInclude Include="kxf\Async.hpp" />
     <ClInclude Include="kxf\Async\Common.h" />
     <ClInclude Include="kxf\Async\Coroutine.h" />
@@ -843,7 +843,7 @@
     <ClCompile Include="kxf\Utility\Drawing.cpp" />
     <ClCompile Include="kxf\Utility\Memory.cpp" />
     <ClCompile Include="kxf\wxWidgets\StreamWrapper.cpp" />
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="KxfPCH.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="kxf\Async\Coroutine\CoroutineImpl.cpp" />

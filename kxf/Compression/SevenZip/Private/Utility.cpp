@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "Utility.h"
 #include "GUIDs.h"
 #include "InStreamWrapper.h"

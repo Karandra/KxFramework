@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "NativeFileSystem.h"
 #include "FSActionEvent.h"
 #include "Private/NativeFSUtility.h"

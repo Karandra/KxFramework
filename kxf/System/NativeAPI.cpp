@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "NativeAPI.h"
 #include "kxf/Log/Common.h"
 #include "kxf/Utility/Common.h"

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "CoreApplication.h"
 #include "Private/NativeApp.h"
 #include "Private/Utility.h"

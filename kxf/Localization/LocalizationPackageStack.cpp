@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "LocalizationPackageStack.h"
 #include "kxf/General/Enumerator.h"
 #include "kxf/Utility/Enumerator.h"

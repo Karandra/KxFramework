@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "DynamicLibraryEvent.h"
 #include "DynamicLibrary.h"
 

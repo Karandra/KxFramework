@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "ImageTextToggleRenderer.h"
 #include "ImageRenderer.h"
 #include "TextRenderer.h"

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "Session.h"
 #include "kxf/System/HandlePtr.h"
 #include "kxf/General/Enumerator.h"

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "StaticVariablesCollection.h"
 
 namespace kxf

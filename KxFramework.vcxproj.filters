@@ -721,7 +721,7 @@
     <ClInclude Include="kxf\System\Private\KnownDirectoryGUID.h">
       <Filter>kxf\System\Private</Filter>
     </ClInclude>
-    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="KxfPCH.h" />
     <ClInclude Include="kxf\wxWidgets\RTTI.h">
       <Filter>kxf\wxWidgets</Filter>
     </ClInclude>
@@ -2060,7 +2060,7 @@
     <ClCompile Include="kxf\System\SharedMemory.cpp">
       <Filter>kxf\System</Filter>
     </ClCompile>
-    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="KxfPCH.cpp" />
     <ClCompile Include="kxf\System\DynamicLibrary.cpp">
       <Filter>kxf\System</Filter>
     </ClCompile>

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "HTMLDocument.h"
 
 #pragma warning(disable: 4005) // macro redefinition

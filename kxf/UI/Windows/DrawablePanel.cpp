@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "DrawablePanel.h"
 #include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"

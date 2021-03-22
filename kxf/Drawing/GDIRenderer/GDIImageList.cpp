@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "GDIImageList.h"
 #include "GDIContext.h"
 #include "../Color.h"

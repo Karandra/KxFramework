@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "ShellMenu.h"
 #include <winnls.h>
 #include <shobjidl.h>

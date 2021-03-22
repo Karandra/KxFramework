@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "UserName.h"
 #include "kxf/General/UniversallyUniqueID.h"
 

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "GDIRegion.h"
 #include "GDIBitmap.h"
 #include "Private/GDI.h"

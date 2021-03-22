@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "Color.h"
 #include "kxf/General/RegEx.h"
 #include "wx/window.h"

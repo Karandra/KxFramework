@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "IVariablesCollection.h"
 #include "kxf/Application/ICoreApplication.h"
 #include "kxf/System/ShellOperations.h"

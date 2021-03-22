@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "UxTheme.h"
 #include "GDIRenderer/GDIContext.h"
 #include "GDIRenderer/GDIAction.h"

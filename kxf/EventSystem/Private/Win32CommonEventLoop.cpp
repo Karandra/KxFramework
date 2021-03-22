@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "Win32CommonEventLoop.h"
 #include "kxf/Application/ICoreApplication.h"
 #include <Windows.h>

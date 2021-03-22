@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "IWindowRenderer.h"
 #include "Renderers/DirectX.h"
 

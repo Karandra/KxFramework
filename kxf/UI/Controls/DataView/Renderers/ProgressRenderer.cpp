@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "ProgressRenderer.h"
 #include "../View.h"
 #include "../Node.h"

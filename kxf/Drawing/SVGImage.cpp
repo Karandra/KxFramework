@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "SVGImage.h"
 #include "BitmapImage.h"
 #include "GDIRenderer/GDIBitmap.h"

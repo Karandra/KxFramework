@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "ArtProvider.h"
 #include "GDIRenderer/GDIBitmap.h"
 #include "GDIRenderer/GDIIcon.h"

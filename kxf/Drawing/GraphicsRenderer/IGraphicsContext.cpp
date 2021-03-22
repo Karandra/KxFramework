@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "IGraphicsContext.h"
 #include "../GDIRenderer/GDIBitmap.h"
 #include "../GDIRenderer/GDIMemoryContext.h"

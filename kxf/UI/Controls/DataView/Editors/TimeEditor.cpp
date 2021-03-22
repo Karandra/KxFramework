@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "TimeEditor.h"
 #include "DateEditor.h"
 #include <wx/timectrl.h>

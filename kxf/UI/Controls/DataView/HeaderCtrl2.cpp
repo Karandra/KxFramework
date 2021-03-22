@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "HeaderCtrl2.h"
 #include "View.h"
 #include "MainWindow.h"

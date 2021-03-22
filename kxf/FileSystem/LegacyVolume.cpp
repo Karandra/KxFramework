@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "LegacyVolume.h"
 #include "FSPath.h"
 #include "kxf/General/Enumerator.h"

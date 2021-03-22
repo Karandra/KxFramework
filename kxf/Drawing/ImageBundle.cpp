@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "ImageBundle.h"
 #include "GDIRenderer/GDIIcon.h"
 #include "kxf/IO/IStream.h"

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "VariantProperty.h"
 #include "COM.h"
 #include "kxf/General/Any.h"

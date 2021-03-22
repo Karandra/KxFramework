@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "Crypto.h"
 #include "kxf/General/BinarySize.h"
 #include "kxf/Utility/ScopeGuard.h"

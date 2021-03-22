@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "ColorEditor.h"
 #include "kxf/Utility/Common.h"
 #include <wx/colordlg.h>

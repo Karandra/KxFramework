@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "ApplicationInitializer.h"
 #include "kxf/wxWidgets/Application.h"
 #include "kxf/Utility/ScopeGuard.h"

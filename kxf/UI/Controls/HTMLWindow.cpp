@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "HTMLWindow.h"
 #include "kxf/UI/Menus/Menu.h"
 #include "kxf/Drawing/GDIRenderer/GDIWindowContext.h"

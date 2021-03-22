@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "EventBuilder.h"
 #include "IEvtHandler.h"
 #include "EvtHandlerAccessor.h"

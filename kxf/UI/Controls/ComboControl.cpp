@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "ComboControl.h"
 #include "ComboPopup.h"
 

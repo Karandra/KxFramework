@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "GDIBrush.h"
 #include "Private/GDI.h"
 #include "../Private/Common.h"

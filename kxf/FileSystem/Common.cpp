@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "Common.h"
 #include "kxf/General/String.h"
 #include "Private/NamespacePrefix.h"

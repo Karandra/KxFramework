@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "AuiToolBar.h"
 #include "kxf/UI/Menus/Menu.h"
 #include <wx/wupdlock.h>

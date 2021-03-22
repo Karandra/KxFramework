@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "VersionImpl.h"
 #include "../Version.h"
 

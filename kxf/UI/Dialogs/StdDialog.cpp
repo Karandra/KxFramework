@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "StdDialog.h"
 #include "kxf/Drawing/UxTheme.h"
 #include "kxf/Drawing/ArtProvider.h"

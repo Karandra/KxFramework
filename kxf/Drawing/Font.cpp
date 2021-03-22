@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "Font.h"
 #include "GDIRenderer/GDIScreenContext.h"
 #include <wx/font.h>

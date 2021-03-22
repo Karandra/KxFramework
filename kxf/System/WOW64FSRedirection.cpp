@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "WOW64FSRedirection.h"
 #include "NativeAPI.h"
 

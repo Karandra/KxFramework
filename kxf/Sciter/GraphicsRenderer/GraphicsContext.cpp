@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "GraphicsContext.h"
 #include "GraphicsBitmap.h"
 #include "GraphicsText.h"

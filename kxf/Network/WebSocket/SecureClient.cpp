@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "SecureClient.h"
 
 namespace kxf::WebSocket

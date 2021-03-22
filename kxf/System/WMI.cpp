@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "WMI.h"
 #include "SafeArray.h"
 #include "VariantProperty.h"

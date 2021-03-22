@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "KxfPCH.h"
 #include "IFileSystem.h"
 #include "NullFileSystem.h"
 #include "kxf/IO/IStream.h"
