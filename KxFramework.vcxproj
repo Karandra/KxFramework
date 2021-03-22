@@ -105,6 +105,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="kxfResources.h" />
     <ClInclude Include="kxf\Application.hpp" />
     <ClInclude Include="kxf\Application\ApplicationInitializer.h" />
     <ClInclude Include="kxf\Application\Common.h" />
@@ -450,7 +451,6 @@
     <ClInclude Include="kxf\wxWidgets\RTTI.h" />
     <ClInclude Include="kxf\wxWidgets\StreamWrapper.h" />
     <ClInclude Include="kxf\wxWidgets\SystemOptions.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="kxf\Async.hpp" />
     <ClInclude Include="kxf\Async\Common.h" />

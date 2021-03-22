@@ -1808,7 +1808,6 @@
     <ClInclude Include="kxf\Drawing\GDIRenderer\GDIIcon.h">
       <Filter>kxf\Drawing\GDIRenderer\&lt;GDIObjects&gt;</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="kxf\wxWidgets\EventTagRef.h">
       <Filter>kxf\wxWidgets</Filter>
     </ClInclude>
@@ -1824,6 +1823,7 @@
     <ClInclude Include="kxf\System\SafeArray.h">
       <Filter>kxf\System</Filter>
     </ClInclude>
+    <ClInclude Include="kxfResources.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
