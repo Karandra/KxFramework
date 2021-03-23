@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "StyledTextBox.h"
-#include <Scintilla.h>
-#include <Sci_Position.h>
+#include <Scintilla\Scintilla.h>
+#include <Scintilla\Sci_Position.h>
 
 namespace
 {
