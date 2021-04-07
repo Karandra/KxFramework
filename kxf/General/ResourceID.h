@@ -1,37 +1,39 @@
 #pragma once
 #include "Common.h"
-#include "String.h"
-#include <variant>
+#include "kxf/Network/URI.h"
 
 namespace kxf
 {
 	class KX_API ResourceID final
 	{
+		friend struct std::hash<ResourceID>;
+
 		private:
-			std::variant<int, String> m_ID;
+			URI m_Value;
 
 		public:
 			ResourceID() noexcept = default;
 
 			template<class T, class = std::enable_if_t<std::is_integral_v<T> || std::is_enum_v<T>>>
 			ResourceID(T id) noexcept
-				:m_ID(static_cast<int>(id))
 			{
+				m_Value.Create(kxf::ToString(id));
 			}
 
-			ResourceID(String id) noexcept
+			ResourceID(URI id) noexcept
+				:m_Value(std::move(id))
 			{
-				if (!id.IsEmptyOrWhitespace())
-				{
-					m_ID = std::move(id);
-				}
+			}
+			ResourceID(const String& id) noexcept
+				:ResourceID(URI(id))
+			{
 			}
 			ResourceID(const char* id) noexcept
-				:ResourceID(String(id))
+				:ResourceID(URI(id))
 			{
 			}
 			ResourceID(const wchar_t* id) noexcept
-				:ResourceID(String(id))
+				:ResourceID(URI(id))
 			{
 			}
 
@@ -41,87 +43,50 @@ namespace kxf
 		public:
 			bool IsNull() const noexcept
 			{
-				if (m_ID.valueless_by_exception())
-				{
-					return true;
-				}
-				else if (auto value = std::get_if<int>(&m_ID))
-				{
-					return *value == 0;
-				}
-				else if (auto value = std::get_if<String>(&m_ID))
-				{
-					return value->IsEmpty();
-				}
-				return false;
+				return m_Value.IsNull();
 			}
-			size_t GetHash() const noexcept
+
+			bool HasScheme() const
 			{
-				if (auto value = std::get_if<int>(&m_ID))
+				return m_Value.HasScheme();
+			}
+			String GetScheme() const
+			{
+				return m_Value.GetScheme();
+			}
+			String GetPath() const
+			{
+				String result = m_Value.GetServer();
+				if (!result.IsEmpty() && m_Value.HasPath())
 				{
-					return std::hash<int>()(*value);
+					result += wxS('/');
 				}
-				else if (auto value = std::get_if<String>(&m_ID))
-				{
-					return std::hash<String>()(*value);
-				}
-				return 0;
+				result += m_Value.GetPath();
+
+				return result;
 			}
 
 			// Integer
 			template<class T = int, class = std::enable_if_t<std::is_integral_v<T> || std::is_enum_v<T>>>
-			T GetInt() const noexcept
+			std::optional<T> ToInt() const noexcept
 			{
-				if (auto value = std::get_if<int>(&m_ID))
-				{
-					return static_cast<T>(*value);
-				}
-				return 0;
+				return GetPath().ToInt<T>();
 			}
 
-			template<class T = int, class = std::enable_if_t<std::is_integral_v<T> || std::is_enum_v<T>>>
-			std::optional<T> QueryInt() const noexcept
+			// URI
+			URI ToURI() const& noexcept
 			{
-				if (auto value = std::get_if<int>(&m_ID))
-				{
-					return static_cast<T>(*value);
-				}
-				return {};
+				return m_Value;
+			}
+			URI ToURI() && noexcept
+			{
+				return std::move(m_Value);
 			}
 
 			// String
-			String GetString() const& noexcept
+			String ToString() const
 			{
-				if (auto value = std::get_if<String>(&m_ID))
-				{
-					return *value;
-				}
-				return {};
-			}
-			String GetString() && noexcept
-			{
-				if (auto value = std::get_if<String>(&m_ID))
-				{
-					return std::move(*value);
-				}
-				return {};
-			}
-
-			std::optional<String> QueryString() const&
-			{
-				if (auto value = std::get_if<String>(&m_ID))
-				{
-					return *value;
-				}
-				return {};
-			}
-			std::optional<String> QueryString() && noexcept
-			{
-				if (auto value = std::get_if<String>(&m_ID))
-				{
-					return std::move(*value);
-				}
-				return {};
+				return m_Value.BuildURI();
 			}
 
 		public:
@@ -136,7 +101,7 @@ namespace kxf
 
 			bool operator==(const ResourceID& other) const noexcept
 			{
-				return this == &other || m_ID == other.m_ID;
+				return this == &other || m_Value == other.m_Value;
 			}
 			bool operator!=(const ResourceID& other) const noexcept
 			{
@@ -155,7 +120,7 @@ namespace std
 	{
 		size_t operator()(const kxf::ResourceID& id) const noexcept
 		{
-			return id.GetHash();
+			return std::hash<kxf::URI>()(id.m_Value);
 		}
 	};
 }

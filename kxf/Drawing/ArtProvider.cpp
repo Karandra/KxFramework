@@ -84,11 +84,11 @@ namespace kxf::ArtProvider
 {
 	GDIBitmap GetResource(const ResourceID& id, const String& clientID, const Size& size)
 	{
-		return wxArtProvider::GetBitmap(id.GetString(), clientID, size);
+		return wxArtProvider::GetBitmap(id.ToString(), clientID, size);
 	}
 	ImageBundle GetResourceBundle(const ResourceID& id, const String& clientID)
 	{
-		return wxArtProvider::GetIconBundle(id.GetString(), clientID);
+		return wxArtProvider::GetIconBundle(id.ToString(), clientID);
 	}
 
 	ResourceID GetMessageBoxResourceIDs(StdIcon iconID)
