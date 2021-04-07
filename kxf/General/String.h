@@ -1307,6 +1307,32 @@ namespace kxf
 	}
 }
 
+namespace kxf
+{
+	template<class T, std::enable_if_t<std::is_arithmetic_v<T>, int> = 0>
+	String ToString(T value)
+	{
+		if constexpr(std::is_same_v<XChar, char>)
+		{
+			return std::to_string(value);
+		}
+		else if constexpr(std::is_same_v<XChar, wchar_t>)
+		{
+			return std::to_wstring(value);
+		}
+		else
+		{
+			static_assert(false, "Unsupported char type");
+		}
+	}
+
+	template<class T, std::enable_if_t<std::is_enum_v<T>, int> = 0>
+	String ToString(T value)
+	{
+		return ToString(static_cast<std::underlying_type_t<T>>(value));
+	}
+}
+
 namespace std
 {
 	template<>
