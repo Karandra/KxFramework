@@ -46,6 +46,7 @@ namespace kxf::Drawing
 					wxWidgets::InputStreamWrapperWx wrapper(stream);
 					if (handlerWx.LoadFile(&image, wrapper, false, index != std::numeric_limits<size_t>::max() ? static_cast<int>(index) : -1) && image.IsOk())
 					{
+						image.SetType(handlerWx.GetType());
 						return std::make_unique<BitmapImage>(std::move(image));
 					}
 				}
