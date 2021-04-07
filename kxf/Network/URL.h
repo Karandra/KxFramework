@@ -148,3 +148,15 @@ namespace kxf
 			}
 	};
 }
+
+namespace std
+{
+	template<>
+	struct hash<kxf::URL> final
+	{
+		size_t operator()(const kxf::URL& url) const noexcept
+		{
+			return std::hash<kxf::String>()(url.BuildURI());
+		}
+	};
+}

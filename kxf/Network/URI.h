@@ -126,5 +126,30 @@ namespace kxf
 
 				return *this;
 			}
+
+			bool operator==(const URI& other) const
+			{
+				return AsBase() == other.AsBase();
+			}
+			bool operator==(const wxURI& other) const
+			{
+				return AsBase() == other;
+			}
+			bool operator==(const String& uri) const
+			{
+				return AsBase() == URI(uri);
+			}
+	};
+}
+
+namespace std
+{
+	template<>
+	struct hash<kxf::URI> final
+	{
+		size_t operator()(const kxf::URI& uri) const noexcept
+		{
+			return std::hash<kxf::String>()(uri.BuildURI());
+		}
 	};
 }
