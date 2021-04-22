@@ -2721,6 +2721,9 @@
     <ClCompile Include="kxf\System\SafeArray.cpp">
       <Filter>kxf\System</Filter>
     </ClCompile>
+    <ClCompile Include="kxf\General\ResourceID.cpp">
+      <Filter>kxf\General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="kxf\System\Private\ErrorCodeNtStatus.i">

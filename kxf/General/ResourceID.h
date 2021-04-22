@@ -41,30 +41,11 @@ namespace kxf
 			ResourceID(ResourceID&&) noexcept = default;
 
 		public:
-			bool IsNull() const noexcept
-			{
-				return m_Value.IsNull();
-			}
+			bool IsNull() const noexcept;
 
-			bool HasScheme() const
-			{
-				return m_Value.HasScheme();
-			}
-			String GetScheme() const
-			{
-				return m_Value.GetScheme();
-			}
-			String GetPath() const
-			{
-				String result = m_Value.GetServer();
-				if (!result.IsEmpty() && m_Value.HasPath())
-				{
-					result += wxS('/');
-				}
-				result += m_Value.GetPath();
-
-				return result;
-			}
+			bool HasScheme() const;
+			String GetScheme() const;
+			String GetPath() const;
 
 			// Integer
 			template<class T = int, class = std::enable_if_t<std::is_integral_v<T> || std::is_enum_v<T>>>
@@ -84,10 +65,7 @@ namespace kxf
 			}
 
 			// String
-			String ToString() const
-			{
-				return m_Value.BuildURI();
-			}
+			String ToString() const;
 
 		public:
 			explicit operator bool() const
