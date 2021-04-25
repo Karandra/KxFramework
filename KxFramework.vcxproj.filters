@@ -1818,6 +1818,21 @@
     <ClInclude Include="kxf\General\ILibraryInfo.h">
       <Filter>kxf\General</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Network\IWebSession.h">
+      <Filter>kxf\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Network\IWebRequest.h">
+      <Filter>kxf\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Network\IWebAuthChallenge.h">
+      <Filter>kxf\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Network\IWebResponse.h">
+      <Filter>kxf\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IO\NullStream.h">
+      <Filter>kxf\IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2714,6 +2729,21 @@
     </ClCompile>
     <ClCompile Include="kxf\General\ResourceID.cpp">
       <Filter>kxf\General</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Network\IWebSession.cpp">
+      <Filter>kxf\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Network\IWebRequest.cpp">
+      <Filter>kxf\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Network\IWebAuthChallenge.cpp">
+      <Filter>kxf\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Network\IWebResponse.cpp">
+      <Filter>kxf\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\IO\NullStream.cpp">
+      <Filter>kxf\IO</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

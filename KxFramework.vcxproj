@@ -275,6 +275,7 @@
     <ClInclude Include="kxf\IO\IStreamOnFileSystem.h" />
     <ClInclude Include="kxf\IO\MemoryStream.h" />
     <ClInclude Include="kxf\IO\INativeStream.h" />
+    <ClInclude Include="kxf\IO\NullStream.h" />
     <ClInclude Include="kxf\IO\StreamDelegate.h" />
     <ClInclude Include="kxf\IO\StreamError.h" />
     <ClInclude Include="kxf\IO\StreamReaderWriter.h" />
@@ -289,6 +290,10 @@
     <ClInclude Include="kxf\Log.hpp" />
     <ClInclude Include="kxf\Log\Common.h" />
     <ClInclude Include="kxf\Log\OutputStreamTarget.h" />
+    <ClInclude Include="kxf\Network\IWebAuthChallenge.h" />
+    <ClInclude Include="kxf\Network\IWebRequest.h" />
+    <ClInclude Include="kxf\Network\IWebResponse.h" />
+    <ClInclude Include="kxf\Network\IWebSession.h" />
     <ClInclude Include="kxf\pch.hpp" />
     <ClInclude Include="kxf\RTTI\ClassInfo.h" />
     <ClInclude Include="kxf\RTTI\IID.h" />
@@ -717,6 +722,7 @@
     <ClCompile Include="kxf\IO\NativeFileStream.cpp" />
     <ClCompile Include="kxf\IO\IStream.cpp" />
     <ClCompile Include="kxf\IO\MemoryStream.cpp" />
+    <ClCompile Include="kxf\IO\NullStream.cpp" />
     <ClCompile Include="kxf\Localization\ILocalizationPackage.cpp" />
     <ClCompile Include="kxf\Localization\LocalizationItem.cpp" />
     <ClCompile Include="kxf\Localization\LocalizationPackageStack.cpp" />
@@ -725,6 +731,10 @@
     <ClCompile Include="kxf\Localization\WindowsLocalizationPackage.cpp" />
     <ClCompile Include="kxf\Log\Common.cpp" />
     <ClCompile Include="kxf\Log\OutputStreamTarget.cpp" />
+    <ClCompile Include="kxf\Network\IWebAuthChallenge.cpp" />
+    <ClCompile Include="kxf\Network\IWebRequest.cpp" />
+    <ClCompile Include="kxf\Network\IWebResponse.cpp" />
+    <ClCompile Include="kxf\Network\IWebSession.cpp" />
     <ClCompile Include="kxf\RTTI\ClassInfo.cpp" />
     <ClCompile Include="kxf\RTTI\Common.cpp" />
     <ClCompile Include="kxf\RTTI\IID.cpp" />
