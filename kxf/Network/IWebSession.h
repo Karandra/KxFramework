@@ -6,8 +6,10 @@
 
 namespace kxf
 {
-	class IWebRequest;
 	class IFileSystem;
+	class IWebRequest;
+	class IWebResponse;
+	class WebRequestEvent;
 }
 
 namespace kxf

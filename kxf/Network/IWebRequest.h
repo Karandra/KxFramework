@@ -20,9 +20,12 @@ namespace kxf
 	class IWebSession;
 	class IWebResponse;
 	class IWebAuthChallenge;
+	class WebRequestEvent;
 
 	enum class WebRequestState
 	{
+		None = -1,
+
 		Idle,
 		Unauthorized,
 		Active,

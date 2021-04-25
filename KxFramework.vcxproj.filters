@@ -1839,6 +1839,9 @@
     <ClInclude Include="kxf\Threading\IThreadPool.h">
       <Filter>kxf\Threading</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Network\WebRequestEvent.h">
+      <Filter>kxf\Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">

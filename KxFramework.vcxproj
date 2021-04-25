@@ -294,6 +294,7 @@
     <ClInclude Include="kxf\Network\IWebRequest.h" />
     <ClInclude Include="kxf\Network\IWebResponse.h" />
     <ClInclude Include="kxf\Network\IWebSession.h" />
+    <ClInclude Include="kxf\Network\WebRequestEvent.h" />
     <ClInclude Include="kxf\pch.hpp" />
     <ClInclude Include="kxf\RTTI\ClassInfo.h" />
     <ClInclude Include="kxf\RTTI\IID.h" />
