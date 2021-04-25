@@ -32,12 +32,12 @@
 # Specifies if the port install should fail immediately given a condition
 # vcpkg_fail_port_install(MESSAGE "lunasvg currently only supports Linux and Mac platforms" ON_TARGET "Windows")
 
-set(VCPKG_USE_HEAD_VERSION ON)
+# set(VCPKG_USE_HEAD_VERSION ON)
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO sammycage/lunasvg
-    REF master
-    SHA512 1
+    REF 2d6d80e835a607a3e4e148620b9f376f479a2d31
+    SHA512 9226def226e34de613f32efe9dd0055a02eca8a86e3db26c7d7d87596b3bbc9eb39a5c9106722b0f5a25493e4069205bd1e5e2febb8108360815efda55166a6c
     HEAD_REF master
 )
 
