@@ -74,6 +74,7 @@
 #undef RemoveDirectory
 #undef GetCurrentDirectory
 #undef SetCurrentDirectory
+#undef SetPort
 
 #ifdef ZeroMemory
 #undef ZeroMemory

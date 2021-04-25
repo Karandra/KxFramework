@@ -13,6 +13,7 @@ namespace kxf
 		Default,
 		DateTime,
 	};
+
 	enum class UnitNameFlag: uint32_t
 	{
 		None = 0,
@@ -98,6 +99,19 @@ namespace kxf
 		Down = wxDOWN,
 	};
 	KxFlagSet_Declare(Direction);
+
+	enum class LineBreakFormat
+	{
+		None = -1,
+
+		LF,
+		CRLF,
+		CR,
+
+		Unix = LF,
+		Windows = CRLF,
+		Macintosh = CR
+	};
 }
 
 namespace kxf

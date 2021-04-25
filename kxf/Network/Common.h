@@ -6,35 +6,15 @@
 namespace kxf
 {
 	class URI;
-	class URL;
 
 	enum class NetworkHostType
 	{
 		None = -1,
 
-		RegName,
-		IPvUnknown,
-		IPv4,
-		IPv6,
-	};
-
-	enum class URIFlag: uint32_t
-	{
-		None = 0,
-		Strict = 1 << 0
-	};
-	KxFlagSet_Declare(URIFlag);
-
-	enum class URLStatus
-	{
-		Success = 0,
-		Unknown,
-		Syntax,
-		NoProtocol,
-		NoHost,
-		NoPath,
-		ConnectionError,
-		ProtocolError
+		RegisteredName = 0, // Host is a registered name: 'www.mysite.com'
+		IPvFuture = 1, // Host is an IPvFuture address
+		IPv4 = 4, // Host is IPv4 address: '192.168.1.100:5050'
+		IPv6 = 6, // Host is IPv6 address: '[aa:aa:aa:aa::aa:aa]:5050'
 	};
 }
 

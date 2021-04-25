@@ -5,18 +5,6 @@
 
 namespace kxf::TextDocument
 {
-	enum class LineBreakFormat
-	{
-		None = -1,
-
-		Windows, // CR LF (13, 10)
-		Unix, // LF (10)
-		Mac, // CR (13)
-	};
-}
-
-namespace kxf::TextDocument
-{
 	size_t Read(const FSPath& filePath, std::function<bool(String)> func);
 	String Read(const FSPath& filePath, LineBreakFormat lineBreakFormat = LineBreakFormat::Windows);
 

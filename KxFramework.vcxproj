@@ -544,9 +544,7 @@
     <ClInclude Include="kxf\Network\CURL.h" />
     <ClInclude Include="kxf\Network\CURL\Private\CURL.h" />
     <ClInclude Include="kxf\Network\HTTPStatus.h" />
-    <ClInclude Include="kxf\Network\Private\URXHelper.h" />
     <ClInclude Include="kxf\Network\URI.h" />
-    <ClInclude Include="kxf\Network\URL.h" />
     <ClInclude Include="kxf\Network\WebSocket.h" />
     <ClInclude Include="kxf\Network\WebSocket\IClient.h" />
     <ClInclude Include="kxf\Network\WebSocket\SecureClient.h" />
@@ -885,7 +883,6 @@
     <ClCompile Include="kxf\Network\CURL\Session.cpp" />
     <ClCompile Include="kxf\Network\CURL\Private\CURL.cpp" />
     <ClCompile Include="kxf\Network\URI.cpp" />
-    <ClCompile Include="kxf\Network\URL.cpp" />
     <ClCompile Include="kxf\Network\WebSocket.cpp" />
     <ClCompile Include="kxf\Network\WebSocket\SecureClient.cpp" />
     <ClCompile Include="kxf\Network\WebSocket\Event.cpp" />

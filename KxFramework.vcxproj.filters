@@ -79,9 +79,6 @@
     <Filter Include="kxf\Network">
       <UniqueIdentifier>{503679ad-0476-4a11-beb0-ba123ce47580}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\Network\Private">
-      <UniqueIdentifier>{297f6ab2-a16f-4533-8457-4978880f4f39}</UniqueIdentifier>
-    </Filter>
     <Filter Include="kxf\Network\CURL">
       <UniqueIdentifier>{7a962409-a4c6-438c-bc0a-e182899e59fb}</UniqueIdentifier>
     </Filter>
@@ -576,12 +573,6 @@
     </ClInclude>
     <ClInclude Include="kxf\Network\URI.h">
       <Filter>kxf\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Network\URL.h">
-      <Filter>kxf\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Network\Private\URXHelper.h">
-      <Filter>kxf\Network\Private</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Network\CURL.h">
       <Filter>kxf\Network</Filter>
@@ -1992,9 +1983,6 @@
       <Filter>kxf\Utility</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Network\URI.cpp">
-      <Filter>kxf\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\Network\URL.cpp">
       <Filter>kxf\Network</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Network\CURL.cpp">

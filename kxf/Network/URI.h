@@ -1,144 +1,157 @@
 #pragma once
 #include "Common.h"
-#include "Private/URXHelper.h"
+class wxURI;
 
 namespace kxf
 {
-	class KX_API URI: public wxURI, public Network::Private::URXHelper<URI, wxURI>
+	class FSPath;
+
+	namespace Private
 	{
-		protected:
-			void NormalizeURI()
-			{
-				Network::Private::NormalizeURI(m_scheme, m_server, m_path, m_query, m_fragment, m_userinfo, m_port);
-			}
+		class URIObject;
+	}
+}
+
+namespace kxf
+{
+	enum class URIFlag: uint32_t
+	{
+		None = 0,
+
+		SpacePlus = 1 << 0,
+		NormalizeBreaks = 1 << 1,
+		DomainRootRelative = 1 << 2
+	};
+	KxFlagSet_Declare(URIFlag);
+}
+
+namespace kxf
+{
+	class KX_API URI final
+	{
+		friend class Private::URIObject;
+		friend struct std::hash<kxf::URI>;
 
 		public:
-			URI() noexcept
-				:THelper(this)
-			{
-			}
+			static String Escape(const String& source, FlagSet<URIFlag> flags = {});
+			static String Unescape(const String& source, LineBreakFormat lineBreakFormat = LineBreakFormat::None, FlagSet<URIFlag> flags = {});
+
+		private:
+			std::unique_ptr<Private::URIObject> m_URI;
+
+		public:
+			URI() noexcept;
 			URI(const String& uri)
-				:wxURI(Network::Private::NormalizeInputAddress(uri)), THelper(this)
+				:URI()
 			{
-				NormalizeURI();
+				Create(uri);
+			}
+			URI(const FSPath& path)
+				:URI()
+			{
+				Create(path);
+			}
+			URI(const wxURI& uri)
+				:URI()
+			{
+				Create(uri);
 			}
 			URI(const wxString& uri)
-				:URI(String(uri))
+				:URI()
 			{
-				NormalizeURI();
+				Create(uri);
 			}
 			URI(const char* uri)
-				:URI(String(uri))
+				:URI()
 			{
+				Create(uri);
 			}
 			URI(const wchar_t* uri)
-				:URI(String(uri))
+				:URI()
 			{
-			}
-			
-			URI(const wxURI& other)
-				:URI(other.BuildURI())
-			{
+				Create(uri);
 			}
 			URI(const URI& other)
-				:wxURI(other), THelper(this)
+				:URI()
 			{
+				*this = other;
 			}
-			URI(URI&& other) noexcept
-				:wxURI(std::move(other)), THelper(this)
-			{
-				other.Clear();
-			}
+			URI(URI&&) noexcept;
+			~URI();
 
 		public:
-			bool IsNull() const noexcept
+			bool IsNull() const noexcept;
+			void Clear() noexcept;
+
+			bool Create(const String& uri);
+			bool Create(const FSPath& path);
+			bool Create(const wxURI& uri);
+			bool Create(const wxString& uri)
 			{
-				return m_fields == 0;
+				return Create(String(uri));
 			}
-			bool Create(const String& uri)
+			bool Create(const char* uri)
 			{
-				if (wxURI::Create(Network::Private::NormalizeInputAddress(uri)))
-				{
-					NormalizeURI();
-					return true;
-				}
-				return false;
+				return Create(String(uri));
 			}
-			void Clear() noexcept
+			bool Create(const wchar_t* uri)
 			{
-				wxURI::Clear();
+				return Create(String(uri));
 			}
 
-			using THelper::GetHostType;
-			using THelper::Resolve;
+			bool IsReference() const noexcept;
+			URI& Resolve(const URI& base, FlagSet<URIFlag> flags = {});
+			URI& MakeReference(const URI& base, FlagSet<URIFlag> flags = {});
+			URI& Normalize() noexcept;
 
-			using THelper::BuildURI;
-			using THelper::BuildUnescapedURI;
-
-			using THelper::GetFragment;
-			using THelper::GetPassword;
-			using THelper::GetPath;
-			using THelper::GetPort;
-			using THelper::GetQuery;
-			using THelper::GetScheme;
-			using THelper::GetServer;
-			using THelper::GetUser;
-			using THelper::GetUserInfo;
+			String BuildURI() const;
+			String BuildUnescapedURI(LineBreakFormat lineBreakFormat = LineBreakFormat::None, FlagSet<URIFlag> flags = {}) const;
 
 		public:
-			URI& operator=(const String& uri)
-			{
-				AsBase() = Network::Private::NormalizeInputAddress(uri);
-				NormalizeURI();
+			bool HasScheme() const noexcept;
+			String GetScheme() const;
 
-				return *this;
-			}
-			URI& operator=(const wxString& uri)
-			{
-				*this = String(uri);
-				return *this;
-			}
-			URI& operator=(const char* uri)
-			{
-				*this = String(uri);
-				return *this;
-			}
-			URI& operator=(const wchar_t* uri)
-			{
-				*this = String(uri);
-				return *this;
-			}
-			
-			URI& operator=(const wxURI& other)
-			{
-				*this = other.BuildURI();
-				return *this;
-			}
-			URI& operator=(const URI& other)
-			{
-				AsBase() = other;
-				return *this;
-			}
-			URI& operator=(URI&& other) noexcept
-			{
-				AsBase() = std::move(other);
-				other.Clear();
+			NetworkHostType GetHostType() const noexcept;
+			bool HasServer() const noexcept;
+			String GetServer() const;
 
-				return *this;
+			bool HasPort() const noexcept;
+			std::optional<uint16_t> GetPortInt() const;
+			String GetPort() const;
+
+			bool HasPath() const noexcept;
+			String GetPath() const;
+
+			bool HasQuery() const noexcept;
+			String GetQuery() const;
+
+			bool HasFragment() const noexcept;
+			String GetFragment() const;
+
+			bool HasUserInfo() const noexcept;
+			String GetUserInfo() const;
+			String GetUser() const;
+			String GetPassword() const;
+
+		public:
+			explicit operator bool() const noexcept
+			{
+				return !IsNull();
+			}
+			bool operator!() const noexcept
+			{
+				return IsNull();
 			}
 
-			bool operator==(const URI& other) const
-			{
-				return AsBase() == other.AsBase();
-			}
-			bool operator==(const wxURI& other) const
-			{
-				return AsBase() == other;
-			}
-			bool operator==(const String& uri) const
-			{
-				return AsBase() == URI(uri);
-			}
+			URI& operator=(const URI& other);
+			URI& operator=(URI&&) noexcept;
+
+			bool operator==(const URI& other) const noexcept;
+			bool operator!=(const URI& other) const noexcept;
+			bool operator==(const wxURI& other) const;
+			bool operator!=(const wxURI& other) const;
+
+			operator wxURI() const;
 	};
 }
 
@@ -147,9 +160,6 @@ namespace std
 	template<>
 	struct hash<kxf::URI> final
 	{
-		size_t operator()(const kxf::URI& uri) const noexcept
-		{
-			return std::hash<kxf::String>()(uri.BuildURI());
-		}
+		size_t operator()(const kxf::URI& uri) const noexcept;
 	};
 }

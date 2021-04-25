@@ -7,21 +7,21 @@
 
 namespace
 {
-	wxTextFileType MapLineBreakType(kxf::TextDocument::LineBreakFormat lineBreakFormat) noexcept
+	wxTextFileType MapLineBreakType(kxf::LineBreakFormat lineBreakFormat) noexcept
 	{
-		using namespace kxf::TextDocument;
+		using namespace kxf;
 
 		switch (lineBreakFormat)
 		{
-			case LineBreakFormat::Windows:
-			{
-				return wxTextFileType::wxTextFileType_Dos;
-			}
 			case LineBreakFormat::Unix:
 			{
 				return wxTextFileType::wxTextFileType_Unix;
 			}
-			case LineBreakFormat::Mac:
+			case LineBreakFormat::Windows:
+			{
+				return wxTextFileType::wxTextFileType_Dos;
+			}
+			case LineBreakFormat::Macintosh:
 			{
 				return wxTextFileType::wxTextFileType_Mac;
 			}
