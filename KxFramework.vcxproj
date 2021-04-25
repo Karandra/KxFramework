@@ -352,11 +352,13 @@
     <ClInclude Include="kxf\System\Win32Error.h" />
     <ClInclude Include="kxf\System\WMI.h" />
     <ClInclude Include="kxf\Threading\CriticalSection.h" />
+    <ClInclude Include="kxf\Threading\IThreadPool.h" />
     <ClInclude Include="kxf\Threading\ReadWriteLock.h" />
     <ClInclude Include="kxf\Threading\RecursiveRWLock.h" />
     <ClInclude Include="kxf\Threading\SynchronizedCondition.h" />
     <ClInclude Include="kxf\Threading\ThreadEvent.h" />
     <ClInclude Include="kxf\Threading\LockGuard.h" />
+    <ClInclude Include="kxf\Threading\ThreadPool.h" />
     <ClInclude Include="kxf\UI\Controls\AUI.h" />
     <ClInclude Include="kxf\UI\Controls\AUI\AuiNotebook.h" />
     <ClInclude Include="kxf\UI\Controls\AUI\AuiToolBar.h" />
@@ -778,6 +780,7 @@
     <ClCompile Include="kxf\Threading\CriticalSection.cpp" />
     <ClCompile Include="kxf\Threading\ReadWriteLock.cpp" />
     <ClCompile Include="kxf\Threading\SynchronizedCondition.cpp" />
+    <ClCompile Include="kxf\Threading\ThreadPool.cpp" />
     <ClCompile Include="kxf\UI\Controls\AUI\AuiNotebook.cpp" />
     <ClCompile Include="kxf\UI\Controls\AUI\AuiToolBar.cpp" />
     <ClCompile Include="kxf\UI\Controls\AUI\AuiToolBarEvent.cpp" />

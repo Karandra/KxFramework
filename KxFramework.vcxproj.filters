@@ -1833,6 +1833,12 @@
     <ClInclude Include="kxf\IO\NullStream.h">
       <Filter>kxf\IO</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Threading\ThreadPool.h">
+      <Filter>kxf\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Threading\IThreadPool.h">
+      <Filter>kxf\Threading</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2744,6 +2750,9 @@
     </ClCompile>
     <ClCompile Include="kxf\IO\NullStream.cpp">
       <Filter>kxf\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Threading\ThreadPool.cpp">
+      <Filter>kxf\Threading</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
