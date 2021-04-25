@@ -1109,6 +1109,14 @@ namespace kxf
 			{
 				m_String.resize(capacity, c);
 			}
+			void assign(const char* data, size_t length = npos)
+			{
+				m_String.assign(data, length);
+			}
+			void assign(const wchar_t* data, size_t length = npos)
+			{
+				m_String.assign(data, length);
+			}
 			void shrink_to_fit()
 			{
 				Shrink();
