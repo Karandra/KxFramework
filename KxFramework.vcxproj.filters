@@ -1815,6 +1815,9 @@
       <Filter>kxf\System</Filter>
     </ClInclude>
     <ClInclude Include="kxfResources.h" />
+    <ClInclude Include="kxf\General\ILibraryInfo.h">
+      <Filter>kxf\General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">

@@ -258,6 +258,7 @@
     <ClInclude Include="kxf\General\Enumerator.h" />
     <ClInclude Include="kxf\General\IEnumerator.h" />
     <ClInclude Include="kxf\General\IErrorCode.h" />
+    <ClInclude Include="kxf\General\ILibraryInfo.h" />
     <ClInclude Include="kxf\General\IVariablesCollection.h" />
     <ClInclude Include="kxf\General\LocallyUniqueID.h" />
     <ClInclude Include="kxf\General\NullVariablesCollection.h" />
