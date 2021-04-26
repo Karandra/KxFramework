@@ -137,6 +137,9 @@ namespace kxf
 			virtual bool ProcessPendingEvents() = 0;
 			virtual size_t DiscardPendingEvents() = 0;
 
+			virtual bool IsEventProcessingEnabled() const = 0;
+			virtual void EnableEventProcessing(bool enable = true) = 0;
+
 			// Event handlers chain
 			virtual IEvtHandler* GetPrevHandler() const = 0;
 			virtual IEvtHandler* GetNextHandler() const = 0;
@@ -145,9 +148,6 @@ namespace kxf
 
 			virtual void Unlink() = 0;
 			virtual bool IsUnlinked() const = 0;
-
-			virtual bool IsEventProcessingEnabled() const = 0;
-			virtual void EnableEventProcessing(bool enable = true) = 0;
 
 		public:
 			// Bind free or static function

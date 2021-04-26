@@ -52,10 +52,12 @@ namespace kxf
 			void ConsumeException(IEvent& event);
 
 		protected:
+			// IEvtHandler
 			LocallyUniqueID DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<BindEventFlag> flags = {}) override;
 			bool DoUnbind(const EventID& eventID, IEventExecutor& executor) override;
 			bool DoUnbind(const LocallyUniqueID& bindSlot) override;
 
+			// EvtHandler
 			bool OnDynamicBind(EventItem& eventItem) override
 			{
 				return true;
@@ -84,11 +86,20 @@ namespace kxf
 			}
 
 		public:
-			// Event queuing and processing
+			// IEvtHandler: Event queuing and processing
 			bool ProcessPendingEvents() override;
 			size_t DiscardPendingEvents() override;
 
-			// Event handlers chain
+			bool IsEventProcessingEnabled() const override
+			{
+				return m_IsEnabled;
+			}
+			void EnableEventProcessing(bool enable = true) override
+			{
+				m_IsEnabled = enable;
+			}
+
+			// IEvtHandler: Event handlers chain
 			IEvtHandler* GetPrevHandler() const override
 			{
 				return m_PrevHandler;
@@ -108,15 +119,6 @@ namespace kxf
 
 			void Unlink() override;
 			bool IsUnlinked() const override;
-
-			bool IsEventProcessingEnabled() const override
-			{
-				return m_IsEnabled;
-			}
-			void EnableEventProcessing(bool enable = true) override
-			{
-				m_IsEnabled = enable;
-			}
 
 		public:
 			EvtHandler& operator=(const EvtHandler&) = delete;

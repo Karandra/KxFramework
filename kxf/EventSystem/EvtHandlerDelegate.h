@@ -18,6 +18,7 @@ namespace kxf
 			}
 
 		protected:
+			// IEvtHandler
 			LocallyUniqueID DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<BindEventFlag> flags = {}) override
 			{
 				return Access().DoBind(eventID, std::move(executor), flags);
@@ -31,15 +32,6 @@ namespace kxf
 				return Access().DoUnbind(bindSlot);
 			}
 
-			bool OnDynamicBind(EventItem& eventItem) override
-			{
-				return Access().OnDynamicBind(eventItem);
-			}
-			bool OnDynamicUnbind(EventItem& eventItem) override
-			{
-				return Access().OnDynamicUnbind(eventItem);
-			}
-
 			std::unique_ptr<IEvent> DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, const UniversallyUniqueID& uuid = {}, FlagSet<ProcessEventFlag> flags = {}) override
 			{
 				return Access().DoQueueEvent(std::move(event), eventID, uuid, flags);
@@ -49,16 +41,8 @@ namespace kxf
 				return Access().DoProcessEvent(event, eventID, uuid, flags, onlyIn);
 			}
 
-			bool TryBefore(IEvent& event) override
-			{
-				return Access().TryBefore(event);
-			}
-			bool TryAfter(IEvent& event) override
-			{
-				return Access().TryAfter(event);
-			}
-
 		public:
+			// EvtHandlerDelegate
 			EvtHandlerDelegate() noexcept = default;
 			EvtHandlerDelegate(IEvtHandler& evtHandler) noexcept
 				:m_EvtHandler(evtHandler)
@@ -73,6 +57,7 @@ namespace kxf
 			~EvtHandlerDelegate() = default;
 
 		public:
+			// EvtHandlerDelegate
 			bool IsNull() const noexcept
 			{
 				return m_EvtHandler.is_null();
@@ -90,7 +75,7 @@ namespace kxf
 				return {};
 			}
 
-			// Event queuing and processing
+			// IEvtHandler: Event queuing and processing
 			bool ProcessPendingEvents() override
 			{
 				return m_EvtHandler->ProcessPendingEvents();
@@ -100,7 +85,16 @@ namespace kxf
 				return m_EvtHandler->DiscardPendingEvents();
 			}
 
-			// Event handlers chain
+			bool IsEventProcessingEnabled() const override
+			{
+				return m_EvtHandler->IsEventProcessingEnabled();
+			}
+			void EnableEventProcessing(bool enable = true) override
+			{
+				m_EvtHandler->EnableEventProcessing(enable);
+			}
+
+			// IEvtHandler: Event handlers chain
 			IEvtHandler* GetPrevHandler() const override
 			{
 				return m_EvtHandler->GetPrevHandler();
@@ -127,15 +121,6 @@ namespace kxf
 				return m_EvtHandler->IsUnlinked();
 			}
 
-			bool IsEventProcessingEnabled() const override
-			{
-				return m_EvtHandler->IsEventProcessingEnabled();
-			}
-			void EnableEventProcessing(bool enable = true) override
-			{
-				m_EvtHandler->EnableEventProcessing(enable);
-			}
-
 		public:
 			explicit operator bool() const noexcept
 			{
@@ -144,6 +129,15 @@ namespace kxf
 			bool operator!() const noexcept
 			{
 				return IsNull();
+			}
+
+			const IEvtHandler& operator*() const noexcept
+			{
+				return *m_EvtHandler;
+			}
+			IEvtHandler& operator*() noexcept
+			{
+				return *m_EvtHandler;
 			}
 
 			EvtHandlerDelegate& operator=(EvtHandlerDelegate&&) noexcept = default;
