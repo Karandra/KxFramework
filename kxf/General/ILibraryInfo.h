@@ -14,5 +14,9 @@ namespace kxf
 			virtual String GetName() const = 0;
 			virtual Version GetVersion() const = 0;
 			virtual uint32_t GetAPILevel() const = 0;
+
+			virtual String GetLicense() const = 0;
+			virtual String GetLicenseName() const = 0;
+			virtual String GetCopyright() const = 0;
 	};
 }
