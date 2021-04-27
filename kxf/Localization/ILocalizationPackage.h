@@ -14,7 +14,7 @@ namespace kxf::Localization
 
 		OverwriteExisting = 1 << 16,
 
-		CONSECUTIVE_MASK = 0xFFFF
+		CONSECUTIVE_MASK = 1 << 16
 	};
 }
 namespace kxf

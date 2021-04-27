@@ -41,7 +41,7 @@ namespace kxf::UI::DataView
 		m_DragFlags = wxDrag_CopyOnly;
 	}
 
-	wxDataObjectSimple* DragDropEvent::GetRecievedDataObject() const
+	wxDataObjectSimple* DragDropEvent::GetReceivedDataObject() const
 	{
 		return m_DataObject;
 	}

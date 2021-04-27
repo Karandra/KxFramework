@@ -309,13 +309,13 @@ namespace kxf::UI::DataView
 			void DragCancel();
 
 			// Drop
-			wxDataObjectSimple* GetRecievedDataObject() const;
+			wxDataObjectSimple* GetReceivedDataObject() const;
 
 			template<class T>
-			T* GetRecievedDataObject() const
+			T* GetReceivedDataObject() const
 			{
 				static_assert(std::is_base_of_v<wxDataObjectSimple, T>);
-				return dynamic_cast<T*>(GetRecievedDataObject());
+				return dynamic_cast<T*>(GetReceivedDataObject());
 			}
 
 			wxDragResult GetDropResult() const
