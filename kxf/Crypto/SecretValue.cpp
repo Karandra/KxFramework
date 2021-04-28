@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "SecretValue.h"
+#include "kxf/Utility/Memory.h"
 
 namespace kxf
 {
@@ -11,7 +12,7 @@ namespace kxf
 	{
 		if (!m_Storage.empty())
 		{
-			::RtlSecureZeroMemory(m_Storage.data(), m_Storage.size());
+			Utility::SecureZeroMemory(m_Storage.data(), m_Storage.size());
 			m_Storage.clear();
 		}
 	}
