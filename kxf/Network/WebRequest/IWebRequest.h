@@ -1,9 +1,5 @@
 #pragma once
 #include "Common.h"
-#include "URI.h"
-#include "WebRequestHeader.h"
-#include "kxf/RTTI/RTTI.h"
-#include "kxf/General/BinarySize.h"
 #include "kxf/EventSystem/IEvtHandler.h"
 
 // Undef these symbols because Windows SDK defines some of them
@@ -21,33 +17,9 @@ namespace kxf
 	class IWebSession;
 	class IWebResponse;
 	class IWebAuthChallenge;
+
 	class WebRequestEvent;
-
-	class FSPath;
-	class IInputStream;
-	class IOutputStream;
-
-	enum class WebRequestState
-	{
-		None = -1,
-
-		Idle,
-		Paused,
-		Resumed,
-		Unauthorized,
-		Active,
-		Completed,
-		Failed,
-		Cancelled
-	};
-	enum class WebRequestStorage
-	{
-		None = -1,
-
-		Memory,
-		Stream,
-		FileSystem
-	};
+	class WebRequestHeader;
 }
 
 namespace kxf

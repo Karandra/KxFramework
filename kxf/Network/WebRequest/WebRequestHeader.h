@@ -3,21 +3,6 @@
 
 namespace kxf
 {
-	enum class WebRequestHeaderFlag: uint32_t
-	{
-		None = 0,
-
-		Add = 1 << 0,
-		Replace = 1 << 1,
-
-		CoalesceComma = 1 << 16,
-		CoalesceSemicolon = 1 << 17
-	};
-	KxFlagSet_Declare(WebRequestHeaderFlag);
-}
-
-namespace kxf
-{
 	class WebRequestHeader final
 	{
 		friend struct std::hash<WebRequestHeader>;

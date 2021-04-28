@@ -1,7 +1,11 @@
 #pragma once
 #include "Common.h"
-#include "IWebRequestOptions.h"
-#include "WebRequestHeader.h"
+#include "Options.h"
+
+namespace kxf
+{
+	class WebRequestHeader;
+}
 
 namespace kxf
 {

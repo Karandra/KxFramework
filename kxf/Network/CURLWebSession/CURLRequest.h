@@ -1,8 +1,5 @@
 #pragma once
 #include "Common.h"
-#include "../IWebRequestOptions.h"
-#include "../IWebRequestAuthOptions.h"
-#include "../IWebRequestSecurityOptions.h"
 #include "CURLAuthChallenge.h"
 #include "CURLUtility.h"
 #include "kxf/EventSystem/EvtHandler.h"

@@ -1,15 +1,5 @@
 #pragma once
 #include "Common.h"
-#include "URI.h"
-#include "HTTPStatus.h"
-#include "kxf/RTTI/RTTI.h"
-#include "kxf/General/Enumerator.h"
-#include "kxf/General/BinarySize.h"
-
-namespace kxf
-{
-	class IInputStream;
-}
 
 namespace kxf
 {

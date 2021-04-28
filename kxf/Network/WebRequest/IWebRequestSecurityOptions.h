@@ -1,11 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "IWebRequestOptions.h"
-
-namespace kxf
-{
-
-}
+#include "Options.h"
 
 namespace kxf
 {

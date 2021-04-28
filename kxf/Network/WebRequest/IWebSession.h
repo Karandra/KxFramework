@@ -1,16 +1,11 @@
 #pragma once
 #include "Common.h"
-#include "URI.h"
-#include "IWebRequest.h"
-#include "IWebResponse.h"
-#include "WebRequestEvent.h"
-#include "WebRequestHeader.h"
-#include "kxf/RTTI/RTTI.h"
 #include "kxf/EventSystem/IEvtHandler.h"
 
 namespace kxf
 {
-	class IFileSystem;
+	class IWebRequest;
+	class WebRequestHeader;
 }
 
 namespace kxf
