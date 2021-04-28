@@ -3,6 +3,7 @@
 #include "URI.h"
 #include "HTTPStatus.h"
 #include "kxf/RTTI/RTTI.h"
+#include "kxf/General/Enumerator.h"
 #include "kxf/General/BinarySize.h"
 
 namespace kxf
@@ -21,8 +22,11 @@ namespace kxf
 
 			virtual URI GetURI() const = 0;
 			virtual String GetSuggestedFileName() const = 0;
-			virtual String GetHeader(const String& name) const = 0;
 			virtual HTTPStatus GetStatus() const = 0;
+
+			virtual String GetHeader(const String& name) const = 0;
+			virtual Enumerator<String> EnumHeaders() const = 0;
+			virtual Enumerator<String> EnumCookies() const = 0;
 
 			virtual String GetMIMEType() const = 0;
 			virtual BinarySize GetContentLength() const = 0;
@@ -62,11 +66,20 @@ namespace kxf
 			{
 				return {};
 			}
+			HTTPStatus GetStatus() const override
+			{
+				return {};
+			}
+
 			String GetHeader(const String& name) const override
 			{
 				return {};
 			}
-			HTTPStatus GetStatus() const override
+			Enumerator<String> EnumHeaders() const override
+			{
+				return {};
+			}
+			Enumerator<String> EnumCookies() const override
 			{
 				return {};
 			}

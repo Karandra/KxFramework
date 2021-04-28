@@ -2,10 +2,12 @@
 #include "kxf/Common.hpp"
 #include "kxf/General/String.h"
 #include "kxf/General/DateTime.h"
+#include "kxf/General/BinarySize.h"
 
 namespace kxf
 {
 	class URI;
+	using TransferRate = BinarySize;
 
 	enum class NetworkHostType
 	{

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -290,11 +290,22 @@
     <ClInclude Include="kxf\Log.hpp" />
     <ClInclude Include="kxf\Log\Common.h" />
     <ClInclude Include="kxf\Log\OutputStreamTarget.h" />
+    <ClInclude Include="kxf\Network\CURLWebSession\Common.h" />
+    <ClInclude Include="kxf\Network\CURLWebSession\CURL.h" />
+    <ClInclude Include="kxf\Network\CURLWebSession\CURLResponse.h" />
+    <ClInclude Include="kxf\Network\CURLWebSession\CURLRequest.h" />
+    <ClInclude Include="kxf\Network\CURLWebSession\CURLSession.h" />
+    <ClInclude Include="kxf\Network\CURLWebSession\CURLUtility.h" />
+    <ClInclude Include="kxf\Network\CURLWebSession\Utility.h" />
     <ClInclude Include="kxf\Network\IWebAuthChallenge.h" />
     <ClInclude Include="kxf\Network\IWebRequest.h" />
+    <ClInclude Include="kxf\Network\IWebRequestAuthOptions.h" />
+    <ClInclude Include="kxf\Network\IWebRequestOptions.h" />
+    <ClInclude Include="kxf\Network\IWebRequestSecurityOptions.h" />
     <ClInclude Include="kxf\Network\IWebResponse.h" />
     <ClInclude Include="kxf\Network\IWebSession.h" />
     <ClInclude Include="kxf\Network\WebRequestEvent.h" />
+    <ClInclude Include="kxf\Network\WebRequestHeader.h" />
     <ClInclude Include="kxf\pch.hpp" />
     <ClInclude Include="kxf\RTTI\ClassInfo.h" />
     <ClInclude Include="kxf\RTTI\IID.h" />
@@ -547,11 +558,7 @@
     <ClInclude Include="kxf\Localization\AndroidLocalizationPackage.h" />
     <ClInclude Include="kxf\Network.hpp" />
     <ClInclude Include="kxf\Network\Common.h" />
-    <ClInclude Include="kxf\Network\CURL\Event.h" />
-    <ClInclude Include="kxf\Network\CURL\Reply.h" />
-    <ClInclude Include="kxf\Network\CURL\Session.h" />
-    <ClInclude Include="kxf\Network\CURL.h" />
-    <ClInclude Include="kxf\Network\CURL\Private\CURL.h" />
+    <ClInclude Include="kxf\Network\CURLWebSession.h" />
     <ClInclude Include="kxf\Network\HTTPStatus.h" />
     <ClInclude Include="kxf\Network\URI.h" />
     <ClInclude Include="kxf\Network\WebSocket.h" />
@@ -734,10 +741,14 @@
     <ClCompile Include="kxf\Localization\WindowsLocalizationPackage.cpp" />
     <ClCompile Include="kxf\Log\Common.cpp" />
     <ClCompile Include="kxf\Log\OutputStreamTarget.cpp" />
+    <ClCompile Include="kxf\Network\CURLWebSession\CURLResponse.cpp" />
+    <ClCompile Include="kxf\Network\CURLWebSession\CURLRequest.cpp" />
+    <ClCompile Include="kxf\Network\CURLWebSession\CURLSession.cpp" />
+    <ClCompile Include="kxf\Network\CURLWebSession\CURLUtility.cpp" />
     <ClCompile Include="kxf\Network\IWebAuthChallenge.cpp" />
-    <ClCompile Include="kxf\Network\IWebRequest.cpp" />
+    <ClCompile Include="kxf\Network\IWebRequestOptions.cpp" />
     <ClCompile Include="kxf\Network\IWebResponse.cpp" />
-    <ClCompile Include="kxf\Network\IWebSession.cpp" />
+    <ClCompile Include="kxf\Network\WebRequestHeader.cpp" />
     <ClCompile Include="kxf\RTTI\ClassInfo.cpp" />
     <ClCompile Include="kxf\RTTI\Common.cpp" />
     <ClCompile Include="kxf\RTTI\IID.cpp" />
@@ -892,11 +903,6 @@
     <ClCompile Include="kxf\Localization\Private\StandardLocalization.cpp" />
     <ClCompile Include="kxf\Localization\AndroidLocalizationPackage.cpp" />
     <ClCompile Include="kxf\Network\Common.cpp" />
-    <ClCompile Include="kxf\Network\CURL.cpp" />
-    <ClCompile Include="kxf\Network\CURL\Event.cpp" />
-    <ClCompile Include="kxf\Network\CURL\Reply.cpp" />
-    <ClCompile Include="kxf\Network\CURL\Session.cpp" />
-    <ClCompile Include="kxf\Network\CURL\Private\CURL.cpp" />
     <ClCompile Include="kxf\Network\URI.cpp" />
     <ClCompile Include="kxf\Network\WebSocket.cpp" />
     <ClCompile Include="kxf\Network\WebSocket\SecureClient.cpp" />

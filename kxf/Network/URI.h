@@ -30,7 +30,7 @@ namespace kxf
 	class KX_API URI final
 	{
 		friend class Private::URIObject;
-		friend struct std::hash<kxf::URI>;
+		friend struct std::hash<URI>;
 
 		public:
 			static String Escape(const String& source, FlagSet<URIFlag> flags = {});
