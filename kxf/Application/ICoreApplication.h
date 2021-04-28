@@ -12,6 +12,7 @@ namespace kxf
 	class IEventExecutor;
 
 	class FSActionEvent;
+	class IThreadPool;
 }
 
 namespace kxf::Application
@@ -200,6 +201,7 @@ namespace kxf
 			virtual IEventFilter::Result FilterEvent(IEvent& event) = 0;
 
 			virtual IEvtHandler& GetEvtHandler() = 0;
+			virtual IThreadPool& GetThreadPool() = 0;
 			virtual const ILocalizationPackage& GetLocalizationPackage() const = 0;
 	};
 }
