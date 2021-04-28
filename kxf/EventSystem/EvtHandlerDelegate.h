@@ -32,6 +32,15 @@ namespace kxf
 				return Access().DoUnbind(bindSlot);
 			}
 
+			bool OnDynamicBind(EventItem& eventItem) override
+			{
+				return Access().OnDynamicBind(eventItem);
+			}
+			bool OnDynamicUnbind(EventItem& eventItem) override
+			{
+				return Access().OnDynamicUnbind(eventItem);
+			}
+
 			std::unique_ptr<IEvent> DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, const UniversallyUniqueID& uuid = {}, FlagSet<ProcessEventFlag> flags = {}) override
 			{
 				return Access().DoQueueEvent(std::move(event), eventID, uuid, flags);
@@ -39,6 +48,15 @@ namespace kxf
 			bool DoProcessEvent(IEvent& event, const EventID& eventID = {}, const UniversallyUniqueID& uuid = {}, FlagSet<ProcessEventFlag> flags = {}, IEvtHandler* onlyIn = nullptr) override
 			{
 				return Access().DoProcessEvent(event, eventID, uuid, flags, onlyIn);
+			}
+
+			bool TryBefore(IEvent& event) override
+			{
+				return Access().TryBefore(event);
+			}
+			bool TryAfter(IEvent& event) override
+			{
+				return Access().TryAfter(event);
 			}
 
 		public:
