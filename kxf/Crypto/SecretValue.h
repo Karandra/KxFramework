@@ -36,7 +36,7 @@ namespace kxf
 				m_Storage.resize(size);
 				std::memcpy(m_Storage.data(), data, size);
 			}
-			SecretValue(const SecretValue& other) = delete;
+			SecretValue(const SecretValue&) = delete;
 			SecretValue(SecretValue&& other) noexcept
 			{
 				*this = std::move(other);
@@ -64,7 +64,7 @@ namespace kxf
 			void Wipe() noexcept;
 
 		public:
-			SecretValue& operator=(const SecretValue& other) = delete;
+			SecretValue& operator=(const SecretValue&) = delete;
 			SecretValue& operator=(SecretValue&& other) noexcept
 			{
 				m_Storage = std::move(other.m_Storage);
