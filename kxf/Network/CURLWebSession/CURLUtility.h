@@ -47,7 +47,7 @@ namespace kxf::CURL::Private
 			bool SetOption(int option, int32_t value) noexcept;
 			bool SetOption(int option, uint32_t value) noexcept;
 			bool SetOption(int option, int64_t value) noexcept;
-			bool SetOption(int option, size_t value) noexcept;
+			bool SetOption(int option, uint64_t value) noexcept;
 			bool SetOption(int option, bool value) noexcept;
 			bool SetOption(int option, const void* value) noexcept;
 
@@ -62,6 +62,12 @@ namespace kxf::CURL::Private
 			{
 				static_assert(false, "member function pointers aren't allowed here");
 				return false;
+			}
+
+			template<class T>
+			bool SetOption(int option, const FlagSet<T>& value) noexcept
+			{
+				return SetOption(option, value.ToInt());
 			}
 
 			bool SetOption(int option, long value) noexcept

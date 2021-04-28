@@ -3,6 +3,7 @@
 #include "../IWebRequestOptions.h"
 #include "../IWebRequestAuthOptions.h"
 #include "../IWebRequestSecurityOptions.h"
+#include "CURLAuthChallenge.h"
 #include "CURLUtility.h"
 #include "kxf/EventSystem/EvtHandler.h"
 #include "kxf/EventSystem/EvtHandlerAccessor.h"
@@ -17,6 +18,7 @@ namespace kxf
 	class KX_API CURLRequest final: public RTTI::Implementation<CURLRequest, IWebRequest, IWebRequestOptions, IWebRequestAuthOptions, IWebRequestSecurityOptions>
 	{
 		friend class CURLSession;
+		friend class CURLAuthChallenge;
 
 		private:
 			using TCURLOffset = int64_t;
@@ -52,16 +54,19 @@ namespace kxf
 			CURL::Private::SessionHandle m_Handle;
 			std::vector<WebRequestHeader> m_RequestHeaders;
 			void* m_RequestHeadersSList = nullptr;
+			String m_Method;
 			URI m_URI;
-
-			// Receive
-			std::shared_ptr<IOutputStream> m_ReceiveStream;
-			WebRequestStorage m_ReceiveStorage = WebRequestStorage::None;
 
 			// Send
 			std::shared_ptr<IInputStream> m_SendStream;
 			std::string m_SendData;
 			WebRequestStorage m_SendStorage = WebRequestStorage::None;
+
+			// Receive
+			std::shared_ptr<IOutputStream> m_ReceiveStream;
+			WebRequestStorage m_ReceiveStorage = WebRequestStorage::None;
+
+			std::optional<CURLAuthChallenge> m_AuthChallenge;
 
 			// Progress state
 			std::atomic<int64_t> m_BytesReceived = -1;
@@ -86,15 +91,18 @@ namespace kxf
 			}
 
 			void NotifyEvent(EventTag<WebRequestEvent> eventID, WebRequestEvent& event);
-			void NotifyStateChange(WebRequestState state, HTTPStatus status = {}, String errorMessage = {})
+			void NotifyStateChange(WebRequestState state, std::optional<int> statusCode = {}, String statusText = {})
 			{
-				WebRequestEvent event(*this, state, status, errorMessage);
+				WebRequestEvent event(*this, state, std::move(statusCode), std::move(statusText));
 				NotifyEvent(WebRequestEvent::EvtStateChanged, event);
 			}
 
 			void DoFreeRequestHeaders();
 			void DoSetRequestHeaders();
+			void DoPrepareSendData();
+			void DoPrepareReceiveData();
 			void DoPerformRequest();
+			void DoResetState();
 			void DoCloseRequest() noexcept;
 
 			bool OnCallbackCommon(bool isWrite, size_t& result);
@@ -102,6 +110,9 @@ namespace kxf
 			size_t OnWriteData(char* data, size_t size, size_t count);
 			size_t OnReceiveHeader(char* data, size_t size, size_t count);
 			int OnProgressNotify(int64_t bytesReceived, int64_t bytesExpectedToReceive, int64_t bytesSent, int64_t bytesExpectedToSend);
+
+			void OnUnauthorizedRequest(const HTTPStatus& responseStatus, std::string_view statusText);
+			void OnSetAuthChallengeCredentials(WebAuthChallengeSource source, UserCredentials credentials);
 
 		protected:
 			// IEvtHandler
@@ -166,6 +177,10 @@ namespace kxf
 			}
 			IWebAuthChallenge& GetAuthChallenge() override
 			{
+				if (m_AuthChallenge)
+				{
+					return *m_AuthChallenge;
+				}
 				return NullWebAuthChallenge::Get();
 			}
 			
@@ -222,9 +237,11 @@ namespace kxf
 			bool SetPort(uint16_t port) override;
 			bool SetMethod(const String& method) override;
 			bool SetDefaultProtocol(const String& protocol) override;
+			bool SetAllowedProtocols(FlagSet<WebRequestProtocol> protocols) override;
 
 			bool SetServiceName(const String& name) override;
-			bool SetFollowLocation(WebRequestOption2 option) override;
+			bool SetAllowRedirection(WebRequestOption2 option) override;
+			bool SetRedirectionProtocols(FlagSet<WebRequestProtocol> protocols) override;
 			bool SetResumeOffset(StreamOffset offset) override;
 
 			bool SetRequestTimeout(const TimeSpan& timeout) override;

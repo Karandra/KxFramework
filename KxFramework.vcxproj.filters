@@ -1858,6 +1858,12 @@
     <ClInclude Include="kxf\Network\CURLWebSession\CURL.h">
       <Filter>kxf\Network\CURLWebSession</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Network\CURLWebSession\CURLAuthChallenge.h">
+      <Filter>kxf\Network\CURLWebSession</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Network\IWebRequestProxyOptions.h">
+      <Filter>kxf\Network</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2769,6 +2775,9 @@
     </ClCompile>
     <ClCompile Include="kxf\Network\WebRequestHeader.cpp">
       <Filter>kxf\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Network\CURLWebSession\CURLAuthChallenge.cpp">
+      <Filter>kxf\Network\CURLWebSession</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

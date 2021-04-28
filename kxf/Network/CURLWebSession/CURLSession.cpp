@@ -106,9 +106,12 @@ namespace kxf
 	std::shared_ptr<IWebRequest> CURLSession::CreateRequest(const URI& uri)
 	{
 		auto request = std::make_shared<CURLRequest>(*this, uri);
-		request->WeakRef(request);
-
-		return request;
+		if (*request)
+		{
+			request->WeakRef(request);
+			return request;
+		}
+		return nullptr;
 	}
 
 	IFileSystem& CURLSession::GetFileSystem() const

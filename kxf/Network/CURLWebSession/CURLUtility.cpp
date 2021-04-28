@@ -109,7 +109,7 @@ namespace kxf::CURL::Private
 	{
 		return DoDispatchSetOptionInt(m_Type, m_Handle, option, value);
 	}
-	bool SessionHandle::SetOption(int option, size_t value) noexcept
+	bool SessionHandle::SetOption(int option, uint64_t value) noexcept
 	{
 		return DoDispatchSetOptionInt(m_Type, m_Handle, option, value);
 	}

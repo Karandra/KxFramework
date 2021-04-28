@@ -18,11 +18,12 @@ namespace kxf
 		KxRTTI_DeclareIID(IWebResponse, {0x24f29008, 0x76c7, 0x42e7, {0x9f, 0x6b, 0x3, 0xcc, 0x4, 0xf3, 0xda, 0x33}});
 
 		public:
-			virtual bool IsNull() const = 0;
-
 			virtual URI GetURI() const = 0;
+			virtual String GetPrimaryIP() const = 0;
 			virtual String GetSuggestedFileName() const = 0;
-			virtual HTTPStatus GetStatus() const = 0;
+
+			virtual std::optional<int> GetStatusCode() const = 0;
+			virtual String GetStatusText() const = 0;
 
 			virtual String GetHeader(const String& name) const = 0;
 			virtual Enumerator<String> EnumHeaders() const = 0;
@@ -32,16 +33,6 @@ namespace kxf
 			virtual BinarySize GetContentLength() const = 0;
 
 			virtual IInputStream& GetStream() = 0;
-
-		public:
-			explicit operator bool() const
-			{
-				return !IsNull();
-			}
-			bool operator!() const
-			{
-				return IsNull();
-			}
 	};
 }
 
@@ -53,12 +44,11 @@ namespace kxf
 			static IWebResponse& Get();
 
 		public:
-			bool IsNull() const override
-			{
-				return true;
-			}
-
 			URI GetURI() const override
+			{
+				return {};
+			}
+			String GetPrimaryIP() const override
 			{
 				return {};
 			}
@@ -66,7 +56,12 @@ namespace kxf
 			{
 				return {};
 			}
-			HTTPStatus GetStatus() const override
+
+			std::optional<int> GetStatusCode() const override
+			{
+				return {};
+			}
+			String GetStatusText() const override
 			{
 				return {};
 			}

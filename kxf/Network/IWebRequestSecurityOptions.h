@@ -4,19 +4,7 @@
 
 namespace kxf
 {
-	enum class WebRequestSSLVersion
-	{
-		Default = -1,
 
-		SSLv2,
-		SSLv3,
-
-		TLSv1_x,
-		TLSv1_0,
-		TLSv1_1,
-		TLSv1_2,
-		TLSv1_3
-	};
 }
 
 namespace kxf

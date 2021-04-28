@@ -292,6 +292,7 @@
     <ClInclude Include="kxf\Log\OutputStreamTarget.h" />
     <ClInclude Include="kxf\Network\CURLWebSession\Common.h" />
     <ClInclude Include="kxf\Network\CURLWebSession\CURL.h" />
+    <ClInclude Include="kxf\Network\CURLWebSession\CURLAuthChallenge.h" />
     <ClInclude Include="kxf\Network\CURLWebSession\CURLResponse.h" />
     <ClInclude Include="kxf\Network\CURLWebSession\CURLRequest.h" />
     <ClInclude Include="kxf\Network\CURLWebSession\CURLSession.h" />
@@ -301,6 +302,7 @@
     <ClInclude Include="kxf\Network\IWebRequest.h" />
     <ClInclude Include="kxf\Network\IWebRequestAuthOptions.h" />
     <ClInclude Include="kxf\Network\IWebRequestOptions.h" />
+    <ClInclude Include="kxf\Network\IWebRequestProxyOptions.h" />
     <ClInclude Include="kxf\Network\IWebRequestSecurityOptions.h" />
     <ClInclude Include="kxf\Network\IWebResponse.h" />
     <ClInclude Include="kxf\Network\IWebSession.h" />
@@ -741,6 +743,7 @@
     <ClCompile Include="kxf\Localization\WindowsLocalizationPackage.cpp" />
     <ClCompile Include="kxf\Log\Common.cpp" />
     <ClCompile Include="kxf\Log\OutputStreamTarget.cpp" />
+    <ClCompile Include="kxf\Network\CURLWebSession\CURLAuthChallenge.cpp" />
     <ClCompile Include="kxf\Network\CURLWebSession\CURLResponse.cpp" />
     <ClCompile Include="kxf\Network\CURLWebSession\CURLRequest.cpp" />
     <ClCompile Include="kxf\Network\CURLWebSession\CURLSession.cpp" />

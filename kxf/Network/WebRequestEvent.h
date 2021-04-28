@@ -21,8 +21,8 @@ namespace kxf
 			IWebResponse* m_Response = nullptr;
 			WebRequestState m_State = WebRequestState::None;
 
-			HTTPStatus m_Status;
-			String m_ErrorMessage;
+			std::optional<int> m_Status;
+			String m_StatusText;
 
 			WebRequestHeader m_Header;
 			const void* m_Buffer = nullptr;
@@ -37,8 +37,8 @@ namespace kxf
 				:m_Request(&request), m_State(state), m_Header(std::move(header))
 			{
 			}
-			WebRequestEvent(IWebRequest& request, WebRequestState state, HTTPStatus status, String errorMessage = {})
-				:m_Request(&request), m_State(state), m_Status(std::move(status)), m_ErrorMessage(std::move(errorMessage))
+			WebRequestEvent(IWebRequest& request, WebRequestState state, std::optional<int> status = {}, String statusText = {})
+				:m_Request(&request), m_State(state), m_Status(status), m_StatusText(std::move(statusText))
 			{
 			}
 			WebRequestEvent(IWebRequest& request, WebRequestState state, const void* buffer, size_t bufferSize)
@@ -80,17 +80,17 @@ namespace kxf
 				return std::move(m_Header);
 			}
 
-			const String& GetErrorMessage() const&
-			{
-				return m_ErrorMessage;
-			}
-			String GetErrorMessage() &&
-			{
-				return std::move(m_ErrorMessage);
-			}
-			HTTPStatus GetStatus()
+			std::optional<int> GetStatusCode() const
 			{
 				return m_Status;
+			}
+			const String& GetStatusText() const&
+			{
+				return m_StatusText;
+			}
+			String GetStatusText() &&
+			{
+				return std::move(m_StatusText);
 			}
 
 			const void* GetBuffer() const

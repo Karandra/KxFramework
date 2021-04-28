@@ -3,6 +3,7 @@
 #include "kxf/General/String.h"
 #include "kxf/General/DateTime.h"
 #include "kxf/General/BinarySize.h"
+#include "kxf/Utility/Literals.h"
 
 namespace kxf
 {
