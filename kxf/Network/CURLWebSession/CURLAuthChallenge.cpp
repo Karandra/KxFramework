@@ -4,8 +4,8 @@
 
 namespace kxf
 {
-	void CURLAuthChallenge::SetCredentials(UserCredentials credentials)
+	bool CURLAuthChallenge::SetCredentials(UserCredentials credentials)
 	{
-		m_Request.OnSetAuthChallengeCredentials(m_Source, std::move(credentials));
+		return m_Request.OnSetAuthChallengeCredentials(m_Source, std::move(credentials));
 	}
 }

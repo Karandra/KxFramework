@@ -1873,6 +1873,9 @@
     <ClInclude Include="kxf\Network\WebRequest\Options.h">
       <Filter>kxf\Network\WebRequest</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\IO\IMemoryStream.h">
+      <Filter>kxf\IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">

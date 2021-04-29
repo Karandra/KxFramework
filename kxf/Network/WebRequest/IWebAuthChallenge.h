@@ -21,7 +21,7 @@ namespace kxf
 
 		public:
 			virtual WebAuthChallengeSource GetSource() const = 0;
-			virtual void SetCredentials(UserCredentials credentials) = 0;
+			virtual bool SetCredentials(UserCredentials credentials) = 0;
 	};
 }
 
@@ -37,8 +37,9 @@ namespace kxf
 			{
 				return WebAuthChallengeSource::None;
 			}
-			void SetCredentials(UserCredentials credentials) override
+			bool SetCredentials(UserCredentials credentials) override
 			{
+				return false;
 			}
 	};
 }

@@ -64,6 +64,26 @@ namespace kxf
 	};
 	KxFlagSet_Declare(WebRequestAuthMethod);
 
+	enum class WebRequestIPVersion
+	{
+		Any = -2,
+		None = -1,
+
+		IPv4,
+		IPv6
+	};
+	enum class WebRequestHTTPVersion
+	{
+		Any = -2,
+		None = -1,
+
+		Version1_0,
+		Version1_1,
+		Version2,
+		Version2TLS,
+		Version3
+	};
+
 	enum class WebRequestProtocol: uint64_t
 	{
 		None = 0,

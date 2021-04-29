@@ -270,6 +270,7 @@
     <ClInclude Include="kxf\General\UniqueFunction.h" />
     <ClInclude Include="kxf\IO.hpp" />
     <ClInclude Include="kxf\IO\Common.h" />
+    <ClInclude Include="kxf\IO\IMemoryStream.h" />
     <ClInclude Include="kxf\IO\NativeFileStream.h" />
     <ClInclude Include="kxf\IO\IStream.h" />
     <ClInclude Include="kxf\IO\IStreamOnFileSystem.h" />

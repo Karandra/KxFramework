@@ -18,7 +18,7 @@ namespace kxf::WebSocket
 			}
 			catch (...)
 			{
-				wxLogDebug(wxS("WebSocket::SecureClient::<ASIOLoop>: exception occurred"));
+				wxLogDebug(wxS("WebSocket::SecureClient::<thread[m_Client.run]>: exception occurred"));
 			}
 		});
 
@@ -73,7 +73,7 @@ namespace kxf::WebSocket
 			}
 			catch (...)
 			{
-				wxLogDebug(wxS("KxWebSocket::RegisterHandlers: exception occured"));
+				wxLogDebug(wxS("WebSocket::SecureClient::RegisterHandlers: exception occurred"));
 			}
 			return context;
 		});

@@ -1,5 +1,11 @@
 #pragma once
 #include "Common.h"
+#include "Options.h"
+
+namespace kxf
+{
+	class WebRequestHeader;
+}
 
 namespace kxf
 {
@@ -9,19 +15,22 @@ namespace kxf
 
 		public:
 			virtual URI GetURI() const = 0;
+			virtual String GetMethod() const = 0;
 			virtual String GetPrimaryIP() const = 0;
-			virtual String GetSuggestedFileName() const = 0;
+			virtual std::optional<uint16_t> GetPrimaryPort() const = 0;
+			virtual WebRequestHTTPVersion GetHTTPVersion() const = 0;
+			virtual WebRequestProtocol GetProtocol() const = 0;
+			virtual BinarySize GetContentLength() const = 0;
+			virtual String GetContentType() const = 0;
 
 			virtual std::optional<int> GetStatusCode() const = 0;
 			virtual String GetStatusText() const = 0;
 
 			virtual String GetHeader(const String& name) const = 0;
-			virtual Enumerator<String> EnumHeaders() const = 0;
+			virtual Enumerator<WebRequestHeader> EnumHeaders() const = 0;
 			virtual Enumerator<String> EnumCookies() const = 0;
 
-			virtual String GetMIMEType() const = 0;
-			virtual BinarySize GetContentLength() const = 0;
-
+			virtual String GetSuggestedFileName() const = 0;
 			virtual IInputStream& GetStream() = 0;
 	};
 }
@@ -38,11 +47,31 @@ namespace kxf
 			{
 				return {};
 			}
+			String GetMethod() const override
+			{
+				return {};
+			}
 			String GetPrimaryIP() const override
 			{
 				return {};
 			}
-			String GetSuggestedFileName() const override
+			std::optional<uint16_t> GetPrimaryPort() const override
+			{
+				return {};
+			}
+			WebRequestProtocol GetProtocol() const override
+			{
+				return WebRequestProtocol::None;
+			}
+			WebRequestHTTPVersion GetHTTPVersion() const override
+			{
+				return WebRequestHTTPVersion::None;
+			}
+			BinarySize GetContentLength() const override
+			{
+				return {};
+			}
+			String GetContentType() const override
 			{
 				return {};
 			}
@@ -60,24 +89,13 @@ namespace kxf
 			{
 				return {};
 			}
-			Enumerator<String> EnumHeaders() const override
-			{
-				return {};
-			}
-			Enumerator<String> EnumCookies() const override
-			{
-				return {};
-			}
+			Enumerator<WebRequestHeader> EnumHeaders() const override;
+			Enumerator<String> EnumCookies() const override;
 
-			String GetMIMEType() const override
+			String GetSuggestedFileName() const override
 			{
 				return {};
 			}
-			BinarySize GetContentLength() const override
-			{
-				return {};
-			}
-
 			IInputStream& GetStream() override;
 	};
 }

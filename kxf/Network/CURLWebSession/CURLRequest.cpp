@@ -4,7 +4,6 @@
 #include "CURL.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/MemoryStream.h"
-#include "kxf/System/HandlePtr.h"
 #include "kxf/General/Enumerator.h"
 #include "kxf/Utility/ScopeGuard.h"
 #include "kxf/Utility/Container.h"
@@ -120,7 +119,7 @@ namespace kxf
 		else if (m_NextState == WebRequestState::Paused)
 		{
 			m_NextState = WebRequestState::None;
-			NotifyStateChange(WebRequestState::Paused);
+			ChangeStateAndNotify(WebRequestState::Paused);
 
 			result = isWrite ? CURL_WRITEFUNC_PAUSE : CURL_READFUNC_PAUSE;
 			return true;
@@ -139,7 +138,7 @@ namespace kxf
 			const size_t length = size * count;
 			m_SendStream->Read(data, length);
 
-			WebRequestEvent event(*this, m_State, data, length);
+			WebRequestEvent event(m_WeakRef.lock(), m_State, data, length);
 			NotifyEvent(WebRequestEvent::EvtDataSent, event);
 
 			return m_SendStream->LastRead().ToBytes();
@@ -158,7 +157,7 @@ namespace kxf
 			const size_t length = size * count;
 			m_ReceiveStream->Write(data, size * count);
 
-			WebRequestEvent event(*this, m_State, data, length);
+			WebRequestEvent event(m_WeakRef.lock(), m_State, data, length);
 			NotifyEvent(WebRequestEvent::EvtDataReceived, event);
 
 			return m_ReceiveStream->LastWrite().ToBytes();
@@ -168,12 +167,14 @@ namespace kxf
 	size_t CURLRequest::OnReceiveHeader(char* data, size_t size, size_t count)
 	{
 		const size_t length = size * count;
-
-		WebRequestHeader header(GetHeaderName(data, length), GetHeaderValue(data, length));
-		if (header)
+		if (const WebRequestHeader& header = m_ResponseHeaders.emplace_back(GetHeaderName(data, length), GetHeaderValue(data, length)))
 		{
-			WebRequestEvent event(*this, m_State, std::move(header));
+			WebRequestEvent event(m_WeakRef.lock(), m_State, header);
 			NotifyEvent(WebRequestEvent::EvtHeaderReceived, event);
+		}
+		else
+		{
+			m_ResponseHeaders.pop_back();
 		}
 		return length;
 	}
@@ -195,9 +196,9 @@ namespace kxf
 		if (m_NextState == WebRequestState::Resumed)
 		{
 			m_NextState = WebRequestState::None;
-			::curl_easy_pause(m_Handle.GetNativeHandle(), CURLPAUSE_CONT);
-			m_State = WebRequestState::Active;
+			m_Handle.Resume();
 
+			m_State = WebRequestState::Active;
 			NotifyStateChange(WebRequestState::Resumed);
 		}
 		else if (m_NextState == WebRequestState::Cancelled)
@@ -207,17 +208,9 @@ namespace kxf
 		}
 		return CURL_PROGRESSFUNC_CONTINUE;
 	}
-
-	void kxf::CURLRequest::OnUnauthorizedRequest(const HTTPStatus& responseStatus, std::string_view statusText)
+	bool CURLRequest::OnSetAuthChallengeCredentials(WebAuthChallengeSource source, UserCredentials credentials)
 	{
-		m_State = WebRequestState::Unauthorized;
-		m_AuthChallenge.emplace(*this, responseStatus == HTTPStatusCode::ProxyAuthenticationRequired ? WebAuthChallengeSource::ProxyServer : WebAuthChallengeSource::TargetServer);
-
-		NotifyStateChange(WebRequestState::Unauthorized, responseStatus.ToInt(), String::FromView(statusText));
-	}
-	void kxf::CURLRequest::OnSetAuthChallengeCredentials(WebAuthChallengeSource source, UserCredentials credentials)
-	{
-		// TODO: Handle any other type of authorization here (TLS)
+		// TODO: Handle other types of authorization here (TLS)
 
 		bool restart = false;
 		switch (source)
@@ -240,11 +233,16 @@ namespace kxf
 			}
 		};
 
+		// Restart the request if we know ho to handle this, otherwise it'll remain in the unauthorized state
+		// (instead of failed) and request processing will terminate here.
 		if (restart)
 		{
 			credentials.WipeSecret();
 			DoPerformRequest();
+
+			return true;
 		}
+		return false;
 	}
 
 	void CURLRequest::DoFreeRequestHeaders()
@@ -312,6 +310,11 @@ namespace kxf
 	}
 	void CURLRequest::DoPerformRequest()
 	{
+		Utility::ScopeGuard atExit = [&]()
+		{
+			m_Handle.SetOption(CURLOPT_ERRORBUFFER, nullptr);
+		};
+
 		// Prepare the request
 		DoResetState();
 		DoPrepareSendData();
@@ -323,32 +326,21 @@ namespace kxf
 		m_Handle.SetOption(CURLOPT_ERRORBUFFER, statusText.data());
 
 		// Active the request and notify about it
-		m_State = WebRequestState::Active;
-		NotifyStateChange(WebRequestState::Active);
+		ChangeStateAndNotify(WebRequestState::Active);
 
 		// And start the request
-		const int statusCode = ::curl_easy_perform(m_Handle.GetNativeHandle());
+		const int statusCode = ::curl_easy_perform(*m_Handle);
+		if (CharTraits::length(statusText.data()) == 0)
+		{
+			statusText.fill(0);
+
+			auto status = CURL::Private::EasyErrorCodeToString(statusCode);
+			std::strncpy(statusText.data(), status.data(), status.size());
+		}
 
 		// Get server response code
-		const auto responseStatus = [&]() -> std::optional<int>
-		{
-			long value = 0;
-			if (::curl_easy_getinfo(m_Handle.GetNativeHandle(), CURLINFO_RESPONSE_CODE, &value) == CURLE_OK)
-			{
-				return value;
-			}
-			return -1;
-		}();
-
-		const auto effectiveProtocol = [&]() -> std::optional<int>
-		{
-			long value = 0;
-			if (::curl_easy_getinfo(m_Handle.GetNativeHandle(), CURLINFO_PROTOCOL, &value) == CURLE_OK)
-			{
-				return value;
-			}
-			return {};
-		}();
+		const auto responseStatus = m_Handle.GetOptionInt32(CURLINFO_RESPONSE_CODE);
+		const auto effectiveProtocol = m_Handle.GetOptionUInt32(CURLINFO_PROTOCOL);
 
 		// Decide what to do next
 		if (effectiveProtocol == CURLPROTO_HTTP || effectiveProtocol == CURLPROTO_HTTPS)
@@ -356,7 +348,9 @@ namespace kxf
 			HTTPStatus httpStatus = responseStatus;
 			if (httpStatus == HTTPStatusCode::Unauthorized || httpStatus == HTTPStatusCode::ProxyAuthenticationRequired)
 			{
-				OnUnauthorizedRequest(responseStatus, statusText.data());
+				m_AuthChallenge.emplace(*this, httpStatus == HTTPStatusCode::ProxyAuthenticationRequired ? WebAuthChallengeSource::ProxyServer : WebAuthChallengeSource::TargetServer);
+				ChangeStateAndNotify(WebRequestState::Unauthorized, httpStatus.ToInt(), statusText.data());
+
 				return;
 			}
 		}
@@ -365,26 +359,27 @@ namespace kxf
 		{
 			case CURLE_OK:
 			{
-				m_State = WebRequestState::Completed;
+				m_Response.emplace(*this, responseStatus, statusText.data());
+				ChangeStateAndNotify(WebRequestState::Completed, responseStatus, statusText.data());
+
 				break;
 			}
 			case CURLE_ABORTED_BY_CALLBACK:
 			{
-				m_State = WebRequestState::Cancelled;
-				NotifyStateChange(WebRequestState::Cancelled, responseStatus, statusText.data());
-
+				ChangeStateAndNotify(WebRequestState::Cancelled, responseStatus, statusText.data());
 				break;
 			}
 			case CURLE_LOGIN_DENIED:
 			{
-				OnUnauthorizedRequest(responseStatus, statusText.data());
+				// HTTP(S) unauthorized case is handled above, this case is for other protocols.
+				m_AuthChallenge.emplace(*this, WebAuthChallengeSource::None);
+				ChangeStateAndNotify(WebRequestState::Unauthorized, responseStatus, statusText.data());
+
 				break;
 			}
 			default:
 			{
-				m_State = WebRequestState::Failed;
-				NotifyStateChange(WebRequestState::Failed, responseStatus, statusText.data());
-
+				ChangeStateAndNotify(WebRequestState::Failed, responseStatus, statusText.data());
 				break;
 			}
 		};
@@ -392,25 +387,17 @@ namespace kxf
 	void CURLRequest::DoResetState()
 	{
 		m_AuthChallenge.reset();
+		m_Response.reset();
+		m_ResponseHeaders.clear();
 
 		m_BytesReceived = -1;
 		m_BytesExpectedToReceive = -1;
 		m_BytesSent = -1;
 		m_BytesExpectedToSend = -1;
 	}
-	void CURLRequest::DoCloseRequest() noexcept
-	{
-		if (m_Handle)
-		{
-			DoFreeRequestHeaders();
-
-			::curl_easy_cleanup(m_Handle.GetNativeHandle());
-			m_Handle = {};
-		}
-	}
 
 	CURLRequest::CURLRequest(CURLSession& session, const URI& uri)
-		:m_Session(session), m_Handle(::curl_easy_init(), CURL::Private::SessionHandleType::Easy)
+		:m_Session(session), m_Handle(CURL::Private::HandleType::Easy)
 	{
 		static_assert(std::is_same_v<TCURLOffset, curl_off_t>, "'TCURLOffset' and 'curl_off_t' are not the same type");
 
@@ -444,12 +431,19 @@ namespace kxf
 			m_Handle.SetOption(CURLOPT_ACCEPT_ENCODING, "");
 		}
 	}
+	CURLRequest::~CURLRequest() noexcept
+	{
+		DoFreeRequestHeaders();
+	}
 
 	// IWebRequest: Common
 	bool CURLRequest::Start()
 	{
 		if (m_State == WebRequestState::Idle)
 		{
+			DoResetState();
+			ChangeStateAndNotify(WebRequestState::Started);
+
 			DoSetRequestHeaders();
 			return m_Session.StartRequest(*this);
 		}
@@ -527,7 +521,7 @@ namespace kxf
 	{
 		if (m_State == WebRequestState::Idle)
 		{
-			auto encodedData = CURL::Private::Escape(m_Handle, data.ToUTF8());
+			auto encodedData = m_Handle.EscapeString(data.ToUTF8());
 			if (!encodedData.empty() || data.IsEmpty())
 			{
 				if (CURLRequest::SetSendSource(std::make_shared<MemoryInputStream>(encodedData.data(), encodedData.size())))
@@ -604,19 +598,17 @@ namespace kxf
 	// IWebRequest: Progress
 	TransferRate CURLRequest::GetSendRate() const
 	{
-		curl_off_t rate = -1;
-		if (::curl_easy_getinfo(m_Handle.GetNativeHandle(), CURLINFO_SPEED_UPLOAD_T, &rate) == CURLE_OK)
+		if (auto rate = m_Handle.GetOptionInt64(CURLINFO_SPEED_UPLOAD_T))
 		{
-			return TransferRate::FromBytes(rate);
+			return TransferRate::FromBytes(*rate);
 		}
 		return {};
 	}
 	TransferRate CURLRequest::GetReceiveRate() const
 	{
-		curl_off_t rate = -1;
-		if (::curl_easy_getinfo(m_Handle.GetNativeHandle(), CURLINFO_SPEED_DOWNLOAD_T, &rate) == CURLE_OK)
+		if (auto rate = m_Handle.GetOptionInt64(CURLINFO_SPEED_DOWNLOAD_T))
 		{
-			return TransferRate::FromBytes(rate);
+			return TransferRate::FromBytes(*rate);
 		}
 		return {};
 	}
@@ -648,6 +640,56 @@ namespace kxf
 	{
 		return m_Handle.SetOption(CURLOPT_PROTOCOLS, MapProtocolSet(protocols));
 	}
+	bool CURLRequest::SetHTTPVersion(WebRequestHTTPVersion option)
+	{
+		switch (option)
+		{
+			case WebRequestHTTPVersion::Any:
+			{
+				return m_Handle.SetOption(CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_NONE);
+			}
+			case WebRequestHTTPVersion::Version1_0:
+			{
+				return m_Handle.SetOption(CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
+			}
+			case WebRequestHTTPVersion::Version1_1:
+			{
+				return m_Handle.SetOption(CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+			}
+			case WebRequestHTTPVersion::Version2:
+			{
+				return m_Handle.SetOption(CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2);
+			}
+			case WebRequestHTTPVersion::Version2TLS:
+			{
+				return m_Handle.SetOption(CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS);
+			}
+			case WebRequestHTTPVersion::Version3:
+			{
+				return m_Handle.SetOption(CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_3);
+			}
+		};
+		return false;
+	}
+	bool CURLRequest::SetIPVersion(WebRequestIPVersion option)
+	{
+		switch (option)
+		{
+			case WebRequestIPVersion::Any:
+			{
+				return m_Handle.SetOption(CURLOPT_IPRESOLVE, CURL_IPRESOLVE_WHATEVER);
+			}
+			case WebRequestIPVersion::IPv4:
+			{
+				return m_Handle.SetOption(CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+			}
+			case WebRequestIPVersion::IPv6:
+			{
+				return m_Handle.SetOption(CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V6);
+			}
+		};
+		return false;
+	}
 
 	bool CURLRequest::SetServiceName(const String& name)
 	{
@@ -655,6 +697,7 @@ namespace kxf
 	}
 	bool CURLRequest::SetAllowRedirection(WebRequestOption2 option)
 	{
+		m_FollowLocation = option;
 		return m_Handle.SetOption(CURLOPT_FOLLOWLOCATION, option == WebRequestOption2::Enabled);
 	}
 	bool CURLRequest::SetRedirectionProtocols(FlagSet<WebRequestProtocol> protocols)
@@ -844,26 +887,5 @@ namespace kxf
 	bool CURLRequest::SetVerifyStatus(WebRequestOption2 option)
 	{
 		return m_Handle.SetOption(CURLOPT_SSL_VERIFYSTATUS, option == WebRequestOption2::Enabled);
-	}
-
-	Enumerator<String> CURLRequest::EnumReplyCookies() const
-	{
-		curl_slist* cookesList = nullptr;
-		const CURLcode result = ::curl_easy_getinfo(m_Handle.GetNativeHandle(), CURLINFO_COOKIELIST, &cookesList);
-		if (result == CURLE_OK && cookesList)
-		{
-			return [handle = make_handle_ptr<::curl_slist_free_all>(cookesList), item = cookesList]() mutable -> std::optional<String>
-			{
-				auto curentItem = item;
-				item = item->next;
-
-				if (curentItem)
-				{
-					return String::FromUTF8(curentItem->data);
-				}
-				return {};
-			};
-		}
-		return {};
 	}
 }

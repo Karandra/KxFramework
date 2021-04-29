@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "CURLSession.h"
 #include "CURLRequest.h"
+#include "CURLUtility.h"
 #include "kxf/Threading/ThreadPool.h"
 #include "kxf/Application/ICoreApplication.h"
 #include "kxf/FileSystem/IFileSystem.h"
@@ -96,6 +97,12 @@ namespace kxf
 	CURLSession::CURLSession(optional_ptr<IThreadPool> threadPool)
 		:m_ThreadPool(std::move(threadPool))
 	{
+		if (!CURL::Private::Initialize())
+		{
+			m_ThreadPool = nullptr;
+			return;
+		}
+
 		if (!m_ThreadPool)
 		{
 			m_ThreadPool = ICoreApplication::GetInstance()->GetThreadPool();

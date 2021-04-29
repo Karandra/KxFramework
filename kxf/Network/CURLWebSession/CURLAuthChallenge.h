@@ -25,6 +25,6 @@ namespace kxf
 			{
 				return m_Source;
 			}
-			void SetCredentials(UserCredentials credentials) override;
+			bool SetCredentials(UserCredentials credentials) override;
 	};
 }

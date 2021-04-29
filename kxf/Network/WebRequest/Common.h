@@ -28,11 +28,12 @@ namespace kxf
 		Idle,
 		Paused,
 		Resumed,
-		Unauthorized,
+		Started,
 		Active,
+		Unauthorized,
 		Completed,
-		Failed,
-		Cancelled
+		Cancelled,
+		Failed
 	};
 	enum class WebRequestStorage
 	{

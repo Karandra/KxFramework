@@ -30,6 +30,10 @@ namespace kxf
 
 		private:
 			// CURLSession
+			bool IsNull() const noexcept
+			{
+				return m_ThreadPool.is_null();
+			}
 			EventSystem::EvtHandlerAccessor AccessEvtHandler() noexcept
 			{
 				return m_EvtHandler;
@@ -157,5 +161,15 @@ namespace kxf
 			String GetLicense() const override;
 			String GetLicenseName() const override;
 			String GetCopyright() const override;
+
+		public:
+			explicit operator bool() const noexcept
+			{
+				return !IsNull();
+			}
+			bool operator!() const noexcept
+			{
+				return IsNull();
+			}
 	};
 }

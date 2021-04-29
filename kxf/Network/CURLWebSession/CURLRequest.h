@@ -1,7 +1,8 @@
 #pragma once
 #include "Common.h"
-#include "CURLAuthChallenge.h"
 #include "CURLUtility.h"
+#include "CURLResponse.h"
+#include "CURLAuthChallenge.h"
 #include "kxf/EventSystem/EvtHandler.h"
 #include "kxf/EventSystem/EvtHandlerAccessor.h"
 
@@ -15,6 +16,7 @@ namespace kxf
 	class KX_API CURLRequest final: public RTTI::Implementation<CURLRequest, IWebRequest, IWebRequestOptions, IWebRequestAuthOptions, IWebRequestSecurityOptions>
 	{
 		friend class CURLSession;
+		friend class CURLResponse;
 		friend class CURLAuthChallenge;
 
 		private:
@@ -42,17 +44,20 @@ namespace kxf
 			// Control and event handling
 			EvtHandler m_EvtHandler;
 			CURLSession& m_Session;
-			std::weak_ptr<CURLRequest> m_SelfRef;
+			std::weak_ptr<CURLRequest> m_WeakRef;
+			bool m_HasHeaderEvent = false;
 
 			std::atomic<WebRequestState> m_State = WebRequestState::None;
 			std::atomic<WebRequestState> m_NextState = WebRequestState::None;
 
 			// Request data
-			CURL::Private::SessionHandle m_Handle;
+			CURL::Private::RequestHandle m_Handle;
 			std::vector<WebRequestHeader> m_RequestHeaders;
+			std::vector<WebRequestHeader> m_ResponseHeaders;
 			void* m_RequestHeadersSList = nullptr;
 			String m_Method;
 			URI m_URI;
+			WebRequestOption2 m_FollowLocation = WebRequestOption2::Disabled;
 
 			// Send
 			std::shared_ptr<IInputStream> m_SendStream;
@@ -63,6 +68,7 @@ namespace kxf
 			std::shared_ptr<IOutputStream> m_ReceiveStream;
 			WebRequestStorage m_ReceiveStorage = WebRequestStorage::None;
 
+			std::optional<CURLResponse> m_Response;
 			std::optional<CURLAuthChallenge> m_AuthChallenge;
 
 			// Progress state
@@ -80,18 +86,23 @@ namespace kxf
 
 			void WeakRef(const std::shared_ptr<CURLRequest>& selfRef)
 			{
-				m_SelfRef = selfRef;
+				m_WeakRef = selfRef;
 			}
 			std::shared_ptr<CURLRequest> LockRef() const
 			{
-				return m_SelfRef.lock();
+				return m_WeakRef.lock();
 			}
 
 			void NotifyEvent(EventTag<WebRequestEvent> eventID, WebRequestEvent& event);
 			void NotifyStateChange(WebRequestState state, std::optional<int> statusCode = {}, String statusText = {})
 			{
-				WebRequestEvent event(*this, state, std::move(statusCode), std::move(statusText));
+				WebRequestEvent event(m_WeakRef.lock(), state, std::move(statusCode), std::move(statusText));
 				NotifyEvent(WebRequestEvent::EvtStateChanged, event);
+			}
+			void ChangeStateAndNotify(WebRequestState state, std::optional<int> statusCode = {}, String statusText = {})
+			{
+				m_State = state;
+				NotifyStateChange(state, std::move(statusCode), std::move(statusText));
 			}
 
 			void DoFreeRequestHeaders();
@@ -100,16 +111,13 @@ namespace kxf
 			void DoPrepareReceiveData();
 			void DoPerformRequest();
 			void DoResetState();
-			void DoCloseRequest() noexcept;
 
 			bool OnCallbackCommon(bool isWrite, size_t& result);
 			size_t OnReadData(char* data, size_t size, size_t count);
 			size_t OnWriteData(char* data, size_t size, size_t count);
 			size_t OnReceiveHeader(char* data, size_t size, size_t count);
 			int OnProgressNotify(int64_t bytesReceived, int64_t bytesExpectedToReceive, int64_t bytesSent, int64_t bytesExpectedToSend);
-
-			void OnUnauthorizedRequest(const HTTPStatus& responseStatus, std::string_view statusText);
-			void OnSetAuthChallengeCredentials(WebAuthChallengeSource source, UserCredentials credentials);
+			bool OnSetAuthChallengeCredentials(WebAuthChallengeSource source, UserCredentials credentials);
 
 		protected:
 			// IEvtHandler
@@ -156,10 +164,7 @@ namespace kxf
 		public:
 			CURLRequest(CURLSession& session, const URI& uri = {});
 			CURLRequest(const CURLRequest&) = delete;
-			~CURLRequest() noexcept
-			{
-				DoCloseRequest();
-			}
+			~CURLRequest() noexcept;
 
 		public:
 			// IWebRequest: Common
@@ -170,6 +175,10 @@ namespace kxf
 
 			IWebResponse& GetResponse() override
 			{
+				if (m_Response)
+				{
+					return *m_Response;
+				}
 				return NullWebResponse::Get();
 			}
 			IWebAuthChallenge& GetAuthChallenge() override
@@ -187,7 +196,7 @@ namespace kxf
 			}
 			void* GetNativeHandle() const override
 			{
-				return m_Handle.GetNativeHandle();
+				return *m_Handle;
 			}
 
 			// IWebRequest: Request options
@@ -235,6 +244,8 @@ namespace kxf
 			bool SetMethod(const String& method) override;
 			bool SetDefaultProtocol(const String& protocol) override;
 			bool SetAllowedProtocols(FlagSet<WebRequestProtocol> protocols) override;
+			bool SetHTTPVersion(WebRequestHTTPVersion option) override;
+			bool SetIPVersion(WebRequestIPVersion option) override;
 
 			bool SetServiceName(const String& name) override;
 			bool SetAllowRedirection(WebRequestOption2 option) override;
@@ -312,9 +323,6 @@ namespace kxf
 			{
 				m_EvtHandler.EnableEventProcessing(enable);
 			}
-
-		public:
-			Enumerator<String> EnumReplyCookies() const;
 
 		public:
 			CURLRequest& operator=(const CURLRequest&) = delete;
