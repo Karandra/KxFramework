@@ -238,13 +238,13 @@ namespace kxf
 		return {};
 	}
 
-	String CURLResponse::GetSuggestedFileName() const
+	FSPath CURLResponse::GetSuggestedFilePath() const
 	{
 		if (String contentDisposition = GetHeader(wxS("Content-Disposition")); !contentDisposition.IsEmpty())
 		{
 			if (RegEx regEx(wxS("filename=\"(.+)\""), RegExFlag::IgnoreCase); regEx.Matches(contentDisposition))
 			{
-				return FSPath(regEx.GetMatch(contentDisposition, 1)).GetName();
+				return regEx.GetMatch(contentDisposition, 1);
 			}
 		}
 
@@ -252,7 +252,7 @@ namespace kxf
 		{
 			if (uri.HasPath())
 			{
-				return FSPath(uri.GetPath()).GetName();
+				return uri.GetPath();
 			}
 			return uri.GetServer();
 		}
@@ -266,6 +266,8 @@ namespace kxf
 			{
 				case WebRequestStorage::Memory:
 				{
+					m_MemoryStream.reset();
+
 					// Our receiving stream must implement 'IMemoryStream' interface since we create it as 'MemoryOutputStream',
 					// but check anyway just in case.
 					if (auto receiveMemoryStream = m_Request.m_ReceiveStream->QueryInterface<IMemoryStream>())
@@ -280,7 +282,15 @@ namespace kxf
 				case WebRequestStorage::Stream:
 				case WebRequestStorage::FileSystem:
 				{
-					// TODO: Input stream on receiving output stream (using 'IReadableOutputStream' interface).
+					m_InputStream.reset();
+
+					if (auto readableStream = m_Request.m_ReceiveStream->QueryInterface<IReadableOutputStream>())
+					{
+						if (m_InputStream = readableStream->CreateInputStream())
+						{
+							return *m_InputStream;
+						}
+					}
 					break;
 				}
 			};
