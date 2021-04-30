@@ -5,6 +5,8 @@
 namespace kxf
 {
 	class WebRequestHeader;
+	class JSONDocument;
+	class XMLDocument;
 }
 
 namespace kxf
@@ -31,7 +33,11 @@ namespace kxf
 			virtual Enumerator<String> EnumCookies() const = 0;
 
 			virtual FSPath GetSuggestedFilePath() const = 0;
-			virtual IInputStream& GetStream() = 0;
+			virtual std::unique_ptr<IInputStream> GetStream() const = 0;
+
+			virtual String GetAsString() const;
+			virtual JSONDocument GetAsJSON() const;
+			virtual XMLDocument GetAsXML() const;
 	};
 }
 
@@ -93,6 +99,6 @@ namespace kxf
 			Enumerator<String> EnumCookies() const override;
 
 			FSPath GetSuggestedFilePath() const override;
-			IInputStream& GetStream() override;
+			std::unique_ptr<IInputStream> GetStream() const override;
 	};
 }

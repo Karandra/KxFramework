@@ -3,8 +3,8 @@
 #include "CURLRequest.h"
 #include "CURLUtility.h"
 #include "CURL.h"
+#include "kxf/IO/IStream.h"
 #include "kxf/General/RegEx.h"
-#include "kxf/IO/NullStream.h"
 #include "kxf/FileSystem/FSPath.h"
 
 #include "kxf/System/HandlePtr.h"
@@ -258,43 +258,25 @@ namespace kxf
 		}
 		return {};
 	}
-	IInputStream& CURLResponse::GetStream()
+	std::unique_ptr<IInputStream> CURLResponse::GetStream() const
 	{
 		if (m_Request.m_ReceiveStream)
 		{
 			switch (m_Request.m_ReceiveStorage)
 			{
 				case WebRequestStorage::Memory:
-				{
-					m_MemoryStream.reset();
-
-					// Our receiving stream must implement 'IMemoryStream' interface since we create it as 'MemoryOutputStream',
-					// but check anyway just in case.
-					if (auto receiveMemoryStream = m_Request.m_ReceiveStream->QueryInterface<IMemoryStream>())
-					{
-						const auto& buffer = receiveMemoryStream->GetStreamBuffer();
-						m_MemoryStream.emplace(buffer.GetBufferStart(), buffer.GetBufferSize());
-
-						return *m_MemoryStream;
-					}
-					break;
-				}
 				case WebRequestStorage::Stream:
 				case WebRequestStorage::FileSystem:
 				{
-					m_InputStream.reset();
-
 					if (auto readableStream = m_Request.m_ReceiveStream->QueryInterface<IReadableOutputStream>())
 					{
-						if (m_InputStream = readableStream->CreateInputStream())
-						{
-							return *m_InputStream;
-						}
+						return readableStream->CreateInputStream();
 					}
+					
 					break;
 				}
 			};
 		}
-		return NullInputStream::Get();
+		return nullptr;
 	}
 }

@@ -21,8 +21,6 @@ namespace kxf
 
 			String m_StatusText;
 			std::optional<int> m_StatusCode;
-			std::optional<MemoryInputStream> m_MemoryStream;
-			std::unique_ptr<IInputStream> m_InputStream;
 
 		private:
 			CURL::Private::RequestHandle& GetRequestHandle() const noexcept;
@@ -57,6 +55,6 @@ namespace kxf
 			Enumerator<String> EnumCookies() const override;
 
 			FSPath GetSuggestedFilePath() const override;
-			IInputStream& GetStream() override;
+			std::unique_ptr<IInputStream> GetStream() const override;
 	};
 }
