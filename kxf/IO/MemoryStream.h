@@ -71,10 +71,10 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API MemoryOutputStream: public wxWidgets::OutputStreamWrapper, public IMemoryStream
+	class KX_API MemoryOutputStream: public wxWidgets::OutputStreamWrapper, public IMemoryStream, public IReadableOutputStream
 	{
 		KxRTTI_DeclareIID(MemoryOutputStream, {});
-		KxRTTI_QueryInterface_Extend(MemoryOutputStream, IMemoryStream);
+		KxRTTI_QueryInterface_Extend(MemoryOutputStream, IMemoryStream, IReadableOutputStream);
 
 		private:
 			wxMemoryOutputStream m_Stream;
@@ -107,5 +107,8 @@ namespace kxf
 			{
 				return *m_Stream.GetOutputStreamBuffer();
 			}
+
+			// IReadableOutputStream
+			std::unique_ptr<IInputStream> CreateInputStream() const override;
 	};
 }

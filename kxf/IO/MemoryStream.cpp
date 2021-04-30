@@ -79,4 +79,10 @@ namespace kxf
 
 		return effectiveSize;
 	}
+
+	// IReadableOutputStream
+	std::unique_ptr<kxf::IInputStream> MemoryOutputStream::CreateInputStream() const
+	{
+		return std::make_unique<MemoryInputStream>(m_Stream);
+	}
 }
