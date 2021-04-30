@@ -1,7 +1,7 @@
 #pragma once
 #include "../Common.h"
 #include "../XDocument.h"
-#include "kxf/General/Version.h"
+#include "kxf/General/ILibraryInfo.h"
 #include "kxf/IO/IStream.h"
 #include "TinyXML2.h"
 #include <wx/stream.h>
@@ -15,9 +15,6 @@ namespace kxf
 
 namespace kxf::XML
 {
-	String GetLibraryName();
-	Version GetLibraryVersion();
-
 	enum class NodeType
 	{
 		None = -1,
@@ -255,7 +252,7 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API XMLDocument: public XMLNode
+	class KX_API XMLDocument final: public XMLNode, public IObject
 	{
 		friend class XMLNode;
 
@@ -274,6 +271,8 @@ namespace kxf
 			void Init();
 			void DoLoad(const char* xml, size_t length);
 			void DoUnload();
+
+			RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept override;
 
 		private:
 			XMLNode CreateElement(const String& name);
@@ -331,7 +330,7 @@ namespace kxf
 			XMLDocument(XMLDocument&&) = delete;
 
 		public:
-			// General
+			// XMLNode: General
 			bool IsNull() const override
 			{
 				return m_Document.Error() || !m_Document.FirstChild();
@@ -382,7 +381,7 @@ namespace kxf
 				m_XPathIndexSeparator = value.IsEmpty() ? IXNode::GetXPathIndexSeparator() : value;
 			}
 
-			// Deletion
+			// XMLNode: Deletion
 			bool RemoveNode(XMLNode& node);
 
 		public:
