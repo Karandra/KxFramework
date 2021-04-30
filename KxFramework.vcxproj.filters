@@ -251,6 +251,9 @@
     <Filter Include="kxf\Network\WebRequest">
       <UniqueIdentifier>{d232eef0-6ea2-41d3-93ee-3ac028409b02}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\SoftwareLicenseDB">
+      <UniqueIdentifier>{755ed2b5-50b4-4e83-bfc6-0dc4845abdd3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -1876,6 +1879,9 @@
     <ClInclude Include="kxf\IO\IMemoryStream.h">
       <Filter>kxf\IO</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Utility\SoftwareLicenseDB.h">
+      <Filter>kxf\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2791,6 +2797,9 @@
     <ClCompile Include="kxf\Network\WebRequest\IWebAuthChallenge.cpp">
       <Filter>kxf\Network\WebRequest</Filter>
     </ClCompile>
+    <ClCompile Include="kxf\Utility\SoftwareLicenseDB.cpp">
+      <Filter>kxf\Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="kxf\System\Private\ErrorCodeNtStatus.i">
@@ -2845,5 +2854,18 @@
     <ResourceCompile Include="kxf.rc">
       <Filter>Resources</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="Resources\Compatibility [WinVista-Win10].manifest">
+      <Filter>Resources</Filter>
+    </Manifest>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\SoftwareLicenseDB\GNU_GPLv3.txt">
+      <Filter>Resources\SoftwareLicenseDB</Filter>
+    </Text>
+    <Text Include="Resources\SoftwareLicenseDB\GNU_LGPLv3.txt">
+      <Filter>Resources\SoftwareLicenseDB</Filter>
+    </Text>
   </ItemGroup>
 </Project>

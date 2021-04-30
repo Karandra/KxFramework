@@ -478,6 +478,7 @@
     <ClInclude Include="kxf\Utility\Functional.h" />
     <ClInclude Include="kxf\Utility\Literals.h" />
     <ClInclude Include="kxf\Utility\RecursiveCollectionEnumerator.h" />
+    <ClInclude Include="kxf\Utility\SoftwareLicenseDB.h" />
     <ClInclude Include="kxf\wxWidgets\Application.h" />
     <ClInclude Include="kxf\wxWidgets\ClientObject.h" />
     <ClInclude Include="kxf\wxWidgets\Common.h" />
@@ -885,6 +886,7 @@
     <ClCompile Include="kxf\UI\Windows\TopLevelWindow.cpp" />
     <ClCompile Include="kxf\Utility\Drawing.cpp" />
     <ClCompile Include="kxf\Utility\Memory.cpp" />
+    <ClCompile Include="kxf\Utility\SoftwareLicenseDB.cpp" />
     <ClCompile Include="kxf\wxWidgets\StreamWrapper.cpp" />
     <ClCompile Include="KxfPCH.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
@@ -991,6 +993,13 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="kxf.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="Resources\Compatibility [WinVista-Win10].manifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\SoftwareLicenseDB\GNU_GPLv3.txt" />
+    <Text Include="Resources\SoftwareLicenseDB\GNU_LGPLv3.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
