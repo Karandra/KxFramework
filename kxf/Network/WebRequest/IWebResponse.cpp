@@ -2,6 +2,7 @@
 #include "IWebResponse.h"
 #include "WebRequestHeader.h"
 #include "kxf/IO/NullStream.h"
+#include "kxf/FileSystem/FSPath.h"
 
 namespace
 {
@@ -24,6 +25,10 @@ namespace kxf
 		return {};
 	}
 
+	FSPath NullWebResponse::GetSuggestedFilePath() const
+	{
+		return {};
+	}
 	IInputStream& NullWebResponse::GetStream()
 	{
 		return NullInputStream::Get();

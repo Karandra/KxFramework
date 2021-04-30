@@ -30,7 +30,7 @@ namespace kxf
 			virtual Enumerator<WebRequestHeader> EnumHeaders() const = 0;
 			virtual Enumerator<String> EnumCookies() const = 0;
 
-			virtual String GetSuggestedFileName() const = 0;
+			virtual FSPath GetSuggestedFilePath() const = 0;
 			virtual IInputStream& GetStream() = 0;
 	};
 }
@@ -92,10 +92,7 @@ namespace kxf
 			Enumerator<WebRequestHeader> EnumHeaders() const override;
 			Enumerator<String> EnumCookies() const override;
 
-			String GetSuggestedFileName() const override
-			{
-				return {};
-			}
+			FSPath GetSuggestedFilePath() const override;
 			IInputStream& GetStream() override;
 	};
 }
