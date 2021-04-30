@@ -12,33 +12,62 @@ namespace kxf
 {
 	String JSONDocument::Save() const
 	{
-		return String::FromUTF8(this->dump(1, '\t'));
+		try
+		{
+			return String::FromUTF8(this->dump(1, '\t'));
+		}
+		catch (...)
+		{
+			return {};
+		}
 	}
 	bool JSONDocument::Save(IOutputStream& stream) const
 	{
-		std::string string = this->dump(1, '\t');
-		return stream.WriteAll(string.data(), string.length());
+		try
+		{
+			std::string string = this->dump(1, '\t');
+			return stream.WriteAll(string.data(), string.length());
+		}
+		catch (...)
+		{
+			return false;
+		}
 	}
 
 	bool JSONDocument::Load(const String& json)
 	{
-		*this = JSONDocument::parse(json.ToUTF8(), nullptr, false);
-		return this->empty();
+		try
+		{
+			*this = JSONDocument::parse(json.ToUTF8(), nullptr, false);
+			return this->empty();
+		}
+		catch (...)
+		{
+			this->clear();
+			return false;
+		}
 	}
 	bool JSONDocument::Load(IInputStream& stream)
 	{
 		if (auto size = stream.GetSize())
 		{
-			IO::InputStreamReader reader(stream);
+			try
+			{
+				IO::InputStreamReader reader(stream);
 
-			*this = JSONDocument::parse(reader.ReadStdString(size.ToBytes()), nullptr, false);
-			return this->empty();
+				*this = JSONDocument::parse(reader.ReadStdString(size.ToBytes()), nullptr, false);
+				return this->empty();
+			}
+			catch (...)
+			{
+				this->clear();
+			}
 		}
 		else
 		{
 			this->clear();
-			return false;
 		}
+		return false;
 	}
 
 	// ILibraryInfo
