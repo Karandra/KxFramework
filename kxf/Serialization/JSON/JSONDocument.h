@@ -1,30 +1,57 @@
 #pragma once
 #include "../Common.h"
-#include "kxf/General/Version.h"
 #include "kxf/IO/IStream.h"
+#include "kxf/General/ILibraryInfo.h"
 #include <nlohmann/json.hpp>
 
 namespace kxf
 {
-	using JSONDocument = nlohmann::json;
-}
+	class JSONDocument final: public nlohmann::json, public ILibraryInfo
+	{
+		private:
+			nlohmann::json& AsBase() noexcept
+			{
+				return static_cast<nlohmann::json&>(*this);
+			}
+			const nlohmann::json& AsBase() const noexcept
+			{
+				return static_cast<const nlohmann::json&>(*this);
+			}
 
-namespace kxf::JSON
-{
-	String GetLibraryName();
-	Version GetLibraryVersion();
+		public:
+			using nlohmann::json::json;
+			JSONDocument(const String& json)
+			{
+				Load(json);
+			}
+			JSONDocument(IInputStream& stream)
+			{
+				Load(stream);
+			}
 
-	JSONDocument Load(const String& json);
-	JSONDocument Load(IInputStream& stream);
+		public:
+			String Save() const;
+			bool Save(IOutputStream& stream) const;
 
-	String Save(const JSONDocument& json);
-	bool Save(const JSONDocument& json, IOutputStream& stream);
+			bool Load(const String& json);
+			bool Load(IInputStream& stream);
+
+		public:
+			// ILibraryInfo
+			String GetName() const override;
+			Version GetVersion() const override;
+			uint32_t GetAPILevel() const override;
+
+			String GetLicense() const override;
+			String GetLicenseName() const override;
+			String GetCopyright() const override;
+	};
 }
 
 namespace nlohmann
 {
 	template<>
-	struct adl_serializer<wxString>
+	struct adl_serializer<wxString> final
 	{
 		static void to_json(json& jsonDocument, const wxString& value)
 		{
@@ -46,7 +73,7 @@ namespace nlohmann
 	};
 
 	template<>
-	struct adl_serializer<kxf::String>
+	struct adl_serializer<kxf::String> final
 	{
 		static void to_json(json& jsonDocument, const kxf::String& value)
 		{

@@ -17,7 +17,7 @@ namespace kxf
 			{
 			}
 			UserCredentials(UserCredentials&&) noexcept = default;
-			UserCredentials(const UserName& other) = delete;
+			UserCredentials(const UserCredentials&) = delete;
 
 		public:
 			bool HasSecret() const noexcept
@@ -36,9 +36,13 @@ namespace kxf
 			{
 				m_Secret = std::move(secret);
 			}
+			void WipeSecret()
+			{
+				m_Secret.Wipe();
+			}
 
 		public:
 			UserCredentials& operator=(UserCredentials&&) noexcept = default;
-			UserCredentials& operator=(const UserCredentials& other) = default;
+			UserCredentials& operator=(const UserCredentials&) = delete;
 	};
 }

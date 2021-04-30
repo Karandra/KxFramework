@@ -1,15 +1,11 @@
 #pragma once
 #include "Common.h"
-#include "URI.h"
-#include "kxf/RTTI/RTTI.h"
 #include "kxf/EventSystem/IEvtHandler.h"
 
 namespace kxf
 {
-	class IFileSystem;
 	class IWebRequest;
-	class IWebResponse;
-	class WebRequestEvent;
+	class WebRequestHeader;
 }
 
 namespace kxf
@@ -21,12 +17,11 @@ namespace kxf
 		public:
 			virtual std::shared_ptr<IWebRequest> CreateRequest(const URI& uri) = 0;
 
-			virtual void SetCommonHeader(const String& name, const String& value) = 0;
+			virtual bool SetCommonHeader(const WebRequestHeader& header, FlagSet<WebRequestHeaderFlag> flags) = 0;
 			virtual void ClearCommonHeaders() = 0;
-			void SetCommonUserAgent(const String& value);
 
-			virtual std::shared_ptr<IFileSystem> GetTempFS() const = 0;
-			virtual void SetTempFS(std::shared_ptr<IFileSystem> fileSystem) = 0;
+			virtual IFileSystem& GetFileSystem() const = 0;
+			virtual void SetFileSystem(IFileSystem& fileSystem) = 0;
 
 			virtual void* GetNativeHandle() const = 0;
 	};

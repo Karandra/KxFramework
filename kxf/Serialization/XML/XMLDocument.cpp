@@ -1,17 +1,11 @@
 #include "KxfPCH.h"
 #include "XMLDocument.h"
 #include "Private/Utility.h"
+#include "kxf/Utility/SoftwareLicenseDB.h"
 
-namespace kxf::XML
+namespace
 {
-	String GetLibraryName()
-	{
-		return wxS("TinyXML2");
-	}
-	Version GetLibraryVersion()
-	{
-		return {TIXML2_MAJOR_VERSION, TIXML2_MINOR_VERSION, TIXML2_PATCH_VERSION};
-	}
+	constexpr kxf::XChar g_Copyright[] = wxS("Copyright© Lee Thomason");
 }
 
 namespace kxf
@@ -44,6 +38,46 @@ namespace kxf
 	void XMLDocument::DoUnload()
 	{
 		m_Document.Clear();
+	}
+
+	RTTI::QueryInfo XMLDocument::DoQueryInterface(const IID& iid) noexcept
+	{
+		if (iid.IsOfType<ILibraryInfo>())
+		{
+			class LibraryInfo final: public ILibraryInfo
+			{
+				public:
+					String GetName() const override
+					{
+						return wxS("TinyXML2");
+					}
+					Version GetVersion() const override
+					{
+						return {TIXML2_MAJOR_VERSION, TIXML2_MINOR_VERSION, TIXML2_PATCH_VERSION};
+					}
+					uint32_t GetAPILevel() const override
+					{
+						return TIXML2_MAJOR_VERSION * 1000 + TIXML2_MINOR_VERSION * 100 + TIXML2_PATCH_VERSION * 10;
+					}
+
+					String GetLicense() const override
+					{
+						return SoftwareLicenseDB::Get().GetText(SoftwareLicenseType::ZLib, g_Copyright);
+					}
+					String GetLicenseName() const override
+					{
+						return SoftwareLicenseDB::Get().GetName(SoftwareLicenseType::ZLib);
+					}
+					String GetCopyright() const override
+					{
+						return g_Copyright;
+					}
+			};
+
+			static LibraryInfo libraryInfo;
+			return static_cast<ILibraryInfo*>(&libraryInfo);
+		}
+		return IObject::QuerySelf(iid, *this);
 	}
 
 	XMLNode XMLDocument::CreateElement(const String& name)
@@ -79,7 +113,7 @@ namespace kxf
 		return XMLNode(m_Document.NewUnknown(utf8.data()), *this);
 	}
 
-	// General
+	// XMLNode: General
 	String XMLDocument::GetXML(SerializationFormat mode) const
 	{
 		return XML::Private::PrintDocument(m_Document, mode == SerializationFormat::HTML5);
@@ -118,7 +152,7 @@ namespace kxf
 		return stream.WriteAll(buffer.CStr(), buffer.CStrSize() - 1);
 	}
 
-	// Deletion
+	// XMLNode: Deletion
 	bool XMLDocument::RemoveNode(XMLNode& node)
 	{
 		if (!IsNull() && node)

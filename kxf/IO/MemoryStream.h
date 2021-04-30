@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "IStream.h"
+#include "IMemoryStream.h"
 #include "kxf/wxWidgets/StreamWrapper.h"
 #include <wx/mstream.h>
 
@@ -12,8 +13,11 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API MemoryInputStream: public wxWidgets::InputStreamWrapper
+	class KX_API MemoryInputStream: public wxWidgets::InputStreamWrapper, public IMemoryStream
 	{
+		KxRTTI_DeclareIID(MemoryInputStream, {});
+		KxRTTI_QueryInterface_Extend(MemoryInputStream, IMemoryStream);
+
 		private:
 			wxMemoryInputStream m_Stream;
 
@@ -56,13 +60,22 @@ namespace kxf
 
 			bool Flush();
 			bool SetAllocationSize(BinarySize offset);
+
+			// IMemoryStream
+			wxStreamBuffer& GetStreamBuffer() const override
+			{
+				return *m_Stream.GetInputStreamBuffer();
+			}
 	};
 }
 
 namespace kxf
 {
-	class KX_API MemoryOutputStream: public wxWidgets::OutputStreamWrapper
+	class KX_API MemoryOutputStream: public wxWidgets::OutputStreamWrapper, public IMemoryStream, public IReadableOutputStream
 	{
+		KxRTTI_DeclareIID(MemoryOutputStream, {});
+		KxRTTI_QueryInterface_Extend(MemoryOutputStream, IMemoryStream, IReadableOutputStream);
+
 		private:
 			wxMemoryOutputStream m_Stream;
 
@@ -88,5 +101,14 @@ namespace kxf
 			{
 				return m_Stream;
 			}
+
+			// IMemoryStream
+			wxStreamBuffer& GetStreamBuffer() const override
+			{
+				return *m_Stream.GetOutputStreamBuffer();
+			}
+
+			// IReadableOutputStream
+			std::unique_ptr<IInputStream> CreateInputStream() const override;
 	};
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -270,6 +270,7 @@
     <ClInclude Include="kxf\General\UniqueFunction.h" />
     <ClInclude Include="kxf\IO.hpp" />
     <ClInclude Include="kxf\IO\Common.h" />
+    <ClInclude Include="kxf\IO\IMemoryStream.h" />
     <ClInclude Include="kxf\IO\NativeFileStream.h" />
     <ClInclude Include="kxf\IO\IStream.h" />
     <ClInclude Include="kxf\IO\IStreamOnFileSystem.h" />
@@ -290,11 +291,27 @@
     <ClInclude Include="kxf\Log.hpp" />
     <ClInclude Include="kxf\Log\Common.h" />
     <ClInclude Include="kxf\Log\OutputStreamTarget.h" />
-    <ClInclude Include="kxf\Network\IWebAuthChallenge.h" />
-    <ClInclude Include="kxf\Network\IWebRequest.h" />
-    <ClInclude Include="kxf\Network\IWebResponse.h" />
-    <ClInclude Include="kxf\Network\IWebSession.h" />
-    <ClInclude Include="kxf\Network\WebRequestEvent.h" />
+    <ClInclude Include="kxf\Network\CURLWebSession\Common.h" />
+    <ClInclude Include="kxf\Network\CURLWebSession\CURL.h" />
+    <ClInclude Include="kxf\Network\CURLWebSession\CURLAuthChallenge.h" />
+    <ClInclude Include="kxf\Network\CURLWebSession\CURLResponse.h" />
+    <ClInclude Include="kxf\Network\CURLWebSession\CURLRequest.h" />
+    <ClInclude Include="kxf\Network\CURLWebSession\CURLSession.h" />
+    <ClInclude Include="kxf\Network\CURLWebSession\CURLUtility.h" />
+    <ClInclude Include="kxf\Network\CURLWebSession\Utility.h" />
+    <ClInclude Include="kxf\Network\WebRequest.h" />
+    <ClInclude Include="kxf\Network\WebRequest\Common.h" />
+    <ClInclude Include="kxf\Network\WebRequest\IWebAuthChallenge.h" />
+    <ClInclude Include="kxf\Network\WebRequest\IWebRequest.h" />
+    <ClInclude Include="kxf\Network\WebRequest\IWebRequestAuthOptions.h" />
+    <ClInclude Include="kxf\Network\WebRequest\IWebRequestOptions.h" />
+    <ClInclude Include="kxf\Network\WebRequest\IWebRequestProxyOptions.h" />
+    <ClInclude Include="kxf\Network\WebRequest\IWebRequestSecurityOptions.h" />
+    <ClInclude Include="kxf\Network\WebRequest\IWebResponse.h" />
+    <ClInclude Include="kxf\Network\WebRequest\IWebSession.h" />
+    <ClInclude Include="kxf\Network\WebRequest\Options.h" />
+    <ClInclude Include="kxf\Network\WebRequest\WebRequestEvent.h" />
+    <ClInclude Include="kxf\Network\WebRequest\WebRequestHeader.h" />
     <ClInclude Include="kxf\pch.hpp" />
     <ClInclude Include="kxf\RTTI\ClassInfo.h" />
     <ClInclude Include="kxf\RTTI\IID.h" />
@@ -461,6 +478,7 @@
     <ClInclude Include="kxf\Utility\Functional.h" />
     <ClInclude Include="kxf\Utility\Literals.h" />
     <ClInclude Include="kxf\Utility\RecursiveCollectionEnumerator.h" />
+    <ClInclude Include="kxf\Utility\SoftwareLicenseDB.h" />
     <ClInclude Include="kxf\wxWidgets\Application.h" />
     <ClInclude Include="kxf\wxWidgets\ClientObject.h" />
     <ClInclude Include="kxf\wxWidgets\Common.h" />
@@ -547,11 +565,6 @@
     <ClInclude Include="kxf\Localization\AndroidLocalizationPackage.h" />
     <ClInclude Include="kxf\Network.hpp" />
     <ClInclude Include="kxf\Network\Common.h" />
-    <ClInclude Include="kxf\Network\CURL\Event.h" />
-    <ClInclude Include="kxf\Network\CURL\Reply.h" />
-    <ClInclude Include="kxf\Network\CURL\Session.h" />
-    <ClInclude Include="kxf\Network\CURL.h" />
-    <ClInclude Include="kxf\Network\CURL\Private\CURL.h" />
     <ClInclude Include="kxf\Network\HTTPStatus.h" />
     <ClInclude Include="kxf\Network\URI.h" />
     <ClInclude Include="kxf\Network\WebSocket.h" />
@@ -734,10 +747,15 @@
     <ClCompile Include="kxf\Localization\WindowsLocalizationPackage.cpp" />
     <ClCompile Include="kxf\Log\Common.cpp" />
     <ClCompile Include="kxf\Log\OutputStreamTarget.cpp" />
-    <ClCompile Include="kxf\Network\IWebAuthChallenge.cpp" />
-    <ClCompile Include="kxf\Network\IWebRequest.cpp" />
-    <ClCompile Include="kxf\Network\IWebResponse.cpp" />
-    <ClCompile Include="kxf\Network\IWebSession.cpp" />
+    <ClCompile Include="kxf\Network\CURLWebSession\CURLAuthChallenge.cpp" />
+    <ClCompile Include="kxf\Network\CURLWebSession\CURLResponse.cpp" />
+    <ClCompile Include="kxf\Network\CURLWebSession\CURLRequest.cpp" />
+    <ClCompile Include="kxf\Network\CURLWebSession\CURLSession.cpp" />
+    <ClCompile Include="kxf\Network\CURLWebSession\CURLUtility.cpp" />
+    <ClCompile Include="kxf\Network\WebRequest\IWebAuthChallenge.cpp" />
+    <ClCompile Include="kxf\Network\WebRequest\IWebRequestOptions.cpp" />
+    <ClCompile Include="kxf\Network\WebRequest\IWebResponse.cpp" />
+    <ClCompile Include="kxf\Network\WebRequest\WebRequestHeader.cpp" />
     <ClCompile Include="kxf\RTTI\ClassInfo.cpp" />
     <ClCompile Include="kxf\RTTI\Common.cpp" />
     <ClCompile Include="kxf\RTTI\IID.cpp" />
@@ -868,6 +886,7 @@
     <ClCompile Include="kxf\UI\Windows\TopLevelWindow.cpp" />
     <ClCompile Include="kxf\Utility\Drawing.cpp" />
     <ClCompile Include="kxf\Utility\Memory.cpp" />
+    <ClCompile Include="kxf\Utility\SoftwareLicenseDB.cpp" />
     <ClCompile Include="kxf\wxWidgets\StreamWrapper.cpp" />
     <ClCompile Include="KxfPCH.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
@@ -892,11 +911,6 @@
     <ClCompile Include="kxf\Localization\Private\StandardLocalization.cpp" />
     <ClCompile Include="kxf\Localization\AndroidLocalizationPackage.cpp" />
     <ClCompile Include="kxf\Network\Common.cpp" />
-    <ClCompile Include="kxf\Network\CURL.cpp" />
-    <ClCompile Include="kxf\Network\CURL\Event.cpp" />
-    <ClCompile Include="kxf\Network\CURL\Reply.cpp" />
-    <ClCompile Include="kxf\Network\CURL\Session.cpp" />
-    <ClCompile Include="kxf\Network\CURL\Private\CURL.cpp" />
     <ClCompile Include="kxf\Network\URI.cpp" />
     <ClCompile Include="kxf\Network\WebSocket.cpp" />
     <ClCompile Include="kxf\Network\WebSocket\SecureClient.cpp" />
@@ -979,6 +993,13 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="kxf.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="Resources\Compatibility [WinVista-Win10].manifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\SoftwareLicenseDB\GNU_GPLv3.txt" />
+    <Text Include="Resources\SoftwareLicenseDB\GNU_LGPLv3.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

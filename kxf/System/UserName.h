@@ -21,7 +21,7 @@ namespace kxf
 				AssignName(std::move(name));
 			}
 			UserName(UserName&&) noexcept = default;
-			UserName(const UserName& other) = default;
+			UserName(const UserName&) = default;
 			virtual ~UserName() = default;
 
 		public:
@@ -70,6 +70,6 @@ namespace kxf
 			}
 
 			UserName& operator=(UserName&&) noexcept = default;
-			UserName& operator=(const UserName& other) = default;
+			UserName& operator=(const UserName&) = default;
 	};
 }

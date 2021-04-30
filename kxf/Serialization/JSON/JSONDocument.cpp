@@ -1,43 +1,99 @@
 #include "KxfPCH.h"
 #include "JSONDocument.h"
+#include "kxf/IO/StreamReaderWriter.h"
+#include "kxf/Utility/SoftwareLicenseDB.h"
 
-namespace kxf::JSON
+namespace
 {
-	String GetLibraryName()
+	constexpr kxf::XChar g_Copyright[] = wxS("Copyright© 2013-2021 Niels Lohmann");
+}
+
+namespace kxf
+{
+	String JSONDocument::Save() const
 	{
-		return wxS("JSON for Modern C++");
+		try
+		{
+			return String::FromUTF8(AsBase().dump(1, '\t'));
+		}
+		catch (...)
+		{
+			return {};
+		}
 	}
-	Version GetLibraryVersion()
+	bool JSONDocument::Save(IOutputStream& stream) const
 	{
-		return {NLOHMANN_JSON_VERSION_MAJOR, NLOHMANN_JSON_VERSION_MINOR, NLOHMANN_JSON_VERSION_PATCH};
+		try
+		{
+			std::string string = AsBase().dump(1, '\t');
+			return stream.WriteAll(string.data(), string.length());
+		}
+		catch (...)
+		{
+			return false;
+		}
 	}
 
-	JSONDocument Load(const String& json)
+	bool JSONDocument::Load(const String& json)
 	{
-		auto utf8 = json.ToUTF8();
-		return JSONDocument::parse(std::string(utf8.data(), utf8.length()), nullptr, false);
+		try
+		{
+			AsBase() = nlohmann::json::parse(json.ToUTF8(), nullptr, false);
+			return this->empty();
+		}
+		catch (...)
+		{
+			this->clear();
+			return false;
+		}
 	}
-	JSONDocument Load(IInputStream& stream)
+	bool JSONDocument::Load(IInputStream& stream)
 	{
 		if (auto size = stream.GetSize())
 		{
-			std::string buffer(size.ToBytes() + 1, '\000');
-			if (stream.ReadAll(buffer.data(), buffer.size()))
+			try
 			{
-				return JSONDocument::parse(buffer, nullptr, false);
+				IO::InputStreamReader reader(stream);
+
+				AsBase() = nlohmann::json::parse(reader.ReadStdString(size.ToBytes()), nullptr, false);
+				return this->empty();
+			}
+			catch (...)
+			{
+				this->clear();
 			}
 		}
-		return {};
+		else
+		{
+			this->clear();
+		}
+		return false;
 	}
 
-	String Save(const JSONDocument& json)
+	// ILibraryInfo
+	String JSONDocument::GetName() const
 	{
-		std::string string = json.dump(1, '\t');
-		return String::FromUTF8(string.data(), string.length());
+		return wxS("JSON for Modern C++");
 	}
-	bool Save(const JSONDocument& json, IOutputStream& stream)
+	Version JSONDocument::GetVersion() const
 	{
-		std::string string = json.dump(1, '\t');
-		return stream.WriteAll(string.data(), string.length());
+		return {NLOHMANN_JSON_VERSION_MAJOR, NLOHMANN_JSON_VERSION_MINOR, NLOHMANN_JSON_VERSION_PATCH};
+	}
+	uint32_t JSONDocument::GetAPILevel() const
+	{
+		return NLOHMANN_JSON_VERSION_MAJOR * 1000 + NLOHMANN_JSON_VERSION_MINOR * 100 + NLOHMANN_JSON_VERSION_PATCH * 10;
+	}
+
+	String JSONDocument::GetLicense() const
+	{
+		return SoftwareLicenseDB::Get().GetText(SoftwareLicenseType::MIT, g_Copyright);
+	}
+	String JSONDocument::GetLicenseName() const
+	{
+		return SoftwareLicenseDB::Get().GetName(SoftwareLicenseType::MIT);
+	}
+	String JSONDocument::GetCopyright() const
+	{
+		return g_Copyright;
 	}
 }

@@ -1,17 +1,15 @@
 #pragma once
 #include "Common.h"
-#include "kxf/RTTI/RTTI.h"
+#include "kxf/Crypto/UserCredentials.h"
 
 namespace kxf
 {
-	class UserCredentials;
-
 	enum class WebAuthChallengeSource
 	{
 		None = -1,
 
-		Server,
-		Proxy
+		TargetServer,
+		ProxyServer
 	};
 }
 
@@ -23,7 +21,7 @@ namespace kxf
 
 		public:
 			virtual WebAuthChallengeSource GetSource() const = 0;
-			virtual void SetCredentials(const UserCredentials& credentials) = 0;
+			virtual bool SetCredentials(UserCredentials credentials) = 0;
 	};
 }
 
@@ -39,8 +37,9 @@ namespace kxf
 			{
 				return WebAuthChallengeSource::None;
 			}
-			void SetCredentials(const UserCredentials& credentials) override
+			bool SetCredentials(UserCredentials credentials) override
 			{
+				return false;
 			}
 	};
 }

@@ -169,6 +169,12 @@ namespace kxf
 			{
 			}
 
+			template<class T, std::enable_if_t<std::is_integral_v<T>, int> = 0>
+			HTTPStatus(std::optional<T> value) noexcept
+				:HTTPStatus(value ? static_cast<HTTPStatusCode>(*value) : HTTPStatusCode::Unknown)
+			{
+			}
+
 		public:
 			// IErrorCode
 			bool IsSuccess() const noexcept override

@@ -1,8 +1,5 @@
 #pragma once
 #include "Common.h"
-#include "URI.h"
-#include "kxf/RTTI/RTTI.h"
-#include "kxf/General/BinarySize.h"
 #include "kxf/EventSystem/IEvtHandler.h"
 
 // Undef these symbols because Windows SDK defines some of them
@@ -20,39 +17,9 @@ namespace kxf
 	class IWebSession;
 	class IWebResponse;
 	class IWebAuthChallenge;
+
 	class WebRequestEvent;
-
-	enum class WebRequestState
-	{
-		None = -1,
-
-		Idle,
-		Unauthorized,
-		Active,
-		Completed,
-		Failed,
-		Cancelled
-	};
-	enum class WebRequestPeerVerify
-	{
-		Disabled = 0,
-		Enabled = 1
-	};
-	enum class WebRequestCommonMethod
-	{
-		Unknown = -2,
-		None = -1,
-
-		OPTIONS,
-		GET,
-		HEAD,
-		POST,
-		PUT,
-		DELETE,
-		TRACE,
-		CONNECT,
-		PATCH
-	};
+	class WebRequestHeader;
 }
 
 namespace kxf
@@ -63,37 +30,39 @@ namespace kxf
 
 		public:
 			// Common
-			virtual void Start() = 0;
-			virtual void Pause() = 0;
-			virtual void Resume() = 0;
-			virtual void Cancel() = 0;
+			virtual bool Start() = 0;
+			virtual bool Pause() = 0;
+			virtual bool Resume() = 0;
+			virtual bool Cancel() = 0;
 
 			virtual IWebResponse& GetResponse() = 0;
 			virtual IWebAuthChallenge& GetAuthChallenge() = 0;
-			
+
 			virtual URI GetURI() const = 0;
 			virtual void* GetNativeHandle() const = 0;
 
 			// Request options
-			virtual void SetHeader(const String& name, const String& value) = 0;
+			virtual bool SetHeader(const WebRequestHeader& header, FlagSet<WebRequestHeaderFlag> flags) = 0;
 			virtual void ClearHeaders() = 0;
-			void SetUserAgent(const String& value);
 
-			virtual String GetMethod() const = 0;
-			virtual void SetMethod(const String& method) = 0;
-			WebRequestCommonMethod GetCommonMethod() const;
-			void SetCommonMethod(WebRequestCommonMethod method);
+			virtual bool SetSendStorage(WebRequestStorage storage) = 0;
+			virtual bool SetSendSource(std::shared_ptr<IInputStream> stream) = 0;
+			virtual bool SetSendSource(const FSPath& filePath) = 0;
+			virtual bool SetSendSource(const String& data) = 0;
 
-			virtual WebRequestPeerVerify GetPeerVerify() const = 0;
-			virtual void SetPeerVerify(WebRequestPeerVerify option) = 0;
+			virtual bool SetReceiveStorage(WebRequestStorage storage) = 0;
+			virtual bool SetReceiveTarget(std::shared_ptr<IOutputStream> stream) = 0;
+			virtual bool SetReceiveTarget(const FSPath& filePath) = 0;
 
 			// Progress
 			virtual WebRequestState GetState() const = 0;
 
 			virtual BinarySize GetBytesSent() const = 0;
 			virtual BinarySize GetBytesExpectedToSend() const = 0;
+			virtual TransferRate GetSendRate() const = 0;
 
 			virtual BinarySize GetBytesReceived() const = 0;
 			virtual BinarySize GetBytesExpectedToReceive() const = 0;
+			virtual TransferRate GetReceiveRate() const = 0;
 	};
 }
