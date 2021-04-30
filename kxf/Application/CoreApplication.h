@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "ICoreApplication.h"
 #include "kxf/Threading/LockGuard.h"
+#include "kxf/Threading/ThreadPool.h"
 #include "kxf/Threading/RecursiveRWLock.h"
 #include "kxf/EventSystem/EvtHandler.h"
 #include "kxf/EventSystem/EvtHandlerAccessor.h"
@@ -28,6 +29,8 @@ namespace kxf
 			// ICoreApplication
 			mutable RecursiveRWLock m_EventFiltersLock;
 			std::list<IEventFilter*> m_EventFilters;
+
+			ThreadPool m_ThreadPool;
 
 			std::optional<int> m_ExitCode;
 			bool m_NativeAppInitialized = false;
@@ -143,6 +146,10 @@ namespace kxf
 			IEvtHandler& GetEvtHandler() override
 			{
 				return m_EvtHandler;
+			}
+			IThreadPool& GetThreadPool() override
+			{
+				return m_ThreadPool;
 			}
 
 			// IEvtHandler
