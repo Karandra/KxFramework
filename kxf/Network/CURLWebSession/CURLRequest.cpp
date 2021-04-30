@@ -359,8 +359,13 @@ namespace kxf
 		{
 			case CURLE_OK:
 			{
+				// Create the response object
 				m_Response.emplace(*this, responseStatus, statusText.data());
-				ChangeStateAndNotify(WebRequestState::Completed, responseStatus, statusText.data());
+
+				// Change state and notify
+				m_State = WebRequestState::Completed;
+				WebRequestEvent event(m_WeakRef.lock(), *m_Response, responseStatus, statusText.data());
+				NotifyEvent(WebRequestEvent::EvtStateChanged, event);
 
 				break;
 			}
@@ -420,7 +425,7 @@ namespace kxf
 
 			// Progress function
 			m_Handle.SetOption(CURLOPT_XFERINFODATA, this);
-			m_Handle.SetOption(CURLOPT_XFERINFOFUNCTION, &CURLRequest::OnReceiveHeaderCB);
+			m_Handle.SetOption(CURLOPT_XFERINFOFUNCTION, &CURLRequest::OnProgressNotifyCB);
 			m_Handle.SetOption(CURLOPT_NOPROGRESS, false);
 
 			// Set default parameters
@@ -429,6 +434,9 @@ namespace kxf
 
 			m_Handle.SetOption(CURLOPT_PRIVATE, this);
 			m_Handle.SetOption(CURLOPT_ACCEPT_ENCODING, "");
+
+			// Mark as idle
+			m_State = WebRequestState::Idle;
 		}
 	}
 	CURLRequest::~CURLRequest() noexcept

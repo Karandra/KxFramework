@@ -45,7 +45,6 @@ namespace kxf
 			EvtHandler m_EvtHandler;
 			CURLSession& m_Session;
 			std::weak_ptr<CURLRequest> m_WeakRef;
-			bool m_HasHeaderEvent = false;
 
 			std::atomic<WebRequestState> m_State = WebRequestState::None;
 			std::atomic<WebRequestState> m_NextState = WebRequestState::None;
@@ -79,6 +78,10 @@ namespace kxf
 
 		private:
 			// CURLRequest
+			bool IsNull() const noexcept
+			{
+				return m_Handle.IsNull() || m_State == WebRequestState::None;
+			}
 			EventSystem::EvtHandlerAccessor AccessEvtHandler() noexcept
 			{
 				return m_EvtHandler;
@@ -329,11 +332,11 @@ namespace kxf
 
 			explicit operator bool() const noexcept
 			{
-				return !m_Handle.IsNull();
+				return !IsNull();
 			}
 			bool operator!() const noexcept
 			{
-				return m_Handle.IsNull();
+				return IsNull();
 			}
 	};
 }

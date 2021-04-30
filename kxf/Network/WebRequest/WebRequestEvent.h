@@ -37,16 +37,16 @@ namespace kxf
 				:m_Request(std::move(request)), m_State(state), m_Header(std::move(header))
 			{
 			}
-			WebRequestEvent(std::shared_ptr<IWebRequest> request, WebRequestState state, std::optional<int> status = {}, String statusText = {})
-				:m_Request(std::move(request)), m_State(state), m_Status(status), m_StatusText(std::move(statusText))
-			{
-			}
 			WebRequestEvent(std::shared_ptr<IWebRequest> request, WebRequestState state, const void* buffer, size_t bufferSize)
 				:m_Request(std::move(request)), m_State(state), m_Buffer(buffer), m_BufferSize(bufferSize)
 			{
 			}
-			WebRequestEvent(std::shared_ptr<IWebRequest> request, IWebResponse& response)
-				:m_Request(std::move(request)), m_Response(&response), m_State(WebRequestState::Completed)
+			WebRequestEvent(std::shared_ptr<IWebRequest> request, WebRequestState state, std::optional<int> status = {}, String statusText = {})
+				:m_Request(std::move(request)), m_State(state), m_Status(status), m_StatusText(std::move(statusText))
+			{
+			}
+			WebRequestEvent(std::shared_ptr<IWebRequest> request, IWebResponse& response, std::optional<int> status = {}, String statusText = {})
+				:m_Request(std::move(request)), m_Response(&response), m_State(WebRequestState::Completed), m_Status(status), m_StatusText(std::move(statusText))
 			{
 			}
 
