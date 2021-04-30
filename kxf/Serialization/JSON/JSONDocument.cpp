@@ -14,7 +14,7 @@ namespace kxf
 	{
 		try
 		{
-			return String::FromUTF8(this->dump(1, '\t'));
+			return String::FromUTF8(AsBase().dump(1, '\t'));
 		}
 		catch (...)
 		{
@@ -25,7 +25,7 @@ namespace kxf
 	{
 		try
 		{
-			std::string string = this->dump(1, '\t');
+			std::string string = AsBase().dump(1, '\t');
 			return stream.WriteAll(string.data(), string.length());
 		}
 		catch (...)
@@ -38,7 +38,7 @@ namespace kxf
 	{
 		try
 		{
-			*this = JSONDocument::parse(json.ToUTF8(), nullptr, false);
+			AsBase() = nlohmann::json::parse(json.ToUTF8(), nullptr, false);
 			return this->empty();
 		}
 		catch (...)
@@ -55,7 +55,7 @@ namespace kxf
 			{
 				IO::InputStreamReader reader(stream);
 
-				*this = JSONDocument::parse(reader.ReadStdString(size.ToBytes()), nullptr, false);
+				AsBase() = nlohmann::json::parse(reader.ReadStdString(size.ToBytes()), nullptr, false);
 				return this->empty();
 			}
 			catch (...)

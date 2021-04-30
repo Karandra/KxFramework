@@ -8,6 +8,16 @@ namespace kxf
 {
 	class JSONDocument final: public nlohmann::json, public ILibraryInfo
 	{
+		private:
+			nlohmann::json& AsBase() noexcept
+			{
+				return static_cast<nlohmann::json&>(*this);
+			}
+			const nlohmann::json& AsBase() const noexcept
+			{
+				return static_cast<const nlohmann::json&>(*this);
+			}
+
 		public:
 			using nlohmann::json::json;
 			JSONDocument(const String& json)
