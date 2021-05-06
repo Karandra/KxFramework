@@ -4,6 +4,10 @@
 #include "kxf/General/FlagSet.h"
 #include <variant>
 
+namespace kxf::RTTI::Private
+{
+	class BaseClassesEnumerator;
+}
 namespace kxf::RTTI
 {
 	enum class ClassTrait: uint64_t
@@ -21,7 +25,8 @@ namespace kxf::RTTI
 
 		Interface = 1 << 16,
 		Implementation = 1 << 17,
-		Dynamic = 1 << 18
+		Dynamic = 1 << 18,
+		Private = 1 << 19
 	};
 }
 namespace kxf
@@ -37,6 +42,8 @@ namespace kxf::RTTI
 
 		friend KX_API const ClassInfo* GetClassInfoByName(std::string_view) noexcept;
 		friend KX_API const ClassInfo* GetClassInfoByName(const kxf::String&) noexcept;
+
+		friend class Private::BaseClassesEnumerator;
 
 		public:
 			static const ClassInfo* GetFirstClassInfo() noexcept;
@@ -107,13 +114,16 @@ namespace kxf::RTTI
 				return *m_TypeInfo;
 			}
 
+			bool IsNull() const noexcept;
+			bool IsBaseOf(const ClassInfo& other) const noexcept;
+			bool IsSameAs(const ClassInfo& other) const noexcept;
+
+			Enumerator<const ClassInfo&> EnumImmediateBaseClasses() const noexcept;
 			Enumerator<const ClassInfo&> EnumBaseClasses() const noexcept;
 			Enumerator<const ClassInfo&> EnumDerivedClasses() const noexcept;
 			Enumerator<const ClassInfo&> EnumImplementations() const noexcept;
+			Enumerator<const ClassInfo&> EnumDynamicImplementations() const noexcept;
 			Enumerator<const ClassInfo&> EnumDerivedInterfaces() const noexcept;
-			bool IsBaseOf(const ClassInfo& other) const noexcept;
-			bool IsSameAs(const ClassInfo& other) const noexcept;
-			bool IsNull() const noexcept;
 
 			template<class T = IObject>
 			std::unique_ptr<T> CreateObjectInstance() const
@@ -292,6 +302,16 @@ namespace kxf::RTTI
 		public:
 			DynamicImplementationClassInfo()
 				:Private::ClassInfoOfCommon<T, TBase...>(ClassTrait::Implementation|ClassTrait::Dynamic)
+			{
+			}
+	};
+
+	template<class T, class... TBase>
+	class PrivateStubClassInfo: public Private::ClassInfoOfCommon<T, TBase...>
+	{
+		public:
+			PrivateStubClassInfo()
+				:Private::ClassInfoOfCommon<T, TBase...>(ClassTrait::Private)
 			{
 			}
 	};

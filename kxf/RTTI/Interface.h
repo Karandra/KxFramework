@@ -128,6 +128,38 @@ namespace kxf::RTTI
 		public:
 			DynamicImplementation() = default;
 	};
+
+	template<class TDerived, class... TBase>
+	class PrivateStub: public TBase...
+	{
+		template<class T>
+		friend const ClassInfo& GetClassInfo() noexcept;
+
+		protected:
+			using TBaseClass = typename PrivateStub<TDerived, TBase...>;
+
+		private:
+			static inline RTTI::PrivateStubClassInfo<TDerived, TBase...> ms_ClassInfo;
+
+		protected:
+			RTTI::QueryInfo DoQueryInterface(const IID& iid) noexcept override
+			{
+				static_assert((std::is_base_of_v<IObject, TBase> && ...), "[...] must inherit from 'IObject'");
+
+				if (iid.IsOfType<RTTI::ClassInfo>())
+				{
+					return static_cast<ClassInfo*>(&ms_ClassInfo);
+				}
+				else if (RTTI::QueryInfo ptr; ((ptr = TBase::DoQueryInterface(iid), !ptr.is_null()) || ...))
+				{
+					return ptr;
+				}
+				return nullptr;
+			}
+
+		public:
+			PrivateStub() = default;
+	};
 }
 
 #define KxRTTI_QueryInterface_Extend(T, ...)	\

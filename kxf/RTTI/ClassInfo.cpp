@@ -3,6 +3,7 @@
 #include "kxf/General/String.h"
 #include "kxf/General/Enumerator.h"
 #include "kxf/Utility/Enumerator.h"
+#include "kxf/Utility/RecursiveCollectionEnumerator.h"
 
 namespace
 {
@@ -80,8 +81,76 @@ namespace
 	}
 }
 
+namespace kxf::RTTI::Private
+{
+	class BaseClassesEnumerator final: public RecursiveCollectionEnumerator<const ClassInfo&, const ClassInfo&>
+	{
+		private:
+			const ClassInfo& m_This;
+			bool m_Recurse = false;
+
+			size_t m_Index = 0;
+			size_t m_Count = std::numeric_limits<size_t>::max();
+
+		protected:
+			TValueContainer SearchDirectory(IEnumerator& enumerator, const TPathWrapper& directory, std::vector<TPathWrapper>& childDirectories, bool& isSubTreeDone) override
+			{
+				if (m_Count == std::numeric_limits<size_t>::max())
+				{
+					m_Count = directory.get().DoGetBaseClass(nullptr);
+				}
+
+				if (m_Index < m_Count)
+				{
+					const ClassInfo* classInfo = nullptr;
+					directory.get().DoGetBaseClass(&classInfo, m_Index++);
+
+					if (classInfo)
+					{
+						if (m_Recurse && classInfo->DoGetBaseClass(nullptr) != 0)
+						{
+							childDirectories.emplace_back(*classInfo);
+						}
+						return *classInfo;
+					}
+					else
+					{
+						// TODO: Investigate missing RTTI class infos. Most likely it's because kxf is compiled
+						// as a static library instead of a DLL.
+
+						// Returned class info shouldn't be nullptr as they must always be there but sometimes
+						// we still can't find them for some reason. This shouldn't really happen but it happens
+						// anyway. Skip such items.
+
+						enumerator.SkipCurrent();
+					}
+				}
+				else
+				{
+					isSubTreeDone = true;
+					m_Count = std::numeric_limits<size_t>::max();
+					m_Index = 0;
+
+					if (m_Recurse)
+					{
+						enumerator.SkipCurrent();
+					}
+				}
+				return {};
+			};
+
+		public:
+			BaseClassesEnumerator() = default;
+			BaseClassesEnumerator(const ClassInfo& thisClassInfo, bool recurse = false)
+				:RecursiveCollectionEnumerator(thisClassInfo), m_This(thisClassInfo), m_Recurse(recurse)
+			{
+			}
+	};
+}
+
 namespace kxf::RTTI
 {
+	// ClassInfo
 	const ClassInfo* ClassInfo::GetFirstClassInfo() noexcept
 	{
 		return m_FirstClassInfo;
@@ -101,9 +170,9 @@ namespace kxf::RTTI
 	{
 		if (m_Traits.Contains(ClassTrait::Interface) && iid)
 		{
-			for (const ClassInfo& classInfo: EnumImplementations())
+			for (const ClassInfo& classInfo: EnumDynamicImplementations())
 			{
-				if (classInfo.GetTraits().Contains(ClassTrait::Implementation) && classInfo.GetIID() == iid)
+				if (classInfo.GetIID() == iid)
 				{
 					return classInfo.CreateObjectInstance();
 				}
@@ -115,9 +184,9 @@ namespace kxf::RTTI
 	{
 		if (m_Traits.Contains(ClassTrait::Interface) && !fullyQualifiedName.IsEmpty())
 		{
-			for (const ClassInfo& classInfo: EnumImplementations())
+			for (const ClassInfo& classInfo: EnumDynamicImplementations())
 			{
-				if (classInfo.GetTraits().Contains(ClassTrait::Implementation) && fullyQualifiedName.IsSameAs(classInfo.m_FullyQualifiedName))
+				if (fullyQualifiedName.IsSameAs(classInfo.m_FullyQualifiedName))
 				{
 					return classInfo.CreateObjectInstance();
 				}
@@ -129,12 +198,9 @@ namespace kxf::RTTI
 	{
 		if (m_Traits.Contains(ClassTrait::Interface))
 		{
-			for (const ClassInfo& classInfo: EnumImplementations())
+			for (const ClassInfo& classInfo: EnumDynamicImplementations())
 			{
-				if (classInfo.GetTraits().Contains(ClassTrait::Implementation))
-				{
-					return classInfo.CreateObjectInstance();
-				}
+				return classInfo.CreateObjectInstance();
 			};
 		}
 		return nullptr;
@@ -146,6 +212,7 @@ namespace kxf::RTTI
 		return nullptr;
 	}
 
+	// ClassInfo
 	std::string_view ClassInfo::ParseToFullyQualifiedName(std::string_view name, size_t index) const noexcept
 	{
 		return DoGetFullyQualifiedName(name, index);
@@ -164,33 +231,40 @@ namespace kxf::RTTI
 		return String::FromView(m_FullyQualifiedName);
 	}
 
+	bool ClassInfo::IsNull() const noexcept
+	{
+		return m_TypeInfo == nullptr;
+	}
+	bool ClassInfo::IsBaseOf(const ClassInfo& other) const noexcept
+	{
+		for (const ClassInfo& classInfo: other.EnumBaseClasses())
+		{
+			if (classInfo == *this)
+			{
+				return true;
+			}
+		};
+		return false;
+	}
+	bool ClassInfo::IsSameAs(const ClassInfo& other) const noexcept
+	{
+		if (this == &other)
+		{
+			return true;
+		}
+		else
+		{
+			return m_Size == other.m_Size && m_Alignment == other.m_Alignment && m_Traits == other.m_Traits && m_FullyQualifiedName == other.m_FullyQualifiedName;
+		}
+	}
+
+	Enumerator<const ClassInfo&> ClassInfo::EnumImmediateBaseClasses() const noexcept
+	{
+		return Private::BaseClassesEnumerator(*this, false);
+	}
 	Enumerator<const ClassInfo&> ClassInfo::EnumBaseClasses() const noexcept
 	{
-		return [this, index = 0_zu, count = DoGetBaseClass(nullptr)](IEnumerator& en) mutable -> optional_ref<const ClassInfo>
-		{
-			if (index < count)
-			{
-				const ClassInfo* classInfo = nullptr;
-				DoGetBaseClass(&classInfo, index++);
-
-				if (classInfo)
-				{
-					return *classInfo;
-				}
-				else
-				{
-					// TODO: Investigate missing RTTI class infos. Most likely it's because kxf is compiled
-					// as a static library instead of a DLL.
-
-					// Returned class info shouldn't be nullptr as they must always be there but sometimes
-					// we still can't find them for some reason. This shouldn't really happen but it happens
-					// anyway. Skip such items.
-
-					en.SkipCurrent();
-				}
-			}
-			return {};
-		};
+		return Private::BaseClassesEnumerator(*this, true);
 	}
 	Enumerator<const ClassInfo&> ClassInfo::EnumDerivedClasses() const noexcept
 	{
@@ -214,7 +288,22 @@ namespace kxf::RTTI
 	{
 		return Utility::MakeForwardingEnumerator([](const ClassInfo& classInfo, IEnumerator& enumerator) -> optional_ref<const ClassInfo>
 		{
-			if (classInfo.GetTraits().Contains(ClassTrait::Implementation))
+			auto traits = classInfo.GetTraits();
+			if (traits.Contains(ClassTrait::Implementation) && !traits.Contains(ClassTrait::Abstract|ClassTrait::Private))
+			{
+				return classInfo;
+			}
+
+			enumerator.SkipCurrent();
+			return {};
+		}, *this, &ClassInfo::EnumDerivedClasses);
+	}
+	Enumerator<const ClassInfo&> ClassInfo::EnumDynamicImplementations() const noexcept
+	{
+		return Utility::MakeForwardingEnumerator([](const ClassInfo& classInfo, IEnumerator& enumerator) -> optional_ref<const ClassInfo>
+		{
+			auto traits = classInfo.GetTraits();
+			if (traits.Contains(ClassTrait::Dynamic|ClassTrait::Implementation) && !traits.Contains(ClassTrait::Abstract|ClassTrait::Private))
 			{
 				return classInfo;
 			}
@@ -227,7 +316,8 @@ namespace kxf::RTTI
 	{
 		return Utility::MakeForwardingEnumerator([](const ClassInfo& classInfo, IEnumerator& enumerator) -> optional_ref<const ClassInfo>
 		{
-			if (classInfo.GetTraits().Contains(ClassTrait::Interface))
+			auto traits = classInfo.GetTraits();
+			if (traits.Contains(ClassTrait::Interface) && !traits.Contains(ClassTrait::Private))
 			{
 				return classInfo;
 			}
@@ -235,32 +325,5 @@ namespace kxf::RTTI
 			enumerator.SkipCurrent();
 			return {};
 		}, *this, &ClassInfo::EnumDerivedClasses);
-	}
-
-	bool ClassInfo::IsBaseOf(const ClassInfo& other) const noexcept
-	{
-		for (const ClassInfo& classInfo: other.EnumBaseClasses())
-		{
-			if (classInfo == *this)
-			{
-				return true;
-			}
-		};
-		return false;
-	}
-	bool ClassInfo::IsSameAs(const ClassInfo& other) const noexcept
-	{
-		if (this == &other)
-		{
-			return true;
-		}
-		else
-		{
-			return m_Size == other.m_Size && m_Alignment == other.m_Alignment && m_Traits == other.m_Traits && m_FullyQualifiedName == other.m_FullyQualifiedName;
-		}
-	}
-	bool ClassInfo::IsNull() const noexcept
-	{
-		return m_TypeInfo == nullptr;
 	}
 }
