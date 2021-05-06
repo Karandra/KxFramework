@@ -170,27 +170,30 @@ namespace
 		protected:
 			std::optional<FileItem> SearchDirectory(IEnumerator& enumerator, const FSPath& directory, std::vector<FSPath>& childDirectories, bool& isSubTreeDone) override
 			{
-				WIN32_FIND_DATAW findInfo = {};
-				if (!m_SearchHandle)
+				if (directory)
 				{
-					if (m_SearchHandle = FileSystem::Private::CallFindFirstFile(ConstructFullQuery(directory), findInfo, m_Flags & FSActionFlag::CaseSensitive))
+					WIN32_FIND_DATAW findInfo = {};
+					if (!m_SearchHandle)
+					{
+						if (m_SearchHandle = FileSystem::Private::CallFindFirstFile(ConstructFullQuery(directory), findInfo, m_Flags & FSActionFlag::CaseSensitive))
+						{
+							return DoItem(enumerator, findInfo, directory, childDirectories);
+						}
+					}
+					else if (::FindNextFileW(*m_SearchHandle, &findInfo))
 					{
 						return DoItem(enumerator, findInfo, directory, childDirectories);
 					}
-				}
-				else if (::FindNextFileW(*m_SearchHandle, &findInfo))
-				{
-					return DoItem(enumerator, findInfo, directory, childDirectories);
-				}
-				else
-				{
-					m_SearchHandle = nullptr;
-					isSubTreeDone = true;
-
-					// Skip this step if we need to scan subdirectories because otherwise we'd terminate the process
-					if (m_Flags.Contains(FSActionFlag::Recursive))
+					else
 					{
-						enumerator.SkipCurrent();
+						m_SearchHandle = nullptr;
+						isSubTreeDone = true;
+
+						// Skip this step if we need to scan subdirectories because otherwise we'd terminate the process
+						if (m_Flags.Contains(FSActionFlag::Recursive))
+						{
+							enumerator.SkipCurrent();
+						}
 					}
 				}
 				return {};

@@ -181,30 +181,33 @@ namespace
 		protected:
 			std::optional<FileItem> SearchDirectory(IEnumerator& enumerator, const FSPath& directory, std::vector<FSPath>& childDirectories, bool& isSubTreeDone) override
 			{
-				if (!m_Items)
+				if (directory)
 				{
-					m_Items = m_Archive.EnumItems(std::numeric_limits<UniversallyUniqueID>::max(), m_Flags);
-					m_ItemsIterator = m_Items.begin();
+					if (!m_Items)
+					{
+						m_Items = m_Archive.EnumItems(std::numeric_limits<UniversallyUniqueID>::max(), m_Flags);
+						m_ItemsIterator = m_Items.begin();
 
-					if (m_Items && m_ItemsIterator != m_Items.end())
+						if (m_Items && m_ItemsIterator != m_Items.end())
+						{
+							return DoItem(enumerator, std::move(*m_ItemsIterator), directory, childDirectories);
+						}
+					}
+					else if (++m_ItemsIterator; m_ItemsIterator != m_Items.end())
 					{
 						return DoItem(enumerator, std::move(*m_ItemsIterator), directory, childDirectories);
 					}
-				}
-				else if (++m_ItemsIterator; m_ItemsIterator != m_Items.end())
-				{
-					return DoItem(enumerator, std::move(*m_ItemsIterator), directory, childDirectories);
-				}
-				else
-				{
-					m_Items = {};
-					m_ItemsIterator = {};
-					isSubTreeDone = true;
-
-					// Skip this step if we need to scan subdirectories because otherwise we'd terminate the process
-					if (m_Flags.Contains(FSActionFlag::Recursive))
+					else
 					{
-						enumerator.SkipCurrent();
+						m_Items = {};
+						m_ItemsIterator = {};
+						isSubTreeDone = true;
+
+						// Skip this step if we need to scan subdirectories because otherwise we'd terminate the process
+						if (m_Flags.Contains(FSActionFlag::Recursive))
+						{
+							enumerator.SkipCurrent();
+						}
 					}
 				}
 				return {};
