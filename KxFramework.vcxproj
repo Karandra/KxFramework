@@ -299,6 +299,8 @@
     <ClInclude Include="kxf\Network\CURLWebSession\CURLSession.h" />
     <ClInclude Include="kxf\Network\CURLWebSession\CURLUtility.h" />
     <ClInclude Include="kxf\Network\CURLWebSession\Utility.h" />
+    <ClInclude Include="kxf\Network\Private\BasicWebRequest.h" />
+    <ClInclude Include="kxf\Network\Private\BasicWebSession.h" />
     <ClInclude Include="kxf\Network\WebRequest.h" />
     <ClInclude Include="kxf\Network\WebRequest\Common.h" />
     <ClInclude Include="kxf\Network\WebRequest\IWebAuthChallenge.h" />
@@ -752,6 +754,7 @@
     <ClCompile Include="kxf\Network\CURLWebSession\CURLRequest.cpp" />
     <ClCompile Include="kxf\Network\CURLWebSession\CURLSession.cpp" />
     <ClCompile Include="kxf\Network\CURLWebSession\CURLUtility.cpp" />
+    <ClCompile Include="kxf\Network\Private\BasicWebSession.cpp" />
     <ClCompile Include="kxf\Network\WebRequest\IWebAuthChallenge.cpp" />
     <ClCompile Include="kxf\Network\WebRequest\IWebRequestOptions.cpp" />
     <ClCompile Include="kxf\Network\WebRequest\IWebResponse.cpp" />

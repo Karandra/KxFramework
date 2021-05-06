@@ -99,14 +99,6 @@ namespace
 
 namespace kxf
 {
-	void CURLRequest::NotifyEvent(EventTag<WebRequestEvent> eventID, WebRequestEvent& event)
-	{
-		if (!ProcessEvent(event, eventID, ProcessEventFlag::HandleExceptions) || event.IsSkipped())
-		{
-			m_Session.ProcessEvent(event, eventID, ProcessEventFlag::HandleExceptions);
-		}
-	}
-
 	bool CURLRequest::OnCallbackCommon(bool isWrite, size_t& result)
 	{
 		if (m_NextState == WebRequestState::Cancelled)
@@ -138,7 +130,7 @@ namespace kxf
 			const size_t length = size * count;
 			m_SendStream->Read(data, length);
 
-			WebRequestEvent event(m_WeakRef.lock(), m_State, data, length);
+			WebRequestEvent event(LockRef(), m_State, data, length);
 			NotifyEvent(WebRequestEvent::EvtDataSent, event);
 
 			return m_SendStream->LastRead().ToBytes();
@@ -157,7 +149,7 @@ namespace kxf
 			const size_t length = size * count;
 			m_ReceiveStream->Write(data, size * count);
 
-			WebRequestEvent event(m_WeakRef.lock(), m_State, data, length);
+			WebRequestEvent event(LockRef(), m_State, data, length);
 			NotifyEvent(WebRequestEvent::EvtDataReceived, event);
 
 			return m_ReceiveStream->LastWrite().ToBytes();
@@ -169,7 +161,7 @@ namespace kxf
 		const size_t length = size * count;
 		if (const WebRequestHeader& header = m_ResponseHeaders.emplace_back(GetHeaderName(data, length), GetHeaderValue(data, length)))
 		{
-			WebRequestEvent event(m_WeakRef.lock(), m_State, header);
+			WebRequestEvent event(LockRef(), m_State, header);
 			NotifyEvent(WebRequestEvent::EvtHeaderReceived, event);
 		}
 		else
@@ -364,7 +356,7 @@ namespace kxf
 
 				// Change state and notify
 				m_State = WebRequestState::Completed;
-				WebRequestEvent event(m_WeakRef.lock(), *m_Response, responseStatus, statusText.data());
+				WebRequestEvent event(LockRef(), *m_Response, responseStatus, statusText.data());
 				NotifyEvent(WebRequestEvent::EvtStateChanged, event);
 
 				break;
@@ -401,15 +393,18 @@ namespace kxf
 		m_BytesExpectedToSend = -1;
 	}
 
-	CURLRequest::CURLRequest(CURLSession& session, const URI& uri)
+	CURLRequest::CURLRequest(CURLSession& session, const std::vector<WebRequestHeader>& commonHeaders, const URI& uri)
 		:m_Session(session), m_Handle(CURL::Private::HandleType::Easy)
 	{
 		static_assert(std::is_same_v<TCURLOffset, curl_off_t>, "'TCURLOffset' and 'curl_off_t' are not the same type");
 
 		if (m_Handle)
 		{
-			// Copy (not move) common headers
-			m_RequestHeaders = m_Session.m_CommonHeaders;
+			// Make the session object handle events if this object doesn't
+			m_EvtHandler.SetNextHandler(&m_Session);
+
+			// Copy common headers
+			m_RequestHeaders = commonHeaders;
 
 			// Upload callback
 			m_Handle.SetOption(CURLOPT_READDATA, this);

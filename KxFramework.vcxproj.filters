@@ -254,6 +254,9 @@
     <Filter Include="Resources\SoftwareLicenseDB">
       <UniqueIdentifier>{755ed2b5-50b4-4e83-bfc6-0dc4845abdd3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\Network\Private">
+      <UniqueIdentifier>{3ed4aa7f-83d3-4b24-8e42-244d3ab51af7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -1882,6 +1885,12 @@
     <ClInclude Include="kxf\Utility\SoftwareLicenseDB.h">
       <Filter>kxf\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Network\Private\BasicWebSession.h">
+      <Filter>kxf\Network\Private</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Network\Private\BasicWebRequest.h">
+      <Filter>kxf\Network\Private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2799,6 +2808,9 @@
     </ClCompile>
     <ClCompile Include="kxf\Utility\SoftwareLicenseDB.cpp">
       <Filter>kxf\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Network\Private\BasicWebSession.cpp">
+      <Filter>kxf\Network\Private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

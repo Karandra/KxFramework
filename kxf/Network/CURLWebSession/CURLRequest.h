@@ -1,10 +1,9 @@
 #pragma once
 #include "Common.h"
+#include "../Private/BasicWebRequest.h"
 #include "CURLUtility.h"
 #include "CURLResponse.h"
 #include "CURLAuthChallenge.h"
-#include "kxf/EventSystem/EvtHandler.h"
-#include "kxf/EventSystem/EvtHandlerAccessor.h"
 
 namespace kxf
 {
@@ -13,9 +12,8 @@ namespace kxf
 
 namespace kxf
 {
-	class KX_API CURLRequest final: public RTTI::Implementation<CURLRequest, IWebRequest, IWebRequestOptions, IWebRequestAuthOptions, IWebRequestSecurityOptions>
+	class KX_API CURLRequest final: public RTTI::Implementation<CURLRequest, Private::BasicWebRequest, IWebRequestOptions, IWebRequestAuthOptions, IWebRequestSecurityOptions>
 	{
-		friend class CURLSession;
 		friend class CURLResponse;
 		friend class CURLAuthChallenge;
 
@@ -41,11 +39,8 @@ namespace kxf
 			}
 
 		private:
-			// Control and event handling
-			EvtHandler m_EvtHandler;
+			// State
 			CURLSession& m_Session;
-			std::weak_ptr<CURLRequest> m_WeakRef;
-
 			std::atomic<WebRequestState> m_State = WebRequestState::None;
 			std::atomic<WebRequestState> m_NextState = WebRequestState::None;
 
@@ -77,29 +72,13 @@ namespace kxf
 			std::atomic<int64_t> m_BytesExpectedToSend = -1;
 
 		private:
-			// CURLRequest
-			bool IsNull() const noexcept
+			void NotifyEvent(EventTag<WebRequestEvent> eventID, WebRequestEvent& event)
 			{
-				return m_Handle.IsNull() || m_State == WebRequestState::None;
+				m_EvtHandler.ProcessEvent(event, eventID, ProcessEventFlag::HandleExceptions);
 			}
-			EventSystem::EvtHandlerAccessor AccessEvtHandler() noexcept
-			{
-				return m_EvtHandler;
-			}
-
-			void WeakRef(const std::shared_ptr<CURLRequest>& selfRef)
-			{
-				m_WeakRef = selfRef;
-			}
-			std::shared_ptr<CURLRequest> LockRef() const
-			{
-				return m_WeakRef.lock();
-			}
-
-			void NotifyEvent(EventTag<WebRequestEvent> eventID, WebRequestEvent& event);
 			void NotifyStateChange(WebRequestState state, std::optional<int> statusCode = {}, String statusText = {})
 			{
-				WebRequestEvent event(m_WeakRef.lock(), state, std::move(statusCode), std::move(statusText));
+				WebRequestEvent event(LockRef(), state, std::move(statusCode), std::move(statusText));
 				NotifyEvent(WebRequestEvent::EvtStateChanged, event);
 			}
 			void ChangeStateAndNotify(WebRequestState state, std::optional<int> statusCode = {}, String statusText = {})
@@ -122,51 +101,14 @@ namespace kxf
 			int OnProgressNotify(int64_t bytesReceived, int64_t bytesExpectedToReceive, int64_t bytesSent, int64_t bytesExpectedToSend);
 			bool OnSetAuthChallengeCredentials(WebAuthChallengeSource source, UserCredentials credentials);
 
-		protected:
-			// IEvtHandler
-			LocallyUniqueID DoBind(const EventID& eventID, std::unique_ptr<IEventExecutor> executor, FlagSet<BindEventFlag> flags = {}) override
+			// Private::BasicWebRequest
+			void PerformRequest() override
 			{
-				return AccessEvtHandler().DoBind(eventID, std::move(executor), flags);
-			}
-			bool DoUnbind(const EventID& eventID, IEventExecutor& executor) override
-			{
-				return AccessEvtHandler().DoUnbind(eventID, executor);
-			}
-			bool DoUnbind(const LocallyUniqueID& bindSlot) override
-			{
-				return AccessEvtHandler().DoUnbind(bindSlot);
-			}
-
-			bool OnDynamicBind(EventItem& eventItem) override
-			{
-				return AccessEvtHandler().OnDynamicBind(eventItem);
-			}
-			bool OnDynamicUnbind(EventItem& eventItem) override
-			{
-				return AccessEvtHandler().OnDynamicUnbind(eventItem);
-			}
-
-			std::unique_ptr<IEvent> DoQueueEvent(std::unique_ptr<IEvent> event, const EventID& eventID = {}, const UniversallyUniqueID& uuid = {}, FlagSet<ProcessEventFlag> flags = {}) override
-			{
-				return AccessEvtHandler().DoQueueEvent(std::move(event), eventID, uuid, flags);
-			}
-			bool DoProcessEvent(IEvent& event, const EventID& eventID = {}, const UniversallyUniqueID& uuid = {}, FlagSet<ProcessEventFlag> flags = {}, IEvtHandler* onlyIn = nullptr) override
-			{
-				return AccessEvtHandler().DoProcessEvent(event, eventID, uuid, flags, onlyIn);
-			}
-
-			bool TryBefore(IEvent& event) override
-			{
-				return AccessEvtHandler().TryBefore(event);
-			}
-			bool TryAfter(IEvent& event) override
-			{
-				return AccessEvtHandler().TryAfter(event);
+				DoPerformRequest();
 			}
 
 		public:
-			CURLRequest(CURLSession& session, const URI& uri = {});
-			CURLRequest(const CURLRequest&) = delete;
+			CURLRequest(CURLSession& session, const std::vector<WebRequestHeader>& commonHeaders, const URI& uri = {});
 			~CURLRequest() noexcept;
 
 		public:
@@ -241,6 +183,7 @@ namespace kxf
 			}
 			TransferRate GetReceiveRate() const override;
 
+		public:
 			// IWebRequestOptions
 			bool SetURI(const URI& uri) override;
 			bool SetPort(uint16_t port) override;
@@ -282,61 +225,10 @@ namespace kxf
 			bool SetVerifyStatus(WebRequestOption2 option) override;
 
 		public:
-			// IEvtHandler
-			bool ProcessPendingEvents() override
+			// CURLRequest
+			bool IsNull() const noexcept
 			{
-				return m_EvtHandler.ProcessPendingEvents();
-			}
-			size_t DiscardPendingEvents() override
-			{
-				return m_EvtHandler.DiscardPendingEvents();
-			}
-
-			IEvtHandler* GetPrevHandler() const override
-			{
-				return m_EvtHandler.GetPrevHandler();
-			}
-			IEvtHandler* GetNextHandler() const override
-			{
-				return m_EvtHandler.GetNextHandler();
-			}
-			void SetPrevHandler(IEvtHandler* evtHandler) override
-			{
-				m_EvtHandler.SetPrevHandler(evtHandler);
-			}
-			void SetNextHandler(IEvtHandler* evtHandler) override
-			{
-				m_EvtHandler.SetNextHandler(evtHandler);
-			}
-
-			void Unlink() override
-			{
-				m_EvtHandler.Unlink();
-			}
-			bool IsUnlinked() const override
-			{
-				return m_EvtHandler.IsUnlinked();
-			}
-
-			bool IsEventProcessingEnabled() const override
-			{
-				return m_EvtHandler.IsEventProcessingEnabled();
-			}
-			void EnableEventProcessing(bool enable = true) override
-			{
-				m_EvtHandler.EnableEventProcessing(enable);
-			}
-
-		public:
-			CURLRequest& operator=(const CURLRequest&) = delete;
-
-			explicit operator bool() const noexcept
-			{
-				return !IsNull();
-			}
-			bool operator!() const noexcept
-			{
-				return IsNull();
+				return m_Handle.IsNull() || m_State == WebRequestState::None;
 			}
 	};
 }
