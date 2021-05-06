@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
-#include "CURLRequest.h"
-#include "CURLSession.h"
-#include "CURL.h"
+#include "CURLWebRequest.h"
+#include "CURLWebSession.h"
+#include "LibCURL.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/IO/MemoryStream.h"
 #include "kxf/General/Enumerator.h"
@@ -99,7 +99,7 @@ namespace
 
 namespace kxf
 {
-	bool CURLRequest::OnCallbackCommon(bool isWrite, size_t& result)
+	bool CURLWebRequest::OnCallbackCommon(bool isWrite, size_t& result)
 	{
 		if (m_NextState == WebRequestState::Cancelled)
 		{
@@ -118,7 +118,7 @@ namespace kxf
 		}
 		return false;
 	}
-	size_t CURLRequest::OnReadData(char* data, size_t size, size_t count)
+	size_t CURLWebRequest::OnReadData(char* data, size_t size, size_t count)
 	{
 		size_t result = 0;
 		if (OnCallbackCommon(false, result))
@@ -137,7 +137,7 @@ namespace kxf
 		}
 		return 0;
 	}
-	size_t CURLRequest::OnWriteData(char* data, size_t size, size_t count)
+	size_t CURLWebRequest::OnWriteData(char* data, size_t size, size_t count)
 	{
 		size_t result = 0;
 		if (OnCallbackCommon(false, result))
@@ -156,7 +156,7 @@ namespace kxf
 		}
 		return 0;
 	}
-	size_t CURLRequest::OnReceiveHeader(char* data, size_t size, size_t count)
+	size_t CURLWebRequest::OnReceiveHeader(char* data, size_t size, size_t count)
 	{
 		const size_t length = size * count;
 		if (const WebRequestHeader& header = m_ResponseHeaders.emplace_back(GetHeaderName(data, length), GetHeaderValue(data, length)))
@@ -170,7 +170,7 @@ namespace kxf
 		}
 		return length;
 	}
-	int CURLRequest::OnProgressNotify(int64_t bytesReceived, int64_t bytesExpectedToReceive, int64_t bytesSent, int64_t bytesExpectedToSend)
+	int CURLWebRequest::OnProgressNotify(int64_t bytesReceived, int64_t bytesExpectedToReceive, int64_t bytesSent, int64_t bytesExpectedToSend)
 	{
 		// Update sizes
 		m_BytesReceived = bytesReceived;
@@ -200,7 +200,7 @@ namespace kxf
 		}
 		return CURL_PROGRESSFUNC_CONTINUE;
 	}
-	bool CURLRequest::OnSetAuthChallengeCredentials(WebAuthChallengeSource source, UserCredentials credentials)
+	bool CURLWebRequest::OnSetAuthChallengeCredentials(WebAuthChallengeSource source, UserCredentials credentials)
 	{
 		// TODO: Handle other types of authorization here (TLS)
 
@@ -237,7 +237,7 @@ namespace kxf
 		return false;
 	}
 
-	void CURLRequest::DoFreeRequestHeaders()
+	void CURLWebRequest::DoFreeRequestHeaders()
 	{
 		if (m_RequestHeadersSList)
 		{
@@ -247,7 +247,7 @@ namespace kxf
 			m_RequestHeadersSList = nullptr;
 		}
 	}
-	void CURLRequest::DoSetRequestHeaders()
+	void CURLWebRequest::DoSetRequestHeaders()
 	{
 		// Reset and free any previously set headers
 		DoFreeRequestHeaders();
@@ -260,7 +260,7 @@ namespace kxf
 		}
 		m_Handle.SetOption(CURLOPT_HTTPHEADER, m_RequestHeadersSList);
 	}
-	void CURLRequest::DoPrepareSendData()
+	void CURLWebRequest::DoPrepareSendData()
 	{
 		if (m_SendStorage != WebRequestStorage::None)
 		{
@@ -293,14 +293,14 @@ namespace kxf
 			m_Handle.SetOption(CURLOPT_CUSTOMREQUEST, m_Method);
 		}
 	}
-	void CURLRequest::DoPrepareReceiveData()
+	void CURLWebRequest::DoPrepareReceiveData()
 	{
 		if (m_ReceiveStorage == WebRequestStorage::Memory)
 		{
 			m_ReceiveStream = std::make_shared<MemoryOutputStream>();
 		}
 	}
-	void CURLRequest::DoPerformRequest()
+	void CURLWebRequest::DoPerformRequest()
 	{
 		Utility::ScopeGuard atExit = [&]()
 		{
@@ -381,7 +381,7 @@ namespace kxf
 			}
 		};
 	}
-	void CURLRequest::DoResetState()
+	void CURLWebRequest::DoResetState()
 	{
 		m_AuthChallenge.reset();
 		m_Response.reset();
@@ -393,7 +393,7 @@ namespace kxf
 		m_BytesExpectedToSend = -1;
 	}
 
-	CURLRequest::CURLRequest(CURLSession& session, const std::vector<WebRequestHeader>& commonHeaders, const URI& uri)
+	CURLWebRequest::CURLWebRequest(CURLWebSession& session, const std::vector<WebRequestHeader>& commonHeaders, const URI& uri)
 		:m_Session(session), m_Handle(CURL::Private::HandleType::Easy)
 	{
 		static_assert(std::is_same_v<TCURLOffset, curl_off_t>, "'TCURLOffset' and 'curl_off_t' are not the same type");
@@ -408,24 +408,24 @@ namespace kxf
 
 			// Upload callback
 			m_Handle.SetOption(CURLOPT_READDATA, this);
-			m_Handle.SetOption(CURLOPT_READFUNCTION, &CURLRequest::OnReadDataCB);
+			m_Handle.SetOption(CURLOPT_READFUNCTION, &CURLWebRequest::OnReadDataCB);
 
 			// Download callback
 			m_Handle.SetOption(CURLOPT_WRITEDATA, this);
-			m_Handle.SetOption(CURLOPT_WRITEFUNCTION, &CURLRequest::OnWriteDataCB);
+			m_Handle.SetOption(CURLOPT_WRITEFUNCTION, &CURLWebRequest::OnWriteDataCB);
 
 			// Response headers callback
 			m_Handle.SetOption(CURLOPT_HEADERDATA, this);
-			m_Handle.SetOption(CURLOPT_HEADERFUNCTION, &CURLRequest::OnReceiveHeaderCB);
+			m_Handle.SetOption(CURLOPT_HEADERFUNCTION, &CURLWebRequest::OnReceiveHeaderCB);
 
 			// Progress function
 			m_Handle.SetOption(CURLOPT_XFERINFODATA, this);
-			m_Handle.SetOption(CURLOPT_XFERINFOFUNCTION, &CURLRequest::OnProgressNotifyCB);
+			m_Handle.SetOption(CURLOPT_XFERINFOFUNCTION, &CURLWebRequest::OnProgressNotifyCB);
 			m_Handle.SetOption(CURLOPT_NOPROGRESS, false);
 
 			// Set default parameters
-			CURLRequest::SetURI(uri);
-			CURLRequest::SetReceiveStorage(WebRequestStorage::Memory);
+			CURLWebRequest::SetURI(uri);
+			CURLWebRequest::SetReceiveStorage(WebRequestStorage::Memory);
 
 			m_Handle.SetOption(CURLOPT_PRIVATE, this);
 			m_Handle.SetOption(CURLOPT_ACCEPT_ENCODING, "");
@@ -434,13 +434,13 @@ namespace kxf
 			m_State = WebRequestState::Idle;
 		}
 	}
-	CURLRequest::~CURLRequest() noexcept
+	CURLWebRequest::~CURLWebRequest() noexcept
 	{
 		DoFreeRequestHeaders();
 	}
 
 	// IWebRequest: Common
-	bool CURLRequest::Start()
+	bool CURLWebRequest::Start()
 	{
 		if (m_State == WebRequestState::Idle)
 		{
@@ -452,7 +452,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool CURLRequest::Pause()
+	bool CURLWebRequest::Pause()
 	{
 		if (m_State == WebRequestState::Active)
 		{
@@ -460,7 +460,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool CURLRequest::Resume()
+	bool CURLWebRequest::Resume()
 	{
 		if (m_State == WebRequestState::Paused)
 		{
@@ -469,7 +469,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool CURLRequest::Cancel()
+	bool CURLWebRequest::Cancel()
 	{
 		if (m_State == WebRequestState::Active || m_State == WebRequestState::Paused)
 		{
@@ -480,16 +480,16 @@ namespace kxf
 	}
 
 	// IWebRequest: Request options
-	bool CURLRequest::SetHeader(const WebRequestHeader& header, FlagSet<WebRequestHeaderFlag> flags)
+	bool CURLWebRequest::SetHeader(const WebRequestHeader& header, FlagSet<WebRequestHeaderFlag> flags)
 	{
-		return CURLSession::SetHeader(m_RequestHeaders, header, flags);
+		return CURLWebSession::SetHeader(m_RequestHeaders, header, flags);
 	}
-	void CURLRequest::ClearHeaders()
+	void CURLWebRequest::ClearHeaders()
 	{
 		m_RequestHeaders.clear();
 	}
 
-	bool CURLRequest::SetSendStorage(WebRequestStorage storage)
+	bool CURLWebRequest::SetSendStorage(WebRequestStorage storage)
 	{
 		if (m_State == WebRequestState::Idle)
 		{
@@ -506,7 +506,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool CURLRequest::SetSendSource(std::shared_ptr<IInputStream> stream)
+	bool CURLWebRequest::SetSendSource(std::shared_ptr<IInputStream> stream)
 	{
 		if (m_State == WebRequestState::Idle)
 		{
@@ -520,14 +520,14 @@ namespace kxf
 		}
 		return false;
 	}
-	bool CURLRequest::SetSendSource(const String& data)
+	bool CURLWebRequest::SetSendSource(const String& data)
 	{
 		if (m_State == WebRequestState::Idle)
 		{
 			auto encodedData = m_Handle.EscapeString(data.ToUTF8());
 			if (!encodedData.empty() || data.IsEmpty())
 			{
-				if (CURLRequest::SetSendSource(std::make_shared<MemoryInputStream>(encodedData.data(), encodedData.size())))
+				if (CURLWebRequest::SetSendSource(std::make_shared<MemoryInputStream>(encodedData.data(), encodedData.size())))
 				{
 					m_SendData = std::move(encodedData);
 					m_SendStorage = WebRequestStorage::Memory;
@@ -538,12 +538,12 @@ namespace kxf
 		}
 		return false;
 	}
-	bool CURLRequest::SetSendSource(const FSPath& filePath)
+	bool CURLWebRequest::SetSendSource(const FSPath& filePath)
 	{
 		if (m_State == WebRequestState::Idle && filePath)
 		{
 			auto& fs = m_Session.GetFileSystem();
-			if (CURLRequest::SetSendSource(fs.OpenToRead(filePath)))
+			if (CURLWebRequest::SetSendSource(fs.OpenToRead(filePath)))
 			{
 				m_SendData = {};
 				m_SendStorage = WebRequestStorage::FileSystem;
@@ -554,7 +554,7 @@ namespace kxf
 		return false;
 	}
 
-	bool CURLRequest::SetReceiveStorage(WebRequestStorage storage)
+	bool CURLWebRequest::SetReceiveStorage(WebRequestStorage storage)
 	{
 		if (m_State == WebRequestState::Idle)
 		{
@@ -571,7 +571,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool CURLRequest::SetReceiveTarget(std::shared_ptr<IOutputStream> stream)
+	bool CURLWebRequest::SetReceiveTarget(std::shared_ptr<IOutputStream> stream)
 	{
 		if (m_State == WebRequestState::Idle)
 		{
@@ -585,7 +585,7 @@ namespace kxf
 		}
 		return false;
 	}
-	bool CURLRequest::SetReceiveTarget(const FSPath& filePath)
+	bool CURLWebRequest::SetReceiveTarget(const FSPath& filePath)
 	{
 		if (m_State == WebRequestState::Idle && filePath)
 		{
@@ -599,7 +599,7 @@ namespace kxf
 	}
 
 	// IWebRequest: Progress
-	TransferRate CURLRequest::GetSendRate() const
+	TransferRate CURLWebRequest::GetSendRate() const
 	{
 		if (auto rate = m_Handle.GetOptionInt64(CURLINFO_SPEED_UPLOAD_T))
 		{
@@ -607,7 +607,7 @@ namespace kxf
 		}
 		return {};
 	}
-	TransferRate CURLRequest::GetReceiveRate() const
+	TransferRate CURLWebRequest::GetReceiveRate() const
 	{
 		if (auto rate = m_Handle.GetOptionInt64(CURLINFO_SPEED_DOWNLOAD_T))
 		{
@@ -617,7 +617,7 @@ namespace kxf
 	}
 
 	// IWebRequestOptions
-	bool CURLRequest::SetURI(const URI& uri)
+	bool CURLWebRequest::SetURI(const URI& uri)
 	{
 		if (m_Handle.SetOption(CURLOPT_URL, uri.BuildURI()))
 		{
@@ -626,24 +626,24 @@ namespace kxf
 		}
 		return false;
 	}
-	bool CURLRequest::SetPort(uint16_t port)
+	bool CURLWebRequest::SetPort(uint16_t port)
 	{
 		return m_Handle.SetOption(CURLOPT_PORT, port);
 	}
-	bool CURLRequest::SetMethod(const String& method)
+	bool CURLWebRequest::SetMethod(const String& method)
 	{
 		m_Method = method;
 		return true;
 	}
-	bool CURLRequest::SetDefaultProtocol(const String& protocol)
+	bool CURLWebRequest::SetDefaultProtocol(const String& protocol)
 	{
 		return m_Handle.SetOption(CURLOPT_DEFAULT_PROTOCOL, protocol);
 	}
-	bool CURLRequest::SetAllowedProtocols(FlagSet<WebRequestProtocol> protocols)
+	bool CURLWebRequest::SetAllowedProtocols(FlagSet<WebRequestProtocol> protocols)
 	{
 		return m_Handle.SetOption(CURLOPT_PROTOCOLS, MapProtocolSet(protocols));
 	}
-	bool CURLRequest::SetHTTPVersion(WebRequestHTTPVersion option)
+	bool CURLWebRequest::SetHTTPVersion(WebRequestHTTPVersion option)
 	{
 		switch (option)
 		{
@@ -674,7 +674,7 @@ namespace kxf
 		};
 		return false;
 	}
-	bool CURLRequest::SetIPVersion(WebRequestIPVersion option)
+	bool CURLWebRequest::SetIPVersion(WebRequestIPVersion option)
 	{
 		switch (option)
 		{
@@ -694,57 +694,57 @@ namespace kxf
 		return false;
 	}
 
-	bool CURLRequest::SetServiceName(const String& name)
+	bool CURLWebRequest::SetServiceName(const String& name)
 	{
 		return m_Handle.SetOption(CURLOPT_SERVICE_NAME, name);
 	}
-	bool CURLRequest::SetAllowRedirection(WebRequestOption2 option)
+	bool CURLWebRequest::SetAllowRedirection(WebRequestOption2 option)
 	{
 		m_FollowLocation = option;
 		return m_Handle.SetOption(CURLOPT_FOLLOWLOCATION, option == WebRequestOption2::Enabled);
 	}
-	bool CURLRequest::SetRedirectionProtocols(FlagSet<WebRequestProtocol> protocols)
+	bool CURLWebRequest::SetRedirectionProtocols(FlagSet<WebRequestProtocol> protocols)
 	{
 		return m_Handle.SetOption(CURLOPT_REDIR_PROTOCOLS, MapProtocolSet(protocols));
 	}
-	bool CURLRequest::SetResumeOffset(StreamOffset offset)
+	bool CURLWebRequest::SetResumeOffset(StreamOffset offset)
 	{
 		return offset.IsValid() && m_Handle.SetOption(CURLOPT_RESUME_FROM_LARGE, offset.ToBytes());
 	}
 
-	bool CURLRequest::SetRequestTimeout(const TimeSpan& timeout)
+	bool CURLWebRequest::SetRequestTimeout(const TimeSpan& timeout)
 	{
 		return m_Handle.SetOption(CURLOPT_TIMEOUT_MS, timeout.IsPositive() ? timeout.GetMilliseconds() : 0);
 	}
-	bool CURLRequest::SetConnectionTimeout(const TimeSpan& timeout)
+	bool CURLWebRequest::SetConnectionTimeout(const TimeSpan& timeout)
 	{
 		return m_Handle.SetOption(CURLOPT_CONNECTTIMEOUT_MS, timeout.IsPositive() ? timeout.GetMilliseconds() : 0);
 	}
 
-	bool CURLRequest::SetMaxSendRate(const TransferRate& rate)
+	bool CURLWebRequest::SetMaxSendRate(const TransferRate& rate)
 	{
 		return m_Handle.SetOption(CURLOPT_MAX_SEND_SPEED_LARGE, rate.IsValid() ? rate.ToBytes() : 0);
 	}
-	bool CURLRequest::SetMaxReceiveRate(const TransferRate& rate)
+	bool CURLWebRequest::SetMaxReceiveRate(const TransferRate& rate)
 	{
 		return m_Handle.SetOption(CURLOPT_MAX_RECV_SPEED_LARGE, rate.IsValid() ? rate.ToBytes() : 0);
 	}
 
-	bool CURLRequest::SetKeepAlive(WebRequestOption2 option)
+	bool CURLWebRequest::SetKeepAlive(WebRequestOption2 option)
 	{
 		return m_Handle.SetOption(CURLOPT_TCP_KEEPALIVE, option == WebRequestOption2::Enabled);
 	}
-	bool CURLRequest::SetKeepAliveIdle(const TimeSpan& interval)
+	bool CURLWebRequest::SetKeepAliveIdle(const TimeSpan& interval)
 	{
 		return m_Handle.SetOption(CURLOPT_TCP_KEEPIDLE, interval.IsPositive() ? interval.GetSeconds() : 60);
 	}
-	bool CURLRequest::SetKeepAliveInterval(const TimeSpan& interval)
+	bool CURLWebRequest::SetKeepAliveInterval(const TimeSpan& interval)
 	{
 		return m_Handle.SetOption(CURLOPT_TCP_KEEPINTVL, interval.IsPositive() ? interval.GetSeconds() : 60);
 	}
 
 	// IWebRequestAuthOptions
-	bool CURLRequest::SetAuthMethod(WebRequestAuthMethod method)
+	bool CURLWebRequest::SetAuthMethod(WebRequestAuthMethod method)
 	{
 		switch (method)
 		{
@@ -771,7 +771,7 @@ namespace kxf
 		};
 		return false;
 	}
-	bool CURLRequest::SetAuthMethods(FlagSet<WebRequestAuthMethod> methods)
+	bool CURLWebRequest::SetAuthMethods(FlagSet<WebRequestAuthMethod> methods)
 	{
 		FlagSet<uint32_t> curlFlags;
 		curlFlags.Add(CURLAUTH_BASIC, methods & WebRequestAuthMethod::Basic);
@@ -783,17 +783,17 @@ namespace kxf
 		return m_Handle.SetOption(CURLOPT_HTTPAUTH, *curlFlags);
 	}
 
-	bool CURLRequest::SetUserName(const String& userName)
+	bool CURLWebRequest::SetUserName(const String& userName)
 	{
 		return m_Handle.SetOption(CURLOPT_USERNAME, userName);
 	}
-	bool CURLRequest::SetUserPassword(const String& userPassword)
+	bool CURLWebRequest::SetUserPassword(const String& userPassword)
 	{
 		return m_Handle.SetOption(CURLOPT_PASSWORD, userPassword);
 	}
 
 	// IWebRequestSecurityOptions
-	bool CURLRequest::SetUseSSL(WebRequestOption3 option)
+	bool CURLWebRequest::SetUseSSL(WebRequestOption3 option)
 	{
 		switch (option)
 		{
@@ -812,7 +812,7 @@ namespace kxf
 		};
 		return false;
 	}
-	bool CURLRequest::SetSSLVersion(WebRequestSSLVersion version)
+	bool CURLWebRequest::SetSSLVersion(WebRequestSSLVersion version)
 	{
 		switch (version)
 		{
@@ -851,7 +851,7 @@ namespace kxf
 		};
 		return false;
 	}
-	bool CURLRequest::SetMaxSSLVersion(WebRequestSSLVersion version)
+	bool CURLWebRequest::SetMaxSSLVersion(WebRequestSSLVersion version)
 	{
 		switch (version)
 		{
@@ -879,15 +879,15 @@ namespace kxf
 		return false;
 	}
 
-	bool CURLRequest::SetVerifyPeer(WebRequestOption2 option)
+	bool CURLWebRequest::SetVerifyPeer(WebRequestOption2 option)
 	{
 		return m_Handle.SetOption(CURLOPT_SSL_VERIFYPEER, option == WebRequestOption2::Enabled);
 	}
-	bool CURLRequest::SetVerifyHost(WebRequestOption2 option)
+	bool CURLWebRequest::SetVerifyHost(WebRequestOption2 option)
 	{
 		return m_Handle.SetOption(CURLOPT_SSL_VERIFYHOST, option == WebRequestOption2::Enabled ? 2 : 0);
 	}
-	bool CURLRequest::SetVerifyStatus(WebRequestOption2 option)
+	bool CURLWebRequest::SetVerifyStatus(WebRequestOption2 option)
 	{
 		return m_Handle.SetOption(CURLOPT_SSL_VERIFYSTATUS, option == WebRequestOption2::Enabled);
 	}

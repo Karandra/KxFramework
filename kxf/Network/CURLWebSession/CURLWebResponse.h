@@ -5,7 +5,7 @@
 
 namespace kxf
 {
-	class CURLRequest;
+	class CURLWebRequest;
 }
 namespace kxf::CURL::Private
 {
@@ -14,10 +14,10 @@ namespace kxf::CURL::Private
 
 namespace kxf
 {
-	class CURLResponse final: public IWebResponse
+	class CURLWebResponse final: public IWebResponse
 	{
 		private:
-			CURLRequest& m_Request;
+			CURLWebRequest& m_Request;
 
 			String m_StatusText;
 			std::optional<int> m_StatusCode;
@@ -26,7 +26,7 @@ namespace kxf
 			CURL::Private::RequestHandle& GetRequestHandle() const noexcept;
 
 		public:
-			CURLResponse(CURLRequest& request, std::optional<int> statusCode = {}, String statusText = {})
+			CURLWebResponse(CURLWebRequest& request, std::optional<int> statusCode = {}, String statusText = {})
 				:m_Request(request), m_StatusText(std::move(statusText)), m_StatusCode(std::move(statusCode))
 			{
 			}

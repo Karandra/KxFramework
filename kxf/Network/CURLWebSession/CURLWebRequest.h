@@ -1,21 +1,21 @@
 #pragma once
 #include "Common.h"
 #include "../Private/BasicWebRequest.h"
-#include "CURLUtility.h"
-#include "CURLResponse.h"
-#include "CURLAuthChallenge.h"
+#include "LibCURLUtility.h"
+#include "CURLWebResponse.h"
+#include "CURLWebAuthChallenge.h"
 
 namespace kxf
 {
-	class CURLSession;
+	class CURLWebSession;
 }
 
 namespace kxf
 {
-	class KX_API CURLRequest final: public RTTI::Implementation<CURLRequest, Private::BasicWebRequest, IWebRequestOptions, IWebRequestAuthOptions, IWebRequestSecurityOptions>
+	class KX_API CURLWebRequest final: public RTTI::Implementation<CURLWebRequest, Private::BasicWebRequest, IWebRequestOptions, IWebRequestAuthOptions, IWebRequestSecurityOptions>
 	{
-		friend class CURLResponse;
-		friend class CURLAuthChallenge;
+		friend class CURLWebResponse;
+		friend class CURLWebAuthChallenge;
 
 		private:
 			using TCURLOffset = int64_t;
@@ -23,24 +23,24 @@ namespace kxf
 		private:
 			static size_t OnReadDataCB(char* data, size_t size, size_t count, void* userData)
 			{
-				return reinterpret_cast<CURLRequest*>(userData)->OnReadData(data, size, count);
+				return reinterpret_cast<CURLWebRequest*>(userData)->OnReadData(data, size, count);
 			}
 			static size_t OnWriteDataCB(char* data, size_t size, size_t count, void* userData)
 			{
-				return reinterpret_cast<CURLRequest*>(userData)->OnWriteData(data, size, count);
+				return reinterpret_cast<CURLWebRequest*>(userData)->OnWriteData(data, size, count);
 			}
 			static size_t OnReceiveHeaderCB(char* data, size_t size, size_t count, void* userData)
 			{
-				return reinterpret_cast<CURLRequest*>(userData)->OnReceiveHeader(data, size, count);
+				return reinterpret_cast<CURLWebRequest*>(userData)->OnReceiveHeader(data, size, count);
 			}
 			static int OnProgressNotifyCB(void* userData, TCURLOffset bytesExpectedToReceive, TCURLOffset bytesReceived, TCURLOffset bytesExpectedToSend, TCURLOffset bytesSent)
 			{
-				return reinterpret_cast<CURLRequest*>(userData)->OnProgressNotify(bytesReceived, bytesExpectedToReceive, bytesSent, bytesExpectedToSend);
+				return reinterpret_cast<CURLWebRequest*>(userData)->OnProgressNotify(bytesReceived, bytesExpectedToReceive, bytesSent, bytesExpectedToSend);
 			}
 
 		private:
 			// State
-			CURLSession& m_Session;
+			CURLWebSession& m_Session;
 			std::atomic<WebRequestState> m_State = WebRequestState::None;
 			std::atomic<WebRequestState> m_NextState = WebRequestState::None;
 
@@ -62,8 +62,8 @@ namespace kxf
 			std::shared_ptr<IOutputStream> m_ReceiveStream;
 			WebRequestStorage m_ReceiveStorage = WebRequestStorage::None;
 
-			std::optional<CURLResponse> m_Response;
-			std::optional<CURLAuthChallenge> m_AuthChallenge;
+			std::optional<CURLWebResponse> m_Response;
+			std::optional<CURLWebAuthChallenge> m_AuthChallenge;
 
 			// Progress state
 			std::atomic<int64_t> m_BytesReceived = -1;
@@ -108,8 +108,8 @@ namespace kxf
 			}
 
 		public:
-			CURLRequest(CURLSession& session, const std::vector<WebRequestHeader>& commonHeaders, const URI& uri = {});
-			~CURLRequest() noexcept;
+			CURLWebRequest(CURLWebSession& session, const std::vector<WebRequestHeader>& commonHeaders, const URI& uri = {});
+			~CURLWebRequest() noexcept;
 
 		public:
 			// IWebRequest: Common
@@ -225,7 +225,7 @@ namespace kxf
 			bool SetVerifyStatus(WebRequestOption2 option) override;
 
 		public:
-			// CURLRequest
+			// CURLWebRequest
 			bool IsNull() const noexcept
 			{
 				return m_Handle.IsNull() || m_State == WebRequestState::None;

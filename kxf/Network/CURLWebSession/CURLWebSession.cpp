@@ -1,8 +1,8 @@
 #include "KxfPCH.h"
-#include "CURLSession.h"
-#include "CURLRequest.h"
+#include "CURLWebSession.h"
+#include "CURLWebRequest.h"
+#include "LibCURL.h"
 #include "kxf/FileSystem/IFileSystem.h"
-#include <curl/curlver.h>
 
 namespace
 {
@@ -22,9 +22,9 @@ Except as contained in this notice, the name of a copyright holder shall not be 
 namespace kxf
 {
 	// IWebSession
-	std::shared_ptr<IWebRequest> CURLSession::CreateRequest(const URI& uri)
+	std::shared_ptr<IWebRequest> CURLWebSession::CreateRequest(const URI& uri)
 	{
-		auto request = std::make_shared<CURLRequest>(*this, m_CommonHeaders, uri);
+		auto request = std::make_shared<CURLWebRequest>(*this, m_CommonHeaders, uri);
 		if (!request->IsNull())
 		{
 			request->WeakRef(request);
@@ -33,11 +33,11 @@ namespace kxf
 		return nullptr;
 	}
 
-	IFileSystem& CURLSession::GetFileSystem() const
+	IFileSystem& CURLWebSession::GetFileSystem() const
 	{
 		return m_FileSystem ? *m_FileSystem : FileSystem::GetNullFileSystem();
 	}
-	void kxf::CURLSession::SetFileSystem(IFileSystem& fileSystem)
+	void kxf::CURLWebSession::SetFileSystem(IFileSystem& fileSystem)
 	{
 		if (fileSystem && fileSystem.IsLookupScoped())
 		{
@@ -50,28 +50,28 @@ namespace kxf
 	}
 
 	// ILibraryInfo
-	String CURLSession::GetName() const
+	String CURLWebSession::GetName() const
 	{
 		return wxS("libcurl");
 	}
-	Version CURLSession::GetVersion() const
+	Version CURLWebSession::GetVersion() const
 	{
 		return LIBCURL_VERSION;
 	}
-	uint32_t CURLSession::GetAPILevel() const
+	uint32_t CURLWebSession::GetAPILevel() const
 	{
 		return LIBCURL_VERSION_NUM;
 	}
 
-	String CURLSession::GetLicense() const
+	String CURLWebSession::GetLicense() const
 	{
 		return g_License;
 	}
-	String CURLSession::GetLicenseName() const
+	String CURLWebSession::GetLicenseName() const
 	{
 		return wxS("MIT/X inspired");
 	}
-	String CURLSession::GetCopyright() const
+	String CURLWebSession::GetCopyright() const
 	{
 		return LIBCURL_COPYRIGHT;
 	}

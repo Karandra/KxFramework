@@ -4,7 +4,7 @@
 
 namespace kxf
 {
-	class CURLRequest;
+	class CURLWebRequest;
 }
 
 namespace kxf::CURL::Private

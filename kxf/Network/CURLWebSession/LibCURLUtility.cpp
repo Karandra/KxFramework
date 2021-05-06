@@ -1,10 +1,7 @@
 #include "KxfPCH.h"
-#include "CURLUtility.h"
+#include "LibCURLUtility.h"
+#include "LibCURL.h"
 #include "kxf/Utility/ScopeGuard.h"
-
-#define CURL_STATICLIB 1
-#include <curl/curl.h>
-#include <curl/urlapi.h>
 
 namespace
 {

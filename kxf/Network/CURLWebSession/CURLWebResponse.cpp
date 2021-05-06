@@ -1,8 +1,8 @@
 #include "KxfPCH.h"
-#include "CURLResponse.h"
-#include "CURLRequest.h"
-#include "CURLUtility.h"
-#include "CURL.h"
+#include "CURLWebResponse.h"
+#include "CURLWebRequest.h"
+#include "LibCURLUtility.h"
+#include "LibCURL.h"
 #include "kxf/IO/IStream.h"
 #include "kxf/General/RegEx.h"
 #include "kxf/FileSystem/FSPath.h"
@@ -13,12 +13,12 @@
 
 namespace kxf
 {
-	CURL::Private::RequestHandle& CURLResponse::GetRequestHandle() const noexcept
+	CURL::Private::RequestHandle& CURLWebResponse::GetRequestHandle() const noexcept
 	{
 		return m_Request.m_Handle;
 	}
 
-	URI CURLResponse::GetURI() const
+	URI CURLWebResponse::GetURI() const
 	{
 		if (m_Request.m_FollowLocation == WebRequestOption2::Enabled)
 		{
@@ -29,15 +29,15 @@ namespace kxf
 			return GetRequestHandle().GetOptionString(CURLINFO_REDIRECT_URL).value_or(NullString);
 		}
 	}
-	String CURLResponse::GetMethod() const
+	String CURLWebResponse::GetMethod() const
 	{
 		return GetRequestHandle().GetOptionString(CURLINFO_EFFECTIVE_METHOD).value_or(NullString);
 	}
-	String CURLResponse::GetPrimaryIP() const
+	String CURLWebResponse::GetPrimaryIP() const
 	{
 		return GetRequestHandle().GetOptionString(CURLINFO_PRIMARY_IP).value_or(NullString);
 	}
-	std::optional<uint16_t> CURLResponse::GetPrimaryPort() const
+	std::optional<uint16_t> CURLWebResponse::GetPrimaryPort() const
 	{
 		if (auto port = GetRequestHandle().GetOptionUInt32(CURLINFO_PRIMARY_PORT))
 		{
@@ -45,7 +45,7 @@ namespace kxf
 		}
 		return {};
 	}
-	WebRequestProtocol CURLResponse::GetProtocol() const
+	WebRequestProtocol CURLWebResponse::GetProtocol() const
 	{
 		if (auto protocol = GetRequestHandle().GetOptionUInt32(CURLINFO_PROTOCOL))
 		{
@@ -167,7 +167,7 @@ namespace kxf
 		}
 		return WebRequestProtocol::None;
 	}
-	WebRequestHTTPVersion CURLResponse::GetHTTPVersion() const
+	WebRequestHTTPVersion CURLWebResponse::GetHTTPVersion() const
 	{
 		switch (GetRequestHandle().GetOptionUInt32(CURLINFO_HTTP_VERSION).value_or(0))
 		{
@@ -190,7 +190,7 @@ namespace kxf
 		};
 		return WebRequestHTTPVersion::None;
 	}
-	BinarySize CURLResponse::GetContentLength() const
+	BinarySize CURLWebResponse::GetContentLength() const
 	{
 		if (auto value = GetRequestHandle().GetOptionUInt64(CURLINFO_CONTENT_LENGTH_DOWNLOAD_T))
 		{
@@ -198,12 +198,12 @@ namespace kxf
 		}
 		return {};
 	}
-	String CURLResponse::GetContentType() const
+	String CURLWebResponse::GetContentType() const
 	{
 		return GetRequestHandle().GetOptionString(CURLINFO_CONTENT_TYPE).value_or(NullString);
 	}
 
-	String CURLResponse::GetHeader(const String& name) const
+	String CURLWebResponse::GetHeader(const String& name) const
 	{
 		auto it = Utility::Container::FindIf(m_Request.m_ResponseHeaders, [&](const WebRequestHeader& header)
 		{
@@ -215,11 +215,11 @@ namespace kxf
 		}
 		return {};
 	}
-	Enumerator<WebRequestHeader> CURLResponse::EnumHeaders() const
+	Enumerator<WebRequestHeader> CURLWebResponse::EnumHeaders() const
 	{
 		return Utility::EnumerateIterableContainer<WebRequestHeader>(m_Request.m_ResponseHeaders);
 	}
-	Enumerator<String> CURLResponse::EnumCookies() const
+	Enumerator<String> CURLWebResponse::EnumCookies() const
 	{
 		if (auto cookesList = static_cast<curl_slist*>(GetRequestHandle().GetOptionPtr(CURLINFO_COOKIELIST).value_or(nullptr)))
 		{
@@ -238,7 +238,7 @@ namespace kxf
 		return {};
 	}
 
-	FSPath CURLResponse::GetSuggestedFilePath() const
+	FSPath CURLWebResponse::GetSuggestedFilePath() const
 	{
 		if (String contentDisposition = GetHeader(wxS("Content-Disposition")); !contentDisposition.IsEmpty())
 		{
@@ -258,7 +258,7 @@ namespace kxf
 		}
 		return {};
 	}
-	std::unique_ptr<IInputStream> CURLResponse::GetStream() const
+	std::unique_ptr<IInputStream> CURLWebResponse::GetStream() const
 	{
 		if (m_Request.m_ReceiveStream)
 		{

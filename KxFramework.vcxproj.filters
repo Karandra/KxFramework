@@ -1822,22 +1822,22 @@
     <ClInclude Include="kxf\Network\CURLWebSession\Common.h">
       <Filter>kxf\Network\CURLWebSession</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Network\CURLWebSession\CURLRequest.h">
+    <ClInclude Include="kxf\Network\CURLWebSession\CURLWebRequest.h">
       <Filter>kxf\Network\CURLWebSession</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Network\CURLWebSession\CURLResponse.h">
+    <ClInclude Include="kxf\Network\CURLWebSession\CURLWebResponse.h">
       <Filter>kxf\Network\CURLWebSession</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Network\CURLWebSession\CURLSession.h">
+    <ClInclude Include="kxf\Network\CURLWebSession\CURLWebSession.h">
       <Filter>kxf\Network\CURLWebSession</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Network\CURLWebSession\CURLUtility.h">
+    <ClInclude Include="kxf\Network\CURLWebSession\LibCURLUtility.h">
       <Filter>kxf\Network\CURLWebSession</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Network\CURLWebSession\CURL.h">
+    <ClInclude Include="kxf\Network\CURLWebSession\LibCURL.h">
       <Filter>kxf\Network\CURLWebSession</Filter>
     </ClInclude>
-    <ClInclude Include="kxf\Network\CURLWebSession\CURLAuthChallenge.h">
+    <ClInclude Include="kxf\Network\CURLWebSession\CURLWebAuthChallenge.h">
       <Filter>kxf\Network\CURLWebSession</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Network\WebRequest.h">
@@ -2779,19 +2779,19 @@
     <ClCompile Include="kxf\Threading\ThreadPool.cpp">
       <Filter>kxf\Threading</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Network\CURLWebSession\CURLRequest.cpp">
+    <ClCompile Include="kxf\Network\CURLWebSession\CURLWebRequest.cpp">
       <Filter>kxf\Network\CURLWebSession</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Network\CURLWebSession\CURLResponse.cpp">
+    <ClCompile Include="kxf\Network\CURLWebSession\CURLWebResponse.cpp">
       <Filter>kxf\Network\CURLWebSession</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Network\CURLWebSession\CURLSession.cpp">
+    <ClCompile Include="kxf\Network\CURLWebSession\CURLWebSession.cpp">
       <Filter>kxf\Network\CURLWebSession</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Network\CURLWebSession\CURLUtility.cpp">
+    <ClCompile Include="kxf\Network\CURLWebSession\LibCURLUtility.cpp">
       <Filter>kxf\Network\CURLWebSession</Filter>
     </ClCompile>
-    <ClCompile Include="kxf\Network\CURLWebSession\CURLAuthChallenge.cpp">
+    <ClCompile Include="kxf\Network\CURLWebSession\CURLWebAuthChallenge.cpp">
       <Filter>kxf\Network\CURLWebSession</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Network\WebRequest\IWebRequestOptions.cpp">

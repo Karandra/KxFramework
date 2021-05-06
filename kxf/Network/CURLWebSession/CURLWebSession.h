@@ -5,14 +5,14 @@
 
 namespace kxf
 {
-	class KX_API CURLSession final: public RTTI::DynamicImplementation<CURLSession, Private::BasicWebSession, ILibraryInfo>
+	class KX_API CURLWebSession final: public RTTI::DynamicImplementation<CURLWebSession, Private::BasicWebSession, ILibraryInfo>
 	{
 		private:
 			IFileSystem* m_FileSystem = nullptr;
 			std::vector<WebRequestHeader> m_CommonHeaders;
 
 		public:
-			CURLSession(optional_ptr<IThreadPool> threadPool = nullptr)
+			CURLWebSession(optional_ptr<IThreadPool> threadPool = nullptr)
 			{
 				BasicWebSession::DoInitialize(std::move(threadPool));
 			}

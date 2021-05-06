@@ -3,19 +3,19 @@
 
 namespace kxf
 {
-	class CURLRequest;
+	class CURLWebRequest;
 }
 
 namespace kxf
 {
-	class CURLAuthChallenge final: public IWebAuthChallenge
+	class CURLWebAuthChallenge final: public IWebAuthChallenge
 	{
 		private:
-			CURLRequest& m_Request;
+			CURLWebRequest& m_Request;
 			WebAuthChallengeSource m_Source = WebAuthChallengeSource::None;
 
 		public:
-			CURLAuthChallenge(CURLRequest& request, WebAuthChallengeSource source)
+			CURLWebAuthChallenge(CURLWebRequest& request, WebAuthChallengeSource source)
 				:m_Request(request), m_Source(source)
 			{
 			}
