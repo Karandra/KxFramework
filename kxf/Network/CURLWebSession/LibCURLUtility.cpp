@@ -300,9 +300,13 @@ namespace kxf::CURL::Private
 		return true;
 	}
 
-	std::string_view EasyErrorCodeToString(int easyErrorCode)
+	std::string_view EasyErrorCodeToString(int easyErrorCode) noexcept
 	{
-		return ::curl_easy_strerror(static_cast<CURLcode>(easyErrorCode));
+		if (const char* text = ::curl_easy_strerror(static_cast<CURLcode>(easyErrorCode)))
+		{
+			return text;
+		}
+		return {};
 	}
 }
 

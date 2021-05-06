@@ -116,5 +116,5 @@ namespace kxf::CURL::Private
 {
 	bool Initialize() noexcept;
 
-	std::string_view EasyErrorCodeToString(int easyErrorCode);
+	std::string_view EasyErrorCodeToString(int easyErrorCode) noexcept;
 }

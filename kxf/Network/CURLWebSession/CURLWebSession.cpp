@@ -21,6 +21,14 @@ Except as contained in this notice, the name of a copyright holder shall not be 
 
 namespace kxf
 {
+	CURLWebSession::CURLWebSession(optional_ptr<IThreadPool> threadPool)
+	{
+		if (CURL::Private::Initialize())
+		{
+			BasicWebSession::DoInitialize(std::move(threadPool));
+		}
+	}
+
 	// IWebSession
 	std::shared_ptr<IWebRequest> CURLWebSession::CreateRequest(const URI& uri)
 	{

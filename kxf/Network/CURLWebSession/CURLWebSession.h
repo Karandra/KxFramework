@@ -12,10 +12,7 @@ namespace kxf
 			std::vector<WebRequestHeader> m_CommonHeaders;
 
 		public:
-			CURLWebSession(optional_ptr<IThreadPool> threadPool = nullptr)
-			{
-				BasicWebSession::DoInitialize(std::move(threadPool));
-			}
+			CURLWebSession(optional_ptr<IThreadPool> threadPool = nullptr);
 
 		public:
 			// IWebSession
