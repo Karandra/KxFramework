@@ -15,6 +15,7 @@ namespace kxf
 		KxRTTI_DeclareIID(IWebSession, {0x46f42b07, 0xd313, 0x475e, {0x82, 0x41, 0x63, 0xf6, 0x64, 0x4a, 0x85, 0x8c}});
 
 		public:
+			virtual void SetBaseURI(const URI& uri) = 0;
 			virtual std::shared_ptr<IWebRequest> CreateRequest(const URI& uri) = 0;
 
 			virtual bool SetCommonHeader(const WebRequestHeader& header, FlagSet<WebRequestHeaderFlag> flags) = 0;

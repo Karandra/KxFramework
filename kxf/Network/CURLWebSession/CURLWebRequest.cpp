@@ -619,12 +619,28 @@ namespace kxf
 	// IWebRequestOptions
 	bool CURLWebRequest::SetURI(const URI& uri)
 	{
-		if (m_Handle.SetOption(CURLOPT_URL, uri.BuildURI()))
+		bool result = false;
+		if (m_Session.m_BaseURI && uri.IsReference())
+		{
+			// Resolve with base URI
+			result = m_Handle.SetOption(CURLOPT_URL, m_Session.ResolveURI(uri).BuildURI());
+		}
+		else
+		{
+			// Use the URI as is
+			result = m_Handle.SetOption(CURLOPT_URL, uri.BuildURI());
+		}
+
+		if (result)
 		{
 			m_URI = uri;
 			return true;
 		}
-		return false;
+		else
+		{
+			m_URI = {};
+			return false;
+		}
 	}
 	bool CURLWebRequest::SetPort(uint16_t port)
 	{

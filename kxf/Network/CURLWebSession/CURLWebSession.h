@@ -7,15 +7,28 @@ namespace kxf
 {
 	class KX_API CURLWebSession final: public RTTI::DynamicImplementation<CURLWebSession, Private::BasicWebSession, ILibraryInfo>
 	{
+		friend class CURLWebRequest;
+
 		private:
 			IFileSystem* m_FileSystem = nullptr;
 			std::vector<WebRequestHeader> m_CommonHeaders;
+			URI m_BaseURI;
+
+		private:
+			URI ResolveURI(const URI& uri) const
+			{
+				return URI(uri).Resolve(m_BaseURI);
+			}
 
 		public:
 			CURLWebSession(optional_ptr<IThreadPool> threadPool = nullptr);
 
 		public:
 			// IWebSession
+			void SetBaseURI(const URI& uri) override
+			{
+				m_BaseURI = uri;
+			}
 			std::shared_ptr<IWebRequest> CreateRequest(const URI& uri) override;
 
 			bool SetCommonHeader(const WebRequestHeader& header, FlagSet<WebRequestHeaderFlag> flags) override
