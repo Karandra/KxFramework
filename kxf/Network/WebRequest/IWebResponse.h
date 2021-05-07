@@ -32,7 +32,7 @@ namespace kxf
 			virtual Enumerator<WebRequestHeader> EnumHeaders() const = 0;
 			virtual Enumerator<String> EnumCookies() const = 0;
 
-			virtual FSPath GetSuggestedFilePath() const = 0;
+			virtual FSPath GetSuggestedFilePath() const;
 			virtual std::unique_ptr<IInputStream> GetStream() const = 0;
 
 			virtual String GetAsString() const;

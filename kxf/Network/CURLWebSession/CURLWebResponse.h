@@ -54,7 +54,6 @@ namespace kxf
 			Enumerator<WebRequestHeader> EnumHeaders() const override;
 			Enumerator<String> EnumCookies() const override;
 
-			FSPath GetSuggestedFilePath() const override;
 			std::unique_ptr<IInputStream> GetStream() const override;
 	};
 }

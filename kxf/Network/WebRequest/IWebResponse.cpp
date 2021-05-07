@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "IWebResponse.h"
 #include "WebRequestHeader.h"
+#include "kxf/General/RegEx.h"
 #include "kxf/IO/NullStream.h"
 #include "kxf/IO/StreamReaderWriter.h"
 #include "kxf/FileSystem/FSPath.h"
@@ -14,6 +15,27 @@ namespace
 
 namespace kxf
 {
+	FSPath IWebResponse::GetSuggestedFilePath() const
+	{
+		if (String contentDisposition = GetHeader(wxS("Content-Disposition")); !contentDisposition.IsEmpty())
+		{
+			if (RegEx regEx(wxS("filename=\"(.+)\""), RegExFlag::IgnoreCase); regEx.Matches(contentDisposition))
+			{
+				return regEx.GetMatch(contentDisposition, 1);
+			}
+		}
+
+		if (URI uri = GetURI())
+		{
+			if (uri.HasPath())
+			{
+				return uri.GetPath();
+			}
+			return uri.GetServer();
+		}
+		return {};
+	}
+
 	String IWebResponse::GetAsString() const
 	{
 		if (auto stream = GetStream())

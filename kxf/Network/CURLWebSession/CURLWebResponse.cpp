@@ -4,8 +4,6 @@
 #include "LibCURLUtility.h"
 #include "LibCURL.h"
 #include "kxf/IO/IStream.h"
-#include "kxf/General/RegEx.h"
-#include "kxf/FileSystem/FSPath.h"
 
 #include "kxf/System/HandlePtr.h"
 #include "kxf/Utility/Container.h"
@@ -238,26 +236,6 @@ namespace kxf
 		return {};
 	}
 
-	FSPath CURLWebResponse::GetSuggestedFilePath() const
-	{
-		if (String contentDisposition = GetHeader(wxS("Content-Disposition")); !contentDisposition.IsEmpty())
-		{
-			if (RegEx regEx(wxS("filename=\"(.+)\""), RegExFlag::IgnoreCase); regEx.Matches(contentDisposition))
-			{
-				return regEx.GetMatch(contentDisposition, 1);
-			}
-		}
-
-		if (URI uri = GetURI())
-		{
-			if (uri.HasPath())
-			{
-				return uri.GetPath();
-			}
-			return uri.GetServer();
-		}
-		return {};
-	}
 	std::unique_ptr<IInputStream> CURLWebResponse::GetStream() const
 	{
 		if (m_Request.m_ReceiveStream)
