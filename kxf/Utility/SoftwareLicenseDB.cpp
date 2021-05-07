@@ -36,6 +36,28 @@ freely, subject to the following restrictions:
 2. Altered source versions must be plainly marked as such, and must not be
    misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.)~~~";\
+
+constexpr char g_BSD2_CALUSE[] = R"~~~(%1
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.)~~~";
+
+	constexpr char g_BSD3_CALUSE[] = R"~~~(%1
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.)~~~";
 }
 namespace
 {
@@ -77,6 +99,14 @@ namespace kxf
 			{
 				return wxS("GNU LGPLv3");
 			}
+			case SoftwareLicenseType::BSD2_Clause:
+			{
+				return wxS("BSD-2-Clause (Simplified/Free BSD License)");
+			}
+			case SoftwareLicenseType::BSD3_Clause:
+			{
+				return wxS("BSD-3-Clause (New/Modified BSD License)");
+			}
 		};
 		return {};
 	}
@@ -100,7 +130,29 @@ namespace kxf
 			{
 				return LoadLicense(wxS("GNU_LGPLv3"));
 			}
+			case SoftwareLicenseType::BSD2_Clause:
+			{
+				return String::Format(g_BSD2_CALUSE, copyright).Trim();
+			}
+			case SoftwareLicenseType::BSD3_Clause:
+			{
+				return String::Format(g_BSD3_CALUSE, copyright).Trim();
+			}
 		};
 		return {};
+	}
+	bool SoftwareLicenseDB::RequiresCopyrightString(SoftwareLicenseType licenseType) const
+	{
+		switch (licenseType)
+		{
+			case SoftwareLicenseType::MIT:
+			case SoftwareLicenseType::ZLib:
+			case SoftwareLicenseType::BSD2_Clause:
+			case SoftwareLicenseType::BSD3_Clause:
+			{
+				return true;
+			}
+		};
+		return false;
 	}
 }
