@@ -116,7 +116,9 @@ namespace kxf
 		SMTP = 1_zu << 24,
 		SMTPS = 1_zu << 25,
 		TELNET = 1_zu << 26,
-		TFTP = 1_zu << 27
+		TFTP = 1_zu << 27,
+		WS = 1_zu << 28,
+		WSS = 1_zu << 29
 	};
 	KxFlagSet_Declare(WebRequestProtocol);
 }
