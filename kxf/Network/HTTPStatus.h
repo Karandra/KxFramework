@@ -7,7 +7,7 @@ namespace kxf
 {
 	enum class HTTPStatusCode: uint32_t
 	{
-		Unknown = std::numeric_limits<uint32_t>::max(),
+		Unknown = 0,
 
 		Continue = 100,
 		SwitchingProtocols = 101,
