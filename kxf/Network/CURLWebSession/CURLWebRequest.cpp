@@ -159,14 +159,12 @@ namespace kxf
 	size_t CURLWebRequest::OnReceiveHeader(char* data, size_t size, size_t count)
 	{
 		const size_t length = size * count;
-		if (const WebRequestHeader& header = m_ResponseHeaders.emplace_back(GetHeaderName(data, length), GetHeaderValue(data, length)))
+
+		WebRequestHeader header(GetHeaderName(data, length), GetHeaderValue(data, length));
+		if (CURLWebSession::SetHeader(m_ResponseHeaders, header, WebRequestHeaderFlag::Add|WebRequestHeaderFlag::CoalesceSemicolon))
 		{
-			WebRequestEvent event(LockRef(), m_State, header);
+			WebRequestEvent event(LockRef(), m_State, std::move(header));
 			NotifyEvent(WebRequestEvent::EvtHeaderReceived, event);
-		}
-		else
-		{
-			m_ResponseHeaders.pop_back();
 		}
 		return length;
 	}

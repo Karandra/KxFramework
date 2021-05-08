@@ -314,6 +314,11 @@
     <ClInclude Include="kxf\Network\WebRequest\Options.h" />
     <ClInclude Include="kxf\Network\WebRequest\WebRequestEvent.h" />
     <ClInclude Include="kxf\Network\WebRequest\WebRequestHeader.h" />
+    <ClInclude Include="kxf\Network\WSPPWebSession\Common.h" />
+    <ClInclude Include="kxf\Network\WSPPWebSession\WSPP.h" />
+    <ClInclude Include="kxf\Network\WSPPWebSession\WSPPWebRequest.h" />
+    <ClInclude Include="kxf\Network\WSPPWebSession\WSPPWebResponse.h" />
+    <ClInclude Include="kxf\Network\WSPPWebSession\WSPPWebSession.h" />
     <ClInclude Include="kxf\pch.hpp" />
     <ClInclude Include="kxf\RTTI\ClassInfo.h" />
     <ClInclude Include="kxf\RTTI\IID.h" />
@@ -569,11 +574,6 @@
     <ClInclude Include="kxf\Network\Common.h" />
     <ClInclude Include="kxf\Network\HTTPStatus.h" />
     <ClInclude Include="kxf\Network\URI.h" />
-    <ClInclude Include="kxf\Network\WebSocket.h" />
-    <ClInclude Include="kxf\Network\WebSocket\IClient.h" />
-    <ClInclude Include="kxf\Network\WebSocket\SecureClient.h" />
-    <ClInclude Include="kxf\Network\WebSocket\CloseCode.h" />
-    <ClInclude Include="kxf\Network\WebSocket\Event.h" />
     <ClInclude Include="kxf\RTTI.hpp" />
     <ClInclude Include="kxf\RTTI\Common.h" />
     <ClInclude Include="kxf\RTTI\IObject.h" />
@@ -759,6 +759,9 @@
     <ClCompile Include="kxf\Network\WebRequest\IWebRequestOptions.cpp" />
     <ClCompile Include="kxf\Network\WebRequest\IWebResponse.cpp" />
     <ClCompile Include="kxf\Network\WebRequest\WebRequestHeader.cpp" />
+    <ClCompile Include="kxf\Network\WSPPWebSession\WSPPWebRequest.cpp" />
+    <ClCompile Include="kxf\Network\WSPPWebSession\WSPPWebResponse.cpp" />
+    <ClCompile Include="kxf\Network\WSPPWebSession\WSPPWebSession.cpp" />
     <ClCompile Include="kxf\RTTI\ClassInfo.cpp" />
     <ClCompile Include="kxf\RTTI\Common.cpp" />
     <ClCompile Include="kxf\RTTI\IID.cpp" />
@@ -915,9 +918,6 @@
     <ClCompile Include="kxf\Localization\AndroidLocalizationPackage.cpp" />
     <ClCompile Include="kxf\Network\Common.cpp" />
     <ClCompile Include="kxf\Network\URI.cpp" />
-    <ClCompile Include="kxf\Network\WebSocket.cpp" />
-    <ClCompile Include="kxf\Network\WebSocket\SecureClient.cpp" />
-    <ClCompile Include="kxf\Network\WebSocket\Event.cpp" />
     <ClCompile Include="kxf\System\CFunctionCompiler.cpp" />
     <ClCompile Include="kxf\System\DPIAwareness.cpp" />
     <ClCompile Include="kxf\System\NativeAPI.cpp" />

@@ -79,9 +79,6 @@
     <Filter Include="kxf\Network">
       <UniqueIdentifier>{503679ad-0476-4a11-beb0-ba123ce47580}</UniqueIdentifier>
     </Filter>
-    <Filter Include="kxf\Network\WebSocket">
-      <UniqueIdentifier>{2a3b5b6b-016a-40ee-a07e-4b956e81b039}</UniqueIdentifier>
-    </Filter>
     <Filter Include="kxf\Drawing">
       <UniqueIdentifier>{fbcc6e41-fe9c-453d-967a-8c07c5a548f6}</UniqueIdentifier>
     </Filter>
@@ -256,6 +253,9 @@
     </Filter>
     <Filter Include="kxf\Network\Private">
       <UniqueIdentifier>{3ed4aa7f-83d3-4b24-8e42-244d3ab51af7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kxf\Network\WSPPWebSession">
+      <UniqueIdentifier>{81faf50f-5e4d-4d78-bb14-cc0847031b43}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -582,21 +582,6 @@
     </ClInclude>
     <ClInclude Include="kxf\Compression\ArchiveEvent.h">
       <Filter>kxf\Compression</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Network\WebSocket.h">
-      <Filter>kxf\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Network\WebSocket\SecureClient.h">
-      <Filter>kxf\Network\WebSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Network\WebSocket\IClient.h">
-      <Filter>kxf\Network\WebSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Network\WebSocket\CloseCode.h">
-      <Filter>kxf\Network\WebSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\Network\WebSocket\Event.h">
-      <Filter>kxf\Network\WebSocket</Filter>
     </ClInclude>
     <ClInclude Include="kxf\Drawing\Common.h">
       <Filter>kxf\Drawing</Filter>
@@ -1891,6 +1876,21 @@
     <ClInclude Include="kxf\Network\Private\BasicWebRequest.h">
       <Filter>kxf\Network\Private</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Network\WSPPWebSession\WSPPWebRequest.h">
+      <Filter>kxf\Network\WSPPWebSession</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Network\WSPPWebSession\WSPPWebResponse.h">
+      <Filter>kxf\Network\WSPPWebSession</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Network\WSPPWebSession\WSPPWebSession.h">
+      <Filter>kxf\Network\WSPPWebSession</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Network\WSPPWebSession\Common.h">
+      <Filter>kxf\Network\WSPPWebSession</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\Network\WSPPWebSession\WSPP.h">
+      <Filter>kxf\Network\WSPPWebSession</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2060,15 +2060,6 @@
     </ClCompile>
     <ClCompile Include="kxf\Network\URI.cpp">
       <Filter>kxf\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\Network\WebSocket.cpp">
-      <Filter>kxf\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\Network\WebSocket\SecureClient.cpp">
-      <Filter>kxf\Network\WebSocket</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\Network\WebSocket\Event.cpp">
-      <Filter>kxf\Network\WebSocket</Filter>
     </ClCompile>
     <ClCompile Include="kxf\Drawing\Common.cpp">
       <Filter>kxf\Drawing</Filter>
@@ -2811,6 +2802,15 @@
     </ClCompile>
     <ClCompile Include="kxf\Network\Private\BasicWebSession.cpp">
       <Filter>kxf\Network\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Network\WSPPWebSession\WSPPWebRequest.cpp">
+      <Filter>kxf\Network\WSPPWebSession</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Network\WSPPWebSession\WSPPWebResponse.cpp">
+      <Filter>kxf\Network\WSPPWebSession</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Network\WSPPWebSession\WSPPWebSession.cpp">
+      <Filter>kxf\Network\WSPPWebSession</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
