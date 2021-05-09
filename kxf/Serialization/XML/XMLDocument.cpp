@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "XMLDocument.h"
 #include "Private/Utility.h"
+#include "kxf/Network/URI.h"
 #include "kxf/Utility/SoftwareLicenseDB.h"
 
 namespace
@@ -44,7 +45,7 @@ namespace kxf
 	{
 		if (iid.IsOfType<ILibraryInfo>())
 		{
-			class LibraryInfo final: public ILibraryInfo
+			class XMLDocumentLibraryInfo final: public ILibraryInfo
 			{
 				public:
 					String GetName() const override
@@ -54,6 +55,10 @@ namespace kxf
 					Version GetVersion() const override
 					{
 						return {TIXML2_MAJOR_VERSION, TIXML2_MINOR_VERSION, TIXML2_PATCH_VERSION};
+					}
+					URI GetHomePage() const override
+					{
+						return wxS("https://github.com/leethomason/tinyxml2");
 					}
 					uint32_t GetAPILevel() const override
 					{
@@ -74,7 +79,7 @@ namespace kxf
 					}
 			};
 
-			static LibraryInfo libraryInfo;
+			static XMLDocumentLibraryInfo libraryInfo;
 			return static_cast<ILibraryInfo*>(&libraryInfo);
 		}
 		return IObject::QuerySelf(iid, *this);

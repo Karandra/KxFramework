@@ -59,6 +59,10 @@ namespace kxf
 	{
 		return {websocketpp::major_version, websocketpp::minor_version, websocketpp::patch_version};
 	}
+	URI WSPPWebSession::GetHomePage() const
+	{
+		return wxS("https://www.zaphoyd.com/projects/websocketpp");
+	}
 	uint32_t WSPPWebSession::GetAPILevel() const
 	{
 		return websocketpp::major_version * 1000 + websocketpp::minor_version * 100 + websocketpp::patch_version * 10;

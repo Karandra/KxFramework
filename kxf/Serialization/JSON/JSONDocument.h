@@ -40,6 +40,7 @@ namespace kxf
 			// ILibraryInfo
 			String GetName() const override;
 			Version GetVersion() const override;
+			URI GetHomePage() const override;
 			uint32_t GetAPILevel() const override;
 
 			String GetLicense() const override;

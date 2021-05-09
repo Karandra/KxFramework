@@ -1,5 +1,6 @@
 #include "KxfPCH.h"
 #include "JSONDocument.h"
+#include "kxf/Network/URI.h"
 #include "kxf/IO/StreamReaderWriter.h"
 #include "kxf/Utility/SoftwareLicenseDB.h"
 
@@ -78,6 +79,10 @@ namespace kxf
 	Version JSONDocument::GetVersion() const
 	{
 		return {NLOHMANN_JSON_VERSION_MAJOR, NLOHMANN_JSON_VERSION_MINOR, NLOHMANN_JSON_VERSION_PATCH};
+	}
+	URI JSONDocument::GetHomePage() const
+	{
+		return wxS("https://github.com/nlohmann/json");
 	}
 	uint32_t JSONDocument::GetAPILevel() const
 	{

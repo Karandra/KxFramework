@@ -72,6 +72,10 @@ namespace kxf
 	{
 		return LIBCURL_VERSION;
 	}
+	URI CURLWebSession::GetHomePage() const
+	{
+		return wxS("https://curl.se");
+	}
 	uint32_t CURLWebSession::GetAPILevel() const
 	{
 		return LIBCURL_VERSION_NUM;
