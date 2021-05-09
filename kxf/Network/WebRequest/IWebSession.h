@@ -24,6 +24,7 @@ namespace kxf
 			virtual IFileSystem& GetFileSystem() const = 0;
 			virtual void SetFileSystem(IFileSystem& fileSystem) = 0;
 
+			virtual String GetDefaultUserAgent() const = 0;
 			virtual void* GetNativeHandle() const = 0;
 	};
 }

@@ -6,6 +6,7 @@
 
 namespace
 {
+	constexpr kxf::XChar g_Name[] = wxS("libcurl");
 	constexpr char g_License[] = R"~~~(COPYRIGHT AND PERMISSION NOTICE
 
 Copyright (c) 1996 - 2021, Daniel Stenberg, daniel@haxx.se, and many contributors, see the THANKS file.
@@ -57,10 +58,15 @@ namespace kxf
 		}
 	}
 
+	String CURLWebSession::GetDefaultUserAgent() const
+	{
+		return String::Format(wxS("%1/%2"), g_Name, LIBCURL_VERSION);
+	}
+
 	// ILibraryInfo
 	String CURLWebSession::GetName() const
 	{
-		return wxS("libcurl");
+		return g_Name;
 	}
 	Version CURLWebSession::GetVersion() const
 	{

@@ -45,6 +45,11 @@ namespace kxf
 		}
 	}
 
+	String WSPPWebSession::GetDefaultUserAgent() const
+	{
+		return websocketpp::user_agent;
+	}
+
 	// ILibraryInfo
 	String WSPPWebSession::GetName() const
 	{

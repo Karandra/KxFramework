@@ -43,6 +43,7 @@ namespace kxf
 			IFileSystem& GetFileSystem() const override;
 			void SetFileSystem(IFileSystem& fileSystem) override;
 
+			String GetDefaultUserAgent() const override;
 			void* GetNativeHandle() const override
 			{
 				return nullptr;

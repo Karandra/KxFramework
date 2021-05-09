@@ -328,7 +328,6 @@ namespace kxf
 			m_Client.clear_access_channels(websocketpp::log::alevel::frame_header);
 			m_Client.clear_access_channels(websocketpp::log::alevel::frame_payload);
 			m_Client.init_asio();
-			//m_Client.start_perpetual();
 			DoRegisterHandlers();
 
 			// Make the session object handle events if this object doesn't
