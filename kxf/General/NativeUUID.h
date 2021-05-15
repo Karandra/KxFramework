@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "kxf/Serialization/BinarySerializer.h"
 #include <limits>
 
 namespace kxf
@@ -72,6 +73,16 @@ namespace kxf
 		{
 			return !(*this == other);
 		}
+	};
+}
+
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<NativeUUID> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const NativeUUID& value) const;
+		uint64_t Deserialize(IInputStream& stream, NativeUUID& value) const;
 	};
 }
 

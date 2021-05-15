@@ -1,7 +1,7 @@
 #include "KxfPCH.h"
 #include "String.h"
+#include "kxf/IO/IStream.h"
 #include "kxf/Utility/Common.h"
-#include <Windows.h>
 #include <kxf/System/UndefWindows.h>
 #include <cctype>
 
@@ -691,5 +691,21 @@ namespace kxf
 			}
 		}
 		return false;
+	}
+}
+
+namespace kxf
+{
+	uint64_t BinarySerializer<String>::Serialize(IOutputStream& stream, const String& value) const
+	{
+		return Serialization::WriteObject(stream, value.ToUTF8());
+	}
+	uint64_t BinarySerializer<String>::Deserialize(IInputStream& stream, String& value) const
+	{
+		std::string buffer;
+		auto read = Serialization::ReadObject(stream, buffer);
+		value = String::FromUTF8(buffer);
+
+		return read;
 	}
 }

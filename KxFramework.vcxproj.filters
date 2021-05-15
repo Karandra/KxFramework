@@ -1891,6 +1891,9 @@
     <ClInclude Include="kxf\Network\WSPPWebSession\WSPP.h">
       <Filter>kxf\Network\WSPPWebSession</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\Serialization\BinarySerializer.h">
+      <Filter>kxf\Serialization</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2811,6 +2814,12 @@
     </ClCompile>
     <ClCompile Include="kxf\Network\WSPPWebSession\WSPPWebSession.cpp">
       <Filter>kxf\Network\WSPPWebSession</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\Serialization\BinarySerializer.cpp">
+      <Filter>kxf\Serialization</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\General\NativeUUID.cpp">
+      <Filter>kxf\General</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

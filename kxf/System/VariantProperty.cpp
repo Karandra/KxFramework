@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "VariantProperty.h"
 #include "COM.h"
+#include "kxf/IO/IStream.h"
 #include "kxf/General/Any.h"
 #include "kxf/Utility/ScopeGuard.h"
 #include <propvarutil.h>
@@ -135,6 +136,65 @@ namespace kxf
 	HResult VariantProperty::DoConvertFromVariant(const tagVARIANT& variant) noexcept
 	{
 		return ::VariantToPropVariant(&variant, &m_PropVariant);
+	}
+
+	uint64_t VariantProperty::Serialize(IOutputStream& stream) const
+	{
+		VARIANT variant;
+		if (DoConvertToVariant(variant))
+		{
+			unsigned long rpcData = 0;
+			uint64_t bufferSize = ::VARIANT_UserSize64(&rpcData, 0, &variant);
+
+			std::vector<uint8_t> buffer;
+			buffer.resize(static_cast<size_t>(bufferSize));
+			auto result = ::VARIANT_UserMarshal64(&rpcData, buffer.data(), &variant);
+			if (HResult(static_cast<HRESULT>(reinterpret_cast<size_t>(result))))
+			{
+				uint64_t written = Serialization::WriteObject(stream, bufferSize);
+				written += stream.Write(buffer.data(), buffer.size()).LastWrite().ToBytes();
+
+				if (stream.LastWrite().ToBytes() != bufferSize)
+				{
+					throw kxf::BinarySerializerException(__FUNCTION__ ": Could not write all bytes to the stream");
+				}
+				return written;
+			}
+		}
+		return Serialization::WriteObject(stream, static_cast<uint64_t>(0));
+	}
+	uint64_t VariantProperty::Deserialize(IInputStream& stream)
+	{
+		uint64_t bufferSize = 0;
+		uint64_t read = Serialization::ReadObject(stream, bufferSize);
+		if (bufferSize == 0)
+		{
+			DoClear();
+		}
+		else
+		{
+			std::vector<uint8_t> buffer;
+			buffer.resize(bufferSize);
+
+			read += stream.Read(buffer.data(), bufferSize).LastRead().ToBytes();;
+			if (stream.LastRead() != bufferSize)
+			{
+				throw kxf::BinarySerializerException(__FUNCTION__ ": Could not read the required amount of bytes");
+			}
+
+			VARIANT variant;
+			unsigned long rpcData = 0;
+			auto result = ::VARIANT_UserUnmarshal64(&rpcData, buffer.data(), &variant);
+			if (HResult(static_cast<HRESULT>(reinterpret_cast<size_t>(result))))
+			{
+				DoConvertFromVariant(variant);
+			}
+			else
+			{
+				DoClear();
+			}
+		}
+		return read;
 	}
 
 	void VariantProperty::AssignBool(bool value) noexcept

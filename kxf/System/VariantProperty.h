@@ -4,6 +4,7 @@
 #include "kxf/General/NativeUUID.h"
 #include "kxf/General/DateTime.h"
 #include "kxf/General/AlignedObjectStorage.h"
+#include "kxf/Serialization/BinarySerializer.h"
 #include "HResult.h"
 struct tagVARIANT;
 struct tagPROPVARIANT;
@@ -40,6 +41,8 @@ namespace kxf
 {
 	class VariantProperty final
 	{
+		friend struct BinarySerializer<VariantProperty>;
+
 		private:
 			AlignedObjectStorage<tagPROPVARIANT, 24, alignof(uint64_t)> m_PropVariant;
 
@@ -49,6 +52,9 @@ namespace kxf
 			HResult DoMove(tagPROPVARIANT&& other) noexcept;
 			HResult DoConvertFromVariant(const tagVARIANT& variant) noexcept;
 			HResult DoConvertToVariant(tagVARIANT& variant) const noexcept;
+
+			uint64_t Serialize(IOutputStream& stream) const;
+			uint64_t Deserialize(IInputStream& stream);
 
 			void AssignBool(bool value) noexcept;
 			void AssignUUID(const NativeUUID& value);
@@ -396,5 +402,21 @@ namespace kxf
 			{
 				return IsEmpty();
 			}
+	};
+}
+
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<VariantProperty> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const VariantProperty& value) const
+		{
+			return value.Serialize(stream);
+		}
+		uint64_t Deserialize(IInputStream& stream, VariantProperty& value) const
+		{
+			return value.Deserialize(stream);
+		}
 	};
 }

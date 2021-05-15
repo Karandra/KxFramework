@@ -1,4 +1,5 @@
 #pragma once
+#include "kxf/Serialization/BinarySerializer.h"
 #include "kxf/Utility/TypeTraits.h"
 #include <utility>
 #include <type_traits>
@@ -251,5 +252,38 @@ namespace kxf
 			{
 				return Clone().FromInt(~ToInt());
 			}
+	};
+}
+
+namespace kxf
+{
+	template<class T>
+	struct BinarySerializer<FlagSet<T>> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const FlagSet<T>& value) const
+		{
+			return Serialization::WriteObject(stream, value.ToInt());
+		}
+		uint64_t Deserialize(IInputStream& stream, FlagSet<T>& value) const
+		{
+			typename FlagSet<T>::TInt intValue = 0;
+			auto read = Serialization::ReadObject(stream, intValue);
+			value.FromInt(intValue);
+
+			return read;
+		}
+	};
+}
+
+
+namespace std
+{
+	template<class T>
+	struct hash<kxf::FlagSet<T>> final
+	{
+		constexpr size_t operator()(const kxf::FlagSet<T>& flagSet) const noexcept
+		{
+			return std::hash<typename kxf::FlagSet<T>::TInt>()(flagSet.ToInt());
+		}
 	};
 }

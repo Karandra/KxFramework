@@ -4,6 +4,7 @@
 #include <string>
 #include <string_view>
 #include "kxf/System/UndefWindows.h"
+#include "kxf/Serialization/BinarySerializer.h"
 
 namespace kxf
 {
@@ -1352,3 +1353,14 @@ namespace std
 		}
 	};
 }
+
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<String> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const String& value) const;
+		uint64_t Deserialize(IInputStream& stream, String& value) const;
+	};
+}
+

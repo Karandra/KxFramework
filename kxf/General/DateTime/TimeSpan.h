@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include "kxf/Serialization/BinarySerializer.h"
 
 namespace kxf
 {
@@ -78,6 +79,16 @@ namespace kxf
 			constexpr bool IsPositive() const noexcept
 			{
 				return m_Value > 0;
+			}
+
+			constexpr int64_t GetValue() const noexcept
+			{
+				return m_Value;
+			}
+			constexpr TimeSpan& SetValue(int64_t value) noexcept
+			{
+				m_Value = value;
+				return *this;
 			}
 
 			constexpr int64_t GetWeeks() const noexcept
@@ -204,5 +215,37 @@ namespace kxf
 			{
 				return m_Value * multiplier;
 			}
+	};
+}
+
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<TimeSpan> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const TimeSpan& value) const
+		{
+			return Serialization::WriteObject(stream, value.GetValue());
+		}
+		uint64_t Deserialize(IInputStream& stream, TimeSpan& value) const
+		{
+			int64_t buffer = 0;
+			auto read = Serialization::ReadObject(stream, buffer);
+			value.SetValue(buffer);
+
+			return read;
+		}
+	};
+}
+
+namespace std
+{
+	template<>
+	struct hash<kxf::TimeSpan> final
+	{
+		size_t operator()(const kxf::TimeSpan& timeSpan) const noexcept
+		{
+			return std::hash<int64_t>()(timeSpan.GetValue());
+		}
 	};
 }

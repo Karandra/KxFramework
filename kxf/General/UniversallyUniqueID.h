@@ -129,6 +129,26 @@ namespace kxf
 	};
 }
 
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<UniversallyUniqueID> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const UniversallyUniqueID& value) const
+		{
+			return Serialization::WriteObject(stream, value.ToNativeUUID());
+		}
+		uint64_t Deserialize(IInputStream& stream, UniversallyUniqueID& value) const
+		{
+			NativeUUID buffer;
+			auto read = Serialization::ReadObject(stream, buffer);
+			value = std::move(buffer);
+
+			return read;
+		}
+	};
+}
+
 namespace std
 {
 	template<>

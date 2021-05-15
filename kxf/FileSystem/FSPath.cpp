@@ -655,3 +655,15 @@ namespace kxf
 		return *this;
 	}
 }
+
+namespace kxf
+{
+	uint64_t BinarySerializer<FSPath>::Serialize(IOutputStream& stream, const FSPath& value) const
+	{
+		return Serialization::WriteObject(stream, value.m_Path) + Serialization::WriteObject(stream, value.m_Namespace);
+	}
+	uint64_t BinarySerializer<FSPath>::Deserialize(IInputStream& stream, FSPath& value) const
+	{
+		return Serialization::ReadObject(stream, value.m_Path) + Serialization::ReadObject(stream, value.m_Namespace);
+	}
+}

@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "kxf/General/IErrorCode.h"
+#include "kxf/Serialization/BinarySerializer.h"
 
 namespace kxf
 {
@@ -66,5 +67,25 @@ namespace kxf
 			{
 				return m_Value != other.m_Value;
 			}
+	};
+}
+
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<Win32Error> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const Win32Error& value) const
+		{
+			return Serialization::WriteObject(stream, value.GetValue());
+		}
+		uint64_t Deserialize(IInputStream& stream, Win32Error& value) const
+		{
+			uint32_t buffer = 0;
+			auto read = Serialization::ReadObject(stream, buffer);
+			value.SetValue(buffer);
+
+			return read;
+		}
 	};
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "../Common.h"
 #include "../XDocument.h"
+#include "../BinarySerializer.h"
 #include "kxf/General/ILibraryInfo.h"
 #include "kxf/IO/IStream.h"
 #include "TinyXML2.h"
@@ -387,5 +388,25 @@ namespace kxf
 		public:
 			XMLDocument& operator=(const XMLDocument&) = delete;
 			XMLDocument& operator=(XMLDocument&&) = delete;
+	};
+}
+
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<XMLDocument> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const XMLDocument& value) const
+		{
+			return BinarySerializer<String>().Serialize(stream, value.Save());
+		}
+		uint64_t Deserialize(IInputStream& stream, XMLDocument& value) const
+		{
+			String buffer;
+			auto read = BinarySerializer<String>().Deserialize(stream, buffer);
+
+			value.Load(buffer);
+			return read;
+		}
 	};
 }

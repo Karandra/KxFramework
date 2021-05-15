@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "kxf/General/String.h"
 #include "kxf/Localization/Locale.h"
+#include "kxf/Serialization/BinarySerializer.h"
 
 namespace kxf
 {
@@ -37,5 +38,26 @@ namespace kxf
 			{
 				return GetValue();
 			}
+	};
+}
+
+
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<IErrorCode> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const IErrorCode& value) const
+		{
+			return Serialization::WriteObject(stream, value.GetValue());
+		}
+		uint64_t Deserialize(IInputStream& stream, IErrorCode& value) const
+		{
+			uint32_t buffer = 0;
+			auto read = Serialization::ReadObject(stream, buffer);
+			value.SetValue(buffer);
+
+			return read;
+		}
 	};
 }

@@ -86,3 +86,23 @@ namespace nlohmann
 		}
 	};
 }
+
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<JSONDocument> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const JSONDocument& value) const
+		{
+			return BinarySerializer<String>().Serialize(stream, value.Save());
+		}
+		uint64_t Deserialize(IInputStream& stream, JSONDocument& value) const
+		{
+			String buffer;
+			auto read = BinarySerializer<String>().Deserialize(stream, buffer);
+
+			value.Load(buffer);
+			return read;
+		}
+	};
+}

@@ -2,9 +2,10 @@
 #include "Common.h"
 #include "FSPath.h"
 #include "kxf/General/String.h"
+#include "kxf/General/DateTime.h"
 #include "kxf/General/BinarySize.h"
 #include "kxf/General/UniversallyUniqueID.h"
-#include <wx/datetime.h>
+#include "kxf/Serialization/BinarySerializer.h"
 
 namespace kxf
 {
@@ -15,6 +16,8 @@ namespace kxf
 {
 	class KX_API FileItem final
 	{
+		friend struct BinarySerializer<FileItem>;
+
 		private:
 			FSPath m_Path;
 			BinarySize m_Size;
@@ -239,5 +242,15 @@ namespace kxf
 			{
 				return !IsValid();
 			}
+	};
+}
+
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<FileItem> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const FileItem& value) const;
+		uint64_t Deserialize(IInputStream& stream, FileItem& value) const;
 	};
 }

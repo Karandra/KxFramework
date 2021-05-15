@@ -3,6 +3,7 @@
 #include "TimeSpan.h"
 #include "DateSpan.h"
 #include "TimeZone.h"
+#include "kxf/Serialization/BinarySerializer.h"
 #include "Private/Mapping.h"
 
 struct _FILETIME;
@@ -116,6 +117,16 @@ namespace kxf
 			}
 
 			// Accessors and modifiers
+			int64_t GetValue() const noexcept
+			{
+				return m_Value.GetValue().GetValue();
+			}
+			DateTime& SetValue(int64_t value) noexcept
+			{
+				m_Value = wxDateTime(wxLongLong(value));
+				return *this;
+			}
+
 			int GetMillisecond(const TimeZoneOffset& tz = TimeZone::Local) const noexcept
 			{
 				return m_Value.GetMillisecond(tz);
@@ -519,5 +530,37 @@ namespace kxf
 			{
 				return m_Value;
 			}
+	};
+}
+
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<DateTime> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const DateTime& value) const
+		{
+			return Serialization::WriteObject(stream, value.GetValue());
+		}
+		uint64_t Deserialize(IInputStream& stream, DateTime& value) const
+		{
+			int64_t buffer = 0;
+			auto read = Serialization::ReadObject(stream, buffer);
+			value.SetValue(buffer);
+
+			return read;
+		}
+	};
+}
+
+namespace std
+{
+	template<>
+	struct hash<kxf::DateTime> final
+	{
+		size_t operator()(const kxf::DateTime& dateTime) const noexcept
+		{
+			return std::hash<int64_t>()(dateTime.GetValue());
+		}
 	};
 }

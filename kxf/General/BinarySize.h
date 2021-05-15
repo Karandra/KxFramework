@@ -296,6 +296,26 @@ namespace kxf
 
 namespace kxf
 {
+	template<>
+	struct BinarySerializer<BinarySize> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const BinarySize& value) const
+		{
+			return Serialization::WriteObject(stream, value.ToBytes());
+		}
+		uint64_t Deserialize(IInputStream& stream, BinarySize& value) const
+		{
+			int64_t buffer = 0;
+			auto read = Serialization::ReadObject(stream, buffer);
+			value = BinarySize::FromBytes(buffer);
+
+			return read;
+		}
+	};
+}
+
+namespace kxf
+{
 	inline double GetSizeRatio(BinarySize smallerSize, BinarySize largerSize) noexcept
 	{
 		if (smallerSize && largerSize && !largerSize.IsNull())

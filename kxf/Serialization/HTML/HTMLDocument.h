@@ -365,3 +365,23 @@ namespace kxf::HTML
 		LAST,
 	};
 }
+
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<HTMLDocument> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const HTMLDocument& value) const
+		{
+			return BinarySerializer<String>().Serialize(stream, value.Save());
+		}
+		uint64_t Deserialize(IInputStream& stream, HTMLDocument& value) const
+		{
+			String buffer;
+			auto read = BinarySerializer<String>().Deserialize(stream, buffer);
+
+			value.Load(buffer);
+			return read;
+		}
+	};
+}

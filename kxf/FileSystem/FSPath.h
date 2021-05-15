@@ -19,7 +19,8 @@ namespace kxf
 {
 	class KX_API FSPath final
 	{
-		friend class FSPath;
+		friend struct std::hash<FSPath>;
+		friend struct BinarySerializer<FSPath>;
 
 		public:
 			static FSPath FromStringUnchecked(String string, FSPathNamespace ns = FSPathNamespace::None);
@@ -263,4 +264,26 @@ namespace kxf
 	{
 		return left.Append(std::forward<T>(right));
 	}
+}
+
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<FSPath> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const FSPath& value) const;
+		uint64_t Deserialize(IInputStream& stream, FSPath& value) const;
+	};
+}
+
+namespace std
+{
+	template<>
+	struct hash<kxf::FSPath> final
+	{
+		size_t operator()(const kxf::FSPath& fsPath) const noexcept
+		{
+			return std::hash<kxf::String>()(fsPath.m_Path);
+		}
+	};
 }

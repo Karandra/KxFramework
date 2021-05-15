@@ -2,6 +2,7 @@
 #include "Common.h"
 #include "kxf/General/String.h"
 #include "kxf/General/UniversallyUniqueID.h"
+#include "kxf/Serialization/BinarySerializer.h"
 #include <type_traits>
 #include <variant>
 
@@ -22,8 +23,15 @@ namespace kxf
 {
 	class KX_API EventID final
 	{
+		friend struct std::hash<EventID>;
+		friend struct BinarySerializer<EventID>;
+
 		private:
 			std::variant<int64_t, UniversallyUniqueID, String> m_ID;
+
+		private:
+			uint64_t Serialize(IOutputStream& stream) const;
+			uint64_t Deserialize(IInputStream& stream);
 
 		public:
 			EventID() noexcept = default;
@@ -227,6 +235,23 @@ namespace kxf::EventSystem
 	KX_API EventID NewSimpleEventID() noexcept;
 	KX_API EventID NewUniqueEventID() noexcept;
 }
+
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<EventID> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const EventID& value) const
+		{
+			return value.Serialize(stream);
+		}
+		uint64_t Deserialize(IInputStream& stream, EventID& value) const
+		{
+			return value.Deserialize(stream);
+		}
+	};
+}
+
 
 namespace std
 {

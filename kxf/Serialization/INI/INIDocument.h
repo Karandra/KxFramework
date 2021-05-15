@@ -178,3 +178,23 @@ namespace kxf
 			INIDocument& operator=(INIDocument&&) = delete;
 	};
 }
+
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<INIDocument> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const INIDocument& value) const
+		{
+			return BinarySerializer<String>().Serialize(stream, value.Save());
+		}
+		uint64_t Deserialize(IInputStream& stream, INIDocument& value) const
+		{
+			String buffer;
+			auto read = BinarySerializer<String>().Deserialize(stream, buffer);
+
+			value.Load(buffer);
+			return read;
+		}
+	};
+}

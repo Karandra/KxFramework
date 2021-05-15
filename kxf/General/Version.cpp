@@ -169,3 +169,22 @@ namespace kxf
 		return cmp == Cmp::GT || cmp == Cmp::EQ;
 	}
 }
+
+namespace kxf
+{
+	uint64_t BinarySerializer<Version>::Serialize(IOutputStream& stream, const Version& value) const
+	{
+		return Serialization::WriteObject(stream, value.GetType()) + Serialization::WriteObject(stream, value.ToString());
+	}
+	uint64_t BinarySerializer<Version>::Deserialize(IInputStream& stream, Version& value) const
+	{
+		VersionType type = VersionType::None;
+		auto read = Serialization::ReadObject(stream, type);
+
+		String buffer;
+		read += Serialization::ReadObject(stream, buffer);
+		value = {std::move(buffer), type};
+
+		return read;
+	}
+}

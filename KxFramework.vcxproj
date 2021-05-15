@@ -333,6 +333,7 @@
     <ClInclude Include="kxf\Sciter\Widgets\Native\TextBoxWidget.h" />
     <ClInclude Include="kxf\Sciter\Widgets\TextBoxWidget.h" />
     <ClInclude Include="kxf\Serialization.hpp" />
+    <ClInclude Include="kxf\Serialization\BinarySerializer.h" />
     <ClInclude Include="kxf\Serialization\Common.h" />
     <ClInclude Include="kxf\Serialization\HTML.h" />
     <ClInclude Include="kxf\Serialization\HTML\HTMLDocument.h" />
@@ -734,6 +735,7 @@
     <ClCompile Include="kxf\General\ErrorCode.cpp" />
     <ClCompile Include="kxf\General\IVariablesCollection.cpp" />
     <ClCompile Include="kxf\General\LocallyUniqueID.cpp" />
+    <ClCompile Include="kxf\General\NativeUUID.cpp" />
     <ClCompile Include="kxf\General\ResourceID.cpp" />
     <ClCompile Include="kxf\General\StaticVariablesCollection.cpp" />
     <ClCompile Include="kxf\IO\Common.cpp" />
@@ -772,6 +774,7 @@
     <ClCompile Include="kxf\Sciter\Widgets\NativeWidget.cpp" />
     <ClCompile Include="kxf\Sciter\Widgets\Native\TextBoxWidget.cpp" />
     <ClCompile Include="kxf\Sciter\Widgets\TextBoxWidget.cpp" />
+    <ClCompile Include="kxf\Serialization\BinarySerializer.cpp" />
     <ClCompile Include="kxf\Serialization\HTML\HTMLDocument.cpp" />
     <ClCompile Include="kxf\Serialization\HTML\HTMLNode.cpp" />
     <ClCompile Include="kxf\Serialization\HTML\Private\clean_text.cpp" />

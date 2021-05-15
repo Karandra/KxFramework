@@ -78,10 +78,30 @@ namespace kxf
 	};
 }
 
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<LocallyUniqueID> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const LocallyUniqueID& value) const
+		{
+			return Serialization::WriteObject(stream, value.ToInt());
+		}
+		uint64_t Deserialize(IInputStream& stream, LocallyUniqueID& value) const
+		{
+			uint64_t buffer = 0;
+			auto read = Serialization::ReadObject(stream, buffer);
+			value = std::move(buffer);
+
+			return read;
+		}
+	};
+}
+
 namespace std
 {
 	template<>
-	struct hash<kxf::LocallyUniqueID>
+	struct hash<kxf::LocallyUniqueID> final
 	{
 		constexpr size_t operator()(const kxf::LocallyUniqueID& luid) const noexcept
 		{

@@ -10,6 +10,68 @@ namespace
 
 namespace kxf
 {
+	uint64_t EventID::Serialize(IOutputStream& stream) const
+	{
+		uint64_t written = Serialization::WriteObject(stream, static_cast<uint64_t>(m_ID.index()));
+
+		if (auto value = std::get_if<int64_t>(&m_ID))
+		{
+			written += Serialization::WriteObject(stream, *value);
+		}
+		else if (auto value = std::get_if<UniversallyUniqueID>(&m_ID))
+		{
+			written += Serialization::WriteObject(stream, *value);
+		}
+		else if (auto value = std::get_if<String>(&m_ID))
+		{
+			written += Serialization::WriteObject(stream, *value);
+		}
+		else
+		{
+			// Shouldn't happen, but just in case
+			written += Serialization::WriteObject(stream, static_cast<uint64_t>(0));
+		}
+		return written;
+	}
+	uint64_t EventID::Deserialize(IInputStream& stream)
+	{
+		uint64_t index = 0;
+		uint64_t read = Serialization::ReadObject(stream, index);
+
+		switch (index)
+		{
+			case 0:
+			{
+				uint64_t value = 0;
+				read += Serialization::ReadObject(stream, value);
+				m_ID = value;
+
+				break;
+			}
+			case 1:
+			{
+				UniversallyUniqueID value;
+				read += Serialization::ReadObject(stream, value);
+				m_ID = std::move(value);
+
+				break;
+			}
+			case 2:
+			{
+				String value;
+				read += Serialization::ReadObject(stream, value);
+				m_ID = std::move(value);
+
+				break;
+			}
+			default:
+			{
+				throw BinarySerializerException(__FUNCTION__ ": Invalid type index");
+			}
+		};
+		return read;
+	}
+
 	bool EventID::IsNull() const noexcept
 	{
 		if (m_ID.valueless_by_exception() || m_ID.index() == std::numeric_limits<size_t>::max())

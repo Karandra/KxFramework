@@ -1,6 +1,7 @@
 #include "KxfPCH.h"
 #include "Color.h"
 #include "kxf/General/RegEx.h"
+#include "kxf/General/String.h"
 #include "wx/window.h"
 
 namespace

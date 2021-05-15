@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "ColorDefines.h"
 #include "Angle.h"
-#include "kxf/General/String.h"
+#include "kxf/Serialization/BinarySerializer.h"
 #include <wx/colour.h>
 #include <wx/brush.h>
 #include <wx/pen.h>
@@ -10,6 +10,8 @@ class wxWindow;
 
 namespace kxf
 {
+	class String;
+
 	enum class C2SFormat
 	{
 		CSS,
@@ -35,6 +37,8 @@ namespace kxf
 {
 	class KX_API Color final
 	{
+		friend struct BinarySerializer<Color>;
+
 		public:
 			constexpr static Color FromHSL(const PackedHSL& color) noexcept
 			{
@@ -628,4 +632,26 @@ namespace kxf::Drawing
 		};
 		return {};
 	}
+}
+
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<Color> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const Color& value) const
+		{
+			return Serialization::WriteObject(stream, value.m_Value.Red) +
+				Serialization::WriteObject(stream, value.m_Value.Green) +
+				Serialization::WriteObject(stream, value.m_Value.Blue) +
+				Serialization::WriteObject(stream, value.m_Value.Alpha);
+		}
+		uint64_t Deserialize(IInputStream& stream, Color& value) const
+		{
+			return Serialization::ReadObject(stream, value.m_Value.Red) +
+				Serialization::ReadObject(stream, value.m_Value.Green) +
+				Serialization::ReadObject(stream, value.m_Value.Blue) +
+				Serialization::ReadObject(stream, value.m_Value.Alpha);
+		}
+	};
 }
