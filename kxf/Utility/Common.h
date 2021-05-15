@@ -237,8 +237,8 @@ namespace kxf::Utility
 			{
 				struct
 				{
-					TOUT High;
 					TOUT Low;
+					TOUT High;
 				};
 				TIN Full;
 			} value;
@@ -259,8 +259,8 @@ namespace kxf::Utility
 		{
 			struct
 			{
-				TIN2 High;
 				TIN1 Low;
+				TIN2 High;
 			};
 			TOUT Full;
 		} value;
