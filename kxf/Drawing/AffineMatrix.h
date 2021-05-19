@@ -4,6 +4,7 @@
 #include "Geometry.h"
 #include "kxf/General/Common.h"
 #include "kxf/General/FlagSet.h"
+#include "kxf/Serialization/BinarySerializer.h"
 #include <wx/affinematrix2d.h>
 #include <cmath>
 
@@ -14,6 +15,8 @@ namespace kxf::Geometry
 	{
 		template<class T>
 		friend class BasicAffineMatrix;
+
+		friend struct BinarySerializer<BasicAffineMatrix<TValue_>>;
 
 		public:
 			using TValue = TValue_;
@@ -262,4 +265,34 @@ namespace kxf
 	using AffineMatrix = Geometry::BasicAffineMatrix<int>;
 	using AffineMatrixF = Geometry::BasicAffineMatrix<float>;
 	using AffineMatrixD = Geometry::BasicAffineMatrix<double>;
+}
+
+namespace kxf
+{
+	template<class T>
+	struct BinarySerializer<Geometry::BasicAffineMatrix<T>> final
+	{
+		private:
+			using TMatrix = Geometry::BasicAffineMatrix<T>;
+
+		public:
+			uint64_t Serialize(IOutputStream& stream, const TMatrix& value) const
+			{
+				return Serialization::WriteObject(stream, value.m_11) +
+					Serialization::WriteObject(stream, value.m_12) +
+					Serialization::WriteObject(stream, value.m_21) +
+					Serialization::WriteObject(stream, value.m_22) +
+					Serialization::WriteObject(stream, value.m_tx) +
+					Serialization::WriteObject(stream, value.m_ty);
+			}
+			uint64_t Deserialize(IInputStream& stream, TMatrix& value) const
+			{
+				return Serialization::ReadObject(stream, value.m_11) +
+					Serialization::ReadObject(stream, value.m_12) +
+					Serialization::ReadObject(stream, value.m_21) +
+					Serialization::ReadObject(stream, value.m_22) +
+					Serialization::ReadObject(stream, value.m_tx) +
+					Serialization::ReadObject(stream, value.m_ty);
+			}
+	};
 }

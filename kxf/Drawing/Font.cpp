@@ -13,8 +13,6 @@ namespace
 
 	float PointSizeFromPixelSize(const Size& pixelSize, int dpi = Geometry::DefaultCoord)
 	{
-
-
 		if (dpi == Geometry::DefaultCoord)
 		{
 			dpi = GDIScreenContext().GetDPI().GetHeight();
@@ -218,5 +216,29 @@ namespace kxf
 	wxFont Font::ToWxFont() const
 	{
 		return GDIFont(*this).ToWxFont();
+	}
+}
+
+namespace kxf
+{
+	uint64_t BinarySerializer<Font>::Serialize(IOutputStream& stream, const Font& value) const
+	{
+		return Serialization::WriteObject(stream, value.m_FaceName) +
+			Serialization::WriteObject(stream, value.m_PixelSize) +
+			Serialization::WriteObject(stream, value.m_PointSize) +
+			Serialization::WriteObject(stream, value.m_Weight) +
+			Serialization::WriteObject(stream, value.m_Family) +
+			Serialization::WriteObject(stream, value.m_Encoding) +
+			Serialization::WriteObject(stream, value.m_Style);
+	}
+	uint64_t BinarySerializer<Font>::Deserialize(IInputStream& stream, Font& value) const
+	{
+		return Serialization::ReadObject(stream, value.m_FaceName) +
+			Serialization::ReadObject(stream, value.m_PixelSize) +
+			Serialization::ReadObject(stream, value.m_PointSize) +
+			Serialization::ReadObject(stream, value.m_Weight) +
+			Serialization::ReadObject(stream, value.m_Family) +
+			Serialization::ReadObject(stream, value.m_Encoding) +
+			Serialization::ReadObject(stream, value.m_Style);
 	}
 }

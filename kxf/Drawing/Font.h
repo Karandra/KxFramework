@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "Geometry.h"
+#include "kxf/Serialization/BinarySerializer.h"
 
 namespace kxf
 {
@@ -11,6 +12,8 @@ namespace kxf
 {
 	class KX_API Font
 	{
+		friend struct BinarySerializer<Font>;
+
 		public:
 			static FontEncoding GetDefaultEncoding() noexcept;
 			static void SetDefaultEncoding(FontEncoding encoding) noexcept;
@@ -166,5 +169,15 @@ namespace kxf
 
 			Font& operator=(const Font&) = default;
 			Font& operator=(Font&&) noexcept = default;
+	};
+}
+
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<Font> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const Font& value) const;
+		uint64_t Deserialize(IInputStream& stream, Font& value) const;
 	};
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "IBitmapImage.h"
+#include "kxf/Serialization/BinarySerializer.h"
 #include <wx/image.h>
 
 namespace kxf
@@ -360,5 +361,21 @@ namespace kxf
 
 				return *this;
 			}
+	};
+}
+
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<BitmapImage> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const BitmapImage& value) const
+		{
+			return value.Save(stream, ImageFormat::Any);
+		}
+		uint64_t Deserialize(IInputStream& stream, BitmapImage& value) const
+		{
+			return value.Load(stream, ImageFormat::Any);
+		}
 	};
 }

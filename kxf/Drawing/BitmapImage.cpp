@@ -70,7 +70,15 @@ namespace kxf
 			wxWidgets::OutputStreamWrapperWx warpper(stream);
 			if (format == ImageFormat::Any)
 			{
-				return m_Image.SaveFile(warpper, wxBitmapType::wxBITMAP_TYPE_PNG);
+				// Save to either original format or as a PNG
+				if (auto type = m_Image.GetType(); type != wxBitmapType::wxBITMAP_TYPE_INVALID && wxBitmapType::wxBITMAP_TYPE_ANY)
+				{
+					return m_Image.SaveFile(warpper, type);
+				}
+				else
+				{
+					return m_Image.SaveFile(warpper, wxBitmapType::wxBITMAP_TYPE_PNG);
+				}
 			}
 			else
 			{

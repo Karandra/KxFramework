@@ -205,3 +205,21 @@ namespace kxf
 		return *this;
 	}
 }
+
+namespace kxf
+{
+
+	uint64_t BinarySerializer<SVGImage>::Serialize(IOutputStream& stream, const SVGImage& value) const
+	{
+		return value.m_Document ? Serialization::WriteObject(stream, value.m_Document->toString()) : Serialization::WriteObject(stream, std::string());
+	}
+	uint64_t BinarySerializer<SVGImage>::Deserialize(IInputStream& stream, SVGImage& value) const
+	{
+		std::string buffer;
+		auto read = Serialization::ReadObject(stream, buffer);
+
+		value.m_Document = std::make_shared<lunasvg::SVGDocument>();
+		value.m_Document->loadFromData(buffer);
+		return read;
+	}
+}

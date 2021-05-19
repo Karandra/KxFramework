@@ -5,6 +5,7 @@
 #include <cmath>
 #include "Angle.h"
 #include "kxf/General/Common.h"
+#include "kxf/Serialization/BinarySerializer.h"
 #include <kxf/Utility/Common.h>
 #include <kxf/Utility/Numeric.h>
 
@@ -1348,6 +1349,66 @@ namespace kxf
 	using PointD = Geometry::BasicPoint<double>;
 	using SizeD = Geometry::BasicSize<double>;
 	using RectD = Geometry::BasicRect<double>;
+}
+
+namespace kxf
+{
+	template<class T>
+	struct BinarySerializer<Geometry::BasicPoint<T>> final
+	{
+		private:
+			using TPoint = Geometry::BasicPoint<T>;
+
+		public:
+			uint64_t Serialize(IOutputStream& stream, const TPoint& value) const
+			{
+				return Serialization::WriteObject(stream, value.GetX()) + Serialization::WriteObject(stream, value.GetY());
+			}
+			uint64_t Deserialize(IInputStream& stream, TPoint& value) const
+			{
+				return Serialization::ReadObject(stream, value.X()) + Serialization::ReadObject(stream, value.Y());
+			}
+	};
+
+	template<class T>
+	struct BinarySerializer<Geometry::BasicSize<T>> final
+	{
+		private:
+			using TSize = Geometry::BasicSize<T>;
+
+		public:
+			uint64_t Serialize(IOutputStream& stream, const TSize& value) const
+			{
+				return Serialization::WriteObject(stream, value.GetWidth()) + Serialization::WriteObject(stream, value.GetHeight());
+			}
+			uint64_t Deserialize(IInputStream& stream, TSize& value) const
+			{
+				return Serialization::ReadObject(stream, value.Width()) + Serialization::ReadObject(stream, value.Height());
+			}
+	};
+
+	template<class T>
+	struct BinarySerializer<Geometry::BasicRect<T>> final
+	{
+		private:
+			using TRect = Geometry::BasicRect<T>;
+
+		public:
+			uint64_t Serialize(IOutputStream& stream, const TRect& value) const
+			{
+				return Serialization::WriteObject(stream, value.GetX()) +
+					Serialization::WriteObject(stream, value.GetY()) +
+					Serialization::WriteObject(stream, value.GetWidth()) +
+					Serialization::WriteObject(stream, value.GetHeight());
+			}
+			uint64_t Deserialize(IInputStream& stream, TRect& value) const
+			{
+				return Serialization::ReadObject(stream, value.X()) +
+					Serialization::ReadObject(stream, value.Y()) +
+					Serialization::ReadObject(stream, value.Width()) +
+					Serialization::ReadObject(stream, value.Height());
+			}
+	};
 }
 
 namespace std

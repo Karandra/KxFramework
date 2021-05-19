@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "IVectorImage.h"
+#include "kxf/Serialization/BinarySerializer.h"
 
 namespace lunasvg
 {
@@ -12,6 +13,8 @@ namespace kxf
 	class KX_API SVGImage final: public RTTI::ExtendInterface<SVGImage, IVectorImage>
 	{
 		KxRTTI_DeclareIID_Using(SVGImage, ImageFormat::SVG.ToNativeUUID());
+		
+		friend struct BinarySerializer<SVGImage>;
 
 		private:
 			std::shared_ptr<lunasvg::SVGDocument> m_Document;
@@ -91,5 +94,15 @@ namespace kxf
 		public:
 			SVGImage& operator=(const SVGImage& other);
 			SVGImage& operator=(SVGImage&& other) noexcept;
+	};
+}
+
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<SVGImage> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const SVGImage& value) const;
+		uint64_t Deserialize(IInputStream& stream, SVGImage& value) const;
 	};
 }

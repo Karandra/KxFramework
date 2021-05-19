@@ -7,12 +7,14 @@ namespace kxf
 {
 	class Angle final
 	{
+		friend struct BinarySerializer<Angle>;
+
 		public:
 			constexpr static Angle FromNormalized(float value) noexcept
 			{
 				if (Utility::Abs(value) > 1.0f)
 				{
-					Utility::ModF(value, &value);
+					value = Utility::ModF(value);
 				}
 
 				Angle angle;
@@ -107,4 +109,20 @@ namespace kxf
 	#undef Kx_AngleCmp
 	#undef Kx_AngleCmpOp
 	#pragma warning(pop)
+}
+
+namespace kxf
+{
+	template<>
+	struct BinarySerializer<Angle> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const Angle& value) const
+		{
+			return Serialization::WriteObject(stream, value.m_Value);
+		}
+		uint64_t Deserialize(IInputStream& stream, Angle& value) const
+		{
+			return Serialization::ReadObject(stream, value.m_Value);
+		}
+	};
 }

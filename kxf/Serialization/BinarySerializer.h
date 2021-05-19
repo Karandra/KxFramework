@@ -294,4 +294,22 @@ namespace kxf
 	{
 		uint64_t Serialize(IOutputStream& stream, const std::wstring_view& value) const;
 	};
+
+	template<>
+	struct BinarySerializer<const char*> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const char* value) const
+		{
+			return Serialization::WriteObject(stream, value ? std::string_view(value) : std::string_view());
+		}
+	};
+
+	template<>
+	struct BinarySerializer<const wchar_t*> final
+	{
+		uint64_t Serialize(IOutputStream& stream, const wchar_t* value) const
+		{
+			return Serialization::WriteObject(stream, value ? std::wstring_view(value) : std::wstring_view());
+		}
+	};
 }
