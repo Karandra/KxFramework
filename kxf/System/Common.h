@@ -13,17 +13,20 @@ namespace kxf
 		HResult,
 		NtStatus
 	};
-	enum class MemoryProtection: uint32_t
+	enum class UserNameFormat
 	{
-		None = 0,
-		Read = 1 << 0,
-		Write = 1 << 1,
-		Execute = 1 << 2,
+		None = -1,
 
-		RW = Read|Write,
-		RX = Read|Execute,
-		RWX = Read|Write|Execute,
+		Display,
+		UniqueID,
+		DownLevel,
+		Canonical,
+		CanonicalEx,
+		UserPrincipal,
+		ServicePrincipal,
+		FullyQualifiedDN
 	};
+
 	enum class SHWindowCommand: uint32_t
 	{
 		None = 0,
@@ -40,19 +43,7 @@ namespace kxf
 		Default = 1 << 17,
 		Inactive = 1 << 18,
 	};
-	enum class UserNameFormat
-	{
-		None = -1,
-
-		Display,
-		UniqueID,
-		DownLevel,
-		Canonical,
-		CanonicalEx,
-		UserPrincipal,
-		ServicePrincipal,
-		FullyQualifiedDN
-	};
+	KxFlagSet_Declare(SHWindowCommand);
 
 	enum class SystemProcessAccess: uint32_t
 	{
@@ -72,17 +63,8 @@ namespace kxf
 
 		Everything = CreateProcess|CreateThread|QueryInformation|QueryLimitedInformation|SetInformation|SuspendResume|Terminate|Synchronize|VMOperation|VMRead|VMWrite
 	};
-	enum class SystemProcessPriority
-	{
-		None = -1,
+	KxFlagSet_Declare(SystemProcessAccess);
 
-		Idle,
-		BelowNormal,
-		Normal,
-		AboveNormal,
-		High,
-		Realtime,
-	};
 	enum class CreateSystemProcessFlag: uint32_t
 	{
 		None = 0,
@@ -95,10 +77,17 @@ namespace kxf
 
 		Async = 1 << 16
 	};
-
-	KxFlagSet_Declare(MemoryProtection);
-	KxFlagSet_Declare(SHWindowCommand);
-
-	KxFlagSet_Declare(SystemProcessAccess);
 	KxFlagSet_Declare(CreateSystemProcessFlag);
+	
+	enum class SystemProcessPriority
+	{
+		None = -1,
+
+		Idle,
+		BelowNormal,
+		Normal,
+		AboveNormal,
+		High,
+		Realtime,
+	};
 }

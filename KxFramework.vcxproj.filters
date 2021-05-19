@@ -257,6 +257,9 @@
     <Filter Include="kxf\Network\WSPPWebSession">
       <UniqueIdentifier>{81faf50f-5e4d-4d78-bb14-cc0847031b43}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kxf\IPC">
+      <UniqueIdentifier>{a0aa2b7d-a31f-46f5-83a7-3816b8156f52}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kxf\Threading\Common.h">
@@ -674,9 +677,6 @@
       <Filter>kxf\System\Private</Filter>
     </ClInclude>
     <ClInclude Include="kxf\System\TaskScheduler.h">
-      <Filter>kxf\System</Filter>
-    </ClInclude>
-    <ClInclude Include="kxf\System\SharedMemory.h">
       <Filter>kxf\System</Filter>
     </ClInclude>
     <ClInclude Include="kxf\System\KnownDirectoryID.h">
@@ -1894,6 +1894,21 @@
     <ClInclude Include="kxf\Serialization\BinarySerializer.h">
       <Filter>kxf\Serialization</Filter>
     </ClInclude>
+    <ClInclude Include="kxf\IPC\IRPCClient.h">
+      <Filter>kxf\IPC</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IPC\IRPCEvent.h">
+      <Filter>kxf\IPC</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IPC\IRPCServer.h">
+      <Filter>kxf\IPC</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IPC\Common.h">
+      <Filter>kxf\IPC</Filter>
+    </ClInclude>
+    <ClInclude Include="kxf\IPC\SharedMemory.h">
+      <Filter>kxf\IPC</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kxf\EventSystem\EventBuilder.cpp">
@@ -2098,9 +2113,6 @@
       <Filter>kxf\System\Private</Filter>
     </ClCompile>
     <ClCompile Include="kxf\System\TaskScheduler.cpp">
-      <Filter>kxf\System</Filter>
-    </ClCompile>
-    <ClCompile Include="kxf\System\SharedMemory.cpp">
       <Filter>kxf\System</Filter>
     </ClCompile>
     <ClCompile Include="KxfPCH.cpp" />
@@ -2820,6 +2832,9 @@
     </ClCompile>
     <ClCompile Include="kxf\General\NativeUUID.cpp">
       <Filter>kxf\General</Filter>
+    </ClCompile>
+    <ClCompile Include="kxf\IPC\SharedMemory.cpp">
+      <Filter>kxf\IPC</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

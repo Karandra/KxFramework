@@ -112,6 +112,20 @@ namespace kxf
 		Windows = CRLF,
 		Macintosh = CR
 	};
+
+	enum class MemoryProtection: uint32_t
+	{
+		None = 0,
+		Read = 1 << 0,
+		Write = 1 << 1,
+		Execute = 1 << 2,
+		CopyOnWrite = 1 << 3,
+
+		RW = Read|Write,
+		RX = Read|Execute,
+		RWX = Read|Write|Execute,
+	};
+	KxFlagSet_Declare(MemoryProtection);
 }
 
 namespace kxf

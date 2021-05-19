@@ -280,6 +280,11 @@
     <ClInclude Include="kxf\IO\StreamDelegate.h" />
     <ClInclude Include="kxf\IO\StreamError.h" />
     <ClInclude Include="kxf\IO\StreamReaderWriter.h" />
+    <ClInclude Include="kxf\IPC\Common.h" />
+    <ClInclude Include="kxf\IPC\IRPCClient.h" />
+    <ClInclude Include="kxf\IPC\IRPCEvent.h" />
+    <ClInclude Include="kxf\IPC\IRPCServer.h" />
+    <ClInclude Include="kxf\IPC\SharedMemory.h" />
     <ClInclude Include="kxf\Localization\Constants.h" />
     <ClInclude Include="kxf\Localization\ILocalizationPackage.h" />
     <ClInclude Include="kxf\Localization\LocalizationItem.h" />
@@ -626,7 +631,6 @@
     <ClInclude Include="kxf\System\Private\Shell.h" />
     <ClInclude Include="kxf\System\Private\KnownDirectoryDefinition.h" />
     <ClInclude Include="kxf\System\Registry.h" />
-    <ClInclude Include="kxf\System\SharedMemory.h" />
     <ClInclude Include="kxf\System\KnownDirectoryID.h" />
     <ClInclude Include="kxf\System\ShellFileType.h" />
     <ClInclude Include="kxf\System\ShellFileTypeInfo.h" />
@@ -743,6 +747,7 @@
     <ClCompile Include="kxf\IO\IStream.cpp" />
     <ClCompile Include="kxf\IO\MemoryStream.cpp" />
     <ClCompile Include="kxf\IO\NullStream.cpp" />
+    <ClCompile Include="kxf\IPC\SharedMemory.cpp" />
     <ClCompile Include="kxf\Localization\ILocalizationPackage.cpp" />
     <ClCompile Include="kxf\Localization\LocalizationItem.cpp" />
     <ClCompile Include="kxf\Localization\LocalizationPackageStack.cpp" />
@@ -927,7 +932,6 @@
     <ClCompile Include="kxf\System\CredentialStore.cpp" />
     <ClCompile Include="kxf\System\Private\Shell.cpp" />
     <ClCompile Include="kxf\System\Registry.cpp" />
-    <ClCompile Include="kxf\System\SharedMemory.cpp" />
     <ClCompile Include="kxf\System\ShellLink.cpp" />
     <ClCompile Include="kxf\System\SystemInformation.cpp" />
     <ClCompile Include="kxf\System\TaskScheduler.cpp" />
