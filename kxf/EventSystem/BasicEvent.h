@@ -46,6 +46,8 @@ namespace kxf
 {
 	class KX_API BasicEvent: public RTTI::Implementation<BasicEvent, IEvent>, private IEventInternal
 	{
+		friend class IObject;
+
 		private:
 			using EventPublicState = EventSystem::EventPublicState;
 			using EventPrivateState = EventSystem::EventPrivateState;
