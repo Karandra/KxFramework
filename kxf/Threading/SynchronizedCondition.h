@@ -26,6 +26,15 @@ namespace kxf
 			bool Signal() noexcept;
 
 		public:
+			explicit operator bool() const noexcept
+			{
+				return !IsNull();
+			}
+			bool operator!() const noexcept
+			{
+				return IsNull();
+			}
+
 			SynchronizedCondition& operator=(const SynchronizedCondition&) = delete;
 	};
 }
